@@ -20,7 +20,7 @@
 - **F1 Button-Command:** Der sichtbare Button ruft den Structural-Command auf; E2E klickt den Button und prüft den echten Cut über `lastCut`.
 - **F2 Deferred-Bindung:** Job-ID, Target, Revision und Content-Payload werden vor Re-Prepare/Hooks geprüft; R5B-f prüft Fremd-/Stale-Jobs und Hook-Fehler mit Requeue.
 - **F3 Coverage:** Vollständige Coverage wird nach Rekonstruktion an den authored Digest gebunden; R5B-d und R5B-g prüfen Fremd-ID, Revision und Same-ID-Fremdinhalt.
-- **F4 Deterministische Evidence:** Timings bleiben Laufzeit-Messwerte und werden nicht persistiert; PNG/JSON/Markdown werden nur mit `WELTRAUM_RECORD_EVIDENCE=1` geändert oder byte-identisch bestätigt.
+- **F4 Deterministische Evidence:** Timings und rendererabhängige Pixelzähler werden nicht persistiert; JSON/Markdown bleiben byte-identisch, PNGs werden beim normalen Rerun weder byte-gegatet noch umgeschrieben. PNG-Aufzeichnung ist ausschließlich mit `WELTRAUM_RECORD_EVIDENCE=1` explizit.
 - **F5 Harness-Grenze:** Der Browsergraph importiert das Fixture ausschließlich aus `tests/support`; der Harness dokumentiert echte Produktpfade und testseitige Projektion separat.
 
 ## Estimate vs Measurement
@@ -39,13 +39,19 @@
 | measured colliders | `3` |
 | measured total | `55` |
 
+## Renderer-tolerantes PNG-Evidence-Gate
+
+- Capture-Vertrag: `640x360`, pro Kanal Toleranz `12`, Nicht-Leerheit `> 0.01`.
+- Before/After: lokale Kalibrierung `109` px (`0.0004730902777777778`), max. Kanal-Delta `210`; zulässiges Band `50..2048` px und max. Kanal-Delta `>= 100`.
+- Low/High: lokale Kalibrierung `4324` px (`0.01876736111111111`), max. Kanal-Delta `166`; zulässiges Band `1024..16384` px und max. Kanal-Delta `>= 100`.
+- Die unteren Grenzen verwerfen identische Bilder; die Nicht-Leerheitsgrenze verwirft leere Bilder; die oberen Grenzen verwerfen einen unplausibel breiten Komplett-Redraw. Die Bänder tolerieren rendererabhängige Rasterabweichungen, ohne das Struktur-/LOD-Signal zu entfernen.
+- Negative Checks: identische Bilder verworfen `true`, leeres Bild verworfen `true`.
+
 ## Scene und Render-LOD
 
 - Scene-Descriptor: `pg-tragwerk-r5-scene-v1`, Source-Hash `fnv1a64-v1:e2e234c9f752d25a`, Low/High-Quads `23/23`
 - Low: `1` gemergte Box(en), `r5-low-shared`
 - High: `2` per-Voxel-Boxen, `r5-high-per-voxel`
-- Before/After-Delta: `109` px (`0.0004730902777777778`), max Kanal-Delta `210`
-- Low/High-Delta: `4324` px (`0.01876736111111111`), max Kanal-Delta `166`
 - Physik-Approximation und Render-LOD bleiben getrennte Projektionen desselben Plans.
 
 ## Deferred-Vollzug
@@ -63,10 +69,11 @@
 ## Screenshots
 
 - Alle vier PNGs: `640x360`.
-- `evidence/pg-tragwerk-r5b-before.png`
-- `evidence/pg-tragwerk-r5b-after.png`
-- `evidence/pg-tragwerk-r5b-lod-low.png`
-- `evidence/pg-tragwerk-r5b-lod-high.png`
+- Die vier Captures werden im normalen Rerun nicht umgeschrieben, weil PNG-Bytes rendererabhängig sind; explizites Recording bleibt über `WELTRAUM_RECORD_EVIDENCE=1` möglich.
+- `pg-tragwerk-r5b-before.png`: 640x360, nicht leer `true`
+- `pg-tragwerk-r5b-after.png`: 640x360, nicht leer `true`
+- `pg-tragwerk-r5b-lod-low.png`: 640x360, nicht leer `true`
+- `pg-tragwerk-r5b-lod-high.png`: 640x360, nicht leer `true`
 
 ## Browser Health
 

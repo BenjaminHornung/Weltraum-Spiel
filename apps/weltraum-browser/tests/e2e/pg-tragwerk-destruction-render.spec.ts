@@ -6,8 +6,56 @@ const evidenceDirectory = path.resolve(process.cwd(), "evidence");
 const focusedCommand = "npx playwright test tests/e2e/pg-tragwerk-destruction-render.spec.ts";
 const recordEvidence = process.env.WELTRAUM_RECORD_EVIDENCE === "1";
 const harnessDimensions = { width: 640, height: 360 } as const;
+interface PixelDeltaBand {
+  readonly observedChangedPixels: number;
+  readonly observedChangedRatio: number;
+  readonly observedMaximumChannelDelta: number;
+  readonly minChangedPixels: number;
+  readonly maxChangedPixels: number;
+  readonly minMaximumChannelDelta: number;
+}
 
-const persistEvidence = async (fileName: string, content: Buffer | string): Promise<void> => {
+interface PixelEvidenceContract {
+  readonly dimensions: typeof harnessDimensions;
+  readonly perChannelTolerance: 12;
+  readonly nonEmptyMinimumRatio: 0.01;
+  readonly deltaBands: {
+    readonly beforeAfter: PixelDeltaBand;
+    readonly lowHigh: PixelDeltaBand;
+  };
+}
+
+interface ScreenshotEvidence {
+  readonly width: number;
+  readonly height: number;
+  readonly nonEmpty: true;
+}
+
+const pixelEvidenceContract: PixelEvidenceContract = {
+  dimensions: harnessDimensions,
+  perChannelTolerance: 12,
+  nonEmptyMinimumRatio: 0.01,
+  deltaBands: {
+    beforeAfter: {
+      observedChangedPixels: 109,
+      observedChangedRatio: 109 / (harnessDimensions.width * harnessDimensions.height),
+      observedMaximumChannelDelta: 210,
+      minChangedPixels: 50,
+      maxChangedPixels: 2048,
+      minMaximumChannelDelta: 100
+    },
+    lowHigh: {
+      observedChangedPixels: 4324,
+      observedChangedRatio: 4324 / (harnessDimensions.width * harnessDimensions.height),
+      observedMaximumChannelDelta: 166,
+      minChangedPixels: 1024,
+      maxChangedPixels: 16384,
+      minMaximumChannelDelta: 100
+    }
+  }
+};
+
+const persistDeterministicEvidence = async (fileName: string, content: Buffer | string): Promise<void> => {
   const filePath = path.join(evidenceDirectory, fileName);
   const bytes = typeof content === "string" ? Buffer.from(content, "utf8") : content;
   try {
@@ -20,6 +68,11 @@ const persistEvidence = async (fileName: string, content: Buffer | string): Prom
   }
   await mkdir(evidenceDirectory, { recursive: true });
   await writeFile(filePath, bytes);
+};
+
+const persistRecordedPngEvidence = async (fileName: string, content: Buffer): Promise<void> => {
+  if (!recordEvidence) return;
+  await persistDeterministicEvidence(fileName, content);
 };
 
 type PngName =
@@ -75,7 +128,7 @@ const testBridgeState = (page: Page): Promise<{ readonly ownProperty: boolean; r
   }));
 
 const decodeAndCompare = async (page: Page, expected: Buffer, actual: Buffer): Promise<PixelComparison> =>
-  page.evaluate(async ({ expectedBase64, actualBase64 }) => {
+  page.evaluate(async ({ expectedBase64, actualBase64, perChannelTolerance }) => {
     const decode = async (base64: string): Promise<{ width: number; height: number; pixels: Uint8ClampedArray }> => {
       const binary = atob(base64);
       const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
@@ -102,7 +155,7 @@ const decodeAndCompare = async (page: Page, expected: Buffer, actual: Buffer): P
       for (let channel = 0; channel < 4; channel += 1) {
         const delta = Math.abs(expectedImage.pixels[offset + channel] - actualImage.pixels[offset + channel]);
         maximumChannelDelta = Math.max(maximumChannelDelta, delta);
-        if (delta > 12) changed = true;
+        if (delta > perChannelTolerance) changed = true;
       }
       if (changed) changedPixels += 1;
     }
@@ -113,10 +166,14 @@ const decodeAndCompare = async (page: Page, expected: Buffer, actual: Buffer): P
       changedRatio: changedPixels / (actualImage.width * actualImage.height),
       maximumChannelDelta
     };
-  }, { expectedBase64: expected.toString("base64"), actualBase64: actual.toString("base64") });
+  }, {
+    expectedBase64: expected.toString("base64"),
+    actualBase64: actual.toString("base64"),
+    perChannelTolerance: pixelEvidenceContract.perChannelTolerance
+  });
 
 const measureCanvas = async (page: Page, image: Buffer): Promise<CanvasMetrics> =>
-  page.evaluate(async (base64) => {
+  page.evaluate(async ({ base64, perChannelTolerance }) => {
     const binary = atob(base64);
     const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
     const bitmap = await createImageBitmap(new Blob([bytes], { type: "image/png" }));
@@ -137,7 +194,7 @@ const measureCanvas = async (page: Page, image: Buffer): Promise<CanvasMetrics> 
     for (let y = 0; y < canvas.height; y += 1) {
       for (let x = 0; x < canvas.width; x += 1) {
         const offset = (y * canvas.width + x) * 4;
-        const differs = background.some((value, channel) => Math.abs(value - pixels[offset + channel]) > 12);
+        const differs = background.some((value, channel) => Math.abs(value - pixels[offset + channel]) > perChannelTolerance);
         if (!differs) continue;
         nonBackgroundPixels += 1;
         minX = Math.min(minX, x);
@@ -154,7 +211,13 @@ const measureCanvas = async (page: Page, image: Buffer): Promise<CanvasMetrics> 
       nonBackgroundRatio: nonBackgroundPixels / (canvas.width * canvas.height),
       bounds: { minX, minY, maxX, maxY }
     };
-  }, image.toString("base64"));
+  }, { base64: image.toString("base64"), perChannelTolerance: pixelEvidenceContract.perChannelTolerance });
+
+const assertPixelDeltaBand = (comparison: PixelComparison, band: PixelDeltaBand, label: string): void => {
+  expect(comparison.changedPixels, `${label} changed-pixel lower band`).toBeGreaterThanOrEqual(band.minChangedPixels);
+  expect(comparison.changedPixels, `${label} changed-pixel upper band`).toBeLessThanOrEqual(band.maxChangedPixels);
+  expect(comparison.maximumChannelDelta, `${label} maximum channel delta`).toBeGreaterThanOrEqual(band.minMaximumChannelDelta);
+};
 
 test("normal route renders the operable PG-TRAGWERK-01 R5B destruction scene", async ({ page }) => {
   test.setTimeout(120_000);
@@ -625,23 +688,41 @@ test("normal route renders the operable PG-TRAGWERK-01 R5B destruction scene", a
     "pg-tragwerk-r5b-lod-low.png": lodLowImage,
     "pg-tragwerk-r5b-lod-high.png": lodHighImage
   };
-  const canvasMetrics: Record<PngName, CanvasMetrics> = {} as Record<PngName, CanvasMetrics>;
+  const screenshotEvidence: Record<PngName, ScreenshotEvidence> = {} as Record<PngName, ScreenshotEvidence>;
   for (const [name, image] of Object.entries(images) as Array<[PngName, Buffer]>) {
     const metrics = await measureCanvas(page, image);
     expect(metrics.width, `${name} must use the deterministic harness width`).toBe(harnessDimensions.width);
     expect(metrics.height, `${name} must use the deterministic harness height`).toBe(harnessDimensions.height);
-    expect(metrics.nonBackgroundRatio, `${name} must be visibly non-empty`).toBeGreaterThan(0.01);
-    canvasMetrics[name] = metrics;
+    expect(metrics.nonBackgroundRatio, `${name} must be visibly non-empty`).toBeGreaterThan(pixelEvidenceContract.nonEmptyMinimumRatio);
+    screenshotEvidence[name] = { width: metrics.width, height: metrics.height, nonEmpty: true };
   }
 
   const beforeAfter = await decodeAndCompare(page, beforeImage, afterImage);
   const lodDelta = await decodeAndCompare(page, lodLowImage, lodHighImage);
-  // Kalibriert an beobachteter Evidence (1 Zelle faellt weg; LOD wechselt
-  // Geometrie+Material): echte sichtbare Deltas mit ~2x Marge.
-  expect(beforeAfter.changedPixels, "destruction must change pixels").toBeGreaterThan(50);
-  expect(beforeAfter.maximumChannelDelta, "destruction must change color visibly").toBeGreaterThan(100);
-  expect(lodDelta.changedPixels, "LOD switch must change pixels").toBeGreaterThan(1000);
-  expect(lodDelta.maximumChannelDelta, "LOD switch must change color visibly").toBeGreaterThan(100);
+  // Renderer-tolerant: fixed count bands retain the observed local signal while
+  // rejecting identical images and implausibly broad redraws.
+  assertPixelDeltaBand(beforeAfter, pixelEvidenceContract.deltaBands.beforeAfter, "before/after destruction");
+  assertPixelDeltaBand(lodDelta, pixelEvidenceContract.deltaBands.lowHigh, "low/high LOD");
+
+  const identicalComparison = await decodeAndCompare(page, beforeImage, beforeImage);
+  expect(() => assertPixelDeltaBand(
+    identicalComparison,
+    pixelEvidenceContract.deltaBands.beforeAfter,
+    "identical images"
+  )).toThrow();
+  expect(() => assertPixelDeltaBand(
+    identicalComparison,
+    pixelEvidenceContract.deltaBands.lowHigh,
+    "identical images"
+  )).toThrow();
+  const emptyImageBase64 = await page.evaluate(({ width, height }) => {
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    return canvas.toDataURL("image/png").split(",", 2)[1]!;
+  }, harnessDimensions);
+  const emptyImage = Buffer.from(emptyImageBase64, "base64");
+  await expect(measureCanvas(page, emptyImage)).rejects.toThrow("Harness canvas is empty");
 
   expect(await testBridgeState(page)).toEqual({ ownProperty: false, inWindow: false });
   const disposed = await scenario.evaluate((value) => value.dispose());
@@ -650,7 +731,7 @@ test("normal route renders the operable PG-TRAGWERK-01 R5B destruction scene", a
   expect(failures).toEqual({ consoleErrors: [], pageErrors: [], requestFailures: [], httpErrors: [] });
 
   const summary = {
-    schemaVersion: "pg-tragwerk-r5b-v2",
+    schemaVersion: "pg-tragwerk-r5b-v3",
     status: "PASS",
     generator: "apps/weltraum-browser/tests/e2e/pg-tragwerk-destruction-render.spec.ts",
     route: "/",
@@ -678,15 +759,15 @@ test("normal route renders the operable PG-TRAGWERK-01 R5B destruction scene", a
       measured: proof.measured
     },
     scene: proof.scene,
+    visualEvidenceContract: pixelEvidenceContract,
     lod: {
       lowBoxCount: proof.lowBoxCount,
       highBoxCount: proof.highBoxCount,
       lowMaterialVariant: proof.lowMaterialVariant,
       highMaterialVariant: proof.highMaterialVariant,
-      beforeAfterDelta: beforeAfter,
-      lodDelta,
       authorityNote: "physics-approximation (collider choice) and render-LOD (geometry+material projection) are separate decisions over the same plan; occupancy/mass/fragments/mesh hash are equal across LODs"
     },
+    negativeChecks: { identicalImagesRejected: true, emptyImageRejected: true },
     deferred: proof.deferred,
     coverage: {
       binding: "object.pg-tragwerk-01@revision-0+empty-evidence",
@@ -706,19 +787,18 @@ test("normal route renders the operable PG-TRAGWERK-01 R5B destruction scene", a
       harnessOnly: ["test-created PG-TRAGWERK overlay", "deterministic Three.js canvas projection"],
       excluded: ["normal scene wiring", "player gameplay state", "persistence"]
     },
-    screenshots: {
-      "pg-tragwerk-r5b-before.png": canvasMetrics["pg-tragwerk-r5b-before.png"],
-      "pg-tragwerk-r5b-after.png": canvasMetrics["pg-tragwerk-r5b-after.png"],
-      "pg-tragwerk-r5b-lod-low.png": canvasMetrics["pg-tragwerk-r5b-lod-low.png"],
-      "pg-tragwerk-r5b-lod-high.png": canvasMetrics["pg-tragwerk-r5b-lod-high.png"]
-    },
+    screenshots: screenshotEvidence,
     browserHealth: { consoleErrors: 0, pageErrors: 0, requestFailures: 0, httpErrors: 0 },
-    verification: { command: focusedCommand, canvasTolerance: "per-channel 12; delta asserted via changed pixels + max channel delta", observedResult: "pass" }
+    verification: {
+      command: focusedCommand,
+      canvasTolerance: "renderer-tolerant: per-channel 12; non-empty > 0.01; fixed before/after and low/high delta bands",
+      observedResult: "pass"
+    }
   };
   await Promise.all([
-    ...Object.entries(images).map(([name, image]) => persistEvidence(name, image)),
-    persistEvidence("pg-tragwerk-r5b-summary.json", `${JSON.stringify(summary, null, 2)}\n`),
-    persistEvidence("pg-tragwerk-r5b.md", createMarkdown(summary))
+    ...Object.entries(images).map(([name, image]) => persistRecordedPngEvidence(name, image)),
+    persistDeterministicEvidence("pg-tragwerk-r5b-summary.json", `${JSON.stringify(summary, null, 2)}\n`),
+    persistDeterministicEvidence("pg-tragwerk-r5b.md", createMarkdown(summary))
   ]);
 });
 
@@ -734,18 +814,18 @@ const createMarkdown = (summary: {
     readonly measured: { readonly visitedCells: number; readonly components: number; readonly fragments: number; readonly quads: number; readonly colliders: number; readonly totalMeasured: number };
   };
   readonly scene: { readonly schemaVersion: string; readonly sourceContentHash: string; readonly lowQuadCount: number; readonly highQuadCount: number };
+  readonly visualEvidenceContract: PixelEvidenceContract;
   readonly lod: {
     readonly lowBoxCount: number;
     readonly highBoxCount: number;
     readonly lowMaterialVariant: string;
     readonly highMaterialVariant: string;
-    readonly beforeAfterDelta: PixelComparison;
-    readonly lodDelta: PixelComparison;
   };
+  readonly negativeChecks: { readonly identicalImagesRejected: boolean; readonly emptyImageRejected: boolean };
   readonly deferred: { readonly status: string; readonly completionStatus: string; readonly jobKind: string; readonly targetKey: string; readonly inputRevision: number; readonly inputContentHash: string; readonly anchoredVoxels: number; readonly fragmentVoxels: number; readonly dynamicVoxels: number; readonly completionMassKg: number; readonly dispatchedJobId: string };
   readonly coverage: { readonly binding: string; readonly digest: string; readonly coveredBricks: number; readonly foreignThrows: boolean; readonly sameIdForeignContentTest: string };
   readonly scope: { readonly kind: string; readonly productPaths: readonly string[]; readonly harnessOnly: readonly string[]; readonly excluded: readonly string[] };
-  readonly screenshots: Record<string, CanvasMetrics>;
+  readonly screenshots: Record<string, ScreenshotEvidence>;
   readonly browserHealth: { readonly consoleErrors: number; readonly pageErrors: number; readonly requestFailures: number; readonly httpErrors: number };
 }): string => `# PG-TRAGWERK-01 R5B Evidence
 
@@ -769,7 +849,7 @@ const createMarkdown = (summary: {
 - **F1 Button-Command:** Der sichtbare Button ruft den Structural-Command auf; E2E klickt den Button und prüft den echten Cut über \`lastCut\`.
 - **F2 Deferred-Bindung:** Job-ID, Target, Revision und Content-Payload werden vor Re-Prepare/Hooks geprüft; R5B-f prüft Fremd-/Stale-Jobs und Hook-Fehler mit Requeue.
 - **F3 Coverage:** Vollständige Coverage wird nach Rekonstruktion an den authored Digest gebunden; R5B-d und R5B-g prüfen Fremd-ID, Revision und Same-ID-Fremdinhalt.
-- **F4 Deterministische Evidence:** Timings bleiben Laufzeit-Messwerte und werden nicht persistiert; PNG/JSON/Markdown werden nur mit \`WELTRAUM_RECORD_EVIDENCE=1\` geändert oder byte-identisch bestätigt.
+- **F4 Deterministische Evidence:** Timings und rendererabhängige Pixelzähler werden nicht persistiert; JSON/Markdown bleiben byte-identisch, PNGs werden beim normalen Rerun weder byte-gegatet noch umgeschrieben. PNG-Aufzeichnung ist ausschließlich mit \`WELTRAUM_RECORD_EVIDENCE=1\` explizit.
 - **F5 Harness-Grenze:** Der Browsergraph importiert das Fixture ausschließlich aus \`tests/support\`; der Harness dokumentiert echte Produktpfade und testseitige Projektion separat.
 
 ## Estimate vs Measurement
@@ -788,13 +868,19 @@ const createMarkdown = (summary: {
 | measured colliders | \`${summary.estimateVsMeasured.measured.colliders}\` |
 | measured total | \`${summary.estimateVsMeasured.measured.totalMeasured}\` |
 
+## Renderer-tolerantes PNG-Evidence-Gate
+
+- Capture-Vertrag: \`${summary.visualEvidenceContract.dimensions.width}x${summary.visualEvidenceContract.dimensions.height}\`, pro Kanal Toleranz \`${summary.visualEvidenceContract.perChannelTolerance}\`, Nicht-Leerheit \`> ${summary.visualEvidenceContract.nonEmptyMinimumRatio}\`.
+- Before/After: lokale Kalibrierung \`${summary.visualEvidenceContract.deltaBands.beforeAfter.observedChangedPixels}\` px (\`${summary.visualEvidenceContract.deltaBands.beforeAfter.observedChangedRatio}\`), max. Kanal-Delta \`${summary.visualEvidenceContract.deltaBands.beforeAfter.observedMaximumChannelDelta}\`; zulässiges Band \`${summary.visualEvidenceContract.deltaBands.beforeAfter.minChangedPixels}..${summary.visualEvidenceContract.deltaBands.beforeAfter.maxChangedPixels}\` px und max. Kanal-Delta \`>= ${summary.visualEvidenceContract.deltaBands.beforeAfter.minMaximumChannelDelta}\`.
+- Low/High: lokale Kalibrierung \`${summary.visualEvidenceContract.deltaBands.lowHigh.observedChangedPixels}\` px (\`${summary.visualEvidenceContract.deltaBands.lowHigh.observedChangedRatio}\`), max. Kanal-Delta \`${summary.visualEvidenceContract.deltaBands.lowHigh.observedMaximumChannelDelta}\`; zulässiges Band \`${summary.visualEvidenceContract.deltaBands.lowHigh.minChangedPixels}..${summary.visualEvidenceContract.deltaBands.lowHigh.maxChangedPixels}\` px und max. Kanal-Delta \`>= ${summary.visualEvidenceContract.deltaBands.lowHigh.minMaximumChannelDelta}\`.
+- Die unteren Grenzen verwerfen identische Bilder; die Nicht-Leerheitsgrenze verwirft leere Bilder; die oberen Grenzen verwerfen einen unplausibel breiten Komplett-Redraw. Die Bänder tolerieren rendererabhängige Rasterabweichungen, ohne das Struktur-/LOD-Signal zu entfernen.
+- Negative Checks: identische Bilder verworfen \`${summary.negativeChecks.identicalImagesRejected}\`, leeres Bild verworfen \`${summary.negativeChecks.emptyImageRejected}\`.
+
 ## Scene und Render-LOD
 
 - Scene-Descriptor: \`${summary.scene.schemaVersion}\`, Source-Hash \`${summary.scene.sourceContentHash}\`, Low/High-Quads \`${summary.scene.lowQuadCount}/${summary.scene.highQuadCount}\`
 - Low: \`${summary.lod.lowBoxCount}\` gemergte Box(en), \`${summary.lod.lowMaterialVariant}\`
 - High: \`${summary.lod.highBoxCount}\` per-Voxel-Boxen, \`${summary.lod.highMaterialVariant}\`
-- Before/After-Delta: \`${summary.lod.beforeAfterDelta.changedPixels}\` px (\`${summary.lod.beforeAfterDelta.changedRatio}\`), max Kanal-Delta \`${summary.lod.beforeAfterDelta.maximumChannelDelta}\`
-- Low/High-Delta: \`${summary.lod.lodDelta.changedPixels}\` px (\`${summary.lod.lodDelta.changedRatio}\`), max Kanal-Delta \`${summary.lod.lodDelta.maximumChannelDelta}\`
 - Physik-Approximation und Render-LOD bleiben getrennte Projektionen desselben Plans.
 
 ## Deferred-Vollzug
@@ -812,10 +898,8 @@ const createMarkdown = (summary: {
 ## Screenshots
 
 - Alle vier PNGs: \`${summary.harness.screenshotDimensions.width}x${summary.harness.screenshotDimensions.height}\`.
-- \`evidence/pg-tragwerk-r5b-before.png\`
-- \`evidence/pg-tragwerk-r5b-after.png\`
-- \`evidence/pg-tragwerk-r5b-lod-low.png\`
-- \`evidence/pg-tragwerk-r5b-lod-high.png\`
+- Die vier Captures werden im normalen Rerun nicht umgeschrieben, weil PNG-Bytes rendererabhängig sind; explizites Recording bleibt über \`WELTRAUM_RECORD_EVIDENCE=1\` möglich.
+- ${Object.entries(summary.screenshots).map(([name, screenshot]) => `\`${name}\`: ${screenshot.width}x${screenshot.height}, nicht leer \`${screenshot.nonEmpty}\``).join("\n- ")}
 
 ## Browser Health
 
