@@ -1932,6 +1932,9 @@ describe("Surface Lab controller", () => {
 
     await expect(controller.restartWorker(0)).rejects.toThrow("synthetic replacement rejection");
     expect(controller.readTelemetry()).toMatchObject({ lifecycle: "Failed", readyChunks: 16, failedChunks: 0 });
+    // The settled generation promise preserves its Ready accounting; Failed lifecycle signals controller/pool
+    // health after the genuine replacement failure (already propagated via the throw above).
+    await expect(controller.whenSettled()).resolves.toMatchObject({ lifecycle: "Ready", readyChunks: 16, failedChunks: 0 });
     expect(workerPool.state).toBe("Stopped");
     expect(workerPool.jobs).toHaveLength(jobsBefore);
     expect(commandCount(backend, "RemoveRepresentation")).toBe(removalsBefore);
