@@ -123,6 +123,13 @@ export interface StructuralRestoredFragmentMotion {
  * Step-Zaehler-Sinn. Fehlererkennung nach Mutationsbeginn raeumt erstellte
  * Bodies wieder ab, bevor der Parent entfernt wurde — die Welt steht dann
  * exakt wie vor dem Commit.
+ *
+ * P-PROD-P04: BodyRef-Handles sind single-use und muessen live sein. Ein
+ * Doppel-Commit mit demselben (bereits entfernten) Parent-Handle oder die
+ * Wiederverwendung stale Handles ist eine Caller-Vertragsverletzung und wird
+ * vom Commit nicht fail-closed abgefangen (der Port bietet keine
+ * Handle-Liveness-Pruefung). Aufrufer duerfen jeden Parent genau einmal
+ * committen; F8-F belegt das enge Verhalten am zaehlenden Port.
  */
 export interface StructuralPhysicsWorldPort<BodyRef> {
   bodiesLen(): number;
@@ -351,7 +358,7 @@ export const commitStructuralPhysicsTransition = <BodyRef>(
     fail(
       "InvalidStructuralState",
       "plan/binding",
-      "Stale plan: object id does not match the live object. Commit refused before touching the world.",
+      "Mismatched binding: object id does not match the live object. Commit refused before touching the world.",
       "validate",
       restored
     );
@@ -682,6 +689,19 @@ export const commitStructuralPhysicsTransition = <BodyRef>(
       "InvalidStructuralState",
       "plan/parentMotionSource",
       "A live parent pose requires a live-parent-body motion source (origin label must match).",
+      "validate",
+      restored
+    );
+  }
+  // P-PROD-P04 (Label-Guard-Symmetrie, spiegelt regionSave.ts): Ein
+  // Autoren-Aufruf ohne Parentpose darf keinen live-parent-body-Plan tragen —
+  // sonst wuerde der Commit still an der Autorpose installieren, aber das
+  // live-Label im Receipt behalten.
+  if (!useLivePose && plan.parentMotionSource === "live-parent-body") {
+    fail(
+      "InvalidStructuralState",
+      "plan/parentMotionSource",
+      "An author-pose install cannot carry a live-parent-body motion source (origin label must match).",
       "validate",
       restored
     );

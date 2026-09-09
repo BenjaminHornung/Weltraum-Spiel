@@ -242,6 +242,18 @@ const readStoredPngEvidence = async (directory: string, fileName: PngName): Prom
   }
 };
 
+// P-PROD-P04: Blank-Snippet-Duplikat beseitigt — beide Tests nutzen diesen
+// einen Helfer statt zweier identischer Inline-Snippets.
+const renderBlankPng = async (page: Page): Promise<Buffer> => {
+  const blankImageBase64 = await page.evaluate(({ width, height }) => {
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    return canvas.toDataURL("image/png").split(",", 2)[1]!;
+  }, harnessDimensions);
+  return Buffer.from(blankImageBase64, "base64");
+};
+
 const loadAndValidateStoredPngEvidence = async (page: Page, directory: string): Promise<Readonly<Record<PngName, Buffer>>> => {
   const storedImages = {} as Record<PngName, Buffer>;
   for (const name of pngNames) storedImages[name] = await readStoredPngEvidence(directory, name);
@@ -757,13 +769,7 @@ test("normal route renders the operable PG-TRAGWERK-01 R5B destruction scene", a
     pixelEvidenceContract.deltaBands.lowHigh,
     "identical images"
   )).toThrow();
-  const emptyImageBase64 = await page.evaluate(({ width, height }) => {
-    const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
-    return canvas.toDataURL("image/png").split(",", 2)[1]!;
-  }, harnessDimensions);
-  const emptyImage = Buffer.from(emptyImageBase64, "base64");
+  const emptyImage = await renderBlankPng(page);
   await expect(measureCanvas(page, emptyImage)).rejects.toThrow("Harness canvas is empty");
 
   // Stored PNGs are read and decoded on every normal run. Explicit recording
@@ -865,13 +871,7 @@ test("stored R5B PNG evidence rejects missing, corrupt, stale, blank, and identi
 
   const validImages = {} as Record<PngName, Buffer>;
   for (const name of pngNames) validImages[name] = await readStoredPngEvidence(evidenceDirectory, name);
-  const blankImageBase64 = await page.evaluate(({ width, height }) => {
-    const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
-    return canvas.toDataURL("image/png").split(",", 2)[1]!;
-  }, harnessDimensions);
-  const blankImage = Buffer.from(blankImageBase64, "base64");
+  const blankImage = await renderBlankPng(page);
 
   const expectRejected = async (label: string, mutate: (directory: string) => Promise<void>): Promise<void> => {
     const directory = await mkdtemp(path.join(tmpdir(), "pg-tragwerk-r5b-negative-"));

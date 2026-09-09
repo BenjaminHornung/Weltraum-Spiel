@@ -29,9 +29,17 @@ import {
  *   unveraendert) muss VOR createBody scheitern.
  * - F8-B: leere Anker-Restbelegung muss scheitern (kein stiller Parent-Verlust).
  * - F8-C: Ankerrotation 45° um z — Restbody traegt Parentpose, Offsets lokal;
- *   Punkt (0,06/0,06/0) ist ausserhalb (lokal x ~0,08485 > 0,0625).
+ *   Punktsonde (0,06/0,06/0) ist ausserhalb (lokal x ~0,08485 > 0,0625).
+ *   Reine Geometrie-Punktsonde an installierten Offsets — KEIN
+ *   Solver-Kontakt-Claim (P-PROD-P04 Wortlaut).
  * - F8-D: Cleanup-Ehrlichkeit per Fault-Injection (add + remove schlagen
  *   fehl) — worldRestored:false, keine sichere Wiederaufnahme.
+ * - F8-E: Parent-Remove-Fehler — Verhalten vor/nach Wirkung +
+ *   Caller-Recovery (Rollback-Versuch, worldRestored:false, ehrliche
+ *   Cleanup-Flag-Formulierung), inkl. INCOMPLETE-Variante (P-PROD-P04).
+ * - F8-F: enger Reentrancy-Nachweis — Doppel-Commit mit stalem Parent-Handle
+ *   dupliziert (kein fail-closed Guard); Handles sind single-use,
+ *   Caller-Vertrag, keine Engine-Aussage darueber hinaus (P-PROD-P04).
  */
 
 const SIDE = 0.125;
@@ -262,7 +270,7 @@ describe("P-PG-F8: Commitgrenze (Klassifikation/Anker/Cleanup)", () => {
     expect(harness.port.collidersLen()).toBe(27);
   });
 
-  it("F8-C: 45°-Ankerrotation — Restbody traegt Parentpose, Punkt (0,06/0,06/0) ist aussen", () => {
+  it("F8-C: 45°-Ankerrotation — Restbody traegt Parentpose, Punktsonde (0,06/0,06/0) ist aussen (kein Solver-Kontakt-Claim)", () => {
     const preCut = createPgTragwerk01();
     const preCutMass = deriveStructuralObjectMassProperties(preCut, { maxVisitedCells: 64 });
     if (preCutMass.centerOfMassMeters === null) throw new Error("Fixture requires finite pre-cut center.");
@@ -333,8 +341,10 @@ describe("P-PG-F8: Commitgrenze (Klassifikation/Anker/Cleanup)", () => {
     expect(recorded.y).toBeCloseTo(expectedLocal.y, 9);
     expect(recorded.z).toBeCloseTo(expectedLocal.z, 9);
 
-    // Punktprobe: W(c) + (0,06/0,06/0) ist im rotierten Wuerfel AUSSEN
+    // Punktsonde: W(c) + (0,06/0,06/0) ist im rotierten Wuerfel AUSSEN
     // (lokal x ~0,08485 > 0,0625), im achsparallelen Wuerfel faelschlich innen.
+    // P-PROD-P04 Wortlaut: reine installierte-Geometrie-Sonde, kein
+    // Solver-Kontakt-Claim (kein Step, keine Kontaktabfrage).
     const off = { x: authorCenter.x - anchor.x, y: authorCenter.y - anchor.y, z: authorCenter.z - anchor.z };
     const rot = quatRotate(pose.rotation, off);
     const worldCenter = {
@@ -411,5 +421,104 @@ describe("P-PG-F8: Commitgrenze (Klassifikation/Anker/Cleanup)", () => {
     expect(commitFailure.worldRestored).toBe(false);
     // Verbleibender Body belegt die unvollstaendige Wiederherstellung.
     expect(harness.port.bodiesLen()).toBeGreaterThan(1);
+  });
+
+  it("F8-E: Parent-Remove-Fehler — Rollback-Versuch, worldRestored:false, ehrliche Cleanup-Flag-Formulierung", () => {
+    // P-PROD-P04: Verhalten vor/nach Wirkung + Caller-Recovery. Der Commit
+    // erstellt Rest (Id 2) + Fragment (Id 3) und scheitert DANN beim
+    // Parent-Remove (Id 1). Caller-Recovery: erstellte Bodies werden
+    // zurueckgerollt, Parent bleibt gezaehlt, Fehler traegt Phase "remove"
+    // und worldRestored:false — niemals eine sichere Wiederaufnahme.
+    const { live, classification, plan } = liveHeteroPlan("command.pg-tragwerk-f8-e-01");
+    const harness = createCountingPort({ failRemoveIds: new Set([1]) });
+    const parentBody = seedParent(harness);
+    expect(harness.port.bodiesLen()).toBe(1);
+    expect(harness.port.collidersLen()).toBe(27);
+
+    let failure: unknown = null;
+    try {
+      commitStructuralPhysicsTransition({
+        port: harness.port,
+        parentBody,
+        plan,
+        live,
+        classification
+      });
+    } catch (error) {
+      failure = error;
+    }
+    expect(failure).toBeInstanceOf(StructuralPhysicsCommitError);
+    const commitFailure = failure as StructuralPhysicsCommitError;
+    expect(commitFailure.code).toBe("CommitFailed");
+    expect(commitFailure.phase).toBe("remove");
+    expect(commitFailure.worldRestored).toBe(false);
+    // Ehrliche Cleanup-Flag-Formulierung pinnen (Rollback ok-Pfad).
+    expect(commitFailure.message).toMatch(/Parent removal failed/);
+    expect(commitFailure.message).toMatch(/created bodies rolled back, parent untouched/);
+    // Nach Wirkung: Parent weiter gezaehlt, Erstellte abgeraeumt.
+    expect(harness.port.bodiesLen()).toBe(1);
+    expect(harness.port.collidersLen()).toBe(27);
+
+    // INCOMPLETE-Variante: Parent-Remove UND Cleanup-Remove (Id 2) schlagen
+    // fehl — die Meldung muss die unvollstaendige Wiederherstellung mit
+    // Remove-Fehlzahl ehrlich flaggen statt "rolled back" zu behaupten.
+    const harness2 = createCountingPort({ failRemoveIds: new Set([1, 2]) });
+    const parentBody2 = seedParent(harness2);
+    let failure2: unknown = null;
+    try {
+      commitStructuralPhysicsTransition({
+        port: harness2.port,
+        parentBody: parentBody2,
+        plan,
+        live,
+        classification
+      });
+    } catch (error) {
+      failure2 = error;
+    }
+    expect(failure2).toBeInstanceOf(StructuralPhysicsCommitError);
+    const commitFailure2 = failure2 as StructuralPhysicsCommitError;
+    expect(commitFailure2.phase).toBe("remove");
+    expect(commitFailure2.worldRestored).toBe(false);
+    expect(commitFailure2.message).toMatch(/Parent removal failed/);
+    expect(commitFailure2.message).toMatch(/INCOMPLETE \(1 remove failure/);
+    // Residueller Body belegt die unvollstaendige Wiederherstellung.
+    expect(harness2.port.bodiesLen()).toBeGreaterThan(1);
+  });
+
+  it("F8-F: enger Reentrancy-Nachweis — Doppel-Commit mit stalem Parent-Handle dupliziert (single-use Caller-Vertrag)", () => {
+    // P-PROD-P04 (enger Nachweis ODER expliziter Portvertrag — hier beides,
+    // eng begrenzt): Handles sind single-use und muessen live sein
+    // (Port-Kommentar in physicsCommit.ts). Der Commit bietet KEINEN
+    // Doppel-Commit-Guard — der zweite Commit mit demselben (bereits
+    // entfernten) Parent-Handle laeuft erneut erfolgreich und dupliziert.
+    // Das ist dokumentiertes Caller-Fehlverhalten, keine Engine-Garantie
+    // darueber hinaus (keine Backend-Matrix, nur Counting-Port).
+    const { live, classification, plan } = liveHeteroPlan("command.pg-tragwerk-f8-f-01");
+    const harness = createCountingPort();
+    const parentBody = seedParent(harness);
+    const first = commitStructuralPhysicsTransition({
+      port: harness.port,
+      parentBody,
+      plan,
+      live,
+      classification
+    });
+    expect(first.bodiesBefore).toBe(1);
+    expect(first.bodiesAfter).toBe(2);
+    expect(harness.port.bodiesLen()).toBe(2);
+
+    const second = commitStructuralPhysicsTransition({
+      port: harness.port,
+      parentBody,
+      plan,
+      live,
+      classification
+    });
+    // Kein Guard: zweiter Commit dupliziert statt abzuweisen — Caller darf
+    // Handles nicht wiederverwenden (single-use, muss live sein).
+    expect(second.bodiesBefore).toBe(2);
+    expect(second.bodiesAfter).toBe(4);
+    expect(harness.port.bodiesLen()).toBe(4);
   });
 });
