@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "pg-tragwerk-r5b-v3",
+  "schemaVersion": "pg-tragwerk-r5b-v4",
   "status": "PASS",
   "generator": "apps/weltraum-browser/tests/e2e/pg-tragwerk-destruction-render.spec.ts",
   "route": "/",
@@ -52,17 +52,17 @@
     "nonEmptyMinimumRatio": 0.01,
     "deltaBands": {
       "beforeAfter": {
-        "observedChangedPixels": 109,
-        "observedChangedRatio": 0.0004730902777777778,
-        "observedMaximumChannelDelta": 210,
+        "calibrationChangedPixels": 109,
+        "calibrationChangedRatio": 0.0004730902777777778,
+        "calibrationMaximumChannelDelta": 210,
         "minChangedPixels": 50,
         "maxChangedPixels": 2048,
         "minMaximumChannelDelta": 100
       },
       "lowHigh": {
-        "observedChangedPixels": 4324,
-        "observedChangedRatio": 0.01876736111111111,
-        "observedMaximumChannelDelta": 166,
+        "calibrationChangedPixels": 4324,
+        "calibrationChangedRatio": 0.01876736111111111,
+        "calibrationMaximumChannelDelta": 166,
         "minChangedPixels": 1024,
         "maxChangedPixels": 16384,
         "minMaximumChannelDelta": 100
@@ -78,7 +78,12 @@
   },
   "negativeChecks": {
     "identicalImagesRejected": true,
-    "emptyImageRejected": true
+    "emptyImageRejected": true,
+    "storedMissingRejected": true,
+    "storedCorruptRejected": true,
+    "storedStaleRejected": true,
+    "storedBlankRejected": true,
+    "storedIdenticalReplacementRejected": true
   },
   "deferred": {
     "status": "Deferred",
