@@ -156,6 +156,7 @@ export interface WorkerJobRequest<Payload = unknown> {
   readonly planningEpoch: PlanningEpoch;
   readonly workerEpoch: WorkerEpoch;
   readonly inputRevision: ContentRevision;
+  readonly sourceInputDigest?: string;
   readonly algorithmVersion: AlgorithmVersion;
   readonly priority: JobPriority;
   readonly deadline: JobDeadline;
@@ -170,6 +171,7 @@ export interface WorkerJobResult {
   readonly planningEpoch: PlanningEpoch;
   readonly workerEpoch: WorkerEpoch;
   readonly inputRevision: ContentRevision;
+  readonly sourceInputDigest?: string;
   readonly outputRevision: ContentRevision;
   readonly algorithmVersion: AlgorithmVersion;
   readonly outputBytes: ByteCount;
@@ -233,6 +235,7 @@ export const snapshotWorkerJobRequest = <Payload>(source: WorkerJobRequest<Paylo
   planningEpoch: planningEpoch(source.planningEpoch),
   workerEpoch: workerEpoch(source.workerEpoch),
   inputRevision: contentRevision(source.inputRevision, "inputRevision"),
+  ...(source.sourceInputDigest === undefined ? {} : { sourceInputDigest: stableAsciiId<string>(source.sourceInputDigest, "sourceInputDigest", 128) }),
   algorithmVersion: algorithmVersion(source.algorithmVersion),
   priority: validatePriority(source.priority),
   deadline: jobDeadline(source.deadline),

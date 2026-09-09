@@ -77,6 +77,7 @@ const isWorkerJobResult = (value: unknown): value is WorkerJobResult => {
     && isSafeNonNegativeInteger(value.outputRevision)
     && isSafeNonNegativeInteger(value.algorithmVersion)
     && isSafeNonNegativeInteger(value.outputBytes)
+    && isOptionalStableAscii(value.sourceInputDigest, 128)
     && isOptionalStableAscii(value.contentHash, 128)
     && isOptionalResultDetails(value.details);
 };

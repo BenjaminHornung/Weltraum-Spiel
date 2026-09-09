@@ -158,6 +158,24 @@ describe("WorkerPool lifecycle", () => {
     await pool.shutdown();
   });
 
+  it("authorizes only completed terminals produced by this pool", async () => {
+    const first = await createPool();
+    const second = await createPool();
+    expect(first.pool.isAcceptedCompletedTerminal({ kind: "Completed" })).toBe(false);
+
+    const terminal = await first.pool.enqueue(request("authorized-terminal", 32), input(32)).result;
+    expect(terminal.kind).toBe("Completed");
+    expect(first.pool.isAcceptedCompletedTerminal(terminal)).toBe(true);
+    expect(second.pool.isAcceptedCompletedTerminal(terminal)).toBe(false);
+
+    const secondTerminal = await second.pool.enqueue(request("second-authorized-terminal", 32), input(32)).result;
+    expect(secondTerminal.kind).toBe("Completed");
+    expect(second.pool.isAcceptedCompletedTerminal(secondTerminal)).toBe(true);
+    expect(first.pool.isAcceptedCompletedTerminal(secondTerminal)).toBe(false);
+    await first.pool.shutdown();
+    await second.pool.shutdown();
+  });
+
   it("takes transferable ownership before an accepted job waits in the queue", async () => {
     const { pool } = await createPool();
     const running = pool.enqueue(request("ownership-running", 512 * 1024), input(512 * 1024));

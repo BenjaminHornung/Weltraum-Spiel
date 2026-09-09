@@ -28,11 +28,15 @@ export type WorkerJobTerminal =
 type CompletedWorkerJobTerminal = Extract<WorkerJobTerminal, { readonly kind: "Completed" }>;
 const acceptedCompletedTerminals = new WeakSet<CompletedWorkerJobTerminal>();
 
+/** Process-wide proof that some pool accepted this terminal. Forged terminals never pass, but cross-pool
+ * identity still requires the owning pool's scoped check. SurfaceLabController enforces the scoped check
+ * before decode/cache/publication; downstream decode/cache checks below remain fail-closed second layers. */
 export const isWorkerPoolAcceptedCompletedTerminal = (value: unknown): value is CompletedWorkerJobTerminal =>
   typeof value === "object" && value !== null && acceptedCompletedTerminals.has(value as CompletedWorkerJobTerminal);
 
 export interface WorkerJobTicket {
   readonly jobId: WorkerJobId;
+  readonly workerEpoch: WorkerEpoch;
   readonly result: Promise<WorkerJobTerminal>;
   cancel(): boolean;
 }
@@ -61,6 +65,7 @@ interface TicketRecord {
   readonly resolve: (terminal: WorkerJobTerminal) => void;
   status: "Queued" | "Running" | "Terminal";
   handle: WorkerHandle | undefined;
+  workerEpoch: WorkerEpoch;
   cancelRequested: boolean;
 }
 
@@ -80,6 +85,7 @@ export class WorkerPool {
   private readonly queue: StableWorkerJobQueue;
   private readonly records = new Map<WorkerJobId, TicketRecord>();
   private readonly seen = new Set<WorkerJobId>();
+  private readonly acceptedCompletedTerminals = new WeakSet<CompletedWorkerJobTerminal>();
   private readonly handles: WorkerHandle[] = [];
   private readonly replacementCandidates = new Set<WorkerHandle>();
   private readonly transportFactory: WorkerTransportFactory;
@@ -261,14 +267,25 @@ export class WorkerPool {
     });
   }
 
+  /** Returns true only for a completed terminal accepted by this pool instance. */
+  public isAcceptedCompletedTerminal(value: unknown): boolean {
+    return typeof value === "object" && value !== null && this.acceptedCompletedTerminals.has(value as CompletedWorkerJobTerminal);
+  }
+
   private createRecord(request: WorkerJobRequest, input: TransferableBufferBundle): TicketRecord {
     let resolve!: (terminal: WorkerJobTerminal) => void;
     const promise = new Promise<WorkerJobTerminal>((complete) => { resolve = complete; });
-    return { request, input, promise, resolve, status: "Queued", handle: undefined, cancelRequested: false };
+    return { request, input, promise, resolve, status: "Queued", handle: undefined, workerEpoch: workerEpoch(0), cancelRequested: false };
   }
 
   private ticket(record: TicketRecord): WorkerJobTicket {
-    return Object.freeze({ jobId: record.request.jobId, result: record.promise, cancel: () => this.cancel(record.request.jobId) });
+    return Object.freeze({
+      jobId: record.request.jobId,
+      // The record is written once at dispatch, so queued tickets observe the worker that actually ran them.
+      get workerEpoch(): WorkerEpoch { return record.workerEpoch; },
+      result: record.promise,
+      cancel: () => this.cancel(record.request.jobId)
+    });
   }
 
   private nextEpoch(): WorkerEpoch {
@@ -328,6 +345,7 @@ export class WorkerPool {
       record.input = undefined;
       record.status = "Running";
       record.handle = handle;
+      record.workerEpoch = handle.workerEpoch;
       try {
         handle.assign(snapshotWorkerJobRequest({ ...request, workerEpoch: handle.workerEpoch }), input);
         this.emit({ type: "Dispatched", jobId: request.jobId, workerEpoch: handle.workerEpoch, inputBytes: input.byteLength });
@@ -353,6 +371,7 @@ export class WorkerPool {
       workerEpoch: handle.workerEpoch,
       targetKey: record.request.targetKey,
       inputRevision: record.request.inputRevision,
+      sourceInputDigest: record.request.sourceInputDigest,
       outputRevision,
       algorithmVersion: record.request.algorithmVersion,
       maximumOutputBytes: byteCount(record.request.estimatedOutputBytes, "maximumOutputBytes"),
@@ -371,6 +390,7 @@ export class WorkerPool {
         planningEpoch: record.request.planningEpoch,
         workerEpoch: handle.workerEpoch,
         inputRevision: record.request.inputRevision,
+        sourceInputDigest: record.request.sourceInputDigest,
         outputRevision,
         algorithmVersion: record.request.algorithmVersion,
         outputBytes: decision.bundle.byteLength,
@@ -379,6 +399,7 @@ export class WorkerPool {
       });
       const terminal: CompletedWorkerJobTerminal = Object.freeze({ kind: "Completed", result: acceptedResult, output: decision.bundle });
       acceptedCompletedTerminals.add(terminal);
+      this.acceptedCompletedTerminals.add(terminal);
       this.settle(record, terminal);
       const executionDurationMs = hestiaPayload === undefined || normalizedDetails === undefined
         ? undefined
@@ -455,6 +476,7 @@ export class WorkerPool {
   }
 
   private fail(record: TicketRecord, code: WorkerJobFailure["code"], message: string, epoch?: WorkerEpoch, decision?: WorkerResultIntegrationDecision): void {
+    if (record.status === "Terminal") return;
     const failure: WorkerJobFailure = Object.freeze({ jobId: record.request.jobId, code, message, ...(epoch === undefined ? {} : { workerEpoch: epoch }) });
     this.settle(record, Object.freeze({ kind: "Failed", failure, ...(decision === undefined ? {} : { integrationDecision: decision }) }));
     this.emit({ type: "Failed", jobId: record.request.jobId });

@@ -31,7 +31,9 @@ import {
   admitHestiaVoxelWorkerOutputToCache,
   canonicalizeContentKey,
   createCachedHestiaVoxelInputBundle,
-  createHestiaVoxelCacheKey
+  createHestiaVoxelCacheKey,
+  transitionResidency,
+  type ResidencyState
 } from "../streaming";
 import {
   HESTIA_MATERIAL_REGISTRY_VERSION_V1,
@@ -72,6 +74,7 @@ import {
   workerTargetKey,
   type GenerateHestiaVoxelBrickMeshPayload,
   type TransferableBufferBundle,
+  type WorkerJobId,
   type WorkerJobRequest,
   type WorkerJobTerminal,
   type WorkerJobTicket,
@@ -90,6 +93,12 @@ import {
   SURFACE_LAB_REGION,
   SURFACE_LAB_REGION_MESH_BUFFER_BUDGET_BYTES
 } from "./surfaceLabRegion";
+import {
+  createSurfaceLabSourceInputDigest,
+  createSurfaceLabWorkerAdoptionExpectation,
+  decideSurfaceLabWorkerAdoption,
+  type SurfaceLabWorkerAdoptionExpectation
+} from "./surfaceLabWorkerAdoption";
 
 export type SurfaceLabLifecycleState = "Idle" | "Requesting" | "Partial" | "Ready" | "Failed" | "Regenerating" | "Disposed";
 
@@ -103,7 +112,7 @@ export interface SurfaceLabFrameChain {
 
 export type SurfaceLabWorkerPool = Pick<
   WorkerPool,
-  "start" | "setPlanningEpoch" | "enqueue" | "replaceWorker" | "shutdown" | "snapshot"
+  "start" | "setPlanningEpoch" | "enqueue" | "replaceWorker" | "shutdown" | "snapshot" | "isAcceptedCompletedTerminal"
 >;
 
 export interface SurfaceLabDecodedChunk {
@@ -121,7 +130,8 @@ export interface SurfaceLabDecodedChunk {
 export type SurfaceLabCompletedDecoder = (
   payload: GenerateHestiaVoxelBrickMeshPayload,
   terminal: Extract<WorkerJobTerminal, { readonly kind: "Completed" }>,
-  presentationArtifactRevision: ArtifactRevision
+  presentationArtifactRevision: ArtifactRevision,
+  isAcceptedCompletedTerminal?: (value: Extract<WorkerJobTerminal, { readonly kind: "Completed" }>) => boolean
 ) => SurfaceLabDecodedChunk;
 
 export interface SurfaceLabControllerOptions {
@@ -212,7 +222,12 @@ const hasExclusiveWorkerBufferIdentity = (
   && mesh.normals.buffer === terminal.output.buffers[3]
   && mesh.indices.buffer === terminal.output.buffers[4];
 
-export const decodeSurfaceLabCompletedChunk: SurfaceLabCompletedDecoder = (payload, terminal, presentationArtifactRevision) => {
+export const decodeSurfaceLabCompletedChunk: SurfaceLabCompletedDecoder = (
+  payload,
+  terminal,
+  presentationArtifactRevision,
+  isAcceptedCompletedTerminal = isWorkerPoolAcceptedCompletedTerminal
+) => {
   const validated = validateHestiaVoxelWorkerOutput(payload, terminal.result, terminal.output);
   const mesh = validated.mesh;
   const representationKey = mesh.representationKey;
@@ -226,7 +241,7 @@ export const decodeSurfaceLabCompletedChunk: SurfaceLabCompletedDecoder = (paylo
   const artifact = mesh.positions.length === 0
     ? undefined
     : payload.inputMode === "Generate"
-      && isWorkerPoolAcceptedCompletedTerminal(terminal)
+      && isAcceptedCompletedTerminal(terminal)
       && hasExclusiveWorkerBufferIdentity(mesh, terminal, validated.bundle.buffers)
       ? adoptMeshArtifactFromVoxelMeshProduct(mesh, {
           materialProfileIdForKey: materialProfileForKey,
@@ -278,14 +293,19 @@ interface SurfaceLabGenerationInput {
 
 interface StagedSurfaceLabGenerationJob {
   readonly payload: GenerateHestiaVoxelBrickMeshPayload;
-  readonly request: WorkerJobRequest;
   readonly cacheKey?: ReturnType<typeof createHestiaVoxelCacheKey>;
   readonly canonicalCacheKey?: ReturnType<typeof canonicalizeContentKey>;
   readonly hadCachedBrick: boolean;
   readonly cached?: Readonly<{
     payload: GenerateHestiaVoxelBrickMeshPayload;
-    request: WorkerJobRequest;
   }>;
+}
+
+interface MutableSurfaceLabWorkerAdoption {
+  expectation: SurfaceLabWorkerAdoptionExpectation;
+  residency: ResidencyState;
+  sourceResidency: ResidencyState;
+  consumed: boolean;
 }
 
 const freshMetrics = (): MutableGenerationMetrics => ({
@@ -332,6 +352,7 @@ export class SurfaceLabController {
   #generation = 0;
   #metrics = freshMetrics();
   readonly #tickets = new Map<WorkerJobTicket, number>();
+  readonly #adoptions = new Map<WorkerJobId, MutableSurfaceLabWorkerAdoption>();
   #cancelledJobs = 0;
   #staleRejects = 0;
   #publishedInputSignature: string | undefined;
@@ -403,8 +424,15 @@ export class SurfaceLabController {
       await this.#pool.replaceWorker(slot);
     } catch (error) {
       if (this.#disposeRequested || this.#lifecycle === "Disposed") return this.readTelemetry();
-      this.#lifecycle = "Failed";
-      this.#emit();
+      this.#cancelTickets();
+      if (this.#generationIsSettled()) {
+        // failedChunks counts chunk terminals; a replacement failure is a controller-level failure
+        // even when the already-settled generation has 16 ready chunks and no failed chunk.
+        this.#lifecycle = "Failed";
+        this.#emit();
+      } else {
+        this.#recordGenerationFailure(generation, true);
+      }
       throw error;
     }
     if (this.#disposeRequested) return this.readTelemetry();
@@ -469,8 +497,9 @@ export class SurfaceLabController {
   public dispose(): Promise<void> {
     if (this.#disposePromise !== undefined) return this.#disposePromise;
     this.#disposeRequested = true;
-    this.#generation += 1;
     this.#cancelTickets();
+    this.#generation += 1;
+    this.#adoptions.clear();
     for (const published of [...this.#published.values()]) this.#removeArtifact(published.artifact);
     this.#published.clear();
     this.#publishedInputSignature = undefined;
@@ -512,8 +541,7 @@ export class SurfaceLabController {
     const inputSignature = this.#inputSignature(input);
     const stagedJobs: readonly StagedSurfaceLabGenerationJob[] = SURFACE_LAB_REGION.chunkCoordinates.map((coordinate) => {
       const payload = this.#payloadFor(coordinate, input, nextPlan);
-      const request = this.#requestFor(payload, nextGeneration, nextPlan);
-      if (!allowCacheRead) return Object.freeze({ payload, request, hadCachedBrick: false });
+      if (!allowCacheRead) return Object.freeze({ payload, hadCachedBrick: false });
       const cacheKey = createHestiaVoxelCacheKey(payload, algorithmVersion(1));
       const canonicalCacheKey = canonicalizeContentKey(cacheKey);
       const cachedBrickContentHash = this.#cachedBrickHashes.get(canonicalCacheKey);
@@ -526,8 +554,7 @@ export class SurfaceLabController {
             cachedBrickContentHash
           });
           cached = Object.freeze({
-            payload: cachedPayload,
-            request: this.#requestFor(cachedPayload, nextGeneration, nextPlan)
+            payload: cachedPayload
           });
         } catch {
           // A stale shadow entry is pruned only after this generation is admitted.
@@ -535,7 +562,6 @@ export class SurfaceLabController {
       }
       return Object.freeze({
         payload,
-        request,
         cacheKey,
         canonicalCacheKey,
         hadCachedBrick: cachedBrickContentHash !== undefined,
@@ -556,21 +582,61 @@ export class SurfaceLabController {
     this.#settledPromise = new Promise<SurfaceLabTelemetrySnapshot>((resolve) => { this.#resolveSettled = resolve; });
     try {
       this.#cancelTickets();
+      for (const [jobId, adoption] of this.#adoptions) {
+        if (adoption.expectation.authorityEpoch < generation) {
+          this.#adoptions.delete(jobId);
+        }
+      }
       this.#clearPublishedForGeneration(inputSignature);
       this.#tickets.clear();
       for (const staged of stagedJobs) {
         const prepared = this.#prepareInput(staged, allowCacheRead);
         const payload = prepared.payload;
-        const request = prepared.request;
+        const sourceInputDigest = createSurfaceLabSourceInputDigest(payload, prepared.bundle);
+        const request = this.#requestFor(
+          payload,
+          generation,
+          nextPlan,
+          sourceInputDigest
+        );
         try {
           const ticket = this.#pool.enqueue(request, prepared.bundle);
           this.#tickets.set(ticket, generation);
+          const expectation = createSurfaceLabWorkerAdoptionExpectation({
+            authorityEpoch: generation,
+            jobId: request.jobId,
+            planningEpoch: request.planningEpoch,
+            workerEpoch: ticket.workerEpoch,
+            targetKey: request.targetKey,
+            inputRevision: request.inputRevision,
+            outputRevision: payload.outputRevision,
+            algorithmVersion: request.algorithmVersion,
+            sourceInputDigest,
+            ...(payload.inputMode === "CachedCanonicalBrick" && staged.cacheKey !== undefined
+              ? { cacheKey: staged.cacheKey }
+              : {})
+          });
+          this.#adoptions.set(request.jobId, {
+            expectation,
+            residency: transitionResidency("NotRequested", "Queued"),
+            sourceResidency: payload.inputMode === "CachedCanonicalBrick" ? "Ready" : "NotRequested",
+            consumed: false
+          });
           this.#metrics.requestedChunks += 1;
           void ticket.result.then((terminal) => {
             this.#forgetTicket(ticket, generation);
-            this.#handleTerminal(generation, payload, terminal);
+            const adoption = this.#adoptions.get(request.jobId);
+            if (adoption !== undefined && ticket.workerEpoch !== 0) {
+              adoption.expectation = createSurfaceLabWorkerAdoptionExpectation({
+                ...adoption.expectation,
+                workerEpoch: ticket.workerEpoch
+              });
+            }
+            this.#handleTerminal(generation, payload, request.jobId, terminal);
           }, () => {
             this.#forgetTicket(ticket, generation);
+            this.#failAdoption(request.jobId);
+            this.#adoptions.delete(request.jobId);
             this.#recordGenerationFailure(generation);
           });
         } catch {
@@ -605,12 +671,11 @@ export class SurfaceLabController {
     allowCacheRead: boolean
   ): Readonly<{
     payload: GenerateHestiaVoxelBrickMeshPayload;
-    request: WorkerJobRequest;
     bundle: TransferableBufferBundle;
   }> {
     if (!allowCacheRead) {
       this.#metrics.cacheBypasses += 1;
-      return Object.freeze({ payload: staged.payload, request: staged.request, bundle: emptyInputBundle() });
+      return Object.freeze({ payload: staged.payload, bundle: emptyInputBundle() });
     }
     if (staged.cached !== undefined && staged.cacheKey !== undefined) {
       try {
@@ -624,7 +689,6 @@ export class SurfaceLabController {
           this.#metrics.cacheHits += 1;
           return Object.freeze({
             payload: staged.cached.payload,
-            request: staged.cached.request,
             bundle: cachedBundle
           });
         }
@@ -634,7 +698,7 @@ export class SurfaceLabController {
     }
     if (staged.hadCachedBrick && staged.canonicalCacheKey !== undefined) this.#cachedBrickHashes.delete(staged.canonicalCacheKey);
     this.#metrics.cacheMisses += 1;
-    return Object.freeze({ payload: staged.payload, request: staged.request, bundle: emptyInputBundle() });
+    return Object.freeze({ payload: staged.payload, bundle: emptyInputBundle() });
   }
 
   #payloadFor(
@@ -661,7 +725,7 @@ export class SurfaceLabController {
     });
   }
 
-  #requestFor(payload: GenerateHestiaVoxelBrickMeshPayload, generation: number, plan: number): WorkerJobRequest {
+  #requestFor(payload: GenerateHestiaVoxelBrickMeshPayload, generation: number, plan: number, sourceInputDigest?: string): WorkerJobRequest {
     const coordinate = payload.brickCoordinate;
     const id = `surface-lab:${generation}:${coordinate.x}:${coordinate.y}:${coordinate.z}`;
     return Object.freeze({
@@ -671,6 +735,7 @@ export class SurfaceLabController {
       planningEpoch: planningEpoch(plan),
       workerEpoch: workerEpoch(0),
       inputRevision: contentRevision(HESTIA_SOURCE_REVISION_V1),
+      ...(sourceInputDigest === undefined ? {} : { sourceInputDigest }),
       algorithmVersion: algorithmVersion(1),
       priority: "Normal",
       deadline: jobDeadline(Number.MAX_SAFE_INTEGER),
@@ -680,44 +745,102 @@ export class SurfaceLabController {
     });
   }
 
-  #handleTerminal(generation: number, payload: GenerateHestiaVoxelBrickMeshPayload, terminal: WorkerJobTerminal): void {
+  #handleTerminal(
+    generation: number,
+    payload: GenerateHestiaVoxelBrickMeshPayload,
+    jobId: WorkerJobId,
+    terminal: WorkerJobTerminal
+  ): void {
     if (this.#disposeRequested || this.#lifecycle === "Disposed") return;
-    if (generation !== this.#generation) {
-      if (terminal.kind === "Completed" || terminal.kind === "Failed" && terminal.integrationDecision?.kind.startsWith("RejectedStale")) {
-        this.#staleRejects += 1;
-        this.#emit();
-      }
+    const adoption = this.#adoptions.get(jobId);
+    if (adoption?.expectation.cacheKey !== undefined
+      && adoption.sourceResidency === "Ready"
+      && !this.#cache.has(adoption.expectation.cacheKey)) {
+      adoption.sourceResidency = transitionResidency(adoption.sourceResidency, "Evicted");
+    }
+    // A completed generation owns no remaining success budget; late unconsumed deliveries are silent no-ops.
+    if (generation === this.#generation && this.#generationIsSettled() && adoption?.consumed !== true) {
+      this.#adoptions.delete(jobId);
       return;
     }
-    if (this.#generationIsSettled()) return;
-    if (terminal.kind !== "Completed") {
-      if (terminal.kind === "Failed" && terminal.integrationDecision?.kind.startsWith("RejectedStale")) this.#staleRejects += 1;
-      this.#recordGenerationFailure(generation);
-      return;
-    } else {
-      try {
-        const decoded = this.#decode(payload, terminal, artifactRevision(payload.outputRevision));
-        if (!Number.isSafeInteger(decoded.meshBytes) || decoded.meshBytes < 0) {
-          throw new RangeError("Surface Lab decoded mesh bytes must be a nonnegative safe integer.");
+    const decision = decideSurfaceLabWorkerAdoption(adoption?.expectation, terminal, {
+      currentAuthorityEpoch: this.#generation,
+      residency: adoption?.residency ?? "Failed",
+      sourceResidency: adoption?.sourceResidency ?? "NotRequested",
+      consumed: adoption?.consumed ?? false,
+      cacheResident: adoption?.expectation.cacheKey === undefined || this.#cache.has(adoption.expectation.cacheKey),
+      poolAccepted: terminal.kind !== "Completed" || this.#pool.isAcceptedCompletedTerminal(terminal)
+    });
+    if (decision.kind !== "Accepted") {
+      if (decision.kind === "RejectedDuplicateDelivery") return;
+      if (decision.kind === "RejectedStaleAuthorityEpoch") {
+        if (terminal.kind === "Completed" || terminal.kind === "Failed" && terminal.integrationDecision?.kind.startsWith("RejectedStale")) {
+          this.#staleRejects += 1;
+          this.#emit();
         }
-        if (decoded.meshBytes > SURFACE_LAB_REGION_MESH_BUFFER_BUDGET_BYTES - this.#metrics.meshBytes) {
-          throw new RangeError("Surface Lab region mesh-buffer budget exceeded.");
-        }
-        const cacheKey = this.#admitToCache(this.#cache, payload, terminal);
-        this.#cachedBrickHashes.set(canonicalizeContentKey(cacheKey), decoded.brickContentHash);
-        this.#publish(decoded);
-        this.#metrics.readyChunks += 1;
-        this.#metrics.vertices += decoded.vertices;
-        this.#metrics.triangles += decoded.triangles;
-        this.#metrics.meshBytes += decoded.meshBytes;
-        this.#metrics.generationMilliseconds += decoded.generationMilliseconds;
-        this.#metrics.meshingMilliseconds += decoded.meshingMilliseconds;
-        this.#metrics.brickHashes.push(decoded.brickContentHash);
-        this.#metrics.meshHashes.push(decoded.meshContentHash);
-      } catch {
-        this.#recordGenerationFailure(generation);
+        this.#adoptions.delete(jobId);
         return;
       }
+      if (decision.kind === "RejectedUnknownJob") {
+        const staleTerminal = terminal.kind === "Completed"
+          || terminal.kind === "Failed" && terminal.integrationDecision?.kind.startsWith("RejectedStale");
+        if (generation < this.#generation && staleTerminal) {
+          this.#staleRejects += 1;
+          this.#emit();
+        }
+        if (generation === this.#generation) this.#recordGenerationFailure(generation);
+        return;
+      }
+      if (decision.kind === "RejectedStalePlanningEpoch" || decision.kind === "RejectedStaleWorkerEpoch") {
+        this.#staleRejects += 1;
+      }
+      if (generation === this.#generation) {
+        // Current-generation cancellation is defensive; supersede/dispose normally advance authority first.
+        if (decision.kind === "RejectedCancelled" && adoption !== undefined
+          && (adoption.residency === "Queued" || adoption.residency === "Loading")) {
+          adoption.residency = transitionResidency(adoption.residency, "Cancelled");
+        } else {
+          this.#failAdoption(jobId);
+        }
+        this.#recordGenerationFailure(generation);
+      }
+      this.#adoptions.delete(jobId);
+      this.#emit();
+      return;
+    }
+    if (adoption === undefined) {
+      this.#recordGenerationFailure(generation);
+      return;
+    }
+    adoption.consumed = true;
+    adoption.residency = transitionResidency(adoption.residency, "Loading");
+    try {
+      if (terminal.kind !== "Completed") throw new Error("Surface Lab adoption accepted a non-completed terminal.");
+      const isAcceptedByPool = (value: Extract<WorkerJobTerminal, { readonly kind: "Completed" }>): boolean =>
+        this.#pool.isAcceptedCompletedTerminal(value);
+      const decoded = this.#decode(payload, terminal, artifactRevision(payload.outputRevision), isAcceptedByPool);
+      if (!Number.isSafeInteger(decoded.meshBytes) || decoded.meshBytes < 0) {
+        throw new RangeError("Surface Lab decoded mesh bytes must be a nonnegative safe integer.");
+      }
+      if (decoded.meshBytes > SURFACE_LAB_REGION_MESH_BUFFER_BUDGET_BYTES - this.#metrics.meshBytes) {
+        throw new RangeError("Surface Lab region mesh-buffer budget exceeded.");
+      }
+      const cacheKey = this.#admitToCache(this.#cache, payload, terminal, isAcceptedByPool);
+      this.#cachedBrickHashes.set(canonicalizeContentKey(cacheKey), decoded.brickContentHash);
+      this.#publish(decoded);
+      this.#metrics.readyChunks += 1;
+      this.#metrics.vertices += decoded.vertices;
+      this.#metrics.triangles += decoded.triangles;
+      this.#metrics.meshBytes += decoded.meshBytes;
+      this.#metrics.generationMilliseconds += decoded.generationMilliseconds;
+      this.#metrics.meshingMilliseconds += decoded.meshingMilliseconds;
+      this.#metrics.brickHashes.push(decoded.brickContentHash);
+      this.#metrics.meshHashes.push(decoded.meshContentHash);
+      adoption.residency = transitionResidency(adoption.residency, "Ready");
+    } catch {
+      adoption.residency = transitionResidency(adoption.residency, "Failed");
+      this.#recordGenerationFailure(generation);
+      return;
     }
     this.#updateGenerationSettlement(generation);
   }
@@ -798,8 +921,17 @@ export class SurfaceLabController {
   }
 
   #recordFailure(generation: number): void {
-    if (this.#disposeRequested || generation !== this.#generation) return;
+    if (this.#disposeRequested || generation !== this.#generation || this.#generationIsSettled()) return;
     this.#metrics.failedChunks += 1;
+    this.#updateGenerationSettlement(generation);
+  }
+
+  #failAdoption(jobId: WorkerJobId): void {
+    const adoption = this.#adoptions.get(jobId);
+    if (adoption === undefined || adoption.residency === "Failed" || adoption.residency === "Cancelled" || adoption.residency === "Evicted") return;
+    if (adoption.residency === "Queued" || adoption.residency === "Loading") {
+      adoption.residency = transitionResidency(adoption.residency, "Failed");
+    }
   }
 
   #finishIfSettled(generation: number): void {
@@ -820,6 +952,11 @@ export class SurfaceLabController {
       if (ticket.cancel()) this.#cancelledJobs += 1;
     }
     this.#tickets.clear();
+    for (const adoption of this.#adoptions.values()) {
+      if (adoption.residency === "Queued" || adoption.residency === "Loading") {
+        adoption.residency = transitionResidency(adoption.residency, "Cancelled");
+      }
+    }
   }
 
   #emit(): void {

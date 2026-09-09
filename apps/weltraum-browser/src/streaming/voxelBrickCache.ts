@@ -57,8 +57,9 @@ export const admitHestiaVoxelWorkerOutputToCache = (
   cache: MemoryContentCache,
   payloadValue: unknown,
   terminal: WorkerJobTerminal,
+  isAcceptedCompletedTerminal: (value: Extract<WorkerJobTerminal, { readonly kind: "Completed" }>) => boolean = isWorkerPoolAcceptedCompletedTerminal,
 ): ContentKey => {
-  if (!isWorkerPoolAcceptedCompletedTerminal(terminal)) {
+  if (terminal.kind !== "Completed" || !isAcceptedCompletedTerminal(terminal)) {
     throw new RangeError("Only a result accepted by the WorkerPool result gate may enter the Hestia cache.");
   }
   const payload = validateHestiaVoxelBrickMeshPayload(payloadValue);

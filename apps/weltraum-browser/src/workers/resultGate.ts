@@ -15,6 +15,7 @@ export interface WorkerResultExpectation {
   readonly workerEpoch: WorkerEpoch;
   readonly targetKey: WorkerTargetKey;
   readonly inputRevision: ContentRevision;
+  readonly sourceInputDigest?: string;
   readonly outputRevision: ContentRevision;
   readonly algorithmVersion: AlgorithmVersion;
   readonly maximumOutputBytes: ByteCount;
@@ -33,6 +34,7 @@ export type WorkerResultIntegrationDecision =
   | { readonly kind: "RejectedAlgorithmMismatch" }
   | { readonly kind: "RejectedInvalidLayout"; readonly message: string }
   | { readonly kind: "RejectedOverBudget" }
+  | { readonly kind: "RejectedSourceInputDigestMismatch" }
   | { readonly kind: "RejectedContentHashMismatch" };
 
 export const integrateWorkerResult = (
@@ -46,6 +48,7 @@ export const integrateWorkerResult = (
   if (expectation.workerEpoch !== result.workerEpoch) return Object.freeze({ kind: "RejectedStaleWorkerEpoch" });
   if (expectation.targetKey !== result.targetKey) return Object.freeze({ kind: "RejectedTargetMismatch" });
   if (expectation.inputRevision !== result.inputRevision || expectation.outputRevision !== result.outputRevision) return Object.freeze({ kind: "RejectedRevisionMismatch" });
+  if (expectation.sourceInputDigest !== result.sourceInputDigest) return Object.freeze({ kind: "RejectedSourceInputDigestMismatch" });
   let bundleRevision: unknown;
   try { bundleRevision = typeof bundle === "object" && bundle !== null ? (bundle as { readonly revision?: unknown }).revision : undefined; }
   catch { return Object.freeze({ kind: "RejectedInvalidLayout", message: "Invalid output bundle envelope." }); }

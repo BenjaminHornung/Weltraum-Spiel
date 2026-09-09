@@ -36,6 +36,14 @@ describe("worker result integration gate", () => {
     expect(integrateWorkerResult(expectation, result, output()).kind).toBe("Accepted");
   });
 
+  it("rejects a mismatched source/input digest before output validation", () => {
+    expect(integrateWorkerResult(
+      { ...expectation, sourceInputDigest: "source-a" },
+      { ...result, sourceInputDigest: "source-b" },
+      { ...output(), byteLength: byteCount(99) }
+    ).kind).toBe("RejectedSourceInputDigestMismatch");
+  });
+
   it("rejects unknown and cancelled jobs first", () => {
     expect(integrateWorkerResult(undefined, result, output()).kind).toBe("RejectedUnknownJob");
     expect(integrateWorkerResult({ ...expectation, cancelled: true }, result, output()).kind).toBe("RejectedCancelled");
