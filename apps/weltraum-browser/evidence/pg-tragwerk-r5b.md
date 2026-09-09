@@ -20,7 +20,7 @@
 - **F1 Button-Command:** Der sichtbare Button ruft den Structural-Command auf; E2E klickt den Button und prüft den echten Cut über `lastCut`.
 - **F2 Deferred-Bindung:** Job-ID, Target, Revision und Content-Payload werden vor Re-Prepare/Hooks geprüft; R5B-f prüft Fremd-/Stale-Jobs und Hook-Fehler mit Requeue.
 - **F3 Coverage:** Vollständige Coverage wird nach Rekonstruktion an den authored Digest gebunden; R5B-d und R5B-g prüfen Fremd-ID, Revision und Same-ID-Fremdinhalt.
-- **F4 Deterministische Evidence:** Timings und rendererabhängige Pixelzähler werden nicht persistiert; JSON/Markdown bleiben byte-identisch, PNGs werden beim normalen Rerun weder byte-gegatet noch umgeschrieben. PNG-Aufzeichnung ist ausschließlich mit `WELTRAUM_RECORD_EVIDENCE=1` explizit.
+- **F4 Deterministische Evidence:** Timings und rendererabhängige Pixelzähler werden nicht persistiert; JSON/Markdown bleiben byte-identisch, gespeicherte PNGs werden in jedem normalen Rerun gelesen, dekodiert und über Dimensionen, Nicht-Leerheit sowie Delta-Bänder tolerant geprüft, aber nicht umgeschrieben. PNG-Aufzeichnung ist ausschließlich mit `WELTRAUM_RECORD_EVIDENCE=1` explizit.
 - **F5 Harness-Grenze:** Der Browsergraph importiert das Fixture ausschließlich aus `tests/support`; der Harness dokumentiert echte Produktpfade und testseitige Projektion separat.
 
 ## Estimate vs Measurement
@@ -45,7 +45,7 @@
 - Before/After: lokale Kalibrierung `109` px (`0.0004730902777777778`), max. Kanal-Delta `210`; zulässiges Band `50..2048` px und max. Kanal-Delta `>= 100`.
 - Low/High: lokale Kalibrierung `4324` px (`0.01876736111111111`), max. Kanal-Delta `166`; zulässiges Band `1024..16384` px und max. Kanal-Delta `>= 100`.
 - Die unteren Grenzen verwerfen identische Bilder; die Nicht-Leerheitsgrenze verwirft leere Bilder; die oberen Grenzen verwerfen einen unplausibel breiten Komplett-Redraw. Die Bänder tolerieren rendererabhängige Rasterabweichungen, ohne das Struktur-/LOD-Signal zu entfernen.
-- Negative Checks: identische Bilder verworfen `true`, leeres Bild verworfen `true`.
+- Negative Checks: identische Bilder verworfen `true`, leeres Bild verworfen `true`; gespeicherte missing/corrupt/stale/blank/identical-Replacements verworfen `true/true/true/true/true`.
 
 ## Scene und Render-LOD
 
@@ -69,7 +69,7 @@
 ## Screenshots
 
 - Alle vier PNGs: `640x360`.
-- Die vier Captures werden im normalen Rerun nicht umgeschrieben, weil PNG-Bytes rendererabhängig sind; explizites Recording bleibt über `WELTRAUM_RECORD_EVIDENCE=1` möglich.
+- Die vier gespeicherten Captures werden im normalen Rerun gelesen/dekodiert und tolerant geprüft, aber wegen rendererabhängiger PNG-Bytes nicht umgeschrieben; explizites Recording bleibt über `WELTRAUM_RECORD_EVIDENCE=1` möglich.
 - `pg-tragwerk-r5b-before.png`: 640x360, nicht leer `true`
 - `pg-tragwerk-r5b-after.png`: 640x360, nicht leer `true`
 - `pg-tragwerk-r5b-lod-low.png`: 640x360, nicht leer `true`
