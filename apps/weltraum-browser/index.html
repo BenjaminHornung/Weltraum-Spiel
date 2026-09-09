@@ -180,6 +180,7 @@
             <div id="autopilot-action-state" class="hud-state-badge action-state">Ready</div>
             <div class="hud-actions">
               <button id="engage-autopilot" type="button">Engage route</button>
+              <button id="pg-proving-ground-open" data-testid="pg-proving-ground-open" class="hud-secondary-action" type="button" style="position:fixed;right:36px;bottom:128px;z-index:25;display:flex;align-items:center;justify-content:center;width:138px;min-height:32px;pointer-events:auto;">Proving Ground</button>
               <button id="graphics-settings-button" class="hud-secondary-action" type="button" data-testid="graphics-settings-open">Grafik</button>
             </div>
           </div>
@@ -489,6 +490,31 @@
           <footer class="planner-footer" aria-label="Planner footer">
             <button id="planner-close" type="button"><span aria-hidden="true">VERLASSEN</span><span class="contract-text">Close</span><kbd>ESC</kbd></button>
           </footer>
+        </dialog>
+
+        <dialog id="pg-tragwerk-dialog" class="hud-overlay pg-tragwerk-dialog" role="dialog" aria-modal="true" aria-labelledby="pg-tragwerk-title" data-testid="pg-tragwerk-dialog" style="pointer-events:auto;background:rgba(4,19,29,0.96);color:#eafcff;border:1px solid rgba(35,214,242,0.54);padding:0;max-width:min(560px,calc(100vw - 48px));">
+          <div class="pg-tragwerk-shell" style="padding:16px 18px;display:grid;gap:10px;">
+            <header class="pg-tragwerk-header" style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+              <div>
+                <div class="label" style="color:#8feaff;font-size:11px;letter-spacing:0.08em;">Proving Ground</div>
+                <h2 id="pg-tragwerk-title" style="margin:2px 0 0;font-size:20px;">PG-TRAGWERK-01</h2>
+              </div>
+              <div id="pg-tragwerk-mode" class="hud-state-badge" data-testid="pg-tragwerk-mode" style="border:1px solid rgba(97,255,138,0.72);padding:4px 8px;">Modus: Proving Ground</div>
+            </header>
+            <div class="pg-tragwerk-body" style="display:grid;gap:6px;font-size:13px;">
+              <div class="label" style="color:#8feaff;font-size:11px;letter-spacing:0.08em;">Zellen / Masse</div>
+              <div id="pg-tragwerk-cells">lädt …</div>
+              <div class="label" style="color:#8feaff;font-size:11px;letter-spacing:0.08em;">Authority / Source</div>
+              <div id="pg-tragwerk-authority">lädt …</div>
+              <div class="label" style="color:#8feaff;font-size:11px;letter-spacing:0.08em;">Schnitt / Physik</div>
+              <div id="pg-tragwerk-receipt">lädt …</div>
+              <div id="pg-tragwerk-status" role="status" aria-live="polite" style="border-top:1px solid rgba(84,196,255,0.28);padding-top:8px;">lädt …</div>
+            </div>
+            <footer class="pg-tragwerk-actions" style="display:flex;gap:8px;">
+              <button id="pg-tragwerk-destroy" type="button" data-testid="pg-tragwerk-destroy" style="border:1px solid rgba(97,255,138,0.72);background:rgba(20,110,75,0.9);color:#f7fbff;padding:6px 12px;">Zerstörung auslösen</button>
+              <button id="pg-tragwerk-close" type="button" data-testid="pg-tragwerk-close" style="border:1px solid rgba(49,217,255,0.42);background:rgba(4,18,30,0.9);color:#f7fbff;padding:6px 12px;">Schließen</button>
+            </footer>
+          </div>
         </dialog>
 
         <section id="combat-contact-hud" class="contact-hud" aria-label="Combat contact presentation" data-testid="combat-contact-hud" hidden>

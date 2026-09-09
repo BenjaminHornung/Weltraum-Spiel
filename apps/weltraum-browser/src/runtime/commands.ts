@@ -18,7 +18,8 @@ export type BrowserRuntimeCommand =
   | { readonly type: "ToggleRcs" }
   | { readonly type: "ToggleSas" }
   | { readonly type: "CycleControlMode" }
-  | { readonly type: "CycleCameraMode" };
+  | { readonly type: "CycleCameraMode" }
+  | { readonly type: "DestroyPgTragwerk" };
 
 export type BrowserRuntimeRejectionCode =
   | PreviewLockRejectionCode
@@ -29,7 +30,9 @@ export type BrowserRuntimeRejectionCode =
   | "PlanLocked"
   | "UnsupportedRouteProfile"
   | "UnsupportedPlanner"
-  | "PlanningRejected";
+  | "PlanningRejected"
+  | "PgTragwerkRejected"
+  | "PgTragwerkUnavailable";
 
 export type BrowserRuntimeCommandCode =
   | "TargetSelected"
@@ -46,6 +49,7 @@ export type BrowserRuntimeCommandCode =
   | "SasToggled"
   | "ControlModeCycled"
   | "CameraModeCycled"
+  | "PgTragwerkDestroyed"
   | BrowserRuntimeRejectionCode;
 
 export interface BrowserRuntimeCommandResult {
