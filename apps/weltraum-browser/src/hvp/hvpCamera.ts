@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
 export type HvpCameraMode = "Orbit" | "Fly";
-export type HvpCameraPreset = "C01-EYE" | "C04-WIDE";
+export type HvpCameraPreset = "C01-EYE" | "C02-SHORE" | "C04-WIDE";
 
 export interface HvpCameraPose {
   readonly mode: HvpCameraMode;
@@ -33,6 +33,11 @@ const HVP_CAMERA_PRESETS: Record<HvpCameraPreset, { position: { x: number; y: nu
     position: { x: -8, y: 3.15, z: -11 },
     target: { x: 0, y: 1, z: 5 },
     fov: 60
+  },
+  "C02-SHORE": {
+    position: { x: -2, y: 1.25, z: -6 },
+    target: { x: 1, y: -0.5, z: -2 },
+    fov: 55
   },
   "C04-WIDE": {
     position: { x: -24, y: 18, z: -28 },

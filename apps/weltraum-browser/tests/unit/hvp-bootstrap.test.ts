@@ -1,7 +1,15 @@
 import * as THREE from "three";
 import { describe, expect, it, vi } from "vitest";
 import { backendRevision, renderCommandResult, type RenderCommand } from "../../src/presentation";
-import { createHvpSession } from "../../src/hvp/hvpTerrain";
+import {
+  HVP_BLOCK_MESH_ALGORITHM_VERSION,
+  HVP_COAST_BLOCK_SIZE_METERS,
+  HVP_TERRAIN_MATERIAL_ID,
+  HVP_TERRAIN_REPRESENTATION_KEY,
+  createHvpSession,
+  hvpBuildCoastBlockCells,
+  hvpMeshBlocks
+} from "../../src/hvp/hvpTerrain";
 import { startHvp, startHvpRoute, type HvpBootstrapHandle } from "../../src/hvp/hvpBootstrap";
 
 class FakeElement extends EventTarget {
@@ -87,9 +95,11 @@ const harness = () => {
   let backendConstructions = 0;
   let backendDisposals = 0;
   let renders = 0;
+  const dispatchedCommands: RenderCommand[] = [];
   const backend = {
     camera: new THREE.PerspectiveCamera(50, 16 / 9, 0.1, 1_000),
     dispatch: (command: RenderCommand) => {
+      dispatchedCommands.push(command);
       if (command.kind === "DisposeBackend") backendDisposals += 1;
       return renderCommandResult("Accepted");
     },
@@ -148,7 +158,8 @@ const harness = () => {
     windowPort,
     createBackend,
     overrides,
-    counts: () => ({ backendConstructions, backendDisposals, renders })
+    counts: () => ({ backendConstructions, backendDisposals, renders }),
+    commands: dispatchedCommands
   };
 };
 
@@ -161,6 +172,45 @@ const stepFrame = (windowPort: FakeWindow, timestamp: number): void => {
 };
 
 describe("HVP T08 bootstrap lifecycle", () => {
+  it("keeps terrain geometry intact while grouping readable material ranges", async () => {
+    const source = harness();
+    const handle = await startHvp(source.overrides());
+    const terrainCommand = source.commands.find((command): command is Extract<RenderCommand, { kind: "UpsertMeshArtifact" }> =>
+      command.kind === "UpsertMeshArtifact"
+      && command.artifact.representationKey === HVP_TERRAIN_REPRESENTATION_KEY
+    );
+
+    expect(terrainCommand).toBeDefined();
+    if (terrainCommand === undefined) return;
+    const original = hvpMeshBlocks(
+      hvpBuildCoastBlockCells(HVP_COAST_BLOCK_SIZE_METERS),
+      HVP_COAST_BLOCK_SIZE_METERS,
+      HVP_TERRAIN_MATERIAL_ID
+    );
+    expect(terrainCommand.artifact.algorithmVersion).toBe(HVP_BLOCK_MESH_ALGORITHM_VERSION);
+    expect([...terrainCommand.artifact.indices].sort((left, right) => left - right))
+      .toEqual([...original.indices].sort((left, right) => left - right));
+    expect(terrainCommand.artifact.materialRanges.reduce((total, range) => total + range.indexCount, 0))
+      .toBe(terrainCommand.artifact.indices.length);
+    terrainCommand.artifact.materialRanges.forEach((range, index, ranges) => {
+      expect(range.startIndex).toBe(index === 0 ? 0 : ranges[index - 1]!.startIndex + ranges[index - 1]!.indexCount);
+    });
+
+    const waterButton = source.body.children
+      .flatMap((child) => [child, ...descendants(child)])
+      .find((element) => element.id === "hvp-water-toggle");
+    expect(waterButton).toBeDefined();
+    waterButton?.dispatchEvent(new Event("click"));
+    const visibilityPlans = source.commands.filter((command): command is Extract<RenderCommand, { kind: "ApplyVisibilityPlan" }> =>
+      command.kind === "ApplyVisibilityPlan"
+    );
+    const hiddenWaterPlan = visibilityPlans.at(-1)?.plan;
+    expect(hiddenWaterPlan?.visibleRepresentationKeys).toEqual([HVP_TERRAIN_REPRESENTATION_KEY]);
+    expect(hiddenWaterPlan?.hiddenRepresentationKeys).toEqual(["hvp:water"]);
+
+    await handle.dispose();
+  });
+
   it("reaches Ready with exactly one tick loop and disposes start/dispose exactly once", async () => {
     const source = harness();
     const handle = await startHvp(source.overrides());
