@@ -16,11 +16,11 @@
     "three": "0.185.1"
   },
   "devDependencies": {
-    "@playwright/test": "1.61.1",
-    "@types/node": "26.1.1",
-    "@types/three": "0.185.1",
+    "@playwright/test": "1.63.0",
+    "@types/node": "26.4.1",
+    "@types/three": "0.185.4",
     "typescript": "7.0.2",
-    "vite": "8.1.5",
+    "vite": "8.2.2",
     "vitest": "4.1.11"
   }
 }
