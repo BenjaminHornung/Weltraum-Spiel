@@ -235,7 +235,7 @@ test("HVP-01 visible coast reaches Ready through the real UI and renders the bou
   await page.goto("/?hestiaPrototype=1");
   await expect(page.locator("#hvp-hud")).toBeVisible();
   await expect(page.locator("#hvp-state")).toContainText("State: Ready", { timeout: 20_000 });
-  await expect(page.locator("#debug-scene")).toHaveAttribute("aria-label", "HVP-01 visible coast viewport");
+  await expect(page.locator("#debug-scene")).toHaveAttribute("aria-label", "HVP-02 readable coast viewport");
   await expect(page.locator("body")).toHaveAttribute("data-hestia-prototype-state", "Ready");
   await expect(page.locator("#hvp-detail")).toContainText("Terrain faces:");
   await expect(page.locator("#hvp-failure")).toHaveCount(0);

@@ -1,16 +1,24 @@
 import * as THREE from "three";
 import { describe, expect, it, vi } from "vitest";
-import { backendRevision, renderCommandResult, type RenderCommand } from "../../src/presentation";
+import { backendRevision, materialProfileId, renderCommandResult, type RenderCommand } from "../../src/presentation";
 import {
   HVP_BLOCK_MESH_ALGORITHM_VERSION,
   HVP_COAST_BLOCK_SIZE_METERS,
   HVP_TERRAIN_MATERIAL_ID,
   HVP_TERRAIN_REPRESENTATION_KEY,
+  HVP_WATER_REPRESENTATION_KEY,
   createHvpSession,
+  type HvpBlockMesh,
   hvpBuildCoastBlockCells,
   hvpMeshBlocks
 } from "../../src/hvp/hvpTerrain";
-import { startHvp, startHvpRoute, type HvpBootstrapHandle } from "../../src/hvp/hvpBootstrap";
+import {
+  createHvpLookTerrain,
+  startHvp,
+  startHvpRoute,
+  type HvpBootstrapHandle
+} from "../../src/hvp/hvpBootstrap";
+import { createHvpLookProfile } from "../../src/hestia-prototype/presentation/look";
 
 class FakeElement extends EventTarget {
   id = "";
@@ -96,8 +104,13 @@ const harness = () => {
   let backendDisposals = 0;
   let renders = 0;
   const dispatchedCommands: RenderCommand[] = [];
+  const scene = new THREE.Scene();
+  const representationRoot = new THREE.Group();
+  scene.add(representationRoot);
   const backend = {
     camera: new THREE.PerspectiveCamera(50, 16 / 9, 0.1, 1_000),
+    scene,
+    representationRoot,
     dispatch: (command: RenderCommand) => {
       dispatchedCommands.push(command);
       if (command.kind === "DisposeBackend") backendDisposals += 1;
@@ -159,7 +172,10 @@ const harness = () => {
     createBackend,
     overrides,
     counts: () => ({ backendConstructions, backendDisposals, renders }),
-    commands: dispatchedCommands
+    commands: dispatchedCommands,
+    camera: backend.camera,
+    scene,
+    backend
   };
 };
 
@@ -172,43 +188,193 @@ const stepFrame = (windowPort: FakeWindow, timestamp: number): void => {
 };
 
 describe("HVP T08 bootstrap lifecycle", () => {
+  it("binds the rendered look scene instead of only publishing dataset claims", async () => {
+    const source = harness();
+    const handle = await startHvp(source.overrides());
+
+    try {
+      const presentation = source.scene.getObjectByName("hvp-readable-coast-presentation");
+      expect(presentation).toBeDefined();
+      expect(source.scene.background).toBeInstanceOf(THREE.Color);
+      expect((source.scene.background as THREE.Color).getHex()).toBe(0x081820);
+      expect(source.scene.fog).toBeInstanceOf(THREE.Fog);
+      expect((source.scene.fog as THREE.Fog).near).toBe(58);
+      expect((source.scene.fog as THREE.Fog).far).toBe(150);
+      expect(source.scene.getObjectByName("hvp-ambient-fill")).toBeInstanceOf(THREE.HemisphereLight);
+      expect(source.scene.getObjectByName("hvp-sun-key")).toBeInstanceOf(THREE.DirectionalLight);
+      expect(source.scene.getObjectByName("hvp-cool-fill")).toBeInstanceOf(THREE.DirectionalLight);
+
+      const ground = source.scene.getObjectByName("hvp-distant-coast-ground-proxy");
+      expect(ground).toBeInstanceOf(THREE.Mesh);
+      expect(ground?.renderOrder).toBe(-2);
+      expect(presentation?.userData.hvpRenderOnly).toBe(true);
+    } finally {
+      await handle.dispose();
+    }
+  });
+
+  it("fails closed when the backend cannot provide a rendered scene", async () => {
+    const source = harness();
+    const handle = await startHvp(source.overrides({
+      createBackend: () => ({ ...source.backend, scene: undefined })
+    }));
+
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Error");
+    expect(descendants(source.body).filter((element) => element.id === "hvp-hud")).toHaveLength(0);
+    expect(descendants(source.body).filter((element) => element.getAttribute("role") === "alert")).toHaveLength(1);
+    expect(descendants(source.body).find((element) => element.id === "hvp-error-detail")?.textContent)
+      .toContain("HVP-02 requires a rendered Three.js scene");
+    expect(source.body.dataset.hestiaPrototypeLook).toBeUndefined();
+    await handle.dispose();
+  });
+
+  it("proves the distant proxy is a raycastable render hit but never an edit target", async () => {
+    const source = harness();
+    const handle = await startHvp(source.overrides());
+
+    try {
+      const proxyGroup = source.scene.getObjectByName("hvp-distant-coast-proxy-noneditable");
+      expect(proxyGroup).toBeInstanceOf(THREE.Group);
+      expect(proxyGroup?.children).toHaveLength(4);
+      const mound = proxyGroup?.children[1];
+      expect(mound).toBeInstanceOf(THREE.Mesh);
+      if (!(mound instanceof THREE.Mesh)) return;
+
+      source.camera.updateProjectionMatrix();
+      source.camera.updateMatrixWorld(true);
+      mound.updateWorldMatrix(true, true);
+      const center = mound.getWorldPosition(new THREE.Vector3());
+      const projected = center.clone().project(source.camera);
+      expect(projected.x).toBeGreaterThan(-1);
+      expect(projected.x).toBeLessThan(1);
+      expect(projected.y).toBeGreaterThan(-1);
+      expect(projected.y).toBeLessThan(1);
+      expect(projected.z).toBeLessThan(1);
+      const ray = new THREE.Raycaster(source.camera.position, center.sub(source.camera.position).normalize());
+      const hit = ray.intersectObject(mound, false)[0];
+      expect(hit).toBeDefined();
+      expect(hit?.object.userData.hvpRenderOnly).toBe(true);
+      expect(hit?.object.userData.hvpEditable).toBe(false);
+      expect((hit?.object as unknown as { readonly edit?: unknown } | undefined)?.edit).toBeUndefined();
+      expect((handle as unknown as { readonly edit?: unknown }).edit).toBeUndefined();
+
+      const ground = source.scene.getObjectByName("hvp-distant-coast-ground-proxy");
+      expect(ground).toBeInstanceOf(THREE.Mesh);
+      expect(ground?.userData.hvpRenderOnly).toBe(true);
+      expect(ground?.userData.hvpEditable).toBe(false);
+      expect((ground as unknown as { readonly edit?: unknown } | undefined)?.edit).toBeUndefined();
+      ground?.updateWorldMatrix(true, true);
+      const groundCenter = new THREE.Vector3(0, -7.75, 0);
+      const groundRay = new THREE.Raycaster(source.camera.position, groundCenter.sub(source.camera.position).normalize());
+      expect(groundRay.intersectObject(ground!, false)[0]).toBeDefined();
+    } finally {
+      await handle.dispose();
+    }
+  });
+
   it("keeps terrain geometry intact while grouping readable material ranges", async () => {
     const source = harness();
     const handle = await startHvp(source.overrides());
-    const terrainCommand = source.commands.find((command): command is Extract<RenderCommand, { kind: "UpsertMeshArtifact" }> =>
-      command.kind === "UpsertMeshArtifact"
-      && command.artifact.representationKey === HVP_TERRAIN_REPRESENTATION_KEY
-    );
+    try {
+      const terrainCommand = source.commands.find((command): command is Extract<RenderCommand, { kind: "UpsertMeshArtifact" }> =>
+        command.kind === "UpsertMeshArtifact"
+        && command.artifact.representationKey === HVP_TERRAIN_REPRESENTATION_KEY
+      );
 
-    expect(terrainCommand).toBeDefined();
-    if (terrainCommand === undefined) return;
-    const original = hvpMeshBlocks(
+      expect(terrainCommand).toBeDefined();
+      if (terrainCommand === undefined) return;
+      const original = hvpMeshBlocks(
+        hvpBuildCoastBlockCells(HVP_COAST_BLOCK_SIZE_METERS),
+        HVP_COAST_BLOCK_SIZE_METERS,
+        HVP_TERRAIN_MATERIAL_ID
+      );
+      expect(terrainCommand.artifact.algorithmVersion).toBe(HVP_BLOCK_MESH_ALGORITHM_VERSION);
+      expect([...terrainCommand.artifact.indices].sort((left, right) => left - right))
+        .toEqual([...original.indices].sort((left, right) => left - right));
+      expect(terrainCommand.artifact.materialRanges.reduce((total, range) => total + range.indexCount, 0))
+        .toBe(terrainCommand.artifact.indices.length);
+      expect(terrainCommand.artifact.materialRanges).toHaveLength(4);
+      expect(terrainCommand.artifact.materialRanges.map((range) => range.materialProfileId)).toEqual([
+        "hvp:look:limestone-dry",
+        "hvp:look:limestone-wet",
+        "hvp:look:soil",
+        "hvp:look:moss"
+      ]);
+      terrainCommand.artifact.materialRanges.forEach((range) => {
+        expect(range.indexCount).toBeGreaterThan(0);
+      });
+      expect(terrainCommand.materialProfiles.map((profile) => profile.id).sort()).toEqual([
+        "hvp:look:limestone-dry",
+        "hvp:look:limestone-wet",
+        "hvp:look:moss",
+        "hvp:look:soil"
+      ]);
+      expect(terrainCommand.artifact.sourceRevision).toBe(1);
+      terrainCommand.artifact.materialRanges.forEach((range, index, ranges) => {
+        expect(range.startIndex).toBe(index === 0 ? 0 : ranges[index - 1]!.startIndex + ranges[index - 1]!.indexCount);
+      });
+
+      const waterCommand = source.commands.find((command): command is Extract<RenderCommand, { kind: "UpsertMeshArtifact" }> =>
+        command.kind === "UpsertMeshArtifact"
+        && command.artifact.representationKey === HVP_WATER_REPRESENTATION_KEY
+      );
+      expect(waterCommand).toBeDefined();
+      if (waterCommand === undefined) return;
+      expect(new Set([...waterCommand.artifact.positions].filter((_value, index) => index % 3 === 1))).toEqual(new Set([0]));
+      expect(waterCommand.materialProfiles).toHaveLength(1);
+      expect(waterCommand.materialProfiles[0]).toMatchObject({
+        id: "hvp:look:water",
+        opacity: 0.62,
+        depthWrite: false
+      });
+
+      const waterButton = source.body.children
+        .flatMap((child) => [child, ...descendants(child)])
+        .find((element) => element.id === "hvp-water-toggle");
+      expect(waterButton).toBeDefined();
+      waterButton?.dispatchEvent(new Event("click"));
+      const visibilityPlans = source.commands.filter((command): command is Extract<RenderCommand, { kind: "ApplyVisibilityPlan" }> =>
+        command.kind === "ApplyVisibilityPlan"
+      );
+      const hiddenWaterPlan = visibilityPlans.at(-1)?.plan;
+      expect(hiddenWaterPlan?.visibleRepresentationKeys).toEqual([HVP_TERRAIN_REPRESENTATION_KEY]);
+      expect(hiddenWaterPlan?.hiddenRepresentationKeys).toEqual(["hvp:water"]);
+    } finally {
+      await handle.dispose();
+    }
+  });
+
+  it("fails closed when a look role is empty or its profile diverges from the role", () => {
+    const look = createHvpLookProfile("readable");
+    const sparseMesh: HvpBlockMesh = {
+      faceCount: 1,
+      outerFaceCount: 1,
+      cavityFaceCount: 0,
+      positions: new Float32Array([0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1]),
+      normals: new Float32Array([0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0]),
+      indices: new Uint16Array([0, 1, 2, 0, 2, 3]),
+      boundsMeters: { min: { x: 0, y: 1, z: 0 }, max: { x: 1, y: 1, z: 1 } },
+      materialProfileId: HVP_TERRAIN_MATERIAL_ID
+    };
+    expect(() => createHvpLookTerrain(sparseMesh, look)).toThrow(/empty|four/i);
+
+    const divergent = {
+      ...look,
+      materials: look.materials.map((material) => material.role === "moss"
+        ? {
+            ...material,
+            materialProfile: Object.freeze({
+              ...material.materialProfile,
+              id: materialProfileId("hvp:look:soil")
+            })
+          }
+        : material)
+    };
+    expect(() => createHvpLookTerrain(hvpMeshBlocks(
       hvpBuildCoastBlockCells(HVP_COAST_BLOCK_SIZE_METERS),
       HVP_COAST_BLOCK_SIZE_METERS,
       HVP_TERRAIN_MATERIAL_ID
-    );
-    expect(terrainCommand.artifact.algorithmVersion).toBe(HVP_BLOCK_MESH_ALGORITHM_VERSION);
-    expect([...terrainCommand.artifact.indices].sort((left, right) => left - right))
-      .toEqual([...original.indices].sort((left, right) => left - right));
-    expect(terrainCommand.artifact.materialRanges.reduce((total, range) => total + range.indexCount, 0))
-      .toBe(terrainCommand.artifact.indices.length);
-    terrainCommand.artifact.materialRanges.forEach((range, index, ranges) => {
-      expect(range.startIndex).toBe(index === 0 ? 0 : ranges[index - 1]!.startIndex + ranges[index - 1]!.indexCount);
-    });
-
-    const waterButton = source.body.children
-      .flatMap((child) => [child, ...descendants(child)])
-      .find((element) => element.id === "hvp-water-toggle");
-    expect(waterButton).toBeDefined();
-    waterButton?.dispatchEvent(new Event("click"));
-    const visibilityPlans = source.commands.filter((command): command is Extract<RenderCommand, { kind: "ApplyVisibilityPlan" }> =>
-      command.kind === "ApplyVisibilityPlan"
-    );
-    const hiddenWaterPlan = visibilityPlans.at(-1)?.plan;
-    expect(hiddenWaterPlan?.visibleRepresentationKeys).toEqual([HVP_TERRAIN_REPRESENTATION_KEY]);
-    expect(hiddenWaterPlan?.hiddenRepresentationKeys).toEqual(["hvp:water"]);
-
-    await handle.dispose();
+    ), divergent)).toThrow(/diverg|profile/i);
   });
 
   it("reaches Ready with exactly one tick loop and disposes start/dispose exactly once", async () => {

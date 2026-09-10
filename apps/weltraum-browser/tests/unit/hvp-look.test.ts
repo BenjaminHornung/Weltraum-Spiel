@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  assertHvpWaterPresentation,
   HVP_READABLE_COAST_LOOK_ID,
   createHvpLookProfile,
   projectHvpLook
@@ -43,5 +44,18 @@ describe("HVP-02 T04 water presentation contract", () => {
     expect(profile.water.opacity).toBeLessThan(1);
     expect(profile.water.materialProfile.kind).toBe("BasicLit");
     expect(profile.water.materialProfile.depthWrite).toBe(false);
+  });
+
+  it("rejects an opaque water mask as a failed underwater oracle", () => {
+    const profile = createHvpLookProfile("readable");
+    expect(() => assertHvpWaterPresentation({
+      ...profile.water,
+      opacity: 1,
+      materialProfile: Object.freeze({
+        ...profile.water.materialProfile,
+        opacity: 1,
+        depthWrite: true
+      })
+    })).toThrow(/transparent|opacity|depth/i);
   });
 });

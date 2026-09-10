@@ -33,6 +33,19 @@ export interface HvpWaterPresentation {
   readonly materialProfile: MaterialProfile;
 }
 
+/** Fail-closed contract for the render-only water surface. */
+export const assertHvpWaterPresentation = (water: HvpWaterPresentation): void => {
+  if (water.transparent !== true || water.depthWrite !== false || water.renderOrder !== 1) {
+    throw new Error("HVP water must be transparent, depth-write disabled, and render at order 1.");
+  }
+  if (!(water.opacity > 0) || !(water.opacity < 1) || water.materialProfile.opacity !== water.opacity) {
+    throw new Error("HVP water opacity must stay strictly between 0 and 1.");
+  }
+  if (water.materialProfile.depthWrite !== false || water.collision !== "none" || water.physics !== "not-simulated") {
+    throw new Error("HVP water must remain presentation-only and non-colliding.");
+  }
+};
+
 export interface HvpLightRole {
   readonly color: number;
   readonly intensity: number;
@@ -140,6 +153,7 @@ export const createHvpLookProfile = (variant: HvpLookVariant): HvpLookProfile =>
   if (variant !== "readable") {
     throw new TypeError(`Unsupported HVP look variant: ${String(variant)}`);
   }
+  assertHvpWaterPresentation(readableProfile.water);
   return readableProfile;
 };
 
