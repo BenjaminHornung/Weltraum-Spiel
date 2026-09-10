@@ -2,6 +2,8 @@
 import { DebugScene } from "./render/three/debugScene";
 import { createBrowserRuntime, createRuntimeShipForFlightCase } from "./runtime/browserRuntime";
 import { createGraphicsSettingsController, loadGraphicsSettings } from "./settings";
+import { startHvpRoute } from "./hvp/hvpBootstrap";
+import { isHvpQuery } from "./hvp/hvpQuery";
 import { startSurfaceLabRoute } from "./surface-lab/surfaceLabFailurePresenter";
 import { isSurfaceLabQuery } from "./surface-lab/surfaceLabQuery";
 import { createGraphicsSettingsPanel } from "./ui/graphicsSettingsPanel";
@@ -65,8 +67,11 @@ const startNormalRuntime = (): void => {
   });
 };
 
+// Combined ?surfaceLab=1&hestiaPrototype=1 resolves to Surface Lab; existing routes stay untouched.
 if (isSurfaceLabQuery(searchParams)) {
   void startSurfaceLabRoute(document, () => import("./surface-lab"));
+} else if (isHvpQuery(searchParams)) {
+  void startHvpRoute(document, () => import("./hvp"));
 } else {
   startNormalRuntime();
 }
