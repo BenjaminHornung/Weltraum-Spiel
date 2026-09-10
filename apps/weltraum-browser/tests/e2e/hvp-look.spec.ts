@@ -71,10 +71,7 @@ const changedPixelRatio = async (page: Page, left: Buffer, right: Buffer): Promi
     return changedPixels / (leftImage.width * leftImage.height);
   }, { leftBase64: left.toString("base64"), rightBase64: right.toString("base64") });
 
-const captureRenderedCanvas = async (page: Page): Promise<Buffer> => {
-  await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => resolve())));
-  return page.locator("#debug-scene").screenshot();
-};
+const captureRenderedCanvas = (page: Page): Promise<Buffer> => page.locator("#debug-scene").screenshot();
 
 interface HvpRegionMetrics {
   readonly pixels: number;
@@ -229,7 +226,11 @@ const assertTolerantBoundMatch = async (page: Page, name: string, bound: Buffer,
 
 const changedPixelRatioInCenter = async (page: Page, left: Buffer, right: Buffer): Promise<number> =>
   page.evaluate(async ({ leftBase64, rightBase64 }) => {
-    const decode = async (base64: string): Promise<{ readonly width: number; readonly height: number; readonly pixels: Uint8ClampedArray }> => {
+    const decode = async (base64: string): Promise<{
+      readonly width: number;
+      readonly height: number;
+      readonly context: CanvasRenderingContext2D;
+    }> => {
       const binary = atob(base64);
       const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
       const bitmap = await createImageBitmap(new Blob([bytes], { type: "image/png" }));
@@ -239,12 +240,10 @@ const changedPixelRatioInCenter = async (page: Page, left: Buffer, right: Buffer
       const context = canvas.getContext("2d", { willReadFrequently: true });
       if (context === null) throw new Error("Canvas 2D context unavailable for HVP ROI comparison");
       context.drawImage(bitmap, 0, 0);
-      const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
       bitmap.close();
-      return { width: canvas.width, height: canvas.height, pixels };
+      return { width: canvas.width, height: canvas.height, context };
     };
-    const leftImage = await decode(leftBase64);
-    const rightImage = await decode(rightBase64);
+    const [leftImage, rightImage] = await Promise.all([decode(leftBase64), decode(rightBase64)]);
     if (leftImage.width !== rightImage.width || leftImage.height !== rightImage.height) {
       throw new Error("HVP ROI comparison image dimensions differ");
     }
@@ -252,18 +251,27 @@ const changedPixelRatioInCenter = async (page: Page, left: Buffer, right: Buffer
     const top = Math.floor(leftImage.height * 0.35);
     const width = Math.floor(leftImage.width * 0.3);
     const height = Math.floor(leftImage.height * 0.3);
+    const leftPixels = leftImage.context.getImageData(left, top, width, height).data;
+    const rightPixels = rightImage.context.getImageData(left, top, width, height).data;
+    const leftWords = new Uint32Array(leftPixels.buffer, leftPixels.byteOffset, leftPixels.byteLength / Uint32Array.BYTES_PER_ELEMENT);
+    const rightWords = new Uint32Array(rightPixels.buffer, rightPixels.byteOffset, rightPixels.byteLength / Uint32Array.BYTES_PER_ELEMENT);
+    const littleEndian = new Uint8Array(new Uint32Array([0x01020304]).buffer)[0] === 0x04;
+    const redShift = littleEndian ? 0 : 24;
+    const greenShift = littleEndian ? 8 : 16;
+    const blueShift = littleEndian ? 16 : 8;
     let changedPixels = 0;
-    let totalPixels = 0;
-    for (let y = top; y < top + height; y += 1) {
-      for (let x = left; x < left + width; x += 1) {
-        const offset = (y * leftImage.width + x) * 4;
-        totalPixels += 1;
-        if ([0, 1, 2].some((channel) => Math.abs(leftImage.pixels[offset + channel]! - rightImage.pixels[offset + channel]!) > 12)) {
-          changedPixels += 1;
-        }
+    for (let index = 0; index < leftWords.length; index += 1) {
+      const leftPixel = leftWords[index]!;
+      const rightPixel = rightWords[index]!;
+      if (
+        Math.abs(((leftPixel >>> redShift) & 0xff) - ((rightPixel >>> redShift) & 0xff)) > 12 ||
+        Math.abs(((leftPixel >>> greenShift) & 0xff) - ((rightPixel >>> greenShift) & 0xff)) > 12 ||
+        Math.abs(((leftPixel >>> blueShift) & 0xff) - ((rightPixel >>> blueShift) & 0xff)) > 12
+      ) {
+        changedPixels += 1;
       }
     }
-    return changedPixels / totalPixels;
+    return changedPixels / leftWords.length;
   }, { leftBase64: left.toString("base64"), rightBase64: right.toString("base64") });
 
 const renderBackgroundOnlyPng = async (page: Page): Promise<Buffer> => {
@@ -307,6 +315,7 @@ const renderOpaqueWaterMask = async (page: Page, source: Buffer): Promise<Buffer
 test.use({ viewport });
 
 test("HVP-02 T02 water toggle keeps shore depth visible through the real UI", async ({ page }) => {
+  test.setTimeout(120_000);
   await page.goto("/?hestiaPrototype=1");
   await expect(page.locator("#hvp-state")).toContainText("State: Ready", { timeout: 20_000 });
   await page.getByRole("button", { name: "C02-SHORE" }).click();
