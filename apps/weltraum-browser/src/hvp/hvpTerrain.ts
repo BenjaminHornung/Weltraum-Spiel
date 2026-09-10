@@ -307,6 +307,7 @@ export interface HvpBlockMesh {
   readonly normals: Float32Array;
   readonly indices: Uint16Array | Uint32Array;
   readonly boundsMeters: { readonly min: HvpCell; readonly max: HvpCell };
+  /** HVP-01 mesher metadata; the HVP-02 look supplies presentation ranges. */
   readonly materialProfileId: string;
 }
 

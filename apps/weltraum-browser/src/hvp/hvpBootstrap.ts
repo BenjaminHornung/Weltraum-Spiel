@@ -1,19 +1,20 @@
+import * as THREE from "three";
 import { ThreeRenderBackend } from "../render/three/backend";
 import {
   artifactRevision,
   backendRevision,
   createFrameProjectionSnapshot,
-  createMaterialProfile,
   createMeshArtifact,
   createRenderCommand,
   createVisibilityPlan,
   frameId,
   frameRevision,
-  materialProfileId,
   representationKey,
   sourceRevision,
   visibilityPlanRevision,
   type FrameId,
+  type MaterialProfile,
+  type MaterialRange,
   type RenderBackend,
   type RenderCommand,
   type RenderCommandResult,
@@ -22,12 +23,17 @@ import {
 import { createHvpCamera, type HvpCameraPreset } from "./hvpCamera";
 import { createHvpHud, type HvpLifecycleState } from "./hvpHud";
 import {
+  assertHvpWaterPresentation,
+  createHvpLookProfile,
+  type HvpLookMaterialRole,
+  type HvpLookProfile
+} from "../hestia-prototype/presentation/look";
+import {
   HVP_BLOCK_MESH_ALGORITHM_VERSION,
   HVP_COAST_BLOCK_SIZE_METERS,
   HVP_FRAME_ID,
   HVP_TERRAIN_MATERIAL_ID,
   HVP_TERRAIN_REPRESENTATION_KEY,
-  HVP_WATER_MATERIAL_ID,
   HVP_WATER_REPRESENTATION_KEY,
   assertHvpCoverageComplete,
   createHvpSession,
@@ -35,11 +41,12 @@ import {
   hvpBuildWaterPlane,
   hvpMeshBlocks,
   hvpServedCoverage,
+  type HvpBlockMesh,
   type HvpSession,
   type HvpSessionSeed
 } from "./hvpTerrain";
 
-const HVP_WATER_ALGORITHM_VERSION = "hvp-water-plane-v1";
+const HVP_WATER_ALGORITHM_VERSION = "hvp-water-presentation-v2";
 
 /** Fail-closed double-mount guard: at most one live HVP session per module. */
 let activeHvpMount = false;
@@ -54,6 +61,11 @@ type HvpWindowPort = Pick<Window,
   | "addEventListener"
   | "removeEventListener"
 >;
+type HvpBackend = RenderBackend & {
+  readonly camera: THREE.PerspectiveCamera;
+  readonly scene?: THREE.Scene;
+  readonly representationRoot?: THREE.Group;
+};
 
 export interface HvpBootstrapHandle {
   dispose(): Promise<void>;
@@ -66,6 +78,183 @@ const requireAccepted = (result: RenderCommandResult, operation: string): void =
   if (!accepted(result)) throw new Error(`${operation} failed: ${result.reasonCode ?? result.status}`);
 };
 
+export interface HvpLookTerrain {
+  readonly indices: Uint16Array | Uint32Array;
+  readonly materialRanges: readonly MaterialRange[];
+  readonly materialProfiles: readonly MaterialProfile[];
+}
+
+const HVP_LOOK_ROLES: readonly HvpLookMaterialRole[] = [
+  "limestone-dry",
+  "limestone-wet",
+  "soil",
+  "moss"
+];
+
+const terrainFaceRole = (mesh: HvpBlockMesh, faceIndex: number): HvpLookMaterialRole => {
+  const vertexOffset = faceIndex * 12;
+  let centerY = 0;
+  for (let vertex = 0; vertex < 4; vertex += 1) {
+    centerY += mesh.positions[vertexOffset + vertex * 3 + 1] ?? 0;
+  }
+  centerY /= 4;
+  const normalY = mesh.normals[vertexOffset + 1] ?? 0;
+  if (centerY <= 0.05) return "limestone-wet";
+  if (normalY > 0.5) return centerY >= 2 ? "moss" : "soil";
+  return centerY < 0.8 ? "limestone-wet" : "limestone-dry";
+};
+
+/** Reorders only render indices so each semantic look role stays one draw group. */
+export const createHvpLookTerrain = (mesh: HvpBlockMesh, look: HvpLookProfile): HvpLookTerrain => {
+  if (look.materials.length !== HVP_LOOK_ROLES.length) {
+    throw new Error(`HVP look must define exactly ${HVP_LOOK_ROLES.length} terrain material roles.`);
+  }
+  const indicesByRole = new Map<HvpLookMaterialRole, number[]>(
+    look.materials.map((material) => [material.role, []])
+  );
+  if (indicesByRole.size !== HVP_LOOK_ROLES.length) {
+    throw new Error("HVP look terrain roles must be unique.");
+  }
+  for (const role of HVP_LOOK_ROLES) {
+    const material = look.materials.find((candidate) => candidate.role === role);
+    if (material === undefined || material.materialProfile.id !== `hvp:look:${role}`) {
+      throw new Error(`HVP look role/profile divergence for ${role}.`);
+    }
+  }
+  for (let faceIndex = 0; faceIndex < mesh.faceCount; faceIndex += 1) {
+    const role = terrainFaceRole(mesh, faceIndex);
+    const target = indicesByRole.get(role);
+    if (target === undefined) throw new Error(`HVP look role is not registered: ${role}`);
+    const indexStart = faceIndex * 6;
+    for (let index = indexStart; index < indexStart + 6; index += 1) {
+      target.push(mesh.indices[index] ?? 0);
+    }
+  }
+
+  const orderedIndices: number[] = [];
+  const materialRanges: MaterialRange[] = [];
+  const materialProfiles: MaterialProfile[] = [];
+  for (const role of HVP_LOOK_ROLES) {
+    const material = look.materials.find((candidate) => candidate.role === role);
+    const roleIndices = indicesByRole.get(role);
+    if (material === undefined || roleIndices === undefined || roleIndices.length === 0) {
+      throw new Error(`HVP look material role ${role} is empty.`);
+    }
+    const startIndex = orderedIndices.length;
+    orderedIndices.push(...roleIndices);
+    materialRanges.push({
+      materialProfileId: material.materialProfile.id,
+      startIndex,
+      indexCount: roleIndices.length
+    });
+    materialProfiles.push(material.materialProfile);
+  }
+  if (materialRanges.length !== HVP_LOOK_ROLES.length || materialProfiles.length !== HVP_LOOK_ROLES.length) {
+    throw new Error("HVP look must produce one non-empty terrain range per role.");
+  }
+  return Object.freeze({
+    indices: mesh.indices instanceof Uint32Array ? new Uint32Array(orderedIndices) : new Uint16Array(orderedIndices),
+    materialRanges: Object.freeze(materialRanges),
+    materialProfiles: Object.freeze(materialProfiles)
+  });
+};
+
+interface HvpLookScene {
+  dispose(): void;
+}
+
+const disposeThreeResources = (root: THREE.Object3D): void => {
+  const geometries = new Set<THREE.BufferGeometry>();
+  const materials = new Set<THREE.Material>();
+  root.traverse((object) => {
+    const mesh = object as THREE.Mesh;
+    if (mesh.geometry instanceof THREE.BufferGeometry) geometries.add(mesh.geometry);
+    const sourceMaterials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+    sourceMaterials.filter((material): material is THREE.Material => material instanceof THREE.Material)
+      .forEach((material) => materials.add(material));
+  });
+  geometries.forEach((geometry) => geometry.dispose());
+  materials.forEach((material) => material.dispose());
+};
+
+const createHvpLookScene = (scene: THREE.Scene, look: HvpLookProfile): HvpLookScene => {
+  const root = new THREE.Group();
+  root.name = "hvp-readable-coast-presentation";
+  root.userData.hvpRenderOnly = true;
+  root.userData.hvpEditable = false;
+
+  const previousBackground = scene.background;
+  const previousFog = scene.fog;
+  const background = new THREE.Color(look.background.color);
+  const fog = new THREE.Fog(look.background.color, look.background.fogNear, look.background.fogFar);
+  scene.background = background;
+  scene.fog = fog;
+
+  const ambient = new THREE.HemisphereLight(
+    look.lighting.ambient.color,
+    0x142228,
+    look.lighting.ambient.intensity
+  );
+  ambient.name = "hvp-ambient-fill";
+  const key = new THREE.DirectionalLight(look.lighting.key.color, look.lighting.key.intensity);
+  key.name = "hvp-sun-key";
+  key.position.set(look.lighting.key.position.x, look.lighting.key.position.y, look.lighting.key.position.z);
+  const fill = new THREE.DirectionalLight(look.lighting.fill.color, look.lighting.fill.intensity);
+  fill.name = "hvp-cool-fill";
+  fill.position.set(look.lighting.fill.position.x, look.lighting.fill.position.y, look.lighting.fill.position.z);
+  root.add(ambient, key, fill);
+
+  const ground = new THREE.Mesh(
+    new THREE.PlaneGeometry(look.distantCoast.radiusMeters * 2, look.distantCoast.radiusMeters * 2),
+    new THREE.MeshLambertMaterial({ color: 0x1b3034, flatShading: true })
+  );
+  ground.name = "hvp-distant-coast-ground-proxy";
+  ground.userData.hvpRenderOnly = true;
+  ground.userData.hvpEditable = false;
+  ground.rotation.x = -Math.PI / 2;
+  ground.position.y = -7.75;
+  ground.renderOrder = -2;
+  root.add(ground);
+
+  const proxyMaterial = new THREE.MeshLambertMaterial({ color: 0x2a4646, flatShading: true });
+  const proxyGroup = new THREE.Group();
+  proxyGroup.name = "hvp-distant-coast-proxy-noneditable";
+  proxyGroup.userData.hvpRenderOnly = true;
+  proxyGroup.userData.hvpEditable = false;
+  const proxyPlacements = [
+    { x: -43, y: -5.7, z: 32, radius: 16, height: 7 },
+    { x: 42, y: -5.4, z: 36, radius: 19, height: 8 },
+    { x: -48, y: -6.1, z: -34, radius: 17, height: 5 },
+    { x: 46, y: -6, z: -31, radius: 15, height: 6 }
+  ];
+  for (const placement of proxyPlacements) {
+    const mound = new THREE.Mesh(
+      new THREE.ConeGeometry(placement.radius, placement.height, 7),
+      proxyMaterial
+    );
+    mound.position.set(placement.x, placement.y, placement.z);
+    mound.name = "hvp-distant-coast-mound-proxy";
+    mound.userData.hvpRenderOnly = true;
+    mound.userData.hvpEditable = false;
+    proxyGroup.add(mound);
+  }
+  root.add(proxyGroup);
+  scene.add(root);
+
+  let disposed = false;
+  return {
+    dispose(): void {
+      if (disposed) return;
+      disposed = true;
+      scene.remove(root);
+      disposeThreeResources(root);
+      root.clear();
+      if (scene.background === background) scene.background = previousBackground;
+      if (scene.fog === fog) scene.fog = previousFog;
+    }
+  };
+};
+
 interface HvpProjectionCamera {
   readonly position: Readonly<{ x: number; y: number; z: number }>;
   readonly orientation: Readonly<{ x: number; y: number; z: number; w: number }>;
@@ -76,13 +265,19 @@ interface HvpProjectionCamera {
 }
 
 /** HVP-owned projection/visibility publisher; mirrors the Surface Lab shape without importing it. */
-const createHvpPresentationBackend = (
+interface HvpPresentationBackend extends RenderBackend {
+  setWaterEnabled(enabled: boolean): void;
+}
+
+export const createHvpPresentationBackend = (
   backend: RenderBackend,
-  readCamera: () => HvpProjectionCamera
-): RenderBackend => {
+  readCamera: () => HvpProjectionCamera,
+  waterRepresentationKey: RepresentationKey
+): HvpPresentationBackend => {
   const framesByRepresentation = new Map<RepresentationKey, FrameId>();
   let lastFrameId: FrameId | undefined;
   let projectionRevision = 0;
+  let waterEnabled = true;
 
   const publishCurrentSet = (): void => {
     const current = framesByRepresentation.values().next().value ?? lastFrameId;
@@ -122,9 +317,9 @@ const createHvpPresentationBackend = (
       backendRevision: revision,
       plan: createVisibilityPlan({
         planRevision: visibilityPlanRevision(projectionRevision),
-        visibleRepresentationKeys: keys,
+        visibleRepresentationKeys: keys.filter((key) => waterEnabled || key !== waterRepresentationKey),
         fallbackRepresentationKeys: [],
-        hiddenRepresentationKeys: []
+        hiddenRepresentationKeys: waterEnabled ? [] : [waterRepresentationKey]
       })
     })), "HVP visibility plan");
   };
@@ -146,7 +341,12 @@ const createHvpPresentationBackend = (
     dispatch,
     renderFrame: () => backend.renderFrame(),
     getCapabilities: () => backend.getCapabilities(),
-    readDiagnostics: () => backend.readDiagnostics()
+    readDiagnostics: () => backend.readDiagnostics(),
+    setWaterEnabled(enabled: boolean): void {
+      if (waterEnabled === enabled) return;
+      waterEnabled = enabled;
+      publishCurrentSet();
+    }
   });
 };
 
@@ -165,10 +365,10 @@ export const presentHvpFailure = (
   root.setAttribute("role", "alert");
   root.setAttribute("aria-live", "assertive");
   const heading = documentPort.createElement("h1");
-  heading.textContent = "HVP-01 UNAVAILABLE";
+  heading.textContent = "HVP-02 UNAVAILABLE";
   const detail = documentPort.createElement("p");
   detail.id = "hvp-error-detail";
-  detail.textContent = `Technical initialization failure: ${error instanceof Error ? error.message : "HVP-01 initialization failed."}`;
+  detail.textContent = `Technical initialization failure: ${error instanceof Error ? error.message : "HVP-02 initialization failed."}`;
   const boundary = documentPort.createElement("p");
   boundary.textContent = "NOT GAMEPLAY · no terrain readiness is being claimed";
   root.append(heading, detail, boundary);
@@ -198,22 +398,24 @@ export const startHvp = async (
   overrides: {
     readonly documentPort?: HvpDocumentPort;
     readonly windowPort?: HvpWindowPort;
-    readonly createBackend?: (options: ConstructorParameters<typeof ThreeRenderBackend>[0]) => ThreeRenderBackend;
+    readonly createBackend?: (options: ConstructorParameters<typeof ThreeRenderBackend>[0]) => HvpBackend;
     readonly createSession?: (seed: HvpSessionSeed) => HvpSession;
   } = {}
 ): Promise<HvpBootstrapHandle> => {
   const documentPort = overrides.documentPort ?? document;
   if (activeHvpMount || documentPort.querySelector("#hvp-hud") !== null) {
-    throw new Error("HVP-01 already mounted: dispose the live session before starting again.");
+    throw new Error("HVP-02 already mounted: dispose the live session before starting again.");
   }
   activeHvpMount = true;
   const windowPort = overrides.windowPort ?? window;
   documentPort.body.dataset.hestiaPrototype = "1";
   documentPort.body.dataset.hestiaPrototypeState = "Loading" satisfies HvpLifecycleState;
 
-  let backend: ThreeRenderBackend | undefined;
+  let backend: HvpBackend | undefined;
   let camera: ReturnType<typeof createHvpCamera> | undefined;
   let hud: ReturnType<typeof createHvpHud> | undefined;
+  let lookScene: HvpLookScene | undefined;
+  let waterEnabled = true;
   let animationFrame: number | undefined;
   let failureRoot: HTMLElement | undefined;
   let disposed = false;
@@ -240,6 +442,8 @@ export const startHvp = async (
       hud = undefined;
       camera?.dispose();
       camera = undefined;
+      lookScene?.dispose();
+      lookScene = undefined;
       failureRoot?.remove();
       failureRoot = undefined;
       if (backend !== undefined) {
@@ -258,10 +462,10 @@ export const startHvp = async (
 
   try {
     const canvas = documentPort.querySelector<HTMLCanvasElement>("#debug-scene");
-    if (canvas === null) throw new Error("Missing #debug-scene canvas for HVP-01.");
-    canvas.setAttribute("aria-label", "HVP-01 visible coast viewport");
+    if (canvas === null) throw new Error("Missing #debug-scene canvas for HVP-02.");
+    canvas.setAttribute("aria-label", "HVP-02 readable coast viewport");
     const host = documentPort.querySelector<HTMLElement>("#app");
-    if (host === null) throw new Error("Missing #app host for HVP-01.");
+    if (host === null) throw new Error("Missing #app host for HVP-02.");
     if (flightHud) flightHud.hidden = true;
 
     backend = (overrides.createBackend ?? ((options) => new ThreeRenderBackend(options)))({
@@ -278,6 +482,24 @@ export const startHvp = async (
       backendRevision: backendRevision(0)
     })), "HVP backend initialization");
 
+    const look = createHvpLookProfile("readable");
+    assertHvpWaterPresentation(look.water);
+    const scene = backend.scene;
+    if (scene === undefined) throw new Error("HVP-02 requires a rendered Three.js scene.");
+    lookScene = createHvpLookScene(scene, look);
+    documentPort.body.dataset.hestiaPrototypeLook = look.id;
+    documentPort.body.dataset.hestiaPrototypeMaterialRoles = look.materials.map((material) => material.role).join(",");
+    documentPort.body.dataset.hestiaPrototypeLighting = "key-fill";
+    documentPort.body.dataset.hestiaPrototypeWaterPresentation = "transparent-non-simulated";
+    documentPort.body.dataset.hestiaPrototypeUnderwaterGeometry = "visible";
+    documentPort.body.dataset.hestiaPrototypeWaterDepth = "depth-aware";
+    documentPort.body.dataset.hestiaPrototypeWaterRenderOrder = String(look.water.renderOrder);
+    documentPort.body.dataset.hestiaPrototypeBackground = "distant-coast-proxy";
+    documentPort.body.dataset.hestiaPrototypeBackgroundEditable = String(look.distantCoast.editable);
+    documentPort.body.dataset.hestiaPrototypeSourceRevision = "1";
+    documentPort.body.dataset.hestiaPrototypeSeed = "0";
+    documentPort.body.dataset.hestiaPrototypeRenderer = "three-basic-lit";
+
     const presentation = createHvpPresentationBackend(backend, () => ({
       position: backend!.camera.position,
       orientation: backend!.camera.quaternion,
@@ -285,7 +507,7 @@ export const startHvp = async (
       aspect: backend!.camera.aspect,
       near: backend!.camera.near,
       far: backend!.camera.far
-    }));
+    }), representationKey(HVP_WATER_REPRESENTATION_KEY));
 
     const frame = frameId(HVP_FRAME_ID);
     const coastCells = hvpBuildCoastBlockCells(HVP_COAST_BLOCK_SIZE_METERS);
@@ -302,25 +524,7 @@ export const startHvp = async (
     );
     if (terrainMesh.faceCount === 0) throw new Error("HVP coast mesher produced no terrain faces.");
     const water = hvpBuildWaterPlane();
-
-    const terrainProfile = createMaterialProfile({
-      id: materialProfileId(HVP_TERRAIN_MATERIAL_ID),
-      kind: "Unlit",
-      baseColor: { r: 0.45, g: 0.38, b: 0.28 },
-      opacity: 1,
-      doubleSided: true,
-      wireframe: false,
-      depthWrite: true
-    });
-    const waterProfile = createMaterialProfile({
-      id: materialProfileId(HVP_WATER_MATERIAL_ID),
-      kind: "Unlit",
-      baseColor: { r: 0.12, g: 0.35, b: 0.5 },
-      opacity: 0.8,
-      doubleSided: true,
-      wireframe: false,
-      depthWrite: true
-    });
+    const terrainLook = createHvpLookTerrain(terrainMesh, look);
 
     requireAccepted(presentation.dispatch(createRenderCommand({
       kind: "UpsertMeshArtifact",
@@ -333,18 +537,14 @@ export const startHvp = async (
         frameId: frame,
         positions: terrainMesh.positions,
         normals: terrainMesh.normals,
-        indices: terrainMesh.indices,
-        materialRanges: [{
-          materialProfileId: materialProfileId(HVP_TERRAIN_MATERIAL_ID),
-          startIndex: 0,
-          indexCount: terrainMesh.indices.length
-        }],
+        indices: terrainLook.indices,
+        materialRanges: terrainLook.materialRanges,
         bounds: {
           min: { ...terrainMesh.boundsMeters.min },
           max: { ...terrainMesh.boundsMeters.max }
         }
       }),
-      materialProfiles: [terrainProfile]
+      materialProfiles: terrainLook.materialProfiles
     })), "HVP terrain upsert");
 
     requireAccepted(presentation.dispatch(createRenderCommand({
@@ -353,21 +553,28 @@ export const startHvp = async (
       artifact: createMeshArtifact({
         representationKey: representationKey(HVP_WATER_REPRESENTATION_KEY),
         sourceRevision: sourceRevision(1),
-        artifactRevision: artifactRevision(0),
+        artifactRevision: artifactRevision(1),
         algorithmVersion: HVP_WATER_ALGORITHM_VERSION,
         frameId: frame,
         positions: water.positions,
         normals: water.normals,
         indices: water.indices,
         materialRanges: [{
-          materialProfileId: materialProfileId(HVP_WATER_MATERIAL_ID),
+          materialProfileId: look.water.materialProfile.id,
           startIndex: 0,
           indexCount: water.indices.length
         }],
         bounds: { min: { ...water.boundsMeters.min }, max: { ...water.boundsMeters.max } }
       }),
-      materialProfiles: [waterProfile]
+      materialProfiles: [look.water.materialProfile]
     })), "HVP water upsert");
+
+    const representationRoot = backend.representationRoot;
+    const waterNode = representationRoot?.getObjectByName(`representation:${HVP_WATER_REPRESENTATION_KEY}`);
+    if (waterNode !== undefined) {
+      waterNode.renderOrder = look.water.renderOrder;
+      waterNode.frustumCulled = false;
+    }
 
     camera = createHvpCamera({ camera: backend.camera, canvas, windowPort: windowPort as Window });
     const stats = {
@@ -386,6 +593,12 @@ export const startHvp = async (
         resetCamera: () => {
           camera!.reset();
           hud!.update("Ready", camera!.readPose(), stats);
+        },
+        readWaterEnabled: () => waterEnabled,
+        setWaterEnabled: (enabled: boolean) => {
+          waterEnabled = enabled;
+          presentation.setWaterEnabled(enabled);
+          documentPort.body.dataset.hestiaPrototypeWater = enabled ? "on" : "off";
         }
       }
     });

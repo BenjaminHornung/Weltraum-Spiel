@@ -64,6 +64,47 @@ describe("HVP camera Masterplan contract", () => {
     controller.dispose();
   });
 
+  it("binds the exact C02-SHORE pose with FOV 55", () => {
+    const camera = new THREE.PerspectiveCamera();
+    const canvas = new FakeCanvas();
+    const windowPort = new FakeWindow();
+    const controller = createHvpCamera({
+      camera,
+      canvas: canvas as unknown as HTMLCanvasElement,
+      windowPort: windowPort as unknown as Window
+    });
+
+    controller.setPreset("C02-SHORE");
+    const pose = controller.readPose();
+    expect(pose.preset).toBe("C02-SHORE");
+    expect(pose.position.x).toBeCloseTo(-2);
+    expect(pose.position.y).toBeCloseTo(1.25);
+    expect(pose.position.z).toBeCloseTo(-6);
+    expect(pose.target).toEqual({ x: 1, y: -0.5, z: -2 });
+    expect(camera.fov).toBe(55);
+    controller.dispose();
+  });
+
+  it("keeps the C02-SHORE target below the HVP water plane", () => {
+    const camera = new THREE.PerspectiveCamera();
+    const canvas = new FakeCanvas();
+    const windowPort = new FakeWindow();
+    const controller = createHvpCamera({
+      camera,
+      canvas: canvas as unknown as HTMLCanvasElement,
+      windowPort: windowPort as unknown as Window
+    });
+
+    controller.setPreset("C02-SHORE");
+    const pose = controller.readPose();
+    expect(pose.target.y).toBe(-0.5);
+    // Independent underwater oracle: the HVP water surface sits at y=0
+    // (see hvp-bootstrap water artifact positions), so the C02 target must
+    // look up from below the plane, never from above it.
+    expect(pose.target.y).toBeLessThan(0);
+    controller.dispose();
+  });
+
   it("never inherits the backend default 50° FOV on preset or resize", () => {
     const camera = new THREE.PerspectiveCamera();
     expect(camera.fov).toBe(50);
