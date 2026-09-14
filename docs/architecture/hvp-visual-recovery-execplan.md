@@ -1146,3 +1146,39 @@ Both independent technical reviews returned CLEAN. Fresh pinned Node 22 run of
 the complete affected file passed 41/41 (exit 0, 35.52 s total); TypeScript
 `tsc -p tsconfig.json --noEmit` also passed. No production or evidence files
 were changed. The next exact-head CI must still confirm unit/build/E2E success.
+
+### Remaining live-test timing boundaries — 2026-09-14
+
+Run `34891993836` on `5c0ea370` passed all 1,572 units, build, 43 core E2E,
+12 UI E2E and T08 (1.8 minutes). Three of 23 live tests failed. Independent
+inspection of all three retained traces established:
+
+- T03 exhausted its 30 s whole-test deadline at 30.018 s; the C01 click finished
+  at 32.732 s and the screenshot began during teardown. Ready C01 and its canvas
+  were present, so the screenshot failure was secondary cancellation.
+- T05/T06 exhausted its deadline at 30.111 s. The background-editable assertion
+  began at 33.064 s during context closure. Earlier snapshots explicitly contain
+  `data-hestia-prototype-background-editable="false"`; no binding was missing.
+- The visible-coast test demanded the HUD within 5 s before its existing 20 s
+  Ready wait. The trace first shows Ready/HUD 7.592 s after navigation. Bootstrap
+  creates the HUD after source/mesh construction; the test asserted too early.
+
+All traces had one navigation, no failed requests or console/page errors; T05
+recorded ReadPixels performance warnings. This is not a hardware performance
+acceptance result or a diagnosis of a product unmount.
+
+T03 and T05/T06 now use the same test-local 120 s budget as T02/AO/T08. The
+visible-coast test waits for the unchanged 20 s Ready condition before its
+unchanged 5 s HUD assertion. It also uses that local 120 s screenshot-test
+budget for its two full-resolution captures and pixel comparisons; its observed
+failure was assertion ordering, not an observed whole-test timeout. No runtime,
+global/action/expect timeout, retry, image tolerance, baseline or assertion is
+changed. R11 remains historical render evidence of unchanged product bytes.
+
+Both independent technical reviews returned CLEAN. Fresh pinned Node 22 /
+installed Chrome verification passed all nine HVP E2E tests (exit 0, 45.6 s):
+T03 5.6 s, T05/T06 5.0 s, primary visible-coast 5.1 s. Runtime error checks,
+TypeScript noEmit and scoped diff-check passed. No evidence recording flags
+were set, the dirty path set did not change, and port 5173 was closed before
+and after. The next exact-head CI remains the remote confirmation; these
+technical fixes do not complete HVP-03 vegetation or HVP-04/05 playable physics.

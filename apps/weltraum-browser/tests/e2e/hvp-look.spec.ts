@@ -588,6 +588,7 @@ test("HVP-02 R3 AO toggle changes rendered brightness through the real UI", asyn
 });
 
 test("HVP-02 T03 key and cool fill are bound to the readable look", async ({ page }) => {
+  test.setTimeout(120_000);
   await page.goto("/?hestiaPrototype=1");
   await expect(page.locator("#hvp-state")).toContainText("State: Ready", { timeout: 20_000 });
   await expect(page.locator("body")).toHaveAttribute("data-hestia-prototype-look", "hvp:readable-coast-v3");
@@ -607,6 +608,7 @@ test("HVP-02 T03 key and cool fill are bound to the readable look", async ({ pag
 });
 
 test("HVP-02 T05/T06 use the stored binding and expose the non-editable proxy", async ({ page }) => {
+  test.setTimeout(120_000);
   await page.goto("/?hestiaPrototype=1");
   await expect(page.locator("#hvp-state")).toContainText("State: Ready", { timeout: 20_000 });
   const candidate = await captureRenderedCanvas(page);

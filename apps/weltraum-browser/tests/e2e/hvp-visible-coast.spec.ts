@@ -223,6 +223,8 @@ const loadAndValidateStoredHvpEvidence = async (page: Page, directory: string): 
 test.use({ viewport: { width: 1920, height: 1080 } });
 
 test("HVP-01 visible coast reaches Ready through the real UI and renders the bound scene structure", async ({ page }) => {
+  // Startup plus two full-resolution captures share the same budget as HVP look tests.
+  test.setTimeout(120_000);
   const consoleErrors: string[] = [];
   const pageErrors: string[] = [];
   const requestFailures: string[] = [];
@@ -233,8 +235,8 @@ test("HVP-01 visible coast reaches Ready through the real UI and renders the bou
   page.on("requestfailed", (request) => requestFailures.push(request.url()));
 
   await page.goto("/?hestiaPrototype=1");
-  await expect(page.locator("#hvp-hud")).toBeVisible();
   await expect(page.locator("#hvp-state")).toContainText("State: Ready", { timeout: 20_000 });
+  await expect(page.locator("#hvp-hud")).toBeVisible();
   await expect(page.locator("#debug-scene")).toHaveAttribute("aria-label", "HVP-02 readable coast viewport");
   await expect(page.locator("body")).toHaveAttribute("data-hestia-prototype-state", "Ready");
   await expect(page.locator("#hvp-detail")).toContainText("Terrain faces:");
