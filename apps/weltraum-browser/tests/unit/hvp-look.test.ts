@@ -29,6 +29,34 @@ describe("HVP-02 T01 semantic material roles", () => {
   });
 });
 
+describe("HVP-02 readable coast daylight palette", () => {
+  it("keeps limestone pale and wet rock neutral instead of water-blue", () => {
+    const profile = createHvpLookProfile("readable");
+    expect(profile.id).toBe(HVP_READABLE_COAST_LOOK_ID);
+    const dry = profile.materials.find((material) => material.role === "limestone-dry");
+    const wet = profile.materials.find((material) => material.role === "limestone-wet");
+    expect(dry?.materialProfile.baseColor.r).toBeGreaterThan(0.7);
+    expect(dry?.materialProfile.baseColor.g).toBeGreaterThan(0.6);
+    expect(wet).toBeDefined();
+    if (wet === undefined) return;
+    // Wet rock is darker neutral stone, never water-blue: blue must not dominate red.
+    expect(wet.materialProfile.baseColor.b).toBeLessThanOrEqual(wet.materialProfile.baseColor.r + 0.02);
+    expect(wet.materialProfile.baseColor.r).toBeLessThan(dry?.materialProfile.baseColor.r ?? 1);
+  });
+
+  it("renders turquoise water under a daylight sky with layered fog", () => {
+    const profile = createHvpLookProfile("readable");
+    expect(profile.water.materialProfile.baseColor.g).toBeGreaterThan(0.5);
+    expect(profile.water.materialProfile.baseColor.b).toBeGreaterThan(0.5);
+    expect(profile.water.materialProfile.baseColor.r).toBeLessThan(0.3);
+    expect(profile.background.color).toBe(0x87b5d9);
+    expect(profile.background.fogNear).toBe(48);
+    expect(profile.background.fogFar).toBe(170);
+    expect(profile.background.fogNear).toBeLessThan(profile.background.fogFar);
+    expect(profile.lighting.ambient.groundColor).toBe(0x2e2a24);
+  });
+});
+
 describe("HVP-02 T04 water presentation contract", () => {
   it("keeps water transparent and outside solid/collider authority", () => {
     const profile = createHvpLookProfile("readable");

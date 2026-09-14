@@ -50,6 +50,8 @@ export interface HvpLightRole {
   readonly color: number;
   readonly intensity: number;
   readonly position: Readonly<{ x: number; y: number; z: number }>;
+  /** Hemisphere ground bounce; declared on the ambient role only. */
+  readonly groundColor?: number;
 }
 
 export interface HvpLookProfile {
@@ -77,7 +79,7 @@ export interface HvpLookProjection extends HvpCanonicalMaterialState {
   readonly profile: HvpLookProfile;
 }
 
-export const HVP_READABLE_COAST_LOOK_ID = "hvp:readable-coast-v1";
+export const HVP_READABLE_COAST_LOOK_ID = "hvp:readable-coast-v3";
 
 const profile = (
   role: HvpLookMaterialRole,
@@ -99,10 +101,10 @@ const readableProfile: HvpLookProfile = Object.freeze({
   id: HVP_READABLE_COAST_LOOK_ID,
   variant: "readable",
   materials: Object.freeze([
-    profile("limestone-dry", Object.freeze({ r: 0.58, g: 0.48, b: 0.34 })),
-    profile("limestone-wet", Object.freeze({ r: 0.04, g: 0.38, b: 0.76 })),
-    profile("soil", Object.freeze({ r: 0.32, g: 0.24, b: 0.15 })),
-    profile("moss", Object.freeze({ r: 0.18, g: 0.38, b: 0.24 }))
+    profile("limestone-dry", Object.freeze({ r: 0.82, g: 0.74, b: 0.58 })),
+    profile("limestone-wet", Object.freeze({ r: 0.3, g: 0.27, b: 0.24 })),
+    profile("soil", Object.freeze({ r: 0.45, g: 0.33, b: 0.2 })),
+    profile("moss", Object.freeze({ r: 0.3, g: 0.55, b: 0.22 }))
   ]),
   water: Object.freeze({
     transparent: true,
@@ -110,12 +112,12 @@ const readableProfile: HvpLookProfile = Object.freeze({
     renderOrder: 1,
     collision: "none",
     physics: "not-simulated",
-    opacity: 0.62,
+    opacity: 0.55,
     materialProfile: createMaterialProfile({
       id: materialProfileId("hvp:look:water"),
       kind: "BasicLit",
-      baseColor: { r: 0.01, g: 0.4, b: 0.95 },
-      opacity: 0.62,
+      baseColor: { r: 0.1, g: 0.65, b: 0.66 },
+      opacity: 0.55,
       doubleSided: true,
       wireframe: false,
       depthWrite: false
@@ -123,25 +125,26 @@ const readableProfile: HvpLookProfile = Object.freeze({
   }),
   lighting: Object.freeze({
     ambient: Object.freeze({
-      color: 0x7b9ca8,
-      intensity: 0.7,
-      position: Object.freeze({ x: 0, y: 1, z: 0 })
+      color: 0xbfd9e8,
+      intensity: 0.85,
+      position: Object.freeze({ x: 0, y: 1, z: 0 }),
+      groundColor: 0x2e2a24
     }),
     key: Object.freeze({
-      color: 0xffd6a3,
-      intensity: 2.2,
+      color: 0xffe2b0,
+      intensity: 2.3,
       position: Object.freeze({ x: -28, y: 42, z: -18 })
     }),
     fill: Object.freeze({
-      color: 0x5a9dcc,
-      intensity: 1.15,
+      color: 0x6fa8d8,
+      intensity: 0.9,
       position: Object.freeze({ x: 30, y: 18, z: 26 })
     })
   }),
   background: Object.freeze({
-    color: 0x081820,
-    fogNear: 58,
-    fogFar: 150
+    color: 0x87b5d9,
+    fogNear: 48,
+    fogFar: 170
   }),
   distantCoast: Object.freeze({
     editable: false,

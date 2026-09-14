@@ -2,18 +2,29 @@ import * as THREE from "three";
 import { describe, expect, it, vi } from "vitest";
 import { backendRevision, materialProfileId, renderCommandResult, type RenderCommand } from "../../src/presentation";
 import {
-  HVP_BLOCK_MESH_ALGORITHM_VERSION,
   HVP_COAST_BLOCK_SIZE_METERS,
   HVP_TERRAIN_MATERIAL_ID,
   HVP_TERRAIN_REPRESENTATION_KEY,
   HVP_WATER_REPRESENTATION_KEY,
-  createHvpSession,
   type HvpBlockMesh,
   hvpBuildCoastBlockCells,
   hvpMeshBlocks
 } from "../../src/hvp/hvpTerrain";
 import {
+  HVP_SLOT_LIMESTONE_DRY,
+  HVP_SLOT_LIMESTONE_WET,
+  HVP_SLOT_MOSS,
+  HVP_SLOT_SOIL,
+  materializeHvpCoastSource,
+  type HvpCoastSourceSnapshot
+} from "../../src/hvp/hvpCoastSource";
+import { meshHvpTestCells } from "../../src/hvp/hvpCoastMesher";
+import {
+  admitHvpResources,
+  buildHvpResourceLedger,
+  createHvpCompactLookTerrain,
   createHvpLookTerrain,
+  HVP_RESOURCE_CAPS_DEFAULT,
   startHvp,
   startHvpRoute,
   type HvpBootstrapHandle
@@ -87,12 +98,16 @@ const harness = () => {
   host.id = "app";
   const canvas = new FakeElement("canvas");
   canvas.id = "debug-scene";
+  const reticle = new FakeElement("div");
+  reticle.setAttribute("class", "hud-center-safe-area");
+  host.append(reticle);
   body.append(host, canvas);
   const documentPort = {
     body,
     querySelector: (selector: string) => {
       if (selector === "#app") return host;
       if (selector === "#debug-scene") return canvas;
+      if (selector === ".hud-center-safe-area") return reticle;
       if (selector === "#hvp-hud") return descendants(body).find((element) => element.id === "hvp-hud") ?? null;
       if (selector === "#flight-hud") return null;
       return null;
@@ -188,7 +203,10 @@ const stepFrame = (windowPort: FakeWindow, timestamp: number): void => {
 };
 
 describe("HVP T08 bootstrap lifecycle", () => {
-  it("binds the rendered look scene instead of only publishing dataset claims", async () => {
+  // Full starts materialize and mesh the region; allow generous time per test
+  // instead of the 5 s default so slow environments report real failures.
+  vi.setConfig({ testTimeout: 120_000 });
+  it("binds the rendered daylight look scene instead of only publishing dataset claims", async () => {
     const source = harness();
     const handle = await startHvp(source.overrides());
 
@@ -196,17 +214,14 @@ describe("HVP T08 bootstrap lifecycle", () => {
       const presentation = source.scene.getObjectByName("hvp-readable-coast-presentation");
       expect(presentation).toBeDefined();
       expect(source.scene.background).toBeInstanceOf(THREE.Color);
-      expect((source.scene.background as THREE.Color).getHex()).toBe(0x081820);
+      expect((source.scene.background as THREE.Color).getHex()).toBe(0x87b5d9);
       expect(source.scene.fog).toBeInstanceOf(THREE.Fog);
-      expect((source.scene.fog as THREE.Fog).near).toBe(58);
-      expect((source.scene.fog as THREE.Fog).far).toBe(150);
+      expect((source.scene.fog as THREE.Fog).near).toBe(48);
+      expect((source.scene.fog as THREE.Fog).far).toBe(170);
       expect(source.scene.getObjectByName("hvp-ambient-fill")).toBeInstanceOf(THREE.HemisphereLight);
       expect(source.scene.getObjectByName("hvp-sun-key")).toBeInstanceOf(THREE.DirectionalLight);
       expect(source.scene.getObjectByName("hvp-cool-fill")).toBeInstanceOf(THREE.DirectionalLight);
 
-      const ground = source.scene.getObjectByName("hvp-distant-coast-ground-proxy");
-      expect(ground).toBeInstanceOf(THREE.Mesh);
-      expect(ground?.renderOrder).toBe(-2);
       expect(presentation?.userData.hvpRenderOnly).toBe(true);
     } finally {
       await handle.dispose();
@@ -228,51 +243,41 @@ describe("HVP T08 bootstrap lifecycle", () => {
     await handle.dispose();
   });
 
-  it("proves the distant proxy is a raycastable render hit but never an edit target", async () => {
+  it("proves the far field arrives bound through the pipeline as render-only data", async () => {
     const source = harness();
     const handle = await startHvp(source.overrides());
 
     try {
       const proxyGroup = source.scene.getObjectByName("hvp-distant-coast-proxy-noneditable");
-      expect(proxyGroup).toBeInstanceOf(THREE.Group);
-      expect(proxyGroup?.children).toHaveLength(4);
-      const mound = proxyGroup?.children[1];
-      expect(mound).toBeInstanceOf(THREE.Mesh);
-      if (!(mound instanceof THREE.Mesh)) return;
-
-      source.camera.updateProjectionMatrix();
-      source.camera.updateMatrixWorld(true);
-      mound.updateWorldMatrix(true, true);
-      const center = mound.getWorldPosition(new THREE.Vector3());
-      const projected = center.clone().project(source.camera);
-      expect(projected.x).toBeGreaterThan(-1);
-      expect(projected.x).toBeLessThan(1);
-      expect(projected.y).toBeGreaterThan(-1);
-      expect(projected.y).toBeLessThan(1);
-      expect(projected.z).toBeLessThan(1);
-      const ray = new THREE.Raycaster(source.camera.position, center.sub(source.camera.position).normalize());
-      const hit = ray.intersectObject(mound, false)[0];
-      expect(hit).toBeDefined();
-      expect(hit?.object.userData.hvpRenderOnly).toBe(true);
-      expect(hit?.object.userData.hvpEditable).toBe(false);
-      expect((hit?.object as unknown as { readonly edit?: unknown } | undefined)?.edit).toBeUndefined();
+      expect(proxyGroup).toBeUndefined();
+      const farCommand = source.commands.find((command): command is Extract<RenderCommand, { kind: "UpsertMeshArtifact" }> =>
+        command.kind === "UpsertMeshArtifact"
+        && command.artifact.representationKey === "hvp:far"
+      );
+      expect(farCommand).toBeDefined();
+      if (farCommand === undefined) return;
+      expect(farCommand.artifact.algorithmVersion).toBe("hvp-farfield-macro-v3");
+      expect(farCommand.artifact.indices.length).toBeGreaterThan(0);
+      expect(farCommand.artifact.indices.length / 3).toBeLessThanOrEqual(500_000);
+      const roleIds = farCommand.artifact.materialRanges.map((range) => range.materialProfileId);
+      expect(roleIds.length).toBeGreaterThan(0);
+      for (const id of roleIds) {
+        expect([
+          "hvp:look:limestone-dry",
+          "hvp:look:limestone-wet",
+          "hvp:look:soil",
+          "hvp:look:moss"
+        ]).toContain(id);
+      }
+      expect(farCommand.artifact.materialRanges.reduce((total, range) => total + range.indexCount, 0))
+        .toBe(farCommand.artifact.indices.length);
       expect((handle as unknown as { readonly edit?: unknown }).edit).toBeUndefined();
-
-      const ground = source.scene.getObjectByName("hvp-distant-coast-ground-proxy");
-      expect(ground).toBeInstanceOf(THREE.Mesh);
-      expect(ground?.userData.hvpRenderOnly).toBe(true);
-      expect(ground?.userData.hvpEditable).toBe(false);
-      expect((ground as unknown as { readonly edit?: unknown } | undefined)?.edit).toBeUndefined();
-      ground?.updateWorldMatrix(true, true);
-      const groundCenter = new THREE.Vector3(0, -7.75, 0);
-      const groundRay = new THREE.Raycaster(source.camera.position, groundCenter.sub(source.camera.position).normalize());
-      expect(groundRay.intersectObject(ground!, false)[0]).toBeDefined();
     } finally {
       await handle.dispose();
     }
   });
 
-  it("keeps terrain geometry intact while grouping readable material ranges", async () => {
+  it("keeps source-derived terrain geometry intact while grouping readable material ranges", async () => {
     const source = harness();
     const handle = await startHvp(source.overrides());
     try {
@@ -283,14 +288,10 @@ describe("HVP T08 bootstrap lifecycle", () => {
 
       expect(terrainCommand).toBeDefined();
       if (terrainCommand === undefined) return;
-      const original = hvpMeshBlocks(
-        hvpBuildCoastBlockCells(HVP_COAST_BLOCK_SIZE_METERS),
-        HVP_COAST_BLOCK_SIZE_METERS,
-        HVP_TERRAIN_MATERIAL_ID
-      );
-      expect(terrainCommand.artifact.algorithmVersion).toBe(HVP_BLOCK_MESH_ALGORITHM_VERSION);
-      expect([...terrainCommand.artifact.indices].sort((left, right) => left - right))
-        .toEqual([...original.indices].sort((left, right) => left - right));
+      expect(terrainCommand.artifact.algorithmVersion).toBe("hvp-coast-greedy-v3");
+      expect(terrainCommand.artifact.indices.length % 6).toBe(0);
+      expect(terrainCommand.artifact.indices.length).toBeGreaterThan(6_000);
+      expect(terrainCommand.artifact.indices.length / 3).toBeLessThanOrEqual(500_000);
       expect(terrainCommand.artifact.materialRanges.reduce((total, range) => total + range.indexCount, 0))
         .toBe(terrainCommand.artifact.indices.length);
       expect(terrainCommand.artifact.materialRanges).toHaveLength(4);
@@ -303,16 +304,20 @@ describe("HVP T08 bootstrap lifecycle", () => {
       terrainCommand.artifact.materialRanges.forEach((range) => {
         expect(range.indexCount).toBeGreaterThan(0);
       });
-      expect(terrainCommand.materialProfiles.map((profile) => profile.id).sort()).toEqual([
-        "hvp:look:limestone-dry",
-        "hvp:look:limestone-wet",
-        "hvp:look:moss",
-        "hvp:look:soil"
-      ]);
       expect(terrainCommand.artifact.sourceRevision).toBe(1);
       terrainCommand.artifact.materialRanges.forEach((range, index, ranges) => {
         expect(range.startIndex).toBe(index === 0 ? 0 : ranges[index - 1]!.startIndex + ranges[index - 1]!.indexCount);
       });
+      expect(source.body.dataset.hestiaPrototypeSeed).toBe("hestia-hvp-lagoon-001");
+      expect(source.body.dataset.hestiaPrototypeSourceRevision).toBe("hvp-authored-coast-v3");
+      expect(source.body.dataset.hestiaPrototypeSourceDigest).toMatch(/^[0-9a-f]{8}$/);
+      const resources = JSON.parse(source.body.dataset.hestiaPrototypeResources!);
+      const artifactTriangles = source.commands.reduce((count, command) =>
+        count + (command.kind === "UpsertMeshArtifact" ? command.artifact.indices.length / 3 : 0), 0);
+      expect(resources.ledger.triangles).toBe(artifactTriangles);
+      expect(resources.ledger.gpuBytes).toBe("unsupported");
+      expect(resources.ledger.totalCpuBytes).toBeLessThanOrEqual(resources.caps.maxCpuBytes);
+      expect(resources.ledger.retainedMeshBytes).toBeLessThanOrEqual(resources.caps.maxMeshBytes);
 
       const waterCommand = source.commands.find((command): command is Extract<RenderCommand, { kind: "UpsertMeshArtifact" }> =>
         command.kind === "UpsertMeshArtifact"
@@ -320,13 +325,44 @@ describe("HVP T08 bootstrap lifecycle", () => {
       );
       expect(waterCommand).toBeDefined();
       if (waterCommand === undefined) return;
+      expect(waterCommand.artifact.algorithmVersion).toBe("hvp-water-mask-v2");
       expect(new Set([...waterCommand.artifact.positions].filter((_value, index) => index % 3 === 1))).toEqual(new Set([0]));
       expect(waterCommand.materialProfiles).toHaveLength(1);
+      expect([...waterCommand.artifact.normals].every((value, index) => value === (index % 3 === 1 ? 1 : 0))).toBe(true);
       expect(waterCommand.materialProfiles[0]).toMatchObject({
         id: "hvp:look:water",
-        opacity: 0.62,
         depthWrite: false
       });
+      let waterArea = 0;
+      const positions = waterCommand.artifact.positions;
+      const indices = waterCommand.artifact.indices;
+      for (let triangle = 0; triangle < indices.length; triangle += 3) {
+        const ax = positions[indices[triangle]! * 3]!;
+        const az = positions[indices[triangle]! * 3 + 2]!;
+        const bx = positions[indices[triangle + 1]! * 3]!;
+        const bz = positions[indices[triangle + 1]! * 3 + 2]!;
+        const cx = positions[indices[triangle + 2]! * 3]!;
+        const cz = positions[indices[triangle + 2]! * 3 + 2]!;
+        waterArea += Math.abs((bx - ax) * (cz - az) - (cx - ax) * (bz - az)) / 2;
+      }
+      expect(waterArea).toBeGreaterThan(40);
+      expect(waterArea).toBeLessThan(480 * 480);
+
+      const joinCommand = source.commands.find((command): command is Extract<RenderCommand, { kind: "UpsertMeshArtifact" }> =>
+        command.kind === "UpsertMeshArtifact"
+        && command.artifact.representationKey === "hvp:join"
+      );
+      expect(joinCommand).toBeDefined();
+      if (joinCommand === undefined) return;
+      expect(joinCommand.artifact.algorithmVersion).toBe("hvp-coast-greedy-v3");
+      expect(joinCommand.artifact.indices.length).toBeGreaterThan(600);
+      expect(joinCommand.artifact.materialRanges).toHaveLength(4);
+      expect(joinCommand.artifact.materialRanges.map((range) => range.materialProfileId)).toEqual([
+        "hvp:look:limestone-dry",
+        "hvp:look:limestone-wet",
+        "hvp:look:soil",
+        "hvp:look:moss"
+      ]);
 
       const waterButton = source.body.children
         .flatMap((child) => [child, ...descendants(child)])
@@ -337,8 +373,17 @@ describe("HVP T08 bootstrap lifecycle", () => {
         command.kind === "ApplyVisibilityPlan"
       );
       const hiddenWaterPlan = visibilityPlans.at(-1)?.plan;
-      expect(hiddenWaterPlan?.visibleRepresentationKeys).toEqual([HVP_TERRAIN_REPRESENTATION_KEY]);
+      // Key sets are canonical ASCII-sorted by the visibility contract.
+      expect(hiddenWaterPlan?.visibleRepresentationKeys).toEqual(["hvp:far", "hvp:join", HVP_TERRAIN_REPRESENTATION_KEY]);
       expect(hiddenWaterPlan?.hiddenRepresentationKeys).toEqual(["hvp:water"]);
+      waterButton?.dispatchEvent(new Event("click"));
+      const restoredPlan = source.commands.filter((command): command is Extract<RenderCommand, { kind: "ApplyVisibilityPlan" }> =>
+        command.kind === "ApplyVisibilityPlan"
+      ).at(-1)?.plan;
+      expect(restoredPlan?.visibleRepresentationKeys).toEqual(
+        expect.arrayContaining([HVP_TERRAIN_REPRESENTATION_KEY, HVP_WATER_REPRESENTATION_KEY, "hvp:join", "hvp:far"])
+      );
+      expect(restoredPlan?.hiddenRepresentationKeys).toEqual([]);
     } finally {
       await handle.dispose();
     }
@@ -449,10 +494,326 @@ describe("HVP T08 bootstrap lifecycle", () => {
     await handle!.dispose();
   });
 
-  it("never reaches Ready on incomplete coverage and stays fail-closed", async () => {
+  it("never installs failure UI into a torn-down or newer mount", async () => {
+    const source = harness();
+    let rejectSource!: (error: Error) => void;
+    const gate = new Promise<HvpCoastSourceSnapshot>((_resolve, reject) => {
+      rejectSource = reject;
+    });
+    const pending = startHvp(source.overrides({
+      createSourceSnapshot: () => gate
+    }));
+
+    source.windowPort.dispatchEvent(new Event("pagehide"));
+    rejectSource(new Error("late source failure"));
+    const handle = await pending;
+    await new Promise((resolve) => {
+      setTimeout(resolve, 25);
+    });
+
+    expect(source.body.dataset.hestiaPrototypeState).toBeUndefined();
+    expect(descendants(source.body).filter((element) => element.id === "hvp-hud")).toHaveLength(0);
+    expect(descendants(source.body).filter((element) => element.getAttribute("role") === "alert")).toHaveLength(0);
+    expect(source.counts().renders).toBe(0);
+    expect(source.windowPort.animationFrames.size).toBe(0);
+    await handle.dispose();
+
+    const retry = await startHvp(source.overrides());
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
+    await retry.dispose();
+  }, 120_000);
+
+  it("cancels a deferred source on pagehide without publishing products", async () => {
+    const source = harness();
+    const snapshot = materializeHvpCoastSource();
+    let resolveSource!: (value: HvpCoastSourceSnapshot) => void;
+    const gate = new Promise<HvpCoastSourceSnapshot>((resolve) => {
+      resolveSource = resolve;
+    });
+    const pending = startHvp(source.overrides({
+      createSourceSnapshot: () => gate
+    }));
+
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Loading");
+    source.windowPort.dispatchEvent(new Event("pagehide"));
+    resolveSource(snapshot);
+    const handle = await pending;
+    await new Promise((resolve) => {
+      setTimeout(resolve, 25);
+    });
+
+    expect(source.body.dataset.hestiaPrototypeState).toBeUndefined();
+    expect(descendants(source.body).filter((element) => element.id === "hvp-hud")).toHaveLength(0);
+    expect(descendants(source.body).filter((element) => element.getAttribute("role") === "alert")).toHaveLength(0);
+    expect(source.commands.filter((command) => command.kind === "UpsertMeshArtifact")).toHaveLength(0);
+    expect(source.counts().renders).toBe(0);
+    expect(source.windowPort.animationFrames.size).toBe(0);
+    await handle.dispose();
+
+    const retry = await startHvp(source.overrides());
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
+    await retry.dispose();
+  }, 120_000);
+
+  it("does not let a late failure teardown wipe a newer mount", async () => {
+    const source = harness();
+    let rejectFirst!: (error: Error) => void;
+    const gate = new Promise<HvpCoastSourceSnapshot>((_resolve, reject) => {
+      rejectFirst = reject;
+    });
+    const firstPending = startHvp(source.overrides({
+      createSourceSnapshot: () => gate
+    }));
+    source.windowPort.dispatchEvent(new Event("pagehide"));
+    await new Promise((resolve) => {
+      setTimeout(resolve, 25);
+    });
+
+    const second = await startHvp(source.overrides());
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
+
+    rejectFirst(new Error("late source failure"));
+    const firstHandle = await firstPending;
+    await new Promise((resolve) => {
+      setTimeout(resolve, 25);
+    });
+
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
+    expect(descendants(source.body).filter((element) => element.id === "hvp-hud")).toHaveLength(1);
+    expect(descendants(source.body).filter((element) => element.getAttribute("role") === "alert")).toHaveLength(0);
+    await firstHandle.dispose();
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
+    await second.dispose();
+  }, 180_000);
+
+  it("rejects over-cap scenes before attaching products or reaching Ready", async () => {
     const source = harness();
     const handle = await startHvp(source.overrides({
-      createSession: () => createHvpSession({})
+      resourceCaps: { maxTriangles: 100 }
+    }));
+
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Error");
+    expect(descendants(source.body).filter((element) => element.id === "hvp-hud")).toHaveLength(0);
+    expect(source.commands.filter((command) => command.kind === "UpsertMeshArtifact")).toHaveLength(0);
+    expect(source.counts().renders).toBe(0);
+    expect(source.windowPort.animationFrames.size).toBe(0);
+    await handle.dispose();
+
+    const retry = await startHvp(source.overrides());
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
+    await retry.dispose();
+  }, 180_000);
+
+  it("rejects malformed look ranges instead of falling back to vertex zero", () => {
+    const look = createHvpLookProfile("readable");    const mesh = meshHvpTestCells(
+      [
+        { x: 0, y: 0, z: 0, slot: HVP_SLOT_LIMESTONE_DRY },
+        { x: 1, y: 0, z: 0, slot: HVP_SLOT_LIMESTONE_WET },
+        { x: 0, y: 0, z: 1, slot: HVP_SLOT_SOIL },
+        { x: 1, y: 0, z: 1, slot: HVP_SLOT_MOSS }
+      ],
+      1
+    );
+    const grouped = createHvpCompactLookTerrain(mesh, look);
+    expect(grouped.materialRanges).toHaveLength(4);
+    const corrupt = {
+      ...mesh,
+      materialRanges: [{ slot: 1, startIndex: 999_999_999, indexCount: 6 }]
+    };
+    expect(() => createHvpCompactLookTerrain(corrupt, look)).toThrow();
+  });
+
+  it("groups partial proxy roles in order while strict mode still rejects them", () => {
+    const look = createHvpLookProfile("readable");
+    const partial = meshHvpTestCells(
+      [
+        { x: 0, y: 0, z: 0, slot: HVP_SLOT_LIMESTONE_DRY },
+        { x: 1, y: 0, z: 0, slot: HVP_SLOT_LIMESTONE_WET }
+      ],
+      1
+    );
+    expect(() => createHvpCompactLookTerrain(partial, look)).toThrow(/empty/i);
+    const grouped = createHvpCompactLookTerrain(partial, look, { allowPartialRoles: true });
+    expect(grouped.materialRanges.map((range) => range.materialProfileId)).toEqual([
+      "hvp:look:limestone-dry",
+      "hvp:look:limestone-wet"
+    ]);
+    expect(grouped.materialRanges.reduce((total, range) => total + range.indexCount, 0))
+      .toBe(grouped.indices.length);
+    expect(grouped.materialProfiles.map((profile) => profile.id)).toEqual([
+      "hvp:look:limestone-dry",
+      "hvp:look:limestone-wet"
+    ]);
+  });
+
+  it("exposes a real Inspect-only AO toggle defaulting to on", async () => {
+    const source = harness();
+    const handle = await startHvp(source.overrides());
+    try {
+      expect(source.body.dataset.hestiaPrototypeAo).toBe("on");
+      const elements = source.body.children.flatMap((child) => [child, ...descendants(child)]);
+      const aoButton = elements.find((element) => element.id === "hvp-ao-toggle");
+      expect(aoButton?.textContent).toBe("AO: on");
+      expect(aoButton?.getAttribute("aria-pressed")).toBe("true");
+      const commandsBefore = source.commands.length;
+      const terrainBefore = source.commands.find((command): command is Extract<RenderCommand, { kind: "UpsertMeshArtifact" }> =>
+        command.kind === "UpsertMeshArtifact" && command.artifact.representationKey === HVP_TERRAIN_REPRESENTATION_KEY
+      );
+      const positionsBefore = terrainBefore === undefined ? [] : [...terrainBefore.artifact.positions];
+      aoButton?.dispatchEvent(new Event("click"));
+      expect(aoButton?.textContent).toBe("AO: off");
+      expect(aoButton?.getAttribute("aria-pressed")).toBe("false");
+      expect(source.body.dataset.hestiaPrototypeAo).toBe("off");
+      aoButton?.dispatchEvent(new Event("click"));
+      expect(aoButton?.textContent).toBe("AO: on");
+      expect(source.body.dataset.hestiaPrototypeAo).toBe("on");
+      // Render-only toggle: no new scene products, geometry bytes untouched.
+      expect(source.commands.length).toBe(commandsBefore);
+      const terrainAfter = source.commands.find((command): command is Extract<RenderCommand, { kind: "UpsertMeshArtifact" }> =>
+        command.kind === "UpsertMeshArtifact" && command.artifact.representationKey === HVP_TERRAIN_REPRESENTATION_KEY
+      );
+      expect(terrainAfter === undefined ? [] : [...terrainAfter.artifact.positions]).toEqual(positionsBefore);
+    } finally {
+      await handle.dispose();
+    }
+  });
+
+  it("swaps whole material arrays on toggle without mutating cached instances", async () => {
+    const source = harness();
+    const handle = await startHvp(source.overrides());
+    try {
+      const root = source.backend.representationRoot;
+      const terrainNode = new THREE.Mesh(new THREE.BufferGeometry(), new THREE.MeshBasicMaterial());
+      terrainNode.name = `representation:${HVP_TERRAIN_REPRESENTATION_KEY}`;
+      const originals = [...(Array.isArray(terrainNode.material) ? terrainNode.material : [terrainNode.material])];
+      root.add(terrainNode);
+      const elements = source.body.children.flatMap((child) => [child, ...descendants(child)]);
+      const aoButton = elements.find((element) => element.id === "hvp-ao-toggle");
+      aoButton?.dispatchEvent(new Event("click"));
+      const offMaterials = Array.isArray(terrainNode.material) ? terrainNode.material : [terrainNode.material];
+      expect(offMaterials).toHaveLength(4);
+      expect(offMaterials).not.toEqual(originals);
+      for (const material of offMaterials) {
+        expect((material as { vertexColors?: boolean }).vertexColors).toBe(false);
+      }
+      aoButton?.dispatchEvent(new Event("click"));
+      expect([...(Array.isArray(terrainNode.material) ? terrainNode.material : [terrainNode.material])]).toEqual(originals);
+      root.remove(terrainNode);
+    } finally {
+      await handle.dispose();
+    }
+  });
+
+  it("accounts exact ledger bytes from known inputs and rejects just below total", () => {
+    const ledger = buildHvpResourceLedger({
+      terrainMesh: {
+          faceCount: 2,
+          unitFaceCount: 2,
+          outerFaceCount: 2,
+          cavityFaceCount: 0,
+          positions: new Float32Array(24),
+          normals: new Float32Array(24),
+          indices: new Uint16Array(12),
+          colors: null,
+          materialRanges: [{ slot: 1, startIndex: 0, indexCount: 12 }],
+          boundsMeters: { min: { x: 0, y: 0, z: 0 }, max: { x: 1, y: 1, z: 1 } },
+          sourceDigest: "00000000",
+          algorithmVersion: "test-ledger-v1",
+          tempEstimateBytes: 100
+        },
+        waterMesh: {
+          faceCount: 1,
+          unitFaceCount: 1,
+          outerFaceCount: 1,
+          cavityFaceCount: 0,
+          positions: new Float32Array(12),
+          normals: new Float32Array(12),
+          indices: new Uint16Array(6),
+          colors: null,
+          materialRanges: [{ slot: 1, startIndex: 0, indexCount: 6 }],
+          boundsMeters: { min: { x: 0, y: 0, z: 0 }, max: { x: 1, y: 0, z: 1 } },
+          sourceDigest: "00000000",
+          algorithmVersion: "test-ledger-v1",
+          tempEstimateBytes: 50
+        },
+        joinMesh: {
+          faceCount: 0,
+          unitFaceCount: 0,
+          outerFaceCount: 0,
+          cavityFaceCount: 0,
+          positions: new Float32Array(0),
+          normals: new Float32Array(0),
+          indices: new Uint16Array(0),
+          colors: null,
+          materialRanges: [],
+          boundsMeters: { min: { x: 0, y: 0, z: 0 }, max: { x: 0, y: 0, z: 0 } },
+          sourceDigest: "00000000",
+          algorithmVersion: "test-ledger-v1",
+          tempEstimateBytes: 0
+        },
+        farMesh: {
+          faceCount: 1,
+          unitFaceCount: 1,
+          outerFaceCount: 1,
+          cavityFaceCount: 0,
+          positions: new Float32Array(12),
+          normals: new Float32Array(12),
+          indices: new Uint16Array(6),
+          colors: null,
+          materialRanges: [{ slot: 1, startIndex: 0, indexCount: 6 }],
+          boundsMeters: { min: { x: 0, y: 0, z: 0 }, max: { x: 1, y: 0, z: 1 } },
+          sourceDigest: "00000000",
+          algorithmVersion: "test-ledger-v1",
+          tempEstimateBytes: 0
+        },
+        groupedIndexBytes: 48,
+        drawCalls: 2
+      });
+      expect(ledger.meshBytes).toBe(
+        (96 + 96 + 24) + 2 * (48 + 48 + 12)
+      );
+      // Far is dispatched through UpsertMeshArtifact too, not wrapped directly.
+      expect(ledger.artifactCopyBytes).toBe((96 + 96 + 24) + 2 * (48 + 48 + 12));
+      expect(ledger.maskBytes).toBe(256 * 256 + 320 * 320 + 960 * 960);
+      expect(ledger.retainedMeshBytes).toBe(ledger.artifactCopyBytes);
+      expect(ledger.triangles).toBe(4 + 2 + 2);
+      expect(ledger.drawCalls).toBe(2);
+      expect(ledger.gpuBytes).toBe("unsupported");
+      expect(ledger.totalCpuBytes).toBe(
+        ledger.slotBytes + ledger.preparedCopyBytes + ledger.maskBytes + ledger.meshBytes
+        + ledger.groupedIndexBytes + ledger.artifactCopyBytes + ledger.tempEstimateBytes
+      );
+      expect(() => admitHvpResources(ledger, HVP_RESOURCE_CAPS_DEFAULT)).not.toThrow();
+      expect(() => admitHvpResources(ledger, {
+        ...HVP_RESOURCE_CAPS_DEFAULT,
+        maxCpuBytes: ledger.totalCpuBytes - 1
+      })).toThrow(/BudgetExceeded/);
+      expect(() => admitHvpResources(ledger, {
+        ...HVP_RESOURCE_CAPS_DEFAULT,
+        maxTriangles: ledger.triangles - 1
+      })).toThrow(/BudgetExceeded/);
+      expect(() => admitHvpResources(ledger, {
+        ...HVP_RESOURCE_CAPS_DEFAULT,
+        maxMeshBytes: ledger.retainedMeshBytes - 1
+      })).toThrow(/BudgetExceeded/);
+  });
+
+  it("never reaches Ready on an invalid source and stays fail-closed", async () => {
+    const source = harness();
+    const handle = await startHvp(source.overrides({
+      createSourceSnapshot: async () => ({
+        version: "hvp-authored-coast-v999",
+        seedName: "invalid-seed",
+        registryDigest: "deadbeef",
+        sourceDigest: "deadbeef",
+        sizeX: 0,
+        sizeY: 0,
+        sizeZ: 0,
+        cellMeters: 0.125,
+        originMeters: { x: -16, y: -8, z: -16 },
+        readSlot: () => 0,
+        copySlots: () => new Uint8Array(0)
+      })
     }));
 
     expect(source.body.dataset.hestiaPrototypeState).toBe("Error");
@@ -467,5 +828,72 @@ describe("HVP T08 bootstrap lifecycle", () => {
     const retry = await startHvp(source.overrides());
     expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
     await retry.dispose();
+  });
+
+  it("hides the leftover flight reticle on entry and restores it on dispose", async () => {
+    const source = harness();
+    const reticle = source.documentPort.querySelector(".hud-center-safe-area") as unknown as FakeElement;
+    expect(reticle.getAttribute("style")).toBeNull();
+    const handle = await startHvp(source.overrides());
+    try {
+      expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
+      expect(reticle.getAttribute("style")).toContain("display:none");
+    } finally {
+      await handle.dispose();
+    }
+    expect(reticle.getAttribute("style")).toBeNull();
+  });
+
+  it("restores the flight reticle when the HVP start fails closed", async () => {
+    const source = harness();
+    const reticle = source.documentPort.querySelector(".hud-center-safe-area") as unknown as FakeElement;
+    const handle = await startHvp(source.overrides({
+      createBackend: () => ({ ...source.backend, scene: undefined })
+    }));
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Error");
+    expect(reticle.getAttribute("style")).toBeNull();
+    await handle.dispose();
+  });
+
+  it("exposes an accessible HUD hide control and a labeled camera inspection mode", async () => {
+    const source = harness();
+    const handle = await startHvp(source.overrides());
+    try {
+      const elements = source.body.children.flatMap((child) => [child, ...descendants(child)]);
+      const hideButton = elements.find((element) => element.id === "hvp-hide-ui");
+      const inspectButton = elements.find((element) => element.id === "hvp-camera-inspect");
+      expect(hideButton?.textContent).toBe("Hide UI");
+      expect(hideButton?.getAttribute("aria-pressed")).toBe("false");
+      expect(inspectButton?.textContent).toBe("Inspect: off");
+      expect(inspectButton?.getAttribute("aria-pressed")).toBe("false");
+      const originalInspectStyle = inspectButton?.getAttribute("style");
+      expect(originalInspectStyle).toBe("margin:6px 6px 0 0;pointer-events:auto");
+
+      hideButton?.dispatchEvent(new Event("click"));
+      expect(hideButton?.textContent).toBe("Show UI");
+      expect(hideButton?.getAttribute("aria-pressed")).toBe("true");
+      const statePanel = elements.find((element) => element.id === "hvp-state");
+      expect(statePanel?.hasAttribute("hidden")).toBe(true);
+      expect(inspectButton?.hasAttribute("hidden")).toBe(true);
+      expect(inspectButton?.getAttribute("style")).toBe(originalInspectStyle);
+      expect(hideButton?.hasAttribute("hidden")).toBe(false);
+      hideButton?.dispatchEvent(new Event("click"));
+      expect(hideButton?.textContent).toBe("Hide UI");
+      expect(statePanel?.getAttribute("style")).toBeNull();
+      expect(statePanel?.hasAttribute("hidden")).toBe(false);
+      expect(inspectButton?.hasAttribute("hidden")).toBe(false);
+      expect(inspectButton?.getAttribute("style")).toBe(originalInspectStyle);
+
+      inspectButton?.dispatchEvent(new Event("click"));
+      expect(inspectButton?.textContent).toBe("Inspect: on");
+      expect(source.body.children.flatMap((child) => [child, ...descendants(child)])
+        .find((element) => element.id === "hvp-mode")?.textContent).toContain("(Fly)");
+      inspectButton?.dispatchEvent(new Event("click"));
+      expect(inspectButton?.textContent).toBe("Inspect: off");
+      expect(source.body.children.flatMap((child) => [child, ...descendants(child)])
+        .find((element) => element.id === "hvp-mode")?.textContent).toContain("(Orbit)");
+    } finally {
+      await handle.dispose();
+    }
   });
 });

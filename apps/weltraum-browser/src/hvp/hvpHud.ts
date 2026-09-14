@@ -3,9 +3,13 @@ import type { HvpCameraPose, HvpCameraPreset } from "./hvpCamera";
 export type HvpLifecycleState = "Loading" | "Ready" | "Error";
 
 export interface HvpHudStats {
+  /** Authority scope: terrain + water only. */
   readonly faces: number;
   readonly vertices: number;
   readonly triangles: number;
+  /** All-scene scope: authority plus join and far continuation. */
+  readonly sceneFaces: number;
+  readonly sceneTriangles: number;
 }
 
 export interface HvpHudActions {
@@ -13,6 +17,10 @@ export interface HvpHudActions {
   resetCamera(): void;
   readWaterEnabled(): boolean;
   setWaterEnabled(enabled: boolean): void;
+  readInspectEnabled(): boolean;
+  setInspectEnabled(enabled: boolean): void;
+  readAoEnabled(): boolean;
+  setAoEnabled(enabled: boolean): void;
 }
 
 export interface HvpHudOptions {
@@ -60,6 +68,45 @@ export const createHvpHud = (options: HvpHudOptions): HvpHud => {
   const detailValue = documentPort.createElement("div");
   detailValue.id = "hvp-detail";
 
+  const inspectButton = documentPort.createElement("button");
+  inspectButton.type = "button";
+  inspectButton.id = "hvp-camera-inspect";
+  inspectButton.setAttribute("style", "margin:6px 6px 0 0;pointer-events:auto");
+  inspectButton.setAttribute("aria-pressed", "false");
+  const updateInspectButton = (): void => {
+    const inspectEnabled = options.actions.readInspectEnabled();
+    inspectButton.textContent = `Inspect: ${inspectEnabled ? "on" : "off"}`;
+    inspectButton.setAttribute("aria-pressed", inspectEnabled ? "true" : "false");
+    root.dataset.inspect = inspectEnabled ? "on" : "off";
+  };
+  inspectButton.addEventListener("click", () => {
+    options.actions.setInspectEnabled(!options.actions.readInspectEnabled());
+    updateInspectButton();
+  });
+  const aoButton = documentPort.createElement("button");
+  aoButton.type = "button";
+  aoButton.id = "hvp-ao-toggle";
+  aoButton.setAttribute("style", "margin:6px 6px 0 0;pointer-events:auto");
+  aoButton.setAttribute("aria-pressed", "true");
+  aoButton.setAttribute("aria-label", "Inspect-only ambient occlusion toggle");
+  const updateAoButton = (): void => {
+    const aoOn = options.actions.readAoEnabled();
+    aoButton.textContent = `AO: ${aoOn ? "on" : "off"}`;
+    aoButton.setAttribute("aria-pressed", aoOn ? "true" : "false");
+    root.dataset.ao = aoOn ? "on" : "off";
+  };
+  aoButton.addEventListener("click", () => {
+    options.actions.setAoEnabled(!options.actions.readAoEnabled());
+    updateAoButton();
+  });
+  const hideButton = documentPort.createElement("button");
+  hideButton.type = "button";
+  hideButton.id = "hvp-hide-ui";
+  hideButton.textContent = "Hide UI";
+  hideButton.setAttribute("style", "margin:6px 6px 0 0;pointer-events:auto");
+  hideButton.setAttribute("aria-pressed", "false");
+  let uiVisible = true;
+  const hideablePanels = [title, stateValue, modeValue, detailValue];
   const controls = documentPort.createElement("div");
   const waterButton = documentPort.createElement("button");
   waterButton.type = "button";
@@ -89,9 +136,39 @@ export const createHvpHud = (options: HvpHudOptions): HvpHud => {
     makeButton("hvp-camera-shore", "C02-SHORE", () => options.actions.setPreset("C02-SHORE")),
     makeButton("hvp-camera-wide", "C04-WIDE", () => options.actions.setPreset("C04-WIDE")),
     makeButton("hvp-reset-camera", "Reset view", () => options.actions.resetCamera()),
-    waterButton
+    waterButton,
+    inspectButton,
+    aoButton,
+    hideButton
   );
   updateWaterButton();
+  updateInspectButton();
+  updateAoButton();
+
+  const setPanelsVisible = (visible: boolean): void => {
+    uiVisible = visible;
+    hideButton.textContent = visible ? "Hide UI" : "Show UI";
+    hideButton.setAttribute("aria-pressed", visible ? "false" : "true");
+    root.dataset.ui = visible ? "on" : "off";
+    documentPort.body.dataset.hestiaPrototypeHud = visible ? "visible" : "hidden";
+    const hideable: Element[] = [...hideablePanels];
+    for (let index = 0; index < controls.children.length; index += 1) {
+      const child = controls.children[index]!;
+      if (child !== hideButton) {
+        hideable.push(child);
+      }
+    }
+    for (const panel of hideable) {
+      if (visible) {
+        panel.removeAttribute("hidden");
+      } else {
+        panel.setAttribute("hidden", "");
+      }
+    }
+  };
+  hideButton.addEventListener("click", () => {
+    setPanelsVisible(!uiVisible);
+  });
 
   root.append(title, stateValue, modeValue, detailValue, controls);
   options.host.append(root);
@@ -106,12 +183,14 @@ export const createHvpHud = (options: HvpHudOptions): HvpHud => {
       body.dataset.hestiaPrototypeCamera = pose.preset;
       body.dataset.hestiaPrototypeFaces = String(stats.faces);
       updateWaterButton();
+      updateInspectButton();
+      updateAoButton();
       root.dataset.state = state;
       root.dataset.camera = pose.preset;
       stateValue.textContent = `State: ${state}`;
       modeValue.textContent = `Camera: ${pose.preset} (${pose.mode})`;
       detailValue.textContent = detail === ""
-        ? `Terrain faces: ${stats.faces} · vertices: ${stats.vertices} · triangles: ${stats.triangles}`
+        ? `Terrain faces: ${stats.faces} · vertices: ${stats.vertices} · triangles: ${stats.triangles} · scene: ${stats.sceneFaces} faces / ${stats.sceneTriangles} tris (join+far incl.)`
         : detail;
     },
     dispose(): void {

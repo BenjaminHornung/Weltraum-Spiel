@@ -1,0 +1,227 @@
+{
+  "worktree": "Hestia-HVP02-readable-coast",
+  "branch": "feature/hvp-02-readable-coast",
+  "runId": "64aadf83-21a9-48dc-88f0-a670ee31a3c9",
+  "baseCommit": "6c161f83f767a60b4a62e85bd53cdcf00a79aaf1",
+  "dirtyTracked": true,
+  "productSources": [
+    {
+      "path": "src/hvp/hvpCoastSource.ts",
+      "sha256": "bdba74cd551db1b2ed7a56e421026b3c117a98495f73d3c428c9efdbc1d67d8a",
+      "bytes": 34766
+    },
+    {
+      "path": "src/hvp/hvpCoastMesher.ts",
+      "sha256": "6f44681a26d481129b7ddb7dbf4f335e33605b2eed7aa17a55aa7448e31b3d03",
+      "bytes": 36759
+    },
+    {
+      "path": "src/hvp/hvpBootstrap.ts",
+      "sha256": "90122366b52c58b299a7eb9e7256b73612f6537c67cfc3ca2035b98d73d37d9c",
+      "bytes": 42868
+    },
+    {
+      "path": "src/hvp/hvpCamera.ts",
+      "sha256": "a0fe38c399364dd8a23a82ec0ed6091955f065cab0f5bb2c73016b4045460f44",
+      "bytes": 9416
+    },
+    {
+      "path": "src/hvp/hvpHud.ts",
+      "sha256": "bf676ae1a09cec1e831ca833e5393a1349fa22579680f5a03e36820fe3fb1cda",
+      "bytes": 7751
+    },
+    {
+      "path": "src/voxel/blockAmbientOcclusion.ts",
+      "sha256": "ddfb1d22eccdcb83e48f8c21d82605339936600a6afbbc452bdcdce497ca7675",
+      "bytes": 6904
+    },
+    {
+      "path": "src/hestia-prototype/presentation/look.ts",
+      "sha256": "cb255e219187d1a6e91dfb0f8e68596bc99b6d4eac76d8802689e27e9555f439",
+      "bytes": 5096
+    },
+    {
+      "path": "src/render/three/backend/threeMaterialFactory.ts",
+      "sha256": "2fe4fcfb0fe7a47e84ad02a83f3d9a2746c795ba538c0e9d4272a58e3e6c09dc",
+      "bytes": 4454
+    },
+    {
+      "path": "src/render/three/backend/threeMeshFactory.ts",
+      "sha256": "cfbbe36b3d3891943cd8fc2fedff0a5d78ff435752f3760d50836b1e5387c8ea",
+      "bytes": 2746
+    }
+  ],
+  "labAo": {
+    "commit": "94bd8acd7ab12d21ff53987330a0e97f46166a17",
+    "files": [
+      "src/voxel/blockAo.ts",
+      "src/voxel/aoGreedyFaceMesher.ts",
+      "src/render-three/aoVertexColors.ts"
+    ]
+  },
+  "source": {
+    "seed": "hestia-hvp-lagoon-001",
+    "revision": "hvp-authored-coast-v3",
+    "digest": "8e3a45c4",
+    "waterDigest": "02f8f480",
+    "triangles": "219480"
+  },
+  "render": {
+    "look": "hvp:readable-coast-v3",
+    "renderer": "three-basic-lit",
+    "ao": "on",
+    "water": "on",
+    "browser": "chromium 153.0.8010.37",
+    "dpr": 1
+  },
+  "captureTest": {
+    "path": "tests/e2e/hvp-look.spec.ts",
+    "sha256": "a95e7333365ee0a0e70e0d80c75c608f201082b8608dfa6312bcc9a99d4d4ea9",
+    "bytes": 44518
+  },
+  "cameras": [
+    {
+      "preset": "C01-EYE",
+      "position": [
+        -8,
+        3.15,
+        -11
+      ],
+      "target": [
+        0,
+        1,
+        5
+      ],
+      "fov": 60
+    },
+    {
+      "preset": "C02-SHORE",
+      "position": [
+        -2,
+        1.25,
+        -6
+      ],
+      "target": [
+        1,
+        -0.5,
+        -2
+      ],
+      "fov": 55
+    },
+    {
+      "preset": "C04-WIDE",
+      "position": [
+        -24,
+        18,
+        -28
+      ],
+      "target": [
+        0,
+        1,
+        1
+      ],
+      "fov": 55
+    }
+  ],
+  "complete": true,
+  "resources": {
+    "ledger": {
+      "slotBytes": 8388608,
+      "preparedCopyBytes": 8388608,
+      "maskBytes": 1089536,
+      "meshBytes": 16043232,
+      "groupedIndexBytes": 2441904,
+      "artifactCopyBytes": 16043232,
+      "retainedMeshBytes": 16043232,
+      "tempEstimateBytes": 127462968,
+      "totalCpuBytes": 179858088,
+      "gpuBytes": "unsupported",
+      "triangles": 219480,
+      "drawCalls": 11
+    },
+    "caps": {
+      "maxCpuBytes": 268435456,
+      "maxMeshBytes": 134217728,
+      "maxTriangles": 500000,
+      "maxDrawCalls": 300
+    }
+  },
+  "captures": [
+    {
+      "name": "hvp-c01-eye.png",
+      "camera": "C01-EYE",
+      "viewport": "1920x1080",
+      "state": "water on, AO on; canvas-region capture, HUD panels hidden (lone Show UI button remains top-left by product design)",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "3485c005846cbd4d7a679e3d9e7406998fdb407554f2e9bab21cd8078a1513ea",
+      "bytes": 617087
+    },
+    {
+      "name": "hvp-c04-wide.png",
+      "camera": "C04-WIDE",
+      "viewport": "1920x1080",
+      "state": "water on, AO on; canvas-region capture, HUD panels hidden (lone Show UI button remains top-left by product design)",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "e132125b26aecfde114e44d3ab54d8d76efb1b3f3f7b80b76ec031d39829a2b6",
+      "bytes": 560689
+    },
+    {
+      "name": "hvp-c04-wide-1280x720.png",
+      "camera": "C04-WIDE",
+      "viewport": "1280x720",
+      "state": "water on, AO on; page-level capture, HUD visible (technical)",
+      "width": 1280,
+      "height": 720,
+      "sha256": "7a9d8e5da4f95a2c7cf142a8a631d94f53ee77c48fc861929627731c2a6b1b93",
+      "bytes": 388925
+    },
+    {
+      "name": "hvp-c02-with-water.png",
+      "camera": "C02-SHORE",
+      "viewport": "1920x1080",
+      "state": "water on, AO on; canvas-region capture, HUD panels hidden (lone Show UI button remains top-left by product design)",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "418655efef06494e6d62db797f81153c5293d42eb375834513bb0e46d694176c",
+      "bytes": 670031,
+      "claims": [
+        "water-on baseline",
+        "ao-on baseline"
+      ]
+    },
+    {
+      "name": "hvp-c02-without-water.png",
+      "camera": "C02-SHORE",
+      "viewport": "1920x1080",
+      "state": "water off, AO on; canvas-region capture, HUD visible",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "7f8aa85c0b626c3db51017907511db825958e56d1b69b953b8cf712560f82c92",
+      "bytes": 737498
+    },
+    {
+      "name": "hvp-c02-ao-off.png",
+      "camera": "C02-SHORE",
+      "viewport": "1920x1080",
+      "state": "water on, AO off; canvas-region capture, HUD visible",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "97332f2f758eea28d1ef08cd9332dae96475323c3bff14a4ec4a955006c87e91",
+      "bytes": 121246
+    }
+  ],
+  "supersedesHistorical": [
+    "evidence/hvp-candidates/* (r1: rejected dark coarse baseline era)",
+    "evidence/hvp-candidates-r2/* (r2: pre-AO single-tone far field era)",
+    "evidence/hvp-candidates-r3/* (r3: AO corner-order defect era)",
+    "evidence/hvp-candidates-r4/* (r4: raised-wall seam defect era)",
+    "evidence/hvp-candidates-r5/* (r5: duplicate with-water/ao-on bytes, hardcoded browser/DPR, HUD in all captures, blank C01/C04 states)",
+    "evidence/hvp-candidates-r6/* (r6: full-page beauty files contain the Show UI button; HUD-free wording overclaims UI-free art evidence)",
+    "evidence/hvp-candidates-r7/* (r7: partial manifests and stale other-emitter companions were not rejected)",
+    "evidence/hvp-candidates-r8/* (r8: Hide/Show discarded the original control-button styles)",
+    "evidence/hvp-candidates-r9/* (r9: closed northern outlet, wet-role height/depth mismatch and repeated shelves)",
+    "evidence/hvp-candidates-r10/* (r10: water output allocation and malformed-grid guards were incomplete)"
+  ]
+}

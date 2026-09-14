@@ -239,6 +239,7 @@ test("HVP-01 visible coast reaches Ready through the real UI and renders the bou
   await expect(page.locator("body")).toHaveAttribute("data-hestia-prototype-state", "Ready");
   await expect(page.locator("#hvp-detail")).toContainText("Terrain faces:");
   await expect(page.locator("#hvp-failure")).toHaveCount(0);
+  await expect(page.locator(".hud-center-safe-area")).toBeHidden();
 
   const liveImage = await page.screenshot();
   const secondLiveImage = await page.screenshot();
@@ -278,6 +279,7 @@ test("HVP-01 camera presets switch through real buttons", async ({ page }) => {
 test("existing routes stay untouched and combined queries resolve to Surface Lab", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("#flight-hud")).toBeVisible();
+  await expect(page.locator(".hud-center-safe-area")).toBeVisible();
   await expect(page.locator("#hvp-hud")).toHaveCount(0);
   await expect.poll(() => page.evaluate(() => "TestBridge" in window)).toBe(false);
 
