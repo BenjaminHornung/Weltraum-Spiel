@@ -1097,3 +1097,31 @@ HVP commit. Only HVP implementation/tests, the authorized shared AO/material
 integration, this plan and candidate evidence R1–R11 belong to publication.
 No cleanup deletion, unrelated evidence promotion or main-checkout change is
 part of this closeout. Test servers are stopped; port 5173 is closed.
+
+### Post-push CI deadline correction — 2026-09-14
+
+Commit `f081f16f` was pushed after human diff approval. Browser Mainline run
+`34880036525` failed T08 while the other 22 live tests and the current-head,
+dependency and repository-policy gates passed. Its trace proves a whole-test
+deadline, not a stuck C04 control: the 30,000 ms timeout fired at 30.007 s
+during the HUD image comparison; C04 click started at 30.079 s. Startup/Ready
+took 5.237 s, the two preceding full-resolution screenshots took 5.196 s and
+5.024 s, and the HUD comparison took 1.614 s. No interception or obscuration
+was reported; the dedicated real-button preset test passed in the same run.
+
+T08 now uses the existing T02/AO pattern, `test.setTimeout(120_000)`, scoped to
+this screenshot-heavy test only. No product, assertion, pixel tolerance,
+per-assertion timeout, camera, global CI setting or retry policy changes.
+R11 remains the render evidence for unchanged product bytes; its capture-test
+hash intentionally identifies the pre-timeout-adjustment script. Historical
+manifests are not rewritten, and this test-only change does not claim a new
+visual baseline. The failed CI run is the red reproduction; focused local
+verification and a new-head CI run provide the follow-up evidence.
+
+Both independent technical reviews returned CLEAN for this two-file correction.
+Fresh pinned Node 22 / installed Chrome verification: T08 PASS (1/1, 7.3 s,
+exit 0), including C04, the HUD-region proof and all negative assertions;
+TypeScript noEmit and scoped diff-check PASS. No candidate evidence was written,
+the existing dirty path set was preserved, and port 5173 was closed before and
+after. New-head GitHub CI remains the required remote confirmation; the full
+local unit/build/E2E suite is not repeated for a per-test deadline-only change.

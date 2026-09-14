@@ -632,6 +632,8 @@ test("HVP-02 T05/T06 use the stored binding and expose the non-editable proxy", 
 });
 
 test("HVP-02 T08 C01 and C04 render complete viewport captures without a test harness", async ({ page, browser }) => {
+  // Full-resolution captures and pixel checks share the test deadline, as in T02/AO.
+  test.setTimeout(120_000);
   await page.goto("/?hestiaPrototype=1");
   await expect(page.locator("#hvp-state")).toContainText("State: Ready", { timeout: 20_000 });
   await page.getByRole("button", { name: "C01-EYE" }).click();
