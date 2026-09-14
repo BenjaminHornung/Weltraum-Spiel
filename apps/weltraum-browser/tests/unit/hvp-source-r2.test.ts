@@ -246,7 +246,7 @@ describe("HVP R10 art-contract falsification", () => {
       drawCalls: grouped.reduce((sum, mesh) => sum + mesh.materialRanges.length, 1) });
     console.info("R10 complete coast admission", ledger);
     expect(() => admitHvpResources(ledger)).not.toThrow();
-  });
+  }, 120_000);
 
   it("keeps actual wet source cells below the existing 0.375 m splash ceiling", () => {
     const bytes = prepared.copyBytes();
@@ -738,7 +738,7 @@ describe("HVP R2 far field from the same macro descriptor", () => {
     }
     expect(farSlots).not.toContain(HVP_SLOT_SOIL);
     expect(farSlots).not.toContain(HVP_SLOT_MOSS);
-  });
+  }, 120_000);
 
   it("reports a real far face count while keeping the conservative transient estimate", () => {
     const far = meshHvpFarField(prepared, 21);
@@ -777,7 +777,7 @@ describe("HVP R2 far field from the same macro descriptor", () => {
       }
     }
     expect(mismatches).toBe(0);
-  });
+  }, 120_000);
 });
 
 describe("HVP R2 ambient occlusion in the greedy core", () => {
@@ -1038,5 +1038,5 @@ describe("HVP R2 product binding negatives", () => {
       ...bound,
       joinMesh: { ...join, sourceDigest: "00000000" }
     })).toThrow(/bound|digest|source/i);
-  });
+  }, 120_000);
 });

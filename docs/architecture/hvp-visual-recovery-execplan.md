@@ -1125,3 +1125,24 @@ TypeScript noEmit and scoped diff-check PASS. No candidate evidence was written,
 the existing dirty path set was preserved, and port 5173 was closed before and
 after. New-head GitHub CI remains the required remote confirmation; the full
 local unit/build/E2E suite is not repeated for a per-test deadline-only change.
+
+### Production-mesh unit-test deadlines — 2026-09-14
+
+Browser CI run `34889648488` on `a9e8ab6e` stopped before E2E: 1,568 unit tests
+passed and four `hvp-source-r2.test.ts` cases exceeded Vitest's implicit 5 s
+deadline. The complete-scene admission, far-role preservation, authority
+water/land partition and product-binding negatives took 6,203 / 5,147 / 5,030 /
+6,463 ms respectively. Only timeout errors were reported. Each builds real
+production meshes; this is not a small-fixture or a performance acceptance test.
+The same file's comparable full-region seam/coverage tests already use 120 s.
+
+Those four test registrations now use that existing 120 s budget explicitly
+(the partition registration covers authority, join and far parameter rows).
+No assertion, fixture extent, resource ceiling, production code, retry or global
+test setting changes. Tests still build independent products rather than adding
+a shared mutable cache. R11 product and capture evidence remain unchanged.
+
+Both independent technical reviews returned CLEAN. Fresh pinned Node 22 run of
+the complete affected file passed 41/41 (exit 0, 35.52 s total); TypeScript
+`tsc -p tsconfig.json --noEmit` also passed. No production or evidence files
+were changed. The next exact-head CI must still confirm unit/build/E2E success.
