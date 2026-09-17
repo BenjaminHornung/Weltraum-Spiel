@@ -53,7 +53,7 @@ describe("HVP-02 readable coast daylight palette", () => {
     expect(profile.background.fogNear).toBe(48);
     expect(profile.background.fogFar).toBe(170);
     expect(profile.background.fogNear).toBeLessThan(profile.background.fogFar);
-    expect(profile.lighting.ambient.groundColor).toBe(0x2e2a24);
+    expect(profile.lighting.ambient.groundColor).toBe(0x8c9376);
   });
 });
 

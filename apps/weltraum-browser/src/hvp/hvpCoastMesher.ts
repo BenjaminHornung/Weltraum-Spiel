@@ -310,14 +310,11 @@ export const meshHvpOccupancy = (
         if (visitedCells > budgets.maxVisitedCells) {
           throw new Error(`meshHvpOccupancy BudgetExceeded: ${visitedCells} cells exceed ${budgets.maxVisitedCells}`);
         }
-        const coords = [ix, iy, iz];
         for (let face = 0; face < HVP_FACES.length; face += 1) {
           const def = HVP_FACES[face]!;
-          const neighbor = [ix, iy, iz];
-          neighbor[def.axis] = coords[def.axis]! + def.delta;
-          const nx = neighbor[0]!;
-          const ny = neighbor[1]!;
-          const nz = neighbor[2]!;
+          const nx = ix + (def.axis === 0 ? def.delta : 0);
+          const ny = iy + (def.axis === 1 ? def.delta : 0);
+          const nz = iz + (def.axis === 2 ? def.delta : 0);
           const inBounds =
             nx >= 0 && nx < occupancy.sizeX && ny >= 0 && ny < occupancy.sizeY && nz >= 0 && nz < occupancy.sizeZ;
           const covered = inBounds
@@ -325,9 +322,10 @@ export const meshHvpOccupancy = (
               || (silentSolidAt !== undefined && silentSolidAt(nx, ny, nz))
             : occupancy.ghostSlotAt !== undefined && occupancy.ghostSlotAt(nx, ny, nz) !== HVP_SLOT_KNOWN_AIR;
           if (!covered) {
-            const slice = coords[def.axis]! + (def.delta === 1 ? 1 : 0);
+            const slice = (def.axis === 0 ? ix : def.axis === 1 ? iy : iz) + (def.delta === 1 ? 1 : 0);
             packedByFace[face]!.push(
-              packFaceCell(slice, coords[def.row]!, coords[def.col]!, faceAoSignature(ix, iy, iz, face, slot))
+              packFaceCell(slice, def.row === 0 ? ix : def.row === 1 ? iy : iz,
+                def.col === 0 ? ix : def.col === 1 ? iy : iz, faceAoSignature(ix, iy, iz, face, slot))
             );
           }
         }
@@ -906,6 +904,17 @@ export const meshHvpFarField = (
   halfMeters = HVP_OUTER_WATER_HALF_METERS
 ): HvpCompactMesh => {
   const count = halfMeters * 2;
+  if (!Number.isSafeInteger(count) || count <= 0 || count * count > HVP_MESH_DEFAULT_BUDGETS.maxVisitedCells) {
+    throw new Error("meshHvpFarField BudgetExceeded: invalid or excessive footprint grid");
+  }
+  // Each immutable installed footprint is queried by its own face and its four
+  // neighbours. Cache exact binary-fraction heights once, not a coarser source.
+  const heights = new Float32Array(count * count);
+  for (let ix = 0; ix < count; ix += 1) {
+    for (let iz = 0; iz < count; iz += 1) {
+      heights[ix * count + iz] = hvpFarColumnTopMeters(-halfMeters + ix + 0.5, -halfMeters + iz + 0.5);
+    }
+  }
   const cell = HVP_SOURCE_CELL_METERS;
   const scale = 1 / cell;
   const minY = -8;
@@ -919,7 +928,7 @@ export const meshHvpFarField = (
       if (Math.abs(x + 0.5) < HVP_JOIN_WATER_HALF_METERS && Math.abs(z + 0.5) < HVP_JOIN_WATER_HALF_METERS) {
         continue;
       }
-      const top = hvpFarColumnTopMeters(x + 0.5, z + 0.5);
+      const top = heights[ix * count + iz]!;
       const columnSlot = readHvpSourceColumnWorld(x + 0.5, z + 0.5).slot;
       // Fine soil/moss is retained by authority/join, not enlarged by the proxy.
       const slot = columnSlot === HVP_SLOT_SOIL || columnSlot === HVP_SLOT_MOSS ? HVP_SLOT_LIMESTONE_DRY : columnSlot;
@@ -944,7 +953,8 @@ export const meshHvpFarField = (
           const neighbor = towardJoin
             ? hvpSourceColumnTopMeters(def.axis === 0 ? nx - def.normal[0] * (0.5 - cell / 2) : tangent,
               def.axis === 2 ? nz - def.normal[2] * (0.5 - cell / 2) : tangent)
-            : Math.max(Math.abs(nx), Math.abs(nz)) >= halfMeters ? minY : hvpFarColumnTopMeters(nx, nz);
+            : Math.max(Math.abs(nx), Math.abs(nz)) >= halfMeters ? minY
+              : heights[(ix + def.normal[0]) * count + iz + def.normal[2]]!;
           if (neighbor >= top) {
             continue;
           }
@@ -980,5 +990,62 @@ export const meshHvpFarField = (
   const mesh = materializeHvpQuads(quads, {
     cellMeters: cell, originMeters: { x: -halfMeters, y: minY, z: -halfMeters }
   }, HVP_MESH_DEFAULT_BUDGETS, quads.length, prepared.sourceDigest, HVP_FARFIELD_MESH_ALGORITHM_VERSION, false);
-  return Object.freeze({ ...mesh, tempEstimateBytes: mesh.tempEstimateBytes + conservativeColumnScratchFaces * (8 + 96) });
+  return Object.freeze({ ...mesh, tempEstimateBytes: mesh.tempEstimateBytes + conservativeColumnScratchFaces * (8 + 96) + heights.byteLength });
+};
+
+/** Projection-only cut-out for an installed region/collar. Never used for collision or source. */
+export const clipHvpProjection=(mesh:HvpCompactMesh,rect:Readonly<{minX:number;maxX:number;minZ:number;maxZ:number}>,digest:string):HvpCompactMesh=>{
+  if(![rect.minX,rect.maxX,rect.minZ,rect.maxZ].every(n=>Number.isFinite(n)&&Number.isInteger(n*8))
+    ||rect.minX>=rect.maxX||rect.minZ>=rect.maxZ||mesh.positions.length!==mesh.faceCount*12||mesh.indices.length!==mesh.faceCount*6){throw new Error("Invalid projection cut-out");}
+  const low=[rect.minX,-Infinity,rect.minZ],high=[rect.maxX,Infinity,rect.maxZ];
+  const quads:HvpQuad[]=[],origins:number[]=[];
+  let range=0;
+  for(let f=0;f<mesh.faceCount;f+=1){
+    while(f*6>=mesh.materialRanges[range]!.startIndex+mesh.materialRanges[range]!.indexCount){range+=1;}
+    const base=f*12,face=HVP_FACES.findIndex(d=>d.normal.every((n,a)=>n===mesh.normals[base+a]));
+    if(face<0){throw new Error("Projection requires axis-aligned faces");}const d=HVP_FACES[face]!;
+    const min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity];
+    for(let v=0;v<4;v+=1){for(let a=0;a<3;a+=1){const n=mesh.positions[base+v*3+a]!;min[a]=Math.min(min[a]!,n);max[a]=Math.max(max[a]!,n);}}
+    const own=min[d.axis]!-d.delta*.0625;
+    const r0=min[d.row]!,r1=max[d.row]!,c0=min[d.col]!,c1=max[d.col]!;
+    const emit=(a:number,b:number,c:number,e:number)=>{
+      if(b<=a||e<=c){return;}
+      quads.push({face,slice:min[d.axis]!*8,row:a*8,col:c*8,rowCount:(b-a)*8,colCount:(e-c)*8,key:mesh.materialRanges[range]!.slot});origins.push(f);
+    };
+    const a=Math.max(r0,low[d.row]!),b=Math.min(r1,high[d.row]!),c=Math.max(c0,low[d.col]!),e=Math.min(c1,high[d.col]!);
+    if(own<low[d.axis]!||own>=high[d.axis]!||a>=b||c>=e){emit(r0,r1,c0,c1);continue;}
+    emit(r0,a,c0,c1);emit(b,r1,c0,c1);emit(a,b,c0,c);emit(a,b,e,c1);
+  }
+  const result=materializeHvpQuads(quads,{cellMeters:.125,originMeters:{x:0,y:0,z:0}},HVP_MESH_DEFAULT_BUDGETS,
+    quads.length,digest,"hvp-clipped-projection-v1",mesh.colors!==null);
+  // Preserve the original diagonal and interpolate only presentation AO at new
+  // corners. Canonical occupancy/materials are not resampled by this operation.
+  for(let f=0;f<quads.length;f+=1){
+    const old=origins[f]!,d=HVP_FACES[quads[f]!.face]!,base=old*12;
+    for(let i=0;i<6;i+=1){result.indices[f*6+i]=f*4+mesh.indices[old*6+i]!-old*4;}
+    if(!result.colors||!mesh.colors){continue;}
+    const rows=[0,1,2,3].map(v=>mesh.positions[base+v*3+d.row]!),cols=[0,1,2,3].map(v=>mesh.positions[base+v*3+d.col]!);
+    const r0=Math.min(...rows),r1=Math.max(...rows),c0=Math.min(...cols),c1=Math.max(...cols);
+    for(let v=0;v<4;v+=1){const r=(result.positions[f*12+v*3+d.row]!-r0)/(r1-r0),c=(result.positions[f*12+v*3+d.col]!-c0)/(c1-c0);
+      for(let channel=0;channel<3;channel+=1){let value=0;
+        for(let ov=0;ov<4;ov+=1){value+=mesh.colors[base+ov*3+channel]!*(rows[ov]===r0?1-r:r)*(cols[ov]===c0?1-c:c);}
+        result.colors[f*12+v*3+channel]=value;
+      }
+    }
+  }
+  return Object.freeze({...result,tempEstimateBytes:result.tempEstimateBytes+origins.length*8});
+};
+
+/** Greedy top-only water for a bounded replacement footprint at the canonical y=0. */
+export const meshHvpWaterPatch=(cells:Uint8Array,sizeX:number,sizeZ:number,cellMeters:number,origin:{x:number;z:number},digest:string):HvpCompactMesh=>{
+  if(!Number.isSafeInteger(sizeX)||!Number.isSafeInteger(sizeZ)||sizeX<1||sizeZ<1||sizeX*sizeZ>1_048_576
+    ||cells.length!==sizeX*sizeZ||![.125,.5,1].includes(cellMeters)||![origin.x,origin.z].every(n=>Number.isFinite(n)&&Number.isInteger(n*8))){throw new Error("Invalid water patch");}
+  const rows:number[]=[],cols:number[]=[],keys:number[]=[];
+  for(let x=0;x<sizeX;x+=1){for(let z=0;z<sizeZ;z+=1){const value=cells[x+z*sizeX]!;
+    if(value>1){throw new Error("Invalid water patch cell");}if(value===1){rows.push(x);cols.push(z);keys.push(1);}
+  }}
+  const quads=greedySlice(3,0,rows,cols,keys);
+  const mesh=materializeHvpQuads(quads,{cellMeters,originMeters:{x:origin.x,y:0,z:origin.z}},HVP_MESH_DEFAULT_BUDGETS,
+    rows.length,digest,"hvp-water-patch-v1",false);
+  return Object.freeze({...mesh,tempEstimateBytes:mesh.tempEstimateBytes+rows.length*24+cells.byteLength});
 };

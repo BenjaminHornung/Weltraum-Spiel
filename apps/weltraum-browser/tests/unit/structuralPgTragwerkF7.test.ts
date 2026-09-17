@@ -20,7 +20,7 @@ import {
   pgConnectivityBudgets,
   pgCutCommand
 } from "./pgTragwerkFixture";
-import { createRapierStructuralPort, type RapierBodyRef } from "./rapierStructuralCommitPort";
+import { createRapierStructuralPort, type RapierBodyRef } from "../../src/hestia-prototype/physics/rapierPort";
 
 /**
  * Paket P-PG-F7 — Physik-/Besitzgrenze stabilisieren.

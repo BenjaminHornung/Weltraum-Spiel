@@ -19,6 +19,11 @@ import {
 import { byteCount, type WorkerEpoch, type WorkerJobId } from "./ids";
 import { generateHestiaVoxelBrickInSlices } from "../world-generation/hestia";
 import { createSurfaceNetsVoxelMeshProduct, type VoxelBrick } from "../voxel";
+import { HVP_COLLISION_JOB, executeHvpCollisionJob } from "./hvpCollisionJob";
+import { HVP_TERRAIN_JOB, executeHvpTerrainJob } from "./hvpTerrainJob";
+import {HVP_BODY_CUT_JOB,executeHvpBodyCutJob} from "./hvpBodyCutJob";
+import {HVP_NEIGHBOR_JOB,executeHvpNeighborJob} from "./hvpNeighborJob";
+import {HVP_SUPPORT_JOB,executeHvpSupportJob} from "./hvpSupportJob";
 
 export type WorkerMessageEmitter = (message: WorkerToHostMessage, transfer?: readonly Transferable[]) => void;
 
@@ -117,7 +122,17 @@ export class StreamingWorkerRuntime {
               await this.checkpoint();
               if (token.isCancellationRequested) throw new WorkerJobCancelled();
             })
-          : (() => { throw new RangeError(`Unsupported worker job kind: ${request.jobKind}.`); })();
+           : request.jobKind === HVP_COLLISION_JOB
+             ? executeHvpCollisionJob(request, input)
+              : request.jobKind === HVP_TERRAIN_JOB ? executeHvpTerrainJob(request, input)
+                 : request.jobKind===HVP_SUPPORT_JOB?executeHvpSupportJob(request,input)
+                  : request.jobKind===HVP_BODY_CUT_JOB?executeHvpBodyCutJob(request,input)
+                    : request.jobKind===HVP_NEIGHBOR_JOB?executeHvpNeighborJob(request,input)
+               : (() => { throw new RangeError(`Unsupported worker job kind: ${request.jobKind}.`); })();
+      if (request.jobKind === HVP_COLLISION_JOB || request.jobKind === HVP_TERRAIN_JOB || request.jobKind===HVP_SUPPORT_JOB || request.jobKind===HVP_BODY_CUT_JOB || request.jobKind===HVP_NEIGHBOR_JOB) {
+        await this.checkpoint();
+        if (token.isCancellationRequested) { throw new WorkerJobCancelled(); }
+      }
       this.emit({ type: "JobOutputData", jobId, workerEpoch: request.workerEpoch, outputBytes: execution.bundle.byteLength, bundle: execution.bundle }, transferListFor(execution.bundle));
       this.emit({ type: "JobCompleted", result: execution.result });
     } catch (error) {

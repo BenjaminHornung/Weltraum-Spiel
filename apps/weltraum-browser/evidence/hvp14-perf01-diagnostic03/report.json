@@ -1,0 +1,84 @@
+{
+  "status": "INELIGIBLE",
+  "scope": "declared scenario and fixture only",
+  "art": "NOT_ASSESSED",
+  "br04": "NOT_APPLICABLE",
+  "planSha256": "762c1049f0994b828f31f8dd20c14f2a73c05db4f2d2b11c4bed2401e15bdfff",
+  "runs": [
+    {
+      "id": "befaf0a1-24c2-45a0-80ed-89d5e38d1fcd-1",
+      "processId": 40556,
+      "reasons": [
+        "coldReadyMs: target exceeded"
+      ],
+      "missing": [],
+      "metrics": {
+        "coldReadyMs": {
+          "count": 1,
+          "p95": 7718.699999988079,
+          "p99": 7718.699999988079,
+          "max": 7718.699999988079
+        }
+      },
+      "outcomes": {
+        "Applied": 0,
+        "NoOp": 0,
+        "Rejected": 0,
+        "Deferred": 0
+      },
+      "cutLatency": null,
+      "feedback": null,
+      "changedCellRange": null
+    },
+    {
+      "id": "befaf0a1-24c2-45a0-80ed-89d5e38d1fcd-2",
+      "processId": 42880,
+      "reasons": [
+        "coldReadyMs: target exceeded"
+      ],
+      "missing": [],
+      "metrics": {
+        "coldReadyMs": {
+          "count": 1,
+          "p95": 9631.199999988079,
+          "p99": 9631.199999988079,
+          "max": 9631.199999988079
+        }
+      },
+      "outcomes": {
+        "Applied": 0,
+        "NoOp": 0,
+        "Rejected": 0,
+        "Deferred": 0
+      },
+      "cutLatency": null,
+      "feedback": null,
+      "changedCellRange": null
+    },
+    {
+      "id": "befaf0a1-24c2-45a0-80ed-89d5e38d1fcd-3",
+      "processId": 39104,
+      "reasons": [
+        "coldReadyMs: target exceeded"
+      ],
+      "missing": [],
+      "metrics": {
+        "coldReadyMs": {
+          "count": 1,
+          "p95": 9287,
+          "p99": 9287,
+          "max": 9287
+        }
+      },
+      "outcomes": {
+        "Applied": 0,
+        "NoOp": 0,
+        "Rejected": 0,
+        "Deferred": 0
+      },
+      "cutLatency": null,
+      "feedback": null,
+      "changedCellRange": null
+    }
+  ]
+}

@@ -1,7 +1,8 @@
 import * as THREE from "three";
+import {createHvpListeners} from "../hestia-prototype/runtime/listeners";
 
 export type HvpCameraMode = "Orbit" | "Fly";
-export type HvpCameraPreset = "C01-EYE" | "C02-SHORE" | "C04-WIDE";
+export type HvpCameraPreset = "C01-EYE" | "C02-SHORE" | "C03-ROOTS" | "C04-WIDE" | "C05-ROCKARM" | "C07-QUARRY";
 
 export interface HvpCameraPose {
   readonly mode: HvpCameraMode;
@@ -12,6 +13,7 @@ export interface HvpCameraPose {
 }
 
 export interface HvpCameraController {
+  readonly listenerCount:number;
   readonly mode: HvpCameraMode;
   readonly preset: HvpCameraPreset;
   setMode(mode: HvpCameraMode): void;
@@ -19,16 +21,22 @@ export interface HvpCameraController {
   reset(): void;
   update(deltaSeconds: number): void;
   readPose(): HvpCameraPose;
+  checkpoint(): HvpCameraCheckpoint;
+  restore(value:HvpCameraCheckpoint):void;
   dispose(): void;
 }
+export interface HvpCameraCheckpoint extends HvpCameraPose {readonly fov:number}
 
 export interface HvpCameraOptions {
   readonly camera: THREE.PerspectiveCamera;
   readonly canvas: HTMLCanvasElement;
+  readonly isInputBlocked?: () => boolean;
   readonly windowPort?: Pick<Window, "innerWidth" | "innerHeight" | "addEventListener" | "removeEventListener">;
 }
 
 const HVP_CAMERA_PRESETS: Record<HvpCameraPreset, { position: { x: number; y: number; z: number }; target: { x: number; y: number; z: number }; fov: number }> = {
+  "C05-ROCKARM": {position:{x:4,y:2.5,z:-9},target:{x:7,y:1.5,z:-6},fov:50},
+  "C07-QUARRY": {position:{x:-10,y:3.2,z:-12},target:{x:-10.5,y:1,z:-9},fov:55},
   "C01-EYE": {
     position: { x: -8, y: 3.15, z: -11 },
     target: { x: 0, y: 1, z: 5 },
@@ -43,6 +51,11 @@ const HVP_CAMERA_PRESETS: Record<HvpCameraPreset, { position: { x: number; y: nu
     position: { x: -24, y: 18, z: -28 },
     target: { x: 0, y: 1, z: 1 },
     fov: 55
+  },
+  "C03-ROOTS": {
+    position: { x: 3, y: 2.5, z: 4 },
+    target: { x: 8, y: 4.5, z: 7 },
+    fov: 60
   }
 };
 
@@ -58,6 +71,7 @@ const isEditableTarget = (target: EventTarget | null): boolean => {
 const finiteDelta = (value: number): number => (Number.isFinite(value) ? Math.min(Math.max(value, 0), 0.1) : 0);
 
 export const createHvpCamera = (options: HvpCameraOptions): HvpCameraController => {
+  const listeners=createHvpListeners();
   const camera = options.camera;
   const canvas = options.canvas;
   const windowPort = options.windowPort ?? window;
@@ -67,11 +81,14 @@ export const createHvpCamera = (options: HvpCameraOptions): HvpCameraController 
   const originalTabIndex = canvas.getAttribute("tabindex");
   let mode: HvpCameraMode = "Orbit";
   let preset: HvpCameraPreset = "C04-WIDE";
+  let viewFov = HVP_CAMERA_PRESETS[preset].fov;
   let yaw = 0;
   let pitch = 0;
   let orbitRadius = 1;
   let activePointer: number | undefined;
   let disposed = false;
+  // Native lock can precede the player's pointerlockchange/Play acknowledgement.
+  const inputBlocked = (): boolean => options.isInputBlocked?.() === true || Boolean(canvas.ownerDocument?.pointerLockElement);
 
   const focusViewport = (): void => {
     if (disposed) return;
@@ -107,7 +124,8 @@ export const createHvpCamera = (options: HvpCameraOptions): HvpCameraController 
     const pose = HVP_CAMERA_PRESETS[next];
     target.set(pose.target.x, pose.target.y, pose.target.z);
     camera.position.set(pose.position.x, pose.position.y, pose.position.z);
-    camera.fov = pose.fov;
+    viewFov = pose.fov;
+    camera.fov = viewFov;
     camera.updateProjectionMatrix();
     deriveOrbitAngles();
     applyView();
@@ -142,14 +160,16 @@ export const createHvpCamera = (options: HvpCameraOptions): HvpCameraController 
   };
 
   const pointerDown = (event: PointerEvent): void => {
+    if (inputBlocked()) { return; }
     focusViewport();
     if (activePointer !== undefined || event.button !== 0) return;
-    activePointer = event.pointerId;
     canvas.setPointerCapture?.(event.pointerId);
+    activePointer = event.pointerId;
     event.preventDefault();
   };
 
   const pointerMove = (event: PointerEvent): void => {
+    if (inputBlocked()) { return; }
     if (activePointer !== event.pointerId) return;
     yaw -= event.movementX * 0.005;
     pitch = THREE.MathUtils.clamp(pitch - event.movementY * 0.005, MIN_PITCH, MAX_PITCH);
@@ -163,6 +183,7 @@ export const createHvpCamera = (options: HvpCameraOptions): HvpCameraController 
   };
 
   const wheel = (event: WheelEvent): void => {
+    if (inputBlocked()) { return; }
     event.preventDefault();
     if (mode === "Orbit") {
       orbitRadius = THREE.MathUtils.clamp(orbitRadius * Math.exp(event.deltaY * 0.001), 2, 240);
@@ -173,6 +194,7 @@ export const createHvpCamera = (options: HvpCameraOptions): HvpCameraController 
   };
 
   const keyDown = (event: KeyboardEvent): void => {
+    if (inputBlocked()) { return; }
     if (isEditableTarget(event.target) || !CAMERA_KEYS.has(event.code)) return;
     pressedKeys.add(event.code);
     event.preventDefault();
@@ -190,11 +212,12 @@ export const createHvpCamera = (options: HvpCameraOptions): HvpCameraController 
     const width = Math.max(1, windowPort.innerWidth);
     const height = Math.max(1, windowPort.innerHeight);
     camera.aspect = width / height;
-    camera.fov = HVP_CAMERA_PRESETS[preset].fov;
+    if (!inputBlocked()) { camera.fov = viewFov; }
     camera.updateProjectionMatrix();
   };
 
   const update = (deltaSeconds: number): void => {
+    if (inputBlocked()) { viewFov = camera.fov; pressedKeys.clear(); return; }
     if (disposed) return;
     if (mode !== "Fly" || pressedKeys.size === 0) return;
     const delta = finiteDelta(deltaSeconds);
@@ -225,20 +248,34 @@ export const createHvpCamera = (options: HvpCameraOptions): HvpCameraController 
     target: Object.freeze({ x: target.x, y: target.y, z: target.z }),
     quaternion: Object.freeze({ x: camera.quaternion.x, y: camera.quaternion.y, z: camera.quaternion.z, w: camera.quaternion.w })
   });
+  const checkpoint=():HvpCameraCheckpoint=>{
+    const pose=readPose(),direction=camera.getWorldDirection(new THREE.Vector3());
+    const toTarget=target.clone().sub(camera.position);
+    // Player readback may have moved the actual camera independently of Orbit.
+    if(toTarget.lengthSq()>1e-12&&toTarget.normalize().dot(direction)>1-1e-10){return Object.freeze({...pose,fov:camera.fov});}
+    const point=camera.position.clone().addScaledVector(direction,10);
+    return Object.freeze({...pose,mode:"Fly",target:Object.freeze({x:point.x,y:point.y,z:point.z}),fov:camera.fov});
+  };
+  const restore=(pose:HvpCameraCheckpoint):void=>{
+    if(disposed||inputBlocked()||!Object.hasOwn(HVP_CAMERA_PRESETS,pose.preset)||!["Orbit","Fly"].includes(pose.mode)
+      ||!Number.isFinite(pose.fov)||pose.fov<=0||pose.fov>=180
+      ||![pose.position.x,pose.position.y,pose.position.z,pose.target.x,pose.target.y,pose.target.z,
+        pose.quaternion.x,pose.quaternion.y,pose.quaternion.z,pose.quaternion.w].every(Number.isFinite)
+      ||Math.abs(Math.hypot(pose.quaternion.x,pose.quaternion.y,pose.quaternion.z,pose.quaternion.w)-1)>1e-6){throw new Error("Invalid camera restore");}
+    pressedKeys.clear();if(activePointer!==undefined){canvas.releasePointerCapture?.(activePointer);activePointer=undefined;}
+    mode=pose.mode;preset=pose.preset;target.set(pose.target.x,pose.target.y,pose.target.z);
+    camera.position.set(pose.position.x,pose.position.y,pose.position.z);
+    camera.quaternion.set(pose.quaternion.x,pose.quaternion.y,pose.quaternion.z,pose.quaternion.w);
+    deriveOrbitAngles();
+    if(mode==="Fly"){const d=camera.getWorldDirection(new THREE.Vector3());yaw=Math.atan2(d.x,d.z);pitch=Math.asin(THREE.MathUtils.clamp(d.y,-1,1));}
+    viewFov=pose.fov;camera.fov=viewFov;camera.updateProjectionMatrix();
+  };
 
   const dispose = (): void => {
     if (disposed) return;
     disposed = true;
     if (activePointer !== undefined) canvas.releasePointerCapture?.(activePointer);
-    canvas.removeEventListener("pointerdown", pointerDown);
-    canvas.removeEventListener("pointermove", pointerMove);
-    canvas.removeEventListener("pointerup", releasePointer);
-    canvas.removeEventListener("pointercancel", releasePointer);
-    canvas.removeEventListener("wheel", wheel);
-    windowPort.removeEventListener("keydown", keyDown);
-    windowPort.removeEventListener("keyup", keyUp);
-    windowPort.removeEventListener("blur", blur);
-    windowPort.removeEventListener("resize", resize);
+    listeners.dispose();
     pressedKeys.clear();
     activePointer = undefined;
     if (hadTabIndex) canvas.setAttribute("tabindex", originalTabIndex ?? "");
@@ -246,19 +283,20 @@ export const createHvpCamera = (options: HvpCameraOptions): HvpCameraController 
   };
 
   canvas.setAttribute("tabindex", "0");
-  canvas.addEventListener("pointerdown", pointerDown);
-  canvas.addEventListener("pointermove", pointerMove);
-  canvas.addEventListener("pointerup", releasePointer);
-  canvas.addEventListener("pointercancel", releasePointer);
-  canvas.addEventListener("wheel", wheel, { passive: false });
-  windowPort.addEventListener("keydown", keyDown);
-  windowPort.addEventListener("keyup", keyUp);
-  windowPort.addEventListener("blur", blur);
-  windowPort.addEventListener("resize", resize);
+  listeners.add(canvas,"pointerdown",pointerDown as EventListener);
+  listeners.add(canvas,"pointermove",pointerMove as EventListener);
+  listeners.add(canvas,"pointerup",releasePointer as EventListener);
+  listeners.add(canvas,"pointercancel",releasePointer as EventListener);
+  listeners.add(canvas,"wheel",wheel as EventListener,{passive:false});
+  listeners.add(windowPort,"keydown",keyDown as EventListener);
+  listeners.add(windowPort,"keyup",keyUp as EventListener);
+  listeners.add(windowPort,"blur",blur);
+  listeners.add(windowPort,"resize",resize);
   resize();
   reset();
 
   return {
+    get listenerCount(){return listeners.size;},
     get mode() { return mode; },
     get preset() { return preset; },
     setMode,
@@ -266,6 +304,7 @@ export const createHvpCamera = (options: HvpCameraOptions): HvpCameraController 
     reset,
     update,
     readPose,
+    checkpoint,restore,
     dispose
   };
 };

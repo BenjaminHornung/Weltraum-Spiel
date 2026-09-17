@@ -1,4 +1,5 @@
 import { beforeAll, describe, expect, it } from "vitest";
+import {createHash} from "node:crypto";
 import { PerspectiveCamera, Vector3 } from "three";
 import {
   HVP_COAST_MATERIAL_REGISTRY,
@@ -94,7 +95,7 @@ const rasterTops = (quads: ReturnType<typeof emittedQuads>, half: number, cell: 
     }
     for (let x = Math.max(0, Math.ceil((q.min[0]! + half) / cell - 0.5)); x < Math.min(dim, (q.max[0]! + half) / cell - 0.5); x += 1) {
       for (let z = Math.max(0, Math.ceil((q.min[2]! + half) / cell - 0.5)); z < Math.min(dim, (q.max[2]! + half) / cell - 0.5); z += 1) {
-        heights[z * dim + x] = q.min[1]!;
+      if(coverage[z*dim+x]===0||q.min[1]!>heights[z*dim+x]!){heights[z * dim + x] = q.min[1]!;}
         coverage[z * dim + x]! += 1;
       }
     }
@@ -160,6 +161,18 @@ const assertSeam = (
 beforeAll(() => {
   prepared = prepareHvpCoastSource(materializeHvpCoastSource());
 }, 120_000);
+
+it("owns the dry walking shaft as known air above its canonical solid floor", () => {
+  console.info("HVP05 source binding", prepared.sourceDigest);
+  // Explicit fixture coordinates, independent of the exported shaft descriptor.
+  for (let x = 34; x < 46; x += 1) {
+    for (let z = 34; z < 46; z += 1) {
+      expect(prepared.readSlot(x, 64, z)).not.toBe(HVP_SLOT_KNOWN_AIR); // [0, .125)
+      for (let y = 65; y < 128; y += 1) { expect(prepared.readSlot(x, y, z)).toBe(HVP_SLOT_KNOWN_AIR); }
+    }
+  }
+  expect(readHvpSourceColumnWorld(-10.1875, -11).topMeters).toBeGreaterThan(0.5);
+});
 
 describe("HVP R10 art-contract falsification", () => {
   // Four-neighbor search on measured coverage: a closed lagoon cannot pass by
@@ -325,7 +338,7 @@ describe("HVP emitted-surface oracle negatives", () => {
 
 describe("HVP R2 source version and density provenance", () => {
   it("versions the corrected descriptor and marks densities as unapproved tuning", () => {
-    expect(HVP_COAST_SOURCE_VERSION).toBe("hvp-authored-coast-v3");
+    expect(HVP_COAST_SOURCE_VERSION).toBe("hvp-authored-coast-v5");
     expect(HVP_COAST_SEED_NAME).toBe("hestia-hvp-lagoon-001");
     for (const entry of HVP_COAST_MATERIAL_REGISTRY) {
       expect(entry.provenance).toBe("prototype-tuning-unapproved");
@@ -748,6 +761,20 @@ describe("HVP R2 far field from the same macro descriptor", () => {
     expect(far.tempEstimateBytes).toBeGreaterThan(far.faceCount * (8 + 96) + arrayBytes);
   });
 
+  it.each([
+    [21,"b8d9cb0a7e3704697584e9e929bb1bb3c83de2ab7116e10b2711e715ed9191ed"],
+    [21.5,"9440bab9193f4c75011dcc28c8a875ff986950372ec4dd10780b50206ab993f2"],
+    [240,"8f0ae7e408a3f8856a417fad8541b15f2dde401cd7d4909fc02b23422509c962"]
+  ] as const)("preserves pre-optimization far projection bytes (%s m)",(half,expected)=>{
+    const mesh=meshHvpFarField(prepared,half),hash=createHash("sha256");
+    for(const a of [mesh.positions,mesh.normals,mesh.indices]){hash.update(new Uint8Array(a.buffer,a.byteOffset,a.byteLength));}
+    hash.update(JSON.stringify({ranges:mesh.materialRanges,bounds:mesh.boundsMeters,faces:mesh.faceCount,unitFaces:mesh.unitFaceCount}));
+    expect(hash.digest("hex")).toBe(expected);
+  },120_000);
+  it("rejects invalid far footprint grids before allocating the height cache",()=>{
+    for(const half of [0,-1,Infinity,NaN,.125,10_000]){expect(()=>meshHvpFarField(prepared,half)).toThrow(/BudgetExceeded/);}
+  });
+
   it("emits only exposed height differences on both join/far seam directions", () => {
     assertSeam(meshHvpJoinRing(prepared), meshHvpFarField(prepared), 20);
   }, 120_000);
@@ -770,7 +797,17 @@ describe("HVP R2 far field from the same macro descriptor", () => {
           }
           continue;
         }
-        if (land.coverage[index] !== 1 || wet.coverage[index] !== (land.heights[index]! < 0 ? 1 : 0)
+        let expectedTops=1,highest=land.heights[index]!;
+        if(region.name==="authority"){
+          expectedTops=0;highest=-Infinity;
+          const ix=Math.floor((x+16)*8),iz=Math.floor((z+16)*8);
+          for(let iy=0;iy<128;iy+=1){
+            if(prepared.readSlot(ix,iy,iz)!==0&&(iy===127||prepared.readSlot(ix,iy+1,iz)===0)){
+              expectedTops+=1;highest=-8+(iy+1)*.125;
+            }
+          }
+        }
+        if (land.coverage[index] !== expectedTops || land.heights[index]!==highest || wet.coverage[index] !== (highest < 0 ? 1 : 0)
           || (wet.coverage[index] !== 0 && wet.heights[index] !== 0)) {
           mismatches += 1;
         }

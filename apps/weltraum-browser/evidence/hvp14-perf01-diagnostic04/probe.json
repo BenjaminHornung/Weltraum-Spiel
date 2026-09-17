@@ -1,0 +1,14 @@
+{
+  "observed": {
+    "gpu": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "visible": "visible",
+    "focused": true,
+    "dpr": 1,
+    "cssWidth": 1280,
+    "cssHeight": 720,
+    "bufferWidth": 1280,
+    "bufferHeight": 720
+  },
+  "browserVersion": "153.0.8010.37",
+  "url": "http://127.0.0.1:5173/?hestiaPrototype=1"
+}

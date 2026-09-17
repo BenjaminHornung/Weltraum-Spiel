@@ -1,4 +1,4 @@
-import { byteCount, nextWorkerEpoch, planningEpoch, workerEpoch, type PlanningEpoch, type WorkerEpoch, type WorkerJobId } from "./ids";
+import { byteCount, contentRevision, nextWorkerEpoch, planningEpoch, workerEpoch, type PlanningEpoch, type WorkerEpoch, type WorkerJobId } from "./ids";
 import type { JobOutputDataMessage } from "./messages";
 import {
   GENERATE_HESTIA_VOXEL_BRICK_MESH_JOB_KIND,
@@ -19,6 +19,11 @@ import {
 import { StableWorkerJobQueue, type WorkerJobQueueSnapshot } from "./queue";
 import { integrateWorkerResult, type WorkerResultIntegrationDecision } from "./resultGate";
 import { WorkerHandle, createBrowserWorkerTransport, type WorkerHandleCallbacks, type WorkerTransportFactory } from "./workerHandle";
+import { HVP_COLLISION_JOB, validateHvpCollisionPayload, validateHvpCollisionRequest, decodeHvpCollisionOutput } from "./hvpCollisionJob";
+import { HVP_TERRAIN_JOB, validateHvpTerrainPayload, validateHvpTerrainRequest, decodeHvpTerrainOutput } from "./hvpTerrainJob";
+import {HVP_SUPPORT_JOB,validateHvpSupportPayload,validateHvpSupportRequest,decodeHvpSupportOutput} from "./hvpSupportJob";
+import {HVP_BODY_CUT_JOB,validateHvpBodyCutPayload,validateHvpBodyCutRequest,decodeHvpBodyCutOutput} from "./hvpBodyCutJob";
+import {HVP_NEIGHBOR_JOB,validateHvpNeighborPayload,validateHvpNeighborRequest,decodeHvpNeighborOutput} from "./hvpNeighborJob";
 
 export type WorkerJobTerminal =
   | { readonly kind: "Completed"; readonly result: WorkerJobResult; readonly output: TransferableBufferBundle }
@@ -149,6 +154,11 @@ export class WorkerPool {
       throw new RangeError("Input bundle does not match request ownership, revision, or byte estimate.");
     }
     if (hestiaPayload !== undefined) validateHestiaVoxelInputBundle(hestiaPayload, input);
+    if (request.jobKind === HVP_COLLISION_JOB) { validateHvpCollisionRequest(request, input); }
+    if (request.jobKind === HVP_TERRAIN_JOB) { validateHvpTerrainRequest(request, input); }
+    if (request.jobKind === HVP_BODY_CUT_JOB) { validateHvpBodyCutRequest(request, input); }
+    if (request.jobKind === HVP_NEIGHBOR_JOB) { validateHvpNeighborRequest(request, input); }
+    if (request.jobKind === HVP_SUPPORT_JOB) { validateHvpSupportRequest(request, input); }
     const record = this.createRecord(request, input);
     if (this.seen.has(request.jobId)) {
       this.fail(record, "DuplicateJob", "Job IDs are unique for the lifetime of a pool.");
@@ -363,7 +373,16 @@ export class WorkerPool {
     const hestiaPayload = record.request.jobKind === GENERATE_HESTIA_VOXEL_BRICK_MESH_JOB_KIND
       ? validateHestiaVoxelBrickMeshPayload(record.request.payload)
       : undefined;
-    const outputRevision = hestiaPayload?.outputRevision ?? validateTransformPayload(record.request.payload).outputRevision;
+    const collisionPayload = record.request.jobKind === HVP_COLLISION_JOB ? validateHvpCollisionPayload(record.request.payload) : undefined;
+    const terrainPayload = record.request.jobKind === HVP_TERRAIN_JOB ? validateHvpTerrainPayload(record.request.payload) : undefined;
+    const supportPayload=record.request.jobKind===HVP_SUPPORT_JOB?validateHvpSupportPayload(record.request.payload):undefined;
+    const bodyPayload=record.request.jobKind===HVP_BODY_CUT_JOB?validateHvpBodyCutPayload(record.request.payload):undefined;
+    const neighborPayload=record.request.jobKind===HVP_NEIGHBOR_JOB?validateHvpNeighborPayload(record.request.payload):undefined;
+    const outputRevision = hestiaPayload?.outputRevision ?? collisionPayload?.outputRevision
+      ?? (supportPayload===undefined?undefined:contentRevision(supportPayload.generation))
+      ?? (bodyPayload===undefined?undefined:contentRevision(bodyPayload.revision+1))
+      ?? (neighborPayload===undefined?undefined:contentRevision(neighborPayload.eastRevision))
+      ?? (terrainPayload === undefined ? validateTransformPayload(record.request.payload).outputRevision : contentRevision(terrainPayload.generation));
     const decision = integrateWorkerResult(Object.freeze({
       jobId: record.request.jobId,
       cancelled: record.cancelRequested,
@@ -378,6 +397,39 @@ export class WorkerPool {
       ...(hestiaPayload === undefined ? {} : { expectedHestiaPayload: hestiaPayload }),
     }), result, output.bundle);
     if (decision.kind === "Accepted") {
+      if(neighborPayload!==undefined){
+        try{decodeHvpNeighborOutput(decision.bundle,neighborPayload);}catch(error){
+          this.fail(record,"ProtocolFault",error instanceof Error?error.message:"Invalid neighbour output",handle.workerEpoch);
+          this.dispatch();return;
+        }
+      }
+      if(bodyPayload!==undefined){
+        try{decodeHvpBodyCutOutput(decision.bundle,bodyPayload);}catch(error){
+          this.fail(record,"ProtocolFault",error instanceof Error?error.message:"Invalid body-cut output",handle.workerEpoch);
+          this.dispatch();return;
+        }
+      }
+      if(supportPayload!==undefined){
+        try{decodeHvpSupportOutput(decision.bundle,supportPayload);}catch(error){
+          this.fail(record,"ProtocolFault",error instanceof Error?error.message:"Invalid support output",handle.workerEpoch);
+          this.dispatch();return;
+        }
+      }
+      if (terrainPayload !== undefined) {
+        try { decodeHvpTerrainOutput(decision.bundle, terrainPayload); }
+        catch (error) {
+          this.fail(record, "ProtocolFault", error instanceof Error ? error.message : "Invalid terrain output", handle.workerEpoch);
+          this.dispatch(); return;
+        }
+      }
+      if (collisionPayload !== undefined) {
+        try { decodeHvpCollisionOutput(decision.bundle, collisionPayload); }
+        catch (error) {
+          this.fail(record, "ProtocolFault", error instanceof Error ? error.message : "Invalid collision output", handle.workerEpoch);
+          this.dispatch();
+          return;
+        }
+      }
       const normalizedDetails = result.details === undefined
         ? undefined
         : validateHestiaVoxelBrickMeshResultDetails(result.details);

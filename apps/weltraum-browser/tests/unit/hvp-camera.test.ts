@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { createHvpCamera } from "../../src/hvp/hvpCamera";
 
 class FakeCanvas extends EventTarget {
+  readonly ownerDocument: { pointerLockElement: unknown } = { pointerLockElement: null };
   readonly captures: number[] = [];
   readonly releases: number[] = [];
   readonly focusOptions: FocusOptions[] = [];
@@ -22,6 +23,42 @@ class FakeWindow extends EventTarget {
 }
 
 describe("HVP camera Masterplan contract", () => {
+  it("does not capture an inspection drag while native pointer lock already owns the document", () => {
+    const camera = new THREE.PerspectiveCamera(), canvas = new FakeCanvas(), windowPort = new FakeWindow();
+    const controller = createHvpCamera({ camera, canvas: canvas as unknown as HTMLCanvasElement, windowPort });
+    const down = () => Object.assign(new Event("pointerdown", { cancelable: true }), { pointerId: 7, button: 0 });
+    const move = () => Object.assign(new Event("pointermove"), { pointerId: 7, movementX: 30, movementY: 10 });
+    const before = camera.quaternion.toArray();
+    canvas.ownerDocument.pointerLockElement = canvas;
+    canvas.dispatchEvent(down()); canvas.dispatchEvent(move());
+    expect(canvas.captures).toEqual([]);
+    expect(camera.quaternion.toArray()).toEqual(before);
+    canvas.ownerDocument.pointerLockElement = null;
+    canvas.dispatchEvent(down()); canvas.dispatchEvent(move());
+    expect(canvas.captures).toEqual([7]);
+    expect(camera.quaternion.toArray()).not.toEqual(before);
+    controller.dispose();
+  });
+  it("restores the actual player-driven view and FOV without replaying stale Orbit state",()=>{
+    const camera=new THREE.PerspectiveCamera(),canvas=new FakeCanvas(),windowPort=new FakeWindow();
+    const controller=createHvpCamera({camera,canvas:canvas as unknown as HTMLCanvasElement,windowPort});
+    camera.position.set(4,2,-3);camera.lookAt(6,1,8);camera.fov=62;
+    const saved=JSON.parse(JSON.stringify(controller.checkpoint()));
+    expect(saved.mode).toBe("Fly");const position=camera.position.clone(),orientation=camera.quaternion.clone();
+    controller.reset();controller.restore(saved);windowPort.dispatchEvent(new Event("resize"));
+    expect(camera.position).toEqual(position);expect(camera.quaternion.toArray()).toEqual(orientation.toArray());expect(camera.fov).toBe(62);
+    controller.update(1/60);expect(camera.position).toEqual(position);
+    expect(()=>controller.restore({...saved,fov:NaN})).toThrow(/restore/);
+    controller.dispose();
+  });
+  it("does not overwrite the active player's FOV on resize and retains it when input is released",()=>{
+    const camera=new THREE.PerspectiveCamera(),canvas=new FakeCanvas(),windowPort=new FakeWindow();let blocked=false;
+    const controller=createHvpCamera({camera,canvas:canvas as unknown as HTMLCanvasElement,windowPort,isInputBlocked:()=>blocked});
+    blocked=true;camera.fov=60;controller.update(1/60);windowPort.dispatchEvent(new Event("resize"));
+    expect(camera.fov).toBe(60);
+    blocked=false;camera.fov=50;windowPort.dispatchEvent(new Event("resize"));expect(camera.fov).toBe(60);
+    controller.dispose();
+  });
   it("binds the exact C01-EYE pose with FOV 60", () => {
     const camera = new THREE.PerspectiveCamera();
     const canvas = new FakeCanvas();

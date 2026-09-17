@@ -1,0 +1,142 @@
+{
+  "runId": "6ef816bf-51e2-41fe-a533-70f84c397543",
+  "baseCommit": "30063007aeea9f8a7d48d2856ad1de7437b308fb",
+  "branch": "feature/hvp-03-signature-vegetation",
+  "dirtyTracked": true,
+  "browser": "chromium 153.0.8010.37",
+  "dpr": 1,
+  "vegetationDigest": "f2ae20dd",
+  "look": "hvp:readable-coast-v5",
+  "sourceDigest": "8e3a45c4",
+  "effects": "hvp-surface-light-v1",
+  "frameDiagnostics": {
+    "renderSubmitMs": 0.6999999992549419,
+    "calls": 60,
+    "triangles": 318046,
+    "geometries": 111,
+    "textures": 3,
+    "shadowUpdated": false,
+    "shadowMapSize": 1024,
+    "fullscreenTargets": 0
+  },
+  "sources": [
+    {
+      "path": "src/hestia-prototype/presentation/vegetation.ts",
+      "bytes": 19794,
+      "sha256": "b04403d1363ee8144b43eef5740fa44a55bfd0965e31942c45fad25257d04b97"
+    },
+    {
+      "path": "src/hestia-prototype/presentation/look.ts",
+      "bytes": 5178,
+      "sha256": "e1d8407d0bb6e0c9c83921e68aedc2b55af534974832e4c31ab404edefe237e3"
+    },
+    {
+      "path": "src/hestia-prototype/presentation/visualEffects.ts",
+      "bytes": 8483,
+      "sha256": "2afe512616bbf4726b63f369442b65299dbae84be4c8228abe7fd984ca78d7aa"
+    },
+    {
+      "path": "src/hvp/hvpBootstrap.ts",
+      "bytes": 46980,
+      "sha256": "3285caf0c679e3f3d050b1e3d0f32c3799ed02f3139e8f8c0e74fc3d6c862d62"
+    },
+    {
+      "path": "src/hvp/hvpCamera.ts",
+      "bytes": 9538,
+      "sha256": "5d1826439fba0253173b59009202318340d57723869fd9db476c9cf35b51d896"
+    },
+    {
+      "path": "src/hvp/hvpHud.ts",
+      "bytes": 7967,
+      "sha256": "b125227b3e99bbf617d6f190db3396ff56739336982663e71084a05fbcedc81f"
+    },
+    {
+      "path": "src/hvp/hvpCoastSource.ts",
+      "bytes": 34766,
+      "sha256": "bdba74cd551db1b2ed7a56e421026b3c117a98495f73d3c428c9efdbc1d67d8a"
+    },
+    {
+      "path": "src/hvp/hvpCoastMesher.ts",
+      "bytes": 36759,
+      "sha256": "6f44681a26d481129b7ddb7dbf4f335e33605b2eed7aa17a55aa7448e31b3d03"
+    },
+    {
+      "path": "tests/e2e/hvp-look.spec.ts",
+      "bytes": 51351,
+      "sha256": "0efc68fa3830309bc55a24b3f1c7bf41fe6df3241525a4885af441377909097c"
+    }
+  ],
+  "resources": {
+    "ledger": {
+      "slotBytes": 8388608,
+      "preparedCopyBytes": 8388608,
+      "maskBytes": 1089536,
+      "meshBytes": 28907460,
+      "groupedIndexBytes": 2441904,
+      "artifactCopyBytes": 28907460,
+      "retainedMeshBytes": 28921028,
+      "tempEstimateBytes": 158163240,
+      "vegetationSourceBytes": 7228096,
+      "totalCpuBytes": 250824928,
+      "gpuBytes": "unsupported",
+      "triangles": 384934,
+      "drawCalls": 118
+    },
+    "caps": {
+      "maxCpuBytes": 268435456,
+      "maxMeshBytes": 134217728,
+      "maxTriangles": 500000,
+      "maxDrawCalls": 300
+    }
+  },
+  "captures": [
+    {
+      "name": "hvp03-c01.png",
+      "camera": "C01-EYE",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "0285cdf3dcafe50481ce9bec85cbcbccf6c5fb0b2ee628bf5c9383381b91c866",
+      "bytes": 1035815,
+      "state": "water on; AO on; panels hidden; Show UI control visible"
+    },
+    {
+      "name": "hvp03-c02.png",
+      "camera": "C02-SHORE",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "feaff42c09d21275e7edb852a84efd18257d48e25ba183164d8fb8e80e703f8c",
+      "bytes": 1342060,
+      "state": "water on; AO on; panels hidden; Show UI control visible"
+    },
+    {
+      "name": "hvp03-c03.png",
+      "camera": "C03-ROOTS",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "a3c77ca235527da51ca92c935788dd8aa8eee599102bdf2215787bae5ccab5de",
+      "bytes": 990499,
+      "state": "water on; AO on; panels hidden; Show UI control visible"
+    },
+    {
+      "name": "hvp03-c04.png",
+      "camera": "C04-WIDE",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "69008ffe5841dd8df405f3196676d77f98d104f6eac884e87408000e83914707",
+      "bytes": 1284221,
+      "state": "water on; AO on; panels hidden; Show UI control visible"
+    },
+    {
+      "name": "hvp03-c04-1280.png",
+      "camera": "C04-WIDE",
+      "width": 1280,
+      "height": 720,
+      "sha256": "a6dd32913eed389dcf59829750867e58fe9328b867706a286445876a09a95c0c",
+      "bytes": 725159,
+      "state": "water on; AO on; panels hidden; Show UI control visible"
+    }
+  ],
+  "complete": true,
+  "artAcceptance": "PENDING_OWNER",
+  "physics": "NOT_IMPLEMENTED_HVP04"
+}

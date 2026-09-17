@@ -3,21 +3,26 @@ import { compareAscii, contentHash, type ContentHash } from "./ids";
 const encoder = new TextEncoder();
 
 class Fnv1a64Writer {
-  private hash = 0xcbf29ce484222325n;
+  private high = 0xcbf29ce4;
+  private low = 0x84222325;
 
   writeByte(value: number): void {
-    this.hash ^= BigInt(value & 0xff);
-    this.hash = BigInt.asUintN(64, this.hash * 0x100000001b3n);
+    // FNV prime = 2^40 + 435. Two uint32 limbs preserve modulo-2^64
+    // arithmetic without allocating a BigInt for every mesh byte.
+    const low = (this.low ^ (value & 0xff)) >>> 0;
+    const carry = Math.floor(low * 435 / 0x100000000);
+    this.high = (Math.imul(this.high, 435) + carry + (low << 8)) >>> 0;
+    this.low = Math.imul(low, 435) >>> 0;
   }
 
-  writeBytes(bytes: Uint8Array): void {
-    for (const byte of bytes) {
-      this.writeByte(byte);
+  writeBytes(bytes: Uint8Array, length = bytes.length): void {
+    for (let index = 0; index < length; index += 1) {
+      this.writeByte(bytes[index]!);
     }
   }
 
   digest(): ContentHash {
-    return contentHash(`fnv1a64:${this.hash.toString(16).padStart(16, "0")}`);
+    return contentHash(`fnv1a64:${this.high.toString(16).padStart(8, "0")}${this.low.toString(16).padStart(8, "0")}`);
   }
 }
 
@@ -44,7 +49,7 @@ const writeTypedArray = (writer: Fnv1a64Writer, value: ArrayBufferView): void =>
   const scratch = new ArrayBuffer(4);
   const data = new DataView(scratch);
   const bytes = new Uint8Array(scratch);
-  const writeElement = (byteLength: 2 | 4): void => writer.writeBytes(bytes.subarray(0, byteLength));
+  const writeElement = (byteLength: 2 | 4): void => writer.writeBytes(bytes, byteLength);
   writeLength(writer, value.byteLength);
   if (value instanceof Float32Array) {
     value.forEach((element) => {

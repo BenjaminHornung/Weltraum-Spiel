@@ -1,0 +1,84 @@
+{
+  "status": "INELIGIBLE",
+  "scope": "declared scenario and fixture only",
+  "art": "NOT_ASSESSED",
+  "br04": "NOT_APPLICABLE",
+  "planSha256": "5d55fd161855cfafb193d724d6585bf0c4978e58f866c6e18478b09fdfce5c7d",
+  "runs": [
+    {
+      "id": "a2b0f28c-33e4-418b-afda-f4d995282d15-1",
+      "processId": 26924,
+      "reasons": [
+        "coldReadyMs: target exceeded"
+      ],
+      "missing": [],
+      "metrics": {
+        "coldReadyMs": {
+          "count": 1,
+          "p95": 6877,
+          "p99": 6877,
+          "max": 6877
+        }
+      },
+      "outcomes": {
+        "Applied": 0,
+        "NoOp": 0,
+        "Rejected": 0,
+        "Deferred": 0
+      },
+      "cutLatency": null,
+      "feedback": null,
+      "changedCellRange": null
+    },
+    {
+      "id": "a2b0f28c-33e4-418b-afda-f4d995282d15-2",
+      "processId": 3204,
+      "reasons": [
+        "coldReadyMs: target exceeded"
+      ],
+      "missing": [],
+      "metrics": {
+        "coldReadyMs": {
+          "count": 1,
+          "p95": 8956.799999982119,
+          "p99": 8956.799999982119,
+          "max": 8956.799999982119
+        }
+      },
+      "outcomes": {
+        "Applied": 0,
+        "NoOp": 0,
+        "Rejected": 0,
+        "Deferred": 0
+      },
+      "cutLatency": null,
+      "feedback": null,
+      "changedCellRange": null
+    },
+    {
+      "id": "a2b0f28c-33e4-418b-afda-f4d995282d15-3",
+      "processId": 40604,
+      "reasons": [
+        "coldReadyMs: target exceeded"
+      ],
+      "missing": [],
+      "metrics": {
+        "coldReadyMs": {
+          "count": 1,
+          "p95": 8256,
+          "p99": 8256,
+          "max": 8256
+        }
+      },
+      "outcomes": {
+        "Applied": 0,
+        "NoOp": 0,
+        "Rejected": 0,
+        "Deferred": 0
+      },
+      "cutLatency": null,
+      "feedback": null,
+      "changedCellRange": null
+    }
+  ]
+}

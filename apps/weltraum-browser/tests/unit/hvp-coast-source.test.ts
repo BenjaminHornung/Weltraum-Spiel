@@ -66,7 +66,7 @@ describe("HVP coast source region contract", () => {
     expect(HVP_SOURCE_SLOT_COUNT).toBe(8_388_608);
     expect(HVP_SOURCE_LEAF_COUNT).toBe(2_048);
     expect(HVP_COAST_SEED_NAME).toBe("hestia-hvp-lagoon-001");
-    expect(HVP_COAST_SOURCE_VERSION).toBe("hvp-authored-coast-v3");
+    expect(HVP_COAST_SOURCE_VERSION).toBe("hvp-authored-coast-v5");
     expect(HVP_SLOT_KNOWN_AIR).toBe(0);
   });
 
@@ -163,7 +163,7 @@ describe("HVP terraced microsteps on the 0.125 m grid", () => {
     }
   });
 
-  it("varies terrace steps across 0.125, 0.25 and 0.5 m with notches as the only cliffs", () => {
+  it("varies terrace steps across 0.125, 0.25 and 0.5 m outside authored notches and the walking shaft", () => {
     const tops: number[][] = [];
     for (let iz = 0; iz < 256; iz += 1) {
       const row: number[] = [];
@@ -198,6 +198,11 @@ describe("HVP terraced microsteps on the 0.125 m grid", () => {
     const steps = new Set<number>();
     let maximumStep = 0;
     let notchStep = 0;
+    let shaftEdges = 0;
+    let rockRoofEdges = 0;
+    const insideShaft = (x: number, z: number) => x >= 34 && x < 46 && z >= 34 && z < 46;
+    const insideRockSite = (x:number,z:number) => x>=172&&x<204&&z>=72&&z<84;
+    const insideRockRoof = (x:number,z:number) => x>=176&&x<200&&z>=76&&z<80;
     for (let iz = 0; iz < 256; iz += 1) {
       for (let ix = 0; ix < 256; ix += 1) {
         const here = tops[iz]![ix]!;
@@ -207,7 +212,19 @@ describe("HVP terraced microsteps on the 0.125 m grid", () => {
             return;
           }
           steps.add(Number(step.toFixed(4)));
-          if (nearNotch(ix, iz) || nearNotch(otherIx, otherIz)) {
+          if (insideShaft(ix, iz) !== insideShaft(otherIx, otherIz)) {
+            shaftEdges += 1;
+            expect(Math.min(here, other)).toBe(0.125);
+            expect(step).toBeGreaterThan(0.5);
+          } else if (insideRockSite(ix,iz) || insideRockSite(otherIx,otherIz)) {
+            if(insideRockRoof(ix,iz)!==insideRockRoof(otherIx,otherIz)){
+              rockRoofEdges+=1;expect(step).toBe(2.625);expect(Math.min(here,other)).toBe(.125);
+            }else{
+              // Only the explicitly authored site's boundary may meet a taller bank.
+              expect(insideRockSite(ix,iz)).not.toBe(insideRockSite(otherIx,otherIz));
+              expect(Math.min(here,other)).toBe(.125);
+            }
+          } else if (nearNotch(ix, iz) || nearNotch(otherIx, otherIz)) {
             notchStep = Math.max(notchStep, step);
           } else {
             maximumStep = Math.max(maximumStep, step);
@@ -225,6 +242,8 @@ describe("HVP terraced microsteps on the 0.125 m grid", () => {
     expect(steps.has(0.25)).toBe(true);
     expect(steps.has(0.5)).toBe(true);
     expect(maximumStep).toBeLessThanOrEqual(0.501);
+    expect(shaftEdges).toBe(48); // perimeter of the explicit 12 by 12 cell shaft
+    expect(rockRoofEdges).toBe(56); // perimeter of the authored 24 by 4 cell roof
     // Authored notch gashes break the terrace bound on purpose: steep broken
     // ledges, never smooth ring stacks.
     expect(notchStep).toBeGreaterThan(0.5);
@@ -489,7 +508,7 @@ describe("HVP production mesh from compact pages", () => {
     expect(covered).toBe(mesh.indices.length);
   }, 120_000);
 
-  it("conserves every column top as upward face area", () => {
+  it("conserves ground and the authored overhang's second upward surface", () => {
     const mesh = productionMesh;
     let upwardArea = 0;
     for (let face = 0; face < mesh.faceCount; face += 1) {
@@ -503,7 +522,8 @@ describe("HVP production mesh from compact pages", () => {
         upwardArea += Math.abs(ax * bz - az * bx);
       }
     }
-    expect(upwardArea).toBeCloseTo(256 * 256 * 0.125 * 0.125, 3);
+    // 2.5m x .5m real floor below the roof adds a second exposed top surface.
+    expect(upwardArea).toBeCloseTo(256 * 256 * 0.125 * 0.125 + 2.5 * .5, 3);
   }, 120_000);
 
   it("rejects over-budget mesh requests before allocating outputs", () => {

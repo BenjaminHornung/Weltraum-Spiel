@@ -1,0 +1,90 @@
+{
+  "status": "INELIGIBLE",
+  "scope": "declared scenario and fixture only",
+  "art": "NOT_ASSESSED",
+  "br04": "NOT_APPLICABLE",
+  "planSha256": "44dda82eda59ea159f2cca86f9d4e1ffee64033527addc5a91d8777caa598a23",
+  "runs": [
+    {
+      "id": "d00971b4-86fa-4024-9575-1d80712c7b08-1",
+      "processId": 41796,
+      "reasons": [],
+      "missing": [
+        "frameIntervalMs",
+        "solverStepCpuMs",
+        "mainCpuMs",
+        "frameIntervalMs: raw phase coverage",
+        "solverStepCpuMs: raw phase coverage",
+        "mainCpuMs: raw phase coverage"
+      ],
+      "metrics": {
+        "frameIntervalMs": null,
+        "solverStepCpuMs": null,
+        "mainCpuMs": null
+      },
+      "outcomes": {
+        "Applied": 0,
+        "NoOp": 0,
+        "Rejected": 0,
+        "Deferred": 0
+      },
+      "cutLatency": null,
+      "feedback": null,
+      "changedCellRange": null
+    },
+    {
+      "id": "d00971b4-86fa-4024-9575-1d80712c7b08-2",
+      "processId": 17228,
+      "reasons": [],
+      "missing": [
+        "frameIntervalMs",
+        "solverStepCpuMs",
+        "mainCpuMs",
+        "frameIntervalMs: raw phase coverage",
+        "solverStepCpuMs: raw phase coverage",
+        "mainCpuMs: raw phase coverage"
+      ],
+      "metrics": {
+        "frameIntervalMs": null,
+        "solverStepCpuMs": null,
+        "mainCpuMs": null
+      },
+      "outcomes": {
+        "Applied": 0,
+        "NoOp": 0,
+        "Rejected": 0,
+        "Deferred": 0
+      },
+      "cutLatency": null,
+      "feedback": null,
+      "changedCellRange": null
+    },
+    {
+      "id": "d00971b4-86fa-4024-9575-1d80712c7b08-3",
+      "processId": 41008,
+      "reasons": [],
+      "missing": [
+        "frameIntervalMs",
+        "solverStepCpuMs",
+        "mainCpuMs",
+        "frameIntervalMs: raw phase coverage",
+        "solverStepCpuMs: raw phase coverage",
+        "mainCpuMs: raw phase coverage"
+      ],
+      "metrics": {
+        "frameIntervalMs": null,
+        "solverStepCpuMs": null,
+        "mainCpuMs": null
+      },
+      "outcomes": {
+        "Applied": 0,
+        "NoOp": 0,
+        "Rejected": 0,
+        "Deferred": 0
+      },
+      "cutLatency": null,
+      "feedback": null,
+      "changedCellRange": null
+    }
+  ]
+}

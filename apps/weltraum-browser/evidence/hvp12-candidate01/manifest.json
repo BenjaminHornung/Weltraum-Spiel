@@ -1,0 +1,728 @@
+{
+  "runId": "8ff177d7-aacc-4035-a21a-d73dd05ddc88",
+  "baseCommit": "30063007aeea9f8a7d48d2856ad1de7437b308fb",
+  "branch": "feature/hvp-03-signature-vegetation",
+  "dirtyTracked": true,
+  "browser": "chromium 153.0.8010.37",
+  "dpr": 1,
+  "vegetationDigest": "f236834a",
+  "look": "hvp:readable-coast-v6",
+  "sourceDigest": "b8fde6b0",
+  "effects": "hvp-surface-light-v1",
+  "frameDiagnostics": {
+    "renderSubmitMs": 1.2999999970197678,
+    "calls": 169,
+    "triangles": 374632,
+    "geometries": 128,
+    "textures": 3,
+    "shadowUpdated": false,
+    "shadowMapSize": 1024,
+    "fullscreenTargets": 0
+  },
+  "sources": [
+    {
+      "path": "src/hestia-prototype/presentation/vegetation.ts",
+      "bytes": 21351,
+      "sha256": "64806d7f77d6e562c8f1a36e7fb313c6353acca04d05331063af3773a519e1ae"
+    },
+    {
+      "path": "src/hestia-prototype/presentation/look.ts",
+      "bytes": 5180,
+      "sha256": "1c058c73d4313b6da757b341f6dad66173d73332d169d7dbe04710b96c0219ea"
+    },
+    {
+      "path": "src/hestia-prototype/presentation/visualEffects.ts",
+      "bytes": 8654,
+      "sha256": "f031eb31cca2d12ab8654625cca49c580d9e461bdb4532239299f290f1ef8027"
+    },
+    {
+      "path": "src/hvp/hvpBootstrap.ts",
+      "bytes": 112868,
+      "sha256": "067656356e29df28f8ca71d373428e051826aacd73cde8af1a9fa82abcdb6d8c"
+    },
+    {
+      "path": "src/hvp/hvpCamera.ts",
+      "bytes": 12157,
+      "sha256": "bea98cdc1bd9664e04fadc518db817973315274734a4a90d6c60b1230514b721"
+    },
+    {
+      "path": "src/hvp/hvpHud.ts",
+      "bytes": 16077,
+      "sha256": "ec03835afbf10b8cbc82a53362b8d62d4b289d2dbe784082c12995aa1439ac8f"
+    },
+    {
+      "path": "src/hvp/hvpCoastSource.ts",
+      "bytes": 36855,
+      "sha256": "f4a2e90b6b2b7de9b980743c7f13348833149617177be03890cc715313e99f99"
+    },
+    {
+      "path": "src/hvp/hvpCoastMesher.ts",
+      "bytes": 36759,
+      "sha256": "6f44681a26d481129b7ddb7dbf4f335e33605b2eed7aa17a55aa7448e31b3d03"
+    },
+    {
+      "path": "tests/e2e/hvp-look.spec.ts",
+      "bytes": 55560,
+      "sha256": "0ec81ef42ef7fd48b221f7a5216b7ff45bc4702eb645c01287abb123dc7df47e"
+    },
+    {
+      "path": "src/hestia-prototype/physics/rapierPort.ts",
+      "bytes": 3520,
+      "sha256": "01249a406183d783e0d1b9e97a842a8c5444af72e17121ecd17f5d64780f049e"
+    },
+    {
+      "path": "src/hestia-prototype/physics/profile.ts",
+      "bytes": 3301,
+      "sha256": "128820a0ef2554ea72fd6bd1d4d417a507d83c90f40e8e28f0a1cf8088f3fa1c"
+    },
+    {
+      "path": "src/hestia-prototype/physics/tick.ts",
+      "bytes": 1929,
+      "sha256": "5dfb07ec90136f55ee771d941d97837fc53caa4c17bb7c7047263cf5d55e83b2"
+    },
+    {
+      "path": "src/hestia-prototype/physics/terrainColliders.ts",
+      "bytes": 3602,
+      "sha256": "90d406d66148ddad1b5faadbc104cf858ce5593d356a7649d457f25560e820fc"
+    },
+    {
+      "path": "src/hestia-prototype/physics/session.ts",
+      "bytes": 23901,
+      "sha256": "e37380ec4d2b8029f9a76e49603199cc2822246a53e6f44a0d420ecc91173d83"
+    },
+    {
+      "path": "src/hestia-prototype/physics/physicsWorker.ts",
+      "bytes": 10191,
+      "sha256": "62e2b62761c9bb372d6014c3452efb56dd0c349f91805af80c8c67957452dc7c"
+    },
+    {
+      "path": "src/hestia-prototype/physics/client.ts",
+      "bytes": 20898,
+      "sha256": "faa252ec482f549a6d2f083026c32cb7ac8a650141ef8902d75b8361d28c4a39"
+    },
+    {
+      "path": "src/hestia-prototype/player/locomotion.ts",
+      "bytes": 7471,
+      "sha256": "e93ac325dec2c5c6661fd6a2a22e57807aca2b99dd6fab387ead84fb7496bd59"
+    },
+    {
+      "path": "src/hestia-prototype/player/input.ts",
+      "bytes": 10171,
+      "sha256": "5cad992d2269f2210fb731ce1e2200adaf26962066c26cd3621c9b2ddf9815e0"
+    },
+    {
+      "path": "src/hestia-prototype/player/presentation.ts",
+      "bytes": 3441,
+      "sha256": "dc26489be8d6139d2ed97d5b284d54d4aae46db8a44d8dc510158ea929f254f2"
+    },
+    {
+      "path": "src/workers/hvpCollisionJob.ts",
+      "bytes": 4956,
+      "sha256": "29621aca6a82a5617a67e1a6047d73a2b3d638621288a45fb8018bae0870ae9c"
+    },
+    {
+      "path": "src/workers/workerPool.ts",
+      "bytes": 27484,
+      "sha256": "f926cb1e6ae152a4a02a050bf30d4316857ac086a8b854f0a8bdce93167791e5"
+    },
+    {
+      "path": "src/workers/streamingWorker.ts",
+      "bytes": 15428,
+      "sha256": "483848fa876fce57398911f1752fa8e0c24de4d83e2b4b87fea4ce63d0cf026f"
+    },
+    {
+      "path": "tests/e2e/hvp-visible-coast.spec.ts",
+      "bytes": 66910,
+      "sha256": "d5930789f2c496e5c5571fca824c89e8eb2e7c6a5d506942949294b0f5b7660c"
+    },
+    {
+      "path": "package.json",
+      "bytes": 2503,
+      "sha256": "0ba7f05ec41d12b1be545c54fc1583df4b25f398a8917b0facdedc295a86e602"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 59899,
+      "sha256": "df777f04bd29b891cccefcffb3b54cdd9f4dec8ae59d3de258ecdb85696c3890"
+    },
+    {
+      "path": "src/workers/hvpTerrainJob.ts",
+      "bytes": 6808,
+      "sha256": "dd226eb81bff29389133da83787c4c04bdd5fb3e08aadd8b3103a4dfca0c67f7"
+    },
+    {
+      "path": "src/hestia-prototype/terrain/picking.ts",
+      "bytes": 2504,
+      "sha256": "5d147db11f5ad53ceab20b7865f972570389836478378062afd6d1c0f5f1ae90"
+    },
+    {
+      "path": "src/hestia-prototype/terrain/cutPlan.ts",
+      "bytes": 20114,
+      "sha256": "a6109ed26490033f75cebf96ac39b92b645b7292b85f030ab3c797cc2e3e1f13"
+    },
+    {
+      "path": "src/hestia-prototype/terrain/terrainProducts.ts",
+      "bytes": 12237,
+      "sha256": "d06d66bc81a84523c9b0297c126299930b9c5a760da7e2688ec6ac7319521fae"
+    },
+    {
+      "path": "src/hestia-prototype/terrain/terrainConsumer.ts",
+      "bytes": 8420,
+      "sha256": "e0371d9a008da320a924fbe450379833062a7b0e716e27d78c2b6d962263c9ec"
+    },
+    {
+      "path": "src/hestia-prototype/terrain/plasmaTool.ts",
+      "bytes": 6596,
+      "sha256": "f155ee90d9f4dace3eee1996dc9419f8859d3f616020d9f2bbce52bf1da98d82"
+    },
+    {
+      "path": "src/hestia-prototype/physics/principalAxes.ts",
+      "bytes": 3603,
+      "sha256": "1bb86622963aa903302f00de4c8bfc17b63a315698c18535d7f76c98c0dd4710"
+    },
+    {
+      "path": "src/hestia-prototype/physics/rigidBody.ts",
+      "bytes": 3018,
+      "sha256": "e0ee72e6f96a0175d0a88241cf2bf82db9c3c9a4bbc8abb0fc56acb810408c7e"
+    },
+    {
+      "path": "src/hestia-prototype/terrain/structuralIngest.ts",
+      "bytes": 6199,
+      "sha256": "c0b769074deffa91b2b00723fae19aa4cc43fc26b806ea1df782c9a6d010a9aa"
+    },
+    {
+      "path": "src/hestia-prototype/physics/structuralBreak.ts",
+      "bytes": 5878,
+      "sha256": "c57a33e77cd92318c9aacb2e0747295fadf6d0999b13ff9aa49825bcbcfd5e7f"
+    },
+    {
+      "path": "src/hestia-prototype/physics/branchSession.ts",
+      "bytes": 10732,
+      "sha256": "ef993da3a67e2757449535a65ad27e97d4154e066bc537347b4811d1bf20ea0c"
+    },
+    {
+      "path": "src/hestia-prototype/presentation/structuralPart.ts",
+      "bytes": 2996,
+      "sha256": "ef4c9320c10d8415811306e777f9ee45cc7f94309318cd0b1279ab9b8242b159"
+    },
+    {
+      "path": "src/hestia-prototype/terrain/structuralConsumer.ts",
+      "bytes": 4299,
+      "sha256": "ba292e2f78960375ece5a873ce3c06b04a93036326c5138d50dcacdbae6ae87f"
+    },
+    {
+      "path": "src/hestia-prototype/physics/rigidRecipe.ts",
+      "bytes": 2118,
+      "sha256": "abaa0b73cd1a208a56179bd03412f6a8d94cde77fc331dcbf2da38ef6cbbbb94"
+    },
+    {
+      "path": "src/hestia-prototype/terrain/supportPlan.ts",
+      "bytes": 8185,
+      "sha256": "477ddf926c28c3134f3cf31463a649a8e144c54dad594c71931fedb3a234358b"
+    },
+    {
+      "path": "src/workers/hvpSupportJob.ts",
+      "bytes": 7851,
+      "sha256": "af6ac7288826065c97f7a75a2f1da909d1e33de2b73fe18b775b2fbe0a857741"
+    },
+    {
+      "path": "src/hestia-prototype/terrain/terrainTransfer.ts",
+      "bytes": 1621,
+      "sha256": "cbf52a6b8a21ec4cc3ec7c847e7f32b41fdb233a712fb6c3d512a57b9b64633a"
+    },
+    {
+      "path": "src/hestia-prototype/physics/terrainFragment.ts",
+      "bytes": 1662,
+      "sha256": "b9c66b216f13178689e14335e9b9cccc365c0ebb9b621f168ff7b9ea4ec2c14e"
+    },
+    {
+      "path": "src/hestia-prototype/presentation/terrainFragment.ts",
+      "bytes": 2069,
+      "sha256": "671fb6c89b7ca7a2ac267b59978a2e174cd6c764511a2bd38ad9509aeeb2adc0"
+    },
+    {
+      "path": "src/hestia-prototype/physics/structuralPlan.ts",
+      "bytes": 3452,
+      "sha256": "c9142953a5659891613ff9cb8195d78b38544bb5da41110f93e3c3a16ef86fed"
+    },
+    {
+      "path": "src/hestia-prototype/physics/bodyCutPlan.ts",
+      "bytes": 2291,
+      "sha256": "e58036dafd6e35edfa615d41b28796d6fbb82f2ea8de286bee8635fdf7701fd0"
+    },
+    {
+      "path": "src/hestia-prototype/physics/bodyCut.ts",
+      "bytes": 6013,
+      "sha256": "528b4ad5a91db97255eef60192663cda0c8b1c4efa964277f3be838d02af511b"
+    },
+    {
+      "path": "src/hestia-prototype/physics/bodyCutSession.ts",
+      "bytes": 7270,
+      "sha256": "e4cb5022d7889475cd174b4a9634f78842ceb5538c9c2507459e9634612dac1b"
+    },
+    {
+      "path": "src/hestia-prototype/terrain/bodyCutConsumer.ts",
+      "bytes": 4502,
+      "sha256": "fbfb5f996dc41936515742e048e6987dd17c706ae4097b8b33c7dbd41d939436"
+    },
+    {
+      "path": "src/workers/hvpBodyCutJob.ts",
+      "bytes": 11868,
+      "sha256": "50da147c453d36e5d67c02bf4809782c09de80c1efe2adb8107a506c8e99bbce"
+    },
+    {
+      "path": "src/hestia-prototype/persistence/gridCheckpoint.ts",
+      "bytes": 3585,
+      "sha256": "d5311a6b86628e258d7ab2910644e8b295bb300fb88b6ec1b72ddaeacbfdc70a"
+    },
+    {
+      "path": "src/hestia-prototype/persistence/bodyCheckpoint.ts",
+      "bytes": 4326,
+      "sha256": "5551c4d4e3e509541248db69cb8ef23987eeb52620bc2009e83e728f1f010edf"
+    },
+    {
+      "path": "src/hestia-prototype/persistence/plantCheckpoint.ts",
+      "bytes": 6683,
+      "sha256": "78df5a1d7329b0fe7ab2c3709ee4e89da1ce04695486891b00410c41b424806e"
+    },
+    {
+      "path": "src/hestia-prototype/persistence/worldCheckpoint.ts",
+      "bytes": 10158,
+      "sha256": "5b9058c8c15a7279305d5e4a45a260b508f95702ddc313d7a1780ee1afa5f9e5"
+    },
+    {
+      "path": "src/hestia-prototype/persistence/gameCheckpoint.ts",
+      "bytes": 11312,
+      "sha256": "dffacfacd02ccb1e693b413e99e1d7d8d2450c7942ad24e0ddb52732055ab881"
+    },
+    {
+      "path": "src/hestia-prototype/persistence/receiptCheckpoint.ts",
+      "bytes": 3532,
+      "sha256": "7f98d5b1c0bc8a339ddb9247dd4927ed6e6b750bd13f6cd2cedf67aeb25ffc43"
+    },
+    {
+      "path": "src/hestia-prototype/persistence/saveStore.ts",
+      "bytes": 3273,
+      "sha256": "3bc2e7c043b21f491b53082929652f7da3940dfe64003b92182c9435806094c7"
+    },
+    {
+      "path": "src/hestia-prototype/persistence/sceneReplacement.ts",
+      "bytes": 2078,
+      "sha256": "1c96abc850cbc71d5f5c400c40d92b18a3f75089e8a61d02a694899af6e74f51"
+    },
+    {
+      "path": "src/hestia-prototype/physics/restoreBody.ts",
+      "bytes": 1717,
+      "sha256": "952c12dd32e325e0de3a7855012efae6a62db3a4c100e04079462ee5dd20e44d"
+    },
+    {
+      "path": "src/hestia-prototype/physics/worldReplacement.ts",
+      "bytes": 2872,
+      "sha256": "3da39db6977f0f4fb9abeb55572540d4c9b18ca20b598482a2650db94fc6631d"
+    },
+    {
+      "path": "src/browser-storage/indexedDbSaveRepository.ts",
+      "bytes": 30057,
+      "sha256": "f89469e23b132b099f91d263ae283d2f5f19b34007840ecaf812cac27f03cfc9"
+    },
+    {
+      "path": "src/browser-storage/codec.ts",
+      "bytes": 16299,
+      "sha256": "679582c4f268fb01e163ee4fbf8fdefed21054ee2bbe65878d9773159ea53b62"
+    },
+    {
+      "path": "src/browser-storage/exportImport.ts",
+      "bytes": 6273,
+      "sha256": "c1b48641c3c42ed7eca8a208a94d15d46e80cd2e0dbdb4c2752f3ed12c64c0a2"
+    },
+    {
+      "path": "src/hestia-prototype/gameplay/salvageLoop.ts",
+      "bytes": 13938,
+      "sha256": "97f9a1cab8c6c6c8476433ba685f98a303cd9a6f7faf3670ca27aa9e1fbcfc95"
+    },
+    {
+      "path": "src/hestia-prototype/presentation/salvageMarker.ts",
+      "bytes": 3225,
+      "sha256": "f1a229af9cb680d30841244511dcb0a7a280f17bf95b0d608c0b0a74d725d48e"
+    }
+  ],
+  "resources": {
+    "ledger": {
+      "slotBytes": 8388608,
+      "preparedCopyBytes": 8388608,
+      "maskBytes": 1089536,
+      "meshBytes": 28102824,
+      "groupedIndexBytes": 2448576,
+      "artifactCopyBytes": 28102824,
+      "retainedMeshBytes": 28116392,
+      "tempEstimateBytes": 156148040,
+      "vegetationSourceBytes": 7158400,
+      "checkpointSourceBytes": 0,
+      "totalCpuBytes": 247067736,
+      "gpuBytes": "unsupported",
+      "triangles": 374632,
+      "drawCalls": 169,
+      "physicsPayloadBytes": 4981680,
+      "physicsPrepareBytes": 100663296,
+      "dynamicFragmentSourceBytes": 0
+    },
+    "caps": {
+      "maxCpuBytes": 268435456,
+      "maxMeshBytes": 134217728,
+      "maxTriangles": 500000,
+      "maxDrawCalls": 300
+    }
+  },
+  "captures": [
+    {
+      "name": "hvp03-c01.png",
+      "camera": "C01-EYE",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "68a9a7f344fde41d4b733641e43718aea043770ef6ac42fa5401880dd998b8e5",
+      "bytes": 1012429,
+      "state": "water on; AO on; physics paused; panels hidden; Show UI control visible"
+    },
+    {
+      "name": "hvp03-c02.png",
+      "camera": "C02-SHORE",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "262466355adc2d7b00c2dda57e2939f456c118085378e6b7cf17e3dd0d285c59",
+      "bytes": 916920,
+      "state": "water on; AO on; physics paused; panels hidden; Show UI control visible"
+    },
+    {
+      "name": "hvp03-c03.png",
+      "camera": "C03-ROOTS",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "7b4804eeacf367a555f40467a87d88dfdc38a2caf5944e9eab152148031138e0",
+      "bytes": 990076,
+      "state": "water on; AO on; physics paused; panels hidden; Show UI control visible"
+    },
+    {
+      "name": "hvp03-c04.png",
+      "camera": "C04-WIDE",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "94699c66760f2011c0464c8ace5b3539d4fda7df6e886c812ab9ffd5e82bcbfd",
+      "bytes": 1288777,
+      "state": "water on; AO on; physics paused; panels hidden; Show UI control visible"
+    },
+    {
+      "name": "hvp03-c04-1280.png",
+      "camera": "C04-WIDE",
+      "width": 1280,
+      "height": 720,
+      "sha256": "f0f441eaced67d7f57d2ace86d9bdb25aa5d33925630c41da1574cdd861acfa5",
+      "bytes": 725031,
+      "state": "water on; AO on; physics paused; panels hidden; Show UI control visible"
+    }
+  ],
+  "complete": true,
+  "artAcceptance": "PENDING_OWNER",
+  "stage": "HVP-12 domain-driven salvage: reach, canonical link cut, real contact delivery and durable save",
+  "terrainGeneration": "0",
+  "terrainSectors": [
+    {
+      "id": 0,
+      "key": "hvp:terrain:s0:r0",
+      "hash": "fnv1a64:dad8c8b414ca91c3"
+    },
+    {
+      "id": 1,
+      "key": "hvp:terrain:s1:r0",
+      "hash": "fnv1a64:5b2783d1d84fe0c5"
+    },
+    {
+      "id": 2,
+      "key": "hvp:terrain:s2:r0",
+      "hash": "fnv1a64:c167624bec434df6"
+    },
+    {
+      "id": 3,
+      "key": "hvp:terrain:s3:r0",
+      "hash": "fnv1a64:42269d7c2fa368b0"
+    },
+    {
+      "id": 4,
+      "key": "hvp:terrain:s4:r0",
+      "hash": "fnv1a64:b27f071d982a8395"
+    },
+    {
+      "id": 5,
+      "key": "hvp:terrain:s5:r0",
+      "hash": "fnv1a64:cccda97ee1daa24b"
+    },
+    {
+      "id": 6,
+      "key": "hvp:terrain:s6:r0",
+      "hash": "fnv1a64:a133d3e625acfeda"
+    },
+    {
+      "id": 7,
+      "key": "hvp:terrain:s7:r0",
+      "hash": "fnv1a64:5959d362a02d1872"
+    },
+    {
+      "id": 8,
+      "key": "hvp:terrain:s8:r0",
+      "hash": "fnv1a64:58b6ef3d62a1a770"
+    },
+    {
+      "id": 9,
+      "key": "hvp:terrain:s9:r0",
+      "hash": "fnv1a64:6e8bb9151c03d0e8"
+    },
+    {
+      "id": 10,
+      "key": "hvp:terrain:s10:r0",
+      "hash": "fnv1a64:dc5fab4e4f6ca737"
+    },
+    {
+      "id": 11,
+      "key": "hvp:terrain:s11:r0",
+      "hash": "fnv1a64:e525fd831589a48d"
+    },
+    {
+      "id": 12,
+      "key": "hvp:terrain:s12:r0",
+      "hash": "fnv1a64:98b3659a031b35ae"
+    },
+    {
+      "id": 13,
+      "key": "hvp:terrain:s13:r0",
+      "hash": "fnv1a64:598399ee36c1d544"
+    },
+    {
+      "id": 14,
+      "key": "hvp:terrain:s14:r0",
+      "hash": "fnv1a64:2f1e8671b26f1201"
+    },
+    {
+      "id": 15,
+      "key": "hvp:terrain:s15:r0",
+      "hash": "fnv1a64:2b5ff40dcf3f6b7a"
+    }
+  ],
+  "cutScope": "SafeQuarry, bounded anchored timber, actual C05 undercut and terrain/timber fragment or descendant cell/box recut; foliage remapped or retired with its real support cell; dynamic sphere and arbitrary root-tree detachment NOT_IMPLEMENTED",
+  "physics": {
+    "ticks": 166,
+    "backlogSeconds": 0.008033333336313581,
+    "discardedSeconds": 0,
+    "status": "Paused",
+    "gravity": 11.794460201817357,
+    "gravityProfile": "local-tangent-gravity-v1",
+    "solver": "rapier-0.12.0",
+    "stepCpuMs": 0.20000000298023224,
+    "bodyCount": 4,
+    "colliderCount": 88,
+    "nativeBytes": "unsupported",
+    "terrainGeneration": 0,
+    "collisionBytes": 2490840,
+    "terrainTransaction": "Idle",
+    "terrainFragments": [],
+    "preparedTerrainFragments": [],
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -9,
+        "y": 2.4200000762939453,
+        "z": -11
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "structural": {
+      "kind": "branch",
+      "origin": {
+        "x": -12,
+        "y": 1.75,
+        "z": -13.5
+      },
+      "cutEdge": 4,
+      "generation": 0,
+      "sourceDigest": "fnv1a64-v1:9cb845863922efae",
+      "state": "Idle",
+      "last": null,
+      "preview": null,
+      "aimPoint": {
+        "x": -11.25,
+        "y": 3,
+        "z": -13.25
+      },
+      "attachment": {
+        "id": "hvp:branch:foliage",
+        "ownerId": "hvp:branch:parent",
+        "supportCell": {
+          "x": 10,
+          "y": 11,
+          "z": 2
+        }
+      },
+      "parts": [
+        {
+          "ownerId": "hvp:branch:parent",
+          "sourceDigest": "fnv1a64-v1:f86be8fb3a37f1cb",
+          "anchored": true,
+          "cellCount": 384,
+          "center": {
+            "x": 0.75,
+            "y": 1,
+            "z": 0.25
+          },
+          "position": {
+            "x": -11.25,
+            "y": 2.75,
+            "z": -13.25
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "w": 1
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "massKg": 450,
+          "sleeping": false
+        }
+      ]
+    },
+    "moving": {
+      "sequence": 0,
+      "pendingId": null,
+      "state": "Idle",
+      "preview": null,
+      "last": null
+    },
+    "lastImpulse": null,
+    "lastImpulseTick": null,
+    "inertia": {
+      "ownerId": "hvp:physics:inertia",
+      "sourceDigest": "fnv1a64-v1:15f3bb58342acf4c",
+      "centerOfMass": {
+        "x": 0.29583333333333334,
+        "y": 0.29583333333333334,
+        "z": 0.125
+      },
+      "tensor": {
+        "xx": 3.441772460937501,
+        "yy": 3.4417724609374996,
+        "zz": 6.517333984375002,
+        "xy": 1.9140625000000004,
+        "xz": 0,
+        "yz": 1.3877787807814457e-17
+      },
+      "principal": {
+        "principalInertia": {
+          "x": 1.5277099609374998,
+          "y": 5.355834960937501,
+          "z": 6.517333984375002
+        },
+        "frame": {
+          "x": 0.3826834323650899,
+          "y": 0.9238795325112867,
+          "z": 0,
+          "w": 0
+        },
+        "residual": 1.1102230246251565e-16
+      },
+      "colliders": 2,
+      "impulses": 0,
+      "aimPoint": {
+        "x": -8.564777374267578,
+        "y": 1.312473177909851,
+        "z": -13.287601470947266
+      },
+      "angularVelocity": {
+        "x": 0.022714829072356224,
+        "y": -0.013200758956372738,
+        "z": -0.010208729654550552
+      }
+    },
+    "bodies": [
+      {
+        "ownerId": "hvp:physics:drop",
+        "position": {
+          "x": -9.624567985534668,
+          "y": 0.6241464614868164,
+          "z": -7.507255554199219
+        },
+        "orientation": {
+          "x": -0.6501973867416382,
+          "y": -0.2731212377548218,
+          "z": 0.27541404962539673,
+          "w": -0.6532956957817078
+        },
+        "velocity": {
+          "x": -0.000004862164587393636,
+          "y": -0.0009930842788890004,
+          "z": 0.000009136166227108333
+        },
+        "sleeping": false,
+        "massKg": 300
+      },
+      {
+        "ownerId": "hvp:physics:inertia",
+        "position": {
+          "x": -8.716800689697266,
+          "y": 1.5458214282989502,
+          "z": -13.151344299316406
+        },
+        "orientation": {
+          "x": -0.0002377739001531154,
+          "y": 0.3575611114501953,
+          "z": 0.00005180474545340985,
+          "w": 0.9338896870613098
+        },
+        "velocity": {
+          "x": -0.0000035234986626164755,
+          "y": -0.002071220427751541,
+          "z": 0.0000012173056802566862
+        },
+        "sleeping": false,
+        "massKg": 35.15625
+      },
+      {
+        "ownerId": "hvp:branch:parent",
+        "position": {
+          "x": -11.25,
+          "y": 2.75,
+          "z": -13.25
+        },
+        "orientation": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "w": 1
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "sleeping": false,
+        "massKg": 450
+      }
+    ]
+  },
+  "save": {
+    "state": "Idle",
+    "message": "Lokaler Hestia-Spielstand",
+    "revision": null
+  },
+  "saveEvidence": "These are paused coast overview images, not salvage completion proof. Separate HVP-11/12 normal-input tests and attachments prove actual IndexedDB abort/rollback, half-progress cold reload, physical delivery, completion only after durable CAS save, and protected restart cancellation.",
+  "preparation": {
+    "jobs": 95,
+    "peakParallelJobs": 2,
+    "mainPrepareMaxMs": 4.700000002980232
+  }
+}

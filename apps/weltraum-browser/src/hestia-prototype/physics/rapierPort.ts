@@ -4,13 +4,27 @@ import type {
   StructuralColliderMassSpec,
   StructuralPhysicsWorldPort,
   StructuralWorldCuboid
-} from "../../src/voxel/structural";
+} from "../../voxel/structural";
 
 /**
- * P-PG-F7 — testseitiger Rapier-Adapter fuer den solver-neutralen
- * `StructuralPhysicsWorldPort`. Der einzige Rapier-Kontakt im Paket;
- * Produktcode (`physicsCommit.ts`) importiert Rapier nicht.
+ * Shared runtime/test adapter for the solver-neutral structural commit port.
+ * Pinned Rapier 0.12.0 (Apache-2.0); the compatibility build embeds its WASM.
  */
+export { R };
+// Pinned compatibility build: the numeric EXCLUDE_SENSORS flag also rejected
+// a dynamic solid in the real ray oracle. Predicate semantics are explicit.
+export const isHvpSolidCollider = (collider:R.Collider):boolean => !collider.isSensor();
+export const isHvpStaticCollider = (collider:R.Collider):boolean =>
+  !collider.isSensor()&&(collider.parent()?.isFixed()??true);
+let initialization: Promise<void> | undefined;
+export const initializeHvpRapier = (): Promise<void> => {
+  initialization ??= R.init().catch((error: unknown) => {
+    initialization = undefined;
+    throw error;
+  });
+  return initialization;
+};
+
 export interface RapierBodyRef {
   readonly body: R.RigidBody;
 }

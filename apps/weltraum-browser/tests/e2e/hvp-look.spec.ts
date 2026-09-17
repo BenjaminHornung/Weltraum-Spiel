@@ -78,6 +78,15 @@ const changedPixelRatio = async (page: Page, left: Buffer, right: Buffer): Promi
 
 const captureRenderedCanvas = (page: Page): Promise<Buffer> => page.locator("#debug-scene").screenshot();
 
+// Visual A/Bs must hold the real simulation still, not compare different physics ticks.
+const startPausedHvp = async (page: Page): Promise<void> => {
+  await page.goto("/?hestiaPrototype=1");
+  await expect(page.locator("#hvp-state")).toContainText("State: Ready", { timeout: 20_000 });
+  await page.getByRole("button", { name: "Physik pausieren", exact: true }).click();
+  await expect.poll(() => page.evaluate(() => ({status:JSON.parse(document.body.dataset.hestiaPrototypePhysics ?? "{}").status,
+    clock:JSON.parse(document.body.dataset.hestiaPrototypePhysicsClock??"null")}))).toMatchObject({status:"Paused"});
+};
+
 interface HvpHudRegionDelta {
   readonly outsideRatio: number;
   readonly insideRatio: number;
@@ -143,12 +152,15 @@ const hudRegionDelta = async (
   }, { hiddenBase64: hidden.toString("base64"), visibleBase64: visible.toString("base64"), box: hud });
 
 interface HvpRegionMetrics {
+  readonly skyFamilyRatio: number;
   readonly pixels: number;
   readonly nonBackgroundRatio: number;
   readonly colorBucketCount: number;
   readonly dominantColorRatio: number;
   readonly waterFamilyRatio: number;
   readonly terrainFamilyRatio: number;
+  readonly vegetationFamilyRatio: number;
+  readonly nearBlackRatio: number;
 }
 
 interface HvpRenderMetrics {
@@ -159,6 +171,8 @@ interface HvpRenderMetrics {
   readonly distinctColorCount: number;
   readonly waterFamilyRatio: number;
   readonly terrainFamilyRatio: number;
+  readonly vegetationFamilyRatio: number;
+  readonly nearBlackRatio: number;
   readonly topBackgroundRatio: number;
   readonly horizonContrast: number;
   readonly center: HvpRegionMetrics;
@@ -184,6 +198,9 @@ const measureCanvas = async (page: Page, image: Buffer): Promise<HvpRenderMetric
       let backgroundPixels = 0;
       let warmPixels = 0;
       let waterPixels = 0;
+      let vegetationPixels = 0;
+      let nearBlackPixels = 0;
+      let skyPixels = 0;
       const colorBuckets = new Map<string, number>();
       for (let y = top; y < Math.min(canvas.height, top + height); y += 1) {
         for (let x = left; x < Math.min(canvas.width, left + width); x += 1) {
@@ -195,6 +212,10 @@ const measureCanvas = async (page: Page, image: Buffer): Promise<HvpRenderMetric
           if (background.every((value, channel) => Math.abs(value - pixels[offset + channel]!) <= 12)) backgroundPixels += 1;
           if (red >= 80 && red - blue >= 16 && green - blue >= 8) warmPixels += 1;
           if (blue >= 64 && blue - red >= 28 && green - red >= 14) waterPixels += 1;
+          if (green > 45 && green > red * 1.25 && green > blue * 1.25) { vegetationPixels += 1; }
+          if (red < 12 && green < 12 && blue < 12) { nearBlackPixels += 1; }
+          if (blue >= red + 15 && blue >= green && green > 100
+            || Math.min(red,green,blue) > 185 && blue >= red && green >= red) { skyPixels += 1; }
           const bucket = `${Math.floor(red / 16)},${Math.floor(green / 16)},${Math.floor(blue / 16)}`;
           colorBuckets.set(bucket, (colorBuckets.get(bucket) ?? 0) + 1);
         }
@@ -206,12 +227,15 @@ const measureCanvas = async (page: Page, image: Buffer): Promise<HvpRenderMetric
         colorBucketCount: [...colorBuckets.values()].filter((count) => count >= 16).length,
         dominantColorRatio: dominantPixels / pixelsSeen,
         waterFamilyRatio: waterPixels / pixelsSeen,
-        terrainFamilyRatio: warmPixels / pixelsSeen
+        terrainFamilyRatio: warmPixels / pixelsSeen,
+        vegetationFamilyRatio: vegetationPixels / pixelsSeen,
+        nearBlackRatio: nearBlackPixels / pixelsSeen,
+        skyFamilyRatio: skyPixels / pixelsSeen
       };
     };
     const rows = [0.05, 0.15, 0.25, 0.35, 0.45, 0.55, 0.65, 0.75, 0.85].map((fraction) => {
       const y = Math.min(canvas.height - 1, Math.floor(canvas.height * fraction));
-      return region(0, y, canvas.width, 1).nonBackgroundRatio;
+      return 1 - region(0, y, canvas.width, 1).skyFamilyRatio;
     });
     const overall = region(0, 0, canvas.width, canvas.height);
     return {
@@ -222,7 +246,9 @@ const measureCanvas = async (page: Page, image: Buffer): Promise<HvpRenderMetric
       distinctColorCount: overall.colorBucketCount,
       waterFamilyRatio: overall.waterFamilyRatio,
       terrainFamilyRatio: overall.terrainFamilyRatio,
-      topBackgroundRatio: 1 - region(0, 0, canvas.width, Math.floor(canvas.height * 0.2)).nonBackgroundRatio,
+      vegetationFamilyRatio: overall.vegetationFamilyRatio,
+      nearBlackRatio: overall.nearBlackRatio,
+      topBackgroundRatio: region(0, 0, canvas.width, Math.floor(canvas.height * 0.2)).skyFamilyRatio,
       horizonContrast: rows.slice(1).reduce((maximum, value, index) => Math.max(maximum, Math.abs(value - rows[index]!)), 0),
       center: region(
         Math.floor(canvas.width * 0.35),
@@ -243,7 +269,9 @@ const assertRenderedStructure = async (page: Page, name: string, image: Buffer):
   const metrics = await measureCanvas(page, image);
   expect(metrics.width, `${name} must use the deterministic 1920 width`).toBe(viewport.width);
   expect(metrics.height, `${name} must use the deterministic 1080 height`).toBe(viewport.height);
-  expect(metrics.background, `${name} must expose the HVP sky background`).toEqual([135, 181, 217, 255]);
+  // The v5 sky has a gradient and clouds, not the v3/v4 flat RGB background.
+  expect(metrics.background[3], `${name} must expose an opaque sky`).toBe(255);
+  expect(metrics.background[2], `${name} must retain a blue/cloud sky color`).toBeGreaterThanOrEqual(metrics.background[0]);
   expect(metrics.nonBackgroundRatio, `${name} must contain rendered scene content`).toBeGreaterThan(0.01);
   expect(metrics.distinctColorCount, `${name} must contain multiple rendered color regions`).toBeGreaterThan(4);
   expect(metrics.waterFamilyRatio, `${name} must contain the rendered water family`).toBeGreaterThan(0.01);
@@ -406,17 +434,21 @@ const changedPixelRatioInRoi = async (page: Page, left: Buffer, right: Buffer): 
     return changedPixels / leftWords.length;
   }, { leftBase64: left.toString("base64"), rightBase64: right.toString("base64"), roi: shoreWaterRoi });
 
-const renderBackgroundOnlyPng = async (page: Page): Promise<Buffer> => {
-  const base64 = await page.evaluate(() => {
+const renderBackgroundOnlyPng = async (page: Page, skyGradient = false): Promise<Buffer> => {
+  const base64 = await page.evaluate((gradientSky) => {
     const canvas = document.createElement("canvas");
     canvas.width = 1920;
     canvas.height = 1080;
     const context = canvas.getContext("2d");
     if (context === null) throw new Error("Canvas 2D context unavailable for HVP background negative");
-    context.fillStyle = "rgb(8 24 32)";
+    const gradient = context.createLinearGradient(0, 0, 0, canvas.height);
+    gradient.addColorStop(0, "rgb(100 150 210)");
+    gradient.addColorStop(0.4, "rgb(220 232 240)");
+    gradient.addColorStop(1, "rgb(135 181 217)");
+    context.fillStyle = gradientSky ? gradient : "rgb(8 24 32)";
     context.fillRect(0, 0, canvas.width, canvas.height);
     return canvas.toDataURL("image/png").split(",", 2)[1]!;
-  });
+  }, skyGradient);
   return Buffer.from(base64, "base64");
 };
 
@@ -448,8 +480,7 @@ test.use({ viewport });
 
 test("HVP-02 T02 water toggle keeps shore depth visible through the real UI", async ({ page }) => {
   test.setTimeout(120_000);
-  await page.goto("/?hestiaPrototype=1");
-  await expect(page.locator("#hvp-state")).toContainText("State: Ready", { timeout: 20_000 });
+  await startPausedHvp(page);
   await page.getByRole("button", { name: "C02-SHORE" }).click();
   await expect(page.locator("body")).toHaveAttribute("data-hestia-prototype-camera", "C02-SHORE");
   await expect(page.locator("body")).toHaveAttribute("data-hestia-prototype-underwater-geometry", "visible");
@@ -527,8 +558,7 @@ const meanLuminance = async (page: Page, image: Buffer): Promise<number> =>
 
 test("HVP-02 R3 AO toggle changes rendered brightness through the real UI", async ({ page }) => {
   test.setTimeout(120_000);
-  await page.goto("/?hestiaPrototype=1");
-  await expect(page.locator("#hvp-state")).toContainText("State: Ready", { timeout: 20_000 });
+  await startPausedHvp(page);
   await page.getByRole("button", { name: "C02-SHORE" }).click();
   await expect(page.locator("body")).toHaveAttribute("data-hestia-prototype-ao", "on");
 
@@ -552,7 +582,7 @@ test("HVP-02 R3 AO toggle changes rendered brightness through the real UI", asyn
   });
   const aoOn = await captureRenderedCanvas(page);
   const stateOn = await geometryState();
-  expect(stateOn).toContain("8e3a45c4");
+  expect(stateOn).toContain("b8fde6b0");
   const aoToggle = page.getByRole("button", { name: "Inspect-only ambient occlusion toggle" });
   await aoToggle.click();
   await expect(page.locator("body")).toHaveAttribute("data-hestia-prototype-ao", "off");
@@ -589,28 +619,31 @@ test("HVP-02 R3 AO toggle changes rendered brightness through the real UI", asyn
 
 test("HVP-02 T03 key and cool fill are bound to the readable look", async ({ page }) => {
   test.setTimeout(120_000);
-  await page.goto("/?hestiaPrototype=1");
-  await expect(page.locator("#hvp-state")).toContainText("State: Ready", { timeout: 20_000 });
-  await expect(page.locator("body")).toHaveAttribute("data-hestia-prototype-look", "hvp:readable-coast-v3");
+  await startPausedHvp(page);
+  await expect(page.locator("body")).toHaveAttribute("data-hestia-prototype-look", "hvp:readable-coast-v6");
   await expect(page.locator("body")).toHaveAttribute("data-hestia-prototype-lighting", "key-fill");
   await expect(page.locator("body")).toHaveAttribute(
     "data-hestia-prototype-material-roles",
     "limestone-dry,limestone-wet,soil,moss"
   );
 
+  // Scene-only metrics must not count the expanded vegetation HUD as missing sky.
+  await page.getByRole("button", { name: "Hide UI", exact: true }).click();
   const wide = await captureRenderedCanvas(page);
   await assertRenderedStructure(page, "HVP-T03 wide", wide);
+  await page.getByRole("button", { name: "Show UI", exact: true }).click();
   await page.getByRole("button", { name: "C01-EYE" }).click();
+  await page.getByRole("button", { name: "Hide UI", exact: true }).click();
   const eye = await captureRenderedCanvas(page);
   await assertRenderedStructure(page, "HVP-T03 eye", eye);
   expect(await changedPixelRatio(page, wide, eye)).toBeGreaterThan(0.01);
+  await page.getByRole("button", { name: "Show UI", exact: true }).click();
   await expect(page.locator("#hvp-detail")).toContainText("Terrain faces:");
 });
 
 test("HVP-02 T05/T06 use the stored binding and expose the non-editable proxy", async ({ page }) => {
   test.setTimeout(120_000);
-  await page.goto("/?hestiaPrototype=1");
-  await expect(page.locator("#hvp-state")).toContainText("State: Ready", { timeout: 20_000 });
+  await startPausedHvp(page);
   const candidate = await captureRenderedCanvas(page);
   const rejected = await readBoundBaseline(evidenceDirectory);
   expect(rejected.length).toBeGreaterThan(1_000);
@@ -626,7 +659,7 @@ test("HVP-02 T05/T06 use the stored binding and expose the non-editable proxy", 
     await rm(directory, { recursive: true, force: true });
   }
 
-  await expect(page.locator("body")).toHaveAttribute("data-hestia-prototype-source-revision", "hvp-authored-coast-v3");
+  await expect(page.locator("body")).toHaveAttribute("data-hestia-prototype-source-revision", "hvp-authored-coast-v5");
   await expect(page.locator("body")).toHaveAttribute("data-hestia-prototype-seed", "hestia-hvp-lagoon-001");
   await expect(page.locator("body")).toHaveAttribute("data-hestia-prototype-renderer", "three-basic-lit");
   await expect(page.locator("body")).toHaveAttribute("data-hestia-prototype-background-editable", "false");
@@ -636,8 +669,7 @@ test("HVP-02 T05/T06 use the stored binding and expose the non-editable proxy", 
 test("HVP-02 T08 C01 and C04 render complete viewport captures without a test harness", async ({ page, browser }) => {
   // Full-resolution captures and pixel checks share the test deadline, as in T02/AO.
   test.setTimeout(120_000);
-  await page.goto("/?hestiaPrototype=1");
-  await expect(page.locator("#hvp-state")).toContainText("State: Ready", { timeout: 20_000 });
+  await startPausedHvp(page);
   await page.getByRole("button", { name: "C01-EYE" }).click();
   const candidateDirectory = process.env.WELTRAUM_DUMP_HVP_DIR;
   let emitRunId: string | undefined;
@@ -808,5 +840,103 @@ test("HVP-02 T08 C01 and C04 render complete viewport captures without a test ha
   const backgroundOnly = await renderBackgroundOnlyPng(page);
   await expect(assertRenderedStructure(page, "background-off negative", backgroundOnly))
     .rejects.toThrow(/rendered scene content|color|horizon|ROI|geometry|background/i);
+  await expect(assertRenderedStructure(page, "sky-gradient-only negative", await renderBackgroundOnlyPng(page, true)))
+    .rejects.toThrow(/terrain family/);
   await expect(page.evaluate(() => "TestBridge" in window)).resolves.toBe(false);
+});
+
+test("HVP-03 root coast renders all four real camera views with admitted vegetation", async ({ page, browser }) => {
+  test.setTimeout(120_000);
+  await startPausedHvp(page);
+  const body = page.locator("body");
+  await expect(body).toHaveAttribute("data-hestia-prototype-vegetation", "hvp-root-umbrella-v3");
+  await expect(body).toHaveAttribute("data-hestia-prototype-effects", "hvp-surface-light-v1");
+  await expect(body).toHaveAttribute("data-hestia-prototype-vegetation-physics", "wood-static-collision; decoration-noncolliding");
+  const resources = JSON.parse((await body.getAttribute("data-hestia-prototype-resources"))!);
+  expect(resources.ledger.triangles).toBeLessThanOrEqual(resources.caps.maxTriangles);
+  expect(resources.ledger.drawCalls).toBeLessThanOrEqual(resources.caps.maxDrawCalls);
+  expect(resources.ledger.totalCpuBytes).toBeLessThanOrEqual(resources.caps.maxCpuBytes);
+  expect(resources.ledger.retainedMeshBytes).toBeLessThanOrEqual(resources.caps.maxMeshBytes);
+  expect(resources.ledger.vegetationSourceBytes).toBeGreaterThan(0);
+  const directory = process.env.WELTRAUM_DUMP_HVP03_DIR;
+  const names = ["hvp03-c01.png", "hvp03-c02.png", "hvp03-c03.png", "hvp03-c04.png", "hvp03-c04-1280.png", "manifest.json"];
+  const runId = directory ? await assertFreshHvpEmitTarget(directory, names, names) : undefined;
+  const captures: Array<Record<string, unknown>> = [];
+  const capture = async (name: string, camera: string): Promise<Buffer> => {
+    const image = await captureRenderedCanvas(page);
+    if (directory) { await writeFile(path.join(directory, name), image); }
+    captures.push({name,camera,...pngDimensions(image),sha256:createHash("sha256").update(image).digest("hex"),bytes:image.length,
+      state:"water on; AO on; physics paused; panels hidden; Show UI control visible"});
+    return image;
+  };
+  for (const [camera,name] of [["C01-EYE",names[0]!],["C02-SHORE",names[1]!],["C03-ROOTS",names[2]!],["C04-WIDE",names[3]!]]) {
+    await page.getByRole("button", {name:camera!,exact:true}).click();
+    await expect(body).toHaveAttribute("data-hestia-prototype-camera", camera!);
+    await page.getByRole("button", {name:"Hide UI",exact:true}).click();
+    const image = await capture(name!, camera!);
+    if (camera === "C03-ROOTS") {
+      const metrics = await measureCanvas(page,image);
+      expect(metrics.vegetationFamilyRatio, "C03 must render foliage, not only publish vegetation metadata").toBeGreaterThan(0.025);
+      expect(metrics.nearBlackRatio, "C03 undersides must retain visible light response rather than black bands").toBeLessThan(0.01);
+    }
+    await page.getByRole("button", {name:"Show UI",exact:true}).click();
+  }
+  await expect.poll(async()=>JSON.parse((await body.getAttribute("data-hestia-prototype-frame-diagnostics"))??"{}").fullscreenTargets).toBe(0);
+  await expect.poll(async()=>JSON.parse((await body.getAttribute("data-hestia-prototype-frame-diagnostics"))??"{}").shadowUpdated).toBe(false);
+  const frameDiagnostics=JSON.parse((await body.getAttribute("data-hestia-prototype-frame-diagnostics"))!);
+  // Local terrain sectors add material groups; compare steady draws to admitted
+  // products instead of the old monolithic scene's incidental 150-draw threshold.
+  expect(frameDiagnostics.calls).toBeGreaterThan(0);
+  expect(frameDiagnostics.calls).toBeLessThanOrEqual(resources.ledger.drawCalls);
+  expect(frameDiagnostics.calls).toBeLessThanOrEqual(resources.caps.maxDrawCalls);
+  await page.setViewportSize({width:1280,height:720});
+  await page.getByRole("button", {name:"Hide UI",exact:true}).click();
+  await capture(names[4]!, "C04-WIDE");
+  expect(await page.evaluate(()=>"TestBridge" in window)).toBe(false);
+  if (directory) {
+    const {execFileSync} = await import("node:child_process");
+    const sources = [];
+    for (const file of ["src/hestia-prototype/presentation/vegetation.ts","src/hestia-prototype/presentation/look.ts","src/hestia-prototype/presentation/visualEffects.ts","src/hvp/hvpBootstrap.ts","src/hvp/hvpCamera.ts","src/hvp/hvpHud.ts","src/hvp/hvpCoastSource.ts","src/hvp/hvpCoastMesher.ts","tests/e2e/hvp-look.spec.ts",
+      "src/hestia-prototype/physics/rapierPort.ts", "src/hestia-prototype/physics/profile.ts", "src/hestia-prototype/physics/tick.ts", "src/hestia-prototype/physics/terrainColliders.ts", "src/hestia-prototype/physics/session.ts", "src/hestia-prototype/physics/physicsWorker.ts", "src/hestia-prototype/physics/client.ts",
+      "src/hestia-prototype/player/locomotion.ts", "src/hestia-prototype/player/input.ts", "src/hestia-prototype/player/presentation.ts", "src/workers/hvpCollisionJob.ts", "src/workers/workerPool.ts", "src/workers/streamingWorker.ts", "tests/e2e/hvp-visible-coast.spec.ts", "package.json", "package-lock.json",
+       "src/workers/hvpTerrainJob.ts", "src/hestia-prototype/terrain/picking.ts", "src/hestia-prototype/terrain/cutPlan.ts", "src/hestia-prototype/terrain/terrainProducts.ts", "src/hestia-prototype/terrain/terrainConsumer.ts", "src/hestia-prototype/terrain/plasmaTool.ts",
+        "src/hestia-prototype/physics/principalAxes.ts", "src/hestia-prototype/physics/rigidBody.ts", "src/hestia-prototype/terrain/structuralIngest.ts",
+         "src/hestia-prototype/physics/structuralBreak.ts", "src/hestia-prototype/physics/branchSession.ts", "src/hestia-prototype/presentation/structuralPart.ts", "src/hestia-prototype/terrain/structuralConsumer.ts",
+          "src/hestia-prototype/physics/rigidRecipe.ts", "src/hestia-prototype/terrain/supportPlan.ts", "src/workers/hvpSupportJob.ts",
+           "src/hestia-prototype/terrain/terrainTransfer.ts", "src/hestia-prototype/physics/terrainFragment.ts", "src/hestia-prototype/presentation/terrainFragment.ts",
+           "src/hestia-prototype/physics/structuralPlan.ts", "src/hestia-prototype/physics/bodyCutPlan.ts", "src/hestia-prototype/physics/bodyCut.ts",
+            "src/hestia-prototype/physics/bodyCutSession.ts", "src/hestia-prototype/terrain/bodyCutConsumer.ts", "src/workers/hvpBodyCutJob.ts",
+            "src/hestia-prototype/persistence/gridCheckpoint.ts", "src/hestia-prototype/persistence/bodyCheckpoint.ts", "src/hestia-prototype/persistence/plantCheckpoint.ts",
+            "src/hestia-prototype/persistence/worldCheckpoint.ts", "src/hestia-prototype/persistence/gameCheckpoint.ts", "src/hestia-prototype/persistence/receiptCheckpoint.ts",
+            "src/hestia-prototype/persistence/saveStore.ts", "src/hestia-prototype/persistence/sceneReplacement.ts", "src/hestia-prototype/physics/restoreBody.ts",
+             "src/hestia-prototype/physics/worldReplacement.ts", "src/browser-storage/indexedDbSaveRepository.ts", "src/browser-storage/codec.ts", "src/browser-storage/exportImport.ts",
+              "src/hestia-prototype/gameplay/salvageLoop.ts", "src/hestia-prototype/presentation/salvageMarker.ts",
+              "src/hestia-prototype/runtime/regionSource.ts", "src/hestia-prototype/runtime/residency.ts", "src/hestia-prototype/runtime/neighborController.ts",
+              "src/hestia-prototype/runtime/neighborProducts.ts", "src/hestia-prototype/runtime/projectionPacket.ts", "src/hestia-prototype/runtime/dormancyController.ts",
+              "src/hestia-prototype/physics/neighborRegion.ts", "src/hestia-prototype/physics/bodyResidency.ts", "src/workers/hvpNeighborJob.ts",
+              "src/streaming/memoryContentCache.ts", "src/streaming/contentKey.ts", "src/streaming/residency.ts"]) {
+      const bytes = await readFile(path.resolve(file));
+      sources.push({path:file,bytes:bytes.length,sha256:createHash("sha256").update(bytes).digest("hex")});
+    }
+    await writeFile(path.join(directory,"manifest.json"),JSON.stringify({
+      runId,baseCommit:execFileSync("git",["rev-parse","HEAD"],{encoding:"utf8"}).trim(),
+      branch:execFileSync("git",["branch","--show-current"],{encoding:"utf8"}).trim(),dirtyTracked:true,
+      browser:`${browser.browserType().name()} ${browser.version()}`,dpr:await page.evaluate(()=>devicePixelRatio),
+      vegetationDigest:await body.getAttribute("data-hestia-prototype-vegetation-digest"),
+      look:await body.getAttribute("data-hestia-prototype-look"),
+      sourceDigest:await body.getAttribute("data-hestia-prototype-source-digest"),
+      effects:await body.getAttribute("data-hestia-prototype-effects"),frameDiagnostics,
+              sources,resources,captures,complete:true,artAcceptance:"PENDING_OWNER",stage:"HVP-13 bounded adjacent canonical region, projection LOD and checkpointed body residency",
+       neighbor:JSON.parse((await body.getAttribute("data-hestia-prototype-neighbor"))??"{}"),
+       dormancy:JSON.parse((await body.getAttribute("data-hestia-prototype-body-residency"))??"{}"),
+       ownedRender:JSON.parse((await body.getAttribute("data-hestia-prototype-owned-render"))??"{}"),
+      terrainGeneration:await body.getAttribute("data-hestia-prototype-terrain-generation"),
+      terrainSectors:JSON.parse((await body.getAttribute("data-hestia-prototype-terrain-sectors"))??"[]"),
+           cutScope:"SafeQuarry, bounded anchored timber, actual C05 undercut and terrain/timber fragment or descendant cell/box recut; foliage remapped or retired with its real support cell; dynamic sphere and arbitrary root-tree detachment NOT_IMPLEMENTED",
+       physics: JSON.parse((await body.getAttribute("data-hestia-prototype-physics")) ?? "{}"),
+       save: JSON.parse((await body.getAttribute("data-hestia-prototype-save")) ?? "{}"),
+         saveEvidence: "These are paused coast overview images, not traversal, dormancy or salvage proof. Separate normal-input tests and attachments prove 20 regional round trips, collision-ready entry, LOD independence, actual sleeping-body eviction/rehydration, live/cold neighbor restoration, IndexedDB abort/rollback and domain-driven salvage completion.",
+      preparation: JSON.parse((await body.getAttribute("data-hestia-prototype-physics-preparation")) ?? "{}")
+    },null,2)+"\n");
+  }
 });

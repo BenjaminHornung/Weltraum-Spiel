@@ -79,7 +79,7 @@ export interface HvpLookProjection extends HvpCanonicalMaterialState {
   readonly profile: HvpLookProfile;
 }
 
-export const HVP_READABLE_COAST_LOOK_ID = "hvp:readable-coast-v3";
+export const HVP_READABLE_COAST_LOOK_ID = "hvp:readable-coast-v6";
 
 const profile = (
   role: HvpLookMaterialRole,
@@ -101,10 +101,10 @@ const readableProfile: HvpLookProfile = Object.freeze({
   id: HVP_READABLE_COAST_LOOK_ID,
   variant: "readable",
   materials: Object.freeze([
-    profile("limestone-dry", Object.freeze({ r: 0.82, g: 0.74, b: 0.58 })),
-    profile("limestone-wet", Object.freeze({ r: 0.3, g: 0.27, b: 0.24 })),
-    profile("soil", Object.freeze({ r: 0.45, g: 0.33, b: 0.2 })),
-    profile("moss", Object.freeze({ r: 0.3, g: 0.55, b: 0.22 }))
+    profile("limestone-dry", Object.freeze({ r: 0.78, g: 0.76, b: 0.69 })),
+    profile("limestone-wet", Object.freeze({ r: 0.27, g: 0.29, b: 0.27 })),
+    profile("soil", Object.freeze({ r: 0.39, g: 0.30, b: 0.2 })),
+    profile("moss", Object.freeze({ r: 0.26, g: 0.47, b: 0.18 }))
   ]),
   water: Object.freeze({
     transparent: true,
@@ -116,7 +116,7 @@ const readableProfile: HvpLookProfile = Object.freeze({
     materialProfile: createMaterialProfile({
       id: materialProfileId("hvp:look:water"),
       kind: "BasicLit",
-      baseColor: { r: 0.1, g: 0.65, b: 0.66 },
+      baseColor: { r: 0.035, g: 0.55, b: 0.8 },
       opacity: 0.55,
       doubleSided: true,
       wireframe: false,
@@ -128,7 +128,8 @@ const readableProfile: HvpLookProfile = Object.freeze({
       color: 0xbfd9e8,
       intensity: 0.85,
       position: Object.freeze({ x: 0, y: 1, z: 0 }),
-      groundColor: 0x2e2a24
+      // Pale coast/foliage bounce keeps new root and crown undersides readable.
+      groundColor: 0x8c9376
     }),
     key: Object.freeze({
       color: 0xffe2b0,

@@ -1,0 +1,126 @@
+{
+  "runId": "bd883cbc-0208-4d77-9e68-66977181dd03",
+  "baseCommit": "30063007aeea9f8a7d48d2856ad1de7437b308fb",
+  "branch": "feature/hvp-03-signature-vegetation",
+  "dirtyTracked": true,
+  "browser": "chromium 153.0.8010.37",
+  "dpr": 1,
+  "vegetationDigest": "c8856712",
+  "look": "hvp:readable-coast-v4",
+  "sourceDigest": "8e3a45c4",
+  "sources": [
+    {
+      "path": "src/hestia-prototype/presentation/vegetation.ts",
+      "bytes": 17534,
+      "sha256": "f982f1db215fe23f715e3908d0fac4f10bd7a5be485ffbea5b899a391a84bb86"
+    },
+    {
+      "path": "src/hestia-prototype/presentation/look.ts",
+      "bytes": 5177,
+      "sha256": "980da586d4050be754a2998780bf38d078bfcce2032b9127072c4945cb77593f"
+    },
+    {
+      "path": "src/hvp/hvpBootstrap.ts",
+      "bytes": 46055,
+      "sha256": "46c25d6b7f27fdf4a9b64c0a4958d4eed847d47361152866b3f344cfe53a940f"
+    },
+    {
+      "path": "src/hvp/hvpCamera.ts",
+      "bytes": 9538,
+      "sha256": "5d1826439fba0253173b59009202318340d57723869fd9db476c9cf35b51d896"
+    },
+    {
+      "path": "src/hvp/hvpHud.ts",
+      "bytes": 7857,
+      "sha256": "a0fd505af73a613121b66df699429c9c62da39a0d5fe86a6ff7558a3974e6221"
+    },
+    {
+      "path": "src/hvp/hvpCoastSource.ts",
+      "bytes": 34766,
+      "sha256": "bdba74cd551db1b2ed7a56e421026b3c117a98495f73d3c428c9efdbc1d67d8a"
+    },
+    {
+      "path": "src/hvp/hvpCoastMesher.ts",
+      "bytes": 36759,
+      "sha256": "6f44681a26d481129b7ddb7dbf4f335e33605b2eed7aa17a55aa7448e31b3d03"
+    },
+    {
+      "path": "tests/e2e/hvp-look.spec.ts",
+      "bytes": 49916,
+      "sha256": "46db4f611ee879cf10771b675313d04155703fe71b4c20e90902f67efd1b5735"
+    }
+  ],
+  "resources": {
+    "ledger": {
+      "slotBytes": 8388608,
+      "preparedCopyBytes": 8388608,
+      "maskBytes": 1089536,
+      "meshBytes": 23889432,
+      "groupedIndexBytes": 2441904,
+      "artifactCopyBytes": 23889432,
+      "retainedMeshBytes": 23889432,
+      "tempEstimateBytes": 153028112,
+      "vegetationSourceBytes": 11124096,
+      "totalCpuBytes": 243363824,
+      "gpuBytes": "unsupported",
+      "triangles": 350188,
+      "drawCalls": 223
+    },
+    "caps": {
+      "maxCpuBytes": 268435456,
+      "maxMeshBytes": 134217728,
+      "maxTriangles": 500000,
+      "maxDrawCalls": 300
+    }
+  },
+  "captures": [
+    {
+      "name": "hvp03-c01.png",
+      "camera": "C01-EYE",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "4d34ad7d960a7c1f0c0a13cf88a7e0ef72e255ee7656fa29a02c23ff9bb0df0e",
+      "bytes": 686307,
+      "state": "water on; AO on; panels hidden; Show UI control visible"
+    },
+    {
+      "name": "hvp03-c02.png",
+      "camera": "C02-SHORE",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "8e78e61c5ad35ea45418f906c517681b1ff41c316b7c3977600f73b266d5e4c3",
+      "bytes": 693695,
+      "state": "water on; AO on; panels hidden; Show UI control visible"
+    },
+    {
+      "name": "hvp03-c03.png",
+      "camera": "C03-ROOTS",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "76bb295c6835e22b584a424b2c9ba5ce7fca1a69d030429e38c62558efdfb8df",
+      "bytes": 403015,
+      "state": "water on; AO on; panels hidden; Show UI control visible"
+    },
+    {
+      "name": "hvp03-c04.png",
+      "camera": "C04-WIDE",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "2e7983297330d46533d3b7560de6b55ee70d695837d4da4850a9f32b2fbf1a28",
+      "bytes": 651484,
+      "state": "water on; AO on; panels hidden; Show UI control visible"
+    },
+    {
+      "name": "hvp03-c04-1280.png",
+      "camera": "C04-WIDE",
+      "width": 1280,
+      "height": 720,
+      "sha256": "8fa6e530340bc1e4b680f43531a626cc05971b0d4d5bfe868a426fb88b37e624",
+      "bytes": 446588,
+      "state": "water on; AO on; panels hidden; Show UI control visible"
+    }
+  ],
+  "complete": true,
+  "artAcceptance": "PENDING_OWNER",
+  "physics": "NOT_IMPLEMENTED_HVP04"
+}

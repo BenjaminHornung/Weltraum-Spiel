@@ -1,10 +1,10 @@
 import * as THREE from "three";
 import { describe, expect, it, vi } from "vitest";
+import {HVP_BRANCH_CELLS,HVP_BRANCH_KEY} from "../../src/hestia-prototype/physics/profile";
 import { backendRevision, materialProfileId, renderCommandResult, type RenderCommand } from "../../src/presentation";
 import {
   HVP_COAST_BLOCK_SIZE_METERS,
   HVP_TERRAIN_MATERIAL_ID,
-  HVP_TERRAIN_REPRESENTATION_KEY,
   HVP_WATER_REPRESENTATION_KEY,
   type HvpBlockMesh,
   hvpBuildCoastBlockCells,
@@ -22,6 +22,7 @@ import { meshHvpTestCells } from "../../src/hvp/hvpCoastMesher";
 import {
   admitHvpResources,
   buildHvpResourceLedger,
+  estimateHvpStageCpuBytes,
   createHvpCompactLookTerrain,
   createHvpLookTerrain,
   HVP_RESOURCE_CAPS_DEFAULT,
@@ -37,6 +38,7 @@ class FakeElement extends EventTarget {
   readonly dataset: Record<string, string> = {};
   readonly children: FakeElement[] = [];
   readonly attributes = new Map<string, string>();
+  readonly style:Record<string,string>={};
   parent: FakeElement | undefined;
 
   constructor(readonly tagName: string) { super(); }
@@ -103,6 +105,7 @@ const harness = () => {
   host.append(reticle);
   body.append(host, canvas);
   const documentPort = {
+    addEventListener: () => {}, removeEventListener: () => {},
     body,
     querySelector: (selector: string) => {
       if (selector === "#app") return host;
@@ -173,6 +176,25 @@ const harness = () => {
   const overrides = (extra: Record<string, unknown> = {}) => ({
     documentPort: documentPort as unknown as Document,
     windowPort: windowPort as unknown as Window,
+    // Bootstrap lifecycle tests isolate transport; real Rapier/worker kernels
+    // are verified separately, without allocating a second World per UI test.
+    createPhysics: async (_sources: unknown, spawn: { x: number; y: number; z: number }) => ({
+      collisionBytes: 0, workerCount: 1, update: () => {}, command: async () => {}, dispose: async () => {},
+      setPlayerInput: () => {}, setCutAim:()=>{},impulse:async()=>{},
+      preparation: { jobs: 95, peakParallelJobs: 1, mainPrepareMaxMs: 0 },
+      read: () => ({ status: "Paused", ticks: 0, backlogSeconds: 0, discardedSeconds: 0,
+        gravity: 11.79, gravityProfile: "test-fixture", solver: "test-fixture", stepCpuMs: 0,
+        bodyCount: 3, colliderCount: 5, nativeBytes: "unsupported", player: null,
+        // Transport-only fixture: the real mass/solver contract has its own tests.
+        inertia: {ownerId:"hvp:physics:inertia",sourceDigest:"test-fixture",centerOfMass:{x:71/240,y:71/240,z:.125}},lastImpulse:null,
+        structural:{generation:0,sourceDigest:"test-fixture",state:"Idle",last:null,preview:null,aimPoint:spawn,
+          attachment:{id:"hvp:branch:foliage",ownerId:HVP_BRANCH_KEY,supportCell:{x:10,y:11,z:2}},
+          parts:[{ownerId:HVP_BRANCH_KEY,anchored:true,cells:HVP_BRANCH_CELLS,center:{x:.75,y:1,z:.25},position:spawn,orientation:{x:0,y:0,z:0,w:1},velocity:{x:0,y:0,z:0},massKg:450,sleeping:true}]},
+        bodies: [{ ownerId: "hvp:physics:drop", position: spawn, orientation: { x: 0, y: 0, z: 0, w: 1 },
+          velocity: { x: 0, y: 0, z: 0 }, sleeping: true, massKg: 300 },
+          {ownerId:"hvp:physics:inertia",position:spawn,orientation:{x:0,y:0,z:0,w:1},velocity:{x:0,y:0,z:0},sleeping:true,massKg:35.15625},
+          {ownerId:HVP_BRANCH_KEY,position:spawn,orientation:{x:0,y:0,z:0,w:1},velocity:{x:0,y:0,z:0},sleeping:true,massKg:450}] })
+    }),
     createBackend: createBackend as unknown as (
       options: ConstructorParameters<typeof import("../../src/render/three/backend").ThreeRenderBackend>[0]
     ) => import("../../src/render/three/backend").ThreeRenderBackend,
@@ -206,6 +228,24 @@ describe("HVP T08 bootstrap lifecycle", () => {
   // Full starts materialize and mesh the region; allow generous time per test
   // instead of the 5 s default so slow environments report real failures.
   vi.setConfig({ testTimeout: 120_000 });
+  it("records measured cold Ready only after the first submitted scene frame",async()=>{
+    const source=harness();Object.defineProperty(source.windowPort,"location",{value:{search:"?hvpMeasure=1"}});
+    const measure=vi.spyOn(performance,"measure");let handle:Awaited<ReturnType<typeof startHvp>>|undefined;
+    try{
+      handle=await startHvp(source.overrides());
+      const startupProjection=source.commands.filter(c=>c.kind==="ApplyFrameProjection");
+      expect(startupProjection).toHaveLength(1);
+      expect(startupProjection[0]!.snapshot.representationTransforms).toHaveLength(source.commands.filter(c=>c.kind==="UpsertMeshArtifact").length);
+      expect(measure.mock.calls.filter(c=>c[0]==="hvp.coldReadyMs")).toHaveLength(0);
+      expect(measure.mock.calls.filter(c=>c[0]==="hvp.startupBackendUpsertMs")).toHaveLength(source.commands.filter(c=>c.kind==="UpsertMeshArtifact").length);
+      expect(measure.mock.calls.filter(c=>c[0]==="hvp.startupProjectionMs")).toHaveLength(source.commands.filter(c=>c.kind==="ApplyFrameProjection").length);
+      stepFrame(source.windowPort,performance.now());expect(source.counts().renders).toBe(1);
+      expect(source.commands.filter(c=>c.kind==="ApplyFrameProjection").length).toBeGreaterThan(startupProjection.length);
+      expect(measure.mock.calls.filter(c=>c[0]==="hvp.coldReadyMs")).toHaveLength(1);
+      stepFrame(source.windowPort,performance.now()+17);
+      expect(measure.mock.calls.filter(c=>c[0]==="hvp.coldReadyMs")).toHaveLength(1);
+    }finally{await handle?.dispose();measure.mockRestore();}
+  });
   it("binds the rendered daylight look scene instead of only publishing dataset claims", async () => {
     const source = harness();
     const handle = await startHvp(source.overrides());
@@ -281,40 +321,37 @@ describe("HVP T08 bootstrap lifecycle", () => {
     const source = harness();
     const handle = await startHvp(source.overrides());
     try {
-      const terrainCommand = source.commands.find((command): command is Extract<RenderCommand, { kind: "UpsertMeshArtifact" }> =>
+      const terrainCommands = source.commands.filter((command): command is Extract<RenderCommand, { kind: "UpsertMeshArtifact" }> =>
         command.kind === "UpsertMeshArtifact"
-        && command.artifact.representationKey === HVP_TERRAIN_REPRESENTATION_KEY
+        && command.artifact.representationKey.startsWith("hvp:terrain:s")
       );
-
-      expect(terrainCommand).toBeDefined();
-      if (terrainCommand === undefined) return;
-      expect(terrainCommand.artifact.algorithmVersion).toBe("hvp-coast-greedy-v3");
+      expect(terrainCommands).toHaveLength(16);
+      expect(terrainCommands.map(c=>c.artifact.representationKey)).toEqual(Array.from({length:16},(_,i)=>`hvp:terrain:s${i}:r0`));
+      const allIndices=terrainCommands.reduce((n,c)=>n+c.artifact.indices.length,0);
+      expect(allIndices).toBeGreaterThan(6000);expect(allIndices/3).toBeLessThanOrEqual(500_000);
+      expect(new Set(terrainCommands.flatMap(c=>c.artifact.materialRanges.map(r=>r.materialProfileId))))
+        .toEqual(new Set(["hvp:look:limestone-dry","hvp:look:limestone-wet","hvp:look:soil","hvp:look:moss"]));
+      for(const terrainCommand of terrainCommands) {
+      expect(terrainCommand.artifact.algorithmVersion).toBe("hvp-terrain-sector-v1");
       expect(terrainCommand.artifact.indices.length % 6).toBe(0);
-      expect(terrainCommand.artifact.indices.length).toBeGreaterThan(6_000);
-      expect(terrainCommand.artifact.indices.length / 3).toBeLessThanOrEqual(500_000);
       expect(terrainCommand.artifact.materialRanges.reduce((total, range) => total + range.indexCount, 0))
         .toBe(terrainCommand.artifact.indices.length);
-      expect(terrainCommand.artifact.materialRanges).toHaveLength(4);
-      expect(terrainCommand.artifact.materialRanges.map((range) => range.materialProfileId)).toEqual([
-        "hvp:look:limestone-dry",
-        "hvp:look:limestone-wet",
-        "hvp:look:soil",
-        "hvp:look:moss"
-      ]);
       terrainCommand.artifact.materialRanges.forEach((range) => {
         expect(range.indexCount).toBeGreaterThan(0);
       });
-      expect(terrainCommand.artifact.sourceRevision).toBe(1);
+      expect(terrainCommand.artifact.sourceRevision).toBe(0);
       terrainCommand.artifact.materialRanges.forEach((range, index, ranges) => {
         expect(range.startIndex).toBe(index === 0 ? 0 : ranges[index - 1]!.startIndex + ranges[index - 1]!.indexCount);
       });
+      }
       expect(source.body.dataset.hestiaPrototypeSeed).toBe("hestia-hvp-lagoon-001");
-      expect(source.body.dataset.hestiaPrototypeSourceRevision).toBe("hvp-authored-coast-v3");
+      expect(source.body.dataset.hestiaPrototypeSourceRevision).toBe("hvp-authored-coast-v5");
       expect(source.body.dataset.hestiaPrototypeSourceDigest).toMatch(/^[0-9a-f]{8}$/);
       const resources = JSON.parse(source.body.dataset.hestiaPrototypeResources!);
       const artifactTriangles = source.commands.reduce((count, command) =>
         count + (command.kind === "UpsertMeshArtifact" ? command.artifact.indices.length / 3 : 0), 0);
-      expect(resources.ledger.triangles).toBe(artifactTriangles);
+      // The presentation-only sky contributes 24 * 11 * 2 triangles, not a world artifact.
+      expect(resources.ledger.triangles).toBe(artifactTriangles + 528);
       expect(resources.ledger.gpuBytes).toBe("unsupported");
       expect(resources.ledger.totalCpuBytes).toBeLessThanOrEqual(resources.caps.maxCpuBytes);
       expect(resources.ledger.retainedMeshBytes).toBeLessThanOrEqual(resources.caps.maxMeshBytes);
@@ -373,16 +410,17 @@ describe("HVP T08 bootstrap lifecycle", () => {
         command.kind === "ApplyVisibilityPlan"
       );
       const hiddenWaterPlan = visibilityPlans.at(-1)?.plan;
+      const publishedKeys = source.commands.flatMap((command) => command.kind === "UpsertMeshArtifact" ? [command.artifact.representationKey] : []).sort();
+      expect(publishedKeys.filter((key) => key.startsWith("hvp:flora:") && key.endsWith(":wood"))).toHaveLength(4);
+      expect(source.body.dataset.hestiaPrototypeVegetation).toBe("hvp-root-umbrella-v3");
       // Key sets are canonical ASCII-sorted by the visibility contract.
-      expect(hiddenWaterPlan?.visibleRepresentationKeys).toEqual(["hvp:far", "hvp:join", HVP_TERRAIN_REPRESENTATION_KEY]);
+      expect(hiddenWaterPlan?.visibleRepresentationKeys).toEqual(publishedKeys.filter((key) => key !== HVP_WATER_REPRESENTATION_KEY));
       expect(hiddenWaterPlan?.hiddenRepresentationKeys).toEqual(["hvp:water"]);
       waterButton?.dispatchEvent(new Event("click"));
       const restoredPlan = source.commands.filter((command): command is Extract<RenderCommand, { kind: "ApplyVisibilityPlan" }> =>
         command.kind === "ApplyVisibilityPlan"
       ).at(-1)?.plan;
-      expect(restoredPlan?.visibleRepresentationKeys).toEqual(
-        expect.arrayContaining([HVP_TERRAIN_REPRESENTATION_KEY, HVP_WATER_REPRESENTATION_KEY, "hvp:join", "hvp:far"])
-      );
+      expect(restoredPlan?.visibleRepresentationKeys).toEqual(publishedKeys);
       expect(restoredPlan?.hiddenRepresentationKeys).toEqual([]);
     } finally {
       await handle.dispose();
@@ -656,10 +694,11 @@ describe("HVP T08 bootstrap lifecycle", () => {
       expect(aoButton?.textContent).toBe("AO: on");
       expect(aoButton?.getAttribute("aria-pressed")).toBe("true");
       const commandsBefore = source.commands.length;
-      const terrainBefore = source.commands.find((command): command is Extract<RenderCommand, { kind: "UpsertMeshArtifact" }> =>
-        command.kind === "UpsertMeshArtifact" && command.artifact.representationKey === HVP_TERRAIN_REPRESENTATION_KEY
+      const terrainBefore = source.commands.filter((command): command is Extract<RenderCommand, { kind: "UpsertMeshArtifact" }> =>
+        command.kind === "UpsertMeshArtifact" && command.artifact.representationKey.startsWith("hvp:terrain:s")
       );
-      const positionsBefore = terrainBefore === undefined ? [] : [...terrainBefore.artifact.positions];
+      expect(terrainBefore).toHaveLength(16);
+      const positionsBefore = terrainBefore.map(c=>[...c.artifact.positions]);
       aoButton?.dispatchEvent(new Event("click"));
       expect(aoButton?.textContent).toBe("AO: off");
       expect(aoButton?.getAttribute("aria-pressed")).toBe("false");
@@ -669,10 +708,10 @@ describe("HVP T08 bootstrap lifecycle", () => {
       expect(source.body.dataset.hestiaPrototypeAo).toBe("on");
       // Render-only toggle: no new scene products, geometry bytes untouched.
       expect(source.commands.length).toBe(commandsBefore);
-      const terrainAfter = source.commands.find((command): command is Extract<RenderCommand, { kind: "UpsertMeshArtifact" }> =>
-        command.kind === "UpsertMeshArtifact" && command.artifact.representationKey === HVP_TERRAIN_REPRESENTATION_KEY
+      const terrainAfter = source.commands.filter((command): command is Extract<RenderCommand, { kind: "UpsertMeshArtifact" }> =>
+        command.kind === "UpsertMeshArtifact" && command.artifact.representationKey.startsWith("hvp:terrain:s")
       );
-      expect(terrainAfter === undefined ? [] : [...terrainAfter.artifact.positions]).toEqual(positionsBefore);
+      expect(terrainAfter.map(c=>[...c.artifact.positions])).toEqual(positionsBefore);
     } finally {
       await handle.dispose();
     }
@@ -684,24 +723,59 @@ describe("HVP T08 bootstrap lifecycle", () => {
     try {
       const root = source.backend.representationRoot;
       const terrainNode = new THREE.Mesh(new THREE.BufferGeometry(), new THREE.MeshBasicMaterial());
-      terrainNode.name = `representation:${HVP_TERRAIN_REPRESENTATION_KEY}`;
+      const terrain = source.commands.find((c):c is Extract<RenderCommand,{kind:"UpsertMeshArtifact"}>=>c.kind==="UpsertMeshArtifact"&&c.artifact.representationKey.startsWith("hvp:terrain:s"))!;
+      expect(terrain).toBeDefined();
+      terrainNode.name = `representation:${terrain.artifact.representationKey}`;
       const originals = [...(Array.isArray(terrainNode.material) ? terrainNode.material : [terrainNode.material])];
       root.add(terrainNode);
+      const woodNodes = source.commands.flatMap((command) => {
+        if (command.kind !== "UpsertMeshArtifact" || !command.artifact.representationKey.endsWith(":wood")) { return []; }
+        const material = new THREE.MeshBasicMaterial({vertexColors:true});
+        const node = new THREE.Mesh(new THREE.BufferGeometry(), material);
+        node.name = `representation:${command.artifact.representationKey}`;
+        root.add(node);
+        return [{node,material}];
+      });
+      expect(woodNodes).toHaveLength(4);
       const elements = source.body.children.flatMap((child) => [child, ...descendants(child)]);
       const aoButton = elements.find((element) => element.id === "hvp-ao-toggle");
       aoButton?.dispatchEvent(new Event("click"));
       const offMaterials = Array.isArray(terrainNode.material) ? terrainNode.material : [terrainNode.material];
-      expect(offMaterials).toHaveLength(4);
+      expect(offMaterials).toHaveLength(terrain.materialProfiles.length);
       expect(offMaterials).not.toEqual(originals);
       for (const material of offMaterials) {
         expect((material as { vertexColors?: boolean }).vertexColors).toBe(false);
       }
+      for (const {node,material} of woodNodes) {
+        const uncolored = node.material as unknown as THREE.MeshBasicMaterial[];
+        expect(uncolored).toHaveLength(1);
+        expect(uncolored[0]!.vertexColors).toBe(false);
+        expect(uncolored[0]).not.toBe(material);
+      }
       aoButton?.dispatchEvent(new Event("click"));
       expect([...(Array.isArray(terrainNode.material) ? terrainNode.material : [terrainNode.material])]).toEqual(originals);
+      for (const {node,material} of woodNodes) {
+        expect(node.material).toEqual([material]);
+        root.remove(node);
+        node.geometry.dispose();
+        material.dispose();
+      }
       root.remove(terrainNode);
+      terrainNode.geometry.dispose();
+      originals.forEach((material) => material.dispose());
     } finally {
       await handle.dispose();
     }
+  });
+
+  it("separates retired initial-build scratch from live replacement working memory without raising caps",()=>{
+    const mib=1024*1024,before={totalCpuBytes:250*mib,tempEstimateBytes:150*mib},after={totalCpuBytes:251*mib,tempEstimateBytes:149*mib};
+    const totalCpuBytes=estimateHvpStageCpuBytes(before,after,2*mib,96*mib);
+    expect(totalCpuBytes).toBe(204*mib); // 102 retained + 6 old/new/index coexistence + 96 preparation.
+    expect(()=>admitHvpResources({totalCpuBytes,retainedMeshBytes:30*mib,triangles:400_000,drawCalls:200})).not.toThrow();
+    expect(()=>admitHvpResources({totalCpuBytes:estimateHvpStageCpuBytes(before,after,20*mib,96*mib),
+      retainedMeshBytes:30*mib,triangles:400_000,drawCalls:200})).toThrow(/BudgetExceeded/);
+    expect(HVP_RESOURCE_CAPS_DEFAULT.maxCpuBytes).toBe(256*mib);
   });
 
   it("accounts exact ledger bytes from known inputs and rejects just below total", () => {
@@ -796,6 +870,17 @@ describe("HVP T08 bootstrap lifecycle", () => {
         ...HVP_RESOURCE_CAPS_DEFAULT,
         maxMeshBytes: ledger.retainedMeshBytes - 1
       })).toThrow(/BudgetExceeded/);
+  });
+
+  it("rejects a World missing the planned inertia specimen before publishing meshes",async()=>{
+    const source=harness();const options=source.overrides()!;
+    const handle=await startHvp({...options,createPhysics:async(...args)=>{
+      const client=await options.createPhysics!(...args);
+      return {...client,read:()=>({...client.read(),inertia:null})};
+    }});
+    expect(source.body.dataset.hestiaPrototypeState).toBe("Error");
+    expect(source.commands.some(c=>c.kind==="UpsertMeshArtifact")).toBe(false);
+    await handle.dispose();
   });
 
   it("never reaches Ready on an invalid source and stays fail-closed", async () => {
@@ -895,5 +980,17 @@ describe("HVP T08 bootstrap lifecycle", () => {
     } finally {
       await handle.dispose();
     }
+  });
+  it("publishes save busy and rejection immediately without waiting for a render frame",async()=>{
+    const source=harness(),handle=await startHvp(source.overrides());
+    try{
+      const save=source.body.children.flatMap(child=>[child,...descendants(child)]).find(e=>e.id==="hvp-save")!;
+      expect(save).toBeDefined();save.dispatchEvent(new Event("click"));
+      expect(JSON.parse(source.body.dataset.hestiaPrototypeSave!).state).toBe("Saving");
+      // Transport fixture deliberately has no checkpoint method: exercise the
+      // error boundary, not a fake successful persistence operation.
+      await vi.waitFor(()=>expect(JSON.parse(source.body.dataset.hestiaPrototypeSave!).state).toBe("Rejected"));
+      expect(source.counts().renders).toBe(0);
+    }finally{await handle.dispose();}
   });
 });

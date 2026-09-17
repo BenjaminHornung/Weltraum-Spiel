@@ -1,7 +1,7 @@
 /**
  * HVP authored coast source boundary (HVP-TERRAIN-0125-v1, HVP-02 correction).
  *
- * Versioned, fully data-driven basis `hvp-authored-coast-v3` with the named
+ * Versioned, fully data-driven basis `hvp-authored-coast-v5` with the named
  * seed `hestia-hvp-lagoon-001`. The active region x/z [-16, 16) m and
  * y [-8, 8) m holds 256 x 128 x 256 compact Uint8 material slots
  * (8,388,608 bytes) in X-fastest adaptive order (x, then y, then z),
@@ -18,7 +18,7 @@
 import { fnv1aHash } from "../core/hash";
 import type { HvpCoverageState } from "./hvpTerrain";
 
-export const HVP_COAST_SOURCE_VERSION = "hvp-authored-coast-v3";
+export const HVP_COAST_SOURCE_VERSION = "hvp-authored-coast-v5";
 export const HVP_COAST_SEED_NAME = "hestia-hvp-lagoon-001";
 
 /** Addressable quantum: real 0.125 m runtime cells, not metadata. */
@@ -94,6 +94,16 @@ const HVP_COAST_CHANNEL_XZ: readonly (readonly [number, number])[] = Object.free
 export const HVP_SOURCE_CHANNEL_CORE_HALF_WIDTH_METERS = 1.5;
 export const HVP_SOURCE_CHANNEL_MARGIN_METERS = 1.5;
 export const HVP_SOURCE_CHANNEL_FLOOR_METERS = -1.5;
+/** Known dry locomotion fixture beside the clearing; canonical cells own every face. */
+export const HVP_PLAYER_SHAFT = Object.freeze({ minX: -11.75, maxX: -10.25, minZ: -11.75, maxZ: -10.25, floor: 0.125 });
+/** Canonical C05 rock arm: one supported roof, real dry air below, no loose prop. */
+export const HVP_ROCK_ARM = Object.freeze({ minX:5.5,maxX:9.5,minZ:-7,maxZ:-5.5,
+  roofMinX:6,roofMaxX:9,roofMinZ:-6.5,roofMaxZ:-6,pillarMaxX:6.5,
+  floor:0.125,roofBottom:2.25,roofTop:2.75 });
+const inRockArmSite=(x:number,z:number):boolean=>x>=HVP_ROCK_ARM.minX&&x<HVP_ROCK_ARM.maxX
+  &&z>=HVP_ROCK_ARM.minZ&&z<HVP_ROCK_ARM.maxZ;
+const underRockArmRoof=(x:number,z:number):boolean=>x>=HVP_ROCK_ARM.roofMinX&&x<HVP_ROCK_ARM.roofMaxX
+  &&z>=HVP_ROCK_ARM.roofMinZ&&z<HVP_ROCK_ARM.roofMaxZ;
 const HVP_CHANNEL_OUTER_METERS = HVP_SOURCE_CHANNEL_CORE_HALF_WIDTH_METERS + HVP_SOURCE_CHANNEL_MARGIN_METERS;
 
 /** Controlled payload admission for the HVP scene (global caps). */
@@ -296,6 +306,11 @@ const farSeaEaseMeters = (x: number, z: number): number => {
 export const hvpSourceSurfaceMeters = (x: number, z: number): number => {
   assertFinite(x, "hvpSourceSurfaceMeters");
   assertFinite(z, "hvpSourceSurfaceMeters");
+  if (x >= HVP_PLAYER_SHAFT.minX && x < HVP_PLAYER_SHAFT.maxX
+    && z >= HVP_PLAYER_SHAFT.minZ && z < HVP_PLAYER_SHAFT.maxZ) {
+    return HVP_PLAYER_SHAFT.floor;
+  }
+  if(inRockArmSite(x,z)){return underRockArmRoof(x,z)?HVP_ROCK_ARM.roofTop:HVP_ROCK_ARM.floor;}
   const channel = hvpChannelSignedDistanceMeters(x, z);
   let plateau = channel.side > 0 ? 0.75 : 1.5;
   for (const hill of HVP_COAST_HILLS) {
@@ -341,7 +356,7 @@ const terraceStepMeters = (surfaceMeters: number): number => {
 /** Quantized column top in meters for world (x, z): whole steps on the 0.125 m grid. */
 export const hvpSourceColumnTopMeters = (x: number, z: number): number => {
   const surface = hvpSourceSurfaceMeters(x, z);
-  const step = terraceStepMeters(surface);
+  const step = inRockArmSite(x,z)?HVP_SOURCE_CELL_METERS:terraceStepMeters(surface);
   return Math.floor(surface / step + 1e-6) * step;
 };
 
@@ -412,7 +427,7 @@ export const readHvpSourceColumnWorld = (x: number, z: number): HvpSourceColumn 
   assertFinite(x, "readHvpSourceColumnWorld");
   assertFinite(z, "readHvpSourceColumnWorld");
   const surface = hvpSourceSurfaceMeters(x, z);
-  const step = terraceStepMeters(surface);
+  const step = inRockArmSite(x,z)?HVP_SOURCE_CELL_METERS:terraceStepMeters(surface);
   const top = Math.floor(surface / step + 1e-6) * step;
   const channel = hvpChannelSignedDistanceMeters(x, z);
   let slot: number;
@@ -453,15 +468,27 @@ const fillHvpColumn = (slots: Uint8Array, ix: number, iz: number, top: number, t
   }
 };
 
-const materializeSlab = (slots: Uint8Array, izStart: number, izExclusive: number): void => {
+const materializeSlab = (slots: Uint8Array, izStart: number, izExclusive: number,originX=-16): void => {
   for (let iz = izStart; iz < izExclusive; iz += 1) {
     const worldZ = -16 + (iz + 0.5) * HVP_SOURCE_CELL_METERS;
     for (let ix = 0; ix < HVP_SOURCE_SIZE_X; ix += 1) {
-      const worldX = -16 + (ix + 0.5) * HVP_SOURCE_CELL_METERS;
+      const worldX = originX + (ix + 0.5) * HVP_SOURCE_CELL_METERS;
       const column = readHvpSourceColumnWorld(worldX, worldZ);
       fillHvpColumn(slots, ix, iz, column.topMeters, column.slot);
+      if(underRockArmRoof(worldX,worldZ)&&worldX>=HVP_ROCK_ARM.pillarMaxX){
+        const bottom=(HVP_ROCK_ARM.floor-HVP_SOURCE_MIN_METERS.y)/HVP_SOURCE_CELL_METERS;
+        const ceiling=(HVP_ROCK_ARM.roofBottom-HVP_SOURCE_MIN_METERS.y)/HVP_SOURCE_CELL_METERS;
+        for(let iy=bottom;iy<ceiling;iy+=1){slots[snapshotIndex(ix,iy,iz)]=HVP_SLOT_KNOWN_AIR;}
+      }
     }
   }
+};
+
+/** Same authored field for the two admitted regions; never region-local noise. */
+export const materializeHvpRegionRows=(slots:Uint8Array,originX:number,startZ:number,endZ:number):void=>{
+  if(!(slots instanceof Uint8Array)||slots.length!==HVP_SOURCE_SLOT_COUNT||(originX!==-16&&originX!==16)
+    ||!Number.isInteger(startZ)||!Number.isInteger(endZ)||startZ<0||endZ>256||endZ<=startZ){throw new Error("Invalid bounded region rows");}
+  materializeSlab(slots,startZ,endZ,originX);
 };
 
 const materializeSlots = (progress?: (doneSlabs: number, totalSlabs: number) => void): Uint8Array => {
@@ -538,6 +565,15 @@ const wrapSnapshot = (slots: Uint8Array): HvpCoastSourceSnapshot => {
 
 /** Fully materialized, validated coast pages for the named seed. */
 export const materializeHvpCoastSource = (): HvpCoastSourceSnapshot => wrapSnapshot(materializeSlots());
+
+/** Artifact boundary: verify saved canonical bytes without running the generator. */
+export const restoreHvpCoastSource = (slots:Uint8Array,expectedDigest:string):HvpCoastSourceSnapshot => {
+  if(!(slots instanceof Uint8Array)||slots.length!==HVP_SOURCE_SLOT_COUNT||slots.some(s=>s>HVP_SLOT_MOSS)
+    ||typeof expectedDigest!=="string"||!/^[0-9a-f]{8}$/.test(expectedDigest)){throw new Error("Invalid coast checkpoint");}
+  const snapshot=wrapSnapshot(slots.slice());
+  if(snapshot.sourceDigest!==expectedDigest){throw new Error("Coast checkpoint digest mismatch");}
+  return snapshot;
+};
 
 /**
  * Chunked materialization with a genuine event-loop yield between slabs so a

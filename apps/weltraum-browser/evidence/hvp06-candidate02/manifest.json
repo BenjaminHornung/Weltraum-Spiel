@@ -1,0 +1,395 @@
+{
+  "runId": "91a6de9e-2a67-471e-831f-9237531d4abe",
+  "baseCommit": "30063007aeea9f8a7d48d2856ad1de7437b308fb",
+  "branch": "feature/hvp-03-signature-vegetation",
+  "dirtyTracked": true,
+  "browser": "chromium 153.0.8010.37",
+  "dpr": 1,
+  "vegetationDigest": "473e49c5",
+  "look": "hvp:readable-coast-v6",
+  "sourceDigest": "f30eca0a",
+  "effects": "hvp-surface-light-v1",
+  "frameDiagnostics": {
+    "renderSubmitMs": 0.9000000059604645,
+    "calls": 168,
+    "triangles": 377608,
+    "geometries": 128,
+    "textures": 3,
+    "shadowUpdated": false,
+    "shadowMapSize": 1024,
+    "fullscreenTargets": 0
+  },
+  "sources": [
+    {
+      "path": "src/hestia-prototype/presentation/vegetation.ts",
+      "bytes": 21226,
+      "sha256": "a67b7dc29045e948a24a37379b3c3880bf56d72c145160ac9aab0f05dd07eb4c"
+    },
+    {
+      "path": "src/hestia-prototype/presentation/look.ts",
+      "bytes": 5180,
+      "sha256": "1c058c73d4313b6da757b341f6dad66173d73332d169d7dbe04710b96c0219ea"
+    },
+    {
+      "path": "src/hestia-prototype/presentation/visualEffects.ts",
+      "bytes": 8596,
+      "sha256": "d902cecaec5e1f3624094513939f1d24d81668322dade3bd2a791df99694e123"
+    },
+    {
+      "path": "src/hvp/hvpBootstrap.ts",
+      "bytes": 66565,
+      "sha256": "0932acd6710f472ab36f9b2d2c2d8b8cc3c672a5d92965bc2ee59e36376becf0"
+    },
+    {
+      "path": "src/hvp/hvpCamera.ts",
+      "bytes": 9938,
+      "sha256": "c6b6106d810ccc9aced3fc80d69dd48e934e021b0b8b44c7f3fe5dac043231bd"
+    },
+    {
+      "path": "src/hvp/hvpHud.ts",
+      "bytes": 11323,
+      "sha256": "e599ee8fa405ed82b4ee7225613790a7a110bba0aea11b925d8fbbc70ac8d55d"
+    },
+    {
+      "path": "src/hvp/hvpCoastSource.ts",
+      "bytes": 35143,
+      "sha256": "eebe13424684179f9e07fd6c1e78da3b80c95747291c952f6ef5a9b1ceb13252"
+    },
+    {
+      "path": "src/hvp/hvpCoastMesher.ts",
+      "bytes": 36759,
+      "sha256": "6f44681a26d481129b7ddb7dbf4f335e33605b2eed7aa17a55aa7448e31b3d03"
+    },
+    {
+      "path": "tests/e2e/hvp-look.spec.ts",
+      "bytes": 53141,
+      "sha256": "6cd6b858a54a6899c384c96b5d4fc3756af4460c88cdf38e490a54c9f8eebbbf"
+    },
+    {
+      "path": "src/hestia-prototype/physics/rapierPort.ts",
+      "bytes": 3146,
+      "sha256": "e29977e50709178270d8e35730f79517177f6ed5a4968c706800934e2947d772"
+    },
+    {
+      "path": "src/hestia-prototype/physics/profile.ts",
+      "bytes": 842,
+      "sha256": "a1ad60fc4a5a032b0338de8d416dcb714443699f5d3e855f0a3c0e867f4c29be"
+    },
+    {
+      "path": "src/hestia-prototype/physics/tick.ts",
+      "bytes": 1314,
+      "sha256": "3e3ffad1e3fbebc770ed1b89d466d6fa28287e47fffb67bb43b673298f07bc34"
+    },
+    {
+      "path": "src/hestia-prototype/physics/terrainColliders.ts",
+      "bytes": 3420,
+      "sha256": "f880d7e9da8f63c6c1ea5fde50c85a3507acb5d70872117528b9121b4c870136"
+    },
+    {
+      "path": "src/hestia-prototype/physics/session.ts",
+      "bytes": 8579,
+      "sha256": "d9ef4b0a1acc091b90481fa05a3ef09e273e06fe04267b7f66e43e41b04c36d5"
+    },
+    {
+      "path": "src/hestia-prototype/physics/physicsWorker.ts",
+      "bytes": 4236,
+      "sha256": "3325179889573e6920bcdc2d0cb7c60309647d39cb06a7a18938827982b59071"
+    },
+    {
+      "path": "src/hestia-prototype/physics/client.ts",
+      "bytes": 11442,
+      "sha256": "4592935ea7d8344c3b303b76bf1bedaff88fe2143c7d84790254ae5eb67b0bd8"
+    },
+    {
+      "path": "src/hestia-prototype/player/locomotion.ts",
+      "bytes": 6880,
+      "sha256": "9a89d501d596dc5f918cddda4ad97c8cc2c1889e9ad9eb53b79ce5626d68be98"
+    },
+    {
+      "path": "src/hestia-prototype/player/input.ts",
+      "bytes": 8856,
+      "sha256": "ab0c380556c62260dc3f38699ffaaf38cf5141cbbd7c9f7e3efff6324daf1b66"
+    },
+    {
+      "path": "src/hestia-prototype/player/presentation.ts",
+      "bytes": 3441,
+      "sha256": "dc26489be8d6139d2ed97d5b284d54d4aae46db8a44d8dc510158ea929f254f2"
+    },
+    {
+      "path": "src/workers/hvpCollisionJob.ts",
+      "bytes": 4956,
+      "sha256": "29621aca6a82a5617a67e1a6047d73a2b3d638621288a45fb8018bae0870ae9c"
+    },
+    {
+      "path": "src/workers/workerPool.ts",
+      "bytes": 26031,
+      "sha256": "0406a7c01d5dee07315610c3545393421368fd9e3cef1b1a09730dd287c5b95d"
+    },
+    {
+      "path": "src/workers/streamingWorker.ts",
+      "bytes": 15031,
+      "sha256": "12e7007d6cc052c271a0ed47b4bb96d68731d5fb865fda8ca4f99dd8b2de33b4"
+    },
+    {
+      "path": "tests/e2e/hvp-visible-coast.spec.ts",
+      "bytes": 26248,
+      "sha256": "5bc2699a8d1225572015dd8745d9ce8685a7be90c6c4096c876f26df6bcb02e5"
+    },
+    {
+      "path": "package.json",
+      "bytes": 2503,
+      "sha256": "0ba7f05ec41d12b1be545c54fc1583df4b25f398a8917b0facdedc295a86e602"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 59899,
+      "sha256": "df777f04bd29b891cccefcffb3b54cdd9f4dec8ae59d3de258ecdb85696c3890"
+    },
+    {
+      "path": "src/workers/hvpTerrainJob.ts",
+      "bytes": 6808,
+      "sha256": "dd226eb81bff29389133da83787c4c04bdd5fb3e08aadd8b3103a4dfca0c67f7"
+    },
+    {
+      "path": "src/hestia-prototype/terrain/picking.ts",
+      "bytes": 2504,
+      "sha256": "5d147db11f5ad53ceab20b7865f972570389836478378062afd6d1c0f5f1ae90"
+    },
+    {
+      "path": "src/hestia-prototype/terrain/cutPlan.ts",
+      "bytes": 12198,
+      "sha256": "7305a7dfa7ed386151c4598f4d253ccd6a8864e0ad75a24056efda04bab92d1c"
+    },
+    {
+      "path": "src/hestia-prototype/terrain/terrainProducts.ts",
+      "bytes": 5971,
+      "sha256": "7b875adf56312d8a3a2b2869f8b20d48c7efd002c93b92a71892a4267d3428d6"
+    },
+    {
+      "path": "src/hestia-prototype/terrain/terrainConsumer.ts",
+      "bytes": 4888,
+      "sha256": "dee4a2ae128eb70dea94de75c956d728830fdfeb5194e2aea26ec614c9e7c791"
+    },
+    {
+      "path": "src/hestia-prototype/terrain/plasmaTool.ts",
+      "bytes": 2811,
+      "sha256": "6216f5066ca37b3f1c624368ae9b297eef6e6bfc03a9f0490ffac7f07892263a"
+    }
+  ],
+  "resources": {
+    "ledger": {
+      "slotBytes": 8388608,
+      "preparedCopyBytes": 8388608,
+      "maskBytes": 1089536,
+      "meshBytes": 28339260,
+      "groupedIndexBytes": 2448936,
+      "artifactCopyBytes": 28339260,
+      "retainedMeshBytes": 28352828,
+      "tempEstimateBytes": 156654136,
+      "vegetationSourceBytes": 7228096,
+      "totalCpuBytes": 248186456,
+      "gpuBytes": "unsupported",
+      "triangles": 377608,
+      "drawCalls": 168,
+      "physicsPayloadBytes": 4984704,
+      "physicsPrepareBytes": 100663296
+    },
+    "caps": {
+      "maxCpuBytes": 268435456,
+      "maxMeshBytes": 134217728,
+      "maxTriangles": 500000,
+      "maxDrawCalls": 300
+    }
+  },
+  "captures": [
+    {
+      "name": "hvp03-c01.png",
+      "camera": "C01-EYE",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "7837d4a7b84b69bcce1739f3fbbe59897be7cb80f8f8f078aaf578ffdf045989",
+      "bytes": 1025325,
+      "state": "water on; AO on; physics paused; panels hidden; Show UI control visible"
+    },
+    {
+      "name": "hvp03-c02.png",
+      "camera": "C02-SHORE",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "262466355adc2d7b00c2dda57e2939f456c118085378e6b7cf17e3dd0d285c59",
+      "bytes": 916920,
+      "state": "water on; AO on; physics paused; panels hidden; Show UI control visible"
+    },
+    {
+      "name": "hvp03-c03.png",
+      "camera": "C03-ROOTS",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "7b4804eeacf367a555f40467a87d88dfdc38a2caf5944e9eab152148031138e0",
+      "bytes": 990076,
+      "state": "water on; AO on; physics paused; panels hidden; Show UI control visible"
+    },
+    {
+      "name": "hvp03-c04.png",
+      "camera": "C04-WIDE",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "d2e8da3cf2f615b9c940da684e5b56e0030f71ea9593626459cb30cbefa24ea0",
+      "bytes": 1287260,
+      "state": "water on; AO on; physics paused; panels hidden; Show UI control visible"
+    },
+    {
+      "name": "hvp03-c04-1280.png",
+      "camera": "C04-WIDE",
+      "width": 1280,
+      "height": 720,
+      "sha256": "0551a97bb5b3f7be96d5c0193f5e816093e05514cc649a47fd1a7b0623ac5802",
+      "bytes": 723544,
+      "state": "water on; AO on; physics paused; panels hidden; Show UI control visible"
+    }
+  ],
+  "complete": true,
+  "artAcceptance": "PENDING_OWNER",
+  "stage": "HVP-06A/B safe-quarry runtime candidate",
+  "terrainGeneration": "0",
+  "terrainSectors": [
+    {
+      "id": 0,
+      "key": "hvp:terrain:s0:r0",
+      "hash": "fnv1a64:dad8c8b414ca91c3"
+    },
+    {
+      "id": 1,
+      "key": "hvp:terrain:s1:r0",
+      "hash": "fnv1a64:5b2783d1d84fe0c5"
+    },
+    {
+      "id": 2,
+      "key": "hvp:terrain:s2:r0",
+      "hash": "fnv1a64:c167624bec434df6"
+    },
+    {
+      "id": 3,
+      "key": "hvp:terrain:s3:r0",
+      "hash": "fnv1a64:42269d7c2fa368b0"
+    },
+    {
+      "id": 4,
+      "key": "hvp:terrain:s4:r0",
+      "hash": "fnv1a64:b27f071d982a8395"
+    },
+    {
+      "id": 5,
+      "key": "hvp:terrain:s5:r0",
+      "hash": "fnv1a64:cccda97ee1daa24b"
+    },
+    {
+      "id": 6,
+      "key": "hvp:terrain:s6:r0",
+      "hash": "fnv1a64:7ff1a13eb16e3ce7"
+    },
+    {
+      "id": 7,
+      "key": "hvp:terrain:s7:r0",
+      "hash": "fnv1a64:8208f6a776094bd9"
+    },
+    {
+      "id": 8,
+      "key": "hvp:terrain:s8:r0",
+      "hash": "fnv1a64:58b6ef3d62a1a770"
+    },
+    {
+      "id": 9,
+      "key": "hvp:terrain:s9:r0",
+      "hash": "fnv1a64:6e8bb9151c03d0e8"
+    },
+    {
+      "id": 10,
+      "key": "hvp:terrain:s10:r0",
+      "hash": "fnv1a64:dc5fab4e4f6ca737"
+    },
+    {
+      "id": 11,
+      "key": "hvp:terrain:s11:r0",
+      "hash": "fnv1a64:e525fd831589a48d"
+    },
+    {
+      "id": 12,
+      "key": "hvp:terrain:s12:r0",
+      "hash": "fnv1a64:98b3659a031b35ae"
+    },
+    {
+      "id": 13,
+      "key": "hvp:terrain:s13:r0",
+      "hash": "fnv1a64:598399ee36c1d544"
+    },
+    {
+      "id": 14,
+      "key": "hvp:terrain:s14:r0",
+      "hash": "fnv1a64:2f1e8671b26f1201"
+    },
+    {
+      "id": 15,
+      "key": "hvp:terrain:s15:r0",
+      "hash": "fnv1a64:2b5ff40dcf3f6b7a"
+    }
+  ],
+  "cutScope": "SafeQuarry only; 0.125 m canonical cells; tree/fragment cutting NOT_IMPLEMENTED",
+  "physics": {
+    "ticks": 153,
+    "backlogSeconds": 0.01239999999850995,
+    "discardedSeconds": 0,
+    "status": "Paused",
+    "gravity": 11.794460201817357,
+    "gravityProfile": "local-tangent-gravity-v1",
+    "solver": "rapier-0.12.0",
+    "stepCpuMs": 0.20000000298023224,
+    "bodyCount": 2,
+    "colliderCount": 84,
+    "nativeBytes": "unsupported",
+    "terrainGeneration": 0,
+    "collisionBytes": 2492352,
+    "terrainTransaction": "Idle",
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -9,
+        "y": 2.4200000762939453,
+        "z": -11
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "bodies": [
+      {
+        "ownerId": "hvp:physics:drop",
+        "position": {
+          "x": -9.624567985534668,
+          "y": 0.6241464614868164,
+          "z": -7.507255554199219
+        },
+        "orientation": {
+          "x": -0.6501973867416382,
+          "y": -0.2731212377548218,
+          "z": 0.27541404962539673,
+          "w": -0.6532956957817078
+        },
+        "velocity": {
+          "x": -0.000005034484274801798,
+          "y": -0.000993004534393549,
+          "z": 0.000010026726158685051
+        },
+        "sleeping": false,
+        "massKg": 300
+      }
+    ]
+  },
+  "preparation": {
+    "jobs": 95,
+    "peakParallelJobs": 2,
+    "mainPrepareMaxMs": 3.100000001490116
+  }
+}

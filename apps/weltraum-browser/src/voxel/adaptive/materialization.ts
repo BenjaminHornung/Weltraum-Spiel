@@ -239,23 +239,20 @@ export const materializeAdaptiveBrick = ({
   const occupancy: number[] = [];
   const material: (StableAuthorityId | null)[] = [];
   const semantic: (StableAuthorityId | null)[] = [];
+  // Private scratch only: predicates synchronously read it, never retain it.
+  // Public inputs and the complete output still receive their original validation/freeze.
+  const footprint = {min:{x:0,y:0,z:0},max:{x:0,y:0,z:0}};
 
   for (let z = 0; z < ADAPTIVE_BRICK_CELLS_PER_AXIS; z += 1) {
     for (let y = 0; y < ADAPTIVE_BRICK_CELLS_PER_AXIS; y += 1) {
       for (let x = 0; x < ADAPTIVE_BRICK_CELLS_PER_AXIS; x += 1) {
-        const min = {
-          x: key.originQuantum.x + x * cellSizeQuantum,
-          y: key.originQuantum.y + y * cellSizeQuantum,
-          z: key.originQuantum.z + z * cellSizeQuantum
-        };
-        const footprintQuantum = deepFreeze({
-          min,
-          max: {
-            x: min.x + cellSizeQuantum,
-            y: min.y + cellSizeQuantum,
-            z: min.z + cellSizeQuantum
-          }
-        }) as QuantumBounds;
+        footprint.min.x = key.originQuantum.x + x * cellSizeQuantum;
+        footprint.min.y = key.originQuantum.y + y * cellSizeQuantum;
+        footprint.min.z = key.originQuantum.z + z * cellSizeQuantum;
+        footprint.max.x = footprint.min.x + cellSizeQuantum;
+        footprint.max.y = footprint.min.y + cellSizeQuantum;
+        footprint.max.z = footprint.min.z + cellSizeQuantum;
+        const footprintQuantum = footprint as QuantumBounds;
         const index = x + ADAPTIVE_BRICK_CELLS_PER_AXIS * (y + ADAPTIVE_BRICK_CELLS_PER_AXIS * z);
         const sample: MutableSample = {
           density: baseSample.density,
