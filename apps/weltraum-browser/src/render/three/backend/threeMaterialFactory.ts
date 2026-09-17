@@ -11,6 +11,15 @@ interface CachedMaterial {
   references: number;
 }
 
+export interface ThreeMaterialAcquireOptions {
+  /**
+   * Serve the vertexColors variant for meshes carrying a color attribute.
+   * Cached separately from the uncolored variant under the same profile id,
+   * so mixed scenes keep both outputs intact regardless of load order.
+   */
+  readonly vertexColors?: boolean;
+}
+
 export class MaterialProfileConflictError extends Error {
   constructor(readonly profileId: MaterialProfileId) {
     super(`Material profile ${profileId} conflicts with its generation definition`);
@@ -37,7 +46,8 @@ export class ThreeMaterialFactory {
     return this.disposalCount;
   }
 
-  acquire(profiles: readonly MaterialProfile[]): ThreeMaterialLease {
+  acquire(profiles: readonly MaterialProfile[], options: ThreeMaterialAcquireOptions = {}): ThreeMaterialLease {
+    const vertexColors = options.vertexColors ?? false;
     const acquired: CachedMaterial[] = [];
     const newDefinitionIds: MaterialProfileId[] = [];
     try {
@@ -51,15 +61,16 @@ export class ThreeMaterialFactory {
           this.definitions.set(profile.id, signature);
           newDefinitionIds.push(profile.id);
         }
-        const cached = this.cache.get(profile.id);
+        const cacheKey = `${profile.id}|vertexColors=${vertexColors ? "1" : "0"}` as MaterialProfileId;
+        const cached = this.cache.get(cacheKey);
         if (cached !== undefined) {
           cached.references += 1;
           acquired.push(cached);
           continue;
         }
-        const material = this.create(profile);
+        const material = this.create(profile, vertexColors);
         const entry: CachedMaterial = { signature, material, references: 1 };
-        this.cache.set(profile.id, entry);
+        this.cache.set(cacheKey, entry);
         this.allocationCount += 1;
         acquired.push(entry);
       }
@@ -92,14 +103,15 @@ export class ThreeMaterialFactory {
     return disposed;
   }
 
-  private create(profile: MaterialProfile): THREE.Material {
+  private create(profile: MaterialProfile, vertexColors: boolean): THREE.Material {
     const parameters: THREE.MeshBasicMaterialParameters = {
       color: new THREE.Color(profile.baseColor.r, profile.baseColor.g, profile.baseColor.b),
       opacity: profile.opacity,
       transparent: profile.opacity < 1,
       side: profile.doubleSided ? THREE.DoubleSide : THREE.FrontSide,
       wireframe: profile.kind === "DebugWireframe" || profile.wireframe,
-      depthWrite: profile.depthWrite
+      depthWrite: profile.depthWrite,
+      vertexColors
     };
     return profile.kind === "BasicLit"
       ? new THREE.MeshLambertMaterial(parameters)

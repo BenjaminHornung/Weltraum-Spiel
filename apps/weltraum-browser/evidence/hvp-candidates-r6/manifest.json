@@ -1,0 +1,223 @@
+{
+  "worktree": "Hestia-HVP02-readable-coast",
+  "branch": "feature/hvp-02-readable-coast",
+  "baseCommit": "6c161f83f767a60b4a62e85bd53cdcf00a79aaf1",
+  "dirtyTracked": true,
+  "productSources": [
+    {
+      "path": "src/hvp/hvpCoastSource.ts",
+      "sha256": "7e4d75a6aa19b73685b111577aeef9a05c0790b5ca5fd35bd75c4c5204ef751f",
+      "bytes": 33808
+    },
+    {
+      "path": "src/hvp/hvpCoastMesher.ts",
+      "sha256": "1286e634ae40b16f2f778d98e82936d770d48767f4941d7fb33ceacd5f0703ea",
+      "bytes": 34570
+    },
+    {
+      "path": "src/hvp/hvpBootstrap.ts",
+      "sha256": "21f5bde590d4d3c9d9bfb6842bfdbf869bdd728680a0301c26ee21a17d5d2f1e",
+      "bytes": 42610
+    },
+    {
+      "path": "src/hvp/hvpHud.ts",
+      "sha256": "84b1612ce4bb22c49f28f755323905798f40e8d586d9cb79b5a93d86d19f28a7",
+      "bytes": 7761
+    },
+    {
+      "path": "src/voxel/blockAmbientOcclusion.ts",
+      "sha256": "5f97bfcec345f9d1a6c24c5d6d604ef41980b63db3b44cac6a71e1fa2c0ebde6",
+      "bytes": 7202
+    },
+    {
+      "path": "src/hestia-prototype/presentation/look.ts",
+      "sha256": "cb255e219187d1a6e91dfb0f8e68596bc99b6d4eac76d8802689e27e9555f439",
+      "bytes": 5096
+    },
+    {
+      "path": "src/render/three/backend/threeMaterialFactory.ts",
+      "sha256": "2fe4fcfb0fe7a47e84ad02a83f3d9a2746c795ba538c0e9d4272a58e3e6c09dc",
+      "bytes": 4454
+    },
+    {
+      "path": "src/render/three/backend/threeMeshFactory.ts",
+      "sha256": "cfbbe36b3d3891943cd8fc2fedff0a5d78ff435752f3760d50836b1e5387c8ea",
+      "bytes": 2746
+    }
+  ],
+  "labAo": {
+    "commit": "94bd8acd7ab12d21ff53987330a0e97f46166a17",
+    "files": [
+      "src/voxel/blockAo.ts",
+      "src/voxel/aoGreedyFaceMesher.ts",
+      "src/render-three/aoVertexColors.ts"
+    ]
+  },
+  "source": {
+    "seed": "hestia-hvp-lagoon-001",
+    "revision": "hvp-authored-coast-v2",
+    "digest": "f0c621f2",
+    "waterDigest": "b5c151f8",
+    "triangles": "366890"
+  },
+  "render": {
+    "look": "hvp:readable-coast-v3",
+    "renderer": "three-basic-lit",
+    "ao": "on",
+    "water": "on",
+    "browser": "chromium 153.0.8010.37",
+    "dpr": 1
+  },
+  "captureTest": {
+    "path": "tests/e2e/hvp-look.spec.ts",
+    "sha256": "3b47f968cfd29dd1fb931b0d24757baf1ef81a9f421887937d25731ba3e9bfa1",
+    "bytes": 37172
+  },
+  "cameras": [
+    {
+      "preset": "C01-EYE",
+      "position": [
+        -8,
+        3.15,
+        -11
+      ],
+      "target": [
+        0,
+        1,
+        5
+      ],
+      "fov": 60
+    },
+    {
+      "preset": "C02-SHORE",
+      "position": [
+        -2,
+        1.25,
+        -6
+      ],
+      "target": [
+        1,
+        -0.5,
+        -2
+      ],
+      "fov": 55
+    },
+    {
+      "preset": "C04-WIDE",
+      "position": [
+        -24,
+        18,
+        -28
+      ],
+      "target": [
+        0,
+        1,
+        1
+      ],
+      "fov": 55
+    }
+  ],
+  "captures": [
+    {
+      "name": "hvp-c01-eye.png",
+      "camera": "C01-EYE",
+      "viewport": "1920x1080",
+      "state": "water on, AO on",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "c76e06da820f684483aa351b5aeb1de4e3a9a659dbe4ea1078fadb16c1b6f34f",
+      "bytes": 533779
+    },
+    {
+      "name": "hvp-c01-eye-beauty.png",
+      "camera": "C01-EYE",
+      "viewport": "1920x1080",
+      "state": "water on, AO on, HUD hidden",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "3712cee63deb37e24203df62877223d733e5b11bf7e8aae83be60d200b4ab837",
+      "bytes": 519459
+    },
+    {
+      "name": "hvp-c04-wide.png",
+      "camera": "C04-WIDE",
+      "viewport": "1920x1080",
+      "state": "water on, AO on",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "e59949de032bad798d36f2cf017e236939a6b3ec34e8b01e3f8157368321584e",
+      "bytes": 625870
+    },
+    {
+      "name": "hvp-c04-wide-beauty.png",
+      "camera": "C04-WIDE",
+      "viewport": "1920x1080",
+      "state": "water on, AO on, HUD hidden",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "26001d64ab2a566e85017ad4d8538992c18708855fb007ccfa4a9b4d2c47f2da",
+      "bytes": 612598
+    },
+    {
+      "name": "hvp-c04-wide-1280x720.png",
+      "camera": "C04-WIDE",
+      "viewport": "1280x720",
+      "state": "water on, AO on, HUD visible",
+      "width": 1280,
+      "height": 720,
+      "sha256": "0adae130c8eef297b86703fa063921604b56237ba6382996d240123d4cdf1d3e",
+      "bytes": 421410
+    },
+    {
+      "name": "hvp-c02-with-water.png",
+      "camera": "C02-SHORE",
+      "viewport": "1920x1080",
+      "state": "water on, AO on",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "45cb1317e0706120df928cb9e474e6015b4193443317a7bd7c02b22e7e9251af",
+      "bytes": 705608,
+      "claims": [
+        "water-on baseline",
+        "ao-on baseline"
+      ]
+    },
+    {
+      "name": "hvp-c02-with-water-beauty.png",
+      "camera": "C02-SHORE",
+      "viewport": "1920x1080",
+      "state": "water on, AO on, HUD hidden",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "4a754bf09bde23ca68bee1329997699f7fc61f594e41b420aff0c89d7adb1461",
+      "bytes": 689822
+    },
+    {
+      "name": "hvp-c02-without-water.png",
+      "camera": "C02-SHORE",
+      "viewport": "1920x1080",
+      "state": "water off, AO on",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "2b25be70e2bef465f19a2ba4f01f469806a7db8b6e515059a11cc8d0d562e35b",
+      "bytes": 758633
+    },
+    {
+      "name": "hvp-c02-ao-off.png",
+      "camera": "C02-SHORE",
+      "viewport": "1920x1080",
+      "state": "water on, AO off",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "abefa64626d001f64f61b68deea6d215fc75eb06e23c3d6d2f26356b17449b9b",
+      "bytes": 135048
+    }
+  ],
+  "supersedesHistorical": [
+    "evidence/hvp-candidates/* (r1: rejected dark coarse baseline era)",
+    "evidence/hvp-candidates-r2/* (r2: pre-AO single-tone far field era)",
+    "evidence/hvp-candidates-r3/* (r3: AO corner-order defect era)",
+    "evidence/hvp-candidates-r4/* (r4: raised-wall seam defect era)",
+    "evidence/hvp-candidates-r5/* (r5: duplicate with-water/ao-on bytes, hardcoded browser/DPR, HUD in all captures, blank C01/C04 states)"
+  ]
+}

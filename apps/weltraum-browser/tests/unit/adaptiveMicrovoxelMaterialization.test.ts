@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import {createHash} from "node:crypto";
 import {
   authorityRevision,
   canonicalAdaptiveJson,
@@ -71,6 +72,12 @@ const journal = () =>
   ]);
 
 describe("adaptive microvoxel materialization obligations 10-12", () => {
+  it.each([3,4])("preserves complete materialized bytes when reusing private cell scratch (L%i)",(level)=>{
+    const result=materializeAdaptiveBrick({key:key(level),baseField:base(),editJournal:journal()});
+    const expected=level===3?"4c3ad214de12e7a7fc13a90efe04bbe311563213e0190bd64d69bf2e772cd662":"1bf2a92585debc947aa81fc0326d14205d846985e983e319cd9e2079b0b9167d";
+    expect(createHash("sha256").update(serializeMaterializedAdaptiveBrick(result)).digest("hex")).toBe(expected);
+    expect(isDeepFrozen(result)).toBe(true);
+  });
   it("[10] materializes byte-stable authority independently of operational A-B-A history", () => {
     const authoritativeKey = key();
     const edits = journal();

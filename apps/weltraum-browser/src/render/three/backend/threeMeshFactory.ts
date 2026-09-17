@@ -45,7 +45,9 @@ export const prepareThreeMesh = (
     artifact.materialRanges.forEach((range, materialIndex) => {
       geometry.addGroup(range.startIndex, range.indexCount, materialIndex);
     });
-    lease = materialFactory.acquire(materialProfiles);
+    lease = materialFactory.acquire(materialProfiles, {
+      vertexColors: artifact.attributes?.color !== undefined
+    });
     const sceneNode = new THREE.Mesh(geometry, [...lease.materials]);
     sceneNode.name = `representation:${artifact.representationKey}`;
     sceneNode.matrixAutoUpdate = true;

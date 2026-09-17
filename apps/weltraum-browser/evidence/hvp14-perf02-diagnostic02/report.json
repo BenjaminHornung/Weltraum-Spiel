@@ -1,0 +1,390 @@
+{
+  "status": "INELIGIBLE",
+  "scope": "declared scenario and fixture only",
+  "art": "NOT_ASSESSED",
+  "br04": "NOT_APPLICABLE",
+  "planSha256": "560d8c31ee54d66b13bd45cc733b2bd4e8794a8dc0418881677a2db523905c59",
+  "runs": [
+    {
+      "id": "5da07597-30ed-407b-b283-3b2af56d553b-1",
+      "processId": 39008,
+      "reasons": [],
+      "missing": [
+        "frameIntervalMs",
+        "solverStepCpuMs",
+        "mainCpuMs",
+        "frameIntervalMs: raw phase coverage",
+        "solverStepCpuMs: raw phase coverage",
+        "mainCpuMs: raw phase coverage"
+      ],
+      "metrics": {
+        "frameIntervalMs": null,
+        "solverStepCpuMs": null,
+        "mainCpuMs": null
+      },
+      "diagnosticMetrics": {
+        "frameIntervalMs": {
+          "count": 1749,
+          "p95": 16.80000000000291,
+          "p99": 33.400000000001455,
+          "max": 50
+        },
+        "solverStepCpuMs": {
+          "count": 1807,
+          "p95": 0.29999998211860657,
+          "p99": 0.4000000059604645,
+          "max": 0.7999999821186066
+        },
+        "mainCpuMs": null,
+        "commitUploadMs": null
+      },
+      "outcomes": {
+        "Applied": 0,
+        "NoOp": 0,
+        "Rejected": 0,
+        "Deferred": 0
+      },
+      "workload": {
+        "route": [
+          {
+            "id": "C01-EYE",
+            "atMs": 17395.399999976158,
+            "position": {
+              "x": -7.857273101806641,
+              "y": 2.2456438541412354,
+              "z": -10.514081001281738
+            },
+            "rootRevision": 0
+          },
+          {
+            "id": "C02-SHORE",
+            "atMs": 20280.19999998808,
+            "position": {
+              "x": -2.2660951614379883,
+              "y": -0.2869982421398163,
+              "z": -6.466774940490723
+            },
+            "rootRevision": 0
+          },
+          {
+            "id": "C03-ROOTS",
+            "atMs": 27981.69999998808,
+            "position": {
+              "x": 2.8601152896881104,
+              "y": -0.5999770164489746,
+              "z": 3.6758525371551514
+            },
+            "rootRevision": 0
+          },
+          {
+            "id": "SALVAGE-CLEARING",
+            "atMs": 38065.19999998808,
+            "position": {
+              "x": -8.621490478515625,
+              "y": 2.4820899963378906,
+              "z": -8.683499336242676
+            },
+            "rootRevision": 0
+          },
+          {
+            "id": "C01-EYE",
+            "atMs": 38868,
+            "position": {
+              "x": -8.2816743850708,
+              "y": 2.3999922275543213,
+              "z": -10.56102466583252
+            },
+            "rootRevision": 0
+          },
+          {
+            "id": "C02-SHORE",
+            "atMs": 41722.89999997616,
+            "position": {
+              "x": -2.2886571884155273,
+              "y": -0.29166412353515625,
+              "z": -6.495253086090088
+            },
+            "rootRevision": 0
+          }
+        ],
+        "walking": [
+          {
+            "startMs": 16835.79999998212,
+            "endMs": 17403.5,
+            "distanceMeters": 1.52647786033857
+          },
+          {
+            "startMs": 17434.5,
+            "endMs": 20286.69999998808,
+            "distanceMeters": 7.0792615883975705
+          },
+          {
+            "startMs": 20305.09999999404,
+            "endMs": 28001.59999999404,
+            "distanceMeters": 11.552158118160005
+          },
+          {
+            "startMs": 28018.59999999404,
+            "endMs": 38070.89999997616,
+            "distanceMeters": 18.725819840739714
+          },
+          {
+            "startMs": 38103.29999998212,
+            "endMs": 38884.09999999404,
+            "distanceMeters": 2.0176518219089443
+          },
+          {
+            "startMs": 38904.39999997616,
+            "endMs": 41738,
+            "distanceMeters": 7.841288569100323
+          },
+          {
+            "startMs": 41795.09999999404,
+            "endMs": 46851.89999997616,
+            "distanceMeters": 4.43066120437062
+          }
+        ],
+        "crossings": []
+      },
+      "cutLatency": null,
+      "feedback": null,
+      "changedCellRange": null
+    },
+    {
+      "id": "5da07597-30ed-407b-b283-3b2af56d553b-2",
+      "processId": 40700,
+      "reasons": [
+        "game-failure",
+        "Error: Workload stopped: {\"atMs\":28020.40000000596,\"status\":\"SimulationHold\",\"player\":{\"ownerId\":\"hvp:player\",\"position\":{\"x\":0.6005157232284546,\"y\":0.976315975189209,\"z\":-1.2139185667037964},\"grounded\":true,\"velocityY\":0,\"jumpCount\":3,\"cameraFraction\":1,\"status\":\"Inspection\"},\"neighbor\":{\"state\":\"NotRequested\",\"epoch\":0,\"wanted\":false,\"pinned\":false,\"lod\":0.5,\"collisionReady\":false,\"transitions\":0,\"busy\":false,\"recoveryHold\":false,\"error\":\"\",\"key\":\"\",\"renderLod\":null,\"proxyOnly\":false,\"sourceDigest\":null,\"sourceBytes\":0,\"checkpointBytes\":0,\"cacheBytes\":0,\"cacheEntries\":0,\"cacheHits\":0,\"cacheMisses\":0,\"adoptions\":0,\"stale\":0},\"nativeNeighbor\":null,\"colliderCount\":88,\"generation\":\"0\",\"camera\":{\"position\":[0.5106487797287729,2.1352582901803956,-1.4088411464021033],\"orientation\":[0,0.9767625583259628,0,-0.21432429785845572],\"visualBody\":[0.5106487797287729,1.3852582901803958,-1.4088411464021033],\"heightMeters\":1.8,\"view\":\"FirstPerson\"},\"input\":{\"owner\":\"Inspection\",\"locked\":false,\"jumpEdges\":3,\"neutralizations\":3,\"pressedKeys\":[]},\"clock\":{\"maxTimerGapMs\":97.40000000596046,\"maxAdvanceMs\":29.19999998807907,\"maxHandlerMs\":1121.2000000178814,\"lastCommand\":\"Read\",\"lastHandlerMs\":0.09999999403953552,\"simulationHold\":{\"gapMs\":97.40000000596046,\"previousCommand\":\"Read\",\"handlerMs\":1.300000011920929,\"advanceMs\":1.9000000059604645,\"backlogSeconds\":0.04363333331545241,\"ticks\":1276},\"delayedCallbacks\":[{\"gapMs\":97.40000000596046,\"previousCommand\":\"Read\",\"handlerMs\":1.300000011920929,\"advanceMs\":1.9000000059604645}]}}"
+      ],
+      "missing": [
+        "incomplete measurement window",
+        "frameIntervalMs",
+        "solverStepCpuMs",
+        "mainCpuMs",
+        "frameIntervalMs: raw phase coverage",
+        "solverStepCpuMs: raw phase coverage",
+        "mainCpuMs: raw phase coverage",
+        "complete actual walking route",
+        "continuous measured walking, not idle camera observation"
+      ],
+      "metrics": {
+        "frameIntervalMs": null,
+        "solverStepCpuMs": null,
+        "mainCpuMs": null
+      },
+      "diagnosticMetrics": {
+        "frameIntervalMs": {
+          "count": 437,
+          "p95": 33.60000000000218,
+          "p99": 66.79999999999927,
+          "max": 83.30000000000291
+        },
+        "solverStepCpuMs": {
+          "count": 527,
+          "p95": 0.4000000059604645,
+          "p99": 0.9000000059604645,
+          "max": 4.199999988079071
+        },
+        "mainCpuMs": null,
+        "commitUploadMs": null
+      },
+      "outcomes": {
+        "Applied": 0,
+        "NoOp": 0,
+        "Rejected": 0,
+        "Deferred": 0
+      },
+      "workload": {
+        "route": [
+          {
+            "id": "C01-EYE",
+            "atMs": 20402.90000000596,
+            "position": {
+              "x": -7.812833786010742,
+              "y": 2.1537413597106934,
+              "z": -10.445989608764648
+            },
+            "rootRevision": 0
+          },
+          {
+            "id": "C02-SHORE",
+            "atMs": 23529.600000023842,
+            "position": {
+              "x": -2.2429940700531006,
+              "y": -0.3067478835582733,
+              "z": -6.421699523925781
+            },
+            "rootRevision": 0
+          }
+        ],
+        "walking": [
+          {
+            "startMs": 19189.100000023842,
+            "endMs": 20447.600000023842,
+            "distanceMeters": 3.3488604423645207
+          },
+          {
+            "startMs": 20488.20000001788,
+            "endMs": 23570.90000000596,
+            "distanceMeters": 8.445319120204237
+          },
+          {
+            "startMs": 23615.600000023842,
+            "endMs": 28026.30000001192,
+            "distanceMeters": 5.559885023840799
+          }
+        ],
+        "crossings": []
+      },
+      "cutLatency": null,
+      "feedback": null,
+      "changedCellRange": null
+    },
+    {
+      "id": "5da07597-30ed-407b-b283-3b2af56d553b-3",
+      "processId": 43116,
+      "reasons": [],
+      "missing": [
+        "frameIntervalMs",
+        "solverStepCpuMs",
+        "mainCpuMs",
+        "frameIntervalMs: raw phase coverage",
+        "solverStepCpuMs: raw phase coverage",
+        "mainCpuMs: raw phase coverage"
+      ],
+      "metrics": {
+        "frameIntervalMs": null,
+        "solverStepCpuMs": null,
+        "mainCpuMs": null
+      },
+      "diagnosticMetrics": {
+        "frameIntervalMs": {
+          "count": 1578,
+          "p95": 33.400000000001455,
+          "p99": 50.30000000000291,
+          "max": 233.3000000000029
+        },
+        "solverStepCpuMs": {
+          "count": 1808,
+          "p95": 0.4000000059604645,
+          "p99": 0.7000000178813934,
+          "max": 6.5999999940395355
+        },
+        "mainCpuMs": null,
+        "commitUploadMs": null
+      },
+      "outcomes": {
+        "Applied": 0,
+        "NoOp": 0,
+        "Rejected": 0,
+        "Deferred": 0
+      },
+      "workload": {
+        "route": [
+          {
+            "id": "C01-EYE",
+            "atMs": 19687.5,
+            "position": {
+              "x": -7.868541240692139,
+              "y": 2.150216817855835,
+              "z": -10.659762382507324
+            },
+            "rootRevision": 0
+          },
+          {
+            "id": "C02-SHORE",
+            "atMs": 22826.19999998808,
+            "position": {
+              "x": -2.2435989379882812,
+              "y": -0.30854493379592896,
+              "z": -6.424144744873047
+            },
+            "rootRevision": 0
+          },
+          {
+            "id": "C03-ROOTS",
+            "atMs": 30256.79999998212,
+            "position": {
+              "x": 2.8833723068237305,
+              "y": -0.59998619556427,
+              "z": 3.701932191848755
+            },
+            "rootRevision": 0
+          },
+          {
+            "id": "SALVAGE-CLEARING",
+            "atMs": 39620.59999999404,
+            "position": {
+              "x": -8.568761825561523,
+              "y": 2.642430067062378,
+              "z": -8.636625289916992
+            },
+            "rootRevision": 0
+          },
+          {
+            "id": "C01-EYE",
+            "atMs": 40448.09999999404,
+            "position": {
+              "x": -8.214813232421875,
+              "y": 2.3997678756713867,
+              "z": -10.622788429260254
+            },
+            "rootRevision": 0
+          },
+          {
+            "id": "C02-SHORE",
+            "atMs": 43460.19999998808,
+            "position": {
+              "x": -2.064748764038086,
+              "y": -0.2850886881351471,
+              "z": -6.275633335113525
+            },
+            "rootRevision": 0
+          }
+        ],
+        "walking": [
+          {
+            "startMs": 18262.399999976158,
+            "endMs": 19720.69999998808,
+            "distanceMeters": 3.9146237077726984
+          },
+          {
+            "startMs": 19750.69999998808,
+            "endMs": 22839.29999998212,
+            "distanceMeters": 8.833177894795975
+          },
+          {
+            "startMs": 22852.79999998212,
+            "endMs": 30261.29999998212,
+            "distanceMeters": 11.559609147587883
+          },
+          {
+            "startMs": 30272.899999976158,
+            "endMs": 39654.59999999404,
+            "distanceMeters": 18.849863833793965
+          },
+          {
+            "startMs": 39687.79999998212,
+            "endMs": 40473.89999997616,
+            "distanceMeters": 2.0452144402768284
+          },
+          {
+            "startMs": 40492.09999999404,
+            "endMs": 43497,
+            "distanceMeters": 7.953922988969401
+          },
+          {
+            "startMs": 43525.59999999404,
+            "endMs": 48298.89999997616,
+            "distanceMeters": 3.9983417767957548
+          }
+        ],
+        "crossings": []
+      },
+      "cutLatency": null,
+      "feedback": null,
+      "changedCellRange": null
+    }
+  ]
+}

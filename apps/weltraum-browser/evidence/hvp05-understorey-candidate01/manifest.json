@@ -1,0 +1,278 @@
+{
+  "runId": "44f5f387-8566-4f4b-8744-e8e580023147",
+  "baseCommit": "30063007aeea9f8a7d48d2856ad1de7437b308fb",
+  "branch": "feature/hvp-03-signature-vegetation",
+  "dirtyTracked": true,
+  "browser": "chromium 153.0.8010.37",
+  "dpr": 1,
+  "vegetationDigest": "473e49c5",
+  "look": "hvp:readable-coast-v6",
+  "sourceDigest": "f30eca0a",
+  "effects": "hvp-surface-light-v1",
+  "frameDiagnostics": {
+    "renderSubmitMs": 0.7999999970197678,
+    "calls": 120,
+    "triangles": 377022,
+    "geometries": 113,
+    "textures": 3,
+    "shadowUpdated": false,
+    "shadowMapSize": 1024,
+    "fullscreenTargets": 0
+  },
+  "sources": [
+    {
+      "path": "src/hestia-prototype/presentation/vegetation.ts",
+      "bytes": 21540,
+      "sha256": "aca5744c04d1bda4cca8c6165492a3889be9c64dd682cf0103e3e2a3cbeea15f"
+    },
+    {
+      "path": "src/hestia-prototype/presentation/look.ts",
+      "bytes": 5180,
+      "sha256": "1c058c73d4313b6da757b341f6dad66173d73332d169d7dbe04710b96c0219ea"
+    },
+    {
+      "path": "src/hestia-prototype/presentation/visualEffects.ts",
+      "bytes": 8483,
+      "sha256": "2afe512616bbf4726b63f369442b65299dbae84be4c8228abe7fd984ca78d7aa"
+    },
+    {
+      "path": "src/hvp/hvpBootstrap.ts",
+      "bytes": 55460,
+      "sha256": "9e3d10cf9b934169bef98e4c96112ee94397fc41bfd6746f3b58315ee0b17962"
+    },
+    {
+      "path": "src/hvp/hvpCamera.ts",
+      "bytes": 9842,
+      "sha256": "d96dbd829883a3e8cab2fd5d367c022e18233edf61164d6c768d17cbd95c4134"
+    },
+    {
+      "path": "src/hvp/hvpHud.ts",
+      "bytes": 10452,
+      "sha256": "3a63b6edf7b2c4ab5e51e61105a8a67c7e81e95e929ddd99888f85a4b77f663d"
+    },
+    {
+      "path": "src/hvp/hvpCoastSource.ts",
+      "bytes": 35143,
+      "sha256": "eebe13424684179f9e07fd6c1e78da3b80c95747291c952f6ef5a9b1ceb13252"
+    },
+    {
+      "path": "src/hvp/hvpCoastMesher.ts",
+      "bytes": 36759,
+      "sha256": "6f44681a26d481129b7ddb7dbf4f335e33605b2eed7aa17a55aa7448e31b3d03"
+    },
+    {
+      "path": "tests/e2e/hvp-look.spec.ts",
+      "bytes": 52085,
+      "sha256": "9b6543bb7efba9ddcb3220fd413ce51eee594f3d7416e3727a81cf7b1efaf10f"
+    },
+    {
+      "path": "src/hestia-prototype/physics/rapierPort.ts",
+      "bytes": 3146,
+      "sha256": "e29977e50709178270d8e35730f79517177f6ed5a4968c706800934e2947d772"
+    },
+    {
+      "path": "src/hestia-prototype/physics/profile.ts",
+      "bytes": 842,
+      "sha256": "a1ad60fc4a5a032b0338de8d416dcb714443699f5d3e855f0a3c0e867f4c29be"
+    },
+    {
+      "path": "src/hestia-prototype/physics/tick.ts",
+      "bytes": 1314,
+      "sha256": "3e3ffad1e3fbebc770ed1b89d466d6fa28287e47fffb67bb43b673298f07bc34"
+    },
+    {
+      "path": "src/hestia-prototype/physics/terrainColliders.ts",
+      "bytes": 3420,
+      "sha256": "f880d7e9da8f63c6c1ea5fde50c85a3507acb5d70872117528b9121b4c870136"
+    },
+    {
+      "path": "src/hestia-prototype/physics/session.ts",
+      "bytes": 3912,
+      "sha256": "1c9406dc8e55469003fe7b14340deabce40a224c8c4425481fd04127d6cb6de0"
+    },
+    {
+      "path": "src/hestia-prototype/physics/physicsWorker.ts",
+      "bytes": 3243,
+      "sha256": "4be8dc8d786416820defba66775e83273833c48571c4f32dbeecddb831c55a9d"
+    },
+    {
+      "path": "src/hestia-prototype/physics/client.ts",
+      "bytes": 9611,
+      "sha256": "c627a6d95c611861f3e495a68ca2fe89565531b52e3493d533258b4eeaff0644"
+    },
+    {
+      "path": "src/hestia-prototype/player/locomotion.ts",
+      "bytes": 6880,
+      "sha256": "9a89d501d596dc5f918cddda4ad97c8cc2c1889e9ad9eb53b79ce5626d68be98"
+    },
+    {
+      "path": "src/hestia-prototype/player/input.ts",
+      "bytes": 7608,
+      "sha256": "6cec0d9d8ba07cf9909b06416e7d905fb17936681105f94170857bde2cc45b04"
+    },
+    {
+      "path": "src/hestia-prototype/player/presentation.ts",
+      "bytes": 3441,
+      "sha256": "dc26489be8d6139d2ed97d5b284d54d4aae46db8a44d8dc510158ea929f254f2"
+    },
+    {
+      "path": "src/workers/hvpCollisionJob.ts",
+      "bytes": 4956,
+      "sha256": "29621aca6a82a5617a67e1a6047d73a2b3d638621288a45fb8018bae0870ae9c"
+    },
+    {
+      "path": "src/workers/workerPool.ts",
+      "bytes": 25249,
+      "sha256": "dc4207c0919f94a93bbd42a3f2cac9efb1b9dc9dc64e08723649399c94d4d550"
+    },
+    {
+      "path": "src/workers/streamingWorker.ts",
+      "bytes": 14824,
+      "sha256": "064c13ef0aa999b7789c374d00dd0ef068a9e27f8bd6bf79a93af85f070a01aa"
+    },
+    {
+      "path": "tests/e2e/hvp-visible-coast.spec.ts",
+      "bytes": 23490,
+      "sha256": "6c812c0033b3c0f0cf3dff7ea385260e553b38dc03f3d52c0b0caf84749998a0"
+    },
+    {
+      "path": "package.json",
+      "bytes": 2503,
+      "sha256": "0ba7f05ec41d12b1be545c54fc1583df4b25f398a8917b0facdedc295a86e602"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 59899,
+      "sha256": "df777f04bd29b891cccefcffb3b54cdd9f4dec8ae59d3de258ecdb85696c3890"
+    }
+  ],
+  "resources": {
+    "ledger": {
+      "slotBytes": 8388608,
+      "preparedCopyBytes": 8388608,
+      "maskBytes": 1089536,
+      "meshBytes": 28290036,
+      "groupedIndexBytes": 2441904,
+      "artifactCopyBytes": 28290036,
+      "retainedMeshBytes": 28303604,
+      "tempEstimateBytes": 156527560,
+      "vegetationSourceBytes": 7228096,
+      "totalCpuBytes": 247954400,
+      "gpuBytes": "unsupported",
+      "triangles": 377022,
+      "drawCalls": 120,
+      "physicsPayloadBytes": 4984704,
+      "physicsPrepareBytes": 100663296
+    },
+    "caps": {
+      "maxCpuBytes": 268435456,
+      "maxMeshBytes": 134217728,
+      "maxTriangles": 500000,
+      "maxDrawCalls": 300
+    }
+  },
+  "captures": [
+    {
+      "name": "hvp03-c01.png",
+      "camera": "C01-EYE",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "611d228d0ba290aa3cfb21ddb205700ce81d6b0f573ce23877c0fa5ad373af1f",
+      "bytes": 1025400,
+      "state": "water on; AO on; physics paused; panels hidden; Show UI control visible"
+    },
+    {
+      "name": "hvp03-c02.png",
+      "camera": "C02-SHORE",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "132b6b89ee056b82786316aeebefcb64239bf7e76ffa77743dbc4e4fff31dc24",
+      "bytes": 916843,
+      "state": "water on; AO on; physics paused; panels hidden; Show UI control visible"
+    },
+    {
+      "name": "hvp03-c03.png",
+      "camera": "C03-ROOTS",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "b7b4633803c121c8d8ba5fb22d3231a745901750efe8eac02aee56ace61fc3eb",
+      "bytes": 990083,
+      "state": "water on; AO on; physics paused; panels hidden; Show UI control visible"
+    },
+    {
+      "name": "hvp03-c04.png",
+      "camera": "C04-WIDE",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "67e35c83e9d3326a2499284bd25dcfc8ad442ab836768fce90044a1a9354cede",
+      "bytes": 1287364,
+      "state": "water on; AO on; physics paused; panels hidden; Show UI control visible"
+    },
+    {
+      "name": "hvp03-c04-1280.png",
+      "camera": "C04-WIDE",
+      "width": 1280,
+      "height": 720,
+      "sha256": "57475671b027b017bb17aed55f8d28bdc1d9f0f4c9f819a682c360f6ce72f817",
+      "bytes": 723551,
+      "state": "water on; AO on; physics paused; panels hidden; Show UI control visible"
+    }
+  ],
+  "complete": true,
+  "artAcceptance": "PENDING_OWNER",
+  "stage": "HVP-04/05 runtime candidate",
+  "physics": {
+    "ticks": 161,
+    "backlogSeconds": 0.009666666666666726,
+    "discardedSeconds": 0,
+    "status": "Paused",
+    "gravity": 11.794460201817357,
+    "gravityProfile": "local-tangent-gravity-v1",
+    "solver": "rapier-0.12.0",
+    "stepCpuMs": 0.20000000298023224,
+    "bodyCount": 2,
+    "colliderCount": 84,
+    "nativeBytes": "unsupported",
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -9,
+        "y": 2.4200000762939453,
+        "z": -11
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "bodies": [
+      {
+        "ownerId": "hvp:physics:drop",
+        "position": {
+          "x": -9.624567985534668,
+          "y": 0.6241464614868164,
+          "z": -7.507255554199219
+        },
+        "orientation": {
+          "x": -0.6501973867416382,
+          "y": -0.2731212377548218,
+          "z": 0.27541404962539673,
+          "w": -0.6532956957817078
+        },
+        "velocity": {
+          "x": -0.000004861954494117526,
+          "y": -0.000993083929643035,
+          "z": 0.000009137577762885485
+        },
+        "sleeping": false,
+        "massKg": 300
+      }
+    ]
+  },
+  "preparation": {
+    "jobs": 95,
+    "peakParallelJobs": 2,
+    "mainPrepareMaxMs": 4.299999997019768
+  }
+}

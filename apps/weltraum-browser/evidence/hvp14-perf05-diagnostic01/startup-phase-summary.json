@@ -1,0 +1,200 @@
+{
+  "planSha256": "fad9b1e05b76d3c93aa67c3b8220ec2a28fa6fc2ef3709bffb05d26d68918a39",
+  "runs": [
+    {
+      "id": "f0551d33-a91b-4982-8b1e-c54ab2a4a59f-1",
+      "totals": {
+        "hvp.startupRendererMs": {
+          "count": 20,
+          "totalMs": 1332.1999999284744,
+          "maxMs": 517.5999999940395
+        },
+        "hvp.startupSourceMs": {
+          "count": 20,
+          "totalMs": 6687.000000089407,
+          "maxMs": 371.40000000596046
+        },
+        "hvp.startupCoastMeshMs": {
+          "count": 20,
+          "totalMs": 49498.30000001192,
+          "maxMs": 2695.699999988079
+        },
+        "hvp.startupVegetationMs": {
+          "count": 20,
+          "totalMs": 15017.5,
+          "maxMs": 791.9000000059605
+        },
+        "hvp.startupAdmissionMs": {
+          "count": 20,
+          "totalMs": 31.19999986886978,
+          "maxMs": 2.699999988079071
+        },
+        "hvp.navigationReadyMs": {
+          "count": 20,
+          "totalMs": 146336.90000000596,
+          "maxMs": 8014.300000011921
+        },
+        "hvp.bootstrapReadyMs": {
+          "count": 20,
+          "totalMs": 142377.79999995232,
+          "maxMs": 7769
+        },
+        "hvp.coldReadyMs": {
+          "count": 20,
+          "totalMs": 144335,
+          "maxMs": 7907.9000000059605
+        },
+        "hvp.startupPhysicsMs": {
+          "count": 20,
+          "totalMs": 31365.59999999404,
+          "maxMs": 2050.9000000059605
+        },
+        "hvp.startupPublishMs": {
+          "count": 20,
+          "totalMs": 38445.800000071526,
+          "maxMs": 2234.0999999940395
+        },
+        "hvp.startupBackendUpsertMs": {
+          "count": 2540,
+          "totalMs": 18565.39999908209,
+          "maxMs": 191.30000001192093
+        },
+        "hvp.startupProjectionMs": {
+          "count": 20,
+          "totalMs": 177.09999999403954,
+          "maxMs": 12.799999982118607
+        }
+      }
+    },
+    {
+      "id": "f0551d33-a91b-4982-8b1e-c54ab2a4a59f-2",
+      "totals": {
+        "hvp.startupRendererMs": {
+          "count": 3,
+          "totalMs": 614.0999999940395,
+          "maxMs": 506.5
+        },
+        "hvp.startupSourceMs": {
+          "count": 3,
+          "totalMs": 1395.0000000298023,
+          "maxMs": 550
+        },
+        "hvp.startupCoastMeshMs": {
+          "count": 3,
+          "totalMs": 9981.5,
+          "maxMs": 3661.600000023842
+        },
+        "hvp.startupVegetationMs": {
+          "count": 3,
+          "totalMs": 2280.899999976158,
+          "maxMs": 773.0999999940395
+        },
+        "hvp.startupAdmissionMs": {
+          "count": 3,
+          "totalMs": 6.900000035762787,
+          "maxMs": 2.600000023841858
+        },
+        "hvp.navigationReadyMs": {
+          "count": 3,
+          "totalMs": 25112.599999964237,
+          "maxMs": 8756.199999988079
+        },
+        "hvp.bootstrapReadyMs": {
+          "count": 3,
+          "totalMs": 24228.100000023842,
+          "maxMs": 8371.300000011921
+        },
+        "hvp.coldReadyMs": {
+          "count": 3,
+          "totalMs": 24742.90000000596,
+          "maxMs": 8668.40000000596
+        },
+        "hvp.startupPhysicsMs": {
+          "count": 3,
+          "totalMs": 4953.800000011921,
+          "maxMs": 1663.7000000178814
+        },
+        "hvp.startupPublishMs": {
+          "count": 3,
+          "totalMs": 4995.899999976158,
+          "maxMs": 1844
+        },
+        "hvp.startupBackendUpsertMs": {
+          "count": 381,
+          "totalMs": 2402.6999999284744,
+          "maxMs": 166.30000001192093
+        },
+        "hvp.startupProjectionMs": {
+          "count": 3,
+          "totalMs": 26.799999982118607,
+          "maxMs": 10.799999982118607
+        }
+      }
+    },
+    {
+      "id": "f0551d33-a91b-4982-8b1e-c54ab2a4a59f-3",
+      "totals": {
+        "hvp.startupRendererMs": {
+          "count": 20,
+          "totalMs": 1922.099999934435,
+          "maxMs": 697.5
+        },
+        "hvp.startupSourceMs": {
+          "count": 20,
+          "totalMs": 9556.099999964237,
+          "maxMs": 584.6999999880791
+        },
+        "hvp.startupCoastMeshMs": {
+          "count": 20,
+          "totalMs": 69551.60000005364,
+          "maxMs": 3885.5999999940395
+        },
+        "hvp.startupVegetationMs": {
+          "count": 20,
+          "totalMs": 15660.299999952316,
+          "maxMs": 949.8999999761581
+        },
+        "hvp.startupAdmissionMs": {
+          "count": 20,
+          "totalMs": 33.10000005364418,
+          "maxMs": 3.5
+        },
+        "hvp.navigationReadyMs": {
+          "count": 20,
+          "totalMs": 171765.90000000596,
+          "maxMs": 10075
+        },
+        "hvp.bootstrapReadyMs": {
+          "count": 20,
+          "totalMs": 166393.4999998808,
+          "maxMs": 9799.09999999404
+        },
+        "hvp.coldReadyMs": {
+          "count": 20,
+          "totalMs": 168924.69999998808,
+          "maxMs": 9897.700000017881
+        },
+        "hvp.startupPhysicsMs": {
+          "count": 20,
+          "totalMs": 35444.40000003576,
+          "maxMs": 2595.300000011921
+        },
+        "hvp.startupPublishMs": {
+          "count": 20,
+          "totalMs": 34225.79999989271,
+          "maxMs": 2024.199999988079
+        },
+        "hvp.startupBackendUpsertMs": {
+          "count": 2540,
+          "totalMs": 16506.000000357628,
+          "maxMs": 282
+        },
+        "hvp.startupProjectionMs": {
+          "count": 20,
+          "totalMs": 195.70000004768372,
+          "maxMs": 16.69999998807907
+        }
+      }
+    }
+  ]
+}

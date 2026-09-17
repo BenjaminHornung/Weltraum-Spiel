@@ -1,0 +1,158 @@
+{
+  "status": "INELIGIBLE",
+  "scope": "declared scenario and fixture only",
+  "art": "NOT_ASSESSED",
+  "br04": "NOT_APPLICABLE",
+  "planSha256": "fad9b1e05b76d3c93aa67c3b8220ec2a28fa6fc2ef3709bffb05d26d68918a39",
+  "runs": [
+    {
+      "id": "f0551d33-a91b-4982-8b1e-c54ab2a4a59f-1",
+      "processId": 26016,
+      "reasons": [],
+      "missing": [
+        "frameIntervalMs",
+        "solverStepCpuMs",
+        "mainCpuMs",
+        "frameIntervalMs: raw phase coverage",
+        "solverStepCpuMs: raw phase coverage",
+        "mainCpuMs: raw phase coverage"
+      ],
+      "metrics": {
+        "frameIntervalMs": null,
+        "solverStepCpuMs": null,
+        "mainCpuMs": null
+      },
+      "diagnosticMetrics": {
+        "frameIntervalMs": {
+          "count": 1709,
+          "p95": 16.900000000000546,
+          "p99": 83.48000000000047,
+          "max": 133.4439999999995
+        },
+        "solverStepCpuMs": {
+          "count": 4040,
+          "p95": 1.0999999940395355,
+          "p99": 3,
+          "max": 13.5
+        },
+        "mainCpuMs": null,
+        "commitUploadMs": null
+      },
+      "outcomes": {
+        "Applied": 0,
+        "NoOp": 0,
+        "Rejected": 0,
+        "Deferred": 0
+      },
+      "workload": {
+        "route": [],
+        "walking": [],
+        "crossings": []
+      },
+      "cutLatency": null,
+      "feedback": null,
+      "changedCellRange": null
+    },
+    {
+      "id": "f0551d33-a91b-4982-8b1e-c54ab2a4a59f-2",
+      "processId": 40004,
+      "reasons": [
+        "game-failure",
+        "Error: page.evaluate: Error: Lifecycle game failure: SimulationHold\n    at eval (eval at evaluate (:303:30), <anonymous>:5:17)\n    at UtilityScript.evaluate (<anonymous>:305:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)"
+      ],
+      "missing": [
+        "incomplete measurement window",
+        "frameIntervalMs",
+        "solverStepCpuMs",
+        "mainCpuMs",
+        "frameIntervalMs: raw phase coverage",
+        "solverStepCpuMs: raw phase coverage",
+        "mainCpuMs: raw phase coverage",
+        "20 actual lifecycle cycles"
+      ],
+      "metrics": {
+        "frameIntervalMs": null,
+        "solverStepCpuMs": null,
+        "mainCpuMs": null
+      },
+      "diagnosticMetrics": {
+        "frameIntervalMs": {
+          "count": 177,
+          "p95": 33.29999999999927,
+          "p99": 100.10599999999977,
+          "max": 117.23199999999997
+        },
+        "solverStepCpuMs": {
+          "count": 275,
+          "p95": 1.5,
+          "p99": 3.699999988079071,
+          "max": 9.199999988079071
+        },
+        "mainCpuMs": null,
+        "commitUploadMs": null
+      },
+      "outcomes": {
+        "Applied": 0,
+        "NoOp": 0,
+        "Rejected": 0,
+        "Deferred": 0
+      },
+      "workload": {
+        "route": [],
+        "walking": [],
+        "crossings": []
+      },
+      "cutLatency": null,
+      "feedback": null,
+      "changedCellRange": null
+    },
+    {
+      "id": "f0551d33-a91b-4982-8b1e-c54ab2a4a59f-3",
+      "processId": 41752,
+      "reasons": [],
+      "missing": [
+        "frameIntervalMs",
+        "solverStepCpuMs",
+        "mainCpuMs",
+        "frameIntervalMs: raw phase coverage",
+        "solverStepCpuMs: raw phase coverage",
+        "mainCpuMs: raw phase coverage"
+      ],
+      "metrics": {
+        "frameIntervalMs": null,
+        "solverStepCpuMs": null,
+        "mainCpuMs": null
+      },
+      "diagnosticMetrics": {
+        "frameIntervalMs": {
+          "count": 1767,
+          "p95": 33.399999999999636,
+          "p99": 83.66399999999885,
+          "max": 167.03399999999965
+        },
+        "solverStepCpuMs": {
+          "count": 3995,
+          "p95": 1.5,
+          "p99": 4.0999999940395355,
+          "max": 22.099999994039536
+        },
+        "mainCpuMs": null,
+        "commitUploadMs": null
+      },
+      "outcomes": {
+        "Applied": 0,
+        "NoOp": 0,
+        "Rejected": 0,
+        "Deferred": 0
+      },
+      "workload": {
+        "route": [],
+        "walking": [],
+        "crossings": []
+      },
+      "cutLatency": null,
+      "feedback": null,
+      "changedCellRange": null
+    }
+  ]
+}

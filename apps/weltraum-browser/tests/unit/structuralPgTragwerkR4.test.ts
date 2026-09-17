@@ -25,7 +25,7 @@ import {
   type StructuralRegionSave,
   type StructuralRestoredFragmentMotion
 } from "../../src/voxel/structural";
-import { createRapierStructuralPort, type RapierBodyRef } from "./rapierStructuralCommitPort";
+import { createRapierStructuralPort, type RapierBodyRef } from "../../src/hestia-prototype/physics/rapierPort";
 import {
   byteCount,
   algorithmVersion,

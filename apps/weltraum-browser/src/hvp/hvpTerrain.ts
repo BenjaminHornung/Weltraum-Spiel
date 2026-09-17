@@ -1,10 +1,12 @@
 /**
- * HVP-01 visible Hestia coast terrain authority.
+ * HVP-01 visible Hestia coast terrain authority (legacy coarse reference).
  *
  * HVP-TERRAIN-0125-v1: the addressable quantum is 0.125 m over
- * x/z [-16, 16) m and y [-8, 8) m. HVP-01 meshes deterministic 1 m
- * coast blocks aligned to that quantum; full microvoxel refinement
- * stays out of scope for HVP-02.
+ * x/z [-16, 16) m and y [-8, 8) m. The fine 0.125 m production runtime for
+ * HVP-02 lives in hvpCoastSource.ts (compact pages) and hvpCoastMesher.ts
+ * (deterministic greedy production mesh); this module remains as the frozen
+ * 1 m reference path for hollow/separate-cell meshing oracles and their
+ * pinned tests, not as the visible scene truth.
  */
 
 import { fnv1aHash } from "../core/hash";
@@ -33,7 +35,7 @@ export const HVP_WATER_MATERIAL_ID = "hvp:water";
 export const HVP_BLOCK_MESH_ALGORITHM_VERSION = "hvp-block-mesher-v1";
 export const HVP_LOCAL_AUTHORITY_ID = "hvp:local-authority-v1";
 
-/** HVP-01 visible coast meshes 1 m blocks; every corner stays on the 0.125 m quantum. */
+/** HVP-01 legacy reference meshes 1 m blocks; every corner stays on the 0.125 m quantum. */
 export const HVP_COAST_BLOCK_SIZE_METERS = 1;
 
 /** Hard output caps; every gate throws BudgetExceeded before the matching allocation. */
@@ -307,6 +309,7 @@ export interface HvpBlockMesh {
   readonly normals: Float32Array;
   readonly indices: Uint16Array | Uint32Array;
   readonly boundsMeters: { readonly min: HvpCell; readonly max: HvpCell };
+  /** HVP-01 mesher metadata; the HVP-02 look supplies presentation ranges. */
   readonly materialProfileId: string;
 }
 
