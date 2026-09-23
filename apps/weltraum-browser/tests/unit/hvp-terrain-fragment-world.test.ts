@@ -9,10 +9,17 @@ import {createMeshArtifact,representationKey,frameId,sourceRevision,artifactRevi
 import {materializeHvpCoastSource,prepareHvpCoastSource} from "../../src/hvp/hvpCoastSource";
 import {createHvpTerrainRoot} from "../../src/hestia-prototype/terrain/cutPlan";
 import {analyzeHvpTerrainSupport} from "../../src/hestia-prototype/terrain/supportPlan";
+import {ingestHvpStructuralCells} from "../../src/hestia-prototype/terrain/structuralIngest";
+import {hvpRigidColliderBoxes,prepareHvpRigidBody} from "../../src/hestia-prototype/physics/rigidRecipe";
+import {HVP_COAST_MATERIAL_REGISTRY} from "../../src/hvp/hvpCoastSource";
 const floor={sizeX:4,sizeY:16,sizeZ:4,cellMeters:.125,originMeters:{x:0,y:0,z:0},readSlot:(_x:number,y:number,_z:number)=>y===0?1:0};
 const roof={...floor,readSlot:(x:number,y:number,z:number)=>y===0||(x<2&&z===0&&y===12)?1:0};
+const fragmentCells=[{x:128,y:76,z:128,materialId:1},{x:129,y:76,z:128,materialId:1}];
+const fragmentMaterials=HVP_COAST_MATERIAL_REGISTRY.map(m=>({materialId:m.slot,densityKgPerCubicMeter:m.densityKgPerM3,
+  structuralClass:m.role,destructible:true,tags:null}));
+const fragmentBoxes=hvpRigidColliderBoxes(prepareHvpRigidBody(ingestHvpStructuralCells("test-fragment",fragmentCells,fragmentMaterials)));
 const fragment={ownerId:"hvp:terrain-fragment:r1:12345678",origin:{x:-16,y:-8,z:-16},massKg:2*2400*.125**3,
-  cells:[{x:128,y:76,z:128,materialId:1},{x:129,y:76,z:128,materialId:1}]};
+  cells:fragmentCells,colliderBoxes:fragmentBoxes};
 const prepare=async()=>({session:await createHvpPhysicsSession([...collisionSectors(roof)],{x:.4,y:2,z:.4}),
   replacements:[{index:0,mesh:[...collisionSectors(floor)][0]!}]});
 
@@ -22,7 +29,7 @@ it("bounds the actual Float32 render vertices after mixed-density native COM rec
     const cut=root.prepare({sessionId:before.sessionId,epoch:before.epoch,revision:before.revision,sourceDigest:before.sourceDigest,
       commandId:"roof",toolPolicy:"hvp-plasma-v1",shape:{kind:"Box",min:[176,78,76],max:[180,82,80]}});
     const part=analyzeHvpTerrainSupport(cut).fragments[0]!;
-    const request={...fragment,massKg:part.massKg,cells:part.cells};
+    const request={...fragment,massKg:part.massKg,cells:part.cells,colliderBoxes:part.colliderBoxes};
     session.prepareTerrain("mixed",0,replacements,[request]);
     const mesh=meshHvpTerrainFragment({request,state:session.read().preparedTerrainFragments[0]!});
     for(let i=0;i<mesh.positions.length;i+=3){

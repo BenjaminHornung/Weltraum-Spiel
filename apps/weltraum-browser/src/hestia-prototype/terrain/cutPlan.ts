@@ -286,13 +286,17 @@ export const createHvpTerrainOwner=(initial:ReturnType<typeof createHvpTerrainRo
   };
 };
 
-export const restoreHvpTerrainRoot=(value:unknown)=>{
+export const validateHvpTerrainCheckpointHeader=(value:unknown):HvpTerrainCheckpoint=>{
   const saved=value as HvpTerrainCheckpoint|null;
   if(!saved||saved.version!=="hvp-terrain-checkpoint-v1"||Object.keys(saved).sort().join(",")!=="base,baseDigest,epoch,leaves,revision,sessionId,sourceDigest,version"
     ||typeof saved.sessionId!=="string"||!/^[A-Za-z0-9:._-]{1,128}$/.test(saved.sessionId)||!Number.isSafeInteger(saved.epoch)||saved.epoch<0
     ||typeof saved.baseDigest!=="string"||!/^[a-f0-9]{8}$/.test(saved.baseDigest)||typeof saved.sourceDigest!=="string"||!/^[a-f0-9]{8}$/.test(saved.sourceDigest)){
     throw new Error("Unsupported terrain checkpoint version/identity");
   }
+  return saved;
+};
+export const restoreHvpTerrainRoot=(value:unknown)=>{
+  const saved=validateHvpTerrainCheckpointHeader(value);
   const base=decodeHvpGrid(saved.base);
   return createHvpTerrainRoot({...base,sourceDigest:saved.baseDigest},saved.sessionId,saved.epoch,undefined,saved);
 };

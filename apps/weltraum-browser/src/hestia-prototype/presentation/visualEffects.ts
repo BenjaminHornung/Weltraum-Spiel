@@ -1,8 +1,11 @@
 import * as THREE from "three";
 import type { ThreeRendererPort } from "../../render/three/backend/threeRenderBackend";
+import { HVP_SHADOW_REVISION_MAX_BYTES, sameHvpShadowRevision, type HvpShadowAtom, type HvpShadowCasterRevision,
+  type HvpShadowRevision } from "./shadowRevision";
 
 /** One sky draw, native tone mapping, one cached 1024² depth map; no fullscreen targets. */
-export const HVP_EFFECT_COST = Object.freeze({ triangles: 528, drawCalls: 1, meshBytes: 13568, cpuBytes: 16384 + 65536 });
+export const HVP_EFFECT_COST = Object.freeze({ triangles: 528, drawCalls: 1, meshBytes: 13568,
+  cpuBytes: 16384 + 65536 + 2 * HVP_SHADOW_REVISION_MAX_BYTES });
 export const HVP_EFFECT_VERSION = "hvp-surface-light-v1";
 
 export const shadeHvpSurface = (material: THREE.Material, water: boolean): void => {
@@ -54,7 +57,10 @@ export const createHvpVisualRenderer = (
   renderer.shadowMap.type = THREE.PCFShadowMap;
   renderer.shadowMap.autoUpdate = false;
   const seenMaterials = new WeakSet<THREE.Material>();
-  const prior = new Map<THREE.Mesh, { geometry: THREE.BufferGeometry; pose: number[]; visible: boolean; frame:number }>();
+  const surfaceHooks = new WeakSet<THREE.Material["onBeforeCompile"]>();
+  const surfaceKeys = new WeakSet<THREE.Material["customProgramCacheKey"]>();
+  let prior: HvpShadowRevision | undefined;
+  const unsupported = Symbol("untracked shadow state"), budgetExceeded = Symbol("shadow revision budget");
   // Bake a small tile once instead of evaluating multi-octave cloud noise every pixel/frame.
   const cloudPixels = new Uint8Array(256*256);
   const noise = (x:number,y:number,period:number):number => {
@@ -100,13 +106,103 @@ export const createHvpVisualRenderer = (
     if (!seenMaterials.has(material)) {
       shadeHvpSurface(material,water);
       seenMaterials.add(material);
+      surfaceHooks.add(material.onBeforeCompile);
+      surfaceKeys.add(material.customProgramCacheKey);
     }
+  };
+  const captureShadow = (scene: THREE.Scene, camera: THREE.Camera) => {
+    // Logical primitive/record payload, not a VM heap estimate. Charge temporary
+    // light tuples as well as the final flattened tuple before growing arrays.
+    let bytes = 128;
+    const charge = (amount: number): void => {
+      if (amount > HVP_SHADOW_REVISION_MAX_BYTES - bytes) { throw budgetExceeded; }
+      bytes += amount;
+    };
+    const add = (values: HvpShadowAtom[], ...atoms: HvpShadowAtom[]): void => {
+      for (const atom of atoms) {
+        if (atom !== null && typeof atom !== "string" && typeof atom !== "number" && typeof atom !== "boolean") { throw unsupported; }
+        if (typeof atom === "number" && Number.isNaN(atom)) { throw unsupported; }
+        charge(16 + (typeof atom === "string" ? atom.length * 2 : 0));
+        values.push(atom);
+      }
+    };
+    const planes = (values: HvpShadowAtom[], entries: readonly THREE.Plane[]): void => {
+      add(values, entries.length);
+      for (const plane of entries) { add(values, plane.normal.x, plane.normal.y, plane.normal.z, plane.constant); }
+    };
+    const texture = (values: HvpShadowAtom[], value: THREE.Texture | null): void => {
+      if (value === null) { add(values, null); return; }
+      if (("isVideoTexture" in value && value.isVideoTexture === true) || value.isRenderTargetTexture) { throw unsupported; }
+      add(values, value.uuid, value.version, value.source.uuid, value.source.version, value.channel,
+        value.wrapS, value.wrapT, value.minFilter, value.magFilter, value.flipY, value.matrixAutoUpdate);
+      if (value.matrixAutoUpdate) {
+        add(values, value.offset.x, value.offset.y, value.repeat.x, value.repeat.y, value.center.x, value.center.y, value.rotation);
+      } else { add(values, ...value.matrix.elements); }
+    };
+    const attribute = (values: HvpShadowAtom[], value: THREE.BufferAttribute | THREE.InterleavedBufferAttribute | undefined | null): void => {
+      if (value === undefined || value === null) { add(values, null); return; }
+      if (!(value instanceof THREE.BufferAttribute) || ("isInstancedBufferAttribute" in value && value.isInstancedBufferAttribute === true)) { throw unsupported; }
+      add(values, value.id, value.version, value.itemSize, value.count, value.normalized);
+    };
+    const light: HvpShadowAtom[] = [];
+    add(light, renderer.shadowMap.type, camera.layers.mask, renderer.localClippingEnabled ?? false);
+    planes(light, renderer.clippingPlanes ?? []);
+    const lights: HvpShadowCasterRevision[] = [], casters: HvpShadowCasterRevision[] = [];
+    const ids = new Set<string>();
+    const record = (id: string): HvpShadowAtom[] => {
+      if (ids.has(id)) { throw unsupported; }
+      charge(128 + id.length * 2); ids.add(id); return [];
+    };
+    if (renderer.shadowMap.type !== THREE.PCFShadowMap || scene.onBeforeRender !== THREE.Object3D.prototype.onBeforeRender) { throw unsupported; }
+    scene.traverseVisible(object => {
+      if (!object.layers.test(camera.layers)) { return; }
+      if (object instanceof THREE.Light && object.castShadow) {
+        if (!(object instanceof THREE.DirectionalLight)) { throw unsupported; }
+        const values = record(object.uuid), shadow = object.shadow;
+        add(values, ...object.matrixWorld.elements, ...object.target.matrixWorld.elements,
+          ...shadow.camera.projectionMatrix.elements, shadow.camera.up.x, shadow.camera.up.y, shadow.camera.up.z,
+          shadow.camera.layers.mask, shadow.bias, shadow.normalBias, shadow.mapSize.x, shadow.mapSize.y, object.castShadow);
+        lights.push({ id: object.uuid, values });
+      } else if (object.castShadow && (object instanceof THREE.Mesh || object instanceof THREE.Line || object instanceof THREE.Points)) {
+        if (!(object instanceof THREE.Mesh) || ("isSkinnedMesh" in object && object.isSkinnedMesh === true)
+          || ("isInstancedMesh" in object && object.isInstancedMesh === true)
+          || ("isBatchedMesh" in object && object.isBatchedMesh === true) || object.morphTargetInfluences?.length
+          || object.customDepthMaterial !== undefined || object.customDistanceMaterial !== undefined
+          || object.onBeforeShadow !== THREE.Object3D.prototype.onBeforeShadow || object.onAfterShadow !== THREE.Object3D.prototype.onAfterShadow) { throw unsupported; }
+        const geometry = object.geometry, materials = Array.isArray(object.material) ? object.material : [object.material];
+        if (!materials.some(material => material.visible)) { return; }
+        if ("isInstancedBufferGeometry" in geometry && geometry.isInstancedBufferGeometry === true) { throw unsupported; }
+        for (const name in geometry.morphAttributes) { if (geometry.morphAttributes[name]?.length) { throw unsupported; } }
+        const values = record(object.uuid);
+        add(values, geometry.uuid);
+        for (const name of ["position", "uv", "uv1", "uv2", "uv3"]) { attribute(values, geometry.getAttribute(name)); }
+        attribute(values, geometry.index);
+        add(values, geometry.drawRange.start, geometry.drawRange.count, geometry.groups.length);
+        for (const group of geometry.groups) { add(values, group.start, group.count, group.materialIndex ?? null); }
+        add(values, ...object.matrixWorld.elements, object.frustumCulled, materials.length);
+        for (const material of materials) {
+          if (!(material instanceof THREE.MeshBasicMaterial || material instanceof THREE.MeshLambertMaterial)
+            || !surfaceHooks.has(material.onBeforeCompile) || !surfaceKeys.has(material.customProgramCacheKey)) { throw unsupported; }
+          add(values, material.uuid, material.version, material.visible, material.side, material.shadowSide, material.wireframe,
+            material.wireframeLinewidth, material.alphaTest, material.alphaToCoverage, material.opacity, material.transparent);
+          texture(values, material.map); texture(values, material.alphaMap);
+          add(values, material.clipShadows, material.clipIntersection);
+          planes(values, material.clippingPlanes ?? []);
+        }
+        casters.push({ id: object.uuid, values });
+      }
+    });
+    const compare = (a: HvpShadowCasterRevision, b: HvpShadowCasterRevision) => a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
+    lights.sort(compare); casters.sort(compare);
+    for (const entry of lights) { add(light, entry.id, ...entry.values); }
+    return { revision: { light, casters } satisfies HvpShadowRevision, bytes };
   };
   return {
     setPixelRatio: (value) => renderer.setPixelRatio(value),
     setSize: (width,height,updateStyle) => renderer.setSize(width,height,updateStyle),
     render: (scene,camera) => {
       if (disposed) { return; }
+      const preparationStarted = performance.now();
       if (attachedScene !== scene) {
         attachedScene?.remove(sky);
         scene.add(sky);
@@ -115,7 +211,6 @@ export const createHvpVisualRenderer = (
       sky.position.copy(camera.position);
       scene.updateMatrixWorld(true);
       frame += 1;
-      let changed = false;
       scene.traverse((object) => {
         if (!(object instanceof THREE.Mesh) || object === sky) { return; }
         const water = object.name === "representation:hvp:water" || object.name.startsWith("representation:hvp:water:");
@@ -128,32 +223,23 @@ export const createHvpVisualRenderer = (
         if (Array.isArray(object.material)) {
           for (const material of object.material) { prepareMaterial(material,water); }
         } else { prepareMaterial(object.material,water); }
-        const last = prior.get(object);
-        const pose = object.matrixWorld.elements;
-        if (last === undefined || last.geometry !== object.geometry || last.visible !== object.visible
-          || pose.some((value,index) => value !== last.pose[index])) {
-          if (last === undefined) {
-            prior.set(object,{ geometry:object.geometry,pose:pose.slice(),visible:object.visible,frame });
-          } else {
-            last.geometry=object.geometry;
-            last.visible=object.visible;
-            for(let i=0;i<16;i+=1) { last.pose[i]=pose[i]!; }
-          }
-          changed = true;
-        }
-        if (last !== undefined) { last.frame=frame; }
       });
-      for (const [node,last] of prior) {
-        if (last.frame!==frame) { prior.delete(node); changed = true; }
-      }
-      // No per-frame shadow redraw in a static view; edits, body poses and removals invalidate it.
+      let next: ReturnType<typeof captureShadow> | undefined;
+      let shadowCache: "updated" | "reused" | "unsupported" | "budget-exceeded";
+      try { next = captureShadow(scene, camera); shadowCache = prior !== undefined && sameHvpShadowRevision(prior, next.revision) ? "reused" : "updated"; }
+      catch (error) { next = undefined; shadowCache = error === budgetExceeded ? "budget-exceeded" : "unsupported"; }
+      const changed = shadowCache !== "reused";
       if (changed) { renderer.shadowMap.needsUpdate = true; }
+      const shadowUpdated = renderer.shadowMap.needsUpdate;
       const started=performance.now();
       renderer.render(scene,camera);
+      // A throwing render does not admit the new cache; an unsupported snapshot
+      // is never truncated or retained as if it described the complete depth pass.
+      prior = next?.revision;
       if (frame % 60 === 0 && canvas.ownerDocument !== undefined) {
         canvas.ownerDocument.body.dataset.hestiaPrototypeFrameDiagnostics=JSON.stringify({
-          renderSubmitMs:performance.now()-started,calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,
-          geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures,shadowUpdated:changed,
+          scenePreparationMs:started-preparationStarted,renderSubmitMs:performance.now()-started,calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,
+          geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures,shadowUpdated,shadowCache,shadowRevisionBytes:next?.bytes??0,
           shadowMapSize:1024,fullscreenTargets:0
         });
       }
@@ -162,7 +248,8 @@ export const createHvpVisualRenderer = (
       if (disposed) { return; }
       disposed = true;
       attachedScene?.remove(sky);
-      prior.clear();
+      attachedScene = undefined;
+      prior = undefined;
       skyGeometry.dispose();
       skyMaterial.dispose();
       cloudMap.dispose();

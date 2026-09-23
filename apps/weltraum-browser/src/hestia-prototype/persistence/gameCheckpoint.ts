@@ -6,7 +6,7 @@ import {createHvpLookProfile} from "../presentation/look";
 import {HVP_EFFECT_VERSION} from "../presentation/visualEffects";
 import {HVP_BRANCH_CELLS,HVP_SALVAGE_CELLS,HVP_PLAYER_PROFILE_DIGEST,resolveHvpGravity} from "../physics/profile";
 import {readHvpBodyCells} from "../physics/bodyCutPlan";
-import {restoreHvpTerrainRoot,type HvpTerrainCheckpoint} from "../terrain/cutPlan";
+import {createHvpTerrainRoot,validateHvpTerrainCheckpointHeader,type HvpTerrainCheckpoint} from "../terrain/cutPlan";
 import type {HvpCutOutcome} from "../terrain/terrainConsumer";
 import {hvpGridCheckpointBytes,decodeHvpGrid} from "./gridCheckpoint";
 import {hvpPlantCheckpointBytes,decodeHvpPlant,type HvpPlantCheckpoint} from "./plantCheckpoint";
@@ -83,7 +83,7 @@ export const decodeHvpGame=(value:unknown)=>{
     if(plantIds.has(plant.instance.id)){throw new Error("Duplicate saved plant owner");}plantIds.add(plant.instance.id);}
   admitBytes(hvpWorldCheckpointBytes(p.world));
   const ownershipBytes=p.world.bodies.some(b=>b.family==="terrain")?baseBytes:0;
-  // RLE base decode, defensive coast verification and Root restoration coexist.
+  // Conservative RLE and defensive-copy working allowance remains unchanged.
   const decodeWorkingBytes=decodedBytes+3*baseBytes+ownershipBytes;
   if(decodeWorkingBytes>HVP_SAVE_DECODE_BYTES){throw new Error("Hestia decoded-source budget exceeded before allocation");}
   const view=validateHvpViewCheckpoint(p.view);
@@ -103,8 +103,12 @@ export const decodeHvpGame=(value:unknown)=>{
   const {signature,...data}=p;
   if(signature!==createPersistenceSignature(data)){throw new Error("Hestia save signature mismatch");}
   const owned=canonicalizePersistenceValue(p) as unknown as HvpGameCheckpoint;
-  const decodedBase=decodeHvpGrid(p.terrain.base),base=restoreHvpCoastSource(decodedBase.copySlots(),p.terrain.baseDigest);
-  const root=restoreHvpTerrainRoot(p.terrain),plants=p.plants.map(plant=>decodeHvpPlant(plant,root.read())),world=decodeHvpWorld(p.world);
+  const decodedBase=decodeHvpGrid(p.terrain.base);
+  const base=restoreHvpCoastSource(decodedBase.copySlots(),p.terrain.baseDigest);
+  const savedTerrain=validateHvpTerrainCheckpointHeader(p.terrain);
+  const root=createHvpTerrainRoot(base,savedTerrain.sessionId,savedTerrain.epoch,undefined,savedTerrain);
+  const plants=p.plants.map(plant=>decodeHvpPlant(plant,root.read()));
+  const world=decodeHvpWorld(p.world);
   const neighborRoot=p.neighbor?restoreHvpEastRegion(p.neighbor.terrain):undefined;
   if(p.progress!==null){
     if(p.progress.sessionId!==p.terrain.sessionId){throw new Error("Foreign objective session");}

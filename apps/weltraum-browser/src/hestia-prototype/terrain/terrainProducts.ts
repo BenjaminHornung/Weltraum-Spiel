@@ -1,5 +1,6 @@
 import { readHvpSourceColumnWorld } from "../../hvp/hvpCoastSource";
-import { WorkerPool } from "../../workers/workerPool";
+import { WorkerPool, type WorkerJobTicket } from "../../workers/workerPool";
+import { runHvpBounded } from "../../workers/hvpBoundedPump";
 import { algorithmVersion, byteCount, contentRevision, jobDeadline, planningEpoch, workerEpoch, workerJobId, workerJobKind, workerTargetKey } from "../../workers/ids";
 import { fnv1aBytes, type TransferableBufferBundle } from "../../workers/protocol";
 import { HVP_TERRAIN_JOB, HVP_TERRAIN_MAX_OUTPUT, decodeHvpTerrainOutput, executeHvpTerrainJob, hvpTerrainInputDigest } from "../../workers/hvpTerrainJob";
@@ -10,7 +11,7 @@ import type { HvpPreparedCut, HvpTerrainSnapshot } from "./cutPlan";
 import {HVP_SUPPORT_JOB,HVP_SUPPORT_MAX_OUTPUT,hvpSupportInputDigest,decodeHvpSupportOutput,type HvpSupportPayload} from "../../workers/hvpSupportJob";
 import {analyzeHvpTerrainSupport,bindHvpSupportPlan,type HvpSupportPlan} from "./supportPlan";
 import type {HvpMovingCutPreparation} from "../physics/bodyCutSession";
-import {HVP_BODY_CUT_JOB,HVP_BODY_CUT_MAX_OUTPUT,hvpBodyCutInputDigest,validateHvpBodyCutPayload,decodeHvpBodyCutOutput} from "../../workers/hvpBodyCutJob";
+import {HVP_BODY_CUT_JOB,HVP_BODY_CUT_ALGORITHM,HVP_BODY_CUT_MAX_OUTPUT,hvpBodyCutInputDigest,validateHvpBodyCutPayload,decodeHvpBodyCutOutput} from "../../workers/hvpBodyCutJob";
 import {HVP_NEIGHBOR_JOB,HVP_NEIGHBOR_MAX_OUTPUT,hvpNeighborInputDigest,decodeHvpNeighborOutput,type HvpNeighborPayload} from "../../workers/hvpNeighborJob";
 import {encodeHvpProjectionPacket} from "../runtime/projectionPacket";
 import type {HvpNeighborProxies} from "../runtime/neighborProducts";
@@ -120,17 +121,31 @@ export const createHvpTerrainCompiler = () => {
     const work=[...renderIds.map(id=>({id,render:true})),...collisionIds.map(id=>({id,render:false}))];
     if(work.length>limit||new Set(renderIds).size!==renderIds.length||new Set(collisionIds).size!==collisionIds.length){throw new Error("Terrain derivative BudgetExceeded");}
     if(work.length!==0){await (started??=pool.start());}
-    for(let i=0;i<work.length;i+=parallel){
-      await Promise.all(work.slice(i,i+parallel).map(async part=>{
-        if(signal?.aborted){throw new Error("Cancelled neighbour products");}
-        const job=jobInput(source,part.id,part.render,sequence++,readNeighbor),ticket=pool.enqueue(job.request,job.bundle);
-        const cancel=()=>ticket.cancel();signal?.addEventListener("abort",cancel,{once:true});
-        const terminal=await ticket.result.finally(()=>signal?.removeEventListener("abort",cancel));
+    const active=new Set<WorkerJobTicket>();
+    const results=await runHvpBounded(work,parallel,async part=>{
+      if(disposed){throw new Error("Terrain compiler disposed");}
+      if(signal?.aborted){throw new Error("Cancelled neighbour products");}
+      const job=jobInput(source,part.id,part.render,sequence++,readNeighbor),ticket=pool.enqueue(job.request,job.bundle);
+      active.add(ticket);
+      const cancel=()=>{try{ticket.cancel();}catch{/* Still await the real terminal or worker termination. */}};
+      signal?.addEventListener("abort",cancel,{once:true});
+      try{
+        const terminal=await ticket.result;
         if(terminal.kind!=="Completed"||!pool.isAcceptedCompletedTerminal(terminal)||disposed){throw new Error(`Terrain prepare ${terminal.kind}`);}
-        if(part.render){render.set(part.id,decodeHvpTerrainOutput(terminal.output,job.identity));}
-        else{collision.set(part.id,decodeHvpCollisionOutput(terminal.output,job.collision));}
-      }));
-      await new Promise<void>(resolve=>setTimeout(resolve,0));
+        if(signal?.aborted){throw new Error("Cancelled neighbour products");}
+        const product=part.render?{id:part.id,render:true as const,mesh:decodeHvpTerrainOutput(terminal.output,job.identity)}
+          :{id:part.id,render:false as const,mesh:decodeHvpCollisionOutput(terminal.output,job.collision)};
+        // Yield a real event-loop turn per finished job, without waiting for its sibling.
+        await new Promise<void>(resolve=>setTimeout(resolve,0));
+        if(disposed){throw new Error("Terrain compiler disposed");}
+        if(signal?.aborted){throw new Error("Cancelled neighbour products");}
+        return product;
+      }finally{signal?.removeEventListener("abort",cancel);active.delete(ticket);}
+    },()=>{
+      for(const ticket of active){try{ticket.cancel();}catch{/* A failed cancellation must not skip other tickets. */}}
+    });
+    for(const product of results){
+      if(product.render){render.set(product.id,product.mesh);}else{collision.set(product.id,product.mesh);}
     }
     return {render,collision,source};
   };
@@ -174,7 +189,7 @@ export const createHvpTerrainCompiler = () => {
       await (started??=pool.start());
       const terminal=await pool.enqueue({jobId:workerJobId(`hvp-body-${sequence++}`),targetKey:workerTargetKey(p.ownerId),jobKind:workerJobKind(HVP_BODY_CUT_JOB),
         workerEpoch:workerEpoch(0),planningEpoch:planningEpoch(0),inputRevision:contentRevision(p.revision),sourceInputDigest:hvpBodyCutInputDigest(p,buffers),
-        algorithmVersion:algorithmVersion(1),priority:"Urgent",deadline:jobDeadline(sequence),estimatedInputBytes:bundle.byteLength,
+        algorithmVersion:algorithmVersion(HVP_BODY_CUT_ALGORITHM),priority:"Urgent",deadline:jobDeadline(sequence),estimatedInputBytes:bundle.byteLength,
         estimatedOutputBytes:byteCount(HVP_BODY_CUT_MAX_OUTPUT),payload:p},bundle).result;
       if(disposed||terminal.kind!=="Completed"||!pool.isAcceptedCompletedTerminal(terminal)){throw new Error(`Body prepare ${terminal.kind}`);}
       return decodeHvpBodyCutOutput(terminal.output,p);

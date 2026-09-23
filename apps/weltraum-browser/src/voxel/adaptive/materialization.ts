@@ -23,6 +23,7 @@ import {
   type AdaptiveEditRecord,
   type MaterializedAdaptiveBrick,
   type QuantumBounds,
+  type QuantumSphere,
   type StableAuthorityId
 } from "./types";
 import {
@@ -63,6 +64,13 @@ const hashValue = (value: unknown, path: string): string => {
 
 const overlapsBox = (left: QuantumBounds, right: QuantumBounds): boolean =>
   (["x", "y", "z"] as const).every((axis) => left.min[axis] < right.max[axis] && left.max[axis] > right.min[axis]);
+
+// Conservative brick-level prefilter: skip only strictly separated spheres.
+// Touching bounds are kept; the exact per-cell predicate still decides.
+// ponytail: bbox test, exact sphere math stays per-cell if it can matter.
+const sphereReachesBrick = (brick: QuantumBounds, sphere: QuantumSphere): boolean =>
+  (["x", "y", "z"] as const).every((axis) => sphere.center[axis] - sphere.radiusQuantum <= brick.max[axis]
+    && sphere.center[axis] + sphere.radiusQuantum >= brick.min[axis]);
 
 const INTEGER_LIMB_BASE = 0x8000;
 
@@ -235,40 +243,82 @@ export const materializeAdaptiveBrick = ({
   const journal = validateAdaptiveEditJournal(journalValue);
   const cellSizeQuantum = cellSizeQuantumForLevel(key.level);
   const cellSizeMeters = cellSizeMetersForLevel(key.level);
-  const density: number[] = [];
-  const occupancy: number[] = [];
-  const material: (StableAuthorityId | null)[] = [];
-  const semantic: (StableAuthorityId | null)[] = [];
+  // Journal order is preserved: skipped edits provably touch no cell of this
+  // brick (box: exact brick-level overlap; sphere: strictly-separated bbox).
+  // Per-cell results, canonical bytes and hashes are unchanged.
+  const brickOrigin = key.originQuantum;
+  const brickExtent = ADAPTIVE_BRICK_CELLS_PER_AXIS * cellSizeQuantum;
+  const brickBounds = { min: brickOrigin, max: { x: brickOrigin.x + brickExtent, y: brickOrigin.y + brickExtent, z: brickOrigin.z + brickExtent } } as QuantumBounds;
+  const overlappingEdits = journal.records.filter((edit) => edit.box !== undefined
+    ? overlapsBox(brickBounds, edit.box)
+    : edit.sphere !== undefined && sphereReachesBrick(brickBounds, edit.sphere));
+  const density: number[] = new Array(ADAPTIVE_BRICK_CELL_COUNT).fill(baseSample.density);
+  const occupancy: number[] = new Array(ADAPTIVE_BRICK_CELL_COUNT).fill(baseSample.occupancy);
+  const material: (StableAuthorityId | null)[] = new Array(ADAPTIVE_BRICK_CELL_COUNT).fill(baseSample.materialId);
+  const semantic: (StableAuthorityId | null)[] = new Array(ADAPTIVE_BRICK_CELL_COUNT).fill(baseSample.semanticId ?? null);
   // Private scratch only: predicates synchronously read it, never retain it.
   // Public inputs and the complete output still receive their original validation/freeze.
   const footprint = {min:{x:0,y:0,z:0},max:{x:0,y:0,z:0}};
+  const footprintQuantum = footprint as QuantumBounds;
+  const sample: MutableSample = { density: 0, occupancy: 0, materialId: null, semanticId: null };
+  const edge = ADAPTIVE_BRICK_CELLS_PER_AXIS;
+  const axes = ["x", "y", "z"] as const;
+  const applyAt = (x: number, y: number, z: number, edit: AdaptiveEditRecord): void => {
+    const index = x + edge * (y + edge * z);
+    sample.density = density[index]!;
+    sample.occupancy = occupancy[index]!;
+    sample.materialId = material[index]!;
+    sample.semanticId = semantic[index]!;
+    applyEdit(sample, edit);
+    density[index] = sample.density;
+    occupancy[index] = sample.occupancy;
+    material[index] = sample.materialId;
+    semantic[index] = sample.semanticId;
+  };
 
-  for (let z = 0; z < ADAPTIVE_BRICK_CELLS_PER_AXIS; z += 1) {
-    for (let y = 0; y < ADAPTIVE_BRICK_CELLS_PER_AXIS; y += 1) {
-      for (let x = 0; x < ADAPTIVE_BRICK_CELLS_PER_AXIS; x += 1) {
-        footprint.min.x = key.originQuantum.x + x * cellSizeQuantum;
-        footprint.min.y = key.originQuantum.y + y * cellSizeQuantum;
-        footprint.min.z = key.originQuantum.z + z * cellSizeQuantum;
-        footprint.max.x = footprint.min.x + cellSizeQuantum;
-        footprint.max.y = footprint.min.y + cellSizeQuantum;
-        footprint.max.z = footprint.min.z + cellSizeQuantum;
-        const footprintQuantum = footprint as QuantumBounds;
-        const index = x + ADAPTIVE_BRICK_CELLS_PER_AXIS * (y + ADAPTIVE_BRICK_CELLS_PER_AXIS * z);
-        const sample: MutableSample = {
-          density: baseSample.density,
-          occupancy: baseSample.occupancy,
-          materialId: baseSample.materialId,
-          semanticId: baseSample.semanticId ?? null
-        };
-        for (const edit of journal.records) {
-          if (appliesToFootprint(footprintQuantum, edit)) applyEdit(sample, edit);
-        }
-        density.push(requireFinite(sample.density, `density/${index}`));
-        occupancy.push(requireFinite(sample.occupancy, `occupancy/${index}`));
-        material.push(sample.materialId);
-        semantic.push(sample.semanticId);
+  for (const edit of overlappingEdits) {
+    let lo: number[] | undefined;
+    let hi: number[] | undefined;
+    const box = edit.box;
+    if (box !== undefined) {
+      const minimum = axes.map(axis => box.min[axis] - brickOrigin[axis]);
+      const maximum = axes.map(axis => box.max[axis] - brickOrigin[axis]);
+      // Valid global coordinates can still have an unsafe local difference.
+      if (minimum.every(Number.isSafeInteger) && maximum.every(Number.isSafeInteger)) {
+        lo = minimum.map(value => Math.max(0, Math.floor(value / cellSizeQuantum)));
+        hi = maximum.map(value => Math.min(edge, Math.ceil(value / cellSizeQuantum)));
       }
     }
+    if (lo !== undefined && hi !== undefined) {
+      for (let z = lo[2]!; z < hi[2]!; z += 1) {
+        for (let y = lo[1]!; y < hi[1]!; y += 1) {
+          for (let x = lo[0]!; x < hi[0]!; x += 1) {
+            applyAt(x, y, z, edit);
+          }
+        }
+      }
+      continue;
+    }
+    // Spheres and unsafe differences retain the original exact footprint rule.
+    for (let z = 0; z < edge; z += 1) {
+      for (let y = 0; y < edge; y += 1) {
+        for (let x = 0; x < edge; x += 1) {
+          footprint.min.x = brickOrigin.x + x * cellSizeQuantum;
+          footprint.min.y = brickOrigin.y + y * cellSizeQuantum;
+          footprint.min.z = brickOrigin.z + z * cellSizeQuantum;
+          footprint.max.x = footprint.min.x + cellSizeQuantum;
+          footprint.max.y = footprint.min.y + cellSizeQuantum;
+          footprint.max.z = footprint.min.z + cellSizeQuantum;
+          if (appliesToFootprint(footprintQuantum, edit)) {
+            applyAt(x, y, z, edit);
+          }
+        }
+      }
+    }
+  }
+  for (let index = 0; index < ADAPTIVE_BRICK_CELL_COUNT; index += 1) {
+    density[index] = requireFinite(density[index]!, `density/${index}`);
+    occupancy[index] = requireFinite(occupancy[index]!, `occupancy/${index}`);
   }
 
   const channels = deepFreeze({

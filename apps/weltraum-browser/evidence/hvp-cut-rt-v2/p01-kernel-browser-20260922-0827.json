@@ -1,0 +1,254 @@
+{
+  "purpose": "P01 isolated browser byte-kernel comparison, not ingestion or end-to-end performance acceptance",
+  "sourceBlob": "eb1c04905f219a396d418e86a9e6b7f5929d4e9b",
+  "adaptiveBlob": "daa39024f8474a64d2a0658bb9678aefb57cdbeb",
+  "candidate": "TypeScript-emitted ES2022 module from p01-kernel-compiled/fnv1a64.js, imported in a task-owned blank page",
+  "compiledModule": "/** FNV-1a 64-bit as 16 lowercase hex digits, with the original modulo-2^64 arithmetic. */\nexport function fnv1a64Bytes(bytes) {\n    let high = 0xcbf29ce4;\n    let low = 0x84222325;\n    for (let index = 0; index < bytes.length; index += 1) {\n        // Prime = 2^40 + 435; the low-product carry is exact below Number's 2^53 limit.\n        const xoredLow = (low ^ bytes[index]) >>> 0;\n        const carry = Math.floor(xoredLow * 435 / 0x100000000);\n        high = (Math.imul(high, 435) + carry + (xoredLow << 8)) >>> 0;\n        low = Math.imul(xoredLow, 435) >>> 0;\n    }\n    return high.toString(16).padStart(8, \"0\") + low.toString(16).padStart(8, \"0\");\n}\n",
+  "referenceImplementation": "bytes => {\n    let hash = 0xcbf29ce484222325n;\n    for (const byte of bytes) {\n      hash = BigInt.asUintN(64, (hash ^ BigInt(byte)) * 0x100000001b3n);\n    }\n    return hash.toString(16).padStart(16, '0');\n  }",
+  "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36",
+  "hardwareConcurrency": 16,
+  "viewport": [
+    1536,
+    791,
+    1.25
+  ],
+  "timeOrigin": 1790065658071.3,
+  "byteLength": 1048576,
+  "seed": "0x17309a7",
+  "coldOrder": "reference-candidate",
+  "cold": {
+    "reference": {
+      "durationMs": 44,
+      "hash": "858a455446e3d012"
+    },
+    "candidate": {
+      "durationMs": 9.900000005960464,
+      "hash": "858a455446e3d012"
+    }
+  },
+  "excludedWarmupPairs": 3,
+  "declaredMeasuredPairs": 31,
+  "pairs": [
+    {
+      "index": 0,
+      "order": "candidate-reference",
+      "candidateMs": 10.5,
+      "referenceMs": 35.29999999701977,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 1,
+      "order": "reference-candidate",
+      "candidateMs": 8.600000008940697,
+      "referenceMs": 51.79999999701977,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 2,
+      "order": "candidate-reference",
+      "candidateMs": 8.599999994039536,
+      "referenceMs": 37,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 3,
+      "order": "reference-candidate",
+      "candidateMs": 8.400000005960464,
+      "referenceMs": 36,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 4,
+      "order": "candidate-reference",
+      "candidateMs": 8,
+      "referenceMs": 34.79999999701977,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 5,
+      "order": "reference-candidate",
+      "candidateMs": 8.099999994039536,
+      "referenceMs": 36.79999999701977,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 6,
+      "order": "candidate-reference",
+      "candidateMs": 7.9000000059604645,
+      "referenceMs": 39.5,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 7,
+      "order": "reference-candidate",
+      "candidateMs": 7.700000002980232,
+      "referenceMs": 35.5,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 8,
+      "order": "candidate-reference",
+      "candidateMs": 9.599999994039536,
+      "referenceMs": 36.29999999701977,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 9,
+      "order": "reference-candidate",
+      "candidateMs": 8,
+      "referenceMs": 36.70000000298023,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 10,
+      "order": "candidate-reference",
+      "candidateMs": 8,
+      "referenceMs": 34.900000005960464,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 11,
+      "order": "reference-candidate",
+      "candidateMs": 7.9000000059604645,
+      "referenceMs": 34.099999994039536,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 12,
+      "order": "candidate-reference",
+      "candidateMs": 7.5999999940395355,
+      "referenceMs": 41.70000000298023,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 13,
+      "order": "reference-candidate",
+      "candidateMs": 8.799999997019768,
+      "referenceMs": 36.5,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 14,
+      "order": "candidate-reference",
+      "candidateMs": 16.200000002980232,
+      "referenceMs": 36.70000000298023,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 15,
+      "order": "reference-candidate",
+      "candidateMs": 9,
+      "referenceMs": 39.5,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 16,
+      "order": "candidate-reference",
+      "candidateMs": 7.899999991059303,
+      "referenceMs": 36.20000000298023,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 17,
+      "order": "reference-candidate",
+      "candidateMs": 8.099999994039536,
+      "referenceMs": 35.900000005960464,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 18,
+      "order": "candidate-reference",
+      "candidateMs": 7.5,
+      "referenceMs": 32.5,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 19,
+      "order": "reference-candidate",
+      "candidateMs": 7.399999991059303,
+      "referenceMs": 34.20000000298023,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 20,
+      "order": "candidate-reference",
+      "candidateMs": 7.4000000059604645,
+      "referenceMs": 33.79999999701977,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 21,
+      "order": "reference-candidate",
+      "candidateMs": 7.700000002980232,
+      "referenceMs": 33.29999999701977,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 22,
+      "order": "candidate-reference",
+      "candidateMs": 7.299999997019768,
+      "referenceMs": 33.400000005960464,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 23,
+      "order": "reference-candidate",
+      "candidateMs": 7.4000000059604645,
+      "referenceMs": 33.599999994039536,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 24,
+      "order": "candidate-reference",
+      "candidateMs": 7.399999991059303,
+      "referenceMs": 34.80000001192093,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 25,
+      "order": "reference-candidate",
+      "candidateMs": 9.200000002980232,
+      "referenceMs": 33.19999998807907,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 26,
+      "order": "candidate-reference",
+      "candidateMs": 8.799999997019768,
+      "referenceMs": 33.70000000298023,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 27,
+      "order": "reference-candidate",
+      "candidateMs": 9.700000002980232,
+      "referenceMs": 33,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 28,
+      "order": "candidate-reference",
+      "candidateMs": 8.900000005960464,
+      "referenceMs": 27.69999998807907,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 29,
+      "order": "reference-candidate",
+      "candidateMs": 9.299999997019768,
+      "referenceMs": 30.400000005960464,
+      "hash": "858a455446e3d012"
+    },
+    {
+      "index": 30,
+      "order": "candidate-reference",
+      "candidateMs": 9.200000002980232,
+      "referenceMs": 29.400000005960464,
+      "hash": "858a455446e3d012"
+    }
+  ],
+  "referenceMedianMs": 34.900000005960464,
+  "candidateMedianMs": 8.099999994039536,
+  "candidateToReferenceRatio": 0.23209169033398744,
+  "relativeKernelTargetPassed": true
+}

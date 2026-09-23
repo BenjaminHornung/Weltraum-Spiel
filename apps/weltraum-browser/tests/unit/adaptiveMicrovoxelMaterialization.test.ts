@@ -359,3 +359,27 @@ describe("adaptive microvoxel materialization obligations 10-12", () => {
     expect(brick.provenance.provenanceHash).toBe("fnv1a64-v1:f1d62e52a9041bae");
   });
 });
+
+describe("adaptive brick journal prefilter",()=>{
+  // Level-4 brick at the origin spans quantum 0..16 on every axis.
+  const edit=(editId:string,sequence:number,rest:object)=>({editId,sequence,
+    expectedRegionRevision:sequence-1,resultRegionRevision:sequence,actorId:"actor.test",sourceId:"tool.test",...rest});
+  const near=()=>edit("edit.near",1,{operation:"AddBox",box:{min:{x:0,y:0,z:0},max:{x:2,y:2,z:2}},materialId:"material.metal"});
+  const run=(edits:object[])=>materializeAdaptiveBrick({key:key(),baseField:base(),editJournal:createAdaptiveEditJournal(edits as never[])});
+  it("ignores strictly separated edits without changing any materialized channel",()=>{
+    const channels=(brick:ReturnType<typeof run>)=>[brick.density,brick.occupancy,brick.material,brick.semantic];
+    expect(channels(run([near(),
+      edit("edit.far-box",2,{operation:"AddBox",box:{min:{x:1000,y:1000,z:1000},max:{x:1010,y:1010,z:1010}},materialId:"material.metal"}),
+      edit("edit.touch-box",3,{operation:"SetMaterialBox",box:{min:{x:-8,y:-8,z:-8},max:{x:0,y:8,z:8}},materialId:"material.metal"}),
+      edit("edit.far-sphere",4,{operation:"SubtractSphere",sphere:{center:{x:500,y:500,z:500},radiusQuantum:10}})])))
+      .toEqual(channels(run([near()])));
+  });
+  it("keeps a boundary-touching sphere so its tangent cells still apply",()=>{
+    const boundary=0+16*(8+16*8); // cell (0,8,8)
+    const without=run([near()]);
+    expect(without.occupancy[boundary]).toBe(1);expect(without.density[boundary]).toBe(0);
+    const kept=run([near(),
+      edit("edit.touch-sphere",2,{operation:"SubtractSphere",sphere:{center:{x:-3,y:8,z:8},radiusQuantum:3}})]);
+    expect(kept.occupancy[boundary]).toBe(0);expect(kept.density[boundary]).toBe(1);
+  });
+});

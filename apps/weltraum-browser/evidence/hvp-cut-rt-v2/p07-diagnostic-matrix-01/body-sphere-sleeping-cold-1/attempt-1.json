@@ -1,0 +1,3057 @@
+{
+  "attempt": 1,
+  "status": "completed",
+  "result": {
+    "sample": {
+      "commandId": "moving-cut-1",
+      "scenario": "body-sphere",
+      "temperature": "cold",
+      "outcome": "Applied",
+      "inputMs": 12996.700000017881,
+      "appliedMs": 16283.100146502256,
+      "firstCommittedRenderSubmitMs": 16310.000048846006,
+      "holdMs": null,
+      "sourceGenerationBefore": 1,
+      "sourceGenerationAfter": 1,
+      "reason": "Current-pose fragment replacement"
+    },
+    "before": {
+      "origin": 1790115808965,
+      "now": 12986.800000011921,
+      "root": 1,
+      "digest": "26d5308d",
+      "physics": {
+        "ticks": 719,
+        "backlogSeconds": 0.0038333333333333483,
+        "discardedSeconds": 0.020933333327373155,
+        "status": "Running",
+        "gravity": 11.794460201817357,
+        "gravityProfile": "local-tangent-gravity-v1",
+        "activeDynamic": 0,
+        "residentDynamic": 3,
+        "solver": "rapier-0.12.0",
+        "stepCpuMs": 0.30000001192092896,
+        "bodyCount": 5,
+        "colliderCount": 89,
+        "nativeBytes": "unsupported",
+        "terrainGeneration": 1,
+        "collisionBytes": 2490264,
+        "terrainTransaction": "Idle",
+        "terrainFragments": [
+          {
+            "ownerId": "hvp:terrain-fragment:r1:1b4aa69d",
+            "sourceDigest": "fnv1a64-v1:70d85a5593bd44c9",
+            "centerOfMass": {
+              "x": 23.50561224489796,
+              "y": 10.49158163265306,
+              "z": 9.755612244897959
+            },
+            "cellCount": 384,
+            "massKg": 1722.65625,
+            "colliders": 1,
+            "sourceBytes": 262144
+          }
+        ],
+        "parked": [],
+        "neighbor": null,
+        "dormantCheckpointBytes": 0,
+        "bodyResidencyId": null,
+        "bodyResidencyTransaction": "Idle",
+        "neighborTransaction": "Idle",
+        "neighborPinned": false,
+        "preparedTerrainFragments": [],
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": 7,
+            "y": 1.0317648649215698,
+            "z": -6.25
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "structural": {
+          "kind": "branch",
+          "origin": {
+            "x": -12,
+            "y": 1.75,
+            "z": -13.5
+          },
+          "cutEdge": 4,
+          "generation": 0,
+          "sourceDigest": "fnv1a64-v1:9cb845863922efae",
+          "state": "Idle",
+          "last": null,
+          "preview": null,
+          "aimPoint": {
+            "x": -11.25,
+            "y": 3,
+            "z": -13.25
+          },
+          "attachment": {
+            "id": "hvp:branch:foliage",
+            "ownerId": "hvp:branch:parent",
+            "supportCell": {
+              "x": 10,
+              "y": 11,
+              "z": 2
+            }
+          },
+          "parts": [
+            {
+              "ownerId": "hvp:branch:parent",
+              "sourceDigest": "fnv1a64-v1:f86be8fb3a37f1cb",
+              "anchored": true,
+              "cellCount": 384,
+              "center": {
+                "x": 0.75,
+                "y": 1,
+                "z": 0.25
+              },
+              "position": {
+                "x": -11.25,
+                "y": 2.75,
+                "z": -13.25
+              },
+              "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+              },
+              "velocity": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              },
+              "massKg": 450,
+              "sleeping": false
+            }
+          ]
+        },
+        "moving": {
+          "sequence": 0,
+          "pendingId": null,
+          "state": "Idle",
+          "preview": {
+            "ownerId": "hvp:terrain-fragment:r1:1b4aa69d",
+            "sourceDigest": "fnv1a64-v1:70d85a5593bd44c9",
+            "revision": 0,
+            "issuedTick": 719,
+            "cell": [
+              189,
+              84,
+              76
+            ],
+            "pose": {
+              "position": {
+                "x": 8.427063941955566,
+                "y": 0.973335862159729,
+                "z": -4.908839225769043
+              },
+              "rotation": {
+                "x": 0.03764636069536209,
+                "y": 0.6483198404312134,
+                "z": 0.01415773294866085,
+                "w": 0.7603049874305725
+              }
+            }
+          },
+          "last": null
+        },
+        "lastImpulse": null,
+        "impulseTarget": {
+          "kind": "Dynamic",
+          "target": "hvp:terrain-fragment:r1:1b4aa69d",
+          "massKg": 1722.6561279296875,
+          "distanceMeters": 1.792133092880249,
+          "point": {
+            "x": 8.20552646013882,
+            "y": 1.0972367069001352,
+            "z": -5.1142763639962965
+          }
+        },
+        "lastImpulseTick": null,
+        "inertia": {
+          "ownerId": "hvp:physics:inertia",
+          "sourceDigest": "fnv1a64-v1:15f3bb58342acf4c",
+          "centerOfMass": {
+            "x": 0.29583333333333334,
+            "y": 0.29583333333333334,
+            "z": 0.125
+          },
+          "tensor": {
+            "xx": 3.441772460937501,
+            "yy": 3.4417724609374996,
+            "zz": 6.517333984375002,
+            "xy": 1.9140625000000004,
+            "xz": 0,
+            "yz": 1.3877787807814457e-17
+          },
+          "principal": {
+            "principalInertia": {
+              "x": 1.5277099609374998,
+              "y": 5.355834960937501,
+              "z": 6.517333984375002
+            },
+            "frame": {
+              "x": 0.3826834323650899,
+              "y": 0.9238795325112867,
+              "z": 0,
+              "w": 0
+            },
+            "residual": 1.1102230246251565e-16
+          },
+          "colliders": 2,
+          "impulses": 0,
+          "aimPoint": {
+            "x": -8.564777374267578,
+            "y": 1.312473177909851,
+            "z": -13.287601470947266
+          },
+          "angularVelocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        "bodies": [
+          {
+            "ownerId": "hvp:physics:drop",
+            "position": {
+              "x": -9.624567985534668,
+              "y": 0.6241464614868164,
+              "z": -7.507255554199219
+            },
+            "orientation": {
+              "x": -0.6501973867416382,
+              "y": -0.2731212377548218,
+              "z": 0.27541404962539673,
+              "w": -0.6532956957817078
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "sleeping": true,
+            "massKg": 300
+          },
+          {
+            "ownerId": "hvp:physics:inertia",
+            "position": {
+              "x": -8.716800689697266,
+              "y": 1.5458214282989502,
+              "z": -13.151344299316406
+            },
+            "orientation": {
+              "x": -0.0002377739001531154,
+              "y": 0.3575611114501953,
+              "z": 0.00005180474545340985,
+              "w": 0.9338896870613098
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "sleeping": true,
+            "massKg": 35.15625
+          },
+          {
+            "ownerId": "hvp:terrain-fragment:r1:1b4aa69d",
+            "position": {
+              "x": 8.427063941955566,
+              "y": 0.973335862159729,
+              "z": -4.908839225769043
+            },
+            "orientation": {
+              "x": 0.03764636069536209,
+              "y": 0.6483198404312134,
+              "z": 0.01415773294866085,
+              "w": 0.7603049874305725
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "sleeping": true,
+            "massKg": 1722.6561279296875
+          },
+          {
+            "ownerId": "hvp:branch:parent",
+            "position": {
+              "x": -11.25,
+              "y": 2.75,
+              "z": -13.25
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "sleeping": false,
+            "massKg": 450
+          }
+        ]
+      },
+      "clock": {
+        "maxTimerGapMs": 40,
+        "maxAdvanceMs": 10.699999988079071,
+        "maxHandlerMs": 2054.9000000059605,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.4000000059604645,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "tool": {
+        "mode": "Kugel 0,25 m",
+        "edges": 1,
+        "issued": 1,
+        "message": "Loses Fragment: Linksklick schneidet erneut (auch nach dem Fallen)",
+        "state": "Applied",
+        "queued": 0,
+        "receipts": 1,
+        "last": {
+          "commandId": "cut-1",
+          "materialRemovedKg": 300,
+          "reason": "Terrain and collision committed",
+          "removedCells": 64,
+          "revision": 1,
+          "status": "Applied",
+          "transferredCells": 384,
+          "transferredMassKg": 1722.65625
+        },
+        "structural": {
+          "state": "Ready",
+          "issued": 0,
+          "last": null
+        },
+        "moving": {
+          "state": "Idle",
+          "last": null,
+          "issued": 0
+        }
+      },
+      "camera": {
+        "position": [
+          7,
+          1.7817654899262574,
+          -6.25
+        ],
+        "orientation": [
+          0.07718390273650459,
+          0.9005033518738348,
+          0.1787562412263891,
+          -0.38882202181070347
+        ],
+        "visualBody": [
+          7,
+          1.0317654899262576,
+          -6.25
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "save": {
+        "state": "Loaded",
+        "message": "Aus Spielstand gestartet – pausiert",
+        "revision": 1
+      },
+      "health": {
+        "enabled": true,
+        "samples": 277,
+        "errors": 0,
+        "dropped": 0,
+        "cutObservation": {
+          "status": "armed",
+          "drops": 0,
+          "disables": 0,
+          "inputCount": 0,
+          "pendingRender": false
+        }
+      },
+      "resources": {
+        "ledger": {
+          "slotBytes": 8388608,
+          "preparedCopyBytes": 8388608,
+          "maskBytes": 1089536,
+          "meshBytes": 28102392,
+          "groupedIndexBytes": 2448192,
+          "artifactCopyBytes": 28102392,
+          "retainedMeshBytes": 28115960,
+          "tempEstimateBytes": 157068904,
+          "vegetationSourceBytes": 7158400,
+          "checkpointSourceBytes": 3240980,
+          "totalCpuBytes": 251752620,
+          "gpuBytes": "unsupported",
+          "triangles": 374620,
+          "drawCalls": 171,
+          "dormantCheckpointBytes": 0,
+          "neighborSourceBytes": 0,
+          "neighborCacheBytes": 0,
+          "neighborCheckpointBytes": 0,
+          "neighborBaseProxyBytes": 0,
+          "physicsPayloadBytes": 4980528,
+          "physicsPrepareBytes": 100663296,
+          "dynamicFragmentSourceBytes": 274432
+        },
+        "gameplayCpuBytes": 251752620,
+        "diagnosticReservedBytes": 524288,
+        "totalCpuBytes": 252276908,
+        "diagnosticRuntimeOverhead": "not-measured",
+        "cutObservation": {
+          "status": "armed",
+          "drops": 0,
+          "disables": 0,
+          "inputCount": 0,
+          "pendingRender": false
+        },
+        "caps": {
+          "maxCpuBytes": 268435456,
+          "maxMeshBytes": 134217728,
+          "maxTriangles": 500000,
+          "maxDrawCalls": 300
+        }
+      },
+      "visible": "visible",
+      "focused": true,
+      "locked": true,
+      "testBridge": false,
+      "inputError": null,
+      "pauseDialogOpen": false
+    },
+    "after": {
+      "origin": 1790115808965,
+      "now": 16351.100000023842,
+      "root": 1,
+      "digest": "26d5308d",
+      "physics": {
+        "ticks": 829,
+        "backlogSeconds": 0.00280000001192093,
+        "discardedSeconds": 0.033233333339294166,
+        "status": "Running",
+        "gravity": 11.794460201817357,
+        "gravityProfile": "local-tangent-gravity-v1",
+        "activeDynamic": 1,
+        "residentDynamic": 3,
+        "solver": "rapier-0.12.0",
+        "stepCpuMs": 0.7000000178813934,
+        "bodyCount": 5,
+        "colliderCount": 104,
+        "nativeBytes": "unsupported",
+        "terrainGeneration": 1,
+        "collisionBytes": 2490264,
+        "terrainTransaction": "Idle",
+        "terrainFragments": [
+          {
+            "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+            "sourceDigest": "fnv1a64-v1:9f121378e6c14525",
+            "centerOfMass": {
+              "x": 23.495282171099927,
+              "y": 10.489081595974119,
+              "z": 9.76303019410496
+            },
+            "cellCount": 362,
+            "massKg": 1630.078125,
+            "colliders": 16,
+            "sourceBytes": 262144
+          }
+        ],
+        "parked": [],
+        "neighbor": null,
+        "dormantCheckpointBytes": 0,
+        "bodyResidencyId": null,
+        "bodyResidencyTransaction": "Idle",
+        "neighborTransaction": "Idle",
+        "neighborPinned": false,
+        "preparedTerrainFragments": [],
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": 7,
+            "y": 1.0317648649215698,
+            "z": -6.25
+          },
+          "grounded": true,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Walking"
+        },
+        "structural": {
+          "kind": "branch",
+          "origin": {
+            "x": -12,
+            "y": 1.75,
+            "z": -13.5
+          },
+          "cutEdge": 4,
+          "generation": 0,
+          "sourceDigest": "fnv1a64-v1:9cb845863922efae",
+          "state": "Idle",
+          "last": null,
+          "preview": null,
+          "aimPoint": {
+            "x": -11.25,
+            "y": 3,
+            "z": -13.25
+          },
+          "attachment": {
+            "id": "hvp:branch:foliage",
+            "ownerId": "hvp:branch:parent",
+            "supportCell": {
+              "x": 10,
+              "y": 11,
+              "z": 2
+            }
+          },
+          "parts": [
+            {
+              "ownerId": "hvp:branch:parent",
+              "sourceDigest": "fnv1a64-v1:f86be8fb3a37f1cb",
+              "anchored": true,
+              "cellCount": 384,
+              "center": {
+                "x": 0.75,
+                "y": 1,
+                "z": 0.25
+              },
+              "position": {
+                "x": -11.25,
+                "y": 2.75,
+                "z": -13.25
+              },
+              "orientation": {
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "w": 1
+              },
+              "velocity": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              },
+              "massKg": 450,
+              "sleeping": false
+            }
+          ]
+        },
+        "moving": {
+          "sequence": 1,
+          "pendingId": null,
+          "state": "Idle",
+          "preview": {
+            "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+            "sourceDigest": "fnv1a64-v1:9f121378e6c14525",
+            "revision": 0,
+            "issuedTick": 829,
+            "cell": [
+              188,
+              83,
+              78
+            ],
+            "pose": {
+              "position": {
+                "x": 8.432671546936035,
+                "y": 0.9698628187179565,
+                "z": -4.897743225097656
+              },
+              "rotation": {
+                "x": 0.03755337744951248,
+                "y": 0.6483238935470581,
+                "z": 0.01409828569740057,
+                "w": 0.760307252407074
+              }
+            }
+          },
+          "last": {
+            "id": "moving-cut-1",
+            "status": "Applied",
+            "parentId": "hvp:terrain-fragment:r1:1b4aa69d",
+            "children": [
+              "hvp:terrain-fragment:r1:1b4aa69d:r1:p0"
+            ],
+            "removedCells": 22,
+            "removedMassKg": 92.578125,
+            "issuedTick": 722,
+            "commitTick": 826,
+            "parentPose": {
+              "position": {
+                "x": 8.427063941955566,
+                "y": 0.973335862159729,
+                "z": -4.908839225769043
+              },
+              "rotation": {
+                "x": 0.03764636069536209,
+                "y": 0.6483198404312134,
+                "z": 0.01415773294866085,
+                "w": 0.7603049874305725
+              },
+              "velocity": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              },
+              "angularVelocity": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              }
+            },
+            "removedMomentum": {
+              "massKg": 92.578125,
+              "referencePoint": {
+                "x": 8.427063941955566,
+                "y": 0.973335862159729,
+                "z": -4.908839225769043
+              },
+              "center": {
+                "x": 8.328276038887346,
+                "y": 1.0350866946472235,
+                "z": -5.1050743532170975
+              },
+              "linear": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              },
+              "angular": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              }
+            }
+          }
+        },
+        "lastImpulse": null,
+        "impulseTarget": {
+          "kind": "Dynamic",
+          "target": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+          "massKg": 1630.078125,
+          "distanceMeters": 2.1134867668151855,
+          "point": {
+            "x": 8.421693640205103,
+            "y": 0.9744915607019998,
+            "z": -4.910625773281534
+          }
+        },
+        "lastImpulseTick": null,
+        "inertia": {
+          "ownerId": "hvp:physics:inertia",
+          "sourceDigest": "fnv1a64-v1:15f3bb58342acf4c",
+          "centerOfMass": {
+            "x": 0.29583333333333334,
+            "y": 0.29583333333333334,
+            "z": 0.125
+          },
+          "tensor": {
+            "xx": 3.441772460937501,
+            "yy": 3.4417724609374996,
+            "zz": 6.517333984375002,
+            "xy": 1.9140625000000004,
+            "xz": 0,
+            "yz": 1.3877787807814457e-17
+          },
+          "principal": {
+            "principalInertia": {
+              "x": 1.5277099609374998,
+              "y": 5.355834960937501,
+              "z": 6.517333984375002
+            },
+            "frame": {
+              "x": 0.3826834323650899,
+              "y": 0.9238795325112867,
+              "z": 0,
+              "w": 0
+            },
+            "residual": 1.1102230246251565e-16
+          },
+          "colliders": 2,
+          "impulses": 0,
+          "aimPoint": {
+            "x": -8.564777374267578,
+            "y": 1.312473177909851,
+            "z": -13.287601470947266
+          },
+          "angularVelocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          }
+        },
+        "bodies": [
+          {
+            "ownerId": "hvp:physics:drop",
+            "position": {
+              "x": -9.624567985534668,
+              "y": 0.6241464614868164,
+              "z": -7.507255554199219
+            },
+            "orientation": {
+              "x": -0.6501973867416382,
+              "y": -0.2731212377548218,
+              "z": 0.27541404962539673,
+              "w": -0.6532956957817078
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "sleeping": true,
+            "massKg": 300
+          },
+          {
+            "ownerId": "hvp:physics:inertia",
+            "position": {
+              "x": -8.716800689697266,
+              "y": 1.5458214282989502,
+              "z": -13.151344299316406
+            },
+            "orientation": {
+              "x": -0.0002377739001531154,
+              "y": 0.3575611114501953,
+              "z": 0.00005180474545340985,
+              "w": 0.9338896870613098
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "sleeping": true,
+            "massKg": 35.15625
+          },
+          {
+            "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+            "position": {
+              "x": 8.432671546936035,
+              "y": 0.9698628187179565,
+              "z": -4.897743225097656
+            },
+            "orientation": {
+              "x": 0.03755337744951248,
+              "y": 0.6483238935470581,
+              "z": 0.01409828569740057,
+              "w": 0.760307252407074
+            },
+            "velocity": {
+              "x": -0.0004909050767309964,
+              "y": 0.0001925004762597382,
+              "z": 0.0005856503266841173
+            },
+            "sleeping": false,
+            "massKg": 1630.078125
+          },
+          {
+            "ownerId": "hvp:branch:parent",
+            "position": {
+              "x": -11.25,
+              "y": 2.75,
+              "z": -13.25
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "sleeping": false,
+            "massKg": 450
+          }
+        ]
+      },
+      "clock": {
+        "maxTimerGapMs": 1497.9000000059605,
+        "maxAdvanceMs": 10.699999988079071,
+        "maxHandlerMs": 2054.9000000059605,
+        "lastCommand": "Read",
+        "lastHandlerMs": 14.899999976158142,
+        "delayedCallbacks": [
+          {
+            "gapMs": 1497.9000000059605,
+            "previousCommand": "StageBodyCut",
+            "handlerMs": 1489.2999999821186,
+            "advanceMs": 0
+          }
+        ],
+        "timers": 1
+      },
+      "tool": {
+        "mode": "Kugel 0,25 m",
+        "edges": 2,
+        "issued": 1,
+        "message": "Loses Fragment: Linksklick schneidet erneut (auch nach dem Fallen)",
+        "state": "Applied",
+        "queued": 0,
+        "receipts": 1,
+        "last": {
+          "commandId": "cut-1",
+          "materialRemovedKg": 300,
+          "reason": "Terrain and collision committed",
+          "removedCells": 64,
+          "revision": 1,
+          "status": "Applied",
+          "transferredCells": 384,
+          "transferredMassKg": 1722.65625
+        },
+        "structural": {
+          "state": "Ready",
+          "issued": 0,
+          "last": null
+        },
+        "moving": {
+          "state": "Idle",
+          "last": {
+            "id": "moving-cut-1",
+            "status": "Applied",
+            "reason": "Current-pose fragment replacement"
+          },
+          "issued": 1
+        }
+      },
+      "camera": {
+        "position": [
+          7,
+          1.7817648649215698,
+          -6.25
+        ],
+        "orientation": [
+          0.07718390273650459,
+          0.9005033518738348,
+          0.1787562412263891,
+          -0.38882202181070347
+        ],
+        "visualBody": [
+          7,
+          1.0317648649215698,
+          -6.25
+        ],
+        "heightMeters": 1.8,
+        "view": "FirstPerson"
+      },
+      "save": {
+        "state": "Loaded",
+        "message": "Aus Spielstand gestartet – pausiert",
+        "revision": 1
+      },
+      "health": {
+        "enabled": true,
+        "samples": 799,
+        "errors": 0,
+        "dropped": 0,
+        "cutObservation": {
+          "status": "armed",
+          "drops": 0,
+          "disables": 0,
+          "inputCount": 1,
+          "pendingRender": false
+        }
+      },
+      "resources": {
+        "ledger": {
+          "slotBytes": 8388608,
+          "preparedCopyBytes": 8388608,
+          "maskBytes": 1089536,
+          "meshBytes": 28109880,
+          "groupedIndexBytes": 2448768,
+          "artifactCopyBytes": 28109880,
+          "retainedMeshBytes": 28123448,
+          "tempEstimateBytes": 157089800,
+          "vegetationSourceBytes": 7158400,
+          "checkpointSourceBytes": 3240980,
+          "totalCpuBytes": 252087372,
+          "gpuBytes": "unsupported",
+          "triangles": 374716,
+          "drawCalls": 171,
+          "dormantCheckpointBytes": 0,
+          "neighborSourceBytes": 0,
+          "neighborCacheBytes": 0,
+          "neighborCheckpointBytes": 0,
+          "neighborBaseProxyBytes": 0,
+          "physicsPayloadBytes": 4980528,
+          "physicsPrepareBytes": 100663296,
+          "dynamicFragmentSourceBytes": 273728
+        },
+        "gameplayCpuBytes": 252087372,
+        "diagnosticReservedBytes": 524288,
+        "totalCpuBytes": 252611660,
+        "diagnosticRuntimeOverhead": "not-measured",
+        "cutObservation": {
+          "status": "armed",
+          "drops": 0,
+          "disables": 0,
+          "inputCount": 1,
+          "pendingRender": false
+        },
+        "caps": {
+          "maxCpuBytes": 268435456,
+          "maxMeshBytes": 134217728,
+          "maxTriangles": 500000,
+          "maxDrawCalls": 300
+        }
+      },
+      "visible": "visible",
+      "focused": true,
+      "locked": true,
+      "testBridge": false,
+      "inputError": null,
+      "pauseDialogOpen": false
+    },
+    "raw": {
+      "entries": [
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 12970.4,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:312"
+          }
+        },
+        {
+          "name": "hvp.cutBodySubmittedMs",
+          "start": 13002.800000011921,
+          "duration": 0,
+          "detail": {
+            "sampleId": "cutBodySubmittedMs:314",
+            "data": {
+              "commandId": "moving-cut-1",
+              "thread": "main",
+              "phase": "cutBodySubmittedMs",
+              "origin": 1790115808965,
+              "start": 13002.800000011921,
+              "duration": 0
+            }
+          }
+        },
+        {
+          "name": "hvp.cutBodyInputMs",
+          "start": 12996.700000017881,
+          "duration": 0,
+          "detail": {
+            "sampleId": "cutBodyInputMs:315",
+            "data": {
+              "commandId": "moving-cut-1",
+              "thread": "main",
+              "phase": "cutBodyInputMs",
+              "origin": 1790115808965,
+              "start": 12996.700000017881,
+              "duration": 0
+            }
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 12987,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:316"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13003.7,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:318"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13020.4,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:322"
+          }
+        },
+        {
+          "name": "hvp.resources",
+          "start": 13047.700000017881,
+          "duration": 0,
+          "detail": {
+            "sampleId": "resources:324",
+            "data": {
+              "triangles": 374620,
+              "draws": 171,
+              "cpuBytes": 251752620,
+              "gameplayCpuBytes": 251752620,
+              "diagnosticReservedBytes": 524288,
+              "totalCpuBytes": 252276908,
+              "diagnosticRuntimeOverhead": "not-measured",
+              "cutObservation": {
+                "status": "armed",
+                "drops": 0,
+                "disables": 0,
+                "inputCount": 1,
+                "pendingRender": false
+              },
+              "meshBytes": 28115960,
+              "activeDynamic": 0,
+              "residentDynamic": 3,
+              "colliders": 89,
+              "heavyJobs": 0,
+              "queue": 0
+            }
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13037.1,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:327"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13053.7,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:329"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13070.4,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:331"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13087,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:334"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13103.6,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:339"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13120.3,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:341"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13137,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:344"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13153.6,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:347"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13170.3,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:350"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13186.9,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:353"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13203.6,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:356"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13220.3,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:359"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13237,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:362"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13253.6,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:366"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13270.3,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:369"
+          }
+        },
+        {
+          "name": "hvp.resources",
+          "start": 13294.200000017881,
+          "duration": 0,
+          "detail": {
+            "sampleId": "resources:371",
+            "data": {
+              "triangles": 374620,
+              "draws": 171,
+              "cpuBytes": 251752620,
+              "gameplayCpuBytes": 251752620,
+              "diagnosticReservedBytes": 524288,
+              "totalCpuBytes": 252276908,
+              "diagnosticRuntimeOverhead": "not-measured",
+              "cutObservation": {
+                "status": "armed",
+                "drops": 0,
+                "disables": 0,
+                "inputCount": 1,
+                "pendingRender": false
+              },
+              "meshBytes": 28115960,
+              "activeDynamic": 0,
+              "residentDynamic": 3,
+              "colliders": 89,
+              "heavyJobs": 1,
+              "queue": 0
+            }
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13287,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:373"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13303.6,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:376"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13320.3,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:379"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13336.9,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:382"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13353.6,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:386"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13370.3,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:389"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13386.9,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:391"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13403.6,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:394"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13420.3,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:397"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13436.9,
+          "duration": 16.80000000000109,
+          "detail": {
+            "sampleId": "frameIntervalMs:400"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13453.7,
+          "duration": 16.599999999998545,
+          "detail": {
+            "sampleId": "frameIntervalMs:403"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13470.3,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:405"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13487,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:408"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13503.7,
+          "duration": 16.599999999998545,
+          "detail": {
+            "sampleId": "frameIntervalMs:411"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13520.3,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:414"
+          }
+        },
+        {
+          "name": "hvp.resources",
+          "start": 13544.100000023842,
+          "duration": 0,
+          "detail": {
+            "sampleId": "resources:416",
+            "data": {
+              "triangles": 374620,
+              "draws": 171,
+              "cpuBytes": 251752620,
+              "gameplayCpuBytes": 251752620,
+              "diagnosticReservedBytes": 524288,
+              "totalCpuBytes": 252276908,
+              "diagnosticRuntimeOverhead": "not-measured",
+              "cutObservation": {
+                "status": "armed",
+                "drops": 0,
+                "disables": 0,
+                "inputCount": 1,
+                "pendingRender": false
+              },
+              "meshBytes": 28115960,
+              "activeDynamic": 0,
+              "residentDynamic": 3,
+              "colliders": 89,
+              "heavyJobs": 1,
+              "queue": 0
+            }
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13536.9,
+          "duration": 16.80000000000109,
+          "detail": {
+            "sampleId": "frameIntervalMs:418"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13553.7,
+          "duration": 16.599999999998545,
+          "detail": {
+            "sampleId": "frameIntervalMs:421"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13570.3,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:424"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13587,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:427"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13603.7,
+          "duration": 16.599999999998545,
+          "detail": {
+            "sampleId": "frameIntervalMs:431"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13620.3,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:434"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13637,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:436"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13653.6,
+          "duration": 16.799999999999272,
+          "detail": {
+            "sampleId": "frameIntervalMs:440"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13670.4,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:443"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13687,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:446"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13703.6,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:449"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13720.3,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:452"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13736.9,
+          "duration": 16.899999999999636,
+          "detail": {
+            "sampleId": "frameIntervalMs:455"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13753.8,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:458"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13770.4,
+          "duration": 16.5,
+          "detail": {
+            "sampleId": "frameIntervalMs:461"
+          }
+        },
+        {
+          "name": "hvp.resources",
+          "start": 13795.600000023842,
+          "duration": 0,
+          "detail": {
+            "sampleId": "resources:463",
+            "data": {
+              "triangles": 374620,
+              "draws": 171,
+              "cpuBytes": 251752620,
+              "gameplayCpuBytes": 251752620,
+              "diagnosticReservedBytes": 524288,
+              "totalCpuBytes": 252276908,
+              "diagnosticRuntimeOverhead": "not-measured",
+              "cutObservation": {
+                "status": "armed",
+                "drops": 0,
+                "disables": 0,
+                "inputCount": 1,
+                "pendingRender": false
+              },
+              "meshBytes": 28115960,
+              "activeDynamic": 0,
+              "residentDynamic": 3,
+              "colliders": 89,
+              "heavyJobs": 1,
+              "queue": 0
+            }
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13786.9,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:465"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13803.6,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:468"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13820.2,
+          "duration": 16.799999999999272,
+          "detail": {
+            "sampleId": "frameIntervalMs:471"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13837,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:474"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13853.6,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:477"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13870.3,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:480"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13886.9,
+          "duration": 16.80000000000109,
+          "detail": {
+            "sampleId": "frameIntervalMs:483"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13903.7,
+          "duration": 16.599999999998545,
+          "detail": {
+            "sampleId": "frameIntervalMs:485"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13920.3,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:488"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13936.9,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:491"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13953.6,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:494"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13970.3,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:497"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 13986.9,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:500"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14003.6,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:503"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14020.3,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:506"
+          }
+        },
+        {
+          "name": "hvp.resources",
+          "start": 14047,
+          "duration": 0,
+          "detail": {
+            "sampleId": "resources:508",
+            "data": {
+              "triangles": 374620,
+              "draws": 171,
+              "cpuBytes": 251752620,
+              "gameplayCpuBytes": 251752620,
+              "diagnosticReservedBytes": 524288,
+              "totalCpuBytes": 252276908,
+              "diagnosticRuntimeOverhead": "not-measured",
+              "cutObservation": {
+                "status": "armed",
+                "drops": 0,
+                "disables": 0,
+                "inputCount": 1,
+                "pendingRender": false
+              },
+              "meshBytes": 28115960,
+              "activeDynamic": 0,
+              "residentDynamic": 3,
+              "colliders": 89,
+              "heavyJobs": 1,
+              "queue": 0
+            }
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14036.9,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:510"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14053.6,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:514"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14070.3,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:517"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14086.9,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:520"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14103.6,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:524"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14120.3,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:526"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14137,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:529"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14153.7,
+          "duration": 16.599999999998545,
+          "detail": {
+            "sampleId": "frameIntervalMs:532"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14170.3,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:535"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14187,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:538"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14203.6,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:541"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14220.3,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:544"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14237,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:547"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14253.7,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:549"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14270.4,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:552"
+          }
+        },
+        {
+          "name": "hvp.resources",
+          "start": 14300.200000017881,
+          "duration": 0,
+          "detail": {
+            "sampleId": "resources:554",
+            "data": {
+              "triangles": 374620,
+              "draws": 171,
+              "cpuBytes": 251752620,
+              "gameplayCpuBytes": 251752620,
+              "diagnosticReservedBytes": 524288,
+              "totalCpuBytes": 252276908,
+              "diagnosticRuntimeOverhead": "not-measured",
+              "cutObservation": {
+                "status": "armed",
+                "drops": 0,
+                "disables": 0,
+                "inputCount": 1,
+                "pendingRender": false
+              },
+              "meshBytes": 28115960,
+              "activeDynamic": 0,
+              "residentDynamic": 3,
+              "colliders": 89,
+              "heavyJobs": 1,
+              "queue": 0
+            }
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14287,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:556"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14303.6,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:559"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14320.3,
+          "duration": 16.80000000000109,
+          "detail": {
+            "sampleId": "frameIntervalMs:562"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14337.1,
+          "duration": 16.5,
+          "detail": {
+            "sampleId": "frameIntervalMs:565"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14353.6,
+          "duration": 16.799999999999272,
+          "detail": {
+            "sampleId": "frameIntervalMs:570"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14370.4,
+          "duration": 16.5,
+          "detail": {
+            "sampleId": "frameIntervalMs:572"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14386.9,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:575"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14403.6,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:578"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14420.3,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:580"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14436.9,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:583"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14453.6,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:587"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14470.3,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:590"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14486.9,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:593"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14503.6,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:596"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14520.3,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:599"
+          }
+        },
+        {
+          "name": "hvp.resources",
+          "start": 14545.700000017881,
+          "duration": 0,
+          "detail": {
+            "sampleId": "resources:601",
+            "data": {
+              "triangles": 374620,
+              "draws": 171,
+              "cpuBytes": 251752620,
+              "gameplayCpuBytes": 251752620,
+              "diagnosticReservedBytes": 524288,
+              "totalCpuBytes": 252276908,
+              "diagnosticRuntimeOverhead": "not-measured",
+              "cutObservation": {
+                "status": "armed",
+                "drops": 0,
+                "disables": 0,
+                "inputCount": 1,
+                "pendingRender": false
+              },
+              "meshBytes": 28115960,
+              "activeDynamic": 0,
+              "residentDynamic": 3,
+              "colliders": 89,
+              "heavyJobs": 1,
+              "queue": 0
+            }
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14536.9,
+          "duration": 16.80000000000109,
+          "detail": {
+            "sampleId": "frameIntervalMs:603"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14553.7,
+          "duration": 16.599999999998545,
+          "detail": {
+            "sampleId": "frameIntervalMs:606"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14570.3,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:609"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14586.9,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:612"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14603.6,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:616"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14620.3,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:619"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14636.9,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:621"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14653.6,
+          "duration": 16.799999999999272,
+          "detail": {
+            "sampleId": "frameIntervalMs:623"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14670.4,
+          "duration": 16.5,
+          "detail": {
+            "sampleId": "frameIntervalMs:626"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14686.9,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:629"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14703.6,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:632"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14720.3,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:635"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14737,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:637"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14753.6,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:639"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14770.3,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:641"
+          }
+        },
+        {
+          "name": "hvp.resources",
+          "start": 14796.90000000596,
+          "duration": 0,
+          "detail": {
+            "sampleId": "resources:643",
+            "data": {
+              "triangles": 374620,
+              "draws": 171,
+              "cpuBytes": 251752620,
+              "gameplayCpuBytes": 251752620,
+              "diagnosticReservedBytes": 524288,
+              "totalCpuBytes": 252276908,
+              "diagnosticRuntimeOverhead": "not-measured",
+              "cutObservation": {
+                "status": "armed",
+                "drops": 0,
+                "disables": 0,
+                "inputCount": 1,
+                "pendingRender": false
+              },
+              "meshBytes": 28115960,
+              "activeDynamic": 0,
+              "residentDynamic": 3,
+              "colliders": 89,
+              "heavyJobs": 0,
+              "queue": 0
+            }
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14787,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:644"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14803.6,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:646"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14820.3,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:648"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14837,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:650"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14853.6,
+          "duration": 16.799999999999272,
+          "detail": {
+            "sampleId": "frameIntervalMs:652"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14870.4,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:654"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14887,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:656"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14903.6,
+          "duration": 16.799999999999272,
+          "detail": {
+            "sampleId": "frameIntervalMs:658"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14920.4,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:660"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14937,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:662"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14953.7,
+          "duration": 16.599999999998545,
+          "detail": {
+            "sampleId": "frameIntervalMs:664"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14970.3,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:666"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 14986.9,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:668"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15003.6,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:670"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15020.3,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:672"
+          }
+        },
+        {
+          "name": "hvp.resources",
+          "start": 15048,
+          "duration": 0,
+          "detail": {
+            "sampleId": "resources:674",
+            "data": {
+              "triangles": 374620,
+              "draws": 171,
+              "cpuBytes": 251752620,
+              "gameplayCpuBytes": 251752620,
+              "diagnosticReservedBytes": 524288,
+              "totalCpuBytes": 252276908,
+              "diagnosticRuntimeOverhead": "not-measured",
+              "cutObservation": {
+                "status": "armed",
+                "drops": 0,
+                "disables": 0,
+                "inputCount": 1,
+                "pendingRender": false
+              },
+              "meshBytes": 28115960,
+              "activeDynamic": 0,
+              "residentDynamic": 3,
+              "colliders": 89,
+              "heavyJobs": 0,
+              "queue": 0
+            }
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15037,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:675"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15053.6,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:677"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15070.2,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:679"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15086.9,
+          "duration": 16.80000000000109,
+          "detail": {
+            "sampleId": "frameIntervalMs:681"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15103.7,
+          "duration": 16.599999999998545,
+          "detail": {
+            "sampleId": "frameIntervalMs:683"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15120.3,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:685"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15137,
+          "duration": 33.29999999999927,
+          "detail": {
+            "sampleId": "frameIntervalMs:687"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15170.3,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:689"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15187,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:691"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15203.6,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:693"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15220.3,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:695"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15237,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:697"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15253.7,
+          "duration": 16.599999999998545,
+          "detail": {
+            "sampleId": "frameIntervalMs:699"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15270.3,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:701"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15287,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:703"
+          }
+        },
+        {
+          "name": "hvp.resources",
+          "start": 15316.40000000596,
+          "duration": 0,
+          "detail": {
+            "sampleId": "resources:705",
+            "data": {
+              "triangles": 374620,
+              "draws": 171,
+              "cpuBytes": 251752620,
+              "gameplayCpuBytes": 251752620,
+              "diagnosticReservedBytes": 524288,
+              "totalCpuBytes": 252276908,
+              "diagnosticRuntimeOverhead": "not-measured",
+              "cutObservation": {
+                "status": "armed",
+                "drops": 0,
+                "disables": 0,
+                "inputCount": 1,
+                "pendingRender": false
+              },
+              "meshBytes": 28115960,
+              "activeDynamic": 0,
+              "residentDynamic": 3,
+              "colliders": 89,
+              "heavyJobs": 0,
+              "queue": 0
+            }
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15303.6,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:706"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15320.3,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:708"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15336.9,
+          "duration": 16.80000000000109,
+          "detail": {
+            "sampleId": "frameIntervalMs:710"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15353.7,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:712"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15370.4,
+          "duration": 16.5,
+          "detail": {
+            "sampleId": "frameIntervalMs:714"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15386.9,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:716"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15403.6,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:718"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15420.3,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:720"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15436.9,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:722"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15453.6,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:724"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15470.3,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:726"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15487,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:728"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15503.6,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:730"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15520.3,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:732"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15536.9,
+          "duration": 16.80000000000109,
+          "detail": {
+            "sampleId": "frameIntervalMs:734"
+          }
+        },
+        {
+          "name": "hvp.resources",
+          "start": 15566.600000023842,
+          "duration": 0,
+          "detail": {
+            "sampleId": "resources:736",
+            "data": {
+              "triangles": 374620,
+              "draws": 171,
+              "cpuBytes": 251752620,
+              "gameplayCpuBytes": 251752620,
+              "diagnosticReservedBytes": 524288,
+              "totalCpuBytes": 252276908,
+              "diagnosticRuntimeOverhead": "not-measured",
+              "cutObservation": {
+                "status": "armed",
+                "drops": 0,
+                "disables": 0,
+                "inputCount": 1,
+                "pendingRender": false
+              },
+              "meshBytes": 28115960,
+              "activeDynamic": 0,
+              "residentDynamic": 3,
+              "colliders": 89,
+              "heavyJobs": 0,
+              "queue": 0
+            }
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15553.7,
+          "duration": 16.599999999998545,
+          "detail": {
+            "sampleId": "frameIntervalMs:737"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15570.3,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:739"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15587,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:741"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15603.7,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:743"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15620.4,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:745"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15637,
+          "duration": 33.29999999999927,
+          "detail": {
+            "sampleId": "frameIntervalMs:747"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15670.3,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:749"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15687,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:751"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15703.7,
+          "duration": 16.599999999998545,
+          "detail": {
+            "sampleId": "frameIntervalMs:753"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15720.3,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:755"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15737,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:757"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15753.6,
+          "duration": 16.799999999999272,
+          "detail": {
+            "sampleId": "frameIntervalMs:759"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15770.4,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:761"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15787,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:763"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15803.7,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:765"
+          }
+        },
+        {
+          "name": "hvp.resources",
+          "start": 15829,
+          "duration": 0,
+          "detail": {
+            "sampleId": "resources:767",
+            "data": {
+              "triangles": 374620,
+              "draws": 171,
+              "cpuBytes": 251752620,
+              "gameplayCpuBytes": 251752620,
+              "diagnosticReservedBytes": 524288,
+              "totalCpuBytes": 252276908,
+              "diagnosticRuntimeOverhead": "not-measured",
+              "cutObservation": {
+                "status": "armed",
+                "drops": 0,
+                "disables": 0,
+                "inputCount": 1,
+                "pendingRender": false
+              },
+              "meshBytes": 28115960,
+              "activeDynamic": 0,
+              "residentDynamic": 3,
+              "colliders": 89,
+              "heavyJobs": 0,
+              "queue": 0
+            }
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15820.4,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:768"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15837,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:770"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15853.6,
+          "duration": 16.799999999999272,
+          "detail": {
+            "sampleId": "frameIntervalMs:772"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15870.4,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:774"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15887,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:776"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15903.7,
+          "duration": 16.599999999998545,
+          "detail": {
+            "sampleId": "frameIntervalMs:778"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15920.3,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:780"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15937,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:782"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15953.7,
+          "duration": 16.599999999998545,
+          "detail": {
+            "sampleId": "frameIntervalMs:784"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15970.3,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:786"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 15987,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:788"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 16003.6,
+          "duration": 16.799999999999272,
+          "detail": {
+            "sampleId": "frameIntervalMs:790"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 16020.4,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:792"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 16037,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:794"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 16053.7,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:796"
+          }
+        },
+        {
+          "name": "hvp.resources",
+          "start": 16078.40000000596,
+          "duration": 0,
+          "detail": {
+            "sampleId": "resources:798",
+            "data": {
+              "triangles": 374620,
+              "draws": 171,
+              "cpuBytes": 251752620,
+              "gameplayCpuBytes": 251752620,
+              "diagnosticReservedBytes": 524288,
+              "totalCpuBytes": 252276908,
+              "diagnosticRuntimeOverhead": "not-measured",
+              "cutObservation": {
+                "status": "armed",
+                "drops": 0,
+                "disables": 0,
+                "inputCount": 1,
+                "pendingRender": false
+              },
+              "meshBytes": 28115960,
+              "activeDynamic": 0,
+              "residentDynamic": 3,
+              "colliders": 89,
+              "heavyJobs": 0,
+              "queue": 0
+            }
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 16070.4,
+          "duration": 16.80000000000109,
+          "detail": {
+            "sampleId": "frameIntervalMs:799"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 16087.2,
+          "duration": 16.399999999999636,
+          "detail": {
+            "sampleId": "frameIntervalMs:801"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 16103.6,
+          "duration": 16.69999999999891,
+          "detail": {
+            "sampleId": "frameIntervalMs:803"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 16120.3,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:805"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 16137,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:807"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 16153.6,
+          "duration": 16.799999999999272,
+          "detail": {
+            "sampleId": "frameIntervalMs:809"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 16170.4,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:811"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 16187.1,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:813"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 16203.7,
+          "duration": 16.599999999998545,
+          "detail": {
+            "sampleId": "frameIntervalMs:815"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 16220.3,
+          "duration": 16.80000000000109,
+          "detail": {
+            "sampleId": "frameIntervalMs:817"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 16237.1,
+          "duration": 16.600000000000364,
+          "detail": {
+            "sampleId": "frameIntervalMs:821"
+          }
+        },
+        {
+          "name": "hvp.cutBodyInputToAppliedMs",
+          "start": 12996.700000017881,
+          "duration": 3286.400146484375,
+          "detail": {
+            "sampleId": "cutBodyInputToAppliedMs:824",
+            "data": {
+              "commandId": "moving-cut-1",
+              "inputOrigin": 1790115808965,
+              "inputStart": 12996.700000017881,
+              "terminalOrigin": 1790115808965,
+              "terminalStart": 13002.800000011921,
+              "terminalDuration": 3280.300000011921
+            }
+          }
+        },
+        {
+          "name": "hvp.cutBodyFirstCommittedRenderSubmitMs",
+          "start": 12996.700000017881,
+          "duration": 3313.300048828125,
+          "detail": {
+            "sampleId": "cutBodyFirstCommittedRenderSubmitMs:827",
+            "data": {
+              "commandId": "moving-cut-1",
+              "savedRevision": 1,
+              "savedDigest": "26d5308d",
+              "nativeGeneration": 1,
+              "activeTerrainKeys": [
+                "hvp:terrain:s0:r1",
+                "hvp:terrain:s1:r1",
+                "hvp:terrain:s2:r1",
+                "hvp:terrain:s3:r1",
+                "hvp:terrain:s4:r1",
+                "hvp:terrain:s5:r1",
+                "hvp:terrain:s6:r1",
+                "hvp:terrain:s7:r1",
+                "hvp:terrain:s8:r1",
+                "hvp:terrain:s9:r1",
+                "hvp:terrain:s10:r1",
+                "hvp:terrain:s11:r1",
+                "hvp:terrain:s12:r1",
+                "hvp:terrain:s13:r1",
+                "hvp:terrain:s14:r1",
+                "hvp:terrain:s15:r1"
+              ],
+              "rootIdentityMatches": true,
+              "activeKeysMatch": true,
+              "visibleKeysMatch": true,
+              "nativeGenerationMatches": true,
+              "recoveryHold": false,
+              "bodySequence": 1,
+              "parentId": "hvp:terrain-fragment:r1:1b4aa69d",
+              "children": [
+                {
+                  "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+                  "sourceDigest": "fnv1a64-v1:9f121378e6c14525",
+                  "renderKey": "hvp:fragment:stage1:p0"
+                }
+              ],
+              "activeBodyKeys": [
+                "hvp:fragment:stage1:p0",
+                "hvp:branch:parent",
+                "hvp:branch:foliage:r0"
+              ],
+              "outcomeIdentityMatches": true
+            }
+          }
+        },
+        {
+          "name": "hvp.cutBodyTotalAppliedMs",
+          "start": 13002.800000011921,
+          "duration": 3280.300000011921,
+          "detail": {
+            "sampleId": "cutBodyTotalAppliedMs:823",
+            "data": {
+              "commandId": "moving-cut-1",
+              "thread": "main",
+              "phase": "cutBodyTotalAppliedMs",
+              "origin": 1790115808965,
+              "start": 13002.800000011921,
+              "duration": 3280.300000011921
+            }
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 16253.7,
+          "duration": 16.599999999998545,
+          "detail": {
+            "sampleId": "frameIntervalMs:825"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 16270.3,
+          "duration": 33.400000000001455,
+          "detail": {
+            "sampleId": "frameIntervalMs:829"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 16303.7,
+          "duration": 16.599999999998545,
+          "detail": {
+            "sampleId": "frameIntervalMs:833"
+          }
+        },
+        {
+          "name": "hvp.frameIntervalMs",
+          "start": 16320.3,
+          "duration": 16.700000000000728,
+          "detail": {
+            "sampleId": "frameIntervalMs:836"
+          }
+        },
+        {
+          "name": "hvp.resources",
+          "start": 16361.800000011921,
+          "duration": 0,
+          "detail": {
+            "sampleId": "resources:838",
+            "data": {
+              "triangles": 374716,
+              "draws": 171,
+              "cpuBytes": 252087372,
+              "gameplayCpuBytes": 252087372,
+              "diagnosticReservedBytes": 524288,
+              "totalCpuBytes": 252611660,
+              "diagnosticRuntimeOverhead": "not-measured",
+              "cutObservation": {
+                "status": "armed",
+                "drops": 0,
+                "disables": 0,
+                "inputCount": 0,
+                "pendingRender": false
+              },
+              "meshBytes": 28123448,
+              "activeDynamic": 1,
+              "residentDynamic": 3,
+              "colliders": 104,
+              "heavyJobs": 0,
+              "queue": 0
+            }
+          }
+        }
+      ],
+      "dropped": 0
+    },
+    "problems": [],
+    "phase": "complete",
+    "commandId": "moving-cut-1"
+  },
+  "warmup": null,
+  "problems": []
+}

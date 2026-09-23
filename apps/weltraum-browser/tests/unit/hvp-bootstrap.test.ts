@@ -22,6 +22,7 @@ import { meshHvpTestCells } from "../../src/hvp/hvpCoastMesher";
 import {
   admitHvpResources,
   buildHvpResourceLedger,
+  estimateHvpColdCheckpointSourceBytes,
   estimateHvpStageCpuBytes,
   createHvpCompactLookTerrain,
   createHvpLookTerrain,
@@ -31,6 +32,13 @@ import {
   type HvpBootstrapHandle
 } from "../../src/hvp/hvpBootstrap";
 import { createHvpLookProfile } from "../../src/hestia-prototype/presentation/look";
+import * as cutTraceModule from "../../src/hestia-prototype/runtime/cutTrace";
+import * as plasmaToolModule from "../../src/hestia-prototype/terrain/plasmaTool";
+import * as playerInputModule from "../../src/hestia-prototype/player/input";
+import * as terrainConsumerModule from "../../src/hestia-prototype/terrain/terrainConsumer";
+import * as bodyConsumerModule from "../../src/hestia-prototype/terrain/bodyCutConsumer";
+import * as structuralConsumerModule from "../../src/hestia-prototype/terrain/structuralConsumer";
+import {ThreeRenderBackend} from "../../src/render/three/backend";
 
 class FakeElement extends EventTarget {
   id = "";
@@ -121,6 +129,7 @@ const harness = () => {
   let backendConstructions = 0;
   let backendDisposals = 0;
   let renders = 0;
+  let recoveryHold = false;
   const dispatchedCommands: RenderCommand[] = [];
   const scene = new THREE.Scene();
   const representationRoot = new THREE.Group();
@@ -178,16 +187,16 @@ const harness = () => {
     windowPort: windowPort as unknown as Window,
     // Bootstrap lifecycle tests isolate transport; real Rapier/worker kernels
     // are verified separately, without allocating a second World per UI test.
-    createPhysics: async (_sources: unknown, spawn: { x: number; y: number; z: number }) => ({
+     createPhysics: async (_sources: unknown, spawn: { x: number; y: number; z: number }) => ({
       collisionBytes: 0, workerCount: 1, update: () => {}, command: async () => {}, dispose: async () => {},
       setPlayerInput: () => {}, setCutAim:()=>{},impulse:async()=>{},
       preparation: { jobs: 95, peakParallelJobs: 1, mainPrepareMaxMs: 0 },
-      read: () => ({ status: "Paused", ticks: 0, backlogSeconds: 0, discardedSeconds: 0,
+       read: () => ({ status: "Paused", terrainGeneration: 0, ticks: 0, backlogSeconds: 0, discardedSeconds: 0,
         gravity: 11.79, gravityProfile: "test-fixture", solver: "test-fixture", stepCpuMs: 0,
         bodyCount: 3, colliderCount: 5, nativeBytes: "unsupported", player: null,
         // Transport-only fixture: the real mass/solver contract has its own tests.
         inertia: {ownerId:"hvp:physics:inertia",sourceDigest:"test-fixture",centerOfMass:{x:71/240,y:71/240,z:.125}},lastImpulse:null,
-        structural:{generation:0,sourceDigest:"test-fixture",state:"Idle",last:null,preview:null,aimPoint:spawn,
+         structural:{generation:0,sourceDigest:"test-fixture",state:recoveryHold?"RecoveryHold":"Idle",last:null,preview:null,aimPoint:spawn,
           attachment:{id:"hvp:branch:foliage",ownerId:HVP_BRANCH_KEY,supportCell:{x:10,y:11,z:2}},
           parts:[{ownerId:HVP_BRANCH_KEY,anchored:true,cells:HVP_BRANCH_CELLS,center:{x:.75,y:1,z:.25},position:spawn,orientation:{x:0,y:0,z:0,w:1},velocity:{x:0,y:0,z:0},massKg:450,sleeping:true}]},
         bodies: [{ ownerId: "hvp:physics:drop", position: spawn, orientation: { x: 0, y: 0, z: 0, w: 1 },
@@ -209,6 +218,7 @@ const harness = () => {
     createBackend,
     overrides,
     counts: () => ({ backendConstructions, backendDisposals, renders }),
+    setRecoveryHold: (value: boolean) => { recoveryHold = value; },
     commands: dispatchedCommands,
     camera: backend.camera,
     scene,
@@ -778,6 +788,29 @@ describe("HVP T08 bootstrap lifecycle", () => {
     expect(HVP_RESOURCE_CAPS_DEFAULT.maxCpuBytes).toBe(256*mib);
   });
 
+  it("cold checkpoint source accounting excludes the shared primary grid without a neighbor",()=>{
+    expect(estimateHvpColdCheckpointSourceBytes(1234,567,false)).toBe(3_502);
+  });
+
+  it("cold checkpoint source accounting retains the neighbor primary grid",()=>{
+    expect(estimateHvpColdCheckpointSourceBytes(1234,567,true)).toBe(8_392_110);
+  });
+
+  it("cold checkpoint source accounting has no extra bytes at zero inputs",()=>{
+    expect(estimateHvpColdCheckpointSourceBytes(0,0,false)).toBe(0);
+  });
+
+  it("cold checkpoint ledger delta matches retained source ownership",()=>{
+    const mesh=meshHvpTestCells([{x:0,y:0,z:0,slot:HVP_SLOT_LIMESTONE_DRY}],0.125);
+    const input={terrainMesh:mesh,waterMesh:mesh,joinMesh:mesh,farMesh:mesh,groupedIndexBytes:0,drawCalls:0};
+    const warm=buildHvpResourceLedger(input);
+    const cold=buildHvpResourceLedger({...input,checkpointSourceBytes:estimateHvpColdCheckpointSourceBytes(1234,567,false)});
+    expect(cold.totalCpuBytes-warm.totalCpuBytes).toBe(3_502);
+    expect(cold.slotBytes).toBe(warm.slotBytes);
+    expect(cold.preparedCopyBytes).toBe(warm.preparedCopyBytes);
+    expect(HVP_RESOURCE_CAPS_DEFAULT.maxCpuBytes).toBe(256*1024*1024);
+  });
+
   it("accounts exact ledger bytes from known inputs and rejects just below total", () => {
     const ledger = buildHvpResourceLedger({
       terrainMesh: {
@@ -993,4 +1026,533 @@ describe("HVP T08 bootstrap lifecycle", () => {
       expect(source.counts().renders).toBe(0);
     }finally{await handle.dispose();}
   });
+
+  it("C2B wires the real confirm, terrain trace, and accepted render callbacks", async () => {
+    const source = harness();
+    Object.defineProperty(source.windowPort, "location", { value: { search: "?hvpMeasure=1" } });
+    const originalInput = playerInputModule.createHvpPlayerInput;
+    const originalConsumer = terrainConsumerModule.createHvpTerrainConsumer;
+    const originalObservation = cutTraceModule.createHvpCutObservation;
+    let confirmCallback: (() => void) | undefined;
+    let traceCallback: cutTraceModule.HvpCutTrace | undefined;
+    let observerConfirm: ReturnType<typeof cutTraceModule.createHvpCutObservation>["confirm"] | undefined;
+    let observerRender: ReturnType<typeof cutTraceModule.createHvpCutObservation>["render"] | undefined;
+    const inputSpy = vi.spyOn(playerInputModule, "createHvpPlayerInput").mockImplementation((...args) => {
+      confirmCallback = args[6]!.confirm;
+      return originalInput(...args);
+    });
+    const consumerSpy = vi.spyOn(terrainConsumerModule, "createHvpTerrainConsumer").mockImplementation((...args) => {
+      traceCallback = args[6];
+      return originalConsumer(...args);
+    });
+    const observationSpy = vi.spyOn(cutTraceModule, "createHvpCutObservation").mockImplementation((...args) => {
+      const observation = originalObservation(...args);
+      observerConfirm = vi.spyOn(observation, "confirm");
+      observerRender = vi.spyOn(observation, "render");
+      return observation;
+    });
+    const handle = await startHvp(source.overrides());
+    try {
+      expect(inputSpy).toHaveBeenCalledOnce();
+      expect(consumerSpy).toHaveBeenCalledOnce();
+      expect(observationSpy).toHaveBeenCalledOnce();
+      expect(traceCallback).toEqual(expect.any(Function));
+      expect(confirmCallback).toEqual(expect.any(Function));
+      confirmCallback!();
+      expect(observerConfirm).toHaveBeenCalledOnce();
+      stepFrame(source.windowPort, performance.now());
+      expect(observerRender).toHaveBeenCalledOnce();
+      expect(source.counts().renders).toBe(1);
+    } finally {
+      await handle.dispose();
+      inputSpy.mockRestore();
+      consumerSpy.mockRestore();
+      observationSpy.mockRestore();
+    }
+  });
+
+  it("C2B reports the controlled observation reservation separately from gameplay bytes", async () => {
+    const source = harness();
+    Object.defineProperty(source.windowPort, "location", { value: { search: "?hvpMeasure=1" } });
+    const handle = await startHvp(source.overrides());
+    try {
+      const resources = JSON.parse(source.body.dataset.hestiaPrototypeResources!);
+      expect(resources.gameplayCpuBytes).toBe(resources.ledger.totalCpuBytes);
+      expect(resources.diagnosticReservedBytes).toBe(cutTraceModule.HVP_CUT_TRACE_RESERVE_BYTES);
+      expect(resources.totalCpuBytes).toBe(resources.gameplayCpuBytes + resources.diagnosticReservedBytes);
+      expect(resources.diagnosticRuntimeOverhead).toBe("not-measured");
+      expect(resources.cutObservation.status).toBe("armed");
+    } finally {
+      await handle.dispose();
+    }
+  });
+
+  it("C2B remains inert by default and preserves the original resource ledger", async () => {
+    const source = harness();
+    const handle = await startHvp(source.overrides());
+    try {
+      const resources = JSON.parse(source.body.dataset.hestiaPrototypeResources!);
+      expect(resources.diagnosticReservedBytes).toBe(0);
+      expect(resources.totalCpuBytes).toBe(resources.ledger.totalCpuBytes);
+      expect(resources.cutObservation.status).toBe("not-requested");
+    } finally {
+      await handle.dispose();
+    }
+  });
+
+  it("C2B does not allocate the observer when startup leaves less than its reserve", async () => {
+    const baseline = harness();
+    const baselineHandle = await startHvp(baseline.overrides());
+    const gameplayCpuBytes = JSON.parse(baseline.body.dataset.hestiaPrototypeResources!).ledger.totalCpuBytes as number;
+    await baselineHandle.dispose();
+
+    const source = harness();
+    Object.defineProperty(source.windowPort, "location", { value: { search: "?hvpMeasure=1" } });
+    const factory = vi.spyOn(cutTraceModule, "createHvpCutObservation");
+    const maxCpuBytes = gameplayCpuBytes + Math.floor(cutTraceModule.HVP_CUT_TRACE_RESERVE_BYTES / 2);
+    const handle = await startHvp(source.overrides({ resourceCaps: { maxCpuBytes } }));
+    try {
+      const resources = JSON.parse(source.body.dataset.hestiaPrototypeResources!);
+      expect(factory).not.toHaveBeenCalled();
+      expect(resources.diagnosticReservedBytes).toBe(0);
+      expect(resources.cutObservation.status).toBe("budget-disabled");
+      expect(resources.cutObservation.disables).toBe(1);
+    } finally {
+      await handle.dispose();
+      factory.mockRestore();
+    }
+  });
+
+  it("C2B admits an exact-cap preview, releases diagnostics, and stays disabled after rollback", async () => {
+    // Synthetic preview cells exercise the real resource admission, not a native cut.
+    const cells = Array.from({ length: 512 }, (_, index) =>
+      [2 * (index % 16), 64 + 2 * Math.floor(index / 16), 128] as const);
+    const plasmaFactory = vi.spyOn(plasmaToolModule, "createHvpPlasmaTool");
+    const consumerFactory = vi.spyOn(terrainConsumerModule, "createHvpTerrainConsumer");
+    const bodyFactory = vi.spyOn(bodyConsumerModule, "createHvpBodyCutConsumer");
+    const observerFactory = vi.spyOn(cutTraceModule, "createHvpCutObservation");
+    let handle: HvpBootstrapHandle | undefined;
+    try {
+      const baseline = harness();
+      handle = await startHvp(baseline.overrides());
+      const baselineResources = JSON.parse(baseline.body.dataset.hestiaPrototypeResources!);
+      plasmaFactory.mock.calls[0]![3](cells, true);
+      const preview = baseline.commands.find(command => command.kind === "UpsertMeshArtifact"
+        && command.artifact.representationKey.startsWith("hvp:tool:preview:"));
+      if (preview?.kind !== "UpsertMeshArtifact") {
+        throw new Error("The real preview callback did not submit its artifact");
+      }
+      const previewBytes = preview.artifact.positions.byteLength + preview.artifact.normals.byteLength
+        + preview.artifact.indices.byteLength;
+      const maxCpuBytes = baselineResources.gameplayCpuBytes + previewBytes * 3;
+      expect(previewBytes * 3).toBeGreaterThan(cutTraceModule.HVP_CUT_TRACE_RESERVE_BYTES);
+      expect(maxCpuBytes).toBeLessThanOrEqual(HVP_RESOURCE_CAPS_DEFAULT.maxCpuBytes);
+      await handle.dispose();
+      handle = undefined;
+      expect(observerFactory).not.toHaveBeenCalled();
+
+      const source = harness();
+      Object.defineProperty(source.windowPort, "location", { value: { search: "?hvpMeasure=1" } });
+      handle = await startHvp(source.overrides({ resourceCaps: { maxCpuBytes } }));
+      expect(observerFactory).toHaveBeenCalledOnce();
+      const observer = observerFactory.mock.results[0]!.value!;
+      const consumer = consumerFactory.mock.results[1]!.value!;
+      const disable = vi.spyOn(consumer, "disableTrace");
+      const disableBody = vi.spyOn(bodyFactory.mock.results[1]!.value!, "disableTrace");
+      const release = vi.spyOn(observer, "dispose");
+      const render = vi.spyOn(observer, "render");
+      try {
+        const [root, , , showPreview, , structural] = plasmaFactory.mock.calls[1]!;
+        const before = root.read();
+        const initialResources = JSON.parse(source.body.dataset.hestiaPrototypeResources!);
+        expect(initialResources.cutObservation.status).toBe("armed");
+        observer.confirm(() => observer.trace({ commandId: "c2b-release", thread: "main", phase: "cutSubmittedMs",
+          origin: performance.timeOrigin, start: performance.now(), duration: 0 }));
+        expect(observer.read().inputCount).toBe(1);
+
+        // Reject the original gameplay overrun before changing observation state.
+        expect(() => showPreview([...cells, [200, 100, 128]], true)).toThrow(/CPU bytes exceed/);
+        expect(release).not.toHaveBeenCalled();
+        expect(disable).not.toHaveBeenCalled();
+        expect(disableBody).not.toHaveBeenCalled();
+
+        // The same production callback now admits exactly the measured payload cap.
+        expect(() => showPreview(cells, true)).not.toThrow();
+        const admitted = source.commands.find(command => command.kind === "UpsertMeshArtifact"
+          && command.artifact.representationKey.startsWith("hvp:tool:preview:"));
+        if (admitted?.kind !== "UpsertMeshArtifact") {
+          throw new Error("The exact-cap preview was not submitted");
+        }
+        expect(initialResources.gameplayCpuBytes + 3 * (admitted.artifact.positions.byteLength
+          + admitted.artifact.normals.byteLength + admitted.artifact.indices.byteLength)).toBe(maxCpuBytes);
+        expect(release).toHaveBeenCalledOnce();
+        expect(disable).toHaveBeenCalledOnce();
+        expect(disableBody).toHaveBeenCalledOnce();
+        expect(observer.read()).toMatchObject({ disposed: true, inputCount: 0, pendingRender: false, dropped: 1 });
+        expect(root.read()).toBe(before);
+
+        showPreview([cells[0]!], true);
+        structural!.admit();
+        // Exercise the existing scene-stage rollback without inventing native success.
+        const stage = consumerFactory.mock.calls[1]![2];
+        stage({ source: before, render: new Map(), collision: new Map() }).rollback();
+        const restored = JSON.parse(source.body.dataset.hestiaPrototypeResources!);
+        expect(restored.ledger).toEqual(initialResources.ledger);
+        expect(restored.totalCpuBytes).toBe(restored.gameplayCpuBytes);
+        expect(restored.diagnosticReservedBytes).toBe(0);
+        expect(restored.cutObservation).toMatchObject({ status: "budget-disabled", drops: 1, disables: 1 });
+        for (let index = 0; index < 15; index += 1) {
+          stepFrame(source.windowPort, performance.now() + index);
+        }
+        const health = JSON.parse(source.body.dataset.hestiaPrototypeMeasurements!);
+        expect(health.cutObservation).toMatchObject({ status: "budget-disabled", drops: 1, disables: 1 });
+        expect(observerFactory).toHaveBeenCalledOnce();
+        expect(release).toHaveBeenCalledOnce();
+        expect(disable).toHaveBeenCalledOnce();
+        expect(render).not.toHaveBeenCalled();
+        expect(source.counts().renders).toBe(15);
+        expect(root.read()).toBe(before);
+        expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
+      } finally {
+        await handle.dispose();
+        handle = undefined;
+        disable.mockRestore();
+        disableBody.mockRestore();
+        release.mockRestore();
+        render.mockRestore();
+      }
+    } finally {
+      await handle?.dispose();
+      plasmaFactory.mockRestore();
+      consumerFactory.mockRestore();
+      bodyFactory.mockRestore();
+      observerFactory.mockRestore();
+    }
+  });
+
+  it("P07 binds a body outcome to actual staged source, native receipt and Three projection",async()=>{
+    // Real bootstrap/staging/Three projection; transport state is an explicit unit fixture, not a native-cut claim.
+    const source=harness();Object.defineProperty(source.windowPort,"location",{value:{search:"?hvpMeasure=1"}});
+    const overrides=source.overrides();
+    if(!overrides?.createPhysics){throw new Error("Missing fixture physics factory");}
+    const originalPhysics=overrides.createPhysics;
+    let native!:ReturnType<Awaited<ReturnType<typeof originalPhysics>>["read"]>,backend!:ThreeRenderBackend;
+    const createPhysics:typeof originalPhysics=async(...args)=>{
+      const physics=await originalPhysics(...args);native=physics.read();
+      Reflect.set(native,"moving",{state:"Idle",sequence:0,last:null,preview:null});Reflect.set(native,"terrainFragments",[]);
+      return {...physics,read:()=>native};
+    };
+    const observerFactory=vi.spyOn(cutTraceModule,"createHvpCutObservation");
+    const bodyFactory=vi.spyOn(bodyConsumerModule,"createHvpBodyCutConsumer");
+    const terrainFactory=vi.spyOn(terrainConsumerModule,"createHvpTerrainConsumer");
+    const structuralFactory=vi.spyOn(structuralConsumerModule,"createHvpStructuralConsumer");
+    const measure=vi.spyOn(performance,"measure");let handle:HvpBootstrapHandle|undefined;
+    try{
+      handle=await startHvp(source.overrides({createPhysics,createBackend:(options:ConstructorParameters<typeof ThreeRenderBackend>[0])=>{
+        backend=new ThreeRenderBackend({...options,rendererFactory:()=>({setPixelRatio:()=>{},setSize:()=>{},render:()=>{},dispose:()=>{}})});return backend;
+      }}));
+      const observer=observerFactory.mock.results[0]!.value!,readFrame=observerFactory.mock.calls[0]![1];
+      const consumer=bodyFactory.mock.results[0]!.value!,stage=bodyFactory.mock.calls[0]![2],trace=bodyFactory.mock.calls[0]![3]!;
+      expect(typeof trace).toBe("function");expect(()=>readFrame("not-applied")).toThrow(/confirmed native replacement/);
+      const oldResidents=backend.readDiagnostics().residentRepresentationKeys;
+      const oldVisible=backend.readDiagnostics().visibleRepresentationKeys;
+      const oldLedger=JSON.parse(source.body.dataset.hestiaPrototypeResources!).ledger;
+      // Replacing an A candidate may leave a tombstone even when native A is restored.
+      // The next valid attempt at the same source revision must not reuse that render identity.
+      const terrainStage=terrainFactory.mock.calls[0]![2];
+      const originalRoot=terrainFactory.mock.calls[0]![0].read();
+      const tile=meshHvpTestCells([{x:0,y:0,z:0,slot:HVP_SLOT_LIMESTONE_DRY}],.125,{ao:true});
+      const tileProducts={source:{...originalRoot,revision:originalRoot.revision+1},render:new Map([[0,tile]]),collision:new Map()};
+      terrainStage(tileProducts).rollback();
+      expect(()=>terrainStage(tileProducts).rollback()).not.toThrow();
+      const branchStage=structuralFactory.mock.calls[0]![1];
+      const branchState={...native.structural!,attachment:{...native.structural!.attachment,ownerId:null}};
+      branchStage(branchState).rollback();
+      expect(()=>branchStage(branchState).rollback()).not.toThrow();
+      expect(backend.readDiagnostics().residentRepresentationKeys).toEqual(oldResidents);
+      expect(backend.readDiagnostics().visibleRepresentationKeys).toEqual(oldVisible);
+      expect(JSON.parse(source.body.dataset.hestiaPrototypeResources!).ledger).toEqual(oldLedger);
+      const ownerId=`hvp:body-fixture:${"x".repeat(110)}`,digest="fnv1a64-v1:0123456789abcdef",id="moving-cut-fixture";
+      expect(ownerId).toHaveLength(127); // Valid canonical owner; render-only suffixes must not consume its ID budget.
+      const mesh={...meshHvpTestCells([{x:0,y:0,z:0,slot:1}],.125,{ao:true}),sourceDigest:digest};
+      const products={removedCells:1,removedMassKg:1,parts:[{ownerId,sourceDigest:digest,sourceBytes:1,
+        center:{x:0,y:0,z:0},massKg:1,cells:[{x:0,y:0,z:0,materialId:1}],mesh}]};
+      // Four earlier stages consumed tags 1–4. A separately owned native body
+      // can legally have the would-be scene key of the next body candidate.
+      const existingBodies=native.bodies,collidingOwner="hvp:fragment:stage5:p0";
+      Reflect.set(native,"bodies",[...existingBodies,{...existingBodies[0]!,ownerId:collidingOwner}]);
+      try{
+        const first=stage(HVP_BRANCH_KEY,products);
+        expect(backend.readDiagnostics().residentRepresentationKeys).not.toContain(collidingOwner);
+        first.rollback();
+      }finally{Reflect.set(native,"bodies",existingBodies);}
+      expect(backend.readDiagnostics().residentRepresentationKeys).toEqual(oldResidents);
+      expect(backend.readDiagnostics().visibleRepresentationKeys).toEqual(oldVisible);
+      expect(JSON.parse(source.body.dataset.hestiaPrototypeResources!).ledger).toEqual(oldLedger);
+      const pending=stage(HVP_BRANCH_KEY,products);
+      const receipt={id,status:"Applied",parentId:HVP_BRANCH_KEY,children:[ownerId]};
+      const pose={ownerId,position:{x:1.1,y:2.2,z:3.3},orientation:{x:0,y:0,z:0,w:1},velocity:{x:0,y:0,z:0},sleeping:true,massKg:1};
+      const childSource={ownerId,sourceDigest:digest};
+      Reflect.set(native,"moving",{state:"Idle",sequence:1,last:receipt,preview:null});
+      Reflect.set(native,"bodies",[...native.bodies.filter(body=>body.ownerId!==HVP_BRANCH_KEY),pose]);
+      Reflect.set(native,"terrainFragments",[childSource]);
+      Reflect.set(native,"structural",{...native.structural,parts:[],attachment:{...native.structural!.attachment,ownerId:null}});
+      pending.publish();pending.finish();
+      const outcome=Object.freeze({id,status:"Applied" as const,reason:"fixture finalized"}),read=consumer.read.bind(consumer);
+      const consumerRead=vi.spyOn(consumer,"read").mockImplementation(()=>({...read(),last:outcome}));
+      try{
+        const facts=readFrame(id);expect(facts.body).toMatchObject({outcome,nativeSequence:1,receipt,
+          children:[{ownerId,sourceDigest:digest}]});
+        const childKey=facts.body?.children[0]?.renderKey;
+        expect(childKey).toMatch(/^hvp:fragment:stage[0-9]+:p0$/);
+        expect(facts.body).toMatchObject({activeKeys:[childKey],visibleKeys:[childKey]});
+        observer.confirm(()=>trace({commandId:id,thread:"main",phase:"cutBodySubmittedMs",origin:performance.timeOrigin,start:performance.now(),duration:0}));
+        trace({commandId:id,thread:"main",phase:"cutBodyTotalAppliedMs",origin:performance.timeOrigin,start:performance.now(),duration:0});
+        expect(observer.read().pendingRender).toBe(true);stepFrame(source.windowPort,performance.now());
+        expect(measure.mock.calls.filter(call=>call[0]==="hvp.cutBodyFirstCommittedRenderSubmitMs")).toHaveLength(1);
+        const node=backend.representationRoot.getObjectByName(`representation:${childKey}`)!;
+        const x=node.position.x;node.position.x+=1;expect(()=>readFrame(id)).toThrow(/projection mismatch/);node.position.x=x;
+        childSource.sourceDigest="fnv1a64-v1:fedcba9876543210";expect(()=>readFrame(id)).toThrow(/source or generation mismatch/);childSource.sourceDigest=digest;
+        receipt.status="CommittedHeld";expect(()=>readFrame(id)).toThrow(/confirmed native replacement/);receipt.status="Applied";
+        const extra=new THREE.Object3D();extra.name=`representation:${HVP_BRANCH_KEY}`;backend.representationRoot.add(extra);
+        observer.confirm(()=>trace({commandId:id,thread:"main",phase:"cutBodySubmittedMs",origin:performance.timeOrigin,start:performance.now(),duration:0}));
+        trace({commandId:id,thread:"main",phase:"cutBodyTotalAppliedMs",origin:performance.timeOrigin,start:performance.now(),duration:0});
+        expect(observer.read().pendingRender).toBe(false);backend.representationRoot.remove(extra);
+      }finally{consumerRead.mockRestore();}
+    }finally{await handle?.dispose();measure.mockRestore();observerFactory.mockRestore();bodyFactory.mockRestore();terrainFactory.mockRestore();structuralFactory.mockRestore();}
+  });
+
+  it("C2B bounds visible representation reads before the sentinel", async () => {
+    const source = harness();
+    Object.defineProperty(source.windowPort, "location", { value: { search: "?hvpMeasure=1" } });
+    const originalFactory = cutTraceModule.createHvpCutObservation;
+    let readFrame: (() => cutTraceModule.HvpCutRenderFacts) | undefined;
+    const factory = vi.spyOn(cutTraceModule, "createHvpCutObservation").mockImplementation((sink, read) => {
+      readFrame = read;
+      return originalFactory(sink, read);
+    });
+    const handle = await startHvp(source.overrides());
+    const root = source.backend.representationRoot;
+    const injected: THREE.Object3D[] = [];
+    const addSentinel = (): { readonly visited: () => boolean; readonly node: THREE.Object3D } => {
+      let visited = false;
+      const node = new THREE.Object3D();
+      Object.defineProperty(node, "name", { configurable: true, get: () => { visited = true; return "sentinel"; } });
+      root.add(node);
+      injected.push(node);
+      return { visited: () => visited, node };
+    };
+    const cleanupInjected = (): void => {
+      root.remove(...injected);
+      injected.length = 0;
+    };
+    try {
+      expect(readFrame).toBeDefined();
+      if (readFrame === undefined) return;
+
+      for (let index = 0; index < 65; index += 1) {
+        const node = new THREE.Object3D();
+        node.name = `representation:hvp:terrain:s-c2b-overflow-${index}`;
+        injected.push(node);
+        root.add(node);
+      }
+      const overflowSentinel = addSentinel();
+      expect(() => readFrame!()).toThrow(/overflow/);
+      expect(overflowSentinel.visited()).toBe(false);
+      cleanupInjected();
+
+      const first = new THREE.Object3D();
+      first.name = "representation:hvp:terrain:s-c2b-duplicate";
+      root.add(first);
+      injected.push(first);
+      const duplicate = new THREE.Object3D();
+      duplicate.name = first.name;
+      root.add(duplicate);
+      injected.push(duplicate);
+      const duplicateSentinel = addSentinel();
+      expect(() => readFrame!()).toThrow(/invalid/);
+      expect(duplicateSentinel.visited()).toBe(false);
+      cleanupInjected();
+
+      const oversized = new THREE.Object3D();
+      oversized.name = `representation:hvp:terrain:s${"x".repeat(257)}`;
+      root.add(oversized);
+      injected.push(oversized);
+      const oversizedSentinel = addSentinel();
+      expect(() => readFrame!()).toThrow(/overflow/);
+      expect(oversizedSentinel.visited()).toBe(false);
+    } finally {
+      cleanupInjected();
+      await handle.dispose();
+      factory.mockRestore();
+    }
+  });
+
+  it("C2B renders once and emits no committed marker when frame facts fail", async () => {
+    const source = harness();
+    Object.defineProperty(source.windowPort, "location", { value: { search: "?hvpMeasure=1" } });
+    const originalFactory = cutTraceModule.createHvpCutObservation;
+    let observer: ReturnType<typeof cutTraceModule.createHvpCutObservation> | undefined;
+    let readFrame: (() => cutTraceModule.HvpCutRenderFacts) | undefined;
+    const factory = vi.spyOn(cutTraceModule, "createHvpCutObservation").mockImplementation((sink, read) => {
+      readFrame = read;
+      observer = originalFactory(sink, read);
+      return observer;
+    });
+    const measure = vi.spyOn(performance, "measure");
+    const handle = await startHvp(source.overrides());
+    const root = source.backend.representationRoot;
+    const injected: THREE.Object3D[] = [];
+    try {
+      expect(observer).toBeDefined();
+      expect(readFrame).toBeDefined();
+      for (const key of readFrame!().activeTerrainKeys) {
+        const node = new THREE.Object3D();
+        node.name = `representation:${key}`;
+        injected.push(node);
+        root.add(node);
+      }
+      const span = { commandId: "c2b-invalid-frame", thread: "main" as const, origin: performance.timeOrigin, duration: 0 };
+      observer!.confirm(() => observer!.trace({ ...span, phase: "cutSubmittedMs", start: performance.now() }));
+      observer!.trace({ ...span, phase: "cutTotalAppliedMs", start: performance.now() });
+      expect(observer!.read().pendingRender).toBe(true);
+      const duplicate = new THREE.Object3D();
+      duplicate.name = injected[0]!.name;
+      root.add(duplicate);
+      injected.push(duplicate);
+      stepFrame(source.windowPort, performance.now());
+      expect(source.counts().renders).toBe(1);
+      expect(observer!.read().pendingRender).toBe(false);
+      expect(observer!.read().dropped).toBeGreaterThan(0);
+      expect(measure.mock.calls.some(([name]) => name === "hvp.cutFirstCommittedRenderSubmitMs")).toBe(false);
+    } finally {
+      root.remove(...injected);
+      await handle.dispose();
+      factory.mockRestore();
+      measure.mockRestore();
+    }
+  });
+
+  it("C2B preserves backend unavailable and thrown render results", async () => {
+    const source = harness();
+    Object.defineProperty(source.windowPort, "location", { value: { search: "?hvpMeasure=1" } });
+    const originalFactory = cutTraceModule.createHvpCutObservation;
+    let observer: ReturnType<typeof cutTraceModule.createHvpCutObservation> | undefined;
+    const factory = vi.spyOn(cutTraceModule, "createHvpCutObservation").mockImplementation((sink, read) => {
+      observer = originalFactory(sink, read);
+      return observer;
+    });
+    const originalRender = source.backend.renderFrame;
+    const handle = await startHvp(source.overrides());
+    try {
+      expect(observer).toBeDefined();
+      const render = vi.spyOn(observer!, "render");
+      try {
+        const unavailable = renderCommandResult("BackendUnavailable");
+        const backendRender = vi.fn(() => unavailable);
+        source.backend.renderFrame = backendRender;
+        stepFrame(source.windowPort, performance.now());
+        expect(backendRender).toHaveBeenCalledOnce();
+        expect(render.mock.results[0]!.value).toBe(unavailable);
+        const original = new Error("C2B render failure");
+        backendRender.mockImplementation(() => { throw original; });
+        expect(() => stepFrame(source.windowPort, performance.now())).toThrow(original);
+        expect(backendRender).toHaveBeenCalledTimes(2);
+        expect(render.mock.results[1]!.value).toBe(original);
+      } finally {
+        render.mockRestore();
+      }
+    } finally {
+      source.backend.renderFrame = originalRender;
+      await handle.dispose();
+      factory.mockRestore();
+    }
+  });
+
+  it("C2B maps the native RecoveryHold fact into the observer frame", async () => {
+    const source = harness();
+    Object.defineProperty(source.windowPort, "location", { value: { search: "?hvpMeasure=1" } });
+    const originalFactory = cutTraceModule.createHvpCutObservation;
+    let readFrame: (() => cutTraceModule.HvpCutRenderFacts) | undefined;
+    const factory = vi.spyOn(cutTraceModule, "createHvpCutObservation").mockImplementation((sink, read) => {
+      readFrame = read;
+      return originalFactory(sink, read);
+    });
+    const handle = await startHvp(source.overrides());
+    try {
+      expect(readFrame).toBeDefined();
+      if (readFrame === undefined) return;
+      source.setRecoveryHold(true);
+      expect(readFrame().recoveryHold).toBe(true);
+    } finally {
+      await handle.dispose();
+      factory.mockRestore();
+    }
+  });
+
+  it("C2B delegates the real structural admission without re-arming", async () => {
+    const source = harness();
+    Object.defineProperty(source.windowPort, "location", { value: { search: "?hvpMeasure=1" } });
+    const originalPlasma = plasmaToolModule.createHvpPlasmaTool;
+    let structuralAdmit: (() => void) | undefined;
+    const plasmaSpy = vi.spyOn(plasmaToolModule, "createHvpPlasmaTool").mockImplementation((...args) => {
+      structuralAdmit = (args[5] as { admit?: () => void } | undefined)?.admit;
+      return originalPlasma(...args);
+    });
+    const handle = await startHvp(source.overrides());
+    try {
+      expect(structuralAdmit).toEqual(expect.any(Function));
+      const before = JSON.parse(source.body.dataset.hestiaPrototypeResources!);
+      expect(before.cutObservation.status).toBe("armed");
+      structuralAdmit!();
+      for (let index = 0; index < 15; index += 1) {
+        stepFrame(source.windowPort, performance.now() + index);
+      }
+      const health = JSON.parse(source.body.dataset.hestiaPrototypeMeasurements!);
+      expect(health.cutObservation).toMatchObject({ status: "armed", disables: 0 });
+      expect(JSON.parse(source.body.dataset.hestiaPrototypeResources!).diagnosticReservedBytes)
+        .toBe(cutTraceModule.HVP_CUT_TRACE_RESERVE_BYTES);
+    } finally {
+      await handle.dispose();
+      plasmaSpy.mockRestore();
+    }
+  });
+
+  it("C2B preserves observer drops in live and disposed measurement health", async () => {
+    const source = harness();
+    Object.defineProperty(source.windowPort, "location", { value: { search: "?hvpMeasure=1" } });
+    (source.windowPort as unknown as { confirm: () => boolean }).confirm = () => true;
+    const originalFactory = cutTraceModule.createHvpCutObservation;
+    let observer: ReturnType<typeof cutTraceModule.createHvpCutObservation> | undefined;
+    const factory = vi.spyOn(cutTraceModule, "createHvpCutObservation").mockImplementation((sink, read) => {
+      observer = originalFactory(sink, read);
+      return observer;
+    });
+    const handle = await startHvp(source.overrides());
+    try {
+      expect(observer).toBeDefined();
+      if (observer === undefined) return;
+      const submitted = { commandId: "c2b-health", thread: "main" as const, phase: "cutSubmittedMs", origin: performance.timeOrigin, start: performance.now(), duration: 0 };
+      observer.confirm(() => { observer!.trace(submitted); });
+      for (let index = 0; index < 15; index += 1) {
+        stepFrame(source.windowPort, performance.now() + index);
+      }
+      const live = JSON.parse(source.body.dataset.hestiaPrototypeMeasurements!);
+      expect(live).toMatchObject({ enabled: true, samples: expect.any(Number), errors: expect.any(Number), dropped: expect.any(Number) });
+      expect(live.cutObservation).toMatchObject({ status: "armed", drops: 0, disables: 0 });
+
+      const end = source.body.children.flatMap((child) => [child, ...descendants(child)]).find((element) => element.id === "hvp-end-session");
+      expect(end).toBeDefined();
+      end?.dispatchEvent(new Event("click"));
+      await vi.waitFor(() => expect(source.body.dataset.hestiaPrototypeDisposal).toBeDefined());
+      const disposal = JSON.parse(source.body.dataset.hestiaPrototypeDisposal!);
+      expect(disposal.measurementHealth).toMatchObject({ enabled: true, cutObservation: { status: "disposed" } });
+      expect(disposal.measurementHealth.cutObservation.drops).toBe(observer.read().dropped);
+      expect(disposal.measurementHealth.cutObservation.drops).toBeGreaterThan(0);
+    } finally {
+      await handle.dispose();
+      factory.mockRestore();
+    }
+  });
+
 });

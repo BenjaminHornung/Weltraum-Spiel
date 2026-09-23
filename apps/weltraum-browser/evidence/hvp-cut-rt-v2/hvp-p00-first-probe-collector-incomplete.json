@@ -1,0 +1,242 @@
+{
+  "label": "p00-first-probe-collector-incomplete",
+  "caveat": "PerformanceEntry.toJSON() omitted PerformanceMeasure.detail in this browser; retained as functional probe, not a command-attributed raw trace or p95 evidence.",
+  "url": "http://127.0.0.1:5177/?hestiaPrototype=1&hvpMeasure=1",
+  "timeOrigin": 1790062213906.6,
+  "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36",
+  "viewport": [
+    1036,
+    766,
+    1.25
+  ],
+  "tool": {
+    "mode": "Box 0,5 m",
+    "edges": 1,
+    "issued": 1,
+    "message": "Protected: top-only quarry depth exceeds 0.5m",
+    "state": "Applied",
+    "queued": 0,
+    "receipts": 1,
+    "last": {
+      "commandId": "cut-1",
+      "status": "Applied",
+      "removedCells": 50,
+      "reason": "Terrain and collision committed",
+      "revision": 1
+    },
+    "structural": {
+      "state": "Ready",
+      "issued": 0,
+      "last": null
+    },
+    "moving": {
+      "state": "Idle",
+      "last": null,
+      "issued": 0
+    }
+  },
+  "rootGeneration": "1",
+  "nativeGeneration": 1,
+  "nativeState": "Idle",
+  "clock": {
+    "maxTimerGapMs": 112.90000000596046,
+    "maxAdvanceMs": 16.700000002980232,
+    "maxHandlerMs": 1912.4000000059605,
+    "lastCommand": "Read",
+    "lastHandlerMs": 0.10000000894069672,
+    "simulationHold": {
+      "gapMs": 112.90000000596046,
+      "previousCommand": "Read",
+      "handlerMs": 0.4000000059604645,
+      "advanceMs": 2.7000000029802322,
+      "backlogSeconds": 0.05126666667560839,
+      "ticks": 18331
+    },
+    "delayedCallbacks": [
+      {
+        "gapMs": 63.20000000298023,
+        "previousCommand": "Read",
+        "handlerMs": 0.4000000059604645,
+        "advanceMs": 0.5
+      },
+      {
+        "gapMs": 63,
+        "previousCommand": "Read",
+        "handlerMs": 0.3999999910593033,
+        "advanceMs": 0.5999999940395355
+      },
+      {
+        "gapMs": 63,
+        "previousCommand": "Read",
+        "handlerMs": 0.3999999910593033,
+        "advanceMs": 0.5999999940395355
+      },
+      {
+        "gapMs": 66.8999999910593,
+        "previousCommand": "Read",
+        "handlerMs": 0.3999999910593033,
+        "advanceMs": 0.7000000029802322
+      },
+      {
+        "gapMs": 63.400000005960464,
+        "previousCommand": "Read",
+        "handlerMs": 26.799999997019768,
+        "advanceMs": 0.8999999910593033
+      },
+      {
+        "gapMs": 112.90000000596046,
+        "previousCommand": "Read",
+        "handlerMs": 0.4000000059604645,
+        "advanceMs": 2.7000000029802322
+      },
+      {
+        "gapMs": 79.5,
+        "previousCommand": "Read",
+        "handlerMs": 68.3999999910593,
+        "advanceMs": 0
+      }
+    ],
+    "lastTerrainRecipeMs": 0,
+    "lastTerrainCookMs": 0.29999999701976776,
+    "lastTerrainInstallMs": 0,
+    "lastTerrainHoldMs": 24.899999991059303,
+    "lastTerrainCommandId": "cut-1",
+    "timers": 1
+  },
+  "health": {
+    "enabled": true,
+    "samples": 69604,
+    "errors": 0,
+    "dropped": 0,
+    "cutObservation": {
+      "status": "armed",
+      "drops": 0,
+      "disables": 0,
+      "inputCount": 0,
+      "pendingRender": false
+    }
+  },
+  "records": [
+    {
+      "name": "hvp.cutSubmittedMs",
+      "entryType": "measure",
+      "startTime": 292076.60000000894,
+      "duration": 0,
+      "navigationId": 2706
+    },
+    {
+      "name": "hvp.cutQueueWaitMs",
+      "entryType": "measure",
+      "startTime": 292076.60000000894,
+      "duration": 0.7000000029802322,
+      "navigationId": 2706
+    },
+    {
+      "name": "hvp.cutRootPrepareMs",
+      "entryType": "measure",
+      "startTime": 292077.40000000596,
+      "duration": 0.5,
+      "navigationId": 2706
+    },
+    {
+      "name": "hvp.cutCompileMs",
+      "entryType": "measure",
+      "startTime": 292078.3000000119,
+      "duration": 214.79999999701977,
+      "navigationId": 2706
+    },
+    {
+      "name": "hvp.cutGraphicsStageMs",
+      "entryType": "measure",
+      "startTime": 292293.200000003,
+      "duration": 36.29999999701977,
+      "navigationId": 2706
+    },
+    {
+      "name": "hvp.cutLookRegroupMs",
+      "entryType": "measure",
+      "startTime": 292293.700000003,
+      "duration": 0.5,
+      "navigationId": 2706
+    },
+    {
+      "name": "hvp.cutArtifactCreateMs",
+      "entryType": "measure",
+      "startTime": 292294.60000000894,
+      "duration": 11.200000002980232,
+      "navigationId": 2706
+    },
+    {
+      "name": "hvp.cutBackendUpsertMs",
+      "entryType": "measure",
+      "startTime": 292305.90000000596,
+      "duration": 23.099999994039536,
+      "navigationId": 2706
+    },
+    {
+      "name": "hvp.cutNativePrepareMs",
+      "entryType": "measure",
+      "startTime": 292329.5,
+      "duration": 9.800000011920929,
+      "navigationId": 2706
+    },
+    {
+      "name": "hvp.cutNativeCommitMs",
+      "entryType": "measure",
+      "startTime": 292339.40000000596,
+      "duration": 9,
+      "navigationId": 2706
+    },
+    {
+      "name": "hvp.cutRootCommitMs",
+      "entryType": "measure",
+      "startTime": 292348.40000000596,
+      "duration": 0.09999999403953552,
+      "navigationId": 2706
+    },
+    {
+      "name": "hvp.cutPublishMs",
+      "entryType": "measure",
+      "startTime": 292348.700000003,
+      "duration": 7,
+      "navigationId": 2706
+    },
+    {
+      "name": "hvp.cutInputToAppliedMs",
+      "entryType": "measure",
+      "startTime": 292058.10000000894,
+      "duration": 322.39990234375,
+      "navigationId": 2706
+    },
+    {
+      "name": "hvp.cutFirstCommittedRenderSubmitMs",
+      "entryType": "measure",
+      "startTime": 292058.10000000894,
+      "duration": 361.599853515625,
+      "navigationId": 2706
+    },
+    {
+      "name": "hvp.cutTotalAppliedMs",
+      "entryType": "measure",
+      "startTime": 292076.60000000894,
+      "duration": 303.8999999910593,
+      "navigationId": 2706
+    },
+    {
+      "name": "hvp.cutNativeFinalizeMs",
+      "entryType": "measure",
+      "startTime": 292355.8000000119,
+      "duration": 15.599999994039536,
+      "navigationId": 2706
+    },
+    {
+      "name": "hvp.cutCleanupMs",
+      "entryType": "measure",
+      "startTime": 292371.5,
+      "duration": 8.800000011920929,
+      "navigationId": 2706
+    }
+  ],
+  "collectorDropped": 0,
+  "testBridge": false
+}

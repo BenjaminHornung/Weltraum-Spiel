@@ -1,0 +1,626 @@
+{
+  "config": {
+    "argv": [
+      "C:\\IFI_SO~1\\Utils\\npm-tmp\\opencode\\hvp-node22\\node_modules\\node\\bin\\node.exe",
+      "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutRT-P00\\apps\\weltraum-browser\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "-c",
+      "C:\\IFI_SourceCode\\Utils\\npm-tmp\\opencode\\hestia-cut-rt-v2-preflight-20260921\\p07-cut-performance.config.mjs",
+      "tests/performance/hvp-cut-rt.spec.ts"
+    ],
+    "configFile": "C:\\IFI_SourceCode\\Utils\\npm-tmp\\opencode\\hestia-cut-rt-v2-preflight-20260921\\p07-cut-performance.config.mjs",
+    "rootDir": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutRT-P00/apps/weltraum-browser/tests/performance",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/hestia-cut-rt-v2-preflight-20260921/p07-diagnostic-matrix-01/playwright-output",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutRT-P00/apps/weltraum-browser/tests/performance",
+        "testIgnore": [],
+        "testMatch": [
+          "hvp-cut-rt.spec.ts"
+        ],
+        "timeout": 1800000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "line",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "C:\\IFI_SourceCode\\Utils\\npm-tmp\\opencode\\hestia-cut-rt-v2-preflight-20260921\\p07-diagnostic-matrix-01/playwright-report.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "none",
+    "updateSourceMethod": "patch",
+    "version": "1.61.1",
+    "workers": 1,
+    "webServer": {
+      "command": "C:/IFI_SO~1/Utils/npm-tmp/opencode/hvp-node22/node_modules/node/bin/node.exe C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutRT-P00/apps/weltraum-browser/node_modules/vite/bin/vite.js preview --host 127.0.0.1 --port 5173 --strictPort",
+      "url": "http://127.0.0.1:5173",
+      "reuseExistingServer": false,
+      "timeout": 20000,
+      "cwd": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutRT-P00/apps/weltraum-browser"
+    }
+  },
+  "suites": [
+    {
+      "title": "hvp-cut-rt.spec.ts",
+      "file": "hvp-cut-rt.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "P07 quarry-box cold session 1",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 1800000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 31060,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "P07 quarry-box/cold/1/1: completed\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-22T22:14:10.217Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "fbb71cd484a2b9289551-bdea17d9a6a654240dbe",
+          "file": "hvp-cut-rt.spec.ts",
+          "line": 305,
+          "column": 7
+        },
+        {
+          "title": "P07 quarry-box warm session 1",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 1800000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 38126,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "P07 quarry-box/warm/1/1: completed\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-22T22:14:41.325Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "fbb71cd484a2b9289551-29f76ccf21d9829ad212",
+          "file": "hvp-cut-rt.spec.ts",
+          "line": 305,
+          "column": 7
+        },
+        {
+          "title": "P07 quarry-sphere cold session 1",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 1800000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 31462,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "P07 quarry-sphere/cold/1/1: completed\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-22T22:15:19.465Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "fbb71cd484a2b9289551-03014851296aa8e740a5",
+          "file": "hvp-cut-rt.spec.ts",
+          "line": 305,
+          "column": 7
+        },
+        {
+          "title": "P07 quarry-sphere warm session 1",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 1800000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 39490,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "P07 quarry-sphere/warm/1/1: completed\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-22T22:15:50.941Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "fbb71cd484a2b9289551-593a35ddd2792613427d",
+          "file": "hvp-cut-rt.spec.ts",
+          "line": 305,
+          "column": 7
+        },
+        {
+          "title": "P07 rock-arm cold session 1",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 1800000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 30894,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "P07 rock-arm/cold/1/1: completed\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-22T22:16:30.442Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "fbb71cd484a2b9289551-1e01c6243e5cff8accef",
+          "file": "hvp-cut-rt.spec.ts",
+          "line": 305,
+          "column": 7
+        },
+        {
+          "title": "P07 rock-arm warm session 1",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 1800000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 42928,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "P07 rock-arm/warm/1/1: completed\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-22T22:17:01.347Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "fbb71cd484a2b9289551-8800ce3d04f93931693b",
+          "file": "hvp-cut-rt.spec.ts",
+          "line": 305,
+          "column": 7
+        },
+        {
+          "title": "P07 body-box-moving cold session 1",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 1800000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 44460,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "P07 body-box-moving/cold/1/1: completed\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-22T22:17:44.287Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "fbb71cd484a2b9289551-88427ae68ea04a6724dc",
+          "file": "hvp-cut-rt.spec.ts",
+          "line": 305,
+          "column": 7
+        },
+        {
+          "title": "P07 body-box-moving warm session 1",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 1800000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 59019,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "P07 body-box-moving/warm/1/1: completed\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-22T22:18:28.756Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "fbb71cd484a2b9289551-856fd78fc96d0d4e896a",
+          "file": "hvp-cut-rt.spec.ts",
+          "line": 305,
+          "column": 7
+        },
+        {
+          "title": "P07 body-box-sleeping cold session 1",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 1800000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 47026,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "P07 body-box-sleeping/cold/1/1: completed\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-22T22:19:27.785Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "fbb71cd484a2b9289551-50ab2ae0abbb3a5f6ba3",
+          "file": "hvp-cut-rt.spec.ts",
+          "line": 305,
+          "column": 7
+        },
+        {
+          "title": "P07 body-box-sleeping warm session 1",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 1800000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 59976,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "P07 body-box-sleeping/warm/1/1: completed\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-22T22:20:14.820Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "fbb71cd484a2b9289551-35e672831f476f5101bf",
+          "file": "hvp-cut-rt.spec.ts",
+          "line": 305,
+          "column": 7
+        },
+        {
+          "title": "P07 body-sphere-moving cold session 1",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 1800000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 47340,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "P07 body-sphere-moving/cold/1/1: completed\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-22T22:21:14.806Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "fbb71cd484a2b9289551-36930d25eea3165167c3",
+          "file": "hvp-cut-rt.spec.ts",
+          "line": 305,
+          "column": 7
+        },
+        {
+          "title": "P07 body-sphere-moving warm session 1",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 1800000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 58635,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "P07 body-sphere-moving/warm/1/1: completed\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-22T22:22:02.161Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "fbb71cd484a2b9289551-ade4a222d6e73a382335",
+          "file": "hvp-cut-rt.spec.ts",
+          "line": 305,
+          "column": 7
+        },
+        {
+          "title": "P07 body-sphere-sleeping cold session 1",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 1800000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 45659,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "P07 body-sphere-sleeping/cold/1/1: completed\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-22T22:23:00.813Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "fbb71cd484a2b9289551-3788001b2c668276ba90",
+          "file": "hvp-cut-rt.spec.ts",
+          "line": 305,
+          "column": 7
+        },
+        {
+          "title": "P07 body-sphere-sleeping warm session 1",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 1800000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 58315,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "P07 body-sphere-sleeping/warm/1/1: completed\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-22T22:23:46.479Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "fbb71cd484a2b9289551-761ee303436aa825861e",
+          "file": "hvp-cut-rt.spec.ts",
+          "line": 305,
+          "column": 7
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-09-22T22:14:07.986Z",
+    "duration": 637363.727,
+    "expected": 14,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

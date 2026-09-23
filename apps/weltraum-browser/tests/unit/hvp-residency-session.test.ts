@@ -43,7 +43,8 @@ it("cold-restores a checkpointed sleeping fragment without instantiating it unti
   try{
     const ownerId="hvp:terrain-fragment:r1:12345678";
     s.prepareTerrain("fragment",0,[{index:0,mesh:primary[0]!}],[{ownerId,origin:{x:-16,y:-8,z:-16},massKg:9.375,
-      cells:[{x:48,y:68,z:128,materialId:1},{x:49,y:68,z:128,materialId:1}]}]);
+      cells:[{x:48,y:68,z:128,materialId:1},{x:49,y:68,z:128,materialId:1}],
+      colliderBoxes:[{min:[48,68,128],max:[50,69,129]}]}]);
     s.commitTerrain("fragment");s.finalizeTerrain("fragment");for(let i=0;i<240;i+=1){s.advance(1/60);}s.pause();
     const body=s.read().bodies.find(b=>b.ownerId===ownerId)!;expect(body.sleeping).toBe(true);
     s.parkDistantBodies();expect(s.read().bodies.some(b=>b.ownerId===ownerId)).toBe(false);expect(s.read().terrainFragments).toHaveLength(1);
@@ -63,7 +64,8 @@ it("holds residency changes until graphics publication and never disguises a cha
   try{
     const ownerId="hvp:terrain-fragment:r1:12345678";
     s.prepareTerrain("fragment",0,[{index:0,mesh:primary[0]!}],[{ownerId,origin:{x:-16,y:-8,z:-16},massKg:9.375,
-      cells:[{x:48,y:68,z:128,materialId:1},{x:49,y:68,z:128,materialId:1}]}]);
+      cells:[{x:48,y:68,z:128,materialId:1},{x:49,y:68,z:128,materialId:1}],
+      colliderBoxes:[{min:[48,68,128],max:[50,69,129]}]}]);
     s.commitTerrain("fragment");s.finalizeTerrain("fragment");for(let i=0;i<240;i+=1){s.advance(1/60);}
     const before=s.read();expect(before.bodies.find(b=>b.ownerId===ownerId)!.sleeping).toBe(true);
     s.prepareBodyResidency("park");expect(s.read().bodyResidencyTransaction).toBe("PreparedHeld");

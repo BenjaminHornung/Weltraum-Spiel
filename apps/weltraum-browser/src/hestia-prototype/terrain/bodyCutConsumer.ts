@@ -3,11 +3,19 @@ import type {HvpMovingCutRequest,HvpMovingCutPreparation} from "../physics/bodyC
 import type {HvpBodyCutProducts} from "../../workers/hvpBodyCutJob";
 import type {HvpStagedTerrain} from "./terrainConsumer";
 import {decodeHvpReceipts,type HvpSimpleOutcome} from "../persistence/receiptCheckpoint";
+import type {HvpCutTrace} from "../runtime/cutTrace";
 
 /** The local worker does not pause or own a moving parent. Only the commit does. */
 export const createHvpBodyCutConsumer=(physics:HvpPhysicsClient,compile:(source:HvpMovingCutPreparation)=>Promise<HvpBodyCutProducts>,
-  stage:(parentId:string,products:HvpBodyCutProducts)=>HvpStagedTerrain)=>{
+  stage:(parentId:string,products:HvpBodyCutProducts)=>HvpStagedTerrain,traceInput?:HvpCutTrace)=>{
   let disposed=false,busy=false,held=false;
+  let trace=traceInput;
+  const emit=(id:string,phase:string,start?:number):number|undefined=>{
+    let now:number|undefined;
+    if(trace){try{now=performance.now();trace({commandId:id,thread:"main",phase,origin:performance.timeOrigin,
+      start:start??now,duration:start===undefined?0:now-start});}catch{/* Observation cannot change the command. */}}
+    return now;
+  };
   let last:Readonly<{id:string;status:string;reason:string}>|null=null;
   const receipts=new Map<string,{signature:string;promise:Promise<void>;outcome?:HvpSimpleOutcome}>();
   return {
@@ -33,8 +41,14 @@ export const createHvpBodyCutConsumer=(physics:HvpPhysicsClient,compile:(source:
         ...(input.brush==="Sphere"?{brush:"Sphere" as const}:{})};
       const signature=JSON.stringify(request),old=receipts.get(request.id);
       if(old){return old.signature===signature?old.promise:Promise.reject(new Error("Moving command id conflict"));}
-      if(disposed||busy||held||receipts.size>=256){return Promise.reject(new Error(held?"RecoveryHold":"Moving cut Pending or disposed"));}
+      if(disposed||busy||held||receipts.size>=256){
+        const error=new Error(held?"RecoveryHold":"Moving cut Pending or disposed");
+        const submitted=emit(request.id,"cutBodySubmittedMs");
+        if(submitted!==undefined){emit(request.id,held?"cutBodyTotalRecoveryHoldMs":"cutBodyTotalRejectedMs",submitted);}
+        return Promise.reject(error);
+      }
       busy=true;
+      const submitted=emit(request.id,"cutBodySubmittedMs");
       const promise=(async()=>{
         let begun=false,finished=false,render:HvpStagedTerrain|undefined;
         try{
@@ -49,6 +63,7 @@ export const createHvpBodyCutConsumer=(physics:HvpPhysicsClient,compile:(source:
           physics.publishBodyCut();render.publish();
           await physics.finalizeBodyCut(request.id);finished=true;
           render.finish();last=Object.freeze({id:request.id,status:"Applied",reason:"Current-pose fragment replacement"});
+          if(submitted!==undefined){emit(request.id,"cutBodyTotalAppliedMs",submitted);}
         }catch(error){
           let restored=!finished;
           if(!finished){
@@ -58,10 +73,12 @@ export const createHvpBodyCutConsumer=(physics:HvpPhysicsClient,compile:(source:
           try{if(physics.read().moving.state==="RecoveryHold"){restored=false;}}catch{restored=false;}
           if(!restored){held=true;try{await physics.command("Pause");}catch{/* Never assert restoration without the World. */}}
           last=Object.freeze({id:request.id,status:held?"RecoveryHold":"Rejected",reason:String(error)});
+          if(submitted!==undefined){emit(request.id,held?"cutBodyTotalRecoveryHoldMs":"cutBodyTotalRejectedMs",submitted);}
         }finally{const receipt=receipts.get(request.id);if(receipt&&last){receipt.outcome=last;}busy=false;}
       })();
       receipts.set(request.id,{signature,promise,...(!busy&&last?.id===request.id?{outcome:last}:{})});return promise;
     },
-    dispose():void {disposed=true;}
+    disableTrace():void {trace=undefined;},
+    dispose():void {disposed=true;trace=undefined;}
   };
 };

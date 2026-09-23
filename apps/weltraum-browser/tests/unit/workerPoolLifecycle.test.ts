@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { fnv1aHash } from "../../src/core/hash";
 import { PerformanceTelemetry, createWorkerPoolTelemetryObserver } from "../../src/diagnostics/performance";
 import { collisionInputs } from "../../src/hestia-prototype/physics/terrainColliders";
 import { HVP_COLLISION_JOB, HVP_COLLISION_MAX_OUTPUT, decodeHvpCollisionOutput } from "../../src/workers/hvpCollisionJob";
@@ -261,6 +262,171 @@ const createPool = async (workerCount = 1) => {
   await pool.start();
   return { pool, transports };
 };
+
+type SupportWireOutput = { binding: unknown; report: Record<string, unknown>; timings?: unknown };
+
+const rewriteSupportOutput = (
+  output: TransferableBufferBundle,
+  mutate: (value: SupportWireOutput) => void
+): TransferableBufferBundle => {
+  const value = JSON.parse(new TextDecoder().decode(output.buffers[0]!)) as SupportWireOutput;
+  mutate(value);
+  const bytes = new TextEncoder().encode(JSON.stringify(value));
+  return { ...output, buffers: [bytes.buffer], contentHash: fnv1aBytes([bytes.buffer]), byteLength: byteCount(bytes.length),
+    views: [{ name: "report", kind: "Uint8Array", bufferIndex: 0, byteOffset: 0, elementCount: bytes.length }] };
+};
+
+const supportFixture = async () => {
+  const { pool } = await createPool();
+  try {
+    const slots = new Uint8Array(32 * 4 * 4);
+    for (const [x, y, z] of [[15, 0, 1], [15, 1, 1], [15, 2, 1], [17, 2, 1], [18, 2, 1]]) {
+      slots[x! + y! * 32 + z! * 128] = 1;
+    }
+    const payload: HvpSupportPayload = { sessionId: "support", epoch: 2, generation: 1, sourceDigest: "12345678", size: [32, 4, 4], changed: [[16, 2, 1]] };
+    const bundle: TransferableBufferBundle = { ownership: "SenderToWorker", revision: contentRevision(1), buffers: [slots.buffer], byteLength: byteCount(slots.byteLength),
+      views: [{ name: "slots", kind: "Uint8Array", bufferIndex: 0, byteOffset: 0, elementCount: slots.length }] };
+    const job: WorkerJobRequest = { ...request("support-decode", slots.byteLength, 1), jobKind: workerJobKind(HVP_SUPPORT_JOB),
+      sourceInputDigest: hvpSupportInputDigest(payload, bundle.buffers), estimatedOutputBytes: byteCount(HVP_SUPPORT_MAX_OUTPUT), payload };
+    const terminal = await pool.enqueue(job, bundle).result;
+    if (terminal.kind !== "Completed") {
+      throw new Error(`Support fixture: ${terminal.kind}`);
+    }
+    return { payload, output: terminal.output };
+  } finally {
+    await pool.shutdown();
+  }
+};
+
+const supportBundle = (payload: HvpSupportPayload, report: Record<string, unknown>, timings?: unknown): TransferableBufferBundle => {
+  const value = { binding: [payload.sessionId, payload.epoch, payload.generation, payload.sourceDigest, payload.size, payload.changed], report,
+    ...(timings === undefined ? {} : { timings }) };
+  const bytes = new TextEncoder().encode(JSON.stringify(value));
+  return { ownership: "WorkerToConsumer", revision: contentRevision(payload.generation), buffers: [bytes.buffer], byteLength: byteCount(bytes.length),
+    contentHash: fnv1aBytes([bytes.buffer]), views: [{ name: "report", kind: "Uint8Array", bufferIndex: 0, byteOffset: 0, elementCount: bytes.length }] };
+};
+
+const largeSupportReport = (): Record<string, unknown> => {
+  const makeFragment = (minX: number, maxX: number) => {
+    const cells: { x: number; y: number; z: number; materialId: number }[] = [];
+    for (let z = 1; z < 17; z += 1) {
+      for (let y = 1; y < 66; y += 1) {
+        for (let x = minX; x < maxX; x += 1) {
+          cells.push({ x, y, z, materialId: 1 });
+        }
+      }
+    }
+    const leaves = [...new Set(cells.map(cell => `${Math.floor(cell.x / 16)}:${Math.floor(cell.y / 16)}:${Math.floor(cell.z / 16)}`))].sort();
+    const digest = fnv1aHash(JSON.stringify(cells));
+    return { id: `hvp-terrain-fragment-${digest}`, digest, cells, min: [minX, 1, 1], max: [maxX, 66, 17],
+      massKg: 16 * 65 * 16 * 2400 * .125 ** 3, colliders: 1, affectedLeaves: leaves,
+      colliderBoxes: [{ min: [minX, 1, 1], max: [maxX, 66, 17] }] };
+  };
+  return { status: "Ready", reason: "", probes: 41_586, anchoredWitnesses: 0, workingBytes: 2_375_680,
+    fragments: [makeFragment(1, 17), makeFragment(18, 34)] };
+};
+
+it("support decode accepts valid reports and rejects stale or mass-bound reports", async () => {
+  const { payload, output } = await supportFixture();
+  const decoded = decodeHvpSupportOutput(output, payload);
+  expect(decoded.fragments).toHaveLength(1);
+  expect(decoded.fragments[0]!.cells).toHaveLength(2);
+  expect(() => decodeHvpSupportOutput(output, { ...payload, epoch: 3 })).toThrow(/binding/);
+  const corrupt = rewriteSupportOutput(output, value => {
+    const fragments = value.report.fragments as Record<string, unknown>[];
+    fragments[0]!.massKg = 0;
+  });
+  expect(() => decodeHvpSupportOutput(corrupt, payload)).toThrow(/mass binding/);
+});
+
+it("support decode requires truthful collider and timing counts", async () => {
+  const { payload, output } = await supportFixture();
+  const colliderMismatch = rewriteSupportOutput(output, value => {
+    const fragments = value.report.fragments as Record<string, unknown>[];
+    fragments[0]!.colliders = 2;
+  });
+  expect(() => decodeHvpSupportOutput(colliderMismatch, payload)).toThrow(/collider/);
+  const fragmentCellsMismatch = rewriteSupportOutput(output, value => {
+    const timings = value.timings as Record<string, unknown>;
+    timings.fragmentCells = 0;
+  });
+  expect(() => decodeHvpSupportOutput(fragmentCellsMismatch, payload)).toThrow(/timings/);
+  const fragmentCountMismatch = rewriteSupportOutput(output, value => {
+    const timings = value.timings as Record<string, unknown>;
+    timings.fragmentCount = 2;
+  });
+  expect(() => decodeHvpSupportOutput(fragmentCountMismatch, payload)).toThrow(/timings/);
+  const invalidColliderBounds = rewriteSupportOutput(output, value => {
+    const fragments = value.report.fragments as Record<string, unknown>[];
+    const box = (fragments[0]!.colliderBoxes as Record<string, unknown>[])[0]!;
+    box.min = box.max;
+  });
+  expect(() => decodeHvpSupportOutput(invalidColliderBounds, payload)).toThrow(/collider box/);
+  const fractionalCell = rewriteSupportOutput(output, value => {
+    const fragments = value.report.fragments as Record<string, unknown>[];
+    const cell = (fragments[0]!.cells as Record<string, unknown>[])[0]!;
+    cell.x = 15.5;
+  });
+  expect(() => decodeHvpSupportOutput(fractionalCell, payload)).toThrow(/fragment cell/);
+  const fractionalColliderBox = rewriteSupportOutput(output, value => {
+    const fragments = value.report.fragments as Record<string, unknown>[];
+    const box = (fragments[0]!.colliderBoxes as Record<string, unknown>[])[0]!;
+    const min = [...(box.min as number[])];
+    min[0] = min[0]! + 0.5;
+    box.min = min;
+  });
+  expect(() => decodeHvpSupportOutput(fractionalColliderBox, payload)).toThrow(/collider box/);
+  const tooManyColliderBoxes = rewriteSupportOutput(output, value => {
+    const fragments = value.report.fragments as Record<string, unknown>[];
+    const box = (fragments[0]!.colliderBoxes as Record<string, unknown>[])[0]!;
+    fragments[0]!.colliderBoxes = Array.from({ length: 65 }, () => box);
+  });
+  expect(() => decodeHvpSupportOutput(tooManyColliderBoxes, payload)).toThrow(/collider boxes/);
+  const colliderVolumeMismatch = rewriteSupportOutput(output, value => {
+    const fragments = value.report.fragments as Record<string, unknown>[];
+    const box = (fragments[0]!.colliderBoxes as Record<string, unknown>[])[0]!;
+    const max = [...(box.max as number[])];
+    max[0] = max[0]! + 1;
+    box.max = max;
+  });
+  expect(() => decodeHvpSupportOutput(colliderVolumeMismatch, payload)).toThrow(/coverage mismatch/);
+ });
+
+it("support decode rejects malformed timing values and freezes diagnostics", async () => {
+  const { payload, output } = await supportFixture();
+  for (const mutate of [
+    (value: SupportWireOutput) => { value.timings = null; },
+    (value: SupportWireOutput) => { (value.timings as Record<string, unknown>).totalMs = -1; },
+    (value: SupportWireOutput) => { (value.timings as Record<string, unknown>).totalMs = null; },
+    (value: SupportWireOutput) => { (value.timings as Record<string, unknown>).totalMs = 262_145; },
+    (value: SupportWireOutput) => { (value.timings as Record<string, unknown>).recipeBreakdown = null; }
+  ]) {
+    expect(() => decodeHvpSupportOutput(rewriteSupportOutput(output, mutate), payload)).toThrow(/timings/);
+  }
+  const decoded = decodeHvpSupportOutput(output, payload);
+  expect(Object.isFrozen(decoded.timings)).toBe(true);
+  expect(Reflect.set(decoded.timings as object, "fragmentCells", 0)).toBe(false);
+  expect(Object.isFrozen(decoded.timings?.recipeBreakdown)).toBe(true);
+  expect(Reflect.set(decoded.timings?.recipeBreakdown as object, "massMs", 0)).toBe(false);
+  const withoutTimings = rewriteSupportOutput(output, value => { delete value.timings; });
+  const without = decodeHvpSupportOutput(withoutTimings, payload);
+  expect(without.fragments).toEqual(decoded.fragments);
+  expect(without.timings).toBeUndefined();
+});
+
+it("support decode keeps report and transfer aggregate budgets distinct", () => {
+  const payload: HvpSupportPayload = { sessionId: "large-support", epoch: 2, generation: 1, sourceDigest: "12345678", size: [64, 128, 32], changed: [[17, 1, 1]] };
+  const report = largeSupportReport();
+  const noTimings = decodeHvpSupportOutput(supportBundle(payload, report), payload);
+  const withTimings = decodeHvpSupportOutput(supportBundle(payload, report, {
+    seedsMs: 0, supportMs: 0, ingestMs: 0, recipeMs: 0, fragmentCount: 2, fragmentCells: 33_280, totalMs: 0,
+    recipeBreakdown: { massMs: 0, classifyMs: 0, transitionMs: 0, axesMs: 0 }
+  }), payload);
+  expect(noTimings.fragments.reduce((sum, fragment) => sum + fragment.cells.length, 0)).toBe(33_280);
+  expect(withTimings.fragments).toEqual(noTimings.fragments);
+  expect(withTimings.timings?.fragmentCount).toBe(2);
+  expect(withTimings.timings?.fragmentCells).toBe(33_280);
+});
 
 describe("WorkerPool lifecycle", () => {
   it("reports only ready workers as active across startup, replacement failure, and shutdown", async () => {

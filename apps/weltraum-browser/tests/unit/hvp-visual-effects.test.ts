@@ -56,7 +56,7 @@ describe("HVP visual effects", () => {
     port.render(scene,camera);
     scene.remove(mesh);
     port.render(scene,camera);
-    expect(updates).toEqual([true,false,false,true,true,true,true]);
+    expect(updates).toEqual([true,false,false,true,true,true,false]);
     expect(renderer.toneMapping).toBe(THREE.ACESFilmicToneMapping);
     expect(shadowMap.autoUpdate).toBe(false);
     scene.remove(coast);

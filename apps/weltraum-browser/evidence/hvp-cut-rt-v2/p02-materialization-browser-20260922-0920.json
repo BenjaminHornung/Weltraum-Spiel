@@ -1,0 +1,867 @@
+{
+  "purpose": "P02 diagnostic comparison; not product Cut p95",
+  "beforeSource": "22f02783af0cc388d2d00c79ce3472da29c6abd8",
+  "afterSource": "2cb17886fc72a557e587958e93bbe443f962f6f1",
+  "beforeBundle": "8c42d2ce7b1a6c9945396f52dc96d0710c6983c0",
+  "afterBundle": "d815301a12c94e559644d6af1f604e15c5f1e090",
+  "instrumentation": "Same two clock reads injected only into temporary bundles: before brick prefilter/channel setup, after final channel validation and before deepFreeze. Product source has no timing hook. Remainder includes input validation, hashing, freeze and harness overhead, not an isolated hash metric.",
+  "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36",
+  "hardwareConcurrency": 16,
+  "viewport": [
+    1536,
+    791,
+    1.25
+  ],
+  "timeOrigin": 1790068777035.3,
+  "warmupPairs": 2,
+  "measuredPairs": 9,
+  "order": "First pair before then after; measured pairs alternate candidate-first/reference-first; no retries or sample filtering",
+  "results": [
+    {
+      "name": "thin-512-x-runs-4-bricks-16384-cells",
+      "bricks": 4,
+      "records": 512,
+      "completeBytesMatch": true,
+      "hashes": [
+        "fnv1a64-v1:7b0c75a2daa7129d",
+        "fnv1a64-v1:846d600586c9b5b4",
+        "fnv1a64-v1:b0dc815ca5bee13e",
+        "fnv1a64-v1:162c11ae84c3cb05"
+      ],
+      "firstPair": {
+        "before": {
+          "totalMs": 580.2999999970198,
+          "channelMs": 366.8999999910593,
+          "remainderMs": 213.40000000596046,
+          "hashes": [
+            "fnv1a64-v1:7b0c75a2daa7129d",
+            "fnv1a64-v1:846d600586c9b5b4",
+            "fnv1a64-v1:b0dc815ca5bee13e",
+            "fnv1a64-v1:162c11ae84c3cb05"
+          ]
+        },
+        "after": {
+          "totalMs": 166.40000000596046,
+          "channelMs": 4.399999991059303,
+          "remainderMs": 162.00000001490116,
+          "hashes": [
+            "fnv1a64-v1:7b0c75a2daa7129d",
+            "fnv1a64-v1:846d600586c9b5b4",
+            "fnv1a64-v1:b0dc815ca5bee13e",
+            "fnv1a64-v1:162c11ae84c3cb05"
+          ]
+        }
+      },
+      "warmups": [
+        {
+          "before": {
+            "totalMs": 461.30000001192093,
+            "channelMs": 306.79999999701977,
+            "remainderMs": 154.50000001490116,
+            "hashes": [
+              "fnv1a64-v1:7b0c75a2daa7129d",
+              "fnv1a64-v1:846d600586c9b5b4",
+              "fnv1a64-v1:b0dc815ca5bee13e",
+              "fnv1a64-v1:162c11ae84c3cb05"
+            ]
+          },
+          "after": {
+            "totalMs": 184.90000000596046,
+            "channelMs": 1.5999999940395355,
+            "remainderMs": 183.30000001192093,
+            "hashes": [
+              "fnv1a64-v1:7b0c75a2daa7129d",
+              "fnv1a64-v1:846d600586c9b5b4",
+              "fnv1a64-v1:b0dc815ca5bee13e",
+              "fnv1a64-v1:162c11ae84c3cb05"
+            ]
+          }
+        },
+        {
+          "before": {
+            "totalMs": 473.59999999403954,
+            "channelMs": 327.79999999701977,
+            "remainderMs": 145.79999999701977,
+            "hashes": [
+              "fnv1a64-v1:7b0c75a2daa7129d",
+              "fnv1a64-v1:846d600586c9b5b4",
+              "fnv1a64-v1:b0dc815ca5bee13e",
+              "fnv1a64-v1:162c11ae84c3cb05"
+            ]
+          },
+          "after": {
+            "totalMs": 174,
+            "channelMs": 1.899999976158142,
+            "remainderMs": 172.10000002384186,
+            "hashes": [
+              "fnv1a64-v1:7b0c75a2daa7129d",
+              "fnv1a64-v1:846d600586c9b5b4",
+              "fnv1a64-v1:b0dc815ca5bee13e",
+              "fnv1a64-v1:162c11ae84c3cb05"
+            ]
+          }
+        }
+      ],
+      "pairs": [
+        {
+          "index": 0,
+          "first": "after",
+          "before": {
+            "totalMs": 544.3000000119209,
+            "channelMs": 365.09999999403954,
+            "remainderMs": 179.2000000178814,
+            "hashes": [
+              "fnv1a64-v1:7b0c75a2daa7129d",
+              "fnv1a64-v1:846d600586c9b5b4",
+              "fnv1a64-v1:b0dc815ca5bee13e",
+              "fnv1a64-v1:162c11ae84c3cb05"
+            ]
+          },
+          "after": {
+            "totalMs": 169.5,
+            "channelMs": 1.4000000059604645,
+            "remainderMs": 168.09999999403954,
+            "hashes": [
+              "fnv1a64-v1:7b0c75a2daa7129d",
+              "fnv1a64-v1:846d600586c9b5b4",
+              "fnv1a64-v1:b0dc815ca5bee13e",
+              "fnv1a64-v1:162c11ae84c3cb05"
+            ]
+          }
+        },
+        {
+          "index": 1,
+          "first": "before",
+          "before": {
+            "totalMs": 803.5,
+            "channelMs": 597.4000000208616,
+            "remainderMs": 206.09999997913837,
+            "hashes": [
+              "fnv1a64-v1:7b0c75a2daa7129d",
+              "fnv1a64-v1:846d600586c9b5b4",
+              "fnv1a64-v1:b0dc815ca5bee13e",
+              "fnv1a64-v1:162c11ae84c3cb05"
+            ]
+          },
+          "after": {
+            "totalMs": 348.29999999701977,
+            "channelMs": 2.6000000089406967,
+            "remainderMs": 345.69999998807907,
+            "hashes": [
+              "fnv1a64-v1:7b0c75a2daa7129d",
+              "fnv1a64-v1:846d600586c9b5b4",
+              "fnv1a64-v1:b0dc815ca5bee13e",
+              "fnv1a64-v1:162c11ae84c3cb05"
+            ]
+          }
+        },
+        {
+          "index": 2,
+          "first": "after",
+          "before": {
+            "totalMs": 848.2000000029802,
+            "channelMs": 618.5999999940395,
+            "remainderMs": 229.6000000089407,
+            "hashes": [
+              "fnv1a64-v1:7b0c75a2daa7129d",
+              "fnv1a64-v1:846d600586c9b5b4",
+              "fnv1a64-v1:b0dc815ca5bee13e",
+              "fnv1a64-v1:162c11ae84c3cb05"
+            ]
+          },
+          "after": {
+            "totalMs": 257.40000000596046,
+            "channelMs": 2.4000000208616257,
+            "remainderMs": 254.99999998509884,
+            "hashes": [
+              "fnv1a64-v1:7b0c75a2daa7129d",
+              "fnv1a64-v1:846d600586c9b5b4",
+              "fnv1a64-v1:b0dc815ca5bee13e",
+              "fnv1a64-v1:162c11ae84c3cb05"
+            ]
+          }
+        },
+        {
+          "index": 3,
+          "first": "before",
+          "before": {
+            "totalMs": 682.5999999940395,
+            "channelMs": 462.6000000089407,
+            "remainderMs": 219.99999998509884,
+            "hashes": [
+              "fnv1a64-v1:7b0c75a2daa7129d",
+              "fnv1a64-v1:846d600586c9b5b4",
+              "fnv1a64-v1:b0dc815ca5bee13e",
+              "fnv1a64-v1:162c11ae84c3cb05"
+            ]
+          },
+          "after": {
+            "totalMs": 210.09999999403954,
+            "channelMs": 1.8999999910593033,
+            "remainderMs": 208.20000000298023,
+            "hashes": [
+              "fnv1a64-v1:7b0c75a2daa7129d",
+              "fnv1a64-v1:846d600586c9b5b4",
+              "fnv1a64-v1:b0dc815ca5bee13e",
+              "fnv1a64-v1:162c11ae84c3cb05"
+            ]
+          }
+        },
+        {
+          "index": 4,
+          "first": "after",
+          "before": {
+            "totalMs": 637.9000000059605,
+            "channelMs": 411.09999999403954,
+            "remainderMs": 226.80000001192093,
+            "hashes": [
+              "fnv1a64-v1:7b0c75a2daa7129d",
+              "fnv1a64-v1:846d600586c9b5b4",
+              "fnv1a64-v1:b0dc815ca5bee13e",
+              "fnv1a64-v1:162c11ae84c3cb05"
+            ]
+          },
+          "after": {
+            "totalMs": 208.5,
+            "channelMs": 1.7999999970197678,
+            "remainderMs": 206.70000000298023,
+            "hashes": [
+              "fnv1a64-v1:7b0c75a2daa7129d",
+              "fnv1a64-v1:846d600586c9b5b4",
+              "fnv1a64-v1:b0dc815ca5bee13e",
+              "fnv1a64-v1:162c11ae84c3cb05"
+            ]
+          }
+        },
+        {
+          "index": 5,
+          "first": "before",
+          "before": {
+            "totalMs": 600.4000000059605,
+            "channelMs": 404.49999998509884,
+            "remainderMs": 195.90000002086163,
+            "hashes": [
+              "fnv1a64-v1:7b0c75a2daa7129d",
+              "fnv1a64-v1:846d600586c9b5b4",
+              "fnv1a64-v1:b0dc815ca5bee13e",
+              "fnv1a64-v1:162c11ae84c3cb05"
+            ]
+          },
+          "after": {
+            "totalMs": 202.09999999403954,
+            "channelMs": 1.7999999970197678,
+            "remainderMs": 200.29999999701977,
+            "hashes": [
+              "fnv1a64-v1:7b0c75a2daa7129d",
+              "fnv1a64-v1:846d600586c9b5b4",
+              "fnv1a64-v1:b0dc815ca5bee13e",
+              "fnv1a64-v1:162c11ae84c3cb05"
+            ]
+          }
+        },
+        {
+          "index": 6,
+          "first": "after",
+          "before": {
+            "totalMs": 615.5999999940395,
+            "channelMs": 416.29999999701977,
+            "remainderMs": 199.29999999701977,
+            "hashes": [
+              "fnv1a64-v1:7b0c75a2daa7129d",
+              "fnv1a64-v1:846d600586c9b5b4",
+              "fnv1a64-v1:b0dc815ca5bee13e",
+              "fnv1a64-v1:162c11ae84c3cb05"
+            ]
+          },
+          "after": {
+            "totalMs": 202.40000000596046,
+            "channelMs": 2.2999999970197678,
+            "remainderMs": 200.1000000089407,
+            "hashes": [
+              "fnv1a64-v1:7b0c75a2daa7129d",
+              "fnv1a64-v1:846d600586c9b5b4",
+              "fnv1a64-v1:b0dc815ca5bee13e",
+              "fnv1a64-v1:162c11ae84c3cb05"
+            ]
+          }
+        },
+        {
+          "index": 7,
+          "first": "before",
+          "before": {
+            "totalMs": 612.7999999970198,
+            "channelMs": 401.40000000596046,
+            "remainderMs": 211.3999999910593,
+            "hashes": [
+              "fnv1a64-v1:7b0c75a2daa7129d",
+              "fnv1a64-v1:846d600586c9b5b4",
+              "fnv1a64-v1:b0dc815ca5bee13e",
+              "fnv1a64-v1:162c11ae84c3cb05"
+            ]
+          },
+          "after": {
+            "totalMs": 199.79999999701977,
+            "channelMs": 3.4000000208616257,
+            "remainderMs": 196.39999997615814,
+            "hashes": [
+              "fnv1a64-v1:7b0c75a2daa7129d",
+              "fnv1a64-v1:846d600586c9b5b4",
+              "fnv1a64-v1:b0dc815ca5bee13e",
+              "fnv1a64-v1:162c11ae84c3cb05"
+            ]
+          }
+        },
+        {
+          "index": 8,
+          "first": "after",
+          "before": {
+            "totalMs": 571.0999999940395,
+            "channelMs": 384,
+            "remainderMs": 187.09999999403954,
+            "hashes": [
+              "fnv1a64-v1:7b0c75a2daa7129d",
+              "fnv1a64-v1:846d600586c9b5b4",
+              "fnv1a64-v1:b0dc815ca5bee13e",
+              "fnv1a64-v1:162c11ae84c3cb05"
+            ]
+          },
+          "after": {
+            "totalMs": 197.6000000089407,
+            "channelMs": 2.4000000059604645,
+            "remainderMs": 195.20000000298023,
+            "hashes": [
+              "fnv1a64-v1:7b0c75a2daa7129d",
+              "fnv1a64-v1:846d600586c9b5b4",
+              "fnv1a64-v1:b0dc815ca5bee13e",
+              "fnv1a64-v1:162c11ae84c3cb05"
+            ]
+          }
+        }
+      ],
+      "medians": {
+        "beforeTotalMs": 615.5999999940395,
+        "afterTotalMs": 202.40000000596046,
+        "beforeChannelMs": 411.09999999403954,
+        "afterChannelMs": 2.2999999970197678,
+        "beforeRemainderMs": 206.09999997913837,
+        "afterRemainderMs": 200.29999999701977,
+        "channelRatio": 0.005594745796772355,
+        "totalRatio": 0.32878492528901915
+      }
+    },
+    {
+      "name": "dense-15-mixed-full-brick-edits",
+      "bricks": 1,
+      "records": 15,
+      "completeBytesMatch": true,
+      "hashes": [
+        "fnv1a64-v1:68905cf92000f66e"
+      ],
+      "firstPair": {
+        "before": {
+          "totalMs": 51.79999999701977,
+          "channelMs": 28.80000001192093,
+          "remainderMs": 22.99999998509884,
+          "hashes": [
+            "fnv1a64-v1:68905cf92000f66e"
+          ]
+        },
+        "after": {
+          "totalMs": 59.6000000089407,
+          "channelMs": 36.20000000298023,
+          "remainderMs": 23.400000005960464,
+          "hashes": [
+            "fnv1a64-v1:68905cf92000f66e"
+          ]
+        }
+      },
+      "warmups": [
+        {
+          "before": {
+            "totalMs": 41.3999999910593,
+            "channelMs": 19.5,
+            "remainderMs": 21.899999991059303,
+            "hashes": [
+              "fnv1a64-v1:68905cf92000f66e"
+            ]
+          },
+          "after": {
+            "totalMs": 46.5,
+            "channelMs": 25.299999997019768,
+            "remainderMs": 21.200000002980232,
+            "hashes": [
+              "fnv1a64-v1:68905cf92000f66e"
+            ]
+          }
+        },
+        {
+          "before": {
+            "totalMs": 43.400000005960464,
+            "channelMs": 19.799999997019768,
+            "remainderMs": 23.600000008940697,
+            "hashes": [
+              "fnv1a64-v1:68905cf92000f66e"
+            ]
+          },
+          "after": {
+            "totalMs": 38,
+            "channelMs": 16.400000005960464,
+            "remainderMs": 21.599999994039536,
+            "hashes": [
+              "fnv1a64-v1:68905cf92000f66e"
+            ]
+          }
+        }
+      ],
+      "pairs": [
+        {
+          "index": 0,
+          "first": "after",
+          "before": {
+            "totalMs": 39.79999999701977,
+            "channelMs": 19.599999994039536,
+            "remainderMs": 20.200000002980232,
+            "hashes": [
+              "fnv1a64-v1:68905cf92000f66e"
+            ]
+          },
+          "after": {
+            "totalMs": 45.70000000298023,
+            "channelMs": 17.5,
+            "remainderMs": 28.200000002980232,
+            "hashes": [
+              "fnv1a64-v1:68905cf92000f66e"
+            ]
+          }
+        },
+        {
+          "index": 1,
+          "first": "before",
+          "before": {
+            "totalMs": 36,
+            "channelMs": 17.200000002980232,
+            "remainderMs": 18.799999997019768,
+            "hashes": [
+              "fnv1a64-v1:68905cf92000f66e"
+            ]
+          },
+          "after": {
+            "totalMs": 33.19999998807907,
+            "channelMs": 14.200000002980232,
+            "remainderMs": 18.99999998509884,
+            "hashes": [
+              "fnv1a64-v1:68905cf92000f66e"
+            ]
+          }
+        },
+        {
+          "index": 2,
+          "first": "after",
+          "before": {
+            "totalMs": 48.900000005960464,
+            "channelMs": 24.5,
+            "remainderMs": 24.400000005960464,
+            "hashes": [
+              "fnv1a64-v1:68905cf92000f66e"
+            ]
+          },
+          "after": {
+            "totalMs": 40.20000000298023,
+            "channelMs": 19.799999997019768,
+            "remainderMs": 20.400000005960464,
+            "hashes": [
+              "fnv1a64-v1:68905cf92000f66e"
+            ]
+          }
+        },
+        {
+          "index": 3,
+          "first": "before",
+          "before": {
+            "totalMs": 53.8999999910593,
+            "channelMs": 24.19999998807907,
+            "remainderMs": 29.700000002980232,
+            "hashes": [
+              "fnv1a64-v1:68905cf92000f66e"
+            ]
+          },
+          "after": {
+            "totalMs": 34,
+            "channelMs": 15.600000008940697,
+            "remainderMs": 18.399999991059303,
+            "hashes": [
+              "fnv1a64-v1:68905cf92000f66e"
+            ]
+          }
+        },
+        {
+          "index": 4,
+          "first": "after",
+          "before": {
+            "totalMs": 54.6000000089407,
+            "channelMs": 23.900000005960464,
+            "remainderMs": 30.700000002980232,
+            "hashes": [
+              "fnv1a64-v1:68905cf92000f66e"
+            ]
+          },
+          "after": {
+            "totalMs": 32,
+            "channelMs": 14,
+            "remainderMs": 18,
+            "hashes": [
+              "fnv1a64-v1:68905cf92000f66e"
+            ]
+          }
+        },
+        {
+          "index": 5,
+          "first": "before",
+          "before": {
+            "totalMs": 36.3999999910593,
+            "channelMs": 17.799999997019768,
+            "remainderMs": 18.599999994039536,
+            "hashes": [
+              "fnv1a64-v1:68905cf92000f66e"
+            ]
+          },
+          "after": {
+            "totalMs": 35.5,
+            "channelMs": 12.900000005960464,
+            "remainderMs": 22.599999994039536,
+            "hashes": [
+              "fnv1a64-v1:68905cf92000f66e"
+            ]
+          }
+        },
+        {
+          "index": 6,
+          "first": "after",
+          "before": {
+            "totalMs": 42.20000000298023,
+            "channelMs": 25.099999994039536,
+            "remainderMs": 17.100000008940697,
+            "hashes": [
+              "fnv1a64-v1:68905cf92000f66e"
+            ]
+          },
+          "after": {
+            "totalMs": 28.899999991059303,
+            "channelMs": 11.799999997019768,
+            "remainderMs": 17.099999994039536,
+            "hashes": [
+              "fnv1a64-v1:68905cf92000f66e"
+            ]
+          }
+        },
+        {
+          "index": 7,
+          "first": "before",
+          "before": {
+            "totalMs": 42.1000000089407,
+            "channelMs": 18.900000005960464,
+            "remainderMs": 23.200000002980232,
+            "hashes": [
+              "fnv1a64-v1:68905cf92000f66e"
+            ]
+          },
+          "after": {
+            "totalMs": 33.79999999701977,
+            "channelMs": 12.5,
+            "remainderMs": 21.299999997019768,
+            "hashes": [
+              "fnv1a64-v1:68905cf92000f66e"
+            ]
+          }
+        },
+        {
+          "index": 8,
+          "first": "after",
+          "before": {
+            "totalMs": 33.099999994039536,
+            "channelMs": 16.299999997019768,
+            "remainderMs": 16.799999997019768,
+            "hashes": [
+              "fnv1a64-v1:68905cf92000f66e"
+            ]
+          },
+          "after": {
+            "totalMs": 29.299999997019768,
+            "channelMs": 12.299999997019768,
+            "remainderMs": 17,
+            "hashes": [
+              "fnv1a64-v1:68905cf92000f66e"
+            ]
+          }
+        }
+      ],
+      "medians": {
+        "beforeTotalMs": 42.1000000089407,
+        "afterTotalMs": 33.79999999701977,
+        "beforeChannelMs": 19.599999994039536,
+        "afterChannelMs": 14,
+        "beforeRemainderMs": 20.200000002980232,
+        "afterRemainderMs": 18.99999998509884,
+        "channelRatio": 0.7142857145029324,
+        "totalRatio": 0.8028503560532476
+      }
+    },
+    {
+      "name": "512-external-edits-1-brick",
+      "bricks": 1,
+      "records": 512,
+      "completeBytesMatch": true,
+      "hashes": [
+        "fnv1a64-v1:88a35d171e910b5d"
+      ],
+      "firstPair": {
+        "before": {
+          "totalMs": 34.19999998807907,
+          "channelMs": 1.2999999970197678,
+          "remainderMs": 32.8999999910593,
+          "hashes": [
+            "fnv1a64-v1:88a35d171e910b5d"
+          ]
+        },
+        "after": {
+          "totalMs": 28.900000005960464,
+          "channelMs": 0.4000000059604645,
+          "remainderMs": 28.5,
+          "hashes": [
+            "fnv1a64-v1:88a35d171e910b5d"
+          ]
+        }
+      },
+      "warmups": [
+        {
+          "before": {
+            "totalMs": 32.400000005960464,
+            "channelMs": 0.29999999701976776,
+            "remainderMs": 32.1000000089407,
+            "hashes": [
+              "fnv1a64-v1:88a35d171e910b5d"
+            ]
+          },
+          "after": {
+            "totalMs": 38.70000000298023,
+            "channelMs": 0.29999999701976776,
+            "remainderMs": 38.400000005960464,
+            "hashes": [
+              "fnv1a64-v1:88a35d171e910b5d"
+            ]
+          }
+        },
+        {
+          "before": {
+            "totalMs": 33.79999999701977,
+            "channelMs": 1.9000000059604645,
+            "remainderMs": 31.899999991059303,
+            "hashes": [
+              "fnv1a64-v1:88a35d171e910b5d"
+            ]
+          },
+          "after": {
+            "totalMs": 30.5,
+            "channelMs": 0.6000000089406967,
+            "remainderMs": 29.899999991059303,
+            "hashes": [
+              "fnv1a64-v1:88a35d171e910b5d"
+            ]
+          }
+        }
+      ],
+      "pairs": [
+        {
+          "index": 0,
+          "first": "after",
+          "before": {
+            "totalMs": 33.29999999701977,
+            "channelMs": 0.29999999701976776,
+            "remainderMs": 33,
+            "hashes": [
+              "fnv1a64-v1:88a35d171e910b5d"
+            ]
+          },
+          "after": {
+            "totalMs": 30.799999997019768,
+            "channelMs": 0.29999999701976776,
+            "remainderMs": 30.5,
+            "hashes": [
+              "fnv1a64-v1:88a35d171e910b5d"
+            ]
+          }
+        },
+        {
+          "index": 1,
+          "first": "before",
+          "before": {
+            "totalMs": 33.599999994039536,
+            "channelMs": 0.29999999701976776,
+            "remainderMs": 33.29999999701977,
+            "hashes": [
+              "fnv1a64-v1:88a35d171e910b5d"
+            ]
+          },
+          "after": {
+            "totalMs": 36.29999999701977,
+            "channelMs": 0.20000000298023224,
+            "remainderMs": 36.099999994039536,
+            "hashes": [
+              "fnv1a64-v1:88a35d171e910b5d"
+            ]
+          }
+        },
+        {
+          "index": 2,
+          "first": "after",
+          "before": {
+            "totalMs": 31.299999997019768,
+            "channelMs": 0.29999999701976776,
+            "remainderMs": 31,
+            "hashes": [
+              "fnv1a64-v1:88a35d171e910b5d"
+            ]
+          },
+          "after": {
+            "totalMs": 31.600000008940697,
+            "channelMs": 0.30000001192092896,
+            "remainderMs": 31.299999997019768,
+            "hashes": [
+              "fnv1a64-v1:88a35d171e910b5d"
+            ]
+          }
+        },
+        {
+          "index": 3,
+          "first": "before",
+          "before": {
+            "totalMs": 32.20000000298023,
+            "channelMs": 0.19999998807907104,
+            "remainderMs": 32.00000001490116,
+            "hashes": [
+              "fnv1a64-v1:88a35d171e910b5d"
+            ]
+          },
+          "after": {
+            "totalMs": 34.8999999910593,
+            "channelMs": 0.10000000894069672,
+            "remainderMs": 34.79999998211861,
+            "hashes": [
+              "fnv1a64-v1:88a35d171e910b5d"
+            ]
+          }
+        },
+        {
+          "index": 4,
+          "first": "after",
+          "before": {
+            "totalMs": 33.6000000089407,
+            "channelMs": 0.29999999701976776,
+            "remainderMs": 33.30000001192093,
+            "hashes": [
+              "fnv1a64-v1:88a35d171e910b5d"
+            ]
+          },
+          "after": {
+            "totalMs": 34.5,
+            "channelMs": 0.29999999701976776,
+            "remainderMs": 34.20000000298023,
+            "hashes": [
+              "fnv1a64-v1:88a35d171e910b5d"
+            ]
+          }
+        },
+        {
+          "index": 5,
+          "first": "before",
+          "before": {
+            "totalMs": 32.20000000298023,
+            "channelMs": 0.4000000059604645,
+            "remainderMs": 31.799999997019768,
+            "hashes": [
+              "fnv1a64-v1:88a35d171e910b5d"
+            ]
+          },
+          "after": {
+            "totalMs": 38.69999998807907,
+            "channelMs": 0.20000000298023224,
+            "remainderMs": 38.49999998509884,
+            "hashes": [
+              "fnv1a64-v1:88a35d171e910b5d"
+            ]
+          }
+        },
+        {
+          "index": 6,
+          "first": "after",
+          "before": {
+            "totalMs": 41.70000000298023,
+            "channelMs": 0.29999999701976776,
+            "remainderMs": 41.400000005960464,
+            "hashes": [
+              "fnv1a64-v1:88a35d171e910b5d"
+            ]
+          },
+          "after": {
+            "totalMs": 38.900000005960464,
+            "channelMs": 0.10000000894069672,
+            "remainderMs": 38.79999999701977,
+            "hashes": [
+              "fnv1a64-v1:88a35d171e910b5d"
+            ]
+          }
+        },
+        {
+          "index": 7,
+          "first": "before",
+          "before": {
+            "totalMs": 35.5,
+            "channelMs": 0.29999999701976776,
+            "remainderMs": 35.20000000298023,
+            "hashes": [
+              "fnv1a64-v1:88a35d171e910b5d"
+            ]
+          },
+          "after": {
+            "totalMs": 36.5,
+            "channelMs": 0.29999999701976776,
+            "remainderMs": 36.20000000298023,
+            "hashes": [
+              "fnv1a64-v1:88a35d171e910b5d"
+            ]
+          }
+        },
+        {
+          "index": 8,
+          "first": "after",
+          "before": {
+            "totalMs": 35.30000001192093,
+            "channelMs": 0.20000000298023224,
+            "remainderMs": 35.1000000089407,
+            "hashes": [
+              "fnv1a64-v1:88a35d171e910b5d"
+            ]
+          },
+          "after": {
+            "totalMs": 34.29999999701977,
+            "channelMs": 0.29999999701976776,
+            "remainderMs": 34,
+            "hashes": [
+              "fnv1a64-v1:88a35d171e910b5d"
+            ]
+          }
+        }
+      ],
+      "medians": {
+        "beforeTotalMs": 33.599999994039536,
+        "afterTotalMs": 34.8999999910593,
+        "beforeChannelMs": 0.29999999701976776,
+        "afterChannelMs": 0.29999999701976776,
+        "beforeRemainderMs": 33.29999999701977,
+        "afterRemainderMs": 34.79999998211861,
+        "channelRatio": 1,
+        "totalRatio": 1.0386904761086422
+      }
+    }
+  ]
+}

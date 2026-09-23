@@ -2,7 +2,7 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 import { R, initializeHvpRapier } from "../../src/hestia-prototype/physics/rapierPort";
 import { createHvpTick, HVP_PHYSICS_DT } from "../../src/hestia-prototype/physics/tick";
 import { collisionSectors } from "../../src/hestia-prototype/physics/terrainColliders";
-import { createHvpPhysicsSession, resolveHvpGravity } from "../../src/hestia-prototype/physics/session";
+import { createHvpPhysicsSession, resolveHvpGravity, type HvpPhysicsSession } from "../../src/hestia-prototype/physics/session";
 import { chooseHvpParallelism } from "../../src/hestia-prototype/physics/client";
 
 beforeAll(initializeHvpRapier);
@@ -40,6 +40,128 @@ describe("HVP runtime physics", () => {
       expect(settle()).toBeCloseTo(.75,2);
       expect(session.read()).toMatchObject({terrainGeneration:1,colliderCount:2,terrainTransaction:"Idle"});
     } finally { session.dispose(); }
+  });
+  it("terrain timing keeps a zero start open through commit and closes at finalize", async () => {
+    let now = 0;
+    const nowSpy = vi.spyOn(performance, "now").mockImplementation(() => now);
+    const mesh = (layers: number) => [...collisionSectors({ ...floor, sizeY: 16, originMeters: { x: -1, y: 0, z: -1 }, readSlot: (_x: number, y: number) => y < layers ? 1 : 0 })][0]!;
+    let ownedSession: HvpPhysicsSession | undefined;
+    try {
+      const session = await createHvpPhysicsSession([mesh(8)], { x: 0, y: 2, z: 0 }, 9.81);
+      ownedSession = session;
+      session.prepareTerrain("zero-start", 0, [{ index: 0, mesh: mesh(4) }]);
+      expect(session.terrainPrepareSpans()).toMatchObject({
+        transactionId: "zero-start", recipeMs: expect.any(Number), cookMs: expect.any(Number), installMs: expect.any(Number), holdMs: null
+      });
+      now = 20;
+      session.commitTerrain("zero-start");
+      expect(session.terrainPrepareSpans()).toMatchObject({ transactionId: "zero-start", holdMs: null });
+      now = 120;
+      session.finalizeTerrain("zero-start");
+      expect(session.terrainPrepareSpans()).toMatchObject({ transactionId: "zero-start", holdMs: 120 });
+    } finally {
+      try { ownedSession?.dispose(); } finally { nowSpy.mockRestore(); }
+    }
+  });
+  it("terrain timing closes rollback and clears an invalid next attempt", async () => {
+    let now = 200;
+    const nowSpy = vi.spyOn(performance, "now").mockImplementation(() => now);
+    const mesh = (layers: number) => [...collisionSectors({ ...floor, sizeY: 16, originMeters: { x: -1, y: 0, z: -1 }, readSlot: (_x: number, y: number) => y < layers ? 1 : 0 })][0]!;
+    let ownedSession: HvpPhysicsSession | undefined;
+    try {
+      const session = await createHvpPhysicsSession([mesh(8)], { x: 0, y: 2, z: 0 }, 9.81);
+      ownedSession = session;
+      session.prepareTerrain("rollback", 0, [{ index: 0, mesh: mesh(4) }]);
+      now = 210;
+      session.commitTerrain("rollback");
+      now = 260;
+      session.rollbackTerrain("rollback");
+      expect(session.terrainPrepareSpans()).toMatchObject({ transactionId: "rollback", holdMs: 60 });
+      const before = session.read();
+      expect(() => session.prepareTerrain("invalid", before.terrainGeneration, [])).toThrow(/Stale or invalid/);
+      expect(session.terrainPrepareSpans()).toBeUndefined();
+      expect(session.read()).toMatchObject({ status: before.status, terrainGeneration: before.terrainGeneration, terrainTransaction: "Idle" });
+    } finally {
+      try { ownedSession?.dispose(); } finally { nowSpy.mockRestore(); }
+    }
+  });
+  it("terrain timing closes a paused-start transaction without resuming", async () => {
+    let now = 200;
+    const nowSpy = vi.spyOn(performance, "now").mockImplementation(() => now);
+    const mesh = (layers: number) => [...collisionSectors({ ...floor, sizeY: 16, originMeters: { x: -1, y: 0, z: -1 }, readSlot: (_x: number, y: number) => y < layers ? 1 : 0 })][0]!;
+    let ownedSession: HvpPhysicsSession | undefined;
+    try {
+      const session = await createHvpPhysicsSession([mesh(8)], { x: 0, y: 2, z: 0 }, 9.81);
+      ownedSession = session;
+      session.pause();
+      session.prepareTerrain("paused-start", 0, [{ index: 0, mesh: mesh(4) }]);
+      now = 210;
+      session.commitTerrain("paused-start");
+      expect(session.terrainPrepareSpans()).toMatchObject({ transactionId: "paused-start", holdMs: null });
+      now = 260;
+      session.finalizeTerrain("paused-start");
+      expect(session.terrainPrepareSpans()).toMatchObject({ transactionId: "paused-start", holdMs: 60 });
+      expect(session.read().status).toBe("Paused");
+    } finally {
+      try { ownedSession?.dispose(); } finally { nowSpy.mockRestore(); }
+    }
+  });
+  it("terrain timing reports unfinished phases after a failed prepare", async () => {
+    const sectors = [...collisionSectors(floor)];
+    const session = await createHvpPhysicsSession(sectors, { x: 0, y: 2, z: 0 }, 9.81);
+    const readings = [200, 200, 210, 210, 260];
+    const nowSpy = vi.spyOn(performance, "now").mockImplementation(() => readings.shift() ?? 260);
+    const createSpy = vi.spyOn(R.World.prototype, "createCollider").mockImplementationOnce(() => { throw new Error("injected timing create failure"); });
+    try {
+      expect(() => session.prepareTerrain("failed-prepare", 0, [{ index: 0, mesh: sectors[0]! }])).toThrow(/injected timing create failure/);
+      const spans = session.terrainPrepareSpans();
+      expect(spans).toMatchObject({ transactionId: "failed-prepare", recipeMs: expect.any(Number), cookMs: null, installMs: null, holdMs: expect.any(Number) });
+      expect(spans?.holdMs).toBeGreaterThanOrEqual(0);
+    } finally {
+      createSpy.mockRestore();
+      session.dispose();
+      nowSpy.mockRestore();
+    }
+  });
+  it.each(["rollback", "finalize"] as const)("terrain timing cleanup retry stays unfinished in RecoveryHold (%s)", async (cleanupKind) => {
+    let now = 0;
+    const nowSpy = vi.spyOn(performance, "now").mockImplementation(() => now);
+    const mesh = (layers: number) => [...collisionSectors({ ...floor, sizeY: 16, originMeters: { x: -1, y: 0, z: -1 }, readSlot: (_x: number, y: number) => y < layers ? 1 : 0 })][0]!;
+    let ownedSession: HvpPhysicsSession | undefined;
+    let removeRestored = false;
+    try {
+      const session = await createHvpPhysicsSession([mesh(8)], { x: 0, y: 2, z: 0 }, 9.81);
+      ownedSession = session;
+      const removeSpy = vi.spyOn(R.World.prototype, "removeCollider").mockImplementationOnce(() => { throw new Error("injected timing cleanup failure"); });
+      try {
+        session.prepareTerrain("recovery", 0, [{ index: 0, mesh: mesh(4) }]);
+        session.commitTerrain("recovery");
+        const cleanup = (): void => {
+          if (cleanupKind === "rollback") {
+            session.rollbackTerrain("recovery");
+          } else {
+            session.finalizeTerrain("recovery");
+          }
+        };
+        expect(cleanup).toThrow(/injected timing cleanup failure/);
+        expect(session.read()).toMatchObject({ terrainTransaction: "RecoveryHold" });
+        expect(session.terrainPrepareSpans()).toMatchObject({ transactionId: "recovery", holdMs: null });
+        removeSpy.mockRestore();
+        removeRestored = true;
+        now = 120;
+        expect(cleanup).not.toThrow();
+        expect(session.read()).toMatchObject({ terrainTransaction: "RecoveryHold" });
+        const ticks = session.read().ticks;
+        session.advance(1);
+        expect(session.read().ticks).toBe(ticks);
+        expect(() => session.resume()).toThrow(/RecoveryHold/);
+        expect(session.terrainPrepareSpans()).toMatchObject({ transactionId: "recovery", holdMs: null });
+      } finally {
+        if (!removeRestored) { removeSpy.mockRestore(); }
+      }
+    } finally {
+      try { ownedSession?.dispose(); } finally { nowSpy.mockRestore(); }
+    }
   });
   it("a collider-create failure preserves the previous active physical generation", async () => {
     const sectors=[...collisionSectors(floor)];

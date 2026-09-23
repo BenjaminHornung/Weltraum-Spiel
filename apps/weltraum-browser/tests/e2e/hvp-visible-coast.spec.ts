@@ -335,6 +335,7 @@ test(`HVP-13 a sleeping terrain fragment dematerializes and returns from its che
   await expect.poll(async()=>(await read()).tool.last?.status,{timeout:30_000}).toBe("Applied");
   const fragment=(await read()).physics.terrainFragments[0];
   await expect.poll(async()=>(await read()).physics.bodies.find((b:{ownerId:string})=>b.ownerId===fragment.ownerId).sleeping,{timeout:20_000}).toBe(true);
+  await testInfo.attach("sleeping-terrain-fragment",{body:await page.screenshot(),contentType:"image/png"});
   await aim(1);
   // Walk south around the real root tree at (12,-6), not through its collider.
   await walk("KeyA",p=>p.z<-10.5,12);
@@ -372,19 +373,33 @@ test(`HVP-13 a sleeping terrain fragment dematerializes and returns from its che
   await expect.poll(()=>page.evaluate(()=>document.body.dataset.hestiaPrototypePlayerCamera)).toBeTruthy();
   await waitForHvpPlayer(page);
   }
-  await aim(-1);await page.keyboard.down("KeyW");
+  const parkedBody=parked.physics.parked.find((body:{ownerId:string})=>body.ownerId===fragment.ownerId);
+  expect(parkedBody).toBeTruthy();
+  await aim(-1);
   try {
+    // Remain within the 12 m wake radius while neighbour work owns the World.
+    // Walking through the entire radius can miss the first safe restore tick.
+    try {
+      await page.keyboard.down("KeyW");
+      await expect.poll(async()=>{
+        const state=await read(),p=state.physics.player.position;
+        if(state.physics.status==="SimulationHold"){throw new Error(`Unexpected residency SimulationHold: ${JSON.stringify(state)}`);}
+        return state.physics.bodies.some((b:{ownerId:string})=>b.ownerId===fragment.ownerId)
+          ||Math.hypot(p.x-parkedBody.position.x,p.z-parkedBody.position.z)<10;
+      },{timeout:30_000,intervals:[16,32,50]}).toBe(true);
+    } finally { await page.keyboard.up("KeyW"); }
     await expect.poll(async()=>{const state=await read();
       if(state.physics.status==="SimulationHold"){throw new Error(`Unexpected residency SimulationHold: ${JSON.stringify(state)}`);}
       return state.physics.bodies.some((b:{ownerId:string})=>b.ownerId===fragment.ownerId);
     },{timeout:30_000,intervals:[16,32,50]}).toBe(true);
   } catch(error) {
     await testInfo.attach("body-residency-failure-clock",{body:JSON.stringify(await read(),null,2),contentType:"application/json"});throw error;
-  } finally { await page.keyboard.up("KeyW"); }
+  }
   await expect.poll(async()=>(await read()).dormancy.busy).toBe(false);
   const near=await read();expect(near.dormancy.parkedRenderOwners).not.toContain(fragment.ownerId);
   expect(near.dormancy.error).toBe("");expect(near.physics.bodyResidencyTransaction).toBe("Idle");
   expect(near.physics.terrainFragments.find((b:{ownerId:string})=>b.ownerId===fragment.ownerId)).toEqual(fragment);
+  await testInfo.attach("restored-terrain-fragment",{body:await page.screenshot(),contentType:"image/png"});
   await testInfo.attach("body-residency-checkpoint-round-trip",{body:JSON.stringify({reload,fragment,parked,saved,restored,near}),contentType:"application/json"});
 });
 }
@@ -885,6 +900,7 @@ test("HVP-09B a normal undercut transfers actual rock-arm cells to one falling b
   await expect(page).toHaveURL(/hvpScenario=rock-arm/);
   await expect(page.locator("#hvp-state")).toContainText("State: Ready",{timeout:30_000});
   const read=()=>page.evaluate(()=>({physics:JSON.parse(document.body.dataset.hestiaPrototypePhysics!),tool:JSON.parse(document.body.dataset.hestiaPrototypeTool!),
+    clock:JSON.parse(document.body.dataset.hestiaPrototypePhysicsClock??"null"),
     generation:Number(document.body.dataset.hestiaPrototypeTerrainGeneration),sectors:JSON.parse(document.body.dataset.hestiaPrototypeTerrainSectors!) as {id:number;hash:string}[]}));
   const before=await read();expect(before.physics.terrainFragments).toHaveLength(0);expect(before.generation).toBe(0);
   expect(before.physics.player.position.x).toBe(7); // Authored new-session spawn, never a live teleport.
@@ -905,6 +921,16 @@ test("HVP-09B a normal undercut transfers actual rock-arm cells to one falling b
   const fragment=after.physics.terrainFragments[0];expect(fragment.cellCount).toBe(384);
   expect(fragment.massKg).toBeCloseTo(after.tool.last.transferredMassKg,5);
   expect(after.tool.last.materialRemovedKg).toBeGreaterThan(0);
+  const native={recipeMs:after.clock?.lastTerrainRecipeMs,cookMs:after.clock?.lastTerrainCookMs,
+    installMs:after.clock?.lastTerrainInstallMs,holdMs:after.clock?.lastTerrainHoldMs};
+  for(const [key,value] of Object.entries(native)){expect(typeof value,`clock.${key}`).toBe("number");expect(value as number,`clock.${key}`).toBeGreaterThanOrEqual(0);}
+  expect(native.holdMs as number).toBeLessThan(30_000);
+  // Step-3 contract: the native owner admits the transferred recipe (ingest +
+  // cheap verification) instead of recomputing classification + transition.
+  // Measured before: 632-684ms. Headroom is deliberately wide: 2.5x above the
+  // expected ~170-200ms, ~20% below the old floor.
+  expect(native.recipeMs as number).toBeLessThan(500);
+  await testInfo.attach("terrain-stage-sub-spans",{body:Buffer.from(JSON.stringify(native)),contentType:"application/json"});
   const changed=after.sectors.filter(s=>s.hash!==before.sectors.find(b=>b.id===s.id)!.hash);
   expect(changed.length).toBeGreaterThan(0);expect(changed.length).toBeLessThanOrEqual(4);
   await expect.poll(async()=>(await read()).physics.bodies.find((b:{ownerId:string})=>b.ownerId===fragment.ownerId).position.y,{timeout:10_000})
@@ -1211,6 +1237,19 @@ test("HVP-09A previews the real rock-arm support without publishing a cut or a b
   const after=await read();
   expect(after.support).toMatchObject({fragments:1,cells:384,massKg:1722.65625,changedCells:64});
   expect(after.support.probes).toBeGreaterThan(384);expect(after.support.probes).toBeLessThanOrEqual(262_144);
+  expect(after.support.timings).toMatchObject({fragmentCount:1,fragmentCells:384});
+  for(const key of ["seedsMs","supportMs","ingestMs","recipeMs","totalMs"] as const){
+    expect(typeof after.support.timings[key],`support.timings.${key}`).toBe("number");
+    expect(after.support.timings[key],`support.timings.${key}`).toBeGreaterThanOrEqual(0);
+  }
+  expect(after.support.timings.totalMs).toBeLessThan(30_000);
+  const breakdown=after.support.timings.recipeBreakdown;
+  expect(breakdown,`recipeBreakdown ${JSON.stringify(after.support.timings)}`).toBeTruthy();
+  for(const key of ["massMs","classifyMs","transitionMs","axesMs"] as const){
+    expect(typeof breakdown[key],`recipeBreakdown.${key}`).toBe("number");
+    expect(breakdown[key],`recipeBreakdown.${key}`).toBeGreaterThanOrEqual(0);
+  }
+  await testInfo.attach("support-sub-spans",{body:Buffer.from(JSON.stringify(after.support.timings)),contentType:"application/json"});
   expect(after.generation).toBe(before.generation);expect(after.digest).toBe(before.digest);expect(after.sectors).toBe(before.sectors);
   expect(after.physics.bodies).toEqual(before.physics.bodies);expect(after.physics.ticks).toBe(before.physics.ticks);
   expect(after.physics.bodyCount).toBe(before.physics.bodyCount);expect(after.physics.colliderCount).toBe(before.physics.colliderCount);

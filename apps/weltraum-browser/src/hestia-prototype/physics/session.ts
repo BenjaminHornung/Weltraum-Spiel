@@ -165,6 +165,14 @@ export const createHvpPhysicsSession = async (
       updateCoverage();if(neighbor?.read().checkpoint?.resident){coverageHeld=false;}
       if(!neighbor?.busy&&!coverageHeld&&neighborWasRunning){tick.resume();}
     };
+    // ponytail: wall-clock spans only; world-hold measured pause->release.
+    type TerrainPrepareSpans=Readonly<{transactionId:string;recipeMs:number|null;cookMs:number|null;installMs:number|null;holdMs:number|null}>;
+    let terrainSpans:TerrainPrepareSpans|undefined,terrainHoldStart:number|undefined;
+    const finishTerrainHold=()=>{
+      if(!terrainHeld&&terrainSpans!==undefined&&terrainHoldStart!==undefined){
+        terrainSpans=Object.freeze({...terrainSpans,holdMs:performance.now()-terrainHoldStart});terrainHoldStart=undefined;
+      }
+    };
     const requireStage = (id: string) => {
       if (staged === undefined || staged.id !== id) { throw new Error("Stale terrain transaction"); }
       return staged;
@@ -183,6 +191,7 @@ export const createHvpPhysicsSession = async (
         ||[...transaction.bodiesBefore].some(([h,b])=>world.getRigidBody(h)!==b)){throw new Error("RecoveryHold: terrain rollback not proven");}
       terrainGeneration=transaction.expected;world.updateSceneQueries();staged=undefined;
       if(transaction.running){tick.resume();}
+      finishTerrainHold();
     };
     const fragmentView=(f:Fragment)=>Object.freeze({ownerId:f.ownerId,sourceDigest:f.recipe.source.contentHash,
       centerOfMass:f.recipe.mass.centerOfMassMeters!,cellCount:f.recipe.mass.occupiedVoxelCount,
@@ -219,6 +228,7 @@ export const createHvpPhysicsSession = async (
       return {x:avatar.position.x,y:avatar.position.y+HVP_PLAYER_PROFILE.eyeHeight-HVP_PLAYER_PROFILE.height/2,z:avatar.position.z};};
     return {
       read,
+      terrainPrepareSpans:()=>terrainSpans,
       checkpoint():HvpWorldCheckpoint {
         if(disposed||terrainHeld||staged||branch?.busy||moving.busy||extraHeld()||tick.read().status!=="Paused"){
           throw new Error("World checkpoint requires a confirmed paused generation");
@@ -360,6 +370,7 @@ export const createHvpPhysicsSession = async (
           target:contact.preview.target!});
       },
        prepareTerrain(id: string, expected: number, replacements: readonly { index: number; mesh: HvpCollisionSector }[],fragments:readonly HvpTerrainFragmentRequest[]=[]): void {
+         if(staged===undefined&&!terrainHeld){terrainSpans=undefined;terrainHoldStart=undefined;}
          if (disposed || terrainHeld || staged !== undefined || branch?.busy || moving.busy || extraHeld() || terrainGeneration !== expected || !/^[A-Za-z0-9:._-]{1,128}$/.test(id)
            || replacements.length === 0 || replacements.length > 16||fragments.length>32
            ||new Set(fragments.map(f=>f.ownerId)).size!==fragments.length||fragments.some(f=>movingBodies.has(f.ownerId)||residency!.read().some(p=>p.ownerId===f.ownerId))
@@ -380,24 +391,32 @@ export const createHvpPhysicsSession = async (
         if (bytes > 8*1024*1024) { throw new Error("Terrain collision BudgetExceeded"); }
          const next = new Map<number, { mesh: HvpCollisionSector; collider?: R.Collider }>();
          const running = tick.read().status === "Running";
-         tick.pause();
+         tick.pause();terrainHoldStart=performance.now();
+         terrainSpans=Object.freeze({transactionId:id,recipeMs:null,cookMs:null,installMs:null,holdMs:null});
          const bodiesBefore=new Map<number,R.RigidBody>(),collidersBefore=new Map<number,R.Collider>();
          world.bodies.forEach(b=>bodiesBefore.set(b.handle,b));world.colliders.forEach(c=>collidersBefore.set(c.handle,c));
          const transaction={id,expected,running,committed:false,old,next,fragments:[] as Fragment[],bodiesBefore,collidersBefore};
          staged=transaction;
          try {
-           const recipes=fragments.map(f=>prepareHvpTerrainFragment(f,expected+1));
-            if(world.bodies.len()+residency!.count+fragments.length>64||[...bodiesBefore.values()].filter(b=>b.isDynamic()).length+fragments.length>32
+            const tRecipe=performance.now();
+            const recipes=fragments.map(f=>prepareHvpTerrainFragment(f,expected+1));
+            const recipeMs=performance.now()-tRecipe;
+            terrainSpans=Object.freeze({...terrainSpans!,recipeMs});
+           if(world.bodies.len()+residency!.count+fragments.length>64||[...bodiesBefore.values()].filter(b=>b.isDynamic()).length+fragments.length>32
              ||world.colliders.len()+replacements.length+recipes.reduce((n,r)=>n+r.colliders.length,0)>4096){throw new Error("Terrain fragment BudgetExceeded");}
-          for (const { index, mesh } of [...replacements].sort((a,b)=>a.index-b.index)) {
+           const tCook=performance.now();
+           for (const { index, mesh } of [...replacements].sort((a,b)=>a.index-b.index)) {
             const collider = mesh.indices.length === 0 ? undefined : world.createCollider(
               R.ColliderDesc.trimesh(mesh.vertices,mesh.indices).setEnabled(false).setFriction(.8).setRestitution(0));
-            next.set(index,{mesh,collider});
-          }
-           for(const [index,request] of fragments.entries()){
-             const recipe=recipes[index]!,body=installHvpRigidBody(world,recipe,{translationMeters:request.origin,rotation:{x:0,y:0,z:0,w:1}});
-             body.setEnabled(false);transaction.fragments.push({ownerId:request.ownerId,body,recipe,family:"terrain"});
+             next.set(index,{mesh,collider});
            }
+           const cookMs=performance.now()-tCook,tInstall=performance.now();
+           terrainSpans=Object.freeze({...terrainSpans!,cookMs});
+            for(const [index,request] of fragments.entries()){
+             const recipe=recipes[index]!,body=installHvpRigidBody(world,recipe,{translationMeters:request.origin,rotation:{x:0,y:0,z:0,w:1}});
+              body.setEnabled(false);transaction.fragments.push({ownerId:request.ownerId,body,recipe,family:"terrain"});
+            }
+            terrainSpans=Object.freeze({...terrainSpans!,installMs:performance.now()-tInstall});
          } catch(error) {
            try{restoreTerrain(transaction);}catch(rollbackError){terrainHeld=true;throw new Error(`RecoveryHold: ${String(error)}; ${String(rollbackError)}`);}
            throw error;
@@ -425,6 +444,7 @@ export const createHvpPhysicsSession = async (
          catch(error){terrainHeld=true;throw error;}
         staged = undefined;
         if(transaction.running) { tick.resume(); }
+        finishTerrainHold();
       },
        drop(): void {
          if (disposed||terrainHeld||moving.busy||extraHeld()) { throw new Error("Physics disposed or RecoveryHold"); }

@@ -1,0 +1,174 @@
+{
+  "config": {
+    "argv": [
+      "C:\\IFI_SO~1\\Utils\\npm-tmp\\opencode\\hvp-node22\\node_modules\\node\\bin\\node.exe",
+      "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutRT-P00\\apps\\weltraum-browser\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "--config",
+      "C:/IFI_SourceCode/Utils/npm-tmp/opencode/hestia-cut-rt-v2-preflight-20260921/p00-functional-preview.config.mjs",
+      "--grep",
+      "HVP-13 a sleeping terrain fragment.*cold"
+    ],
+    "configFile": "C:\\IFI_SourceCode\\Utils\\npm-tmp\\opencode\\hestia-cut-rt-v2-preflight-20260921\\p00-functional-preview.config.mjs",
+    "rootDir": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutRT-P00/apps/weltraum-browser/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/hestia-cut-rt-v2-preflight-20260921/p00-source-cold-01/artifacts",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutRT-P00/apps/weltraum-browser/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "hvp-visible-coast.spec.ts"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "line",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/hestia-cut-rt-v2-preflight-20260921/p00-source-cold-01/report.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.1",
+    "workers": 1,
+    "webServer": {
+      "command": "C:/IFI_SO~1/Utils/npm-tmp/opencode/hvp-node22/node_modules/node/bin/node.exe C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutRT-P00/apps/weltraum-browser/node_modules/vite/bin/vite.js preview --host 127.0.0.1 --port 5177 --strictPort",
+      "cwd": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutRT-P00/apps/weltraum-browser",
+      "url": "http://127.0.0.1:5177",
+      "reuseExistingServer": false,
+      "timeout": 20000
+    }
+  },
+  "suites": [
+    {
+      "title": "hvp-visible-coast.spec.ts",
+      "file": "hvp-visible-coast.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "HVP-13 a sleeping terrain fragment dematerializes and returns from its checkpoint (cold)",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 124386,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#hvp-state')\nExpected substring: \u001b[32m\"State: Ready\"\u001b[39m\nTimeout: 60000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 60000ms\u001b[22m\n\u001b[2m  - waiting for locator('#hvp-state')\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#hvp-state')\nExpected substring: \u001b[32m\"State: Ready\"\u001b[39m\nTimeout: 60000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 60000ms\u001b[22m\n\u001b[2m  - waiting for locator('#hvp-state')\u001b[22m\n\n    at C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutRT-P00\\apps\\weltraum-browser\\tests\\e2e\\hvp-visible-coast.spec.ts:363:92",
+                    "location": {
+                      "file": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutRT-P00\\apps\\weltraum-browser\\tests\\e2e\\hvp-visible-coast.spec.ts",
+                      "column": 92,
+                      "line": 363
+                    },
+                    "snippet": "\u001b[0m \u001b[90m 361 |\u001b[39m   saved\u001b[33m=\u001b[39m\u001b[36mawait\u001b[39m read()\u001b[33m;\u001b[39m\n \u001b[90m 362 |\u001b[39m   page\u001b[33m.\u001b[39monce(\u001b[32m\"dialog\"\u001b[39m\u001b[33m,\u001b[39md\u001b[33m=>\u001b[39md\u001b[33m.\u001b[39maccept())\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgetByRole(\u001b[32m\"button\"\u001b[39m\u001b[33m,\u001b[39m{name\u001b[33m:\u001b[39m\u001b[32m\"Gespeicherte Sitzung neu öffnen\"\u001b[39m\u001b[33m,\u001b[39mexact\u001b[33m:\u001b[39m\u001b[36mtrue\u001b[39m})\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 363 |\u001b[39m   \u001b[36mawait\u001b[39m expect(page)\u001b[33m.\u001b[39mtoHaveURL(\u001b[35m/hvpLoad=primary/\u001b[39m)\u001b[33m;\u001b[39m\u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m\"#hvp-state\"\u001b[39m))\u001b[33m.\u001b[39mtoContainText(\u001b[32m\"State: Ready\"\u001b[39m\u001b[33m,\u001b[39m{timeout\u001b[33m:\u001b[39m\u001b[35m60\u001b[39m_000})\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                                                                            \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 364 |\u001b[39m   restored\u001b[33m=\u001b[39m\u001b[36mawait\u001b[39m read()\u001b[33m;\u001b[39mexpect(restored\u001b[33m.\u001b[39msave)\u001b[33m.\u001b[39mtoMatchObject({state\u001b[33m:\u001b[39m\u001b[32m\"Loaded\"\u001b[39m\u001b[33m,\u001b[39mrevision\u001b[33m:\u001b[39m\u001b[35m1\u001b[39m})\u001b[33m;\u001b[39m\n \u001b[90m 365 |\u001b[39m   expect(restored\u001b[33m.\u001b[39mphysics\u001b[33m.\u001b[39mparked)\u001b[33m.\u001b[39mtoEqual(saved\u001b[33m.\u001b[39mphysics\u001b[33m.\u001b[39mparked)\u001b[33m;\u001b[39mexpect(restored\u001b[33m.\u001b[39mphysics\u001b[33m.\u001b[39mbodies)\u001b[33m.\u001b[39mtoEqual(saved\u001b[33m.\u001b[39mphysics\u001b[33m.\u001b[39mbodies)\u001b[33m;\u001b[39m\n \u001b[90m 366 |\u001b[39m   expect(restored\u001b[33m.\u001b[39mphysics\u001b[33m.\u001b[39mterrainFragments)\u001b[33m.\u001b[39mtoEqual(saved\u001b[33m.\u001b[39mphysics\u001b[33m.\u001b[39mterrainFragments)\u001b[33m;\u001b[39m\u001b[0m"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutRT-P00\\apps\\weltraum-browser\\tests\\e2e\\hvp-visible-coast.spec.ts",
+                        "column": 92,
+                        "line": 363
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#hvp-state')\nExpected substring: \u001b[32m\"State: Ready\"\u001b[39m\nTimeout: 60000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 60000ms\u001b[22m\n\u001b[2m  - waiting for locator('#hvp-state')\u001b[22m\n\n\n  361 |   saved=await read();\n  362 |   page.once(\"dialog\",d=>d.accept());await page.getByRole(\"button\",{name:\"Gespeicherte Sitzung neu öffnen\",exact:true}).click();\n> 363 |   await expect(page).toHaveURL(/hvpLoad=primary/);await expect(page.locator(\"#hvp-state\")).toContainText(\"State: Ready\",{timeout:60_000});\n      |                                                                                            ^\n  364 |   restored=await read();expect(restored.save).toMatchObject({state:\"Loaded\",revision:1});\n  365 |   expect(restored.physics.parked).toEqual(saved.physics.parked);expect(restored.physics.bodies).toEqual(saved.physics.bodies);\n  366 |   expect(restored.physics.terrainFragments).toEqual(saved.physics.terrainFragments);\n    at C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutRT-P00\\apps\\weltraum-browser\\tests\\e2e\\hvp-visible-coast.spec.ts:363:92"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-21T14:28:10.706Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "body-residency-far-observation",
+                      "contentType": "application/json",
+                      "body": "eyJwaHlzaWNzIjp7InRpY2tzIjoyMDYxLCJiYWNrbG9nU2Vjb25kcyI6MC4wMDQwMzMzMzMzMzYzMTM5NzcsImRpc2NhcmRlZFNlY29uZHMiOjAuMDEwMDY2NjY2NjY1MTc3NDE1LCJzdGF0dXMiOiJSdW5uaW5nIiwiZ3Jhdml0eSI6MTEuNzk0NDYwMjAxODE3MzU3LCJncmF2aXR5UHJvZmlsZSI6ImxvY2FsLXRhbmdlbnQtZ3Jhdml0eS12MSIsImFjdGl2ZUR5bmFtaWMiOjAsInJlc2lkZW50RHluYW1pYyI6Mywic29sdmVyIjoicmFwaWVyLTAuMTIuMCIsInN0ZXBDcHVNcyI6MC40MDAwMDAwMDIyMzUxNzQyLCJib2R5Q291bnQiOjUsImNvbGxpZGVyQ291bnQiOjE1NCwibmF0aXZlQnl0ZXMiOiJ1bnN1cHBvcnRlZCIsInRlcnJhaW5HZW5lcmF0aW9uIjoxLCJjb2xsaXNpb25CeXRlcyI6MzQ1NjAwMCwidGVycmFpblRyYW5zYWN0aW9uIjoiSWRsZSIsInRlcnJhaW5GcmFnbWVudHMiOlt7Im93bmVySWQiOiJodnA6dGVycmFpbi1mcmFnbWVudDpyMTpmYTAxZjE2NSIsInNvdXJjZURpZ2VzdCI6ImZudjFhNjQtdjE6MzA2NTg3ZTc1MjcyNDEwOSIsImNlbnRlck9mTWFzcyI6eyJ4IjoyMy40NTMyMjY4NTc4ODc4NzQsInkiOjEwLjQ3ODg5NTA0NTYzMjMzMywieiI6OS43NTUzNzgwOTY0Nzk3OTJ9LCJjZWxsQ291bnQiOjQwMCwibWFzc0tnIjoxNzk3LjY1NjI1LCJjb2xsaWRlcnMiOjIsInNvdXJjZUJ5dGVzIjoyNjIxNDR9XSwicGFya2VkIjpbXSwibmVpZ2hib3IiOnsidmVyc2lvbiI6Imh2cC1uZWlnaGJvci13b3JsZC12MSIsImVwb2NoIjoxLCJyZXNpZGVudCI6dHJ1ZSwic291cmNlRGlnZXN0IjoiMzIwMzYyYjciLCJiYXNlU2VjdG9yQ291bnQiOjk1fSwiZG9ybWFudENoZWNrcG9pbnRCeXRlcyI6MCwiYm9keVJlc2lkZW5jeUlkIjpudWxsLCJib2R5UmVzaWRlbmN5VHJhbnNhY3Rpb24iOiJJZGxlIiwibmVpZ2hib3JUcmFuc2FjdGlvbiI6IklkbGUiLCJuZWlnaGJvclBpbm5lZCI6dHJ1ZSwicHJlcGFyZWRUZXJyYWluRnJhZ21lbnRzIjpbXSwicGxheWVyIjp7Im93bmVySWQiOiJodnA6cGxheWVyIiwicG9zaXRpb24iOnsieCI6MjYuNzYwMzgxNjk4NjA4NCwieSI6MS41MjUxNzEyNzk5MDcyMjY2LCJ6IjotMTAuNzY0NTIwNjQ1MTQxNjAyfSwiZ3JvdW5kZWQiOnRydWUsInZlbG9jaXR5WSI6MCwianVtcENvdW50IjoxMCwiY2FtZXJhRnJhY3Rpb24iOjEsInN0YXR1cyI6IldhbGtpbmcifSwic3RydWN0dXJhbCI6eyJraW5kIjoiYnJhbmNoIiwib3JpZ2luIjp7IngiOi0xMiwieSI6MS43NSwieiI6LTEzLjV9LCJjdXRFZGdlIjo0LCJnZW5lcmF0aW9uIjowLCJzb3VyY2VEaWdlc3QiOiJmbnYxYTY0LXYxOjljYjg0NTg2MzkyMmVmYWUiLCJzdGF0ZSI6IklkbGUiLCJsYXN0IjpudWxsLCJwcmV2aWV3IjpudWxsLCJhaW1Qb2ludCI6eyJ4IjotMTEuMjUsInkiOjMsInoiOi0xMy4yNX0sImF0dGFjaG1lbnQiOnsiaWQiOiJodnA6YnJhbmNoOmZvbGlhZ2UiLCJvd25lcklkIjoiaHZwOmJyYW5jaDpwYXJlbnQiLCJzdXBwb3J0Q2VsbCI6eyJ4IjoxMCwieSI6MTEsInoiOjJ9fSwicGFydHMiOlt7Im93bmVySWQiOiJodnA6YnJhbmNoOnBhcmVudCIsInNvdXJjZURpZ2VzdCI6ImZudjFhNjQtdjE6Zjg2YmU4ZmIzYTM3ZjFjYiIsImFuY2hvcmVkIjp0cnVlLCJjZWxsQ291bnQiOjM4NCwiY2VudGVyIjp7IngiOjAuNzUsInkiOjEsInoiOjAuMjV9LCJwb3NpdGlvbiI6eyJ4IjotMTEuMjUsInkiOjIuNzUsInoiOi0xMy4yNX0sIm9yaWVudGF0aW9uIjp7IngiOjAsInkiOjAsInoiOjAsInciOjF9LCJ2ZWxvY2l0eSI6eyJ4IjowLCJ5IjowLCJ6IjowfSwibWFzc0tnIjo0NTAsInNsZWVwaW5nIjpmYWxzZX1dfSwibW92aW5nIjp7InNlcXVlbmNlIjowLCJwZW5kaW5nSWQiOm51bGwsInN0YXRlIjoiSWRsZSIsInByZXZpZXciOm51bGwsImxhc3QiOm51bGx9LCJsYXN0SW1wdWxzZSI6bnVsbCwiaW1wdWxzZVRhcmdldCI6eyJraW5kIjoiSW52YWxpZEFpbSIsInRhcmdldCI6bnVsbCwiZGlzdGFuY2VNZXRlcnMiOm51bGwsIm1hc3NLZyI6bnVsbCwicG9pbnQiOm51bGx9LCJsYXN0SW1wdWxzZVRpY2siOm51bGwsImluZXJ0aWEiOnsib3duZXJJZCI6Imh2cDpwaHlzaWNzOmluZXJ0aWEiLCJzb3VyY2VEaWdlc3QiOiJmbnYxYTY0LXYxOjE1ZjNiYjU4MzQyYWNmNGMiLCJjZW50ZXJPZk1hc3MiOnsieCI6MC4yOTU4MzMzMzMzMzMzMzMzNCwieSI6MC4yOTU4MzMzMzMzMzMzMzMzNCwieiI6MC4xMjV9LCJ0ZW5zb3IiOnsieHgiOjMuNDQxNzcyNDYwOTM3NTAxLCJ5eSI6My40NDE3NzI0NjA5Mzc0OTk2LCJ6eiI6Ni41MTczMzM5ODQzNzUwMDIsInh5IjoxLjkxNDA2MjUwMDAwMDAwMDQsInh6IjowLCJ5eiI6MS4zODc3Nzg3ODA3ODE0NDU3ZS0xN30sInByaW5jaXBhbCI6eyJwcmluY2lwYWxJbmVydGlhIjp7IngiOjEuNTI3NzA5OTYwOTM3NDk5OCwieSI6NS4zNTU4MzQ5NjA5Mzc1MDEsInoiOjYuNTE3MzMzOTg0Mzc1MDAyfSwiZnJhbWUiOnsieCI6MC4zODI2ODM0MzIzNjUwODk5LCJ5IjowLjkyMzg3OTUzMjUxMTI4NjcsInoiOjAsInciOjB9LCJyZXNpZHVhbCI6MS4xMTAyMjMwMjQ2MjUxNTY1ZS0xNn0sImNvbGxpZGVycyI6MiwiaW1wdWxzZXMiOjAsImFpbVBvaW50Ijp7IngiOi04LjU2NDc3NzM3NDI2NzU3OCwieSI6MS4zMTI0NzMxNzc5MDk4NTEsInoiOi0xMy4yODc2MDE0NzA5NDcyNjZ9LCJhbmd1bGFyVmVsb2NpdHkiOnsieCI6MCwieSI6MCwieiI6MH19LCJib2RpZXMiOlt7Im93bmVySWQiOiJodnA6cGh5c2ljczpkcm9wIiwicG9zaXRpb24iOnsieCI6LTkuNjI0NTY3OTg1NTM0NjY4LCJ5IjowLjYyNDE0NjQ2MTQ4NjgxNjQsInoiOi03LjUwNzI1NTU1NDE5OTIxOX0sIm9yaWVudGF0aW9uIjp7IngiOi0wLjY1MDE5NzM4Njc0MTYzODIsInkiOi0wLjI3MzEyMTIzNzc1NDgyMTgsInoiOjAuMjc1NDE0MDQ5NjI1Mzk2NzMsInciOi0wLjY1MzI5NTY5NTc4MTcwNzh9LCJ2ZWxvY2l0eSI6eyJ4IjowLCJ5IjowLCJ6IjowfSwic2xlZXBpbmciOnRydWUsIm1hc3NLZyI6MzAwfSx7Im93bmVySWQiOiJodnA6cGh5c2ljczppbmVydGlhIiwicG9zaXRpb24iOnsieCI6LTguNzE2ODAwNjg5Njk3MjY2LCJ5IjoxLjU0NTgyMTQyODI5ODk1MDIsInoiOi0xMy4xNTEzNDQyOTkzMTY0MDZ9LCJvcmllbnRhdGlvbiI6eyJ4IjotMC4wMDAyMzc3NzM5MDAxNTMxMTU0LCJ5IjowLjM1NzU2MTExMTQ1MDE5NTMsInoiOjAuMDAwMDUxODA0NzQ1NDUzNDA5ODUsInciOjAuOTMzODg5Njg3MDYxMzA5OH0sInZlbG9jaXR5Ijp7IngiOjAsInkiOjAsInoiOjB9LCJzbGVlcGluZyI6dHJ1ZSwibWFzc0tnIjozNS4xNTYyNX0seyJvd25lcklkIjoiaHZwOnRlcnJhaW4tZnJhZ21lbnQ6cjE6ZmEwMWYxNjUiLCJwb3NpdGlvbiI6eyJ4Ijo3LjU3MTI2Mzc5MDEzMDYxNSwieSI6MS4yNDc0NTYzMTIxNzk1NjU0LCJ6IjotNi4yNTA3NDMzODkxMjk2Mzl9LCJvcmllbnRhdGlvbiI6eyJ4IjotMC4wMDA1NDg2MzQ5MTA5NTYwMjUxLCJ5IjowLjAwMzkyNjEwMTE0MDY3NzkyOSwieiI6LTAuMzIxNjMzNjM2OTUxNDQ2NTMsInciOjAuOTQ2ODU1OTAyNjcxODE0fSwidmVsb2NpdHkiOnsieCI6MCwieSI6MCwieiI6MH0sInNsZWVwaW5nIjp0cnVlLCJtYXNzS2ciOjE3OTcuNjU2MTI3OTI5Njg3NX0seyJvd25lcklkIjoiaHZwOmJyYW5jaDpwYXJlbnQiLCJwb3NpdGlvbiI6eyJ4IjotMTEuMjUsInkiOjIuNzUsInoiOi0xMy4yNX0sIm9yaWVudGF0aW9uIjp7IngiOjAsInkiOjAsInoiOjAsInciOjF9LCJ2ZWxvY2l0eSI6eyJ4IjowLCJ5IjowLCJ6IjowfSwic2xlZXBpbmciOmZhbHNlLCJtYXNzS2ciOjQ1MH1dfSwidG9vbCI6eyJtb2RlIjoiQm94IDAsNSBtIiwiZWRnZXMiOjEsImlzc3VlZCI6MSwibWVzc2FnZSI6IktlaW5lIGJlc3TDpHRpZ3RlIFplbGxhYmRlY2t1bmciLCJzdGF0ZSI6IkFwcGxpZWQiLCJxdWV1ZWQiOjAsInJlY2VpcHRzIjoxLCJsYXN0Ijp7ImNvbW1hbmRJZCI6ImN1dC0xIiwic3RhdHVzIjoiQXBwbGllZCIsInJlbW92ZWRDZWxscyI6NjQsInJlYXNvbiI6IlRlcnJhaW4gYW5kIGNvbGxpc2lvbiBjb21taXR0ZWQiLCJyZXZpc2lvbiI6MSwidHJhbnNmZXJyZWRDZWxscyI6NDAwLCJ0cmFuc2ZlcnJlZE1hc3NLZyI6MTc5Ny42NTYyNSwibWF0ZXJpYWxSZW1vdmVkS2ciOjMwMH0sInN0cnVjdHVyYWwiOnsic3RhdGUiOiJSZWFkeSIsImlzc3VlZCI6MCwibGFzdCI6bnVsbH0sIm1vdmluZyI6eyJzdGF0ZSI6IklkbGUiLCJsYXN0IjpudWxsLCJpc3N1ZWQiOjB9fSwiZG9ybWFuY3kiOnsiYnVzeSI6ZmFsc2UsInJlY292ZXJ5SG9sZCI6ZmFsc2UsImVycm9yIjoiIiwiY2hhbmdlcyI6MCwicGFya2VkUmVuZGVyT3duZXJzIjpbXSwiZGVyaXZlZE1lc2hDYWNoZUJ5dGVzIjowfSwibmVpZ2hib3IiOnsic3RhdGUiOiJSZWFkeSIsImVwb2NoIjo0LCJ3YW50ZWQiOnRydWUsInBpbm5lZCI6dHJ1ZSwibG9kIjowLjEyNSwiY29sbGlzaW9uUmVhZHkiOnRydWUsInRyYW5zaXRpb25zIjozLCJidXN5Ijp0cnVlLCJyZWNvdmVyeUhvbGQiOmZhbHNlLCJlcnJvciI6IiIsImtleSI6IltcImh2cC1yZWdpb25cIixcImVhc3Q6MTU2YWRiOWNcIiwwLDEsMF0iLCJyZW5kZXJMb2QiOjAuNSwicHJveHlPbmx5IjpmYWxzZSwic291cmNlRGlnZXN0IjoiMzIwMzYyYjciLCJzb3VyY2VCeXRlcyI6ODM4ODYwOCwiY2hlY2twb2ludEJ5dGVzIjowLCJjYWNoZUJ5dGVzIjo4MjEyMjkyLCJjYWNoZUVudHJpZXMiOjEsImNhY2hlSGl0cyI6MCwiY2FjaGVNaXNzZXMiOjMsImFkb3B0aW9ucyI6MSwic3RhbGUiOjB9LCJzYXZlIjp7InN0YXRlIjoiSWRsZSIsIm1lc3NhZ2UiOiJMb2thbGVyIEhlc3RpYS1TcGllbHN0YW5kIiwicmV2aXNpb24iOm51bGx9LCJjbG9jayI6eyJtYXhUaW1lckdhcE1zIjoyNTQuNjk5OTk5OTk5MjU0OTQsIm1heEFkdmFuY2VNcyI6MTQuMjAwMDAwMDAyOTgwMjMyLCJtYXhIYW5kbGVyTXMiOjEyMTcuODk5OTk5OTk4NTA5OSwibGFzdENvbW1hbmQiOiJSZWFkIiwibGFzdEhhbmRsZXJNcyI6MC4zOTk5OTk5OTg1MDk4ODM5LCJkZWxheWVkQ2FsbGJhY2tzIjpbeyJnYXBNcyI6MjU0LjY5OTk5OTk5OTI1NDk0LCJwcmV2aW91c0NvbW1hbmQiOiJQcmVwYXJlVGVycmFpbiIsImhhbmRsZXJNcyI6MjQ2LjgwMDAwMDAwMDc0NTA2LCJhZHZhbmNlTXMiOjB9XSwibGFzdFRlcnJhaW5SZWNpcGVNcyI6MjQ0LjUsImxhc3RUZXJyYWluQ29va01zIjowLjY5OTk5OTk5OTI1NDk0MTksImxhc3RUZXJyYWluSW5zdGFsbE1zIjowLjMwMDAwMDAwMDc0NTA1ODA2LCJsYXN0VGVycmFpbkhvbGRNcyI6NDAxLCJsYXN0VGVycmFpbkNvbW1hbmRJZCI6ImN1dC0xIiwidGltZXJzIjoxfSwiY2FtZXJhIjp7InBvc2l0aW9uIjpbMjYuNzE4MjMxNjYxNDg0MTIyLDIuMjgyMzkzNDc1MzY1OTY1NiwtMTAuNzY0NTM3NTI4MzExMTc3XSwib3JpZW50YXRpb24iOlstMC4wMDAwMjM4NDgwOTYyNTQ0ODMyODIsLTAuNzA3MjUwNzg0ODIxMjUxMSwtMC4wMDAwMjM4NTc4MTI2Njk5OTA2NTQsMC43MDY5NjI3NDc0MTQ0NTcyXSwidmlzdWFsQm9keSI6WzI2LjcxODIzMTY2MTQ4NDEyMiwxLjUzMjM5MzQ3NTM2NTk2NTgsLTEwLjc2NDUzNzUyODMxMTE3N10sImhlaWdodE1ldGVycyI6MS44LCJ2aWV3IjoiRmlyc3RQZXJzb24ifX0="
+                    },
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "C:\\IFI_SourceCode\\Utils\\npm-tmp\\opencode\\hestia-cut-rt-v2-preflight-20260921\\p00-source-cold-01\\artifacts\\hvp-visible-coast-HVP-13-a-e3fd9-s-from-its-checkpoint-cold--chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\IFI_SourceCode\\Utils\\npm-tmp\\opencode\\hestia-cut-rt-v2-preflight-20260921\\p00-source-cold-01\\artifacts\\hvp-visible-coast-HVP-13-a-e3fd9-s-from-its-checkpoint-cold--chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "C:\\IFI_SourceCode\\Utils\\npm-tmp\\opencode\\hestia-cut-rt-v2-preflight-20260921\\p00-source-cold-01\\artifacts\\hvp-visible-coast-HVP-13-a-e3fd9-s-from-its-checkpoint-cold--chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutRT-P00\\apps\\weltraum-browser\\tests\\e2e\\hvp-visible-coast.spec.ts",
+                    "column": 92,
+                    "line": 363
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "00a3b8301ed44f007621-e69d83e8a6ce2025e452",
+          "file": "hvp-visible-coast.spec.ts",
+          "line": 276,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-09-21T14:28:08.964Z",
+    "duration": 131621.77500000002,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

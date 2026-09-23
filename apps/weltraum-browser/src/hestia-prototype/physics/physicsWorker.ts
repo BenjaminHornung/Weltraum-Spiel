@@ -13,6 +13,8 @@ export interface HvpPhysicsClock {
   readonly timers:number;
   readonly maxTimerGapMs:number;readonly maxAdvanceMs:number;readonly maxHandlerMs:number;
   readonly lastCommand:string;readonly lastHandlerMs:number;
+  readonly lastTerrainRecipeMs?:number;readonly lastTerrainCookMs?:number;
+  readonly lastTerrainInstallMs?:number;readonly lastTerrainHoldMs?:number;readonly lastTerrainCommandId?:string;
   readonly delayedCallbacks:readonly {gapMs:number;previousCommand:string;handlerMs:number;advanceMs:number}[];
   readonly simulationHold?:Readonly<{gapMs:number;previousCommand:string;handlerMs:number;advanceMs:number;backlogSeconds:number;ticks:number}>;
 }
@@ -51,7 +53,10 @@ let timer: ReturnType<typeof setInterval> | undefined;
 let previous=performance.now();
 let measure=false,droppedTimings=0;
 let stepTimings:(readonly[number,number])[]=[];
-const clock={maxTimerGapMs:0,maxAdvanceMs:0,maxHandlerMs:0,lastCommand:"Initialize",lastHandlerMs:0,
+const clock:{maxTimerGapMs:number;maxAdvanceMs:number;maxHandlerMs:number;lastCommand:string;lastHandlerMs:number;
+  lastTerrainRecipeMs?:number;lastTerrainCookMs?:number;lastTerrainInstallMs?:number;lastTerrainHoldMs?:number;lastTerrainCommandId?:string;
+  simulationHold:HvpPhysicsClock["simulationHold"],
+  delayedCallbacks:{gapMs:number;previousCommand:string;handlerMs:number;advanceMs:number}[]}={maxTimerGapMs:0,maxAdvanceMs:0,maxHandlerMs:0,lastCommand:"Initialize",lastHandlerMs:0,
   simulationHold:undefined as HvpPhysicsClock["simulationHold"],
   delayedCallbacks:[] as {gapMs:number;previousCommand:string;handlerMs:number;advanceMs:number}[]};
 type RestoreState={id:string;transaction?:HvpWorldReplacement;recoveryHold?:boolean};
@@ -59,8 +64,23 @@ let restore:RestoreState|undefined;
 // A single worker owns the coupled World. No other worker can mutate its handles.
 port.onmessage = async ({ data }) => {
   const started=performance.now();
+  const previousTerrainSpans=session?.terrainPrepareSpans();
+  let terrainCommand=false,requestedTerrainId:string|undefined;
+  const projectTerrainSpans=(spans:ReturnType<HvpPhysicsSession["terrainPrepareSpans"]>)=>{
+    clock.lastTerrainRecipeMs=spans?.recipeMs??undefined;clock.lastTerrainCookMs=spans?.cookMs??undefined;
+    clock.lastTerrainInstallMs=spans?.installMs??undefined;clock.lastTerrainHoldMs=spans?.holdMs??undefined;
+    clock.lastTerrainCommandId=spans?.transactionId;
+  };
   const reply=(value:HvpPhysicsReply)=>{
     clock.lastCommand=data.kind;clock.lastHandlerMs=performance.now()-started;clock.maxHandlerMs=Math.max(clock.maxHandlerMs,clock.lastHandlerMs);
+    const currentTerrainSpans=session?.terrainPrepareSpans();
+    if(terrainCommand){
+      const ownsReply=currentTerrainSpans!==undefined&&requestedTerrainId!==undefined&&currentTerrainSpans.transactionId===requestedTerrainId
+        &&(value.rejected===undefined||currentTerrainSpans!==previousTerrainSpans);
+      projectTerrainSpans(ownsReply?currentTerrainSpans:undefined);
+    }else{
+      projectTerrainSpans(currentTerrainSpans);
+    }
     const timings=measure?{origin:performance.timeOrigin,steps:stepTimings,dropped:droppedTimings}:undefined;
     if(measure){stepTimings=[];droppedTimings=0;}
     port.postMessage({...value,clock:{...clock,timers:timer===undefined?0:1,delayedCallbacks:[...clock.delayedCallbacks]},timings});
@@ -69,6 +89,9 @@ port.onmessage = async ({ data }) => {
   let releasingHeld=false;
   try {
     if (!Number.isSafeInteger(data.id) || data.id < 0) { throw new Error("Invalid physics message id"); }
+    if(data.kind==="PrepareTerrain"||data.kind==="CommitTerrain"||data.kind==="RollbackTerrain"||data.kind==="FinalizeTerrain"){
+      terrainCommand=true;requestedTerrainId=data.transactionId;
+    }
     if (data.kind === "Dispose") { disposed = true; clearInterval(timer);timer=undefined; restore?.transaction?.dispose();session?.dispose(); }
     else if (data.kind === "Initialize") {
       if (initializing || session !== undefined || disposed) { throw new Error("Physics already initialized/disposed"); }
@@ -183,7 +206,7 @@ port.onmessage = async ({ data }) => {
         restoreState:restore?.recoveryHold?"RecoveryHold":restore?.transaction?.state});
       return;
     }
-    clearInterval(timer); session?.dispose(); disposed = true;
+    clearInterval(timer);timer=undefined;session?.dispose(); disposed = true;
     reply({ id: data.id, error: error instanceof Error ? error.message : "Physics worker failed" });
   }
 };

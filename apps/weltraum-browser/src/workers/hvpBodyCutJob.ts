@@ -7,9 +7,11 @@ import {meshHvpBodyCells} from "../hestia-prototype/presentation/terrainFragment
 import type {HvpCompactMesh} from "../hvp/hvpCoastMesher";
 import {byteCount,contentRevision} from "./ids";
 import {fnv1aBytes,validateTransferableBundle,type TransferableBufferBundle,type WorkerJobRequest,type WorkerJobResult} from "./protocol";
+import {HVP_BODY_CUT_MAX_OUTPUT,encodeHvpBodyCutWire,unpackHvpBodyCutWire} from "./hvpBodyCutWire";
 
 export const HVP_BODY_CUT_JOB="BuildHvpLocalBodyCut";
-export const HVP_BODY_CUT_MAX_OUTPUT=8*1024*1024;
+export const HVP_BODY_CUT_ALGORITHM=2;
+export {HVP_BODY_CUT_MAX_OUTPUT};
 export interface HvpBodyCutPayload {
   readonly sessionId:string;readonly epoch:number;readonly commandId:string;readonly ownerId:string;
   readonly sourceId:string;readonly sourceDigest:string;readonly revision:number;readonly cellCount:number;readonly massKg:number;
@@ -30,7 +32,7 @@ const identity=(p:HvpBodyCutPayload)=>[p.sessionId,p.epoch,p.commandId,p.ownerId
 export const hvpBodyCutInputDigest=(p:HvpBodyCutPayload,buffers:readonly ArrayBuffer[])=>fnv1aHash(JSON.stringify([...identity(p),fnv1aBytes(buffers)]));
 export const validateHvpBodyCutRequest=(request:WorkerJobRequest,input:TransferableBufferBundle)=>{
   const p=validateHvpBodyCutPayload(request.payload),v=input.views[0],size=p.cellCount*16;
-  if(request.jobKind!==HVP_BODY_CUT_JOB||request.algorithmVersion!==1||request.inputRevision!==p.revision
+  if(request.jobKind!==HVP_BODY_CUT_JOB||(request.algorithmVersion!==1&&request.algorithmVersion!==HVP_BODY_CUT_ALGORITHM)||request.inputRevision!==p.revision
     ||request.estimatedOutputBytes!==HVP_BODY_CUT_MAX_OUTPUT||input.revision!==p.revision||input.buffers.length!==1||input.views.length!==1
     ||input.byteLength!==size||input.buffers[0]!.byteLength!==size||v?.name!=="cells"||v.kind!=="Int32Array"
     ||v.byteOffset!==0||v.bufferIndex!==0||v.elementCount!==p.cellCount*4||request.sourceInputDigest!==hvpBodyCutInputDigest(p,input.buffers)){
@@ -43,14 +45,20 @@ export interface HvpLocalBodyProduct {
   readonly massKg:number;readonly sourceBytes:number;readonly cells:readonly HvpStructuralCell[];readonly mesh:HvpCompactMesh;
 }
 type MeshWire=Omit<HvpCompactMesh,"positions"|"normals"|"colors"|"indices">&{positions:number[];normals:number[];colors:number[];indices:number[]};
-type PartWire=Omit<HvpLocalBodyProduct,"mesh">&{mesh:MeshWire};
+type JsonPartWire=Omit<HvpLocalBodyProduct,"mesh">&{mesh:MeshWire};
+type PartWire=JsonPartWire|ReturnType<typeof unpackHvpBodyCutWire>["parts"][number];
 export interface HvpBodyCutProducts {readonly parts:readonly HvpLocalBodyProduct[];readonly removedCells:number;readonly removedMassKg:number}
 
 export const decodeHvpBodyCutOutput=(output:TransferableBufferBundle,p:HvpBodyCutPayload):HvpBodyCutProducts=>{
   const b=validateTransferableBundle(output),v=b.views[0];
-  if(b.ownership!=="WorkerToConsumer"||b.revision!==p.revision+1||b.buffers.length!==1||b.views.length!==1||b.byteLength>HVP_BODY_CUT_MAX_OUTPUT
-    ||v?.name!=="products"||v.kind!=="Uint8Array"||v.byteOffset!==0||v.bufferIndex!==0||v.elementCount!==b.buffers[0]!.byteLength){throw new Error("Invalid body-cut output layout");}
-  const value=JSON.parse(new TextDecoder("utf-8",{fatal:true}).decode(b.buffers[0]!)) as {binding:unknown;parts:PartWire[];removedCells:number;removedMassKg:number};
+  if(b.ownership!=="WorkerToConsumer"||b.revision!==p.revision+1||b.byteLength>HVP_BODY_CUT_MAX_OUTPUT){throw new Error("Invalid body-cut output layout");}
+  let value:{binding:unknown;parts:PartWire[];removedCells:number;removedMassKg:number};
+  if(b.buffers.length===1&&b.views.length===1){
+    if(v?.name!=="products"||v.kind!=="Uint8Array"||v.byteOffset!==0||v.bufferIndex!==0||v.elementCount!==b.buffers[0]!.byteLength){throw new Error("Invalid body-cut output layout");}
+    value=JSON.parse(new TextDecoder("utf-8",{fatal:true}).decode(b.buffers[0]!)) as typeof value;
+  }else{
+    value=unpackHvpBodyCutWire(b,identity(p));
+  }
   if(JSON.stringify(value.binding)!==JSON.stringify(identity(p))||!Array.isArray(value.parts)||value.parts.length>32
     ||!Number.isSafeInteger(value.removedCells)||value.removedCells<1||value.removedCells>512
     ||!Number.isFinite(value.removedMassKg)||value.removedMassKg<=0){throw new Error("Invalid body-cut output binding");}
@@ -79,10 +87,10 @@ export const decodeHvpBodyCutOutput=(output:TransferableBufferBundle,p:HvpBodyCu
       ||part.sourceBytes!==bricks.size*ADAPTIVE_BRICK_ESTIMATED_BYTES){throw new Error("Body part mass/source mismatch");}
     const mesh=part.mesh;
     if(!mesh||mesh.sourceDigest!==part.sourceDigest||mesh.algorithmVersion!=="hvp-terrain-fragment-v1"
-      ||!Array.isArray(mesh.positions)||mesh.positions.length===0||mesh.positions.length>768_000||mesh.positions.length%12!==0
-      ||!Array.isArray(mesh.normals)||mesh.normals.length!==mesh.positions.length||mesh.normals.some(n=>n!==0&&n!==1&&n!==-1)
-      ||!Array.isArray(mesh.colors)||mesh.colors.length!==mesh.positions.length||mesh.colors.some(n=>!Number.isFinite(n)||n<0||n>1)
-      ||!Array.isArray(mesh.indices)||mesh.indices.length!==mesh.positions.length/2||mesh.indices.length>384_000
+      ||!(Array.isArray(mesh.positions)||mesh.positions instanceof Float32Array)||mesh.positions.length===0||mesh.positions.length>768_000||mesh.positions.length%12!==0
+      ||!(Array.isArray(mesh.normals)||mesh.normals instanceof Float32Array)||mesh.normals.length!==mesh.positions.length||mesh.normals.some(n=>n!==0&&n!==1&&n!==-1)
+      ||!(Array.isArray(mesh.colors)||mesh.colors instanceof Float32Array)||mesh.colors.length!==mesh.positions.length||mesh.colors.some(n=>!Number.isFinite(n)||n<0||n>1)
+      ||!(Array.isArray(mesh.indices)||mesh.indices instanceof Uint32Array)||mesh.indices.length!==mesh.positions.length/2||mesh.indices.length>384_000
       ||mesh.indices.some(n=>!Number.isSafeInteger(n)||n<0||n>=mesh.positions.length/3)
       ||mesh.faceCount!==mesh.indices.length/6||!Number.isSafeInteger(mesh.unitFaceCount)||mesh.unitFaceCount<mesh.faceCount
       ||![mesh.outerFaceCount,mesh.cavityFaceCount].every(n=>Number.isSafeInteger(n)&&n>=0)||mesh.outerFaceCount+mesh.cavityFaceCount!==mesh.faceCount
@@ -109,16 +117,34 @@ export const executeHvpBodyCutJob=(request:WorkerJobRequest,bundle:TransferableB
   const source=ingestHvpStructuralCells(p.sourceId,cells,p.materials);
   if(source.contentHash!==p.sourceDigest||source.objectRevision!==p.revision){throw new Error("Body source reconstruction mismatch");}
   const local=prepareHvpLocalBodyCut(source,p.cell,p.commandId,p.edge,p.brush);
-  const parts:PartWire[]=local.plan.parts.map(part=>{
+  const makePart=(part:(typeof local.plan.parts)[number]):HvpLocalBodyProduct=>{
     const center=part.recipe.mass.centerOfMassMeters!,mesh=meshHvpBodyCells(part.cells,center,part.recipe.source.contentHash);
     return {ownerId:part.ownerId,sourceDigest:part.recipe.source.contentHash,center,massKg:part.recipe.mass.totalMassKg,
-      sourceBytes:part.recipe.source.bricks.length*ADAPTIVE_BRICK_ESTIMATED_BYTES,cells:part.cells,
-      mesh:{...mesh,positions:Array.from(mesh.positions),normals:Array.from(mesh.normals),colors:Array.from(mesh.colors!),indices:Array.from(mesh.indices)}};
-  });
-  const bytes=new TextEncoder().encode(JSON.stringify({binding:identity(p),parts,removedCells:local.plan.removedCells,removedMassKg:local.plan.removedMassKg}));
-  if(bytes.byteLength>HVP_BODY_CUT_MAX_OUTPUT){throw new Error("Body-cut products BudgetExceeded");}
-  const buffers=[bytes.buffer as ArrayBuffer],output:TransferableBufferBundle={buffers,ownership:"WorkerToConsumer",revision:contentRevision(p.revision+1),
-    byteLength:byteCount(bytes.byteLength),contentHash:fnv1aBytes(buffers),views:[{name:"products",kind:"Uint8Array",bufferIndex:0,byteOffset:0,elementCount:bytes.length}]};
+      sourceBytes:part.recipe.source.bricks.length*ADAPTIVE_BRICK_ESTIMATED_BYTES,cells:part.cells,mesh};
+  };
+  let output:TransferableBufferBundle;
+  if(request.algorithmVersion===HVP_BODY_CUT_ALGORITHM){
+    let retainedMeshBytes=0;
+    const parts=local.plan.parts.map(part=>{
+      const product=makePart(part),mesh=product.mesh;
+      retainedMeshBytes+=mesh.positions.byteLength+mesh.normals.byteLength+(mesh.colors?.byteLength??0)+mesh.indices.byteLength;
+      // Wire indices are at least as wide, so an over-cap retained mesh set cannot fit V2.
+      if(retainedMeshBytes>HVP_BODY_CUT_MAX_OUTPUT){throw new Error("Body-cut products BudgetExceeded");}
+      return product;
+    });
+    output=encodeHvpBodyCutWire({parts,removedCells:local.plan.removedCells,removedMassKg:local.plan.removedMassKg},identity(p),p.revision+1);
+  }else{
+    // Preserve V1's per-part conversion lifetime; do not retain all raw meshes first.
+    const parts:JsonPartWire[]=local.plan.parts.map(part=>{
+      const product=makePart(part),mesh=product.mesh;
+      return {...product,mesh:{...mesh,positions:Array.from(mesh.positions),normals:Array.from(mesh.normals),colors:Array.from(mesh.colors!),indices:Array.from(mesh.indices)}};
+    });
+    const bytes=new TextEncoder().encode(JSON.stringify({binding:identity(p),parts,removedCells:local.plan.removedCells,removedMassKg:local.plan.removedMassKg}));
+    if(bytes.byteLength>HVP_BODY_CUT_MAX_OUTPUT){throw new Error("Body-cut products BudgetExceeded");}
+    const buffers=[bytes.buffer as ArrayBuffer];
+    output={buffers,ownership:"WorkerToConsumer",revision:contentRevision(p.revision+1),
+      byteLength:byteCount(bytes.byteLength),contentHash:fnv1aBytes(buffers),views:[{name:"products",kind:"Uint8Array",bufferIndex:0,byteOffset:0,elementCount:bytes.length}]};
+  }
   decodeHvpBodyCutOutput(output,p);
   const result:WorkerJobResult={jobId:request.jobId,targetKey:request.targetKey,workerEpoch:request.workerEpoch,planningEpoch:request.planningEpoch,
     inputRevision:request.inputRevision,sourceInputDigest:request.sourceInputDigest,outputRevision:output.revision,algorithmVersion:request.algorithmVersion,outputBytes:output.byteLength,contentHash:output.contentHash};

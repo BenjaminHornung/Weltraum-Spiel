@@ -1,3 +1,4 @@
+import { fnv1a64Bytes } from "../../core/fnv1a64";
 import {
   adaptiveLevel,
   adaptivePlanningEpoch,
@@ -95,12 +96,7 @@ export const canonicalAdaptiveJson = (value: unknown): string => serialize(canon
 
 export const hashAdaptiveCanonical = (value: unknown): string => {
   const bytes = new TextEncoder().encode(canonicalAdaptiveJson(value));
-  let hash = 0xcbf29ce484222325n;
-  for (const byte of bytes) {
-    hash ^= BigInt(byte);
-    hash = BigInt.asUintN(64, hash * 0x100000001b3n);
-  }
-  return `fnv1a64-v1:${hash.toString(16).padStart(16, "0")}`;
+  return `fnv1a64-v1:${fnv1a64Bytes(bytes)}`;
 };
 
 const validateAdaptiveBaseFieldSample = (value: AdaptiveBaseFieldSample): AdaptiveBaseFieldSample => {

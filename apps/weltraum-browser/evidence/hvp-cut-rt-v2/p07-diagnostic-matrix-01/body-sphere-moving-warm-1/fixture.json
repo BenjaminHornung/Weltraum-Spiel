@@ -1,0 +1,34 @@
+{
+  "saved": {
+    "root": 1,
+    "digest": "26d5308d",
+    "fragments": [
+      {
+        "ownerId": "hvp:terrain-fragment:r1:1b4aa69d",
+        "sourceDigest": "fnv1a64-v1:70d85a5593bd44c9",
+        "cellCount": 384,
+        "massKg": 1722.65625
+      }
+    ]
+  },
+  "selected": {
+    "gpu": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "width": 1280,
+    "height": 720,
+    "dpr": 1,
+    "bufferWidth": 1280,
+    "bufferHeight": 720,
+    "visible": "visible",
+    "focused": true
+  },
+  "device": {
+    "vendorId": 32902,
+    "deviceId": 32081,
+    "subSysId": 591796138,
+    "revision": 3,
+    "vendorString": "",
+    "deviceString": "Intel(R) Arc(TM) Pro 140T GPU (16GB)",
+    "driverVendor": "Intel",
+    "driverVersion": "32.0.101.8517"
+  }
+}

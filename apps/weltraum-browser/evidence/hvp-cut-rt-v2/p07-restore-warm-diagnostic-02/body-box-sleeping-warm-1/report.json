@@ -1,0 +1,225 @@
+{
+  "planSha256": "4f55c83671f8e4ff8be1003198f48840ebb4c4b2468ad04524ee8fb3c666eb3c",
+  "failure": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n\nCall Log:\n- Timeout 10000ms exceeded while waiting on the predicate",
+  "plannedAttempts": 1,
+  "records": [
+    {
+      "attempt": 1,
+      "status": "not-run",
+      "result": null,
+      "warmup": null,
+      "problems": []
+    }
+  ],
+  "summary": {
+    "acceptance": "NOT_ASSESSED",
+    "attempts": 0,
+    "outcomes": {
+      "Applied": 0,
+      "NoOp": 0,
+      "Rejected": 0,
+      "RecoveryHold": 0,
+      "Timeout": 0
+    },
+    "unknownOutcomes": 0,
+    "unclassifiedAttempts": 0,
+    "invalid": [],
+    "groups": [
+      {
+        "scenario": "quarry",
+        "temperature": "cold",
+        "attempts": 0,
+        "outcomes": {
+          "Applied": 0,
+          "NoOp": 0,
+          "Rejected": 0,
+          "RecoveryHold": 0,
+          "Timeout": 0
+        },
+        "invalidCount": 0,
+        "completeApplied": 0,
+        "incompleteApplied": 0,
+        "missing": {
+          "applied": 0,
+          "committedRender": 0,
+          "sourceGenerationAfter": 0,
+          "hold": 0
+        },
+        "inputToAppliedMs": null,
+        "inputToCommittedRenderMs": null,
+        "holdMs": null
+      },
+      {
+        "scenario": "quarry",
+        "temperature": "warm",
+        "attempts": 0,
+        "outcomes": {
+          "Applied": 0,
+          "NoOp": 0,
+          "Rejected": 0,
+          "RecoveryHold": 0,
+          "Timeout": 0
+        },
+        "invalidCount": 0,
+        "completeApplied": 0,
+        "incompleteApplied": 0,
+        "missing": {
+          "applied": 0,
+          "committedRender": 0,
+          "sourceGenerationAfter": 0,
+          "hold": 0
+        },
+        "inputToAppliedMs": null,
+        "inputToCommittedRenderMs": null,
+        "holdMs": null
+      },
+      {
+        "scenario": "rock-arm",
+        "temperature": "cold",
+        "attempts": 0,
+        "outcomes": {
+          "Applied": 0,
+          "NoOp": 0,
+          "Rejected": 0,
+          "RecoveryHold": 0,
+          "Timeout": 0
+        },
+        "invalidCount": 0,
+        "completeApplied": 0,
+        "incompleteApplied": 0,
+        "missing": {
+          "applied": 0,
+          "committedRender": 0,
+          "sourceGenerationAfter": 0,
+          "hold": 0
+        },
+        "inputToAppliedMs": null,
+        "inputToCommittedRenderMs": null,
+        "holdMs": null
+      },
+      {
+        "scenario": "rock-arm",
+        "temperature": "warm",
+        "attempts": 0,
+        "outcomes": {
+          "Applied": 0,
+          "NoOp": 0,
+          "Rejected": 0,
+          "RecoveryHold": 0,
+          "Timeout": 0
+        },
+        "invalidCount": 0,
+        "completeApplied": 0,
+        "incompleteApplied": 0,
+        "missing": {
+          "applied": 0,
+          "committedRender": 0,
+          "sourceGenerationAfter": 0,
+          "hold": 0
+        },
+        "inputToAppliedMs": null,
+        "inputToCommittedRenderMs": null,
+        "holdMs": null
+      },
+      {
+        "scenario": "body-box",
+        "temperature": "cold",
+        "attempts": 0,
+        "outcomes": {
+          "Applied": 0,
+          "NoOp": 0,
+          "Rejected": 0,
+          "RecoveryHold": 0,
+          "Timeout": 0
+        },
+        "invalidCount": 0,
+        "completeApplied": 0,
+        "incompleteApplied": 0,
+        "missing": {
+          "applied": 0,
+          "committedRender": 0,
+          "sourceGenerationAfter": 0,
+          "hold": 0
+        },
+        "inputToAppliedMs": null,
+        "inputToCommittedRenderMs": null,
+        "holdMs": null
+      },
+      {
+        "scenario": "body-box",
+        "temperature": "warm",
+        "attempts": 0,
+        "outcomes": {
+          "Applied": 0,
+          "NoOp": 0,
+          "Rejected": 0,
+          "RecoveryHold": 0,
+          "Timeout": 0
+        },
+        "invalidCount": 0,
+        "completeApplied": 0,
+        "incompleteApplied": 0,
+        "missing": {
+          "applied": 0,
+          "committedRender": 0,
+          "sourceGenerationAfter": 0,
+          "hold": 0
+        },
+        "inputToAppliedMs": null,
+        "inputToCommittedRenderMs": null,
+        "holdMs": null
+      },
+      {
+        "scenario": "body-sphere",
+        "temperature": "cold",
+        "attempts": 0,
+        "outcomes": {
+          "Applied": 0,
+          "NoOp": 0,
+          "Rejected": 0,
+          "RecoveryHold": 0,
+          "Timeout": 0
+        },
+        "invalidCount": 0,
+        "completeApplied": 0,
+        "incompleteApplied": 0,
+        "missing": {
+          "applied": 0,
+          "committedRender": 0,
+          "sourceGenerationAfter": 0,
+          "hold": 0
+        },
+        "inputToAppliedMs": null,
+        "inputToCommittedRenderMs": null,
+        "holdMs": null
+      },
+      {
+        "scenario": "body-sphere",
+        "temperature": "warm",
+        "attempts": 0,
+        "outcomes": {
+          "Applied": 0,
+          "NoOp": 0,
+          "Rejected": 0,
+          "RecoveryHold": 0,
+          "Timeout": 0
+        },
+        "invalidCount": 0,
+        "completeApplied": 0,
+        "incompleteApplied": 0,
+        "missing": {
+          "applied": 0,
+          "committedRender": 0,
+          "sourceGenerationAfter": 0,
+          "hold": 0
+        },
+        "inputToAppliedMs": null,
+        "inputToCommittedRenderMs": null,
+        "holdMs": null
+      }
+    ]
+  },
+  "sourceUnchanged": true,
+  "buildUnchanged": true,
+  "performanceAcceptance": "NOT_ASSESSED: aggregate the complete predeclared multi-session population, including every failed/precondition attempt"
+}

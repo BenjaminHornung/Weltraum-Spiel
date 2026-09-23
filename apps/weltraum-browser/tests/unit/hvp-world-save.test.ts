@@ -50,7 +50,8 @@ it("restores current recut timber and terrain fragments, not the original parent
     expect(()=>source.checkpoint()).toThrow(/confirmed/);
     source.commitBranch("release");source.finalizeBranch("release");
     source.prepareTerrain("rock",0,[{index:0,mesh:sectors[0]!}],[{ownerId:"hvp:terrain-fragment:r1:12345678",
-      origin:{x:-16,y:-8,z:-16},massKg:9.375,cells:[{x:128,y:90,z:144,materialId:1},{x:129,y:90,z:144,materialId:1}]}]);
+      origin:{x:-16,y:-8,z:-16},massKg:9.375,cells:[{x:128,y:90,z:144,materialId:1},{x:129,y:90,z:144,materialId:1}],
+      colliderBoxes:[{min:[128,90,144],max:[130,91,145]}]}]);
     source.commitTerrain("rock");source.finalizeTerrain("rock");
     const parent=source.read().structural!.parts.find(p=>!p.anchored)!;
     source.aimBranch(direction(parent.position));

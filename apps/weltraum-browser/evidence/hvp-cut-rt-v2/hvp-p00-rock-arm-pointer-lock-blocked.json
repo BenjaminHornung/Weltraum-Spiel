@@ -1,0 +1,40 @@
+{
+  "result": "Pointer-lock denied twice before any cut; no successful cut sample discarded",
+  "url": "http://127.0.0.1:5177/?hestiaPrototype=1&hvpScenario=rock-arm&hvpMeasure=1",
+  "error": "Pointer Lock nicht verfügbar – bitte erneut auf Spielen klicken.",
+  "input": "{\"owner\":\"Inspection\",\"locked\":false,\"jumpEdges\":0,\"neutralizations\":3,\"pressedKeys\":[]}",
+  "tool": {
+    "mode": "Box 0,5 m",
+    "edges": 0,
+    "issued": 0,
+    "message": "Spielen: 1 Zelle · 2 Box · 3 Kugel · Linksklick",
+    "state": "Idle",
+    "queued": 0,
+    "receipts": 0,
+    "structural": {
+      "state": "Ready",
+      "issued": 0,
+      "last": null
+    },
+    "moving": {
+      "state": "Idle",
+      "last": null,
+      "issued": 0
+    }
+  },
+  "rootGeneration": 0,
+  "health": {
+    "enabled": true,
+    "samples": 60763,
+    "errors": 0,
+    "dropped": 0,
+    "cutObservation": {
+      "status": "armed",
+      "drops": 0,
+      "disables": 0,
+      "inputCount": 0,
+      "pendingRender": false
+    }
+  },
+  "records": []
+}

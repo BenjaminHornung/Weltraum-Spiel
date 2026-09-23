@@ -1,5 +1,6 @@
 import {beforeAll,expect,it,vi} from "vitest";
 import * as coast from "../../src/hvp/hvpCoastSource";
+import * as cutPlan from "../../src/hestia-prototype/terrain/cutPlan";
 import {createHvpTerrainRoot} from "../../src/hestia-prototype/terrain/cutPlan";
 import {collisionSectors} from "../../src/hestia-prototype/physics/terrainColliders";
 import {createHvpPhysicsSession,resolveHvpGravity} from "../../src/hestia-prototype/physics/session";
@@ -14,6 +15,7 @@ import {R} from "../../src/hestia-prototype/physics/rapierPort";
 import {ingestHvpStructuralCells} from "../../src/hestia-prototype/terrain/structuralIngest";
 import {prepareHvpRigidBody,installHvpRigidBody} from "../../src/hestia-prototype/physics/rigidBody";
 import {encodeHvpBody} from "../../src/hestia-prototype/persistence/bodyCheckpoint";
+import * as gridCheckpoint from "../../src/hestia-prototype/persistence/gridCheckpoint";
 import {decodeHvpGrid} from "../../src/hestia-prototype/persistence/gridCheckpoint";
 import {replaceHvpScene} from "../../src/hestia-prototype/persistence/sceneReplacement";
 import type {HvpPhysicsClient} from "../../src/hestia-prototype/physics/client";
@@ -37,6 +39,74 @@ beforeAll(async()=>{
       view:{camera:{mode:"Orbit",preset:"C04-WIDE",fov:55,position:{x:-24,y:18,z:-28},target:{x:0,y:1,z:1},quaternion:{x:0,y:0,z:0,w:1}},
         playerYaw:Math.PI,playerPitch:0,thirdPerson:true,waterEnabled:true,aoEnabled:true,tool:{mode:2,sequence:1,structureSequence:0,movingSequence:0,edges:1}}});
   }finally{session.dispose();}
+},120_000);
+
+it("CB01 proves one primary decode and shared Root reader ownership",()=>{
+  const oracle=cutPlan.restoreHvpTerrainRoot(artifact.terrain),input=structuredClone(artifact);
+  const decodeSpy=vi.spyOn(gridCheckpoint,"decodeHvpGrid"),rootSpy=vi.spyOn(cutPlan,"createHvpTerrainRoot");
+  try{
+    const decoded=decodeHvpGame(input);
+    const primary=decodeSpy.mock.calls.map((call,index)=>({input:call[0],result:decodeSpy.mock.results[index]?.value})).filter(call=>call.input===input.terrain.base);
+    expect(primary).toHaveLength(1);
+    expect((primary[0]!.result as {byteLength:number}).byteLength).toBe(8_388_608);
+    const rootCall=rootSpy.mock.calls.findIndex(([base])=>base===decoded.base);
+    expect(rootCall).toBeGreaterThanOrEqual(0);
+    expect(rootSpy.mock.results[rootCall]?.value).toBe(decoded.root);
+    expect(decoded.root.checkpoint()).toEqual(oracle.checkpoint());
+    const rootSnapshot=decoded.root.read(),checkpoint=decoded.root.checkpoint(),sourceDigest=decoded.base.sourceDigest,revision=rootSnapshot.revision;
+    const sourceCopy=decoded.base.copySlots(),sourceBefore=decoded.base.readSlot(0,0,0);
+    Reflect.set(sourceCopy,0,sourceBefore===0?1:0);Reflect.set(input.terrain.base.runs,0,input.terrain.base.runs[0]===0?1:0);
+    expect(decoded.base.readSlot(0,0,0)).toBe(sourceBefore);
+    const restoredKey=artifact.terrain.leaves[0]!.key;
+    const untouchedKey=restoredKey[0]===0&&restoredKey[1]===0&&restoredKey[2]===0?[1,0,0] as const:[0,0,0] as const;
+    const restoredCopy=rootSnapshot.copyLeaf(restoredKey[0]!,restoredKey[1]!,restoredKey[2]!),restoredBefore=restoredCopy[0]!;
+    const untouchedCopy=rootSnapshot.copyLeaf(untouchedKey[0],untouchedKey[1],untouchedKey[2]),untouchedBefore=untouchedCopy[0]!;
+    Reflect.set(restoredCopy,0,restoredBefore===0?1:0);Reflect.set(untouchedCopy,0,untouchedBefore===0?1:0);
+    expect(rootSnapshot.copyLeaf(restoredKey[0]!,restoredKey[1]!,restoredKey[2]!)[0]).toBe(restoredBefore);
+    expect(rootSnapshot.copyLeaf(untouchedKey[0],untouchedKey[1],untouchedKey[2])[0]).toBe(untouchedBefore);
+    expect(decoded.base.sourceDigest).toBe(sourceDigest);expect(decoded.root.read().revision).toBe(revision);expect(decoded.root.checkpoint()).toEqual(checkpoint);expect(decoded.checkpoint).toEqual(artifact);
+  }finally{rootSpy.mockRestore();decodeSpy.mockRestore();}
+},120_000);
+
+it("CB01 preserves inner validation and error precedence after rehash",()=>{
+  const clone=():HvpGameCheckpoint=>structuredClone(artifact);
+  const rehash=(value:HvpGameCheckpoint):HvpGameCheckpoint=>{const {signature:_signature,...data}=value;return {...value,signature:createPersistenceSignature(data)};};
+  const replaceLeaf=(value:HvpGameCheckpoint,key:readonly [number,number,number],change:(slot:number,x:number,y:number,z:number)=>number):void=>{
+    const base=gridCheckpoint.decodeHvpGrid(value.terrain.base);
+    const grid=gridCheckpoint.encodeHvpGrid({sizeX:16,sizeY:16,sizeZ:16,cellMeters:.125,
+      originMeters:{x:base.originMeters.x+key[0]*2,y:base.originMeters.y+key[1]*2,z:base.originMeters.z+key[2]*2},
+      readSlot:(x,y,z)=>change(base.readSlot(key[0]*16+x,key[1]*16+y,key[2]*16+z)!,x,y,z)});
+    const storedKey=Object.freeze([key[0],key[1],key[2]]) as readonly [number,number,number];
+    Reflect.set(value.terrain,"leaves",[{key:storedKey,revision:1,grid}]);Reflect.set(value.terrain,"revision",1);Reflect.set(value.world,"terrainGeneration",1);
+  };
+  const base=gridCheckpoint.decodeHvpGrid(artifact.terrain.base);let selected:[number,number,number]|undefined;
+  for(let y=1;y<16&&selected===undefined;y+=1){for(let z=0;z<16&&selected===undefined;z+=1){for(let x=0;x<16;x+=1){
+    if(base.readSlot(x,y,z)!==0){selected=[x,y,z];break;}
+  }}}
+  if(selected===undefined){throw new Error("CB01 fixture lacks a non-air material");}
+  const protectedSlot=base.readSlot(0,0,0)!;
+  const cases:readonly [string,(value:HvpGameCheckpoint)=>void,RegExp][]=[
+    ["extra terrain key",value=>{Reflect.set(value.terrain,"extra",true);},/Unsupported terrain checkpoint version\/identity/],
+    ["wrong terrain version",value=>{Reflect.set(value.terrain,"version","invalid");},/Unsupported terrain checkpoint version\/identity/],
+    ["non-string session",value=>{Reflect.set(value.terrain,"sessionId",42);},/Unsupported terrain checkpoint version\/identity/],
+    ["invalid session",value=>{Reflect.set(value.terrain,"sessionId","foreign session");},/Unsupported terrain checkpoint version\/identity/],
+    ["negative epoch",value=>{Reflect.set(value.terrain,"epoch",-1);},/Unsupported terrain checkpoint version\/identity/],
+    ["unsafe epoch",value=>{Reflect.set(value.terrain,"epoch",Number.MAX_SAFE_INTEGER+1);},/Unsupported terrain checkpoint version\/identity/],
+    ["malformed base digest",value=>{Reflect.set(value.terrain,"baseDigest","bad");},/Invalid coast checkpoint/],
+    ["wrong valid base digest",value=>{Reflect.set(value.terrain,"baseDigest",value.terrain.baseDigest==="00000000"?"ffffffff":"00000000");},/Coast checkpoint digest mismatch/],
+    ["malformed source digest",value=>{Reflect.set(value.terrain,"sourceDigest","bad");},/Unsupported terrain checkpoint version\/identity/],
+    ["wrong valid source digest",value=>{Reflect.set(value.terrain,"sourceDigest",value.terrain.sourceDigest==="00000000"?"ffffffff":"00000000");},/Checkpoint source digest mismatch/],
+    ["malformed leaf address",value=>{Reflect.set(value.terrain.leaves[0]!,"key",[999,0,0]);},/Invalid checkpoint leaf revision\/address/],
+    ["malformed leaf grid",value=>{Reflect.set(value.terrain.leaves[0]!.grid,"runs",[]);},/Invalid bounded checkpoint runs/],
+    ["duplicate leaf",value=>{Reflect.set(value.terrain,"leaves",[...value.terrain.leaves,value.terrain.leaves[0]!]);},/Duplicate or malformed checkpoint leaf/],
+    ["revision without content",value=>{Reflect.set(value.terrain,"revision",1);Reflect.set(value.world,"terrainGeneration",1);Reflect.set(value.terrain,"leaves",[]);},/Checkpoint revision mismatch/],
+    ["invalid leaf revision",value=>{Reflect.set(value.terrain.leaves[0]!,"revision",0);},/Invalid checkpoint leaf revision\/address/],
+    ["wrong material",value=>{replaceLeaf(value,[0,0,0],(slot,x,y,z)=>x===selected![0]&&y===selected![1]&&z===selected![2]?(slot===1?2:1):slot);},/Invalid checkpoint material\/ownership change/],
+    ["protected material",value=>{replaceLeaf(value,[0,0,0],(slot,x,y,z)=>x===0&&y===0&&z===0?(protectedSlot===0?1:0):slot);},/Invalid checkpoint material\/ownership change/]
+  ];
+  for(const [_name,mutate,error] of cases){const value=clone();mutate(value);expect(()=>decodeHvpGame(rehash(value))).toThrow(error);}
+  const paired=clone();Reflect.set(paired.terrain,"baseDigest","bad");Reflect.set(paired.terrain,"version","invalid");expect(()=>decodeHvpGame(rehash(paired))).toThrow(/Invalid coast checkpoint/);
+  const outer=clone();Reflect.set(outer.terrain,"version","invalid");expect(()=>decodeHvpGame(outer)).toThrow(/Hestia save signature mismatch/);
 },120_000);
 
 it("round-trips an edited eastern Root with exact native coverage and rejects a foreign neighbour binding",async()=>{

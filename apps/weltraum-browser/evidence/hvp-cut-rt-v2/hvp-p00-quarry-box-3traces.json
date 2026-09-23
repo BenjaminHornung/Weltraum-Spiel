@@ -1,0 +1,1203 @@
+{
+  "purpose": "P00 functional diagnostic traces, not formal P07 performance acceptance",
+  "collector": "Bounded 512 cut records per fresh runtime; explicitly retains PerformanceMeasure.detail",
+  "reports": [
+    {
+      "attempt": 1,
+      "scenario": "quarry-box-first-cut",
+      "url": "http://127.0.0.1:5177/?hestiaPrototype=1&hvpMeasure=1",
+      "timeOrigin": 1790062907320,
+      "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36",
+      "viewport": [
+        1036,
+        766,
+        1.25
+      ],
+      "rootGeneration": 1,
+      "nativeGeneration": 1,
+      "nativeState": "Idle",
+      "tool": {
+        "mode": "Box 0,5 m",
+        "edges": 1,
+        "issued": 1,
+        "message": "Protected: top-only quarry depth exceeds 0.5m",
+        "state": "Applied",
+        "queued": 0,
+        "receipts": 1,
+        "last": {
+          "commandId": "cut-1",
+          "status": "Applied",
+          "removedCells": 50,
+          "reason": "Terrain and collision committed",
+          "revision": 1
+        },
+        "structural": {
+          "state": "Ready",
+          "issued": 0,
+          "last": null
+        },
+        "moving": {
+          "state": "Idle",
+          "last": null,
+          "issued": 0
+        }
+      },
+      "clock": {
+        "maxTimerGapMs": 32.099999994039536,
+        "maxAdvanceMs": 9.099999994039536,
+        "maxHandlerMs": 1013.5,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.3999999910593033,
+        "delayedCallbacks": [],
+        "lastTerrainRecipeMs": 0,
+        "lastTerrainCookMs": 0.20000000298023224,
+        "lastTerrainInstallMs": 0,
+        "lastTerrainHoldMs": 27.799999997019768,
+        "lastTerrainCommandId": "cut-1",
+        "timers": 1
+      },
+      "health": {
+        "enabled": true,
+        "samples": 346,
+        "errors": 0,
+        "dropped": 0,
+        "cutObservation": {
+          "status": "armed",
+          "drops": 0,
+          "disables": 0,
+          "inputCount": 1,
+          "pendingRender": false
+        }
+      },
+      "records": [
+        {
+          "name": "hvp.cutSubmittedMs",
+          "entryType": "measure",
+          "startTime": 9824.5,
+          "duration": 0,
+          "navigationId": 5199,
+          "detail": {
+            "sampleId": "cutSubmittedMs:294",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutSubmittedMs",
+              "origin": 1790062907320,
+              "start": 9824.5,
+              "duration": 0
+            }
+          }
+        },
+        {
+          "name": "hvp.cutQueueWaitMs",
+          "entryType": "measure",
+          "startTime": 9824.5,
+          "duration": 0.3999999910593033,
+          "navigationId": 5199,
+          "detail": {
+            "sampleId": "cutQueueWaitMs:295",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutQueueWaitMs",
+              "origin": 1790062907320,
+              "start": 9824.5,
+              "duration": 0.3999999910593033
+            }
+          }
+        },
+        {
+          "name": "hvp.cutRootPrepareMs",
+          "entryType": "measure",
+          "startTime": 9825,
+          "duration": 0.19999998807907104,
+          "navigationId": 5199,
+          "detail": {
+            "sampleId": "cutRootPrepareMs:296",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutRootPrepareMs",
+              "origin": 1790062907320,
+              "start": 9825,
+              "duration": 0.19999998807907104
+            }
+          }
+        },
+        {
+          "name": "hvp.cutCompileMs",
+          "entryType": "measure",
+          "startTime": 9825.29999999702,
+          "duration": 201,
+          "navigationId": 5199,
+          "detail": {
+            "sampleId": "cutCompileMs:331",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutCompileMs",
+              "origin": 1790062907320,
+              "start": 9825.29999999702,
+              "duration": 201
+            }
+          }
+        },
+        {
+          "name": "hvp.cutGraphicsStageMs",
+          "entryType": "measure",
+          "startTime": 10026.39999999106,
+          "duration": 35.1000000089407,
+          "navigationId": 5199,
+          "detail": {
+            "sampleId": "cutGraphicsStageMs:335",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutGraphicsStageMs",
+              "origin": 1790062907320,
+              "start": 10026.39999999106,
+              "duration": 35.1000000089407
+            }
+          }
+        },
+        {
+          "name": "hvp.cutLookRegroupMs",
+          "entryType": "measure",
+          "startTime": 10026.79999999702,
+          "duration": 0.29999999701976776,
+          "navigationId": 5199,
+          "detail": {
+            "sampleId": "cutLookRegroupMs:332",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutLookRegroupMs",
+              "origin": 1790062907320,
+              "start": 10026.79999999702,
+              "duration": 0.29999999701976776
+            }
+          }
+        },
+        {
+          "name": "hvp.cutArtifactCreateMs",
+          "entryType": "measure",
+          "startTime": 10027.29999999702,
+          "duration": 12.299999997019768,
+          "navigationId": 5199,
+          "detail": {
+            "sampleId": "cutArtifactCreateMs:333",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutArtifactCreateMs",
+              "origin": 1790062907320,
+              "start": 10027.29999999702,
+              "duration": 12.299999997019768
+            }
+          }
+        },
+        {
+          "name": "hvp.cutBackendUpsertMs",
+          "entryType": "measure",
+          "startTime": 10039.699999988079,
+          "duration": 21.600000008940697,
+          "navigationId": 5199,
+          "detail": {
+            "sampleId": "cutBackendUpsertMs:334",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutBackendUpsertMs",
+              "origin": 1790062907320,
+              "start": 10039.699999988079,
+              "duration": 21.600000008940697
+            }
+          }
+        },
+        {
+          "name": "hvp.cutNativePrepareMs",
+          "entryType": "measure",
+          "startTime": 10061.5,
+          "duration": 11.699999988079071,
+          "navigationId": 5199,
+          "detail": {
+            "sampleId": "cutNativePrepareMs:342",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutNativePrepareMs",
+              "origin": 1790062907320,
+              "start": 10061.5,
+              "duration": 11.699999988079071
+            }
+          }
+        },
+        {
+          "name": "hvp.cutNativeCommitMs",
+          "entryType": "measure",
+          "startTime": 10073.199999988079,
+          "duration": 9.100000008940697,
+          "navigationId": 5199,
+          "detail": {
+            "sampleId": "cutNativeCommitMs:346",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutNativeCommitMs",
+              "origin": 1790062907320,
+              "start": 10073.199999988079,
+              "duration": 9.100000008940697
+            }
+          }
+        },
+        {
+          "name": "hvp.cutRootCommitMs",
+          "entryType": "measure",
+          "startTime": 10082.29999999702,
+          "duration": 0.09999999403953552,
+          "navigationId": 5199,
+          "detail": {
+            "sampleId": "cutRootCommitMs:347",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutRootCommitMs",
+              "origin": 1790062907320,
+              "start": 10082.29999999702,
+              "duration": 0.09999999403953552
+            }
+          }
+        },
+        {
+          "name": "hvp.cutPublishMs",
+          "entryType": "measure",
+          "startTime": 10082.39999999106,
+          "duration": 7.100000008940697,
+          "navigationId": 5199,
+          "detail": {
+            "sampleId": "cutPublishMs:348",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutPublishMs",
+              "origin": 1790062907320,
+              "start": 10082.39999999106,
+              "duration": 7.100000008940697
+            }
+          }
+        },
+        {
+          "name": "hvp.cutInputToAppliedMs",
+          "entryType": "measure",
+          "startTime": 9811.5,
+          "duration": 300.800048828125,
+          "navigationId": 5199,
+          "detail": {
+            "sampleId": "cutInputToAppliedMs:354",
+            "data": {
+              "commandId": "cut-1",
+              "inputOrigin": 1790062907320,
+              "inputStart": 9811.5,
+              "terminalOrigin": 1790062907320,
+              "terminalStart": 9824.5,
+              "terminalDuration": 287.79999999701977
+            }
+          }
+        },
+        {
+          "name": "hvp.cutFirstCommittedRenderSubmitMs",
+          "entryType": "measure",
+          "startTime": 9811.5,
+          "duration": 336.39990234375,
+          "navigationId": 5199,
+          "detail": {
+            "sampleId": "cutFirstCommittedRenderSubmitMs:357",
+            "data": {
+              "commandId": "cut-1",
+              "savedRevision": 1,
+              "savedDigest": "3480a8e8",
+              "nativeGeneration": 1,
+              "activeTerrainKeys": [
+                "hvp:terrain:s1:r0",
+                "hvp:terrain:s2:r0",
+                "hvp:terrain:s3:r0",
+                "hvp:terrain:s4:r0",
+                "hvp:terrain:s5:r0",
+                "hvp:terrain:s6:r0",
+                "hvp:terrain:s7:r0",
+                "hvp:terrain:s8:r0",
+                "hvp:terrain:s9:r0",
+                "hvp:terrain:s10:r0",
+                "hvp:terrain:s11:r0",
+                "hvp:terrain:s12:r0",
+                "hvp:terrain:s13:r0",
+                "hvp:terrain:s14:r0",
+                "hvp:terrain:s15:r0",
+                "hvp:terrain:s0:r1"
+              ],
+              "rootIdentityMatches": true,
+              "activeKeysMatch": true,
+              "visibleKeysMatch": true,
+              "nativeGenerationMatches": true,
+              "recoveryHold": false
+            }
+          }
+        },
+        {
+          "name": "hvp.cutTotalAppliedMs",
+          "entryType": "measure",
+          "startTime": 9824.5,
+          "duration": 287.79999999701977,
+          "navigationId": 5199,
+          "detail": {
+            "sampleId": "cutTotalAppliedMs:353",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutTotalAppliedMs",
+              "origin": 1790062907320,
+              "start": 9824.5,
+              "duration": 287.79999999701977
+            }
+          }
+        },
+        {
+          "name": "hvp.cutNativeFinalizeMs",
+          "entryType": "measure",
+          "startTime": 10089.59999999404,
+          "duration": 16.700000002980232,
+          "navigationId": 5199,
+          "detail": {
+            "sampleId": "cutNativeFinalizeMs:351",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutNativeFinalizeMs",
+              "origin": 1790062907320,
+              "start": 10089.59999999404,
+              "duration": 16.700000002980232
+            }
+          }
+        },
+        {
+          "name": "hvp.cutCleanupMs",
+          "entryType": "measure",
+          "startTime": 10106.29999999702,
+          "duration": 5.799999997019768,
+          "navigationId": 5199,
+          "detail": {
+            "sampleId": "cutCleanupMs:352",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutCleanupMs",
+              "origin": 1790062907320,
+              "start": 10106.29999999702,
+              "duration": 5.799999997019768
+            }
+          }
+        }
+      ],
+      "dropped": 0,
+      "testBridge": false
+    },
+    {
+      "attempt": 2,
+      "scenario": "quarry-box-first-cut",
+      "url": "http://127.0.0.1:5177/?hestiaPrototype=1&hvpMeasure=1",
+      "timeOrigin": 1790062917520.7,
+      "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36",
+      "viewport": [
+        1036,
+        766,
+        1.25
+      ],
+      "rootGeneration": 1,
+      "nativeGeneration": 1,
+      "nativeState": "Idle",
+      "tool": {
+        "mode": "Box 0,5 m",
+        "edges": 1,
+        "issued": 1,
+        "message": "Protected: top-only quarry depth exceeds 0.5m",
+        "state": "Applied",
+        "queued": 0,
+        "receipts": 1,
+        "last": {
+          "commandId": "cut-1",
+          "status": "Applied",
+          "removedCells": 50,
+          "reason": "Terrain and collision committed",
+          "revision": 1
+        },
+        "structural": {
+          "state": "Ready",
+          "issued": 0,
+          "last": null
+        },
+        "moving": {
+          "state": "Idle",
+          "last": null,
+          "issued": 0
+        }
+      },
+      "clock": {
+        "maxTimerGapMs": 32.20000000298023,
+        "maxAdvanceMs": 7.5999999940395355,
+        "maxHandlerMs": 1109.199999988079,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.7000000029802322,
+        "delayedCallbacks": [],
+        "lastTerrainRecipeMs": 0,
+        "lastTerrainCookMs": 0.3999999910593033,
+        "lastTerrainInstallMs": 0,
+        "lastTerrainHoldMs": 31.400000005960464,
+        "lastTerrainCommandId": "cut-1",
+        "timers": 1
+      },
+      "health": {
+        "enabled": true,
+        "samples": 360,
+        "errors": 0,
+        "dropped": 0,
+        "cutObservation": {
+          "status": "armed",
+          "drops": 0,
+          "disables": 0,
+          "inputCount": 0,
+          "pendingRender": false
+        }
+      },
+      "records": [
+        {
+          "name": "hvp.cutSubmittedMs",
+          "entryType": "measure",
+          "startTime": 9573.40000000596,
+          "duration": 0,
+          "navigationId": 7904,
+          "detail": {
+            "sampleId": "cutSubmittedMs:290",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutSubmittedMs",
+              "origin": 1790062917520.7,
+              "start": 9573.40000000596,
+              "duration": 0
+            }
+          }
+        },
+        {
+          "name": "hvp.cutQueueWaitMs",
+          "entryType": "measure",
+          "startTime": 9573.40000000596,
+          "duration": 0.09999999403953552,
+          "navigationId": 7904,
+          "detail": {
+            "sampleId": "cutQueueWaitMs:291",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutQueueWaitMs",
+              "origin": 1790062917520.7,
+              "start": 9573.40000000596,
+              "duration": 0.09999999403953552
+            }
+          }
+        },
+        {
+          "name": "hvp.cutRootPrepareMs",
+          "entryType": "measure",
+          "startTime": 9573.60000000894,
+          "duration": 0.20000000298023224,
+          "navigationId": 7904,
+          "detail": {
+            "sampleId": "cutRootPrepareMs:292",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutRootPrepareMs",
+              "origin": 1790062917520.7,
+              "start": 9573.60000000894,
+              "duration": 0.20000000298023224
+            }
+          }
+        },
+        {
+          "name": "hvp.cutCompileMs",
+          "entryType": "measure",
+          "startTime": 9573.90000000596,
+          "duration": 201.79999999701977,
+          "navigationId": 7904,
+          "detail": {
+            "sampleId": "cutCompileMs:327",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutCompileMs",
+              "origin": 1790062917520.7,
+              "start": 9573.90000000596,
+              "duration": 201.79999999701977
+            }
+          }
+        },
+        {
+          "name": "hvp.cutLookRegroupMs",
+          "entryType": "measure",
+          "startTime": 9775.70000000298,
+          "duration": 0.4000000059604645,
+          "navigationId": 7904,
+          "detail": {
+            "sampleId": "cutLookRegroupMs:328",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutLookRegroupMs",
+              "origin": 1790062917520.7,
+              "start": 9775.70000000298,
+              "duration": 0.4000000059604645
+            }
+          }
+        },
+        {
+          "name": "hvp.cutGraphicsStageMs",
+          "entryType": "measure",
+          "startTime": 9775.70000000298,
+          "duration": 47.20000000298023,
+          "navigationId": 7904,
+          "detail": {
+            "sampleId": "cutGraphicsStageMs:331",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutGraphicsStageMs",
+              "origin": 1790062917520.7,
+              "start": 9775.70000000298,
+              "duration": 47.20000000298023
+            }
+          }
+        },
+        {
+          "name": "hvp.cutArtifactCreateMs",
+          "entryType": "measure",
+          "startTime": 9776.20000000298,
+          "duration": 16.700000002980232,
+          "navigationId": 7904,
+          "detail": {
+            "sampleId": "cutArtifactCreateMs:329",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutArtifactCreateMs",
+              "origin": 1790062917520.7,
+              "start": 9776.20000000298,
+              "duration": 16.700000002980232
+            }
+          }
+        },
+        {
+          "name": "hvp.cutBackendUpsertMs",
+          "entryType": "measure",
+          "startTime": 9793,
+          "duration": 29.600000008940697,
+          "navigationId": 7904,
+          "detail": {
+            "sampleId": "cutBackendUpsertMs:330",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutBackendUpsertMs",
+              "origin": 1790062917520.7,
+              "start": 9793,
+              "duration": 29.600000008940697
+            }
+          }
+        },
+        {
+          "name": "hvp.cutNativePrepareMs",
+          "entryType": "measure",
+          "startTime": 9822.90000000596,
+          "duration": 12.400000005960464,
+          "navigationId": 7904,
+          "detail": {
+            "sampleId": "cutNativePrepareMs:339",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutNativePrepareMs",
+              "origin": 1790062917520.7,
+              "start": 9822.90000000596,
+              "duration": 12.400000005960464
+            }
+          }
+        },
+        {
+          "name": "hvp.cutNativeCommitMs",
+          "entryType": "measure",
+          "startTime": 9835.40000000596,
+          "duration": 12,
+          "navigationId": 7904,
+          "detail": {
+            "sampleId": "cutNativeCommitMs:342",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutNativeCommitMs",
+              "origin": 1790062917520.7,
+              "start": 9835.40000000596,
+              "duration": 12
+            }
+          }
+        },
+        {
+          "name": "hvp.cutRootCommitMs",
+          "entryType": "measure",
+          "startTime": 9847.40000000596,
+          "duration": 0,
+          "navigationId": 7904,
+          "detail": {
+            "sampleId": "cutRootCommitMs:343",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutRootCommitMs",
+              "origin": 1790062917520.7,
+              "start": 9847.40000000596,
+              "duration": 0
+            }
+          }
+        },
+        {
+          "name": "hvp.cutPublishMs",
+          "entryType": "measure",
+          "startTime": 9847.40000000596,
+          "duration": 7.299999997019768,
+          "navigationId": 7904,
+          "detail": {
+            "sampleId": "cutPublishMs:344",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutPublishMs",
+              "origin": 1790062917520.7,
+              "start": 9847.40000000596,
+              "duration": 7.299999997019768
+            }
+          }
+        },
+        {
+          "name": "hvp.cutInputToAppliedMs",
+          "entryType": "measure",
+          "startTime": 9559.60000000894,
+          "duration": 349.39990234375,
+          "navigationId": 7904,
+          "detail": {
+            "sampleId": "cutInputToAppliedMs:350",
+            "data": {
+              "commandId": "cut-1",
+              "inputOrigin": 1790062917520.7,
+              "inputStart": 9559.60000000894,
+              "terminalOrigin": 1790062917520.7,
+              "terminalStart": 9573.40000000596,
+              "terminalDuration": 335.59999999403954
+            }
+          }
+        },
+        {
+          "name": "hvp.cutFirstCommittedRenderSubmitMs",
+          "entryType": "measure",
+          "startTime": 9559.60000000894,
+          "duration": 379.199951171875,
+          "navigationId": 7904,
+          "detail": {
+            "sampleId": "cutFirstCommittedRenderSubmitMs:353",
+            "data": {
+              "commandId": "cut-1",
+              "savedRevision": 1,
+              "savedDigest": "3480a8e8",
+              "nativeGeneration": 1,
+              "activeTerrainKeys": [
+                "hvp:terrain:s1:r0",
+                "hvp:terrain:s2:r0",
+                "hvp:terrain:s3:r0",
+                "hvp:terrain:s4:r0",
+                "hvp:terrain:s5:r0",
+                "hvp:terrain:s6:r0",
+                "hvp:terrain:s7:r0",
+                "hvp:terrain:s8:r0",
+                "hvp:terrain:s9:r0",
+                "hvp:terrain:s10:r0",
+                "hvp:terrain:s11:r0",
+                "hvp:terrain:s12:r0",
+                "hvp:terrain:s13:r0",
+                "hvp:terrain:s14:r0",
+                "hvp:terrain:s15:r0",
+                "hvp:terrain:s0:r1"
+              ],
+              "rootIdentityMatches": true,
+              "activeKeysMatch": true,
+              "visibleKeysMatch": true,
+              "nativeGenerationMatches": true,
+              "recoveryHold": false
+            }
+          }
+        },
+        {
+          "name": "hvp.cutTotalAppliedMs",
+          "entryType": "measure",
+          "startTime": 9573.40000000596,
+          "duration": 335.59999999403954,
+          "navigationId": 7904,
+          "detail": {
+            "sampleId": "cutTotalAppliedMs:349",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutTotalAppliedMs",
+              "origin": 1790062917520.7,
+              "start": 9573.40000000596,
+              "duration": 335.59999999403954
+            }
+          }
+        },
+        {
+          "name": "hvp.cutNativeFinalizeMs",
+          "entryType": "measure",
+          "startTime": 9854.800000011921,
+          "duration": 43.19999998807907,
+          "navigationId": 7904,
+          "detail": {
+            "sampleId": "cutNativeFinalizeMs:347",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutNativeFinalizeMs",
+              "origin": 1790062917520.7,
+              "start": 9854.800000011921,
+              "duration": 43.19999998807907
+            }
+          }
+        },
+        {
+          "name": "hvp.cutCleanupMs",
+          "entryType": "measure",
+          "startTime": 9898.10000000894,
+          "duration": 10.899999991059303,
+          "navigationId": 7904,
+          "detail": {
+            "sampleId": "cutCleanupMs:348",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutCleanupMs",
+              "origin": 1790062917520.7,
+              "start": 9898.10000000894,
+              "duration": 10.899999991059303
+            }
+          }
+        }
+      ],
+      "dropped": 0,
+      "testBridge": false
+    },
+    {
+      "attempt": 3,
+      "scenario": "quarry-box-first-cut",
+      "url": "http://127.0.0.1:5177/?hestiaPrototype=1&hvpMeasure=1",
+      "timeOrigin": 1790062927544.4,
+      "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36",
+      "viewport": [
+        1536,
+        791,
+        1.25
+      ],
+      "rootGeneration": 1,
+      "nativeGeneration": 1,
+      "nativeState": "Idle",
+      "tool": {
+        "mode": "Box 0,5 m",
+        "edges": 1,
+        "issued": 1,
+        "message": "Protected: top-only quarry depth exceeds 0.5m",
+        "state": "Applied",
+        "queued": 0,
+        "receipts": 1,
+        "last": {
+          "commandId": "cut-1",
+          "status": "Applied",
+          "removedCells": 50,
+          "reason": "Terrain and collision committed",
+          "revision": 1
+        },
+        "structural": {
+          "state": "Ready",
+          "issued": 0,
+          "last": null
+        },
+        "moving": {
+          "state": "Idle",
+          "last": null,
+          "issued": 0
+        }
+      },
+      "clock": {
+        "maxTimerGapMs": 18.900000005960464,
+        "maxAdvanceMs": 17.200000002980232,
+        "maxHandlerMs": 1037.2000000029802,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.29999999701976776,
+        "delayedCallbacks": [],
+        "lastTerrainRecipeMs": 0,
+        "lastTerrainCookMs": 0.10000000894069672,
+        "lastTerrainInstallMs": 0,
+        "lastTerrainHoldMs": 15.599999994039536,
+        "lastTerrainCommandId": "cut-1",
+        "timers": 1
+      },
+      "health": {
+        "enabled": true,
+        "samples": 341,
+        "errors": 0,
+        "dropped": 0,
+        "cutObservation": {
+          "status": "armed",
+          "drops": 0,
+          "disables": 0,
+          "inputCount": 1,
+          "pendingRender": false
+        }
+      },
+      "records": [
+        {
+          "name": "hvp.cutSubmittedMs",
+          "entryType": "measure",
+          "startTime": 9739.29999999702,
+          "duration": 0,
+          "navigationId": 8392,
+          "detail": {
+            "sampleId": "cutSubmittedMs:303",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutSubmittedMs",
+              "origin": 1790062927544.4,
+              "start": 9739.29999999702,
+              "duration": 0
+            }
+          }
+        },
+        {
+          "name": "hvp.cutQueueWaitMs",
+          "entryType": "measure",
+          "startTime": 9739.29999999702,
+          "duration": 0.20000000298023224,
+          "navigationId": 8392,
+          "detail": {
+            "sampleId": "cutQueueWaitMs:304",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutQueueWaitMs",
+              "origin": 1790062927544.4,
+              "start": 9739.29999999702,
+              "duration": 0.20000000298023224
+            }
+          }
+        },
+        {
+          "name": "hvp.cutRootPrepareMs",
+          "entryType": "measure",
+          "startTime": 9739.5,
+          "duration": 0.29999999701976776,
+          "navigationId": 8392,
+          "detail": {
+            "sampleId": "cutRootPrepareMs:305",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutRootPrepareMs",
+              "origin": 1790062927544.4,
+              "start": 9739.5,
+              "duration": 0.29999999701976776
+            }
+          }
+        },
+        {
+          "name": "hvp.cutCompileMs",
+          "entryType": "measure",
+          "startTime": 9739.79999999702,
+          "duration": 190.70000000298023,
+          "navigationId": 8392,
+          "detail": {
+            "sampleId": "cutCompileMs:341",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutCompileMs",
+              "origin": 1790062927544.4,
+              "start": 9739.79999999702,
+              "duration": 190.70000000298023
+            }
+          }
+        },
+        {
+          "name": "hvp.cutLookRegroupMs",
+          "entryType": "measure",
+          "startTime": 9930.5,
+          "duration": 0.6000000089406967,
+          "navigationId": 8392,
+          "detail": {
+            "sampleId": "cutLookRegroupMs:342",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutLookRegroupMs",
+              "origin": 1790062927544.4,
+              "start": 9930.5,
+              "duration": 0.6000000089406967
+            }
+          }
+        },
+        {
+          "name": "hvp.cutGraphicsStageMs",
+          "entryType": "measure",
+          "startTime": 9930.5,
+          "duration": 24.700000002980232,
+          "navigationId": 8392,
+          "detail": {
+            "sampleId": "cutGraphicsStageMs:345",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutGraphicsStageMs",
+              "origin": 1790062927544.4,
+              "start": 9930.5,
+              "duration": 24.700000002980232
+            }
+          }
+        },
+        {
+          "name": "hvp.cutArtifactCreateMs",
+          "entryType": "measure",
+          "startTime": 9931.29999999702,
+          "duration": 8,
+          "navigationId": 8392,
+          "detail": {
+            "sampleId": "cutArtifactCreateMs:343",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutArtifactCreateMs",
+              "origin": 1790062927544.4,
+              "start": 9931.29999999702,
+              "duration": 8
+            }
+          }
+        },
+        {
+          "name": "hvp.cutBackendUpsertMs",
+          "entryType": "measure",
+          "startTime": 9939.29999999702,
+          "duration": 15.800000011920929,
+          "navigationId": 8392,
+          "detail": {
+            "sampleId": "cutBackendUpsertMs:344",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutBackendUpsertMs",
+              "origin": 1790062927544.4,
+              "start": 9939.29999999702,
+              "duration": 15.800000011920929
+            }
+          }
+        },
+        {
+          "name": "hvp.cutNativePrepareMs",
+          "entryType": "measure",
+          "startTime": 9955.29999999702,
+          "duration": 5.600000008940697,
+          "navigationId": 8392,
+          "detail": {
+            "sampleId": "cutNativePrepareMs:351",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutNativePrepareMs",
+              "origin": 1790062927544.4,
+              "start": 9955.29999999702,
+              "duration": 5.600000008940697
+            }
+          }
+        },
+        {
+          "name": "hvp.cutNativeCommitMs",
+          "entryType": "measure",
+          "startTime": 9960.90000000596,
+          "duration": 6.0999999940395355,
+          "navigationId": 8392,
+          "detail": {
+            "sampleId": "cutNativeCommitMs:354",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutNativeCommitMs",
+              "origin": 1790062927544.4,
+              "start": 9960.90000000596,
+              "duration": 6.0999999940395355
+            }
+          }
+        },
+        {
+          "name": "hvp.cutRootCommitMs",
+          "entryType": "measure",
+          "startTime": 9967,
+          "duration": 0,
+          "navigationId": 8392,
+          "detail": {
+            "sampleId": "cutRootCommitMs:355",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutRootCommitMs",
+              "origin": 1790062927544.4,
+              "start": 9967,
+              "duration": 0
+            }
+          }
+        },
+        {
+          "name": "hvp.cutPublishMs",
+          "entryType": "measure",
+          "startTime": 9967,
+          "duration": 4,
+          "navigationId": 8392,
+          "detail": {
+            "sampleId": "cutPublishMs:356",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutPublishMs",
+              "origin": 1790062927544.4,
+              "start": 9967,
+              "duration": 4
+            }
+          }
+        },
+        {
+          "name": "hvp.cutInputToAppliedMs",
+          "entryType": "measure",
+          "startTime": 9722.60000000894,
+          "duration": 254.300048828125,
+          "navigationId": 8392,
+          "detail": {
+            "sampleId": "cutInputToAppliedMs:360",
+            "data": {
+              "commandId": "cut-1",
+              "inputOrigin": 1790062927544.4,
+              "inputStart": 9722.60000000894,
+              "terminalOrigin": 1790062927544.4,
+              "terminalStart": 9739.29999999702,
+              "terminalDuration": 237.6000000089407
+            }
+          }
+        },
+        {
+          "name": "hvp.cutTotalAppliedMs",
+          "entryType": "measure",
+          "startTime": 9739.29999999702,
+          "duration": 237.6000000089407,
+          "navigationId": 8392,
+          "detail": {
+            "sampleId": "cutTotalAppliedMs:359",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutTotalAppliedMs",
+              "origin": 1790062927544.4,
+              "start": 9739.29999999702,
+              "duration": 237.6000000089407
+            }
+          }
+        },
+        {
+          "name": "hvp.cutNativeFinalizeMs",
+          "entryType": "measure",
+          "startTime": 9971,
+          "duration": 1.2000000029802322,
+          "navigationId": 8392,
+          "detail": {
+            "sampleId": "cutNativeFinalizeMs:357",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutNativeFinalizeMs",
+              "origin": 1790062927544.4,
+              "start": 9971,
+              "duration": 1.2000000029802322
+            }
+          }
+        },
+        {
+          "name": "hvp.cutCleanupMs",
+          "entryType": "measure",
+          "startTime": 9972.20000000298,
+          "duration": 4.5999999940395355,
+          "navigationId": 8392,
+          "detail": {
+            "sampleId": "cutCleanupMs:358",
+            "data": {
+              "commandId": "cut-1",
+              "thread": "main",
+              "phase": "cutCleanupMs",
+              "origin": 1790062927544.4,
+              "start": 9972.20000000298,
+              "duration": 4.5999999940395355
+            }
+          }
+        },
+        {
+          "name": "hvp.cutFirstCommittedRenderSubmitMs",
+          "entryType": "measure",
+          "startTime": 9722.60000000894,
+          "duration": 275.099853515625,
+          "navigationId": 8392,
+          "detail": {
+            "sampleId": "cutFirstCommittedRenderSubmitMs:363",
+            "data": {
+              "commandId": "cut-1",
+              "savedRevision": 1,
+              "savedDigest": "3480a8e8",
+              "nativeGeneration": 1,
+              "activeTerrainKeys": [
+                "hvp:terrain:s1:r0",
+                "hvp:terrain:s2:r0",
+                "hvp:terrain:s3:r0",
+                "hvp:terrain:s4:r0",
+                "hvp:terrain:s5:r0",
+                "hvp:terrain:s6:r0",
+                "hvp:terrain:s7:r0",
+                "hvp:terrain:s8:r0",
+                "hvp:terrain:s9:r0",
+                "hvp:terrain:s10:r0",
+                "hvp:terrain:s11:r0",
+                "hvp:terrain:s12:r0",
+                "hvp:terrain:s13:r0",
+                "hvp:terrain:s14:r0",
+                "hvp:terrain:s15:r0",
+                "hvp:terrain:s0:r1"
+              ],
+              "rootIdentityMatches": true,
+              "activeKeysMatch": true,
+              "visibleKeysMatch": true,
+              "nativeGenerationMatches": true,
+              "recoveryHold": false
+            }
+          }
+        }
+      ],
+      "dropped": 0,
+      "testBridge": false
+    }
+  ]
+}

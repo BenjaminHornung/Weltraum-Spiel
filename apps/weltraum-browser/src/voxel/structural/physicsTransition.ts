@@ -216,7 +216,7 @@ const quantumKey = (x: number, y: number, z: number): string => `${x},${y},${z}`
  * Seed ist immer die kleinste freie Zelle (x, y, z); Expansion x, dann y,
  * dann z. Abdeckung wird per Zellvolumen gegen die Eingabemenge geprueft.
  */
-const mergeGreedyQuantumBoxes = (
+export const mergeGreedyQuantumBoxes = (
   cells: readonly (Readonly<{ x: number; y: number; z: number }>)[],
   path: string
 ): readonly QuantumBox[] => {

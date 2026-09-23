@@ -1,0 +1,1895 @@
+{
+  "classification": "diagnostic",
+  "variant": {
+    "id": "quarry-box",
+    "scenario": "quarry",
+    "mode": 2,
+    "motion": "static"
+  },
+  "temperature": "cold",
+  "session": 1,
+  "schedule": [
+    1
+  ],
+  "attempts": 1,
+  "fixturePolicy": "Authentic normal-UI checkpoint; new document/workers each attempt. Warm: one unmeasured cut then normal hot restore. Moving: actual contact impulse, not a falling-body substitute.",
+  "timeoutMs": 30000,
+  "width": 1280,
+  "height": 720,
+  "dpr": 1,
+  "trace": false,
+  "screenshots": false,
+  "video": false,
+  "head": "9341fb906383515057e659a99e16a381632f2bea",
+  "dirty": "M apps/weltraum-browser/src/hestia-prototype/persistence/gameCheckpoint.ts\n M apps/weltraum-browser/src/hestia-prototype/physics/client.ts\n M apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts\n M apps/weltraum-browser/src/hestia-prototype/physics/rigidRecipe.ts\n M apps/weltraum-browser/src/hestia-prototype/physics/session.ts\n M apps/weltraum-browser/src/hestia-prototype/physics/terrainFragment.ts\n M apps/weltraum-browser/src/hestia-prototype/presentation/visualEffects.ts\n M apps/weltraum-browser/src/hestia-prototype/terrain/bodyCutConsumer.ts\n M apps/weltraum-browser/src/hestia-prototype/terrain/cutPlan.ts\n M apps/weltraum-browser/src/hestia-prototype/terrain/structuralIngest.ts\n M apps/weltraum-browser/src/hestia-prototype/terrain/supportPlan.ts\n M apps/weltraum-browser/src/hestia-prototype/terrain/terrainConsumer.ts\n M apps/weltraum-browser/src/hestia-prototype/terrain/terrainProducts.ts\n M apps/weltraum-browser/src/hvp/hvpBootstrap.ts\n M apps/weltraum-browser/src/voxel/adaptive/canonical.ts\n M apps/weltraum-browser/src/voxel/adaptive/materialization.ts\n M apps/weltraum-browser/src/voxel/structural/physicsTransition.ts\n M apps/weltraum-browser/src/workers/hvpBodyCutJob.ts\n M apps/weltraum-browser/src/workers/hvpSupportJob.ts\n M apps/weltraum-browser/tests/e2e/hvp-visible-coast.spec.ts\n M apps/weltraum-browser/tests/unit/adaptiveMicrovoxelMaterialization.test.ts\n M apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts\n M apps/weltraum-browser/tests/unit/hvp-game-save.test.ts\n M apps/weltraum-browser/tests/unit/hvp-moving-consumer.test.ts\n M apps/weltraum-browser/tests/unit/hvp-physics.test.ts\n M apps/weltraum-browser/tests/unit/hvp-residency-session.test.ts\n M apps/weltraum-browser/tests/unit/hvp-terrain-consumer.test.ts\n M apps/weltraum-browser/tests/unit/hvp-terrain-fragment-world.test.ts\n M apps/weltraum-browser/tests/unit/hvp-terrain-support.test.ts\n M apps/weltraum-browser/tests/unit/hvp-visual-effects.test.ts\n M apps/weltraum-browser/tests/unit/hvp-world-save.test.ts\n M apps/weltraum-browser/tests/unit/workerPoolLifecycle.test.ts\n?? apps/weltraum-browser/src/core/fnv1a64.ts\n?? apps/weltraum-browser/src/hestia-prototype/presentation/shadowRevision.ts\n?? apps/weltraum-browser/src/hestia-prototype/presentation/synchronousBatch.ts\n?? apps/weltraum-browser/src/hestia-prototype/runtime/cutTrace.ts\n?? apps/weltraum-browser/src/workers/hvpBodyCutWire.ts\n?? apps/weltraum-browser/src/workers/hvpBoundedPump.ts\n?? apps/weltraum-browser/tests/performance/hvp-cut-rt.spec.ts\n?? apps/weltraum-browser/tests/performance/hvpCutRtReport.ts\n?? apps/weltraum-browser/tests/unit/hvp-physics-worker-clock.test.ts\n?? apps/weltraum-browser/tests/unit/hvp-structural-ingest-trace.test.ts\n?? apps/weltraum-browser/tests/unit/hvp-transferred-recipe.test.ts\n?? apps/weltraum-browser/tests/unit/hvpAdaptiveEditRaster.test.ts\n?? apps/weltraum-browser/tests/unit/hvpAdaptiveFnv64.test.ts\n?? apps/weltraum-browser/tests/unit/hvpBodyCutWire.test.ts\n?? apps/weltraum-browser/tests/unit/hvpBoundedPump.test.ts\n?? apps/weltraum-browser/tests/unit/hvpCutRtReport.test.ts\n?? apps/weltraum-browser/tests/unit/hvpCutTrace.test.ts\n?? apps/weltraum-browser/tests/unit/hvpPresentationBatch.test.ts\n?? apps/weltraum-browser/tests/unit/hvpShadowRevision.test.ts\n?? docs/research/hvp-cut-rt/",
+  "source": [
+    {
+      "path": "src/browser-storage/canonical.ts",
+      "sha256": "c056e49f697b112f1301728862e42e5343e45c88f865c43d6ccad1a158eab7f7"
+    },
+    {
+      "path": "src/browser-storage/checksum.ts",
+      "sha256": "2c0207a5fb8b670d298408106d39c8e93ec23b985c470f708d9bc06f3953d438"
+    },
+    {
+      "path": "src/browser-storage/codec.ts",
+      "sha256": "679582c4f268fb01e163ee4fbf8fdefed21054ee2bbe65878d9773159ea53b62"
+    },
+    {
+      "path": "src/browser-storage/errors.ts",
+      "sha256": "a2d300b03aa8c9f434a71d0d49deb287be26cf0150c7b3fd82e8930d37b6e0b3"
+    },
+    {
+      "path": "src/browser-storage/exportImport.ts",
+      "sha256": "c1b48641c3c42ed7eca8a208a94d15d46e80cd2e0dbdb4c2752f3ed12c64c0a2"
+    },
+    {
+      "path": "src/browser-storage/ids.ts",
+      "sha256": "77e120df477bbe60ddc4890cbf27bfd76869a33f5b6b3c5bffd668f516d1db95"
+    },
+    {
+      "path": "src/browser-storage/index.ts",
+      "sha256": "24b84265f91b08d24cdd82ca91f882bc5cf360f22610bed607d7083c9710a30c"
+    },
+    {
+      "path": "src/browser-storage/indexedDbSaveRepository.ts",
+      "sha256": "f89469e23b132b099f91d263ae283d2f5f19b34007840ecaf812cac27f03cfc9"
+    },
+    {
+      "path": "src/browser-storage/memorySaveRepository.ts",
+      "sha256": "3d4b7f106152a9a998d4902c6fd1514802f16b8c4f2737ca064fca1635349657"
+    },
+    {
+      "path": "src/browser-storage/saveRepository.ts",
+      "sha256": "53e685fb6f0d917ee1e1db8a8a8fcac3487bb3139631bba9be7bf4f18c56802e"
+    },
+    {
+      "path": "src/browser-storage/saveWriteRequest.ts",
+      "sha256": "6cb4c6daabfc407cb84eccc72f67d0674254893d1d7b7bc30a93312228b0cc6d"
+    },
+    {
+      "path": "src/browser-storage/types.ts",
+      "sha256": "2026a5fdf7060314cab9290c7bc5592029d02bd2fefd58ab4f160357973cf6ce"
+    },
+    {
+      "path": "src/celestial/canonical.ts",
+      "sha256": "20b5d53ffab98ab87f8ab19db730d381db7ceba4028a8c26b50b61e89bd9bf4a"
+    },
+    {
+      "path": "src/celestial/catalog.ts",
+      "sha256": "d06073a382dbfb57123566c95a0bd32bbcb009491cb11b29464e72fd506b184e"
+    },
+    {
+      "path": "src/celestial/ephemeris.ts",
+      "sha256": "4d5e971d8f027f21dbbaaf78ca234ab7db3db325a39c226c45040f3779567143"
+    },
+    {
+      "path": "src/celestial/errors.ts",
+      "sha256": "6a3af7a96d0a11a6271a9d4a088f622abb34fc69f79ea981153b2e8486ae5524"
+    },
+    {
+      "path": "src/celestial/gravity.ts",
+      "sha256": "ed15d92cfda0de9929c376c8164276544798b7249acb56625ec7ec8d4280b632"
+    },
+    {
+      "path": "src/celestial/ids.ts",
+      "sha256": "67d674f7ca89569a175185ae3c38ce2a1092e06d9e534e7feaa93740a327fbe9"
+    },
+    {
+      "path": "src/celestial/index.ts",
+      "sha256": "bded43c30782f7cebf814db7e7cca3c3ccde22fe344d3d0739eed079f13427d5"
+    },
+    {
+      "path": "src/celestial/kepler.ts",
+      "sha256": "4f9176810c9bbf22b12b781b45684b09b2afdf66cdfa65919c6f5c8918f0d5dd"
+    },
+    {
+      "path": "src/celestial/starterSystem.ts",
+      "sha256": "d6a1bff618e4b47ebedbff9c69aa4f283caa14e604fac182ddb8b16c99e9da43"
+    },
+    {
+      "path": "src/celestial/types.ts",
+      "sha256": "a32286f52c579016c3b73e1e00b3dbc9a08a588e7c1f7ed3d6fe36a2b03a82a0"
+    },
+    {
+      "path": "src/celestial/validation.ts",
+      "sha256": "19e52d974efd95c892d02cf3f24fd18711e263369af17bd26a19150a077d0bf8"
+    },
+    {
+      "path": "src/combat/contracts.ts",
+      "sha256": "3345ae6f6918ac4558fa71d33e292e93812de113389010697f92e89e36fec812"
+    },
+    {
+      "path": "src/combat/damage.ts",
+      "sha256": "1c2a834c2dd9e47b4f4545a0cc94c8d70d93d8b4f217542a2720baf8d5a5e0c1"
+    },
+    {
+      "path": "src/combat/events.ts",
+      "sha256": "fe01029b618e905f79cc6ac5348922bc88b45808baa383c3b052cfb048cae34a"
+    },
+    {
+      "path": "src/combat/fireControl.ts",
+      "sha256": "ee28a555cfde812aeaf7e221f07bcc4dc3b9e3cc71b88edd9fc27c8137362c86"
+    },
+    {
+      "path": "src/combat/fixtures.ts",
+      "sha256": "f4edfba11df1195b8b325aea6a13332e08bc79e4c401605a223ed23440398fb0"
+    },
+    {
+      "path": "src/combat/hitResolution.ts",
+      "sha256": "4e4610b6b6fd9e1b64f0b645c37c7c49371f5e18b54889f3d15b5be412e45155"
+    },
+    {
+      "path": "src/combat/index.ts",
+      "sha256": "31d275d400fb814ebf65021e80734c2dafab99897259675acacddfd9e85098a4"
+    },
+    {
+      "path": "src/core/fnv1a64.ts",
+      "sha256": "35557616c13a1c04be10df8f1d777bc777db021c4b8a9f3ef61bacd01edd2def"
+    },
+    {
+      "path": "src/core/hash.ts",
+      "sha256": "7514fc507d6c83404462d967ff4736790abf6425842b676cefedc4928a2febee"
+    },
+    {
+      "path": "src/core/index.ts",
+      "sha256": "c7d8f9b37295d7ad81ee475aaaf996d657387e98da6a44fa47410798b64a5a24"
+    },
+    {
+      "path": "src/core/types.ts",
+      "sha256": "8fc3f0d509255c336c3db74813bd7fd429c7420aee0ee23f20fa643b541f8560"
+    },
+    {
+      "path": "src/core/vector.ts",
+      "sha256": "bcd1ce4c43a5a79f82f4410c16e528a3b4a2794dd6526a5f7c9393c10d068ad9"
+    },
+    {
+      "path": "src/diagnostics/performance/canonical.ts",
+      "sha256": "d8a044549ec4d1025707c884e7e6616fcb17d8fea822152b52d32827a9886e64"
+    },
+    {
+      "path": "src/diagnostics/performance/counters.ts",
+      "sha256": "719c33d12f6cfc6f0504bc085d1c5bea254573e0d1eebd28b6b63958802544b5"
+    },
+    {
+      "path": "src/diagnostics/performance/index.ts",
+      "sha256": "7c54b6dd430609eab42159a6bc0c83b8c5b694c0b646b97204064148087e056e"
+    },
+    {
+      "path": "src/diagnostics/performance/snapshots.ts",
+      "sha256": "05936111ea47db8c37115ecc7eca612f2a988a36ff1d6468d8615dfc015c0bf4"
+    },
+    {
+      "path": "src/diagnostics/performance/streamingProjection.ts",
+      "sha256": "fbe2e03a66324d9f04acf7e933086e5da808d23fc4a7ec5a2c81851aaa750122"
+    },
+    {
+      "path": "src/diagnostics/performance/timing.ts",
+      "sha256": "9ce05e7bcf72dc85446d38747473d364fdeaa73d023d4331dd6f2fd34366bbd4"
+    },
+    {
+      "path": "src/diagnostics/performance/types.ts",
+      "sha256": "7e30176a00a01de7dfa1da18624a002b46669fc2adbbb727f1a57f66a5d59751"
+    },
+    {
+      "path": "src/flight/executor.ts",
+      "sha256": "c12162bbe82bb2428393bb62a59575f2eeb566466ba4e6b01501f8b2590f638e"
+    },
+    {
+      "path": "src/flight/flightController.ts",
+      "sha256": "a7750db322dd7223e524bc0d3c148bde458f613f13b41e95435071c6daff3a5f"
+    },
+    {
+      "path": "src/flight/propulsionCapability.ts",
+      "sha256": "4f7b29a4b5445556ce4de2e6df45f3ac7634fea8c63c30c4dc8e442094cd4c5d"
+    },
+    {
+      "path": "src/flight/state.ts",
+      "sha256": "77e0df10378dd2637c8c6b459a59807dca9fee17fa65145b9c0ac338bc8732fe"
+    },
+    {
+      "path": "src/flight/transitPolicies.ts",
+      "sha256": "3ddc82ea840c268ec4861d58eb4b96e67d63c6c3bf6fe2f69ebc3e811ea3b086"
+    },
+    {
+      "path": "src/hestia-prototype/gameplay/salvageLoop.ts",
+      "sha256": "97f9a1cab8c6c6c8476433ba685f98a303cd9a6f7faf3670ca27aa9e1fbcfc95"
+    },
+    {
+      "path": "src/hestia-prototype/persistence/bodyCheckpoint.ts",
+      "sha256": "5551c4d4e3e509541248db69cb8ef23987eeb52620bc2009e83e728f1f010edf"
+    },
+    {
+      "path": "src/hestia-prototype/persistence/gameCheckpoint.ts",
+      "sha256": "874cf349d65fbbe6268644e981014fcc69bb4197c751c160afaaea3861da85da"
+    },
+    {
+      "path": "src/hestia-prototype/persistence/gridCheckpoint.ts",
+      "sha256": "9d301a76c351b263d40280b1cf6b3897376ac00b4a785fd8537817e9890d861c"
+    },
+    {
+      "path": "src/hestia-prototype/persistence/plantCheckpoint.ts",
+      "sha256": "78df5a1d7329b0fe7ab2c3709ee4e89da1ce04695486891b00410c41b424806e"
+    },
+    {
+      "path": "src/hestia-prototype/persistence/receiptCheckpoint.ts",
+      "sha256": "7f98d5b1c0bc8a339ddb9247dd4927ed6e6b750bd13f6cd2cedf67aeb25ffc43"
+    },
+    {
+      "path": "src/hestia-prototype/persistence/saveStore.ts",
+      "sha256": "3bc2e7c043b21f491b53082929652f7da3940dfe64003b92182c9435806094c7"
+    },
+    {
+      "path": "src/hestia-prototype/persistence/sceneReplacement.ts",
+      "sha256": "91ffd8be5c64dd090f9761f3a656681c170ce7b4d9ac7a918e05d00f0759518b"
+    },
+    {
+      "path": "src/hestia-prototype/persistence/worldCheckpoint.ts",
+      "sha256": "7c066fa278c124d2080acfff6a5316ec6434c08c446f44946192bce9f58f0664"
+    },
+    {
+      "path": "src/hestia-prototype/physics/bodyCut.ts",
+      "sha256": "ccd159e11454762bf0a9e489ae32d84ae7d656abce17db13b32488741d41694b"
+    },
+    {
+      "path": "src/hestia-prototype/physics/bodyCutPlan.ts",
+      "sha256": "0cfd5a4506877b3622cbfc54cc73eea1d1bf343b6fd297025b40372c73fa867b"
+    },
+    {
+      "path": "src/hestia-prototype/physics/bodyCutSession.ts",
+      "sha256": "b7c68b53ea779b60413ac0e9634a022839615a0e630af1c84b95a35123ed0dd5"
+    },
+    {
+      "path": "src/hestia-prototype/physics/bodyResidency.ts",
+      "sha256": "4574d59829de7318027b575c5db89f7d664804c91456b7e8c0c81645a2d26748"
+    },
+    {
+      "path": "src/hestia-prototype/physics/branchSession.ts",
+      "sha256": "bc63da558737f7f769b18f656d3d95e0eb2686f083ec1140f8918df3a52a3f11"
+    },
+    {
+      "path": "src/hestia-prototype/physics/client.ts",
+      "sha256": "c84410fa78a8ffad7f847192e363497da90835102d763510a5bb2955ca81793d"
+    },
+    {
+      "path": "src/hestia-prototype/physics/neighborRegion.ts",
+      "sha256": "c7bc8adc578f6c60e9895f7a037d9420bdb849073d14432e45e7fb8acc8451cf"
+    },
+    {
+      "path": "src/hestia-prototype/physics/physicsWorker.ts",
+      "sha256": "9bf936191eceab38d997531c2aa1ab7446667e29bc255c3f0f09e75cf1d3b7c9"
+    },
+    {
+      "path": "src/hestia-prototype/physics/principalAxes.ts",
+      "sha256": "1bb86622963aa903302f00de4c8bfc17b63a315698c18535d7f76c98c0dd4710"
+    },
+    {
+      "path": "src/hestia-prototype/physics/profile.ts",
+      "sha256": "128820a0ef2554ea72fd6bd1d4d417a507d83c90f40e8e28f0a1cf8088f3fa1c"
+    },
+    {
+      "path": "src/hestia-prototype/physics/rapierPort.ts",
+      "sha256": "01249a406183d783e0d1b9e97a842a8c5444af72e17121ecd17f5d64780f049e"
+    },
+    {
+      "path": "src/hestia-prototype/physics/restoreBody.ts",
+      "sha256": "952c12dd32e325e0de3a7855012efae6a62db3a4c100e04079462ee5dd20e44d"
+    },
+    {
+      "path": "src/hestia-prototype/physics/rigidBody.ts",
+      "sha256": "e0ee72e6f96a0175d0a88241cf2bf82db9c3c9a4bbc8abb0fc56acb810408c7e"
+    },
+    {
+      "path": "src/hestia-prototype/physics/rigidRecipe.ts",
+      "sha256": "75f4b24dc96ad0b42609400079fb1c14f21da123ee4b21e9c1a7d9f47d1b3f14"
+    },
+    {
+      "path": "src/hestia-prototype/physics/session.ts",
+      "sha256": "aade61812de8d3cbdc30ca309f47c0724eda4a768a34199f18b8f04c4a80f035"
+    },
+    {
+      "path": "src/hestia-prototype/physics/structuralBreak.ts",
+      "sha256": "dbe340e839929ccd84b5081a78b8e5c85b4fcaadfcfe5aae08fcd248ed689e34"
+    },
+    {
+      "path": "src/hestia-prototype/physics/structuralPlan.ts",
+      "sha256": "abff84d422aa518bf2e96957bf5e3fead935f7a86f25ebbde45aeed6610c2900"
+    },
+    {
+      "path": "src/hestia-prototype/physics/terrainColliders.ts",
+      "sha256": "6aca34326bb8e93002b6d8863bbb13b14679911d812660f774a79c6725252e58"
+    },
+    {
+      "path": "src/hestia-prototype/physics/terrainFragment.ts",
+      "sha256": "04e64c654465c9dbf8ca1b2afc4f4dd93f5335924ed8fee184d2c0db26b5a622"
+    },
+    {
+      "path": "src/hestia-prototype/physics/tick.ts",
+      "sha256": "5dfb07ec90136f55ee771d941d97837fc53caa4c17bb7c7047263cf5d55e83b2"
+    },
+    {
+      "path": "src/hestia-prototype/physics/worldReplacement.ts",
+      "sha256": "334d33a970b7b200ebdadffeaae4843fce4d83d0beb31728b7b70f4a3a5c7a47"
+    },
+    {
+      "path": "src/hestia-prototype/player/input.ts",
+      "sha256": "279ca6184a84a1376eb0a0a3a610a336457a7e9374c44bd3397ca49ece651889"
+    },
+    {
+      "path": "src/hestia-prototype/player/locomotion.ts",
+      "sha256": "e93ac325dec2c5c6661fd6a2a22e57807aca2b99dd6fab387ead84fb7496bd59"
+    },
+    {
+      "path": "src/hestia-prototype/player/presentation.ts",
+      "sha256": "dc26489be8d6139d2ed97d5b284d54d4aae46db8a44d8dc510158ea929f254f2"
+    },
+    {
+      "path": "src/hestia-prototype/presentation/look.ts",
+      "sha256": "1c058c73d4313b6da757b341f6dad66173d73332d169d7dbe04710b96c0219ea"
+    },
+    {
+      "path": "src/hestia-prototype/presentation/salvageMarker.ts",
+      "sha256": "f1a229af9cb680d30841244511dcb0a7a280f17bf95b0d608c0b0a74d725d48e"
+    },
+    {
+      "path": "src/hestia-prototype/presentation/shadowRevision.ts",
+      "sha256": "3dfa4691249b74360223602283828301b624f001111541bb41ef1934ee844316"
+    },
+    {
+      "path": "src/hestia-prototype/presentation/structuralPart.ts",
+      "sha256": "ef4c9320c10d8415811306e777f9ee45cc7f94309318cd0b1279ab9b8242b159"
+    },
+    {
+      "path": "src/hestia-prototype/presentation/synchronousBatch.ts",
+      "sha256": "5656b59685478c52ee69be7c3c2285415368d52d6345ea45267fc96f51dc6052"
+    },
+    {
+      "path": "src/hestia-prototype/presentation/terrainFragment.ts",
+      "sha256": "671fb6c89b7ca7a2ac267b59978a2e174cd6c764511a2bd38ad9509aeeb2adc0"
+    },
+    {
+      "path": "src/hestia-prototype/presentation/vegetation.ts",
+      "sha256": "64806d7f77d6e562c8f1a36e7fb313c6353acca04d05331063af3773a519e1ae"
+    },
+    {
+      "path": "src/hestia-prototype/presentation/visualEffects.ts",
+      "sha256": "b8ec73f1d9693f39c224ef1fb2daab0f3cb05a99bd9a2257bbd6334bf77d8041"
+    },
+    {
+      "path": "src/hestia-prototype/runtime/cutTrace.ts",
+      "sha256": "826924a12e60ebbc26ad1823b6c02417d8973e92a421b5c8e5ca3b246496ef06"
+    },
+    {
+      "path": "src/hestia-prototype/runtime/dormancyController.ts",
+      "sha256": "1bb4d7e2aae0b4a81fe2ce9d2d986c3c28fad705f34259007405a7270eadb936"
+    },
+    {
+      "path": "src/hestia-prototype/runtime/listeners.ts",
+      "sha256": "c4c5629dc125169435a9b5b7d1d6e5790b768f9a6ce4d19d64fc13456c654234"
+    },
+    {
+      "path": "src/hestia-prototype/runtime/measurements.ts",
+      "sha256": "fcb038f12bd516c90aa1b491633eb1be991203a34033020dc8358b09beba6d62"
+    },
+    {
+      "path": "src/hestia-prototype/runtime/neighborController.ts",
+      "sha256": "42b04eadb7f7c05858f53290da6392097be844af98636f403efcc69ecf612402"
+    },
+    {
+      "path": "src/hestia-prototype/runtime/neighborProducts.ts",
+      "sha256": "1082427a14b1e8c0baecaa563c182f010d818c6c65927ca1da4386a8dedd811b"
+    },
+    {
+      "path": "src/hestia-prototype/runtime/projectionPacket.ts",
+      "sha256": "577e92ca5ced96f9add2c9f6a7e1b2eebd82ba10c480f67889845e5d721008de"
+    },
+    {
+      "path": "src/hestia-prototype/runtime/regionSource.ts",
+      "sha256": "c77bb40362c522582df4db7f1b997ee66d96b75a8fc4b1000c975d8eaa3f02bc"
+    },
+    {
+      "path": "src/hestia-prototype/runtime/residency.ts",
+      "sha256": "1189618a259abeb57b90aa979aa0d0694521c01d1fb1dfecc8aa8e63937f8f8e"
+    },
+    {
+      "path": "src/hestia-prototype/terrain/bodyCutConsumer.ts",
+      "sha256": "55930f3abb65736646c7d7267d6bab879e04526bd934bf315ab123c711e57449"
+    },
+    {
+      "path": "src/hestia-prototype/terrain/cutPlan.ts",
+      "sha256": "21c20bc764a034bad485a212234b8b3172e52b37dd41332c53ecb08e8d712296"
+    },
+    {
+      "path": "src/hestia-prototype/terrain/picking.ts",
+      "sha256": "5d147db11f5ad53ceab20b7865f972570389836478378062afd6d1c0f5f1ae90"
+    },
+    {
+      "path": "src/hestia-prototype/terrain/plasmaTool.ts",
+      "sha256": "340ec6678da1ede6742b09a9ddc7e1e0bfe4ed06174d3150b4592494a3ef6b99"
+    },
+    {
+      "path": "src/hestia-prototype/terrain/structuralConsumer.ts",
+      "sha256": "ba292e2f78960375ece5a873ce3c06b04a93036326c5138d50dcacdbae6ae87f"
+    },
+    {
+      "path": "src/hestia-prototype/terrain/structuralIngest.ts",
+      "sha256": "8666c0d55733c202ec00348079b31ddb220c31b597ad3ad13d3b35ed141348b4"
+    },
+    {
+      "path": "src/hestia-prototype/terrain/supportPlan.ts",
+      "sha256": "6713f4961f7253980bbec96ba9c42e442964ac8249eb3ceb41682aee19cc1055"
+    },
+    {
+      "path": "src/hestia-prototype/terrain/terrainConsumer.ts",
+      "sha256": "9a59bbb24a5cbe24107da34a50e6bab2209872c93aa105e3b6cad9764c9bef5d"
+    },
+    {
+      "path": "src/hestia-prototype/terrain/terrainProducts.ts",
+      "sha256": "be1c84184ba846f31a1c2ea53dbc2d3d9d9e8bd4a9bb39d84de4dd2353b23410"
+    },
+    {
+      "path": "src/hestia-prototype/terrain/terrainTransfer.ts",
+      "sha256": "cbf52a6b8a21ec4cc3ec7c847e7f32b41fdb233a712fb6c3d512a57b9b64633a"
+    },
+    {
+      "path": "src/hvp/hvpBootstrap.ts",
+      "sha256": "cf44499856878fb0d9ffa46d72c4d9157e977cef106c0edcb8ad833e0768e139"
+    },
+    {
+      "path": "src/hvp/hvpCamera.ts",
+      "sha256": "b7bec67081a4ec0a9a532cc6b4dbc929fd0be56dd5367a965c66891ae487bf56"
+    },
+    {
+      "path": "src/hvp/hvpCoastMesher.ts",
+      "sha256": "b41750395c78426e2c8b75325af91c72c01b7e2342607c60fae7fdf1c868503c"
+    },
+    {
+      "path": "src/hvp/hvpCoastSource.ts",
+      "sha256": "c13e3107a542b402faf342befb479e6bf74d94730b16c4caf73d1f911fad8be4"
+    },
+    {
+      "path": "src/hvp/hvpHud.ts",
+      "sha256": "2e89c73b3749ec7d539ff3656cc233cc22eb774947f4bc19ab67d0e85ef3f699"
+    },
+    {
+      "path": "src/hvp/hvpQuery.ts",
+      "sha256": "30f9acfa22d4cfca6e616fa3de4393dfe3033b624c88e191c75684c6877f995a"
+    },
+    {
+      "path": "src/hvp/hvpTerrain.ts",
+      "sha256": "93019417d3f022ead0ee3f9bf42eefce6e249fe135fa61916424d78b19ba1a11"
+    },
+    {
+      "path": "src/hvp/index.ts",
+      "sha256": "91547d248ccdaab6ea9ec42e4514ad5b87dd53fcf11c3fe71c7172621c742470"
+    },
+    {
+      "path": "src/main.ts",
+      "sha256": "849ae778181b83ed650983a2a2f7aca03c2d6a584b099f0c84774e0007e01704"
+    },
+    {
+      "path": "src/missions/core.ts",
+      "sha256": "5fcc6139c2385ec2c4698bbed7d9c6386718d469bb88d28ea86d89730cbb9c44"
+    },
+    {
+      "path": "src/missions/fixtures.ts",
+      "sha256": "9699f57a09286cf7fc17a78a2a6da054e617038fdf8fd2d626b64932e8244408"
+    },
+    {
+      "path": "src/missions/index.ts",
+      "sha256": "6ce8c3045598a0a69b55114cfb714ff2f13e876b11bc5e884a7c8c7387d181d2"
+    },
+    {
+      "path": "src/missions/types.ts",
+      "sha256": "041a4296980f1a1031235dac288dd0e91a3be4ef8046502fa4f192fcebe2b7fc"
+    },
+    {
+      "path": "src/missions/validation.ts",
+      "sha256": "8161855ecc5c7efcf4da46aab503fe23376251d2b041614dd2d0e52a2b76d879"
+    },
+    {
+      "path": "src/navigation/map/activeShip.ts",
+      "sha256": "667481909f0b272129660293a89c9169736f601e24d5bd5bbc7c89bebe9d6606"
+    },
+    {
+      "path": "src/navigation/map/contracts.ts",
+      "sha256": "e2733fbdbd391c501e38db4c12a84d4d25cf7bbe7628bc7d40f30194dbf75264"
+    },
+    {
+      "path": "src/navigation/map/index.ts",
+      "sha256": "7d47389ca34d8dbbee5f9989c320e82c3f181c2916b726704855b619ad202c1d"
+    },
+    {
+      "path": "src/navigation/map/projection.ts",
+      "sha256": "242583a554a12626949bd298d0286436883f281f582a8f11f7d0a9ebd0721043"
+    },
+    {
+      "path": "src/navigation/motionProfile.ts",
+      "sha256": "00641a9006d82a9a3c2d38397b6c963345d54174f695af32f05705fa0be07f4b"
+    },
+    {
+      "path": "src/navigation/multiObstaclePlanner.ts",
+      "sha256": "3880f69a26c5ae6e3836792f587dab13acd0bf6b4aec5fe86fdbadcb3aca0139"
+    },
+    {
+      "path": "src/navigation/planners.ts",
+      "sha256": "c7bdfb6c0d9133f5fa13e6e1eef01738d9c8044816f544b949b18b5b8d43a214"
+    },
+    {
+      "path": "src/navigation/previewLock.ts",
+      "sha256": "7817184bf5d284efd621c44e48e386a1274cf958c08663c5d89210ee7c40ef7a"
+    },
+    {
+      "path": "src/navigation/validation.ts",
+      "sha256": "d483e46159648d0b4dc6fec9e69b139bf8e8d9c72bd406bda611ae5d13eb9aab"
+    },
+    {
+      "path": "src/persistence/canonical.ts",
+      "sha256": "e21ef6b4ecb2e60663b9d5e1e42327d1dce0e147b3eeb1edf99c2b1d70834ead"
+    },
+    {
+      "path": "src/persistence/events.ts",
+      "sha256": "6a7f7bd2273e2304cf90a966ec8cc662db330bf5db68af7ee9d7d2857b350a33"
+    },
+    {
+      "path": "src/persistence/fixtures.ts",
+      "sha256": "f4958f37c6a00602b6a980b18fdf0d052cecbed1b5ce354026b979d2c45429de"
+    },
+    {
+      "path": "src/persistence/ids.ts",
+      "sha256": "db9acf8357ee229c9fc1afc7d38365892fab6e458bd9ed6a8df9b677ecc638e4"
+    },
+    {
+      "path": "src/persistence/index.ts",
+      "sha256": "0e952aeb9a5d14b5a9a08577aff6b9f6f762ccb95ef3ea71cfd969bb7b476223"
+    },
+    {
+      "path": "src/persistence/migrations.ts",
+      "sha256": "a2e12e86d61116ebcb7f63ea082262ecb56e2ecc3cdd7fca6003900ce2c1d47a"
+    },
+    {
+      "path": "src/persistence/saveSchema.ts",
+      "sha256": "821c3f600a7ace426a5e26a47143b7c9eac1c594990df7d12fc33ec2ee6a79f3"
+    },
+    {
+      "path": "src/persistence/simulationMode.ts",
+      "sha256": "cee8dd7c34023cd532dfc209845291762dd12685030159a3baba196dc3e8c6df"
+    },
+    {
+      "path": "src/persistence/time.ts",
+      "sha256": "fecf2c7512b426586a88b6bfc01c8d6fe8b0a8e020227cd75c9e41f03b6a49df"
+    },
+    {
+      "path": "src/persistence/types.ts",
+      "sha256": "93575ab700e3c42e98d1915daa82fb702be649b5c16c3646189219a293241454"
+    },
+    {
+      "path": "src/persistence/validation.ts",
+      "sha256": "101c0ae7b122e5ff4d468c42c9acc0caca96f627b081f2605833f87c7958f1ef"
+    },
+    {
+      "path": "src/physics-space/canonical.ts",
+      "sha256": "cb1f9a96334fbf93e8995ffb0f62b1eb8ad8921ff86c7ec0e27f1096579f4ca5"
+    },
+    {
+      "path": "src/physics-space/errors.ts",
+      "sha256": "5c2c6613e2d03f6ee2d167ee156c06e114cf30dcb633b2cf155b78c96f59fe8b"
+    },
+    {
+      "path": "src/physics-space/gravityField.ts",
+      "sha256": "c6f0314a0be6581525e5f36fdbc7108608576851a3535490ee5513ebb00d4819"
+    },
+    {
+      "path": "src/physics-space/handoff.ts",
+      "sha256": "0e057e895622b81e88d37e43aaececc1c95861397b753d84702c0916b729dfcb"
+    },
+    {
+      "path": "src/physics-space/ids.ts",
+      "sha256": "c671fcbcffe2fbbd113cd9b33f47e75be9ed7c69f36e82a5af6f03abcf4224cb"
+    },
+    {
+      "path": "src/physics-space/index.ts",
+      "sha256": "f23d19c35165bb3dec2ebcfb32ee82d7c2785f2d83f18117b3a499e37db9c9e3"
+    },
+    {
+      "path": "src/physics-space/integrator.ts",
+      "sha256": "8f65dc32efddf704ca25c2b02e0bc0328c18345b837654358f4f5a375d6541c3"
+    },
+    {
+      "path": "src/physics-space/probeSimulation.ts",
+      "sha256": "251cd7be70fa2a1909fb662f955ad181c3aa833773820ade6344593c703c086e"
+    },
+    {
+      "path": "src/physics-space/types.ts",
+      "sha256": "2f082524b02c0c55be3877045abe2cea28b2e785501539ec95830862695b92b2"
+    },
+    {
+      "path": "src/presentation/backend.ts",
+      "sha256": "20885ad0c4c716bec12362c3abed1d8273fbb9b260596fdfc8906d28336a48bb"
+    },
+    {
+      "path": "src/presentation/canonical.ts",
+      "sha256": "67558d89ff09e99588101618eb02c5820a042a27850e884db91b0e80188862c8"
+    },
+    {
+      "path": "src/presentation/ids.ts",
+      "sha256": "ca64b20138f56b8de2fed80dd7c3ca290cdc441696ae5d6eb27145c7ab3c7225"
+    },
+    {
+      "path": "src/presentation/index.ts",
+      "sha256": "d1cc7c04ed7bf95d023f8a75c8d6b6edb558bc67e0c24e16298d81f7d6321d49"
+    },
+    {
+      "path": "src/presentation/materialProfile.ts",
+      "sha256": "1d871f968781bdf67c9e6b5517daad94bddccf373950b3f022e68769e7278134"
+    },
+    {
+      "path": "src/presentation/meshArtifact.ts",
+      "sha256": "a0b0d23160b37de3ec5cc17f9688c9d54123d4faf4af16da9cd300f5542e9af0"
+    },
+    {
+      "path": "src/presentation/renderCommands.ts",
+      "sha256": "4fc0541edecc3fcfc99540950bcd0a5eec2c670c243ec58fa49670dc9c16a444"
+    },
+    {
+      "path": "src/presentation/types.ts",
+      "sha256": "ec8cc94f1b267348e17e7d5b4a42d0d1c5161d92ba39ef40efa6cd1a0df7dc4a"
+    },
+    {
+      "path": "src/presentation/validation.ts",
+      "sha256": "e93eadb015c284865184a997b9542fc351ab4c0b4f67247a9adb80890bafb1ff"
+    },
+    {
+      "path": "src/presentation/visibilityPlan.ts",
+      "sha256": "4e95e5fa2c8fa0f6f0a232582e7da36d0b8434ad2a8a3bc6a0885f449b13fbc0"
+    },
+    {
+      "path": "src/provingGround/pgTragwerkPlayerSlice.ts",
+      "sha256": "2d96903bdc14fca9b682f8d462c3dcfdbf6d6259a2da555780feb5cae46c2848"
+    },
+    {
+      "path": "src/render/three/backend/deterministicHarness.ts",
+      "sha256": "51c2cb1061beb234a25c46c06b221b1721ccc73c5a6797ba82a7e0c0d9b23383"
+    },
+    {
+      "path": "src/render/three/backend/index.ts",
+      "sha256": "0b971a8514a0675a73c35be11fadd85223a6db415af4d2eaad844c33e3505d9e"
+    },
+    {
+      "path": "src/render/three/backend/threeCameraProjection.ts",
+      "sha256": "b93ace4a89df22b445ad2a16108e1bef5e8efce78c6bc3f122bf89884d7e08f3"
+    },
+    {
+      "path": "src/render/three/backend/threeDiagnostics.ts",
+      "sha256": "3529794a0dacbae8fc1e760f039c4d779d639c5499635b663d87d49bf4b0d78b"
+    },
+    {
+      "path": "src/render/three/backend/threeMaterialFactory.ts",
+      "sha256": "2fe4fcfb0fe7a47e84ad02a83f3d9a2746c795ba538c0e9d4272a58e3e6c09dc"
+    },
+    {
+      "path": "src/render/three/backend/threeMeshFactory.ts",
+      "sha256": "cfbbe36b3d3891943cd8fc2fedff0a5d78ff435752f3760d50836b1e5387c8ea"
+    },
+    {
+      "path": "src/render/three/backend/threeRenderBackend.ts",
+      "sha256": "cc355798dbd4f11afc554f0cfe3207802b4fc728bd405265ccca5c92b729c250"
+    },
+    {
+      "path": "src/render/three/backend/threeResourceRegistry.ts",
+      "sha256": "c328cff19fe5b3d3ed6b46610ff4d7bdb0c7153c88f58dae690028dfe35fcc7d"
+    },
+    {
+      "path": "src/render/three/debugScene.ts",
+      "sha256": "f57e949b33e8ca6140cfaabf40df61996399b97ff35ed237ea895a91c892ae36"
+    },
+    {
+      "path": "src/render/three/graphicsSettingsAdapter.ts",
+      "sha256": "87658dc71a20a9221be96a431bf0e14d99427ee338bdd9a73342a08a3849f777"
+    },
+    {
+      "path": "src/render/three/nozzleVfx.ts",
+      "sha256": "c07b5f336a25703795bb5f232cc7b2bc6eebcc6d2c4a07a6e8d9061930f9777f"
+    },
+    {
+      "path": "src/render/three/shipVisual.ts",
+      "sha256": "e5ae6ffbe4e9e9860c2f6b8c08239ffca366b0438309fd5b1f364c51fd64c08c"
+    },
+    {
+      "path": "src/render/three/worldPresentationRenderer.ts",
+      "sha256": "c84c59cc747b6765b89fab953b73b5d66910f5e1a3455bcc096a1bae5bfe25b8"
+    },
+    {
+      "path": "src/resources/capacityMath.ts",
+      "sha256": "aec4ff2e7c954f8f202f256c37a9d108a7f32bf1648dcc53dd7f53c52ab9ac45"
+    },
+    {
+      "path": "src/resources/catalog.ts",
+      "sha256": "bbabd077440e9307a05e4278f9befd15308adbe64b9fa4ecd558e6202a6ad66b"
+    },
+    {
+      "path": "src/resources/categories.ts",
+      "sha256": "fc614c30071f22a2cf16a109d01b774c69d7f68f7c334e775836958d05f58a7f"
+    },
+    {
+      "path": "src/resources/containers.ts",
+      "sha256": "a11215f4bda7eca86bb8fee791fce00cc601c080a106a85face6ff4bec3dbecb"
+    },
+    {
+      "path": "src/resources/fixtures.ts",
+      "sha256": "4833c6036af7486938867ff662ec69143be452c439ea88f5dd853b095e124224"
+    },
+    {
+      "path": "src/resources/ids.ts",
+      "sha256": "a46157defe1ce361240b8a6f3b7f1894f4ebd8282af2ec7bc576e6f8dc6b9298"
+    },
+    {
+      "path": "src/resources/index.ts",
+      "sha256": "b96b725646f0d6bd2d0e973cd0fdaf131973afd868a80fdc2ee4a22507808339"
+    },
+    {
+      "path": "src/resources/serialization.ts",
+      "sha256": "7d1459f7ff1b470d5f88f6046259add5f0ecaab78955fc2afc8d37adf14ff80f"
+    },
+    {
+      "path": "src/resources/starterCatalog.ts",
+      "sha256": "62b194407b09ee605f9d520820388a8dc1837356121a67abaa9cea422c96f06e"
+    },
+    {
+      "path": "src/resources/transfer.ts",
+      "sha256": "9f40f65694ff962c7388d509fe66229909693cdf26f1a48d7a5330bb03396cd4"
+    },
+    {
+      "path": "src/resources/types.ts",
+      "sha256": "f50a6a32a34f1b2597dbeaeecfdc58d53d42971ffcb35fb22162681074b79de6"
+    },
+    {
+      "path": "src/runtime/browserRuntime.ts",
+      "sha256": "9fc74cf8d10619f5d3df2a5714f81564ac3b1f746188487f51bf0ab9dea959ab"
+    },
+    {
+      "path": "src/runtime/commands.ts",
+      "sha256": "dcd7c090a71ae34fa4011943612827da443d06ff23c2185f1fc2923307dd40d9"
+    },
+    {
+      "path": "src/runtime/input.ts",
+      "sha256": "31f9fbd5b181d1ae80d51d57b619c43b1a08e094292a8092c45771941b5e9828"
+    },
+    {
+      "path": "src/settings/capabilities.ts",
+      "sha256": "077d7d7834f7b3f011499701b9d518bd9f33ef65730531c29b197cd8cfa94eb9"
+    },
+    {
+      "path": "src/settings/defaults.ts",
+      "sha256": "8f4a285894c116b510c0a032c30ffa4da7b7ba7d86a727ac4b01acc4443f63e8"
+    },
+    {
+      "path": "src/settings/graphicsSettings.ts",
+      "sha256": "5fc638ee81e9f369fe26f9ec8d593276e81e3cac640aa984bd86d7d01c392720"
+    },
+    {
+      "path": "src/settings/index.ts",
+      "sha256": "a96b520e18b099ec00ec8988931f09500d77d5b510e994d292c97f86f880323b"
+    },
+    {
+      "path": "src/settings/presets.ts",
+      "sha256": "d5b44a603f2f3ce7a28ec13f3d1298b2ddfba22bc4019008596c0e3d984a7617"
+    },
+    {
+      "path": "src/settings/schema.ts",
+      "sha256": "0cb33749bb53d3763485ec87c40e6da63725b4301fd6352d1da21bbd740cb925"
+    },
+    {
+      "path": "src/settings/storage.ts",
+      "sha256": "2f1a051a4a7c606420da70f6c0bb9b429bf8723856f07e0f5e0cd39910f0b2e6"
+    },
+    {
+      "path": "src/settings/store.ts",
+      "sha256": "8161aea7cd6adc696fb859cd1681abad400b5e1914b5a5bce555bc09e9272805"
+    },
+    {
+      "path": "src/settings/types.ts",
+      "sha256": "9b4a4ed6230ba2a25040997d0895cd1f1d46127d5c0c6174f440ae01e9cf264e"
+    },
+    {
+      "path": "src/settings/validation.ts",
+      "sha256": "f23138e372775d1d3bf87e66705404d8c682de6ad6a3243a125ce7bbdac3c0c4"
+    },
+    {
+      "path": "src/ship-builder/blueprint.ts",
+      "sha256": "df37775a7d172f95a21cce5b0e5a2099ce18ba20bb22e3b90a584bbea409fc93"
+    },
+    {
+      "path": "src/ship-builder/blueprintValidation.ts",
+      "sha256": "e60e6b822cc001e830695ebe390b6da7793b2b3b482aef29f3351b3fdb8177d2"
+    },
+    {
+      "path": "src/ship-builder/canonicalJson.ts",
+      "sha256": "435f0054cad209ba9ef2dad58c334dc0b8103ec6448513c47223c595d49cbc55"
+    },
+    {
+      "path": "src/ship-builder/catalog.ts",
+      "sha256": "d46473febe82a9da14747f2de8386e9917e8e33bae74876ed5293969d41aa486"
+    },
+    {
+      "path": "src/ship-builder/categories.ts",
+      "sha256": "542e0d816ee6846a49b959273b6a4ccafd6e914a4f26b04720c5b5771fcc8bad"
+    },
+    {
+      "path": "src/ship-builder/compatibility.ts",
+      "sha256": "7bc053e4355747d3331b2276b60fc42cc05586c0ed0370424b045c589c773a26"
+    },
+    {
+      "path": "src/ship-builder/components.ts",
+      "sha256": "15f48f3342c95944297cb48ea0687221c822d044850a9b35162095a5c2aab335"
+    },
+    {
+      "path": "src/ship-builder/diagnostics.ts",
+      "sha256": "7358d36952164b89476a46a48171dcfe80e8656a35c48063f82c8c3272cf8039"
+    },
+    {
+      "path": "src/ship-builder/fixtures.ts",
+      "sha256": "270f6c137d37518bd53b540b3e33c83fb9e65a24f92d19a74ca34bcdc68b508a"
+    },
+    {
+      "path": "src/ship-builder/flightReadiness.ts",
+      "sha256": "9e43f96117d86ff64b4adb55ba0304ab27b6962b5b1598d0f6a8f024936e364d"
+    },
+    {
+      "path": "src/ship-builder/handlingDiagnostics.ts",
+      "sha256": "1d3e050a291d1581d2ee259332313c51030b1e6fbe4d9ba1f741c585e1023c20"
+    },
+    {
+      "path": "src/ship-builder/ids.ts",
+      "sha256": "6f1e05c48198ddd72c2454937f9b02a9669c5d7d5ad23f551934d5ac98b8ec37"
+    },
+    {
+      "path": "src/ship-builder/index.ts",
+      "sha256": "0d3d080fb5033179d05897c1b8aa6c706b1b4b560eebc35433c7261fe4dc5709"
+    },
+    {
+      "path": "src/ship-builder/massProperties.ts",
+      "sha256": "c5c012b036e07e9af471d840ffe9385f8e63a0a8eb4fc25007977479831d91da"
+    },
+    {
+      "path": "src/ship-builder/serialization.ts",
+      "sha256": "2e2a5e7c5a1be448985ee1e71c80f711787fa5416a09f866a15334112dfa52e3"
+    },
+    {
+      "path": "src/ship-builder/shipStats.ts",
+      "sha256": "a21ebb5c4461d1eec30a7d919a8996c373f709c786a65352e9cc074861869ff0"
+    },
+    {
+      "path": "src/ship-builder/sockets.ts",
+      "sha256": "2016fe04e7f4bbef2ad8d0e39e05bda7269860597f89e32429ccf9771ac99914"
+    },
+    {
+      "path": "src/ship-builder/starterCatalog.ts",
+      "sha256": "36d22ca3704544a8252a4b20c052859cc9eba8682735dcdb1f6177b6d6c1cd6d"
+    },
+    {
+      "path": "src/ship-builder/statCanonical.ts",
+      "sha256": "0138401b3f13ff920e91069ee9dd92bb9b287d6fabd9e782e2aa513e0f01bf87"
+    },
+    {
+      "path": "src/ship-builder/types.ts",
+      "sha256": "1c605bbbacd21fbf3c1c592f70933fd08fc256e9f9180cdc6a89d992702abf80"
+    },
+    {
+      "path": "src/ship-builder/validation.ts",
+      "sha256": "1bdc81d07e4416dd2372efa8ffff61826bcc8ddb022db8b8c5994ac20c9e07a2"
+    },
+    {
+      "path": "src/ship-power-thermal/battery.ts",
+      "sha256": "dc065229a89920c5dc0923cef5b71b09c6014aa171ab5052b9244c1af0056c4a"
+    },
+    {
+      "path": "src/ship-power-thermal/canonical.ts",
+      "sha256": "021b39ea3eedb3a3b7cf9a42543bd29396a2153949ec8ac9b7feb4ae837839b0"
+    },
+    {
+      "path": "src/ship-power-thermal/events.ts",
+      "sha256": "82b920e885f526a8043c2587a51b76c16cfb308a2d92b3d44c1f3e7ead525112"
+    },
+    {
+      "path": "src/ship-power-thermal/fixtures.ts",
+      "sha256": "689a084643a32f21b7a180c6018ee76ce75b6cdc43081102f46bf766484f25e0"
+    },
+    {
+      "path": "src/ship-power-thermal/ids.ts",
+      "sha256": "948d6b1040939a04f045326d528e0998cb13526bfe968fa74b1d0a6859103acf"
+    },
+    {
+      "path": "src/ship-power-thermal/index.ts",
+      "sha256": "30edf0ae071b125ad4c2fa382f795faadf86da8380067ebdd6b314ae7a34c2b5"
+    },
+    {
+      "path": "src/ship-power-thermal/powerAllocation.ts",
+      "sha256": "175c18a11c9cf342c51196a787922dd645c9da1bffa250927dd16ba2cd9ee46e"
+    },
+    {
+      "path": "src/ship-power-thermal/protection.ts",
+      "sha256": "450d3306bcd76cb3b27836945ffdba7a5ba9912896fa2d459e9c30d44d783717"
+    },
+    {
+      "path": "src/ship-power-thermal/step.ts",
+      "sha256": "4349c07b6a61b57da2986ccc9a85a02ff7d905b9a5e339b2fe1bb5a1b4f850d2"
+    },
+    {
+      "path": "src/ship-power-thermal/thermal.ts",
+      "sha256": "ee85bdb573b48412fee51fc31ca489045b09a081c1f8a48db6b8e82e18ce165a"
+    },
+    {
+      "path": "src/ship-power-thermal/types.ts",
+      "sha256": "3dbe2cb14fd90805f7e3fad134e1082d02bd5ed07520bb5f3dac43a10c12c0aa"
+    },
+    {
+      "path": "src/ship-power-thermal/validation.ts",
+      "sha256": "0247c705737ccd2e09e8c4cc2e3c9b64a79f8bbc13826fd7d6b1e7f712599720"
+    },
+    {
+      "path": "src/sim/simulation.ts",
+      "sha256": "d8c86e7416aae20ef761b38dcbf80964f17c489a4d1f6df237ef5a0f08a3f92a"
+    },
+    {
+      "path": "src/sim/telemetry.ts",
+      "sha256": "ce6ba7fa31d75f2889c58e3045230e2c3071d0ce4d2e4f7fb66127a4b46cb5b9"
+    },
+    {
+      "path": "src/simulation-scheduler/eligibility.ts",
+      "sha256": "d4eea88448f4f11ba183e9c0e446f293973e0618047f3cf4fe5c50b6276fadcf"
+    },
+    {
+      "path": "src/simulation-scheduler/fixtures.ts",
+      "sha256": "2b008fef1225103ffdda4d32d389d8f8fecaf3613a43f5df369e68a223bf6391"
+    },
+    {
+      "path": "src/simulation-scheduler/index.ts",
+      "sha256": "689eff6ee6fd377f6aed66d79cb4180d03759a04028d78142106612de71f38a5"
+    },
+    {
+      "path": "src/simulation-scheduler/planner.ts",
+      "sha256": "bc39113a50edfe7bac0d556217ad5331ffb56ea15c091d2c959404e18eac51ca"
+    },
+    {
+      "path": "src/simulation-scheduler/state.ts",
+      "sha256": "a43dfe6b2c1a065796a62f85e64b6e74d5eb76afddaea32dea6565d0cc416375"
+    },
+    {
+      "path": "src/simulation-scheduler/types.ts",
+      "sha256": "f4d6c2328f54499060edb06cd8eff75a623a2e8f76b15f0f7d9ac71184a4d155"
+    },
+    {
+      "path": "src/simulation-scheduler/validation.ts",
+      "sha256": "022fb7fa5753e762a654d006b355f7f166316f25700134deb72d6c3cc140eff3"
+    },
+    {
+      "path": "src/spatial/bodyFrames.ts",
+      "sha256": "129ab6e093351465d1766b0fa63cfbae040f2f48e3ee2c5aebf17aafa7a40451"
+    },
+    {
+      "path": "src/spatial/canonical.ts",
+      "sha256": "4821116410203880dadc200ccb13c91fed4d6f5101e52f884462091e1baa0729"
+    },
+    {
+      "path": "src/spatial/errors.ts",
+      "sha256": "47f48d65467970f3db4ba5e2ab1a3059d10e77999d465af71b9fe26aaa39b146"
+    },
+    {
+      "path": "src/spatial/frameGraph.ts",
+      "sha256": "8553854de09b1d069a654b89482c914b01a0ba5bb45458e7498d7f14fa068a7f"
+    },
+    {
+      "path": "src/spatial/frameValidation.ts",
+      "sha256": "72b4c3a0472ecfab8d9ccf1708e711f0ec2fc807c2c4dd0e4225718a670cf2f0"
+    },
+    {
+      "path": "src/spatial/ids.ts",
+      "sha256": "ab208880b05067f0ef06108cfc5d019e3f482a44485465bb863ddc516f7433b9"
+    },
+    {
+      "path": "src/spatial/index.ts",
+      "sha256": "da59840281dcdd1d395744ea15e70dba3abb10bd0ab970132b60acf88aafb12f"
+    },
+    {
+      "path": "src/spatial/quaternion.ts",
+      "sha256": "5036273dae402fa1b9b25e1c35d8b50bee1236b2c70b57691f3f7e9c4e133c3f"
+    },
+    {
+      "path": "src/spatial/surfaceLocalFrame.ts",
+      "sha256": "2c00197bba05b1b3863033d0ea9786678ad88434a4167921a004f88be0437b94"
+    },
+    {
+      "path": "src/spatial/transforms.ts",
+      "sha256": "b54ed3d913fb6e9302d7b712e6c3c704958a731104db430437aad70091e6aa9c"
+    },
+    {
+      "path": "src/spatial/types.ts",
+      "sha256": "f19cb96cc08e1b7922178c84a420f7efb9f83f2b15ad114c72eba53b02a622ac"
+    },
+    {
+      "path": "src/spatial/universeClock.ts",
+      "sha256": "729e06cb50a01c41b9d61067483082b5c12fb091f4ef6748fcc224c90f0d1b73"
+    },
+    {
+      "path": "src/streaming/asyncContentLoader.ts",
+      "sha256": "0787bb7fedd6cfe4ba9ed149a1f1e6bb11a1b22f4e8588dfbda3eca92bbef03e"
+    },
+    {
+      "path": "src/streaming/budgets.ts",
+      "sha256": "23b1f9ab21e6b4737d7103125d15f54063a6b858f54cc90d6baaffb952499755"
+    },
+    {
+      "path": "src/streaming/canonical.ts",
+      "sha256": "372c51f1671e842d82c9868955e06f2900d724f9883dffb3991df775ca1b640d"
+    },
+    {
+      "path": "src/streaming/contentKey.ts",
+      "sha256": "4c0b847828dbb640d398e200cd2068c33d641b44f473c1134695862407babc58"
+    },
+    {
+      "path": "src/streaming/contentProvider.ts",
+      "sha256": "3d25c4eff81b67323a59e31f5ff79afca9da46a63b63c649b3aacbaac16a7974"
+    },
+    {
+      "path": "src/streaming/index.ts",
+      "sha256": "cf516017d04b0f057ac9fa930c9989a0a17011f813fb0818af367e5d978549c7"
+    },
+    {
+      "path": "src/streaming/memoryContentCache.ts",
+      "sha256": "c5e727f9dca8980cdf57512913f07e0738a47be1dda7da040ac35c5008d2f889"
+    },
+    {
+      "path": "src/streaming/residency.ts",
+      "sha256": "d599efc89cd61910904f4f4256ddd7d527020bdfd692cd1f0613f8fa002cb845"
+    },
+    {
+      "path": "src/streaming/voxelBrickCache.ts",
+      "sha256": "4a1e09e534edefbfdd7df6ad1c3de5e2f83d327187fb88796d00d42622d08d5d"
+    },
+    {
+      "path": "src/style.css",
+      "sha256": "83100be985d20246fcd618c8f0f47cd0cdb74e726a63d0bf4ff32b2119c2b420"
+    },
+    {
+      "path": "src/surface-lab/index.ts",
+      "sha256": "ec8226f8759198f5c629aa5e49e1777db1874e82f39499972d34286939a1cc31"
+    },
+    {
+      "path": "src/surface-lab/surfaceLabBootstrap.ts",
+      "sha256": "13550373042705c1c17c9d81238dc1a3c39e1c94b77ce5ee05fbfc44be28305f"
+    },
+    {
+      "path": "src/surface-lab/surfaceLabCamera.ts",
+      "sha256": "2c27d1480fbc3d429e73e3c15652434c391fac47cabc40e031de1a87812758a7"
+    },
+    {
+      "path": "src/surface-lab/surfaceLabController.ts",
+      "sha256": "0e345427a17f74a02973f8992b9805f47a11bb3f7d5da956dbc9066240dbe6ef"
+    },
+    {
+      "path": "src/surface-lab/surfaceLabEnvironment.ts",
+      "sha256": "f18edfe26409dd13d7ad5725bd78a290f8af346200a4f7d38d988b752b5a4d13"
+    },
+    {
+      "path": "src/surface-lab/surfaceLabFailurePresenter.ts",
+      "sha256": "fa1e35e24845b2b80a529c0d8e2b8b25219ff453c34dcc7de7af1764cffa3ada"
+    },
+    {
+      "path": "src/surface-lab/surfaceLabHud.ts",
+      "sha256": "9e14036ae1281a1a49c94efc2d0fe30349cfa3f5d0b9a39508663adee75b20e1"
+    },
+    {
+      "path": "src/surface-lab/surfaceLabPresentationBackend.ts",
+      "sha256": "5220391991816a2dcfe0cf4d978c28444aaa51b7232279232643699f319089f4"
+    },
+    {
+      "path": "src/surface-lab/surfaceLabQuery.ts",
+      "sha256": "f17f09b4af33b93aa3493b2aafcce68a67d4564bc0e203b7f0ee276f9db08892"
+    },
+    {
+      "path": "src/surface-lab/surfaceLabRegion.ts",
+      "sha256": "cd0e0fbc444155929cf986bcf502a287d4752d7690cd54cf54f2e42d02d14ac7"
+    },
+    {
+      "path": "src/surface-lab/surfaceLabTelemetry.ts",
+      "sha256": "6a76f3b6b208a4acb6dcf0e4e9abf21fd6c09d19277219ffd567ffdafc896fb6"
+    },
+    {
+      "path": "src/surface-lab/surfaceLabWorkerAdoption.ts",
+      "sha256": "51cae913a6607d46222807c88b061f875b5addeff3631973c9a92dd62b4d38ab"
+    },
+    {
+      "path": "src/test-harness/autopilotBangBangMetrics.ts",
+      "sha256": "2f4ee21cec1fb5c74f9731cb5c07ce12f41364412f82400349ffa7d7bac3e84d"
+    },
+    {
+      "path": "src/test-harness/browserBridge.ts",
+      "sha256": "b6483358f479686e88edc996f4b9bfd71fe082e551aa09bcd4577d8265174839"
+    },
+    {
+      "path": "src/test-harness/scenarioRunner.ts",
+      "sha256": "7835550814862001f4601512409e3cc020c37649ba6c840321ae1ddbea5a88b7"
+    },
+    {
+      "path": "src/test-harness/scenarios.ts",
+      "sha256": "cfd1469a66c0a56219b3990d01138776b6c7e68298b45f03b90589df78df6c54"
+    },
+    {
+      "path": "src/trajectory/canonical.ts",
+      "sha256": "9dddf499fe069a2f1dea9e212b16c7965e34ce865831d3d32de4fd35cd915f9b"
+    },
+    {
+      "path": "src/trajectory/closestApproach.ts",
+      "sha256": "638af3ef73ec9981861e235b9e7fecf51ef42721171c622a6e282d3c0821f531"
+    },
+    {
+      "path": "src/trajectory/fixtures.ts",
+      "sha256": "a8546d7e6dd5326bdc507842bb93ae39e66986b4fe85e90d63f1a3a36221badf"
+    },
+    {
+      "path": "src/trajectory/hazards.ts",
+      "sha256": "03a7bf192f1daad27539bbc00d2bab3d8e560757c0692f3cb30a38b0acafb255"
+    },
+    {
+      "path": "src/trajectory/ids.ts",
+      "sha256": "882aa6a120f95d27957137eb3872c719a8df332ba71799140841bd311fd82c06"
+    },
+    {
+      "path": "src/trajectory/index.ts",
+      "sha256": "c56b788a32374820902a40070b1176799e750613e1f989fce0802bbd360e5bea"
+    },
+    {
+      "path": "src/trajectory/integrators.ts",
+      "sha256": "2420392746a4cf20f723223991791440fbda7cdfe85768bc2a244cedd64edae4"
+    },
+    {
+      "path": "src/trajectory/metrics.ts",
+      "sha256": "4f656c22dcbcbfbfe5da72b9cb35399c0df6565db093afc810fc77ceeba60e2a"
+    },
+    {
+      "path": "src/trajectory/predictor.ts",
+      "sha256": "32cf3cd6c831de788bee0d332cfdf4d809f53d248f405dfd3188cc024bfd2920"
+    },
+    {
+      "path": "src/trajectory/propagation.ts",
+      "sha256": "f5e976ccb53f7f8d98ac436fca4193d274679074e3d29d88c0e9359e017dcbdb"
+    },
+    {
+      "path": "src/trajectory/segments.ts",
+      "sha256": "4d24262a5535c5e4661221faebae57eae7a38785b579fde349223ead49f38a8f"
+    },
+    {
+      "path": "src/trajectory/types.ts",
+      "sha256": "135feafee9d9497aa1617407fa5b2c84263623d084fabe90ecb2c4a640b2aadb"
+    },
+    {
+      "path": "src/ui/graphicsSettingsPanel.ts",
+      "sha256": "a89eeba56894eca8b24b91a123883891cfbee69c9e69607841101633474d59b3"
+    },
+    {
+      "path": "src/ui/pgTragwerkPlayerPanel.ts",
+      "sha256": "56ff3d4f2d176aefb0b9c4f020e669346bcd18e106a01079be99eb311ba699aa"
+    },
+    {
+      "path": "src/ui/plannerMap.ts",
+      "sha256": "24f220e93308f6e14bc1e5043d13fd1666ffaf4e30e14945853b1153d1ed3dc1"
+    },
+    {
+      "path": "src/ui/statusHud.ts",
+      "sha256": "1d6f7e70cd4f50b857415ec68ef168f4af560bc0960d75fdb4a174e5cdce8bfa"
+    },
+    {
+      "path": "src/vite-env.d.ts",
+      "sha256": "c27f59d978c3b1e8ee3419b9514eb83197a279adb86e019498d0d284ff31d0d7"
+    },
+    {
+      "path": "src/voxel/adaptive/canonical.ts",
+      "sha256": "cdbcb79bda5e2e79137111092e4eecf7e3e7fdaeb591ffeef7089006040c3d2e"
+    },
+    {
+      "path": "src/voxel/adaptive/coordinates.ts",
+      "sha256": "aa76e09491f2958b581a4551caf91e68b99838c329b4e48508f095d1cea51c9d"
+    },
+    {
+      "path": "src/voxel/adaptive/edits.ts",
+      "sha256": "de641c14a75ab87f1c87e8308b84c471aad8dbbeb72d03694ca47c17640f6f57"
+    },
+    {
+      "path": "src/voxel/adaptive/index.ts",
+      "sha256": "9299877748d7937a51aa01d4d0f21863fcf90675bdf3b649fea4dd31b99af416"
+    },
+    {
+      "path": "src/voxel/adaptive/materialization.ts",
+      "sha256": "e599b63012144fc439de42f9e47a7e5fcd2295eeb0b3cb18c91ecd4e41b153f2"
+    },
+    {
+      "path": "src/voxel/adaptive/planner.ts",
+      "sha256": "9d9cb2b36d62ca4b27bd67732bedc868436b8c0ca2977c99b6a70eeab64e7325"
+    },
+    {
+      "path": "src/voxel/adaptive/residency.ts",
+      "sha256": "61b2d84ae5d6d4d0f2494e95a2497ff46d425d0d495e155dd78c50d96b2e0741"
+    },
+    {
+      "path": "src/voxel/adaptive/types.ts",
+      "sha256": "b44ccc8844222e4b1ce6ab7a6605ea68417ca41fb993be8ddc2dc4b1ee5c1d2b"
+    },
+    {
+      "path": "src/voxel/adaptive/validation.ts",
+      "sha256": "33d85f292823278586c4929c68eada97f03e511330c8c29a8018a678f6e987db"
+    },
+    {
+      "path": "src/voxel/blockAmbientOcclusion.ts",
+      "sha256": "ddfb1d22eccdcb83e48f8c21d82605339936600a6afbbc452bdcdce497ca7675"
+    },
+    {
+      "path": "src/voxel/brick.ts",
+      "sha256": "b0d10dfe2b1cd2b5a8c5e093fedfe186b4c825853d8e2d37c27142518157ed29"
+    },
+    {
+      "path": "src/voxel/canonical.ts",
+      "sha256": "0994167495c2f9306aa209792dc9e92ec4453276a1f614e8670615ce504ad029"
+    },
+    {
+      "path": "src/voxel/channels.ts",
+      "sha256": "5fb713a91915f990166e2ca61f55cfa60427a3f0407950c2c34ac17db3bb7d7f"
+    },
+    {
+      "path": "src/voxel/density.ts",
+      "sha256": "c3f0b2b31d0034546a0b6db6711c36915124367eb3cc838150e1b048c9227a79"
+    },
+    {
+      "path": "src/voxel/ids.ts",
+      "sha256": "14f4a73a1d61e1e0b97003f1411b15232799f7c230cd9c5cc69b4d46efb5e86b"
+    },
+    {
+      "path": "src/voxel/index.ts",
+      "sha256": "a8525e6a768a39996941ac1402f821bfb4c7a5de100bbc5b7310a9c7c6185b1f"
+    },
+    {
+      "path": "src/voxel/materials.ts",
+      "sha256": "79c9ff04fee6965bbdb2a1a0d42f993fcdbf801fe8355e54d7ca3f7176448420"
+    },
+    {
+      "path": "src/voxel/meshArtifactAdapter.ts",
+      "sha256": "f442281d42e8ecbd0cf0f48e78b630581694714c2b15b5f4b160651c6750f805"
+    },
+    {
+      "path": "src/voxel/structural/canonical.ts",
+      "sha256": "7cf9895333a028388659db3ccca985277826f2aeed0933336979d08c35b74d70"
+    },
+    {
+      "path": "src/voxel/structural/commands.ts",
+      "sha256": "01594f35bc1819b7bb2972a4ee053c3114a806ce4956b922565b1cd9bf994f65"
+    },
+    {
+      "path": "src/voxel/structural/connectivity.ts",
+      "sha256": "432fa406b7ce22c94a4cd87310cc68b0db1f57ef075b2e062fad15e3e2ad4168"
+    },
+    {
+      "path": "src/voxel/structural/coordinates.ts",
+      "sha256": "cb2515dfe690734d77a0d167a9ec0400d5483409d9da9b715d8a4a67045a0553"
+    },
+    {
+      "path": "src/voxel/structural/greedyMesher.ts",
+      "sha256": "078bfae9dc9619430c99badc00955ac8cacc502d58493a4274aa54bbf1816cbd"
+    },
+    {
+      "path": "src/voxel/structural/index.ts",
+      "sha256": "4ad10701d978cc27155981bc4ee5c0291ab8a8f5e7a5a911d6f443dcfabed470"
+    },
+    {
+      "path": "src/voxel/structural/massProperties.ts",
+      "sha256": "9de3b8f504dfbc4d85ba71ef5bdd6151b5ab0b75fd75c034a3a8fca26cdcebc6"
+    },
+    {
+      "path": "src/voxel/structural/model.ts",
+      "sha256": "821e9fb4f3bda4e15bcbbd9f662f55989ade39273009cbdb329bc4c23042e413"
+    },
+    {
+      "path": "src/voxel/structural/persistence.ts",
+      "sha256": "fb8090930123016f3e461c0a8f10df1d3608b39c615fb59d88ae24e65b81b4bc"
+    },
+    {
+      "path": "src/voxel/structural/physicsCommit.ts",
+      "sha256": "0aff922682eba0f053cc2efc761ad33157d82b916f62acea653278ea5771ffc8"
+    },
+    {
+      "path": "src/voxel/structural/physicsTransition.ts",
+      "sha256": "978c9c6bcb79bd3c9c514789f72373d4fd65a5c8e45467a03b96da1f144d64fb"
+    },
+    {
+      "path": "src/voxel/structural/provingGroundR5.ts",
+      "sha256": "8bb5b9488c29ccd2d0920027b9b610291ae80453e471f44f238c1a4762ce572e"
+    },
+    {
+      "path": "src/voxel/structural/regionSave.ts",
+      "sha256": "384842ac264db4a408ef90da9ea883654b7e3f87a6962bdc2df95b6cc043f972"
+    },
+    {
+      "path": "src/voxel/structural/types.ts",
+      "sha256": "b83e0e7db4dd57451b164280ce43edd75d814edd1f6549759d6bd0f2ea25a6ff"
+    },
+    {
+      "path": "src/voxel/structural/validation.ts",
+      "sha256": "afc1e2de34b975eacaa2df76d63d9ac46d294cf8c2c32b9666a94c5d98bdb0eb"
+    },
+    {
+      "path": "src/voxel/surfaceNets.ts",
+      "sha256": "f43ceaf6bc13e0eba1cf27caa84de26a48c48335640acfec6f444f49d8dfb385"
+    },
+    {
+      "path": "src/voxel/types.ts",
+      "sha256": "bd18ff7f2384d514fb6ee7b10a373a231e77d532a0fef74fca08bb469b254f85"
+    },
+    {
+      "path": "src/workers/cancellation.ts",
+      "sha256": "aa0da3b134d49684b2426016065eb173dc9517993b8ae461553f117ce9925e90"
+    },
+    {
+      "path": "src/workers/hvpBodyCutJob.ts",
+      "sha256": "c5125566d6e1a77351eee2b6bef152907a1cd143ffc20b00201a0bf5e06ba94b"
+    },
+    {
+      "path": "src/workers/hvpBodyCutWire.ts",
+      "sha256": "77fa9abe1e13e4c8579102962cb2ecb05b15fe5c67ff618f7b26e6ab7f23ba7c"
+    },
+    {
+      "path": "src/workers/hvpBoundedPump.ts",
+      "sha256": "f243fd0e7744a8daff9dcb25d706f57661fd746d3e14867a74753d272c4f251e"
+    },
+    {
+      "path": "src/workers/hvpCollisionJob.ts",
+      "sha256": "29621aca6a82a5617a67e1a6047d73a2b3d638621288a45fb8018bae0870ae9c"
+    },
+    {
+      "path": "src/workers/hvpNeighborJob.ts",
+      "sha256": "a7cc958cde848f23429d20997242d80a7a0122222c3cb225395a15c92f9bf6ec"
+    },
+    {
+      "path": "src/workers/hvpSupportJob.ts",
+      "sha256": "e547822ef83c824b1819646ab16a2165e6e9a4de83ffea6575bc5c9fa657490f"
+    },
+    {
+      "path": "src/workers/hvpTerrainJob.ts",
+      "sha256": "dd226eb81bff29389133da83787c4c04bdd5fb3e08aadd8b3103a4dfca0c67f7"
+    },
+    {
+      "path": "src/workers/ids.ts",
+      "sha256": "61abaadf0052b15645547fd9b286a4144f5a5bd712263a523cfae1a7e6967126"
+    },
+    {
+      "path": "src/workers/index.ts",
+      "sha256": "5528c89f4a58dd3b9432acd33ab10adbdc34342189d4b7c3a625e357d1cc8757"
+    },
+    {
+      "path": "src/workers/messages.ts",
+      "sha256": "2c3645f20852b42a54a0121b81cdf8a6808fac0871f467187fa289b802fec493"
+    },
+    {
+      "path": "src/workers/protocol.ts",
+      "sha256": "adcc8222d774bf172d65c609cfd7800d33151958ccb1eb147de3decdef949bbe"
+    },
+    {
+      "path": "src/workers/queue.ts",
+      "sha256": "ec2c5b2ffcbff65f31f5ba8bdb5cf3b16989a3ea0506329b05bc26234756a06c"
+    },
+    {
+      "path": "src/workers/resultGate.ts",
+      "sha256": "5617eb86a607f61f7cb176f92c1aa71e8dc7747ae5f549c3ea1d3b24a25fc32b"
+    },
+    {
+      "path": "src/workers/streamingWorker.ts",
+      "sha256": "b11ea7012ca4e928ad362047bb4863aca32094fb3aa4391af0cba00c1ce39e8c"
+    },
+    {
+      "path": "src/workers/workerHandle.ts",
+      "sha256": "18c6b46dcfb0af785c633f54e8790d5f7c81c499a281d987c30adb425b3f5301"
+    },
+    {
+      "path": "src/workers/workerPool.ts",
+      "sha256": "3c4335036c130cb08287f07fb461b186f87cb5bb775191aa6a906c2d8efe58d2"
+    },
+    {
+      "path": "src/world-generation/hestia/densityGenerator.ts",
+      "sha256": "bd2b2e34859d2fbfbf79a20a0483de718d83596a0d11b29f5d9cd9755f32df74"
+    },
+    {
+      "path": "src/world-generation/hestia/index.ts",
+      "sha256": "e0515e10805f0e5a831f1276b9f898632b4d9986ed15a2ce388ac752172bda0f"
+    },
+    {
+      "path": "src/world-generation/hestia/materialClassifier.ts",
+      "sha256": "0d462037dcf110930c15d1a7f3cac364677086e3c3d704efe7dede4d6c4bb911"
+    },
+    {
+      "path": "src/world-generation/hestia/noise.ts",
+      "sha256": "98a2fc27dfda4c237f59376dcf2ce9aa218735b2f86e0cc26bd3c879032c22d9"
+    },
+    {
+      "path": "src/world-generation/hestia/preset.ts",
+      "sha256": "72171abe1aebde2625ab04fc069121c4d355885e1e8a8cb532ae49f509879eee"
+    },
+    {
+      "path": "src/world-generation/hestia/scatterGenerator.ts",
+      "sha256": "adde1f64ac5b67c7e0904c7b5faac1956540632cd80657b970f1e4ac690bb1bb"
+    },
+    {
+      "path": "src/world-generation/hestia/seed.ts",
+      "sha256": "20ac280c0503e9c92089f30d7053f5ac084aaeddd286f7a656de9a35c44e16c0"
+    },
+    {
+      "path": "src/world/autopilotProvingGroundCourses.ts",
+      "sha256": "30226264806652d520ffa1f40519129f85d5bf8dab3a0d7e7e9603c6e9ce23c0"
+    },
+    {
+      "path": "src/world/chunkRegistry.ts",
+      "sha256": "7f1dc2c428bb46ebb63782f4ca8e568db6ef8abbed6e9bdd96a08693899b14c9"
+    },
+    {
+      "path": "src/world/floatingOrigin.ts",
+      "sha256": "f83082ab4a697a1409129c7eaa9d6da4917b72677de193de44b8c8be5d79e1fa"
+    },
+    {
+      "path": "src/world/frames.ts",
+      "sha256": "ddafb4ccf4256ea1662b1c4f86a902d9adb527cb5d7116026d808e30e9baa5c2"
+    },
+    {
+      "path": "src/world/lowPolyInstances.ts",
+      "sha256": "88a4cd2a802b633cc6a56b7c4006287aa4d6957a4753844ec099dada747a57ca"
+    },
+    {
+      "path": "src/world/navigationMapWorldAdapter.ts",
+      "sha256": "f278aee058524067a7ba15e47cc4c4e9b8453bb8d5d292b19d3db12b589bbfb6"
+    },
+    {
+      "path": "src/world/provingGroundWorld.ts",
+      "sha256": "be9cd18cb7dcec9262fda04818460e51b727773ed066aa2ad640090ad5c767e9"
+    },
+    {
+      "path": "src/world/simulationBubble.ts",
+      "sha256": "92d3dc9067ac17ff2528e07e506ab4a51fe869237a689a0555a5123dee447966"
+    },
+    {
+      "path": "src/world/worldPresentation.ts",
+      "sha256": "98950902101d61e988d1629f5f3649c40c44980fb848d0fa034bb7a1745c097a"
+    },
+    {
+      "path": "src/world/worldStreaming.ts",
+      "sha256": "949ad3cb661b894d04ad94cc3970c21f2c6353498ae6f83eb4fe717012b85b7a"
+    },
+    {
+      "path": "src/world/worldStreamingScenario.ts",
+      "sha256": "95ad0f8f6c0dffb45783e5322e21ec64befdac662298f9078247576d5785154a"
+    }
+  ],
+  "build": [
+    {
+      "path": "dist/assets/browserBridge-CmJS_-4_.js",
+      "sha256": "a6d6cee76cac8a8e3377d522ec62420a2760799d8808b85f0f40c3ef2e734b18"
+    },
+    {
+      "path": "dist/assets/browserBridge-CmJS_-4_.js.map",
+      "sha256": "17f8e718d5c6f13a6f80a7b3b7f72b0c2619065f3fc9573af75d98decbf34c25"
+    },
+    {
+      "path": "dist/assets/hvp-CTvM5YRF.js",
+      "sha256": "74e65554879b717fa966ad7926e05f28ff972262b337c60faf6e806e0f357063"
+    },
+    {
+      "path": "dist/assets/index-CDtX0IrI.js",
+      "sha256": "433bf7d0283d2a4a1bc3104f5a4c4fb48cb3865036198e5726b4469ea8852ead"
+    },
+    {
+      "path": "dist/assets/index-CDtX0IrI.js.map",
+      "sha256": "c46e8da5d4bd750cd98eded48ac4eb0bf371b96a5896c80f1166c26ac9e3cfeb"
+    },
+    {
+      "path": "dist/assets/index-GeJ96uLU.css",
+      "sha256": "252d286768f545feda6b7a69f8242535aaa7fbe6645ab93e2fb1500e3941e188"
+    },
+    {
+      "path": "dist/assets/physicsWorker-lfuCJazA.js",
+      "sha256": "6ccd2c306cd03fe4fa1954ebc0738eff771c9ec8eed2601d5ea535f925c13c0c"
+    },
+    {
+      "path": "dist/assets/physicsWorker-lfuCJazA.js.map",
+      "sha256": "f347a7d4e64dabdf05b068c3dce73b92c8e064ec7383e553acfca9709dc243fb"
+    },
+    {
+      "path": "dist/assets/streamingWorker-DRxVZoS9.js",
+      "sha256": "d65bf165f18a5495c76589b40ab86495f83998ff3097a78979b059c57941870d"
+    },
+    {
+      "path": "dist/assets/streamingWorker-DRxVZoS9.js.map",
+      "sha256": "ac72265e729bfc32041432eeb306969d0ce6946bd17e2aa56e2f91c4b6f09cc8"
+    },
+    {
+      "path": "dist/assets/surface-lab-CgJgI-8N.js",
+      "sha256": "90fd11487ed6db5acb9d297646a7563aa61636553918dda5c2f2627604eb1ae6"
+    },
+    {
+      "path": "dist/assets/surface-lab-CgJgI-8N.js.map",
+      "sha256": "89391a5e14fe5c11c38e5ad5e572f1927d4f02e81b9ef81e8ac03987aab90381"
+    },
+    {
+      "path": "dist/concept/combat-asteroid-contact-clean.png",
+      "sha256": "baada59bb18eff149644ca39355d9523b73da691726972d5ba919d93e2bce755"
+    },
+    {
+      "path": "dist/concept/combat-compass-overlay.png",
+      "sha256": "abf39c566d85989a2a472694f17c24af2b5b719feccd76d5a07476063f165adf"
+    },
+    {
+      "path": "dist/concept/combat-compass-reference.png",
+      "sha256": "8ff8dc3ddda81cf097def3b9234626afe586d24227fbceec5e6b92272d395d25"
+    },
+    {
+      "path": "dist/concept/combat-contact-marker-overlay.png",
+      "sha256": "50e4f9ea6fab985e2336dca0d680354e62a315a6e99bad227f560db5145590e8"
+    },
+    {
+      "path": "dist/concept/combat-contact-marker-reference.png",
+      "sha256": "eb8e9db397fe64a8cf6c3505d5dd6c01a432d68ed3f560fd3468d86a65d90512"
+    },
+    {
+      "path": "dist/concept/combat-reticle-overlay.png",
+      "sha256": "1a92d53cbae192d694c08a8afc9df346c54f72c695b909a257e555284a10298e"
+    },
+    {
+      "path": "dist/concept/combat-reticle-reference.png",
+      "sha256": "c2fab7ccd3335a5bcce8adbe4b02d6455bb8d26051a1907dbf564ae81664fffa"
+    },
+    {
+      "path": "dist/concept/combat-scene-reference-clean.png",
+      "sha256": "37f2dd8df449a5559e9d2fc444158a2b2028c91f751d71a7ca7be956b332710b"
+    },
+    {
+      "path": "dist/concept/combat-scene-reference-composite.png",
+      "sha256": "695b76d84db830a85ff868116608835a2e3b2447397dcb6540000717639cf69f"
+    },
+    {
+      "path": "dist/concept/combat-target-wireframe.png",
+      "sha256": "40936daf57380ebc312bfe80f6c15732ffa51b3c840076a8a7be7a9560320db3"
+    },
+    {
+      "path": "dist/concept/flight-asteroid-belt-clean.png",
+      "sha256": "2cd08773ba51bfc1b41b7ef8c32c1f9d52dc4ea16ef08d0a600d92df054a5805"
+    },
+    {
+      "path": "dist/concept/flight-scene-reference-clean.png",
+      "sha256": "2148b766d76990d0aab32a84ef6c8672f2d77e5df87acfa4941dbdfbc1d91f94"
+    },
+    {
+      "path": "dist/concept/flight-scene-reference-composite.png",
+      "sha256": "65b3a0688742ff9f2788cdcf60a6137bd0ea3d126877e12d1a89100de8f64d07"
+    },
+    {
+      "path": "dist/concept/icon-combat-active-weapon.png",
+      "sha256": "aea52542f7ba42d4ec678d48caed0e62eaa50014d60925f26b66667c36038248"
+    },
+    {
+      "path": "dist/concept/icon-combat-cannon.png",
+      "sha256": "8ae768b25821bf317120ef8b5a0251e6c9af2d63ce7f0cbed9c43d9d062a0ea8"
+    },
+    {
+      "path": "dist/concept/icon-combat-hull.png",
+      "sha256": "67614e47509b438f9c209e13661fe5d285edc34715ab5c3912492fc887cb3a00"
+    },
+    {
+      "path": "dist/concept/icon-combat-laser.png",
+      "sha256": "ec3424f68e94474d70106cb553a272426ae3d44069e5beec70a2969ee23b499c"
+    },
+    {
+      "path": "dist/concept/icon-combat-radar-contact.png",
+      "sha256": "fd3cb58e014048bc677a49bcac2fa552b083b770f8047e6bb4781f48ace77fa6"
+    },
+    {
+      "path": "dist/concept/icon-combat-radar-target.png",
+      "sha256": "6388db385169ebf4d642e8b81653fa2535edef0055f132ec319c5c976c7ce1a2"
+    },
+    {
+      "path": "dist/concept/icon-combat-radar-threat.png",
+      "sha256": "17e8b0988670044d006b1afb9ca3e16b8c4873a766103240e9a753dcaf8c856d"
+    },
+    {
+      "path": "dist/concept/icon-combat-rockets.png",
+      "sha256": "c86a77812eaa9dd827ed618152e41a1ea4df981702f1de88f0b34c9658f9fb07"
+    },
+    {
+      "path": "dist/concept/icon-combat-shield.png",
+      "sha256": "ad3578b99da38130aab4f7329a25a33d460160e16f91e944002a530c45ff8b12"
+    },
+    {
+      "path": "dist/concept/icon-combat-target.png",
+      "sha256": "2f09c3c7cd04cb27030c7d75ec132c3105e15df33523424ad7fbce8327f8f524"
+    },
+    {
+      "path": "dist/concept/icon-combat-thruster.png",
+      "sha256": "7e997e7acc8a784c2506aeb38df48e117ca8852ced1f6caeeb96a6e9cb77cd5d"
+    },
+    {
+      "path": "dist/concept/icon-flight-autopilot.png",
+      "sha256": "bd78d37dab86f79df0c5ddd9b0e3ccfa3acb4bc45c514d63d5e05ab0be22e68d"
+    },
+    {
+      "path": "dist/concept/icon-flight-course.png",
+      "sha256": "7755e21781ac143339450ee35589da8665d87c8c96401d913976d109dbb80e4d"
+    },
+    {
+      "path": "dist/concept/icon-flight-distance.png",
+      "sha256": "a863fe93e906525ac03bd04ff34cf9bb8f1946a71d2e8b8b4acd4e2d1081f25c"
+    },
+    {
+      "path": "dist/concept/icon-flight-engage.png",
+      "sha256": "395bfbd1f3bb80758c70a2ee3002a2deee60b3d7b5f98367457ceddbebc47966"
+    },
+    {
+      "path": "dist/concept/icon-flight-eta.png",
+      "sha256": "fdaeaf8270dcfe687d456e064b8715b611f4b624e391a1541a843b0622218e00"
+    },
+    {
+      "path": "dist/concept/icon-flight-fuel.png",
+      "sha256": "bf5aabfeaeb7b15d92d674c71ea94fb2646aeab1ec41bc76d24497d73892bfb6"
+    },
+    {
+      "path": "dist/concept/icon-flight-navigation.png",
+      "sha256": "f159b3126bda01c27cc25b3fe7c8c06cd1af4e1001ae5f3a59bc1d3c3799c403"
+    },
+    {
+      "path": "dist/concept/icon-flight-rcs.png",
+      "sha256": "dfebef6485fa49eff392afcaafb45528289ef25b235ec2c668052e646eb4b6c6"
+    },
+    {
+      "path": "dist/concept/icon-flight-speed.png",
+      "sha256": "e990dd969ae12bc6f8b90898d662ea2bb948ef1c6ba96f25a6d4c531077bac2b"
+    },
+    {
+      "path": "dist/concept/icon-flight-target-action.png",
+      "sha256": "96895c275e788eaff7e943b5945de5f8bbe4fe8484a0d729e2b768eb42e09020"
+    },
+    {
+      "path": "dist/concept/icon-flight-target.png",
+      "sha256": "a09768a2b002e5fd16130fc4571c540d45f9382aa646ccec069ce838114cd2e6"
+    },
+    {
+      "path": "dist/concept/icon-flight-thrust.png",
+      "sha256": "4e429c17d6c744cace37da3ea1d7e2c68cbf7d7a551034b7796bff2d1cfa7756"
+    },
+    {
+      "path": "dist/concept/icon-flight-warning-fuel.png",
+      "sha256": "5d3d3aa390b13c10d45824361cb90715bc6af0b5f651823ae3e9097ef2df4b83"
+    },
+    {
+      "path": "dist/concept/icon-flight-warning-target.png",
+      "sha256": "648ca2299895bc23aca9079ba5c0df4637dcbb4d5f23ede64e099e388e89f1c8"
+    },
+    {
+      "path": "dist/concept/panel-border-cyan.png",
+      "sha256": "8b84e2b74eb48d1521a77a6997adbf97de0727b5f9b9473b2d91f056596a8537"
+    },
+    {
+      "path": "dist/concept/panel-border-orange.png",
+      "sha256": "dbc2c6c990f4818726c97b8169e3f165dcfd22f0a8f7e352c6db24d0b82670b4"
+    },
+    {
+      "path": "dist/concept/panel-border-red.png",
+      "sha256": "ec4f6f332edf51793f280d158e421d4e972a669d0cb7c7821cd46f48dbfa79ae"
+    },
+    {
+      "path": "dist/concept/planner-brand-lockup.png",
+      "sha256": "fd065d5ef6c1aae0d59752b146015d9703c42cbf9ab27586d961265f81b9303e"
+    },
+    {
+      "path": "dist/concept/planner-icon-action-engage.png",
+      "sha256": "2cb303c3053a7eec12b47fd2033ee99888c10aadd637c423095965a7f85efc30"
+    },
+    {
+      "path": "dist/concept/planner-icon-action-preview.png",
+      "sha256": "b723bd1777ef5040e848c4475b193bcb8711e64236287a67fd104d66fd086d74"
+    },
+    {
+      "path": "dist/concept/planner-icon-action-replan.png",
+      "sha256": "5c325b51595105252a4f34acb83d8443b555a0c0e7141f356cee56405eb25047"
+    },
+    {
+      "path": "dist/concept/planner-icon-align.png",
+      "sha256": "a925f2cb802031a7a7ec3ee070fc7e8d20f511b25bdddb1d9936a761d4e90046"
+    },
+    {
+      "path": "dist/concept/planner-icon-brake.png",
+      "sha256": "8340eba00ba407d935cf1bb459f760d2dd01731e83feefcd308c88c8c6df8211"
+    },
+    {
+      "path": "dist/concept/planner-icon-burn.png",
+      "sha256": "380c1166eb1f02a9f56713c582daa4fd831972ee309321002c4f08c2c7192d78"
+    },
+    {
+      "path": "dist/concept/planner-icon-flip.png",
+      "sha256": "5b68b7e965b57d8e494da8eb4a2e7a43f7c440481e486bb626c7bbcbffc15a2a"
+    },
+    {
+      "path": "dist/concept/planner-icon-footer-credits.png",
+      "sha256": "dcfbe3f1e8817701e43185ccb06090da156816ce27035f961d43263bb36dfa5f"
+    },
+    {
+      "path": "dist/concept/planner-icon-footer-ruf.png",
+      "sha256": "35553582588785dc1f4f1bee509d20659b284c9060b031c8eac8843bd0489f79"
+    },
+    {
+      "path": "dist/concept/planner-icon-header-brake.png",
+      "sha256": "6461d4a23d74b58d0acfee53b90a6d8e77514b6afc051de3b43a7750800cf405"
+    },
+    {
+      "path": "dist/concept/planner-icon-header-eta.png",
+      "sha256": "f98711e8b1f8da12aa86a59510446c284e96342a2d3b374e1c50cafd7eb88c2d"
+    },
+    {
+      "path": "dist/concept/planner-icon-header-fuel.png",
+      "sha256": "9cf18db9563f6f48fae0c8c4c0542cc9545514c9434839c88dbec71ebfaa22de"
+    },
+    {
+      "path": "dist/concept/planner-icon-header-target.png",
+      "sha256": "18add940bb4612a5e718f592a8bdbe8ba8db54a9da639411397cac0cd728b4cb"
+    },
+    {
+      "path": "dist/concept/planner-icon-hold.png",
+      "sha256": "f58308318a415cf4b12a9b5c91a282809bdff73dcf8a9e0ed8b27e6057ef18b9"
+    },
+    {
+      "path": "dist/concept/planner-icon-legend-avoidance.png",
+      "sha256": "01d6d20a47ac0c6a722fb3fd7389b647757a1950f9a27dd7790fceb7f3efe4d3"
+    },
+    {
+      "path": "dist/concept/planner-icon-legend-hazard.png",
+      "sha256": "0f757dd62faefa2e25c911fa0bfe5f430b74ea36e842ff9c3fa7fbc3270e8990"
+    },
+    {
+      "path": "dist/concept/planner-icon-legend-maneuver.png",
+      "sha256": "4c87c00302ffed6179bc638e88658c2ce0db7fc369a115b845374570b20d6957"
+    },
+    {
+      "path": "dist/concept/planner-icon-legend-route.png",
+      "sha256": "8f85cbbdb4e2e4f2d35dadb611defb271021e72ada6d287b288134da4a454be3"
+    },
+    {
+      "path": "dist/concept/planner-icon-legend-waypoint.png",
+      "sha256": "24fc0851b6aa93bab1dfa29994311c4132242323830b7707ef3f0096441e2590"
+    },
+    {
+      "path": "dist/concept/planner-icon-map-focus.png",
+      "sha256": "d76539fb8c290c1876379db7e71b1c63b1aaa07fe57241e76133491fa32adce6"
+    },
+    {
+      "path": "dist/concept/planner-icon-map-orbit.png",
+      "sha256": "de97ea4f936f147f044a2019f63ce8fb359324abf3c76a36f632a45dc60a909f"
+    },
+    {
+      "path": "dist/concept/planner-icon-map-zoom.png",
+      "sha256": "86aa7f16e6b2f48147c590090d3865f2c159dd52cbab2fc0451fe4d0941e5333"
+    },
+    {
+      "path": "dist/concept/planner-icon-profile-balanced.png",
+      "sha256": "87918b33d7075eeeab900a281358efe758e8be7d3711d148ff9d7e175e468999"
+    },
+    {
+      "path": "dist/concept/planner-icon-profile-fast.png",
+      "sha256": "28ad64de326f107ac45c4e89227dc46f1eda6e4fbdb00527e3ad3cd46fe71cc7"
+    },
+    {
+      "path": "dist/concept/planner-icon-profile-safe.png",
+      "sha256": "3d4e35aae43f14509ff8cbecf8b03a3afc856caae4620f712fd2f5fe5ec0f06e"
+    },
+    {
+      "path": "dist/concept/planner-rail-reference.png",
+      "sha256": "9881832facb2de0f801ecc5d7192dc16b486c935ba8aa04d0c6624a01e7bb673"
+    },
+    {
+      "path": "dist/concept/planner-ship-marker.png",
+      "sha256": "046d3841cacaa22e28b74124b12aeeda321f6e7f1b3b81f8c78aa727bce977b3"
+    },
+    {
+      "path": "dist/concept/planner-station-marker.png",
+      "sha256": "fb05e8ff0a1efe3109a6e1f0680f15ec050b9bec5d80dbfbfb3297271c3544d3"
+    },
+    {
+      "path": "dist/concept/planner-system-map-clean.png",
+      "sha256": "9ebe0fb09e92b438c9b03b16835cec8c5617830561d6fde78b460f8c8114e087"
+    },
+    {
+      "path": "dist/favicon.png",
+      "sha256": "a6c6a565367915e6d2a51617d691a4bb1249760f7d262af07e66f71ce65f4f53"
+    },
+    {
+      "path": "dist/fonts/rajdhani/OFL.txt",
+      "sha256": "6390ee7459abec970abc294644b54e59ecad808158af03ab4ae53fef00472a53"
+    },
+    {
+      "path": "dist/fonts/rajdhani/Rajdhani-Medium.ttf",
+      "sha256": "12ff7dcfe4c206e3875ac53b1762eab57de6a2fa7f5a86c26b97b88d6591eac2"
+    },
+    {
+      "path": "dist/fonts/rajdhani/Rajdhani-Regular.ttf",
+      "sha256": "6e1fc228a8318251a6e569502ec57bac1e4656c582f92f59ccecc4688e039b98"
+    },
+    {
+      "path": "dist/fonts/rajdhani/Rajdhani-SemiBold.ttf",
+      "sha256": "94bbd25a18ca665999feb05a537de9fd2b860dcfb78bbe9ca00270825bf235da"
+    },
+    {
+      "path": "dist/index.html",
+      "sha256": "5a48835712eacb4192ec79d6ff57ed299511dbf25b9a389379c736ab656ac230"
+    },
+    {
+      "path": "dist/ships/demo_scout_mk1.glb",
+      "sha256": "d89533e7ab1409b698c066e382ce2cc46963e3c9b2feb75f1e51ab28e7dcb7d0"
+    }
+  ],
+  "fixture": [
+    {
+      "path": "tests/performance/hvp-cut-rt.spec.ts",
+      "sha256": "e88e7b92b69a6839a0fdb9c09b44d47d29eb73f7c76202d15811677bd256d18e"
+    },
+    {
+      "path": "tests/performance/hvpCutRtReport.ts",
+      "sha256": "0eeebbd71f336ab1b336864b83af4cdfb0b6aa988e60e665e3dada36ebc1283c"
+    },
+    {
+      "path": "tests/e2e/hvp-performance-evidence.ts",
+      "sha256": "5d24c5e57b4aae9add2366e5d7a494de0507bf0e0198e08aeea860f938f571fb"
+    },
+    {
+      "path": "playwright.performance.config.ts",
+      "sha256": "b61f35b54c959a404e330ae1839a3370e8cf73ea25f9680517248049233cd522"
+    },
+    {
+      "path": "C:\\IFI_SourceCode\\Utils\\npm-tmp\\opencode\\hestia-cut-rt-v2-preflight-20260921\\p07-cut-performance.config.mjs",
+      "sha256": "f96077ac3a48d70999ea60759c16f7eaa7bdfe37dff21bfc17de3479587d1703"
+    }
+  ],
+  "sourceSha256": "ed82599b77548d917d6406710a547501646a2be943f1d0345326f6250433117f",
+  "buildSha256": "f06d4fde198f1e97313f66a71cd6a9045a8bdc3679132f50c7e6db6a1fc0dcc7",
+  "lockSha256": "df777f04bd29b891cccefcffb3b54cdd9f4dec8ae59d3de258ecdb85696c3890",
+  "wasmSha256": "db0b0ac357ae581d89134fd4ac0ff9a4c344d746fb1e6a14f2f98a3eb2714739",
+  "browserSha256": "e8bce39747ea63c9c7d4306f7635d2916c9ecb0cf913fbcf5e7acc4539b5b8a0",
+  "os": "Windows_NT 10.0.26200 x64",
+  "cpu": "Intel(R) Core(TM) Ultra 7 255H",
+  "ramBytes": 33811132416,
+  "power": "GUID des Energieschemas: 381b4222-f694-41f0-9685-ff5bb260df2e  (Ausbalanciert)",
+  "supply": "{\"PowerOnline\":true,\"Charging\":false,\"Discharging\":false}",
+  "adapters": [
+    {
+      "Name": "NVIDIA RTX PRO 500 Blackwell Generation Laptop GPU",
+      "DriverVersion": "32.0.15.9658",
+      "CurrentRefreshRate": null,
+      "CurrentHorizontalResolution": null
+    },
+    {
+      "Name": "Intel(R) Arc(TM) Pro 140T GPU (16GB)",
+      "DriverVersion": "32.0.101.8517",
+      "CurrentRefreshRate": 60,
+      "CurrentHorizontalResolution": 1920
+    }
+  ]
+}

@@ -1,0 +1,164 @@
+{
+  "config": {
+    "argv": [
+      "C:\\IFI_SO~1\\Utils\\npm-tmp\\opencode\\hvp-node22\\node_modules\\node\\bin\\node.exe",
+      "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutRT-P00\\apps\\weltraum-browser\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "-c",
+      "C:\\IFI_SourceCode\\Utils\\npm-tmp\\opencode\\hestia-cut-rt-v2-preflight-20260921\\p07-cut-performance.config.mjs",
+      "tests/performance/hvp-cut-rt.spec.ts",
+      "--grep",
+      "P07 body-box-sleeping warm session 1"
+    ],
+    "configFile": "C:\\IFI_SourceCode\\Utils\\npm-tmp\\opencode\\hestia-cut-rt-v2-preflight-20260921\\p07-cut-performance.config.mjs",
+    "rootDir": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutRT-P00/apps/weltraum-browser/tests/performance",
+    "failOnFlakyTests": false,
+    "forbidOnly": true,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/hestia-cut-rt-v2-preflight-20260921/p07-restore-warm-pilot-01/playwright-output",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutRT-P00/apps/weltraum-browser/tests/performance",
+        "testIgnore": [],
+        "testMatch": [
+          "hvp-cut-rt.spec.ts"
+        ],
+        "timeout": 1800000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "line",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "C:\\IFI_SourceCode\\Utils\\npm-tmp\\opencode\\hestia-cut-rt-v2-preflight-20260921\\p07-restore-warm-pilot-01/playwright-report.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "none",
+    "updateSourceMethod": "patch",
+    "version": "1.61.1",
+    "workers": 1,
+    "webServer": {
+      "command": "C:/IFI_SO~1/Utils/npm-tmp/opencode/hvp-node22/node_modules/node/bin/node.exe C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutRT-P00/apps/weltraum-browser/node_modules/vite/bin/vite.js preview --host 127.0.0.1 --port 5173 --strictPort",
+      "url": "http://127.0.0.1:5173",
+      "reuseExistingServer": false,
+      "timeout": 20000,
+      "cwd": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutRT-P00/apps/weltraum-browser"
+    }
+  },
+  "suites": [
+    {
+      "title": "hvp-cut-rt.spec.ts",
+      "file": "hvp-cut-rt.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "P07 body-box-sleeping warm session 1",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 1800000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 70037,
+                  "error": {
+                    "message": "Error: [{\"attempt\":1,\"status\":\"failed\",\"problems\":[\"Error: \\u001b[2mexpect(\\u001b[22m\\u001b[31mreceived\\u001b[39m\\u001b[2m).\\u001b[22mtoBe\\u001b[2m(\\u001b[22m\\u001b[32mexpected\\u001b[39m\\u001b[2m) // Object.is equality\\u001b[22m\\n\\nExpected: \\u001b[32mtrue\\u001b[39m\\nReceived: \\u001b[31mfalse\\u001b[39m\\n\\nCall Log:\\n- Timeout 10000ms exceeded while waiting on the predicate\"]}]\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m",
+                    "stack": "Error: [{\"attempt\":1,\"status\":\"failed\",\"problems\":[\"Error: \\u001b[2mexpect(\\u001b[22m\\u001b[31mreceived\\u001b[39m\\u001b[2m).\\u001b[22mtoBe\\u001b[2m(\\u001b[22m\\u001b[32mexpected\\u001b[39m\\u001b[2m) // Object.is equality\\u001b[22m\\n\\nExpected: \\u001b[32mtrue\\u001b[39m\\nReceived: \\u001b[31mfalse\\u001b[39m\\n\\nCall Log:\\n- Timeout 10000ms exceeded while waiting on the predicate\"]}]\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n    at C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutRT-P00\\apps\\weltraum-browser\\tests\\performance\\hvp-cut-rt.spec.ts:371:190",
+                    "location": {
+                      "file": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutRT-P00\\apps\\weltraum-browser\\tests\\performance\\hvp-cut-rt.spec.ts",
+                      "column": 190,
+                      "line": 371
+                    },
+                    "snippet": "\u001b[0m \u001b[90m 369 |\u001b[39m         \u001b[36mawait\u001b[39m writeFile(path\u001b[33m.\u001b[39mjoin(directory\u001b[33m,\u001b[39m \u001b[32m\"report.json\"\u001b[39m)\u001b[33m,\u001b[39m \u001b[33mJSON\u001b[39m\u001b[33m.\u001b[39mstringify(report\u001b[33m,\u001b[39m \u001b[36mnull\u001b[39m\u001b[33m,\u001b[39m \u001b[35m2\u001b[39m))\u001b[33m;\u001b[39m\n \u001b[90m 370 |\u001b[39m         expect(failure\u001b[33m,\u001b[39m \u001b[33mJSON\u001b[39m\u001b[33m.\u001b[39mstringify(report\u001b[33m.\u001b[39msummary))\u001b[33m.\u001b[39mtoBeUndefined()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 371 |\u001b[39m         expect(records\u001b[33m.\u001b[39mevery(record \u001b[33m=>\u001b[39m record\u001b[33m.\u001b[39mstatus \u001b[33m===\u001b[39m \u001b[32m\"completed\"\u001b[39m)\u001b[33m,\u001b[39m \u001b[33mJSON\u001b[39m\u001b[33m.\u001b[39mstringify(records\u001b[33m.\u001b[39mmap(record \u001b[33m=>\u001b[39m ({attempt\u001b[33m:\u001b[39m record\u001b[33m.\u001b[39mattempt\u001b[33m,\u001b[39m status\u001b[33m:\u001b[39m record\u001b[33m.\u001b[39mstatus\u001b[33m,\u001b[39m problems\u001b[33m:\u001b[39m record\u001b[33m.\u001b[39mproblems}))))\u001b[33m.\u001b[39mtoBe(\u001b[36mtrue\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                                                                                                                                                                              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 372 |\u001b[39m         expect(report\u001b[33m.\u001b[39msourceUnchanged \u001b[33m&&\u001b[39m report\u001b[33m.\u001b[39mbuildUnchanged)\u001b[33m.\u001b[39mtoBe(\u001b[36mtrue\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 373 |\u001b[39m       })\u001b[33m;\u001b[39m\n \u001b[90m 374 |\u001b[39m     }\u001b[0m"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutRT-P00\\apps\\weltraum-browser\\tests\\performance\\hvp-cut-rt.spec.ts",
+                        "column": 190,
+                        "line": 371
+                      },
+                      "message": "Error: [{\"attempt\":1,\"status\":\"failed\",\"problems\":[\"Error: \\u001b[2mexpect(\\u001b[22m\\u001b[31mreceived\\u001b[39m\\u001b[2m).\\u001b[22mtoBe\\u001b[2m(\\u001b[22m\\u001b[32mexpected\\u001b[39m\\u001b[2m) // Object.is equality\\u001b[22m\\n\\nExpected: \\u001b[32mtrue\\u001b[39m\\nReceived: \\u001b[31mfalse\\u001b[39m\\n\\nCall Log:\\n- Timeout 10000ms exceeded while waiting on the predicate\"]}]\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n\n  369 |         await writeFile(path.join(directory, \"report.json\"), JSON.stringify(report, null, 2));\n  370 |         expect(failure, JSON.stringify(report.summary)).toBeUndefined();\n> 371 |         expect(records.every(record => record.status === \"completed\"), JSON.stringify(records.map(record => ({attempt: record.attempt, status: record.status, problems: record.problems})))).toBe(true);\n      |                                                                                                                                                                                              ^\n  372 |         expect(report.sourceUnchanged && report.buildUnchanged).toBe(true);\n  373 |       });\n  374 |     }\n    at C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutRT-P00\\apps\\weltraum-browser\\tests\\performance\\hvp-cut-rt.spec.ts:371:190"
+                    }
+                  ],
+                  "stdout": [
+                    {
+                      "text": "P07 body-box-sleeping/warm/1/1: failed\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-22T20:29:35.388Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\IFI_SourceCode\\Utils\\npm-tmp\\opencode\\hestia-cut-rt-v2-preflight-20260921\\p07-restore-warm-pilot-01\\playwright-output\\hvp-cut-rt-P07-body-box-sleeping-warm-session-1\\error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutRT-P00\\apps\\weltraum-browser\\tests\\performance\\hvp-cut-rt.spec.ts",
+                    "column": 190,
+                    "line": 371
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "fbb71cd484a2b9289551-35e672831f476f5101bf",
+          "file": "hvp-cut-rt.spec.ts",
+          "line": 298,
+          "column": 7
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-09-22T20:29:32.919Z",
+    "duration": 73032.258,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

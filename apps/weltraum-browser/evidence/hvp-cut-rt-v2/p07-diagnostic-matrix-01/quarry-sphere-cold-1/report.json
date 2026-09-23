@@ -1,0 +1,1435 @@
+{
+  "planSha256": "33f0166250a4ad511ffd62b5862abbe575d47d02fd26f2206eb327b5b1bd5014",
+  "plannedAttempts": 1,
+  "records": [
+    {
+      "attempt": 1,
+      "status": "completed",
+      "result": {
+        "sample": {
+          "commandId": "cut-1",
+          "scenario": "quarry",
+          "temperature": "cold",
+          "outcome": "Applied",
+          "inputMs": 12890.199999988079,
+          "appliedMs": 13203.599902331829,
+          "firstCommittedRenderSubmitMs": 13244.899951159954,
+          "holdMs": 33.80000001192093,
+          "sourceGenerationBefore": 0,
+          "sourceGenerationAfter": 1,
+          "reason": "Terrain and collision committed"
+        },
+        "before": {
+          "origin": 1790115336088.7,
+          "now": 12880.5,
+          "root": 0,
+          "digest": "b8fde6b0",
+          "physics": {
+            "ticks": 191,
+            "backlogSeconds": 0.00013333331545193824,
+            "discardedSeconds": 0.00793333332737296,
+            "status": "Running",
+            "gravity": 11.794460201817357,
+            "gravityProfile": "local-tangent-gravity-v1",
+            "activeDynamic": 1,
+            "residentDynamic": 2,
+            "solver": "rapier-0.12.0",
+            "stepCpuMs": 0.5,
+            "bodyCount": 4,
+            "colliderCount": 88,
+            "nativeBytes": "unsupported",
+            "terrainGeneration": 0,
+            "collisionBytes": 2490840,
+            "terrainTransaction": "Idle",
+            "terrainFragments": [],
+            "parked": [],
+            "neighbor": null,
+            "dormantCheckpointBytes": 0,
+            "bodyResidencyId": null,
+            "bodyResidencyTransaction": "Idle",
+            "neighborTransaction": "Idle",
+            "neighborPinned": false,
+            "preparedTerrainFragments": [],
+            "player": {
+              "ownerId": "hvp:player",
+              "position": {
+                "x": -9,
+                "y": 2.406723737716675,
+                "z": -11
+              },
+              "grounded": true,
+              "velocityY": 0,
+              "jumpCount": 0,
+              "cameraFraction": 1,
+              "status": "Walking"
+            },
+            "structural": {
+              "kind": "branch",
+              "origin": {
+                "x": -12,
+                "y": 1.75,
+                "z": -13.5
+              },
+              "cutEdge": 4,
+              "generation": 0,
+              "sourceDigest": "fnv1a64-v1:9cb845863922efae",
+              "state": "Idle",
+              "last": null,
+              "preview": null,
+              "aimPoint": {
+                "x": -11.25,
+                "y": 3,
+                "z": -13.25
+              },
+              "attachment": {
+                "id": "hvp:branch:foliage",
+                "ownerId": "hvp:branch:parent",
+                "supportCell": {
+                  "x": 10,
+                  "y": 11,
+                  "z": 2
+                }
+              },
+              "parts": [
+                {
+                  "ownerId": "hvp:branch:parent",
+                  "sourceDigest": "fnv1a64-v1:f86be8fb3a37f1cb",
+                  "anchored": true,
+                  "cellCount": 384,
+                  "center": {
+                    "x": 0.75,
+                    "y": 1,
+                    "z": 0.25
+                  },
+                  "position": {
+                    "x": -11.25,
+                    "y": 2.75,
+                    "z": -13.25
+                  },
+                  "orientation": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0,
+                    "w": 1
+                  },
+                  "velocity": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                  },
+                  "massKg": 450,
+                  "sleeping": false
+                }
+              ]
+            },
+            "moving": {
+              "sequence": 0,
+              "pendingId": null,
+              "state": "Idle",
+              "preview": null,
+              "last": null
+            },
+            "lastImpulse": null,
+            "impulseTarget": {
+              "kind": "Fixed",
+              "target": null,
+              "distanceMeters": 3.2988650798797607,
+              "massKg": null,
+              "point": {
+                "x": -10.497724724058823,
+                "y": 1.000000049371474,
+                "z": -9.003033701254903
+              }
+            },
+            "lastImpulseTick": null,
+            "inertia": {
+              "ownerId": "hvp:physics:inertia",
+              "sourceDigest": "fnv1a64-v1:15f3bb58342acf4c",
+              "centerOfMass": {
+                "x": 0.29583333333333334,
+                "y": 0.29583333333333334,
+                "z": 0.125
+              },
+              "tensor": {
+                "xx": 3.441772460937501,
+                "yy": 3.4417724609374996,
+                "zz": 6.517333984375002,
+                "xy": 1.9140625000000004,
+                "xz": 0,
+                "yz": 1.3877787807814457e-17
+              },
+              "principal": {
+                "principalInertia": {
+                  "x": 1.5277099609374998,
+                  "y": 5.355834960937501,
+                  "z": 6.517333984375002
+                },
+                "frame": {
+                  "x": 0.3826834323650899,
+                  "y": 0.9238795325112867,
+                  "z": 0,
+                  "w": 0
+                },
+                "residual": 1.1102230246251565e-16
+              },
+              "colliders": 2,
+              "impulses": 0,
+              "aimPoint": {
+                "x": -8.564777374267578,
+                "y": 1.312473177909851,
+                "z": -13.287601470947266
+              },
+              "angularVelocity": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              }
+            },
+            "bodies": [
+              {
+                "ownerId": "hvp:physics:drop",
+                "position": {
+                  "x": -9.624565124511719,
+                  "y": 0.6241469383239746,
+                  "z": -7.507253170013428
+                },
+                "orientation": {
+                  "x": -0.6502015590667725,
+                  "y": -0.2731199562549591,
+                  "z": 0.275415301322937,
+                  "w": -0.6532915234565735
+                },
+                "velocity": {
+                  "x": 0.00001197592882817844,
+                  "y": -0.0010055258171632886,
+                  "z": -0.000013546498848882038
+                },
+                "sleeping": false,
+                "massKg": 300
+              },
+              {
+                "ownerId": "hvp:physics:inertia",
+                "position": {
+                  "x": -8.716800689697266,
+                  "y": 1.5458214282989502,
+                  "z": -13.151344299316406
+                },
+                "orientation": {
+                  "x": -0.0002377739001531154,
+                  "y": 0.3575611114501953,
+                  "z": 0.00005180474545340985,
+                  "w": 0.9338896870613098
+                },
+                "velocity": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                },
+                "sleeping": true,
+                "massKg": 35.15625
+              },
+              {
+                "ownerId": "hvp:branch:parent",
+                "position": {
+                  "x": -11.25,
+                  "y": 2.75,
+                  "z": -13.25
+                },
+                "orientation": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0,
+                  "w": 1
+                },
+                "velocity": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                },
+                "sleeping": false,
+                "massKg": 450
+              }
+            ]
+          },
+          "clock": {
+            "maxTimerGapMs": 42.400000005960464,
+            "maxAdvanceMs": 18.700000017881393,
+            "maxHandlerMs": 1289.5999999940395,
+            "lastCommand": "Read",
+            "lastHandlerMs": 0.5,
+            "delayedCallbacks": [],
+            "timers": 1
+          },
+          "tool": {
+            "mode": "Kugel 0,25 m",
+            "edges": 0,
+            "issued": 0,
+            "message": "18 Zellen · sicherer Steinbruch",
+            "state": "Idle",
+            "queued": 0,
+            "receipts": 0,
+            "structural": {
+              "state": "Ready",
+              "issued": 0,
+              "last": null
+            },
+            "moving": {
+              "state": "Idle",
+              "last": null,
+              "issued": 0
+            }
+          },
+          "camera": {
+            "position": [
+              -9,
+              3.1573750108708984,
+              -11
+            ],
+            "orientation": [
+              -0.1102980361525686,
+              0.889105780539065,
+              0.3308941084577058,
+              0.2963685935130217
+            ],
+            "visualBody": [
+              -9,
+              2.4073750108708984,
+              -11
+            ],
+            "heightMeters": 1.8,
+            "view": "FirstPerson"
+          },
+          "save": {
+            "state": "Loaded",
+            "message": "Aus Spielstand gestartet – pausiert",
+            "revision": 1
+          },
+          "health": {
+            "enabled": true,
+            "samples": 263,
+            "errors": 0,
+            "dropped": 0,
+            "cutObservation": {
+              "status": "armed",
+              "drops": 0,
+              "disables": 0,
+              "inputCount": 0,
+              "pendingRender": false
+            }
+          },
+          "resources": {
+            "ledger": {
+              "slotBytes": 8388608,
+              "preparedCopyBytes": 8388608,
+              "maskBytes": 1089536,
+              "meshBytes": 28104216,
+              "groupedIndexBytes": 2448576,
+              "artifactCopyBytes": 28104216,
+              "retainedMeshBytes": 28117784,
+              "tempEstimateBytes": 157073096,
+              "vegetationSourceBytes": 7158400,
+              "checkpointSourceBytes": 2794784,
+              "totalCpuBytes": 251314648,
+              "gpuBytes": "unsupported",
+              "triangles": 374640,
+              "drawCalls": 169,
+              "dormantCheckpointBytes": 0,
+              "neighborSourceBytes": 0,
+              "neighborCacheBytes": 0,
+              "neighborCheckpointBytes": 0,
+              "neighborBaseProxyBytes": 0,
+              "physicsPayloadBytes": 4981680,
+              "physicsPrepareBytes": 100663296,
+              "dynamicFragmentSourceBytes": 0
+            },
+            "gameplayCpuBytes": 251314648,
+            "diagnosticReservedBytes": 524288,
+            "totalCpuBytes": 251838936,
+            "diagnosticRuntimeOverhead": "not-measured",
+            "cutObservation": {
+              "status": "armed",
+              "drops": 0,
+              "disables": 0,
+              "inputCount": 0,
+              "pendingRender": false
+            },
+            "caps": {
+              "maxCpuBytes": 268435456,
+              "maxMeshBytes": 134217728,
+              "maxTriangles": 500000,
+              "maxDrawCalls": 300
+            }
+          },
+          "visible": "visible",
+          "focused": true,
+          "locked": true,
+          "testBridge": false,
+          "inputError": null,
+          "pauseDialogOpen": false
+        },
+        "after": {
+          "origin": 1790115336088.7,
+          "now": 13263.399999976158,
+          "root": 1,
+          "digest": "979b7dde",
+          "physics": {
+            "ticks": 208,
+            "backlogSeconds": 0.01663333331545194,
+            "discardedSeconds": 0.01359999999403963,
+            "status": "Running",
+            "gravity": 11.794460201817357,
+            "gravityProfile": "local-tangent-gravity-v1",
+            "activeDynamic": 1,
+            "residentDynamic": 2,
+            "solver": "rapier-0.12.0",
+            "stepCpuMs": 0.7000000178813934,
+            "bodyCount": 4,
+            "colliderCount": 88,
+            "nativeBytes": "unsupported",
+            "terrainGeneration": 1,
+            "collisionBytes": 2493000,
+            "terrainTransaction": "Idle",
+            "terrainFragments": [],
+            "parked": [],
+            "neighbor": null,
+            "dormantCheckpointBytes": 0,
+            "bodyResidencyId": null,
+            "bodyResidencyTransaction": "Idle",
+            "neighborTransaction": "Idle",
+            "neighborPinned": false,
+            "preparedTerrainFragments": [],
+            "player": {
+              "ownerId": "hvp:player",
+              "position": {
+                "x": -9,
+                "y": 2.406723737716675,
+                "z": -11
+              },
+              "grounded": true,
+              "velocityY": 0,
+              "jumpCount": 0,
+              "cameraFraction": 1,
+              "status": "Walking"
+            },
+            "structural": {
+              "kind": "branch",
+              "origin": {
+                "x": -12,
+                "y": 1.75,
+                "z": -13.5
+              },
+              "cutEdge": 4,
+              "generation": 0,
+              "sourceDigest": "fnv1a64-v1:9cb845863922efae",
+              "state": "Idle",
+              "last": null,
+              "preview": null,
+              "aimPoint": {
+                "x": -11.25,
+                "y": 3,
+                "z": -13.25
+              },
+              "attachment": {
+                "id": "hvp:branch:foliage",
+                "ownerId": "hvp:branch:parent",
+                "supportCell": {
+                  "x": 10,
+                  "y": 11,
+                  "z": 2
+                }
+              },
+              "parts": [
+                {
+                  "ownerId": "hvp:branch:parent",
+                  "sourceDigest": "fnv1a64-v1:f86be8fb3a37f1cb",
+                  "anchored": true,
+                  "cellCount": 384,
+                  "center": {
+                    "x": 0.75,
+                    "y": 1,
+                    "z": 0.25
+                  },
+                  "position": {
+                    "x": -11.25,
+                    "y": 2.75,
+                    "z": -13.25
+                  },
+                  "orientation": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0,
+                    "w": 1
+                  },
+                  "velocity": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                  },
+                  "massKg": 450,
+                  "sleeping": false
+                }
+              ]
+            },
+            "moving": {
+              "sequence": 0,
+              "pendingId": null,
+              "state": "Idle",
+              "preview": null,
+              "last": null
+            },
+            "lastImpulse": null,
+            "impulseTarget": {
+              "kind": "InvalidAim",
+              "target": null,
+              "distanceMeters": null,
+              "massKg": null,
+              "point": null
+            },
+            "lastImpulseTick": null,
+            "inertia": {
+              "ownerId": "hvp:physics:inertia",
+              "sourceDigest": "fnv1a64-v1:15f3bb58342acf4c",
+              "centerOfMass": {
+                "x": 0.29583333333333334,
+                "y": 0.29583333333333334,
+                "z": 0.125
+              },
+              "tensor": {
+                "xx": 3.441772460937501,
+                "yy": 3.4417724609374996,
+                "zz": 6.517333984375002,
+                "xy": 1.9140625000000004,
+                "xz": 0,
+                "yz": 1.3877787807814457e-17
+              },
+              "principal": {
+                "principalInertia": {
+                  "x": 1.5277099609374998,
+                  "y": 5.355834960937501,
+                  "z": 6.517333984375002
+                },
+                "frame": {
+                  "x": 0.3826834323650899,
+                  "y": 0.9238795325112867,
+                  "z": 0,
+                  "w": 0
+                },
+                "residual": 1.1102230246251565e-16
+              },
+              "colliders": 2,
+              "impulses": 0,
+              "aimPoint": {
+                "x": -8.564777374267578,
+                "y": 1.312473177909851,
+                "z": -13.287601470947266
+              },
+              "angularVelocity": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              }
+            },
+            "bodies": [
+              {
+                "ownerId": "hvp:physics:drop",
+                "position": {
+                  "x": -9.624565124511719,
+                  "y": 0.6241469383239746,
+                  "z": -7.5072526931762695
+                },
+                "orientation": {
+                  "x": -0.6502026915550232,
+                  "y": -0.27312055230140686,
+                  "z": 0.2754145860671997,
+                  "w": -0.6532903909683228
+                },
+                "velocity": {
+                  "x": -0.0000012138692682128749,
+                  "y": -0.0009909848449751735,
+                  "z": -0.0000011973181699431734
+                },
+                "sleeping": false,
+                "massKg": 300
+              },
+              {
+                "ownerId": "hvp:physics:inertia",
+                "position": {
+                  "x": -8.716800689697266,
+                  "y": 1.5458214282989502,
+                  "z": -13.151344299316406
+                },
+                "orientation": {
+                  "x": -0.0002377739001531154,
+                  "y": 0.3575611114501953,
+                  "z": 0.00005180474545340985,
+                  "w": 0.9338896870613098
+                },
+                "velocity": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                },
+                "sleeping": true,
+                "massKg": 35.15625
+              },
+              {
+                "ownerId": "hvp:branch:parent",
+                "position": {
+                  "x": -11.25,
+                  "y": 2.75,
+                  "z": -13.25
+                },
+                "orientation": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0,
+                  "w": 1
+                },
+                "velocity": {
+                  "x": 0,
+                  "y": 0,
+                  "z": 0
+                },
+                "sleeping": false,
+                "massKg": 450
+              }
+            ]
+          },
+          "clock": {
+            "maxTimerGapMs": 42.400000005960464,
+            "maxAdvanceMs": 18.700000017881393,
+            "maxHandlerMs": 1289.5999999940395,
+            "lastCommand": "Read",
+            "lastHandlerMs": 0.10000002384185791,
+            "delayedCallbacks": [],
+            "lastTerrainRecipeMs": 0,
+            "lastTerrainCookMs": 0.20000001788139343,
+            "lastTerrainInstallMs": 0,
+            "lastTerrainHoldMs": 33.80000001192093,
+            "lastTerrainCommandId": "cut-1",
+            "timers": 1
+          },
+          "tool": {
+            "mode": "Kugel 0,25 m",
+            "edges": 1,
+            "issued": 1,
+            "message": "Protected: top-only quarry depth exceeds 0.5m",
+            "state": "Applied",
+            "queued": 0,
+            "receipts": 1,
+            "last": {
+              "commandId": "cut-1",
+              "status": "Applied",
+              "removedCells": 18,
+              "reason": "Terrain and collision committed",
+              "revision": 1
+            },
+            "structural": {
+              "state": "Ready",
+              "issued": 0,
+              "last": null
+            },
+            "moving": {
+              "state": "Idle",
+              "last": null,
+              "issued": 0
+            }
+          },
+          "camera": {
+            "position": [
+              -9,
+              3.1567238676062184,
+              -11
+            ],
+            "orientation": [
+              -0.1102980361525686,
+              0.889105780539065,
+              0.3308941084577058,
+              0.2963685935130217
+            ],
+            "visualBody": [
+              -9,
+              2.4067238676062184,
+              -11
+            ],
+            "heightMeters": 1.8,
+            "view": "FirstPerson"
+          },
+          "save": {
+            "state": "Loaded",
+            "message": "Aus Spielstand gestartet – pausiert",
+            "revision": 1
+          },
+          "health": {
+            "enabled": true,
+            "samples": 323,
+            "errors": 0,
+            "dropped": 0,
+            "cutObservation": {
+              "status": "armed",
+              "drops": 0,
+              "disables": 0,
+              "inputCount": 1,
+              "pendingRender": false
+            }
+          },
+          "resources": {
+            "ledger": {
+              "slotBytes": 8388608,
+              "preparedCopyBytes": 8388608,
+              "maskBytes": 1089536,
+              "meshBytes": 28109256,
+              "groupedIndexBytes": 2449296,
+              "artifactCopyBytes": 28109256,
+              "retainedMeshBytes": 28122824,
+              "tempEstimateBytes": 157086184,
+              "vegetationSourceBytes": 7158400,
+              "checkpointSourceBytes": 2794784,
+              "totalCpuBytes": 251346728,
+              "gpuBytes": "unsupported",
+              "triangles": 374700,
+              "drawCalls": 169,
+              "dormantCheckpointBytes": 0,
+              "neighborSourceBytes": 0,
+              "neighborCacheBytes": 0,
+              "neighborCheckpointBytes": 0,
+              "neighborBaseProxyBytes": 0,
+              "physicsPayloadBytes": 4986000,
+              "physicsPrepareBytes": 100663296,
+              "dynamicFragmentSourceBytes": 0
+            },
+            "gameplayCpuBytes": 251346728,
+            "diagnosticReservedBytes": 524288,
+            "totalCpuBytes": 251871016,
+            "diagnosticRuntimeOverhead": "not-measured",
+            "cutObservation": {
+              "status": "armed",
+              "drops": 0,
+              "disables": 0,
+              "inputCount": 1,
+              "pendingRender": false
+            },
+            "caps": {
+              "maxCpuBytes": 268435456,
+              "maxMeshBytes": 134217728,
+              "maxTriangles": 500000,
+              "maxDrawCalls": 300
+            }
+          },
+          "visible": "visible",
+          "focused": true,
+          "locked": true,
+          "testBridge": false,
+          "inputError": null,
+          "pauseDialogOpen": false
+        },
+        "raw": {
+          "entries": [
+            {
+              "name": "hvp.frameIntervalMs",
+              "start": 12847.9,
+              "duration": 16.700000000000728,
+              "detail": {
+                "sampleId": "frameIntervalMs:278"
+              }
+            },
+            {
+              "name": "hvp.frameIntervalMs",
+              "start": 12864.6,
+              "duration": 16.69999999999891,
+              "detail": {
+                "sampleId": "frameIntervalMs:280"
+              }
+            },
+            {
+              "name": "hvp.frameIntervalMs",
+              "start": 12881.3,
+              "duration": 16.600000000000364,
+              "detail": {
+                "sampleId": "frameIntervalMs:286"
+              }
+            },
+            {
+              "name": "hvp.cutInputMs",
+              "start": 12890.199999988079,
+              "duration": 0,
+              "detail": {
+                "sampleId": "cutInputMs:283",
+                "data": {
+                  "commandId": "cut-1",
+                  "thread": "main",
+                  "phase": "cutInputMs",
+                  "origin": 1790115336088.7,
+                  "start": 12890.199999988079,
+                  "duration": 0
+                }
+              }
+            },
+            {
+              "name": "hvp.frameIntervalMs",
+              "start": 12897.9,
+              "duration": 16.80000000000109,
+              "detail": {
+                "sampleId": "frameIntervalMs:288"
+              }
+            },
+            {
+              "name": "hvp.cutSubmittedMs",
+              "start": 12906.399999976158,
+              "duration": 0,
+              "detail": {
+                "sampleId": "cutSubmittedMs:282",
+                "data": {
+                  "commandId": "cut-1",
+                  "thread": "main",
+                  "phase": "cutSubmittedMs",
+                  "origin": 1790115336088.7,
+                  "start": 12906.399999976158,
+                  "duration": 0
+                }
+              }
+            },
+            {
+              "name": "hvp.cutQueueWaitMs",
+              "start": 12906.399999976158,
+              "duration": 0.7000000178813934,
+              "detail": {
+                "sampleId": "cutQueueWaitMs:284",
+                "data": {
+                  "commandId": "cut-1",
+                  "thread": "main",
+                  "phase": "cutQueueWaitMs",
+                  "origin": 1790115336088.7,
+                  "start": 12906.399999976158,
+                  "duration": 0.7000000178813934
+                }
+              }
+            },
+            {
+              "name": "hvp.cutRootPrepareMs",
+              "start": 12907.199999988079,
+              "duration": 0.30000001192092896,
+              "detail": {
+                "sampleId": "cutRootPrepareMs:285",
+                "data": {
+                  "commandId": "cut-1",
+                  "thread": "main",
+                  "phase": "cutRootPrepareMs",
+                  "origin": 1790115336088.7,
+                  "start": 12907.199999988079,
+                  "duration": 0.30000001192092896
+                }
+              }
+            },
+            {
+              "name": "hvp.frameIntervalMs",
+              "start": 12914.7,
+              "duration": 16.5,
+              "detail": {
+                "sampleId": "frameIntervalMs:291"
+              }
+            },
+            {
+              "name": "hvp.frameIntervalMs",
+              "start": 12931.2,
+              "duration": 16.69999999999891,
+              "detail": {
+                "sampleId": "frameIntervalMs:296"
+              }
+            },
+            {
+              "name": "hvp.frameIntervalMs",
+              "start": 12947.9,
+              "duration": 50,
+              "detail": {
+                "sampleId": "frameIntervalMs:298"
+              }
+            },
+            {
+              "name": "hvp.frameIntervalMs",
+              "start": 12997.9,
+              "duration": 33.30000000000109,
+              "detail": {
+                "sampleId": "frameIntervalMs:304"
+              }
+            },
+            {
+              "name": "hvp.frameIntervalMs",
+              "start": 13031.2,
+              "duration": 16.69999999999891,
+              "detail": {
+                "sampleId": "frameIntervalMs:309"
+              }
+            },
+            {
+              "name": "hvp.frameIntervalMs",
+              "start": 13047.9,
+              "duration": 16.600000000000364,
+              "detail": {
+                "sampleId": "frameIntervalMs:312"
+              }
+            },
+            {
+              "name": "hvp.cutCompileMs",
+              "start": 12907.59999999404,
+              "duration": 170.59999999403954,
+              "detail": {
+                "sampleId": "cutCompileMs:314",
+                "data": {
+                  "commandId": "cut-1",
+                  "thread": "main",
+                  "phase": "cutCompileMs",
+                  "origin": 1790115336088.7,
+                  "start": 12907.59999999404,
+                  "duration": 170.59999999403954
+                }
+              }
+            },
+            {
+              "name": "hvp.cutGraphicsStageMs",
+              "start": 13078.299999982119,
+              "duration": 43.80000001192093,
+              "detail": {
+                "sampleId": "cutGraphicsStageMs:318",
+                "data": {
+                  "commandId": "cut-1",
+                  "thread": "main",
+                  "phase": "cutGraphicsStageMs",
+                  "origin": 1790115336088.7,
+                  "start": 13078.299999982119,
+                  "duration": 43.80000001192093
+                }
+              }
+            },
+            {
+              "name": "hvp.cutLookRegroupMs",
+              "start": 13078.799999982119,
+              "duration": 0.5,
+              "detail": {
+                "sampleId": "cutLookRegroupMs:315",
+                "data": {
+                  "commandId": "cut-1",
+                  "thread": "main",
+                  "phase": "cutLookRegroupMs",
+                  "origin": 1790115336088.7,
+                  "start": 13078.799999982119,
+                  "duration": 0.5
+                }
+              }
+            },
+            {
+              "name": "hvp.cutArtifactCreateMs",
+              "start": 13079.699999988079,
+              "duration": 12.800000011920929,
+              "detail": {
+                "sampleId": "cutArtifactCreateMs:316",
+                "data": {
+                  "commandId": "cut-1",
+                  "thread": "main",
+                  "phase": "cutArtifactCreateMs",
+                  "origin": 1790115336088.7,
+                  "start": 13079.699999988079,
+                  "duration": 12.800000011920929
+                }
+              }
+            },
+            {
+              "name": "hvp.cutBackendUpsertMs",
+              "start": 13092.799999982119,
+              "duration": 17.700000017881393,
+              "detail": {
+                "sampleId": "cutBackendUpsertMs:317",
+                "data": {
+                  "commandId": "cut-1",
+                  "thread": "main",
+                  "phase": "cutBackendUpsertMs",
+                  "origin": 1790115336088.7,
+                  "start": 13092.799999982119,
+                  "duration": 17.700000017881393
+                }
+              }
+            },
+            {
+              "name": "hvp.frameIntervalMs",
+              "start": 13064.5,
+              "duration": 16.700000000000728,
+              "detail": {
+                "sampleId": "frameIntervalMs:320"
+              }
+            },
+            {
+              "name": "hvp.resources",
+              "start": 13134.09999999404,
+              "duration": 0,
+              "detail": {
+                "sampleId": "resources:322",
+                "data": {
+                  "triangles": 374640,
+                  "draws": 169,
+                  "cpuBytes": 251314648,
+                  "gameplayCpuBytes": 251314648,
+                  "diagnosticReservedBytes": 524288,
+                  "totalCpuBytes": 251838936,
+                  "diagnosticRuntimeOverhead": "not-measured",
+                  "cutObservation": {
+                    "status": "armed",
+                    "drops": 0,
+                    "disables": 0,
+                    "inputCount": 1,
+                    "pendingRender": false
+                  },
+                  "meshBytes": 28117784,
+                  "activeDynamic": 1,
+                  "residentDynamic": 2,
+                  "colliders": 88,
+                  "heavyJobs": 0,
+                  "queue": 0
+                }
+              }
+            },
+            {
+              "name": "hvp.frameIntervalMs",
+              "start": 13081.2,
+              "duration": 50.099999999998545,
+              "detail": {
+                "sampleId": "frameIntervalMs:327"
+              }
+            },
+            {
+              "name": "hvp.cutNativePrepareMs",
+              "start": 13122.299999982119,
+              "duration": 13.800000011920929,
+              "detail": {
+                "sampleId": "cutNativePrepareMs:326",
+                "data": {
+                  "commandId": "cut-1",
+                  "thread": "main",
+                  "phase": "cutNativePrepareMs",
+                  "origin": 1790115336088.7,
+                  "start": 13122.299999982119,
+                  "duration": 13.800000011920929
+                }
+              }
+            },
+            {
+              "name": "hvp.cutNativeCommitMs",
+              "start": 13136.09999999404,
+              "duration": 10.099999994039536,
+              "detail": {
+                "sampleId": "cutNativeCommitMs:329",
+                "data": {
+                  "commandId": "cut-1",
+                  "thread": "main",
+                  "phase": "cutNativeCommitMs",
+                  "origin": 1790115336088.7,
+                  "start": 13136.09999999404,
+                  "duration": 10.099999994039536
+                }
+              }
+            },
+            {
+              "name": "hvp.cutRootCommitMs",
+              "start": 13146.199999988079,
+              "duration": 0.09999999403953552,
+              "detail": {
+                "sampleId": "cutRootCommitMs:330",
+                "data": {
+                  "commandId": "cut-1",
+                  "thread": "main",
+                  "phase": "cutRootCommitMs",
+                  "origin": 1790115336088.7,
+                  "start": 13146.199999988079,
+                  "duration": 0.09999999403953552
+                }
+              }
+            },
+            {
+              "name": "hvp.cutPublishMs",
+              "start": 13146.399999976158,
+              "duration": 10.200000017881393,
+              "detail": {
+                "sampleId": "cutPublishMs:331",
+                "data": {
+                  "commandId": "cut-1",
+                  "thread": "main",
+                  "phase": "cutPublishMs",
+                  "origin": 1790115336088.7,
+                  "start": 13146.399999976158,
+                  "duration": 10.200000017881393
+                }
+              }
+            },
+            {
+              "name": "hvp.frameIntervalMs",
+              "start": 13131.3,
+              "duration": 16.600000000000364,
+              "detail": {
+                "sampleId": "frameIntervalMs:332"
+              }
+            },
+            {
+              "name": "hvp.cutInputToAppliedMs",
+              "start": 12890.199999988079,
+              "duration": 313.39990234375,
+              "detail": {
+                "sampleId": "cutInputToAppliedMs:337",
+                "data": {
+                  "commandId": "cut-1",
+                  "inputOrigin": 1790115336088.7,
+                  "inputStart": 12890.199999988079,
+                  "terminalOrigin": 1790115336088.7,
+                  "terminalStart": 12906.399999976158,
+                  "terminalDuration": 297.2000000178814
+                }
+              }
+            },
+            {
+              "name": "hvp.cutFirstCommittedRenderSubmitMs",
+              "start": 12890.199999988079,
+              "duration": 354.699951171875,
+              "detail": {
+                "sampleId": "cutFirstCommittedRenderSubmitMs:340",
+                "data": {
+                  "commandId": "cut-1",
+                  "savedRevision": 1,
+                  "savedDigest": "979b7dde",
+                  "nativeGeneration": 1,
+                  "activeTerrainKeys": [
+                    "hvp:terrain:s1:r0",
+                    "hvp:terrain:s2:r0",
+                    "hvp:terrain:s3:r0",
+                    "hvp:terrain:s4:r0",
+                    "hvp:terrain:s5:r0",
+                    "hvp:terrain:s6:r0",
+                    "hvp:terrain:s7:r0",
+                    "hvp:terrain:s8:r0",
+                    "hvp:terrain:s9:r0",
+                    "hvp:terrain:s10:r0",
+                    "hvp:terrain:s11:r0",
+                    "hvp:terrain:s12:r0",
+                    "hvp:terrain:s13:r0",
+                    "hvp:terrain:s14:r0",
+                    "hvp:terrain:s15:r0",
+                    "hvp:terrain:s0:r1:stage1"
+                  ],
+                  "rootIdentityMatches": true,
+                  "activeKeysMatch": true,
+                  "visibleKeysMatch": true,
+                  "nativeGenerationMatches": true,
+                  "recoveryHold": false
+                }
+              }
+            },
+            {
+              "name": "hvp.cutTotalAppliedMs",
+              "start": 12906.399999976158,
+              "duration": 297.2000000178814,
+              "detail": {
+                "sampleId": "cutTotalAppliedMs:336",
+                "data": {
+                  "commandId": "cut-1",
+                  "thread": "main",
+                  "phase": "cutTotalAppliedMs",
+                  "origin": 1790115336088.7,
+                  "start": 12906.399999976158,
+                  "duration": 297.2000000178814
+                }
+              }
+            },
+            {
+              "name": "hvp.frameIntervalMs",
+              "start": 13147.9,
+              "duration": 33.399999999999636,
+              "detail": {
+                "sampleId": "frameIntervalMs:338"
+              }
+            },
+            {
+              "name": "hvp.cutNativeFinalizeMs",
+              "start": 13156.59999999404,
+              "duration": 37.099999994039536,
+              "detail": {
+                "sampleId": "cutNativeFinalizeMs:334",
+                "data": {
+                  "commandId": "cut-1",
+                  "thread": "main",
+                  "phase": "cutNativeFinalizeMs",
+                  "origin": 1790115336088.7,
+                  "start": 13156.59999999404,
+                  "duration": 37.099999994039536
+                }
+              }
+            },
+            {
+              "name": "hvp.cutCleanupMs",
+              "start": 13193.799999982119,
+              "duration": 9.599999994039536,
+              "detail": {
+                "sampleId": "cutCleanupMs:335",
+                "data": {
+                  "commandId": "cut-1",
+                  "thread": "main",
+                  "phase": "cutCleanupMs",
+                  "origin": 1790115336088.7,
+                  "start": 13193.799999982119,
+                  "duration": 9.599999994039536
+                }
+              }
+            },
+            {
+              "name": "hvp.frameIntervalMs",
+              "start": 13181.3,
+              "duration": 50,
+              "detail": {
+                "sampleId": "frameIntervalMs:342"
+              }
+            },
+            {
+              "name": "hvp.frameIntervalMs",
+              "start": 13231.3,
+              "duration": 16.600000000000364,
+              "detail": {
+                "sampleId": "frameIntervalMs:347"
+              }
+            }
+          ],
+          "dropped": 0
+        },
+        "problems": [],
+        "phase": "complete",
+        "commandId": "cut-1"
+      },
+      "warmup": null,
+      "problems": []
+    }
+  ],
+  "summary": {
+    "acceptance": "NOT_ASSESSED",
+    "attempts": 1,
+    "outcomes": {
+      "Applied": 1,
+      "NoOp": 0,
+      "Rejected": 0,
+      "RecoveryHold": 0,
+      "Timeout": 0
+    },
+    "unknownOutcomes": 0,
+    "unclassifiedAttempts": 0,
+    "invalid": [],
+    "groups": [
+      {
+        "scenario": "quarry",
+        "temperature": "cold",
+        "attempts": 1,
+        "outcomes": {
+          "Applied": 1,
+          "NoOp": 0,
+          "Rejected": 0,
+          "RecoveryHold": 0,
+          "Timeout": 0
+        },
+        "invalidCount": 0,
+        "completeApplied": 1,
+        "incompleteApplied": 0,
+        "missing": {
+          "applied": 0,
+          "committedRender": 0,
+          "sourceGenerationAfter": 0,
+          "hold": 0
+        },
+        "inputToAppliedMs": {
+          "count": 1,
+          "p50": 313.39990234375,
+          "p95": 313.39990234375,
+          "p99": 313.39990234375,
+          "max": 313.39990234375
+        },
+        "inputToCommittedRenderMs": {
+          "count": 1,
+          "p50": 354.699951171875,
+          "p95": 354.699951171875,
+          "p99": 354.699951171875,
+          "max": 354.699951171875
+        },
+        "holdMs": {
+          "count": 1,
+          "p50": 33.80000001192093,
+          "p95": 33.80000001192093,
+          "p99": 33.80000001192093,
+          "max": 33.80000001192093
+        }
+      },
+      {
+        "scenario": "quarry",
+        "temperature": "warm",
+        "attempts": 0,
+        "outcomes": {
+          "Applied": 0,
+          "NoOp": 0,
+          "Rejected": 0,
+          "RecoveryHold": 0,
+          "Timeout": 0
+        },
+        "invalidCount": 0,
+        "completeApplied": 0,
+        "incompleteApplied": 0,
+        "missing": {
+          "applied": 0,
+          "committedRender": 0,
+          "sourceGenerationAfter": 0,
+          "hold": 0
+        },
+        "inputToAppliedMs": null,
+        "inputToCommittedRenderMs": null,
+        "holdMs": null
+      },
+      {
+        "scenario": "rock-arm",
+        "temperature": "cold",
+        "attempts": 0,
+        "outcomes": {
+          "Applied": 0,
+          "NoOp": 0,
+          "Rejected": 0,
+          "RecoveryHold": 0,
+          "Timeout": 0
+        },
+        "invalidCount": 0,
+        "completeApplied": 0,
+        "incompleteApplied": 0,
+        "missing": {
+          "applied": 0,
+          "committedRender": 0,
+          "sourceGenerationAfter": 0,
+          "hold": 0
+        },
+        "inputToAppliedMs": null,
+        "inputToCommittedRenderMs": null,
+        "holdMs": null
+      },
+      {
+        "scenario": "rock-arm",
+        "temperature": "warm",
+        "attempts": 0,
+        "outcomes": {
+          "Applied": 0,
+          "NoOp": 0,
+          "Rejected": 0,
+          "RecoveryHold": 0,
+          "Timeout": 0
+        },
+        "invalidCount": 0,
+        "completeApplied": 0,
+        "incompleteApplied": 0,
+        "missing": {
+          "applied": 0,
+          "committedRender": 0,
+          "sourceGenerationAfter": 0,
+          "hold": 0
+        },
+        "inputToAppliedMs": null,
+        "inputToCommittedRenderMs": null,
+        "holdMs": null
+      },
+      {
+        "scenario": "body-box",
+        "temperature": "cold",
+        "attempts": 0,
+        "outcomes": {
+          "Applied": 0,
+          "NoOp": 0,
+          "Rejected": 0,
+          "RecoveryHold": 0,
+          "Timeout": 0
+        },
+        "invalidCount": 0,
+        "completeApplied": 0,
+        "incompleteApplied": 0,
+        "missing": {
+          "applied": 0,
+          "committedRender": 0,
+          "sourceGenerationAfter": 0,
+          "hold": 0
+        },
+        "inputToAppliedMs": null,
+        "inputToCommittedRenderMs": null,
+        "holdMs": null
+      },
+      {
+        "scenario": "body-box",
+        "temperature": "warm",
+        "attempts": 0,
+        "outcomes": {
+          "Applied": 0,
+          "NoOp": 0,
+          "Rejected": 0,
+          "RecoveryHold": 0,
+          "Timeout": 0
+        },
+        "invalidCount": 0,
+        "completeApplied": 0,
+        "incompleteApplied": 0,
+        "missing": {
+          "applied": 0,
+          "committedRender": 0,
+          "sourceGenerationAfter": 0,
+          "hold": 0
+        },
+        "inputToAppliedMs": null,
+        "inputToCommittedRenderMs": null,
+        "holdMs": null
+      },
+      {
+        "scenario": "body-sphere",
+        "temperature": "cold",
+        "attempts": 0,
+        "outcomes": {
+          "Applied": 0,
+          "NoOp": 0,
+          "Rejected": 0,
+          "RecoveryHold": 0,
+          "Timeout": 0
+        },
+        "invalidCount": 0,
+        "completeApplied": 0,
+        "incompleteApplied": 0,
+        "missing": {
+          "applied": 0,
+          "committedRender": 0,
+          "sourceGenerationAfter": 0,
+          "hold": 0
+        },
+        "inputToAppliedMs": null,
+        "inputToCommittedRenderMs": null,
+        "holdMs": null
+      },
+      {
+        "scenario": "body-sphere",
+        "temperature": "warm",
+        "attempts": 0,
+        "outcomes": {
+          "Applied": 0,
+          "NoOp": 0,
+          "Rejected": 0,
+          "RecoveryHold": 0,
+          "Timeout": 0
+        },
+        "invalidCount": 0,
+        "completeApplied": 0,
+        "incompleteApplied": 0,
+        "missing": {
+          "applied": 0,
+          "committedRender": 0,
+          "sourceGenerationAfter": 0,
+          "hold": 0
+        },
+        "inputToAppliedMs": null,
+        "inputToCommittedRenderMs": null,
+        "holdMs": null
+      }
+    ]
+  },
+  "sourceUnchanged": true,
+  "buildUnchanged": true,
+  "performanceAcceptance": "NOT_ASSESSED: aggregate the complete predeclared multi-session population, including every failed/precondition attempt"
+}

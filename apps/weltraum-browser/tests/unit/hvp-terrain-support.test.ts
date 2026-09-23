@@ -1,6 +1,6 @@
 import {expect,it} from "vitest";
 import {createHvpTerrainRoot} from "../../src/hestia-prototype/terrain/cutPlan";
-import {analyzeHvpTerrainSupport,assertHvpSupportCurrent} from "../../src/hestia-prototype/terrain/supportPlan";
+import {analyzeHvpSupportSnapshot,analyzeHvpTerrainSupport,assertHvpSupportCurrent,createHvpSupportTimingsCollector} from "../../src/hestia-prototype/terrain/supportPlan";
 import {materializeHvpCoastSource,prepareHvpCoastSource} from "../../src/hvp/hvpCoastSource";
 
 type Cell=readonly[number,number,number];
@@ -88,3 +88,25 @@ it("previews the actual authored rock arm without detaching or changing its cano
   console.info("Authored rock-arm support",{sourceDigest:prepared.sourceDigest,probes:plan.probes,massKg:expectedMass});
   expect(root.read()).toBe(before);expect(root.read().readSlot(176,78,76)).toBe(1);
 },120_000);
+
+it("records deterministic support sub-spans without changing the admitted fragments",()=>{
+  const {plan}=fixture(arm,[16,2,1]);
+  const plain=analyzeHvpSupportSnapshot(plan.after,plan.changed.map(c=>c.cell));
+  let t=0;const clock=createHvpSupportTimingsCollector(()=>t+=1.5);
+  const timed=analyzeHvpSupportSnapshot(plan.after,plan.changed.map(c=>c.cell),{},clock);
+  expect(timed).toEqual(plain);
+  expect(timed.fragments).toHaveLength(1);
+  const cells=timed.fragments[0]!.cells.length;
+  const timings=clock.done(timed.fragments.length,timed.fragments.reduce((n,f)=>n+f.cells.length,0));
+  expect(timings.fragmentCount).toBe(1);expect(timings.fragmentCells).toBe(cells);
+  expect(timings).toMatchObject({seedsMs:1.5,supportMs:3,ingestMs:1.5,recipeMs:1.5,totalMs:7.5});
+  const bd=timings.recipeBreakdown!;
+  for(const key of ["massMs","classifyMs","transitionMs","axesMs"] as const){
+    expect(typeof bd[key],`recipeBreakdown.${key}`).toBe("number");expect(bd[key],`recipeBreakdown.${key}`).toBeGreaterThanOrEqual(0);
+  }
+  expect(bd.massMs+bd.classifyMs+bd.transitionMs+bd.axesMs).toBeGreaterThan(0);
+  let u=0;const pure=createHvpSupportTimingsCollector(()=>(u+=2));
+  pure.recipe({massMs:1,classifyMs:2});pure.recipe({transitionMs:3,axesMs:4});
+  expect(pure.done(2,9).recipeBreakdown).toEqual({massMs:1,classifyMs:2,transitionMs:3,axesMs:4});
+  expect(createHvpSupportTimingsCollector().done(0,0)).not.toHaveProperty("recipeBreakdown");
+});

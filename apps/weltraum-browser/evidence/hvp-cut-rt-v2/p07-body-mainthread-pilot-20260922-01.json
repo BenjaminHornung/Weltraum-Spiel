@@ -1,0 +1,2856 @@
+{
+  "purpose": "P07 functional main-thread body observation pilot; not a formal 250ms sample or reference-viewport run",
+  "status": "functional-pilot-pass",
+  "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36",
+  "viewport": [
+    1536,
+    791,
+    1.25
+  ],
+  "timeOrigin": 1790101597544.4,
+  "url": "http://127.0.0.1:5177/?hestiaPrototype=1&hvpScenario=rock-arm&hvpMeasure=1",
+  "scriptUrls": [
+    "http://127.0.0.1:5177/assets/index-D5_2orCQ.js"
+  ],
+  "preconditionNotes": [
+    "Initial cursor lookup used a control hidden during Play; no cut had been issued.",
+    "Before Sphere the pointer lock was absent and the real pause dialog intercepted the background Play button; resumed via its actual control. No second cut had been issued."
+  ],
+  "checks": [
+    {
+      "commandId": "moving-cut-1",
+      "rootGeneration": 1,
+      "bodySequence": 1,
+      "parentId": "hvp:terrain-fragment:r1:1b4aa69d",
+      "children": [
+        {
+          "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+          "sourceDigest": "fnv1a64-v1:c05b830d110a061f",
+          "renderKey": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0"
+        }
+      ],
+      "inputToAppliedMs": 3046.89990234375,
+      "firstCommittedRenderSubmitMs": 3085.199951171875,
+      "bodyHoldMs": null,
+      "partitionAndReceiptMatch": true
+    },
+    {
+      "commandId": "moving-cut-2",
+      "rootGeneration": 1,
+      "bodySequence": 2,
+      "parentId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+      "children": [
+        {
+          "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0:r1:p0",
+          "sourceDigest": "fnv1a64-v1:cf159dcf9d1f6f71",
+          "renderKey": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0:r1:p0"
+        }
+      ],
+      "inputToAppliedMs": 3695.199951171875,
+      "firstCommittedRenderSubmitMs": 3731.7001953125,
+      "bodyHoldMs": null,
+      "partitionAndReceiptMatch": true
+    }
+  ],
+  "health": {
+    "enabled": true,
+    "samples": 147030,
+    "errors": 0,
+    "dropped": 0,
+    "cutObservation": {
+      "status": "armed",
+      "drops": 0,
+      "disables": 0,
+      "inputCount": 0,
+      "pendingRender": false
+    }
+  },
+  "resources": {
+    "ledger": {
+      "slotBytes": 8388608,
+      "preparedCopyBytes": 8388608,
+      "maskBytes": 1089536,
+      "meshBytes": 28109736,
+      "groupedIndexBytes": 2448864,
+      "artifactCopyBytes": 28109736,
+      "retainedMeshBytes": 28123304,
+      "tempEstimateBytes": 157089688,
+      "vegetationSourceBytes": 7158400,
+      "checkpointSourceBytes": 0,
+      "totalCpuBytes": 248845000,
+      "gpuBytes": "unsupported",
+      "triangles": 374724,
+      "drawCalls": 171,
+      "dormantCheckpointBytes": 0,
+      "neighborSourceBytes": 0,
+      "neighborCacheBytes": 0,
+      "neighborCheckpointBytes": 0,
+      "neighborBaseProxyBytes": 0,
+      "physicsPayloadBytes": 4980528,
+      "physicsPrepareBytes": 100663296,
+      "dynamicFragmentSourceBytes": 272640
+    },
+    "gameplayCpuBytes": 248845000,
+    "diagnosticReservedBytes": 524288,
+    "totalCpuBytes": 249369288,
+    "diagnosticRuntimeOverhead": "not-measured",
+    "cutObservation": {
+      "status": "armed",
+      "drops": 0,
+      "disables": 0,
+      "inputCount": 1,
+      "pendingRender": false
+    },
+    "caps": {
+      "maxCpuBytes": 268435456,
+      "maxMeshBytes": 134217728,
+      "maxTriangles": 500000,
+      "maxDrawCalls": 300
+    }
+  },
+  "clock": {
+    "maxTimerGapMs": 1647.800000011921,
+    "maxAdvanceMs": 17.600000008940697,
+    "maxHandlerMs": 1637,
+    "lastCommand": "Read",
+    "lastHandlerMs": 0.3999999910593033,
+    "simulationHold": {
+      "gapMs": 78.5,
+      "previousCommand": "Read",
+      "handlerMs": 0.7999999970197678,
+      "advanceMs": 0.7999999970197678,
+      "backlogSeconds": 0.018000000000001373,
+      "ticks": 28126
+    },
+    "delayedCallbacks": [
+      {
+        "gapMs": 239.70000000298023,
+        "previousCommand": "PrepareTerrain",
+        "handlerMs": 228.79999999701977,
+        "advanceMs": 0
+      },
+      {
+        "gapMs": 1470.3999999910593,
+        "previousCommand": "StageBodyCut",
+        "handlerMs": 1446,
+        "advanceMs": 0
+      },
+      {
+        "gapMs": 78.5,
+        "previousCommand": "Read",
+        "handlerMs": 0.7999999970197678,
+        "advanceMs": 0.7999999970197678
+      },
+      {
+        "gapMs": 63.400000005960464,
+        "previousCommand": "Read",
+        "handlerMs": 0.10000000894069672,
+        "advanceMs": 0
+      },
+      {
+        "gapMs": 72.69999998807907,
+        "previousCommand": "Read",
+        "handlerMs": 0.20000000298023224,
+        "advanceMs": 0
+      },
+      {
+        "gapMs": 60.099999994039536,
+        "previousCommand": "Read",
+        "handlerMs": 0.20000000298023224,
+        "advanceMs": 0
+      },
+      {
+        "gapMs": 1647.800000011921,
+        "previousCommand": "StageBodyCut",
+        "handlerMs": 1637,
+        "advanceMs": 0
+      }
+    ],
+    "lastTerrainRecipeMs": 224.59999999403954,
+    "lastTerrainCookMs": 1.7999999970197678,
+    "lastTerrainInstallMs": 0.7999999970197678,
+    "lastTerrainHoldMs": 334.5,
+    "lastTerrainCommandId": "cut-1",
+    "timers": 1
+  },
+  "beforeDetach": {
+    "physics": {
+      "ticks": 15443,
+      "backlogSeconds": 0.01620000000298341,
+      "discardedSeconds": 0.014066666672628996,
+      "status": "Running",
+      "gravity": 11.794460201817357,
+      "gravityProfile": "local-tangent-gravity-v1",
+      "activeDynamic": 0,
+      "residentDynamic": 2,
+      "solver": "rapier-0.12.0",
+      "stepCpuMs": 0.09999999403953552,
+      "bodyCount": 4,
+      "colliderCount": 88,
+      "nativeBytes": "unsupported",
+      "terrainGeneration": 0,
+      "collisionBytes": 2490840,
+      "terrainTransaction": "Idle",
+      "terrainFragments": [],
+      "parked": [],
+      "neighbor": null,
+      "dormantCheckpointBytes": 0,
+      "bodyResidencyId": null,
+      "bodyResidencyTransaction": "Idle",
+      "neighborTransaction": "Idle",
+      "neighborPinned": false,
+      "preparedTerrainFragments": [],
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": 7,
+          "y": 1.035041093826294,
+          "z": -6.25
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "structural": {
+        "kind": "branch",
+        "origin": {
+          "x": -12,
+          "y": 1.75,
+          "z": -13.5
+        },
+        "cutEdge": 4,
+        "generation": 0,
+        "sourceDigest": "fnv1a64-v1:9cb845863922efae",
+        "state": "Idle",
+        "last": null,
+        "preview": null,
+        "aimPoint": {
+          "x": -11.25,
+          "y": 3,
+          "z": -13.25
+        },
+        "attachment": {
+          "id": "hvp:branch:foliage",
+          "ownerId": "hvp:branch:parent",
+          "supportCell": {
+            "x": 10,
+            "y": 11,
+            "z": 2
+          }
+        },
+        "parts": [
+          {
+            "ownerId": "hvp:branch:parent",
+            "sourceDigest": "fnv1a64-v1:f86be8fb3a37f1cb",
+            "anchored": true,
+            "cellCount": 384,
+            "center": {
+              "x": 0.75,
+              "y": 1,
+              "z": 0.25
+            },
+            "position": {
+              "x": -11.25,
+              "y": 2.75,
+              "z": -13.25
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "massKg": 450,
+            "sleeping": false
+          }
+        ]
+      },
+      "moving": {
+        "sequence": 0,
+        "pendingId": null,
+        "state": "Idle",
+        "preview": null,
+        "last": null
+      },
+      "lastImpulse": null,
+      "impulseTarget": {
+        "kind": "Fixed",
+        "target": null,
+        "distanceMeters": 0.6309311389923096,
+        "massKg": null,
+        "point": {
+          "x": 6.499999992642602,
+          "y": 2.169845063131101,
+          "z": -6.25
+        }
+      },
+      "lastImpulseTick": null,
+      "inertia": {
+        "ownerId": "hvp:physics:inertia",
+        "sourceDigest": "fnv1a64-v1:15f3bb58342acf4c",
+        "centerOfMass": {
+          "x": 0.29583333333333334,
+          "y": 0.29583333333333334,
+          "z": 0.125
+        },
+        "tensor": {
+          "xx": 3.441772460937501,
+          "yy": 3.4417724609374996,
+          "zz": 6.517333984375002,
+          "xy": 1.9140625000000004,
+          "xz": 0,
+          "yz": 1.3877787807814457e-17
+        },
+        "principal": {
+          "principalInertia": {
+            "x": 1.5277099609374998,
+            "y": 5.355834960937501,
+            "z": 6.517333984375002
+          },
+          "frame": {
+            "x": 0.3826834323650899,
+            "y": 0.9238795325112867,
+            "z": 0,
+            "w": 0
+          },
+          "residual": 1.1102230246251565e-16
+        },
+        "colliders": 2,
+        "impulses": 0,
+        "aimPoint": {
+          "x": -8.564777374267578,
+          "y": 1.312473177909851,
+          "z": -13.287601470947266
+        },
+        "angularVelocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      },
+      "bodies": [
+        {
+          "ownerId": "hvp:physics:drop",
+          "position": {
+            "x": -9.624567985534668,
+            "y": 0.6241464614868164,
+            "z": -7.507255554199219
+          },
+          "orientation": {
+            "x": -0.6501973867416382,
+            "y": -0.2731212377548218,
+            "z": 0.27541404962539673,
+            "w": -0.6532956957817078
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": true,
+          "massKg": 300
+        },
+        {
+          "ownerId": "hvp:physics:inertia",
+          "position": {
+            "x": -8.716800689697266,
+            "y": 1.5458214282989502,
+            "z": -13.151344299316406
+          },
+          "orientation": {
+            "x": -0.0002377739001531154,
+            "y": 0.3575611114501953,
+            "z": 0.00005180474545340985,
+            "w": 0.9338896870613098
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": true,
+          "massKg": 35.15625
+        },
+        {
+          "ownerId": "hvp:branch:parent",
+          "position": {
+            "x": -11.25,
+            "y": 2.75,
+            "z": -13.25
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "w": 1
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": false,
+          "massKg": 450
+        }
+      ]
+    },
+    "generation": 0
+  },
+  "detached": {
+    "tool": {
+      "mode": "Box 0,5 m",
+      "edges": 1,
+      "issued": 1,
+      "message": "Kein Ziel innerhalb 4 m",
+      "state": "Applied",
+      "queued": 0,
+      "receipts": 1,
+      "last": {
+        "commandId": "cut-1",
+        "status": "Applied",
+        "removedCells": 64,
+        "reason": "Terrain and collision committed",
+        "revision": 1,
+        "transferredCells": 384,
+        "transferredMassKg": 1722.65625,
+        "materialRemovedKg": 300
+      },
+      "structural": {
+        "state": "Ready",
+        "issued": 0,
+        "last": null
+      },
+      "moving": {
+        "state": "Idle",
+        "last": null,
+        "issued": 0
+      }
+    },
+    "physics": {
+      "ticks": 15545,
+      "backlogSeconds": 0.007399999991059303,
+      "discardedSeconds": 0.023466666678592693,
+      "status": "Running",
+      "gravity": 11.794460201817357,
+      "gravityProfile": "local-tangent-gravity-v1",
+      "activeDynamic": 1,
+      "residentDynamic": 3,
+      "solver": "rapier-0.12.0",
+      "stepCpuMs": 0.10000000894069672,
+      "bodyCount": 5,
+      "colliderCount": 89,
+      "nativeBytes": "unsupported",
+      "terrainGeneration": 1,
+      "collisionBytes": 2490264,
+      "terrainTransaction": "Idle",
+      "terrainFragments": [
+        {
+          "ownerId": "hvp:terrain-fragment:r1:1b4aa69d",
+          "sourceDigest": "fnv1a64-v1:70d85a5593bd44c9",
+          "centerOfMass": {
+            "x": 23.50561224489796,
+            "y": 10.49158163265306,
+            "z": 9.755612244897959
+          },
+          "cellCount": 384,
+          "massKg": 1722.65625,
+          "colliders": 1,
+          "sourceBytes": 262144
+        }
+      ],
+      "parked": [],
+      "neighbor": null,
+      "dormantCheckpointBytes": 0,
+      "bodyResidencyId": null,
+      "bodyResidencyTransaction": "Idle",
+      "neighborTransaction": "Idle",
+      "neighborPinned": false,
+      "preparedTerrainFragments": [],
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": 7,
+          "y": 1.035041093826294,
+          "z": -6.25
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "structural": {
+        "kind": "branch",
+        "origin": {
+          "x": -12,
+          "y": 1.75,
+          "z": -13.5
+        },
+        "cutEdge": 4,
+        "generation": 0,
+        "sourceDigest": "fnv1a64-v1:9cb845863922efae",
+        "state": "Idle",
+        "last": null,
+        "preview": null,
+        "aimPoint": {
+          "x": -11.25,
+          "y": 3,
+          "z": -13.25
+        },
+        "attachment": {
+          "id": "hvp:branch:foliage",
+          "ownerId": "hvp:branch:parent",
+          "supportCell": {
+            "x": 10,
+            "y": 11,
+            "z": 2
+          }
+        },
+        "parts": [
+          {
+            "ownerId": "hvp:branch:parent",
+            "sourceDigest": "fnv1a64-v1:f86be8fb3a37f1cb",
+            "anchored": true,
+            "cellCount": 384,
+            "center": {
+              "x": 0.75,
+              "y": 1,
+              "z": 0.25
+            },
+            "position": {
+              "x": -11.25,
+              "y": 2.75,
+              "z": -13.25
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "massKg": 450,
+            "sleeping": false
+          }
+        ]
+      },
+      "moving": {
+        "sequence": 0,
+        "pendingId": null,
+        "state": "Idle",
+        "preview": null,
+        "last": null
+      },
+      "lastImpulse": null,
+      "impulseTarget": {
+        "kind": "InvalidAim",
+        "target": null,
+        "distanceMeters": null,
+        "massKg": null,
+        "point": null
+      },
+      "lastImpulseTick": null,
+      "inertia": {
+        "ownerId": "hvp:physics:inertia",
+        "sourceDigest": "fnv1a64-v1:15f3bb58342acf4c",
+        "centerOfMass": {
+          "x": 0.29583333333333334,
+          "y": 0.29583333333333334,
+          "z": 0.125
+        },
+        "tensor": {
+          "xx": 3.441772460937501,
+          "yy": 3.4417724609374996,
+          "zz": 6.517333984375002,
+          "xy": 1.9140625000000004,
+          "xz": 0,
+          "yz": 1.3877787807814457e-17
+        },
+        "principal": {
+          "principalInertia": {
+            "x": 1.5277099609374998,
+            "y": 5.355834960937501,
+            "z": 6.517333984375002
+          },
+          "frame": {
+            "x": 0.3826834323650899,
+            "y": 0.9238795325112867,
+            "z": 0,
+            "w": 0
+          },
+          "residual": 1.1102230246251565e-16
+        },
+        "colliders": 2,
+        "impulses": 0,
+        "aimPoint": {
+          "x": -8.564777374267578,
+          "y": 1.312473177909851,
+          "z": -13.287601470947266
+        },
+        "angularVelocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      },
+      "bodies": [
+        {
+          "ownerId": "hvp:physics:drop",
+          "position": {
+            "x": -9.624567985534668,
+            "y": 0.6241464614868164,
+            "z": -7.507255554199219
+          },
+          "orientation": {
+            "x": -0.6501973867416382,
+            "y": -0.2731212377548218,
+            "z": 0.27541404962539673,
+            "w": -0.6532956957817078
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": true,
+          "massKg": 300
+        },
+        {
+          "ownerId": "hvp:physics:inertia",
+          "position": {
+            "x": -8.716800689697266,
+            "y": 1.5458214282989502,
+            "z": -13.151344299316406
+          },
+          "orientation": {
+            "x": -0.0002377739001531154,
+            "y": 0.3575611114501953,
+            "z": 0.00005180474545340985,
+            "w": 0.9338896870613098
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": true,
+          "massKg": 35.15625
+        },
+        {
+          "ownerId": "hvp:terrain-fragment:r1:1b4aa69d",
+          "position": {
+            "x": 7.505612373352051,
+            "y": 2.491581678390503,
+            "z": -6.244387626647949
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "w": 1
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": false,
+          "massKg": 1722.6561279296875
+        },
+        {
+          "ownerId": "hvp:branch:parent",
+          "position": {
+            "x": -11.25,
+            "y": 2.75,
+            "z": -13.25
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "w": 1
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": false,
+          "massKg": 450
+        }
+      ]
+    },
+    "generation": 1
+  },
+  "beforeBody": {
+    "physics": {
+      "ticks": 23185,
+      "backlogSeconds": 0.008066666657728518,
+      "discardedSeconds": 0.023466666678592693,
+      "status": "Running",
+      "gravity": 11.794460201817357,
+      "gravityProfile": "local-tangent-gravity-v1",
+      "activeDynamic": 0,
+      "residentDynamic": 3,
+      "solver": "rapier-0.12.0",
+      "stepCpuMs": 0.30000001192092896,
+      "bodyCount": 5,
+      "colliderCount": 89,
+      "nativeBytes": "unsupported",
+      "terrainGeneration": 1,
+      "collisionBytes": 2490264,
+      "terrainTransaction": "Idle",
+      "terrainFragments": [
+        {
+          "ownerId": "hvp:terrain-fragment:r1:1b4aa69d",
+          "sourceDigest": "fnv1a64-v1:70d85a5593bd44c9",
+          "centerOfMass": {
+            "x": 23.50561224489796,
+            "y": 10.49158163265306,
+            "z": 9.755612244897959
+          },
+          "cellCount": 384,
+          "massKg": 1722.65625,
+          "colliders": 1,
+          "sourceBytes": 262144
+        }
+      ],
+      "parked": [],
+      "neighbor": null,
+      "dormantCheckpointBytes": 0,
+      "bodyResidencyId": null,
+      "bodyResidencyTransaction": "Idle",
+      "neighborTransaction": "Idle",
+      "neighborPinned": false,
+      "preparedTerrainFragments": [],
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": 7,
+          "y": 1.035041093826294,
+          "z": -6.25
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "structural": {
+        "kind": "branch",
+        "origin": {
+          "x": -12,
+          "y": 1.75,
+          "z": -13.5
+        },
+        "cutEdge": 4,
+        "generation": 0,
+        "sourceDigest": "fnv1a64-v1:9cb845863922efae",
+        "state": "Idle",
+        "last": null,
+        "preview": null,
+        "aimPoint": {
+          "x": -11.25,
+          "y": 3,
+          "z": -13.25
+        },
+        "attachment": {
+          "id": "hvp:branch:foliage",
+          "ownerId": "hvp:branch:parent",
+          "supportCell": {
+            "x": 10,
+            "y": 11,
+            "z": 2
+          }
+        },
+        "parts": [
+          {
+            "ownerId": "hvp:branch:parent",
+            "sourceDigest": "fnv1a64-v1:f86be8fb3a37f1cb",
+            "anchored": true,
+            "cellCount": 384,
+            "center": {
+              "x": 0.75,
+              "y": 1,
+              "z": 0.25
+            },
+            "position": {
+              "x": -11.25,
+              "y": 2.75,
+              "z": -13.25
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "massKg": 450,
+            "sleeping": false
+          }
+        ]
+      },
+      "moving": {
+        "sequence": 0,
+        "pendingId": null,
+        "state": "Idle",
+        "preview": {
+          "ownerId": "hvp:terrain-fragment:r1:1b4aa69d",
+          "sourceDigest": "fnv1a64-v1:70d85a5593bd44c9",
+          "revision": 0,
+          "issuedTick": 23185,
+          "cell": [
+            189,
+            84,
+            76
+          ],
+          "pose": {
+            "position": {
+              "x": 8.427063941955566,
+              "y": 0.973335862159729,
+              "z": -4.908839225769043
+            },
+            "rotation": {
+              "x": 0.03764636069536209,
+              "y": 0.6483198404312134,
+              "z": 0.01415773294866085,
+              "w": 0.7603049874305725
+            }
+          }
+        },
+        "last": null
+      },
+      "lastImpulse": null,
+      "impulseTarget": {
+        "kind": "Dynamic",
+        "target": "hvp:terrain-fragment:r1:1b4aa69d",
+        "massKg": 1722.6561279296875,
+        "distanceMeters": 1.792392611503601,
+        "point": {
+          "x": 8.205627131021501,
+          "y": 1.1001682003676412,
+          "z": -5.114181522195057
+        }
+      },
+      "lastImpulseTick": null,
+      "inertia": {
+        "ownerId": "hvp:physics:inertia",
+        "sourceDigest": "fnv1a64-v1:15f3bb58342acf4c",
+        "centerOfMass": {
+          "x": 0.29583333333333334,
+          "y": 0.29583333333333334,
+          "z": 0.125
+        },
+        "tensor": {
+          "xx": 3.441772460937501,
+          "yy": 3.4417724609374996,
+          "zz": 6.517333984375002,
+          "xy": 1.9140625000000004,
+          "xz": 0,
+          "yz": 1.3877787807814457e-17
+        },
+        "principal": {
+          "principalInertia": {
+            "x": 1.5277099609374998,
+            "y": 5.355834960937501,
+            "z": 6.517333984375002
+          },
+          "frame": {
+            "x": 0.3826834323650899,
+            "y": 0.9238795325112867,
+            "z": 0,
+            "w": 0
+          },
+          "residual": 1.1102230246251565e-16
+        },
+        "colliders": 2,
+        "impulses": 0,
+        "aimPoint": {
+          "x": -8.564777374267578,
+          "y": 1.312473177909851,
+          "z": -13.287601470947266
+        },
+        "angularVelocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      },
+      "bodies": [
+        {
+          "ownerId": "hvp:physics:drop",
+          "position": {
+            "x": -9.624567985534668,
+            "y": 0.6241464614868164,
+            "z": -7.507255554199219
+          },
+          "orientation": {
+            "x": -0.6501973867416382,
+            "y": -0.2731212377548218,
+            "z": 0.27541404962539673,
+            "w": -0.6532956957817078
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": true,
+          "massKg": 300
+        },
+        {
+          "ownerId": "hvp:physics:inertia",
+          "position": {
+            "x": -8.716800689697266,
+            "y": 1.5458214282989502,
+            "z": -13.151344299316406
+          },
+          "orientation": {
+            "x": -0.0002377739001531154,
+            "y": 0.3575611114501953,
+            "z": 0.00005180474545340985,
+            "w": 0.9338896870613098
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": true,
+          "massKg": 35.15625
+        },
+        {
+          "ownerId": "hvp:terrain-fragment:r1:1b4aa69d",
+          "position": {
+            "x": 8.427063941955566,
+            "y": 0.973335862159729,
+            "z": -4.908839225769043
+          },
+          "orientation": {
+            "x": 0.03764636069536209,
+            "y": 0.6483198404312134,
+            "z": 0.01415773294866085,
+            "w": 0.7603049874305725
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": true,
+          "massKg": 1722.6561279296875
+        },
+        {
+          "ownerId": "hvp:branch:parent",
+          "position": {
+            "x": -11.25,
+            "y": 2.75,
+            "z": -13.25
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "w": 1
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": false,
+          "massKg": 450
+        }
+      ]
+    },
+    "tool": {
+      "mode": "Box 0,5 m",
+      "edges": 1,
+      "issued": 1,
+      "message": "Loses Fragment: Linksklick schneidet erneut (auch nach dem Fallen)",
+      "state": "Applied",
+      "queued": 0,
+      "receipts": 1,
+      "last": {
+        "commandId": "cut-1",
+        "status": "Applied",
+        "removedCells": 64,
+        "reason": "Terrain and collision committed",
+        "revision": 1,
+        "transferredCells": 384,
+        "transferredMassKg": 1722.65625,
+        "materialRemovedKg": 300
+      },
+      "structural": {
+        "state": "Ready",
+        "issued": 0,
+        "last": null
+      },
+      "moving": {
+        "state": "Idle",
+        "last": null,
+        "issued": 0
+      }
+    },
+    "generation": 1
+  },
+  "afterBody": {
+    "physics": {
+      "ticks": 23282,
+      "backlogSeconds": 0.0091333333303531,
+      "discardedSeconds": 0.02513333334526196,
+      "status": "Running",
+      "gravity": 11.794460201817357,
+      "gravityProfile": "local-tangent-gravity-v1",
+      "activeDynamic": 1,
+      "residentDynamic": 3,
+      "solver": "rapier-0.12.0",
+      "stepCpuMs": 0.6000000089406967,
+      "bodyCount": 5,
+      "colliderCount": 91,
+      "nativeBytes": "unsupported",
+      "terrainGeneration": 1,
+      "collisionBytes": 2490264,
+      "terrainTransaction": "Idle",
+      "terrainFragments": [
+        {
+          "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+          "sourceDigest": "fnv1a64-v1:c05b830d110a061f",
+          "centerOfMass": {
+            "x": 23.484675036927623,
+            "y": 10.480705317577549,
+            "z": 9.754985228951256
+          },
+          "cellCount": 352,
+          "massKg": 1586.71875,
+          "colliders": 3,
+          "sourceBytes": 262144
+        }
+      ],
+      "parked": [],
+      "neighbor": null,
+      "dormantCheckpointBytes": 0,
+      "bodyResidencyId": null,
+      "bodyResidencyTransaction": "Idle",
+      "neighborTransaction": "Idle",
+      "neighborPinned": false,
+      "preparedTerrainFragments": [],
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": 7,
+          "y": 1.035041093826294,
+          "z": -6.25
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "structural": {
+        "kind": "branch",
+        "origin": {
+          "x": -12,
+          "y": 1.75,
+          "z": -13.5
+        },
+        "cutEdge": 4,
+        "generation": 0,
+        "sourceDigest": "fnv1a64-v1:9cb845863922efae",
+        "state": "Idle",
+        "last": null,
+        "preview": null,
+        "aimPoint": {
+          "x": -11.25,
+          "y": 3,
+          "z": -13.25
+        },
+        "attachment": {
+          "id": "hvp:branch:foliage",
+          "ownerId": "hvp:branch:parent",
+          "supportCell": {
+            "x": 10,
+            "y": 11,
+            "z": 2
+          }
+        },
+        "parts": [
+          {
+            "ownerId": "hvp:branch:parent",
+            "sourceDigest": "fnv1a64-v1:f86be8fb3a37f1cb",
+            "anchored": true,
+            "cellCount": 384,
+            "center": {
+              "x": 0.75,
+              "y": 1,
+              "z": 0.25
+            },
+            "position": {
+              "x": -11.25,
+              "y": 2.75,
+              "z": -13.25
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "massKg": 450,
+            "sleeping": false
+          }
+        ]
+      },
+      "moving": {
+        "sequence": 1,
+        "pendingId": null,
+        "state": "Idle",
+        "preview": {
+          "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+          "sourceDigest": "fnv1a64-v1:c05b830d110a061f",
+          "revision": 0,
+          "issuedTick": 23282,
+          "cell": [
+            188,
+            83,
+            77
+          ],
+          "pose": {
+            "position": {
+              "x": 8.422796249389648,
+              "y": 0.9610997438430786,
+              "z": -4.889207363128662
+            },
+            "rotation": {
+              "x": 0.03749266266822815,
+              "y": 0.6483242511749268,
+              "z": 0.01410338282585144,
+              "w": 0.7603098154067993
+            }
+          }
+        },
+        "last": {
+          "id": "moving-cut-1",
+          "status": "Applied",
+          "parentId": "hvp:terrain-fragment:r1:1b4aa69d",
+          "children": [
+            "hvp:terrain-fragment:r1:1b4aa69d:r1:p0"
+          ],
+          "removedCells": 32,
+          "removedMassKg": 135.9375,
+          "issuedTick": 23187,
+          "commitTick": 23278,
+          "parentPose": {
+            "position": {
+              "x": 8.427063941955566,
+              "y": 0.973335862159729,
+              "z": -4.908839225769043
+            },
+            "rotation": {
+              "x": 0.03764636069536209,
+              "y": 0.6483198404312134,
+              "z": 0.01415773294866085,
+              "w": 0.7603049874305725
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularVelocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          "removedMomentum": {
+            "massKg": 135.9375,
+            "referencePoint": {
+              "x": 8.427063941955566,
+              "y": 0.973335862159729,
+              "z": -4.908839225769043
+            },
+            "center": {
+              "x": 8.476599205610391,
+              "y": 1.1167841202017095,
+              "z": -5.138762731822651
+            },
+            "linear": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angular": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          }
+        }
+      },
+      "lastImpulse": null,
+      "impulseTarget": {
+        "kind": "Dynamic",
+        "target": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+        "massKg": 1586.71875,
+        "distanceMeters": 2.0988142490386963,
+        "point": {
+          "x": 8.411737241816056,
+          "y": 0.9830845479523637,
+          "z": -4.920005672731113
+        }
+      },
+      "lastImpulseTick": null,
+      "inertia": {
+        "ownerId": "hvp:physics:inertia",
+        "sourceDigest": "fnv1a64-v1:15f3bb58342acf4c",
+        "centerOfMass": {
+          "x": 0.29583333333333334,
+          "y": 0.29583333333333334,
+          "z": 0.125
+        },
+        "tensor": {
+          "xx": 3.441772460937501,
+          "yy": 3.4417724609374996,
+          "zz": 6.517333984375002,
+          "xy": 1.9140625000000004,
+          "xz": 0,
+          "yz": 1.3877787807814457e-17
+        },
+        "principal": {
+          "principalInertia": {
+            "x": 1.5277099609374998,
+            "y": 5.355834960937501,
+            "z": 6.517333984375002
+          },
+          "frame": {
+            "x": 0.3826834323650899,
+            "y": 0.9238795325112867,
+            "z": 0,
+            "w": 0
+          },
+          "residual": 1.1102230246251565e-16
+        },
+        "colliders": 2,
+        "impulses": 0,
+        "aimPoint": {
+          "x": -8.564777374267578,
+          "y": 1.312473177909851,
+          "z": -13.287601470947266
+        },
+        "angularVelocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      },
+      "bodies": [
+        {
+          "ownerId": "hvp:physics:drop",
+          "position": {
+            "x": -9.624567985534668,
+            "y": 0.6241464614868164,
+            "z": -7.507255554199219
+          },
+          "orientation": {
+            "x": -0.6501973867416382,
+            "y": -0.2731212377548218,
+            "z": 0.27541404962539673,
+            "w": -0.6532956957817078
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": true,
+          "massKg": 300
+        },
+        {
+          "ownerId": "hvp:physics:inertia",
+          "position": {
+            "x": -8.716800689697266,
+            "y": 1.5458214282989502,
+            "z": -13.151344299316406
+          },
+          "orientation": {
+            "x": -0.0002377739001531154,
+            "y": 0.3575611114501953,
+            "z": 0.00005180474545340985,
+            "w": 0.9338896870613098
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": true,
+          "massKg": 35.15625
+        },
+        {
+          "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+          "position": {
+            "x": 8.422796249389648,
+            "y": 0.9610997438430786,
+            "z": -4.889207363128662
+          },
+          "orientation": {
+            "x": 0.03749266266822815,
+            "y": 0.6483242511749268,
+            "z": 0.01410338282585144,
+            "w": 0.7603098154067993
+          },
+          "velocity": {
+            "x": -0.0004897032049484551,
+            "y": 0.00020291667897254229,
+            "z": 0.0005545573658309877
+          },
+          "sleeping": false,
+          "massKg": 1586.71875
+        },
+        {
+          "ownerId": "hvp:branch:parent",
+          "position": {
+            "x": -11.25,
+            "y": 2.75,
+            "z": -13.25
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "w": 1
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": false,
+          "massKg": 450
+        }
+      ]
+    },
+    "tool": {
+      "mode": "Box 0,5 m",
+      "edges": 2,
+      "issued": 1,
+      "message": "Loses Fragment: Linksklick schneidet erneut (auch nach dem Fallen)",
+      "state": "Applied",
+      "queued": 0,
+      "receipts": 1,
+      "last": {
+        "commandId": "cut-1",
+        "status": "Applied",
+        "removedCells": 64,
+        "reason": "Terrain and collision committed",
+        "revision": 1,
+        "transferredCells": 384,
+        "transferredMassKg": 1722.65625,
+        "materialRemovedKg": 300
+      },
+      "structural": {
+        "state": "Ready",
+        "issued": 0,
+        "last": null
+      },
+      "moving": {
+        "state": "Idle",
+        "last": {
+          "id": "moving-cut-1",
+          "status": "Applied",
+          "reason": "Current-pose fragment replacement"
+        },
+        "issued": 1
+      }
+    },
+    "generation": 1
+  },
+  "beforeSphere": {
+    "physics": {
+      "ticks": 31043,
+      "backlogSeconds": 0.008333333333334199,
+      "discardedSeconds": 0.04313333334526333,
+      "status": "Running",
+      "gravity": 11.794460201817357,
+      "gravityProfile": "local-tangent-gravity-v1",
+      "activeDynamic": 0,
+      "residentDynamic": 3,
+      "solver": "rapier-0.12.0",
+      "stepCpuMs": 0.29999999701976776,
+      "bodyCount": 5,
+      "colliderCount": 91,
+      "nativeBytes": "unsupported",
+      "terrainGeneration": 1,
+      "collisionBytes": 2490264,
+      "terrainTransaction": "Idle",
+      "terrainFragments": [
+        {
+          "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+          "sourceDigest": "fnv1a64-v1:c05b830d110a061f",
+          "centerOfMass": {
+            "x": 23.484675036927623,
+            "y": 10.480705317577549,
+            "z": 9.754985228951256
+          },
+          "cellCount": 352,
+          "massKg": 1586.71875,
+          "colliders": 3,
+          "sourceBytes": 262144
+        }
+      ],
+      "parked": [],
+      "neighbor": null,
+      "dormantCheckpointBytes": 0,
+      "bodyResidencyId": null,
+      "bodyResidencyTransaction": "Idle",
+      "neighborTransaction": "Idle",
+      "neighborPinned": false,
+      "preparedTerrainFragments": [],
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": 7,
+          "y": 1.035041093826294,
+          "z": -6.25
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "structural": {
+        "kind": "branch",
+        "origin": {
+          "x": -12,
+          "y": 1.75,
+          "z": -13.5
+        },
+        "cutEdge": 4,
+        "generation": 0,
+        "sourceDigest": "fnv1a64-v1:9cb845863922efae",
+        "state": "Idle",
+        "last": null,
+        "preview": null,
+        "aimPoint": {
+          "x": -11.25,
+          "y": 3,
+          "z": -13.25
+        },
+        "attachment": {
+          "id": "hvp:branch:foliage",
+          "ownerId": "hvp:branch:parent",
+          "supportCell": {
+            "x": 10,
+            "y": 11,
+            "z": 2
+          }
+        },
+        "parts": [
+          {
+            "ownerId": "hvp:branch:parent",
+            "sourceDigest": "fnv1a64-v1:f86be8fb3a37f1cb",
+            "anchored": true,
+            "cellCount": 384,
+            "center": {
+              "x": 0.75,
+              "y": 1,
+              "z": 0.25
+            },
+            "position": {
+              "x": -11.25,
+              "y": 2.75,
+              "z": -13.25
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "massKg": 450,
+            "sleeping": false
+          }
+        ]
+      },
+      "moving": {
+        "sequence": 1,
+        "pendingId": null,
+        "state": "Idle",
+        "preview": {
+          "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+          "sourceDigest": "fnv1a64-v1:c05b830d110a061f",
+          "revision": 0,
+          "issuedTick": 31043,
+          "cell": [
+            188,
+            83,
+            77
+          ],
+          "pose": {
+            "position": {
+              "x": 8.422771453857422,
+              "y": 0.9611991047859192,
+              "z": -4.889292240142822
+            },
+            "rotation": {
+              "x": 0.03730102628469467,
+              "y": 0.6483278870582581,
+              "z": 0.014030314981937408,
+              "w": 0.7603175044059753
+            }
+          }
+        },
+        "last": {
+          "id": "moving-cut-1",
+          "status": "Applied",
+          "parentId": "hvp:terrain-fragment:r1:1b4aa69d",
+          "children": [
+            "hvp:terrain-fragment:r1:1b4aa69d:r1:p0"
+          ],
+          "removedCells": 32,
+          "removedMassKg": 135.9375,
+          "issuedTick": 23187,
+          "commitTick": 23278,
+          "parentPose": {
+            "position": {
+              "x": 8.427063941955566,
+              "y": 0.973335862159729,
+              "z": -4.908839225769043
+            },
+            "rotation": {
+              "x": 0.03764636069536209,
+              "y": 0.6483198404312134,
+              "z": 0.01415773294866085,
+              "w": 0.7603049874305725
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularVelocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          "removedMomentum": {
+            "massKg": 135.9375,
+            "referencePoint": {
+              "x": 8.427063941955566,
+              "y": 0.973335862159729,
+              "z": -4.908839225769043
+            },
+            "center": {
+              "x": 8.476599205610391,
+              "y": 1.1167841202017095,
+              "z": -5.138762731822651
+            },
+            "linear": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angular": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          }
+        }
+      },
+      "lastImpulse": null,
+      "impulseTarget": {
+        "kind": "Dynamic",
+        "target": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+        "massKg": 1586.71875,
+        "distanceMeters": 2.098567008972168,
+        "point": {
+          "x": 8.411570939338478,
+          "y": 0.9831790183371752,
+          "z": -4.9201623459031705
+        }
+      },
+      "lastImpulseTick": null,
+      "inertia": {
+        "ownerId": "hvp:physics:inertia",
+        "sourceDigest": "fnv1a64-v1:15f3bb58342acf4c",
+        "centerOfMass": {
+          "x": 0.29583333333333334,
+          "y": 0.29583333333333334,
+          "z": 0.125
+        },
+        "tensor": {
+          "xx": 3.441772460937501,
+          "yy": 3.4417724609374996,
+          "zz": 6.517333984375002,
+          "xy": 1.9140625000000004,
+          "xz": 0,
+          "yz": 1.3877787807814457e-17
+        },
+        "principal": {
+          "principalInertia": {
+            "x": 1.5277099609374998,
+            "y": 5.355834960937501,
+            "z": 6.517333984375002
+          },
+          "frame": {
+            "x": 0.3826834323650899,
+            "y": 0.9238795325112867,
+            "z": 0,
+            "w": 0
+          },
+          "residual": 1.1102230246251565e-16
+        },
+        "colliders": 2,
+        "impulses": 0,
+        "aimPoint": {
+          "x": -8.564777374267578,
+          "y": 1.312473177909851,
+          "z": -13.287601470947266
+        },
+        "angularVelocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      },
+      "bodies": [
+        {
+          "ownerId": "hvp:physics:drop",
+          "position": {
+            "x": -9.624567985534668,
+            "y": 0.6241464614868164,
+            "z": -7.507255554199219
+          },
+          "orientation": {
+            "x": -0.6501973867416382,
+            "y": -0.2731212377548218,
+            "z": 0.27541404962539673,
+            "w": -0.6532956957817078
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": true,
+          "massKg": 300
+        },
+        {
+          "ownerId": "hvp:physics:inertia",
+          "position": {
+            "x": -8.716800689697266,
+            "y": 1.5458214282989502,
+            "z": -13.151344299316406
+          },
+          "orientation": {
+            "x": -0.0002377739001531154,
+            "y": 0.3575611114501953,
+            "z": 0.00005180474545340985,
+            "w": 0.9338896870613098
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": true,
+          "massKg": 35.15625
+        },
+        {
+          "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+          "position": {
+            "x": 8.422771453857422,
+            "y": 0.9611991047859192,
+            "z": -4.889292240142822
+          },
+          "orientation": {
+            "x": 0.03730102628469467,
+            "y": 0.6483278870582581,
+            "z": 0.014030314981937408,
+            "w": 0.7603175044059753
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": true,
+          "massKg": 1586.71875
+        },
+        {
+          "ownerId": "hvp:branch:parent",
+          "position": {
+            "x": -11.25,
+            "y": 2.75,
+            "z": -13.25
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "w": 1
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": false,
+          "massKg": 450
+        }
+      ]
+    },
+    "tool": {
+      "mode": "Kugel 0,25 m",
+      "edges": 2,
+      "issued": 1,
+      "message": "Loses Fragment: Linksklick schneidet erneut (auch nach dem Fallen)",
+      "state": "Applied",
+      "queued": 0,
+      "receipts": 1,
+      "last": {
+        "commandId": "cut-1",
+        "status": "Applied",
+        "removedCells": 64,
+        "reason": "Terrain and collision committed",
+        "revision": 1,
+        "transferredCells": 384,
+        "transferredMassKg": 1722.65625,
+        "materialRemovedKg": 300
+      },
+      "structural": {
+        "state": "Ready",
+        "issued": 0,
+        "last": null
+      },
+      "moving": {
+        "state": "Idle",
+        "last": {
+          "id": "moving-cut-1",
+          "status": "Applied",
+          "reason": "Current-pose fragment replacement"
+        },
+        "issued": 1
+      }
+    },
+    "generation": 1
+  },
+  "afterSphere": {
+    "physics": {
+      "ticks": 31171,
+      "backlogSeconds": 0.0027666666607062025,
+      "discardedSeconds": 0.04896666667859756,
+      "status": "Running",
+      "gravity": 11.794460201817357,
+      "gravityProfile": "local-tangent-gravity-v1",
+      "activeDynamic": 1,
+      "residentDynamic": 3,
+      "solver": "rapier-0.12.0",
+      "stepCpuMs": 0.5,
+      "bodyCount": 5,
+      "colliderCount": 102,
+      "nativeBytes": "unsupported",
+      "terrainGeneration": 1,
+      "collisionBytes": 2490264,
+      "terrainTransaction": "Idle",
+      "terrainFragments": [
+        {
+          "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0:r1:p0",
+          "sourceDigest": "fnv1a64-v1:cf159dcf9d1f6f71",
+          "centerOfMass": {
+            "x": 23.479928457869633,
+            "y": 10.486387122416534,
+            "z": 9.759340222575517
+          },
+          "cellCount": 328,
+          "massKg": 1474.21875,
+          "colliders": 14,
+          "sourceBytes": 262144
+        }
+      ],
+      "parked": [],
+      "neighbor": null,
+      "dormantCheckpointBytes": 0,
+      "bodyResidencyId": null,
+      "bodyResidencyTransaction": "Idle",
+      "neighborTransaction": "Idle",
+      "neighborPinned": false,
+      "preparedTerrainFragments": [],
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": 7,
+          "y": 1.035041093826294,
+          "z": -6.25
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "structural": {
+        "kind": "branch",
+        "origin": {
+          "x": -12,
+          "y": 1.75,
+          "z": -13.5
+        },
+        "cutEdge": 4,
+        "generation": 0,
+        "sourceDigest": "fnv1a64-v1:9cb845863922efae",
+        "state": "Idle",
+        "last": null,
+        "preview": null,
+        "aimPoint": {
+          "x": -11.25,
+          "y": 3,
+          "z": -13.25
+        },
+        "attachment": {
+          "id": "hvp:branch:foliage",
+          "ownerId": "hvp:branch:parent",
+          "supportCell": {
+            "x": 10,
+            "y": 11,
+            "z": 2
+          }
+        },
+        "parts": [
+          {
+            "ownerId": "hvp:branch:parent",
+            "sourceDigest": "fnv1a64-v1:f86be8fb3a37f1cb",
+            "anchored": true,
+            "cellCount": 384,
+            "center": {
+              "x": 0.75,
+              "y": 1,
+              "z": 0.25
+            },
+            "position": {
+              "x": -11.25,
+              "y": 2.75,
+              "z": -13.25
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "massKg": 450,
+            "sleeping": false
+          }
+        ]
+      },
+      "moving": {
+        "sequence": 2,
+        "pendingId": null,
+        "state": "Idle",
+        "preview": {
+          "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0:r1:p0",
+          "sourceDigest": "fnv1a64-v1:cf159dcf9d1f6f71",
+          "revision": 0,
+          "issuedTick": 31171,
+          "cell": [
+            187,
+            83,
+            79
+          ],
+          "pose": {
+            "position": {
+              "x": 8.423064231872559,
+              "y": 0.9640769958496094,
+              "z": -4.884335041046143
+            },
+            "rotation": {
+              "x": 0.03134150803089142,
+              "y": 0.6481854915618896,
+              "z": 0.018483813852071762,
+              "w": 0.7606126070022583
+            }
+          }
+        },
+        "last": {
+          "id": "moving-cut-2",
+          "status": "Applied",
+          "parentId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+          "children": [
+            "hvp:terrain-fragment:r1:1b4aa69d:r1:p0:r1:p0"
+          ],
+          "removedCells": 24,
+          "removedMassKg": 112.5,
+          "issuedTick": 31047,
+          "commitTick": 31166,
+          "parentPose": {
+            "position": {
+              "x": 8.422771453857422,
+              "y": 0.9611991047859192,
+              "z": -4.889292240142822
+            },
+            "rotation": {
+              "x": 0.03730102628469467,
+              "y": 0.6483278870582581,
+              "z": 0.014030314981937408,
+              "w": 0.7603175044059753
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angularVelocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          },
+          "removedMomentum": {
+            "massKg": 112.5,
+            "referencePoint": {
+              "x": 8.422771453857422,
+              "y": 0.9611991047859192,
+              "z": -4.889292240142822
+            },
+            "center": {
+              "x": 8.37432345828046,
+              "y": 0.8935145059594891,
+              "z": -4.965060551377405
+            },
+            "linear": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "angular": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            }
+          }
+        }
+      },
+      "lastImpulse": null,
+      "impulseTarget": {
+        "kind": "Dynamic",
+        "target": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0:r1:p0",
+        "massKg": 1474.21875,
+        "distanceMeters": 2.270756483078003,
+        "point": {
+          "x": 8.527391714500105,
+          "y": 0.9173854513490478,
+          "z": -4.811047866677072
+        }
+      },
+      "lastImpulseTick": null,
+      "inertia": {
+        "ownerId": "hvp:physics:inertia",
+        "sourceDigest": "fnv1a64-v1:15f3bb58342acf4c",
+        "centerOfMass": {
+          "x": 0.29583333333333334,
+          "y": 0.29583333333333334,
+          "z": 0.125
+        },
+        "tensor": {
+          "xx": 3.441772460937501,
+          "yy": 3.4417724609374996,
+          "zz": 6.517333984375002,
+          "xy": 1.9140625000000004,
+          "xz": 0,
+          "yz": 1.3877787807814457e-17
+        },
+        "principal": {
+          "principalInertia": {
+            "x": 1.5277099609374998,
+            "y": 5.355834960937501,
+            "z": 6.517333984375002
+          },
+          "frame": {
+            "x": 0.3826834323650899,
+            "y": 0.9238795325112867,
+            "z": 0,
+            "w": 0
+          },
+          "residual": 1.1102230246251565e-16
+        },
+        "colliders": 2,
+        "impulses": 0,
+        "aimPoint": {
+          "x": -8.564777374267578,
+          "y": 1.312473177909851,
+          "z": -13.287601470947266
+        },
+        "angularVelocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      },
+      "bodies": [
+        {
+          "ownerId": "hvp:physics:drop",
+          "position": {
+            "x": -9.624567985534668,
+            "y": 0.6241464614868164,
+            "z": -7.507255554199219
+          },
+          "orientation": {
+            "x": -0.6501973867416382,
+            "y": -0.2731212377548218,
+            "z": 0.27541404962539673,
+            "w": -0.6532956957817078
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": true,
+          "massKg": 300
+        },
+        {
+          "ownerId": "hvp:physics:inertia",
+          "position": {
+            "x": -8.716800689697266,
+            "y": 1.5458214282989502,
+            "z": -13.151344299316406
+          },
+          "orientation": {
+            "x": -0.0002377739001531154,
+            "y": 0.3575611114501953,
+            "z": 0.00005180474545340985,
+            "w": 0.9338896870613098
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": true,
+          "massKg": 35.15625
+        },
+        {
+          "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0:r1:p0",
+          "position": {
+            "x": 8.423064231872559,
+            "y": 0.9640769958496094,
+            "z": -4.884335041046143
+          },
+          "orientation": {
+            "x": 0.03134150803089142,
+            "y": 0.6481854915618896,
+            "z": 0.018483813852071762,
+            "w": 0.7606126070022583
+          },
+          "velocity": {
+            "x": 0.0021332099568098783,
+            "y": 0.0024031621869653463,
+            "z": 0.0005319012561812997
+          },
+          "sleeping": false,
+          "massKg": 1474.21875
+        },
+        {
+          "ownerId": "hvp:branch:parent",
+          "position": {
+            "x": -11.25,
+            "y": 2.75,
+            "z": -13.25
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "w": 1
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": false,
+          "massKg": 450
+        }
+      ]
+    },
+    "tool": {
+      "mode": "Kugel 0,25 m",
+      "edges": 3,
+      "issued": 1,
+      "message": "Loses Fragment: Linksklick schneidet erneut (auch nach dem Fallen)",
+      "state": "Applied",
+      "queued": 0,
+      "receipts": 1,
+      "last": {
+        "commandId": "cut-1",
+        "status": "Applied",
+        "removedCells": 64,
+        "reason": "Terrain and collision committed",
+        "revision": 1,
+        "transferredCells": 384,
+        "transferredMassKg": 1722.65625,
+        "materialRemovedKg": 300
+      },
+      "structural": {
+        "state": "Ready",
+        "issued": 0,
+        "last": null
+      },
+      "moving": {
+        "state": "Idle",
+        "last": {
+          "id": "moving-cut-2",
+          "status": "Applied",
+          "reason": "Current-pose fragment replacement"
+        },
+        "issued": 2
+      }
+    },
+    "generation": 1
+  },
+  "records": [
+    {
+      "name": "hvp.cutSubmittedMs",
+      "entryType": "measure",
+      "startTime": 322241.700000003,
+      "duration": 0,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutSubmittedMs:52774",
+        "data": {
+          "commandId": "cut-1",
+          "thread": "main",
+          "phase": "cutSubmittedMs",
+          "origin": 1790101597544.4,
+          "start": 322241.700000003,
+          "duration": 0
+        }
+      }
+    },
+    {
+      "name": "hvp.cutQueueWaitMs",
+      "entryType": "measure",
+      "startTime": 322241.700000003,
+      "duration": 0.8999999910593033,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutQueueWaitMs:52775",
+        "data": {
+          "commandId": "cut-1",
+          "thread": "main",
+          "phase": "cutQueueWaitMs",
+          "origin": 1790101597544.4,
+          "start": 322241.700000003,
+          "duration": 0.8999999910593033
+        }
+      }
+    },
+    {
+      "name": "hvp.cutRootPrepareMs",
+      "entryType": "measure",
+      "startTime": 322242.700000003,
+      "duration": 0.8999999910593033,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutRootPrepareMs:52776",
+        "data": {
+          "commandId": "cut-1",
+          "thread": "main",
+          "phase": "cutRootPrepareMs",
+          "origin": 1790101597544.4,
+          "start": 322242.700000003,
+          "duration": 0.8999999910593033
+        }
+      }
+    },
+    {
+      "name": "hvp.cutSupportAnalyzeMs",
+      "entryType": "measure",
+      "startTime": 322243.700000003,
+      "duration": 1453.5999999940395,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutSupportAnalyzeMs:53037",
+        "data": {
+          "commandId": "cut-1",
+          "thread": "main",
+          "phase": "cutSupportAnalyzeMs",
+          "origin": 1790101597544.4,
+          "start": 322243.700000003,
+          "duration": 1453.5999999940395
+        }
+      }
+    },
+    {
+      "name": "hvp.cutTransferPrepareMs",
+      "entryType": "measure",
+      "startTime": 323697.5,
+      "duration": 6.9000000059604645,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutTransferPrepareMs:53038",
+        "data": {
+          "commandId": "cut-1",
+          "thread": "main",
+          "phase": "cutTransferPrepareMs",
+          "origin": 1790101597544.4,
+          "start": 323697.5,
+          "duration": 6.9000000059604645
+        }
+      }
+    },
+    {
+      "name": "hvp.cutCompileMs",
+      "entryType": "measure",
+      "startTime": 323704.5,
+      "duration": 185.5,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutCompileMs:53069",
+        "data": {
+          "commandId": "cut-1",
+          "thread": "main",
+          "phase": "cutCompileMs",
+          "origin": 1790101597544.4,
+          "start": 323704.5,
+          "duration": 185.5
+        }
+      }
+    },
+    {
+      "name": "hvp.cutNativePrepareMs",
+      "entryType": "measure",
+      "startTime": 323890.09999999404,
+      "duration": 230.1000000089407,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutNativePrepareMs:53100",
+        "data": {
+          "commandId": "cut-1",
+          "thread": "main",
+          "phase": "cutNativePrepareMs",
+          "origin": 1790101597544.4,
+          "start": 323890.09999999404,
+          "duration": 230.1000000089407
+        }
+      }
+    },
+    {
+      "name": "hvp.cutGraphicsStageMs",
+      "entryType": "measure",
+      "startTime": 324120.40000000596,
+      "duration": 91.3999999910593,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutGraphicsStageMs:53111",
+        "data": {
+          "commandId": "cut-1",
+          "thread": "main",
+          "phase": "cutGraphicsStageMs",
+          "origin": 1790101597544.4,
+          "start": 324120.40000000596,
+          "duration": 91.3999999910593
+        }
+      }
+    },
+    {
+      "name": "hvp.cutFragmentMeshMs",
+      "entryType": "measure",
+      "startTime": 324120.700000003,
+      "duration": 1.8999999910593033,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutFragmentMeshMs:53101",
+        "data": {
+          "commandId": "cut-1",
+          "thread": "main",
+          "phase": "cutFragmentMeshMs",
+          "origin": 1790101597544.4,
+          "start": 324120.700000003,
+          "duration": 1.8999999910593033
+        }
+      }
+    },
+    {
+      "name": "hvp.cutLookRegroupMs",
+      "entryType": "measure",
+      "startTime": 324122.799999997,
+      "duration": 0.10000000894069672,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutLookRegroupMs:53102",
+        "data": {
+          "commandId": "cut-1",
+          "thread": "main",
+          "phase": "cutLookRegroupMs",
+          "origin": 1790101597544.4,
+          "start": 324122.799999997,
+          "duration": 0.10000000894069672
+        }
+      }
+    },
+    {
+      "name": "hvp.cutArtifactCreateMs",
+      "entryType": "measure",
+      "startTime": 324122.90000000596,
+      "duration": 0.5,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutArtifactCreateMs:53103",
+        "data": {
+          "commandId": "cut-1",
+          "thread": "main",
+          "phase": "cutArtifactCreateMs",
+          "origin": 1790101597544.4,
+          "start": 324122.90000000596,
+          "duration": 0.5
+        }
+      }
+    },
+    {
+      "name": "hvp.cutLookRegroupMs",
+      "entryType": "measure",
+      "startTime": 324123.40000000596,
+      "duration": 0.699999988079071,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutLookRegroupMs:53104",
+        "data": {
+          "commandId": "cut-1",
+          "thread": "main",
+          "phase": "cutLookRegroupMs",
+          "origin": 1790101597544.4,
+          "start": 324123.40000000596,
+          "duration": 0.699999988079071
+        }
+      }
+    },
+    {
+      "name": "hvp.cutLookRegroupMs",
+      "entryType": "measure",
+      "startTime": 324124.09999999404,
+      "duration": 0.30000001192092896,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutLookRegroupMs:53105",
+        "data": {
+          "commandId": "cut-1",
+          "thread": "main",
+          "phase": "cutLookRegroupMs",
+          "origin": 1790101597544.4,
+          "start": 324124.09999999404,
+          "duration": 0.30000001192092896
+        }
+      }
+    },
+    {
+      "name": "hvp.cutArtifactCreateMs",
+      "entryType": "measure",
+      "startTime": 324124.799999997,
+      "duration": 21,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutArtifactCreateMs:53106",
+        "data": {
+          "commandId": "cut-1",
+          "thread": "main",
+          "phase": "cutArtifactCreateMs",
+          "origin": 1790101597544.4,
+          "start": 324124.799999997,
+          "duration": 21
+        }
+      }
+    },
+    {
+      "name": "hvp.cutArtifactCreateMs",
+      "entryType": "measure",
+      "startTime": 324146,
+      "duration": 6.200000002980232,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutArtifactCreateMs:53107",
+        "data": {
+          "commandId": "cut-1",
+          "thread": "main",
+          "phase": "cutArtifactCreateMs",
+          "origin": 1790101597544.4,
+          "start": 324146,
+          "duration": 6.200000002980232
+        }
+      }
+    },
+    {
+      "name": "hvp.cutBackendUpsertMs",
+      "entryType": "measure",
+      "startTime": 324152.700000003,
+      "duration": 40.20000000298023,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutBackendUpsertMs:53108",
+        "data": {
+          "commandId": "cut-1",
+          "thread": "main",
+          "phase": "cutBackendUpsertMs",
+          "origin": 1790101597544.4,
+          "start": 324152.700000003,
+          "duration": 40.20000000298023
+        }
+      }
+    },
+    {
+      "name": "hvp.cutBackendUpsertMs",
+      "entryType": "measure",
+      "startTime": 324193.200000003,
+      "duration": 11.700000002980232,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutBackendUpsertMs:53109",
+        "data": {
+          "commandId": "cut-1",
+          "thread": "main",
+          "phase": "cutBackendUpsertMs",
+          "origin": 1790101597544.4,
+          "start": 324193.200000003,
+          "duration": 11.700000002980232
+        }
+      }
+    },
+    {
+      "name": "hvp.cutBackendUpsertMs",
+      "entryType": "measure",
+      "startTime": 324205.200000003,
+      "duration": 0.5,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutBackendUpsertMs:53110",
+        "data": {
+          "commandId": "cut-1",
+          "thread": "main",
+          "phase": "cutBackendUpsertMs",
+          "origin": 1790101597544.4,
+          "start": 324205.200000003,
+          "duration": 0.5
+        }
+      }
+    },
+    {
+      "name": "hvp.cutNativeCommitMs",
+      "entryType": "measure",
+      "startTime": 324211.799999997,
+      "duration": 7.4000000059604645,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutNativeCommitMs:53114",
+        "data": {
+          "commandId": "cut-1",
+          "thread": "main",
+          "phase": "cutNativeCommitMs",
+          "origin": 1790101597544.4,
+          "start": 324211.799999997,
+          "duration": 7.4000000059604645
+        }
+      }
+    },
+    {
+      "name": "hvp.cutRootCommitMs",
+      "entryType": "measure",
+      "startTime": 324219.200000003,
+      "duration": 0.20000000298023224,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutRootCommitMs:53115",
+        "data": {
+          "commandId": "cut-1",
+          "thread": "main",
+          "phase": "cutRootCommitMs",
+          "origin": 1790101597544.4,
+          "start": 324219.200000003,
+          "duration": 0.20000000298023224
+        }
+      }
+    },
+    {
+      "name": "hvp.cutPublishMs",
+      "entryType": "measure",
+      "startTime": 324219.40000000596,
+      "duration": 5.899999991059303,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutPublishMs:53116",
+        "data": {
+          "commandId": "cut-1",
+          "thread": "main",
+          "phase": "cutPublishMs",
+          "origin": 1790101597544.4,
+          "start": 324219.40000000596,
+          "duration": 5.899999991059303
+        }
+      }
+    },
+    {
+      "name": "hvp.cutInputToAppliedMs",
+      "entryType": "measure",
+      "startTime": 322222,
+      "duration": 2024.800048828125,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutInputToAppliedMs:53123",
+        "data": {
+          "commandId": "cut-1",
+          "inputOrigin": 1790101597544.4,
+          "inputStart": 322222,
+          "terminalOrigin": 1790101597544.4,
+          "terminalStart": 322241.700000003,
+          "terminalDuration": 2005.0999999940395
+        }
+      }
+    },
+    {
+      "name": "hvp.cutFirstCommittedRenderSubmitMs",
+      "entryType": "measure",
+      "startTime": 322222,
+      "duration": 2042.39990234375,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutFirstCommittedRenderSubmitMs:53126",
+        "data": {
+          "commandId": "cut-1",
+          "savedRevision": 1,
+          "savedDigest": "26d5308d",
+          "nativeGeneration": 1,
+          "activeTerrainKeys": [
+            "hvp:terrain:s0:r0",
+            "hvp:terrain:s1:r0",
+            "hvp:terrain:s2:r0",
+            "hvp:terrain:s3:r0",
+            "hvp:terrain:s4:r0",
+            "hvp:terrain:s5:r0",
+            "hvp:terrain:s8:r0",
+            "hvp:terrain:s9:r0",
+            "hvp:terrain:s10:r0",
+            "hvp:terrain:s11:r0",
+            "hvp:terrain:s12:r0",
+            "hvp:terrain:s13:r0",
+            "hvp:terrain:s14:r0",
+            "hvp:terrain:s15:r0",
+            "hvp:terrain:s6:r1",
+            "hvp:terrain:s7:r1"
+          ],
+          "rootIdentityMatches": true,
+          "activeKeysMatch": true,
+          "visibleKeysMatch": true,
+          "nativeGenerationMatches": true,
+          "recoveryHold": false
+        }
+      }
+    },
+    {
+      "name": "hvp.cutTotalAppliedMs",
+      "entryType": "measure",
+      "startTime": 322241.700000003,
+      "duration": 2005.0999999940395,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutTotalAppliedMs:53122",
+        "data": {
+          "commandId": "cut-1",
+          "thread": "main",
+          "phase": "cutTotalAppliedMs",
+          "origin": 1790101597544.4,
+          "start": 322241.700000003,
+          "duration": 2005.0999999940395
+        }
+      }
+    },
+    {
+      "name": "hvp.cutNativeFinalizeMs",
+      "entryType": "measure",
+      "startTime": 324225.40000000596,
+      "duration": 13.199999988079071,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutNativeFinalizeMs:53120",
+        "data": {
+          "commandId": "cut-1",
+          "thread": "main",
+          "phase": "cutNativeFinalizeMs",
+          "origin": 1790101597544.4,
+          "start": 324225.40000000596,
+          "duration": 13.199999988079071
+        }
+      }
+    },
+    {
+      "name": "hvp.cutCleanupMs",
+      "entryType": "measure",
+      "startTime": 324238.700000003,
+      "duration": 7.899999991059303,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutCleanupMs:53121",
+        "data": {
+          "commandId": "cut-1",
+          "thread": "main",
+          "phase": "cutCleanupMs",
+          "origin": 1790101597544.4,
+          "start": 324238.700000003,
+          "duration": 7.899999991059303
+        }
+      }
+    },
+    {
+      "name": "hvp.cutBodySubmittedMs",
+      "entryType": "measure",
+      "startTime": 451611.700000003,
+      "duration": 0,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutBodySubmittedMs:76026",
+        "data": {
+          "commandId": "moving-cut-1",
+          "thread": "main",
+          "phase": "cutBodySubmittedMs",
+          "origin": 1790101597544.4,
+          "start": 451611.700000003,
+          "duration": 0
+        }
+      }
+    },
+    {
+      "name": "hvp.cutBodyInputToAppliedMs",
+      "entryType": "measure",
+      "startTime": 451605.5,
+      "duration": 3046.89990234375,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutBodyInputToAppliedMs:76492",
+        "data": {
+          "commandId": "moving-cut-1",
+          "inputOrigin": 1790101597544.4,
+          "inputStart": 451605.5,
+          "terminalOrigin": 1790101597544.4,
+          "terminalStart": 451611.700000003,
+          "terminalDuration": 3040.7000000029802
+        }
+      }
+    },
+    {
+      "name": "hvp.cutBodyFirstCommittedRenderSubmitMs",
+      "entryType": "measure",
+      "startTime": 451605.5,
+      "duration": 3085.199951171875,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutBodyFirstCommittedRenderSubmitMs:76495",
+        "data": {
+          "commandId": "moving-cut-1",
+          "savedRevision": 1,
+          "savedDigest": "26d5308d",
+          "nativeGeneration": 1,
+          "activeTerrainKeys": [
+            "hvp:terrain:s0:r0",
+            "hvp:terrain:s1:r0",
+            "hvp:terrain:s2:r0",
+            "hvp:terrain:s3:r0",
+            "hvp:terrain:s4:r0",
+            "hvp:terrain:s5:r0",
+            "hvp:terrain:s8:r0",
+            "hvp:terrain:s9:r0",
+            "hvp:terrain:s10:r0",
+            "hvp:terrain:s11:r0",
+            "hvp:terrain:s12:r0",
+            "hvp:terrain:s13:r0",
+            "hvp:terrain:s14:r0",
+            "hvp:terrain:s15:r0",
+            "hvp:terrain:s6:r1",
+            "hvp:terrain:s7:r1"
+          ],
+          "rootIdentityMatches": true,
+          "activeKeysMatch": true,
+          "visibleKeysMatch": true,
+          "nativeGenerationMatches": true,
+          "recoveryHold": false,
+          "bodySequence": 1,
+          "parentId": "hvp:terrain-fragment:r1:1b4aa69d",
+          "children": [
+            {
+              "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+              "sourceDigest": "fnv1a64-v1:c05b830d110a061f",
+              "renderKey": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0"
+            }
+          ],
+          "activeBodyKeys": [
+            "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+            "hvp:branch:parent",
+            "hvp:branch:foliage:r0"
+          ],
+          "outcomeIdentityMatches": true
+        }
+      }
+    },
+    {
+      "name": "hvp.cutBodyTotalAppliedMs",
+      "entryType": "measure",
+      "startTime": 451611.700000003,
+      "duration": 3040.7000000029802,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutBodyTotalAppliedMs:76491",
+        "data": {
+          "commandId": "moving-cut-1",
+          "thread": "main",
+          "phase": "cutBodyTotalAppliedMs",
+          "origin": 1790101597544.4,
+          "start": 451611.700000003,
+          "duration": 3040.7000000029802
+        }
+      }
+    },
+    {
+      "name": "hvp.cutBodySubmittedMs",
+      "entryType": "measure",
+      "startTime": 814545.200000003,
+      "duration": 0,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutBodySubmittedMs:125888",
+        "data": {
+          "commandId": "moving-cut-2",
+          "thread": "main",
+          "phase": "cutBodySubmittedMs",
+          "origin": 1790101597544.4,
+          "start": 814545.200000003,
+          "duration": 0
+        }
+      }
+    },
+    {
+      "name": "hvp.cutBodyInputToAppliedMs",
+      "entryType": "measure",
+      "startTime": 814535.400000006,
+      "duration": 3695.199951171875,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutBodyInputToAppliedMs:126376",
+        "data": {
+          "commandId": "moving-cut-2",
+          "inputOrigin": 1790101597544.4,
+          "inputStart": 814535.400000006,
+          "terminalOrigin": 1790101597544.4,
+          "terminalStart": 814545.200000003,
+          "terminalDuration": 3685.3999999910593
+        }
+      }
+    },
+    {
+      "name": "hvp.cutBodyFirstCommittedRenderSubmitMs",
+      "entryType": "measure",
+      "startTime": 814535.400000006,
+      "duration": 3731.7001953125,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutBodyFirstCommittedRenderSubmitMs:126379",
+        "data": {
+          "commandId": "moving-cut-2",
+          "savedRevision": 1,
+          "savedDigest": "26d5308d",
+          "nativeGeneration": 1,
+          "activeTerrainKeys": [
+            "hvp:terrain:s0:r0",
+            "hvp:terrain:s1:r0",
+            "hvp:terrain:s2:r0",
+            "hvp:terrain:s3:r0",
+            "hvp:terrain:s4:r0",
+            "hvp:terrain:s5:r0",
+            "hvp:terrain:s8:r0",
+            "hvp:terrain:s9:r0",
+            "hvp:terrain:s10:r0",
+            "hvp:terrain:s11:r0",
+            "hvp:terrain:s12:r0",
+            "hvp:terrain:s13:r0",
+            "hvp:terrain:s14:r0",
+            "hvp:terrain:s15:r0",
+            "hvp:terrain:s6:r1",
+            "hvp:terrain:s7:r1"
+          ],
+          "rootIdentityMatches": true,
+          "activeKeysMatch": true,
+          "visibleKeysMatch": true,
+          "nativeGenerationMatches": true,
+          "recoveryHold": false,
+          "bodySequence": 2,
+          "parentId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+          "children": [
+            {
+              "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0:r1:p0",
+              "sourceDigest": "fnv1a64-v1:cf159dcf9d1f6f71",
+              "renderKey": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0:r1:p0"
+            }
+          ],
+          "activeBodyKeys": [
+            "hvp:terrain-fragment:r1:1b4aa69d:r1:p0:r1:p0",
+            "hvp:branch:parent",
+            "hvp:branch:foliage:r0"
+          ],
+          "outcomeIdentityMatches": true
+        }
+      }
+    },
+    {
+      "name": "hvp.cutBodyTotalAppliedMs",
+      "entryType": "measure",
+      "startTime": 814545.200000003,
+      "duration": 3685.3999999910593,
+      "navigationId": 9512,
+      "detail": {
+        "sampleId": "cutBodyTotalAppliedMs:126375",
+        "data": {
+          "commandId": "moving-cut-2",
+          "thread": "main",
+          "phase": "cutBodyTotalAppliedMs",
+          "origin": 1790101597544.4,
+          "start": 814545.200000003,
+          "duration": 3685.3999999910593
+        }
+      }
+    }
+  ],
+  "collectorDropped": 0,
+  "testBridge": false
+}

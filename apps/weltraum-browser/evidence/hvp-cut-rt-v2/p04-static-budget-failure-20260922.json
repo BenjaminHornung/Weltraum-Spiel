@@ -1,0 +1,64 @@
+{
+  "purpose": "P04 static-cache regression before reserve correction; actual default scene stays on budget-exceeded fallback",
+  "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36",
+  "url": "http://127.0.0.1:5177/?hestiaPrototype=1&hvpMeasure=1",
+  "state": "Ready",
+  "diagnostics": {
+    "scenePreparationMs": 0.5,
+    "renderSubmitMs": 1.5,
+    "calls": 277,
+    "triangles": 528700,
+    "geometries": 128,
+    "textures": 3,
+    "shadowUpdated": true,
+    "shadowCache": "budget-exceeded",
+    "shadowRevisionBytes": 0,
+    "shadowMapSize": 1024,
+    "fullscreenTargets": 0
+  },
+  "resources": {
+    "ledger": {
+      "slotBytes": 8388608,
+      "preparedCopyBytes": 8388608,
+      "maskBytes": 1089536,
+      "meshBytes": 28102824,
+      "groupedIndexBytes": 2448576,
+      "artifactCopyBytes": 28102824,
+      "retainedMeshBytes": 28116392,
+      "tempEstimateBytes": 157069640,
+      "vegetationSourceBytes": 7158400,
+      "checkpointSourceBytes": 0,
+      "totalCpuBytes": 248120408,
+      "gpuBytes": "unsupported",
+      "triangles": 374632,
+      "drawCalls": 169,
+      "dormantCheckpointBytes": 0,
+      "neighborSourceBytes": 0,
+      "neighborCacheBytes": 0,
+      "neighborCheckpointBytes": 0,
+      "neighborBaseProxyBytes": 0,
+      "physicsPayloadBytes": 4981680,
+      "physicsPrepareBytes": 100663296,
+      "dynamicFragmentSourceBytes": 0
+    },
+    "gameplayCpuBytes": 248120408,
+    "diagnosticReservedBytes": 262144,
+    "totalCpuBytes": 248382552,
+    "diagnosticRuntimeOverhead": "not-measured",
+    "cutObservation": {
+      "status": "armed",
+      "drops": 0,
+      "disables": 0,
+      "inputCount": 0,
+      "pendingRender": false
+    },
+    "caps": {
+      "maxCpuBytes": 268435456,
+      "maxMeshBytes": 134217728,
+      "maxTriangles": 500000,
+      "maxDrawCalls": 300
+    }
+  },
+  "native": "SimulationHold",
+  "testBridge": false
+}

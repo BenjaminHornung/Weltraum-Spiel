@@ -1,6 +1,7 @@
 import {fnv1aHash} from "../core/hash";
 import {HVP_COAST_MATERIAL_REGISTRY} from "../hvp/hvpCoastSource";
-import {analyzeHvpSupportSnapshot,type HvpSupportReport,type HvpTerrainFragment} from "../hestia-prototype/terrain/supportPlan";
+import {analyzeHvpSupportSnapshot,createHvpSupportTimingsCollector,type HvpSupportReport,type HvpTerrainFragment,type HvpSupportTimings} from "../hestia-prototype/terrain/supportPlan";
+import type {HvpTransferredColliderBox} from "../hestia-prototype/physics/rigidRecipe";
 import type {HvpCell} from "../hestia-prototype/terrain/picking";
 import {byteCount,contentRevision} from "./ids";
 import {fnv1aBytes,validateTransferableBundle,type TransferableBufferBundle,type WorkerJobRequest,type WorkerJobResult} from "./protocol";
@@ -39,7 +40,7 @@ export const decodeHvpSupportOutput=(output:TransferableBufferBundle,p:HvpSuppor
   if(b.ownership!=="WorkerToConsumer"||b.revision!==p.generation||b.byteLength>HVP_SUPPORT_MAX_OUTPUT
     ||b.buffers.length!==1||b.views.length!==1||v?.kind!=="Uint8Array"||v.name!=="report"
     ||v.bufferIndex!==0||v.byteOffset!==0||v.elementCount!==b.buffers[0]!.byteLength){throw new Error("Invalid support output layout");}
-  const value=JSON.parse(new TextDecoder("utf-8",{fatal:true}).decode(b.buffers[0]!)) as {binding:unknown;report:HvpSupportReport};
+  const value=JSON.parse(new TextDecoder("utf-8",{fatal:true}).decode(b.buffers[0]!)) as {binding:unknown;report:HvpSupportReport;timings?:HvpSupportTimings};
   const r=value.report;
   if(JSON.stringify(value.binding)!==JSON.stringify(identity(p))||!r
     ||!["Ready","NoChange","UnknownBoundary","OverBudget","FragmentOverBudget"].includes(r.status)
@@ -70,21 +71,54 @@ export const decodeHvpSupportOutput=(output:TransferableBufferBundle,p:HvpSuppor
     if(f.digest!==digest||f.id!==`hvp-terrain-fragment-${digest}`||!Number.isFinite(f.massKg)||Math.abs(f.massKg-mass)>1e-6
       ||JSON.stringify(f.min)!==JSON.stringify(min)||JSON.stringify(f.max)!==JSON.stringify(max)
       ||JSON.stringify(f.affectedLeaves)!==JSON.stringify(sortedLeaves)){throw new Error("Invalid support fragment geometry or mass binding");}
+    if(!Array.isArray(f.colliderBoxes)||f.colliderBoxes.length<1||f.colliderBoxes.length>64){throw new Error("Invalid support collider boxes");}
+    let boxVolume=0;
+    const colliderBoxes=f.colliderBoxes.map((box:HvpTransferredColliderBox)=>{
+      if(!box||!Array.isArray(box.min)||!Array.isArray(box.max)||box.min.length!==3||box.max.length!==3
+        ||![...box.min,...box.max].every((v)=>Number.isSafeInteger(v)&&Math.abs(v)<=1_000_000)
+        ||box.min[0]!>=box.max[0]!||box.min[1]!>=box.max[1]!||box.min[2]!>=box.max[2]!){
+        throw new Error("Invalid support collider box");
+      }
+      boxVolume+=(box.max[0]!-box.min[0]!)*(box.max[1]!-box.min[1]!)*(box.max[2]!-box.min[2]!);
+      return Object.freeze({min:Object.freeze([...box.min] as [number,number,number]),max:Object.freeze([...box.max] as [number,number,number])});
+    });
+    if(boxVolume!==cells.length){throw new Error("Support collider coverage mismatch");}
+    if(f.colliders!==colliderBoxes.length){throw new Error("Invalid support collider count");}
     return Object.freeze({id:f.id,digest,cells:Object.freeze(cells),massKg:mass,colliders:f.colliders,
-      min:Object.freeze(min) as unknown as HvpCell,max:Object.freeze(max) as unknown as HvpCell,affectedLeaves:Object.freeze(sortedLeaves)});
+      min:Object.freeze(min) as unknown as HvpCell,max:Object.freeze(max) as unknown as HvpCell,affectedLeaves:Object.freeze(sortedLeaves),
+      colliderBoxes:Object.freeze(colliderBoxes)});
   });
   if(seen.size>r.probes){throw new Error("Support cells exceed actual probes");}
+  const tm=value.timings;
+  let ownedTimings:HvpSupportTimings|undefined;
+  if(tm!==undefined){
+    if(tm===null||typeof tm!=="object"){throw new Error("Invalid support timings");}
+    const spanKeys:readonly (keyof HvpSupportTimings)[]=["seedsMs","supportMs","ingestMs","recipeMs","totalMs"];
+    const bd=tm.recipeBreakdown;
+    if(typeof tm.fragmentCount!=="number"||!Number.isSafeInteger(tm.fragmentCount)||tm.fragmentCount<0||tm.fragmentCount>32
+      ||typeof tm.fragmentCells!=="number"||!Number.isSafeInteger(tm.fragmentCells)||tm.fragmentCells<0||tm.fragmentCells!==seen.size
+      ||spanKeys.some(k=>typeof tm[k]!=="number"||!Number.isFinite(tm[k]!)||tm[k]!<0||tm[k]!>262_144)
+      ||(bd!==undefined&&(typeof bd!=="object"||bd===null
+        ||(["massMs","classifyMs","transitionMs","axesMs"] as const).some(k=>typeof bd[k]!=="number"||!Number.isFinite(bd[k])||bd[k]<0||bd[k]>262_144)))
+      ||tm.fragmentCount!==r.fragments.length){throw new Error("Invalid support timings");}
+    const recipeBreakdown=bd===undefined?undefined:Object.freeze({massMs:bd.massMs,classifyMs:bd.classifyMs,transitionMs:bd.transitionMs,axesMs:bd.axesMs});
+    ownedTimings=Object.freeze({seedsMs:tm.seedsMs,supportMs:tm.supportMs,ingestMs:tm.ingestMs,recipeMs:tm.recipeMs,
+      fragmentCount:tm.fragmentCount,fragmentCells:tm.fragmentCells,totalMs:tm.totalMs,
+      ...(recipeBreakdown===undefined?{}:{recipeBreakdown})});
+  }
   return Object.freeze({status:r.status,reason:r.reason,probes:r.probes,anchoredWitnesses:r.anchoredWitnesses,
-    workingBytes:r.workingBytes,fragments:Object.freeze(fragments)});
+    workingBytes:r.workingBytes,fragments:Object.freeze(fragments),...(ownedTimings===undefined?{}:{timings:ownedTimings})});
 };
 export const executeHvpSupportJob=(request:WorkerJobRequest,bundle:TransferableBufferBundle)=>{
   const input=validateTransferableBundle(bundle),p=validateHvpSupportRequest(request,input),slots=new Uint8Array(input.buffers[0]!);
   if(slots.some(v=>v>4&&v!==255)||p.changed.some(([x,y,z])=>slots[x+y*p.size[0]+z*p.size[0]*p.size[1]]!==0)){
     throw new Error("Invalid candidate occupancy or cut seeds");
   }
+  const clock=createHvpSupportTimingsCollector();
   const report=analyzeHvpSupportSnapshot({sizeX:p.size[0],sizeY:p.size[1],sizeZ:p.size[2],cellMeters:.125,originMeters:{x:0,y:0,z:0},
-    readSlot:(x,y,z)=>{const v=slots[x+y*p.size[0]+z*p.size[0]*p.size[1]]!;return v===255?undefined:v;}},p.changed);
-  const bytes=new TextEncoder().encode(JSON.stringify({binding:identity(p),report}));
+    readSlot:(x,y,z)=>{const v=slots[x+y*p.size[0]+z*p.size[0]*p.size[1]]!;return v===255?undefined:v;}},p.changed,{},clock);
+  const timings=clock.done(report.fragments.length,report.fragments.reduce((n,f)=>n+f.cells.length,0));
+  const bytes=new TextEncoder().encode(JSON.stringify({binding:identity(p),report,timings}));
   if(bytes.byteLength>HVP_SUPPORT_MAX_OUTPUT){throw new Error("Support output BudgetExceeded");}
   const buffers=[bytes.buffer as ArrayBuffer];
   const output:TransferableBufferBundle={buffers,ownership:"WorkerToConsumer",revision:contentRevision(p.generation),byteLength:byteCount(bytes.byteLength),

@@ -1,0 +1,111 @@
+{
+  "purpose": "P04 original static-cache failure reproduced after correction: three spaced samples following a real C04-to-C01 camera change; not GPU timing or full-frame instrumentation",
+  "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36",
+  "viewport": [
+    1536,
+    791,
+    1.25
+  ],
+  "state": "Ready",
+  "camera": "C01-EYE",
+  "testBridge": false,
+  "resources": {
+    "ledger": {
+      "slotBytes": 8388608,
+      "preparedCopyBytes": 8388608,
+      "maskBytes": 1089536,
+      "meshBytes": 28102824,
+      "groupedIndexBytes": 2448576,
+      "artifactCopyBytes": 28102824,
+      "retainedMeshBytes": 28116392,
+      "tempEstimateBytes": 157069640,
+      "vegetationSourceBytes": 7158400,
+      "checkpointSourceBytes": 0,
+      "totalCpuBytes": 248513624,
+      "gpuBytes": "unsupported",
+      "triangles": 374632,
+      "drawCalls": 169,
+      "dormantCheckpointBytes": 0,
+      "neighborSourceBytes": 0,
+      "neighborCacheBytes": 0,
+      "neighborCheckpointBytes": 0,
+      "neighborBaseProxyBytes": 0,
+      "physicsPayloadBytes": 4981680,
+      "physicsPrepareBytes": 100663296,
+      "dynamicFragmentSourceBytes": 0
+    },
+    "gameplayCpuBytes": 248513624,
+    "diagnosticReservedBytes": 262144,
+    "totalCpuBytes": 248775768,
+    "diagnosticRuntimeOverhead": "not-measured",
+    "cutObservation": {
+      "status": "armed",
+      "drops": 0,
+      "disables": 0,
+      "inputCount": 0,
+      "pendingRender": false
+    },
+    "caps": {
+      "maxCpuBytes": 268435456,
+      "maxMeshBytes": 134217728,
+      "maxTriangles": 500000,
+      "maxDrawCalls": 300
+    }
+  },
+  "samples": [
+    {
+      "now": 224667.5,
+      "diagnostics": {
+        "scenePreparationMs": 0.30000001192092896,
+        "renderSubmitMs": 0.5999999940395355,
+        "calls": 139,
+        "triangles": 352184,
+        "geometries": 128,
+        "textures": 3,
+        "shadowUpdated": false,
+        "shadowCache": "reused",
+        "shadowRevisionBytes": 134496,
+        "shadowMapSize": 1024,
+        "fullscreenTargets": 0
+      },
+      "native": "Running",
+      "rootGeneration": 0
+    },
+    {
+      "now": 226180.70000000298,
+      "diagnostics": {
+        "scenePreparationMs": 0.4000000059604645,
+        "renderSubmitMs": 0.5,
+        "calls": 139,
+        "triangles": 352184,
+        "geometries": 128,
+        "textures": 3,
+        "shadowUpdated": false,
+        "shadowCache": "reused",
+        "shadowRevisionBytes": 134496,
+        "shadowMapSize": 1024,
+        "fullscreenTargets": 0
+      },
+      "native": "Running",
+      "rootGeneration": 0
+    },
+    {
+      "now": 227685.79999999702,
+      "diagnostics": {
+        "scenePreparationMs": 0.4000000059604645,
+        "renderSubmitMs": 0.5999999940395355,
+        "calls": 139,
+        "triangles": 352184,
+        "geometries": 128,
+        "textures": 3,
+        "shadowUpdated": false,
+        "shadowCache": "reused",
+        "shadowRevisionBytes": 134496,
+        "shadowMapSize": 1024,
+        "fullscreenTargets": 0
+      },
+      "native": "Running",
+      "rootGeneration": 0
+    }
+  ]
+}

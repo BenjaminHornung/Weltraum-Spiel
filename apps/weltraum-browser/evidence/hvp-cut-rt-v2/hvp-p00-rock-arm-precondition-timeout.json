@@ -1,0 +1,36 @@
+{
+  "purpose": "P00 rock-arm preparation attempt, no cut issued",
+  "result": "precondition timeout waiting for pointer lock / grounded support aim",
+  "url": "http://127.0.0.1:5177/?hestiaPrototype=1&hvpScenario=rock-arm&hvpMeasure=1",
+  "tool": {
+    "mode": "Box 0,5 m",
+    "edges": 0,
+    "issued": 0,
+    "message": "Spielen: 1 Zelle · 2 Box · 3 Kugel · Linksklick",
+    "state": "Idle",
+    "queued": 0,
+    "receipts": 0,
+    "structural": {
+      "state": "Ready",
+      "issued": 0,
+      "last": null
+    },
+    "moving": {
+      "state": "Idle",
+      "last": null,
+      "issued": 0
+    }
+  },
+  "clock": {
+    "maxTimerGapMs": 42.599999994039536,
+    "maxAdvanceMs": 17,
+    "maxHandlerMs": 1168.5999999940395,
+    "lastCommand": "Read",
+    "lastHandlerMs": 0.09999999403953552,
+    "delayedCallbacks": [],
+    "timers": 1
+  },
+  "pointerLock": null,
+  "generation": 0,
+  "records": []
+}
