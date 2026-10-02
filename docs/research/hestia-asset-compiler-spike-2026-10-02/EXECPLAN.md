@@ -2,7 +2,7 @@
 
 ## Goal
 
-Current authorization is **C0/C1 ONLY**: establish the exact baseline, freeze the read-only contract audit, commit these three research documents, then **STOP before C2**. No compiler, fixture builder, tests, or CLI are implemented at this checkpoint.
+Current authorization is **C2 then C3**, serially, following the accepted C0/C1 checkpoint `89f068dfff2d965177165dce082c5289a35d0df4`. Implement and freshly verify the narrow reader, then canonical geometry; make their two exact scoped commits and **STOP before C4**. No full compile, voxelization, package, or CLI success is claimed.
 
 After separately authorized serial gates C2-C8, the eventual goal is an executable, standard-library-only offline GLB/report compiler, independent golden corpus, deterministic packages, and bounded verification. Documentation alone will not satisfy that eventual goal. `PRODUCT_INTEGRATED = NO` throughout.
 
@@ -35,7 +35,7 @@ DevToolbox tracking is explicitly inactive. Equivalent checks are the source/lea
 
 ## Non-goals
 
-- No compiler implementation or scaffold before C2 authorization; no future gate marked complete from a plan.
+- No C4-C8 implementation before further authorization; no future gate marked complete from a plan.
 - No HVP, save, physics, renderer, worker, terrain, material-registry, or authoring-schema integration. Renderer projections never become world truth.
 - No broad upstream fixes. Confirmed exporter gaps become later `INTEGRATION_HANDOFF.md` items.
 - No invented density, kg mass, physical inertia, strength, or collision/navigation authority.
@@ -73,7 +73,7 @@ The exact comparison classes approved by R1-A2 are frozen in the audit: identica
 
 ## Implementation phases
 
-All gates are serial. Completion requires fresh evidence and self-review; the superorchestrator retains gate authorization and independent-review responsibility. **C2-C8 below are future work, NOT RUN and NOT AUTHORIZED at C1.** File splits are minimum intended owners, not a requirement to create empty scaffolding.
+All gates are serial. Completion requires fresh evidence and self-review; the superorchestrator retains gate authorization and independent-review responsibility. **C2 then C3 are authorized; C4-C8 remain NOT AUTHORIZED / NOT RUN.** File splits are minimum intended owners, not a requirement to create empty scaffolding.
 
 ### C0 — preflight and baseline
 
@@ -82,7 +82,7 @@ All gates are serial. Completion requires fresh evidence and self-review; the su
 - Acceptance: exact pin/branch; no tracked changes or foreign task edits; real baseline output; environment/Blender limitations explicit.
 - Evidence: 58 host tests PASS, exit 0; details below. No code or qualified performance benchmark.
 
-### C1 — contract freeze (current checkpoint)
+### C1 — contract freeze (accepted prior checkpoint)
 
 - Create these three research files, including R1-A2 comparison/design resolutions and R2/R3 minimal requirements.
 - Check all required plan headings, source references, statuses, diff whitespace, and the **exact three added-file** allowlist; self-review the entire staged diff.
@@ -210,6 +210,20 @@ The publication step follows a final fresh staged check with these literal paths
 
 The commit's own SHA cannot be embedded in its content. The final checkpoint response and Git log record the actual commit result/SHA, parent, remaining status and cleanup **after** execution; this document does not claim the publication command ran before it did. No second bookkeeping commit or amend is required. Final status must retain only the two untracked instrumentation logs; they are not part of the publication.
 
+### C2 actual implementation and bounded verification — 2026-10-02
+
+Implemented `__init__.py`, `errors.py`, `profiles.py`, `glb.py`, `tests/glb_fixtures.py`, and `tests/test_glb.py` beneath the compiler lease; no dependency or upstream source changed. The reader returns validated transport semantics and decoded primitives, not an admitted report-bound compile artifact. `read_report` only pre-bounds/parses bytes and records their SHA; digest/semantic report binding remains C6.
+
+Negative fixtures preceded implementation: first run was the expected missing-reader import failure (exit 1). The first implementation run identified a mistaken negative oracle: offset 4 with stride 16 and 48-byte view is legal (`4 + 2*16 + 12 = 48`). Retained it as a positive and used offset 8 as the negative; no invalid last access was relaxed. Subsequent focused runs passed. Fresh publication evidence is recorded below after execution.
+
+Frozen `spike-budgets-v1` limits (all have limit/limit+1/boolean negative checks): GLB 33,554,432 bytes; report/JSON 4,194,304 bytes each; JSON depth 64/tokens 250,000; nodes 2048/edges 2047/graph depth 64; meshes 1024/primitives 4096/materials 1024/accessors 4096/buffer views 4096; accessor elements 262,144; logical decoded Float64 bytes 33,554,432; instance-expanded triangles 20,000; absolute world coordinate 1,000,000 m/grid coordinate 8,000,000; inclusive padded grid/flood cells 2,000,000 each; candidate work 10,000,000/topology pairs 2,000,000; bricks 8192/output bytes 67,108,864. These are admission ceilings, not measured performance guarantees. Whole-file/JSON/accessor/hierarchy/instance guards run before their corresponding read/decode/expansion; future work/flood/output consumers must also call the frozen guards before allocation.
+
+Explicit render-only subset: core PBR, UV0/UV1 and COLOR0 Float32 or normalized U8/U16; finite Float32 NORMAL/TANGENT; embedded PNG/JPEG buffer-view references without decoding; core texture/sampler refs; material-local `KHR_materials_unlit` and `KHR_materials_emissive_strength`. Other extensions and all external/data URIs are rejected. Exactly one scene is the deliberate narrow subset; mesh reuse is valid, multiple node parents are not. Sparse/morph/skin/animation/non-TRIANGLES and unowned reachable meshes reject. No topology proof is inferred from this reader or report inventory.
+
+Profiles remain explicit `micro-0125-research-v1=0.125 m` and `standard-025-v1=0.25 m`; no default/adoption. C2 tests cover parser portions of G23-G26/G30 and valid reused meshes; G03-G08/G17-G22/G28-G29 geometry portions wait for C3, all voxel portions for C4+.
+
+Fresh C2 command: the Python `-B` unittest command above with `-p 'test_glb.py' -v`, same explicit TEMP/TMP/interpreter/worktree. Exact final summary: `Ran 17 tests in 0.176s` / `OK`, exit 0, no skips. `git diff --check` and read-only Blender/schema/apps/README/AGENTS/DevToolbox baseline comparison both exit 0, empty. Status inventory is exactly the six new compiler files, this leased plan modification, and the two untouched instrumentation files. `-B`/no Blender or compiler caches/empty task TEMP check PASS, exit 0. Self-review corrected no production contract; confirmed offset oracle corrected as described. Staged diff/allowlist is checked again immediately before the exact C2 commit.
+
 ### Future independent contact-A goldens — NOT RUN
 
 These counts are analytic interval oracles for this explicit research convention, not compiler-produced expected values or a global runtime norm. Intervals are inclusive integer cell coordinates. They describe final surface-plus-material fill; the extra flood padding is excluded.
@@ -259,12 +273,16 @@ At C1 retain the authorized docs commit, untouched instrumentation, and empty ta
 - [x] C0 discovery/baseline: exact base/branch, complete required reading, 58 host tests PASS, no tracked source changes. Instrumentation exception explicitly accepted; porcelain is not claimed empty.
 - [x] C1 read-only contract audit and three-document draft; R1-A2 comparison/design resolutions and R2-A/R3-A requirements recorded below and in the register.
 - [x] C1 fresh document/diff allowlist verification and self-review: PASS as recorded above. Authorized publication result and SHA are recorded in the final checkpoint response/Git after the exact scoped commit, not predicted here.
-- [ ] C2-C8 implementation/verification: **NOT AUTHORIZED / NOT RUN**; STOP before C2.
+- Superorchestrator independently accepted C0/C1 (not the full spike): read all three documents; HEAD `89f068dfff2d965177165dce082c5289a35d0df4`, exact parent `25bc7f5bbd2db6317c42193873eadeaf10a092c5`; scoped diff whitespace exit 0; only the two untracked instrumentation files; independently reran Blender host tests using Python `-B`: **58 PASS**, exit 0, **0.320 s**. This is relayed external meta-evidence, not this agent's run.
+- C2 then C3 authorized explicitly, serial sole writer, exact separate commits; stop before C4. No further agents or independent implementation review dispatched here.
+- [x] C2 reader/fixture implementation and fresh scoped tests/self-review: 17 PASS, exit 0; exact C2 publication follows final staged lease/whitespace checks, resulting SHA recorded by Git/checkpoint.
+- [ ] C3 implementation/verification: authorized after the C2 commit, not yet run.
+- [ ] C4-C8: **NOT AUTHORIZED / NOT RUN**; STOP before C4.
 
 R1 reviewer `731643b5-d353-4147-82e7-6d6d4eab31fb` independently approved the comparison and cavity-design interpretations (R1-A2, relayed by superorchestrator). R2 `a9f5de5b-43db-4fbc-bb1b-625a06dfa53d` and R3 `23ac2427-9a49-4c2e-a3da-7996b5affb7e` completed read-only technical prechecks, also relayed. None is described as a review of implemented compiler code; no implementation or independent hollow/tunnel oracle has run.
 
 ## Definition of Done
 
-**Current checkpoint:** C0 evidence qualified accurately; all three C1 documents exist and are self-reviewed/freshly checked; only those three new leased files in the exact docs commit; branch/base unchanged; remaining status and cleanup reported; **STOP before C2**. No full-spike acceptance or implementation PASS.
+**Current checkpoint:** accepted C0/C1 preserved; executable C2 ingestion and C3 canonical geometry/semantics freshly tested and self-reviewed; two exact separately scoped commits, no upstream modifications; branch/base preserved; SHAs, exact test counts/output, profiles/budgets, limits and cleanup reported; **STOP before C4**. No full-spike acceptance or successful compile claim. The superorchestrator will commission independent Parser/Budget and Geometry implementation reviews after this checkpoint.
 
 **Eventual separately authorized spike:** working narrow reader/geometry/reference classifier/semantic package/CLI; G01-G30 outcomes and independent oracles including both-profile G13; honest thin/topology/material rejection; same-input byte determinism and explicit permutation classes; fault-safe whole-package publication; fresh tests/baseline/compileall; coordinated benchmark or explicit nonqualified status; real Blender E2E or precise NOT RUN blocker; independent full review with confirmed fixes verified; final reports/handoff and lease-clean commit. `PRODUCT_INTEGRATED = NO` even if accepted.
