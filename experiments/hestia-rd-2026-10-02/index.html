@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>Hestia RD-00 contract control</title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, sans-serif; background: #151b22; color: #edf2f5; }
+    body { max-width: 850px; margin: 24px auto; padding: 0 16px; }
+    h1 { font-size: 1.5rem; } button, input { font: inherit; padding: 6px; }
+    .commands { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    canvas { display: block; width: 100%; max-width: 640px; background: #222e39; margin: 16px 0; }
+    #status { display: block; margin: 12px 0; } #facts { display: block; white-space: pre-wrap; overflow-wrap: anywhere; font-family: monospace; }
+  </style>
+</head>
+<body>
+  <h1>Hestia RD-00 — contract control</h1>
+  <p>Isolated diagnostic. Empty synthetic snapshot, controlled 60 Hz ticks, no product integration.
+    The marker is not a Hestia scene. Three renderer/effects belong to RD-03.</p>
+  <div class="commands">
+    <button data-command="mount">Mount</button>
+    <button data-command="advance">Advance 60 ticks</button>
+    <label><input id="pause" type="checkbox"> Pause</label>
+    <label>Seek tick <input id="seek" type="number" min="0" max="3600" step="1" value="0"></label>
+    <button data-command="seek">Seek</button>
+    <button data-command="reset">Reset</button>
+    <button data-command="replace">Replace snapshot</button>
+    <button data-command="dispose">Dispose</button>
+  </div>
+  <output id="status" aria-live="polite">Initializing contracts</output>
+  <canvas id="control-canvas" width="640" height="64" aria-label="Controlled tick marker; diagnostic only"></canvas>
+  <output id="facts" aria-live="polite"></output>
+  <p>GPU time/memory: unsupported. Performance qualification: NOT_RUN (no GPU lease).
+    Art acceptance: NOT_RUN. ProductIntegrated=false.</p>
+  <script type="module">
+    import { startControlPage } from './src/registration.ts';
+    startControlPage().catch((error) => { document.querySelector('#status').value = `Initialization failed: ${error.message}`; });
+  </script>
+</body>
+</html>

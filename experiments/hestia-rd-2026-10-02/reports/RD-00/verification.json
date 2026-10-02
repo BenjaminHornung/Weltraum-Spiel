@@ -1,0 +1,655 @@
+{
+  "schema": "rd00-verification-v1",
+  "collectedAt": "2026-10-02T16:34:59.116Z",
+  "productReadBase": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+  "start": "807e8b4cc4528bd9d02122109e08e2e869305047",
+  "productIntegrated": false,
+  "commands": [
+    {
+      "label": "preflight",
+      "started": "2026-10-02T15:21:40.340Z",
+      "finished": "2026-10-02T15:21:41.965Z",
+      "cwd": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD00\\experiments\\hestia-rd-2026-10-02",
+      "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+      "args": [
+        "./reports/RD-00/preflight.mjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "log": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/logs/preflight-1790954501965.log",
+      "logSha256": "e991d3ff2dca5e2cbb0e97de0f637643e668d644a7bb80c324fa751508f8b600"
+    },
+    {
+      "label": "install",
+      "started": "2026-10-02T15:21:52.250Z",
+      "finished": "2026-10-02T15:22:14.744Z",
+      "cwd": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD00\\experiments\\hestia-rd-2026-10-02",
+      "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+      "args": [
+        "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node_modules/npm/bin/npm-cli.js",
+        "install",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "exitCode": 1,
+      "signal": null,
+      "log": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/logs/install-1790954534744.log",
+      "logSha256": "1f45eb5e54699a08f071b6a72f43d9080604fa7dc297daaf7d507769cabeb588"
+    },
+    {
+      "label": "install-required-peers",
+      "started": "2026-10-02T15:23:32.270Z",
+      "finished": "2026-10-02T15:23:39.590Z",
+      "cwd": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD00\\experiments\\hestia-rd-2026-10-02",
+      "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+      "args": [
+        "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node_modules/npm/bin/npm-cli.js",
+        "install",
+        "--legacy-peer-deps",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "log": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/logs/install-required-peers-1790954619589.log",
+      "logSha256": "0192d9ae5a4664d833069d4a2884376c0235e712fff35d0b872a11a76b33f402"
+    },
+    {
+      "label": "red",
+      "started": "2026-10-02T15:23:48.549Z",
+      "finished": "2026-10-02T15:23:50.684Z",
+      "cwd": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD00\\experiments\\hestia-rd-2026-10-02",
+      "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+      "args": [
+        "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node_modules/npm/bin/npm-cli.js",
+        "run",
+        "test:unit",
+        "--",
+        "tests/RD-00"
+      ],
+      "exitCode": 1,
+      "signal": null,
+      "log": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/logs/red-1790954630684.log",
+      "logSha256": "e1eba785dbd3fbccfe78f00fa5bc15b84a0f0311c6e993ba563013ea421205ff"
+    },
+    {
+      "label": "red-snapshot",
+      "started": "2026-10-02T15:24:52.190Z",
+      "finished": "2026-10-02T15:24:52.264Z",
+      "cwd": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD00\\experiments\\hestia-rd-2026-10-02",
+      "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+      "args": [
+        "--input-type=module",
+        "-e",
+        "import {readFileSync,writeFileSync} from \"node:fs\"; import {createHash} from \"node:crypto\"; const paths=[\"tests/RD-00/unit.test.ts\",\"src/contracts/fixture.ts\",\"src/contracts/experiment.ts\",\"src/contracts/result.ts\",\"scripts/verify-boundary.mjs\"]; const entries=paths.map(path=>{const bytes=readFileSync(path);return {path,sha256:createHash(\"sha256\").update(bytes).digest(\"hex\"),base64:bytes.toString(\"base64\")};}); writeFileSync(\"C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/red-source-snapshot.json\",JSON.stringify(entries,null,2)); console.log(\"RED sources and test bytes preserved\");"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "log": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/logs/red-snapshot-1790954692263.log",
+      "logSha256": "4eb1ae3a43607729dd84139fdf6f250523e7a619c328f26076fcd6aeb625cf32"
+    },
+    {
+      "label": "check",
+      "started": "2026-10-02T15:40:49.405Z",
+      "finished": "2026-10-02T15:40:50.393Z",
+      "cwd": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD00\\experiments\\hestia-rd-2026-10-02",
+      "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+      "args": [
+        "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node_modules/npm/bin/npm-cli.js",
+        "run",
+        "check"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "log": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/logs/check-1790955650392.log",
+      "logSha256": "55c814d0e096397f099fe6af3df4cb48543573b7821b3361bbbe5963f2045252"
+    },
+    {
+      "label": "green",
+      "started": "2026-10-02T15:41:00.450Z",
+      "finished": "2026-10-02T15:41:11.149Z",
+      "cwd": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD00\\experiments\\hestia-rd-2026-10-02",
+      "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+      "args": [
+        "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node_modules/npm/bin/npm-cli.js",
+        "run",
+        "test:unit",
+        "--",
+        "tests/RD-00"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "log": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/logs/green-1790955671148.log",
+      "logSha256": "66baa443da5397a353c72402b806708b20fb6b16e891a64e9a0e9c30e875d150"
+    },
+    {
+      "label": "boundary",
+      "started": "2026-10-02T15:41:25.907Z",
+      "finished": "2026-10-02T15:41:28.258Z",
+      "cwd": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD00\\experiments\\hestia-rd-2026-10-02",
+      "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+      "args": [
+        "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node_modules/npm/bin/npm-cli.js",
+        "run",
+        "verify:boundary",
+        "--",
+        "--base",
+        "b3c6523a94cd050f5a9a22dc27f4777fcc03363e"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "log": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/logs/boundary-1790955688258.log",
+      "logSha256": "7474be13935f04571960ec226acb9021f573a9994d0715868e08c2c1a7657ce0"
+    },
+    {
+      "label": "build",
+      "started": "2026-10-02T15:43:11.698Z",
+      "finished": "2026-10-02T15:43:12.549Z",
+      "cwd": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD00\\experiments\\hestia-rd-2026-10-02",
+      "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+      "args": [
+        "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node_modules/npm/bin/npm-cli.js",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "log": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/logs/build-1790955792549.log",
+      "logSha256": "8e3c9b684ceeb55a111a4be89a7034e2274601b961dd0cd3e9386afb08fc93d5"
+    },
+    {
+      "label": "port-before-browser",
+      "started": "2026-10-02T15:43:33.138Z",
+      "finished": "2026-10-02T15:43:33.221Z",
+      "cwd": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD00\\experiments\\hestia-rd-2026-10-02",
+      "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+      "args": [
+        "./scripts/verify-boundary.mjs",
+        "--port-check"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "log": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/logs/port-before-browser-1790955813221.log",
+      "logSha256": "ab398982083bd9ee341327f392a8002e062bec83f3e044f7b05c364718aecdbc"
+    },
+    {
+      "label": "browser",
+      "started": "2026-10-02T15:44:51.216Z",
+      "finished": "2026-10-02T15:44:54.898Z",
+      "cwd": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD00\\experiments\\hestia-rd-2026-10-02",
+      "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+      "args": [
+        "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node_modules/npm/bin/npm-cli.js",
+        "run",
+        "test:browser",
+        "--",
+        "tests/RD-00/browser.spec.ts"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "log": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/logs/browser-1790955894897.log",
+      "logSha256": "d75f843e7a9a266082215b7335e82fd03c6a2359a93914691913a8066fa0cb51"
+    },
+    {
+      "label": "port-after-browser",
+      "started": "2026-10-02T15:46:27.585Z",
+      "finished": "2026-10-02T15:46:27.681Z",
+      "cwd": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD00\\experiments\\hestia-rd-2026-10-02",
+      "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+      "args": [
+        "./scripts/verify-boundary.mjs",
+        "--port-check"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "log": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/logs/port-after-browser-1790955987680.log",
+      "logSha256": "ab398982083bd9ee341327f392a8002e062bec83f3e044f7b05c364718aecdbc"
+    },
+    {
+      "label": "b3-bindings",
+      "started": "2026-10-02T15:48:10.372Z",
+      "finished": "2026-10-02T15:48:11.195Z",
+      "cwd": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD00\\experiments\\hestia-rd-2026-10-02",
+      "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+      "args": [
+        "./reports/RD-00/inspect-b3.mjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "log": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/logs/b3-bindings-1790956091194.log",
+      "logSha256": "6632794ce614875748272bdac9c1923ec0c7a86747e9ad5fa1b1122be02f48bd"
+    },
+    {
+      "label": "native-ts",
+      "started": "2026-10-02T15:48:26.072Z",
+      "finished": "2026-10-02T15:48:26.231Z",
+      "cwd": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD00\\experiments\\hestia-rd-2026-10-02",
+      "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+      "args": [
+        "--experimental-strip-types",
+        "./reports/RD-00/native-ts-smoke.mts"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "log": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/logs/native-ts-1790956106231.log",
+      "logSha256": "8a98dd3e3785ebce75ecfd74d1ad20cd7374257fc03d326d2fdc5d574cd81b81"
+    },
+    {
+      "label": "check-steering",
+      "started": "2026-10-02T16:02:30.628Z",
+      "finished": "2026-10-02T16:02:31.407Z",
+      "cwd": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD00\\experiments\\hestia-rd-2026-10-02",
+      "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+      "args": [
+        "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node_modules/npm/bin/npm-cli.js",
+        "run",
+        "check"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "log": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/logs/check-steering-1790956951407.log",
+      "logSha256": "55c814d0e096397f099fe6af3df4cb48543573b7821b3361bbbe5963f2045252"
+    },
+    {
+      "label": "green-steering",
+      "started": "2026-10-02T16:03:33.605Z",
+      "finished": "2026-10-02T16:03:52.773Z",
+      "cwd": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD00\\experiments\\hestia-rd-2026-10-02",
+      "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+      "args": [
+        "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node_modules/npm/bin/npm-cli.js",
+        "run",
+        "test:unit",
+        "--",
+        "tests/RD-00"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "log": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/logs/green-steering-1790957032762.log",
+      "logSha256": "72ade2038f48f01dc1db9645de16ee540f290e66b5ac7083e8afdfcd40e925b3"
+    },
+    {
+      "label": "ci-final",
+      "started": "2026-10-02T16:17:04.509Z",
+      "finished": "2026-10-02T16:17:12.010Z",
+      "cwd": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD00\\experiments\\hestia-rd-2026-10-02",
+      "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+      "args": [
+        "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node_modules/npm/bin/npm-cli.js",
+        "ci",
+        "--legacy-peer-deps",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "log": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/logs/ci-final-1790957832010.log",
+      "processLocal": {
+        "PATH": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64;C:/IFI_SourceCode/Utils/opencode-migration/runtime/git/cmd;C:/IFI_SourceCode/Utils/PowerShell",
+        "npmScriptShell": "C:/IFI_SourceCode/Utils/PowerShell/pwsh.exe",
+        "npmCache": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/npm-cache",
+        "TEMP": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/temp",
+        "playwrightBrowsers": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/browser",
+        "browserRunId": null
+      },
+      "logSha256": "0192d9ae5a4664d833069d4a2884376c0235e712fff35d0b872a11a76b33f402"
+    },
+    {
+      "label": "check-final",
+      "started": "2026-10-02T16:17:36.148Z",
+      "finished": "2026-10-02T16:17:36.811Z",
+      "cwd": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD00\\experiments\\hestia-rd-2026-10-02",
+      "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+      "args": [
+        "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node_modules/npm/bin/npm-cli.js",
+        "run",
+        "check"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "log": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/logs/check-final-1790957856810.log",
+      "processLocal": {
+        "PATH": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64;C:/IFI_SourceCode/Utils/opencode-migration/runtime/git/cmd;C:/IFI_SourceCode/Utils/PowerShell",
+        "npmScriptShell": "C:/IFI_SourceCode/Utils/PowerShell/pwsh.exe",
+        "npmCache": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/npm-cache",
+        "TEMP": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/temp",
+        "playwrightBrowsers": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/browser",
+        "browserRunId": null
+      },
+      "logSha256": "55c814d0e096397f099fe6af3df4cb48543573b7821b3361bbbe5963f2045252"
+    },
+    {
+      "label": "green-final",
+      "started": "2026-10-02T16:17:45.786Z",
+      "finished": "2026-10-02T16:18:04.922Z",
+      "cwd": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD00\\experiments\\hestia-rd-2026-10-02",
+      "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+      "args": [
+        "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node_modules/npm/bin/npm-cli.js",
+        "run",
+        "test:unit",
+        "--",
+        "tests/RD-00"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "log": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/logs/green-final-1790957884921.log",
+      "processLocal": {
+        "PATH": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64;C:/IFI_SourceCode/Utils/opencode-migration/runtime/git/cmd;C:/IFI_SourceCode/Utils/PowerShell",
+        "npmScriptShell": "C:/IFI_SourceCode/Utils/PowerShell/pwsh.exe",
+        "npmCache": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/npm-cache",
+        "TEMP": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/temp",
+        "playwrightBrowsers": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/browser",
+        "browserRunId": null
+      },
+      "logSha256": "088416275cdf0d34f0304e3419d3d14c3ed0f61963026cc564e84437bab76a7b"
+    },
+    {
+      "label": "build-final",
+      "started": "2026-10-02T16:18:30.219Z",
+      "finished": "2026-10-02T16:18:30.992Z",
+      "cwd": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD00\\experiments\\hestia-rd-2026-10-02",
+      "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+      "args": [
+        "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node_modules/npm/bin/npm-cli.js",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "log": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/logs/build-final-1790957910992.log",
+      "processLocal": {
+        "PATH": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64;C:/IFI_SourceCode/Utils/opencode-migration/runtime/git/cmd;C:/IFI_SourceCode/Utils/PowerShell",
+        "npmScriptShell": "C:/IFI_SourceCode/Utils/PowerShell/pwsh.exe",
+        "npmCache": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/npm-cache",
+        "TEMP": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/temp",
+        "playwrightBrowsers": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/browser",
+        "browserRunId": null
+      },
+      "logSha256": "7f5ce943f36b51c5c1798171c1a5caf69e783561f52321bf6ed781eeb9744083"
+    },
+    {
+      "label": "b3-bindings-final",
+      "started": "2026-10-02T16:18:44.162Z",
+      "finished": "2026-10-02T16:18:45.549Z",
+      "cwd": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD00\\experiments\\hestia-rd-2026-10-02",
+      "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+      "args": [
+        "./reports/RD-00/inspect-b3.mjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "log": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/logs/b3-bindings-final-1790957925549.log",
+      "processLocal": {
+        "PATH": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64;C:/IFI_SourceCode/Utils/opencode-migration/runtime/git/cmd;C:/IFI_SourceCode/Utils/PowerShell",
+        "npmScriptShell": "C:/IFI_SourceCode/Utils/PowerShell/pwsh.exe",
+        "npmCache": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/npm-cache",
+        "TEMP": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/temp",
+        "playwrightBrowsers": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/browser",
+        "browserRunId": null
+      },
+      "logSha256": "9bfe88da95b0094022d9e1b44e3f73aa1c037bd0bb758558b616f60fd92af4bf"
+    },
+    {
+      "label": "port-before-browser-final",
+      "started": "2026-10-02T16:18:55.735Z",
+      "finished": "2026-10-02T16:18:55.830Z",
+      "cwd": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD00\\experiments\\hestia-rd-2026-10-02",
+      "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+      "args": [
+        "./scripts/verify-boundary.mjs",
+        "--port-check"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "log": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/logs/port-before-browser-final-1790957935829.log",
+      "processLocal": {
+        "PATH": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64;C:/IFI_SourceCode/Utils/opencode-migration/runtime/git/cmd;C:/IFI_SourceCode/Utils/PowerShell",
+        "npmScriptShell": "C:/IFI_SourceCode/Utils/PowerShell/pwsh.exe",
+        "npmCache": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/npm-cache",
+        "TEMP": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/temp",
+        "playwrightBrowsers": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/browser",
+        "browserRunId": null
+      },
+      "logSha256": "ab398982083bd9ee341327f392a8002e062bec83f3e044f7b05c364718aecdbc"
+    },
+    {
+      "label": "browser-final",
+      "started": "2026-10-02T16:19:34.116Z",
+      "finished": "2026-10-02T16:19:38.158Z",
+      "cwd": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD00\\experiments\\hestia-rd-2026-10-02",
+      "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+      "args": [
+        "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node_modules/npm/bin/npm-cli.js",
+        "run",
+        "test:browser",
+        "--",
+        "tests/RD-00/browser.spec.ts"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "log": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/logs/browser-final-1790957978157.log",
+      "processLocal": {
+        "PATH": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64;C:/IFI_SourceCode/Utils/opencode-migration/runtime/git/cmd;C:/IFI_SourceCode/Utils/PowerShell",
+        "npmScriptShell": "C:/IFI_SourceCode/Utils/PowerShell/pwsh.exe",
+        "npmCache": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/npm-cache",
+        "TEMP": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/temp",
+        "playwrightBrowsers": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/browser",
+        "browserRunId": "browser-final-1790957974117"
+      },
+      "logSha256": "ab991755c14551864aab799a97fed6065e0349a54f777eac9ee25d2b603461d8"
+    },
+    {
+      "label": "port-after-browser-final",
+      "started": "2026-10-02T16:20:28.191Z",
+      "finished": "2026-10-02T16:20:28.303Z",
+      "cwd": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD00\\experiments\\hestia-rd-2026-10-02",
+      "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+      "args": [
+        "./scripts/verify-boundary.mjs",
+        "--port-check"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "log": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/logs/port-after-browser-final-1790958028302.log",
+      "processLocal": {
+        "PATH": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64;C:/IFI_SourceCode/Utils/opencode-migration/runtime/git/cmd;C:/IFI_SourceCode/Utils/PowerShell",
+        "npmScriptShell": "C:/IFI_SourceCode/Utils/PowerShell/pwsh.exe",
+        "npmCache": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/npm-cache",
+        "TEMP": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/temp",
+        "playwrightBrowsers": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/browser",
+        "browserRunId": null
+      },
+      "logSha256": "ab398982083bd9ee341327f392a8002e062bec83f3e044f7b05c364718aecdbc"
+    },
+    {
+      "label": "check-boundary-review",
+      "started": "2026-10-02T16:32:46.838Z",
+      "finished": "2026-10-02T16:32:47.550Z",
+      "cwd": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD00\\experiments\\hestia-rd-2026-10-02",
+      "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+      "args": [
+        "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node_modules/npm/bin/npm-cli.js",
+        "run",
+        "check"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "log": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/logs/check-boundary-review-1790958767550.log",
+      "processLocal": {
+        "PATH": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64;C:/IFI_SourceCode/Utils/opencode-migration/runtime/git/cmd;C:/IFI_SourceCode/Utils/PowerShell",
+        "npmScriptShell": "C:/IFI_SourceCode/Utils/PowerShell/pwsh.exe",
+        "npmCache": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/npm-cache",
+        "TEMP": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/temp",
+        "playwrightBrowsers": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/browser",
+        "browserRunId": null
+      },
+      "logSha256": "55c814d0e096397f099fe6af3df4cb48543573b7821b3361bbbe5963f2045252"
+    },
+    {
+      "label": "green-boundary-review",
+      "started": "2026-10-02T16:32:57.221Z",
+      "finished": "2026-10-02T16:33:20.520Z",
+      "cwd": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD00\\experiments\\hestia-rd-2026-10-02",
+      "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+      "args": [
+        "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node_modules/npm/bin/npm-cli.js",
+        "run",
+        "test:unit",
+        "--",
+        "tests/RD-00"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "log": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/logs/green-boundary-review-1790958800514.log",
+      "processLocal": {
+        "PATH": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64;C:/IFI_SourceCode/Utils/opencode-migration/runtime/git/cmd;C:/IFI_SourceCode/Utils/PowerShell",
+        "npmScriptShell": "C:/IFI_SourceCode/Utils/PowerShell/pwsh.exe",
+        "npmCache": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/npm-cache",
+        "TEMP": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/temp",
+        "playwrightBrowsers": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/browser",
+        "browserRunId": null
+      },
+      "logSha256": "0f6c16adda7f1bf9475632e7c57c364589378fbed238ae773bd99cf42a4c35a7"
+    },
+    {
+      "label": "boundary-final",
+      "started": "2026-10-02T16:33:36.308Z",
+      "finished": "2026-10-02T16:33:39.481Z",
+      "cwd": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD00\\experiments\\hestia-rd-2026-10-02",
+      "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+      "args": [
+        "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node_modules/npm/bin/npm-cli.js",
+        "run",
+        "verify:boundary",
+        "--",
+        "--base",
+        "b3c6523a94cd050f5a9a22dc27f4777fcc03363e"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "log": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/logs/boundary-final-1790958819481.log",
+      "processLocal": {
+        "PATH": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64;C:/IFI_SourceCode/Utils/opencode-migration/runtime/git/cmd;C:/IFI_SourceCode/Utils/PowerShell",
+        "npmScriptShell": "C:/IFI_SourceCode/Utils/PowerShell/pwsh.exe",
+        "npmCache": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/npm-cache",
+        "TEMP": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/temp",
+        "playwrightBrowsers": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/browser",
+        "browserRunId": null
+      },
+      "logSha256": "1a2a130912850a012f515def70a1f7899160c7b92884dde828de540fb423cd21"
+    }
+  ],
+  "frozenFiles": [
+    {
+      "path": ".gitignore",
+      "sha256": "efbbb31ea819b8961321cc4acbf53cd41376cda54122dc6754925250cac0fd2a"
+    },
+    {
+      "path": "index.html",
+      "sha256": "26bee0771c55ac08f52488ca86a0f4f5e93183e0961be182600cbbba2c848f75"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "2fc41f22007c1b72e573c0021e45fb7e5d10a9a1ff41db143e5669b2cd9de3d9"
+    },
+    {
+      "path": "package.json",
+      "sha256": "6719e540e2c383a7383347412826891d4783530cb2232929909a2d569f48c988"
+    },
+    {
+      "path": "playwright.config.ts",
+      "sha256": "a3d0557e62033a6417e79bec8713ea0f9e3c79e3d3d5ff16f3dd3646abb856a0"
+    },
+    {
+      "path": "scripts/verify-boundary.mjs",
+      "sha256": "befda847de3e4e620031d682a9b4827d3b12daa69851303e698497a48d40993f"
+    },
+    {
+      "path": "src/contracts/controlFixture.ts",
+      "sha256": "f9a55a632bb4f608ddccb20a7a31e69a0da0c24473c1b4200939bf8f89e18ba1"
+    },
+    {
+      "path": "src/contracts/experiment.ts",
+      "sha256": "cb7f39251a356f4473783004c91a0e9ab27bb45e59f76e321b9708d764cd9188"
+    },
+    {
+      "path": "src/contracts/fixture.ts",
+      "sha256": "b879e945ad8ce875f4b9a352ce32a9ae026eb3ad4433dac25c3588ca67feadb1"
+    },
+    {
+      "path": "src/contracts/result.ts",
+      "sha256": "121bc744df8b2e9055c12f3ddff109e5f78134bb0739c901685000e32d0e8860"
+    },
+    {
+      "path": "src/contracts/scenario.ts",
+      "sha256": "994ec69f3ab1ec53ee67ea89e9a408b5c02cc8cddb210a5760e25078ea4a424d"
+    },
+    {
+      "path": "src/contracts/validation.ts",
+      "sha256": "da9e58e4d31c3805b6ed29661679a5eb79db6f22e3810b65eece63e6d07563a3"
+    },
+    {
+      "path": "src/registration.ts",
+      "sha256": "f322822dce38e5420abe25f369a704cfdd25054abaa4bf129610fbde7e12f6da"
+    },
+    {
+      "path": "tests/RD-00/browser.spec.ts",
+      "sha256": "9c21d95521499736d9bb05b850afa0f11e5875059612cac6d7fef369e45b725f"
+    },
+    {
+      "path": "tests/RD-00/unit.test.ts",
+      "sha256": "cdeac2bd7b80845752af54840577e006c705efc6c5a5b425e8dfa6d6152d6ce5"
+    },
+    {
+      "path": "tsconfig.json",
+      "sha256": "35c88c07aae98f6311523d9629a743dfab93c843541616df791e7b3e4e778d43"
+    },
+    {
+      "path": "vite.config.ts",
+      "sha256": "60596dda1adb6ecb3481d3c03aa0e040803f89a0529a4fae73d6b219f9eecc8d"
+    },
+    {
+      "path": "vitest.config.ts",
+      "sha256": "5021e7f3425342c1c4d6337ed40ff5c12af8647a067170ca711a73d574f17447"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/red-source-snapshot.json",
+      "sha256": "e9908e52023662c98499fc9fd67d41d4ed75dd409d01352a19306fe99eaaa73f"
+    },
+    {
+      "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/b3-read-only/bindings.json",
+      "sha256": "8d7bcdbf3aa057f4b6c330dcb840f80048150b84f179d0c677fc7f8160f55de5"
+    },
+    {
+      "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/browser/browser-final-1790957974117/report.json",
+      "sha256": "f7750fcc2cae081b4e2e13bbdf186890c15fbc37e99002900c52366abfdd083d"
+    },
+    {
+      "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/browser/browser-final-1790957974117/diagnostic.json",
+      "sha256": "d5d0ff7003b0b8a2f85091eecf7bc7210fb8402543fc4b599af4c92a1ab861cf"
+    },
+    {
+      "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/browser/browser-final-1790957974117/result.json",
+      "sha256": "2f6e05f356423adebbb65b64e24c1f7f744f4fd454a776725dab20c17c0142d1"
+    },
+    {
+      "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/browser/browser-final-1790957974117/byte-bindings.json",
+      "sha256": "466636ea7872e36811103234d6e041642d4ded9664757ed05637cc5d2b187d99"
+    },
+    {
+      "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/media/browser-final-1790957974117.png",
+      "sha256": "d422203cae17c3bd1ba0b2f58153524fc5632b0dcf83b2c508c8699c70f1c0ca"
+    }
+  ],
+  "serverRawLogs": [
+    "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/logs/server-1.log",
+    "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/logs/server-2.log"
+  ],
+  "review": "Self-review only; no independent/human review",
+  "GPU": "NOT_RUN: no lease",
+  "art": "NOT_RUN",
+  "productTests": "NOT_RUN: read-only product; RD-00 lab only"
+}

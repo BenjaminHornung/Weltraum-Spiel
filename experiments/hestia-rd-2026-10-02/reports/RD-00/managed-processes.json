@@ -1,0 +1,46 @@
+{
+  "schema": "rd00-managed-process-evidence-v1",
+  "source": "Observed create/wait/get/kill managed-process tool results; not a benchmark",
+  "shell": "C:/IFI_SourceCode/Utils/PowerShell/pwsh.exe",
+  "cwd": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-worktrees/Hestia-RD-RD00/experiments/hestia-rd-2026-10-02",
+  "processLocal": {
+    "PATH": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64;C:/IFI_SourceCode/Utils/opencode-migration/runtime/git/cmd;C:/IFI_SourceCode/Utils/PowerShell",
+    "TEMP": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/temp"
+  },
+  "runs": [
+    {
+      "taskId": "bg_mur4uxb2_1d",
+      "pid": 46296,
+      "command": "& 'C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe' './node_modules/vite/bin/vite.js' --host 127.0.0.1 --port 5280 --strictPort",
+      "startedAt": "2026-10-02T15:43:48.269Z",
+      "readyAt": "2026-10-02T15:44:39.611Z",
+      "readiness": "Initial literal URL wait timed out because ANSI escapes split port digits; one corrected bounded 'ready in' wait succeeded",
+      "completedAt": "2026-10-02T15:45:18.145Z",
+      "status": "cancelled",
+      "exitCode": 1,
+      "signal": null,
+      "error": null,
+      "maxRuntimeMs": 180000,
+      "cleanup": "Explicitly killed only this owned managed task; free port subsequently verified",
+      "outputLines": ["", "\u001b[32m\u001b[1mVITE\u001b[22m v8.1.5\u001b[39m  \u001b[2mready in \u001b[0m\u001b[1m222\u001b[22m\u001b[2m\u001b[0m ms\u001b[22m", "", "\u001b[32m➜\u001b[39m  \u001b[1mLocal\u001b[22m:   \u001b[36mhttp://127.0.0.1:\u001b[1m5280\u001b[22m/\u001b[39m"]
+    },
+    {
+      "taskId": "bg_mur64fjk_1m",
+      "pid": 19588,
+      "command": "& 'C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe' './node_modules/vite/bin/vite.js' preview --host 127.0.0.1 --port 5280 --strictPort",
+      "startedAt": "2026-10-02T16:19:11.484Z",
+      "readyAt": "2026-10-02T16:19:20.459Z",
+      "readinessPattern": "http://127\\.0\\.0\\.1:5280/",
+      "readinessTimeoutMs": 15000,
+      "completedAt": "2026-10-02T16:19:45.480Z",
+      "status": "cancelled",
+      "exitCode": 1,
+      "signal": null,
+      "error": null,
+      "maxRuntimeMs": 120000,
+      "cleanup": "Explicitly killed only this owned managed task; Chromium pid39156 exited0 and cleaned own profile; free port subsequently verified",
+      "outputLines": ["  ➜  Local:   http://127.0.0.1:5280/"],
+      "colorEnvironment": { "NO_COLOR": "1", "FORCE_COLOR": "0" }
+    }
+  ]
+}

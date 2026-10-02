@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "strict": true,
+    "noEmit": true,
+    "allowJs": true,
+    "types": ["node", "vite/client"],
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*.ts", "tests/RD-00/**/*.ts", "*.config.ts", "scripts/verify-boundary.mjs"]
+}
