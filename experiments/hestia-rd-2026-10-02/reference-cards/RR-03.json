@@ -1,0 +1,31 @@
+{
+  "id": "RR-03",
+  "title": "My raymarching engine",
+  "sourceRef": {
+    "url": "https://www.reddit.com/r/VoxelGameDev/comments/1s6e1gk/my_raymarching_engine/",
+    "titleProvenance": "HISTORICAL_MANIFEST_NOT_CURRENT_POST_READ",
+    "manifest": { "path": "docs/coordination/input-package/sources/web_sources.json", "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b", "blob": "8c80b44e61fdbd5c02859abfc90079b3df088b7e", "sha256": "20f240b1e5dc695d2151a28602d370b43795e83521562f9664b0ae541b1c7979", "recordId": "RR-03" },
+    "historicalPackage": { "path": "docs/coordination/input-package/context/REDDIT_CHAT_ORIGINAL.txt", "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b", "blob": "e6ae688661ed220ea04df50b8f4ce70b1811dcf9", "byteLength": 13246, "sha256": "b76a07a1cf38ed6267eb2fdc5daed6337c39fa2ac661ac1d52fe01041ebd0588" },
+    "packageSummary": { "path": "docs/coordination/input-package/02_QUELLEN_UND_REDDIT.md", "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b", "blob": "e2b9e7b07948cc586fec4963750257dd813b9e8f", "sha256": "85ed8c64754a7f398aa3be4607d79b3bdba380311b33767124665b90eedacf24" },
+    "accessEvidence": { "path": "reports/RD-01/sources-current.json", "sha256": "0481d2963642abbd051dfdeb859b15ba7bf8cb83981f207151d28be458ee6427", "recordId": "RR-03" }
+  },
+  "author": { "status": "UNKNOWN", "name": null },
+  "license": { "media": "UNKNOWN", "code": "UNKNOWN", "adoption": "NOT_AUTHORIZED" },
+  "accessStatus": { "text": "UNAVAILABLE", "media": "NOT_VIEWED", "accessClass": "JS_CHALLENGE", "checkedAt": "2026-10-02T20:04:28.533Z", "httpStatus": 200, "contentType": "text/html", "developerSources": "NOT_DISCOVERABLE_FROM_UNAVAILABLE_POST" },
+  "observedIntervals": [],
+  "claims": {
+    "historicalPackage": [
+      { "origin": "HISTORICAL_PACKAGE", "kind": "AUTHOR_TECHNICAL_AS_REPORTED", "text": "Das Paket berichtet Rust/wgpu; Rauheit, Reflexionen und Emission sowie offene zeitliche Rekonstruktion und GI-Aktualisierung werden historisch beschrieben.", "sourceLocator": { "ref": "sourceRef.packageSummary", "lines": [22, 22] } },
+      { "origin": "HISTORICAL_PACKAGE", "kind": "AUTHOR_TECHNICAL_AS_REPORTED", "text": "Das Chatarchiv nennt unfertige Rekonstruktion und GI; dies ist kein Beleg einer vollständig dynamischen Hestia-Welt.", "sourceLocator": { "ref": "sourceRef.historicalPackage", "lines": [13, 13] } }
+    ],
+    "authorTextRead": { "status": "UNAVAILABLE", "statements": [], "reason": "JS_CHALLENGE; historical AUTHOR_TEXT_READ label does not describe this fetch" },
+    "fpsHardware": { "origin": "UNKNOWN", "fps": null, "resolution": null, "hardware": null, "isOwnMeasurement": false },
+    "ownObservation": [ { "origin": "RD01_OBSERVATION", "kind": "HTTP_ACCESS", "text": "HTTP 200 text/html mit js_challenge; kein aktuell gelesener Autorentext, keine Entwicklerlinks und kein abgespieltes Video.", "sourceLocator": { "ref": "sourceRef.accessEvidence", "recordId": "RR-03" } } ]
+  },
+  "desiredEffect": [ "Lokale Material-/Lichtqualität bei einer echten Geometrieänderung prüfen, nicht nur ein ruhendes Beautybild.", "Rauheit, Emission, Reflexion und räumlich differenziertes Licht nach Öffnen einer Schattenzone vergleichen." ],
+  "exclusions": [ "Kein automatischer Engine-/Rust-/wgpu-Port.", "Keine GI-, Browser- oder Performance-Akzeptanz aus Autorenbeschreibungen.", "Historisches R03, Reddit RR-03 und Task RD-03 sind verschiedene Identitäten." ],
+  "experimentIds": [ "RD-13", "RD-14" ],
+  "resultLinks": [ { "experimentId": "RD-13", "status": "NOT_RUN", "url": null }, { "experimentId": "RD-14", "status": "NOT_RUN", "url": null } ],
+  "artStatus": "NOT_RUN",
+  "productIntegrated": false
+}

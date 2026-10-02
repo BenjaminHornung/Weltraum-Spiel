@@ -1,0 +1,30 @@
+{
+  "id": "RR-06",
+  "title": "Windy voxel forest",
+  "sourceRef": {
+    "url": "https://www.reddit.com/r/VoxelGameDev/comments/1l7r6un/windy_voxel_forest/",
+    "titleProvenance": "HISTORICAL_MANIFEST_NOT_CURRENT_POST_READ",
+    "manifest": { "path": "docs/coordination/input-package/sources/web_sources.json", "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b", "blob": "8c80b44e61fdbd5c02859abfc90079b3df088b7e", "sha256": "20f240b1e5dc695d2151a28602d370b43795e83521562f9664b0ae541b1c7979", "recordId": "RR-06" },
+    "historicalPackage": { "path": "docs/coordination/input-package/context/REDDIT_CHAT_ORIGINAL.txt", "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b", "blob": "e6ae688661ed220ea04df50b8f4ce70b1811dcf9", "byteLength": 13246, "sha256": "b76a07a1cf38ed6267eb2fdc5daed6337c39fa2ac661ac1d52fe01041ebd0588" },
+    "accessEvidence": { "path": "reports/RD-01/sources-current.json", "sha256": "0481d2963642abbd051dfdeb859b15ba7bf8cb83981f207151d28be458ee6427", "recordId": "RR-06" }
+  },
+  "author": { "status": "UNKNOWN", "name": null },
+  "license": { "media": "UNKNOWN", "code": "UNKNOWN", "adoption": "NOT_AUTHORIZED" },
+  "accessStatus": { "text": "UNAVAILABLE", "media": "NOT_VIEWED", "accessClass": "JS_CHALLENGE", "checkedAt": "2026-10-02T20:04:29.047Z", "httpStatus": 200, "contentType": "text/html", "developerSources": "NOT_DISCOVERABLE_FROM_UNAVAILABLE_POST" },
+  "observedIntervals": [],
+  "claims": {
+    "historicalPackage": [
+      { "origin": "HISTORICAL_PACKAGE", "kind": "AUTHOR_TECHNICAL_AS_REPORTED", "text": "Vorab voxelisierte Animationsframes laut historischem Bericht; der aktuelle Clip wurde nicht abgespielt.", "sourceLocator": { "ref": "sourceRef.historicalPackage", "lines": [16, 16] } },
+      { "origin": "HISTORICAL_PACKAGE", "kind": "AUTHOR_MEMORY_AS_REPORTED", "text": "Etwa 630 MB für vier Baumvorlagen mit fünf Sekunden Animation: historische Autorenangabe, keine eigene Speicher-/Zeitmessung.", "value": { "megabytesApprox": 630, "templates": 4, "seconds": 5 }, "sourceLocator": { "ref": "sourceRef.historicalPackage", "lines": [16, 16] } }
+    ],
+    "authorTextRead": { "status": "UNAVAILABLE", "statements": [], "reason": "JS_CHALLENGE" },
+    "fpsHardware": { "origin": "UNKNOWN", "fps": null, "resolution": null, "hardware": null, "isOwnMeasurement": false },
+    "ownObservation": [ { "origin": "RD01_OBSERVATION", "kind": "HTTP_ACCESS", "text": "HTTP 200 text/html mit js_challenge; kein Posttext, keine Entwicklerlinks und keine Medien-, Speicher- oder Zeitmessung.", "sourceLocator": { "ref": "sourceRef.accessEvidence", "recordId": "RR-06" } } ]
+  },
+  "desiredEffect": [ "Lebendige Vegetationsbewegung mit kompakter Animation gegen begrenzte Vorberechnung prüfen.", "Nach Trennung dürfen entfernte Zellen nicht im nächsten Frame zurückkehren; Rest und Fragment behalten korrekte Dekoranbindung." ],
+  "exclusions": [ "630 MB/4 Templates/5 s sind keine RD-01-Messung.", "Kein nachgewiesener Fehler der fremden Demo: Wiedererscheinen entfernter Zellen ist eine eigene Gegenprobe.", "Keine ungeprüfte glatte Biegung kanonischer Holzzellen, keine kopierten Frames/Assets." ],
+  "experimentIds": [ "RD-21", "RD-22", "RD-23" ],
+  "resultLinks": [ { "experimentId": "RD-21", "status": "NOT_RUN", "url": null }, { "experimentId": "RD-22", "status": "NOT_RUN", "url": null }, { "experimentId": "RD-23", "status": "NOT_RUN", "url": null } ],
+  "artStatus": "NOT_RUN",
+  "productIntegrated": false
+}

@@ -1,0 +1,415 @@
+{
+  "taskId": "RD-01",
+  "auditedAt": "2026-10-02T20:04:47.043Z",
+  "productIntegrated": false,
+  "start": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+  "startTree": "cec8bddf28b3b4f7aafc716d64e20d3e9e0a0681",
+  "productReadBase": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+  "productReadTree": "cdf8a92b17eecd764bac4588054167bd566485f1",
+  "freezePath": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/HEAD/freezes/89b55315fa7800a7a417c49e5e5a272f17410b4b.json",
+  "freezeSha256": "8cd18756ea6a8fb3ddbc48b97119bf9a953f0eb90d20f7e368c2fdc50a019b89",
+  "frozenFiles": [
+    {
+      "path": ".gitignore",
+      "sha256": "efbbb31ea819b8961321cc4acbf53cd41376cda54122dc6754925250cac0fd2a",
+      "actualSha256": "efbbb31ea819b8961321cc4acbf53cd41376cda54122dc6754925250cac0fd2a",
+      "byteLength": 70,
+      "matches": true
+    },
+    {
+      "path": "index.html",
+      "sha256": "26bee0771c55ac08f52488ca86a0f4f5e93183e0961be182600cbbba2c848f75",
+      "actualSha256": "26bee0771c55ac08f52488ca86a0f4f5e93183e0961be182600cbbba2c848f75",
+      "byteLength": 2197,
+      "matches": true
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "2fc41f22007c1b72e573c0021e45fb7e5d10a9a1ff41db143e5669b2cd9de3d9",
+      "actualSha256": "2fc41f22007c1b72e573c0021e45fb7e5d10a9a1ff41db143e5669b2cd9de3d9",
+      "byteLength": 57156,
+      "matches": true
+    },
+    {
+      "path": "package.json",
+      "sha256": "6719e540e2c383a7383347412826891d4783530cb2232929909a2d569f48c988",
+      "actualSha256": "6719e540e2c383a7383347412826891d4783530cb2232929909a2d569f48c988",
+      "byteLength": 1377,
+      "matches": true
+    },
+    {
+      "path": "playwright.config.ts",
+      "sha256": "a3d0557e62033a6417e79bec8713ea0f9e3c79e3d3d5ff16f3dd3646abb856a0",
+      "actualSha256": "a3d0557e62033a6417e79bec8713ea0f9e3c79e3d3d5ff16f3dd3646abb856a0",
+      "byteLength": 1033,
+      "matches": true
+    },
+    {
+      "path": "scripts/verify-boundary.mjs",
+      "sha256": "7a00bae3929dc3e88ed682a7662ff57cfa4e2299b5ef8c5a40d162675c3c35bf",
+      "actualSha256": "7a00bae3929dc3e88ed682a7662ff57cfa4e2299b5ef8c5a40d162675c3c35bf",
+      "byteLength": 12177,
+      "matches": true
+    },
+    {
+      "path": "src/contracts/controlFixture.ts",
+      "sha256": "f9a55a632bb4f608ddccb20a7a31e69a0da0c24473c1b4200939bf8f89e18ba1",
+      "actualSha256": "f9a55a632bb4f608ddccb20a7a31e69a0da0c24473c1b4200939bf8f89e18ba1",
+      "byteLength": 1390,
+      "matches": true
+    },
+    {
+      "path": "src/contracts/experiment.ts",
+      "sha256": "cb7f39251a356f4473783004c91a0e9ab27bb45e59f76e321b9708d764cd9188",
+      "actualSha256": "cb7f39251a356f4473783004c91a0e9ab27bb45e59f76e321b9708d764cd9188",
+      "byteLength": 6358,
+      "matches": true
+    },
+    {
+      "path": "src/contracts/fixture.ts",
+      "sha256": "b879e945ad8ce875f4b9a352ce32a9ae026eb3ad4433dac25c3588ca67feadb1",
+      "actualSha256": "b879e945ad8ce875f4b9a352ce32a9ae026eb3ad4433dac25c3588ca67feadb1",
+      "byteLength": 22233,
+      "matches": true
+    },
+    {
+      "path": "src/contracts/result.ts",
+      "sha256": "121bc744df8b2e9055c12f3ddff109e5f78134bb0739c901685000e32d0e8860",
+      "actualSha256": "121bc744df8b2e9055c12f3ddff109e5f78134bb0739c901685000e32d0e8860",
+      "byteLength": 5994,
+      "matches": true
+    },
+    {
+      "path": "src/contracts/scenario.ts",
+      "sha256": "994ec69f3ab1ec53ee67ea89e9a408b5c02cc8cddb210a5760e25078ea4a424d",
+      "actualSha256": "994ec69f3ab1ec53ee67ea89e9a408b5c02cc8cddb210a5760e25078ea4a424d",
+      "byteLength": 7155,
+      "matches": true
+    },
+    {
+      "path": "src/contracts/validation.ts",
+      "sha256": "da9e58e4d31c3805b6ed29661679a5eb79db6f22e3810b65eece63e6d07563a3",
+      "actualSha256": "da9e58e4d31c3805b6ed29661679a5eb79db6f22e3810b65eece63e6d07563a3",
+      "byteLength": 3848,
+      "matches": true
+    },
+    {
+      "path": "src/registration.ts",
+      "sha256": "f322822dce38e5420abe25f369a704cfdd25054abaa4bf129610fbde7e12f6da",
+      "actualSha256": "f322822dce38e5420abe25f369a704cfdd25054abaa4bf129610fbde7e12f6da",
+      "byteLength": 5988,
+      "matches": true
+    },
+    {
+      "path": "tests/RD-00/browser.spec.ts",
+      "sha256": "9c21d95521499736d9bb05b850afa0f11e5875059612cac6d7fef369e45b725f",
+      "actualSha256": "9c21d95521499736d9bb05b850afa0f11e5875059612cac6d7fef369e45b725f",
+      "byteLength": 7703,
+      "matches": true
+    },
+    {
+      "path": "tests/RD-00/unit.test.ts",
+      "sha256": "cdeac2bd7b80845752af54840577e006c705efc6c5a5b425e8dfa6d6152d6ce5",
+      "actualSha256": "cdeac2bd7b80845752af54840577e006c705efc6c5a5b425e8dfa6d6152d6ce5",
+      "byteLength": 27374,
+      "matches": true
+    },
+    {
+      "path": "tsconfig.json",
+      "sha256": "35c88c07aae98f6311523d9629a743dfab93c843541616df791e7b3e4e778d43",
+      "actualSha256": "35c88c07aae98f6311523d9629a743dfab93c843541616df791e7b3e4e778d43",
+      "byteLength": 383,
+      "matches": true
+    },
+    {
+      "path": "vite.config.ts",
+      "sha256": "60596dda1adb6ecb3481d3c03aa0e040803f89a0529a4fae73d6b219f9eecc8d",
+      "actualSha256": "60596dda1adb6ecb3481d3c03aa0e040803f89a0529a4fae73d6b219f9eecc8d",
+      "byteLength": 369,
+      "matches": true
+    },
+    {
+      "path": "vitest.config.ts",
+      "sha256": "5021e7f3425342c1c4d6337ed40ff5c12af8647a067170ca711a73d574f17447",
+      "actualSha256": "5021e7f3425342c1c4d6337ed40ff5c12af8647a067170ca711a73d574f17447",
+      "byteLength": 204,
+      "matches": true
+    }
+  ],
+  "controls": [
+    {
+      "path": "docs/coordination/input-package/05_TASKBOARD.json",
+      "expectedSha256": "cd5722dfff73393a2cb9d87fabf4c94f59da310300b79a7c2e87a1ec79b40448",
+      "sha256": "cd5722dfff73393a2cb9d87fabf4c94f59da310300b79a7c2e87a1ec79b40448",
+      "byteLength": 15460,
+      "matches": true
+    },
+    {
+      "path": "fixtures/inventory.json",
+      "expectedSha256": "cc802f0d9044f7d7ee3c3a251870c6ae2fce926ad5785fc0bb82ab93be54723f",
+      "sha256": "cc802f0d9044f7d7ee3c3a251870c6ae2fce926ad5785fc0bb82ab93be54723f",
+      "byteLength": 122718,
+      "matches": true
+    }
+  ],
+  "inputs": [
+    {
+      "path": "docs/coordination/input-package/02_QUELLEN_UND_REDDIT.md",
+      "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+      "blob": "e2b9e7b07948cc586fec4963750257dd813b9e8f",
+      "byteLength": 6256,
+      "sha256": "85ed8c64754a7f398aa3be4607d79b3bdba380311b33767124665b90eedacf24"
+    },
+    {
+      "path": "docs/coordination/input-package/context/CHECKPOINT_ORIGINAL.md",
+      "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+      "blob": "99c5a7f6f30b36d4a52d598fe9e6d817de0de1b7",
+      "byteLength": 7439,
+      "sha256": "e16a2d766ce86dac7cb8826141bea979de0a7af736f8ea07b9353dec31176f84"
+    },
+    {
+      "path": "docs/coordination/input-package/context/G01_GAMELOOP_ORIGINAL.md",
+      "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+      "blob": "2427f429819c00129025c4b298c03f9bd9bfc2a4",
+      "byteLength": 84837,
+      "sha256": "6297388fc9f6fa40547250d68a61c9b4539ff17df16507af22bf476c0aec790c"
+    },
+    {
+      "path": "docs/coordination/input-package/context/G02_AUTHORING_ORIGINAL.md",
+      "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+      "blob": "b3347ee1496d599997c986c0e5bf72e61da5b0c5",
+      "byteLength": 79148,
+      "sha256": "661bb79819c24fbdcf66009526bb1c26c8ec74dec28a46d67243ee308133f20d"
+    },
+    {
+      "path": "docs/coordination/input-package/context/G12_TOOLCHAIN_ORIGINAL.md",
+      "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+      "blob": "5360a61215502a130562c90ad7bdab13a6e5edc1",
+      "byteLength": 50338,
+      "sha256": "79b7c7116768faf6b1c7f10519943e1930796514cf6b10132db424b94dcc11a6"
+    },
+    {
+      "path": "docs/coordination/input-package/context/G13_CONTENT_ORIGINAL.md",
+      "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+      "blob": "539906e35f747848c72f2d65f43050a54c9e7f1c",
+      "byteLength": 77292,
+      "sha256": "dfd28aec6ca16ed6f65fa032f55f5c9760cedf2a12b27ad43dc7c235f64b0b28"
+    },
+    {
+      "path": "docs/coordination/input-package/context/G17_QA_ORIGINAL.md",
+      "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+      "blob": "57a6f7ad430b8e2f9a21ababf6e6ae01e153cc70",
+      "byteLength": 90840,
+      "sha256": "a46416858744904359b7719fd5ca158b6d90fce17f9c00b6415ca4fdf0dc1365"
+    },
+    {
+      "path": "docs/coordination/input-package/context/HESTIA_VISUAL_BIBLE_ORIGINAL.md",
+      "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+      "blob": "18e3c9afdd5564463489c9facfe1152bb3578f48",
+      "byteLength": 58291,
+      "sha256": "ff9c82548870a761aacc6a6e91115e68f3a52757e19b541ac4ed3c3fb45c0333"
+    },
+    {
+      "path": "docs/coordination/input-package/context/REDDIT_CHAT_ORIGINAL.txt",
+      "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+      "blob": "e6ae688661ed220ea04df50b8f4ce70b1811dcf9",
+      "byteLength": 13246,
+      "sha256": "b76a07a1cf38ed6267eb2fdc5daed6337c39fa2ac661ac1d52fe01041ebd0588"
+    },
+    {
+      "path": "docs/coordination/input-package/context/SEQUENCE_RESEARCH_ORIGINAL.txt",
+      "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+      "blob": "516c413b3c5e25c241884bd276a9e4201ba3f1d3",
+      "byteLength": 50790,
+      "sha256": "61b9ca2ec8b4903857bdb8df0bc3efea9cdcb9b0b8b2fd8d0a3c25bf1b35ab02"
+    },
+    {
+      "path": "docs/coordination/input-package/context/VORHERIGER_PARALLELPLAN_ORIGINAL.md",
+      "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+      "blob": "b1f306edb16548380b98946719ae720ec873a3ee",
+      "byteLength": 26354,
+      "sha256": "e65c5b13e9a3e2fc73b067d3fecf3d74ed2fe3e2f86c2ad1e10fceb21a3bc454"
+    },
+    {
+      "path": "docs/coordination/input-package/sources/project_sources.json",
+      "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+      "blob": "36135f50fa7933696a01bac5e917924cbf98fce8",
+      "byteLength": 4719,
+      "sha256": "4c8eaf773c275d060489fef4508278a2f1cb7ddb676c0db47cc00f4004216166"
+    },
+    {
+      "path": "docs/coordination/input-package/sources/web_sources.json",
+      "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+      "blob": "8c80b44e61fdbd5c02859abfc90079b3df088b7e",
+      "byteLength": 5516,
+      "sha256": "20f240b1e5dc695d2151a28602d370b43795e83521562f9664b0ae541b1c7979"
+    },
+    {
+      "path": "docs/coordination/input-package/tasks/RD-01.md",
+      "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+      "blob": "7b964e26110888e32aaba7aae457a91e6d6fc325",
+      "byteLength": 4724,
+      "sha256": "4569a0094a16a88abf082c663f1fc2a48462c0c469a31917455b3310356ac296"
+    }
+  ],
+  "assets": [
+    {
+      "id": "TARGET-01",
+      "role": "HISTORICAL_CONCEPT_TARGET",
+      "requestedBasename": "target-01-coastal-valley.png",
+      "gitCommit": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+      "searchedTree": "cdf8a92b17eecd764bac4588054167bd566485f1",
+      "searchScope": "ENTIRE_PINNED_GIT_TREE_EXACT_BASENAME",
+      "path": null,
+      "blob": null,
+      "byteLength": null,
+      "sha256": null,
+      "availability": "MISSING_AT_PIN",
+      "license": "UNKNOWN"
+    },
+    {
+      "id": "TARGET-02",
+      "role": "HISTORICAL_CONCEPT_TARGET",
+      "requestedBasename": "target-02-archipelago-mountain.png",
+      "gitCommit": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+      "searchedTree": "cdf8a92b17eecd764bac4588054167bd566485f1",
+      "searchScope": "ENTIRE_PINNED_GIT_TREE_EXACT_BASENAME",
+      "path": null,
+      "blob": null,
+      "byteLength": null,
+      "sha256": null,
+      "availability": "MISSING_AT_PIN",
+      "license": "UNKNOWN"
+    },
+    {
+      "id": "TARGET-03",
+      "role": "HISTORICAL_CONCEPT_TARGET",
+      "requestedBasename": "target-03-wetland-roots.png",
+      "gitCommit": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+      "searchedTree": "cdf8a92b17eecd764bac4588054167bd566485f1",
+      "searchScope": "ENTIRE_PINNED_GIT_TREE_EXACT_BASENAME",
+      "path": null,
+      "blob": null,
+      "byteLength": null,
+      "sha256": null,
+      "availability": "MISSING_AT_PIN",
+      "license": "UNKNOWN"
+    },
+    {
+      "id": "TARGET-04",
+      "role": "HISTORICAL_CONCEPT_TARGET",
+      "requestedBasename": "target-04-terraced-coast.png",
+      "gitCommit": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+      "searchedTree": "cdf8a92b17eecd764bac4588054167bd566485f1",
+      "searchScope": "ENTIRE_PINNED_GIT_TREE_EXACT_BASENAME",
+      "path": null,
+      "blob": null,
+      "byteLength": null,
+      "sha256": null,
+      "availability": "MISSING_AT_PIN",
+      "license": "UNKNOWN"
+    },
+    {
+      "id": "TARGET-05",
+      "role": "HISTORICAL_CONCEPT_TARGET",
+      "requestedBasename": "target-05-lagoon-channel.png",
+      "gitCommit": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+      "searchedTree": "cdf8a92b17eecd764bac4588054167bd566485f1",
+      "searchScope": "ENTIRE_PINNED_GIT_TREE_EXACT_BASENAME",
+      "path": null,
+      "blob": null,
+      "byteLength": null,
+      "sha256": null,
+      "availability": "MISSING_AT_PIN",
+      "license": "UNKNOWN"
+    },
+    {
+      "id": "TARGET-06",
+      "role": "HISTORICAL_CONCEPT_TARGET",
+      "requestedBasename": "target-06-forested-island.png",
+      "gitCommit": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+      "searchedTree": "cdf8a92b17eecd764bac4588054167bd566485f1",
+      "searchScope": "ENTIRE_PINNED_GIT_TREE_EXACT_BASENAME",
+      "path": null,
+      "blob": null,
+      "byteLength": null,
+      "sha256": null,
+      "availability": "MISSING_AT_PIN",
+      "license": "UNKNOWN"
+    },
+    {
+      "id": "HVP03-C01",
+      "role": "HISTORICAL_RUNTIME_EVIDENCE_NOT_CONCEPT_SUBSTITUTE",
+      "gitCommit": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+      "path": "apps/weltraum-browser/evidence/hvp13-candidate05/hvp03-c01.png",
+      "blob": "2b4dc0fece67e9dfecf9af12589b458c3e899286",
+      "byteLength": 132,
+      "sha256": "6904f86890f64305b41f37fd4d26cc12c1034c215cc2ddb9480ade943aebddd1",
+      "availability": "LFS_POINTER_ONLY",
+      "lfsPayloadOidSha256": "68a9a7f344fde41d4b733641e43718aea043770ef6ac42fa5401880dd998b8e5",
+      "lfsPayloadExpectedBytes": 1012429,
+      "lfsPayloadRetrieved": false,
+      "license": "UNKNOWN"
+    },
+    {
+      "id": "HVP03-C02",
+      "role": "HISTORICAL_RUNTIME_EVIDENCE_NOT_CONCEPT_SUBSTITUTE",
+      "gitCommit": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+      "path": "apps/weltraum-browser/evidence/hvp13-candidate05/hvp03-c02.png",
+      "blob": "9e8b59e87790b718ab6292fad0eef474f54eb32c",
+      "byteLength": 131,
+      "sha256": "48e6ecd574bd17eb3f2e465aaa94f3c8ea1ec348950c3b27d04aad0fa92d8548",
+      "availability": "LFS_POINTER_ONLY",
+      "lfsPayloadOidSha256": "262466355adc2d7b00c2dda57e2939f456c118085378e6b7cf17e3dd0d285c59",
+      "lfsPayloadExpectedBytes": 916920,
+      "lfsPayloadRetrieved": false,
+      "license": "UNKNOWN"
+    },
+    {
+      "id": "HVP03-C03",
+      "role": "HISTORICAL_RUNTIME_EVIDENCE_NOT_CONCEPT_SUBSTITUTE",
+      "gitCommit": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+      "path": "apps/weltraum-browser/evidence/hvp13-candidate05/hvp03-c03.png",
+      "blob": "47d8421115627ea2635b8261fb6eb4192cb6122d",
+      "byteLength": 131,
+      "sha256": "e92afefc701d6e451b92e946a34e63952c22d1036b09ff5203a04237d7c2d957",
+      "availability": "LFS_POINTER_ONLY",
+      "lfsPayloadOidSha256": "7b4804eeacf367a555f40467a87d88dfdc38a2caf5944e9eab152148031138e0",
+      "lfsPayloadExpectedBytes": 990076,
+      "lfsPayloadRetrieved": false,
+      "license": "UNKNOWN"
+    },
+    {
+      "id": "HVP03-C04-1280",
+      "role": "HISTORICAL_RUNTIME_EVIDENCE_NOT_CONCEPT_SUBSTITUTE",
+      "gitCommit": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+      "path": "apps/weltraum-browser/evidence/hvp13-candidate05/hvp03-c04-1280.png",
+      "blob": "5a58363897d918dd32b39f06a5610f401973e58d",
+      "byteLength": 131,
+      "sha256": "1bbf135abbf9d658b3de29086cba60294d7cd0be68f9bc79dd90140787048694",
+      "availability": "LFS_POINTER_ONLY",
+      "lfsPayloadOidSha256": "f0f441eaced67d7f57d2ace86d9bdb25aa5d33925630c41da1574cdd861acfa5",
+      "lfsPayloadExpectedBytes": 725031,
+      "lfsPayloadRetrieved": false,
+      "license": "UNKNOWN"
+    },
+    {
+      "id": "HVP03-C04",
+      "role": "HISTORICAL_RUNTIME_EVIDENCE_NOT_CONCEPT_SUBSTITUTE",
+      "gitCommit": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+      "path": "apps/weltraum-browser/evidence/hvp13-candidate05/hvp03-c04.png",
+      "blob": "39f919c6b078c81fe0709b64da2b10d4b7704b07",
+      "byteLength": 132,
+      "sha256": "78f5c90bb4d9f7a0143e2e2a1f047b0b2754515746f0ac6dbda0cbccbd9df914",
+      "availability": "LFS_POINTER_ONLY",
+      "lfsPayloadOidSha256": "94699c66760f2011c0464c8ace5b3539d4fda7df6e886c812ab9ffd5e82bcbfd",
+      "lfsPayloadExpectedBytes": 1288777,
+      "lfsPayloadRetrieved": false,
+      "license": "UNKNOWN"
+    }
+  ],
+  "observedIntervals": [],
+  "mediaStatus": "NOT_VIEWED",
+  "artStatus": "NOT_RUN",
+  "policy": "Local immutable Git blobs only. No LFS pull/fetch, image playback, product or Art writes. Pointer hash is not image payload hash."
+}

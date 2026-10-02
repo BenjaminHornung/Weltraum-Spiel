@@ -1,0 +1,180 @@
+{
+  "taskId": "RD-01",
+  "verifiedAt": "2026-10-02T20:27:34.655Z",
+  "productIntegrated": false,
+  "status": "PASS",
+  "indexBytes": 46512,
+  "indexSha256": "b7804d1a80aa4b23d9ad7ced016a51d78c571a88b23ce93488d09edd8ef281a1",
+  "normalReverseByteEqual": true,
+  "trackedIndexByteEqual": true,
+  "commands": [
+    {
+      "label": "normal",
+      "started": "2026-10-02T20:27:34.243Z",
+      "finished": "2026-10-02T20:27:34.417Z",
+      "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+      "args": [
+        "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD01\\experiments\\hestia-rd-2026-10-02\\src\\tools\\reference-index\\cli.mjs"
+      ],
+      "cwd": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD01\\experiments\\hestia-rd-2026-10-02",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-01/catalog/2026-10-02T20-27-34-242Z/normal.json",
+      "stdoutBytes": 46512,
+      "stdoutSha256": "b7804d1a80aa4b23d9ad7ced016a51d78c571a88b23ce93488d09edd8ef281a1",
+      "stderrPath": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-01/catalog/2026-10-02T20-27-34-242Z/normal.stderr.log",
+      "stderrBytes": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "reverse",
+      "started": "2026-10-02T20:27:34.418Z",
+      "finished": "2026-10-02T20:27:34.648Z",
+      "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+      "args": [
+        "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD01\\experiments\\hestia-rd-2026-10-02\\src\\tools\\reference-index\\cli.mjs",
+        "--reverse"
+      ],
+      "cwd": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD01\\experiments\\hestia-rd-2026-10-02",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "stdoutPath": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-01/catalog/2026-10-02T20-27-34-242Z/reverse.json",
+      "stdoutBytes": 46512,
+      "stdoutSha256": "b7804d1a80aa4b23d9ad7ced016a51d78c571a88b23ce93488d09edd8ef281a1",
+      "stderrPath": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-01/catalog/2026-10-02T20-27-34-242Z/reverse.stderr.log",
+      "stderrBytes": 0,
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "inputBindings": [
+    {
+      "path": "docs/coordination/input-package/02_QUELLEN_UND_REDDIT.md",
+      "byteLength": 6256,
+      "sha256": "85ed8c64754a7f398aa3be4607d79b3bdba380311b33767124665b90eedacf24"
+    },
+    {
+      "path": "docs/coordination/input-package/context/HESTIA_VISUAL_BIBLE_ORIGINAL.md",
+      "byteLength": 58291,
+      "sha256": "ff9c82548870a761aacc6a6e91115e68f3a52757e19b541ac4ed3c3fb45c0333"
+    },
+    {
+      "path": "docs/coordination/input-package/context/REDDIT_CHAT_ORIGINAL.txt",
+      "byteLength": 13246,
+      "sha256": "b76a07a1cf38ed6267eb2fdc5daed6337c39fa2ac661ac1d52fe01041ebd0588"
+    },
+    {
+      "path": "docs/coordination/input-package/sources/web_sources.json",
+      "byteLength": 5516,
+      "sha256": "20f240b1e5dc695d2151a28602d370b43795e83521562f9664b0ae541b1c7979"
+    },
+    {
+      "path": "reference-cards/RR-01.json",
+      "byteLength": 2896,
+      "sha256": "e25d2a2b8b9f70aa3b4cdbdd78b0779fb28764af4695e7135f7752ff561ab509"
+    },
+    {
+      "path": "reference-cards/RR-02.json",
+      "byteLength": 2997,
+      "sha256": "4c158f6eadfc92771201b079b5d0face93ab00d4bfba8566dc5ada71dd80c0a1"
+    },
+    {
+      "path": "reference-cards/RR-03.json",
+      "byteLength": 3671,
+      "sha256": "d9c7e6a95e4c85c495d23a56d16452d6d96b26644d580ed2759fb1a156fd8fa8"
+    },
+    {
+      "path": "reference-cards/RR-04.json",
+      "byteLength": 3123,
+      "sha256": "a7c271fc71af78c10f879d224f49f64bb8b74a417f72f84ffcc91aa583d7647a"
+    },
+    {
+      "path": "reference-cards/RR-05.json",
+      "byteLength": 3381,
+      "sha256": "edfda6d26d87563793900e6877ab63d3246b89fcc2ad1fe1a5745f1dd8ed1b43"
+    },
+    {
+      "path": "reference-cards/RR-06.json",
+      "byteLength": 3466,
+      "sha256": "1b675ed19bd937074907871b939e03ebe99b4e4dc8653eee6debb058f8104d62"
+    },
+    {
+      "path": "reference-cards/RR-07.json",
+      "byteLength": 3097,
+      "sha256": "aa9319ab6dd944fa3fef7a9fe11cbac28e631b4cf332567ac4e7b34a22fcf046"
+    },
+    {
+      "path": "reference-cards/concepts.json",
+      "byteLength": 9146,
+      "sha256": "a846247553f1b6cd3833dd2cf103fe857a66d867fd14122425b0b5a4e2d2af30"
+    },
+    {
+      "path": "reports/RD-01/source-audit.json",
+      "byteLength": 17133,
+      "sha256": "f77160e2e7434fa1b4a3560c86ab1d5f43d9d1b7aafb24bb9e0b9782b345e7d0"
+    },
+    {
+      "path": "reports/RD-01/sources-current.json",
+      "byteLength": 8263,
+      "sha256": "0481d2963642abbd051dfdeb859b15ba7bf8cb83981f207151d28be458ee6427"
+    }
+  ],
+  "bodyBindings": [
+    {
+      "id": "RR-01",
+      "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-01/http/2026-10-02T20-04-28-045Z/RR-01.html",
+      "byteLength": 8454,
+      "sha256": "8af3e67e6ec361df853a25dec6316825e3d90478bee6860dae0d7f29ab482658",
+      "publicAnchorCount": 0
+    },
+    {
+      "id": "RR-02",
+      "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-01/http/2026-10-02T20-04-28-045Z/RR-02.html",
+      "byteLength": 8477,
+      "sha256": "511cac2f3aaeee5f4f3190d66ad97c5e9ff04a2b41004a77db62d00f5057bd98",
+      "publicAnchorCount": 0
+    },
+    {
+      "id": "RR-03",
+      "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-01/http/2026-10-02T20-04-28-045Z/RR-03.html",
+      "byteLength": 8451,
+      "sha256": "151ce45db35034cde7255a01dfc01f8c6cc6177e2d5da9b365d99d381c21e97c",
+      "publicAnchorCount": 0
+    },
+    {
+      "id": "RR-04",
+      "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-01/http/2026-10-02T20-04-28-045Z/RR-04.html",
+      "byteLength": 8479,
+      "sha256": "6d35b960a69d8f2fc75e7f44bf91c2c78d431c992ac42322e2e8395ba9f28009",
+      "publicAnchorCount": 0
+    },
+    {
+      "id": "RR-05",
+      "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-01/http/2026-10-02T20-04-28-045Z/RR-05.html",
+      "byteLength": 8479,
+      "sha256": "bebf0a5022cea3c6cc50657f4228793f543d753bbd0f9aee1b6105ffe1f7059c",
+      "publicAnchorCount": 0
+    },
+    {
+      "id": "RR-06",
+      "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-01/http/2026-10-02T20-04-28-045Z/RR-06.html",
+      "byteLength": 8448,
+      "sha256": "63b5b2552a4021a392eabce82ff62c3f59996ab1be6cba4ce9fb4d0aa671e1a8",
+      "publicAnchorCount": 0
+    },
+    {
+      "id": "RR-07",
+      "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-01/http/2026-10-02T20-04-28-045Z/RR-07.html",
+      "byteLength": 8477,
+      "sha256": "21e949d7b8e20d729230f2b777b6364338bb73be20376cff09fde1561c8628f8",
+      "publicAnchorCount": 0
+    }
+  ],
+  "missingConceptTargets": 6,
+  "lfsPointerOnlyImages": 5,
+  "browser": "NOT_APPLICABLE",
+  "mediaPlayback": "NOT_RUN",
+  "art": "NOT_RUN",
+  "gpuPerformance": "NOT_AUTHORIZED"
+}

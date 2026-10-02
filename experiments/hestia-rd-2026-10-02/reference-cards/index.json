@@ -1,0 +1,1327 @@
+{
+  "schemaVersion": 1,
+  "taskId": "RD-01",
+  "productIntegrated": false,
+  "artStatus": "NOT_RUN",
+  "references": [
+    {
+      "id": "RR-01",
+      "title": "Camera cutout for voxels",
+      "sourceRef": {
+        "url": "https://www.reddit.com/r/VoxelGameDev/comments/1wbp8kq/camera_cutout_for_voxels/",
+        "titleProvenance": "HISTORICAL_MANIFEST_NOT_CURRENT_POST_READ",
+        "manifest": {
+          "path": "docs/coordination/input-package/sources/web_sources.json",
+          "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+          "blob": "8c80b44e61fdbd5c02859abfc90079b3df088b7e",
+          "sha256": "20f240b1e5dc695d2151a28602d370b43795e83521562f9664b0ae541b1c7979",
+          "recordId": "RR-01"
+        },
+        "historicalPackage": {
+          "path": "docs/coordination/input-package/context/REDDIT_CHAT_ORIGINAL.txt",
+          "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+          "blob": "e6ae688661ed220ea04df50b8f4ce70b1811dcf9",
+          "byteLength": 13246,
+          "sha256": "b76a07a1cf38ed6267eb2fdc5daed6337c39fa2ac661ac1d52fe01041ebd0588"
+        },
+        "accessEvidence": {
+          "path": "reports/RD-01/sources-current.json",
+          "sha256": "0481d2963642abbd051dfdeb859b15ba7bf8cb83981f207151d28be458ee6427",
+          "recordId": "RR-01"
+        }
+      },
+      "author": {
+        "status": "UNKNOWN",
+        "name": null
+      },
+      "license": {
+        "media": "UNKNOWN",
+        "code": "UNKNOWN",
+        "adoption": "NOT_AUTHORIZED"
+      },
+      "accessStatus": {
+        "text": "UNAVAILABLE",
+        "media": "NOT_VIEWED",
+        "accessClass": "JS_CHALLENGE",
+        "checkedAt": "2026-10-02T20:04:28.047Z",
+        "httpStatus": 200,
+        "contentType": "text/html",
+        "developerSources": "NOT_DISCOVERABLE_FROM_UNAVAILABLE_POST"
+      },
+      "observedIntervals": [],
+      "claims": {
+        "historicalPackage": [
+          {
+            "origin": "HISTORICAL_PACKAGE",
+            "kind": "AUTHOR_TECHNICAL_AS_REPORTED",
+            "text": "Das Chatarchiv berichtet eine Raymarching-Freistellung zwischen Kamera und Figur; der aktuelle Autorentext wurde nicht gelesen.",
+            "sourceLocator": {
+              "ref": "sourceRef.historicalPackage",
+              "lines": [
+                11,
+                11
+              ]
+            }
+          }
+        ],
+        "authorTextRead": {
+          "status": "UNAVAILABLE",
+          "statements": [],
+          "reason": "JS_CHALLENGE"
+        },
+        "fpsHardware": {
+          "origin": "UNKNOWN",
+          "fps": null,
+          "resolution": null,
+          "hardware": null,
+          "isOwnMeasurement": false
+        },
+        "ownObservation": [
+          {
+            "origin": "RD01_OBSERVATION",
+            "kind": "HTTP_ACCESS",
+            "text": "Original-URL antwortete mit HTTP 200 text/html und js_challenge; kein lesbarer Post und keine öffentlich verlinkte Entwicklerquelle im Antwortkörper. Keine Medienwiedergabe.",
+            "sourceLocator": {
+              "ref": "sourceRef.accessEvidence",
+              "recordId": "RR-01"
+            }
+          }
+        ]
+      },
+      "desiredEffect": [
+        "Lesbare Third-Person-Sicht unter Wurzeln, Felsvorsprüngen und in engen Räumen; lokale Verdeckungsausblendung gegen Kamera-Push-in vergleichen."
+      ],
+      "exclusions": [
+        "Kein Durchgang oder Welt-Edit durch Sichtfreistellung.",
+        "Kollision und Picking unverändert.",
+        "Keine Übernahme fremder Shader, Assets oder Raymarching-Architektur aus dem Clip."
+      ],
+      "experimentIds": [
+        "RD-15"
+      ],
+      "resultLinks": [
+        {
+          "experimentId": "RD-15",
+          "status": "NOT_RUN",
+          "url": null
+        }
+      ],
+      "artStatus": "NOT_RUN",
+      "productIntegrated": false,
+      "expectedUrl": "https://www.reddit.com/r/VoxelGameDev/comments/1wbp8kq/camera_cutout_for_voxels/",
+      "catalogStatus": "COMPLETE_UNVIEWED"
+    },
+    {
+      "id": "RR-02",
+      "title": "BFS new snow system",
+      "sourceRef": {
+        "url": "https://www.reddit.com/r/VoxelGameDev/comments/1u2b62l/bfs_new_snow_system_implemented_snow_squares_to/",
+        "titleProvenance": "HISTORICAL_MANIFEST_NOT_CURRENT_POST_READ",
+        "manifest": {
+          "path": "docs/coordination/input-package/sources/web_sources.json",
+          "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+          "blob": "8c80b44e61fdbd5c02859abfc90079b3df088b7e",
+          "sha256": "20f240b1e5dc695d2151a28602d370b43795e83521562f9664b0ae541b1c7979",
+          "recordId": "RR-02"
+        },
+        "historicalPackage": {
+          "path": "docs/coordination/input-package/context/REDDIT_CHAT_ORIGINAL.txt",
+          "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+          "blob": "e6ae688661ed220ea04df50b8f4ce70b1811dcf9",
+          "byteLength": 13246,
+          "sha256": "b76a07a1cf38ed6267eb2fdc5daed6337c39fa2ac661ac1d52fe01041ebd0588"
+        },
+        "accessEvidence": {
+          "path": "reports/RD-01/sources-current.json",
+          "sha256": "0481d2963642abbd051dfdeb859b15ba7bf8cb83981f207151d28be458ee6427",
+          "recordId": "RR-02"
+        }
+      },
+      "author": {
+        "status": "UNKNOWN",
+        "name": null
+      },
+      "license": {
+        "media": "UNKNOWN",
+        "code": "UNKNOWN",
+        "adoption": "NOT_AUTHORIZED"
+      },
+      "accessStatus": {
+        "text": "UNAVAILABLE",
+        "media": "NOT_VIEWED",
+        "accessClass": "JS_CHALLENGE",
+        "checkedAt": "2026-10-02T20:04:28.401Z",
+        "httpStatus": 200,
+        "contentType": "text/html",
+        "developerSources": "NOT_DISCOVERABLE_FROM_UNAVAILABLE_POST"
+      },
+      "observedIntervals": [],
+      "claims": {
+        "historicalPackage": [
+          {
+            "origin": "HISTORICAL_PACKAGE",
+            "kind": "AUTHOR_TECHNICAL_AS_REPORTED",
+            "text": "Das Archiv beschreibt drei getrennte Systeme: Oberflächenauflage, bewegte Effekte und interaktive Partikel sowie eine Höhenkartenlösung. Keine aktuelle Verifikation.",
+            "sourceLocator": {
+              "ref": "sourceRef.historicalPackage",
+              "lines": [
+                12,
+                12
+              ]
+            }
+          }
+        ],
+        "authorTextRead": {
+          "status": "UNAVAILABLE",
+          "statements": [],
+          "reason": "JS_CHALLENGE"
+        },
+        "fpsHardware": {
+          "origin": "UNKNOWN",
+          "fps": null,
+          "resolution": null,
+          "hardware": null,
+          "isOwnMeasurement": false
+        },
+        "ownObservation": [
+          {
+            "origin": "RD01_OBSERVATION",
+            "kind": "HTTP_ACCESS",
+            "text": "HTTP 200 text/html mit js_challenge; kein Posttext, keine öffentlich verlinkte Entwicklerquelle und keine Wiedergabe.",
+            "sourceLocator": {
+              "ref": "sourceRef.accessEvidence",
+              "recordId": "RR-02"
+            }
+          }
+        ]
+      },
+      "desiredEffect": [
+        "Schneeauflage, bewegte Partikel und tatsächlich interaktive Materie getrennt beurteilen.",
+        "Dach-/Überhang-Gegenprobe und bewegte Fragmente für die dargestellte Schneeauflage."
+      ],
+      "exclusions": [
+        "Keine Physikbehauptung aus Dekorpartikeln.",
+        "Keine ungeprüfte Höhenkartenübernahme für Überhänge.",
+        "Kein neuer Wetter-/Weltauftrag und keine Medien-/Codeübernahme."
+      ],
+      "experimentIds": [
+        "RD-31",
+        "RD-33"
+      ],
+      "resultLinks": [
+        {
+          "experimentId": "RD-31",
+          "status": "NOT_RUN",
+          "url": null
+        },
+        {
+          "experimentId": "RD-33",
+          "status": "NOT_RUN",
+          "url": null
+        }
+      ],
+      "artStatus": "NOT_RUN",
+      "productIntegrated": false,
+      "expectedUrl": "https://www.reddit.com/r/VoxelGameDev/comments/1u2b62l/bfs_new_snow_system_implemented_snow_squares_to/",
+      "catalogStatus": "COMPLETE_UNVIEWED"
+    },
+    {
+      "id": "RR-03",
+      "title": "My raymarching engine",
+      "sourceRef": {
+        "url": "https://www.reddit.com/r/VoxelGameDev/comments/1s6e1gk/my_raymarching_engine/",
+        "titleProvenance": "HISTORICAL_MANIFEST_NOT_CURRENT_POST_READ",
+        "manifest": {
+          "path": "docs/coordination/input-package/sources/web_sources.json",
+          "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+          "blob": "8c80b44e61fdbd5c02859abfc90079b3df088b7e",
+          "sha256": "20f240b1e5dc695d2151a28602d370b43795e83521562f9664b0ae541b1c7979",
+          "recordId": "RR-03"
+        },
+        "historicalPackage": {
+          "path": "docs/coordination/input-package/context/REDDIT_CHAT_ORIGINAL.txt",
+          "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+          "blob": "e6ae688661ed220ea04df50b8f4ce70b1811dcf9",
+          "byteLength": 13246,
+          "sha256": "b76a07a1cf38ed6267eb2fdc5daed6337c39fa2ac661ac1d52fe01041ebd0588"
+        },
+        "packageSummary": {
+          "path": "docs/coordination/input-package/02_QUELLEN_UND_REDDIT.md",
+          "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+          "blob": "e2b9e7b07948cc586fec4963750257dd813b9e8f",
+          "sha256": "85ed8c64754a7f398aa3be4607d79b3bdba380311b33767124665b90eedacf24"
+        },
+        "accessEvidence": {
+          "path": "reports/RD-01/sources-current.json",
+          "sha256": "0481d2963642abbd051dfdeb859b15ba7bf8cb83981f207151d28be458ee6427",
+          "recordId": "RR-03"
+        }
+      },
+      "author": {
+        "status": "UNKNOWN",
+        "name": null
+      },
+      "license": {
+        "media": "UNKNOWN",
+        "code": "UNKNOWN",
+        "adoption": "NOT_AUTHORIZED"
+      },
+      "accessStatus": {
+        "text": "UNAVAILABLE",
+        "media": "NOT_VIEWED",
+        "accessClass": "JS_CHALLENGE",
+        "checkedAt": "2026-10-02T20:04:28.533Z",
+        "httpStatus": 200,
+        "contentType": "text/html",
+        "developerSources": "NOT_DISCOVERABLE_FROM_UNAVAILABLE_POST"
+      },
+      "observedIntervals": [],
+      "claims": {
+        "historicalPackage": [
+          {
+            "origin": "HISTORICAL_PACKAGE",
+            "kind": "AUTHOR_TECHNICAL_AS_REPORTED",
+            "text": "Das Paket berichtet Rust/wgpu; Rauheit, Reflexionen und Emission sowie offene zeitliche Rekonstruktion und GI-Aktualisierung werden historisch beschrieben.",
+            "sourceLocator": {
+              "ref": "sourceRef.packageSummary",
+              "lines": [
+                22,
+                22
+              ]
+            }
+          },
+          {
+            "origin": "HISTORICAL_PACKAGE",
+            "kind": "AUTHOR_TECHNICAL_AS_REPORTED",
+            "text": "Das Chatarchiv nennt unfertige Rekonstruktion und GI; dies ist kein Beleg einer vollständig dynamischen Hestia-Welt.",
+            "sourceLocator": {
+              "ref": "sourceRef.historicalPackage",
+              "lines": [
+                13,
+                13
+              ]
+            }
+          }
+        ],
+        "authorTextRead": {
+          "status": "UNAVAILABLE",
+          "statements": [],
+          "reason": "JS_CHALLENGE; historical AUTHOR_TEXT_READ label does not describe this fetch"
+        },
+        "fpsHardware": {
+          "origin": "UNKNOWN",
+          "fps": null,
+          "resolution": null,
+          "hardware": null,
+          "isOwnMeasurement": false
+        },
+        "ownObservation": [
+          {
+            "origin": "RD01_OBSERVATION",
+            "kind": "HTTP_ACCESS",
+            "text": "HTTP 200 text/html mit js_challenge; kein aktuell gelesener Autorentext, keine Entwicklerlinks und kein abgespieltes Video.",
+            "sourceLocator": {
+              "ref": "sourceRef.accessEvidence",
+              "recordId": "RR-03"
+            }
+          }
+        ]
+      },
+      "desiredEffect": [
+        "Lokale Material-/Lichtqualität bei einer echten Geometrieänderung prüfen, nicht nur ein ruhendes Beautybild.",
+        "Rauheit, Emission, Reflexion und räumlich differenziertes Licht nach Öffnen einer Schattenzone vergleichen."
+      ],
+      "exclusions": [
+        "Kein automatischer Engine-/Rust-/wgpu-Port.",
+        "Keine GI-, Browser- oder Performance-Akzeptanz aus Autorenbeschreibungen.",
+        "Historisches R03, Reddit RR-03 und Task RD-03 sind verschiedene Identitäten."
+      ],
+      "experimentIds": [
+        "RD-13",
+        "RD-14"
+      ],
+      "resultLinks": [
+        {
+          "experimentId": "RD-13",
+          "status": "NOT_RUN",
+          "url": null
+        },
+        {
+          "experimentId": "RD-14",
+          "status": "NOT_RUN",
+          "url": null
+        }
+      ],
+      "artStatus": "NOT_RUN",
+      "productIntegrated": false,
+      "expectedUrl": "https://www.reddit.com/r/VoxelGameDev/comments/1s6e1gk/my_raymarching_engine/",
+      "catalogStatus": "COMPLETE_UNVIEWED"
+    },
+    {
+      "id": "RR-04",
+      "title": "Destruction and building in our unannounced voxel physics survival game",
+      "sourceRef": {
+        "url": "https://www.reddit.com/r/VoxelGameDev/comments/1jtt18s/destruction_and_building_in_our_unannounced_voxel/",
+        "titleProvenance": "HISTORICAL_MANIFEST_NOT_CURRENT_POST_READ",
+        "manifest": {
+          "path": "docs/coordination/input-package/sources/web_sources.json",
+          "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+          "blob": "8c80b44e61fdbd5c02859abfc90079b3df088b7e",
+          "sha256": "20f240b1e5dc695d2151a28602d370b43795e83521562f9664b0ae541b1c7979",
+          "recordId": "RR-04"
+        },
+        "historicalPackage": {
+          "path": "docs/coordination/input-package/context/REDDIT_CHAT_ORIGINAL.txt",
+          "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+          "blob": "e6ae688661ed220ea04df50b8f4ce70b1811dcf9",
+          "byteLength": 13246,
+          "sha256": "b76a07a1cf38ed6267eb2fdc5daed6337c39fa2ac661ac1d52fe01041ebd0588"
+        },
+        "accessEvidence": {
+          "path": "reports/RD-01/sources-current.json",
+          "sha256": "0481d2963642abbd051dfdeb859b15ba7bf8cb83981f207151d28be458ee6427",
+          "recordId": "RR-04"
+        }
+      },
+      "author": {
+        "status": "UNKNOWN",
+        "name": null
+      },
+      "license": {
+        "media": "UNKNOWN",
+        "code": "UNKNOWN",
+        "adoption": "NOT_AUTHORIZED"
+      },
+      "accessStatus": {
+        "text": "UNAVAILABLE",
+        "media": "NOT_VIEWED",
+        "accessClass": "JS_CHALLENGE",
+        "checkedAt": "2026-10-02T20:04:28.639Z",
+        "httpStatus": 200,
+        "contentType": "text/html",
+        "developerSources": "NOT_DISCOVERABLE_FROM_UNAVAILABLE_POST"
+      },
+      "observedIntervals": [],
+      "claims": {
+        "historicalPackage": [
+          {
+            "origin": "HISTORICAL_PACKAGE",
+            "kind": "AUTHOR_TECHNICAL_AS_REPORTED",
+            "text": "Historischer Bericht über klassische Dreiecksmeshes/Greedy Meshing und die Trennung verbundener Strukturen in eigenständige Voxelvolumen; nicht in RD-01 beobachtet.",
+            "sourceLocator": {
+              "ref": "sourceRef.historicalPackage",
+              "lines": [
+                14,
+                14
+              ]
+            }
+          }
+        ],
+        "authorTextRead": {
+          "status": "UNAVAILABLE",
+          "statements": [],
+          "reason": "JS_CHALLENGE"
+        },
+        "fpsHardware": {
+          "origin": "UNKNOWN",
+          "fps": null,
+          "resolution": null,
+          "hardware": null,
+          "isOwnMeasurement": false
+        },
+        "ownObservation": [
+          {
+            "origin": "RD01_OBSERVATION",
+            "kind": "HTTP_ACCESS",
+            "text": "HTTP 200 text/html mit js_challenge; kein Posttext, keine öffentlich verlinkte Entwicklerquelle und keine Wiedergabe.",
+            "sourceLocator": {
+              "ref": "sourceRef.accessEvidence",
+              "recordId": "RR-04"
+            }
+          }
+        ]
+      },
+      "desiredEffect": [
+        "Meshpfad als ernsthafte Kontrolle bei Trennung und eigenständigen Volumen.",
+        "Neue Owner und korrekte Dekoranbindung nach dem Eingriff vergleichen."
+      ],
+      "exclusions": [
+        "Keine Marching-Cubes-/Transvoxel-Stilübernahme.",
+        "Keine neue World-/Physics-Authority durch den Katalog.",
+        "Keine behauptete Zerstörungs-, Atomaritäts- oder Persistenzparität ohne eigenes Experiment."
+      ],
+      "experimentIds": [
+        "RD-13",
+        "RD-23",
+        "RD-51"
+      ],
+      "resultLinks": [
+        {
+          "experimentId": "RD-13",
+          "status": "NOT_RUN",
+          "url": null
+        },
+        {
+          "experimentId": "RD-23",
+          "status": "NOT_RUN",
+          "url": null
+        },
+        {
+          "experimentId": "RD-51",
+          "status": "NOT_RUN",
+          "url": null
+        }
+      ],
+      "artStatus": "NOT_RUN",
+      "productIntegrated": false,
+      "expectedUrl": "https://www.reddit.com/r/VoxelGameDev/comments/1jtt18s/destruction_and_building_in_our_unannounced_voxel/",
+      "catalogStatus": "COMPLETE_UNVIEWED"
+    },
+    {
+      "id": "RR-05",
+      "title": "My tiny voxel game is fully destructable",
+      "sourceRef": {
+        "url": "https://www.reddit.com/r/VoxelGameDev/comments/1jbqhv5/my_tiny_voxel_game_is_fully_destructable_rendered/",
+        "titleProvenance": "HISTORICAL_MANIFEST_NOT_CURRENT_POST_READ",
+        "manifest": {
+          "path": "docs/coordination/input-package/sources/web_sources.json",
+          "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+          "blob": "8c80b44e61fdbd5c02859abfc90079b3df088b7e",
+          "sha256": "20f240b1e5dc695d2151a28602d370b43795e83521562f9664b0ae541b1c7979",
+          "recordId": "RR-05"
+        },
+        "historicalPackage": {
+          "path": "docs/coordination/input-package/context/REDDIT_CHAT_ORIGINAL.txt",
+          "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+          "blob": "e6ae688661ed220ea04df50b8f4ce70b1811dcf9",
+          "byteLength": 13246,
+          "sha256": "b76a07a1cf38ed6267eb2fdc5daed6337c39fa2ac661ac1d52fe01041ebd0588"
+        },
+        "accessEvidence": {
+          "path": "reports/RD-01/sources-current.json",
+          "sha256": "0481d2963642abbd051dfdeb859b15ba7bf8cb83981f207151d28be458ee6427",
+          "recordId": "RR-05"
+        }
+      },
+      "author": {
+        "status": "UNKNOWN",
+        "name": null
+      },
+      "license": {
+        "media": "UNKNOWN",
+        "code": "UNKNOWN",
+        "adoption": "NOT_AUTHORIZED"
+      },
+      "accessStatus": {
+        "text": "UNAVAILABLE",
+        "media": "NOT_VIEWED",
+        "accessClass": "JS_CHALLENGE",
+        "checkedAt": "2026-10-02T20:04:28.818Z",
+        "httpStatus": 200,
+        "contentType": "text/html",
+        "developerSources": "NOT_DISCOVERABLE_FROM_UNAVAILABLE_POST"
+      },
+      "observedIntervals": [],
+      "claims": {
+        "historicalPackage": [
+          {
+            "origin": "HISTORICAL_PACKAGE",
+            "kind": "AUTHOR_TECHNICAL_AS_REPORTED",
+            "text": "SVO-Rendering und separat erzeugte Box-Collider um Entitäten werden im Archiv als Autorenbeschreibung berichtet.",
+            "sourceLocator": {
+              "ref": "sourceRef.historicalPackage",
+              "lines": [
+                15,
+                15
+              ]
+            }
+          },
+          {
+            "origin": "HISTORICAL_PACKAGE",
+            "kind": "AUTHOR_FPS_AS_REPORTED",
+            "text": "4K/120 FPS ist ausschließlich die im historischen Chat berichtete Autorenangabe, keine aktuelle Autorlektüre und keine eigene Messung.",
+            "value": {
+              "fps": 120,
+              "resolution": "4K",
+              "hardware": null
+            },
+            "sourceLocator": {
+              "ref": "sourceRef.historicalPackage",
+              "lines": [
+                15,
+                15
+              ]
+            }
+          }
+        ],
+        "authorTextRead": {
+          "status": "UNAVAILABLE",
+          "statements": [],
+          "reason": "JS_CHALLENGE"
+        },
+        "fpsHardware": {
+          "origin": "HISTORICAL_PACKAGE",
+          "fps": 120,
+          "resolution": "4K",
+          "hardware": null,
+          "isOwnMeasurement": false,
+          "sourceLocator": {
+            "ref": "sourceRef.historicalPackage",
+            "lines": [
+              15,
+              15
+            ]
+          }
+        },
+        "ownObservation": [
+          {
+            "origin": "RD01_OBSERVATION",
+            "kind": "HTTP_ACCESS",
+            "text": "HTTP 200 text/html mit js_challenge; kein Posttext, keine Entwicklerlinks, kein Video und kein FPS-/Hardwarelauf.",
+            "sourceLocator": {
+              "ref": "sourceRef.accessEvidence",
+              "recordId": "RR-05"
+            }
+          }
+        ]
+      },
+      "desiredEffect": [
+        "Denselben lokalen Voxelbestand und Edit-Upload/Speicher im SVO-/Renderpfad gegen Greedy vergleichen.",
+        "Renderdaten und lokal benötigte Kollisionsdaten getrennt beurteilen."
+      ],
+      "exclusions": [
+        "4K/120 FPS niemals als Hestia- oder Browserbenchmark übernehmen.",
+        "Kein Boxcollider-Qualitätsrückschritt.",
+        "SVO beweist weder Masse/Trägheit noch atomare Änderungen oder Persistenz.",
+        "Kein Asset-/Shaderimport."
+      ],
+      "experimentIds": [
+        "RD-13"
+      ],
+      "resultLinks": [
+        {
+          "experimentId": "RD-13",
+          "status": "NOT_RUN",
+          "url": null
+        }
+      ],
+      "artStatus": "NOT_RUN",
+      "productIntegrated": false,
+      "expectedUrl": "https://www.reddit.com/r/VoxelGameDev/comments/1jbqhv5/my_tiny_voxel_game_is_fully_destructable_rendered/",
+      "catalogStatus": "COMPLETE_UNVIEWED"
+    },
+    {
+      "id": "RR-06",
+      "title": "Windy voxel forest",
+      "sourceRef": {
+        "url": "https://www.reddit.com/r/VoxelGameDev/comments/1l7r6un/windy_voxel_forest/",
+        "titleProvenance": "HISTORICAL_MANIFEST_NOT_CURRENT_POST_READ",
+        "manifest": {
+          "path": "docs/coordination/input-package/sources/web_sources.json",
+          "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+          "blob": "8c80b44e61fdbd5c02859abfc90079b3df088b7e",
+          "sha256": "20f240b1e5dc695d2151a28602d370b43795e83521562f9664b0ae541b1c7979",
+          "recordId": "RR-06"
+        },
+        "historicalPackage": {
+          "path": "docs/coordination/input-package/context/REDDIT_CHAT_ORIGINAL.txt",
+          "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+          "blob": "e6ae688661ed220ea04df50b8f4ce70b1811dcf9",
+          "byteLength": 13246,
+          "sha256": "b76a07a1cf38ed6267eb2fdc5daed6337c39fa2ac661ac1d52fe01041ebd0588"
+        },
+        "accessEvidence": {
+          "path": "reports/RD-01/sources-current.json",
+          "sha256": "0481d2963642abbd051dfdeb859b15ba7bf8cb83981f207151d28be458ee6427",
+          "recordId": "RR-06"
+        }
+      },
+      "author": {
+        "status": "UNKNOWN",
+        "name": null
+      },
+      "license": {
+        "media": "UNKNOWN",
+        "code": "UNKNOWN",
+        "adoption": "NOT_AUTHORIZED"
+      },
+      "accessStatus": {
+        "text": "UNAVAILABLE",
+        "media": "NOT_VIEWED",
+        "accessClass": "JS_CHALLENGE",
+        "checkedAt": "2026-10-02T20:04:29.047Z",
+        "httpStatus": 200,
+        "contentType": "text/html",
+        "developerSources": "NOT_DISCOVERABLE_FROM_UNAVAILABLE_POST"
+      },
+      "observedIntervals": [],
+      "claims": {
+        "historicalPackage": [
+          {
+            "origin": "HISTORICAL_PACKAGE",
+            "kind": "AUTHOR_TECHNICAL_AS_REPORTED",
+            "text": "Vorab voxelisierte Animationsframes laut historischem Bericht; der aktuelle Clip wurde nicht abgespielt.",
+            "sourceLocator": {
+              "ref": "sourceRef.historicalPackage",
+              "lines": [
+                16,
+                16
+              ]
+            }
+          },
+          {
+            "origin": "HISTORICAL_PACKAGE",
+            "kind": "AUTHOR_MEMORY_AS_REPORTED",
+            "text": "Etwa 630 MB für vier Baumvorlagen mit fünf Sekunden Animation: historische Autorenangabe, keine eigene Speicher-/Zeitmessung.",
+            "value": {
+              "megabytesApprox": 630,
+              "templates": 4,
+              "seconds": 5
+            },
+            "sourceLocator": {
+              "ref": "sourceRef.historicalPackage",
+              "lines": [
+                16,
+                16
+              ]
+            }
+          }
+        ],
+        "authorTextRead": {
+          "status": "UNAVAILABLE",
+          "statements": [],
+          "reason": "JS_CHALLENGE"
+        },
+        "fpsHardware": {
+          "origin": "UNKNOWN",
+          "fps": null,
+          "resolution": null,
+          "hardware": null,
+          "isOwnMeasurement": false
+        },
+        "ownObservation": [
+          {
+            "origin": "RD01_OBSERVATION",
+            "kind": "HTTP_ACCESS",
+            "text": "HTTP 200 text/html mit js_challenge; kein Posttext, keine Entwicklerlinks und keine Medien-, Speicher- oder Zeitmessung.",
+            "sourceLocator": {
+              "ref": "sourceRef.accessEvidence",
+              "recordId": "RR-06"
+            }
+          }
+        ]
+      },
+      "desiredEffect": [
+        "Lebendige Vegetationsbewegung mit kompakter Animation gegen begrenzte Vorberechnung prüfen.",
+        "Nach Trennung dürfen entfernte Zellen nicht im nächsten Frame zurückkehren; Rest und Fragment behalten korrekte Dekoranbindung."
+      ],
+      "exclusions": [
+        "630 MB/4 Templates/5 s sind keine RD-01-Messung.",
+        "Kein nachgewiesener Fehler der fremden Demo: Wiedererscheinen entfernter Zellen ist eine eigene Gegenprobe.",
+        "Keine ungeprüfte glatte Biegung kanonischer Holzzellen, keine kopierten Frames/Assets."
+      ],
+      "experimentIds": [
+        "RD-21",
+        "RD-22",
+        "RD-23"
+      ],
+      "resultLinks": [
+        {
+          "experimentId": "RD-21",
+          "status": "NOT_RUN",
+          "url": null
+        },
+        {
+          "experimentId": "RD-22",
+          "status": "NOT_RUN",
+          "url": null
+        },
+        {
+          "experimentId": "RD-23",
+          "status": "NOT_RUN",
+          "url": null
+        }
+      ],
+      "artStatus": "NOT_RUN",
+      "productIntegrated": false,
+      "expectedUrl": "https://www.reddit.com/r/VoxelGameDev/comments/1l7r6un/windy_voxel_forest/",
+      "catalogStatus": "COMPLETE_UNVIEWED"
+    },
+    {
+      "id": "RR-07",
+      "title": "Blocky voxels with lots of foliage, Castle Craft",
+      "sourceRef": {
+        "url": "https://www.reddit.com/r/VoxelGameDev/comments/yelhom/were_using_blocky_voxels_with_lots_of_foliage_to/",
+        "titleProvenance": "HISTORICAL_MANIFEST_NOT_CURRENT_POST_READ",
+        "manifest": {
+          "path": "docs/coordination/input-package/sources/web_sources.json",
+          "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+          "blob": "8c80b44e61fdbd5c02859abfc90079b3df088b7e",
+          "sha256": "20f240b1e5dc695d2151a28602d370b43795e83521562f9664b0ae541b1c7979",
+          "recordId": "RR-07"
+        },
+        "historicalPackage": {
+          "path": "docs/coordination/input-package/context/REDDIT_CHAT_ORIGINAL.txt",
+          "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+          "blob": "e6ae688661ed220ea04df50b8f4ce70b1811dcf9",
+          "byteLength": 13246,
+          "sha256": "b76a07a1cf38ed6267eb2fdc5daed6337c39fa2ac661ac1d52fe01041ebd0588"
+        },
+        "accessEvidence": {
+          "path": "reports/RD-01/sources-current.json",
+          "sha256": "0481d2963642abbd051dfdeb859b15ba7bf8cb83981f207151d28be458ee6427",
+          "recordId": "RR-07"
+        }
+      },
+      "author": {
+        "status": "UNKNOWN",
+        "name": null
+      },
+      "license": {
+        "media": "UNKNOWN",
+        "code": "UNKNOWN",
+        "adoption": "NOT_AUTHORIZED"
+      },
+      "accessStatus": {
+        "text": "UNAVAILABLE",
+        "media": "NOT_VIEWED",
+        "accessClass": "JS_CHALLENGE",
+        "checkedAt": "2026-10-02T20:04:29.454Z",
+        "httpStatus": 200,
+        "contentType": "text/html",
+        "developerSources": "NOT_DISCOVERABLE_FROM_UNAVAILABLE_POST"
+      },
+      "observedIntervals": [],
+      "claims": {
+        "historicalPackage": [
+          {
+            "origin": "HISTORICAL_PACKAGE",
+            "kind": "AUTHOR_TECHNICAL_AS_REPORTED",
+            "text": "1-Meter-Voxel und Nicht-Voxel-Bäume sind im Archiv als Autorenbeschreibung berichtet; nicht aktuell gelesen oder gesehen.",
+            "value": {
+              "voxelMetersReported": 1,
+              "treesReportedAsVoxels": false
+            },
+            "sourceLocator": {
+              "ref": "sourceRef.historicalPackage",
+              "lines": [
+                17,
+                17
+              ]
+            }
+          }
+        ],
+        "authorTextRead": {
+          "status": "UNAVAILABLE",
+          "statements": [],
+          "reason": "JS_CHALLENGE"
+        },
+        "fpsHardware": {
+          "origin": "UNKNOWN",
+          "fps": null,
+          "resolution": null,
+          "hardware": null,
+          "isOwnMeasurement": false
+        },
+        "ownObservation": [
+          {
+            "origin": "RD01_OBSERVATION",
+            "kind": "HTTP_ACCESS",
+            "text": "HTTP 200 text/html mit js_challenge; kein Posttext, keine öffentlich verlinkte Entwicklerquelle und keine Wiedergabe.",
+            "sourceLocator": {
+              "ref": "sourceRef.accessEvidence",
+              "recordId": "RR-07"
+            }
+          }
+        ]
+      },
+      "desiredEffect": [
+        "Vegetationsschichten, Cluster, Lichtungen und Habitat für eine üppige, lesbare blockartige Landschaft vergleichen.",
+        "Räumliche Wirkung aus Spielerhöhe und nach einem Eingriff prüfen."
+      ],
+      "exclusions": [
+        "1-Meter-Voxel und Nicht-Voxel-Bäume nicht als Hestia-Norm übernehmen.",
+        "Kein gleichmäßiges Noise-Streuen anstelle gestalteter Habitate.",
+        "Kein aktuelles Art-/Performance-ACCEPT oder fremder Assetimport."
+      ],
+      "experimentIds": [
+        "RD-20",
+        "RD-41"
+      ],
+      "resultLinks": [
+        {
+          "experimentId": "RD-20",
+          "status": "NOT_RUN",
+          "url": null
+        },
+        {
+          "experimentId": "RD-41",
+          "status": "NOT_RUN",
+          "url": null
+        }
+      ],
+      "artStatus": "NOT_RUN",
+      "productIntegrated": false,
+      "expectedUrl": "https://www.reddit.com/r/VoxelGameDev/comments/yelhom/were_using_blocky_voxels_with_lots_of_foliage_to/",
+      "catalogStatus": "COMPLETE_UNVIEWED"
+    }
+  ],
+  "concepts": {
+    "id": "HESTIA-CONCEPTS",
+    "title": "Hestia concept basis and pinned-byte availability",
+    "sourceRef": {
+      "visualBible": {
+        "path": "docs/coordination/input-package/context/HESTIA_VISUAL_BIBLE_ORIGINAL.md",
+        "originalSourceName": "hestia_rd_sources/01_Hestia_Visual_Design_Language_v1.md",
+        "gitCommit": "89b55315fa7800a7a417c49e5e5a272f17410b4b",
+        "blob": "18e3c9afdd5564463489c9facfe1152bb3578f48",
+        "byteLength": 58291,
+        "sha256": "ff9c82548870a761aacc6a6e91115e68f3a52757e19b541ac4ed3c3fb45c0333",
+        "role": "HISTORICAL_PROJECT_TEXT_NOT_IMAGE_EVIDENCE"
+      },
+      "byteAudit": {
+        "path": "reports/RD-01/source-audit.json",
+        "sha256": "f77160e2e7434fa1b4a3560c86ab1d5f43d9d1b7aafb24bb9e0b9782b345e7d0"
+      },
+      "productReadBase": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+      "productReadTree": "cdf8a92b17eecd764bac4588054167bd566485f1"
+    },
+    "accessStatus": {
+      "text": "PROJECT_SOURCE_READ",
+      "media": "NOT_VIEWED",
+      "accessClass": "TEXT_BYTES_ONLY_IMAGES_UNAVAILABLE",
+      "checkedAt": "2026-10-02T20:04:47.043Z"
+    },
+    "license": {
+      "text": "PROVIDED_PROJECT_SOURCE_FOR_RESEARCH",
+      "images": "UNKNOWN",
+      "imageAdoption": "NOT_AUTHORIZED"
+    },
+    "observedIntervals": [],
+    "claims": {
+      "historicalPackage": [
+        {
+          "origin": "HISTORICAL_PACKAGE",
+          "kind": "VISUAL_INTENT",
+          "text": "Feine harte achsenparallele Microvoxel; gestaltete Macro-/Meso-/Micro-Hierarchie, Habitat statt Streuung und Dichte mit Ruheflächen.",
+          "sourceLocator": {
+            "ref": "sourceRef.visualBible",
+            "lines": [
+              96,
+              156
+            ]
+          }
+        },
+        {
+          "origin": "HISTORICAL_PACKAGE",
+          "kind": "VISUAL_INTENT",
+          "text": "Lesbare Küsten- und Unterwasserstufen, transparente Flachwasserzonen, Nassmaterialien sowie zusammenhängende asymmetrische Schirm-/Wurzelbäume.",
+          "sourceLocator": {
+            "ref": "sourceRef.visualBible",
+            "lines": [
+              245,
+              344
+            ]
+          }
+        },
+        {
+          "origin": "HISTORICAL_PACKAGE",
+          "kind": "SCALE_SCOPE_NOT_PRODUCT_OVERRIDE",
+          "text": "Historische 0,25-m-Lab-/Assetakzeptanz und abgegrenzter 0,125-m-Vertrag sind keine globale Planetenskala. Der eingefrorene V3/HVP-Vertrag wird hier nicht geändert.",
+          "sourceLocator": {
+            "ref": "sourceRef.visualBible",
+            "lines": [
+              189,
+              198
+            ]
+          }
+        }
+      ],
+      "authorTextRead": {
+        "status": "NOT_APPLICABLE",
+        "statements": [],
+        "reason": "Provided historical project text, not a freshly read Reddit author"
+      },
+      "fpsHardware": {
+        "origin": "UNKNOWN",
+        "fps": null,
+        "resolution": null,
+        "hardware": null,
+        "isOwnMeasurement": false
+      },
+      "ownObservation": [
+        {
+          "origin": "RD01_OBSERVATION",
+          "kind": "LOCAL_BYTE_AUDIT",
+          "text": "Sechs target-Basenamen fehlen im gesamten gepinnten b3-Tree. Alle fünf hvp13-candidate05-PNG-Blobs sind 131/132-Byte-LFS-Pointer, keine Bildpayloads. Keine Bilder gesehen.",
+          "sourceLocator": {
+            "ref": "sourceRef.byteAudit",
+            "field": "assets"
+          }
+        }
+      ]
+    },
+    "assets": [
+      {
+        "id": "HVP03-C01",
+        "role": "HISTORICAL_RUNTIME_EVIDENCE_NOT_CONCEPT_SUBSTITUTE",
+        "gitCommit": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+        "path": "apps/weltraum-browser/evidence/hvp13-candidate05/hvp03-c01.png",
+        "blob": "2b4dc0fece67e9dfecf9af12589b458c3e899286",
+        "byteLength": 132,
+        "sha256": "6904f86890f64305b41f37fd4d26cc12c1034c215cc2ddb9480ade943aebddd1",
+        "availability": "LFS_POINTER_ONLY",
+        "lfsPayloadOidSha256": "68a9a7f344fde41d4b733641e43718aea043770ef6ac42fa5401880dd998b8e5",
+        "lfsPayloadExpectedBytes": 1012429,
+        "lfsPayloadRetrieved": false,
+        "license": "UNKNOWN"
+      },
+      {
+        "id": "HVP03-C02",
+        "role": "HISTORICAL_RUNTIME_EVIDENCE_NOT_CONCEPT_SUBSTITUTE",
+        "gitCommit": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+        "path": "apps/weltraum-browser/evidence/hvp13-candidate05/hvp03-c02.png",
+        "blob": "9e8b59e87790b718ab6292fad0eef474f54eb32c",
+        "byteLength": 131,
+        "sha256": "48e6ecd574bd17eb3f2e465aaa94f3c8ea1ec348950c3b27d04aad0fa92d8548",
+        "availability": "LFS_POINTER_ONLY",
+        "lfsPayloadOidSha256": "262466355adc2d7b00c2dda57e2939f456c118085378e6b7cf17e3dd0d285c59",
+        "lfsPayloadExpectedBytes": 916920,
+        "lfsPayloadRetrieved": false,
+        "license": "UNKNOWN"
+      },
+      {
+        "id": "HVP03-C03",
+        "role": "HISTORICAL_RUNTIME_EVIDENCE_NOT_CONCEPT_SUBSTITUTE",
+        "gitCommit": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+        "path": "apps/weltraum-browser/evidence/hvp13-candidate05/hvp03-c03.png",
+        "blob": "47d8421115627ea2635b8261fb6eb4192cb6122d",
+        "byteLength": 131,
+        "sha256": "e92afefc701d6e451b92e946a34e63952c22d1036b09ff5203a04237d7c2d957",
+        "availability": "LFS_POINTER_ONLY",
+        "lfsPayloadOidSha256": "7b4804eeacf367a555f40467a87d88dfdc38a2caf5944e9eab152148031138e0",
+        "lfsPayloadExpectedBytes": 990076,
+        "lfsPayloadRetrieved": false,
+        "license": "UNKNOWN"
+      },
+      {
+        "id": "HVP03-C04",
+        "role": "HISTORICAL_RUNTIME_EVIDENCE_NOT_CONCEPT_SUBSTITUTE",
+        "gitCommit": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+        "path": "apps/weltraum-browser/evidence/hvp13-candidate05/hvp03-c04.png",
+        "blob": "39f919c6b078c81fe0709b64da2b10d4b7704b07",
+        "byteLength": 132,
+        "sha256": "78f5c90bb4d9f7a0143e2e2a1f047b0b2754515746f0ac6dbda0cbccbd9df914",
+        "availability": "LFS_POINTER_ONLY",
+        "lfsPayloadOidSha256": "94699c66760f2011c0464c8ace5b3539d4fda7df6e886c812ab9ffd5e82bcbfd",
+        "lfsPayloadExpectedBytes": 1288777,
+        "lfsPayloadRetrieved": false,
+        "license": "UNKNOWN"
+      },
+      {
+        "id": "HVP03-C04-1280",
+        "role": "HISTORICAL_RUNTIME_EVIDENCE_NOT_CONCEPT_SUBSTITUTE",
+        "gitCommit": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+        "path": "apps/weltraum-browser/evidence/hvp13-candidate05/hvp03-c04-1280.png",
+        "blob": "5a58363897d918dd32b39f06a5610f401973e58d",
+        "byteLength": 131,
+        "sha256": "1bbf135abbf9d658b3de29086cba60294d7cd0be68f9bc79dd90140787048694",
+        "availability": "LFS_POINTER_ONLY",
+        "lfsPayloadOidSha256": "f0f441eaced67d7f57d2ace86d9bdb25aa5d33925630c41da1574cdd861acfa5",
+        "lfsPayloadExpectedBytes": 725031,
+        "lfsPayloadRetrieved": false,
+        "license": "UNKNOWN"
+      },
+      {
+        "id": "TARGET-01",
+        "role": "HISTORICAL_CONCEPT_TARGET",
+        "requestedBasename": "target-01-coastal-valley.png",
+        "gitCommit": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+        "searchedTree": "cdf8a92b17eecd764bac4588054167bd566485f1",
+        "searchScope": "ENTIRE_PINNED_GIT_TREE_EXACT_BASENAME",
+        "path": null,
+        "blob": null,
+        "byteLength": null,
+        "sha256": null,
+        "availability": "MISSING_AT_PIN",
+        "license": "UNKNOWN"
+      },
+      {
+        "id": "TARGET-02",
+        "role": "HISTORICAL_CONCEPT_TARGET",
+        "requestedBasename": "target-02-archipelago-mountain.png",
+        "gitCommit": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+        "searchedTree": "cdf8a92b17eecd764bac4588054167bd566485f1",
+        "searchScope": "ENTIRE_PINNED_GIT_TREE_EXACT_BASENAME",
+        "path": null,
+        "blob": null,
+        "byteLength": null,
+        "sha256": null,
+        "availability": "MISSING_AT_PIN",
+        "license": "UNKNOWN"
+      },
+      {
+        "id": "TARGET-03",
+        "role": "HISTORICAL_CONCEPT_TARGET",
+        "requestedBasename": "target-03-wetland-roots.png",
+        "gitCommit": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+        "searchedTree": "cdf8a92b17eecd764bac4588054167bd566485f1",
+        "searchScope": "ENTIRE_PINNED_GIT_TREE_EXACT_BASENAME",
+        "path": null,
+        "blob": null,
+        "byteLength": null,
+        "sha256": null,
+        "availability": "MISSING_AT_PIN",
+        "license": "UNKNOWN"
+      },
+      {
+        "id": "TARGET-04",
+        "role": "HISTORICAL_CONCEPT_TARGET",
+        "requestedBasename": "target-04-terraced-coast.png",
+        "gitCommit": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+        "searchedTree": "cdf8a92b17eecd764bac4588054167bd566485f1",
+        "searchScope": "ENTIRE_PINNED_GIT_TREE_EXACT_BASENAME",
+        "path": null,
+        "blob": null,
+        "byteLength": null,
+        "sha256": null,
+        "availability": "MISSING_AT_PIN",
+        "license": "UNKNOWN"
+      },
+      {
+        "id": "TARGET-05",
+        "role": "HISTORICAL_CONCEPT_TARGET",
+        "requestedBasename": "target-05-lagoon-channel.png",
+        "gitCommit": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+        "searchedTree": "cdf8a92b17eecd764bac4588054167bd566485f1",
+        "searchScope": "ENTIRE_PINNED_GIT_TREE_EXACT_BASENAME",
+        "path": null,
+        "blob": null,
+        "byteLength": null,
+        "sha256": null,
+        "availability": "MISSING_AT_PIN",
+        "license": "UNKNOWN"
+      },
+      {
+        "id": "TARGET-06",
+        "role": "HISTORICAL_CONCEPT_TARGET",
+        "requestedBasename": "target-06-forested-island.png",
+        "gitCommit": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+        "searchedTree": "cdf8a92b17eecd764bac4588054167bd566485f1",
+        "searchScope": "ENTIRE_PINNED_GIT_TREE_EXACT_BASENAME",
+        "path": null,
+        "blob": null,
+        "byteLength": null,
+        "sha256": null,
+        "availability": "MISSING_AT_PIN",
+        "license": "UNKNOWN"
+      }
+    ],
+    "desiredEffect": [
+      "Zusammenhängende asymmetrische Wurzel-/Schirmbäume, Vegetationshierarchie und Lichtungen statt gleichmäßiger Streuung.",
+      "Lesbare transparente Lagune mit Unterwasserstufen und differenzierten Nass-/Kalksteinmaterialien.",
+      "Gerichtetes Licht, kühler Fill und Tiefe erhalten die blockige Form auch nach einem Eingriff."
+    ],
+    "exclusions": [
+      "Keine nicht vorhandenen Bilder als gesichtet markieren; HVP-Runtime-Pointer und unrelated space art sind kein Konzept-Ersatz.",
+      "Keine neue Visual Bible, globale Skala, Low-Poly-/Minecraft-/Diorama-Stilvorgabe oder Art-Freigabe.",
+      "Keine LFS-Abfrage, Golden-/Art-/Produktänderung oder Bildübernahme."
+    ],
+    "experimentIds": [
+      "RD-14",
+      "RD-20",
+      "RD-41"
+    ],
+    "resultLinks": [
+      {
+        "experimentId": "RD-14",
+        "status": "NOT_RUN",
+        "url": null
+      },
+      {
+        "experimentId": "RD-20",
+        "status": "NOT_RUN",
+        "url": null
+      },
+      {
+        "experimentId": "RD-41",
+        "status": "NOT_RUN",
+        "url": null
+      }
+    ],
+    "artStatus": "NOT_RUN",
+    "productIntegrated": false
+  },
+  "experiments": [
+    {
+      "id": "RD-13",
+      "referenceIds": [
+        "RR-03",
+        "RR-04",
+        "RR-05"
+      ],
+      "conceptIds": [],
+      "resultStatus": "NOT_RUN"
+    },
+    {
+      "id": "RD-14",
+      "referenceIds": [
+        "RR-03"
+      ],
+      "conceptIds": [
+        "HESTIA-CONCEPTS"
+      ],
+      "resultStatus": "NOT_RUN"
+    },
+    {
+      "id": "RD-15",
+      "referenceIds": [
+        "RR-01"
+      ],
+      "conceptIds": [],
+      "resultStatus": "NOT_RUN"
+    },
+    {
+      "id": "RD-20",
+      "referenceIds": [
+        "RR-07"
+      ],
+      "conceptIds": [
+        "HESTIA-CONCEPTS"
+      ],
+      "resultStatus": "NOT_RUN"
+    },
+    {
+      "id": "RD-21",
+      "referenceIds": [
+        "RR-06"
+      ],
+      "conceptIds": [],
+      "resultStatus": "NOT_RUN"
+    },
+    {
+      "id": "RD-22",
+      "referenceIds": [
+        "RR-06"
+      ],
+      "conceptIds": [],
+      "resultStatus": "NOT_RUN"
+    },
+    {
+      "id": "RD-23",
+      "referenceIds": [
+        "RR-04",
+        "RR-06"
+      ],
+      "conceptIds": [],
+      "resultStatus": "NOT_RUN"
+    },
+    {
+      "id": "RD-31",
+      "referenceIds": [
+        "RR-02"
+      ],
+      "conceptIds": [],
+      "resultStatus": "NOT_RUN"
+    },
+    {
+      "id": "RD-33",
+      "referenceIds": [
+        "RR-02"
+      ],
+      "conceptIds": [],
+      "resultStatus": "NOT_RUN"
+    },
+    {
+      "id": "RD-41",
+      "referenceIds": [
+        "RR-07"
+      ],
+      "conceptIds": [
+        "HESTIA-CONCEPTS"
+      ],
+      "resultStatus": "NOT_RUN"
+    },
+    {
+      "id": "RD-51",
+      "referenceIds": [
+        "RR-04"
+      ],
+      "conceptIds": [],
+      "resultStatus": "NOT_RUN"
+    }
+  ],
+  "issues": [],
+  "inputBindings": [
+    {
+      "path": "docs/coordination/input-package/02_QUELLEN_UND_REDDIT.md",
+      "byteLength": 6256,
+      "sha256": "85ed8c64754a7f398aa3be4607d79b3bdba380311b33767124665b90eedacf24"
+    },
+    {
+      "path": "docs/coordination/input-package/context/HESTIA_VISUAL_BIBLE_ORIGINAL.md",
+      "byteLength": 58291,
+      "sha256": "ff9c82548870a761aacc6a6e91115e68f3a52757e19b541ac4ed3c3fb45c0333"
+    },
+    {
+      "path": "docs/coordination/input-package/context/REDDIT_CHAT_ORIGINAL.txt",
+      "byteLength": 13246,
+      "sha256": "b76a07a1cf38ed6267eb2fdc5daed6337c39fa2ac661ac1d52fe01041ebd0588"
+    },
+    {
+      "path": "docs/coordination/input-package/sources/web_sources.json",
+      "byteLength": 5516,
+      "sha256": "20f240b1e5dc695d2151a28602d370b43795e83521562f9664b0ae541b1c7979"
+    },
+    {
+      "path": "reference-cards/RR-01.json",
+      "byteLength": 2896,
+      "sha256": "e25d2a2b8b9f70aa3b4cdbdd78b0779fb28764af4695e7135f7752ff561ab509"
+    },
+    {
+      "path": "reference-cards/RR-02.json",
+      "byteLength": 2997,
+      "sha256": "4c158f6eadfc92771201b079b5d0face93ab00d4bfba8566dc5ada71dd80c0a1"
+    },
+    {
+      "path": "reference-cards/RR-03.json",
+      "byteLength": 3671,
+      "sha256": "d9c7e6a95e4c85c495d23a56d16452d6d96b26644d580ed2759fb1a156fd8fa8"
+    },
+    {
+      "path": "reference-cards/RR-04.json",
+      "byteLength": 3123,
+      "sha256": "a7c271fc71af78c10f879d224f49f64bb8b74a417f72f84ffcc91aa583d7647a"
+    },
+    {
+      "path": "reference-cards/RR-05.json",
+      "byteLength": 3381,
+      "sha256": "edfda6d26d87563793900e6877ab63d3246b89fcc2ad1fe1a5745f1dd8ed1b43"
+    },
+    {
+      "path": "reference-cards/RR-06.json",
+      "byteLength": 3466,
+      "sha256": "1b675ed19bd937074907871b939e03ebe99b4e4dc8653eee6debb058f8104d62"
+    },
+    {
+      "path": "reference-cards/RR-07.json",
+      "byteLength": 3097,
+      "sha256": "aa9319ab6dd944fa3fef7a9fe11cbac28e631b4cf332567ac4e7b34a22fcf046"
+    },
+    {
+      "path": "reference-cards/concepts.json",
+      "byteLength": 9146,
+      "sha256": "a846247553f1b6cd3833dd2cf103fe857a66d867fd14122425b0b5a4e2d2af30"
+    },
+    {
+      "path": "reports/RD-01/source-audit.json",
+      "byteLength": 17133,
+      "sha256": "f77160e2e7434fa1b4a3560c86ab1d5f43d9d1b7aafb24bb9e0b9782b345e7d0"
+    },
+    {
+      "path": "reports/RD-01/sources-current.json",
+      "byteLength": 8263,
+      "sha256": "0481d2963642abbd051dfdeb859b15ba7bf8cb83981f207151d28be458ee6427"
+    }
+  ]
+}
