@@ -60,3 +60,36 @@ def box(lo=(0, 0, 0), hi=(1, 1, 1)):
     faces = [(0, 2, 1), (0, 3, 2), (4, 5, 6), (4, 6, 7), (0, 1, 5), (0, 5, 4),
              (3, 7, 6), (3, 6, 2), (0, 4, 7), (0, 7, 3), (1, 2, 6), (1, 6, 5)]
     return vertices, faces
+
+
+def combine_meshes(meshes):
+    vertices, faces = [], []
+    for points, triangles in meshes:
+        offset = len(vertices)
+        vertices.extend(points)
+        faces.extend(tuple(i + offset for i in face) for face in triangles)
+    return vertices, faces
+
+
+def orthogonal_union(xs, ys, zs, occupied):
+    """Fixture boundary from supplied boxes, not a production occupancy oracle."""
+    axes = (xs, ys, zs)
+    vertices, faces, ids = [], [], {}
+    sides = ((2, -1), (2, 1), (1, -1), (1, 1), (0, -1), (0, 1))
+    for cell in sorted(occupied):
+        points, triangles = box(tuple(axes[a][cell[a]] for a in range(3)),
+                                tuple(axes[a][cell[a] + 1] for a in range(3)))
+        for side, (axis, delta) in enumerate(sides):
+            neighbor = tuple(cell[a] + (delta if a == axis else 0) for a in range(3))
+            if neighbor in occupied:
+                continue
+            for face in triangles[2 * side:2 * side + 2]:
+                result = []
+                for index in face:
+                    point = points[index]
+                    if point not in ids:
+                        ids[point] = len(vertices)
+                        vertices.append(point)
+                    result.append(ids[point])
+                faces.append(tuple(result))
+    return vertices, faces
