@@ -3,7 +3,7 @@ import path from 'node:path';
 import { performance } from 'node:perf_hooks';
 import { fileURLToPath } from 'node:url';
 import { sha, sorted } from './fixture-export.mjs';
-import { BASE, LAB, RUN, ownedPath, stageSource, verifyFreeze, writeOwned } from './stage-source.mjs';
+import { BASE, LAB, RUN, START, ownedPath, stageSource, verifyFreeze, writeOwned } from './stage-source.mjs';
 import { makeSyntheticFixtures } from './synthetic.mjs';
 import { makeProductFixture } from './product-crop.mjs';
 import { readFixtureDirectory, writeBundle } from './fixture-files.mjs';
@@ -12,13 +12,14 @@ async function main() {
   const argv = process.argv.slice(2); const options = {};
   for (let i = 0; i < argv.length; i += 1) {
     if (argv[i] === '--reverse-order') { options.reverse = true; }
-    else if (['--source-ref', '--out', '--stage'].includes(argv[i]) && argv[i + 1]) { options[argv[i].slice(2)] = argv[++i]; }
-    else { throw new Error('Usage: export-fixtures.mjs --source-ref <b3 SHA> --out <own output> [--stage <own run directory>] [--reverse-order]'); }
+    else if (['--source-ref', '--input-freeze-ref', '--out', '--stage'].includes(argv[i]) && argv[i + 1]) { options[argv[i].slice(2)] = argv[++i]; }
+    else { throw new Error('Usage: export-fixtures.mjs --source-ref <b3 SHA> --out <own output> [--input-freeze-ref <HEAD freeze SHA>] [--stage <own run directory>] [--reverse-order]'); }
   }
   if (options['source-ref'] !== BASE || !options.out) { throw new Error('Exact pinned source-ref and owned out required'); }
   const out = ownedPath(options.out, true); const stage = ownedPath(options.stage ?? `${RUN}/stage-v1`);
   const start = performance.now(); const cpu = process.cpuUsage();
-  const freeze = verifyFreeze();
+  const inputFreezeRef = options['input-freeze-ref'] ?? START;
+  const freeze = verifyFreeze(inputFreezeRef);
   const generatorFiles = sorted(['fixture-export.mjs', 'synthetic.mjs', 'stage-source.mjs', 'product-crop.mjs', 'fixture-files.mjs', 'export-fixtures.mjs']
     .map(file => ({ path: `exporters/${file}`, sha256: sha(readFileSync(path.join(LAB, 'exporters', file))) })), f => f.path);
   const staged = await stageSource(stage, BASE);
@@ -63,7 +64,7 @@ async function main() {
     fixtures, scenarios: scenarioInventory };
   writeOwned(path.join(out, 'inventory.json'), `${staged.contracts.canonicalJson(inventory)}\n`, true);
   const cpuUsed = process.cpuUsage(cpu);
-  const diagnostic = { schema: 'rd02-export-cost-v1', sourceRef: BASE, out, stage, reverseOrder: Boolean(options.reverse),
+  const diagnostic = { schema: 'rd02-export-cost-v1', sourceRef: BASE, inputFreezeRef, out, stage, reverseOrder: Boolean(options.reverse),
     wallMilliseconds: performance.now() - start, processCpuUserMilliseconds: cpuUsed.user / 1000,
     processCpuSystemMilliseconds: cpuUsed.system / 1000, processPeakRssKiB: process.resourceUsage().maxRSS,
     currentMemoryBytes: process.memoryUsage(), fixtureCount: fixtures.length,

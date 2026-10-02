@@ -59,11 +59,46 @@ export function readPinned(file, ref = BASE) {
   }
   return { path: file, sha256: sha(bytes), blobSha, bytes };
 }
-export function verifyFreeze() {
-  const freeze = JSON.parse(readFileSync(`C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/HEAD/freezes/${START}.json`, 'utf8'));
+export function verifyFreeze(inputRef = START) {
+  const git = (...args) => execFileSync(GIT, args, { cwd: REPO, maxBuffer: 1_048_576, windowsHide: true });
+  const readFreeze = ref => {
+    if (!/^[0-9a-f]{40}$/.test(ref)) { throw new Error('Invalid input freeze reference'); }
+    const file = path.resolve(RUN, `../HEAD/freezes/${ref}.json`);
+    const stat = lstatSync(file);
+    if (!stat.isFile() || stat.isSymbolicLink() || stat.size > 1_048_576 || realpathSync(file) !== file) {
+      throw new Error('Invalid input freeze file');
+    }
+    const freeze = JSON.parse(readFileSync(file, 'utf8'));
+    const tree = git('rev-parse', `${ref}^{tree}`).toString().trim();
+    git('merge-base', '--is-ancestor', ref, 'HEAD');
+    if (freeze.schema !== 'hestia-rd-head-freeze-v1' || freeze.start !== ref || freeze.tree !== tree || freeze.productReadBase !== BASE || freeze.productIntegrated !== false
+      || !Array.isArray(freeze.frozenFiles) || freeze.frozenFiles.length !== 18
+      || new Set(freeze.frozenFiles.map(row => row.path)).size !== 18) {
+      throw new Error('Input freeze commit/tree/schema binding mismatch');
+    }
+    for (const row of freeze.frozenFiles) {
+      if (typeof row.path !== 'string' || path.posix.normalize(row.path) !== row.path || row.path.startsWith('../')
+        || path.posix.isAbsolute(row.path) || row.path.includes('\\') || !/^[0-9a-f]{64}$/.test(row.sha256)
+        || sha(git('show', `${ref}:experiments/hestia-rd-2026-10-02/${row.path}`)) !== row.sha256) {
+        throw new Error('Input freeze Git-byte binding mismatch');
+      }
+    }
+    return freeze;
+  };
+  const original = readFreeze(START);
+  const freeze = inputRef === START ? original : readFreeze(inputRef);
+  if (JSON.stringify(freeze.frozenFiles.map(row => row.path).sort()) !== JSON.stringify(original.frozenFiles.map(row => row.path).sort())) {
+    throw new Error('Input freeze path set changed');
+  }
+  for (const name of ['fixture', 'scenario', 'experiment', 'result', 'validation']) {
+    const file = `src/contracts/${name}.ts`;
+    if (sha(readFileSync(path.join(LAB, file))) !== original.frozenFiles.find(row => row.path === file)?.sha256) {
+      throw new Error('Original consumed RD02 contract drift');
+    }
+  }
   const rows = freeze.frozenFiles.map(file => ({ path: file.path, expectedSha256: file.sha256,
     actualSha256: sha(readFileSync(path.join(LAB, file.path))) }));
-  if (rows.length !== 18 || rows.some(r => r.expectedSha256 !== r.actualSha256)) { throw new Error('RD-00 freeze drift'); }
+  if (rows.some(r => r.expectedSha256 !== r.actualSha256)) { throw new Error('Input freeze current-byte drift'); }
   return rows;
 }
 function adapt(source, known, subset = false) {

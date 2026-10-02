@@ -30,17 +30,32 @@ function taskAllowlist(task) {
   return entries;
 }
 
-export function assertIsolation({ origin = 'http://127.0.0.1:5280', databaseName = 'hestia-rd-rd00', runRoot = RUN_ROOT } = {}) {
+/** @param {{task?: string, origin?: string, databaseName?: string, runRoot?: string}} options */
+export function assertIsolation({ task = 'RD-00', origin = 'http://127.0.0.1:5280', databaseName, runRoot } = {}) {
+  if (!/^RD-\d{2}$/.test(task)) { throw new Error('Runtime requires a real RD task profile'); }
+  taskAllowlist(task);
+  const namespace = `hestia-rd-${task.replace('RD-', 'rd')}`;
+  const artifacts = path.resolve(RUN_ROOT, '..', task);
+  databaseName ??= namespace;
+  runRoot ??= artifacts;
   const url = new URL(origin);
   if (url.href !== 'http://127.0.0.1:5280/' || url.username || url.password) {
     throw new Error('Only task-owned loopback origin http://127.0.0.1:5280 is allowed; no product origin');
   }
-  if (!/^hestia-rd-[a-z0-9-]+$/.test(databaseName)) { throw new Error('Shared/product database forbidden'); }
-  if (!within(path.resolve(RUN_ROOT), path.resolve(runRoot))) { throw new Error('Run artifacts outside RD-00 root'); }
+  if (!/^[a-z0-9-]+$/.test(databaseName) || (databaseName !== namespace && !databaseName.startsWith(`${namespace}-`))) {
+    throw new Error('Shared/product/cross-task database forbidden');
+  }
+  if (!within(artifacts, path.resolve(runRoot))) { throw new Error(`Run artifacts outside ${task} root`); }
+  const ownerRoot = path.dirname(artifacts);
+  for (let cursor = path.resolve(runRoot); within(ownerRoot, cursor); cursor = path.dirname(cursor)) {
+    const stat = lstatSync(cursor, { throwIfNoEntry: false });
+    if (stat && (stat.isSymbolicLink() || !stat.isDirectory())) { throw new Error('Run root link/non-directory forbidden'); }
+    if (cursor === ownerRoot) { break; }
+  }
 }
 
 export async function assertPortFree(port = 5280) {
-  if (port !== 5280) { throw new Error('RD-00 requires strict port 5280; no fallback'); }
+  if (port !== 5280) { throw new Error('Lab requires strict port 5280; no fallback'); }
   const server = createServer();
   await new Promise((resolve, reject) => {
     server.once('error', (error) => { reject(new Error(`Port 127.0.0.1:5280 is not free: ${error.message}`)); });
@@ -184,7 +199,8 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   try {
     const args = process.argv.slice(2);
     const argument = (name, fallback) => { const index = args.indexOf(name); return index >= 0 ? args[index + 1] : fallback; };
-    assertIsolation();
+    const task = argument('--task', 'RD-00');
+    assertIsolation({ task: task.startsWith('RD-') ? task : 'RD-00' });
     if (args.includes('--port-check')) { await assertPortFree(); console.log('PASS: task-owned origin/namespace and free 127.0.0.1:5280'); }
     else {
       const result = inspectBoundary({ base: argument('--base', BASE), task: argument('--task', 'RD-00'), start: argument('--start', undefined) });
