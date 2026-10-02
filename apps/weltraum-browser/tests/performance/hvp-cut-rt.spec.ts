@@ -7,7 +7,8 @@ import os from "node:os";
 import {Quaternion, Vector3} from "three";
 import type {HvpPhysicsClock, HvpPhysicsSnapshot} from "../../src/hestia-prototype/physics/physicsWorker";
 import type {createHvpPlasmaTool} from "../../src/hestia-prototype/terrain/plasmaTool";
-import {readHvpCutMarkers, summarizeHvpCuts, type HvpCutRawEntry, type HvpCutSample} from "./hvpCutRtReport";
+import {isHvpCutHealthFresh, readHvpBodyHoldForCommand, readHvpCutMarkers, summarizeHvpCuts,
+  type HvpCutRawEntry, type HvpCutSample} from "./hvpCutRtReport";
 
 const variants = [
   {id: "quarry-box", scenario: "quarry", mode: 2, motion: "static"},
@@ -23,7 +24,8 @@ type ToolState = ReturnType<ReturnType<typeof createHvpPlasmaTool>["read"]>;
 type Snapshot = {
   origin: number; now: number; root: number; digest: string; physics: HvpPhysicsSnapshot; clock: HvpPhysicsClock | null;
   tool: ToolState; camera: {orientation: number[]} | null; save: {state: string; revision: number};
-  health: {enabled: boolean; errors: number; dropped: number; cutObservation: {status: string; drops: number}};
+  health: {enabled: boolean; errors: number; dropped: number; cutObservation: {status: string; drops: number};
+    timingSinkFailures: number|null; publishedOrigin: number; publishedAt: number};
   resources: {totalCpuBytes: number; ledger: {triangles: number; drawCalls: number; retainedMeshBytes: number};
     caps: {maxCpuBytes: number; maxMeshBytes: number; maxTriangles: number; maxDrawCalls: number}};
   visible: string; focused: boolean; locked: boolean; testBridge: boolean; inputError: string | null; pauseDialogOpen: boolean;
@@ -209,7 +211,8 @@ const cut = async (page: Page, variant: Variant, temperature: HvpCutSample["temp
   try {
     await prepareCut(page, variant); await drain(page); result.before = await read(page);
     expect(result.before).toMatchObject({visible: "visible", focused: true, locked: true, testBridge: false});
-    expect(result.before.health).toMatchObject({enabled: true, errors: 0, dropped: 0, cutObservation: {status: "armed", drops: 0}});
+    expect(result.before.health).toMatchObject({enabled: true, errors: 0, dropped: 0, timingSinkFailures:0,
+      publishedOrigin:result.before.origin,cutObservation: {status: "armed", drops: 0}});
     if (body) {
       const parent = result.before.physics.bodies.find(value => value.ownerId === result.before!.physics.moving.preview?.ownerId);
       if (!parent) { throw new Error("No actual parent at the measured input"); }
@@ -234,6 +237,18 @@ const cut = async (page: Page, variant: Variant, temperature: HvpCutSample["temp
     if (!result.commandId) { throw new Error("No real command-bound input observed; no synthetic sample created"); }
     const markers = readHvpCutMarkers(result.raw.entries, result.commandId, body);
     result.problems.push(...markers.problems);
+    const terminal=result.raw.entries.find(entry=>entry.detail?.data?.commandId===result.commandId
+      &&["Applied","NoOp","Rejected","RecoveryHold"].some(status=>entry.name===`${prefix}InputTo${status}Ms`));
+    const endpoint=markers.firstCommittedRenderSubmitMs??(terminal?terminal.start+terminal.duration:result.after.now);
+    result.phase="await-health";
+    await expect.poll(async()=>isHvpCutHealthFresh((await read(page)).health,result.before!.origin,endpoint),
+      {timeout:5_000}).toBe(true);
+    const fresh=await read(page);
+    expect(fresh.origin).toBe(result.before.origin);
+    expect(fresh.root).toBe(result.after.root);
+    result.after={...result.after,health:fresh.health};
+    const healthBatch=await drain(page);result.raw.entries.push(...healthBatch.entries);result.raw.dropped+=healthBatch.dropped;
+    result.phase="verify";
     const inputs = result.raw.entries.filter(entry => entry.name === "hvp.cutInputMs" || entry.name === "hvp.cutBodyInputMs");
     if (inputs.length !== 1 || inputs[0]?.detail?.data?.commandId !== result.commandId) {
       result.problems.push("Expected exactly one actual command input in this measured attempt");
@@ -251,7 +266,8 @@ const cut = async (page: Page, variant: Variant, temperature: HvpCutSample["temp
     if (markers.inputMs !== null) {
       result.sample = {commandId: result.commandId, scenario: variant.scenario, temperature, outcome,
         inputMs: markers.inputMs, appliedMs: markers.appliedMs, firstCommittedRenderSubmitMs: markers.firstCommittedRenderSubmitMs,
-        holdMs: !body && result.after.clock?.lastTerrainCommandId === result.commandId ? result.after.clock.lastTerrainHoldMs ?? null : null,
+         holdMs: body ? readHvpBodyHoldForCommand(result.after.clock,result.commandId)
+           : result.after.clock?.lastTerrainCommandId === result.commandId ? result.after.clock.lastTerrainHoldMs ?? null : null,
         sourceGenerationBefore: result.before.root, sourceGenerationAfter: outcome === "Timeout" ? null : result.after.root,
         reason: observedId === result.commandId ? observed!.reason : "No confirmed terminal before the deadline"};
     }
@@ -260,6 +276,7 @@ const cut = async (page: Page, variant: Variant, temperature: HvpCutSample["temp
     expect(result.after.health).toMatchObject({enabled: true, errors: 0, dropped: 0, cutObservation: {status: "armed", drops: 0}});
     expect(result.raw.dropped).toBe(0); expect(markers.problems).toEqual([]);
     expect(outcome).toBe("Applied"); expect(markers.appliedMs).not.toBeNull(); expect(markers.firstCommittedRenderSubmitMs).not.toBeNull();
+    if(body&&result.sample?.holdMs===null){result.problems.push("Confirmed body World-Hold is not measured for this Applied command");}
     if (markers.inputMs !== null && markers.appliedMs !== null && markers.appliedMs - markers.inputMs > 30_000) {
       result.problems.push("Applied arrived beyond the declared terminal deadline; retained as late evidence, not a timely success");
     }

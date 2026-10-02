@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import { createHvpCutObservation, measureHvpCut, measureHvpCutAsync, type HvpCutSpan, type HvpCutRenderFacts } from "../../src/hestia-prototype/runtime/cutTrace";
+import { createHvpCutObservation, HVP_CUT_TRACE_RESERVE_BYTES, measureHvpCut, measureHvpCutAsync,
+  type HvpCutSpan, type HvpCutRenderFacts } from "../../src/hestia-prototype/runtime/cutTrace";
 import { createHvpTerrainRoot } from "../../src/hestia-prototype/terrain/cutPlan";
 import { renderCommandResult } from "../../src/presentation/renderCommands";
 
@@ -14,6 +15,19 @@ const deferred = <T>() => {
 };
 
 describe("HVP cut trace", () => {
+  it("models bounded main and worker reply payloads inside the existing controlled reserve",()=>{
+    // Logical owned record/string/array allowance, not JavaScript VM heap or
+    // externally subscribed PerformanceObserver buffering. The 129-key,
+    // 65-key, 33-child and tenth-input cases independently enforce the caps.
+    const key=128,inputs=9,keys=64,children=32,pendingReplies=8;
+    const main=10*keys*(key*2+32+16)
+      +3*children*(2*key+2*key+27*2+3*32+128+16)
+      +inputs*((key+8)*2+32+128+32)+96*1024; // "terrain:"/"body:" scope on each ID
+    const additional=2*512+pendingReplies*3*(key*2+32+3*8+128)+32*1024;
+    expect(main).toBeLessThanOrEqual(384*1024);
+    expect(additional).toBeLessThanOrEqual(128*1024);
+    expect(main+additional).toBeLessThanOrEqual(HVP_CUT_TRACE_RESERVE_BYTES);
+  });
   it("returns disabled sync values and errors without reading the clock", () => {
     const now = vi.spyOn(performance, "now");
     const origin = vi.spyOn(performance, "timeOrigin", "get");
@@ -229,6 +243,38 @@ describe("HVP cut trace", () => {
     return { root, sink, observer, setFacts: (next: HvpCutRenderFacts) => { facts = next; }, setReadFailure: (value: boolean) => { readFailure = value; } };
   };
 
+  it("bounds actual maximal observer input, key and child records before accepted render",()=>{
+    const root=makeRoot("bounded-observer"),id="moving-cut-0".padEnd(128,"x");
+    const mainKeys=Array.from({length:64},(_,index)=>`hvp:terrain:s${index}`.padEnd(128,"x"));
+    const bodyKeys=Array.from({length:64},(_,index)=>`hvp:fragment:${index}`.padEnd(128,"x"));
+    const children=Array.from({length:32},(_,index)=>({ownerId:`hvp:owner:${index}`.padEnd(128,"x"),
+      sourceDigest:"fnv1a64-v1:0123456789abcdef",renderKey:bodyKeys[index]!}));
+    const facts:HvpCutRenderFacts={...makeFacts(root,mainKeys,mainKeys),body:{
+      outcome:Object.freeze({id,status:"Applied"}),nativeState:"Idle",nativeSequence:1,
+      receipt:{id,status:"Applied",parentId:"hvp:parent",children:children.map(child=>child.ownerId)},
+      children,activeKeys:bodyKeys,visibleKeys:bodyKeys}};
+    const sink={record:vi.fn()},observer=createHvpCutObservation(sink,()=>facts);
+    try{
+      for(let index=0;index<9;index+=1){
+        const commandId=`moving-cut-${index}`.padEnd(128,"x");
+        observer.confirm(()=>observer.trace({commandId,thread:"main",phase:"cutBodySubmittedMs",
+          origin:performance.timeOrigin,start:performance.now(),duration:0}));
+      }
+      expect(observer.read()).toMatchObject({inputCount:9,dropped:0});
+      const commandId="moving-cut-0".padEnd(128,"x");
+      observer.trace({commandId,thread:"main",phase:"cutBodyTotalAppliedMs",origin:performance.timeOrigin,
+        start:performance.now(),duration:0});
+      expect(observer.read()).toMatchObject({inputCount:8,pendingRender:true,dropped:0});
+      observer.render(()=>renderCommandResult("Accepted"));
+      const marker=sink.record.mock.calls.find(call=>call[0]==="cutBodyFirstCommittedRenderSubmitMs");
+      expect(marker?.[3]).toMatchObject({activeTerrainKeys:mainKeys,activeBodyKeys:bodyKeys,children});
+      expect(observer.read()).toMatchObject({pendingRender:false,dropped:0});
+      const serializedBytes=new TextEncoder().encode(JSON.stringify(sink.record.mock.calls)).byteLength;
+      expect(serializedBytes).toBeLessThanOrEqual(384*1024);
+      expect(serializedBytes).toBeLessThanOrEqual(HVP_CUT_TRACE_RESERVE_BYTES);
+    }finally{observer.dispose();}
+  });
+
   describe("P07 body observation", () => {
     const bodyFixture=()=>{
       const root=makeRoot("body-observation"),id="moving-cut-1";
@@ -243,6 +289,23 @@ describe("HVP cut trace", () => {
         observer.trace({...submitted(id),phase:"cutBodyTotalAppliedMs"});};
       return {root,id,sink,observer,readFrame,apply,body:()=>body,setBody:(next:typeof body)=>{body=next;},setFrame:(next:HvpCutRenderFacts)=>{frame=next;}};
     };
+
+    it("rejects a rendered key beyond the real 128-character representation boundary",()=>{
+      const f=bodyFixture(),key=`hvp:fragment:${"a".repeat(129-"hvp:fragment:".length)}`;
+      expect(key).toHaveLength(129);
+      const b=f.body();f.setBody({...b,children:[{...b.children[0]!,renderKey:key}],activeKeys:[key],visibleKeys:[key]});
+      f.apply();expect(f.observer.read()).toMatchObject({pendingRender:false,dropReasons:{invalidFrame:1}});
+      f.observer.dispose();
+    });
+
+    it("rejects a foreign main-clock terminal instead of attributing its duration to the real input",()=>{
+      const f=bodyFixture();
+      f.observer.confirm(()=>f.observer.trace({...submitted(f.id),phase:"cutBodySubmittedMs"}));
+      f.observer.trace({...submitted(f.id),phase:"cutBodyTotalAppliedMs",origin:performance.timeOrigin+1_000});
+      expect(f.observer.read()).toMatchObject({inputCount:0,pendingRender:false,dropReasons:{invalidSpan:1}});
+      expect(f.sink.record.mock.calls.some(call=>call[0]==="cutBodyInputToAppliedMs")).toBe(false);
+      f.observer.dispose();
+    });
 
     it("binds body input and an actual matching render separately from the unchanged terrain generation",()=>{
       const f=bodyFixture();f.apply();

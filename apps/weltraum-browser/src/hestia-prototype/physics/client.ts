@@ -16,7 +16,8 @@ export interface HvpPhysicsClient {
   readonly collisionBytes: number;
   readonly workerCount: number;
   readonly clock?: HvpPhysicsClock;
-  lifecycle?():Readonly<{workers:number;pendingJobs:number;timers:number|null;listeners:number;native:Readonly<{status:string;bodies:number;colliders:number}>|null}>;
+  lifecycle?():Readonly<{workers:number;pendingJobs:number;timers:number|null;listeners:number;timingSinkFailures:number;
+    native:Readonly<{status:string;bodies:number;colliders:number}>|null}>;
   readonly preparation: Readonly<{ jobs: number; peakParallelJobs: number; mainPrepareMaxMs: number }>;
   read(): HvpPhysicsSnapshot;
   update(): void;
@@ -145,6 +146,7 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
   let failure: Error | undefined;
   let disposed = false;
   let terminated=false;
+  let timingSinkDisabled=false,timingSinkFailures=0;
   let busy = false;
   let mutating = false;
   let bodyPending=false;
@@ -169,14 +171,16 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
     const p = pending.get(data.id);
     if (p === undefined) { return; }
     if(data.clock!==undefined){clock=data.clock;}
-    if(data.timings!==undefined){onTimings?.(data.timings);}
     clearTimeout(p.timeout); pending.delete(data.id);
     if (p.publish && data.snapshot !== undefined && data.id > lastId) { snapshot = data.snapshot; lastId = data.id; }
     if (!p.publish && data.snapshot !== undefined) { heldSnapshot={id:data.id,value:data.snapshot}; }
     if(data.restoreState!==undefined){restorePhase=data.restoreState;}
-    if(data.rejected !== undefined) { p.reject(new Error(data.rejected)); return; }
-    try{p.onReply?.(data);}catch(error){p.reject(error instanceof Error?error:new Error(String(error)));return;}
-    p.resolve();
+    if(data.rejected !== undefined){p.reject(new Error(data.rejected));}
+    else{try{p.onReply?.(data);p.resolve();}catch(error){p.reject(error instanceof Error?error:new Error(String(error)));}}
+    // Never let optional observation own the completed command's slot or result.
+    if(data.timings!==undefined&&!timingSinkDisabled&&onTimings!==undefined){
+      try{onTimings(data.timings);}catch{timingSinkDisabled=true;timingSinkFailures+=1;onTimings=undefined;}
+    }
   };
   type Request = HvpPhysicsMessage extends infer M ? M extends HvpPhysicsMessage ? Omit<M, "id"> : never : never;
   const send = (message: Request, transfers: Transferable[] = [], publish = true,onReply?:(reply:HvpPhysicsReply)=>void): Promise<void> => new Promise((resolve, reject) => {
@@ -321,6 +325,8 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
       if(heldSnapshot){snapshot=heldSnapshot.value;lastId=heldSnapshot.id;}heldSnapshot=undefined;mutating=false;},
     async beginBodyCut(request){
       if(mutating||bodyPending){throw new Error("World Pending");}bodyPending=true;
+      // The body transaction owns the held slot: an older rejected transaction's snapshot never proves its cleanup.
+      heldSnapshot=undefined;
       let preparation:HvpMovingCutPreparation|undefined;
       try{await send({kind:"BeginBodyCut",request:{id:request.id,ownerId:request.ownerId,sourceDigest:request.sourceDigest,edge:request.edge,
          direction:{x:request.direction.x,y:request.direction.y,z:request.direction.z},...(request.brush==="Sphere"?{brush:"Sphere" as const}:{})}},[],true,reply=>{preparation=reply.bodyPreparation;});
@@ -329,15 +335,24 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
       }catch(error){if(snapshot?.moving.pendingId===request.id){await send({kind:"RollbackBodyCut",transactionId:request.id});}bodyPending=false;throw error;}
     },
     async stageBodyCut(id,products){
-      if(!bodyPending||mutating){throw new Error("No pending local body work");}mutating=true;
-      await send({kind:"StageBodyCut",transactionId:id,products:{removedCells:products.removedCells,removedMassKg:products.removedMassKg,
-        parts:products.parts.map(p=>({ownerId:p.ownerId,sourceDigest:p.sourceDigest,massKg:p.massKg,center:{x:p.center.x,y:p.center.y,z:p.center.z}}))}},[],false);
+      if(!bodyPending||mutating){throw new Error("No pending local body work");}
+      const admission={removedCells:products.removedCells,removedMassKg:products.removedMassKg,
+        parts:products.parts.map(p=>({ownerId:p.ownerId,sourceDigest:p.sourceDigest,massKg:p.massKg,center:{x:p.center.x,y:p.center.y,z:p.center.z}}))};
+      // Source-only native plan: Read/Input keep publishing; bodyPending still rejects every other mutation.
+      await send({kind:"PrepareBodyPlan",transactionId:id});
+      if(!bodyPending||mutating){throw new Error("No pending local body work");}
+      mutating=true;heldSnapshot=undefined;
+      const staging=send({kind:"StageBodyCut",transactionId:id,products:admission},[],false);
+      // An older in-flight Read can no longer publish over the held stage.
+      lastId=Math.max(lastId,nextId-1);
+      await staging;
     },
     commitBodyCut(id){return send({kind:"CommitBodyCut",transactionId:id},[],false);},
     publishBodyCut(){if(!mutating||heldSnapshot?.value.moving.state!=="CommittedHeld"){throw new Error("Missing committed moving snapshot");}
       snapshot=heldSnapshot.value;lastId=heldSnapshot.id;heldSnapshot=undefined;},
     async rollbackBodyCut(id){
-      if(heldSnapshot?.value.moving.state==="Idle"){snapshot=heldSnapshot.value;lastId=heldSnapshot.id;}
+      // Only this transaction's own Stage/Commit reply can fill the slot; it never moves publication backwards.
+      if(heldSnapshot?.value.moving.state==="Idle"){snapshot=heldSnapshot.value;lastId=Math.max(lastId,heldSnapshot.id);}
       else{await send({kind:"RollbackBodyCut",transactionId:id});}
       heldSnapshot=undefined;mutating=false;bodyPending=false;
     },
@@ -351,7 +366,8 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
       if (disposed || mutating) { return; }
       if (busy) { return; }
       busy = true;
-      void send({ kind: "Read", input: playerInput, cameraOffset,cutAim }).catch(error => { failure = error; }).finally(() => { busy = false; });
+      void send({ kind: "Read", input: playerInput, cameraOffset,cutAim,
+        ...(timingSinkDisabled?{measure:false as const}:{}) }).catch(error => { failure = error; }).finally(() => { busy = false; });
       playerInput = { ...playerInput, jump: false };
     },
     async command(kind) {
@@ -383,6 +399,7 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
     async rollbackTerrain(id) { await send({kind:"RollbackTerrain",transactionId:id}); heldSnapshot=undefined; mutating=false; },
     async finalizeTerrain(id) { await send({kind:"FinalizeTerrain",transactionId:id}); heldSnapshot=undefined; mutating=false; },
     lifecycle:()=>Object.freeze({workers:terminated?0:1,pendingJobs:pending.size,timers:clock===undefined?null:pending.size+clock.timers,
+      timingSinkFailures,
       listeners:Number(worker.onmessage!==null)+Number(worker.onerror!==null)+Number(worker.onmessageerror!==null),
       native:snapshot?Object.freeze({status:snapshot.status,bodies:snapshot.bodyCount,colliders:snapshot.colliderCount}):null}),
     async dispose() {

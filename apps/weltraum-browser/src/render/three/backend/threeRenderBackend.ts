@@ -5,6 +5,7 @@ import {
   estimateMeshArtifactBytes,
   frameProjectionSignature,
   meshArtifactOwnedBuffers,
+  parseEphemeralRepresentationKey,
   renderCommandResult,
   renderCommandSignature,
   resolveVisibility,
@@ -12,7 +13,9 @@ import {
   visibilityPlanSignature,
   type ApplyFrameProjectionCommand,
   type ApplyVisibilityPlanCommand,
+  type AdvanceEphemeralEpochCommand,
   type BackendRevision,
+  type CancelEphemeralRepresentationCommand,
   type ContentHash,
   type DisposeBackendCommand,
   type EvictRepresentationCommand,
@@ -25,6 +28,7 @@ import {
   type RenderBackendDiagnostics,
   type RenderCommand,
   type RenderCommandResult,
+  type RegisterEphemeralRepresentationCommand,
   type RepresentationKey,
   type ResetBackendCommand,
   type UpsertMeshArtifactCommand,
@@ -115,6 +119,9 @@ export class ThreeRenderBackend implements RenderBackend {
     if (command.kind === "InitializeBackend") return this.initialize(command);
     if (this.diagnostics.backendState === "Disposed") {
       if (command.kind === "DisposeBackend" && command.backendRevision === this.diagnostics.backendRevision) {
+        if (this.registry.hasEphemeralReleaseUncertainty()) {
+          return this.finish(renderCommandResult("BackendUnavailable", "AlreadyOwnedByBackend", "EphemeralReleaseUncertain"));
+        }
         return this.finish(renderCommandResult("AlreadyApplied", "NotApplicable", "BackendAlreadyDisposed"));
       }
       return this.finish(renderCommandResult("BackendUnavailable", "RetainedByCaller", "BackendDisposed"));
@@ -136,6 +143,15 @@ export class ThreeRenderBackend implements RenderBackend {
       case "UpsertMeshArtifact": return this.upsert(command);
       case "RemoveRepresentation": return this.remove(command);
       case "EvictRepresentation": return this.evict(command);
+      case "RegisterEphemeralRepresentation": {
+        return this.registerEphemeral(command);
+      }
+      case "CancelEphemeralRepresentation": {
+        return this.cancelEphemeral(command);
+      }
+      case "AdvanceEphemeralEpoch": {
+        return this.advanceEphemeralEpoch(command);
+      }
       case "ApplyVisibilityPlan": return this.applyVisibilityPlan(command);
       case "ApplyFrameProjection": return this.applyProjection(command);
       case "ResetBackend": return this.reset(command);
@@ -158,12 +174,13 @@ export class ThreeRenderBackend implements RenderBackend {
 
   readDiagnostics(): RenderBackendDiagnostics {
     const records = this.registry.residentRecords();
+    const ownedRecords = this.registry.ownedRecords();
     return diagnosticSnapshot(this.diagnostics, {
       residentKeys: records.map((record) => record.representationKey),
       visibleKeys: records.filter((record) => record.sceneNode.visible).map((record) => record.representationKey),
       pinnedFallbackKeys: this.visibilityPlan?.fallbackRepresentationKeys ?? [],
-      estimatedGpuBytes: records.reduce((total, record) => total + record.estimatedBytes, 0),
-      ownedCpuBytes: records.reduce((total, record) => total + record.estimatedBytes, 0)
+      estimatedGpuBytes: ownedRecords.reduce((total, record) => total + record.estimatedBytes, 0),
+      ownedCpuBytes: ownedRecords.reduce((total, record) => total + record.estimatedBytes, 0)
     });
   }
 
@@ -190,6 +207,11 @@ export class ThreeRenderBackend implements RenderBackend {
   }
 
   private upsert(command: UpsertMeshArtifactCommand): RenderCommandResult {
+    const admission = this.ephemeralAdmission(command.artifact.representationKey);
+    if (admission !== undefined) {
+      return admission;
+    }
+    const isEphemeral = parseEphemeralRepresentationKey(command.artifact.representationKey) !== undefined;
     const indexWidth = command.artifact.indices instanceof Uint16Array ? 16 : 32;
     if (!capabilities.supportedIndexWidths.includes(indexWidth)) {
       this.diagnostics.rejectedArtifacts += 1;
@@ -225,6 +247,9 @@ export class ThreeRenderBackend implements RenderBackend {
       this.syncMaterialDiagnostics();
       this.diagnostics.rejectedArtifacts += 1;
       const conflict = error instanceof MaterialProfileConflictError;
+      if (isEphemeral && !conflict) {
+        this.registry.markEphemeralReleaseUncertain(command.artifact.representationKey);
+      }
       return this.finish(renderCommandResult(
         conflict ? "RejectedContentConflict" : "BackendUnavailable",
         "RetainedByCaller",
@@ -254,7 +279,18 @@ export class ThreeRenderBackend implements RenderBackend {
     this.recomputeVisibility();
     if (previous !== undefined) {
       this.representationRoot.remove(previous.sceneNode);
-      previous.prepared.dispose();
+      if (isEphemeral) {
+        try {
+          previous.prepared.dispose();
+        } catch {
+          previous.sceneNode.visible = false;
+          this.registry.preserveUncertainEphemeralRecord(command.artifact.representationKey, previous);
+          this.syncMaterialDiagnostics();
+          return this.finish(renderCommandResult("BackendUnavailable", "AlreadyOwnedByBackend", "EphemeralReleaseUncertain"));
+        }
+      } else {
+        previous.prepared.dispose();
+      }
       this.diagnostics.geometryDisposals += 1;
       this.diagnostics.replacementCount += 1;
     }
@@ -263,6 +299,11 @@ export class ThreeRenderBackend implements RenderBackend {
   }
 
   private remove(command: RemoveRepresentationCommand): RenderCommandResult {
+    const admission = this.ephemeralAdmission(command.representationKey);
+    if (admission !== undefined) {
+      return admission;
+    }
+    const isEphemeral = parseEphemeralRepresentationKey(command.representationKey) !== undefined;
     const match = this.matchExpected(command);
     if (match !== undefined) return match;
     const ledger = this.registry.getLedger(command.representationKey);
@@ -270,14 +311,33 @@ export class ThreeRenderBackend implements RenderBackend {
     if (this.isPinnedFallback(command.representationKey)) {
       return this.finish(renderCommandResult("RejectedContentConflict", "NotApplicable", "PinnedFallback"));
     }
+    const resident = this.registry.get(command.representationKey);
+    if (isEphemeral && resident !== undefined) {
+      try {
+        this.releaseRecord(resident);
+      } catch {
+        resident.sceneNode.visible = false;
+        this.registry.preserveUncertainEphemeralRecord(command.representationKey, resident);
+        this.syncMaterialDiagnostics();
+        return this.finish(renderCommandResult("BackendUnavailable", "AlreadyOwnedByBackend", "EphemeralReleaseUncertain"));
+      }
+    }
     const removed = this.registry.markRemoved(command.representationKey);
-    if (removed !== undefined) this.releaseRecord(removed);
+    if (!isEphemeral && removed !== undefined) this.releaseRecord(removed);
+    if (isEphemeral && !this.registry.expireEphemeral(command.representationKey)) {
+      return this.finish(renderCommandResult("BackendUnavailable", "AlreadyOwnedByBackend", "EphemeralReleaseUncertain"));
+    }
     this.diagnostics.removeCount += 1;
     this.recomputeVisibility();
     return this.finish(renderCommandResult("Accepted", removed === undefined ? "NotApplicable" : "ReleasedByBackend"));
   }
 
   private evict(command: EvictRepresentationCommand): RenderCommandResult {
+    const admission = this.ephemeralAdmission(command.representationKey);
+    if (admission !== undefined) {
+      return admission;
+    }
+    const isEphemeral = parseEphemeralRepresentationKey(command.representationKey) !== undefined;
     const match = this.matchExpected(command);
     if (match !== undefined) return match;
     const ledger = this.registry.getLedger(command.representationKey);
@@ -286,8 +346,19 @@ export class ThreeRenderBackend implements RenderBackend {
       this.diagnostics.evictionRejectCount += 1;
       return this.finish(renderCommandResult("RejectedContentConflict", "NotApplicable", "PinnedFallback"));
     }
+    const resident = this.registry.get(command.representationKey);
+    if (isEphemeral && resident !== undefined) {
+      try {
+        this.releaseRecord(resident);
+      } catch {
+        resident.sceneNode.visible = false;
+        this.registry.preserveUncertainEphemeralRecord(command.representationKey, resident);
+        this.syncMaterialDiagnostics();
+        return this.finish(renderCommandResult("BackendUnavailable", "AlreadyOwnedByBackend", "EphemeralReleaseUncertain"));
+      }
+    }
     const evicted = this.registry.markEvicted(command.representationKey);
-    if (evicted !== undefined) this.releaseRecord(evicted);
+    if (!isEphemeral && evicted !== undefined) this.releaseRecord(evicted);
     this.diagnostics.evictionCount += 1;
     this.recomputeVisibility();
     return this.finish(renderCommandResult("Accepted", evicted === undefined ? "NotApplicable" : "ReleasedByBackend"));
@@ -329,6 +400,10 @@ export class ThreeRenderBackend implements RenderBackend {
   }
 
   private reset(command: ResetBackendCommand): RenderCommandResult {
+    const releasedEphemeral = this.releaseEphemeralResidentsBeforeClear();
+    if (typeof releasedEphemeral !== "number") {
+      return releasedEphemeral;
+    }
     const records = this.registry.clear();
     records.forEach((record) => this.releaseRecord(record));
     this.materialFactory.disposeAll();
@@ -354,6 +429,44 @@ export class ThreeRenderBackend implements RenderBackend {
   }
 
   private dispose(_command: DisposeBackendCommand): RenderCommandResult {
+    const releasedEphemeral = this.registry.hasEphemeralReleaseUncertainty() ? 0 : this.releaseEphemeralResidentsBeforeClear();
+    if (this.registry.hasEphemeralReleaseUncertainty()) {
+      let additionalReleaseFailure = false;
+      for (const record of this.registry.residentRecords()) {
+        try {
+          this.releaseRecord(record);
+          this.registry.forgetReleasedRecord(record);
+        } catch {
+          additionalReleaseFailure = true;
+          record.sceneNode.visible = false;
+          if (parseEphemeralRepresentationKey(record.representationKey) !== undefined) {
+            this.registry.preserveUncertainEphemeralRecord(record.representationKey, record);
+          }
+        }
+      }
+      let rendererTeardownSucceeded = true;
+      try {
+        this.renderer?.dispose();
+        this.renderer = undefined;
+      } catch {
+        rendererTeardownSucceeded = false;
+      }
+      this.visibilityPlan = undefined;
+      this.visibilitySignature = undefined;
+      this.projection = undefined;
+      this.projectionSignature = undefined;
+      this.projectedTransforms.clear();
+      this.registry.pruneTerminalCleanState();
+      this.diagnostics.backendState = "Disposed";
+      this.syncMaterialDiagnostics();
+      const message = additionalReleaseFailure || !rendererTeardownSucceeded
+        ? "Additional terminal cleanup remains unproven"
+        : undefined;
+      return this.finish(renderCommandResult("BackendUnavailable", "AlreadyOwnedByBackend", "EphemeralReleaseUncertain", message));
+    }
+    if (typeof releasedEphemeral !== "number") {
+      return releasedEphemeral;
+    }
     const records = this.registry.clear();
     records.forEach((record) => this.releaseRecord(record));
     this.materialFactory.disposeAll();
@@ -364,12 +477,78 @@ export class ThreeRenderBackend implements RenderBackend {
     this.projectedTransforms.clear();
     this.diagnostics.backendState = "Disposed";
     this.syncMaterialDiagnostics();
-    return this.finish(renderCommandResult("Accepted", records.length === 0 ? "NotApplicable" : "ReleasedByBackend"));
+    return this.finish(renderCommandResult("Accepted", records.length + releasedEphemeral === 0 ? "NotApplicable" : "ReleasedByBackend"));
   }
 
   private orderProfiles(command: UpsertMeshArtifactCommand): readonly MaterialProfile[] {
     const byId = new Map(command.materialProfiles.map((profile) => [profile.id, profile]));
     return command.artifact.materialRanges.map((range) => byId.get(range.materialProfileId) as MaterialProfile);
+  }
+
+  private registerEphemeral(command: RegisterEphemeralRepresentationCommand): RenderCommandResult {
+    const result = this.registry.registerEphemeral(command.representationKey, command.serial, command.epoch);
+    if (result === "Accepted") {
+      return this.finish(renderCommandResult("Accepted"));
+    }
+    return this.rejectStale(result === "EpochMismatch" ? "EphemeralEpochMismatch" : "EphemeralSerialMismatch");
+  }
+
+  private cancelEphemeral(command: CancelEphemeralRepresentationCommand): RenderCommandResult {
+    const result = this.registry.cancelEphemeral(command.representationKey, command.serial);
+    if (result === "Accepted") {
+      return this.finish(renderCommandResult("Accepted"));
+    }
+    if (result === "ReleaseUncertain") {
+      return this.finish(renderCommandResult("BackendUnavailable", "AlreadyOwnedByBackend", "EphemeralReleaseUncertain"));
+    }
+    return this.rejectStale(result === "AlreadyUploaded" ? "EphemeralRepresentationAlreadyUploaded" : "ExpiredEpoch");
+  }
+
+  private advanceEphemeralEpoch(command: AdvanceEphemeralEpochCommand): RenderCommandResult {
+    return this.registry.advanceEphemeralEpoch(command.nextEpoch)
+      ? this.finish(renderCommandResult("Accepted"))
+      : this.rejectStale("EphemeralEpochMismatch");
+  }
+
+  private ephemeralAdmission(key: RepresentationKey): RenderCommandResult | undefined {
+    if (parseEphemeralRepresentationKey(key) === undefined) {
+      return undefined;
+    }
+    const registration = this.registry.getEphemeralRegistration(key);
+    if (registration === undefined) {
+      return this.rejectStale("ExpiredEpoch", "RetainedByCaller");
+    }
+    if (registration.releaseUncertain) {
+      return this.finish(renderCommandResult("BackendUnavailable", "AlreadyOwnedByBackend", "EphemeralReleaseUncertain"));
+    }
+    return undefined;
+  }
+
+  private releaseEphemeralResidentsBeforeClear(): number | RenderCommandResult {
+    if (this.registry.hasEphemeralReleaseUncertainty()) {
+      return this.finish(renderCommandResult("BackendUnavailable", "AlreadyOwnedByBackend", "EphemeralReleaseUncertain"));
+    }
+    let released = 0;
+    for (const record of this.registry.residentRecords()) {
+      const key = record.representationKey;
+      if (parseEphemeralRepresentationKey(key) === undefined) {
+        continue;
+      }
+      try {
+        this.releaseRecord(record);
+      } catch {
+        record.sceneNode.visible = false;
+        this.registry.preserveUncertainEphemeralRecord(key, record);
+        this.syncMaterialDiagnostics();
+        return this.finish(renderCommandResult("BackendUnavailable", "AlreadyOwnedByBackend", "EphemeralReleaseUncertain"));
+      }
+      this.registry.markRemoved(key);
+      if (!this.registry.expireEphemeral(key)) {
+        return this.finish(renderCommandResult("BackendUnavailable", "AlreadyOwnedByBackend", "EphemeralReleaseUncertain"));
+      }
+      released += 1;
+    }
+    return released;
   }
 
   private matchExpected(command: RemoveRepresentationCommand | EvictRepresentationCommand): RenderCommandResult | undefined {

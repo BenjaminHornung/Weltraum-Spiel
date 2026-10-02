@@ -1,7 +1,9 @@
 import * as THREE from "three";
 import { describe, expect, it, vi } from "vitest";
 import {HVP_BRANCH_CELLS,HVP_BRANCH_KEY} from "../../src/hestia-prototype/physics/profile";
-import { backendRevision, materialProfileId, renderCommandResult, type RenderCommand } from "../../src/presentation";
+import { artifactRevision, backendRevision, createMaterialProfile, createMeshArtifact, createRenderCommand, frameId,
+  materialProfileId, representationKey, renderCommandResult, sourceRevision, type RenderCommand, type RepresentationKey } from "../../src/presentation";
+import * as presentationModule from "../../src/presentation";
 import {
   HVP_COAST_BLOCK_SIZE_METERS,
   HVP_TERRAIN_MATERIAL_ID,
@@ -16,6 +18,7 @@ import {
   HVP_SLOT_MOSS,
   HVP_SLOT_SOIL,
   materializeHvpCoastSource,
+  prepareHvpCoastSource,
   type HvpCoastSourceSnapshot
 } from "../../src/hvp/hvpCoastSource";
 import { meshHvpTestCells } from "../../src/hvp/hvpCoastMesher";
@@ -36,9 +39,25 @@ import * as cutTraceModule from "../../src/hestia-prototype/runtime/cutTrace";
 import * as plasmaToolModule from "../../src/hestia-prototype/terrain/plasmaTool";
 import * as playerInputModule from "../../src/hestia-prototype/player/input";
 import * as terrainConsumerModule from "../../src/hestia-prototype/terrain/terrainConsumer";
+import * as terrainProductsModule from "../../src/hestia-prototype/terrain/terrainProducts";
+import * as neighborControllerModule from "../../src/hestia-prototype/runtime/neighborController";
+import type {HvpNeighborStage} from "../../src/hestia-prototype/runtime/neighborController";
+import {createHvpTerrainRoot} from "../../src/hestia-prototype/terrain/cutPlan";
+import {buildHvpPlant,planHvpVegetation} from "../../src/hestia-prototype/presentation/vegetation";
+import {encodeHvpPlant} from "../../src/hestia-prototype/persistence/plantCheckpoint";
+import {collisionSectors} from "../../src/hestia-prototype/physics/terrainColliders";
+import {createHvpPhysicsSession,resolveHvpGravity} from "../../src/hestia-prototype/physics/session";
+import {decodeHvpGame,encodeHvpGame} from "../../src/hestia-prototype/persistence/gameCheckpoint";
+import * as saveStoreModule from "../../src/hestia-prototype/persistence/saveStore";
+import * as sceneReplacementModule from "../../src/hestia-prototype/persistence/sceneReplacement";
+import * as dormancyControllerModule from "../../src/hestia-prototype/runtime/dormancyController";
+import type {HvpPhysicsClient} from "../../src/hestia-prototype/physics/client";
+import {bindHvpSupportPlan} from "../../src/hestia-prototype/terrain/supportPlan";
 import * as bodyConsumerModule from "../../src/hestia-prototype/terrain/bodyCutConsumer";
 import * as structuralConsumerModule from "../../src/hestia-prototype/terrain/structuralConsumer";
+import * as structuralPartModule from "../../src/hestia-prototype/presentation/structuralPart";
 import {ThreeRenderBackend} from "../../src/render/three/backend";
+import {isHvpCutHealthFresh} from "../performance/hvpCutRtReport";
 
 class FakeElement extends EventTarget {
   id = "";
@@ -224,6 +243,38 @@ const harness = () => {
     scene,
     backend
   };
+};
+
+let k34LoadCheckpoint: ReturnType<typeof encodeHvpGame> | undefined;
+const createK34LoadCheckpoint = async (): Promise<ReturnType<typeof encodeHvpGame>> => {
+  if (k34LoadCheckpoint !== undefined) return k34LoadCheckpoint;
+  const prepared = prepareHvpCoastSource(materializeHvpCoastSource());
+  const root = createHvpTerrainRoot(prepared, "k34-load-fixture", 0);
+  const session = await createHvpPhysicsSession([...collisionSectors(root.read())], { x: -9, y: 8, z: -9 }, resolveHvpGravity(),
+    { spawn: { x: -9, y: 2.42, z: -11 }, coverage: [{ minX: -16, maxX: 16, minZ: -16, maxZ: 16 }] },
+    { x: -9, y: 8, z: -13 }, { x: -12, y: 5, z: -13.5 }, "k34-load-fixture");
+  try {
+    session.pause();
+    k34LoadCheckpoint = encodeHvpGame({
+      terrain: root.checkpoint(),
+      plants: planHvpVegetation().map(buildHvpPlant).map(encodeHvpPlant),
+      world: session.checkpoint(),
+      progress: null,
+      receipts: {
+        terrain: { version: "hvp-command-receipts-v1", kind: "terrain", entries: [], last: null },
+        structural: { version: "hvp-command-receipts-v1", kind: "structural", entries: [], last: null },
+        moving: { version: "hvp-command-receipts-v1", kind: "moving", entries: [], last: null }
+      },
+      view: {
+        camera: { mode: "Orbit", preset: "C04-WIDE", fov: 55, position: { x: -24, y: 18, z: -28 }, target: { x: 0, y: 1, z: 1 }, quaternion: { x: 0, y: 0, z: 0, w: 1 } },
+        playerYaw: Math.PI, playerPitch: 0, thirdPerson: true, waterEnabled: true, aoEnabled: true,
+        tool: { mode: 2, sequence: 1, structureSequence: 0, movingSequence: 0, edges: 1 }
+      }
+    });
+    return k34LoadCheckpoint;
+  } finally {
+    session.dispose();
+  }
 };
 
 /** Emulates the browser firing a pending frame: the fired callback leaves the queue. */
@@ -1192,6 +1243,16 @@ describe("HVP T08 bootstrap lifecycle", () => {
         expect(root.read()).toBe(before);
 
         showPreview([cells[0]!], true);
+        const previews=source.commands.filter((command):command is Extract<RenderCommand,{kind:"UpsertMeshArtifact"}>=>
+          command.kind==="UpsertMeshArtifact"&&command.artifact.representationKey.startsWith("hvp:tool:preview:"));
+        expect(previews).toHaveLength(2);
+        expect(previews[0]!.artifact.representationKey).toMatch(/^hvp:tool:preview:e0~[1-9][0-9]*$/);
+        expect(source.commands.some(command=>command.kind==="RemoveRepresentation"
+          &&command.representationKey===previews[0]!.artifact.representationKey)).toBe(true);
+        const currentPreviewKey=previews[1]!.artifact.representationKey;
+        showPreview([],false);
+        expect(source.commands.some(command=>command.kind==="RemoveRepresentation"&&command.representationKey===currentPreviewKey)).toBe(false);
+        expect(source.commands.some(command=>command.kind==="CancelEphemeralRepresentation"&&command.representationKey===currentPreviewKey)).toBe(false);
         structural!.admit();
         // Exercise the existing scene-stage rollback without inventing native success.
         const stage = consumerFactory.mock.calls[1]![2];
@@ -1304,7 +1365,7 @@ describe("HVP T08 bootstrap lifecycle", () => {
         const facts=readFrame(id);expect(facts.body).toMatchObject({outcome,nativeSequence:1,receipt,
           children:[{ownerId,sourceDigest:digest}]});
         const childKey=facts.body?.children[0]?.renderKey;
-        expect(childKey).toMatch(/^hvp:fragment:stage[0-9]+:p0$/);
+         expect(childKey).toMatch(/^hvp:fragment:e0~[1-9][0-9]*$/);
         expect(facts.body).toMatchObject({activeKeys:[childKey],visibleKeys:[childKey]});
         observer.confirm(()=>trace({commandId:id,thread:"main",phase:"cutBodySubmittedMs",origin:performance.timeOrigin,start:performance.now(),duration:0}));
         trace({commandId:id,thread:"main",phase:"cutBodyTotalAppliedMs",origin:performance.timeOrigin,start:performance.now(),duration:0});
@@ -1320,6 +1381,629 @@ describe("HVP T08 bootstrap lifecycle", () => {
         expect(observer.read().pendingRender).toBe(false);backend.representationRoot.remove(extra);
       }finally{consumerRead.mockRestore();}
     }finally{await handle?.dispose();measure.mockRestore();observerFactory.mockRestore();bodyFactory.mockRestore();terrainFactory.mockRestore();structuralFactory.mockRestore();}
+  });
+
+  it("V3-01 exposes the already validated support phase numbers without forging worker start times",async()=>{
+    const source=harness();Object.defineProperty(source.windowPort,"location",{value:{search:"?hvpMeasure=1"}});
+    const originalFactory=terrainProductsModule.createHvpTerrainCompiler;
+    const compilerFactory=vi.spyOn(terrainProductsModule,"createHvpTerrainCompiler").mockImplementation(()=>{
+      const compiler=originalFactory();
+      vi.spyOn(compiler,"analyze").mockImplementation(async plan=>bindHvpSupportPlan(plan,{
+        status:"Ready",reason:"",probes:0,anchoredWitnesses:0,fragments:[],workingBytes:0,
+        timings:{seedsMs:1,supportMs:2,ingestMs:3,recipeMs:4,totalMs:10,fragmentCount:0,fragmentCells:0,
+          recipeBreakdown:{massMs:.5,classifyMs:.5,transitionMs:2,axesMs:1}}
+      }));
+      return compiler;
+    });
+    const terrainFactory=vi.spyOn(terrainConsumerModule,"createHvpTerrainConsumer");
+    const measurement=vi.spyOn(performance,"measure");let handle:HvpBootstrapHandle|undefined;
+    try{
+      handle=await startHvp(source.overrides());
+      const root=terrainFactory.mock.calls[0]![0],before=root.read();
+      const plan=root.prepare({sessionId:before.sessionId,epoch:before.epoch,revision:before.revision,
+        sourceDigest:before.sourceDigest,commandId:"v3-support-breakdown",toolPolicy:"hvp-plasma-v1",
+        shape:{kind:"Box",min:[40,80,40],max:[41,81,41]}});
+      const analyze=terrainFactory.mock.calls[0]![5];
+      if(!analyze){throw new Error("Missing actual support-analysis callback");}
+      expect((await analyze(plan)).timings?.totalMs).toBe(10);
+      const recorded=measurement.mock.calls.filter(([name])=>name==="hvp.cutSupportPhasesMs");
+      expect(recorded).toHaveLength(1);
+      expect(recorded[0]![1]).toMatchObject({duration:0,detail:{data:{commandId:plan.request.commandId,
+        thread:"support",timings:{seedsMs:1,supportMs:2,ingestMs:3,recipeMs:4,totalMs:10,fragmentCount:0,fragmentCells:0}}}});
+    }finally{await handle?.dispose();measurement.mockRestore();terrainFactory.mockRestore();compilerFactory.mockRestore();}
+  });
+
+  it("V3-00 keeps an occupied native fragment representation through terrain staging and rollback",async()=>{
+    // Cold-style owner/name collision in a real Three backend; native state is
+    // an explicit unit fixture, not a claim of a successful cold restore.
+    const source=harness(),overrides=source.overrides();
+    if(!overrides?.createPhysics){throw new Error("Missing fixture physics factory");}
+    const originalPhysics=overrides.createPhysics;
+    let native!:ReturnType<Awaited<ReturnType<typeof originalPhysics>>["read"]>,backend!:ThreeRenderBackend;
+    const createPhysics:typeof originalPhysics=async(...args)=>{
+      const physics=await originalPhysics(...args);native=physics.read();
+      return {...physics,read:()=>native};
+    };
+    const factory=vi.spyOn(terrainConsumerModule,"createHvpTerrainConsumer");
+    let handle:HvpBootstrapHandle|undefined;
+    try{
+      handle=await startHvp(source.overrides({createPhysics,createBackend:(options:ConstructorParameters<typeof ThreeRenderBackend>[0])=>{
+        backend=new ThreeRenderBackend({...options,rendererFactory:()=>({setPixelRatio:()=>{},setSize:()=>{},render:()=>{},dispose:()=>{}})});
+        return backend;
+      }}));
+      const ownerId="hvp:terrain-fragment:r1:12345678",residentKey=`${ownerId}:stage1`;
+      const residentMesh=meshHvpTestCells([{x:0,y:0,z:0,slot:HVP_SLOT_LIMESTONE_DRY}],.125,{ao:true});
+      const material=createMaterialProfile({id:materialProfileId("hvp:v3:resident"),kind:"BasicLit",
+        baseColor:{r:.5,g:.5,b:.5},opacity:1,doubleSided:false,wireframe:false,depthWrite:true});
+      const resident=createMeshArtifact({representationKey:representationKey(residentKey),frameId:frameId("hvp:coast-frame"),
+        sourceRevision:sourceRevision(0),artifactRevision:artifactRevision(0),algorithmVersion:residentMesh.algorithmVersion,
+        positions:residentMesh.positions,normals:residentMesh.normals,indices:residentMesh.indices,
+        attributes:{color:residentMesh.colors!},bounds:residentMesh.boundsMeters,
+        materialRanges:[{materialProfileId:material.id,startIndex:0,indexCount:residentMesh.indices.length}]});
+      expect(backend.dispatch(createRenderCommand({kind:"UpsertMeshArtifact",backendRevision:backendRevision(0),
+        artifact:resident,materialProfiles:[material]})).status).toBe("Accepted");
+      const originalNode=backend.representationRoot.getObjectByName(`representation:${residentKey}`);
+      expect(originalNode).toBeInstanceOf(THREE.Mesh);
+      Reflect.set(native,"bodies",[...native.bodies,{...native.bodies[0]!,ownerId:residentKey}]);
+      const root=factory.mock.calls[0]![0].read(),stage=factory.mock.calls[0]![2];
+      const fragment={request:{ownerId,origin:{x:0,y:0,z:0},massKg:1,
+        cells:[{x:0,y:0,z:0,materialId:1}],colliderBoxes:[{min:[0,0,0] as const,max:[1,1,1] as const}]},
+        state:{ownerId,sourceDigest:"fnv1a64-v1:0123456789abcdef",centerOfMass:{x:0,y:0,z:0},cellCount:1,
+          massKg:1,colliders:1,sourceBytes:4096}};
+      const candidate=stage({source:{...root,revision:root.revision+1},render:new Map(),collision:new Map()},[fragment]);
+      expect(backend.representationRoot.getObjectByName(`representation:${residentKey}`)).toBe(originalNode);
+       const fragmentKey=backend.readDiagnostics().residentRepresentationKeys.find(key=>/^hvp:fragment:e0~[1-9][0-9]*$/.test(key));
+       expect(fragmentKey).toBeDefined();
+      candidate.rollback();
+      expect(backend.representationRoot.getObjectByName(`representation:${residentKey}`)).toBe(originalNode);
+      expect(backend.readDiagnostics().residentRepresentationKeys).toContain(residentKey);
+    }finally{await handle?.dispose();factory.mockRestore();}
+  });
+
+  it.each(["body-foliage-parked","body-foliage-product-alias","structural-branch"] as const)("V3-05 keeps a restored owner representation during %s staging",async scenario=>{
+    // Native owner facts are an explicit unit fixture; only ThreeRenderBackend is real here.
+    const source=harness(),overrides=source.overrides();
+    if(!overrides?.createPhysics){throw new Error("Missing fixture physics factory");}
+    const originalPhysics=overrides.createPhysics;
+    let native!:ReturnType<Awaited<ReturnType<typeof originalPhysics>>["read"]>,backend!:ThreeRenderBackend;
+    const createPhysics:typeof originalPhysics=async(...args)=>{
+      const physics=await originalPhysics(...args);native=physics.read();return {...physics,read:()=>native};
+    };
+    const bodyFactory=vi.spyOn(bodyConsumerModule,"createHvpBodyCutConsumer");
+    const structuralFactory=vi.spyOn(structuralConsumerModule,"createHvpStructuralConsumer");
+    let handle:HvpBootstrapHandle|undefined;
+    try{
+      handle=await startHvp(source.overrides({createPhysics,createBackend:(options:ConstructorParameters<typeof ThreeRenderBackend>[0])=>{
+        backend=new ThreeRenderBackend({...options,rendererFactory:()=>({setPixelRatio:()=>{},setSize:()=>{},render:()=>{},dispose:()=>{}})});
+        return backend;
+      }}));
+      const residentMesh=meshHvpTestCells([{x:0,y:0,z:0,slot:HVP_SLOT_LIMESTONE_DRY}],.125,{ao:true});
+       let residentKey:string,stageCandidate!:()=>{rollback():void},expectedStageCount:number;
+      let bodyStage:Parameters<typeof bodyConsumerModule.createHvpBodyCutConsumer>[2]|undefined;
+      if(scenario.startsWith("body-foliage")){
+        residentKey="hvp:branch:foliage:body-r1-0:stage1";
+        Reflect.set(native,"moving",{state:"Idle",sequence:0,last:null,preview:null});
+        if(scenario==="body-foliage-parked"){
+          Reflect.set(native,"parked",[{ownerId:residentKey,position:native.bodies[0]!.position,residency:"Checkpointed"}]);
+        }
+        bodyStage=bodyFactory.mock.calls[0]![2];
+        if(!bodyStage){throw new Error("Missing body presentation stage");}
+        const digest="fnv1a64-v1:0123456789abcdef";
+        const mesh={...residentMesh,sourceDigest:digest};
+        const products={removedCells:1,removedMassKg:1,parts:[{ownerId:scenario==="body-foliage-product-alias"?residentKey:"hvp:body-v3-child",sourceDigest:digest,sourceBytes:4096,
+          center:{x:0,y:0,z:0},massKg:1,cells:[{x:10,y:11,z:2,materialId:1}],mesh}]};
+        stageCandidate=()=>bodyStage!(HVP_BRANCH_KEY,products);
+         expectedStageCount=2;
+      }else{
+        const branchOwner=`hvp:branch:${"x".repeat(117)}`;
+        residentKey="hvp:branch:stage1:p0";
+        expect(branchOwner).toHaveLength(128);
+        Reflect.set(native,"bodies",[...native.bodies,{...native.bodies[0]!,ownerId:residentKey}]);
+        const initial=native.structural;
+        if(!initial){throw new Error("Missing fixture branch snapshot");}
+        const state={...initial,parts:initial.parts.map((part,index)=>index===0?{...part,ownerId:branchOwner}:part),
+          attachment:{...initial.attachment,ownerId:branchOwner}};
+        const branchStage=structuralFactory.mock.calls[0]![1];
+        if(!branchStage){throw new Error("Missing structural presentation stage");}
+        stageCandidate=()=>branchStage(state);
+         expectedStageCount=2;
+      }
+      const profile=createMaterialProfile({id:materialProfileId("hvp:v3:resident"),kind:"BasicLit",
+        baseColor:{r:.5,g:.5,b:.5},opacity:1,doubleSided:false,wireframe:false,depthWrite:true});
+      const resident=createMeshArtifact({representationKey:representationKey(residentKey),frameId:frameId("hvp:coast-frame"),
+        sourceRevision:sourceRevision(0),artifactRevision:artifactRevision(0),algorithmVersion:residentMesh.algorithmVersion,
+        positions:residentMesh.positions,normals:residentMesh.normals,indices:residentMesh.indices,
+        attributes:{color:residentMesh.colors!},bounds:residentMesh.boundsMeters,
+        materialRanges:[{materialProfileId:profile.id,startIndex:0,indexCount:residentMesh.indices.length}]});
+      expect(backend.dispatch(createRenderCommand({kind:"UpsertMeshArtifact",backendRevision:backendRevision(0),
+        artifact:resident,materialProfiles:[profile]})).status).toBe("Accepted");
+      const originalNode=backend.representationRoot.getObjectByName(`representation:${residentKey}`);
+      expect(originalNode).toBeInstanceOf(THREE.Mesh);
+      if(!(originalNode instanceof THREE.Mesh)){throw new Error("Missing real resident Three mesh");}
+      const originalGeometry=originalNode.geometry,originalPositions=Array.from(originalGeometry.getAttribute("position").array),
+        originalIndices=originalGeometry.index===null?null:Array.from(originalGeometry.index.array),originalPose={
+          position:originalNode.position.toArray(),quaternion:originalNode.quaternion.toArray(),scale:originalNode.scale.toArray()};
+      const before=backend.readDiagnostics(),beforeLedger=JSON.parse(source.body.dataset.hestiaPrototypeResources!).ledger;
+      const nativeBefore={bodies:native.bodies.map(body=>body.ownerId),parked:native.parked?.map(body=>body.ownerId)};
+      const assertResident=()=>{
+        const current=backend.representationRoot.getObjectByName(`representation:${residentKey}`);
+        expect(current).toBe(originalNode);
+        expect(originalNode.geometry).toBe(originalGeometry);
+        expect(Array.from(originalGeometry.getAttribute("position").array)).toEqual(originalPositions);
+        expect(originalGeometry.index===null?null:Array.from(originalGeometry.index.array)).toEqual(originalIndices);
+        expect({position:originalNode.position.toArray(),quaternion:originalNode.quaternion.toArray(),scale:originalNode.scale.toArray()}).toEqual(originalPose);
+      };
+      const assertRestored=()=>{
+        assertResident();
+        const after=backend.readDiagnostics();
+        expect(after.residentRepresentationKeys).toEqual(before.residentRepresentationKeys);
+        expect(after.visibleRepresentationKeys).toEqual(before.visibleRepresentationKeys);
+        expect(JSON.parse(source.body.dataset.hestiaPrototypeResources!).ledger).toEqual(beforeLedger);
+        expect({bodies:native.bodies.map(body=>body.ownerId),parked:native.parked?.map(body=>body.ownerId)}).toEqual(nativeBefore);
+      };
+       const stageAndRollback=()=>{
+         const candidate=stageCandidate();
+         try{
+           assertResident();
+           const residents=backend.readDiagnostics().residentRepresentationKeys;
+           const keys=residents.filter(key=>/^hvp:(?:fragment|branch)(?::foliage)?:e0~[1-9][0-9]*$/.test(key)
+             &&!before.residentRepresentationKeys.includes(key));
+           expect(keys).toHaveLength(expectedStageCount);
+           expect(new Set(keys).size).toBe(expectedStageCount);
+           expect(keys).not.toContain(residentKey);
+         }finally{candidate.rollback();}
+         assertRestored();
+       };
+       stageAndRollback();
+       stageAndRollback();
+       if(scenario==="structural-branch"){
+         for(let attempt=0;attempt<7;attempt+=1){stageAndRollback();}
+       }
+      if(scenario.startsWith("body-foliage")){
+        const structure=native.structural;
+        if(!structure||!bodyStage){throw new Error("Missing no-foliage fixture state");}
+        Reflect.set(native,"structural",{...structure,attachment:{...structure.attachment,ownerId:null,supportCell:null}});
+        const empty={removedCells:1,removedMassKg:1,parts:[]};
+        const completeRemoval=bodyStage(HVP_BRANCH_KEY,empty);
+        try{
+          expect(backend.readDiagnostics().residentRepresentationKeys).toEqual(before.residentRepresentationKeys);
+        }finally{completeRemoval.rollback();Reflect.set(native,"structural",structure);}
+        assertRestored();
+      }
+    }finally{await handle?.dispose();bodyFactory.mockRestore();structuralFactory.mockRestore();}
+  });
+
+  it.each(["cpu","mesh"] as const)("preflights moving-body coexistence over the %s cap before allocation",async cap=>{
+    const baseline=harness(),baselineHandle=await startHvp(baseline.overrides());
+    const baselineLedger=JSON.parse(baseline.body.dataset.hestiaPrototypeResources!).ledger as {
+      totalCpuBytes:number;tempEstimateBytes:number;retainedMeshBytes:number
+    };
+    const maxCpuBytes=HVP_RESOURCE_CAPS_DEFAULT.maxCpuBytes;
+    await baselineHandle.dispose();
+
+    const source=harness(),overrides=source.overrides();
+    if(!overrides?.createPhysics){throw new Error("Missing fixture physics factory");}
+    const originalPhysics=overrides.createPhysics;
+    let native!:ReturnType<HvpPhysicsClient["read"]>;
+    const createPhysics:typeof originalPhysics=async(...args)=>{
+      const physics=await originalPhysics(...args);native=physics.read();
+      Reflect.set(native,"moving",{state:"Idle",sequence:0,last:null,preview:null});Reflect.set(native,"terrainFragments",[]);
+      return {...physics,read:()=>native};
+    };
+    const bodyFactory=vi.spyOn(bodyConsumerModule,"createHvpBodyCutConsumer");
+    let handle:HvpBootstrapHandle|undefined,artifactCalls=0,foliageCalls=0;
+    try{
+      const resourceCaps=cap==="cpu"?{maxCpuBytes}:{maxMeshBytes:baselineLedger.retainedMeshBytes};
+      handle=await startHvp(source.overrides({createPhysics,resourceCaps}));
+      const stage=bodyFactory.mock.calls[0]?.[2];if(!stage){throw new Error("Missing body presentation stage");}
+      const originalArtifact=presentationModule.createMeshArtifact;
+      const artifactSpy=vi.spyOn(presentationModule,"createMeshArtifact").mockImplementation(input=>{
+        artifactCalls+=1;return originalArtifact(input);
+      });
+      const originalFoliage=structuralPartModule.meshHvpBranchFoliage;
+      const foliageSpy=vi.spyOn(structuralPartModule,"meshHvpBranchFoliage").mockImplementation((...args)=>{
+        foliageCalls+=1;return originalFoliage(...args);
+      });
+      try{
+        const digest="fnv1a64-v1:0123456789abcdef",mesh={...meshHvpTestCells([{x:0,y:0,z:0,slot:HVP_SLOT_LIMESTONE_DRY}],.125,{ao:true}),sourceDigest:digest};
+        const indexReads={count:0},indices=new Proxy(mesh.indices,{get(target,property){
+          if(typeof property==="string"&&/^(0|[1-9][0-9]*)$/.test(property)){indexReads.count+=1;}
+          return Reflect.get(target,property,target);
+        }});
+        // Controlled source-cost estimate, not an allocated 256-MiB source or native proof.
+        const products={removedCells:1,removedMassKg:1,parts:[{ownerId:"hvp:body-preflight-child",sourceDigest:digest,sourceBytes:cap==="cpu"?maxCpuBytes:4096,
+          center:{x:0,y:0,z:0},massKg:1,cells:[{x:10,y:11,z:2,materialId:1}],mesh:{...mesh,indices}}]};
+        const registrations=source.commands.filter(command=>command.kind==="RegisterEphemeralRepresentation").length;
+        expect(()=>stage(HVP_BRANCH_KEY,products)).toThrow(cap==="cpu"?/CPU bytes exceed/:/retained mesh bytes exceed/);
+        expect(source.commands.filter(command=>command.kind==="RegisterEphemeralRepresentation")).toHaveLength(registrations);
+        expect(artifactCalls).toBe(0);expect(foliageCalls).toBe(0);expect(indexReads.count).toBe(0);
+
+        const malformedMesh={...meshHvpTestCells([{x:0,y:0,z:0,slot:HVP_SLOT_MOSS}],.125,{ao:true}),sourceDigest:digest};
+        expect(()=>stage(HVP_BRANCH_KEY,{...products,parts:[{...products.parts[0]!,mesh:malformedMesh}]})).toThrow(/Unexpected timber material/);
+        expect(source.commands.filter(command=>command.kind==="RegisterEphemeralRepresentation")).toHaveLength(registrations);
+        expect(artifactCalls).toBe(0);expect(foliageCalls).toBe(0);
+      }finally{artifactSpy.mockRestore();foliageSpy.mockRestore();}
+    }finally{await handle?.dispose();bodyFactory.mockRestore();}
+  });
+
+  it.each(["Rejected","ThrowAfterAcceptance","PageHide","SuccessfulLoad","RolloverFailure","PageHideDuringRollover"] as const)("K34 uses an issued save and atomic replacement before %s epoch outcome",async advanceFailure=>{
+    // The checkpoint and coordinator are real; Native A/B and lifecycle counters are controlled fixtures, not a cold restore.
+    const source=harness(),snapshot=materializeHvpCoastSource(),createSourceSnapshot=()=>snapshot;
+    const checkpoint=await createK34LoadCheckpoint();let currentGame=decodeHvpGame(checkpoint);
+    const overrides=source.overrides();
+    if(!overrides?.createPhysics){throw new Error("Missing fixture physics factory");}
+    const originalPhysics=overrides.createPhysics;
+    let native!:ReturnType<HvpPhysicsClient["read"]>,restoreA!:ReturnType<HvpPhysicsClient["read"]>,restoreB!:ReturnType<HvpPhysicsClient["read"]>;
+    let rootOwner!:ReturnType<typeof createHvpTerrainRoot>,backend!:ThreeRenderBackend;
+    let beforeLoad:{root:unknown;native:ReturnType<HvpPhysicsClient["read"]>;resident:string[];visible:string[];owned:number}|undefined;
+    let stagedKeys:string[]=[],failFinalizeNext=false,deferFinalizeNext=false,deferredFinalizePending=false,restoreFinalized=false,restorePublished=false,physicsDisposals=0,rollbackCount=0;
+    let failRolloverNext=false,deferRolloverNext=false;
+    const events:string[]=[];
+    let releaseDeferredFinalize!:()=>void,signalDeferredFinalize!:()=>void,finalizeReturned=false;
+    const deferredFinalize=new Promise<void>(resolve=>{releaseDeferredFinalize=resolve;});
+    const deferredFinalizeEntered=new Promise<void>(resolve=>{signalDeferredFinalize=resolve;});
+    let releaseDeferredRollover!:()=>void,signalDeferredRollover!:()=>void,signalRolloverSettled!:()=>void;
+    const deferredRollover=new Promise<void>(resolve=>{releaseDeferredRollover=resolve;});
+    const deferredRolloverEntered=new Promise<void>(resolve=>{signalDeferredRollover=resolve;});
+    const deferredRolloverSettled=new Promise<void>(resolve=>{signalRolloverSettled=resolve;});
+    const createPhysics:typeof originalPhysics=async(...args)=>{
+      const physics=await originalPhysics(...args);native=physics.read();
+      const disposePhysics=physics.dispose;
+      Reflect.set(native,"parked",[]);Reflect.set(native,"terrainFragments",[]);Reflect.set(native,"dormantCheckpointBytes",0);
+      return Object.assign(physics,{
+        read:()=>native,
+        checkpoint:async()=>currentGame.checkpoint.world,
+        prepareRestore:async(_id:string,world:Awaited<ReturnType<HvpPhysicsClient["checkpoint"]>>)=>{
+          restoreA=native;
+          const bodies=currentGame.world.bodies.map(({checkpoint:body,motion,recipe})=>({ownerId:body.ownerId,position:motion.translationMeters,
+            orientation:motion.rotation,velocity:motion.linvelMetersPerSecond,sleeping:body.sleeping,massKg:recipe.mass.totalMassKg}));
+          restoreB={...restoreA,terrainGeneration:world.terrainGeneration,bodies,bodyCount:bodies.length};
+          restoreFinalized=false;restorePublished=false;finalizeReturned=false;stagedKeys=[];
+          return restoreB;
+        },
+        commitRestore:async()=>{
+          if(!beforeLoad){throw new Error("Missing captured A state before restore");}
+          expect(native).toBe(restoreA);expect(rootOwner.read()).toBe(beforeLoad.root);
+          const afterStage=backend.readDiagnostics();
+          stagedKeys=afterStage.residentRepresentationKeys.filter(key=>!beforeLoad!.resident.includes(key));
+          expect(stagedKeys.length).toBeGreaterThan(0);
+          expect(stagedKeys.every(key=>key.includes("~"))).toBe(true);
+          expect(afterStage.visibleRepresentationKeys).not.toEqual(expect.arrayContaining(stagedKeys));
+          if(beforeLoad.resident.includes(retainedKey!)){expect(afterStage.residentRepresentationKeys).toContain(retainedKey!);}
+        },
+        publishRestore:()=>{native=restoreB;restorePublished=true;},
+        rollbackRestore:async()=>{
+          rollbackCount+=1;
+          expect(native).toBe(restorePublished?restoreB:restoreA);
+          if(beforeLoad){
+            expect(rootOwner.read()).toBe(beforeLoad.root);
+            expect(backend.readDiagnostics().visibleRepresentationKeys).toEqual(beforeLoad.visible);
+          }
+          native=restoreA;restorePublished=false;restoreFinalized=false;
+        },
+        finalizeRestore:async()=>{
+          expect(native).toBe(restoreB);expect(rootOwner.read()).toBe(currentGame.root.read());
+          const published=backend.readDiagnostics(),terrainKeys=stagedKeys.filter(key=>key.startsWith("hvp:terrain:s"));
+          expect(terrainKeys.length).toBeGreaterThan(0);
+          expect(published.visibleRepresentationKeys).toEqual(expect.arrayContaining(terrainKeys));
+          if(failFinalizeNext){failFinalizeNext=false;throw new Error("Injected pre-finalize B failure");}
+          if(deferFinalizeNext){deferFinalizeNext=false;deferredFinalizePending=true;signalDeferredFinalize();await deferredFinalize;}
+          restoreFinalized=true;finalizeReturned=true;events.push("finalized");
+        },
+        dispose:async()=>{physicsDisposals+=1;await disposePhysics();},
+        lifecycle:()=>({workers:0,pendingJobs:0,timers:0,listeners:0,timingSinkFailures:0,
+          native:{status:physicsDisposals>0?"Disposed":"Paused",bodies:physicsDisposals>0?0:native.bodyCount,colliders:physicsDisposals>0?0:native.colliderCount}})
+      });
+    };
+    let renderCount=2,failSecondConstructor=false,constructionCount=0;
+    const originalCompilerFactory=terrainProductsModule.createHvpTerrainCompiler;
+    const tile=meshHvpTestCells([{x:0,y:0,z:0,slot:HVP_SLOT_LIMESTONE_DRY}],.125,{ao:true});
+    let compiler!:ReturnType<typeof originalCompilerFactory>;
+    vi.spyOn(terrainProductsModule,"createHvpTerrainCompiler").mockImplementation(()=>{
+      compiler=originalCompilerFactory();
+      vi.spyOn(compiler,"restore").mockImplementation(async(_old,target)=>({source:target,
+        render:new Map(Array.from({length:renderCount},(_,id)=>[id,tile] as const)),collision:new Map()}));
+      const rollover=compiler.rolloverAfterLoad;
+      vi.spyOn(compiler,"rolloverAfterLoad").mockImplementation(async ownerStillLive=>{
+        events.push("rollover-started");
+        if(failRolloverNext){failRolloverNext=false;events.push("rollover-failed");throw new Error("Injected compiler pool rollover failure");}
+        const deferred=deferRolloverNext;
+        if(deferred){deferRolloverNext=false;signalDeferredRollover();}
+        try{
+          if(deferred){await deferredRollover;}
+          await rollover(ownerStillLive);events.push("rollover-complete");
+        }finally{if(deferred){signalRolloverSettled();}}
+      });
+      return compiler;
+    });
+    const terrainFactory=vi.spyOn(terrainConsumerModule,"createHvpTerrainConsumer");
+    const commands:RenderCommand[]=[];let advanceMode:"none"|"rejected"|"throw-after-accepted"="none";
+    let retainedKey:RepresentationKey|undefined,handle:HvpBootstrapHandle|undefined;
+    const originalReplace=sceneReplacementModule.replaceHvpScene,replacementOperations:Promise<void>[]=[];
+    const replacementSpy=vi.spyOn(sceneReplacementModule,"replaceHvpScene").mockImplementation((...args)=>{
+      const operation=originalReplace(...args);replacementOperations.push(operation);return operation;
+    });
+    try{
+      handle=await startHvp(source.overrides({createSourceSnapshot,createPhysics,createBackend:(options:ConstructorParameters<typeof ThreeRenderBackend>[0])=>{
+        backend=new ThreeRenderBackend({...options,rendererFactory:()=>({setPixelRatio:()=>{},setSize:()=>{},render:()=>{},dispose:()=>{}})});
+        const dispatch=backend.dispatch.bind(backend);
+        vi.spyOn(backend,"dispatch").mockImplementation(command=>{
+          commands.push(command);
+          if(command.kind==="AdvanceEphemeralEpoch"){
+            expect(restoreFinalized).toBe(true);expect(native).toBe(restoreB);expect(rootOwner.read()).toBe(currentGame.root.read());
+            expect(events.at(-1)).toBe("finalized");
+            if(advanceMode==="rejected"){events.push("advance-rejected");return renderCommandResult("RejectedStaleRevision","NotApplicable","InjectedEpochRejection");}
+            const result=dispatch(command);events.push("advance-accepted");
+            if(advanceMode==="throw-after-accepted"){expect(result.status).toBe("Accepted");throw new Error("Injected epoch publication throw");}
+            return result;
+          }
+          return dispatch(command);
+        });
+        return backend;
+      }}));
+      rootOwner=terrainFactory.mock.calls[0]![0];
+      const terrainStage=terrainFactory.mock.calls[0]?.[2];
+      if(!terrainStage){throw new Error("Missing terrain staging callback");}
+      const liveRoot=rootOwner.read(),ownerId="hvp:terrain-fragment:load-retained",digest="fnv1a64-v1:0123456789abcdef";
+      const retained=terrainStage({source:{...liveRoot,revision:liveRoot.revision+1},render:new Map(),collision:new Map()},[{
+        request:{ownerId,origin:{x:0,y:0,z:0},massKg:1,cells:[{x:0,y:0,z:0,materialId:1}],
+          colliderBoxes:[{min:[0,0,0] as const,max:[1,1,1] as const}]},
+        state:{ownerId,sourceDigest:digest,centerOfMass:{x:0,y:0,z:0},cellCount:1,massKg:1,colliders:1,sourceBytes:4096}
+      }]);
+      retained.publish();retained.finish();
+      retainedKey=backend.readDiagnostics().residentRepresentationKeys.find(key=>/^hvp:fragment:e0~[1-9][0-9]*$/.test(key));
+      if(!retainedKey){throw new Error("Missing registered active fragment alias");}
+
+      const originalArtifactFactory=presentationModule.createMeshArtifact;
+      vi.spyOn(presentationModule,"createMeshArtifact").mockImplementation(input=>{
+        if(failSecondConstructor&&input.representationKey.includes("~")){
+          constructionCount+=1;if(constructionCount===2){throw new Error("Injected second Load artifact constructor");}
+        }
+        return originalArtifactFactory(input);
+      });
+      const store={initialize:vi.fn(async()=>{}),list:vi.fn(async()=>({slots:[]})),
+        load:vi.fn(async()=>({game:currentGame,metadata:{recordRevision:1}})),close:vi.fn(async()=>{}),
+        save:vi.fn(),export:vi.fn(),import:vi.fn()};
+      vi.spyOn(saveStoreModule,"createHvpSaveStore").mockReturnValue(store as unknown as ReturnType<typeof saveStoreModule.createHvpSaveStore>);
+      const loadButton=descendants(source.body).find(element=>element.id==="hvp-load");
+      if(!loadButton){throw new Error("Missing HVP Load control");}
+      const saveState=()=>{
+        const save=source.body.dataset.hestiaPrototypeSave;
+        return save===undefined?undefined:JSON.parse(save).state as string;
+      };
+      const captureBeforeLoad=()=>{
+        const diagnostics=backend.readDiagnostics();
+        beforeLoad={root:rootOwner.read(),native,resident:[...diagnostics.residentRepresentationKeys],
+          visible:[...diagnostics.visibleRepresentationKeys],owned:diagnostics.ownedCpuBytes};
+        events.length=0;
+      };
+      const failLoad=async(mode:"constructor"|"rollback"|"admission")=>{
+        failSecondConstructor=mode==="constructor";constructionCount=0;failFinalizeNext=mode==="rollback";
+        renderCount=mode==="admission"?301:2;
+        const registrationsBefore=commands.filter(command=>command.kind==="RegisterEphemeralRepresentation").length;
+        const cancellationsBefore=commands.filter(command=>command.kind==="CancelEphemeralRepresentation").length;
+        const advancesBefore=commands.filter(command=>command.kind==="AdvanceEphemeralEpoch").length;
+        captureBeforeLoad();loadButton.dispatchEvent(new Event("click"));await vi.waitFor(()=>expect(saveState()).toBe("Rejected"));
+        expect(commands.filter(command=>command.kind==="AdvanceEphemeralEpoch")).toHaveLength(advancesBefore);
+        expect(rootOwner.read()).toBe(beforeLoad!.root);expect(native).toBe(beforeLoad!.native);
+        expect(backend.readDiagnostics().residentRepresentationKeys).toEqual(beforeLoad!.resident);
+        expect(backend.readDiagnostics().visibleRepresentationKeys).toEqual(beforeLoad!.visible);
+        expect(backend.readDiagnostics().ownedCpuBytes).toBe(beforeLoad!.owned);
+        const newRegistrations=commands.filter(command=>command.kind==="RegisterEphemeralRepresentation").slice(registrationsBefore);
+        if(mode==="rollback"){
+          expect(newRegistrations.length).toBeGreaterThan(0);
+          for(const registration of newRegistrations){
+            expect(commands.some(command=>command.kind==="RemoveRepresentation"&&command.representationKey===registration.representationKey)).toBe(true);
+          }
+        }else{
+          expect(commands.filter(command=>command.kind==="CancelEphemeralRepresentation").slice(cancellationsBefore).length).toBe(newRegistrations.length);
+        }
+        failSecondConstructor=false;renderCount=2;
+      };
+      await failLoad("constructor");await failLoad("rollback");await failLoad("admission");
+      expect(replacementSpy).toHaveBeenCalledTimes(3);
+      expect(compiler.rolloverAfterLoad).toHaveBeenCalledTimes(0);
+
+      captureBeforeLoad();loadButton.dispatchEvent(new Event("click"));await vi.waitFor(()=>expect(saveState()).toBe("Loaded"));
+      expect(events).toEqual(["finalized","advance-accepted","rollover-started","rollover-complete"]);
+      expect(compiler.rolloverAfterLoad).toHaveBeenCalledTimes(1);
+      const successfulAdvance=commands.filter(command=>command.kind==="AdvanceEphemeralEpoch").at(-1);
+      expect(successfulAdvance).toMatchObject({kind:"AdvanceEphemeralEpoch",nextEpoch:1});
+      expect(native).toBe(restoreB);expect(rootOwner.read()).toBe(currentGame.root.read());
+      const currentDiagnostics=backend.readDiagnostics(),currentKeys=currentDiagnostics.residentRepresentationKeys;
+      expect(currentKeys.some(key=>/e1~[1-9][0-9]*$/.test(key))).toBe(true);
+      expect(currentKeys.some(key=>/^hvp:terrain:s[0-9]+:e1~[1-9][0-9]*$/.test(key))).toBe(true);
+      expect(currentKeys.some(key=>/^hvp:branch(?::foliage)?:e1~[1-9][0-9]*$/.test(key))).toBe(true);
+      expect(currentDiagnostics.visibleRepresentationKeys).toEqual(expect.arrayContaining(stagedKeys.filter(key=>key.startsWith("hvp:terrain:s"))));
+      expect(currentKeys).not.toContain(retainedKey!);
+      expect(replacementSpy).toHaveBeenCalledTimes(4);
+
+      currentGame=decodeHvpGame(checkpoint);
+      const rollbacksAfterCommittedLoad=rollbackCount;
+      captureBeforeLoad();
+      if(advanceFailure==="PageHide"){
+        deferFinalizeNext=true;loadButton.dispatchEvent(new Event("click"));
+        await vi.waitFor(()=>{
+          if(saveState()!=="Loading"){throw new Error(`Load ended before deferred finalize: ${source.body.dataset.hestiaPrototypeSave}`);}
+          expect(deferredFinalizePending).toBe(true);
+        },{timeout:30_000,interval:10});await deferredFinalizeEntered;
+        expect(saveState()).toBe("Loading");expect(restoreFinalized).toBe(false);
+        try{source.windowPort.dispatchEvent(new Event("pagehide"));await handle.dispose();}
+        finally{releaseDeferredFinalize();}
+        expect(physicsDisposals).toBe(1);expect(source.windowPort.listenerTotals.get("pagehide")).toBe(0);
+        expect(backend.readDiagnostics()).toMatchObject({backendState:"Disposed",residentRepresentationKeys:[],ownedCpuBytes:0});
+        await Promise.allSettled([replacementOperations.at(-1)!]);await Promise.resolve();
+        expect(finalizeReturned).toBe(true);expect(saveState()).toBeUndefined();
+        expect(commands.filter(command=>command.kind==="AdvanceEphemeralEpoch")).toHaveLength(1);
+        expect(rollbackCount).toBe(rollbacksAfterCommittedLoad);
+        expect(compiler.rolloverAfterLoad).toHaveBeenCalledTimes(1);
+      }else if(advanceFailure==="PageHideDuringRollover"){
+        deferRolloverNext=true;
+        try{
+          loadButton.dispatchEvent(new Event("click"));
+          await vi.waitFor(()=>expect(events).toContain("rollover-started"),{timeout:30_000,interval:10});
+          await deferredRolloverEntered;
+          expect(saveState()).toBe("Loading");expect(restoreFinalized).toBe(true);
+          expect(events).toEqual(["finalized","advance-accepted","rollover-started"]);
+          source.windowPort.dispatchEvent(new Event("pagehide"));await handle.dispose();
+        }
+        finally{releaseDeferredRollover();}
+        await deferredRolloverSettled;
+        expect(saveState()).toBeUndefined();expect(events).toEqual(["finalized","advance-accepted","rollover-started"]);
+        expect(commands.filter(command=>command.kind==="AdvanceEphemeralEpoch")).toHaveLength(2);
+        expect(rollbackCount).toBe(rollbacksAfterCommittedLoad);expect(compiler.rolloverAfterLoad).toHaveBeenCalledTimes(2);
+        expect(physicsDisposals).toBe(1);expect(source.windowPort.listenerTotals.get("pagehide")).toBe(0);
+        expect(backend.readDiagnostics()).toMatchObject({backendState:"Disposed",residentRepresentationKeys:[],ownedCpuBytes:0});
+      }else if(advanceFailure==="SuccessfulLoad"){
+        const firstEpochKeys=backend.readDiagnostics().residentRepresentationKeys.filter(key=>/e1~[1-9][0-9]*$/.test(key));
+        captureBeforeLoad();loadButton.dispatchEvent(new Event("click"));await vi.waitFor(()=>expect(saveState()).toBe("Loaded"));
+        expect(events).toEqual(["finalized","advance-accepted","rollover-started","rollover-complete"]);
+        expect(compiler.rolloverAfterLoad).toHaveBeenCalledTimes(2);
+        expect(native).toBe(restoreB);expect(rootOwner.read()).toBe(currentGame.root.read());
+        const secondEpochKeys=backend.readDiagnostics().residentRepresentationKeys.filter(key=>/e2~[1-9][0-9]*$/.test(key));
+        expect(secondEpochKeys.length).toBeGreaterThan(0);expect(secondEpochKeys.some(key=>key.startsWith("hvp:terrain:s"))).toBe(true);
+        expect(secondEpochKeys.some(key=>key.startsWith("hvp:branch"))).toBe(true);
+        expect(secondEpochKeys.some(key=>firstEpochKeys.includes(key))).toBe(false);
+        expect(backend.readDiagnostics().residentRepresentationKeys).not.toEqual(expect.arrayContaining(firstEpochKeys));
+      }else if(advanceFailure==="RolloverFailure"){
+        failRolloverNext=true;loadButton.dispatchEvent(new Event("click"));await vi.waitFor(()=>expect(saveState()).toBe("RecoveryHold"));
+        expect(events).toEqual(["finalized","advance-accepted","rollover-started","rollover-failed"]);
+        expect(saveState()).not.toBe("Loaded");expect(native).toBe(restoreB);expect(rootOwner.read()).toBe(currentGame.root.read());
+        expect(rollbackCount).toBe(rollbacksAfterCommittedLoad);expect(compiler.rolloverAfterLoad).toHaveBeenCalledTimes(2);
+        const lastAdvance=commands.filter(command=>command.kind==="AdvanceEphemeralEpoch").at(-1);
+        expect(lastAdvance).toMatchObject({kind:"AdvanceEphemeralEpoch",nextEpoch:2});
+      }else{
+        advanceMode=advanceFailure.toLowerCase()==="rejected"?"rejected":"throw-after-accepted";
+        loadButton.dispatchEvent(new Event("click"));await vi.waitFor(()=>expect(["RecoveryHold","Rejected","Loaded"]).toContain(saveState()));
+        expect(saveState(),source.body.dataset.hestiaPrototypeSave).toBe("RecoveryHold");
+        expect(saveState()).not.toBe("Loaded");expect(saveState()).not.toBe("Rejected");
+        expect(events).toEqual(["finalized",advanceFailure==="Rejected"?"advance-rejected":"advance-accepted"]);
+        expect(compiler.rolloverAfterLoad).toHaveBeenCalledTimes(1);
+        expect(native).toBe(restoreB);expect(rootOwner.read()).toBe(currentGame.root.read());
+        expect(rollbackCount).toBe(rollbacksAfterCommittedLoad);
+        const lastAdvance=commands.filter(command=>command.kind==="AdvanceEphemeralEpoch").at(-1);
+        expect(lastAdvance).toMatchObject({kind:"AdvanceEphemeralEpoch",nextEpoch:2});
+        expect(backend.readDiagnostics().residentRepresentationKeys.some(key=>/e2~[1-9][0-9]*$/.test(key))).toBe(true);
+        expect(replacementSpy).toHaveBeenCalledTimes(5);
+      }
+    }finally{
+      try{await handle?.dispose();}
+      finally{vi.restoreAllMocks();}
+      if(backend){
+        expect(commands.filter(command=>command.kind==="DisposeBackend")).toHaveLength(1);
+        expect(backend.readDiagnostics()).toMatchObject({backendState:"Disposed",residentRepresentationKeys:[],ownedCpuBytes:0});
+      }
+      if(handle){expect(physicsDisposals).toBe(1);}
+    }
+  });
+
+  it("K34 registers neighbour role aliases once and keeps reused proxies live",async()=>{
+    const source=harness(),neighborFactory=vi.spyOn(neighborControllerModule,"createHvpNeighborController");
+    let backend!:ThreeRenderBackend;const commands:RenderCommand[]=[];let handle:HvpBootstrapHandle|undefined;
+    try{
+      handle=await startHvp(source.overrides({createBackend:(options:ConstructorParameters<typeof ThreeRenderBackend>[0])=>{
+        backend=new ThreeRenderBackend({...options,rendererFactory:()=>({setPixelRatio:()=>{},setSize:()=>{},render:()=>{},dispose:()=>{}})});
+        const dispatch=backend.dispatch.bind(backend);
+        vi.spyOn(backend,"dispatch").mockImplementation(command=>{commands.push(command);return dispatch(command);});return backend;
+      }}));
+      const stage=neighborFactory.mock.calls[0]?.[0].stage;
+      if(!stage){throw new Error("Missing HVP neighbour stage callback");}
+      const mesh={...meshHvpTestCells([{x:0,y:0,z:0,slot:HVP_SLOT_LIMESTONE_DRY}],.125,{ao:true}),
+        sourceDigest:"fnv1a64-v1:0123456789abcdef"};
+      const products={digest:"neighbor-fixture",lod:.125,region:[mesh],waterPatch:mesh,water:mesh,join:mesh,far:mesh,sourceBytes:0,projectionBytes:0} as unknown as NonNullable<HvpNeighborStage["products"]>;
+      const before=commands.filter(command=>command.kind==="RegisterEphemeralRepresentation").length;
+      const next=stage({products,seams:null,epoch:1,source:null,cacheBytes:0,checkpointBytes:0});next.publish();next.finish();
+      const activeKeys=backend.readDiagnostics().residentRepresentationKeys.filter(key=>key.includes("~"));
+      expect(activeKeys).toHaveLength(5);
+      expect(activeKeys.filter(key=>key.startsWith("hvp:water:")).length).toBe(2);
+      expect(activeKeys.some(key=>/^hvp:neighbor:join:e0~[1-9][0-9]*$/.test(key))).toBe(true);
+      expect(activeKeys.some(key=>/^hvp:neighbor:far:e0~[1-9][0-9]*$/.test(key))).toBe(true);
+      expect(activeKeys.some(key=>/^hvp:neighbor:region:e0~[1-9][0-9]*$/.test(key))).toBe(true);
+      const proxies=stage({products:null,seams:null,epoch:2,source:null,cacheBytes:0,checkpointBytes:0});proxies.publish();proxies.finish();
+      const proxyKeys=backend.readDiagnostics().residentRepresentationKeys.filter(key=>key.includes("~"));
+      expect(proxyKeys).toHaveLength(3);
+      expect(proxyKeys.filter(key=>key.startsWith("hvp:neighbor:proxy:")).length).toBe(2);
+      expect(proxyKeys.some(key=>key.startsWith("hvp:water:"))).toBe(true);
+      const beforeReuse=commands.filter(command=>command.kind==="RegisterEphemeralRepresentation").length;
+      const reused=stage({products:null,seams:null,epoch:3,source:null,cacheBytes:0,checkpointBytes:0});reused.publish();reused.finish();
+      expect(commands.filter(command=>command.kind==="RegisterEphemeralRepresentation")).toHaveLength(beforeReuse);
+      expect(backend.readDiagnostics().residentRepresentationKeys.filter(key=>key.includes("~"))).toEqual(proxyKeys);
+      expect(commands.filter(command=>command.kind==="RegisterEphemeralRepresentation").length-before).toBe(8);
+      expect(commands.filter(command=>command.kind==="EvictRepresentation"&&activeKeys.includes(command.representationKey))).toHaveLength(0);
+    }finally{await handle?.dispose();neighborFactory.mockRestore();}
+  });
+
+  it("K34 keeps a parked ephemeral fragment registered across Evict and wake",async()=>{
+    // Fake Native residency facts; Three owns the actual Evict/rehydrate lifecycle.
+    const source=harness(),terrainFactory=vi.spyOn(terrainConsumerModule,"createHvpTerrainConsumer"),
+      dormancyFactory=vi.spyOn(dormancyControllerModule,"createHvpDormancyController");
+    let backend!:ThreeRenderBackend,native!:ReturnType<HvpPhysicsClient["read"]>;const backendCommands:RenderCommand[]=[];
+    const overrides=source.overrides();
+    if(!overrides?.createPhysics){throw new Error("Missing fixture physics factory");}
+    const originalPhysics=overrides.createPhysics;
+    const createPhysics:typeof originalPhysics=async(...args)=>{
+      const physics=await originalPhysics(...args);native=physics.read();Reflect.set(native,"parked",[]);return {...physics,read:()=>native};
+    };
+    let handle:HvpBootstrapHandle|undefined;
+    try{
+      handle=await startHvp(source.overrides({createPhysics,createBackend:(options:ConstructorParameters<typeof ThreeRenderBackend>[0])=>{
+        backend=new ThreeRenderBackend({...options,rendererFactory:()=>({setPixelRatio:()=>{},setSize:()=>{},render:()=>{},dispose:()=>{}})});
+        const dispatch=backend.dispatch.bind(backend);vi.spyOn(backend,"dispatch").mockImplementation(command=>{
+          backendCommands.push(command);return dispatch(command);
+        });return backend;
+      }}));
+      const stage=terrainFactory.mock.calls[0]?.[2],stageDormancy=dormancyFactory.mock.calls[0]?.[0].stage;
+      if(!stage||!stageDormancy){throw new Error("Missing HVP fragment/residency stage callbacks");}
+      const root=terrainFactory.mock.calls[0]![0].read(),ownerId="hvp:terrain-fragment:parked-fixture",digest="fnv1a64-v1:0123456789abcdef";
+      const fragment={request:{ownerId,origin:{x:0,y:0,z:0},massKg:1,cells:[{x:0,y:0,z:0,materialId:1}],
+        colliderBoxes:[{min:[0,0,0] as const,max:[1,1,1] as const}]},
+        state:{ownerId,sourceDigest:digest,centerOfMass:{x:0,y:0,z:0},cellCount:1,massKg:1,colliders:1,sourceBytes:4096}};
+      const installed=stage({source:{...root,revision:root.revision+1},render:new Map(),collision:new Map()},[fragment]);
+      installed.publish();installed.finish();
+      const key=backend.readDiagnostics().residentRepresentationKeys.find(value=>/^hvp:fragment:e0~[1-9][0-9]*$/.test(value));
+      if(!key){throw new Error("Missing issued fragment render alias");}
+      const registrations=backendCommands.filter(command=>command.kind==="RegisterEphemeralRepresentation").length;
+      const parked=stageDormancy({...native,parked:[{ownerId,position:native.bodies[0]!.position,residency:"Checkpointed"}],dormantCheckpointBytes:0});
+      parked.publish();parked.finish();
+      expect(backend.readDiagnostics().residentRepresentationKeys).not.toContain(key);
+      expect(backendCommands.filter(command=>command.kind==="RegisterEphemeralRepresentation")).toHaveLength(registrations);
+      const awake=stageDormancy({...native,parked:[],terrainFragments:[fragment.state],dormantCheckpointBytes:0});
+      awake.publish();awake.finish();
+      expect(backend.readDiagnostics().residentRepresentationKeys).toContain(key);
+      expect(backendCommands.filter(command=>command.kind==="RegisterEphemeralRepresentation")).toHaveLength(registrations);
+    }finally{await handle?.dispose();terrainFactory.mockRestore();dormancyFactory.mockRestore();}
+  });
+
+  it("K34 removes an accepted terrain Upsert after visibility publication throws",async()=>{
+    const source=harness(),terrainFactory=vi.spyOn(terrainConsumerModule,"createHvpTerrainConsumer");
+    let backend!:ThreeRenderBackend,injectVisibilityFailure=false;const commands:RenderCommand[]=[];
+    const publishFailure=new Error("injected visibility publication failure");let handle:HvpBootstrapHandle|undefined;
+    try{
+      handle=await startHvp(source.overrides({createBackend:(options:ConstructorParameters<typeof ThreeRenderBackend>[0])=>{
+        backend=new ThreeRenderBackend({...options,rendererFactory:()=>({setPixelRatio:()=>{},setSize:()=>{},render:()=>{},dispose:()=>{}})});
+        const dispatch=backend.dispatch.bind(backend);
+        vi.spyOn(backend,"dispatch").mockImplementation(command=>{
+          commands.push(command);const result=dispatch(command);
+          if(injectVisibilityFailure&&command.kind==="ApplyVisibilityPlan"){injectVisibilityFailure=false;throw publishFailure;}
+          return result;
+        });return backend;
+      }}));
+      const stage=terrainFactory.mock.calls[0]?.[2];if(!stage){throw new Error("Missing terrain stage callback");}
+      const root=terrainFactory.mock.calls[0]![0].read(),mesh=meshHvpTestCells([{x:0,y:0,z:0,slot:HVP_SLOT_LIMESTONE_DRY}],.125,{ao:true});
+      const before=backend.readDiagnostics();injectVisibilityFailure=true;
+      expect(()=>stage({source:{...root,revision:root.revision+1},render:new Map([[0,mesh]]),collision:new Map()})).toThrow(publishFailure);
+      const afterCleanup=backend.readDiagnostics();
+      expect(afterCleanup.residentRepresentationKeys).toEqual(before.residentRepresentationKeys);
+      expect(afterCleanup.ownedCpuBytes).toBe(before.ownedCpuBytes);
+      const upsert=commands.find(command=>command.kind==="UpsertMeshArtifact"&&command.artifact.representationKey.includes("~"));
+      if(upsert?.kind!=="UpsertMeshArtifact"){throw new Error("Missing accepted ephemeral Upsert");}
+      expect(commands.some(command=>command.kind==="RemoveRepresentation"&&command.representationKey===upsert.artifact.representationKey)).toBe(true);
+      const allocations=afterCleanup.geometryAllocations;
+      expect(backend.dispatch(upsert)).toMatchObject({status:"RejectedStaleRevision",reasonCode:"ExpiredEpoch"});
+      expect(backend.readDiagnostics().staleRejectCount).toBeGreaterThan(before.staleRejectCount);
+      expect(backend.readDiagnostics().geometryAllocations).toBe(allocations);
+      expect(backend.readDiagnostics().residentRepresentationKeys).toEqual(before.residentRepresentationKeys);
+    }finally{await handle?.dispose();terrainFactory.mockRestore();}
   });
 
   it("C2B bounds visible representation reads before the sentinel", async () => {
@@ -1372,6 +2056,16 @@ describe("HVP T08 bootstrap lifecycle", () => {
       const duplicateSentinel = addSentinel();
       expect(() => readFrame!()).toThrow(/invalid/);
       expect(duplicateSentinel.visited()).toBe(false);
+      cleanupInjected();
+
+      const overActualKey = new THREE.Object3D();
+      overActualKey.name = `representation:hvp:terrain:s${"x".repeat(116)}`;
+      expect(overActualKey.name.slice("representation:".length)).toHaveLength(129);
+      root.add(overActualKey);
+      injected.push(overActualKey);
+      const keySentinel=addSentinel();
+      expect(() => readFrame!()).toThrow(/overflow/);
+      expect(keySentinel.visited()).toBe(false);
       cleanupInjected();
 
       const oversized = new THREE.Object3D();
@@ -1553,6 +2247,40 @@ describe("HVP T08 bootstrap lifecycle", () => {
       await handle.dispose();
       factory.mockRestore();
     }
+  });
+
+  it.each([false,true])("V3-01 records a sink failure after health publication (publish next: %s)",async publishNext=>{
+    const source=harness();Object.defineProperty(source.windowPort,"location",{value:{search:"?hvpMeasure=1"}});
+    Reflect.set(source.windowPort,"confirm",()=>true);
+    const overrides=source.overrides();
+    if(!overrides?.createPhysics){throw new Error("Missing fixture physics factory");}
+    const originalPhysics=overrides.createPhysics;
+    let failures=0;
+    const createPhysics:typeof originalPhysics=async(...args)=>{
+      const physics=await originalPhysics(...args);
+      return {...physics,lifecycle:()=>({workers:1,pendingJobs:0,timers:1,listeners:0,
+        timingSinkFailures:failures,native:{status:"Running",bodies:3,colliders:5}})};
+    };
+    const handle=await startHvp(source.overrides({createPhysics}));
+    try{
+      for(let i=0;i<15;i+=1){stepFrame(source.windowPort,performance.now()+i);}
+      const before=JSON.parse(source.body.dataset.hestiaPrototypeMeasurements!);
+      expect(before).toMatchObject({publishedOrigin:performance.timeOrigin,publishedAt:expect.any(Number),timingSinkFailures:0});
+      failures=1;
+      expect(isHvpCutHealthFresh(before,performance.timeOrigin,before.publishedAt+1)).toBe(false);
+      if(publishNext){
+        for(let i=0;i<15;i+=1){stepFrame(source.windowPort,performance.now()+i);}
+        const after=JSON.parse(source.body.dataset.hestiaPrototypeMeasurements!);
+        expect(after).toMatchObject({publishedOrigin:performance.timeOrigin,timingSinkFailures:1});
+        expect(after.publishedAt).toBeGreaterThanOrEqual(before.publishedAt);
+        expect(isHvpCutHealthFresh(after,performance.timeOrigin,before.publishedAt)).toBe(false);
+      }else{expect(JSON.parse(source.body.dataset.hestiaPrototypeMeasurements!).timingSinkFailures).toBe(0);}
+      const end=descendants(source.body).find(element=>element.id==="hvp-end-session");
+      if(!end){throw new Error("Missing end-session control");}
+      end.dispatchEvent(new Event("click"));
+      await vi.waitFor(()=>expect(source.body.dataset.hestiaPrototypeDisposal).toBeDefined());
+      expect(JSON.parse(source.body.dataset.hestiaPrototypeDisposal!).measurementHealth.timingSinkFailures).toBe(1);
+    }finally{await handle.dispose();}
   });
 
 });

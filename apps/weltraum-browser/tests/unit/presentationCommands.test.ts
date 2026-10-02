@@ -6,6 +6,7 @@ import {
   createMaterialProfile,
   createMeshArtifact,
   createRenderCommand,
+  ephemeralRepresentationKey,
   frameId,
   frameRevision,
   materialProfileId,
@@ -138,6 +139,36 @@ describe("presentation commands", () => {
     const malformed = validateRenderCommand({ kind: "UpsertMeshArtifact", backendRevision: 0 });
     expect(malformed.valid).toBe(false);
     if (!malformed.valid) expect(malformed.issues.map((entry) => entry.code)).toContain("MalformedCommandPayload");
+  });
+
+  it("validates ephemeral registration, cancellation, and epoch commands against the key", () => {
+    const key = ephemeralRepresentationKey({ kind: "neighbor", part: "water" }, 1, 2);
+    const register = {
+      kind: "RegisterEphemeralRepresentation" as const,
+      backendRevision: backendRevision(0),
+      representationKey: key,
+      epoch: 1,
+      serial: 2
+    };
+    expect(validateRenderCommand(register)).toEqual({ valid: true });
+    expect(validateRenderCommand({ ...register, serial: 3 }).valid).toBe(false);
+    expect(validateRenderCommand({ ...register, epoch: 0 }).valid).toBe(false);
+    expect(validateRenderCommand({
+      kind: "CancelEphemeralRepresentation",
+      backendRevision: backendRevision(0),
+      representationKey: key,
+      serial: 2
+    })).toEqual({ valid: true });
+    expect(validateRenderCommand({
+      kind: "AdvanceEphemeralEpoch",
+      backendRevision: backendRevision(0),
+      nextEpoch: 2
+    })).toEqual({ valid: true });
+    expect(validateRenderCommand({
+      kind: "AdvanceEphemeralEpoch",
+      backendRevision: backendRevision(0),
+      nextEpoch: Number.MAX_SAFE_INTEGER + 1
+    }).valid).toBe(false);
   });
 
   it("rejects projection values outside the finite Float32 range", () => {

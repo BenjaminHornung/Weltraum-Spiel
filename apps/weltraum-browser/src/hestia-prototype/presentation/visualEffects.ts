@@ -48,7 +48,8 @@ export const createHvpVisualRenderer = (
   canvas: HTMLCanvasElement,
   parameters: THREE.WebGLRendererParameters,
   makeRenderer = (options: THREE.WebGLRendererParameters): THREE.WebGLRenderer => new THREE.WebGLRenderer(options),
-  onDispose?: (remaining:Readonly<{geometries:number;textures:number}>)=>void
+  onDispose?: (remaining:Readonly<{geometries:number;textures:number}>)=>void,
+  diagnostics = false
 ): ThreeRendererPort => {
   const renderer = makeRenderer({ ...parameters, canvas });
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -236,7 +237,7 @@ export const createHvpVisualRenderer = (
       // A throwing render does not admit the new cache; an unsupported snapshot
       // is never truncated or retained as if it described the complete depth pass.
       prior = next?.revision;
-      if (frame % 60 === 0 && canvas.ownerDocument !== undefined) {
+      if (diagnostics && frame % 60 === 0 && canvas.ownerDocument !== undefined) {
         canvas.ownerDocument.body.dataset.hestiaPrototypeFrameDiagnostics=JSON.stringify({
           scenePreparationMs:started-preparationStarted,renderSubmitMs:performance.now()-started,calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,
           geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures,shadowUpdated,shadowCache,shadowRevisionBytes:next?.bytes??0,

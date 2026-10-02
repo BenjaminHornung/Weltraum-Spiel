@@ -2,8 +2,9 @@ import { canonicalSignature } from "./canonical";
 import {
   compareAscii,
   isContentHash,
+  parseEphemeralRepresentationKey,
   validateRevision,
-  validateSemanticId,
+  validateRepresentationKey,
   ArtifactRevision,
   BackendRevision,
   ContentHash,
@@ -66,6 +67,27 @@ export interface DisposeBackendCommand {
   readonly backendRevision: BackendRevision;
 }
 
+export interface RegisterEphemeralRepresentationCommand {
+  readonly kind: "RegisterEphemeralRepresentation";
+  readonly backendRevision: BackendRevision;
+  readonly representationKey: RepresentationKey;
+  readonly epoch: number;
+  readonly serial: number;
+}
+
+export interface CancelEphemeralRepresentationCommand {
+  readonly kind: "CancelEphemeralRepresentation";
+  readonly backendRevision: BackendRevision;
+  readonly representationKey: RepresentationKey;
+  readonly serial: number;
+}
+
+export interface AdvanceEphemeralEpochCommand {
+  readonly kind: "AdvanceEphemeralEpoch";
+  readonly backendRevision: BackendRevision;
+  readonly nextEpoch: number;
+}
+
 export type RenderCommand =
   | InitializeBackendCommand
   | UpsertMeshArtifactCommand
@@ -74,7 +96,10 @@ export type RenderCommand =
   | ApplyVisibilityPlanCommand
   | ApplyFrameProjectionCommand
   | ResetBackendCommand
-  | DisposeBackendCommand;
+  | DisposeBackendCommand
+  | RegisterEphemeralRepresentationCommand
+  | CancelEphemeralRepresentationCommand
+  | AdvanceEphemeralEpochCommand;
 
 export type RenderCommandStatus =
   | "Accepted"
@@ -134,6 +159,34 @@ export const validateRenderCommand = (command: unknown): ValidationResult => {
       case "InitializeBackend":
       case "DisposeBackend":
         break;
+      case "RegisterEphemeralRepresentation": {
+        const typed = record as unknown as RegisterEphemeralRepresentationCommand;
+        add(validateRepresentationKey(typed.representationKey, "representationKey"));
+        add(validateRevision(typed.epoch, "epoch"));
+        if (!Number.isSafeInteger(typed.serial) || typed.serial < 1) {
+          issues.push(issue("InvalidEphemeralSerial", "serial", "must be a positive safe integer"));
+        }
+        const identity = parseEphemeralRepresentationKey(typed.representationKey);
+        if (identity === undefined || identity.epoch !== typed.epoch || identity.serial !== typed.serial) {
+          issues.push(issue("EphemeralKeyBindingMismatch", "representationKey", "must encode the registration epoch and serial"));
+        }
+        break;
+      }
+      case "CancelEphemeralRepresentation": {
+        const typed = record as unknown as CancelEphemeralRepresentationCommand;
+        add(validateRepresentationKey(typed.representationKey, "representationKey"));
+        if (!Number.isSafeInteger(typed.serial) || typed.serial < 1) {
+          issues.push(issue("InvalidEphemeralSerial", "serial", "must be a positive safe integer"));
+        }
+        const identity = parseEphemeralRepresentationKey(typed.representationKey);
+        if (identity === undefined || identity.serial !== typed.serial) {
+          issues.push(issue("EphemeralKeyBindingMismatch", "representationKey", "must encode the cancellation serial"));
+        }
+        break;
+      }
+      case "AdvanceEphemeralEpoch":
+        add(validateRevision((record as unknown as AdvanceEphemeralEpochCommand).nextEpoch, "nextEpoch"));
+        break;
       case "UpsertMeshArtifact": {
         const typed = record as unknown as UpsertMeshArtifactCommand;
         add(validateMeshArtifact(typed.artifact));
@@ -152,7 +205,7 @@ export const validateRenderCommand = (command: unknown): ValidationResult => {
       case "RemoveRepresentation":
       case "EvictRepresentation": {
         const typed = record as unknown as RevisionBoundRepresentationCommand;
-        add(validateSemanticId(typed.representationKey, "representationKey"));
+        add(validateRepresentationKey(typed.representationKey, "representationKey"));
         add(validateRevision(typed.expectedSourceRevision, "expectedSourceRevision"));
         add(validateRevision(typed.expectedArtifactRevision, "expectedArtifactRevision"));
         if (!isContentHash(typed.expectedContentHash)) issues.push(issue("InvalidContentHash", "expectedContentHash", "must use canonical fnv1a64 format"));

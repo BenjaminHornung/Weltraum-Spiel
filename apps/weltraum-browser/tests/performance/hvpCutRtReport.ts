@@ -1,4 +1,5 @@
 import {nearestRank} from "../e2e/hvp-performance-evidence";
+import type {HvpPhysicsClock} from "../../src/hestia-prototype/physics/physicsWorker";
 
 export interface HvpCutSample {
   readonly commandId: string;
@@ -62,6 +63,21 @@ export function readHvpCutMarkers(entries: readonly HvpCutRawEntry[], commandId:
     renderBinding: render?.detail?.data ?? null, problems};
 }
 
+/** The worker's last clock is evidence only for its exact, completed Body command. */
+export const readHvpBodyHoldForCommand=(clock:Pick<HvpPhysicsClock,"lastBodyHoldMs"|"lastBodyCommandId"|"lastBodyManualPause">|null,
+  commandId:string):number|null=>{
+  if(clock?.lastBodyCommandId!==commandId||clock.lastBodyManualPause!==false){return null;}
+  const value=clock.lastBodyHoldMs;
+  return typeof value==="number"&&Number.isFinite(value)&&value>=0?value:null;
+};
+
+/** A cached healthy status is not evidence for an endpoint published later. */
+export const isHvpCutHealthFresh=(health:Readonly<{publishedOrigin?:number;publishedAt?:number;timingSinkFailures?:number|null}>|null,
+  origin:number,endpoint:number):boolean=>
+  health!==null&&Number.isFinite(origin)&&origin>=0&&Number.isFinite(endpoint)&&endpoint>=0
+  &&health.publishedOrigin===origin&&typeof health.publishedAt==="number"&&Number.isFinite(health.publishedAt)
+  &&health.publishedAt>=endpoint&&health.timingSinkFailures===0;
+
 /** Descriptive only: runtime/source binding, planned attempts and device eligibility belong to the runner. */
 export function summarizeHvpCuts(samples: readonly HvpCutSample[]) {
   if (!Array.isArray(samples)) {
@@ -71,7 +87,7 @@ export function summarizeHvpCuts(samples: readonly HvpCutSample[]) {
     scenario, temperature, attempts: 0, outcomes: outcomeCounts(), invalidCount: 0,
     completeApplied: 0, incompleteApplied: 0,
     missing: {applied: 0, committedRender: 0, sourceGenerationAfter: 0, hold: 0},
-    applied: [] as number[], render: [] as number[], hold: [] as number[]
+     applied: [] as number[], render: [] as number[], appliedRender: [] as number[], hold: [] as number[]
   })));
   const outcomes = outcomeCounts();
   const invalid: {index: number; commandId: string | null; reasons: string[]}[] = [];
@@ -150,6 +166,9 @@ export function summarizeHvpCuts(samples: readonly HvpCutSample[]) {
     } else {
       group.render.push(row.firstCommittedRenderSubmitMs - row.inputMs);
     }
+    if(row.appliedMs!==null&&row.firstCommittedRenderSubmitMs!==null){
+      group.appliedRender.push(row.firstCommittedRenderSubmitMs-row.appliedMs);
+    }
     if (row.sourceGenerationAfter === null) {
       group.missing.sourceGenerationAfter += 1;
     }
@@ -161,7 +180,8 @@ export function summarizeHvpCuts(samples: readonly HvpCutSample[]) {
   }
   return {
     acceptance: "NOT_ASSESSED" as const, attempts: samples.length, outcomes, unknownOutcomes, unclassifiedAttempts, invalid,
-    groups: groups.map(({applied, render, hold, ...group}) => ({...group,
-      inputToAppliedMs: summary(applied), inputToCommittedRenderMs: summary(render), holdMs: summary(hold)}))
+    groups: groups.map(({applied, render, appliedRender, hold, ...group}) => ({...group,
+      inputToAppliedMs: summary(applied), inputToCommittedRenderMs: summary(render),
+      appliedToCommittedRenderMs:summary(appliedRender),holdMs: summary(hold)}))
   };
 }

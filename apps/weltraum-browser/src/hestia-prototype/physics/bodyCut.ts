@@ -2,14 +2,15 @@ import {deriveStructuralWorldSplitVelocity,rotateStructuralWorldVector} from "..
 import {pickHvpCell,type HvpCell,type HvpCellReader} from "../terrain/picking";
 import {R,isHvpSolidCollider} from "./rapierPort";
 import {assertHvpRigidRecipe,type HvpRigidRecipe} from "./rigidRecipe";
-import {prepareHvpLocalBodyCut,readHvpBodyCells} from "./bodyCutPlan";
+import {prepareHvpLocalBodyCutOwnedHashSteps,prepareHvpLocalBodyCutSteps,readHvpBodyCells} from "./bodyCutPlan";
 import {stageHvpStructuralBreak} from "./structuralBreak";
+import {drainHvpPlanSteps,type HvpPlanProbe} from "./structuralPlan";
 
 type Vec=Readonly<{x:number;y:number;z:number}>;
 export interface HvpCuttableBody {readonly ownerId:string;readonly body:R.RigidBody;readonly recipe:HvpRigidRecipe;readonly family?:"terrain"|"branch"}
 const readers=new WeakMap<HvpRigidRecipe,{reader:HvpCellReader;min:HvpCell}>();
-const hits=new WeakMap<object,{target:HvpCuttableBody;source:HvpRigidRecipe}>();
-const plans=new WeakSet<object>();
+const hits=new WeakMap<object,{source:HvpRigidRecipe;body:R.RigidBody}>();
+const plans=new WeakMap<object,R.RigidBody>();
 
 const readerFor=(recipe:HvpRigidRecipe)=>{
   const old=readers.get(recipe);if(old){return old;}
@@ -42,20 +43,36 @@ export const captureHvpBodyHit=(world:R.World,targets:ReadonlyMap<string,HvpCutt
   const hit=Object.freeze({ownerId:target.ownerId,sourceDigest:target.recipe.source.contentHash,revision:target.recipe.source.objectRevision,issuedTick,
     cell:Object.freeze(picked.cell.map((v,i)=>v+min[i]!)) as HvpCell,
     pose:Object.freeze({position:Object.freeze(position),rotation:Object.freeze(rotation)})});
-  hits.set(hit,{target,source:target.recipe});return hit;
+  hits.set(hit,{source:target.recipe,body:target.body});return hit;
 };
 export type HvpBodyHit=NonNullable<ReturnType<typeof captureHvpBodyHit>>;
 
-export const prepareHvpBodyCut=(hit:HvpBodyHit,target:HvpCuttableBody,id:string,edge=4,brush:"Box"|"Sphere"="Box")=>{
+/** Owner-local plan steps for one issued hit; the plan is issued only after the last step. */
+export function* prepareHvpBodyCutSteps(hit:HvpBodyHit,target:HvpCuttableBody,id:string,edge=4,brush:"Box"|"Sphere"="Box",probe?:HvpPlanProbe){
+  return yield* bodyCutSteps(false,hit,target,id,edge,brush,probe);
+}
+/** OWNER-INTERNAL (module export only; first-party Physics-Worker body session): children use the owned-payload hash. */
+export function* prepareHvpBodyCutOwnedHashSteps(hit:HvpBodyHit,target:HvpCuttableBody,id:string,edge=4,brush:"Box"|"Sphere"="Box",probe?:HvpPlanProbe){
+  return yield* bodyCutSteps(true,hit,target,id,edge,brush,probe);
+}
+function* bodyCutSteps(ownedHash:boolean,hit:HvpBodyHit,target:HvpCuttableBody,id:string,edge:number,brush:"Box"|"Sphere",probe?:HvpPlanProbe){
   const proof=hits.get(hit);
-  if(!proof||proof.target.body!==target.body||proof.source!==target.recipe||hit.ownerId!==target.ownerId){throw new Error("Stale or unvalidated body hit");}
-  const local=prepareHvpLocalBodyCut(target.recipe.source,hit.cell,id,edge,brush);
-  const plan=Object.freeze({hit,local,ownerId:target.ownerId,source:target.recipe});plans.add(plan);return plan;
-};
+  if(!proof||proof.body!==target.body||proof.source!==target.recipe||hit.ownerId!==target.ownerId){throw new Error("Stale or unvalidated body hit");}
+  const local=ownedHash
+    ?yield* prepareHvpLocalBodyCutOwnedHashSteps(target.recipe.source,hit.cell,id,edge,brush,probe,target.recipe)
+    :yield* prepareHvpLocalBodyCutSteps(target.recipe.source,hit.cell,id,edge,brush,probe);
+  const plan=Object.freeze({hit,local,ownerId:target.ownerId,source:target.recipe});
+  plans.set(plan,target.body);
+  return plan;
+}
+export const prepareHvpBodyCut=(hit:HvpBodyHit,target:HvpCuttableBody,id:string,edge=4,brush:"Box"|"Sphere"="Box")=>
+  drainHvpPlanSteps(prepareHvpBodyCutSteps(hit,target,id,edge,brush));
 export type HvpBodyCutPlan=ReturnType<typeof prepareHvpBodyCut>;
 
 export const stageHvpBodyCut=(world:R.World,target:HvpCuttableBody,plan:HvpBodyCutPlan,additionalResidentBodies=0)=>{
-  if(!plans.has(plan)||plan.ownerId!==target.ownerId||plan.source!==target.recipe||world.getRigidBody(target.body.handle)!==target.body){
+  const originalBody=plans.get(plan);
+  if(originalBody===undefined||originalBody!==target.body||plan.ownerId!==target.ownerId
+    ||plan.source!==target.recipe||world.getRigidBody(target.body.handle)!==target.body){
     throw new Error("Stale, removed or unvalidated body cut");
   }
   const position=Object.freeze({...target.body.translation()}),rotation=Object.freeze({...target.body.rotation()}),

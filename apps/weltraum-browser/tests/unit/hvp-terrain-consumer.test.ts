@@ -20,7 +20,7 @@ const setup=(fault="",trace?:HvpCutTrace,compileWait?:Promise<void>)=>{
       async command(){held=true;events.push("hold");}},[],undefined,observer);
   const request=(id="cut-1"):HvpCutRequest=>({sessionId:"session",epoch:1,revision:root.read().revision,sourceDigest:root.read().sourceDigest,
     commandId:id,toolPolicy:"hvp-plasma-v1",shape:{kind:"Box",min:[40,79,56],max:[41,80,57]}});
-  return {root,consumer,request,events,spans,stageCommandId:()=>stageCommandId,stageArity:()=>stageArity,read:()=>({visible,world,held})};
+  return {root,consumer,request,events,spans,clearFault:()=>{fault="";},stageCommandId:()=>stageCommandId,stageArity:()=>stageArity,read:()=>({visible,world,held})};
 };
 describe("HVP paired terrain consumer",()=>{
   it("replays the saved exact outcome without recompiling or committing the cut again",async()=>{
@@ -73,9 +73,35 @@ describe("HVP paired terrain consumer",()=>{
     expect((await s.consumer.submit({...request,shape:{kind:"Box",min:[41,79,56],max:[42,80,57]}})).reason).toBe("IdempotencyConflict");
     expect((await s.consumer.submit(s.request("again"))).status).toBe("NoOp");expect(s.root.read().revision).toBe(1);
   });
+  it("keeps a queued cut bound to the submitted shape after caller mutation",async()=>{
+    const s=setup(),request=s.request(),original=structuredClone(request);
+    const pending=s.consumer.submit(request);
+    Reflect.set(request.shape,"min",[41,79,56]);
+    Reflect.set(request.shape,"max",[42,80,57]);
+    expect((await pending).status).toBe("Applied");
+    expect(s.root.read().readSlot(40,79,56)).toBe(0);
+    expect(s.root.read().readSlot(41,79,56)).toBe(1);
+    expect(s.consumer.submit(original)).toBe(pending);
+    expect((await s.consumer.submit(request)).reason).toBe("IdempotencyConflict");
+  });
   it.each(["compile","stage","prepare","commit","publish","world-publish","finalize"])("restores the previous generation after %s failure",async fault=>{
     const s=setup(fault),before=s.root.read();const result=await s.consumer.submit(s.request());
     expect(result.status).toBe("Rejected");expect(s.root.read()).toBe(before);expect(s.read()).toEqual({visible:0,world:0,held:false});
+  });
+  it("retries a proved rolled-back cut only under a fresh command ID",async()=>{
+    const s=setup("commit"),before=s.root.read(),request=s.request("failed-cut");
+    const original=s.consumer.submit(request),failed=await original;
+    expect(failed.status).toBe("Rejected");expect(s.root.read()).toBe(before);
+    expect(s.read()).toEqual({visible:0,world:0,held:false});
+    const events=[...s.events];expect(s.consumer.submit(request)).toBe(original);
+    expect(await s.consumer.submit(request)).toBe(failed);
+    expect(s.events).toEqual(events);expect(s.consumer.read().receipts).toBe(1);
+    s.clearFault();
+    expect((await s.consumer.submit(s.request("retry-cut"))).status).toBe("Applied");
+    expect(s.root.read().revision).toBe(1);expect(s.read()).toEqual({visible:1,world:1,held:false});
+    expect(s.consumer.read().receipts).toBe(2);
+    expect(s.consumer.submit(request)).toBe(original);expect(await s.consumer.submit(request)).toBe(failed);
+    expect(s.events).toEqual(events.concat(["compile","stage","prepare","commit","publish","world-publish","finalize","retire"]));
   });
   it("reports RecoveryHold instead of rolling back an already finalized cleanup",async()=>{
     const s=setup("retire");expect((await s.consumer.submit(s.request())).status).toBe("RecoveryHold");

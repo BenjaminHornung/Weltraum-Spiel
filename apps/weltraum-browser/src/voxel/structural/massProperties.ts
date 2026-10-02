@@ -14,8 +14,9 @@ import {
   validateStructuralCellAddress
 } from "./coordinates";
 import { serializeStructuralCellAddress } from "./canonical";
+import { structuralComponentClassificationSteps } from "./classificationSteps";
 import { deriveStructuralComponentClassification } from "./connectivity";
-import { getStructuralVoxel, structuralAddressForBrickCell } from "./model";
+import { getStructuralVoxel, isIssuedStructuralObject, structuralAddressForBrickCell } from "./model";
 import {
   STRUCTURAL_COMPONENT_ID_VERSION,
   STRUCTURAL_COMPONENT_SCHEMA_VERSION,
@@ -24,6 +25,7 @@ import {
   type StructuralCellAddress,
   type StructuralComponentMassBudgets,
   type StructuralComponent,
+  type StructuralComponentClassification,
   type StructuralInertiaTensor,
   type StructuralMassBudgets,
   type StructuralMassProperties,
@@ -303,6 +305,61 @@ export const deriveStructuralObjectMassProperties = (
   object: StructuralObject,
   budgets: StructuralMassBudgets
 ): StructuralMassProperties => derive(object, budgets, null);
+
+/**
+ * Step form of deriveStructuralSingleComponentMasses (module export only, not in the structural barrel).
+ * Only the classification's bounded occupied-cell extraction yields; everything else is unchanged.
+ */
+export function* deriveStructuralSingleComponentMassesSteps(
+  object: StructuralObject,
+  budgets: StructuralComponentMassBudgets,
+  afterObjectMass: (mass: StructuralMassProperties) => void,
+  afterClassification: (classification: StructuralComponentClassification) => void
+) {
+  if (!isIssuedStructuralObject(object)) {
+    throw new StructuralMassError("InvalidStructuralState", "object", "Single-component reuse requires an issued source.");
+  }
+  const fixed = Object.freeze({
+    maxVisitedCells: structuralPositiveBudget(budgets.maxVisitedCells, "massBudgets/maxVisitedCells"),
+    maxConnectivityCells: structuralPositiveBudget(budgets.maxConnectivityCells, "componentMassBudgets/maxConnectivityCells"),
+    maxComponents: structuralPositiveBudget(budgets.maxComponents, "componentMassBudgets/maxComponents"),
+    maxConnectivityFacts: structuralPositiveBudget(budgets.maxConnectivityFacts, "componentMassBudgets/maxConnectivityFacts")
+  });
+  const objectMass = derive(object, fixed, null);
+  afterObjectMass(objectMass);
+  if(objectMass.totalMassKg<=0||objectMass.centerOfMassMeters===null){
+    throw new StructuralMassError("InvalidStructuralState", "objectMass", "Single-component source requires nonempty mass.");
+  }
+  const classification=yield* structuralComponentClassificationSteps(object,{maxVisitedCells:fixed.maxConnectivityCells,
+    maxComponents:fixed.maxComponents,maxIndexedFacts:fixed.maxConnectivityFacts});
+  afterClassification(classification);
+  if(classification.components.length!==1||classification.detachedComponents.length!==1||classification.fragments.length!==1){
+    throw new StructuralMassError("InvalidStructuralState", "component", "Single-component source requires one unanchored fragment.");
+  }
+  const componentMass=derive(object,fixed,classification.detachedComponents[0]!.occupiedCells);
+  const prepared: Readonly<{objectMass: StructuralMassProperties; classification: StructuralComponentClassification;
+    componentMass: StructuralMassProperties; budgets: StructuralComponentMassBudgets}> =
+    Object.freeze({objectMass,classification,componentMass,budgets:fixed});
+  return prepared;
+}
+
+/** Fresh issued-source derivation for a single rigid component, not a cache or an externally supplied claim. */
+export const deriveStructuralSingleComponentMasses = (
+  object: StructuralObject,
+  budgets: StructuralComponentMassBudgets,
+  afterObjectMass: (mass: StructuralMassProperties) => void,
+  afterClassification: (classification: StructuralComponentClassification) => void
+): Readonly<{objectMass: StructuralMassProperties; classification: StructuralComponentClassification;
+  componentMass: StructuralMassProperties; budgets: StructuralComponentMassBudgets}> => {
+  // Drains the single step algorithm without pausing.
+  const steps = deriveStructuralSingleComponentMassesSteps(object, budgets, afterObjectMass, afterClassification);
+  for (;;) {
+    const step = steps.next();
+    if (step.done) {
+      return step.value;
+    }
+  }
+};
 
 export const deriveStructuralComponentMassProperties = (
   object: StructuralObject,

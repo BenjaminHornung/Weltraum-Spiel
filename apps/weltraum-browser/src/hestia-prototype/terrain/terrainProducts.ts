@@ -111,11 +111,17 @@ export const copyHvpTerrainSlots=async(source:HvpTerrainSnapshot,cancelled:()=>b
 /** At most two concurrent derived jobs; accepted edits remain in the source owner. */
 export const createHvpTerrainCompiler = () => {
   const count=Math.max(1,Math.min(2,(globalThis.navigator?.hardwareConcurrency??2)-1));
-  const pool=new WorkerPool({workerCount:count,queueCapacity:32});
-  let started:Promise<void>|undefined, sequence=0, disposed=false;
+  const createPool=()=>new WorkerPool({workerCount:count,queueCapacity:32});
+  let pool=createPool(),started:Promise<void>|undefined,sequence=0,disposed=false,rollingOver=false,rolloverFailed=false,activeOperations=0;
+  const withOperation=async<T>(operation:()=>Promise<T>):Promise<T>=>{
+    if(disposed||rolloverFailed){throw new Error("Terrain compiler disposed");}
+    if(rollingOver){throw new Error("Terrain compiler rollover in progress");}
+    activeOperations+=1;
+    try{return await operation();}finally{activeOperations-=1;}
+  };
   const compileSectors=async(source:HvpTerrainSnapshot,renderIds:readonly number[],collisionIds:readonly number[],limit:number,
     readNeighbor?:(x:number,y:number,z:number)=>number|undefined,signal?:AbortSignal,parallel=count):Promise<HvpTerrainProducts>=>{
-    if(disposed){throw new Error("Terrain compiler disposed");}
+    if(disposed||rolloverFailed){throw new Error("Terrain compiler disposed");}
     if(!Number.isInteger(parallel)||parallel<1||parallel>count){throw new Error("Invalid preparation concurrency");}
     const render=new Map<number,HvpCompactMesh>(),collision=new Map<number,HvpCollisionSector>();
     const work=[...renderIds.map(id=>({id,render:true})),...collisionIds.map(id=>({id,render:false}))];
@@ -149,81 +155,109 @@ export const createHvpTerrainCompiler = () => {
     }
     return {render,collision,source};
   };
+  const rolloverAfterLoad=async(ownerStillLive:()=>boolean):Promise<void>=>{
+    if(disposed||rolloverFailed){throw new Error("Terrain compiler disposed");}
+    if(rollingOver||activeOperations!==0||!ownerStillLive()){
+      rolloverFailed=true;
+      throw new Error("Terrain compiler rollover requires a live, quiescent owner");
+    }
+    rollingOver=true;
+    const retiring=pool;
+    try{
+      await retiring.shutdown();
+      if(disposed||rolloverFailed||!ownerStillLive()){throw new Error("Terrain compiler owner changed during rollover");}
+      const retired=retiring.snapshot();
+      if(retired.state!=="Stopped"||retired.activeWorkers!==0||retired.runningJobs!==0||retired.queue.size!==0||retired.workers.length!==0){
+        throw new Error("Terrain worker pool retirement unproven");
+      }
+      pool=createPool();started=undefined;
+    }catch(error){rolloverFailed=true;throw error;}
+    finally{rollingOver=false;}
+  };
   return {
     diagnostics:()=>{const state=pool.snapshot();return {runningJobs:state.runningJobs,queue:state.queue.size,workers:state.workers.filter(w=>w.state!=="Stopped").length,state:state.state};},
+    rolloverAfterLoad,
     async neighborSeams(primary:HvpTerrainSnapshot,east?:HvpTerrainSnapshot,signal?:AbortSignal,serial=false,renderOnly=false){
-      const a=await compileSectors(primary,[3,7,11,15],renderOnly?[]:[7,15,23,31,39,47,55,63],12,
-        east?(x,y,z)=>x>=256?east.readSlot(x-256,y,z):undefined:undefined,signal,serial?1:count);
-      const b=east&&!renderOnly?await compileSectors(east,[],Array.from({length:64},(_,i)=>i),64,
-        (x,y,z)=>x<0?primary.readSlot(x+256,y,z):undefined,signal,serial?1:count):undefined;
-      return {primary:a,east:b?[...b.collision].sort(([a],[b])=>a-b).map(([,mesh])=>mesh):[]};
+      return withOperation(async()=>{
+        const a=await compileSectors(primary,[3,7,11,15],renderOnly?[]:[7,15,23,31,39,47,55,63],12,
+          east?(x,y,z)=>x>=256?east.readSlot(x-256,y,z):undefined:undefined,signal,serial?1:count);
+        const b=east&&!renderOnly?await compileSectors(east,[],Array.from({length:64},(_,i)=>i),64,
+          (x,y,z)=>x<0?primary.readSlot(x+256,y,z):undefined,signal,serial?1:count):undefined;
+        return {primary:a,east:b?[...b.collision].sort(([a],[b])=>a-b).map(([,mesh])=>mesh):[]};
+      });
     },
     async neighborProjection(primary:HvpTerrainSnapshot,east:HvpTerrainSnapshot,lod:.125|.5,epoch:number,key:string,proxies:HvpNeighborProxies,signal?:AbortSignal){
-      if(disposed||signal?.aborted){throw new Error("Cancelled neighbour projection");}
-      const cancelled=()=>disposed||signal?.aborted===true;
-      const buffers=[(await copyHvpTerrainSlots(primary,cancelled)).buffer as ArrayBuffer,
-        (await copyHvpTerrainSlots(east,cancelled)).buffer as ArrayBuffer,encodeHvpProjectionPacket([proxies.join,proxies.far,proxies.water])];
-      const payload:HvpNeighborPayload={epoch,primaryRevision:primary.revision,eastRevision:east.revision,primaryDigest:primary.sourceDigest,eastDigest:east.sourceDigest,lod,key};
-      const bundle:TransferableBufferBundle={ownership:"SenderToWorker",revision:contentRevision(east.revision),buffers,
-        byteLength:byteCount(buffers.reduce((n,b)=>n+b.byteLength,0)),views:buffers.map((b,i)=>({name:["primary","east","proxies"][i]!,kind:"Uint8Array",bufferIndex:i,byteOffset:0,elementCount:b.byteLength}))};
-      await(started??=pool.start());if(disposed||signal?.aborted){throw new Error("Cancelled neighbour preparation");}
-      const job=sequence++,ticket=pool.enqueue({jobId:workerJobId(`hvp-neighbor-${job}`),targetKey:workerTargetKey("hvp-east-projection"),jobKind:workerJobKind(HVP_NEIGHBOR_JOB),
-        workerEpoch:workerEpoch(0),planningEpoch:planningEpoch(0),inputRevision:contentRevision(east.revision),sourceInputDigest:hvpNeighborInputDigest(payload,buffers),
-        algorithmVersion:algorithmVersion(1),priority:"Normal",deadline:jobDeadline(job),estimatedInputBytes:bundle.byteLength,estimatedOutputBytes:byteCount(HVP_NEIGHBOR_MAX_OUTPUT),payload},bundle);
-      const cancel=()=>ticket.cancel();signal?.addEventListener("abort",cancel,{once:true});
-      const terminal=await ticket.result.finally(()=>signal?.removeEventListener("abort",cancel));
-      if(terminal.kind!=="Completed"||!pool.isAcceptedCompletedTerminal(terminal)||disposed||signal?.aborted){throw new Error(`Neighbour preparation ${terminal.kind}`);}
-      return {products:decodeHvpNeighborOutput(terminal.output,payload),buffer:terminal.output.buffers[0]!,payload};
+      return withOperation(async()=>{
+        if(signal?.aborted){throw new Error("Cancelled neighbour projection");}
+        const cancelled=()=>disposed||signal?.aborted===true;
+        const buffers=[(await copyHvpTerrainSlots(primary,cancelled)).buffer as ArrayBuffer,
+          (await copyHvpTerrainSlots(east,cancelled)).buffer as ArrayBuffer,encodeHvpProjectionPacket([proxies.join,proxies.far,proxies.water])];
+        const payload:HvpNeighborPayload={epoch,primaryRevision:primary.revision,eastRevision:east.revision,primaryDigest:primary.sourceDigest,eastDigest:east.sourceDigest,lod,key};
+        const bundle:TransferableBufferBundle={ownership:"SenderToWorker",revision:contentRevision(east.revision),buffers,
+          byteLength:byteCount(buffers.reduce((n,b)=>n+b.byteLength,0)),views:buffers.map((b,i)=>({name:["primary","east","proxies"][i]!,kind:"Uint8Array",bufferIndex:i,byteOffset:0,elementCount:b.byteLength}))};
+        await(started??=pool.start());if(disposed||signal?.aborted){throw new Error("Cancelled neighbour preparation");}
+        const job=sequence++,ticket=pool.enqueue({jobId:workerJobId(`hvp-neighbor-${job}`),targetKey:workerTargetKey("hvp-east-projection"),jobKind:workerJobKind(HVP_NEIGHBOR_JOB),
+          workerEpoch:workerEpoch(0),planningEpoch:planningEpoch(0),inputRevision:contentRevision(east.revision),sourceInputDigest:hvpNeighborInputDigest(payload,buffers),
+          algorithmVersion:algorithmVersion(1),priority:"Normal",deadline:jobDeadline(job),estimatedInputBytes:bundle.byteLength,estimatedOutputBytes:byteCount(HVP_NEIGHBOR_MAX_OUTPUT),payload},bundle);
+        const cancel=()=>ticket.cancel();signal?.addEventListener("abort",cancel,{once:true});
+        const terminal=await ticket.result.finally(()=>signal?.removeEventListener("abort",cancel));
+        if(terminal.kind!=="Completed"||!pool.isAcceptedCompletedTerminal(terminal)||disposed||signal?.aborted){throw new Error(`Neighbour preparation ${terminal.kind}`);}
+        return {products:decodeHvpNeighborOutput(terminal.output,payload),buffer:terminal.output.buffers[0]!,payload};
+      });
     },
     async compileBody(preparation:HvpMovingCutPreparation){
-      if(disposed){throw new Error("Compiler disposed");}
-      const p=validateHvpBodyCutPayload(preparation.payload);
-      if(preparation.cells.length!==p.cellCount){throw new Error("Body source count mismatch");}
-      const cells=new Int32Array(p.cellCount*4);
-      for(const [i,c] of preparation.cells.entries()){
-        if(![c.x,c.y,c.z,c.materialId].every(n=>Number.isSafeInteger(n)&&Math.abs(n)<=1_000_000)){throw new Error("Invalid local body source");}
-        cells.set([c.x,c.y,c.z,c.materialId],i*4);
-      }
-      const buffers=[cells.buffer as ArrayBuffer],bundle:TransferableBufferBundle={buffers,ownership:"SenderToWorker",revision:contentRevision(p.revision),
-        byteLength:byteCount(cells.byteLength),views:[{name:"cells",kind:"Int32Array",bufferIndex:0,byteOffset:0,elementCount:cells.length}]};
-      await (started??=pool.start());
-      const terminal=await pool.enqueue({jobId:workerJobId(`hvp-body-${sequence++}`),targetKey:workerTargetKey(p.ownerId),jobKind:workerJobKind(HVP_BODY_CUT_JOB),
-        workerEpoch:workerEpoch(0),planningEpoch:planningEpoch(0),inputRevision:contentRevision(p.revision),sourceInputDigest:hvpBodyCutInputDigest(p,buffers),
-        algorithmVersion:algorithmVersion(HVP_BODY_CUT_ALGORITHM),priority:"Urgent",deadline:jobDeadline(sequence),estimatedInputBytes:bundle.byteLength,
-        estimatedOutputBytes:byteCount(HVP_BODY_CUT_MAX_OUTPUT),payload:p},bundle).result;
-      if(disposed||terminal.kind!=="Completed"||!pool.isAcceptedCompletedTerminal(terminal)){throw new Error(`Body prepare ${terminal.kind}`);}
-      return decodeHvpBodyCutOutput(terminal.output,p);
+      return withOperation(async()=>{
+        const p=validateHvpBodyCutPayload(preparation.payload);
+        if(preparation.cells.length!==p.cellCount){throw new Error("Body source count mismatch");}
+        const cells=new Int32Array(p.cellCount*4);
+        for(const [i,c] of preparation.cells.entries()){
+          if(![c.x,c.y,c.z,c.materialId].every(n=>Number.isSafeInteger(n)&&Math.abs(n)<=1_000_000)){throw new Error("Invalid local body source");}
+          cells.set([c.x,c.y,c.z,c.materialId],i*4);
+        }
+        const buffers=[cells.buffer as ArrayBuffer],bundle:TransferableBufferBundle={buffers,ownership:"SenderToWorker",revision:contentRevision(p.revision),
+          byteLength:byteCount(cells.byteLength),views:[{name:"cells",kind:"Int32Array",bufferIndex:0,byteOffset:0,elementCount:cells.length}]};
+        await (started??=pool.start());
+        const terminal=await pool.enqueue({jobId:workerJobId(`hvp-body-${sequence++}`),targetKey:workerTargetKey(p.ownerId),jobKind:workerJobKind(HVP_BODY_CUT_JOB),
+          workerEpoch:workerEpoch(0),planningEpoch:planningEpoch(0),inputRevision:contentRevision(p.revision),sourceInputDigest:hvpBodyCutInputDigest(p,buffers),
+          algorithmVersion:algorithmVersion(HVP_BODY_CUT_ALGORITHM),priority:"Urgent",deadline:jobDeadline(sequence),estimatedInputBytes:bundle.byteLength,
+          estimatedOutputBytes:byteCount(HVP_BODY_CUT_MAX_OUTPUT),payload:p},bundle).result;
+        if(disposed||terminal.kind!=="Completed"||!pool.isAcceptedCompletedTerminal(terminal)){throw new Error(`Body prepare ${terminal.kind}`);}
+        return decodeHvpBodyCutOutput(terminal.output,p);
+      });
     },
     async analyze(plan:HvpPreparedCut):Promise<HvpSupportPlan>{
-      if(disposed){throw new Error("Terrain compiler disposed");}
-      if(plan.changed.length===0){return analyzeHvpTerrainSupport(plan);}
-      const s=plan.after,total=s.sizeX*s.sizeY*s.sizeZ;
-      if(!Number.isSafeInteger(total)||total<1||total>8_388_608){throw new Error("Support input BudgetExceeded");}
-      // Reuse immutable COW leaf copies, not 8 million map/string lookups and
-      // 256 nested timers. Unknown coverage still fails closed at copyLeaf.
-      const slots=await copyHvpTerrainSlots(s,()=>disposed);
-      const payload:HvpSupportPayload={sessionId:s.sessionId,epoch:s.epoch,generation:s.revision,sourceDigest:s.sourceDigest,
-        size:[s.sizeX,s.sizeY,s.sizeZ],changed:plan.changed.map(c=>c.cell)};
-      const buffers=[slots.buffer as ArrayBuffer],input:TransferableBufferBundle={buffers,ownership:"SenderToWorker",revision:contentRevision(s.revision),
-        byteLength:byteCount(slots.byteLength),views:[{name:"slots",kind:"Uint8Array",bufferIndex:0,byteOffset:0,elementCount:slots.length}]};
-      const request={jobId:workerJobId(`hvp-support-${sequence++}`),targetKey:workerTargetKey("hvp-support"),jobKind:workerJobKind(HVP_SUPPORT_JOB),
-        workerEpoch:workerEpoch(0),planningEpoch:planningEpoch(0),inputRevision:contentRevision(s.revision),
-        sourceInputDigest:hvpSupportInputDigest(payload,buffers),algorithmVersion:algorithmVersion(1),priority:"Urgent" as const,
-        deadline:jobDeadline(sequence),estimatedInputBytes:input.byteLength,estimatedOutputBytes:byteCount(HVP_SUPPORT_MAX_OUTPUT),payload};
-      await (started??=pool.start());
-      const terminal=await pool.enqueue(request,input).result;
-      if(disposed||terminal.kind!=="Completed"||!pool.isAcceptedCompletedTerminal(terminal)){throw new Error(`Support prepare ${terminal.kind}`);}
-      const report=decodeHvpSupportOutput(terminal.output,payload);
-      for(const f of report.fragments){for(const c of f.cells){if(s.readSlot(c.x,c.y,c.z)!==c.materialId){throw new Error("Foreign support occupancy");}}}
-      return bindHvpSupportPlan(plan,report);
+      return withOperation(async()=>{
+        if(plan.changed.length===0){return analyzeHvpTerrainSupport(plan);}
+        const s=plan.after,total=s.sizeX*s.sizeY*s.sizeZ;
+        if(!Number.isSafeInteger(total)||total<1||total>8_388_608){throw new Error("Support input BudgetExceeded");}
+        // Reuse immutable COW leaf copies, not 8 million map/string lookups and
+        // 256 nested timers. Unknown coverage still fails closed at copyLeaf.
+        const slots=await copyHvpTerrainSlots(s,()=>disposed);
+        const payload:HvpSupportPayload={sessionId:s.sessionId,epoch:s.epoch,generation:s.revision,sourceDigest:s.sourceDigest,
+          size:[s.sizeX,s.sizeY,s.sizeZ],changed:plan.changed.map(c=>c.cell)};
+        const buffers=[slots.buffer as ArrayBuffer],input:TransferableBufferBundle={buffers,ownership:"SenderToWorker",revision:contentRevision(s.revision),
+          byteLength:byteCount(slots.byteLength),views:[{name:"slots",kind:"Uint8Array",bufferIndex:0,byteOffset:0,elementCount:slots.length}]};
+        const request={jobId:workerJobId(`hvp-support-${sequence++}`),targetKey:workerTargetKey("hvp-support"),jobKind:workerJobKind(HVP_SUPPORT_JOB),
+          workerEpoch:workerEpoch(0),planningEpoch:planningEpoch(0),inputRevision:contentRevision(s.revision),
+          sourceInputDigest:hvpSupportInputDigest(payload,buffers),algorithmVersion:algorithmVersion(1),priority:"Urgent" as const,
+          deadline:jobDeadline(sequence),estimatedInputBytes:input.byteLength,estimatedOutputBytes:byteCount(HVP_SUPPORT_MAX_OUTPUT),payload};
+        await (started??=pool.start());
+        const terminal=await pool.enqueue(request,input).result;
+        if(disposed||terminal.kind!=="Completed"||!pool.isAcceptedCompletedTerminal(terminal)){throw new Error(`Support prepare ${terminal.kind}`);}
+        const report=decodeHvpSupportOutput(terminal.output,payload);
+        for(const f of report.fragments){for(const c of f.cells){if(s.readSlot(c.x,c.y,c.z)!==c.materialId){throw new Error("Foreign support occupancy");}}}
+        return bindHvpSupportPlan(plan,report);
+      });
     },
     async compile(plan:HvpPreparedCut):Promise<HvpTerrainProducts> {
-      return compileSectors(plan.after,hvpDirtySectors(plan,64),hvpDirtySectors(plan,32),64);
+      return withOperation(()=>compileSectors(plan.after,hvpDirtySectors(plan,64),hvpDirtySectors(plan,32),64));
     },
     async restore(before:HvpTerrainSnapshot,after:HvpTerrainSnapshot,serial=false):Promise<HvpTerrainProducts>{
-      // A full scene restore may need all 16 render + 64 collision sectors,
-      // still in bounded batches; it is not a larger per-cut allowance.
-      return compileSectors(after,hvpRestoreSectors(before,after,64),hvpRestoreSectors(before,after,32),80,undefined,undefined,serial?1:count);
+      return withOperation(async()=>{
+        // A full scene restore may need all 16 render + 64 collision sectors,
+        // still in bounded batches; it is not a larger per-cut allowance.
+        return compileSectors(after,hvpRestoreSectors(before,after,64),hvpRestoreSectors(before,after,32),80,undefined,undefined,serial?1:count);
+      });
     },
     async dispose():Promise<void> { disposed=true; if(started!==undefined) { await pool.shutdown(); } }
   };

@@ -885,4 +885,66 @@ describe("WorkerPool lifecycle", () => {
     await Promise.all([active.result, queued.result]);
     await pool.shutdown();
   });
+
+  it("keeps exact job-ID replay rejection after the original job settled",async()=>{
+    const {pool}=await createPool();
+    try{
+      const original=await pool.enqueue(request("terminal-replay",8),input(8)).result;
+      expect(original.kind).toBe("Completed");
+      if(original.kind==="Completed"){expect(pool.isAcceptedCompletedTerminal(original)).toBe(true);}
+      const replay=await pool.enqueue(request("terminal-replay",8),input(8)).result;
+      expect(replay).toMatchObject({kind:"Failed",failure:{code:"DuplicateJob"}});
+      const distinct=await pool.enqueue(request("fresh-after-terminal",8),input(8)).result;
+      expect(distinct.kind).toBe("Completed");
+    }finally{await pool.shutdown();}
+  });
+
+  it("scopes completed terminals to sequential pool lifetimes", async () => {
+    const first = await createPool();
+    try {
+      const firstTerminal = await first.pool.enqueue(request("pool-epoch-replay", 8), input(8)).result;
+      expect(firstTerminal.kind).toBe("Completed");
+      if (firstTerminal.kind !== "Completed") { throw new Error("Pool A job did not complete."); }
+      expect(first.pool.isAcceptedCompletedTerminal(firstTerminal)).toBe(true);
+
+      const replay = await first.pool.enqueue(request("pool-epoch-replay", 8), input(8)).result;
+      expect(replay).toMatchObject({ kind: "Failed", failure: { code: "DuplicateJob" } });
+
+      await first.pool.shutdown();
+      const stoppedSnapshot = first.pool.snapshot();
+      expect(stoppedSnapshot).toMatchObject({ state: "Stopped", activeWorkers: 0, runningJobs: 0, queue: { size: 0 }, workers: [] });
+      expect(first.transports).toHaveLength(1);
+      expect(first.transports[0]!.terminated).toBe(true);
+
+      const second = await createPool();
+      try {
+        const secondTerminal = await second.pool.enqueue(request("pool-epoch-fresh-job", 8), input(8)).result;
+        expect(secondTerminal.kind).toBe("Completed");
+        if (secondTerminal.kind !== "Completed") { throw new Error("Pool B job did not complete."); }
+        expect(secondTerminal.result.jobId).not.toBe(firstTerminal.result.jobId);
+        expect(second.pool.isAcceptedCompletedTerminal(secondTerminal)).toBe(true);
+        expect(second.pool.isAcceptedCompletedTerminal(firstTerminal)).toBe(false);
+        const runningSnapshot = second.pool.snapshot();
+
+        first.transports[0]!.emitAfterTermination({
+          type: "JobOutputData",
+          jobId: firstTerminal.result.jobId,
+          workerEpoch: firstTerminal.result.workerEpoch,
+          outputBytes: firstTerminal.output.byteLength,
+          bundle: firstTerminal.output
+        });
+        first.transports[0]!.emitAfterTermination({ type: "JobCompleted", result: firstTerminal.result });
+
+        expect(first.pool.snapshot()).toEqual(stoppedSnapshot);
+        expect(first.transports[0]!.terminated).toBe(true);
+        expect(second.pool.snapshot()).toEqual(runningSnapshot);
+        expect(second.pool.isAcceptedCompletedTerminal(secondTerminal)).toBe(true);
+        expect(second.pool.isAcceptedCompletedTerminal(firstTerminal)).toBe(false);
+      } finally {
+        await second.pool.shutdown();
+      }
+    } finally {
+      await first.pool.shutdown();
+    }
+  });
 });

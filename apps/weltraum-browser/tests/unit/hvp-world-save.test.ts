@@ -1,19 +1,25 @@
-import {expect,it} from "vitest";
+import {expect,it,vi} from "vitest";
 import {createHvpPhysicsSession} from "../../src/hestia-prototype/physics/session";
 import {collisionSectors} from "../../src/hestia-prototype/physics/terrainColliders";
 import {encodeHvpGrid,decodeHvpGrid} from "../../src/hestia-prototype/persistence/gridCheckpoint";
 import {ingestHvpStructuralCells} from "../../src/hestia-prototype/terrain/structuralIngest";
 import {prepareHvpLocalBodyCut} from "../../src/hestia-prototype/physics/bodyCutPlan";
+import {createPersistenceSignature,serializeCanonicalPersistenceValue} from "../../src/persistence";
 
 const floor={sizeX:64,sizeY:8,sizeZ:64,cellMeters:.125,originMeters:{x:-4,y:-.125,z:-4},readSlot:(_x:number,y:number,_z:number)=>y===0?1:0};
 const drop={x:-2,y:3,z:-2},player={spawn:{x:.75,y:.92,z:-1},coverage:[{minX:-4,maxX:4,minZ:-4,maxZ:4}]};
-const create=()=>createHvpPhysicsSession([...collisionSectors(floor)],drop,9.81,player,{x:2,y:2,z:2},{x:0,y:0,z:0},"saved-world");
+const create=(measureBodyHold=false)=>createHvpPhysicsSession([...collisionSectors(floor)],drop,9.81,player,{x:2,y:2,z:2},{x:0,y:0,z:0},
+  "saved-world",undefined,"branch",measureBodyHold);
 it("recreates every current native owner and the paused player from artifact-only data",async()=>{
   const source=await create();source.play();for(let i=0;i<10;i+=1){source.advance(1/60);}source.pause();
-  const before=source.read(true),grid=JSON.parse(JSON.stringify(encodeHvpGrid(floor))),saved=JSON.parse(JSON.stringify(source.checkpoint()));
+  const before=source.read(true),grid=JSON.parse(JSON.stringify(encodeHvpGrid(floor))),saved:ReturnType<typeof source.checkpoint>=JSON.parse(JSON.stringify(source.checkpoint()));
   source.dispose();
   const restored=await createHvpPhysicsSession([...collisionSectors(decodeHvpGrid(grid))],drop,9.81,undefined,undefined,undefined,"saved-world",saved);
   try{
+    const restoredCheckpoint=restored.checkpoint();
+    expect(serializeCanonicalPersistenceValue(restoredCheckpoint)).toBe(serializeCanonicalPersistenceValue(saved));
+    expect(createPersistenceSignature(restoredCheckpoint)).toBe(createPersistenceSignature(saved));
+    expect(restoredCheckpoint.bodies.map(({ownerId,region})=>[ownerId,region])).toEqual(saved.bodies.map(({ownerId,region})=>[ownerId,region]));
     const after=restored.read(true);
     expect(after.bodies).toEqual(before.bodies);expect(after.player).toEqual(before.player);
     expect(after.structural).toEqual(before.structural);expect(after.inertia).toEqual(before.inertia);
@@ -37,8 +43,13 @@ it("rejects running checkpoints and foreign collision/profile or incomplete owne
 it("never invents collision for missing checkpoint coverage",()=>{
   expect(()=>[...collisionSectors({...floor,readSlot:()=>undefined})]).toThrow(/Unknown/);
 });
-it("restores current recut timber and terrain fragments, not the original parent generators",async()=>{
-  const source=await create();let saved:ReturnType<typeof source.checkpoint>,before:ReturnType<typeof source.read>;
+it.each([
+  {measureBodyHold:false,interruption:"none"},
+  {measureBodyHold:true,interruption:"none"},
+  {measureBodyHold:true,interruption:"Pause"},
+  {measureBodyHold:true,interruption:"Inspect"}
+])("restores current recut timber and terrain fragments with $interruption (measure=$measureBodyHold)",async({measureBodyHold,interruption})=>{
+  const source=await create(measureBodyHold);let saved:ReturnType<typeof source.checkpoint>,before:ReturnType<typeof source.read>;
   const sectors=[...collisionSectors(floor)];
   const direction=(point:{x:number;y:number;z:number})=>{
     const p=source.read().player!.position,dx=point.x-p.x,dy=point.y-(p.y+.75),dz=point.z-p.z,length=Math.hypot(dx,dy,dz);
@@ -58,9 +69,39 @@ it("restores current recut timber and terrain fragments, not the original parent
     const hit=source.read().moving.preview!;expect(hit.ownerId).toBe(parent.ownerId);
     const prep=source.beginBodyCut({id:"recut",ownerId:parent.ownerId,sourceDigest:hit.sourceDigest,edge:1,direction:direction(parent.position)});
     const p=prep.payload,local=prepareHvpLocalBodyCut(ingestHvpStructuralCells(p.sourceId,prep.cells,p.materials),p.cell,p.commandId,p.edge);
-    source.stageBodyCut("recut",{removedCells:local.plan.removedCells,removedMassKg:local.plan.removedMassKg,parts:local.plan.parts.map(part=>({
-      ownerId:part.ownerId,sourceDigest:part.recipe.source.contentHash,massKg:part.recipe.mass.totalMassKg,center:part.recipe.mass.centerOfMassMeters!}))});
-    source.commitBodyCut("recut");source.finalizeBodyCut("recut");
+    let now=1000;
+    const nowSpy=vi.spyOn(performance,"now").mockImplementation(()=>now);
+    try{
+      const admission={removedCells:local.plan.removedCells,removedMassKg:local.plan.removedMassKg,parts:local.plan.parts.map(part=>({
+        ownerId:part.ownerId,sourceDigest:part.recipe.source.contentHash,massKg:part.recipe.mass.totalMassKg,center:part.recipe.mass.centerOfMassMeters!}))};
+      if(measureBodyHold&&interruption==="none"){
+        const originalError=new Error("invalid body-product getter"),old=source.read();
+        const hostile=Object.defineProperty({...admission},"parts",{get:()=>{throw originalError;}});
+        let caught:unknown;
+        try{source.stageBodyCut("recut",hostile);}catch(error){caught=error;}
+        expect(caught).toBe(originalError);
+        expect(source.read()).toMatchObject({status:"Running",bodyCount:old.bodyCount,moving:{state:"Preparing"}});
+      }
+      source.stageBodyCut("recut",admission);
+      if(measureBodyHold){expect(source.bodyPrepareSpans()).toMatchObject({transactionId:"recut",holdMs:null});}
+      else{expect(source.bodyPrepareSpans()).toBeUndefined();}
+      expect(()=>source.stageBodyCut("foreign",admission)).toThrow(/Stale body preparation/);
+      expect(()=>source.stageBodyCut("recut",admission)).toThrow(/Stale body preparation/);
+      if(measureBodyHold){expect(source.bodyPrepareSpans()).toMatchObject({transactionId:"recut",holdMs:null});}
+      else{expect(source.bodyPrepareSpans()).toBeUndefined();}
+      now=1010;
+      if(interruption==="Pause"){source.pause();expect(source.bodyPrepareSpans()).toMatchObject({transactionId:"recut",holdMs:null,manualPause:true});}
+      if(interruption==="Inspect"){source.inspect();expect(source.bodyPrepareSpans()).toMatchObject({transactionId:"recut",holdMs:null,manualPause:false});}
+      now=1040;source.commitBodyCut("recut");
+      if(measureBodyHold){expect(source.bodyPrepareSpans()?.holdMs).toBeNull();}
+      else{expect(source.bodyPrepareSpans()).toBeUndefined();}
+      now=1060;source.finalizeBodyCut("recut");
+      if(measureBodyHold){expect(source.bodyPrepareSpans()).toMatchObject({transactionId:"recut",holdMs:interruption==="Pause"?null:60,
+        manualPause:interruption==="Pause"});}
+      else{expect(source.bodyPrepareSpans()).toBeUndefined();}
+      expect(source.read().status).toBe(interruption==="Pause"?"Paused":"Running");
+      if(interruption!=="none"){source.play();}
+    }finally{nowSpy.mockRestore();}
     source.pause();before=source.read(true);saved=JSON.parse(JSON.stringify(source.checkpoint()));
     expect(before.structural!.generation).toBe(1);expect(before.moving.sequence).toBe(1);
     expect(before.structural!.parts.some(p=>p.ownerId===parent.ownerId)).toBe(false);
@@ -68,6 +109,12 @@ it("restores current recut timber and terrain fragments, not the original parent
   }finally{source.dispose();}
   const restored=await createHvpPhysicsSession(sectors,drop,9.81,undefined,undefined,undefined,"saved-world",saved!);
   try{
+    const restoredCheckpoint=restored.checkpoint();
+    expect(serializeCanonicalPersistenceValue(restoredCheckpoint)).toBe(serializeCanonicalPersistenceValue(saved!));
+    expect(createPersistenceSignature(restoredCheckpoint)).toBe(createPersistenceSignature(saved!));
+    expect(restoredCheckpoint.bodies.map(({ownerId,region})=>[ownerId,region])).toEqual(saved!.bodies.map(({ownerId,region})=>[ownerId,region]));
+    expect(restoredCheckpoint.branch).toEqual(saved!.branch);
+    expect(restoredCheckpoint.moving).toEqual(saved!.moving);
     const after=restored.read(true);
     expect(after.bodies).toEqual(before!.bodies);expect(after.structural).toEqual(before!.structural);
     expect(after.terrainGeneration).toBe(1);expect(after.terrainFragments).toEqual(before!.terrainFragments);

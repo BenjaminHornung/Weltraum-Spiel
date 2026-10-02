@@ -192,6 +192,11 @@ export interface InternalStructuralObjectReconstructionInput {
   readonly commandEvidence: readonly unknown[];
 }
 
+// Provenance only: no derived payload or caller-supplied clone is retained.
+const issuedObjects=new WeakSet<object>();
+export const isIssuedStructuralObject=(value:unknown):value is StructuralObject=>
+  value!==null&&typeof value==="object"&&issuedObjects.has(value);
+
 export const reconstructStructuralObjectInternal = (value: unknown): StructuralObject => {
   const input = requirePlainRecord(value, "objectInput");
   requireExactKeys(input, ["objectId", "frame", "source", "materials", "bricks", "anchors", "joints", "objectRevision", "editRevision", "commandEvidence"], "objectInput");
@@ -244,7 +249,9 @@ export const reconstructStructuralObjectInternal = (value: unknown): StructuralO
     contentHash
   );
   const evidenceHash = hashStructuralEvidence(commandEvidence);
-  return deepFreeze({ ...contentCandidate, contentHash, commandEvidence, evidenceHash });
+  const result=deepFreeze({ ...contentCandidate, contentHash, commandEvidence, evidenceHash });
+  issuedObjects.add(result);
+  return result;
 };
 
 const validateMaterialBindings = (

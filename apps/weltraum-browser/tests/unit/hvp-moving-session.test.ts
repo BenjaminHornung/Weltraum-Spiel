@@ -1,4 +1,4 @@
-import {beforeAll,expect,it} from "vitest";
+import {beforeAll,expect,it,vi} from "vitest";
 import {R,initializeHvpRapier} from "../../src/hestia-prototype/physics/rapierPort";
 import {ingestHvpStructuralCells} from "../../src/hestia-prototype/terrain/structuralIngest";
 import {prepareHvpRigidBody,installHvpRigidBody} from "../../src/hestia-prototype/physics/rigidBody";
@@ -54,6 +54,20 @@ it("rejects foreign local output before native mutation and rolls staged members
     expect(f.body.translation()).toEqual(position);expect(f.session.read()).toMatchObject({state:"Idle",sequence:0});
   }finally{f.world.free();}
 });
+it("never acknowledges rollback when a real native child escaped unproved staging cleanup",()=>{
+  const f=fixture();
+  const create=vi.spyOn(f.world,"createCollider"),remove=vi.spyOn(f.world,"removeRigidBody");
+  try{
+    const prep=f.session.begin(f.request,f.eye,0),built=products(prep),before=f.world.bodies.len();
+    create.mockImplementationOnce(()=>{throw new Error("injected child collider failure");});
+    remove.mockImplementationOnce(()=>{throw new Error("injected cleanup failure");});
+    expect(()=>f.session.stage(f.request.id,built,1)).toThrow(/injected child collider failure/);
+    expect(f.session.read().state).toBe("RecoveryHold");
+    expect(f.world.bodies.len()).toBeGreaterThan(before);
+    expect(()=>f.session.rollback(f.request.id)).toThrow(/RecoveryHold/);
+    expect(f.session.read().state).toBe("RecoveryHold");
+  }finally{create.mockRestore();remove.mockRestore();f.world.free();}
+},120_000);
 it.each([1,4])("recuts released timber and resolves its real foliage support without stale owners (edge %i)",edge=>{
   const world=new R.World({x:0,y:0,z:0}),targets=new Map<string,HvpCuttableBody>(),bodies=new Map<string,R.RigidBody>();
   try{

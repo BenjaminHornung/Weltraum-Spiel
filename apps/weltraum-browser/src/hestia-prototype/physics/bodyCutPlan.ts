@@ -3,8 +3,10 @@ import {deriveStructuralObjectMassProperties,globalQuantumForStructuralCell,obje
 import {fnv1aHash} from "../../core/hash";
 import {ingestHvpStructuralCells,type HvpStructuralCell} from "../terrain/structuralIngest";
 import type {HvpCell} from "../terrain/picking";
-import {prepareHvpStructuralBreak,prepareHvpStructuralSphere} from "./structuralPlan";
+import {drainHvpPlanSteps,hvpPlanPartBoundaryPhase,measureHvpPlanPhase,prepareHvpStructuralBreakOwnedHashSteps,prepareHvpStructuralBreakSteps,
+  prepareHvpStructuralSphereOwnedHashSteps,prepareHvpStructuralSphereSteps,type HvpPlanProbe} from "./structuralPlan";
 import {selectHvpCutCells,type HvpCutShape} from "../terrain/cutPlan";
+import type {HvpRigidRecipe} from "./rigidRecipe";
 
 const cellCache=new WeakMap<StructuralObject,readonly HvpStructuralCell[]>();
 export const readHvpBodyCells=(source:StructuralObject):readonly HvpStructuralCell[]=>{
@@ -19,7 +21,14 @@ export const readHvpBodyCells=(source:StructuralObject):readonly HvpStructuralCe
 };
 
 /** Worker-safe local work: no body handle, world pose or render transform. */
-export const prepareHvpLocalBodyCut=(source:StructuralObject,cell:HvpCell,commandId:string,edge=4,brush:"Box"|"Sphere"="Box")=>{
+export function* prepareHvpLocalBodyCutSteps(source:StructuralObject,cell:HvpCell,commandId:string,edge=4,brush:"Box"|"Sphere"="Box",probe?:HvpPlanProbe){
+  return yield* localBodyCutSteps(false,source,cell,commandId,edge,brush,probe);
+}
+/** OWNER-INTERNAL (module export only; first-party Physics-Worker body route): children use the owned-payload hash. */
+export function* prepareHvpLocalBodyCutOwnedHashSteps(source:StructuralObject,cell:HvpCell,commandId:string,edge=4,brush:"Box"|"Sphere"="Box",probe?:HvpPlanProbe,parentRecipe?:HvpRigidRecipe){
+  return yield* localBodyCutSteps(true,source,cell,commandId,edge,brush,probe,parentRecipe);
+}
+function* localBodyCutSteps(ownedHash:boolean,source:StructuralObject,cell:HvpCell,commandId:string,edge:number,brush:"Box"|"Sphere",probe?:HvpPlanProbe,parentRecipe?:HvpRigidRecipe){
   if(!Number.isSafeInteger(edge)||edge<1||edge>8||cell.length!==3||!cell.every(Number.isSafeInteger)){
     throw new Error("Invalid local body cut");
   }
@@ -29,9 +38,20 @@ export const prepareHvpLocalBodyCut=(source:StructuralObject,cell:HvpCell,comman
   const shape:HvpCutShape=brush==="Sphere"?{kind:"Sphere",center2:[2*cell[0]+1,2*cell[1]+1,2*cell[2]+1],radius2:edge}
     :{kind:"Box",min:[min.x,min.y,min.z],max:[max.x,max.y,max.z]};
   const selected=new Set(selectHvpCutCells(shape).map(c=>c.join(":")));
-  const plan=shape.kind==="Sphere"?prepareHvpStructuralSphere(source,shape,commandId):prepareHvpStructuralBreak(source,{min,max},commandId);
-  const removed=readHvpBodyCells(source).filter(c=>selected.has(`${c.x}:${c.y}:${c.z}`));
+  const plan=shape.kind==="Sphere"
+    ?ownedHash
+      ?yield* prepareHvpStructuralSphereOwnedHashSteps(source,shape,commandId,probe,parentRecipe)
+      :yield* prepareHvpStructuralSphereSteps(source,shape,commandId,probe)
+    :ownedHash
+      ?yield* prepareHvpStructuralBreakOwnedHashSteps(source,{min,max},commandId,probe,parentRecipe)
+      :yield* prepareHvpStructuralBreakSteps(source,{min,max},commandId,probe);
+  // This step ended with the last child recipe (or the parent mass when no child remains).
+  yield hvpPlanPartBoundaryPhase(plan.parts.length);
+  const removed=measureHvpPlanPhase(probe,"removedFilterMs",()=>readHvpBodyCells(source).filter(c=>selected.has(`${c.x}:${c.y}:${c.z}`)));
   if(removed.length!==plan.removedCells){throw new Error("Incomplete removed-material receipt");}
-  const removedMass=deriveStructuralObjectMassProperties(ingestHvpStructuralCells(`hvp-removed-${fnv1aHash(source.contentHash+commandId)}`,removed,source.materials),{maxVisitedCells:512});
+  const removedSource=ingestHvpStructuralCells(`hvp-removed-${fnv1aHash(source.contentHash+commandId)}`,removed,source.materials,[],probe?.ingest);
+  const removedMass=measureHvpPlanPhase(probe,"removedMassDeriveMs",()=>deriveStructuralObjectMassProperties(removedSource,{maxVisitedCells:512}));
   return Object.freeze({plan,removedMass,bounds:Object.freeze({min:Object.freeze(min),max:Object.freeze(max)})});
-};
+}
+export const prepareHvpLocalBodyCut=(source:StructuralObject,cell:HvpCell,commandId:string,edge=4,brush:"Box"|"Sphere"="Box")=>
+  drainHvpPlanSteps(prepareHvpLocalBodyCutSteps(source,cell,commandId,edge,brush));

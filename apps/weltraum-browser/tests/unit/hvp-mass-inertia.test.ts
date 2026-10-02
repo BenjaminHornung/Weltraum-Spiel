@@ -127,9 +127,27 @@ describe("HVP full canonical inertia", () => {
     } finally { world.free(); }
   });
 
+  it("keeps the independent two-density parallel-axis tensor and native mass", () => {
+    // Two adjacent .125 m cubes have masses 1 kg and 2 kg; neither value comes from the product derivation.
+    const source=ingestHvpStructuralCells("two-density",[{x:0,y:0,z:0,materialId:1},{x:1,y:0,z:0,materialId:2}],
+      [{...materials[0]!,densityKgPerCubicMeter:512},{...materials[0]!,materialId:2,densityKgPerCubicMeter:1024}]);
+    const recipe=prepareHvpRigidBody(source),tensor=recipe.mass.inertiaTensorKgMetersSquared;
+    expect(recipe.mass.totalMassKg).toBe(3);
+    expect(recipe.mass.centerOfMassMeters).toEqual({x:7/48,y:1/16,z:1/16});
+    expect(tensor.xx).toBeCloseTo(1/128,12);
+    expect(tensor.yy).toBeCloseTo(7/384,12);
+    expect(tensor.zz).toBeCloseTo(7/384,12);
+    expect([tensor.xy,tensor.xz,tensor.yz]).toEqual([0,0,0]);
+    const world=new R.World({x:0,y:0,z:0});
+    try{const body=installHvpRigidBody(world,recipe);expect(body.mass()).toBeCloseTo(3,5);}
+    finally{world.free();}
+  });
+
   it("rejects excessive exact collision and AddBox work rather than using a hull", () => {
     const comb=Array.from({length:130},(_,x)=>({x,y:0,z:0,materialId:1}));
     comb.push(...Array.from({length:65},(_,i)=>({x:i*2,y:1,z:0,materialId:1})));
+    expect(prepareHvpRigidBody(ingestHvpStructuralCells("comb-exact-64",comb.slice(0,193),materials)).colliders).toHaveLength(64);
+    expect(()=>prepareHvpRigidBody(ingestHvpStructuralCells("comb-over-65",comb.slice(0,194),materials))).toThrow(/Budget|64/);
     expect(()=>prepareHvpRigidBody(ingestHvpStructuralCells("comb",comb,materials))).toThrow(/Budget|64/);
     const runs=Array.from({length:4097},(_,i)=>({x:(i%16)*2,y:Math.floor(i/16)%32,z:Math.floor(i/512),materialId:1}));
     expect(()=>ingestHvpStructuralCells("runs",runs,materials)).toThrow(/4096/);
@@ -137,6 +155,7 @@ describe("HVP full canonical inertia", () => {
 
   it.each([false,true])("reports actual World rollback after collider failure (cleanup fails: %s)", cleanupFails => {
     const recipe=prepareHvpRigidBody(ingestHvpStructuralCells("rollback",cells,materials));
+    expect(recipe.colliders).toHaveLength(2); // Existing fault is the last collider of this L.
     const world=new R.World({x:0,y:0,z:0});
     const create=world.createCollider.bind(world);
     vi.spyOn(world,"createCollider").mockImplementationOnce(create).mockImplementationOnce(()=>{throw new Error("injected allocation");});
@@ -148,6 +167,20 @@ describe("HVP full canonical inertia", () => {
       expect((caught as StructuralPhysicsCommitError).worldRestored).toBe(!cleanupFails);
       expect(world.bodies.len()).toBe(cleanupFails?1:0);
       expect(world.colliders.len()).toBe(cleanupFails?1:0);
+    } finally { vi.restoreAllMocks();world.free(); }
+  });
+
+  it("restores the real World when the first rigid collider installation fails", () => {
+    const recipe=prepareHvpRigidBody(ingestHvpStructuralCells("first-failure",cells,materials));
+    const world=new R.World({x:0,y:0,z:0});
+    vi.spyOn(world,"createCollider").mockImplementationOnce(()=>{throw new Error("injected first collider failure");});
+    try {
+      let caught:unknown;
+      try { installHvpRigidBody(world,recipe); } catch(error) { caught=error; }
+      expect(caught).toBeInstanceOf(StructuralPhysicsCommitError);
+      expect((caught as StructuralPhysicsCommitError).worldRestored).toBe(true);
+      expect(world.bodies.len()).toBe(0);
+      expect(world.colliders.len()).toBe(0);
     } finally { vi.restoreAllMocks();world.free(); }
   });
 

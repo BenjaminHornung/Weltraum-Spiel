@@ -9,7 +9,7 @@ import { prepareHvpRigidBody, installHvpRigidBody } from "./rigidBody";
 import { createHvpBranchSession, type HvpBranchRequest } from "./branchSession";
 import {prepareHvpTerrainFragment,type HvpTerrainFragmentRequest} from "./terrainFragment";
 import {ADAPTIVE_BRICK_ESTIMATED_BYTES} from "../../voxel/adaptive";
-import {createHvpBodyCutSession,type HvpMovingCutRequest,type HvpBodyCutAdmission} from "./bodyCutSession";
+import {createHvpBodyCutSession,createHvpOwnedHashBodyCutSession,type HvpMovingCutRequest,type HvpBodyCutAdmission,type HvpBodyPlanTrace} from "./bodyCutSession";
 import type {HvpCuttableBody} from "./bodyCut";
 import {decodeHvpWorld,hvpCollisionDigest,type HvpWorldCheckpoint} from "../persistence/worldCheckpoint";
 import {encodeHvpBody} from "../persistence/bodyCheckpoint";
@@ -26,7 +26,33 @@ export interface HvpImpulseTarget {
   readonly point:Readonly<{x:number;y:number;z:number}>|null;
 }
 const noImpulseTarget:HvpImpulseTarget=Object.freeze({kind:"NotPlaying",target:null,distanceMeters:null,massKg:null,point:null});
-export const createHvpPhysicsSession = async (
+// ponytail: a macrotask yield between whole plan phases, not a bounded slice; nested timeouts may clamp to ~4 ms.
+const yieldPhysicsTask=():Promise<void>=>new Promise<void>(resolve=>{
+  setTimeout(resolve,0);
+});
+// ponytail: TEMPORARY B1 diagnostic, measurement mode only; remove with the bounded §5.4 cursor.
+const HVP_SLOW_PLAN_STEP_MS=8;
+/**
+ * One console.debug line per plan, only if a contiguous step reached the slow threshold. Labels come
+ * from the plan's own yields; `phases` aggregates every step, `slow` lists only recorded steps
+ * (`truncatedSteps` were beyond the recording cap).
+ */
+const logSlowHvpBodyPlan=(trace:HvpBodyPlanTrace):void=>{
+  const worst=trace.max;
+  if(worst===undefined||worst.duration<HVP_SLOW_PLAN_STEP_MS){
+    return;
+  }
+  console.debug(`hvp-body-plan-steps ${JSON.stringify({commandId:trace.commandId,outcome:trace.outcome,origin:performance.timeOrigin,
+    steps:trace.totalSteps,truncatedSteps:trace.totalSteps-trace.steps.length,
+    max:{ordinal:worst.ordinal,label:worst.label,start:worst.start,durationMs:worst.duration},
+    phases:trace.phases.filter(phase=>phase.maxMs>=HVP_SLOW_PLAN_STEP_MS)
+      .map(phase=>({label:phase.label,count:phase.count,totalMs:phase.totalMs,maxMs:phase.maxMs})),
+    slow:trace.steps.filter(step=>step.duration>=HVP_SLOW_PLAN_STEP_MS)
+      .map(step=>({ordinal:step.ordinal,label:step.label,start:step.start,durationMs:step.duration,
+        ...(step.sub===undefined?{}:{sub:step.sub})}))})}`);
+};
+/** `workerOwned` is fixed per factory (never a caller input); only it selects the owned-payload body hash. */
+const physicsSessionFor = (workerOwned: boolean) => async (
   sectors: readonly HvpCollisionSector[],
   spawn: Readonly<{ x: number; y: number; z: number }>,
   gravity = resolveHvpGravity(),
@@ -35,7 +61,8 @@ export const createHvpPhysicsSession = async (
   branchSpawn?:Readonly<{x:number;y:number;z:number}>,
    sessionId="hvp-world",
     checkpoint?:unknown,
-    branchKind:"branch"|"salvage"="branch"
+    branchKind:"branch"|"salvage"="branch",
+    measureBodyHold=false
 ) => {
   if (!Number.isFinite(gravity) || gravity <= 0 || ![spawn.x, spawn.y, spawn.z].every(Number.isFinite) || sectors.length > 4094) {
     throw new RangeError("Invalid HVP physics admission");
@@ -115,7 +142,8 @@ export const createHvpPhysicsSession = async (
     },saved?.tick);
     let terrainGeneration = saved?.terrainGeneration??0;
     type Fragment=HvpCuttableBody;
-    const moving=createHvpBodyCutSession(world,movingBodies,bodies,sessionId,saved?.moving,residentExtras);
+    const moving=(workerOwned?createHvpOwnedHashBodyCutSession:createHvpBodyCutSession)(world,movingBodies,bodies,sessionId,saved?.moving,residentExtras,
+      measureBodyHold?logSlowHvpBodyPlan:undefined);
     let movingWasRunning=false;
     let terrainHeld=false;
     let bodyResidencyWork:{id:string;running:boolean;committed:boolean;changed:boolean;hold:boolean}|undefined;
@@ -168,6 +196,15 @@ export const createHvpPhysicsSession = async (
     // ponytail: wall-clock spans only; world-hold measured pause->release.
     type TerrainPrepareSpans=Readonly<{transactionId:string;recipeMs:number|null;cookMs:number|null;installMs:number|null;holdMs:number|null}>;
     let terrainSpans:TerrainPrepareSpans|undefined,terrainHoldStart:number|undefined;
+    type BodyPrepareSpans=Readonly<{transactionId:string;holdMs:number|null;manualPause:boolean}>;
+    let bodySpans:BodyPrepareSpans|undefined,bodyHoldStart:number|undefined;
+    let bodyHoldManual=false,bodyReleasedHold:Readonly<{id:string;ms:number}>|undefined;
+    const finishBodyHold=():number|undefined=>{
+      if(moving.holdsWorld||bodyHoldStart===undefined){return undefined;}
+      const duration=performance.now()-bodyHoldStart;bodyHoldStart=undefined;
+      if(measureBodyHold&&bodySpans&&!bodyHoldManual){bodySpans=Object.freeze({...bodySpans,holdMs:duration});}
+      return !bodyHoldManual&&Number.isFinite(duration)&&duration>=0?duration:undefined;
+    };
     const finishTerrainHold=()=>{
       if(!terrainHeld&&terrainSpans!==undefined&&terrainHoldStart!==undefined){
         terrainSpans=Object.freeze({...terrainSpans,holdMs:performance.now()-terrainHoldStart});terrainHoldStart=undefined;
@@ -229,6 +266,13 @@ export const createHvpPhysicsSession = async (
     return {
       read,
       terrainPrepareSpans:()=>terrainSpans,
+      bodyPrepareSpans:()=>bodySpans,
+      /** Follows the worker's dynamic measurement opt-out for the TEMPORARY plan trace. */
+      disableBodyPlanTrace:():void=>{moving.disablePlanObservation();},
+      takeBodyReleasedHold:(id:string):number|undefined=>{
+        const released=bodyReleasedHold;bodyReleasedHold=undefined;
+        return released?.id===id?released.ms:undefined;
+      },
       checkpoint():HvpWorldCheckpoint {
         if(disposed||terrainHeld||staged||branch?.busy||moving.busy||extraHeld()||tick.read().status!=="Paused"){
           throw new Error("World checkpoint requires a confirmed paused generation");
@@ -319,7 +363,9 @@ export const createHvpPhysicsSession = async (
          try{if(!terrainHeld&&staged === undefined&&!branch?.busy&&!moving.holdsWorld&&!extraHeld()) { tick.advance(seconds); }return stepTimings;}
          finally{stepTimings=undefined;}
        },
-      pause(): void { impulseTarget=noImpulseTarget;if(staged) { staged.running=false; }if(bodyResidencyWork){bodyResidencyWork.running=false;} branchWasRunning=false;movingWasRunning=false;neighborWasRunning=false;coverageWasRunning=false;character?.setEnabled(false); tick.pause(); },
+       pause(): void { impulseTarget=noImpulseTarget;if(staged) { staged.running=false; }if(bodyResidencyWork){bodyResidencyWork.running=false;}
+         if(bodyHoldStart!==undefined){bodyHoldManual=true;if(bodySpans&&bodySpans.holdMs===null){bodySpans=Object.freeze({...bodySpans,manualPause:true});}}
+         branchWasRunning=false;movingWasRunning=false;neighborWasRunning=false;coverageWasRunning=false;character?.setEnabled(false); tick.pause(); },
        resume(): void { if(terrainHeld||moving.holdsWorld||extraHeld()){throw new Error("RecoveryHold, coverage or body transaction");}tick.resume(); },
        play(): void {
          if(terrainHeld||moving.holdsWorld||extraHeld()){throw new Error("RecoveryHold, coverage or body transaction");}
@@ -336,16 +382,51 @@ export const createHvpPhysicsSession = async (
       },
       beginBodyCut(request:HvpMovingCutRequest){
         if(disposed||terrainHeld||staged||branch?.busy||moving.busy||extraHeld()||tick.read().status!=="Running"){throw new Error("Moving cut unavailable");}
-        return moving.begin(request,playerEye(),tick.read().ticks);
+        const preparation=moving.begin(request,playerEye(),tick.read().ticks);
+        // A rollback before Stage must never resume from the previous command's run state.
+        movingWasRunning=false;
+        return preparation;
       },
-      stageBodyCut(id:string,products:HvpBodyCutAdmission):void {
-        if(terrainHeld||staged||branch?.busy||extraHeld()){throw new Error("World transaction pending");}
-        movingWasRunning=tick.read().status==="Running";tick.pause();
-        try{moving.stage(id,products,tick.read().ticks);}catch(error){if(!moving.holdsWorld&&movingWasRunning){tick.resume();}throw error;}
+      /** Source-only plan work before any World hold; Read/Input and simulation continue between phases. */
+      async prepareBodyCutPlan(id:string):Promise<void> {
+        if(terrainHeld||staged||branch?.busy||extraHeld()){
+          throw new Error("World transaction pending");
+        }
+        const state=moving.read();
+        if(state.state!=="Preparing"||state.pendingId!==id){
+          throw new Error("Stale body preparation");
+        }
+        await moving.preparePlan(id,{
+          yieldTask:yieldPhysicsTask,
+          assertCurrent:()=>{
+            if(disposed){
+              throw new Error("Moving preparation disposed");
+            }
+          }
+        });
       },
-      commitBodyCut(id:string):void {moving.commit(id);},
-      rollbackBodyCut(id:string):void {moving.rollback(id);if(movingWasRunning){tick.resume();}},
-      finalizeBodyCut(id:string):void {try{moving.finalize(id);}finally{if(!moving.holdsWorld&&movingWasRunning){tick.resume();}}},
+       stageBodyCut(id:string,products:HvpBodyCutAdmission):void {
+         if(terrainHeld||staged||branch?.busy||extraHeld()){throw new Error("World transaction pending");}
+         const state=moving.read();
+         if(state.state!=="Preparing"||state.pendingId!==id){throw new Error("Stale body preparation");}
+         // The owner-local plan is finished before the hold; Stage only installs it at the current pose.
+         moving.completePlan(id);
+         const status=tick.read().status;
+         if(status!=="Running"&&status!=="Paused"){
+           // A safety hold is not a player pause: reject without mutation and leave it visible for explicit continuation.
+           movingWasRunning=false;
+           throw new Error(`${status}: body stage requires a running or player-paused World`);
+         }
+         movingWasRunning=status==="Running";tick.pause();
+         bodyReleasedHold=undefined;bodyHoldManual=!movingWasRunning;
+         bodyHoldStart=movingWasRunning?performance.now():undefined;
+         if(measureBodyHold){bodySpans=Object.freeze({transactionId:id,holdMs:null,manualPause:bodyHoldManual});}
+         try{moving.stage(id,products,tick.read().ticks);}catch(error){if(!moving.holdsWorld&&movingWasRunning){tick.resume();}
+           const released=finishBodyHold();if(released!==undefined){bodyReleasedHold=Object.freeze({id,ms:released});}throw error;}
+       },
+       commitBodyCut(id:string):void {moving.commit(id);},
+       rollbackBodyCut(id:string):void {moving.rollback(id);if(!moving.holdsWorld&&movingWasRunning){tick.resume();}finishBodyHold();},
+       finalizeBodyCut(id:string):void {try{moving.finalize(id);}finally{if(!moving.holdsWorld&&movingWasRunning){tick.resume();}finishBodyHold();}},
       prepareBranch(request:HvpBranchRequest):void {
         if(!branch||staged||branch.busy||moving.busy||extraHeld()||tick.read().status!=="Running") {throw new Error("Branch not available");}
         const eye=playerEye();branchWasRunning=true;tick.pause();
@@ -459,3 +540,9 @@ export const createHvpPhysicsSession = async (
     };
   } catch (error) { world.free(); throw error; }
 };
+export const createHvpPhysicsSession = physicsSessionFor(false);
+/**
+ * OWNER-INTERNAL (module export only): the first-party Physics-Worker World (Initialize and its Restore
+ * candidates). Same session; only its body owner hashes child transitions through the owned-payload cursor.
+ */
+export const createHvpWorkerPhysicsSession = physicsSessionFor(true);

@@ -26,8 +26,8 @@ const material = createMaterialProfile({
   depthWrite: true
 });
 
-const mesh = (revision: number, peak = 1): MeshArtifact => createMeshArtifact({
-  representationKey: key,
+const mesh = (revision: number, peak = 1, representation = key): MeshArtifact => createMeshArtifact({
+  representationKey: representation,
   sourceRevision: sourceRevision(3),
   artifactRevision: artifactRevision(revision),
   algorithmVersion: "artifact:v1",
@@ -165,5 +165,25 @@ describe("ThreeRenderBackend revision safety", () => {
     instance.dispatch({ kind: "ResetBackend", backendRevision: backendRevision(0), nextBackendRevision: backendRevision(1) });
     expect(upsert(instance, mesh(2))).toMatchObject({ status: "RejectedStaleRevision", ownership: "RetainedByCaller" });
     expect(instance.readDiagnostics()).toMatchObject({ backendRevision: 1, activeRepresentations: 0, staleRejectCount: 1 });
+  });
+
+  it("preserves ordinary replay semantics for a native-looking stage key", () => {
+    const instance = backend();
+    const nativeLooking = representationKey("hvp:fragment:stage7:p0");
+    const artifact = mesh(1, 1, nativeLooking);
+    expect(upsert(instance, artifact).status).toBe("Accepted");
+    expect(upsert(instance, mesh(1, 1, nativeLooking)).status).toBe("AlreadyApplied");
+    expect(instance.dispatch({
+      kind: "RemoveRepresentation",
+      backendRevision: backendRevision(0),
+      representationKey: nativeLooking,
+      expectedSourceRevision: artifact.sourceRevision,
+      expectedArtifactRevision: artifact.artifactRevision,
+      expectedContentHash: artifact.contentHash
+    }).status).toBe("Accepted");
+    expect(upsert(instance, mesh(1, 1, nativeLooking))).toMatchObject({
+      status: "RejectedStaleRevision",
+      reasonCode: "RepresentationRemovedAtRevision"
+    });
   });
 });

@@ -1,5 +1,6 @@
 import {describe, expect, it} from "vitest";
-import {readHvpCutMarkers, summarizeHvpCuts, type HvpCutSample, type HvpCutRawEntry} from "../performance/hvpCutRtReport";
+import {isHvpCutHealthFresh, readHvpBodyHoldForCommand, readHvpCutMarkers, summarizeHvpCuts,
+  type HvpCutSample, type HvpCutRawEntry} from "../performance/hvpCutRtReport";
 
 const sample = (overrides: Partial<HvpCutSample> = {}): HvpCutSample => ({
   commandId: "cut-1", scenario: "quarry", temperature: "cold", outcome: "Applied",
@@ -56,6 +57,31 @@ describe("P07 command-bound marker extraction", () => {
     expect(readHvpCutMarkers(raw, "cut-1", false).problems.length).toBeGreaterThan(0);
   });
 });
+
+it("binds a finite completed body hold only to its actual command and excludes manual or stale clocks",()=>{
+  const matching={lastBodyCommandId:"moving-cut-1",lastBodyHoldMs:37.5,lastBodyManualPause:false};
+  expect(readHvpBodyHoldForCommand(matching,"moving-cut-1")).toBe(37.5);
+  expect(readHvpBodyHoldForCommand({...matching,lastBodyHoldMs:0},"moving-cut-1")).toBe(0);
+  expect(readHvpBodyHoldForCommand(matching,"moving-cut-2")).toBeNull();
+  expect(readHvpBodyHoldForCommand({...matching,lastBodyManualPause:true},"moving-cut-1")).toBeNull();
+  expect(readHvpBodyHoldForCommand({...matching,lastBodyManualPause:undefined},"moving-cut-1")).toBeNull();
+  expect(readHvpBodyHoldForCommand({...matching,lastBodyHoldMs:undefined},"moving-cut-1")).toBeNull();
+  expect(readHvpBodyHoldForCommand({...matching,lastBodyHoldMs:NaN},"moving-cut-1")).toBeNull();
+  expect(readHvpBodyHoldForCommand({...matching,lastBodyHoldMs:-1},"moving-cut-1")).toBeNull();
+  expect(readHvpBodyHoldForCommand(null,"moving-cut-1")).toBeNull();
+});
+it("requires health published after the actual endpoint and refuses missing or failed sink data",()=>{
+  const fresh={publishedOrigin:1000,publishedAt:30,timingSinkFailures:0};
+  expect(isHvpCutHealthFresh(fresh,1000,30)).toBe(true);
+  expect(isHvpCutHealthFresh({...fresh,publishedAt:29},1000,30)).toBe(false);
+  expect(isHvpCutHealthFresh({...fresh,publishedOrigin:1001},1000,30)).toBe(false);
+  expect(isHvpCutHealthFresh({...fresh,timingSinkFailures:1},1000,30)).toBe(false);
+  expect(isHvpCutHealthFresh({...fresh,timingSinkFailures:null},1000,30)).toBe(false);
+  expect(isHvpCutHealthFresh({...fresh,timingSinkFailures:undefined},1000,30)).toBe(false);
+  expect(isHvpCutHealthFresh({...fresh,publishedAt:NaN},1000,30)).toBe(false);
+  expect(isHvpCutHealthFresh(fresh,1000,Infinity)).toBe(false);
+  expect(isHvpCutHealthFresh(null,1000,30)).toBe(false);
+});
 const quarry = (rows: readonly HvpCutSample[]) => summarizeHvpCuts(rows).groups[0]!;
 
 describe("P07 descriptive cut report", () => {
@@ -67,6 +93,7 @@ describe("P07 descriptive cut report", () => {
     const report = quarry(rows);
     expect(report.inputToAppliedMs).toEqual({count: 100, p50: 50, p95: 95, p99: 99, max: 100});
     expect(report.inputToCommittedRenderMs).toEqual({count: 100, p50: 60, p95: 105, p99: 109, max: 110});
+    expect(report.appliedToCommittedRenderMs).toEqual({count:100,p50:10,p95:10,p99:10,max:10});
     expect(report.completeApplied).toBe(100);
     expect(JSON.stringify(rows)).toBe(before);
     expect(summarizeHvpCuts(rows).acceptance).toBe("NOT_ASSESSED");
@@ -105,6 +132,12 @@ describe("P07 descriptive cut report", () => {
       missing: {applied: 1, committedRender: 1, sourceGenerationAfter: 1, hold: 2},
       inputToAppliedMs: {count: 1, p95: 0}, inputToCommittedRenderMs: {count: 1, p95: 0}, holdMs: {count: 1, p95: 0}});
     expect(report.acceptance).toBe("NOT_ASSESSED");
+  });
+
+  it("does not invent an Applied-to-render interval without both real endpoints",()=>{
+    const report=quarry([sample({appliedMs:null,firstCommittedRenderSubmitMs:35}),
+      sample({outcome:"Timeout",appliedMs:null,firstCommittedRenderSubmitMs:null,sourceGenerationAfter:null,holdMs:null})]);
+    expect(report.appliedToCommittedRenderMs).toBeNull();
   });
 
   it("counts every terminal outcome and reports known hold durations without inventing success timings", () => {

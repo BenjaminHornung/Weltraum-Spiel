@@ -1,8 +1,16 @@
 import { describe, expect, it } from "vitest";
 import {
+  backendRevision,
+  createFrameProjectionSnapshot,
+  createRenderCommand,
   createVisibilityPlan,
+  ephemeralRepresentationKey,
+  frameId,
+  frameRevision,
   representationKey,
   resolveVisibility,
+  validateFrameProjectionSnapshot,
+  validateRenderCommand,
   validateVisibilityPlan,
   visibilityPlanRevision,
   visibilityPlanSignature
@@ -87,5 +95,36 @@ describe("VisibilityPlan", () => {
     });
     const ready = new Set([parent, child, omitted]);
     expect(resolveVisibility(plan, ready, ready).visibleRepresentationKeys).toEqual([child]);
+  });
+
+  it("validates ephemeral keys in visibility sets and transform snapshots", () => {
+    const fragment = ephemeralRepresentationKey({ kind: "fragment" }, 1, 1);
+    const plan = createVisibilityPlan({
+      planRevision: visibilityPlanRevision(7),
+      visibleRepresentationKeys: [fragment],
+      fallbackRepresentationKeys: [],
+      hiddenRepresentationKeys: []
+    });
+    expect(validateVisibilityPlan(plan)).toEqual({ valid: true });
+
+    const snapshot = createFrameProjectionSnapshot({
+      frameId: frameId("camera:local"),
+      frameRevision: frameRevision(1),
+      cameraPositionRelative: { x: 0, y: 0, z: 3 },
+      cameraOrientation: { x: 0, y: 0, z: 0, w: 1 },
+      projectionParameters: { kind: "Perspective", verticalFovDegrees: 50, aspect: 1, near: 0.1, far: 100 },
+      representationTransforms: [{
+        representationKey: fragment,
+        positionRelative: { x: 0, y: 0, z: 0 },
+        orientation: { x: 0, y: 0, z: 0, w: 1 },
+        scale: { x: 1, y: 1, z: 1 }
+      }]
+    });
+    expect(validateFrameProjectionSnapshot(snapshot)).toEqual({ valid: true });
+    expect(validateRenderCommand(createRenderCommand({
+      kind: "ApplyFrameProjection",
+      backendRevision: backendRevision(0),
+      snapshot
+    }))).toEqual({ valid: true });
   });
 });

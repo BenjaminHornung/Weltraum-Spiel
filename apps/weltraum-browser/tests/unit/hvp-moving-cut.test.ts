@@ -1,8 +1,10 @@
 import {beforeAll,expect,it} from "vitest";
 import {R,initializeHvpRapier} from "../../src/hestia-prototype/physics/rapierPort";
+import {HVP_PHYSICS_DT} from "../../src/hestia-prototype/physics/tick";
 import {ingestHvpStructuralCells} from "../../src/hestia-prototype/terrain/structuralIngest";
 import {installHvpRigidBody,prepareHvpRigidBody} from "../../src/hestia-prototype/physics/rigidBody";
 import {captureHvpBodyHit,prepareHvpBodyCut,stageHvpBodyCut} from "../../src/hestia-prototype/physics/bodyCut";
+import {readHvpBodyCells} from "../../src/hestia-prototype/physics/bodyCutPlan";
 
 beforeAll(initializeHvpRapier);
 const material=[{materialId:1,densityKgPerCubicMeter:512,structuralClass:"stone",destructible:true,tags:null}];
@@ -39,6 +41,35 @@ it("binds a rotated native first hit to a local cell, and rejects occlusion or o
     expect(captureHvpBodyHit(world,targets,{x:.9375,y:2.1875,z:2},{x:0,y:0,z:1},9)).toBeNull();
   }finally{world.free();}
 });
+it("stages only the originally issued hit after the camera points away",()=>{
+  const world=new R.World({x:0,y:0,z:0});try{
+    const target=make(world),targets=new Map([[target.ownerId,target]]);
+    const hit=captureHvpBodyHit(world,targets,{x:.9375,y:2.1875,z:2},{x:0,y:0,z:1},0)!;
+    expect(hit.cell).toEqual([1,0,0]);
+    const plan=prepareHvpBodyCut(hit,target,"camera-turn",1);
+    expect(captureHvpBodyHit(world,targets,{x:5,y:5,z:5},{x:1,y:0,z:0},1)).toBeNull();
+    const stage=stageHvpBodyCut(world,target,plan);
+    expect(stage.removedMomentum.massKg).toBe(1);
+    expect(stage.result.parts.flatMap(part=>part.cells.map(cell=>cell.x)).sort()).toEqual([0,2]);
+    stage.rollback();
+  }finally{world.free();}
+});
+it("rejects a new native body under the same owner and source after the original hit",()=>{
+  const world=new R.World({x:0,y:0,z:0});try{
+    const target=make(world),hit=captureHvpBodyHit(world,new Map([[target.ownerId,target]]),
+      {x:.9375,y:2.1875,z:2},{x:0,y:0,z:1},0)!;
+    const plan=prepareHvpBodyCut(hit,target,"replaced-parent",1);
+    const invalid={...target};Reflect.set(invalid,"body",undefined);
+    expect(()=>stageHvpBodyCut(world,invalid,{...plan})).toThrow(/Stale|removed/);
+    world.removeRigidBody(target.body);
+    const replacement={...target,body:installHvpRigidBody(world,target.recipe)};
+    expect(world.bodies.len()).toBe(1);
+    expect(()=>stageHvpBodyCut(world,replacement,plan)).toThrow(/Stale|removed/);
+    Reflect.set(target,"body",replacement.body);
+    expect(()=>prepareHvpBodyCut(hit,target,"replaced-before-prepare",1)).toThrow(/Stale|unvalidated/);
+    expect(world.bodies.len()).toBe(1);
+  }finally{world.free();}
+});
 it("uses current parent pose and motion after local work, not its issued-hit pose",()=>{
   const world=new R.World({x:0,y:0,z:0});try{
     const target=make(world),targets=new Map([[target.ownerId,target]]);
@@ -62,7 +93,13 @@ it("removes the last cell completely and rejects a removed parent or copied plan
     const hit=captureHvpBodyHit(world,targets,{x:.9375,y:2.0625,z:2},{x:0,y:0,z:1},0)!;
     const plan=prepareHvpBodyCut(hit,target,"last",1);
     expect(()=>stageHvpBodyCut(world,target,{...plan})).toThrow(/Stale|issued|validated/);
-    const stage=stageHvpBodyCut(world,target,plan);expect(stage.result.parts).toHaveLength(0);stage.commit();stage.finalize();
+    target.body.setLinvel({x:1,y:2,z:-3},true);target.body.setAngvel({x:.5,y:-1,z:2},true);
+    const stage=stageHvpBodyCut(world,target,plan);expect(stage.result.parts).toHaveLength(0);
+    expect(stage.removedMomentum).toMatchObject({massKg:1,linear:{x:1,y:2,z:-3}});
+    for(const [axis,rate] of Object.entries({x:.5,y:-1,z:2}) as ["x"|"y"|"z",number][]){
+      expect(stage.removedMomentum.angular[axis]).toBeCloseTo(rate/384,8);
+    }
+    stage.commit();stage.finalize();
     expect(world.bodies.len()).toBe(0);expect(world.colliders.len()).toBe(0);
     expect(()=>stageHvpBodyCut(world,target,plan)).toThrow(/Stale|removed/);
   }finally{world.free();}
@@ -120,5 +157,133 @@ it("accounts for removed linear and angular momentum using an independent per-cu
     }
     linear.forEach((n,i)=>expect(n).toBeCloseTo(before.linear[i]!,5));
     angular.forEach((n,i)=>expect(n).toBeCloseTo(before.angular[i]!,5));stage.rollback();
+  }finally{world.free();}
+});
+
+it.each([
+  {state:"falling",brush:"Box"},
+  {state:"falling",brush:"Sphere"},
+  {state:"sleeping",brush:"Box"},
+  {state:"sleeping",brush:"Sphere"}
+] as const)("balances real $state body cuts with $brush source and native geometry",({state,brush})=>{
+  const materials=[
+    {materialId:1,densityKgPerCubicMeter:512,structuralClass:"stone",destructible:true,tags:null},
+    {materialId:2,densityKgPerCubicMeter:1024,structuralClass:"stone",destructible:true,tags:null}
+  ];
+  const cells=Array.from({length:64},(_,i)=>({x:i%4,y:Math.floor(i/4)%4,z:Math.floor(i/16),materialId:i%4===0||i%4===3?2:1}));
+  const cellMeters=.125,cellVolume=cellMeters**3,key=(c:{x:number;y:number;z:number})=>`${c.x}:${c.y}:${c.z}`;
+  const materialKey=(c:{x:number;y:number;z:number;materialId:number})=>`${key(c)}:${c.materialId}`;
+  const rotate=(q:{x:number;y:number;z:number;w:number},v:{x:number;y:number;z:number})=>{
+    const t={x:2*(q.y*v.z-q.z*v.y),y:2*(q.z*v.x-q.x*v.z),z:2*(q.x*v.y-q.y*v.x)};
+    return {x:v.x+q.w*t.x+q.y*t.z-q.z*t.y,y:v.y+q.w*t.y+q.z*t.x-q.x*t.z,z:v.z+q.w*t.z+q.x*t.y-q.y*t.x};
+  };
+  const massFor=(subset:readonly {readonly materialId:number}[])=>subset.reduce((sum,cell)=>sum+materials.find(m=>m.materialId===cell.materialId)!.densityKgPerCubicMeter*cellVolume,0);
+  const recipe=prepareHvpRigidBody(ingestHvpStructuralCells(`k32-${state}-${brush}`,cells,materials));
+  const sourceMass=massFor(cells);
+  expect(sourceMass).toBe(96);
+  expect(recipe.mass.totalMassKg).toBeCloseTo(sourceMass,8);
+
+  const world=new R.World({x:0,y:-9.81,z:0});
+  try{
+    world.timestep=HVP_PHYSICS_DT;
+    const floor=world.createCollider(R.ColliderDesc.cuboid(2,.125,2).setTranslation(0,-.125,0));
+    const body=installHvpRigidBody(world,recipe,{translationMeters:{x:-.25,y:2,z:-.25},rotation:{x:0,y:0,z:0,w:1}});
+    const target={ownerId:`k32-${state}-${brush}`,body,recipe},targets=new Map([[target.ownerId,target]]);
+    expect(body.numColliders()).toBe(recipe.colliders.length);
+
+    if(state==="falling"){
+      for(let i=0;i<8;i+=1){world.step();}
+      expect(body.isSleeping()).toBe(false);
+      expect(body.linvel().y).toBeLessThan(-.5);
+      expect(body.translation().y-recipe.mass.centerOfMassMeters!.y).toBeGreaterThan(.5);
+      let contactingFloor=false;
+      world.contactPair(floor,body.collider(0),()=>{contactingFloor=true;});
+      expect(contactingFloor).toBe(false);
+    }else{
+      let steps=0;
+      while(!body.isSleeping()&&steps<1200){world.step();steps+=1;}
+      expect(body.isSleeping()).toBe(true);
+      let contactingFloor=false;
+      world.contactPair(floor,body.collider(0),()=>{contactingFloor=true;});
+      expect(contactingFloor).toBe(true);
+      expect(body.translation().y-recipe.mass.centerOfMassMeters!.y).toBeCloseTo(0,2);
+    }
+
+    const originY=body.translation().y-recipe.mass.centerOfMassMeters!.y;
+    const hit=captureHvpBodyHit(world,targets,{x:-.0625,y:originY+.1875,z:-1.25},{x:0,y:0,z:1},0);
+    expect(hit?.cell).toEqual([1,1,0]);
+    const plan=prepareHvpBodyCut(hit!,target,`k32-cut-${state}-${brush}`,2,brush);
+    if(state==="falling"){
+      for(let i=0;i<3;i+=1){world.step();}
+      expect(body.isSleeping()).toBe(false);
+    }else{
+      world.step();
+      expect(body.isSleeping()).toBe(true);
+    }
+
+    const nativeAtStage={position:{...body.translation()},rotation:{...body.rotation()},velocity:{...body.linvel()},angularVelocity:{...body.angvel()}};
+    const stage=stageHvpBodyCut(world,target,plan);
+    expect(stage.parentPose).toEqual(nativeAtStage);
+    if(state==="falling"){
+      expect(stage.parentPose.velocity.y).toBeLessThan(-.5);
+      expect(Math.abs(stage.parentPose.position.y-hit!.pose.position.y)).toBeGreaterThan(.001);
+    }else{
+      expect(body.isSleeping()).toBe(true);
+      expect(stage.parentPose.position).toEqual(hit!.pose.position);
+    }
+
+    const edge=2,hitCell=hit!.cell;
+    const minX=Math.floor(hitCell[0]/edge)*edge,minY=Math.floor(hitCell[1]/edge)*edge,minZ=Math.floor(hitCell[2]/edge)*edge;
+    const removed=cells.filter(cell=>brush==="Box"
+      ?cell.x>=minX&&cell.x<minX+edge&&cell.y>=minY&&cell.y<minY+edge&&cell.z>=minZ&&cell.z<minZ+edge
+      :(2*cell.x+1-(2*hitCell[0]+1))**2+(2*cell.y+1-(2*hitCell[1]+1))**2+(2*cell.z+1-(2*hitCell[2]+1))**2<=edge**2);
+    const removedKeys=new Set(removed.map(key)),survivors=cells.filter(cell=>!removedKeys.has(key(cell)));
+    const removedMass=massFor(removed),survivorMass=massFor(survivors);
+    expect(removed).toHaveLength(brush==="Box"?8:6);
+    expect(removedMass).toBe(brush==="Box"?12:7);
+    expect(stage.result.removedMassKg).toBeCloseTo(removedMass,8);
+    expect(stage.removedMomentum.massKg).toBeCloseTo(removedMass,8);
+    const childCells=stage.result.parts.flatMap(part=>part.cells);
+    expect(childCells.map(materialKey).sort()).toEqual(survivors.map(materialKey).sort());
+    const childMass=stage.result.parts.reduce((sum,part)=>sum+part.body.mass(),0);
+    expect(childMass).toBeCloseTo(survivorMass,6);
+    expect(childMass+stage.removedMomentum.massKg).toBeCloseTo(sourceMass,6);
+
+    const centerOffset=rotate(stage.parentPose.rotation,recipe.mass.centerOfMassMeters!);
+    const sourceOrigin={x:stage.parentPose.position.x-centerOffset.x,y:stage.parentPose.position.y-centerOffset.y,z:stage.parentPose.position.z-centerOffset.z};
+    const inverse={x:-stage.parentPose.rotation.x,y:-stage.parentPose.rotation.y,z:-stage.parentPose.rotation.z,w:stage.parentPose.rotation.w};
+    const colliderCoverage=new Map<string,number>();
+    const childColliderCount=stage.result.parts.reduce((sum,part)=>sum+part.body.numColliders(),0);
+    for(const part of stage.result.parts){
+      const issued=plan.local.plan.parts.find(p=>p.ownerId===part.ownerId);
+      if(!issued){throw new Error("Missing issued child source");}
+      expect(readHvpBodyCells(issued.recipe.source).map(materialKey).sort()).toEqual(part.cells.map(materialKey).sort());
+      expect(part.body.mass()).toBeCloseTo(massFor(part.cells),6);
+      expect(part.body.numColliders()).toBe(issued.recipe.colliders.length);
+      for(let i=0;i<part.body.numColliders();i+=1){
+        const collider=part.body.collider(i),half=collider.halfExtents(),center=collider.translation();
+        expect(collider.parent()).toBe(part.body);
+        expect(collider.shapeType()).toBe(R.ShapeType.Cuboid);
+        const q=collider.rotation(),parent=stage.parentPose.rotation;
+        expect(Math.abs(q.x*parent.x+q.y*parent.y+q.z*parent.z+q.w*parent.w)).toBeCloseTo(1,6);
+        const localCenter=rotate(inverse,{x:center.x-sourceOrigin.x,y:center.y-sourceOrigin.y,z:center.z-sourceOrigin.z});
+        const min=[(localCenter.x-half.x)/cellMeters,(localCenter.y-half.y)/cellMeters,(localCenter.z-half.z)/cellMeters];
+        const max=[(localCenter.x+half.x)/cellMeters,(localCenter.y+half.y)/cellMeters,(localCenter.z+half.z)/cellMeters];
+        const low=min.map(Math.round),high=max.map(Math.round);
+        min.forEach((value,axis)=>expect(value).toBeCloseTo(low[axis]!,4));
+        max.forEach((value,axis)=>expect(value).toBeCloseTo(high[axis]!,4));
+        for(let z=low[2]!;z<high[2]!;z+=1){for(let y=low[1]!;y<high[1]!;y+=1){for(let x=low[0]!;x<high[0]!;x+=1){
+          const cellKey=`${x}:${y}:${z}`;
+          colliderCoverage.set(cellKey,(colliderCoverage.get(cellKey)??0)+1);
+        }}}
+      }
+    }
+    expect([...colliderCoverage.keys()].sort()).toEqual(survivors.map(key).sort());
+    expect([...colliderCoverage.values()].every(count=>count===1)).toBe(true);
+    expect(world.colliders.len()).toBe(1+body.numColliders()+childColliderCount);
+    stage.commit();stage.finalize();
+    expect(world.getRigidBody(body.handle)).toBeNull();
+    expect(world.bodies.len()).toBe(stage.result.parts.length);
+    expect(world.colliders.len()).toBe(1+childColliderCount);
   }finally{world.free();}
 });

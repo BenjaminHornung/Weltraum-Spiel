@@ -2,6 +2,7 @@ import { canonicalSignature } from "./canonical";
 import {
   compareAscii,
   validateRevision,
+  validateRepresentationKey,
   validateSemanticId,
   type ContentHash,
   type FrameId,
@@ -61,7 +62,7 @@ export const validateVisibilityPlan = (plan: VisibilityPlan): ValidationResult =
   for (const [name, keys] of sets) {
     let previous: string | undefined;
     keys.forEach((key, index) => {
-      const idValidation = validateSemanticId(key, `${name}[${index}]`);
+      const idValidation = validateRepresentationKey(key, `${name}[${index}]`);
       if (!idValidation.valid) issues.push(...idValidation.issues);
       if (previous !== undefined && previous >= key) {
         issues.push(issue("NonCanonicalKeySet", name, "must be sorted and contain no duplicates"));
@@ -133,7 +134,7 @@ export const validateFrameProjectionSnapshot = (snapshot: FrameProjectionSnapsho
   }
   let previous: string | undefined;
   snapshot.representationTransforms.forEach((transform, index) => {
-    const keyValidation = validateSemanticId(transform.representationKey, `representationTransforms[${index}].representationKey`);
+    const keyValidation = validateRepresentationKey(transform.representationKey, `representationTransforms[${index}].representationKey`);
     if (!keyValidation.valid) issues.push(...keyValidation.issues);
     if (previous !== undefined && previous >= transform.representationKey) {
       issues.push(issue("NonCanonicalTransformSet", "representationTransforms", "must be sorted and contain unique keys"));

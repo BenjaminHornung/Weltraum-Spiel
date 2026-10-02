@@ -1,11 +1,14 @@
-import {createHvpPhysicsSession,type HvpPhysicsSession} from "./session";
+import {createHvpPhysicsSession,createHvpWorkerPhysicsSession,type HvpPhysicsSession} from "./session";
 import type {HvpWorldCheckpoint} from "../persistence/worldCheckpoint";
 import type {HvpCollisionSector} from "./terrainColliders";
 import {validateHvpNeighborCheckpoint} from "../runtime/residency";
 
-/** A stays owned and paused until validated B and its render products are ready. */
-export const prepareHvpWorldReplacement=async(before:HvpPhysicsSession,checkpoint:unknown,
-  replacements:readonly {index:number;mesh:HvpCollisionSector}[])=>{
+/**
+ * A stays owned and paused until validated B and its render products are ready. `workerOwned` is fixed
+ * per factory (never a caller input) and only selects the candidate's session factory.
+ */
+const worldReplacementFor=(workerOwned:boolean)=>async(before:HvpPhysicsSession,checkpoint:unknown,
+  replacements:readonly {index:number;mesh:HvpCollisionSector}[],measureBodyHold=false)=>{
   const previous=before.checkpoint(); // Reject in-flight cuts/Hold, not just a superficially paused clock.
   const c=checkpoint as HvpWorldCheckpoint|null;
   if(!c||!c.dropSpawn){throw new Error("Missing World checkpoint");}
@@ -21,7 +24,7 @@ export const prepareHvpWorldReplacement=async(before:HvpPhysicsSession,checkpoin
   for(let i=0;i<count;i+=1){if(!sectors[i]){throw new Error("Missing restored terrain sector");}}
   const facts=()=>{const {stepCpuMs:_step,...s}=before.read();return JSON.stringify(s);};
   const originalFacts=facts();
-  const candidate=await createHvpPhysicsSession(sectors,c.dropSpawn,c.gravity,undefined,undefined,undefined,c.sessionId,c);
+  const candidate=await (workerOwned?createHvpWorkerPhysicsSession:createHvpPhysicsSession)(sectors,c.dropSpawn,c.gravity,undefined,undefined,undefined,c.sessionId,c,"branch",measureBodyHold);
   let state:"Prepared"|"Committed"|"Finalized"|"RolledBack"|"RecoveryHold"="Prepared";
   const hold=(error:unknown):never=>{state="RecoveryHold";candidate.pause();before.pause();throw new Error(`RecoveryHold: ${String(error)}`);};
   try{if(facts()!==originalFacts){throw new Error("Live World changed during restore preparation");}}
@@ -51,4 +54,7 @@ export const prepareHvpWorldReplacement=async(before:HvpPhysicsSession,checkpoin
     }
   };
 };
+export const prepareHvpWorldReplacement=worldReplacementFor(false);
+/** OWNER-INTERNAL (module export only): the first-party Physics-Worker Restore; its candidate keeps the Worker body route. */
+export const prepareHvpWorkerWorldReplacement=worldReplacementFor(true);
 export type HvpWorldReplacement=Awaited<ReturnType<typeof prepareHvpWorldReplacement>>;

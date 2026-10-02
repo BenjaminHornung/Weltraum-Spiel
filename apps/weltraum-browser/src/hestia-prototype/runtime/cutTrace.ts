@@ -137,7 +137,8 @@ type HvpPendingRender = Readonly<{
 
 const HVP_CUT_MAX_INPUTS = 9;
 const HVP_CUT_MAX_KEYS = 64;
-const HVP_CUT_MAX_KEY_LENGTH = 256;
+// The owning presentation validator never accepts a longer representation key.
+const HVP_CUT_MAX_KEY_LENGTH = 128;
 const HVP_CUT_KEY_PREFIX = "hvp:terrain:s";
 const HVP_CUT_DIGEST = /^[a-f0-9]{8}$/;
 const HVP_CUT_PHASE = /^[A-Za-z][A-Za-z0-9]{0,62}$/;
@@ -242,7 +243,7 @@ const bodyFactsStatus = (body: HvpBodyCutRenderFacts | undefined, commandId: str
   if (!body || !body.outcome || typeof body.outcome !== "object" || body.outcome.id !== commandId || body.outcome.status !== "Applied"
     || body.nativeState !== "Idle" || !isSafeNonNegativeInteger(body.nativeSequence) || !body.receipt
     || body.receipt.id !== commandId || body.receipt.status !== "Applied"
-    || typeof body.receipt.parentId !== "string" || body.receipt.parentId.length === 0 || body.receipt.parentId.length > 256
+     || typeof body.receipt.parentId !== "string" || body.receipt.parentId.length === 0 || body.receipt.parentId.length > 128
     || !Array.isArray(body.children) || !Array.isArray(body.receipt.children)) { return "invalidFrame"; }
   if (body.children.length > 32 || body.receipt.children.length > 32) { return "overflow"; }
   const active = keyListStatus(body.activeKeys, ""), visible = keyListStatus(body.visibleKeys, "");
@@ -251,7 +252,7 @@ const bodyFactsStatus = (body: HvpBodyCutRenderFacts | undefined, commandId: str
     || body.children.length !== body.receipt.children.length || body.activeKeys.includes(body.receipt.parentId)) { return "invalidFrame"; }
   for (let i = 0; i < body.children.length; i += 1) {
     const child = body.children[i];
-    if (!child || typeof child.ownerId !== "string" || child.ownerId.length === 0 || child.ownerId.length > 256
+     if (!child || typeof child.ownerId !== "string" || child.ownerId.length === 0 || child.ownerId.length > 128
       || child.ownerId === body.receipt.parentId || child.ownerId !== body.receipt.children[i]
       || typeof child.sourceDigest !== "string" || !/^fnv1a64-v1:[a-f0-9]{16}$/.test(child.sourceDigest)
       || typeof child.renderKey !== "string" || !body.activeKeys.includes(child.renderKey)) { return "invalidFrame"; }
@@ -520,6 +521,9 @@ export function createHvpCutObservation(
       drop(parent.reason ?? "invalidSpan");
       return;
     }
+    if(raw.thread==="main"&&(raw.origin!==parent.value||(status&&input!==undefined&&input.origin!==parent.value))){
+      drop("invalidSpan");return;
+    }
     const timing = translatedTiming(raw, parent.value);
     if (!timing) {
       drop("invalidSpan");
@@ -646,12 +650,7 @@ export function createHvpCutObservation(
     if (!isCurrent(generation) || pending !== candidate) {
       return run();
     }
-    let result: RenderCommandResult;
-    try {
-      result = run();
-    } catch (error) {
-      throw error;
-    }
+    const result = run();
     if (!isCurrent(generation)) {
       return result;
     }

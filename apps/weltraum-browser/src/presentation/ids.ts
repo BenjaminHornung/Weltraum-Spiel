@@ -25,6 +25,18 @@ export interface ArtifactVersion {
   readonly artifactRevision: ArtifactRevision;
 }
 
+export type EphemeralRepresentationRole =
+  | { readonly kind: "terrain"; readonly sector: number }
+  | { readonly kind: "fragment" }
+  | { readonly kind: "branch"; readonly part: "branch" | "foliage" }
+  | { readonly kind: "neighbor"; readonly part: "water" | "join" | "far" | "region" | "proxy" }
+  | { readonly kind: "tool-preview" };
+
+export interface EphemeralRepresentationIdentity {
+  readonly epoch: number;
+  readonly serial: number;
+}
+
 export const compareAscii = (left: string, right: string): -1 | 0 | 1 => {
   if (left === right) return 0;
   return left < right ? -1 : 1;
@@ -32,12 +44,43 @@ export const compareAscii = (left: string, right: string): -1 | 0 | 1 => {
 
 const semanticIdPattern = /^[a-z][a-z0-9]*(?:[_:-][a-z0-9]+)*$/;
 const contentHashPattern = /^fnv1a64:[0-9a-f]{16}$/;
+const ephemeralRepresentationPattern = /^(?:hvp:terrain:s(0|[1-9][0-9]*)|hvp:fragment|hvp:branch|hvp:branch:foliage|hvp:water:neighbor|hvp:neighbor:(?:join|far|region|proxy)|hvp:tool:preview):e(0|[1-9][0-9]*)~([1-9][0-9]*)$/;
 
 export const validateSemanticId = (value: unknown, path = "id"): ValidationResult => {
   if (typeof value !== "string" || value.length < 1 || value.length > 128 || !semanticIdPattern.test(value)) {
     return invalidResult([issue("InvalidSemanticId", path, "must be a 1-128 character stable lowercase ASCII identifier")]);
   }
   return validResult();
+};
+
+export const parseEphemeralRepresentationKey = (value: unknown): EphemeralRepresentationIdentity | undefined => {
+  if (typeof value !== "string" || value.length < 1 || value.length > 128) {
+    return undefined;
+  }
+  const match = ephemeralRepresentationPattern.exec(value);
+  if (match === null || match[0] !== value) {
+    return undefined;
+  }
+  const sector = match[1] === undefined ? undefined : Number(match[1]);
+  const epoch = Number(match[2]);
+  const serial = Number(match[3]);
+  if ((sector !== undefined && !Number.isSafeInteger(sector))
+    || !Number.isSafeInteger(epoch)
+    || !Number.isSafeInteger(serial)
+    || serial < 1) {
+    return undefined;
+  }
+  return Object.freeze({ epoch, serial });
+};
+
+export const validateRepresentationKey = (value: unknown, path = "representationKey"): ValidationResult => {
+  if (typeof value === "string" && value.includes("~")) {
+    if (parseEphemeralRepresentationKey(value) !== undefined) {
+      return validResult();
+    }
+    return invalidResult([issue("InvalidEphemeralRepresentationKey", path, "must use a closed HVP render role and a bounded safe-integer epoch/serial suffix")]);
+  }
+  return validateSemanticId(value, path);
 };
 
 const semanticId = <T extends string>(value: string, name: string): T => {
@@ -64,6 +107,62 @@ export const validateRevision = (value: unknown, path = "revision"): ValidationR
     return invalidResult([issue("InvalidRevision", path, "must be a non-negative safe integer")]);
   }
   return validResult();
+};
+
+export const ephemeralRepresentationKey = (
+  role: EphemeralRepresentationRole,
+  epoch: number,
+  serial: number
+): RepresentationKey => {
+  if (!validateRevision(epoch, "ephemeralEpoch").valid || !Number.isSafeInteger(serial) || serial < 1) {
+    throw new TypeError("ephemeral epoch and serial must be non-negative/positive safe integers");
+  }
+  let prefix: string;
+  switch (role.kind) {
+    case "terrain":
+      if (!Number.isSafeInteger(role.sector) || role.sector < 0 || Object.is(role.sector, -0)) {
+        throw new TypeError("terrain sector must be a non-negative safe integer");
+      }
+      prefix = `hvp:terrain:s${role.sector}`;
+      break;
+    case "fragment":
+      prefix = "hvp:fragment";
+      break;
+    case "branch":
+      if (role.part === "foliage") {
+        prefix = "hvp:branch:foliage";
+      } else if (role.part === "branch") {
+        prefix = "hvp:branch";
+      } else {
+        throw new TypeError("branch role part is not supported");
+      }
+      break;
+    case "neighbor":
+      switch (role.part) {
+        case "water":
+          prefix = "hvp:water:neighbor";
+          break;
+        case "join":
+        case "far":
+        case "region":
+        case "proxy":
+          prefix = `hvp:neighbor:${role.part}`;
+          break;
+        default:
+          throw new TypeError("neighbor role part is not supported");
+      }
+      break;
+    case "tool-preview":
+      prefix = "hvp:tool:preview";
+      break;
+    default:
+      throw new TypeError("ephemeral representation role is not supported");
+  }
+  const value = `${prefix}:e${epoch}~${serial}`;
+  if (!validateRepresentationKey(value).valid) {
+    throw new TypeError("ephemeral representation key exceeds its closed grammar");
+  }
+  return value as RepresentationKey;
 };
 
 const revision = <T extends number>(value: number, name: string): T => {

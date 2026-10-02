@@ -40,7 +40,7 @@ const fixture = () => {
   } as unknown as THREE.WebGLRenderer;
   const dataset: Record<string, string> = {};
   const canvas = { ownerDocument: { body: { dataset } } } as unknown as HTMLCanvasElement;
-  const port = createHvpVisualRenderer(canvas, {}, () => renderer);
+  const port = createHvpVisualRenderer(canvas, {}, () => renderer, undefined, true);
   const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(), group = new THREE.Group();
   const geometry = new THREE.BoxGeometry(), material = new THREE.MeshLambertMaterial();
   const mesh: THREE.Mesh = new THREE.Mesh(geometry, material);

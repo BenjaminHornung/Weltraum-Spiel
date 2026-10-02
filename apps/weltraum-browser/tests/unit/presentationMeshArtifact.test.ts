@@ -3,10 +3,12 @@ import {
   artifactRevision,
   adoptMeshArtifactBuffers,
   createMeshArtifact,
+  ephemeralRepresentationKey,
   frameId,
   materialProfileId,
   representationKey,
   sourceRevision,
+  validateRepresentationKey,
   validateMeshArtifact,
   type MeshArtifactOwnership,
   type MeshArtifact,
@@ -74,6 +76,47 @@ describe("MeshArtifact", () => {
     expect(Object.isFrozen(artifact)).toBe(true);
     expect(Object.isFrozen(artifact.bounds)).toBe(true);
     expect(Object.isFrozen(artifact.materialRanges)).toBe(true);
+  });
+
+  it("accepts only closed HVP ephemeral representation keys without changing ordinary IDs", () => {
+    const key = ephemeralRepresentationKey({ kind: "terrain", sector: 7 }, 2, 1);
+    expect(key).toBe("hvp:terrain:s7:e2~1");
+    expect(validateRepresentationKey(key)).toEqual({ valid: true });
+    expect(validateMeshArtifact(createMeshArtifact({ ...meshInput(), representationKey: key })).valid).toBe(true);
+    expect(representationKey("hvp:fragment:stage7:p0")).toBe("hvp:fragment:stage7:p0");
+    expect(validateRepresentationKey("hvp:fragment:stage7:p0")).toEqual({ valid: true });
+
+    const roles = [
+      [{ kind: "fragment" } as const, "hvp:fragment:e2~3", 3],
+      [{ kind: "branch", part: "branch" } as const, "hvp:branch:e2~4", 4],
+      [{ kind: "branch", part: "foliage" } as const, "hvp:branch:foliage:e2~5", 5],
+      [{ kind: "neighbor", part: "join" } as const, "hvp:neighbor:join:e2~6", 6],
+      [{ kind: "neighbor", part: "far" } as const, "hvp:neighbor:far:e2~7", 7],
+      [{ kind: "neighbor", part: "region" } as const, "hvp:neighbor:region:e2~8", 8],
+      [{ kind: "neighbor", part: "proxy" } as const, "hvp:neighbor:proxy:e2~9", 9],
+      [{ kind: "tool-preview" } as const, "hvp:tool:preview:e2~10", 10]
+    ] as const;
+    for (const [role, expected, serial] of roles) {
+      const generated = ephemeralRepresentationKey(role, 2, serial);
+      expect(generated).toBe(expected);
+      expect(validateRepresentationKey(generated).valid).toBe(true);
+      expect(generated.length).toBeLessThanOrEqual(128);
+    }
+
+    for (const invalid of [
+      "hvp:unknown:e1~1",
+      "hvp:neighbor:e0~1",
+      "hvp:fragment:e01~1",
+      "hvp:fragment:e1~0",
+      "hvp:fragment:e1~01",
+      "hvp:fragment:e1~9007199254740992",
+      "hvp:terrain:s9007199254740992:e0~1",
+      "hvp:fragment:e1~1\n"
+    ]) {
+      expect(validateRepresentationKey(invalid).valid).toBe(false);
+    }
+    expect(() => representationKey("hvp:fragment:e1~1")).toThrow();
+    expect(() => ephemeralRepresentationKey({ kind: "fragment" }, 0, Number.MAX_SAFE_INTEGER + 1)).toThrow();
   });
 
   it("adopts exclusive worker buffers without copying", () => {

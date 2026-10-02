@@ -3,6 +3,7 @@ import {
   isContentHash,
   compareAscii,
   validateRevision,
+  validateRepresentationKey,
   validateSemanticId,
   type ArtifactRevision,
   type ContentHash,
@@ -134,7 +135,7 @@ export const validateMeshArtifact = (artifact: MeshArtifact): ValidationResult =
   const add = (result: ValidationResult): void => {
     if (!result.valid) issues.push(...result.issues);
   };
-  add(validateSemanticId(artifact.representationKey, "representationKey"));
+  add(validateRepresentationKey(artifact.representationKey, "representationKey"));
   add(validateRevision(artifact.sourceRevision, "sourceRevision"));
   add(validateRevision(artifact.artifactRevision, "artifactRevision"));
   add(validateSemanticId(artifact.algorithmVersion, "algorithmVersion"));

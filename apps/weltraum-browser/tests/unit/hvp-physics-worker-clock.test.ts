@@ -74,8 +74,11 @@ it("terrain timing projects one coherent transaction through the real worker han
     const finalized = await send({ id: 5, kind: "FinalizeTerrain", transactionId: "one" });
     expect(clock(finalized)).toMatchObject({ lastTerrainCommandId: "one", lastTerrainHoldMs: 120 });
 
+    now=135;intervalCallbacks[0]!();
     const read = await send({ id: 6, kind: "Read" });
     expect(clock(read)).toMatchObject({ lastTerrainCommandId: "one", lastTerrainHoldMs: 120 });
+    expect(clock(read).maxTimerGapMs).toBeGreaterThanOrEqual(135);
+    expect(read.snapshot?.status).toBe("Running");
 
     now = 200;
     const stale = await send({ id: 7, kind: "PrepareTerrain", transactionId: "stale", generation: 0, replacements: [{ index: 0, mesh: mesh(2) }] });
@@ -95,25 +98,60 @@ it("terrain timing projects one coherent transaction through the real worker han
     expect(clock(rolledBack)).toMatchObject({ lastTerrainCommandId: "two", lastTerrainHoldMs: 60 });
 
     now = 300;
-    const createSpy = vi.spyOn(R.World.prototype, "createCollider").mockImplementationOnce(() => { throw new Error("worker timing create failure"); });
+    const createSpy = vi.spyOn(R.World.prototype, "createCollider").mockImplementationOnce(() => {
+      now += 250; throw new Error("worker timing create failure");
+    });
     try {
       const failed = await send({ id: 10, kind: "PrepareTerrain", transactionId: "fault", generation: 1, replacements: [{ index: 0, mesh: mesh(4) }] });
       expect(failed.id).toBe(10);
       expect(failed.rejected).toMatch(/worker timing create failure/);
-      expect(clock(failed)).toMatchObject({ lastTerrainCommandId: "fault", lastTerrainRecipeMs: expect.any(Number), lastTerrainHoldMs: 0 });
+      expect(clock(failed)).toMatchObject({ lastTerrainCommandId: "fault", lastTerrainRecipeMs: expect.any(Number), lastTerrainHoldMs: 250 });
       expect(clock(failed).lastTerrainCookMs).toBeUndefined();
       expect(clock(failed).lastTerrainInstallMs).toBeUndefined();
       expect(failed.snapshot?.terrainTransaction).toBe("Idle");
     } finally {
       createSpy.mockRestore();
     }
-    await send({ id: 11, kind: "Pause" });
-    const checkpointReply = await send({ id: 12, kind: "Checkpoint" });
+    // 40 ms elapsed while running before pause and 11 ms after rollback must
+    // still advance normally; only the 250 ms verified transaction hold is excluded.
+    now = 561;
+    intervalCallbacks[0]!();
+    const resumed = await send({ id: 11, kind: "Read" });
+    expect(resumed.snapshot?.status).toBe("Running");
+    expect(resumed.snapshot?.ticks).toBe((rolledBack.snapshot?.ticks??0)+3);
+    expect(clock(resumed).maxTimerGapMs).toBeGreaterThanOrEqual(301);
+    expect(clock(resumed).simulationHold).toBeUndefined();
+
+    // Two more separate, proven native hold releases before ONE callback must
+    // each be deducted once, with the surrounding 40+11 ms still simulated.
+    now = 601;
+    for(const [index,heldMs] of [250,125].entries()){
+      const fault=vi.spyOn(R.World.prototype,"createCollider").mockImplementationOnce(()=>{
+        now+=heldMs;throw new Error(`worker batched failure ${index}`);
+      });
+      try{
+        const reply=await send({id:12+index,kind:"PrepareTerrain",transactionId:`batch-${index}`,generation:1,
+          replacements:[{index:0,mesh:mesh(4)}]});
+        expect(reply.rejected).toContain(`worker batched failure ${index}`);
+        expect(reply.snapshot?.terrainTransaction).toBe("Idle");
+        expect(clock(reply).lastTerrainHoldMs).toBe(heldMs);
+      }finally{fault.mockRestore();}
+    }
+    now = 987;
+    intervalCallbacks[0]!();
+    const afterBatched=await send({id:14,kind:"Read"});
+    expect(afterBatched.snapshot?.status).toBe("Running");
+    expect(afterBatched.snapshot?.ticks).toBe(resumed.snapshot!.ticks+3);
+    expect(clock(afterBatched).delayedCallbacks.at(-1)?.gapMs).toBeCloseTo(426,6);
+    expect(clock(afterBatched).simulationHold).toBeUndefined();
+
+    await send({ id: 15, kind: "Pause" });
+    const checkpointReply = await send({ id: 16, kind: "Checkpoint" });
     expect(checkpointReply.checkpoint).toBeDefined();
-    await send({ id: 13, kind: "PrepareRestore", transactionId: "restore", checkpoint: checkpointReply.checkpoint!, replacements: [{ index: 0, mesh: mesh(4) }] });
-    const committedRestore = await send({ id: 14, kind: "CommitRestore", transactionId: "restore" });
+    await send({ id: 17, kind: "PrepareRestore", transactionId: "restore", checkpoint: checkpointReply.checkpoint!, replacements: [{ index: 0, mesh: mesh(4) }] });
+    const committedRestore = await send({ id: 18, kind: "CommitRestore", transactionId: "restore" });
     expectNoTerrainClock(committedRestore);
-    const finalizedRestore = await send({ id: 15, kind: "FinalizeRestore", transactionId: "restore" });
+    const finalizedRestore = await send({ id: 19, kind: "FinalizeRestore", transactionId: "restore" });
     expectNoTerrainClock(finalizedRestore);
 
     const invalidMessage = await send(1 as unknown as HvpPhysicsMessage);
@@ -122,7 +160,7 @@ it("terrain timing projects one coherent transaction through the real worker han
   } finally {
     try {
       if (workerLoaded) {
-        await send({ id: 16, kind: "Dispose" });
+        await send({ id: 20, kind: "Dispose" });
       }
     } finally {
       nowSpy?.mockRestore();

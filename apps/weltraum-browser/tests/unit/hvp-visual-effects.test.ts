@@ -2,6 +2,24 @@ import { describe, expect, it, vi } from "vitest";
 import * as THREE from "three";
 import { createHvpVisualRenderer, HVP_EFFECT_COST, shadeHvpSurface } from "../../src/hestia-prototype/presentation/visualEffects";
 
+const diagnosticsFixture = (diagnostics?: boolean) => {
+  const shadowMap = { enabled:false,type:THREE.BasicShadowMap,autoUpdate:true,needsUpdate:false };
+  const shadowUpdates: boolean[] = [];
+  const render = vi.fn(() => { shadowUpdates.push(shadowMap.needsUpdate); shadowMap.needsUpdate=false; });
+  const dispose = vi.fn();
+  const renderer = { shadowMap,render,dispose,setSize:vi.fn(),setPixelRatio:vi.fn(),
+    info:{render:{calls:1,triangles:12},memory:{geometries:0,textures:0}} } as unknown as THREE.WebGLRenderer;
+  const dataset: Record<string,string> = {};
+  const canvas = { ownerDocument:{body:{dataset}} } as unknown as HTMLCanvasElement;
+  const port = createHvpVisualRenderer(canvas,{},()=>renderer,undefined,diagnostics);
+  const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(), light = new THREE.DirectionalLight();
+  light.castShadow = true;
+  scene.add(light,light.target);
+  return { dataset,dispose,port,render,scene,shadowMap,shadowUpdates,camera,
+    draw:()=>port.render(scene,camera),
+    release:()=>{port.dispose();scene.clear();} };
+};
+
 describe("HVP visual effects", () => {
   it("patches the installed water shader without moving source geometry or changing opacity", () => {
     const material = new THREE.MeshLambertMaterial({ opacity:0.55, transparent:true, depthWrite:false });
@@ -66,5 +84,47 @@ describe("HVP visual effects", () => {
     expect(dispose).toHaveBeenCalledTimes(1);
     expect(scene.children).toHaveLength(0);
     geometry.dispose(); replacement.dispose(); material.dispose();
+  });
+
+  it("keeps frame diagnostics off by default without skipping rendering or shadow updates", () => {
+    const f = diagnosticsFixture();
+    try {
+      for (let frame = 0; frame < 60; frame += 1) { f.draw(); }
+      expect(f.render).toHaveBeenCalledTimes(60);
+      expect(f.shadowMap.enabled).toBe(true);
+      expect(f.shadowMap.type).toBe(THREE.PCFShadowMap);
+      expect(f.shadowUpdates[0]).toBe(true);
+      expect(f.dataset.hestiaPrototypeFrameDiagnostics).toBeUndefined();
+    } finally { f.release(); }
+  });
+
+  it("writes diagnostics at frame 60 only when opted in and stays inert after disposal", () => {
+    const f = diagnosticsFixture(true);
+    try {
+      for (let frame = 0; frame < 59; frame += 1) { f.draw(); }
+      expect(f.dataset.hestiaPrototypeFrameDiagnostics).toBeUndefined();
+      f.draw();
+      const diagnostics = f.dataset.hestiaPrototypeFrameDiagnostics;
+      expect(JSON.parse(diagnostics!)).toMatchObject({ shadowMapSize:1024,fullscreenTargets:0 });
+      f.port.dispose();
+      f.port.dispose();
+      f.draw();
+      expect(f.dataset.hestiaPrototypeFrameDiagnostics).toBe(diagnostics);
+      expect(f.render).toHaveBeenCalledTimes(60);
+      expect(f.dispose).toHaveBeenCalledTimes(1);
+    } finally { f.release(); }
+  });
+
+  it("does not emit diagnostics for a frame whose renderer submission throws", () => {
+    const f = diagnosticsFixture(true);
+    const failure = new Error("render failed");
+    try {
+      for (let frame = 0; frame < 59; frame += 1) { f.draw(); }
+      f.render.mockImplementationOnce(() => { throw failure; });
+      let thrown: unknown;
+      try { f.draw(); } catch (error) { thrown = error; }
+      expect(thrown).toBe(failure);
+      expect(f.dataset.hestiaPrototypeFrameDiagnostics).toBeUndefined();
+    } finally { f.release(); }
   });
 });

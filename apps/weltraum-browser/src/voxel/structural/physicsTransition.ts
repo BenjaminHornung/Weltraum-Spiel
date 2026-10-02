@@ -14,7 +14,8 @@ import {
   hashStructuralFragmentId,
   serializeStructuralCellAddress
 } from "./canonical";
-import { deriveStructuralComponentMassProperties, deriveStructuralObjectMassProperties } from "./massProperties";
+import { deriveStructuralComponentMassProperties, deriveStructuralObjectMassProperties,
+  deriveStructuralSingleComponentMassesSteps } from "./massProperties";
 import { structuralAddressForBrickCell } from "./model";
 import type {
   StructuralComponent,
@@ -24,9 +25,12 @@ import type {
   StructuralFragment,
   StructuralFragmentId,
   StructuralInertiaTensor,
+  StructuralMassProperties,
   StructuralObject
 } from "./types";
-import { normalizeAdaptiveAuthorityFunction, structuralFail, structuralPositiveBudget } from "./validation";
+import { normalizeAdaptiveAuthorityError, normalizeAdaptiveAuthorityFunction, structuralFail, structuralPositiveBudget } from "./validation";
+// Private owned-payload cursor (module export only, not in the adaptive barrel).
+import { createOwnedCanonicalHashCursor } from "../adaptive/ownedCanonicalHashSteps";
 
 const canonicalAdaptiveJson = normalizeAdaptiveAuthorityFunction(adaptiveCanonicalJson);
 const hashAdaptiveCanonical = normalizeAdaptiveAuthorityFunction(adaptiveHashCanonical);
@@ -306,27 +310,21 @@ interface FragmentWork {
   readonly voxelCount: number;
 }
 
-export const deriveStructuralPhysicsTransition = (
+type StructuralTransitionPayload =
+  | Omit<StructuralInstalledPhysicsTransition, "contentHash">
+  | Omit<StructuralFallbackPhysicsTransition, "contentHash">;
+
+/** The deep-frozen Installed or Fallback payload exactly as before; the caller adds its contentHash. */
+const deriveTransitionPayload = (
   object: StructuralObject,
   classification: StructuralComponentClassification,
-  parentMotionValue: StructuralBodyMotion,
-  budgetValue: StructuralPhysicsTransitionBudgets,
+  parentMotion: StructuralBodyMotion,
+  budgets: StructuralPhysicsTransitionBudgets,
   massBudgets: StructuralComponentMassBudgets,
-  parentMotionSourceValue: StructuralParentMotionSource = "explicit"
-): StructuralPhysicsTransitionResult => {
-  const budgets = validateBudgets(budgetValue);
-  const parentMotion = validateMotion(parentMotionValue);
-  const parentMotionSource: StructuralParentMotionSource =
-    parentMotionSourceValue === "explicit" || parentMotionSourceValue === "live-parent-body"
-      ? parentMotionSourceValue
-      : fail("InvalidStructuralState", "parentMotionSource", "Parent motion source must be explicit or live-parent-body.");
-  if (classification.fragments.length !== classification.detachedComponents.length) {
-    fail("InvalidStructuralState", "classification", "Fragment count must match detached-component count.");
-  }
-  const objectMass = deriveStructuralObjectMassProperties(object, { maxVisitedCells: massBudgets.maxVisitedCells });
-  if (objectMass.centerOfMassMeters === null) {
-    fail("InvalidStructuralState", "objectMass", "Physics transition requires a nonempty object with finite center of mass.");
-  }
+  parentMotionSource: StructuralParentMotionSource,
+  objectMass: StructuralMassProperties,
+  issuedComponentMass?: StructuralMassProperties
+): StructuralTransitionPayload => {
   const parentCenter = objectMass.centerOfMassMeters as MeterPoint;
 
   const works: FragmentWork[] = classification.fragments.map((fragment, index) => {
@@ -379,7 +377,7 @@ export const deriveStructuralPhysicsTransition = (
     if (recomputedFragmentId !== fragment.fragmentId) {
       fail("InvalidStructuralState", path, "Fragment id must match the bound object version and content.");
     }
-    const mass = deriveStructuralComponentMassProperties(object, boundComponent, massBudgets);
+    const mass = issuedComponentMass ?? deriveStructuralComponentMassProperties(object, boundComponent, massBudgets);
     if (mass.centerOfMassMeters === null) {
       fail("InvalidStructuralState", path, "Fragment mass derivation requires finite center of mass.");
     }
@@ -505,8 +503,7 @@ export const deriveStructuralPhysicsTransition = (
   };
 
   if (overflowWorks.length === 0) {
-    const payload = deepFreeze({ ...base, status: "Installed" as const });
-    return deepFreeze({ ...payload, contentHash: hashAdaptiveCanonical(payload) });
+    return deepFreeze({ ...base, status: "Installed" as const });
   }
 
   // Semantischer Fallback: kein stilles Loeschen. Ueberzaehlige Fragmente werden
@@ -587,14 +584,155 @@ export const deriveStructuralPhysicsTransition = (
     greedyColliders: deepFreeze(debrisGreedyColliders.slice()),
     exceedsColliderBudget: debrisGreedyColliders.length > budgets.maxCollidersPerFragment
   });
-  const payload = deepFreeze({
+  return deepFreeze({
     ...base,
     status: "Fallback" as const,
     fallbackKind: STRUCTURAL_PHYSICS_TRANSITION_FALLBACK_KIND,
     debris,
     mergedDebrisFragmentIds
   });
+};
+
+type TransitionCoreArgs = Parameters<typeof deriveTransitionPayload>;
+
+/** Generic route: the same payload, then the public hash exactly as before. */
+const deriveTransitionCore = (...args: TransitionCoreArgs): StructuralPhysicsTransitionResult => {
+  const payload = deriveTransitionPayload(...args);
   return deepFreeze({ ...payload, contentHash: hashAdaptiveCanonical(payload) });
+};
+
+/** TEMPORARY diagnostic identities of the owner-internal final-hash seam's yields (module exports only). */
+export const STRUCTURAL_TRANSITION_PAYLOAD_PHASE = "transitionPayload";
+export const STRUCTURAL_TRANSITION_HASH_PHASE = "transitionHash";
+// ponytail: Node-measured start value (64 units max ~1.1 ms); calibrate in the real Worker.
+const STRUCTURAL_OWNED_HASH_UNITS_PER_STEP = 64;
+
+/**
+ * Owner-internal final hash of a payload built above: bounded cursor advances with one yield each.
+ * Owned-payload proof (static, from deriveTransitionPayload): every record is a local literal with at
+ * most 13 fields (top 13, debris 10, body plan 9, tensor 6, proof 5, box/motion 2, vectors 3); every
+ * array is a local map/slice result (dynamicBodies, dynamicFragmentIds, voxel/greedy colliders, merged
+ * ids) with no named/symbol own keys and no Proxy; all are deep-frozen before hashing. Cursor errors
+ * are translated per advance like the public wrapper; the cursor is released in `finally`.
+ */
+function* ownedTransitionHashSteps(payload: StructuralTransitionPayload): Generator<string, string, unknown> {
+  const cursor = createOwnedCanonicalHashCursor(payload);
+  try {
+    for (;;) {
+      const result = normalizeAdaptiveAuthorityError(() => cursor.advance(STRUCTURAL_OWNED_HASH_UNITS_PER_STEP));
+      if (result !== undefined) {
+        return result.contentHash;
+      }
+      yield STRUCTURAL_TRANSITION_HASH_PHASE;
+    }
+  } finally {
+    cursor.dispose();
+  }
+}
+
+function* deriveTransitionCoreOwnedHashSteps(...args: TransitionCoreArgs): Generator<string, StructuralPhysicsTransitionResult, unknown> {
+  const payload = deriveTransitionPayload(...args);
+  // The payload build (and its deepFreeze) ends its own step, before the first hash batch.
+  yield STRUCTURAL_TRANSITION_PAYLOAD_PHASE;
+  const contentHash = yield* ownedTransitionHashSteps(payload);
+  return deepFreeze({ ...payload, contentHash });
+}
+
+export const deriveStructuralPhysicsTransition = (
+  object: StructuralObject,
+  classification: StructuralComponentClassification,
+  parentMotionValue: StructuralBodyMotion,
+  budgetValue: StructuralPhysicsTransitionBudgets,
+  massBudgets: StructuralComponentMassBudgets,
+  parentMotionSourceValue: StructuralParentMotionSource = "explicit"
+): StructuralPhysicsTransitionResult => {
+  const budgets = validateBudgets(budgetValue);
+  const parentMotion = validateMotion(parentMotionValue);
+  const parentMotionSource: StructuralParentMotionSource =
+    parentMotionSourceValue === "explicit" || parentMotionSourceValue === "live-parent-body"
+      ? parentMotionSourceValue
+      : fail("InvalidStructuralState", "parentMotionSource", "Parent motion source must be explicit or live-parent-body.");
+  if (classification.fragments.length !== classification.detachedComponents.length) {
+    fail("InvalidStructuralState", "classification", "Fragment count must match detached-component count.");
+  }
+  const objectMass = deriveStructuralObjectMassProperties(object, { maxVisitedCells: massBudgets.maxVisitedCells });
+  if (objectMass.centerOfMassMeters === null) {
+    fail("InvalidStructuralState", "objectMass", "Physics transition requires a nonempty object with finite center of mass.");
+  }
+  return deriveTransitionCore(object,classification,parentMotion,budgets,massBudgets,parentMotionSource,objectMass);
+};
+
+function* singleComponentPhysicsPreparationSteps(
+  ownedHash: boolean,
+  object: StructuralObject,
+  parentMotionValue: StructuralBodyMotion,
+  budgetValue: StructuralPhysicsTransitionBudgets,
+  massBudgets: StructuralComponentMassBudgets,
+  afterObjectMass: (mass: StructuralMassProperties) => void,
+  afterClassification: (classification: StructuralComponentClassification) => void
+) {
+  const budgets=validateBudgets(budgetValue),motion=validateMotion(parentMotionValue);
+  const prepared=yield* deriveStructuralSingleComponentMassesSteps(object,massBudgets,afterObjectMass,afterClassification);
+  const core:TransitionCoreArgs=[object,prepared.classification,motion,budgets,prepared.budgets,
+    "explicit",prepared.objectMass,prepared.componentMass];
+  const transition=ownedHash?(yield* deriveTransitionCoreOwnedHashSteps(...core)):deriveTransitionCore(...core);
+  const result:Readonly<{objectMass:StructuralMassProperties;classification:StructuralComponentClassification;
+    transition:StructuralPhysicsTransitionResult}>=Object.freeze({objectMass:prepared.objectMass,classification:prepared.classification,
+    transition});
+  return result;
+}
+
+/**
+ * Step form of deriveStructuralSingleComponentPhysicsPreparation (module export only, not in the
+ * structural barrel): same validation order; only the child classification's cell extraction yields.
+ * Always the generic public hash.
+ */
+export function* deriveStructuralSingleComponentPhysicsPreparationSteps(
+  object: StructuralObject,
+  parentMotionValue: StructuralBodyMotion,
+  budgetValue: StructuralPhysicsTransitionBudgets,
+  massBudgets: StructuralComponentMassBudgets,
+  afterObjectMass: (mass: StructuralMassProperties) => void,
+  afterClassification: (classification: StructuralComponentClassification) => void
+) {
+  return yield* singleComponentPhysicsPreparationSteps(false,object,parentMotionValue,budgetValue,massBudgets,afterObjectMass,afterClassification);
+}
+
+/**
+ * OWNER-INTERNAL (module export only; reached only by the first-party Physics-Worker body route): the
+ * same preparation, but the transition's final hash runs through the bounded owned-payload cursor
+ * (yields STRUCTURAL_TRANSITION_PAYLOAD_PHASE once, then STRUCTURAL_TRANSITION_HASH_PHASE per batch).
+ * Callers must pass first-party callbacks that cannot patch realm intrinsics.
+ */
+export function* deriveStructuralSingleComponentPhysicsPreparationOwnedHashSteps(
+  object: StructuralObject,
+  parentMotionValue: StructuralBodyMotion,
+  budgetValue: StructuralPhysicsTransitionBudgets,
+  massBudgets: StructuralComponentMassBudgets,
+  afterObjectMass: (mass: StructuralMassProperties) => void,
+  afterClassification: (classification: StructuralComponentClassification) => void
+) {
+  return yield* singleComponentPhysicsPreparationSteps(true,object,parentMotionValue,budgetValue,massBudgets,afterObjectMass,afterClassification);
+}
+
+/** Fresh issued-source derivation; no caller-provided mass or classification is admitted. */
+export const deriveStructuralSingleComponentPhysicsPreparation = (
+  object: StructuralObject,
+  parentMotionValue: StructuralBodyMotion,
+  budgetValue: StructuralPhysicsTransitionBudgets,
+  massBudgets: StructuralComponentMassBudgets,
+  afterObjectMass: (mass: StructuralMassProperties) => void,
+  afterClassification: (classification: StructuralComponentClassification) => void
+): Readonly<{objectMass:StructuralMassProperties;classification:StructuralComponentClassification;
+  transition:StructuralPhysicsTransitionResult}> => {
+  // Drains the single step algorithm without pausing.
+  const steps=deriveStructuralSingleComponentPhysicsPreparationSteps(object,parentMotionValue,budgetValue,massBudgets,afterObjectMass,afterClassification);
+  for(;;){
+    const step=steps.next();
+    if(step.done){
+      return step.value;
+    }
+  }
 };
 
 export const canonicalStructuralTransitionJson = (result: StructuralPhysicsTransitionResult): string =>

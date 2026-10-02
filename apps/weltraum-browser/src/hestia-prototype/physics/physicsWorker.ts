@@ -1,10 +1,11 @@
-import { createHvpPhysicsSession, type HvpPhysicsSession } from "./session";
+// First-party owner factories: the only route that selects the owned-payload child transition hash.
+import { createHvpWorkerPhysicsSession, type HvpPhysicsSession } from "./session";
 import type { HvpCollisionSector } from "./terrainColliders";
 import type { HvpCollisionCoverage, HvpPlayerInput } from "../player/locomotion";
 import type { HvpBranchRequest } from "./branchSession";
 import type {HvpTerrainFragmentRequest} from "./terrainFragment";
 import type {HvpMovingCutRequest,HvpMovingCutPreparation,HvpBodyCutAdmission} from "./bodyCutSession";
-import {prepareHvpWorldReplacement,type HvpWorldReplacement} from "./worldReplacement";
+import {prepareHvpWorkerWorldReplacement,type HvpWorldReplacement} from "./worldReplacement";
 import type {HvpWorldCheckpoint} from "../persistence/worldCheckpoint";
 import type {HvpNeighborCheckpoint} from "../runtime/residency";
 
@@ -15,13 +16,15 @@ export interface HvpPhysicsClock {
   readonly lastCommand:string;readonly lastHandlerMs:number;
   readonly lastTerrainRecipeMs?:number;readonly lastTerrainCookMs?:number;
   readonly lastTerrainInstallMs?:number;readonly lastTerrainHoldMs?:number;readonly lastTerrainCommandId?:string;
+  readonly lastBodyHoldMs?:number|null;readonly lastBodyCommandId?:string;readonly lastBodyManualPause?:boolean;
   readonly delayedCallbacks:readonly {gapMs:number;previousCommand:string;handlerMs:number;advanceMs:number}[];
   readonly simulationHold?:Readonly<{gapMs:number;previousCommand:string;handlerMs:number;advanceMs:number;backlogSeconds:number;ticks:number}>;
 }
 export type HvpPhysicsMessage = { readonly id: number } & (
   | { readonly kind: "Initialize"; readonly sectors: readonly HvpCollisionSector[]; readonly spawn: { x: number; y: number; z: number }; readonly gravity: number;
       readonly player?: { spawn: { x: number; y: number; z: number }; coverage: readonly HvpCollisionCoverage[] }; readonly inertiaSpawn?: {x:number;y:number;z:number}; readonly branchSpawn?:{x:number;y:number;z:number};readonly sessionId:string;readonly checkpoint?:HvpWorldCheckpoint;readonly branchKind?:"branch"|"salvage";readonly measure?:boolean }
-  | { readonly kind: "Read"; readonly input?: HvpPlayerInput; readonly cameraOffset?: { x: number; y: number; z: number };readonly cutAim?:{x:number;y:number;z:number} }
+   | { readonly kind: "Read"; readonly input?: HvpPlayerInput; readonly cameraOffset?: { x: number; y: number; z: number };
+       readonly cutAim?:{x:number;y:number;z:number};readonly measure?:false }
   | { readonly kind: "Pause" | "Resume" | "Drop" | "Play" | "Inspect" | "Dispose" }
   | { readonly kind: "Impulse"; readonly direction: {x:number;y:number;z:number} }
   | { readonly kind: "PrepareTerrain"; readonly transactionId: string; readonly generation: number;
@@ -30,6 +33,7 @@ export type HvpPhysicsMessage = { readonly id: number } & (
   | {readonly kind:"PrepareBranch";readonly request:HvpBranchRequest}
   | {readonly kind:"CommitBranch"|"RollbackBranch"|"FinalizeBranch";readonly transactionId:string}
   | {readonly kind:"BeginBodyCut";readonly request:HvpMovingCutRequest}
+  | {readonly kind:"PrepareBodyPlan";readonly transactionId:string}
   | {readonly kind:"StageBodyCut";readonly transactionId:string;readonly products:HvpBodyCutAdmission}
   | {readonly kind:"CommitBodyCut"|"RollbackBodyCut"|"FinalizeBodyCut";readonly transactionId:string}
   | {readonly kind:"Checkpoint"}
@@ -51,10 +55,13 @@ let initializing = false;
 let disposed = false;
 let timer: ReturnType<typeof setInterval> | undefined;
 let previous=performance.now();
+let simulationPrevious=previous;
+let releasedPrepareHoldMs=0;
 let measure=false,droppedTimings=0;
 let stepTimings:(readonly[number,number])[]=[];
 const clock:{maxTimerGapMs:number;maxAdvanceMs:number;maxHandlerMs:number;lastCommand:string;lastHandlerMs:number;
   lastTerrainRecipeMs?:number;lastTerrainCookMs?:number;lastTerrainInstallMs?:number;lastTerrainHoldMs?:number;lastTerrainCommandId?:string;
+  lastBodyHoldMs?:number|null;lastBodyCommandId?:string;lastBodyManualPause?:boolean;
   simulationHold:HvpPhysicsClock["simulationHold"],
   delayedCallbacks:{gapMs:number;previousCommand:string;handlerMs:number;advanceMs:number}[]}={maxTimerGapMs:0,maxAdvanceMs:0,maxHandlerMs:0,lastCommand:"Initialize",lastHandlerMs:0,
   simulationHold:undefined as HvpPhysicsClock["simulationHold"],
@@ -65,11 +72,17 @@ let restore:RestoreState|undefined;
 port.onmessage = async ({ data }) => {
   const started=performance.now();
   const previousTerrainSpans=session?.terrainPrepareSpans();
+  const previousBodySpans=session?.bodyPrepareSpans();
   let terrainCommand=false,requestedTerrainId:string|undefined;
+  let bodyCommand=false,requestedBodyId:string|undefined;
   const projectTerrainSpans=(spans:ReturnType<HvpPhysicsSession["terrainPrepareSpans"]>)=>{
     clock.lastTerrainRecipeMs=spans?.recipeMs??undefined;clock.lastTerrainCookMs=spans?.cookMs??undefined;
     clock.lastTerrainInstallMs=spans?.installMs??undefined;clock.lastTerrainHoldMs=spans?.holdMs??undefined;
     clock.lastTerrainCommandId=spans?.transactionId;
+  };
+  const projectBodySpans=(spans:ReturnType<HvpPhysicsSession["bodyPrepareSpans"]>)=>{
+    clock.lastBodyHoldMs=spans?.holdMs;clock.lastBodyCommandId=spans?.transactionId;
+    clock.lastBodyManualPause=spans?.manualPause;
   };
   const reply=(value:HvpPhysicsReply)=>{
     clock.lastCommand=data.kind;clock.lastHandlerMs=performance.now()-started;clock.maxHandlerMs=Math.max(clock.maxHandlerMs,clock.lastHandlerMs);
@@ -80,6 +93,14 @@ port.onmessage = async ({ data }) => {
       projectTerrainSpans(ownsReply?currentTerrainSpans:undefined);
     }else{
       projectTerrainSpans(currentTerrainSpans);
+    }
+    if(measure){
+      const currentBodySpans=session?.bodyPrepareSpans();
+      if(bodyCommand){
+        const ownsReply=currentBodySpans!==undefined&&requestedBodyId!==undefined&&currentBodySpans.transactionId===requestedBodyId
+          &&(value.rejected===undefined||currentBodySpans!==previousBodySpans);
+        projectBodySpans(ownsReply?currentBodySpans:undefined);
+      }else{projectBodySpans(currentBodySpans);}
     }
     const timings=measure?{origin:performance.timeOrigin,steps:stepTimings,dropped:droppedTimings}:undefined;
     if(measure){stepTimings=[];droppedTimings=0;}
@@ -92,21 +113,26 @@ port.onmessage = async ({ data }) => {
     if(data.kind==="PrepareTerrain"||data.kind==="CommitTerrain"||data.kind==="RollbackTerrain"||data.kind==="FinalizeTerrain"){
       terrainCommand=true;requestedTerrainId=data.transactionId;
     }
+    if(data.kind==="StageBodyCut"||data.kind==="CommitBodyCut"||data.kind==="RollbackBodyCut"||data.kind==="FinalizeBodyCut"){
+      bodyCommand=true;requestedBodyId=data.transactionId;
+    }
     if (data.kind === "Dispose") { disposed = true; clearInterval(timer);timer=undefined; restore?.transaction?.dispose();session?.dispose(); }
     else if (data.kind === "Initialize") {
       if (initializing || session !== undefined || disposed) { throw new Error("Physics already initialized/disposed"); }
       initializing = true;
       measure=data.measure===true;
-      session = await createHvpPhysicsSession(data.sectors, data.spawn, data.gravity, data.player, data.inertiaSpawn,data.branchSpawn,data.sessionId,data.checkpoint,data.branchKind);
+       session = await createHvpWorkerPhysicsSession(data.sectors, data.spawn, data.gravity, data.player, data.inertiaSpawn,data.branchSpawn,data.sessionId,data.checkpoint,data.branchKind,measure);
       if (disposed) { session.dispose(); }
       else {
-        previous = performance.now();
+         previous = performance.now();simulationPrevious=previous;releasedPrepareHoldMs=0;
         timer = setInterval(() => {
           try {
              const now = performance.now();
              const gapMs=now-previous;clock.maxTimerGapMs=Math.max(clock.maxTimerGapMs,gapMs);
-             if(restore===undefined){const steps=session!.advance((now - previous) / 1000,measure);
-               for(const step of steps??[]){if(stepTimings.length<1024){stepTimings.push(step);}else{droppedTimings+=1;}}}
+              // Keep the real callback gap visible, but never simulate the
+              // proven native hold released within a failed PrepareTerrain/StageBodyCut.
+              if(restore===undefined){const steps=session!.advance((now-simulationPrevious-releasedPrepareHoldMs)/1000,measure);
+                for(const step of steps??[]){if(stepTimings.length<1024){stepTimings.push(step);}else{droppedTimings+=1;}}}
               const advanceMs=performance.now()-now;clock.maxAdvanceMs=Math.max(clock.maxAdvanceMs,advanceMs);
               if(gapMs>40&&clock.simulationHold===undefined){
                 const state=session!.read();
@@ -115,7 +141,7 @@ port.onmessage = async ({ data }) => {
               }
              if(gapMs>60){clock.delayedCallbacks.push({gapMs,previousCommand:clock.lastCommand,handlerMs:clock.lastHandlerMs,advanceMs});
                if(clock.delayedCallbacks.length>8){clock.delayedCallbacks.shift();}}
-            previous = now;
+             previous=now;simulationPrevious=now;releasedPrepareHoldMs=0;
           } catch (error) {
             clearInterval(timer);timer=undefined; session?.dispose(); disposed = true;
             port.postMessage({ id: -1, error: error instanceof Error ? error.message : "Physics clock failed" });
@@ -124,12 +150,20 @@ port.onmessage = async ({ data }) => {
       }
     } else {
       if (session === undefined || disposed) { throw new Error("Physics is not ready"); }
+      if(data.kind==="Read"&&data.measure===false){
+        measure=false;stepTimings=[];droppedTimings=0;
+        delete clock.lastBodyHoldMs;delete clock.lastBodyCommandId;delete clock.lastBodyManualPause;
+        session.disableBodyPlanTrace();
+        restore?.transaction?.candidate.disableBodyPlanTrace();
+      }
       if(data.kind==="PrepareRestore"){
         if(restore){throw new Error("World replacement Pending");}
         if(!/^[A-Za-z0-9:_-]{1,128}$/.test(data.transactionId)){throw new Error("Invalid restore identity");}
         const pending:RestoreState={id:data.transactionId};restore=pending;
-        try{pending.transaction=await prepareHvpWorldReplacement(session,data.checkpoint,data.replacements);
+         try{pending.transaction=await prepareHvpWorkerWorldReplacement(session,data.checkpoint,data.replacements,measure);
           if(disposed){pending.transaction.dispose();throw new Error("Restore disposed");}
+          // A candidate created while measuring must follow an opt-out received during its preparation.
+          if(!measure){pending.transaction.candidate.disableBodyPlanTrace();}
           reply({id:data.id,snapshot:pending.transaction.candidate.read(true),restoreState:pending.transaction.state});return;
         }catch(error){
           if(error instanceof Error&&error.message.includes("RecoveryHold")){pending.recoveryHold=true;}
@@ -141,9 +175,13 @@ port.onmessage = async ({ data }) => {
         const tx=restore?.transaction;
         if(!tx||restore?.id!==data.transactionId){throw new Error("Stale World replacement");}
         if(data.kind==="CommitRestore"){session=tx.commit();}
-        if(data.kind==="RollbackRestore"){session=tx.rollback();restore=undefined;}
+        if(data.kind==="RollbackRestore"){
+          session=tx.rollback();restore=undefined;
+          // The returned old World missed any opt-out received while the candidate was active.
+          if(!measure){session.disableBodyPlanTrace();}
+        }
         if(data.kind==="FinalizeRestore"){tx.finalize();restore=undefined;}
-        previous=performance.now();reply({id:data.id,snapshot:session.read(true),restoreState:tx.state});return;
+         simulationPrevious=performance.now();releasedPrepareHoldMs=0;reply({id:data.id,snapshot:session.read(true),restoreState:tx.state});return;
       }
       if(restore){
         if(data.kind!=="Read"&&data.kind!=="Pause"&&data.kind!=="Inspect"){throw new Error("World replacement Pending");}
@@ -173,7 +211,19 @@ port.onmessage = async ({ data }) => {
         case "RollbackBranch":session.rollbackBranch(data.transactionId);break;
         case "FinalizeBranch":session.finalizeBranch(data.transactionId);break;
         case "BeginBodyCut":bodyPreparation=session.beginBodyCut(data.request);break;
-        case "StageBodyCut":session.stageBodyCut(data.transactionId,data.products);break;
+        case "PrepareBodyPlan":
+        case "StageBodyCut":{
+          // Source-only plan phases yield to Read/Input and the timer before any hold starts.
+          const owner=session;
+          await owner.prepareBodyCutPlan(data.transactionId);
+          if(disposed||session!==owner||restore!==undefined){
+            throw new Error("Moving preparation cancelled");
+          }
+          if(data.kind==="StageBodyCut"){
+            owner.stageBodyCut(data.transactionId,data.products);
+          }
+          break;
+        }
         case "CommitBodyCut":session.commitBodyCut(data.transactionId);break;
         case "RollbackBodyCut":session.rollbackBodyCut(data.transactionId);break;
         case "FinalizeBodyCut":session.finalizeBodyCut(data.transactionId);break;
@@ -190,14 +240,24 @@ port.onmessage = async ({ data }) => {
         default: throw new Error("Unknown physics command");
       }
       // Deliberately held transaction/pause time is not simulation backlog.
-      if(data.kind==="Resume"||data.kind==="Play"||data.kind==="Drop"||releasingHeld){previous=performance.now();}
+       if(data.kind==="Resume"||data.kind==="Play"||data.kind==="Drop"||releasingHeld){simulationPrevious=performance.now();releasedPrepareHoldMs=0;}
     }
     reply({ id: data.id, snapshot: session?.read(data.kind==="Initialize"||data.kind==="PrepareBranch"),bodyPreparation });
   } catch (error) {
-    if(releasingHeld){previous=performance.now();}
+    if(data.kind==="PrepareTerrain"){
+      const released=session?.terrainPrepareSpans();
+      if(released!==previousTerrainSpans&&released?.transactionId===data.transactionId&&released.holdMs!==null){
+        releasedPrepareHoldMs+=released.holdMs;
+      }
+    }
+    if(data.kind==="StageBodyCut"){
+      const released=session?.takeBodyReleasedHold(data.transactionId);
+      if(released!==undefined){releasedPrepareHoldMs+=released;}
+    }
+    if(releasingHeld){simulationPrevious=performance.now();releasedPrepareHoldMs=0;}
     if(data.kind === "PrepareTerrain" || data.kind === "CommitTerrain" || data.kind === "RollbackTerrain" || data.kind === "FinalizeTerrain"
       ||data.kind==="PrepareBranch"||data.kind==="CommitBranch"||data.kind==="RollbackBranch"||data.kind==="FinalizeBranch"
-      ||data.kind==="BeginBodyCut"||data.kind==="StageBodyCut"||data.kind==="CommitBodyCut"||data.kind==="RollbackBodyCut"||data.kind==="FinalizeBodyCut"
+      ||data.kind==="BeginBodyCut"||data.kind==="PrepareBodyPlan"||data.kind==="StageBodyCut"||data.kind==="CommitBodyCut"||data.kind==="RollbackBodyCut"||data.kind==="FinalizeBodyCut"
       ||data.kind==="Checkpoint"||data.kind==="PrepareRestore"||data.kind==="CommitRestore"||data.kind==="RollbackRestore"||data.kind==="FinalizeRestore"
       ||data.kind==="PrepareNeighbor"||data.kind==="CommitNeighbor"||data.kind==="RollbackNeighbor"||data.kind==="FinalizeNeighbor"
       ||data.kind==="ParkDistantBodies"||data.kind==="RestoreNearBodies"||data.kind==="PrepareBodyResidency"||data.kind==="CommitBodyResidency"

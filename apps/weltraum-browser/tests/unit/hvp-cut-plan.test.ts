@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { pickHvpCell } from "../../src/hestia-prototype/terrain/picking";
+import { Quaternion, Vector3 } from "three";
+import { materializeHvpCoastSource } from "../../src/hvp/hvpCoastSource";
+import { pickHvpCell, type HvpCell } from "../../src/hestia-prototype/terrain/picking";
 import { assertHvpSafeQuarry, createHvpTerrainRoot, selectHvpCutCells } from "../../src/hestia-prototype/terrain/cutPlan";
 
 const source = (readSlot = (x: number, y: number, z: number): number | undefined => x === 2 && y < 3 && z === 2 ? 1 : 0) => ({
@@ -48,6 +50,11 @@ describe("HVP canonical cutter prepare", () => {
     expect(() => selectHvpCutCells({ kind: "Box", min: [0,0,0], max: [9,8,8] })).toThrow(/Budget/);
     expect(() => selectHvpCutCells({ kind: "Sphere", center2: [Number.MAX_SAFE_INTEGER,0,0], radius2: 8 })).toThrow();
   });
+  it("keeps negative and largest allowed Box coordinates half-open without a bitwise fast path",()=>{
+    expect(selectHvpCutCells({kind:"Box",min:[-1_000_000,0,0],max:[-999_999,1,1]})).toEqual([[-1_000_000,0,0]]);
+    expect(selectHvpCutCells({kind:"Box",min:[999_999,0,0],max:[1_000_000,1,1]})).toEqual([[999_999,0,0]]);
+    expect(()=>selectHvpCutCells({kind:"Box",min:[1_000_000,0,0],max:[1_000_000,1,1]})).toThrow(/Budget/);
+  });
   it("prepares defensive leaves without writes and rejects stale, protected or unknown mixed edits", () => {
     const root = createHvpTerrainRoot(source(), "session", 1);
     const before = root.read();
@@ -70,6 +77,38 @@ describe("HVP canonical cutter prepare", () => {
     expect(() => root.prepare({ ...request, revision: 1, sourceDigest: root.read().sourceDigest,
       shape: { kind: "Box", min: [4,2,2], max: [6,3,3] } })).toThrow(/Unknown/);
   });
+  it("replays the failed K34 quarry rays against the real source without changing gameplay", () => {
+    const base = materializeHvpCoastSource();
+    const root = createHvpTerrainRoot(base, "k34-aim-replay", 0);
+    expect(root.read().sourceDigest).toBe("b8fde6b0");
+    const pick = (y: number, quaternion: readonly [number, number, number, number]) => {
+      const direction = new Vector3(0, 0, -1).applyQuaternion(new Quaternion(...quaternion));
+      return pickHvpCell(root.read(), [-9, y + .75, -11], direction.toArray() as HvpCell);
+    };
+    const first = pick(2.4100000858306885, [-.11126560942604359, .8880980958640798, .3326874997995301, .29701980364747477]);
+    expect(first.kind).toBe("Hit");
+    if (first.kind !== "Hit") { throw new Error("Frozen Cut1 ray missed"); }
+    expect(first.cell).toEqual([44, 71, 55]);
+    const prepare = (cell: HvpCell, commandId: string) => root.prepare({ sessionId: "k34-aim-replay", epoch: 0,
+      revision: root.read().revision, sourceDigest: root.read().sourceDigest, commandId,
+      toolPolicy: "hvp-plasma-v1", shape: { kind: "Box", min: cell,
+        max: cell.map(value => value + 1) as unknown as HvpCell } });
+    const cut1 = prepare(first.cell, "cut-1");
+    expect(cut1.changed).toHaveLength(1);
+    root.commit(cut1);
+    expect(root.read().sourceDigest).toBe("b1560699");
+
+    const seed = pick(2.4100000858306885, [-.11092607724384901, .8884777394477845, .3316722884203943, .2971467734757101]);
+    const i00 = pick(2.406723737716675, [-.11092607724384901, .8884777394477845, .3316722884203943, .2971467734757101]);
+    const i01 = pick(2.406723737716675, [-.1102980361525686, .889105780539065, .3308941084577058, .2963685935130217]);
+    expect(seed.kind).toBe("Hit"); expect(i00.kind).toBe("Hit"); expect(i01.kind).toBe("Hit");
+    if (seed.kind !== "Hit" || i00.kind !== "Hit" || i01.kind !== "Hit") { throw new Error("Frozen recut ray missed"); }
+    expect(seed.cell).toEqual([43, 71, 55]);
+    expect(i00.cell).toEqual([43, 71, 55]);
+    expect(i01.cell).toEqual([43, 71, 56]);
+    expect(prepare(seed.cell, "cut-2").after.sourceDigest).toBe("7b20c5ad");
+    expect(prepare(i01.cell, "cut-2").after.sourceDigest).toBe("76208ae5");
+  }, 30_000);
   it("keeps no-ops revision-neutral and distinguishes content leaves from halo dependants", () => {
     const root = createHvpTerrainRoot({ ...source(() => 1), sizeX: 32, sizeY: 32, sizeZ: 32 }, "s", 1);
     const request = { sessionId: "s", epoch: 1, revision: 0, sourceDigest: "fixture", commandId: "a", toolPolicy: "hvp-plasma-v1" as const,

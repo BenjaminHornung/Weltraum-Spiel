@@ -290,7 +290,7 @@ describe("HVP compact page ownership and addressing", () => {
     expect(copy).toHaveLength(HVP_SOURCE_SLOT_COUNT);
     expect(copy[(3 + 256 * (5 + 256 * 7)) | 0]).toBe(readHvpSourceSlot(snapshot, 3, 7, 5));
     const second = snapshot.copySlots();
-    expect(second).not.toBe(copy);
+    expect(Object.is(second, copy)).toBe(false);
     expect(second.length).toBe(copy.length);
     let mismatches = 0;
     for (let index = 0; index < copy.length; index += 1) {

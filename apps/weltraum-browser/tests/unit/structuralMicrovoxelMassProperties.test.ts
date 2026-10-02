@@ -16,6 +16,7 @@ import {
 } from "../../src/voxel/adaptive";
 import {
   STRUCTURAL_FRAME_BINDING_SCHEMA_VERSION,
+  StructuralMassError,
   StructuralValidationError,
   createStructuralObjectFromAdaptive,
   deriveStructuralComponentClassification,
@@ -82,6 +83,36 @@ const asymmetricNonCoplanarObjectFixture = () => objectFixture([
 ]);
 
 describe("Structural Microvoxel mass properties", () => {
+  it("keeps a first cell material error before reading a later forged state getter",()=>{
+    const object=objectFixture([{x:0},{x:1}]),brick=object.bricks[0]!;
+    const first={...brick.cells[0]!,state:{...brick.cells[0]!.state}};
+    Reflect.set(first.state,"materialId",999);
+    let later=0;
+    const second={...brick.cells[1]!};
+    Object.defineProperty(second,"state",{configurable:true,enumerable:true,get:()=>{later+=1;throw new Error("later getter");}});
+    const forged={...object,bricks:[{...brick,cells:[first,second]}]} as typeof object;
+    try{
+      deriveStructuralObjectMassProperties(forged,{maxVisitedCells:2});
+      throw new Error("Expected first-cell material error");
+    }catch(error){
+      expect(error).toBeInstanceOf(StructuralMassError);
+      if(error instanceof StructuralMassError){expect(error.path).toBe("occupiedCells/0/materialId");}
+    }
+    expect(later).toBe(0);
+  });
+
+  it("uses the first matching brick and cell for forged duplicate structural addresses",()=>{
+    const object=objectFixture([{x:0},{x:1}]),brick=object.bricks[0]!;
+    const split={...object,bricks:[{...brick,cells:[brick.cells[0]!]},{...brick,cells:[brick.cells[1]!]}]} as typeof object;
+    expect(()=>deriveStructuralObjectMassProperties(split,{maxVisitedCells:2}))
+      .toThrowError(/currently occupied cells/);
+    const bad={...brick.cells[0]!,state:{...brick.cells[0]!.state}};
+    Reflect.set(bad.state,"materialId",999);
+    const duplicate={...object,bricks:[{...brick,cells:[brick.cells[0]!,bad]}]} as typeof object;
+    const mass=deriveStructuralObjectMassProperties(duplicate,{maxVisitedCells:2});
+    expect(mass.totalMassKg).toBe(2); // Both addresses resolve to the first matching cell.
+  });
+
   it("stops object-address collection before reading the first cell beyond maxVisitedCells", () => {
     const object = objectFixture([{ x: 0 }, { x: 1 }]);
     let getterCalls = 0;

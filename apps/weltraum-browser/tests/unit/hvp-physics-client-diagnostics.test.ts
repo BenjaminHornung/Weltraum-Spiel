@@ -1,0 +1,122 @@
+import {expect,it,vi} from "vitest";
+import {createHvpPhysicsClient} from "../../src/hestia-prototype/physics/client";
+import type {HvpPhysicsMessage,HvpPhysicsReply,HvpPhysicsSnapshot} from "../../src/hestia-prototype/physics/physicsWorker";
+
+vi.mock("../../src/workers/workerPool",()=>({WorkerPool:class {
+  async start():Promise<void>{}
+  async shutdown():Promise<void>{}
+}}));
+
+it("settles real client replies even when optional diagnostics throw",async()=>{
+  const controller=new AbortController();
+  let worker:PhysicsWorkerStub|undefined;
+  const callbackErrors:unknown[]=[],observed=vi.fn(()=>{throw new Error("optional telemetry sink failed");});
+  class PhysicsWorkerStub {
+    onmessage:((event:MessageEvent<HvpPhysicsReply>)=>void)|null=null;
+    onerror:((event:ErrorEvent)=>void)|null=null;
+    onmessageerror:((event:MessageEvent)=>void)|null=null;
+    terminated=false;
+    readonly messages:HvpPhysicsMessage[]=[];
+    constructor(){worker=this;}
+    postMessage(message:HvpPhysicsMessage):void {
+      this.messages.push(message);
+      queueMicrotask(()=>{
+        const disposed=message.kind==="Dispose";
+        const snapshot={status:disposed?"Disposed":"Running",bodyCount:disposed?0:1,colliderCount:0,collisionBytes:0} as HvpPhysicsSnapshot;
+        const reply:HvpPhysicsReply={id:message.id,snapshot,
+          timings:{origin:performance.timeOrigin,steps:[],dropped:0},
+          clock:{timers:disposed?0:1,maxTimerGapMs:0,maxAdvanceMs:0,maxHandlerMs:0,lastCommand:message.kind,
+            lastHandlerMs:0,delayedCallbacks:[]}};
+        try {this.onmessage?.({data:reply} as MessageEvent<HvpPhysicsReply>);}
+        catch(error){callbackErrors.push(error);}
+      });
+    }
+    terminate():void{this.terminated=true;}
+  }
+  vi.stubGlobal("Worker",PhysicsWorkerStub);
+  let client:Awaited<ReturnType<typeof createHvpPhysicsClient>>|undefined;
+  try {
+    const starting=createHvpPhysicsClient([],{x:0,y:1,z:0},controller.signal,undefined,undefined,undefined,undefined,"branch",observed);
+    void starting.catch(()=>undefined);
+    // A completion-turn oracle avoids waiting for the 20-second production timeout.
+    await new Promise<void>(resolve=>setTimeout(resolve,0));
+    expect(callbackErrors).toEqual([]);
+    client=await starting;
+    expect(client.read().status).toBe("Running");
+    client.update();
+    await new Promise<void>(resolve=>setTimeout(resolve,0));
+    expect(callbackErrors).toEqual([]);
+    expect(client.lifecycle?.()).toMatchObject({workers:1,pendingJobs:0,timingSinkFailures:1});
+    expect(worker?.messages.some(message=>message.kind==="Read"&&message.measure===false)).toBe(true);
+    await client.dispose();
+    expect(callbackErrors).toEqual([]);
+    expect(worker?.terminated).toBe(true);
+    expect(observed).toHaveBeenCalledTimes(1);
+  } finally {
+    controller.abort();
+    vi.unstubAllGlobals();
+  }
+});
+
+it.each([false,true])("frees a saturated reply slot before a reentrant failing sink (rejected=%s)",async rejected=>{
+  const controller=new AbortController(),callbackErrors:unknown[]=[];
+  let worker:HoldingWorker|undefined,client:Awaited<ReturnType<typeof createHvpPhysicsClient>>|undefined;
+  const snapshot={status:"Running",bodyCount:1,colliderCount:0,collisionBytes:0} as HvpPhysicsSnapshot;
+  let sinkCalls=0;
+  class HoldingWorker {
+    onmessage:((event:MessageEvent<HvpPhysicsReply>)=>void)|null=null;
+    onerror:((event:ErrorEvent)=>void)|null=null;
+    onmessageerror:((event:MessageEvent)=>void)|null=null;
+    readonly held:HvpPhysicsMessage[]=[];
+    readonly messages:HvpPhysicsMessage[]=[];
+    terminated=false;
+    constructor(){worker=this;}
+    postMessage(message:HvpPhysicsMessage):void{
+      this.messages.push(message);
+      if(message.kind==="Pause"){this.held.push(message);}
+      else{queueMicrotask(()=>this.deliver(message));}
+    }
+    deliver(message:HvpPhysicsMessage,reject=false):void{
+      const disposed=message.kind==="Dispose";
+      const reply:HvpPhysicsReply={id:message.id,snapshot:disposed?{...snapshot,status:"Disposed",bodyCount:0}:snapshot,
+        ...(reject?{rejected:"original native rejection"}:{}),
+        timings:{origin:performance.timeOrigin,steps:[],dropped:0},
+        clock:{timers:disposed?0:1,maxTimerGapMs:0,maxAdvanceMs:0,maxHandlerMs:0,lastCommand:message.kind,
+          lastHandlerMs:0,delayedCallbacks:[]}};
+      try{this.onmessage?.({data:reply} as MessageEvent<HvpPhysicsReply>);}catch(error){callbackErrors.push(error);}
+    }
+    terminate():void{this.terminated=true;}
+  }
+  vi.stubGlobal("Worker",HoldingWorker);
+  try{
+    client=await createHvpPhysicsClient([],{x:0,y:1,z:0},controller.signal,undefined,undefined,undefined,undefined,"branch",()=>{
+      sinkCalls+=1;
+      if(client&&sinkCalls===2){client.update();throw new Error("reentrant optional sink failed");}
+    });
+    const commands=Array.from({length:8},()=>client!.command("Pause"));
+    for(const command of commands){void command.catch(()=>undefined);}
+    expect(client.lifecycle?.().pendingJobs).toBe(8);
+    const first=worker!.held.shift()!;
+    worker!.deliver(first,rejected);
+    expect(callbackErrors).toEqual([]);
+    expect(worker!.messages.filter(message=>message.kind==="Read")).toHaveLength(1);
+    expect(client.lifecycle?.().pendingJobs).toBe(8); // seven Pause + one admitted reentrant Read
+    for(const message of worker!.held.splice(0)){worker!.deliver(message);}
+    const settled=await Promise.allSettled(commands);
+    await new Promise<void>(resolve=>setTimeout(resolve,0));
+    expect(settled[0]?.status).toBe(rejected?"rejected":"fulfilled");
+    if(rejected){
+      if(settled[0]?.status!=="rejected"){throw new Error("Original native rejection was lost");}
+      expect(settled[0].reason).toBeInstanceOf(Error);
+      expect(settled[0].reason.message).toBe("original native rejection");
+    }
+    expect(settled.slice(1).every(result=>result.status==="fulfilled")).toBe(true);
+    expect(client.read()).toBe(snapshot);
+    expect(client.lifecycle?.()).toMatchObject({workers:1,pendingJobs:0,timingSinkFailures:1});
+    expect(worker!.terminated).toBe(false);
+    expect(sinkCalls).toBe(2); // Initialize and the failing reply, never the queued old replies.
+    await client.dispose();
+    expect(worker!.terminated).toBe(true);
+    expect(callbackErrors).toEqual([]);
+  }finally{controller.abort();vi.unstubAllGlobals();}
+});
