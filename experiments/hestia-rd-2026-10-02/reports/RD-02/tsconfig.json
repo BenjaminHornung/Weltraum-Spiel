@@ -1,0 +1,4 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": ["../../src/contracts/**/*.ts", "../../exporters/**/*.mjs", "../../tests/RD-02/**/*.ts"]
+}
