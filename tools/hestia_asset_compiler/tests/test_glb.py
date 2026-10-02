@@ -5,8 +5,9 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from glb_fixtures import fixture, glb, part
+from glb_fixtures import box, fixture, glb, part
 from tools.hestia_asset_compiler.errors import CompilerError
+from tools.hestia_asset_compiler.geometry import canonicalize_geometry
 from tools.hestia_asset_compiler.glb import load_glb, read_glb, read_report, strict_json
 from tools.hestia_asset_compiler.profiles import BUDGETS, PROFILES, check_budget, check_grid
 
@@ -270,6 +271,173 @@ class ReaderTests(unittest.TestCase):
         tangent = doc["bufferViews"][3]["byteOffset"]
         binary = binary[:tangent] + struct.pack("<f", float("inf")) + binary[tangent + 4:]
         self.reject("glb.nonfinite", doc, binary)
+
+    def test_owner_lists_bounded_before_location_scan(self):
+        class CountedOwners(list):
+            visits = 0
+
+            def __iter__(self):
+                for owner in super().__iter__():
+                    self.visits += 1
+                    yield owner
+
+        for field, budget in [("materials", "materials"), ("nodes", "nodes")]:
+            with self.subTest(oversized=field):
+                doc, binary = fixture(*box())
+                doc[field] = [{"extensions": {}} for _ in range(BUDGETS[budget] + 1)]
+                raw = glb(doc, binary)
+                owners = CountedOwners(doc[field])
+
+                def counted_json(data):
+                    result = strict_json(data)
+                    result[field] = owners
+                    return result
+
+                with patch("tools.hestia_asset_compiler.glb.strict_json", side_effect=counted_json):
+                    self.reject("budget." + budget, raw=raw)
+                self.assertEqual(owners.visits, 0, "cap must precede owner-set construction and scanner work")
+
+        doc, binary = fixture()
+        doc["materials"] += [{"extensions": {}, "extras": {"hestia": {
+            "renderMaterialId": "render." + str(i), "structuralMaterialId": "steel." + str(i),
+        }}} for i in range(1, BUDGETS["materials"])]
+        raw = glb(doc, binary)
+        owners = CountedOwners(doc["materials"])
+
+        def counted_materials(data):
+            result = strict_json(data)
+            result["materials"] = owners
+            return result
+
+        with patch("tools.hestia_asset_compiler.glb.strict_json", side_effect=counted_materials):
+            self.assertEqual(len(read_glb(raw).semantics["materials"]), 1024)
+        self.assertLessEqual(owners.visits, 4 * len(owners), "owner admission must not scan the material list per object")
+        for field in ("materials", "nodes"):
+            for value in ({}, None, [None]):
+                with self.subTest(field=field, value=value):
+                    doc, binary = fixture()
+                    doc[field] = value
+                    self.reject("glb.structure", doc, binary)
+
+    def test_hestia_transport_locations_and_ordinary_extras(self):
+        doc, binary = fixture(*box())
+        doc["images"] = [{"bufferView": 0, "mimeType": "image/png"}]
+        doc["samplers"] = [{}]
+        doc["textures"] = [{"source": 0, "sampler": 0}]
+        doc["materials"][0]["pbrMetallicRoughness"] = {"baseColorTexture": {"index": 0}}
+        doc["materials"][0]["extensions"] = {"KHR_materials_unlit": {}}
+        doc["extensionsUsed"] = ["KHR_materials_unlit"]
+
+        def owners(d):
+            return [d, d["scenes"][0], d["meshes"][0], d["meshes"][0]["primitives"][0],
+                    d["buffers"][0], d["bufferViews"][0], d["accessors"][0], d["images"][0],
+                    d["samplers"][0], d["textures"][0], d["materials"][0]["pbrMetallicRoughness"],
+                    d["materials"][0]["pbrMetallicRoughness"]["baseColorTexture"],
+                    d["materials"][0]["extensions"]["KHR_materials_unlit"]]
+
+        for index in range(len(owners(doc))):
+            with self.subTest(unsupported_owner=index):
+                bad = copy.deepcopy(doc)
+                owners(bad)[index]["extras"] = {"hestia": {"renderMaterialId": "render.other"}}
+                if index == 1:
+                    owners(bad)[index]["extras"]["hestia"] = {"schema": "unknown.schema", "assetId": "asset.other"}
+                self.reject("glb.semantics-location", bad, binary)
+        expected = canonicalize_geometry(read_glb(glb(doc, binary)))
+        ordinary = copy.deepcopy(doc)
+        # Extras are opaque user metadata, not aliases for transport/extension owners.
+        for owner in owners(ordinary)[:10] + [ordinary["asset"], ordinary["nodes"][0], ordinary["materials"][0]]:
+            owner.setdefault("extras", {})["note"] = {"extensions": {"editor.flag": True}}
+        parsed = read_glb(glb(ordinary, binary))
+        self.assertEqual(parsed.document, ordinary)
+        actual = canonicalize_geometry(parsed)
+        self.assertEqual(len(actual.triangles), 12)
+        self.assertEqual(actual.normalized_geometry_sha256, expected.normalized_geometry_sha256)
+        self.assertEqual(actual.semantics_sha256, expected.semantics_sha256)
+
+    def test_all_vertex_attribute_alignment_before_decode(self):
+        def attribute(name, component, width, stride=None, offset=0, view_offset=0):
+            doc, binary = fixture(*box())
+            element = {5121: 1, 5123: 2, 5126: 4}[component] * width
+            length = offset + 8 * (stride if stride is not None else element)
+            view = {"buffer": 0, "byteOffset": len(binary) + view_offset, "byteLength": length}
+            if stride is not None:
+                view["byteStride"] = stride
+            binary += bytes(view_offset + length)
+            doc["bufferViews"].append(view)
+            doc["accessors"].append({"bufferView": 2, "componentType": component, "count": 8,
+                                     "type": "VEC" + str(width), "normalized": component != 5126, "byteOffset": offset})
+            doc["meshes"][0]["primitives"][0]["attributes"][name] = 2
+            doc["buffers"][0]["byteLength"] = len(binary)
+            return doc, binary
+
+        unpack = struct.unpack_from
+
+        def headers_only(fmt, *args):
+            if fmt not in ("<4sII", "<II"):
+                raise AssertionError("misaligned attribute reached binary decoding")
+            return unpack(fmt, *args)
+
+        invalid = [("TEXCOORD_0", 5121, 2), ("TEXCOORD_1", 5121, 2), ("COLOR_0", 5121, 3),
+                   ("TEXCOORD_0", 5121, 2, 4, 1), ("TEXCOORD_0", 5121, 2, 4, 3, 1),
+                   ("NORMAL", 5126, 3, None, 0, 1), ("TANGENT", 5126, 4, None, 0, 1)]
+        for args in invalid:
+            with self.subTest(invalid=args):
+                doc, binary = attribute(*args)
+                self.reject("glb.accessor", doc, binary)
+                with patch("tools.hestia_asset_compiler.glb.struct.unpack_from", side_effect=headers_only):
+                    self.reject("glb.accessor", doc, binary)
+        for args in [("TEXCOORD_0", 5121, 2, 4), ("TEXCOORD_1", 5123, 2), ("COLOR_0", 5121, 4),
+                     ("COLOR_0", 5121, 3, 4), ("NORMAL", 5126, 3), ("TANGENT", 5126, 4)]:
+            with self.subTest(valid=args):
+                self.assertEqual(len(read_glb(glb(*attribute(*args))).primitives[0][0].positions), 8)
+        for component, prefix in [(5121, 1), (5123, 2)]:
+            with self.subTest(index_component=component):
+                doc, binary = fixture(*box(), index_type=component)
+                start = doc["bufferViews"][1]["byteOffset"]
+                binary = binary[:start] + bytes(prefix) + binary[start:]
+                doc["buffers"][0]["byteLength"] = len(binary)
+                doc["bufferViews"][1]["byteLength"] += prefix
+                doc["accessors"][1]["byteOffset"] = prefix
+                self.assertEqual(len(read_glb(glb(doc, binary)).primitives[0][0].indices), 36)
+
+    def test_render_zero_defaults_nonnegative_without_input_rewrite(self):
+        doc, binary = fixture(*box())
+        expected = canonicalize_geometry(read_glb(glb(doc, binary)))
+        variants = [{"alphaMode": "MASK", "alphaCutoff": value} for value in (0, 0.0, 0.5, 2)]
+        variants += [{"extensions": {"KHR_materials_emissive_strength": value}}
+                     for value in ({}, {"emissiveStrength": 0}, {"emissiveStrength": 0.0}, {"emissiveStrength": 1}, {"emissiveStrength": 2})]
+        for variant in variants:
+            with self.subTest(valid=variant):
+                valid = copy.deepcopy(doc)
+                valid["materials"][0].update(variant)
+                valid["extensionsUsed"] = ["KHR_materials_emissive_strength"]
+                parsed = read_glb(glb(valid, binary))
+                self.assertEqual(parsed.document, valid)  # omitted default stays omitted
+                actual = canonicalize_geometry(parsed)
+                self.assertEqual(actual.normalized_geometry_sha256, expected.normalized_geometry_sha256)
+                self.assertEqual(actual.semantics_sha256, expected.semantics_sha256)
+        for value in (-1, True, False, None, "0", [], float("nan"), float("inf"), -float("inf")):
+            for field in ("alphaCutoff", "emissiveStrength"):
+                with self.subTest(invalid=value, field=field):
+                    bad = copy.deepcopy(doc)
+                    bad["extensionsUsed"] = ["KHR_materials_emissive_strength"]
+                    if field == "alphaCutoff":
+                        bad["materials"][0][field] = value
+                    else:
+                        bad["materials"][0]["extensions"] = {"KHR_materials_emissive_strength": {field: value}}
+                    code = "json.number" if type(value) is float else "glb.render"
+                    self.reject(code, bad, binary)
+        doc["nodes"][0]["extras"]["hestia"]["thinFeature"]["declaredMinimumThicknessMeters"] = 0
+        self.reject("glb.semantics", doc, binary)
+        doc, binary = fixture()
+        doc["nodes"] += [{"extras": {"hestia": part("part.b", "StructuralAssembly")}}, {"extras": {"hestia": {
+            "kind": "joint", "jointId": "joint.a", "parentPartId": "part.a", "childPartId": "part.b",
+            "jointType": "Fixed", "breakPolicy": "Threshold", "breakForceNewtons": 1,
+        }}}]
+        doc["scenes"][0]["nodes"] = [0, 1, 2]
+        read_glb(glb(doc, binary))
+        doc["nodes"][2]["extras"]["hestia"]["breakForceNewtons"] = 0
+        self.reject("glb.semantics", doc, binary)
 
 
 if __name__ == "__main__":

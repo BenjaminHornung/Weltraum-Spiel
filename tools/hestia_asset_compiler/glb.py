@@ -201,6 +201,11 @@ def positive(value, code):
         fail(code, "positive finite number required")
 
 
+def nonnegative(value, code):
+    if type(value) not in (int, float) or not math.isfinite(value) or value < 0:
+        fail(code, "nonnegative finite number required")
+
+
 def extras(obj):
     value = obj.get("extras", {})
     if not isinstance(value, dict):
@@ -322,7 +327,7 @@ def render_data(doc):
         if material.get("alphaMode", "OPAQUE") not in ("OPAQUE", "MASK", "BLEND"):
             fail("glb.render", "alpha mode")
         if "alphaCutoff" in material:
-            positive(material["alphaCutoff"], "glb.render")
+            nonnegative(material["alphaCutoff"], "glb.render")
         if "doubleSided" in material and type(material["doubleSided"]) is not bool:
             fail("glb.render", "doubleSided must be boolean")
         ext = material.get("extensions", {})
@@ -330,8 +335,8 @@ def render_data(doc):
             if name == "KHR_materials_unlit":
                 shape(value, [], code="glb.render")
             else:
-                shape(value, ["emissiveStrength"], ["emissiveStrength"], "glb.render")
-                positive(value["emissiveStrength"], "glb.render")
+                shape(value, ["emissiveStrength"], code="glb.render")
+                nonnegative(value.get("emissiveStrength", 1), "glb.render")
     return semantics
 
 
@@ -407,15 +412,28 @@ def _read_glb(raw):
             fail("glb.unsupported", "unsupported extension")
     if "animations" in doc or "skins" in doc:
         fail("glb.unsupported", "animation/skin unsupported")
+    material_owners = sequence(doc.get("materials", []))
+    check_budget("materials", len(material_owners))
+    node_owners = sequence(doc.get("nodes", []))
+    check_budget("nodes", len(node_owners))
+    for owners in (material_owners, node_owners):
+        if any(not isinstance(owner, dict) for owner in owners):
+            fail("glb.structure", "transport owner must be an object")
+    material_owner_ids = {id(owner) for owner in material_owners}
+    semantic_owner_ids = material_owner_ids | {id(doc["asset"])} | {id(owner) for owner in node_owners}
     stack = [doc]
     while stack:
         value = stack.pop()
         if isinstance(value, dict):
+            metadata = value.get("extras")
+            if isinstance(metadata, dict) and "hestia" in metadata and id(value) not in semantic_owner_ids:
+                fail("glb.semantics-location", "Hestia transport allowed only on asset, node, or material")
             if "extensions" in value:
                 ext = value["extensions"]
-                if not isinstance(ext, dict) or set(ext) - allowed or not any(value is material for material in doc.get("materials", [])):
+                if not isinstance(ext, dict) or set(ext) - allowed or id(value) not in material_owner_ids:
                     fail("glb.unsupported", "unsupported extension location")
-            stack.extend(value.values())
+            # Direct extras.hestia is transport; the rest of extras is opaque metadata.
+            stack.extend(item for key, item in value.items() if key != "extras")
         elif isinstance(value, list):
             stack.extend(value)
     binary = chunks[1]
@@ -505,7 +523,12 @@ def _read_glb(raw):
         check_budget("primitives", primitive_count)
         for prim in prims:
             shape(prim, ["attributes", "indices", "material", "mode", "targets", "extensions", "extras"], ["attributes", "material"])
-            shape(prim["attributes"], ["POSITION", "NORMAL", "TANGENT", "TEXCOORD_0", "TEXCOORD_1", "COLOR_0"], ["POSITION"], "glb.unsupported")
+            attrs = shape(prim["attributes"], ["POSITION", "NORMAL", "TANGENT", "TEXCOORD_0", "TEXCOORD_1", "COLOR_0"], ["POSITION"], "glb.unsupported")
+            for index in attrs.values():
+                integer(index, 0, len(accessors) - 1, "glb.accessor")
+                start, stride, _, _ = layouts[index]
+                if accessors[index].get("byteOffset", 0) % 4 or start % 4 or stride % 4:
+                    fail("glb.accessor", "vertex alignment")
             index_source = prim.get("indices", prim["attributes"]["POSITION"])
             primitive_index_bytes += accessors[integer(index_source, 0, len(accessors) - 1, "glb.accessor")]["count"] * 8
             # Stored flat indices are per primitive, even for unreachable meshes/shared accessors.
@@ -543,9 +566,6 @@ def _read_glb(raw):
                 fail("glb.unsupported", "only TRIANGLES without morph targets supported")
             attrs = shape(prim["attributes"], ["POSITION", "NORMAL", "TANGENT", "TEXCOORD_0", "TEXCOORD_1", "COLOR_0"], ["POSITION"], "glb.unsupported")
             positions = decode(attrs["POSITION"], 3, (5126,))
-            pos_start, pos_stride, _, _ = layouts[attrs["POSITION"]]
-            if pos_start % 4 or pos_stride % 4:
-                fail("glb.accessor", "vertex alignment")
             for name, index in attrs.items():
                 if name == "POSITION":
                     continue

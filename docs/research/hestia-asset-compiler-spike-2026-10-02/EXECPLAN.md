@@ -2,7 +2,7 @@
 
 ## Goal
 
-Current authorization is **C2 then C3**, serially, following the accepted C0/C1 checkpoint `89f068dfff2d965177165dce082c5289a35d0df4`. Implement and freshly verify the narrow reader, then canonical geometry; make their two exact scoped commits and **STOP before C4**. No full compile, voxelization, package, or CLI success is claimed.
+C2 and C3 were implemented serially at `6b6e6fb1eb38642bca6045630270134337a705ce` and `286d7a89f588ee33fa48f748ea14216bb61e7239`. Current authorization is **only the four confirmed R3-B reader fixes**, their regression tests, and this leased plan. Reproduce red before production edits, fix the common reader, freshly run the full compiler suite, self-review/check the three-file lease, and make a separate `fix(asset-compiler): harden GLB admission before voxelization` commit without amend/rewrite. **STOP before C4** and await user-dispatched targeted R3 closure. No full compile, voxelization, package, or CLI success is claimed.
 
 After separately authorized serial gates C2-C8, the eventual goal is an executable, standard-library-only offline GLB/report compiler, independent golden corpus, deterministic packages, and bounded verification. Documentation alone will not satisfy that eventual goal. `PRODUCT_INTEGRATED = NO` throughout.
 
@@ -73,7 +73,7 @@ The exact comparison classes approved by R1-A2 are frozen in the audit: identica
 
 ## Implementation phases
 
-All gates are serial. Completion requires fresh evidence and self-review; the superorchestrator retains gate authorization and independent-review responsibility. **C2 then C3 are authorized; C4-C8 remain NOT AUTHORIZED / NOT RUN.** File splits are minimum intended owners, not a requirement to create empty scaffolding.
+All gates are serial. Completion requires fresh evidence and self-review; the superorchestrator retains gate authorization and independent-review responsibility. **C2/C3 are implemented; only the scoped R3-B correction is currently authorized. C4-C8 remain NOT AUTHORIZED / NOT RUN.** File splits are minimum intended owners, not a requirement to create empty scaffolding.
 
 ### C0 — preflight and baseline
 
@@ -109,6 +109,16 @@ All gates are serial. Completion requires fresh evidence and self-review; the su
 - Verification: G03-G08, G17-G19, G20-G22, G28-G29; geometric duplicates across materials; invalid joint/marker ancestors and shear fixtures.
 - Commit: `feat(asset-compiler): canonicalize authored geometry and semantics`.
 
+### R3-B correction — authorized reader-only checkpoint
+
+- Files: only `tools/hestia_asset_compiler/glb.py`, `tools/hestia_asset_compiler/tests/test_glb.py`, and this own leased `EXECPLAN.md`. Geometry, profiles/budgets, upstream Blender/schema/runtime, inputs and dependencies stay unchanged. `.opencode` is not edited or staged by this writer; independent harness appends are not claimed absent.
+- Prevalidate material/node owner list forms, existing 1024/2048 caps, and object members before building identity sets or scanning locations. Use bounded identity-set membership, not a linear material search for each extension owner.
+- Admit direct `extras.hestia` only on exact asset/node/material objects; reject all other transport locations with `glb.semantics-location`. Other extras are opaque metadata, not aliases or extension owners; no semantic records are moved or defaults inferred.
+- Preflight **all** primitive vertex attributes before any binary decoding: accessor-relative offset, absolute offset, and effective stride must be multiples of four. Component-specific index alignment remains unchanged. Naturally aligned U16/VEC2 and U8/VEC4 need no explicit stride.
+- Only render `alphaCutoff` and `emissiveStrength` gain finite nonnegative validation; absent emissive strength is validated against its schema default 1 without writing into input. Thickness/force `positive()` is unchanged.
+- Acceptance: negative/positive repros first, red on C3; all four groups and the full compiler suite green; exact three-file diff/lease/whitespace self-review; no budget increase, new agents, services, or C4 implementation.
+- Commit: `fix(asset-compiler): harden GLB admission before voxelization`, separate child of C3, no amend/rewrite/push. Actual publication SHA/result is recorded after execution in Git and the checkpoint response; independent R3 closure is not claimed by this writer.
+
 ### C4 — conservative surface and addressing
 
 - Intended files: `voxel.py`, `tests/test_surface.py`; share integer addressing rather than creating a runtime adapter.
@@ -121,7 +131,7 @@ All gates are serial. Completion requires fresh evidence and self-review; the su
 
 - Intended files: reference classification in `voxel.py`, `tests/test_classification.py`, independent interval oracle helpers in tests.
 - Implement the padded 6-neighbor flood + per-part cavity-aware geometric parity rule above. Stable ambiguous-case rejection; no GWN dependency. Prove hollow regions and topology preservation, not just exterior flood reachability.
-- Run mandatory G13 at **both** profiles against independent analytic cell intervals. Include nested cavity winding, disconnected solids, resolvable tunnels, under-resolved tunnels, phase/diagonal cases, and grazing/edge/vertex ambiguity. Shell/LayeredShell never get Solid fill.
+- Run mandatory G13 at **both** profiles against independent analytic cell intervals. Include both equal-outward and reversed-inner nested winding variants (source signed volumes 9 and 7), with the same cavity parity oracle. `closed` is topology evidence, never sufficient fill authorization. Include disconnected solids, resolvable tunnels, under-resolved tunnels, phase/diagonal cases, and grazing/edge/vertex ambiguity. Shell/LayeredShell never get Solid fill.
 - Verification: G01/G02/G13/G14/G15 and the exact interval/count oracles below. A rejected under-resolved tunnel cannot be reported as successful preserved connectivity.
 - Commit: `feat(asset-compiler): classify solid interiors with reference flood fill`.
 
@@ -256,6 +266,39 @@ Coverage is the relevant **partial gates** of G03-G08/G17-G19/G20-G26/G28-G30: n
 
 Read-only Blender/schema/apps/README/AGENTS/DevToolbox comparison to the accepted C1 commit: PASS, exit 0, empty. HEAD before C3 publication remains exact C2 SHA and `origin/main` exact base; lease/status contains only the C3 files/plan and untouched instrumentation. `git diff --check` PASS, exit 0 (normal LF/CRLF warning, not a whitespace error). Cache/TEMP checks PASS with `-B`; repeat the hygiene check after tests and inspect the complete staged C3 diff before the exact scoped commit. Publication SHA/parent/result and a **fresh post-commit** test/diff/status checkpoint are reported after execution, not fabricated into this commit's own content.
 
+### R2-B / R3-B external review and actual narrow correction — 2026-10-02
+
+**Relayed external evidence, not this agent's runs:** superorchestrator reported R2-B **GEOMETRY PASS** on C3 `286d7a89f588ee33fa48f748ea14216bb61e7239`, 15 independent in-memory case groups, no current geometry findings. R3-B reported **Reader REQUIRES_FIX**, four confirmed findings below. Its separate small geometry check passed 1008 triangles / 84 disconnected closed boxes / 507528 pairs; this was not a voxel/package or timing benchmark. Its pre-read/depth/token/duplicate/nonfinite/absolute-coordinate/instance/unreachable-index negative checks passed. Medium/Large remained budget-excluded / NOT RUN. User's fresh meta-run: `Ran 45 tests in 0.477s`, PASS, exit 0; baseline-to-HEAD whitespace exit 0; name-status only the three new research docs and eight new compiler files; status only the two accepted instrumentation logs. Official Khronos minimum/default facts for the two render fields were freshly verified by the superorchestrator, not claimed as this writer's documentation fetch.
+
+R2's future warning is retained in the C5 plan: equal-outward nested boundaries can be geometrically closed with signed volume 9, while reversed-inner boundaries give 7. Neither the closed flag nor signed volume alone authorizes fill. C5 must independently test per-part regional parity and both winding variants at both profiles. **No geometry modification or C5 implementation is made here.**
+
+Own TDD: added four reader regression methods with negative/positive subcases **before editing production**. Actual red run: `Ran 22 tests in 0.307s` / `FAILED (failures=21, errors=6)`, exit 1. These were expected admission/positive-control failures, not setup/import failures. The 1025-material fixture produced 526850 counted owner-list visits before its late cap (including scanner traversal); the externally reported 525825 value counted only identity comparisons. The at-limit material test also reproduced the repeated list scan. Unknown transport locations and U8 UV natural-stride/offset negatives were accepted; zero/default render positives and opaque ordinary extras were rejected.
+
+Implemented common-reader fixes and retained all original tests:
+
+1. Material/node list form, cap and object-member checks now precede bounded identity-set preparation and location scanning. Over-limit tests assert **zero owner-list visits**, and the valid 1024-material case asserts at most four list passes; no timing/memory benchmark is inferred.
+2. Root/scene/mesh/primitive/buffer/view/accessor/image/sampler/texture/PBR/texture-info/extension-child Hestia records all reject stably with `glb.semantics-location`. Valid asset/node/material records and normal opaque extras remain accepted with unchanged geometry/semantic hashes.
+3. Attribute alignment runs in common primitive preflight, before any binary accessor decode. Mocked decoder negatives prove ordering. U8 UV stride 4, natural U16/VEC2, natural U8/VEC4, padded U8/VEC3, finite NORMAL/TANGENT, and component-aligned U8/U16 indices remain accepted.
+4. Render zero/positive/default cases are accepted without input/default rewriting; negative/bool/null/string/list/nonfinite cases reject. Full-reader thickness-zero and threshold-force-zero regressions prove strict positive semantic values remain required.
+
+Own fresh commands use the same explicit interpreter, `-B`, worktree and task TEMP/TMP above:
+
+```text
+-B -m unittest discover -s tools/hestia_asset_compiler/tests -p 'test_glb.py' -v
+Ran 22 tests in 0.248s
+OK
+exit 0
+
+-B -m unittest discover -s tools/hestia_asset_compiler/tests -p 'test_*.py' -v
+Ran 49 tests in 0.586s
+OK
+exit 0; 22 reader + 27 unchanged geometry methods, no failures/skips
+```
+
+Fresh working-diff whitespace and name-status checks: PASS, exit 0, exactly the three correction paths. Index was empty before staging. Own `-B` hygiene check: PASS, exit 0; no Blender/compiler `__pycache__`, task TEMP empty, parent retained. Normal LF-to-CRLF warnings are not whitespace failures.
+
+Numeric limits, `spike-budgets-v1`, profiles, geometry/semantic hash algorithms and `positive()` are unchanged. No report binding, package publication, Blender E2E or benchmark run; unchanged Blender host baseline need not be rerun for this reader-only correction. Final staged diff/lease/whitespace self-review and post-commit compiler/status/hygiene checkpoint are required before reporting publication. Targeted independent R3 closure remains user-owned and pending; green unit tests do not claim that review or full-spike acceptance.
+
 ### Future independent contact-A goldens — NOT RUN
 
 These counts are analytic interval oracles for this explicit research convention, not compiler-produced expected values or a global runtime norm. Intervals are inclusive integer cell coordinates. They describe final surface-plus-material fill; the extra flood padding is excluded.
@@ -310,12 +353,15 @@ At C1 retain the authorized docs commit, untouched instrumentation, and empty ta
 - C2 then C3 authorized explicitly, serial sole writer, exact separate commits; stop before C4. No further agents or independent implementation review dispatched here.
 - [x] C2 reader/fixture implementation, fresh scoped tests/self-review and publication: 17 PASS, exit 0; exact scoped commit `6b6e6fb1eb38642bca6045630270134337a705ce` with the accepted C1 commit as sole parent.
 - [x] C3 geometry/semantics implementation, scoped reader budget-defect fix and fresh combined tests: 45 PASS (18 reader + 27 geometry), exit 0; fresh own unchanged Blender baseline 58 PASS, exit 0. Full staged self-review/lease/whitespace verification immediately precedes the exact C3 publication; its SHA/result and fresh post-commit checkpoint are recorded in Git/final response.
+- C3 publication completed at `286d7a89f588ee33fa48f748ea14216bb61e7239`, sole parent C2; own post-commit compiler 45 PASS in 0.576 s and unchanged Blender host baseline 58 PASS in 0.223 s, exit 0, as previously reported. These are distinct from the later external 45-test / 0.477 s meta-run.
+- Superorchestrator relayed implemented-code reviews: R2-B GEOMETRY PASS (15 case groups), R3-B Reader REQUIRES_FIX (four findings); authorized only the narrow shared-reader fixes/regressions/this plan and the exact separate corrective commit. No new reviewer agent dispatched by this writer.
+- [x] Four R3-B regression groups reproduced red before production changes; common-reader fixes and fresh full suite: 49 PASS (22 reader + 27 geometry), exit 0. Numeric budgets/profiles/geometry/upstream unchanged; publication follows final scoped staged self-review/checks, actual result/SHA recorded after execution. Independent R3 targeted closure remains pending.
 - [ ] C4-C8: **NOT AUTHORIZED / NOT RUN**; STOP before C4.
 
-R1 reviewer `731643b5-d353-4147-82e7-6d6d4eab31fb` independently approved the comparison and cavity-design interpretations (R1-A2, relayed by superorchestrator). R2 `a9f5de5b-43db-4fbc-bb1b-625a06dfa53d` and R3 `23ac2427-9a49-4c2e-a3da-7996b5affb7e` completed read-only technical prechecks, also relayed. These were not implemented-code reviews. This agent now ran C2/C3 tests/self-review; independent implementation review is still user-dispatched **after this checkpoint**. C3's signed-volume cavity-winding oracle is not C5's independent occupancy/flood/tunnel oracle, which remains NOT RUN.
+R1 reviewer `731643b5-d353-4147-82e7-6d6d4eab31fb` independently approved the comparison and cavity-design interpretations (R1-A2, relayed by superorchestrator). R2 `a9f5de5b-43db-4fbc-bb1b-625a06dfa53d` and R3 `23ac2427-9a49-4c2e-a3da-7996b5affb7e` completed read-only technical prechecks, also relayed; those prechecks were not implemented-code reviews. The later user-dispatched R2-B/R3-B implementation results are explicitly attributed above. This writer performs fixes/tests/self-review only; **targeted R3 closure after the corrective commit remains pending**. C3's signed-volume cavity-winding oracle is not C5's independent occupancy/flood/tunnel oracle, which remains NOT RUN.
 
 ## Definition of Done
 
-**Current checkpoint:** accepted C0/C1 preserved; executable C2 ingestion and C3 canonical geometry/semantics freshly tested and self-reviewed; two exact separately scoped commits, no upstream modifications; branch/base preserved; SHAs, exact test counts/output, profiles/budgets, limits and cleanup reported; **STOP before C4**. No full-spike acceptance or successful compile claim. The superorchestrator will commission independent Parser/Budget and Geometry implementation reviews after this checkpoint.
+**Current checkpoint:** accepted C0/C1 and existing C2/C3 commits preserved; exactly four R3-B shared-reader fixes with red/green regression evidence and fresh full-suite verification; unchanged numeric budgets/geometry/upstream; exact three-file scoped corrective commit, no amend/rewrite/push; branch/base preserved; actual SHA/counts/output/self-review/lease/hygiene reported; **STOP before C4** for superorchestrator-dispatched targeted R3 closure. No independent closure, full-spike acceptance or successful compile claim.
 
 **Eventual separately authorized spike:** working narrow reader/geometry/reference classifier/semantic package/CLI; G01-G30 outcomes and independent oracles including both-profile G13; honest thin/topology/material rejection; same-input byte determinism and explicit permutation classes; fault-safe whole-package publication; fresh tests/baseline/compileall; coordinated benchmark or explicit nonqualified status; real Blender E2E or precise NOT RUN blocker; independent full review with confirmed fixes verified; final reports/handoff and lease-clean commit. `PRODUCT_INTEGRATED = NO` even if accepted.
