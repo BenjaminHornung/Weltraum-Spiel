@@ -31,7 +31,8 @@ export function ownedPath(target, allowFixture = false) {
   if (!root) { throw new Error('Output/staging outside own RD-02 run root or fixtures'); }
   let cursor = resolved;
   while (cursor.startsWith(root)) {
-    if (existsSync(cursor) && (lstatSync(cursor).isSymbolicLink() || realpathSync(cursor) !== cursor)) {
+    const stat = lstatSync(cursor, { throwIfNoEntry: false });
+    if (stat && (stat.isSymbolicLink() || realpathSync(cursor) !== cursor)) {
       throw new Error('Linked/escaping output path');
     }
     if (cursor === root) { break; }

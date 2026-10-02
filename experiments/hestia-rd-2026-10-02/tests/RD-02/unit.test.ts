@@ -6,9 +6,9 @@ import { exportFixture, exportImportedFixture } from '../../exporters/fixture-ex
 import { makeSyntheticFixtures } from '../../exporters/synthetic.mjs';
 import { nativeMeshes, extractVegetationPalettes } from '../../exporters/product-crop.mjs';
 import { readFixtureDirectory } from '../../exporters/fixture-files.mjs';
-import { readPinned, BASE, LAB, RUN } from '../../exporters/stage-source.mjs';
+import { readPinned, ownedPath, BASE, LAB, RUN } from '../../exporters/stage-source.mjs';
 import { sha } from '../../exporters/fixture-export.mjs';
-import { readFileSync } from 'node:fs';
+import { existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, symlinkSync } from 'node:fs';
 import path from 'node:path';
 
 const contracts = { ...fixtureContract, ...scenarioContract, ...validation };
@@ -33,6 +33,29 @@ const signature = (bundle: any) => [new TextDecoder().decode(bundle.manifestByte
   [...bundle.payloads].sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0).map(([id, bytes]) => [id, Array.from(bytes as Uint8Array)])];
 
 describe('RD-02 bounded fixture export', () => {
+  it('FX10 owned paths reject dangling and live links while normal paths and foreign rejection remain intact', () => {
+    const root = mkdtempSync(`${RUN}/fx10-owned-path-`);
+    const danglingTarget = path.join(root, 'absent-target');
+    const danglingLink = path.join(root, 'dangling-link');
+    const liveTarget = path.join(root, 'live-target');
+    const liveLink = path.join(root, 'live-link');
+    mkdirSync(liveTarget);
+    symlinkSync(danglingTarget, danglingLink, 'junction');
+    symlinkSync(liveTarget, liveLink, 'junction');
+    expect(lstatSync(danglingLink).isSymbolicLink()).toBe(true);
+    expect(existsSync(danglingLink)).toBe(false);
+    expect(ownedPath(path.join(root, 'normal', 'output.bin'))).toBe(path.join(root, 'normal', 'output.bin'));
+    expect(ownedPath(path.join(liveTarget, 'output.bin'))).toBe(path.join(liveTarget, 'output.bin'));
+    expect(() => ownedPath(`${RUN}-foreign/output.bin`)).toThrow(/outside own/);
+    expect(() => ownedPath(path.join(liveLink, 'output.bin'))).toThrow(/Linked\/escaping/);
+    expect(() => ownedPath(path.join(danglingLink, 'output.bin'))).toThrow(/Linked\/escaping/);
+    expect(() => ownedPath(danglingLink)).toThrow(/Linked\/escaping/);
+    expect(existsSync(danglingTarget)).toBe(false);
+    expect(existsSync(path.join(liveTarget, 'output.bin'))).toBe(false);
+    // Retain additive task-owned directories/links as evidence; no follow-write,
+    // cleanup of foreign probes, or delete/recreate of a link.
+  });
+
   it('FX01 same export twice and reverse query/order payload determinism', async () => {
     const objects = [object('terrain'), object('branch')];
     const a = await exportFixture(spec(objects), contracts);
