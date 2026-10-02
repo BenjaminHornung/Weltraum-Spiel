@@ -1,7 +1,7 @@
 import { expect, it, vi } from "vitest";
 import { collisionSectors } from "../../src/hestia-prototype/physics/terrainColliders";
 import { R } from "../../src/hestia-prototype/physics/rapierPort";
-import type { HvpPhysicsMessage, HvpPhysicsReply } from "../../src/hestia-prototype/physics/physicsWorker";
+import type { HvpPhysicsMessage, HvpPhysicsReply,HvpPhysicsRequest } from "../../src/hestia-prototype/physics/physicsWorker";
 
 type TimingClock = NonNullable<HvpPhysicsReply["clock"]> & { readonly lastTerrainCommandId?: string };
 type WorkerHost = {
@@ -20,13 +20,13 @@ it("terrain timing projects one coherent transaction through the real worker han
   const host = globalThis as typeof globalThis & WorkerHost;
   const replies: HvpPhysicsReply[] = [];
   let workerLoaded = false;
-  const send = async (message: HvpPhysicsMessage): Promise<HvpPhysicsReply> => {
+  const send = async (message: HvpPhysicsRequest&{readonly id:number}): Promise<HvpPhysicsReply> => {
     const handler = host.onmessage;
     if (handler === undefined) {
       throw new Error("Physics worker handler was not installed");
     }
     const replyIndex = replies.length;
-    await handler({ data: message } as MessageEvent<HvpPhysicsMessage>);
+    await handler({ data: {...message,protocol:"hvp-physics-owner-v3",incarnation:"worker-clock-test"} } as MessageEvent<HvpPhysicsMessage>);
     expect(replies).toHaveLength(replyIndex + 1);
     return replies[replyIndex]!;
   };

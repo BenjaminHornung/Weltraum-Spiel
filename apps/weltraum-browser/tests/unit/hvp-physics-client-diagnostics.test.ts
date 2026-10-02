@@ -17,13 +17,14 @@ it("settles real client replies even when optional diagnostics throw",async()=>{
     onmessageerror:((event:MessageEvent)=>void)|null=null;
     terminated=false;
     readonly messages:HvpPhysicsMessage[]=[];
+    sequence=0;
     constructor(){worker=this;}
     postMessage(message:HvpPhysicsMessage):void {
       this.messages.push(message);
       queueMicrotask(()=>{
         const disposed=message.kind==="Dispose";
         const snapshot={status:disposed?"Disposed":"Running",bodyCount:disposed?0:1,colliderCount:0,collisionBytes:0} as HvpPhysicsSnapshot;
-        const reply:HvpPhysicsReply={id:message.id,snapshot,
+        const reply:HvpPhysicsReply={id:message.id,protocol:message.protocol,incarnation:message.incarnation,sequence:++this.sequence,snapshot,
           timings:{origin:performance.timeOrigin,steps:[],dropped:0},
           clock:{timers:disposed?0:1,maxTimerGapMs:0,maxAdvanceMs:0,maxHandlerMs:0,lastCommand:message.kind,
             lastHandlerMs:0,delayedCallbacks:[]}};
@@ -69,6 +70,7 @@ it.each([false,true])("frees a saturated reply slot before a reentrant failing s
     onmessageerror:((event:MessageEvent)=>void)|null=null;
     readonly held:HvpPhysicsMessage[]=[];
     readonly messages:HvpPhysicsMessage[]=[];
+    sequence=0;
     terminated=false;
     constructor(){worker=this;}
     postMessage(message:HvpPhysicsMessage):void{
@@ -78,7 +80,7 @@ it.each([false,true])("frees a saturated reply slot before a reentrant failing s
     }
     deliver(message:HvpPhysicsMessage,reject=false):void{
       const disposed=message.kind==="Dispose";
-      const reply:HvpPhysicsReply={id:message.id,snapshot:disposed?{...snapshot,status:"Disposed",bodyCount:0}:snapshot,
+      const reply:HvpPhysicsReply={id:message.id,protocol:message.protocol,incarnation:message.incarnation,sequence:++this.sequence,snapshot:disposed?{...snapshot,status:"Disposed",bodyCount:0}:snapshot,
         ...(reject?{rejected:"original native rejection"}:{}),
         timings:{origin:performance.timeOrigin,steps:[],dropped:0},
         clock:{timers:disposed?0:1,maxTimerGapMs:0,maxAdvanceMs:0,maxHandlerMs:0,lastCommand:message.kind,

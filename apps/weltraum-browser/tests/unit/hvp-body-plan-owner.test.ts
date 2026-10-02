@@ -384,7 +384,7 @@ it.each(["on","off","disabledMidYield"] as const)("logs slow contiguous plan ste
 },120_000);
 
 type WorkerHost={onmessage?:(event:MessageEvent<HvpPhysicsMessage>)=>void|Promise<void>;postMessage?:(reply:HvpPhysicsReply)=>void};
-type WorkerRequest=HvpPhysicsMessage extends infer M?M extends HvpPhysicsMessage?Omit<M,"id">:never:never;
+type WorkerRequest=HvpPhysicsMessage extends infer M?M extends HvpPhysicsMessage?Omit<M,"id"|"protocol"|"incarnation">:never:never;
 type WorkerHarness={
   send(message:WorkerRequest):Promise<HvpPhysicsReply>;
   dispatch(message:WorkerRequest):{id:number;done:Promise<void>};
@@ -434,7 +434,7 @@ const withWorker=async(measure:boolean,body:(worker:WorkerHarness)=>Promise<void
     return now;
   });
   const dispatch=(message:WorkerRequest)=>{
-    const next={...message,id:++id} as HvpPhysicsMessage;
+    const next={...message,id:++id,protocol:"hvp-physics-owner-v3",incarnation:"worker-plan-test"} as HvpPhysicsMessage;
     const done=Promise.resolve(host.onmessage!({data:next} as MessageEvent<HvpPhysicsMessage>));
     dispatched.push(done);
     return {id:next.id,done};
@@ -564,6 +564,28 @@ const drainWorkerPlan=async(worker:WorkerHarness,plan:{id:number;done:Promise<vo
   return worker.reply(plan.id)!;
 };
 
+it("rejects foreign and mixed-version Dispose without mutating the current Worker owner",async()=>{
+  await withWorker(false,async worker=>{
+    const before=await worker.send({kind:"Read"});
+    for(const field of ["incarnation","protocol"] as const){
+      const id=field==="incarnation"?10001:10002;
+      const packet:HvpPhysicsMessage={id,kind:"Dispose",protocol:before.protocol,incarnation:before.incarnation};
+      Reflect.set(packet,field,field==="incarnation"?"foreign-owner":"hvp-physics-owner-v2");
+      const handler=(globalThis as typeof globalThis&WorkerHost).onmessage!;
+      await handler({data:packet} as MessageEvent<HvpPhysicsMessage>);
+      const rejection=worker.reply(id)!;
+      expect(rejection.rejected).toBe("Invalid physics message binding");
+      expect(rejection.incarnation).toBe(packet.incarnation);
+      const current=await worker.send({kind:"Read"});
+      expect(current.snapshot!.status).toBe("Running");
+      expect(current.snapshot!.bodyCount).toBe(before.snapshot!.bodyCount);
+      expect(current.sequence).toBeGreaterThan(rejection.sequence);
+      expect(current.incarnation).toBe(before.incarnation);
+      expect(current.clock!.timers).toBe(1);
+    }
+  });
+},120_000);
+
 it("serves Read, input and the fixed-step timer while the worker's source-only plan is suspended",async()=>{
   await withWorker(false,async worker=>{
     const admission=await beginWorkerBodyCut(worker);
@@ -577,6 +599,8 @@ it("serves Read, input and the fixed-step timer while the worker's source-only p
     expect(worker.reply(plan.id)).toBeUndefined();
     const prepared=await drainWorkerPlan(worker,plan);
     expect(prepared.rejected).toBeUndefined();
+    expect(prepared.id).toBeLessThan(released.id);
+    expect(prepared.sequence).toBeGreaterThan(released.sequence);
     expect(prepared.snapshot).toMatchObject({status:"Running",moving:{state:"Preparing"}});
     // Several whole phases, each behind its own real task yield.
     expect(worker.gatedYields).toBeGreaterThanOrEqual(3);
@@ -1383,6 +1407,7 @@ class FaithfulPhysicsStub {
   holdNextRead=false;
   holdPlans=false;
   ticks=0;
+  replySequence=0;
   moving:StubMoving="Idle";
   pendingId:string|null=null;
   constructor(){FaithfulPhysicsStub.current=this;}
@@ -1433,7 +1458,7 @@ class FaithfulPhysicsStub {
         sourceDigest:message.request.sourceDigest,revision:0,cellCount:1,massKg:1,cell:[0,0,0],edge:message.request.edge,materials:[]},
       cells:[],issuedTick:this.ticks}:undefined;
     const clock:HvpPhysicsClock={timers:disposed?0:1,maxTimerGapMs:0,maxAdvanceMs:0,maxHandlerMs:0,lastCommand:message.kind,lastHandlerMs:0,delayedCallbacks:[]};
-    const reply:HvpPhysicsReply={id:message.id,snapshot:this.snapshot(disposed),clock,
+    const reply:HvpPhysicsReply={id:message.id,protocol:message.protocol,incarnation:message.incarnation,sequence:++this.replySequence,snapshot:this.snapshot(disposed),clock,
       ...(rejected===undefined?{}:{rejected}),...(bodyPreparation===undefined?{}:{bodyPreparation})};
     this.onmessage?.({data:reply} as MessageEvent<HvpPhysicsReply>);
   }

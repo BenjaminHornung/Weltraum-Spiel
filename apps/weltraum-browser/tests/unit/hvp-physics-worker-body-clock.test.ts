@@ -2,7 +2,7 @@ import { expect, it, vi } from "vitest";
 import { collisionSectors } from "../../src/hestia-prototype/physics/terrainColliders";
 import { ingestHvpStructuralCells } from "../../src/hestia-prototype/terrain/structuralIngest";
 import { prepareHvpLocalBodyCut } from "../../src/hestia-prototype/physics/bodyCutPlan";
-import type { HvpPhysicsMessage, HvpPhysicsReply } from "../../src/hestia-prototype/physics/physicsWorker";
+import type { HvpPhysicsMessage, HvpPhysicsReply,HvpPhysicsRequest } from "../../src/hestia-prototype/physics/physicsWorker";
 
 type WorkerHost = {
   onmessage?: (event: MessageEvent<HvpPhysicsMessage>) => void | Promise<void>;
@@ -78,12 +78,12 @@ const runBodyCut = async (
   let messageId = 0;
   let projectedMeasure=measure;
   let workerLoaded = false;
-  const send = async (message: HvpPhysicsMessage): Promise<HvpPhysicsReply> => {
+  const send = async (message: HvpPhysicsRequest&{readonly id:number}): Promise<HvpPhysicsReply> => {
     const handler = host.onmessage;
     if (handler === undefined) {
       throw new Error("Physics worker handler was not installed");
     }
-    await handler({ data: message } as MessageEvent<HvpPhysicsMessage>);
+    await handler({ data: {...message,protocol:"hvp-physics-owner-v3",incarnation:"worker-body-clock-test"} } as MessageEvent<HvpPhysicsMessage>);
     const reply = replies.find(value=>value.id===message.id);
     if(reply===undefined){throw new Error(`No physics reply for ${message.id}`);}
     if (!projectedMeasure) {

@@ -4,7 +4,8 @@ import { fnv1aBytes, type TransferableBufferBundle } from "../../workers/protoco
 import { HVP_COLLISION_JOB, HVP_COLLISION_ALGORITHM, HVP_COLLISION_MAX_OUTPUT, decodeHvpCollisionOutput } from "../../workers/hvpCollisionJob";
 import { collisionInputs, type HvpCollisionSector, type HvpCollisionSource } from "./terrainColliders";
 import { resolveHvpGravity } from "./profile";
-import type { HvpPhysicsMessage, HvpPhysicsReply, HvpPhysicsSnapshot, HvpPhysicsClock } from "./physicsWorker";
+import type { HvpPhysicsRequest, HvpPhysicsReply, HvpPhysicsSnapshot, HvpPhysicsClock } from "./physicsWorker";
+import {HVP_PHYSICS_PROTOCOL} from "./physicsProtocol";
 import type { HvpCollisionCoverage, HvpPlayerInput } from "../player/locomotion";
 import type { HvpBranchRequest } from "./branchSession";
 import type {HvpTerrainFragmentRequest} from "./terrainFragment";
@@ -140,7 +141,10 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
   if (signal.aborted) { throw new Error("Physics loading cancelled"); }
   const worker = new Worker(new URL("./physicsWorker.ts", import.meta.url), { type: "module", name: "hvp-simulation-owner" });
   let nextId = 0;
-  let lastId = -1;
+  const incarnation=crypto.randomUUID();
+  // Request barriers protect atomic held publication; reply sequence owns snapshot freshness.
+  let publishRequestFloor = -1;
+  let lastSnapshotSequence=-1,lastClockSequence=-1,lastRestoreSequence=-1;
   let snapshot: HvpPhysicsSnapshot | undefined;
   let clock: HvpPhysicsClock | undefined;
   let failure: Error | undefined;
@@ -152,12 +156,12 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
   let bodyPending=false;
   let neighborPending:{id:string;next:HvpNeighborCheckpoint}|undefined;
   let restorePhase:string|undefined;
-  let heldSnapshot: {id:number;value:HvpPhysicsSnapshot}|undefined;
+  let heldSnapshot: {id:number;sequence:number;value:HvpPhysicsSnapshot}|undefined;
   const readHeldSnapshot=()=>heldSnapshot;
   let playerInput: HvpPlayerInput = { x: 0, z: 0, sprint: false, jump: false };
   let cameraOffset: { x: number; y: number; z: number } | undefined;
   let cutAim: {x:number;y:number;z:number}|undefined;
-  const pending = new Map<number, { resolve: () => void; reject: (e: Error) => void; timeout: ReturnType<typeof setTimeout>; publish: boolean;onReply?:(reply:HvpPhysicsReply)=>void }>();
+  const pending = new Map<number, { resolve: () => void; reject: (e: Error) => void; timeout: ReturnType<typeof setTimeout>; publish: boolean;ownsState:boolean;onReply?:(reply:HvpPhysicsReply)=>void }>();
   const terminate=()=>{if(!terminated){worker.terminate();terminated=true;}worker.onmessage=null;worker.onerror=null;worker.onmessageerror=null;};
   const fail = (error: Error): void => {
     failure = error;
@@ -167,14 +171,29 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
   worker.onerror = event => fail(new Error(event.message || "Physics worker error"));
   worker.onmessageerror = () => fail(new Error("Physics worker transfer error"));
   worker.onmessage = ({ data }: MessageEvent<HvpPhysicsReply>) => {
-    if (data.error !== undefined) { fail(new Error(data.error)); return; }
+    if(disposed||terminated){return;}
     const p = pending.get(data.id);
+    if(data.incarnation!==incarnation){
+      if(typeof data.incarnation!=="string"&&(p!==undefined||data.id===-1)){fail(new Error("Invalid physics reply binding"));}
+      return;
+    }
+    if(data.protocol!==HVP_PHYSICS_PROTOCOL||!Number.isSafeInteger(data.sequence)||data.sequence<1){
+      if(p!==undefined||data.id===-1){fail(new Error("Invalid physics reply binding"));}
+      return;
+    }
+    // A late settled-request error is not the live owner's independent fatal timer channel.
+    if(data.error!==undefined){if(p!==undefined||data.id===-1){fail(new Error(data.error));}return;}
     if (p === undefined) { return; }
-    if(data.clock!==undefined){clock=data.clock;}
+    if(data.clock!==undefined&&data.sequence>lastClockSequence){clock=data.clock;lastClockSequence=data.sequence;}
     clearTimeout(p.timeout); pending.delete(data.id);
-    if (p.publish && data.snapshot !== undefined && data.id > lastId) { snapshot = data.snapshot; lastId = data.id; }
-    if (!p.publish && data.snapshot !== undefined) { heldSnapshot={id:data.id,value:data.snapshot}; }
-    if(data.restoreState!==undefined){restorePhase=data.restoreState;}
+    if(p.publish&&data.snapshot!==undefined&&data.id>publishRequestFloor&&data.sequence>lastSnapshotSequence){
+      snapshot=data.snapshot;lastSnapshotSequence=data.sequence;
+    }
+    if(!p.publish&&p.ownsState&&data.snapshot!==undefined&&data.sequence>lastSnapshotSequence
+      &&data.sequence>(heldSnapshot?.sequence??-1)){heldSnapshot={id:data.id,sequence:data.sequence,value:data.snapshot};}
+    if(p.ownsState&&data.restoreState!==undefined&&data.sequence>lastRestoreSequence){
+      restorePhase=data.restoreState;lastRestoreSequence=data.sequence;
+    }
     if(data.rejected !== undefined){p.reject(new Error(data.rejected));}
     else{try{p.onReply?.(data);p.resolve();}catch(error){p.reject(error instanceof Error?error:new Error(String(error)));}}
     // Never let optional observation own the completed command's slot or result.
@@ -182,14 +201,15 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
       try{onTimings(data.timings);}catch{timingSinkDisabled=true;timingSinkFailures+=1;onTimings=undefined;}
     }
   };
-  type Request = HvpPhysicsMessage extends infer M ? M extends HvpPhysicsMessage ? Omit<M, "id"> : never : never;
-  const send = (message: Request, transfers: Transferable[] = [], publish = true,onReply?:(reply:HvpPhysicsReply)=>void): Promise<void> => new Promise((resolve, reject) => {
+  const send = (message: HvpPhysicsRequest, transfers: Transferable[] = [], publish = true,onReply?:(reply:HvpPhysicsReply)=>void): Promise<void> => new Promise((resolve, reject) => {
     if (failure !== undefined || disposed) { reject(failure ?? new Error("Physics disposed")); return; }
     if (pending.size >= 8) { reject(new Error("Physics command backpressure")); return; }
     const id = nextId++;
+    const ownsState=message.kind!=="Read"&&message.kind!=="Pause"&&message.kind!=="Inspect";
+    if(!publish&&ownsState){publishRequestFloor=Math.max(publishRequestFloor,id);}
     const timeout = setTimeout(() => fail(new Error("Physics worker response deadline exceeded")), 20_000);
-    pending.set(id, { resolve, reject, timeout, publish,onReply });
-    try { worker.postMessage({ ...message, id }, transfers); } catch (e) { fail(e instanceof Error ? e : new Error("Physics transfer failed")); }
+    pending.set(id, { resolve, reject, timeout, publish,ownsState,onReply });
+    try { worker.postMessage({ ...message, id,protocol:HVP_PHYSICS_PROTOCOL,incarnation }, transfers); } catch (e) { fail(e instanceof Error ? e : new Error("Physics transfer failed")); }
   });
   const abort = (): void => fail(new Error("Physics loading cancelled"));
   signal.addEventListener("abort", abort, { once: true });
@@ -214,7 +234,7 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
       }catch(error){
         const held=readHeldSnapshot();
         if(held?.value.bodyResidencyId===id){
-          snapshot=held.value;lastId=held.id;
+          snapshot=held.value;lastSnapshotSequence=held.sequence;
           try{await send({kind:"RollbackBodyResidency",transactionId:id});}catch{throw new Error(`RecoveryHold: ${String(error)}`);}
         }
         mutating=false;throw error;
@@ -223,7 +243,7 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
     commitBodyResidency(id){return send({kind:"CommitBodyResidency",transactionId:id},[],false);},
     publishBodyResidency(id){const held=readHeldSnapshot();
       if(!mutating||held?.value.bodyResidencyId!==id||held.value.bodyResidencyTransaction!=="CommittedHeld"){throw new Error("Missing committed residency receipt");}
-      snapshot=held.value;lastId=held.id;heldSnapshot=undefined;
+      snapshot=held.value;lastSnapshotSequence=held.sequence;heldSnapshot=undefined;
     },
     async finalizeBodyResidency(id){await send({kind:"FinalizeBodyResidency",transactionId:id});mutating=false;heldSnapshot=undefined;},
     async rollbackBodyResidency(id){await send({kind:"RollbackBodyResidency",transactionId:id});mutating=false;heldSnapshot=undefined;},
@@ -239,7 +259,7 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
       if(mutating||bodyPending||snapshot?.status!=="Paused"){throw new Error("Restore requires an idle paused World");}
       mutating=true;restorePhase=undefined;heldSnapshot=undefined;let acknowledged=false;
       try{await send({kind:"PrepareRestore",transactionId:id,checkpoint,replacements},
-        replacements.flatMap(r=>[r.mesh.vertices.buffer as ArrayBuffer,r.mesh.indices.buffer as ArrayBuffer]),false,reply=>{restorePhase=reply.restoreState;});
+          replacements.flatMap(r=>[r.mesh.vertices.buffer as ArrayBuffer,r.mesh.indices.buffer as ArrayBuffer]),false);
         acknowledged=true;
         const candidate=readHeldSnapshot();
         if(restorePhase!=="Prepared"||!candidate){throw new Error("Missing prepared restore snapshot");}return candidate.value;
@@ -253,9 +273,9 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
         heldSnapshot=undefined;restorePhase=undefined;mutating=false;throw error;
       }
     },
-    async commitRestore(id){await send({kind:"CommitRestore",transactionId:id},[],false,reply=>{restorePhase=reply.restoreState;});},
+    async commitRestore(id){await send({kind:"CommitRestore",transactionId:id},[],false);},
     publishRestore(){if(!mutating||restorePhase!=="Committed"||!heldSnapshot){throw new Error("Missing committed restore snapshot");}
-      snapshot=heldSnapshot.value;lastId=heldSnapshot.id;heldSnapshot=undefined;playerInput={x:0,z:0,sprint:false,jump:false};cutAim=undefined;cameraOffset=undefined;},
+      snapshot=heldSnapshot.value;lastSnapshotSequence=heldSnapshot.sequence;heldSnapshot=undefined;playerInput={x:0,z:0,sprint:false,jump:false};cutAim=undefined;cameraOffset=undefined;},
     async rollbackRestore(id){await send({kind:"RollbackRestore",transactionId:id});
       if(restorePhase!=="RolledBack"){throw new Error("RecoveryHold: missing restore rollback acknowledgement");}
       heldSnapshot=undefined;restorePhase=undefined;mutating=false;},
@@ -288,7 +308,7 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
         ||!( ["version","epoch","resident","sourceDigest","baseSectorCount"] as const).every(k=>held.value.neighbor?.[k]===next[k])){
         throw new Error("Missing committed neighbour binding");
       }
-      snapshot=held.value;lastId=held.id;heldSnapshot=undefined;
+      snapshot=held.value;lastSnapshotSequence=held.sequence;heldSnapshot=undefined;
     },
     async rollbackNeighbor(id){
       await send({kind:"RollbackNeighbor",transactionId:id});
@@ -309,20 +329,20 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
       if(mutating||bodyPending){throw new Error("World Pending");}mutating=true;
       try {await send({kind:"PrepareBranch",request:{id:request.id,generation:request.generation,sourceDigest:request.sourceDigest,direction:{x:request.direction.x,y:request.direction.y,z:request.direction.z}}},[],false);
         const prepared=heldSnapshot?.value.structural;if(!prepared||prepared.state!=="PreparedHeld"){throw new Error("Missing prepared branch");}return prepared;
-      }catch(error){if(heldSnapshot?.value.structural?.state==="RecoveryHold"){snapshot=heldSnapshot.value;lastId=heldSnapshot.id;}mutating=false;throw error;}
+      }catch(error){if(heldSnapshot?.value.structural?.state==="RecoveryHold"){snapshot=heldSnapshot.value;lastSnapshotSequence=heldSnapshot.sequence;}mutating=false;throw error;}
     },
     commitBranch(id){return send({kind:"CommitBranch",transactionId:id},[],false);},
     publishBranch(){
       if(!mutating||heldSnapshot?.value.structural?.state!=="CommittedHeld"){throw new Error("Missing committed branch snapshot");}
-      snapshot=heldSnapshot.value;lastId=heldSnapshot.id;heldSnapshot=undefined;
+      snapshot=heldSnapshot.value;lastSnapshotSequence=heldSnapshot.sequence;heldSnapshot=undefined;
     },
     async rollbackBranch(id){
-      if(heldSnapshot?.value.structural?.state==="Idle") {snapshot=heldSnapshot.value;lastId=heldSnapshot.id;}
+      if(heldSnapshot?.value.structural?.state==="Idle") {snapshot=heldSnapshot.value;lastSnapshotSequence=heldSnapshot.sequence;}
       else {await send({kind:"RollbackBranch",transactionId:id});}
       heldSnapshot=undefined;mutating=false;
     },
     async finalizeBranch(id){await send({kind:"FinalizeBranch",transactionId:id},[],false);
-      if(heldSnapshot){snapshot=heldSnapshot.value;lastId=heldSnapshot.id;}heldSnapshot=undefined;mutating=false;},
+      if(heldSnapshot){snapshot=heldSnapshot.value;lastSnapshotSequence=heldSnapshot.sequence;}heldSnapshot=undefined;mutating=false;},
     async beginBodyCut(request){
       if(mutating||bodyPending){throw new Error("World Pending");}bodyPending=true;
       // The body transaction owns the held slot: an older rejected transaction's snapshot never proves its cleanup.
@@ -343,21 +363,19 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
       if(!bodyPending||mutating){throw new Error("No pending local body work");}
       mutating=true;heldSnapshot=undefined;
       const staging=send({kind:"StageBodyCut",transactionId:id,products:admission},[],false);
-      // An older in-flight Read can no longer publish over the held stage.
-      lastId=Math.max(lastId,nextId-1);
       await staging;
     },
     commitBodyCut(id){return send({kind:"CommitBodyCut",transactionId:id},[],false);},
     publishBodyCut(){if(!mutating||heldSnapshot?.value.moving.state!=="CommittedHeld"){throw new Error("Missing committed moving snapshot");}
-      snapshot=heldSnapshot.value;lastId=heldSnapshot.id;heldSnapshot=undefined;},
+      snapshot=heldSnapshot.value;lastSnapshotSequence=heldSnapshot.sequence;heldSnapshot=undefined;},
     async rollbackBodyCut(id){
       // Only this transaction's own Stage/Commit reply can fill the slot; it never moves publication backwards.
-      if(heldSnapshot?.value.moving.state==="Idle"){snapshot=heldSnapshot.value;lastId=Math.max(lastId,heldSnapshot.id);}
+      if(heldSnapshot?.value.moving.state==="Idle"){snapshot=heldSnapshot.value;lastSnapshotSequence=heldSnapshot.sequence;}
       else{await send({kind:"RollbackBodyCut",transactionId:id});}
       heldSnapshot=undefined;mutating=false;bodyPending=false;
     },
     async finalizeBodyCut(id){await send({kind:"FinalizeBodyCut",transactionId:id},[],false);
-      if(heldSnapshot){snapshot=heldSnapshot.value;lastId=heldSnapshot.id;}heldSnapshot=undefined;mutating=false;bodyPending=false;},
+      if(heldSnapshot){snapshot=heldSnapshot.value;lastSnapshotSequence=heldSnapshot.sequence;}heldSnapshot=undefined;mutating=false;bodyPending=false;},
     async impulse(direction) {
       if(mutating||bodyPending) { throw new Error("Terrain Pending"); }
       await send({kind:"Impulse",direction:{x:direction.x,y:direction.y,z:direction.z}});
@@ -384,7 +402,7 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
           origin:{x:f.origin.x,y:f.origin.y,z:f.origin.z},cells:f.cells.map(c=>({x:c.x,y:c.y,z:c.z,materialId:c.materialId})),
           colliderBoxes:f.colliderBoxes.map(b=>({min:[...b.min],max:[...b.max]}))}))},
           replacements.flatMap(s=>[s.mesh.vertices.buffer as ArrayBuffer,s.mesh.indices.buffer as ArrayBuffer]),false);
-      } catch(error) { if(heldSnapshot?.value.terrainTransaction==="RecoveryHold"){snapshot=heldSnapshot.value;lastId=heldSnapshot.id;}
+      } catch(error) { if(heldSnapshot?.value.terrainTransaction==="RecoveryHold"){snapshot=heldSnapshot.value;lastSnapshotSequence=heldSnapshot.sequence;}
         mutating=false; throw error; }
     },
     preparedTerrainFragments(){
@@ -394,7 +412,7 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
     commitTerrain(id) { return send({kind:"CommitTerrain",transactionId:id},[],false); },
     publishTerrain() {
       if(!mutating||heldSnapshot?.value.terrainTransaction!=="CommittedHeld") { throw new Error("Missing committed World snapshot"); }
-      snapshot=heldSnapshot.value; lastId=heldSnapshot.id; heldSnapshot=undefined;
+      snapshot=heldSnapshot.value; lastSnapshotSequence=heldSnapshot.sequence; heldSnapshot=undefined;
     },
     async rollbackTerrain(id) { await send({kind:"RollbackTerrain",transactionId:id}); heldSnapshot=undefined; mutating=false; },
     async finalizeTerrain(id) { await send({kind:"FinalizeTerrain",transactionId:id}); heldSnapshot=undefined; mutating=false; },

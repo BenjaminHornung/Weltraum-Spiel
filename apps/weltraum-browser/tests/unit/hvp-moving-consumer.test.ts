@@ -3,6 +3,7 @@ import {createHvpBodyCutConsumer} from "../../src/hestia-prototype/terrain/bodyC
 import type {HvpPhysicsClient} from "../../src/hestia-prototype/physics/client";
 import type {HvpBodyCutProducts} from "../../src/workers/hvpBodyCutJob";
 import type {HvpCutSpan,HvpCutTrace} from "../../src/hestia-prototype/runtime/cutTrace";
+import {HvpRenderStageRecoveryError} from "../../src/hestia-prototype/presentation/renderStageRecovery";
 
 const request={id:"recut-1",ownerId:"hvp:terrain-fragment:r1:12345678",sourceDigest:"source",edge:1,direction:{x:0,y:0,z:1}};
 const harness=(fault="",trace?:HvpCutTrace)=>{
@@ -25,6 +26,53 @@ const harness=(fault="",trace?:HvpCutTrace)=>{
   },trace);
   return {consumer,physics,state:()=>({native,visible,published,paused})};
 };
+
+it.each([false,true])("R01/T04 retains the renderer stage cleanup receipt (unproven=%s)",async unproven=>{
+  const uploadFailure=new Error("upload failure"),cleanupFailure=new Error("release unproven");
+  const cause=unproven?new HvpRenderStageRecoveryError([uploadFailure,cleanupFailure],"stage failed")
+    :new Error("clean pre-allocation rejection");
+  const cleanupOrder:string[]=[];
+  const rollback=vi.fn(async()=>{cleanupOrder.push("Rollback");}),pause=vi.fn(async()=>{cleanupOrder.push("Pause");}),stage=vi.fn(async()=>{}),publish=vi.fn();
+  const physics={beginBodyCut:async()=>({}),rollbackBodyCut:rollback,command:pause,
+    read:()=>({moving:{state:"Idle"}}),stageBodyCut:stage,publishBodyCut:publish} as unknown as HvpPhysicsClient;
+  const consumer=createHvpBodyCutConsumer(physics,async()=>({parts:[],removedCells:1,removedMassKg:1}) as HvpBodyCutProducts,
+    ()=>{throw cause;});
+  try{
+    const result=consumer.submit(request);await result;
+    expect(rollback).toHaveBeenCalledOnce();expect(stage).not.toHaveBeenCalled();expect(publish).not.toHaveBeenCalled();
+    expect(consumer.read()).toMatchObject({state:unproven?"RecoveryHold":"Idle",
+      last:{status:unproven?"RecoveryHold":"Rejected",reason:String(cause)}});
+    expect(consumer.submit(request)).toBe(result); // Replay cannot clear the sticky receipt.
+    if(unproven){
+      expect(cause).toBeInstanceOf(AggregateError);
+      expect((cause as HvpRenderStageRecoveryError).errors).toEqual([uploadFailure,cleanupFailure]);
+      expect(pause).toHaveBeenCalledWith("Pause");
+      expect(cleanupOrder).toEqual(["Pause","Rollback"]);
+      expect(()=>consumer.checkpoint()).toThrow(/save boundary/);
+      expect(()=>consumer.restoreReceipts({})).toThrow(/restore boundary/);
+      await expect(consumer.submit({...request,id:"recut-2"})).rejects.toThrow(/RecoveryHold/);
+    }else{
+      expect(cleanupOrder).toEqual(["Rollback"]);
+      expect(pause).not.toHaveBeenCalled();expect(()=>consumer.checkpoint()).not.toThrow();
+    }
+  }finally{consumer.dispose();}
+});
+
+it("R01 does not infer restoration authority from error text or AggregateError shape",async()=>{
+  for(const cause of [new Error("RecoveryHold: clean pre-allocation rejection"),
+    new AggregateError([new Error("RecoveryHold")],"clean pre-allocation rejection")]){
+    const pause=vi.fn(async()=>{});
+    const physics={beginBodyCut:async()=>({}),rollbackBodyCut:async()=>{},command:pause,
+      read:()=>({moving:{state:"Idle"}})} as unknown as HvpPhysicsClient;
+    const consumer=createHvpBodyCutConsumer(physics,async()=>({parts:[],removedCells:1,removedMassKg:1}) as HvpBodyCutProducts,
+      ()=>{throw cause;});
+    try{
+      await consumer.submit(request);
+      expect(consumer.read()).toMatchObject({state:"Idle",last:{status:"Rejected",reason:String(cause)}});
+      expect(pause).not.toHaveBeenCalled();expect(()=>consumer.checkpoint()).not.toThrow();
+    }finally{consumer.dispose();}
+  }
+});
 it("owns one moving command and publishes the matching native and visible replacement once",async()=>{
   const h=harness(),result=h.consumer.submit(request);expect(h.consumer.submit(request)).toBe(result);
   await result;expect(h.consumer.read().last?.status).toBe("Applied");

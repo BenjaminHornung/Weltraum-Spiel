@@ -2,6 +2,7 @@ import type {HvpPhysicsClient} from "../physics/client";
 import type {HvpMovingCutRequest,HvpMovingCutPreparation} from "../physics/bodyCutSession";
 import type {HvpBodyCutProducts} from "../../workers/hvpBodyCutJob";
 import type {HvpStagedTerrain} from "./terrainConsumer";
+import {HvpRenderStageRecoveryError} from "../presentation/renderStageRecovery";
 import {decodeHvpReceipts,type HvpSimpleOutcome} from "../persistence/receiptCheckpoint";
 import type {HvpCutTrace} from "../runtime/cutTrace";
 
@@ -65,13 +66,15 @@ export const createHvpBodyCutConsumer=(physics:HvpPhysicsClient,compile:(source:
           render.finish();last=Object.freeze({id:request.id,status:"Applied",reason:"Current-pose fragment replacement"});
           if(submitted!==undefined){emit(request.id,"cutBodyTotalAppliedMs",submitted);}
         }catch(error){
-          let restored=!finished;
+          const renderRecovery=error instanceof HvpRenderStageRecoveryError;
+          let restored=!finished&&!renderRecovery;
+          if(renderRecovery){held=true;try{await physics.command("Pause");}catch{/* Cleanup cannot assert a running World is safe. */}}
           if(!finished){
             try{render?.rollback();}catch{restored=false;}
             if(begun){try{await physics.rollbackBodyCut(request.id);}catch{restored=false;}}
           }
           try{if(physics.read().moving.state==="RecoveryHold"){restored=false;}}catch{restored=false;}
-          if(!restored){held=true;try{await physics.command("Pause");}catch{/* Never assert restoration without the World. */}}
+          if(!restored){held=true;if(!renderRecovery){try{await physics.command("Pause");}catch{/* Never assert restoration without the World. */}}}
           last=Object.freeze({id:request.id,status:held?"RecoveryHold":"Rejected",reason:String(error)});
           if(submitted!==undefined){emit(request.id,held?"cutBodyTotalRecoveryHoldMs":"cutBodyTotalRejectedMs",submitted);}
         }finally{const receipt=receipts.get(request.id);if(receipt&&last){receipt.outcome=last;}busy=false;}

@@ -14,7 +14,7 @@ import {
   validateStructuralCellAddress
 } from "./coordinates";
 import { serializeStructuralCellAddress } from "./canonical";
-import { structuralComponentClassificationSteps } from "./classificationSteps";
+import { structuralIssuedComponentClassificationSteps } from "./classificationSteps";
 import { deriveStructuralComponentClassification } from "./connectivity";
 import { getStructuralVoxel, isIssuedStructuralObject, structuralAddressForBrickCell } from "./model";
 import {
@@ -330,7 +330,7 @@ export function* deriveStructuralSingleComponentMassesSteps(
   if(objectMass.totalMassKg<=0||objectMass.centerOfMassMeters===null){
     throw new StructuralMassError("InvalidStructuralState", "objectMass", "Single-component source requires nonempty mass.");
   }
-  const classification=yield* structuralComponentClassificationSteps(object,{maxVisitedCells:fixed.maxConnectivityCells,
+  const classification=yield* structuralIssuedComponentClassificationSteps(object,{maxVisitedCells:fixed.maxConnectivityCells,
     maxComponents:fixed.maxComponents,maxIndexedFacts:fixed.maxConnectivityFacts});
   afterClassification(classification);
   if(classification.components.length!==1||classification.detachedComponents.length!==1||classification.fragments.length!==1){

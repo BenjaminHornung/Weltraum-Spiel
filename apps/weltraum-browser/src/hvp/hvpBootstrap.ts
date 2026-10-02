@@ -28,6 +28,7 @@ import { HVP_INERTIA_CELLS, HVP_INERTIA_KEY } from "../hestia-prototype/physics/
 import {meshHvpBranchProducts,meshHvpBranchFoliage,type HvpBranchProduct} from "../hestia-prototype/presentation/structuralPart";
 import {createHvpStructuralConsumer,type HvpStagedBranch} from "../hestia-prototype/terrain/structuralConsumer";
 import {createHvpBodyCutConsumer} from "../hestia-prototype/terrain/bodyCutConsumer";
+import {HvpRenderStageRecoveryError} from "../hestia-prototype/presentation/renderStageRecovery";
 import { createHvpPlayerInput } from "../hestia-prototype/player/input";
 import { createHvpAvatarMesh, HVP_AVATAR_KEY } from "../hestia-prototype/player/presentation";
 import type { HvpCollisionSource } from "../hestia-prototype/physics/terrainColliders";
@@ -1105,7 +1106,16 @@ export const startHvp = async (
       try{return action(scope);}
       catch(error){
         try{cleanupEphemeralScope(scope);}
-        catch(cleanupError){throw new AggregateError([error,cleanupError],`HVP render staging failed and cleanup is unproven: ${String(error)}; ${String(cleanupError)}`);}
+        catch(cleanupError){
+          let message="HVP render staging failed and cleanup is unproven";
+          try{message+=`: ${String(error)}; ${String(cleanupError)}`;}catch{/* Preserve both original causes. */}
+          throw new HvpRenderStageRecoveryError([error,cleanupError],message);
+        }
+        if(saveHold&&!(error instanceof HvpRenderStageRecoveryError)){
+          let message="RecoveryHold: HVP render staging restoration is unproven";
+          try{message+=`: ${String(error)}`;}catch{/* Preserve the original cause. */}
+          throw new HvpRenderStageRecoveryError([error],message);
+        }
         throw error;
       }
     };
@@ -2028,7 +2038,7 @@ export const startHvp = async (
         catch(cleanupError){
           let message="Moving-body staging and cleanup failed";
           try{message+=`: ${String(error)}; ${String(cleanupError)}`;}catch{/* Preserve both original causes. */}
-          throw new AggregateError([error,cleanupError],message);
+          throw new HvpRenderStageRecoveryError([error,cleanupError],message);
         }
         throw error;
       }

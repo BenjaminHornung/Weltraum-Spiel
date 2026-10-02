@@ -8,6 +8,7 @@ import type {HvpMovingCutRequest,HvpMovingCutPreparation,HvpBodyCutAdmission} fr
 import {prepareHvpWorkerWorldReplacement,type HvpWorldReplacement} from "./worldReplacement";
 import type {HvpWorldCheckpoint} from "../persistence/worldCheckpoint";
 import type {HvpNeighborCheckpoint} from "../runtime/residency";
+import {HVP_PHYSICS_PROTOCOL,type HvpPhysicsBinding} from "./physicsProtocol";
 
 export type HvpPhysicsSnapshot = ReturnType<HvpPhysicsSession["read"]>;
 export interface HvpPhysicsClock {
@@ -20,7 +21,7 @@ export interface HvpPhysicsClock {
   readonly delayedCallbacks:readonly {gapMs:number;previousCommand:string;handlerMs:number;advanceMs:number}[];
   readonly simulationHold?:Readonly<{gapMs:number;previousCommand:string;handlerMs:number;advanceMs:number;backlogSeconds:number;ticks:number}>;
 }
-export type HvpPhysicsMessage = { readonly id: number } & (
+export type HvpPhysicsMessage = HvpPhysicsBinding & { readonly id: number } & (
   | { readonly kind: "Initialize"; readonly sectors: readonly HvpCollisionSector[]; readonly spawn: { x: number; y: number; z: number }; readonly gravity: number;
       readonly player?: { spawn: { x: number; y: number; z: number }; coverage: readonly HvpCollisionCoverage[] }; readonly inertiaSpawn?: {x:number;y:number;z:number}; readonly branchSpawn?:{x:number;y:number;z:number};readonly sessionId:string;readonly checkpoint?:HvpWorldCheckpoint;readonly branchKind?:"branch"|"salvage";readonly measure?:boolean }
    | { readonly kind: "Read"; readonly input?: HvpPlayerInput; readonly cameraOffset?: { x: number; y: number; z: number };
@@ -45,7 +46,8 @@ export type HvpPhysicsMessage = { readonly id: number } & (
   | {readonly kind:"ParkDistantBodies"|"RestoreNearBodies"}
   | {readonly kind:"PrepareBodyResidency"|"CommitBodyResidency"|"FinalizeBodyResidency"|"RollbackBodyResidency";readonly transactionId:string}
 );
-export type HvpPhysicsReply = { readonly id: number; readonly snapshot?: HvpPhysicsSnapshot; readonly error?: string; readonly rejected?: string;readonly bodyPreparation?:HvpMovingCutPreparation;
+export type HvpPhysicsRequest = HvpPhysicsMessage extends infer M ? M extends HvpPhysicsMessage ? Omit<M,"id"|keyof HvpPhysicsBinding> : never : never;
+export type HvpPhysicsReply = HvpPhysicsBinding & { readonly id: number; readonly sequence:number; readonly snapshot?: HvpPhysicsSnapshot; readonly error?: string; readonly rejected?: string;readonly bodyPreparation?:HvpMovingCutPreparation;
   readonly checkpoint?:HvpWorldCheckpoint;readonly restoreState?:string;readonly clock?:HvpPhysicsClock;
   readonly timings?:{origin:number;steps:readonly (readonly[number,number])[];dropped:number} };
 
@@ -54,6 +56,12 @@ let session: HvpPhysicsSession | undefined;
 let initializing = false;
 let disposed = false;
 let timer: ReturnType<typeof setInterval> | undefined;
+let incarnation:string|undefined;
+let replySequence=0;
+type ReplyBody=Omit<HvpPhysicsReply,keyof HvpPhysicsBinding|"sequence">;
+const post=(value:ReplyBody,replyIncarnation=incarnation??"")=>{
+  port.postMessage({...value,protocol:HVP_PHYSICS_PROTOCOL,incarnation:replyIncarnation,sequence:++replySequence});
+};
 let previous=performance.now();
 let simulationPrevious=previous;
 let releasedPrepareHoldMs=0;
@@ -70,6 +78,14 @@ type RestoreState={id:string;transaction?:HvpWorldReplacement;recoveryHold?:bool
 let restore:RestoreState|undefined;
 // A single worker owns the coupled World. No other worker can mutate its handles.
 port.onmessage = async ({ data }) => {
+  // Old/mixed owner messages cannot mutate or dispose the live World.
+  if(incarnation!==undefined&&(data.protocol!==HVP_PHYSICS_PROTOCOL||data.incarnation!==incarnation)){
+    post({id:data.id,rejected:"Invalid physics message binding"},typeof data.incarnation==="string"?data.incarnation:"");return;
+  }
+  if(incarnation===undefined&&data.kind==="Initialize"&&(data.protocol!==HVP_PHYSICS_PROTOCOL
+    ||typeof data.incarnation!=="string"||!/^[A-Za-z0-9_-]{1,128}$/.test(data.incarnation))){
+    post({id:data.id,rejected:"Invalid physics initialization binding"},typeof data.incarnation==="string"?data.incarnation:"");return;
+  }
   const started=performance.now();
   const previousTerrainSpans=session?.terrainPrepareSpans();
   const previousBodySpans=session?.bodyPrepareSpans();
@@ -84,7 +100,7 @@ port.onmessage = async ({ data }) => {
     clock.lastBodyHoldMs=spans?.holdMs;clock.lastBodyCommandId=spans?.transactionId;
     clock.lastBodyManualPause=spans?.manualPause;
   };
-  const reply=(value:HvpPhysicsReply)=>{
+  const reply=(value:ReplyBody)=>{
     clock.lastCommand=data.kind;clock.lastHandlerMs=performance.now()-started;clock.maxHandlerMs=Math.max(clock.maxHandlerMs,clock.lastHandlerMs);
     const currentTerrainSpans=session?.terrainPrepareSpans();
     if(terrainCommand){
@@ -104,12 +120,19 @@ port.onmessage = async ({ data }) => {
     }
     const timings=measure?{origin:performance.timeOrigin,steps:stepTimings,dropped:droppedTimings}:undefined;
     if(measure){stepTimings=[];droppedTimings=0;}
-    port.postMessage({...value,clock:{...clock,timers:timer===undefined?0:1,delayedCallbacks:[...clock.delayedCallbacks]},timings});
+    post({...value,clock:{...clock,timers:timer===undefined?0:1,delayedCallbacks:[...clock.delayedCallbacks]},timings});
   };
   let bodyPreparation:HvpMovingCutPreparation|undefined;
   let releasingHeld=false;
   try {
     if (!Number.isSafeInteger(data.id) || data.id < 0) { throw new Error("Invalid physics message id"); }
+    if(incarnation===undefined){
+      if(data.kind!=="Initialize"||data.protocol!==HVP_PHYSICS_PROTOCOL
+        ||typeof data.incarnation!=="string"||!/^[A-Za-z0-9_-]{1,128}$/.test(data.incarnation)){
+        throw new Error("Invalid physics initialization binding");
+      }
+      incarnation=data.incarnation;
+    }
     if(data.kind==="PrepareTerrain"||data.kind==="CommitTerrain"||data.kind==="RollbackTerrain"||data.kind==="FinalizeTerrain"){
       terrainCommand=true;requestedTerrainId=data.transactionId;
     }
@@ -144,7 +167,7 @@ port.onmessage = async ({ data }) => {
              previous=now;simulationPrevious=now;releasedPrepareHoldMs=0;
           } catch (error) {
             clearInterval(timer);timer=undefined; session?.dispose(); disposed = true;
-            port.postMessage({ id: -1, error: error instanceof Error ? error.message : "Physics clock failed" });
+            post({ id: -1, error: error instanceof Error ? error.message : "Physics clock failed" });
           }
         }, 1000 / 60);
       }

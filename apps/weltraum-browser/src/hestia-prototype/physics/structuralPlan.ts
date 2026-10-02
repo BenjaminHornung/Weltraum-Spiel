@@ -6,7 +6,7 @@ import {ingestHvpStructuralCells} from "../terrain/structuralIngest";
 import {assertHvpRigidRecipe,prepareHvpRigidBodyOwnedHashSteps,prepareHvpRigidBodySteps,type HvpRigidRecipe,type HvpRigidRecipeSpans} from "./rigidRecipe";
 import {measureHvpCut,type HvpCutSpan,type HvpCutTrace} from "../runtime/cutTrace";
 // Private core module (not in the structural barrel): the step form of the public classification.
-import {structuralComponentClassificationSteps} from "../../voxel/structural/classificationSteps";
+import {structuralComponentClassificationSteps,structuralIssuedComponentClassificationSteps} from "../../voxel/structural/classificationSteps";
 import {isIssuedStructuralObject} from "../../voxel/structural/model";
 
 const issued=new WeakSet<object>();
@@ -151,7 +151,8 @@ function* finishPlanSteps(ownedHash:boolean,before:StructuralObject,after:Struct
     throw new Error("Structural plan source must be an owner-created frozen object");
   }
   // The single public classification algorithm; only its occupied-cell extraction yields (bounded batches).
-  const classification=yield* structuralComponentClassificationSteps(after,{maxVisitedCells:32_768,maxComponents:32,maxIndexedFacts:262_144});
+  const classification=yield* (ownedHash?structuralIssuedComponentClassificationSteps:structuralComponentClassificationSteps)(after,
+    {maxVisitedCells:32_768,maxComponents:32,maxIndexedFacts:262_144});
   yield "classification";
   let oldMass:ReturnType<typeof deriveStructuralObjectMassProperties>;
   if(parentRecipe===undefined){

@@ -54,6 +54,7 @@ import * as dormancyControllerModule from "../../src/hestia-prototype/runtime/do
 import type {HvpPhysicsClient} from "../../src/hestia-prototype/physics/client";
 import {bindHvpSupportPlan} from "../../src/hestia-prototype/terrain/supportPlan";
 import * as bodyConsumerModule from "../../src/hestia-prototype/terrain/bodyCutConsumer";
+import {HvpRenderStageRecoveryError} from "../../src/hestia-prototype/presentation/renderStageRecovery";
 import * as structuralConsumerModule from "../../src/hestia-prototype/terrain/structuralConsumer";
 import * as structuralPartModule from "../../src/hestia-prototype/presentation/structuralPart";
 import {ThreeRenderBackend} from "../../src/render/three/backend";
@@ -1972,6 +1973,54 @@ describe("HVP T08 bootstrap lifecycle", () => {
       expect(backend.readDiagnostics().residentRepresentationKeys).toContain(key);
       expect(backendCommands.filter(command=>command.kind==="RegisterEphemeralRepresentation")).toHaveLength(registrations);
     }finally{await handle?.dispose();terrainFactory.mockRestore();dormancyFactory.mockRestore();}
+  });
+
+  it.each([false,true])("R01/T04 moving stage reports renderer cleanup authority (unproven=%s)",async unproven=>{
+    // The renderer/ephemeral owner is real; physics remains a controlled fixture.
+    const source=harness(),overrides=source.overrides();
+    if(!overrides?.createPhysics){throw new Error("Missing fixture physics factory");}
+    const originalPhysics=overrides.createPhysics;
+    const createPhysics:typeof originalPhysics=async(...args)=>{
+      const physics=await originalPhysics(...args),native=physics.read();
+      Reflect.set(native,"moving",{state:"Idle",sequence:0,last:null,preview:null});
+      return {...physics,read:()=>native};
+    };
+    const bodyFactory=vi.spyOn(bodyConsumerModule,"createHvpBodyCutConsumer");
+    let backend!:ThreeRenderBackend,failUpload=false,failCleanup=false,handle:HvpBootstrapHandle|undefined;
+    const uploadFailure=new Error("injected accepted upload failure"),cleanupFailure=new Error("injected release failure");
+    try{
+      handle=await startHvp(source.overrides({createPhysics,createBackend:(options:ConstructorParameters<typeof ThreeRenderBackend>[0])=>{
+        backend=new ThreeRenderBackend({...options,rendererFactory:()=>({setPixelRatio:()=>{},setSize:()=>{},render:()=>{},dispose:()=>{}})});
+        const dispatch=backend.dispatch.bind(backend);
+        vi.spyOn(backend,"dispatch").mockImplementation(command=>{
+          if(failCleanup&&command.kind==="RemoveRepresentation"&&command.representationKey.includes("~")){throw cleanupFailure;}
+          const result=dispatch(command);
+          if(failUpload&&command.kind==="UpsertMeshArtifact"&&command.artifact.representationKey.includes("~")){
+            failUpload=false;throw uploadFailure;
+          }
+          return result;
+        });return backend;
+      }}));
+      const stage=bodyFactory.mock.calls[0]?.[2];if(!stage){throw new Error("Missing moving render stage");}
+      const digest="fnv1a64-v1:0123456789abcdef";
+      const mesh={...meshHvpTestCells([{x:0,y:0,z:0,slot:HVP_SLOT_LIMESTONE_DRY}],.125,{ao:true}),sourceDigest:digest};
+      const products={removedCells:1,removedMassKg:1,parts:[{ownerId:"hvp:r01-child",sourceDigest:digest,sourceBytes:4096,
+        center:{x:0,y:0,z:0},massKg:1,cells:[{x:10,y:11,z:2,materialId:1}],mesh}]};
+      const before=backend.readDiagnostics();failUpload=true;failCleanup=unproven;
+      let caught:unknown;
+      try{stage(HVP_BRANCH_KEY,products);}catch(error){caught=error;}
+      if(unproven){
+        expect(caught).toBeInstanceOf(HvpRenderStageRecoveryError);
+        expect(source.body.dataset.hestiaPrototypeSave).toContain("RecoveryHold");
+        // Failed release is not counted as reclaimed GPU/native memory.
+        expect(backend.readDiagnostics().residentRepresentationKeys).not.toEqual(before.residentRepresentationKeys);
+      }else{
+        expect(caught).toBe(uploadFailure);
+        expect(backend.readDiagnostics().residentRepresentationKeys).toEqual(before.residentRepresentationKeys);
+        expect(backend.readDiagnostics().ownedCpuBytes).toBe(before.ownedCpuBytes);
+        expect(source.body.dataset.hestiaPrototypeSave).not.toContain("RecoveryHold");
+      }
+    }finally{failUpload=false;failCleanup=false;await handle?.dispose();bodyFactory.mockRestore();}
   });
 
   it("K34 removes an accepted terrain Upsert after visibility publication throws",async()=>{
