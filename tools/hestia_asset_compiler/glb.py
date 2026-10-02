@@ -493,6 +493,7 @@ def _read_glb(raw):
         if "mesh" in node:
             integer(node["mesh"], 0, len(meshes) - 1, "glb.structure")
     primitive_count = 0
+    primitive_index_bytes = 0
     for mesh in meshes:
         shape(mesh, ["name", "extras", "primitives", "weights"], ["primitives"])
         if "weights" in mesh:
@@ -505,6 +506,10 @@ def _read_glb(raw):
         for prim in prims:
             shape(prim, ["attributes", "indices", "material", "mode", "targets", "extensions", "extras"], ["attributes", "material"])
             shape(prim["attributes"], ["POSITION", "NORMAL", "TANGENT", "TEXCOORD_0", "TEXCOORD_1", "COLOR_0"], ["POSITION"], "glb.unsupported")
+            index_source = prim.get("indices", prim["attributes"]["POSITION"])
+            primitive_index_bytes += accessors[integer(index_source, 0, len(accessors) - 1, "glb.accessor")]["count"] * 8
+            # Stored flat indices are per primitive, even for unreachable meshes/shared accessors.
+            check_budget("decoded_bytes", decoded_bytes + primitive_index_bytes)
     expanded = 0
     for index in reachable:
         node = doc["nodes"][index]

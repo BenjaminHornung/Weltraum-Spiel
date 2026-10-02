@@ -65,6 +65,27 @@ class ReaderTests(unittest.TestCase):
                 check_grid(lo, hi)
             self.assertEqual(code, caught.exception.code)
 
+    def test_unreachable_primitive_index_storage_before_decode(self):
+        for indexed in (True, False):
+            with self.subTest(indexed=indexed):
+                if indexed:
+                    doc, binary = fixture(faces=[(0, 1, 2)] * 10001)
+                else:
+                    doc, binary = fixture(vertices=[(0, 0, 0)] * 10002)
+                    doc["meshes"][0]["primitives"][0].pop("indices")
+                primitive = doc["meshes"][0]["primitives"][0]
+                # This mesh is unreachable: only mesh 0 participates in the instance count.
+                doc["meshes"].append({"primitives": [dict(primitive) for _ in range(512)]})
+                original_unpack = struct.unpack_from
+
+                def header_only(fmt, *args):
+                    if fmt not in ("<4sII", "<II"):
+                        raise AssertionError("binary decode reached before cumulative index-storage guard")
+                    return original_unpack(fmt, *args)
+
+                with patch("tools.hestia_asset_compiler.glb.struct.unpack_from", side_effect=header_only):
+                    self.reject("budget.decoded_bytes", doc, binary)
+
     def test_preread_file_and_report_caps(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "big.glb"

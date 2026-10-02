@@ -222,7 +222,39 @@ Explicit render-only subset: core PBR, UV0/UV1 and COLOR0 Float32 or normalized 
 
 Profiles remain explicit `micro-0125-research-v1=0.125 m` and `standard-025-v1=0.25 m`; no default/adoption. C2 tests cover parser portions of G23-G26/G30 and valid reused meshes; G03-G08/G17-G22/G28-G29 geometry portions wait for C3, all voxel portions for C4+.
 
-Fresh C2 command: the Python `-B` unittest command above with `-p 'test_glb.py' -v`, same explicit TEMP/TMP/interpreter/worktree. Exact final summary: `Ran 17 tests in 0.176s` / `OK`, exit 0, no skips. `git diff --check` and read-only Blender/schema/apps/README/AGENTS/DevToolbox baseline comparison both exit 0, empty. Status inventory is exactly the six new compiler files, this leased plan modification, and the two untouched instrumentation files. `-B`/no Blender or compiler caches/empty task TEMP check PASS, exit 0. Self-review corrected no production contract; confirmed offset oracle corrected as described. Staged diff/allowlist is checked again immediately before the exact C2 commit.
+Fresh C2 command: the Python `-B` unittest command above with **`-s tools/hestia_asset_compiler/tests -p 'test_glb.py' -v`**, same explicit TEMP/TMP/interpreter/worktree. Exact final summary: `Ran 17 tests in 0.176s` / `OK`, exit 0, no skips. `git diff --check` and read-only Blender/schema/apps/README/AGENTS/DevToolbox baseline comparison both exit 0, empty. Status inventory is exactly the six new compiler files, this leased plan modification, and the two untouched instrumentation files. `-B`/no Blender or compiler caches/empty task TEMP check PASS, exit 0. Self-review corrected no production contract; confirmed offset oracle corrected as described. Publication succeeded at `6b6e6fb1eb38642bca6045630270134337a705ce`, exact parent `89f068dfff2d965177165dce082c5289a35d0df4`, exact prescribed message; staged lease/whitespace checks and complete diff self-review preceded it.
+
+### C3 actual geometry implementation and verification — 2026-10-02
+
+Added only `tools/hestia_asset_compiler/geometry.py` and `tests/test_geometry.py`; updated the compiler's own `__init__.py` to `hestia-asset-compiler-spike-c3-v1` and this leased plan. Self-review also fixed a confirmed C2 allocation-budget defect in the leased `glb.py` with a focused regression in `tests/test_glb.py`, detailed below. No empty model/scaffolding, external dependency, input, schema, Blender or runtime change. Geometry consumes `read_glb` output; no report digest/binding, thickness proof, voxelization, output publication or successful full compile is asserted.
+
+Column-major Float64 matrices compose `parent * (T * R * S)`, including shear. Matrix/TRS mixing, projective/nonfinite matrices, singular local/world matrices and invalid quaternions reject. Unit-quaternion squared-norm tolerance is `1e-6`; components are retained, not repaired/renormalized. Every reachable node, including unannotated transform ancestors and geometryless joints/markers, is independently checked. Placements preserve stable semantic IDs and their canonical world matrix. Exact determinant signs of the stored Float64 matrix control a single total-world reflection winding swap. Triangle keys use part/render-material IDs and only cyclic rotations.
+
+Topology is actual per-part baked geometry, not report counters: exact positional seam joining, duplicates independent of material/winding, zero area, edge incidence/orientation, closed Solid vertex fans, and illegal self/component intersection/contact. Stdlib `Fraction` predicates operate on the **already baked Float64 coordinates**, with no epsilon weld or alternate authoring geometry. Only shared topological vertices/edges may intersect. Separate disjoint/nested components are allowed and cavity winding is retained. This is geometry proof only, not a cavity/interior/air classifier. Shell surfaces can be open; other representations do not silently receive Solid fill authority.
+
+The versioned limits remain unchanged. Preflight bounds instance-expanded triangles to 20,000 and the **sum of per-part unordered triangle pairs to 2,000,000 before world expansion/topology maps**. Thus the quadratic reference admits at most 2,000 triangles in one part (2,001 rejects); there is no new unbounded pair list. Referenced-vertex expansion is at most three vertices per admitted triangle; unused accessor rows are not multiplied by mesh instances. Tests mock expansion/topology to prove the pair guard runs first and prove 2×1000-row instances transform only 18 points (two origins plus 2×8 used vertices). World points and geometryless placements obey the 1,000,000 m absolute coordinate ceiling. Grid/flood/candidate/brick/output consumers are still C4+ and must apply the C2 frozen guards before allocation.
+
+Negative fixtures preceded `geometry.py`: expected missing-module failure, exit 1. The first implementation run exposed a **production** canonical-hash defect: root TRS integer-valued matrix entries differed in serialization from composed Float64 entries after two mirrors. Fixed the owning matrix boundary to always store Float64; the two-mirror, equivalent explicit-matrix/TRS, and canonical-permutation regressions now pass. No oracle, winding rule, report contract, or source provenance was relaxed to get green.
+
+Confirmed self-review finding: C2 capped accessor decoding and reachable instances but constructed separate flat index tuples for **all** primitives, including unreachable meshes sharing an accessor. Many such primitives could multiply stored indices beyond the byte ceiling. A negative test with mocked binary decoding reproduced the missing guard for indexed and nonindexed primitives (two subtest failures, exit 1), without allocating the oversized copies. The reader now charges every primitive's flat index storage to the **existing** cumulative 33,554,432-byte logical decoding budget before any binary decoding. Numeric limits/version/profiles and accepted geometry semantics are unchanged; the guard closes an omitted intermediate, rather than increasing limits or relaxing validation. Both cases and all prior tests pass.
+
+Fresh own verification, with explicit TEMP/TMP/interpreter/worktree from above:
+
+```text
+-B -m unittest discover -s tools/hestia_asset_compiler/tests -p 'test_*.py' -v
+Ran 45 tests in 0.398s
+OK
+exit 0; 18 reader + 27 geometry tests, no failures/skips
+
+-B -m unittest discover -s tools/blender/tests -p 'test_*.py' -v
+Ran 58 tests in 0.193s
+OK
+exit 0; intentional negative-path diagnostics as in C0, no Blender process
+```
+
+Coverage is the relevant **partial gates** of G03-G08/G17-G19/G20-G26/G28-G30: negative/origin-crossing bounds, exact 90-degree matrix and three-axis quaternion TRS oracles, Float64 translation, nonuniform-parent/rotated-child shear, one/two mirrors, reused meshes/part parent graph, joint/CutInterface placements and invalid ancestors, open/nonmanifold/degenerate/duplicate faces (including across materials), exact seam joining, disconnected/nested components, coplanar/noncoplanar/adjacent-face intersection and touch negatives, no epsilon weld, canonical list/cyclic/node/primitive/material reorder equivalence, truthful changed raw source SHA, and pre-expansion budget failures. Full golden voxel occupancy, ten-run package determinism, flood/tunnel topology, thin decisions, report admission and package faults are **NOT RUN**, not implied by these unit tests.
+
+Read-only Blender/schema/apps/README/AGENTS/DevToolbox comparison to the accepted C1 commit: PASS, exit 0, empty. HEAD before C3 publication remains exact C2 SHA and `origin/main` exact base; lease/status contains only the C3 files/plan and untouched instrumentation. `git diff --check` PASS, exit 0 (normal LF/CRLF warning, not a whitespace error). Cache/TEMP checks PASS with `-B`; repeat the hygiene check after tests and inspect the complete staged C3 diff before the exact scoped commit. Publication SHA/parent/result and a **fresh post-commit** test/diff/status checkpoint are reported after execution, not fabricated into this commit's own content.
 
 ### Future independent contact-A goldens — NOT RUN
 
@@ -260,6 +292,7 @@ Future commands use the same TEMP/TMP and worktree above:
 - Exporter report inventory is not baked topology, transform, thickness, or exact Part ownership proof. Joint validation and unannotated export gaps need downstream rejection/validation, not upstream writes.
 - Palette IDs, terrain material 0, terrain brick shapes, and adaptive/structural proof inputs are different boundaries; a research package cannot claim runtime compatibility.
 - Path/graph/accessor/instance/grid/flood/output budgets must cover intermediates before allocation. Qualified performance remains unknown.
+- Exact-predicate quadratic topology is a deliberately bounded reference, not a scalable production kernel. Current 20,000-instance-triangle / 2,000,000-pair limits exclude the proposed Medium/Large benchmark input sizes, and one-part cases above 2,000 faces reject. Do not quietly raise budgets: future coordinated benchmark/admission scope must explicitly report this limitation or receive a separately authorized versioned revision. Logical decoded byte caps are not measured Python/Fraction peak memory guarantees.
 - Real Blender axis/unit/exporter-version behavior remains unverified until allowed-root E2E; metadata-only discovery is not that proof.
 
 ## Rollback / safe stop
@@ -275,11 +308,11 @@ At C1 retain the authorized docs commit, untouched instrumentation, and empty ta
 - [x] C1 fresh document/diff allowlist verification and self-review: PASS as recorded above. Authorized publication result and SHA are recorded in the final checkpoint response/Git after the exact scoped commit, not predicted here.
 - Superorchestrator independently accepted C0/C1 (not the full spike): read all three documents; HEAD `89f068dfff2d965177165dce082c5289a35d0df4`, exact parent `25bc7f5bbd2db6317c42193873eadeaf10a092c5`; scoped diff whitespace exit 0; only the two untracked instrumentation files; independently reran Blender host tests using Python `-B`: **58 PASS**, exit 0, **0.320 s**. This is relayed external meta-evidence, not this agent's run.
 - C2 then C3 authorized explicitly, serial sole writer, exact separate commits; stop before C4. No further agents or independent implementation review dispatched here.
-- [x] C2 reader/fixture implementation and fresh scoped tests/self-review: 17 PASS, exit 0; exact C2 publication follows final staged lease/whitespace checks, resulting SHA recorded by Git/checkpoint.
-- [ ] C3 implementation/verification: authorized after the C2 commit, not yet run.
+- [x] C2 reader/fixture implementation, fresh scoped tests/self-review and publication: 17 PASS, exit 0; exact scoped commit `6b6e6fb1eb38642bca6045630270134337a705ce` with the accepted C1 commit as sole parent.
+- [x] C3 geometry/semantics implementation, scoped reader budget-defect fix and fresh combined tests: 45 PASS (18 reader + 27 geometry), exit 0; fresh own unchanged Blender baseline 58 PASS, exit 0. Full staged self-review/lease/whitespace verification immediately precedes the exact C3 publication; its SHA/result and fresh post-commit checkpoint are recorded in Git/final response.
 - [ ] C4-C8: **NOT AUTHORIZED / NOT RUN**; STOP before C4.
 
-R1 reviewer `731643b5-d353-4147-82e7-6d6d4eab31fb` independently approved the comparison and cavity-design interpretations (R1-A2, relayed by superorchestrator). R2 `a9f5de5b-43db-4fbc-bb1b-625a06dfa53d` and R3 `23ac2427-9a49-4c2e-a3da-7996b5affb7e` completed read-only technical prechecks, also relayed. None is described as a review of implemented compiler code; no implementation or independent hollow/tunnel oracle has run.
+R1 reviewer `731643b5-d353-4147-82e7-6d6d4eab31fb` independently approved the comparison and cavity-design interpretations (R1-A2, relayed by superorchestrator). R2 `a9f5de5b-43db-4fbc-bb1b-625a06dfa53d` and R3 `23ac2427-9a49-4c2e-a3da-7996b5affb7e` completed read-only technical prechecks, also relayed. These were not implemented-code reviews. This agent now ran C2/C3 tests/self-review; independent implementation review is still user-dispatched **after this checkpoint**. C3's signed-volume cavity-winding oracle is not C5's independent occupancy/flood/tunnel oracle, which remains NOT RUN.
 
 ## Definition of Done
 

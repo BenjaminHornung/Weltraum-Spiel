@@ -1,3 +1,3 @@
 """Isolated offline research ingestion; not a runtime adapter or full compiler."""
 
-COMPILER_VERSION = "hestia-asset-compiler-spike-c2-v1"
+COMPILER_VERSION = "hestia-asset-compiler-spike-c3-v1"
