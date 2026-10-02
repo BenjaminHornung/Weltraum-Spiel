@@ -94,3 +94,110 @@ describe('RD-01 reference provenance', () => {
     });
   });
 });
+
+it('REF05 actual CLI output guard rejects case-variant live/dangling links and linked parents; absent/regular targets are allowed', async () => {
+  const fs = await import('node:fs');
+  const path = await import('node:path');
+  const { createHash } = await import('node:crypto');
+  const root = path.resolve(fs.mkdtempSync('C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-01/repair-output-guard-'));
+  const sourceBytes = fs.readFileSync(new URL('../../src/tools/reference-index/cli.mjs', import.meta.url));
+  const source = sourceBytes.toString('utf8');
+  const start = source.indexOf("if (args.includes('--write')) {");
+  const end = source.indexOf('\nprocess.stdout.write(output);', start);
+  expect(start).toBeGreaterThanOrEqual(0);
+  expect(end).toBeGreaterThan(start);
+  const actualBlock = source.slice(start, end);
+  expect(actualBlock.match(/writeFileSync\(target, output\);/g)).toHaveLength(1);
+  const guard = new Function('args', 'lab', 'output', 'path', 'readdirSync', 'realpathSync', 'lstatSync', 'writeFileSync', actualBlock);
+  const linkName = process.platform === 'win32' ? 'INDEX.JSON' : 'index.json';
+  const payload = '{"retainedFixture":true}\n';
+  const cases: Array<{ label: string; lab: string; reject: boolean; targetLink?: boolean }> = [];
+  const makeLab = (label: string) => {
+    const lab = path.join(root, label);
+    fs.mkdirSync(path.join(lab, 'reference-cards'), { recursive: true });
+    return lab;
+  };
+  const absent = makeLab('absent');
+  cases.push({ label: 'absent', lab: absent, reject: false });
+  const regular = makeLab('regular');
+  const regularTarget = path.join(regular, 'reference-cards/index.json');
+  fs.writeFileSync(regularTarget, payload, { flag: 'wx' });
+  cases.push({ label: 'regular', lab: regular, reject: false });
+  const destinations: string[] = [];
+  for (const [label, live] of [['live-junction', true], ['dangling-junction', false]] as const) {
+    const lab = makeLab(label);
+    const destination = path.join(root, `${label}-destination`);
+    if (live) {
+      fs.mkdirSync(destination);
+      destinations.push(destination);
+    }
+    fs.symlinkSync(destination, path.join(lab, 'reference-cards', linkName), 'junction');
+    cases.push({ label, lab, reject: true, targetLink: true });
+  }
+  const parentLab = path.join(root, 'linked-parent');
+  const parentDestination = path.join(root, 'parent-destination');
+  fs.mkdirSync(parentLab);
+  fs.mkdirSync(parentDestination);
+  fs.writeFileSync(path.join(parentDestination, 'index.json'), payload, { flag: 'wx' });
+  fs.symlinkSync(parentDestination, path.join(parentLab, 'reference-cards'), 'junction');
+  cases.push({ label: 'linked-parent', lab: parentLab, reject: true });
+  const nonregular = makeLab('directory-target');
+  fs.mkdirSync(path.join(nonregular, 'reference-cards/index.json'));
+  cases.push({ label: 'directory-target', lab: nonregular, reject: true });
+  const fileDestination = path.join(root, 'owned-file-destination.json');
+  fs.writeFileSync(fileDestination, payload, { flag: 'wx' });
+  let fileSymlinkLimitation: { code?: string; message: string; errno?: number; syscall?: string } | null = null;
+  try {
+    for (const [label, destination] of [['live-file-link', fileDestination], ['dangling-file-link', path.join(root, 'absent-file-destination.json')]]) {
+      const lab = makeLab(label);
+      fs.symlinkSync(destination, path.join(lab, 'reference-cards', linkName), 'file');
+      cases.push({ label, lab, reject: true, targetLink: true });
+    }
+  } catch (error) {
+    const failure = error as NodeJS.ErrnoException;
+    if (!['EPERM', 'EACCES', 'ENOTSUP'].includes(failure.code ?? '')) {
+      throw error;
+    }
+    fileSymlinkLimitation = { code: failure.code, message: failure.message, errno: failure.errno, syscall: failure.syscall };
+  }
+  const outcomes = cases.map((scenario) => {
+    const target = path.join(scenario.lab, 'reference-cards/index.json');
+    if (scenario.targetLink) {
+      expect(fs.lstatSync(target).isSymbolicLink()).toBe(true);
+      if (process.platform === 'win32') {
+        const names = fs.readdirSync(path.dirname(target));
+        expect(names).toContain('INDEX.JSON');
+        expect(names).not.toContain('index.json');
+      }
+    }
+    const sinkCalls: string[] = [];
+    let error: string | null = null;
+    try {
+      // Actual production block, actual native filesystem reads; the write sink only records admission.
+      guard(['--write'], scenario.lab, payload, path, fs.readdirSync, fs.realpathSync, fs.lstatSync,
+        (admittedTarget: string) => { sinkCalls.push(admittedTarget); });
+    } catch (failure) {
+      error = (failure as Error).message;
+    }
+    return { label: scenario.label, expectedReject: scenario.reject, error, sinkCalls,
+      nativeCaseVariant: Boolean(scenario.targetLink && process.platform === 'win32') };
+  });
+  expect(fs.existsSync(path.join(absent, 'reference-cards/index.json'))).toBe(false);
+  for (const destination of destinations) {
+    expect(fs.readdirSync(destination)).toEqual([]);
+  }
+  for (const file of [regularTarget, path.join(parentDestination, 'index.json'), fileDestination]) {
+    expect(fs.readFileSync(file, 'utf8')).toBe(payload);
+  }
+  fs.writeFileSync(path.join(root, 'evidence.json'), `${JSON.stringify({ testId: 'REF05', root,
+    regressionTestSha256: createHash('sha256').update(fs.readFileSync(new URL('./unit.test.ts', import.meta.url))).digest('hex'),
+    sourceSha256: createHash('sha256').update(sourceBytes).digest('hex'),
+    guardSha256: createHash('sha256').update(actualBlock).digest('hex'),
+    filesystemSinkExecuted: false, destinationEntries: destinations.map((destination) => ({ destination, entries: fs.readdirSync(destination) })),
+    fileSymlinkLimitation, outcomes }, null, 2)}\n`, { flag: 'wx' });
+  console.log(`REF05 retained fenced-sink evidence: ${path.join(root, 'evidence.json')}`);
+  for (const outcome of outcomes) {
+    expect(outcome.error, outcome.label).toBe(outcome.expectedReject ? 'Index output is not an own regular path' : null);
+    expect(outcome.sinkCalls, outcome.label).toHaveLength(outcome.expectedReject ? 0 : 1);
+  }
+});

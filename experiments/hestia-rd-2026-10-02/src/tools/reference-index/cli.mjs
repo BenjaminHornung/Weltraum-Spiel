@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync, realpathSync, writeFileSync } from 'node:fs';
+import { lstatSync, readFileSync, readdirSync, realpathSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -43,9 +43,10 @@ const index = { ...buildIndex({ cards, concepts, sources }),
 const output = `${JSON.stringify(index, null, 2)}\n`;
 if (args.includes('--write')) {
   const target = path.join(lab, 'reference-cards/index.json');
+  const targetStats = lstatSync(target, { throwIfNoEntry: false });
   // Existing output must not redirect this explicitly owned write through a link.
   if (realpathSync(path.dirname(target)) !== path.dirname(target)
-    || (readdirSync(path.dirname(target)).includes('index.json') && realpathSync(target) !== target)) {
+    || (targetStats && (targetStats.isSymbolicLink() || !targetStats.isFile() || realpathSync(target) !== target))) {
     throw new Error('Index output is not an own regular path');
   }
   writeFileSync(target, output);
