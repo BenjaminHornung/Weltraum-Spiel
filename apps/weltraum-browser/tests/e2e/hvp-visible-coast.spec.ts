@@ -1304,3 +1304,61 @@ test("stored HVP PNG evidence rejects missing, corrupt, blank, and wrong-size re
     await writeFile(path.join(directory, pngName), wrongSizeImage);
   });
 });
+
+test("HVP HUD projections avoid repeated real DOM writes and preserve normalized reticle colors", async ({ page }) => {
+  // A HUD-only fixture isolates CSSOM/property behavior from GPU and worker time.
+  const { createHvpPhysicsSession } = await import("../../src/hestia-prototype/physics/session");
+  const session = await createHvpPhysicsSession([], { x: 0, y: 8, z: 0 }, 9.81,
+    { spawn: { x: 0, y: 1, z: 0 }, coverage: [{ minX: -16, maxX: 16, minZ: -16, maxZ: 16 }] });
+  const physics = session.read(); session.dispose();
+  await page.route("**/hud-dom-fixture", route => route.fulfill({ contentType: "text/html", body: "<!doctype html><html><body></body></html>" }));
+  await page.goto("/hud-dom-fixture");
+  const result = await page.evaluate(async initial => {
+    const entry = "/src/hvp/hvpHud.ts";
+    const { createHvpHud } = await import(entry) as typeof import("../../src/hvp/hvpHud");
+    let state = { ...initial, player: { ...initial.player!, status: "Walking" as const } }, thirdPerson = false;
+    let save = { state: "Idle", message: "Bereit", revision: null as number | null };
+    const noop = () => {};
+    const actions: import("../../src/hvp/hvpHud").HvpHudActions = {
+      setPreset: noop, resetCamera: noop, readWaterEnabled: () => true, setWaterEnabled: noop,
+      readInspectEnabled: () => false, setInspectEnabled: noop, readAoEnabled: () => true, setAoEnabled: noop,
+      readPhysics: () => state, physicsCommand: async () => {}, play: noop, readThirdPerson: () => thirdPerson,
+      readAimScreen: () => ({ x: 50, y: 50, visible: true }), togglePlayerView: noop,
+      readTool: () => ({ mode: "Zelle", edges: 0, issued: 0, message: "Kein Ziel", state: "Idle", queued: 0,
+        receipts: 0, last: undefined, structural: undefined, moving: undefined }),
+      selectTool: noop, aimImpulse: noop, aimBranch: noop, previewSupport: noop, aimRock: noop, restartRock: noop,
+      readSupport: () => ({ state: "Idle", cells: 0, massKg: 0, fragments: 0, message: "" }), readSave: () => save,
+      save: noop, load: noop, loadNewSession: noop, readSalvage: () => null, restartSalvage: noop,
+      readNeighbor: () => null, readDormancy: () => null, retryNeighbor: noop, restartEast: noop, endSession: noop
+    };
+    const hud = createHvpHud({ host: document.body, actions });
+    const writes = { textContent: 0, setAttribute: 0, disabled: 0, hidden: 0 };
+    for (const [prototype, key] of [[Node.prototype, "textContent"], [HTMLButtonElement.prototype, "disabled"],
+      [HTMLElement.prototype, "hidden"]] as const) {
+      const descriptor = Object.getOwnPropertyDescriptor(prototype, key)!;
+      Object.defineProperty(prototype, key, { ...descriptor, set(value: unknown) {
+        writes[key] += 1; descriptor.set!.call(this, value);
+      } });
+    }
+    const setAttribute = Element.prototype.setAttribute;
+    Element.prototype.setAttribute = function(name, value) { writes.setAttribute += 1; setAttribute.call(this, name, value); };
+    hud.updatePhysics(); Object.assign(writes, { textContent: 0, setAttribute: 0, disabled: 0, hidden: 0 });
+    const mutations = new MutationObserver(() => {});
+    mutations.observe(document.body, { subtree: true, attributes: true, childList: true, characterData: true });
+    hud.updatePhysics();
+    const repeated = { ...writes, records: mutations.takeRecords().length }; mutations.disconnect();
+    thirdPerson = true; save = { state: "RecoveryHold", message: "Wiederherstellung fehlt", revision: 2 };
+    state = { ...state, impulseTarget: { kind: "Dynamic", target: "hvp:physics:drop", distanceMeters: 2, massKg: 300, point: null } };
+    hud.updatePhysics();
+    const reticle = document.querySelector<HTMLElement>("#hvp-aim-reticle")!;
+    const dynamicColor = reticle.style.background;
+    state = { ...state, impulseTarget: { ...state.impulseTarget, kind: "Fixed" } }; hud.updatePhysics();
+    return { repeated, dynamicColor, fixedColor: reticle.style.background,
+      view: document.querySelector("#hvp-player-view")!.textContent,
+      disabled: document.querySelector<HTMLButtonElement>("#hvp-save")!.disabled,
+      live: document.querySelector("#hvp-cut-feedback")!.getAttribute("aria-live") };
+  }, physics);
+  expect(result.repeated).toEqual({ textContent: 0, setAttribute: 0, disabled: 0, hidden: 0, records: 0 });
+  expect(result.dynamicColor).toBe("rgb(156, 232, 191)"); expect(result.fixedColor).toBe("rgb(242, 244, 236)");
+  expect(result.view).toBe("Perspektive: 3. Person (V)"); expect(result.disabled).toBe(true); expect(result.live).toBe("polite");
+});

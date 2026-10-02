@@ -101,7 +101,18 @@ export const clearHvpDataset = (body: HTMLElement): void => {
   }
 };
 
+const setText = (element: HTMLElement, value: string): void => {
+  if (element.textContent !== value) element.textContent = value;
+};
+const setHidden = (element: HTMLElement, value: boolean): void => {
+  if (element.hidden !== value) element.hidden = value;
+};
+const setDisabled = (element: HTMLButtonElement, value: boolean): void => {
+  if (element.disabled !== value) element.disabled = value;
+};
+
 export const createHvpHud = (options: HvpHudOptions): HvpHud => {
+  let disposed = false;
   const listeners=createHvpListeners();
   const documentPort = options.documentPort ?? document;
   const root = documentPort.createElement("section");
@@ -213,6 +224,7 @@ export const createHvpHud = (options: HvpHudOptions): HvpHud => {
   };
   const command = (kind: "Pause" | "Resume" | "Drop"): void => {
     void options.actions.physicsCommand(kind).catch((error: unknown) => {
+      if (disposed) return;
       physicsValue.textContent = `Physics error: ${error instanceof Error ? error.message : String(error)}`;
     });
   };
@@ -229,63 +241,88 @@ export const createHvpHud = (options: HvpHudOptions): HvpHud => {
   const goalSave=makeButton("hvp-salvage-save","Bergung speichern",()=>options.actions.save());
   const goalRestart=makeButton("hvp-salvage-restart","Neuer Auftrag",()=>options.actions.restartSalvage());
   goalPanel.append(goalTitle,goalText,goalSteps,goalPlay,goalSave,goalRestart);options.host.append(goalPanel);goalPanel.hidden=true;
+  const goalButtons = [goalPlay, goalSave, goalRestart];
+  // Cache scalar values, not snapshot identity: a caller may reuse its save view.
+  let saveState: string | undefined, saveMessage: string | undefined, saveRevision: number | null | undefined;
+  let aimX: number | undefined, aimY: number | undefined, dynamicTarget: boolean | undefined;
   const updateSave = () => {
-    const save=options.actions.readSave();saveValue.textContent=`Spielstand: ${save.state} · ${save.message}${save.revision===null?"":` · r${save.revision}`}`;
-    documentPort.body.dataset.hestiaPrototypeSave=JSON.stringify(save);
-    for(const child of Array.from(controls.children)){if(child!==hideButton){(child as HTMLButtonElement).disabled=["Saving","Loading","RecoveryHold"].includes(save.state);}}
-    for(const b of [goalPlay,goalSave,goalRestart]){b.disabled=["Saving","Loading","RecoveryHold"].includes(save.state);}
+    if (disposed) return;
+    const save=options.actions.readSave();
+    setText(saveValue,`Spielstand: ${save.state} · ${save.message}${save.revision===null?"":` · r${save.revision}`}`);
+    if (save.state !== saveState || save.message !== saveMessage || save.revision !== saveRevision) {
+      documentPort.body.dataset.hestiaPrototypeSave=JSON.stringify(save);
+      saveState = save.state; saveMessage = save.message; saveRevision = save.revision;
+    }
+    const blocked = save.state === "Saving" || save.state === "Loading" || save.state === "RecoveryHold";
+    for (let index = 0; index < controls.children.length; index += 1) {
+      const child = controls.children[index]!;
+      if (child !== hideButton) setDisabled(child as HTMLButtonElement, blocked);
+    }
+    for (const button of goalButtons) setDisabled(button, blocked);
     return save;
   };
   const updatePhysics = (): void => {
+    if (disposed) return;
     updateSave();
     const tool=options.actions.readTool();
-    toolValue.textContent=`Plasmacutter: ${tool.mode} · ${tool.state} · ${tool.last?.reason??tool.message} · 1/2/3, Linksklick · Terrain: SafeQuarry / Holz: Ast`;
-    viewButton.textContent = options.actions.readThirdPerson() ? "Perspektive: 3. Person (V)" : "Perspektive: Ego (V)";
+    let toolText=`Plasmacutter: ${tool.mode} · ${tool.state} · ${tool.last?.reason??tool.message} · 1/2/3, Linksklick · Terrain: SafeQuarry / Holz: Ast`;
+    const thirdPerson = options.actions.readThirdPerson();
+    setText(viewButton, thirdPerson ? "Perspektive: 3. Person (V)" : "Perspektive: Ego (V)");
     const state = options.actions.readPhysics();
     const neighbor=options.actions.readNeighbor();
-    neighborValue.textContent=neighbor?`Ostregion: ${neighbor.state}${neighbor.busy?" (Pending)":""} · LOD ${neighbor.renderLod??neighbor.lod} m${neighbor.proxyOnly?" (Checkpoint-Projektion)":""} · Kollision ${neighbor.collisionReady?"bereit":"fehlt"}${neighbor.error?` · ${neighbor.error}`:""}`:"";
+    let neighborText=neighbor?`Ostregion: ${neighbor.state}${neighbor.busy?" (Pending)":""} · LOD ${neighbor.renderLod??neighbor.lod} m${neighbor.proxyOnly?" (Checkpoint-Projektion)":""} · Kollision ${neighbor.collisionReady?"bereit":"fehlt"}${neighbor.error?` · ${neighbor.error}`:""}`:"";
     const dormancy=options.actions.readDormancy();
-    if(dormancy){neighborValue.textContent+=` · Ruhende Fragmente: ${options.actions.readPhysics().parked?.length??0}${dormancy.busy?" (Pending)":""}${dormancy.error?` · ${dormancy.error}`:""}`;}
-    const goal=options.actions.readSalvage();goalPanel.hidden=goal===null||!uiVisible;
+    if(dormancy){neighborText+=` · Ruhende Fragmente: ${state.parked?.length??0}${dormancy.busy?" (Pending)":""}${dormancy.error?` · ${dormancy.error}`:""}`;}
+    setText(neighborValue, neighborText);
+    const goal=options.actions.readSalvage();setHidden(goalPanel, goal===null||!uiVisible);
     // Keep the real player objective separate from the inspection/diagnostic panel.
     const playing=state.player?.status==="Walking";
-    root.hidden=playing;
-    interaction.hidden=!playing||!uiVisible;
-    const aim=options.actions.readAimScreen();reticle.hidden=!playing||!uiVisible||!aim.visible;
-    reticle.style.left=`${aim.x}%`;reticle.style.top=`${aim.y}%`;
-    reticle.style.background=state.impulseTarget?.kind==="Dynamic"?"#9ce8bf":"#f2f4ec";
+    setHidden(root, playing);
+    setHidden(interaction, !playing||!uiVisible);
+    const aim=options.actions.readAimScreen();setHidden(reticle, !playing||!uiVisible||!aim.visible);
+    // This HUD exclusively owns the reticle styles. Cache inputs because CSSOM
+    // normalizes colors (hex becomes rgb), which defeats raw string comparisons.
+    if (aim.x !== aimX) { reticle.style.left=`${aim.x}%`; aimX=aim.x; }
+    if (aim.y !== aimY) { reticle.style.top=`${aim.y}%`; aimY=aim.y; }
+    const dynamic = state.impulseTarget?.kind==="Dynamic";
+    if (dynamic !== dynamicTarget) { reticle.style.background=dynamic?"#9ce8bf":"#f2f4ec"; dynamicTarget=dynamic; }
     const targetText=describeHvpImpulseTarget(state.impulseTarget);
-    if(targetValue.textContent!==targetText){targetValue.textContent=targetText;}
+    setText(targetValue, targetText);
     const resultText=(state.lastImpulse?"Letzter Versuch: ":"")+describeHvpImpulseResult(state.lastImpulse?.reason);
-    if(feedback.textContent!==resultText){feedback.textContent=resultText;}
-    const cutStates=[tool.state,tool.structural?.state,tool.moving?.state];
-    const cutText=cutStates.includes("RecoveryHold")?"Schnitt angehalten: Wiederherstellung nicht bestätigt."
-      :cutStates.includes("Pending")?"Schneiden … Zusammenhang, Geometrie und Kollision werden vorbereitet."
+    setText(feedback, resultText);
+    const recovery = tool.state === "RecoveryHold" || tool.structural?.state === "RecoveryHold" || tool.moving?.state === "RecoveryHold";
+    const pending = tool.state === "Pending" || tool.structural?.state === "Pending" || tool.moving?.state === "Pending";
+    const cutText=recovery?"Schnitt angehalten: Wiederherstellung nicht bestätigt."
+      :pending?"Schneiden … Zusammenhang, Geometrie und Kollision werden vorbereitet."
         :`${tool.mode} · Linksklick: ${tool.message}`;
-    if(cutFeedback.textContent!==cutText){cutFeedback.textContent=cutText;}
+    setText(cutFeedback, cutText);
     if(goal){
-      goalText.textContent=goal.targetLost?"Bergungsstück verändert oder verloren. Gesicherten Stand laden oder neuen Auftrag starten.":goal.instruction!;
-      goalSteps.textContent=`${goal.mission.objectiveStates.filter(o=>o.state==="Completed").length}/4 · WASD / Space · 1 + Klick: Verbindung · F: Schieben · Esc: Pause`;
-      goalPlay.hidden=state.player?.status==="Walking"||goal.stage==="Save"||goal.stage==="Completed";
-      goalSave.hidden=goal.stage!=="Save";
+      setText(goalText, goal.targetLost?"Bergungsstück verändert oder verloren. Gesicherten Stand laden oder neuen Auftrag starten.":goal.instruction!);
+      let completed = 0;
+      for (const objective of goal.mission.objectiveStates) { if (objective.state === "Completed") completed += 1; }
+      setText(goalSteps,`${completed}/4 · WASD / Space · 1 + Klick: Verbindung · F: Schieben · Esc: Pause`);
+      setHidden(goalPlay, playing||goal.stage==="Save"||goal.stage==="Completed");
+      setHidden(goalSave, goal.stage!=="Save");
     }
-    if(state.inertia) { toolValue.textContent+=` · F: Schieben (4 m / 15 N·s) · ${state.lastImpulse?.reason??"L-Körper bereit"}`; }
-    if(state.structural) {toolValue.textContent+=` · Ast: ${tool.structural?.last?.status??state.structural.state} · ${tool.structural?.last?.reason??`Taste ${state.structural.cutEdge===1?1:2} + Linksklick`}`;}
-    if(state.moving){toolValue.textContent+=` · Fragment: ${tool.moving?.last?.status??tool.moving?.state??state.moving.state} · ${tool.moving?.last?.reason??"1 Zelle / 2 Box / 3 Kugel erneut schneiden"}`;}
+    if(state.inertia) { toolText+=` · F: Schieben (4 m / 15 N·s) · ${state.lastImpulse?.reason??"L-Körper bereit"}`; }
+    if(state.structural) {toolText+=` · Ast: ${tool.structural?.last?.status??state.structural.state} · ${tool.structural?.last?.reason??`Taste ${state.structural.cutEdge===1?1:2} + Linksklick`}`;}
+    if(state.moving){toolText+=` · Fragment: ${tool.moving?.last?.status??tool.moving?.state??state.moving.state} · ${tool.moving?.last?.reason??"1 Zelle / 2 Box / 3 Kugel erneut schneiden"}`;}
     const support=options.actions.readSupport();
-    if(support.state!=="Idle"){toolValue.textContent+=` · Stützvorschau: ${support.state} · ${support.fragments} Teile / ${support.cells} Zellen / ${support.massKg.toFixed(2)} kg · ${support.message}`;}
-    pauseButton.textContent = state.status === "Running" ? "Physik pausieren" : "Physik fortsetzen";
+    if(support.state!=="Idle"){toolText+=` · Stützvorschau: ${support.state} · ${support.fragments} Teile / ${support.cells} Zellen / ${support.massKg.toFixed(2)} kg · ${support.message}`;}
+    setText(toolValue, toolText);
+    setText(pauseButton, state.status === "Running" ? "Physik pausieren" : "Physik fortsetzen");
     const drop = state.bodies[0];
-    physicsValue.textContent = `Physics: ${state.status} · ${state.bodyCount} bodies / ${state.colliderCount} colliders · g=${state.gravity.toFixed(2)} m/s²`
+    let physicsText = `Physics: ${state.status} · ${state.bodyCount} bodies / ${state.colliderCount} colliders · g=${state.gravity.toFixed(2)} m/s²`
       + (drop === undefined ? "" : ` · Fallhöhe y=${drop.position.y.toFixed(2)} m`);
     if (state.player != null) {
-      physicsValue.textContent += ` · Player: ${state.player.status}${state.player.grounded ? " (Boden)" : ""}`;
-      modeValue.textContent = state.player.status === "Inspection"
+      physicsText += ` · Player: ${state.player.status}${state.player.grounded ? " (Boden)" : ""}`;
+      setText(modeValue, state.player.status === "Inspection"
         ? `Camera: ${documentPort.body.dataset.hestiaPrototypeCamera} (${options.actions.readInspectEnabled() ? "Fly" : "Orbit"})`
-        : `Player: ${state.player.status} · ${options.actions.readThirdPerson() ? "Third Person" : "First Person"} · 1.80 m`;
+        : `Player: ${state.player.status} · ${thirdPerson ? "Third Person" : "First Person"} · 1.80 m`);
     }
     const inputError = documentPort.body.dataset.hestiaPrototypeInputError;
-    if (inputError !== undefined) { physicsValue.textContent += ` · ${inputError}`; }
+    if (inputError !== undefined) { physicsText += ` · ${inputError}`; }
+    setText(physicsValue, physicsText);
   };
   controls.append(
     makeButton("hvp-end-session","Sitzung beenden",()=>options.actions.endSession()),
@@ -352,7 +389,6 @@ export const createHvpHud = (options: HvpHudOptions): HvpHud => {
   root.append(title, stateValue, modeValue, detailValue, physicsValue, toolValue,saveValue,neighborValue, controls);
   options.host.append(root);
   updateSave();
-  let disposed = false;
 
   return {
     updatePhysics,
