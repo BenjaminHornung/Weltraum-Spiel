@@ -9,7 +9,7 @@ import { prepareHvpRigidBody, installHvpRigidBody } from "./rigidBody";
 import { createHvpBranchSession, type HvpBranchRequest } from "./branchSession";
 import {prepareHvpTerrainFragment,type HvpTerrainFragmentRequest} from "./terrainFragment";
 import {ADAPTIVE_BRICK_ESTIMATED_BYTES} from "../../voxel/adaptive";
-import {createHvpBodyCutSession,createHvpOwnedHashBodyCutSession,type HvpMovingCutRequest,type HvpBodyCutAdmission,type HvpBodyPlanTrace} from "./bodyCutSession";
+import {createHvpBodyCutSession,createHvpOwnedHashBodyCutSession,type HvpMovingCutRequest,type HvpBodyCutAdmission,type HvpBodyPlanTrace,type HvpBodyChildProjection} from "./bodyCutSession";
 import type {HvpCuttableBody} from "./bodyCut";
 import {decodeHvpWorld,hvpCollisionDigest,type HvpWorldCheckpoint} from "../persistence/worldCheckpoint";
 import {encodeHvpBody} from "../persistence/bodyCheckpoint";
@@ -162,6 +162,12 @@ const physicsSessionFor = (workerOwned: boolean) => async (
     const allCollision=()=>[...[...collision.values()].map(c=>c.mesh),...neighborMeshes()];
     const collisionBytes = () => allCollision().reduce((n,s)=>n+s.vertices.byteLength+s.indices.byteLength,0);
     const extraHeld=()=>neighbor?.busy||residency!.held||coverageHeld||bodyResidencyWork!==undefined;
+    // Same live-owner task adapter for legacy preparation and the unwired child projection.
+    const bodyPlanHost={yieldTask:yieldPhysicsTask,assertCurrent:()=>{
+      if(disposed){
+        throw new Error("Moving preparation disposed");
+      }
+    }};
     let impulseTarget:HvpImpulseTarget=noImpulseTarget;
     const queryImpulse=(direction?:Readonly<{x:number;y:number;z:number}>):{
       preview:HvpImpulseTarget;reason:string;body?:R.RigidBody;magnitude?:number
@@ -396,15 +402,16 @@ const physicsSessionFor = (workerOwned: boolean) => async (
         if(state.state!=="Preparing"||state.pendingId!==id){
           throw new Error("Stale body preparation");
         }
-        await moving.preparePlan(id,{
-          yieldTask:yieldPhysicsTask,
-          assertCurrent:()=>{
-            if(disposed){
-              throw new Error("Moving preparation disposed");
-            }
-          }
-        });
-      },
+         await moving.preparePlan(id,bodyPlanHost);
+       },
+       /** Private source-only projection, not exposed by the Worker/Client or production compiler. */
+       async prepareBodyChildProjection(id:string):Promise<HvpBodyChildProjection> {
+         bodyPlanHost.assertCurrent();
+         if(terrainHeld||staged||branch?.busy||extraHeld()){
+           throw new Error("World transaction pending");
+         }
+         return moving.prepareChildProjection(id,bodyPlanHost);
+       },
        stageBodyCut(id:string,products:HvpBodyCutAdmission):void {
          if(terrainHeld||staged||branch?.busy||extraHeld()){throw new Error("World transaction pending");}
          const state=moving.read();

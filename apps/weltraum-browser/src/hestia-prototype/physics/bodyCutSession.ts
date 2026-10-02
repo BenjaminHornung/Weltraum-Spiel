@@ -1,4 +1,5 @@
 import {StructuralPhysicsCommitError} from "../../voxel/structural";
+import {ADAPTIVE_BRICK_ESTIMATED_BYTES} from "../../voxel/adaptive";
 import {readHvpBodyCells} from "./bodyCutPlan";
 import {captureHvpBodyHit,prepareHvpBodyCutOwnedHashSteps,prepareHvpBodyCutSteps,stageHvpBodyCut,type HvpBodyCutPlan,type HvpBodyHit,type HvpCuttableBody} from "./bodyCut";
 import type {R} from "./rapierPort";
@@ -10,6 +11,12 @@ import type {HvpBodyCutPayload,HvpLocalBodyProduct} from "../../workers/hvpBodyC
 type Vec=Readonly<{x:number;y:number;z:number}>;
 export interface HvpMovingCutRequest {readonly id:string;readonly ownerId:string;readonly sourceDigest:string;readonly edge:number;readonly direction:Vec;readonly brush?:"Box"|"Sphere"}
 export interface HvpMovingCutPreparation {readonly payload:HvpBodyCutPayload;readonly cells:ReturnType<typeof readHvpBodyCells>;readonly issuedTick:number}
+/** Private mesh input from a finished owner-local plan; data only, never native/recipe authority. */
+export interface HvpBodyChildProjection extends Pick<HvpBodyCutPayload,"sessionId"|"epoch"|"commandId"|"ownerId"|"sourceId"|"sourceDigest"|"revision"> {
+  readonly issuedTick:number;
+  readonly removedCells:number;readonly removedMassKg:number;
+  readonly parts:readonly Pick<HvpLocalBodyProduct,"ownerId"|"sourceDigest"|"center"|"massKg"|"sourceBytes"|"cells">[];
+}
 export interface HvpBodyCutAdmission {
   readonly removedCells:number;readonly removedMassKg:number;
   readonly parts:readonly Pick<HvpLocalBodyProduct,"ownerId"|"sourceDigest"|"center"|"massKg">[];
@@ -57,6 +64,7 @@ const HVP_BODY_PLAN_FAILED_STEP="failedStep";
 interface HvpBodyPlanWork {
   steps?:ReturnType<typeof prepareHvpBodyCutSteps>;
   plan?:HvpBodyCutPlan;
+  projection?:HvpBodyChildProjection;
   failure?:{readonly error:unknown};
   running?:Promise<void>;
   trace?:{readonly commandId:string;readonly steps:HvpBodyPlanStepTiming[];current?:HvpBodyPlanSubspan[];
@@ -223,6 +231,31 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
     }
     return settledPlan(work);
   };
+  /** The existing task-yielding plan pump, shared without changing its legacy entrypoint. */
+  const preparePlan=async(id:string,host:HvpBodyPlanHost):Promise<void>=>{
+    const ticket=requirePreparing(id),work=planWork(ticket);
+    if(work.running===undefined){
+      work.running=(async()=>{
+        try{
+          while(!advancePlan(work)){
+            await host.yieldTask();
+            if(pending!==ticket||held){
+              throw new Error("Moving preparation cancelled");
+            }
+            host.assertCurrent();
+          }
+        }catch(error){
+          abandonPlan(work,error);
+          throw error;
+        }
+      })();
+    }
+    await work.running;
+    if(pending!==ticket){
+      throw new Error("Moving preparation cancelled");
+    }
+    settledPlan(work);
+  };
   return {
     get busy(){return pending!==undefined||held;},get holdsWorld(){return stage!==undefined||held;},
     checkpoint():HvpMovingCheckpoint {
@@ -257,29 +290,35 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
       completePlan(requirePreparing(id));
     },
     /** Source-only preparation with real task yields; the World keeps running meanwhile. */
-    async preparePlan(id:string,host:HvpBodyPlanHost):Promise<void> {
-      const ticket=requirePreparing(id),work=planWork(ticket);
-      if(work.running===undefined){
-        work.running=(async()=>{
-          try{
-            while(!advancePlan(work)){
-              await host.yieldTask();
-              if(pending!==ticket||held){
-                throw new Error("Moving preparation cancelled");
-              }
-              host.assertCurrent();
-            }
-          }catch(error){
-            abandonPlan(work,error);
-            throw error;
-          }
-        })();
-      }
-      await work.running;
-      if(pending!==ticket){
+    preparePlan,
+    /** Unwired owner-first input: reuse the one plan, borrow its frozen children, never recut. */
+    async prepareChildProjection(id:string,host:HvpBodyPlanHost):Promise<HvpBodyChildProjection> {
+      const ticket=requirePreparing(id);
+      await preparePlan(id,host);
+      host.assertCurrent();
+      if(requirePreparing(id)!==ticket){
         throw new Error("Moving preparation cancelled");
       }
-      settledPlan(work);
+      const work=ticket.work!,plan=settledPlan(work);
+      if(plan.hit!==ticket.hit||plan.source!==ticket.target.recipe||plan.ownerId!==ticket.target.ownerId
+        ||bodies.get(ticket.target.ownerId)!==ticket.target.body||world.getRigidBody(ticket.target.body.handle)!==ticket.target.body){
+        throw new Error("Stale body child projection");
+      }
+      if(work.projection===undefined){
+        const children=plan.local.plan.parts;
+        if(children.length>32||children.reduce((count,part)=>count+part.cells.length,0)>32_768){
+          throw new Error("Body child projection BudgetExceeded");
+        }
+        const p=ticket.preparation.payload;
+        work.projection=Object.freeze({sessionId:p.sessionId,epoch:p.epoch,commandId:p.commandId,ownerId:p.ownerId,
+          sourceId:p.sourceId,sourceDigest:p.sourceDigest,revision:p.revision,issuedTick:ticket.hit.issuedTick,
+          removedCells:plan.local.plan.removedCells,removedMassKg:plan.local.plan.removedMassKg,
+          parts:Object.freeze(children.map(part=>Object.freeze({ownerId:part.ownerId,sourceDigest:part.recipe.source.contentHash,
+            center:part.recipe.mass.centerOfMassMeters!,massKg:part.recipe.mass.totalMassKg,
+            sourceBytes:part.recipe.source.bricks.length*ADAPTIVE_BRICK_ESTIMATED_BYTES,cells:part.cells})))
+        });
+      }
+      return work.projection;
     },
     stage(id:string,products:HvpBodyCutAdmission,tick:number):void {
       const ticket=requirePreparing(id);

@@ -11,6 +11,7 @@ import {executeHvpBodyCutJob,decodeHvpBodyCutOutput,hvpBodyCutInputDigest,HVP_BO
 import {algorithmVersion,byteCount,contentRevision,jobDeadline,planningEpoch,workerEpoch,workerJobId,workerJobKind,workerTargetKey,type TransferableBufferBundle} from "../../src/workers";
 import type {HvpPhysicsClock,HvpPhysicsMessage,HvpPhysicsReply,HvpPhysicsSnapshot} from "../../src/hestia-prototype/physics/physicsWorker";
 import {createHvpPhysicsClient} from "../../src/hestia-prototype/physics/client";
+import {ADAPTIVE_BRICK_ESTIMATED_BYTES} from "../../src/voxel/adaptive";
 
 // The client test has no collision sources; the pool is not the subject here.
 vi.mock("../../src/workers/workerPool",()=>({WorkerPool:class {
@@ -99,6 +100,127 @@ const expectCanonicalChildren=(f:ReturnType<typeof fixture>,built:ReturnType<typ
   expect(childXs(f)).toEqual([[3,4],[0,1]]);
   expect(childXs(f)).toEqual(built.parts.map(part=>part.cells.map(c=>c.x).sort((a,b)=>a-b)));
 };
+
+it("owner-first child projection: reuses one finished plan before CURRENT-pose Stage",async()=>{
+  const f=fixture(),cast=vi.spyOn(f.world,"castRay");
+  try{
+    await expect(f.session.prepareChildProjection(f.request.id,taskHost())).rejects.toThrow("Stale body preparation");
+    expect(planCalls()).toBe(0);
+    const prep=f.session.begin(f.request,f.eye,7),issuedPose={...f.body.translation()};
+    f.body.setLinvel({x:1,y:0,z:0},true);
+    const colliders=f.world.colliders.len();cast.mockClear();
+    const host=taskHost(()=>{f.world.step();});
+    const first=f.session.prepareChildProjection(f.request.id,host);
+    const second=f.session.prepareChildProjection(f.request.id,taskHost());
+    expect(f.session.holdsWorld).toBe(false);
+    expect(f.world.bodies.len()).toBe(1);
+    const projection=await first;
+    expect(await second).toBe(projection);
+    expect(planCalls()).toBe(1);
+    expect(host.yields).toBeGreaterThan(0);
+    expect(projection).toMatchObject({sessionId:"plan-owner",epoch:0,commandId:f.request.id,ownerId:f.target.ownerId,
+      sourceId:prep.payload.sourceId,sourceDigest:prep.payload.sourceDigest,revision:prep.payload.revision,issuedTick:7,
+      removedCells:1,removedMassKg:1});
+    expect(projection.parts.map(part=>part.cells.map(cell=>cell.x))).toEqual([[3,4],[0,1]]);
+    expect(projection.parts.map(part=>part.massKg)).toEqual([2,2]);
+    expect(Object.isFrozen(projection)).toBe(true);expect(Object.isFrozen(projection.parts)).toBe(true);
+    for(const part of projection.parts){
+      expect(Object.isFrozen(part)).toBe(true);expect(Object.isFrozen(part.cells)).toBe(true);
+      expect(part.cells.every(Object.isFrozen)).toBe(true);
+      expect(Object.isFrozen(part.center)).toBe(true);
+      expect(part.sourceBytes).toBe(ADAPTIVE_BRICK_ESTIMATED_BYTES);
+      expect(Object.hasOwn(part,"recipe")).toBe(false);expect(Object.hasOwn(part,"body")).toBe(false);
+    }
+    expect(Object.hasOwn(projection,"hit")).toBe(false);expect(Object.hasOwn(projection,"parentPose")).toBe(false);
+    expect(f.session.holdsWorld).toBe(false);expect(f.world.bodies.len()).toBe(1);
+    expect(f.world.colliders.len()).toBe(colliders);expect(cast).not.toHaveBeenCalled();
+    const now={...f.body.translation()};expect(now.x).toBeGreaterThan(issuedPose.x);
+    // Existing metadata-only Stage is used only to prove plan reuse, not complete mesh admission.
+    f.session.stage(f.request.id,projection,9);
+    expect(f.session.read().last!.parentPose.position).toEqual(now);
+    f.session.commit(f.request.id);
+    for(const part of projection.parts){
+      const child=f.targets.get(part.ownerId)!;
+      expect(readHvpBodyCells(child.recipe.source)).toEqual(part.cells);
+      expect(child.recipe.mass.centerOfMassMeters).toBe(part.center);
+    }
+    expect(planCalls()).toBe(1);
+    await expect(f.session.prepareChildProjection(f.request.id,taskHost())).rejects.toThrow("Stale body preparation");
+    f.session.rollback(f.request.id);
+  }finally{cast.mockRestore();f.world.free();}
+});
+
+it("owner-first child projection: rejects cancelled old work for a reused command id",async()=>{
+  const f=fixture();
+  try{
+    f.session.begin(f.request,f.eye,0);
+    const old=f.session.prepareChildProjection(f.request.id,taskHost());
+    const failure=expect(old).rejects.toThrow("Moving preparation cancelled");
+    f.session.rollback(f.request.id);f.session.begin(f.request,f.eye,1);
+    await failure;
+    const fresh=await f.session.prepareChildProjection(f.request.id,taskHost());
+    expect(fresh.issuedTick).toBe(1);expect(planCalls()).toBe(2);
+    expect(f.session.holdsWorld).toBe(false);expect(f.world.bodies.len()).toBe(1);
+    f.session.rollback(f.request.id);
+  }finally{f.world.free();}
+});
+
+it("owner-first child projection: retains the original plan failure on retry",async()=>{
+  const f=fixture(),error=new Error("projection task failed");
+  const host:HvpBodyPlanHost={yieldTask:()=>Promise.reject(error),assertCurrent:()=>undefined};
+  try{
+    f.session.begin(f.request,f.eye,0);
+    await expect(f.session.prepareChildProjection(f.request.id,host)).rejects.toBe(error);
+    await expect(f.session.prepareChildProjection(f.request.id,taskHost())).rejects.toBe(error);
+    expect(planCalls()).toBe(1);expect(f.session.holdsWorld).toBe(false);
+    expect(f.world.bodies.len()).toBe(1);f.session.rollback(f.request.id);
+  }finally{f.world.free();}
+});
+
+it("owner-first child projection: uses the issued-hash factory without recut or native installation",async()=>{
+  const f=fixture();
+  const session=createHvpOwnedHashBodyCutSession(f.world,f.targets,f.bodies,"projection-issued-owner");
+  try{
+    session.begin(f.request,f.eye,0);
+    const projection=await session.prepareChildProjection(f.request.id,taskHost());
+    const cursors=hashProbe.cursors;
+    expect(cursors).toBeGreaterThan(0);
+    expect(await session.prepareChildProjection(f.request.id,taskHost())).toBe(projection);
+    expect(hashProbe.cursors).toBe(cursors);expect(hashProbe.disposed).toBe(cursors);
+    expect(projection.parts.map(part=>part.cells.map(cell=>cell.x))).toEqual([[3,4],[0,1]]);
+    expect(session.holdsWorld).toBe(false);expect(f.world.bodies.len()).toBe(1);
+    session.rollback(f.request.id);
+  }finally{f.world.free();}
+});
+
+it("owner-first child projection: permits a finished full-removal plan with no children",async()=>{
+  const f=fixture([{x:0,y:0,z:0,materialId:1}]);
+  try{
+    f.session.begin({...f.request,brush:"Sphere"},{x:.0625,y:.0625,z:-1},0);
+    const projection=await f.session.prepareChildProjection(f.request.id,taskHost());
+    expect(projection.parts).toEqual([]);expect(projection.removedCells).toBe(1);
+    expect(projection.removedMassKg).toBe(1);expect(f.world.bodies.len()).toBe(1);
+    expect(f.session.holdsWorld).toBe(false);expect(planCalls()).toBe(1);
+    f.session.rollback(f.request.id);
+  }finally{f.world.free();}
+});
+
+it.each(["target","registry","native"] as const)("owner-first child projection: rechecks cached %s identity",async boundary=>{
+  const f=fixture();
+  try{
+    f.session.begin(f.request,f.eye,0);
+    await f.session.prepareChildProjection(f.request.id,taskHost());
+    if(boundary==="target"){
+      f.targets.set(f.target.ownerId,{...f.target});
+    }else if(boundary==="registry"){
+      f.bodies.delete(f.target.ownerId);
+    }else{
+      f.world.removeRigidBody(f.body);
+    }
+    await expect(f.session.prepareChildProjection(f.request.id,taskHost())).rejects.toThrow(/Stale body (preparation|child projection)/);
+    expect(planCalls()).toBe(1);expect(f.session.holdsWorld).toBe(false);
+  }finally{f.world.free();}
+});
 
 it("derives exactly one native plan per command across task-yielding preparation, a failed stage and its retry",async()=>{
   const f=fixture();
@@ -259,6 +381,29 @@ const admissionFor=(prep:HvpMovingCutPreparation)=>{
   return {removedCells:local.plan.removedCells,removedMassKg:local.plan.removedMassKg,parts:local.plan.parts.map(part=>({
     ownerId:part.ownerId,sourceDigest:part.recipe.source.contentHash,massKg:part.recipe.mass.totalMassKg,center:part.recipe.mass.centerOfMassMeters!}))};
 };
+
+it("owner-first child projection: leaves the World running and rejects actual owner disposal",async()=>{
+  const source=await createHvpPhysicsSession([...collisionSectors(floor)],{x:-2,y:3,z:-2},9.81,player,{x:2,y:2,z:2},{x:0,y:0,z:0},
+    "projection-owner-world");
+  try{
+    source.play();source.advance(1/60);
+    source.prepareBranch({id:"release",generation:0,sourceDigest:source.read().structural!.sourceDigest,
+      direction:aimAt({x:.75,y:1.25,z:0},source.read().player!.position)});
+    source.commitBranch("release");source.finalizeBranch("release");
+    const parent=source.read().structural!.parts.find(part=>!part.anchored)!,direction=aimAt(parent.position,source.read().player!.position);
+    const request={id:"projection",ownerId:parent.ownerId,sourceDigest:parent.sourceDigest,edge:1,direction};
+    source.beginBodyCut(request);
+    const before=source.read(),preparing=source.prepareBodyChildProjection(request.id);
+    source.advance(1/60);
+    expect(source.read()).toMatchObject({status:"Running",ticks:before.ticks+1,moving:{state:"Preparing"}});
+    const projection=await preparing;
+    expect(projection.commandId).toBe(request.id);expect(projection.ownerId).toBe(parent.ownerId);
+    expect(source.read().status).toBe("Running");expect(source.read().bodyCount).toBe(before.bodyCount);
+    expect(planCalls()).toBe(1);
+    source.rollbackBodyCut(request.id);source.dispose();
+    await expect(source.prepareBodyChildProjection(request.id)).rejects.toThrow("Moving preparation disposed");
+  }finally{source.dispose();}
+});
 
 it.each(["Running","Paused"] as const)("runs session source preparation outside the World hold and preserves %s after release",async mode=>{
   const source=await createHvpPhysicsSession([...collisionSectors(floor)],{x:-2,y:3,z:-2},9.81,player,{x:2,y:2,z:2},{x:0,y:0,z:0},
