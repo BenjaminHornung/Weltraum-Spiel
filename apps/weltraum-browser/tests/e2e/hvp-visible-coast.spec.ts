@@ -1260,15 +1260,30 @@ test("HVP-09A previews the real rock-arm support without publishing a cut or a b
 });
 
 test("existing routes stay untouched and combined queries resolve to Surface Lab", async ({ page }) => {
+  const hvpBootstrapRequests: string[] = [];
+  page.on("request", (request) => {
+    if (new URL(request.url()).pathname.includes("/hvpBootstrap")) hvpBootstrapRequests.push(request.url());
+  });
   await page.goto("/");
   await expect(page.locator("#flight-hud")).toBeVisible();
   await expect(page.locator(".hud-center-safe-area")).toBeVisible();
   await expect(page.locator("#hvp-hud")).toHaveCount(0);
   await expect.poll(() => page.evaluate(() => "TestBridge" in window)).toBe(false);
 
+  await page.goto("/?testBridge=1");
+  await expect(page.locator("#flight-hud")).toBeVisible();
+  await expect.poll(() => page.evaluate(() => "TestBridge" in window)).toBe(true);
+  await expect(page.locator("#hvp-hud")).toHaveCount(0);
+
+  await page.goto("/?surfaceLab=1");
+  await expect(page.locator("body")).toHaveAttribute("data-surface-lab", "1");
+  await expect(page.locator("#hvp-hud")).toHaveCount(0);
+
   await page.goto("/?surfaceLab=1&hestiaPrototype=1");
   await expect(page.locator("body")).toHaveAttribute("data-surface-lab", "1");
   await expect(page.locator("#hvp-hud")).toHaveCount(0);
+  await expect.poll(() => page.evaluate(() => "TestBridge" in window)).toBe(false);
+  expect(hvpBootstrapRequests, "HVP bootstrap must stay unloaded on other routes").toEqual([]);
 });
 
 test("stored HVP PNG evidence rejects missing, corrupt, blank, and wrong-size replacements", async ({ page }) => {

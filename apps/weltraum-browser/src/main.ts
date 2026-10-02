@@ -2,7 +2,6 @@
 import { DebugScene } from "./render/three/debugScene";
 import { createBrowserRuntime, createRuntimeShipForFlightCase } from "./runtime/browserRuntime";
 import { createGraphicsSettingsController, loadGraphicsSettings } from "./settings";
-import { startHvpRoute } from "./hvp/hvpBootstrap";
 import { isHvpQuery } from "./hvp/hvpQuery";
 import { startSurfaceLabRoute } from "./surface-lab/surfaceLabFailurePresenter";
 import { isSurfaceLabQuery } from "./surface-lab/surfaceLabQuery";
@@ -71,7 +70,7 @@ const startNormalRuntime = (): void => {
 if (isSurfaceLabQuery(searchParams)) {
   void startSurfaceLabRoute(document, () => import("./surface-lab"));
 } else if (isHvpQuery(searchParams)) {
-  void startHvpRoute(document, () => import("./hvp"));
+  void import("./hvp/hvpBootstrap").then((hvp) => hvp.startHvpRoute(document, async () => hvp));
 } else {
   startNormalRuntime();
 }
