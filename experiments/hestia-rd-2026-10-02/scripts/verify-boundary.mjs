@@ -10,15 +10,25 @@ const BASE = 'b3c6523a94cd050f5a9a22dc27f4777fcc03363e';
 const START = '807e8b4cc4528bd9d02122109e08e2e869305047';
 const GIT = 'C:/IFI_SourceCode/Utils/opencode-migration/runtime/git/cmd/git.exe';
 const RUN_ROOT = 'C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00';
+const OWNED_REPOSITORY = 'C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02';
+const OWNED_WORKTREES = 'C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-worktrees';
 const PLATFORM_FILES = ['.opencode/throughput.jsonl', '.opencode/throughput.md'];
-const leafFiles = ['package.json', 'package-lock.json', 'tsconfig.json', 'vite.config.ts', 'vitest.config.ts',
-  'playwright.config.ts', 'index.html', '.gitignore', 'src/registration.ts', 'scripts/verify-boundary.mjs'];
-const leafDirectories = ['src/contracts/', 'docs/coordination/', 'tests/RD-00/', 'reports/RD-00/'];
+const LOCATION_LOGS = [...PLATFORM_FILES, ...PLATFORM_FILES.map((file) => `${LAB}${file}`)];
+const BOARD_SHA256 = 'cd5722dfff73393a2cb9d87fabf4c94f59da310300b79a7c2e87a1ec79b40448';
 const hash = (bytes) => createHash('sha256').update(bytes).digest('hex');
 const within = (root, file) => { const relative = path.relative(root, file); return relative === ''
   || (!relative.startsWith(`..${path.sep}`) && relative !== '..' && !path.isAbsolute(relative)); };
-const allowed = (file) => file.startsWith(LAB) && (leafFiles.includes(file.slice(LAB.length))
-  || leafDirectories.some((directory) => file.slice(LAB.length).startsWith(directory)));
+
+function taskAllowlist(task) {
+  const bytes = readFileSync(new URL('../docs/coordination/input-package/05_TASKBOARD.json', import.meta.url));
+  if (hash(bytes) !== BOARD_SHA256) { throw new Error('Original taskboard bytes changed'); }
+  const board = JSON.parse(bytes.toString('utf8'));
+  if (task === 'HEAD') { return ['**']; }
+  const entries = board.tasks.find((entry) => entry.id === task)?.write_allowlist
+    ?? (board.coordinator_report_roots[task] ? [board.coordinator_report_roots[task]] : undefined);
+  if (!entries) { throw new Error(`Unknown task profile: ${task}`); }
+  return entries;
+}
 
 export function assertIsolation({ origin = 'http://127.0.0.1:5280', databaseName = 'hestia-rd-rd00', runRoot = RUN_ROOT } = {}) {
   const url = new URL(origin);
@@ -39,34 +49,43 @@ export async function assertPortFree(port = 5280) {
   await new Promise((resolve, reject) => { server.close((error) => { if (error) { reject(error); } else { resolve(); } }); });
 }
 
-/** @param {{repoRoot?: string, base?: string, start?: string, gitPath?: string, verifyPinned?: boolean}} options */
+/** @param {{repoRoot?: string, base?: string, start?: string, task?: string, gitPath?: string, verifyPinned?: boolean}} options */
 export function inspectBoundary(options = {}) {
   const repoRoot = options.repoRoot ?? path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
-  const base = options.base ?? BASE; const start = options.start ?? START;
+  const base = options.base ?? BASE; const start = options.start ?? START; const task = options.task ?? 'RD-00';
   const gitPath = options.gitPath ?? GIT; const verifyPinned = options.verifyPinned ?? true;
+  if (task !== 'RD-00' && !options.start) { throw new Error('Explicit immutable task start SHA required'); }
   if (!/^[0-9a-f]{40}$/.test(base) || !/^[0-9a-f]{40}$/.test(start)) { throw new Error('Full immutable base/start SHA required'); }
+  if (verifyPinned && base !== BASE) { throw new Error('Product read base must remain the exact b3 checkpoint'); }
   if (!within('C:/IFI_SourceCode', path.resolve(repoRoot)) || !within('C:/IFI_SourceCode', path.resolve(gitPath))) {
     throw new Error('Execution target outside C:/IFI_SourceCode');
   }
   const gitBytes = (...args) => execFileSync(gitPath, args, { cwd: repoRoot, maxBuffer: 16 * 1024 * 1024, windowsHide: true });
   const git = (...args) => gitBytes(...args).toString('utf8');
   const paths = (...args) => git(...args).split('\0').filter(Boolean);
+  git('merge-base', '--is-ancestor', start, 'HEAD');
+  const writeAllowlist = taskAllowlist(task);
+  const allowed = (file) => file.startsWith(LAB) && !LOCATION_LOGS.includes(file)
+    && writeAllowlist.some((entry) => entry === '**' || (entry.endsWith('/**')
+      ? file.slice(LAB.length).startsWith(entry.slice(0, -2)) : file.slice(LAB.length) === entry));
   const violations = []; const platformArtifacts = [];
   const ownedRoot = path.resolve(repoRoot).replaceAll('\\', '/');
-  const authorizedLogScope = ownedRoot === 'C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-worktrees/Hestia-RD-RD00'
-    || ownedRoot.startsWith(`${RUN_ROOT}/oracles/boundary-`);
+  const commonDirectory = path.resolve(git('rev-parse', '--path-format=absolute', '--git-common-dir').trim());
+  const ownedCheckout = (path.resolve(repoRoot) === path.resolve(OWNED_REPOSITORY) || within(OWNED_WORKTREES, repoRoot))
+    && commonDirectory.toLowerCase() === path.resolve(OWNED_REPOSITORY, '.git').toLowerCase();
+  const authorizedLogScope = ownedCheckout || (!verifyPinned && ownedRoot.startsWith(`${RUN_ROOT}/oracles/boundary-`));
   function automaticLogIsRegular(file) {
     const full = path.join(repoRoot, file);
     const stat = lstatSync(full, { throwIfNoEntry: false });
     if (!stat) { return false; }
-    const parent = path.join(repoRoot, '.opencode');
+    const parent = path.dirname(full);
     const safe = stat.isFile() && !stat.isSymbolicLink() && !lstatSync(parent).isSymbolicLink()
       && within(repoRoot, realpathSync(full)) && within(repoRoot, realpathSync(parent));
     if (!safe) { violations.push(`automatic-log name is not a regular contained file (symlink/junction/escape): ${file}`); }
     return safe;
   }
   // The user's explicit exception is UNTRACKED regular automatic logs only; never a wildcard ignore.
-  for (const file of PLATFORM_FILES) { automaticLogIsRegular(file); }
+  for (const file of LOCATION_LOGS) { automaticLogIsRegular(file); }
   const inventories = {
     committed: paths('diff', '--no-renames', '--name-only', '-z', base, 'HEAD'),
     staged: paths('diff', '--no-renames', '--cached', '--name-only', '-z'),
@@ -78,18 +97,19 @@ export function inspectBoundary(options = {}) {
   for (const [stage, files] of Object.entries(inventories)) {
     for (const file of files) {
       if ((stage === 'untracked' || stage === 'untrackedIgnored') && authorizedLogScope
-        && PLATFORM_FILES.includes(file) && automaticLogIsRegular(file)) {
+        && LOCATION_LOGS.includes(file) && automaticLogIsRegular(file)) {
         platformArtifacts.push(file); continue;
       }
+      if (LOCATION_LOGS.includes(file)) { violations.push(`${stage}: automatic logs must never be tracked/staged/committed: ${file}`); }
       if (!file.startsWith(LAB)) { violations.push(`${stage}: outside RD root: ${file}`); }
-      if (stage !== 'committed' && !allowed(file)) { violations.push(`${stage}: outside RD-00 allowlist: ${file}`); }
+      if (stage !== 'committed' && !allowed(file)) { violations.push(`${stage}: outside ${task} allowlist: ${file}`); }
     }
   }
   const newCommitted = paths('diff', '--no-renames', '--name-only', '-z', start, 'HEAD');
-  for (const file of newCommitted) { if (!allowed(file)) { violations.push(`committed: outside RD-00 allowlist: ${file}`); } }
+  for (const file of newCommitted) { if (!allowed(file)) { violations.push(`committed: outside ${task} allowlist: ${file}`); } }
   const initialFiles = new Set(paths('ls-tree', '-r', '--name-only', '-z', start));
   for (const file of new Set([...newCommitted, ...inventories.staged, ...inventories.unstaged])) {
-    if (initialFiles.has(file)) { violations.push(`pinned existing file changed: ${file}`); }
+    if (initialFiles.has(file) && (task === 'RD-00' || !allowed(file))) { violations.push(`pinned existing file changed: ${file}`); }
   }
   const labRoot = path.join(repoRoot, LAB);
   const links = [];
@@ -134,7 +154,7 @@ export function inspectBoundary(options = {}) {
     }
     for (const file of ['RUN.json', 'EXECPLAN.md', '.gitattributes', 'input-package/MANIFEST.json']) {
       const relative = `${coordination}${file}`;
-      if (hash(scopedBytes(relative)) !== hash(gitBytes('show', `${start}:${relative}`))) {
+      if (hash(scopedBytes(relative)) !== hash(gitBytes('show', `${START}:${relative}`))) {
         violations.push(`Pinned coordination bytes changed: ${file}`);
       }
     }
@@ -154,18 +174,20 @@ export function inspectBoundary(options = {}) {
   return { ok: violations.length === 0, originalAllFilesGate: violations.length > 0 ? 'FAIL'
     : platformArtifacts.length === 0 ? 'PASS' : 'FAIL_ACCEPTED_NARROW_EXCEPTION',
     acceptedScopeDeviation: 'User authorized only two untracked regular contained automatically generated throughput logs; no agent edits/cleanup/publication',
-    base, start, head: git('rev-parse', 'HEAD').trim(),
+    base, start, task, writeAllowlist, taskboardSha256: BOARD_SHA256, commonDirectory,
+    head: git('rev-parse', 'HEAD').trim(),
     tree: git('rev-parse', 'HEAD^{tree}').trim(), inventories, platformArtifacts,
     links, inputHashesVerified, violations, productIntegrated: false };
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try {
-    const args = process.argv.slice(2); const baseIndex = args.indexOf('--base');
+    const args = process.argv.slice(2);
+    const argument = (name, fallback) => { const index = args.indexOf(name); return index >= 0 ? args[index + 1] : fallback; };
     assertIsolation();
     if (args.includes('--port-check')) { await assertPortFree(); console.log('PASS: task-owned origin/namespace and free 127.0.0.1:5280'); }
     else {
-      const result = inspectBoundary({ base: baseIndex >= 0 ? args[baseIndex + 1] : BASE });
+      const result = inspectBoundary({ base: argument('--base', BASE), task: argument('--task', 'RD-00'), start: argument('--start', undefined) });
       console.log(JSON.stringify(result, null, 2)); process.exitCode = result.ok ? 0 : 1;
     }
   } catch (error) { console.error(error); process.exitCode = 1; }
