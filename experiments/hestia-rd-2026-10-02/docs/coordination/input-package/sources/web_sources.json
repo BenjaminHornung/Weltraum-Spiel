@@ -1,0 +1,126 @@
+{
+  "accessed_on": "2026-10-02",
+  "scope": "planning research only, no code or asset adoption",
+  "sources": [
+    {
+      "id": "W01",
+      "title": "Three.js WebGPURenderer",
+      "url": "https://threejs.org/manual/en/webgpurenderer.html",
+      "status": "CURRENT_PRIMARY_TEXT",
+      "note": "WebGPU/WebGL2-Backend, TSL und Migrationsgrenzen gelesen. Aussagen sind nicht automatisch APIs der gepinnten Produktversion.",
+      "media_status": "NOT_APPLICABLE"
+    },
+    {
+      "id": "W02",
+      "title": "Three.js Material",
+      "url": "https://threejs.org/docs/pages/Material.html",
+      "status": "CURRENT_PRIMARY_TEXT",
+      "note": "onBeforeCompile WebGLRenderer-only; Materialtransparenz und Lifecycle.",
+      "media_status": "NOT_APPLICABLE"
+    },
+    {
+      "id": "W03",
+      "title": "Babylon specifications",
+      "url": "https://www.babylonjs.com/specifications/",
+      "status": "CURRENT_PRIMARY_TEXT",
+      "note": "Fähigkeiten gelesen; keine eigene Geschwindigkeitsevidenz.",
+      "media_status": "NOT_APPLICABLE"
+    },
+    {
+      "id": "W04",
+      "title": "PlayCanvas graphics",
+      "url": "https://developer.playcanvas.com/user-manual/graphics/",
+      "status": "CURRENT_PRIMARY_TEXT",
+      "note": "Zusätzlicher Browserrendererkandidat in Vorauswahl, nicht bereits ausgewählter Port.",
+      "media_status": "NOT_APPLICABLE"
+    },
+    {
+      "id": "W05",
+      "title": "GPU Gems 3 Chapter 16, Tiago Sousa/Crytek",
+      "url": "https://developer.nvidia.com/gpugems/gpugems3/part-iii-rendering/chapter-16-vegetation-procedural-animation-and-shading-crysis",
+      "status": "CURRENT_PRIMARY_TEXT",
+      "note": "Prozedurale Pflanzenbewegung und Shading als technische Referenz; kein Code/Asset übernommen.",
+      "media_status": "NOT_APPLICABLE"
+    },
+    {
+      "id": "W06",
+      "title": "Codex/Work subagents",
+      "url": "https://developers.openai.com/codex/subagents",
+      "status": "CURRENT_PRIMARY_TEXT",
+      "note": "Aktuell zu ChatGPT Learn weitergeleitet. Tatsächliche Laufzeit-Spawntiefe und Limits prüfen, nicht aus Artikel erfinden.",
+      "media_status": "NOT_APPLICABLE"
+    },
+    {
+      "id": "W07",
+      "title": "Codex/Work config reference",
+      "url": "https://developers.openai.com/codex/config-reference",
+      "status": "CURRENT_PRIMARY_TEXT",
+      "note": "Konfigurationsnamen/Hostgrenzen sind veränderlich. Dieser Plan ändert keine Agentenkonfiguration.",
+      "media_status": "NOT_APPLICABLE"
+    },
+    {
+      "id": "W08",
+      "title": "Three InstancedMesh",
+      "url": "https://threejs.org/docs/pages/InstancedMesh.html",
+      "status": "CURRENT_PRIMARY_TEXT",
+      "note": "Draw-Batching und Bounds/Lifecycle als Prüfpunkt.",
+      "media_status": "NOT_APPLICABLE"
+    },
+    {
+      "id": "RR-01",
+      "title": "Camera cutout for voxels",
+      "url": "https://www.reddit.com/r/VoxelGameDev/comments/1wbp8kq/camera_cutout_for_voxels/",
+      "status": "UNAVAILABLE",
+      "note": "Per Projektkontext referenziert; aktueller öffentlicher Abruf fehlgeschlagen. Frühere Textinterpretation im Chatarchiv, Medien nicht gesehen.",
+      "media_status": "NOT_VIEWED"
+    },
+    {
+      "id": "RR-02",
+      "title": "BFS new snow system",
+      "url": "https://www.reddit.com/r/VoxelGameDev/comments/1u2b62l/bfs_new_snow_system_implemented_snow_squares_to/",
+      "status": "UNAVAILABLE",
+      "note": "Per Projektkontext referenziert; aktueller öffentlicher Abruf fehlgeschlagen. Keine frisch verifizierte Implementierungsbehauptung.",
+      "media_status": "NOT_VIEWED"
+    },
+    {
+      "id": "RR-03",
+      "title": "My raymarching engine",
+      "url": "https://www.reddit.com/r/VoxelGameDev/comments/1s6e1gk/my_raymarching_engine/",
+      "status": "AUTHOR_TEXT_READ",
+      "note": "Entwicklertext gelesen, keine Video- oder Benchmarkverifikation.",
+      "media_status": "NOT_VIEWED"
+    },
+    {
+      "id": "RR-04",
+      "title": "Destruction and building in our unannounced voxel physics survival game",
+      "url": "https://www.reddit.com/r/VoxelGameDev/comments/1jtt18s/destruction_and_building_in_our_unannounced_voxel/",
+      "status": "AUTHOR_TEXT_READ",
+      "note": "Entwicklerantwort zu klassischen Dreiecksmeshes/Greedy und geteilten Volumen gelesen. Keine Hestia-Messung.",
+      "media_status": "NOT_VIEWED"
+    },
+    {
+      "id": "RR-05",
+      "title": "My tiny voxel game is fully destructable",
+      "url": "https://www.reddit.com/r/VoxelGameDev/comments/1jbqhv5/my_tiny_voxel_game_is_fully_destructable_rendered/",
+      "status": "AUTHOR_TEXT_READ",
+      "note": "Autorenbeschreibung SVO-/Kollisionspfad; Titel-FPS kein unabhängiger Browserbenchmark.",
+      "media_status": "NOT_VIEWED"
+    },
+    {
+      "id": "RR-06",
+      "title": "Windy voxel forest",
+      "url": "https://www.reddit.com/r/VoxelGameDev/comments/1l7r6un/windy_voxel_forest/",
+      "status": "AUTHOR_TEXT_READ",
+      "note": "Vorberechnete voxelisierte Frames und ca. 630 MB im beschriebenen Beispiel; nur Autorenangabe.",
+      "media_status": "NOT_VIEWED"
+    },
+    {
+      "id": "RR-07",
+      "title": "Blocky voxels with lots of foliage, Castle Craft",
+      "url": "https://www.reddit.com/r/VoxelGameDev/comments/yelhom/were_using_blocky_voxels_with_lots_of_foliage_to/",
+      "status": "AUTHOR_TEXT_READ",
+      "note": "1-m-Voxel und Nicht-Voxel-Bäume laut Entwickler; übernommen wird nur die gewünschte Dichte-/Umweltwirkung.",
+      "media_status": "NOT_VIEWED"
+    }
+  ]
+}

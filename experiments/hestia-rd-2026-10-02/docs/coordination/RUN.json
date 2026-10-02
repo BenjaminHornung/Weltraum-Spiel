@@ -1,0 +1,40 @@
+{
+  "schema": "hestia-rd-coordination-v1",
+  "repository": "BenjaminHornung/Weltraum-Spiel",
+  "productReadBase": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+  "productReadTree": "cdf8a92b17eecd764bac4588054167bd566485f1",
+  "cloneRoot": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02",
+  "writeRoot": "experiments/hestia-rd-2026-10-02/",
+  "runRoot": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs",
+  "worktreeRoot": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-worktrees",
+  "inputPackageSha256": "510c87e3754f395daf76eb3a2ca44b818041067c13e240c8ebc2c93be95b6c8f",
+  "agentLaunch": {
+    "provider": "opencode/openai/gpt-6.1-sol",
+    "modeId": "orchestrator",
+    "thinkingOptionId": "max",
+    "features": { "auto_accept": true }
+  },
+  "capacity": {
+    "advertisedHostLimit": null,
+    "provisionalMaxOpenChildren": 3,
+    "maxActiveOrchestrators": 2,
+    "maxWriters": 1,
+    "maxHeavyRdJobs": 1,
+    "reservedReviewRecoverySlots": 1,
+    "nestedSpawnLease": "not-granted",
+    "gpuBenchmarkLease": "not-granted",
+    "reason": "Conservative RAM/load bound; preserve all foreign product agents and benchmarks."
+  },
+  "tools": {
+    "git": "C:/IFI_SourceCode/Utils/opencode-migration/runtime/git/cmd/git.exe",
+    "node": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+    "npmCli": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node_modules/npm/bin/npm-cli.js",
+    "python": "C:/IFI_SourceCode/Utils/Python/cpython-3.12.13-windows-x86_64-none/python.exe",
+    "pwsh": "C:/IFI_SourceCode/Utils/PowerShell/pwsh.exe",
+    "chromium": "C:/IFI_SourceCode/Utils/opencode-migration/runtime/chromium-1234/chrome-win64/chrome.exe",
+    "worktreeHelper": "C:/IFI_SourceCode/Utils/opencode/profile/skills/ifi-worktree/scripts/new-feature-worktree.ps1"
+  },
+  "portPolicy": "Loopback, strict free port >=5280; task-owned origin/profile only.",
+  "publication": "local-only",
+  "productIntegrated": false
+}
