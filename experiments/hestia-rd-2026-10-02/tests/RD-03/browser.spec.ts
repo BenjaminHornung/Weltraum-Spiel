@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { createHash } from 'node:crypto';
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { assertIsolation } from '../../scripts/verify-boundary.mjs';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { captureBrowserScreenshot, createBrowserRunDirectory } from './capture-admission.mjs';
 
 const run = 'C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-03';
 const hash = (bytes: Uint8Array) => createHash('sha256').update(bytes).digest('hex');
@@ -40,8 +40,8 @@ test('RUN03 REAL optimized WebGL2 backend/source/image/DPR/resolution/timer bind
     const url = `/F00-CONTROL/${payload.path}`; const bytes = await (await page.request.get(url)).body();
     expect(bytes.byteLength).toBe(payload.byteLength); expect(hash(bytes)).toBe(payload.sha256); bindings.push({ path: url, sha256: hash(bytes) });
   }
-  const directory = `${run}/browser/${runId()}/RUN03`; assertIsolation({ task: 'RD-03', runRoot: directory }); mkdirSync(directory, { recursive: true });
-  const image = `${directory}/webgl2.png`; await page.locator('canvas').screenshot({ path: image });
+  const directory = createBrowserRunDirectory(`${run}/browser/${runId()}/RUN03`);
+  const image = `${directory}/webgl2.png`; await captureBrowserScreenshot(image, (path) => page.locator('canvas').screenshot({ path }));
   const png = readFileSync(image); const imageResolution = { width: png.readUInt32BE(16), height: png.readUInt32BE(20) };
   const cssBounds = (await page.locator('canvas').boundingBox())!;
   expect(imageResolution).toEqual({ width: Math.round(cssBounds.width), height: Math.round(cssBounds.height) });
@@ -83,7 +83,7 @@ test('RUN04 20 REAL mount/dispose renderer/texture/listener cycles, one canvas, 
     expect(state.cleanup).toEqual({ disposed: true, geometries: 0, textures: 0, programs: 0, liveHosts: { renderers: 0, renderloops: 0, hostListeners: 0 } });
     expect(await listenerCount()).toEqual(baseline); expect(await page.locator('canvas').count()).toBe(1); cycles.push(state.cleanup);
   }
-  const directory = `${run}/browser/${runId()}/RUN04`; assertIsolation({ task: 'RD-03', runRoot: directory }); mkdirSync(directory, { recursive: true });
+  const directory = createBrowserRunDirectory(`${run}/browser/${runId()}/RUN04`);
   writeFileSync(`${directory}/lifecycle.json`, JSON.stringify({ status: 'PASS', cycles, planned: 20, observed: 20, failed: 0,
     baselineCanvasListeners: baseline, finalCanvasListeners: await listenerCount(), serviceCleanup: 'Caller must stop only its managed service; browser test does not own it',
     qualification: 'HEADLESS-DIAGNOSTIC-NOT-TARGET-GPU-OR-PERFORMANCE', productIntegrated: false }, null, 2), { flag: 'wx' });

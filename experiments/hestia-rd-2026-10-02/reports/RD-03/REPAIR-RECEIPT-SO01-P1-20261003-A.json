@@ -1,0 +1,79 @@
+{
+  "schema": "rd03-capture-admission-repair-content-v1",
+  "status": "VERIFIED_BOUNDED_REPAIR_READY_FOR_HEAD_WIRING",
+  "finding": "SO01 P1: reused RUN03 could overwrite webgl2.png before exclusive functional.json rejected reuse",
+  "reviewedParent": "e4f52161e75400f10c9bc3cf0d95f455219fba2a",
+  "reviewedParentTree": "a7fb3926323e689d60c1d3f12dd518313e851d00",
+  "originalStart": "16faf55a9782fb12d2f30df4547a619957792089",
+  "productReadBase": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+  "finalCommitBinding": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-03/checks/repair-so01-p1-20261003-a/TERMINAL-RECEIPT.json",
+  "changedPaths": [
+    "experiments/hestia-rd-2026-10-02/tests/RD-03/browser.spec.ts",
+    "experiments/hestia-rd-2026-10-02/tests/RD-03/capture-admission.mjs",
+    "experiments/hestia-rd-2026-10-02/tests/RD-03/capture-admission-regression.mjs",
+    "experiments/hestia-rd-2026-10-02/reports/RD-03/REPAIR-HANDOFF-SO01-P1-20261003-A.md",
+    "experiments/hestia-rd-2026-10-02/reports/RD-03/REPAIR-RECEIPT-SO01-P1-20261003-A.json"
+  ],
+  "testedSourceBindings": [
+    { "path": "tests/RD-03/browser.spec.ts", "sha256": "6c05da79b3f5912767d31c5e667406ee926dd23bdb7c48926dffd616cfafc1c3" },
+    { "path": "tests/RD-03/capture-admission.mjs", "sha256": "3174bf02938a3b9fd12b2bf29098f944ca61a2293eb3816adc5c9a62207fe3f0" },
+    { "path": "tests/RD-03/capture-admission-regression.mjs", "sha256": "c3190fcc26fba1fc10650a9490b90d5626a75af9ca7820833ca970d78856e542" }
+  ],
+  "nativeRegression": {
+    "binary": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+    "cwd": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-worktrees/Hestia-RD-RD03/experiments/hestia-rd-2026-10-02",
+    "red": {
+      "args": ["./tests/RD-03/capture-admission-regression.mjs", "repair-so01-p1-a-admission-red"],
+      "exitCode": 1,
+      "assertion": "Reused RUN03 must be rejected before screenshot callback: 1 !== 0",
+      "log": "logs/repair-so01-p1-a-admission-red.log",
+      "logSha256": "0d3888f4bd3a36dde656a07e5a390a9854160667c89c5f41237592bca8e2dd8e",
+      "originalBrowserSha256": "a4c253525d04491f3031003ac8e8a93c646ccc37a2f9270abb0d7bd24fb2be03",
+      "unsafeExtractedAdmissionSha256": "5d3b236f78646a6954b0ea56bcaed19b60d5acd0d6a3b2a6aebc251e87c3d04c",
+      "retainedImageAndJsonUnchanged": true
+    },
+    "green": {
+      "args": ["./tests/RD-03/capture-admission-regression.mjs", "repair-so01-p1-a-admission-green"],
+      "exitCode": 0,
+      "caseRecords": 8,
+      "reusedRun03CallbackCalls": 0,
+      "log": "logs/repair-so01-p1-a-admission-green.log",
+      "logSha256": "09ff72cef6545bd919822a05a55523cd7ab549053795ec1e830bdcf38e285048",
+      "redGreenRegressionSourceIdentical": true
+    },
+    "qualification": "NATIVE_ADMISSION_ONLY; fenced callback, no browser or screenshot follow-write"
+  },
+  "verification": [
+    { "check": "Pinned Vitest run tests/RD-03", "status": "PASS", "exitCode": 0, "tests": 13, "files": 2, "logSha256": "1831cfaa568c75635471251ab4167dcaba4da9705625b8cf29b2b733e595c30b" },
+    { "check": "npm run check", "status": "PASS", "exitCode": 0, "logSha256": "55c814d0e096397f099fe6af3df4cb48543573b7821b3361bbbe5963f2045252" },
+    { "check": "Explicit RD03 boundary before reports", "status": "PASS", "exitCode": 0, "inputHashesVerified": 52, "violations": [], "logSha256": "64c69a9f481b4d6ec74befb1bdfe9efbe24bd4710e6cc51e01bc4b3d58c20325" },
+    { "check": "Retained bytes", "status": "PASS", "exitCode": 0, "sharedFiles": 18, "fixtureFiles": 429, "runtimeAndCliFiles": 7, "oldReports": 3, "oldEvidenceFiles": 1209, "oldHelpers": 6, "oldLinksCheckedWithoutFollowing": 4, "oldCommandLedgerPrefixUnchanged": true, "logSha256": "6d0483f9bb434b45f8f9f4a3b009e70042333adb37a4e748766746a498070758" },
+    { "check": "Repair code diff self-review", "status": "PASS", "newConfirmedFindings": [], "logSha256": "28c6d1d2b4960ab34232d7270a92f958c3c05b08a97b0240c60d85af91284a7d" }
+  ],
+  "baseline": {
+    "path": "checks/repair-so01-p1-20261003-a/before.json",
+    "sha256": "4f803d32a763bf64438411cf751456b5eddf856b015585cd897c51bc06d7ac6b",
+    "retainedVerification": "checks/repair-so01-p1-20261003-a/retained-verification.json",
+    "retainedVerificationSha256": "600af39c81235a54343c8f8862fac3887424baf26d6977369f1770e3962bfe63"
+  },
+  "oldEvidenceBindingsNotRebound": {
+    "codeCommit": "0857c4ce1232c66d7e7b4f4dbad20f6249d2e677",
+    "codeTree": "0a2199440b65b43580fd545aab29c87c232b596e",
+    "codeReceiptSha256": "f5c9bce2ee1014435c0ca0831d289dc692bc843996af8edea02d1aeb49774118",
+    "evidenceIndexSha256": "71f6d2ba982060f6e084255fa3e24865401fa0f52e3003705347a5b87dd78d8a",
+    "finalReceiptSha256": "8add12adb7017114ec496617de5ad2704b5cfe6b418d9ceea692923011a3e02a"
+  },
+  "lockSha256": "9dc112529df87daa8a3d92a913932d2b0bad131055d8d684d86736bd4409b60c",
+  "inventorySha256": "26bf86bba1cbd1955d069ab2eac8d491b6cade59d16a004f1d094cc117ebc9c6",
+  "scopeDeviation": "Earlier broad unit run remains recorded and retained, not retroactively PASS; HEAD retained ten additive program oracles after bounded metadata inspection, not a complete historical mutation-freedom proof",
+  "skippedChecks": {
+    "cliInspectAndAbort": "NOT_RUN: unchanged CLI/CPU paths",
+    "build": "NOT_RUN: test-side repair; prior root build remains Canvas2D-only",
+    "optimizedRUN03RUN04": "NOT_RUN: pending actual HEAD wiring and new immutable phase-two snapshot",
+    "gpuProductPerformanceArtAcceptance": "NOT_RUN: no exclusive GPU lease or acceptance",
+    "newIndependentOrHumanReview": "NOT_RUN: no delegation"
+  },
+  "cleanup": "No services/browsers started, no foreign cleanup or file deletion; additive probes/links retained; automatic untracked throughput logs untouched",
+  "publication": "NONE; local commit only",
+  "productIntegrated": false
+}
