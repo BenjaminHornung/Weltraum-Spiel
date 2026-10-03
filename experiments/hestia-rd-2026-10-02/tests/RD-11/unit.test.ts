@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { Mesh, Scene, DoubleSide, FrontSide, ACESFilmicToneMapping, HalfFloatType, NoToneMapping, Vector2, type BufferGeometry } from 'three';
-import { materialColor, materialOpacity } from 'three/tsl';
-import { type MeshLambertNodeMaterial } from 'three/webgpu';
+import { materialOpacity } from 'three/tsl';
+import { NodeMaterial, type MeshLambertNodeMaterial } from 'three/webgpu';
 import { copyFixturePayload, fixtureRevision, getFixtureDigest, type LabFixtureV1 } from '../../src/contracts/fixture';
 import { createFrameInput, mountExperiment, registeredMountCount } from '../../src/contracts/experiment';
 import { sampleScenario } from '../../src/contracts/scenario';
@@ -124,7 +124,7 @@ it('REN12 PARITY exact F01 node/TSL material flags, AO/color/normal/index bytes 
         const mesh = node.root.children[ownerIndex].children[meshIndex] as Mesh<BufferGeometry, MeshLambertNodeMaterial[]>;
         const c0 = controlRoot.children[0].children[ownerIndex].children[meshIndex] as Mesh; const c0Material = (c0.material as any[])[0];
         const declared = fixture.materials.find((entry) => entry.id === source.materialId)!; const material = mesh.material[0];
-        expect(material.type).toBe('MeshLambertNodeMaterial'); expect(material.colorNode).toBe(materialColor); expect(material.opacityNode).toBe(materialOpacity);
+        expect(material.type).toBe('MeshLambertNodeMaterial'); expect(material.colorNode).toBeNull(); expect(material.opacityNode).toBe(materialOpacity);
         expect(material.color.toArray()).toEqual(declared.colorLinearRgb); expect(material.vertexColors).toBe(Boolean(source.colors));
         for (const key of ['opacity', 'transparent', 'depthWrite', 'side', 'vertexColors', 'fog'] as const) { expect(material[key]).toBe(c0Material[key]); }
         expect(material.depthTest).toBe(true); expect(material.side).toBe(declared.doubleSided ? DoubleSide : FrontSide);
@@ -150,7 +150,7 @@ it('REN12 F01 frozen coast tone/fog/lights; F04/F06 actual synthetic noToneMappi
     }
     const projection = buildNodeProjection(fixture, new AbortController().signal);
     try { projection.root.traverse((object) => { if (object instanceof Mesh && object.userData.role === 'emission') {
-      const material = (object.material as MeshLambertNodeMaterial[])[0]; expect(material.emissive.toArray()).toEqual(material.color.toArray()); expect(material.emissiveNode).not.toBeNull();
+      const material = (object.material as MeshLambertNodeMaterial[])[0]; expect(material.emissive.toArray()).toEqual(material.color.toArray()); expect(material).not.toHaveProperty('emissiveNode');
     } }); } finally { projection.dispose(); }
   }
 });
@@ -264,4 +264,17 @@ it('REN11 controlled native-API-shape MSAA observation reads C1 scene renderbuff
   expect(bind.mock.calls.slice(-2)).toEqual([[2, msaa], [2, previous]]);
   gl.getRenderbufferParameter = () => { throw new Error('controlled-quality-query-failure'); };
   expect(() => host.readDiagnostics()).toThrow('controlled-quality-query-failure'); expect(bind.mock.calls.at(-1)).toEqual([2, previous]);
+});
+
+it('REN12 pinned real NodeMaterial defaults retain material color, one vertex-color multiplication, opacity and Color emission', () => {
+  // Inspect the actual imported implementation, not a substitute shader or renderer double.
+  const diffuse = NodeMaterial.prototype.setupDiffuseColor.toString();
+  expect(diffuse).toContain('let colorNode = this.colorNode ? vec4( this.colorNode ) : materialColor;');
+  expect(diffuse).toContain("if ( this.vertexColors === true && geometry.hasAttribute( 'color' ) )");
+  expect(diffuse.match(/colorNode = colorNode\.mul\( vertexColor\(\) \);/g)).toHaveLength(1);
+  expect(diffuse).toContain('const opacityNode = this.opacityNode ? float( this.opacityNode ) : materialOpacity;');
+  const lighting = NodeMaterial.prototype.setupLighting.toString();
+  expect(lighting).toContain('material.emissive && material.emissive.isColor === true');
+  expect(lighting).toContain('emissive.assign( vec3( emissiveNode ? emissiveNode : materialEmissive ) );');
+  expect(lighting).toContain('outgoingLightNode = outgoingLightNode.add( emissive );');
 });

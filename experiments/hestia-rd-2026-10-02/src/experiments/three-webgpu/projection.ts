@@ -1,7 +1,7 @@
 import { ACESFilmicToneMapping, BufferAttribute, BufferGeometry, Color, DirectionalLight, DoubleSide, Fog,
   FrontSide, Group, HemisphereLight, LinearSRGBColorSpace, Mesh, NoToneMapping, ReinhardToneMapping, Scene } from 'three';
 import { MeshLambertNodeMaterial } from 'three/webgpu';
-import { materialColor, materialEmissive, materialOpacity } from 'three/tsl';
+import { materialOpacity } from 'three/tsl';
 import { copyFixturePayload, getFixtureDigest, type LabFixtureV1 } from '../../contracts/fixture';
 import { requireValue } from '../../contracts/validation';
 import { projectFloat32 } from '../three-control';
@@ -43,9 +43,9 @@ export function buildNodeProjection(fixture: LabFixtureV1, signal: AbortSignal) 
         const material = new MeshLambertNodeMaterial({ color: new Color().setRGB(...declared.colorLinearRgb, LinearSRGBColorSpace),
           vertexColors: Boolean(source.colors), opacity: declared.opacity ?? 1, transparent: (declared.opacity ?? 1) < 1,
           depthWrite: declared.depthWrite ?? true, side: declared.doubleSided ? DoubleSide : FrontSide });
-        // NodeMaterial multiplies this by vertexColor once; no full-color/shader substitute.
-        material.colorNode = materialColor; material.opacityNode = materialOpacity;
-        if (declared.role === 'emission') { material.emissive.copy(material.color); material.emissiveNode = materialEmissive; }
+        // Pinned NodeMaterial defaults read color/emissive and multiply vertexColor once.
+        material.opacityNode = materialOpacity;
+        if (declared.role === 'emission') { material.emissive.copy(material.color); }
         materials.push(material); const mesh = new Mesh(geometry, [material]); mesh.name = `${sourceOwner.ownerId}:${source.materialId}`;
         mesh.userData = { materialId: source.materialId, role: declared.role, presentationOnly: source.presentationOnly ?? false };
         if (declared.role === 'water-presentation') { mesh.renderOrder = 1; } owner.add(mesh);
