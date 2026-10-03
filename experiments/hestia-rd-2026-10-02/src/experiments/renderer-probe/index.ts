@@ -104,7 +104,7 @@ export const createRendererProbeExperiment: LabExperimentFactory = async (contex
     gpuCanvas?.unconfigure(); gpuCanvas = null; contextOwned = false;
     if (device) { device.onuncapturederror = null; device.destroy(); device = undefined; }
   }
-  function fail(message: string) { if (!disposed && !disposing) { status = 'failed'; backend = `failed-native-${mode}`; reason = message; release(); publish(); } }
+  function fail(message: string) { if (!disposed && !disposing && status !== 'failed') { status = 'failed'; backend = `failed-native-${mode}`; reason = message; release(); publish(); } }
   const lost = () => { fail('WebGL2 context lost; no hidden restore or fallback'); };
   const onAbort = () => { void dispose(); };
   async function dispose(): Promise<void> {
@@ -198,7 +198,9 @@ export const createRendererProbeExperiment: LabExperimentFactory = async (contex
     }
     context.signal.throwIfAborted();
   } catch (error) {
-    status = 'failed'; backend = `failed-native-${mode}`; reason = String(error); release();
+    // Async device callbacks can have failed before this catch; preserve their first reason.
+    if ((status as ProbeReport['status']) !== 'failed') { status = 'failed'; backend = `failed-native-${mode}`; reason = String(error); }
+    release();
     if (context.signal.aborted) { await dispose(); throw error; }
   } finally { clearTimeout(timeout); publish(); }
   function active() { context.signal.throwIfAborted(); requireValue(!disposed && !disposing, 'Probe disposed'); }

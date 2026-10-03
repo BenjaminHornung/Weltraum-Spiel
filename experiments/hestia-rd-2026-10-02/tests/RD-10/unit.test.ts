@@ -113,9 +113,44 @@ describe('RD10 native capability behavior', () => {
   });
   it('CAP01 failed compile deletes partial candidates before publication', async () => {
     guardedGlobals(); const gl = glDouble(undefined, false, true); const target = canvas(gl.gl);
+    let deliverQueuedCleanupLoss!: () => void;
+    gl.lost.mockImplementation(() => { deliverQueuedCleanupLoss = () => { target.dispatchEvent(new Event('webglcontextlost')); }; });
     const handle = await mount(target, 'webgl2'); expect(readProbeReport(target).status).toBe('failed');
+    const first = readProbeReport(target); expect(first.reason).toBe('Error: Shader compile failed: controlled compile failure');
     expect(gl.gl.drawArrays).not.toHaveBeenCalled(); expect(gl.removeShader).toHaveBeenCalledTimes(1);
+    expect(gl.lost).toHaveBeenCalledTimes(1); deliverQueuedCleanupLoss();
+    expect(readProbeReport(target).reason).toBe(first.reason); expect(handle.readFacts().errors).toEqual([first.reason]);
     expect(gl.lost).toHaveBeenCalledTimes(1); await handle.dispose(); expect(gl.lost).toHaveBeenCalledTimes(1);
+    expect(gl.removeShader).toHaveBeenCalledTimes(1);
+  });
+  it('CAP01 supported context loss remains visible and cleanup stays idempotent', async () => {
+    guardedGlobals(); const gl = glDouble(); const target = canvas(gl.gl); const handle = await mount(target, 'webgl2');
+    expect(readProbeReport(target).status).toBe('supported'); target.dispatchEvent(new Event('webglcontextlost'));
+    expect(readProbeReport(target).status).toBe('failed');
+    expect(handle.readFacts().errors).toEqual(['WebGL2 context lost; no hidden restore or fallback']);
+    expect(readProbeReport(target).liveOwned).toEqual({ contexts: 0, devices: 0, programs: 0, shaders: 0, vertexArrays: 0 });
+    target.dispatchEvent(new Event('webglcontextlost')); await handle.dispose(); await handle.dispose();
+    expect(gl.lost).toHaveBeenCalledTimes(1); expect(gl.removeProgram).toHaveBeenCalledTimes(1);
+    expect(gl.removeShader).toHaveBeenCalledTimes(2); expect(gl.removeArray).toHaveBeenCalledTimes(1);
+  });
+  it('CAP01 async WebGPU failure precedes init catch without losing the first reason', async () => {
+    const gpu = gpuDouble(); guardedGlobals(gpu.gpu); const target = canvas(null, gpu.context);
+    let loseDevice!: (value: { reason: string; message: string }) => void;
+    Object.defineProperty(gpu.device, 'lost', { value: new Promise((resolve) => { loseDevice = resolve; }) });
+    let rejectPipeline!: (error: Error) => void;
+    const pendingPipeline = new Promise<object>((_resolve, reject) => { rejectPipeline = reject; });
+    const initializing = vi.spyOn(gpu.device, 'createRenderPipelineAsync').mockImplementation(() => pendingPipeline);
+    const mounting = mount(target);
+    await vi.waitFor(() => { expect(initializing).toHaveBeenCalledTimes(1); });
+    loseDevice({ reason: 'unknown', message: 'controlled first device loss' });
+    await vi.waitFor(() => { expect(readProbeReport(target).status).toBe('failed'); });
+    const first = readProbeReport(target); expect(first.reason).toBe('WebGPU device lost: controlled first device loss');
+    rejectPipeline(new Error('controlled secondary pipeline rejection'));
+    const handle = await mounting;
+    expect(readProbeReport(target).reason).toBe(first.reason); expect(handle.readFacts().errors).toEqual([first.reason]);
+    expect(readProbeReport(target).liveOwned).toEqual({ contexts: 0, devices: 0, programs: 0, shaders: 0, vertexArrays: 0 });
+    expect(gpu.submit).not.toHaveBeenCalled(); await handle.dispose(); await handle.dispose();
+    expect(gpu.destroy).toHaveBeenCalledTimes(1); expect(gpu.unconfigure).toHaveBeenCalledTimes(1);
   });
   it('CAP03 double mount is rejected and backend reuse requires a fresh canvas', async () => {
     guardedGlobals(); const target = canvas(glDouble().gl); const handle = await mount(target, 'webgl2');
