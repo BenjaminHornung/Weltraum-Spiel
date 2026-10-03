@@ -1,0 +1,63 @@
+{
+  "profiles": "C0 input/existing-host proxy only; C1/C2 transfer estimates unqualified",
+  "costs": [
+    {
+      "path": "dist/assets/three-control-BV4Dtd8b.js",
+      "sha256": "85918fb7cb3c0c9f166b1bfa284aa82b172a285b37219ba417f0d5b24bb580d0",
+      "bytes": 549551,
+      "gzipBytes": 139751,
+      "kind": "measured-built-RD03-file-bytes-NOT-engine-isolated"
+    },
+    {
+      "path": "dist/assets/rd03-CMpvPTxY.js",
+      "sha256": "1f54fcfafe9314415c89ccecaff1dd50425900ae75b1976f7baace7528afd645",
+      "bytes": 8480,
+      "gzipBytes": 3589,
+      "kind": "measured-built-RD03-file-bytes-NOT-engine-isolated"
+    },
+    {
+      "path": "node_modules/three/build/three.module.min.js",
+      "sha256": "86bcee248b64f44bcfc23c331ae74619061957d59cab040171dcb6fb5900beb6",
+      "bytes": 365552,
+      "gzipBytes": 87119,
+      "kind": "measured-installed-build-input-file-bytes-NOT-optimized-C1-C2-bundle"
+    },
+    {
+      "path": "node_modules/three/build/three.core.min.js",
+      "sha256": "05b2609338c76cd65daf74f3ac515bc9a5045e1b3b33edc07d8c9bd55250fa90",
+      "bytes": 385386,
+      "gzipBytes": 101929,
+      "kind": "measured-installed-build-input-file-bytes-NOT-optimized-C1-C2-bundle"
+    },
+    {
+      "path": "node_modules/three/build/three.webgpu.min.js",
+      "sha256": "9deb9cc8943f215f77c27b2cc86bacb83dbd5ab92ef8a7e172437a9e2dff819c",
+      "bytes": 667861,
+      "gzipBytes": 185647,
+      "kind": "measured-installed-build-input-file-bytes-NOT-optimized-C1-C2-bundle"
+    },
+    {
+      "path": "node_modules/three/build/three.tsl.min.js",
+      "sha256": "93e864a9adf5eea21fe35ac7fe69403bdd35ad7dc8e393248ee214ba3a815a65",
+      "bytes": 23676,
+      "gzipBytes": 6664,
+      "kind": "measured-installed-build-input-file-bytes-NOT-optimized-C1-C2-bundle"
+    }
+  ],
+  "C1_C2_optimizedBundle": {
+    "status": "not-run",
+    "unit": "byte",
+    "reason": "HEAD input/integration and profile implementation pending"
+  },
+  "babylonBundle": {
+    "status": "not-run",
+    "unit": "byte",
+    "reason": "Not installed; HEAD/RD12 exact pin and bounded proposal required"
+  },
+  "playcanvasBundle": {
+    "status": "not-run",
+    "unit": "byte",
+    "reason": "Not installed; full port not proposed"
+  },
+  "productIntegrated": false
+}

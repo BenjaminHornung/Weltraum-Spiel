@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>RD-10 native renderer capability probe</title>
+  <style>
+    :root { color-scheme: dark; font: 16px/1.4 system-ui; background: #101820; color: #e5edf3; }
+    body { max-width: 960px; margin: 24px auto; padding: 0 16px; }
+    button { font: inherit; padding: 8px 14px; margin: 4px 4px 12px 0; }
+    button:focus-visible { outline: 3px solid #71cbe8; }
+    #surface canvas { width: 320px; height: 180px; max-width: 100%; }
+    #capability { display: block; white-space: pre-wrap; overflow-wrap: anywhere; font: 13px/1.35 monospace; }
+    #status { display: block; margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+  <h1>RD-10 native capability probe</h1>
+  <p>Diagnostic triangle only, not a fixture scene or a Three renderer comparison.
+    No fallback, timing benchmark, target-GPU or product qualification.</p>
+  <button type="button" data-mode="webgl2">Probe WebGL2</button>
+  <button type="button" data-mode="webgpu">Probe WebGPU</button>
+  <button type="button" id="close">Close probe</button>
+  <output id="status" role="status" aria-live="polite">Loading validated F00 fixture…</output>
+  <div id="surface"></div>
+  <output id="capability" data-mounts="0" aria-label="Capability report">No probe run.</output>
+  <script type="module" src="./main.ts"></script>
+</body>
+</html>

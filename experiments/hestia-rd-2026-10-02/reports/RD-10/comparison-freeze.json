@@ -1,0 +1,2836 @@
+{
+  "schema": "rd10-comparison-freeze-v1",
+  "phase": 1,
+  "start": "4788520ef7cecc5db62da8d51f0daaa8ac8bdd09",
+  "startTree": "6df6382bfcd596c464828b7938ad9ac5036aca05",
+  "immutableProductSource": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+  "lockSha256": "9dc112529df87daa8a3d92a913932d2b0bad131055d8d684d86736bd4409b60c",
+  "inventorySha256": "26bf86bba1cbd1955d069ab2eac8d491b6cade59d16a004f1d094cc117ebc9c6",
+  "sourceEvidence": {
+    "path": "reports/RD-10/source-evidence.json",
+    "sha256": "5c62010bcc78e838d97107fe32b41a15b57bfbfb2256e946babda05d6945c7a5"
+  },
+  "frozenSharedFiles": [
+    {
+      "path": ".gitignore",
+      "sha256": "efbbb31ea819b8961321cc4acbf53cd41376cda54122dc6754925250cac0fd2a"
+    },
+    {
+      "path": "index.html",
+      "sha256": "26bee0771c55ac08f52488ca86a0f4f5e93183e0961be182600cbbba2c848f75"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "9dc112529df87daa8a3d92a913932d2b0bad131055d8d684d86736bd4409b60c"
+    },
+    {
+      "path": "package.json",
+      "sha256": "881067f193dadfaf7f3c9e21b195d0728c528a1eaad4c7453ca279529e12a322"
+    },
+    {
+      "path": "playwright.config.ts",
+      "sha256": "1cf6814a19f18451e30d802a2e7e3c4826b7ca0c17115c0f9247a9ae175643da"
+    },
+    {
+      "path": "scripts/verify-boundary.mjs",
+      "sha256": "a9c7fc8ede96059a88d22a5ad28c456bca0b63199dfb38f9ab28a1fb0f18c159"
+    },
+    {
+      "path": "src/contracts/controlFixture.ts",
+      "sha256": "f9a55a632bb4f608ddccb20a7a31e69a0da0c24473c1b4200939bf8f89e18ba1"
+    },
+    {
+      "path": "src/contracts/experiment.ts",
+      "sha256": "cb7f39251a356f4473783004c91a0e9ab27bb45e59f76e321b9708d764cd9188"
+    },
+    {
+      "path": "src/contracts/fixture.ts",
+      "sha256": "b879e945ad8ce875f4b9a352ce32a9ae026eb3ad4433dac25c3588ca67feadb1"
+    },
+    {
+      "path": "src/contracts/result.ts",
+      "sha256": "121bc744df8b2e9055c12f3ddff109e5f78134bb0739c901685000e32d0e8860"
+    },
+    {
+      "path": "src/contracts/scenario.ts",
+      "sha256": "994ec69f3ab1ec53ee67ea89e9a408b5c02cc8cddb210a5760e25078ea4a424d"
+    },
+    {
+      "path": "src/contracts/validation.ts",
+      "sha256": "da9e58e4d31c3805b6ed29661679a5eb79db6f22e3810b65eece63e6d07563a3"
+    },
+    {
+      "path": "src/registration.ts",
+      "sha256": "ab1658a6dcbd66bfdfb5725b304d258715e1942c9f740e87417bde206802a646"
+    },
+    {
+      "path": "tests/RD-00/browser.spec.ts",
+      "sha256": "9c21d95521499736d9bb05b850afa0f11e5875059612cac6d7fef369e45b725f"
+    },
+    {
+      "path": "tests/RD-00/unit.test.ts",
+      "sha256": "cdeac2bd7b80845752af54840577e006c705efc6c5a5b425e8dfa6d6152d6ce5"
+    },
+    {
+      "path": "tsconfig.json",
+      "sha256": "48a78c82e9bf97a2f37361f7b2dd1b19eb0c4c9a9e488626f598e219f62831e7"
+    },
+    {
+      "path": "vite.config.ts",
+      "sha256": "9ff329d3c92622a2f61636499e67ae059865ffb25028c07910ad9ceb4e72139a"
+    },
+    {
+      "path": "vitest.config.ts",
+      "sha256": "5021e7f3425342c1c4d6337ed40ff5c12af8647a067170ca711a73d574f17447"
+    }
+  ],
+  "fixtures": [
+    {
+      "group": "F01-HVP-COAST",
+      "manifests": [
+        {
+          "id": "F01-HVP-COAST",
+          "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "manifestPath": "F01-HVP-COAST/manifest.json",
+          "manifestSha256": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "manifestBytes": 27201,
+          "payloadBytes": 23150628,
+          "sourceRevision": 0,
+          "sourceRefs": [
+            {
+              "commit": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+              "files": [
+                {
+                  "blobSha": "d0613db4fbaecc8bfbf2ff80ad6a483e20430833",
+                  "path": "apps/weltraum-browser/src/core/hash.ts",
+                  "sha256": "7514fc507d6c83404462d967ff4736790abf6425842b676cefedc4928a2febee"
+                },
+                {
+                  "blobSha": "d4cd91baca674a027416e9cd8eab97532803080d",
+                  "path": "apps/weltraum-browser/src/hestia-prototype/presentation/look.ts",
+                  "sha256": "1c058c73d4313b6da757b341f6dad66173d73332d169d7dbe04710b96c0219ea"
+                },
+                {
+                  "blobSha": "089e5e985ee9ad271a3ed44e0bb3214ab28c0879",
+                  "path": "apps/weltraum-browser/src/hestia-prototype/presentation/vegetation.ts",
+                  "sha256": "64806d7f77d6e562c8f1a36e7fb313c6353acca04d05331063af3773a519e1ae"
+                },
+                {
+                  "blobSha": "5d99e23a6bc8dfd80e8bd8d056d3dea393daad2b",
+                  "path": "apps/weltraum-browser/src/hestia-prototype/presentation/visualEffects.ts",
+                  "sha256": "b02f1d1a114fd143201fd7f516c6bec52dd574d3e511fdc09aa5ffd7931ba31f"
+                },
+                {
+                  "blobSha": "3f87cadac0664db2b32aae04b25356bb0ead8c8d",
+                  "path": "apps/weltraum-browser/src/hvp/hvpCamera.ts",
+                  "sha256": "b7bec67081a4ec0a9a532cc6b4dbc929fd0be56dd5367a965c66891ae487bf56"
+                },
+                {
+                  "blobSha": "1fad35b9ca837256f8acfd1ed1ebeb97ca5b4c26",
+                  "path": "apps/weltraum-browser/src/hvp/hvpCoastMesher.ts",
+                  "sha256": "437f3f48a3e578174f23b0956e3a3a2fee975a25b4576cc77b7af87c91930a6a"
+                },
+                {
+                  "blobSha": "0e9d3226828cc0a233791b77b634aa91c0c39771",
+                  "path": "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+                  "sha256": "c13e3107a542b402faf342befb479e6bf74d94730b16c4caf73d1f911fad8be4"
+                },
+                {
+                  "blobSha": "86aeb3b74a8a2c04fb8e8f6624f6ecdd9b66b9d0",
+                  "path": "apps/weltraum-browser/src/hvp/hvpTerrain.ts",
+                  "sha256": "93019417d3f022ead0ee3f9bf42eefce6e249fe135fa61916424d78b19ba1a11"
+                },
+                {
+                  "blobSha": "54720c15972daeccfa1b8bc781deb2933da4c4b4",
+                  "path": "apps/weltraum-browser/src/presentation/canonical.ts",
+                  "sha256": "67558d89ff09e99588101618eb02c5820a042a27850e884db91b0e80188862c8"
+                },
+                {
+                  "blobSha": "a201fa411bd72e4cd39504a6d84ba008267263f1",
+                  "path": "apps/weltraum-browser/src/presentation/ids.ts",
+                  "sha256": "50d7642fe0fbf097bf2cd80275ff5d4243b69cb62c93a7bad14612f5c2ce96a2"
+                },
+                {
+                  "blobSha": "17b2f92823dc571ba2c16268907a904e68f9e3f0",
+                  "path": "apps/weltraum-browser/src/presentation/index.ts",
+                  "sha256": "d1cc7c04ed7bf95d023f8a75c8d6b6edb558bc67e0c24e16298d81f7d6321d49"
+                },
+                {
+                  "blobSha": "8c4d6e98721d03d90881c99b152c96bfd20cf063",
+                  "path": "apps/weltraum-browser/src/presentation/materialProfile.ts",
+                  "sha256": "1d871f968781bdf67c9e6b5517daad94bddccf373950b3f022e68769e7278134"
+                },
+                {
+                  "blobSha": "d6e3d92f52370e380a081c6a6b5bf1af88ebadc0",
+                  "path": "apps/weltraum-browser/src/presentation/meshArtifact.ts",
+                  "sha256": "070a4bef18182a666a8bdd57518da057370ccca2c8d3c9047506a0a12e4ff671"
+                },
+                {
+                  "blobSha": "351b6f7385dd612724912d58c8288ddb99109117",
+                  "path": "apps/weltraum-browser/src/presentation/validation.ts",
+                  "sha256": "e93eadb015c284865184a997b9542fc351ab4c0b4f67247a9adb80890bafb1ff"
+                },
+                {
+                  "blobSha": "e01256c79c2c0efa1e871c5de835102adb66f65c",
+                  "path": "apps/weltraum-browser/src/voxel/blockAmbientOcclusion.ts",
+                  "sha256": "ddfb1d22eccdcb83e48f8c21d82605339936600a6afbbc452bdcdce497ca7675"
+                }
+              ],
+              "generatorVersion": "hvp-authored-coast-v5+hvp-root-umbrella-v3",
+              "kind": "product",
+              "repository": "BenjaminHornung/Weltraum-Spiel",
+              "sourceDigest": "b8fde6b0"
+            }
+          ],
+          "cameras": [
+            {
+              "id": "C01-EYE",
+              "positionMeters": [
+                -8,
+                3.15,
+                -11
+              ],
+              "targetMeters": [
+                0,
+                1,
+                5
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "verticalFovDegrees": 60
+            },
+            {
+              "id": "C02-SHORE",
+              "positionMeters": [
+                -2,
+                1.25,
+                -6
+              ],
+              "targetMeters": [
+                1,
+                -0.5,
+                -2
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "verticalFovDegrees": 55
+            },
+            {
+              "id": "C03-ROOTS",
+              "positionMeters": [
+                3,
+                2.5,
+                4
+              ],
+              "targetMeters": [
+                8,
+                4.5,
+                7
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "verticalFovDegrees": 60
+            },
+            {
+              "id": "C04-WIDE",
+              "positionMeters": [
+                -24,
+                18,
+                -28
+              ],
+              "targetMeters": [
+                0,
+                1,
+                1
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "verticalFovDegrees": 55
+            },
+            {
+              "id": "C05-ROCKARM",
+              "positionMeters": [
+                4,
+                2.5,
+                -9
+              ],
+              "targetMeters": [
+                7,
+                1.5,
+                -6
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "verticalFovDegrees": 50
+            },
+            {
+              "id": "C07-QUARRY",
+              "positionMeters": [
+                -10,
+                3.2,
+                -12
+              ],
+              "targetMeters": [
+                -10.5,
+                1,
+                -9
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "verticalFovDegrees": 55
+            }
+          ],
+          "materials": [
+            {
+              "colorLinearRgb": [
+                0.78,
+                0.76,
+                0.69
+              ],
+              "depthWrite": true,
+              "doubleSided": true,
+              "id": "hvp-limestone-dry",
+              "opacity": 1,
+              "role": "limestone-dry"
+            },
+            {
+              "colorLinearRgb": [
+                0.27,
+                0.29,
+                0.27
+              ],
+              "depthWrite": true,
+              "doubleSided": true,
+              "id": "hvp-limestone-wet",
+              "opacity": 1,
+              "role": "limestone-wet"
+            },
+            {
+              "colorLinearRgb": [
+                0.26,
+                0.47,
+                0.18
+              ],
+              "depthWrite": true,
+              "doubleSided": true,
+              "id": "hvp-moss",
+              "opacity": 1,
+              "role": "moss"
+            },
+            {
+              "colorLinearRgb": [
+                0.39,
+                0.3,
+                0.2
+              ],
+              "depthWrite": true,
+              "doubleSided": true,
+              "id": "hvp-soil",
+              "opacity": 1,
+              "role": "soil"
+            },
+            {
+              "colorLinearRgb": [
+                0.035,
+                0.55,
+                0.8
+              ],
+              "depthWrite": false,
+              "doubleSided": true,
+              "id": "hvp-water",
+              "opacity": 0.55,
+              "role": "water-presentation"
+            },
+            {
+              "colorLinearRgb": [
+                1,
+                1,
+                1
+              ],
+              "depthWrite": true,
+              "doubleSided": false,
+              "id": "hvp:flora:amber:vertex-palette-v2",
+              "opacity": 1,
+              "role": "accent"
+            },
+            {
+              "colorLinearRgb": [
+                1,
+                1,
+                1
+              ],
+              "depthWrite": true,
+              "doubleSided": false,
+              "id": "hvp:flora:broadleaf:vertex-palette-v2",
+              "opacity": 1,
+              "role": "foliage"
+            },
+            {
+              "colorLinearRgb": [
+                1,
+                1,
+                1
+              ],
+              "depthWrite": true,
+              "doubleSided": false,
+              "id": "hvp:flora:reed:vertex-palette-v2",
+              "opacity": 1,
+              "role": "foliage"
+            },
+            {
+              "colorLinearRgb": [
+                1,
+                1,
+                1
+              ],
+              "depthWrite": true,
+              "doubleSided": false,
+              "id": "hvp:flora:tree:vertex-palette-v2",
+              "opacity": 1,
+              "role": "foliage"
+            },
+            {
+              "colorLinearRgb": [
+                1,
+                1,
+                1
+              ],
+              "depthWrite": true,
+              "doubleSided": false,
+              "id": "hvp:flora:violet:vertex-palette-v2",
+              "opacity": 1,
+              "role": "accent"
+            },
+            {
+              "colorLinearRgb": [
+                0.32,
+                0.21,
+                0.1
+              ],
+              "depthWrite": true,
+              "doubleSided": false,
+              "id": "hvp:flora:wood:vertex-palette-v2",
+              "opacity": 1,
+              "role": "wood"
+            }
+          ],
+          "presentation": {
+            "background": {
+              "colorSrgb24": 8893913,
+              "fogFarMeters": 170,
+              "fogNearMeters": 48
+            },
+            "exposure": 1.05,
+            "id": "hvp:readable-coast-v6",
+            "lighting": {
+              "ambient": {
+                "colorSrgb24": 12573160,
+                "groundColorSrgb24": 9212790,
+                "intensity": 0.85,
+                "positionMeters": [
+                  0,
+                  1,
+                  0
+                ]
+              },
+              "fill": {
+                "colorSrgb24": 7317720,
+                "intensity": 0.9,
+                "positionMeters": [
+                  30,
+                  18,
+                  26
+                ]
+              },
+              "key": {
+                "colorSrgb24": 16769712,
+                "intensity": 2.3,
+                "positionMeters": [
+                  -28,
+                  42,
+                  -18
+                ]
+              }
+            },
+            "materialColorSpace": "linear-srgb",
+            "outputColorSpace": "srgb",
+            "sourcePaths": [
+              "apps/weltraum-browser/src/hestia-prototype/presentation/look.ts",
+              "apps/weltraum-browser/src/hestia-prototype/presentation/visualEffects.ts"
+            ],
+            "toneMapping": "aces-filmic"
+          },
+          "payloads": [
+            {
+              "id": "coast-crop-coverage",
+              "path": "F01-HVP-COAST/payloads/coast-crop-coverage.bin",
+              "byteLength": 2949120,
+              "sha256": "1d433f1aa37993106ee691d7dfc033363ca7201fbbab132742340d3a08e92259"
+            },
+            {
+              "id": "coast-crop-material-slots",
+              "path": "F01-HVP-COAST/payloads/coast-crop-material-slots.bin",
+              "byteLength": 2949120,
+              "sha256": "561b1ea853ee6377ec78337016725d6771f178e734925dd0d6d3a33ec7056c0a"
+            },
+            {
+              "id": "coast-crop-occupancy",
+              "path": "F01-HVP-COAST/payloads/coast-crop-occupancy.bin",
+              "byteLength": 2949120,
+              "sha256": "04ba6e9254fe1940801f40679af6dfb1d95ffd828955c886823c519630c01f7c"
+            },
+            {
+              "id": "coast-slot-1-colors",
+              "path": "F01-HVP-COAST/payloads/coast-slot-1-colors.bin",
+              "byteLength": 1433664,
+              "sha256": "f020daf02341c6ab0f1511cf5b5bf14fea8e2ce4d2d8c8b4fbf5f587f4ad3ca5"
+            },
+            {
+              "id": "coast-slot-1-indices",
+              "path": "F01-HVP-COAST/payloads/coast-slot-1-indices.bin",
+              "byteLength": 410640,
+              "sha256": "ad41ac068cc45ebce3da452a21dfd6c2066c7a518305e26a8ad42020a0db1a48"
+            },
+            {
+              "id": "coast-slot-1-normals",
+              "path": "F01-HVP-COAST/payloads/coast-slot-1-normals.bin",
+              "byteLength": 1433664,
+              "sha256": "16b3807d274a6bbfb7ed54749f89c5240d963abcd50798ea051544423a4552c3"
+            },
+            {
+              "id": "coast-slot-1-positions",
+              "path": "F01-HVP-COAST/payloads/coast-slot-1-positions.bin",
+              "byteLength": 1433664,
+              "sha256": "48f478a1647152e7593727a1b1e53265f8978949b1a12e9ad2da9d360754e680"
+            },
+            {
+              "id": "coast-slot-2-indices",
+              "path": "F01-HVP-COAST/payloads/coast-slot-2-indices.bin",
+              "byteLength": 266640,
+              "sha256": "11018e41244c359d27137788b8d256bcbf135118481b0513221281cb3e3bb492"
+            },
+            {
+              "id": "coast-slot-3-indices",
+              "path": "F01-HVP-COAST/payloads/coast-slot-3-indices.bin",
+              "byteLength": 27192,
+              "sha256": "d7e16db83dcaa8a22f2155fb4129c4b951356f38d24578edf29b2f26e7f8accf"
+            },
+            {
+              "id": "coast-slot-4-indices",
+              "path": "F01-HVP-COAST/payloads/coast-slot-4-indices.bin",
+              "byteLength": 12360,
+              "sha256": "546154522f8a0171c5ffa93335b8c05eb0ddbc272f4d0b72dd8dbd0fb2480ed9"
+            },
+            {
+              "id": "coast-water-indices",
+              "path": "F01-HVP-COAST/payloads/coast-water-indices.bin",
+              "byteLength": 1848,
+              "sha256": "e0810d67d0319761e19e7d3364f5ad4e18a7a3c43cb5b1ef92b68c0258a13d64"
+            },
+            {
+              "id": "coast-water-normals",
+              "path": "F01-HVP-COAST/payloads/coast-water-normals.bin",
+              "byteLength": 7392,
+              "sha256": "f87c0ea807d66296a2d3c496ab3992b378668427d9f4c0c0d67b7c75525fbe43"
+            },
+            {
+              "id": "coast-water-positions",
+              "path": "F01-HVP-COAST/payloads/coast-water-positions.bin",
+              "byteLength": 7392,
+              "sha256": "1614f45e69000d39b1ee2b6db7f800190e7d68fd0025896b29448fb80d1356e7"
+            },
+            {
+              "id": "plant-0-decor-coverage",
+              "path": "F01-HVP-COAST/payloads/plant-0-decor-coverage.bin",
+              "byteLength": 1105920,
+              "sha256": "d5cdcf75112ecd21d5fe3c0ba1c5486dafd27ee3b27b507e9c99cc9ed46801b4"
+            },
+            {
+              "id": "plant-0-decor-material-slots",
+              "path": "F01-HVP-COAST/payloads/plant-0-decor-material-slots.bin",
+              "byteLength": 1105920,
+              "sha256": "223576632d466275dc1abfe05496975d0032a06e784b16a71238aa0f9a21abd5"
+            },
+            {
+              "id": "plant-0-decor-occupancy",
+              "path": "F01-HVP-COAST/payloads/plant-0-decor-occupancy.bin",
+              "byteLength": 1105920,
+              "sha256": "d5cdcf75112ecd21d5fe3c0ba1c5486dafd27ee3b27b507e9c99cc9ed46801b4"
+            },
+            {
+              "id": "plant-0-decor-slot-1-colors",
+              "path": "F01-HVP-COAST/payloads/plant-0-decor-slot-1-colors.bin",
+              "byteLength": 369936,
+              "sha256": "8f33b27ca9605e203699c2bdd50f52d84acb88e27c0a5ca9c9ed575114cf0a6c"
+            },
+            {
+              "id": "plant-0-decor-slot-1-indices",
+              "path": "F01-HVP-COAST/payloads/plant-0-decor-slot-1-indices.bin",
+              "byteLength": 92484,
+              "sha256": "ca40fca8cce7d6c665104c45a02e292d828e7bc0cc43e8864eabbdac893ff9a2"
+            },
+            {
+              "id": "plant-0-decor-slot-1-normals",
+              "path": "F01-HVP-COAST/payloads/plant-0-decor-slot-1-normals.bin",
+              "byteLength": 369936,
+              "sha256": "391e52de3443bc6056cb558b723a4fd76244766d16171240f09e230360a1dd98"
+            },
+            {
+              "id": "plant-0-decor-slot-1-positions",
+              "path": "F01-HVP-COAST/payloads/plant-0-decor-slot-1-positions.bin",
+              "byteLength": 369936,
+              "sha256": "9b58b212aa70357248cab4f00c216d06b9c15a9c78f638509b125bb84aac51fb"
+            },
+            {
+              "id": "plant-0-wood-coverage",
+              "path": "F01-HVP-COAST/payloads/plant-0-wood-coverage.bin",
+              "byteLength": 1105920,
+              "sha256": "dc0683f9ec347e4494344138f1771d0ae27d2577089a3637df52e52607576516"
+            },
+            {
+              "id": "plant-0-wood-material-slots",
+              "path": "F01-HVP-COAST/payloads/plant-0-wood-material-slots.bin",
+              "byteLength": 1105920,
+              "sha256": "dc0683f9ec347e4494344138f1771d0ae27d2577089a3637df52e52607576516"
+            },
+            {
+              "id": "plant-0-wood-occupancy",
+              "path": "F01-HVP-COAST/payloads/plant-0-wood-occupancy.bin",
+              "byteLength": 1105920,
+              "sha256": "dc0683f9ec347e4494344138f1771d0ae27d2577089a3637df52e52607576516"
+            },
+            {
+              "id": "plant-0-wood-slot-1-colors",
+              "path": "F01-HVP-COAST/payloads/plant-0-wood-slot-1-colors.bin",
+              "byteLength": 294864,
+              "sha256": "17178e79ed0fa169d9038056d40c514930111bae3b733ba291b3256d73d441a4"
+            },
+            {
+              "id": "plant-0-wood-slot-1-indices",
+              "path": "F01-HVP-COAST/payloads/plant-0-wood-slot-1-indices.bin",
+              "byteLength": 73716,
+              "sha256": "18f25b64520cd1ec14c53e0f7d1ad1e5dae95e61a6ecb95b179de262512e427d"
+            },
+            {
+              "id": "plant-0-wood-slot-1-normals",
+              "path": "F01-HVP-COAST/payloads/plant-0-wood-slot-1-normals.bin",
+              "byteLength": 294864,
+              "sha256": "122e14d0eef0c99c950bc085274391837b2dc2ca92f217665949517a65e9d78d"
+            },
+            {
+              "id": "plant-0-wood-slot-1-positions",
+              "path": "F01-HVP-COAST/payloads/plant-0-wood-slot-1-positions.bin",
+              "byteLength": 294864,
+              "sha256": "b2896724b73955c4ccdd92c3035516827f2d6e4ff09ee716cc580abc77649935"
+            },
+            {
+              "id": "plant-1-decor-coverage",
+              "path": "F01-HVP-COAST/payloads/plant-1-decor-coverage.bin",
+              "byteLength": 23232,
+              "sha256": "e14fe300404fc6c6f74051a1bd6ae57b514916c453ab04b60d12df7045b7b4f2"
+            },
+            {
+              "id": "plant-1-decor-material-slots",
+              "path": "F01-HVP-COAST/payloads/plant-1-decor-material-slots.bin",
+              "byteLength": 23232,
+              "sha256": "161f987495f38b17f1a193248327361c507f29c7b72b590e9bb68ed7631189f7"
+            },
+            {
+              "id": "plant-1-decor-occupancy",
+              "path": "F01-HVP-COAST/payloads/plant-1-decor-occupancy.bin",
+              "byteLength": 23232,
+              "sha256": "e14fe300404fc6c6f74051a1bd6ae57b514916c453ab04b60d12df7045b7b4f2"
+            },
+            {
+              "id": "plant-1-decor-slot-1-colors",
+              "path": "F01-HVP-COAST/payloads/plant-1-decor-slot-1-colors.bin",
+              "byteLength": 12672,
+              "sha256": "e4e0a8da74b3442311206183f8258de6d2d0a3aaf28a8f43bec41c52d10f3fdf"
+            },
+            {
+              "id": "plant-1-decor-slot-1-indices",
+              "path": "F01-HVP-COAST/payloads/plant-1-decor-slot-1-indices.bin",
+              "byteLength": 3168,
+              "sha256": "e185ece4977751d05af409a2dfcb0cf412aab54be953def36e45a171b6da6a1b"
+            },
+            {
+              "id": "plant-1-decor-slot-1-normals",
+              "path": "F01-HVP-COAST/payloads/plant-1-decor-slot-1-normals.bin",
+              "byteLength": 12672,
+              "sha256": "fafbf9380f74c4d2aa388c8601693c9fccac4e86a5a7ca0d30b5a6caa428a4fc"
+            },
+            {
+              "id": "plant-1-decor-slot-1-positions",
+              "path": "F01-HVP-COAST/payloads/plant-1-decor-slot-1-positions.bin",
+              "byteLength": 12672,
+              "sha256": "f792c46920bcc67e17bf28339dc574a4b43bb1769fb8f40503c7d88d54c037f0"
+            },
+            {
+              "id": "plant-2-decor-coverage",
+              "path": "F01-HVP-COAST/payloads/plant-2-decor-coverage.bin",
+              "byteLength": 23232,
+              "sha256": "81a984ec399f208ffb5e9fa7ec0c8fb8b1fd4bdfef2143354bfa1b446af741bc"
+            },
+            {
+              "id": "plant-2-decor-material-slots",
+              "path": "F01-HVP-COAST/payloads/plant-2-decor-material-slots.bin",
+              "byteLength": 23232,
+              "sha256": "fc0ffea11a4f961b287b574e00c50b0f6a5e511a1ef759a7f2681334d139ca90"
+            },
+            {
+              "id": "plant-2-decor-occupancy",
+              "path": "F01-HVP-COAST/payloads/plant-2-decor-occupancy.bin",
+              "byteLength": 23232,
+              "sha256": "81a984ec399f208ffb5e9fa7ec0c8fb8b1fd4bdfef2143354bfa1b446af741bc"
+            },
+            {
+              "id": "plant-2-decor-slot-1-colors",
+              "path": "F01-HVP-COAST/payloads/plant-2-decor-slot-1-colors.bin",
+              "byteLength": 23184,
+              "sha256": "dc3b80996153751cf303ecdf82d2bf3a097230434847cdab4879d161ec4ec594"
+            },
+            {
+              "id": "plant-2-decor-slot-1-indices",
+              "path": "F01-HVP-COAST/payloads/plant-2-decor-slot-1-indices.bin",
+              "byteLength": 5796,
+              "sha256": "66f92ff37eb1c7d4a14485b8ec2d52ec51e20cd129f0f3e4a47cb6e7f3b688c8"
+            },
+            {
+              "id": "plant-2-decor-slot-1-normals",
+              "path": "F01-HVP-COAST/payloads/plant-2-decor-slot-1-normals.bin",
+              "byteLength": 23184,
+              "sha256": "7fbf82b50b94809442d7d6eac1ba82c9f0697ad2d8dec85becef8dfb43f54acf"
+            },
+            {
+              "id": "plant-2-decor-slot-1-positions",
+              "path": "F01-HVP-COAST/payloads/plant-2-decor-slot-1-positions.bin",
+              "byteLength": 23184,
+              "sha256": "cd25e56458532611ac4cbe91d0608c7166f80913d3225041aa42ef28738703b8"
+            },
+            {
+              "id": "plant-3-decor-coverage",
+              "path": "F01-HVP-COAST/payloads/plant-3-decor-coverage.bin",
+              "byteLength": 23232,
+              "sha256": "b5586b65bcdf7df411677e6edba5a6f5145eaed8c4d307fc8b5f682663e9bad4"
+            },
+            {
+              "id": "plant-3-decor-material-slots",
+              "path": "F01-HVP-COAST/payloads/plant-3-decor-material-slots.bin",
+              "byteLength": 23232,
+              "sha256": "1ebfb6571a3fa4d6d9282dd487e25e850356c6eb30de4be2fa5249e0b38c16ac"
+            },
+            {
+              "id": "plant-3-decor-occupancy",
+              "path": "F01-HVP-COAST/payloads/plant-3-decor-occupancy.bin",
+              "byteLength": 23232,
+              "sha256": "b5586b65bcdf7df411677e6edba5a6f5145eaed8c4d307fc8b5f682663e9bad4"
+            },
+            {
+              "id": "plant-3-decor-slot-1-colors",
+              "path": "F01-HVP-COAST/payloads/plant-3-decor-slot-1-colors.bin",
+              "byteLength": 13152,
+              "sha256": "5fc8ed40fa995e76e72cdad053402183ff713922c3fc15af5de507ec0e35b871"
+            },
+            {
+              "id": "plant-3-decor-slot-1-indices",
+              "path": "F01-HVP-COAST/payloads/plant-3-decor-slot-1-indices.bin",
+              "byteLength": 3288,
+              "sha256": "fb86341feb5e8daa01a8b0ede399f588edada24dcebee785f96d22f8abcf9652"
+            },
+            {
+              "id": "plant-3-decor-slot-1-normals",
+              "path": "F01-HVP-COAST/payloads/plant-3-decor-slot-1-normals.bin",
+              "byteLength": 13152,
+              "sha256": "11b80a769aa070a1f43137c7e403585bce7fba62d4e9392170198fb3bc144ef6"
+            },
+            {
+              "id": "plant-3-decor-slot-1-positions",
+              "path": "F01-HVP-COAST/payloads/plant-3-decor-slot-1-positions.bin",
+              "byteLength": 13152,
+              "sha256": "ab12e22b3fb5d7ad0a5929f17c07bac63862416e0f8df7a5882cc9a487f7542f"
+            },
+            {
+              "id": "plant-4-decor-coverage",
+              "path": "F01-HVP-COAST/payloads/plant-4-decor-coverage.bin",
+              "byteLength": 23232,
+              "sha256": "0d9e714a249b3552fc8a33b5d1ae2c09239dc06ff7120f1db5f051ec8f44d6a6"
+            },
+            {
+              "id": "plant-4-decor-material-slots",
+              "path": "F01-HVP-COAST/payloads/plant-4-decor-material-slots.bin",
+              "byteLength": 23232,
+              "sha256": "f3335c5899fe34577af80f457cacb1be7be7ed0c855245293fc125d28467d6f5"
+            },
+            {
+              "id": "plant-4-decor-occupancy",
+              "path": "F01-HVP-COAST/payloads/plant-4-decor-occupancy.bin",
+              "byteLength": 23232,
+              "sha256": "0d9e714a249b3552fc8a33b5d1ae2c09239dc06ff7120f1db5f051ec8f44d6a6"
+            },
+            {
+              "id": "plant-4-decor-slot-1-colors",
+              "path": "F01-HVP-COAST/payloads/plant-4-decor-slot-1-colors.bin",
+              "byteLength": 10656,
+              "sha256": "c1f7c8ab99e090cf296641e1577b0d7f93ae078a9d655161981e528311bd546a"
+            },
+            {
+              "id": "plant-4-decor-slot-1-indices",
+              "path": "F01-HVP-COAST/payloads/plant-4-decor-slot-1-indices.bin",
+              "byteLength": 2664,
+              "sha256": "08df4a3c7b06e1b3114c5c66267d140af62f071f233615be524f83b3ecbe85b8"
+            },
+            {
+              "id": "plant-4-decor-slot-1-normals",
+              "path": "F01-HVP-COAST/payloads/plant-4-decor-slot-1-normals.bin",
+              "byteLength": 10656,
+              "sha256": "728d73385828153bd3f7d4792fe6a262c8e667cdf8ee69cc0eaf08b782758232"
+            },
+            {
+              "id": "plant-4-decor-slot-1-positions",
+              "path": "F01-HVP-COAST/payloads/plant-4-decor-slot-1-positions.bin",
+              "byteLength": 10656,
+              "sha256": "6e28c21ec65e8b714a34df565b7c482e5756df7254a3c395b964dcd67d9728cb"
+            }
+          ]
+        }
+      ],
+      "scenario": {
+        "id": "F01-HVP-COAST-REPLAY",
+        "initialFixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+        "mode": "presentation-replay",
+        "path": "F01-HVP-COAST/scenario.json",
+        "scenarioDigest": "e41d4965131f17ad47ec7a7ce6db4a841d60a550abb86cd51206fa973c500bd9",
+        "sha256": "e41d4965131f17ad47ec7a7ce6db4a841d60a550abb86cd51206fa973c500bd9",
+        "snapshots": [],
+        "bytes": 774,
+        "initialCameraId": "C01-EYE",
+        "initialWeatherPresetId": "dry",
+        "weatherPresets": {
+          "dry": {
+            "cloud01": 0.1,
+            "rain01": 0,
+            "snow01": 0,
+            "windMps": [
+              0,
+              0,
+              0
+            ]
+          },
+          "wet": {
+            "cloud01": 0.8,
+            "rain01": 0.8,
+            "snow01": 0,
+            "windMps": [
+              2,
+              0,
+              1
+            ]
+          },
+          "windy": {
+            "cloud01": 0.4,
+            "rain01": 0,
+            "snow01": 0,
+            "windMps": [
+              5,
+              0,
+              -2
+            ]
+          }
+        },
+        "durationTicks": 1800,
+        "ticksPerSecond": 60,
+        "keyframes": [
+          {
+            "cameraId": "C07-QUARRY",
+            "tick": 120,
+            "type": "SelectCamera"
+          },
+          {
+            "presetId": "wet",
+            "tick": 240,
+            "type": "SetWeatherPreset"
+          },
+          {
+            "cameraId": "C01-EYE",
+            "tick": 600,
+            "type": "SelectCamera"
+          },
+          {
+            "presetId": "windy",
+            "tick": 900,
+            "type": "SetWeatherPreset"
+          },
+          {
+            "tick": 1560,
+            "type": "ResetLab"
+          }
+        ]
+      }
+    },
+    {
+      "group": "F04-DETACH",
+      "manifests": [
+        {
+          "id": "F04-DETACH",
+          "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+          "manifestPath": "F04-DETACH/manifest.json",
+          "manifestSha256": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+          "manifestBytes": 7093,
+          "payloadBytes": 140544,
+          "sourceRevision": 0,
+          "sourceRefs": [
+            {
+              "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+              "generatorPath": "exporters/synthetic.mjs",
+              "generatorVersion": "rd02-small-fixtures-v1",
+              "kind": "synthetic",
+              "seed": 20261002,
+              "sourceDigest": "c4151167bdfd1ee22ad4ba66b0f5374617e16b32b9770cb92ab1f88a5963886b",
+              "testOnly": true
+            }
+          ],
+          "cameras": [
+            {
+              "id": "far",
+              "positionMeters": [
+                15,
+                10,
+                -15
+              ],
+              "targetMeters": [
+                2,
+                1.8,
+                2
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "verticalFovDegrees": 55
+            },
+            {
+              "id": "medium",
+              "positionMeters": [
+                9,
+                6,
+                -9
+              ],
+              "targetMeters": [
+                2,
+                1.8,
+                2
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "verticalFovDegrees": 55
+            },
+            {
+              "id": "near",
+              "positionMeters": [
+                5,
+                3,
+                -5
+              ],
+              "targetMeters": [
+                2,
+                1.8,
+                2
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "verticalFovDegrees": 60
+            }
+          ],
+          "materials": [
+            {
+              "colorLinearRgb": [
+                0.45,
+                0.12,
+                0.62
+              ],
+              "id": "accent",
+              "role": "accent"
+            },
+            {
+              "colorLinearRgb": [
+                0.78,
+                0.76,
+                0.69
+              ],
+              "id": "dry",
+              "role": "limestone-dry"
+            },
+            {
+              "colorLinearRgb": [
+                1,
+                0.5,
+                0.04
+              ],
+              "id": "emission",
+              "role": "emission"
+            },
+            {
+              "colorLinearRgb": [
+                0.19,
+                0.48,
+                0.11
+              ],
+              "id": "leaf",
+              "role": "foliage"
+            },
+            {
+              "colorLinearRgb": [
+                0.27,
+                0.29,
+                0.27
+              ],
+              "id": "wet",
+              "role": "limestone-wet"
+            },
+            {
+              "colorLinearRgb": [
+                0.32,
+                0.21,
+                0.1
+              ],
+              "id": "wood",
+              "role": "wood"
+            }
+          ],
+          "presentation": null,
+          "payloads": [
+            {
+              "id": "fragment-leaf-coverage",
+              "path": "F04-DETACH/payloads/fragment-leaf-coverage.bin",
+              "byteLength": 48,
+              "sha256": "5bf90435cd45d0475cbb0ace7e7e3a672ed2a3a4984ad3e8624d8878725a9c2e"
+            },
+            {
+              "id": "fragment-leaf-material-slots",
+              "path": "F04-DETACH/payloads/fragment-leaf-material-slots.bin",
+              "byteLength": 48,
+              "sha256": "9d4d9b7e821f3cc4c1d92c6c31d71862dbb0ba643a414b3960d750bab09c4b82"
+            },
+            {
+              "id": "fragment-leaf-occupancy",
+              "path": "F04-DETACH/payloads/fragment-leaf-occupancy.bin",
+              "byteLength": 48,
+              "sha256": "5bf90435cd45d0475cbb0ace7e7e3a672ed2a3a4984ad3e8624d8878725a9c2e"
+            },
+            {
+              "id": "fragment-leaf-slot-4-indices",
+              "path": "F04-DETACH/payloads/fragment-leaf-slot-4-indices.bin",
+              "byteLength": 1920,
+              "sha256": "c4ef25f22436617659998b73d66296a7c6a5d83e1f425b7e9b48d3faae41b54d"
+            },
+            {
+              "id": "fragment-leaf-slot-4-normals",
+              "path": "F04-DETACH/payloads/fragment-leaf-slot-4-normals.bin",
+              "byteLength": 3840,
+              "sha256": "012f2ba248cb07e0fd81029d7d93e60323dcabe5ed640771a47867e7fcea5fab"
+            },
+            {
+              "id": "fragment-leaf-slot-4-positions",
+              "path": "F04-DETACH/payloads/fragment-leaf-slot-4-positions.bin",
+              "byteLength": 3840,
+              "sha256": "16ca5d7dc0177aae8a22959a4c4f7b6f8952c5a5b405e2b20e490fee87a84af3"
+            },
+            {
+              "id": "fragment-wood-coverage",
+              "path": "F04-DETACH/payloads/fragment-wood-coverage.bin",
+              "byteLength": 128,
+              "sha256": "7eb24a18990ee4c958c89773da6cc9fbc5c278357762d02ec6ab947eb28726ff"
+            },
+            {
+              "id": "fragment-wood-material-slots",
+              "path": "F04-DETACH/payloads/fragment-wood-material-slots.bin",
+              "byteLength": 128,
+              "sha256": "b9cc204811abcb8134013ac53ee69b449ea38afd9cdcc30efb67358b4b885ee7"
+            },
+            {
+              "id": "fragment-wood-occupancy",
+              "path": "F04-DETACH/payloads/fragment-wood-occupancy.bin",
+              "byteLength": 128,
+              "sha256": "2403d6f8ff30779590a7e8d9a00548ca83e32b870bbf3e1d6901ef438f445db2"
+            },
+            {
+              "id": "fragment-wood-slot-3-indices",
+              "path": "F04-DETACH/payloads/fragment-wood-slot-3-indices.bin",
+              "byteLength": 2736,
+              "sha256": "12e689078e30a9e53b78e9c70f12bfd87e8c58f745871ae5f8710640a7648a78"
+            },
+            {
+              "id": "fragment-wood-slot-3-normals",
+              "path": "F04-DETACH/payloads/fragment-wood-slot-3-normals.bin",
+              "byteLength": 5472,
+              "sha256": "34f489283e5773ae18b996685e0694e0f36454dbde328251669cf487bc2875b5"
+            },
+            {
+              "id": "fragment-wood-slot-3-positions",
+              "path": "F04-DETACH/payloads/fragment-wood-slot-3-positions.bin",
+              "byteLength": 5472,
+              "sha256": "b313fc9bfff18706cbd5cdbc990600da3d3a81f2d9ea9b679b2b67b29309713b"
+            },
+            {
+              "id": "trunk-cells-coverage",
+              "path": "F04-DETACH/payloads/trunk-cells-coverage.bin",
+              "byteLength": 18432,
+              "sha256": "19a1cc81b9d025fe2f8c0decb0111ef580a499a09654a662cef2e1ba75732db1"
+            },
+            {
+              "id": "trunk-cells-material-slots",
+              "path": "F04-DETACH/payloads/trunk-cells-material-slots.bin",
+              "byteLength": 18432,
+              "sha256": "97263e5d297ce8812be7ea167a18091c60eb67ca1235ec7187b5d61331b3a030"
+            },
+            {
+              "id": "trunk-cells-occupancy",
+              "path": "F04-DETACH/payloads/trunk-cells-occupancy.bin",
+              "byteLength": 18432,
+              "sha256": "0c6fdae94658c4021f7af16029e4a8ce72448b3f7f2cec0b555d6dcd35d01d59"
+            },
+            {
+              "id": "trunk-cells-slot-3-indices",
+              "path": "F04-DETACH/payloads/trunk-cells-slot-3-indices.bin",
+              "byteLength": 12288,
+              "sha256": "a571dba5603586ae9d62cf681489d062dd2ae233d0a2c57b742993d98b8ccbdd"
+            },
+            {
+              "id": "trunk-cells-slot-3-normals",
+              "path": "F04-DETACH/payloads/trunk-cells-slot-3-normals.bin",
+              "byteLength": 24576,
+              "sha256": "bdaa0d6f2bdd2a6bf81237a55a6309722bfe37c762552314f06e9456182792b8"
+            },
+            {
+              "id": "trunk-cells-slot-3-positions",
+              "path": "F04-DETACH/payloads/trunk-cells-slot-3-positions.bin",
+              "byteLength": 24576,
+              "sha256": "400625cf7de24598bbea92555a9449af83f7468d20e8d9ad31f0c68fb9ebbd45"
+            }
+          ]
+        },
+        {
+          "id": "F04-DETACH-R1",
+          "fixtureDigest": "c45992d7a859482a869e8deebbecd0e54263986a0acbeca1dc0bde9d8cab4e3b",
+          "manifestPath": "F04-DETACH/snapshots/r1-detach/manifest.json",
+          "manifestSha256": "c45992d7a859482a869e8deebbecd0e54263986a0acbeca1dc0bde9d8cab4e3b",
+          "manifestBytes": 7419,
+          "payloadBytes": 140544,
+          "sourceRevision": 1,
+          "sourceRefs": [
+            {
+              "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+              "generatorPath": "exporters/synthetic.mjs",
+              "generatorVersion": "rd02-small-fixtures-v1",
+              "kind": "synthetic",
+              "seed": 20261002,
+              "sourceDigest": "52fdd9dc8886a853e43ed1b23deeae292d3642f845dbf1cce4457a7adea573d3",
+              "testOnly": true
+            }
+          ],
+          "cameras": [
+            {
+              "id": "far",
+              "positionMeters": [
+                15,
+                10,
+                -15
+              ],
+              "targetMeters": [
+                2,
+                1.8,
+                2
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "verticalFovDegrees": 55
+            },
+            {
+              "id": "medium",
+              "positionMeters": [
+                9,
+                6,
+                -9
+              ],
+              "targetMeters": [
+                2,
+                1.8,
+                2
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "verticalFovDegrees": 55
+            },
+            {
+              "id": "near",
+              "positionMeters": [
+                5,
+                3,
+                -5
+              ],
+              "targetMeters": [
+                2,
+                1.8,
+                2
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "verticalFovDegrees": 60
+            }
+          ],
+          "materials": [
+            {
+              "colorLinearRgb": [
+                0.45,
+                0.12,
+                0.62
+              ],
+              "id": "accent",
+              "role": "accent"
+            },
+            {
+              "colorLinearRgb": [
+                0.78,
+                0.76,
+                0.69
+              ],
+              "id": "dry",
+              "role": "limestone-dry"
+            },
+            {
+              "colorLinearRgb": [
+                1,
+                0.5,
+                0.04
+              ],
+              "id": "emission",
+              "role": "emission"
+            },
+            {
+              "colorLinearRgb": [
+                0.19,
+                0.48,
+                0.11
+              ],
+              "id": "leaf",
+              "role": "foliage"
+            },
+            {
+              "colorLinearRgb": [
+                0.27,
+                0.29,
+                0.27
+              ],
+              "id": "wet",
+              "role": "limestone-wet"
+            },
+            {
+              "colorLinearRgb": [
+                0.32,
+                0.21,
+                0.1
+              ],
+              "id": "wood",
+              "role": "wood"
+            }
+          ],
+          "presentation": null,
+          "payloads": [
+            {
+              "id": "fragment-leaf-coverage",
+              "path": "F04-DETACH/snapshots/r1-detach/payloads/fragment-leaf-coverage.bin",
+              "byteLength": 48,
+              "sha256": "5bf90435cd45d0475cbb0ace7e7e3a672ed2a3a4984ad3e8624d8878725a9c2e"
+            },
+            {
+              "id": "fragment-leaf-material-slots",
+              "path": "F04-DETACH/snapshots/r1-detach/payloads/fragment-leaf-material-slots.bin",
+              "byteLength": 48,
+              "sha256": "9d4d9b7e821f3cc4c1d92c6c31d71862dbb0ba643a414b3960d750bab09c4b82"
+            },
+            {
+              "id": "fragment-leaf-occupancy",
+              "path": "F04-DETACH/snapshots/r1-detach/payloads/fragment-leaf-occupancy.bin",
+              "byteLength": 48,
+              "sha256": "5bf90435cd45d0475cbb0ace7e7e3a672ed2a3a4984ad3e8624d8878725a9c2e"
+            },
+            {
+              "id": "fragment-leaf-slot-4-indices",
+              "path": "F04-DETACH/snapshots/r1-detach/payloads/fragment-leaf-slot-4-indices.bin",
+              "byteLength": 1920,
+              "sha256": "c4ef25f22436617659998b73d66296a7c6a5d83e1f425b7e9b48d3faae41b54d"
+            },
+            {
+              "id": "fragment-leaf-slot-4-normals",
+              "path": "F04-DETACH/snapshots/r1-detach/payloads/fragment-leaf-slot-4-normals.bin",
+              "byteLength": 3840,
+              "sha256": "012f2ba248cb07e0fd81029d7d93e60323dcabe5ed640771a47867e7fcea5fab"
+            },
+            {
+              "id": "fragment-leaf-slot-4-positions",
+              "path": "F04-DETACH/snapshots/r1-detach/payloads/fragment-leaf-slot-4-positions.bin",
+              "byteLength": 3840,
+              "sha256": "d947d16ed567650677f5ebd90d99a55ae727cb3cd80994781abc6eb7fca0d6c8"
+            },
+            {
+              "id": "fragment-wood-coverage",
+              "path": "F04-DETACH/snapshots/r1-detach/payloads/fragment-wood-coverage.bin",
+              "byteLength": 128,
+              "sha256": "7eb24a18990ee4c958c89773da6cc9fbc5c278357762d02ec6ab947eb28726ff"
+            },
+            {
+              "id": "fragment-wood-material-slots",
+              "path": "F04-DETACH/snapshots/r1-detach/payloads/fragment-wood-material-slots.bin",
+              "byteLength": 128,
+              "sha256": "b9cc204811abcb8134013ac53ee69b449ea38afd9cdcc30efb67358b4b885ee7"
+            },
+            {
+              "id": "fragment-wood-occupancy",
+              "path": "F04-DETACH/snapshots/r1-detach/payloads/fragment-wood-occupancy.bin",
+              "byteLength": 128,
+              "sha256": "2403d6f8ff30779590a7e8d9a00548ca83e32b870bbf3e1d6901ef438f445db2"
+            },
+            {
+              "id": "fragment-wood-slot-3-indices",
+              "path": "F04-DETACH/snapshots/r1-detach/payloads/fragment-wood-slot-3-indices.bin",
+              "byteLength": 2736,
+              "sha256": "12e689078e30a9e53b78e9c70f12bfd87e8c58f745871ae5f8710640a7648a78"
+            },
+            {
+              "id": "fragment-wood-slot-3-normals",
+              "path": "F04-DETACH/snapshots/r1-detach/payloads/fragment-wood-slot-3-normals.bin",
+              "byteLength": 5472,
+              "sha256": "34f489283e5773ae18b996685e0694e0f36454dbde328251669cf487bc2875b5"
+            },
+            {
+              "id": "fragment-wood-slot-3-positions",
+              "path": "F04-DETACH/snapshots/r1-detach/payloads/fragment-wood-slot-3-positions.bin",
+              "byteLength": 5472,
+              "sha256": "12f7b1b1533b442d8c408edd7e680f9932047b73b9a6eb787205e298aa5d3455"
+            },
+            {
+              "id": "trunk-cells-coverage",
+              "path": "F04-DETACH/snapshots/r1-detach/payloads/trunk-cells-coverage.bin",
+              "byteLength": 18432,
+              "sha256": "19a1cc81b9d025fe2f8c0decb0111ef580a499a09654a662cef2e1ba75732db1"
+            },
+            {
+              "id": "trunk-cells-material-slots",
+              "path": "F04-DETACH/snapshots/r1-detach/payloads/trunk-cells-material-slots.bin",
+              "byteLength": 18432,
+              "sha256": "97263e5d297ce8812be7ea167a18091c60eb67ca1235ec7187b5d61331b3a030"
+            },
+            {
+              "id": "trunk-cells-occupancy",
+              "path": "F04-DETACH/snapshots/r1-detach/payloads/trunk-cells-occupancy.bin",
+              "byteLength": 18432,
+              "sha256": "0c6fdae94658c4021f7af16029e4a8ce72448b3f7f2cec0b555d6dcd35d01d59"
+            },
+            {
+              "id": "trunk-cells-slot-3-indices",
+              "path": "F04-DETACH/snapshots/r1-detach/payloads/trunk-cells-slot-3-indices.bin",
+              "byteLength": 12288,
+              "sha256": "a571dba5603586ae9d62cf681489d062dd2ae233d0a2c57b742993d98b8ccbdd"
+            },
+            {
+              "id": "trunk-cells-slot-3-normals",
+              "path": "F04-DETACH/snapshots/r1-detach/payloads/trunk-cells-slot-3-normals.bin",
+              "byteLength": 24576,
+              "sha256": "bdaa0d6f2bdd2a6bf81237a55a6309722bfe37c762552314f06e9456182792b8"
+            },
+            {
+              "id": "trunk-cells-slot-3-positions",
+              "path": "F04-DETACH/snapshots/r1-detach/payloads/trunk-cells-slot-3-positions.bin",
+              "byteLength": 24576,
+              "sha256": "400625cf7de24598bbea92555a9449af83f7468d20e8d9ad31f0c68fb9ebbd45"
+            }
+          ]
+        },
+        {
+          "id": "F04-DETACH-R2",
+          "fixtureDigest": "7e1bb35d1a0ada1ff5ddda9719e7d2ad5710d11d59f0f28c7f72b20a04dce37e",
+          "manifestPath": "F04-DETACH/snapshots/r2-rotate/manifest.json",
+          "manifestSha256": "7e1bb35d1a0ada1ff5ddda9719e7d2ad5710d11d59f0f28c7f72b20a04dce37e",
+          "manifestBytes": 7446,
+          "payloadBytes": 140544,
+          "sourceRevision": 2,
+          "sourceRefs": [
+            {
+              "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+              "generatorPath": "exporters/synthetic.mjs",
+              "generatorVersion": "rd02-small-fixtures-v1",
+              "kind": "synthetic",
+              "seed": 20261002,
+              "sourceDigest": "c1429c283b570945593a62014f63a58bde41949533be6624d58639807977d45e",
+              "testOnly": true
+            }
+          ],
+          "cameras": [
+            {
+              "id": "far",
+              "positionMeters": [
+                15,
+                10,
+                -15
+              ],
+              "targetMeters": [
+                2,
+                1.8,
+                2
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "verticalFovDegrees": 55
+            },
+            {
+              "id": "medium",
+              "positionMeters": [
+                9,
+                6,
+                -9
+              ],
+              "targetMeters": [
+                2,
+                1.8,
+                2
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "verticalFovDegrees": 55
+            },
+            {
+              "id": "near",
+              "positionMeters": [
+                5,
+                3,
+                -5
+              ],
+              "targetMeters": [
+                2,
+                1.8,
+                2
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "verticalFovDegrees": 60
+            }
+          ],
+          "materials": [
+            {
+              "colorLinearRgb": [
+                0.45,
+                0.12,
+                0.62
+              ],
+              "id": "accent",
+              "role": "accent"
+            },
+            {
+              "colorLinearRgb": [
+                0.78,
+                0.76,
+                0.69
+              ],
+              "id": "dry",
+              "role": "limestone-dry"
+            },
+            {
+              "colorLinearRgb": [
+                1,
+                0.5,
+                0.04
+              ],
+              "id": "emission",
+              "role": "emission"
+            },
+            {
+              "colorLinearRgb": [
+                0.19,
+                0.48,
+                0.11
+              ],
+              "id": "leaf",
+              "role": "foliage"
+            },
+            {
+              "colorLinearRgb": [
+                0.27,
+                0.29,
+                0.27
+              ],
+              "id": "wet",
+              "role": "limestone-wet"
+            },
+            {
+              "colorLinearRgb": [
+                0.32,
+                0.21,
+                0.1
+              ],
+              "id": "wood",
+              "role": "wood"
+            }
+          ],
+          "presentation": null,
+          "payloads": [
+            {
+              "id": "fragment-leaf-coverage",
+              "path": "F04-DETACH/snapshots/r2-rotate/payloads/fragment-leaf-coverage.bin",
+              "byteLength": 48,
+              "sha256": "5bf90435cd45d0475cbb0ace7e7e3a672ed2a3a4984ad3e8624d8878725a9c2e"
+            },
+            {
+              "id": "fragment-leaf-material-slots",
+              "path": "F04-DETACH/snapshots/r2-rotate/payloads/fragment-leaf-material-slots.bin",
+              "byteLength": 48,
+              "sha256": "9d4d9b7e821f3cc4c1d92c6c31d71862dbb0ba643a414b3960d750bab09c4b82"
+            },
+            {
+              "id": "fragment-leaf-occupancy",
+              "path": "F04-DETACH/snapshots/r2-rotate/payloads/fragment-leaf-occupancy.bin",
+              "byteLength": 48,
+              "sha256": "5bf90435cd45d0475cbb0ace7e7e3a672ed2a3a4984ad3e8624d8878725a9c2e"
+            },
+            {
+              "id": "fragment-leaf-slot-4-indices",
+              "path": "F04-DETACH/snapshots/r2-rotate/payloads/fragment-leaf-slot-4-indices.bin",
+              "byteLength": 1920,
+              "sha256": "c4ef25f22436617659998b73d66296a7c6a5d83e1f425b7e9b48d3faae41b54d"
+            },
+            {
+              "id": "fragment-leaf-slot-4-normals",
+              "path": "F04-DETACH/snapshots/r2-rotate/payloads/fragment-leaf-slot-4-normals.bin",
+              "byteLength": 3840,
+              "sha256": "012f2ba248cb07e0fd81029d7d93e60323dcabe5ed640771a47867e7fcea5fab"
+            },
+            {
+              "id": "fragment-leaf-slot-4-positions",
+              "path": "F04-DETACH/snapshots/r2-rotate/payloads/fragment-leaf-slot-4-positions.bin",
+              "byteLength": 3840,
+              "sha256": "d947d16ed567650677f5ebd90d99a55ae727cb3cd80994781abc6eb7fca0d6c8"
+            },
+            {
+              "id": "fragment-wood-coverage",
+              "path": "F04-DETACH/snapshots/r2-rotate/payloads/fragment-wood-coverage.bin",
+              "byteLength": 128,
+              "sha256": "7eb24a18990ee4c958c89773da6cc9fbc5c278357762d02ec6ab947eb28726ff"
+            },
+            {
+              "id": "fragment-wood-material-slots",
+              "path": "F04-DETACH/snapshots/r2-rotate/payloads/fragment-wood-material-slots.bin",
+              "byteLength": 128,
+              "sha256": "b9cc204811abcb8134013ac53ee69b449ea38afd9cdcc30efb67358b4b885ee7"
+            },
+            {
+              "id": "fragment-wood-occupancy",
+              "path": "F04-DETACH/snapshots/r2-rotate/payloads/fragment-wood-occupancy.bin",
+              "byteLength": 128,
+              "sha256": "2403d6f8ff30779590a7e8d9a00548ca83e32b870bbf3e1d6901ef438f445db2"
+            },
+            {
+              "id": "fragment-wood-slot-3-indices",
+              "path": "F04-DETACH/snapshots/r2-rotate/payloads/fragment-wood-slot-3-indices.bin",
+              "byteLength": 2736,
+              "sha256": "12e689078e30a9e53b78e9c70f12bfd87e8c58f745871ae5f8710640a7648a78"
+            },
+            {
+              "id": "fragment-wood-slot-3-normals",
+              "path": "F04-DETACH/snapshots/r2-rotate/payloads/fragment-wood-slot-3-normals.bin",
+              "byteLength": 5472,
+              "sha256": "34f489283e5773ae18b996685e0694e0f36454dbde328251669cf487bc2875b5"
+            },
+            {
+              "id": "fragment-wood-slot-3-positions",
+              "path": "F04-DETACH/snapshots/r2-rotate/payloads/fragment-wood-slot-3-positions.bin",
+              "byteLength": 5472,
+              "sha256": "12f7b1b1533b442d8c408edd7e680f9932047b73b9a6eb787205e298aa5d3455"
+            },
+            {
+              "id": "trunk-cells-coverage",
+              "path": "F04-DETACH/snapshots/r2-rotate/payloads/trunk-cells-coverage.bin",
+              "byteLength": 18432,
+              "sha256": "19a1cc81b9d025fe2f8c0decb0111ef580a499a09654a662cef2e1ba75732db1"
+            },
+            {
+              "id": "trunk-cells-material-slots",
+              "path": "F04-DETACH/snapshots/r2-rotate/payloads/trunk-cells-material-slots.bin",
+              "byteLength": 18432,
+              "sha256": "97263e5d297ce8812be7ea167a18091c60eb67ca1235ec7187b5d61331b3a030"
+            },
+            {
+              "id": "trunk-cells-occupancy",
+              "path": "F04-DETACH/snapshots/r2-rotate/payloads/trunk-cells-occupancy.bin",
+              "byteLength": 18432,
+              "sha256": "0c6fdae94658c4021f7af16029e4a8ce72448b3f7f2cec0b555d6dcd35d01d59"
+            },
+            {
+              "id": "trunk-cells-slot-3-indices",
+              "path": "F04-DETACH/snapshots/r2-rotate/payloads/trunk-cells-slot-3-indices.bin",
+              "byteLength": 12288,
+              "sha256": "a571dba5603586ae9d62cf681489d062dd2ae233d0a2c57b742993d98b8ccbdd"
+            },
+            {
+              "id": "trunk-cells-slot-3-normals",
+              "path": "F04-DETACH/snapshots/r2-rotate/payloads/trunk-cells-slot-3-normals.bin",
+              "byteLength": 24576,
+              "sha256": "bdaa0d6f2bdd2a6bf81237a55a6309722bfe37c762552314f06e9456182792b8"
+            },
+            {
+              "id": "trunk-cells-slot-3-positions",
+              "path": "F04-DETACH/snapshots/r2-rotate/payloads/trunk-cells-slot-3-positions.bin",
+              "byteLength": 24576,
+              "sha256": "400625cf7de24598bbea92555a9449af83f7468d20e8d9ad31f0c68fb9ebbd45"
+            }
+          ]
+        },
+        {
+          "id": "F04-DETACH-R3",
+          "fixtureDigest": "95e4ebc916e34c14d7ff46b0aa98ad2007d7c9f4e03c2463cc2bd75d7d5414bd",
+          "manifestPath": "F04-DETACH/snapshots/r3-remove/manifest.json",
+          "manifestSha256": "95e4ebc916e34c14d7ff46b0aa98ad2007d7c9f4e03c2463cc2bd75d7d5414bd",
+          "manifestBytes": 5508,
+          "payloadBytes": 125040,
+          "sourceRevision": 3,
+          "sourceRefs": [
+            {
+              "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+              "generatorPath": "exporters/synthetic.mjs",
+              "generatorVersion": "rd02-small-fixtures-v1",
+              "kind": "synthetic",
+              "seed": 20261002,
+              "sourceDigest": "e27b26e1a4bbfb0694dbabb9e88d7b69ef1b4cf7a4422acebb3cc71302461a43",
+              "testOnly": true
+            }
+          ],
+          "cameras": [
+            {
+              "id": "far",
+              "positionMeters": [
+                15,
+                10,
+                -15
+              ],
+              "targetMeters": [
+                2,
+                1.8,
+                2
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "verticalFovDegrees": 55
+            },
+            {
+              "id": "medium",
+              "positionMeters": [
+                9,
+                6,
+                -9
+              ],
+              "targetMeters": [
+                2,
+                1.8,
+                2
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "verticalFovDegrees": 55
+            },
+            {
+              "id": "near",
+              "positionMeters": [
+                5,
+                3,
+                -5
+              ],
+              "targetMeters": [
+                2,
+                1.8,
+                2
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "verticalFovDegrees": 60
+            }
+          ],
+          "materials": [
+            {
+              "colorLinearRgb": [
+                0.45,
+                0.12,
+                0.62
+              ],
+              "id": "accent",
+              "role": "accent"
+            },
+            {
+              "colorLinearRgb": [
+                0.78,
+                0.76,
+                0.69
+              ],
+              "id": "dry",
+              "role": "limestone-dry"
+            },
+            {
+              "colorLinearRgb": [
+                1,
+                0.5,
+                0.04
+              ],
+              "id": "emission",
+              "role": "emission"
+            },
+            {
+              "colorLinearRgb": [
+                0.19,
+                0.48,
+                0.11
+              ],
+              "id": "leaf",
+              "role": "foliage"
+            },
+            {
+              "colorLinearRgb": [
+                0.27,
+                0.29,
+                0.27
+              ],
+              "id": "wet",
+              "role": "limestone-wet"
+            },
+            {
+              "colorLinearRgb": [
+                0.32,
+                0.21,
+                0.1
+              ],
+              "id": "wood",
+              "role": "wood"
+            }
+          ],
+          "presentation": null,
+          "payloads": [
+            {
+              "id": "fragment-wood-coverage",
+              "path": "F04-DETACH/snapshots/r3-remove/payloads/fragment-wood-coverage.bin",
+              "byteLength": 128,
+              "sha256": "7eb24a18990ee4c958c89773da6cc9fbc5c278357762d02ec6ab947eb28726ff"
+            },
+            {
+              "id": "fragment-wood-material-slots",
+              "path": "F04-DETACH/snapshots/r3-remove/payloads/fragment-wood-material-slots.bin",
+              "byteLength": 128,
+              "sha256": "8d2cc6471711ebb6157ba9093bc4eb55b9ae8c898aabb6f1b2bb6754854f5ddd"
+            },
+            {
+              "id": "fragment-wood-occupancy",
+              "path": "F04-DETACH/snapshots/r3-remove/payloads/fragment-wood-occupancy.bin",
+              "byteLength": 128,
+              "sha256": "2c776dddf7e29ec09870c8f81cc258f14c2462e9e079c59d2e9665698cf6c729"
+            },
+            {
+              "id": "fragment-wood-slot-3-indices",
+              "path": "F04-DETACH/snapshots/r3-remove/payloads/fragment-wood-slot-3-indices.bin",
+              "byteLength": 1584,
+              "sha256": "ec2d8ad54cb27e2e847c553012007d17f333e722086509e93adaab1bde580260"
+            },
+            {
+              "id": "fragment-wood-slot-3-normals",
+              "path": "F04-DETACH/snapshots/r3-remove/payloads/fragment-wood-slot-3-normals.bin",
+              "byteLength": 3168,
+              "sha256": "1a2fa307eaf45d6bc378baae4363c201ae7418f9bd3a3d13a61715ee544e7422"
+            },
+            {
+              "id": "fragment-wood-slot-3-positions",
+              "path": "F04-DETACH/snapshots/r3-remove/payloads/fragment-wood-slot-3-positions.bin",
+              "byteLength": 3168,
+              "sha256": "575752af13fc9dbe74c1bd84247fde24cf6073af9b600d46d76b193544b8971b"
+            },
+            {
+              "id": "trunk-cells-coverage",
+              "path": "F04-DETACH/snapshots/r3-remove/payloads/trunk-cells-coverage.bin",
+              "byteLength": 18432,
+              "sha256": "19a1cc81b9d025fe2f8c0decb0111ef580a499a09654a662cef2e1ba75732db1"
+            },
+            {
+              "id": "trunk-cells-material-slots",
+              "path": "F04-DETACH/snapshots/r3-remove/payloads/trunk-cells-material-slots.bin",
+              "byteLength": 18432,
+              "sha256": "97263e5d297ce8812be7ea167a18091c60eb67ca1235ec7187b5d61331b3a030"
+            },
+            {
+              "id": "trunk-cells-occupancy",
+              "path": "F04-DETACH/snapshots/r3-remove/payloads/trunk-cells-occupancy.bin",
+              "byteLength": 18432,
+              "sha256": "0c6fdae94658c4021f7af16029e4a8ce72448b3f7f2cec0b555d6dcd35d01d59"
+            },
+            {
+              "id": "trunk-cells-slot-3-indices",
+              "path": "F04-DETACH/snapshots/r3-remove/payloads/trunk-cells-slot-3-indices.bin",
+              "byteLength": 12288,
+              "sha256": "a571dba5603586ae9d62cf681489d062dd2ae233d0a2c57b742993d98b8ccbdd"
+            },
+            {
+              "id": "trunk-cells-slot-3-normals",
+              "path": "F04-DETACH/snapshots/r3-remove/payloads/trunk-cells-slot-3-normals.bin",
+              "byteLength": 24576,
+              "sha256": "bdaa0d6f2bdd2a6bf81237a55a6309722bfe37c762552314f06e9456182792b8"
+            },
+            {
+              "id": "trunk-cells-slot-3-positions",
+              "path": "F04-DETACH/snapshots/r3-remove/payloads/trunk-cells-slot-3-positions.bin",
+              "byteLength": 24576,
+              "sha256": "400625cf7de24598bbea92555a9449af83f7468d20e8d9ad31f0c68fb9ebbd45"
+            }
+          ]
+        },
+        {
+          "id": "F04-DETACH-R4",
+          "fixtureDigest": "8b7af46b9292ce40ead9545cf02d38bb7e57bf1205d7fbf1bf9f4c7af783832b",
+          "manifestPath": "F04-DETACH/snapshots/r4-reload/manifest.json",
+          "manifestSha256": "8b7af46b9292ce40ead9545cf02d38bb7e57bf1205d7fbf1bf9f4c7af783832b",
+          "manifestBytes": 5508,
+          "payloadBytes": 125040,
+          "sourceRevision": 4,
+          "sourceRefs": [
+            {
+              "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+              "generatorPath": "exporters/synthetic.mjs",
+              "generatorVersion": "rd02-small-fixtures-v1",
+              "kind": "synthetic",
+              "seed": 20261002,
+              "sourceDigest": "0654c0e77a2ab0b14594f2f21ed70ffd6720e39019fee0fee2814f76093e9038",
+              "testOnly": true
+            }
+          ],
+          "cameras": [
+            {
+              "id": "far",
+              "positionMeters": [
+                15,
+                10,
+                -15
+              ],
+              "targetMeters": [
+                2,
+                1.8,
+                2
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "verticalFovDegrees": 55
+            },
+            {
+              "id": "medium",
+              "positionMeters": [
+                9,
+                6,
+                -9
+              ],
+              "targetMeters": [
+                2,
+                1.8,
+                2
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "verticalFovDegrees": 55
+            },
+            {
+              "id": "near",
+              "positionMeters": [
+                5,
+                3,
+                -5
+              ],
+              "targetMeters": [
+                2,
+                1.8,
+                2
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "verticalFovDegrees": 60
+            }
+          ],
+          "materials": [
+            {
+              "colorLinearRgb": [
+                0.45,
+                0.12,
+                0.62
+              ],
+              "id": "accent",
+              "role": "accent"
+            },
+            {
+              "colorLinearRgb": [
+                0.78,
+                0.76,
+                0.69
+              ],
+              "id": "dry",
+              "role": "limestone-dry"
+            },
+            {
+              "colorLinearRgb": [
+                1,
+                0.5,
+                0.04
+              ],
+              "id": "emission",
+              "role": "emission"
+            },
+            {
+              "colorLinearRgb": [
+                0.19,
+                0.48,
+                0.11
+              ],
+              "id": "leaf",
+              "role": "foliage"
+            },
+            {
+              "colorLinearRgb": [
+                0.27,
+                0.29,
+                0.27
+              ],
+              "id": "wet",
+              "role": "limestone-wet"
+            },
+            {
+              "colorLinearRgb": [
+                0.32,
+                0.21,
+                0.1
+              ],
+              "id": "wood",
+              "role": "wood"
+            }
+          ],
+          "presentation": null,
+          "payloads": [
+            {
+              "id": "fragment-wood-coverage",
+              "path": "F04-DETACH/snapshots/r4-reload/payloads/fragment-wood-coverage.bin",
+              "byteLength": 128,
+              "sha256": "7eb24a18990ee4c958c89773da6cc9fbc5c278357762d02ec6ab947eb28726ff"
+            },
+            {
+              "id": "fragment-wood-material-slots",
+              "path": "F04-DETACH/snapshots/r4-reload/payloads/fragment-wood-material-slots.bin",
+              "byteLength": 128,
+              "sha256": "8d2cc6471711ebb6157ba9093bc4eb55b9ae8c898aabb6f1b2bb6754854f5ddd"
+            },
+            {
+              "id": "fragment-wood-occupancy",
+              "path": "F04-DETACH/snapshots/r4-reload/payloads/fragment-wood-occupancy.bin",
+              "byteLength": 128,
+              "sha256": "2c776dddf7e29ec09870c8f81cc258f14c2462e9e079c59d2e9665698cf6c729"
+            },
+            {
+              "id": "fragment-wood-slot-3-indices",
+              "path": "F04-DETACH/snapshots/r4-reload/payloads/fragment-wood-slot-3-indices.bin",
+              "byteLength": 1584,
+              "sha256": "ec2d8ad54cb27e2e847c553012007d17f333e722086509e93adaab1bde580260"
+            },
+            {
+              "id": "fragment-wood-slot-3-normals",
+              "path": "F04-DETACH/snapshots/r4-reload/payloads/fragment-wood-slot-3-normals.bin",
+              "byteLength": 3168,
+              "sha256": "1a2fa307eaf45d6bc378baae4363c201ae7418f9bd3a3d13a61715ee544e7422"
+            },
+            {
+              "id": "fragment-wood-slot-3-positions",
+              "path": "F04-DETACH/snapshots/r4-reload/payloads/fragment-wood-slot-3-positions.bin",
+              "byteLength": 3168,
+              "sha256": "575752af13fc9dbe74c1bd84247fde24cf6073af9b600d46d76b193544b8971b"
+            },
+            {
+              "id": "trunk-cells-coverage",
+              "path": "F04-DETACH/snapshots/r4-reload/payloads/trunk-cells-coverage.bin",
+              "byteLength": 18432,
+              "sha256": "19a1cc81b9d025fe2f8c0decb0111ef580a499a09654a662cef2e1ba75732db1"
+            },
+            {
+              "id": "trunk-cells-material-slots",
+              "path": "F04-DETACH/snapshots/r4-reload/payloads/trunk-cells-material-slots.bin",
+              "byteLength": 18432,
+              "sha256": "97263e5d297ce8812be7ea167a18091c60eb67ca1235ec7187b5d61331b3a030"
+            },
+            {
+              "id": "trunk-cells-occupancy",
+              "path": "F04-DETACH/snapshots/r4-reload/payloads/trunk-cells-occupancy.bin",
+              "byteLength": 18432,
+              "sha256": "0c6fdae94658c4021f7af16029e4a8ce72448b3f7f2cec0b555d6dcd35d01d59"
+            },
+            {
+              "id": "trunk-cells-slot-3-indices",
+              "path": "F04-DETACH/snapshots/r4-reload/payloads/trunk-cells-slot-3-indices.bin",
+              "byteLength": 12288,
+              "sha256": "a571dba5603586ae9d62cf681489d062dd2ae233d0a2c57b742993d98b8ccbdd"
+            },
+            {
+              "id": "trunk-cells-slot-3-normals",
+              "path": "F04-DETACH/snapshots/r4-reload/payloads/trunk-cells-slot-3-normals.bin",
+              "byteLength": 24576,
+              "sha256": "bdaa0d6f2bdd2a6bf81237a55a6309722bfe37c762552314f06e9456182792b8"
+            },
+            {
+              "id": "trunk-cells-slot-3-positions",
+              "path": "F04-DETACH/snapshots/r4-reload/payloads/trunk-cells-slot-3-positions.bin",
+              "byteLength": 24576,
+              "sha256": "400625cf7de24598bbea92555a9449af83f7468d20e8d9ad31f0c68fb9ebbd45"
+            }
+          ]
+        }
+      ],
+      "scenario": {
+        "id": "F04-DETACH-REPLAY",
+        "initialFixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+        "mode": "presentation-replay",
+        "path": "F04-DETACH/scenario.json",
+        "scenarioDigest": "0d9012b86bac2c620864774038a1aed987d81e2338f1618b4a434b49f9f0a623",
+        "sha256": "0d9012b86bac2c620864774038a1aed987d81e2338f1618b4a434b49f9f0a623",
+        "snapshots": [
+          {
+            "fixtureDigest": "c45992d7a859482a869e8deebbecd0e54263986a0acbeca1dc0bde9d8cab4e3b",
+            "id": "F04-DETACH-R1",
+            "sourceRevision": 1,
+            "tick": 360
+          },
+          {
+            "fixtureDigest": "7e1bb35d1a0ada1ff5ddda9719e7d2ad5710d11d59f0f28c7f72b20a04dce37e",
+            "id": "F04-DETACH-R2",
+            "sourceRevision": 2,
+            "tick": 720
+          },
+          {
+            "fixtureDigest": "95e4ebc916e34c14d7ff46b0aa98ad2007d7c9f4e03c2463cc2bd75d7d5414bd",
+            "id": "F04-DETACH-R3",
+            "sourceRevision": 3,
+            "tick": 1080
+          },
+          {
+            "fixtureDigest": "8b7af46b9292ce40ead9545cf02d38bb7e57bf1205d7fbf1bf9f4c7af783832b",
+            "id": "F04-DETACH-R4",
+            "sourceRevision": 4,
+            "tick": 1440
+          }
+        ],
+        "bytes": 27171,
+        "initialCameraId": "far",
+        "initialWeatherPresetId": "dry",
+        "weatherPresets": {
+          "dry": {
+            "cloud01": 0.1,
+            "rain01": 0,
+            "snow01": 0,
+            "windMps": [
+              0,
+              0,
+              0
+            ]
+          },
+          "wet": {
+            "cloud01": 0.8,
+            "rain01": 0.8,
+            "snow01": 0,
+            "windMps": [
+              2,
+              0,
+              1
+            ]
+          },
+          "windy": {
+            "cloud01": 0.4,
+            "rain01": 0,
+            "snow01": 0,
+            "windMps": [
+              5,
+              0,
+              -2
+            ]
+          }
+        },
+        "durationTicks": 1800,
+        "ticksPerSecond": 60,
+        "keyframes": [
+          {
+            "cameraId": "near",
+            "tick": 120,
+            "type": "SelectCamera"
+          },
+          {
+            "presetId": "wet",
+            "tick": 240,
+            "type": "SetWeatherPreset"
+          },
+          {
+            "cameraId": "far",
+            "tick": 600,
+            "type": "SelectCamera"
+          },
+          {
+            "presetId": "windy",
+            "tick": 900,
+            "type": "SetWeatherPreset"
+          },
+          {
+            "tick": 1560,
+            "type": "ResetLab"
+          }
+        ]
+      }
+    },
+    {
+      "group": "F06-MATERIAL",
+      "manifests": [
+        {
+          "id": "F06-MATERIAL",
+          "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+          "manifestPath": "F06-MATERIAL/manifest.json",
+          "manifestSha256": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+          "manifestBytes": 7153,
+          "payloadBytes": 834480,
+          "sourceRevision": 0,
+          "sourceRefs": [
+            {
+              "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+              "generatorPath": "exporters/synthetic.mjs",
+              "generatorVersion": "rd02-small-fixtures-v1",
+              "kind": "synthetic",
+              "seed": 20261002,
+              "sourceDigest": "d5669ad21f646d9c731e4f561e23aaec01fbd908e6fc3c078b4ac976a918543b",
+              "testOnly": true
+            }
+          ],
+          "cameras": [
+            {
+              "id": "far",
+              "positionMeters": [
+                15,
+                10,
+                -15
+              ],
+              "targetMeters": [
+                2,
+                1.8,
+                2
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "verticalFovDegrees": 55
+            },
+            {
+              "id": "interior",
+              "positionMeters": [
+                1.5,
+                1.2,
+                1
+              ],
+              "targetMeters": [
+                2.5,
+                1.4,
+                2.5
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "verticalFovDegrees": 60
+            },
+            {
+              "id": "medium",
+              "positionMeters": [
+                9,
+                6,
+                -9
+              ],
+              "targetMeters": [
+                2,
+                1.8,
+                2
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "verticalFovDegrees": 55
+            },
+            {
+              "id": "near",
+              "positionMeters": [
+                5,
+                3,
+                -5
+              ],
+              "targetMeters": [
+                2,
+                1.8,
+                2
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "verticalFovDegrees": 60
+            }
+          ],
+          "materials": [
+            {
+              "colorLinearRgb": [
+                0.45,
+                0.12,
+                0.62
+              ],
+              "id": "accent",
+              "role": "accent"
+            },
+            {
+              "colorLinearRgb": [
+                0.78,
+                0.76,
+                0.69
+              ],
+              "id": "dry",
+              "role": "limestone-dry"
+            },
+            {
+              "colorLinearRgb": [
+                1,
+                0.5,
+                0.04
+              ],
+              "id": "emission",
+              "role": "emission"
+            },
+            {
+              "colorLinearRgb": [
+                0.19,
+                0.48,
+                0.11
+              ],
+              "id": "leaf",
+              "role": "foliage"
+            },
+            {
+              "colorLinearRgb": [
+                0.27,
+                0.29,
+                0.27
+              ],
+              "id": "wet",
+              "role": "limestone-wet"
+            },
+            {
+              "colorLinearRgb": [
+                0.32,
+                0.21,
+                0.1
+              ],
+              "id": "wood",
+              "role": "wood"
+            }
+          ],
+          "presentation": null,
+          "payloads": [
+            {
+              "id": "material-room-coverage",
+              "path": "F06-MATERIAL/payloads/material-room-coverage.bin",
+              "byteLength": 35840,
+              "sha256": "782c3a48703a9b3d0536ef4c51d03840d5e09dd0ccf15edf2a73d7b4c3d7d2f6"
+            },
+            {
+              "id": "material-room-material-slots",
+              "path": "F06-MATERIAL/payloads/material-room-material-slots.bin",
+              "byteLength": 35840,
+              "sha256": "a487a59ca423d87f08307933769d91f01caab957a9aaa71278f0bec7976c8559"
+            },
+            {
+              "id": "material-room-occupancy",
+              "path": "F06-MATERIAL/payloads/material-room-occupancy.bin",
+              "byteLength": 35840,
+              "sha256": "b4c007a550098258f670e0ec5061270e10f7b4860ff859817c1935e234bf90b5"
+            },
+            {
+              "id": "material-room-slot-1-indices",
+              "path": "F06-MATERIAL/payloads/material-room-slot-1-indices.bin",
+              "byteLength": 113160,
+              "sha256": "2f8da78837e1be1a39507f0b209a02252f70228565ad9eb3b47e9599ffc6ec1d"
+            },
+            {
+              "id": "material-room-slot-1-normals",
+              "path": "F06-MATERIAL/payloads/material-room-slot-1-normals.bin",
+              "byteLength": 226320,
+              "sha256": "52bc806122082c415b03db1314814013d7cec4d3a9f69c76051a654cb3f50ba9"
+            },
+            {
+              "id": "material-room-slot-1-positions",
+              "path": "F06-MATERIAL/payloads/material-room-slot-1-positions.bin",
+              "byteLength": 226320,
+              "sha256": "9a3a9105bb22738691ed7b3e1dcd7e8766f7349fad7220a2fee6dee6e996abdd"
+            },
+            {
+              "id": "material-room-slot-2-indices",
+              "path": "F06-MATERIAL/payloads/material-room-slot-2-indices.bin",
+              "byteLength": 23952,
+              "sha256": "5e590203fe392a851981fadcfa69ba90a5ef1a47957ab2f13832ea83305b3ead"
+            },
+            {
+              "id": "material-room-slot-2-normals",
+              "path": "F06-MATERIAL/payloads/material-room-slot-2-normals.bin",
+              "byteLength": 47904,
+              "sha256": "424afd3d4c33f8525f1f92fd4fe54f4a5133328d67f6d1dae9a544c1dc145239"
+            },
+            {
+              "id": "material-room-slot-2-positions",
+              "path": "F06-MATERIAL/payloads/material-room-slot-2-positions.bin",
+              "byteLength": 47904,
+              "sha256": "d270102417a232e373cfb4eda94bc2ce1577eaf38e233992475ba2b8c650f2e8"
+            },
+            {
+              "id": "material-room-slot-3-indices",
+              "path": "F06-MATERIAL/payloads/material-room-slot-3-indices.bin",
+              "byteLength": 2688,
+              "sha256": "fc73a1d41ad8cd7ffe56e21b9b3cdea72f592b7cade06e182d6de0c9f2e3a7f2"
+            },
+            {
+              "id": "material-room-slot-3-normals",
+              "path": "F06-MATERIAL/payloads/material-room-slot-3-normals.bin",
+              "byteLength": 5376,
+              "sha256": "05d13bae0206613b769a06eb3d5d0da29862fb43a0439e9a37f39077c1ecb8c6"
+            },
+            {
+              "id": "material-room-slot-3-positions",
+              "path": "F06-MATERIAL/payloads/material-room-slot-3-positions.bin",
+              "byteLength": 5376,
+              "sha256": "8189dfd9858d517e345db9683b912ad8bd2992b7862dc4ed33e7fc6b2b457eec"
+            },
+            {
+              "id": "material-room-slot-4-indices",
+              "path": "F06-MATERIAL/payloads/material-room-slot-4-indices.bin",
+              "byteLength": 4512,
+              "sha256": "418b6e8981ccc0b09c0771a3fb2c8a5922dfe60efef1ccbfc2ea46986990b275"
+            },
+            {
+              "id": "material-room-slot-4-normals",
+              "path": "F06-MATERIAL/payloads/material-room-slot-4-normals.bin",
+              "byteLength": 9024,
+              "sha256": "f25597e404c2076ab275f17dbffaea378c737c7264b63baa8e5005ec88e9492f"
+            },
+            {
+              "id": "material-room-slot-4-positions",
+              "path": "F06-MATERIAL/payloads/material-room-slot-4-positions.bin",
+              "byteLength": 9024,
+              "sha256": "3ccf9ed82d57d70af486d4824953c7b2b4a03527406d5f7af616b1e5ff17a213"
+            },
+            {
+              "id": "material-room-slot-6-indices",
+              "path": "F06-MATERIAL/payloads/material-room-slot-6-indices.bin",
+              "byteLength": 1080,
+              "sha256": "6d6ab68a0b8de8f374f1a72fa5483c1baf6e02c9275455396769fdbc64159eed"
+            },
+            {
+              "id": "material-room-slot-6-normals",
+              "path": "F06-MATERIAL/payloads/material-room-slot-6-normals.bin",
+              "byteLength": 2160,
+              "sha256": "cdd82778c59d584bf4049c69ef755d1b7d3054c94a9b2053f92c0313305f6b85"
+            },
+            {
+              "id": "material-room-slot-6-positions",
+              "path": "F06-MATERIAL/payloads/material-room-slot-6-positions.bin",
+              "byteLength": 2160,
+              "sha256": "65aa9bf6f59d75f5f7e0291ba42b4d7c809503e695399d095ac0f3c8d5521e62"
+            }
+          ]
+        },
+        {
+          "id": "F06-MATERIAL-R1",
+          "fixtureDigest": "81de4732517d6cf5259f7ec9afd4d4b7af05379feb7cff56afe9e80e16c6d91a",
+          "manifestPath": "F06-MATERIAL/snapshots/r1-opening/manifest.json",
+          "manifestSha256": "81de4732517d6cf5259f7ec9afd4d4b7af05379feb7cff56afe9e80e16c6d91a",
+          "manifestBytes": 7156,
+          "payloadBytes": 825360,
+          "sourceRevision": 1,
+          "sourceRefs": [
+            {
+              "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+              "generatorPath": "exporters/synthetic.mjs",
+              "generatorVersion": "rd02-small-fixtures-v1",
+              "kind": "synthetic",
+              "seed": 20261002,
+              "sourceDigest": "4c5909a3ccf3c53b92d20dfbb3e63b54892ee1f4c7d34b59a4ad31dac7c47f9e",
+              "testOnly": true
+            }
+          ],
+          "cameras": [
+            {
+              "id": "far",
+              "positionMeters": [
+                15,
+                10,
+                -15
+              ],
+              "targetMeters": [
+                2,
+                1.8,
+                2
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "verticalFovDegrees": 55
+            },
+            {
+              "id": "interior",
+              "positionMeters": [
+                1.5,
+                1.2,
+                1
+              ],
+              "targetMeters": [
+                2.5,
+                1.4,
+                2.5
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "verticalFovDegrees": 60
+            },
+            {
+              "id": "medium",
+              "positionMeters": [
+                9,
+                6,
+                -9
+              ],
+              "targetMeters": [
+                2,
+                1.8,
+                2
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "verticalFovDegrees": 55
+            },
+            {
+              "id": "near",
+              "positionMeters": [
+                5,
+                3,
+                -5
+              ],
+              "targetMeters": [
+                2,
+                1.8,
+                2
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "verticalFovDegrees": 60
+            }
+          ],
+          "materials": [
+            {
+              "colorLinearRgb": [
+                0.45,
+                0.12,
+                0.62
+              ],
+              "id": "accent",
+              "role": "accent"
+            },
+            {
+              "colorLinearRgb": [
+                0.78,
+                0.76,
+                0.69
+              ],
+              "id": "dry",
+              "role": "limestone-dry"
+            },
+            {
+              "colorLinearRgb": [
+                1,
+                0.5,
+                0.04
+              ],
+              "id": "emission",
+              "role": "emission"
+            },
+            {
+              "colorLinearRgb": [
+                0.19,
+                0.48,
+                0.11
+              ],
+              "id": "leaf",
+              "role": "foliage"
+            },
+            {
+              "colorLinearRgb": [
+                0.27,
+                0.29,
+                0.27
+              ],
+              "id": "wet",
+              "role": "limestone-wet"
+            },
+            {
+              "colorLinearRgb": [
+                0.32,
+                0.21,
+                0.1
+              ],
+              "id": "wood",
+              "role": "wood"
+            }
+          ],
+          "presentation": null,
+          "payloads": [
+            {
+              "id": "material-room-coverage",
+              "path": "F06-MATERIAL/snapshots/r1-opening/payloads/material-room-coverage.bin",
+              "byteLength": 35840,
+              "sha256": "782c3a48703a9b3d0536ef4c51d03840d5e09dd0ccf15edf2a73d7b4c3d7d2f6"
+            },
+            {
+              "id": "material-room-material-slots",
+              "path": "F06-MATERIAL/snapshots/r1-opening/payloads/material-room-material-slots.bin",
+              "byteLength": 35840,
+              "sha256": "bd173c7017e8c253a33161415fcd0750d5370e140c8564db78dcc17fc524e655"
+            },
+            {
+              "id": "material-room-occupancy",
+              "path": "F06-MATERIAL/snapshots/r1-opening/payloads/material-room-occupancy.bin",
+              "byteLength": 35840,
+              "sha256": "9a53ab36a78a8733d23fdcf0769a9f4ad985bbc402cd1a789a708922bd6f8334"
+            },
+            {
+              "id": "material-room-slot-1-indices",
+              "path": "F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-1-indices.bin",
+              "byteLength": 111336,
+              "sha256": "60f465d9ac74d523062404755086b5dd81f6255ed69a4cfd621d1ef6690c7de1"
+            },
+            {
+              "id": "material-room-slot-1-normals",
+              "path": "F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-1-normals.bin",
+              "byteLength": 222672,
+              "sha256": "18633850f54218ffde09cca10370f45bef7133b23feebbf8e0d6763ea3cbf053"
+            },
+            {
+              "id": "material-room-slot-1-positions",
+              "path": "F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-1-positions.bin",
+              "byteLength": 222672,
+              "sha256": "ea2273da15357d2b195dccab890ac79909fc994ec3a8564973d1805fc68a8927"
+            },
+            {
+              "id": "material-room-slot-2-indices",
+              "path": "F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-2-indices.bin",
+              "byteLength": 23952,
+              "sha256": "5e590203fe392a851981fadcfa69ba90a5ef1a47957ab2f13832ea83305b3ead"
+            },
+            {
+              "id": "material-room-slot-2-normals",
+              "path": "F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-2-normals.bin",
+              "byteLength": 47904,
+              "sha256": "424afd3d4c33f8525f1f92fd4fe54f4a5133328d67f6d1dae9a544c1dc145239"
+            },
+            {
+              "id": "material-room-slot-2-positions",
+              "path": "F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-2-positions.bin",
+              "byteLength": 47904,
+              "sha256": "d270102417a232e373cfb4eda94bc2ce1577eaf38e233992475ba2b8c650f2e8"
+            },
+            {
+              "id": "material-room-slot-3-indices",
+              "path": "F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-3-indices.bin",
+              "byteLength": 2688,
+              "sha256": "fc73a1d41ad8cd7ffe56e21b9b3cdea72f592b7cade06e182d6de0c9f2e3a7f2"
+            },
+            {
+              "id": "material-room-slot-3-normals",
+              "path": "F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-3-normals.bin",
+              "byteLength": 5376,
+              "sha256": "05d13bae0206613b769a06eb3d5d0da29862fb43a0439e9a37f39077c1ecb8c6"
+            },
+            {
+              "id": "material-room-slot-3-positions",
+              "path": "F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-3-positions.bin",
+              "byteLength": 5376,
+              "sha256": "8189dfd9858d517e345db9683b912ad8bd2992b7862dc4ed33e7fc6b2b457eec"
+            },
+            {
+              "id": "material-room-slot-4-indices",
+              "path": "F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-4-indices.bin",
+              "byteLength": 4512,
+              "sha256": "418b6e8981ccc0b09c0771a3fb2c8a5922dfe60efef1ccbfc2ea46986990b275"
+            },
+            {
+              "id": "material-room-slot-4-normals",
+              "path": "F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-4-normals.bin",
+              "byteLength": 9024,
+              "sha256": "f25597e404c2076ab275f17dbffaea378c737c7264b63baa8e5005ec88e9492f"
+            },
+            {
+              "id": "material-room-slot-4-positions",
+              "path": "F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-4-positions.bin",
+              "byteLength": 9024,
+              "sha256": "3ccf9ed82d57d70af486d4824953c7b2b4a03527406d5f7af616b1e5ff17a213"
+            },
+            {
+              "id": "material-room-slot-6-indices",
+              "path": "F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-6-indices.bin",
+              "byteLength": 1080,
+              "sha256": "6d6ab68a0b8de8f374f1a72fa5483c1baf6e02c9275455396769fdbc64159eed"
+            },
+            {
+              "id": "material-room-slot-6-normals",
+              "path": "F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-6-normals.bin",
+              "byteLength": 2160,
+              "sha256": "cdd82778c59d584bf4049c69ef755d1b7d3054c94a9b2053f92c0313305f6b85"
+            },
+            {
+              "id": "material-room-slot-6-positions",
+              "path": "F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-6-positions.bin",
+              "byteLength": 2160,
+              "sha256": "65aa9bf6f59d75f5f7e0291ba42b4d7c809503e695399d095ac0f3c8d5521e62"
+            }
+          ]
+        }
+      ],
+      "scenario": {
+        "id": "F06-MATERIAL-REPLAY",
+        "initialFixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+        "mode": "presentation-replay",
+        "path": "F06-MATERIAL/scenario.json",
+        "scenarioDigest": "ffca7e5fe106c613a4128da6abebe93402fa77a1dc8648f83b2317251ce351cf",
+        "sha256": "ffca7e5fe106c613a4128da6abebe93402fa77a1dc8648f83b2317251ce351cf",
+        "snapshots": [
+          {
+            "fixtureDigest": "81de4732517d6cf5259f7ec9afd4d4b7af05379feb7cff56afe9e80e16c6d91a",
+            "id": "F06-MATERIAL-R1",
+            "sourceRevision": 1,
+            "tick": 360
+          }
+        ],
+        "bytes": 8047,
+        "initialCameraId": "far",
+        "initialWeatherPresetId": "dry",
+        "weatherPresets": {
+          "dry": {
+            "cloud01": 0.1,
+            "rain01": 0,
+            "snow01": 0,
+            "windMps": [
+              0,
+              0,
+              0
+            ]
+          },
+          "wet": {
+            "cloud01": 0.8,
+            "rain01": 0.8,
+            "snow01": 0,
+            "windMps": [
+              2,
+              0,
+              1
+            ]
+          },
+          "windy": {
+            "cloud01": 0.4,
+            "rain01": 0,
+            "snow01": 0,
+            "windMps": [
+              5,
+              0,
+              -2
+            ]
+          }
+        },
+        "durationTicks": 1800,
+        "ticksPerSecond": 60,
+        "keyframes": [
+          {
+            "cameraId": "near",
+            "tick": 120,
+            "type": "SelectCamera"
+          },
+          {
+            "presetId": "wet",
+            "tick": 240,
+            "type": "SetWeatherPreset"
+          },
+          {
+            "cameraId": "far",
+            "tick": 600,
+            "type": "SelectCamera"
+          },
+          {
+            "presetId": "windy",
+            "tick": 900,
+            "type": "SetWeatherPreset"
+          },
+          {
+            "tick": 1560,
+            "type": "ResetLab"
+          }
+        ]
+      }
+    }
+  ],
+  "profiles": [
+    {
+      "id": "C0",
+      "engine": "three",
+      "version": "0.185.1",
+      "entry": "three",
+      "namedExport": "WebGLRenderer",
+      "backend": "WebGL2",
+      "material": "MeshLambertMaterial canonical RD03 control",
+      "availability": "EXISTING-RD03-HOST-NOT-RD10-OPTIMIZED-EVIDENCE",
+      "antialiasRequested": true,
+      "effectiveSamples": "NOT_RUN",
+      "outputFormat": "NOT_RUN",
+      "fidelityUnsupported": [
+        "product-native-PCF-shadow-pipeline",
+        "procedural-product-sky",
+        "GLSL-water/onBeforeCompile-hooks"
+      ]
+    },
+    {
+      "id": "C1",
+      "engine": "three",
+      "version": "0.185.1",
+      "entry": "three/webgpu",
+      "namedExport": "WebGPURenderer",
+      "materialEntry": "three/tsl",
+      "forceWebGL": true,
+      "backend": "WebGL2-only-if-inspected",
+      "material": "required-node/TSL-material-port",
+      "availability": "NOT_IMPLEMENTED",
+      "antialiasRequested": true,
+      "requestedSamples": 4,
+      "outputBufferType": "HalfFloatType (same requested policy as C2)",
+      "effectiveSamples": "NOT_RUN-compatibility-can-disable-MSAA",
+      "outputFormat": "NOT_RUN"
+    },
+    {
+      "id": "C2",
+      "engine": "three",
+      "version": "0.185.1",
+      "entry": "three/webgpu",
+      "namedExport": "WebGPURenderer",
+      "materialEntry": "three/tsl",
+      "forceWebGL": false,
+      "backend": "WebGPU-only-if-inspected-no-hidden-WebGL-success",
+      "material": "same-required-node/TSL-material-port-as-C1",
+      "availability": "NOT_IMPLEMENTED",
+      "antialiasRequested": true,
+      "requestedSamples": 4,
+      "outputBufferType": "HalfFloatType (same requested policy as C1)",
+      "effectiveSamples": "NOT_RUN-compatibility-can-disable-MSAA",
+      "outputFormat": "NOT_RUN"
+    }
+  ],
+  "babylonProfiles": "PENDING-HEAD-EXACT-PIN-AND-RD12-no-B-profiles-authorized",
+  "geometryPolicy": "Same frozen canonical payloads, stable owners, source revisions, camera/scenario replay and resolution; no reductions or asymmetric quality",
+  "fixtureLookPolicy": {
+    "F01": "Bound hvp:readable-coast-v6: linear-sRGB inputs, SRGB output, ACES exposure1.05, fog48–170m, source lights/water descriptors",
+    "F04": "Actual synthetic RD03 look: NoToneMapping exposure1, no fog; do not copy coast look",
+    "F06": "Actual synthetic RD03 look: NoToneMapping exposure1, no fog; do not copy coast look"
+  },
+  "comparisons": {
+    "C0_to_C1": "Material/pipeline port AND potentially output-buffer quality axis, NOT pure backend",
+    "C1_to_C2": "Cleaner backend comparison ONLY AFTER feature, actual-backend, effective-MSAA/output-format and visual parity proof"
+  },
+  "barriers": [
+    "C1/C2 await init and inspect renderer.backend; WebGPURenderer default can fall back",
+    "C1 forceWebGL still needs Node/TSL; WebGL onBeforeCompile cannot be reused",
+    "Full PCF/sky/water parity unsupported in C0; do not invent matching features",
+    "Capability triangle is not C0/C1/C2, no timing or art claim",
+    "Headless/software/fallback/unknown identity never target-qualified; no benchmark lease"
+  ],
+  "productIntegrated": false
+}

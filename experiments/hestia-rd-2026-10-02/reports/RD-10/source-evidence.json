@@ -1,0 +1,391 @@
+{
+  "phase": 1,
+  "start": "4788520ef7cecc5db62da8d51f0daaa8ac8bdd09",
+  "base": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+  "packages": [
+    {
+      "name": "three",
+      "version": "0.185.1",
+      "license": "MIT",
+      "commit": "2431a09f46f34c560bc8e44b33be0e567723d5b9",
+      "integrity": "sha512-5aojFCXKwnjBRZvUnt3WFfEcvUJgkN5LlijRFN95hMy8WVkG4I0QNcJE+OuWvuJ0bOdStrbfXn0pkd6/QyiAlg==",
+      "unpackedBytes": 23172772,
+      "unpackedBytesKind": "registry-declared-package-size-NOT-bundle-or-memory",
+      "installed": true
+    },
+    {
+      "name": "babylonjs",
+      "version": "9.29.0",
+      "license": "Apache-2.0",
+      "commit": "cbe5bb36998fdde6bd93d76e67813ff571a535db",
+      "integrity": "sha512-cG5385LjwuZTTWBONwxNjkGlvZzxEDREu3lxX3UeNX0LwN7azLoW+qghf009nCq4gpE0USK0R21iidXxe2MBJQ==",
+      "unpackedBytes": 113487308,
+      "unpackedBytesKind": "registry-declared-package-size-NOT-bundle-or-memory",
+      "installed": false
+    },
+    {
+      "name": "playcanvas",
+      "version": "2.23.0",
+      "license": "MIT",
+      "commit": "cfef43d306b2b55a2c0742e4994221f6d2463957",
+      "integrity": "sha512-DNV4AUMqSDkm74P0CdGEi0NJkmDzKzKEtHNW753LPVF0Xd+2YQeNxAprEcPqEpXTo6/o8LXXqpgspYXWYlhDTg==",
+      "unpackedBytes": 90083507,
+      "unpackedBytesKind": "registry-declared-package-size-NOT-bundle-or-memory",
+      "installed": false
+    }
+  ],
+  "sources": [
+    {
+      "name": "three-registry",
+      "url": "https://registry.npmjs.org/three/0.185.1",
+      "bytes": 4052,
+      "sha256": "eaf6cab853d8114d0bbf720d1ce034a10c15e2a42b13d502ea80d1d9507bbc46",
+      "retainedRaw": "inspection/inspection-03/three-registry.txt",
+      "excerpts": []
+    },
+    {
+      "name": "babylonjs-registry",
+      "url": "https://registry.npmjs.org/babylonjs/9.29.0",
+      "bytes": 2575,
+      "sha256": "417c29b721c3fd5e026251d5c55fb5dfad9bdcec2d0f8048e3d5e12e71851c0e",
+      "retainedRaw": "inspection/inspection-03/babylonjs-registry.txt",
+      "excerpts": []
+    },
+    {
+      "name": "playcanvas-registry",
+      "url": "https://registry.npmjs.org/playcanvas/2.23.0",
+      "bytes": 6007,
+      "sha256": "55af5b463c315b916fce69063766707e178a6917a1fb9bae5cc75349aecc4db7",
+      "retainedRaw": "inspection/inspection-03/playcanvas-registry.txt",
+      "excerpts": []
+    },
+    {
+      "name": "three-webgpu-renderer",
+      "url": "https://raw.githubusercontent.com/mrdoob/three.js/2431a09f46f34c560bc8e44b33be0e567723d5b9/src/renderers/webgpu/WebGPURenderer.js",
+      "bytes": 3606,
+      "sha256": "b17a6f55a82dc51109ab489c110a52bb0a91ee5dbbe557819ade4071776fb19b",
+      "retainedRaw": "inspection/inspection-03/three-webgpu-renderer.txt",
+      "installedPath": "node_modules/three/src/renderers/webgpu/WebGPURenderer.js",
+      "installedSha256": "b17a6f55a82dc51109ab489c110a52bb0a91ee5dbbe557819ade4071776fb19b",
+      "excerpts": [
+        {
+          "line": 4,
+          "text": "import WebGPUBackend from './WebGPUBackend.js';\nimport StandardNodeLibrary from './nodes/StandardNodeLibrary.js';\nimport { warn } from '../../utils.js';\n/*\nconst debugHandler = {"
+        },
+        {
+          "line": 44,
+          "text": "\t * @property {number} [outputType=undefined] - Texture type for output to canvas. By default, device's preferred format is used; other formats may incur overhead.\n\t * @property {number} [outputBufferType=HalfFloatType] - Defines the type of output buffers. The default `HalfFloatType` is recommend for best\n\t * quality. To save memory and bandwidth, `UnsignedByteType` might be used. This will reduce rendering quality though.\n\t */\n"
+        },
+        {
+          "line": 57,
+          "text": "\n\t\tif ( parameters.forceWebGL ) {\n\n\t\t\tBackendClass = WebGLBackend;\n"
+        },
+        {
+          "line": 65,
+          "text": "\n\t\t\tparameters.getFallback = () => {\n\n\t\t\t\twarn( 'WebGPURenderer: WebGPU is not available, running under WebGL2 backend.' );\n"
+        },
+        {
+          "line": 84,
+          "text": "\t\t *\n\t\t * @type {StandardNodeLibrary}\n\t\t */\n\t\tthis.library = new StandardNodeLibrary();\n"
+        },
+        {
+          "line": 86,
+          "text": "\t\t */\n\t\tthis.library = new StandardNodeLibrary();\n\n\t\t/**\n\t\t * This flag can be used for type testing."
+        }
+      ]
+    },
+    {
+      "name": "three-renderer-init",
+      "url": "https://raw.githubusercontent.com/mrdoob/three.js/2431a09f46f34c560bc8e44b33be0e567723d5b9/src/renderers/common/Renderer.js",
+      "bytes": 102228,
+      "sha256": "71a69fd29482ea2287b52cbf1fe7e7734fcb0488030842e3cfac6ab8001b0d8b",
+      "retainedRaw": "inspection/inspection-03/three-renderer-init.txt",
+      "installedPath": "node_modules/three/src/renderers/common/Renderer.js",
+      "installedSha256": "71a69fd29482ea2287b52cbf1fe7e7734fcb0488030842e3cfac6ab8001b0d8b",
+      "excerpts": [
+        {
+          "line": 69,
+          "text": "\t * to overwrite the default.\n\t * @property {?Function} [getFallback=null] - This callback function can be used to provide a fallback backend, if the primary backend can't be targeted.\n\t * @property {number} [outputBufferType=HalfFloatType] - Defines the type of output buffers. The default `HalfFloatType` is recommend for best\n\t * quality. To save memory and bandwidth, `UnsignedByteType` might be used. This will reduce rendering quality though.\n\t * @property {boolean} [multiview=false] - If set to `true`, the renderer will use multiview during WebXR rendering if supported."
+        },
+        {
+          "line": 103,
+          "text": "\t\t\tsamples = 0,\n\t\t\tgetFallback = null,\n\t\t\toutputBufferType = HalfFloatType,\n\t\t\tmultiview = false\n\t\t} = parameters;"
+        },
+        {
+          "line": 310,
+          "text": "\t\t */\n\t\tthis._getFallback = getFallback;\n\n\t\t/**\n\t\t * A reference to a renderer module for managing shader attributes."
+        },
+        {
+          "line": 767,
+          "text": "\t */\n\tasync init() {\n\n\t\tif ( this._initPromise !== null ) {\n"
+        },
+        {
+          "line": 781,
+          "text": "\n\t\t\t\tawait backend.init( this );\n\n\t\t\t} catch ( error ) {\n"
+        },
+        {
+          "line": 785,
+          "text": "\n\t\t\t\tif ( this._getFallback !== null ) {\n\n\t\t\t\t\t// try the fallback\n"
+        },
+        {
+          "line": 791,
+          "text": "\n\t\t\t\t\t\tthis.backend = backend = this._getFallback( error );\n\t\t\t\t\t\tawait backend.init( this );\n\n\t\t\t\t\t} catch ( error ) {"
+        },
+        {
+          "line": 792,
+          "text": "\t\t\t\t\t\tthis.backend = backend = this._getFallback( error );\n\t\t\t\t\t\tawait backend.init( this );\n\n\t\t\t\t\t} catch ( error ) {\n"
+        }
+      ]
+    },
+    {
+      "name": "three-webgpu-backend",
+      "url": "https://raw.githubusercontent.com/mrdoob/three.js/2431a09f46f34c560bc8e44b33be0e567723d5b9/src/renderers/webgpu/WebGPUBackend.js",
+      "bytes": 79976,
+      "sha256": "ffd7f720c3cbbe4c6ec9757dd73b003fa340b1c2e40ccf4be131b6025a649e31",
+      "retainedRaw": "inspection/inspection-03/three-webgpu-backend.txt",
+      "installedPath": "node_modules/three/src/renderers/webgpu/WebGPUBackend.js",
+      "installedSha256": "ffd7f720c3cbbe4c6ec9757dd73b003fa340b1c2e40ccf4be131b6025a649e31",
+      "excerpts": [
+        {
+          "line": 103,
+          "text": "\t\t */\n\t\tthis.compatibilityMode = null;\n\n\t\t/**\n\t\t * A reference to the device."
+        },
+        {
+          "line": 217,
+          "text": "\n\t\t\tconst adapter = ( typeof navigator !== 'undefined' ) ? await navigator.gpu.requestAdapter( adapterOptions ) : null;\n\n\t\t\tif ( adapter === null ) {\n"
+        },
+        {
+          "line": 246,
+          "text": "\n\t\t\tdevice = await adapter.requestDevice( deviceDescriptor );\n\n\t\t} else {\n"
+        },
+        {
+          "line": 254,
+          "text": "\n\t\tthis.compatibilityMode = ! device.features.has( 'core-features-and-limits' );\n\n\t\tif ( this.compatibilityMode ) {\n"
+        },
+        {
+          "line": 256,
+          "text": "\n\t\tif ( this.compatibilityMode ) {\n\n\t\t\trenderer._samples = 0;\n"
+        },
+        {
+          "line": 258,
+          "text": "\n\t\t\trenderer._samples = 0;\n\n\t\t}\n"
+        }
+      ]
+    },
+    {
+      "name": "three-material-hooks",
+      "url": "https://raw.githubusercontent.com/mrdoob/three.js/2431a09f46f34c560bc8e44b33be0e567723d5b9/src/materials/Material.js",
+      "bytes": 42885,
+      "sha256": "3af196049d118e5c8a81e07cb9d90c44524ac5a319263e64f18f3ee08178ca68",
+      "retainedRaw": "inspection/inspection-03/three-material-hooks.txt",
+      "installedPath": "node_modules/three/src/materials/Material.js",
+      "installedSha256": "3af196049d118e5c8a81e07cb9d90c44524ac5a319263e64f18f3ee08178ca68",
+      "excerpts": [
+        {
+          "line": 304,
+          "text": "\t\t * Points in space whose signed distance to the plane is negative are clipped\n\t\t * (not rendered). This requires {@link WebGLRenderer#localClippingEnabled} to\n\t\t * be `true`.\n\t\t *\n\t\t * @type {?Array<Plane>}"
+        },
+        {
+          "line": 509,
+          "text": "\t *\n\t * This method can only be used when rendering with {@link WebGLRenderer}.\n\t *\n\t * @param {WebGLRenderer} renderer - The renderer.\n\t * @param {Scene} scene - The scene."
+        },
+        {
+          "line": 511,
+          "text": "\t *\n\t * @param {WebGLRenderer} renderer - The renderer.\n\t * @param {Scene} scene - The scene.\n\t * @param {Camera} camera - The camera that is used to render the scene.\n\t * @param {BufferGeometry} geometry - The 3D object's geometry."
+        },
+        {
+          "line": 525,
+          "text": "\t *\n\t * This method can only be used when rendering with {@link WebGLRenderer}. The\n\t * recommended approach when customizing materials is to use `WebGPURenderer` with the new\n\t * Node Material system and [TSL](https://github.com/mrdoob/three.js/wiki/Three.js-Shading-Language).\n\t *"
+        },
+        {
+          "line": 530,
+          "text": "\t * @param {{vertexShader:string,fragmentShader:string,uniforms:Object}} shaderobject - The object holds the uniforms and the vertex and fragment shader source.\n\t * @param {WebGLRenderer} renderer - A reference to the renderer.\n\t */\n\tonBeforeCompile( /* shaderobject, renderer */ ) {}\n"
+        },
+        {
+          "line": 532,
+          "text": "\t */\n\tonBeforeCompile( /* shaderobject, renderer */ ) {}\n\n\t/**\n\t * In case {@link Material#onBeforeCompile} is used, this callback can be used to identify"
+        },
+        {
+          "line": 535,
+          "text": "\t/**\n\t * In case {@link Material#onBeforeCompile} is used, this callback can be used to identify\n\t * values of settings used in `onBeforeCompile()`, so three.js can reuse a cached\n\t * shader or recompile the shader for this material as needed.\n\t *"
+        },
+        {
+          "line": 536,
+          "text": "\t * In case {@link Material#onBeforeCompile} is used, this callback can be used to identify\n\t * values of settings used in `onBeforeCompile()`, so three.js can reuse a cached\n\t * shader or recompile the shader for this material as needed.\n\t *\n\t * This method can only be used when rendering with {@link WebGLRenderer}."
+        },
+        {
+          "line": 539,
+          "text": "\t *\n\t * This method can only be used when rendering with {@link WebGLRenderer}.\n\t *\n\t * @return {string} The custom program cache key.\n\t */"
+        },
+        {
+          "line": 543,
+          "text": "\t */\n\tcustomProgramCacheKey() {\n\n\t\treturn this.onBeforeCompile.toString();\n"
+        },
+        {
+          "line": 545,
+          "text": "\n\t\treturn this.onBeforeCompile.toString();\n\n\t}\n"
+        }
+      ]
+    },
+    {
+      "name": "babylon-webgpu-init",
+      "url": "https://raw.githubusercontent.com/BabylonJS/Babylon.js/cbe5bb36998fdde6bd93d76e67813ff571a535db/packages/dev/core/src/Engines/webgpuEngine.pure.ts",
+      "bytes": 197784,
+      "sha256": "8cb4da6e4ff1f6a528d5ecfc2b4fb912dba677ec02737e8d0a0d77361aacbf15",
+      "retainedRaw": "inspection/inspection-03/babylon-webgpu-init.txt",
+      "excerpts": [
+        {
+          "line": 736,
+          "text": "    // eslint-disable-next-line @typescript-eslint/promise-function-async, no-restricted-syntax\r\n    public initAsync(glslangOptions?: GlslangOptions, twgslOptions?: TwgslOptions): Promise<void> {\r\n        (this.uniqueId as number) = WebGPUEngine._InstanceId++;\r\n        this._glslangOptions = glslangOptions;\r\n        this._twgslOptions = twgslOptions;\r"
+        },
+        {
+          "line": 742,
+          "text": "            navigator\r\n                .gpu!.requestAdapter(this._options)\r\n                // eslint-disable-next-line github/no-then\r\n                .then(async (adapter: GPUAdapter | null | undefined) => {\r\n                    if (!adapter) {\r"
+        },
+        {
+          "line": 786,
+          "text": "\r\n                        return await this._adapter.requestDevice(deviceDescriptor);\r\n                    }\r\n                })\r\n                // eslint-disable-next-line github/no-then\r"
+        },
+        {
+          "line": 941,
+          "text": "\r\n        throw new Error(\"glslang is not available\");\r\n    }\r\n\r\n    private _initializeLimits(): void {\r"
+        }
+      ]
+    },
+    {
+      "name": "playcanvas-factory",
+      "url": "https://raw.githubusercontent.com/playcanvas/engine/cfef43d306b2b55a2c0742e4994221f6d2463957/src/platform/graphics/graphics-device-create.js",
+      "bytes": 8636,
+      "sha256": "609b81f00c0fc509b2188689d8fa5ac659d6109a6ae60b47d6ea5dfe20351798",
+      "retainedRaw": "inspection/inspection-03/playcanvas-factory.txt",
+      "excerpts": [
+        {
+          "line": 56,
+          "text": " * requested to have a stencil buffer of at least 8 bits. Defaults to true.\n * @param {string} [options.glslangUrl] - The URL to the glslang script. Required only if\n * user-defined shaders or shader chunk overrides are specified in GLSL and need to be transpiled to\n * WGSL for use with the {@link DEVICETYPE_WEBGPU} device type. This is not required if only the\n * engine's built-in shaders are used, as those are provided directly in WGSL. Not used for"
+        },
+        {
+          "line": 61,
+          "text": " * {@link DEVICETYPE_WEBGL2} device type creation.\n * @param {string} [options.twgslUrl] - An url to twgsl script, required if glslangUrl was specified.\n * @param {boolean} [options.xrCompatible] - Boolean that hints to the user agent to use a\n * compatible graphics adapter for an immersive XR device. When omitted in a browser, defaults to\n * `true` if `navigator.xr` is present, otherwise `false` (see {@link GraphicsDevice} constructor)."
+        },
+        {
+          "line": 99,
+          "text": "    if (!deviceTypes.includes(DEVICETYPE_WEBGL2)) {\n        deviceTypes.push(DEVICETYPE_WEBGL2);\n    }\n\n    // make a list of device creation functions in priority order"
+        },
+        {
+          "line": 111,
+          "text": "                const device = new WebgpuGraphicsDevice(canvas, { ...options, featureLevel });\n                return device.initWebGpu(options.glslangUrl, options.twgslUrl);\n            });\n        }\n"
+        }
+      ]
+    },
+    {
+      "name": "playcanvas-actual-device",
+      "url": "https://raw.githubusercontent.com/playcanvas/engine/cfef43d306b2b55a2c0742e4994221f6d2463957/src/platform/graphics/graphics-device.js",
+      "bytes": 68043,
+      "sha256": "a39ff21491f61bd33a31fb0d59f30b73964e6b761c2527648c0e88bace34006f",
+      "retainedRaw": "inspection/inspection-03/playcanvas-actual-device.txt",
+      "excerpts": [
+        {
+          "line": 1758,
+          "text": "     */\n    get deviceType() {\n        return this._deviceType;\n    }\n"
+        },
+        {
+          "line": 1759,
+          "text": "    get deviceType() {\n        return this._deviceType;\n    }\n\n    startRenderPass(renderPass) {"
+        }
+      ]
+    },
+    {
+      "name": "b3-visualEffects.ts",
+      "source": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e:apps/weltraum-browser/src/hestia-prototype/presentation/visualEffects.ts",
+      "bytes": 15881,
+      "sha256": "b02f1d1a114fd143201fd7f516c6bec52dd574d3e511fdc09aa5ffd7931ba31f",
+      "retainedRaw": "inspection/inspection-03/b3-visualEffects.ts",
+      "excerpts": [
+        {
+          "line": 14,
+          "text": "  material.customProgramCacheKey = () => `${HVP_EFFECT_VERSION}:${water ? \"water\" : \"opaque\"}`;"
+        },
+        {
+          "line": 15,
+          "text": "  material.onBeforeCompile = (shader) => {"
+        },
+        {
+          "line": 55,
+          "text": "  renderer.toneMapping = THREE.ACESFilmicToneMapping;"
+        },
+        {
+          "line": 56,
+          "text": "  renderer.toneMappingExposure = 1.05;"
+        },
+        {
+          "line": 58,
+          "text": "  renderer.shadowMap.type = THREE.PCFShadowMap;"
+        },
+        {
+          "line": 61,
+          "text": "  const surfaceHooks = new WeakSet<THREE.Material[\"onBeforeCompile\"]>();"
+        },
+        {
+          "line": 62,
+          "text": "  const surfaceKeys = new WeakSet<THREE.Material[\"customProgramCacheKey\"]>();"
+        },
+        {
+          "line": 110,
+          "text": "      surfaceHooks.add(material.onBeforeCompile);"
+        },
+        {
+          "line": 111,
+          "text": "      surfaceKeys.add(material.customProgramCacheKey);"
+        },
+        {
+          "line": 157,
+          "text": "    if (renderer.shadowMap.type !== THREE.PCFShadowMap || scene.onBeforeRender !== THREE.Object3D.prototype.onBeforeRender) { throw unsupported; }"
+        },
+        {
+          "line": 186,
+          "text": "            || !surfaceHooks.has(material.onBeforeCompile) || !surfaceKeys.has(material.customProgramCacheKey)) { throw unsupported; }"
+        }
+      ]
+    },
+    {
+      "name": "b3-look.ts",
+      "source": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e:apps/weltraum-browser/src/hestia-prototype/presentation/look.ts",
+      "bytes": 5180,
+      "sha256": "1c058c73d4313b6da757b341f6dad66173d73332d169d7dbe04710b96c0219ea",
+      "retainedRaw": "inspection/inspection-03/b3-look.ts",
+      "excerpts": [
+        {
+          "line": 69,
+          "text": "    readonly fogNear: number;"
+        },
+        {
+          "line": 70,
+          "text": "    readonly fogFar: number;"
+        },
+        {
+          "line": 82,
+          "text": "export const HVP_READABLE_COAST_LOOK_ID = \"hvp:readable-coast-v6\";"
+        },
+        {
+          "line": 147,
+          "text": "    fogNear: 48,"
+        },
+        {
+          "line": 148,
+          "text": "    fogFar: 170"
+        }
+      ]
+    },
+    {
+      "name": "b3-package-lock.json",
+      "source": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e:apps/weltraum-browser/package-lock.json",
+      "bytes": 59899,
+      "sha256": "df777f04bd29b891cccefcffb3b54cdd9f4dec8ae59d3de258ecdb85696c3890",
+      "retainedRaw": "inspection/inspection-03/b3-package-lock.json",
+      "excerpts": []
+    }
+  ],
+  "sourceSupportIsNotSpeed": true,
+  "historicalR03": "UNRESOLVED-NOT-AVAILABLE; not current RD03 or RR03",
+  "productIntegrated": false
+}
