@@ -1,0 +1,5 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": { "strict": true, "noImplicitReturns": true, "noImplicitOverride": true, "noFallthroughCasesInSwitch": true },
+  "include": ["../../src/tools/variant-gallery/**/*.ts", "../../tests/RD-40/*.ts", "./vite.phase1.config.ts", "./vitest.phase1.config.ts"]
+}
