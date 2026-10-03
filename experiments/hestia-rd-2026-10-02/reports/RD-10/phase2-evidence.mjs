@@ -224,7 +224,7 @@ if (mode === 'preflight') {
   const boundary = inspectBoundary({ repoRoot: repo, base, start, task: 'RD-10', gitPath }); assert(boundary.ok, JSON.stringify(boundary.violations));
   const report = path.join(lab, 'reports/RD-10/capability-report-phase2-20261003.json');
   const published = json(report);
-  for (const key of ['shared', 'graph', 'browser', 'negativeEvidence', 'behavioralRedGreen', 'profileAvailability', 'qualifications']) { assert.deepEqual(published[key], proof[key], `Published ${key} binding`); }
+  for (const key of ['shared', 'graph', 'browser', 'negativeEvidence', 'behavioralRedGreen', 'profileAvailability', 'qualifications']) { assert.deepEqual(published[key], JSON.parse(JSON.stringify(proof[key])), `Published ${key} binding`); }
   write('candidate.json', { status: 'READY_FOR_HEAD_OPTIMIZED_RECHECK_AND_INTEGRATION', head, tree: git('show', '-s', '--format=%T', 'HEAD'), parent,
     branch: git('branch', '--show-current'), source: base, changed: changed.map((file) => ({ path: file, sha256: sha(bytes(path.join(repo, file))) })),
     reportSha256: sha(bytes(report)), report: path.relative(repo, report).replaceAll('\\', '/'), gitStatus, boundary, proof,
