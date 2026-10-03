@@ -1,6 +1,6 @@
 # Hestia asset compiler spike — C1 conflict register
 
-Initial date: 2026-10-02; C7 update 2026-10-03. Base: `25bc7f5bbd2db6317c42193873eadeaf10a092c5`. Historical decisions are retained below; all C6 findings independently CLOSED, current authorization C7 ONLY, **STOP before C8**. Existing upstream source/contracts remain unchanged. `PRODUCT_INTEGRATED = NO`.
+Initial2026-10-02, C8 closure2026-10-03; base `25bc7f5bbd2db6317c42193873eadeaf10a092c5`. Historical decisions retained; ALL findings/final scoped endreviews externally CLOSED at unchanged c8e451... code freeze. META SPIKE_ACCEPTED_WITH_NOTES; exact final research commit authorized, STOP afterward/no push here. Upstream unchanged. `PRODUCT_INTEGRATED = NO`.
 
 No unresolved pair of current, same-boundary contradictory MUST rules was found. A later explicit conflict still triggers STOP with both quotations; scoped research decisions do not override public authoring contracts. C1 `RESOLVED_*` labels are interpretation/design decisions; implemented evidence is specifically updated here and in EXECPLAN/PACKAGE_FORMAT, never inferred from that label alone.
 
@@ -32,7 +32,7 @@ Resolution, explicitly approved in R1-A2 by reviewer **`731643b5-d353-4147-82e7-
 - Semantically equivalent ordering permutations -> identical normalized-geometry/semantics/voxelization hashes, brick bytes and owner/material/address associations, and canonical semantic manifest projection.
 - Raw GLB/report source hashes, authoring-payload digest/source inventory and their full provenance-binding manifest/tree remain truthful and **may differ** for different bytes.
 
-The exact executable C6 projection/preimages are in [PACKAGE_FORMAT.md](PACKAGE_FORMAT.md): only sources/provenanceSha256/manifestTreeSha256 are excluded. No source provenance is faked or public schema changed. Properly remapped permutations and two same-byte generations are exercised at C6; ten-run/full corpus tests remain **NOT RUN**. An explicit new contrary current MUST still triggers STOP with quotation.
+Exact C6 preimages/projection are in [PACKAGE_FORMAT.md](PACKAGE_FORMAT.md); only sources/provenanceSha256/manifestTreeSha256 excluded, no fake provenance/public schema change. C8 complete native expected-outcome ten repeats and scoped external reviews PASS; META accepts with notes. Immutable capture pending fields are historical, not current acceptance. A new contrary current MUST still triggers STOP with quotation.
 
 ## CR06 — flood-only cavity/tunnel design gap
 
@@ -107,11 +107,13 @@ User-relayed EXTERNAL evidence: META 131 PASS / Exit 0 / 61.092 s / baseline dif
 
 | Finding | Own root fix / regression | Status |
 | --- | --- | --- |
-| F1 P2 (R3/META) | Shared research publisher uses `path.anchor`, keeping traversal/backslash/colon checks before parent mkdir/write. Both slash escapes and rooted/drive-relative controls are tested wholly in RAM, plus legal relative publication. No current generator injection path or native foreign write is claimed. | Implemented / own verified; independent targeted closure PENDING |
-| F2 P2 (R3/META) | CLI routes actual BLOCKED compiler code to existing Exit 1/stderr handler BEFORE publication; no stdout or success output. API record remains detailed. REAL hash-paired G24/core + mocked builder/synthetic clocks with/without output; success numerical and exclusion Exit 0 controls retained. | Implemented / own verified; independent targeted closure PENDING |
-| F3 P3 (R2) | Four independent descriptor checks derive min/max cells, meter bounds, h³ cell volume and full occupied grid inventory from existing analytic owned sets. Isolated four-field fakes and empty occupancy reject; no producer helper used as oracle or verifier-acceptance claim. Frozen empty grid inventory remains `[]`. | Implemented / own verified; independent targeted closure PENDING |
-| F4 P3 (R1/R2) | Correct documentation/test: 185 VARIANT-ADDRESSED pairs / 179 different SHA byte-pairs; six normal identity transports legitimately duplicate base bytes. Exact IDs/records/outcomes/inputs/pins unchanged, no deduplication. | Corrected / own count verified |
+| F1 P2 (R3/META) | Shared `path.anchor` guard BEFORE mkdir/write; traversal/backslash/colon preserved, actual regression wholly RAM. No native foreign-write/injection claim. | CLOSED externally R3-E2; own fresh PASS |
+| F2 P2 (R3/META) | Actual BLOCKED core code routes CLI Exit 1/stderr/empty stdout BEFORE publication; API detail and exclusion controls retained. REAL G24 with synthetic clocks is not performance measurement. | CLOSED externally R3-E2; own fresh PASS |
+| F3 P3 (R2) | Independent boundsCells/boundsMeters/h³/full grid inventory from existing analytic full sets; no producer helper, empty list remains []. Four-field/empty fakes reject. | CLOSED externally R2-E2; own fresh PASS |
+| F4 P3 (R1/R2) | 185 variant-addressed pairs / 179 different SHA byte-pairs; six identity duplicates intentional. No deduplication, input/record/PIN change. | CLOSED externally R2-E2; own count verified |
 
 Own final RED: three tests, 22 subtest failures, 1.950 s, Exit 1 before root edits; GREEN three PASS / 1.461 s / Exit 0. Final focused CLI/Golden/Benchmark + existing count/pin/source-warning controls **21 PASS / 19.994 s / Exit 0**. Additional 14 scoped core compiles preserve exact saved public records/file/content/projection/tree pins. All frozen artifact SHAs/bytes unchanged. No full-suite, 1008-triangle benchmark, producer/core/cap/version/preimage or C8 change. Exact commands and the one non-reproduced native publication.io check are recorded in EXECPLAN. Targeted R3/R2 reviews remain user-dispatched/PENDING.
 
-Full C8 `CORPUS_VERIFIED`, 30-case/ten-repeat `DETERMINISM_VERIFIED`, real `BLENDER_E2E_VERIFIED`, qualified performance and full spike acceptance are NOT RUN. `PRODUCT_INTEGRATED = NO`; STOP before C8.
+The previous correction-run paragraph is historical. User-relayed EXTERNAL R3-E2 (three programs Exit 0) / R2-E2 (one program Exit 0) now close ALL F1–F4, and META accepts C0–C7 at c8e451... (selected 21 PASS/19.220 s/baseline diff 0/only accepted logs). Exact scopes/counts are in REVIEW/EXECPLAN, not this writer's own new runs.
+
+C8 own134/58/owned compileall PASS; managed native ten repeats Exit0/1426.516652s,370 logical/3700 case executions (root calls NOT_INSTRUMENTED),285S77expectedReject8reasonedBLOCKED per set,185addressed179different inputs. All records/pins/immutable C7/C8 bytes unchanged;401 published files verified/owned generation removed. One Small/profile Exit0/CONTAMINATED_DIAGNOSTIC/memory UNSUPPORTED, larger ranges before-builder excluded; GWN reasoned NOT_IMPLEMENTED. Real Blender execution-root blocker/symlink1314/qualifiedPerf remain NOT RUN; UNKNOWN once non-reproduced publication.io retained, no AV guess/fix. Launcher correction before Python was not a compiler failure. EXTERNAL all3 endreviews SCOPEDPASS_WITH_NOTES/no open findings and META independent artifact validation Exit0 accept SPIKE_ACCEPTED_WITH_NOTES. Immutable PENDING fields identify PRE-COMMIT capture; exact final commit authorized, stop after commit/no writer push. ProductNO/upstream unchanged.

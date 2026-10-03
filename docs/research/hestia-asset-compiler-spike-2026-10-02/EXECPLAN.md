@@ -2,9 +2,9 @@
 
 ## Goal
 
-C0-C6 accepted/all findings independently CLOSED; C7 initial implementation is frozen at `bc83267745906c956c69815e91db64766ea5d676`. Current authorization is **C7 review correction F1–F4 ONLY**: shared research path guard, benchmark rejection exit boundary, four independent bounds/volume checks and addressed-versus-distinct pair wording. Preserve C0-C6 core/producer/caps/versions/preimages, ALL frozen pins/Smoke bytes and record shapes. **STOP before C8** for user-dispatched targeted R3/R2 correction reviews; no full-spike/product acceptance.
+C0–C8 accepted by externally relayed META: **SPIKE_ACCEPTED_WITH_NOTES**, all3 scoped endreviews PASS_WITH_NOTES/no open findings, NOT human review/product readiness. Code/review freeze `c8e451a3e52fc8da743df011debae682f93c89a3` unchanged. Current authorization is bounded documentation closure and **EXACT15-path final commit**, no verification reruns/product/proof/cap/version/preimage/PIN/raw-evidence changes. **STOP AFTER COMMIT**; no amend/push/merge/PR.
 
-After separately authorized serial gates C2-C8, the eventual goal is an executable, standard-library-only offline GLB/report compiler, independent golden corpus, deterministic packages, and bounded verification. Documentation alone will not satisfy that eventual goal. `PRODUCT_INTEGRATED = NO` throughout.
+The original executable-spike goal is complete within its accepted support limits: standard-library-only offline GLB/report compiler, independent golden corpus, deterministic research packages and bounded verification. This is not documentation-only implementation or product adoption. `PRODUCT_INTEGRATED = NO` throughout.
 
 ## Context
 
@@ -35,7 +35,7 @@ DevToolbox tracking is explicitly inactive. Equivalent checks are the source/lea
 
 ## Non-goals
 
-- Current correction is narrow wrappers/assertions/docs/regressions ONLY; no broad full-suite or 1008-triangle benchmark resweep, C8 closeout, full ten-repeat certification, qualified performance or new GWN/product adoption.
+- Current C8 work is documentation-only closure and the authorized exact final commit; verification and scoped review gates are complete. No reruns/product/proof/dependency/PIN/ExpectedHash/raw-evidence rebaseline/qualified performance/GWN/product adoption. Dedicated push remains META-owned.
 - No HVP, save, physics, renderer, worker, terrain, material-registry, or authoring-schema integration. Renderer projections never become world truth.
 - No broad upstream fixes. Confirmed exporter gaps become later `INTEGRATION_HANDOFF.md` items.
 - No invented density, kg mass, physical inertia, strength, or collision/navigation authority.
@@ -73,7 +73,7 @@ The exact comparison classes approved by R1-A2 are frozen in the audit: identica
 
 ## Implementation phases
 
-All gates are serial. Completion requires fresh evidence and self-review; the superorchestrator retains gate authorization and independent-review responsibility. **C7 F1–F4 review correction ONLY is currently authorized; C8 remains NOT AUTHORIZED / NOT RUN.** Prior gate stops below are historical, not permanent prohibitions after explicit authorization. File splits are actual minimum owners, never empty scaffolding.
+All gates serial; verified own evidence and user-relayed scoped independent reviews support final META acceptance. **Exact final C8 research commit is now authorized; STOP after commit, META owns dedicated push.** Prior gate stops/pending labels below are historical. Product/support boundaries and immutable PRE-COMMIT capture fields remain unchanged.
 
 ### C0 — preflight and baseline
 
@@ -311,7 +311,40 @@ Own final source/test/docs diff self-review PASS: eight leased files only (two w
 - User coordinates independent Contract/Authority, Geometry/Voxel, and Parser/Budget/Fault review. Sole writer fixes confirmed scoped findings, reruns affected checks, and documents unresolved blockers. No new agents created here.
 - Extend the actual C7 GOLDEN_CORPUS/BENCHMARK smoke docs with final accepted evidence; new final `REVIEW.md`, `REPORT.md`, `INTEGRATION_HANDOFF.md` and plan/register updates remain C8. Handoff includes upstream joint-transform/unannotated-export gaps and the separate future static-asset/read-only-adapter slice, not an implemented adapter.
 - Final diff whitespace/lease check, explicit statuses and cleanup; `SPIKE_ACCEPTED`, `SPIKE_ACCEPTED_WITH_NOTES`, `REQUIRES_FIX`, or `BLOCKED`, never PRODUCT_READY.
-- Commit: `feat(asset-compiler): complete isolated Hestia asset compiler spike`. No push/PR/merge authorized.
+- META now authorizes exact commit `feat(asset-compiler): complete isolated Hestia asset compiler spike`, sole parent c8e451...; literal15 research paths only. Actual SHA is externally recorded after execution, never predicted. **STOP after commit; no push/PR/merge/amend.**
+
+### C8 actual preparation — 2026-10-03
+
+C7 correction published c8e451..., sole parent bc832..., eight lease files, exact `fix(asset-compiler): harden research CLI boundaries and oracles`; own post-commit selected 21 PASS/19.442 s/Exit 0. ALL frozen pins/C7 bytes unchanged. Prior publication.io remains one UNKNOWN, non-reproduced event; no guessed cause/core fix.
+
+**EXTERNAL user-relayed acceptance at c8e451:** R3-E2 TARGETED PASS (3 in-memory programs Exit 0, 11 unsafe names rejected/3 legal, 3 REAL G24 core calls API BLOCKED/CLI1/stderr/no publish, REAL G02 positive/two CLI controls/four exclusions BEFORE builder/core; eight diffs/three artifact lengths/SHAs unchanged/no finding). R2-E2 TARGETED PASS (1 program Exit 0, four core baselines, 16 descriptor + three grid-inventory + two empty fakes rejected golden.oracle; F3/F4 CLOSED, 185 addressed/179 different byte pairs). META selected 21 PASS/19.220 s/baseline diff check 0/only two accepted logs. C0–C7 accepted; these are NOT own C8 runs. Prior META full 131/61.092 s belongs to bc832 parent.
+
+Input package06/07 completely reread, README/current boundary and upstream gap anchors reread; exact HEAD/branch/origin base verified, initial tracked/index clean with only accepted logs. `verify_c8.py` is an own-docs verification wrapper, NOT product code; exact Ctree interpreter/cwd/TEMP, new C8 artifacts only, frozen C7/compiler checks, invocation-owned generations. Complete statuses/results belong in REPORT/REVIEW, never inferred from test count.
+
+Fresh own foundation wrapper Exit 0: **compiler 134 PASS/60.630 s**, read-only **Blender host 58 PASS/0.140 s**, compiler-only compileall Exit 0. 25 .pyc files directed to one owned TEMP PYTHONPYCACHEPREFIX, then only that cache removed; source trees remain cachefree. Native CLI/source/privacy/atomic/junction/fault/F1–F4 reproductions are present in C8_TESTS.log. No redundant suite rerun.
+
+The first managed launch bg_murx11bo_3f failed BEFORE Python after40ms/Exit1: CMD rejected the PowerShell `&` token (`"&" kann syntaktisch an dieser Stelle nicht verarbeitet werden.`), zero cases, corrected launcher syntax only. Direct Ctree launch **bg_murxlpal_3g** had actual START readiness and is now **COMPLETED/Exit0**, no signal/error, with 5,400,000-ms max, 40-line bound, 5250-s child timeout. One 300-s managed wait reached its wait bound without terminating/retrying the task; bounded background Wait-Process on exact owned PID42068 supplied automatic completion notification, Exit0. No status-poll loop or foreign lifecycle. Completed native `golden --repeats 10 --output OWNED_GENERATION`: **1426.516652s / stderr0 / 370 logical records ×10 = 3700 actual case executions**, root-call count NOT_INSTRUMENTED. Per set285SUCCESS77EXPECTED_REJECTION8BLOCKED; micro143/38/4 and standard142/39/4. Full same-input bytes/diagnostics/tree and exact ordering classes/oracles checked by frozen actual pipeline. ALL case records equal C7, 185 addressed/179 different source pairs independently rehashed;401 actual published research files verified, own generation removed. Raw engine C7 labels stay unchanged; wrapper current phase/final end-review PENDING. Git compiler tree a458f03f2aae82846a666ce29d57ec1f6505ab94; actual Python-source manifest SHA c2a6c63cb94f2f24d29e3a727cc1f72e88ca90e60d26a504886d291118cf7e1a.
+
+New immutable C8 raw2,370,658B/SHA49aa818ac90c1fa157fcf0e2e63015d9d7ad36bdc4c3316117bcbb9e26b7139f; determinism62,020B/SHA4dfa31a6891cb46548eb44992d872e675bb8ec94733f981db84cdb4069eb8ede. Both independent raw-length/SHA/summary checks PASS; old three artifact SHA/bytes unchanged. No ExpectedHash edit or cosmetic product-label change.
+
+After correctness/full corpus, ONE native Small/profile plus Medium/Large policy reports, wrapper Exit0: micro1008input=expanded/672vertices/18,144cells/504bricks/2,407,633B/wall10474.151ms/CPU10093.750ms/work9,424,296; standard1008/672/5,376/420/2,036,443B/wall5267.0417ms/CPU5062.500ms/work4,237,128. New C8_BENCHMARK11,343B/SHA70bf1eff5020c856af12a2c8b7bbc05a02060417aa1926ac0d0034de8e089cca, actual publication verified/owned generation removed. ALL CONTAMINATED_DIAGNOSTIC, memory UNSUPPORTED; inclusive/nested/partial timings explicit, no exclusive slot or performance claim. Medium/Large both profiles Exit0 NOT_RUN_BUDGET_EXCLUDED before builder/core under unchanged20k cap. GWN reasoned NOT_IMPLEMENTED; C7 timing artifact untouched. Exact phases/limits are in BENCHMARK/REPORT.
+
+```powershell
+$env:TEMP='C:\IFI_SourceCode\Utils\opencode-migration\tmp\opencode\hestia-agent3-2026-10-02-72981f9a'; $env:TMP='C:\IFI_SourceCode\Utils\opencode-migration\tmp\opencode\hestia-agent3-2026-10-02-72981f9a'
+& 'C:\IFI_SourceCode\Utils\Python\cpython-3.12.13-windows-x86_64-none\python.exe' -B -X utf8 docs/research/hestia-asset-compiler-spike-2026-10-02/verify_c8.py foundation
+# Actual managed command string (CMD syntax), same cwd/TEMP, max 90 min:
+C:\IFI_SourceCode\Utils\Python\cpython-3.12.13-windows-x86_64-none\python.exe -B -X utf8 docs/research/hestia-asset-compiler-spike-2026-10-02/verify_c8.py golden
+# After completed correctness/corpus, exact PowerShell prefix for one bounded diagnostic:
+& 'C:\IFI_SourceCode\Utils\Python\cpython-3.12.13-windows-x86_64-none\python.exe' -B -X utf8 docs/research/hestia-asset-compiler-spike-2026-10-02/verify_c8.py benchmark
+```
+
+Wrapper native argv: `-m unittest discover -s tools/hestia_asset_compiler/tests -p test_*.py -v`; same read-only `tools/blender/tests`; `-m compileall -q tools/hestia_asset_compiler` with owned prefix; `-m tools.hestia_asset_compiler golden --repeats 10 --output OWNED_GENERATION`. All exact pinned interpreter `-B -X utf8`. A new confirmed bug/recurrent native IO error is fail-closed STOP/scope review, not a blind retry, fix or GoldenHash adjustment.
+
+### C8 external final acceptance and authorized closeout — 2026-10-03
+
+User-relayed EXTERNAL all3 endreviews **SCOPEDPASS_WITH_NOTES/no open findings**: R1 authority/status/handoff; R2 independently370pins/401inventory/185addressed179different/counts/real repeat loop/source freeze; R3 actual134+58 log/artifact SHA/fault matrix/benchmark/caps/cleanup. META independently verifies25-source manifest/log/rawCorpus SHA/all370 C7-equal records/outcomes285/77/8/401 unique inventory in its own program **Exit0**, baseline diffcheck0. Owner verification execution remains this writer's prior runs, external to META; no new suites/corpus/diagnostics executed for closure. Reviews are scoped independent, NOT human review.
+
+META accepts **SPIKE_ACCEPTED_WITH_NOTES** and authorizes exact final commit/15 literal paths, including ONLY ignored owned C8_TESTS.log with exact force-add. Source/hash/version/caps/pins and immutable C7/C8 evidence remain untouched; captured PENDING fields truthfully refer to pre-review capture, current document acceptance supersedes their historical status without rewriting them. META relays fresh fetch origin--prune Exit0/EXPECTED_PUSH_REMOTE=True GitHub BenjaminHornung/WeltraumSpiel/origin-main still25bc7f5.../exact branch and c8e451... HEAD. These are external META checks, not writer fetch/push. Fresh closure docs/staged lease/whitespace/checksums precede commit; actual SHA/sole parent/files/clean tracked-index result reported after execution. Stop after commit; META validates and owns subsequent normal dedicated non-force push. No new agents/services/tracking/upstream/foreign cleanup/amend/merge/PR/push. Blender-root/symlink1314/eightBLOCKED/contaminatedPerf/unsupportedMemory/onceUNKNOWN IO notes remain accepted, ProductNO.
 
 ## Tests and evidence
 
@@ -575,13 +608,15 @@ At C1 retain the authorized docs commit, untouched instrumentation, and empty ta
 - [x] C6 original corrigendum published `a73e4d9b0af672800f27b1fef354d60e10e2819b`, sole parent C6 freeze; own fresh full 115 PASS and post-commit four corrigendum tests + pin PASS. Original two P2s now independently CLOSED by external R2-D2/R3-D2; new duplicated-count P2 is a separate finding.
 - [x] C6 diagnostic-count fix published `1b652cf5b215259ba666db448de39132444b36fb`; user-relayed R3-D3 TARGETED PASS and META 3/1.882 s independently close the final P2. C0-C6 accepted, no open C6 finding.
 - [x] Initial C7 published bc832...; own 131/54.449 s full and 18/17.172 s post-commit focused PASS. External initial R1-E/R2-E/R3-E reviews complete, exactly two P2/two P3 corrections authorized above; no P1/new MUST conflict.
-- [x] F1–F4 root guards/oracle assertions/docs and first-RED/fresh-focused checks implemented/own verified; frozen artifacts/record shapes/core unchanged. Separate exact correction commit/checkpoint follows self-review/lease/diff/cleanup; targeted independent R3/R2 closure PENDING.
-- [ ] C8: **NOT AUTHORIZED / NOT RUN**; STOP before C8.
+- [x] F1–F4 published c8e451..., own post-commit selected 21/19.442 s PASS. EXTERNAL R3-E2/R2-E2 CLOSED all findings; META accepts C0–C7, frozen artifacts unchanged.
+- [x] At PRE-COMMIT capture: C8 foundation 134/58/owned compileall PASS; complete managed native 370×10 expected-outcome/byte/ordering verification PASS; one contaminated Small/profile/honest larger-range exclusions; REPORT/REVIEW/HANDOFF/evidence and own diff/lease/cleanup review PASS. HEAD/base/compiler tree/source manifest/frozen artifact checks, baseline and HEAD whitespace Exit0, unchanged code/upstream/index diff Exit0, owned TEMP0/no source .pyc. C8 changes15 own research paths (six modified/nine new); ignored owned C8_TESTS.log verified. No staging/commit/push at that historical capture; the subsequent authorized closeout is recorded above and below.
+- [x] EXTERNAL all3 final endreviews SCOPEDPASS_WITH_NOTES/no open findings; META independent validation Exit0 and SPIKE_ACCEPTED_WITH_NOTES. Documentation-only closure/exact15-path commit authorized; actual execution/result follows fresh staging checks and is reported externally. No self-predicted final SHA.
+- [ ] META dedicated normal push: not executed by this writer; STOP after commit, no force/amend/merge/PR.
 
-R1 reviewer `731643b5-d353-4147-82e7-6d6d4eab31fb`, R2 `a9f5de5b-43db-4fbc-bb1b-625a06dfa53d`, and R3 `23ac2427-9a49-4c2e-a3da-7996b5affb7e` are user-dispatched read-only reviewers; prior C6 findings independently CLOSED, with external evidence attributed above. Initial C7 E-reviews complete; **targeted independent R3/R2 correction closure PENDING**. No agents spawned here. This writer claims implementation/tests/self-review only, no full spike/human acceptance. C3 signed source volume is not C5 cavity topology or C6 raster volume.
+Existing reviewer sessions/milestones are in REVIEW. ALL findings/endReviews externally CLOSED; META final accepted status is user-relayed, not this writer's own independent or human review. Own execution/self-review attribution stays separate; no agents spawned here. Signed source volume remains distinct from cavity topology/raster volume.
 
 ## Definition of Done
 
-**Current checkpoint:** bc832... freeze preserved as exact correction parent; F1–F4 only, own original REDs/fresh focused CLI/Golden/bounds and existing pin/source-warning checks, unchanged core/record shapes/frozen artifacts. Self-review/diff/lease/cleanup and separate `fix(asset-compiler): harden research CLI boundaries and oracles` commit; actual SHA/parent/files/test counts/exits/finding closure/unchanged pin/artifact SHAs/cleanup report. **STOP before C8**, targeted independent R3/R2 correction closure user-owned/PENDING. No broad 131 resweep, Small-1008 rerun, expected/evidence regeneration, push/amend/merge/new agents/services/dependencies/upstream/core/cap/version/preimage or C8/full-spike claim.
+**Current closeout:** META accepted SPIKE_ACCEPTED_WITH_NOTES; complete verified evidence and scoped reviews have no open findings. Preserve code freeze c8e451.../all pins/immutable C7/C8 bytes; close current document acceptance only, review fresh scoped diff/lease/checksums, stage exact15 literal research paths (log-only force-add), commit exact authorized title with sole parent c8e451.... Report actual SHA/files/clean tracked-index/checks/accepted two untracked logs externally afterward. **STOP AFTER COMMIT**, no reruns/amend/push/merge/PR/product/upstream/proof/cap/version/preimage/ExpectedHash/foreign cleanup. PRODUCT_INTEGRATED=NO; residual accepted notes remain explicit.
 
 **Eventual separately authorized spike:** working narrow reader/geometry/reference classifier/semantic package/CLI; G01-G30 outcomes and independent oracles including both-profile G13; honest thin/topology/material rejection; same-input byte determinism and explicit permutation classes; fault-safe whole-package publication; fresh tests/baseline/compileall; coordinated benchmark or explicit nonqualified status; real Blender E2E or precise NOT RUN blocker; independent full review with confirmed fixes verified; final reports/handoff and lease-clean commit. `PRODUCT_INTEGRATED = NO` even if accepted.

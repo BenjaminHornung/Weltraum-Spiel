@@ -1,6 +1,6 @@
-# C7 bounded diagnostic benchmark — no qualified performance claim
+# Bounded diagnostic benchmarks — immutable C7 and current C8, no qualification
 
-Gate/package/path date **2026-10-02**, execution 2026-10-03. Parent `1b652cf5b215259ba666db448de39132444b36fb`; **STOP before C8**. `PRODUCT_INTEGRATED = NO`.
+Gate/package/path date **2026-10-02**, execution/closure2026-10-03. Original C7 measurements retain parent `1b652cf5b215259ba666db448de39132444b36fb`; separate C8 run at freeze `c8e451a3e52fc8da743df011debae682f93c89a3` follows below. META accepts **SPIKE_ACCEPTED_WITH_NOTES** after all3 scoped endreviews PASS_WITH_NOTES/no open findings; exact closeout commit authorized, writer STOPS after commit. `PRODUCT_INTEGRATED = NO`.
 
 ## Actual runner and qualification
 
@@ -64,4 +64,39 @@ Review correction at `bc83267745906c956c69815e91db64766ea5d676`: `measure_compil
 
 **GWN_NO_ADOPTION / REASONED_NOT_IMPLEMENTED**: signed winding 2 in the equal-outward hollow cavity conflicts with accepted even/odd Air, with no substitute thin/topology proof. No GWN code experiment, timing sample, candidate adoption or general rotated-fill support is claimed. Reference/core bytes remain unchanged.
 
-Future isolated performance qualification, reliable memory measurement, any newly authorized bounded GWN experiment and final C8 acceptance are NOT RUN. Current measurements are diagnostic only; normal TRS/rod/layer proof limitations are detailed in [GOLDEN_CORPUS.md](GOLDEN_CORPUS.md).
+Isolated performance qualification, reliable memory measurement and GWN experiment remain NOT RUN. Final scoped independent reviews and META acceptance are complete as externally relayed in REVIEW. Measurements remain diagnostic only; TRS/rod/layer limits stay in GOLDEN_CORPUS.
+
+## C8 actual post-correctness diagnostic — one Small/profile
+
+After fresh 134 compiler / 58 host / owned compileall checks AND the complete native ten-repeat corpus passed, `verify_c8.py benchmark` invoked the actual native CLI once for Small BOTH profiles, then once each for Medium/Large policy reports. **Exit 0**, actual published benchmark bytes equal stdout, own generation removed. No rerun/loop, no foreign session stopped or exclusive CPU assumption. C7 Smoke bytes remain unchanged.
+
+Immutable `C8_BENCHMARK.json`: **11,343 bytes**, SHA-256 `70bf1eff5020c856af12a2c8b7bbc05a02060417aa1926ac0d0034de8e089cca`. Code freeze c8e451..., environment Python3.12.13/win32/10.0.26200/AMD64. ALL CONTAMINATED_DIAGNOSTIC/memory UNSUPPORTED; captured PENDING_END_REVIEW describes original PRE-COMMIT evidence, NOT current META acceptance. Raw bytes/measurements were not rewritten or rerun. Same source69796/report23648 bytes,84 true copies/1008 input=expanded/672 actual vertices; no source/producer/cap/algorithm changes.
+
+| Current metric | micro 0.125 m | standard 0.25 m |
+| --- | ---: | ---: |
+| Owned cells / bricks | 18,144 / 504 | 5,376 / 420 |
+| Actual total output bytes | 2,407,633 | 2,036,443 |
+| Total wall ms / CPU ms | 10474.151 / 10093.750 | 5267.0417 / 5062.500 |
+| Actual combined candidate work / unchanged limit | 9,424,296 / 10,000,000 | 4,237,128 / 10,000,000 |
+| Grid / flood / source / refinement cells | 90,552 / 215,040 / 2,268 / 43,008 | 40,824 / 90,720 / 2,268 / 18,144 |
+
+Below are saved C8 phase durations rounded only for display, **DO NOT SUM** nested parents/children. Same inclusive/combined/partial scopes as above. File I/O, fixture generation and output-directory publication are NOT measured in this in-memory total; 0 CPU for fast executed phases is clock resolution, not a synthetic unavailable measurement.
+
+| Current actual phase | micro wall / CPU ms | standard wall / CPU ms |
+| --- | ---: | ---: |
+| inputHash — inclusive admission/hash/parse | 11.3134 / 15.625 | 11.9665 / 15.625 |
+| glbParse — nested reader | 6.9437 / 0.000 | 7.1794 / 15.625 |
+| transformsNormalize — combined with validation | 742.3086 / 718.750 | 802.4003 / 781.250 |
+| geometryValidation — nested, 84 actual calls | 716.8067 / 703.125 | 769.5437 / 765.625 |
+| thinMeasurementAdmission — inclusive preflight | 454.8726 / 453.125 | 554.3143 / 515.625 |
+| surfaceCoverage — nested SAT | 6687.9537 / 6390.625 | 2658.1978 / 2578.125 |
+| classificationFill — combined fill/parity/topology | 8531.7802 / 8203.125 | 3413.8671 / 3281.250 |
+| materialResolution — partial explicit bindings | 0.5015 / 0.000 | 0.7288 / 0.000 |
+| brickPacking — address/slot/hash | 70.5600 / 46.875 | 15.6242 / 15.625 |
+| hashingSerialization — partial package calls | 404.3160 / 421.875 | 320.5599 / 328.125 |
+| outputVerification — inclusive actual byte verification | 360.2071 / 343.750 | 234.5425 / 234.375 |
+| optionalGwn | NOT_RUN | NOT_RUN |
+
+Actual classification workload statistics are unchanged: micro ray4,346,496/witness4,515,840; standard ray1,959,552/witness1,905,120. Quadratic exact topology validation/aggregate2M pair limit remain enforced. C7 and C8 times are separate unqualified diagnostics, NOT a valid speed comparison or an adoption/capacity claim.
+
+The immutable artifact retains Medium25k–50k/Large100k–250k: BOTH profiles NOT_RUN_BUDGET_EXCLUDED, Exit0 BEFORE builder/core under frozen20k expanded cap, no invented timing/count zero. GWN REASONED_NOT_IMPLEMENTED, not timed; qualified performance NOT RUN. External endreviews/META accept the scoped spike with these notes. Only exact final commit is authorized here; dedicated push remains META-owned.

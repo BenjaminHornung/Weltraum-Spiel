@@ -1,6 +1,6 @@
-# C7 CLI and exact G01–G30 corpus smoke
+# Exact G01–G30 corpus — frozen C7 inputs and actual C8 ten-repeat evidence
 
-Gate/package/path date remains **2026-10-02**; execution date 2026-10-03. Parent `1b652cf5b215259ba666db448de39132444b36fb`. C7 only, **STOP before C8**. `PRODUCT_INTEGRATED = NO`; no HVP, renderer, runtime adapter or product-format adoption.
+Gate/package/path date **2026-10-02**, execution/closure2026-10-03. Original C7 parent1b652...; unchanged code/review freeze `c8e451a3e52fc8da743df011debae682f93c89a3`. All3 external scoped endreviews PASS_WITH_NOTES/no open findings; META accepts SPIKE_ACCEPTED_WITH_NOTES and authorizes exact final research commit, writer STOPS after commit. `PRODUCT_INTEGRATED = NO`; no runtime/HVP/renderer/product-format adoption.
 
 ## Actual commands, not a placeholder CLI
 
@@ -84,12 +84,34 @@ Expected cell sets derive from authored analytic intervals, NOT the production v
 
 G01/G13/G16/G27/G28 use normal/reverse/fixed-seed-42 triangle LIST order × two node orders × two primitive orders × two material orders = **24 transports** per base variant. Children/scenes/material primitive refs are correctly remapped; primitive accessors and binary triangle streams really change. Equal meanings require geometry/semantics/voxel hashes, EXACT semantic projection and actual owned brick bytes equal. Honest source/provenance/full-tree hashes may differ. When actual source bytes match, every package output/diagnostic/tree byte is also checked. Opposite G13 inner winding is NOT oriented-geometry/projection identity; only the expected even/odd occupied sets and owned bricks are compared across those variants.
 
-`--repeats 2..10` executes the actual core again for each pinned input and compares full public evidence and EVERY package file byte, not just summary hashes. A tiny real G02 two-repeat test and injected output-byte changes exercise that runner. **Complete corpus ×10 remains C8 NOT RUN.** The C6 original cube pin is still 12 files / 41,295 bytes / tree `d9a27b06a65a37b6c7af4c75b58ad327c1fe9c04452fcf96a03bfecc75f4494b`; C7's richer ordering fixtures have extra explicit declarations and therefore different truthful source-bound pins.
+`--repeats 2..10` executes the actual pipeline again for each pinned input and compares full public evidence and EVERY successful package file byte, not just summary hashes. Expected rejection/BLOCKED diagnostic records also compare on all repeats. The complete native corpus ×10 now PASS in C8 as recorded below; it is not inferred from the tiny G02 support test or a cached replay. The C6 original cube pin remains 12 files / 41,295 bytes / tree `d9a27b06a65a37b6c7af4c75b58ad327c1fe9c04452fcf96a03bfecc75f4494b`; C7's richer fixtures retain different truthful source-bound pins.
+
+## C8 complete native verification — own run, externally accepted with notes
+
+Accepted implementation/review freeze `c8e451a3e52fc8da743df011debae682f93c89a3`, compiler Git tree `a458f03f2aae82846a666ce29d57ec1f6505ab94`; actual Python-source manifest SHA-256 `c2a6c63cb94f2f24d29e3a727cc1f72e88ca90e60d26a504886d291118cf7e1a` (manifest definition in C8_DETERMINISM). No source/test/producer/algorithm/version/preimage/cap/PIN changes.
+
+ONE completed managed native `golden --repeats 10 --output <OWNED_CTREE_GENERATION>`: **Exit 0 / stderr 0 bytes / 1426.516652 s**. Actual frozen loop executes each logical record once plus nine fresh `run_case` calls, not cache replay. **370 logical records ×10 = 3700 actual case executions**; root compile-call count is NOT_INSTRUMENTED, not a measured 3700 claim. Outcomes per logical set remain **285 SUCCESS / 77 EXPECTED_REJECTION / 8 BLOCKED**. Repeat-expanded counts are derived ×10, not another logical inventory.
+
+| Profile | Logical SUCCESS / EXPECTED_REJECTION / BLOCKED | Logical records / repeats |
+| --- | --- | --- |
+| micro-0125-research-v1 | 143 / 38 / 4 | 185 / 10 |
+| standard-025-v1 | 142 / 39 / 4 | 185 / 10 |
+
+The runner checked all pinned three-source/content/projection/tree/file/brick bindings, full independent oracles, all same-input output/diagnostic bytes and the actual 3×2×2×2 ordering classes. Actual published research generation had **401 files** (370 inputs, 30 case record files, one summary). Each of the **185 addressed / 179 different** input pairs was independently rehashed against GLB/report/canonical-payload bindings; no deduplication. ALL case records equal the previous C7 records byte-for-byte under the declared compact sorted JSON encoding. The owned generation was verified and removed; C7 artifacts/ExpectedHashes remain unchanged.
+
+| New C8 artifact | Actual bytes / SHA-256 |
+| --- | --- |
+| `C8_GOLDEN_RAW.json` | 2,370,658 / `49aa818ac90c1fa157fcf0e2e63015d9d7ad36bdc4c3316117bcbb9e26b7139f` |
+| `C8_DETERMINISM.json` | 62,020 / `4dfa31a6891cb46548eb44992d872e675bb8ec94733f981db84cdb4069eb8ede` |
+
+Raw engine schema `golden.c7.v1`, C7_SMOKE_PASS/finalC8Acceptance:NOT_RUN and C8 PENDING_INDEPENDENT_END_REVIEW fields remain immutable engine/PRE-COMMIT capture labels. Current external endreview PASS_WITH_NOTES/META acceptance is documented in REPORT/REVIEW, NOT rewritten into raw records or source code. Actual phase/repeats/source freeze/raw SHA and all pins stay identical; no cosmetic schema/version/algorithm change.
 
 ## GWN decision and outstanding acceptance
 
 **GWN_NO_ADOPTION — REASONED_NOT_IMPLEMENTED.** Equal-outward nested components give signed winding 2 in the cavity, while the accepted even/odd contract requires Air. No bounded experiment was run, no candidate numbers invented, no uncertainty band or alternate classifier was silently adopted. Reference thickness/topology/ownership and package authority remain unchanged. See [BENCHMARK.md](BENCHMARK.md) for NOT_RUN optional GWN timing.
 
-User-relayed EXTERNAL C7 reviews are complete: R1-E SCOPED PASS WITH NOTES (no execution), R2-E SCOPED PASS WITH NOTES (three in-memory programs Exit 0 / 35 actual core calls / 144 reference remaps / 185 pairs and 370 pins / full sets and source-versus-raster bounds / G02 actual repeat 2), R3-E REQUIRES_FIX for the two confirmed P2s (five programs Exit 0; final G02 ×10 has TEN actual compile/classification/packing/verify calls with all-byte comparison, NOT the complete 370×10). External Small preflight verifies 1008/672/work 9,424,296+4,237,128/analytic cells and bricks, NO benchmark rerun. META external full 131 PASS / Exit 0 / 61.092 s belongs to bc832...; it is not this writer's correction verification. GWN reasoned nonimplementation accepted. Own focused correction results and original REDs are in EXECPLAN; targeted independent R3/R2 correction closure remains PENDING.
+Historical EXTERNAL initial C7 reviews: R1-E SCOPED PASS WITH NOTES (no execution), R2-E SCOPED PASS WITH NOTES (three in-memory programs Exit 0 / 35 actual core calls / 144 reference remaps / full sets and source-versus-raster bounds / G02 actual repeat 2), R3-E two P2 findings (five programs Exit 0; G02 ×10 was TEN real calls, not then a complete corpus ×10). External Small preflight was not a benchmark rerun. META 131/61.092 s belongs to bc832. Subsequently R3-E2/R2-E2 independently CLOSED ALL F1–F4 and META accepted C0–C7 at c8e451; these milestones are external in REVIEW, not own C8 execution.
 
-Ordinary Blender quarter-turn TRS interoperability remains an actual risk: valid baked residuals are nonorthogonal to the exact proof. No snap, repaired geometry, invalid-rotation claim or Shell reclassification. Rod/tube and multilayer usable proofs remain BLOCKED. Real Blender E2E, complete corpus ten repeats, compiler compileall, qualified performance and final full-spike report/handoff/closeout remain NOT RUN/C8 unauthorized. Source authoring version remains UNRECORDED, not invented. STOP before C8.
+C8 fresh134/58/owned compileall/complete ten repeats PASS; raw C7/C8 labels, pins and bytes unchanged. All3 external scoped endreviews PASS_WITH_NOTES/no open findings, META independently validates all370 records/401inventory/25-source manifest and accepts SPIKE_ACCEPTED_WITH_NOTES. Exact final commit authorized, STOP afterward; no resweep/push here. Diagnostic limits stay in BENCHMARK.
+
+Ordinary quarter-turn TRS remains valid geometry/nonorthogonal proof risk, no snap/repair/invalid-rotation/Shell relabel. Eight reasoned BLOCKED records remain, including tube/rod/multilayer support. Real Blender NOT RUN—EXECUTION_ROOT_BLOCKER, source-tool version UNRECORDED; qualified performance NOT RUN. Scoped spike acceptance does not remove these notes or integrate product. Actual final Git SHA reported externally after authorized commit; dedicated push belongs to META.
