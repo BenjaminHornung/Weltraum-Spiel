@@ -59,7 +59,8 @@ No destructive cleanup; only owned managed runtime/profile may be stopped.
 - [x] CLI inspect, failed-input and controlled abort checks; evidence/bench NOT_RUN gates.
 - [x] Scope deviation: broad inherited suite passed 40 tests but created additive
       RD00/RD01/RD02 oracle directories. Stopped broad runs; retained, reported, no cleanup.
-- [ ] Narrow local code commit and complete HEAD wiring handoff.
+- [x] Narrow local code commit `0857c4ce1232c66d7e7b4f4dbad20f6249d2e677`
+      and complete HEAD wiring handoff; acceptance remains pending scope-deviation review.
 - [ ] Phase-2 optimized browser evidence (NOT_RUN until HEAD snapshot).
 
 ## Definition of Done

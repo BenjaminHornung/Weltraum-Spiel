@@ -1,0 +1,90 @@
+{
+  "schema": "rd03-code-phase-receipt-v1",
+  "implementationStatus": "READY_FOR_HEAD_WIRING",
+  "acceptanceStatus": "PENDING_HEAD_SCOPE_DEVIATION_REVIEW_AND_PHASE2",
+  "codeCommit": "0857c4ce1232c66d7e7b4f4dbad20f6249d2e677",
+  "codeTree": "0a2199440b65b43580fd545aab29c87c232b596e",
+  "parent": "16faf55a9782fb12d2f30df4547a619957792089",
+  "startTree": "e094ea4e5631027ac26680ac06578ddfce41cdab",
+  "productReadOnly": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+  "branch": "feature/hestia-rd-rd03-2026-10-02",
+  "workspace": "wks_5862e4b1cc7fb4f5",
+  "changedPathsInCodeCommit": [
+    "experiments/hestia-rd-2026-10-02/reports/RD-03/EXECPLAN.md",
+    "experiments/hestia-rd-2026-10-02/reports/RD-03/HANDOFF.md",
+    "experiments/hestia-rd-2026-10-02/scripts/run-lab.mjs",
+    "experiments/hestia-rd-2026-10-02/src/experiments/three-control/index.ts",
+    "experiments/hestia-rd-2026-10-02/src/runner/assets.ts",
+    "experiments/hestia-rd-2026-10-02/src/runner/index.html",
+    "experiments/hestia-rd-2026-10-02/src/runner/main.ts",
+    "experiments/hestia-rd-2026-10-02/src/runner/scenarioRunner.ts",
+    "experiments/hestia-rd-2026-10-02/src/runner/threeHost.ts",
+    "experiments/hestia-rd-2026-10-02/tests/RD-03/browser.spec.ts",
+    "experiments/hestia-rd-2026-10-02/tests/RD-03/cli-abort.mjs",
+    "experiments/hestia-rd-2026-10-02/tests/RD-03/host/unit.test.ts",
+    "experiments/hestia-rd-2026-10-02/tests/RD-03/unit.test.ts"
+  ],
+  "dependencies": {
+    "shared18Of18": "PASS: rechecked after implementation; exact per-file hashes in external evidence index",
+    "acceptanceReceiptSha256": "ad81599d8f44f96e3d63f25cf657964a1b8d79ffb5af45b5f71b3100ceb249b3",
+    "lockSha256": "9dc112529df87daa8a3d92a913932d2b0bad131055d8d684d86736bd4409b60c",
+    "inventorySha256": "26bf86bba1cbd1955d069ab2eac8d491b6cade59d16a004f1d094cc117ebc9c6",
+    "taskboardSha256": "cd5722dfff73393a2cb9d87fabf4c94f59da310300b79a7c2e87a1ec79b40448",
+    "sharedFilesEdited": false,
+    "originalInputFilesVerifiedByBoundary": 52
+  },
+  "evidenceIndex": {
+    "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-03/checks/evidence-index.json",
+    "sha256": "71f6d2ba982060f6e084255fa3e24865401fa0f52e3003705347a5b87dd78d8a",
+    "contains": "18 current dependency hashes; exact source bindings; raw commands/exits/log hashes; RED source; data/media hashes; scope-deviation paths; actual DEV backend/device/timer/resolution and cleanup"
+  },
+  "verification": {
+    "focusedUnit": { "status": "PASS", "tests": 13, "log": "logs/focused-commit.log", "sha256": "066866fbca9089eb6133215d0b40f40eb5877e00b897831beb05c2cff0ae95fb" },
+    "types": { "status": "PASS", "log": "logs/types-commit.log", "sha256": "55c814d0e096397f099fe6af3df4cb48543573b7821b3361bbbe5963f2045252" },
+    "build": { "status": "PASS", "scope": "existing root Canvas2D baseline only, not optimized RD03", "log": "logs/build-final.log", "sha256": "3f14161c87568a7196a4c12d5c865c8708bf5b9caf0b139fa27cb69163146116" },
+    "inspect": { "status": "PASS", "planned": 3, "observed": 3, "log": "logs/inspect-commit.log", "sha256": "2d194b5c9dd58c4ee88f664d409b2773071bf3b1a29cb7ea76df5b85b4e5f9e8" },
+    "abortHandler": { "status": "PASS", "scope": "controlled SIGINT handler, not OS console or browser abort proof", "planned": 3, "observed": 0, "skipped": 3, "log": "logs/cli-abort-final.log", "sha256": "972140b95e7606131af1e224c6f11faa19d47cb8b16d1a95d7f1d8e1b80c6e89" },
+    "boundary": { "status": "PASS", "scope": "repository paths, original bytes, links and explicitly authorized automatic-log exception; not external deviation acceptance", "log": "logs/boundary-code-final.log", "sha256": "dcfef59e6bcd333e6d8a2815a4710d4e8f4a36f95d72528b6ab3fd5649695f2b" },
+    "whitespace": { "status": "PASS", "log": "logs/whitespace-commit.log", "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" },
+    "devBrowser": { "status": "PASS", "qualification": "DEV-DIAGNOSTIC-NOT-OPTIMIZED-NOT-PERFORMANCE-NOT-TARGET-GPU", "views": 9, "lifecycleCycles": 20, "canvasListenerBaselineRestored": true, "log": "logs/dev-diagnostic-final.log", "sha256": "f85bba1cea2695f376c3c2f15e22dc42b067ff837c69d5c3c1cc827925aac59c" },
+    "optimizedRUN03RUN04": { "status": "NOT_RUN", "reason": "actual HEAD multi-entry wiring and immutable phase2 snapshot required" },
+    "benchmark": { "status": "NOT_RUN", "planned": 120, "observed": 0, "skipped": 120, "reason": "no actual exclusive GPU slot; empty/active overhead and all timings NOT_RUN" },
+    "independentReview": "NOT_RUN",
+    "humanReview": "NOT_RUN",
+    "selfReview": "PASS: inspected code flow and staged diff; fixed confirmed findings, reran focused checks and original remount reproduction"
+  },
+  "scopeDeviation": {
+    "status": "REQUIRES_HEAD_REVIEW_NOT_ACCEPTED_BY_LEAF",
+    "cause": "Incorrect broad npm run test:unit executed inherited hard-coded RD00/RD01/RD02 artifact tests",
+    "broadTestsPassed": 40,
+    "additiveOracleDirectoriesCreated": 10,
+    "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-03/checks/scope-deviation.json",
+    "action": "Stopped broad runs; no foreign cleanup or old receipt/wrapper modification"
+  },
+  "exports": [
+    "createThreeControlExperiment(context: LabExperimentContext): Promise<ThreeLabHost>",
+    "mountThreeEffect(context: ThreeLabEffectContext, preset: LabPreset): Promise<ThreeLabEffect>",
+    "createThreeLabHost(context: LabExperimentContext, mounts): Promise<ThreeLabHost>",
+    "ThreeLabHost / ThreeLabEffectContext / ThreeLabEffect / ThreeLabEffectFactory / ThreeOwnerPose",
+    "createScenarioRunner(scenario: LabScenarioV1, handle, setResetTick)",
+    "loadInventory / loadFixture / loadReplay / publicAssetRoot / readBoundedResponse"
+  ],
+  "headWiring": "HANDOFF.md exact static imports/registration, Vite8 build.rolldownOptions.input, package CLI aliases and managed preview commands; no shared LabFrameInput field delta",
+  "cleanup": {
+    "ownedManagedServicesStopped": ["bg_murlat6y_2z", "bg_murlu1f6_30"],
+    "port5280": "PASS: strict loopback port free after cleanup",
+    "ownedBrowsers": "closed",
+    "profiles": "retained additively",
+    "foreignProcessesOrTabsCleaned": false,
+    "automaticOpencodeLogs": "untracked regular files; untouched, unstaged and unpublished"
+  },
+  "productIntegrated": false,
+  "publication": "NONE: local commits only",
+  "residualRisks": [
+    "HEAD review of ten additive foreign-card oracle directories",
+    "optimized real backend/image/lifecycle and real browser abort/context-loss cases pending phase2",
+    "native PCF/sky/water/material-shader parity and art/reference gates not implemented/accepted",
+    "target hardware, exclusive measurement protocol, native allocation/timing and overhead not qualified",
+    "future effects must honor detached-root ownership; concrete RD14-owned channels still required"
+  ]
+}

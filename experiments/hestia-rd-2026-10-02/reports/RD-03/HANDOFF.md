@@ -15,6 +15,10 @@ publication, product bootstrap, physics, save/database changes or new dependenci
 
 ## Inputs and commit binding
 
+Code commit: **0857c4ce1232c66d7e7b4f4dbad20f6249d2e677**;
+tree **0a2199440b65b43580fd545aab29c87c232b596e**;
+parent **16faf55a9782fb12d2f30df4547a619957792089**.
+
 - Worktree: `C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-worktrees/Hestia-RD-RD03`
 - Branch: `feature/hestia-rd-rd03-2026-10-02`; workspace `wks_5862e4b1cc7fb4f5`
 - Immutable parent/start: `16faf55a9782fb12d2f30df4547a619957792089`
