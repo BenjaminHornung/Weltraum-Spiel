@@ -1,10 +1,15 @@
 """Generator inventory, independent oracle and remapped transport regression."""
 
+import copy
+from dataclasses import replace
 import unittest
 from unittest.mock import patch
 
 from tools.hestia_asset_compiler.errors import CompilerError
-from tools.hestia_asset_compiler.golden import corpus, load_pins, ordering_variants, run_case, run_corpus
+from tools.hestia_asset_compiler.admission import admit_pair
+from tools.hestia_asset_compiler.geometry import canonicalize_geometry
+from tools.hestia_asset_compiler.golden import ORDER_IDS, corpus, independent_oracle, load_pins, ordering_variants, run_case, run_corpus
+from tools.hestia_asset_compiler.package import compile_core
 from tools.hestia_asset_compiler.profiles import PROFILES
 
 
@@ -20,6 +25,12 @@ class GoldenTests(unittest.TestCase):
             sidecar = json.loads(case.report)
             self.assertEqual(sidecar["payload"]["glbSha256"], sha256_bytes(case.glb))
             self.assertEqual(sidecar["digests"]["glb_sha256"], sha256_bytes(case.glb))
+        addressed = {(c.case_id, c.variant): (sha256_bytes(c.glb), sha256_bytes(c.report)) for c in first}
+        for case in first:
+            if case.case_id in ORDER_IDS:
+                addressed.update({(c.case_id, c.variant): (sha256_bytes(c.glb), sha256_bytes(c.report)) for c in ordering_variants(case)})
+        self.assertEqual(len(addressed), 185)
+        self.assertEqual(len(set(addressed.values())), 179)  # Six normal identity transports duplicate their base bytes.
         for case in first:
             if case.case_id in ("G23", "G24", "G25", "G26"):
                 self.assertEqual(run_case(case, "standard-025-v1")["outcome"], "EXPECTED_REJECTION")
@@ -80,3 +91,37 @@ class GoldenTests(unittest.TestCase):
         summary, _, _ = run_corpus(["G02"], ["standard-025-v1"], repeats=2, ordering=False, check_pins=False)
         self.assertEqual(summary["repeats"], 2)
         self.assertEqual(summary["outcomeCounts"]["SUCCESS"], 1)
+
+    def test_independent_owned_bounds_and_cell_volume_reject_each_mutated_descriptor(self):
+        for case in corpus():
+            if case.case_id not in ("G03", "G08"):
+                continue
+            geometry = canonicalize_geometry(admit_pair(case.glb, case.report).source)
+            for profile in PROFILES:
+                generated = compile_core(case.glb, case.report, profile)
+                baseline = independent_oracle(case, generated, geometry, profile)
+                for field in ("boundsCells", "boundsMeters", "cellVolumeCubicMeters", "gridBounds"):
+                    with self.subTest(case=case.case_id, profile=profile, field=field):
+                        manifest = copy.deepcopy(generated.manifest)
+                        if field == "gridBounds":
+                            manifest[field][0]["minimumCell"][0] += 1
+                        elif field == "cellVolumeCubicMeters":
+                            manifest["geometricMassInputs"][0][field] *= 2
+                        else:
+                            manifest["geometricMassInputs"][0][field][0][0] += 1
+                        # Isolate the independent oracle, NOT a claim that the verifier accepts these fakes.
+                        with self.assertRaises(CompilerError) as error:
+                            independent_oracle(case, replace(generated, manifest=manifest), geometry, profile)
+                        self.assertEqual(error.exception.code, "golden.oracle")
+                self.assertEqual(independent_oracle(case, generated, geometry, profile), baseline)
+        beam = next(c for c in corpus() if c.case_id == "G10" and c.variant == "beam")
+        geometry = canonicalize_geometry(admit_pair(beam.glb, beam.report).source)
+        generated = compile_core(beam.glb, beam.report, "standard-025-v1")
+        self.assertEqual(generated.manifest["gridBounds"], [])  # Frozen per-owner inventory: no occupied owner/bounds.
+        independent_oracle(beam, generated, geometry, "standard-025-v1")
+        for invalid in (None, [{"partId": "part.a", "minimumCell": [0, 0, 0], "maximumCell": [0, 0, 0]}]):
+            with self.subTest(empty=invalid):
+                manifest = {**generated.manifest, "gridBounds": invalid}
+                with self.assertRaises(CompilerError) as error:
+                    independent_oracle(beam, replace(generated, manifest=manifest), geometry, "standard-025-v1")
+                self.assertEqual(error.exception.code, "golden.oracle")

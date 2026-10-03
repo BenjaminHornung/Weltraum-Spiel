@@ -155,3 +155,66 @@ class CliTests(unittest.TestCase):
                 self.assertEqual(error.exception.code, "publication.io")
             self.assertEqual(list(root.iterdir()), [foreign])
             self.assertEqual((foreign / "sentinel").read_bytes(), b"FOREIGN")
+
+    def test_research_publisher_rejects_anchored_names_before_parent_mkdir_or_write_in_RAM(self):
+        from tools.hestia_asset_compiler.__main__ import publish_research_files
+        from tools.hestia_asset_compiler.errors import CompilerError
+        parent, staging = ROOT, ROOT / ".hestia-research-RAM-only"
+        target, payload = ROOT / "RAM-only-output", b"owned"
+        # All filesystem operations are mocked: even the pre-fix escape cannot touch foreign files.
+        for name in ("/probe.bin", "/probe/file.json", "\\probe.bin", "C:probe.bin", "C:/probe.bin",
+                     "//server/share/probe.bin", "../probe.bin", "legal/../probe.bin", "legal\\probe.bin"):
+            with self.subTest(name=name), \
+                    patch("tools.hestia_asset_compiler.__main__.publication_parent", return_value=(target, parent)), \
+                    patch("tools.hestia_asset_compiler.__main__.tempfile.mkdtemp", return_value=str(staging)), \
+                    patch.object(Path, "mkdir", autospec=True) as mkdir, \
+                    patch.object(Path, "read_bytes", autospec=True, return_value=payload), \
+                    patch("tools.hestia_asset_compiler.__main__.write_file") as write, \
+                    patch("tools.hestia_asset_compiler.__main__.os.path.lexists", return_value=False), \
+                    patch("tools.hestia_asset_compiler.__main__.os.rename") as rename, \
+                    patch("tools.hestia_asset_compiler.__main__.shutil.rmtree") as cleanup:
+                with self.assertRaises(CompilerError) as error:
+                    publish_research_files({name: payload}, target)
+                self.assertEqual(error.exception.code, "cli.evidence-path")
+                mkdir.assert_not_called()
+                write.assert_not_called()
+                rename.assert_not_called()
+                cleanup.assert_called_once_with(staging)
+        with patch("tools.hestia_asset_compiler.__main__.publication_parent", return_value=(target, parent)), \
+                patch("tools.hestia_asset_compiler.__main__.tempfile.mkdtemp", return_value=str(staging)), \
+                patch.object(Path, "mkdir", autospec=True) as mkdir, \
+                patch.object(Path, "read_bytes", autospec=True, return_value=payload), \
+                patch("tools.hestia_asset_compiler.__main__.write_file") as write, \
+                patch("tools.hestia_asset_compiler.__main__.os.path.lexists", return_value=False), \
+                patch("tools.hestia_asset_compiler.__main__.os.rename") as rename, \
+                patch("tools.hestia_asset_compiler.__main__.shutil.rmtree") as cleanup:
+            publish_research_files({"legal/probe.json": payload}, target)
+            mkdir.assert_called_once_with(staging / "legal", parents=True, exist_ok=True)
+            write.assert_called_once_with(staging / "legal/probe.json", payload)
+            rename.assert_called_once_with(staging, target)
+            cleanup.assert_not_called()
+
+    def test_benchmark_real_core_rejection_exits_one_without_stdout_or_publication(self):
+        from tools.hestia_asset_compiler.__main__ import main
+        from tools.hestia_asset_compiler.benchmark import benchmark
+        from tools.hestia_asset_compiler.golden import corpus
+        case = next(c for c in corpus() if c.case_id == "G24")
+        target = ROOT / "PRIVATE_RAM_ONLY_OUTPUT"
+        with patch("tools.hestia_asset_compiler.benchmark.small_input", return_value=(case.glb, case.report)), \
+                patch("tools.hestia_asset_compiler.benchmark.perf_counter_ns", return_value=0), \
+                patch("tools.hestia_asset_compiler.benchmark.process_time_ns", return_value=0):
+            # Synthetic clocks ONLY; the paired negative input goes through the REAL core.
+            result = benchmark("small", ["standard-025-v1"])
+            self.assertEqual(result["runs"][0]["status"], "BLOCKED")
+            self.assertEqual(result["runs"][0]["diagnostic"], "glb.unsupported")
+            for output in ([], ["--output", str(target)]):
+                stdout, stderr = io.StringIO(), io.StringIO()
+                with self.subTest(output=bool(output)), redirect_stdout(stdout), redirect_stderr(stderr), \
+                        patch("tools.hestia_asset_compiler.__main__.publication_parent", return_value=(target, ROOT)), \
+                        patch("tools.hestia_asset_compiler.__main__.publish_research_files") as publish:
+                    self.assertEqual(main(["benchmark", "--profile", "standard-025-v1", *output]), 1)
+                    self.assertEqual(stdout.getvalue(), "")
+                    self.assertEqual(json.loads(stderr.getvalue()), {"status": "REJECTED", "diagnostics": [{"severity": "error", "code": "glb.unsupported"}]})
+                    self.assertNotIn("PRIVATE", stderr.getvalue())
+                    self.assertNotIn("Traceback", stderr.getvalue())
+                    publish.assert_not_called()

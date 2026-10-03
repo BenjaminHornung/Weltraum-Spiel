@@ -62,7 +62,7 @@ def publish_research_files(files, target):
         staging = Path(tempfile.mkdtemp(prefix=".hestia-research-", dir=parent))
         for name, data in sorted(files.items()):
             path = Path(name)
-            if path.is_absolute() or ".." in path.parts or "\\" in name or ":" in name:
+            if path.anchor or ".." in path.parts or "\\" in name or ":" in name:
                 raise CompilerError("cli.evidence-path", "research file paths must be internal stable relative names")
             destination = staging / path
             destination.parent.mkdir(parents=True, exist_ok=True)
@@ -107,6 +107,9 @@ def main(argv=None):
             if args.output is not None:
                 publication_parent(args.output)
             data = benchmark(args.population, args.profiles)
+            for run in data["runs"]:
+                if run["status"] == "BLOCKED":
+                    raise CompilerError(run["diagnostic"], "benchmark compiler rejected input")
             if args.output is not None:
                 publish_research_files({"benchmark-run.json": bounded_json(data)}, args.output)
         print(bounded_json(data).decode("utf-8"))

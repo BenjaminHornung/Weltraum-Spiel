@@ -348,8 +348,16 @@ def independent_oracle(case, package, geometry, profile):
                 check(bindings[slot] == ("render.a", "steel.a"), "unexpected material selector")
                 actual[identity] = slot
     check(set(actual) == {(owner, cell) for owner, cells in expected.items() for cell in cells}, "full independent owned interval set differs")
+    bounds = {owner: [[min(c[a] for c in cells) for a in range(3)], [max(c[a] for c in cells) for a in range(3)]]
+              for owner, cells in expected.items() if cells}
+    grid_bounds = [{"partId": owner, "minimumCell": bounds[owner][0], "maximumCell": bounds[owner][1]} for owner in sorted(bounds)]
+    check(manifest["gridBounds"] == grid_bounds, "independent occupied grid bounds differ")
     for mass in manifest["geometricMassInputs"]:
         cells = expected[mass["partId"]]
+        lo, hi = bounds[mass["partId"]]
+        check(mass["boundsCells"] == [lo, hi], "independent inclusive cell bounds differ")
+        check(mass["boundsMeters"] == [[float(x*h) for x in lo], [float((x+1)*h) for x in hi]], "independent occupied meter bounds differ")
+        check(mass["cellVolumeCubicMeters"] == float(h**3), "independent cell volume differs")
         check(mass["cellCount"] == len(cells), "owned count differs")
         sums = [float(sum((Fraction(c[a]) + Fraction(1, 2))*h for c in cells)) for a in range(3)]
         check(mass["cellCenterSumMeters"] == sums, "independent cell center sums differ")
