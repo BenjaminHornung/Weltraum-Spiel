@@ -13,6 +13,9 @@
     "test:unit": "& 'C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe' './node_modules/vitest/vitest.mjs' run",
     "test:browser": "& 'C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe' './node_modules/@playwright/test/cli.js' test",
     "verify:boundary": "& 'C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe' './scripts/verify-boundary.mjs'",
+    "lab:inspect": "& 'C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe' './scripts/run-lab.mjs' inspect",
+    "lab:evidence": "& 'C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe' './scripts/run-lab.mjs' evidence",
+    "lab:bench": "& 'C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe' './scripts/run-lab.mjs' bench",
     "dev": "& 'C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe' './scripts/verify-boundary.mjs' --port-check; if ($LASTEXITCODE -eq 0) { & 'C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe' './node_modules/vite/bin/vite.js' } else { exit $LASTEXITCODE }"
   },
   "dependencies": {

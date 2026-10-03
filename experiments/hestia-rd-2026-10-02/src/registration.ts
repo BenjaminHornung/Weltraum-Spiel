@@ -5,6 +5,7 @@ import { mountExperiment, registeredMountCount, type LabExperimentFactory,
 import { fixtureRevision, getFixtureDigest, importFixture } from './contracts/fixture';
 import { createControlledClock, getScenarioDigest, sampleScenario } from './contracts/scenario';
 import { sha256 } from './contracts/validation';
+import { createThreeControlExperiment } from './experiments/three-control';
 
 const createContractControl: LabExperimentFactory = async (context) => {
   if (context.signal.aborted) { throw new Error('Control init aborted'); }
@@ -32,6 +33,7 @@ export interface LabRegistration { readonly id: string; readonly variantId: stri
 // HEAD owns additions after the RD-00 terminal handoff. No dynamic import/plugin loader.
 export const LAB_REGISTRATIONS: readonly LabRegistration[] = Object.freeze([
   Object.freeze({ id: 'RD-00', variantId: 'contract-control', scenarioId: 'RD00-CONTRACT-CONTROL', preset: Object.freeze({ id: 'diagnostic' }), create: createContractControl }),
+  Object.freeze({ id: 'RD-03', variantId: 'fixture-control', scenarioId: 'F00-CONTROL-REPLAY', preset: Object.freeze({ id: 'fixture-control' }), create: createThreeControlExperiment }),
 ]);
 
 export async function startControlPage(): Promise<void> {
