@@ -6,6 +6,7 @@ import { fixtureRevision, getFixtureDigest, importFixture } from './contracts/fi
 import { createControlledClock, getScenarioDigest, sampleScenario } from './contracts/scenario';
 import { sha256 } from './contracts/validation';
 import { createThreeControlExperiment } from './experiments/three-control';
+import { createRendererProbeExperiment } from './experiments/renderer-probe';
 
 const createContractControl: LabExperimentFactory = async (context) => {
   if (context.signal.aborted) { throw new Error('Control init aborted'); }
@@ -34,6 +35,8 @@ export interface LabRegistration { readonly id: string; readonly variantId: stri
 export const LAB_REGISTRATIONS: readonly LabRegistration[] = Object.freeze([
   Object.freeze({ id: 'RD-00', variantId: 'contract-control', scenarioId: 'RD00-CONTRACT-CONTROL', preset: Object.freeze({ id: 'diagnostic' }), create: createContractControl }),
   Object.freeze({ id: 'RD-03', variantId: 'fixture-control', scenarioId: 'F00-CONTROL-REPLAY', preset: Object.freeze({ id: 'fixture-control' }), create: createThreeControlExperiment }),
+  Object.freeze({ id: 'RD-10', variantId: 'native-webgl2', scenarioId: 'F00-CONTROL-REPLAY', preset: Object.freeze({ id: 'native-webgl2', parameters: Object.freeze({ mode: 'webgl2' }) }), create: createRendererProbeExperiment }),
+  Object.freeze({ id: 'RD-10', variantId: 'native-webgpu', scenarioId: 'F00-CONTROL-REPLAY', preset: Object.freeze({ id: 'native-webgpu', parameters: Object.freeze({ mode: 'webgpu' }) }), create: createRendererProbeExperiment }),
 ]);
 
 export async function startControlPage(): Promise<void> {
