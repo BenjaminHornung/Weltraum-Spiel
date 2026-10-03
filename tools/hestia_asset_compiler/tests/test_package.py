@@ -152,6 +152,56 @@ class PackageTests(unittest.TestCase):
         mass = package.manifest["geometricMassInputs"][0]
         self.assertFalse({"density", "massKg", "inertia"} & set(mass))
 
+    def test_duplicated_diagnostic_counts_closed_integer_before_equality(self):
+        raw, _, report = pair()
+        report["payload"]["diagnostics"] = [{"severity": "warning", "code": "source.warning",
+            "message": "Actual admitted warning", "path": ""}]
+        warning = compile_core(raw, rehash(report), MICRO)
+        records = (("asset-manifest.json", "diagnosticsSummary"),
+                   ("provenance.json", "authoringDiagnosticCounts"),
+                   ("diagnostics.json", "authoringDiagnosticCounts"))
+
+        def rehashed_counts(package, name, field, mutate):
+            files = dict(package.files)
+            document = json.loads(files[name])
+            mutate(document[field])
+            files[name] = bounded_json(document)
+            manifest = json.loads(files["asset-manifest.json"])
+            manifest["provenanceSha256"] = sha256_bytes(files["provenance.json"])
+            compile_report = json.loads(files["compile-report.json"])
+            compile_report["semanticProjectionSha256"] = sha256_bytes(bounded_json(semantic_projection(manifest)))
+            files["compile-report.json"] = bounded_json(compile_report)
+            files["asset-manifest.json"] = bounded_json(manifest)
+            manifest["manifestTreeSha256"] = tree_hash(files)
+            files["asset-manifest.json"] = bounded_json(manifest)
+            self.assertEqual(sha256_bytes(files["provenance.json"]), manifest["provenanceSha256"])
+            self.assertEqual(tree_hash(files), manifest["manifestTreeSha256"])
+            return files
+
+        for package, count in ((self.cube, 0), (warning, 1)):
+            for name, field in records:
+                counts = json.loads(package.files[name])[field]
+                self.assertEqual(counts, {"info": 0, "warning": count, "error": 0})
+                self.assertTrue(all(type(value) is int for value in counts.values()))
+            verify_files(package.files)
+            for name, field in records[1:]:
+                with self.subTest(fake=(name, bool(count))):
+                    with self.assertRaises(CompilerError) as error:
+                        verify_files(rehashed_counts(package, name, field, lambda counts: counts.update(warning=bool(count))))
+                    self.assertEqual(error.exception.code, "package.diagnostics")
+            for name, field in records:
+                mutations = [("extra", lambda counts: counts.update(extra=0))]
+                for key in ("info", "warning", "error"):
+                    mutations.extend(((f"missing.{key}", lambda counts, key=key: counts.pop(key)),
+                                      (f"negative.{key}", lambda counts, key=key: counts.update({key: -1})),
+                                      # Current canonical helper emits 0.0 as integer zero; 1.0 retains its float type.
+                                      (f"float.{key}", lambda counts, key=key: counts.update({key: 1.0}))))
+                for label, mutate in mutations:
+                    with self.subTest(count=count, record=name, invalid=label):
+                        with self.assertRaises(CompilerError) as error:
+                            verify_files(rehashed_counts(package, name, field, mutate))
+                        self.assertEqual(error.exception.code, "package.diagnostics")
+
     def test_preserved_beam_decorative_and_unbound_stats(self):
         doc, binary = fixture(*box((0, 0, 0), (2, .0625, .125)))
         doc["nodes"][0]["extras"]["hestia"]["thinFeature"]["policy"] = "PreserveAsBeam"

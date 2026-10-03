@@ -543,13 +543,15 @@ def _verify_files(files):
     validate_inventory(provenance["sourceInventory"], semantics)
     validate_options(provenance["authoringOptions"])
     summary = manifest["diagnosticsSummary"]
-    shape(summary, ["info", "warning", "error"], ["info", "warning", "error"], "package.diagnostics")
-    for count in summary.values():
-        integer(count, code="package.diagnostics")
-    if summary["error"] != 0 or provenance["authoringDiagnosticCounts"] != summary:
-        fail("package.diagnostics", "no authoring Error or inconsistent source count")
     diagnostic_file = docs["diagnostics.json"]
     shape(diagnostic_file, ["schema", "diagnostics", "authoringDiagnosticCounts"], ["schema", "diagnostics", "authoringDiagnosticCounts"], "package.diagnostics")
+    fields = ["info", "warning", "error"]
+    for counts in (summary, provenance["authoringDiagnosticCounts"], diagnostic_file["authoringDiagnosticCounts"]):
+        shape(counts, fields, fields, "package.diagnostics")
+        for count in counts.values():
+            integer(count, code="package.diagnostics")
+    if summary["error"] != 0 or provenance["authoringDiagnosticCounts"] != summary:
+        fail("package.diagnostics", "no authoring Error or inconsistent source count")
     if (diagnostic_file["schema"] != SCHEMA or diagnostic_file["authoringDiagnosticCounts"] != summary
             or diagnostic_file["diagnostics"] != [{"severity": "info", "code": "compile.admitted", "assetId": manifest["assetId"],
                 "message": "Report-bound research package; no runtime integration"}]):
