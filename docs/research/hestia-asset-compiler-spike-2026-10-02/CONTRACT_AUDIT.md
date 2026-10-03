@@ -1,6 +1,6 @@
 # Hestia asset compiler spike — C1 contract audit
 
-Initial C1 audit date: 2026-10-02. Source pin: `25bc7f5bbd2db6317c42193873eadeaf10a092c5`. This freezes an **isolated research interpretation**, not a change to a public authoring schema or an accepted runtime manifest. The C1 no-code checkpoint below is historical; authorized C2-C6 implementation/evidence is recorded in EXECPLAN and the executable C6 amendment. **STOP before C7**. `PRODUCT_INTEGRATED = NO`.
+Initial C1 audit date: 2026-10-02. Source pin: `25bc7f5bbd2db6317c42193873eadeaf10a092c5`. This freezes an **isolated research interpretation**, not a change to a public authoring schema or an accepted runtime manifest. The C1 no-code checkpoint below is historical; C2-C6 accepted implementation and actual C7 CLI/corpus/diagnostic evidence are recorded in EXECPLAN. **STOP before C8**. `PRODUCT_INTEGRATED = NO`.
 
 ## Evidence and source precedence
 
@@ -16,7 +16,11 @@ The exact executable projection supersedes the earlier planned field sketch **on
 
 Thin proof is the scoped exact orthogonal material-section arrangement with threshold 2*h, not generic thickness/AABB or authored minimum. Usable measured box-beam and rectangular single-layer midplane shell parameters are emitted; unsupported rod/tube/multilayer/diagonal replacements reject. Geometric owned-cell sums are not physical kg, analytic volume or net overlapping volume. Common 90-degree TRS is valid geometry but blocked at this narrow proof; exact quarter-turn matrix package succeeds. Complete partial G01-G30 support/handoff notes are in PACKAGE_FORMAT; no global corpus/adoption claim.
 
-Native publication is bounded local Windows only. Native symlink creation was attempted and blocked by WinError 1314; actual junction/broken-junction guards and separately labelled lexists mocks do not claim native symlink evidence. This environment limitation, real Blender E2E, full spike review and C7/C8 remain open.
+Native publication is bounded local Windows only. Native symlink creation was attempted and blocked by WinError 1314; actual junction/broken-junction guards and separately labelled lexists mocks do not claim native symlink evidence. This environment limitation, real Blender E2E and full spike review/C8 remain open.
+
+## C7 wrapper/research amendment — no core contract change
+
+The actual CLI/generator/runner/diagnostic workload and frozen single-run hash inventory are documented in GOLDEN_CORPUS/BENCHMARK, with machine evidence and truthful source/geometry/support-stage distinctions. Core source/format/versions/preimages/caps and C6 original cube pin are unchanged. C7 rich ordering fixtures add explicit unused semantic declarations, so their source-bound pins need not equal that original cube's pin. No expected hash is automatically rewritten; the final native replay is byte-identical to saved evidence. GWN_NO_ADOPTION is reasoned nonimplementation, not experiment evidence or an alternate manifest/proof authority. Every current benchmark is CONTAMINATED_DIAGNOSTIC; Medium/Large are excluded before input allocation by the frozen expanded cap. C8 ten repeats/full acceptance and independent C7 review remain NOT RUN/PENDING.
 
 ### Completely read primary sources
 

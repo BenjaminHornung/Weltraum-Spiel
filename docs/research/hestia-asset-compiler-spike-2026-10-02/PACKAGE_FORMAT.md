@@ -1,10 +1,10 @@
 # C6 research package: executable format, support and handoff
 
-Date: 2026-10-03. Applies only to `hestia.asset-compiler-spike.v1` and `hestia-asset-compiler-spike-c6-v1`. This is NOT `hestia.asset-manifest.v1`, HVOX, a runtime adapter, full corpus acceptance, or product integration. C7/C8 are NOT AUTHORIZED. `PRODUCT_INTEGRATED = NO`.
+Date: 2026-10-03. Applies only to `hestia.asset-compiler-spike.v1` and unchanged `hestia-asset-compiler-spike-c6-v1`. This is NOT `hestia.asset-manifest.v1`, HVOX, a runtime adapter, full corpus acceptance, or product integration. C7 CLI/research wrappers are authorized and documented in [GOLDEN_CORPUS.md](GOLDEN_CORPUS.md); **C8 NOT AUTHORIZED**. `PRODUCT_INTEGRATED = NO`.
 
 ## Functional API and source admission
 
-`package.compile_core(glb_bytes, report_bytes, profile_id)` requires exact delivered GLB **and** sidecar bytes. `compile_files` bounds both source files before reads; file-descriptor aliases are forbidden. `compile_to_directory` checks lexical output admission before reading inputs, then uses the same core and publisher. `verify_files` / `verify_package` inspect actual bytes rather than trusting the generated manifest. No CLI exists at this checkpoint.
+`package.compile_core(glb_bytes, report_bytes, profile_id)` requires exact delivered GLB **and** sidecar bytes. `compile_files` bounds both source files before reads; file-descriptor aliases are forbidden. `compile_to_directory` checks lexical output admission before reading inputs, then uses the same core and publisher. `verify_files` / `verify_package` inspect actual bytes rather than trusting the generated manifest. C7's module CLI reuses these owners without changing format/preimages/core versions.
 
 Profiles are explicit: `micro-0125-research-v1` = 0.125 m, `standard-025-v1` = 0.25 m. No default. Current frame remains metersPerUnit 1, RIGHT, +Y up, +Z forward.
 
@@ -143,7 +143,7 @@ Actual fault evidence includes temp/unwritable-parent mocks (no ACL change), aft
 
 ## Partial G01-G30 main inventory and handoff
 
-EXACTLY G01-G30 remain the main inventory; variants stay under each ID. These are focused unit/support outcomes, **not** final corpus records/source hashes/30-case acceptance. Future C8 must execute and record every case/profile or explicit reasoned BLOCKED per package checklist. No `CORPUS_VERIFIED=YES` is inferred from test count.
+EXACTLY G01-G30 remain the main inventory; variants stay under each ID. The following table is the **historical C6-focused** unit/support snapshot, not a current C7 run claim. Actual C7 single-run input hashes/records/ordering outcomes are in GOLDEN_CORPUS and C7_GOLDEN_SMOKE; final C8 ten-repeat acceptance remains NOT RUN. No `CORPUS_VERIFIED=YES` is inferred from test count.
 
 | ID | Current support/evidence; remaining limit |
 | --- | --- |
@@ -184,4 +184,4 @@ Common `rotation=[0,0,sin(pi/4),cos(pi/4)]` is a valid C3 transform with 12 bake
 
 Existing joint-transform validation, unannotated export-scope and missing exporter-version provenance remain upstream handoff items only. The compiler handles downstream rejection/placement; source version is explicitly UNRECORDED. Later integration must define an accepted static-asset adapter/physical registry/container separately. No current schema, Blender, runtime or package/lockfile write occurs.
 
-C7 CLI, GWN, complete G01-G30 hash inventory, ten repeats, qualified performance, real Blender export and full-spike R1/R2/R3 acceptance remain NOT RUN. Two-generation smoke is not full determinism certification. C6 freeze reviews are DONE as externally attributed in EXECPLAN; the two confirmed metadata P2s receive only the scoped validator corrigendum. Targeted independent correction closure remains PENDING; this writer claims own implementation/tests/self-review only.
+C7 CLI and exact G01-G30 frozen hash/single-run/ordering evidence now exist; diagnostic Small runs are documented in BENCHMARK. GWN is reasoned NO_ADOPTION, NOT an executed experiment. All C6 findings are independently CLOSED as externally attributed in EXECPLAN. Ten repeats, qualified performance, real Blender export, independent C7 reviews and full-spike acceptance remain NOT RUN/PENDING; this writer claims own implementation/tests/self-review only. Core producer/preimages/version/caps and the 41,295-byte cube pin are unchanged. STOP before C8.
