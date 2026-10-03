@@ -9,4 +9,5 @@ export default defineConfig({ cacheDir: '.vite', publicDir: 'fixtures',
     rd00: fileURLToPath(new URL('./index.html', import.meta.url)),
     rd03: fileURLToPath(new URL('./src/runner/index.html', import.meta.url)),
     rd10: fileURLToPath(new URL('./src/experiments/renderer-probe/index.html', import.meta.url)),
+    rd11: fileURLToPath(new URL('./src/experiments/three-webgpu/index.html', import.meta.url)),
   } } } });

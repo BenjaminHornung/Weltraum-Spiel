@@ -7,6 +7,7 @@ import { createControlledClock, getScenarioDigest, sampleScenario } from './cont
 import { sha256 } from './contracts/validation';
 import { createThreeControlExperiment } from './experiments/three-control';
 import { createRendererProbeExperiment } from './experiments/renderer-probe';
+import { createThreeWebGpuExperiment } from './experiments/three-webgpu';
 
 const createContractControl: LabExperimentFactory = async (context) => {
   if (context.signal.aborted) { throw new Error('Control init aborted'); }
@@ -37,6 +38,8 @@ export const LAB_REGISTRATIONS: readonly LabRegistration[] = Object.freeze([
   Object.freeze({ id: 'RD-03', variantId: 'fixture-control', scenarioId: 'F00-CONTROL-REPLAY', preset: Object.freeze({ id: 'fixture-control' }), create: createThreeControlExperiment }),
   Object.freeze({ id: 'RD-10', variantId: 'native-webgl2', scenarioId: 'F00-CONTROL-REPLAY', preset: Object.freeze({ id: 'native-webgl2', parameters: Object.freeze({ mode: 'webgl2' }) }), create: createRendererProbeExperiment }),
   Object.freeze({ id: 'RD-10', variantId: 'native-webgpu', scenarioId: 'F00-CONTROL-REPLAY', preset: Object.freeze({ id: 'native-webgpu', parameters: Object.freeze({ mode: 'webgpu' }) }), create: createRendererProbeExperiment }),
+  Object.freeze({ id: 'RD-11', variantId: 'C1', scenarioId: 'F01-HVP-COAST-REPLAY', preset: Object.freeze({ id: 'C1' }), create: createThreeWebGpuExperiment }),
+  Object.freeze({ id: 'RD-11', variantId: 'C2', scenarioId: 'F01-HVP-COAST-REPLAY', preset: Object.freeze({ id: 'C2' }), create: createThreeWebGpuExperiment }),
 ]);
 
 export async function startControlPage(): Promise<void> {
