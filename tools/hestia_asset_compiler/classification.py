@@ -286,7 +286,7 @@ class Classification:
     stats: dict
 
 
-def classify_geometry(geometry, profile_id):
+def classify_cells(geometry, profile_id):
     h, plans, domains, materials, records, stats = preflight_classification(geometry, profile_id)
     cells = rasterize(plans, h, materials)
     exterior, cavities, proofs = {}, {}, {}
@@ -329,6 +329,11 @@ def classify_geometry(geometry, profile_id):
                      rayVersion=RAY_VERSION, sourceArrangementCells=math.prod(len(a) - 1 for a in cuts),
                      commonRefinementCells=volume(bounds))
         proofs[part_id] = proof
-    bricks, slots = pack_bricks((owner, cell, binding) for (owner, cell), binding in cells.items())
-    return Classification(profile_id, dict(sorted(cells.items())), domains, bricks, slots,
-                          exterior, cavities, proofs, stats)
+    return Classification(profile_id, dict(sorted(cells.items())), domains, (), (),
+                           exterior, cavities, proofs, stats)
+
+
+def classify_geometry(geometry, profile_id):
+    result = classify_cells(geometry, profile_id)
+    bricks, slots = pack_bricks((owner, cell, binding) for (owner, cell), binding in result.cells.items())
+    return replace(result, bricks=bricks, material_slots=slots)

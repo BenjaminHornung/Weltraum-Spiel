@@ -1,10 +1,22 @@
 # Hestia asset compiler spike — C1 contract audit
 
-Audit date: 2026-10-02. Source pin: `25bc7f5bbd2db6317c42193873eadeaf10a092c5`. This freezes an **isolated research interpretation**, not a change to a public authoring schema or an accepted runtime manifest. Current authorization ends after C1; **STOP before C2**. No compiler implementation or goldens have run. `PRODUCT_INTEGRATED = NO`.
+Initial C1 audit date: 2026-10-02. Source pin: `25bc7f5bbd2db6317c42193873eadeaf10a092c5`. This freezes an **isolated research interpretation**, not a change to a public authoring schema or an accepted runtime manifest. The C1 no-code checkpoint below is historical; authorized C2-C6 implementation/evidence is recorded in EXECPLAN and the executable C6 amendment. **STOP before C7**. `PRODUCT_INTEGRATED = NO`.
 
 ## Evidence and source precedence
 
 Current committed authoring contracts/schema/exporter code outrank historical research proposals. Distinguish normative contract, observed implementation, and deliberately narrower spike boundary; do not resolve two genuinely current contradictory MUSTs by picking one. No such unresolved same-boundary contradiction was found in the audited sources; known gaps and scoped distinctions are enumerated in [CONFLICT_REGISTER.md](CONFLICT_REGISTER.md).
+
+## C6 executable amendment — 2026-10-03
+
+[PACKAGE_FORMAT.md](PACKAGE_FORMAT.md) freezes the ACTUAL executable input envelope, minimum manifest, hash preimages/virtual-self tree, exact three-field source exclusions from the semantic projection, thin sampling/proof/replacement scope, actual-byte verifier and local Windows no-replace publication contract. This is a spike-local format, no public schema or old source change.
+
+Source-only current-model clarification (superorchestrator, not this writer's independent run): scale policy is ignore/warning/error; tolerance finite >=0 with zero valid; requireSchemaId nonempty/current schema admitted here. Shell thickness/layer thickness remain positive; model serialized layer sorting is not modified and generic canonical helper does not reorder layer arrays. Pure current `build_report` positive interoperability is exercised READ ONLY in C6 tests.
+
+The exact executable projection supersedes the earlier planned field sketch **only within this research artifact**: all manifest fields except `sources`, `provenanceSha256`, `manifestTreeSha256`. Source inventory/options live exclusively in provenance; raw GLB/raw report/payload hashes remain truthful, and source warning messages/host paths are not copied. Actual own C6 tests compare explicit independent selected preimages, full file bytes for two identical generations, and content/owned-brick/projection identity under properly remapped ordering changes. Ten-run/full corpus verification remains NOT RUN.
+
+Thin proof is the scoped exact orthogonal material-section arrangement with threshold 2*h, not generic thickness/AABB or authored minimum. Usable measured box-beam and rectangular single-layer midplane shell parameters are emitted; unsupported rod/tube/multilayer/diagonal replacements reject. Geometric owned-cell sums are not physical kg, analytic volume or net overlapping volume. Common 90-degree TRS is valid geometry but blocked at this narrow proof; exact quarter-turn matrix package succeeds. Complete partial G01-G30 support/handoff notes are in PACKAGE_FORMAT; no global corpus/adoption claim.
+
+Native publication is bounded local Windows only. Native symlink creation was attempted and blocked by WinError 1314; actual junction/broken-junction guards and separately labelled lexists mocks do not claim native symlink evidence. This environment limitation, real Blender E2E, full spike review and C7/C8 remain open.
 
 ### Completely read primary sources
 

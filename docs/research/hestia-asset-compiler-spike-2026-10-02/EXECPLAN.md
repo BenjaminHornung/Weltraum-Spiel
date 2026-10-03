@@ -2,7 +2,7 @@
 
 ## Goal
 
-C2/C3 and the separate reader correction are preserved. C4 is published; C5 is implemented and verified below, with final scoped review/publication/checkpoint still required. Current authorization remains **C4 then C5**, serial sole writer and separate prescribed commits. **STOP before C6** for user-dispatched R2 voxel/topology and R3 aggregate-budget review. No admitted report-bound compile, package, CLI or full-spike success is claimed.
+C2-C5 and the separate reader correction are preserved at accepted HEAD `6d55238c076ec2ccf9e743ea63470ead4e25690c`. Current authorization is **C6 ONLY**: executable report-bound core, honest thin/semantic/geometric packages, actual-byte verification and local Windows no-replace publication, one prescribed scoped commit after fresh tests/self-review. **STOP before C7** for user-dispatched independent C6 review. Supported synthetic package SUCCESS is not full corpus/CLI/Blender/performance/product or full-spike acceptance.
 
 After separately authorized serial gates C2-C8, the eventual goal is an executable, standard-library-only offline GLB/report compiler, independent golden corpus, deterministic packages, and bounded verification. Documentation alone will not satisfy that eventual goal. `PRODUCT_INTEGRATED = NO` throughout.
 
@@ -35,7 +35,7 @@ DevToolbox tracking is explicitly inactive. Equivalent checks are the source/lea
 
 ## Non-goals
 
-- No C6-C8 implementation before further authorization; no future gate marked complete from a plan.
+- No C7/C8/GWN/CLI/benchmark implementation before further authorization; no future gate marked complete from a plan.
 - No HVP, save, physics, renderer, worker, terrain, material-registry, or authoring-schema integration. Renderer projections never become world truth.
 - No broad upstream fixes. Confirmed exporter gaps become later `INTEGRATION_HANDOFF.md` items.
 - No invented density, kg mass, physical inertia, strength, or collision/navigation authority.
@@ -73,7 +73,7 @@ The exact comparison classes approved by R1-A2 are frozen in the audit: identica
 
 ## Implementation phases
 
-All gates are serial. Completion requires fresh evidence and self-review; the superorchestrator retains gate authorization and independent-review responsibility. **C4 then C5 are authorized; C6-C8 remain NOT AUTHORIZED / NOT RUN.** File splits are minimum intended owners, not a requirement to create empty scaffolding.
+All gates are serial. Completion requires fresh evidence and self-review; the superorchestrator retains gate authorization and independent-review responsibility. **C6 ONLY is currently authorized; C7/C8 remain NOT AUTHORIZED / NOT RUN.** Prior gate stops below are historical, not permanent prohibitions after explicit authorization. File splits are actual minimum owners, never empty scaffolding.
 
 ### C0 — preflight and baseline
 
@@ -139,7 +139,7 @@ All gates are serial. Completion requires fresh evidence and self-review; the su
 
 ### C6 — bound semantics, thin safety, packages, atomicity
 
-- Intended files: `semantics.py`, `package.py`, `diagnostics.py`, `tests/test_semantics.py`, `tests/test_package.py`.
+- Actual owners: `admission.py`, `thin.py`, `package.py`; `tests/package_fixtures.py`, `tests/test_admission.py`, `tests/test_thin.py`, `tests/test_package.py`. Existing own `classification.py` exposes functional `classify_cells` before packing and preserves old wrapper behavior; own compiler version advances to C6. No speculative diagnostics/framework files. This plan/audit/register and `PACKAGE_FORMAT.md` own the executable format/support/handoff evidence.
 - Check raw GLB SHA against **both** report GLB fields, and canonical payload SHA using the existing helper. Record raw report source SHA separately. Reject null GLB hashes, Error diagnostics, digest-valid semantic conflicts, ambiguous ownership, or malformed references.
 - Preserve asset/revision, parts/parent, joints/world placement, markers/interface/world placement, policies, materials and tags. Unused declared report materials can be legitimate exporter slots; the 255 cap counts only active voxelized slots. `paletteIndex` is not a local slot.
 - Homogeneous Solid material assignment can use its unique geometry-bound semantic material. Do not invent interior precedence for multiple distinct materials; reject ambiguity without a committed rule. Carry part ownership in brick entries.
@@ -147,6 +147,38 @@ All gates are serial. Completion requires fresh evidence and self-review; the su
 - Freeze exact research manifest, semantic projection, hash preimages, diagnostics, source inventory and deterministic compile report; manifest-tree preimage excludes its self field. No timing/path/host/user/locale in content hashes.
 - Whole-generation task-owned sibling staging, finish and validate all files, single atomic directory rename. Reject **any existing target**, including empty dir/file/link/junction, unchanged. No target deletion/replacement. Faults: after brick 1, before manifest, rename failure, unwritable parent, publish collision with sentinel intact; clean only owned staging.
 - Commit: `feat(asset-compiler): emit semantic deterministic asset packages`.
+
+### C6 actual evidence and scoped support — 2026-10-03
+
+**Relayed EXTERNAL evidence, not this writer's runs/reviews:** superorchestrator accepted C5 HEAD `6d55238c076ec2ccf9e743ea63470ead4e25690c`, sole parent C4. R2-C SCOPED PASS math/no P1/P2: four bounded programs exit 0; independent 64 face patches plus 1280 extra edge/vertex contacts; induced-map counterexamples; full G01/G02/G13/G27 sets and decoded brick bytes both profiles/both windings; tunnel controls/G15. R3-C SCOPED PASS: two bounded programs exit 0, global admission/owned 255-vs-256/8193-brick preallocation, multipart/refinement/eight-ray/105-witness bounds. META fresh 74 PASS exit 0 in 33.336 s, independent package-independent sets/brick bytes, 90 Matrix-vs-quaternion repro, baseline diff whitespace 0 and status only two instrumentation files. R1-C SCOPED PASS WITH NOTES: G05/G06 require actual geometry baking, not universal rotated fill; mandatory G01/G02/G13 SUCCESS cannot be replaced by rejection, EXACT G01-G30 inventory/variants/reasoned BLOCKED and G16 ambiguity rejection are retained. None is independent C6 review/full spike PASS.
+
+Actual C6 API/hash/projection/thin/support/atomicity is frozen in [PACKAGE_FORMAT.md](PACKAGE_FORMAT.md), with audit/register amendments. Input semantics/digests/options/inventory/diagnostics are validated before world/raster; current pure `build_report` interoperates READ ONLY. Canonical payload-only hash is reused exactly, raw report SHA separate; source warning messages/host paths never enter outputs. Tests use deliberately nonmatching evaluated inventory counts to prove actual triangles remain geometry truth.
+
+Focused tests were written BEFORE production modules; missing admission/package imports reproduced red (exit 1). A real dyadic just-under-0.5-m witness later reproduced **1 FAIL in 0.017 s, exit 1** before replacing rounded threshold comparison with exact Fraction; a rehashed false-grid/bool/malformed package test reproduced **2 failures + 1 error in 0.350 s, exit 1** before actual decoded-bound verification/bool-safe metadata/stable malformed rejection. No input repair, profile/budget change or weakened oracle.
+
+Own first full C6 suite: **107 tests PASS in 44.201 s**, exit 0; no failures/skips. Own fresh unchanged Blender host baseline: **58 PASS in 0.163 s**, exit 0 (intentional asserted negative diagnostics are not failures). Further exact-preimage, path-core, shell-package and precise witness metadata checks follow; final counts/output/diff/lease/cleanup and actual publication SHA are recorded after fresh execution, not predicted. Commands retain the literal Python/Git/TEMP/TMP/worktree above; unit durations are NOT benchmarks.
+
+Own complete source/test self-review found descriptor validation gaps in the first verifier. Negative rehashed proof/missing-version/false-fill/changed-component and preserved-binding tests were added FIRST: **1 test, 8 subtest failures in 0.527 s, exit 1**. Seven were actual verifier acceptance gaps; one first endpoint mutation was a no-op (numerator already 1), corrected to 3 without weakening production. Common verifier now checks versioned complete admitted proof descriptors, exact axial endpoints and declared usable replacement/assembly bindings. No claim of authenticating fully forged geometry without original source. Subsequent actual full suite **111 PASS in 41.018 s**, exit 0: original 74 + 7 admission + 8 thin + 22 package. Own read-only Blender baseline **58 PASS in 0.173 s**, exit 0. No failures/skips in either green run. Focused independent preimage selection and frozen synthetic cube example (12 files/41,295 bytes) are recorded in PACKAGE_FORMAT; final staged review/checkpoint will collect fresh evidence again after the final assertions.
+
+Final own pre-commit verification after all code/frozen-example assertions: **111 PASS in 42.823 s**, exit 0; unchanged read-only Blender host baseline **58 PASS in 0.153 s**, exit 0. Exact commands from the pinned worktree (task TEMP/TMP set to the existing bounded directory above):
+
+```powershell
+& 'C:\IFI_SourceCode\Utils\Python\cpython-3.12.13-windows-x86_64-none\python.exe' -B -m unittest discover -s tools/hestia_asset_compiler/tests -p 'test_*.py' -q
+& 'C:\IFI_SourceCode\Utils\Python\cpython-3.12.13-windows-x86_64-none\python.exe' -B -m unittest discover -s tools/blender/tests -p 'test_*.py' -q
+& 'C:\IFI_SourceCode\Utils\opencode-migration\runtime\git\cmd\git.exe' diff --cached --check
+```
+
+**PASS** full tests, frozen hash/length/preimage regression, actual publication/fault controls, original dyadic and rehashed-malformed regressions, complete own final source/test/doc and staged diff self-review, staged whitespace check (exit 0). **PASS** lease: all 13 staged paths belong to the two authorized directories; accepted C5 HEAD/parent preserved; no upstream/dependency/profile/budget modifications. **PASS** cleanup: task TEMP empty with parent retained, no compiler/Blender bytecode caches; only two accepted untracked `.opencode/throughput.*` files remain untouched. No services or agents were started. **NOT RUN** independent C6 review, native symlink/broken-symlink execution (WinError 1314), actual Blender E2E, C7/C8/full corpus/ten repeats/GWN/qualified benchmarks; **NOT APPLICABLE** product/runtime integration. The single prescribed commit SHA and post-commit clean/status evidence are reported after publication, not fabricated inside its self-referential contents.
+
+All mandatory Cube/Box/Hollow/L-body full owned sets/decoded bricks/center sums pass both profiles; G13 passes both inner windings. Two identical generation file maps/tree hashes match; properly remapped input orders preserve content/brick/projection while truthful sources/full tree differ. These are C6 focused smoke, NOT complete 30-case/ten-run certification. Exact 90 Matrix package succeeds; common 90 TRS bakes valid geometry but thin proof rejects without snap/invalid-rotation claim. The partial support/corpus/handoff inventory is exactly G01-G30 in PACKAGE_FORMAT.
+
+Thin sampling is explicit 2*h, proved complete orthogonal material-axis sections with exact rational witness/endpoint parameters, not authored minimum/global AABB. Real box-beam/single-layer shell/assembly parameters are preserved; generic rod/tube/multilayer/arbitrary proof blocks whole asset. Homogeneous explicit material bindings must agree; palette/unused declarations are not slots. Geometric inputs group owned Part/structural-material contributions, mark unbound data, explicitly disavow net overlapping physical volume, density/kg/inertia and analytic-source-volume substitution.
+
+Metadata byte/depth/token and combined metadata+binary output guards precede brick payload allocation. Core spies exercise output cap and 256 actual-cell bindings before packing (allocation controls only, not fake successful geometry/compiles); 256 unused declarations plus one voxelized binding compile with one slot. Existing C4/C5 physical allocation guards and caps remain unchanged. `classify_cells` reuses actual C5 proof but delays pack until C6 metadata preflight; old classifier tests are retained.
+
+Owned unique sibling staging is actually verified before one local Windows no-replace directory rename. Real existing file/empty/nonempty dir/junction/**broken junction** and late empty/nonempty publish collision controls preserve foreign state. Faults cover temp/unwritable-parent mock/no ACL change, after brick 1, before manifest, failed verification/corrupt brick and rename; own staging is removed and foreign stale sibling/sentinel retained. **Native symlink/broken-symlink tests NOT RUN:** actual creation failed WinError 1314; separately labelled lexical mocks are unit branch evidence only. No privilege/ACL changes. POSIX/UNC/mapped network publication fails explicitly; no portable atomicity or crash-durability claim.
+
+Independent C6 review remains user-dispatched after freeze. C7/C8/GWN/CLI/full corpus/ten repeats/compileall/Blender E2E/qualified benchmark remain NOT RUN. No services/new agents/upstream/dependency/lockfile/product writes, push/amend/merge or instrumentation cleanup.
 
 ### C7 — CLI and optional bounded classifier comparison
 
@@ -420,12 +452,14 @@ At C1 retain the authorized docs commit, untouched instrumentation, and empty ta
 - R3-B correction published at `9328d5c629c7de31c7462c983ca810bc726625a6`, sole parent C3. User-relayed R3-B2 independent closure PASS and fresh meta 49 PASS in 0.599 s are external evidence above. C4 then C5 explicitly authorized; no repeat C2/C3 review loop.
 - [x] C4 exact SAT/surface/address implementation, fresh full 59 PASS and post-self-review focused 10 PASS, exit 0; published `4a5e6a427bb67d28ef8850fb8aa9b1e8c747cca2`, sole parent reader correction, exact prescribed message and scoped three-path lease.
 - [x] C5 padded exterior flood/exact parity/pure boundary-disk inclusion certificate and independent interval/tunnel controls implemented; full scoped self-review and fresh full 74 PASS in 36.174 s, exit 0. Separate prescribed publication and post-commit checkpoint follow; actual result/SHA is reported in Git/final response. C6 remains STOP.
-- [ ] C6-C8: **NOT AUTHORIZED / NOT RUN**; STOP before C6.
+- C5 published `6d55238c076ec2ccf9e743ea63470ead4e25690c`, sole parent C4, own post-commit 74 PASS in 34.854 s, exit 0. Later relayed scoped R1-C/R2-C/R3-C and META 74/33.336 s are external evidence in the C6 section, not this writer's runs.
+- [x] C6 scoped implementation, own full diff/self-review, final fresh 111-test compiler verification and unchanged 58-test host baseline PASS, fault/preimage/support evidence and clean lease/cleanup verified. Single prescribed commit publication follows these verified contents; SHA/parent and post-commit status are reported externally. Independent C6 review and full-spike acceptance are not claimed. STOP before C7.
+- [ ] C7-C8: **NOT AUTHORIZED / NOT RUN**; STOP before C7.
 
-R1 reviewer `731643b5-d353-4147-82e7-6d6d4eab31fb` independently approved the comparison and cavity-design interpretations (R1-A2, relayed by superorchestrator). R2 `a9f5de5b-43db-4fbc-bb1b-625a06dfa53d` and R3 `23ac2427-9a49-4c2e-a3da-7996b5affb7e` completed read-only technical prechecks, also relayed; those prechecks were not implemented-code reviews. Later R2-B/R3-B/R3-B2 results are explicitly attributed above. This writer performs implementation/tests/self-review only; **independent review of actual C4/C5 code remains pending**. C3's signed-volume oracle is not a C5 occupancy/connectivity oracle.
+R1 reviewer `731643b5-d353-4147-82e7-6d6d4eab31fb`, R2 `a9f5de5b-43db-4fbc-bb1b-625a06dfa53d`, and R3 `23ac2427-9a49-4c2e-a3da-7996b5affb7e` are user-dispatched read-only reviewers; earlier prechecks and later implemented-code scoped results are explicitly attributed. C4/C5 scoped closures were relayed by the superorchestrator; **independent review of actual C6 code remains pending**. This writer claims implementation/tests/self-review only, no full spike/human acceptance. C3 signed source volume is not C5 cavity topology or C6 raster volume.
 
 ## Definition of Done
 
-**Current checkpoint:** preserve accepted prior commits; implement C4 then C5 with independent interval/contact/topology checks and fresh per-gate tests/self-review; unchanged numeric budgets/upstream; two exact separate scoped commits, no amend/rewrite/push; report actual SHAs/counts/commands/proof versions/budget/cleanup; **STOP before C6** for user-dispatched independent reviews. No full-spike acceptance or successful admitted compile claim.
+**Current checkpoint:** preserve accepted C0-C5 commits; actual report-bound C6 core/thin/semantic/geometric deterministic package and verified atomic publication, focused positive/negative/fault/preimage tests, fresh full suite/read-only baseline and complete scoped self-review; one exact separate prescribed commit; report actual SHA/parent/files/commands/counts/faults/preimages/examples/limits/cleanup. **STOP before C7** for user-dispatched independent C6 reviews. No amend/rewrite/push, budget increase, full corpus/ten-repeat/Blender/performance/product/full-spike claim.
 
 **Eventual separately authorized spike:** working narrow reader/geometry/reference classifier/semantic package/CLI; G01-G30 outcomes and independent oracles including both-profile G13; honest thin/topology/material rejection; same-input byte determinism and explicit permutation classes; fault-safe whole-package publication; fresh tests/baseline/compileall; coordinated benchmark or explicit nonqualified status; real Blender E2E or precise NOT RUN blocker; independent full review with confirmed fixes verified; final reports/handoff and lease-clean commit. `PRODUCT_INTEGRATED = NO` even if accepted.

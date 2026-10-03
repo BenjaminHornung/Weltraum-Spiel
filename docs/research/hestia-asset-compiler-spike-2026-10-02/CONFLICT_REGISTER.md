@@ -1,8 +1,8 @@
 # Hestia asset compiler spike — C1 conflict register
 
-Date: 2026-10-02. Base: `25bc7f5bbd2db6317c42193873eadeaf10a092c5`. Current scope: C0/C1 ONLY; **STOP before C2**. Existing source/contracts remain unchanged. `PRODUCT_INTEGRATED = NO`.
+Initial date: 2026-10-02; C6 update 2026-10-03. Base: `25bc7f5bbd2db6317c42193873eadeaf10a092c5`. C1 historical decisions are retained below; current authorization is C6 ONLY, **STOP before C7**. Existing upstream source/contracts remain unchanged. `PRODUCT_INTEGRATED = NO`.
 
-No unresolved pair of current, same-boundary contradictory MUST rules was found. A later explicit conflict still triggers STOP with both quotations; scoped research decisions do not override public authoring contracts. `RESOLVED_*` below means an interpretation/design decision, **not implemented or tested compiler behavior**.
+No unresolved pair of current, same-boundary contradictory MUST rules was found. A later explicit conflict still triggers STOP with both quotations; scoped research decisions do not override public authoring contracts. C1 `RESOLVED_*` labels are interpretation/design decisions; implemented evidence is specifically updated here and in EXECPLAN/PACKAGE_FORMAT, never inferred from that label alone.
 
 ## CR01 — historical frame suggestions versus current authoring frame
 
@@ -32,7 +32,7 @@ Resolution, explicitly approved in R1-A2 by reviewer **`731643b5-d353-4147-82e7-
 - Semantically equivalent ordering permutations -> identical normalized-geometry/semantics/voxelization hashes, brick bytes and owner/material/address associations, and canonical semantic manifest projection.
 - Raw GLB/report source hashes, authoring-payload digest/source inventory and their full provenance-binding manifest/tree remain truthful and **may differ** for different bytes.
 
-The exact projection fields/exclusions are in CONTRACT_AUDIT. This is an explicit comparison definition, not removing/faking published provenance or changing public authoring schema. No reviewed MUST requires sourcehash-bearing full manifest/tree byte identity for different input bytes. If such an explicit current MUST is newly found, STOP and quote it. Executable permutation/ten-run tests remain **NOT RUN**.
+The exact executable C6 projection/preimages are in [PACKAGE_FORMAT.md](PACKAGE_FORMAT.md): only sources/provenanceSha256/manifestTreeSha256 are excluded. No source provenance is faked or public schema changed. Properly remapped permutations and two same-byte generations are exercised at C6; ten-run/full corpus tests remain **NOT RUN**. An explicit new contrary current MUST still triggers STOP with quotation.
 
 ## CR06 — flood-only cavity/tunnel design gap
 
@@ -45,7 +45,7 @@ Exterior flood alone labels every enclosed non-surface region as material, false
 3. Remaining non-surface connected components; deterministic cell-center representative with geometry ray parity, even/odd **per Solid part**.
 4. Material labels fill, cavity labels stay Air; grazing/edge/vertex/uncertain labels reject stably.
 
-No GWN dependency and no relabelling G13 to Shell. Mandatory G13 runs at both profiles against independent interval oracles in EXECPLAN. G14's under-resolved contact-A tunnel can seal at 0.25 m; use both-profile resolvable control and explicit phase/diagonal/under-resolved topology-loss rejection. Parity-empty enclosed air does not prove raster exterior connectivity. **Implementation and independent hollow/tunnel oracle remain NOT RUN.**
+No GWN dependency and no relabelling G13 to Shell. C5 implementation and own independent interval/tunnel tests passed, with user-relayed R2-C scoped closure described in EXECPLAN. C6 full packages preserve both-profile G13 and both inner windings. G14 coarse sealing rejects; wide/phase controls have actual through-body Air paths. Narrow orthogonal PL-boundary-disk inclusion plus induced component mapping is documented in PACKAGE_FORMAT; no Euler/counts-only shortcut or universal geometry support is claimed.
 
 ## CR07 — joint transform proof missing upstream
 
@@ -57,11 +57,11 @@ No GWN dependency and no relabelling G13 to Shell. Mandatory G13 runs at both pr
 
 ## CR09 — true thickness and replacement geometry not generally proved
 
-**Status: OPEN_RESEARCH_LIMIT; FAIL-CLOSED_RULE_FROZEN.** Current contract line 39 requires geometry measurement; metadata/AABB is not proof. Beam/Rod policy alone cannot justify `PreservedSemantic`; retain genuine replacement geometry/parameters and payload. Tube must not turn into filled rod. Overdeclared thickness gets negative fixtures. Use `RejectedUnprovenThickness` for unsupported/unproved geometry, rather than silently erasing it or claiming general measurement solved. Exact proof implementation/outcomes belong to C6 and remain NOT RUN.
+**Status: IMPLEMENTED_NARROW_PROOF; GENERAL_THICKNESS_OPEN.** C6 exact orthogonal material-axis sections use spike-local 2*h margin, real dyadic witnesses and fully specified exact ratio endpoints, not metadata/AABB. Proven box beam/single-layer rectangular shell replacements carry usable parameters. Overdeclared/thin and rounded-under-threshold cases reject. Unsupported rods/tubes/layer stacking/arbitrary nonorthogonal proof is RejectedUnprovenThickness; no tube becomes a rod and no structural part silently disappears. General thickness remains unsolved; actual support/outcomes are in PACKAGE_FORMAT.
 
 ## CR10 — material/Part interior precedence unspecified
 
-**Status: OPEN_RESEARCH_LIMIT; AMBIGUITY_REJECTION_FROZEN.** Current schema maps semantic render/structural materials but does not define a multi-material volume selector. Package 04 lines 100-102 explicitly allows research decisions/ambiguity diagnosis. Unique geometry-bound material of a homogeneous Solid is usable; unresolved distinct material/interior/owner choices reject. Defaults and surface ownership are not automatic interior precedence. Use order-independent candidate sets and manifest brick owner refs; part-owned entries are the minimum ownership evidence. Count only active voxelized slots for the 255 cap; unused report slots and paletteIndex are not that cap/map. G16 must record actual success with a proven rule or honest rejection, not fabricated precedence.
+**Status: IMPLEMENTED_UNANIMOUS_BINDING; GENERAL_SELECTOR_OPEN.** Current schema still does not define a multimaterial volume selector. The spike requires homogeneous geometry-bound material and agreement with any explicit Part/asset-default structural IDs; conflicts reject without precedence. Per-Part brick ownership/overlapping geometric contributions remain explicit, not global XOR/net volume. Only active voxelized bindings consume 255 slots; unused declarations and paletteIndex do not. G16 ambiguity rejection remains allowed and no general selector is claimed.
 
 ## CR11 — report inventory versus baked geometry/provenance
 
@@ -77,10 +77,14 @@ No GWN dependency and no relabelling G13 to Shell. Mandatory G13 runs at both pr
 
 ## CR14 — budgets, render allowlist and whole-output atomicity
 
-**Status: DOWNSTREAM_REQUIREMENTS_FROZEN; IMPLEMENTATION_NOT_RUN.** R3-A requires pre-read byte budgets, strict bounded JSON, full graph/accessor/instance expansion budgets, safe grid/padding/flood/work/output limits and boolean rejection; explicit UV/PBR/embedded-image handling without external URI/image decode; finite NORMAL/TANGENT and rejection of unsupported geometry-altering extensions. Report payload digest must use the exact existing canonical helper. C6 stages/verifies a whole sibling generation, rejects every existing target unchanged, excludes tree self-preimage, publishes by one atomic directory rename, and fault-tests collision/failures/owned cleanup. No broad upstream rewrite or dependency follows from these requirements.
+**Status: IMPLEMENTED_SCOPED_REFERENCE; NATIVE_LINK_EVIDENCE_LIMIT.** Reader/admission/global geometry/grid/work/owned-brick caps remain unchanged; C6 adds bounded JSON/metadata+binary output preflight before payload packing, exact report binding and actual-byte verifier. Whole owned sibling staging and one local Windows no-replace directory rename are fault-tested, including late empty/nonempty collisions and real junction/broken-junction prechecks. POSIX/UNC/mapped network publication rejects. Native symlink creation failed WinError 1314, so native symlink/broken-symlink cases remain NOT RUN; labelled lexical mocks are not that evidence. No ACL/privilege/upstream/dependency changes.
+
+## CR15 — valid 90-degree TRS baking versus exact orthogonal fill scope
+
+**Status: OPEN_SCOPED_SUPPORT_LIMIT; R1-C INTERPRETATION RELAYED.** Exact quarter-turn MATRIX compiles. Common quaternion [0,0,sin(pi/4),cos(pi/4)] bakes 12 valid C3 triangles but Float64 residuals are nonorthogonal for the exact C5/C6 proof, producing NOT VOXELIZED / thin.unproven. Arbitrary rotation/shear has the same scoped proof limitation. This is not invalid geometry, a universal rotated-fill obligation, or license to snap/repair/relabel. G05/G06 variants remain inside those exact IDs; reasoned BLOCKED must be recorded in future corpus/handoff. Default Blender 90-degree TRS interop remains an actual E2E risk.
 
 ## Review and checkpoint limits
 
 R1-A/R1-A2, R2-A, and R3-A are user-dispatched **independent read-only prechecks**, relayed by the superorchestrator; reviewer IDs above identify attribution. This agent did not create another agent or claim fresh direct access to their entire sessions. Their design approval is not implementation PASS, independent executed golden evidence, a human final gate, or full-spike acceptance.
 
-C1 self-review/fresh scoped checks and commit evidence are recorded in EXECPLAN. `IMPLEMENTED = NO`; compiler `CODE_VERIFIED`, `CORPUS_VERIFIED`, `DETERMINISM_VERIFIED`, and `BLENDER_E2E_VERIFIED` are NOT RUN; qualified performance NOT RUN; `PRODUCT_INTEGRATED = NO`. C2-C8 require further authorization, and this writer stops at the C1 checkpoint.
+C1 no-implementation status is historical. C2-C6 functional core and focused own tests/self-review are recorded in EXECPLAN. User-relayed R1-C/R2-C/R3-C are scoped prior-head reviews, NOT independent C6 acceptance. Independent C6 review is pending; full `CORPUS_VERIFIED`, 30-case/ten-repeat `DETERMINISM_VERIFIED`, real `BLENDER_E2E_VERIFIED`, qualified performance and full spike acceptance are NOT RUN. `PRODUCT_INTEGRATED = NO`; STOP before C7.
