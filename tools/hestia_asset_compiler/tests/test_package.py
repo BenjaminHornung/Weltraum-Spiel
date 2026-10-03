@@ -298,6 +298,161 @@ class PackageTests(unittest.TestCase):
             with self.subTest(field=field), self.assertRaises(CompilerError):
                 verify_files(rehashed_package(beam, lambda m: m["thinFeatureDecisions"][0]["replacement"].update({field: value})))
 
+    def test_corrigendum_five_rehashed_review_reproductions(self):
+        doc, binary = fixture(*box((0, 0, 0), (1, .0625, .125)))
+        doc["nodes"][0]["extras"]["hestia"]["thinFeature"]["policy"] = "PreserveAsBeam"
+        beam = compile_core(*pair(doc, binary)[:2], MICRO)
+        centered = compile_core(*pair(*fixture(*box((-.375,) * 3, (.375,) * 3)))[:2], MICRO)
+        mass = centered.manifest["geometricMassInputs"][0]
+        self.assertEqual((mass["cellCount"], mass["occupiedCellVolumeCubicMeters"], mass["cellCenterSumMeters"]),
+                         (512, 1.0, [0, 0, 0]))
+
+        def omit_minima(manifest):
+            proof = manifest["thinFeatureDecisions"][0]["proof"]
+            del proof["minimumAxisSectionMeters"], proof["axisSectionMinimaMeters"]
+
+        cases = (("zero-minima-versus-exact-one", self.cube, lambda m: m["thinFeatureDecisions"][0]["proof"].update(
+                    minimumAxisSectionMeters=0, axisSectionMinimaMeters=[0, 0, 0])),
+                 ("omitted-minima", self.cube, omit_minima),
+                 ("unknown-decision-field", self.cube, lambda m: m["thinFeatureDecisions"][0].update(unrecognizedProbeField="probe")),
+                 ("beam-bool-one", beam, lambda m: m["thinFeatureDecisions"][0]["replacement"].update(lengthMeters=True)),
+                 ("volume-bool-one-and-center-bool-zero", centered, lambda m: m["geometricMassInputs"][0].update(
+                    occupiedCellVolumeCubicMeters=True, cellCenterSumMeters=[False, False, False])))
+        for name, package, mutate in cases:
+            with self.subTest(case=name):
+                with self.assertRaises(CompilerError) as error:
+                    verify_files(rehashed_package(package, mutate))
+                self.assertEqual(error.exception.code, "package.geometric-inputs" if package is centered else "package.thin")
+
+    def test_corrigendum_section_records_closed_typed_and_coherent(self):
+        decision = self.cube.manifest["thinFeatureDecisions"][0]
+        records = (((), decision), (("intent",), decision["intent"]), (("proof",), decision["proof"]),
+                   (("proof", "thinSectionWitness"), decision["proof"]["thinSectionWitness"]),
+                   (("proof", "thinSectionWitness", "exactLengthRatio"), decision["proof"]["thinSectionWitness"]["exactLengthRatio"]))
+        for path, record in records:
+            for field in (*record, "unknown"):
+                def mutate(manifest):
+                    target = manifest["thinFeatureDecisions"][0]
+                    for key in path:
+                        target = target[key]
+                    if field == "unknown":
+                        target[field] = "probe"
+                    else:
+                        del target[field]
+                with self.subTest(path=path, field=field), self.assertRaises(CompilerError):
+                    verify_files(rehashed_package(self.cube, mutate))
+        proof_mutations = (lambda p: p.update(minimumAxisSectionMeters=True),
+                           lambda p: p.update(axisSectionMinimaMeters=[True, 1, 1]),
+                           lambda p: p.update(axisSectionMinimaMeters=[1, 1]),
+                           lambda p: p.update(axisSectionMinimaMeters=[2, 1, 1]),
+                           lambda p: p.update(minimumAxisSectionMeters=2),
+                           lambda p: p["thinSectionWitness"].update(axis=False),
+                           lambda p: p["thinSectionWitness"].update(exactEndpointRatios=[[{}], []]),
+                           lambda p: p["thinSectionWitness"]["exactEndpointRatios"][0][0].update(unknown="probe"))
+        for mutate in proof_mutations:
+            with self.subTest(mutate=mutate), self.assertRaises(CompilerError):
+                verify_files(rehashed_package(self.cube, lambda m: mutate(m["thinFeatureDecisions"][0]["proof"])))
+
+        def rounded_under_margin(manifest):
+            proof = manifest["thinFeatureDecisions"][0]["proof"]
+            proof.update(minimumAxisSectionMeters=.25, axisSectionMinimaMeters=[.25] * 3)
+            witness = proof["thinSectionWitness"]
+            length = Fraction(1, 4) - Fraction(1, 2 ** 56)
+            self.assertEqual(float(length), .25)
+            ratio = {"numerator": str(length.numerator), "denominator": str(length.denominator)}
+            witness["exactLengthRatio"] = ratio
+            witness["exactEndpointRatios"][1][witness["axis"]] = ratio
+            witness["endpointsMeters"][1][witness["axis"]] = .25
+        with self.assertRaises(CompilerError) as error:
+            verify_files(rehashed_package(self.cube, rounded_under_margin))
+        self.assertEqual(error.exception.code, "package.thin")
+
+    def test_corrigendum_geometric_records_closed_and_nonbool(self):
+        centered = compile_core(*pair(*fixture(*box((-.375,) * 3, (.375,) * 3)))[:2], MICRO)
+        record = centered.manifest["geometricMassInputs"][0]
+        for field in (*record, "unknown"):
+            def mutate(manifest):
+                target = manifest["geometricMassInputs"][0]
+                if field == "unknown":
+                    target[field] = "probe"
+                else:
+                    del target[field]
+            with self.subTest(field=field), self.assertRaises(CompilerError):
+                verify_files(rehashed_package(centered, mutate))
+        mutations = (lambda r: r.update(cellCount=True), lambda r: r.update(cellVolumeCubicMeters=True),
+                     lambda r: r.update(occupiedCellVolumeCubicMeters=True),
+                     lambda r: r.update(cellCenterSumMeters=[False, False, False]),
+                     lambda r: r.update(boundsCells=[[False] * 3, [True] * 3]),
+                     lambda r: r.update(boundsCells=[[0] * 3]),
+                     lambda r: r.update(boundsMeters=[[False] * 3, [True] * 3]),
+                     lambda r: r.update(boundsMeters=[[0] * 3]),
+                     lambda r: r.update(structuralMaterialId="steel.missing"),
+                     lambda r: r.update(applicability="UnboundGeometry"))
+        for mutate in mutations:
+            with self.subTest(mutate=mutate), self.assertRaises(CompilerError):
+                verify_files(rehashed_package(centered, lambda m: mutate(m["geometricMassInputs"][0])))
+        valid = rehashed_package(centered, lambda m: m["geometricMassInputs"][0].update(
+            occupiedCellVolumeCubicMeters=1, cellCenterSumMeters=[0, 0, 0]))
+        self.assertEqual(verify_files(valid)["geometricMassInputs"][0]["cellCenterSumMeters"], [0, 0, 0])
+        negative = compile_core(*pair(*fixture(*box((-1.375,) * 3, (-.625,) * 3)))[:2], MICRO)
+        self.assertEqual(negative.manifest["geometricMassInputs"][0]["cellCenterSumMeters"], [-512] * 3)
+        self.assertEqual(verify_files(negative.files), negative.manifest)
+
+    def test_corrigendum_preserved_variants_closed_typed_and_exact_margin(self):
+        doc, binary = fixture(*box((0, 0, 0), (1, .0625, .125)))
+        doc["nodes"][0]["extras"]["hestia"]["thinFeature"]["policy"] = "PreserveAsBeam"
+        beam = compile_core(*pair(doc, binary)[:2], MICRO)
+        doc, binary = fixture([(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)], [(0, 1, 2), (0, 2, 3)])
+        doc["nodes"][0]["extras"]["hestia"].update(representation="Shell", shell={"thicknessMeters": 1,
+            "layers": [{"structuralMaterialId": "steel.a", "thicknessMeters": 1}]})
+        doc["nodes"][0]["extras"]["hestia"]["thinFeature"]["policy"] = "PreserveAsShell"
+        shell = compile_core(*pair(doc, binary)[:2], MICRO)
+        doc, binary = fixture(*box())
+        del doc["nodes"][0]["mesh"]
+        doc["nodes"][0]["extras"]["hestia"]["representation"] = "StructuralAssembly"
+        assembly = compile_core(*pair(doc, binary)[:2], MICRO)
+        doc, binary = fixture(*box())
+        doc["nodes"][0]["extras"]["hestia"].update(representation="Decorative", destructible=False,
+            collisionPolicy="None", navigationPolicy="None")
+        decorative = compile_core(*pair(doc, binary)[:2], MICRO)
+        for package in (beam, shell, assembly, decorative):
+            self.assertEqual(verify_files(package.files), package.manifest)
+            decision = package.manifest["thinFeatureDecisions"][0]
+            records = [((), decision)]
+            for key in ("proof", "replacement"):
+                if key in decision:
+                    records.append(((key,), decision[key]))
+            for path, record in records:
+                for field in (*record, "unknown"):
+                    def mutate(manifest):
+                        target = manifest["thinFeatureDecisions"][0]
+                        for key in path:
+                            target = target[key]
+                        if field == "unknown":
+                            target[field] = "probe"
+                        else:
+                            del target[field]
+                    with self.subTest(outcome=decision["outcome"], path=path, field=field), self.assertRaises(CompilerError):
+                        verify_files(rehashed_package(package, mutate))
+        for package, mutate in ((beam, lambda r: r.update(lengthMeters=True)),
+                                (beam, lambda r: r.update(crossSectionMeters=[True, .125])),
+                                (beam, lambda r: r.update(boundsMinMeters=[False, 0, 0])),
+                                (shell, lambda r: r.update(thicknessMeters=True)),
+                                (shell, lambda r: r.update(normal=[0, 0, True])),
+                                (shell, lambda r: r["layerIntent"][0].update(thicknessMeters=True)),
+                                (shell, lambda r: r["layerIntent"][0].update(unknown="probe")),
+                                (shell, lambda r: r["layerIntent"][0].pop("thicknessMeters"))):
+            with self.subTest(mutate=mutate), self.assertRaises(CompilerError):
+                verify_files(rehashed_package(package, lambda m: mutate(m["thinFeatureDecisions"][0]["replacement"])))
+        doc, binary = fixture(*box((0, 0, 2 ** -55), (2, .5, .5)))
+        doc["nodes"][0]["extras"]["hestia"]["thinFeature"]["policy"] = "PreserveAsBeam"
+        rounded_beam = compile_core(*pair(doc, binary)[:2], STANDARD)
+        proof = rounded_beam.manifest["thinFeatureDecisions"][0]["proof"]
+        ratio = proof["thinSectionWitness"]["exactLengthRatio"]
+        self.assertEqual(proof["minimumAxisSectionMeters"], .5)
+        self.assertLess(Fraction(int(ratio["numerator"]), int(ratio["denominator"])), Fraction(1, 2))
+        self.assertEqual(verify_files(rounded_beam.files), rounded_beam.manifest)
+
     def test_success_actual_directory_verification_and_corrupt_brick(self):
         with tempfile.TemporaryDirectory() as root:
             target = Path(root) / "out"

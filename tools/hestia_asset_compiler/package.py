@@ -17,7 +17,7 @@ from .admission import admit_pair, digest, report_semantics, validate_inventory,
 from .classification import CLASSIFICATION_VERSION, RAY_VERSION, TOPOLOGY_VERSION, classify_cells
 from .errors import CompilerError
 from .geometry import GEOMETRY_VERSION, canonicalize_geometry, valid_matrix, world_point
-from .glb import bounded_read, fail, finite_vector, integer, positive, sequence, shape, strict_json
+from .glb import bounded_read, fail, finite_vector, integer, nonnegative, positive, sequence, shape, strict_json
 from .profiles import BUDGETS, BUDGET_VERSION, PROFILES, check_budget
 from .thin import MATERIAL_VERSION, REPLACEMENT_VERSION, THIN_VERSION, check_material_intent, thin_gate
 from .voxel import ADDRESS_VERSION, SURFACE_VERSION, Binding, brick_address, pack_bricks
@@ -225,20 +225,43 @@ def read_ratio(value):
 
 
 def validate_decision(decision, part, h, semantics, material_by_id):
-    if decision.get("policy") != part["thinFeature"]["policy"]:
+    fields = ["partId", "policy", "intent", "thinVersion", "outcome"]
+    outcome = decision.get("outcome")
+    replacement = decision.get("replacement", {})
+    kind = replacement.get("kind") if isinstance(replacement, dict) else None
+    if outcome == "Voxelized":
+        fields += ["proof", "reason"]
+    elif outcome == "PreservedSemantic" and kind in ("RectangularPrismBeam", "RectangularSingleLayerMidplaneShell", "SemanticAssemblyGraph"):
+        fields += ["replacement"] + ([] if kind == "SemanticAssemblyGraph" else ["proof"])
+    elif outcome == "DecorativeOnly":
+        fields += ["reason"]
+    else:
+        fail("package.thin", "supported conditional decision/replacement required")
+    shape(decision, fields, fields, "package.thin")
+    shape(decision["intent"], ["policy", "declaredMinimumThicknessMeters"], ["policy", "declaredMinimumThicknessMeters"], "package.thin")
+    positive(decision["intent"]["declaredMinimumThicknessMeters"], "package.thin")
+    if (decision["partId"] != part["partId"] or decision["thinVersion"] != THIN_VERSION
+            or decision["intent"] != part["thinFeature"] or decision["policy"] != part["thinFeature"]["policy"]):
         fail("package.thin", "thin policy must retain original intent")
-    if decision["outcome"] == "Voxelized":
-        if part["representation"] != "Solid":
-            fail("package.thin", "only proved Solid sections authorize voxel cells")
-        proof = decision.get("proof", {})
-        witness = proof.get("thinSectionWitness", {})
-        ratio = witness.get("exactLengthRatio", {})
-        if proof.get("scope") != "ExactOrthogonalMaterialAxisSections" or proof.get("samplingThresholdMeters") != 2 * h:
+    if outcome == "Voxelized" or kind == "RectangularPrismBeam":
+        proof = decision["proof"]
+        fields = ["scope", "minimumAxisSectionMeters", "axisSectionMinimaMeters", "thinSectionWitness", "samplingThresholdMeters"]
+        shape(proof, fields, fields, "package.thin")
+        nonnegative(proof["minimumAxisSectionMeters"], "package.thin")
+        minima = finite_vector(proof["axisSectionMinimaMeters"], 3, "package.thin")
+        positive(proof["samplingThresholdMeters"], "package.thin")
+        witness = proof["thinSectionWitness"]
+        fields = ["axis", "endpointsMeters", "exactEndpointRatios", "exactLengthRatio"]
+        shape(witness, fields, fields, "package.thin")
+        if proof["scope"] != "ExactOrthogonalMaterialAxisSections" or proof["samplingThresholdMeters"] != 2 * h:
             fail("package.thin", "actual versioned section witness required")
-        length = read_ratio(ratio)
-        if length < 2 * h:
-            fail("package.thin", "exact section witness does not meet sampling margin")
+        length = read_ratio(witness["exactLengthRatio"])
         axis = integer(witness["axis"], maximum=2, code="package.thin")
+        if (length <= 0 or proof["minimumAxisSectionMeters"] != min(minima)
+                or proof["minimumAxisSectionMeters"] != float(length) or minima[axis] != float(length)):
+            fail("package.thin", "displayed section minima must agree with the exact axial witness")
+        if (outcome == "Voxelized" and length < 2 * h) or (kind == "RectangularPrismBeam" and length >= 2 * h):
+            fail("package.thin", "exact section witness disagrees with sampling outcome")
         endpoints = sequence(witness["endpointsMeters"], "package.thin")
         if len(endpoints) != 2:
             fail("package.thin", "two actual section endpoints required")
@@ -252,14 +275,20 @@ def validate_decision(decision, part, h, semantics, material_by_id):
                 or [[float(x) for x in point] for point in points] != endpoints or points[1][axis] - points[0][axis] != length
                 or any(points[0][a] != points[1][a] for a in range(3) if a != axis)):
             fail("package.thin", "section witness endpoint/length mismatch")
-    elif decision["outcome"] == "PreservedSemantic":
-        replacement = decision.get("replacement", {})
-        kind = replacement.get("kind")
+    if outcome == "Voxelized":
+        if part["representation"] != "Solid" or decision["reason"] != "AllExactAxisMaterialSectionsMeetTwoCellThreshold":
+            fail("package.thin", "only proved Solid sections authorize voxel cells")
+    elif outcome == "PreservedSemantic":
         if kind == "SemanticAssemblyGraph":
+            shape(replacement, ["kind", "childPartIds"], ["kind", "childPartIds"], "package.thin")
+            sequence(replacement["childPartIds"], "package.thin")
             children = sorted(p["partId"] for p in semantics["parts"] if p.get("parentPartId") == part["partId"])
             if part["representation"] != "StructuralAssembly" or replacement.get("childPartIds") != children:
                 fail("package.thin", "usable semantic assembly graph required")
         elif kind in ("RectangularPrismBeam", "RectangularSingleLayerMidplaneShell"):
+            fields = ["kind", "replacementVersion", "boundsMinMeters", "boundsMaxMeters", "renderMaterialId", "structuralMaterialId"]
+            fields += ["axis", "lengthMeters", "crossSectionMeters"] if kind == "RectangularPrismBeam" else ["normal", "extrusionConvention", "thicknessMeters", "layerIntent"]
+            shape(replacement, fields, fields, "package.thin")
             if replacement.get("replacementVersion") != REPLACEMENT_VERSION:
                 fail("package.thin", "versioned reconstructable replacement required")
             material = material_by_id.get(replacement.get("renderMaterialId"))
@@ -268,8 +297,12 @@ def validate_decision(decision, part, h, semantics, material_by_id):
             check_material_intent(part, {Binding(material["renderMaterialId"], material.get("structuralMaterialId"))}, semantics["asset"])
             lo = finite_vector(replacement["boundsMinMeters"], 3, "package.thin")
             hi = finite_vector(replacement["boundsMaxMeters"], 3, "package.thin")
+            if any(abs(x) > BUDGETS["world_coordinate"] for point in (lo, hi) for x in point):
+                fail("package.thin", "bounded replacement world coordinates required")
             extents = [Fraction(b) - Fraction(a) for a, b in zip(lo, hi)]
             if kind == "RectangularPrismBeam":
+                positive(replacement["lengthMeters"], "package.thin")
+                finite_vector(replacement["crossSectionMeters"], 2, "package.thin")
                 axis = integer(replacement["axis"], maximum=2, code="package.thin")
                 cross_section = [float(extents[a]) for a in range(3) if a != axis]
                 if (part["representation"] != "Solid" or part["thinFeature"]["policy"] != "PreserveAsBeam"
@@ -278,6 +311,14 @@ def validate_decision(decision, part, h, semantics, material_by_id):
                         or replacement["crossSectionMeters"] != cross_section):
                     fail("package.thin", "beam parameters must reconstruct exact measured box")
             else:
+                proof = decision["proof"]
+                shape(proof, ["scope", "solidFill"], ["scope", "solidFill"], "package.thin")
+                if (proof["scope"] != "ExactPlanarRectangleCoverage; authored single-layer extrusion intent"
+                        or proof["solidFill"] is not False):
+                    fail("package.thin", "shell proof retains extrusion intent, never Solid fill")
+                for layer in sequence(replacement["layerIntent"], "package.thin"):
+                    shape(layer, ["structuralMaterialId", "thicknessMeters"], ["structuralMaterialId", "thicknessMeters"], "package.thin")
+                    positive(layer["thicknessMeters"], "package.thin")
                 shell = part.get("shell", {})
                 positive(replacement["thicknessMeters"], "package.thin")
                 normal = finite_vector(replacement["normal"], 3, "package.thin")
@@ -291,8 +332,9 @@ def validate_decision(decision, part, h, semantics, material_by_id):
                     fail("package.thin", "single-layer rectangular midplane shell parameters required")
         else:
             fail("package.thin", "unsupported/missing reconstructable replacement")
-    elif part["representation"] != "Decorative" and (part["thinFeature"]["policy"] != "DecorativeOnly"
-            or part["destructible"] or part["collisionPolicy"] != "None" or part["navigationPolicy"] != "None"):
+    elif (decision["reason"] != "ExplicitNonVoxelPolicy" or (part["representation"] != "Decorative"
+            and (part["thinFeature"]["policy"] != "DecorativeOnly" or part["destructible"]
+                 or part["collisionPolicy"] != "None" or part["navigationPolicy"] != "None"))):
         fail("package.thin", "DecorativeOnly cannot erase authoritative structural policy")
 
 
@@ -444,13 +486,33 @@ def _verify_files(files):
     if set(files) != expected_paths or used != set(bindings):
         fail("package.inventory", "no unexpected files or unused byte slots allowed")
     masses = mass_inputs(entries, Fraction(manifest["cellMeters"]))
+    structural_ids = {m["structuralMaterialId"] for m in semantics["materials"] if "structuralMaterialId" in m}
     for mass in sequence(manifest["geometricMassInputs"], "package.geometric-inputs"):
+        fields = ("partId structuralMaterialId applicability ownershipConvention algorithm cellCount cellVolumeCubicMeters "
+                  "occupiedCellVolumeCubicMeters cellCenterSumMeters boundsCells boundsMeters").split()
+        shape(mass, fields, fields, "package.geometric-inputs")
+        structural = mass["structuralMaterialId"]
+        if (mass["partId"] not in parts or (structural is not None and structural not in structural_ids)
+                or mass["algorithm"] != MASS_VERSION or mass["applicability"] != ("UnboundGeometry" if structural is None else "GeometricOnly")
+                or mass["ownershipConvention"] != "PerPartContributions; overlaps are not net unique physical volume"):
+            fail("package.geometric-inputs", "versioned owned geometry/material convention required")
         integer(mass["cellCount"], 1, BUDGETS["grid_cells"], "package.geometric-inputs")
-        for cell in mass["boundsCells"]:
+        for field in ("cellVolumeCubicMeters", "occupiedCellVolumeCubicMeters"):
+            nonnegative(mass[field], "package.geometric-inputs")
+        finite_vector(mass["cellCenterSumMeters"], 3, "package.geometric-inputs")
+        bounds = sequence(mass["boundsCells"], "package.geometric-inputs")
+        if len(bounds) != 2:
+            fail("package.geometric-inputs", "two cell-bound rows required")
+        for cell in bounds:
             if len(sequence(cell, "package.geometric-inputs")) != 3:
                 fail("package.geometric-inputs", "three integer cell bounds required")
             for value in cell:
                 integer(value, -BUDGETS["grid_coordinate"], BUDGETS["grid_coordinate"], "package.geometric-inputs")
+        bounds = sequence(mass["boundsMeters"], "package.geometric-inputs")
+        if len(bounds) != 2:
+            fail("package.geometric-inputs", "two finite world-bound rows required")
+        for point in bounds:
+            finite_vector(point, 3, "package.geometric-inputs")
     if masses != manifest["geometricMassInputs"]:
         fail("package.geometric-inputs", "geometric inputs must match actual decoded owned cells")
     grid_bounds = []
