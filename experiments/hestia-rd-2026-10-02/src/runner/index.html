@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>RD-03 — Three/WebGL2 lab</title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, sans-serif; background: #131a22; color: #e9edf1; }
+    body { margin: 1rem auto; max-width: 1320px; padding: 0 1rem; }
+    h1 { font-size: 1.3rem; } fieldset { display: flex; flex-wrap: wrap; gap: .65rem; align-items: center; }
+    button, input, select { font: inherit; } button { padding: .4rem .65rem; } input[type=number] { width: 7rem; }
+    canvas { display: block; width: 100%; max-width: 1280px; aspect-ratio: 16 / 9; margin: 1rem 0; background: #192430; }
+    pre { max-height: 22rem; overflow: auto; white-space: pre-wrap; font-size: .8rem; }
+    #status { min-height: 1.5rem; } :focus-visible { outline: 2px solid #f8c362; outline-offset: 3px; }
+  </style>
+</head>
+<body>
+  <h1>RD-03 — Three/WebGL2 diagnostic control</h1>
+  <p id="scope">Lab only · ProductIntegrated=false · no target-GPU, performance or art acceptance.</p>
+  <p>1280 × 720 at DPR 1; no backend/quality fallback. Native PCF, sky and water-shader parity is not implemented.</p>
+  <fieldset><legend>Source and lifecycle</legend>
+    <label>Scenario <select id="scenario" aria-label="Scenario"></select></label>
+    <button id="mount" type="button" disabled>Mount</button><button id="dispose" type="button">Dispose</button>
+  </fieldset>
+  <fieldset><legend>Controlled replay — tick/60, not render cadence</legend>
+    <button id="play" type="button" disabled>Play controlled ticks</button>
+    <label><input id="pause" type="checkbox" disabled>Pause</label>
+    <button id="advance" type="button" disabled>Advance 60 ticks</button>
+    <label>Seek tick <input id="tick" type="number" min="0" step="1" value="0" disabled></label>
+    <button id="seek" type="button" disabled>Seek</button><button id="reset" type="button" disabled>Reset</button>
+  </fieldset>
+  <p id="status" role="status" aria-live="polite">Loading pinned inventory…</p>
+  <canvas id="view" width="1280" height="720" aria-label="Three fixture projection"></canvas>
+  <details open><summary>Lab facts (not player HUD)</summary><pre id="facts" data-mounts="0">{ "productIntegrated": false }</pre></details>
+  <script type="module" src="./main.ts"></script>
+</body>
+</html>
