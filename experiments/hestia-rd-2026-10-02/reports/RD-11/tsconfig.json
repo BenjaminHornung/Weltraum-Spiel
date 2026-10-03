@@ -1,0 +1,5 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": ["../../src/experiments/three-webgpu/**/*.ts", "../../tests/RD-11/*.ts", "./oracle.ts"],
+  "exclude": []
+}

@@ -1,0 +1,5 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": ["./compiler-smoke.ts"],
+  "exclude": []
+}
