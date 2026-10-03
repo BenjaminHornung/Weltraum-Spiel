@@ -1,0 +1,27 @@
+{
+  "checks": {
+    "actual90TRSKnownUnsupportedNoTargetCaptured": "PASS",
+    "compiler25SourceManifestUnchanged": "PASS",
+    "exact11NativeChildExits": "PASS",
+    "finiteClosed12Triangle8VertexGeometry": "PASS",
+    "indexEmpty": "PASS",
+    "newHelperSyntaxOnlyNoReexecution": "PASS",
+    "old8ArtifactsHelperAndGoldenPinsUnchanged": "PASS",
+    "ownedTempAndSourceCachesEmpty": "PASS",
+    "plainBothProfileCompileValidateInspectCaptured": "PASS",
+    "plainFrameWorldVerticesExact": "PASS",
+    "rawStdoutStderrHashes": "PASS",
+    "relativeDocumentLinks": 7,
+    "retainedRealSourceAndPayloadBindings": "PASS",
+    "upstreamTrackedSourcesUnchanged": "PASS",
+    "whitespaceAndLease": "PASS"
+  },
+  "cleanupSha256": "ebbe973934f0a14a83f41d1b631668c7b40c386ba3cf38bff95fa3a3e7f38e1e",
+  "compilerCodeFreeze": "c8e451a3e52fc8da743df011debae682f93c89a3",
+  "executionSha256": "dce2d851f30ab44bb754afce2b5534cfb5eb20ea4c1bf41dd593470ae3a031b2",
+  "independentFollowupReview": "PENDING_META",
+  "newTestCorpusBenchmarkRuns": 0,
+  "productIntegrated": false,
+  "sourceManifestSha256": "c2a6c63cb94f2f24d29e3a727cc1f72e88ca90e60d26a504886d291118cf7e1a",
+  "status": "PASS_WITH_DOCUMENTED_CACHE_DEVIATION"
+}

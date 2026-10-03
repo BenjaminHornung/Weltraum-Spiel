@@ -1,0 +1,49 @@
+{
+  "compilerAndBlenderSourceBytecodeCount": 0,
+  "environmentSet": {
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "futureInvocationRequirement": "Explicitly set sys.dont_write_bytecode=True in the exporter process before its --python entrypoint; existing one-shot helper is retained exactly as executed and must not be replayed unchanged.",
+  "helperFrozenAtExecutedSha256": "82836485da250da9fcacd0583fdbfe55b397525ea70dc59b8784c4e0b3b2e836",
+  "observed": "Direct Blender exporter invocations still wrote seven new CPython313 caches; environment-only suppression was insufficient. No source code was edited. Initial Git status had no such untracked paths. No rerun or upstream fix.",
+  "ownedTempEntries": 0,
+  "rawExecutionSha256": "dce2d851f30ab44bb754afce2b5534cfb5eb20ea4c1bf41dd593470ae3a031b2",
+  "removedOwnedBytecode": [
+    {
+      "bytes": 2636,
+      "path": "tools/blender/hestia_asset_authoring/__pycache__/__init__.cpython-313.pyc",
+      "sha256": "a59aa82a0f984e226e0c653ce9027c362d6f84778c8be37878fbea3107c690a2"
+    },
+    {
+      "bytes": 52462,
+      "path": "tools/blender/hestia_asset_authoring/__pycache__/blender_adapter.cpython-313.pyc",
+      "sha256": "f873ddaac26444fee25c1d2530d7d9cd3a2ed1c34eb1138645f3c5431ab5320c"
+    },
+    {
+      "bytes": 7250,
+      "path": "tools/blender/hestia_asset_authoring/__pycache__/canonical.cpython-313.pyc",
+      "sha256": "652d2cffb5972074b137132c1b3449caffb54c55f30852db87c2bd3a2d54a0fe"
+    },
+    {
+      "bytes": 44500,
+      "path": "tools/blender/hestia_asset_authoring/__pycache__/model.cpython-313.pyc",
+      "sha256": "28d26154b20b29460e085a7464c59348b7117bfc82d26a425f83ecad54573f7a"
+    },
+    {
+      "bytes": 8812,
+      "path": "tools/blender/hestia_asset_authoring/__pycache__/report.cpython-313.pyc",
+      "sha256": "cef2e808506330fea31a2f4c4b3fe1622460e9033a0bc9ea09658b7ed6e266ce"
+    },
+    {
+      "bytes": 5580,
+      "path": "tools/blender/hestia_asset_authoring/__pycache__/schema.cpython-313.pyc",
+      "sha256": "f095ee8eb3c66008d84f39a40ebaa21bba19170dd66b25a21f8dcb8609cbef91"
+    },
+    {
+      "bytes": 58112,
+      "path": "tools/blender/hestia_asset_authoring/__pycache__/validation.cpython-313.pyc",
+      "sha256": "9f012970c25d89a18492a746dc6a4cb3c157553243edfe82ad6bb870a6bc87d0"
+    }
+  ],
+  "status": "OWNED_CACHE_DEVIATION_CLEANED"
+}

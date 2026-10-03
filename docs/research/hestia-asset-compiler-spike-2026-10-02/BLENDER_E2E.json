@@ -1,0 +1,2276 @@
+{
+  "cases": [
+    {
+      "blendBytes": 96546,
+      "blendSha256": "18ac55c4f4ff0497fab909d4f4e1b1b269be3d837629280773582e70cf682754",
+      "export": "PASS",
+      "geometry": {
+        "bounds": [
+          [
+            0.0,
+            1.0,
+            -1.5
+          ],
+          [
+            1.0,
+            2.0,
+            -0.5
+          ]
+        ],
+        "normalizedGeometrySha256": "5f7d74c48a42cfde01964fbf4c2f024109b62d90f23a4fdde863d1357b57f4a5",
+        "placements": [
+          {
+            "id": "cube",
+            "kind": "part",
+            "worldMatrix": [
+              1.0,
+              0,
+              0,
+              0,
+              0,
+              1.0,
+              0,
+              0,
+              0,
+              0,
+              1.0,
+              0,
+              0.5,
+              1.5,
+              -1.0,
+              1.0
+            ]
+          }
+        ],
+        "topology": [
+          {
+            "closed": true,
+            "components": 1,
+            "faces": 12,
+            "partId": "cube",
+            "vertices": 8
+          }
+        ],
+        "triangleCount": 12,
+        "worldVertices": [
+          [
+            0.0,
+            1.0,
+            -1.5
+          ],
+          [
+            0.0,
+            1.0,
+            -0.5
+          ],
+          [
+            0.0,
+            2.0,
+            -1.5
+          ],
+          [
+            0.0,
+            2.0,
+            -0.5
+          ],
+          [
+            1.0,
+            1.0,
+            -1.5
+          ],
+          [
+            1.0,
+            1.0,
+            -0.5
+          ],
+          [
+            1.0,
+            2.0,
+            -1.5
+          ],
+          [
+            1.0,
+            2.0,
+            -0.5
+          ]
+        ]
+      },
+      "glbBytes": 2576,
+      "glbDocument": {
+        "accessors": [
+          {
+            "bufferView": 0,
+            "componentType": 5126,
+            "count": 24,
+            "max": [
+              0.5,
+              0.5,
+              0.5
+            ],
+            "min": [
+              -0.5,
+              -0.5,
+              -0.5
+            ],
+            "type": "VEC3"
+          },
+          {
+            "bufferView": 1,
+            "componentType": 5126,
+            "count": 24,
+            "type": "VEC3"
+          },
+          {
+            "bufferView": 2,
+            "componentType": 5126,
+            "count": 24,
+            "type": "VEC2"
+          },
+          {
+            "bufferView": 3,
+            "componentType": 5123,
+            "count": 36,
+            "type": "SCALAR"
+          }
+        ],
+        "asset": {
+          "extras": {
+            "hestia": {
+              "assetId": "blender-e2e-cube",
+              "assetRevision": 1,
+              "coordinateFrame": {
+                "forwardAxis": "+Z",
+                "handedness": "RIGHT",
+                "upAxis": "+Y"
+              },
+              "metersPerUnit": 1,
+              "representation": "StructuralAssembly",
+              "schema": "hestia.asset-authoring.v1",
+              "tags": []
+            }
+          },
+          "generator": "Khronos glTF Blender I/O v5.2.39",
+          "version": "2.0"
+        },
+        "bufferViews": [
+          {
+            "buffer": 0,
+            "byteLength": 288,
+            "byteOffset": 0,
+            "target": 34962
+          },
+          {
+            "buffer": 0,
+            "byteLength": 288,
+            "byteOffset": 288,
+            "target": 34962
+          },
+          {
+            "buffer": 0,
+            "byteLength": 192,
+            "byteOffset": 576,
+            "target": 34962
+          },
+          {
+            "buffer": 0,
+            "byteLength": 72,
+            "byteOffset": 768,
+            "target": 34963
+          }
+        ],
+        "buffers": [
+          {
+            "byteLength": 840
+          }
+        ],
+        "materials": [
+          {
+            "doubleSided": true,
+            "extras": {
+              "hestia": {
+                "renderMaterialId": "cube-material",
+                "tags": []
+              }
+            },
+            "name": "CubeMaterial",
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                1
+              ],
+              "metallicFactor": 0,
+              "roughnessFactor": 0.5
+            }
+          }
+        ],
+        "meshes": [
+          {
+            "name": "Cube.001",
+            "primitives": [
+              {
+                "attributes": {
+                  "NORMAL": 1,
+                  "POSITION": 0,
+                  "TEXCOORD_0": 2
+                },
+                "indices": 3,
+                "material": 0
+              }
+            ]
+          }
+        ],
+        "nodes": [
+          {
+            "extras": {
+              "hestia": {
+                "collisionPolicy": "Voxel",
+                "defaultRenderMaterialId": "cube-material",
+                "destructible": true,
+                "kind": "part",
+                "navigationPolicy": "Obstacle",
+                "partId": "cube",
+                "representation": "Solid",
+                "tags": [],
+                "thinFeature": {
+                  "declaredMinimumThicknessMeters": 1.0,
+                  "policy": "Reject"
+                }
+              }
+            },
+            "mesh": 0,
+            "name": "CubePart",
+            "translation": [
+              0.5,
+              1.5,
+              -1
+            ]
+          }
+        ],
+        "scene": 0,
+        "scenes": [
+          {
+            "name": "Scene",
+            "nodes": [
+              0
+            ]
+          }
+        ]
+      },
+      "glbSha256": "52e2d51ec970e50c823a4120708ff9b407b8033f62d7728fe9bbb736f39d7ca9",
+      "profiles": [
+        {
+          "compileExitCode": 0,
+          "compileInfo": {
+            "assetId": "blender-e2e-cube",
+            "assetRevision": 1,
+            "brickCount": 4,
+            "cellMeters": 0.125,
+            "contentHashes": {
+              "normalizedGeometrySha256": "5f7d74c48a42cfde01964fbf4c2f024109b62d90f23a4fdde863d1357b57f4a5",
+              "semanticsSha256": "3c4315c75a1642ac114c41b8f8d9713b4fa0b04a8ca20fc612fd34988d0dff77",
+              "voxelizationSha256": "617785f7cb17974b6171233ced314d6cedd65d358e51ed4ba0b10e9c6342da6d"
+            },
+            "diagnosticsSummary": {
+              "error": 0,
+              "info": 0,
+              "warning": 0
+            },
+            "manifestTreeSha256": "f69980c657ae375f9dfb9899845412f6d81ffb9d6256b8456f356d6c013677f7",
+            "ownedCellCount": 1000,
+            "partCount": 1,
+            "productIntegrated": false,
+            "profileId": "micro-0125-research-v1",
+            "schema": "hestia.asset-compiler-spike.v1",
+            "sources": {
+              "authoringPayloadSha256": "dcbc9c6dbe960760a62156b51e105b30e52d35b358819f097b40422673e81e5f",
+              "sourceGlbSha256": "52e2d51ec970e50c823a4120708ff9b407b8033f62d7728fe9bbb736f39d7ca9",
+              "sourceReportSha256": "2dad2dac080f61c46c94395655c7f1b7fc47c15e995d321f9b0c0c757f0bd8f5"
+            },
+            "status": "VALID",
+            "thinOutcomes": {
+              "cube": "Voxelized"
+            }
+          },
+          "inspect": "PASS",
+          "manifest": {
+            "algorithmVersions": {
+              "address": "spike-owned-16-x-fastest-v1",
+              "budgets": "spike-budgets-v1",
+              "classification": "spike-exterior-six-parity-v1",
+              "geometricInputs": "spike-owned-cell-geometric-inputs-v1",
+              "geometry": "spike-world-triangles-v1",
+              "material": "spike-unanimous-explicit-binding-v1",
+              "ray": "spike-exact-eight-directions-v1",
+              "replacement": "spike-box-beam-single-layer-shell-v1",
+              "surface": "spike-exact-sat-contact-a-v1",
+              "thin": "spike-orthogonal-section-two-samples-v1",
+              "topology": "spike-orthogonal-cubical-inclusion-v1",
+              "tree": "spike-virtual-manifest-tree-v1",
+              "voxelization": "spike-owned-package-voxelization-v1"
+            },
+            "asset": {
+              "assetId": "blender-e2e-cube",
+              "assetRevision": 1,
+              "coordinateFrame": {
+                "forwardAxis": "+Z",
+                "handedness": "RIGHT",
+                "upAxis": "+Y"
+              },
+              "metersPerUnit": 1,
+              "representation": "StructuralAssembly",
+              "tags": []
+            },
+            "assetId": "blender-e2e-cube",
+            "assetRevision": 1,
+            "authoringSchema": "hestia.asset-authoring.v1",
+            "brickCellsPerAxis": 16,
+            "bricks": [
+              {
+                "byteLength": 4096,
+                "coordinate": [
+                  -1,
+                  0,
+                  -1
+                ],
+                "key": "ad222de094d7838f1c8f10a091c85df0af0b7c7dd540d98963b24fe047576a3f",
+                "partId": "cube",
+                "path": "bricks/ad222de094d7838f1c8f10a091c85df0af0b7c7dd540d98963b24fe047576a3f.bin",
+                "sha256": "88edd572a5bb2d568fc63fcf406918fb0cb3a3f419faeb47442bd83df5c3908d"
+              },
+              {
+                "byteLength": 4096,
+                "coordinate": [
+                  -1,
+                  1,
+                  -1
+                ],
+                "key": "e4197d26799f2c45f44f9d9595496ac9a242999f3e6340ad359723f2faa10fe1",
+                "partId": "cube",
+                "path": "bricks/e4197d26799f2c45f44f9d9595496ac9a242999f3e6340ad359723f2faa10fe1.bin",
+                "sha256": "8c3ba11a9c5940580ddb43eccb103c3a3523a4d1cf21146a6f39fd22470011be"
+              },
+              {
+                "byteLength": 4096,
+                "coordinate": [
+                  0,
+                  0,
+                  -1
+                ],
+                "key": "4b448ca40114fde1e2e556be882430ec9ed0b0124920f36a141f0ef2bbcc6030",
+                "partId": "cube",
+                "path": "bricks/4b448ca40114fde1e2e556be882430ec9ed0b0124920f36a141f0ef2bbcc6030.bin",
+                "sha256": "ca232ee333e091da2cce67463e1f536a337a90a89c74656a3b1b0882c00c9e00"
+              },
+              {
+                "byteLength": 4096,
+                "coordinate": [
+                  0,
+                  1,
+                  -1
+                ],
+                "key": "738414c6576262b7f0436053cf48544fcbcc462141c0f538812634feb49c0640",
+                "partId": "cube",
+                "path": "bricks/738414c6576262b7f0436053cf48544fcbcc462141c0f538812634feb49c0640.bin",
+                "sha256": "421d2e91283ab76b1923c0c644910af01d02ad2a5d959a15edad8288694a2ced"
+              }
+            ],
+            "cellMeters": 0.125,
+            "cellOrder": "x-fastest",
+            "classificationProofs": {
+              "cube": {
+                "attachmentAttempts": 543,
+                "certifiedAdditions": 488,
+                "classificationVersion": "spike-exterior-six-parity-v1",
+                "commonRefinementCells": 1728,
+                "conservativeInclusion": true,
+                "filled": true,
+                "homotopyEquivalent": true,
+                "rasterAirComponents": 1,
+                "rasterEuler": 1,
+                "rasterMaterialComponents": 1,
+                "rayVersion": "spike-exact-eight-directions-v1",
+                "representation": "Solid",
+                "sourceAirComponents": 1,
+                "sourceArrangementCells": 27,
+                "sourceEuler": 1,
+                "sourceMaterialComponents": 1,
+                "topologyVersion": "spike-orthogonal-cubical-inclusion-v1"
+              }
+            },
+            "compiler": {
+              "id": "hestia.asset-compiler-spike",
+              "version": "hestia-asset-compiler-spike-c6-v1"
+            },
+            "coordinateFrame": {
+              "forwardAxis": "+Z",
+              "handedness": "RIGHT",
+              "upAxis": "+Y"
+            },
+            "diagnosticsSummary": {
+              "error": 0,
+              "info": 0,
+              "warning": 0
+            },
+            "geometricMassInputs": [
+              {
+                "algorithm": "spike-owned-cell-geometric-inputs-v1",
+                "applicability": "UnboundGeometry",
+                "boundsCells": [
+                  [
+                    -1,
+                    7,
+                    -13
+                  ],
+                  [
+                    8,
+                    16,
+                    -4
+                  ]
+                ],
+                "boundsMeters": [
+                  [
+                    -0.125,
+                    0.875,
+                    -1.625
+                  ],
+                  [
+                    1.125,
+                    2.125,
+                    -0.375
+                  ]
+                ],
+                "cellCenterSumMeters": [
+                  500.0,
+                  1500.0,
+                  -1000.0
+                ],
+                "cellCount": 1000,
+                "cellVolumeCubicMeters": 0.001953125,
+                "occupiedCellVolumeCubicMeters": 1.953125,
+                "ownershipConvention": "PerPartContributions; overlaps are not net unique physical volume",
+                "partId": "cube",
+                "structuralMaterialId": null
+              }
+            ],
+            "gridBounds": [
+              {
+                "maximumCell": [
+                  8,
+                  16,
+                  -4
+                ],
+                "minimumCell": [
+                  -1,
+                  7,
+                  -13
+                ],
+                "partId": "cube"
+              }
+            ],
+            "joints": [],
+            "manifestTreeSha256": "f69980c657ae375f9dfb9899845412f6d81ffb9d6256b8456f356d6c013677f7",
+            "markers": [],
+            "materialSlots": [
+              {
+                "renderMaterialId": "cube-material",
+                "slot": 1,
+                "structuralMaterialId": null
+              }
+            ],
+            "materials": [
+              {
+                "renderMaterialId": "cube-material",
+                "tags": []
+              }
+            ],
+            "metersPerUnit": 1,
+            "normalizedGeometrySha256": "5f7d74c48a42cfde01964fbf4c2f024109b62d90f23a4fdde863d1357b57f4a5",
+            "parts": [
+              {
+                "collisionPolicy": "Voxel",
+                "defaultRenderMaterialId": "cube-material",
+                "destructible": true,
+                "navigationPolicy": "Obstacle",
+                "partId": "cube",
+                "representation": "Solid",
+                "tags": [],
+                "thinFeature": {
+                  "declaredMinimumThicknessMeters": 1.0,
+                  "policy": "Reject"
+                }
+              }
+            ],
+            "placements": [
+              {
+                "id": "cube",
+                "kind": "part",
+                "worldMatrix": [
+                  1.0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1.0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1.0,
+                  0,
+                  0.5,
+                  1.5,
+                  -1.0,
+                  1.0
+                ]
+              }
+            ],
+            "profileId": "micro-0125-research-v1",
+            "provenanceSha256": "b10566f2f46cb0295fa59470379c03a8d02042a6ab76a307ab8301b0eca62dce",
+            "schema": "hestia.asset-compiler-spike.v1",
+            "semanticsSha256": "3c4315c75a1642ac114c41b8f8d9713b4fa0b04a8ca20fc612fd34988d0dff77",
+            "sources": {
+              "authoringPayloadSha256": "dcbc9c6dbe960760a62156b51e105b30e52d35b358819f097b40422673e81e5f",
+              "sourceGlbSha256": "52e2d51ec970e50c823a4120708ff9b407b8033f62d7728fe9bbb736f39d7ca9",
+              "sourceReportSha256": "2dad2dac080f61c46c94395655c7f1b7fc47c15e995d321f9b0c0c757f0bd8f5"
+            },
+            "thinFeatureDecisions": [
+              {
+                "intent": {
+                  "declaredMinimumThicknessMeters": 1.0,
+                  "policy": "Reject"
+                },
+                "outcome": "Voxelized",
+                "partId": "cube",
+                "policy": "Reject",
+                "proof": {
+                  "axisSectionMinimaMeters": [
+                    1.0,
+                    1.0,
+                    1.0
+                  ],
+                  "minimumAxisSectionMeters": 1.0,
+                  "samplingThresholdMeters": 0.25,
+                  "scope": "ExactOrthogonalMaterialAxisSections",
+                  "thinSectionWitness": {
+                    "axis": 0,
+                    "endpointsMeters": [
+                      [
+                        0,
+                        1.5,
+                        -1.0
+                      ],
+                      [
+                        1.0,
+                        1.5,
+                        -1.0
+                      ]
+                    ],
+                    "exactEndpointRatios": [
+                      [
+                        {
+                          "denominator": "1",
+                          "numerator": "0"
+                        },
+                        {
+                          "denominator": "2",
+                          "numerator": "3"
+                        },
+                        {
+                          "denominator": "1",
+                          "numerator": "-1"
+                        }
+                      ],
+                      [
+                        {
+                          "denominator": "1",
+                          "numerator": "1"
+                        },
+                        {
+                          "denominator": "2",
+                          "numerator": "3"
+                        },
+                        {
+                          "denominator": "1",
+                          "numerator": "-1"
+                        }
+                      ]
+                    ],
+                    "exactLengthRatio": {
+                      "denominator": "1",
+                      "numerator": "1"
+                    }
+                  }
+                },
+                "reason": "AllExactAxisMaterialSectionsMeetTwoCellThreshold",
+                "thinVersion": "spike-orthogonal-section-two-samples-v1"
+              }
+            ],
+            "voxelizationSha256": "617785f7cb17974b6171233ced314d6cedd65d358e51ed4ba0b10e9c6342da6d"
+          },
+          "packageInventory": [
+            {
+              "bytes": 5621,
+              "path": "asset-manifest.json",
+              "sha256": "80dacc25df318690103f99ae1404e38803d6e624126cf0b48ccdc06d8bfbe245"
+            },
+            {
+              "bytes": 4096,
+              "path": "bricks/4b448ca40114fde1e2e556be882430ec9ed0b0124920f36a141f0ef2bbcc6030.bin",
+              "sha256": "ca232ee333e091da2cce67463e1f536a337a90a89c74656a3b1b0882c00c9e00"
+            },
+            {
+              "bytes": 4096,
+              "path": "bricks/738414c6576262b7f0436053cf48544fcbcc462141c0f538812634feb49c0640.bin",
+              "sha256": "421d2e91283ab76b1923c0c644910af01d02ad2a5d959a15edad8288694a2ced"
+            },
+            {
+              "bytes": 4096,
+              "path": "bricks/ad222de094d7838f1c8f10a091c85df0af0b7c7dd540d98963b24fe047576a3f.bin",
+              "sha256": "88edd572a5bb2d568fc63fcf406918fb0cb3a3f419faeb47442bd83df5c3908d"
+            },
+            {
+              "bytes": 4096,
+              "path": "bricks/e4197d26799f2c45f44f9d9595496ac9a242999f3e6340ad359723f2faa10fe1.bin",
+              "sha256": "8c3ba11a9c5940580ddb43eccb103c3a3523a4d1cf21146a6f39fd22470011be"
+            },
+            {
+              "bytes": 590,
+              "path": "compile-report.json",
+              "sha256": "99bfcf0b439cb1e96f1ad8639e3d5a1aaffae1ad1573080ff1c572b21b6fde1a"
+            },
+            {
+              "bytes": 261,
+              "path": "diagnostics.json",
+              "sha256": "1cd2396caff90f800abaf1f748100c6b928a57bd55c5239413c45633fb2dadb2"
+            },
+            {
+              "bytes": 1149,
+              "path": "provenance.json",
+              "sha256": "b10566f2f46cb0295fa59470379c03a8d02042a6ab76a307ab8301b0eca62dce"
+            }
+          ],
+          "profile": "micro-0125-research-v1",
+          "publishedBytes": 24005,
+          "publishedFileCount": 8,
+          "status": "SUCCESS",
+          "validate": "PASS"
+        },
+        {
+          "compileExitCode": 0,
+          "compileInfo": {
+            "assetId": "blender-e2e-cube",
+            "assetRevision": 1,
+            "brickCount": 2,
+            "cellMeters": 0.25,
+            "contentHashes": {
+              "normalizedGeometrySha256": "5f7d74c48a42cfde01964fbf4c2f024109b62d90f23a4fdde863d1357b57f4a5",
+              "semanticsSha256": "3c4315c75a1642ac114c41b8f8d9713b4fa0b04a8ca20fc612fd34988d0dff77",
+              "voxelizationSha256": "7ebda023efb7b7bb7dcc6887fee94dc9d00f372b64d7e8203e937a923eaea89d"
+            },
+            "diagnosticsSummary": {
+              "error": 0,
+              "info": 0,
+              "warning": 0
+            },
+            "manifestTreeSha256": "51549b85a8d0b5699f9632840ef6b6d9d5ce04be9b0f81bd4a7682ea96e4edcb",
+            "ownedCellCount": 216,
+            "partCount": 1,
+            "productIntegrated": false,
+            "profileId": "standard-025-v1",
+            "schema": "hestia.asset-compiler-spike.v1",
+            "sources": {
+              "authoringPayloadSha256": "dcbc9c6dbe960760a62156b51e105b30e52d35b358819f097b40422673e81e5f",
+              "sourceGlbSha256": "52e2d51ec970e50c823a4120708ff9b407b8033f62d7728fe9bbb736f39d7ca9",
+              "sourceReportSha256": "2dad2dac080f61c46c94395655c7f1b7fc47c15e995d321f9b0c0c757f0bd8f5"
+            },
+            "status": "VALID",
+            "thinOutcomes": {
+              "cube": "Voxelized"
+            }
+          },
+          "inspect": "PASS",
+          "manifest": {
+            "algorithmVersions": {
+              "address": "spike-owned-16-x-fastest-v1",
+              "budgets": "spike-budgets-v1",
+              "classification": "spike-exterior-six-parity-v1",
+              "geometricInputs": "spike-owned-cell-geometric-inputs-v1",
+              "geometry": "spike-world-triangles-v1",
+              "material": "spike-unanimous-explicit-binding-v1",
+              "ray": "spike-exact-eight-directions-v1",
+              "replacement": "spike-box-beam-single-layer-shell-v1",
+              "surface": "spike-exact-sat-contact-a-v1",
+              "thin": "spike-orthogonal-section-two-samples-v1",
+              "topology": "spike-orthogonal-cubical-inclusion-v1",
+              "tree": "spike-virtual-manifest-tree-v1",
+              "voxelization": "spike-owned-package-voxelization-v1"
+            },
+            "asset": {
+              "assetId": "blender-e2e-cube",
+              "assetRevision": 1,
+              "coordinateFrame": {
+                "forwardAxis": "+Z",
+                "handedness": "RIGHT",
+                "upAxis": "+Y"
+              },
+              "metersPerUnit": 1,
+              "representation": "StructuralAssembly",
+              "tags": []
+            },
+            "assetId": "blender-e2e-cube",
+            "assetRevision": 1,
+            "authoringSchema": "hestia.asset-authoring.v1",
+            "brickCellsPerAxis": 16,
+            "bricks": [
+              {
+                "byteLength": 4096,
+                "coordinate": [
+                  -1,
+                  0,
+                  -1
+                ],
+                "key": "ad222de094d7838f1c8f10a091c85df0af0b7c7dd540d98963b24fe047576a3f",
+                "partId": "cube",
+                "path": "bricks/ad222de094d7838f1c8f10a091c85df0af0b7c7dd540d98963b24fe047576a3f.bin",
+                "sha256": "0ed14d0f7193f362530514b6ecdbaaef04a04c7e2e7bc3f31e481d87dd8d201e"
+              },
+              {
+                "byteLength": 4096,
+                "coordinate": [
+                  0,
+                  0,
+                  -1
+                ],
+                "key": "4b448ca40114fde1e2e556be882430ec9ed0b0124920f36a141f0ef2bbcc6030",
+                "partId": "cube",
+                "path": "bricks/4b448ca40114fde1e2e556be882430ec9ed0b0124920f36a141f0ef2bbcc6030.bin",
+                "sha256": "2fd06a45d3a5c318ae6824a2a657208668f91327b0d7c5b5a8a29455c578c93d"
+              }
+            ],
+            "cellMeters": 0.25,
+            "cellOrder": "x-fastest",
+            "classificationProofs": {
+              "cube": {
+                "attachmentAttempts": 183,
+                "certifiedAdditions": 152,
+                "classificationVersion": "spike-exterior-six-parity-v1",
+                "commonRefinementCells": 512,
+                "conservativeInclusion": true,
+                "filled": true,
+                "homotopyEquivalent": true,
+                "rasterAirComponents": 1,
+                "rasterEuler": 1,
+                "rasterMaterialComponents": 1,
+                "rayVersion": "spike-exact-eight-directions-v1",
+                "representation": "Solid",
+                "sourceAirComponents": 1,
+                "sourceArrangementCells": 27,
+                "sourceEuler": 1,
+                "sourceMaterialComponents": 1,
+                "topologyVersion": "spike-orthogonal-cubical-inclusion-v1"
+              }
+            },
+            "compiler": {
+              "id": "hestia.asset-compiler-spike",
+              "version": "hestia-asset-compiler-spike-c6-v1"
+            },
+            "coordinateFrame": {
+              "forwardAxis": "+Z",
+              "handedness": "RIGHT",
+              "upAxis": "+Y"
+            },
+            "diagnosticsSummary": {
+              "error": 0,
+              "info": 0,
+              "warning": 0
+            },
+            "geometricMassInputs": [
+              {
+                "algorithm": "spike-owned-cell-geometric-inputs-v1",
+                "applicability": "UnboundGeometry",
+                "boundsCells": [
+                  [
+                    -1,
+                    3,
+                    -7
+                  ],
+                  [
+                    4,
+                    8,
+                    -2
+                  ]
+                ],
+                "boundsMeters": [
+                  [
+                    -0.25,
+                    0.75,
+                    -1.75
+                  ],
+                  [
+                    1.25,
+                    2.25,
+                    -0.25
+                  ]
+                ],
+                "cellCenterSumMeters": [
+                  108.0,
+                  324.0,
+                  -216.0
+                ],
+                "cellCount": 216,
+                "cellVolumeCubicMeters": 0.015625,
+                "occupiedCellVolumeCubicMeters": 3.375,
+                "ownershipConvention": "PerPartContributions; overlaps are not net unique physical volume",
+                "partId": "cube",
+                "structuralMaterialId": null
+              }
+            ],
+            "gridBounds": [
+              {
+                "maximumCell": [
+                  4,
+                  8,
+                  -2
+                ],
+                "minimumCell": [
+                  -1,
+                  3,
+                  -7
+                ],
+                "partId": "cube"
+              }
+            ],
+            "joints": [],
+            "manifestTreeSha256": "51549b85a8d0b5699f9632840ef6b6d9d5ce04be9b0f81bd4a7682ea96e4edcb",
+            "markers": [],
+            "materialSlots": [
+              {
+                "renderMaterialId": "cube-material",
+                "slot": 1,
+                "structuralMaterialId": null
+              }
+            ],
+            "materials": [
+              {
+                "renderMaterialId": "cube-material",
+                "tags": []
+              }
+            ],
+            "metersPerUnit": 1,
+            "normalizedGeometrySha256": "5f7d74c48a42cfde01964fbf4c2f024109b62d90f23a4fdde863d1357b57f4a5",
+            "parts": [
+              {
+                "collisionPolicy": "Voxel",
+                "defaultRenderMaterialId": "cube-material",
+                "destructible": true,
+                "navigationPolicy": "Obstacle",
+                "partId": "cube",
+                "representation": "Solid",
+                "tags": [],
+                "thinFeature": {
+                  "declaredMinimumThicknessMeters": 1.0,
+                  "policy": "Reject"
+                }
+              }
+            ],
+            "placements": [
+              {
+                "id": "cube",
+                "kind": "part",
+                "worldMatrix": [
+                  1.0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1.0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1.0,
+                  0,
+                  0.5,
+                  1.5,
+                  -1.0,
+                  1.0
+                ]
+              }
+            ],
+            "profileId": "standard-025-v1",
+            "provenanceSha256": "b10566f2f46cb0295fa59470379c03a8d02042a6ab76a307ab8301b0eca62dce",
+            "schema": "hestia.asset-compiler-spike.v1",
+            "semanticsSha256": "3c4315c75a1642ac114c41b8f8d9713b4fa0b04a8ca20fc612fd34988d0dff77",
+            "sources": {
+              "authoringPayloadSha256": "dcbc9c6dbe960760a62156b51e105b30e52d35b358819f097b40422673e81e5f",
+              "sourceGlbSha256": "52e2d51ec970e50c823a4120708ff9b407b8033f62d7728fe9bbb736f39d7ca9",
+              "sourceReportSha256": "2dad2dac080f61c46c94395655c7f1b7fc47c15e995d321f9b0c0c757f0bd8f5"
+            },
+            "thinFeatureDecisions": [
+              {
+                "intent": {
+                  "declaredMinimumThicknessMeters": 1.0,
+                  "policy": "Reject"
+                },
+                "outcome": "Voxelized",
+                "partId": "cube",
+                "policy": "Reject",
+                "proof": {
+                  "axisSectionMinimaMeters": [
+                    1.0,
+                    1.0,
+                    1.0
+                  ],
+                  "minimumAxisSectionMeters": 1.0,
+                  "samplingThresholdMeters": 0.5,
+                  "scope": "ExactOrthogonalMaterialAxisSections",
+                  "thinSectionWitness": {
+                    "axis": 0,
+                    "endpointsMeters": [
+                      [
+                        0,
+                        1.5,
+                        -1.0
+                      ],
+                      [
+                        1.0,
+                        1.5,
+                        -1.0
+                      ]
+                    ],
+                    "exactEndpointRatios": [
+                      [
+                        {
+                          "denominator": "1",
+                          "numerator": "0"
+                        },
+                        {
+                          "denominator": "2",
+                          "numerator": "3"
+                        },
+                        {
+                          "denominator": "1",
+                          "numerator": "-1"
+                        }
+                      ],
+                      [
+                        {
+                          "denominator": "1",
+                          "numerator": "1"
+                        },
+                        {
+                          "denominator": "2",
+                          "numerator": "3"
+                        },
+                        {
+                          "denominator": "1",
+                          "numerator": "-1"
+                        }
+                      ]
+                    ],
+                    "exactLengthRatio": {
+                      "denominator": "1",
+                      "numerator": "1"
+                    }
+                  }
+                },
+                "reason": "AllExactAxisMaterialSectionsMeetTwoCellThreshold",
+                "thinVersion": "spike-orthogonal-section-two-samples-v1"
+              }
+            ],
+            "voxelizationSha256": "7ebda023efb7b7bb7dcc6887fee94dc9d00f372b64d7e8203e937a923eaea89d"
+          },
+          "packageInventory": [
+            {
+              "bytes": 5007,
+              "path": "asset-manifest.json",
+              "sha256": "dedb24c2d30f1a1f21ee4a26371f6ac29276c0a45a3f8d8a1bfad1a6d27b93d1"
+            },
+            {
+              "bytes": 4096,
+              "path": "bricks/4b448ca40114fde1e2e556be882430ec9ed0b0124920f36a141f0ef2bbcc6030.bin",
+              "sha256": "2fd06a45d3a5c318ae6824a2a657208668f91327b0d7c5b5a8a29455c578c93d"
+            },
+            {
+              "bytes": 4096,
+              "path": "bricks/ad222de094d7838f1c8f10a091c85df0af0b7c7dd540d98963b24fe047576a3f.bin",
+              "sha256": "0ed14d0f7193f362530514b6ecdbaaef04a04c7e2e7bc3f31e481d87dd8d201e"
+            },
+            {
+              "bytes": 589,
+              "path": "compile-report.json",
+              "sha256": "d589cc345d5cf82a0845cbb30fbc0a9dea9a7bd1a8dd3efd03bed4866fbdedc7"
+            },
+            {
+              "bytes": 261,
+              "path": "diagnostics.json",
+              "sha256": "1cd2396caff90f800abaf1f748100c6b928a57bd55c5239413c45633fb2dadb2"
+            },
+            {
+              "bytes": 1149,
+              "path": "provenance.json",
+              "sha256": "b10566f2f46cb0295fa59470379c03a8d02042a6ab76a307ab8301b0eca62dce"
+            }
+          ],
+          "profile": "standard-025-v1",
+          "publishedBytes": 15198,
+          "publishedFileCount": 6,
+          "status": "SUCCESS",
+          "validate": "PASS"
+        }
+      ],
+      "report": {
+        "digests": {
+          "glb_sha256": "52e2d51ec970e50c823a4120708ff9b407b8033f62d7728fe9bbb736f39d7ca9",
+          "report_sha256": "dcbc9c6dbe960760a62156b51e105b30e52d35b358819f097b40422673e81e5f"
+        },
+        "payload": {
+          "diagnostics": [],
+          "glbSha256": "52e2d51ec970e50c823a4120708ff9b407b8033f62d7728fe9bbb736f39d7ca9",
+          "inventory": {
+            "materials": [
+              {
+                "materialId": "cube-material"
+              }
+            ],
+            "meshes": [
+              {
+                "boundsMax": [
+                  0.5,
+                  0.5,
+                  0.5
+                ],
+                "boundsMin": [
+                  -0.5,
+                  -0.5,
+                  -0.5
+                ],
+                "materialIds": [
+                  "cube-material"
+                ],
+                "meshId": "cube",
+                "primitiveIds": [
+                  "cube:0"
+                ],
+                "topology": {
+                  "boundaryEdgeCount": 0,
+                  "degeneratePolygonCount": 0,
+                  "edgeCount": 12,
+                  "nonManifoldEdgeCount": 0,
+                  "polygonCount": 6,
+                  "triangleCount": 12,
+                  "vertexCount": 8
+                }
+              }
+            ],
+            "primitives": [
+              {
+                "materialId": "cube-material",
+                "meshId": "cube",
+                "primitiveId": "cube:0",
+                "topology": {
+                  "boundaryEdgeCount": 0,
+                  "degeneratePolygonCount": 0,
+                  "edgeCount": 12,
+                  "nonManifoldEdgeCount": 0,
+                  "polygonCount": 6,
+                  "triangleCount": 12,
+                  "vertexCount": 8
+                }
+              }
+            ]
+          },
+          "options": {
+            "requireSchemaId": "hestia.asset-authoring.v1",
+            "unappliedScalePolicy": "warning",
+            "unappliedScaleTolerance": 1e-06
+          },
+          "outputBasename": "plain-cube.glb",
+          "schemaId": "hestia.asset-authoring.v1",
+          "semantics": {
+            "asset": {
+              "assetId": "blender-e2e-cube",
+              "assetRevision": 1,
+              "coordinateFrame": {
+                "forwardAxis": "+Z",
+                "handedness": "RIGHT",
+                "upAxis": "+Y"
+              },
+              "metersPerUnit": 1,
+              "representation": "StructuralAssembly",
+              "tags": []
+            },
+            "joints": [],
+            "markers": [],
+            "materials": [
+              {
+                "renderMaterialId": "cube-material",
+                "tags": []
+              }
+            ],
+            "parts": [
+              {
+                "collisionPolicy": "Voxel",
+                "defaultRenderMaterialId": "cube-material",
+                "destructible": true,
+                "navigationPolicy": "Obstacle",
+                "partId": "cube",
+                "representation": "Solid",
+                "tags": [],
+                "thinFeature": {
+                  "declaredMinimumThicknessMeters": 1.0,
+                  "policy": "Reject"
+                }
+              }
+            ],
+            "schema": "hestia.asset-authoring.v1"
+          }
+        }
+      },
+      "reportBytes": 1660,
+      "reportSha256": "2dad2dac080f61c46c94395655c7f1b7fc47c15e995d321f9b0c0c757f0bd8f5",
+      "variant": "plain-cube"
+    },
+    {
+      "blendBytes": 96544,
+      "blendSha256": "d4c7d1d19ed7c178b08099cca593ceec3e092c7933c146dbfc3f83c3125f1067",
+      "export": "PASS",
+      "geometry": {
+        "bounds": [
+          [
+            -1.3435885648505064e-07,
+            1.0,
+            -1.5000001343588565
+          ],
+          [
+            1.0000001343588565,
+            2.0,
+            -0.4999998656411435
+          ]
+        ],
+        "normalizedGeometrySha256": "67ec2fd9345c121c8458560c72f92b913cf28db0a6d6203f610b82534920c306",
+        "placements": [
+          {
+            "id": "cube",
+            "kind": "part",
+            "worldMatrix": [
+              -1.3435885648505064e-07,
+              0,
+              -1.0000001343588565,
+              0,
+              0,
+              1.0,
+              0,
+              0,
+              1.0000001343588565,
+              0,
+              -1.3435885648505064e-07,
+              0,
+              0.5,
+              1.5,
+              -1.0,
+              1.0
+            ]
+          }
+        ],
+        "topology": [
+          {
+            "closed": true,
+            "components": 1,
+            "faces": 12,
+            "partId": "cube",
+            "vertices": 8
+          }
+        ],
+        "triangleCount": 12,
+        "worldVertices": [
+          [
+            -1.3435885648505064e-07,
+            1.0,
+            -1.5
+          ],
+          [
+            -1.3435885648505064e-07,
+            2.0,
+            -1.5
+          ],
+          [
+            0.0,
+            1.0,
+            -0.4999998656411435
+          ],
+          [
+            0.0,
+            2.0,
+            -0.4999998656411435
+          ],
+          [
+            1.0,
+            1.0,
+            -1.5000001343588565
+          ],
+          [
+            1.0,
+            2.0,
+            -1.5000001343588565
+          ],
+          [
+            1.0000001343588565,
+            1.0,
+            -0.5
+          ],
+          [
+            1.0000001343588565,
+            2.0,
+            -0.5
+          ]
+        ]
+      },
+      "glbBytes": 2632,
+      "glbDocument": {
+        "accessors": [
+          {
+            "bufferView": 0,
+            "componentType": 5126,
+            "count": 24,
+            "max": [
+              0.5,
+              0.5,
+              0.5
+            ],
+            "min": [
+              -0.5,
+              -0.5,
+              -0.5
+            ],
+            "type": "VEC3"
+          },
+          {
+            "bufferView": 1,
+            "componentType": 5126,
+            "count": 24,
+            "type": "VEC3"
+          },
+          {
+            "bufferView": 2,
+            "componentType": 5126,
+            "count": 24,
+            "type": "VEC2"
+          },
+          {
+            "bufferView": 3,
+            "componentType": 5123,
+            "count": 36,
+            "type": "SCALAR"
+          }
+        ],
+        "asset": {
+          "extras": {
+            "hestia": {
+              "assetId": "blender-e2e-cube",
+              "assetRevision": 1,
+              "coordinateFrame": {
+                "forwardAxis": "+Z",
+                "handedness": "RIGHT",
+                "upAxis": "+Y"
+              },
+              "metersPerUnit": 1,
+              "representation": "StructuralAssembly",
+              "schema": "hestia.asset-authoring.v1",
+              "tags": []
+            }
+          },
+          "generator": "Khronos glTF Blender I/O v5.2.39",
+          "version": "2.0"
+        },
+        "bufferViews": [
+          {
+            "buffer": 0,
+            "byteLength": 288,
+            "byteOffset": 0,
+            "target": 34962
+          },
+          {
+            "buffer": 0,
+            "byteLength": 288,
+            "byteOffset": 288,
+            "target": 34962
+          },
+          {
+            "buffer": 0,
+            "byteLength": 192,
+            "byteOffset": 576,
+            "target": 34962
+          },
+          {
+            "buffer": 0,
+            "byteLength": 72,
+            "byteOffset": 768,
+            "target": 34963
+          }
+        ],
+        "buffers": [
+          {
+            "byteLength": 840
+          }
+        ],
+        "materials": [
+          {
+            "doubleSided": true,
+            "extras": {
+              "hestia": {
+                "renderMaterialId": "cube-material",
+                "tags": []
+              }
+            },
+            "name": "CubeMaterial",
+            "pbrMetallicRoughness": {
+              "baseColorFactor": [
+                0.800000011920929,
+                0.800000011920929,
+                0.800000011920929,
+                1
+              ],
+              "metallicFactor": 0,
+              "roughnessFactor": 0.5
+            }
+          }
+        ],
+        "meshes": [
+          {
+            "name": "Cube.001",
+            "primitives": [
+              {
+                "attributes": {
+                  "NORMAL": 1,
+                  "POSITION": 0,
+                  "TEXCOORD_0": 2
+                },
+                "indices": 3,
+                "material": 0
+              }
+            ]
+          }
+        ],
+        "nodes": [
+          {
+            "extras": {
+              "hestia": {
+                "collisionPolicy": "Voxel",
+                "defaultRenderMaterialId": "cube-material",
+                "destructible": true,
+                "kind": "part",
+                "navigationPolicy": "Obstacle",
+                "partId": "cube",
+                "representation": "Solid",
+                "tags": [],
+                "thinFeature": {
+                  "declaredMinimumThicknessMeters": 1.0,
+                  "policy": "Reject"
+                }
+              }
+            },
+            "mesh": 0,
+            "name": "CubePart",
+            "rotation": [
+              0,
+              0.7071068286895752,
+              0,
+              0.7071068286895752
+            ],
+            "translation": [
+              0.5,
+              1.5,
+              -1
+            ]
+          }
+        ],
+        "scene": 0,
+        "scenes": [
+          {
+            "name": "Scene",
+            "nodes": [
+              0
+            ]
+          }
+        ]
+      },
+      "glbSha256": "db3594fa54750fe1a7ecaeea30c054a421aada7b4b055904fbc980d66d032b9c",
+      "profiles": [
+        {
+          "compileExitCode": 1,
+          "diagnostic": {
+            "diagnostics": [
+              {
+                "code": "thin.unproven",
+                "severity": "error"
+              }
+            ],
+            "status": "REJECTED"
+          },
+          "inspect": "NOT_APPLICABLE_NO_PACKAGE",
+          "profile": "micro-0125-research-v1",
+          "status": "KNOWN_UNSUPPORTED_PROOF",
+          "targetAbsent": true,
+          "validate": "NOT_APPLICABLE_NO_PACKAGE"
+        },
+        {
+          "compileExitCode": 1,
+          "diagnostic": {
+            "diagnostics": [
+              {
+                "code": "thin.unproven",
+                "severity": "error"
+              }
+            ],
+            "status": "REJECTED"
+          },
+          "inspect": "NOT_APPLICABLE_NO_PACKAGE",
+          "profile": "standard-025-v1",
+          "status": "KNOWN_UNSUPPORTED_PROOF",
+          "targetAbsent": true,
+          "validate": "NOT_APPLICABLE_NO_PACKAGE"
+        }
+      ],
+      "report": {
+        "digests": {
+          "glb_sha256": "db3594fa54750fe1a7ecaeea30c054a421aada7b4b055904fbc980d66d032b9c",
+          "report_sha256": "3c20dde15cab661c11380bcfc7f9ae383d3ebca666dc6259074204e09635aa6c"
+        },
+        "payload": {
+          "diagnostics": [],
+          "glbSha256": "db3594fa54750fe1a7ecaeea30c054a421aada7b4b055904fbc980d66d032b9c",
+          "inventory": {
+            "materials": [
+              {
+                "materialId": "cube-material"
+              }
+            ],
+            "meshes": [
+              {
+                "boundsMax": [
+                  0.5,
+                  0.5,
+                  0.5
+                ],
+                "boundsMin": [
+                  -0.5,
+                  -0.5,
+                  -0.5
+                ],
+                "materialIds": [
+                  "cube-material"
+                ],
+                "meshId": "cube",
+                "primitiveIds": [
+                  "cube:0"
+                ],
+                "topology": {
+                  "boundaryEdgeCount": 0,
+                  "degeneratePolygonCount": 0,
+                  "edgeCount": 12,
+                  "nonManifoldEdgeCount": 0,
+                  "polygonCount": 6,
+                  "triangleCount": 12,
+                  "vertexCount": 8
+                }
+              }
+            ],
+            "primitives": [
+              {
+                "materialId": "cube-material",
+                "meshId": "cube",
+                "primitiveId": "cube:0",
+                "topology": {
+                  "boundaryEdgeCount": 0,
+                  "degeneratePolygonCount": 0,
+                  "edgeCount": 12,
+                  "nonManifoldEdgeCount": 0,
+                  "polygonCount": 6,
+                  "triangleCount": 12,
+                  "vertexCount": 8
+                }
+              }
+            ]
+          },
+          "options": {
+            "requireSchemaId": "hestia.asset-authoring.v1",
+            "unappliedScalePolicy": "warning",
+            "unappliedScaleTolerance": 1e-06
+          },
+          "outputBasename": "rotation-z-90.glb",
+          "schemaId": "hestia.asset-authoring.v1",
+          "semantics": {
+            "asset": {
+              "assetId": "blender-e2e-cube",
+              "assetRevision": 1,
+              "coordinateFrame": {
+                "forwardAxis": "+Z",
+                "handedness": "RIGHT",
+                "upAxis": "+Y"
+              },
+              "metersPerUnit": 1,
+              "representation": "StructuralAssembly",
+              "tags": []
+            },
+            "joints": [],
+            "markers": [],
+            "materials": [
+              {
+                "renderMaterialId": "cube-material",
+                "tags": []
+              }
+            ],
+            "parts": [
+              {
+                "collisionPolicy": "Voxel",
+                "defaultRenderMaterialId": "cube-material",
+                "destructible": true,
+                "navigationPolicy": "Obstacle",
+                "partId": "cube",
+                "representation": "Solid",
+                "tags": [],
+                "thinFeature": {
+                  "declaredMinimumThicknessMeters": 1.0,
+                  "policy": "Reject"
+                }
+              }
+            ],
+            "schema": "hestia.asset-authoring.v1"
+          }
+        }
+      },
+      "reportBytes": 1663,
+      "reportSha256": "0b1d520447270b54716b1f179c921eb34b3619e9123c3f739f83d1abe0bb4b30",
+      "variant": "rotation-z-90"
+    }
+  ],
+  "commands": [
+    {
+      "argv": [
+        "C:\\IFI_SourceCode\\Utils\\Blender 5.2\\blender.exe",
+        "--background",
+        "--factory-startup",
+        "--python-exit-code",
+        "1",
+        "--python",
+        "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-Agent3-AssetCompiler-2026-10-02\\docs\\research\\hestia-asset-compiler-spike-2026-10-02\\verify_blender_e2e.py",
+        "--",
+        "fixture",
+        "C:\\IFI_SourceCode\\Utils\\opencode-migration\\tmp\\opencode\\hestia-agent3-2026-10-02-72981f9a\\blender-e2e-tz5zplil"
+      ],
+      "exitCode": 0,
+      "label": "real-fixture-creation",
+      "stderr": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-Agent3-AssetCompiler-2026-10-02\\docs\\research\\hestia-asset-compiler-spike-2026-10-02\\verify_blender_e2e.py:56: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0\r\n  material.use_nodes = True\r\n",
+      "stderrSha256": "47c50e3815234959f8b290bd6c4d8fa6eee19d4f856c5e69a74c1b9c4422be14",
+      "stdout": "00:02.813  bpy.rna          | WARNING current value '0' matches no enum in 'EnumProperty', 'export_format', 'default'\n00:02.813  bpy.rna          | WARNING current value '0' matches no enum in 'EnumProperty', 'export_format', 'default'\nInfo: Saved as \"plain-cube.blend\"\r\nInfo: Saved as \"rotation-z-90.blend\"\r\nBlender 5.2.0 LTS (hash fbe6228777e7 built 2026-07-14 01:35:40)\n\nBlender quit\n",
+      "stdoutSha256": "0b38966bddedff1c0f28faa32267a1dfa3d310c0b0529bb7595b1c7c22625234",
+      "timeoutSeconds": 180
+    },
+    {
+      "argv": [
+        "C:\\IFI_SourceCode\\Utils\\Blender 5.2\\blender.exe",
+        "--background",
+        "--factory-startup",
+        "C:\\IFI_SourceCode\\Utils\\opencode-migration\\tmp\\opencode\\hestia-agent3-2026-10-02-72981f9a\\blender-e2e-tz5zplil\\plain-cube.blend",
+        "--python-exit-code",
+        "1",
+        "--python",
+        "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-Agent3-AssetCompiler-2026-10-02\\tools\\blender\\hestia_asset_authoring\\export_hestia_glb.py",
+        "--",
+        "--output",
+        "C:\\IFI_SourceCode\\Utils\\opencode-migration\\tmp\\opencode\\hestia-agent3-2026-10-02-72981f9a\\blender-e2e-tz5zplil\\plain-cube.glb",
+        "--collection",
+        "HestiaE2E",
+        "--unapplied-scale",
+        "warning"
+      ],
+      "exitCode": 0,
+      "label": "plain-cube: real-export",
+      "stderr": "",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "00:00.656  blend            | Read blend: \"C:\\IFI_SourceCode\\Utils\\opencode-migration\\tmp\\opencode\\hestia-agent3-2026-10-02-72981f9a\\blender-e2e-tz5zplil\\plain-cube.blend\"\nINFO Draco is available, use library at C:\\IFI_SourceCode\\Utils\\Blender 5.2\\5.2\\scripts\\addons_core\\io_scene_gltf2\\bf_intern_draco_bridge.dll\r\nINFO MeshOptimizer is available, use library at C:\\IFI_SourceCode\\Utils\\Blender 5.2\\5.2\\scripts\\addons_core\\io_scene_gltf2\\bf_intern_meshopt_bridge.dll\r\n10:02:53 | INFO: Starting glTF 2.0 export\r\n10:02:53 | INFO: Extracting primitive: Cube.001\r\n10:02:53 | INFO: Primitives created: 1\r\n10:02:53 | INFO: Finished glTF 2.0 export in 0.06557512283325195 s\r\nBlender 5.2.0 LTS (hash fbe6228777e7 built 2026-07-14 01:35:40)\n\r\nExported GLB and report for blender-e2e-cube\r\n",
+      "stdoutSha256": "dd05f084ecb3adf8cbe743c223256372c23c525fd1d09299428c4b7b3772a295",
+      "timeoutSeconds": 180
+    },
+    {
+      "argv": [
+        "C:\\IFI_SourceCode\\Utils\\Python\\cpython-3.12.13-windows-x86_64-none\\python.exe",
+        "-B",
+        "-X",
+        "utf8",
+        "-m",
+        "tools.hestia_asset_compiler",
+        "compile",
+        "--glb",
+        "C:\\IFI_SourceCode\\Utils\\opencode-migration\\tmp\\opencode\\hestia-agent3-2026-10-02-72981f9a\\blender-e2e-tz5zplil\\plain-cube.glb",
+        "--report",
+        "C:\\IFI_SourceCode\\Utils\\opencode-migration\\tmp\\opencode\\hestia-agent3-2026-10-02-72981f9a\\blender-e2e-tz5zplil\\plain-cube.hestia-authoring-report.json",
+        "--profile",
+        "micro-0125-research-v1",
+        "--output",
+        "C:\\IFI_SourceCode\\Utils\\opencode-migration\\tmp\\opencode\\hestia-agent3-2026-10-02-72981f9a\\blender-e2e-tz5zplil\\plain-cube-micro-0125-research-v1"
+      ],
+      "exitCode": 0,
+      "label": "plain-cube: compile micro-0125-research-v1",
+      "stderr": "",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"assetId\":\"blender-e2e-cube\",\"assetRevision\":1,\"brickCount\":4,\"cellMeters\":0.125,\"contentHashes\":{\"normalizedGeometrySha256\":\"5f7d74c48a42cfde01964fbf4c2f024109b62d90f23a4fdde863d1357b57f4a5\",\"semanticsSha256\":\"3c4315c75a1642ac114c41b8f8d9713b4fa0b04a8ca20fc612fd34988d0dff77\",\"voxelizationSha256\":\"617785f7cb17974b6171233ced314d6cedd65d358e51ed4ba0b10e9c6342da6d\"},\"diagnosticsSummary\":{\"error\":0,\"info\":0,\"warning\":0},\"manifestTreeSha256\":\"f69980c657ae375f9dfb9899845412f6d81ffb9d6256b8456f356d6c013677f7\",\"ownedCellCount\":1000,\"partCount\":1,\"productIntegrated\":false,\"profileId\":\"micro-0125-research-v1\",\"schema\":\"hestia.asset-compiler-spike.v1\",\"sources\":{\"authoringPayloadSha256\":\"dcbc9c6dbe960760a62156b51e105b30e52d35b358819f097b40422673e81e5f\",\"sourceGlbSha256\":\"52e2d51ec970e50c823a4120708ff9b407b8033f62d7728fe9bbb736f39d7ca9\",\"sourceReportSha256\":\"2dad2dac080f61c46c94395655c7f1b7fc47c15e995d321f9b0c0c757f0bd8f5\"},\"status\":\"VALID\",\"thinOutcomes\":{\"cube\":\"Voxelized\"}}\r\n",
+      "stdoutSha256": "e38c91831b84337f1b3995fd4974e230a9a31083abc6f0c4946756d0890389e8",
+      "timeoutSeconds": 180
+    },
+    {
+      "argv": [
+        "C:\\IFI_SourceCode\\Utils\\Python\\cpython-3.12.13-windows-x86_64-none\\python.exe",
+        "-B",
+        "-X",
+        "utf8",
+        "-m",
+        "tools.hestia_asset_compiler",
+        "validate",
+        "C:\\IFI_SourceCode\\Utils\\opencode-migration\\tmp\\opencode\\hestia-agent3-2026-10-02-72981f9a\\blender-e2e-tz5zplil\\plain-cube-micro-0125-research-v1"
+      ],
+      "exitCode": 0,
+      "label": "plain-cube: validate micro-0125-research-v1",
+      "stderr": "",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"assetId\":\"blender-e2e-cube\",\"assetRevision\":1,\"brickCount\":4,\"cellMeters\":0.125,\"contentHashes\":{\"normalizedGeometrySha256\":\"5f7d74c48a42cfde01964fbf4c2f024109b62d90f23a4fdde863d1357b57f4a5\",\"semanticsSha256\":\"3c4315c75a1642ac114c41b8f8d9713b4fa0b04a8ca20fc612fd34988d0dff77\",\"voxelizationSha256\":\"617785f7cb17974b6171233ced314d6cedd65d358e51ed4ba0b10e9c6342da6d\"},\"diagnosticsSummary\":{\"error\":0,\"info\":0,\"warning\":0},\"manifestTreeSha256\":\"f69980c657ae375f9dfb9899845412f6d81ffb9d6256b8456f356d6c013677f7\",\"ownedCellCount\":1000,\"partCount\":1,\"productIntegrated\":false,\"profileId\":\"micro-0125-research-v1\",\"schema\":\"hestia.asset-compiler-spike.v1\",\"sources\":{\"authoringPayloadSha256\":\"dcbc9c6dbe960760a62156b51e105b30e52d35b358819f097b40422673e81e5f\",\"sourceGlbSha256\":\"52e2d51ec970e50c823a4120708ff9b407b8033f62d7728fe9bbb736f39d7ca9\",\"sourceReportSha256\":\"2dad2dac080f61c46c94395655c7f1b7fc47c15e995d321f9b0c0c757f0bd8f5\"},\"status\":\"VALID\",\"thinOutcomes\":{\"cube\":\"Voxelized\"}}\r\n",
+      "stdoutSha256": "e38c91831b84337f1b3995fd4974e230a9a31083abc6f0c4946756d0890389e8",
+      "timeoutSeconds": 180
+    },
+    {
+      "argv": [
+        "C:\\IFI_SourceCode\\Utils\\Python\\cpython-3.12.13-windows-x86_64-none\\python.exe",
+        "-B",
+        "-X",
+        "utf8",
+        "-m",
+        "tools.hestia_asset_compiler",
+        "inspect",
+        "C:\\IFI_SourceCode\\Utils\\opencode-migration\\tmp\\opencode\\hestia-agent3-2026-10-02-72981f9a\\blender-e2e-tz5zplil\\plain-cube-micro-0125-research-v1",
+        "--json"
+      ],
+      "exitCode": 0,
+      "label": "plain-cube: inspect micro-0125-research-v1",
+      "stderr": "",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"assetId\":\"blender-e2e-cube\",\"assetRevision\":1,\"brickCount\":4,\"cellMeters\":0.125,\"contentHashes\":{\"normalizedGeometrySha256\":\"5f7d74c48a42cfde01964fbf4c2f024109b62d90f23a4fdde863d1357b57f4a5\",\"semanticsSha256\":\"3c4315c75a1642ac114c41b8f8d9713b4fa0b04a8ca20fc612fd34988d0dff77\",\"voxelizationSha256\":\"617785f7cb17974b6171233ced314d6cedd65d358e51ed4ba0b10e9c6342da6d\"},\"diagnosticsSummary\":{\"error\":0,\"info\":0,\"warning\":0},\"manifestTreeSha256\":\"f69980c657ae375f9dfb9899845412f6d81ffb9d6256b8456f356d6c013677f7\",\"ownedCellCount\":1000,\"partCount\":1,\"productIntegrated\":false,\"profileId\":\"micro-0125-research-v1\",\"schema\":\"hestia.asset-compiler-spike.v1\",\"sources\":{\"authoringPayloadSha256\":\"dcbc9c6dbe960760a62156b51e105b30e52d35b358819f097b40422673e81e5f\",\"sourceGlbSha256\":\"52e2d51ec970e50c823a4120708ff9b407b8033f62d7728fe9bbb736f39d7ca9\",\"sourceReportSha256\":\"2dad2dac080f61c46c94395655c7f1b7fc47c15e995d321f9b0c0c757f0bd8f5\"},\"status\":\"VALID\",\"thinOutcomes\":{\"cube\":\"Voxelized\"}}\r\n",
+      "stdoutSha256": "e38c91831b84337f1b3995fd4974e230a9a31083abc6f0c4946756d0890389e8",
+      "timeoutSeconds": 180
+    },
+    {
+      "argv": [
+        "C:\\IFI_SourceCode\\Utils\\Python\\cpython-3.12.13-windows-x86_64-none\\python.exe",
+        "-B",
+        "-X",
+        "utf8",
+        "-m",
+        "tools.hestia_asset_compiler",
+        "compile",
+        "--glb",
+        "C:\\IFI_SourceCode\\Utils\\opencode-migration\\tmp\\opencode\\hestia-agent3-2026-10-02-72981f9a\\blender-e2e-tz5zplil\\plain-cube.glb",
+        "--report",
+        "C:\\IFI_SourceCode\\Utils\\opencode-migration\\tmp\\opencode\\hestia-agent3-2026-10-02-72981f9a\\blender-e2e-tz5zplil\\plain-cube.hestia-authoring-report.json",
+        "--profile",
+        "standard-025-v1",
+        "--output",
+        "C:\\IFI_SourceCode\\Utils\\opencode-migration\\tmp\\opencode\\hestia-agent3-2026-10-02-72981f9a\\blender-e2e-tz5zplil\\plain-cube-standard-025-v1"
+      ],
+      "exitCode": 0,
+      "label": "plain-cube: compile standard-025-v1",
+      "stderr": "",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"assetId\":\"blender-e2e-cube\",\"assetRevision\":1,\"brickCount\":2,\"cellMeters\":0.25,\"contentHashes\":{\"normalizedGeometrySha256\":\"5f7d74c48a42cfde01964fbf4c2f024109b62d90f23a4fdde863d1357b57f4a5\",\"semanticsSha256\":\"3c4315c75a1642ac114c41b8f8d9713b4fa0b04a8ca20fc612fd34988d0dff77\",\"voxelizationSha256\":\"7ebda023efb7b7bb7dcc6887fee94dc9d00f372b64d7e8203e937a923eaea89d\"},\"diagnosticsSummary\":{\"error\":0,\"info\":0,\"warning\":0},\"manifestTreeSha256\":\"51549b85a8d0b5699f9632840ef6b6d9d5ce04be9b0f81bd4a7682ea96e4edcb\",\"ownedCellCount\":216,\"partCount\":1,\"productIntegrated\":false,\"profileId\":\"standard-025-v1\",\"schema\":\"hestia.asset-compiler-spike.v1\",\"sources\":{\"authoringPayloadSha256\":\"dcbc9c6dbe960760a62156b51e105b30e52d35b358819f097b40422673e81e5f\",\"sourceGlbSha256\":\"52e2d51ec970e50c823a4120708ff9b407b8033f62d7728fe9bbb736f39d7ca9\",\"sourceReportSha256\":\"2dad2dac080f61c46c94395655c7f1b7fc47c15e995d321f9b0c0c757f0bd8f5\"},\"status\":\"VALID\",\"thinOutcomes\":{\"cube\":\"Voxelized\"}}\r\n",
+      "stdoutSha256": "d0b99a3da414b8866170c5fa6af42f80729e4c1205dc9cb98e0bf8c4668cc824",
+      "timeoutSeconds": 180
+    },
+    {
+      "argv": [
+        "C:\\IFI_SourceCode\\Utils\\Python\\cpython-3.12.13-windows-x86_64-none\\python.exe",
+        "-B",
+        "-X",
+        "utf8",
+        "-m",
+        "tools.hestia_asset_compiler",
+        "validate",
+        "C:\\IFI_SourceCode\\Utils\\opencode-migration\\tmp\\opencode\\hestia-agent3-2026-10-02-72981f9a\\blender-e2e-tz5zplil\\plain-cube-standard-025-v1"
+      ],
+      "exitCode": 0,
+      "label": "plain-cube: validate standard-025-v1",
+      "stderr": "",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"assetId\":\"blender-e2e-cube\",\"assetRevision\":1,\"brickCount\":2,\"cellMeters\":0.25,\"contentHashes\":{\"normalizedGeometrySha256\":\"5f7d74c48a42cfde01964fbf4c2f024109b62d90f23a4fdde863d1357b57f4a5\",\"semanticsSha256\":\"3c4315c75a1642ac114c41b8f8d9713b4fa0b04a8ca20fc612fd34988d0dff77\",\"voxelizationSha256\":\"7ebda023efb7b7bb7dcc6887fee94dc9d00f372b64d7e8203e937a923eaea89d\"},\"diagnosticsSummary\":{\"error\":0,\"info\":0,\"warning\":0},\"manifestTreeSha256\":\"51549b85a8d0b5699f9632840ef6b6d9d5ce04be9b0f81bd4a7682ea96e4edcb\",\"ownedCellCount\":216,\"partCount\":1,\"productIntegrated\":false,\"profileId\":\"standard-025-v1\",\"schema\":\"hestia.asset-compiler-spike.v1\",\"sources\":{\"authoringPayloadSha256\":\"dcbc9c6dbe960760a62156b51e105b30e52d35b358819f097b40422673e81e5f\",\"sourceGlbSha256\":\"52e2d51ec970e50c823a4120708ff9b407b8033f62d7728fe9bbb736f39d7ca9\",\"sourceReportSha256\":\"2dad2dac080f61c46c94395655c7f1b7fc47c15e995d321f9b0c0c757f0bd8f5\"},\"status\":\"VALID\",\"thinOutcomes\":{\"cube\":\"Voxelized\"}}\r\n",
+      "stdoutSha256": "d0b99a3da414b8866170c5fa6af42f80729e4c1205dc9cb98e0bf8c4668cc824",
+      "timeoutSeconds": 180
+    },
+    {
+      "argv": [
+        "C:\\IFI_SourceCode\\Utils\\Python\\cpython-3.12.13-windows-x86_64-none\\python.exe",
+        "-B",
+        "-X",
+        "utf8",
+        "-m",
+        "tools.hestia_asset_compiler",
+        "inspect",
+        "C:\\IFI_SourceCode\\Utils\\opencode-migration\\tmp\\opencode\\hestia-agent3-2026-10-02-72981f9a\\blender-e2e-tz5zplil\\plain-cube-standard-025-v1",
+        "--json"
+      ],
+      "exitCode": 0,
+      "label": "plain-cube: inspect standard-025-v1",
+      "stderr": "",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "{\"assetId\":\"blender-e2e-cube\",\"assetRevision\":1,\"brickCount\":2,\"cellMeters\":0.25,\"contentHashes\":{\"normalizedGeometrySha256\":\"5f7d74c48a42cfde01964fbf4c2f024109b62d90f23a4fdde863d1357b57f4a5\",\"semanticsSha256\":\"3c4315c75a1642ac114c41b8f8d9713b4fa0b04a8ca20fc612fd34988d0dff77\",\"voxelizationSha256\":\"7ebda023efb7b7bb7dcc6887fee94dc9d00f372b64d7e8203e937a923eaea89d\"},\"diagnosticsSummary\":{\"error\":0,\"info\":0,\"warning\":0},\"manifestTreeSha256\":\"51549b85a8d0b5699f9632840ef6b6d9d5ce04be9b0f81bd4a7682ea96e4edcb\",\"ownedCellCount\":216,\"partCount\":1,\"productIntegrated\":false,\"profileId\":\"standard-025-v1\",\"schema\":\"hestia.asset-compiler-spike.v1\",\"sources\":{\"authoringPayloadSha256\":\"dcbc9c6dbe960760a62156b51e105b30e52d35b358819f097b40422673e81e5f\",\"sourceGlbSha256\":\"52e2d51ec970e50c823a4120708ff9b407b8033f62d7728fe9bbb736f39d7ca9\",\"sourceReportSha256\":\"2dad2dac080f61c46c94395655c7f1b7fc47c15e995d321f9b0c0c757f0bd8f5\"},\"status\":\"VALID\",\"thinOutcomes\":{\"cube\":\"Voxelized\"}}\r\n",
+      "stdoutSha256": "d0b99a3da414b8866170c5fa6af42f80729e4c1205dc9cb98e0bf8c4668cc824",
+      "timeoutSeconds": 180
+    },
+    {
+      "argv": [
+        "C:\\IFI_SourceCode\\Utils\\Blender 5.2\\blender.exe",
+        "--background",
+        "--factory-startup",
+        "C:\\IFI_SourceCode\\Utils\\opencode-migration\\tmp\\opencode\\hestia-agent3-2026-10-02-72981f9a\\blender-e2e-tz5zplil\\rotation-z-90.blend",
+        "--python-exit-code",
+        "1",
+        "--python",
+        "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-Agent3-AssetCompiler-2026-10-02\\tools\\blender\\hestia_asset_authoring\\export_hestia_glb.py",
+        "--",
+        "--output",
+        "C:\\IFI_SourceCode\\Utils\\opencode-migration\\tmp\\opencode\\hestia-agent3-2026-10-02-72981f9a\\blender-e2e-tz5zplil\\rotation-z-90.glb",
+        "--collection",
+        "HestiaE2E",
+        "--unapplied-scale",
+        "warning"
+      ],
+      "exitCode": 0,
+      "label": "rotation-z-90: real-export",
+      "stderr": "",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "00:00.641  blend            | Read blend: \"C:\\IFI_SourceCode\\Utils\\opencode-migration\\tmp\\opencode\\hestia-agent3-2026-10-02-72981f9a\\blender-e2e-tz5zplil\\rotation-z-90.blend\"\nINFO Draco is available, use library at C:\\IFI_SourceCode\\Utils\\Blender 5.2\\5.2\\scripts\\addons_core\\io_scene_gltf2\\bf_intern_draco_bridge.dll\r\nINFO MeshOptimizer is available, use library at C:\\IFI_SourceCode\\Utils\\Blender 5.2\\5.2\\scripts\\addons_core\\io_scene_gltf2\\bf_intern_meshopt_bridge.dll\r\n10:03:05 | INFO: Starting glTF 2.0 export\r\n10:03:05 | INFO: Extracting primitive: Cube.001\r\n10:03:05 | INFO: Primitives created: 1\r\n10:03:05 | INFO: Finished glTF 2.0 export in 0.009444236755371094 s\r\nBlender 5.2.0 LTS (hash fbe6228777e7 built 2026-07-14 01:35:40)\n\r\nExported GLB and report for blender-e2e-cube\r\n",
+      "stdoutSha256": "b8495b9922bb66cdf6a7539e5dac4323492384b917dd6734db06f7722674d03d",
+      "timeoutSeconds": 180
+    },
+    {
+      "argv": [
+        "C:\\IFI_SourceCode\\Utils\\Python\\cpython-3.12.13-windows-x86_64-none\\python.exe",
+        "-B",
+        "-X",
+        "utf8",
+        "-m",
+        "tools.hestia_asset_compiler",
+        "compile",
+        "--glb",
+        "C:\\IFI_SourceCode\\Utils\\opencode-migration\\tmp\\opencode\\hestia-agent3-2026-10-02-72981f9a\\blender-e2e-tz5zplil\\rotation-z-90.glb",
+        "--report",
+        "C:\\IFI_SourceCode\\Utils\\opencode-migration\\tmp\\opencode\\hestia-agent3-2026-10-02-72981f9a\\blender-e2e-tz5zplil\\rotation-z-90.hestia-authoring-report.json",
+        "--profile",
+        "micro-0125-research-v1",
+        "--output",
+        "C:\\IFI_SourceCode\\Utils\\opencode-migration\\tmp\\opencode\\hestia-agent3-2026-10-02-72981f9a\\blender-e2e-tz5zplil\\rotation-z-90-micro-0125-research-v1"
+      ],
+      "exitCode": 1,
+      "label": "rotation-z-90: compile micro-0125-research-v1",
+      "stderr": "{\"diagnostics\":[{\"code\":\"thin.unproven\",\"severity\":\"error\"}],\"status\":\"REJECTED\"}\r\n",
+      "stderrSha256": "aa433e1085a6f72230f7d7a699759cf6878aa81eeb5e8606f06fcbef6630a00d",
+      "stdout": "",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "timeoutSeconds": 180
+    },
+    {
+      "argv": [
+        "C:\\IFI_SourceCode\\Utils\\Python\\cpython-3.12.13-windows-x86_64-none\\python.exe",
+        "-B",
+        "-X",
+        "utf8",
+        "-m",
+        "tools.hestia_asset_compiler",
+        "compile",
+        "--glb",
+        "C:\\IFI_SourceCode\\Utils\\opencode-migration\\tmp\\opencode\\hestia-agent3-2026-10-02-72981f9a\\blender-e2e-tz5zplil\\rotation-z-90.glb",
+        "--report",
+        "C:\\IFI_SourceCode\\Utils\\opencode-migration\\tmp\\opencode\\hestia-agent3-2026-10-02-72981f9a\\blender-e2e-tz5zplil\\rotation-z-90.hestia-authoring-report.json",
+        "--profile",
+        "standard-025-v1",
+        "--output",
+        "C:\\IFI_SourceCode\\Utils\\opencode-migration\\tmp\\opencode\\hestia-agent3-2026-10-02-72981f9a\\blender-e2e-tz5zplil\\rotation-z-90-standard-025-v1"
+      ],
+      "exitCode": 1,
+      "label": "rotation-z-90: compile standard-025-v1",
+      "stderr": "{\"diagnostics\":[{\"code\":\"thin.unproven\",\"severity\":\"error\"}],\"status\":\"REJECTED\"}\r\n",
+      "stderrSha256": "aa433e1085a6f72230f7d7a699759cf6878aa81eeb5e8606f06fcbef6630a00d",
+      "stdout": "",
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "timeoutSeconds": 180
+    }
+  ],
+  "commit": "de0f405f2d0e1084d0fa7f993d3cf74761b66dca",
+  "compilerCodeFreeze": "c8e451a3e52fc8da743df011debae682f93c89a3",
+  "helperSha256": "82836485da250da9fcacd0583fdbfe55b397525ea70dc59b8784c4e0b3b2e836",
+  "ownedGenerationRemoved": true,
+  "ownedTempEntries": 0,
+  "productIntegrated": false,
+  "pythonSourceManifestSha256": "c2a6c63cb94f2f24d29e3a727cc1f72e88ca90e60d26a504886d291118cf7e1a",
+  "runtime": {
+    "blenderBuildDate": "2026-07-14",
+    "blenderBuildHash": "fbe6228777e7",
+    "blenderPythonVersion": "3.13.13 (main, May  8 2026, 12:37:03) [MSC v.1944 64 bit (AMD64)]",
+    "blenderVersion": "5.2.0 LTS",
+    "explicitExporterOptions": {
+      "export_extras": true,
+      "export_format": "GLB",
+      "use_selection": true
+    },
+    "exportCustomPropertiesAvailable": false,
+    "fixtures": {
+      "plain-cube": {
+        "assetProperties": {
+          "hestia.asset_id": "blender-e2e-cube",
+          "hestia.asset_revision": 1,
+          "hestia.representation_mode": "StructuralAssembly",
+          "hestia.schema_version": "hestia.asset-authoring.v1"
+        },
+        "authoredProperties": {
+          "hestia.collision_policy": "Voxel",
+          "hestia.declared_minimum_thickness_m": 1.0,
+          "hestia.destructible": true,
+          "hestia.navigation_policy": "Obstacle",
+          "hestia.part_id": "cube",
+          "hestia.render_material_id": "cube-material",
+          "hestia.representation_mode": "Solid",
+          "hestia.thin_feature_policy": "Reject"
+        },
+        "blendSaveResult": [
+          "FINISHED"
+        ],
+        "blenderWorldBounds": [
+          [
+            0.0,
+            0.5,
+            1.0
+          ],
+          [
+            1.0,
+            1.5,
+            2.0
+          ]
+        ],
+        "blenderWorldMatrixRows": [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.5
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            1.5
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "blenderWorldVertices": [
+          [
+            0.0,
+            0.5,
+            1.0
+          ],
+          [
+            0.0,
+            0.5,
+            2.0
+          ],
+          [
+            0.0,
+            1.5,
+            1.0
+          ],
+          [
+            0.0,
+            1.5,
+            2.0
+          ],
+          [
+            1.0,
+            0.5,
+            1.0
+          ],
+          [
+            1.0,
+            0.5,
+            2.0
+          ],
+          [
+            1.0,
+            1.5,
+            1.0
+          ],
+          [
+            1.0,
+            1.5,
+            2.0
+          ]
+        ],
+        "localVertexCount": 8,
+        "polygonCount": 6,
+        "rotationEulerRadians": [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "rotation-z-90": {
+        "assetProperties": {
+          "hestia.asset_id": "blender-e2e-cube",
+          "hestia.asset_revision": 1,
+          "hestia.representation_mode": "StructuralAssembly",
+          "hestia.schema_version": "hestia.asset-authoring.v1"
+        },
+        "authoredProperties": {
+          "hestia.collision_policy": "Voxel",
+          "hestia.declared_minimum_thickness_m": 1.0,
+          "hestia.destructible": true,
+          "hestia.navigation_policy": "Obstacle",
+          "hestia.part_id": "cube",
+          "hestia.render_material_id": "cube-material",
+          "hestia.representation_mode": "Solid",
+          "hestia.thin_feature_policy": "Reject"
+        },
+        "blendSaveResult": [
+          "FINISHED"
+        ],
+        "blenderWorldBounds": [
+          [
+            -2.1855694143368964e-08,
+            0.4999999701976776,
+            1.0
+          ],
+          [
+            1.0,
+            1.5,
+            2.0
+          ]
+        ],
+        "blenderWorldMatrixRows": [
+          [
+            -4.371138828673793e-08,
+            -1.0,
+            0.0,
+            0.5
+          ],
+          [
+            1.0,
+            -4.371138828673793e-08,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            1.5
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "blenderWorldVertices": [
+          [
+            1.0,
+            0.5,
+            1.0
+          ],
+          [
+            1.0,
+            0.5,
+            2.0
+          ],
+          [
+            2.1855694143368964e-08,
+            0.4999999701976776,
+            1.0
+          ],
+          [
+            2.1855694143368964e-08,
+            0.4999999701976776,
+            2.0
+          ],
+          [
+            1.0,
+            1.5,
+            1.0
+          ],
+          [
+            1.0,
+            1.5,
+            2.0
+          ],
+          [
+            -2.1855694143368964e-08,
+            1.5,
+            1.0
+          ],
+          [
+            -2.1855694143368964e-08,
+            1.5,
+            2.0
+          ]
+        ],
+        "localVertexCount": 8,
+        "polygonCount": 6,
+        "rotationEulerRadians": [
+          0.0,
+          0.0,
+          1.5707963705062866
+        ]
+      }
+    },
+    "gltfExporterModuleSha256": "0cd8903bd1a72ef1edbd728bee70d24a3ecc93c9901db68927b00910bb38be70",
+    "gltfExporterVersion": [
+      5,
+      2,
+      39
+    ],
+    "operatorAvailableProperties": [
+      "at_collection_center",
+      "check_existing",
+      "collection",
+      "export_action_filter",
+      "export_active_vertex_color_when_no_material",
+      "export_all_influences",
+      "export_all_vertex_colors",
+      "export_anim_scene_split_object",
+      "export_anim_single_armature",
+      "export_anim_slide_to_zero",
+      "export_animation_mode",
+      "export_animations",
+      "export_apply",
+      "export_armature_object_remove",
+      "export_attributes",
+      "export_bake_animation",
+      "export_cameras",
+      "export_convert_animation_pointer",
+      "export_copyright",
+      "export_current_frame",
+      "export_def_bones",
+      "export_draco_color_quantization",
+      "export_draco_generic_quantization",
+      "export_draco_mesh_compression_enable",
+      "export_draco_mesh_compression_level",
+      "export_draco_normal_quantization",
+      "export_draco_position_quantization",
+      "export_draco_texcoord_quantization",
+      "export_extra_animations",
+      "export_extras",
+      "export_force_sampling",
+      "export_format",
+      "export_frame_range",
+      "export_frame_step",
+      "export_gltfpack_kn",
+      "export_gltfpack_noq",
+      "export_gltfpack_sa",
+      "export_gltfpack_si",
+      "export_gltfpack_slb",
+      "export_gltfpack_tc",
+      "export_gltfpack_tq",
+      "export_gltfpack_vc",
+      "export_gltfpack_vn",
+      "export_gltfpack_vp",
+      "export_gltfpack_vpi",
+      "export_gltfpack_vt",
+      "export_gn_mesh",
+      "export_gpu_instances",
+      "export_hierarchy_flatten_bones",
+      "export_hierarchy_flatten_objs",
+      "export_hierarchy_full_collections",
+      "export_image_add_webp",
+      "export_image_format",
+      "export_image_quality",
+      "export_image_webp_fallback",
+      "export_import_convert_lighting_mode",
+      "export_influence_nb",
+      "export_jpeg_quality",
+      "export_keep_originals",
+      "export_leaf_bone",
+      "export_lights",
+      "export_loglevel",
+      "export_materials",
+      "export_merge_animation",
+      "export_meshopt_compression_enable",
+      "export_meshopt_extension",
+      "export_morph",
+      "export_morph_animation",
+      "export_morph_normal",
+      "export_morph_reset_sk_data",
+      "export_morph_tangent",
+      "export_negative_frame",
+      "export_nla_strips",
+      "export_nla_strips_merged_animation_name",
+      "export_normals",
+      "export_optimize_animation_keep_anim_armature",
+      "export_optimize_animation_keep_anim_object",
+      "export_optimize_animation_size",
+      "export_optimize_disable_viewport",
+      "export_original_specular",
+      "export_pointer_animation",
+      "export_reset_pose_bones",
+      "export_rest_position_armature",
+      "export_sampling_interpolation_fallback",
+      "export_shared_accessors",
+      "export_skins",
+      "export_tangents",
+      "export_texcoords",
+      "export_texture_dir",
+      "export_try_omit_sparse_sk",
+      "export_try_sparse_sk",
+      "export_unused_images",
+      "export_unused_textures",
+      "export_use_gltfpack",
+      "export_vertex_color",
+      "export_vertex_color_name",
+      "export_yup",
+      "filepath",
+      "filter_glob",
+      "gltf_export_id",
+      "rna_type",
+      "ui_tab",
+      "use_active_collection",
+      "use_active_collection_with_nested",
+      "use_active_scene",
+      "use_mesh_edges",
+      "use_mesh_vertices",
+      "use_renderable",
+      "use_selection",
+      "use_visible",
+      "will_save_settings"
+    ],
+    "operatorFactoryDefaults": {
+      "at_collection_center": false,
+      "check_existing": true,
+      "collection": "",
+      "export_action_filter": false,
+      "export_active_vertex_color_when_no_material": true,
+      "export_all_influences": false,
+      "export_all_vertex_colors": true,
+      "export_anim_scene_split_object": true,
+      "export_anim_single_armature": true,
+      "export_anim_slide_to_zero": false,
+      "export_animation_mode": "ACTIONS",
+      "export_animations": true,
+      "export_apply": false,
+      "export_armature_object_remove": false,
+      "export_attributes": false,
+      "export_bake_animation": false,
+      "export_cameras": false,
+      "export_convert_animation_pointer": false,
+      "export_copyright": "",
+      "export_current_frame": false,
+      "export_def_bones": false,
+      "export_draco_color_quantization": 10,
+      "export_draco_generic_quantization": 12,
+      "export_draco_mesh_compression_enable": false,
+      "export_draco_mesh_compression_level": 6,
+      "export_draco_normal_quantization": 10,
+      "export_draco_position_quantization": 14,
+      "export_draco_texcoord_quantization": 12,
+      "export_extra_animations": false,
+      "export_extras": false,
+      "export_force_sampling": true,
+      "export_format": "",
+      "export_frame_range": false,
+      "export_frame_step": 1,
+      "export_gltfpack_kn": false,
+      "export_gltfpack_noq": true,
+      "export_gltfpack_sa": false,
+      "export_gltfpack_si": 1.0,
+      "export_gltfpack_slb": false,
+      "export_gltfpack_tc": true,
+      "export_gltfpack_tq": 8,
+      "export_gltfpack_vc": 8,
+      "export_gltfpack_vn": 8,
+      "export_gltfpack_vp": 14,
+      "export_gltfpack_vpi": "Integer",
+      "export_gltfpack_vt": 12,
+      "export_gn_mesh": false,
+      "export_gpu_instances": false,
+      "export_hierarchy_flatten_bones": false,
+      "export_hierarchy_flatten_objs": false,
+      "export_hierarchy_full_collections": false,
+      "export_image_add_webp": false,
+      "export_image_format": "AUTO",
+      "export_image_quality": 75,
+      "export_image_webp_fallback": false,
+      "export_import_convert_lighting_mode": "SPEC",
+      "export_influence_nb": 4,
+      "export_jpeg_quality": 75,
+      "export_keep_originals": false,
+      "export_leaf_bone": false,
+      "export_lights": false,
+      "export_loglevel": -1,
+      "export_materials": "EXPORT",
+      "export_merge_animation": "ACTION",
+      "export_meshopt_compression_enable": false,
+      "export_meshopt_extension": "EXT_meshopt_compression",
+      "export_morph": true,
+      "export_morph_animation": true,
+      "export_morph_normal": true,
+      "export_morph_reset_sk_data": true,
+      "export_morph_tangent": false,
+      "export_negative_frame": "SLIDE",
+      "export_nla_strips": true,
+      "export_nla_strips_merged_animation_name": "Animation",
+      "export_normals": true,
+      "export_optimize_animation_keep_anim_armature": true,
+      "export_optimize_animation_keep_anim_object": false,
+      "export_optimize_animation_size": true,
+      "export_optimize_disable_viewport": false,
+      "export_original_specular": false,
+      "export_pointer_animation": false,
+      "export_reset_pose_bones": true,
+      "export_rest_position_armature": true,
+      "export_sampling_interpolation_fallback": "LINEAR",
+      "export_shared_accessors": false,
+      "export_skins": true,
+      "export_tangents": false,
+      "export_texcoords": true,
+      "export_texture_dir": "",
+      "export_try_omit_sparse_sk": false,
+      "export_try_sparse_sk": true,
+      "export_unused_images": false,
+      "export_unused_textures": false,
+      "export_use_gltfpack": false,
+      "export_vertex_color": "MATERIAL",
+      "export_vertex_color_name": "Color",
+      "export_yup": true,
+      "filepath": "",
+      "filter_glob": "*.glb",
+      "gltf_export_id": "",
+      "ui_tab": "GENERAL",
+      "use_active_collection": false,
+      "use_active_collection_with_nested": true,
+      "use_active_scene": false,
+      "use_mesh_edges": false,
+      "use_mesh_vertices": false,
+      "use_renderable": false,
+      "use_selection": false,
+      "use_visible": false,
+      "will_save_settings": false
+    }
+  },
+  "status": "FOCUSED_EXECUTION_COMPLETE_NOT_BLANKET_INTEROP_PASS"
+}
