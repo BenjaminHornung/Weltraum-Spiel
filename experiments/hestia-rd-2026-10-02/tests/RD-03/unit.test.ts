@@ -101,6 +101,15 @@ it('resetTick reconstructs on backward seek; owner rotation and namespace stay s
     const object = event.manifest.objects[0]; const pose = ownerPose(event.manifest, object.ownerId)!;
     expect(pose.sourceRevision).toBe(object.sourceRevision); expect(pose.sourceNamespace).toBe(object.sourceNamespace);
     expect(pose.rotationXyzw).toEqual(object.frame.rotationXyzw);
+    const context = effectContext(event.manifest); const effect = await mountThreeEffect(context, { id: 'fixture-control' });
+    const projection = context.root.children[0];
+    expect(projection.children.map((owner) => owner.name)).toEqual(event.manifest.objects.map((owner) => owner.ownerId));
+    for (const source of event.manifest.objects) {
+      const owner = projection.children.find((entry) => entry.name === source.ownerId)!;
+      expect(owner.position.toArray()).toEqual(source.frame.originMeters); expect(owner.quaternion.toArray()).toEqual(source.frame.rotationXyzw);
+      expect(owner.userData).toEqual({ ownerId: source.ownerId, sourceNamespace: source.sourceNamespace, sourceRevision: source.sourceRevision });
+    }
+    await effect.dispose();
   }
   expect(ownerPose(data.initialFixture, 'no-such-owner')).toBeUndefined();
 });

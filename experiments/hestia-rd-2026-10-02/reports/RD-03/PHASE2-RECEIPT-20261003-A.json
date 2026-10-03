@@ -1,0 +1,131 @@
+{
+  "schema": "hestia-rd03-phase2-functional-receipt-v1",
+  "status": "OPTIMIZED_PHASE2_FUNCTIONAL_VERIFIED_READY_FOR_HEAD_REVIEW",
+  "productIntegrated": false,
+  "branch": "feature/hestia-rd-rd03-phase2-2026-10-02",
+  "parentStart": "32a0a6b12361c62a60aa31dc7bd24694f352d16c",
+  "parentTree": "993233eba8e62fa2310905ad6032dca6bfb01b02",
+  "readOnlyProductBase": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+  "commitBinding": "New external post-commit checks/phase2-20261003-a/TERMINAL-RECEIPT.json; no circular own-commit claim",
+  "phase1CodeTruthNotRebound": "0857c4ce1232c66d7e7b4f4dbad20f6249d2e677",
+  "immutableFreeze": {
+    "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/HEAD/freezes/32a0a6b12361c62a60aa31dc7bd24694f352d16c.json",
+    "sha256": "b5c30468d98c7f582a8ada9037db113242d90e2d9334a54878ff8487d5f4442d",
+    "actualSharedFilesUnchanged": 18,
+    "lockSha256": "9dc112529df87daa8a3d92a913932d2b0bad131055d8d684d86736bd4409b60c",
+    "inventorySha256": "26bf86bba1cbd1955d069ab2eac8d491b6cade59d16a004f1d094cc117ebc9c6"
+  },
+  "changedPaths": [
+    "experiments/hestia-rd-2026-10-02/reports/RD-03/PHASE2-HANDOFF-20261003-A.md",
+    "experiments/hestia-rd-2026-10-02/reports/RD-03/PHASE2-RECEIPT-20261003-A.json",
+    "experiments/hestia-rd-2026-10-02/tests/RD-03/browser.spec.ts",
+    "experiments/hestia-rd-2026-10-02/tests/RD-03/cli-browser-terminal.mjs",
+    "experiments/hestia-rd-2026-10-02/tests/RD-03/unit.test.ts"
+  ],
+  "testedSources": [
+    { "path": "tests/RD-03/browser.spec.ts", "sha256": "243f2456e0ea95f9cf488e9ab0d1baabbc4e6128452fb906979fb3d03a416511" },
+    { "path": "tests/RD-03/unit.test.ts", "sha256": "018bcfa8633dc140c034e72469e76c3e623e7aff9dfbfccdc3d89d1039e68bde" },
+    { "path": "tests/RD-03/cli-browser-terminal.mjs", "sha256": "5cd709a6e41610fbc75681a77dcdd5b7c1ea79b237c23ab19159e7a8fdc469c4" }
+  ],
+  "evidenceIndex": {
+    "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-03/checks/phase2-20261003-a/evidence-index-phase2.json",
+    "sha256": "126f7359ebfbf88e9352da5ddbab2d48a6bc9e1b4649f4e17964dc0a7b3899be",
+    "sourceBuildInputFiles": 19,
+    "distFiles": 434,
+    "canonicalPublicFilesByteEqual": 429,
+    "httpExecutableEntriesByteEqual": 5,
+    "inlineCssBoundByHtml": true,
+    "positiveBrowserImages": 32,
+    "positiveCliImages": 6,
+    "faultImagesAreNotPositiveAcceptance": true,
+    "exactCommandsAndEnvironmentsBound": true
+  },
+  "captureCorrection": {
+    "rootCause": "Pinned Playwright 1.61.1 encloses document-space edges; Math.round(css.height) incorrectly expected 702 instead of actual 703",
+    "fix": "Exact floor(origin+1e-3)/ceil(end-1e-3) edge difference including scroll position; not a threshold or quality change",
+    "redSourceSha256": "6c05da79b3f5912767d31c5e667406ee926dd23bdb7c48926dffd616cfafc1c3",
+    "sameOriginalPairGreenSourceSha256": "cd3507ab26a0a78cc1a9518b36fe2e07c5a4b88c8ce574d16da3f19a7bd889d2",
+    "pinnedNativeAlgorithmExcerptSha256": "d224cbbba87ee5a072db172cca7ec21698e18fccc798d527e6d63b2ebc3d5d8e",
+    "additionalRuntimeCorrections": 0
+  },
+  "functionalChecks": {
+    "focusedUnit": { "status": "PASS", "files": 2, "tests": 13 },
+    "types": "PASS",
+    "nativeAdmission": { "status": "PASS", "cases": 8, "reusedScreenshotCallbackCount": 0 },
+    "optimizedBrowser": { "status": "PASS", "tests": 5, "skipped": 0, "retries": 0, "replayStates": 31, "fixtures": ["F00", "F01", "F04", "F05"] },
+    "lifecycle": { "status": "PASS", "planned": 20, "observed": 20, "failed": 0, "ownedDisposedCountsZero": true, "canvasUiListenersRestoredToBaselineNotAbsoluteZero": true },
+    "actualOwnerTransformsAndDeletion": "PASS on real CPU Three projection; browser complete snapshot/count binding, not direct browser scene-object inspection",
+    "canonicalFloat64PrivateFloat32": "PASS; existing 1e-5 projection tolerance unchanged",
+    "productionBuild": "PASS; actual optimized dual HTML entries and unchanged 549.55 kB static Three warning",
+    "requiredWebgl2Denial": "PASS controlled required-capability denial on real optimized page/CLI",
+    "timerDenialContextLoss": "PASS controlled timer denial and actual WEBGL_lose_context; no hidden fallback or measurement value"
+  },
+  "cliTerminals": [
+    { "run": "phase2-a-cli-inspect-f04", "status": "PASS", "planned": 3, "observed": 3, "skipped": 0, "failed": 0, "qualification": "CPU_ONLY" },
+    { "run": "phase2-a-cli-evidence-f04", "status": "PASS", "planned": 3, "observed": 3, "skipped": 0, "failed": 0, "ticks": [899, 900, 901], "revisionTransition": false },
+    { "run": "phase2-a-cli-evidence-transition", "status": "PASS", "planned": 3, "observed": 3, "skipped": 0, "failed": 0, "ticks": [1079, 1080, 1081], "revisionTransition": true },
+    { "run": "phase2-a-cli-abort-import", "status": "ABORTED", "planned": 3, "observed": 0, "skipped": 3, "failed": 0 },
+    { "run": "phase2-a-cli-missing-webgl2", "status": "UNSUPPORTED", "planned": 3, "observed": 0, "skipped": 3, "failed": 0 },
+    { "run": "phase2-a-cli-context-loss", "status": "FAILED", "planned": 2, "observed": 2, "skipped": 0, "failed": 1, "expectedFault": true },
+    { "run": "phase2-a-cli-abort-rendered", "status": "ABORTED", "planned": 3, "observed": 0, "skipped": 3, "failed": 0, "actualWebgl2SubmittedFramesBeforeControlledHandlerSignal": true },
+    { "run": "phase2-a-cli-bench-not-run", "status": "NOT_RUN", "planned": 120, "observed": 0, "skipped": 120, "failed": 0, "reason": "No exclusive qualified GPU slot" }
+  ],
+  "verification": [
+    { "label": "phase2-a-browser-base", "exitCode": 1, "logSha256": "ccbaf4f5a5b7c34097872762d66db9810c263ab686ebf08e1df558c4ddf6efb6" },
+    { "label": "phase2-a-browser-green", "exitCode": 0, "logSha256": "470e551df21e41f8d5d7c0bc6ad917ae3edbcd0c964d1856e52435e71f88723c" },
+    { "label": "phase2-a-focused-expanded", "exitCode": 0, "logSha256": "69af9efce68fa9b1c96e80d2ed3568ce4b36b58538c09da7481831f74c59b985" },
+    { "label": "phase2-a-types-expanded", "exitCode": 1, "logSha256": "4ba6c7ca645382f554504018d48326e69a08b53f7b159c47a6b00f9a7aa0275d" },
+    { "label": "phase2-a-types-expanded-green", "exitCode": 0, "logSha256": "55c814d0e096397f099fe6af3df4cb48543573b7821b3361bbbe5963f2045252" },
+    { "label": "phase2-a-admission", "exitCode": 0, "logSha256": "09ff72cef6545bd919822a05a55523cd7ab549053795ec1e830bdcf38e285048" },
+    { "label": "phase2-a-browser-expanded", "exitCode": 0, "logSha256": "4945fc682bd593206fbdbde21c35efd01e6cc40153fe7d88d986157192cc92a4" },
+    { "label": "phase2-a-build-final", "exitCode": 0, "logSha256": "331220e959b3b133a48a8f6564826c933b8f1145033c78bb313b6dbe4c0c4058" },
+    { "label": "phase2-a-cli-inspect", "exitCode": 0, "logSha256": "d999ef7a8ad1d48928f8ba3a04c8ad02d7954aab3aee4dbd200a851b2692236c" },
+    { "label": "phase2-a-cli-evidence", "exitCode": 0, "logSha256": "212ed0bb9e6133ea3522f9c610086ef2e4d0b6058bdf6fcdb081d3e19ba7c9d3" },
+    { "label": "phase2-a-cli-evidence-transition", "exitCode": 0, "logSha256": "319c9762a695cf9025e5b4f2703f11f179e47bb1723c2919ae52e0b7df003ffc" },
+    { "label": "phase2-a-cli-abort-import", "exitCode": 0, "logSha256": "f9f21f85c9b88ae314379c750f55b923db15ed82a8806397069ee2b320503cc5" },
+    { "label": "phase2-a-cli-missing-webgl2", "exitCode": 0, "logSha256": "a86d7db495beda31503c855526a92f4456e342f7bcea050c6a4392b6fa09673b" },
+    { "label": "phase2-a-cli-context-loss", "exitCode": 0, "logSha256": "0a533a914a9a72293cdd0a2dd59cec38b3f1513ac315f166f5d9d74ec8744018" },
+    { "label": "phase2-a-cli-abort-rendered", "exitCode": 0, "logSha256": "3dd23dd88a5ea98319419e65c3719911e62ca1b7b14dfbd1a7e068d7bee79956" },
+    { "label": "phase2-a-cli-bench-not-run", "exitCode": 0, "logSha256": "fb82e672c60865bd6226b88bdeb57409d198d71486ec910422b82cee11c6815a" },
+    { "label": "phase2-a-evidence-bindings", "exitCode": 0, "logSha256": "d05f1f376cd37637f849f398dd60b0a83bab1881a2ed42fa6d8ba193ec1d9196" },
+    { "label": "phase2-a-retained", "exitCode": 0, "logSha256": "e374a884b47ca25a84ab5b03f5b6f74b646f48c1d1f60600d26359c309f37e20" },
+    { "label": "phase2-a-cleanup-port-free", "exitCode": 0, "logSha256": "ab398982083bd9ee341327f392a8002e062bec83f3e044f7b05c364718aecdbc" }
+  ],
+  "retention": {
+    "verificationSha256": "ed230b9c7bca079ddb6a6eb9ebd0e7ec4ca295b209b9f79cb96ece03465a70be",
+    "canonicalFiles": 429,
+    "oldReports": 5,
+    "oldPhase2AdmissionEvidenceFiles": 191,
+    "priorRepairOldEvidenceFilesIncludingProfiles": 1209,
+    "countsOverlapDoNotSum": true,
+    "oldLinkMetadataOnlyNoFollow": 12,
+    "oldLedgerPrefixUnchanged": true,
+    "oldReceiptsNeverRebound": true,
+    "originalCodeReceiptSha256": "f5c9bce2ee1014435c0ca0831d289dc692bc843996af8edea02d1aeb49774118",
+    "originalEvidenceIndexSha256": "71f6d2ba982060f6e084255fa3e24865401fa0f52e3003705347a5b87dd78d8a",
+    "originalFinalReceiptSha256": "8add12adb7017114ec496617de5ad2704b5cfe6b418d9ceea692923011a3e02a",
+    "captureRepairTerminalReceiptSha256": "4ab7aacc9b334261d0251d134ce927a9fcbd4f329c7749428c330603b25d9389"
+  },
+  "cleanup": {
+    "ownedManagedPreview": "bg_mus3tawa_3o",
+    "ownedPid": 41660,
+    "finalManagedStatus": "cancelled",
+    "lifecycleSha256": "571381d291d38fdfeba46dd94ddf2cbf318070b888438ca216db56e810bf0915",
+    "port5280FreeNativeGuard": "PASS",
+    "ownedCliBrowsersAndNativeLoadersClosed": true,
+    "persistentProfilesAndProbesRetained": true,
+    "foreignCleanup": false
+  },
+  "review": "Leaf self-review; no new independent or human review. Final staged diff/whitespace/post-commit boundary are external terminal bindings",
+  "historicalScopeDeviation": "FAIL retained: earlier broad-unit run created ten additive foreign-root program oracles; HEAD bounded metadata inspection and additive retention are not retroactive PASS or complete historical mutation-freedom proof",
+  "limitations": [
+    "Qualified GPU benchmark, empty/active timing qualification, native GPU allocation measurement, target-hardware and human art acceptance NOT_RUN; no values invented",
+    "Chromium 151.0.7922.34 / WebGL2 / observed ANGLE Intel Arc Pro 140T D3D11 metadata are unqualified headless functional diagnostics, not hardware acceptance",
+    "CLI native context loss fails closed via 15000 ms sample wait timeout rather than a dedicated terminal reason; its retained fault image is not positive evidence",
+    "Abort probes exercise controlled process.emit(SIGINT) handlers, not OS-console Ctrl-C delivery",
+    "Canvas UI listeners return to the original baseline; only owned host listeners and reported resources are zero after disposal; native GPU bytes remain unknown",
+    "PCF/sky/water hooks and unsupported material parity excluded; no hidden quality fallback; Float64 canonical/private Float32 tolerance unchanged",
+    "Product/art/performance acceptance pending separately; product integration, deployment and publication NOT APPLICABLE to this leaf",
+    "HEAD wiring remains unchanged; real URL /src/runner/index.html, public /inventory.json and /Fxx paths; no additional shared delta requested"
+  ]
+}
