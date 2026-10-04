@@ -5,6 +5,7 @@ import { canonicalJson } from '../../src/contracts/validation';
 import { createRunResult } from '../../src/contracts/result';
 import type { GalleryState } from '../../src/tools/variant-gallery/session';
 import type { SourceBinding } from '../../src/tools/variant-gallery/source';
+import { nativeCanvasCapture } from './native-canvas-capture';
 
 const sha = (bytes: Uint8Array | string) => createHash('sha256').update(bytes).digest('hex');
 type Facts = { productIntegrated: false; state: GalleryState; source: SourceBinding; owners: {
@@ -41,9 +42,10 @@ async function seek(page: Page, tick: number) {
 async function save(info: TestInfo, name: string, bytes: Uint8Array | string) { await writeFile(info.outputPath(name), bytes, { flag: 'wx' }); }
 async function capture(page: Page, info: TestInfo, name: string, classification: string, canvasOnly = false) {
   const before = await facts(page);
-  const bytes = canvasOnly ? await page.locator('#gallery-canvas').screenshot() : await page.screenshot({ fullPage: true });
+  const bytes = canvasOnly ? await nativeCanvasCapture(page, info, name, receipt) : await page.screenshot({ fullPage: true });
   const after = await facts(page); expect(after.state.comparison).toEqual(before.state.comparison);
-  await save(info, `${name}.png`, bytes); await save(info, `${name}.json`, JSON.stringify({ productIntegrated: false, classification,
+  if (!canvasOnly) { await save(info, `${name}.png`, bytes); }
+  await save(info, `${name}.json`, JSON.stringify({ productIntegrated: false, classification,
     pngSha256: sha(bytes), sourceCommit: receipt.sourceCommit, sourceTree: receipt.sourceTree, buildDigest: receipt.buildDigest, facts: after }, null, 2));
   return { bytes, facts: after };
 }

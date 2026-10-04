@@ -7,6 +7,7 @@ import { canonicalJson } from '../../src/contracts/validation';
 import { createRunResult } from '../../src/contracts/result';
 import type { GalleryState } from '../../src/tools/variant-gallery/session';
 import type { SourceBinding } from '../../src/tools/variant-gallery/source';
+import { nativeCanvasCapture } from './native-canvas-capture';
 
 // Phase1: COMPILED ONLY. HEAD must supply fresh wiring/build/freeze receipt AND a new browser grant.
 type HeadReceipt = { phase: 'RD40-PHASE2'; productIntegrated: false; entryWired: true; port5280Released: true;
@@ -24,9 +25,9 @@ async function ready(page: Page) {
   expect(value.state.submission!.backend.actual).toBe(value.state.submission!.backend.requested); return value;
 }
 async function seek(page: Page, tick: number) { await page.getByLabel('Seek tick', { exact: true }).fill(String(tick)); await page.getByRole('button', { name: 'Seek', exact: true }).click(); await expect(page.locator('#facts')).toHaveAttribute('data-tick', String(tick)); await ready(page); }
-async function scene(page: Page, fixture: string) { await page.getByLabel('Fixture', { exact: true }).selectOption(fixture); return ready(page); }
+async function scene(page: Page, fixture: string) { await page.getByRole('combobox', { name: 'Fixture', exact: true }).selectOption(fixture); return ready(page); }
 async function screenshot(page: Page, info: TestInfo, name: string, viewportOnly = false) {
-  const bytes = viewportOnly ? await page.locator('#gallery-canvas').screenshot({ path: info.outputPath(`${name}.png`) }) : await page.screenshot({ path: info.outputPath(`${name}.png`), fullPage: true });
+  const bytes = viewportOnly ? await nativeCanvasCapture(page, info, name, receipt) : await page.screenshot({ path: info.outputPath(`${name}.png`), fullPage: true });
   const value = await facts(page); await writeFile(info.outputPath(`${name}.json`), JSON.stringify({ productIntegrated: false, pngSha256: sha(bytes), state: value.state, source: value.source, head: receipt }, null, 2), { flag: 'wx' }); return bytes;
 }
 test.beforeAll(async () => {

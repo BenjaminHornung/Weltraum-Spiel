@@ -16,20 +16,32 @@ export const freezePath = `C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/HEAD
 export const freezeHash = '2310ee20028cfa52e0150dffc37bb74d24620ed5f925ea625a97285353e86aa3';
 export const chrome = 'C:/IFI_SourceCode/Utils/opencode-migration/runtime/chromium-1234/chrome-win64/chrome.exe';
 export const prefix = 'experiments/hestia-rd-2026-10-02/';
-export const verificationParent = '453bbbf680e32352accd2255aea50a52dfdb9b61';
+export const verificationParent = '649ea866aea66e2135545553923513392eb01ef9';
+const readerParent = '453bbbf680e32352accd2255aea50a52dfdb9b61';
 export const readerOracles = [
-  { path: 'tests/RD-40/browser.spec.ts', oldSha256: '91c06b7e1bdb0002a110a5e44563454bc36af701347e64e0f28baa03fafb5440', newSha256: 'be1dad08c168160e8faffa4cef034e1235171a114b26628a8a8735ad9a138dcd' },
-  { path: 'tests/RD-40/phase2-native.spec.ts', oldSha256: '1653aa5dd772b06d05eba454fd948d6fcb8c57700cb7da8a2b37811c1118d1a9', newSha256: 'ab15639b7db4c5f084704f39d99f9bfa72a11547092be7f580a5cf5c067405b6' },
+  { path: 'tests/RD-40/browser.spec.ts', oldSha256: '91c06b7e1bdb0002a110a5e44563454bc36af701347e64e0f28baa03fafb5440', readerFixedSha256: 'be1dad08c168160e8faffa4cef034e1235171a114b26628a8a8735ad9a138dcd', newSha256: '2cd2014d11d67db882694f515101ae5cd35e5c41fabfdc50981fe6b345ea62d3' },
+  { path: 'tests/RD-40/phase2-native.spec.ts', oldSha256: '1653aa5dd772b06d05eba454fd948d6fcb8c57700cb7da8a2b37811c1118d1a9', readerFixedSha256: 'ab15639b7db4c5f084704f39d99f9bfa72a11547092be7f580a5cf5c067405b6', newSha256: '6c841a382e5bfbcb28511dbfec781b5875b6b9b97c733fe66710055458905ba2' },
 ];
 export function oracleReadRepair(root) {
+  const bodies = [];
   for (const row of readerOracles) {
-    const old = execFileSync(git, ['show', `${verificationParent}:${prefix}${row.path}`], { cwd: lab, env: environment(root) });
+    const old = execFileSync(git, ['show', `${readerParent}:${prefix}${row.path}`], { cwd: lab, env: environment(root) });
+    const fixed = execFileSync(git, ['show', `${verificationParent}:${prefix}${row.path}`], { cwd: lab, env: environment(root) });
     regular(path.join(lab, row.path));
-    if (sha(old) !== row.oldSha256 || sha(readFileSync(path.join(lab, row.path))) !== row.newSha256) { throw new Error(`Only declared reader/cleanup/regression delta admitted: ${row.path}`); }
+    const actual = readFileSync(path.join(lab, row.path));
+    if (sha(old) !== row.oldSha256 || sha(fixed) !== row.readerFixedSha256 || sha(actual) !== row.newSha256) { throw new Error(`Only declared reader and owning harness deltas admitted: ${row.path}`); }
+    const firstCase = "\ntest('UI40"; const before = fixed.toString(); const after = actual.toString();
+    if (!before.includes(firstCase) || !after.includes(firstCase) || before.slice(before.indexOf(firstCase)) !== after.slice(after.indexOf(firstCase))) { throw new Error('Original eleven case bodies and assertions must remain byte-identical'); }
+    bodies.push({ path: row.path, caseBodiesSha256: sha(after.slice(after.indexOf(firstCase))), unchangedFrom649: true });
   }
+  const captureHelper = { path: 'tests/RD-40/native-canvas-capture.ts', sha256: '50fe912120a040d711ac2a6ea6f4bbc76f44138a78483d2b6d5895e72709f5f5' };
+  regular(path.join(lab, captureHelper.path));
+  if (sha(readFileSync(path.join(lab, captureHelper.path))) !== captureHelper.sha256) { throw new Error('Only sealed whole-native-canvas test capture admitted'); }
+  const historicalReaderDiff = gitRead(root, 'diff', '--no-ext-diff', '--no-renames', '--unified=3', readerParent, verificationParent, '--', ...readerOracles.map((row) => row.path));
   const exactDiff = gitRead(root, 'diff', '--no-ext-diff', '--no-renames', '--unified=3', verificationParent, '--', ...readerOracles.map((row) => row.path));
-  return { authorization: 'HEAD narrow facts-reader repair, one native regression and verification-only cleanup', verificationParent, oracles: readerOracles,
-    originalTenFlowsAssertionsTimeoutsUnchanged: true, injectedFactsOrDetailsState: false, exactDiff, exactDiffSha256: sha(exactDiff) };
+  return { authorization: 'HEAD owning accessible Fixture selector and whole floating native compositor canvas capture', verificationParent, readerParent, oracles: readerOracles, captureHelper,
+    historicalReaderDiff, historicalReaderDiffSha256: sha(historicalReaderDiff), bodies, originalElevenBodiesAssertionsTimeoutsUnchanged: true,
+    injectedFactsOrDetailsState: false, runtimeOrCssOrPixelRewrite: false, exactDiff, exactDiffSha256: sha(exactDiff) };
 }
 export function directory(id) {
   if (!/^phase2-32e88a34-20261004-[a-z0-9-]+$/.test(id)) { throw new Error('Fresh phase2 ID required'); }
@@ -150,7 +162,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const root = action === 'stop' ? directory(id) : fresh(id);
   if (action !== 'stop') { outputRoot = root; }
   const data = inventory(root);
-  if (['admission', 'verify', 'preview', 'browser'].includes(action) && gitRead(root, 'rev-parse', 'HEAD') !== verificationParent) { throw new Error('Actual verification parent453 required; built source remains32'); }
+  if (['admission', 'verify', 'preview', 'browser'].includes(action) && gitRead(root, 'rev-parse', 'HEAD') !== verificationParent) { throw new Error('Actual verification parent649 required; built source remains32'); }
   if (action === 'admission') {
     json(path.join(root, 'admission.json'), { phase: 'RD40-PHASE2', taskStart: start, actualHead: gitRead(root, 'rev-parse', 'HEAD'), actualTree: gitRead(root, 'rev-parse', 'HEAD^{tree}'),
       freeze: { path: freezePath, sha256: freezeHash }, receipt: { path: receiptPath, sha256: receiptHash }, ...data });
