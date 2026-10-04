@@ -110,11 +110,12 @@ export function buildBabylonProjection(fixture: LabFixtureV1, scene: Scene, sign
         bufferBytes += vertices.positions.byteLength + indices.byteLength + (vertices.normals as Float32Array).byteLength + ((vertices.colors as Float32Array | undefined)?.byteLength ?? 0); triangles += indices.length / 3;
       }
     }
+    const rootTransform = root.computeWorldMatrix(true);
     for (const declared of presentation.lights) {
-      const vector = new Vector3(...declared.positionMeters); const light = declared.role === 'ambient' ? new HemisphericLight('RD12:ambient', vector, scene) : new DirectionalLight(`RD12:${declared.role}`, vector.negate(), scene);
+      const vector = new Vector3(...declared.positionMeters); const light = declared.role === 'ambient' ? new HemisphericLight('RD12:ambient', Vector3.TransformNormal(vector, rootTransform), scene) : new DirectionalLight(`RD12:${declared.role}`, Vector3.TransformNormal(vector.negate(), rootTransform), scene);
       lights.push(light); light.setEnabled(false); light.diffuse = srgb24Linear(declared.colorSrgb24); light.specular = Color3.Black(); light.intensity = declared.intensity;
       if (light instanceof HemisphericLight) { light.groundColor = srgb24Linear('groundColorSrgb24' in declared ? declared.groundColorSrgb24 : 0x444444); }
-      else { light.position.copyFrom(vector); }
+      else { light.position.copyFrom(Vector3.TransformCoordinates(vector, rootTransform)); }
     }
     return projection;
   } catch (error) { projection.dispose(); throw error; }

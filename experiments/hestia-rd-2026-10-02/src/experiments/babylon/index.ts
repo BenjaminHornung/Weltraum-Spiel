@@ -98,8 +98,9 @@ export async function createBabylonExperiment(context: LabExperimentContext): Pr
   function identity(): Submission { return { tick: frame.tick, cameraId: frame.cameraId, sourceRevision: frame.sourceRevision, fixtureDigest: getFixtureDigest(fixture), resetTick, projectionGeneration, presentationGeneration }; }
   function current(submission: Submission) { return !disposed && !replacing && JSON.stringify(submission) === JSON.stringify(identity()); }
   function applyCamera() {
-    const declared = fixture.cameras.find((entry) => entry.id === frame.cameraId)!; camera!.position.copyFromFloats(...declared.positionMeters); camera!.upVector = new Vector3(...declared.up);
-    camera!.setTarget(new Vector3(...declared.targetMeters)); camera!.fov = declared.verticalFovDegrees * Math.PI / 180; camera!.minZ = 0.01; camera!.maxZ = 2000;
+    const declared = fixture.cameras.find((entry) => entry.id === frame.cameraId)!; const transform = (projection ?? candidate)!.root.computeWorldMatrix(true);
+    camera!.position.copyFrom(Vector3.TransformCoordinates(new Vector3(...declared.positionMeters), transform)); camera!.upVector = Vector3.TransformNormal(new Vector3(...declared.up), transform);
+    camera!.setTarget(Vector3.TransformCoordinates(new Vector3(...declared.targetMeters), transform)); camera!.fov = declared.verticalFovDegrees * Math.PI / 180; camera!.minZ = 0.01; camera!.maxZ = 2000;
   }
   function resize(width: number, height: number, dpr: number) {
     active(); requireValue(!replacing, 'Replacement pending'); requireValue(Number.isSafeInteger(width) && Number.isSafeInteger(height) && width > 0 && height > 0 && Number.isFinite(dpr) && dpr > 0, 'Invalid resize dimensions');
@@ -149,8 +150,8 @@ export async function createBabylonExperiment(context: LabExperimentContext): Pr
       void gpu._device.lost.then((info) => { if (!disposed) { fail(new Error(`WebGPU device lost: ${info.reason}: ${info.message}`)); } }, (error) => { if (!disposed) { fail(error); } });
     }
     active(); scene = new Scene(engine); scene.detachControl(); scene.useRightHandedSystem = true; scene.shadowsEnabled = false;
-    camera = new FreeCamera('RD12:camera', Vector3.Zero(), scene); camera.detachControl(); scene.activeCamera = camera; applyCamera();
-    candidate = buildBabylonProjection(fixture, scene, signal); applyPresentation(scene, candidate.presentation); await compile(candidate);
+    camera = new FreeCamera('RD12:camera', Vector3.Zero(), scene); camera.detachControl(); scene.activeCamera = camera;
+    candidate = buildBabylonProjection(fixture, scene, signal); applyCamera(); applyPresentation(scene, candidate.presentation); await compile(candidate);
     projection = candidate; candidate = undefined; projection.setEnabled(true); projectionGeneration = 1;
     const parameters = context.preset.parameters ?? {}; resize(Number(parameters.width ?? context.canvas.width ?? 1280), Number(parameters.height ?? context.canvas.height ?? 720), Number(parameters.dpr ?? 1));
     // Exactly one SDK loop. SDK owns begin/endFrame; do not nest another frame.

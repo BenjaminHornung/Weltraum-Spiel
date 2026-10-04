@@ -5,7 +5,8 @@ import { loadInventory, loadReplay } from '../../src/runner/assets';
 import { sampleScenario } from '../../src/contracts/scenario';
 import { getFixtureDigest, fixtureRevision } from '../../src/contracts/fixture';
 import type { BabylonDiagnostics } from '../../src/experiments/babylon';
-import { requireQualifiedParity, VISUAL_ORACLE_V1 } from '../../reports/RD-12/oracle';
+import { VISUAL_ORACLE_V1 } from '../../reports/RD-12/oracle';
+import { requireQualifiedParityV2 } from '../../reports/RD-12/qualification-v2';
 
 // AUTHORED/COMPILED ONLY in phase1. Run against the admitted optimized build,
 // never Vite dev, and only AFTER HEAD actual wiring/new freeze/GPU lease.
@@ -99,7 +100,7 @@ for (const mode of ['C3', 'C4']) {
       const reference = await capture(page, info, `${mode}-${region.id}-original`);
       await page.evaluate((fault) => (window as any).TestBridge.visualFault(fault), region.fault); await submitted(page, 0); const fault = await capture(page, info, `${mode}-${region.id}-deliberate-fault`);
       await page.evaluate(() => (window as any).TestBridge.visualFault('none')); await submitted(page, 0); const restored = await capture(page, info, `${mode}-${region.id}-restored`);
-      const result = requireQualifiedParity(await roi(page, reference, region.rect), await roi(page, restored, region.rect), await roi(page, fault, region.rect));
+      const result = requireQualifiedParityV2(await roi(page, reference, region.rect), await roi(page, restored, region.rect), await roi(page, fault, region.rect));
       await info.attach(`${mode}-${region.id}-oracle.json`, { body: Buffer.from(JSON.stringify({ result, region, crossEngineParity: 'NOT_RUN', productIntegrated: false })), contentType: 'application/json' });
     });
   }
