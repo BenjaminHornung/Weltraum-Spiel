@@ -28,9 +28,9 @@ const listing = readFileSync(`${commands}/original-inventory-01/raw.log`, 'utf8'
 assert(total, 'Actual Playwright inventory count required'); const titles = listing.split(/\r?\n/).filter((line) => /browser\.spec\.ts:\d+:\d+/.test(line)).map((line) => line.trim());
 assert.equal(titles.length, Number(total[1])); fresh(`${commands}/inventory-01.json`, { source: proof.start, count: Number(total[1]), files: Number(total[2]), titles, raw: bound(`${commands}/original-inventory-01/raw.log`), productIntegrated: false });
 await run('original-native-01', 'reports/RD-12/playwright.config.ts'); console.log('RD12_ORIGINAL_COMPLETE; waiting for explicitly sealed supplemental request or stop');
-const accepted = new Set(); let busy = false;
+const accepted = new Set(); let busy = false; let expired = false;
 const control = setInterval(async () => {
-  if (busy) { return; }
+  if (expired || busy) { return; }
   if (existsSync(`${commands}/launcher/stop.json`)) { clearInterval(control); clearTimeout(deadline); console.log('RD12_LAUNCHER_STOPPED'); return; }
   const requests = readdirSync(`${commands}/launcher`).filter((file) => /^request-[a-z0-9-]+\.json$/.test(file) && !accepted.has(file));
   if (requests.length === 0) { return; } assert.equal(requests.length, 1, 'Only one sequential native request'); busy = true; const file = requests[0]; accepted.add(file);
@@ -39,6 +39,9 @@ const control = setInterval(async () => {
     assert.equal(sha(Buffer.from(JSON.stringify(ownBindings()))), request.ownBindingsSha256, 'Supplement changed after explicit pre-run seal');
     await run(request.label, request.config, request.list === true);
   } catch (error) { console.error(error); fresh(`${commands}/launcher/error-${file}`, { error: String(error), productIntegrated: false }); }
-  finally { busy = false; }
+  finally {
+    busy = false;
+    if (expired) { clearInterval(control); console.log('RD12_LAUNCHER_DEADLINE'); process.exitCode = 1; }
+  }
 }, 200);
-const deadline = setTimeout(() => { if (!busy) { clearInterval(control); console.log('RD12_LAUNCHER_DEADLINE'); process.exitCode = 1; } }, 7_200_000);
+const deadline = setTimeout(() => { expired = true; if (!busy) { clearInterval(control); console.log('RD12_LAUNCHER_DEADLINE'); process.exitCode = 1; } }, 7_200_000);
