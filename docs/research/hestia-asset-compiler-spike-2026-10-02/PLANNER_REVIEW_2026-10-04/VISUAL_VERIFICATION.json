@@ -1,0 +1,19 @@
+{
+  "schema": "hestia.compiler-visible-review-verification.v1",
+  "phase": "2026-10-04 visible review followup",
+  "compilerEvidenceBaseCommit": "35e751dd68d32eccdd699e77fc7ef78ea800ba1e",
+  "productIntegrated": false,
+  "server": "http://127.0.0.1:8769/",
+  "renderer": "Static SVG; actual canonical source triangles and actual decoded occupied brick cells, no inferred gameplay state",
+  "nativeBuild": {"exitCode": 0, "microCells": 1000, "standardCells": 216, "rotationBothProfiles": "thin.unproven"},
+  "browserChecks": [
+    {"page": "index.html", "profile": "micro-0125-research-v1", "cells": 1000, "bricks": 4, "screenshot": "screenshots/01-micro.png", "viewport": [1440, 1050], "fullPage": true},
+    {"page": "standard.html", "profile": "standard-025-v1", "cells": 216, "bricks": 2, "screenshot": "screenshots/02-standard.png", "viewport": [1440, 1050], "fullPage": true, "navigation": "actual profile link click"},
+    {"page": "rotation.html", "outcome": "EXPECTED_UNSUPPORTED", "code": "thin.unproven", "screenshot": "screenshots/03-rotation-boundary.png", "viewport": [1440, 1050], "fullPage": true, "navigation": "actual support-boundary link click"},
+    {"page": "index.html", "screenshot": "screenshots/04-micro-mobile.png", "viewport": [390, 844], "fullPage": true, "horizontalOverflow": false}
+  ],
+  "console": "Final fresh demo tab: zero errors and warnings. Initial request for absent favicon returned 404; corrected with an inline empty favicon, no visible screenshot-content change.",
+  "review": "META self-review and actual browser/compile checks; no new independent or human review claimed",
+  "historicalEvidence": "134+58 tests and full 370x10 corpus were verified in prior phase; retained unchanged, not rerun or attributed to this demo",
+  "measurements": "C8 diagnostic benchmark retained; not qualified and not remeasured as a demo performance benchmark"
+}

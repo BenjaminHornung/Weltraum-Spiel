@@ -1,0 +1,65 @@
+{
+  "input": "retained real Blender 5.2.0 / glTF 5.2.39 export",
+  "productIntegrated": false,
+  "profiles": [
+    {
+      "bricks": 4,
+      "cellMeters": 0.125,
+      "cells": 1000,
+      "gridBounds": [
+        {
+          "maximumCell": [
+            8,
+            16,
+            -4
+          ],
+          "minimumCell": [
+            -1,
+            7,
+            -13
+          ],
+          "partId": "cube"
+        }
+      ],
+      "profile": "micro-0125-research-v1",
+      "status": "PASS",
+      "treeSha256": "f69980c657ae375f9dfb9899845412f6d81ffb9d6256b8456f356d6c013677f7"
+    },
+    {
+      "bricks": 2,
+      "cellMeters": 0.25,
+      "cells": 216,
+      "gridBounds": [
+        {
+          "maximumCell": [
+            4,
+            8,
+            -2
+          ],
+          "minimumCell": [
+            -1,
+            3,
+            -7
+          ],
+          "partId": "cube"
+        }
+      ],
+      "profile": "standard-025-v1",
+      "status": "PASS",
+      "treeSha256": "51549b85a8d0b5699f9632840ef6b6d9d5ce04be9b0f81bd4a7682ea96e4edcb"
+    }
+  ],
+  "rotation": [
+    {
+      "code": "thin.unproven",
+      "profile": "micro-0125-research-v1",
+      "status": "EXPECTED_UNSUPPORTED"
+    },
+    {
+      "code": "thin.unproven",
+      "profile": "standard-025-v1",
+      "status": "EXPECTED_UNSUPPORTED"
+    }
+  ],
+  "schema": "hestia.compiler-visible-review.v1"
+}
