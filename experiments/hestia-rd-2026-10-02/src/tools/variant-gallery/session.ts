@@ -12,8 +12,13 @@ export interface GalleryHost {
 }
 export interface GalleryState {
   readonly status: 'IDLE' | 'PREPARING' | 'READY' | 'ERROR'; readonly busy: boolean; readonly message: string;
+  readonly inputError: string | null;
   readonly generation: number; readonly selection: Selection | null; readonly comparison: Comparison | null;
   readonly submission: Submission | null; readonly cleanup: unknown; readonly durationTicks: number;
+}
+export function seekTickError(tick: unknown, durationTicks: number): string | null {
+  return typeof tick === 'number' && Number.isSafeInteger(tick) && tick >= 0 && tick <= durationTicks
+    ? null : `Enter an integer tick between 0 and ${durationTicks}`;
 }
 export function createGallerySession(options: {
   load(selection: Selection, signal: AbortSignal): Promise<Replay>;
@@ -23,7 +28,7 @@ export function createGallerySession(options: {
   type Active = { selection: Selection; prepared: PreparedReplay; host: GalleryHost; controller: AbortController;
     runner: ReturnType<typeof createScenarioRunner>; generation: number };
   let state: GalleryState = freezeJson({ status: 'IDLE', busy: false, message: 'Choose a frozen replay', generation: 0,
-    selection: null, comparison: null, submission: null, cleanup: null, durationTicks: 0 });
+    inputError: null, selection: null, comparison: null, submission: null, cleanup: null, durationTicks: 0 });
   let active: Active | null = null; let generation = 0; let desired: Selection | null = null;
   let mounting: AbortController | null = null; let work: Promise<void> | null = null; let commandWork: Promise<void> | null = null;
   let retirement: Promise<void> | null = null;
@@ -46,7 +51,7 @@ export function createGallerySession(options: {
   }
   function fail(error: unknown) {
     stopClock(); generation++; desired = null; mounting?.abort(); active?.controller.abort();
-    publish({ status: 'ERROR', busy: false, message: String(error), comparison: null, submission: null });
+    publish({ status: 'ERROR', busy: false, inputError: null, message: String(error), comparison: null, submission: null });
     if (!work && !commandWork) {
       work = retire().catch((cleanupError: unknown) => { publish({ message: String(cleanupError) }); }).then(pump).finally(finished);
     }
@@ -97,13 +102,17 @@ export function createGallerySession(options: {
     if (state.comparison) { position = { tick: state.comparison.frame.tick, paused: state.comparison.frame.paused }; }
     if (selection.scenarioId !== state.selection?.scenarioId) { position = { tick: 0, paused: true }; }
     generation++; desired = { ...selection }; mounting?.abort(); active?.controller.abort();
-    publish({ status: 'PREPARING', busy: true, selection, message: 'Stopping old host; preparing latest selection', comparison: null, submission: null });
+    publish({ status: 'PREPARING', busy: true, inputError: null, selection, message: 'Stopping old host; preparing latest selection', comparison: null, submission: null });
     if (!work) { work = pump().finally(finished); }
     return work;
   }
   async function command(kind: 'play' | 'pause' | 'step' | 'seek' | 'reset' | 'advance', tick?: number) {
     const owner = active;
     if (!owner || state.status !== 'READY' || closed) { return; }
+    if (kind === 'seek') {
+      const inputError = seekTickError(tick, owner.prepared.effective.durationTicks);
+      if (inputError) { publish({ inputError }); return; }
+    }
     if (commandWork) {
       if (kind === 'pause') {
         stopClock(); await commandWork;
@@ -111,7 +120,7 @@ export function createGallerySession(options: {
       }
       return;
     }
-    stopClock(); publish({ busy: true });
+    stopClock(); publish({ busy: true, inputError: null });
     const job = async () => {
       try {
         const baseline = owner.host.readSubmission().submittedFrames;
@@ -137,7 +146,7 @@ export function createGallerySession(options: {
     closed = true; stopClock(); generation++; desired = null; mounting?.abort(); active?.controller.abort();
     await work; await commandWork;
     try { await retire(); } catch (error) { fail(error); }
-    publish({ busy: false, comparison: null, submission: null, status: state.status === 'ERROR' ? 'ERROR' : 'IDLE', message: state.status === 'ERROR' ? state.message : 'Disposed; no active host' });
+    publish({ busy: false, inputError: null, comparison: null, submission: null, status: state.status === 'ERROR' ? 'ERROR' : 'IDLE', message: state.status === 'ERROR' ? state.message : 'Disposed; no active host' });
   }
   return { read, select, command, dispose };
 }

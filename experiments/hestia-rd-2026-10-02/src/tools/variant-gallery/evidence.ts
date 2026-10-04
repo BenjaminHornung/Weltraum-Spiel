@@ -1,5 +1,5 @@
 import { importRunResult } from '../../contracts/result';
-import { canonicalJson, digest, freezeJson, keys, parseBoundedJson, record, relativePath, requireValue, sha256 } from '../../contracts/validation';
+import { canonicalJson, digest, freezeJson, keys, MAX_MANIFEST_BYTES, parseBoundedJson, record, relativePath, requireValue, sha256 } from '../../contracts/validation';
 import type { GalleryState } from './session';
 import type { SourceBinding } from './source';
 import type { Variant } from './model';
@@ -7,6 +7,36 @@ import type { Variant } from './model';
 export const EVIDENCE_LIMIT = 32 * 1024 * 1024;
 export type EvidenceKey = 'run' | 'image' | 'original' | 'effective' | 'fixture';
 export type EvidenceFiles = Readonly<Record<EvidenceKey, { readonly name: string; readonly bytes: Uint8Array<ArrayBuffer> }>>;
+export async function readEvidenceSelection(selected: FileList | readonly File[] | null): Promise<{ sidecar: Uint8Array<ArrayBuffer>; files: EvidenceFiles }> {
+  requireValue(selected && selected.length === 6, 'Select exactly binding + run + PNG + three input JSON files');
+  const selectedFiles = Array.from(selected);
+  requireValue(new Set(selectedFiles.map((file) => file.name)).size === 6, 'Duplicate local filename');
+  // Admit the WHOLE selection before even the first File.arrayBuffer allocation (input-package 03, line 17).
+  for (const file of selectedFiles) {
+    relativePath(file.name); requireValue(!file.name.includes('/'), 'Expected local basename');
+    const image = file.name.endsWith('.png'); const json = file.name.endsWith('.json');
+    requireValue((image || json) && (!file.type || file.type === (image ? 'image/png' : 'application/json')), 'Expected JSON/PNG file type');
+    requireValue(Number.isSafeInteger(file.size) && file.size > 0 && file.size <= (image ? EVIDENCE_LIMIT : MAX_MANIFEST_BYTES), 'Empty or oversized local file');
+  }
+  const jsonFiles = selectedFiles.filter((file) => file.name.endsWith('.json')); const images = selectedFiles.filter((file) => file.name.endsWith('.png'));
+  const sidecars = jsonFiles.filter((file) => file.name.endsWith('.binding.json'));
+  requireValue(jsonFiles.length === 5 && images.length === 1 && sidecars.length === 1, 'Expected five JSON, one PNG and exactly one .binding.json');
+  const read = async (file: File) => {
+    const bytes = new Uint8Array(await file.arrayBuffer()); requireValue(bytes.byteLength === file.size, 'Local file size changed'); return bytes;
+  };
+  const sidecar = await read(sidecars[0]!); const receipts = record(record(parseBoundedJson(sidecar)).files);
+  keys(receipts, ['run', 'image', 'original', 'effective', 'fixture']);
+  const roles = {} as Record<EvidenceKey, File>; const used = new Set([sidecars[0]!.name]);
+  for (const key of ['run', 'image', 'original', 'effective', 'fixture'] as const) {
+    const receipt = record(receipts[key]); keys(receipt, ['path', 'sha256']); relativePath(receipt.path); digest(receipt.sha256);
+    const name = receipt.path.split('/').at(-1)!; const file = selectedFiles.find((candidate) => candidate.name === name);
+    requireValue(file && !used.has(name) && (key === 'image' ? file === images[0] : file.name.endsWith('.json')), `Missing/duplicate/wrong-type ${key} file`);
+    used.add(name); roles[key] = file;
+  }
+  const files = {} as Record<EvidenceKey, EvidenceFiles[EvidenceKey]>;
+  for (const key of ['run', 'image', 'original', 'effective', 'fixture'] as const) { files[key] = { name: roles[key].name, bytes: await read(roles[key]) }; }
+  return { sidecar, files };
+}
 export function runtimeBinding(state: GalleryState, source: SourceBinding) {
   requireValue(state.status === 'READY' && !state.busy && state.comparison && state.submission && state.selection,
     'Evidence export requires READY, settled, matching runtime');
@@ -28,7 +58,7 @@ export async function bindEvidence(state: GalleryState, source: SourceBinding, s
   for (const key of ['sourceCommit', 'sourceTree']) { requireValue(typeof provenance[key] === 'string' && /^[0-9a-f]{40}$/.test(provenance[key] as string), `Missing full ${key}`); }
   digest(provenance.buildDigest); const receipts = record(sidecar.files); keys(receipts, ['run', 'image', 'original', 'effective', 'fixture']);
   const verified = await Promise.all((['run', 'image', 'original', 'effective', 'fixture'] as const).map(async (key) => {
-    const file = files[key]; requireValue(file && file.bytes.length > 0 && file.bytes.length <= (key === 'image' ? EVIDENCE_LIMIT : 1024 * 1024), `Missing/oversized ${key} bytes`);
+    const file = files[key]; requireValue(file && file.bytes.length > 0 && file.bytes.length <= (key === 'image' ? EVIDENCE_LIMIT : MAX_MANIFEST_BYTES), `Missing/oversized ${key} bytes`);
     const receipt = record(receipts[key]); keys(receipt, ['path', 'sha256']); relativePath(receipt.path); digest(receipt.sha256);
     requireValue((receipt.path as string).split('/').at(-1) === file.name, `${key} filename mismatch`);
     const hash = await sha256(file.bytes); requireValue(hash === receipt.sha256, `${key} byte hash mismatch`); return { key, path: receipt.path as string, sha256: hash };

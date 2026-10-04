@@ -2,15 +2,15 @@ import './style.css';
 import referenceIndex from '../../../reference-cards/index.json';
 import concepts from '../../../reference-cards/concepts.json';
 import { registeredMountCount } from '../../contracts/experiment';
-import { canonicalJson, parseBoundedJson, record, requireValue, sha256 } from '../../contracts/validation';
+import { canonicalJson, requireValue, sha256 } from '../../contracts/validation';
 import { loadInventory, loadReplay, publicAssetRoot, PINNED_INVENTORY_SHA256, type LabInventory } from '../../runner/assets';
 import { liveThreeHostCounts } from '../../runner/threeHost';
 import { liveWebGpuHostCounts } from '../../experiments/three-webgpu';
 import { knownHostMount, registration } from './hosts';
 import { cameras, deriveReplay, NATIVE_SCENARIOS, type Replay, type Selection, type Variant } from './model';
-import { createGallerySession, type GalleryState } from './session';
+import { createGallerySession, seekTickError, type GalleryState } from './session';
 import { sourceBinding, type SourceBinding } from './source';
-import { bindEvidence, bindingTemplate, canExportPair, EVIDENCE_LIMIT, runtimeBinding, type EvidenceFiles, type EvidenceKey } from './evidence';
+import { bindEvidence, bindingTemplate, canExportPair, readEvidenceSelection, runtimeBinding } from './evidence';
 
 function element<T extends HTMLElement>(id: string): T { const value = document.getElementById(id); requireValue(value, `Missing gallery element ${id}`); return value as T; }
 const menu = (id: string) => element<HTMLSelectElement>(id);
@@ -19,6 +19,7 @@ const output = (id: string) => element<HTMLOutputElement>(id);
 const dialog = element<HTMLDialogElement>('overlay'); const page = new AbortController();
 let source: SourceBinding; let inventory: LabInventory; let currentReplay: Replay | null = null;
 let closed = false; let overlayUrl: string | null = null; let opener: HTMLElement | null = null;
+let binding = false; let pairInitialized = false;
 type Bound = Awaited<ReturnType<typeof bindEvidence>> & { image: Uint8Array<ArrayBuffer> };
 const slots: Partial<Record<'A' | 'B', Bound>> = {};
 const assetRoot = publicAssetRoot(import.meta.env.BASE_URL, location.href);
@@ -53,14 +54,24 @@ function freshCanvas() {
 }
 function ready(state = session.read()) { return state.status === 'READY' && !state.busy && Boolean(state.comparison?.frame.paused); }
 function pairReady(): boolean {
-  return Boolean(source) && canExportPair(session.read(), source, { A: slots.A?.card, B: slots.B?.card },
+  return !closed && !page.signal.aborted && Boolean(source) && canExportPair(session.read(), source, { A: slots.A?.card, B: slots.B?.card },
     { A: menu('a-variant').value as Variant, B: menu('b-variant').value as Variant });
+}
+function canSwitchPair(): boolean {
+  return pairInitialized && !closed && !page.signal.aborted && Boolean(inventory) && ['a', 'b'].every((slot) => {
+    const variant = menu(`${slot}-variant`).value;
+    return variant === 'fixture-control' || (nativeAllowed() && (variant === 'C1' || variant === 'C2'));
+  });
 }
 function evidenceButtons() {
   button('export-pair').disabled = !pairReady(); button('contact-sheet').disabled = !pairReady();
-  for (const id of ['binding-template', 'inputs', 'bind']) { button(id).disabled = !ready() || !source; }
+  for (const id of ['binding-template', 'inputs', 'bind']) { button(id).disabled = closed || page.signal.aborted || !ready() || !source; }
+  button('bind').disabled ||= binding;
+  for (const slot of ['a', 'b']) { button(`switch-${slot}`).disabled = !canSwitchPair(); }
 }
 function show(state: GalleryState) {
+  if (state.status === 'READY') { pairInitialized = true; }
+  output('input-error').value = state.inputError ?? '';
   const displayStatus = state.status === 'READY' && state.busy ? 'PREPARING' : state.status;
   output('status').value = `${displayStatus} · ${state.busy && state.status === 'READY' ? 'Waiting for matching commanded frame' : state.message}`; output('status').dataset.status = displayStatus;
   const host = element('viewport-host'); host.setAttribute('aria-busy', String(state.busy)); host.dataset.mounting = String(state.status === 'PREPARING');
@@ -136,24 +147,23 @@ function renderCards() {
     }
   }
 }
-button('bind').addEventListener('click', () => { void action(async () => {
-  const selected = element<HTMLInputElement>('evidence-files').files; requireValue(selected && selected.length === 6, 'Select exactly binding + run + PNG + three input JSON files');
-  const state = session.read(); runtimeBinding(state, source); const slot = menu('evidence-slot').value as 'A' | 'B';
-  requireValue(state.selection?.variant === menu(`${slot.toLowerCase()}-variant`).value, 'Selected evidence slot does not match active variant');
-  const local = new Map<string, Uint8Array<ArrayBuffer>>();
-  for (const file of Array.from(selected)) { requireValue(!local.has(file.name) && file.size > 0 && file.size <= EVIDENCE_LIMIT, 'Duplicate, empty or oversized local file'); local.set(file.name, new Uint8Array(await file.arrayBuffer())); }
-  const sidecars = [...local].filter(([name]) => name.endsWith('.binding.json')); requireValue(sidecars.length === 1, 'Exactly one .binding.json required');
-  const sidecar = sidecars[0]![1]; const receipts = record(record(parseBoundedJson(sidecar)).files); const files = {} as Record<EvidenceKey, EvidenceFiles[EvidenceKey]>;
-  for (const key of ['run', 'image', 'original', 'effective', 'fixture'] as const) {
-    const receipt = record(receipts[key]); requireValue(typeof receipt.path === 'string', 'Missing file path');
-    const name = receipt.path.split('/').at(-1)!; const bytes = local.get(name); requireValue(bytes, `Missing ${name}`); files[key] = { name, bytes };
-  }
-  const value = await bindEvidence(state, source, sidecar, files);
-  const bitmap = await createImageBitmap(new Blob([files.image.bytes], { type: 'image/png' }));
-  try { requireValue(bitmap.width === state.comparison!.viewport.bufferWidth && bitmap.height === state.comparison!.viewport.bufferHeight, 'Decoded PNG dimensions mismatch'); } finally { bitmap.close(); }
-  requireValue(ready() && canonicalJson(runtimeBinding(session.read(), source)) === canonicalJson(value.card.runtime), 'Runtime changed while reading evidence');
-  slots[slot] = { ...value, image: files.image.bytes }; output('evidence-status').value = `${slot} bound · ${value.cardHash} · external Git/build verification still required`; renderCards();
-}); });
+button('bind').addEventListener('click', () => {
+  if (binding || closed || page.signal.aborted || !ready() || !source) { return; }
+  binding = true; evidenceButtons();
+  void action(async () => {
+    try {
+      const state = session.read(); runtimeBinding(state, source); const slot = menu('evidence-slot').value as 'A' | 'B';
+      requireValue(state.selection?.variant === menu(`${slot.toLowerCase()}-variant`).value, 'Selected evidence slot does not match active variant');
+      const { sidecar, files } = await readEvidenceSelection(element<HTMLInputElement>('evidence-files').files);
+      requireValue(!closed && !page.signal.aborted && ready(), 'Runtime no longer ready for evidence');
+      const value = await bindEvidence(state, source, sidecar, files);
+      const bitmap = await createImageBitmap(new Blob([files.image.bytes], { type: 'image/png' }));
+      try { requireValue(bitmap.width === state.comparison!.viewport.bufferWidth && bitmap.height === state.comparison!.viewport.bufferHeight, 'Decoded PNG dimensions mismatch'); } finally { bitmap.close(); }
+      requireValue(ready() && canonicalJson(runtimeBinding(session.read(), source)) === canonicalJson(value.card.runtime), 'Runtime changed while reading evidence');
+      slots[slot] = { ...value, image: files.image.bytes }; output('evidence-status').value = `${slot} bound · ${value.cardHash} · external Git/build verification still required`; renderCards();
+    } finally { binding = false; }
+  });
+});
 button('export-pair').addEventListener('click', () => { void action(async () => {
   requireValue(pairReady(), 'Missing/stale/pending comparison evidence');
   const cards = { schema: 'rd40-comparison-pair-v1', productIntegrated: false, A: slots.A!.card, B: slots.B!.card, hashes: { A: slots.A!.cardHash, B: slots.B!.cardHash } };
@@ -181,11 +191,15 @@ menu('scenario').addEventListener('change', () => { syncPairMenus(); syncVariant
 menu('experiment').addEventListener('change', () => { syncVariant(menu('experiment').value === 'RD-03' ? 'fixture-control' : 'C1'); void choose(); });
 for (const id of ['camera', 'viewport', 'preset']) { menu(id).addEventListener('change', () => { void choose(); }); }
 menu('variant').addEventListener('change', () => { syncVariant(menu('variant').value as Variant); void choose(); });
-for (const slot of ['a', 'b']) { button(`switch-${slot}`).addEventListener('click', () => { syncVariant(menu(`${slot}-variant`).value as Variant); void choose(); }); menu(`${slot}-variant`).addEventListener('change', evidenceButtons); }
+for (const slot of ['a', 'b']) { button(`switch-${slot}`).addEventListener('click', () => { if (canSwitchPair()) { syncVariant(menu(`${slot}-variant`).value as Variant); void choose(); } }); menu(`${slot}-variant`).addEventListener('change', evidenceButtons); }
 for (const control of document.querySelectorAll<HTMLButtonElement>('[data-command]')) { control.addEventListener('click', () => { void session.command(control.dataset.command as 'play' | 'pause' | 'step' | 'reset'); }); }
-button('seek-go').addEventListener('click', () => { void session.command('seek', Number(element<HTMLInputElement>('seek').value)); });
+button('seek-go').addEventListener('click', () => {
+  const input = element<HTMLInputElement>('seek'); const tick = input.value.trim() ? input.valueAsNumber : NaN;
+  const error = seekTickError(tick, session.read().durationTicks); output('input-error').value = error ?? '';
+  if (!error) { void session.command('seek', tick); }
+});
 element('seek').addEventListener('keydown', (event) => { if (event.key === 'Enter') { event.preventDefault(); button('seek-go').click(); } });
-button('dispose').addEventListener('click', () => { closed = true; void session.dispose().then(() => {
+button('dispose').addEventListener('click', () => { closed = true; evidenceButtons(); void session.dispose().then(() => {
   element('viewport-host').replaceChildren();
   output('status').value = session.read().status === 'ERROR' ? `ERROR · disposed request retained failure: ${session.read().message}` : 'IDLE · disposed; reload explicitly to start a new session';
 }); });
@@ -193,7 +207,7 @@ document.addEventListener('keydown', (event) => {
   if (dialog.open || event.altKey || event.ctrlKey || event.metaKey || (event.target instanceof Element && event.target.closest('input,select,textarea,button,a,[contenteditable]'))) { return; }
   if (event.code === 'Space') { event.preventDefault(); void session.command(session.read().comparison?.frame.paused ? 'play' : 'pause'); }
 });
-window.addEventListener('pagehide', () => { page.abort(); void session.dispose(); if (overlayUrl) { URL.revokeObjectURL(overlayUrl); } }, { once: true });
+window.addEventListener('pagehide', () => { closed = true; page.abort(); evidenceButtons(); void session.dispose(); if (overlayUrl) { URL.revokeObjectURL(overlayUrl); } }, { once: true });
 references(); renderCards(); syncVariant('fixture-control'); show(session.read());
 try {
   source = await sourceBinding(); inventory = await loadInventory(assetRoot, fetch, page.signal);
