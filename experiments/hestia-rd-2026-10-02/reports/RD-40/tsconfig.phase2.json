@@ -1,0 +1,4 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["../../src/tools/variant-gallery/**/*.ts", "../../tests/RD-40/*.ts", "./vite.phase1.config.ts", "./vitest.phase1.config.ts", "./playwright.phase2.config.ts", "./vitest.phase2.config.ts", "./phase2-source-proof.ts"]
+}
