@@ -1,0 +1,1 @@
+{"extends":"../../tsconfig.json","include":["../../src/experiments/voxel-rays/**/*.ts","../../tests/RD-13/**/*.ts","./*.config.ts"]}
