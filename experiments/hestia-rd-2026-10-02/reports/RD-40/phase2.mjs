@@ -16,6 +16,21 @@ export const freezePath = `C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/HEAD
 export const freezeHash = '2310ee20028cfa52e0150dffc37bb74d24620ed5f925ea625a97285353e86aa3';
 export const chrome = 'C:/IFI_SourceCode/Utils/opencode-migration/runtime/chromium-1234/chrome-win64/chrome.exe';
 export const prefix = 'experiments/hestia-rd-2026-10-02/';
+export const verificationParent = '453bbbf680e32352accd2255aea50a52dfdb9b61';
+export const readerOracles = [
+  { path: 'tests/RD-40/browser.spec.ts', oldSha256: '91c06b7e1bdb0002a110a5e44563454bc36af701347e64e0f28baa03fafb5440', newSha256: 'be1dad08c168160e8faffa4cef034e1235171a114b26628a8a8735ad9a138dcd' },
+  { path: 'tests/RD-40/phase2-native.spec.ts', oldSha256: '1653aa5dd772b06d05eba454fd948d6fcb8c57700cb7da8a2b37811c1118d1a9', newSha256: 'ab15639b7db4c5f084704f39d99f9bfa72a11547092be7f580a5cf5c067405b6' },
+];
+export function oracleReadRepair(root) {
+  for (const row of readerOracles) {
+    const old = execFileSync(git, ['show', `${verificationParent}:${prefix}${row.path}`], { cwd: lab, env: environment(root) });
+    regular(path.join(lab, row.path));
+    if (sha(old) !== row.oldSha256 || sha(readFileSync(path.join(lab, row.path))) !== row.newSha256) { throw new Error(`Only declared reader/cleanup/regression delta admitted: ${row.path}`); }
+  }
+  const exactDiff = gitRead(root, 'diff', '--no-ext-diff', '--no-renames', '--unified=3', verificationParent, '--', ...readerOracles.map((row) => row.path));
+  return { authorization: 'HEAD narrow facts-reader repair, one native regression and verification-only cleanup', verificationParent, oracles: readerOracles,
+    originalTenFlowsAssertionsTimeoutsUnchanged: true, injectedFactsOrDetailsState: false, exactDiff, exactDiffSha256: sha(exactDiff) };
+}
 export function directory(id) {
   if (!/^phase2-32e88a34-20261004-[a-z0-9-]+$/.test(id)) { throw new Error('Fresh phase2 ID required'); }
   return `C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-40/${id}`;
@@ -49,6 +64,8 @@ function unitRun(root, args) {
 }
 export function inventory(root) {
   const receipt = checked(receiptPath, receiptHash); const freeze = checked(freezePath, freezeHash);
+  const readerRepair = oracleReadRepair(root);
+  const baseline = checked(path.join(directory('phase2-32e88a34-20261004-reader-repair-preedit-a'), 'preedit.json'), 'd40f41953e2eae297bb2ab06bb11ae4a97d1dc6e2c649efbe1f9fce1e912338d');
   if (receipt.sourceCommit !== start || receipt.sourceTree !== tree || freeze.start !== start || freeze.tree !== tree
     || receipt.productIntegrated !== false || !receipt.entryWired || !receipt.port5280Released) { throw new Error('Immutable phase2 admission mismatch'); }
   if (gitRead(root, 'rev-parse', `${start}^{tree}`) !== tree) { throw new Error('START tree mismatch'); }
@@ -56,7 +73,8 @@ export function inventory(root) {
   const source21 = scoped.map((file) => {
     const relative = file.slice(prefix.length); const full = path.join(lab, relative); regular(full);
     const expected = execFileSync(git, ['show', `${start}:${file}`], { cwd: lab, env: environment(root) });
-    const actual = sha(readFileSync(full)); if (actual !== sha(expected)) { throw new Error(`Source21 changed: ${relative}`); }
+    const actual = sha(readFileSync(full)); const admitted = readerOracles.find((row) => row.path === relative);
+    if (admitted ? sha(expected) !== admitted.oldSha256 || actual !== admitted.newSha256 : actual !== sha(expected)) { throw new Error(`Source21 changed outside exact oracle admission: ${relative}`); }
     return { path: relative, sha256: actual };
   });
   if (source21.length !== 21 || receipt.shared18.length !== 18 || canonicalJson(receipt.shared18) !== canonicalJson(freeze.frozenFiles)) { throw new Error('Source21/shared18 inventory incomplete'); }
@@ -101,8 +119,15 @@ export function inventory(root) {
   const startFiles = gitRead(root, 'ls-tree', '-r', '--full-name', '--name-only', start, '--', '.').split('\n').map((file) => {
     const relative = file.slice(prefix.length); regular(path.join(lab, relative)); return { path: relative, sha256: sha(readFileSync(path.join(lab, relative))) };
   });
+  if (startFiles.length !== 672 || baseline.startFiles.length !== 672) { throw new Error('Complete START672 inventory required'); }
+  for (const row of baseline.startFiles) {
+    const admitted = readerOracles.find((oracle) => oracle.path === row.path);
+    const expected = admitted ? admitted.newSha256 : row.sha256;
+    if ((admitted && row.sha256 !== admitted.oldSha256) || startFiles.find((current) => current.path === row.path)?.sha256 !== expected) { throw new Error(`START672 changed outside exact oracle admission: ${row.path}`); }
+  }
   regular(chrome);
   return { receipt, source21, sourceFiles, publicFiles, startFiles, shared18: receipt.shared18, original645: original.immutableStart.sha256,
+    originalSource21: baseline.source21, originalStart672: baseline.startFiles, readerRepair,
     original429: original.fixtureMedia.sha256, browserExecutable: chrome, browserExecutableSha256: sha(readFileSync(chrome)) };
 }
 export async function served(root) {
@@ -125,7 +150,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const root = action === 'stop' ? directory(id) : fresh(id);
   if (action !== 'stop') { outputRoot = root; }
   const data = inventory(root);
-  if (['admission', 'verify', 'preview', 'browser'].includes(action) && gitRead(root, 'rev-parse', 'HEAD') !== start) { throw new Error('Execution must be on actual32, not a pretend child identity'); }
+  if (['admission', 'verify', 'preview', 'browser'].includes(action) && gitRead(root, 'rev-parse', 'HEAD') !== verificationParent) { throw new Error('Actual verification parent453 required; built source remains32'); }
   if (action === 'admission') {
     json(path.join(root, 'admission.json'), { phase: 'RD40-PHASE2', taskStart: start, actualHead: gitRead(root, 'rev-parse', 'HEAD'), actualTree: gitRead(root, 'rev-parse', 'HEAD^{tree}'),
       freeze: { path: freezePath, sha256: freezeHash }, receipt: { path: receiptPath, sha256: receiptHash }, ...data });

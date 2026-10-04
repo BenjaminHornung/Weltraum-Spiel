@@ -16,7 +16,10 @@ type ReadProbe = { names: string[]; release?: () => void };
 let receipt: Receipt;
 const pageErrors = new WeakMap<Page, string[]>();
 
-async function facts(page: Page): Promise<Facts> { return JSON.parse(await page.locator('#facts').innerText()) as Facts; }
+async function facts(page: Page): Promise<Facts> {
+  const text = await page.locator('#facts').textContent(); expect(text?.trim(), 'Actual DOM facts JSON must be nonempty').toBeTruthy();
+  return JSON.parse(text!) as Facts;
+}
 async function ready(page: Page) {
   await expect(page.locator('#status')).toHaveAttribute('data-status', 'READY'); await expect(page.locator('#step')).toBeEnabled();
   const value = await facts(page); expect(value.state.busy).toBe(false); expect(value.state.comparison!.frame.paused).toBe(true);
@@ -101,17 +104,23 @@ test.beforeAll(async () => {
 });
 test.beforeEach(({ page }) => { const errors: string[] = []; pageErrors.set(page, errors); page.on('pageerror', (error) => { errors.push(String(error)); }); });
 test.afterEach(async ({ page }, info) => {
+  const errors: unknown[] = [];
   if (await page.locator('#dispose').count()) {
-    if (info.status !== info.expectedStatus) {
-      await capture(page, info, 'native-failure-before-dispose', 'ACTUAL-FAILURE-NO-RECLASSIFICATION');
-    }
-    await page.locator('#dispose').click(); await expect(page.locator('#status')).toContainText('disposed');
-    const value = await facts(page); expect(value.owners.registeredMounts).toBe(0);
-    expect(value.owners.c0).toMatchObject({ renderers: 0, renderloops: 0 }); expect(value.owners.rd11).toMatchObject({ renderers: 0, renderloops: 0 });
-    await save(info, 'native-cleanup.json', JSON.stringify({ productIntegrated: false, sourceCommit: receipt.sourceCommit,
-      owners: value.owners, state: value.state, pageErrors: pageErrors.get(page), runtimeDisposedBeforeContextClose: true }, null, 2));
+    try {
+      if (info.status !== info.expectedStatus) { await capture(page, info, 'native-failure-before-dispose', 'ACTUAL-FAILURE-NO-RECLASSIFICATION'); }
+    } catch (error) { errors.push(error); }
+    try {
+      await page.locator('#dispose').click(); await expect(page.locator('#status')).toContainText('disposed');
+    } catch (error) { errors.push(error); }
+    try {
+      const value = await facts(page); expect(value.owners.registeredMounts).toBe(0);
+      expect(value.owners.c0).toMatchObject({ renderers: 0, renderloops: 0 }); expect(value.owners.rd11).toMatchObject({ renderers: 0, renderloops: 0 });
+      await save(info, 'native-cleanup.json', JSON.stringify({ productIntegrated: false, sourceCommit: receipt.sourceCommit,
+        owners: value.owners, state: value.state, pageErrors: pageErrors.get(page), runtimeDisposedBeforeContextClose: true }, null, 2));
+    } catch (error) { errors.push(error); }
   }
-  expect(pageErrors.get(page)).toEqual([]);
+  try { expect(pageErrors.get(page)).toEqual([]); } catch (error) { errors.push(error); }
+  if (errors.length) { throw new AggregateError(errors, 'Native capture/cleanup verification; original test error remains in the report'); }
 });
 
 test('UI40 native invalid typed seek preserves nonzero snapshot/reset and live owner; valid backseek remains usable', async ({ page }, info) => {
@@ -221,4 +230,23 @@ test('UI43 native PNG-bound A/B stable pair and actual contact-sheet downloads d
   await save(info, 'native-contact-sheet-binding.json', JSON.stringify({ productIntegrated: false, classification: 'ACTUAL-NATIVE-PNG-AND-TOOL-SIDECAR-NOT-BENCHMARK',
     sourceCommit: receipt.sourceCommit, sourceTree: receipt.sourceTree, buildDigest: receipt.buildDigest, pairHash, imageSha256: sha(png), sidecarSha256: sha(sidecarBytes), decoded,
     captured, current: await facts(page) }, null, 2));
+});
+
+test('FACTS-READER native closed output textContent retains the actual source/frame across visible disclosure clicks', async ({ page }, info) => {
+  await open(page); await seek(page, 19);
+  const details = page.locator('details:has(#facts)'); const output = page.locator('#facts');
+  expect(await details.evaluate((element: HTMLDetailsElement) => element.open)).toBe(false);
+  expect(await output.innerText()).toBe(''); const closed = await facts(page);
+  const closedText = await output.textContent(); expect(closedText).toBe(await output.evaluate((element: HTMLOutputElement) => element.value));
+  await details.locator('summary').click(); expect(await details.evaluate((element: HTMLDetailsElement) => element.open)).toBe(true);
+  const expanded = await facts(page); expect(await output.innerText()).toBe(await output.textContent());
+  expect(expanded.source).toEqual(closed.source); expect(expanded.state.comparison).toEqual(closed.state.comparison);
+  expect(expanded.state.submission!.backend).toEqual(closed.state.submission!.backend); expect(expanded.owners).toEqual(closed.owners);
+  await details.locator('summary').click(); expect(await details.evaluate((element: HTMLDetailsElement) => element.open)).toBe(false);
+  expect(await output.innerText()).toBe(''); const restored = await ready(page);
+  expect(restored.source).toEqual(closed.source); expect(restored.state.comparison).toEqual(closed.state.comparison);
+  await save(info, 'native-facts-reader-regression.json', JSON.stringify({ productIntegrated: false, classification: 'ACTUAL-NATIVE-DOM-READ-NOT-INJECTED-FACTS',
+    sourceCommit: receipt.sourceCommit, sourceTree: receipt.sourceTree, buildDigest: receipt.buildDigest, closedTextBytes: Buffer.byteLength(closedText!),
+    closed, expanded, restored, disclosureRestoredThroughVisibleClick: true }, null, 2));
+  await capture(page, info, 'native-facts-reader-closed', 'ACTUAL-OPTIMIZED-NATIVE-UI-DISCLOSURE-RESTORED');
 });

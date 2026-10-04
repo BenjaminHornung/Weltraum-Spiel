@@ -14,7 +14,10 @@ type HeadReceipt = { phase: 'RD40-PHASE2'; productIntegrated: false; entryWired:
   buildRoot: string; entrySha256: string; shared18: readonly { path: string; sha256: string }[] };
 const sha = (bytes: Uint8Array | string) => createHash('sha256').update(bytes).digest('hex');
 let receipt: HeadReceipt;
-async function facts(page: Page) { return JSON.parse(await page.locator('#facts').innerText()) as { state: GalleryState; source: SourceBinding; owners: { registeredMounts: number; c0: { renderers: number; renderloops: number }; rd11: { renderers: number; renderloops: number } } }; }
+async function facts(page: Page) {
+  const text = await page.locator('#facts').textContent(); expect(text?.trim(), 'Actual DOM facts JSON must be nonempty').toBeTruthy();
+  return JSON.parse(text!) as { state: GalleryState; source: SourceBinding; owners: { registeredMounts: number; c0: { renderers: number; renderloops: number }; rd11: { renderers: number; renderloops: number } } };
+}
 async function ready(page: Page) {
   await expect(page.locator('#status')).toHaveAttribute('data-status', 'READY');
   await expect(page.locator('#step')).toBeEnabled(); const value = await facts(page); expect(value.state.busy).toBe(false);
@@ -46,11 +49,13 @@ test.beforeEach(async ({ page }) => {
   const value = await ready(page); expect(value.source.sourceBytesDigest).toBe(receipt.sourceBytesDigest);
   expect(await page.evaluate(() => 'TestBridge' in window)).toBe(false);
 });
-test.afterEach(async ({ page }) => {
+test.afterEach(async ({ page }, info) => {
   if (await page.locator('#dispose').count()) {
     await page.locator('#dispose').click(); await expect(page.locator('#status')).toContainText('disposed');
     const value = await facts(page); expect(value.owners.registeredMounts).toBe(0);
     expect(value.owners.c0).toMatchObject({ renderers: 0, renderloops: 0 }); expect(value.owners.rd11).toMatchObject({ renderers: 0, renderloops: 0 });
+    await writeFile(info.outputPath('original-native-cleanup.json'), JSON.stringify({ productIntegrated: false, sourceCommit: receipt.sourceCommit,
+      owners: value.owners, state: value.state, runtimeDisposedBeforeContextClose: true }, null, 2), { flag: 'wx' });
   }
 });
 test('UI40 actual paused nonzero A/B/A, snapshot/reset boundaries and backward seek', async ({ page }, info) => {
