@@ -9,6 +9,7 @@ import { createThreeControlExperiment } from './experiments/three-control';
 import { createRendererProbeExperiment } from './experiments/renderer-probe';
 import { createThreeWebGpuExperiment } from './experiments/three-webgpu';
 import { createBabylonExperiment } from './experiments/babylon';
+import { createVoxelRayExperiment } from './experiments/voxel-rays';
 
 const createContractControl: LabExperimentFactory = async (context) => {
   if (context.signal.aborted) { throw new Error('Control init aborted'); }
@@ -43,6 +44,8 @@ export const LAB_REGISTRATIONS: readonly LabRegistration[] = Object.freeze([
   Object.freeze({ id: 'RD-11', variantId: 'C2', scenarioId: 'F01-HVP-COAST-REPLAY', preset: Object.freeze({ id: 'C2' }), create: createThreeWebGpuExperiment }),
   Object.freeze({ id: 'RD-12', variantId: 'C3', scenarioId: 'F01-HVP-COAST-REPLAY', preset: Object.freeze({ id: 'C3' }), create: createBabylonExperiment }),
   Object.freeze({ id: 'RD-12', variantId: 'C4', scenarioId: 'F01-HVP-COAST-REPLAY', preset: Object.freeze({ id: 'C4' }), create: createBabylonExperiment }),
+  Object.freeze({ id: 'RD-13', variantId: 'rays-no-ao', scenarioId: 'F01-HVP-COAST-REPLAY', preset: Object.freeze({ id: 'rays-no-ao' }), create: createVoxelRayExperiment }),
+  Object.freeze({ id: 'RD-13', variantId: 'greedy-no-ao', scenarioId: 'F01-HVP-COAST-REPLAY', preset: Object.freeze({ id: 'greedy-no-ao' }), create: createVoxelRayExperiment }),
 ]);
 
 export async function startControlPage(): Promise<void> {

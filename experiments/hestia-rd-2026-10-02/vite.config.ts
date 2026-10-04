@@ -11,5 +11,6 @@ export default defineConfig({ cacheDir: '.vite', publicDir: 'fixtures',
     rd10: fileURLToPath(new URL('./src/experiments/renderer-probe/index.html', import.meta.url)),
     rd11: fileURLToPath(new URL('./src/experiments/three-webgpu/index.html', import.meta.url)),
     rd12: fileURLToPath(new URL('./src/experiments/babylon/index.html', import.meta.url)),
+    rd13: fileURLToPath(new URL('./src/experiments/voxel-rays/index.html', import.meta.url)),
     rd40: fileURLToPath(new URL('./src/tools/variant-gallery/index.html', import.meta.url)),
   } } } });
