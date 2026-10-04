@@ -44,7 +44,12 @@ export function wrapTerminalHost(base:LabExperimentHandle,retire:()=>void,canvas
     setFrame(input) { active(); try { base.setFrame(input); } catch (error) { throw fail(error); } },
     async replaceFixture(next) {
       active(); pending=true; retire(); canvas.hidden=true;
-      try { await base.replaceFixture(next); requireValue(!disposed&&!firstFailure,firstFailure??'Replacement disposed'); }
+      try {
+        await base.replaceFixture(next); requireValue(!disposed&&!firstFailure,firstFailure??'Replacement disposed');
+        const adopted=validateFacts(base.readFacts());
+        requireValue(adopted.fixtureDigest===getFixtureDigest(next)&&adopted.sourceRevision===fixtureRevision(next),'Adopted facts are not bound to the replacement fixture');
+        lastFacts=adopted; // Cache the newly adopted source before unlocking; a later driver fault must retain it.
+      }
       catch (error) { fail(error); await disposal?.catch(()=>{}); throw error; }
       finally { pending=false; }
     },

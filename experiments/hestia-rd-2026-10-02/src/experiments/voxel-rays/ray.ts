@@ -60,6 +60,7 @@ export function hitDepth(point:Vec3,camera:PerspectiveCamera) { return new Vecto
 export const PRODUCTION_KERNEL = /* glsl */`
 uniform highp usampler3D voxelData;
 uniform ivec3 gridSize;
+uniform int slotDoubleSided[8];
 float projectionDepth(vec3 worldHit,mat4 projectionView) { vec4 clip=projectionView*vec4(worldHit,1.0); return clip.z/clip.w*0.5+0.5; }
 struct VoxelHit { bool hit; bool unknown; bool traversalFault; float t; ivec3 cell; int slot; vec3 normal; };
 uvec4 sourceCell(ivec3 c) {
@@ -67,7 +68,7 @@ uvec4 sourceCell(ivec3 c) {
   return texelFetch(voxelData,c,0);
 }
 vec3 axisNormal(int a,float signValue) { vec3 n=vec3(0); n[a]=signValue; return n; }
-VoxelHit traceVoxels(vec3 o,vec3 gridDirection) {
+VoxelHit traceVoxels(vec3 o,vec3 gridDirection,bool selectVisible) {
   VoxelHit h; h.hit=false; h.unknown=false; h.traversalFault=false; h.t=0.0; h.cell=ivec3(-1); h.slot=0; h.normal=vec3(0);
   float entry=-1e30; float leave=1e30; int entryAxis=0;
   for (int a=0;a<3;a++) {
@@ -101,13 +102,17 @@ VoxelHit traceVoxels(vec3 o,vec3 gridDirection) {
     uvec4 sample=sourceCell(cell); h.unknown=h.unknown || sample.g==0u;
     bool solid=sample.r!=0u;
     if (!insideRun && solid) { h.hit=true; h.t=t; h.cell=cell; h.slot=int(sample.b); h.normal=face; return h; }
-    if (insideRun && !solid) { h.hit=true; h.t=t; h.cell=previous; h.slot=previousSlot; h.normal=-face; return h; }
+    if (insideRun && !solid) {
+      if (!selectVisible || slotDoubleSided[previousSlot]!=0) { h.hit=true; h.t=t; h.cell=previous; h.slot=previousSlot; h.normal=-face; return h; }
+      // Rejected back exit: keep this empty interval, Unknown, world t and ONE traversal budget.
+      insideRun=false;
+    }
     if (solid) { previous=cell; previousSlot=int(sample.b); }
     float nextT=min(crossing.x,min(crossing.y,crossing.z));
     if (nextT<=t) { h.traversalFault=true; return h; }
     bvec3 tied=equal(crossing,vec3(nextT)); int a=tied.x?0:(tied.y?1:2); face=axisNormal(a,-float(stepDir[a]));
     if (nextT>=leave) {
-      if (insideRun) { h.hit=true; h.t=leave; h.cell=previous; h.slot=previousSlot; h.normal=-face; }
+      if (insideRun && (!selectVisible || slotDoubleSided[previousSlot]!=0)) { h.hit=true; h.t=leave; h.cell=previous; h.slot=previousSlot; h.normal=-face; }
       return h;
     }
     // ALL tied axes advance; no zero-length intermediate cells are ever sampled.
@@ -118,6 +123,9 @@ VoxelHit traceVoxels(vec3 o,vec3 gridDirection) {
   }
   h.traversalFault=true; return h;
 }
+// Geometric first-exit semantics are unchanged; only visible projection filters exits during traversal.
+VoxelHit traceVoxels(vec3 o,vec3 gridDirection) { return traceVoxels(o,gridDirection,false); }
+VoxelHit traceVisibleVoxels(vec3 o,vec3 gridDirection) { return traceVoxels(o,gridDirection,true); }
 `;
 
 export const VISIBLE_VERTEX = `void main() { gl_Position=vec4(position.xy,0.0,1.0); }`;
@@ -135,7 +143,6 @@ uniform mat3 worldNormalMatrix;
 uniform vec2 drawingBuffer;
 uniform vec3 slotColor[8];
 uniform vec3 slotEmission[8];
-uniform int slotDoubleSided[8];
 #ifdef USE_FOG
 uniform vec3 fogColor;
 uniform float fogNear;
@@ -150,13 +157,12 @@ void main() {
   vec3 worldDirection=normalize(farPoint.xyz/farPoint.w-worldOrigin);
   vec3 gridOrigin=(gridFromWorld*vec4(worldOrigin,1.0)).xyz;
   vec3 gridDirection=(gridFromWorld*vec4(worldDirection,0.0)).xyz;
-  VoxelHit h=traceVoxels(gridOrigin,gridDirection);
+  VoxelHit h=traceVisibleVoxels(gridOrigin,gridDirection);
   if (h.traversalFault) { gl_FragColor=vec4(1.0,0.0,1.0,1.0); gl_FragDepth=0.0; return; }
   if (!h.hit) { discard; }
   vec3 worldHit=worldOrigin+h.t*worldDirection;
   vec3 worldNormal=normalize(worldNormalMatrix*h.normal);
   bool back=dot(worldNormal,worldDirection)>0.0;
-  if (back && slotDoubleSided[h.slot]==0) { discard; }
   if (back) { worldNormal=-worldNormal; }
   vec4 viewHit=viewMatrix*vec4(worldHit,1.0);
   vec4 clip=projectionMatrix*viewHit;
