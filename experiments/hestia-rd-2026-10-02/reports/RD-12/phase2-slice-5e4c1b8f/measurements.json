@@ -1,0 +1,430 @@
+{
+  "schema": "rd12-native-png-measurements-v1",
+  "source": "5e4c1b8fea9026bc38aa38f4258d9892f2b848b7",
+  "tree": "6e7d9936f712fad8b9cd7183a528c487b4fa36b9",
+  "decoder": {
+    "path": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD12\\experiments\\hestia-rd-2026-10-02\\node_modules\\playwright-core\\lib\\utilsBundle.js",
+    "bytes": 3143574,
+    "sha256": "1295945f0054d2504c9b751945b15aa3c672530ad5a340f3f9636e5e238f304a"
+  },
+  "gate": {
+    "path": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD12\\experiments\\hestia-rd-2026-10-02\\reports\\RD-12\\qualification-v2.ts",
+    "bytes": 679,
+    "sha256": "8b398348b53f6d76c6bbbe1854e14b5dae4fb07ae4044636e8ca9294c3fab1ee"
+  },
+  "generatedLinkedGate": {
+    "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-12/phase2-5e4c1b8f-20261004-a-commands/package-build-01/qualification-v2-linked.mjs",
+    "bytes": 804,
+    "sha256": "a4b7813db22e71d2a9b6fbd93baa91260760d0333c8924aeaea5fa7d8d72b9e0"
+  },
+  "thresholds": {
+    "version": "rd12-material-depth-v1",
+    "minimumPixels": 4096,
+    "minimumReferenceContrast": 0.04,
+    "maximumMeanRgbError": 0.035,
+    "minimumFaultMeanRgbError": 0.01,
+    "regions": [
+      {
+        "id": "F01-scene-baked-colors",
+        "scenario": "F01-HVP-COAST-REPLAY",
+        "camera": "C01-EYE",
+        "rect": [
+          0.05,
+          0.12,
+          0.9,
+          0.8
+        ],
+        "fault": "omit-vertex-colors"
+      },
+      {
+        "id": "F06-material-depth-scene",
+        "scenario": "F06-MATERIAL-REPLAY",
+        "camera": "fixture-first-camera",
+        "rect": [
+          0.05,
+          0.05,
+          0.9,
+          0.9
+        ],
+        "fault": "disable-depth-test"
+      }
+    ]
+  },
+  "measurements": [
+    {
+      "mode": "C3",
+      "region": {
+        "id": "F01-scene-baked-colors",
+        "scenario": "F01-HVP-COAST-REPLAY",
+        "camera": "C01-EYE",
+        "rect": [
+          0.05,
+          0.12,
+          0.9,
+          0.8
+        ],
+        "fault": "omit-vertex-colors"
+      },
+      "positive": {
+        "meanRgbError": 0,
+        "referenceContrast": 0.204783170984015,
+        "pixels": 665281
+      },
+      "negative": {
+        "meanRgbError": 0.04902906966642507,
+        "referenceContrast": 0.204783170984015,
+        "pixels": 665281
+      },
+      "qualification": {
+        "status": "PASS_SAME_BACKEND_CONTROL_ONLY",
+        "result": {
+          "positive": {
+            "meanRgbError": 0,
+            "referenceContrast": 0.204783170984015,
+            "pixels": 665281
+          },
+          "negative": {
+            "meanRgbError": 0.04902906966642507,
+            "referenceContrast": 0.204783170984015,
+            "pixels": 665281
+          },
+          "version": "rd12-material-depth-qualification-v2"
+        }
+      },
+      "crossEngineParity": "NOT_RUN",
+      "captures": [
+        {
+          "image": "images/image-057.png",
+          "facts": "facts/image-057.json",
+          "fullPngSha256": "7bb23c48cdfcd03f0e5953293cec2e9bf432c78b351a32d39c4f7f5c7fdcfadf",
+          "roi": {
+            "x": 64,
+            "y": 87,
+            "width": 1153,
+            "height": 577
+          },
+          "decodedRoiSha256": "15cd51a73a6e55a5deaa2eeb2307be7ff95b97a64ee2d44b9bbb5ac4dd228ade",
+          "decodedBytes": 2661124,
+          "compressedRgba": {
+            "path": "pixels/C3-F01-scene-baked-colors-original.rgba.gz",
+            "bytes": 270406,
+            "sha256": "ec11fef92582f73e6d8a0e3fb58c9a8adfbb7dc0a9721956ccd35d877b1c78ba"
+          }
+        },
+        {
+          "image": "images/image-059.png",
+          "facts": "facts/image-059.json",
+          "fullPngSha256": "7bb23c48cdfcd03f0e5953293cec2e9bf432c78b351a32d39c4f7f5c7fdcfadf",
+          "roi": {
+            "x": 64,
+            "y": 87,
+            "width": 1153,
+            "height": 577
+          },
+          "decodedRoiSha256": "15cd51a73a6e55a5deaa2eeb2307be7ff95b97a64ee2d44b9bbb5ac4dd228ade",
+          "decodedBytes": 2661124,
+          "compressedRgba": {
+            "path": "pixels/C3-F01-scene-baked-colors-restored.rgba.gz",
+            "bytes": 270406,
+            "sha256": "ec11fef92582f73e6d8a0e3fb58c9a8adfbb7dc0a9721956ccd35d877b1c78ba"
+          }
+        },
+        {
+          "image": "images/image-058.png",
+          "facts": "facts/image-058.json",
+          "fullPngSha256": "16f7ac8410e273fc4b8053e3d71edc462860589d3e0652b10eb995a876f8ecba",
+          "roi": {
+            "x": 64,
+            "y": 87,
+            "width": 1153,
+            "height": 577
+          },
+          "decodedRoiSha256": "5836fc1a8ef09742aca5371d63e4b984a84df4e533fab8f3ed357f363d673e5e",
+          "decodedBytes": 2661124,
+          "compressedRgba": {
+            "path": "pixels/C3-F01-scene-baked-colors-deliberate-fault.rgba.gz",
+            "bytes": 66818,
+            "sha256": "39b348e71713854517ba08713581f155caee21754d4d5f52c03bc351b52bf77f"
+          }
+        }
+      ],
+      "productIntegrated": false
+    },
+    {
+      "mode": "C3",
+      "region": {
+        "id": "F06-material-depth-scene",
+        "scenario": "F06-MATERIAL-REPLAY",
+        "camera": "fixture-first-camera",
+        "rect": [
+          0.05,
+          0.05,
+          0.9,
+          0.9
+        ],
+        "fault": "disable-depth-test"
+      },
+      "positive": {
+        "meanRgbError": 0,
+        "referenceContrast": 0.10678134663632566,
+        "pixels": 748297
+      },
+      "negative": {
+        "meanRgbError": 0.0018225261489397359,
+        "referenceContrast": 0.10678134663632566,
+        "pixels": 748297
+      },
+      "qualification": {
+        "status": "DEFER_INSENSITIVE_FAULT",
+        "error": "Error: FALSE-GREEN: owning material/depth fault not detected; ROI unqualified"
+      },
+      "crossEngineParity": "NOT_RUN",
+      "captures": [
+        {
+          "image": "images/image-060.png",
+          "facts": "facts/image-060.json",
+          "fullPngSha256": "c8e746824aeb018d246e50f23e2bd83ae104ad9256a44f6413cdc5b459ff2fdc",
+          "roi": {
+            "x": 64,
+            "y": 36,
+            "width": 1153,
+            "height": 649
+          },
+          "decodedRoiSha256": "12b743ed742a6edb52317402f33a61ffe2352896bee6d549530c7a0842b1ee2a",
+          "decodedBytes": 2993188,
+          "compressedRgba": {
+            "path": "pixels/C3-F06-material-depth-scene-original.rgba.gz",
+            "bytes": 5752,
+            "sha256": "f343724f6f18039959c6004be0e4baa7687ecb33128bddb37e0d685bb6929b10"
+          }
+        },
+        {
+          "image": "images/image-062.png",
+          "facts": "facts/image-062.json",
+          "fullPngSha256": "c8e746824aeb018d246e50f23e2bd83ae104ad9256a44f6413cdc5b459ff2fdc",
+          "roi": {
+            "x": 64,
+            "y": 36,
+            "width": 1153,
+            "height": 649
+          },
+          "decodedRoiSha256": "12b743ed742a6edb52317402f33a61ffe2352896bee6d549530c7a0842b1ee2a",
+          "decodedBytes": 2993188,
+          "compressedRgba": {
+            "path": "pixels/C3-F06-material-depth-scene-restored.rgba.gz",
+            "bytes": 5752,
+            "sha256": "f343724f6f18039959c6004be0e4baa7687ecb33128bddb37e0d685bb6929b10"
+          }
+        },
+        {
+          "image": "images/image-061.png",
+          "facts": "facts/image-061.json",
+          "fullPngSha256": "356e18ba4036d34ed84a9ffdced6bf7b590c46e5e1be354561ef986b03b0d46c",
+          "roi": {
+            "x": 64,
+            "y": 36,
+            "width": 1153,
+            "height": 649
+          },
+          "decodedRoiSha256": "647a85b7f49182efd3e235e63823b35f67cc46b8d790bb7e7abce2cfd6aeaaa2",
+          "decodedBytes": 2993188,
+          "compressedRgba": {
+            "path": "pixels/C3-F06-material-depth-scene-deliberate-fault.rgba.gz",
+            "bytes": 5953,
+            "sha256": "b0f4bdfc22a3e9199e8386387c73219864f84758fcf24a5f0fb1335bf7f801a6"
+          }
+        }
+      ],
+      "productIntegrated": false
+    },
+    {
+      "mode": "C4",
+      "region": {
+        "id": "F01-scene-baked-colors",
+        "scenario": "F01-HVP-COAST-REPLAY",
+        "camera": "C01-EYE",
+        "rect": [
+          0.05,
+          0.12,
+          0.9,
+          0.8
+        ],
+        "fault": "omit-vertex-colors"
+      },
+      "positive": {
+        "meanRgbError": 0,
+        "referenceContrast": 0.20478055823629923,
+        "pixels": 665281
+      },
+      "negative": {
+        "meanRgbError": 0.04904784987756236,
+        "referenceContrast": 0.20478055823629923,
+        "pixels": 665281
+      },
+      "qualification": {
+        "status": "PASS_SAME_BACKEND_CONTROL_ONLY",
+        "result": {
+          "positive": {
+            "meanRgbError": 0,
+            "referenceContrast": 0.20478055823629923,
+            "pixels": 665281
+          },
+          "negative": {
+            "meanRgbError": 0.04904784987756236,
+            "referenceContrast": 0.20478055823629923,
+            "pixels": 665281
+          },
+          "version": "rd12-material-depth-qualification-v2"
+        }
+      },
+      "crossEngineParity": "NOT_RUN",
+      "captures": [
+        {
+          "image": "images/image-063.png",
+          "facts": "facts/image-063.json",
+          "fullPngSha256": "e6e4a330052a3939908de3a990756dfc83c240f465d9ae4456a83cd0fc6544eb",
+          "roi": {
+            "x": 64,
+            "y": 87,
+            "width": 1153,
+            "height": 577
+          },
+          "decodedRoiSha256": "0ff4be4c85fb6d684d3374354e3c0f29632071726ce936f9e3474a62ac1c34ac",
+          "decodedBytes": 2661124,
+          "compressedRgba": {
+            "path": "pixels/C4-F01-scene-baked-colors-original.rgba.gz",
+            "bytes": 271504,
+            "sha256": "32379d2f78ef4cc7704a7678241c37feea1e94baf3d849a16daba264867e5c85"
+          }
+        },
+        {
+          "image": "images/image-065.png",
+          "facts": "facts/image-065.json",
+          "fullPngSha256": "e6e4a330052a3939908de3a990756dfc83c240f465d9ae4456a83cd0fc6544eb",
+          "roi": {
+            "x": 64,
+            "y": 87,
+            "width": 1153,
+            "height": 577
+          },
+          "decodedRoiSha256": "0ff4be4c85fb6d684d3374354e3c0f29632071726ce936f9e3474a62ac1c34ac",
+          "decodedBytes": 2661124,
+          "compressedRgba": {
+            "path": "pixels/C4-F01-scene-baked-colors-restored.rgba.gz",
+            "bytes": 271504,
+            "sha256": "32379d2f78ef4cc7704a7678241c37feea1e94baf3d849a16daba264867e5c85"
+          }
+        },
+        {
+          "image": "images/image-064.png",
+          "facts": "facts/image-064.json",
+          "fullPngSha256": "611f1ec392f8860d9e4abe59ebf67b8bd76a64e922b59ebb5746a49351adf3ec",
+          "roi": {
+            "x": 64,
+            "y": 87,
+            "width": 1153,
+            "height": 577
+          },
+          "decodedRoiSha256": "0b99f46a4de6bb0f0f6b1db8babc12c68c37eb990b63cf5fbd5f0a2a1f236c47",
+          "decodedBytes": 2661124,
+          "compressedRgba": {
+            "path": "pixels/C4-F01-scene-baked-colors-deliberate-fault.rgba.gz",
+            "bytes": 67142,
+            "sha256": "570e02a6832185d6d1cb4ba7769c09c0ee1f9af2e44b80652d9a3e035ddab0e1"
+          }
+        }
+      ],
+      "productIntegrated": false
+    },
+    {
+      "mode": "C4",
+      "region": {
+        "id": "F06-material-depth-scene",
+        "scenario": "F06-MATERIAL-REPLAY",
+        "camera": "fixture-first-camera",
+        "rect": [
+          0.05,
+          0.05,
+          0.9,
+          0.9
+        ],
+        "fault": "disable-depth-test"
+      },
+      "positive": {
+        "meanRgbError": 0,
+        "referenceContrast": 0.10679002123123271,
+        "pixels": 748297
+      },
+      "negative": {
+        "meanRgbError": 0.0018214046481368742,
+        "referenceContrast": 0.10679002123123271,
+        "pixels": 748297
+      },
+      "qualification": {
+        "status": "DEFER_INSENSITIVE_FAULT",
+        "error": "Error: FALSE-GREEN: owning material/depth fault not detected; ROI unqualified"
+      },
+      "crossEngineParity": "NOT_RUN",
+      "captures": [
+        {
+          "image": "images/image-066.png",
+          "facts": "facts/image-066.json",
+          "fullPngSha256": "90871cb310abb5c7e3a39d7c9a421deac2b0a828892511a09773a3220c744bd4",
+          "roi": {
+            "x": 64,
+            "y": 36,
+            "width": 1153,
+            "height": 649
+          },
+          "decodedRoiSha256": "191a7b22563e0bf2c1e3a9cbe4ce0d6029fd3fef00567643d5dd462007f27191",
+          "decodedBytes": 2993188,
+          "compressedRgba": {
+            "path": "pixels/C4-F06-material-depth-scene-original.rgba.gz",
+            "bytes": 5650,
+            "sha256": "b7b3a7c3c52e405611924c6c9f320dfd65834a6d286651fe48219f3691d76dc2"
+          }
+        },
+        {
+          "image": "images/image-068.png",
+          "facts": "facts/image-068.json",
+          "fullPngSha256": "90871cb310abb5c7e3a39d7c9a421deac2b0a828892511a09773a3220c744bd4",
+          "roi": {
+            "x": 64,
+            "y": 36,
+            "width": 1153,
+            "height": 649
+          },
+          "decodedRoiSha256": "191a7b22563e0bf2c1e3a9cbe4ce0d6029fd3fef00567643d5dd462007f27191",
+          "decodedBytes": 2993188,
+          "compressedRgba": {
+            "path": "pixels/C4-F06-material-depth-scene-restored.rgba.gz",
+            "bytes": 5650,
+            "sha256": "b7b3a7c3c52e405611924c6c9f320dfd65834a6d286651fe48219f3691d76dc2"
+          }
+        },
+        {
+          "image": "images/image-067.png",
+          "facts": "facts/image-067.json",
+          "fullPngSha256": "63ed58124dedb806cfadb55dc0a0719daf59a7d67f4caed132ef979fdefc3402",
+          "roi": {
+            "x": 64,
+            "y": 36,
+            "width": 1153,
+            "height": 649
+          },
+          "decodedRoiSha256": "1abc7b20c530e175c947233917e317c83628fc701f23053f624f2ba1dd634683",
+          "decodedBytes": 2993188,
+          "compressedRgba": {
+            "path": "pixels/C4-F06-material-depth-scene-deliberate-fault.rgba.gz",
+            "bytes": 5864,
+            "sha256": "03c52db94de6031e121cf1624669519f5a7d0d7a75032181cf6cbc02b8b2f393"
+          }
+        }
+      ],
+      "productIntegrated": false
+    }
+  ],
+  "nativeMemory": "UNKNOWN_UNSUPPORTED",
+  "qualifiedGpuPerformance": "NOT_GRANTED",
+  "productIntegrated": false
+}

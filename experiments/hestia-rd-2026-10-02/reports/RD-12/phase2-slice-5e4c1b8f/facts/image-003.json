@@ -1,0 +1,1492 @@
+{
+  "before": {
+    "scenario": "F01-HVP-COAST-REPLAY",
+    "scenarioDigest": "e41d4965131f17ad47ec7a7ce6db4a841d60a550abb86cd51206fa973c500bd9",
+    "status": "SUBMITTED",
+    "diagnostic": {
+      "backend": {
+        "requested": "C3",
+        "actual": "webgl2",
+        "sdk": "9.29.0",
+        "initialization": "awaited",
+        "shaderLanguage": "packaged-GLSL",
+        "compilerPaths": "blocked",
+        "restoration": "disabled"
+      },
+      "disposed": false,
+      "terminal": null,
+      "cleanupErrors": [],
+      "replacing": false,
+      "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+      "sourceRevision": 0,
+      "frame": {
+        "cameraId": "C01-EYE",
+        "paused": true,
+        "seconds": 26,
+        "sourceRevision": 0,
+        "tick": 1560,
+        "weather": {
+          "cloud01": 0.4,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            5,
+            0,
+            -2
+          ]
+        }
+      },
+      "resetTick": 1560,
+      "projectionGeneration": 2,
+      "presentationGeneration": 10,
+      "submittedFrames": 99,
+      "rendered": {
+        "tick": 1560,
+        "cameraId": "C01-EYE",
+        "sourceRevision": 0,
+        "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+        "resetTick": 1560,
+        "projectionGeneration": 2,
+        "presentationGeneration": 10
+      },
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "presentation": {
+        "profileId": "hvp:readable-coast-v6",
+        "toneMapping": "aces-filmic",
+        "exposure": 1.05,
+        "materialColorSpace": "linear-srgb",
+        "outputColorSpace": "srgb",
+        "outputEquivalence": "UNSUPPORTED",
+        "sdkToneMapper": "Babylon-ACES-approximation",
+        "fog": {
+          "near": 48,
+          "far": 170
+        },
+        "background": 8893913,
+        "lights": [
+          {
+            "role": "ambient",
+            "colorSrgb24": 12573160,
+            "groundColorSrgb24": 9212790,
+            "intensity": 0.85,
+            "positionMeters": [
+              0,
+              1,
+              0
+            ]
+          },
+          {
+            "role": "key",
+            "colorSrgb24": 16769712,
+            "intensity": 2.3,
+            "positionMeters": [
+              -28,
+              42,
+              -18
+            ]
+          },
+          {
+            "role": "fill",
+            "colorSrgb24": 7317720,
+            "intensity": 0.9,
+            "positionMeters": [
+              30,
+              18,
+              26
+            ]
+          }
+        ]
+      },
+      "buffers": [
+        {
+          "ownerId": "hvp:flora:bed-100-88",
+          "meshIndex": 0,
+          "sourceNamespace": "hvp-plant-component-local-slot-v3",
+          "sourceRevision": 0,
+          "sourceIds": [
+            "decor/11/17/11"
+          ],
+          "materialId": "hvp:flora:broadleaf:vertex-palette-v2",
+          "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "sourceColors": true,
+          "vertices": 1932,
+          "indices": 2898,
+          "normals": 3,
+          "colorStride": 4,
+          "ownerPose": {
+            "positionMeters": [
+              -3.5,
+              1.5,
+              -5
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "rootPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "evidence": "SDK-retained-attributes/owner transforms; NOT native mapped GPU readback"
+        },
+        {
+          "ownerId": "hvp:flora:bed-160-76",
+          "meshIndex": 0,
+          "sourceNamespace": "hvp-plant-component-local-slot-v3",
+          "sourceRevision": 0,
+          "sourceIds": [
+            "decor/13/17/12"
+          ],
+          "materialId": "hvp:flora:reed:vertex-palette-v2",
+          "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "sourceColors": true,
+          "vertices": 1056,
+          "indices": 1584,
+          "normals": 3,
+          "colorStride": 4,
+          "ownerPose": {
+            "positionMeters": [
+              4,
+              -0.25,
+              -6.5
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "rootPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "evidence": "SDK-retained-attributes/owner transforms; NOT native mapped GPU readback"
+        },
+        {
+          "ownerId": "hvp:flora:bed-76-124",
+          "meshIndex": 0,
+          "sourceNamespace": "hvp-plant-component-local-slot-v3",
+          "sourceRevision": 0,
+          "sourceIds": [
+            "decor/11/17/11"
+          ],
+          "materialId": "hvp:flora:amber:vertex-palette-v2",
+          "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "sourceColors": true,
+          "vertices": 888,
+          "indices": 1332,
+          "normals": 3,
+          "colorStride": 4,
+          "ownerPose": {
+            "positionMeters": [
+              -6.5,
+              1.25,
+              -0.5
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "rootPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "evidence": "SDK-retained-attributes/owner transforms; NOT native mapped GPU readback"
+        },
+        {
+          "ownerId": "hvp:flora:bed-88-88",
+          "meshIndex": 0,
+          "sourceNamespace": "hvp-plant-component-local-slot-v3",
+          "sourceRevision": 0,
+          "sourceIds": [
+            "decor/11/16/12"
+          ],
+          "materialId": "hvp:flora:violet:vertex-palette-v2",
+          "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "sourceColors": true,
+          "vertices": 1096,
+          "indices": 1644,
+          "normals": 3,
+          "colorStride": 4,
+          "ownerPose": {
+            "positionMeters": [
+              -5,
+              2,
+              -5
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "rootPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "evidence": "SDK-retained-attributes/owner transforms; NOT native mapped GPU readback"
+        },
+        {
+          "ownerId": "hvp:flora:hero",
+          "meshIndex": 0,
+          "sourceNamespace": "hvp-plant-component-local-slot-v3",
+          "sourceRevision": 0,
+          "sourceIds": [
+            "decor/23/80/37",
+            "decor/28/97/62",
+            "decor/47/101/47",
+            "decor/54/87/69",
+            "decor/67/90/32",
+            "wood/23/81/38",
+            "wood/24/31/32",
+            "wood/29/97/63",
+            "wood/32/32/72",
+            "wood/48/101/48",
+            "wood/55/87/70",
+            "wood/56/31/72",
+            "wood/67/91/33",
+            "wood/72/40/40"
+          ],
+          "materialId": "hvp:flora:tree:vertex-palette-v2",
+          "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "sourceColors": true,
+          "vertices": 30828,
+          "indices": 46242,
+          "normals": 3,
+          "colorStride": 4,
+          "ownerPose": {
+            "positionMeters": [
+              8,
+              0.75,
+              7
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "rootPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "evidence": "SDK-retained-attributes/owner transforms; NOT native mapped GPU readback"
+        },
+        {
+          "ownerId": "hvp:flora:hero",
+          "meshIndex": 1,
+          "sourceNamespace": "hvp-plant-component-local-slot-v3",
+          "sourceRevision": 0,
+          "sourceIds": [
+            "decor/23/80/37",
+            "decor/28/97/62",
+            "decor/47/101/47",
+            "decor/54/87/69",
+            "decor/67/90/32",
+            "wood/23/81/38",
+            "wood/24/31/32",
+            "wood/29/97/63",
+            "wood/32/32/72",
+            "wood/48/101/48",
+            "wood/55/87/70",
+            "wood/56/31/72",
+            "wood/67/91/33",
+            "wood/72/40/40"
+          ],
+          "materialId": "hvp:flora:wood:vertex-palette-v2",
+          "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "sourceColors": true,
+          "vertices": 24572,
+          "indices": 36858,
+          "normals": 3,
+          "colorStride": 4,
+          "ownerPose": {
+            "positionMeters": [
+              8,
+              0.75,
+              7
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "rootPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "evidence": "SDK-retained-attributes/owner transforms; NOT native mapped GPU readback"
+        },
+        {
+          "ownerId": "hvp:terrain",
+          "meshIndex": 0,
+          "sourceNamespace": "hvp-source-global-slot-v5",
+          "sourceRevision": 0,
+          "sourceIds": [
+            "crop-volume",
+            "slot/100/75/88",
+            "slot/160/61/76",
+            "slot/76/73/124",
+            "slot/88/79/88"
+          ],
+          "materialId": "hvp-limestone-dry",
+          "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "sourceColors": true,
+          "vertices": 119472,
+          "indices": 102660,
+          "normals": 3,
+          "colorStride": 4,
+          "ownerPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "rootPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "evidence": "SDK-retained-attributes/owner transforms; NOT native mapped GPU readback"
+        },
+        {
+          "ownerId": "hvp:terrain",
+          "meshIndex": 1,
+          "sourceNamespace": "hvp-source-global-slot-v5",
+          "sourceRevision": 0,
+          "sourceIds": [
+            "crop-volume",
+            "slot/100/75/88",
+            "slot/160/61/76",
+            "slot/76/73/124",
+            "slot/88/79/88"
+          ],
+          "materialId": "hvp-limestone-wet",
+          "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "sourceColors": true,
+          "vertices": 119472,
+          "indices": 66660,
+          "normals": 3,
+          "colorStride": 4,
+          "ownerPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "rootPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "evidence": "SDK-retained-attributes/owner transforms; NOT native mapped GPU readback"
+        },
+        {
+          "ownerId": "hvp:terrain",
+          "meshIndex": 2,
+          "sourceNamespace": "hvp-source-global-slot-v5",
+          "sourceRevision": 0,
+          "sourceIds": [
+            "crop-volume",
+            "slot/100/75/88",
+            "slot/160/61/76",
+            "slot/76/73/124",
+            "slot/88/79/88"
+          ],
+          "materialId": "hvp-soil",
+          "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "sourceColors": true,
+          "vertices": 119472,
+          "indices": 6798,
+          "normals": 3,
+          "colorStride": 4,
+          "ownerPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "rootPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "evidence": "SDK-retained-attributes/owner transforms; NOT native mapped GPU readback"
+        },
+        {
+          "ownerId": "hvp:terrain",
+          "meshIndex": 3,
+          "sourceNamespace": "hvp-source-global-slot-v5",
+          "sourceRevision": 0,
+          "sourceIds": [
+            "crop-volume",
+            "slot/100/75/88",
+            "slot/160/61/76",
+            "slot/76/73/124",
+            "slot/88/79/88"
+          ],
+          "materialId": "hvp-moss",
+          "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "sourceColors": true,
+          "vertices": 119472,
+          "indices": 3090,
+          "normals": 3,
+          "colorStride": 4,
+          "ownerPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "rootPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "evidence": "SDK-retained-attributes/owner transforms; NOT native mapped GPU readback"
+        },
+        {
+          "ownerId": "hvp:water",
+          "meshIndex": 0,
+          "sourceNamespace": "hvp-water-crop-presentation-v2",
+          "sourceRevision": 0,
+          "sourceIds": [
+            "crop-water-mask"
+          ],
+          "materialId": "hvp-water",
+          "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "sourceColors": false,
+          "vertices": 616,
+          "indices": 924,
+          "normals": 3,
+          "colorStride": 0,
+          "ownerPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "rootPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "evidence": "SDK-retained-attributes/owner transforms; NOT native mapped GPU readback"
+        }
+      ],
+      "camera": {
+        "id": "C01-EYE",
+        "position": [
+          -8,
+          3.15,
+          -11
+        ],
+        "target": [
+          -1.4822331184660698e-7,
+          0.9999999223756957,
+          4.999999703553376
+        ],
+        "up": [
+          0,
+          1,
+          0
+        ],
+        "fovDegrees": 59.99999999999999,
+        "near": 0.01,
+        "far": 2000,
+        "controlsAttached": false
+      },
+      "visualFault": "none",
+      "nativeReadback": "NOT_RUN",
+      "productIntegrated": false
+    },
+    "cleanup": {
+      "disposed": false,
+      "ownedMeshes": 11,
+      "ownedMaterials": 11,
+      "ownedLights": 3,
+      "pendingNativeInitializations": 0,
+      "errors": []
+    },
+    "facts": {
+      "backend": "Babylon-WebGL2",
+      "errors": [],
+      "experimentId": "RD-12",
+      "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+      "liveResources": {
+        "engines": {
+          "reason": "Owned logical SDK objects, NOT native allocation/VRAM",
+          "status": "measured",
+          "unit": "count",
+          "value": 1
+        },
+        "lights": {
+          "reason": "Owned logical SDK objects, NOT native allocation/VRAM",
+          "status": "measured",
+          "unit": "count",
+          "value": 3
+        },
+        "materials": {
+          "reason": "Owned logical SDK objects, NOT native allocation/VRAM",
+          "status": "measured",
+          "unit": "count",
+          "value": 11
+        },
+        "meshes": {
+          "reason": "Owned logical SDK objects, NOT native allocation/VRAM",
+          "status": "measured",
+          "unit": "count",
+          "value": 11
+        }
+      },
+      "logicalCosts": {
+        "cpuMs": {
+          "reason": "Not a selection benchmark",
+          "status": "not-run",
+          "unit": "ms"
+        },
+        "gpuBytes": {
+          "reason": "Native driver/VRAM allocations unavailable",
+          "status": "unsupported",
+          "unit": "byte"
+        },
+        "gpuMs": {
+          "reason": "No qualified timestamp workload",
+          "status": "not-run",
+          "unit": "ms"
+        },
+        "projectionBufferBytes": {
+          "reason": "Private CPU attributes/index bytes, excludes native buffers/driver/shaders",
+          "status": "estimated",
+          "unit": "byte",
+          "value": 22444980
+        },
+        "triangles": {
+          "reason": "Owned logical SDK objects, NOT native allocation/VRAM",
+          "status": "measured",
+          "unit": "count",
+          "value": 90230
+        },
+        "uploadBytes": {
+          "reason": "No native upload instrumentation; retained buffers are not upload proof",
+          "status": "not-run",
+          "unit": "byte"
+        }
+      },
+      "sourceRevision": 0,
+      "unsupportedFeatures": [
+        "native-pcf-shadow-parity",
+        "native-ao-recompute-parity",
+        "native-water-shader-parity",
+        "native-sky-shader-parity",
+        "native-material-shader-hooks",
+        "native-weather-hook-parity",
+        "lambert-brdf-parity",
+        "output-color-equivalence",
+        "effective-sample-equivalence",
+        "canvas-alpha-equivalence"
+      ],
+      "variantId": "C3"
+    },
+    "mounts": 1,
+    "owned": {
+      "engines": 1,
+      "renderloops": 1,
+      "listeners": 2,
+      "pendingNativeInitializations": 0
+    },
+    "productIntegrated": false
+  },
+  "after": {
+    "scenario": "F01-HVP-COAST-REPLAY",
+    "scenarioDigest": "e41d4965131f17ad47ec7a7ce6db4a841d60a550abb86cd51206fa973c500bd9",
+    "status": "SUBMITTED",
+    "diagnostic": {
+      "backend": {
+        "requested": "C3",
+        "actual": "webgl2",
+        "sdk": "9.29.0",
+        "initialization": "awaited",
+        "shaderLanguage": "packaged-GLSL",
+        "compilerPaths": "blocked",
+        "restoration": "disabled"
+      },
+      "disposed": false,
+      "terminal": null,
+      "cleanupErrors": [],
+      "replacing": false,
+      "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+      "sourceRevision": 0,
+      "frame": {
+        "cameraId": "C01-EYE",
+        "paused": true,
+        "seconds": 26,
+        "sourceRevision": 0,
+        "tick": 1560,
+        "weather": {
+          "cloud01": 0.4,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            5,
+            0,
+            -2
+          ]
+        }
+      },
+      "resetTick": 1560,
+      "projectionGeneration": 2,
+      "presentationGeneration": 10,
+      "submittedFrames": 103,
+      "rendered": {
+        "tick": 1560,
+        "cameraId": "C01-EYE",
+        "sourceRevision": 0,
+        "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+        "resetTick": 1560,
+        "projectionGeneration": 2,
+        "presentationGeneration": 10
+      },
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "presentation": {
+        "profileId": "hvp:readable-coast-v6",
+        "toneMapping": "aces-filmic",
+        "exposure": 1.05,
+        "materialColorSpace": "linear-srgb",
+        "outputColorSpace": "srgb",
+        "outputEquivalence": "UNSUPPORTED",
+        "sdkToneMapper": "Babylon-ACES-approximation",
+        "fog": {
+          "near": 48,
+          "far": 170
+        },
+        "background": 8893913,
+        "lights": [
+          {
+            "role": "ambient",
+            "colorSrgb24": 12573160,
+            "groundColorSrgb24": 9212790,
+            "intensity": 0.85,
+            "positionMeters": [
+              0,
+              1,
+              0
+            ]
+          },
+          {
+            "role": "key",
+            "colorSrgb24": 16769712,
+            "intensity": 2.3,
+            "positionMeters": [
+              -28,
+              42,
+              -18
+            ]
+          },
+          {
+            "role": "fill",
+            "colorSrgb24": 7317720,
+            "intensity": 0.9,
+            "positionMeters": [
+              30,
+              18,
+              26
+            ]
+          }
+        ]
+      },
+      "buffers": [
+        {
+          "ownerId": "hvp:flora:bed-100-88",
+          "meshIndex": 0,
+          "sourceNamespace": "hvp-plant-component-local-slot-v3",
+          "sourceRevision": 0,
+          "sourceIds": [
+            "decor/11/17/11"
+          ],
+          "materialId": "hvp:flora:broadleaf:vertex-palette-v2",
+          "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "sourceColors": true,
+          "vertices": 1932,
+          "indices": 2898,
+          "normals": 3,
+          "colorStride": 4,
+          "ownerPose": {
+            "positionMeters": [
+              -3.5,
+              1.5,
+              -5
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "rootPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "evidence": "SDK-retained-attributes/owner transforms; NOT native mapped GPU readback"
+        },
+        {
+          "ownerId": "hvp:flora:bed-160-76",
+          "meshIndex": 0,
+          "sourceNamespace": "hvp-plant-component-local-slot-v3",
+          "sourceRevision": 0,
+          "sourceIds": [
+            "decor/13/17/12"
+          ],
+          "materialId": "hvp:flora:reed:vertex-palette-v2",
+          "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "sourceColors": true,
+          "vertices": 1056,
+          "indices": 1584,
+          "normals": 3,
+          "colorStride": 4,
+          "ownerPose": {
+            "positionMeters": [
+              4,
+              -0.25,
+              -6.5
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "rootPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "evidence": "SDK-retained-attributes/owner transforms; NOT native mapped GPU readback"
+        },
+        {
+          "ownerId": "hvp:flora:bed-76-124",
+          "meshIndex": 0,
+          "sourceNamespace": "hvp-plant-component-local-slot-v3",
+          "sourceRevision": 0,
+          "sourceIds": [
+            "decor/11/17/11"
+          ],
+          "materialId": "hvp:flora:amber:vertex-palette-v2",
+          "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "sourceColors": true,
+          "vertices": 888,
+          "indices": 1332,
+          "normals": 3,
+          "colorStride": 4,
+          "ownerPose": {
+            "positionMeters": [
+              -6.5,
+              1.25,
+              -0.5
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "rootPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "evidence": "SDK-retained-attributes/owner transforms; NOT native mapped GPU readback"
+        },
+        {
+          "ownerId": "hvp:flora:bed-88-88",
+          "meshIndex": 0,
+          "sourceNamespace": "hvp-plant-component-local-slot-v3",
+          "sourceRevision": 0,
+          "sourceIds": [
+            "decor/11/16/12"
+          ],
+          "materialId": "hvp:flora:violet:vertex-palette-v2",
+          "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "sourceColors": true,
+          "vertices": 1096,
+          "indices": 1644,
+          "normals": 3,
+          "colorStride": 4,
+          "ownerPose": {
+            "positionMeters": [
+              -5,
+              2,
+              -5
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "rootPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "evidence": "SDK-retained-attributes/owner transforms; NOT native mapped GPU readback"
+        },
+        {
+          "ownerId": "hvp:flora:hero",
+          "meshIndex": 0,
+          "sourceNamespace": "hvp-plant-component-local-slot-v3",
+          "sourceRevision": 0,
+          "sourceIds": [
+            "decor/23/80/37",
+            "decor/28/97/62",
+            "decor/47/101/47",
+            "decor/54/87/69",
+            "decor/67/90/32",
+            "wood/23/81/38",
+            "wood/24/31/32",
+            "wood/29/97/63",
+            "wood/32/32/72",
+            "wood/48/101/48",
+            "wood/55/87/70",
+            "wood/56/31/72",
+            "wood/67/91/33",
+            "wood/72/40/40"
+          ],
+          "materialId": "hvp:flora:tree:vertex-palette-v2",
+          "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "sourceColors": true,
+          "vertices": 30828,
+          "indices": 46242,
+          "normals": 3,
+          "colorStride": 4,
+          "ownerPose": {
+            "positionMeters": [
+              8,
+              0.75,
+              7
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "rootPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "evidence": "SDK-retained-attributes/owner transforms; NOT native mapped GPU readback"
+        },
+        {
+          "ownerId": "hvp:flora:hero",
+          "meshIndex": 1,
+          "sourceNamespace": "hvp-plant-component-local-slot-v3",
+          "sourceRevision": 0,
+          "sourceIds": [
+            "decor/23/80/37",
+            "decor/28/97/62",
+            "decor/47/101/47",
+            "decor/54/87/69",
+            "decor/67/90/32",
+            "wood/23/81/38",
+            "wood/24/31/32",
+            "wood/29/97/63",
+            "wood/32/32/72",
+            "wood/48/101/48",
+            "wood/55/87/70",
+            "wood/56/31/72",
+            "wood/67/91/33",
+            "wood/72/40/40"
+          ],
+          "materialId": "hvp:flora:wood:vertex-palette-v2",
+          "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "sourceColors": true,
+          "vertices": 24572,
+          "indices": 36858,
+          "normals": 3,
+          "colorStride": 4,
+          "ownerPose": {
+            "positionMeters": [
+              8,
+              0.75,
+              7
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "rootPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "evidence": "SDK-retained-attributes/owner transforms; NOT native mapped GPU readback"
+        },
+        {
+          "ownerId": "hvp:terrain",
+          "meshIndex": 0,
+          "sourceNamespace": "hvp-source-global-slot-v5",
+          "sourceRevision": 0,
+          "sourceIds": [
+            "crop-volume",
+            "slot/100/75/88",
+            "slot/160/61/76",
+            "slot/76/73/124",
+            "slot/88/79/88"
+          ],
+          "materialId": "hvp-limestone-dry",
+          "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "sourceColors": true,
+          "vertices": 119472,
+          "indices": 102660,
+          "normals": 3,
+          "colorStride": 4,
+          "ownerPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "rootPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "evidence": "SDK-retained-attributes/owner transforms; NOT native mapped GPU readback"
+        },
+        {
+          "ownerId": "hvp:terrain",
+          "meshIndex": 1,
+          "sourceNamespace": "hvp-source-global-slot-v5",
+          "sourceRevision": 0,
+          "sourceIds": [
+            "crop-volume",
+            "slot/100/75/88",
+            "slot/160/61/76",
+            "slot/76/73/124",
+            "slot/88/79/88"
+          ],
+          "materialId": "hvp-limestone-wet",
+          "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "sourceColors": true,
+          "vertices": 119472,
+          "indices": 66660,
+          "normals": 3,
+          "colorStride": 4,
+          "ownerPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "rootPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "evidence": "SDK-retained-attributes/owner transforms; NOT native mapped GPU readback"
+        },
+        {
+          "ownerId": "hvp:terrain",
+          "meshIndex": 2,
+          "sourceNamespace": "hvp-source-global-slot-v5",
+          "sourceRevision": 0,
+          "sourceIds": [
+            "crop-volume",
+            "slot/100/75/88",
+            "slot/160/61/76",
+            "slot/76/73/124",
+            "slot/88/79/88"
+          ],
+          "materialId": "hvp-soil",
+          "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "sourceColors": true,
+          "vertices": 119472,
+          "indices": 6798,
+          "normals": 3,
+          "colorStride": 4,
+          "ownerPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "rootPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "evidence": "SDK-retained-attributes/owner transforms; NOT native mapped GPU readback"
+        },
+        {
+          "ownerId": "hvp:terrain",
+          "meshIndex": 3,
+          "sourceNamespace": "hvp-source-global-slot-v5",
+          "sourceRevision": 0,
+          "sourceIds": [
+            "crop-volume",
+            "slot/100/75/88",
+            "slot/160/61/76",
+            "slot/76/73/124",
+            "slot/88/79/88"
+          ],
+          "materialId": "hvp-moss",
+          "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "sourceColors": true,
+          "vertices": 119472,
+          "indices": 3090,
+          "normals": 3,
+          "colorStride": 4,
+          "ownerPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "rootPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "evidence": "SDK-retained-attributes/owner transforms; NOT native mapped GPU readback"
+        },
+        {
+          "ownerId": "hvp:water",
+          "meshIndex": 0,
+          "sourceNamespace": "hvp-water-crop-presentation-v2",
+          "sourceRevision": 0,
+          "sourceIds": [
+            "crop-water-mask"
+          ],
+          "materialId": "hvp-water",
+          "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "sourceColors": false,
+          "vertices": 616,
+          "indices": 924,
+          "normals": 3,
+          "colorStride": 0,
+          "ownerPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "rootPose": {
+            "positionMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "evidence": "SDK-retained-attributes/owner transforms; NOT native mapped GPU readback"
+        }
+      ],
+      "camera": {
+        "id": "C01-EYE",
+        "position": [
+          -8,
+          3.15,
+          -11
+        ],
+        "target": [
+          -1.4822331184660698e-7,
+          0.9999999223756957,
+          4.999999703553376
+        ],
+        "up": [
+          0,
+          1,
+          0
+        ],
+        "fovDegrees": 59.99999999999999,
+        "near": 0.01,
+        "far": 2000,
+        "controlsAttached": false
+      },
+      "visualFault": "none",
+      "nativeReadback": "NOT_RUN",
+      "productIntegrated": false
+    },
+    "cleanup": {
+      "disposed": false,
+      "ownedMeshes": 11,
+      "ownedMaterials": 11,
+      "ownedLights": 3,
+      "pendingNativeInitializations": 0,
+      "errors": []
+    },
+    "facts": {
+      "backend": "Babylon-WebGL2",
+      "errors": [],
+      "experimentId": "RD-12",
+      "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+      "liveResources": {
+        "engines": {
+          "reason": "Owned logical SDK objects, NOT native allocation/VRAM",
+          "status": "measured",
+          "unit": "count",
+          "value": 1
+        },
+        "lights": {
+          "reason": "Owned logical SDK objects, NOT native allocation/VRAM",
+          "status": "measured",
+          "unit": "count",
+          "value": 3
+        },
+        "materials": {
+          "reason": "Owned logical SDK objects, NOT native allocation/VRAM",
+          "status": "measured",
+          "unit": "count",
+          "value": 11
+        },
+        "meshes": {
+          "reason": "Owned logical SDK objects, NOT native allocation/VRAM",
+          "status": "measured",
+          "unit": "count",
+          "value": 11
+        }
+      },
+      "logicalCosts": {
+        "cpuMs": {
+          "reason": "Not a selection benchmark",
+          "status": "not-run",
+          "unit": "ms"
+        },
+        "gpuBytes": {
+          "reason": "Native driver/VRAM allocations unavailable",
+          "status": "unsupported",
+          "unit": "byte"
+        },
+        "gpuMs": {
+          "reason": "No qualified timestamp workload",
+          "status": "not-run",
+          "unit": "ms"
+        },
+        "projectionBufferBytes": {
+          "reason": "Private CPU attributes/index bytes, excludes native buffers/driver/shaders",
+          "status": "estimated",
+          "unit": "byte",
+          "value": 22444980
+        },
+        "triangles": {
+          "reason": "Owned logical SDK objects, NOT native allocation/VRAM",
+          "status": "measured",
+          "unit": "count",
+          "value": 90230
+        },
+        "uploadBytes": {
+          "reason": "No native upload instrumentation; retained buffers are not upload proof",
+          "status": "not-run",
+          "unit": "byte"
+        }
+      },
+      "sourceRevision": 0,
+      "unsupportedFeatures": [
+        "native-pcf-shadow-parity",
+        "native-ao-recompute-parity",
+        "native-water-shader-parity",
+        "native-sky-shader-parity",
+        "native-material-shader-hooks",
+        "native-weather-hook-parity",
+        "lambert-brdf-parity",
+        "output-color-equivalence",
+        "effective-sample-equivalence",
+        "canvas-alpha-equivalence"
+      ],
+      "variantId": "C3"
+    },
+    "mounts": 1,
+    "owned": {
+      "engines": 1,
+      "renderloops": 1,
+      "listeners": 2,
+      "pendingNativeInitializations": 0
+    },
+    "productIntegrated": false
+  },
+  "screenshotSha256": "7bb23c48cdfcd03f0e5953293cec2e9bf432c78b351a32d39c4f7f5c7fdcfadf",
+  "productIntegrated": false
+}

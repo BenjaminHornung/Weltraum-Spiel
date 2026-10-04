@@ -1,0 +1,853 @@
+{
+  "version": "rd12-functional-supplement-v2",
+  "reader": "rd12-diagnosed-collapsed-facts-textcontent-v2",
+  "diagnosisSha256": "e7156837c5e09333b27f07373e406dad5a51b4dd3ff7cd9c43dec9b28f675eed",
+  "requests": [
+    "http://127.0.0.1:5280/src/experiments/babylon/index.html",
+    "http://127.0.0.1:5280/assets/rd12-DqSiWw8d.js",
+    "http://127.0.0.1:5280/assets/scenario-BrdsnLBG.js",
+    "http://127.0.0.1:5280/assets/observable.pure-CQcZJ-VL.js",
+    "http://127.0.0.1:5280/assets/typeStore-Cq6cjp3s.js",
+    "http://127.0.0.1:5280/assets/logger-CuBYPcDK.js",
+    "http://127.0.0.1:5280/assets/halfFloat-Ce77JD5z.js",
+    "http://127.0.0.1:5280/assets/bufferUtils-DsvLulfh.js",
+    "http://127.0.0.1:5280/assets/math.scalar.functions-Bg-lysIT.js",
+    "http://127.0.0.1:5280/assets/math.vector.pure-CMwVmuSv.js",
+    "http://127.0.0.1:5280/assets/math.color.pure-BA2-Vki4.js",
+    "http://127.0.0.1:5280/assets/baseTexture.pure-Bi8AIM1h.js",
+    "http://127.0.0.1:5280/assets/shaderStore-D-XQlhUT.js",
+    "http://127.0.0.1:5280/assets/precisionDate-CfCevjl-.js",
+    "http://127.0.0.1:5280/assets/drawWrapper-BDFsh3rC.js",
+    "http://127.0.0.1:5280/assets/compatibilityOptions-BIkaqVN-.js",
+    "http://127.0.0.1:5280/assets/sphericalPolynomial.pure-ZzhnrSAS.js",
+    "http://127.0.0.1:5280/assets/webRequest-CNElM_Yd.js",
+    "http://127.0.0.1:5280/assets/tools.pure-gyo-e2nz.js",
+    "http://127.0.0.1:5280/assets/clearQuad.vertex-BQfweATK.js",
+    "http://127.0.0.1:5280/assets/clearQuad.fragment-DQbPmvKE.js",
+    "http://127.0.0.1:5280/assets/instancesVertex-DuzGY6PP.js",
+    "http://127.0.0.1:5280/assets/helperFunctions-BH8P-eyq.js",
+    "http://127.0.0.1:5280/assets/decalFragment-DWlMlk8p.js",
+    "http://127.0.0.1:5280/assets/sceneUboDeclaration-C_WIasrC.js",
+    "http://127.0.0.1:5280/assets/spatialWebAudioUpdaterComponent-Brjz8Dnv.js",
+    "http://127.0.0.1:5280/assets/abstractAudioNode-Cn3WIuFq.js",
+    "http://127.0.0.1:5280/assets/babylon-DpPF5JVt.js",
+    "http://127.0.0.1:5280/assets/assets-Dj6pciVh.js",
+    "http://127.0.0.1:5280/assets/scenarioRunner-KkeHoa-5.js",
+    "http://127.0.0.1:5280/inventory.json",
+    "http://127.0.0.1:5280/F04-DETACH/manifest.json",
+    "http://127.0.0.1:5280/F04-DETACH/payloads/fragment-leaf-coverage.bin",
+    "http://127.0.0.1:5280/F04-DETACH/payloads/fragment-leaf-material-slots.bin",
+    "http://127.0.0.1:5280/F04-DETACH/payloads/fragment-leaf-occupancy.bin",
+    "http://127.0.0.1:5280/F04-DETACH/payloads/fragment-leaf-slot-4-indices.bin",
+    "http://127.0.0.1:5280/F04-DETACH/payloads/fragment-leaf-slot-4-normals.bin",
+    "http://127.0.0.1:5280/F04-DETACH/payloads/fragment-leaf-slot-4-positions.bin",
+    "http://127.0.0.1:5280/F04-DETACH/payloads/fragment-wood-coverage.bin",
+    "http://127.0.0.1:5280/F04-DETACH/payloads/fragment-wood-material-slots.bin",
+    "http://127.0.0.1:5280/F04-DETACH/payloads/fragment-wood-occupancy.bin",
+    "http://127.0.0.1:5280/F04-DETACH/payloads/fragment-wood-slot-3-indices.bin",
+    "http://127.0.0.1:5280/F04-DETACH/payloads/fragment-wood-slot-3-normals.bin",
+    "http://127.0.0.1:5280/F04-DETACH/payloads/fragment-wood-slot-3-positions.bin",
+    "http://127.0.0.1:5280/F04-DETACH/payloads/trunk-cells-coverage.bin",
+    "http://127.0.0.1:5280/F04-DETACH/payloads/trunk-cells-material-slots.bin",
+    "http://127.0.0.1:5280/F04-DETACH/payloads/trunk-cells-occupancy.bin",
+    "http://127.0.0.1:5280/F04-DETACH/payloads/trunk-cells-slot-3-indices.bin",
+    "http://127.0.0.1:5280/F04-DETACH/payloads/trunk-cells-slot-3-normals.bin",
+    "http://127.0.0.1:5280/F04-DETACH/payloads/trunk-cells-slot-3-positions.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/manifest.json",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/fragment-leaf-coverage.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/fragment-leaf-material-slots.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/fragment-leaf-occupancy.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/fragment-leaf-slot-4-indices.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/fragment-leaf-slot-4-normals.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/fragment-leaf-slot-4-positions.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/fragment-wood-coverage.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/fragment-wood-material-slots.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/fragment-wood-occupancy.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/fragment-wood-slot-3-indices.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/fragment-wood-slot-3-normals.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/fragment-wood-slot-3-positions.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/trunk-cells-coverage.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/trunk-cells-material-slots.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/trunk-cells-occupancy.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/trunk-cells-slot-3-indices.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/trunk-cells-slot-3-normals.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/trunk-cells-slot-3-positions.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/manifest.json",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/fragment-leaf-coverage.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/fragment-leaf-material-slots.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/fragment-leaf-occupancy.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/fragment-leaf-slot-4-indices.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/fragment-leaf-slot-4-normals.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/fragment-leaf-slot-4-positions.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/fragment-wood-coverage.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/fragment-wood-material-slots.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/fragment-wood-occupancy.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/fragment-wood-slot-3-indices.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/fragment-wood-slot-3-normals.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/fragment-wood-slot-3-positions.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/trunk-cells-coverage.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/trunk-cells-material-slots.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/trunk-cells-occupancy.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/trunk-cells-slot-3-indices.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/trunk-cells-slot-3-normals.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/trunk-cells-slot-3-positions.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r3-remove/manifest.json",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r3-remove/payloads/fragment-wood-coverage.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r3-remove/payloads/fragment-wood-material-slots.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r3-remove/payloads/fragment-wood-occupancy.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r3-remove/payloads/fragment-wood-slot-3-indices.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r3-remove/payloads/fragment-wood-slot-3-normals.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r3-remove/payloads/fragment-wood-slot-3-positions.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r3-remove/payloads/trunk-cells-coverage.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r3-remove/payloads/trunk-cells-material-slots.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r3-remove/payloads/trunk-cells-occupancy.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r3-remove/payloads/trunk-cells-slot-3-indices.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r3-remove/payloads/trunk-cells-slot-3-normals.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r3-remove/payloads/trunk-cells-slot-3-positions.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r4-reload/manifest.json",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r4-reload/payloads/fragment-wood-coverage.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r4-reload/payloads/fragment-wood-material-slots.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r4-reload/payloads/fragment-wood-occupancy.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r4-reload/payloads/fragment-wood-slot-3-indices.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r4-reload/payloads/fragment-wood-slot-3-normals.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r4-reload/payloads/fragment-wood-slot-3-positions.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r4-reload/payloads/trunk-cells-coverage.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r4-reload/payloads/trunk-cells-material-slots.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r4-reload/payloads/trunk-cells-occupancy.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r4-reload/payloads/trunk-cells-slot-3-indices.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r4-reload/payloads/trunk-cells-slot-3-normals.bin",
+    "http://127.0.0.1:5280/F04-DETACH/snapshots/r4-reload/payloads/trunk-cells-slot-3-positions.bin",
+    "http://127.0.0.1:5280/F04-DETACH/scenario.json",
+    "http://127.0.0.1:5280/assets/default.vertex-ZC5TzuFQ.js",
+    "http://127.0.0.1:5280/assets/logDepthDeclaration-BKcd_JEL.js",
+    "http://127.0.0.1:5280/assets/helperFunctions-gEnZbjN3.js",
+    "http://127.0.0.1:5280/assets/default.fragment-DnHL1jEV.js"
+  ],
+  "responses": [
+    {
+      "url": "http://127.0.0.1:5280/src/experiments/babylon/index.html",
+      "status": 200,
+      "bytes": 5333,
+      "sha256": "6c3da4da8591b9dd2088d7f7ccf277e205b69823fc5ae3fb5d56d3a8aa0e1467"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/observable.pure-CQcZJ-VL.js",
+      "status": 200,
+      "bytes": 3227,
+      "sha256": "3b163b97a544bfcf4dca48fec2da7f3d4e4ad62143be82ad6f63358224bdf220"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/typeStore-Cq6cjp3s.js",
+      "status": 200,
+      "bytes": 441,
+      "sha256": "10817aaba075ef4be9eff11934ef7371f327dd8d8f197fc4fc4c478cfbbc577e"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/rd12-DqSiWw8d.js",
+      "status": 200,
+      "bytes": 4862,
+      "sha256": "3dd9b3143c3eb456f49c8c780bf5c013e0ae7fae9a4fe0d054784e9373060e46"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/halfFloat-Ce77JD5z.js",
+      "status": 200,
+      "bytes": 1290,
+      "sha256": "e364d38c88e676a0e9ced31660c08e156b244af07b1729fb8ea38e1ad6cffbb7"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/logger-CuBYPcDK.js",
+      "status": 200,
+      "bytes": 1881,
+      "sha256": "30a999582eace71f2e78a479182e71e943508bbda9574b17e5b29575c49a3b9e"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/scenario-BrdsnLBG.js",
+      "status": 200,
+      "bytes": 20694,
+      "sha256": "3eb55c8c8dd17b1e45be7e406ad658940bd489b087159906ecd2d745fbdc8fce"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/math.scalar.functions-Bg-lysIT.js",
+      "status": 200,
+      "bytes": 597,
+      "sha256": "68f290ec32a16975df1a42d346e4f3dfd1ab544f7bf850a56060807994f48aff"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/bufferUtils-DsvLulfh.js",
+      "status": 200,
+      "bytes": 17395,
+      "sha256": "e3140341448a8a4c6d40f9490c740a09b984d22c449a8d3601210f3249b82e20"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/shaderStore-D-XQlhUT.js",
+      "status": 200,
+      "bytes": 469,
+      "sha256": "db600316439f2fedb7bfd3bcbc61b24d30c2b2646828dcea1c7c778cd07d5e3e"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/precisionDate-CfCevjl-.js",
+      "status": 200,
+      "bytes": 390,
+      "sha256": "ca81e6b450810d0472b8ea1d02e169f7c206f21994ba8fd557a0fdde51bb1e67"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/math.color.pure-BA2-Vki4.js",
+      "status": 200,
+      "bytes": 12514,
+      "sha256": "9e1ea92f6c930ee0b2ca5f2dd4fc877f6a804daf5fbd78e55b3f688288126718"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/baseTexture.pure-Bi8AIM1h.js",
+      "status": 200,
+      "bytes": 31889,
+      "sha256": "f151383f2f1482ba212e9914e1ed65a363a490ab0308c0e07c8c2178cc19a640"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/compatibilityOptions-BIkaqVN-.js",
+      "status": 200,
+      "bytes": 1822,
+      "sha256": "f98b0677b6a4cda705b8c95308052d3f21a11326b46a1f3d3c611842bc110d70"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/webRequest-CNElM_Yd.js",
+      "status": 200,
+      "bytes": 2939,
+      "sha256": "8d63ea1df5907a42d63f572bb004f70d0ac41a5a195274ae9902d933f5579b7f"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/sphericalPolynomial.pure-ZzhnrSAS.js",
+      "status": 200,
+      "bytes": 5737,
+      "sha256": "e39b21d6138b4632d4a6ed573344bb250268519d3456bac71c83deafc3c74490"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/tools.pure-gyo-e2nz.js",
+      "status": 200,
+      "bytes": 22595,
+      "sha256": "3275591b76a83c1999d1f547a98bbefae53717b61a10cd03037dbb512ac77455"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/math.vector.pure-CMwVmuSv.js",
+      "status": 200,
+      "bytes": 65042,
+      "sha256": "f7476db8b026b175c7336f66c9f7b56d9124b6a32e059e68a7184be36578cfef"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/drawWrapper-BDFsh3rC.js",
+      "status": 200,
+      "bytes": 63342,
+      "sha256": "6b56800b585efb8749412d8e5222d86942d9611fcc56e77f692e7662a8c20c26"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/clearQuad.vertex-BQfweATK.js",
+      "status": 200,
+      "bytes": 521,
+      "sha256": "826251d9d4d71eba2d5c36dce4d9c54ce14b58c1f9f67bb3ca2fa470c37d694f"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/clearQuad.fragment-DQbPmvKE.js",
+      "status": 200,
+      "bytes": 287,
+      "sha256": "4400446bece9d37ba7a5754d1576d73570e830bebe4fb218fe6e869885fa5a91"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/decalFragment-DWlMlk8p.js",
+      "status": 200,
+      "bytes": 821,
+      "sha256": "47a79a0260ec3db19871100e37ef14b5caa08ed995f8a8945d6113a18171b81d"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/sceneUboDeclaration-C_WIasrC.js",
+      "status": 200,
+      "bytes": 657,
+      "sha256": "c5f34c27a6a2c168e1012b2289d02e6bc53fb5005153407141e31c1753e10a15"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/instancesVertex-DuzGY6PP.js",
+      "status": 200,
+      "bytes": 5718,
+      "sha256": "981f8cf8d8b6a31d6c71e08f16d8dfe934e3acb70d0c6bb8e512832f0aba444b"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/helperFunctions-BH8P-eyq.js",
+      "status": 200,
+      "bytes": 6489,
+      "sha256": "019a076bb9af420aa999424c444b782a858fa7153a108bfb55fbf30b20917969"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/spatialWebAudioUpdaterComponent-Brjz8Dnv.js",
+      "status": 200,
+      "bytes": 1896,
+      "sha256": "0a4be36b0f961191bdec2f24ee4a2505c249ff224ee185babaf5f96aff063aeb"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/scenarioRunner-KkeHoa-5.js",
+      "status": 200,
+      "bytes": 710,
+      "sha256": "5c2c11fcd35392d5de0ff3f134ef4cd94114e9200b5df085e89ebedc536d7155"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/abstractAudioNode-Cn3WIuFq.js",
+      "status": 200,
+      "bytes": 4003,
+      "sha256": "dd17d38ef48161bf0efe2947aa1665fb5860252c3c71d8f4bf066c1f4cd8a607"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/assets-Dj6pciVh.js",
+      "status": 200,
+      "bytes": 4281,
+      "sha256": "3e36325fc8867ad378de23fdb0c790015b2071e075f812fd680b3357c6b2d5f3"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/babylon-DpPF5JVt.js",
+      "status": 200,
+      "bytes": 1077540,
+      "sha256": "46956b2d5c48d83eef5c98b1acf68f5b75c2ebcec5309fd3e583083a3e9321ce"
+    },
+    {
+      "url": "http://127.0.0.1:5280/inventory.json",
+      "status": 200,
+      "bytes": 122718,
+      "sha256": "26bf86bba1cbd1955d069ab2eac8d491b6cade59d16a004f1d094cc117ebc9c6"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/manifest.json",
+      "status": 200,
+      "bytes": 7093,
+      "sha256": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/payloads/fragment-leaf-coverage.bin",
+      "status": 200,
+      "bytes": 48,
+      "sha256": "5bf90435cd45d0475cbb0ace7e7e3a672ed2a3a4984ad3e8624d8878725a9c2e"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/payloads/fragment-leaf-material-slots.bin",
+      "status": 200,
+      "bytes": 48,
+      "sha256": "9d4d9b7e821f3cc4c1d92c6c31d71862dbb0ba643a414b3960d750bab09c4b82"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/payloads/fragment-leaf-occupancy.bin",
+      "status": 200,
+      "bytes": 48,
+      "sha256": "5bf90435cd45d0475cbb0ace7e7e3a672ed2a3a4984ad3e8624d8878725a9c2e"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/payloads/fragment-leaf-slot-4-indices.bin",
+      "status": 200,
+      "bytes": 1920,
+      "sha256": "c4ef25f22436617659998b73d66296a7c6a5d83e1f425b7e9b48d3faae41b54d"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/payloads/fragment-leaf-slot-4-normals.bin",
+      "status": 200,
+      "bytes": 3840,
+      "sha256": "012f2ba248cb07e0fd81029d7d93e60323dcabe5ed640771a47867e7fcea5fab"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/payloads/fragment-leaf-slot-4-positions.bin",
+      "status": 200,
+      "bytes": 3840,
+      "sha256": "16ca5d7dc0177aae8a22959a4c4f7b6f8952c5a5b405e2b20e490fee87a84af3"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/payloads/fragment-wood-coverage.bin",
+      "status": 200,
+      "bytes": 128,
+      "sha256": "7eb24a18990ee4c958c89773da6cc9fbc5c278357762d02ec6ab947eb28726ff"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/payloads/fragment-wood-material-slots.bin",
+      "status": 200,
+      "bytes": 128,
+      "sha256": "b9cc204811abcb8134013ac53ee69b449ea38afd9cdcc30efb67358b4b885ee7"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/payloads/fragment-wood-occupancy.bin",
+      "status": 200,
+      "bytes": 128,
+      "sha256": "2403d6f8ff30779590a7e8d9a00548ca83e32b870bbf3e1d6901ef438f445db2"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/payloads/fragment-wood-slot-3-indices.bin",
+      "status": 200,
+      "bytes": 2736,
+      "sha256": "12e689078e30a9e53b78e9c70f12bfd87e8c58f745871ae5f8710640a7648a78"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/payloads/fragment-wood-slot-3-normals.bin",
+      "status": 200,
+      "bytes": 5472,
+      "sha256": "34f489283e5773ae18b996685e0694e0f36454dbde328251669cf487bc2875b5"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/payloads/fragment-wood-slot-3-positions.bin",
+      "status": 200,
+      "bytes": 5472,
+      "sha256": "b313fc9bfff18706cbd5cdbc990600da3d3a81f2d9ea9b679b2b67b29309713b"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/payloads/trunk-cells-coverage.bin",
+      "status": 200,
+      "bytes": 18432,
+      "sha256": "19a1cc81b9d025fe2f8c0decb0111ef580a499a09654a662cef2e1ba75732db1"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/payloads/trunk-cells-material-slots.bin",
+      "status": 200,
+      "bytes": 18432,
+      "sha256": "97263e5d297ce8812be7ea167a18091c60eb67ca1235ec7187b5d61331b3a030"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/payloads/trunk-cells-occupancy.bin",
+      "status": 200,
+      "bytes": 18432,
+      "sha256": "0c6fdae94658c4021f7af16029e4a8ce72448b3f7f2cec0b555d6dcd35d01d59"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/payloads/trunk-cells-slot-3-indices.bin",
+      "status": 200,
+      "bytes": 12288,
+      "sha256": "a571dba5603586ae9d62cf681489d062dd2ae233d0a2c57b742993d98b8ccbdd"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/payloads/trunk-cells-slot-3-normals.bin",
+      "status": 200,
+      "bytes": 24576,
+      "sha256": "bdaa0d6f2bdd2a6bf81237a55a6309722bfe37c762552314f06e9456182792b8"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/payloads/trunk-cells-slot-3-positions.bin",
+      "status": 200,
+      "bytes": 24576,
+      "sha256": "400625cf7de24598bbea92555a9449af83f7468d20e8d9ad31f0c68fb9ebbd45"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/manifest.json",
+      "status": 200,
+      "bytes": 7419,
+      "sha256": "c45992d7a859482a869e8deebbecd0e54263986a0acbeca1dc0bde9d8cab4e3b"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/fragment-leaf-coverage.bin",
+      "status": 200,
+      "bytes": 48,
+      "sha256": "5bf90435cd45d0475cbb0ace7e7e3a672ed2a3a4984ad3e8624d8878725a9c2e"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/fragment-leaf-material-slots.bin",
+      "status": 200,
+      "bytes": 48,
+      "sha256": "9d4d9b7e821f3cc4c1d92c6c31d71862dbb0ba643a414b3960d750bab09c4b82"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/fragment-leaf-occupancy.bin",
+      "status": 200,
+      "bytes": 48,
+      "sha256": "5bf90435cd45d0475cbb0ace7e7e3a672ed2a3a4984ad3e8624d8878725a9c2e"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/fragment-leaf-slot-4-indices.bin",
+      "status": 200,
+      "bytes": 1920,
+      "sha256": "c4ef25f22436617659998b73d66296a7c6a5d83e1f425b7e9b48d3faae41b54d"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/fragment-leaf-slot-4-normals.bin",
+      "status": 200,
+      "bytes": 3840,
+      "sha256": "012f2ba248cb07e0fd81029d7d93e60323dcabe5ed640771a47867e7fcea5fab"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/fragment-leaf-slot-4-positions.bin",
+      "status": 200,
+      "bytes": 3840,
+      "sha256": "d947d16ed567650677f5ebd90d99a55ae727cb3cd80994781abc6eb7fca0d6c8"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/fragment-wood-coverage.bin",
+      "status": 200,
+      "bytes": 128,
+      "sha256": "7eb24a18990ee4c958c89773da6cc9fbc5c278357762d02ec6ab947eb28726ff"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/fragment-wood-material-slots.bin",
+      "status": 200,
+      "bytes": 128,
+      "sha256": "b9cc204811abcb8134013ac53ee69b449ea38afd9cdcc30efb67358b4b885ee7"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/fragment-wood-occupancy.bin",
+      "status": 200,
+      "bytes": 128,
+      "sha256": "2403d6f8ff30779590a7e8d9a00548ca83e32b870bbf3e1d6901ef438f445db2"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/fragment-wood-slot-3-indices.bin",
+      "status": 200,
+      "bytes": 2736,
+      "sha256": "12e689078e30a9e53b78e9c70f12bfd87e8c58f745871ae5f8710640a7648a78"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/fragment-wood-slot-3-normals.bin",
+      "status": 200,
+      "bytes": 5472,
+      "sha256": "34f489283e5773ae18b996685e0694e0f36454dbde328251669cf487bc2875b5"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/fragment-wood-slot-3-positions.bin",
+      "status": 200,
+      "bytes": 5472,
+      "sha256": "12f7b1b1533b442d8c408edd7e680f9932047b73b9a6eb787205e298aa5d3455"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/trunk-cells-coverage.bin",
+      "status": 200,
+      "bytes": 18432,
+      "sha256": "19a1cc81b9d025fe2f8c0decb0111ef580a499a09654a662cef2e1ba75732db1"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/trunk-cells-material-slots.bin",
+      "status": 200,
+      "bytes": 18432,
+      "sha256": "97263e5d297ce8812be7ea167a18091c60eb67ca1235ec7187b5d61331b3a030"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/trunk-cells-occupancy.bin",
+      "status": 200,
+      "bytes": 18432,
+      "sha256": "0c6fdae94658c4021f7af16029e4a8ce72448b3f7f2cec0b555d6dcd35d01d59"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/trunk-cells-slot-3-indices.bin",
+      "status": 200,
+      "bytes": 12288,
+      "sha256": "a571dba5603586ae9d62cf681489d062dd2ae233d0a2c57b742993d98b8ccbdd"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/trunk-cells-slot-3-normals.bin",
+      "status": 200,
+      "bytes": 24576,
+      "sha256": "bdaa0d6f2bdd2a6bf81237a55a6309722bfe37c762552314f06e9456182792b8"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r1-detach/payloads/trunk-cells-slot-3-positions.bin",
+      "status": 200,
+      "bytes": 24576,
+      "sha256": "400625cf7de24598bbea92555a9449af83f7468d20e8d9ad31f0c68fb9ebbd45"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/manifest.json",
+      "status": 200,
+      "bytes": 7446,
+      "sha256": "7e1bb35d1a0ada1ff5ddda9719e7d2ad5710d11d59f0f28c7f72b20a04dce37e"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/fragment-leaf-coverage.bin",
+      "status": 200,
+      "bytes": 48,
+      "sha256": "5bf90435cd45d0475cbb0ace7e7e3a672ed2a3a4984ad3e8624d8878725a9c2e"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/fragment-leaf-material-slots.bin",
+      "status": 200,
+      "bytes": 48,
+      "sha256": "9d4d9b7e821f3cc4c1d92c6c31d71862dbb0ba643a414b3960d750bab09c4b82"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/fragment-leaf-occupancy.bin",
+      "status": 200,
+      "bytes": 48,
+      "sha256": "5bf90435cd45d0475cbb0ace7e7e3a672ed2a3a4984ad3e8624d8878725a9c2e"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/fragment-leaf-slot-4-indices.bin",
+      "status": 200,
+      "bytes": 1920,
+      "sha256": "c4ef25f22436617659998b73d66296a7c6a5d83e1f425b7e9b48d3faae41b54d"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/fragment-leaf-slot-4-normals.bin",
+      "status": 200,
+      "bytes": 3840,
+      "sha256": "012f2ba248cb07e0fd81029d7d93e60323dcabe5ed640771a47867e7fcea5fab"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/fragment-leaf-slot-4-positions.bin",
+      "status": 200,
+      "bytes": 3840,
+      "sha256": "d947d16ed567650677f5ebd90d99a55ae727cb3cd80994781abc6eb7fca0d6c8"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/fragment-wood-coverage.bin",
+      "status": 200,
+      "bytes": 128,
+      "sha256": "7eb24a18990ee4c958c89773da6cc9fbc5c278357762d02ec6ab947eb28726ff"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/fragment-wood-material-slots.bin",
+      "status": 200,
+      "bytes": 128,
+      "sha256": "b9cc204811abcb8134013ac53ee69b449ea38afd9cdcc30efb67358b4b885ee7"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/fragment-wood-occupancy.bin",
+      "status": 200,
+      "bytes": 128,
+      "sha256": "2403d6f8ff30779590a7e8d9a00548ca83e32b870bbf3e1d6901ef438f445db2"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/fragment-wood-slot-3-indices.bin",
+      "status": 200,
+      "bytes": 2736,
+      "sha256": "12e689078e30a9e53b78e9c70f12bfd87e8c58f745871ae5f8710640a7648a78"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/fragment-wood-slot-3-normals.bin",
+      "status": 200,
+      "bytes": 5472,
+      "sha256": "34f489283e5773ae18b996685e0694e0f36454dbde328251669cf487bc2875b5"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/fragment-wood-slot-3-positions.bin",
+      "status": 200,
+      "bytes": 5472,
+      "sha256": "12f7b1b1533b442d8c408edd7e680f9932047b73b9a6eb787205e298aa5d3455"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/trunk-cells-coverage.bin",
+      "status": 200,
+      "bytes": 18432,
+      "sha256": "19a1cc81b9d025fe2f8c0decb0111ef580a499a09654a662cef2e1ba75732db1"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/trunk-cells-material-slots.bin",
+      "status": 200,
+      "bytes": 18432,
+      "sha256": "97263e5d297ce8812be7ea167a18091c60eb67ca1235ec7187b5d61331b3a030"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/trunk-cells-occupancy.bin",
+      "status": 200,
+      "bytes": 18432,
+      "sha256": "0c6fdae94658c4021f7af16029e4a8ce72448b3f7f2cec0b555d6dcd35d01d59"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/trunk-cells-slot-3-indices.bin",
+      "status": 200,
+      "bytes": 12288,
+      "sha256": "a571dba5603586ae9d62cf681489d062dd2ae233d0a2c57b742993d98b8ccbdd"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/trunk-cells-slot-3-normals.bin",
+      "status": 200,
+      "bytes": 24576,
+      "sha256": "bdaa0d6f2bdd2a6bf81237a55a6309722bfe37c762552314f06e9456182792b8"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r2-rotate/payloads/trunk-cells-slot-3-positions.bin",
+      "status": 200,
+      "bytes": 24576,
+      "sha256": "400625cf7de24598bbea92555a9449af83f7468d20e8d9ad31f0c68fb9ebbd45"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r3-remove/manifest.json",
+      "status": 200,
+      "bytes": 5508,
+      "sha256": "95e4ebc916e34c14d7ff46b0aa98ad2007d7c9f4e03c2463cc2bd75d7d5414bd"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r3-remove/payloads/fragment-wood-coverage.bin",
+      "status": 200,
+      "bytes": 128,
+      "sha256": "7eb24a18990ee4c958c89773da6cc9fbc5c278357762d02ec6ab947eb28726ff"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r3-remove/payloads/fragment-wood-material-slots.bin",
+      "status": 200,
+      "bytes": 128,
+      "sha256": "8d2cc6471711ebb6157ba9093bc4eb55b9ae8c898aabb6f1b2bb6754854f5ddd"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r3-remove/payloads/fragment-wood-occupancy.bin",
+      "status": 200,
+      "bytes": 128,
+      "sha256": "2c776dddf7e29ec09870c8f81cc258f14c2462e9e079c59d2e9665698cf6c729"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r3-remove/payloads/fragment-wood-slot-3-indices.bin",
+      "status": 200,
+      "bytes": 1584,
+      "sha256": "ec2d8ad54cb27e2e847c553012007d17f333e722086509e93adaab1bde580260"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r3-remove/payloads/fragment-wood-slot-3-normals.bin",
+      "status": 200,
+      "bytes": 3168,
+      "sha256": "1a2fa307eaf45d6bc378baae4363c201ae7418f9bd3a3d13a61715ee544e7422"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r3-remove/payloads/fragment-wood-slot-3-positions.bin",
+      "status": 200,
+      "bytes": 3168,
+      "sha256": "575752af13fc9dbe74c1bd84247fde24cf6073af9b600d46d76b193544b8971b"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r3-remove/payloads/trunk-cells-coverage.bin",
+      "status": 200,
+      "bytes": 18432,
+      "sha256": "19a1cc81b9d025fe2f8c0decb0111ef580a499a09654a662cef2e1ba75732db1"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r3-remove/payloads/trunk-cells-material-slots.bin",
+      "status": 200,
+      "bytes": 18432,
+      "sha256": "97263e5d297ce8812be7ea167a18091c60eb67ca1235ec7187b5d61331b3a030"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r3-remove/payloads/trunk-cells-occupancy.bin",
+      "status": 200,
+      "bytes": 18432,
+      "sha256": "0c6fdae94658c4021f7af16029e4a8ce72448b3f7f2cec0b555d6dcd35d01d59"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r3-remove/payloads/trunk-cells-slot-3-indices.bin",
+      "status": 200,
+      "bytes": 12288,
+      "sha256": "a571dba5603586ae9d62cf681489d062dd2ae233d0a2c57b742993d98b8ccbdd"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r3-remove/payloads/trunk-cells-slot-3-normals.bin",
+      "status": 200,
+      "bytes": 24576,
+      "sha256": "bdaa0d6f2bdd2a6bf81237a55a6309722bfe37c762552314f06e9456182792b8"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r3-remove/payloads/trunk-cells-slot-3-positions.bin",
+      "status": 200,
+      "bytes": 24576,
+      "sha256": "400625cf7de24598bbea92555a9449af83f7468d20e8d9ad31f0c68fb9ebbd45"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r4-reload/manifest.json",
+      "status": 200,
+      "bytes": 5508,
+      "sha256": "8b7af46b9292ce40ead9545cf02d38bb7e57bf1205d7fbf1bf9f4c7af783832b"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r4-reload/payloads/fragment-wood-coverage.bin",
+      "status": 200,
+      "bytes": 128,
+      "sha256": "7eb24a18990ee4c958c89773da6cc9fbc5c278357762d02ec6ab947eb28726ff"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r4-reload/payloads/fragment-wood-material-slots.bin",
+      "status": 200,
+      "bytes": 128,
+      "sha256": "8d2cc6471711ebb6157ba9093bc4eb55b9ae8c898aabb6f1b2bb6754854f5ddd"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r4-reload/payloads/fragment-wood-occupancy.bin",
+      "status": 200,
+      "bytes": 128,
+      "sha256": "2c776dddf7e29ec09870c8f81cc258f14c2462e9e079c59d2e9665698cf6c729"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r4-reload/payloads/fragment-wood-slot-3-indices.bin",
+      "status": 200,
+      "bytes": 1584,
+      "sha256": "ec2d8ad54cb27e2e847c553012007d17f333e722086509e93adaab1bde580260"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r4-reload/payloads/fragment-wood-slot-3-normals.bin",
+      "status": 200,
+      "bytes": 3168,
+      "sha256": "1a2fa307eaf45d6bc378baae4363c201ae7418f9bd3a3d13a61715ee544e7422"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r4-reload/payloads/fragment-wood-slot-3-positions.bin",
+      "status": 200,
+      "bytes": 3168,
+      "sha256": "575752af13fc9dbe74c1bd84247fde24cf6073af9b600d46d76b193544b8971b"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r4-reload/payloads/trunk-cells-coverage.bin",
+      "status": 200,
+      "bytes": 18432,
+      "sha256": "19a1cc81b9d025fe2f8c0decb0111ef580a499a09654a662cef2e1ba75732db1"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r4-reload/payloads/trunk-cells-material-slots.bin",
+      "status": 200,
+      "bytes": 18432,
+      "sha256": "97263e5d297ce8812be7ea167a18091c60eb67ca1235ec7187b5d61331b3a030"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r4-reload/payloads/trunk-cells-occupancy.bin",
+      "status": 200,
+      "bytes": 18432,
+      "sha256": "0c6fdae94658c4021f7af16029e4a8ce72448b3f7f2cec0b555d6dcd35d01d59"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r4-reload/payloads/trunk-cells-slot-3-indices.bin",
+      "status": 200,
+      "bytes": 12288,
+      "sha256": "a571dba5603586ae9d62cf681489d062dd2ae233d0a2c57b742993d98b8ccbdd"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r4-reload/payloads/trunk-cells-slot-3-normals.bin",
+      "status": 200,
+      "bytes": 24576,
+      "sha256": "bdaa0d6f2bdd2a6bf81237a55a6309722bfe37c762552314f06e9456182792b8"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/snapshots/r4-reload/payloads/trunk-cells-slot-3-positions.bin",
+      "status": 200,
+      "bytes": 24576,
+      "sha256": "400625cf7de24598bbea92555a9449af83f7468d20e8d9ad31f0c68fb9ebbd45"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F04-DETACH/scenario.json",
+      "status": 200,
+      "bytes": 27171,
+      "sha256": "0d9012b86bac2c620864774038a1aed987d81e2338f1618b4a434b49f9f0a623"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/logDepthDeclaration-BKcd_JEL.js",
+      "status": 200,
+      "bytes": 2160,
+      "sha256": "fa28fea64fd32656afcd71c7cd7500f62ba35b7b69e4c5280d6ed6590bea1db6"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/helperFunctions-gEnZbjN3.js",
+      "status": 200,
+      "bytes": 6815,
+      "sha256": "25cb5a62b09965a1f9d12f999eb40672c9f80924b8cf2353120e9809d11a03ba"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/default.vertex-ZC5TzuFQ.js",
+      "status": 200,
+      "bytes": 29825,
+      "sha256": "1f81ffa129479ea6698d07cfebf10953d2063fa387f6dab121a73bd881101d25"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/default.fragment-DnHL1jEV.js",
+      "status": 200,
+      "bytes": 112518,
+      "sha256": "79cbd96c82ff2ada8b29506fff9310fc03b03a064179d8b83c56595d8c2b22d7"
+    }
+  ],
+  "errors": [],
+  "console": [
+    {
+      "type": "log",
+      "text": "BJS - [12:08:10]: Babylon.js v9.29.0 - WebGL2 - Parallel shader compilation"
+    }
+  ],
+  "offsite": [],
+  "compilerRequests": [],
+  "originalSuite": "FAIL16_RETAINED",
+  "productIntegrated": false
+}

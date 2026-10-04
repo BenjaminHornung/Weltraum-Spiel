@@ -1,0 +1,5062 @@
+{
+  "schema": "rd12-native-relative-slice-v1",
+  "source": "5e4c1b8fea9026bc38aa38f4258d9892f2b848b7",
+  "tree": "6e7d9936f712fad8b9cd7183a528c487b4fa36b9",
+  "reports": [
+    {
+      "version": "original",
+      "source": {
+        "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-12/phase2-5e4c1b8f-20261004-a/native-results.json",
+        "bytes": 124179,
+        "sha256": "0b25a34aa663885fd85b63b29c5bdd9fbbde0506ba8cba19768f7d8170a5ee7b"
+      },
+      "portable": {
+        "path": "sources/original-report.json.gz",
+        "bytes": 4800,
+        "sha256": "1882d27d65329675e085ff268a8fd51970d8da51521a1059f2b222e7b2a6011e"
+      },
+      "passed": 0,
+      "failed": 16,
+      "skipped": 0
+    },
+    {
+      "version": "diagnosis-v1",
+      "source": {
+        "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-12/phase2-5e4c1b8f-20261004-a/diagnosis-v1-results.json",
+        "bytes": 190568,
+        "sha256": "e7156837c5e09333b27f07373e406dad5a51b4dd3ff7cd9c43dec9b28f675eed"
+      },
+      "portable": {
+        "path": "sources/diagnosis-v1-report.json.gz",
+        "bytes": 43251,
+        "sha256": "92f9f6e0dab956f15572ca81dc213c7eeb38dde3b238be0fad81f945331b715c"
+      },
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "version": "functional-v2",
+      "source": {
+        "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-12/phase2-5e4c1b8f-20261004-a/functional-v2-results.json",
+        "bytes": 10495481,
+        "sha256": "e7b346c5a0756795ac85665fc688e3f8645a686dcf61e9cfdc76ff5232d0a46e"
+      },
+      "portable": {
+        "path": "sources/functional-v2-report.json.gz",
+        "bytes": 4648922,
+        "sha256": "dbd15a475515e5ef428f6906d2bae1959ee2a3f8d99734736eb99275356f5ec2"
+      },
+      "passed": 12,
+      "failed": 4,
+      "skipped": 0
+    }
+  ],
+  "images": [
+    {
+      "id": 1,
+      "case": 1,
+      "mode": "C3",
+      "originalAttachment": "C3-F01-HVP-COAST-REPLAY-tick-0-generation-1.png",
+      "path": "images/image-001.png",
+      "bytes": 265144,
+      "sha256": "7bb23c48cdfcd03f0e5953293cec2e9bf432c78b351a32d39c4f7f5c7fdcfadf",
+      "facts": {
+        "path": "facts/image-001.json",
+        "bytes": 39703,
+        "sha256": "34893fded0b8fc9c4f95677c6f183b8a4f7feac57b6def4a9803d8fa6de4c137"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "88418d413927e24ea72a9207c736d01be4b1f048f82d6a7c7426e2175ab1abfc",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "C01-EYE",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "C01-EYE",
+        "sourceRevision": 0,
+        "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+        "resetTick": null,
+        "projectionGeneration": 1,
+        "presentationGeneration": 5
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 2,
+      "case": 1,
+      "mode": "C3",
+      "originalAttachment": "C3-F01-HVP-COAST-REPLAY-tick-1559-generation-1.png",
+      "path": "images/image-002.png",
+      "bytes": 265144,
+      "sha256": "7bb23c48cdfcd03f0e5953293cec2e9bf432c78b351a32d39c4f7f5c7fdcfadf",
+      "facts": {
+        "path": "facts/image-002.json",
+        "bytes": 39751,
+        "sha256": "a2e1d69e7baebf2f58b04ed62af10c39944595a0581b7be3724b653dbeb67b38"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "88418d413927e24ea72a9207c736d01be4b1f048f82d6a7c7426e2175ab1abfc",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "C01-EYE",
+        "paused": true,
+        "seconds": 25.983333333333334,
+        "sourceRevision": 0,
+        "tick": 1559,
+        "weather": {
+          "cloud01": 0.4,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            5,
+            0,
+            -2
+          ]
+        }
+      },
+      "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 1559,
+        "cameraId": "C01-EYE",
+        "sourceRevision": 0,
+        "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+        "resetTick": null,
+        "projectionGeneration": 1,
+        "presentationGeneration": 7
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 3,
+      "case": 1,
+      "mode": "C3",
+      "originalAttachment": "C3-F01-HVP-COAST-REPLAY-tick-1560-generation-2.png",
+      "path": "images/image-003.png",
+      "bytes": 265144,
+      "sha256": "7bb23c48cdfcd03f0e5953293cec2e9bf432c78b351a32d39c4f7f5c7fdcfadf",
+      "facts": {
+        "path": "facts/image-003.json",
+        "bytes": 39724,
+        "sha256": "f7bf115cbc3b382e75524ffc21139590acb9031276c3cdc66cf81a352d65a159"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "88418d413927e24ea72a9207c736d01be4b1f048f82d6a7c7426e2175ab1abfc",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "C01-EYE",
+        "paused": true,
+        "seconds": 26,
+        "sourceRevision": 0,
+        "tick": 1560,
+        "weather": {
+          "cloud01": 0.4,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            5,
+            0,
+            -2
+          ]
+        }
+      },
+      "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 1560,
+        "cameraId": "C01-EYE",
+        "sourceRevision": 0,
+        "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+        "resetTick": 1560,
+        "projectionGeneration": 2,
+        "presentationGeneration": 10
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 4,
+      "case": 1,
+      "mode": "C3",
+      "originalAttachment": "C3-F01-HVP-COAST-REPLAY-tick-1559-generation-3.png",
+      "path": "images/image-004.png",
+      "bytes": 265144,
+      "sha256": "7bb23c48cdfcd03f0e5953293cec2e9bf432c78b351a32d39c4f7f5c7fdcfadf",
+      "facts": {
+        "path": "facts/image-004.json",
+        "bytes": 39757,
+        "sha256": "6d579f8c1cc29869fcda11e1910b5607a94ae0b0a11df41b3bf23fccc2ae37bc"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "88418d413927e24ea72a9207c736d01be4b1f048f82d6a7c7426e2175ab1abfc",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "C01-EYE",
+        "paused": true,
+        "seconds": 25.983333333333334,
+        "sourceRevision": 0,
+        "tick": 1559,
+        "weather": {
+          "cloud01": 0.4,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            5,
+            0,
+            -2
+          ]
+        }
+      },
+      "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 1559,
+        "cameraId": "C01-EYE",
+        "sourceRevision": 0,
+        "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+        "resetTick": null,
+        "projectionGeneration": 3,
+        "presentationGeneration": 13
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 5,
+      "case": 1,
+      "mode": "C3",
+      "originalAttachment": "C3-F01-HVP-COAST-REPLAY-tick-0-generation-4.png",
+      "path": "images/image-005.png",
+      "bytes": 265144,
+      "sha256": "7bb23c48cdfcd03f0e5953293cec2e9bf432c78b351a32d39c4f7f5c7fdcfadf",
+      "facts": {
+        "path": "facts/image-005.json",
+        "bytes": 39709,
+        "sha256": "29dae6521b3aa8e9aa22aed3fd581171fc04c67806ad75474f56bd486c141d0e"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "88418d413927e24ea72a9207c736d01be4b1f048f82d6a7c7426e2175ab1abfc",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "C01-EYE",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "C01-EYE",
+        "sourceRevision": 0,
+        "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+        "resetTick": null,
+        "projectionGeneration": 4,
+        "presentationGeneration": 16
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 6,
+      "case": 1,
+      "mode": "C3",
+      "originalAttachment": "C3-F01-HVP-COAST-REPLAY-resized.png",
+      "path": "images/image-006.png",
+      "bytes": 6398,
+      "sha256": "1611f64666e63dab07d262f0042ff7abc51ec8f8799dd800390005d0cb235e0f",
+      "facts": {
+        "path": "facts/image-006.json",
+        "bytes": 39689,
+        "sha256": "d790c21f88d0be9fb70c7fb14942f51261a709eab929429a54be2a61f7f08593"
+      },
+      "width": 642,
+      "height": 362,
+      "decodedRgbaSha256": "15972986be38a2ce9aca56d13dbcc0dc25aea80c83f1f459dffea05376b7d5b5",
+      "decodedBytes": 929616,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 640,
+        "height": 360,
+        "dpr": 2,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "C07-QUARRY",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "C07-QUARRY",
+        "sourceRevision": 0,
+        "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+        "resetTick": null,
+        "projectionGeneration": 4,
+        "presentationGeneration": 18
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 7,
+      "case": 2,
+      "mode": "C3",
+      "originalAttachment": "C3-F04-DETACH-REPLAY-tick-0-generation-1.png",
+      "path": "images/image-007.png",
+      "bytes": 5602,
+      "sha256": "cf3b46cb574a3f47f6e8ec81b1dca5a0958e1698e9e4172c966c193f2c477d81",
+      "facts": {
+        "path": "facts/image-007.json",
+        "bytes": 19167,
+        "sha256": "f82b16aaa96bfa7358e61776fedbe1d24e5865fb94ec760f40db3f6dd0685b68"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "6f187cca6b2c1ab39ac666d06dc73d5f4aad51ba24fcc46c0f3a5250033a4e9a",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "far",
+        "sourceRevision": 0,
+        "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+        "resetTick": null,
+        "projectionGeneration": 1,
+        "presentationGeneration": 5
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 8,
+      "case": 2,
+      "mode": "C3",
+      "originalAttachment": "C3-F04-DETACH-REPLAY-tick-359-generation-1.png",
+      "path": "images/image-008.png",
+      "bytes": 6561,
+      "sha256": "4cec0c11ba20a93cd7acfc0cac16ddfae4d83d931612353b43b3be76e141e553",
+      "facts": {
+        "path": "facts/image-008.json",
+        "bytes": 19241,
+        "sha256": "f348e49933f11c7dba148b8db826ceadd48e35a523f5840a3da0932dbc6d3c00"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "750e17816e85489ae7b096a43b3af77bec23fee51a072ddfbdd2e43d70d9a25d",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "near",
+        "paused": true,
+        "seconds": 5.983333333333333,
+        "sourceRevision": 0,
+        "tick": 359,
+        "weather": {
+          "cloud01": 0.8,
+          "rain01": 0.8,
+          "snow01": 0,
+          "windMps": [
+            2,
+            0,
+            1
+          ]
+        }
+      },
+      "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 359,
+        "cameraId": "near",
+        "sourceRevision": 0,
+        "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+        "resetTick": null,
+        "projectionGeneration": 1,
+        "presentationGeneration": 7
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 9,
+      "case": 2,
+      "mode": "C3",
+      "originalAttachment": "C3-F04-DETACH-REPLAY-tick-360-generation-2.png",
+      "path": "images/image-009.png",
+      "bytes": 6776,
+      "sha256": "30ec5c5fb8e2c13d69f70d1974f056710f5bf494d0bd2d7e395f2bb946cd6339",
+      "facts": {
+        "path": "facts/image-009.json",
+        "bytes": 19029,
+        "sha256": "380f9157fb9252b0587de77e9a93be9f1add502521bc068c00b846a33800df5d"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "226511000f3d4d895cb97e3347582846d3cd24c3ef495b54da8accd78fe6491b",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "near",
+        "paused": true,
+        "seconds": 6,
+        "sourceRevision": 1,
+        "tick": 360,
+        "weather": {
+          "cloud01": 0.8,
+          "rain01": 0.8,
+          "snow01": 0,
+          "windMps": [
+            2,
+            0,
+            1
+          ]
+        }
+      },
+      "fixtureDigest": "c45992d7a859482a869e8deebbecd0e54263986a0acbeca1dc0bde9d8cab4e3b",
+      "sourceRevision": 1,
+      "rendered": {
+        "tick": 360,
+        "cameraId": "near",
+        "sourceRevision": 1,
+        "fixtureDigest": "c45992d7a859482a869e8deebbecd0e54263986a0acbeca1dc0bde9d8cab4e3b",
+        "resetTick": null,
+        "projectionGeneration": 2,
+        "presentationGeneration": 10
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 10,
+      "case": 2,
+      "mode": "C3",
+      "originalAttachment": "C3-F04-DETACH-REPLAY-tick-719-generation-2.png",
+      "path": "images/image-010.png",
+      "bytes": 5624,
+      "sha256": "8a789a35ff080d92a00cd5d61a5a357d93815a8eb3cbdfca8ca3cbe0a538727f",
+      "facts": {
+        "path": "facts/image-010.json",
+        "bytes": 19035,
+        "sha256": "dc464e54fd9e79148d1bcbbd6c19549fc1e497ff9dbe19a583f523be4338708b"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "f421e58ae8249db4d38ca370a686bba1a5426b14f81e53abc92e99bcb0613ee9",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 11.983333333333333,
+        "sourceRevision": 1,
+        "tick": 719,
+        "weather": {
+          "cloud01": 0.8,
+          "rain01": 0.8,
+          "snow01": 0,
+          "windMps": [
+            2,
+            0,
+            1
+          ]
+        }
+      },
+      "fixtureDigest": "c45992d7a859482a869e8deebbecd0e54263986a0acbeca1dc0bde9d8cab4e3b",
+      "sourceRevision": 1,
+      "rendered": {
+        "tick": 719,
+        "cameraId": "far",
+        "sourceRevision": 1,
+        "fixtureDigest": "c45992d7a859482a869e8deebbecd0e54263986a0acbeca1dc0bde9d8cab4e3b",
+        "resetTick": null,
+        "projectionGeneration": 2,
+        "presentationGeneration": 12
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 11,
+      "case": 2,
+      "mode": "C3",
+      "originalAttachment": "C3-F04-DETACH-REPLAY-tick-720-generation-3.png",
+      "path": "images/image-011.png",
+      "bytes": 5552,
+      "sha256": "756c036355f430c16e98ab2189d0d56995883f93e256a753e3b0707abb150176",
+      "facts": {
+        "path": "facts/image-011.json",
+        "bytes": 19111,
+        "sha256": "e61efc383d882ed8d8ac48201d2f808aeab082269cf7526e6084671b70afd2ab"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "cf9a4cac1216b61d4e072d18ffd419af5658bc92b586bf00424dd4fa161fce6c",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 12,
+        "sourceRevision": 2,
+        "tick": 720,
+        "weather": {
+          "cloud01": 0.8,
+          "rain01": 0.8,
+          "snow01": 0,
+          "windMps": [
+            2,
+            0,
+            1
+          ]
+        }
+      },
+      "fixtureDigest": "7e1bb35d1a0ada1ff5ddda9719e7d2ad5710d11d59f0f28c7f72b20a04dce37e",
+      "sourceRevision": 2,
+      "rendered": {
+        "tick": 720,
+        "cameraId": "far",
+        "sourceRevision": 2,
+        "fixtureDigest": "7e1bb35d1a0ada1ff5ddda9719e7d2ad5710d11d59f0f28c7f72b20a04dce37e",
+        "resetTick": null,
+        "projectionGeneration": 3,
+        "presentationGeneration": 15
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 12,
+      "case": 2,
+      "mode": "C3",
+      "originalAttachment": "C3-F04-DETACH-REPLAY-tick-1079-generation-3.png",
+      "path": "images/image-012.png",
+      "bytes": 5552,
+      "sha256": "756c036355f430c16e98ab2189d0d56995883f93e256a753e3b0707abb150176",
+      "facts": {
+        "path": "facts/image-012.json",
+        "bytes": 19145,
+        "sha256": "2911b9723025459c77deaee5843eefb86eee9c7841fba167f3a8da076b31bea5"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "cf9a4cac1216b61d4e072d18ffd419af5658bc92b586bf00424dd4fa161fce6c",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 17.983333333333334,
+        "sourceRevision": 2,
+        "tick": 1079,
+        "weather": {
+          "cloud01": 0.4,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            5,
+            0,
+            -2
+          ]
+        }
+      },
+      "fixtureDigest": "7e1bb35d1a0ada1ff5ddda9719e7d2ad5710d11d59f0f28c7f72b20a04dce37e",
+      "sourceRevision": 2,
+      "rendered": {
+        "tick": 1079,
+        "cameraId": "far",
+        "sourceRevision": 2,
+        "fixtureDigest": "7e1bb35d1a0ada1ff5ddda9719e7d2ad5710d11d59f0f28c7f72b20a04dce37e",
+        "resetTick": null,
+        "projectionGeneration": 3,
+        "presentationGeneration": 17
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 13,
+      "case": 2,
+      "mode": "C3",
+      "originalAttachment": "C3-F04-DETACH-REPLAY-tick-1080-generation-4.png",
+      "path": "images/image-013.png",
+      "bytes": 5287,
+      "sha256": "f0de6c818dd15fd77e4593cc8b79f2c015a3800bc869b8790034a54174cc8dcb",
+      "facts": {
+        "path": "facts/image-013.json",
+        "bytes": 16715,
+        "sha256": "01e2a2bff2ba847fa26435414444549ffae92272b23a5aad1a8ac45a4635a766"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "0aed812072f6f03e85898cc021560d60e948a81fbd305357eccca30abe174f48",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 18,
+        "sourceRevision": 3,
+        "tick": 1080,
+        "weather": {
+          "cloud01": 0.4,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            5,
+            0,
+            -2
+          ]
+        }
+      },
+      "fixtureDigest": "95e4ebc916e34c14d7ff46b0aa98ad2007d7c9f4e03c2463cc2bd75d7d5414bd",
+      "sourceRevision": 3,
+      "rendered": {
+        "tick": 1080,
+        "cameraId": "far",
+        "sourceRevision": 3,
+        "fixtureDigest": "95e4ebc916e34c14d7ff46b0aa98ad2007d7c9f4e03c2463cc2bd75d7d5414bd",
+        "resetTick": null,
+        "projectionGeneration": 4,
+        "presentationGeneration": 20
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 14,
+      "case": 2,
+      "mode": "C3",
+      "originalAttachment": "C3-F04-DETACH-REPLAY-tick-1439-generation-4.png",
+      "path": "images/image-014.png",
+      "bytes": 5287,
+      "sha256": "f0de6c818dd15fd77e4593cc8b79f2c015a3800bc869b8790034a54174cc8dcb",
+      "facts": {
+        "path": "facts/image-014.json",
+        "bytes": 16747,
+        "sha256": "63f9ea3d5f5b573f3aa85f14155a607ca6b8666fdc32c2573577cae868236ed8"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "0aed812072f6f03e85898cc021560d60e948a81fbd305357eccca30abe174f48",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 23.983333333333334,
+        "sourceRevision": 3,
+        "tick": 1439,
+        "weather": {
+          "cloud01": 0.4,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            5,
+            0,
+            -2
+          ]
+        }
+      },
+      "fixtureDigest": "95e4ebc916e34c14d7ff46b0aa98ad2007d7c9f4e03c2463cc2bd75d7d5414bd",
+      "sourceRevision": 3,
+      "rendered": {
+        "tick": 1439,
+        "cameraId": "far",
+        "sourceRevision": 3,
+        "fixtureDigest": "95e4ebc916e34c14d7ff46b0aa98ad2007d7c9f4e03c2463cc2bd75d7d5414bd",
+        "resetTick": null,
+        "projectionGeneration": 4,
+        "presentationGeneration": 22
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 15,
+      "case": 2,
+      "mode": "C3",
+      "originalAttachment": "C3-F04-DETACH-REPLAY-tick-1440-generation-5.png",
+      "path": "images/image-015.png",
+      "bytes": 5287,
+      "sha256": "f0de6c818dd15fd77e4593cc8b79f2c015a3800bc869b8790034a54174cc8dcb",
+      "facts": {
+        "path": "facts/image-015.json",
+        "bytes": 16715,
+        "sha256": "590d33fb9c9cfceb52681548d5e3051de99155d2e8f31357f4c4e1913e4c1b29"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "0aed812072f6f03e85898cc021560d60e948a81fbd305357eccca30abe174f48",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 24,
+        "sourceRevision": 4,
+        "tick": 1440,
+        "weather": {
+          "cloud01": 0.4,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            5,
+            0,
+            -2
+          ]
+        }
+      },
+      "fixtureDigest": "8b7af46b9292ce40ead9545cf02d38bb7e57bf1205d7fbf1bf9f4c7af783832b",
+      "sourceRevision": 4,
+      "rendered": {
+        "tick": 1440,
+        "cameraId": "far",
+        "sourceRevision": 4,
+        "fixtureDigest": "8b7af46b9292ce40ead9545cf02d38bb7e57bf1205d7fbf1bf9f4c7af783832b",
+        "resetTick": null,
+        "projectionGeneration": 5,
+        "presentationGeneration": 25
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 16,
+      "case": 2,
+      "mode": "C3",
+      "originalAttachment": "C3-F04-DETACH-REPLAY-tick-1559-generation-5.png",
+      "path": "images/image-016.png",
+      "bytes": 5287,
+      "sha256": "f0de6c818dd15fd77e4593cc8b79f2c015a3800bc869b8790034a54174cc8dcb",
+      "facts": {
+        "path": "facts/image-016.json",
+        "bytes": 16747,
+        "sha256": "2fe60f388ce46743f0e03f87c0779591b22664b8f9c02c35c05a92c1c4eb3c80"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "0aed812072f6f03e85898cc021560d60e948a81fbd305357eccca30abe174f48",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 25.983333333333334,
+        "sourceRevision": 4,
+        "tick": 1559,
+        "weather": {
+          "cloud01": 0.4,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            5,
+            0,
+            -2
+          ]
+        }
+      },
+      "fixtureDigest": "8b7af46b9292ce40ead9545cf02d38bb7e57bf1205d7fbf1bf9f4c7af783832b",
+      "sourceRevision": 4,
+      "rendered": {
+        "tick": 1559,
+        "cameraId": "far",
+        "sourceRevision": 4,
+        "fixtureDigest": "8b7af46b9292ce40ead9545cf02d38bb7e57bf1205d7fbf1bf9f4c7af783832b",
+        "resetTick": null,
+        "projectionGeneration": 5,
+        "presentationGeneration": 27
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 17,
+      "case": 2,
+      "mode": "C3",
+      "originalAttachment": "C3-F04-DETACH-REPLAY-tick-1560-generation-6.png",
+      "path": "images/image-017.png",
+      "bytes": 5287,
+      "sha256": "f0de6c818dd15fd77e4593cc8b79f2c015a3800bc869b8790034a54174cc8dcb",
+      "facts": {
+        "path": "facts/image-017.json",
+        "bytes": 16715,
+        "sha256": "cf82e9909f321e94442a912808dac6357680f9840229df8c680eb5ddcda9f1d1"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "0aed812072f6f03e85898cc021560d60e948a81fbd305357eccca30abe174f48",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 26,
+        "sourceRevision": 4,
+        "tick": 1560,
+        "weather": {
+          "cloud01": 0.4,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            5,
+            0,
+            -2
+          ]
+        }
+      },
+      "fixtureDigest": "8b7af46b9292ce40ead9545cf02d38bb7e57bf1205d7fbf1bf9f4c7af783832b",
+      "sourceRevision": 4,
+      "rendered": {
+        "tick": 1560,
+        "cameraId": "far",
+        "sourceRevision": 4,
+        "fixtureDigest": "8b7af46b9292ce40ead9545cf02d38bb7e57bf1205d7fbf1bf9f4c7af783832b",
+        "resetTick": 1560,
+        "projectionGeneration": 6,
+        "presentationGeneration": 30
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 18,
+      "case": 2,
+      "mode": "C3",
+      "originalAttachment": "C3-F04-DETACH-REPLAY-tick-1559-generation-7.png",
+      "path": "images/image-018.png",
+      "bytes": 5287,
+      "sha256": "f0de6c818dd15fd77e4593cc8b79f2c015a3800bc869b8790034a54174cc8dcb",
+      "facts": {
+        "path": "facts/image-018.json",
+        "bytes": 16747,
+        "sha256": "218f63d411c42f59c5a12df308e009898dffe73f4253763146a8bca73fb22cd4"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "0aed812072f6f03e85898cc021560d60e948a81fbd305357eccca30abe174f48",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 25.983333333333334,
+        "sourceRevision": 4,
+        "tick": 1559,
+        "weather": {
+          "cloud01": 0.4,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            5,
+            0,
+            -2
+          ]
+        }
+      },
+      "fixtureDigest": "8b7af46b9292ce40ead9545cf02d38bb7e57bf1205d7fbf1bf9f4c7af783832b",
+      "sourceRevision": 4,
+      "rendered": {
+        "tick": 1559,
+        "cameraId": "far",
+        "sourceRevision": 4,
+        "fixtureDigest": "8b7af46b9292ce40ead9545cf02d38bb7e57bf1205d7fbf1bf9f4c7af783832b",
+        "resetTick": null,
+        "projectionGeneration": 7,
+        "presentationGeneration": 33
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 19,
+      "case": 2,
+      "mode": "C3",
+      "originalAttachment": "C3-F04-DETACH-REPLAY-tick-0-generation-8.png",
+      "path": "images/image-019.png",
+      "bytes": 5602,
+      "sha256": "cf3b46cb574a3f47f6e8ec81b1dca5a0958e1698e9e4172c966c193f2c477d81",
+      "facts": {
+        "path": "facts/image-019.json",
+        "bytes": 19173,
+        "sha256": "584d56c2e2be8ff854430bb433c5e64d83792fd7468f52f65ed245e7d067b2a8"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "6f187cca6b2c1ab39ac666d06dc73d5f4aad51ba24fcc46c0f3a5250033a4e9a",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "far",
+        "sourceRevision": 0,
+        "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+        "resetTick": null,
+        "projectionGeneration": 8,
+        "presentationGeneration": 36
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 20,
+      "case": 2,
+      "mode": "C3",
+      "originalAttachment": "C3-F04-DETACH-REPLAY-resized.png",
+      "path": "images/image-020.png",
+      "bytes": 3553,
+      "sha256": "6a60024a0132194596b3a1d0d971a9f3126c64b917ed89c2eb4c6606abd83091",
+      "facts": {
+        "path": "facts/image-020.json",
+        "bytes": 19201,
+        "sha256": "ed57cee7b96234d69d74f96eba174a8e3564a5a779ad0587c47b189cd5c622d0"
+      },
+      "width": 642,
+      "height": 362,
+      "decodedRgbaSha256": "63f3560b87dec061c77abcc582574c4da19e6a7d82150ef766fa82882c8fb2cb",
+      "decodedBytes": 929616,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 640,
+        "height": 360,
+        "dpr": 2,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "near",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "near",
+        "sourceRevision": 0,
+        "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+        "resetTick": null,
+        "projectionGeneration": 8,
+        "presentationGeneration": 38
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 21,
+      "case": 3,
+      "mode": "C3",
+      "originalAttachment": "C3-F06-MATERIAL-REPLAY-tick-0-generation-1.png",
+      "path": "images/image-021.png",
+      "bytes": 8224,
+      "sha256": "c8e746824aeb018d246e50f23e2bd83ae104ad9256a44f6413cdc5b459ff2fdc",
+      "facts": {
+        "path": "facts/image-021.json",
+        "bytes": 24257,
+        "sha256": "594023bd6c1cddcf33d8d7f7a83bb1c3e1511686694ac73b7f1030f3bb6af62f"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "7e45e478803849e0ba3661691a71eb3bb956e7a89e6f8a3d9d138872604d6738",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "far",
+        "sourceRevision": 0,
+        "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+        "resetTick": null,
+        "projectionGeneration": 1,
+        "presentationGeneration": 5
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 22,
+      "case": 3,
+      "mode": "C3",
+      "originalAttachment": "C3-F06-MATERIAL-REPLAY-tick-359-generation-1.png",
+      "path": "images/image-022.png",
+      "bytes": 9750,
+      "sha256": "28e141dd94f8d84a2a126b629be69f165670917ecf2376a809b86868ffb41bf6",
+      "facts": {
+        "path": "facts/image-022.json",
+        "bytes": 24331,
+        "sha256": "5387d19e490669b346657023d689223a2ce1e22043487e53ed6599e4e27410b5"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "3095ca9637cec20959d416fa29e6de2642ac2ab4d38237f2cc461b096cce7bbd",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "near",
+        "paused": true,
+        "seconds": 5.983333333333333,
+        "sourceRevision": 0,
+        "tick": 359,
+        "weather": {
+          "cloud01": 0.8,
+          "rain01": 0.8,
+          "snow01": 0,
+          "windMps": [
+            2,
+            0,
+            1
+          ]
+        }
+      },
+      "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 359,
+        "cameraId": "near",
+        "sourceRevision": 0,
+        "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+        "resetTick": null,
+        "projectionGeneration": 1,
+        "presentationGeneration": 7
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 23,
+      "case": 3,
+      "mode": "C3",
+      "originalAttachment": "C3-F06-MATERIAL-REPLAY-tick-360-generation-2.png",
+      "path": "images/image-023.png",
+      "bytes": 9878,
+      "sha256": "d3482f7480aa0d8b46a234639a9a9f817bf9225972a147854c50325b0f21d6f7",
+      "facts": {
+        "path": "facts/image-023.json",
+        "bytes": 24303,
+        "sha256": "121dead818701ebc38f214c8755fc73dc3a151fb82beb96b039ddc3b6f3b6fa0"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "28cd40691955e1efd2790e12fd5701223d2b941bd79f1d05519a05360520b9d1",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "near",
+        "paused": true,
+        "seconds": 6,
+        "sourceRevision": 1,
+        "tick": 360,
+        "weather": {
+          "cloud01": 0.8,
+          "rain01": 0.8,
+          "snow01": 0,
+          "windMps": [
+            2,
+            0,
+            1
+          ]
+        }
+      },
+      "fixtureDigest": "81de4732517d6cf5259f7ec9afd4d4b7af05379feb7cff56afe9e80e16c6d91a",
+      "sourceRevision": 1,
+      "rendered": {
+        "tick": 360,
+        "cameraId": "near",
+        "sourceRevision": 1,
+        "fixtureDigest": "81de4732517d6cf5259f7ec9afd4d4b7af05379feb7cff56afe9e80e16c6d91a",
+        "resetTick": null,
+        "projectionGeneration": 2,
+        "presentationGeneration": 10
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 24,
+      "case": 3,
+      "mode": "C3",
+      "originalAttachment": "C3-F06-MATERIAL-REPLAY-tick-1559-generation-2.png",
+      "path": "images/image-024.png",
+      "bytes": 8549,
+      "sha256": "e70e43020ec30e133c662656117799fb4788b0aef3502cc4068e236306e1205c",
+      "facts": {
+        "path": "facts/image-024.json",
+        "bytes": 24311,
+        "sha256": "5be466faec282c866d8a4cf0bd97aad16f60513d4e7a1533f00612cdba27af32"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "7cb791d742718c48bf4c12707291355a79f79e9a83da809bb20e3524e9a1a78e",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 25.983333333333334,
+        "sourceRevision": 1,
+        "tick": 1559,
+        "weather": {
+          "cloud01": 0.4,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            5,
+            0,
+            -2
+          ]
+        }
+      },
+      "fixtureDigest": "81de4732517d6cf5259f7ec9afd4d4b7af05379feb7cff56afe9e80e16c6d91a",
+      "sourceRevision": 1,
+      "rendered": {
+        "tick": 1559,
+        "cameraId": "far",
+        "sourceRevision": 1,
+        "fixtureDigest": "81de4732517d6cf5259f7ec9afd4d4b7af05379feb7cff56afe9e80e16c6d91a",
+        "resetTick": null,
+        "projectionGeneration": 2,
+        "presentationGeneration": 12
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 25,
+      "case": 3,
+      "mode": "C3",
+      "originalAttachment": "C3-F06-MATERIAL-REPLAY-tick-1560-generation-3.png",
+      "path": "images/image-025.png",
+      "bytes": 8549,
+      "sha256": "e70e43020ec30e133c662656117799fb4788b0aef3502cc4068e236306e1205c",
+      "facts": {
+        "path": "facts/image-025.json",
+        "bytes": 24279,
+        "sha256": "ca41a40f10a7e98f4403f2a1c5fe8196bf50fa5a1d03ad4ccb76fc42b352a2b6"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "7cb791d742718c48bf4c12707291355a79f79e9a83da809bb20e3524e9a1a78e",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 26,
+        "sourceRevision": 1,
+        "tick": 1560,
+        "weather": {
+          "cloud01": 0.4,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            5,
+            0,
+            -2
+          ]
+        }
+      },
+      "fixtureDigest": "81de4732517d6cf5259f7ec9afd4d4b7af05379feb7cff56afe9e80e16c6d91a",
+      "sourceRevision": 1,
+      "rendered": {
+        "tick": 1560,
+        "cameraId": "far",
+        "sourceRevision": 1,
+        "fixtureDigest": "81de4732517d6cf5259f7ec9afd4d4b7af05379feb7cff56afe9e80e16c6d91a",
+        "resetTick": 1560,
+        "projectionGeneration": 3,
+        "presentationGeneration": 15
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 26,
+      "case": 3,
+      "mode": "C3",
+      "originalAttachment": "C3-F06-MATERIAL-REPLAY-tick-1559-generation-4.png",
+      "path": "images/image-026.png",
+      "bytes": 8549,
+      "sha256": "e70e43020ec30e133c662656117799fb4788b0aef3502cc4068e236306e1205c",
+      "facts": {
+        "path": "facts/image-026.json",
+        "bytes": 24311,
+        "sha256": "10451bff9a159e94c7cdc37537e089db7737777122caad12dbe9462cbe2986b1"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "7cb791d742718c48bf4c12707291355a79f79e9a83da809bb20e3524e9a1a78e",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 25.983333333333334,
+        "sourceRevision": 1,
+        "tick": 1559,
+        "weather": {
+          "cloud01": 0.4,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            5,
+            0,
+            -2
+          ]
+        }
+      },
+      "fixtureDigest": "81de4732517d6cf5259f7ec9afd4d4b7af05379feb7cff56afe9e80e16c6d91a",
+      "sourceRevision": 1,
+      "rendered": {
+        "tick": 1559,
+        "cameraId": "far",
+        "sourceRevision": 1,
+        "fixtureDigest": "81de4732517d6cf5259f7ec9afd4d4b7af05379feb7cff56afe9e80e16c6d91a",
+        "resetTick": null,
+        "projectionGeneration": 4,
+        "presentationGeneration": 18
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 27,
+      "case": 3,
+      "mode": "C3",
+      "originalAttachment": "C3-F06-MATERIAL-REPLAY-tick-0-generation-5.png",
+      "path": "images/image-027.png",
+      "bytes": 8224,
+      "sha256": "c8e746824aeb018d246e50f23e2bd83ae104ad9256a44f6413cdc5b459ff2fdc",
+      "facts": {
+        "path": "facts/image-027.json",
+        "bytes": 24263,
+        "sha256": "d5b7c7cba19085fdc7456f085f84a4ae2fb59fd2c64b22b6e79fa266e60a5853"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "7e45e478803849e0ba3661691a71eb3bb956e7a89e6f8a3d9d138872604d6738",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "far",
+        "sourceRevision": 0,
+        "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+        "resetTick": null,
+        "projectionGeneration": 5,
+        "presentationGeneration": 21
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 28,
+      "case": 3,
+      "mode": "C3",
+      "originalAttachment": "C3-F06-MATERIAL-REPLAY-resized.png",
+      "path": "images/image-028.png",
+      "bytes": 6914,
+      "sha256": "e2a9dda9e740e74f1f073beae3849fc52a940a80cd015e0be492ace48e66b366",
+      "facts": {
+        "path": "facts/image-028.json",
+        "bytes": 24291,
+        "sha256": "e3f44de91a89ce66787e37a97016bde55b8da9fb201127d75bee8157d873c474"
+      },
+      "width": 642,
+      "height": 362,
+      "decodedRgbaSha256": "d58cbd339e44acb11485e68ea08ffcecc3dd1867fb5ab0b3fb4d50426c7a2f62",
+      "decodedBytes": 929616,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 640,
+        "height": 360,
+        "dpr": 2,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "near",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "near",
+        "sourceRevision": 0,
+        "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+        "resetTick": null,
+        "projectionGeneration": 5,
+        "presentationGeneration": 23
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 29,
+      "case": 7,
+      "mode": "C4",
+      "originalAttachment": "C4-F01-HVP-COAST-REPLAY-tick-0-generation-1.png",
+      "path": "images/image-029.png",
+      "bytes": 266062,
+      "sha256": "e6e4a330052a3939908de3a990756dfc83c240f465d9ae4456a83cd0fc6544eb",
+      "facts": {
+        "path": "facts/image-029.json",
+        "bytes": 39716,
+        "sha256": "f04d02d9d05084b38bcbe327db60cfeafc01c528dd683812f9d066ba50976848"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "b8c44e182e400f3be92b0ee09a3169c0e5ecb8f2332225208af5c369b235f521",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "C01-EYE",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "C01-EYE",
+        "sourceRevision": 0,
+        "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+        "resetTick": null,
+        "projectionGeneration": 1,
+        "presentationGeneration": 5
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 30,
+      "case": 7,
+      "mode": "C4",
+      "originalAttachment": "C4-F01-HVP-COAST-REPLAY-tick-1559-generation-1.png",
+      "path": "images/image-030.png",
+      "bytes": 266062,
+      "sha256": "e6e4a330052a3939908de3a990756dfc83c240f465d9ae4456a83cd0fc6544eb",
+      "facts": {
+        "path": "facts/image-030.json",
+        "bytes": 39765,
+        "sha256": "2e513d3a2a13010c243ee4967b5b6fe25c216b0c13c7ccdd1c0b741b7066a63a"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "b8c44e182e400f3be92b0ee09a3169c0e5ecb8f2332225208af5c369b235f521",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "C01-EYE",
+        "paused": true,
+        "seconds": 25.983333333333334,
+        "sourceRevision": 0,
+        "tick": 1559,
+        "weather": {
+          "cloud01": 0.4,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            5,
+            0,
+            -2
+          ]
+        }
+      },
+      "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 1559,
+        "cameraId": "C01-EYE",
+        "sourceRevision": 0,
+        "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+        "resetTick": null,
+        "projectionGeneration": 1,
+        "presentationGeneration": 7
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 31,
+      "case": 7,
+      "mode": "C4",
+      "originalAttachment": "C4-F01-HVP-COAST-REPLAY-tick-1560-generation-2.png",
+      "path": "images/image-031.png",
+      "bytes": 266062,
+      "sha256": "e6e4a330052a3939908de3a990756dfc83c240f465d9ae4456a83cd0fc6544eb",
+      "facts": {
+        "path": "facts/image-031.json",
+        "bytes": 39737,
+        "sha256": "04279a5b6cb6acefd79db29c111bb7f195273a49986bade05fd014ff95d29cd9"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "b8c44e182e400f3be92b0ee09a3169c0e5ecb8f2332225208af5c369b235f521",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "C01-EYE",
+        "paused": true,
+        "seconds": 26,
+        "sourceRevision": 0,
+        "tick": 1560,
+        "weather": {
+          "cloud01": 0.4,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            5,
+            0,
+            -2
+          ]
+        }
+      },
+      "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 1560,
+        "cameraId": "C01-EYE",
+        "sourceRevision": 0,
+        "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+        "resetTick": 1560,
+        "projectionGeneration": 2,
+        "presentationGeneration": 10
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 32,
+      "case": 7,
+      "mode": "C4",
+      "originalAttachment": "C4-F01-HVP-COAST-REPLAY-tick-1559-generation-3.png",
+      "path": "images/image-032.png",
+      "bytes": 266062,
+      "sha256": "e6e4a330052a3939908de3a990756dfc83c240f465d9ae4456a83cd0fc6544eb",
+      "facts": {
+        "path": "facts/image-032.json",
+        "bytes": 39770,
+        "sha256": "65a01325c37b893be8a066b033fd94a5358a17ed8392235ad29ab46f52d99484"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "b8c44e182e400f3be92b0ee09a3169c0e5ecb8f2332225208af5c369b235f521",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "C01-EYE",
+        "paused": true,
+        "seconds": 25.983333333333334,
+        "sourceRevision": 0,
+        "tick": 1559,
+        "weather": {
+          "cloud01": 0.4,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            5,
+            0,
+            -2
+          ]
+        }
+      },
+      "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 1559,
+        "cameraId": "C01-EYE",
+        "sourceRevision": 0,
+        "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+        "resetTick": null,
+        "projectionGeneration": 3,
+        "presentationGeneration": 13
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 33,
+      "case": 7,
+      "mode": "C4",
+      "originalAttachment": "C4-F01-HVP-COAST-REPLAY-tick-0-generation-4.png",
+      "path": "images/image-033.png",
+      "bytes": 266062,
+      "sha256": "e6e4a330052a3939908de3a990756dfc83c240f465d9ae4456a83cd0fc6544eb",
+      "facts": {
+        "path": "facts/image-033.json",
+        "bytes": 39723,
+        "sha256": "f388df4a8110b9f538be7fc3c10c0084cf0087a31d759ebdc354222eeae6208f"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "b8c44e182e400f3be92b0ee09a3169c0e5ecb8f2332225208af5c369b235f521",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "C01-EYE",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "C01-EYE",
+        "sourceRevision": 0,
+        "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+        "resetTick": null,
+        "projectionGeneration": 4,
+        "presentationGeneration": 16
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 34,
+      "case": 7,
+      "mode": "C4",
+      "originalAttachment": "C4-F01-HVP-COAST-REPLAY-resized.png",
+      "path": "images/image-034.png",
+      "bytes": 6441,
+      "sha256": "641434bd6a670c4bf718838b8ff7e8f72cf91ba503a14162181de36803aa24fd",
+      "facts": {
+        "path": "facts/image-034.json",
+        "bytes": 39703,
+        "sha256": "9f076e6f9a77eafaf5a75cb6c2aefe668f0ce9f68cf51dfd11f2ba9d2aa97ca7"
+      },
+      "width": 642,
+      "height": 362,
+      "decodedRgbaSha256": "da7ab5ce80a55a70e41a6cd3f80b2904ac634ab40f28638e8ef1f008f4e419be",
+      "decodedBytes": 929616,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 640,
+        "height": 360,
+        "dpr": 2,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "C07-QUARRY",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "C07-QUARRY",
+        "sourceRevision": 0,
+        "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+        "resetTick": null,
+        "projectionGeneration": 4,
+        "presentationGeneration": 18
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 35,
+      "case": 8,
+      "mode": "C4",
+      "originalAttachment": "C4-F04-DETACH-REPLAY-tick-0-generation-1.png",
+      "path": "images/image-035.png",
+      "bytes": 5632,
+      "sha256": "f2ac1c7dcd040be9e1ed5a254b0af0da930cdbdcb4a8ff5a9bc0ee9c542e9878",
+      "facts": {
+        "path": "facts/image-035.json",
+        "bytes": 19181,
+        "sha256": "68ffdc7ba28c07f919ee43dbf6de37166c8115cf56a954c743fda3bb78c27e7c"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "a2b06c415fdff44f577c0ad9b539041bb12178e7953349669b4299765faa6540",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "far",
+        "sourceRevision": 0,
+        "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+        "resetTick": null,
+        "projectionGeneration": 1,
+        "presentationGeneration": 5
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 36,
+      "case": 8,
+      "mode": "C4",
+      "originalAttachment": "C4-F04-DETACH-REPLAY-tick-359-generation-1.png",
+      "path": "images/image-036.png",
+      "bytes": 6521,
+      "sha256": "2080419996ef990376df1ecdbda26fa3f5640bfa99f15061de8a76092fb2122e",
+      "facts": {
+        "path": "facts/image-036.json",
+        "bytes": 19255,
+        "sha256": "b31e5219fe87a74d2fff9c14c9e8d41441ed23efa2b8b5b736aff7a7db0b5a35"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "86a29e058c55c9cde553754569b96afb0548fed571d2a306ed54cc17e11d655b",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "near",
+        "paused": true,
+        "seconds": 5.983333333333333,
+        "sourceRevision": 0,
+        "tick": 359,
+        "weather": {
+          "cloud01": 0.8,
+          "rain01": 0.8,
+          "snow01": 0,
+          "windMps": [
+            2,
+            0,
+            1
+          ]
+        }
+      },
+      "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 359,
+        "cameraId": "near",
+        "sourceRevision": 0,
+        "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+        "resetTick": null,
+        "projectionGeneration": 1,
+        "presentationGeneration": 7
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 37,
+      "case": 8,
+      "mode": "C4",
+      "originalAttachment": "C4-F04-DETACH-REPLAY-tick-360-generation-2.png",
+      "path": "images/image-037.png",
+      "bytes": 6706,
+      "sha256": "d79dd0d905e9b5f2ddfdbc8783a648a2eb9dbebf8d085a96e205b77119c73e4c",
+      "facts": {
+        "path": "facts/image-037.json",
+        "bytes": 19043,
+        "sha256": "a62dcaf6ed9f49462a1d6c6fc3e3ccaa99cb04fa4b3c36690e1c8dd88dbc09c1"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "bdffe6b8fa90b36f3426703321e5adc753fbc6a53d955276f664af39387bc7ba",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "near",
+        "paused": true,
+        "seconds": 6,
+        "sourceRevision": 1,
+        "tick": 360,
+        "weather": {
+          "cloud01": 0.8,
+          "rain01": 0.8,
+          "snow01": 0,
+          "windMps": [
+            2,
+            0,
+            1
+          ]
+        }
+      },
+      "fixtureDigest": "c45992d7a859482a869e8deebbecd0e54263986a0acbeca1dc0bde9d8cab4e3b",
+      "sourceRevision": 1,
+      "rendered": {
+        "tick": 360,
+        "cameraId": "near",
+        "sourceRevision": 1,
+        "fixtureDigest": "c45992d7a859482a869e8deebbecd0e54263986a0acbeca1dc0bde9d8cab4e3b",
+        "resetTick": null,
+        "projectionGeneration": 2,
+        "presentationGeneration": 10
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 38,
+      "case": 8,
+      "mode": "C4",
+      "originalAttachment": "C4-F04-DETACH-REPLAY-tick-719-generation-2.png",
+      "path": "images/image-038.png",
+      "bytes": 5683,
+      "sha256": "31cc544ade75d67f1403e0b03238b8644619ac9dc10b3947837a9f6fcc8cfa76",
+      "facts": {
+        "path": "facts/image-038.json",
+        "bytes": 19049,
+        "sha256": "029cb7233a9b8105cb8ca1a0848d07018a42e536b138a574784ad005de2a5e99"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "565898e5f855929a63c0fdd9452de4fe53edcbd68ca6e67edb34daae5e577a27",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 11.983333333333333,
+        "sourceRevision": 1,
+        "tick": 719,
+        "weather": {
+          "cloud01": 0.8,
+          "rain01": 0.8,
+          "snow01": 0,
+          "windMps": [
+            2,
+            0,
+            1
+          ]
+        }
+      },
+      "fixtureDigest": "c45992d7a859482a869e8deebbecd0e54263986a0acbeca1dc0bde9d8cab4e3b",
+      "sourceRevision": 1,
+      "rendered": {
+        "tick": 719,
+        "cameraId": "far",
+        "sourceRevision": 1,
+        "fixtureDigest": "c45992d7a859482a869e8deebbecd0e54263986a0acbeca1dc0bde9d8cab4e3b",
+        "resetTick": null,
+        "projectionGeneration": 2,
+        "presentationGeneration": 12
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 39,
+      "case": 8,
+      "mode": "C4",
+      "originalAttachment": "C4-F04-DETACH-REPLAY-tick-720-generation-3.png",
+      "path": "images/image-039.png",
+      "bytes": 5617,
+      "sha256": "39e29af17801e6d4a664e45e73a91d6534033e279120c3728ea8e769ca5b77af",
+      "facts": {
+        "path": "facts/image-039.json",
+        "bytes": 19125,
+        "sha256": "6e402535cd810e32f1e1ea4b1aac944223f269ca333f406d50bed355345fbc87"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "1a1a46c4db4262b1099f6f7269428f538bec2bc29c0adc9aab536b8bdafb986f",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 12,
+        "sourceRevision": 2,
+        "tick": 720,
+        "weather": {
+          "cloud01": 0.8,
+          "rain01": 0.8,
+          "snow01": 0,
+          "windMps": [
+            2,
+            0,
+            1
+          ]
+        }
+      },
+      "fixtureDigest": "7e1bb35d1a0ada1ff5ddda9719e7d2ad5710d11d59f0f28c7f72b20a04dce37e",
+      "sourceRevision": 2,
+      "rendered": {
+        "tick": 720,
+        "cameraId": "far",
+        "sourceRevision": 2,
+        "fixtureDigest": "7e1bb35d1a0ada1ff5ddda9719e7d2ad5710d11d59f0f28c7f72b20a04dce37e",
+        "resetTick": null,
+        "projectionGeneration": 3,
+        "presentationGeneration": 15
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 40,
+      "case": 8,
+      "mode": "C4",
+      "originalAttachment": "C4-F04-DETACH-REPLAY-tick-1079-generation-3.png",
+      "path": "images/image-040.png",
+      "bytes": 5617,
+      "sha256": "39e29af17801e6d4a664e45e73a91d6534033e279120c3728ea8e769ca5b77af",
+      "facts": {
+        "path": "facts/image-040.json",
+        "bytes": 19159,
+        "sha256": "0e01eb7e3082cdef551d90f52780b69eb40b7a95068db74fb3d79dd5bb0958e8"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "1a1a46c4db4262b1099f6f7269428f538bec2bc29c0adc9aab536b8bdafb986f",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 17.983333333333334,
+        "sourceRevision": 2,
+        "tick": 1079,
+        "weather": {
+          "cloud01": 0.4,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            5,
+            0,
+            -2
+          ]
+        }
+      },
+      "fixtureDigest": "7e1bb35d1a0ada1ff5ddda9719e7d2ad5710d11d59f0f28c7f72b20a04dce37e",
+      "sourceRevision": 2,
+      "rendered": {
+        "tick": 1079,
+        "cameraId": "far",
+        "sourceRevision": 2,
+        "fixtureDigest": "7e1bb35d1a0ada1ff5ddda9719e7d2ad5710d11d59f0f28c7f72b20a04dce37e",
+        "resetTick": null,
+        "projectionGeneration": 3,
+        "presentationGeneration": 17
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 41,
+      "case": 8,
+      "mode": "C4",
+      "originalAttachment": "C4-F04-DETACH-REPLAY-tick-1080-generation-4.png",
+      "path": "images/image-041.png",
+      "bytes": 5290,
+      "sha256": "9b23b7573e279c9230430489272a8a9401ee077a41df4e29e926f22a1cbc25ae",
+      "facts": {
+        "path": "facts/image-041.json",
+        "bytes": 16729,
+        "sha256": "4d6ad9f62f825f89687c38be5895575eac727395a2613c3ae122e92e70885df2"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "4188d19ae62214279bc240f9d75e5bafdf57ba517bc02c17e76519b0dfbc0300",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 18,
+        "sourceRevision": 3,
+        "tick": 1080,
+        "weather": {
+          "cloud01": 0.4,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            5,
+            0,
+            -2
+          ]
+        }
+      },
+      "fixtureDigest": "95e4ebc916e34c14d7ff46b0aa98ad2007d7c9f4e03c2463cc2bd75d7d5414bd",
+      "sourceRevision": 3,
+      "rendered": {
+        "tick": 1080,
+        "cameraId": "far",
+        "sourceRevision": 3,
+        "fixtureDigest": "95e4ebc916e34c14d7ff46b0aa98ad2007d7c9f4e03c2463cc2bd75d7d5414bd",
+        "resetTick": null,
+        "projectionGeneration": 4,
+        "presentationGeneration": 20
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 42,
+      "case": 8,
+      "mode": "C4",
+      "originalAttachment": "C4-F04-DETACH-REPLAY-tick-1439-generation-4.png",
+      "path": "images/image-042.png",
+      "bytes": 5290,
+      "sha256": "9b23b7573e279c9230430489272a8a9401ee077a41df4e29e926f22a1cbc25ae",
+      "facts": {
+        "path": "facts/image-042.json",
+        "bytes": 16761,
+        "sha256": "43671b5a1e617f83794ac55b0cb6e3db3e2890f4a52d5c6d74626a301cc354bb"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "4188d19ae62214279bc240f9d75e5bafdf57ba517bc02c17e76519b0dfbc0300",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 23.983333333333334,
+        "sourceRevision": 3,
+        "tick": 1439,
+        "weather": {
+          "cloud01": 0.4,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            5,
+            0,
+            -2
+          ]
+        }
+      },
+      "fixtureDigest": "95e4ebc916e34c14d7ff46b0aa98ad2007d7c9f4e03c2463cc2bd75d7d5414bd",
+      "sourceRevision": 3,
+      "rendered": {
+        "tick": 1439,
+        "cameraId": "far",
+        "sourceRevision": 3,
+        "fixtureDigest": "95e4ebc916e34c14d7ff46b0aa98ad2007d7c9f4e03c2463cc2bd75d7d5414bd",
+        "resetTick": null,
+        "projectionGeneration": 4,
+        "presentationGeneration": 22
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 43,
+      "case": 8,
+      "mode": "C4",
+      "originalAttachment": "C4-F04-DETACH-REPLAY-tick-1440-generation-5.png",
+      "path": "images/image-043.png",
+      "bytes": 5290,
+      "sha256": "9b23b7573e279c9230430489272a8a9401ee077a41df4e29e926f22a1cbc25ae",
+      "facts": {
+        "path": "facts/image-043.json",
+        "bytes": 16729,
+        "sha256": "0927d4d6ca89f10783cc80f1ac22eb466a7274cc1d8d831b1a2c5d6e87d0fe1b"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "4188d19ae62214279bc240f9d75e5bafdf57ba517bc02c17e76519b0dfbc0300",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 24,
+        "sourceRevision": 4,
+        "tick": 1440,
+        "weather": {
+          "cloud01": 0.4,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            5,
+            0,
+            -2
+          ]
+        }
+      },
+      "fixtureDigest": "8b7af46b9292ce40ead9545cf02d38bb7e57bf1205d7fbf1bf9f4c7af783832b",
+      "sourceRevision": 4,
+      "rendered": {
+        "tick": 1440,
+        "cameraId": "far",
+        "sourceRevision": 4,
+        "fixtureDigest": "8b7af46b9292ce40ead9545cf02d38bb7e57bf1205d7fbf1bf9f4c7af783832b",
+        "resetTick": null,
+        "projectionGeneration": 5,
+        "presentationGeneration": 25
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 44,
+      "case": 8,
+      "mode": "C4",
+      "originalAttachment": "C4-F04-DETACH-REPLAY-tick-1559-generation-5.png",
+      "path": "images/image-044.png",
+      "bytes": 5290,
+      "sha256": "9b23b7573e279c9230430489272a8a9401ee077a41df4e29e926f22a1cbc25ae",
+      "facts": {
+        "path": "facts/image-044.json",
+        "bytes": 16761,
+        "sha256": "92a0dc46489fa1c7091ced8db1f7a92cd1b942a787506414fd8f97a22e033774"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "4188d19ae62214279bc240f9d75e5bafdf57ba517bc02c17e76519b0dfbc0300",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 25.983333333333334,
+        "sourceRevision": 4,
+        "tick": 1559,
+        "weather": {
+          "cloud01": 0.4,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            5,
+            0,
+            -2
+          ]
+        }
+      },
+      "fixtureDigest": "8b7af46b9292ce40ead9545cf02d38bb7e57bf1205d7fbf1bf9f4c7af783832b",
+      "sourceRevision": 4,
+      "rendered": {
+        "tick": 1559,
+        "cameraId": "far",
+        "sourceRevision": 4,
+        "fixtureDigest": "8b7af46b9292ce40ead9545cf02d38bb7e57bf1205d7fbf1bf9f4c7af783832b",
+        "resetTick": null,
+        "projectionGeneration": 5,
+        "presentationGeneration": 27
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 45,
+      "case": 8,
+      "mode": "C4",
+      "originalAttachment": "C4-F04-DETACH-REPLAY-tick-1560-generation-6.png",
+      "path": "images/image-045.png",
+      "bytes": 5290,
+      "sha256": "9b23b7573e279c9230430489272a8a9401ee077a41df4e29e926f22a1cbc25ae",
+      "facts": {
+        "path": "facts/image-045.json",
+        "bytes": 16729,
+        "sha256": "f22e68efd2ccbc3c4685f0c66c044b3bafceda8ea5230f2eb03a6297f55da327"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "4188d19ae62214279bc240f9d75e5bafdf57ba517bc02c17e76519b0dfbc0300",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 26,
+        "sourceRevision": 4,
+        "tick": 1560,
+        "weather": {
+          "cloud01": 0.4,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            5,
+            0,
+            -2
+          ]
+        }
+      },
+      "fixtureDigest": "8b7af46b9292ce40ead9545cf02d38bb7e57bf1205d7fbf1bf9f4c7af783832b",
+      "sourceRevision": 4,
+      "rendered": {
+        "tick": 1560,
+        "cameraId": "far",
+        "sourceRevision": 4,
+        "fixtureDigest": "8b7af46b9292ce40ead9545cf02d38bb7e57bf1205d7fbf1bf9f4c7af783832b",
+        "resetTick": 1560,
+        "projectionGeneration": 6,
+        "presentationGeneration": 30
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 46,
+      "case": 8,
+      "mode": "C4",
+      "originalAttachment": "C4-F04-DETACH-REPLAY-tick-1559-generation-7.png",
+      "path": "images/image-046.png",
+      "bytes": 5290,
+      "sha256": "9b23b7573e279c9230430489272a8a9401ee077a41df4e29e926f22a1cbc25ae",
+      "facts": {
+        "path": "facts/image-046.json",
+        "bytes": 16761,
+        "sha256": "d2928815fd9747871ad2f2cf4a01196ceddf01ab9c9129e2008c1a305aff5ce3"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "4188d19ae62214279bc240f9d75e5bafdf57ba517bc02c17e76519b0dfbc0300",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 25.983333333333334,
+        "sourceRevision": 4,
+        "tick": 1559,
+        "weather": {
+          "cloud01": 0.4,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            5,
+            0,
+            -2
+          ]
+        }
+      },
+      "fixtureDigest": "8b7af46b9292ce40ead9545cf02d38bb7e57bf1205d7fbf1bf9f4c7af783832b",
+      "sourceRevision": 4,
+      "rendered": {
+        "tick": 1559,
+        "cameraId": "far",
+        "sourceRevision": 4,
+        "fixtureDigest": "8b7af46b9292ce40ead9545cf02d38bb7e57bf1205d7fbf1bf9f4c7af783832b",
+        "resetTick": null,
+        "projectionGeneration": 7,
+        "presentationGeneration": 33
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 47,
+      "case": 8,
+      "mode": "C4",
+      "originalAttachment": "C4-F04-DETACH-REPLAY-tick-0-generation-8.png",
+      "path": "images/image-047.png",
+      "bytes": 5632,
+      "sha256": "f2ac1c7dcd040be9e1ed5a254b0af0da930cdbdcb4a8ff5a9bc0ee9c542e9878",
+      "facts": {
+        "path": "facts/image-047.json",
+        "bytes": 19187,
+        "sha256": "be6c10f856d7c82b49033e6e01466244c3e6d50c69ebc13a4945804e36429413"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "a2b06c415fdff44f577c0ad9b539041bb12178e7953349669b4299765faa6540",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "far",
+        "sourceRevision": 0,
+        "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+        "resetTick": null,
+        "projectionGeneration": 8,
+        "presentationGeneration": 36
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 48,
+      "case": 8,
+      "mode": "C4",
+      "originalAttachment": "C4-F04-DETACH-REPLAY-resized.png",
+      "path": "images/image-048.png",
+      "bytes": 3556,
+      "sha256": "c08bcf2fc7bddf62da25871ea4f198a02936801f5715bf091688e784f8433757",
+      "facts": {
+        "path": "facts/image-048.json",
+        "bytes": 19215,
+        "sha256": "29e2f159c9cfe4a315e00e0d3f6b62d3a1817bf5d478d9b3009501b6b7a819f1"
+      },
+      "width": 642,
+      "height": 362,
+      "decodedRgbaSha256": "3cc561a5b43889ed2bc33366cc11d3e737b9ff540e4c6af8e8df1b9bb086b092",
+      "decodedBytes": 929616,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 640,
+        "height": 360,
+        "dpr": 2,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "near",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "near",
+        "sourceRevision": 0,
+        "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+        "resetTick": null,
+        "projectionGeneration": 8,
+        "presentationGeneration": 38
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 49,
+      "case": 9,
+      "mode": "C4",
+      "originalAttachment": "C4-F06-MATERIAL-REPLAY-tick-0-generation-1.png",
+      "path": "images/image-049.png",
+      "bytes": 7932,
+      "sha256": "90871cb310abb5c7e3a39d7c9a421deac2b0a828892511a09773a3220c744bd4",
+      "facts": {
+        "path": "facts/image-049.json",
+        "bytes": 24271,
+        "sha256": "e2ad406be158b32019ec6dfceb86f0330bee7d51d6d54d848ad822e81140fcf9"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "3f74013a5dad40e9aad6c341fdb689f562cca65664c0ff3ed4131bd4907628f5",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "far",
+        "sourceRevision": 0,
+        "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+        "resetTick": null,
+        "projectionGeneration": 1,
+        "presentationGeneration": 5
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 50,
+      "case": 9,
+      "mode": "C4",
+      "originalAttachment": "C4-F06-MATERIAL-REPLAY-tick-359-generation-1.png",
+      "path": "images/image-050.png",
+      "bytes": 9700,
+      "sha256": "f45d1d2f13f0e2900a3dd2ff27359b1b9d12607dd40d6b1295c4be4fc41aacd4",
+      "facts": {
+        "path": "facts/image-050.json",
+        "bytes": 24345,
+        "sha256": "8c8b5462c091c57a9c5d28c5b963c0fd844ce0b720c371ddd0c9b812a6480565"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "6fe0a935e96ee762eed7ba72eac7fbaf858b96aba416e347efe50dccdf3b930b",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "near",
+        "paused": true,
+        "seconds": 5.983333333333333,
+        "sourceRevision": 0,
+        "tick": 359,
+        "weather": {
+          "cloud01": 0.8,
+          "rain01": 0.8,
+          "snow01": 0,
+          "windMps": [
+            2,
+            0,
+            1
+          ]
+        }
+      },
+      "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 359,
+        "cameraId": "near",
+        "sourceRevision": 0,
+        "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+        "resetTick": null,
+        "projectionGeneration": 1,
+        "presentationGeneration": 7
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 51,
+      "case": 9,
+      "mode": "C4",
+      "originalAttachment": "C4-F06-MATERIAL-REPLAY-tick-360-generation-2.png",
+      "path": "images/image-051.png",
+      "bytes": 9839,
+      "sha256": "93619ea06b339a0efc327488c5ace8569d3cdbd21a99d8c047402bc91f1a9f06",
+      "facts": {
+        "path": "facts/image-051.json",
+        "bytes": 24317,
+        "sha256": "3e7a210b349dec34a10bb74f25297ad0d7ab3b0301957630526bb44b8d7f06ce"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "1ba47bc4b10b62d455ccefc158b2c278bece73a6fca604d477dcd46cf057de65",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "near",
+        "paused": true,
+        "seconds": 6,
+        "sourceRevision": 1,
+        "tick": 360,
+        "weather": {
+          "cloud01": 0.8,
+          "rain01": 0.8,
+          "snow01": 0,
+          "windMps": [
+            2,
+            0,
+            1
+          ]
+        }
+      },
+      "fixtureDigest": "81de4732517d6cf5259f7ec9afd4d4b7af05379feb7cff56afe9e80e16c6d91a",
+      "sourceRevision": 1,
+      "rendered": {
+        "tick": 360,
+        "cameraId": "near",
+        "sourceRevision": 1,
+        "fixtureDigest": "81de4732517d6cf5259f7ec9afd4d4b7af05379feb7cff56afe9e80e16c6d91a",
+        "resetTick": null,
+        "projectionGeneration": 2,
+        "presentationGeneration": 10
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 52,
+      "case": 9,
+      "mode": "C4",
+      "originalAttachment": "C4-F06-MATERIAL-REPLAY-tick-1559-generation-2.png",
+      "path": "images/image-052.png",
+      "bytes": 8308,
+      "sha256": "ab5856aa796aae2e1c51a8dcaa0df21d41dc59a9fc78b45051c2eaba46b5113b",
+      "facts": {
+        "path": "facts/image-052.json",
+        "bytes": 24325,
+        "sha256": "2a097e2352f1bd6eea80fcaa2e9dcd734a068fe9050beb6b54981f4d50796050"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "12dfa6292142df68fa482b232e4b7c220b06ed244c4f05c34986858e37a50f89",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 25.983333333333334,
+        "sourceRevision": 1,
+        "tick": 1559,
+        "weather": {
+          "cloud01": 0.4,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            5,
+            0,
+            -2
+          ]
+        }
+      },
+      "fixtureDigest": "81de4732517d6cf5259f7ec9afd4d4b7af05379feb7cff56afe9e80e16c6d91a",
+      "sourceRevision": 1,
+      "rendered": {
+        "tick": 1559,
+        "cameraId": "far",
+        "sourceRevision": 1,
+        "fixtureDigest": "81de4732517d6cf5259f7ec9afd4d4b7af05379feb7cff56afe9e80e16c6d91a",
+        "resetTick": null,
+        "projectionGeneration": 2,
+        "presentationGeneration": 12
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 53,
+      "case": 9,
+      "mode": "C4",
+      "originalAttachment": "C4-F06-MATERIAL-REPLAY-tick-1560-generation-3.png",
+      "path": "images/image-053.png",
+      "bytes": 8308,
+      "sha256": "ab5856aa796aae2e1c51a8dcaa0df21d41dc59a9fc78b45051c2eaba46b5113b",
+      "facts": {
+        "path": "facts/image-053.json",
+        "bytes": 24293,
+        "sha256": "bf7e1510ffc51f8d9e1332fe04d6937e1f8b10e43d71a74ae8a2e4c55d3093cd"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "12dfa6292142df68fa482b232e4b7c220b06ed244c4f05c34986858e37a50f89",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 26,
+        "sourceRevision": 1,
+        "tick": 1560,
+        "weather": {
+          "cloud01": 0.4,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            5,
+            0,
+            -2
+          ]
+        }
+      },
+      "fixtureDigest": "81de4732517d6cf5259f7ec9afd4d4b7af05379feb7cff56afe9e80e16c6d91a",
+      "sourceRevision": 1,
+      "rendered": {
+        "tick": 1560,
+        "cameraId": "far",
+        "sourceRevision": 1,
+        "fixtureDigest": "81de4732517d6cf5259f7ec9afd4d4b7af05379feb7cff56afe9e80e16c6d91a",
+        "resetTick": 1560,
+        "projectionGeneration": 3,
+        "presentationGeneration": 15
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 54,
+      "case": 9,
+      "mode": "C4",
+      "originalAttachment": "C4-F06-MATERIAL-REPLAY-tick-1559-generation-4.png",
+      "path": "images/image-054.png",
+      "bytes": 8308,
+      "sha256": "ab5856aa796aae2e1c51a8dcaa0df21d41dc59a9fc78b45051c2eaba46b5113b",
+      "facts": {
+        "path": "facts/image-054.json",
+        "bytes": 24325,
+        "sha256": "d767df6db5996f651507ff5d505045d41823f04aee6fe244d445f59623e907f3"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "12dfa6292142df68fa482b232e4b7c220b06ed244c4f05c34986858e37a50f89",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 25.983333333333334,
+        "sourceRevision": 1,
+        "tick": 1559,
+        "weather": {
+          "cloud01": 0.4,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            5,
+            0,
+            -2
+          ]
+        }
+      },
+      "fixtureDigest": "81de4732517d6cf5259f7ec9afd4d4b7af05379feb7cff56afe9e80e16c6d91a",
+      "sourceRevision": 1,
+      "rendered": {
+        "tick": 1559,
+        "cameraId": "far",
+        "sourceRevision": 1,
+        "fixtureDigest": "81de4732517d6cf5259f7ec9afd4d4b7af05379feb7cff56afe9e80e16c6d91a",
+        "resetTick": null,
+        "projectionGeneration": 4,
+        "presentationGeneration": 18
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 55,
+      "case": 9,
+      "mode": "C4",
+      "originalAttachment": "C4-F06-MATERIAL-REPLAY-tick-0-generation-5.png",
+      "path": "images/image-055.png",
+      "bytes": 7932,
+      "sha256": "90871cb310abb5c7e3a39d7c9a421deac2b0a828892511a09773a3220c744bd4",
+      "facts": {
+        "path": "facts/image-055.json",
+        "bytes": 24277,
+        "sha256": "0608f134b1e4050a095df8393070eaf41ba0b2800e080e60f931397f20d4cb3e"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "3f74013a5dad40e9aad6c341fdb689f562cca65664c0ff3ed4131bd4907628f5",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "far",
+        "sourceRevision": 0,
+        "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+        "resetTick": null,
+        "projectionGeneration": 5,
+        "presentationGeneration": 21
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 56,
+      "case": 9,
+      "mode": "C4",
+      "originalAttachment": "C4-F06-MATERIAL-REPLAY-resized.png",
+      "path": "images/image-056.png",
+      "bytes": 6945,
+      "sha256": "b38fe1f0892ac67bcd35ed94cf657e5f7b96243d158f5907a8a8087084a91afb",
+      "facts": {
+        "path": "facts/image-056.json",
+        "bytes": 24305,
+        "sha256": "9f22f1a544e5d932723e1493e72be433b9d78aaa178efe7adc1acc7a579f54ec"
+      },
+      "width": 642,
+      "height": 362,
+      "decodedRgbaSha256": "657c3f02f04b4b4fef0c9280e7e5cc714952cda98821c237a4c5a32e3e9a1a21",
+      "decodedBytes": 929616,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 640,
+        "height": 360,
+        "dpr": 2,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "near",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "near",
+        "sourceRevision": 0,
+        "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+        "resetTick": null,
+        "projectionGeneration": 5,
+        "presentationGeneration": 23
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 57,
+      "case": 13,
+      "mode": "C3",
+      "originalAttachment": "C3-F01-scene-baked-colors-original.png",
+      "path": "images/image-057.png",
+      "bytes": 265144,
+      "sha256": "7bb23c48cdfcd03f0e5953293cec2e9bf432c78b351a32d39c4f7f5c7fdcfadf",
+      "facts": {
+        "path": "facts/image-057.json",
+        "bytes": 39703,
+        "sha256": "21482e567a1d1364c7e31c89eee30889d44f310ba94702f08ffdee5710715755"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "88418d413927e24ea72a9207c736d01be4b1f048f82d6a7c7426e2175ab1abfc",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "C01-EYE",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "C01-EYE",
+        "sourceRevision": 0,
+        "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+        "resetTick": null,
+        "projectionGeneration": 1,
+        "presentationGeneration": 4
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 58,
+      "case": 13,
+      "mode": "C3",
+      "originalAttachment": "C3-F01-scene-baked-colors-deliberate-fault.png",
+      "path": "images/image-058.png",
+      "bytes": 98225,
+      "sha256": "16f7ac8410e273fc4b8053e3d71edc462860589d3e0652b10eb995a876f8ecba",
+      "facts": {
+        "path": "facts/image-058.json",
+        "bytes": 39731,
+        "sha256": "0a56f92eb635bc88839eb2c24817f6f38b89c8f63e36597c17be0adfbeb72e0f"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "2ccc31c83ff9563412da59c38448627da4b2defc3c05dff9e062a80ae56f3e24",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "C01-EYE",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "C01-EYE",
+        "sourceRevision": 0,
+        "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+        "resetTick": null,
+        "projectionGeneration": 1,
+        "presentationGeneration": 5
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 59,
+      "case": 13,
+      "mode": "C3",
+      "originalAttachment": "C3-F01-scene-baked-colors-restored.png",
+      "path": "images/image-059.png",
+      "bytes": 265144,
+      "sha256": "7bb23c48cdfcd03f0e5953293cec2e9bf432c78b351a32d39c4f7f5c7fdcfadf",
+      "facts": {
+        "path": "facts/image-059.json",
+        "bytes": 39703,
+        "sha256": "3f1ecb5a846b2fc0f4f97b9f0fdf0422d2dd69a04a174630377541cc2cef808e"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "88418d413927e24ea72a9207c736d01be4b1f048f82d6a7c7426e2175ab1abfc",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "C01-EYE",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "C01-EYE",
+        "sourceRevision": 0,
+        "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+        "resetTick": null,
+        "projectionGeneration": 1,
+        "presentationGeneration": 6
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 60,
+      "case": 14,
+      "mode": "C3",
+      "originalAttachment": "C3-F06-material-depth-scene-original.png",
+      "path": "images/image-060.png",
+      "bytes": 8224,
+      "sha256": "c8e746824aeb018d246e50f23e2bd83ae104ad9256a44f6413cdc5b459ff2fdc",
+      "facts": {
+        "path": "facts/image-060.json",
+        "bytes": 24257,
+        "sha256": "46d0b35b2e6e3c4ee463ee800d2c43ab56abdd137cec501af275f867b62b5b25"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "7e45e478803849e0ba3661691a71eb3bb956e7a89e6f8a3d9d138872604d6738",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "far",
+        "sourceRevision": 0,
+        "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+        "resetTick": null,
+        "projectionGeneration": 1,
+        "presentationGeneration": 3
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 61,
+      "case": 14,
+      "mode": "C3",
+      "originalAttachment": "C3-F06-material-depth-scene-deliberate-fault.png",
+      "path": "images/image-061.png",
+      "bytes": 8449,
+      "sha256": "356e18ba4036d34ed84a9ffdced6bf7b590c46e5e1be354561ef986b03b0d46c",
+      "facts": {
+        "path": "facts/image-061.json",
+        "bytes": 24285,
+        "sha256": "03de58a84355dab813ddd93e62ddbafd826dadb52619fb9e256ccf3866e2e730"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "ae27c6bf0147920a69d66474d1acd271ea0b5dedc9ec413d1098bbe7e996c852",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "far",
+        "sourceRevision": 0,
+        "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+        "resetTick": null,
+        "projectionGeneration": 1,
+        "presentationGeneration": 4
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 62,
+      "case": 14,
+      "mode": "C3",
+      "originalAttachment": "C3-F06-material-depth-scene-restored.png",
+      "path": "images/image-062.png",
+      "bytes": 8224,
+      "sha256": "c8e746824aeb018d246e50f23e2bd83ae104ad9256a44f6413cdc5b459ff2fdc",
+      "facts": {
+        "path": "facts/image-062.json",
+        "bytes": 24257,
+        "sha256": "9c343dc7291a6cca45a28944322c11d28d928a66d45d016eced57990cea131aa"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "7e45e478803849e0ba3661691a71eb3bb956e7a89e6f8a3d9d138872604d6738",
+      "decodedBytes": 3702416,
+      "backend": "webgl2",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "far",
+        "sourceRevision": 0,
+        "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+        "resetTick": null,
+        "projectionGeneration": 1,
+        "presentationGeneration": 5
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 63,
+      "case": 15,
+      "mode": "C4",
+      "originalAttachment": "C4-F01-scene-baked-colors-original.png",
+      "path": "images/image-063.png",
+      "bytes": 266062,
+      "sha256": "e6e4a330052a3939908de3a990756dfc83c240f465d9ae4456a83cd0fc6544eb",
+      "facts": {
+        "path": "facts/image-063.json",
+        "bytes": 39717,
+        "sha256": "25e61ccb16b09a36d89a885149fa5645efa298540d4d0d654aaf7704d2a3c623"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "b8c44e182e400f3be92b0ee09a3169c0e5ecb8f2332225208af5c369b235f521",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "C01-EYE",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "C01-EYE",
+        "sourceRevision": 0,
+        "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+        "resetTick": null,
+        "projectionGeneration": 1,
+        "presentationGeneration": 4
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 64,
+      "case": 15,
+      "mode": "C4",
+      "originalAttachment": "C4-F01-scene-baked-colors-deliberate-fault.png",
+      "path": "images/image-064.png",
+      "bytes": 99169,
+      "sha256": "611f1ec392f8860d9e4abe59ebf67b8bd76a64e922b59ebb5746a49351adf3ec",
+      "facts": {
+        "path": "facts/image-064.json",
+        "bytes": 39745,
+        "sha256": "78dbe6b0fa9907fc78a2cd104abd3f402a68019e7e193d67e515bc4047cf5169"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "9d6588cd76d229be39b1cc314df031cdb10710303221d87df418444547054deb",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "C01-EYE",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "C01-EYE",
+        "sourceRevision": 0,
+        "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+        "resetTick": null,
+        "projectionGeneration": 1,
+        "presentationGeneration": 5
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 65,
+      "case": 15,
+      "mode": "C4",
+      "originalAttachment": "C4-F01-scene-baked-colors-restored.png",
+      "path": "images/image-065.png",
+      "bytes": 266062,
+      "sha256": "e6e4a330052a3939908de3a990756dfc83c240f465d9ae4456a83cd0fc6544eb",
+      "facts": {
+        "path": "facts/image-065.json",
+        "bytes": 39717,
+        "sha256": "db3a0f829bfd7d9ff259a282a997bc551990619b75e37e1299cd84feb2251f96"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "b8c44e182e400f3be92b0ee09a3169c0e5ecb8f2332225208af5c369b235f521",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "C01-EYE",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "C01-EYE",
+        "sourceRevision": 0,
+        "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+        "resetTick": null,
+        "projectionGeneration": 1,
+        "presentationGeneration": 6
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 66,
+      "case": 16,
+      "mode": "C4",
+      "originalAttachment": "C4-F06-material-depth-scene-original.png",
+      "path": "images/image-066.png",
+      "bytes": 7932,
+      "sha256": "90871cb310abb5c7e3a39d7c9a421deac2b0a828892511a09773a3220c744bd4",
+      "facts": {
+        "path": "facts/image-066.json",
+        "bytes": 24270,
+        "sha256": "d532efec5a2671cb2f4a5b0699cd9e78398583f2212721768f0c68274261b575"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "3f74013a5dad40e9aad6c341fdb689f562cca65664c0ff3ed4131bd4907628f5",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "far",
+        "sourceRevision": 0,
+        "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+        "resetTick": null,
+        "projectionGeneration": 1,
+        "presentationGeneration": 3
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 67,
+      "case": 16,
+      "mode": "C4",
+      "originalAttachment": "C4-F06-material-depth-scene-deliberate-fault.png",
+      "path": "images/image-067.png",
+      "bytes": 8212,
+      "sha256": "63ed58124dedb806cfadb55dc0a0719daf59a7d67f4caed132ef979fdefc3402",
+      "facts": {
+        "path": "facts/image-067.json",
+        "bytes": 24299,
+        "sha256": "77d912e78e5806d36bb7e8a1d4c934e1f007bc2889abb6b164545f055c424906"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "e2fffe6e4cf81566bf0e42ea2377d0d3bad9529abeb66db8703c173ec215ee20",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "far",
+        "sourceRevision": 0,
+        "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+        "resetTick": null,
+        "projectionGeneration": 1,
+        "presentationGeneration": 4
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    },
+    {
+      "id": 68,
+      "case": 16,
+      "mode": "C4",
+      "originalAttachment": "C4-F06-material-depth-scene-restored.png",
+      "path": "images/image-068.png",
+      "bytes": 7932,
+      "sha256": "90871cb310abb5c7e3a39d7c9a421deac2b0a828892511a09773a3220c744bd4",
+      "facts": {
+        "path": "facts/image-068.json",
+        "bytes": 24271,
+        "sha256": "48b571b6bda223a23546154de2cbefd24b6a63dbe59098ee884629ee45b128ea"
+      },
+      "width": 1282,
+      "height": 722,
+      "decodedRgbaSha256": "3f74013a5dad40e9aad6c341fdb689f562cca65664c0ff3ed4131bd4907628f5",
+      "decodedBytes": 3702416,
+      "backend": "webgpu",
+      "resolution": {
+        "width": 1280,
+        "height": 720,
+        "dpr": 1,
+        "bufferWidth": 1280,
+        "bufferHeight": 720
+      },
+      "frame": {
+        "cameraId": "far",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+      "sourceRevision": 0,
+      "rendered": {
+        "tick": 0,
+        "cameraId": "far",
+        "sourceRevision": 0,
+        "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+        "resetTick": null,
+        "projectionGeneration": 1,
+        "presentationGeneration": 5
+      },
+      "evidence": "native browser presentation screenshot; NOT mapped GPU buffer readback"
+    }
+  ],
+  "files": [
+    {
+      "path": "cases/case-01/attachment-10.json",
+      "bytes": 39709,
+      "sha256": "29dae6521b3aa8e9aa22aed3fd581171fc04c67806ad75474f56bd486c141d0e"
+    },
+    {
+      "path": "cases/case-01/attachment-12.json",
+      "bytes": 39689,
+      "sha256": "d790c21f88d0be9fb70c7fb14942f51261a709eab929429a54be2a61f7f08593"
+    },
+    {
+      "path": "cases/case-01/attachment-13.json",
+      "bytes": 6906,
+      "sha256": "2bdb93ebd4056fc0ecbefd08700634336e873e339ba32100373e687ae9abf8b4"
+    },
+    {
+      "path": "cases/case-01/attachment-14.json",
+      "bytes": 27874,
+      "sha256": "45e7caf19c656c78d1a92e19917ef3157d2ab97e00e8319d498c88c1afa3d738"
+    },
+    {
+      "path": "cases/case-01/attachment-2.json",
+      "bytes": 39703,
+      "sha256": "34893fded0b8fc9c4f95677c6f183b8a4f7feac57b6def4a9803d8fa6de4c137"
+    },
+    {
+      "path": "cases/case-01/attachment-4.json",
+      "bytes": 39751,
+      "sha256": "a2e1d69e7baebf2f58b04ed62af10c39944595a0581b7be3724b653dbeb67b38"
+    },
+    {
+      "path": "cases/case-01/attachment-6.json",
+      "bytes": 39724,
+      "sha256": "f7bf115cbc3b382e75524ffc21139590acb9031276c3cdc66cf81a352d65a159"
+    },
+    {
+      "path": "cases/case-01/attachment-8.json",
+      "bytes": 39757,
+      "sha256": "6d579f8c1cc29869fcda11e1910b5607a94ae0b0a11df41b3bf23fccc2ae37bc"
+    },
+    {
+      "path": "cases/case-02/attachment-10.json",
+      "bytes": 19111,
+      "sha256": "e61efc383d882ed8d8ac48201d2f808aeab082269cf7526e6084671b70afd2ab"
+    },
+    {
+      "path": "cases/case-02/attachment-12.json",
+      "bytes": 19145,
+      "sha256": "2911b9723025459c77deaee5843eefb86eee9c7841fba167f3a8da076b31bea5"
+    },
+    {
+      "path": "cases/case-02/attachment-14.json",
+      "bytes": 16715,
+      "sha256": "01e2a2bff2ba847fa26435414444549ffae92272b23a5aad1a8ac45a4635a766"
+    },
+    {
+      "path": "cases/case-02/attachment-16.json",
+      "bytes": 16747,
+      "sha256": "63f9ea3d5f5b573f3aa85f14155a607ca6b8666fdc32c2573577cae868236ed8"
+    },
+    {
+      "path": "cases/case-02/attachment-18.json",
+      "bytes": 16715,
+      "sha256": "590d33fb9c9cfceb52681548d5e3051de99155d2e8f31357f4c4e1913e4c1b29"
+    },
+    {
+      "path": "cases/case-02/attachment-2.json",
+      "bytes": 19167,
+      "sha256": "f82b16aaa96bfa7358e61776fedbe1d24e5865fb94ec760f40db3f6dd0685b68"
+    },
+    {
+      "path": "cases/case-02/attachment-20.json",
+      "bytes": 16747,
+      "sha256": "2fe60f388ce46743f0e03f87c0779591b22664b8f9c02c35c05a92c1c4eb3c80"
+    },
+    {
+      "path": "cases/case-02/attachment-22.json",
+      "bytes": 16715,
+      "sha256": "cf82e9909f321e94442a912808dac6357680f9840229df8c680eb5ddcda9f1d1"
+    },
+    {
+      "path": "cases/case-02/attachment-24.json",
+      "bytes": 16747,
+      "sha256": "218f63d411c42f59c5a12df308e009898dffe73f4253763146a8bca73fb22cd4"
+    },
+    {
+      "path": "cases/case-02/attachment-26.json",
+      "bytes": 19173,
+      "sha256": "584d56c2e2be8ff854430bb433c5e64d83792fd7468f52f65ed245e7d067b2a8"
+    },
+    {
+      "path": "cases/case-02/attachment-28.json",
+      "bytes": 19201,
+      "sha256": "ed57cee7b96234d69d74f96eba174a8e3564a5a779ad0587c47b189cd5c622d0"
+    },
+    {
+      "path": "cases/case-02/attachment-29.json",
+      "bytes": 10107,
+      "sha256": "d445e663be0ee6a6b7bb5c9503273938edfde95327d85b277d2b6c546b9532ac"
+    },
+    {
+      "path": "cases/case-02/attachment-30.json",
+      "bytes": 38032,
+      "sha256": "b357c4c6c39919f3d55a8ebb8b504df5d72b1416a2e576944ae89b00a53296be"
+    },
+    {
+      "path": "cases/case-02/attachment-4.json",
+      "bytes": 19241,
+      "sha256": "f348e49933f11c7dba148b8db826ceadd48e35a523f5840a3da0932dbc6d3c00"
+    },
+    {
+      "path": "cases/case-02/attachment-6.json",
+      "bytes": 19029,
+      "sha256": "380f9157fb9252b0587de77e9a93be9f1add502521bc068c00b846a33800df5d"
+    },
+    {
+      "path": "cases/case-02/attachment-8.json",
+      "bytes": 19035,
+      "sha256": "dc464e54fd9e79148d1bcbbd6c19549fc1e497ff9dbe19a583f523be4338708b"
+    },
+    {
+      "path": "cases/case-03/attachment-10.json",
+      "bytes": 24279,
+      "sha256": "ca41a40f10a7e98f4403f2a1c5fe8196bf50fa5a1d03ad4ccb76fc42b352a2b6"
+    },
+    {
+      "path": "cases/case-03/attachment-12.json",
+      "bytes": 24311,
+      "sha256": "10451bff9a159e94c7cdc37537e089db7737777122caad12dbe9462cbe2986b1"
+    },
+    {
+      "path": "cases/case-03/attachment-14.json",
+      "bytes": 24263,
+      "sha256": "d5b7c7cba19085fdc7456f085f84a4ae2fb59fd2c64b22b6e79fa266e60a5853"
+    },
+    {
+      "path": "cases/case-03/attachment-16.json",
+      "bytes": 24291,
+      "sha256": "e3f44de91a89ce66787e37a97016bde55b8da9fb201127d75bee8157d873c474"
+    },
+    {
+      "path": "cases/case-03/attachment-17.json",
+      "bytes": 5873,
+      "sha256": "59b63dccd94ff346e83a7f5a862f41a2ce3ba1d83a3367f5443c597c95c943f5"
+    },
+    {
+      "path": "cases/case-03/attachment-18.json",
+      "bytes": 22975,
+      "sha256": "ab463a6267382e798994117600da0741f6096bee2c1b914deccec43c20551c74"
+    },
+    {
+      "path": "cases/case-03/attachment-2.json",
+      "bytes": 24257,
+      "sha256": "594023bd6c1cddcf33d8d7f7a83bb1c3e1511686694ac73b7f1030f3bb6af62f"
+    },
+    {
+      "path": "cases/case-03/attachment-4.json",
+      "bytes": 24331,
+      "sha256": "5387d19e490669b346657023d689223a2ce1e22043487e53ed6599e4e27410b5"
+    },
+    {
+      "path": "cases/case-03/attachment-6.json",
+      "bytes": 24303,
+      "sha256": "121dead818701ebc38f214c8755fc73dc3a151fb82beb96b039ddc3b6f3b6fa0"
+    },
+    {
+      "path": "cases/case-03/attachment-8.json",
+      "bytes": 24311,
+      "sha256": "5be466faec282c866d8a4cf0bd97aad16f60513d4e7a1533f00612cdba27af32"
+    },
+    {
+      "path": "cases/case-04/attachment-1.json",
+      "bytes": 76097,
+      "sha256": "daa8daa4c8283a9da47172c2dbe3d08c7ee0d889fe44ff2a9c5aa4d5f6e56b8d"
+    },
+    {
+      "path": "cases/case-04/attachment-2.json",
+      "bytes": 576777,
+      "sha256": "d298c3113ab68faebb3bb65002e05df64122c07670d8df1333c4948a74e4ad26"
+    },
+    {
+      "path": "cases/case-05/attachment-1.json",
+      "bytes": 38058,
+      "sha256": "4b12aa0acecba77f6cea2a05c84af73069b116dfdc8f9860fa8603fa235badf1"
+    },
+    {
+      "path": "cases/case-06/attachment-1.json",
+      "bytes": 1808,
+      "sha256": "6f313f72110e277b16b9539354701c928e7fe4c566a95f0d96657d45aac895ac"
+    },
+    {
+      "path": "cases/case-06/attachment-3.json",
+      "bytes": 38058,
+      "sha256": "8e1954dd5e854a12f26a58017f013e7d30f497d22a99aadb309dbf685ba95c29"
+    },
+    {
+      "path": "cases/case-07/attachment-10.json",
+      "bytes": 39723,
+      "sha256": "f388df4a8110b9f538be7fc3c10c0084cf0087a31d759ebdc354222eeae6208f"
+    },
+    {
+      "path": "cases/case-07/attachment-12.json",
+      "bytes": 39703,
+      "sha256": "9f076e6f9a77eafaf5a75cb6c2aefe668f0ce9f68cf51dfd11f2ba9d2aa97ca7"
+    },
+    {
+      "path": "cases/case-07/attachment-13.json",
+      "bytes": 6974,
+      "sha256": "4f1b848080f6978b23404830daf95fe4183b1dcf433a67a751e69cbf791e17c0"
+    },
+    {
+      "path": "cases/case-07/attachment-14.json",
+      "bytes": 28131,
+      "sha256": "531e96a1184c4894234d54e2a7aa3fa8c189dfff19694945ebba2fdf370f5cb9"
+    },
+    {
+      "path": "cases/case-07/attachment-2.json",
+      "bytes": 39716,
+      "sha256": "f04d02d9d05084b38bcbe327db60cfeafc01c528dd683812f9d066ba50976848"
+    },
+    {
+      "path": "cases/case-07/attachment-4.json",
+      "bytes": 39765,
+      "sha256": "2e513d3a2a13010c243ee4967b5b6fe25c216b0c13c7ccdd1c0b741b7066a63a"
+    },
+    {
+      "path": "cases/case-07/attachment-6.json",
+      "bytes": 39737,
+      "sha256": "04279a5b6cb6acefd79db29c111bb7f195273a49986bade05fd014ff95d29cd9"
+    },
+    {
+      "path": "cases/case-07/attachment-8.json",
+      "bytes": 39770,
+      "sha256": "65a01325c37b893be8a066b033fd94a5358a17ed8392235ad29ab46f52d99484"
+    },
+    {
+      "path": "cases/case-08/attachment-10.json",
+      "bytes": 19125,
+      "sha256": "6e402535cd810e32f1e1ea4b1aac944223f269ca333f406d50bed355345fbc87"
+    },
+    {
+      "path": "cases/case-08/attachment-12.json",
+      "bytes": 19159,
+      "sha256": "0e01eb7e3082cdef551d90f52780b69eb40b7a95068db74fb3d79dd5bb0958e8"
+    },
+    {
+      "path": "cases/case-08/attachment-14.json",
+      "bytes": 16729,
+      "sha256": "4d6ad9f62f825f89687c38be5895575eac727395a2613c3ae122e92e70885df2"
+    },
+    {
+      "path": "cases/case-08/attachment-16.json",
+      "bytes": 16761,
+      "sha256": "43671b5a1e617f83794ac55b0cb6e3db3e2890f4a52d5c6d74626a301cc354bb"
+    },
+    {
+      "path": "cases/case-08/attachment-18.json",
+      "bytes": 16729,
+      "sha256": "0927d4d6ca89f10783cc80f1ac22eb466a7274cc1d8d831b1a2c5d6e87d0fe1b"
+    },
+    {
+      "path": "cases/case-08/attachment-2.json",
+      "bytes": 19181,
+      "sha256": "68ffdc7ba28c07f919ee43dbf6de37166c8115cf56a954c743fda3bb78c27e7c"
+    },
+    {
+      "path": "cases/case-08/attachment-20.json",
+      "bytes": 16761,
+      "sha256": "92a0dc46489fa1c7091ced8db1f7a92cd1b942a787506414fd8f97a22e033774"
+    },
+    {
+      "path": "cases/case-08/attachment-22.json",
+      "bytes": 16729,
+      "sha256": "f22e68efd2ccbc3c4685f0c66c044b3bafceda8ea5230f2eb03a6297f55da327"
+    },
+    {
+      "path": "cases/case-08/attachment-24.json",
+      "bytes": 16761,
+      "sha256": "d2928815fd9747871ad2f2cf4a01196ceddf01ab9c9129e2008c1a305aff5ce3"
+    },
+    {
+      "path": "cases/case-08/attachment-26.json",
+      "bytes": 19187,
+      "sha256": "be6c10f856d7c82b49033e6e01466244c3e6d50c69ebc13a4945804e36429413"
+    },
+    {
+      "path": "cases/case-08/attachment-28.json",
+      "bytes": 19215,
+      "sha256": "29e2f159c9cfe4a315e00e0d3f6b62d3a1817bf5d478d9b3009501b6b7a819f1"
+    },
+    {
+      "path": "cases/case-08/attachment-29.json",
+      "bytes": 10175,
+      "sha256": "b4250de8c2e3c38fe36e5626b5008c302e3b340332965aee42373e3111bb606a"
+    },
+    {
+      "path": "cases/case-08/attachment-30.json",
+      "bytes": 38289,
+      "sha256": "8f9c770f15cd36b408eda817b8284fa2a96f42fc673f43f570dd68e8e82195f5"
+    },
+    {
+      "path": "cases/case-08/attachment-4.json",
+      "bytes": 19255,
+      "sha256": "b31e5219fe87a74d2fff9c14c9e8d41441ed23efa2b8b5b736aff7a7db0b5a35"
+    },
+    {
+      "path": "cases/case-08/attachment-6.json",
+      "bytes": 19043,
+      "sha256": "a62dcaf6ed9f49462a1d6c6fc3e3ccaa99cb04fa4b3c36690e1c8dd88dbc09c1"
+    },
+    {
+      "path": "cases/case-08/attachment-8.json",
+      "bytes": 19049,
+      "sha256": "029cb7233a9b8105cb8ca1a0848d07018a42e536b138a574784ad005de2a5e99"
+    },
+    {
+      "path": "cases/case-09/attachment-10.json",
+      "bytes": 24293,
+      "sha256": "bf7e1510ffc51f8d9e1332fe04d6937e1f8b10e43d71a74ae8a2e4c55d3093cd"
+    },
+    {
+      "path": "cases/case-09/attachment-12.json",
+      "bytes": 24325,
+      "sha256": "d767df6db5996f651507ff5d505045d41823f04aee6fe244d445f59623e907f3"
+    },
+    {
+      "path": "cases/case-09/attachment-14.json",
+      "bytes": 24277,
+      "sha256": "0608f134b1e4050a095df8393070eaf41ba0b2800e080e60f931397f20d4cb3e"
+    },
+    {
+      "path": "cases/case-09/attachment-16.json",
+      "bytes": 24305,
+      "sha256": "9f22f1a544e5d932723e1493e72be433b9d78aaa178efe7adc1acc7a579f54ec"
+    },
+    {
+      "path": "cases/case-09/attachment-17.json",
+      "bytes": 5941,
+      "sha256": "879d04a4af72cf1755d359012242a272474957b4ae334daf5988998104789e90"
+    },
+    {
+      "path": "cases/case-09/attachment-18.json",
+      "bytes": 23232,
+      "sha256": "ca3a588a96c3488f8ac2d662091591381e810948aea51b16d4a165c63aad2367"
+    },
+    {
+      "path": "cases/case-09/attachment-2.json",
+      "bytes": 24271,
+      "sha256": "e2ad406be158b32019ec6dfceb86f0330bee7d51d6d54d848ad822e81140fcf9"
+    },
+    {
+      "path": "cases/case-09/attachment-4.json",
+      "bytes": 24345,
+      "sha256": "8c8b5462c091c57a9c5d28c5b963c0fd844ce0b720c371ddd0c9b812a6480565"
+    },
+    {
+      "path": "cases/case-09/attachment-6.json",
+      "bytes": 24317,
+      "sha256": "3e7a210b349dec34a10bb74f25297ad0d7ab3b0301957630526bb44b8d7f06ce"
+    },
+    {
+      "path": "cases/case-09/attachment-8.json",
+      "bytes": 24325,
+      "sha256": "2a097e2352f1bd6eea80fcaa2e9dcd734a068fe9050beb6b54981f4d50796050"
+    },
+    {
+      "path": "cases/case-10/attachment-1.json",
+      "bytes": 76237,
+      "sha256": "b2fcfa06ce3d7b6c4dc56728a9349f3da25b8b8e2d07c5ce71cb6510d795a264"
+    },
+    {
+      "path": "cases/case-10/attachment-2.json",
+      "bytes": 576616,
+      "sha256": "853d5dda39f8310cd5bcd516054c5636688e55777acf4faa11c2edf46094d1f6"
+    },
+    {
+      "path": "cases/case-11/attachment-1.json",
+      "bytes": 38315,
+      "sha256": "ebe297fda3c776dfb0a6193c1e3a44705176af2bc302e03c1b4b9e1be849791d"
+    },
+    {
+      "path": "cases/case-12/attachment-1.json",
+      "bytes": 1865,
+      "sha256": "204f882efea0bb62513c0869adc0cc5520c60307e8cf03ce3fc51d75ba10ef85"
+    },
+    {
+      "path": "cases/case-12/attachment-3.json",
+      "bytes": 38315,
+      "sha256": "f8d8c8ad51156ee8de4f8db8733f52f6865fb5321402e662faf646805441bdc0"
+    },
+    {
+      "path": "cases/case-13/attachment-2.json",
+      "bytes": 39703,
+      "sha256": "21482e567a1d1364c7e31c89eee30889d44f310ba94702f08ffdee5710715755"
+    },
+    {
+      "path": "cases/case-13/attachment-4.json",
+      "bytes": 39731,
+      "sha256": "0a56f92eb635bc88839eb2c24817f6f38b89c8f63e36597c17be0adfbeb72e0f"
+    },
+    {
+      "path": "cases/case-13/attachment-6.json",
+      "bytes": 39703,
+      "sha256": "3f1ecb5a846b2fc0f4f97b9f0fdf0422d2dd69a04a174630377541cc2cef808e"
+    },
+    {
+      "path": "cases/case-13/attachment-7.json",
+      "bytes": 453,
+      "sha256": "4cd1b0bc5173aaac0773fc32f6d3c86ca03c96203adad4e6f289da7eb3a11e73"
+    },
+    {
+      "path": "cases/case-13/attachment-8.json",
+      "bytes": 27900,
+      "sha256": "83b486e74258a750bdc79c3f65c39f6ae94d013c9e170d7bd01e399a28f36bcd"
+    },
+    {
+      "path": "cases/case-14/attachment-2.json",
+      "bytes": 24257,
+      "sha256": "46d0b35b2e6e3c4ee463ee800d2c43ab56abdd137cec501af275f867b62b5b25"
+    },
+    {
+      "path": "cases/case-14/attachment-4.json",
+      "bytes": 24285,
+      "sha256": "03de58a84355dab813ddd93e62ddbafd826dadb52619fb9e256ccf3866e2e730"
+    },
+    {
+      "path": "cases/case-14/attachment-6.json",
+      "bytes": 24257,
+      "sha256": "9c343dc7291a6cca45a28944322c11d28d928a66d45d016eced57990cea131aa"
+    },
+    {
+      "path": "cases/case-14/attachment-8.json",
+      "bytes": 23001,
+      "sha256": "34dabdbaa8f2a5bf68afe8f70af80fd2611e6e30ec4d4512a6588173572ddb01"
+    },
+    {
+      "path": "cases/case-15/attachment-2.json",
+      "bytes": 39717,
+      "sha256": "25e61ccb16b09a36d89a885149fa5645efa298540d4d0d654aaf7704d2a3c623"
+    },
+    {
+      "path": "cases/case-15/attachment-4.json",
+      "bytes": 39745,
+      "sha256": "78dbe6b0fa9907fc78a2cd104abd3f402a68019e7e193d67e515bc4047cf5169"
+    },
+    {
+      "path": "cases/case-15/attachment-6.json",
+      "bytes": 39717,
+      "sha256": "db3a0f829bfd7d9ff259a282a997bc551990619b75e37e1299cd84feb2251f96"
+    },
+    {
+      "path": "cases/case-15/attachment-7.json",
+      "bytes": 457,
+      "sha256": "26b4802451eaf432e8e7c6e4089d879bec20f570c73c7aeb171287966bdbca3d"
+    },
+    {
+      "path": "cases/case-15/attachment-8.json",
+      "bytes": 28157,
+      "sha256": "bd047ffb52a08da5660c95cdb7758d7332162318a5e7a2edfb7a28090ec472dd"
+    },
+    {
+      "path": "cases/case-16/attachment-2.json",
+      "bytes": 24270,
+      "sha256": "d532efec5a2671cb2f4a5b0699cd9e78398583f2212721768f0c68274261b575"
+    },
+    {
+      "path": "cases/case-16/attachment-4.json",
+      "bytes": 24299,
+      "sha256": "77d912e78e5806d36bb7e8a1d4c934e1f007bc2889abb6b164545f055c424906"
+    },
+    {
+      "path": "cases/case-16/attachment-6.json",
+      "bytes": 24271,
+      "sha256": "48b571b6bda223a23546154de2cbefd24b6a63dbe59098ee884629ee45b128ea"
+    },
+    {
+      "path": "cases/case-16/attachment-8.json",
+      "bytes": 23258,
+      "sha256": "cc432d640b3bb77c2759ceee4ed25b317ddcba955c8aaba880fabd9b04d968fa"
+    },
+    {
+      "path": "contact-sheet.md",
+      "bytes": 2178,
+      "sha256": "0d0d2bc4bf0d813ec05474f67266fab259a2563d7d84d6116ad43c5a8b04a4b9"
+    },
+    {
+      "path": "contact-sheet.png",
+      "bytes": 282240,
+      "sha256": "0faf118c8125b4b5608a2b30b002ee8e881e15fd294c29da9c9370817672b598"
+    },
+    {
+      "path": "facts/image-001.json",
+      "bytes": 39703,
+      "sha256": "34893fded0b8fc9c4f95677c6f183b8a4f7feac57b6def4a9803d8fa6de4c137"
+    },
+    {
+      "path": "facts/image-002.json",
+      "bytes": 39751,
+      "sha256": "a2e1d69e7baebf2f58b04ed62af10c39944595a0581b7be3724b653dbeb67b38"
+    },
+    {
+      "path": "facts/image-003.json",
+      "bytes": 39724,
+      "sha256": "f7bf115cbc3b382e75524ffc21139590acb9031276c3cdc66cf81a352d65a159"
+    },
+    {
+      "path": "facts/image-004.json",
+      "bytes": 39757,
+      "sha256": "6d579f8c1cc29869fcda11e1910b5607a94ae0b0a11df41b3bf23fccc2ae37bc"
+    },
+    {
+      "path": "facts/image-005.json",
+      "bytes": 39709,
+      "sha256": "29dae6521b3aa8e9aa22aed3fd581171fc04c67806ad75474f56bd486c141d0e"
+    },
+    {
+      "path": "facts/image-006.json",
+      "bytes": 39689,
+      "sha256": "d790c21f88d0be9fb70c7fb14942f51261a709eab929429a54be2a61f7f08593"
+    },
+    {
+      "path": "facts/image-007.json",
+      "bytes": 19167,
+      "sha256": "f82b16aaa96bfa7358e61776fedbe1d24e5865fb94ec760f40db3f6dd0685b68"
+    },
+    {
+      "path": "facts/image-008.json",
+      "bytes": 19241,
+      "sha256": "f348e49933f11c7dba148b8db826ceadd48e35a523f5840a3da0932dbc6d3c00"
+    },
+    {
+      "path": "facts/image-009.json",
+      "bytes": 19029,
+      "sha256": "380f9157fb9252b0587de77e9a93be9f1add502521bc068c00b846a33800df5d"
+    },
+    {
+      "path": "facts/image-010.json",
+      "bytes": 19035,
+      "sha256": "dc464e54fd9e79148d1bcbbd6c19549fc1e497ff9dbe19a583f523be4338708b"
+    },
+    {
+      "path": "facts/image-011.json",
+      "bytes": 19111,
+      "sha256": "e61efc383d882ed8d8ac48201d2f808aeab082269cf7526e6084671b70afd2ab"
+    },
+    {
+      "path": "facts/image-012.json",
+      "bytes": 19145,
+      "sha256": "2911b9723025459c77deaee5843eefb86eee9c7841fba167f3a8da076b31bea5"
+    },
+    {
+      "path": "facts/image-013.json",
+      "bytes": 16715,
+      "sha256": "01e2a2bff2ba847fa26435414444549ffae92272b23a5aad1a8ac45a4635a766"
+    },
+    {
+      "path": "facts/image-014.json",
+      "bytes": 16747,
+      "sha256": "63f9ea3d5f5b573f3aa85f14155a607ca6b8666fdc32c2573577cae868236ed8"
+    },
+    {
+      "path": "facts/image-015.json",
+      "bytes": 16715,
+      "sha256": "590d33fb9c9cfceb52681548d5e3051de99155d2e8f31357f4c4e1913e4c1b29"
+    },
+    {
+      "path": "facts/image-016.json",
+      "bytes": 16747,
+      "sha256": "2fe60f388ce46743f0e03f87c0779591b22664b8f9c02c35c05a92c1c4eb3c80"
+    },
+    {
+      "path": "facts/image-017.json",
+      "bytes": 16715,
+      "sha256": "cf82e9909f321e94442a912808dac6357680f9840229df8c680eb5ddcda9f1d1"
+    },
+    {
+      "path": "facts/image-018.json",
+      "bytes": 16747,
+      "sha256": "218f63d411c42f59c5a12df308e009898dffe73f4253763146a8bca73fb22cd4"
+    },
+    {
+      "path": "facts/image-019.json",
+      "bytes": 19173,
+      "sha256": "584d56c2e2be8ff854430bb433c5e64d83792fd7468f52f65ed245e7d067b2a8"
+    },
+    {
+      "path": "facts/image-020.json",
+      "bytes": 19201,
+      "sha256": "ed57cee7b96234d69d74f96eba174a8e3564a5a779ad0587c47b189cd5c622d0"
+    },
+    {
+      "path": "facts/image-021.json",
+      "bytes": 24257,
+      "sha256": "594023bd6c1cddcf33d8d7f7a83bb1c3e1511686694ac73b7f1030f3bb6af62f"
+    },
+    {
+      "path": "facts/image-022.json",
+      "bytes": 24331,
+      "sha256": "5387d19e490669b346657023d689223a2ce1e22043487e53ed6599e4e27410b5"
+    },
+    {
+      "path": "facts/image-023.json",
+      "bytes": 24303,
+      "sha256": "121dead818701ebc38f214c8755fc73dc3a151fb82beb96b039ddc3b6f3b6fa0"
+    },
+    {
+      "path": "facts/image-024.json",
+      "bytes": 24311,
+      "sha256": "5be466faec282c866d8a4cf0bd97aad16f60513d4e7a1533f00612cdba27af32"
+    },
+    {
+      "path": "facts/image-025.json",
+      "bytes": 24279,
+      "sha256": "ca41a40f10a7e98f4403f2a1c5fe8196bf50fa5a1d03ad4ccb76fc42b352a2b6"
+    },
+    {
+      "path": "facts/image-026.json",
+      "bytes": 24311,
+      "sha256": "10451bff9a159e94c7cdc37537e089db7737777122caad12dbe9462cbe2986b1"
+    },
+    {
+      "path": "facts/image-027.json",
+      "bytes": 24263,
+      "sha256": "d5b7c7cba19085fdc7456f085f84a4ae2fb59fd2c64b22b6e79fa266e60a5853"
+    },
+    {
+      "path": "facts/image-028.json",
+      "bytes": 24291,
+      "sha256": "e3f44de91a89ce66787e37a97016bde55b8da9fb201127d75bee8157d873c474"
+    },
+    {
+      "path": "facts/image-029.json",
+      "bytes": 39716,
+      "sha256": "f04d02d9d05084b38bcbe327db60cfeafc01c528dd683812f9d066ba50976848"
+    },
+    {
+      "path": "facts/image-030.json",
+      "bytes": 39765,
+      "sha256": "2e513d3a2a13010c243ee4967b5b6fe25c216b0c13c7ccdd1c0b741b7066a63a"
+    },
+    {
+      "path": "facts/image-031.json",
+      "bytes": 39737,
+      "sha256": "04279a5b6cb6acefd79db29c111bb7f195273a49986bade05fd014ff95d29cd9"
+    },
+    {
+      "path": "facts/image-032.json",
+      "bytes": 39770,
+      "sha256": "65a01325c37b893be8a066b033fd94a5358a17ed8392235ad29ab46f52d99484"
+    },
+    {
+      "path": "facts/image-033.json",
+      "bytes": 39723,
+      "sha256": "f388df4a8110b9f538be7fc3c10c0084cf0087a31d759ebdc354222eeae6208f"
+    },
+    {
+      "path": "facts/image-034.json",
+      "bytes": 39703,
+      "sha256": "9f076e6f9a77eafaf5a75cb6c2aefe668f0ce9f68cf51dfd11f2ba9d2aa97ca7"
+    },
+    {
+      "path": "facts/image-035.json",
+      "bytes": 19181,
+      "sha256": "68ffdc7ba28c07f919ee43dbf6de37166c8115cf56a954c743fda3bb78c27e7c"
+    },
+    {
+      "path": "facts/image-036.json",
+      "bytes": 19255,
+      "sha256": "b31e5219fe87a74d2fff9c14c9e8d41441ed23efa2b8b5b736aff7a7db0b5a35"
+    },
+    {
+      "path": "facts/image-037.json",
+      "bytes": 19043,
+      "sha256": "a62dcaf6ed9f49462a1d6c6fc3e3ccaa99cb04fa4b3c36690e1c8dd88dbc09c1"
+    },
+    {
+      "path": "facts/image-038.json",
+      "bytes": 19049,
+      "sha256": "029cb7233a9b8105cb8ca1a0848d07018a42e536b138a574784ad005de2a5e99"
+    },
+    {
+      "path": "facts/image-039.json",
+      "bytes": 19125,
+      "sha256": "6e402535cd810e32f1e1ea4b1aac944223f269ca333f406d50bed355345fbc87"
+    },
+    {
+      "path": "facts/image-040.json",
+      "bytes": 19159,
+      "sha256": "0e01eb7e3082cdef551d90f52780b69eb40b7a95068db74fb3d79dd5bb0958e8"
+    },
+    {
+      "path": "facts/image-041.json",
+      "bytes": 16729,
+      "sha256": "4d6ad9f62f825f89687c38be5895575eac727395a2613c3ae122e92e70885df2"
+    },
+    {
+      "path": "facts/image-042.json",
+      "bytes": 16761,
+      "sha256": "43671b5a1e617f83794ac55b0cb6e3db3e2890f4a52d5c6d74626a301cc354bb"
+    },
+    {
+      "path": "facts/image-043.json",
+      "bytes": 16729,
+      "sha256": "0927d4d6ca89f10783cc80f1ac22eb466a7274cc1d8d831b1a2c5d6e87d0fe1b"
+    },
+    {
+      "path": "facts/image-044.json",
+      "bytes": 16761,
+      "sha256": "92a0dc46489fa1c7091ced8db1f7a92cd1b942a787506414fd8f97a22e033774"
+    },
+    {
+      "path": "facts/image-045.json",
+      "bytes": 16729,
+      "sha256": "f22e68efd2ccbc3c4685f0c66c044b3bafceda8ea5230f2eb03a6297f55da327"
+    },
+    {
+      "path": "facts/image-046.json",
+      "bytes": 16761,
+      "sha256": "d2928815fd9747871ad2f2cf4a01196ceddf01ab9c9129e2008c1a305aff5ce3"
+    },
+    {
+      "path": "facts/image-047.json",
+      "bytes": 19187,
+      "sha256": "be6c10f856d7c82b49033e6e01466244c3e6d50c69ebc13a4945804e36429413"
+    },
+    {
+      "path": "facts/image-048.json",
+      "bytes": 19215,
+      "sha256": "29e2f159c9cfe4a315e00e0d3f6b62d3a1817bf5d478d9b3009501b6b7a819f1"
+    },
+    {
+      "path": "facts/image-049.json",
+      "bytes": 24271,
+      "sha256": "e2ad406be158b32019ec6dfceb86f0330bee7d51d6d54d848ad822e81140fcf9"
+    },
+    {
+      "path": "facts/image-050.json",
+      "bytes": 24345,
+      "sha256": "8c8b5462c091c57a9c5d28c5b963c0fd844ce0b720c371ddd0c9b812a6480565"
+    },
+    {
+      "path": "facts/image-051.json",
+      "bytes": 24317,
+      "sha256": "3e7a210b349dec34a10bb74f25297ad0d7ab3b0301957630526bb44b8d7f06ce"
+    },
+    {
+      "path": "facts/image-052.json",
+      "bytes": 24325,
+      "sha256": "2a097e2352f1bd6eea80fcaa2e9dcd734a068fe9050beb6b54981f4d50796050"
+    },
+    {
+      "path": "facts/image-053.json",
+      "bytes": 24293,
+      "sha256": "bf7e1510ffc51f8d9e1332fe04d6937e1f8b10e43d71a74ae8a2e4c55d3093cd"
+    },
+    {
+      "path": "facts/image-054.json",
+      "bytes": 24325,
+      "sha256": "d767df6db5996f651507ff5d505045d41823f04aee6fe244d445f59623e907f3"
+    },
+    {
+      "path": "facts/image-055.json",
+      "bytes": 24277,
+      "sha256": "0608f134b1e4050a095df8393070eaf41ba0b2800e080e60f931397f20d4cb3e"
+    },
+    {
+      "path": "facts/image-056.json",
+      "bytes": 24305,
+      "sha256": "9f22f1a544e5d932723e1493e72be433b9d78aaa178efe7adc1acc7a579f54ec"
+    },
+    {
+      "path": "facts/image-057.json",
+      "bytes": 39703,
+      "sha256": "21482e567a1d1364c7e31c89eee30889d44f310ba94702f08ffdee5710715755"
+    },
+    {
+      "path": "facts/image-058.json",
+      "bytes": 39731,
+      "sha256": "0a56f92eb635bc88839eb2c24817f6f38b89c8f63e36597c17be0adfbeb72e0f"
+    },
+    {
+      "path": "facts/image-059.json",
+      "bytes": 39703,
+      "sha256": "3f1ecb5a846b2fc0f4f97b9f0fdf0422d2dd69a04a174630377541cc2cef808e"
+    },
+    {
+      "path": "facts/image-060.json",
+      "bytes": 24257,
+      "sha256": "46d0b35b2e6e3c4ee463ee800d2c43ab56abdd137cec501af275f867b62b5b25"
+    },
+    {
+      "path": "facts/image-061.json",
+      "bytes": 24285,
+      "sha256": "03de58a84355dab813ddd93e62ddbafd826dadb52619fb9e256ccf3866e2e730"
+    },
+    {
+      "path": "facts/image-062.json",
+      "bytes": 24257,
+      "sha256": "9c343dc7291a6cca45a28944322c11d28d928a66d45d016eced57990cea131aa"
+    },
+    {
+      "path": "facts/image-063.json",
+      "bytes": 39717,
+      "sha256": "25e61ccb16b09a36d89a885149fa5645efa298540d4d0d654aaf7704d2a3c623"
+    },
+    {
+      "path": "facts/image-064.json",
+      "bytes": 39745,
+      "sha256": "78dbe6b0fa9907fc78a2cd104abd3f402a68019e7e193d67e515bc4047cf5169"
+    },
+    {
+      "path": "facts/image-065.json",
+      "bytes": 39717,
+      "sha256": "db3a0f829bfd7d9ff259a282a997bc551990619b75e37e1299cd84feb2251f96"
+    },
+    {
+      "path": "facts/image-066.json",
+      "bytes": 24270,
+      "sha256": "d532efec5a2671cb2f4a5b0699cd9e78398583f2212721768f0c68274261b575"
+    },
+    {
+      "path": "facts/image-067.json",
+      "bytes": 24299,
+      "sha256": "77d912e78e5806d36bb7e8a1d4c934e1f007bc2889abb6b164545f055c424906"
+    },
+    {
+      "path": "facts/image-068.json",
+      "bytes": 24271,
+      "sha256": "48b571b6bda223a23546154de2cbefd24b6a63dbe59098ee884629ee45b128ea"
+    },
+    {
+      "path": "images/image-001.png",
+      "bytes": 265144,
+      "sha256": "7bb23c48cdfcd03f0e5953293cec2e9bf432c78b351a32d39c4f7f5c7fdcfadf"
+    },
+    {
+      "path": "images/image-002.png",
+      "bytes": 265144,
+      "sha256": "7bb23c48cdfcd03f0e5953293cec2e9bf432c78b351a32d39c4f7f5c7fdcfadf"
+    },
+    {
+      "path": "images/image-003.png",
+      "bytes": 265144,
+      "sha256": "7bb23c48cdfcd03f0e5953293cec2e9bf432c78b351a32d39c4f7f5c7fdcfadf"
+    },
+    {
+      "path": "images/image-004.png",
+      "bytes": 265144,
+      "sha256": "7bb23c48cdfcd03f0e5953293cec2e9bf432c78b351a32d39c4f7f5c7fdcfadf"
+    },
+    {
+      "path": "images/image-005.png",
+      "bytes": 265144,
+      "sha256": "7bb23c48cdfcd03f0e5953293cec2e9bf432c78b351a32d39c4f7f5c7fdcfadf"
+    },
+    {
+      "path": "images/image-006.png",
+      "bytes": 6398,
+      "sha256": "1611f64666e63dab07d262f0042ff7abc51ec8f8799dd800390005d0cb235e0f"
+    },
+    {
+      "path": "images/image-007.png",
+      "bytes": 5602,
+      "sha256": "cf3b46cb574a3f47f6e8ec81b1dca5a0958e1698e9e4172c966c193f2c477d81"
+    },
+    {
+      "path": "images/image-008.png",
+      "bytes": 6561,
+      "sha256": "4cec0c11ba20a93cd7acfc0cac16ddfae4d83d931612353b43b3be76e141e553"
+    },
+    {
+      "path": "images/image-009.png",
+      "bytes": 6776,
+      "sha256": "30ec5c5fb8e2c13d69f70d1974f056710f5bf494d0bd2d7e395f2bb946cd6339"
+    },
+    {
+      "path": "images/image-010.png",
+      "bytes": 5624,
+      "sha256": "8a789a35ff080d92a00cd5d61a5a357d93815a8eb3cbdfca8ca3cbe0a538727f"
+    },
+    {
+      "path": "images/image-011.png",
+      "bytes": 5552,
+      "sha256": "756c036355f430c16e98ab2189d0d56995883f93e256a753e3b0707abb150176"
+    },
+    {
+      "path": "images/image-012.png",
+      "bytes": 5552,
+      "sha256": "756c036355f430c16e98ab2189d0d56995883f93e256a753e3b0707abb150176"
+    },
+    {
+      "path": "images/image-013.png",
+      "bytes": 5287,
+      "sha256": "f0de6c818dd15fd77e4593cc8b79f2c015a3800bc869b8790034a54174cc8dcb"
+    },
+    {
+      "path": "images/image-014.png",
+      "bytes": 5287,
+      "sha256": "f0de6c818dd15fd77e4593cc8b79f2c015a3800bc869b8790034a54174cc8dcb"
+    },
+    {
+      "path": "images/image-015.png",
+      "bytes": 5287,
+      "sha256": "f0de6c818dd15fd77e4593cc8b79f2c015a3800bc869b8790034a54174cc8dcb"
+    },
+    {
+      "path": "images/image-016.png",
+      "bytes": 5287,
+      "sha256": "f0de6c818dd15fd77e4593cc8b79f2c015a3800bc869b8790034a54174cc8dcb"
+    },
+    {
+      "path": "images/image-017.png",
+      "bytes": 5287,
+      "sha256": "f0de6c818dd15fd77e4593cc8b79f2c015a3800bc869b8790034a54174cc8dcb"
+    },
+    {
+      "path": "images/image-018.png",
+      "bytes": 5287,
+      "sha256": "f0de6c818dd15fd77e4593cc8b79f2c015a3800bc869b8790034a54174cc8dcb"
+    },
+    {
+      "path": "images/image-019.png",
+      "bytes": 5602,
+      "sha256": "cf3b46cb574a3f47f6e8ec81b1dca5a0958e1698e9e4172c966c193f2c477d81"
+    },
+    {
+      "path": "images/image-020.png",
+      "bytes": 3553,
+      "sha256": "6a60024a0132194596b3a1d0d971a9f3126c64b917ed89c2eb4c6606abd83091"
+    },
+    {
+      "path": "images/image-021.png",
+      "bytes": 8224,
+      "sha256": "c8e746824aeb018d246e50f23e2bd83ae104ad9256a44f6413cdc5b459ff2fdc"
+    },
+    {
+      "path": "images/image-022.png",
+      "bytes": 9750,
+      "sha256": "28e141dd94f8d84a2a126b629be69f165670917ecf2376a809b86868ffb41bf6"
+    },
+    {
+      "path": "images/image-023.png",
+      "bytes": 9878,
+      "sha256": "d3482f7480aa0d8b46a234639a9a9f817bf9225972a147854c50325b0f21d6f7"
+    },
+    {
+      "path": "images/image-024.png",
+      "bytes": 8549,
+      "sha256": "e70e43020ec30e133c662656117799fb4788b0aef3502cc4068e236306e1205c"
+    },
+    {
+      "path": "images/image-025.png",
+      "bytes": 8549,
+      "sha256": "e70e43020ec30e133c662656117799fb4788b0aef3502cc4068e236306e1205c"
+    },
+    {
+      "path": "images/image-026.png",
+      "bytes": 8549,
+      "sha256": "e70e43020ec30e133c662656117799fb4788b0aef3502cc4068e236306e1205c"
+    },
+    {
+      "path": "images/image-027.png",
+      "bytes": 8224,
+      "sha256": "c8e746824aeb018d246e50f23e2bd83ae104ad9256a44f6413cdc5b459ff2fdc"
+    },
+    {
+      "path": "images/image-028.png",
+      "bytes": 6914,
+      "sha256": "e2a9dda9e740e74f1f073beae3849fc52a940a80cd015e0be492ace48e66b366"
+    },
+    {
+      "path": "images/image-029.png",
+      "bytes": 266062,
+      "sha256": "e6e4a330052a3939908de3a990756dfc83c240f465d9ae4456a83cd0fc6544eb"
+    },
+    {
+      "path": "images/image-030.png",
+      "bytes": 266062,
+      "sha256": "e6e4a330052a3939908de3a990756dfc83c240f465d9ae4456a83cd0fc6544eb"
+    },
+    {
+      "path": "images/image-031.png",
+      "bytes": 266062,
+      "sha256": "e6e4a330052a3939908de3a990756dfc83c240f465d9ae4456a83cd0fc6544eb"
+    },
+    {
+      "path": "images/image-032.png",
+      "bytes": 266062,
+      "sha256": "e6e4a330052a3939908de3a990756dfc83c240f465d9ae4456a83cd0fc6544eb"
+    },
+    {
+      "path": "images/image-033.png",
+      "bytes": 266062,
+      "sha256": "e6e4a330052a3939908de3a990756dfc83c240f465d9ae4456a83cd0fc6544eb"
+    },
+    {
+      "path": "images/image-034.png",
+      "bytes": 6441,
+      "sha256": "641434bd6a670c4bf718838b8ff7e8f72cf91ba503a14162181de36803aa24fd"
+    },
+    {
+      "path": "images/image-035.png",
+      "bytes": 5632,
+      "sha256": "f2ac1c7dcd040be9e1ed5a254b0af0da930cdbdcb4a8ff5a9bc0ee9c542e9878"
+    },
+    {
+      "path": "images/image-036.png",
+      "bytes": 6521,
+      "sha256": "2080419996ef990376df1ecdbda26fa3f5640bfa99f15061de8a76092fb2122e"
+    },
+    {
+      "path": "images/image-037.png",
+      "bytes": 6706,
+      "sha256": "d79dd0d905e9b5f2ddfdbc8783a648a2eb9dbebf8d085a96e205b77119c73e4c"
+    },
+    {
+      "path": "images/image-038.png",
+      "bytes": 5683,
+      "sha256": "31cc544ade75d67f1403e0b03238b8644619ac9dc10b3947837a9f6fcc8cfa76"
+    },
+    {
+      "path": "images/image-039.png",
+      "bytes": 5617,
+      "sha256": "39e29af17801e6d4a664e45e73a91d6534033e279120c3728ea8e769ca5b77af"
+    },
+    {
+      "path": "images/image-040.png",
+      "bytes": 5617,
+      "sha256": "39e29af17801e6d4a664e45e73a91d6534033e279120c3728ea8e769ca5b77af"
+    },
+    {
+      "path": "images/image-041.png",
+      "bytes": 5290,
+      "sha256": "9b23b7573e279c9230430489272a8a9401ee077a41df4e29e926f22a1cbc25ae"
+    },
+    {
+      "path": "images/image-042.png",
+      "bytes": 5290,
+      "sha256": "9b23b7573e279c9230430489272a8a9401ee077a41df4e29e926f22a1cbc25ae"
+    },
+    {
+      "path": "images/image-043.png",
+      "bytes": 5290,
+      "sha256": "9b23b7573e279c9230430489272a8a9401ee077a41df4e29e926f22a1cbc25ae"
+    },
+    {
+      "path": "images/image-044.png",
+      "bytes": 5290,
+      "sha256": "9b23b7573e279c9230430489272a8a9401ee077a41df4e29e926f22a1cbc25ae"
+    },
+    {
+      "path": "images/image-045.png",
+      "bytes": 5290,
+      "sha256": "9b23b7573e279c9230430489272a8a9401ee077a41df4e29e926f22a1cbc25ae"
+    },
+    {
+      "path": "images/image-046.png",
+      "bytes": 5290,
+      "sha256": "9b23b7573e279c9230430489272a8a9401ee077a41df4e29e926f22a1cbc25ae"
+    },
+    {
+      "path": "images/image-047.png",
+      "bytes": 5632,
+      "sha256": "f2ac1c7dcd040be9e1ed5a254b0af0da930cdbdcb4a8ff5a9bc0ee9c542e9878"
+    },
+    {
+      "path": "images/image-048.png",
+      "bytes": 3556,
+      "sha256": "c08bcf2fc7bddf62da25871ea4f198a02936801f5715bf091688e784f8433757"
+    },
+    {
+      "path": "images/image-049.png",
+      "bytes": 7932,
+      "sha256": "90871cb310abb5c7e3a39d7c9a421deac2b0a828892511a09773a3220c744bd4"
+    },
+    {
+      "path": "images/image-050.png",
+      "bytes": 9700,
+      "sha256": "f45d1d2f13f0e2900a3dd2ff27359b1b9d12607dd40d6b1295c4be4fc41aacd4"
+    },
+    {
+      "path": "images/image-051.png",
+      "bytes": 9839,
+      "sha256": "93619ea06b339a0efc327488c5ace8569d3cdbd21a99d8c047402bc91f1a9f06"
+    },
+    {
+      "path": "images/image-052.png",
+      "bytes": 8308,
+      "sha256": "ab5856aa796aae2e1c51a8dcaa0df21d41dc59a9fc78b45051c2eaba46b5113b"
+    },
+    {
+      "path": "images/image-053.png",
+      "bytes": 8308,
+      "sha256": "ab5856aa796aae2e1c51a8dcaa0df21d41dc59a9fc78b45051c2eaba46b5113b"
+    },
+    {
+      "path": "images/image-054.png",
+      "bytes": 8308,
+      "sha256": "ab5856aa796aae2e1c51a8dcaa0df21d41dc59a9fc78b45051c2eaba46b5113b"
+    },
+    {
+      "path": "images/image-055.png",
+      "bytes": 7932,
+      "sha256": "90871cb310abb5c7e3a39d7c9a421deac2b0a828892511a09773a3220c744bd4"
+    },
+    {
+      "path": "images/image-056.png",
+      "bytes": 6945,
+      "sha256": "b38fe1f0892ac67bcd35ed94cf657e5f7b96243d158f5907a8a8087084a91afb"
+    },
+    {
+      "path": "images/image-057.png",
+      "bytes": 265144,
+      "sha256": "7bb23c48cdfcd03f0e5953293cec2e9bf432c78b351a32d39c4f7f5c7fdcfadf"
+    },
+    {
+      "path": "images/image-058.png",
+      "bytes": 98225,
+      "sha256": "16f7ac8410e273fc4b8053e3d71edc462860589d3e0652b10eb995a876f8ecba"
+    },
+    {
+      "path": "images/image-059.png",
+      "bytes": 265144,
+      "sha256": "7bb23c48cdfcd03f0e5953293cec2e9bf432c78b351a32d39c4f7f5c7fdcfadf"
+    },
+    {
+      "path": "images/image-060.png",
+      "bytes": 8224,
+      "sha256": "c8e746824aeb018d246e50f23e2bd83ae104ad9256a44f6413cdc5b459ff2fdc"
+    },
+    {
+      "path": "images/image-061.png",
+      "bytes": 8449,
+      "sha256": "356e18ba4036d34ed84a9ffdced6bf7b590c46e5e1be354561ef986b03b0d46c"
+    },
+    {
+      "path": "images/image-062.png",
+      "bytes": 8224,
+      "sha256": "c8e746824aeb018d246e50f23e2bd83ae104ad9256a44f6413cdc5b459ff2fdc"
+    },
+    {
+      "path": "images/image-063.png",
+      "bytes": 266062,
+      "sha256": "e6e4a330052a3939908de3a990756dfc83c240f465d9ae4456a83cd0fc6544eb"
+    },
+    {
+      "path": "images/image-064.png",
+      "bytes": 99169,
+      "sha256": "611f1ec392f8860d9e4abe59ebf67b8bd76a64e922b59ebb5746a49351adf3ec"
+    },
+    {
+      "path": "images/image-065.png",
+      "bytes": 266062,
+      "sha256": "e6e4a330052a3939908de3a990756dfc83c240f465d9ae4456a83cd0fc6544eb"
+    },
+    {
+      "path": "images/image-066.png",
+      "bytes": 7932,
+      "sha256": "90871cb310abb5c7e3a39d7c9a421deac2b0a828892511a09773a3220c744bd4"
+    },
+    {
+      "path": "images/image-067.png",
+      "bytes": 8212,
+      "sha256": "63ed58124dedb806cfadb55dc0a0719daf59a7d67f4caed132ef979fdefc3402"
+    },
+    {
+      "path": "images/image-068.png",
+      "bytes": 7932,
+      "sha256": "90871cb310abb5c7e3a39d7c9a421deac2b0a828892511a09773a3220c744bd4"
+    },
+    {
+      "path": "measurements.json",
+      "bytes": 14365,
+      "sha256": "83d2d3b8fd83f06d69f250ce3a108e6c171a08fb30a2ac0387259724f447f27c"
+    },
+    {
+      "path": "pixels/C3-F01-scene-baked-colors-deliberate-fault.rgba.gz",
+      "bytes": 66818,
+      "sha256": "39b348e71713854517ba08713581f155caee21754d4d5f52c03bc351b52bf77f"
+    },
+    {
+      "path": "pixels/C3-F01-scene-baked-colors-original.rgba.gz",
+      "bytes": 270406,
+      "sha256": "ec11fef92582f73e6d8a0e3fb58c9a8adfbb7dc0a9721956ccd35d877b1c78ba"
+    },
+    {
+      "path": "pixels/C3-F01-scene-baked-colors-restored.rgba.gz",
+      "bytes": 270406,
+      "sha256": "ec11fef92582f73e6d8a0e3fb58c9a8adfbb7dc0a9721956ccd35d877b1c78ba"
+    },
+    {
+      "path": "pixels/C3-F06-material-depth-scene-deliberate-fault.rgba.gz",
+      "bytes": 5953,
+      "sha256": "b0f4bdfc22a3e9199e8386387c73219864f84758fcf24a5f0fb1335bf7f801a6"
+    },
+    {
+      "path": "pixels/C3-F06-material-depth-scene-original.rgba.gz",
+      "bytes": 5752,
+      "sha256": "f343724f6f18039959c6004be0e4baa7687ecb33128bddb37e0d685bb6929b10"
+    },
+    {
+      "path": "pixels/C3-F06-material-depth-scene-restored.rgba.gz",
+      "bytes": 5752,
+      "sha256": "f343724f6f18039959c6004be0e4baa7687ecb33128bddb37e0d685bb6929b10"
+    },
+    {
+      "path": "pixels/C4-F01-scene-baked-colors-deliberate-fault.rgba.gz",
+      "bytes": 67142,
+      "sha256": "570e02a6832185d6d1cb4ba7769c09c0ee1f9af2e44b80652d9a3e035ddab0e1"
+    },
+    {
+      "path": "pixels/C4-F01-scene-baked-colors-original.rgba.gz",
+      "bytes": 271504,
+      "sha256": "32379d2f78ef4cc7704a7678241c37feea1e94baf3d849a16daba264867e5c85"
+    },
+    {
+      "path": "pixels/C4-F01-scene-baked-colors-restored.rgba.gz",
+      "bytes": 271504,
+      "sha256": "32379d2f78ef4cc7704a7678241c37feea1e94baf3d849a16daba264867e5c85"
+    },
+    {
+      "path": "pixels/C4-F06-material-depth-scene-deliberate-fault.rgba.gz",
+      "bytes": 5864,
+      "sha256": "03c52db94de6031e121cf1624669519f5a7d0d7a75032181cf6cbc02b8b2f393"
+    },
+    {
+      "path": "pixels/C4-F06-material-depth-scene-original.rgba.gz",
+      "bytes": 5650,
+      "sha256": "b7b3a7c3c52e405611924c6c9f320dfd65834a6d286651fe48219f3691d76dc2"
+    },
+    {
+      "path": "pixels/C4-F06-material-depth-scene-restored.rgba.gz",
+      "bytes": 5650,
+      "sha256": "b7b3a7c3c52e405611924c6c9f320dfd65834a6d286651fe48219f3691d76dc2"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1146,
+      "sha256": "aeb75a18686b7d69c248e5e5aac32d541e93e0c63828e185bc5665b2899828a7"
+    },
+    {
+      "path": "result-matrix.json",
+      "bytes": 39188,
+      "sha256": "033e1e4e025846e51eaf074ebb7831adf5f5260437dd73aa15f6a96fa9bf4eaa"
+    },
+    {
+      "path": "sources/diagnosis-v1-report.json.gz",
+      "bytes": 43251,
+      "sha256": "92f9f6e0dab956f15572ca81dc213c7eeb38dde3b238be0fad81f945331b715c"
+    },
+    {
+      "path": "sources/functional-v2-report.json.gz",
+      "bytes": 4648922,
+      "sha256": "dbd15a475515e5ef428f6906d2bae1959ee2a3f8d99734736eb99275356f5ec2"
+    },
+    {
+      "path": "sources/original-report.json.gz",
+      "bytes": 4800,
+      "sha256": "1882d27d65329675e085ff268a8fd51970d8da51521a1059f2b222e7b2a6011e"
+    }
+  ],
+  "relativePrimaryReferences": true,
+  "qualification": "PARTIAL_FUNCTIONAL_DIAGNOSTIC_NOT_FULL_NATIVE_ACCEPTANCE",
+  "productIntegrated": false
+}

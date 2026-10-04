@@ -1,0 +1,538 @@
+{
+  "version": "rd12-functional-supplement-v2",
+  "reader": "rd12-diagnosed-collapsed-facts-textcontent-v2",
+  "diagnosisSha256": "e7156837c5e09333b27f07373e406dad5a51b4dd3ff7cd9c43dec9b28f675eed",
+  "requests": [
+    "http://127.0.0.1:5280/src/experiments/babylon/index.html?testBridge=1",
+    "http://127.0.0.1:5280/assets/rd12-DqSiWw8d.js",
+    "http://127.0.0.1:5280/assets/scenario-BrdsnLBG.js",
+    "http://127.0.0.1:5280/assets/observable.pure-CQcZJ-VL.js",
+    "http://127.0.0.1:5280/assets/typeStore-Cq6cjp3s.js",
+    "http://127.0.0.1:5280/assets/logger-CuBYPcDK.js",
+    "http://127.0.0.1:5280/assets/halfFloat-Ce77JD5z.js",
+    "http://127.0.0.1:5280/assets/bufferUtils-DsvLulfh.js",
+    "http://127.0.0.1:5280/assets/math.scalar.functions-Bg-lysIT.js",
+    "http://127.0.0.1:5280/assets/math.vector.pure-CMwVmuSv.js",
+    "http://127.0.0.1:5280/assets/math.color.pure-BA2-Vki4.js",
+    "http://127.0.0.1:5280/assets/baseTexture.pure-Bi8AIM1h.js",
+    "http://127.0.0.1:5280/assets/shaderStore-D-XQlhUT.js",
+    "http://127.0.0.1:5280/assets/precisionDate-CfCevjl-.js",
+    "http://127.0.0.1:5280/assets/drawWrapper-BDFsh3rC.js",
+    "http://127.0.0.1:5280/assets/compatibilityOptions-BIkaqVN-.js",
+    "http://127.0.0.1:5280/assets/sphericalPolynomial.pure-ZzhnrSAS.js",
+    "http://127.0.0.1:5280/assets/webRequest-CNElM_Yd.js",
+    "http://127.0.0.1:5280/assets/tools.pure-gyo-e2nz.js",
+    "http://127.0.0.1:5280/assets/clearQuad.vertex-BQfweATK.js",
+    "http://127.0.0.1:5280/assets/clearQuad.fragment-DQbPmvKE.js",
+    "http://127.0.0.1:5280/assets/instancesVertex-DuzGY6PP.js",
+    "http://127.0.0.1:5280/assets/helperFunctions-BH8P-eyq.js",
+    "http://127.0.0.1:5280/assets/decalFragment-DWlMlk8p.js",
+    "http://127.0.0.1:5280/assets/sceneUboDeclaration-C_WIasrC.js",
+    "http://127.0.0.1:5280/assets/spatialWebAudioUpdaterComponent-Brjz8Dnv.js",
+    "http://127.0.0.1:5280/assets/abstractAudioNode-Cn3WIuFq.js",
+    "http://127.0.0.1:5280/assets/babylon-DpPF5JVt.js",
+    "http://127.0.0.1:5280/assets/assets-Dj6pciVh.js",
+    "http://127.0.0.1:5280/assets/scenarioRunner-KkeHoa-5.js",
+    "http://127.0.0.1:5280/inventory.json",
+    "http://127.0.0.1:5280/F06-MATERIAL/manifest.json",
+    "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-coverage.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-material-slots.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-occupancy.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-1-indices.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-1-normals.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-1-positions.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-2-indices.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-2-normals.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-2-positions.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-3-indices.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-3-normals.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-3-positions.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-4-indices.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-4-normals.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-4-positions.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-6-indices.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-6-normals.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-6-positions.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/manifest.json",
+    "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-coverage.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-material-slots.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-occupancy.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-1-indices.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-1-normals.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-1-positions.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-2-indices.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-2-normals.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-2-positions.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-3-indices.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-3-normals.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-3-positions.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-4-indices.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-4-normals.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-4-positions.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-6-indices.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-6-normals.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-6-positions.bin",
+    "http://127.0.0.1:5280/F06-MATERIAL/scenario.json",
+    "http://127.0.0.1:5280/assets/default.vertex-ZC5TzuFQ.js",
+    "http://127.0.0.1:5280/assets/logDepthDeclaration-BKcd_JEL.js",
+    "http://127.0.0.1:5280/assets/helperFunctions-gEnZbjN3.js",
+    "http://127.0.0.1:5280/assets/default.fragment-DnHL1jEV.js"
+  ],
+  "responses": [
+    {
+      "url": "http://127.0.0.1:5280/src/experiments/babylon/index.html?testBridge=1",
+      "status": 200,
+      "bytes": 5333,
+      "sha256": "6c3da4da8591b9dd2088d7f7ccf277e205b69823fc5ae3fb5d56d3a8aa0e1467"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/rd12-DqSiWw8d.js",
+      "status": 200,
+      "bytes": 4862,
+      "sha256": "3dd9b3143c3eb456f49c8c780bf5c013e0ae7fae9a4fe0d054784e9373060e46"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/typeStore-Cq6cjp3s.js",
+      "status": 200,
+      "bytes": 441,
+      "sha256": "10817aaba075ef4be9eff11934ef7371f327dd8d8f197fc4fc4c478cfbbc577e"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/observable.pure-CQcZJ-VL.js",
+      "status": 200,
+      "bytes": 3227,
+      "sha256": "3b163b97a544bfcf4dca48fec2da7f3d4e4ad62143be82ad6f63358224bdf220"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/halfFloat-Ce77JD5z.js",
+      "status": 200,
+      "bytes": 1290,
+      "sha256": "e364d38c88e676a0e9ced31660c08e156b244af07b1729fb8ea38e1ad6cffbb7"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/logger-CuBYPcDK.js",
+      "status": 200,
+      "bytes": 1881,
+      "sha256": "30a999582eace71f2e78a479182e71e943508bbda9574b17e5b29575c49a3b9e"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/scenario-BrdsnLBG.js",
+      "status": 200,
+      "bytes": 20694,
+      "sha256": "3eb55c8c8dd17b1e45be7e406ad658940bd489b087159906ecd2d745fbdc8fce"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/bufferUtils-DsvLulfh.js",
+      "status": 200,
+      "bytes": 17395,
+      "sha256": "e3140341448a8a4c6d40f9490c740a09b984d22c449a8d3601210f3249b82e20"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/math.scalar.functions-Bg-lysIT.js",
+      "status": 200,
+      "bytes": 597,
+      "sha256": "68f290ec32a16975df1a42d346e4f3dfd1ab544f7bf850a56060807994f48aff"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/shaderStore-D-XQlhUT.js",
+      "status": 200,
+      "bytes": 469,
+      "sha256": "db600316439f2fedb7bfd3bcbc61b24d30c2b2646828dcea1c7c778cd07d5e3e"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/precisionDate-CfCevjl-.js",
+      "status": 200,
+      "bytes": 390,
+      "sha256": "ca81e6b450810d0472b8ea1d02e169f7c206f21994ba8fd557a0fdde51bb1e67"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/math.color.pure-BA2-Vki4.js",
+      "status": 200,
+      "bytes": 12514,
+      "sha256": "9e1ea92f6c930ee0b2ca5f2dd4fc877f6a804daf5fbd78e55b3f688288126718"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/baseTexture.pure-Bi8AIM1h.js",
+      "status": 200,
+      "bytes": 31889,
+      "sha256": "f151383f2f1482ba212e9914e1ed65a363a490ab0308c0e07c8c2178cc19a640"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/math.vector.pure-CMwVmuSv.js",
+      "status": 200,
+      "bytes": 65042,
+      "sha256": "f7476db8b026b175c7336f66c9f7b56d9124b6a32e059e68a7184be36578cfef"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/compatibilityOptions-BIkaqVN-.js",
+      "status": 200,
+      "bytes": 1822,
+      "sha256": "f98b0677b6a4cda705b8c95308052d3f21a11326b46a1f3d3c611842bc110d70"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/clearQuad.vertex-BQfweATK.js",
+      "status": 200,
+      "bytes": 521,
+      "sha256": "826251d9d4d71eba2d5c36dce4d9c54ce14b58c1f9f67bb3ca2fa470c37d694f"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/webRequest-CNElM_Yd.js",
+      "status": 200,
+      "bytes": 2939,
+      "sha256": "8d63ea1df5907a42d63f572bb004f70d0ac41a5a195274ae9902d933f5579b7f"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/sphericalPolynomial.pure-ZzhnrSAS.js",
+      "status": 200,
+      "bytes": 5737,
+      "sha256": "e39b21d6138b4632d4a6ed573344bb250268519d3456bac71c83deafc3c74490"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/tools.pure-gyo-e2nz.js",
+      "status": 200,
+      "bytes": 22595,
+      "sha256": "3275591b76a83c1999d1f547a98bbefae53717b61a10cd03037dbb512ac77455"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/drawWrapper-BDFsh3rC.js",
+      "status": 200,
+      "bytes": 63342,
+      "sha256": "6b56800b585efb8749412d8e5222d86942d9611fcc56e77f692e7662a8c20c26"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/decalFragment-DWlMlk8p.js",
+      "status": 200,
+      "bytes": 821,
+      "sha256": "47a79a0260ec3db19871100e37ef14b5caa08ed995f8a8945d6113a18171b81d"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/sceneUboDeclaration-C_WIasrC.js",
+      "status": 200,
+      "bytes": 657,
+      "sha256": "c5f34c27a6a2c168e1012b2289d02e6bc53fb5005153407141e31c1753e10a15"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/clearQuad.fragment-DQbPmvKE.js",
+      "status": 200,
+      "bytes": 287,
+      "sha256": "4400446bece9d37ba7a5754d1576d73570e830bebe4fb218fe6e869885fa5a91"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/instancesVertex-DuzGY6PP.js",
+      "status": 200,
+      "bytes": 5718,
+      "sha256": "981f8cf8d8b6a31d6c71e08f16d8dfe934e3acb70d0c6bb8e512832f0aba444b"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/helperFunctions-BH8P-eyq.js",
+      "status": 200,
+      "bytes": 6489,
+      "sha256": "019a076bb9af420aa999424c444b782a858fa7153a108bfb55fbf30b20917969"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/spatialWebAudioUpdaterComponent-Brjz8Dnv.js",
+      "status": 200,
+      "bytes": 1896,
+      "sha256": "0a4be36b0f961191bdec2f24ee4a2505c249ff224ee185babaf5f96aff063aeb"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/scenarioRunner-KkeHoa-5.js",
+      "status": 200,
+      "bytes": 710,
+      "sha256": "5c2c11fcd35392d5de0ff3f134ef4cd94114e9200b5df085e89ebedc536d7155"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/assets-Dj6pciVh.js",
+      "status": 200,
+      "bytes": 4281,
+      "sha256": "3e36325fc8867ad378de23fdb0c790015b2071e075f812fd680b3357c6b2d5f3"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/abstractAudioNode-Cn3WIuFq.js",
+      "status": 200,
+      "bytes": 4003,
+      "sha256": "dd17d38ef48161bf0efe2947aa1665fb5860252c3c71d8f4bf066c1f4cd8a607"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/babylon-DpPF5JVt.js",
+      "status": 200,
+      "bytes": 1077540,
+      "sha256": "46956b2d5c48d83eef5c98b1acf68f5b75c2ebcec5309fd3e583083a3e9321ce"
+    },
+    {
+      "url": "http://127.0.0.1:5280/inventory.json",
+      "status": 200,
+      "bytes": 122718,
+      "sha256": "26bf86bba1cbd1955d069ab2eac8d491b6cade59d16a004f1d094cc117ebc9c6"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/manifest.json",
+      "status": 200,
+      "bytes": 7153,
+      "sha256": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-coverage.bin",
+      "status": 200,
+      "bytes": 35840,
+      "sha256": "782c3a48703a9b3d0536ef4c51d03840d5e09dd0ccf15edf2a73d7b4c3d7d2f6"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-material-slots.bin",
+      "status": 200,
+      "bytes": 35840,
+      "sha256": "a487a59ca423d87f08307933769d91f01caab957a9aaa71278f0bec7976c8559"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-occupancy.bin",
+      "status": 200,
+      "bytes": 35840,
+      "sha256": "b4c007a550098258f670e0ec5061270e10f7b4860ff859817c1935e234bf90b5"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-1-indices.bin",
+      "status": 200,
+      "bytes": 113160,
+      "sha256": "2f8da78837e1be1a39507f0b209a02252f70228565ad9eb3b47e9599ffc6ec1d"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-1-normals.bin",
+      "status": 200,
+      "bytes": 226320,
+      "sha256": "52bc806122082c415b03db1314814013d7cec4d3a9f69c76051a654cb3f50ba9"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-1-positions.bin",
+      "status": 200,
+      "bytes": 226320,
+      "sha256": "9a3a9105bb22738691ed7b3e1dcd7e8766f7349fad7220a2fee6dee6e996abdd"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-2-indices.bin",
+      "status": 200,
+      "bytes": 23952,
+      "sha256": "5e590203fe392a851981fadcfa69ba90a5ef1a47957ab2f13832ea83305b3ead"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-2-normals.bin",
+      "status": 200,
+      "bytes": 47904,
+      "sha256": "424afd3d4c33f8525f1f92fd4fe54f4a5133328d67f6d1dae9a544c1dc145239"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-2-positions.bin",
+      "status": 200,
+      "bytes": 47904,
+      "sha256": "d270102417a232e373cfb4eda94bc2ce1577eaf38e233992475ba2b8c650f2e8"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-3-indices.bin",
+      "status": 200,
+      "bytes": 2688,
+      "sha256": "fc73a1d41ad8cd7ffe56e21b9b3cdea72f592b7cade06e182d6de0c9f2e3a7f2"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-3-normals.bin",
+      "status": 200,
+      "bytes": 5376,
+      "sha256": "05d13bae0206613b769a06eb3d5d0da29862fb43a0439e9a37f39077c1ecb8c6"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-3-positions.bin",
+      "status": 200,
+      "bytes": 5376,
+      "sha256": "8189dfd9858d517e345db9683b912ad8bd2992b7862dc4ed33e7fc6b2b457eec"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-4-indices.bin",
+      "status": 200,
+      "bytes": 4512,
+      "sha256": "418b6e8981ccc0b09c0771a3fb2c8a5922dfe60efef1ccbfc2ea46986990b275"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-4-normals.bin",
+      "status": 200,
+      "bytes": 9024,
+      "sha256": "f25597e404c2076ab275f17dbffaea378c737c7264b63baa8e5005ec88e9492f"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-4-positions.bin",
+      "status": 200,
+      "bytes": 9024,
+      "sha256": "3ccf9ed82d57d70af486d4824953c7b2b4a03527406d5f7af616b1e5ff17a213"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-6-indices.bin",
+      "status": 200,
+      "bytes": 1080,
+      "sha256": "6d6ab68a0b8de8f374f1a72fa5483c1baf6e02c9275455396769fdbc64159eed"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-6-normals.bin",
+      "status": 200,
+      "bytes": 2160,
+      "sha256": "cdd82778c59d584bf4049c69ef755d1b7d3054c94a9b2053f92c0313305f6b85"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/payloads/material-room-slot-6-positions.bin",
+      "status": 200,
+      "bytes": 2160,
+      "sha256": "65aa9bf6f59d75f5f7e0291ba42b4d7c809503e695399d095ac0f3c8d5521e62"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/manifest.json",
+      "status": 200,
+      "bytes": 7156,
+      "sha256": "81de4732517d6cf5259f7ec9afd4d4b7af05379feb7cff56afe9e80e16c6d91a"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-coverage.bin",
+      "status": 200,
+      "bytes": 35840,
+      "sha256": "782c3a48703a9b3d0536ef4c51d03840d5e09dd0ccf15edf2a73d7b4c3d7d2f6"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-material-slots.bin",
+      "status": 200,
+      "bytes": 35840,
+      "sha256": "bd173c7017e8c253a33161415fcd0750d5370e140c8564db78dcc17fc524e655"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-occupancy.bin",
+      "status": 200,
+      "bytes": 35840,
+      "sha256": "9a53ab36a78a8733d23fdcf0769a9f4ad985bbc402cd1a789a708922bd6f8334"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-1-indices.bin",
+      "status": 200,
+      "bytes": 111336,
+      "sha256": "60f465d9ac74d523062404755086b5dd81f6255ed69a4cfd621d1ef6690c7de1"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-1-normals.bin",
+      "status": 200,
+      "bytes": 222672,
+      "sha256": "18633850f54218ffde09cca10370f45bef7133b23feebbf8e0d6763ea3cbf053"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-1-positions.bin",
+      "status": 200,
+      "bytes": 222672,
+      "sha256": "ea2273da15357d2b195dccab890ac79909fc994ec3a8564973d1805fc68a8927"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-2-indices.bin",
+      "status": 200,
+      "bytes": 23952,
+      "sha256": "5e590203fe392a851981fadcfa69ba90a5ef1a47957ab2f13832ea83305b3ead"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-2-normals.bin",
+      "status": 200,
+      "bytes": 47904,
+      "sha256": "424afd3d4c33f8525f1f92fd4fe54f4a5133328d67f6d1dae9a544c1dc145239"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-2-positions.bin",
+      "status": 200,
+      "bytes": 47904,
+      "sha256": "d270102417a232e373cfb4eda94bc2ce1577eaf38e233992475ba2b8c650f2e8"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-3-indices.bin",
+      "status": 200,
+      "bytes": 2688,
+      "sha256": "fc73a1d41ad8cd7ffe56e21b9b3cdea72f592b7cade06e182d6de0c9f2e3a7f2"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-3-normals.bin",
+      "status": 200,
+      "bytes": 5376,
+      "sha256": "05d13bae0206613b769a06eb3d5d0da29862fb43a0439e9a37f39077c1ecb8c6"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-3-positions.bin",
+      "status": 200,
+      "bytes": 5376,
+      "sha256": "8189dfd9858d517e345db9683b912ad8bd2992b7862dc4ed33e7fc6b2b457eec"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-4-indices.bin",
+      "status": 200,
+      "bytes": 4512,
+      "sha256": "418b6e8981ccc0b09c0771a3fb2c8a5922dfe60efef1ccbfc2ea46986990b275"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-4-normals.bin",
+      "status": 200,
+      "bytes": 9024,
+      "sha256": "f25597e404c2076ab275f17dbffaea378c737c7264b63baa8e5005ec88e9492f"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-4-positions.bin",
+      "status": 200,
+      "bytes": 9024,
+      "sha256": "3ccf9ed82d57d70af486d4824953c7b2b4a03527406d5f7af616b1e5ff17a213"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-6-indices.bin",
+      "status": 200,
+      "bytes": 1080,
+      "sha256": "6d6ab68a0b8de8f374f1a72fa5483c1baf6e02c9275455396769fdbc64159eed"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-6-normals.bin",
+      "status": 200,
+      "bytes": 2160,
+      "sha256": "cdd82778c59d584bf4049c69ef755d1b7d3054c94a9b2053f92c0313305f6b85"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/snapshots/r1-opening/payloads/material-room-slot-6-positions.bin",
+      "status": 200,
+      "bytes": 2160,
+      "sha256": "65aa9bf6f59d75f5f7e0291ba42b4d7c809503e695399d095ac0f3c8d5521e62"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F06-MATERIAL/scenario.json",
+      "status": 200,
+      "bytes": 8047,
+      "sha256": "ffca7e5fe106c613a4128da6abebe93402fa77a1dc8648f83b2317251ce351cf"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/logDepthDeclaration-BKcd_JEL.js",
+      "status": 200,
+      "bytes": 2160,
+      "sha256": "fa28fea64fd32656afcd71c7cd7500f62ba35b7b69e4c5280d6ed6590bea1db6"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/helperFunctions-gEnZbjN3.js",
+      "status": 200,
+      "bytes": 6815,
+      "sha256": "25cb5a62b09965a1f9d12f999eb40672c9f80924b8cf2353120e9809d11a03ba"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/default.vertex-ZC5TzuFQ.js",
+      "status": 200,
+      "bytes": 29825,
+      "sha256": "1f81ffa129479ea6698d07cfebf10953d2063fa387f6dab121a73bd881101d25"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/default.fragment-DnHL1jEV.js",
+      "status": 200,
+      "bytes": 112518,
+      "sha256": "79cbd96c82ff2ada8b29506fff9310fc03b03a064179d8b83c56595d8c2b22d7"
+    }
+  ],
+  "errors": [],
+  "console": [
+    {
+      "type": "log",
+      "text": "BJS - [12:09:44]: Babylon.js v9.29.0 - WebGL2 - Parallel shader compilation"
+    }
+  ],
+  "offsite": [],
+  "compilerRequests": [],
+  "originalSuite": "FAIL16_RETAINED",
+  "productIntegrated": false
+}

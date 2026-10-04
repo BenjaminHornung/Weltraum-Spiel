@@ -1,0 +1,675 @@
+{
+  "version": "rd12-functional-supplement-v2",
+  "reader": "rd12-diagnosed-collapsed-facts-textcontent-v2",
+  "diagnosisSha256": "e7156837c5e09333b27f07373e406dad5a51b4dd3ff7cd9c43dec9b28f675eed",
+  "requests": [
+    "http://127.0.0.1:5280/src/experiments/babylon/index.html?testBridge=1",
+    "http://127.0.0.1:5280/assets/rd12-DqSiWw8d.js",
+    "http://127.0.0.1:5280/assets/scenario-BrdsnLBG.js",
+    "http://127.0.0.1:5280/assets/observable.pure-CQcZJ-VL.js",
+    "http://127.0.0.1:5280/assets/typeStore-Cq6cjp3s.js",
+    "http://127.0.0.1:5280/assets/logger-CuBYPcDK.js",
+    "http://127.0.0.1:5280/assets/halfFloat-Ce77JD5z.js",
+    "http://127.0.0.1:5280/assets/bufferUtils-DsvLulfh.js",
+    "http://127.0.0.1:5280/assets/math.scalar.functions-Bg-lysIT.js",
+    "http://127.0.0.1:5280/assets/math.vector.pure-CMwVmuSv.js",
+    "http://127.0.0.1:5280/assets/math.color.pure-BA2-Vki4.js",
+    "http://127.0.0.1:5280/assets/baseTexture.pure-Bi8AIM1h.js",
+    "http://127.0.0.1:5280/assets/shaderStore-D-XQlhUT.js",
+    "http://127.0.0.1:5280/assets/precisionDate-CfCevjl-.js",
+    "http://127.0.0.1:5280/assets/drawWrapper-BDFsh3rC.js",
+    "http://127.0.0.1:5280/assets/compatibilityOptions-BIkaqVN-.js",
+    "http://127.0.0.1:5280/assets/sphericalPolynomial.pure-ZzhnrSAS.js",
+    "http://127.0.0.1:5280/assets/webRequest-CNElM_Yd.js",
+    "http://127.0.0.1:5280/assets/tools.pure-gyo-e2nz.js",
+    "http://127.0.0.1:5280/assets/clearQuad.vertex-BQfweATK.js",
+    "http://127.0.0.1:5280/assets/clearQuad.fragment-DQbPmvKE.js",
+    "http://127.0.0.1:5280/assets/instancesVertex-DuzGY6PP.js",
+    "http://127.0.0.1:5280/assets/helperFunctions-BH8P-eyq.js",
+    "http://127.0.0.1:5280/assets/decalFragment-DWlMlk8p.js",
+    "http://127.0.0.1:5280/assets/sceneUboDeclaration-C_WIasrC.js",
+    "http://127.0.0.1:5280/assets/spatialWebAudioUpdaterComponent-Brjz8Dnv.js",
+    "http://127.0.0.1:5280/assets/abstractAudioNode-Cn3WIuFq.js",
+    "http://127.0.0.1:5280/assets/babylon-DpPF5JVt.js",
+    "http://127.0.0.1:5280/assets/assets-Dj6pciVh.js",
+    "http://127.0.0.1:5280/assets/scenarioRunner-KkeHoa-5.js",
+    "http://127.0.0.1:5280/inventory.json",
+    "http://127.0.0.1:5280/F01-HVP-COAST/manifest.json",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-crop-coverage.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-crop-material-slots.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-crop-occupancy.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-slot-1-colors.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-slot-1-indices.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-slot-1-normals.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-slot-1-positions.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-slot-2-indices.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-slot-3-indices.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-slot-4-indices.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-water-indices.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-water-normals.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-water-positions.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-decor-coverage.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-decor-material-slots.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-decor-occupancy.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-decor-slot-1-colors.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-decor-slot-1-indices.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-decor-slot-1-normals.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-decor-slot-1-positions.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-wood-coverage.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-wood-material-slots.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-wood-occupancy.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-wood-slot-1-colors.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-wood-slot-1-indices.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-wood-slot-1-normals.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-wood-slot-1-positions.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-1-decor-coverage.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-1-decor-material-slots.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-1-decor-occupancy.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-1-decor-slot-1-colors.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-1-decor-slot-1-indices.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-1-decor-slot-1-normals.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-1-decor-slot-1-positions.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-2-decor-coverage.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-2-decor-material-slots.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-2-decor-occupancy.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-2-decor-slot-1-colors.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-2-decor-slot-1-indices.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-2-decor-slot-1-normals.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-2-decor-slot-1-positions.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-3-decor-coverage.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-3-decor-material-slots.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-3-decor-occupancy.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-3-decor-slot-1-colors.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-3-decor-slot-1-indices.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-3-decor-slot-1-normals.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-3-decor-slot-1-positions.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-4-decor-coverage.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-4-decor-material-slots.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-4-decor-occupancy.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-4-decor-slot-1-colors.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-4-decor-slot-1-indices.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-4-decor-slot-1-normals.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-4-decor-slot-1-positions.bin",
+    "http://127.0.0.1:5280/F01-HVP-COAST/scenario.json",
+    "http://127.0.0.1:5280/assets/clearQuad.vertex-CHbWJOXM.js",
+    "http://127.0.0.1:5280/assets/clearQuad.fragment-BwyJM4Bg.js",
+    "http://127.0.0.1:5280/assets/default.vertex-DqXsb47B.js",
+    "http://127.0.0.1:5280/assets/logDepthDeclaration-pYNAkkbq.js",
+    "http://127.0.0.1:5280/assets/default.fragment-CPqLvicJ.js"
+  ],
+  "responses": [
+    {
+      "url": "http://127.0.0.1:5280/src/experiments/babylon/index.html?testBridge=1",
+      "status": 200,
+      "bytes": 5333,
+      "sha256": "6c3da4da8591b9dd2088d7f7ccf277e205b69823fc5ae3fb5d56d3a8aa0e1467"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/rd12-DqSiWw8d.js",
+      "status": 200,
+      "bytes": 4862,
+      "sha256": "3dd9b3143c3eb456f49c8c780bf5c013e0ae7fae9a4fe0d054784e9373060e46"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/typeStore-Cq6cjp3s.js",
+      "status": 200,
+      "bytes": 441,
+      "sha256": "10817aaba075ef4be9eff11934ef7371f327dd8d8f197fc4fc4c478cfbbc577e"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/observable.pure-CQcZJ-VL.js",
+      "status": 200,
+      "bytes": 3227,
+      "sha256": "3b163b97a544bfcf4dca48fec2da7f3d4e4ad62143be82ad6f63358224bdf220"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/logger-CuBYPcDK.js",
+      "status": 200,
+      "bytes": 1881,
+      "sha256": "30a999582eace71f2e78a479182e71e943508bbda9574b17e5b29575c49a3b9e"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/scenario-BrdsnLBG.js",
+      "status": 200,
+      "bytes": 20694,
+      "sha256": "3eb55c8c8dd17b1e45be7e406ad658940bd489b087159906ecd2d745fbdc8fce"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/math.scalar.functions-Bg-lysIT.js",
+      "status": 200,
+      "bytes": 597,
+      "sha256": "68f290ec32a16975df1a42d346e4f3dfd1ab544f7bf850a56060807994f48aff"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/halfFloat-Ce77JD5z.js",
+      "status": 200,
+      "bytes": 1290,
+      "sha256": "e364d38c88e676a0e9ced31660c08e156b244af07b1729fb8ea38e1ad6cffbb7"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/precisionDate-CfCevjl-.js",
+      "status": 200,
+      "bytes": 390,
+      "sha256": "ca81e6b450810d0472b8ea1d02e169f7c206f21994ba8fd557a0fdde51bb1e67"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/bufferUtils-DsvLulfh.js",
+      "status": 200,
+      "bytes": 17395,
+      "sha256": "e3140341448a8a4c6d40f9490c740a09b984d22c449a8d3601210f3249b82e20"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/shaderStore-D-XQlhUT.js",
+      "status": 200,
+      "bytes": 469,
+      "sha256": "db600316439f2fedb7bfd3bcbc61b24d30c2b2646828dcea1c7c778cd07d5e3e"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/math.color.pure-BA2-Vki4.js",
+      "status": 200,
+      "bytes": 12514,
+      "sha256": "9e1ea92f6c930ee0b2ca5f2dd4fc877f6a804daf5fbd78e55b3f688288126718"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/compatibilityOptions-BIkaqVN-.js",
+      "status": 200,
+      "bytes": 1822,
+      "sha256": "f98b0677b6a4cda705b8c95308052d3f21a11326b46a1f3d3c611842bc110d70"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/baseTexture.pure-Bi8AIM1h.js",
+      "status": 200,
+      "bytes": 31889,
+      "sha256": "f151383f2f1482ba212e9914e1ed65a363a490ab0308c0e07c8c2178cc19a640"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/math.vector.pure-CMwVmuSv.js",
+      "status": 200,
+      "bytes": 65042,
+      "sha256": "f7476db8b026b175c7336f66c9f7b56d9124b6a32e059e68a7184be36578cfef"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/drawWrapper-BDFsh3rC.js",
+      "status": 200,
+      "bytes": 63342,
+      "sha256": "6b56800b585efb8749412d8e5222d86942d9611fcc56e77f692e7662a8c20c26"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/clearQuad.vertex-BQfweATK.js",
+      "status": 200,
+      "bytes": 521,
+      "sha256": "826251d9d4d71eba2d5c36dce4d9c54ce14b58c1f9f67bb3ca2fa470c37d694f"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/sphericalPolynomial.pure-ZzhnrSAS.js",
+      "status": 200,
+      "bytes": 5737,
+      "sha256": "e39b21d6138b4632d4a6ed573344bb250268519d3456bac71c83deafc3c74490"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/clearQuad.fragment-DQbPmvKE.js",
+      "status": 200,
+      "bytes": 287,
+      "sha256": "4400446bece9d37ba7a5754d1576d73570e830bebe4fb218fe6e869885fa5a91"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/instancesVertex-DuzGY6PP.js",
+      "status": 200,
+      "bytes": 5718,
+      "sha256": "981f8cf8d8b6a31d6c71e08f16d8dfe934e3acb70d0c6bb8e512832f0aba444b"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/webRequest-CNElM_Yd.js",
+      "status": 200,
+      "bytes": 2939,
+      "sha256": "8d63ea1df5907a42d63f572bb004f70d0ac41a5a195274ae9902d933f5579b7f"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/tools.pure-gyo-e2nz.js",
+      "status": 200,
+      "bytes": 22595,
+      "sha256": "3275591b76a83c1999d1f547a98bbefae53717b61a10cd03037dbb512ac77455"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/sceneUboDeclaration-C_WIasrC.js",
+      "status": 200,
+      "bytes": 657,
+      "sha256": "c5f34c27a6a2c168e1012b2289d02e6bc53fb5005153407141e31c1753e10a15"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/decalFragment-DWlMlk8p.js",
+      "status": 200,
+      "bytes": 821,
+      "sha256": "47a79a0260ec3db19871100e37ef14b5caa08ed995f8a8945d6113a18171b81d"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/helperFunctions-BH8P-eyq.js",
+      "status": 200,
+      "bytes": 6489,
+      "sha256": "019a076bb9af420aa999424c444b782a858fa7153a108bfb55fbf30b20917969"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/spatialWebAudioUpdaterComponent-Brjz8Dnv.js",
+      "status": 200,
+      "bytes": 1896,
+      "sha256": "0a4be36b0f961191bdec2f24ee4a2505c249ff224ee185babaf5f96aff063aeb"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/abstractAudioNode-Cn3WIuFq.js",
+      "status": 200,
+      "bytes": 4003,
+      "sha256": "dd17d38ef48161bf0efe2947aa1665fb5860252c3c71d8f4bf066c1f4cd8a607"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/scenarioRunner-KkeHoa-5.js",
+      "status": 200,
+      "bytes": 710,
+      "sha256": "5c2c11fcd35392d5de0ff3f134ef4cd94114e9200b5df085e89ebedc536d7155"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/assets-Dj6pciVh.js",
+      "status": 200,
+      "bytes": 4281,
+      "sha256": "3e36325fc8867ad378de23fdb0c790015b2071e075f812fd680b3357c6b2d5f3"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/babylon-DpPF5JVt.js",
+      "status": 200,
+      "bytes": 1077540,
+      "sha256": "46956b2d5c48d83eef5c98b1acf68f5b75c2ebcec5309fd3e583083a3e9321ce"
+    },
+    {
+      "url": "http://127.0.0.1:5280/inventory.json",
+      "status": 200,
+      "bytes": 122718,
+      "sha256": "26bf86bba1cbd1955d069ab2eac8d491b6cade59d16a004f1d094cc117ebc9c6"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/manifest.json",
+      "status": 200,
+      "bytes": 27201,
+      "sha256": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-crop-coverage.bin",
+      "status": 200,
+      "bytes": 2949120,
+      "sha256": "1d433f1aa37993106ee691d7dfc033363ca7201fbbab132742340d3a08e92259"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-crop-material-slots.bin",
+      "status": 200,
+      "bytes": 2949120,
+      "sha256": "561b1ea853ee6377ec78337016725d6771f178e734925dd0d6d3a33ec7056c0a"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-crop-occupancy.bin",
+      "status": 200,
+      "bytes": 2949120,
+      "sha256": "04ba6e9254fe1940801f40679af6dfb1d95ffd828955c886823c519630c01f7c"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-slot-1-colors.bin",
+      "status": 200,
+      "bytes": 1433664,
+      "sha256": "f020daf02341c6ab0f1511cf5b5bf14fea8e2ce4d2d8c8b4fbf5f587f4ad3ca5"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-slot-1-indices.bin",
+      "status": 200,
+      "bytes": 410640,
+      "sha256": "ad41ac068cc45ebce3da452a21dfd6c2066c7a518305e26a8ad42020a0db1a48"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-slot-1-normals.bin",
+      "status": 200,
+      "bytes": 1433664,
+      "sha256": "16b3807d274a6bbfb7ed54749f89c5240d963abcd50798ea051544423a4552c3"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-slot-1-positions.bin",
+      "status": 200,
+      "bytes": 1433664,
+      "sha256": "48f478a1647152e7593727a1b1e53265f8978949b1a12e9ad2da9d360754e680"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-slot-2-indices.bin",
+      "status": 200,
+      "bytes": 266640,
+      "sha256": "11018e41244c359d27137788b8d256bcbf135118481b0513221281cb3e3bb492"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-slot-3-indices.bin",
+      "status": 200,
+      "bytes": 27192,
+      "sha256": "d7e16db83dcaa8a22f2155fb4129c4b951356f38d24578edf29b2f26e7f8accf"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-slot-4-indices.bin",
+      "status": 200,
+      "bytes": 12360,
+      "sha256": "546154522f8a0171c5ffa93335b8c05eb0ddbc272f4d0b72dd8dbd0fb2480ed9"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-water-indices.bin",
+      "status": 200,
+      "bytes": 1848,
+      "sha256": "e0810d67d0319761e19e7d3364f5ad4e18a7a3c43cb5b1ef92b68c0258a13d64"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-water-normals.bin",
+      "status": 200,
+      "bytes": 7392,
+      "sha256": "f87c0ea807d66296a2d3c496ab3992b378668427d9f4c0c0d67b7c75525fbe43"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-water-positions.bin",
+      "status": 200,
+      "bytes": 7392,
+      "sha256": "1614f45e69000d39b1ee2b6db7f800190e7d68fd0025896b29448fb80d1356e7"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-decor-coverage.bin",
+      "status": 200,
+      "bytes": 1105920,
+      "sha256": "d5cdcf75112ecd21d5fe3c0ba1c5486dafd27ee3b27b507e9c99cc9ed46801b4"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-decor-material-slots.bin",
+      "status": 200,
+      "bytes": 1105920,
+      "sha256": "223576632d466275dc1abfe05496975d0032a06e784b16a71238aa0f9a21abd5"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-decor-occupancy.bin",
+      "status": 200,
+      "bytes": 1105920,
+      "sha256": "d5cdcf75112ecd21d5fe3c0ba1c5486dafd27ee3b27b507e9c99cc9ed46801b4"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-decor-slot-1-colors.bin",
+      "status": 200,
+      "bytes": 369936,
+      "sha256": "8f33b27ca9605e203699c2bdd50f52d84acb88e27c0a5ca9c9ed575114cf0a6c"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-decor-slot-1-indices.bin",
+      "status": 200,
+      "bytes": 92484,
+      "sha256": "ca40fca8cce7d6c665104c45a02e292d828e7bc0cc43e8864eabbdac893ff9a2"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-decor-slot-1-normals.bin",
+      "status": 200,
+      "bytes": 369936,
+      "sha256": "391e52de3443bc6056cb558b723a4fd76244766d16171240f09e230360a1dd98"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-decor-slot-1-positions.bin",
+      "status": 200,
+      "bytes": 369936,
+      "sha256": "9b58b212aa70357248cab4f00c216d06b9c15a9c78f638509b125bb84aac51fb"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-wood-coverage.bin",
+      "status": 200,
+      "bytes": 1105920,
+      "sha256": "dc0683f9ec347e4494344138f1771d0ae27d2577089a3637df52e52607576516"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-wood-material-slots.bin",
+      "status": 200,
+      "bytes": 1105920,
+      "sha256": "dc0683f9ec347e4494344138f1771d0ae27d2577089a3637df52e52607576516"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-wood-occupancy.bin",
+      "status": 200,
+      "bytes": 1105920,
+      "sha256": "dc0683f9ec347e4494344138f1771d0ae27d2577089a3637df52e52607576516"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-wood-slot-1-colors.bin",
+      "status": 200,
+      "bytes": 294864,
+      "sha256": "17178e79ed0fa169d9038056d40c514930111bae3b733ba291b3256d73d441a4"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-wood-slot-1-indices.bin",
+      "status": 200,
+      "bytes": 73716,
+      "sha256": "18f25b64520cd1ec14c53e0f7d1ad1e5dae95e61a6ecb95b179de262512e427d"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-wood-slot-1-normals.bin",
+      "status": 200,
+      "bytes": 294864,
+      "sha256": "122e14d0eef0c99c950bc085274391837b2dc2ca92f217665949517a65e9d78d"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-wood-slot-1-positions.bin",
+      "status": 200,
+      "bytes": 294864,
+      "sha256": "b2896724b73955c4ccdd92c3035516827f2d6e4ff09ee716cc580abc77649935"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-1-decor-coverage.bin",
+      "status": 200,
+      "bytes": 23232,
+      "sha256": "e14fe300404fc6c6f74051a1bd6ae57b514916c453ab04b60d12df7045b7b4f2"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-1-decor-material-slots.bin",
+      "status": 200,
+      "bytes": 23232,
+      "sha256": "161f987495f38b17f1a193248327361c507f29c7b72b590e9bb68ed7631189f7"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-1-decor-occupancy.bin",
+      "status": 200,
+      "bytes": 23232,
+      "sha256": "e14fe300404fc6c6f74051a1bd6ae57b514916c453ab04b60d12df7045b7b4f2"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-1-decor-slot-1-colors.bin",
+      "status": 200,
+      "bytes": 12672,
+      "sha256": "e4e0a8da74b3442311206183f8258de6d2d0a3aaf28a8f43bec41c52d10f3fdf"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-1-decor-slot-1-indices.bin",
+      "status": 200,
+      "bytes": 3168,
+      "sha256": "e185ece4977751d05af409a2dfcb0cf412aab54be953def36e45a171b6da6a1b"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-1-decor-slot-1-normals.bin",
+      "status": 200,
+      "bytes": 12672,
+      "sha256": "fafbf9380f74c4d2aa388c8601693c9fccac4e86a5a7ca0d30b5a6caa428a4fc"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-1-decor-slot-1-positions.bin",
+      "status": 200,
+      "bytes": 12672,
+      "sha256": "f792c46920bcc67e17bf28339dc574a4b43bb1769fb8f40503c7d88d54c037f0"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-2-decor-coverage.bin",
+      "status": 200,
+      "bytes": 23232,
+      "sha256": "81a984ec399f208ffb5e9fa7ec0c8fb8b1fd4bdfef2143354bfa1b446af741bc"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-2-decor-material-slots.bin",
+      "status": 200,
+      "bytes": 23232,
+      "sha256": "fc0ffea11a4f961b287b574e00c50b0f6a5e511a1ef759a7f2681334d139ca90"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-2-decor-occupancy.bin",
+      "status": 200,
+      "bytes": 23232,
+      "sha256": "81a984ec399f208ffb5e9fa7ec0c8fb8b1fd4bdfef2143354bfa1b446af741bc"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-2-decor-slot-1-colors.bin",
+      "status": 200,
+      "bytes": 23184,
+      "sha256": "dc3b80996153751cf303ecdf82d2bf3a097230434847cdab4879d161ec4ec594"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-2-decor-slot-1-indices.bin",
+      "status": 200,
+      "bytes": 5796,
+      "sha256": "66f92ff37eb1c7d4a14485b8ec2d52ec51e20cd129f0f3e4a47cb6e7f3b688c8"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-2-decor-slot-1-normals.bin",
+      "status": 200,
+      "bytes": 23184,
+      "sha256": "7fbf82b50b94809442d7d6eac1ba82c9f0697ad2d8dec85becef8dfb43f54acf"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-2-decor-slot-1-positions.bin",
+      "status": 200,
+      "bytes": 23184,
+      "sha256": "cd25e56458532611ac4cbe91d0608c7166f80913d3225041aa42ef28738703b8"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-3-decor-coverage.bin",
+      "status": 200,
+      "bytes": 23232,
+      "sha256": "b5586b65bcdf7df411677e6edba5a6f5145eaed8c4d307fc8b5f682663e9bad4"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-3-decor-material-slots.bin",
+      "status": 200,
+      "bytes": 23232,
+      "sha256": "1ebfb6571a3fa4d6d9282dd487e25e850356c6eb30de4be2fa5249e0b38c16ac"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-3-decor-occupancy.bin",
+      "status": 200,
+      "bytes": 23232,
+      "sha256": "b5586b65bcdf7df411677e6edba5a6f5145eaed8c4d307fc8b5f682663e9bad4"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-3-decor-slot-1-colors.bin",
+      "status": 200,
+      "bytes": 13152,
+      "sha256": "5fc8ed40fa995e76e72cdad053402183ff713922c3fc15af5de507ec0e35b871"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-3-decor-slot-1-indices.bin",
+      "status": 200,
+      "bytes": 3288,
+      "sha256": "fb86341feb5e8daa01a8b0ede399f588edada24dcebee785f96d22f8abcf9652"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-3-decor-slot-1-normals.bin",
+      "status": 200,
+      "bytes": 13152,
+      "sha256": "11b80a769aa070a1f43137c7e403585bce7fba62d4e9392170198fb3bc144ef6"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-3-decor-slot-1-positions.bin",
+      "status": 200,
+      "bytes": 13152,
+      "sha256": "ab12e22b3fb5d7ad0a5929f17c07bac63862416e0f8df7a5882cc9a487f7542f"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-4-decor-coverage.bin",
+      "status": 200,
+      "bytes": 23232,
+      "sha256": "0d9e714a249b3552fc8a33b5d1ae2c09239dc06ff7120f1db5f051ec8f44d6a6"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-4-decor-material-slots.bin",
+      "status": 200,
+      "bytes": 23232,
+      "sha256": "f3335c5899fe34577af80f457cacb1be7be7ed0c855245293fc125d28467d6f5"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-4-decor-occupancy.bin",
+      "status": 200,
+      "bytes": 23232,
+      "sha256": "0d9e714a249b3552fc8a33b5d1ae2c09239dc06ff7120f1db5f051ec8f44d6a6"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-4-decor-slot-1-colors.bin",
+      "status": 200,
+      "bytes": 10656,
+      "sha256": "c1f7c8ab99e090cf296641e1577b0d7f93ae078a9d655161981e528311bd546a"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-4-decor-slot-1-indices.bin",
+      "status": 200,
+      "bytes": 2664,
+      "sha256": "08df4a3c7b06e1b3114c5c66267d140af62f071f233615be524f83b3ecbe85b8"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-4-decor-slot-1-normals.bin",
+      "status": 200,
+      "bytes": 10656,
+      "sha256": "728d73385828153bd3f7d4792fe6a262c8e667cdf8ee69cc0eaf08b782758232"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-4-decor-slot-1-positions.bin",
+      "status": 200,
+      "bytes": 10656,
+      "sha256": "6e28c21ec65e8b714a34df565b7c482e5756df7254a3c395b964dcd67d9728cb"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F01-HVP-COAST/scenario.json",
+      "status": 200,
+      "bytes": 774,
+      "sha256": "e41d4965131f17ad47ec7a7ce6db4a841d60a550abb86cd51206fa973c500bd9"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/clearQuad.vertex-CHbWJOXM.js",
+      "status": 200,
+      "bytes": 90,
+      "sha256": "da12f3507868e6b89bf3c68e2a043d7d0d65f3fab59f386e662be4c813f2b113"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/clearQuad.fragment-BwyJM4Bg.js",
+      "status": 200,
+      "bytes": 91,
+      "sha256": "594ed6a49168b9808b84303ec2593718d65f07db7104fbdb121269ead3a4e870"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/logDepthDeclaration-pYNAkkbq.js",
+      "status": 200,
+      "bytes": 1983,
+      "sha256": "c93580ae6e191b794754119333f9743dcd72c1c59e3152e17e6e8899e151d5e4"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/default.vertex-DqXsb47B.js",
+      "status": 200,
+      "bytes": 44036,
+      "sha256": "d60f301dca937074e0bdd3815ecaa9aa1623f445fa0a3858842a6f0a902a25f2"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/default.fragment-CPqLvicJ.js",
+      "status": 200,
+      "bytes": 116864,
+      "sha256": "5372219db1b324e73eec356afe57a6df80f08f38ea5e5ffd901e36a99747dd24"
+    }
+  ],
+  "errors": [],
+  "console": [
+    {
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    },
+    {
+      "type": "log",
+      "text": "BJS - [12:10:17]: Babylon.js v9.29.0 - WebGPU1 engine"
+    }
+  ],
+  "offsite": [],
+  "compilerRequests": [],
+  "originalSuite": "FAIL16_RETAINED",
+  "productIntegrated": false
+}
