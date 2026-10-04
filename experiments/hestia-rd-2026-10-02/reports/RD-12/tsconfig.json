@@ -1,0 +1,4 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": ["../../src/experiments/babylon/**/*.ts", "../../tests/RD-12/**/*.ts", "./*.ts"]
+}
