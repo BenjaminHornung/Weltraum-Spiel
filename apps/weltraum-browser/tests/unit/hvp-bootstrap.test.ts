@@ -34,6 +34,8 @@ import {
   startHvpRoute,
   type HvpBootstrapHandle
 } from "../../src/hvp/hvpBootstrap";
+import * as cameraModule from "../../src/hvp/hvpCamera";
+import * as hudModule from "../../src/hvp/hvpHud";
 import { createHvpLookProfile } from "../../src/hestia-prototype/presentation/look";
 import * as cutTraceModule from "../../src/hestia-prototype/runtime/cutTrace";
 import * as plasmaToolModule from "../../src/hestia-prototype/terrain/plasmaTool";
@@ -1064,6 +1066,146 @@ describe("HVP T08 bootstrap lifecycle", () => {
         .find((element) => element.id === "hvp-mode")?.textContent).toContain("(Orbit)");
     } finally {
       await handle.dispose();
+    }
+  });
+  it("keeps HUD inspection state tied to the real camera across presets reset Play and restored modes", async () => {
+    const source = harness();
+    const createCamera = cameraModule.createHvpCamera;
+    const createHud = hudModule.createHvpHud;
+    const createPhysics = source.overrides()!.createPhysics!;
+    let camera: ReturnType<typeof createCamera> | undefined;
+    let hud: ReturnType<typeof createHud> | undefined;
+    let actions: Parameters<typeof createHud>[0]["actions"] | undefined;
+    const cameraSpy = vi.spyOn(cameraModule, "createHvpCamera").mockImplementation((...args) => {
+      camera = createCamera(...args);
+      return camera;
+    });
+    const hudSpy = vi.spyOn(hudModule, "createHvpHud").mockImplementation((options) => {
+      actions = options.actions;
+      hud = createHud(options);
+      return hud;
+    });
+    let handle: HvpBootstrapHandle | undefined;
+    try {
+      handle = await startHvp(source.overrides({
+        createPhysics: async (...args: Parameters<typeof createPhysics>) => {
+          const physics = await createPhysics(...args);
+          const read = physics.read;
+          // Transport-only Inspection sample; Camera and HUD remain real.
+          return { ...physics, read: () => ({ ...read(), player: {
+            ownerId: "hvp:player", position: { ...args[1] }, grounded: true,
+            velocityY: 0, jumpCount: 0, cameraFraction: 1, status: "Inspection" as const
+          } }) };
+        }
+      }));
+      expect(cameraSpy).toHaveBeenCalledOnce();
+      expect(hudSpy).toHaveBeenCalledOnce();
+      const owner = camera!;
+      const actualHud = hud!;
+      const hudActions = actions!;
+      const elements = source.body.children.flatMap((child) => [child, ...descendants(child)]);
+      const inspect = elements.find((element) => element.id === "hvp-camera-inspect")!;
+      const root = elements.find((element) => element.id === "hvp-hud")!;
+      const mode = elements.find((element) => element.id === "hvp-mode")!;
+      expect(owner.mode).toBe("Orbit");
+      expect(hudActions.readInspectEnabled()).toBe(false);
+      expect(inspect.textContent).toBe("Inspect: off");
+      expect(inspect.getAttribute("aria-pressed")).toBe("false");
+      expect(root.dataset.inspect).toBe("off");
+      expect(mode.textContent).toContain("(Orbit)");
+      expect(hudActions.readPhysics().player?.status).toBe("Inspection");
+      const updates = vi.spyOn(actualHud, "update");
+      try {
+        for (const id of ["hvp-camera-eye", "hvp-camera-shore", "hvp-camera-roots", "hvp-camera-wide",
+          "hvp-camera-rockarm", "hvp-camera-quarry", "hvp-reset-camera"]) {
+          inspect.dispatchEvent(new Event("click"));
+          expect(owner.mode).toBe("Fly");
+          expect(hudActions.readInspectEnabled()).toBe(true);
+          expect(inspect.textContent).toBe("Inspect: on");
+          expect(inspect.getAttribute("aria-pressed")).toBe("true");
+          expect(root.dataset.inspect).toBe("on");
+          expect(mode.textContent).toContain("(Fly)");
+          elements.find((element) => element.id === id)!.dispatchEvent(new Event("click"));
+          expect(owner.mode).toBe("Orbit");
+          expect(hudActions.readInspectEnabled()).toBe(false);
+          expect(inspect.textContent).toBe("Inspect: off");
+          expect(inspect.getAttribute("aria-pressed")).toBe("false");
+          expect(root.dataset.inspect).toBe("off");
+          expect(mode.textContent).toContain("(Orbit)");
+          stepFrame(source.windowPort, performance.now());
+          expect(owner.mode).toBe("Orbit");
+          expect(hudActions.readInspectEnabled()).toBe(false);
+          expect(inspect.textContent).toBe("Inspect: off");
+          expect(inspect.getAttribute("aria-pressed")).toBe("false");
+          expect(root.dataset.inspect).toBe("off");
+          expect(mode.textContent).toContain("(Orbit)");
+          inspect.dispatchEvent(new Event("click"));
+          expect(owner.mode).toBe("Fly");
+          expect(hudActions.readInspectEnabled()).toBe(true);
+          expect(inspect.textContent).toBe("Inspect: on");
+          inspect.dispatchEvent(new Event("click"));
+          expect(owner.mode).toBe("Orbit");
+          expect(hudActions.readInspectEnabled()).toBe(false);
+          expect(inspect.textContent).toBe("Inspect: off");
+        }
+
+        inspect.dispatchEvent(new Event("click"));
+        expect(owner.mode).toBe("Fly");
+        expect(inspect.textContent).toBe("Inspect: on");
+        // Real Play action, not a Native walking or pointer-lock proof.
+        elements.find((element) => element.id === "hvp-play")!.dispatchEvent(new Event("click"));
+        expect(owner.mode).toBe("Orbit");
+        expect(hudActions.readInspectEnabled()).toBe(false);
+        expect(inspect.textContent).toBe("Inspect: off");
+        expect(inspect.getAttribute("aria-pressed")).toBe("false");
+        expect(root.dataset.inspect).toBe("off");
+        expect(mode.textContent).toContain("(Orbit)");
+
+        const orbit = owner.checkpoint();
+        expect(orbit.mode).toBe("Orbit");
+        inspect.dispatchEvent(new Event("click"));
+        const fly = owner.checkpoint();
+        expect(fly.mode).toBe("Fly");
+        // Owner Camera + real HUD only; no Save/Load or native Restore fixture.
+        for (const [checkpoint, expectedMode, enabled, text, pressed, dataset] of [
+          [orbit, "Orbit", false, "Inspect: off", "false", "off"],
+          [fly, "Fly", true, "Inspect: on", "true", "on"]
+        ] as const) {
+          owner.setMode(expectedMode === "Orbit" ? "Fly" : "Orbit");
+          owner.restore(checkpoint);
+          const projected = updates.mock.calls.at(-1)!;
+          actualHud.update(projected[0], owner.readPose(), projected[2], projected[3]);
+          expect(owner.mode).toBe(expectedMode);
+          expect(hudActions.readInspectEnabled()).toBe(enabled);
+          expect(inspect.textContent).toBe(text);
+          expect(inspect.getAttribute("aria-pressed")).toBe(pressed);
+          expect(root.dataset.inspect).toBe(dataset);
+          expect(mode.textContent).toContain(`(${expectedMode})`);
+          stepFrame(source.windowPort, performance.now());
+          expect(owner.mode).toBe(expectedMode);
+          expect(hudActions.readInspectEnabled()).toBe(enabled);
+          expect(inspect.textContent).toBe(text);
+          expect(inspect.getAttribute("aria-pressed")).toBe(pressed);
+          expect(root.dataset.inspect).toBe(dataset);
+          expect(mode.textContent).toContain(`(${expectedMode})`);
+          inspect.dispatchEvent(new Event("click"));
+          expect(owner.mode).toBe(expectedMode === "Orbit" ? "Fly" : "Orbit");
+          expect(hudActions.readInspectEnabled()).toBe(!enabled);
+          expect(inspect.textContent).toBe(enabled ? "Inspect: off" : "Inspect: on");
+          expect(inspect.getAttribute("aria-pressed")).toBe(enabled ? "false" : "true");
+          expect(root.dataset.inspect).toBe(enabled ? "off" : "on");
+          expect(mode.textContent).toContain(enabled ? "(Orbit)" : "(Fly)");
+        }
+      } finally {
+        updates.mockRestore();
+      }
+    } finally {
+      try {
+        await handle?.dispose();
+      } finally {
+        cameraSpy.mockRestore();
+        hudSpy.mockRestore();
+      }
     }
   });
   it("publishes save busy and rejection immediately without waiting for a render frame",async()=>{

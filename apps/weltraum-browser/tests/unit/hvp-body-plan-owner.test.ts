@@ -1690,3 +1690,257 @@ it("never lets an older rejected branch snapshot prove body rollback or move pub
     expect(stub.moving).toBe("Idle");
   });
 },120_000);
+
+// Private SourceBridge controls reuse the existing fixtures; the original fifty cases are unchanged.
+import {hvpBodyProjectionBinding,readHvpBodyProjectionReply} from "../../src/hestia-prototype/physics/physicsProtocol";
+import type {HvpBodyChildProjection} from "../../src/hestia-prototype/physics/bodyCutSession";
+
+const captureWorkerBegin=async(worker:WorkerHarness,begin:(observed:WorkerHarness)=>Promise<ReturnType<typeof admissionFor>>=beginWorkerBodyCut)=>{
+  let begun:HvpPhysicsReply|undefined;
+  const admission=await begin({...worker,async send(message){
+    const reply=await worker.send(message);
+    if(message.kind==="BeginBodyCut"){begun=reply;}
+    return reply;
+  }});
+  if(begun?.bodyPreparation===undefined){throw new Error("Fixture did not issue Begin");}
+  return {preparation:begun.bodyPreparation,admission,binding:hvpBodyProjectionBinding(begun.bodyPreparation,begun.id),sequence:begun.sequence};
+};
+const suspendWorkerProjection=async(worker:WorkerHarness,binding:ReturnType<typeof hvpBodyProjectionBinding>)=>{
+  worker.gate(true);
+  const pending=worker.dispatch({kind:"PrepareBodyChildProjection",binding});
+  await new Promise<void>(resolve=>{queueMicrotask(resolve);});
+  expect(worker.reply(pending.id)).toBeUndefined();
+  return pending;
+};
+
+it("owner source bridge: returns only current framed data while Read/Input/timer run and reuses one native plan",async()=>{
+  await withWorker(false,async worker=>{
+    const begun=await captureWorkerBegin(worker),before=(await worker.send({kind:"Read"})).snapshot!;
+    const pending=await suspendWorkerProjection(worker,begun.binding);
+    const walking=await worker.send({kind:"Read",input:{x:0,z:1,sprint:false,jump:false}});
+    worker.tick(1000/60);
+    const neutral=await worker.send({kind:"Read",input:{x:0,z:0,sprint:false,jump:false}});
+    expect(neutral.snapshot).toMatchObject({status:"Running",ticks:walking.snapshot!.ticks+1,moving:{state:"Preparing"}});
+    expect(neutral.snapshot!.bodyCount).toBe(before.bodyCount);
+    const reply=await drainWorkerPlan(worker,pending);
+    expect(reply.rejected).toBeUndefined();expect(reply.snapshot).toBeUndefined();expect(reply.restoreState).toBeUndefined();
+    expect(reply).toMatchObject({protocol:"hvp-physics-owner-v3",incarnation:"worker-plan-test"});
+    expect(reply.sequence).toBeGreaterThan(neutral.sequence);
+    expect(reply.bodyChildProjection?.beginRequestId).toBe(begun.binding.beginRequestId);
+    expect(reply.bodyChildProjection!.projection).toMatchObject(begun.admission);
+    const cloned=structuredClone(reply.bodyChildProjection);
+    expect(readHvpBodyProjectionReply(cloned,begun.binding)).toEqual(reply.bodyChildProjection!.projection);
+    expect(cloned!.projection).not.toBe(reply.bodyChildProjection!.projection);
+    expect(Object.hasOwn(reply.bodyChildProjection!.projection,"hit")).toBe(false);
+    expect(Object.hasOwn(reply.bodyChildProjection!.projection,"parentPose")).toBe(false);
+    const repeated=await worker.send({kind:"PrepareBodyChildProjection",binding:begun.binding});
+    expect(repeated.bodyChildProjection!.projection).toBe(reply.bodyChildProjection!.projection);
+    expect(worker.planCount()).toBe(1);
+    expect((await worker.send({kind:"Read"})).snapshot).toMatchObject({status:"Running",bodyCount:before.bodyCount,moving:{state:"Preparing"}});
+    await worker.send({kind:"RollbackBodyCut",transactionId:"recut"});
+  });
+});
+
+it("owner source bridge: rejects wrong Begin request/source/target before deriving a native plan",async()=>{
+  await withWorker(false,async worker=>{
+    const begun=await captureWorkerBegin(worker);
+    for(const patch of [{beginRequestId:begun.binding.beginRequestId-1},{sourceDigest:"foreign"},{ownerId:"foreign"}]){
+      const reply=await worker.send({kind:"PrepareBodyChildProjection",binding:{...begun.binding,...patch}});
+      expect(reply.rejected).toBe("Stale body projection binding");
+      expect(reply.snapshot).toBeUndefined();expect(reply.bodyChildProjection).toBeUndefined();
+      expect(worker.planCount()).toBe(0);
+    }
+    await worker.send({kind:"RollbackBodyCut",transactionId:"recut"});
+  });
+});
+
+it.each(["rollback-reuse","dispose"] as const)("owner source bridge: settles suspended work after %s without exporting old data",async boundary=>{
+  await withWorker(false,async worker=>{
+    const begun=await captureWorkerBegin(worker),pending=await suspendWorkerProjection(worker,begun.binding);
+    if(boundary==="dispose"){
+      await worker.send({kind:"Dispose"});
+    }else{
+      await worker.send({kind:"RollbackBodyCut",transactionId:"recut"});
+      const fresh=await captureWorkerBegin(worker,observed=>beginWorkerRecut(observed,"recut"));
+      expect(fresh.binding.beginRequestId).not.toBe(begun.binding.beginRequestId);
+    }
+    const reply=await drainWorkerPlan(worker,pending);
+    expect(reply.rejected).toMatch(/cancelled|disposed/);
+    expect(reply.bodyChildProjection).toBeUndefined();expect(reply.snapshot).toBeUndefined();
+    expect(worker.planCount()).toBe(1);
+    if(boundary==="rollback-reuse"){
+      expect((await worker.send({kind:"Read"})).snapshot!.moving).toMatchObject({state:"Preparing",pendingId:"recut"});
+      await worker.send({kind:"RollbackBodyCut",transactionId:"recut"});
+    }
+  });
+});
+
+it("owner source bridge: old Begin request IDs cannot project after a real finalized World Restore",async()=>{
+  let phaseOrdinal=0;
+  const phase=async<T>(name:string,action:()=>Promise<T>):Promise<T>=>{
+    const ordinal=++phaseOrdinal;
+    console.info(`[Restore ${ordinal}] ${name} START`);
+    try{
+      const result=await action();
+      console.info(`[Restore ${ordinal}] ${name} DONE`);
+      return result;
+    }catch(error){
+      console.info(`[Restore ${ordinal}] ${name} ERROR`);
+      throw error;
+    }
+  };
+  await phase("withWorker setup-through-outer-return",()=>withWorker(false,async worker=>{
+    const tracedWorker:WorkerHarness={...worker,async send(message:WorkerRequest){
+      const ordinal=++phaseOrdinal;
+      console.info(`[Restore ${ordinal}] worker.send ${message.kind} START`);
+      try{
+        const reply=await worker.send(message);
+        console.info(`[Restore ${ordinal}] worker.send ${message.kind} DONE`,{
+          id:reply.id,sequence:reply.sequence,status:reply.snapshot?.status,moving:reply.snapshot?.moving.state,planCount:worker.planCount()
+        });
+        return reply;
+      }catch(error){
+        console.info(`[Restore ${ordinal}] worker.send ${message.kind} ERROR`);
+        throw error;
+      }
+    }};
+    await phase("withWorker body entry-through-return",async()=>{
+      const old=await phase("old captureWorkerBegin",()=>captureWorkerBegin(tracedWorker));
+      await tracedWorker.send({kind:"RollbackBodyCut",transactionId:"recut"});
+      await tracedWorker.send({kind:"Pause"});
+      const saved=await tracedWorker.send({kind:"Checkpoint"});
+      expect((await tracedWorker.send({kind:"PrepareRestore",transactionId:"projection-restore",checkpoint:saved.checkpoint!,replacements:[]})).restoreState).toBe("Prepared");
+      await tracedWorker.send({kind:"CommitRestore",transactionId:"projection-restore"});
+      await tracedWorker.send({kind:"FinalizeRestore",transactionId:"projection-restore"});
+      await tracedWorker.send({kind:"Play"});
+      const fresh=await phase("fresh captureWorkerBegin",()=>captureWorkerBegin(tracedWorker,observed=>beginWorkerRecut(observed,"recut")));
+      const stale=await tracedWorker.send({kind:"PrepareBodyChildProjection",binding:old.binding});
+      expect(stale.rejected).toBe("Stale body projection binding");expect(stale.bodyChildProjection).toBeUndefined();
+      expect(tracedWorker.planCount()).toBe(0);
+      const current=await tracedWorker.send({kind:"PrepareBodyChildProjection",binding:fresh.binding});
+      expect(current.rejected).toBeUndefined();expect(current.bodyChildProjection?.beginRequestId).toBe(fresh.binding.beginRequestId);
+      expect(tracedWorker.planCount()).toBe(1);
+      await tracedWorker.send({kind:"RollbackBodyCut",transactionId:"recut"});
+    });
+  }));
+});
+
+const holdClientProjections=(stub:FaithfulPhysicsStub)=>{
+  const post=stub.postMessage;
+  return vi.spyOn(stub,"postMessage").mockImplementation(message=>{
+    if(message.kind==="PrepareBodyChildProjection"){stub.messages.push(message);stub.held.push(message);}
+    else{post.call(stub,message);}
+  });
+};
+const clientProjectionReply=(stub:FaithfulPhysicsStub,message:HvpPhysicsMessage,patch:Partial<HvpPhysicsReply>={})=>{
+  if(message.kind!=="PrepareBodyChildProjection"){throw new Error("Not a projection demand");}
+  const {beginRequestId,...binding}=message.binding;
+  const projection:HvpBodyChildProjection={...binding,removedCells:1,removedMassKg:1,parts:[]};
+  stub.onmessage?.({data:{id:message.id,protocol:message.protocol,incarnation:message.incarnation,sequence:++stub.replySequence,
+    bodyChildProjection:{beginRequestId,projection},...patch}} as MessageEvent<HvpPhysicsReply>);
+};
+
+it("owner source bridge: data replies cannot own publication/held/Restore watermarks or suppress an earlier Read",async()=>{
+  await withStubClient(async(client,stub)=>{
+    const held=holdClientProjections(stub);
+    try{
+      await client.beginBodyCut(bodyRequest("data"));
+      const before=client.read();
+      stub.holdNextRead=true;client.update();await settleClient();
+      const read=stub.held.shift()!;
+      const preparing=client.prepareBodyChildProjection("data"),demand=stub.held.shift()!;
+      clientProjectionReply(stub,demand,{incarnation:"foreign-owner",error:"foreign fatal"});
+      expect(client.lifecycle?.().pendingJobs).toBe(2);expect(client.read()).toBe(before);
+      clientProjectionReply(stub,demand,{snapshot:{...before,ticks:999,moving:{...before.moving,state:"CommittedHeld"}},restoreState:"Committed"});
+      const data=await preparing;
+      expect(Object.isFrozen(data)).toBe(true);expect(Object.isFrozen(data.parts)).toBe(true);
+      expect(client.read()).toBe(before);
+      stub.deliver(read);await settleClient();
+      expect(client.read().ticks).toBe(before.ticks+1);expect(client.read().moving.state).toBe("Preparing");
+      expect(client.lifecycle?.().pendingJobs).toBe(0);
+      await client.rollbackBodyCut("data");
+    }finally{held.mockRestore();}
+  });
+});
+
+it.each(["rollback-reuse","dispose"] as const)("owner source bridge: client rejects stale demands/replies after %s",async boundary=>{
+  await withStubClient(async(client,stub)=>{
+    const held=holdClientProjections(stub);
+    try{
+      await client.beginBodyCut(bodyRequest("same"));
+      const preparing=client.prepareBodyChildProjection("same"),demand=stub.held.shift()!;
+      const failure=preparing.catch(error=>error);
+      if(boundary==="dispose"){
+        await client.dispose();
+        let original:unknown;
+        try{client.read();}catch(error){original=error;}
+        expect(await failure).toBe(original);
+      }else{
+        await client.rollbackBodyCut("same");
+        const posted=stub.messages.length;
+        await expect(client.prepareBodyChildProjection("same")).rejects.toThrow("Stale body projection ticket");
+        expect(stub.messages).toHaveLength(posted);
+        await client.beginBodyCut(bodyRequest("same"));
+        clientProjectionReply(stub,demand);
+        expect(await failure).toMatchObject({message:"Stale body projection ticket"});
+        const fresh=client.prepareBodyChildProjection("same"),freshDemand=stub.held.shift()!;
+        clientProjectionReply(stub,freshDemand);expect((await fresh).commandId).toBe("same");
+        await client.rollbackBodyCut("same");
+      }
+      expect(client.lifecycle?.().pendingJobs).toBe(0);
+    }finally{held.mockRestore();}
+  });
+});
+
+it.each(["parts","cells","metadata","begin-id","sequence","sentinel"] as const)("owner source bridge: rejects untrusted %s data without adopting state or replacing the original error",async boundary=>{
+  await withStubClient(async(client,stub)=>{
+    const held=holdClientProjections(stub),sentinel=new Error("projection validation sentinel");
+    try{
+      await client.beginBodyCut(bodyRequest("invalid"));
+      const before=client.read(),beginSequence=stub.replySequence,preparing=client.prepareBodyChildProjection("invalid"),demand=stub.held.shift()!;
+      const failure=preparing.catch(error=>error);
+      if(demand.kind!=="PrepareBodyChildProjection"){throw new Error("Missing projection demand");}
+      const {beginRequestId,...binding}=demand.binding;
+      const value={...binding,removedCells:1,removedMassKg:1,parts:[] as unknown[]};
+      if(boundary==="parts"){value.parts=new Array(33);}
+      else if(boundary==="cells"){
+        value.parts=[{ownerId:`${binding.sourceId}:r${binding.revision+1}:p0`,sourceDigest:"fnv1a64-v1:0000000000000000",
+          center:{x:0,y:0,z:0},massKg:1,sourceBytes:1,cells:new Array(32_768)}];
+      }else if(boundary==="metadata"){value.sourceDigest="foreign";}
+      const projection=boundary==="sentinel"?new Proxy(value,{getPrototypeOf(){throw sentinel;}}):value;
+      clientProjectionReply(stub,demand,{bodyChildProjection:{beginRequestId:beginRequestId+(boundary==="begin-id"?1:0),
+        projection:projection as unknown as HvpBodyChildProjection},...(boundary==="sequence"?{sequence:beginSequence}:{})});
+      const error=await failure;
+      if(boundary==="sentinel"){expect(error).toBe(sentinel);}
+      else{expect(error).toBeInstanceOf(Error);}
+      expect(client.read()).toBe(before);expect(client.lifecycle?.().pendingJobs).toBe(0);
+      await client.rollbackBodyCut("invalid");
+    }finally{held.mockRestore();}
+  });
+});
+
+it("owner source bridge: preserves genuine occupied Uint16 material IDs and rejects Air/negative-zero/overflow data",async()=>{
+  const ids=[256,65_535],materials=ids.map(materialId=>({...wood[0]!,materialId}));
+  const f=fixture(Array.from({length:5},(_,x)=>({x,y:0,z:0,materialId:x<3?256:65_535})),materials);
+  try{
+    // Diagnostic input witness for the independent immutable-b3/FNV fixture oracle, not an expected result.
+    console.info("S13_HIGH_MATERIAL_SOURCE "+JSON.stringify(f.target.recipe.source));
+    expect([...new Set(readHvpBodyCells(f.target.recipe.source).map(cell=>cell.materialId))].sort((a,b)=>a-b)).toEqual(ids);
+    const preparation=f.session.begin(f.request,f.eye,0);
+    const projection=await f.session.prepareChildProjection(f.request.id,taskHost());
+    // Local data framing only: the real Source/body/plan came from the unchanged native fixture.
+    const binding=hvpBodyProjectionBinding(preparation,0),reply={beginRequestId:binding.beginRequestId,projection};
+    const data=readHvpBodyProjectionReply(structuredClone(reply),binding);
+    expect(data).toEqual(projection);
+    expect(data.parts.map(part=>part.cells.map(cell=>cell.materialId))).toEqual([[256,256],[65_535,65_535]]);
+    for(const materialId of [0,-0,65_536]){
+      const invalid=structuredClone(reply),cell=invalid.projection.parts[0]!.cells[0]!;
+      Reflect.set(cell,"materialId",materialId);
+      expect(Object.is(cell.materialId,materialId)).toBe(true);
+      expect(()=>readHvpBodyProjectionReply(invalid,binding)).toThrow(/Material 0|Uint16/);
+    }
+    expect(readHvpBodyCells(f.target.recipe.source).map(cell=>cell.materialId)).toEqual([256,256,256,65_535,65_535]);
+    expect(planCalls()).toBe(1);expect(f.session.holdsWorld).toBe(false);expect(f.world.bodies.len()).toBe(1);
+    f.session.rollback(f.request.id);
+  }finally{f.world.free();}
+});

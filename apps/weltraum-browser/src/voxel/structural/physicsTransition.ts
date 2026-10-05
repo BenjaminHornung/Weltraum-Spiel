@@ -28,7 +28,9 @@ import type {
   StructuralMassProperties,
   StructuralObject
 } from "./types";
-import { normalizeAdaptiveAuthorityError, normalizeAdaptiveAuthorityFunction, structuralFail, structuralPositiveBudget } from "./validation";
+import { drainStructuralSteps, normalizeAdaptiveAuthorityError, normalizeAdaptiveAuthorityFunction,
+  structuralFail, structuralFreezeArraySteps, structuralPositiveBudget, structuralSortSteps,
+  type StructuralOwnedReserve } from "./validation";
 // Private owned-payload cursor (module export only, not in the adaptive barrel).
 import { createOwnedCanonicalHashCursor } from "../adaptive/ownedCanonicalHashSteps";
 
@@ -223,70 +225,111 @@ const quantumKey = (x: number, y: number, z: number): string => `${x},${y},${z}`
 export const mergeGreedyQuantumBoxes = (
   cells: readonly (Readonly<{ x: number; y: number; z: number }>)[],
   path: string
-): readonly QuantumBox[] => {
+): readonly QuantumBox[] => drainStructuralSteps(greedyQuantumBoxesSteps(cells, path));
+
+/** INACTIVE direct-module form. The producer retains a first-party plain/index-only immutable
+ * cell array for the complete generator lifetime and charges it to ONE parent ledger. No
+ * structural/recipe/World authority is issued; the parent alone releases the borrowed reserve. */
+export function* mergeGreedyQuantumBoxesOwnedSteps(
+  cells: readonly (Readonly<{ x: number; y: number; z: number }>)[], path: string, reserve: StructuralOwnedReserve
+) {
+  return yield* greedyQuantumBoxesSteps(cells, path, reserve);
+}
+
+function* greedyQuantumBoxesSteps(
+  cells: readonly (Readonly<{ x: number; y: number; z: number }>)[], path: string, reserve?: StructuralOwnedReserve
+): Generator<void, readonly QuantumBox[], void> {
+  reserve?.(512);
   const remaining = new Map<string, Readonly<{ x: number; y: number; z: number }>>();
   for (const cell of cells) {
     if (!Number.isSafeInteger(cell.x) || !Number.isSafeInteger(cell.y) || !Number.isSafeInteger(cell.z)) {
       return structuralFail("InvalidContract", path, "Greedy merge requires safe-integer quantum cells.");
     }
+    reserve?.(256);
     const key = quantumKey(cell.x, cell.y, cell.z);
     if (remaining.has(key)) {
       return structuralFail("InvalidContract", path, "Greedy merge requires unique quantum cells.");
     }
     remaining.set(key, cell);
+    if (reserve !== undefined) { yield; }
   }
+  reserve?.(64);
   const boxes: QuantumBox[] = [];
   while (remaining.size > 0) {
-    const seed = [...remaining.values()].sort((a, b) => a.x - b.x || a.y - b.y || a.z - b.z)[0];
+    let seeds: Readonly<{ x: number; y: number; z: number }>[];
+    if (reserve === undefined) { seeds = [...remaining.values()]; }
+    else {
+      reserve(64 + remaining.size * 128);
+      seeds = [];
+      for (const cell of remaining.values()) { seeds.push(cell); yield; }
+    }
+    const seed = (yield* structuralSortSteps(seeds, (a, b) => a.x - b.x || a.y - b.y || a.z - b.z, reserve))[0];
     let maxX = seed.x;
-    while (remaining.has(quantumKey(maxX + 1, seed.y, seed.z))) maxX += 1;
+    for (;;) {
+      reserve?.(128);
+      const present = remaining.has(quantumKey(maxX + 1, seed.y, seed.z));
+      if (reserve !== undefined) { yield; }
+      if (!present) { break; }
+      maxX += 1;
+    }
     let maxY = seed.y;
     let rowComplete = true;
     while (rowComplete) {
       for (let x = seed.x; x <= maxX; x += 1) {
-        if (!remaining.has(quantumKey(x, maxY + 1, seed.z))) {
+        reserve?.(128);
+        const present = remaining.has(quantumKey(x, maxY + 1, seed.z));
+        if (reserve !== undefined) { yield; }
+        if (!present) {
           rowComplete = false;
           break;
         }
       }
-      if (rowComplete) maxY += 1;
+      if (rowComplete) { maxY += 1; }
     }
     let maxZ = seed.z;
     let slabComplete = true;
     while (slabComplete) {
       for (let y = seed.y; y <= maxY; y += 1) {
         for (let x = seed.x; x <= maxX; x += 1) {
-          if (!remaining.has(quantumKey(x, y, maxZ + 1))) {
+          reserve?.(128);
+          const present = remaining.has(quantumKey(x, y, maxZ + 1));
+          if (reserve !== undefined) { yield; }
+          if (!present) {
             slabComplete = false;
             break;
           }
         }
-        if (!slabComplete) break;
+        if (!slabComplete) { break; }
       }
-      if (slabComplete) maxZ += 1;
+      if (slabComplete) { maxZ += 1; }
     }
     for (let z = seed.z; z <= maxZ; z += 1) {
       for (let y = seed.y; y <= maxY; y += 1) {
         for (let x = seed.x; x <= maxX; x += 1) {
+          reserve?.(128);
           remaining.delete(quantumKey(x, y, z));
+          if (reserve !== undefined) { yield; }
         }
       }
     }
+    reserve?.(1_024, true);
     boxes.push(deepFreeze({
       min: deepFreeze({ x: seed.x, y: seed.y, z: seed.z }),
       max: deepFreeze({ x: maxX + 1, y: maxY + 1, z: maxZ + 1 })
     }));
+    if (reserve !== undefined) { yield; }
   }
   let covered = 0;
   for (const box of boxes) {
     covered += (box.max.x - box.min.x) * (box.max.y - box.min.y) * (box.max.z - box.min.z);
+    if (reserve !== undefined) { yield; }
   }
   if (covered !== cells.length) {
     return structuralFail("InvalidContract", path, "Greedy merge coverage must equal the fragment cell count.");
   }
-  boxes.sort((a, b) => a.min.z - b.min.z || a.min.y - b.min.y || a.min.x - b.min.x);
-  return deepFreeze(boxes);
-};
+  yield* structuralSortSteps(boxes, (a, b) => a.min.z - b.min.z || a.min.y - b.min.y || a.min.x - b.min.x, reserve);
+  return yield* structuralFreezeArraySteps(boxes, reserve);
+}
 
 const toMetersBox = (box: QuantumBox): StructuralColliderBoxMeters => {
   const side = MICROVOXEL_BASE_QUANTUM_METERS;

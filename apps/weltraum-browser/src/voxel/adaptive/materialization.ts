@@ -1,5 +1,6 @@
 import {
   evaluateAdaptiveBaseFieldDescriptor,
+  adaptiveBaseFieldDescriptorHashSteps,
   hashAdaptiveBaseFieldDescriptor,
   hashAdaptiveCanonical,
   validateAdaptiveBaseFieldDescriptor
@@ -10,7 +11,7 @@ import {
   parentOf,
   validateAdaptiveBrickKey
 } from "./coordinates";
-import { validateAdaptiveEditJournal } from "./edits";
+import { validateAdaptiveEditJournal, adaptiveValidateEditJournalSteps, type AdaptiveOwnedJournalOptions } from "./edits";
 import {
   ADAPTIVE_BRICK_CELL_COUNT,
   ADAPTIVE_BRICK_CELLS_PER_AXIS,
@@ -28,6 +29,9 @@ import {
 } from "./types";
 import {
   authorityRevision,
+  adaptiveDrainSteps,
+  adaptiveDenseArraySteps,
+  adaptiveFreezeArraySteps,
   deepFreeze,
   fail,
   requireDenseDataPropertyArray,
@@ -39,10 +43,14 @@ import {
 
 const hashPattern = /^fnv1a64-v1:[0-9a-f]{16}$/;
 
-const validateDenseChannel = (value: unknown, name: string): readonly unknown[] =>
-  requireDenseDataPropertyArray(value, `brick/${name}`, "InvalidBaseField", {
+function* validateDenseChannelSteps(value: unknown, name: string,
+  owned?: AdaptiveOwnedJournalOptions): Generator<void, readonly unknown[], void> {
+  return owned === undefined ? requireDenseDataPropertyArray(value, `brick/${name}`, "InvalidBaseField", {
     exactLength: ADAPTIVE_BRICK_CELL_COUNT
-  });
+  }) : yield* adaptiveDenseArraySteps(value, `brick/${name}`, "InvalidBaseField", {
+    exactLength: ADAPTIVE_BRICK_CELL_COUNT
+  }, owned.reserve);
+}
 
 const finiteChannelValue = (value: unknown, path: string): number => {
   if (typeof value !== "number") return fail("InvalidBaseField", path, "Materialized numeric channels must contain numbers.");
@@ -182,29 +190,39 @@ interface AuthorityInputMetadata {
   readonly journalDigest: string;
 }
 
-const authorityInputDigest = (key: AdaptiveBrickKey, metadata: AuthorityInputMetadata): string =>
-  hashAdaptiveCanonical({
+function* materializationHashSteps(payload: unknown, owned?: AdaptiveOwnedJournalOptions): Generator<void, string, void> {
+  owned?.reserve(8_192);
+  return owned === undefined ? hashAdaptiveCanonical(payload) : yield* owned.hash(Object.freeze(payload));
+}
+
+function* authorityInputDigestSteps(key: AdaptiveBrickKey, metadata: AuthorityInputMetadata,
+  owned?: AdaptiveOwnedJournalOptions): Generator<void, string, void> {
+  owned?.reserve(2_048);
+  return yield* materializationHashSteps({
     schemaVersion: "adaptive-microvoxel-authority-input-v1",
     brickSchemaVersion: ADAPTIVE_BRICK_SCHEMA_VERSION,
     materializationVersion: ADAPTIVE_MATERIALIZATION_VERSION,
     key,
     ...metadata
-  });
+  }, owned);
+}
 
-const expectedParentProvenanceHash = (key: AdaptiveBrickKey, metadata: AuthorityInputMetadata): string | null => {
+function* expectedParentProvenanceHashSteps(key: AdaptiveBrickKey, metadata: AuthorityInputMetadata,
+  owned?: AdaptiveOwnedJournalOptions): Generator<void, string | null, void> {
+  owned?.reserve(8_192);
   const parent = parentOf(key);
   return parent === null
     ? null
-    : hashAdaptiveCanonical({
+    : yield* materializationHashSteps({
         schemaVersion: "adaptive-microvoxel-parent-provenance-v1",
         brickSchemaVersion: ADAPTIVE_BRICK_SCHEMA_VERSION,
         materializationVersion: ADAPTIVE_MATERIALIZATION_VERSION,
         key: parent,
         ...metadata
-      });
-};
+      }, owned);
+}
 
-const contentHashFor = (
+function* contentHashForSteps(
   key: AdaptiveBrickKey,
   metadata: AuthorityInputMetadata,
   channels: Readonly<{
@@ -212,15 +230,19 @@ const contentHashFor = (
     occupancy: readonly number[];
     material: readonly (StableAuthorityId | null)[];
     semantic: readonly (StableAuthorityId | null)[];
-  }>
-): string => hashAdaptiveCanonical({
-  schemaVersion: "adaptive-microvoxel-content-hash-input-v1",
-  authorityInputDigest: authorityInputDigest(key, metadata),
-  cellSizeQuantum: cellSizeQuantumForLevel(key.level),
-  cellSizeMeters: cellSizeMetersForLevel(key.level),
-  cellCount: ADAPTIVE_BRICK_CELL_COUNT,
-  ...channels
-});
+  }>,
+  owned?: AdaptiveOwnedJournalOptions
+): Generator<void, string, void> {
+  owned?.reserve(2_048);
+  return yield* materializationHashSteps({
+    schemaVersion: "adaptive-microvoxel-content-hash-input-v1",
+    authorityInputDigest: yield* authorityInputDigestSteps(key, metadata, owned),
+    cellSizeQuantum: cellSizeQuantumForLevel(key.level),
+    cellSizeMeters: cellSizeMetersForLevel(key.level),
+    cellCount: ADAPTIVE_BRICK_CELL_COUNT,
+    ...channels
+  }, owned);
+}
 
 export interface MaterializeAdaptiveBrickInput {
   readonly key: AdaptiveBrickKey;
@@ -228,19 +250,35 @@ export interface MaterializeAdaptiveBrickInput {
   readonly editJournal: AdaptiveEditJournal;
 }
 
-export const materializeAdaptiveBrick = ({
-  key: keyValue,
-  baseField,
-  editJournal: journalValue
-}: MaterializeAdaptiveBrickInput): MaterializedAdaptiveBrick => {
+function* filledChannelSteps<T>(value: T, owned?: AdaptiveOwnedJournalOptions): Generator<void, T[], void> {
+  if (owned === undefined) { return new Array(ADAPTIVE_BRICK_CELL_COUNT).fill(value) as T[]; }
+  owned.reserve(64 + ADAPTIVE_BRICK_CELL_COUNT * 128, true);
+  const channel = new Array<T>(ADAPTIVE_BRICK_CELL_COUNT);
+  yield;
+  for (let index = 0; index < channel.length; index += 1) { channel[index] = value; yield; }
+  return channel;
+}
+
+export const materializeAdaptiveBrick = (input: MaterializeAdaptiveBrickInput): MaterializedAdaptiveBrick =>
+  adaptiveDrainSteps(adaptiveMaterializeBrickSteps(input));
+
+/** Direct-module INACTIVE DATA kernel. A producer owns fixed-shape plain inputs, no Proxy or
+ * named/symbol array fields, held immutable throughout this generator; frozen is NOT provenance.
+ * The higher caller accounts inputs/old/results and supplies ONE borrowed reserve/hash lifetime. */
+export function* adaptiveMaterializeBrickSteps(input: MaterializeAdaptiveBrickInput,
+  owned?: AdaptiveOwnedJournalOptions): Generator<void, MaterializedAdaptiveBrick, void> {
+  owned?.reserve(16_384);
+  const { key: keyValue, baseField, editJournal: journalValue } = input;
   const key = validateAdaptiveBrickKey(keyValue);
   const validatedBaseField = validateAdaptiveBaseFieldDescriptor(baseField);
   const identity = validatedBaseField.identity;
   const version = validatedBaseField.version;
   const sourceRevision = validatedBaseField.sourceRevision;
-  const baseFieldDescriptorDigest = hashAdaptiveBaseFieldDescriptor(validatedBaseField);
+  const baseFieldDescriptorDigest = owned === undefined ? hashAdaptiveBaseFieldDescriptor(validatedBaseField)
+    : yield* adaptiveBaseFieldDescriptorHashSteps(validatedBaseField, owned);
   const baseSample = evaluateAdaptiveBaseFieldDescriptor(validatedBaseField);
-  const journal = validateAdaptiveEditJournal(journalValue);
+  const journal = owned === undefined ? validateAdaptiveEditJournal(journalValue)
+    : yield* adaptiveValidateEditJournalSteps(journalValue, owned);
   const cellSizeQuantum = cellSizeQuantumForLevel(key.level);
   const cellSizeMeters = cellSizeMetersForLevel(key.level);
   // Journal order is preserved: skipped edits provably touch no cell of this
@@ -249,15 +287,30 @@ export const materializeAdaptiveBrick = ({
   const brickOrigin = key.originQuantum;
   const brickExtent = ADAPTIVE_BRICK_CELLS_PER_AXIS * cellSizeQuantum;
   const brickBounds = { min: brickOrigin, max: { x: brickOrigin.x + brickExtent, y: brickOrigin.y + brickExtent, z: brickOrigin.z + brickExtent } } as QuantumBounds;
-  const overlappingEdits = journal.records.filter((edit) => edit.box !== undefined
+  const reachesBrick = (edit: AdaptiveEditRecord): boolean => edit.box !== undefined
     ? overlapsBox(brickBounds, edit.box)
-    : edit.sphere !== undefined && sphereReachesBrick(brickBounds, edit.sphere));
-  const density: number[] = new Array(ADAPTIVE_BRICK_CELL_COUNT).fill(baseSample.density);
-  const occupancy: number[] = new Array(ADAPTIVE_BRICK_CELL_COUNT).fill(baseSample.occupancy);
-  const material: (StableAuthorityId | null)[] = new Array(ADAPTIVE_BRICK_CELL_COUNT).fill(baseSample.materialId);
-  const semantic: (StableAuthorityId | null)[] = new Array(ADAPTIVE_BRICK_CELL_COUNT).fill(baseSample.semanticId ?? null);
+    : edit.sphere !== undefined && sphereReachesBrick(brickBounds, edit.sphere);
+  let overlappingEdits: readonly AdaptiveEditRecord[];
+  if (owned === undefined) { overlappingEdits = journal.records.filter(reachesBrick); }
+  else {
+    owned.reserve(64 + journal.records.length * 128);
+    const filtered: AdaptiveEditRecord[] = [];
+    for (let index = 0; index < journal.records.length; index += 1) {
+      const edit = journal.records[index];
+      if (reachesBrick(edit)) { filtered.push(edit); }
+      yield;
+    }
+    overlappingEdits = filtered;
+  }
+  const density = yield* filledChannelSteps(baseSample.density, owned);
+  const occupancy = yield* filledChannelSteps(baseSample.occupancy, owned);
+  const material = yield* filledChannelSteps(baseSample.materialId, owned);
+  const semantic = yield* filledChannelSteps(baseSample.semanticId ?? null, owned);
   // Private scratch only: predicates synchronously read it, never retain it.
   // Public inputs and the complete output still receive their original validation/freeze.
+  // One serial non-escaping predicate/scalar scratch lease; original safe-integer limbs have
+  // <=4 limbs (53-bit inputs), never coexist across cells. GC/physical allocation NOT_PROVEN.
+  owned?.reserve(16_384);
   const footprint = {min:{x:0,y:0,z:0},max:{x:0,y:0,z:0}};
   const footprintQuantum = footprint as QuantumBounds;
   const sample: MutableSample = { density: 0, occupancy: 0, materialId: null, semanticId: null };
@@ -277,6 +330,7 @@ export const materializeAdaptiveBrick = ({
   };
 
   for (const edit of overlappingEdits) {
+    owned?.reserve(2_048);
     let lo: number[] | undefined;
     let hi: number[] | undefined;
     const box = edit.box;
@@ -294,9 +348,11 @@ export const materializeAdaptiveBrick = ({
         for (let y = lo[1]!; y < hi[1]!; y += 1) {
           for (let x = lo[0]!; x < hi[0]!; x += 1) {
             applyAt(x, y, z, edit);
+            if (owned !== undefined) { yield; }
           }
         }
       }
+      if (owned !== undefined) { yield; }
       continue;
     }
     // Spheres and unsafe differences retain the original exact footprint rule.
@@ -312,22 +368,32 @@ export const materializeAdaptiveBrick = ({
           if (appliesToFootprint(footprintQuantum, edit)) {
             applyAt(x, y, z, edit);
           }
+          if (owned !== undefined) { yield; }
         }
       }
     }
+    if (owned !== undefined) { yield; }
   }
   for (let index = 0; index < ADAPTIVE_BRICK_CELL_COUNT; index += 1) {
     density[index] = requireFinite(density[index]!, `density/${index}`);
     occupancy[index] = requireFinite(occupancy[index]!, `occupancy/${index}`);
+    if (owned !== undefined) { yield; }
   }
 
-  const channels = deepFreeze({
+  owned?.reserve(2_048, true);
+  const channels = owned === undefined ? deepFreeze({
     density: deepFreeze(density),
     occupancy: deepFreeze(occupancy),
     material: deepFreeze(material),
     semantic: deepFreeze(semantic)
+  }) : Object.freeze({
+    density: yield* adaptiveFreezeArraySteps(density, owned.reserve),
+    occupancy: yield* adaptiveFreezeArraySteps(occupancy, owned.reserve),
+    material: yield* adaptiveFreezeArraySteps(material, owned.reserve),
+    semantic: yield* adaptiveFreezeArraySteps(semantic, owned.reserve)
   });
-  const hierarchyKeyHash = hashAdaptiveCanonical(key);
+  const hierarchyKeyHash = yield* materializationHashSteps(key, owned);
+  owned?.reserve(8_192, true);
   const authorityMetadata = {
     baseFieldIdentity: identity,
     baseFieldVersion: version,
@@ -348,8 +414,8 @@ export const materializeAdaptiveBrick = ({
     sourceRevision,
     editRevision: journal.revision
   };
-  const contentHash = contentHashFor(key, authorityMetadata, channels);
-  const parentHash = expectedParentProvenanceHash(key, authorityMetadata);
+  const contentHash = yield* contentHashForSteps(key, authorityMetadata, channels, owned);
+  const parentHash = yield* expectedParentProvenanceHashSteps(key, authorityMetadata, owned);
   const provenancePayload = {
     schemaVersion: "adaptive-microvoxel-provenance-v1" as const,
     ...authorityMetadata,
@@ -357,20 +423,30 @@ export const materializeAdaptiveBrick = ({
     materializationVersion: ADAPTIVE_MATERIALIZATION_VERSION,
     parentProvenanceHash: parentHash
   };
-  const provenance = deepFreeze({
+  const provenanceValue = {
     ...provenancePayload,
-    provenanceHash: hashAdaptiveCanonical(provenancePayload)
-  });
-  return deepFreeze({
+    provenanceHash: yield* materializationHashSteps(provenancePayload, owned)
+  };
+  const provenance = owned === undefined ? deepFreeze(provenanceValue) : Object.freeze(provenanceValue);
+  owned?.reserve(4_096, true);
+  const result: MaterializedAdaptiveBrick = {
     ...contentPayload,
     originQuantum: key.originQuantum,
     level: key.level,
     contentHash,
     provenance
-  });
-};
+  };
+  return owned === undefined ? deepFreeze(result) : Object.freeze(result);
+}
 
-export const validateMaterializedAdaptiveBrick = (brick: MaterializedAdaptiveBrick): MaterializedAdaptiveBrick => {
+export const validateMaterializedAdaptiveBrick = (brick: MaterializedAdaptiveBrick): MaterializedAdaptiveBrick =>
+  adaptiveDrainSteps(adaptiveValidateMaterializedBrickSteps(brick));
+
+/** Full original validator, NOT a frozen/hash-only admission shortcut. The same first-party
+ * producer lifetime/borrowed ledger contract as adaptiveMaterializeBrickSteps applies. */
+export function* adaptiveValidateMaterializedBrickSteps(brick: MaterializedAdaptiveBrick,
+  owned?: AdaptiveOwnedJournalOptions): Generator<void, MaterializedAdaptiveBrick, void> {
+  owned?.reserve(16_384);
   const record = requirePlainRecord(brick, "brick");
   requireExactKeys(
     record,
@@ -399,22 +475,23 @@ export const validateMaterializedAdaptiveBrick = (brick: MaterializedAdaptiveBri
   const originRecord = requirePlainRecord(record.originQuantum, "brick/originQuantum");
   requireExactKeys(originRecord, ["x", "y", "z"], "brick/originQuantum");
   if (
-    record.schemaVersion !== ADAPTIVE_BRICK_SCHEMA_VERSION ||
-    record.materializationVersion !== ADAPTIVE_MATERIALIZATION_VERSION ||
-    record.cellCount !== ADAPTIVE_BRICK_CELL_COUNT ||
-    record.level !== key.level ||
-    originRecord.x !== key.originQuantum.x ||
-    originRecord.y !== key.originQuantum.y ||
-    originRecord.z !== key.originQuantum.z ||
-    record.cellSizeQuantum !== cellSizeQuantumForLevel(key.level) ||
-    record.cellSizeMeters !== cellSizeMetersForLevel(key.level)
+    record.schemaVersion !== ADAPTIVE_BRICK_SCHEMA_VERSION
+    || record.materializationVersion !== ADAPTIVE_MATERIALIZATION_VERSION
+    || record.cellCount !== ADAPTIVE_BRICK_CELL_COUNT
+    || record.level !== key.level
+    || originRecord.x !== key.originQuantum.x
+    || originRecord.y !== key.originQuantum.y
+    || originRecord.z !== key.originQuantum.z
+    || record.cellSizeQuantum !== cellSizeQuantumForLevel(key.level)
+    || record.cellSizeMeters !== cellSizeMetersForLevel(key.level)
   ) {
     return fail("InvalidKey", "brick", "Materialized brick metadata is inconsistent.");
   }
-  const density = validateDenseChannel(record.density, "density");
-  const occupancy = validateDenseChannel(record.occupancy, "occupancy");
-  const material = validateDenseChannel(record.material, "material");
-  const semantic = validateDenseChannel(record.semantic, "semantic");
+  const density = yield* validateDenseChannelSteps(record.density, "density", owned);
+  const occupancy = yield* validateDenseChannelSteps(record.occupancy, "occupancy", owned);
+  const material = yield* validateDenseChannelSteps(record.material, "material", owned);
+  const semantic = yield* validateDenseChannelSteps(record.semantic, "semantic", owned);
+  owned?.reserve(4 * (64 + ADAPTIVE_BRICK_CELL_COUNT * 128), true);
   const validatedDensity: number[] = [];
   const validatedOccupancy: number[] = [];
   const validatedMaterial: (StableAuthorityId | null)[] = [];
@@ -422,19 +499,23 @@ export const validateMaterializedAdaptiveBrick = (brick: MaterializedAdaptiveBri
   for (let index = 0; index < density.length; index += 1) {
     validatedDensity.push(finiteChannelValue(density[index], `brick/density/${index}`));
     const occupied = finiteChannelValue(occupancy[index], `brick/occupancy/${index}`);
-    if (occupied < 0 || occupied > 1) return fail("InvalidBaseField", `brick/occupancy/${index}`, "Occupancy must be in [0, 1].");
+    if (occupied < 0 || occupied > 1) { return fail("InvalidBaseField", `brick/occupancy/${index}`, "Occupancy must be in [0, 1]."); }
     validatedOccupancy.push(occupied);
     validatedMaterial.push(authorityChannelValue(material[index], `brick/material/${index}`));
     validatedSemantic.push(authorityChannelValue(semantic[index], `brick/semantic/${index}`));
+    if (owned !== undefined) { yield; }
   }
   const sourceRevision = authorityRevision(record.sourceRevision as number);
   const editRevision = authorityRevision(record.editRevision as number);
-  const channels = {
-    density: validatedDensity,
-    occupancy: validatedOccupancy,
-    material: validatedMaterial,
-    semantic: validatedSemantic
-  };
+  owned?.reserve(16_384, true);
+  const channels = owned === undefined ? {
+    density: validatedDensity, occupancy: validatedOccupancy, material: validatedMaterial, semantic: validatedSemantic
+  } : Object.freeze({
+    density: yield* adaptiveFreezeArraySteps(validatedDensity, owned.reserve),
+    occupancy: yield* adaptiveFreezeArraySteps(validatedOccupancy, owned.reserve),
+    material: yield* adaptiveFreezeArraySteps(validatedMaterial, owned.reserve),
+    semantic: yield* adaptiveFreezeArraySteps(validatedSemantic, owned.reserve)
+  });
   const payload = {
     schemaVersion: ADAPTIVE_BRICK_SCHEMA_VERSION,
     materializationVersion: ADAPTIVE_MATERIALIZATION_VERSION,
@@ -501,30 +582,32 @@ export const validateMaterializedAdaptiveBrick = (brick: MaterializedAdaptiveBri
     editRevision: provenancePayload.editRevision,
     journalDigest: provenancePayload.journalDigest
   };
-  const expectedParentHash = expectedParentProvenanceHash(key, authorityMetadata);
+  const expectedParentHash = yield* expectedParentProvenanceHashSteps(key, authorityMetadata, owned);
   if (
-    provenancePayload.schemaVersion !== provenanceRecord.schemaVersion ||
-    provenancePayload.sourceRevision !== sourceRevision ||
-    provenancePayload.editRevision !== editRevision ||
-    provenancePayload.baseFieldDescriptorDigest !== payload.baseFieldDescriptorDigest ||
-    provenancePayload.hierarchyKeyHash !== hashAdaptiveCanonical(key) ||
-    provenancePayload.parentProvenanceHash !== expectedParentHash ||
-    hashAdaptiveCanonical(provenancePayload) !== provenanceHash
+    provenancePayload.schemaVersion !== provenanceRecord.schemaVersion
+    || provenancePayload.sourceRevision !== sourceRevision
+    || provenancePayload.editRevision !== editRevision
+    || provenancePayload.baseFieldDescriptorDigest !== payload.baseFieldDescriptorDigest
+    || provenancePayload.hierarchyKeyHash !== (yield* materializationHashSteps(key, owned))
+    || provenancePayload.parentProvenanceHash !== expectedParentHash
+    || (yield* materializationHashSteps(provenancePayload, owned)) !== provenanceHash
   ) {
     return fail("InvalidBaseField", "brick/provenance", "Materialized provenance is inconsistent.");
   }
   if (
-    typeof record.contentHash !== "string" ||
-    !hashPattern.test(record.contentHash) ||
-    contentHashFor(key, authorityMetadata, channels) !== record.contentHash
+    typeof record.contentHash !== "string"
+    || !hashPattern.test(record.contentHash)
+    || (yield* contentHashForSteps(key, authorityMetadata, channels, owned)) !== record.contentHash
   ) {
     return fail("InvalidBaseField", "brick/contentHash", "Materialized content hash mismatch.");
   }
-  return deepFreeze({
+  owned?.reserve(4_096, true);
+  const result: MaterializedAdaptiveBrick = {
     ...payload,
     originQuantum: key.originQuantum,
     level: key.level,
     contentHash: record.contentHash,
-    provenance: { ...provenancePayload, provenanceHash }
-  });
-};
+    provenance: owned === undefined ? { ...provenancePayload, provenanceHash } : Object.freeze({ ...provenancePayload, provenanceHash })
+  };
+  return owned === undefined ? deepFreeze(result) : Object.freeze(result);
+}

@@ -2,7 +2,6 @@ import {
   MICROVOXEL_BASE_QUANTUM_METERS,
   canonicalAdaptiveJson as adaptiveCanonicalJson,
   deepFreeze,
-  hashAdaptiveCanonical as adaptiveHashCanonical,
   requireExactKeys as adaptiveRequireExactKeys,
   requireFinite as adaptiveRequireFinite,
   requirePlainRecord as adaptiveRequirePlainRecord,
@@ -13,10 +12,10 @@ import {
   globalQuantumForStructuralCell,
   validateStructuralCellAddress
 } from "./coordinates";
-import { serializeStructuralCellAddress } from "./canonical";
-import { structuralIssuedComponentClassificationSteps } from "./classificationSteps";
+import { serializeStructuralCellAddress, structuralCanonicalHashSteps } from "./canonical";
+import { structuralIssuedComponentClassificationSteps, structuralOwnedComponentClassificationSteps } from "./classificationSteps";
 import { deriveStructuralComponentClassification } from "./connectivity";
-import { getStructuralVoxel, isIssuedStructuralObject, structuralAddressForBrickCell } from "./model";
+import { getStructuralVoxel, isIssuedStructuralObject, isOwnedStructuralDerivationCandidate, structuralAddressForBrickCell } from "./model";
 import {
   STRUCTURAL_COMPONENT_ID_VERSION,
   STRUCTURAL_COMPONENT_SCHEMA_VERSION,
@@ -29,7 +28,8 @@ import {
   type StructuralInertiaTensor,
   type StructuralMassBudgets,
   type StructuralMassProperties,
-  type StructuralObject
+  type StructuralObject,
+  type StructuralVoxelState
 } from "./types";
 import {
   normalizeAdaptiveAuthorityFunction,
@@ -38,11 +38,16 @@ import {
   structuralDenseArray,
   structuralFail,
   structuralPositiveBudget,
-  structuralRevision
+  structuralRevision,
+  drainStructuralSteps,
+  freezeStructuralProduced,
+  structuralFreezeArraySteps,
+  structuralMapSteps,
+  structuralSortSteps,
+  type StructuralOwnedReserve
 } from "./validation";
 
 const canonicalAdaptiveJson = normalizeAdaptiveAuthorityFunction(adaptiveCanonicalJson);
-const hashAdaptiveCanonical = normalizeAdaptiveAuthorityFunction(adaptiveHashCanonical);
 const requireExactKeys = normalizeAdaptiveAuthorityFunction(adaptiveRequireExactKeys);
 const requireFinite = normalizeAdaptiveAuthorityFunction(adaptiveRequireFinite);
 const requirePlainRecord = normalizeAdaptiveAuthorityFunction(adaptiveRequirePlainRecord);
@@ -72,12 +77,15 @@ const zeroTensor = (): StructuralInertiaTensor => deepFreeze({ xx: 0, yy: 0, zz:
 
 const finite = (value: number, path: string): number => requireFinite(value, path);
 
-const canonicalAddresses = (
+function* canonicalAddressSteps(
   object: StructuralObject,
   addresses: readonly StructuralCellAddress[] | null,
-  maxVisitedCells: number
-): readonly StructuralCellAddress[] => {
+  maxVisitedCells: number,
+  reserve?: StructuralOwnedReserve,
+  ownedStates?: StructuralVoxelState[]
+): Generator<void, readonly StructuralCellAddress[], void> {
   if (addresses === null) {
+    reserve?.(64);
     const copied: StructuralCellAddress[] = [];
     for (let brickIndex = 0; brickIndex < object.bricks.length; brickIndex += 1) {
       const brick = object.bricks[brickIndex];
@@ -86,21 +94,29 @@ const canonicalAddresses = (
           throw new StructuralMassError("BudgetExceeded", "massBudgets/maxVisitedCells", "Occupied-cell traversal exceeded the explicit mass budget.");
         }
         const cell = brick.cells[cellIndex];
+        reserve?.(1_536);
         copied.push(structuralAddressForBrickCell(brick, cell.localIndex));
+        ownedStates?.push(cell.state);
+        if (reserve !== undefined) { yield; }
       }
+      if (reserve !== undefined) { yield; }
     }
-    return deepFreeze(copied);
+    return yield* structuralFreezeArraySteps(copied, reserve);
   }
-  const copied = structuralDenseArray(addresses, "occupiedCells", maxVisitedCells)
-    .map((address, index) => validateStructuralCellAddress(address, `occupiedCells/${index}`))
-    .sort(compareStructuralCellAddresses);
+  const copied = yield* structuralMapSteps(addresses, "occupiedCells", maxVisitedCells, function* (address, index) {
+    reserve?.(1_536);
+    return validateStructuralCellAddress(address, `occupiedCells/${index}`);
+  }, reserve);
+  yield* structuralSortSteps(copied, compareStructuralCellAddresses, reserve);
   for (let index = 1; index < copied.length; index += 1) {
+    reserve?.(4_096);
     if (serializeStructuralCellAddress(copied[index - 1]) === serializeStructuralCellAddress(copied[index])) {
       return structuralFail("InvalidContract", "occupiedCells", "Mass input cell addresses must be unique.");
     }
+    if (reserve !== undefined) { yield; }
   }
-  return deepFreeze(copied);
-};
+  return yield* structuralFreezeArraySteps(copied, reserve);
+}
 
 const projectComponentForComparison = (
   value: unknown,
@@ -173,14 +189,28 @@ const projectComponentForComparison = (
     componentContentHash: requireStructuralHash(record.componentContentHash, "component/componentContentHash")
   });
 };
-const derive = (
+function* deriveMassSteps(
   object: StructuralObject,
   budgetValue: StructuralMassBudgets,
-  addressValues: readonly StructuralCellAddress[] | null
-): StructuralMassProperties => {
+  addressValues: readonly StructuralCellAddress[] | null,
+  reserve?: StructuralOwnedReserve
+): Generator<void, StructuralMassProperties, void> {
   const maxVisitedCells = structuralPositiveBudget(budgetValue.maxVisitedCells, "massBudgets/maxVisitedCells");
-  const addresses = canonicalAddresses(object, addressValues, maxVisitedCells);
-  const materials = new Map(object.materials.map((material) => [material.materialId, material]));
+  reserve?.(512);
+  // Null-address object traversal is already canonical. Keep a parallel private state array instead
+  // of repeating getStructuralVoxel's brick/cell search for every address; no generic observer changes.
+  const ownedStates = reserve === undefined || addressValues !== null ? undefined : [] as StructuralVoxelState[];
+  const addresses = yield* canonicalAddressSteps(object, addressValues, maxVisitedCells, reserve, ownedStates);
+  let materials: Map<number, StructuralObject["materials"][number]>;
+  if (reserve === undefined) { materials = new Map(object.materials.map((material) => [material.materialId, material])); }
+  else {
+    materials = new Map();
+    for (const material of object.materials) {
+      reserve(128);
+      materials.set(material.materialId, material);
+      yield;
+    }
+  }
   const side = MICROVOXEL_BASE_QUANTUM_METERS;
   const cellVolume = side * side * side;
   const cells: MassCell[] = [];
@@ -197,7 +227,7 @@ const derive = (
 
   for (let index = 0; index < addresses.length; index += 1) {
     const address = addresses[index];
-    const state = getStructuralVoxel(object, address);
+    const state = ownedStates === undefined ? getStructuralVoxel(object, address) : ownedStates[index];
     if (state === undefined || state === null) {
       throw new StructuralMassError("InvalidStructuralState", `occupiedCells/${index}`, "Mass derivation requires currently occupied cells in present bricks.");
     }
@@ -207,6 +237,7 @@ const derive = (
     }
     const massKg = finite(material.densityKgPerCubicMeter * cellVolume, `mass/${index}`);
     if (massKg <= 0) throw new StructuralMassError("InvalidStructuralState", `mass/${index}`, "Occupied cell mass must be positive and finite.");
+    reserve?.(2_048);
     const global = globalQuantumForStructuralCell(address);
     const min = deepFreeze({ x: global.x * side, y: global.y * side, z: global.z * side });
     const max = deepFreeze({ x: (global.x + 1) * side, y: (global.y + 1) * side, z: (global.z + 1) * side });
@@ -222,10 +253,12 @@ const derive = (
     maxX = Math.max(maxX, max.x);
     maxY = Math.max(maxY, max.y);
     maxZ = Math.max(maxZ, max.z);
-    cells.push(deepFreeze({ address, massKg, center, min, max }));
+    cells.push(freezeStructuralProduced({ address, massKg, center, min, max }, reserve));
+    if (reserve !== undefined) { yield; }
   }
 
   if (cells.length === 0) {
+    reserve?.(2_048);
     const payload = deepFreeze({
       schemaVersion: STRUCTURAL_MASS_PROPERTIES_SCHEMA_VERSION,
       algorithmVersion: STRUCTURAL_MASS_ALGORITHM_VERSION,
@@ -237,12 +270,13 @@ const derive = (
       sourceRevision: object.objectRevision,
       sourceContentHash: object.contentHash
     });
-    return deepFreeze({ ...payload, contentHash: hashAdaptiveCanonical(payload) });
+    return freezeStructuralProduced({ ...payload, contentHash: yield* structuralCanonicalHashSteps(payload, reserve) }, reserve);
   }
 
   if (!(totalMassKg > 0) || !Number.isFinite(totalMassKg)) {
     throw new StructuralMassError("InvalidStructuralState", "totalMassKg", "Nonempty mass input requires positive finite total mass.");
   }
+  reserve?.(4_096);
   const centerOfMassMeters = deepFreeze({
     x: finite(weightedX / totalMassKg, "centerOfMassMeters/x"),
     y: finite(weightedY / totalMassKg, "centerOfMassMeters/y"),
@@ -275,6 +309,7 @@ const derive = (
     xy -= cell.massKg * dx * dy;
     xz -= cell.massKg * dx * dz;
     yz -= cell.massKg * dy * dz;
+    if (reserve !== undefined) { yield; }
   }
   const inertiaTensorKgMetersSquared = deepFreeze({
     xx: finite(xx, "inertiaTensor/xx"),
@@ -298,49 +333,89 @@ const derive = (
     sourceRevision: object.objectRevision,
     sourceContentHash: object.contentHash
   });
-  return deepFreeze({ ...payload, contentHash: hashAdaptiveCanonical(payload) });
-};
+  return freezeStructuralProduced({ ...payload, contentHash: yield* structuralCanonicalHashSteps(payload, reserve) }, reserve);
+}
+
+const derive = (object: StructuralObject, budgets: StructuralMassBudgets, addresses: readonly StructuralCellAddress[] | null): StructuralMassProperties =>
+  drainStructuralSteps(deriveMassSteps(object, budgets, addresses));
+
+/** INACTIVE module entry; private preliminary capability is never final Structural issuance. */
+export function* structuralOwnedObjectMassSteps(object: StructuralObject, budgets: StructuralMassBudgets,
+  reserve: StructuralOwnedReserve): Generator<void, StructuralMassProperties, void> {
+  if (!isIssuedStructuralObject(object) && !isOwnedStructuralDerivationCandidate(object)) {
+    return structuralFail("InvalidContract", "mass/source", "Owned mass requires an issued source or live command-local derivation capability.");
+  }
+  return yield* deriveMassSteps(object, budgets, null, reserve);
+}
 
 export const deriveStructuralObjectMassProperties = (
   object: StructuralObject,
   budgets: StructuralMassBudgets
 ): StructuralMassProperties => derive(object, budgets, null);
 
-/**
- * Step form of deriveStructuralSingleComponentMasses (module export only, not in the structural barrel).
- * Only the classification's bounded occupied-cell extraction yields; everything else is unchanged.
- */
-export function* deriveStructuralSingleComponentMassesSteps(
+type SingleComponentMasses = Readonly<{objectMass: StructuralMassProperties; classification: StructuralComponentClassification;
+  componentMass: StructuralMassProperties; budgets: StructuralComponentMassBudgets}>;
+type AfterObjectMass = (mass: StructuralMassProperties) => void;
+type AfterClassification = (classification: StructuralComponentClassification) => void;
+
+// Keep the existing generic string-label stream type; only the borrowed form also yields void units.
+function singleComponentMassesSteps(object: StructuralObject, budgets: StructuralComponentMassBudgets,
+  afterObjectMass: AfterObjectMass, afterClassification: AfterClassification): Generator<string, SingleComponentMasses, unknown>;
+function singleComponentMassesSteps(object: StructuralObject, budgets: StructuralComponentMassBudgets,
+  afterObjectMass: AfterObjectMass, afterClassification: AfterClassification, reserve: StructuralOwnedReserve): Generator<string | void, SingleComponentMasses, unknown>;
+function* singleComponentMassesSteps(
   object: StructuralObject,
   budgets: StructuralComponentMassBudgets,
-  afterObjectMass: (mass: StructuralMassProperties) => void,
-  afterClassification: (classification: StructuralComponentClassification) => void
+  afterObjectMass: AfterObjectMass,
+  afterClassification: AfterClassification,
+  reserve?: StructuralOwnedReserve
 ) {
   if (!isIssuedStructuralObject(object)) {
     throw new StructuralMassError("InvalidStructuralState", "object", "Single-component reuse requires an issued source.");
   }
+  reserve?.(1_024, true);
   const fixed = Object.freeze({
     maxVisitedCells: structuralPositiveBudget(budgets.maxVisitedCells, "massBudgets/maxVisitedCells"),
     maxConnectivityCells: structuralPositiveBudget(budgets.maxConnectivityCells, "componentMassBudgets/maxConnectivityCells"),
     maxComponents: structuralPositiveBudget(budgets.maxComponents, "componentMassBudgets/maxComponents"),
     maxConnectivityFacts: structuralPositiveBudget(budgets.maxConnectivityFacts, "componentMassBudgets/maxConnectivityFacts")
   });
-  const objectMass = derive(object, fixed, null);
+  const objectMass = reserve === undefined ? derive(object, fixed, null) : yield* deriveMassSteps(object, fixed, null, reserve);
   afterObjectMass(objectMass);
   if(objectMass.totalMassKg<=0||objectMass.centerOfMassMeters===null){
     throw new StructuralMassError("InvalidStructuralState", "objectMass", "Single-component source requires nonempty mass.");
   }
-  const classification=yield* structuralIssuedComponentClassificationSteps(object,{maxVisitedCells:fixed.maxConnectivityCells,
-    maxComponents:fixed.maxComponents,maxIndexedFacts:fixed.maxConnectivityFacts});
+  reserve?.(512);
+  const connectivityBudgets={maxVisitedCells:fixed.maxConnectivityCells,
+    maxComponents:fixed.maxComponents,maxIndexedFacts:fixed.maxConnectivityFacts};
+  if (reserve !== undefined) { Object.freeze(connectivityBudgets); }
+  const classification=reserve===undefined?yield* structuralIssuedComponentClassificationSteps(object,connectivityBudgets)
+    :yield* structuralOwnedComponentClassificationSteps(object,connectivityBudgets,reserve);
   afterClassification(classification);
   if(classification.components.length!==1||classification.detachedComponents.length!==1||classification.fragments.length!==1){
     throw new StructuralMassError("InvalidStructuralState", "component", "Single-component source requires one unanchored fragment.");
   }
-  const componentMass=derive(object,fixed,classification.detachedComponents[0]!.occupiedCells);
-  const prepared: Readonly<{objectMass: StructuralMassProperties; classification: StructuralComponentClassification;
-    componentMass: StructuralMassProperties; budgets: StructuralComponentMassBudgets}> =
+  const componentMass=reserve===undefined?derive(object,fixed,classification.detachedComponents[0]!.occupiedCells)
+    :yield* deriveMassSteps(object,fixed,classification.detachedComponents[0]!.occupiedCells,reserve);
+  reserve?.(1_024, true);
+  const prepared: SingleComponentMasses =
     Object.freeze({objectMass,classification,componentMass,budgets:fixed});
   return prepared;
+}
+
+/** Existing generic step form: native observers, callbacks and label sequence are unchanged. */
+export function* deriveStructuralSingleComponentMassesSteps(object: StructuralObject, budgets: StructuralComponentMassBudgets,
+  afterObjectMass: AfterObjectMass, afterClassification: AfterClassification) {
+  return yield* singleComponentMassesSteps(object,budgets,afterObjectMass,afterClassification);
+}
+
+/** INACTIVE direct-module borrowed form, no recipe/plan/World authority. The producer owns a real
+ * first-party plain/index-only issued source and fixed budget record immutable for this lifetime;
+ * issuance or Object.freeze alone is not provenance. All source/old/results use ONE higher ledger.
+ * Callbacks must retain this ownership; return/throw propagates through the existing hash cleanup. */
+export function* structuralOwnedSingleComponentMassesSteps(object: StructuralObject, budgets: StructuralComponentMassBudgets,
+  reserve: StructuralOwnedReserve, afterObjectMass: AfterObjectMass, afterClassification: AfterClassification) {
+  return yield* singleComponentMassesSteps(object,budgets,afterObjectMass,afterClassification,reserve);
 }
 
 /** Fresh issued-source derivation for a single rigid component, not a cache or an externally supplied claim. */

@@ -1,9 +1,9 @@
 import { deepFreeze, serializeAdaptiveKey as adaptiveSerializeKey } from "../adaptive";
 import { serializeStructuralCellAddress } from "./canonical";
 import { globalQuantumForStructuralCell, localCellIndexFromOffset } from "./coordinates";
-import { isIssuedStructuralObject, structuralAddressForBrickCell } from "./model";
+import { isIssuedStructuralObject, isOwnedStructuralDerivationCandidate, structuralAddressForBrickCell } from "./model";
 import type { StructuralCellAddress, StructuralObject, StructuralVoxelState } from "./types";
-import { normalizeAdaptiveAuthorityFunction, structuralFail, structuralPositiveBudget } from "./validation";
+import { normalizeAdaptiveAuthorityFunction, structuralFail, structuralPositiveBudget, structuralFreezeArraySteps, type StructuralOwnedReserve } from "./validation";
 
 // Pure core, deliberately NOT re-exported by the structural barrel: the cursor is an internal building block.
 const serializeAdaptiveKey = normalizeAdaptiveAuthorityFunction(adaptiveSerializeKey);
@@ -65,8 +65,10 @@ type OccupiedEntryFactory<T extends OccupiedEntry> = (
 function* occupiedEntrySteps<T extends OccupiedEntry>(
   object: StructuralObject,
   maxVisitedCells: number,
-  createEntry: OccupiedEntryFactory<T>
+  createEntry: OccupiedEntryFactory<T>,
+  reserve?: StructuralOwnedReserve
 ): Generator<undefined, T[], void> {
+  reserve?.(64);
   const entries: T[] = [];
   for (const brick of object.bricks) {
     yield;
@@ -74,12 +76,27 @@ function* occupiedEntrySteps<T extends OccupiedEntry>(
       if (entries.length >= maxVisitedCells) {
         throw new StructuralConnectivityError("connectivityBudgets/maxVisitedCells", "Occupied-cell traversal exceeded the explicit connectivity budget.");
       }
+      // Address, two bounded serialized keys, entry record and growing-array coexistence.
+      reserve?.(4_096);
       const address = structuralAddressForBrickCell(brick, cell.localIndex);
       entries.push(createEntry(brick, cell, address));
       yield;
     }
   }
   return entries;
+}
+
+/** INACTIVE command-local producer route; does not weaken the existing issued-only cursor. */
+export function* sortedOwnedStructuralOccupiedEntrySteps(object: StructuralObject, maxVisitedCellsValue: number,
+  reserve: StructuralOwnedReserve): Generator<void, readonly IssuedOccupiedEntry[], void> {
+  if (!isIssuedStructuralObject(object) && !isOwnedStructuralDerivationCandidate(object)) {
+    return structuralFail("InvalidContract", "connectivity/source", "Owned extraction requires an issued source or live command-local derivation capability.");
+  }
+  const maxVisitedCells = structuralPositiveBudget(maxVisitedCellsValue, "connectivityBudgets/maxVisitedCells");
+  const entries = yield* occupiedEntrySteps(object, maxVisitedCells, issuedOccupiedEntry, reserve);
+  // Both permitted producers retain canonical brick/local-index order; these new arrays are plain,
+  // index-only literals, never published until every index and length have been locked.
+  return yield* structuralFreezeArraySteps(entries, reserve);
 }
 
 const genericOccupiedEntry: OccupiedEntryFactory<OccupiedEntry> = (_brick, cell, address) => {

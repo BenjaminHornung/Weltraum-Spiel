@@ -21,20 +21,22 @@ export function* meshHvpOwnedBodyCellsSteps(cells:readonly HvpStructuralCell[],c
   }
   // Match meshHvpBodyCells' existing bounding-box and forward Float32 projection exactly.
   const min=[256,128,256],max=[0,0,0];
+  let wideMaterials=false;
   for(let start=0;start<cells.length;start+=CELL_BATCH){
     for(let i=start;i<Math.min(start+CELL_BATCH,cells.length);i+=1){
       const c=cells[i]!;
       if(!Object.isFrozen(c)||![c.x,c.y,c.z].every(n=>Number.isSafeInteger(n)&&Math.abs(n)<=1000000)
-        ||!Number.isSafeInteger(c.materialId)||c.materialId<1||c.materialId>255){
+        ||!Number.isSafeInteger(c.materialId)||c.materialId<1||c.materialId>65535){
         throw new Error("Body mesh requires immutable local cells");
       }
+      if(c.materialId>255){wideMaterials=true;}
       for(const [a,v] of [c.x,c.y,c.z].entries()){min[a]=Math.min(min[a]!,v);max[a]=Math.max(max[a]!,v+1);}
     }
     yield "meshBounds";
   }
   const [sx,sy,sz]=max.map((v,i)=>v-min[i]!) as [number,number,number];
   if(sx*sy*sz>262144){throw new Error("Fragment mesh preparation BudgetExceeded");}
-  const slots=new Uint8Array(sx*sy*sz);
+  const slots=wideMaterials?new Uint16Array(sx*sy*sz):new Uint8Array(sx*sy*sz);
   for(let start=0;start<cells.length;start+=CELL_BATCH){
     for(let i=start;i<Math.min(start+CELL_BATCH,cells.length);i+=1){
       const c:HvpStructuralCell=cells[i]!;

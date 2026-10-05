@@ -163,7 +163,15 @@ const physicsSessionFor = (workerOwned: boolean) => async (
     const collisionBytes = () => allCollision().reduce((n,s)=>n+s.vertices.byteLength+s.indices.byteLength,0);
     const extraHeld=()=>neighbor?.busy||residency!.held||coverageHeld||bodyResidencyWork!==undefined;
     // Same live-owner task adapter for legacy preparation and the unwired child projection.
-    const bodyPlanHost={yieldTask:yieldPhysicsTask,assertCurrent:()=>{
+    let bodyPlanSliceStart=0,bodyPlanSliceSteps=0;
+    const bodyPlanHost={yieldTask:workerOwned?async()=>{
+      await yieldPhysicsTask();
+      bodyPlanSliceStart=performance.now();bodyPlanSliceSteps=0;
+    }:yieldPhysicsTask,continuePlan:workerOwned?()=>{
+      // Bound a fixed/stalled clock too; only repeated phases can use this 2ms quantum.
+      bodyPlanSliceSteps+=1;
+      return bodyPlanSliceSteps<16&&performance.now()-bodyPlanSliceStart<2;
+    }:undefined,assertCurrent:()=>{
       if(disposed){
         throw new Error("Moving preparation disposed");
       }

@@ -1,31 +1,46 @@
 import { compareAdaptiveBrickKeys, validateAdaptiveBrickKey } from "./coordinates";
-import { validateAdaptiveEditJournal } from "./edits";
+import { validateAdaptiveEditJournal, adaptiveValidateEditJournalSteps, type AdaptiveOwnedJournalOptions } from "./edits";
 import { ADAPTIVE_MAX_RESIDENT_SUMMARIES, validateAdaptiveBaseFieldDescriptor } from "./canonical";
 import type { AdaptiveBaseFieldDescriptor, AdaptiveBrickKey, AdaptiveEditJournal } from "./types";
-import { deepFreeze, fail, isDeepFrozen, requireDenseDataPropertyArray, requireExactKeys, requirePlainRecord } from "./validation";
+import { deepFreeze, fail, adaptiveDrainSteps, adaptiveIsDeepFrozenSteps, requireDenseDataPropertyArray, requireExactKeys, requirePlainRecord } from "./validation";
 
 export interface AdaptiveAuthorityRetention {
   readonly baseField: AdaptiveBaseFieldDescriptor;
   readonly editJournal: AdaptiveEditJournal;
 }
 
-export const createAdaptiveAuthorityRetention = (input: AdaptiveAuthorityRetention): AdaptiveAuthorityRetention => {
+export const createAdaptiveAuthorityRetention = (input: AdaptiveAuthorityRetention): AdaptiveAuthorityRetention =>
+  adaptiveDrainSteps(adaptiveAuthorityRetentionSteps(input));
+
+/** Direct-module only, one borrowed ledger; retains the complete original authority. */
+export function* adaptiveAuthorityRetentionSteps(input: AdaptiveAuthorityRetention,
+  owned?: AdaptiveOwnedJournalOptions): Generator<void, AdaptiveAuthorityRetention, void> {
+  owned?.reserve(8_192, true);
   const record = requirePlainRecord(input, "authority");
   requireExactKeys(record, ["baseField", "editJournal"], "authority");
-  return deepFreeze({
-    baseField: validateAdaptiveBaseFieldDescriptor(input.baseField),
-    editJournal: validateAdaptiveEditJournal(input.editJournal)
-  });
-};
+  const baseField = validateAdaptiveBaseFieldDescriptor(input.baseField);
+  const editJournal = owned === undefined ? validateAdaptiveEditJournal(input.editJournal)
+    : yield* adaptiveValidateEditJournalSteps(input.editJournal, owned);
+  return owned === undefined ? deepFreeze({ baseField, editJournal }) : Object.freeze({ baseField, editJournal });
+}
 
-const validateAuthorityRetention = (value: AdaptiveAuthorityRetention): AdaptiveAuthorityRetention => {
+const validateAuthorityRetention = (value: AdaptiveAuthorityRetention): AdaptiveAuthorityRetention =>
+  adaptiveDrainSteps(adaptiveValidateAuthorityRetentionSteps(value));
+
+/** Checks the ORIGINAL retained object, not a freshly frozen replacement or an invented brand. */
+export function* adaptiveValidateAuthorityRetentionSteps(value: AdaptiveAuthorityRetention,
+  owned?: AdaptiveOwnedJournalOptions): Generator<void, AdaptiveAuthorityRetention, void> {
+  owned?.reserve(8_192);
   const record = requirePlainRecord(value, "authority");
   requireExactKeys(record, ["baseField", "editJournal"], "authority");
   validateAdaptiveBaseFieldDescriptor(value.baseField);
-  validateAdaptiveEditJournal(value.editJournal);
-  if (!isDeepFrozen(value)) return fail("InvalidBaseField", "authority", "Authority retention descriptors must be created and deeply frozen before release.");
+  if (owned === undefined) { validateAdaptiveEditJournal(value.editJournal); }
+  else { yield* adaptiveValidateEditJournalSteps(value.editJournal, owned); }
+  if (!(yield* adaptiveIsDeepFrozenSteps(value, undefined, owned?.reserve))) {
+    return fail("InvalidBaseField", "authority", "Authority retention descriptors must be created and deeply frozen before release.");
+  }
   return value;
-};
+}
 
 export interface AdaptiveResidencyRelease {
   readonly mode: "collapse" | "evict";

@@ -160,7 +160,104 @@ export const structuralDenseArray = (
   { maximumLength }
 );
 
-export const validateStructuralMaterialDefinition = (value: unknown, path = "material"): StructuralMaterialDefinition => {
+/** Module-private owner work: estimates, not physical heap. `retained` marks result storage. */
+export type StructuralOwnedReserve = (bytes: number, retained?: boolean, kind?: "hash") => void;
+
+export const drainStructuralSteps = <T>(steps: Generator<void, T, void>): T => {
+  for (;;) {
+    const step = steps.next();
+    if (step.done) { return step.value; }
+  }
+};
+
+/** Produced plain arrays only: lock one index per unit, never freeze a whole owner array at the end. */
+export function* structuralFreezeArraySteps<T>(values: T[], reserve?: StructuralOwnedReserve): Generator<void, readonly T[], void> {
+  if (reserve === undefined) { return deepFreeze(values); }
+  reserve(512); // Bounded descriptor/path scratch before native property operations.
+  Object.preventExtensions(values);
+  yield;
+  for (let index = 0; index < values.length; index += 1) {
+    Object.defineProperty(values, String(index), { writable: false, configurable: false });
+    yield;
+  }
+  Object.defineProperty(values, "length", { writable: false });
+  return values;
+}
+
+/** Owner arrays must come from the bound issuer/first-party literals, never arbitrary proxies. */
+export function* structuralDenseArraySteps(value: unknown, path: string, maximumLength: number, reserve?: StructuralOwnedReserve): Generator<void, readonly unknown[], void> {
+  if (reserve === undefined) { return structuralDenseArray(value, path, maximumLength); }
+  if (!Array.isArray(value)) { return structuralFail("InvalidCanonicalValue", path, "Expected an array."); }
+  const descriptor = Object.getOwnPropertyDescriptor(value, "length");
+  if (descriptor === undefined || !("value" in descriptor) || !Number.isSafeInteger(descriptor.value)) {
+    return structuralFail("InvalidCanonicalValue", path, "Array length must be a safe data property.");
+  }
+  const length = descriptor.value as number;
+  if (length > maximumLength) { return structuralFail("InvalidCanonicalValue", path, `Array length ${length} exceeds the finite limit ${maximumLength}.`); }
+  reserve(64 + length * 128); // References plus per-index property-lock estimates; physical layout is NOT_PROVEN.
+  const copy = new Array<unknown>(length);
+  let firstHole = -1;
+  yield;
+  for (let index = 0; index < length; index += 1) {
+    const entry = Object.getOwnPropertyDescriptor(value, String(index));
+    if (entry === undefined) {
+      if (firstHole < 0) { firstHole = index; }
+    } else if (!entry.enumerable || !("value" in entry)) {
+      return structuralFail("InvalidCanonicalValue", `${path}/${index}`, "Array entries must be enumerable data properties.");
+    } else { copy[index] = entry.value; }
+    yield;
+  }
+  if (firstHole >= 0) { return structuralFail("InvalidCanonicalValue", `${path}/${firstHole}`, "Sparse arrays are rejected."); }
+  return yield* structuralFreezeArraySteps(copy, reserve);
+}
+
+export function* structuralMapSteps<T>(value: unknown, path: string, maximumLength: number,
+  create: (entry: unknown, index: number) => Generator<void, T, void>, reserve?: StructuralOwnedReserve): Generator<void, T[], void> {
+  const dense = yield* structuralDenseArraySteps(value, path, maximumLength, reserve);
+  // Native map/Species and callback order stay exactly on the generic boundary.
+  if (reserve === undefined) { return dense.map((entry, index) => drainStructuralSteps(create(entry, index))); }
+  reserve(64 + dense.length * 128, true);
+  const result = new Array<T>(dense.length);
+  yield;
+  for (let index = 0; index < dense.length; index += 1) {
+    result[index] = yield* create(dense[index], index);
+    yield;
+  }
+  return result;
+}
+
+/** Stable bottom-up merge; every comparison/write is one unit, no native owner sort. */
+export function* structuralSortSteps<T>(values: T[], compare: (left: T, right: T) => number, reserve?: StructuralOwnedReserve): Generator<void, T[], void> {
+  if (reserve === undefined) { return values.sort(compare); }
+  reserve(64 + values.length * 8);
+  let from = values, to = new Array<T>(values.length);
+  yield;
+  for (let width = 1; width < values.length; width *= 2) {
+    for (let start = 0; start < values.length; start += width * 2) {
+      const middle = Math.min(start + width, values.length), end = Math.min(start + width * 2, values.length);
+      let left = start, right = middle;
+      for (let target = start; target < end; target += 1) {
+        to[target] = left < middle && (right >= end || compare(from[left], from[right]) <= 0) ? from[left++] : from[right++];
+        yield;
+      }
+    }
+    const old = from; from = to; to = old;
+  }
+  if (from !== values) {
+    for (let index = 0; index < values.length; index += 1) { values[index] = from[index]; yield; }
+  }
+  return values;
+}
+
+/** Only schema-owned output containers use shallow freeze; generic deepFreeze is unchanged. */
+export const freezeStructuralProduced = <T>(value: T, reserve?: StructuralOwnedReserve): T =>
+  reserve === undefined ? deepFreeze(value) : Object.freeze(value);
+
+export const validateStructuralMaterialDefinition = (value: unknown, path = "material"): StructuralMaterialDefinition =>
+  drainStructuralSteps(structuralMaterialDefinitionSteps(value, path));
+
+export function* structuralMaterialDefinitionSteps(value: unknown, path: string, reserve?: StructuralOwnedReserve): Generator<void, StructuralMaterialDefinition, void> {
+  reserve?.(512, true);
   const record = requirePlainRecord(value, path);
   requireExactKeys(record, ["materialId", "densityKgPerCubicMeter", "structuralClass", "destructible", "tags"], path);
   const materialId = structuralMaterialId(record.materialId, `${path}/materialId`, false);
@@ -170,14 +267,18 @@ export const validateStructuralMaterialDefinition = (value: unknown, path = "mat
   const structuralClass = structuralCanonicalString<StructuralClass>(record.structuralClass, `${path}/structuralClass`);
   const tags = record.tags === null
     ? null
-    : structuralDenseArray(record.tags, `${path}/tags`, STRUCTURAL_MAX_MATERIAL_TAGS).map((tag, index) => structuralCanonicalString<StructuralTag>(tag, `${path}/tags/${index}`));
+    : yield* structuralMapSteps(record.tags, `${path}/tags`, STRUCTURAL_MAX_MATERIAL_TAGS, function* (tag, index) {
+      return structuralCanonicalString<StructuralTag>(tag, `${path}/tags/${index}`);
+    }, reserve);
   if (tags !== null) {
     for (let index = 1; index < tags.length; index += 1) {
       if (tags[index - 1] >= tags[index]) return structuralFail("InvalidMaterial", `${path}/tags`, "Tags must be sorted and unique.");
+      if (reserve !== undefined) { yield; }
     }
   }
-  return deepFreeze({ materialId, densityKgPerCubicMeter: density, structuralClass, destructible: record.destructible, tags: tags === null ? null : deepFreeze([...tags]) });
-};
+  return freezeStructuralProduced({ materialId, densityKgPerCubicMeter: density, structuralClass, destructible: record.destructible,
+    tags: tags === null ? null : reserve === undefined ? deepFreeze([...tags]) : (yield* structuralFreezeArraySteps(tags, reserve)) }, reserve);
+}
 
 export const validateStructuralVoxelState = (value: unknown, path = "state"): StructuralVoxelState => {
   const record = requirePlainRecord(value, path);
@@ -230,21 +331,30 @@ export const assertStructuralKeyMatchesFrame = (keyValue: unknown, frameValue: u
   }
 };
 
-export const validateStructuralMaterialFilter = (value: unknown, path = "materialFilter"): StructuralMaterialFilter | null => {
+export const validateStructuralMaterialFilter = (value: unknown, path = "materialFilter"): StructuralMaterialFilter | null =>
+  drainStructuralSteps(structuralMaterialFilterSteps(value, path));
+
+function* structuralMaterialFilterSteps(value: unknown, path: string, reserve?: StructuralOwnedReserve): Generator<void, StructuralMaterialFilter | null, void> {
   if (value === null) return null;
+  reserve?.(512);
   const record = requirePlainRecord(value, path);
   requireExactKeys(record, ["materialIds"], path);
-  const materialIds = structuralDenseArray(record.materialIds, `${path}/materialIds`, STRUCTURAL_MAX_MATERIAL_FILTER_IDS).map((entry, index) => structuralMaterialId(entry, `${path}/materialIds/${index}`, false));
+  const materialIds = yield* structuralMapSteps(record.materialIds, `${path}/materialIds`, STRUCTURAL_MAX_MATERIAL_FILTER_IDS,
+    function* (entry, index) { return structuralMaterialId(entry, `${path}/materialIds/${index}`, false); }, reserve);
   for (let index = 1; index < materialIds.length; index += 1) {
     if (materialIds[index - 1] >= materialIds[index]) return structuralFail("InvalidMaterial", `${path}/materialIds`, "Material filters must be sorted and unique.");
+    if (reserve !== undefined) { yield; }
   }
-  return deepFreeze({ materialIds: deepFreeze(materialIds) });
-};
+  return freezeStructuralProduced({ materialIds: yield* structuralFreezeArraySteps(materialIds, reserve) }, reserve);
+}
 
 export const validateStructuralAdaptiveSourceBindingExpectation = (
   value: unknown,
   path = "expectedAdaptiveSource"
-): StructuralAdaptiveSourceBinding => {
+): StructuralAdaptiveSourceBinding => drainStructuralSteps(structuralSourceExpectationSteps(value, path));
+
+function* structuralSourceExpectationSteps(value: unknown, path: string, reserve?: StructuralOwnedReserve): Generator<void, StructuralAdaptiveSourceBinding, void> {
+  reserve?.(1_024);
   const record = requirePlainRecord(value, path);
   const keys = [
     "schemaVersion", "baseFieldIdentity", "baseFieldVersion", "baseFieldDescriptorDigest",
@@ -255,27 +365,28 @@ export const validateStructuralAdaptiveSourceBindingExpectation = (
   if (record.schemaVersion !== STRUCTURAL_SOURCE_BINDING_SCHEMA_VERSION) {
     return structuralFail("InvalidAdaptiveBinding", `${path}/schemaVersion`, "Unsupported Structural source binding schema.");
   }
-  const proofDigests = structuralDenseArray(record.proofDigests, `${path}/proofDigests`, STRUCTURAL_MAX_PROOF_DIGESTS)
-    .map((digest, index) => requireStructuralHash(digest, `${path}/proofDigests/${index}`));
+  const proofDigests = yield* structuralMapSteps(record.proofDigests, `${path}/proofDigests`, STRUCTURAL_MAX_PROOF_DIGESTS,
+    function* (digest, index) { return requireStructuralHash(digest, `${path}/proofDigests/${index}`); }, reserve);
   for (let index = 1; index < proofDigests.length; index += 1) {
     if (proofDigests[index - 1] >= proofDigests[index]) {
       return structuralFail("InvalidAdaptiveBinding", `${path}/proofDigests`, "Proof digests must be sorted and unique.");
     }
+    if (reserve !== undefined) { yield; }
   }
-  return deepFreeze({
+  return freezeStructuralProduced({
     schemaVersion: STRUCTURAL_SOURCE_BINDING_SCHEMA_VERSION,
     baseFieldIdentity: stableAuthorityId(record.baseFieldIdentity as string, `${path}/baseFieldIdentity`),
     baseFieldVersion: stableAuthorityId(record.baseFieldVersion as string, `${path}/baseFieldVersion`),
     baseFieldDescriptorDigest: requireStructuralHash(record.baseFieldDescriptorDigest, `${path}/baseFieldDescriptorDigest`),
     journalDigest: requireStructuralHash(record.journalDigest, `${path}/journalDigest`),
     snapshotProjectionDigest: requireStructuralHash(record.snapshotProjectionDigest, `${path}/snapshotProjectionDigest`),
-    proofDigests: deepFreeze(proofDigests),
+    proofDigests: yield* structuralFreezeArraySteps(proofDigests, reserve),
     sourceRevision: authorityRevision(structuralNonNegativeSafeInteger(record.sourceRevision, `${path}/sourceRevision`)),
     editRevision: authorityRevision(structuralNonNegativeSafeInteger(record.editRevision, `${path}/editRevision`)),
     brickRevision: authorityRevision(structuralNonNegativeSafeInteger(record.brickRevision, `${path}/brickRevision`)),
     planningEpoch: adaptivePlanningEpoch(structuralNonNegativeSafeInteger(record.planningEpoch, `${path}/planningEpoch`))
-  });
-};
+  }, reserve);
+}
 export const validateStructuralCommandBudgets = (value: unknown, path = "budgets"): StructuralCommandBudgets => {
   const record = requirePlainRecord(value, path);
   const keys = ["maxVisitedBricks", "maxVisitedCells", "maxSelectedCells", "maxChangedCells", "maxConnectivityCells", "maxConnectivityFacts", "maxComponents", "maxMassCells"] as const;
@@ -286,7 +397,12 @@ export const validateStructuralCommandBudgets = (value: unknown, path = "budgets
 const structuralCommandSequence = (value: unknown, path: string): StructuralCommandSequence =>
   structuralNonNegativeSafeInteger(value, path) as StructuralCommandSequence;
 
-export const validateStructuralDestructionCommand = (value: unknown, path = "command"): StructuralDestructionCommand => {
+export const validateStructuralDestructionCommand = (value: unknown, path = "command"): StructuralDestructionCommand =>
+  drainStructuralSteps(structuralDestructionCommandValidationSteps(value, path));
+
+/** Internal owner adapter: input records/arrays are first-party literals held immutable by their producer. */
+export function* structuralDestructionCommandValidationSteps(value: unknown, path = "command", reserve?: StructuralOwnedReserve): Generator<void, StructuralDestructionCommand, void> {
+  reserve?.(8_192);
   const record = requirePlainRecord(value, path);
   const kind = record.kind;
   if (kind !== "SubtractSphere" && kind !== "SubtractBox" && kind !== "SetMaterialSphere" && kind !== "SetMaterialBox") {
@@ -317,20 +433,21 @@ export const validateStructuralDestructionCommand = (value: unknown, path = "com
     targetObjectId: stableAuthorityId(record.targetObjectId as string, `${path}/targetObjectId`),
     expectedObjectRevision: structuralRevision(record.expectedObjectRevision, `${path}/expectedObjectRevision`),
     resultingObjectRevision: structuralRevision(record.resultingObjectRevision, `${path}/resultingObjectRevision`),
-    expectedAdaptiveSource: validateStructuralAdaptiveSourceBindingExpectation(record.expectedAdaptiveSource, `${path}/expectedAdaptiveSource`),
-    materialFilter: validateStructuralMaterialFilter(record.materialFilter, `${path}/materialFilter`),
+    expectedAdaptiveSource: yield* structuralSourceExpectationSteps(record.expectedAdaptiveSource, `${path}/expectedAdaptiveSource`, reserve),
+    materialFilter: yield* structuralMaterialFilterSteps(record.materialFilter, `${path}/materialFilter`, reserve),
     actor: stableAuthorityId(record.actor as string, `${path}/actor`),
     source: stableAuthorityId(record.source as string, `${path}/source`),
     budgets: validateStructuralCommandBudgets(record.budgets, `${path}/budgets`),
     ...order
   };
-  if (kind === "SubtractSphere") return deepFreeze({ ...base, kind, shape: validateStructuralSphereShape(record.shape, `${path}/shape`) });
-  if (kind === "SubtractBox") return deepFreeze({ ...base, kind, shape: validateStructuralBoxShape(record.shape, `${path}/shape`) });
+  if (reserve !== undefined) { yield; }
+  if (kind === "SubtractSphere") return freezeStructuralProduced({ ...base, kind, shape: validateStructuralSphereShape(record.shape, `${path}/shape`) }, reserve);
+  if (kind === "SubtractBox") return freezeStructuralProduced({ ...base, kind, shape: validateStructuralBoxShape(record.shape, `${path}/shape`) }, reserve);
   const materialId = structuralMaterialId(record.materialId, `${path}/materialId`, false);
   return kind === "SetMaterialSphere"
-    ? deepFreeze({ ...base, kind, shape: validateStructuralSphereShape(record.shape, `${path}/shape`), materialId })
-    : deepFreeze({ ...base, kind, shape: validateStructuralBoxShape(record.shape, `${path}/shape`), materialId });
-};
+    ? freezeStructuralProduced({ ...base, kind, shape: validateStructuralSphereShape(record.shape, `${path}/shape`), materialId }, reserve)
+    : freezeStructuralProduced({ ...base, kind, shape: validateStructuralBoxShape(record.shape, `${path}/shape`), materialId }, reserve);
+}
 
 export const validateStructuralSphereShape = (value: unknown, path = "shape"): StructuralSphereShape => {
   const record = requirePlainRecord(value, path);
@@ -366,32 +483,37 @@ const checkedStructuralRevisionIncrement = (value: StructuralRevision, path: str
   return structuralRevision(value + 1, path);
 };
 
-const validateStructuralCommandEvidence = (
+function* structuralCommandEvidenceSteps(
   value: unknown,
   source: StructuralAdaptiveSourceBinding,
   frame: StructuralFrameBinding,
-  path: string
-): StructuralCommandEvidence => {
+  path: string,
+  reserve?: StructuralOwnedReserve
+): Generator<void, StructuralCommandEvidence, void> {
+  reserve?.(512, true);
   const record = requirePlainRecord(value, path);
   const keys = ["schemaVersion", "commandId", "commandHash", "status", "previousObjectRevision", "resultingObjectRevision", "previousEditRevision", "resultingEditRevision", "previousContentHash", "resultingContentHash", "changedBrickKeys", "selectedVoxelCount", "changedVoxelCount", "adaptiveJournalDigest"] as const;
   requireExactKeys(record, keys, path);
   if (record.schemaVersion !== STRUCTURAL_COMMAND_EVIDENCE_SCHEMA_VERSION || (record.status !== "Applied" && record.status !== "NoChange")) {
     return structuralFail("InvalidContract", path, "Unsupported command evidence schema or status.");
   }
-  const changedBrickKeys = structuralDenseArray(record.changedBrickKeys, `${path}/changedBrickKeys`, STRUCTURAL_MAX_CHANGED_BRICK_KEYS)
-    .map((key) => validateAdaptiveBrickKey(key))
-    .sort(compareAdaptiveBrickKeys);
+  const changedBrickKeys = yield* structuralSortSteps(yield* structuralMapSteps(record.changedBrickKeys, `${path}/changedBrickKeys`, STRUCTURAL_MAX_CHANGED_BRICK_KEYS,
+    function* (key) { reserve?.(3_072, true); return validateAdaptiveBrickKey(key); }, reserve), compareAdaptiveBrickKeys, reserve);
   for (let index = 1; index < changedBrickKeys.length; index += 1) {
     if (serializeAdaptiveKey(changedBrickKeys[index - 1]) === serializeAdaptiveKey(changedBrickKeys[index])) {
       return structuralFail("InvalidContract", `${path}/changedBrickKeys`, "Changed brick keys must be unique.");
     }
+    if (reserve !== undefined) { yield; }
   }
-  for (const key of changedBrickKeys) assertStructuralKeyMatchesFrame(key, frame, `${path}/changedBrickKeys`);
+  for (const key of changedBrickKeys) {
+    assertStructuralKeyMatchesFrame(key, frame, `${path}/changedBrickKeys`);
+    if (reserve !== undefined) { yield; }
+  }
   const adaptiveJournalDigest = requireStructuralHash(record.adaptiveJournalDigest, `${path}/adaptiveJournalDigest`);
   if (adaptiveJournalDigest !== source.journalDigest) {
     return structuralFail("InvalidAdaptiveBinding", `${path}/adaptiveJournalDigest`, "Command evidence must bind the object's retained Adaptive journal digest.");
   }
-  return deepFreeze({
+  return freezeStructuralProduced({
     schemaVersion: STRUCTURAL_COMMAND_EVIDENCE_SCHEMA_VERSION,
     commandId: stableAuthorityId(record.commandId as string, `${path}/commandId`),
     commandHash: requireStructuralHash(record.commandHash, `${path}/commandHash`),
@@ -402,12 +524,12 @@ const validateStructuralCommandEvidence = (
     resultingEditRevision: structuralRevision(record.resultingEditRevision, `${path}/resultingEditRevision`),
     previousContentHash: requireStructuralHash(record.previousContentHash, `${path}/previousContentHash`),
     resultingContentHash: requireStructuralHash(record.resultingContentHash, `${path}/resultingContentHash`),
-    changedBrickKeys: deepFreeze(changedBrickKeys),
+    changedBrickKeys: yield* structuralFreezeArraySteps(changedBrickKeys, reserve),
     selectedVoxelCount: structuralNonNegativeSafeInteger(record.selectedVoxelCount, `${path}/selectedVoxelCount`),
     changedVoxelCount: structuralNonNegativeSafeInteger(record.changedVoxelCount, `${path}/changedVoxelCount`),
     adaptiveJournalDigest
-  });
-};
+  }, reserve);
+}
 
 export const validateStructuralCommandEvidenceSemanticsInternal = (
   value: unknown,
@@ -417,21 +539,28 @@ export const validateStructuralCommandEvidenceSemanticsInternal = (
   editRevisionValue: unknown,
   contentHashValue: unknown,
   path = "commandEvidence"
-): readonly StructuralCommandEvidence[] => {
+): readonly StructuralCommandEvidence[] => drainStructuralSteps(structuralCommandEvidenceSemanticsSteps(value, source, frame, objectRevisionValue, editRevisionValue, contentHashValue, path));
+
+export function* structuralCommandEvidenceSemanticsSteps(
+  value: unknown, source: StructuralAdaptiveSourceBinding, frame: StructuralFrameBinding,
+  objectRevisionValue: unknown, editRevisionValue: unknown, contentHashValue: unknown,
+  path = "commandEvidence", reserve?: StructuralOwnedReserve
+): Generator<void, readonly StructuralCommandEvidence[], void> {
   const objectRevision = structuralRevision(objectRevisionValue, "objectRevision");
   const editRevision = structuralRevision(editRevisionValue, "editRevision");
   const contentHash = requireStructuralHash(contentHashValue, "contentHash");
-  const evidence = structuralDenseArray(value, path, STRUCTURAL_MAX_COMMAND_EVIDENCE).map((entry, index) =>
-    validateStructuralCommandEvidence(entry, source, frame, `${path}/${index}`));
+  const evidence = yield* structuralMapSteps(value, path, STRUCTURAL_MAX_COMMAND_EVIDENCE,
+    (entry, index) => structuralCommandEvidenceSteps(entry, source, frame, `${path}/${index}`, reserve), reserve);
 
   if (evidence.length === 0) {
     if (objectRevision !== 0 || editRevision !== 0) {
       return structuralFail("InvalidRevision", path, "Empty command evidence is valid only for the initial object and edit revisions.");
     }
-    return deepFreeze(evidence);
+    return yield* structuralFreezeArraySteps(evidence, reserve);
   }
 
   let previous: StructuralCommandEvidence | undefined;
+  reserve?.(64 + evidence.length * 3_072);
   const commandIds = new Set<string>();
   for (let index = 0; index < evidence.length; index += 1) {
     const receipt = evidence[index];
@@ -466,10 +595,11 @@ export const validateStructuralCommandEvidenceSemanticsInternal = (
       }
     }
     previous = receipt;
+    if (reserve !== undefined) { yield; }
   }
 
   if (previous === undefined || previous.resultingObjectRevision !== objectRevision || previous.resultingEditRevision !== editRevision || previous.resultingContentHash !== contentHash) {
     return structuralFail("InvalidRevision", path, "Final command evidence must bind the Structural object revision and content hash.");
   }
-  return deepFreeze(evidence);
-};
+  return yield* structuralFreezeArraySteps(evidence, reserve);
+}

@@ -5,10 +5,14 @@ import type {HvpStructuralCell} from "../terrain/structuralIngest";
 /** Immutable source-derived local geometry; native COM/pose remains the World owner's. */
 export const meshHvpBodyCells=(cells:readonly HvpStructuralCell[],center:Readonly<{x:number;y:number;z:number}>,sourceDigest:string)=>{
   const min=[256,128,256],max=[0,0,0];
-  for(const c of cells){for(const [i,v] of [c.x,c.y,c.z].entries()){min[i]=Math.min(min[i]!,v);max[i]=Math.max(max[i]!,v+1);}}
+  let wideMaterials=false;
+  for(const c of cells){
+    if(c.materialId>255){wideMaterials=true;}
+    for(const [i,v] of [c.x,c.y,c.z].entries()){min[i]=Math.min(min[i]!,v);max[i]=Math.max(max[i]!,v+1);}
+  }
   const [sx,sy,sz]=max.map((v,i)=>v-min[i]!) as [number,number,number];
   if(sx*sy*sz>262_144){throw new Error("Fragment mesh preparation BudgetExceeded");}
-  const slots=new Uint8Array(sx*sy*sz);
+  const slots=wideMaterials?new Uint16Array(sx*sy*sz):new Uint8Array(sx*sy*sz);
   for(const c of cells){slots[c.x-min[0]!+(c.y-min[1]!)*sx+(c.z-min[2]!)*sx*sy]=c.materialId;}
   const mesh=meshHvpOccupancy({sizeX:sx,sizeY:sy,sizeZ:sz,cellMeters:.125,
     originMeters:{x:min[0]!*.125,y:min[1]!*.125,z:min[2]!*.125},slotAt:(x,y,z)=>slots[x+y*sx+z*sx*sy]!},

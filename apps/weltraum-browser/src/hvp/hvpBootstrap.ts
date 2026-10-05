@@ -2180,7 +2180,7 @@ export const startHvp = async (
     };
     const currentView=()=>({camera:camera!.checkpoint(),...playerInput!.checkpoint(),tool:plasmaTool!.checkpoint(),waterEnabled,aoEnabled});
     const restoreView=(view:ReturnType<typeof currentView>)=>{
-      playerInput!.restore(view);camera!.restore(view.camera);inspectEnabled=view.camera.mode==="Fly";plasmaTool!.restore(view.tool);
+      playerInput!.restore(view);camera!.restore(view.camera);plasmaTool!.restore(view.tool);
       waterEnabled=view.waterEnabled;presentation.setWaterEnabled(waterEnabled);documentPort.body.dataset.hestiaPrototypeWater=waterEnabled?"on":"off";
       aoEnabled=view.aoEnabled;setAoOnNodes(aoEnabled);documentPort.body.dataset.hestiaPrototypeAo=aoEnabled?"on":"off";
     };
@@ -2404,7 +2404,6 @@ export const startHvp = async (
       }catch(error){saveHold=String(error).includes("RecoveryHold");saveView={state:saveHold?"RecoveryHold":"Rejected",message:String(error),revision:saveRevision};}
       finally{saveBusy=false;if(!disposed&&hvpMountEpoch===myEpoch){hud?.updateSave();if(!saveHold){syncPhysicsTransforms();observeSalvage();updateTerrainState();}}}
     };
-    let inspectEnabled = false;
     if(coldGame){
       terrainConsumer!.restoreReceipts(coldGame.receipts.terrain);structuralConsumer!.restoreReceipts(coldGame.receipts.structural);bodyCutConsumer!.restoreReceipts(coldGame.receipts.moving);
       if(coldGame.neighborRoot){
@@ -2476,10 +2475,9 @@ export const startHvp = async (
           presentation.setWaterEnabled(enabled);
           documentPort.body.dataset.hestiaPrototypeWater = enabled ? "on" : "off";
         },
-        readInspectEnabled: () => inspectEnabled,
+        readInspectEnabled: () => camera!.mode === "Fly",
         setInspectEnabled: (enabled: boolean) => {
           playerInput!.stop();
-          inspectEnabled = enabled;
           camera!.setMode(enabled ? "Fly" : "Orbit");
           hud!.update("Ready", camera!.readPose(), stats);
         },
@@ -2492,7 +2490,7 @@ export const startHvp = async (
         },
         readPhysics: () => physics!.read(),
         physicsCommand: kind => { if (kind === "Pause") { playerInput!.stop(); } return physics!.command(kind); },
-        play: () => { inspectEnabled = false; camera!.setMode("Orbit"); playerInput!.start(); },
+        play: () => { camera!.setMode("Orbit"); hud!.update("Ready", camera!.readPose(), stats); playerInput!.start(); },
         readThirdPerson: () => playerInput!.thirdPerson,
         readAimScreen: () => playerInput!.aimScreen,
         togglePlayerView: () => playerInput!.toggleView(),

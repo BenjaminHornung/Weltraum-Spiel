@@ -4,7 +4,7 @@ import {readHvpBodyCells} from "./bodyCutPlan";
 import {captureHvpBodyHit,prepareHvpBodyCutOwnedHashSteps,prepareHvpBodyCutSteps,stageHvpBodyCut,type HvpBodyCutPlan,type HvpBodyHit,type HvpCuttableBody} from "./bodyCut";
 import type {R} from "./rapierPort";
 import {HVP_PLAN_FINAL_PHASE,type HvpPlanProbe} from "./structuralPlan";
-import type {HvpRigidRecipeSpans} from "./rigidRecipe";
+import {HVP_CHILD_HASH_PHASE,type HvpRigidRecipeSpans} from "./rigidRecipe";
 import type {HvpCutSpan} from "../runtime/cutTrace";
 import type {HvpBodyCutPayload,HvpLocalBodyProduct} from "../../workers/hvpBodyCutJob";
 
@@ -29,6 +29,8 @@ export interface HvpMovingCheckpoint {readonly sequence:number;readonly last:Hvp
 export interface HvpBodyPlanHost {
   yieldTask():Promise<void>;
   assertCurrent():void;
+  /** Optional owner budget for consecutive private hash batches; absent keeps legacy yields. */
+  continuePlan?():boolean;
 }
 /** A named existing sub-hook duration inside one step (ingest phases, recipe spans, cell/mass phases). */
 export interface HvpBodyPlanSubspan {readonly phase:string;readonly durationMs:number}
@@ -63,6 +65,7 @@ const HVP_BODY_PLAN_FAILED_STEP="failedStep";
 /** The single owner-local plan outcome of one pending command. */
 interface HvpBodyPlanWork {
   steps?:ReturnType<typeof prepareHvpBodyCutSteps>;
+  phase?:string;
   plan?:HvpBodyCutPlan;
   projection?:HvpBodyChildProjection;
   failure?:{readonly error:unknown};
@@ -184,6 +187,7 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
       const step=work.steps!.next();
       if(!step.done){
         label=step.value;
+        work.phase=label;
         return false;
       }
       label=HVP_PLAN_FINAL_PHASE;
@@ -237,8 +241,16 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
     if(work.running===undefined){
       work.running=(async()=>{
         try{
+          let previousPhase:string|undefined;
           while(!advancePlan(work)){
-            await host.yieldTask();
+            // Cell/classification yields remain individually observable to Read/Input/tick callers.
+            const continuation=work.phase===HVP_CHILD_HASH_PHASE
+              &&work.phase===previousPhase
+              &&host.continuePlan?.()===true;
+            previousPhase=work.phase;
+            if(!continuation){
+              await host.yieldTask();
+            }
             if(pending!==ticket||held){
               throw new Error("Moving preparation cancelled");
             }

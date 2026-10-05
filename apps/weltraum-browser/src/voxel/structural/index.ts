@@ -23,7 +23,25 @@ export {
   type StructuralValidationErrorCode
 } from "./validation";
 export * from "./coordinates";
-export * from "./canonical";
+export {
+  projectStructuralObjectContent,
+  projectStructuralCommandEvidence,
+  projectStructuralObject,
+  projectStructuralResult,
+  canonicalStructuralJson,
+  serializeStructuralCellAddress,
+  serializeStructuralObject,
+  serializeStructuralCommand,
+  serializeStructuralResult,
+  hashStructuralObjectContent,
+  hashStructuralEvidence,
+  hashStructuralCommand,
+  hashStructuralResult,
+  hashStructuralAdaptiveAuthorityBinding,
+  hashStructuralComponentId,
+  hashStructuralFragmentContent,
+  hashStructuralFragmentId
+} from "./canonical";
 export {
   createStructuralMaterialTable,
   createStructuralBrick,
@@ -41,7 +59,7 @@ export {
   deriveStructuralSingleComponentMasses,
   deriveStructuralComponentMassProperties
 } from "./massProperties";
-export * from "./commands";
+export { applyStructuralDestructionCommand } from "./commands";
 export {
   STRUCTURAL_PHYSICS_TRANSITION_SCHEMA_VERSION,
   STRUCTURAL_PHYSICS_TRANSITION_FALLBACK_KIND,

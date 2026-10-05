@@ -87,7 +87,7 @@ export interface HvpCompactMesh {
   };
   readonly sourceDigest: string;
   readonly algorithmVersion: string;
-  /** Legacy transient estimate (formula retained for parity); excludes cursor bookkeeping and bounded-sort scratch. */
+  /** Legacy transient estimate (formula retained for parity); excludes face-coordinate staging, cursor bookkeeping and bounded-sort scratch. */
   readonly tempEstimateBytes: number;
 }
 
@@ -158,15 +158,26 @@ interface HvpQuad {
   readonly col: number;
   readonly rowCount: number;
   readonly colCount: number;
-  /** Merge key: material slot in the low 3 bits, AO signature above. */
+  /** Merge key: unchanged occupied material in the low 16 bits, eight AO bits above. */
   readonly key: number;
 }
 
-const packFaceCell = (slice: number, row: number, col: number, key: number): number =>
-  ((slice * 1024 + row) * 1024 + col) * 2048 + key;
+const HVP_MATERIAL_RADIX = 65_536;
+const HVP_FACE_KEY_RADIX = HVP_MATERIAL_RADIX * 256;
 
-const quadSlot = (key: number): number => key % 8;
-const quadAoSignature = (key: number): number => Math.floor(key / 8);
+const packFaceCell = (slice: number, row: number, col: number, key: number, rows: number, cols: number): number => {
+  const cell = (slice * rows + row) * cols + col;
+  // Include the positive boundary plane. With Body volume <=2^18, cell <2^19 and
+  // the 24-bit material/AO key gives a pack <2^43, not a fixed-radix 54-bit pack.
+  if (!Number.isSafeInteger(cell) || cell < 0 || !Number.isSafeInteger(key) || key < 0 || key >= HVP_FACE_KEY_RADIX
+    || cell > Math.floor((Number.MAX_SAFE_INTEGER - key) / HVP_FACE_KEY_RADIX)) {
+    throw new Error("meshHvpOccupancy coordinate pack exceeds safe integer range");
+  }
+  return cell * HVP_FACE_KEY_RADIX + key;
+};
+
+const quadSlot = (key: number): number => key % HVP_MATERIAL_RADIX;
+const quadAoSignature = (key: number): number => Math.floor(key / HVP_MATERIAL_RADIX);
 
 // ponytail: 1024 elementary operations; Node slice probe calibrated from 128 to avoid tiny task floods.
 // This is not a Chrome max8ms/p95 or end-to-end latency claim.
@@ -192,14 +203,31 @@ function* greedySliceSteps(
   keys: readonly number[],
   state: HvpMeshStepState
 ): Generator<string, HvpQuad[], unknown> {
+  let colStride = 1, maxRow = 0;
+  for (let index = 0; index < rows.length; index += 1) {
+    colStride = Math.max(colStride, cols[index]! + 1);
+    maxRow = Math.max(maxRow, rows[index]!);
+    if (state.bounded && ++state.work === HVP_MESH_STEP_BATCH) {
+      state.work = 0;
+      yield "greedy-bounds";
+    }
+  }
+  if (!Number.isSafeInteger((maxRow + 1) * colStride)) {
+    throw new Error("meshHvpOccupancy coordinate pack exceeds safe integer range");
+  }
   const byCoordinate = new Map<number, number>();
   for (let index = 0; index < rows.length; index += 1) {
-    byCoordinate.set(rows[index]! * 4096 + cols[index]!, index);
+    byCoordinate.set(rows[index]! * colStride + cols[index]!, index);
     if (state.bounded && ++state.work === HVP_MESH_STEP_BATCH) {
       state.work = 0;
       yield "greedy-index";
     }
   }
+  // A column probe past the edge must not carry into the next row's first cell.
+  const at = (row: number, col: number): number | undefined => {
+    if (row < 0 || row > maxRow || col < 0 || col >= colStride) { return undefined; }
+    return byCoordinate.get(row * colStride + col);
+  };
   const remaining = new Set<number>();
   for (let index = 0; index < rows.length; index += 1) {
     remaining.add(index);
@@ -222,7 +250,7 @@ function* greedySliceSteps(
     const seedKey = keys[seed]!;
     let colCount = 1;
     while (true) {
-      const candidate = byCoordinate.get(seedRow * 4096 + (seedCol + colCount));
+      const candidate = at(seedRow, seedCol + colCount);
       const compatible = candidate !== undefined && remaining.has(candidate) && keys[candidate] === seedKey;
       if (state.bounded && ++state.work === HVP_MESH_STEP_BATCH) {
         state.work = 0;
@@ -238,7 +266,7 @@ function* greedySliceSteps(
       const row = seedRow + rowCount;
       let compatible = true;
       for (let offset = 0; offset < colCount; offset += 1) {
-        const candidate = byCoordinate.get(row * 4096 + (seedCol + offset));
+        const candidate = at(row, seedCol + offset);
         if (candidate === undefined || !remaining.has(candidate) || keys[candidate] !== seedKey) {
           compatible = false;
           if (state.bounded && ++state.work === HVP_MESH_STEP_BATCH) {
@@ -263,7 +291,7 @@ function* greedySliceSteps(
     }
     for (let rowOffset = 0; rowOffset < rowCount; rowOffset += 1) {
       for (let colOffset = 0; colOffset < colCount; colOffset += 1) {
-        remaining.delete(byCoordinate.get((seedRow + rowOffset) * 4096 + (seedCol + colOffset))!);
+        remaining.delete(at(seedRow + rowOffset, seedCol + colOffset)!);
         if (state.bounded && ++state.work === HVP_MESH_STEP_BATCH) {
           state.work = 0;
           yield "greedy-delete";
@@ -416,7 +444,7 @@ function* faceAoSignatureSteps(
       yield "occupancy-ao";
     }
   }
-  return slot + (hvpPackAoSignature(levels) << 3);
+  return slot + hvpPackAoSignature(levels) * HVP_MATERIAL_RADIX;
 }
 
 /**
@@ -459,7 +487,7 @@ function* meshHvpOccupancyCore(
         solidAt(samples.side2[0], samples.side2[1], samples.side2[2]),
         solidAt(samples.corner[0], samples.corner[1], samples.corner[2])));
     }
-    return slot + (hvpPackAoSignature(levels) << 3);
+    return slot + hvpPackAoSignature(levels) * HVP_MATERIAL_RADIX;
   };
   for (let iz = 0; iz < occupancy.sizeZ; iz += 1) {
     for (let iy = 0; iy < occupancy.sizeY; iy += 1) {
@@ -497,13 +525,13 @@ function* meshHvpOccupancyCore(
               const row = def.row === 0 ? ix : def.row === 1 ? iy : iz;
               const col = def.col === 0 ? ix : def.col === 1 ? iy : iz;
               const key = aoEnabled ? yield* faceAoSignatureSteps(ix, iy, iz, face, slot, solidAt, state) : slot;
-              packedByFace[face]!.push(packFaceCell(slice, row, col, key));
+              packedByFace[face]!.push(slice, row, col, key);
             } else {
               // Resolve push before AO callbacks, as in the original synchronous expression.
-              packedByFace[face]!.push(packFaceCell(slice,
+              packedByFace[face]!.push(slice,
                 def.row === 0 ? ix : def.row === 1 ? iy : iz,
                 def.col === 0 ? ix : def.col === 1 ? iy : iz,
-                faceAoSignature(ix, iy, iz, face, slot)));
+                faceAoSignature(ix, iy, iz, face, slot));
             }
           }
           if (state.bounded && ++state.work === HVP_MESH_STEP_BATCH) {
@@ -517,7 +545,7 @@ function* meshHvpOccupancyCore(
 
   let exposedFaces = 0;
   for (const packed of packedByFace) {
-    exposedFaces += packed.length;
+    exposedFaces += packed.length / 4;
   }
   if (exposedFaces > budgets.maxQuads) {
     throw new Error(`meshHvpOccupancy BudgetExceeded: ${exposedFaces} faces exceed ${budgets.maxQuads}`);
@@ -526,19 +554,40 @@ function* meshHvpOccupancyCore(
   const quads: HvpQuad[] = [];
   for (let face = 0; face < HVP_FACES.length; face += 1) {
     const packed = packedByFace[face]!;
+    // Derive radixes ONLY from the already emitted local coordinates: no new
+    // occupancy getter/callback reads or material-key cache. Compact in place.
+    let rowCount = 1, colCount = 1;
+    for (let index = 0; index < packed.length; index += 4) {
+      rowCount = Math.max(rowCount, packed[index + 1]! + 1);
+      colCount = Math.max(colCount, packed[index + 2]! + 1);
+      if (state.bounded && ++state.work === HVP_MESH_STEP_BATCH) {
+        state.work = 0;
+        yield "packed-bounds";
+      }
+    }
+    const faceCount = packed.length / 4;
+    for (let index = 0; index < faceCount; index += 1) {
+      const offset = index * 4;
+      packed[index] = packFaceCell(packed[offset]!, packed[offset + 1]!, packed[offset + 2]!, packed[offset + 3]!, rowCount, colCount);
+      if (state.bounded && ++state.work === HVP_MESH_STEP_BATCH) {
+        state.work = 0;
+        yield "packed-encode";
+      }
+    }
+    packed.length = faceCount;
     yield* sortPackedSteps(packed, state);
     let cursor = 0;
     while (cursor < packed.length) {
-      const slice = Math.floor(packed[cursor]! / 2048 / (1024 * 1024));
+      const slice = Math.floor(Math.floor(packed[cursor]! / HVP_FACE_KEY_RADIX) / (rowCount * colCount));
       const rows: number[] = [];
       const cols: number[] = [];
       const keys: number[] = [];
-      while (cursor < packed.length && Math.floor(packed[cursor]! / 2048 / (1024 * 1024)) === slice) {
+      while (cursor < packed.length && Math.floor(Math.floor(packed[cursor]! / HVP_FACE_KEY_RADIX) / (rowCount * colCount)) === slice) {
         const value = packed[cursor]!;
-        const key = value % 2048;
-        const cell = Math.floor(value / 2048);
-        const row = Math.floor(cell / 1024) % 1024;
-        const col = cell % 1024;
+        const key = value % HVP_FACE_KEY_RADIX;
+        const cell = Math.floor(value / HVP_FACE_KEY_RADIX);
+        const row = Math.floor(cell / colCount) % rowCount;
+        const col = cell % colCount;
         rows.push(row);
         cols.push(col);
         keys.push(key);

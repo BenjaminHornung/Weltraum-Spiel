@@ -1,11 +1,77 @@
-import {describe, expect, it} from "vitest";
-import {isHvpCutHealthFresh, readHvpBodyHoldForCommand, readHvpCutMarkers, summarizeHvpCuts,
-  type HvpCutSample, type HvpCutRawEntry} from "../performance/hvpCutRtReport";
+import {describe, expect, it, vi} from "vitest";
+import * as fs from "node:fs/promises";
+import path from "node:path";
+import {fileURLToPath} from "node:url";
+import {isHvpCutHealthFresh, planHvpCutRtSeries, readHvpBodyHoldForCommand, readHvpCutMarkers, summarizeHvpCuts,
+  summarizeHvpCutRtSessions, createHvpCutRtEvidenceDirectory, describeHvpCutRtFailure, inventoryHvpCutRtFiles,
+  persistHvpCutRtReport, type HvpCutRtFailureStage, type HvpCutRtAttemptRecord, type HvpCutSample, type HvpCutRawEntry} from "../performance/hvpCutRtReport";
+
+vi.mock("node:fs/promises", async importOriginal => ({...await importOriginal<typeof fs>()}));
 
 const sample = (overrides: Partial<HvpCutSample> = {}): HvpCutSample => ({
   commandId: "cut-1", scenario: "quarry", temperature: "cold", outcome: "Applied",
   inputMs: 10, appliedMs: 20, firstCommittedRenderSubmitMs: 30, holdMs: 5,
   sourceGenerationBefore: 0, sourceGenerationAfter: 1, reason: "Terrain and collision committed", ...overrides
+});
+
+it("uses the runner's exact diagnostic, qualification and formal session plans without acceptance shortcuts", () => {
+  const ids = ["quarry-box", "quarry-sphere", "rock-arm", "body-box-moving", "body-box-sleeping", "body-sphere-moving", "body-sphere-sleeping"];
+  const populations = ids.flatMap(id => [`${id}/cold`, `${id}/warm`]);
+  for (const [value, sessions, attempts, perPopulation, schedule] of [
+    [undefined, 14, 14, 1, [1]], ["diagnostic", 14, 14, 1, [1]],
+    ["qualification", 14, 42, 3, [3]], ["measurement", 42, 1400, 100, [34, 33, 33]]
+  ] as const) {
+    const plan = planHvpCutRtSeries(value);
+    expect(plan.sessions).toHaveLength(sessions);
+    expect(plan.schedule).toEqual(schedule);
+    expect(plan.sessions.reduce((count, session) => count + session.attempts, 0)).toBe(attempts);
+    const counts = new Map<string, number>();
+    for (const session of plan.sessions) {
+      const key = `${session.variant.id}/${session.temperature}`;
+      counts.set(key, (counts.get(key) ?? 0) + session.attempts);
+      expect(Object.isFrozen(session) && Object.isFrozen(session.variant)).toBe(true);
+    }
+    expect([...counts.keys()]).toEqual(populations);
+    expect([...counts.values()]).toEqual(Array(14).fill(perPopulation));
+    expect(plan.doNotUseForAcceptance).toBe(value !== "measurement");
+    expect(summarizeHvpCutRtSessions(plan, []).acceptance).toBe("NOT_ASSESSED");
+  }
+  expect(() => planHvpCutRtSeries("unknown")).toThrow("Unknown cut series classification");
+  expect(() => planHvpCutRtSeries("")).toThrow("Unknown cut series classification");
+});
+
+it("retains all fourteen populations, unstarted/preflight attempts and warmups without pooling body motion", () => {
+  const plan = planHvpCutRtSeries("qualification");
+  const result = (overrides: Partial<HvpCutSample> = {}) => ({sample: sample(overrides), problems: [], raw: {entries: [], dropped: 0}});
+  const records: HvpCutRtAttemptRecord[] = [
+    {attempt: 1, status: "completed", result: result(), warmup: result({appliedMs: 1000, firstCommittedRenderSubmitMs: 1010}), problems: []},
+    {attempt: 2, status: "failed", result: null, warmup: null, problems: ["precondition failed"]},
+    {attempt: 3, status: "not-run", result: null, warmup: null, problems: []}
+  ];
+  const reports = [{variantId: "quarry-box", temperature: "cold", session: 1, failure: null, records},
+    {variantId: "body-box-moving", temperature: "cold", session: 1, failure: "preflight failed",
+      records: records.map(record => ({...record, status: "not-run" as const, result: null, warmup: null}))},
+    {variantId: "body-box-sleeping", temperature: "cold", session: 1, failure: null,
+      records: records.map(record => ({...record, status: "completed" as const,
+        result: result({scenario: "body-box", appliedMs: 110, firstCommittedRenderSubmitMs: 120}), warmup: null}))}
+  ] as const;
+  const before = JSON.stringify(reports);
+  const report = summarizeHvpCutRtSessions(plan, reports);
+  expect(report).toMatchObject({acceptance: "NOT_ASSESSED", doNotUseForAcceptance: true, plannedSessions: 14, plannedAttempts: 42});
+  expect(report.populations).toHaveLength(14);
+  expect(report.populations[0]).toMatchObject({plannedAttempts: 3, completed: 1, failed: 1, notRun: 1,
+    missingSamples: 2, warmups: 1, preconditionFailures: 1, observedDrops: 0,
+    summary: {inputToAppliedMs: {count: 1, p95: 10}}});
+  expect(report.populations[1]).toMatchObject({reportedSessions: 0, missingSessions: 1, notRun: 3, observedDrops: null,
+    summary: {inputToAppliedMs: null, inputToCommittedRenderMs: null, holdMs: null}});
+  expect(report.populations[6]).toMatchObject({notRun: 3, failures: ["preflight failed"], summary: {inputToAppliedMs: null}});
+  expect(report.populations[8]).toMatchObject({completed: 3, summary: {inputToAppliedMs: {count: 3, p95: 100}}});
+  expect(JSON.stringify(reports)).toBe(before);
+  expect(() => summarizeHvpCutRtSessions(plan, [reports[0], reports[0]])).toThrow(/exact planned session/);
+  expect(() => summarizeHvpCutRtSessions(plan, [{...reports[0], session: 2}])).toThrow(/exact planned session/);
+  expect(() => summarizeHvpCutRtSessions(plan, [{...reports[0], records: records.slice(0, 1)}])).toThrow(/exact planned session/);
+  expect(() => summarizeHvpCutRtSessions(plan, [{...reports[0], records: [{...records[0]!, attempt: 2}, ...records.slice(1)]}])).toThrow(/attempt record/);
+  expect(() => summarizeHvpCutRtSessions(plan, [{...reports[0], variantId: "body-box-moving"}])).toThrow(/different planned population/);
 });
 
 describe("P07 command-bound marker extraction", () => {
@@ -194,5 +260,131 @@ describe("P07 descriptive cut report", () => {
       expect(group).toMatchObject({attempts: 0, completeApplied: 0, inputToAppliedMs: null,
         inputToCommittedRenderMs: null, holdMs: null});
     }
+  });
+});
+
+describe("P07 owning artifact and privacy boundaries", () => {
+  const app = fileURLToPath(new URL("../..", import.meta.url));
+  const root = "C:/IFI_SourceCode/Utils/opencode-migration/tmp/opencode/runner-contract-controlled";
+  const evidence = () => {
+    const series = planHvpCutRtSeries("qualification"), first = series.sessions[0]!;
+    const records: HvpCutRtAttemptRecord[] = Array.from({length: first.attempts}, (_, index) =>
+      ({attempt: index + 1, status: "not-run", result: null, warmup: null, problems: []}));
+    return {series, records, failure: null as string | null, artifactFailures: [] as string[]};
+  };
+
+  it.each(["outside-source", "inside-app", "ancestor-junction"] as const)("rejects %s before any redirected write and attaches every planned record", async kind => {
+    const mkdir = vi.spyOn(fs, "mkdir").mockResolvedValue(undefined);
+    vi.spyOn(fs, "readdir").mockResolvedValue([]);
+    const write = vi.spyOn(fs, "writeFile").mockResolvedValue(undefined);
+    vi.spyOn(fs, "realpath").mockImplementation((async file => {
+      const resolved = path.resolve(file as string);
+      if (resolved === path.resolve(root)) {
+        return kind === "inside-app" ? path.resolve(app, "evidence") : kind === "outside-source" ? "C:/FAKE_OUTSIDE_IFI" : resolved;
+      }
+      return resolved;
+    }) as typeof fs.realpath);
+    vi.spyOn(fs, "lstat").mockImplementation((async file => ({isDirectory: () => true,
+      isSymbolicLink: () => kind === "ancestor-junction" && path.resolve(file as string) === path.dirname(path.resolve(root))})) as typeof fs.lstat);
+    try {
+      const report = evidence(), bodies: Buffer[] = []; let directory: string | undefined;
+      try { directory = await createHvpCutRtEvidenceDirectory(root, app, "quarry-box-cold-1"); }
+      catch (error) { report.failure = describeHvpCutRtFailure("preflight", error); }
+      await persistHvpCutRtReport(directory, app, report, async body => { bodies.push(body); });
+      expect(directory).toBeUndefined(); expect(mkdir).not.toHaveBeenCalled(); expect(write).not.toHaveBeenCalled();
+      expect(bodies).toHaveLength(1);
+      const attached = JSON.parse(bodies[0]!.toString());
+      expect(attached.failure).toContain("preflight"); expect(attached.records).toEqual(report.records);
+      expect(attached.records.every((record: HvpCutRtAttemptRecord) => record.status === "not-run")).toBe(true);
+      const summary = summarizeHvpCutRtSessions(report.series, []);
+      expect(summary.plannedAttempts).toBe(42); expect(summary.populations).toHaveLength(14);
+    } finally { vi.restoreAllMocks(); }
+  });
+
+  it.each(["first-write", "final-write"] as const)("retains first operation failure, warmups and raw markers after %s failure", async mode => {
+    const report = evidence(), original = Object.assign(new Error("FAKE_OPERATION_TOKEN"), {code: "EACCES"});
+    const write = vi.spyOn(fs, "writeFile").mockRejectedValue(Object.assign(new Error("FAKE_STORAGE_TOKEN"), {code: "ENOSPC"}));
+    vi.spyOn(fs, "realpath").mockImplementation((async file => path.resolve(file as string)) as typeof fs.realpath);
+    vi.spyOn(fs, "lstat").mockImplementation((async () => ({isDirectory: () => true, isSymbolicLink: () => false})) as unknown as typeof fs.lstat);
+    const bodies: Buffer[] = [];
+    try {
+      if (mode === "first-write") {
+        write.mockRejectedValueOnce(original);
+        try { await fs.writeFile(path.join(root, "declared-plan.json"), "{}", {flag: "wx"}); }
+        catch (error) { report.failure = describeHvpCutRtFailure("preflight", error); }
+      } else {
+        report.failure = describeHvpCutRtFailure("attempt", original);
+        const raw = {entries: [{name: "hvp.cutInputMs", start: 10, duration: 0, detail: {data: {commandId: "cut-1"}}}], dropped: 0};
+        report.records[0] = {attempt: 1, status: "failed", result: {sample: sample(), problems: [report.failure], raw},
+          warmup: {sample: sample({appliedMs: 80, firstCommittedRenderSubmitMs: 90}), problems: [], raw}, problems: [report.failure]};
+      }
+      const firstFailure = report.failure, before = JSON.stringify(report.records);
+      await persistHvpCutRtReport(root, app, report, async body => { bodies.push(body); });
+      expect(bodies).toHaveLength(1);
+      const attached = JSON.parse(bodies[0]!.toString());
+      expect(attached.failure).toBe(firstFailure); expect(attached.artifactFailures).toHaveLength(1);
+      expect(attached.artifactFailures[0]).toContain("ENOSPC"); expect(JSON.stringify(attached.records)).toBe(before);
+      expect(attached.records).toHaveLength(3); expect(attached.records[2].status).toBe("not-run");
+      if (mode === "final-write") { expect(attached.records[0].warmup.sample.appliedMs).toBe(80); expect(attached.records[0].result.raw.entries).toHaveLength(1); }
+      expect(write.mock.calls.every(call => (call[2] as {flag: string}).flag === "wx")).toBe(true);
+    } finally { vi.restoreAllMocks(); }
+  });
+
+  it("projects synthetic launch, page, console, nested-cut and cleanup failures without leaking text to file or attachment", async () => {
+    const stages: HvpCutRtFailureStage[] = ["browser-launch", "page-error", "console-error", "cut", "page-cleanup", "browser-cleanup", "final-inventory"];
+    const text = "FAKE_COMMAND --user-data-dir=C:/FAKE_PRIVATE_PROFILE --token=FAKE_TOKEN_9";
+    const original = Object.assign(new Error(text), {code: "EACCES"});
+    const problems = stages.map(stage => describeHvpCutRtFailure(stage, original));
+    const bodies: string[] = [], report = {...evidence(), problems};
+    vi.spyOn(fs, "writeFile").mockImplementation(async (_file, data) => { bodies.push(String(data)); });
+    vi.spyOn(fs, "realpath").mockImplementation((async file => path.resolve(file as string)) as typeof fs.realpath);
+    vi.spyOn(fs, "lstat").mockImplementation((async () => ({isDirectory: () => true, isSymbolicLink: () => false})) as unknown as typeof fs.lstat);
+    try {
+      await persistHvpCutRtReport(root, app, report, async body => { bodies.push(body.toString()); });
+      await persistHvpCutRtReport(undefined, app, report, async body => { bodies.push(body.toString()); });
+      expect(bodies).toHaveLength(2);
+      for (const body of bodies) {
+        for (const sentinel of ["FAKE_COMMAND", "FAKE_PRIVATE_PROFILE", "FAKE_TOKEN_9"]) { expect(body).not.toContain(sentinel); }
+        for (const stage of stages) { expect(body).toContain(stage); }
+        expect(body).toContain("EACCES");
+      }
+      expect(original.message).toBe(text);
+      const hostile = Object.assign(new Error(text), {name: "FAKE_PRIVATE_PROFILE", code: "FAKE_TOKEN_9"});
+      expect(describeHvpCutRtFailure("cut", hostile)).toBe("cut: Error");
+    } finally { vi.restoreAllMocks(); }
+  });
+
+  it("creates one exclusive safe directory and emits relative inventories with unchanged actual hashes", async () => {
+    const fixture = await fs.mkdtemp("C:/IFI_SourceCode/Utils/opencode-migration/tmp/opencode/hvp-runner-contract-fixture-");
+    console.info("RUNNER_CONTRACT_SAFE_ADDITIVE_FIXTURE", fixture);
+    const directory = await createHvpCutRtEvidenceDirectory(fixture, app, "quarry-box-cold-1");
+    await fs.mkdir(path.join(directory, "src")); await fs.mkdir(path.join(directory, "dist"));
+    await fs.writeFile(path.join(directory, "src", "source.txt"), "abc", {flag: "wx"});
+    await fs.writeFile(path.join(directory, "dist", "build.txt"), "abc", {flag: "wx"});
+    const hash = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad";
+    expect(await inventoryHvpCutRtFiles(path.join(directory, "src"), directory)).toEqual([{path: "src/source.txt", sha256: hash}]);
+    expect(await inventoryHvpCutRtFiles(path.join(directory, "dist"), directory)).toEqual([{path: "dist/build.txt", sha256: hash}]);
+    await expect(createHvpCutRtEvidenceDirectory(fixture, app, "quarry-box-cold-1")).rejects.toThrow();
+    await fs.writeFile(path.join(directory, "report.json"), "previous-artifact", {flag: "wx"});
+    const report = evidence(), bodies: Buffer[] = [];
+    await persistHvpCutRtReport(directory, app, report, async body => { bodies.push(body); });
+    expect(await fs.readFile(path.join(directory, "report.json"), "utf8")).toBe("previous-artifact");
+    expect(report.artifactFailures).toEqual(["artifact: Error [EEXIST]"]); expect(bodies).toHaveLength(1);
+  });
+
+  it("rechecks a created directory before final persistence and falls back without redirected writes", async () => {
+    vi.spyOn(fs, "mkdir").mockResolvedValue(undefined);
+    vi.spyOn(fs, "lstat").mockImplementation((async () => ({isDirectory: () => true, isSymbolicLink: () => false})) as unknown as typeof fs.lstat);
+    const resolve = vi.spyOn(fs, "realpath").mockImplementation((async file => path.resolve(file as string)) as typeof fs.realpath);
+    const write = vi.spyOn(fs, "writeFile").mockResolvedValue(undefined);
+    try {
+      const directory = await createHvpCutRtEvidenceDirectory(root, app, "quarry-box-cold-1");
+      resolve.mockImplementation((async file => path.resolve(file as string) === path.resolve(directory) ? "C:/FAKE_REDIRECTED_AFTER_PREFLIGHT" : path.resolve(file as string)) as typeof fs.realpath);
+      const report = evidence(), bodies: Buffer[] = [];
+      await persistHvpCutRtReport(directory, app, report, async body => { bodies.push(body); });
+      expect(write).not.toHaveBeenCalled(); expect(bodies).toHaveLength(1);
+      expect(JSON.parse(bodies[0]!.toString()).records).toEqual(report.records);
+      expect(report.artifactFailures).toEqual(["artifact: Error"]);
+    } finally { vi.restoreAllMocks(); }
   });
 });

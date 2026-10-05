@@ -7,6 +7,9 @@ export const HVP_AVATAR_KEY = "hvp:player:avatar";
 /** Render-only lag filter: never extrapolates or changes the solver position. */
 export const createHvpPlayerVisualPose = () => {
   const position = new Vector3();
+  const sample = new Vector3();
+  // Preserve constructor defaults when a getter changes after validation.
+  const setSample = (x = 0, y = 0, z = 0): Vector3 => sample.set(x, y, z);
   let initialized = false;
   return {
     position,
@@ -14,12 +17,12 @@ export const createHvpPlayerVisualPose = () => {
       if (![target.x, target.y, target.z, seconds].every(Number.isFinite) || seconds < 0) {
         throw new RangeError("Invalid player presentation sample");
       }
-      const distance = position.distanceTo(new Vector3(target.x, target.y, target.z));
+      const distance = position.distanceTo(setSample(target.x, target.y, target.z));
       if (!initialized || reset || distance > 2) {
         position.set(target.x, target.y, target.z); initialized = true; return;
       }
       const alpha = 1 - Math.exp(-seconds / 0.045);
-      position.lerp(new Vector3(target.x, target.y, target.z), alpha);
+      position.lerp(setSample(target.x, target.y, target.z), alpha);
     }
   };
 };

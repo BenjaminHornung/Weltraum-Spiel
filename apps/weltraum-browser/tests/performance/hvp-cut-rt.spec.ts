@@ -1,25 +1,19 @@
 import {test, expect, type Browser, type Page} from "@playwright/test";
 import {createHash} from "node:crypto";
 import {execFileSync} from "node:child_process";
-import {mkdir, readFile, readdir, stat, writeFile} from "node:fs/promises";
+import {readFile, realpath, stat} from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
+import {fileURLToPath} from "node:url";
 import {Quaternion, Vector3} from "three";
 import type {HvpPhysicsClock, HvpPhysicsSnapshot} from "../../src/hestia-prototype/physics/physicsWorker";
 import type {createHvpPlasmaTool} from "../../src/hestia-prototype/terrain/plasmaTool";
-import {isHvpCutHealthFresh, readHvpBodyHoldForCommand, readHvpCutMarkers, summarizeHvpCuts,
-  type HvpCutRawEntry, type HvpCutSample} from "./hvpCutRtReport";
+import {createHvpCutRtEvidenceDirectory, describeHvpCutRtFailure, inventoryHvpCutRtFiles, isHvpCutHealthFresh,
+  persistHvpCutRtReport, planHvpCutRtSeries, readHvpBodyHoldForCommand, readHvpCutMarkers, summarizeHvpCuts, writeHvpCutRtArtifact,
+  summarizeHvpCutRtSessions, type HvpCutRawEntry, type HvpCutSample, type HvpCutRtAttemptRecord, type HvpCutRtVariant,
+  type HvpCutRtFailureStage} from "./hvpCutRtReport";
 
-const variants = [
-  {id: "quarry-box", scenario: "quarry", mode: 2, motion: "static"},
-  {id: "quarry-sphere", scenario: "quarry", mode: 3, motion: "static"},
-  {id: "rock-arm", scenario: "rock-arm", mode: 2, motion: "static"},
-  {id: "body-box-moving", scenario: "body-box", mode: 2, motion: "moving"},
-  {id: "body-box-sleeping", scenario: "body-box", mode: 2, motion: "sleeping"},
-  {id: "body-sphere-moving", scenario: "body-sphere", mode: 3, motion: "moving"},
-  {id: "body-sphere-sleeping", scenario: "body-sphere", mode: 3, motion: "sleeping"}
-] as const;
-type Variant = (typeof variants)[number];
+type Variant = HvpCutRtVariant;
 type ToolState = ReturnType<ReturnType<typeof createHvpPlasmaTool>["read"]>;
 type Snapshot = {
   origin: number; now: number; root: number; digest: string; physics: HvpPhysicsSnapshot; clock: HvpPhysicsClock | null;
@@ -34,21 +28,20 @@ type Raw = {entries: HvpCutRawEntry[]; dropped: number};
 type CutResult = {sample: HvpCutSample | null; before: Snapshot | null; after: Snapshot | null;
   raw: Raw; problems: string[]; phase: string; commandId: string | null};
 const baseUrl = "http://127.0.0.1:5173";
-const sha = (value: string | Uint8Array) => createHash("sha256").update(value).digest("hex");
-const shell = (command: string) => execFileSync("powershell.exe", ["-NoProfile", "-NonInteractive", "-Command", command],
-  {encoding: "utf8", timeout: 20_000, windowsHide: true}).trim();
-const power = () => shell("powercfg /getactivescheme");
-const powerSource = () => shell("Get-CimInstance -Namespace root/wmi -ClassName BatteryStatus | Select-Object PowerOnline,Charging,Discharging | ConvertTo-Json -Compress");
-const inventory = async (root: string): Promise<{path: string; sha256: string}[]> => {
-  const files: {path: string; sha256: string}[] = [];
-  for (const entry of await readdir(root, {withFileTypes: true})) {
-    const file = path.join(root, entry.name);
-    if (entry.isSymbolicLink()) { throw new Error("Measurement source/build symlink is not supported"); }
-    if (entry.isDirectory()) { files.push(...await inventory(file)); }
-    else if (entry.isFile()) { files.push({path: file.replaceAll("\\", "/"), sha256: sha(await readFile(file))}); }
-  }
-  return files.sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0);
+const app = fileURLToPath(new URL("../..", import.meta.url));
+const pwsh = "C:/IFI_SourceCode/Utils/PowerShell/pwsh.exe";
+const git = "C:/IFI_SourceCode/Utils/opencode-migration/runtime/git/cmd/git.exe";
+const powercfg = "C:/IFI_SourceCode/Utils/opencode-migration/tmp/opencode/hestia-parallel-coordination-20261002/P06-reference-active-plan-powercfg-readonly-20261004-r01/tools/powercfg.exe";
+const underSourceCode = (file: string) => {
+  const relative = path.relative("C:/IFI_SourceCode", file);
+  return path.isAbsolute(file) && relative !== ".." && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative);
 };
+const sha = (value: string | Uint8Array) => createHash("sha256").update(value).digest("hex");
+const shell = (command: string) => execFileSync(pwsh, ["-NoProfile", "-NonInteractive", "-Command", command],
+  {cwd: app, encoding: "utf8", timeout: 20_000, windowsHide: true}).trim();
+const power = () => execFileSync(powercfg, ["/getactivescheme"],
+  {cwd: app, encoding: "utf8", timeout: 20_000, windowsHide: true}).trim();
+const powerSource = () => shell("Get-CimInstance -Namespace root/wmi -ClassName BatteryStatus | Select-Object PowerOnline,Charging,Discharging | ConvertTo-Json -Compress");
 const read = (page: Page): Promise<Snapshot> => page.evaluate(() => ({
   origin: performance.timeOrigin, now: performance.now(), root: Number(document.body.dataset.hestiaPrototypeTerrainGeneration),
   digest: document.body.dataset.hestiaPrototypeSourceDigest!, physics: JSON.parse(document.body.dataset.hestiaPrototypePhysics!),
@@ -284,7 +277,7 @@ const cut = async (page: Page, variant: Variant, temperature: HvpCutSample["temp
     verifyCut(variant, result.before, result.after, markers.renderBinding);
     result.phase = "complete";
   } catch (error) {
-    result.problems.push(String(error));
+    result.problems.push(describeHvpCutRtFailure("cut", error));
     try {
       result.after = await read(page); const batch = await drain(page);
       result.raw.entries.push(...batch.entries); result.raw.dropped += batch.dropped;
@@ -313,53 +306,74 @@ const processInfo = async (browser: Browser) => {
   } finally { await cdp.detach(); }
 };
 
-const classification = process.env.WELTRAUM_HVP_CUT_RT_CLASS ?? "diagnostic";
-if (classification !== "diagnostic" && classification !== "measurement") { throw new Error("Unknown cut series classification"); }
-const schedule = classification === "measurement" ? [34, 33, 33] : [1];
-for (const variant of variants) {
-  for (const temperature of ["cold", "warm"] as const) {
-    for (const [session, attempts] of schedule.entries()) {
-      test(`P07 ${variant.id} ${temperature} session ${session + 1}`, async ({playwright}, testInfo) => {
+const series = planHvpCutRtSeries(process.env.WELTRAUM_HVP_CUT_RT_CLASS);
+for (const {variant, temperature, session, attempts} of series.sessions) {
+      test(`P07 ${variant.id} ${temperature} session ${session}`, async ({playwright}, testInfo) => {
         test.setTimeout(30 * 60_000);
         const root = process.env.WELTRAUM_HVP_MEASURE_DIR, executable = process.env.WELTRAUM_PLAYWRIGHT_EXECUTABLE_PATH;
-        if (!root || !path.isAbsolute(root) || !executable || !(await stat(executable)).isFile()) { throw new Error("Explicit evidence directory and installed browser required"); }
-        const configFile = testInfo.config.configFile;
-        if (!configFile) { throw new Error("Actual measurement configuration path is required"); }
-        const directory = path.join(root, `${variant.id}-${temperature}-${session + 1}`);
-        await mkdir(directory, {recursive: true}); if ((await readdir(directory)).length !== 0) { throw new Error("Refusing to mix or overwrite a previous series"); }
-        const source = await inventory("src"), build = await inventory("dist");
-        const fixture = await Promise.all(["tests/performance/hvp-cut-rt.spec.ts", "tests/performance/hvpCutRtReport.ts", "tests/e2e/hvp-performance-evidence.ts", "playwright.performance.config.ts", configFile]
-          .map(async file => ({path: file, sha256: sha(await readFile(file))})));
-        const scheme = power(), supply = powerSource();
-        if (!scheme.includes("381b4222-f694-41f0-9685-ff5bb260df2e")) { throw new Error("Reference device is not in its designated Balanced scheme"); }
-        const plan = {classification, variant, temperature, session: session + 1, schedule, attempts,
+        const plan = {classification: series.classification, doNotUseForAcceptance: series.doNotUseForAcceptance,
+          variant, temperature, session, schedule: series.schedule, attempts,
           fixturePolicy: "Authentic normal-UI checkpoint; new document/workers each attempt. Warm: one unmeasured cut then normal hot restore. Moving: actual contact impulse, not a falling-body substitute.",
           timeoutMs: 30_000, width: 1280, height: 720, dpr: 1, trace: false, screenshots: false, video: false,
-          head: execFileSync("git", ["rev-parse", "HEAD"], {encoding: "utf8"}).trim(), dirty: execFileSync("git", ["status", "--porcelain"], {encoding: "utf8"}).trim(),
-          source, build, fixture, sourceSha256: sha(JSON.stringify(source)), buildSha256: sha(JSON.stringify(build)),
-          lockSha256: sha(await readFile("package-lock.json")), wasmSha256: sha(await readFile("node_modules/@dimforge/rapier3d-compat/rapier_wasm3d_bg.wasm")),
-          browserSha256: sha(await readFile(executable)), os: `${os.type()} ${os.release()} ${os.arch()}`, cpu: os.cpus()[0]?.model,
-          ramBytes: os.totalmem(), power: scheme, supply, adapters: JSON.parse(shell("Get-CimInstance Win32_VideoController | Select-Object Name,DriverVersion,CurrentRefreshRate,CurrentHorizontalResolution | ConvertTo-Json -Compress"))};
-        await writeFile(path.join(directory, "plan.json"), JSON.stringify(plan, null, 2));
-        const records = Array.from({length: attempts}, (_, index) => ({attempt: index + 1, status: "not-run", result: null as CutResult | null,
+          bindings: null as {sourceSha256: string; buildSha256: string; [key: string]: unknown} | null};
+        const records = Array.from({length: attempts}, (_, index) => ({attempt: index + 1, status: "not-run" as HvpCutRtAttemptRecord["status"], result: null as CutResult | null,
           warmup: null as CutResult | null, problems: [] as string[]}));
         let browser: Browser | undefined, failure: string | undefined;
+        const secondaryFailures: string[] = [];
+        let stage: HvpCutRtFailureStage = "preflight";
+        let directory: string | undefined;
         try {
+          if (!underSourceCode(app) || !underSourceCode(process.execPath) || !root || !underSourceCode(root)) {
+            throw new Error("Explicit C:/IFI_SourceCode execution and evidence directory required");
+          }
+          directory = await createHvpCutRtEvidenceDirectory(root, app, `${variant.id}-${temperature}-${session}`);
+          stage = "artifact";
+          await writeHvpCutRtArtifact(directory, app, "declared-plan.json", plan);
+          stage = "preflight";
+          if (!executable || !underSourceCode(executable) || !underSourceCode(await realpath(executable)) || !(await stat(executable)).isFile()) {
+            throw new Error("Explicit installed C:/IFI_SourceCode browser required");
+          }
+          const configFile = testInfo.config.configFile;
+          if (!configFile) { throw new Error("Actual measurement configuration path is required"); }
+          const source = await inventoryHvpCutRtFiles(path.join(app, "src"), app), build = await inventoryHvpCutRtFiles(path.join(app, "dist"), app);
+          const fixture = await Promise.all(["tests/performance/hvp-cut-rt.spec.ts", "tests/performance/hvpCutRtReport.ts", "tests/e2e/hvp-performance-evidence.ts", "playwright.performance.config.ts", configFile]
+            .map(async file => ({path: path.relative(app, path.resolve(app, file)).replaceAll("\\", "/"), sha256: sha(await readFile(path.resolve(app, file)))})));
+          const tools = await Promise.all([process.execPath, pwsh, git, powercfg].map(async file => ({path: file, sha256: sha(await readFile(file))})));
+          const scheme = power(), supply = powerSource();
+          plan.bindings = {
+            head: execFileSync(git, ["rev-parse", "HEAD"], {cwd: app, encoding: "utf8", timeout: 20_000}).trim(),
+            dirty: execFileSync(git, ["status", "--porcelain"], {cwd: app, encoding: "utf8", timeout: 20_000}).trim(),
+            source, build, fixture, tools, sourceSha256: sha(JSON.stringify(source)), buildSha256: sha(JSON.stringify(build)),
+            lockSha256: sha(await readFile(path.join(app, "package-lock.json"))),
+            wasmSha256: sha(await readFile(path.join(app, "node_modules/@dimforge/rapier3d-compat/rapier_wasm3d_bg.wasm"))),
+            browserSha256: sha(await readFile(executable)), os: `${os.type()} ${os.release()} ${os.arch()}`, cpu: os.cpus()[0]?.model,
+            ramBytes: os.totalmem(), power: scheme, supply,
+            adapters: JSON.parse(shell("Get-CimInstance Win32_VideoController | Select-Object Name,DriverVersion,CurrentRefreshRate,CurrentHorizontalResolution | ConvertTo-Json -Compress"))};
+          if (!scheme.includes("381b4222-f694-41f0-9685-ff5bb260df2e")) { throw new Error("Reference device is not in its designated Balanced scheme"); }
+          stage = "artifact";
+          await writeHvpCutRtArtifact(directory, app, "plan.json", plan);
+          stage = "browser-launch";
           browser = await playwright.chromium.launch({executablePath: executable, headless: false, args: ["--force-device-scale-factor=1"]});
+          stage = "attempt";
           const identity = await processInfo(browser), context = await browser.newContext({viewport: {width: 1280, height: 720}, deviceScaleFactor: 1});
-          await writeFile(path.join(directory, "process.json"), JSON.stringify({version: browser.version(), ...identity}, null, 2));
+          stage = "artifact";
+          await writeHvpCutRtArtifact(directory, app, "process.json", {version: browser.version(), ...identity});
+          stage = "attempt";
           const setup = await context.newPage(); const saved = await makeCheckpoint(setup, variant);
           const frozenProfile = await profile(setup);
           expect(frozenProfile).toMatchObject({width: 1280, height: 720, dpr: 1, bufferWidth: 1280, bufferHeight: 720, visible: "visible", focused: true});
           const devices = identity.gpu.gpu.devices.filter(device => device.deviceString.length > 0 && frozenProfile.gpu.includes(device.deviceString));
           if (devices.length !== 1 || !devices[0]!.driverVersion) { throw new Error(`Actual WebGL GPU/driver binding is ambiguous: ${frozenProfile.gpu}`); }
-          await writeFile(path.join(directory, "fixture.json"), JSON.stringify({saved, selected: frozenProfile, device: devices[0]}, null, 2)); await setup.close();
+          stage = "artifact";
+          await writeHvpCutRtArtifact(directory, app, "fixture.json", {saved, selected: frozenProfile, device: devices[0]}); await setup.close();
           for (const record of records) {
-            const page = await context.newPage(); const errors: string[] = [];
-            page.on("pageerror", error => errors.push(error.message));
-            page.on("console", message => { if (message.type() === "error") { errors.push(message.text()); } });
+            stage = "attempt";
+            let page: Page | undefined; const errors: string[] = [];
             record.status = "preparing";
             try {
+              page = await context.newPage();
+              page.on("pageerror", error => errors.push(describeHvpCutRtFailure("page-error", error)));
+              page.on("console", message => { if (message.type() === "error") { errors.push(describeHvpCutRtFailure("console-error", undefined)); } });
               await installCollector(page); await ready(page, "/?hestiaPrototype=1&hvpLoad=primary&hvpMeasure=1");
               expect(sourceFacts(await read(page))).toEqual(saved); expect(await profile(page)).toEqual(frozenProfile);
               expect(power()).toBe(scheme); expect(powerSource()).toBe(supply);
@@ -367,34 +381,50 @@ for (const variant of variants) {
                 record.warmup = await cut(page, variant, temperature);
                 expect(record.warmup.problems).toEqual([]);
                 await inspect(page); await page.getByRole("button", {name: "Spielstand laden", exact: true}).click();
-                await expect.poll(async () => (await read(page)).save.state, {timeout: 30_000}).toBe("Loaded");
+                await expect.poll(async () => (await read(page!)).save.state, {timeout: 30_000}).toBe("Loaded");
                 expect(sourceFacts(await read(page))).toEqual(saved);
               }
               record.result = await cut(page, variant, temperature);
               record.problems.push(...record.result.problems, ...errors);
               expect(await profile(page)).toEqual(frozenProfile); expect(power()).toBe(scheme); expect(powerSource()).toBe(supply);
               record.status = record.problems.length ? "failed" : "completed";
-            } catch (error) { record.status = "failed"; record.problems.push(String(error), ...errors); }
+            } catch (error) { record.status = "failed"; record.problems.push(describeHvpCutRtFailure("attempt", error), ...errors); }
             finally {
-              try { await page.close(); } catch (error) { record.status = "failed"; record.problems.push(`Owned page cleanup: ${String(error)}`); }
+              try { await page?.close(); } catch (error) { record.status = "failed"; record.problems.push(describeHvpCutRtFailure("page-cleanup", error)); }
             }
-            await writeFile(path.join(directory, `attempt-${record.attempt}.json`), JSON.stringify(record, null, 2));
-            console.log(`P07 ${variant.id}/${temperature}/${session + 1}/${record.attempt}: ${record.status}`);
+            stage = "artifact";
+            await writeHvpCutRtArtifact(directory, app, `attempt-${record.attempt}.json`, record);
+            console.log(`P07 ${variant.id}/${temperature}/${session}/${record.attempt}: ${record.status}`);
           }
-        } catch (error) { failure = String(error); }
+        } catch (error) { failure = describeHvpCutRtFailure(stage, error); }
         finally {
-          try { await browser?.close(); } catch (error) { failure = `${failure ?? ""}; owned browser cleanup: ${String(error)}`; }
+          try { await browser?.close(); } catch (error) {
+            const problem = describeHvpCutRtFailure("browser-cleanup", error);
+            if (failure === undefined) { failure = problem; } else { secondaryFailures.push(problem); }
+          }
         }
         const samples = records.flatMap(record => record.result?.sample ? [record.result.sample] : []);
-        const report = {planSha256: sha(JSON.stringify(plan)), failure, plannedAttempts: attempts, records,
-          summary: summarizeHvpCuts(samples), sourceUnchanged: sha(JSON.stringify(await inventory("src"))) === plan.sourceSha256,
-          buildUnchanged: sha(JSON.stringify(await inventory("dist"))) === plan.buildSha256,
+        let sourceUnchanged: boolean | null = null, buildUnchanged: boolean | null = null;
+        if (plan.bindings) {
+          try {
+            sourceUnchanged = sha(JSON.stringify(await inventoryHvpCutRtFiles(path.join(app, "src"), app))) === plan.bindings.sourceSha256;
+            buildUnchanged = sha(JSON.stringify(await inventoryHvpCutRtFiles(path.join(app, "dist"), app))) === plan.bindings.buildSha256;
+          } catch (error) {
+            const problem = describeHvpCutRtFailure("final-inventory", error);
+            if (failure === undefined) { failure = problem; } else { secondaryFailures.push(problem); }
+          }
+        }
+        const report = {plan, planSha256: sha(JSON.stringify(plan)), failure: failure ?? null, secondaryFailures,
+          artifactFailures: [] as string[], plannedAttempts: attempts, records,
+          classification: series.classification, doNotUseForAcceptance: series.doNotUseForAcceptance,
+          summary: summarizeHvpCuts(samples), sourceUnchanged, buildUnchanged,
+          populationSummary: summarizeHvpCutRtSessions(series, [{variantId: variant.id, temperature, session, failure: failure ?? null, records}]),
+          populationCoverage: "ONE_SESSION: other declared sessions remain missing, not successful",
           performanceAcceptance: "NOT_ASSESSED: aggregate the complete predeclared multi-session population, including every failed/precondition attempt"};
-        await writeFile(path.join(directory, "report.json"), JSON.stringify(report, null, 2));
+        await persistHvpCutRtReport(directory, app, report, body => testInfo.attach("cut-session-report", {body, contentType: "application/json"}));
+        expect(report.artifactFailures).toEqual([]);
         expect(failure, JSON.stringify(report.summary)).toBeUndefined();
         expect(records.every(record => record.status === "completed"), JSON.stringify(records.map(record => ({attempt: record.attempt, status: record.status, problems: record.problems})))).toBe(true);
         expect(report.sourceUnchanged && report.buildUnchanged).toBe(true);
       });
-    }
-  }
 }

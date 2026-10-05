@@ -16,7 +16,7 @@ import { compareCanonicalCodeUnits, fail, requireCanonicalString, requirePlainRe
  * own enumerable data property (one unit each, before any child, like the public dense check), and
  * records plain with at most OWNED_RECORD_MAX_KEYS keys (a record's own-key read/sort is one unit).
  *
- * One unit is one of: a container open (record key read/sort), one array index check, one scalar,
+ * One unit is one of: a container open (record key read/sort), one array integrity/index check, one scalar,
  * one string/key chunk of at most STRING_CHUNK_UNITS code units, one record key. A unit may also
  * encode at most PENDING_UNITS code units per encode and fold at most BUFFER_BYTES bytes per fold, with
  * at most two folds in a unit (the final unit: pending-encode flush plus last flush) before it builds
@@ -133,15 +133,31 @@ function* emitArray(emitter: Emitter, value: unknown[], path: string): Generator
   if (emitter.ancestors.has(value)) {
     fail("InvalidCanonicalValue", path, "Cycles are not canonical.");
   }
-  requireOwnedFrozen(value, path);
+  // The producer guarantees index-only, non-Proxy arrays. Complete the frozen flag pass before
+  // prototype/density/children, preserving native isFrozen precedence without a bulk integrity call.
+  if (Object.isExtensible(value)) {
+    fail("InvalidCanonicalValue", path, "Owned canonical containers must be frozen.");
+  }
+  const lengthDescriptor = Object.getOwnPropertyDescriptor(value, "length");
+  if (lengthDescriptor?.configurable || lengthDescriptor?.writable) {
+    fail("InvalidCanonicalValue", path, "Owned canonical containers must be frozen.");
+  }
+  const length = lengthDescriptor?.value as number;
+  yield;
+  for (let index = 0; index < length; index += 1) {
+    const descriptor = Object.getOwnPropertyDescriptor(value, String(index));
+    // A missing index is not a mutable property: sealed sparse arrays can still be frozen.
+    if (descriptor !== undefined && (descriptor.configurable || ("value" in descriptor && descriptor.writable))) {
+      fail("InvalidCanonicalValue", path, "Owned canonical containers must be frozen.");
+    }
+    yield;
+  }
   if (Object.getPrototypeOf(value) !== Array.prototype) {
     fail("InvalidCanonicalValue", path, "Owned canonical arrays must be plain arrays.");
   }
-  const lengthDescriptor = Object.getOwnPropertyDescriptor(value, "length");
   if (lengthDescriptor === undefined || !("value" in lengthDescriptor) || !Number.isSafeInteger(lengthDescriptor.value)) {
     fail("InvalidCanonicalValue", path, "Array length must be a safe data property.");
   }
-  const length = lengthDescriptor!.value as number;
   yield;
   // Every entry is checked before any child, like the public dense-array check: a present
   // non-enumerable/accessor entry anywhere wins over an earlier hole, then the first hole is reported.

@@ -117,8 +117,23 @@ export const requireDenseDataPropertyArray = (
   path: string,
   errorCode: AdaptiveAuthorityErrorCode,
   options: DenseDataPropertyArrayOptions = {}
-): readonly unknown[] => {
-  if (!Array.isArray(value)) return fail(errorCode, path, "Expected an array.");
+): readonly unknown[] => adaptiveDrainSteps(adaptiveDenseArraySteps(value, path, errorCode, options));
+
+/** Internal borrowed accounting only; no runtime dependency on a higher-layer owner. */
+export type AdaptiveOwnedReserve = (bytes: number, retained?: boolean, kind?: "hash") => void;
+
+export const adaptiveDrainSteps = <T>(steps: Generator<void, T, void>): T => {
+  for (;;) {
+    const step = steps.next();
+    if (step.done) { return step.value; }
+  }
+};
+
+/** Owned inputs are first-party plain/index-only arrays held immutable by their producer. */
+export function* adaptiveDenseArraySteps(value: unknown, path: string, errorCode: AdaptiveAuthorityErrorCode,
+  options: DenseDataPropertyArrayOptions = {}, reserve?: AdaptiveOwnedReserve): Generator<void, unknown[], void> {
+  reserve?.(1_024);
+  if (!Array.isArray(value)) { return fail(errorCode, path, "Expected an array."); }
   const lengthDescriptor = Object.getOwnPropertyDescriptor(value, "length");
   if (lengthDescriptor === undefined || !("value" in lengthDescriptor) || !Number.isSafeInteger(lengthDescriptor.value)) {
     return fail(errorCode, path, "Array length must be a safe data property.");
@@ -131,31 +146,96 @@ export const requireDenseDataPropertyArray = (
     return fail(errorCode, path, `Array length ${length} exceeds the finite limit ${options.maximumLength}.`);
   }
 
-  for (const key of Reflect.ownKeys(value)) {
-    if (key === "length") continue;
-    if (typeof key !== "string" || !/^(0|[1-9]\d*)$/.test(key)) {
-      return fail(errorCode, path, "Arrays may contain only indexed entries and length.");
+  if (reserve === undefined) {
+    for (const key of Reflect.ownKeys(value)) {
+      if (key === "length") { continue; }
+      if (typeof key !== "string" || !/^(0|[1-9]\d*)$/.test(key)) {
+        return fail(errorCode, path, "Arrays may contain only indexed entries and length.");
+      }
+      const index = Number(key);
+      if (!Number.isSafeInteger(index) || index < 0 || index >= length || String(index) !== key) {
+        return fail(errorCode, path, "Array index is outside the declared dense length.");
+      }
+      const descriptor = Object.getOwnPropertyDescriptor(value, key);
+      if (descriptor === undefined || !descriptor.enumerable || !("value" in descriptor)) {
+        return fail(errorCode, `${path}/${key}`, "Array entries must be enumerable data properties.");
+      }
     }
-    const index = Number(key);
-    if (!Number.isSafeInteger(index) || index < 0 || index >= length || String(index) !== key) {
-      return fail(errorCode, path, "Array index is outside the declared dense length.");
-    }
-    const descriptor = Object.getOwnPropertyDescriptor(value, key);
-    if (descriptor === undefined || !descriptor.enumerable || !("value" in descriptor)) {
-      return fail(errorCode, `${path}/${key}`, "Array entries must be enumerable data properties.");
+  } else {
+    // The supported producer excludes named/symbol keys and Proxies. Preserve the original
+    // descriptor-before-hole precedence without a whole own-key read over a large array.
+    for (let index = 0; index < length; index += 1) {
+      const descriptor = Object.getOwnPropertyDescriptor(value, String(index));
+      if (descriptor !== undefined && (!descriptor.enumerable || !("value" in descriptor))) {
+        return fail(errorCode, `${path}/${index}`, "Array entries must be enumerable data properties.");
+      }
+      yield;
     }
   }
+  reserve?.(64 + length * 128);
   const copy = new Array<unknown>(length);
+  if (reserve !== undefined) { yield; }
   for (let index = 0; index < length; index += 1) {
     const descriptor = Object.getOwnPropertyDescriptor(value, String(index));
-    if (descriptor === undefined) return fail(errorCode, `${path}/${index}`, "Sparse arrays are rejected.");
+    if (descriptor === undefined) { return fail(errorCode, `${path}/${index}`, "Sparse arrays are rejected."); }
     if (!descriptor.enumerable || !("value" in descriptor)) {
       return fail(errorCode, `${path}/${index}`, "Array entries must be enumerable data properties.");
     }
     copy[index] = descriptor.value;
+    if (reserve !== undefined) { yield; }
   }
   return copy;
-};
+}
+
+/** Same native generic map and sort; owner loops consume only private produced arrays. */
+export function* adaptiveMapSteps<T, R>(values: readonly T[], project: (value: T, index: number) => R,
+  reserve?: AdaptiveOwnedReserve): Generator<void, R[], void> {
+  if (reserve === undefined) { return values.map(project); }
+  reserve(64 + values.length * 128);
+  const result: R[] = [];
+  for (let index = 0; index < values.length; index += 1) {
+    result.push(project(values[index], index));
+    yield;
+  }
+  return result;
+}
+
+export function* adaptiveSortSteps<T>(values: T[], compare: (left: T, right: T) => number,
+  reserve?: AdaptiveOwnedReserve): Generator<void, T[], void> {
+  if (reserve === undefined) { return values.sort(compare); }
+  reserve(64 + values.length * 16);
+  let source = values, target = new Array<T>(values.length);
+  yield;
+  for (let width = 1; width < values.length; width *= 2) {
+    for (let start = 0; start < values.length; start += width * 2) {
+      const middle = Math.min(start + width, values.length), end = Math.min(start + width * 2, values.length);
+      let left = start, right = middle;
+      for (let output = start; output < end; output += 1) {
+        target[output] = right >= end || (left < middle && compare(source[left], source[right]) <= 0)
+          ? source[left++] : source[right++];
+        yield;
+      }
+    }
+    const swap = source; source = target; target = swap;
+  }
+  if (source !== values) {
+    for (let index = 0; index < values.length; index += 1) { values[index] = source[index]; yield; }
+  }
+  return values;
+}
+
+export function* adaptiveFreezeArraySteps<T>(values: T[], reserve?: AdaptiveOwnedReserve): Generator<void, readonly T[], void> {
+  if (reserve === undefined) { return deepFreeze(values); }
+  reserve(512);
+  Object.preventExtensions(values);
+  yield;
+  for (let index = 0; index < values.length; index += 1) {
+    Object.defineProperty(values, String(index), { writable: false, configurable: false });
+    yield;
+  }
+  Object.defineProperty(values, "length", { writable: false });
+  return values;
+}
 
 export const stableAuthorityId = (value: string, path = "id"): StableAuthorityId => {
   if (typeof value !== "string" || value.length === 0 || value.trim() !== value || value.length > 256) {
@@ -209,11 +289,54 @@ export const deepFreeze = <T>(value: T, seen = new WeakSet<object>()): T => {
   return Object.freeze(value);
 };
 
-export const isDeepFrozen = (value: unknown, seen = new WeakSet<object>()): boolean => {
-  if (typeof value !== "object" || value === null || seen.has(value)) return true;
-  if (!Object.isFrozen(value)) return false;
+export const isDeepFrozen = (value: unknown, seen = new WeakSet<object>()): boolean =>
+  adaptiveDrainSteps(adaptiveIsDeepFrozenSteps(value, seen));
+
+/** Internal original predicate, not provenance. Owned arrays are first-party/index-only and
+ * fixed records have <=32 own keys, held immutable for the entire recursive generator lifetime. */
+export function* adaptiveIsDeepFrozenSteps(value: unknown, seenValue?: WeakSet<object>,
+  reserve?: AdaptiveOwnedReserve): Generator<void, boolean, void> {
+  reserve?.(512);
+  const seen = seenValue === undefined ? new WeakSet<object>() : seenValue;
+  if (typeof value !== "object" || value === null || seen.has(value)) { return true; }
+  if (reserve === undefined) {
+    if (!Object.isFrozen(value)) { return false; }
+    seen.add(value);
+    return Object.values(Object.getOwnPropertyDescriptors(value)).every(
+      descriptor => !("value" in descriptor) || adaptiveDrainSteps(adaptiveIsDeepFrozenSteps(descriptor.value, seen))
+    );
+  }
+  // Same frozen-before-seen and complete flag pass before descendant recursion. No whole-array
+  // Object.isFrozen/getOwnPropertyDescriptors/Object.values work is hidden in a cursor unit.
+  if (Object.isExtensible(value)) { return false; }
+  reserve(4_160);
+  const array = Array.isArray(value);
+  const lengthDescriptor = array ? Object.getOwnPropertyDescriptor(value, "length") : undefined;
+  const keys = array ? undefined : Reflect.ownKeys(value);
+  if (keys !== undefined && keys.length > 32) {
+    return fail("InvalidCanonicalValue", "frozen", "Owned frozen records require a bounded first-party shape.");
+  }
+  const length = array ? lengthDescriptor?.value as number : keys!.length;
+  if (array && (lengthDescriptor === undefined || lengthDescriptor.configurable || lengthDescriptor.writable)) { return false; }
+  yield;
+  for (let index = 0; index < length; index += 1) {
+    const key = array ? String(index) : keys![index];
+    const descriptor = Object.getOwnPropertyDescriptor(value, key);
+    if (descriptor !== undefined && (descriptor.configurable || ("value" in descriptor && descriptor.writable))) { return false; }
+    yield;
+  }
   seen.add(value);
-  return Object.values(Object.getOwnPropertyDescriptors(value)).every(
-    (descriptor) => !("value" in descriptor) || isDeepFrozen(descriptor.value, seen)
-  );
-};
+  yield;
+  for (let index = 0; index < length; index += 1) {
+    const key = array ? String(index) : keys![index];
+    // Object.values of the descriptor map deliberately excludes Symbol keys, including their
+    // mutable values. Accessor descriptors never cause their getters to be invoked.
+    if (typeof key === "string") {
+      const descriptor = Object.getOwnPropertyDescriptor(value, key);
+      if (descriptor !== undefined && "value" in descriptor
+        && !(yield* adaptiveIsDeepFrozenSteps(descriptor.value, seen, reserve))) { return false; }
+    }
+    yield;
+  }
+  return true;
+}

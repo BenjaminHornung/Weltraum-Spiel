@@ -5,11 +5,11 @@ import { HVP_COLLISION_JOB, HVP_COLLISION_ALGORITHM, HVP_COLLISION_MAX_OUTPUT, d
 import { collisionInputs, type HvpCollisionSector, type HvpCollisionSource } from "./terrainColliders";
 import { resolveHvpGravity } from "./profile";
 import type { HvpPhysicsRequest, HvpPhysicsReply, HvpPhysicsSnapshot, HvpPhysicsClock } from "./physicsWorker";
-import {HVP_PHYSICS_PROTOCOL} from "./physicsProtocol";
+import {HVP_PHYSICS_PROTOCOL,hvpBodyProjectionBinding,readHvpBodyProjectionReply,type HvpBodyProjectionRequest} from "./physicsProtocol";
 import type { HvpCollisionCoverage, HvpPlayerInput } from "../player/locomotion";
 import type { HvpBranchRequest } from "./branchSession";
 import type {HvpTerrainFragmentRequest} from "./terrainFragment";
-import type {HvpMovingCutRequest,HvpMovingCutPreparation,HvpBodyCutAdmission} from "./bodyCutSession";
+import type {HvpMovingCutRequest,HvpMovingCutPreparation,HvpBodyCutAdmission,HvpBodyChildProjection} from "./bodyCutSession";
 import type {HvpWorldCheckpoint} from "../persistence/worldCheckpoint";
 import {validateHvpNeighborCheckpoint,type HvpNeighborCheckpoint} from "../runtime/residency";
 
@@ -33,6 +33,8 @@ export interface HvpPhysicsClient {
   rollbackBranch(id:string):Promise<void>;
   finalizeBranch(id:string):Promise<void>;
   beginBodyCut(request:HvpMovingCutRequest):Promise<HvpMovingCutPreparation>;
+  /** Private source bridge; returned data is not a native/geometry admission receipt. */
+  prepareBodyChildProjection(id:string):Promise<HvpBodyChildProjection>;
   stageBodyCut(id:string,products:HvpBodyCutAdmission):Promise<void>;
   commitBodyCut(id:string):Promise<void>;
   publishBodyCut():void;
@@ -154,6 +156,7 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
   let busy = false;
   let mutating = false;
   let bodyPending=false;
+  let bodyProjectionTicket:{binding:HvpBodyProjectionRequest;beginSequence:number}|undefined;
   let neighborPending:{id:string;next:HvpNeighborCheckpoint}|undefined;
   let restorePhase:string|undefined;
   let heldSnapshot: {id:number;sequence:number;value:HvpPhysicsSnapshot}|undefined;
@@ -165,6 +168,7 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
   const terminate=()=>{if(!terminated){worker.terminate();terminated=true;}worker.onmessage=null;worker.onerror=null;worker.onmessageerror=null;};
   const fail = (error: Error): void => {
     failure = error;
+    bodyProjectionTicket=undefined;
     for (const p of pending.values()) { clearTimeout(p.timeout); p.reject(error); }
     pending.clear(); terminate();
   };
@@ -205,13 +209,22 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
     if (failure !== undefined || disposed) { reject(failure ?? new Error("Physics disposed")); return; }
     if (pending.size >= 8) { reject(new Error("Physics command backpressure")); return; }
     const id = nextId++;
-    const ownsState=message.kind!=="Read"&&message.kind!=="Pause"&&message.kind!=="Inspect";
+    const ownsState=message.kind!=="Read"&&message.kind!=="Pause"&&message.kind!=="Inspect"&&message.kind!=="PrepareBodyChildProjection";
     if(!publish&&ownsState){publishRequestFloor=Math.max(publishRequestFloor,id);}
     const timeout = setTimeout(() => fail(new Error("Physics worker response deadline exceeded")), 20_000);
     pending.set(id, { resolve, reject, timeout, publish,ownsState,onReply });
     try { worker.postMessage({ ...message, id,protocol:HVP_PHYSICS_PROTOCOL,incarnation }, transfers); } catch (e) { fail(e instanceof Error ? e : new Error("Physics transfer failed")); }
   });
   const abort = (): void => fail(new Error("Physics loading cancelled"));
+  const requireBodyProjectionTicket=(ticket:typeof bodyProjectionTicket)=>{
+    if(failure!==undefined){throw failure;}
+    if(disposed||terminated){throw new Error("Physics disposed");}
+    if(ticket===undefined||bodyProjectionTicket!==ticket||!bodyPending||mutating
+      ||snapshot?.moving.state!=="Preparing"||snapshot.moving.pendingId!==ticket.binding.commandId){
+      throw new Error("Stale body projection ticket");
+    }
+    return ticket;
+  };
   signal.addEventListener("abort", abort, { once: true });
   try {
     await send({ kind: "Initialize", sectors, spawn, gravity: resolveHvpGravity(), inertiaSpawn,branchSpawn,checkpoint,branchKind,measure:onTimings!==undefined,
@@ -349,10 +362,25 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
       heldSnapshot=undefined;
       let preparation:HvpMovingCutPreparation|undefined;
       try{await send({kind:"BeginBodyCut",request:{id:request.id,ownerId:request.ownerId,sourceDigest:request.sourceDigest,edge:request.edge,
-         direction:{x:request.direction.x,y:request.direction.y,z:request.direction.z},...(request.brush==="Sphere"?{brush:"Sphere" as const}:{})}},[],true,reply=>{preparation=reply.bodyPreparation;});
+         direction:{x:request.direction.x,y:request.direction.y,z:request.direction.z},...(request.brush==="Sphere"?{brush:"Sphere" as const}:{})}},[],true,reply=>{
+           preparation=reply.bodyPreparation;
+           if(preparation!==undefined){bodyProjectionTicket={binding:hvpBodyProjectionBinding(preparation,reply.id),beginSequence:reply.sequence};}
+         });
         if(!preparation||preparation.payload.commandId!==request.id||preparation.payload.ownerId!==request.ownerId){throw new Error("Missing body preparation binding");}
         return preparation;
-      }catch(error){if(snapshot?.moving.pendingId===request.id){await send({kind:"RollbackBodyCut",transactionId:request.id});}bodyPending=false;throw error;}
+      }catch(error){bodyProjectionTicket=undefined;if(snapshot?.moving.pendingId===request.id){await send({kind:"RollbackBodyCut",transactionId:request.id});}bodyPending=false;throw error;}
+    },
+    async prepareBodyChildProjection(id){
+      const ticket=requireBodyProjectionTicket(bodyProjectionTicket);
+      if(ticket.binding.commandId!==id){throw new Error("Stale body projection ticket");}
+      let projection:HvpBodyChildProjection|undefined;
+      await send({kind:"PrepareBodyChildProjection",binding:ticket.binding},[],false,reply=>{
+        requireBodyProjectionTicket(ticket);
+        if(reply.sequence<=ticket.beginSequence){throw new Error("Stale body projection reply sequence");}
+        projection=readHvpBodyProjectionReply(reply.bodyChildProjection,ticket.binding);
+      });
+      requireBodyProjectionTicket(ticket);
+      return projection!;
     },
     async stageBodyCut(id,products){
       if(!bodyPending||mutating){throw new Error("No pending local body work");}
@@ -369,12 +397,13 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
     publishBodyCut(){if(!mutating||heldSnapshot?.value.moving.state!=="CommittedHeld"){throw new Error("Missing committed moving snapshot");}
       snapshot=heldSnapshot.value;lastSnapshotSequence=heldSnapshot.sequence;heldSnapshot=undefined;},
     async rollbackBodyCut(id){
+      if(bodyProjectionTicket?.binding.commandId===id){bodyProjectionTicket=undefined;}
       // Only this transaction's own Stage/Commit reply can fill the slot; it never moves publication backwards.
       if(heldSnapshot?.value.moving.state==="Idle"){snapshot=heldSnapshot.value;lastSnapshotSequence=heldSnapshot.sequence;}
       else{await send({kind:"RollbackBodyCut",transactionId:id});}
       heldSnapshot=undefined;mutating=false;bodyPending=false;
     },
-    async finalizeBodyCut(id){await send({kind:"FinalizeBodyCut",transactionId:id},[],false);
+    async finalizeBodyCut(id){if(bodyProjectionTicket?.binding.commandId===id){bodyProjectionTicket=undefined;}await send({kind:"FinalizeBodyCut",transactionId:id},[],false);
       if(heldSnapshot){snapshot=heldSnapshot.value;lastSnapshotSequence=heldSnapshot.sequence;}heldSnapshot=undefined;mutating=false;bodyPending=false;},
     async impulse(direction) {
       if(mutating||bodyPending) { throw new Error("Terrain Pending"); }

@@ -1,5 +1,10 @@
 import { fnv1a64Bytes } from "../../core/fnv1a64";
 import {
+  adaptiveDrainSteps,
+  adaptiveDenseArraySteps,
+  adaptiveMapSteps,
+  adaptiveSortSteps,
+  adaptiveFreezeArraySteps,
   adaptiveLevel,
   adaptivePlanningEpoch,
   authorityRevision,
@@ -15,8 +20,8 @@ import {
   stableAuthorityId
 } from "./validation";
 import { brickExtentQuantumForLevel, compareAdaptiveBrickKeys, quantumBoundsForKey, validateAdaptiveBrickKey, validateQuantumBounds } from "./coordinates";
-import { validateAdaptiveEditJournal } from "./edits";
-import { validateMaterializedAdaptiveBrick } from "./materialization";
+import { validateAdaptiveEditJournal, adaptiveValidateEditJournalSteps, type AdaptiveOwnedJournalOptions } from "./edits";
+import { validateMaterializedAdaptiveBrick, adaptiveValidateMaterializedBrickSteps } from "./materialization";
 import type {
   AdaptiveBaseFieldDescriptor,
   AdaptiveBaseFieldSample,
@@ -158,10 +163,18 @@ export const evaluateAdaptiveBaseFieldDescriptor = (
 };
 
 export const hashAdaptiveBaseFieldDescriptor = (value: AdaptiveBaseFieldDescriptor): string =>
-  hashAdaptiveCanonical({
+  adaptiveDrainSteps(adaptiveBaseFieldDescriptorHashSteps(value));
+
+/** Direct-module only: the SAME descriptor projection, with a borrowed full-payload hash. */
+export function* adaptiveBaseFieldDescriptorHashSteps(value: AdaptiveBaseFieldDescriptor,
+  owned?: AdaptiveOwnedJournalOptions): Generator<void, string, void> {
+  owned?.reserve(8_192);
+  const payload = {
     schemaVersion: ADAPTIVE_BASE_FIELD_DESCRIPTOR_DIGEST_SCHEMA_VERSION,
     descriptor: validateAdaptiveBaseFieldDescriptor(value)
-  });
+  };
+  return owned === undefined ? hashAdaptiveCanonical(payload) : yield* owned.hash(Object.freeze(payload));
+}
 
 export const serializeAdaptiveKey = (key: AdaptiveBrickKey): string => {
   return canonicalAdaptiveJson(validateAdaptiveBrickKey(key));
@@ -208,7 +221,14 @@ const copyCanonicalRecord = (value: unknown, path: string): Record<string, Adapt
  * Canonical, non-circular planner input projection. Validation proofs and every
  * proof-derived digest are deliberately omitted.
  */
-export const createAdaptivePlannerSnapshotProjection = (snapshot: AdaptivePlannerSnapshot) => {
+export const createAdaptivePlannerSnapshotProjection = (snapshot: AdaptivePlannerSnapshot) =>
+  adaptiveDrainSteps(adaptivePlannerSnapshotProjectionSteps(snapshot));
+
+/** Direct-module only. Fixed-schema first-party records and index-only arrays stay immutable for
+ * this generator lifetime; borrowed accounting/hash is NOT a provenance or publication shortcut. */
+export function* adaptivePlannerSnapshotProjectionSteps(snapshot: AdaptivePlannerSnapshot,
+  owned?: AdaptiveOwnedJournalOptions): Generator<void, AdaptiveSnapshotProjection, void> {
+  owned?.reserve(32_768);
   const record = requirePlainRecord(snapshot, "snapshot");
   requireExactKeys(record, ["schemaVersion", "bodyId", "surfaceFrameId", "regionId", "generatorVersion", "authority", "planningEpoch", "resident", "activeCoverage", "refinementRequests", "budgets"], "snapshot");
   if (record.schemaVersion !== "adaptive-microvoxel-planner-snapshot-v1") {
@@ -226,12 +246,16 @@ export const createAdaptivePlannerSnapshotProjection = (snapshot: AdaptivePlanne
     return fail("InvalidPlannerInput", "snapshot/authority/schemaVersion", "Unsupported planner authority schema.");
   }
   const baseField = validateAdaptiveBaseFieldDescriptor(authorityRecord.baseField as AdaptiveBaseFieldDescriptor);
-  const editJournal = validateAdaptiveEditJournal(authorityRecord.editJournal as AdaptiveEditJournal);
+  const editJournal = owned === undefined ? validateAdaptiveEditJournal(authorityRecord.editJournal as AdaptiveEditJournal)
+    : yield* adaptiveValidateEditJournalSteps(authorityRecord.editJournal as AdaptiveEditJournal, owned);
   const brickRevision = authorityRevision(authorityRecord.brickRevision as number);
-  const baseFieldDescriptorDigest = hashAdaptiveBaseFieldDescriptor(baseField);
+  const baseFieldDescriptorDigest = owned === undefined ? hashAdaptiveBaseFieldDescriptor(baseField)
+    : yield* adaptiveBaseFieldDescriptorHashSteps(baseField, owned);
 
   const readinessValues = new Set(["ready", "stale", "invalid", "incomplete", "cancelled"]);
-  const residents = requireDenseArray(record.resident, "snapshot/resident", ADAPTIVE_MAX_RESIDENT_SUMMARIES).map((value, index) => {
+  const residentValues = yield* plannerDenseArraySteps(record.resident, "snapshot/resident", ADAPTIVE_MAX_RESIDENT_SUMMARIES, owned);
+  const residents = yield* adaptiveSortSteps(yield* adaptiveMapSteps(residentValues, (value, index) => {
+    owned?.reserve(8_192, true);
     const path = `snapshot/resident/${index}`;
     const entry = requirePlainRecord(value, path);
     const hasProof = Object.hasOwn(entry, "validationProof");
@@ -259,24 +283,32 @@ export const createAdaptivePlannerSnapshotProjection = (snapshot: AdaptivePlanne
       editRevision: authorityRevision(entry.editRevision as number),
       brickRevision: authorityRevision(entry.brickRevision as number)
     });
-  }).sort((left, right) => compareAdaptiveBrickKeys(left.key, right.key));
+  }, owned?.reserve), (left, right) => compareAdaptiveBrickKeys(left.key, right.key), owned?.reserve);
   for (let index = 1; index < residents.length; index += 1) {
     if (canonicalAdaptiveJson(residents[index - 1].key) === canonicalAdaptiveJson(residents[index].key)) {
       return fail("InvalidPlannerInput", "snapshot/resident", "Duplicate resident keys are rejected.");
     }
+    if (owned !== undefined) { yield; }
   }
 
-  const activeCoverage = requireDenseArray(record.activeCoverage, "snapshot/activeCoverage", ADAPTIVE_MAX_ACTIVE_COVERAGE_ENTRIES).map((value, index) => {
+  const coverageValues = yield* plannerDenseArraySteps(record.activeCoverage, "snapshot/activeCoverage", ADAPTIVE_MAX_ACTIVE_COVERAGE_ENTRIES, owned);
+  const activeCoverage = yield* adaptiveSortSteps(yield* adaptiveMapSteps(coverageValues, (value, index) => {
+    owned?.reserve(8_192, true);
     const path = `snapshot/activeCoverage/${index}`;
     const entry = requirePlainRecord(value, path);
     requireExactKeys(entry, ["bounds", "key", "kind"], path);
-    if (entry.kind !== "selected" && entry.kind !== "fallback") return fail("InvalidPlannerInput", `${path}/kind`, "Unsupported coverage kind.");
+    if (entry.kind !== "selected" && entry.kind !== "fallback") { return fail("InvalidPlannerInput", `${path}/kind`, "Unsupported coverage kind."); }
     return deepFreeze({ bounds: validateQuantumBounds(entry.bounds, `${path}/bounds`), key: validateAdaptiveBrickKey(entry.key), kind: entry.kind });
-  }).sort((left, right) => compareCanonicalCodeUnits(canonicalAdaptiveJson(left), canonicalAdaptiveJson(right)));
+  }, owned?.reserve), (left, right) => compareCanonicalCodeUnits(canonicalAdaptiveJson(left), canonicalAdaptiveJson(right)), owned?.reserve);
 
-  const refinementRequests = requireDenseArray(record.refinementRequests, "snapshot/refinementRequests", ADAPTIVE_MAX_REFINEMENT_REQUESTS)
-    .map((value, index) => copyCanonicalRecord(value, `snapshot/refinementRequests/${index}`))
-    .sort((left, right) => compareCanonicalCodeUnits(canonicalAdaptiveJson(left), canonicalAdaptiveJson(right)));
+  const refinementValues = yield* plannerDenseArraySteps(record.refinementRequests, "snapshot/refinementRequests", ADAPTIVE_MAX_REFINEMENT_REQUESTS, owned);
+  // Owned refinement records are the controlled <=7-field schema with <=3-field nested shapes,
+  // bounded IDs and finite scalars. Reuse the ORIGINAL fixed-record canonical copier/serializer;
+  // arbitrary canonical extras are not an owned producer. No replacement general serializer.
+  const refinementRequests = yield* adaptiveSortSteps(yield* adaptiveMapSteps(refinementValues, (value, index) => {
+    owned?.reserve(8_192, true);
+    return copyCanonicalRecord(value, `snapshot/refinementRequests/${index}`);
+  }, owned?.reserve), (left, right) => compareCanonicalCodeUnits(canonicalAdaptiveJson(left), canonicalAdaptiveJson(right)), owned?.reserve);
   const budgetsRecord = requirePlainRecord(record.budgets, "snapshot/budgets");
   requireExactKeys(budgetsRecord, ["maxBricks", "maxBytes", "maxWork", "maxCoverageQuantum"], "snapshot/budgets");
   const budgets = deepFreeze({
@@ -285,32 +317,59 @@ export const createAdaptivePlannerSnapshotProjection = (snapshot: AdaptivePlanne
     maxWork: plannerNonNegativeInteger(budgetsRecord.maxWork, "snapshot/budgets/maxWork"),
     maxCoverageQuantum: plannerNonNegativeInteger(budgetsRecord.maxCoverageQuantum, "snapshot/budgets/maxCoverageQuantum")
   });
-  return deepFreeze({
+  owned?.reserve(8_192, true);
+  const authorityValue = {
+    schemaVersion: "adaptive-microvoxel-planner-authority-v1" as const,
+    bodyId, surfaceFrameId, regionId, generatorVersion, baseField, baseFieldDescriptorDigest,
+    editJournal, journalDigest: editJournal.digest, sourceRevision: baseField.sourceRevision,
+    editRevision: editJournal.revision, brickRevision, planningEpoch
+  };
+  const authority = owned === undefined ? deepFreeze(authorityValue) : Object.freeze(authorityValue);
+  // Generic finalization keeps its original recursive order. Owned arrays are fully built
+  // privately, then each index is locked before the fixed-schema result can escape.
+  const result = {
     schemaVersion: ADAPTIVE_SNAPSHOT_PROJECTION_SCHEMA_VERSION,
-    authority: deepFreeze({
-      schemaVersion: "adaptive-microvoxel-planner-authority-v1" as const,
-      bodyId,
-      surfaceFrameId,
-      regionId,
-      generatorVersion,
-      baseField,
-      baseFieldDescriptorDigest,
-      editJournal,
-      journalDigest: editJournal.digest,
-      sourceRevision: baseField.sourceRevision,
-      editRevision: editJournal.revision,
-      brickRevision,
-      planningEpoch
-    }),
-    resident: deepFreeze(residents),
-    activeCoverage: deepFreeze(activeCoverage),
-    refinementRequests: deepFreeze(refinementRequests),
+    authority,
+    resident: yield* adaptiveFreezeArraySteps(residents, owned?.reserve),
+    activeCoverage: yield* adaptiveFreezeArraySteps(activeCoverage, owned?.reserve),
+    refinementRequests: yield* adaptiveFreezeArraySteps(refinementRequests, owned?.reserve),
     budgets
-  });
+  };
+  return owned === undefined ? deepFreeze(result) : Object.freeze(result);
+}
+
+type AdaptiveSnapshotProjection = {
+  readonly schemaVersion: typeof ADAPTIVE_SNAPSHOT_PROJECTION_SCHEMA_VERSION;
+  readonly authority: Readonly<{schemaVersion:"adaptive-microvoxel-planner-authority-v1";
+    bodyId:ReturnType<typeof stableAuthorityId>;surfaceFrameId:ReturnType<typeof stableAuthorityId>;
+    regionId:ReturnType<typeof stableAuthorityId>;generatorVersion:ReturnType<typeof stableAuthorityId>;
+    baseField:ReturnType<typeof validateAdaptiveBaseFieldDescriptor>;baseFieldDescriptorDigest:string;editJournal:AdaptiveEditJournal;
+    journalDigest:string;sourceRevision:ReturnType<typeof authorityRevision>;editRevision:ReturnType<typeof authorityRevision>;
+    brickRevision:ReturnType<typeof authorityRevision>;planningEpoch:ReturnType<typeof adaptivePlanningEpoch>}>;
+  readonly resident: readonly (Omit<AdaptivePlannerSnapshot["resident"][number],"validationProof"|"readiness"> & {readonly readiness:string})[];
+  readonly activeCoverage: readonly (Omit<AdaptivePlannerSnapshot["activeCoverage"][number],"kind"> & {readonly kind:string})[];
+  readonly refinementRequests: readonly Record<string, AdaptiveCanonicalValue>[];
+  readonly budgets: Readonly<{maxBricks:number;maxBytes:number;maxWork:number;maxCoverageQuantum:number}>;
 };
 
+function* plannerDenseArraySteps(value: unknown, path: string, maximumLength: number,
+  owned?: AdaptiveOwnedJournalOptions): Generator<void, readonly unknown[], void> {
+  return owned === undefined ? requireDenseArray(value, path, maximumLength)
+    : yield* adaptiveDenseArraySteps(value, path, "InvalidPlannerInput", { maximumLength }, owned.reserve);
+}
+
+function* plannerPayloadHashSteps(payload: unknown, owned?: AdaptiveOwnedJournalOptions): Generator<void, string, void> {
+  owned?.reserve(8_192);
+  return owned === undefined ? hashAdaptiveCanonical(payload) : yield* owned.hash(Object.freeze(payload));
+}
+
 export const hashAdaptivePlannerSnapshotProjection = (snapshot: AdaptivePlannerSnapshot): string =>
-  hashAdaptiveCanonical(createAdaptivePlannerSnapshotProjection(snapshot));
+  adaptiveDrainSteps(adaptivePlannerSnapshotHashSteps(snapshot));
+
+export function* adaptivePlannerSnapshotHashSteps(snapshot: AdaptivePlannerSnapshot,
+  owned?: AdaptiveOwnedJournalOptions): Generator<void, string, void> {
+  return yield* plannerPayloadHashSteps(yield* adaptivePlannerSnapshotProjectionSteps(snapshot, owned), owned);
+}
 
 const semanticAxes = ["x", "y", "z"] as const;
 const refinementReasons = new Set<AdaptiveRefinementReason>([
@@ -407,7 +466,13 @@ const validateIssuedResidentProof = (
   projectionResident: ReturnType<typeof createAdaptivePlannerSnapshotProjection>["resident"][number],
   projection: ReturnType<typeof createAdaptivePlannerSnapshotProjection>,
   snapshotProjectionDigest: string
-): void => {
+): void => adaptiveDrainSteps(issuedResidentProofValidationSteps(value, residentPath, projectionResident, projection, snapshotProjectionDigest));
+
+function* issuedResidentProofValidationSteps(
+  value: unknown, residentPath: string, projectionResident: AdaptiveSnapshotProjection["resident"][number],
+  projection: AdaptiveSnapshotProjection, snapshotProjectionDigest: string, owned?: AdaptiveOwnedJournalOptions
+): Generator<void, void, void> {
+  owned?.reserve(16_384);
   const path = `${residentPath}/validationProof`;
   if (typeof value !== "object" || value === null || !issuedResidentValidationProofs.has(value)) {
     return fail("InvalidPlannerInput", path, "Resident validation proof was not issued by the trusted constructor.");
@@ -434,24 +499,38 @@ const validateIssuedResidentProof = (
   };
   const authority = projection.authority;
   if (
-    canonicalAdaptiveJson(payload.key) !== canonicalAdaptiveJson(projectionResident.key) ||
-    payload.contentHash !== projectionResident.contentHash ||
-    payload.provenanceHash !== projectionResident.provenanceHash ||
-    payload.baseFieldDescriptorDigest !== projectionResident.baseFieldDescriptorDigest ||
-    payload.journalDigest !== projectionResident.journalDigest ||
-    payload.sourceRevision !== projectionResident.sourceRevision ||
-    payload.editRevision !== projectionResident.editRevision ||
-    payload.brickRevision !== projectionResident.brickRevision ||
-    payload.baseFieldDescriptorDigest !== authority.baseFieldDescriptorDigest ||
-    payload.journalDigest !== authority.journalDigest ||
-    payload.sourceRevision !== authority.sourceRevision ||
-    payload.editRevision !== authority.editRevision ||
-    payload.brickRevision !== authority.brickRevision ||
-    payload.planningEpoch !== authority.planningEpoch ||
-    payload.snapshotProjectionDigest !== snapshotProjectionDigest ||
-    hashAdaptiveCanonical(payload) !== plannerHash(proof.proofDigest, `${path}/proofDigest`)
-  ) return fail("InvalidPlannerInput", path, "Resident validation proof does not match the exact snapshot authority projection.");
-};
+    canonicalAdaptiveJson(payload.key) !== canonicalAdaptiveJson(projectionResident.key)
+    || payload.contentHash !== projectionResident.contentHash
+    || payload.provenanceHash !== projectionResident.provenanceHash
+    || payload.baseFieldDescriptorDigest !== projectionResident.baseFieldDescriptorDigest
+    || payload.journalDigest !== projectionResident.journalDigest
+    || payload.sourceRevision !== projectionResident.sourceRevision
+    || payload.editRevision !== projectionResident.editRevision
+    || payload.brickRevision !== projectionResident.brickRevision
+    || payload.baseFieldDescriptorDigest !== authority.baseFieldDescriptorDigest
+    || payload.journalDigest !== authority.journalDigest
+    || payload.sourceRevision !== authority.sourceRevision
+    || payload.editRevision !== authority.editRevision
+    || payload.brickRevision !== authority.brickRevision
+    || payload.planningEpoch !== authority.planningEpoch
+    || payload.snapshotProjectionDigest !== snapshotProjectionDigest
+    || (yield* plannerPayloadHashSteps(payload, owned)) !== plannerHash(proof.proofDigest, `${path}/proofDigest`)
+  ) { return fail("InvalidPlannerInput", path, "Resident validation proof does not match the exact snapshot authority projection."); }
+}
+
+/** Original native find in generic mode; owned predicates compare only fully validated fixed keys. */
+function* plannerResidentFindSteps(values: AdaptiveSnapshotProjection["resident"],
+  match: (entry: AdaptiveSnapshotProjection["resident"][number]) => boolean,
+  owned?: AdaptiveOwnedJournalOptions): Generator<void, AdaptiveSnapshotProjection["resident"][number] | undefined, void> {
+  owned?.reserve(32_768);
+  if (owned === undefined) { return values.find(match); }
+  for (let index = 0; index < values.length; index += 1) {
+    const entry = values[index];
+    if (match(entry)) { return entry; }
+    yield;
+  }
+  return undefined;
+}
 
 export interface ValidateAdaptivePlannerSnapshotSemanticsOptions {
   readonly allowProoflessReadyResidents?: boolean;
@@ -461,20 +540,34 @@ export interface ValidateAdaptivePlannerSnapshotSemanticsOptions {
 export const validateAdaptivePlannerSnapshotSemantics = (
   snapshot: AdaptivePlannerSnapshot,
   options: ValidateAdaptivePlannerSnapshotSemanticsOptions = {}
-) => {
-  const projection = createAdaptivePlannerSnapshotProjection(snapshot);
-  const snapshotProjectionDigest = hashAdaptiveCanonical(projection);
+) => adaptiveDrainSteps(adaptivePlannerSnapshotSemanticsSteps(snapshot, options));
+
+type AdaptiveSnapshotSemantics = {readonly projection:AdaptiveSnapshotProjection;readonly snapshotProjectionDigest:string;
+  readonly refinementRequests:readonly AdaptiveValidatedRefinementRequest[];readonly budgets:AdaptiveSnapshotProjection["budgets"]};
+
+/** Complete original semantic gate, including proof binding. One local result, not a cache. */
+export function* adaptivePlannerSnapshotSemanticsSteps(snapshot: AdaptivePlannerSnapshot,
+  options: ValidateAdaptivePlannerSnapshotSemanticsOptions = {}, owned?: AdaptiveOwnedJournalOptions
+): Generator<void, AdaptiveSnapshotSemantics, void> {
+  owned?.reserve(32_768);
+  const projection = yield* adaptivePlannerSnapshotProjectionSteps(snapshot, owned);
+  const snapshotProjectionDigest = yield* plannerPayloadHashSteps(projection, owned);
 
   for (let index = 0; index < snapshot.resident.length; index += 1) {
     const entry = snapshot.resident[index];
     const path = `snapshot/resident/${index}`;
-    const projected = projection.resident.find((candidate) => canonicalAdaptiveJson(candidate.key) === canonicalAdaptiveJson(entry.key));
-    if (projected === undefined) return fail("InvalidPlannerInput", `${path}/key`, "Resident key is absent from the canonical snapshot projection.");
+    const projected = yield* plannerResidentFindSteps(projection.resident,
+      candidate => canonicalAdaptiveJson(candidate.key) === canonicalAdaptiveJson(entry.key), owned);
+    if (projected === undefined) { return fail("InvalidPlannerInput", `${path}/key`, "Resident key is absent from the canonical snapshot projection."); }
     const hasProof = Object.hasOwn(entry, "validationProof");
     if (entry.readiness === "ready" && !hasProof && options.allowProoflessReadyResidents !== true) {
       return fail("InvalidPlannerInput", `${path}/validationProof`, "Ready residency requires a validation proof.");
     }
-    if (hasProof) validateIssuedResidentProof(entry.validationProof, path, projected, projection, snapshotProjectionDigest);
+    if (hasProof) {
+      if (owned === undefined) { validateIssuedResidentProof(entry.validationProof, path, projected, projection, snapshotProjectionDigest); }
+      else { yield* issuedResidentProofValidationSteps(entry.validationProof, path, projected, projection, snapshotProjectionDigest, owned); }
+    }
+    if (owned !== undefined) { yield; }
   }
 
   for (let index = 0; index < snapshot.activeCoverage.length; index += 1) {
@@ -487,23 +580,30 @@ export const validateAdaptivePlannerSnapshotSemantics = (
     if (canonicalAdaptiveJson(validateQuantumBounds(entry.bounds, `${path}/bounds`)) !== canonicalAdaptiveJson(quantumBoundsForKey(key))) {
       return fail("InvalidPlannerInput", `${path}/bounds`, "Active coverage bounds must exactly match its key.");
     }
+    if (owned !== undefined) { yield; }
   }
 
-  const refinementRequests = (
-    requireDenseArray(
-      snapshot.refinementRequests,
-      "snapshot/refinementRequests",
-      ADAPTIVE_MAX_REFINEMENT_REQUESTS
-    ) as readonly AdaptiveRefinementRequest[]
-  ).map(validateRefinementRequest);
+  const requestValues = (yield* plannerDenseArraySteps(snapshot.refinementRequests,
+    "snapshot/refinementRequests", ADAPTIVE_MAX_REFINEMENT_REQUESTS, owned)) as readonly AdaptiveRefinementRequest[];
+  const refinementRequests = owned === undefined ? requestValues.map(validateRefinementRequest)
+    : yield* adaptiveMapSteps(requestValues, (value, index) => {
+    owned?.reserve(8_192, true);
+    return validateRefinementRequest(value, index);
+  }, owned?.reserve);
+  owned?.reserve(64 + refinementRequests.length * 128);
   const requestIds = new Set<string>();
   for (const { request } of refinementRequests) {
-    if (requestIds.has(request.requestId)) return fail("InvalidPlannerInput", "snapshot/refinementRequests", "Duplicate request IDs are rejected.");
+    if (requestIds.has(request.requestId)) { return fail("InvalidPlannerInput", "snapshot/refinementRequests", "Duplicate request IDs are rejected."); }
     requestIds.add(request.requestId);
+    if (owned !== undefined) { yield; }
   }
 
-  return deepFreeze({ projection, snapshotProjectionDigest, refinementRequests, budgets: projection.budgets });
-};
+  owned?.reserve(4_096, true);
+  const result = { projection, snapshotProjectionDigest,
+    refinementRequests: owned === undefined ? refinementRequests : yield* adaptiveFreezeArraySteps(refinementRequests, owned.reserve),
+    budgets: projection.budgets };
+  return owned === undefined ? deepFreeze(result) : Object.freeze(result);
+}
 
 export interface CreateAdaptiveResidentValidationProofInput {
   readonly brick: MaterializedAdaptiveBrick;
@@ -516,30 +616,40 @@ const issueAdaptiveResidentValidationProof = (
   revisionValue: number,
   projection: ReturnType<typeof createAdaptivePlannerSnapshotProjection>,
   snapshotProjectionDigest: string
-): AdaptiveResidentValidationProof => {
-  const brick = validateMaterializedAdaptiveBrick(value);
+): AdaptiveResidentValidationProof =>
+  adaptiveDrainSteps(residentProofIssueSteps(value, revisionValue, projection, snapshotProjectionDigest));
+
+/** Existing real issuer, never exposed as a projection-only or frozen-object admission API. */
+function* residentProofIssueSteps(value: MaterializedAdaptiveBrick, revisionValue: number,
+  projection: AdaptiveSnapshotProjection, snapshotProjectionDigest: string, owned?: AdaptiveOwnedJournalOptions
+): Generator<void, AdaptiveResidentValidationProof, void> {
+  owned?.reserve(16_384);
+  const brick = owned === undefined ? validateMaterializedAdaptiveBrick(value)
+    : yield* adaptiveValidateMaterializedBrickSteps(value, owned);
   const brickRevision = authorityRevision(revisionValue);
-  const expected = projection.resident.find((entry) => canonicalAdaptiveJson(entry.key) === canonicalAdaptiveJson(brick.key));
+  const expected = yield* plannerResidentFindSteps(projection.resident,
+    entry => canonicalAdaptiveJson(entry.key) === canonicalAdaptiveJson(brick.key), owned);
   if (expected === undefined || expected.readiness !== "ready") {
     return fail("InvalidPlannerInput", "proof/brick", "Validated brick must have one ready resident summary in the snapshot projection.");
   }
   const authority = projection.authority;
   if (
-    expected.contentHash !== brick.contentHash ||
-    expected.provenanceHash !== brick.provenance.provenanceHash ||
-    expected.baseFieldDescriptorDigest !== brick.baseFieldDescriptorDigest ||
-    expected.journalDigest !== brick.provenance.journalDigest ||
-    expected.sourceRevision !== brick.sourceRevision ||
-    expected.editRevision !== brick.editRevision ||
-    expected.brickRevision !== brickRevision ||
-    authority.baseFieldDescriptorDigest !== brick.baseFieldDescriptorDigest ||
-    authority.journalDigest !== brick.provenance.journalDigest ||
-    authority.sourceRevision !== brick.sourceRevision ||
-    authority.editRevision !== brick.editRevision ||
-    authority.brickRevision !== brickRevision
+    expected.contentHash !== brick.contentHash
+    || expected.provenanceHash !== brick.provenance.provenanceHash
+    || expected.baseFieldDescriptorDigest !== brick.baseFieldDescriptorDigest
+    || expected.journalDigest !== brick.provenance.journalDigest
+    || expected.sourceRevision !== brick.sourceRevision
+    || expected.editRevision !== brick.editRevision
+    || expected.brickRevision !== brickRevision
+    || authority.baseFieldDescriptorDigest !== brick.baseFieldDescriptorDigest
+    || authority.journalDigest !== brick.provenance.journalDigest
+    || authority.sourceRevision !== brick.sourceRevision
+    || authority.editRevision !== brick.editRevision
+    || authority.brickRevision !== brickRevision
   ) {
     return fail("InvalidPlannerInput", "proof/brick", "Materialized brick does not match the projected resident and authority context.");
   }
+  owned?.reserve(8_192, true);
   const payload = {
     schemaVersion: ADAPTIVE_RESIDENT_VALIDATION_PROOF_SCHEMA_VERSION,
     proofVersion: ADAPTIVE_RESIDENT_VALIDATION_PROOF_VERSION,
@@ -554,18 +664,24 @@ const issueAdaptiveResidentValidationProof = (
     planningEpoch: authority.planningEpoch,
     snapshotProjectionDigest
   };
-  const proof = deepFreeze({
+  const proofValue = {
     ...payload,
-    proofDigest: hashAdaptiveCanonical(payload)
-  }) as unknown as AdaptiveResidentValidationProof;
+    proofDigest: yield* plannerPayloadHashSteps(payload, owned)
+  };
+  const proof = (owned === undefined ? deepFreeze(proofValue) : Object.freeze(proofValue)) as unknown as AdaptiveResidentValidationProof;
   issuedResidentValidationProofs.add(proof as object);
   return proof;
-};
+}
 
-export const createAdaptiveResidentValidationProof = ({ brick, brickRevision, snapshot }: CreateAdaptiveResidentValidationProofInput): AdaptiveResidentValidationProof => {
-  const { projection, snapshotProjectionDigest } = validateAdaptivePlannerSnapshotSemantics(snapshot, { allowProoflessReadyResidents: true });
-  return issueAdaptiveResidentValidationProof(brick, brickRevision, projection, snapshotProjectionDigest);
-};
+export const createAdaptiveResidentValidationProof = ({ brick, brickRevision, snapshot }: CreateAdaptiveResidentValidationProofInput): AdaptiveResidentValidationProof =>
+  adaptiveDrainSteps(adaptiveResidentValidationProofSteps({ brick, brickRevision, snapshot }));
+
+export function* adaptiveResidentValidationProofSteps({ brick, brickRevision, snapshot }: CreateAdaptiveResidentValidationProofInput,
+  owned?: AdaptiveOwnedJournalOptions): Generator<void, AdaptiveResidentValidationProof, void> {
+  owned?.reserve(8_192);
+  const { projection, snapshotProjectionDigest } = yield* adaptivePlannerSnapshotSemanticsSteps(snapshot, { allowProoflessReadyResidents: true }, owned);
+  return yield* residentProofIssueSteps(brick, brickRevision, projection, snapshotProjectionDigest, owned);
+}
 
 export interface CreateAdaptiveResidentValidationProofsInput {
   readonly bricks: readonly MaterializedAdaptiveBrick[];
@@ -574,11 +690,28 @@ export interface CreateAdaptiveResidentValidationProofsInput {
 }
 
 /** Issues several proofs against one exact projection without recomputing it per resident. */
-export const createAdaptiveResidentValidationProofs = ({ bricks, brickRevision, snapshot }: CreateAdaptiveResidentValidationProofsInput): readonly AdaptiveResidentValidationProof[] => {
-  const proofBricks = requireDenseArray(bricks, "proofs/bricks", ADAPTIVE_MAX_RESIDENT_SUMMARIES) as readonly MaterializedAdaptiveBrick[];
-  const { projection, snapshotProjectionDigest } = validateAdaptivePlannerSnapshotSemantics(snapshot, { allowProoflessReadyResidents: true });
-  return deepFreeze(proofBricks.map((brick) => issueAdaptiveResidentValidationProof(brick, brickRevision, projection, snapshotProjectionDigest)));
-};
+export const createAdaptiveResidentValidationProofs = ({ bricks, brickRevision, snapshot }: CreateAdaptiveResidentValidationProofsInput): readonly AdaptiveResidentValidationProof[] =>
+  adaptiveDrainSteps(adaptiveResidentValidationProofsSteps({ bricks, brickRevision, snapshot }));
+
+/** One COMPLETE immutable semantic projection/digest is reused only by THIS batch lifetime.
+ * Every brick receives the full original channel/provenance validation before the real WeakSet add.
+ * Private partial proofs never escape a failed/cancelled generator. No cache or alternate issuer. */
+export function* adaptiveResidentValidationProofsSteps({ bricks, brickRevision, snapshot }: CreateAdaptiveResidentValidationProofsInput,
+  owned?: AdaptiveOwnedJournalOptions): Generator<void, readonly AdaptiveResidentValidationProof[], void> {
+  owned?.reserve(8_192);
+  const proofBricks = (yield* plannerDenseArraySteps(bricks, "proofs/bricks", ADAPTIVE_MAX_RESIDENT_SUMMARIES, owned)) as readonly MaterializedAdaptiveBrick[];
+  const { projection, snapshotProjectionDigest } = yield* adaptivePlannerSnapshotSemanticsSteps(snapshot, { allowProoflessReadyResidents: true }, owned);
+  if (owned === undefined) {
+    return deepFreeze(proofBricks.map(brick => issueAdaptiveResidentValidationProof(brick, brickRevision, projection, snapshotProjectionDigest)));
+  }
+  owned.reserve(64 + proofBricks.length * 128, true);
+  const result: AdaptiveResidentValidationProof[] = [];
+  for (let index = 0; index < proofBricks.length; index += 1) {
+    result.push(yield* residentProofIssueSteps(proofBricks[index], brickRevision, projection, snapshotProjectionDigest, owned));
+    yield;
+  }
+  return yield* adaptiveFreezeArraySteps(result, owned.reserve);
+}
 
 export const hasAdaptiveResidentValidationProofBrand = (value: unknown): value is AdaptiveResidentValidationProof =>
   typeof value === "object" && value !== null && issuedResidentValidationProofs.has(value);

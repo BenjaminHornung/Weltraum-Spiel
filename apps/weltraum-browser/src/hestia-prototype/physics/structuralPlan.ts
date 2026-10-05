@@ -8,6 +8,23 @@ import {measureHvpCut,type HvpCutSpan,type HvpCutTrace} from "../runtime/cutTrac
 // Private core module (not in the structural barrel): the step form of the public classification.
 import {structuralComponentClassificationSteps,structuralIssuedComponentClassificationSteps} from "../../voxel/structural/classificationSteps";
 import {isIssuedStructuralObject} from "../../voxel/structural/model";
+import {createOwnedStructuralCommandCursor} from "../../voxel/structural/commands";
+import type {StructuralDestructionCommand} from "../../voxel/structural/types";
+
+/** INACTIVE source-only harness entry. No Worker/plan/ingest/recipe caller, no plan issuance.
+ * Producer holds its first-party command/source immutable and charges every live borrowed input
+ * and retained old result in residentBytes. The cursor owns ONE aggregate nested Prepare ledger. */
+export function* prepareHvpStructuralCommandSourceOwnedSteps(before:StructuralObject,command:StructuralDestructionCommand,
+  residentBytes:number,prepareLimitBytes=96*1024*1024){
+  const cursor=createOwnedStructuralCommandCursor(before,command,residentBytes,prepareLimitBytes);
+  try{
+    for(;;){
+      const step=cursor.advance(1);
+      if(step.done){return step.value;}
+      yield "ownerCommand";
+    }
+  }finally{cursor.dispose();}
+}
 
 const issued=new WeakSet<object>();
 
