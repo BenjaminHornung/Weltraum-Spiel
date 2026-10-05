@@ -1,0 +1,758 @@
+{
+  "schema": "rd13-native-compositor-capture-v1",
+  "source": "16a5d29a5cddea372abae139da618aa000a058be",
+  "productIntegrated": false,
+  "name": "F05-greedy-no-ao-tick0",
+  "before": {
+    "url": "http://127.0.0.1:5280/src/experiments/voxel-rays/index.html",
+    "bridgePresent": false,
+    "status": "Host render submitted. Native numeric/image/depth-water qualification still NOT RUN; this is not an art/performance PASS.",
+    "projected": {
+      "productIntegrated": false,
+      "facts": {
+        "backend": "Three-WebGLRenderer-WebGL2",
+        "errors": [],
+        "experimentId": "RD-13",
+        "fixtureDigest": "c24de4c1597713e11935bf98e8fe7c5a312a615ee3544831f6f97b74c948b904",
+        "liveResources": {
+          "geometries": {
+            "status": "measured",
+            "unit": "count",
+            "value": 2
+          },
+          "hostListeners": {
+            "status": "measured",
+            "unit": "count",
+            "value": 2
+          },
+          "renderers": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "renderloops": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "textures": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          }
+        },
+        "logicalCosts": {
+          "effect-0-cpuPeakBytes": {
+            "reason": "Conservative source transport/private/copy/old-new estimate, not JS heap",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 3334968
+          },
+          "effect-0-fullScreenVolumes": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          },
+          "effect-0-greedyBuildMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 7.5999999940395355
+          },
+          "effect-0-maxStepsPerRay": {
+            "status": "measured",
+            "unit": "count",
+            "value": 109
+          },
+          "effect-0-nativeGpuBytes": {
+            "reason": "Native context/driver VRAM cannot be measured here",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "effect-0-prepareMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 15.200000017881393
+          },
+          "effect-0-projectionBuildMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 7.899999976158142
+          },
+          "effect-0-projectionBytes": {
+            "reason": "Typed texture/mesh payload; excludes native allocator/driver/context",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 6480
+          },
+          "effect-0-triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 120
+          },
+          "effect-0-uploadCommandCpuMs": {
+            "reason": "Three upload occurs during native render; CPU preparation is not upload time",
+            "status": "not-run",
+            "unit": "ms"
+          },
+          "gpuBytes": {
+            "reason": "Native GPU memory unavailable",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "gpuMs": {
+            "reason": "Timer available; diagnostic loop does not sample GPU timing",
+            "status": "not-run",
+            "unit": "ms"
+          },
+          "renderCalls": {
+            "status": "measured",
+            "unit": "count",
+            "value": 3
+          },
+          "triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 120
+          }
+        },
+        "sourceRevision": 0,
+        "unsupportedFeatures": [
+          "native-pcf-shadow-parity",
+          "native-sky-shader-parity",
+          "native-numeric-qualification-not-run",
+          "native-water-shader-parity",
+          "native-material-shader-hooks",
+          "face-ambient-occlusion",
+          "gi-and-reflections",
+          "unknown-is-not-world-clearance",
+          "native-vram-unavailable",
+          "gpu-timing-not-qualified"
+        ],
+        "variantId": "greedy-no-ao"
+      },
+      "private": {
+        "productIntegrated": false,
+        "variant": "greedy-no-ao",
+        "caps": {
+          "max3D": 2048,
+          "maxTexture": 16384,
+          "maxViewport": [
+            32767,
+            32767
+          ],
+          "fragmentSamplers": 16,
+          "rgba8ui": true,
+          "contextLost": false,
+          "formatSampleCounts": []
+        },
+        "host": {
+          "backend": "Three-WebGLRenderer-WebGL2",
+          "webgl2": true,
+          "fixtureId": "F05-CUTOUT",
+          "fixtureDigest": "c24de4c1597713e11935bf98e8fe7c5a312a615ee3544831f6f97b74c948b904",
+          "sourceRevision": 0,
+          "payloadBindings": [
+            {
+              "id": "cutout-obstacles-coverage",
+              "byteLength": 44800,
+              "sha256": "ac12e17c351077e52cc5bc0c7458c9f7a64b9182d8afc6066d04a8b76721506f"
+            },
+            {
+              "id": "cutout-obstacles-material-slots",
+              "byteLength": 44800,
+              "sha256": "09481596d2a2a977dd4494caf151028f04750a1981b6104b4cdfd594445145bc"
+            },
+            {
+              "id": "cutout-obstacles-occupancy",
+              "byteLength": 44800,
+              "sha256": "a3c40b9339b8271b9a389069a22dfae47e78afef8f393f42db3e106feb9e45a2"
+            },
+            {
+              "id": "cutout-obstacles-slot-1-indices",
+              "byteLength": 166128,
+              "sha256": "5aafc0331b224a4d63395fc832d4bf3028ad2c43e4a5c36c906b306e3e621955"
+            },
+            {
+              "id": "cutout-obstacles-slot-1-normals",
+              "byteLength": 332256,
+              "sha256": "21edf78008f75ee98d27ba0aab9d4adcaf2e222880c890723b4248d2b91f0cb6"
+            },
+            {
+              "id": "cutout-obstacles-slot-1-positions",
+              "byteLength": 332256,
+              "sha256": "9c5be8b6ef40f47f10e1e2e7d8288e36a677e0d3edcc4ba9229788e939064594"
+            },
+            {
+              "id": "cutout-obstacles-slot-3-indices",
+              "byteLength": 2256,
+              "sha256": "fab3d09055099cfc566d6c3c6999f17656598e1924afce7a9f277ae8713905c1"
+            },
+            {
+              "id": "cutout-obstacles-slot-3-normals",
+              "byteLength": 4512,
+              "sha256": "de4cde2a0b0e91991a411d95065b8e7291be3064328480827b264506b3effc38"
+            },
+            {
+              "id": "cutout-obstacles-slot-3-positions",
+              "byteLength": 4512,
+              "sha256": "320961bee7b44baa9708b2e1c92f9e0cd68320eeb97cf8e0a4f1a8fbe47db1c6"
+            },
+            {
+              "id": "figure-marker-indices",
+              "byteLength": 72,
+              "sha256": "111344a69a3f4c9c714bfdd23c3b16f9ad6beb430821bd310f33d9f795061012"
+            },
+            {
+              "id": "figure-marker-normals",
+              "byteLength": 288,
+              "sha256": "1d25335f006dfec1dd5deb082ea469d6f41b5f72d651220fa52367f3a28b3e72"
+            },
+            {
+              "id": "figure-marker-positions",
+              "byteLength": 576,
+              "sha256": "a506fca253d18710c247856a569966c95d162353536d0b3df2d94774742d6a9a"
+            }
+          ],
+          "presentationProfile": "synthetic-lab-light-v1-no-shadows",
+          "frame": {
+            "cameraId": "far",
+            "paused": false,
+            "seconds": 0,
+            "sourceRevision": 0,
+            "tick": 0,
+            "weather": {
+              "cloud01": 0.1,
+              "rain01": 0,
+              "snow01": 0,
+              "windMps": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          "resetTick": null,
+          "resolution": {
+            "width": 1280,
+            "height": 720,
+            "dpr": 1,
+            "bufferWidth": 1280,
+            "bufferHeight": 720
+          },
+          "colorSpace": "srgb",
+          "toneMapping": 0,
+          "exposure": 1,
+          "timerQueryAvailable": true,
+          "gpuMs": {
+            "status": "not-run",
+            "unit": "ms",
+            "reason": "Timer available; no qualified timer-query sampling in diagnostic control"
+          },
+          "nativeGpuBytes": {
+            "status": "unsupported",
+            "unit": "byte",
+            "reason": "WebGL does not expose native/driver allocation bytes"
+          },
+          "device": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "submittedFrames": 11,
+          "rendered": {
+            "tick": 0,
+            "fixtureDigest": "c24de4c1597713e11935bf98e8fe7c5a312a615ee3544831f6f97b74c948b904",
+            "sourceRevision": 0,
+            "resetTick": null
+          },
+          "rendererInfo": {
+            "geometries": 2,
+            "textures": 0,
+            "programs": 1,
+            "calls": 3,
+            "triangles": 120
+          },
+          "liveHosts": {
+            "renderers": 1,
+            "renderloops": 1,
+            "hostListeners": 2
+          },
+          "productIntegrated": false
+        },
+        "source": [
+          {
+            "ownerId": "cutout-obstacles",
+            "sourceNamespace": "rd02-authored-cells-v1",
+            "sourceRevision": 0,
+            "regionId": "cutout-obstacles",
+            "fixtureDigest": "c24de4c1597713e11935bf98e8fe7c5a312a615ee3544831f6f97b74c948b904",
+            "recipeSha256": "dce3b1403515e723955df758894f0d3eabff74971953d72a7576f3755e626d10",
+            "sourceIds": [
+              "left-wall",
+              "right-wall",
+              "root-arch",
+              "window"
+            ],
+            "sourceIdMeaning": {},
+            "originalDimensions": [
+              40,
+              28,
+              40
+            ],
+            "originalOriginMeters": [
+              0,
+              0,
+              0
+            ],
+            "dimensions": [
+              40,
+              28,
+              40
+            ],
+            "offset": [
+              0,
+              0,
+              0
+            ],
+            "sourceSlotSha256": "09481596d2a2a977dd4494caf151028f04750a1981b6104b4cdfd594445145bc"
+          }
+        ],
+        "costs": {
+          "canonicalPayloadBytes": 977256,
+          "wholeRegionCopyBytes": 134400,
+          "selectedCpuBytes": 268800,
+          "cpuPeakEstimateBytes": 3334968,
+          "projectionBytes": 179200
+        },
+        "terminal": {
+          "firstFailure": null,
+          "pending": false,
+          "disposed": false,
+          "productIntegrated": false
+        }
+      },
+      "history": [
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission"
+      ]
+    },
+    "selections": {
+      "fixture": "F05-CUTOUT-REPLAY",
+      "variant": "greedy-no-ao",
+      "camera": "far",
+      "tick": "0",
+      "resolution": "1280x720",
+      "dpr": "1"
+    },
+    "canvas": {
+      "hidden": false,
+      "width": 1280,
+      "height": 720,
+      "box": {
+        "x": 140,
+        "y": 334.0625,
+        "width": 1320,
+        "height": 742.5,
+        "top": 334.0625,
+        "right": 1460,
+        "bottom": 1076.5625,
+        "left": 140
+      },
+      "devicePixelRatio": 1
+    }
+  },
+  "after": {
+    "url": "http://127.0.0.1:5280/src/experiments/voxel-rays/index.html",
+    "bridgePresent": false,
+    "status": "Host render submitted. Native numeric/image/depth-water qualification still NOT RUN; this is not an art/performance PASS.",
+    "projected": {
+      "productIntegrated": false,
+      "facts": {
+        "backend": "Three-WebGLRenderer-WebGL2",
+        "errors": [],
+        "experimentId": "RD-13",
+        "fixtureDigest": "c24de4c1597713e11935bf98e8fe7c5a312a615ee3544831f6f97b74c948b904",
+        "liveResources": {
+          "geometries": {
+            "status": "measured",
+            "unit": "count",
+            "value": 2
+          },
+          "hostListeners": {
+            "status": "measured",
+            "unit": "count",
+            "value": 2
+          },
+          "renderers": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "renderloops": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "textures": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          }
+        },
+        "logicalCosts": {
+          "effect-0-cpuPeakBytes": {
+            "reason": "Conservative source transport/private/copy/old-new estimate, not JS heap",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 3334968
+          },
+          "effect-0-fullScreenVolumes": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          },
+          "effect-0-greedyBuildMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 7.5999999940395355
+          },
+          "effect-0-maxStepsPerRay": {
+            "status": "measured",
+            "unit": "count",
+            "value": 109
+          },
+          "effect-0-nativeGpuBytes": {
+            "reason": "Native context/driver VRAM cannot be measured here",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "effect-0-prepareMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 15.200000017881393
+          },
+          "effect-0-projectionBuildMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 7.899999976158142
+          },
+          "effect-0-projectionBytes": {
+            "reason": "Typed texture/mesh payload; excludes native allocator/driver/context",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 6480
+          },
+          "effect-0-triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 120
+          },
+          "effect-0-uploadCommandCpuMs": {
+            "reason": "Three upload occurs during native render; CPU preparation is not upload time",
+            "status": "not-run",
+            "unit": "ms"
+          },
+          "gpuBytes": {
+            "reason": "Native GPU memory unavailable",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "gpuMs": {
+            "reason": "Timer available; diagnostic loop does not sample GPU timing",
+            "status": "not-run",
+            "unit": "ms"
+          },
+          "renderCalls": {
+            "status": "measured",
+            "unit": "count",
+            "value": 3
+          },
+          "triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 120
+          }
+        },
+        "sourceRevision": 0,
+        "unsupportedFeatures": [
+          "native-pcf-shadow-parity",
+          "native-sky-shader-parity",
+          "native-numeric-qualification-not-run",
+          "native-water-shader-parity",
+          "native-material-shader-hooks",
+          "face-ambient-occlusion",
+          "gi-and-reflections",
+          "unknown-is-not-world-clearance",
+          "native-vram-unavailable",
+          "gpu-timing-not-qualified"
+        ],
+        "variantId": "greedy-no-ao"
+      },
+      "private": {
+        "productIntegrated": false,
+        "variant": "greedy-no-ao",
+        "caps": {
+          "max3D": 2048,
+          "maxTexture": 16384,
+          "maxViewport": [
+            32767,
+            32767
+          ],
+          "fragmentSamplers": 16,
+          "rgba8ui": true,
+          "contextLost": false,
+          "formatSampleCounts": []
+        },
+        "host": {
+          "backend": "Three-WebGLRenderer-WebGL2",
+          "webgl2": true,
+          "fixtureId": "F05-CUTOUT",
+          "fixtureDigest": "c24de4c1597713e11935bf98e8fe7c5a312a615ee3544831f6f97b74c948b904",
+          "sourceRevision": 0,
+          "payloadBindings": [
+            {
+              "id": "cutout-obstacles-coverage",
+              "byteLength": 44800,
+              "sha256": "ac12e17c351077e52cc5bc0c7458c9f7a64b9182d8afc6066d04a8b76721506f"
+            },
+            {
+              "id": "cutout-obstacles-material-slots",
+              "byteLength": 44800,
+              "sha256": "09481596d2a2a977dd4494caf151028f04750a1981b6104b4cdfd594445145bc"
+            },
+            {
+              "id": "cutout-obstacles-occupancy",
+              "byteLength": 44800,
+              "sha256": "a3c40b9339b8271b9a389069a22dfae47e78afef8f393f42db3e106feb9e45a2"
+            },
+            {
+              "id": "cutout-obstacles-slot-1-indices",
+              "byteLength": 166128,
+              "sha256": "5aafc0331b224a4d63395fc832d4bf3028ad2c43e4a5c36c906b306e3e621955"
+            },
+            {
+              "id": "cutout-obstacles-slot-1-normals",
+              "byteLength": 332256,
+              "sha256": "21edf78008f75ee98d27ba0aab9d4adcaf2e222880c890723b4248d2b91f0cb6"
+            },
+            {
+              "id": "cutout-obstacles-slot-1-positions",
+              "byteLength": 332256,
+              "sha256": "9c5be8b6ef40f47f10e1e2e7d8288e36a677e0d3edcc4ba9229788e939064594"
+            },
+            {
+              "id": "cutout-obstacles-slot-3-indices",
+              "byteLength": 2256,
+              "sha256": "fab3d09055099cfc566d6c3c6999f17656598e1924afce7a9f277ae8713905c1"
+            },
+            {
+              "id": "cutout-obstacles-slot-3-normals",
+              "byteLength": 4512,
+              "sha256": "de4cde2a0b0e91991a411d95065b8e7291be3064328480827b264506b3effc38"
+            },
+            {
+              "id": "cutout-obstacles-slot-3-positions",
+              "byteLength": 4512,
+              "sha256": "320961bee7b44baa9708b2e1c92f9e0cd68320eeb97cf8e0a4f1a8fbe47db1c6"
+            },
+            {
+              "id": "figure-marker-indices",
+              "byteLength": 72,
+              "sha256": "111344a69a3f4c9c714bfdd23c3b16f9ad6beb430821bd310f33d9f795061012"
+            },
+            {
+              "id": "figure-marker-normals",
+              "byteLength": 288,
+              "sha256": "1d25335f006dfec1dd5deb082ea469d6f41b5f72d651220fa52367f3a28b3e72"
+            },
+            {
+              "id": "figure-marker-positions",
+              "byteLength": 576,
+              "sha256": "a506fca253d18710c247856a569966c95d162353536d0b3df2d94774742d6a9a"
+            }
+          ],
+          "presentationProfile": "synthetic-lab-light-v1-no-shadows",
+          "frame": {
+            "cameraId": "far",
+            "paused": false,
+            "seconds": 0,
+            "sourceRevision": 0,
+            "tick": 0,
+            "weather": {
+              "cloud01": 0.1,
+              "rain01": 0,
+              "snow01": 0,
+              "windMps": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          "resetTick": null,
+          "resolution": {
+            "width": 1280,
+            "height": 720,
+            "dpr": 1,
+            "bufferWidth": 1280,
+            "bufferHeight": 720
+          },
+          "colorSpace": "srgb",
+          "toneMapping": 0,
+          "exposure": 1,
+          "timerQueryAvailable": true,
+          "gpuMs": {
+            "status": "not-run",
+            "unit": "ms",
+            "reason": "Timer available; no qualified timer-query sampling in diagnostic control"
+          },
+          "nativeGpuBytes": {
+            "status": "unsupported",
+            "unit": "byte",
+            "reason": "WebGL does not expose native/driver allocation bytes"
+          },
+          "device": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "submittedFrames": 11,
+          "rendered": {
+            "tick": 0,
+            "fixtureDigest": "c24de4c1597713e11935bf98e8fe7c5a312a615ee3544831f6f97b74c948b904",
+            "sourceRevision": 0,
+            "resetTick": null
+          },
+          "rendererInfo": {
+            "geometries": 2,
+            "textures": 0,
+            "programs": 1,
+            "calls": 3,
+            "triangles": 120
+          },
+          "liveHosts": {
+            "renderers": 1,
+            "renderloops": 1,
+            "hostListeners": 2
+          },
+          "productIntegrated": false
+        },
+        "source": [
+          {
+            "ownerId": "cutout-obstacles",
+            "sourceNamespace": "rd02-authored-cells-v1",
+            "sourceRevision": 0,
+            "regionId": "cutout-obstacles",
+            "fixtureDigest": "c24de4c1597713e11935bf98e8fe7c5a312a615ee3544831f6f97b74c948b904",
+            "recipeSha256": "dce3b1403515e723955df758894f0d3eabff74971953d72a7576f3755e626d10",
+            "sourceIds": [
+              "left-wall",
+              "right-wall",
+              "root-arch",
+              "window"
+            ],
+            "sourceIdMeaning": {},
+            "originalDimensions": [
+              40,
+              28,
+              40
+            ],
+            "originalOriginMeters": [
+              0,
+              0,
+              0
+            ],
+            "dimensions": [
+              40,
+              28,
+              40
+            ],
+            "offset": [
+              0,
+              0,
+              0
+            ],
+            "sourceSlotSha256": "09481596d2a2a977dd4494caf151028f04750a1981b6104b4cdfd594445145bc"
+          }
+        ],
+        "costs": {
+          "canonicalPayloadBytes": 977256,
+          "wholeRegionCopyBytes": 134400,
+          "selectedCpuBytes": 268800,
+          "cpuPeakEstimateBytes": 3334968,
+          "projectionBytes": 179200
+        },
+        "terminal": {
+          "firstFailure": null,
+          "pending": false,
+          "disposed": false,
+          "productIntegrated": false
+        }
+      },
+      "history": [
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission"
+      ]
+    },
+    "selections": {
+      "fixture": "F05-CUTOUT-REPLAY",
+      "variant": "greedy-no-ao",
+      "camera": "far",
+      "tick": "0",
+      "resolution": "1280x720",
+      "dpr": "1"
+    },
+    "canvas": {
+      "hidden": false,
+      "width": 1280,
+      "height": 720,
+      "box": {
+        "x": 140,
+        "y": 334.0625,
+        "width": 1320,
+        "height": 742.5,
+        "top": 334.0625,
+        "right": 1460,
+        "bottom": 1076.5625,
+        "left": 140
+      },
+      "devicePixelRatio": 1
+    }
+  },
+  "stableSourceFrame": true,
+  "fractionalElementBox": {
+    "x": 140,
+    "y": 334.0625,
+    "width": 1320,
+    "height": 742.5
+  },
+  "ui": {
+    "path": "F05-greedy-no-ao-tick0-ui.png",
+    "bytes": 57421,
+    "sha256": "10bb2319264b253888a60bb9db3cb83d8aa8019e51c5a71c0a9ba0eba3e80687",
+    "width": 1600,
+    "height": 1118
+  },
+  "canvas": {
+    "path": "F05-greedy-no-ao-tick0-canvas.png",
+    "bytes": 15014,
+    "sha256": "a9b7ec0512a8a23ad27e639809e32aba858d0b7cf1566c0011f8e44ab3adf699",
+    "width": 1320,
+    "height": 743
+  },
+  "imageAuthority": "Playwright Chromium compositor only; NOT native hit-buffer identity",
+  "nativeGpuMs": "UNKNOWN",
+  "nativeVram": "UNKNOWN"
+}

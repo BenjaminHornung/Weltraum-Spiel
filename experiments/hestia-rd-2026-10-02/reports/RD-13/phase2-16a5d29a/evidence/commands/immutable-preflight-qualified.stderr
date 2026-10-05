@@ -1,0 +1,22 @@
+node:fs:1722
+  const stats = binding.lstat(
+                        ^
+
+Error: ENOENT: no such file or directory, lstat 'C:\IFI_SourceCode\Temp\Hestia-RD-2026-10-02-worktrees\Hestia-RD-RD13\experiments\hestia-rd-2026-10-02\node_modules\playwright-core\lib\server\utils\processLauncher.js'
+    at lstatSync (node:fs:1722:25)
+    at bytes (file:///C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-worktrees/Hestia-RD-RD13/experiments/hestia-rd-2026-10-02/reports/RD-13/phase2-16a5d29a/support.mjs:25:61)
+    at bound (file:///C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-worktrees/Hestia-RD-RD13/experiments/hestia-rd-2026-10-02/reports/RD-13/phase2-16a5d29a/support.mjs:26:44)
+    at file:///C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-worktrees/Hestia-RD-RD13/experiments/hestia-rd-2026-10-02/reports/RD-13/phase2-16a5d29a/support.mjs:65:357
+    at Array.map (<anonymous>)
+    at immutable (file:///C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-worktrees/Hestia-RD-RD13/experiments/hestia-rd-2026-10-02/reports/RD-13/phase2-16a5d29a/support.mjs:65:348)
+    at file:///C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-worktrees/Hestia-RD-RD13/experiments/hestia-rd-2026-10-02/reports/RD-13/phase2-16a5d29a/support.mjs:76:106
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'lstat',
+  path: 'C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\node_modules\\playwright-core\\lib\\server\\utils\\processLauncher.js'
+}
+
+Node.js v22.23.2

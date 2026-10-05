@@ -1,0 +1,25 @@
+import{test,expect,type Page}from'@playwright/test';
+import{createHash}from'node:crypto';
+import{readFileSync}from'node:fs';
+const entry='/src/experiments/camera-occlusion/index.html',hash=(b:Uint8Array)=>createHash('sha256').update(b).digest('hex');
+async function state(page:Page){return JSON.parse((await page.locator('#facts').textContent())!);}
+async function rendered(page:Page){await page.waitForFunction(()=>{const s=JSON.parse(document.getElementById('facts')!.textContent!);return s.diagnostics?.rendered?.frameVersion===s.diagnostics?.frameVersion&&s.diagnostics?.rendered?.fixtureDigest===s.facts?.fixtureDigest;});return state(page);}
+async function inspect(page:Page){return page.evaluate(()=>(window as any).CameraTestBridge.inspect());}
+async function markerPixels(page:Page,png:Uint8Array){return page.evaluate(async base64=>{const bitmap=await createImageBitmap(new Blob([Uint8Array.from(atob(base64),c=>c.charCodeAt(0))],{type:'image/png'})),canvas=new OffscreenCanvas(bitmap.width,bitmap.height),ctx=canvas.getContext('2d')!;ctx.drawImage(bitmap,0,0);bitmap.close();const pixels=ctx.getImageData(0,0,canvas.width,canvas.height).data;let count=0;for(let i=0;i<pixels.length;i+=4)if(pixels[i+2]>pixels[i]*1.1&&pixels[i]>pixels[i+1]*1.1&&pixels[i]>40)count++;return count;},Buffer.from(png).toString('base64'));}
+test('CAM01/CAM02/CAM04 actual native clipping/push-in preserve source and ray picks; paused views restore on remount',async({page},info)=>{
+ const errors:string[]=[];page.on('pageerror',e=>errors.push(String(e)));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
+ const response=await page.goto(entry+'?testBridge=1');expect(hash(await response!.body())).toBe(hash(readFileSync('dist'+entry)));await expect(page.locator('#status')).toContainText('Bereit');const observations:any[]=[];
+ async function mount(variant:string){await page.locator('#variant').selectOption(variant);await page.locator('#mount').click();await expect(page.locator('#status')).toHaveText('Kamera-Labor aktiv');return rendered(page);}
+ async function close(){await page.locator('#dispose').click();await expect(page.locator('#status')).toHaveText('Disposed');expect((await state(page)).liveHosts).toEqual({renderers:0,renderloops:0,hostListeners:0});}
+ const control=await mount('control'),before=await inspect(page),controlPng=await page.locator('#view').screenshot({path:info.outputPath('near-control.png')});expect(before.materials.every((m:any)=>m.planes.length===0)).toBe(true);await close();
+ const clipped=await mount('clip-corridor'),after=await inspect(page),clipPng=await page.locator('#view').screenshot({path:info.outputPath('near-clip.png')});
+ expect(after.source).toEqual(before.source);expect(after.hits).toEqual(before.hits);expect(after.materials.filter((m:any)=>m.mesh.startsWith('cutout-obstacles:')).every((m:any)=>m.planes.length===6&&m.clipIntersection&&!m.clipShadows)).toBe(true);
+ expect(after.materials.filter((m:any)=>m.mesh.startsWith('figure-marker:')).every((m:any)=>m.planes.length===0)).toBe(true);expect(hash(clipPng)).not.toBe(hash(controlPng));expect(clipped.diagnostics.cameraActual).toEqual(control.diagnostics.cameraActual);
+ const visibility={control:await markerPixels(page,controlPng),clipped:await markerPixels(page,clipPng)};expect(visibility.clipped).toBeGreaterThan(visibility.control);
+ observations.push({control,before,clipped,after,visibility});
+ for(const id of['inside-wall','medium','far','near']){await page.locator('#camera').selectOption(id);await expect(page.locator('#status')).toHaveText('Kamera angewendet');const s=await rendered(page);expect(s.occlusion.cameraId).toBe(id);expect(s.liveHosts).toMatchObject({renderers:1,renderloops:1});observations.push(s);await page.locator('#view').screenshot({path:info.outputPath(id+'-clip.png')});}
+ await page.locator('#pause').click();await expect(page.locator('#status')).toHaveText('Pausiert');expect((await rendered(page)).clock.paused).toBe(true);await close();
+ const pushed=await mount('push-in'),push=await inspect(page);expect(pushed.occlusion.status).toBe('SOURCE_QUERY_PUSH_IN');expect(push.diagnostics.cameraActual.positionMeters).toEqual(pushed.occlusion.cameraView.positionMeters);expect(push.materials.every((m:any)=>m.planes.length===0)).toBe(true);expect(push.source).toEqual(before.source);expect(push.hits).toEqual(before.hits);await page.locator('#view').screenshot({path:info.outputPath('near-push.png')});observations.push({pushed,push});await close();
+ const restored=await mount('control'),off=await inspect(page),offPng=await page.locator('#view').screenshot({path:info.outputPath('near-restored.png')});expect(hash(offPng)).toBe(hash(controlPng));expect(off.materials.every((m:any)=>m.planes.length===0)).toBe(true);expect(restored.facts.errors).toEqual([]);await close();expect(errors).toEqual([]);
+ await info.attach('native-bound-camera',{body:JSON.stringify({observations,restored,errors,qualification:'Q0_FUNCTIONAL_UNQUALIFIED',cameraHysteresis:'NOT_RUN_FREE_LOOK',nativeShadow:'UNSUPPORTED',productIntegrated:false}),contentType:'application/json'});
+});

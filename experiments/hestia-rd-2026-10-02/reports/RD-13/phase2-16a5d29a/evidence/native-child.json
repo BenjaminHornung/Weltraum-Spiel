@@ -1,0 +1,22 @@
+{
+  "pid": 88928,
+  "binary": {
+    "path": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+    "bytes": 86997320,
+    "sha256": "0d0f5e39f9f3d9587bc19f73eab3c2c9c4903fd02d6dbf9c853dd81b3d95fad4"
+  },
+  "args": [
+    "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-worktrees/Hestia-RD-RD13/experiments/hestia-rd-2026-10-02/node_modules/@playwright/test/cli.js",
+    "test",
+    "--config",
+    "reports/RD-13/phase2-16a5d29a/playwright.config.ts"
+  ],
+  "cwd": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-worktrees/Hestia-RD-RD13/experiments/hestia-rd-2026-10-02",
+  "source": "16a5d29a5cddea372abae139da618aa000a058be",
+  "tree": "abb0bdde3039c33d1a815d2f2754103fcb16c100",
+  "admissionSha256": "236b86ef1831498ad4b5072778d5ad9b8868bf61ca3a064bb73494beaa0761b7",
+  "TEMP": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-13/phase2-16a5d29a-20261004-a/temp",
+  "PATH": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-13/phase2-16a5d29a-20261004-a/bin;C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64;C:/IFI_SourceCode/Utils/opencode-migration/runtime/git/cmd;C:/IFI_SourceCode/Utils/PowerShell",
+  "COMSPEC": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-13/phase2-16a5d29a-20261004-a/bin/cmd.exe",
+  "productIntegrated": false
+}

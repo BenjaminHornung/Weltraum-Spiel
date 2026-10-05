@@ -1,0 +1,1378 @@
+{
+  "source": "16a5d29a5cddea372abae139da618aa000a058be",
+  "productIntegrated": false,
+  "admission": {
+    "url": "http://127.0.0.1:5280/src/experiments/voxel-rays/index.html?testBridge=1",
+    "bridgePresent": true,
+    "status": "FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.",
+    "projected": {
+      "productIntegrated": false,
+      "history": [
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission"
+      ],
+      "terminal": {
+        "firstFailure": "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "pending": false,
+        "disposed": true,
+        "productIntegrated": false
+      }
+    },
+    "selections": {
+      "fixture": "F00-CONTROL-REPLAY",
+      "variant": "rays-no-ao",
+      "camera": "far",
+      "tick": "0",
+      "resolution": "1280x720",
+      "dpr": "1"
+    },
+    "canvas": {
+      "hidden": true,
+      "width": 1280,
+      "height": 720,
+      "box": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "devicePixelRatio": 1
+    }
+  },
+  "result": {
+    "results": [
+      {
+        "id": "entry-first-cell",
+        "result": {
+          "status": "FAIL",
+          "reason": "Error: Native shader compile failed: ERROR: 0:51: 'sample' : Illegal use of reserved word\nERROR: 0:51: 'sample' : syntax error\n\u0000",
+          "kernelSha256": "4998595025abd4f77a989bd7144b1dcb1c1422cbb0a2d1ffb0ddbd1c14717600",
+          "shaderSha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+          "productIntegrated": false,
+          "source": {
+            "ownerId": "rd13-synthetic-test",
+            "sourceNamespace": "rd13-synthetic-not-fixture",
+            "sourceRevision": 0,
+            "regionId": "synthetic-cells",
+            "fixtureDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+            "recipeSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "sourceIds": [],
+            "sourceIdMeaning": {},
+            "originalDimensions": [
+              4,
+              1,
+              1
+            ],
+            "originalOriginMeters": [
+              0,
+              0,
+              0
+            ]
+          },
+          "sourceSlotSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+          "inputPackedSha256": "630f7b37b2d17dba0c8815b91beff8b90bab42278003187c7f28b68e6dac3655",
+          "fault": "none",
+          "nativeGpuBytes": {
+            "status": "unsupported",
+            "reason": "Even context-only acquisition consumes unknown native VRAM"
+          },
+          "expected": {
+            "status": "hit",
+            "t": 1,
+            "point": [
+              0,
+              0.5,
+              0.5
+            ],
+            "normal": [
+              -1,
+              0,
+              0
+            ],
+            "slot": 1,
+            "materialId": "synthetic-dry",
+            "cell": [
+              0,
+              0,
+              0
+            ],
+            "originalCell": [
+              0,
+              0,
+              0
+            ],
+            "sourceIds": [],
+            "unknownTraversed": false,
+            "outsideUnknown": true
+          },
+          "mismatches": [],
+          "projectionAllocations": 10,
+          "cleanup": {
+            "textures": 6,
+            "programs": 1,
+            "shaders": 2,
+            "framebuffers": 1,
+            "vaos": 0
+          },
+          "device": {
+            "renderer": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+            "vendor": "Google Inc. (Intel)",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+            "classification": "hardware-candidate"
+          },
+          "uploadedPackedSha256": "630f7b37b2d17dba0c8815b91beff8b90bab42278003187c7f28b68e6dac3655"
+        }
+      },
+      {
+        "id": "negative-zero-components",
+        "result": {
+          "status": "FAIL",
+          "reason": "Error: Native shader compile failed: ERROR: 0:51: 'sample' : Illegal use of reserved word\nERROR: 0:51: 'sample' : syntax error\n\u0000",
+          "kernelSha256": "4998595025abd4f77a989bd7144b1dcb1c1422cbb0a2d1ffb0ddbd1c14717600",
+          "shaderSha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+          "productIntegrated": false,
+          "source": {
+            "ownerId": "rd13-synthetic-test",
+            "sourceNamespace": "rd13-synthetic-not-fixture",
+            "sourceRevision": 0,
+            "regionId": "synthetic-cells",
+            "fixtureDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+            "recipeSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "sourceIds": [],
+            "sourceIdMeaning": {},
+            "originalDimensions": [
+              4,
+              1,
+              1
+            ],
+            "originalOriginMeters": [
+              0,
+              0,
+              0
+            ]
+          },
+          "sourceSlotSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+          "inputPackedSha256": "630f7b37b2d17dba0c8815b91beff8b90bab42278003187c7f28b68e6dac3655",
+          "fault": "none",
+          "nativeGpuBytes": {
+            "status": "unsupported",
+            "reason": "Even context-only acquisition consumes unknown native VRAM"
+          },
+          "expected": {
+            "status": "hit",
+            "t": 1,
+            "point": [
+              4,
+              0.5,
+              0.5
+            ],
+            "normal": [
+              1,
+              0,
+              0
+            ],
+            "slot": 2,
+            "materialId": "synthetic-wet",
+            "cell": [
+              3,
+              0,
+              0
+            ],
+            "originalCell": [
+              3,
+              0,
+              0
+            ],
+            "sourceIds": [],
+            "unknownTraversed": false,
+            "outsideUnknown": true
+          },
+          "mismatches": [],
+          "projectionAllocations": 10,
+          "cleanup": {
+            "textures": 6,
+            "programs": 1,
+            "shaders": 2,
+            "framebuffers": 1,
+            "vaos": 0
+          },
+          "device": {
+            "renderer": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+            "vendor": "Google Inc. (Intel)",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+            "classification": "hardware-candidate"
+          },
+          "uploadedPackedSha256": "630f7b37b2d17dba0c8815b91beff8b90bab42278003187c7f28b68e6dac3655"
+        }
+      },
+      {
+        "id": "negative-world-floor",
+        "result": {
+          "status": "FAIL",
+          "reason": "Error: Native shader compile failed: ERROR: 0:51: 'sample' : Illegal use of reserved word\nERROR: 0:51: 'sample' : syntax error\n\u0000",
+          "kernelSha256": "4998595025abd4f77a989bd7144b1dcb1c1422cbb0a2d1ffb0ddbd1c14717600",
+          "shaderSha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+          "productIntegrated": false,
+          "source": {
+            "ownerId": "rd13-synthetic-test",
+            "sourceNamespace": "rd13-synthetic-not-fixture",
+            "sourceRevision": 0,
+            "regionId": "synthetic-cells",
+            "fixtureDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+            "recipeSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "sourceIds": [],
+            "sourceIdMeaning": {},
+            "originalDimensions": [
+              3,
+              1,
+              1
+            ],
+            "originalOriginMeters": [
+              -4,
+              0,
+              0
+            ]
+          },
+          "sourceSlotSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+          "inputPackedSha256": "72e5b9f49f28919466825822df33814bc0b009152abdc31a24a3224ad33c5f40",
+          "fault": "none",
+          "nativeGpuBytes": {
+            "status": "unsupported",
+            "reason": "Even context-only acquisition consumes unknown native VRAM"
+          },
+          "expected": {
+            "status": "hit",
+            "t": 0.25,
+            "point": [
+              -4,
+              0.5,
+              0.5
+            ],
+            "normal": [
+              -1,
+              0,
+              0
+            ],
+            "slot": 1,
+            "materialId": "synthetic-dry",
+            "cell": [
+              0,
+              0,
+              0
+            ],
+            "originalCell": [
+              0,
+              0,
+              0
+            ],
+            "sourceIds": [],
+            "unknownTraversed": false,
+            "outsideUnknown": true
+          },
+          "mismatches": [],
+          "projectionAllocations": 10,
+          "cleanup": {
+            "textures": 6,
+            "programs": 1,
+            "shaders": 2,
+            "framebuffers": 1,
+            "vaos": 0
+          },
+          "device": {
+            "renderer": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+            "vendor": "Google Inc. (Intel)",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+            "classification": "hardware-candidate"
+          },
+          "uploadedPackedSha256": "72e5b9f49f28919466825822df33814bc0b009152abdc31a24a3224ad33c5f40"
+        }
+      },
+      {
+        "id": "exact-negative-boundary",
+        "result": {
+          "status": "FAIL",
+          "reason": "Error: Native shader compile failed: ERROR: 0:51: 'sample' : Illegal use of reserved word\nERROR: 0:51: 'sample' : syntax error\n\u0000",
+          "kernelSha256": "4998595025abd4f77a989bd7144b1dcb1c1422cbb0a2d1ffb0ddbd1c14717600",
+          "shaderSha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+          "productIntegrated": false,
+          "source": {
+            "ownerId": "rd13-synthetic-test",
+            "sourceNamespace": "rd13-synthetic-not-fixture",
+            "sourceRevision": 0,
+            "regionId": "synthetic-cells",
+            "fixtureDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+            "recipeSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "sourceIds": [],
+            "sourceIdMeaning": {},
+            "originalDimensions": [
+              4,
+              1,
+              1
+            ],
+            "originalOriginMeters": [
+              0,
+              0,
+              0
+            ]
+          },
+          "sourceSlotSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+          "inputPackedSha256": "630f7b37b2d17dba0c8815b91beff8b90bab42278003187c7f28b68e6dac3655",
+          "fault": "none",
+          "nativeGpuBytes": {
+            "status": "unsupported",
+            "reason": "Even context-only acquisition consumes unknown native VRAM"
+          },
+          "expected": {
+            "status": "hit",
+            "t": 1,
+            "point": [
+              0,
+              0.5,
+              0.5
+            ],
+            "normal": [
+              -1,
+              0,
+              0
+            ],
+            "slot": 1,
+            "materialId": "synthetic-dry",
+            "cell": [
+              0,
+              0,
+              0
+            ],
+            "originalCell": [
+              0,
+              0,
+              0
+            ],
+            "sourceIds": [],
+            "unknownTraversed": false,
+            "outsideUnknown": true
+          },
+          "mismatches": [],
+          "projectionAllocations": 10,
+          "cleanup": {
+            "textures": 6,
+            "programs": 1,
+            "shaders": 2,
+            "framebuffers": 1,
+            "vaos": 0
+          },
+          "device": {
+            "renderer": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+            "vendor": "Google Inc. (Intel)",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+            "classification": "hardware-candidate"
+          },
+          "uploadedPackedSha256": "630f7b37b2d17dba0c8815b91beff8b90bab42278003187c7f28b68e6dac3655"
+        }
+      },
+      {
+        "id": "inside-contiguous-run",
+        "result": {
+          "status": "FAIL",
+          "reason": "Error: Native shader compile failed: ERROR: 0:51: 'sample' : Illegal use of reserved word\nERROR: 0:51: 'sample' : syntax error\n\u0000",
+          "kernelSha256": "4998595025abd4f77a989bd7144b1dcb1c1422cbb0a2d1ffb0ddbd1c14717600",
+          "shaderSha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+          "productIntegrated": false,
+          "source": {
+            "ownerId": "rd13-synthetic-test",
+            "sourceNamespace": "rd13-synthetic-not-fixture",
+            "sourceRevision": 0,
+            "regionId": "synthetic-cells",
+            "fixtureDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+            "recipeSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "sourceIds": [],
+            "sourceIdMeaning": {},
+            "originalDimensions": [
+              4,
+              1,
+              1
+            ],
+            "originalOriginMeters": [
+              0,
+              0,
+              0
+            ]
+          },
+          "sourceSlotSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+          "inputPackedSha256": "630f7b37b2d17dba0c8815b91beff8b90bab42278003187c7f28b68e6dac3655",
+          "fault": "none",
+          "nativeGpuBytes": {
+            "status": "unsupported",
+            "reason": "Even context-only acquisition consumes unknown native VRAM"
+          },
+          "expected": {
+            "status": "hit",
+            "t": 1.5,
+            "point": [
+              2,
+              0.5,
+              0.5
+            ],
+            "normal": [
+              1,
+              0,
+              0
+            ],
+            "slot": 1,
+            "materialId": "synthetic-dry",
+            "cell": [
+              1,
+              0,
+              0
+            ],
+            "originalCell": [
+              1,
+              0,
+              0
+            ],
+            "sourceIds": [],
+            "unknownTraversed": false,
+            "outsideUnknown": true
+          },
+          "mismatches": [],
+          "projectionAllocations": 10,
+          "cleanup": {
+            "textures": 6,
+            "programs": 1,
+            "shaders": 2,
+            "framebuffers": 1,
+            "vaos": 0
+          },
+          "device": {
+            "renderer": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+            "vendor": "Google Inc. (Intel)",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+            "classification": "hardware-candidate"
+          },
+          "uploadedPackedSha256": "630f7b37b2d17dba0c8815b91beff8b90bab42278003187c7f28b68e6dac3655"
+        }
+      },
+      {
+        "id": "hollow-inside-air",
+        "result": {
+          "status": "FAIL",
+          "reason": "Error: Native shader compile failed: ERROR: 0:51: 'sample' : Illegal use of reserved word\nERROR: 0:51: 'sample' : syntax error\n\u0000",
+          "kernelSha256": "4998595025abd4f77a989bd7144b1dcb1c1422cbb0a2d1ffb0ddbd1c14717600",
+          "shaderSha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+          "productIntegrated": false,
+          "source": {
+            "ownerId": "rd13-synthetic-test",
+            "sourceNamespace": "rd13-synthetic-not-fixture",
+            "sourceRevision": 0,
+            "regionId": "synthetic-cells",
+            "fixtureDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+            "recipeSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "sourceIds": [],
+            "sourceIdMeaning": {},
+            "originalDimensions": [
+              3,
+              1,
+              1
+            ],
+            "originalOriginMeters": [
+              0,
+              0,
+              0
+            ]
+          },
+          "sourceSlotSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+          "inputPackedSha256": "40c21ba9fe057cba9d40fe41399d301cdf0b8a0a187fd906c7ff8d85062c7a29",
+          "fault": "none",
+          "nativeGpuBytes": {
+            "status": "unsupported",
+            "reason": "Even context-only acquisition consumes unknown native VRAM"
+          },
+          "expected": {
+            "status": "hit",
+            "t": 0.5,
+            "point": [
+              2,
+              0.5,
+              0.5
+            ],
+            "normal": [
+              -1,
+              0,
+              0
+            ],
+            "slot": 1,
+            "materialId": "synthetic-dry",
+            "cell": [
+              2,
+              0,
+              0
+            ],
+            "originalCell": [
+              2,
+              0,
+              0
+            ],
+            "sourceIds": [],
+            "unknownTraversed": false,
+            "outsideUnknown": true
+          },
+          "mismatches": [],
+          "projectionAllocations": 10,
+          "cleanup": {
+            "textures": 6,
+            "programs": 1,
+            "shaders": 2,
+            "framebuffers": 1,
+            "vaos": 0
+          },
+          "device": {
+            "renderer": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+            "vendor": "Google Inc. (Intel)",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+            "classification": "hardware-candidate"
+          },
+          "uploadedPackedSha256": "40c21ba9fe057cba9d40fe41399d301cdf0b8a0a187fd906c7ff8d85062c7a29"
+        }
+      },
+      {
+        "id": "null-component-outside-slab",
+        "result": {
+          "status": "FAIL",
+          "reason": "Error: Native shader compile failed: ERROR: 0:51: 'sample' : Illegal use of reserved word\nERROR: 0:51: 'sample' : syntax error\n\u0000",
+          "kernelSha256": "4998595025abd4f77a989bd7144b1dcb1c1422cbb0a2d1ffb0ddbd1c14717600",
+          "shaderSha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+          "productIntegrated": false,
+          "source": {
+            "ownerId": "rd13-synthetic-test",
+            "sourceNamespace": "rd13-synthetic-not-fixture",
+            "sourceRevision": 0,
+            "regionId": "synthetic-cells",
+            "fixtureDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+            "recipeSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "sourceIds": [],
+            "sourceIdMeaning": {},
+            "originalDimensions": [
+              4,
+              1,
+              1
+            ],
+            "originalOriginMeters": [
+              0,
+              0,
+              0
+            ]
+          },
+          "sourceSlotSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+          "inputPackedSha256": "630f7b37b2d17dba0c8815b91beff8b90bab42278003187c7f28b68e6dac3655",
+          "fault": "none",
+          "nativeGpuBytes": {
+            "status": "unsupported",
+            "reason": "Even context-only acquisition consumes unknown native VRAM"
+          },
+          "expected": {
+            "status": "miss",
+            "unknownTraversed": false,
+            "outsideUnknown": true
+          },
+          "mismatches": [],
+          "projectionAllocations": 10,
+          "cleanup": {
+            "textures": 6,
+            "programs": 1,
+            "shaders": 2,
+            "framebuffers": 1,
+            "vaos": 0
+          },
+          "device": {
+            "renderer": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+            "vendor": "Google Inc. (Intel)",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+            "classification": "hardware-candidate"
+          },
+          "uploadedPackedSha256": "630f7b37b2d17dba0c8815b91beff8b90bab42278003187c7f28b68e6dac3655"
+        }
+      },
+      {
+        "id": "zero-length-grazing",
+        "result": {
+          "status": "FAIL",
+          "reason": "Error: Native shader compile failed: ERROR: 0:51: 'sample' : Illegal use of reserved word\nERROR: 0:51: 'sample' : syntax error\n\u0000",
+          "kernelSha256": "4998595025abd4f77a989bd7144b1dcb1c1422cbb0a2d1ffb0ddbd1c14717600",
+          "shaderSha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+          "productIntegrated": false,
+          "source": {
+            "ownerId": "rd13-synthetic-test",
+            "sourceNamespace": "rd13-synthetic-not-fixture",
+            "sourceRevision": 0,
+            "regionId": "synthetic-cells",
+            "fixtureDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+            "recipeSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "sourceIds": [],
+            "sourceIdMeaning": {},
+            "originalDimensions": [
+              4,
+              1,
+              1
+            ],
+            "originalOriginMeters": [
+              0,
+              0,
+              0
+            ]
+          },
+          "sourceSlotSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+          "inputPackedSha256": "630f7b37b2d17dba0c8815b91beff8b90bab42278003187c7f28b68e6dac3655",
+          "fault": "none",
+          "nativeGpuBytes": {
+            "status": "unsupported",
+            "reason": "Even context-only acquisition consumes unknown native VRAM"
+          },
+          "expected": {
+            "status": "miss",
+            "unknownTraversed": false,
+            "outsideUnknown": true
+          },
+          "mismatches": [],
+          "projectionAllocations": 10,
+          "cleanup": {
+            "textures": 6,
+            "programs": 1,
+            "shaders": 2,
+            "framebuffers": 1,
+            "vaos": 0
+          },
+          "device": {
+            "renderer": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+            "vendor": "Google Inc. (Intel)",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+            "classification": "hardware-candidate"
+          },
+          "uploadedPackedSha256": "630f7b37b2d17dba0c8815b91beff8b90bab42278003187c7f28b68e6dac3655"
+        }
+      },
+      {
+        "id": "all-three-tied-axes",
+        "result": {
+          "status": "FAIL",
+          "reason": "Error: Native shader compile failed: ERROR: 0:51: 'sample' : Illegal use of reserved word\nERROR: 0:51: 'sample' : syntax error\n\u0000",
+          "kernelSha256": "4998595025abd4f77a989bd7144b1dcb1c1422cbb0a2d1ffb0ddbd1c14717600",
+          "shaderSha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+          "productIntegrated": false,
+          "source": {
+            "ownerId": "rd13-synthetic-test",
+            "sourceNamespace": "rd13-synthetic-not-fixture",
+            "sourceRevision": 0,
+            "regionId": "synthetic-cells",
+            "fixtureDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+            "recipeSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "sourceIds": [],
+            "sourceIdMeaning": {},
+            "originalDimensions": [
+              2,
+              2,
+              2
+            ],
+            "originalOriginMeters": [
+              0,
+              0,
+              0
+            ]
+          },
+          "sourceSlotSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+          "inputPackedSha256": "64589bffb1a8e5ab74b437028cfb6c5faa7fb230059fb14a576527745b505ca5",
+          "fault": "none",
+          "nativeGpuBytes": {
+            "status": "unsupported",
+            "reason": "Even context-only acquisition consumes unknown native VRAM"
+          },
+          "expected": {
+            "status": "hit",
+            "t": 3.464101615137754,
+            "point": [
+              1,
+              1,
+              1
+            ],
+            "normal": [
+              -1,
+              0,
+              0
+            ],
+            "slot": 2,
+            "materialId": "synthetic-wet",
+            "cell": [
+              1,
+              1,
+              1
+            ],
+            "originalCell": [
+              1,
+              1,
+              1
+            ],
+            "sourceIds": [],
+            "unknownTraversed": false,
+            "outsideUnknown": true
+          },
+          "mismatches": [],
+          "projectionAllocations": 10,
+          "cleanup": {
+            "textures": 6,
+            "programs": 1,
+            "shaders": 2,
+            "framebuffers": 1,
+            "vaos": 0
+          },
+          "device": {
+            "renderer": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+            "vendor": "Google Inc. (Intel)",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+            "classification": "hardware-candidate"
+          },
+          "uploadedPackedSha256": "64589bffb1a8e5ab74b437028cfb6c5faa7fb230059fb14a576527745b505ca5"
+        }
+      },
+      {
+        "id": "unknown-before-hit",
+        "result": {
+          "status": "FAIL",
+          "reason": "Error: Native shader compile failed: ERROR: 0:51: 'sample' : Illegal use of reserved word\nERROR: 0:51: 'sample' : syntax error\n\u0000",
+          "kernelSha256": "4998595025abd4f77a989bd7144b1dcb1c1422cbb0a2d1ffb0ddbd1c14717600",
+          "shaderSha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+          "productIntegrated": false,
+          "source": {
+            "ownerId": "rd13-synthetic-test",
+            "sourceNamespace": "rd13-synthetic-not-fixture",
+            "sourceRevision": 0,
+            "regionId": "synthetic-cells",
+            "fixtureDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+            "recipeSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "sourceIds": [],
+            "sourceIdMeaning": {},
+            "originalDimensions": [
+              3,
+              1,
+              1
+            ],
+            "originalOriginMeters": [
+              0,
+              0,
+              0
+            ]
+          },
+          "sourceSlotSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+          "inputPackedSha256": "1a88fffdcb4dfee9204a30ce4eb0fe2b9622d0c6939a1a669dcaf5b83f175732",
+          "fault": "none",
+          "nativeGpuBytes": {
+            "status": "unsupported",
+            "reason": "Even context-only acquisition consumes unknown native VRAM"
+          },
+          "expected": {
+            "status": "hit",
+            "t": 1.5,
+            "point": [
+              2,
+              0.5,
+              0.5
+            ],
+            "normal": [
+              -1,
+              0,
+              0
+            ],
+            "slot": 1,
+            "materialId": "synthetic-dry",
+            "cell": [
+              2,
+              0,
+              0
+            ],
+            "originalCell": [
+              2,
+              0,
+              0
+            ],
+            "sourceIds": [],
+            "unknownTraversed": true,
+            "outsideUnknown": true
+          },
+          "mismatches": [],
+          "projectionAllocations": 10,
+          "cleanup": {
+            "textures": 6,
+            "programs": 1,
+            "shaders": 2,
+            "framebuffers": 1,
+            "vaos": 0
+          },
+          "device": {
+            "renderer": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+            "vendor": "Google Inc. (Intel)",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+            "classification": "hardware-candidate"
+          },
+          "uploadedPackedSha256": "1a88fffdcb4dfee9204a30ce4eb0fe2b9622d0c6939a1a669dcaf5b83f175732"
+        }
+      },
+      {
+        "id": "unknown-miss-is-not-clearance",
+        "result": {
+          "status": "FAIL",
+          "reason": "Error: Native shader compile failed: ERROR: 0:51: 'sample' : Illegal use of reserved word\nERROR: 0:51: 'sample' : syntax error\n\u0000",
+          "kernelSha256": "4998595025abd4f77a989bd7144b1dcb1c1422cbb0a2d1ffb0ddbd1c14717600",
+          "shaderSha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+          "productIntegrated": false,
+          "source": {
+            "ownerId": "rd13-synthetic-test",
+            "sourceNamespace": "rd13-synthetic-not-fixture",
+            "sourceRevision": 0,
+            "regionId": "synthetic-cells",
+            "fixtureDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+            "recipeSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "sourceIds": [],
+            "sourceIdMeaning": {},
+            "originalDimensions": [
+              2,
+              1,
+              1
+            ],
+            "originalOriginMeters": [
+              0,
+              0,
+              0
+            ]
+          },
+          "sourceSlotSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+          "inputPackedSha256": "2e22fd435060cd5d3cf5e3ef39f79e198b35bd2c4af31974db36601b3a2f4c91",
+          "fault": "none",
+          "nativeGpuBytes": {
+            "status": "unsupported",
+            "reason": "Even context-only acquisition consumes unknown native VRAM"
+          },
+          "expected": {
+            "status": "miss",
+            "unknownTraversed": true,
+            "outsideUnknown": true
+          },
+          "mismatches": [],
+          "projectionAllocations": 10,
+          "cleanup": {
+            "textures": 6,
+            "programs": 1,
+            "shaders": 2,
+            "framebuffers": 1,
+            "vaos": 0
+          },
+          "device": {
+            "renderer": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+            "vendor": "Google Inc. (Intel)",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+            "classification": "hardware-candidate"
+          },
+          "uploadedPackedSha256": "2e22fd435060cd5d3cf5e3ef39f79e198b35bd2c4af31974db36601b3a2f4c91"
+        }
+      },
+      {
+        "id": "exit-at-unknown-face",
+        "result": {
+          "status": "FAIL",
+          "reason": "Error: Native shader compile failed: ERROR: 0:51: 'sample' : Illegal use of reserved word\nERROR: 0:51: 'sample' : syntax error\n\u0000",
+          "kernelSha256": "4998595025abd4f77a989bd7144b1dcb1c1422cbb0a2d1ffb0ddbd1c14717600",
+          "shaderSha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+          "productIntegrated": false,
+          "source": {
+            "ownerId": "rd13-synthetic-test",
+            "sourceNamespace": "rd13-synthetic-not-fixture",
+            "sourceRevision": 0,
+            "regionId": "synthetic-cells",
+            "fixtureDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+            "recipeSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+            "sourceIds": [],
+            "sourceIdMeaning": {},
+            "originalDimensions": [
+              2,
+              1,
+              1
+            ],
+            "originalOriginMeters": [
+              0,
+              0,
+              0
+            ]
+          },
+          "sourceSlotSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+          "inputPackedSha256": "4500f13127e64cfa2cab4b0e3883a3ac30cd90a9bcdab43e742c28879f660a99",
+          "fault": "none",
+          "nativeGpuBytes": {
+            "status": "unsupported",
+            "reason": "Even context-only acquisition consumes unknown native VRAM"
+          },
+          "expected": {
+            "status": "hit",
+            "t": 0.5,
+            "point": [
+              1,
+              0.5,
+              0.5
+            ],
+            "normal": [
+              1,
+              0,
+              0
+            ],
+            "slot": 1,
+            "materialId": "synthetic-dry",
+            "cell": [
+              0,
+              0,
+              0
+            ],
+            "originalCell": [
+              0,
+              0,
+              0
+            ],
+            "sourceIds": [],
+            "unknownTraversed": true,
+            "outsideUnknown": true
+          },
+          "mismatches": [],
+          "projectionAllocations": 10,
+          "cleanup": {
+            "textures": 6,
+            "programs": 1,
+            "shaders": 2,
+            "framebuffers": 1,
+            "vaos": 0
+          },
+          "device": {
+            "renderer": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+            "vendor": "Google Inc. (Intel)",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+            "classification": "hardware-candidate"
+          },
+          "uploadedPackedSha256": "4500f13127e64cfa2cab4b0e3883a3ac30cd90a9bcdab43e742c28879f660a99"
+        }
+      }
+    ],
+    "faults": [
+      {
+        "status": "FAIL",
+        "reason": "Error: Native shader compile failed: ERROR: 0:51: 'sample' : Illegal use of reserved word\nERROR: 0:51: 'sample' : syntax error\n\u0000",
+        "kernelSha256": "4998595025abd4f77a989bd7144b1dcb1c1422cbb0a2d1ffb0ddbd1c14717600",
+        "shaderSha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+        "productIntegrated": false,
+        "source": {
+          "ownerId": "rd13-synthetic-test",
+          "sourceNamespace": "rd13-synthetic-not-fixture",
+          "sourceRevision": 0,
+          "regionId": "synthetic-cells",
+          "fixtureDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+          "recipeSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+          "sourceIds": [],
+          "sourceIdMeaning": {},
+          "originalDimensions": [
+            4,
+            1,
+            1
+          ],
+          "originalOriginMeters": [
+            0,
+            0,
+            0
+          ]
+        },
+        "sourceSlotSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+        "inputPackedSha256": "630f7b37b2d17dba0c8815b91beff8b90bab42278003187c7f28b68e6dac3655",
+        "fault": "wrong-slot",
+        "nativeGpuBytes": {
+          "status": "unsupported",
+          "reason": "Even context-only acquisition consumes unknown native VRAM"
+        },
+        "expected": {
+          "status": "hit",
+          "t": 1,
+          "point": [
+            0,
+            0.5,
+            0.5
+          ],
+          "normal": [
+            -1,
+            0,
+            0
+          ],
+          "slot": 1,
+          "materialId": "synthetic-dry",
+          "cell": [
+            0,
+            0,
+            0
+          ],
+          "originalCell": [
+            0,
+            0,
+            0
+          ],
+          "sourceIds": [],
+          "unknownTraversed": false,
+          "outsideUnknown": true
+        },
+        "mismatches": [],
+        "projectionAllocations": 10,
+        "cleanup": {
+          "textures": 6,
+          "programs": 1,
+          "shaders": 2,
+          "framebuffers": 1,
+          "vaos": 0
+        },
+        "device": {
+          "renderer": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "vendor": "Google Inc. (Intel)",
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+          "classification": "hardware-candidate"
+        },
+        "uploadedPackedSha256": "630f7b37b2d17dba0c8815b91beff8b90bab42278003187c7f28b68e6dac3655"
+      },
+      {
+        "status": "FAIL",
+        "reason": "Error: Native shader compile failed: ERROR: 0:51: 'sample' : Illegal use of reserved word\nERROR: 0:51: 'sample' : syntax error\n\u0000",
+        "kernelSha256": "4998595025abd4f77a989bd7144b1dcb1c1422cbb0a2d1ffb0ddbd1c14717600",
+        "shaderSha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+        "productIntegrated": false,
+        "source": {
+          "ownerId": "rd13-synthetic-test",
+          "sourceNamespace": "rd13-synthetic-not-fixture",
+          "sourceRevision": 0,
+          "regionId": "synthetic-cells",
+          "fixtureDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+          "recipeSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+          "sourceIds": [],
+          "sourceIdMeaning": {},
+          "originalDimensions": [
+            4,
+            1,
+            1
+          ],
+          "originalOriginMeters": [
+            0,
+            0,
+            0
+          ]
+        },
+        "sourceSlotSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+        "inputPackedSha256": "630f7b37b2d17dba0c8815b91beff8b90bab42278003187c7f28b68e6dac3655",
+        "fault": "wrong-normal",
+        "nativeGpuBytes": {
+          "status": "unsupported",
+          "reason": "Even context-only acquisition consumes unknown native VRAM"
+        },
+        "expected": {
+          "status": "hit",
+          "t": 1,
+          "point": [
+            0,
+            0.5,
+            0.5
+          ],
+          "normal": [
+            -1,
+            0,
+            0
+          ],
+          "slot": 1,
+          "materialId": "synthetic-dry",
+          "cell": [
+            0,
+            0,
+            0
+          ],
+          "originalCell": [
+            0,
+            0,
+            0
+          ],
+          "sourceIds": [],
+          "unknownTraversed": false,
+          "outsideUnknown": true
+        },
+        "mismatches": [],
+        "projectionAllocations": 10,
+        "cleanup": {
+          "textures": 6,
+          "programs": 1,
+          "shaders": 2,
+          "framebuffers": 1,
+          "vaos": 0
+        },
+        "device": {
+          "renderer": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "vendor": "Google Inc. (Intel)",
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+          "classification": "hardware-candidate"
+        },
+        "uploadedPackedSha256": "630f7b37b2d17dba0c8815b91beff8b90bab42278003187c7f28b68e6dac3655"
+      },
+      {
+        "status": "FAIL",
+        "reason": "Error: Native shader compile failed: ERROR: 0:51: 'sample' : Illegal use of reserved word\nERROR: 0:51: 'sample' : syntax error\n\u0000",
+        "kernelSha256": "4998595025abd4f77a989bd7144b1dcb1c1422cbb0a2d1ffb0ddbd1c14717600",
+        "shaderSha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+        "productIntegrated": false,
+        "source": {
+          "ownerId": "rd13-synthetic-test",
+          "sourceNamespace": "rd13-synthetic-not-fixture",
+          "sourceRevision": 0,
+          "regionId": "synthetic-cells",
+          "fixtureDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+          "recipeSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+          "sourceIds": [],
+          "sourceIdMeaning": {},
+          "originalDimensions": [
+            4,
+            1,
+            1
+          ],
+          "originalOriginMeters": [
+            0,
+            0,
+            0
+          ]
+        },
+        "sourceSlotSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+        "inputPackedSha256": "630f7b37b2d17dba0c8815b91beff8b90bab42278003187c7f28b68e6dac3655",
+        "fault": "force-miss",
+        "nativeGpuBytes": {
+          "status": "unsupported",
+          "reason": "Even context-only acquisition consumes unknown native VRAM"
+        },
+        "expected": {
+          "status": "hit",
+          "t": 1,
+          "point": [
+            0,
+            0.5,
+            0.5
+          ],
+          "normal": [
+            -1,
+            0,
+            0
+          ],
+          "slot": 1,
+          "materialId": "synthetic-dry",
+          "cell": [
+            0,
+            0,
+            0
+          ],
+          "originalCell": [
+            0,
+            0,
+            0
+          ],
+          "sourceIds": [],
+          "unknownTraversed": false,
+          "outsideUnknown": true
+        },
+        "mismatches": [],
+        "projectionAllocations": 10,
+        "cleanup": {
+          "textures": 6,
+          "programs": 1,
+          "shaders": 2,
+          "framebuffers": 1,
+          "vaos": 0
+        },
+        "device": {
+          "renderer": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "vendor": "Google Inc. (Intel)",
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+          "classification": "hardware-candidate"
+        },
+        "uploadedPackedSha256": "630f7b37b2d17dba0c8815b91beff8b90bab42278003187c7f28b68e6dac3655"
+      },
+      {
+        "status": "FAIL",
+        "reason": "Error: Native shader compile failed: ERROR: 0:51: 'sample' : Illegal use of reserved word\nERROR: 0:51: 'sample' : syntax error\n\u0000",
+        "kernelSha256": "4998595025abd4f77a989bd7144b1dcb1c1422cbb0a2d1ffb0ddbd1c14717600",
+        "shaderSha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+        "productIntegrated": false,
+        "source": {
+          "ownerId": "rd13-synthetic-test",
+          "sourceNamespace": "rd13-synthetic-not-fixture",
+          "sourceRevision": 0,
+          "regionId": "synthetic-cells",
+          "fixtureDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+          "recipeSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+          "sourceIds": [],
+          "sourceIdMeaning": {},
+          "originalDimensions": [
+            4,
+            1,
+            1
+          ],
+          "originalOriginMeters": [
+            0,
+            0,
+            0
+          ]
+        },
+        "sourceSlotSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+        "inputPackedSha256": "630f7b37b2d17dba0c8815b91beff8b90bab42278003187c7f28b68e6dac3655",
+        "fault": "proxy-depth",
+        "nativeGpuBytes": {
+          "status": "unsupported",
+          "reason": "Even context-only acquisition consumes unknown native VRAM"
+        },
+        "expected": {
+          "status": "hit",
+          "t": 1,
+          "point": [
+            0,
+            0.5,
+            0.5
+          ],
+          "normal": [
+            -1,
+            0,
+            0
+          ],
+          "slot": 1,
+          "materialId": "synthetic-dry",
+          "cell": [
+            0,
+            0,
+            0
+          ],
+          "originalCell": [
+            0,
+            0,
+            0
+          ],
+          "sourceIds": [],
+          "unknownTraversed": false,
+          "outsideUnknown": true
+        },
+        "mismatches": [],
+        "projectionAllocations": 10,
+        "cleanup": {
+          "textures": 6,
+          "programs": 1,
+          "shaders": 2,
+          "framebuffers": 1,
+          "vaos": 0
+        },
+        "device": {
+          "renderer": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "vendor": "Google Inc. (Intel)",
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+          "classification": "hardware-candidate"
+        },
+        "uploadedPackedSha256": "630f7b37b2d17dba0c8815b91beff8b90bab42278003187c7f28b68e6dac3655"
+      },
+      {
+        "status": "FAIL",
+        "reason": "Error: Native shader compile failed: ERROR: 0:51: 'sample' : Illegal use of reserved word\nERROR: 0:51: 'sample' : syntax error\n\u0000",
+        "kernelSha256": "4998595025abd4f77a989bd7144b1dcb1c1422cbb0a2d1ffb0ddbd1c14717600",
+        "shaderSha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+        "productIntegrated": false,
+        "source": {
+          "ownerId": "rd13-synthetic-test",
+          "sourceNamespace": "rd13-synthetic-not-fixture",
+          "sourceRevision": 0,
+          "regionId": "synthetic-cells",
+          "fixtureDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+          "recipeSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+          "sourceIds": [],
+          "sourceIdMeaning": {},
+          "originalDimensions": [
+            3,
+            1,
+            1
+          ],
+          "originalOriginMeters": [
+            0,
+            0,
+            0
+          ]
+        },
+        "sourceSlotSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+        "inputPackedSha256": "1a88fffdcb4dfee9204a30ce4eb0fe2b9622d0c6939a1a669dcaf5b83f175732",
+        "fault": "hide-unknown",
+        "nativeGpuBytes": {
+          "status": "unsupported",
+          "reason": "Even context-only acquisition consumes unknown native VRAM"
+        },
+        "expected": {
+          "status": "hit",
+          "t": 1.5,
+          "point": [
+            2,
+            0.5,
+            0.5
+          ],
+          "normal": [
+            -1,
+            0,
+            0
+          ],
+          "slot": 1,
+          "materialId": "synthetic-dry",
+          "cell": [
+            2,
+            0,
+            0
+          ],
+          "originalCell": [
+            2,
+            0,
+            0
+          ],
+          "sourceIds": [],
+          "unknownTraversed": true,
+          "outsideUnknown": true
+        },
+        "mismatches": [],
+        "projectionAllocations": 10,
+        "cleanup": {
+          "textures": 6,
+          "programs": 1,
+          "shaders": 2,
+          "framebuffers": 1,
+          "vaos": 0
+        },
+        "device": {
+          "renderer": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "vendor": "Google Inc. (Intel)",
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+          "classification": "hardware-candidate"
+        },
+        "uploadedPackedSha256": "1a88fffdcb4dfee9204a30ce4eb0fe2b9622d0c6939a1a669dcaf5b83f175732"
+      }
+    ]
+  },
+  "originalReadyGateUnchanged": true,
+  "originalBodiesStatus": "SEPARATE_ORIGINAL_REPORT"
+}

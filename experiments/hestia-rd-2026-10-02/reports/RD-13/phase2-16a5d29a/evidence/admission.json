@@ -1,0 +1,37 @@
+{
+  "schema": "rd13-native-admission-v1",
+  "leaseId": "rd13-native-16a5d29a-20261004-a",
+  "runId": "phase2-16a5d29a-20261004-a",
+  "start": "16a5d29a5cddea372abae139da618aa000a058be",
+  "tree": "abb0bdde3039c33d1a815d2f2754103fcb16c100",
+  "baseURL": "http://127.0.0.1:5280",
+  "buildRoot": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/HEAD/rd13-wiring-c5307386-20261004-b/build",
+  "outputRoot": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-13/phase2-16a5d29a-20261004-a",
+  "freeze": {
+    "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/HEAD/freezes/16a5d29a5cddea372abae139da618aa000a058be.json",
+    "bytes": 257566,
+    "sha256": "55abac71cdde12a6e52471f1a182d8d63adaed08bd8c87e827634b46250e6eb7"
+  },
+  "lease": {
+    "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/HEAD/leases/RD13-native-16a5d29a-20261004-a.json",
+    "bytes": 1428,
+    "sha256": "cf5c7bc69ea208ab0678e9286062d54a10b8b2eca7046aba31509eca0953a4da"
+  },
+  "buildProof": {
+    "path": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\HEAD\\rd13-wired-head-16a5d29a.json",
+    "bytes": 961045,
+    "sha256": "46f5441ffd0075cc5c61977169ddf86330dead39f650d7bd50828d7d19a26bcc"
+  },
+  "executable": {
+    "path": "C:/IFI_SourceCode/Utils/opencode-migration/runtime/chromium-1234/chrome-win64/chrome.exe",
+    "bytes": 4024832,
+    "sha256": "409805a16d6416087e6b2f778df1cf8f7bbb267d6b99f6b5bb0a618eace234f2"
+  },
+  "kernelSha256": "4998595025abd4f77a989bd7144b1dcb1c1422cbb0a2d1ffb0ddbd1c14717600",
+  "preflight": {
+    "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-13/phase2-16a5d29a-20261004-a/preflight.json",
+    "bytes": 419524,
+    "sha256": "d2e7c78ee17b05ea344b09d500dccc390ff33de0708b3cd2cc56385ec248e11f"
+  },
+  "productIntegrated": false
+}

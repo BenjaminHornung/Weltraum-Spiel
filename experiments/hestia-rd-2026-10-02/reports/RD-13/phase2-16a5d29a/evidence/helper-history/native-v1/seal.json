@@ -1,0 +1,82 @@
+{
+  "source": "16a5d29a5cddea372abae139da618aa000a058be",
+  "tree": "abb0bdde3039c33d1a815d2f2754103fcb16c100",
+  "pins": [
+    {
+      "path": "reports/RD-13/phase2-16a5d29a/diagnose-source.mjs",
+      "bytes": 1381,
+      "sha256": "4c125b0b3674777f7ee5965e78c33087ea071624a29ab0b21586a85577385db0"
+    },
+    {
+      "path": "reports/RD-13/phase2-16a5d29a/native-launch.mjs",
+      "bytes": 5077,
+      "sha256": "78745ab069721a73bc61e0f1f0a6fdbc1a52419930cb04e256ba12d0efc1ceec"
+    },
+    {
+      "path": "reports/RD-13/phase2-16a5d29a/PLAN.md",
+      "bytes": 3088,
+      "sha256": "d687f041c206075f991b7e2b59c348070e44260293b37712d4e67233311d3840"
+    },
+    {
+      "path": "reports/RD-13/phase2-16a5d29a/playwright.config.ts",
+      "bytes": 1625,
+      "sha256": "ef17cf8541b4d1ca60f18176aa15bba28226c04d20a33ff3c98f31e94bfa1eb9"
+    },
+    {
+      "path": "reports/RD-13/phase2-16a5d29a/prepare-native.mjs",
+      "bytes": 1410,
+      "sha256": "f60c84ac66a5a0dcfd38a36fa02d086148273253baaecaeb873f1072d08e03b4"
+    },
+    {
+      "path": "reports/RD-13/phase2-16a5d29a/preview.mjs",
+      "bytes": 2785,
+      "sha256": "7a16f8504df2df0f8a5903488a86481482a5c64e749d407510b470d1bc10e9e5"
+    },
+    {
+      "path": "reports/RD-13/phase2-16a5d29a/seal-harness.mjs",
+      "bytes": 642,
+      "sha256": "d54fd87f8ee3579c11b49600b22f22b893b5fac7e280b7a294197c1511de7cb6"
+    },
+    {
+      "path": "reports/RD-13/phase2-16a5d29a/support.mjs",
+      "bytes": 11760,
+      "sha256": "3426b01d9ac966d8c48a0fd732f1cd1412c195868955968e8a0ba0f374467d01"
+    },
+    {
+      "path": "reports/RD-13/phase2-16a5d29a/tsconfig.json",
+      "bytes": 136,
+      "sha256": "fa1b20fa06dc5c9ba479b65d820070a92b46ed76f0e60ad8b46dd505a431371a"
+    },
+    {
+      "path": "reports/RD-13/phase2-16a5d29a/vitest.config.ts",
+      "bytes": 280,
+      "sha256": "124426169ddf3b5912c1c84f1b57a6f22a91a5dc10e12759b505af7d55aa1f56"
+    },
+    {
+      "path": "tests/RD-13/phase2-launcher-16a5d29a.test.mjs",
+      "bytes": 999,
+      "sha256": "bdf3a6808d3aae43623fa1196fd1c99d433afbdec7f5eb318208992bdb1ca581"
+    },
+    {
+      "path": "tests/RD-13/phase2-numeric-16a5d29a.ts",
+      "bytes": 9629,
+      "sha256": "a75221ba39e2ca3123c0e24579ba3f4c7a063f29a28c87d03f8b363b04e43829"
+    },
+    {
+      "path": "tests/RD-13/phase2-observe-16a5d29a.ts",
+      "bytes": 9967,
+      "sha256": "bd26bf3354dae6ba5400b5f76c81d65fd2737a937878ad509dfe9a237e0b5939"
+    },
+    {
+      "path": "tests/RD-13/phase2-original-16a5d29a.spec.ts",
+      "bytes": 182,
+      "sha256": "f00ca2d5f0a6b0d6873a12f4f81abf8e5aba38d0977eb27c455bc9cef49acff7"
+    },
+    {
+      "path": "tests/RD-13/phase2-supplement-16a5d29a.spec.ts",
+      "bytes": 8539,
+      "sha256": "8bb06d3fc3e854a4a0223d545dd618ff89589c650f1b7149724c8a04b64a6469"
+    }
+  ],
+  "productIntegrated": false
+}

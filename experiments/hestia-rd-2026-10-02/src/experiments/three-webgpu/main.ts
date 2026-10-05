@@ -1,5 +1,6 @@
 import { mountExperiment, registeredMountCount, type LabExperimentHandle } from '../../contracts/experiment';
 import { requireValue } from '../../contracts/validation';
+import{Group,Mesh,type Material}from'three';
 import { loadInventory, loadReplay, publicAssetRoot, type LabInventory } from '../../runner/assets';
 import { createScenarioRunner } from '../../runner/scenarioRunner';
 import { createThreeWebGpuExperiment, liveWebGpuHostCounts, type ThreeWebGpuHost } from './index';
@@ -97,7 +98,23 @@ element('play').addEventListener('click', () => {
     void perform(() => runner!.advance(1), 'Playing controlled ticks; not a benchmark'); }, 1000 / 60);
 });
 if (params.get('testBridge') === '1') {
+  let faultHost:ThreeWebGpuHost|undefined,restore:()=>void=()=>{};
+  const visualFaults=['vertex-colors-off','missing-bank','wrong-owner-pose','water-opacity-one','water-depth-off','holdout-hero-hidden'] as const;
   Object.defineProperty(window, 'TestBridge', { value: Object.freeze({
+    inspect(){requireValue(host,'Mounted native host required');return host.readDiagnostics();},
+    visualFault(fault:string){
+      requireValue(host&&replay?.initialFixture.id==='F01-HVP-COAST','Fault controls require actual mounted F01 source');requireValue(fault==='restore'||visualFaults.some(v=>v===fault),'Unknown native visual fault');
+      if(faultHost===host)restore();faultHost=host;restore=()=>{};const changed:string[]=[];
+      const meshes:Mesh[]=[],owners:Group[]=[];host.scene.traverse(o=>{if(o instanceof Mesh)meshes.push(o);if(o instanceof Group&&o.userData.ownerId)owners.push(o);});
+      const changes:Array<()=>void>=[];
+      const materialChange=(mesh:Mesh,key:'vertexColors'|'opacity'|'depthTest',value:boolean|number)=>{for(const material of(Array.isArray(mesh.material)?mesh.material:[mesh.material])as Material[]){const m=material as Material&{vertexColors:boolean};const before=m[key];(m as any)[key]=value;m.needsUpdate=true;changes.push(()=>{(m as any)[key]=before;m.needsUpdate=true;});changed.push(mesh.name+':'+key);}};
+      if(fault==='vertex-colors-off')for(const m of meshes)materialChange(m,'vertexColors',false);
+      if(fault==='missing-bank'){const mesh=meshes.find(m=>m.name==='hvp:terrain:hvp-limestone-dry');requireValue(mesh?.parent,'Missing known bank mesh');const parent=mesh.parent;mesh.removeFromParent();changes.push(()=>parent.add(mesh));changed.push(mesh.name+':removed');}
+      if(fault==='wrong-owner-pose'||fault==='holdout-hero-hidden'){const owner=owners.find(o=>o.userData.ownerId==='hvp:flora:hero');requireValue(owner,'Missing known hero owner');const position=owner.position.clone(),visible=owner.visible;if(fault==='wrong-owner-pose')owner.position.x+=1.5;else owner.visible=false;changes.push(()=>{owner.position.copy(position);owner.visible=visible;});changed.push(owner.name+':'+fault);}
+      if(fault==='water-opacity-one'||fault==='water-depth-off'){const water=meshes.find(m=>m.name==='hvp:water:hvp-water');requireValue(water,'Missing known native water mesh');materialChange(water,fault==='water-opacity-one'?'opacity':'depthTest',fault==='water-opacity-one'?1:false);}
+      restore=()=>{for(const undo of changes.reverse())undo();};if(fault!=='restore')requireValue(changed.length>0,'Fault made no native mutation');
+      const before=host.readDiagnostics();return{fault,changed,fixtureDigest:before.fixtureDigest,cameraId:before.frame.cameraId,tick:before.frame.tick,submittedFrames:before.submittedFrames,backend:before.backend};
+    },
     omitVertexColors() {
       requireValue(host, 'Test bridge requires owned mounted host');
       host.scene.traverse((object) => {

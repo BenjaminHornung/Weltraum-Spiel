@@ -1,0 +1,128 @@
+{
+  "schema": "rd13-derived-contact-sheet-v1",
+  "authority": "Visualization derived only from index.json; NOT additional native capture",
+  "indexSha256": "373e894bc8a7f3ce7e6c0b387d838f59d04c59a309d383bbfc79bb6fb2d10767",
+  "inputs": [
+    {
+      "path": "evidence/captures/explicit-dispose-ui.png",
+      "sha256": "899c1107504a4e228f8ec0a1c9757f63d83f75f1da95b00c1042f60764296d1a",
+      "bytes": 44430,
+      "width": 1600,
+      "height": 1100
+    },
+    {
+      "path": "evidence/captures/F00-greedy-no-ao-tick0-ui.png",
+      "sha256": "3a563071b8de928b3a3d5afbe56b2d6b7c5acd9731d095e403e55d4aae9763cb",
+      "bytes": 53987,
+      "width": 1600,
+      "height": 1118
+    },
+    {
+      "path": "evidence/captures/F00-rays-no-ao-tick0-ui.png",
+      "sha256": "df40f69cac27f1d435bbd5720535465dbf759ac415a1672677b1d3d16c9dd9b9",
+      "bytes": 45078,
+      "width": 1600,
+      "height": 1100
+    },
+    {
+      "path": "evidence/captures/F01-greedy-no-ao-tick0-ui.png",
+      "sha256": "d85862e6ee8b68dfcedc56d107f6eeef86f92ddafe09bf5b7af14ae9f42cb12c",
+      "bytes": 140659,
+      "width": 1600,
+      "height": 1118
+    },
+    {
+      "path": "evidence/captures/F01-rays-no-ao-tick0-ui.png",
+      "sha256": "37850fd234bf765c8184bcca8a47d907cea59bccf5f9feb7478718072fb42d1f",
+      "bytes": 45596,
+      "width": 1600,
+      "height": 1100
+    },
+    {
+      "path": "evidence/captures/F03-greedy-dpr2-controls-ui.png",
+      "sha256": "c72181af63352388d4b75a57f781cbc7b9aa5b59a9a3573010e0f7112faf31f0",
+      "bytes": 62431,
+      "width": 1600,
+      "height": 1118
+    },
+    {
+      "path": "evidence/captures/F03-greedy-no-ao-tick120-ui.png",
+      "sha256": "2264abfcf091b40cfed655e3e492e65ae284331711f4d13a1cdd2023729bc1ec",
+      "bytes": 57417,
+      "width": 1600,
+      "height": 1118
+    },
+    {
+      "path": "evidence/captures/F03-rays-no-ao-tick120-ui.png",
+      "sha256": "3710b2a94d6421ea5d3a4ecae5c6f3ca2b59d456dac13a6cd23de28c3bd36ffa",
+      "bytes": 44905,
+      "width": 1600,
+      "height": 1100
+    },
+    {
+      "path": "evidence/captures/F04-greedy-no-ao-tick120-ui.png",
+      "sha256": "04692e56cd202965c816721a52ed73c69088f6aa12e0beff4888776910a44cf7",
+      "bytes": 48865,
+      "width": 1600,
+      "height": 1118
+    },
+    {
+      "path": "evidence/captures/F04-rays-no-ao-tick120-ui.png",
+      "sha256": "54a0c376ef7df0e26ecf1d3078d14c208331c4f55535effb2248b5fb4e62a9a2",
+      "bytes": 45101,
+      "width": 1600,
+      "height": 1100
+    },
+    {
+      "path": "evidence/captures/F05-greedy-no-ao-tick0-ui.png",
+      "sha256": "10bb2319264b253888a60bb9db3cb83d8aa8019e51c5a71c0a9ba0eba3e80687",
+      "bytes": 57421,
+      "width": 1600,
+      "height": 1118
+    },
+    {
+      "path": "evidence/captures/F05-rays-no-ao-tick0-ui.png",
+      "sha256": "f3536f023e08d2d2ff7138c94d32dfa3dcaee996409fca5779ef89c68575ddbd",
+      "bytes": 45055,
+      "width": 1600,
+      "height": 1100
+    },
+    {
+      "path": "evidence/captures/F06-greedy-no-ao-tick90-ui.png",
+      "sha256": "18f1d0e43b4dabe72f8b73c542639b0d9dc201e3735ab3ffec24680e877a434a",
+      "bytes": 58224,
+      "width": 1600,
+      "height": 1118
+    },
+    {
+      "path": "evidence/captures/F06-rays-no-ao-tick90-ui.png",
+      "sha256": "2cab10a08447a30eafdc8baaca8c3c7ed3dfb94192e8838523d43bff64750f77",
+      "bytes": 45190,
+      "width": 1600,
+      "height": 1100
+    },
+    {
+      "path": "evidence/captures/normal-home-tool-ui.png",
+      "sha256": "d564aa8242c2232a5d2ae2503d4c7c87155a7b99d7c06b511870fb54b6ef8ca3",
+      "bytes": 45063,
+      "width": 1600,
+      "height": 1100
+    }
+  ],
+  "output": {
+    "path": "contact-sheet.png",
+    "bytes": 707333,
+    "sha256": "e771c36ee4d9c9fba66c10f144b023e15a52243c8b6b473b3b1c677596068bb0",
+    "width": 1950,
+    "height": 2865
+  },
+  "helperSha256": "c8e65f34773cb1b6bf1c5b9b7002ae6312d51b70844041044ed0594897572412",
+  "python": "3.12.13 (main, May 10 2026, 19:35:37) [MSC v.1944 64 bit (AMD64)]",
+  "pillowVersion": "12.3.0",
+  "pythonExecutable": {
+    "path": "C:\\IFI_SourceCode\\Utils\\Python\\cpython-3.12.13-windows-x86_64-none\\python.exe",
+    "sha256": "e9f7e4baa0da1c21ffc3c2c2a644459b1a38dced56dfc7846e16f801645d520f"
+  },
+  "rawInputsUnchanged": true,
+  "productIntegrated": false
+}

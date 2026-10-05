@@ -1,0 +1,11 @@
+# Final Hestia RD handoff
+
+Final ZIP: Hestia_RD_Planner_Final_2026-10-05.zip,68,078,891B. SHA25687cddafc768dd24bbde7bf5a260dfeb1d184d66d600e967f09a22971034e4a4a. Its.sha256/.MANIFEST.sha256/.integrity.json/.closure.json companions are external non-circular verification records.
+
+Manifest254a797d75646c8f390832483dfabb05bb291c0bd84ace1c33e55f5156ddc170;2,222 bound artifacts plus manifest,2,223 ZIP member SHA/CRC checks passed. Strong privacy scan0findings; no secrets/global configuration/binaries/node_modules or Git directory included.23 core cards/97 original cases:82PASS15PARTIAL with explicit native/human gates and negative candidates. Source code, frozen fixtures/recipes, build, raw failures, current captures/videos, source receipts, RESULTS/RUNBOOK/ADOPTION_QUEUE/CORE_INDEX/CASE_EVIDENCE and vendor license/notice files are included.
+
+Fresh source-bound tests:198/198CPU;32/33native plus corrected unchanged UI43 export1/1, separately preserved; actual package delivery5/5. Combined100 source/preset transitions and20 owned mount cycles on one unchanged page/canvas/renderer/loop, zero owned resources after disposal. REN12-v2 passes actual native calibration/holdout; originalv1 fail retained. BabylonDEFER and nativeRaysREJECT; no performance/art/product acceptance implied. ART=PENDING_OWNER, Q0_FUNCTIONAL_UNQUALIFIED, PRODUCT_INTEGRATED=false. OptionalRD22/RD33 NOT_STARTED_OPTIONAL.
+
+Independent technical and semantic reviews cleared exactfinal03 with no material findings. DevToolbox spec+actual contained package verification passed;B00+23 core task completion preflights passed and24/24tasks closed, spec statuscompleted. Final boundary52 inputs/0violations and free127.0.0.1:5280 confirmed. No own service left running. No commit/push/publication; changed code isUNCOMMITTED_HASH_BOUND through exact receipts/manifests, not falsely assigned to unchangedGitHEAD16a5d29a. Product-read SHA b3c6523a94cd050f5a9a22dc27f4777fcc03363e remains frozen.
+
+Start using the contained RUNBOOK.md: verify MANIFEST with the external.MANIFEST.sha256 value, serve dist with the approved Python on127.0.0.1:5280, then open /RD-RESULTS.html and /src/qa/combined-scene/index.html. Habitat/weather/asset-inspection tools and sequential comparison gallery are linked there. Stop only your foreground service using Ctrl+C.

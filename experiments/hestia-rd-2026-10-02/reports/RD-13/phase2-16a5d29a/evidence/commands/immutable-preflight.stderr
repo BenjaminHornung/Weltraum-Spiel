@@ -1,0 +1,24 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: reports/RD-00/native-ts-smoke.mts non-LFS blob
++ actual - expected
+
++ '077d3a4092fd5b823486faed41d30c9a242801d970a70315963ddc39ed6ee71e'
+- '46da5de8a3192a6f9b7fe08ece7066ddd5234132022270672665e57c4620c81c'
+
+    at immutable (file:///C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-worktrees/Hestia-RD-RD13/experiments/hestia-rd-2026-10-02/reports/RD-13/phase2-16a5d29a/support.mjs:60:216)
+    at file:///C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-worktrees/Hestia-RD-RD13/experiments/hestia-rd-2026-10-02/reports/RD-13/phase2-16a5d29a/support.mjs:74:106
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: '077d3a4092fd5b823486faed41d30c9a242801d970a70315963ddc39ed6ee71e',
+  expected: '46da5de8a3192a6f9b7fe08ece7066ddd5234132022270672665e57c4620c81c',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.23.2

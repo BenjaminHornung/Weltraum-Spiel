@@ -1,0 +1,23 @@
+{
+  "pid": 103280,
+  "started": "2026-10-04T17:50:08.177Z",
+  "source": "16a5d29a5cddea372abae139da618aa000a058be",
+  "tree": "abb0bdde3039c33d1a815d2f2754103fcb16c100",
+  "admission": {
+    "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-13/phase2-16a5d29a-20261004-a/admission.json",
+    "bytes": 1776,
+    "sha256": "236b86ef1831498ad4b5072778d5ad9b8868bf61ca3a064bb73494beaa0761b7"
+  },
+  "executable": {
+    "path": "C:/IFI_SourceCode/Utils/opencode-migration/runtime/chromium-1234/chrome-win64/chrome.exe",
+    "bytes": 4024832,
+    "sha256": "409805a16d6416087e6b2f778df1cf8f7bbb267d6b99f6b5bb0a618eace234f2"
+  },
+  "sourceSeal": {
+    "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-13/phase2-16a5d29a-20261004-a/preflight.json",
+    "bytes": 419524,
+    "sha256": "d2e7c78ee17b05ea344b09d500dccc390ff33de0708b3cd2cc56385ec248e11f"
+  },
+  "nativeExecution": "ATTEMPTED_FUNCTIONAL_DIAGNOSTIC",
+  "productIntegrated": false
+}

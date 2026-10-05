@@ -1,0 +1,13 @@
+{
+  "steps": [
+    {
+      "name": "Contained23-card planner integrity",
+      "commandLine": "\"C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe\" scripts/check-rd-results.mjs .resume-runs/planner-final-03/MANIFEST.json 254a797d75646c8f390832483dfabb05bb291c0bd84ace1c33e55f5156ddc170",
+      "workingDirectory": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-resume-2026-10-05/experiments/hestia-rd-2026-10-02",
+      "isOptional": false,
+      "timeoutSeconds": 120,
+      "outputLimitBytes": 524288,
+      "reason": "Actual complete artifact/97-case/source/run inventory; execution receipts separately prove198 CPU,32 native plus corrected1,5 delivery,100/20 and unchanged product. No product build or ambiguous toolchain fallback."
+    }
+  ]
+}

@@ -1,0 +1,819 @@
+{
+  "schema": "rd13-native-compositor-capture-v1",
+  "source": "16a5d29a5cddea372abae139da618aa000a058be",
+  "productIntegrated": false,
+  "name": "explicit-dispose",
+  "before": {
+    "url": "http://127.0.0.1:5280/src/experiments/voxel-rays/index.html",
+    "bridgePresent": false,
+    "status": "Disposed; no render loop owned by this entry. Failure history retained.",
+    "projected": {
+      "productIntegrated": false,
+      "facts": {
+        "backend": "Three-WebGLRenderer-WebGL2",
+        "errors": [],
+        "experimentId": "RD-13",
+        "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+        "liveResources": {
+          "geometries": {
+            "status": "measured",
+            "unit": "count",
+            "value": 2
+          },
+          "hostListeners": {
+            "status": "measured",
+            "unit": "count",
+            "value": 2
+          },
+          "renderers": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "renderloops": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "textures": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          }
+        },
+        "logicalCosts": {
+          "effect-0-cpuPeakBytes": {
+            "reason": "Conservative source transport/private/copy/old-new estimate, not JS heap",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 2495088
+          },
+          "effect-0-fullScreenVolumes": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          },
+          "effect-0-greedyBuildMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 8.099999994039536
+          },
+          "effect-0-maxStepsPerRay": {
+            "status": "measured",
+            "unit": "count",
+            "value": 105
+          },
+          "effect-0-nativeGpuBytes": {
+            "reason": "Native context/driver VRAM cannot be measured here",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "effect-0-prepareMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 14.700000017881393
+          },
+          "effect-0-projectionBuildMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 8.299999982118607
+          },
+          "effect-0-projectionBytes": {
+            "reason": "Typed texture/mesh payload; excludes native allocator/driver/context",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 6912
+          },
+          "effect-0-triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 128
+          },
+          "effect-0-uploadCommandCpuMs": {
+            "reason": "Three upload occurs during native render; CPU preparation is not upload time",
+            "status": "not-run",
+            "unit": "ms"
+          },
+          "gpuBytes": {
+            "reason": "Native GPU memory unavailable",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "gpuMs": {
+            "reason": "Timer available; diagnostic loop does not sample GPU timing",
+            "status": "not-run",
+            "unit": "ms"
+          },
+          "renderCalls": {
+            "status": "measured",
+            "unit": "count",
+            "value": 2
+          },
+          "triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 128
+          }
+        },
+        "sourceRevision": 0,
+        "unsupportedFeatures": [
+          "native-pcf-shadow-parity",
+          "native-sky-shader-parity",
+          "native-numeric-qualification-not-run",
+          "native-water-shader-parity",
+          "native-material-shader-hooks",
+          "face-ambient-occlusion",
+          "gi-and-reflections",
+          "unknown-is-not-world-clearance",
+          "native-vram-unavailable",
+          "gpu-timing-not-qualified"
+        ],
+        "variantId": "greedy-no-ao"
+      },
+      "private": {
+        "productIntegrated": false,
+        "variant": "greedy-no-ao",
+        "caps": {
+          "max3D": 2048,
+          "maxTexture": 16384,
+          "maxViewport": [
+            32767,
+            32767
+          ],
+          "fragmentSamplers": 16,
+          "rgba8ui": true,
+          "contextLost": false,
+          "formatSampleCounts": []
+        },
+        "host": {
+          "backend": "Three-WebGLRenderer-WebGL2",
+          "webgl2": true,
+          "fixtureId": "F03-SHELTER",
+          "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+          "sourceRevision": 0,
+          "payloadBindings": [
+            {
+              "id": "removable-roof-cells-coverage",
+              "byteLength": 136,
+              "sha256": "3654da25dd1bae2cc27c2e3d0d7e9e9755280ca7f3ae5d4aa18d32a0fc094384"
+            },
+            {
+              "id": "removable-roof-cells-material-slots",
+              "byteLength": 136,
+              "sha256": "3654da25dd1bae2cc27c2e3d0d7e9e9755280ca7f3ae5d4aa18d32a0fc094384"
+            },
+            {
+              "id": "removable-roof-cells-occupancy",
+              "byteLength": 136,
+              "sha256": "3654da25dd1bae2cc27c2e3d0d7e9e9755280ca7f3ae5d4aa18d32a0fc094384"
+            },
+            {
+              "id": "removable-roof-cells-slot-1-indices",
+              "byteLength": 7728,
+              "sha256": "b10bd08dca4cbf97fa51375be174e5396e3fc6ff5f0648f50765378ff01f742f"
+            },
+            {
+              "id": "removable-roof-cells-slot-1-normals",
+              "byteLength": 15456,
+              "sha256": "b36ff3b829df46d849b93797d1ef8239c7673d3554e15524e1fdac3ac60bb498"
+            },
+            {
+              "id": "removable-roof-cells-slot-1-positions",
+              "byteLength": 15456,
+              "sha256": "615f18b046bd9a70da02edf2df95a74939de0c27e0376bd6af7eac5f0cba709f"
+            },
+            {
+              "id": "shelter-shell-coverage",
+              "byteLength": 40960,
+              "sha256": "2d79cff9e3fd90907d81177f9b314b7a7ab5c514a15348c04261fe6a08d4c3c8"
+            },
+            {
+              "id": "shelter-shell-material-slots",
+              "byteLength": 40960,
+              "sha256": "b1aa334474aee82b8a621369edf72edfb539bf9bb436b0b8bb5d37df1bcf08dc"
+            },
+            {
+              "id": "shelter-shell-occupancy",
+              "byteLength": 40960,
+              "sha256": "b1aa334474aee82b8a621369edf72edfb539bf9bb436b0b8bb5d37df1bcf08dc"
+            },
+            {
+              "id": "shelter-shell-slot-1-indices",
+              "byteLength": 109296,
+              "sha256": "67fa506099809e930e61568310510890d84e55331c831c6a7b14b983796fbaab"
+            },
+            {
+              "id": "shelter-shell-slot-1-normals",
+              "byteLength": 218592,
+              "sha256": "1ea36a19595227696c3b7d164d15e8f778df5d6e9e495aeb0dc057f1d92efa0d"
+            },
+            {
+              "id": "shelter-shell-slot-1-positions",
+              "byteLength": 218592,
+              "sha256": "1665185104623c07027505f74d484ee47a6cfa8cb0aeac3a07be914be618ed61"
+            }
+          ],
+          "presentationProfile": "synthetic-lab-light-v1-no-shadows",
+          "frame": {
+            "cameraId": "medium",
+            "paused": false,
+            "seconds": 0,
+            "sourceRevision": 0,
+            "tick": 0,
+            "weather": {
+              "cloud01": 0.1,
+              "rain01": 0,
+              "snow01": 0,
+              "windMps": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          "resetTick": null,
+          "resolution": {
+            "width": 960,
+            "height": 540,
+            "dpr": 2,
+            "bufferWidth": 1920,
+            "bufferHeight": 1080
+          },
+          "colorSpace": "srgb",
+          "toneMapping": 0,
+          "exposure": 1,
+          "timerQueryAvailable": true,
+          "gpuMs": {
+            "status": "not-run",
+            "unit": "ms",
+            "reason": "Timer available; no qualified timer-query sampling in diagnostic control"
+          },
+          "nativeGpuBytes": {
+            "status": "unsupported",
+            "unit": "byte",
+            "reason": "WebGL does not expose native/driver allocation bytes"
+          },
+          "device": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "submittedFrames": 35,
+          "rendered": {
+            "tick": 0,
+            "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+            "sourceRevision": 0,
+            "resetTick": null
+          },
+          "rendererInfo": {
+            "geometries": 2,
+            "textures": 0,
+            "programs": 1,
+            "calls": 2,
+            "triangles": 128
+          },
+          "liveHosts": {
+            "renderers": 1,
+            "renderloops": 1,
+            "hostListeners": 2
+          },
+          "productIntegrated": false
+        },
+        "source": [
+          {
+            "ownerId": "removable-roof",
+            "sourceNamespace": "rd02-authored-cells-v1",
+            "sourceRevision": 0,
+            "regionId": "removable-roof-cells",
+            "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+            "recipeSha256": "0ff438e3dcc43bcbe33069577b8cd1c61a3ab6752ccc37cdb3b892ca1d886af4",
+            "sourceIds": [
+              "roof-piece"
+            ],
+            "sourceIdMeaning": {},
+            "originalDimensions": [
+              8,
+              1,
+              17
+            ],
+            "originalOriginMeters": [
+              2,
+              1.5,
+              0.375
+            ],
+            "dimensions": [
+              8,
+              1,
+              17
+            ],
+            "offset": [
+              0,
+              0,
+              0
+            ],
+            "sourceSlotSha256": "3654da25dd1bae2cc27c2e3d0d7e9e9755280ca7f3ae5d4aa18d32a0fc094384"
+          },
+          {
+            "ownerId": "shelter-shell",
+            "sourceNamespace": "rd02-authored-cells-v1",
+            "sourceRevision": 0,
+            "regionId": "shelter-shell",
+            "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+            "recipeSha256": "0ff438e3dcc43bcbe33069577b8cd1c61a3ab6752ccc37cdb3b892ca1d886af4",
+            "sourceIds": [
+              "cave",
+              "high-roof",
+              "low-roof",
+              "overhang",
+              "side-entry"
+            ],
+            "sourceIdMeaning": {},
+            "originalDimensions": [
+              40,
+              32,
+              32
+            ],
+            "originalOriginMeters": [
+              0,
+              0,
+              0
+            ],
+            "dimensions": [
+              40,
+              32,
+              32
+            ],
+            "offset": [
+              0,
+              0,
+              0
+            ],
+            "sourceSlotSha256": "b1aa334474aee82b8a621369edf72edfb539bf9bb436b0b8bb5d37df1bcf08dc"
+          }
+        ],
+        "costs": {
+          "canonicalPayloadBytes": 708408,
+          "wholeRegionCopyBytes": 123288,
+          "selectedCpuBytes": 246576,
+          "cpuPeakEstimateBytes": 2495088,
+          "projectionBytes": 164384
+        },
+        "terminal": {
+          "firstFailure": null,
+          "pending": false,
+          "disposed": false,
+          "productIntegrated": false
+        }
+      },
+      "history": [
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission"
+      ]
+    },
+    "selections": {
+      "fixture": "F03-SHELTER-REPLAY",
+      "variant": "greedy-no-ao",
+      "camera": "medium",
+      "tick": "0",
+      "resolution": "960x540",
+      "dpr": "2"
+    },
+    "canvas": {
+      "hidden": true,
+      "width": 1920,
+      "height": 1080,
+      "box": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "devicePixelRatio": 1
+    }
+  },
+  "after": {
+    "url": "http://127.0.0.1:5280/src/experiments/voxel-rays/index.html",
+    "bridgePresent": false,
+    "status": "Disposed; no render loop owned by this entry. Failure history retained.",
+    "projected": {
+      "productIntegrated": false,
+      "facts": {
+        "backend": "Three-WebGLRenderer-WebGL2",
+        "errors": [],
+        "experimentId": "RD-13",
+        "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+        "liveResources": {
+          "geometries": {
+            "status": "measured",
+            "unit": "count",
+            "value": 2
+          },
+          "hostListeners": {
+            "status": "measured",
+            "unit": "count",
+            "value": 2
+          },
+          "renderers": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "renderloops": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "textures": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          }
+        },
+        "logicalCosts": {
+          "effect-0-cpuPeakBytes": {
+            "reason": "Conservative source transport/private/copy/old-new estimate, not JS heap",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 2495088
+          },
+          "effect-0-fullScreenVolumes": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          },
+          "effect-0-greedyBuildMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 8.099999994039536
+          },
+          "effect-0-maxStepsPerRay": {
+            "status": "measured",
+            "unit": "count",
+            "value": 105
+          },
+          "effect-0-nativeGpuBytes": {
+            "reason": "Native context/driver VRAM cannot be measured here",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "effect-0-prepareMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 14.700000017881393
+          },
+          "effect-0-projectionBuildMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 8.299999982118607
+          },
+          "effect-0-projectionBytes": {
+            "reason": "Typed texture/mesh payload; excludes native allocator/driver/context",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 6912
+          },
+          "effect-0-triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 128
+          },
+          "effect-0-uploadCommandCpuMs": {
+            "reason": "Three upload occurs during native render; CPU preparation is not upload time",
+            "status": "not-run",
+            "unit": "ms"
+          },
+          "gpuBytes": {
+            "reason": "Native GPU memory unavailable",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "gpuMs": {
+            "reason": "Timer available; diagnostic loop does not sample GPU timing",
+            "status": "not-run",
+            "unit": "ms"
+          },
+          "renderCalls": {
+            "status": "measured",
+            "unit": "count",
+            "value": 2
+          },
+          "triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 128
+          }
+        },
+        "sourceRevision": 0,
+        "unsupportedFeatures": [
+          "native-pcf-shadow-parity",
+          "native-sky-shader-parity",
+          "native-numeric-qualification-not-run",
+          "native-water-shader-parity",
+          "native-material-shader-hooks",
+          "face-ambient-occlusion",
+          "gi-and-reflections",
+          "unknown-is-not-world-clearance",
+          "native-vram-unavailable",
+          "gpu-timing-not-qualified"
+        ],
+        "variantId": "greedy-no-ao"
+      },
+      "private": {
+        "productIntegrated": false,
+        "variant": "greedy-no-ao",
+        "caps": {
+          "max3D": 2048,
+          "maxTexture": 16384,
+          "maxViewport": [
+            32767,
+            32767
+          ],
+          "fragmentSamplers": 16,
+          "rgba8ui": true,
+          "contextLost": false,
+          "formatSampleCounts": []
+        },
+        "host": {
+          "backend": "Three-WebGLRenderer-WebGL2",
+          "webgl2": true,
+          "fixtureId": "F03-SHELTER",
+          "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+          "sourceRevision": 0,
+          "payloadBindings": [
+            {
+              "id": "removable-roof-cells-coverage",
+              "byteLength": 136,
+              "sha256": "3654da25dd1bae2cc27c2e3d0d7e9e9755280ca7f3ae5d4aa18d32a0fc094384"
+            },
+            {
+              "id": "removable-roof-cells-material-slots",
+              "byteLength": 136,
+              "sha256": "3654da25dd1bae2cc27c2e3d0d7e9e9755280ca7f3ae5d4aa18d32a0fc094384"
+            },
+            {
+              "id": "removable-roof-cells-occupancy",
+              "byteLength": 136,
+              "sha256": "3654da25dd1bae2cc27c2e3d0d7e9e9755280ca7f3ae5d4aa18d32a0fc094384"
+            },
+            {
+              "id": "removable-roof-cells-slot-1-indices",
+              "byteLength": 7728,
+              "sha256": "b10bd08dca4cbf97fa51375be174e5396e3fc6ff5f0648f50765378ff01f742f"
+            },
+            {
+              "id": "removable-roof-cells-slot-1-normals",
+              "byteLength": 15456,
+              "sha256": "b36ff3b829df46d849b93797d1ef8239c7673d3554e15524e1fdac3ac60bb498"
+            },
+            {
+              "id": "removable-roof-cells-slot-1-positions",
+              "byteLength": 15456,
+              "sha256": "615f18b046bd9a70da02edf2df95a74939de0c27e0376bd6af7eac5f0cba709f"
+            },
+            {
+              "id": "shelter-shell-coverage",
+              "byteLength": 40960,
+              "sha256": "2d79cff9e3fd90907d81177f9b314b7a7ab5c514a15348c04261fe6a08d4c3c8"
+            },
+            {
+              "id": "shelter-shell-material-slots",
+              "byteLength": 40960,
+              "sha256": "b1aa334474aee82b8a621369edf72edfb539bf9bb436b0b8bb5d37df1bcf08dc"
+            },
+            {
+              "id": "shelter-shell-occupancy",
+              "byteLength": 40960,
+              "sha256": "b1aa334474aee82b8a621369edf72edfb539bf9bb436b0b8bb5d37df1bcf08dc"
+            },
+            {
+              "id": "shelter-shell-slot-1-indices",
+              "byteLength": 109296,
+              "sha256": "67fa506099809e930e61568310510890d84e55331c831c6a7b14b983796fbaab"
+            },
+            {
+              "id": "shelter-shell-slot-1-normals",
+              "byteLength": 218592,
+              "sha256": "1ea36a19595227696c3b7d164d15e8f778df5d6e9e495aeb0dc057f1d92efa0d"
+            },
+            {
+              "id": "shelter-shell-slot-1-positions",
+              "byteLength": 218592,
+              "sha256": "1665185104623c07027505f74d484ee47a6cfa8cb0aeac3a07be914be618ed61"
+            }
+          ],
+          "presentationProfile": "synthetic-lab-light-v1-no-shadows",
+          "frame": {
+            "cameraId": "medium",
+            "paused": false,
+            "seconds": 0,
+            "sourceRevision": 0,
+            "tick": 0,
+            "weather": {
+              "cloud01": 0.1,
+              "rain01": 0,
+              "snow01": 0,
+              "windMps": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          "resetTick": null,
+          "resolution": {
+            "width": 960,
+            "height": 540,
+            "dpr": 2,
+            "bufferWidth": 1920,
+            "bufferHeight": 1080
+          },
+          "colorSpace": "srgb",
+          "toneMapping": 0,
+          "exposure": 1,
+          "timerQueryAvailable": true,
+          "gpuMs": {
+            "status": "not-run",
+            "unit": "ms",
+            "reason": "Timer available; no qualified timer-query sampling in diagnostic control"
+          },
+          "nativeGpuBytes": {
+            "status": "unsupported",
+            "unit": "byte",
+            "reason": "WebGL does not expose native/driver allocation bytes"
+          },
+          "device": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "submittedFrames": 35,
+          "rendered": {
+            "tick": 0,
+            "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+            "sourceRevision": 0,
+            "resetTick": null
+          },
+          "rendererInfo": {
+            "geometries": 2,
+            "textures": 0,
+            "programs": 1,
+            "calls": 2,
+            "triangles": 128
+          },
+          "liveHosts": {
+            "renderers": 1,
+            "renderloops": 1,
+            "hostListeners": 2
+          },
+          "productIntegrated": false
+        },
+        "source": [
+          {
+            "ownerId": "removable-roof",
+            "sourceNamespace": "rd02-authored-cells-v1",
+            "sourceRevision": 0,
+            "regionId": "removable-roof-cells",
+            "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+            "recipeSha256": "0ff438e3dcc43bcbe33069577b8cd1c61a3ab6752ccc37cdb3b892ca1d886af4",
+            "sourceIds": [
+              "roof-piece"
+            ],
+            "sourceIdMeaning": {},
+            "originalDimensions": [
+              8,
+              1,
+              17
+            ],
+            "originalOriginMeters": [
+              2,
+              1.5,
+              0.375
+            ],
+            "dimensions": [
+              8,
+              1,
+              17
+            ],
+            "offset": [
+              0,
+              0,
+              0
+            ],
+            "sourceSlotSha256": "3654da25dd1bae2cc27c2e3d0d7e9e9755280ca7f3ae5d4aa18d32a0fc094384"
+          },
+          {
+            "ownerId": "shelter-shell",
+            "sourceNamespace": "rd02-authored-cells-v1",
+            "sourceRevision": 0,
+            "regionId": "shelter-shell",
+            "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+            "recipeSha256": "0ff438e3dcc43bcbe33069577b8cd1c61a3ab6752ccc37cdb3b892ca1d886af4",
+            "sourceIds": [
+              "cave",
+              "high-roof",
+              "low-roof",
+              "overhang",
+              "side-entry"
+            ],
+            "sourceIdMeaning": {},
+            "originalDimensions": [
+              40,
+              32,
+              32
+            ],
+            "originalOriginMeters": [
+              0,
+              0,
+              0
+            ],
+            "dimensions": [
+              40,
+              32,
+              32
+            ],
+            "offset": [
+              0,
+              0,
+              0
+            ],
+            "sourceSlotSha256": "b1aa334474aee82b8a621369edf72edfb539bf9bb436b0b8bb5d37df1bcf08dc"
+          }
+        ],
+        "costs": {
+          "canonicalPayloadBytes": 708408,
+          "wholeRegionCopyBytes": 123288,
+          "selectedCpuBytes": 246576,
+          "cpuPeakEstimateBytes": 2495088,
+          "projectionBytes": 164384
+        },
+        "terminal": {
+          "firstFailure": null,
+          "pending": false,
+          "disposed": false,
+          "productIntegrated": false
+        }
+      },
+      "history": [
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission"
+      ]
+    },
+    "selections": {
+      "fixture": "F03-SHELTER-REPLAY",
+      "variant": "greedy-no-ao",
+      "camera": "medium",
+      "tick": "0",
+      "resolution": "960x540",
+      "dpr": "2"
+    },
+    "canvas": {
+      "hidden": true,
+      "width": 1920,
+      "height": 1080,
+      "box": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "devicePixelRatio": 1
+    }
+  },
+  "stableSourceFrame": true,
+  "fractionalElementBox": null,
+  "ui": {
+    "path": "explicit-dispose-ui.png",
+    "bytes": 44430,
+    "sha256": "899c1107504a4e228f8ec0a1c9757f63d83f75f1da95b00c1042f60764296d1a",
+    "width": 1600,
+    "height": 1100
+  },
+  "canvas": null,
+  "imageAuthority": "Playwright Chromium compositor only; NOT native hit-buffer identity",
+  "nativeGpuMs": "UNKNOWN",
+  "nativeVram": "UNKNOWN"
+}

@@ -1,0 +1,29 @@
+{
+  "source": "16a5d29a5cddea372abae139da618aa000a058be",
+  "tree": "abb0bdde3039c33d1a815d2f2754103fcb16c100",
+  "packageHelper": {
+    "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-worktrees/Hestia-RD-RD13/experiments/hestia-rd-2026-10-02/reports/RD-13/phase2-16a5d29a/package-evidence.mjs",
+    "bytes": 11884,
+    "sha256": "784c23d8ec5e520f57a7d9f75dcfdc948fddaf2d1b796f7fbb1de8cf448650ca"
+  },
+  "rawArtifacts": 162,
+  "images": 22,
+  "index": {
+    "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-worktrees/Hestia-RD-RD13/experiments/hestia-rd-2026-10-02/reports/RD-13/phase2-16a5d29a/index.json",
+    "bytes": 44134,
+    "sha256": "373e894bc8a7f3ce7e6c0b387d838f59d04c59a309d383bbfc79bb6fb2d10767"
+  },
+  "manifest": {
+    "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-worktrees/Hestia-RD-RD13/experiments/hestia-rd-2026-10-02/reports/RD-13/phase2-16a5d29a/manifest.json",
+    "bytes": 62900,
+    "sha256": "1f728597237cd358a2c98b7dc9aa7fbec70abb67c1311f0d6287e3594ea2a623"
+  },
+  "summary": {
+    "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-worktrees/Hestia-RD-RD13/experiments/hestia-rd-2026-10-02/reports/RD-13/phase2-16a5d29a/summary.json",
+    "bytes": 121587,
+    "sha256": "0d9e84153e1abd0c7d70aa9d8da58b82045c6c38b5f95ab54bf5e38b959031ae"
+  },
+  "nativeRunRepeated": false,
+  "servicesStarted": false,
+  "productIntegrated": false
+}

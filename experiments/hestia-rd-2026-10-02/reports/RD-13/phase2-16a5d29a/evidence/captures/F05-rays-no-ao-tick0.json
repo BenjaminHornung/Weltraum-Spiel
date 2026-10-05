@@ -1,0 +1,123 @@
+{
+  "schema": "rd13-native-compositor-capture-v1",
+  "source": "16a5d29a5cddea372abae139da618aa000a058be",
+  "productIntegrated": false,
+  "name": "F05-rays-no-ao-tick0",
+  "before": {
+    "url": "http://127.0.0.1:5280/src/experiments/voxel-rays/index.html",
+    "bridgePresent": false,
+    "status": "FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.",
+    "projected": {
+      "productIntegrated": false,
+      "history": [
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission"
+      ],
+      "terminal": {
+        "firstFailure": "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "pending": false,
+        "disposed": true,
+        "productIntegrated": false
+      }
+    },
+    "selections": {
+      "fixture": "F05-CUTOUT-REPLAY",
+      "variant": "rays-no-ao",
+      "camera": "far",
+      "tick": "0",
+      "resolution": "1280x720",
+      "dpr": "1"
+    },
+    "canvas": {
+      "hidden": true,
+      "width": 1280,
+      "height": 720,
+      "box": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "devicePixelRatio": 1
+    }
+  },
+  "after": {
+    "url": "http://127.0.0.1:5280/src/experiments/voxel-rays/index.html",
+    "bridgePresent": false,
+    "status": "FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.",
+    "projected": {
+      "productIntegrated": false,
+      "history": [
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission"
+      ],
+      "terminal": {
+        "firstFailure": "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "pending": false,
+        "disposed": true,
+        "productIntegrated": false
+      }
+    },
+    "selections": {
+      "fixture": "F05-CUTOUT-REPLAY",
+      "variant": "rays-no-ao",
+      "camera": "far",
+      "tick": "0",
+      "resolution": "1280x720",
+      "dpr": "1"
+    },
+    "canvas": {
+      "hidden": true,
+      "width": 1280,
+      "height": 720,
+      "box": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "devicePixelRatio": 1
+    }
+  },
+  "stableSourceFrame": true,
+  "fractionalElementBox": null,
+  "ui": {
+    "path": "F05-rays-no-ao-tick0-ui.png",
+    "bytes": 45055,
+    "sha256": "f3536f023e08d2d2ff7138c94d32dfa3dcaee996409fca5779ef89c68575ddbd",
+    "width": 1600,
+    "height": 1100
+  },
+  "canvas": null,
+  "imageAuthority": "Playwright Chromium compositor only; NOT native hit-buffer identity",
+  "nativeGpuMs": "UNKNOWN",
+  "nativeVram": "UNKNOWN"
+}

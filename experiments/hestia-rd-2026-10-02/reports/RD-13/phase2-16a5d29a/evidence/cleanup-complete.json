@@ -1,0 +1,23 @@
+{
+  "source": "16a5d29a5cddea372abae139da618aa000a058be",
+  "tree": "abb0bdde3039c33d1a815d2f2754103fcb16c100",
+  "native": {
+    "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-13/phase2-16a5d29a-20261004-a/native-cleanup.json",
+    "bytes": 367,
+    "sha256": "b533f43edb2dc6bb237b6c4aec3ca35e819bdf0f355fd8cde1d8310ab0704579"
+  },
+  "preview": {
+    "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-13/phase2-16a5d29a-20261004-a/preview-cleanup.json",
+    "bytes": 261,
+    "sha256": "77f4afc915a86a5d8cef43ce4b668c57c0713b22e8de421f1bde967d456f7b39"
+  },
+  "port": {
+    "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-13/phase2-16a5d29a-20261004-a/port-after-cleanup.json",
+    "bytes": 157,
+    "sha256": "8e01f9d6280d622f7aefc67a2cfabb78fd8c673c6bdce5b5e48e70063403bc20"
+  },
+  "servicesRetained": false,
+  "noForeignCleanup": true,
+  "nativeVram": "UNKNOWN",
+  "productIntegrated": false
+}

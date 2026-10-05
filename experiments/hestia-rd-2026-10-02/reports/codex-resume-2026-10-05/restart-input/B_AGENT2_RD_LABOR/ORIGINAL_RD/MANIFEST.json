@@ -1,0 +1,266 @@
+{
+  "format": "file-manifest-v1",
+  "note": "Manifest lists every delivered payload except itself; no self-hash. Integrity, not authenticity.",
+  "files": [
+    {
+      "path": "00_START_HAUPTORCHESTRATOR.md",
+      "bytes": 7676,
+      "sha256": "23f1e0a0587cfd2338c85f6e4572bf4e2c2c4f7d52ddacda45095935614993d9"
+    },
+    {
+      "path": "01_PROGRAMM_UND_ISOLATION.md",
+      "bytes": 7237,
+      "sha256": "6b8b1ca4460e21e85436dde195771a312c209b47ebd924a35cafd2cd37e0f8f2"
+    },
+    {
+      "path": "02_QUELLEN_UND_REDDIT.md",
+      "bytes": 6256,
+      "sha256": "85ed8c64754a7f398aa3be4607d79b3bdba380311b33767124665b90eedacf24"
+    },
+    {
+      "path": "03_LAB_VERTRAEGE_UND_FIXTURES.md",
+      "bytes": 11625,
+      "sha256": "b575e2c2e94732c952b0b3084b265dc98765815f1f72bf3da6e3fdedb8b3ed3d"
+    },
+    {
+      "path": "04_MESSUNG_UND_ENTSCHEIDUNG.md",
+      "bytes": 9083,
+      "sha256": "dc552b74450cc556cc449416e0fb1c40dbcb9ac077c287e294079da06928d15b"
+    },
+    {
+      "path": "05_TASKBOARD.json",
+      "bytes": 15460,
+      "sha256": "cd5722dfff73393a2cb9d87fabf4c94f59da310300b79a7c2e87a1ec79b40448"
+    },
+    {
+      "path": "06_STARTREIHENFOLGE_UND_ERGEBNISSE.md",
+      "bytes": 2774,
+      "sha256": "17ec4357971027eb8bcbc276b28b9aa05201d0ac1d4ef01216b2baab30ccaf2e"
+    },
+    {
+      "path": "PACKAGE_VALIDATION.json",
+      "bytes": 1026,
+      "sha256": "4ce0f48c774ee431351c9aafd1ead3662c030f5fba74963d8531b739130e711c"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2401,
+      "sha256": "0fdda5090ce9529c45292b27f2586f954eac15c473a9d8eaee0c7c175097b5ec"
+    },
+    {
+      "path": "context/CHECKPOINT_ORIGINAL.md",
+      "bytes": 7439,
+      "sha256": "e16a2d766ce86dac7cb8826141bea979de0a7af736f8ea07b9353dec31176f84"
+    },
+    {
+      "path": "context/G01_GAMELOOP_ORIGINAL.md",
+      "bytes": 84837,
+      "sha256": "6297388fc9f6fa40547250d68a61c9b4539ff17df16507af22bf476c0aec790c"
+    },
+    {
+      "path": "context/G02_AUTHORING_ORIGINAL.md",
+      "bytes": 79148,
+      "sha256": "661bb79819c24fbdcf66009526bb1c26c8ec74dec28a46d67243ee308133f20d"
+    },
+    {
+      "path": "context/G12_TOOLCHAIN_ORIGINAL.md",
+      "bytes": 50338,
+      "sha256": "79b7c7116768faf6b1c7f10519943e1930796514cf6b10132db424b94dcc11a6"
+    },
+    {
+      "path": "context/G13_CONTENT_ORIGINAL.md",
+      "bytes": 77292,
+      "sha256": "dfd28aec6ca16ed6f65fa032f55f5c9760cedf2a12b27ad43dc7c235f64b0b28"
+    },
+    {
+      "path": "context/G17_QA_ORIGINAL.md",
+      "bytes": 90840,
+      "sha256": "a46416858744904359b7719fd5ca158b6d90fce17f9c00b6415ca4fdf0dc1365"
+    },
+    {
+      "path": "context/HESTIA_VISUAL_BIBLE_ORIGINAL.md",
+      "bytes": 58291,
+      "sha256": "ff9c82548870a761aacc6a6e91115e68f3a52757e19b541ac4ed3c3fb45c0333"
+    },
+    {
+      "path": "context/REDDIT_CHAT_ORIGINAL.txt",
+      "bytes": 13246,
+      "sha256": "b76a07a1cf38ed6267eb2fdc5daed6337c39fa2ac661ac1d52fe01041ebd0588"
+    },
+    {
+      "path": "context/SEQUENCE_RESEARCH_ORIGINAL.txt",
+      "bytes": 50790,
+      "sha256": "61b9ca2ec8b4903857bdb8df0bc3efea9cdcb9b0b8b2fd8d0a3c25bf1b35ab02"
+    },
+    {
+      "path": "context/VORHERIGER_PARALLELPLAN_ORIGINAL.md",
+      "bytes": 26354,
+      "sha256": "e65c5b13e9a3e2fc73b067d3fecf3d74ed2fe3e2f86c2ad1e10fceb21a3bc454"
+    },
+    {
+      "path": "orchestrators/SO-01.md",
+      "bytes": 3435,
+      "sha256": "8bdb092113fb9e425d8948e15975d3aad6a18cb55925a96134d93407ed6b18cd"
+    },
+    {
+      "path": "orchestrators/SO-02.md",
+      "bytes": 3648,
+      "sha256": "6ce1f71c8c0371f9863ec705cfd014055c835af955b8a5248fc0e36351f19ba1"
+    },
+    {
+      "path": "orchestrators/SO-03.md",
+      "bytes": 3488,
+      "sha256": "7e92b997d036d2f49c535132c4943bb71b2393d9102826692f79522b44d5a47b"
+    },
+    {
+      "path": "orchestrators/SO-04.md",
+      "bytes": 3392,
+      "sha256": "c374f44ea1c6f9168709bb814ffb6fd2473c1e6141875590775ab02d7d4ed726"
+    },
+    {
+      "path": "orchestrators/SO-05.md",
+      "bytes": 3334,
+      "sha256": "ecfdd3ef3715ef26bd2f39d19878357c1876a272b77e22ab6234fca9b8897b6d"
+    },
+    {
+      "path": "orchestrators/SO-06.md",
+      "bytes": 3392,
+      "sha256": "4b15c5e19e08afc218ed3a1c68066ffac7bf207cbdd0fadd08a2ba0c2887c13d"
+    },
+    {
+      "path": "sources/project_sources.json",
+      "bytes": 4719,
+      "sha256": "4c8eaf773c275d060489fef4508278a2f1cb7ddb676c0db47cc00f4004216166"
+    },
+    {
+      "path": "sources/web_sources.json",
+      "bytes": 5516,
+      "sha256": "20f240b1e5dc695d2151a28602d370b43795e83521562f9664b0ae541b1c7979"
+    },
+    {
+      "path": "tasks/RD-00.md",
+      "bytes": 5012,
+      "sha256": "b95147bb524f7246c497c822919aa55348b9c00440c8bacd1cb76763aa23a63a"
+    },
+    {
+      "path": "tasks/RD-01.md",
+      "bytes": 4724,
+      "sha256": "4569a0094a16a88abf082c663f1fc2a48462c0c469a31917455b3310356ac296"
+    },
+    {
+      "path": "tasks/RD-02.md",
+      "bytes": 4920,
+      "sha256": "fbcb9463e7e9490d9aa96d38501570eb477503b3bedda2e9305dc60ee677dc55"
+    },
+    {
+      "path": "tasks/RD-03.md",
+      "bytes": 4990,
+      "sha256": "4889074ea620c9c2ccaf944ded8a950a327cac160d682eed0d40d198c4920f4a"
+    },
+    {
+      "path": "tasks/RD-10.md",
+      "bytes": 4594,
+      "sha256": "ca0164c96fcc8ae517e575a80be8447e49506fa74db341bbe59076b7c8d9c4bc"
+    },
+    {
+      "path": "tasks/RD-11.md",
+      "bytes": 4632,
+      "sha256": "50a5443065b69666dd89951d162e930882574e4e0e44a466623fcfc6664a4bdd"
+    },
+    {
+      "path": "tasks/RD-12.md",
+      "bytes": 4605,
+      "sha256": "74952493821283a536dbf7b101fd5efbc0dd602ae137a092cd628a85709a7211"
+    },
+    {
+      "path": "tasks/RD-13.md",
+      "bytes": 4792,
+      "sha256": "eb24a8863c40439e359555a3a9f947737ea622d5d7f8b61814c48edd076f6057"
+    },
+    {
+      "path": "tasks/RD-14.md",
+      "bytes": 4931,
+      "sha256": "08104f1e0aa1dfdfbb7724113230879cd49b6cfe3be6810c37401b277204e373"
+    },
+    {
+      "path": "tasks/RD-15.md",
+      "bytes": 4858,
+      "sha256": "e0db533d15b549dd86bdfa4b60322467c67017df4695d88fb55f0bf019de99ca"
+    },
+    {
+      "path": "tasks/RD-20.md",
+      "bytes": 4794,
+      "sha256": "3e0b94254892d7d574605c9f2e1538872003b3d4d87d443189c8fa121e4d5c45"
+    },
+    {
+      "path": "tasks/RD-21.md",
+      "bytes": 5182,
+      "sha256": "155af9d0bef97cabeab99e4bad40588b7b23b541fab3b3b73be1ed644df623e5"
+    },
+    {
+      "path": "tasks/RD-22.md",
+      "bytes": 5089,
+      "sha256": "e47748cdc64fcd2f3e4dec2e183ef6d9a583afcd5e66a54030a3f842f66c2f78"
+    },
+    {
+      "path": "tasks/RD-23.md",
+      "bytes": 4561,
+      "sha256": "2067375d31f0894ba7af3c3071dea40c721dee9cc3608ba230319a0dbe4f5ae5"
+    },
+    {
+      "path": "tasks/RD-30.md",
+      "bytes": 4652,
+      "sha256": "b229794a47774afbb5fb17184f9ba638b8e52df43a3b06941580edf1340c23b5"
+    },
+    {
+      "path": "tasks/RD-31.md",
+      "bytes": 5200,
+      "sha256": "609dd37d76a38d52e42581002bb9a9c55d09a6c05d1bb400e88f408bfa2d72b4"
+    },
+    {
+      "path": "tasks/RD-32.md",
+      "bytes": 5157,
+      "sha256": "995e8b2cb8b60dec7e56f2d216a871f5acc53f6bf18c798484360d63dd1f3437"
+    },
+    {
+      "path": "tasks/RD-33.md",
+      "bytes": 4880,
+      "sha256": "bd1eb4ff2ee1e1a0e1d02f92b349342b3cd7b5ccf19826d05ef22911ae4bc565"
+    },
+    {
+      "path": "tasks/RD-40.md",
+      "bytes": 4615,
+      "sha256": "f6f7c7b0e78fa6a9af5979e5e57a2c606439d7ce4f29fa4d6382f501f6fadf70"
+    },
+    {
+      "path": "tasks/RD-41.md",
+      "bytes": 4555,
+      "sha256": "d1e1c8af4aa46ac6a32ddf92827722eba4afc7ee3737f131b35a96968dce9d86"
+    },
+    {
+      "path": "tasks/RD-42.md",
+      "bytes": 4429,
+      "sha256": "ab0ddee5b89b17b1636d1a9570a6220ab4984277c4b9d6cdde21a38b0508bd73"
+    },
+    {
+      "path": "tasks/RD-43.md",
+      "bytes": 4571,
+      "sha256": "c43e1c00449fbed93f326031b92bd1849c2fabaeaaba9098968eadaf6d6b435b"
+    },
+    {
+      "path": "tasks/RD-50.md",
+      "bytes": 4737,
+      "sha256": "adee9a233257d16092b1f263c9d8fa05d848cfa2eb5ed689ffd32b38f0ea8f44"
+    },
+    {
+      "path": "tasks/RD-51.md",
+      "bytes": 4969,
+      "sha256": "663464d9721efa4e6ea7affc1c0cf8030a2cc09869692d1566945ae6cf587de4"
+    },
+    {
+      "path": "tasks/RD-52.md",
+      "bytes": 5073,
+      "sha256": "2d2ef420d3d2bc6adc90a44c3a9c60d662fc1c66f40f4bf1e42a9938c06e709b"
+    }
+  ]
+}

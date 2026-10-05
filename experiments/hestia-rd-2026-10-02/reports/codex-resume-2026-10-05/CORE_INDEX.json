@@ -1,0 +1,1031 @@
+{
+  "schema": "hestia-rd-core-index-v1",
+  "executionAnchor": "16a5d29a5cddea372abae139da618aa000a058be",
+  "sourceState": "UNCOMMITTED_HASH_BOUND",
+  "productRead": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+  "optional": {
+    "RD-22": "NOT_STARTED_OPTIONAL",
+    "RD-33": "NOT_STARTED_OPTIONAL"
+  },
+  "cards": [
+    {
+      "id": "RD-00",
+      "name": "Contracts/isolation",
+      "recommendation": "ADOPT_CANDIDATE",
+      "implementation": "PRESENT",
+      "performance": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "productIntegrated": false,
+      "art": "PENDING_OWNER",
+      "limit": "Frozenv1 contracts, owned mounts and scope checks; diagnostic only.",
+      "implementationArtifacts": [
+        "src/contracts/experiment.ts"
+      ],
+      "sourceArtifacts": [
+        "src/contracts/experiment.ts"
+      ],
+      "runArtifacts": [
+        ".resume-runs/final-source-units-01/receipt.json",
+        ".resume-runs/final-source-units-01/unit.json"
+      ],
+      "cases": [
+        {
+          "id": "BC00",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "BC01",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "C00",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "C01",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        }
+      ]
+    },
+    {
+      "id": "RD-01",
+      "name": "Sources/media",
+      "recommendation": "DEFER",
+      "implementation": "PRESENT",
+      "performance": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "productIntegrated": false,
+      "art": "PENDING_OWNER",
+      "limit": "Seven primary-page rechecks and five decoded local PNGs; external videos and six concept images unavailable. Art/license remains owner-gated.",
+      "implementationArtifacts": [
+        "reference-cards/index.json"
+      ],
+      "sourceArtifacts": [
+        "reference-cards/index.json"
+      ],
+      "runArtifacts": [
+        ".resume-runs/final-source-units-01/receipt.json",
+        ".resume-runs/final-source-units-01/unit.json"
+      ],
+      "cases": [
+        {
+          "id": "REF01",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "REF02",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "REF03",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "REF04",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        }
+      ]
+    },
+    {
+      "id": "RD-02",
+      "name": "Fixture exports",
+      "recommendation": "ADOPT_CANDIDATE",
+      "implementation": "PRESENT",
+      "performance": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "productIntegrated": false,
+      "art": "PENDING_OWNER",
+      "limit": "Frozen b3 fixture bytes and independent cells/faces; replay is not a native cut receipt.",
+      "implementationArtifacts": [
+        "exporters/fixture-export.mjs"
+      ],
+      "sourceArtifacts": [
+        "exporters/fixture-export.mjs"
+      ],
+      "runArtifacts": [
+        ".resume-runs/final-source-units-01/receipt.json",
+        ".resume-runs/final-source-units-01/unit.json"
+      ],
+      "cases": [
+        {
+          "id": "FX01",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "FX02",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "FX03",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "FX04",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "FX05",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        }
+      ]
+    },
+    {
+      "id": "RD-03",
+      "name": "Control/runner",
+      "recommendation": "ADOPT_CANDIDATE",
+      "implementation": "PRESENT",
+      "performance": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "productIntegrated": false,
+      "art": "PENDING_OWNER",
+      "limit": "One controlled WebGL2 host; native GPU allocation and performance unavailable.",
+      "implementationArtifacts": [
+        "src/runner/threeHost.ts"
+      ],
+      "sourceArtifacts": [
+        "src/runner/threeHost.ts"
+      ],
+      "runArtifacts": [
+        ".resume-runs/final-source-native-01/receipt.json",
+        ".resume-runs/final-source-native-01/report.json",
+        ".resume-runs/final-source-units-01/receipt.json",
+        ".resume-runs/final-source-units-01/unit.json"
+      ],
+      "cases": [
+        {
+          "id": "RUN01",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "RUN02",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "RUN03",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "RUN04",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        }
+      ]
+    },
+    {
+      "id": "RD-10",
+      "name": "Renderer capabilities",
+      "recommendation": "DEFER",
+      "implementation": "PRESENT",
+      "performance": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "productIntegrated": false,
+      "art": "PENDING_OWNER",
+      "limit": "Backend identity and capability refusal supported; no target-device qualified costs.",
+      "implementationArtifacts": [
+        "src/experiments/renderer-probe/index.ts"
+      ],
+      "sourceArtifacts": [
+        "src/experiments/renderer-probe/index.ts"
+      ],
+      "runArtifacts": [
+        ".resume-runs/final-source-native-01/receipt.json",
+        ".resume-runs/final-source-native-01/report.json",
+        ".resume-runs/final-source-units-01/receipt.json",
+        ".resume-runs/final-source-units-01/unit.json"
+      ],
+      "cases": [
+        {
+          "id": "CAP01",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "CAP02",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "CAP03",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        }
+      ]
+    },
+    {
+      "id": "RD-11",
+      "name": "Three WebGPU/TSL",
+      "recommendation": "DEFER",
+      "implementation": "PRESENT",
+      "performance": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "productIntegrated": false,
+      "art": "PENDING_OWNER",
+      "limit": "REN12-v2 native sensitivity/holdout qualified only for declared semantic color ROIs; isolated AO, native depth readback and shadows unavailable.",
+      "implementationArtifacts": [
+        "src/experiments/three-webgpu/index.ts"
+      ],
+      "sourceArtifacts": [
+        "src/experiments/three-webgpu/index.ts"
+      ],
+      "runArtifacts": [
+        ".resume-runs/final-source-native-01/receipt.json",
+        ".resume-runs/final-source-native-01/report.json",
+        ".resume-runs/final-source-units-01/receipt.json",
+        ".resume-runs/final-source-units-01/unit.json"
+      ],
+      "cases": [
+        {
+          "id": "REN11",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "REN12",
+          "status": "PARTIAL",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "REN13",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "REN14",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        }
+      ]
+    },
+    {
+      "id": "RD-12",
+      "name": "Babylon comparison",
+      "recommendation": "DEFER",
+      "implementation": "PRESENT",
+      "performance": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "productIntegrated": false,
+      "art": "PENDING_OWNER",
+      "limit": "Original0/16 and separate12/16 native populations preserved. F06 depth sensitivity fails; no cross-engine parity or COPY_SRC readback.",
+      "implementationArtifacts": [
+        "src/experiments/babylon/index.ts"
+      ],
+      "sourceArtifacts": [
+        "src/experiments/babylon/index.ts"
+      ],
+      "runArtifacts": [
+        ".resume-runs/final-source-units-01/receipt.json",
+        ".resume-runs/final-source-units-01/unit.json"
+      ],
+      "cases": [
+        {
+          "id": "BAB01",
+          "status": "PARTIAL",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "BAB02",
+          "status": "PARTIAL",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "BAB03",
+          "status": "PARTIAL",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "BAB04",
+          "status": "PARTIAL",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        }
+      ]
+    },
+    {
+      "id": "RD-13",
+      "name": "Voxel rays",
+      "recommendation": "REJECT",
+      "implementation": "PRESENT",
+      "performance": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "productIntegrated": false,
+      "art": "PENDING_OWNER",
+      "limit": "Native shader reserved identifier sample fails after allocations. CPU DDA is independent positive evidence, never native success; greedy control retained.",
+      "implementationArtifacts": [
+        "src/experiments/voxel-rays/index.ts"
+      ],
+      "sourceArtifacts": [
+        "src/experiments/voxel-rays/index.ts"
+      ],
+      "runArtifacts": [
+        ".resume-runs/final-source-units-01/receipt.json",
+        ".resume-runs/final-source-units-01/unit.json"
+      ],
+      "cases": [
+        {
+          "id": "RAY01",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "RAY02",
+          "status": "PARTIAL",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "RAY03",
+          "status": "PARTIAL",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "RAY04",
+          "status": "PARTIAL",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        }
+      ]
+    },
+    {
+      "id": "RD-14",
+      "name": "Material/light",
+      "recommendation": "ADOPT_CANDIDATE",
+      "implementation": "PRESENT",
+      "performance": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "productIntegrated": false,
+      "art": "PENDING_OWNER",
+      "limit": "Real source-bound wet attributes, roughness and water/debug views; shared sun direction. Native shadows/temporal shadow history unsupported.",
+      "implementationArtifacts": [
+        "src/experiments/material-light/index.ts"
+      ],
+      "sourceArtifacts": [
+        "src/experiments/material-light/index.ts"
+      ],
+      "runArtifacts": [
+        ".resume-runs/final-source-native-01/receipt.json",
+        ".resume-runs/final-source-native-01/report.json",
+        ".resume-runs/final-source-units-01/receipt.json",
+        ".resume-runs/final-source-units-01/unit.json"
+      ],
+      "cases": [
+        {
+          "id": "MAT01",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "MAT02",
+          "status": "PARTIAL",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "MAT03",
+          "status": "PARTIAL",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "MAT04",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        }
+      ]
+    },
+    {
+      "id": "RD-15",
+      "name": "Camera occlusion",
+      "recommendation": "ADOPT_CANDIDATE",
+      "implementation": "PRESENT",
+      "performance": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "productIntegrated": false,
+      "art": "PENDING_OWNER",
+      "limit": "Fixed-preset bounded push-in/local clip corridor; source and original-camera picks unchanged. Free-look hysteresis and native shadow interaction not qualified.",
+      "implementationArtifacts": [
+        "src/experiments/camera-occlusion/index.ts"
+      ],
+      "sourceArtifacts": [
+        "src/experiments/camera-occlusion/index.ts"
+      ],
+      "runArtifacts": [
+        ".resume-runs/final-source-native-01/receipt.json",
+        ".resume-runs/final-source-native-01/report.json",
+        ".resume-runs/final-source-units-01/receipt.json",
+        ".resume-runs/final-source-units-01/unit.json"
+      ],
+      "cases": [
+        {
+          "id": "CAM01",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "CAM02",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "CAM03",
+          "status": "PARTIAL",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "CAM04",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        }
+      ]
+    },
+    {
+      "id": "RD-20",
+      "name": "Habitat/foliage",
+      "recommendation": "ADOPT_CANDIDATE",
+      "implementation": "PRESENT",
+      "performance": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "productIntegrated": false,
+      "art": "PENDING_OWNER",
+      "limit": "Three connected authored wood forms, two undergrowth forms and bounded habitat placement; synthetic art, not product content acceptance.",
+      "implementationArtifacts": [
+        "src/experiments/foliage-shapes/index.ts"
+      ],
+      "sourceArtifacts": [
+        "src/experiments/foliage-shapes/index.ts"
+      ],
+      "runArtifacts": [
+        ".resume-runs/final-source-units-01/receipt.json",
+        ".resume-runs/final-source-units-01/unit.json"
+      ],
+      "cases": [
+        {
+          "id": "FOL01",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "FOL02",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "FOL03",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "FOL04",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        }
+      ]
+    },
+    {
+      "id": "RD-21",
+      "name": "Wind",
+      "recommendation": "ADOPT_CANDIDATE",
+      "implementation": "PRESENT",
+      "performance": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "productIntegrated": false,
+      "art": "PENDING_OWNER",
+      "limit": "Shared analytic clock and stable source-bound static/rigid/bounded-vertex candidates; cull bounds updated, native shadow motion unsupported.",
+      "implementationArtifacts": [
+        "src/experiments/foliage-wind/index.ts"
+      ],
+      "sourceArtifacts": [
+        "src/experiments/foliage-wind/index.ts"
+      ],
+      "runArtifacts": [
+        ".resume-runs/final-source-units-01/receipt.json",
+        ".resume-runs/final-source-units-01/unit.json"
+      ],
+      "cases": [
+        {
+          "id": "WND01",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "WND02",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "WND03",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "WND04",
+          "status": "PARTIAL",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "WND05",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        }
+      ]
+    },
+    {
+      "id": "RD-23",
+      "name": "Attachment lifecycle",
+      "recommendation": "ADOPT_CANDIDATE",
+      "implementation": "PRESENT",
+      "performance": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "productIntegrated": false,
+      "art": "PENDING_OWNER",
+      "limit": "F04 intact/detach/rotate/remove/reload replay;100 transitions and20 mount cycles in combined native route. No physics/cut/save integration.",
+      "implementationArtifacts": [
+        "src/experiments/foliage-lifecycle/index.ts"
+      ],
+      "sourceArtifacts": [
+        "src/experiments/foliage-lifecycle/index.ts"
+      ],
+      "runArtifacts": [
+        ".resume-runs/final-source-native-01/receipt.json",
+        ".resume-runs/final-source-native-01/report.json",
+        ".resume-runs/final-source-units-01/receipt.json",
+        ".resume-runs/final-source-units-01/unit.json"
+      ],
+      "cases": [
+        {
+          "id": "LIF01",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "LIF02",
+          "status": "PARTIAL",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "LIF03",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "LIF04",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "LIF05",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        }
+      ]
+    },
+    {
+      "id": "RD-30",
+      "name": "Weather field",
+      "recommendation": "ADOPT_CANDIDATE",
+      "implementation": "PRESENT",
+      "performance": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "productIntegrated": false,
+      "art": "PENDING_OWNER",
+      "limit": "Four bounded analytic presets, deterministic location/seed/tick; no forces on product bodies.",
+      "implementationArtifacts": [
+        "src/experiments/weather-field/index.ts"
+      ],
+      "sourceArtifacts": [
+        "src/experiments/weather-field/index.ts"
+      ],
+      "runArtifacts": [
+        ".resume-runs/final-source-units-01/receipt.json",
+        ".resume-runs/final-source-units-01/unit.json"
+      ],
+      "cases": [
+        {
+          "id": "WEA01",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "WEA02",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "WEA03",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "WEA04",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        }
+      ]
+    },
+    {
+      "id": "RD-31",
+      "name": "Rain shielding",
+      "recommendation": "ADOPT_CANDIDATE",
+      "implementation": "PRESENT",
+      "performance": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "productIntegrated": false,
+      "art": "PENDING_OWNER",
+      "limit": "Batched source queries selected; fixed particle/splash/query ceilings. Mesh-first depth candidate REJECT at unchanged half-open boundary; no native GPU depth readback.",
+      "implementationArtifacts": [
+        "src/experiments/rain/index.ts"
+      ],
+      "sourceArtifacts": [
+        "src/experiments/rain/index.ts"
+      ],
+      "runArtifacts": [
+        ".resume-runs/final-source-native-01/receipt.json",
+        ".resume-runs/final-source-native-01/report.json",
+        ".resume-runs/final-source-units-01/receipt.json",
+        ".resume-runs/final-source-units-01/unit.json"
+      ],
+      "cases": [
+        {
+          "id": "RAIN01",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "RAIN02",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "RAIN03",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "RAIN04",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "RAIN05",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        }
+      ]
+    },
+    {
+      "id": "RD-32",
+      "name": "Wetness/water",
+      "recommendation": "ADOPT_CANDIDATE",
+      "implementation": "PRESENT",
+      "performance": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "productIntegrated": false,
+      "art": "PENDING_OWNER",
+      "limit": "Analytic source-reset history reconstruction with current exposure; own retained source bytes accounted. Not per-pose historical water simulation.",
+      "implementationArtifacts": [
+        "src/experiments/wet-surface/index.ts"
+      ],
+      "sourceArtifacts": [
+        "src/experiments/wet-surface/index.ts"
+      ],
+      "runArtifacts": [
+        ".resume-runs/final-source-native-01/receipt.json",
+        ".resume-runs/final-source-native-01/report.json",
+        ".resume-runs/final-source-units-01/receipt.json",
+        ".resume-runs/final-source-units-01/unit.json"
+      ],
+      "cases": [
+        {
+          "id": "WET01",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "WET02",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "WET03",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "WET04",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "WET05",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        }
+      ]
+    },
+    {
+      "id": "RD-40",
+      "name": "Variant gallery",
+      "recommendation": "ADOPT_CANDIDATE",
+      "implementation": "PRESENT",
+      "performance": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "productIntegrated": false,
+      "art": "PENDING_OWNER",
+      "limit": "Real same-tick sequential A/B/A and hash-bound exports; historical reference catalogue explicitly labelled. Gallery is not the combined route.",
+      "implementationArtifacts": [
+        "src/tools/variant-gallery/session.ts"
+      ],
+      "sourceArtifacts": [
+        "src/tools/variant-gallery/session.ts"
+      ],
+      "runArtifacts": [
+        ".resume-runs/final-gallery-export-02/receipt.json",
+        ".resume-runs/final-gallery-export-02/report.json",
+        ".resume-runs/final-source-native-01/receipt.json",
+        ".resume-runs/final-source-native-01/report.json",
+        ".resume-runs/final-source-units-01/receipt.json",
+        ".resume-runs/final-source-units-01/unit.json"
+      ],
+      "cases": [
+        {
+          "id": "UI40",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "UI41",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "UI42",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "UI43",
+          "status": "PARTIAL",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        }
+      ]
+    },
+    {
+      "id": "RD-41",
+      "name": "Habitat workbench",
+      "recommendation": "ADOPT_CANDIDATE",
+      "implementation": "PRESENT",
+      "performance": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "productIntegrated": false,
+      "art": "PENDING_OWNER",
+      "limit": "Actual shared generator, bounded latest-draft queue, cancel/undo/redo/local validated JSON; no product authoring writes.",
+      "implementationArtifacts": [
+        "src/tools/foliage-workbench/model.ts"
+      ],
+      "sourceArtifacts": [
+        "src/tools/foliage-workbench/model.ts"
+      ],
+      "runArtifacts": [
+        ".resume-runs/final-source-native-01/receipt.json",
+        ".resume-runs/final-source-native-01/report.json",
+        ".resume-runs/final-source-units-01/receipt.json",
+        ".resume-runs/final-source-units-01/unit.json"
+      ],
+      "cases": [
+        {
+          "id": "TOOL41",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "TOOL42",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "TOOL43",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "TOOL44",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        }
+      ]
+    },
+    {
+      "id": "RD-42",
+      "name": "Weather workbench",
+      "recommendation": "ADOPT_CANDIDATE",
+      "implementation": "PRESENT",
+      "performance": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "productIntegrated": false,
+      "art": "PENDING_OWNER",
+      "limit": "Actual shared weather/wetness, keyframes/scrub/reset, bounded validated local scenario IO; no executable or remote URL inputs.",
+      "implementationArtifacts": [
+        "src/tools/weather-workbench/model.ts"
+      ],
+      "sourceArtifacts": [
+        "src/tools/weather-workbench/model.ts"
+      ],
+      "runArtifacts": [
+        ".resume-runs/final-source-native-01/receipt.json",
+        ".resume-runs/final-source-native-01/report.json",
+        ".resume-runs/final-source-units-01/receipt.json",
+        ".resume-runs/final-source-units-01/unit.json"
+      ],
+      "cases": [
+        {
+          "id": "TOOL45",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "TOOL46",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "TOOL47",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "TOOL48",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        }
+      ]
+    },
+    {
+      "id": "RD-43",
+      "name": "Asset inspector",
+      "recommendation": "ADOPT_CANDIDATE",
+      "implementation": "PRESENT",
+      "performance": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "productIntegrated": false,
+      "art": "PENDING_OWNER",
+      "limit": "Independent cells/faces/material/support findings, actual normals/bounds/solo/hide; budget overflow UNSUPPORTED, never false PASS. Optional G12 GLB pair absent.",
+      "implementationArtifacts": [
+        "src/tools/asset-inspector/model.ts"
+      ],
+      "sourceArtifacts": [
+        "src/tools/asset-inspector/model.ts"
+      ],
+      "runArtifacts": [
+        ".resume-runs/final-source-native-01/receipt.json",
+        ".resume-runs/final-source-native-01/report.json",
+        ".resume-runs/final-source-units-01/receipt.json",
+        ".resume-runs/final-source-units-01/unit.json"
+      ],
+      "cases": [
+        {
+          "id": "INS01",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "INS02",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "INS03",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "INS04",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        }
+      ]
+    },
+    {
+      "id": "RD-50",
+      "name": "QA/admission",
+      "recommendation": "ADOPT_CANDIDATE",
+      "implementation": "PRESENT",
+      "performance": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "productIntegrated": false,
+      "art": "PENDING_OWNER",
+      "limit": "Independent truth, path/hash/schema/claim guards and source-bound case receipts; a gate metadata pass is not GPU/art qualification.",
+      "implementationArtifacts": [
+        "scripts/check-rd-results.mjs"
+      ],
+      "sourceArtifacts": [
+        "scripts/check-rd-results.mjs"
+      ],
+      "runArtifacts": [
+        ".resume-runs/final-source-units-01/receipt.json",
+        ".resume-runs/final-source-units-01/unit.json"
+      ],
+      "cases": [
+        {
+          "id": "QA01",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "QA02",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "QA03",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "QA04",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        }
+      ]
+    },
+    {
+      "id": "RD-51",
+      "name": "Combined route",
+      "recommendation": "ADOPT_CANDIDATE",
+      "implementation": "PRESENT",
+      "performance": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "productIntegrated": false,
+      "art": "PENDING_OWNER",
+      "limit": "One canvas/renderer/loop, shared source/tick/weather, original component payloads in explicit syntheticF51 composite;100 transitions/20 owned cycles. Native allocator/performance unknown.",
+      "implementationArtifacts": [
+        "src/qa/combined-scene/index.ts"
+      ],
+      "sourceArtifacts": [
+        "src/qa/combined-scene/index.ts"
+      ],
+      "runArtifacts": [
+        ".resume-runs/final-source-native-01/receipt.json",
+        ".resume-runs/final-source-native-01/report.json",
+        ".resume-runs/final-source-units-01/receipt.json",
+        ".resume-runs/final-source-units-01/unit.json"
+      ],
+      "cases": [
+        {
+          "id": "COM01",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "COM02",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "COM03",
+          "status": "PARTIAL",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "COM04",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "COM05",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        }
+      ]
+    },
+    {
+      "id": "RD-52",
+      "name": "Planner delivery",
+      "recommendation": "ADOPT_CANDIDATE",
+      "implementation": "PRESENT",
+      "performance": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "productIntegrated": false,
+      "art": "PENDING_OWNER",
+      "limit": "Complete original case accounting, runnable built lab, selected raw/media evidence and verified source/artifact inventory. No automatic product integration.",
+      "implementationArtifacts": [
+        "scripts/assemble-planner-package.mjs"
+      ],
+      "sourceArtifacts": [
+        "scripts/assemble-planner-package.mjs"
+      ],
+      "runArtifacts": [
+        ".resume-runs/final-planner-delivery-01/receipt.json",
+        ".resume-runs/final-planner-delivery-01/unit.json"
+      ],
+      "cases": [
+        {
+          "id": "DEC01",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "DEC02",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "DEC03",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        },
+        {
+          "id": "DEC04",
+          "status": "PASS",
+          "evidence": "reports/codex-resume-2026-10-05/CASE_EVIDENCE.json"
+        }
+      ]
+    }
+  ]
+}

@@ -18,7 +18,7 @@ export function projectFloat32(values: LabTypedPayload): Float32Array<ArrayBuffe
 }
 const measured = (value: number, unit = 'count'): LabMetric => ({ status: 'measured', value, unit });
 
-function buildProjection(fixture: LabFixtureV1, signal: AbortSignal) {
+function buildProjection(fixture: LabFixtureV1, signal: AbortSignal, projection: 'all'|'solid'|'decor'='all') {
   getFixtureDigest(fixture); signal.throwIfAborted(); const root = new Group();
   root.position.set(...fixture.frame.originMeters); root.quaternion.set(...fixture.frame.rotationXyzw);
   const geometries: BufferGeometry[] = []; const materials: MeshLambertMaterial[] = []; let bufferBytes = 0; let triangles = 0;
@@ -29,6 +29,9 @@ function buildProjection(fixture: LabFixtureV1, signal: AbortSignal) {
       owner.userData = { ownerId: object.ownerId, sourceNamespace: object.sourceNamespace, sourceRevision: object.sourceRevision };
       owner.position.set(...object.frame.originMeters); owner.quaternion.set(...object.frame.rotationXyzw); root.add(owner);
       for (const source of object.meshes) {
+        const role=fixture.materials.find((material)=>material.id===source.materialId)!.role;
+        const decor=['foliage','accent','reed'].includes(role);
+        if((projection==='solid'&&decor)||(projection==='decor'&&!decor))continue;
         const geometry = new BufferGeometry(); geometries.push(geometry);
         const positions = projectFloat32(copyFixturePayload(fixture, source.positions));
         const indices = copyFixturePayload(fixture, source.indices);
@@ -60,7 +63,8 @@ function buildProjection(fixture: LabFixtureV1, signal: AbortSignal) {
 /** The future effect seam: use context.root; do not create a renderer, camera, loop or shader-hook chain. */
 export async function mountThreeEffect(context: ThreeLabEffectContext, preset: LabPreset): Promise<ThreeLabEffect> {
   requireValue(preset.id === 'fixture-control', 'Unknown Three control variant; no quality fallback');
-  let fixture = context.fixture; let projection = buildProjection(fixture, context.signal); let generation = 0; let disposed = false;
+  const selection=preset.parameters?.projection??'all';requireValue(selection==='all'||selection==='solid'||selection==='decor','Unknown projection ownership');
+  let fixture = context.fixture; let projection = buildProjection(fixture, context.signal,selection); let generation = 0; let disposed = false;
   context.root.add(projection.root);
   return {
     setFrame(input) {
@@ -70,7 +74,7 @@ export async function mountThreeEffect(context: ThreeLabEffectContext, preset: L
     },
     async replaceFixture(next) {
       context.signal.throwIfAborted(); requireValue(!disposed, 'Effect disposed'); const version = ++generation;
-      const candidate = buildProjection(next, context.signal);
+      const candidate = buildProjection(next, context.signal,selection);
       // An async boundary tests late cancellation without ever attaching a half-built candidate.
       await Promise.resolve();
       try { context.signal.throwIfAborted(); requireValue(!disposed && version === generation, 'Stale/aborted effect replacement'); }

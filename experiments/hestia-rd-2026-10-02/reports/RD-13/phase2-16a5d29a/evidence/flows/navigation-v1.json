@@ -1,0 +1,97 @@
+{
+  "source": "16a5d29a5cddea372abae139da618aa000a058be",
+  "productIntegrated": false,
+  "rootPath": {
+    "url": "http://127.0.0.1:5280/src/experiments/voxel-rays/index.html",
+    "bridgePresent": false,
+    "status": "FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.",
+    "projected": {
+      "productIntegrated": false,
+      "history": [
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission"
+      ],
+      "terminal": {
+        "firstFailure": "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "pending": false,
+        "disposed": true,
+        "productIntegrated": false
+      }
+    },
+    "selections": {
+      "fixture": "F00-CONTROL-REPLAY",
+      "variant": "rays-no-ao",
+      "camera": "far",
+      "tick": "0",
+      "resolution": "1280x720",
+      "dpr": "1"
+    },
+    "canvas": {
+      "hidden": true,
+      "width": 1280,
+      "height": 720,
+      "box": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "devicePixelRatio": 1
+    }
+  },
+  "gallery": {
+    "url": "http://127.0.0.1:5280/src/tools/variant-gallery/index.html",
+    "bridgePresent": false,
+    "variants": [
+      "RD03 · Three control",
+      "RD11 · WebGPURenderer"
+    ]
+  },
+  "toolAfterGallery": {
+    "url": "http://127.0.0.1:5280/src/experiments/voxel-rays/index.html",
+    "bridgePresent": false,
+    "status": "FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.",
+    "projected": {
+      "productIntegrated": false,
+      "history": [
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission"
+      ],
+      "terminal": {
+        "firstFailure": "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "pending": false,
+        "disposed": true,
+        "productIntegrated": false
+      }
+    },
+    "selections": {
+      "fixture": "F00-CONTROL-REPLAY",
+      "variant": "rays-no-ao",
+      "camera": "far",
+      "tick": "0",
+      "resolution": "1280x720",
+      "dpr": "1"
+    },
+    "canvas": {
+      "hidden": true,
+      "width": 1280,
+      "height": 720,
+      "box": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "devicePixelRatio": 1
+    }
+  },
+  "visibleClickPath": true
+}

@@ -1,0 +1,61 @@
+{
+  "decoded": 5,
+  "rows": [
+    {
+      "id": "HVP03-C01",
+      "sha256": "68a9a7f344fde41d4b733641e43718aea043770ef6ac42fa5401880dd998b8e5",
+      "bytes": 1012429,
+      "format": "PNG",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "wholeImageDecode": "PASS"
+    },
+    {
+      "id": "HVP03-C02",
+      "sha256": "262466355adc2d7b00c2dda57e2939f456c118085378e6b7cf17e3dd0d285c59",
+      "bytes": 916920,
+      "format": "PNG",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "wholeImageDecode": "PASS"
+    },
+    {
+      "id": "HVP03-C03",
+      "sha256": "7b4804eeacf367a555f40467a87d88dfdc38a2caf5944e9eab152148031138e0",
+      "bytes": 990076,
+      "format": "PNG",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "wholeImageDecode": "PASS"
+    },
+    {
+      "id": "HVP03-C04-1280",
+      "sha256": "f0f441eaced67d7f57d2ace86d9bdb25aa5d33925630c41da1574cdd861acfa5",
+      "bytes": 725031,
+      "format": "PNG",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "wholeImageDecode": "PASS"
+    },
+    {
+      "id": "HVP03-C04",
+      "sha256": "94699c66760f2011c0464c8ace5b3539d4fda7df6e886c812ab9ffd5e82bcbfd",
+      "bytes": 1288777,
+      "format": "PNG",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "wholeImageDecode": "PASS"
+    }
+  ],
+  "productIntegrated": false
+}

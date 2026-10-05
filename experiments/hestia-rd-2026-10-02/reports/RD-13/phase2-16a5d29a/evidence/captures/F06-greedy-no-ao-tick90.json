@@ -1,0 +1,818 @@
+{
+  "schema": "rd13-native-compositor-capture-v1",
+  "source": "16a5d29a5cddea372abae139da618aa000a058be",
+  "productIntegrated": false,
+  "name": "F06-greedy-no-ao-tick90",
+  "before": {
+    "url": "http://127.0.0.1:5280/src/experiments/voxel-rays/index.html",
+    "bridgePresent": false,
+    "status": "Host render submitted. Native numeric/image/depth-water qualification still NOT RUN; this is not an art/performance PASS.",
+    "projected": {
+      "productIntegrated": false,
+      "facts": {
+        "backend": "Three-WebGLRenderer-WebGL2",
+        "errors": [],
+        "experimentId": "RD-13",
+        "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+        "liveResources": {
+          "geometries": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "hostListeners": {
+            "status": "measured",
+            "unit": "count",
+            "value": 2
+          },
+          "renderers": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "renderloops": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "textures": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          }
+        },
+        "logicalCosts": {
+          "effect-0-cpuPeakBytes": {
+            "reason": "Conservative source transport/private/copy/old-new estimate, not JS heap",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 2826000
+          },
+          "effect-0-fullScreenVolumes": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          },
+          "effect-0-greedyBuildMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 5.5
+          },
+          "effect-0-maxStepsPerRay": {
+            "status": "measured",
+            "unit": "count",
+            "value": 101
+          },
+          "effect-0-nativeGpuBytes": {
+            "reason": "Native context/driver VRAM cannot be measured here",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "effect-0-prepareMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 12
+          },
+          "effect-0-projectionBuildMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 5.699999988079071
+          },
+          "effect-0-projectionBytes": {
+            "reason": "Typed texture/mesh payload; excludes native allocator/driver/context",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 5832
+          },
+          "effect-0-triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 108
+          },
+          "effect-0-uploadCommandCpuMs": {
+            "reason": "Three upload occurs during native render; CPU preparation is not upload time",
+            "status": "not-run",
+            "unit": "ms"
+          },
+          "gpuBytes": {
+            "reason": "Native GPU memory unavailable",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "gpuMs": {
+            "reason": "Timer available; diagnostic loop does not sample GPU timing",
+            "status": "not-run",
+            "unit": "ms"
+          },
+          "renderCalls": {
+            "status": "measured",
+            "unit": "count",
+            "value": 5
+          },
+          "triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 108
+          }
+        },
+        "sourceRevision": 0,
+        "unsupportedFeatures": [
+          "native-pcf-shadow-parity",
+          "native-sky-shader-parity",
+          "native-numeric-qualification-not-run",
+          "native-water-shader-parity",
+          "native-material-shader-hooks",
+          "face-ambient-occlusion",
+          "gi-and-reflections",
+          "unknown-is-not-world-clearance",
+          "native-vram-unavailable",
+          "gpu-timing-not-qualified"
+        ],
+        "variantId": "greedy-no-ao"
+      },
+      "private": {
+        "productIntegrated": false,
+        "variant": "greedy-no-ao",
+        "caps": {
+          "max3D": 2048,
+          "maxTexture": 16384,
+          "maxViewport": [
+            32767,
+            32767
+          ],
+          "fragmentSamplers": 16,
+          "rgba8ui": true,
+          "contextLost": false,
+          "formatSampleCounts": []
+        },
+        "host": {
+          "backend": "Three-WebGLRenderer-WebGL2",
+          "webgl2": true,
+          "fixtureId": "F06-MATERIAL",
+          "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+          "sourceRevision": 0,
+          "payloadBindings": [
+            {
+              "id": "material-room-coverage",
+              "byteLength": 35840,
+              "sha256": "782c3a48703a9b3d0536ef4c51d03840d5e09dd0ccf15edf2a73d7b4c3d7d2f6"
+            },
+            {
+              "id": "material-room-material-slots",
+              "byteLength": 35840,
+              "sha256": "a487a59ca423d87f08307933769d91f01caab957a9aaa71278f0bec7976c8559"
+            },
+            {
+              "id": "material-room-occupancy",
+              "byteLength": 35840,
+              "sha256": "b4c007a550098258f670e0ec5061270e10f7b4860ff859817c1935e234bf90b5"
+            },
+            {
+              "id": "material-room-slot-1-indices",
+              "byteLength": 113160,
+              "sha256": "2f8da78837e1be1a39507f0b209a02252f70228565ad9eb3b47e9599ffc6ec1d"
+            },
+            {
+              "id": "material-room-slot-1-normals",
+              "byteLength": 226320,
+              "sha256": "52bc806122082c415b03db1314814013d7cec4d3a9f69c76051a654cb3f50ba9"
+            },
+            {
+              "id": "material-room-slot-1-positions",
+              "byteLength": 226320,
+              "sha256": "9a3a9105bb22738691ed7b3e1dcd7e8766f7349fad7220a2fee6dee6e996abdd"
+            },
+            {
+              "id": "material-room-slot-2-indices",
+              "byteLength": 23952,
+              "sha256": "5e590203fe392a851981fadcfa69ba90a5ef1a47957ab2f13832ea83305b3ead"
+            },
+            {
+              "id": "material-room-slot-2-normals",
+              "byteLength": 47904,
+              "sha256": "424afd3d4c33f8525f1f92fd4fe54f4a5133328d67f6d1dae9a544c1dc145239"
+            },
+            {
+              "id": "material-room-slot-2-positions",
+              "byteLength": 47904,
+              "sha256": "d270102417a232e373cfb4eda94bc2ce1577eaf38e233992475ba2b8c650f2e8"
+            },
+            {
+              "id": "material-room-slot-3-indices",
+              "byteLength": 2688,
+              "sha256": "fc73a1d41ad8cd7ffe56e21b9b3cdea72f592b7cade06e182d6de0c9f2e3a7f2"
+            },
+            {
+              "id": "material-room-slot-3-normals",
+              "byteLength": 5376,
+              "sha256": "05d13bae0206613b769a06eb3d5d0da29862fb43a0439e9a37f39077c1ecb8c6"
+            },
+            {
+              "id": "material-room-slot-3-positions",
+              "byteLength": 5376,
+              "sha256": "8189dfd9858d517e345db9683b912ad8bd2992b7862dc4ed33e7fc6b2b457eec"
+            },
+            {
+              "id": "material-room-slot-4-indices",
+              "byteLength": 4512,
+              "sha256": "418b6e8981ccc0b09c0771a3fb2c8a5922dfe60efef1ccbfc2ea46986990b275"
+            },
+            {
+              "id": "material-room-slot-4-normals",
+              "byteLength": 9024,
+              "sha256": "f25597e404c2076ab275f17dbffaea378c737c7264b63baa8e5005ec88e9492f"
+            },
+            {
+              "id": "material-room-slot-4-positions",
+              "byteLength": 9024,
+              "sha256": "3ccf9ed82d57d70af486d4824953c7b2b4a03527406d5f7af616b1e5ff17a213"
+            },
+            {
+              "id": "material-room-slot-6-indices",
+              "byteLength": 1080,
+              "sha256": "6d6ab68a0b8de8f374f1a72fa5483c1baf6e02c9275455396769fdbc64159eed"
+            },
+            {
+              "id": "material-room-slot-6-normals",
+              "byteLength": 2160,
+              "sha256": "cdd82778c59d584bf4049c69ef755d1b7d3054c94a9b2053f92c0313305f6b85"
+            },
+            {
+              "id": "material-room-slot-6-positions",
+              "byteLength": 2160,
+              "sha256": "65aa9bf6f59d75f5f7e0291ba42b4d7c809503e695399d095ac0f3c8d5521e62"
+            }
+          ],
+          "presentationProfile": "synthetic-lab-light-v1-no-shadows",
+          "frame": {
+            "cameraId": "far",
+            "paused": false,
+            "seconds": 1.5,
+            "sourceRevision": 0,
+            "tick": 90,
+            "weather": {
+              "cloud01": 0.1,
+              "rain01": 0,
+              "snow01": 0,
+              "windMps": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          "resetTick": null,
+          "resolution": {
+            "width": 1280,
+            "height": 720,
+            "dpr": 1,
+            "bufferWidth": 1280,
+            "bufferHeight": 720
+          },
+          "colorSpace": "srgb",
+          "toneMapping": 0,
+          "exposure": 1,
+          "timerQueryAvailable": true,
+          "gpuMs": {
+            "status": "not-run",
+            "unit": "ms",
+            "reason": "Timer available; no qualified timer-query sampling in diagnostic control"
+          },
+          "nativeGpuBytes": {
+            "status": "unsupported",
+            "unit": "byte",
+            "reason": "WebGL does not expose native/driver allocation bytes"
+          },
+          "device": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "submittedFrames": 8,
+          "rendered": {
+            "tick": 90,
+            "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+            "sourceRevision": 0,
+            "resetTick": null
+          },
+          "rendererInfo": {
+            "geometries": 1,
+            "textures": 0,
+            "programs": 1,
+            "calls": 5,
+            "triangles": 108
+          },
+          "liveHosts": {
+            "renderers": 1,
+            "renderloops": 1,
+            "hostListeners": 2
+          },
+          "productIntegrated": false
+        },
+        "source": [
+          {
+            "ownerId": "material-room",
+            "sourceNamespace": "rd02-authored-cells-v1",
+            "sourceRevision": 0,
+            "regionId": "material-room",
+            "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+            "recipeSha256": "6040b36db450654c3688e2233f8cfb55f53da30fc0d0f0340d6c29200c99c433",
+            "sourceIds": [
+              "dry-face",
+              "emitter",
+              "foliage",
+              "opening",
+              "wet-face",
+              "wood"
+            ],
+            "sourceIdMeaning": {},
+            "originalDimensions": [
+              40,
+              28,
+              32
+            ],
+            "originalOriginMeters": [
+              0,
+              0,
+              0
+            ],
+            "dimensions": [
+              40,
+              28,
+              32
+            ],
+            "offset": [
+              0,
+              0,
+              0
+            ],
+            "sourceSlotSha256": "a487a59ca423d87f08307933769d91f01caab957a9aaa71278f0bec7976c8559"
+          }
+        ],
+        "costs": {
+          "canonicalPayloadBytes": 834480,
+          "wholeRegionCopyBytes": 107520,
+          "selectedCpuBytes": 215040,
+          "cpuPeakEstimateBytes": 2826000,
+          "projectionBytes": 143360
+        },
+        "terminal": {
+          "firstFailure": null,
+          "pending": false,
+          "disposed": false,
+          "productIntegrated": false
+        }
+      },
+      "history": [
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission"
+      ]
+    },
+    "selections": {
+      "fixture": "F06-MATERIAL-REPLAY",
+      "variant": "greedy-no-ao",
+      "camera": "far",
+      "tick": "90",
+      "resolution": "1280x720",
+      "dpr": "1"
+    },
+    "canvas": {
+      "hidden": false,
+      "width": 1280,
+      "height": 720,
+      "box": {
+        "x": 140,
+        "y": 334.0625,
+        "width": 1320,
+        "height": 742.5,
+        "top": 334.0625,
+        "right": 1460,
+        "bottom": 1076.5625,
+        "left": 140
+      },
+      "devicePixelRatio": 1
+    }
+  },
+  "after": {
+    "url": "http://127.0.0.1:5280/src/experiments/voxel-rays/index.html",
+    "bridgePresent": false,
+    "status": "Host render submitted. Native numeric/image/depth-water qualification still NOT RUN; this is not an art/performance PASS.",
+    "projected": {
+      "productIntegrated": false,
+      "facts": {
+        "backend": "Three-WebGLRenderer-WebGL2",
+        "errors": [],
+        "experimentId": "RD-13",
+        "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+        "liveResources": {
+          "geometries": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "hostListeners": {
+            "status": "measured",
+            "unit": "count",
+            "value": 2
+          },
+          "renderers": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "renderloops": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "textures": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          }
+        },
+        "logicalCosts": {
+          "effect-0-cpuPeakBytes": {
+            "reason": "Conservative source transport/private/copy/old-new estimate, not JS heap",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 2826000
+          },
+          "effect-0-fullScreenVolumes": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          },
+          "effect-0-greedyBuildMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 5.5
+          },
+          "effect-0-maxStepsPerRay": {
+            "status": "measured",
+            "unit": "count",
+            "value": 101
+          },
+          "effect-0-nativeGpuBytes": {
+            "reason": "Native context/driver VRAM cannot be measured here",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "effect-0-prepareMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 12
+          },
+          "effect-0-projectionBuildMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 5.699999988079071
+          },
+          "effect-0-projectionBytes": {
+            "reason": "Typed texture/mesh payload; excludes native allocator/driver/context",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 5832
+          },
+          "effect-0-triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 108
+          },
+          "effect-0-uploadCommandCpuMs": {
+            "reason": "Three upload occurs during native render; CPU preparation is not upload time",
+            "status": "not-run",
+            "unit": "ms"
+          },
+          "gpuBytes": {
+            "reason": "Native GPU memory unavailable",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "gpuMs": {
+            "reason": "Timer available; diagnostic loop does not sample GPU timing",
+            "status": "not-run",
+            "unit": "ms"
+          },
+          "renderCalls": {
+            "status": "measured",
+            "unit": "count",
+            "value": 5
+          },
+          "triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 108
+          }
+        },
+        "sourceRevision": 0,
+        "unsupportedFeatures": [
+          "native-pcf-shadow-parity",
+          "native-sky-shader-parity",
+          "native-numeric-qualification-not-run",
+          "native-water-shader-parity",
+          "native-material-shader-hooks",
+          "face-ambient-occlusion",
+          "gi-and-reflections",
+          "unknown-is-not-world-clearance",
+          "native-vram-unavailable",
+          "gpu-timing-not-qualified"
+        ],
+        "variantId": "greedy-no-ao"
+      },
+      "private": {
+        "productIntegrated": false,
+        "variant": "greedy-no-ao",
+        "caps": {
+          "max3D": 2048,
+          "maxTexture": 16384,
+          "maxViewport": [
+            32767,
+            32767
+          ],
+          "fragmentSamplers": 16,
+          "rgba8ui": true,
+          "contextLost": false,
+          "formatSampleCounts": []
+        },
+        "host": {
+          "backend": "Three-WebGLRenderer-WebGL2",
+          "webgl2": true,
+          "fixtureId": "F06-MATERIAL",
+          "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+          "sourceRevision": 0,
+          "payloadBindings": [
+            {
+              "id": "material-room-coverage",
+              "byteLength": 35840,
+              "sha256": "782c3a48703a9b3d0536ef4c51d03840d5e09dd0ccf15edf2a73d7b4c3d7d2f6"
+            },
+            {
+              "id": "material-room-material-slots",
+              "byteLength": 35840,
+              "sha256": "a487a59ca423d87f08307933769d91f01caab957a9aaa71278f0bec7976c8559"
+            },
+            {
+              "id": "material-room-occupancy",
+              "byteLength": 35840,
+              "sha256": "b4c007a550098258f670e0ec5061270e10f7b4860ff859817c1935e234bf90b5"
+            },
+            {
+              "id": "material-room-slot-1-indices",
+              "byteLength": 113160,
+              "sha256": "2f8da78837e1be1a39507f0b209a02252f70228565ad9eb3b47e9599ffc6ec1d"
+            },
+            {
+              "id": "material-room-slot-1-normals",
+              "byteLength": 226320,
+              "sha256": "52bc806122082c415b03db1314814013d7cec4d3a9f69c76051a654cb3f50ba9"
+            },
+            {
+              "id": "material-room-slot-1-positions",
+              "byteLength": 226320,
+              "sha256": "9a3a9105bb22738691ed7b3e1dcd7e8766f7349fad7220a2fee6dee6e996abdd"
+            },
+            {
+              "id": "material-room-slot-2-indices",
+              "byteLength": 23952,
+              "sha256": "5e590203fe392a851981fadcfa69ba90a5ef1a47957ab2f13832ea83305b3ead"
+            },
+            {
+              "id": "material-room-slot-2-normals",
+              "byteLength": 47904,
+              "sha256": "424afd3d4c33f8525f1f92fd4fe54f4a5133328d67f6d1dae9a544c1dc145239"
+            },
+            {
+              "id": "material-room-slot-2-positions",
+              "byteLength": 47904,
+              "sha256": "d270102417a232e373cfb4eda94bc2ce1577eaf38e233992475ba2b8c650f2e8"
+            },
+            {
+              "id": "material-room-slot-3-indices",
+              "byteLength": 2688,
+              "sha256": "fc73a1d41ad8cd7ffe56e21b9b3cdea72f592b7cade06e182d6de0c9f2e3a7f2"
+            },
+            {
+              "id": "material-room-slot-3-normals",
+              "byteLength": 5376,
+              "sha256": "05d13bae0206613b769a06eb3d5d0da29862fb43a0439e9a37f39077c1ecb8c6"
+            },
+            {
+              "id": "material-room-slot-3-positions",
+              "byteLength": 5376,
+              "sha256": "8189dfd9858d517e345db9683b912ad8bd2992b7862dc4ed33e7fc6b2b457eec"
+            },
+            {
+              "id": "material-room-slot-4-indices",
+              "byteLength": 4512,
+              "sha256": "418b6e8981ccc0b09c0771a3fb2c8a5922dfe60efef1ccbfc2ea46986990b275"
+            },
+            {
+              "id": "material-room-slot-4-normals",
+              "byteLength": 9024,
+              "sha256": "f25597e404c2076ab275f17dbffaea378c737c7264b63baa8e5005ec88e9492f"
+            },
+            {
+              "id": "material-room-slot-4-positions",
+              "byteLength": 9024,
+              "sha256": "3ccf9ed82d57d70af486d4824953c7b2b4a03527406d5f7af616b1e5ff17a213"
+            },
+            {
+              "id": "material-room-slot-6-indices",
+              "byteLength": 1080,
+              "sha256": "6d6ab68a0b8de8f374f1a72fa5483c1baf6e02c9275455396769fdbc64159eed"
+            },
+            {
+              "id": "material-room-slot-6-normals",
+              "byteLength": 2160,
+              "sha256": "cdd82778c59d584bf4049c69ef755d1b7d3054c94a9b2053f92c0313305f6b85"
+            },
+            {
+              "id": "material-room-slot-6-positions",
+              "byteLength": 2160,
+              "sha256": "65aa9bf6f59d75f5f7e0291ba42b4d7c809503e695399d095ac0f3c8d5521e62"
+            }
+          ],
+          "presentationProfile": "synthetic-lab-light-v1-no-shadows",
+          "frame": {
+            "cameraId": "far",
+            "paused": false,
+            "seconds": 1.5,
+            "sourceRevision": 0,
+            "tick": 90,
+            "weather": {
+              "cloud01": 0.1,
+              "rain01": 0,
+              "snow01": 0,
+              "windMps": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          "resetTick": null,
+          "resolution": {
+            "width": 1280,
+            "height": 720,
+            "dpr": 1,
+            "bufferWidth": 1280,
+            "bufferHeight": 720
+          },
+          "colorSpace": "srgb",
+          "toneMapping": 0,
+          "exposure": 1,
+          "timerQueryAvailable": true,
+          "gpuMs": {
+            "status": "not-run",
+            "unit": "ms",
+            "reason": "Timer available; no qualified timer-query sampling in diagnostic control"
+          },
+          "nativeGpuBytes": {
+            "status": "unsupported",
+            "unit": "byte",
+            "reason": "WebGL does not expose native/driver allocation bytes"
+          },
+          "device": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "submittedFrames": 8,
+          "rendered": {
+            "tick": 90,
+            "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+            "sourceRevision": 0,
+            "resetTick": null
+          },
+          "rendererInfo": {
+            "geometries": 1,
+            "textures": 0,
+            "programs": 1,
+            "calls": 5,
+            "triangles": 108
+          },
+          "liveHosts": {
+            "renderers": 1,
+            "renderloops": 1,
+            "hostListeners": 2
+          },
+          "productIntegrated": false
+        },
+        "source": [
+          {
+            "ownerId": "material-room",
+            "sourceNamespace": "rd02-authored-cells-v1",
+            "sourceRevision": 0,
+            "regionId": "material-room",
+            "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+            "recipeSha256": "6040b36db450654c3688e2233f8cfb55f53da30fc0d0f0340d6c29200c99c433",
+            "sourceIds": [
+              "dry-face",
+              "emitter",
+              "foliage",
+              "opening",
+              "wet-face",
+              "wood"
+            ],
+            "sourceIdMeaning": {},
+            "originalDimensions": [
+              40,
+              28,
+              32
+            ],
+            "originalOriginMeters": [
+              0,
+              0,
+              0
+            ],
+            "dimensions": [
+              40,
+              28,
+              32
+            ],
+            "offset": [
+              0,
+              0,
+              0
+            ],
+            "sourceSlotSha256": "a487a59ca423d87f08307933769d91f01caab957a9aaa71278f0bec7976c8559"
+          }
+        ],
+        "costs": {
+          "canonicalPayloadBytes": 834480,
+          "wholeRegionCopyBytes": 107520,
+          "selectedCpuBytes": 215040,
+          "cpuPeakEstimateBytes": 2826000,
+          "projectionBytes": 143360
+        },
+        "terminal": {
+          "firstFailure": null,
+          "pending": false,
+          "disposed": false,
+          "productIntegrated": false
+        }
+      },
+      "history": [
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission"
+      ]
+    },
+    "selections": {
+      "fixture": "F06-MATERIAL-REPLAY",
+      "variant": "greedy-no-ao",
+      "camera": "far",
+      "tick": "90",
+      "resolution": "1280x720",
+      "dpr": "1"
+    },
+    "canvas": {
+      "hidden": false,
+      "width": 1280,
+      "height": 720,
+      "box": {
+        "x": 140,
+        "y": 334.0625,
+        "width": 1320,
+        "height": 742.5,
+        "top": 334.0625,
+        "right": 1460,
+        "bottom": 1076.5625,
+        "left": 140
+      },
+      "devicePixelRatio": 1
+    }
+  },
+  "stableSourceFrame": true,
+  "fractionalElementBox": {
+    "x": 140,
+    "y": 334.0625,
+    "width": 1320,
+    "height": 742.5
+  },
+  "ui": {
+    "path": "F06-greedy-no-ao-tick90-ui.png",
+    "bytes": 58224,
+    "sha256": "18f1d0e43b4dabe72f8b73c542639b0d9dc201e3735ab3ffec24680e877a434a",
+    "width": 1600,
+    "height": 1118
+  },
+  "canvas": {
+    "path": "F06-greedy-no-ao-tick90-canvas.png",
+    "bytes": 15655,
+    "sha256": "2b46d855dd8f363d7d586660ffe0c3621add3a41a9ed44741037cdb8c240e705",
+    "width": 1320,
+    "height": 743
+  },
+  "imageAuthority": "Playwright Chromium compositor only; NOT native hit-buffer identity",
+  "nativeGpuMs": "UNKNOWN",
+  "nativeVram": "UNKNOWN"
+}

@@ -1,0 +1,16 @@
+{
+  "pid": 103280,
+  "browserExit": {
+    "exitCode": 0,
+    "signal": null
+  },
+  "cooperative": true,
+  "busy": false,
+  "expired": false,
+  "source": "16a5d29a5cddea372abae139da618aa000a058be",
+  "tree": "abb0bdde3039c33d1a815d2f2754103fcb16c100",
+  "elapsedCommandMs": 168017,
+  "noForeignCleanup": true,
+  "nativeVram": "UNKNOWN",
+  "productIntegrated": false
+}

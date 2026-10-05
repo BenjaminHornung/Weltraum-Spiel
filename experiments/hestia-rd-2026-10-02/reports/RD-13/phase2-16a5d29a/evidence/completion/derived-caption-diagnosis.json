@@ -1,0 +1,38 @@
+{
+  "schema": "rd13-own-derived-caption-diagnosis-v1",
+  "reason": "Disposed is non-submitted/hidden, not a runtime FAIL. Fix only derived label; original status and native result unchanged.",
+  "pins": [
+    {
+      "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-13/phase2-16a5d29a-20261004-a/helper-history/contact-caption-v2/contact-sheet.py",
+      "bytes": 3936,
+      "sha256": "c8e65f34773cb1b6bf1c5b9b7002ae6312d51b70844041044ed0594897572412"
+    },
+    {
+      "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-13/phase2-16a5d29a-20261004-a/helper-history/contact-caption-v2/contact-sheet.png",
+      "bytes": 707333,
+      "sha256": "e771c36ee4d9c9fba66c10f144b023e15a52243c8b6b473b3b1c677596068bb0"
+    },
+    {
+      "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-13/phase2-16a5d29a-20261004-a/helper-history/contact-caption-v2/contact-sheet-proof.json",
+      "bytes": 4407,
+      "sha256": "8fe19b4ca7d8797f751e9119694d6226e7dc86e6b26e2a100bc74469f3fb5086"
+    },
+    {
+      "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-13/phase2-16a5d29a-20261004-a/helper-history/contact-caption-v2/index.json",
+      "bytes": 44134,
+      "sha256": "373e894bc8a7f3ce7e6c0b387d838f59d04c59a309d383bbfc79bb6fb2d10767"
+    },
+    {
+      "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-13/phase2-16a5d29a-20261004-a/helper-history/contact-caption-v2/INDEX.md",
+      "bytes": 10253,
+      "sha256": "e2037d0afc6ba024a8193ae161d781d0593c2b97fddc9ae8dd602e24d6258f15"
+    }
+  ],
+  "indexBefore": {
+    "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-worktrees/Hestia-RD-RD13/experiments/hestia-rd-2026-10-02/reports/RD-13/phase2-16a5d29a/index.json",
+    "bytes": 44134,
+    "sha256": "373e894bc8a7f3ce7e6c0b387d838f59d04c59a309d383bbfc79bb6fb2d10767"
+  },
+  "nativeRunRepeated": false,
+  "productIntegrated": false
+}

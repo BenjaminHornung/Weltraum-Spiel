@@ -1,0 +1,107 @@
+{
+  "schema": "rd13-native-visible-witness-v1",
+  "source": "16a5d29a5cddea372abae139da618aa000a058be",
+  "productIntegrated": false,
+  "kernelSha256": "4998595025abd4f77a989bd7144b1dcb1c1422cbb0a2d1ffb0ddbd1c14717600",
+  "shaderSha256": "69b61edafd746751951fa3be3d95d3843e34728649302eb0aa7d5c164b8bad99",
+  "vertexSha256": "15a74f27eea4764ce5ba2de8e5b3dbedea1fb251c8a48265bad597348006b299",
+  "depthShaderSha256": "ff8383ab9fe6d2a9f800755096e69b2634df812a18e087fbcc380f7e76d676fe",
+  "originalIndependentGeometricOracle": {
+    "status": "hit",
+    "t": 0.5,
+    "point": [
+      1,
+      0.5,
+      0.5
+    ],
+    "normal": [
+      1,
+      0,
+      0
+    ],
+    "slot": 1,
+    "materialId": "synthetic-dry",
+    "cell": [
+      0,
+      0,
+      0
+    ],
+    "originalCell": [
+      0,
+      0,
+      0
+    ],
+    "sourceIds": [],
+    "unknownTraversed": false,
+    "outsideUnknown": true
+  },
+  "visibleExpectedAuthority": "Analytical x=2 entry plane of declared [1,0,1] input; no epsilon/restart/crop or changed original oracle",
+  "result": {
+    "status": "FAIL",
+    "reason": "Error: Native shader compile AFTER allocation: ERROR: 0:48: 'sample' : Illegal use of reserved word\nERROR: 0:48: 'sample' : syntax error\n\u0000",
+    "fragment": "#version 300 es\nprecision highp float; precision highp int;\nlayout(location=0) out vec4 positionT; layout(location=1) out vec4 normalSlot;\nlayout(location=2) out vec4 cellStatus; layout(location=3) out vec4 uncertainty;\nuniform mat4 projectionView; uniform int visibleMode; uniform int fault;\n\nuniform highp usampler3D voxelData;\nuniform ivec3 gridSize;\nuniform int slotDoubleSided[8];\nfloat projectionDepth(vec3 worldHit,mat4 projectionView) { vec4 clip=projectionView*vec4(worldHit,1.0); return clip.z/clip.w*0.5+0.5; }\nstruct VoxelHit { bool hit; bool unknown; bool traversalFault; float t; ivec3 cell; int slot; vec3 normal; };\nuvec4 sourceCell(ivec3 c) {\n  if (any(lessThan(c,ivec3(0))) || any(greaterThanEqual(c,gridSize))) { return uvec4(0); }\n  return texelFetch(voxelData,c,0);\n}\nvec3 axisNormal(int a,float signValue) { vec3 n=vec3(0); n[a]=signValue; return n; }\nVoxelHit traceVoxels(vec3 o,vec3 gridDirection,bool selectVisible) {\n  VoxelHit h; h.hit=false; h.unknown=false; h.traversalFault=false; h.t=0.0; h.cell=ivec3(-1); h.slot=0; h.normal=vec3(0);\n  float entry=-1e30; float leave=1e30; int entryAxis=0;\n  for (int a=0;a<3;a++) {\n    if (gridDirection[a]==0.0) {\n      if (o[a]<0.0 || o[a]>=float(gridSize[a])) { return h; }\n    } else {\n      float t0=(0.0-o[a])/gridDirection[a]; float t1=(float(gridSize[a])-o[a])/gridDirection[a];\n      float nearT=min(t0,t1); float farT=max(t0,t1);\n      if (nearT>entry) { entry=nearT; entryAxis=a; }\n      leave=min(leave,farT);\n    }\n  }\n  float t=max(0.0,entry); if (leave<=t) { return h; }\n  vec3 p=o+t*gridDirection; ivec3 cell=ivec3(floor(p)); ivec3 stepDir=ivec3(sign(gridDirection));\n  for (int a=0;a<3;a++) {\n    if (gridDirection[a]<0.0 && p[a]==floor(p[a])) { cell[a]-=1; }\n  }\n  // Only a mathematically proved BOX ENTRY permits a roundoff clamp.\n  if (entry>=0.0) { cell=clamp(cell,ivec3(0),gridSize-ivec3(1)); }\n  if (any(lessThan(cell,ivec3(0))) || any(greaterThanEqual(cell,gridSize))) { return h; }\n  vec3 crossing=vec3(1e30);\n  for (int a=0;a<3;a++) {\n    if (gridDirection[a]!=0.0) { crossing[a]=(float(cell[a]+(stepDir[a]>0?1:0))-o[a])/gridDirection[a]; }\n  }\n  bool insideRun=entry<0.0 && sourceCell(cell).r!=0u; ivec3 previous=cell; int previousSlot=int(sourceCell(cell).b);\n  vec3 face=axisNormal(entryAxis,-float(stepDir[entryAxis]));\n  // First valid cell tested BEFORE any step. A ray crosses at most sum(dimensions) planes.\n  int admittedSteps=gridSize.x+gridSize.y+gridSize.z+1;\n  for (int iteration=0;iteration<193;iteration++) {\n    if (iteration>=admittedSteps) { h.traversalFault=true; return h; }\n    uvec4 sample=sourceCell(cell); h.unknown=h.unknown || sample.g==0u;\n    bool solid=sample.r!=0u;\n    if (!insideRun && solid) { h.hit=true; h.t=t; h.cell=cell; h.slot=int(sample.b); h.normal=face; return h; }\n    if (insideRun && !solid) {\n      if (!selectVisible || slotDoubleSided[previousSlot]!=0) { h.hit=true; h.t=t; h.cell=previous; h.slot=previousSlot; h.normal=-face; return h; }\n      // Rejected back exit: keep this empty interval, Unknown, world t and ONE traversal budget.\n      insideRun=false;\n    }\n    if (solid) { previous=cell; previousSlot=int(sample.b); }\n    float nextT=min(crossing.x,min(crossing.y,crossing.z));\n    if (nextT<=t) { h.traversalFault=true; return h; }\n    bvec3 tied=equal(crossing,vec3(nextT)); int a=tied.x?0:(tied.y?1:2); face=axisNormal(a,-float(stepDir[a]));\n    if (nextT>=leave) {\n      if (insideRun && (!selectVisible || slotDoubleSided[previousSlot]!=0)) { h.hit=true; h.t=leave; h.cell=previous; h.slot=previousSlot; h.normal=-face; }\n      return h;\n    }\n    // ALL tied axes advance; no zero-length intermediate cells are ever sampled.\n    for (int j=0;j<3;j++) {\n      if (tied[j]) { cell[j]+=stepDir[j]; crossing[j]=(float(cell[j]+(stepDir[j]>0?1:0))-o[j])/gridDirection[j]; }\n    }\n    t=nextT;\n  }\n  h.traversalFault=true; return h;\n}\n// Geometric first-exit semantics are unchanged; only visible projection filters exits during traversal.\nVoxelHit traceVoxels(vec3 o,vec3 gridDirection) { return traceVoxels(o,gridDirection,false); }\nVoxelHit traceVisibleVoxels(vec3 o,vec3 gridDirection) { return traceVoxels(o,gridDirection,true); }\n\nvoid main(){\n vec3 o=vec3(.5);vec3 d=vec3(1,0,0);\n VoxelHit h=visibleMode==1?traceVisibleVoxels(o,d):traceVoxels(o,d);\n if(fault==3){h.hit=false;}if(fault==4){h.unknown=false;}\n positionT=vec4(0);normalSlot=vec4(0);cellStatus=vec4(-1,-1,-1,h.traversalFault?-1.0:0.0);\n uncertainty=vec4(h.unknown?1.0:0.0,1.0,0,1);gl_FragDepth=fault==5?0.0:1.0;\n if(h.hit){vec3 p=o+h.t*d;positionT=vec4(p,h.t);normalSlot=vec4(fault==2?-h.normal:h.normal,float(fault==1?2:h.slot));\n cellStatus=vec4(vec3(h.cell),1);gl_FragDepth=fault==5?0.0:projectionDepth(p,projectionView);}\n}",
+    "vertex": "#version 300 es\nvoid main(){vec2 p=gl_VertexID==0?vec2(-1,-1):(gl_VertexID==1?vec2(3,-1):vec2(-1,3));gl_Position=vec4(p,0,1);}",
+    "depthShader": "#version 300 es\nprecision highp float;layout(location=0) out vec4 depthValue;uniform highp sampler2D attachmentDepth;void main(){depthValue=vec4(texelFetch(attachmentDepth,ivec2(0),0).r,0,0,1);}",
+    "rows": [],
+    "allocations": 10,
+    "cleanup": {
+      "textures": 6,
+      "programs": 1,
+      "shaders": 2,
+      "framebuffers": 1,
+      "vaos": 0,
+      "logicalOnly": true
+    },
+    "firstTerminal": {
+      "reason": "Error: Native shader compile AFTER allocation: ERROR: 0:48: 'sample' : Illegal use of reserved word\nERROR: 0:48: 'sample' : syntax error\n\u0000",
+      "allocations": 10
+    },
+    "productIntegrated": false,
+    "nativeVram": "UNKNOWN",
+    "device": {
+      "renderer": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "vendor": "Google Inc. (Intel)",
+      "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+      "glsl": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+      "classification": "hardware-candidate"
+    },
+    "caps": {
+      "float": true,
+      "drawBuffers": 8,
+      "attachments": 8,
+      "max3D": 2048
+    },
+    "formatQueries": {
+      "rgba32f": [
+        8,
+        4,
+        2,
+        1
+      ],
+      "depth32f": [
+        8,
+        4,
+        2,
+        1
+      ]
+    },
+    "formatError": 0,
+    "targetFbo": 36053,
+    "shaderLogs": [
+      {
+        "type": 35633,
+        "status": true,
+        "log": ""
+      },
+      {
+        "type": 35632,
+        "status": false,
+        "log": "ERROR: 0:48: 'sample' : Illegal use of reserved word\nERROR: 0:48: 'sample' : syntax error\n\u0000"
+      }
+    ]
+  },
+  "inputPackedSha256": "40c21ba9fe057cba9d40fe41399d301cdf0b8a0a187fd906c7ff8d85062c7a29",
+  "fixtureAuthority": "OWNED SYNTHETIC TEST ONLY, not an original gallery fixture",
+  "nativeGpuMs": "UNKNOWN",
+  "nativeVram": "UNKNOWN"
+}

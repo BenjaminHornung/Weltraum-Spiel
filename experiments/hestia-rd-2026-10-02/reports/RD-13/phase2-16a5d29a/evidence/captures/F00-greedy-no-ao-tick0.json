@@ -1,0 +1,830 @@
+{
+  "schema": "rd13-native-compositor-capture-v1",
+  "source": "16a5d29a5cddea372abae139da618aa000a058be",
+  "productIntegrated": false,
+  "name": "F00-greedy-no-ao-tick0",
+  "before": {
+    "url": "http://127.0.0.1:5280/src/experiments/voxel-rays/index.html",
+    "bridgePresent": false,
+    "status": "Host render submitted. Native numeric/image/depth-water qualification still NOT RUN; this is not an art/performance PASS.",
+    "projected": {
+      "productIntegrated": false,
+      "facts": {
+        "backend": "Three-WebGLRenderer-WebGL2",
+        "errors": [],
+        "experimentId": "RD-13",
+        "fixtureDigest": "378513d00d5f2a11f569ff0748d4e42ac1832674104febd052070f0fd258b81d",
+        "liveResources": {
+          "geometries": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "hostListeners": {
+            "status": "measured",
+            "unit": "count",
+            "value": 2
+          },
+          "renderers": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "renderloops": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "textures": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          }
+        },
+        "logicalCosts": {
+          "effect-0-cpuPeakBytes": {
+            "reason": "Conservative source transport/private/copy/old-new estimate, not JS heap",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 1066176
+          },
+          "effect-0-fullScreenVolumes": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          },
+          "effect-0-greedyBuildMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 6.0999999940395355
+          },
+          "effect-0-maxStepsPerRay": {
+            "status": "measured",
+            "unit": "count",
+            "value": 81
+          },
+          "effect-0-nativeGpuBytes": {
+            "reason": "Native context/driver VRAM cannot be measured here",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "effect-0-prepareMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 3.9000000059604645
+          },
+          "effect-0-projectionBuildMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 6.899999976158142
+          },
+          "effect-0-projectionBytes": {
+            "reason": "Typed texture/mesh payload; excludes native allocator/driver/context",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 4428
+          },
+          "effect-0-triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 82
+          },
+          "effect-0-uploadCommandCpuMs": {
+            "reason": "Three upload occurs during native render; CPU preparation is not upload time",
+            "status": "not-run",
+            "unit": "ms"
+          },
+          "gpuBytes": {
+            "reason": "Native GPU memory unavailable",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "gpuMs": {
+            "reason": "Timer available; diagnostic loop does not sample GPU timing",
+            "status": "not-run",
+            "unit": "ms"
+          },
+          "renderCalls": {
+            "status": "measured",
+            "unit": "count",
+            "value": 6
+          },
+          "triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 82
+          }
+        },
+        "sourceRevision": 0,
+        "unsupportedFeatures": [
+          "native-pcf-shadow-parity",
+          "native-sky-shader-parity",
+          "native-numeric-qualification-not-run",
+          "native-water-shader-parity",
+          "native-material-shader-hooks",
+          "face-ambient-occlusion",
+          "gi-and-reflections",
+          "unknown-is-not-world-clearance",
+          "native-vram-unavailable",
+          "gpu-timing-not-qualified"
+        ],
+        "variantId": "greedy-no-ao"
+      },
+      "private": {
+        "productIntegrated": false,
+        "variant": "greedy-no-ao",
+        "caps": {
+          "max3D": 2048,
+          "maxTexture": 16384,
+          "maxViewport": [
+            32767,
+            32767
+          ],
+          "fragmentSamplers": 16,
+          "rgba8ui": true,
+          "contextLost": false,
+          "formatSampleCounts": []
+        },
+        "host": {
+          "backend": "Three-WebGLRenderer-WebGL2",
+          "webgl2": true,
+          "fixtureId": "F00-CONTROL",
+          "fixtureDigest": "378513d00d5f2a11f569ff0748d4e42ac1832674104febd052070f0fd258b81d",
+          "sourceRevision": 0,
+          "payloadBindings": [
+            {
+              "id": "control-cells-coverage",
+              "byteLength": 18432,
+              "sha256": "19a1cc81b9d025fe2f8c0decb0111ef580a499a09654a662cef2e1ba75732db1"
+            },
+            {
+              "id": "control-cells-material-slots",
+              "byteLength": 18432,
+              "sha256": "b51a18f630293e605a51dbeaf0052f0c8665f3ce2e849de1d67ebcfaadeb92cc"
+            },
+            {
+              "id": "control-cells-occupancy",
+              "byteLength": 18432,
+              "sha256": "0a1235ca30a59e9016fd9989ecfe452f598be55428bbc1982bd2aec5038f9bf0"
+            },
+            {
+              "id": "control-cells-slot-1-indices",
+              "byteLength": 36912,
+              "sha256": "d0ddbde922189dc197cdbf105e859603b479441b7bda26fcc41da60ea479faa6"
+            },
+            {
+              "id": "control-cells-slot-1-normals",
+              "byteLength": 73824,
+              "sha256": "f9297e5ae59b73fa69e2c4b1544cdf0e0c52519967928d34180bfec3a87dada8"
+            },
+            {
+              "id": "control-cells-slot-1-positions",
+              "byteLength": 73824,
+              "sha256": "482412f7df8a3b458b2e879cff5e2f7dbc7a096d8e77e4106ab82a963ebc9e6b"
+            },
+            {
+              "id": "control-cells-slot-2-indices",
+              "byteLength": 1104,
+              "sha256": "d33bb49f9ba61840948479296e89ed9ec243da0ff2d5554690a51809558b223f"
+            },
+            {
+              "id": "control-cells-slot-2-normals",
+              "byteLength": 2208,
+              "sha256": "b4c6dd75a54bcd8f367cea231c6cf67f0d2dfe6a258b88b7f08d739b2ab46cf7"
+            },
+            {
+              "id": "control-cells-slot-2-positions",
+              "byteLength": 2208,
+              "sha256": "f77a0e7f518dddc174169750642186f6a0ba194d94e57d70e15dbc5948fef500"
+            },
+            {
+              "id": "control-cells-slot-3-indices",
+              "byteLength": 5040,
+              "sha256": "e78b2875056779308bcdd6e32815bbba32a153ac55bf77160da4f26e58b0e82d"
+            },
+            {
+              "id": "control-cells-slot-3-normals",
+              "byteLength": 10080,
+              "sha256": "c259b6b39e9d7aa257ad005e5cf1007f7f3095fefde533131cd936a39286a4b5"
+            },
+            {
+              "id": "control-cells-slot-3-positions",
+              "byteLength": 10080,
+              "sha256": "8d2b3f33dd54ccab2c506f98097c704598369e1c3c00a0297fcdd0ccafe39cbb"
+            },
+            {
+              "id": "control-cells-slot-4-indices",
+              "byteLength": 1488,
+              "sha256": "87255534af1375ddb02d11d03c17c5650b074735cd175c0ca6247061512b6191"
+            },
+            {
+              "id": "control-cells-slot-4-normals",
+              "byteLength": 2976,
+              "sha256": "9c5d2bea13e3e4ae216ed02446bff2c8c04b0680927d29b30aee5a62c88eccdc"
+            },
+            {
+              "id": "control-cells-slot-4-positions",
+              "byteLength": 2976,
+              "sha256": "9226ccf58d6b0ba5da8f171a9a9beebcd973d877790a44aa0bf0fa41732777db"
+            },
+            {
+              "id": "control-cells-slot-5-indices",
+              "byteLength": 1680,
+              "sha256": "406d0fa517f2a430037ff41c9918ff0c96b6bc3b62cb0a0a19b3332de11ce04e"
+            },
+            {
+              "id": "control-cells-slot-5-normals",
+              "byteLength": 3360,
+              "sha256": "53f1b75bc284ee8ba7831a4711369cb386c14d6b462c3a793f789f00f05c0f7d"
+            },
+            {
+              "id": "control-cells-slot-5-positions",
+              "byteLength": 3360,
+              "sha256": "5f5b5867d8d8dcae9efa7140078c8619830cb584ea2d87d515f468cb90b582cf"
+            },
+            {
+              "id": "control-cells-slot-6-indices",
+              "byteLength": 2736,
+              "sha256": "12e689078e30a9e53b78e9c70f12bfd87e8c58f745871ae5f8710640a7648a78"
+            },
+            {
+              "id": "control-cells-slot-6-normals",
+              "byteLength": 5472,
+              "sha256": "2f41e44be5536833ce21c6903306d58f23c408fcee479db1707dc3d7c7ebf6b8"
+            },
+            {
+              "id": "control-cells-slot-6-positions",
+              "byteLength": 5472,
+              "sha256": "59d244a01639cc7e2e5cb9b14c5c1e507ef93454b6e372ab16f80de0270d4c33"
+            }
+          ],
+          "presentationProfile": "synthetic-lab-light-v1-no-shadows",
+          "frame": {
+            "cameraId": "far",
+            "paused": false,
+            "seconds": 0,
+            "sourceRevision": 0,
+            "tick": 0,
+            "weather": {
+              "cloud01": 0.1,
+              "rain01": 0,
+              "snow01": 0,
+              "windMps": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          "resetTick": null,
+          "resolution": {
+            "width": 1280,
+            "height": 720,
+            "dpr": 1,
+            "bufferWidth": 1280,
+            "bufferHeight": 720
+          },
+          "colorSpace": "srgb",
+          "toneMapping": 0,
+          "exposure": 1,
+          "timerQueryAvailable": true,
+          "gpuMs": {
+            "status": "not-run",
+            "unit": "ms",
+            "reason": "Timer available; no qualified timer-query sampling in diagnostic control"
+          },
+          "nativeGpuBytes": {
+            "status": "unsupported",
+            "unit": "byte",
+            "reason": "WebGL does not expose native/driver allocation bytes"
+          },
+          "device": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "submittedFrames": 10,
+          "rendered": {
+            "tick": 0,
+            "fixtureDigest": "378513d00d5f2a11f569ff0748d4e42ac1832674104febd052070f0fd258b81d",
+            "sourceRevision": 0,
+            "resetTick": null
+          },
+          "rendererInfo": {
+            "geometries": 1,
+            "textures": 0,
+            "programs": 1,
+            "calls": 6,
+            "triangles": 82
+          },
+          "liveHosts": {
+            "renderers": 1,
+            "renderloops": 1,
+            "hostListeners": 2
+          },
+          "productIntegrated": false
+        },
+        "source": [
+          {
+            "ownerId": "control",
+            "sourceNamespace": "rd02-authored-cells-v1",
+            "sourceRevision": 0,
+            "regionId": "control-cells",
+            "fixtureDigest": "378513d00d5f2a11f569ff0748d4e42ac1832674104febd052070f0fd258b81d",
+            "recipeSha256": "6a4e4b7d2fde3944b1efb434453d1651697a005fb43af02d92b688ccecdaa5c8",
+            "sourceIds": [
+              "material-planes",
+              "single-shadow-caster",
+              "steps"
+            ],
+            "sourceIdMeaning": {},
+            "originalDimensions": [
+              32,
+              24,
+              24
+            ],
+            "originalOriginMeters": [
+              0,
+              0,
+              0
+            ],
+            "dimensions": [
+              32,
+              24,
+              24
+            ],
+            "offset": [
+              0,
+              0,
+              0
+            ],
+            "sourceSlotSha256": "b51a18f630293e605a51dbeaf0052f0c8665f3ce2e849de1d67ebcfaadeb92cc"
+          }
+        ],
+        "costs": {
+          "canonicalPayloadBytes": 300096,
+          "wholeRegionCopyBytes": 55296,
+          "selectedCpuBytes": 110592,
+          "cpuPeakEstimateBytes": 1066176,
+          "projectionBytes": 73728
+        },
+        "terminal": {
+          "firstFailure": null,
+          "pending": false,
+          "disposed": false,
+          "productIntegrated": false
+        }
+      },
+      "history": [
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission"
+      ]
+    },
+    "selections": {
+      "fixture": "F00-CONTROL-REPLAY",
+      "variant": "greedy-no-ao",
+      "camera": "far",
+      "tick": "0",
+      "resolution": "1280x720",
+      "dpr": "1"
+    },
+    "canvas": {
+      "hidden": false,
+      "width": 1280,
+      "height": 720,
+      "box": {
+        "x": 140,
+        "y": 334.0625,
+        "width": 1320,
+        "height": 742.5,
+        "top": 334.0625,
+        "right": 1460,
+        "bottom": 1076.5625,
+        "left": 140
+      },
+      "devicePixelRatio": 1
+    }
+  },
+  "after": {
+    "url": "http://127.0.0.1:5280/src/experiments/voxel-rays/index.html",
+    "bridgePresent": false,
+    "status": "Host render submitted. Native numeric/image/depth-water qualification still NOT RUN; this is not an art/performance PASS.",
+    "projected": {
+      "productIntegrated": false,
+      "facts": {
+        "backend": "Three-WebGLRenderer-WebGL2",
+        "errors": [],
+        "experimentId": "RD-13",
+        "fixtureDigest": "378513d00d5f2a11f569ff0748d4e42ac1832674104febd052070f0fd258b81d",
+        "liveResources": {
+          "geometries": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "hostListeners": {
+            "status": "measured",
+            "unit": "count",
+            "value": 2
+          },
+          "renderers": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "renderloops": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "textures": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          }
+        },
+        "logicalCosts": {
+          "effect-0-cpuPeakBytes": {
+            "reason": "Conservative source transport/private/copy/old-new estimate, not JS heap",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 1066176
+          },
+          "effect-0-fullScreenVolumes": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          },
+          "effect-0-greedyBuildMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 6.0999999940395355
+          },
+          "effect-0-maxStepsPerRay": {
+            "status": "measured",
+            "unit": "count",
+            "value": 81
+          },
+          "effect-0-nativeGpuBytes": {
+            "reason": "Native context/driver VRAM cannot be measured here",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "effect-0-prepareMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 3.9000000059604645
+          },
+          "effect-0-projectionBuildMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 6.899999976158142
+          },
+          "effect-0-projectionBytes": {
+            "reason": "Typed texture/mesh payload; excludes native allocator/driver/context",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 4428
+          },
+          "effect-0-triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 82
+          },
+          "effect-0-uploadCommandCpuMs": {
+            "reason": "Three upload occurs during native render; CPU preparation is not upload time",
+            "status": "not-run",
+            "unit": "ms"
+          },
+          "gpuBytes": {
+            "reason": "Native GPU memory unavailable",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "gpuMs": {
+            "reason": "Timer available; diagnostic loop does not sample GPU timing",
+            "status": "not-run",
+            "unit": "ms"
+          },
+          "renderCalls": {
+            "status": "measured",
+            "unit": "count",
+            "value": 6
+          },
+          "triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 82
+          }
+        },
+        "sourceRevision": 0,
+        "unsupportedFeatures": [
+          "native-pcf-shadow-parity",
+          "native-sky-shader-parity",
+          "native-numeric-qualification-not-run",
+          "native-water-shader-parity",
+          "native-material-shader-hooks",
+          "face-ambient-occlusion",
+          "gi-and-reflections",
+          "unknown-is-not-world-clearance",
+          "native-vram-unavailable",
+          "gpu-timing-not-qualified"
+        ],
+        "variantId": "greedy-no-ao"
+      },
+      "private": {
+        "productIntegrated": false,
+        "variant": "greedy-no-ao",
+        "caps": {
+          "max3D": 2048,
+          "maxTexture": 16384,
+          "maxViewport": [
+            32767,
+            32767
+          ],
+          "fragmentSamplers": 16,
+          "rgba8ui": true,
+          "contextLost": false,
+          "formatSampleCounts": []
+        },
+        "host": {
+          "backend": "Three-WebGLRenderer-WebGL2",
+          "webgl2": true,
+          "fixtureId": "F00-CONTROL",
+          "fixtureDigest": "378513d00d5f2a11f569ff0748d4e42ac1832674104febd052070f0fd258b81d",
+          "sourceRevision": 0,
+          "payloadBindings": [
+            {
+              "id": "control-cells-coverage",
+              "byteLength": 18432,
+              "sha256": "19a1cc81b9d025fe2f8c0decb0111ef580a499a09654a662cef2e1ba75732db1"
+            },
+            {
+              "id": "control-cells-material-slots",
+              "byteLength": 18432,
+              "sha256": "b51a18f630293e605a51dbeaf0052f0c8665f3ce2e849de1d67ebcfaadeb92cc"
+            },
+            {
+              "id": "control-cells-occupancy",
+              "byteLength": 18432,
+              "sha256": "0a1235ca30a59e9016fd9989ecfe452f598be55428bbc1982bd2aec5038f9bf0"
+            },
+            {
+              "id": "control-cells-slot-1-indices",
+              "byteLength": 36912,
+              "sha256": "d0ddbde922189dc197cdbf105e859603b479441b7bda26fcc41da60ea479faa6"
+            },
+            {
+              "id": "control-cells-slot-1-normals",
+              "byteLength": 73824,
+              "sha256": "f9297e5ae59b73fa69e2c4b1544cdf0e0c52519967928d34180bfec3a87dada8"
+            },
+            {
+              "id": "control-cells-slot-1-positions",
+              "byteLength": 73824,
+              "sha256": "482412f7df8a3b458b2e879cff5e2f7dbc7a096d8e77e4106ab82a963ebc9e6b"
+            },
+            {
+              "id": "control-cells-slot-2-indices",
+              "byteLength": 1104,
+              "sha256": "d33bb49f9ba61840948479296e89ed9ec243da0ff2d5554690a51809558b223f"
+            },
+            {
+              "id": "control-cells-slot-2-normals",
+              "byteLength": 2208,
+              "sha256": "b4c6dd75a54bcd8f367cea231c6cf67f0d2dfe6a258b88b7f08d739b2ab46cf7"
+            },
+            {
+              "id": "control-cells-slot-2-positions",
+              "byteLength": 2208,
+              "sha256": "f77a0e7f518dddc174169750642186f6a0ba194d94e57d70e15dbc5948fef500"
+            },
+            {
+              "id": "control-cells-slot-3-indices",
+              "byteLength": 5040,
+              "sha256": "e78b2875056779308bcdd6e32815bbba32a153ac55bf77160da4f26e58b0e82d"
+            },
+            {
+              "id": "control-cells-slot-3-normals",
+              "byteLength": 10080,
+              "sha256": "c259b6b39e9d7aa257ad005e5cf1007f7f3095fefde533131cd936a39286a4b5"
+            },
+            {
+              "id": "control-cells-slot-3-positions",
+              "byteLength": 10080,
+              "sha256": "8d2b3f33dd54ccab2c506f98097c704598369e1c3c00a0297fcdd0ccafe39cbb"
+            },
+            {
+              "id": "control-cells-slot-4-indices",
+              "byteLength": 1488,
+              "sha256": "87255534af1375ddb02d11d03c17c5650b074735cd175c0ca6247061512b6191"
+            },
+            {
+              "id": "control-cells-slot-4-normals",
+              "byteLength": 2976,
+              "sha256": "9c5d2bea13e3e4ae216ed02446bff2c8c04b0680927d29b30aee5a62c88eccdc"
+            },
+            {
+              "id": "control-cells-slot-4-positions",
+              "byteLength": 2976,
+              "sha256": "9226ccf58d6b0ba5da8f171a9a9beebcd973d877790a44aa0bf0fa41732777db"
+            },
+            {
+              "id": "control-cells-slot-5-indices",
+              "byteLength": 1680,
+              "sha256": "406d0fa517f2a430037ff41c9918ff0c96b6bc3b62cb0a0a19b3332de11ce04e"
+            },
+            {
+              "id": "control-cells-slot-5-normals",
+              "byteLength": 3360,
+              "sha256": "53f1b75bc284ee8ba7831a4711369cb386c14d6b462c3a793f789f00f05c0f7d"
+            },
+            {
+              "id": "control-cells-slot-5-positions",
+              "byteLength": 3360,
+              "sha256": "5f5b5867d8d8dcae9efa7140078c8619830cb584ea2d87d515f468cb90b582cf"
+            },
+            {
+              "id": "control-cells-slot-6-indices",
+              "byteLength": 2736,
+              "sha256": "12e689078e30a9e53b78e9c70f12bfd87e8c58f745871ae5f8710640a7648a78"
+            },
+            {
+              "id": "control-cells-slot-6-normals",
+              "byteLength": 5472,
+              "sha256": "2f41e44be5536833ce21c6903306d58f23c408fcee479db1707dc3d7c7ebf6b8"
+            },
+            {
+              "id": "control-cells-slot-6-positions",
+              "byteLength": 5472,
+              "sha256": "59d244a01639cc7e2e5cb9b14c5c1e507ef93454b6e372ab16f80de0270d4c33"
+            }
+          ],
+          "presentationProfile": "synthetic-lab-light-v1-no-shadows",
+          "frame": {
+            "cameraId": "far",
+            "paused": false,
+            "seconds": 0,
+            "sourceRevision": 0,
+            "tick": 0,
+            "weather": {
+              "cloud01": 0.1,
+              "rain01": 0,
+              "snow01": 0,
+              "windMps": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          "resetTick": null,
+          "resolution": {
+            "width": 1280,
+            "height": 720,
+            "dpr": 1,
+            "bufferWidth": 1280,
+            "bufferHeight": 720
+          },
+          "colorSpace": "srgb",
+          "toneMapping": 0,
+          "exposure": 1,
+          "timerQueryAvailable": true,
+          "gpuMs": {
+            "status": "not-run",
+            "unit": "ms",
+            "reason": "Timer available; no qualified timer-query sampling in diagnostic control"
+          },
+          "nativeGpuBytes": {
+            "status": "unsupported",
+            "unit": "byte",
+            "reason": "WebGL does not expose native/driver allocation bytes"
+          },
+          "device": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "submittedFrames": 10,
+          "rendered": {
+            "tick": 0,
+            "fixtureDigest": "378513d00d5f2a11f569ff0748d4e42ac1832674104febd052070f0fd258b81d",
+            "sourceRevision": 0,
+            "resetTick": null
+          },
+          "rendererInfo": {
+            "geometries": 1,
+            "textures": 0,
+            "programs": 1,
+            "calls": 6,
+            "triangles": 82
+          },
+          "liveHosts": {
+            "renderers": 1,
+            "renderloops": 1,
+            "hostListeners": 2
+          },
+          "productIntegrated": false
+        },
+        "source": [
+          {
+            "ownerId": "control",
+            "sourceNamespace": "rd02-authored-cells-v1",
+            "sourceRevision": 0,
+            "regionId": "control-cells",
+            "fixtureDigest": "378513d00d5f2a11f569ff0748d4e42ac1832674104febd052070f0fd258b81d",
+            "recipeSha256": "6a4e4b7d2fde3944b1efb434453d1651697a005fb43af02d92b688ccecdaa5c8",
+            "sourceIds": [
+              "material-planes",
+              "single-shadow-caster",
+              "steps"
+            ],
+            "sourceIdMeaning": {},
+            "originalDimensions": [
+              32,
+              24,
+              24
+            ],
+            "originalOriginMeters": [
+              0,
+              0,
+              0
+            ],
+            "dimensions": [
+              32,
+              24,
+              24
+            ],
+            "offset": [
+              0,
+              0,
+              0
+            ],
+            "sourceSlotSha256": "b51a18f630293e605a51dbeaf0052f0c8665f3ce2e849de1d67ebcfaadeb92cc"
+          }
+        ],
+        "costs": {
+          "canonicalPayloadBytes": 300096,
+          "wholeRegionCopyBytes": 55296,
+          "selectedCpuBytes": 110592,
+          "cpuPeakEstimateBytes": 1066176,
+          "projectionBytes": 73728
+        },
+        "terminal": {
+          "firstFailure": null,
+          "pending": false,
+          "disposed": false,
+          "productIntegrated": false
+        }
+      },
+      "history": [
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission"
+      ]
+    },
+    "selections": {
+      "fixture": "F00-CONTROL-REPLAY",
+      "variant": "greedy-no-ao",
+      "camera": "far",
+      "tick": "0",
+      "resolution": "1280x720",
+      "dpr": "1"
+    },
+    "canvas": {
+      "hidden": false,
+      "width": 1280,
+      "height": 720,
+      "box": {
+        "x": 140,
+        "y": 334.0625,
+        "width": 1320,
+        "height": 742.5,
+        "top": 334.0625,
+        "right": 1460,
+        "bottom": 1076.5625,
+        "left": 140
+      },
+      "devicePixelRatio": 1
+    }
+  },
+  "stableSourceFrame": true,
+  "fractionalElementBox": {
+    "x": 140,
+    "y": 334.0625,
+    "width": 1320,
+    "height": 742.5
+  },
+  "ui": {
+    "path": "F00-greedy-no-ao-tick0-ui.png",
+    "bytes": 53987,
+    "sha256": "3a563071b8de928b3a3d5afbe56b2d6b7c5acd9731d095e403e55d4aae9763cb",
+    "width": 1600,
+    "height": 1118
+  },
+  "canvas": {
+    "path": "F00-greedy-no-ao-tick0-canvas.png",
+    "bytes": 11880,
+    "sha256": "06f8f264493268da472a0c840c7eeef0384a757d507a50faf227900dc928eb15",
+    "width": 1320,
+    "height": 743
+  },
+  "imageAuthority": "Playwright Chromium compositor only; NOT native hit-buffer identity",
+  "nativeGpuMs": "UNKNOWN",
+  "nativeVram": "UNKNOWN"
+}

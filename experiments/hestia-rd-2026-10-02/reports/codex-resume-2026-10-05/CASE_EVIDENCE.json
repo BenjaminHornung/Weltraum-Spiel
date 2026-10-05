@@ -1,0 +1,3870 @@
+{
+  "schema": "hestia-rd-case-evidence-v1",
+  "records": [
+    {
+      "cardId": "RD-00",
+      "caseId": "BC00",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/contracts/experiment.ts",
+          "sha256": "cb7f39251a356f4473783004c91a0e9ab27bb45e59f76e321b9708d764cd9188"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/0/assertionResults/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/0/assertionResults/4",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-00",
+      "caseId": "BC01",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/contracts/experiment.ts",
+          "sha256": "cb7f39251a356f4473783004c91a0e9ab27bb45e59f76e321b9708d764cd9188"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/0/assertionResults/1",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/0/assertionResults/4",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-00",
+      "caseId": "C00",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/contracts/experiment.ts",
+          "sha256": "cb7f39251a356f4473783004c91a0e9ab27bb45e59f76e321b9708d764cd9188"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/0/assertionResults/2",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-00",
+      "caseId": "C01",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/contracts/experiment.ts",
+          "sha256": "cb7f39251a356f4473783004c91a0e9ab27bb45e59f76e321b9708d764cd9188"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/0/assertionResults/3",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-01",
+      "caseId": "REF01",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "reference-cards/index.json",
+          "sha256": "b7804d1a80aa4b23d9ad7ced016a51d78c571a88b23ce93488d09edd8ef281a1"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/1/assertionResults/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-01",
+      "caseId": "REF02",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "reference-cards/index.json",
+          "sha256": "b7804d1a80aa4b23d9ad7ced016a51d78c571a88b23ce93488d09edd8ef281a1"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/1/assertionResults/1",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-01",
+      "caseId": "REF03",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "reference-cards/index.json",
+          "sha256": "b7804d1a80aa4b23d9ad7ced016a51d78c571a88b23ce93488d09edd8ef281a1"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/1/assertionResults/2",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-01",
+      "caseId": "REF04",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "reference-cards/index.json",
+          "sha256": "b7804d1a80aa4b23d9ad7ced016a51d78c571a88b23ce93488d09edd8ef281a1"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/1/assertionResults/3",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-02",
+      "caseId": "FX01",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "exporters/fixture-export.mjs",
+          "sha256": "aa905ada5639b952690669e43b71735bdaf248ff31eccc0429795177807ad0de"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/3/assertionResults/1",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-02",
+      "caseId": "FX02",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "exporters/fixture-export.mjs",
+          "sha256": "aa905ada5639b952690669e43b71735bdaf248ff31eccc0429795177807ad0de"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/3/assertionResults/2",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-02",
+      "caseId": "FX03",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "exporters/fixture-export.mjs",
+          "sha256": "aa905ada5639b952690669e43b71735bdaf248ff31eccc0429795177807ad0de"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/3/assertionResults/3",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-02",
+      "caseId": "FX04",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "exporters/fixture-export.mjs",
+          "sha256": "aa905ada5639b952690669e43b71735bdaf248ff31eccc0429795177807ad0de"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/3/assertionResults/4",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-02",
+      "caseId": "FX05",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "exporters/fixture-export.mjs",
+          "sha256": "aa905ada5639b952690669e43b71735bdaf248ff31eccc0429795177807ad0de"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/3/assertionResults/5",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-03",
+      "caseId": "RUN01",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/runner/threeHost.ts",
+          "sha256": "9059915fedd132da2b0067ec32ce3d6783e0dacb0aa1cfe441b3ab2ddfb47af2"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/2/assertionResults/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-03",
+      "caseId": "RUN02",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/runner/threeHost.ts",
+          "sha256": "9059915fedd132da2b0067ec32ce3d6783e0dacb0aa1cfe441b3ab2ddfb47af2"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/2/assertionResults/1",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/22/assertionResults/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/22/assertionResults/2",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/6/specs/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-03",
+      "caseId": "RUN03",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/runner/threeHost.ts",
+          "sha256": "9059915fedd132da2b0067ec32ce3d6783e0dacb0aa1cfe441b3ab2ddfb47af2"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/2/assertionResults/2",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/22/assertionResults/1",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/1/specs/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/1/specs/2",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/1/specs/3",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/1/specs/4",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-03",
+      "caseId": "RUN04",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/runner/threeHost.ts",
+          "sha256": "9059915fedd132da2b0067ec32ce3d6783e0dacb0aa1cfe441b3ab2ddfb47af2"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/2/assertionResults/3",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/1/specs/1",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-10",
+      "caseId": "CAP01",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/renderer-probe/index.ts",
+          "sha256": "e2828ce924d798306f530656c6a102af4c86ab868125bbb4f8df4ebce7bc628d"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/4/assertionResults/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/4/assertionResults/1",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/4/assertionResults/2",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/4/assertionResults/3",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/4/assertionResults/9",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/4/assertionResults/10",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/4/assertionResults/11",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/2/specs/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-10",
+      "caseId": "CAP02",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/renderer-probe/index.ts",
+          "sha256": "e2828ce924d798306f530656c6a102af4c86ab868125bbb4f8df4ebce7bc628d"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/4/assertionResults/4",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/4/assertionResults/5",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/4/assertionResults/6",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/4/assertionResults/7",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/2/specs/1",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-10",
+      "caseId": "CAP03",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/renderer-probe/index.ts",
+          "sha256": "e2828ce924d798306f530656c6a102af4c86ab868125bbb4f8df4ebce7bc628d"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/4/assertionResults/8",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/4/assertionResults/12",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/4/assertionResults/13",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/4/assertionResults/14",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/4/assertionResults/15",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/2/specs/2",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-11",
+      "caseId": "REN11",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/three-webgpu/index.ts",
+          "sha256": "adc800c24bdf08c0a171d064786e46b49a0ad270be3aa3243fdde06e6408e2bb"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/5/assertionResults/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/5/assertionResults/1",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/5/assertionResults/2",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/5/assertionResults/15",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-11",
+      "caseId": "REN12",
+      "status": "PARTIAL",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Material/color/water-depth response and held-out C2 controls pass; isolated AO/native readback/shadow part unsupported.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/three-webgpu/index.ts",
+          "sha256": "adc800c24bdf08c0a171d064786e46b49a0ad270be3aa3243fdde06e6408e2bb"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/5/assertionResults/3",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/5/assertionResults/4",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/5/assertionResults/5",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/5/assertionResults/16",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/25/assertionResults/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/25/assertionResults/1",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/25/assertionResults/2",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/25/assertionResults/3",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/3/specs/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-11",
+      "caseId": "REN13",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/three-webgpu/index.ts",
+          "sha256": "adc800c24bdf08c0a171d064786e46b49a0ad270be3aa3243fdde06e6408e2bb"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/5/assertionResults/6",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/5/assertionResults/7",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/5/assertionResults/8",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/5/assertionResults/14",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-11",
+      "caseId": "REN14",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/three-webgpu/index.ts",
+          "sha256": "adc800c24bdf08c0a171d064786e46b49a0ad270be3aa3243fdde06e6408e2bb"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/5/assertionResults/9",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/5/assertionResults/10",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/5/assertionResults/11",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/5/assertionResults/12",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/5/assertionResults/13",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-12",
+      "caseId": "BAB01",
+      "status": "PARTIAL",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Current CPU projection passes; historical same-backend native evidence only, cross-engine equivalence deferred.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/babylon/index.ts",
+          "sha256": "470b71d82af776c6721647279007e1933e1b31809af7f4461285883342d123c5"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/6/assertionResults/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/6/assertionResults/10",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-12",
+      "caseId": "BAB02",
+      "status": "PARTIAL",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "CPU generation/profile checks pass; historical F06 native depth fault sensitivity fails and shadow parity is unqualified.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/babylon/index.ts",
+          "sha256": "470b71d82af776c6721647279007e1933e1b31809af7f4461285883342d123c5"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/6/assertionResults/1",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/6/assertionResults/2",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/6/assertionResults/3",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/6/assertionResults/12",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-12",
+      "caseId": "BAB03",
+      "status": "PARTIAL",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "CPU and historical logical teardown pass; no native driver-memory release qualification.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/babylon/index.ts",
+          "sha256": "470b71d82af776c6721647279007e1933e1b31809af7f4461285883342d123c5"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/6/assertionResults/4",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-12",
+      "caseId": "BAB04",
+      "status": "PARTIAL",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Controlled capability/loss handling passes; actual missing-WebGPU fallback and native COPY_SRC buffer readback remain unsupported.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/babylon/index.ts",
+          "sha256": "470b71d82af776c6721647279007e1933e1b31809af7f4461285883342d123c5"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/6/assertionResults/5",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/6/assertionResults/6",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/6/assertionResults/7",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/6/assertionResults/8",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/6/assertionResults/9",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/6/assertionResults/11",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-13",
+      "caseId": "RAY01",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/voxel-rays/index.ts",
+          "sha256": "486a3e44d7a0e5fa8d02deefa730c8c828c9276051892d8b919e644d8aec4884"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/7/assertionResults/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/7/assertionResults/1",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-13",
+      "caseId": "RAY02",
+      "status": "PARTIAL",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "CPU source query passes; actual native edit/depth/material/normal trial NOT_RUN after shader compilation failed.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/voxel-rays/index.ts",
+          "sha256": "486a3e44d7a0e5fa8d02deefa730c8c828c9276051892d8b919e644d8aec4884"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/7/assertionResults/2",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/7/assertionResults/3",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-13",
+      "caseId": "RAY03",
+      "status": "PARTIAL",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "CPU owner/volume cases pass; actual native pose/overhang/image match NOT_RUN after compilation failed.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/voxel-rays/index.ts",
+          "sha256": "486a3e44d7a0e5fa8d02deefa730c8c828c9276051892d8b919e644d8aec4884"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/7/assertionResults/4",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/7/assertionResults/5",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/7/assertionResults/6",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-13",
+      "caseId": "RAY04",
+      "status": "PARTIAL",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "CPU preallocation guards pass; preserved native shader failure occurred after10 allocations: original native preallocation gate FAIL.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/voxel-rays/index.ts",
+          "sha256": "486a3e44d7a0e5fa8d02deefa730c8c828c9276051892d8b919e644d8aec4884"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/7/assertionResults/7",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/7/assertionResults/8",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/7/assertionResults/9",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/7/assertionResults/10",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/7/assertionResults/11",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-14",
+      "caseId": "MAT01",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/material-light/index.ts",
+          "sha256": "7488a7ef9edd5e4c11ef84e842c7563114179f9eaa710614d0725b2755b3d73a"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/9/assertionResults/1",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/9/assertionResults/5",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/9/assertionResults/6",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/4/specs/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/4/specs/2",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-14",
+      "caseId": "MAT02",
+      "status": "PARTIAL",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Shared sun direction and water normals pass; native shadow channel unsupported.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/material-light/index.ts",
+          "sha256": "7488a7ef9edd5e4c11ef84e842c7563114179f9eaa710614d0725b2755b3d73a"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/9/assertionResults/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/9/assertionResults/2",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/4/specs/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-14",
+      "caseId": "MAT03",
+      "status": "PARTIAL",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Source-incarnation wetness/material state updates pass; native shadow/temporal-shadow invalidation unsupported.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/material-light/index.ts",
+          "sha256": "7488a7ef9edd5e4c11ef84e842c7563114179f9eaa710614d0725b2755b3d73a"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/9/assertionResults/3",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/4/specs/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/4/specs/1",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-14",
+      "caseId": "MAT04",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/material-light/index.ts",
+          "sha256": "7488a7ef9edd5e4c11ef84e842c7563114179f9eaa710614d0725b2755b3d73a"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/9/assertionResults/4",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/4/specs/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/4/specs/1",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/4/specs/2",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-15",
+      "caseId": "CAM01",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/camera-occlusion/index.ts",
+          "sha256": "07183ab386015772c7745c6d7afece7cc93812400a8411c6d1b69eb63d55f763"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/8/assertionResults/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/5/specs/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-15",
+      "caseId": "CAM02",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/camera-occlusion/index.ts",
+          "sha256": "07183ab386015772c7745c6d7afece7cc93812400a8411c6d1b69eb63d55f763"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/8/assertionResults/1",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/5/specs/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-15",
+      "caseId": "CAM03",
+      "status": "PARTIAL",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Stable discrete preset poses pass; free-look boundary hysteresis NOT_RUN.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/camera-occlusion/index.ts",
+          "sha256": "07183ab386015772c7745c6d7afece7cc93812400a8411c6d1b69eb63d55f763"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/8/assertionResults/2",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-15",
+      "caseId": "CAM04",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/camera-occlusion/index.ts",
+          "sha256": "07183ab386015772c7745c6d7afece7cc93812400a8411c6d1b69eb63d55f763"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/8/assertionResults/3",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/5/specs/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/6/specs/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-20",
+      "caseId": "FOL01",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/foliage-shapes/index.ts",
+          "sha256": "f3e8665d5a752857fcdc9908fbe9b58fd1d8a989db71bd19792a308e8abcfd68"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/10/assertionResults/4",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-20",
+      "caseId": "FOL02",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/foliage-shapes/index.ts",
+          "sha256": "f3e8665d5a752857fcdc9908fbe9b58fd1d8a989db71bd19792a308e8abcfd68"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/10/assertionResults/5",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-20",
+      "caseId": "FOL03",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/foliage-shapes/index.ts",
+          "sha256": "f3e8665d5a752857fcdc9908fbe9b58fd1d8a989db71bd19792a308e8abcfd68"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/10/assertionResults/1",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/10/assertionResults/3",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/10/assertionResults/6",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-20",
+      "caseId": "FOL04",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/foliage-shapes/index.ts",
+          "sha256": "f3e8665d5a752857fcdc9908fbe9b58fd1d8a989db71bd19792a308e8abcfd68"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/10/assertionResults/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/10/assertionResults/1",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/10/assertionResults/7",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-21",
+      "caseId": "WND01",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/foliage-wind/index.ts",
+          "sha256": "9e3e04de80cfa0ae3b21a6a4f68619d364fe7ee2e0989039cf604efb2e4dda82"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/10/assertionResults/2",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/11/assertionResults/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/11/assertionResults/5",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-21",
+      "caseId": "WND02",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/foliage-wind/index.ts",
+          "sha256": "9e3e04de80cfa0ae3b21a6a4f68619d364fe7ee2e0989039cf604efb2e4dda82"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/10/assertionResults/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/11/assertionResults/1",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-21",
+      "caseId": "WND03",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/foliage-wind/index.ts",
+          "sha256": "9e3e04de80cfa0ae3b21a6a4f68619d364fe7ee2e0989039cf604efb2e4dda82"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/11/assertionResults/2",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-21",
+      "caseId": "WND04",
+      "status": "PARTIAL",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Actual moved-cluster normals/cull bounds pass; native shadow-following part unsupported.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/foliage-wind/index.ts",
+          "sha256": "9e3e04de80cfa0ae3b21a6a4f68619d364fe7ee2e0989039cf604efb2e4dda82"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/11/assertionResults/3",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/11/assertionResults/5",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-21",
+      "caseId": "WND05",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/foliage-wind/index.ts",
+          "sha256": "9e3e04de80cfa0ae3b21a6a4f68619d364fe7ee2e0989039cf604efb2e4dda82"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/11/assertionResults/4",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/11/assertionResults/5",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/11/assertionResults/6",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-23",
+      "caseId": "LIF01",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/foliage-lifecycle/index.ts",
+          "sha256": "495b10deaeb54650b2d9ad75df93b0c9fec7b26b7c9e6b13878e06da0dd76bf1"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/12/assertionResults/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/7/specs/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-23",
+      "caseId": "LIF02",
+      "status": "PARTIAL",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Source/support/incarnation and animation stale publication guards pass; no native shadow cache qualification.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/foliage-lifecycle/index.ts",
+          "sha256": "495b10deaeb54650b2d9ad75df93b0c9fec7b26b7c9e6b13878e06da0dd76bf1"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/12/assertionResults/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/7/specs/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-23",
+      "caseId": "LIF03",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/foliage-lifecycle/index.ts",
+          "sha256": "495b10deaeb54650b2d9ad75df93b0c9fec7b26b7c9e6b13878e06da0dd76bf1"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/12/assertionResults/1",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/22/assertionResults/2",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-23",
+      "caseId": "LIF04",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/foliage-lifecycle/index.ts",
+          "sha256": "495b10deaeb54650b2d9ad75df93b0c9fec7b26b7c9e6b13878e06da0dd76bf1"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/12/assertionResults/2",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-23",
+      "caseId": "LIF05",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/foliage-lifecycle/index.ts",
+          "sha256": "495b10deaeb54650b2d9ad75df93b0c9fec7b26b7c9e6b13878e06da0dd76bf1"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/12/assertionResults/3",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/7/specs/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-30",
+      "caseId": "WEA01",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/weather-field/index.ts",
+          "sha256": "ca4dc3ce94a2fc296988f83f4e1107278da94aea89b16428d1e04ba808fe85c8"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/18/assertionResults/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-30",
+      "caseId": "WEA02",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/weather-field/index.ts",
+          "sha256": "ca4dc3ce94a2fc296988f83f4e1107278da94aea89b16428d1e04ba808fe85c8"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/18/assertionResults/1",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-30",
+      "caseId": "WEA03",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/weather-field/index.ts",
+          "sha256": "ca4dc3ce94a2fc296988f83f4e1107278da94aea89b16428d1e04ba808fe85c8"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/18/assertionResults/2",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-30",
+      "caseId": "WEA04",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/weather-field/index.ts",
+          "sha256": "ca4dc3ce94a2fc296988f83f4e1107278da94aea89b16428d1e04ba808fe85c8"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/18/assertionResults/3",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-31",
+      "caseId": "RAIN01",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/rain/index.ts",
+          "sha256": "74dea487bfa8737f7475ddc9eec2a4927f37912c39144f6d829cd3e5b0e3e324"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/13/assertionResults/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/13/assertionResults/5",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/13/assertionResults/6",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/26/assertionResults/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/26/assertionResults/1",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/8/specs/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-31",
+      "caseId": "RAIN02",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/rain/index.ts",
+          "sha256": "74dea487bfa8737f7475ddc9eec2a4927f37912c39144f6d829cd3e5b0e3e324"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/13/assertionResults/1",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/26/assertionResults/1",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/8/specs/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-31",
+      "caseId": "RAIN03",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/rain/index.ts",
+          "sha256": "74dea487bfa8737f7475ddc9eec2a4927f37912c39144f6d829cd3e5b0e3e324"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/13/assertionResults/2",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/13/assertionResults/5",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/26/assertionResults/2",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/26/assertionResults/3",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/8/specs/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-31",
+      "caseId": "RAIN04",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/rain/index.ts",
+          "sha256": "74dea487bfa8737f7475ddc9eec2a4927f37912c39144f6d829cd3e5b0e3e324"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/13/assertionResults/3",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/26/assertionResults/3",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-31",
+      "caseId": "RAIN05",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/rain/index.ts",
+          "sha256": "74dea487bfa8737f7475ddc9eec2a4927f37912c39144f6d829cd3e5b0e3e324"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/13/assertionResults/4",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/13/assertionResults/6",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/26/assertionResults/3",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/8/specs/1",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-32",
+      "caseId": "WET01",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/wet-surface/index.ts",
+          "sha256": "c3cfc72f47f511840531b92a1797bb76c9120b1811d20d957ef37ad5efc85a75"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/14/assertionResults/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/14/assertionResults/5",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/9/specs/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-32",
+      "caseId": "WET02",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/wet-surface/index.ts",
+          "sha256": "c3cfc72f47f511840531b92a1797bb76c9120b1811d20d957ef37ad5efc85a75"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/14/assertionResults/1",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/9/specs/1",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-32",
+      "caseId": "WET03",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/wet-surface/index.ts",
+          "sha256": "c3cfc72f47f511840531b92a1797bb76c9120b1811d20d957ef37ad5efc85a75"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/14/assertionResults/2",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/14/assertionResults/5",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/9/specs/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-32",
+      "caseId": "WET04",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/wet-surface/index.ts",
+          "sha256": "c3cfc72f47f511840531b92a1797bb76c9120b1811d20d957ef37ad5efc85a75"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/14/assertionResults/3",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/14/assertionResults/5",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/9/specs/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-32",
+      "caseId": "WET05",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/experiments/wet-surface/index.ts",
+          "sha256": "c3cfc72f47f511840531b92a1797bb76c9120b1811d20d957ef37ad5efc85a75"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/14/assertionResults/4",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/21/assertionResults/2",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/9/specs/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/9/specs/1",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-40",
+      "caseId": "UI40",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/tools/variant-gallery/session.ts",
+          "sha256": "2aa8634fb5d5f204fbdfb93f57e80f916eab18c5008a18ee462fa4648425b58a"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/15/assertionResults/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/15/assertionResults/1",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/15/assertionResults/3",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/15/assertionResults/8",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/15/assertionResults/9",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/10/specs/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-40",
+      "caseId": "UI41",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/tools/variant-gallery/session.ts",
+          "sha256": "2aa8634fb5d5f204fbdfb93f57e80f916eab18c5008a18ee462fa4648425b58a"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/15/assertionResults/2",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/15/assertionResults/4",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/15/assertionResults/5",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/15/assertionResults/6",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/15/assertionResults/7",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/15/assertionResults/12",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/10/specs/1",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/10/specs/3",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-40",
+      "caseId": "UI42",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/tools/variant-gallery/session.ts",
+          "sha256": "2aa8634fb5d5f204fbdfb93f57e80f916eab18c5008a18ee462fa4648425b58a"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/10/specs/2",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-40",
+      "caseId": "UI43",
+      "status": "PARTIAL",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/tools/variant-gallery/session.ts",
+          "sha256": "2aa8634fb5d5f204fbdfb93f57e80f916eab18c5008a18ee462fa4648425b58a"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/15/assertionResults/10",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/15/assertionResults/11",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/10/specs/4",
+          "status": "FAIL"
+        },
+        {
+          "runId": "final-gallery-export-02",
+          "path": ".resume-runs/final-gallery-export-02/report.json",
+          "sha256": "251c9de44fd085ca15b23ae8c7b477865b0f8afe2236e504345510944388f4a1",
+          "receiptPath": ".resume-runs/final-gallery-export-02/receipt.json",
+          "receiptSha256": "11c39ecfea8d9d8602dea844bb0317f96c2ad57e9b1530b44855ea0af6c9db9c",
+          "pointer": "/suites/0/specs/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-41",
+      "caseId": "TOOL41",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/tools/foliage-workbench/model.ts",
+          "sha256": "299a3e8cb853bb9953413fdfbb7da240b856d305e53b049b10bb66dd956ab06e"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/17/assertionResults/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/17/assertionResults/4",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/11/specs/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/11/specs/2",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-41",
+      "caseId": "TOOL42",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/tools/foliage-workbench/model.ts",
+          "sha256": "299a3e8cb853bb9953413fdfbb7da240b856d305e53b049b10bb66dd956ab06e"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/17/assertionResults/1",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/11/specs/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-41",
+      "caseId": "TOOL43",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/tools/foliage-workbench/model.ts",
+          "sha256": "299a3e8cb853bb9953413fdfbb7da240b856d305e53b049b10bb66dd956ab06e"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/17/assertionResults/2",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/11/specs/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/11/specs/1",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/11/specs/2",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-41",
+      "caseId": "TOOL44",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/tools/foliage-workbench/model.ts",
+          "sha256": "299a3e8cb853bb9953413fdfbb7da240b856d305e53b049b10bb66dd956ab06e"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/17/assertionResults/3",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/11/specs/1",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-42",
+      "caseId": "TOOL45",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/tools/weather-workbench/model.ts",
+          "sha256": "994f89e80070afa3001b50decd55c0570f1f95a3c17e15965963207c3601f2ee"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/16/assertionResults/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/12/specs/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-42",
+      "caseId": "TOOL46",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/tools/weather-workbench/model.ts",
+          "sha256": "994f89e80070afa3001b50decd55c0570f1f95a3c17e15965963207c3601f2ee"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/16/assertionResults/1",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/16/assertionResults/4",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/12/specs/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-42",
+      "caseId": "TOOL47",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/tools/weather-workbench/model.ts",
+          "sha256": "994f89e80070afa3001b50decd55c0570f1f95a3c17e15965963207c3601f2ee"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/16/assertionResults/2",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/12/specs/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-42",
+      "caseId": "TOOL48",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/tools/weather-workbench/model.ts",
+          "sha256": "994f89e80070afa3001b50decd55c0570f1f95a3c17e15965963207c3601f2ee"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/16/assertionResults/3",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/12/specs/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-43",
+      "caseId": "INS01",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/tools/asset-inspector/model.ts",
+          "sha256": "2d707dab24c7aa1d44eb236924f99ffcbe4cb1bf516932d967e82f38f08fa198"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/19/assertionResults/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/19/assertionResults/4",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/19/assertionResults/5",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/19/assertionResults/6",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-43",
+      "caseId": "INS02",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/tools/asset-inspector/model.ts",
+          "sha256": "2d707dab24c7aa1d44eb236924f99ffcbe4cb1bf516932d967e82f38f08fa198"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/19/assertionResults/1",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/19/assertionResults/7",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/13/specs/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-43",
+      "caseId": "INS03",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/tools/asset-inspector/model.ts",
+          "sha256": "2d707dab24c7aa1d44eb236924f99ffcbe4cb1bf516932d967e82f38f08fa198"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/19/assertionResults/2",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/19/assertionResults/4",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/19/assertionResults/6",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-43",
+      "caseId": "INS04",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/tools/asset-inspector/model.ts",
+          "sha256": "2d707dab24c7aa1d44eb236924f99ffcbe4cb1bf516932d967e82f38f08fa198"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/19/assertionResults/3",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/13/specs/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-50",
+      "caseId": "QA01",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "scripts/check-rd-results.mjs",
+          "sha256": "c205f10062e36c710112bf6b1b6fa6b2fd48c93775f91ec393dc3fde82210d55"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/20/assertionResults/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-50",
+      "caseId": "QA02",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "scripts/check-rd-results.mjs",
+          "sha256": "c205f10062e36c710112bf6b1b6fa6b2fd48c93775f91ec393dc3fde82210d55"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/20/assertionResults/1",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-50",
+      "caseId": "QA03",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "scripts/check-rd-results.mjs",
+          "sha256": "c205f10062e36c710112bf6b1b6fa6b2fd48c93775f91ec393dc3fde82210d55"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/20/assertionResults/3",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-50",
+      "caseId": "QA04",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "scripts/check-rd-results.mjs",
+          "sha256": "c205f10062e36c710112bf6b1b6fa6b2fd48c93775f91ec393dc3fde82210d55"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/20/assertionResults/2",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/20/assertionResults/4",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/20/assertionResults/5",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-51",
+      "caseId": "COM01",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/qa/combined-scene/index.ts",
+          "sha256": "a7a6a21db69b9732cfab4f29c53dd727fd5f8cf2d049a226c3ab2d41f31bb79d"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/21/assertionResults/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/14/specs/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-51",
+      "caseId": "COM02",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/qa/combined-scene/index.ts",
+          "sha256": "a7a6a21db69b9732cfab4f29c53dd727fd5f8cf2d049a226c3ab2d41f31bb79d"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/21/assertionResults/1",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/14/specs/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-51",
+      "caseId": "COM03",
+      "status": "PARTIAL",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Old/new canonical payload and owned typed effect costs are recorded together; JS/native allocator/GPU memory/frame budget unavailable.",
+      "sourceBindings": [
+        {
+          "path": "src/qa/combined-scene/index.ts",
+          "sha256": "a7a6a21db69b9732cfab4f29c53dd727fd5f8cf2d049a226c3ab2d41f31bb79d"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/21/assertionResults/1",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-units-01",
+          "path": ".resume-runs/final-source-units-01/unit.json",
+          "sha256": "2a668897a2bbd0219a9097714a660ca17004cf6e5b8c1637e5ee30a0a0664c25",
+          "receiptPath": ".resume-runs/final-source-units-01/receipt.json",
+          "receiptSha256": "60eedc826c595579fa790fd4087b98a79c8c44ed2e09e668e1719b801d7d5985",
+          "pointer": "/testResults/21/assertionResults/2",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/14/specs/0",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-51",
+      "caseId": "COM04",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/qa/combined-scene/index.ts",
+          "sha256": "a7a6a21db69b9732cfab4f29c53dd727fd5f8cf2d049a226c3ab2d41f31bb79d"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/14/specs/1",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-51",
+      "caseId": "COM05",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "src/qa/combined-scene/index.ts",
+          "sha256": "a7a6a21db69b9732cfab4f29c53dd727fd5f8cf2d049a226c3ab2d41f31bb79d"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/14/specs/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-source-native-01",
+          "path": ".resume-runs/final-source-native-01/report.json",
+          "sha256": "d03f1f1387b626c31d4538e5ea88fb9e6d98c75efbadcf1d3c416113dcae0944",
+          "receiptPath": ".resume-runs/final-source-native-01/receipt.json",
+          "receiptSha256": "780e44bc33c335ef0960b98b01149fd8361c6d00f43f1e7cde03b8ab874b1fc3",
+          "pointer": "/suites/14/specs/1",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-52",
+      "caseId": "DEC01",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "scripts/assemble-planner-package.mjs",
+          "sha256": "be42ec17101cab08fd4bd7c110fcf89e3a8496817e4e0ac7dc49e2fcdfa08e1d"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-planner-delivery-01",
+          "path": ".resume-runs/final-planner-delivery-01/unit.json",
+          "sha256": "6a171dbbfb869887ef04fbde39b17cccde9c7ecbd30216260b699e39b6d9f1f4",
+          "receiptPath": ".resume-runs/final-planner-delivery-01/receipt.json",
+          "receiptSha256": "5d34fe829bed1f37c1de7e61c9281c3235b122682aad0dfdfb01f77630e80cf9",
+          "pointer": "/testResults/0/assertionResults/0",
+          "status": "PASS"
+        },
+        {
+          "runId": "final-planner-delivery-01",
+          "path": ".resume-runs/final-planner-delivery-01/unit.json",
+          "sha256": "6a171dbbfb869887ef04fbde39b17cccde9c7ecbd30216260b699e39b6d9f1f4",
+          "receiptPath": ".resume-runs/final-planner-delivery-01/receipt.json",
+          "receiptSha256": "5d34fe829bed1f37c1de7e61c9281c3235b122682aad0dfdfb01f77630e80cf9",
+          "pointer": "/testResults/0/assertionResults/1",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-52",
+      "caseId": "DEC02",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "scripts/assemble-planner-package.mjs",
+          "sha256": "be42ec17101cab08fd4bd7c110fcf89e3a8496817e4e0ac7dc49e2fcdfa08e1d"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-planner-delivery-01",
+          "path": ".resume-runs/final-planner-delivery-01/unit.json",
+          "sha256": "6a171dbbfb869887ef04fbde39b17cccde9c7ecbd30216260b699e39b6d9f1f4",
+          "receiptPath": ".resume-runs/final-planner-delivery-01/receipt.json",
+          "receiptSha256": "5d34fe829bed1f37c1de7e61c9281c3235b122682aad0dfdfb01f77630e80cf9",
+          "pointer": "/testResults/0/assertionResults/2",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-52",
+      "caseId": "DEC03",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "scripts/assemble-planner-package.mjs",
+          "sha256": "be42ec17101cab08fd4bd7c110fcf89e3a8496817e4e0ac7dc49e2fcdfa08e1d"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-planner-delivery-01",
+          "path": ".resume-runs/final-planner-delivery-01/unit.json",
+          "sha256": "6a171dbbfb869887ef04fbde39b17cccde9c7ecbd30216260b699e39b6d9f1f4",
+          "receiptPath": ".resume-runs/final-planner-delivery-01/receipt.json",
+          "receiptSha256": "5d34fe829bed1f37c1de7e61c9281c3235b122682aad0dfdfb01f77630e80cf9",
+          "pointer": "/testResults/0/assertionResults/3",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "cardId": "RD-52",
+      "caseId": "DEC04",
+      "status": "PASS",
+      "scope": "LAB_ONLY",
+      "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+      "reason": "Declared lab contract has an executed source-bound positive witness; no broader art/product/performance claim.",
+      "sourceBindings": [
+        {
+          "path": "scripts/assemble-planner-package.mjs",
+          "sha256": "be42ec17101cab08fd4bd7c110fcf89e3a8496817e4e0ac7dc49e2fcdfa08e1d"
+        }
+      ],
+      "observations": [
+        {
+          "runId": "final-planner-delivery-01",
+          "path": ".resume-runs/final-planner-delivery-01/unit.json",
+          "sha256": "6a171dbbfb869887ef04fbde39b17cccde9c7ecbd30216260b699e39b6d9f1f4",
+          "receiptPath": ".resume-runs/final-planner-delivery-01/receipt.json",
+          "receiptSha256": "5d34fe829bed1f37c1de7e61c9281c3235b122682aad0dfdfb01f77630e80cf9",
+          "pointer": "/testResults/0/assertionResults/4",
+          "status": "PASS"
+        }
+      ]
+    }
+  ]
+}

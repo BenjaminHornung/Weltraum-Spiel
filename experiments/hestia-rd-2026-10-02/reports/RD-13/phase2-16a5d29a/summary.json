@@ -1,0 +1,3806 @@
+{
+  "schema": "rd13-functional-native-diagnostic-summary-v1",
+  "status": "FAIL_NATIVE_RAY_SHADER_COMPILE",
+  "sourceExecuted": "16a5d29a5cddea372abae139da618aa000a058be",
+  "sourceTree": "abb0bdde3039c33d1a815d2f2754103fcb16c100",
+  "runId": "phase2-16a5d29a-20261004-a",
+  "productIntegrated": false,
+  "original": {
+    "bodies": 6,
+    "passed": 0,
+    "failed": 6,
+    "skipped": 0,
+    "assertionBoundary": "Unchanged initial ready gate; later semantic assertions not reached",
+    "cases": [
+      {
+        "path": "evidence/cases/602461a8e9c6ca5d922b-01f90e4166f6ab9fe7b8-0.json",
+        "title": "RAY03: Transform eines lokalen Volumens ändert keine Source-ID; Kamera im Volumen und Überhang korrekt",
+        "status": "failed"
+      },
+      {
+        "path": "evidence/cases/602461a8e9c6ca5d922b-d6644af111ad5881adf2-0.json",
+        "title": "RAY02: Position/Depth/Material/Normal nach Edit stimmt mit belegter Quelle; keine geglättete SDF-Oberfläche",
+        "status": "failed"
+      },
+      {
+        "path": "evidence/cases/602461a8e9c6ca5d922b-dada161e44d3df207d45-0.json",
+        "title": "RAY01: unabhängiges CPU-DDA-Oracle für Randtreffer, negative Richtung, Nullkomponente, innen startenden Strahl und Unknown",
+        "status": "failed"
+      },
+      {
+        "path": "evidence/cases/602461a8e9c6ca5d922b-dda7db0095ea54f4b980-0.json",
+        "title": "RAY04: GPU-Formatlimit oder Uploadüberlauf scheitert vor Allokation; alte Volumenversion wird nicht weitergezeichnet",
+        "status": "failed"
+      },
+      {
+        "path": "evidence/cases/602461a8e9c6ca5d922b-e4bb4e44b76a9aedc3b3-0.json",
+        "title": "normal controls, real greedy, source revisions, disposal, and no TestBridge on normal entry",
+        "status": "failed"
+      },
+      {
+        "path": "evidence/cases/602461a8e9c6ca5d922b-f1ce1fef534bae4ad5fd-0.json",
+        "title": "selected F01 solid attachment depth / proxy fault under original translucent-water presentation; not an image-parity gate",
+        "status": "failed"
+      }
+    ]
+  },
+  "supplements": {
+    "passed": 2,
+    "failed": 2,
+    "notNativeAcceptance": true
+  },
+  "ordinaryMatrix": {
+    "rows": 12,
+    "greedySubmitted": 6,
+    "raysSubmitted": 0,
+    "controls": [
+      {
+        "command": "original fixed camera",
+        "status": "Host render submitted. Native numeric/image/depth-water qualification still NOT RUN; this is not an art/performance PASS.",
+        "selections": {
+          "fixture": "F03-SHELTER-REPLAY",
+          "variant": "greedy-no-ao",
+          "camera": "medium",
+          "tick": "0",
+          "resolution": "1280x720",
+          "dpr": "1"
+        }
+      },
+      {
+        "command": "pause",
+        "status": "Host render submitted. Native numeric/image/depth-water qualification still NOT RUN; this is not an art/performance PASS.",
+        "selections": {
+          "fixture": "F03-SHELTER-REPLAY",
+          "variant": "greedy-no-ao",
+          "camera": "medium",
+          "tick": "0",
+          "resolution": "1280x720",
+          "dpr": "1"
+        }
+      },
+      {
+        "command": "step",
+        "status": "Host render submitted. Native numeric/image/depth-water qualification still NOT RUN; this is not an art/performance PASS.",
+        "selections": {
+          "fixture": "F03-SHELTER-REPLAY",
+          "variant": "greedy-no-ao",
+          "camera": "medium",
+          "tick": "0",
+          "resolution": "1280x720",
+          "dpr": "1"
+        }
+      },
+      {
+        "command": "reset",
+        "status": "Host render submitted. Native numeric/image/depth-water qualification still NOT RUN; this is not an art/performance PASS.",
+        "selections": {
+          "fixture": "F03-SHELTER-REPLAY",
+          "variant": "greedy-no-ao",
+          "camera": "medium",
+          "tick": "0",
+          "resolution": "1280x720",
+          "dpr": "1"
+        }
+      },
+      {
+        "command": "960x540",
+        "status": "Host render submitted. Native numeric/image/depth-water qualification still NOT RUN; this is not an art/performance PASS.",
+        "selections": {
+          "fixture": "F03-SHELTER-REPLAY",
+          "variant": "greedy-no-ao",
+          "camera": "medium",
+          "tick": "0",
+          "resolution": "960x540",
+          "dpr": "1"
+        }
+      },
+      {
+        "command": "DPR2",
+        "status": "Host render submitted. Native numeric/image/depth-water qualification still NOT RUN; this is not an art/performance PASS.",
+        "selections": {
+          "fixture": "F03-SHELTER-REPLAY",
+          "variant": "greedy-no-ao",
+          "camera": "medium",
+          "tick": "0",
+          "resolution": "960x540",
+          "dpr": "2"
+        }
+      },
+      {
+        "command": "dispose",
+        "status": "Disposed; no render loop owned by this entry. Failure history retained.",
+        "selections": {
+          "fixture": "F03-SHELTER-REPLAY",
+          "variant": "greedy-no-ao",
+          "camera": "medium",
+          "tick": "0",
+          "resolution": "960x540",
+          "dpr": "2"
+        }
+      },
+      {
+        "command": "explicit remount",
+        "status": "Host render submitted. Native numeric/image/depth-water qualification still NOT RUN; this is not an art/performance PASS.",
+        "selections": {
+          "fixture": "F03-SHELTER-REPLAY",
+          "variant": "greedy-no-ao",
+          "camera": "far",
+          "tick": "0",
+          "resolution": "960x540",
+          "dpr": "2"
+        }
+      }
+    ]
+  },
+  "numeric": {
+    "status": "FAIL",
+    "reason": "Error: Native shader compile AFTER allocation: ERROR: 0:48: 'sample' : Illegal use of reserved word\nERROR: 0:48: 'sample' : syntax error\n\u0000",
+    "kernelSha256": "4998595025abd4f77a989bd7144b1dcb1c1422cbb0a2d1ffb0ddbd1c14717600",
+    "shaderSha256": "69b61edafd746751951fa3be3d95d3843e34728649302eb0aa7d5c164b8bad99",
+    "vertexSha256": "15a74f27eea4764ce5ba2de8e5b3dbedea1fb251c8a48265bad597348006b299",
+    "depthShaderSha256": "ff8383ab9fe6d2a9f800755096e69b2634df812a18e087fbcc380f7e76d676fe",
+    "readbacks": 0,
+    "allocations": 10,
+    "firstTerminal": {
+      "reason": "Error: Native shader compile AFTER allocation: ERROR: 0:48: 'sample' : Illegal use of reserved word\nERROR: 0:48: 'sample' : syntax error\n\u0000",
+      "allocations": 10
+    },
+    "cleanup": {
+      "textures": 6,
+      "programs": 1,
+      "shaders": 2,
+      "framebuffers": 1,
+      "vaos": 0,
+      "logicalOnly": true
+    },
+    "device": {
+      "renderer": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "vendor": "Google Inc. (Intel)",
+      "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+      "glsl": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+      "classification": "hardware-candidate"
+    },
+    "caps": {
+      "float": true,
+      "drawBuffers": 8,
+      "attachments": 8,
+      "max3D": 2048
+    },
+    "formatQueries": {
+      "rgba32f": [
+        8,
+        4,
+        2,
+        1
+      ],
+      "depth32f": [
+        8,
+        4,
+        2,
+        1
+      ]
+    },
+    "targetFbo": 36053,
+    "shaderLogs": [
+      {
+        "type": 35633,
+        "status": true,
+        "log": ""
+      },
+      {
+        "type": 35632,
+        "status": false,
+        "log": "ERROR: 0:48: 'sample' : Illegal use of reserved word\nERROR: 0:48: 'sample' : syntax error\n\u0000"
+      }
+    ],
+    "depthAndInducedFaultQualification": "NOT RUN after shader compile failure; FAIL outputs are not fault-sensitivity proof"
+  },
+  "r1Terminal": {
+    "status": "EXECUTED_REAL_ADOPTED_R1",
+    "failure": "Error: page.evaluate: Error: UNSUPPORTED: RGBA8UI volume format/context\n    at r (http://127.0.0.1:5280/assets/validation-DshwGweA.js:1:106)\n    at be (http://127.0.0.1:5280/assets/voxel-rays-BiO9aFha.js:2:13953)\n    at Object.v [as mount] (http://127.0.0.1:5280/assets/voxel-rays-BiO9aFha.js:2:27597)\n    at async re (http://127.0.0.1:5280/assets/three-control-CTbaiuDa.js:4104:58628)\n    at async http://127.0.0.1:5280/assets/three-control-CTbaiuDa.js:4104:61146\n    at async Object.replaceFixture (http://127.0.0.1:5280/assets/three-control-CTbaiuDa.js:4104:61354)\n    at async Object.replaceFixture (http://127.0.0.1:5280/assets/voxel-rays-BiO9aFha.js:2:20163)\n    at async Object.rejectReplacementForQualification (http://127.0.0.1:5280/assets/voxel-rays-BiO9aFha.js:2:31172)\n    at async Object.failReplacement (http://127.0.0.1:5280/assets/rd13-rP4kbG1L.js:2:7076)\n    at async eval (eval at evaluate (:303:30), <anonymous>:1:13)",
+    "digestBeforeFault": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+    "digestAtTerminal": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+    "hidden": true,
+    "terminal": {
+      "firstFailure": "Error: UNSUPPORTED: RGBA8UI volume format/context",
+      "pending": false,
+      "disposed": true,
+      "productIntegrated": false
+    }
+  },
+  "network": {
+    "observations": 1140,
+    "offsiteOrVendorTranslatorRequests": 0,
+    "blockedOffsiteAttempts": 0,
+    "transportCaptureFailures": [
+      {
+        "url": "http://127.0.0.1:5280/inventory.json",
+        "failure": {
+          "errorText": "net::ERR_ABORTED"
+        }
+      },
+      {
+        "url": "http://127.0.0.1:5280/inventory.json",
+        "status": 200,
+        "bodyError": "Error: response.body: Protocol error (Network.getResponseBody): No data found for resource with given identifier"
+      },
+      {
+        "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-slot-1-positions.bin",
+        "failure": {
+          "errorText": "net::ERR_ABORTED"
+        }
+      },
+      {
+        "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-slot-1-positions.bin",
+        "status": 200,
+        "bodyError": "Error: response.body: Protocol error (Network.getResponseBody): No data found for resource with given identifier"
+      },
+      {
+        "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-crop-material-slots.bin",
+        "failure": {
+          "errorText": "net::ERR_ABORTED"
+        }
+      },
+      {
+        "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-crop-occupancy.bin",
+        "failure": {
+          "errorText": "net::ERR_ABORTED"
+        }
+      },
+      {
+        "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-crop-material-slots.bin",
+        "status": 200,
+        "bodyError": "Error: response.body: Protocol error (Network.getResponseBody): No resource with given identifier found"
+      },
+      {
+        "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-crop-occupancy.bin",
+        "status": 200,
+        "bodyError": "Error: response.body: Protocol error (Network.getResponseBody): No resource with given identifier found"
+      },
+      {
+        "url": "http://127.0.0.1:5280/inventory.json",
+        "failure": {
+          "errorText": "net::ERR_ABORTED"
+        }
+      },
+      {
+        "url": "http://127.0.0.1:5280/inventory.json",
+        "status": 200,
+        "bodyError": "Error: response.body: Protocol error (Network.getResponseBody): No data found for resource with given identifier"
+      },
+      {
+        "url": "http://127.0.0.1:5280/F03-SHELTER/payloads/removable-roof-cells-slot-1-positions.bin",
+        "failure": {
+          "errorText": "net::ERR_ABORTED"
+        }
+      },
+      {
+        "url": "http://127.0.0.1:5280/F03-SHELTER/payloads/removable-roof-cells-slot-1-positions.bin",
+        "status": 200,
+        "bodyError": "Error: response.body: Protocol error (Network.getResponseBody): No data found for resource with given identifier"
+      },
+      {
+        "url": "http://127.0.0.1:5280/inventory.json",
+        "failure": {
+          "errorText": "net::ERR_ABORTED"
+        }
+      },
+      {
+        "url": "http://127.0.0.1:5280/inventory.json",
+        "status": 200,
+        "bodyError": "Error: response.body: Protocol error (Network.getResponseBody): No data found for resource with given identifier"
+      },
+      {
+        "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-crop-coverage.bin",
+        "failure": {
+          "errorText": "net::ERR_ABORTED"
+        }
+      },
+      {
+        "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-crop-coverage.bin",
+        "status": 200,
+        "bodyError": "Error: response.body: Protocol error (Network.getResponseBody): No data found for resource with given identifier"
+      },
+      {
+        "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-crop-material-slots.bin",
+        "failure": {
+          "errorText": "net::ERR_ABORTED"
+        }
+      },
+      {
+        "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-crop-material-slots.bin",
+        "status": 200,
+        "bodyError": "Error: response.body: Protocol error (Network.getResponseBody): No data found for resource with given identifier"
+      },
+      {
+        "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-slot-1-colors.bin",
+        "failure": {
+          "errorText": "net::ERR_ABORTED"
+        }
+      },
+      {
+        "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-slot-1-colors.bin",
+        "status": 200,
+        "bodyError": "Error: response.body: Protocol error (Network.getResponseBody): No data found for resource with given identifier"
+      },
+      {
+        "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-decor-material-slots.bin",
+        "failure": {
+          "errorText": "net::ERR_ABORTED"
+        }
+      },
+      {
+        "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-decor-material-slots.bin",
+        "status": 200,
+        "bodyError": "Error: response.body: Protocol error (Network.getResponseBody): No data found for resource with given identifier"
+      },
+      {
+        "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-crop-material-slots.bin",
+        "failure": {
+          "errorText": "net::ERR_ABORTED"
+        }
+      },
+      {
+        "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-crop-material-slots.bin",
+        "status": 200,
+        "bodyError": "Error: response.body: Protocol error (Network.getResponseBody): No data found for resource with given identifier"
+      },
+      {
+        "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-crop-occupancy.bin",
+        "failure": {
+          "errorText": "net::ERR_ABORTED"
+        }
+      },
+      {
+        "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/coast-crop-occupancy.bin",
+        "status": 200,
+        "bodyError": "Error: response.body: Protocol error (Network.getResponseBody): No data found for resource with given identifier"
+      },
+      {
+        "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-decor-material-slots.bin",
+        "failure": {
+          "errorText": "net::ERR_ABORTED"
+        }
+      },
+      {
+        "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-decor-material-slots.bin",
+        "status": 200,
+        "bodyError": "Error: response.body: Protocol error (Network.getResponseBody): No data found for resource with given identifier"
+      },
+      {
+        "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-wood-coverage.bin",
+        "failure": {
+          "errorText": "net::ERR_ABORTED"
+        }
+      },
+      {
+        "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-wood-coverage.bin",
+        "status": 200,
+        "bodyError": "Error: response.body: Protocol error (Network.getResponseBody): No data found for resource with given identifier"
+      },
+      {
+        "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-wood-occupancy.bin",
+        "failure": {
+          "errorText": "net::ERR_ABORTED"
+        }
+      },
+      {
+        "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-wood-occupancy.bin",
+        "status": 200,
+        "bodyError": "Error: response.body: Protocol error (Network.getResponseBody): No data found for resource with given identifier"
+      },
+      {
+        "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-wood-slot-1-indices.bin",
+        "failure": {
+          "errorText": "net::ERR_ABORTED"
+        }
+      },
+      {
+        "url": "http://127.0.0.1:5280/F01-HVP-COAST/payloads/plant-0-wood-slot-1-indices.bin",
+        "status": 200,
+        "bodyError": "Error: response.body: Protocol error (Network.getResponseBody): No data found for resource with given identifier"
+      },
+      {
+        "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-slot-2-normals.bin",
+        "failure": {
+          "errorText": "net::ERR_ABORTED"
+        }
+      },
+      {
+        "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-slot-2-normals.bin",
+        "status": 200,
+        "bodyError": "Error: response.body: Protocol error (Network.getResponseBody): No data found for resource with given identifier"
+      },
+      {
+        "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-slot-2-positions.bin",
+        "failure": {
+          "errorText": "net::ERR_ABORTED"
+        }
+      },
+      {
+        "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-slot-2-positions.bin",
+        "status": 200,
+        "bodyError": "Error: response.body: Protocol error (Network.getResponseBody): No data found for resource with given identifier"
+      },
+      {
+        "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-slot-5-normals.bin",
+        "failure": {
+          "errorText": "net::ERR_ABORTED"
+        }
+      },
+      {
+        "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-slot-5-normals.bin",
+        "status": 200,
+        "bodyError": "Error: response.body: Protocol error (Network.getResponseBody): No data found for resource with given identifier"
+      }
+    ],
+    "coverageAuthority": "All 517 exact response bodies separately captured before and after native run; aborted remount requests remain raw failures"
+  },
+  "ownership": [
+    {
+      "path": "evidence/cases/602461a8e9c6ca5d922b-01f90e4166f6ab9fe7b8-0.json",
+      "title": "RAY03: Transform eines lokalen Volumens ändert keine Source-ID; Kamera im Volumen und Überhang korrekt",
+      "before": {
+        "created": {
+          "createTexture": 4,
+          "createFramebuffer": 3,
+          "createBuffer": 1,
+          "createProgram": 1,
+          "createShader": 2,
+          "createVertexArray": 1
+        },
+        "deleted": {
+          "deleteShader": 2,
+          "deleteBuffer": 1,
+          "deleteVertexArray": 1,
+          "deleteProgram": 1
+        },
+        "raf": {
+          "requested": 1,
+          "settled": 1,
+          "cancelled": 2,
+          "active": 0
+        }
+      },
+      "after": {
+        "created": {
+          "createTexture": 4,
+          "createFramebuffer": 3,
+          "createBuffer": 1,
+          "createProgram": 1,
+          "createShader": 2,
+          "createVertexArray": 1
+        },
+        "deleted": {
+          "deleteShader": 2,
+          "deleteBuffer": 1,
+          "deleteVertexArray": 1,
+          "deleteProgram": 1
+        },
+        "raf": {
+          "requested": 1,
+          "settled": 1,
+          "cancelled": 2,
+          "active": 0
+        },
+        "listeners": [
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          }
+        ]
+      },
+      "claim": "Logical counters/canvas listeners and context/browser teardown only; eager deletion of every renderer allocation and native VRAM are not established"
+    },
+    {
+      "path": "evidence/cases/602461a8e9c6ca5d922b-d6644af111ad5881adf2-0.json",
+      "title": "RAY02: Position/Depth/Material/Normal nach Edit stimmt mit belegter Quelle; keine geglättete SDF-Oberfläche",
+      "before": {
+        "created": {
+          "createTexture": 4,
+          "createFramebuffer": 3,
+          "createBuffer": 1,
+          "createProgram": 1,
+          "createShader": 2,
+          "createVertexArray": 1
+        },
+        "deleted": {
+          "deleteShader": 2,
+          "deleteBuffer": 1,
+          "deleteVertexArray": 1,
+          "deleteProgram": 1
+        },
+        "raf": {
+          "requested": 1,
+          "settled": 1,
+          "cancelled": 2,
+          "active": 0
+        }
+      },
+      "after": {
+        "created": {
+          "createTexture": 4,
+          "createFramebuffer": 3,
+          "createBuffer": 1,
+          "createProgram": 1,
+          "createShader": 2,
+          "createVertexArray": 1
+        },
+        "deleted": {
+          "deleteShader": 2,
+          "deleteBuffer": 1,
+          "deleteVertexArray": 1,
+          "deleteProgram": 1
+        },
+        "raf": {
+          "requested": 1,
+          "settled": 1,
+          "cancelled": 2,
+          "active": 0
+        },
+        "listeners": [
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          }
+        ]
+      },
+      "claim": "Logical counters/canvas listeners and context/browser teardown only; eager deletion of every renderer allocation and native VRAM are not established"
+    },
+    {
+      "path": "evidence/cases/602461a8e9c6ca5d922b-dada161e44d3df207d45-0.json",
+      "title": "RAY01: unabhängiges CPU-DDA-Oracle für Randtreffer, negative Richtung, Nullkomponente, innen startenden Strahl und Unknown",
+      "before": {
+        "created": {
+          "createTexture": 4,
+          "createFramebuffer": 3,
+          "createBuffer": 1,
+          "createProgram": 1,
+          "createShader": 2,
+          "createVertexArray": 1
+        },
+        "deleted": {
+          "deleteShader": 2,
+          "deleteBuffer": 1,
+          "deleteVertexArray": 1,
+          "deleteProgram": 1
+        },
+        "raf": {
+          "requested": 1,
+          "settled": 1,
+          "cancelled": 2,
+          "active": 0
+        }
+      },
+      "after": {
+        "created": {
+          "createTexture": 4,
+          "createFramebuffer": 3,
+          "createBuffer": 1,
+          "createProgram": 1,
+          "createShader": 2,
+          "createVertexArray": 1
+        },
+        "deleted": {
+          "deleteShader": 2,
+          "deleteBuffer": 1,
+          "deleteVertexArray": 1,
+          "deleteProgram": 1
+        },
+        "raf": {
+          "requested": 1,
+          "settled": 1,
+          "cancelled": 2,
+          "active": 0
+        },
+        "listeners": [
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          }
+        ]
+      },
+      "claim": "Logical counters/canvas listeners and context/browser teardown only; eager deletion of every renderer allocation and native VRAM are not established"
+    },
+    {
+      "path": "evidence/cases/602461a8e9c6ca5d922b-dda7db0095ea54f4b980-0.json",
+      "title": "RAY04: GPU-Formatlimit oder Uploadüberlauf scheitert vor Allokation; alte Volumenversion wird nicht weitergezeichnet",
+      "before": {
+        "created": {
+          "createTexture": 4,
+          "createFramebuffer": 3,
+          "createBuffer": 1,
+          "createProgram": 1,
+          "createShader": 2,
+          "createVertexArray": 1
+        },
+        "deleted": {
+          "deleteShader": 2,
+          "deleteBuffer": 1,
+          "deleteVertexArray": 1,
+          "deleteProgram": 1
+        },
+        "raf": {
+          "requested": 1,
+          "settled": 1,
+          "cancelled": 2,
+          "active": 0
+        }
+      },
+      "after": {
+        "created": {
+          "createTexture": 4,
+          "createFramebuffer": 3,
+          "createBuffer": 1,
+          "createProgram": 1,
+          "createShader": 2,
+          "createVertexArray": 1
+        },
+        "deleted": {
+          "deleteShader": 2,
+          "deleteBuffer": 1,
+          "deleteVertexArray": 1,
+          "deleteProgram": 1
+        },
+        "raf": {
+          "requested": 1,
+          "settled": 1,
+          "cancelled": 2,
+          "active": 0
+        },
+        "listeners": [
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          }
+        ]
+      },
+      "claim": "Logical counters/canvas listeners and context/browser teardown only; eager deletion of every renderer allocation and native VRAM are not established"
+    },
+    {
+      "path": "evidence/cases/602461a8e9c6ca5d922b-e4bb4e44b76a9aedc3b3-0.json",
+      "title": "normal controls, real greedy, source revisions, disposal, and no TestBridge on normal entry",
+      "before": {
+        "created": {
+          "createTexture": 4,
+          "createFramebuffer": 3,
+          "createBuffer": 1,
+          "createProgram": 1,
+          "createShader": 2,
+          "createVertexArray": 1
+        },
+        "deleted": {
+          "deleteShader": 2,
+          "deleteBuffer": 1,
+          "deleteVertexArray": 1,
+          "deleteProgram": 1
+        },
+        "raf": {
+          "requested": 1,
+          "settled": 1,
+          "cancelled": 2,
+          "active": 0
+        }
+      },
+      "after": {
+        "created": {
+          "createTexture": 4,
+          "createFramebuffer": 3,
+          "createBuffer": 1,
+          "createProgram": 1,
+          "createShader": 2,
+          "createVertexArray": 1
+        },
+        "deleted": {
+          "deleteShader": 2,
+          "deleteBuffer": 1,
+          "deleteVertexArray": 1,
+          "deleteProgram": 1
+        },
+        "raf": {
+          "requested": 1,
+          "settled": 1,
+          "cancelled": 2,
+          "active": 0
+        },
+        "listeners": [
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          }
+        ]
+      },
+      "claim": "Logical counters/canvas listeners and context/browser teardown only; eager deletion of every renderer allocation and native VRAM are not established"
+    },
+    {
+      "path": "evidence/cases/602461a8e9c6ca5d922b-f1ce1fef534bae4ad5fd-0.json",
+      "title": "selected F01 solid attachment depth / proxy fault under original translucent-water presentation; not an image-parity gate",
+      "before": {
+        "created": {
+          "createTexture": 4,
+          "createFramebuffer": 3,
+          "createBuffer": 1,
+          "createProgram": 1,
+          "createShader": 2,
+          "createVertexArray": 1
+        },
+        "deleted": {
+          "deleteShader": 2,
+          "deleteBuffer": 1,
+          "deleteVertexArray": 1,
+          "deleteProgram": 1
+        },
+        "raf": {
+          "requested": 1,
+          "settled": 1,
+          "cancelled": 2,
+          "active": 0
+        }
+      },
+      "after": {
+        "created": {
+          "createTexture": 4,
+          "createFramebuffer": 3,
+          "createBuffer": 1,
+          "createProgram": 1,
+          "createShader": 2,
+          "createVertexArray": 1
+        },
+        "deleted": {
+          "deleteShader": 2,
+          "deleteBuffer": 1,
+          "deleteVertexArray": 1,
+          "deleteProgram": 1
+        },
+        "raf": {
+          "requested": 1,
+          "settled": 1,
+          "cancelled": 2,
+          "active": 0
+        },
+        "listeners": [
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          }
+        ]
+      },
+      "claim": "Logical counters/canvas listeners and context/browser teardown only; eager deletion of every renderer allocation and native VRAM are not established"
+    },
+    {
+      "path": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "title": "supplement v1: original geometric probes without substituting their authored ready gate",
+      "before": {
+        "created": {
+          "createTexture": 106,
+          "createFramebuffer": 20,
+          "createBuffer": 1,
+          "createProgram": 18,
+          "createShader": 36,
+          "createVertexArray": 1
+        },
+        "deleted": {
+          "deleteShader": 36,
+          "deleteBuffer": 1,
+          "deleteVertexArray": 1,
+          "deleteProgram": 18,
+          "deleteTexture": 102,
+          "deleteFramebuffer": 17
+        },
+        "raf": {
+          "requested": 18,
+          "settled": 18,
+          "cancelled": 2,
+          "active": 0
+        }
+      },
+      "after": {
+        "created": {
+          "createTexture": 106,
+          "createFramebuffer": 20,
+          "createBuffer": 1,
+          "createProgram": 18,
+          "createShader": 36,
+          "createVertexArray": 1
+        },
+        "deleted": {
+          "deleteShader": 36,
+          "deleteBuffer": 1,
+          "deleteVertexArray": 1,
+          "deleteProgram": 18,
+          "deleteTexture": 102,
+          "deleteFramebuffer": 17
+        },
+        "raf": {
+          "requested": 18,
+          "settled": 18,
+          "cancelled": 2,
+          "active": 0
+        },
+        "listeners": [
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          }
+        ]
+      },
+      "claim": "Logical counters/canvas listeners and context/browser teardown only; eager deletion of every renderer allocation and native VRAM are not established"
+    },
+    {
+      "path": "evidence/cases/f92d190c9fcb38209a65-3ee689af714b72597551-0.json",
+      "title": "supplement v1: R1 terminal facts after real F06 adoption only, no forced ready state",
+      "before": {
+        "created": {
+          "createTexture": 8,
+          "createFramebuffer": 6,
+          "createBuffer": 4,
+          "createProgram": 2,
+          "createShader": 4,
+          "createVertexArray": 2
+        },
+        "deleted": {
+          "deleteShader": 4,
+          "deleteBuffer": 4,
+          "deleteVertexArray": 2,
+          "deleteProgram": 2
+        },
+        "raf": {
+          "requested": 107,
+          "settled": 106,
+          "cancelled": 4,
+          "active": 0
+        }
+      },
+      "after": {
+        "created": {
+          "createTexture": 8,
+          "createFramebuffer": 6,
+          "createBuffer": 4,
+          "createProgram": 2,
+          "createShader": 4,
+          "createVertexArray": 2
+        },
+        "deleted": {
+          "deleteShader": 4,
+          "deleteBuffer": 4,
+          "deleteVertexArray": 2,
+          "deleteProgram": 2
+        },
+        "raf": {
+          "requested": 107,
+          "settled": 106,
+          "cancelled": 4,
+          "active": 0
+        },
+        "listeners": [
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          }
+        ]
+      },
+      "claim": "Logical counters/canvas listeners and context/browser teardown only; eager deletion of every renderer allocation and native VRAM are not established"
+    },
+    {
+      "path": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "title": "supplement v1: normal home/gallery visible links and bounded ordinary control/compositor matrix, diagnostic collection not native acceptance",
+      "before": {
+        "created": {
+          "createTexture": 60,
+          "createFramebuffer": 45,
+          "createBuffer": 59,
+          "createProgram": 17,
+          "createShader": 34,
+          "createVertexArray": 23
+        },
+        "deleted": {
+          "deleteShader": 34,
+          "deleteBuffer": 53,
+          "deleteVertexArray": 21,
+          "deleteProgram": 16
+        },
+        "raf": {
+          "requested": 915,
+          "settled": 907,
+          "cancelled": 28,
+          "active": 1
+        }
+      },
+      "after": {
+        "created": {
+          "createTexture": 60,
+          "createFramebuffer": 45,
+          "createBuffer": 59,
+          "createProgram": 17,
+          "createShader": 34,
+          "createVertexArray": 23
+        },
+        "deleted": {
+          "deleteShader": 34,
+          "deleteBuffer": 59,
+          "deleteVertexArray": 23,
+          "deleteProgram": 17
+        },
+        "raf": {
+          "requested": 923,
+          "settled": 915,
+          "cancelled": 30,
+          "active": 0
+        },
+        "listeners": [
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          }
+        ]
+      },
+      "claim": "Logical counters/canvas listeners and context/browser teardown only; eager deletion of every renderer allocation and native VRAM are not established"
+    },
+    {
+      "path": "evidence/cases/f92d190c9fcb38209a65-f62c70ff40e2d09b708f-0.json",
+      "title": "supplement v1: native visible-mode P2 witness with actual float MRT and resolved attachment depth",
+      "before": {
+        "created": {
+          "createTexture": 10,
+          "createFramebuffer": 4,
+          "createBuffer": 1,
+          "createProgram": 2,
+          "createShader": 4,
+          "createVertexArray": 1
+        },
+        "deleted": {
+          "deleteShader": 4,
+          "deleteBuffer": 1,
+          "deleteVertexArray": 1,
+          "deleteProgram": 2,
+          "deleteTexture": 6,
+          "deleteFramebuffer": 1
+        },
+        "raf": {
+          "requested": 17,
+          "settled": 17,
+          "cancelled": 2,
+          "active": 0
+        }
+      },
+      "after": {
+        "created": {
+          "createTexture": 10,
+          "createFramebuffer": 4,
+          "createBuffer": 1,
+          "createProgram": 2,
+          "createShader": 4,
+          "createVertexArray": 1
+        },
+        "deleted": {
+          "deleteShader": 4,
+          "deleteBuffer": 1,
+          "deleteVertexArray": 1,
+          "deleteProgram": 2,
+          "deleteTexture": 6,
+          "deleteFramebuffer": 1
+        },
+        "raf": {
+          "requested": 17,
+          "settled": 17,
+          "cancelled": 2,
+          "active": 0
+        },
+        "listeners": [
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          }
+        ]
+      },
+      "claim": "Logical counters/canvas listeners and context/browser teardown only; eager deletion of every renderer allocation and native VRAM are not established"
+    }
+  ],
+  "shaderBindings": [
+    {
+      "case": "evidence/cases/602461a8e9c6ca5d922b-01f90e4166f6ab9fe7b8-0.json",
+      "context": 0,
+      "shader": 10,
+      "sha256": "d05836c371ce61c7329cb8ed4462b70bf2641a2e574086651dc1a50d11d7e173",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/602461a8e9c6ca5d922b-01f90e4166f6ab9fe7b8-0.json",
+      "context": 0,
+      "shader": 11,
+      "sha256": "a161dd4d1a87af0c54f3414b1be2c93b7c397f2793c7657219501ec45a0f929a",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/602461a8e9c6ca5d922b-d6644af111ad5881adf2-0.json",
+      "context": 0,
+      "shader": 10,
+      "sha256": "d05836c371ce61c7329cb8ed4462b70bf2641a2e574086651dc1a50d11d7e173",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/602461a8e9c6ca5d922b-d6644af111ad5881adf2-0.json",
+      "context": 0,
+      "shader": 11,
+      "sha256": "a161dd4d1a87af0c54f3414b1be2c93b7c397f2793c7657219501ec45a0f929a",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/602461a8e9c6ca5d922b-dada161e44d3df207d45-0.json",
+      "context": 0,
+      "shader": 10,
+      "sha256": "d05836c371ce61c7329cb8ed4462b70bf2641a2e574086651dc1a50d11d7e173",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/602461a8e9c6ca5d922b-dada161e44d3df207d45-0.json",
+      "context": 0,
+      "shader": 11,
+      "sha256": "a161dd4d1a87af0c54f3414b1be2c93b7c397f2793c7657219501ec45a0f929a",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/602461a8e9c6ca5d922b-dda7db0095ea54f4b980-0.json",
+      "context": 0,
+      "shader": 10,
+      "sha256": "d05836c371ce61c7329cb8ed4462b70bf2641a2e574086651dc1a50d11d7e173",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/602461a8e9c6ca5d922b-dda7db0095ea54f4b980-0.json",
+      "context": 0,
+      "shader": 11,
+      "sha256": "a161dd4d1a87af0c54f3414b1be2c93b7c397f2793c7657219501ec45a0f929a",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/602461a8e9c6ca5d922b-e4bb4e44b76a9aedc3b3-0.json",
+      "context": 0,
+      "shader": 10,
+      "sha256": "d05836c371ce61c7329cb8ed4462b70bf2641a2e574086651dc1a50d11d7e173",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/602461a8e9c6ca5d922b-e4bb4e44b76a9aedc3b3-0.json",
+      "context": 0,
+      "shader": 11,
+      "sha256": "a161dd4d1a87af0c54f3414b1be2c93b7c397f2793c7657219501ec45a0f929a",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/602461a8e9c6ca5d922b-f1ce1fef534bae4ad5fd-0.json",
+      "context": 0,
+      "shader": 10,
+      "sha256": "d05836c371ce61c7329cb8ed4462b70bf2641a2e574086651dc1a50d11d7e173",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/602461a8e9c6ca5d922b-f1ce1fef534bae4ad5fd-0.json",
+      "context": 0,
+      "shader": 11,
+      "sha256": "a161dd4d1a87af0c54f3414b1be2c93b7c397f2793c7657219501ec45a0f929a",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 0,
+      "shader": 10,
+      "sha256": "d05836c371ce61c7329cb8ed4462b70bf2641a2e574086651dc1a50d11d7e173",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 0,
+      "shader": 11,
+      "sha256": "a161dd4d1a87af0c54f3414b1be2c93b7c397f2793c7657219501ec45a0f929a",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 1,
+      "shader": 21,
+      "sha256": "4a1cac282564578f46ff3bb43448ef8cdeff659e164354912a01acc8bd03d260",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 1,
+      "shader": 22,
+      "sha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 2,
+      "shader": 31,
+      "sha256": "4a1cac282564578f46ff3bb43448ef8cdeff659e164354912a01acc8bd03d260",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 2,
+      "shader": 32,
+      "sha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 3,
+      "shader": 41,
+      "sha256": "4a1cac282564578f46ff3bb43448ef8cdeff659e164354912a01acc8bd03d260",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 3,
+      "shader": 42,
+      "sha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 4,
+      "shader": 51,
+      "sha256": "4a1cac282564578f46ff3bb43448ef8cdeff659e164354912a01acc8bd03d260",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 4,
+      "shader": 52,
+      "sha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 5,
+      "shader": 61,
+      "sha256": "4a1cac282564578f46ff3bb43448ef8cdeff659e164354912a01acc8bd03d260",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 5,
+      "shader": 62,
+      "sha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 6,
+      "shader": 71,
+      "sha256": "4a1cac282564578f46ff3bb43448ef8cdeff659e164354912a01acc8bd03d260",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 6,
+      "shader": 72,
+      "sha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 7,
+      "shader": 81,
+      "sha256": "4a1cac282564578f46ff3bb43448ef8cdeff659e164354912a01acc8bd03d260",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 7,
+      "shader": 82,
+      "sha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 8,
+      "shader": 91,
+      "sha256": "4a1cac282564578f46ff3bb43448ef8cdeff659e164354912a01acc8bd03d260",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 8,
+      "shader": 92,
+      "sha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 9,
+      "shader": 101,
+      "sha256": "4a1cac282564578f46ff3bb43448ef8cdeff659e164354912a01acc8bd03d260",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 9,
+      "shader": 102,
+      "sha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 10,
+      "shader": 111,
+      "sha256": "4a1cac282564578f46ff3bb43448ef8cdeff659e164354912a01acc8bd03d260",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 10,
+      "shader": 112,
+      "sha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 11,
+      "shader": 121,
+      "sha256": "4a1cac282564578f46ff3bb43448ef8cdeff659e164354912a01acc8bd03d260",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 11,
+      "shader": 122,
+      "sha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 12,
+      "shader": 131,
+      "sha256": "4a1cac282564578f46ff3bb43448ef8cdeff659e164354912a01acc8bd03d260",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 12,
+      "shader": 132,
+      "sha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 13,
+      "shader": 141,
+      "sha256": "4a1cac282564578f46ff3bb43448ef8cdeff659e164354912a01acc8bd03d260",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 13,
+      "shader": 142,
+      "sha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 14,
+      "shader": 151,
+      "sha256": "4a1cac282564578f46ff3bb43448ef8cdeff659e164354912a01acc8bd03d260",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 14,
+      "shader": 152,
+      "sha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 15,
+      "shader": 161,
+      "sha256": "4a1cac282564578f46ff3bb43448ef8cdeff659e164354912a01acc8bd03d260",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 15,
+      "shader": 162,
+      "sha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 16,
+      "shader": 171,
+      "sha256": "4a1cac282564578f46ff3bb43448ef8cdeff659e164354912a01acc8bd03d260",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 16,
+      "shader": 172,
+      "sha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 17,
+      "shader": 181,
+      "sha256": "4a1cac282564578f46ff3bb43448ef8cdeff659e164354912a01acc8bd03d260",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-0479a647062decd0715d-0.json",
+      "context": 17,
+      "shader": 182,
+      "sha256": "4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-3ee689af714b72597551-0.json",
+      "context": 0,
+      "shader": 10,
+      "sha256": "d05836c371ce61c7329cb8ed4462b70bf2641a2e574086651dc1a50d11d7e173",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-3ee689af714b72597551-0.json",
+      "context": 0,
+      "shader": 11,
+      "sha256": "a161dd4d1a87af0c54f3414b1be2c93b7c397f2793c7657219501ec45a0f929a",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-3ee689af714b72597551-0.json",
+      "context": 0,
+      "shader": 23,
+      "sha256": "423e20b3e08623d5c0e466ba3254b6d30a336b19bdbf4a7e7ec679def9ce03cf",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-3ee689af714b72597551-0.json",
+      "context": 0,
+      "shader": 24,
+      "sha256": "90b17ea0791d4a5071e087359f79f89b796b419d37294bee9a8a966a73beca52",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 10,
+      "sha256": "d05836c371ce61c7329cb8ed4462b70bf2641a2e574086651dc1a50d11d7e173",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 11,
+      "sha256": "a161dd4d1a87af0c54f3414b1be2c93b7c397f2793c7657219501ec45a0f929a",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 22,
+      "sha256": "d05836c371ce61c7329cb8ed4462b70bf2641a2e574086651dc1a50d11d7e173",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 23,
+      "sha256": "a161dd4d1a87af0c54f3414b1be2c93b7c397f2793c7657219501ec45a0f929a",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 35,
+      "sha256": "423e20b3e08623d5c0e466ba3254b6d30a336b19bdbf4a7e7ec679def9ce03cf",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 36,
+      "sha256": "90b17ea0791d4a5071e087359f79f89b796b419d37294bee9a8a966a73beca52",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 49,
+      "sha256": "d05836c371ce61c7329cb8ed4462b70bf2641a2e574086651dc1a50d11d7e173",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 50,
+      "sha256": "a161dd4d1a87af0c54f3414b1be2c93b7c397f2793c7657219501ec45a0f929a",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 64,
+      "sha256": "423e20b3e08623d5c0e466ba3254b6d30a336b19bdbf4a7e7ec679def9ce03cf",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 65,
+      "sha256": "90b17ea0791d4a5071e087359f79f89b796b419d37294bee9a8a966a73beca52",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 81,
+      "sha256": "d05836c371ce61c7329cb8ed4462b70bf2641a2e574086651dc1a50d11d7e173",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 82,
+      "sha256": "a161dd4d1a87af0c54f3414b1be2c93b7c397f2793c7657219501ec45a0f929a",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 98,
+      "sha256": "423e20b3e08623d5c0e466ba3254b6d30a336b19bdbf4a7e7ec679def9ce03cf",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 99,
+      "sha256": "90b17ea0791d4a5071e087359f79f89b796b419d37294bee9a8a966a73beca52",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 115,
+      "sha256": "d05836c371ce61c7329cb8ed4462b70bf2641a2e574086651dc1a50d11d7e173",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 116,
+      "sha256": "a161dd4d1a87af0c54f3414b1be2c93b7c397f2793c7657219501ec45a0f929a",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 128,
+      "sha256": "423e20b3e08623d5c0e466ba3254b6d30a336b19bdbf4a7e7ec679def9ce03cf",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 129,
+      "sha256": "90b17ea0791d4a5071e087359f79f89b796b419d37294bee9a8a966a73beca52",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 143,
+      "sha256": "d05836c371ce61c7329cb8ed4462b70bf2641a2e574086651dc1a50d11d7e173",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 144,
+      "sha256": "a161dd4d1a87af0c54f3414b1be2c93b7c397f2793c7657219501ec45a0f929a",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 158,
+      "sha256": "423e20b3e08623d5c0e466ba3254b6d30a336b19bdbf4a7e7ec679def9ce03cf",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 159,
+      "sha256": "90b17ea0791d4a5071e087359f79f89b796b419d37294bee9a8a966a73beca52",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 175,
+      "sha256": "3748d04fcd685c33a29e76559e0cdf16a32c8762161b595fc40ed6044a1f5b87",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 176,
+      "sha256": "9b4c11a83535679e5b4c94ac3e11efd56f5a41e1c24d2cb6686580cd8fb3d2b6",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 190,
+      "sha256": "9866867f970c472d5965b7b628139b72d851d27310b3dfd7328340be1c9f56ee",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 191,
+      "sha256": "fee9ab10b268b91ca99571387778830aa54f4e12bd02d1015c730882676e6404",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 195,
+      "sha256": "45fc49b3b48a0fb85b0f168244640303e606de2b2bb8c8f1915a9f201f3600db",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 196,
+      "sha256": "d373347fb94743ec9e66abc73d19aaa75ca2e466cbf30d9cf22a9cbbd1e52436",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 200,
+      "sha256": "36f6f2bee76e61494370a02f21b8f12e3d20f3617105c3ff3918a4732cc55d07",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 201,
+      "sha256": "8721a4eefd6a0c9ec57a64c13a09afab3ca4642f416f60bfeafb72b7d5b2d59a",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 215,
+      "sha256": "423e20b3e08623d5c0e466ba3254b6d30a336b19bdbf4a7e7ec679def9ce03cf",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 216,
+      "sha256": "90b17ea0791d4a5071e087359f79f89b796b419d37294bee9a8a966a73beca52",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 233,
+      "sha256": "423e20b3e08623d5c0e466ba3254b6d30a336b19bdbf4a7e7ec679def9ce03cf",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-bf30c1be919386120cb7-0.json",
+      "context": 0,
+      "shader": 234,
+      "sha256": "90b17ea0791d4a5071e087359f79f89b796b419d37294bee9a8a966a73beca52",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-f62c70ff40e2d09b708f-0.json",
+      "context": 0,
+      "shader": 10,
+      "sha256": "d05836c371ce61c7329cb8ed4462b70bf2641a2e574086651dc1a50d11d7e173",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-f62c70ff40e2d09b708f-0.json",
+      "context": 0,
+      "shader": 11,
+      "sha256": "a161dd4d1a87af0c54f3414b1be2c93b7c397f2793c7657219501ec45a0f929a",
+      "containsExactKernel": true
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-f62c70ff40e2d09b708f-0.json",
+      "context": 1,
+      "shader": 21,
+      "sha256": "15a74f27eea4764ce5ba2de8e5b3dbedea1fb251c8a48265bad597348006b299",
+      "containsExactKernel": false
+    },
+    {
+      "case": "evidence/cases/f92d190c9fcb38209a65-f62c70ff40e2d09b708f-0.json",
+      "context": 1,
+      "shader": 22,
+      "sha256": "69b61edafd746751951fa3be3d95d3843e34728649302eb0aa7d5c164b8bad99",
+      "containsExactKernel": true
+    }
+  ],
+  "verification": {
+    "cpu39": "PASS",
+    "focusedTypes": "PASS",
+    "rootTypes": "PASS",
+    "launcherCheck": "PASS",
+    "boundary52": "Recorded separately in fresh precommit/postcommit audit",
+    "build": "Existing HEAD build only; no rebuild"
+  },
+  "cleanup": {
+    "source": "16a5d29a5cddea372abae139da618aa000a058be",
+    "tree": "abb0bdde3039c33d1a815d2f2754103fcb16c100",
+    "native": {
+      "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-13/phase2-16a5d29a-20261004-a/native-cleanup.json",
+      "bytes": 367,
+      "sha256": "b533f43edb2dc6bb237b6c4aec3ca35e819bdf0f355fd8cde1d8310ab0704579"
+    },
+    "preview": {
+      "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-13/phase2-16a5d29a-20261004-a/preview-cleanup.json",
+      "bytes": 261,
+      "sha256": "77f4afc915a86a5d8cef43ce4b668c57c0713b22e8de421f1bde967d456f7b39"
+    },
+    "port": {
+      "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-13/phase2-16a5d29a-20261004-a/port-after-cleanup.json",
+      "bytes": 157,
+      "sha256": "8e01f9d6280d622f7aefc67a2cfabb78fd8c673c6bdce5b5e48e70063403bc20"
+    },
+    "servicesRetained": false,
+    "noForeignCleanup": true,
+    "nativeVram": "UNKNOWN",
+    "productIntegrated": false
+  },
+  "commandTimingAuthority": "Recorded wall/CPU command durations and unchanged diagnostic facts are not GPU benchmark evidence",
+  "nativeGpuMs": "UNKNOWN",
+  "nativeVram": "UNKNOWN",
+  "qualifiedGpuPerformance": "NOT_GRANTED"
+}

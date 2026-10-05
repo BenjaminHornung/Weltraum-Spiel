@@ -1,0 +1,15 @@
+{
+  "schema": "hestia-rd-final-zip-integrity-v1",
+  "zip": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-RD-resume-2026-10-05\\experiments\\hestia-rd-2026-10-02\\.resume-runs\\delivery\\Hestia_RD_Planner_Final_2026-10-05.zip",
+  "bytes": 68078891,
+  "sha256": "87cddafc768dd24bbde7bf5a260dfeb1d184d66d600e967f09a22971034e4a4a",
+  "manifestSha256": "254a797d75646c8f390832483dfabb05bb291c0bd84ace1c33e55f5156ddc170",
+  "files": 2223,
+  "memberHashesVerified": 2223,
+  "crc": "PASS",
+  "privacyStrongPatternScan": "PASS",
+  "privacyFindings": 0,
+  "productIntegrated": false,
+  "art": "PENDING_OWNER",
+  "qualification": "Q0_FUNCTIONAL_UNQUALIFIED"
+}

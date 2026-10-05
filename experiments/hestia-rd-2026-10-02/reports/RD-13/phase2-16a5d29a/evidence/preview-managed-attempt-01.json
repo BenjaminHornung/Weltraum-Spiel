@@ -1,0 +1,14 @@
+{
+  "schema": "rd13-managed-launch-failure-v1",
+  "taskId": "bg_muu45uzu_60",
+  "pid": 41204,
+  "startedAt": "2026-10-04T17:47:37.403Z",
+  "completedAt": "2026-10-04T17:47:37.715Z",
+  "exitCode": 1,
+  "ready": false,
+  "rawError": "[ERROR] \"&\" kann syntaktisch an dieser Stelle nicht verarbeitet werden.",
+  "diagnosis": "Managed launcher default shell interpreted PowerShell invocation as cmd syntax; no preview/Node/native job started. Select the explicit existing C-only PowerShell executable.",
+  "source": "16a5d29a5cddea372abae139da618aa000a058be",
+  "runtimeChanged": false,
+  "productIntegrated": false
+}

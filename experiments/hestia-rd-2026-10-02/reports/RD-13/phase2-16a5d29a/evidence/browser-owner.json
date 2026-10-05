@@ -1,0 +1,16 @@
+{
+  "ownerPid": 103280,
+  "browserPid": 77204,
+  "executable": {
+    "path": "C:/IFI_SourceCode/Utils/opencode-migration/runtime/chromium-1234/chrome-win64/chrome.exe",
+    "bytes": 4024832,
+    "sha256": "409805a16d6416087e6b2f778df1cf8f7bbb267d6b99f6b5bb0a618eace234f2"
+  },
+  "transport": "OWNED_PRIVATE_PLAYWRIGHT_SERVER_NOT_PUBLISHED",
+  "source": "16a5d29a5cddea372abae139da618aa000a058be",
+  "tree": "abb0bdde3039c33d1a815d2f2754103fcb16c100",
+  "headless": true,
+  "functionalHardwareCandidateOnly": true,
+  "qualifiedGpuPerformance": "NOT_GRANTED",
+  "productIntegrated": false
+}

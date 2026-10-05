@@ -1,0 +1,93 @@
+**Ja – die Referenzen ergänzen unsere Konzeptbilder vor allem um etwas, das ein Standbild kaum vermitteln kann: Wie sich die Welt bei Bewegung, Eingriffen und Umwelteinflüssen anfühlen soll.** Ich lese deinen Input deshalb nicht als Wunsch nach sieben zusätzlichen Einzelfeatures, sondern als Präzisierung des Gesamtziels: eine kleinteilig blockartige, dichte, lebendige und unmittelbar veränderbare Hestia-Welt.
+
+Dabei bleiben unsere Konzepte stilgebend. Die vorhandene Visual Language unterscheidet bereits ausdrücklich zwischen **visuellem Ziel, tatsächlicher Runtime-Funktion und technischer Architektur**. Ein passender Reddit-Beitrag darf also einzelne Eigenschaften ergänzen, ohne damit automatisch seine Engine, seinen Voxelmaßstab oder seine gesamte Umsetzung zum neuen Projektstandard zu machen. fileciteturn2file0L19-L31
+
+Ich habe die Beiträge und verfügbaren Entwicklerantworten gelesen und drei unserer Konzeptbilder – Lagunenkanal, Wurzelbaum-Feuchtgebiet und Terrassenküste – direkt angesehen. **Die eingebetteten Reddit-Videos und Bildgalerien waren hier nicht zuverlässig abrufbar.** Die technischen Aussagen unten stammen deshalb aus den Entwicklertexten; ich behaupte keine vollständige Sichtung oder Messung der Clips.
+
+## 1. Was die einzelnen Referenzen für Hestia beitragen
+
+| Referenz | Bedeutung für Hestia | Wichtige Abgrenzung |
+|---|---|---|
+| **Camera cutout for voxels** | Kameralesbarkeit bei verdeckter Spielfigur, insbesondere in Third-Person, unter Wurzelbögen und in engen Räumen. Der Autor beschreibt eine Freistellung beim Raymarching zwischen Kamera und Figur. | Das ist eine **Darstellungsfunktion**, keine echte Zerstörung. Freie Sicht darf nicht automatisch einen begehbaren oder durchschießbaren Durchgang erzeugen. ([reddit.com](https://www.reddit.com/r/VoxelGameDev/comments/1wbp8kq/camera_cutout_for_voxels/)) |
+| **BFS – Snow system** | Eine zusammenhängende Umweltwirkung aus Oberflächenauflage, bewegten Effekten und interaktiven Partikeln. Der Entwickler trennt diese drei Systeme ausdrücklich. | Nicht jeder sichtbare Effekt muss ein physikalischer Körper sein. Umgekehrt darf interaktive Materie nicht bloß Dekoration sein. Die beschriebene Höhenkartenlösung wäre für unsere Überhänge und beweglichen Fragmente separat zu prüfen. ~~~~~~~~~~~~~~~~~~~~~~ |
+| **My raymarching engine** | Material- und Lichtqualität als eigenständige Qualitätsdimension: Rauheit, Reflexionen, Emission und räumlich differenzierte Beleuchtung. | Der Autor beschreibt selbst unfertige zeitliche Rekonstruktion und GI-Aktualisierung. Das ist eine technische Referenz, kein Nachweis einer vollständigen dynamischen Spielwelt mit unseren Anforderungen. ([reddit.com](https://www.reddit.com/r/VoxelGameDev/comments/1s6e1gk/my_raymarching_engine/)) |
+| **Destruction and building** | Besonders relevante Verhaltensreferenz für Verbindung, Trennung und die Entstehung eigenständiger Voxelvolumen. | Laut Entwickler werden klassische Dreiecksmeshes beziehungsweise Greedy Meshing verwendet – **Raymarching ist dafür also nicht zwingend erforderlich**. Das geglättete Marching-Cubes-/Transvoxel-Planetenterrain passt dagegen nicht zu unserem sichtbaren Hestia-Ziel. ~~~~~~~~~~~~~~~~~~~~~~ |
+| **My Tiny Voxel game / SVO** | Interessant für die Trennung kompakter Renderdaten und lokal benötigter Kollisionsdaten. Der Autor beschreibt SVO-Rendering und separat erzeugte Box-Collider um Entitäten. | „4K/120 FPS“ ist eine Autorenangabe, kein übertragbarer Hestia-Benchmark. Ein SVO beantwortet außerdem nicht automatisch Fragen zu Masse, Trägheit, atomaren Änderungen oder Persistenz. ([reddit.com](https://www.reddit.com/r/VoxelGameDev/comments/1jbqhv5/my_tiny_voxel_game_is_fully_destructable_rendered/)) |
+| **Windy voxel forest** | Vegetationsbewegung als Teil des gewünschten Erscheinungsbilds – nicht nur mehr Pflanzen, sondern ein lebendiger Raum. | Die Animation verwendet vorab voxelisierte Frames. Der Autor nennt etwa 630 MB für vier Baumvorlagen mit fünf Sekunden Animation. Für Hestia wären insbesondere Speicherbedarf und die Vereinbarkeit mit nachträglicher Zerstörung zu prüfen. ([reddit.com](https://www.reddit.com/r/VoxelGameDev/comments/1l7r6un/windy_voxel_forest/)) |
+| **Castle Craft – lush environments** | Vegetationsschichten, Bodenbewuchs und Atmosphäre als Ergänzung der blockartigen Landschaft. | Der Autor nennt ausdrücklich **1-Meter-Voxel und Nicht-Voxel-Bäume**. Wir sollten daraus die Üppigkeit und räumliche Wirkung ableiten, nicht diesen Maßstab oder die Baumtechnik zur Hestia-Norm machen. ~~~~~~~~~~~~~~~~~~~~~~ |
+
+**Die wichtigste Schlussfolgerung daraus: Wir sollten gewünschte Wirkung und konkrete Implementierung konsequent auseinanderhalten.** Manche Beispiele sind besonders wertvoll für Bewegung, andere für Materialwirkung oder Interaktion. Keines muss als vollständige Blaupause übernommen werden.
+
+## 2. Was dadurch an unserem Zielbild deutlicher wird
+
+### Hestia braucht nicht nur kleine Voxel, sondern eine durchgängig gestaltete Landschaft
+
+Unsere Lagunen- und Wurzelbaumkonzepte zeigen nicht einfach eine hohe Anzahl kleiner Würfel. Entscheidend sind die asymmetrischen Baumformen, die mehrfach gestaffelte Vegetation, freie Wasserflächen, sichtbare Unterwasserterrassen und der Wechsel zwischen dichtem Bewuchs und freiem Fels. Genau diese Kombination macht die Landschaft aus. fileciteturn11file0L5-L7 fileciteturn11file1L22-L24
+
+Die vorhandene Visual Bible formuliert das bereits sehr treffend: Habitat statt gleichmäßiger Streuung, Materialrollen statt flacher Farbflächen und Dichte mit Ruheflächen. Die neuen Referenzen verstärken für mich diese Lesart. **„Voxel kleiner machen“, „mehr Bäume setzen“ oder „einen schöneren Shader hinzufügen“ sind jeweils nur Teilmaßnahmen.** Sie ersetzen keine überzeugenden Silhouetten und keine gute Landschaftskomposition. fileciteturn9file0L13-L31
+
+Für einen nächsten visuellen Vergleich wäre deshalb nicht nur zu fragen: „Ist genug Vegetation vorhanden?“ Sondern: **Wirkt derselbe Ort aus Spielerhöhe, beim Herumlaufen und nach einem Eingriff noch wie Hestia?**
+
+### Das gewünschte Spielgefühl umfasst die tatsächliche Weltänderung
+
+Den Zerstörungsbeitrag würde ich vor allem als Referenz für einen zusammenhängenden Ablauf nutzen: Ein verbundenes Gebilde wird verändert und teilt sich in neue Voxelvolumen. Genau diese Verbindung zwischen Bearbeitung und anschließendem Weltzustand ist relevanter als die Frage, ob die Darstellung über Raymarching oder Meshes erfolgt. ~~~~~~~~~~~~~~~~~~~~~~
+
+Für unsere weitere Prüfung würde ich dabei drei Zeitpunkte getrennt betrachten:
+
+- **Werkzeugfeedback:** Der Spieler erkennt, dass sein Eingriff angenommen wurde.
+- **Autoritative Anwendung:** Material, Struktur und physikalischer Zustand sind tatsächlich geändert.
+- **Darstellung und Kollision:** Die übernommene Änderung ist sichtbar und verhält sich entsprechend.
+
+Eine sofortige Schneidanimation kann den ersten Punkt erfüllen, obwohl die eigentliche Änderung noch aussteht. Deshalb würde ich die laufende Arbeit an der tatsächlichen Reaktionszeit nicht durch zusätzliche Effekte ersetzen. Gleichzeitig sollten schnelle Eingriffe nicht auf Kosten deiner Anforderungen an Kollision, Masse und Trägheit, Atomarität oder Save/Restore gehen.
+
+### Lebendige Vegetation muss auch nach Zerstörung richtig bleiben
+
+Die Waldreferenz macht einen wichtigen zusätzlichen Prüffall sichtbar: **Eine schöne Animation im unbeschädigten Zustand reicht für unser Projekt nicht.** Da dort vorberechnete Voxel-Animationsframes verwendet werden, müssten wir bei einer ähnlichen Technik ausdrücklich verhindern, dass ein späterer Animationsframe zuvor entfernte Teile wieder erscheinen lässt. Das ist eine abzuleitende Integrationsanforderung, kein von mir nachgewiesener Fehler dieser Demo. ([reddit.com](https://www.reddit.com/r/VoxelGameDev/comments/1l7r6un/windy_voxel_forest/))
+
+Für Hestia wäre mein vorgeschlagener Prüfablauf deshalb: Vegetation bewegt sich, ein freigegebener Holzbereich wird getrennt, das Fragment fällt, und der verbleibende sowie der abgelöste Bewuchs behalten die richtige Zuordnung.
+
+Das passt grundsätzlich zur bereits dokumentierten HVP-Trennung zwischen kanonischen Holzzellen und masseloser Dekoration mit stabilen Anbindungen. Die Referenz spricht also nicht automatisch dafür, dieses Modell wegzuwerfen. Sie macht deutlich, **welches Verhalten dieses Modell zusätzlich tragen und nachweisen müsste**. fileciteturn8file0L2-L2
+
+### Material- und Lichtqualität muss Veränderungen mitmachen
+
+Die Raymarching-Referenz ist gerade deshalb interessant, weil der Autor nicht nur Geometrie beschreibt, sondern auch Materialattribute und die Aktualisierung der Beleuchtung. Gleichzeitig benennt er offene Probleme bei zeitlicher Rekonstruktion und GI. ([reddit.com](https://www.reddit.com/r/VoxelGameDev/comments/1s6e1gk/my_raymarching_engine/))
+
+Für uns würde ich daraus einen konkreten Vergleich ableiten: Ein schattiger Bereich wird geöffnet oder ein bewachsener Felsbereich getrennt. **Passen Beleuchtung, Schatten, Bewuchs und Oberflächenwirkung anschließend noch zum neuen Zustand?**
+
+Das gewünschte Ergebnis ist nicht bloß ein schönes Ausgangsbild. Auch der veränderte Ort soll visuell zusammenhängend bleiben. Dafür ist zunächst das Ergebnis zu spezifizieren – nicht voreilig eine bestimmte GI-, Raytracing- oder Postprocessing-Technik.
+
+## 3. Wichtig beim Vergleich mit dem aktuellen Framework
+
+Ich würde den heutigen Stand **nicht mehr pauschal anhand der alten Beschreibung „isolierte Grundlagen ohne spielbare Verbindung“ beurteilen**.
+
+Beim Abruf stand `main` auf **`25bc7f5…`**. Der dortige HVP-ExecPlan beschreibt bereits lokale Kandidaten beziehungsweise Prüfungen für Begehbarkeit, Rapier, kanonische Schnitte, Fragmenttransfer, erneutes Schneiden, Save/Restore und einen Bergungsablauf. Gleichzeitig bleiben Art- und Hardware-Abnahme sowie einzelne Funktionsgrenzen ausdrücklich offen. Das ist ein dokumentierter Stand – keine von mir hier erneut ausgeführte Laufzeitverifikation. fileciteturn6file0L2-L2 fileciteturn8file0L2-L2
+
+Das weiterhin vorhandene `current-mainline-state.md` bezeichnet sich dagegen als älteren Snapshot vom 6. September auf Basis `15f3550…`. Seine damaligen Aussagen dürfen daher nicht ungeprüft als Beschreibung des späteren HVP-Stands übernommen werden. fileciteturn3file0L2-L2
+
+**Die jetzt relevante Frage ist deshalb weniger „Existieren Terrain und Physik?“, sondern: „Erreichen die verbundenen Systeme gemeinsam die gewünschte Qualität?“**
+
+Die von dir gelieferten Referenzen sind dafür gute Vergleichsachsen. Sie sind aber allein noch kein Beleg dafür, dass eine bestimmte Funktion im aktuellen Build fehlt oder der gewählte Renderer ungeeignet ist.
+
+## 4. Konsequenz für die weitere Planung
+
+Ich würde daraus **keinen neuen großen Engine-Umbau und keine zusätzliche lange Vorbereitungsphase** ableiten. Sinnvoller wäre, die vorhandene Hestia-Referenzszene gleichzeitig als visuelle und interaktive Prüfstrecke zu verwenden.
+
+| Vorgeschlagener Vergleich | Was dabei sichtbar werden soll |
+|---|---|
+| **Lagune aus fester Ansicht und beim Begehen** | Ob Detailmaßstab, Vegetationshierarchie, Wasser und Fernwirkung auch aus Spielerperspektive zusammenpassen. |
+| **Dichte Szene während eines echten Schnitts** | Ob das gute Erscheinungsbild auch unter tatsächlicher Edit-, Physik- und Renderlast erhalten bleibt. |
+| **Bewegte Vegetation vor und nach einer Trennung** | Ob Animation und Dekoration mit dem zerstörten Zustand vereinbar bleiben. |
+| **Third-Person unter Wurzeln und Felsvorsprüngen** | Ob die Kamera verständliche Sicht bietet, ohne die physikalische Welt zu verfälschen. |
+| **Wiederholte Eingriffe statt einzelner Idealfälle** | Ob Reaktionszeiten, Speicherbedarf und Darstellung auch nach mehreren Änderungen stabil bleiben. |
+
+Das sind **Prüfvorschläge**, noch keine neu freigegebenen Paketverträge. Insbesondere Vegetationsanimation oder Kamera-Freistellung müssten zunächst ihren konkreten Umfang erhalten.
+
+Meine Schwerpunktsetzung wäre: **zuerst die tatsächliche Weltänderung flüssig und korrekt machen, parallel die bestehende Referenzszene visuell verbessern, anschließend gezielt Bewegungs- und Kameraverhalten ergänzen.** Schnee und umfassendere Wetterphysik würde ich aus diesem Input nicht automatisch zur Voraussetzung für den ersten spielbaren Küstenprototyp machen.
+
+Unterm Strich präzisieren deine Beispiele das Ziel sehr gut:
+
+> **Die Formensprache und Identität kommen aus unseren Hestia-Konzepten. Die neuen Referenzen ergänzen, wie lebendig, reaktionsschnell und zusammenhängend diese Welt im laufenden Spiel wirken soll.**
+
+Die vollständige Einordnung mit allen sieben Links, Übernahmegrenzen und Prüfvorschlägen liegt hier als separates Addendum für die weitere Arbeit:
+
+[**Hestia – Reddit-Referenzen und abgeleitete Prüfvorschläge**](sandbox:/mnt/data/HESTIA_REDDIT_REFERENZEN_2026-09-28.md)

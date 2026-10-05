@@ -1,0 +1,2 @@
+# Preserve exact new evidence/harness bytes; inherited PNG LFS filters stay active.
+* -text

@@ -1,0 +1,8 @@
+import{canonicalJson,integer,requireValue}from'../../contracts/validation';
+/** Tiny independent references. No production mesher/ray/exposure function is called here. */
+export function visibleCellFaces(cells:readonly {cell:readonly[number,number,number];material:string}[]){
+ requireValue(cells.length<=4096,'Oracle cell budget exceeded');const occupied=new Set(cells.map(c=>c.cell.join(',')));requireValue(occupied.size===cells.length,'Duplicate oracle cells');const faces:{key:string;material:string}[]=[];
+ for(const {cell,material}of cells){cell.forEach(v=>requireValue(Number.isSafeInteger(v),'Invalid oracle cell'));for(let axis=0;axis<3;axis++)for(const direction of[-1,1]){const neighbor=[...cell];neighbor[axis]+=direction;if(!occupied.has(neighbor.join(',')))faces.push({key:cell.join(',')+'/'+axis+'/'+direction,material});}}return faces.sort((a,b)=>a.key<b.key?-1:1);
+}
+export function columnExposure(occupancy:readonly number[],coverage:readonly number[]){requireValue(occupancy.length===coverage.length&&occupancy.length>0&&occupancy.length<=512,'Oracle column budget/binding');requireValue([...occupancy,...coverage].every(v=>v===0||v===1),'Invalid oracle column');if(occupancy.some((v,i)=>v&&coverage[i]))return'shielded';return coverage.some(v=>!v)?'unknown':'exposed';}
+export function assertOwnerBindings(expected:readonly {ownerId:string;sourceRevision:number;sourceNamespace:string;sourceIds:readonly string[]}[],actual:typeof expected){expected.forEach(o=>integer(o.sourceRevision));requireValue(canonicalJson([...expected].sort((a,b)=>a.ownerId<b.ownerId?-1:1))===canonicalJson([...actual].sort((a,b)=>a.ownerId<b.ownerId?-1:1)),'Stale/missing owner binding');}

@@ -1,0 +1,16 @@
+TAP version 13
+# Subtest: actual launcher checks deadline and owned stop after a busy child receipt; no future admission wait
+ok 1 - actual launcher checks deadline and owned stop after a busy child receipt; no future admission wait
+  ---
+  duration_ms: 2.302
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 516.3088

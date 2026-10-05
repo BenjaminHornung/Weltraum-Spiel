@@ -1,0 +1,12 @@
+{
+  "owner": "RD13",
+  "source": "16a5d29a5cddea372abae139da618aa000a058be",
+  "tree": "abb0bdde3039c33d1a815d2f2754103fcb16c100",
+  "reason": "native job terminal and owned browser cooperatively exited",
+  "nativeCleanup": {
+    "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-13/phase2-16a5d29a-20261004-a/native-cleanup.json",
+    "bytes": 367,
+    "sha256": "b533f43edb2dc6bb237b6c4aec3ca35e819bdf0f355fd8cde1d8310ab0704579"
+  },
+  "productIntegrated": false
+}

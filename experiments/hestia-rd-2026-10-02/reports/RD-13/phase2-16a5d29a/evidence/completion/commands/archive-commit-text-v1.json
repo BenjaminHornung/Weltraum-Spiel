@@ -1,0 +1,19 @@
+{
+  "label": "archive-commit-text-v1",
+  "executable": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+  "args": [
+    "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-13/phase2-16a5d29a-20261004-a/archive-commit-text-v1.mjs"
+  ],
+  "cwd": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-worktrees/Hestia-RD-RD13/experiments/hestia-rd-2026-10-02",
+  "start": "2026-10-05T06:24:48.214Z",
+  "elapsedMs": 212.92110000000002,
+  "exit": 0,
+  "signal": null,
+  "timedOut": false,
+  "error": null,
+  "stdoutSha256": "bf8bd26b0e6639ea483a0499f536d58260ac270227c9d1431938c88887fee216",
+  "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "helperSha256": "34925849441aa8be8f02bb371d89b0086e02a1b9cac4b88dd68d31ed2d93c59b",
+  "productIntegrated": false,
+  "nativeExecuted": false
+}

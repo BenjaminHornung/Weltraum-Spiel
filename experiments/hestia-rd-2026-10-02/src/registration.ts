@@ -10,6 +10,13 @@ import { createRendererProbeExperiment } from './experiments/renderer-probe';
 import { createThreeWebGpuExperiment } from './experiments/three-webgpu';
 import { createBabylonExperiment } from './experiments/babylon';
 import { createVoxelRayExperiment } from './experiments/voxel-rays';
+import { createFoliageWindExperiment } from './experiments/foliage-wind';
+import {createFoliageLifecycleExperiment} from './experiments/foliage-lifecycle';
+import {createInspectorExperiment} from './tools/asset-inspector/render';
+import { createRainExperiment } from './experiments/rain';
+import { createMaterialLightExperiment } from './experiments/material-light';
+import { createWetSurfaceExperiment } from './experiments/wet-surface';
+import {createCameraOcclusionExperiment} from './experiments/camera-occlusion';
 
 const createContractControl: LabExperimentFactory = async (context) => {
   if (context.signal.aborted) { throw new Error('Control init aborted'); }
@@ -46,6 +53,13 @@ export const LAB_REGISTRATIONS: readonly LabRegistration[] = Object.freeze([
   Object.freeze({ id: 'RD-12', variantId: 'C4', scenarioId: 'F01-HVP-COAST-REPLAY', preset: Object.freeze({ id: 'C4' }), create: createBabylonExperiment }),
   Object.freeze({ id: 'RD-13', variantId: 'rays-no-ao', scenarioId: 'F01-HVP-COAST-REPLAY', preset: Object.freeze({ id: 'rays-no-ao' }), create: createVoxelRayExperiment }),
   Object.freeze({ id: 'RD-13', variantId: 'greedy-no-ao', scenarioId: 'F01-HVP-COAST-REPLAY', preset: Object.freeze({ id: 'greedy-no-ao' }), create: createVoxelRayExperiment }),
+  ...(['static', 'rigid', 'vertex'] as const).map((variantId) => Object.freeze({ id: 'RD-21', variantId, scenarioId: 'F02-ROOT-GROVE-REPLAY', preset: Object.freeze({ id: variantId }), create: createFoliageWindExperiment })),
+  Object.freeze({id:'RD-23',variantId:'rigid',scenarioId:'F04-DETACH-REPLAY',preset:Object.freeze({id:'rigid'}),create:createFoliageLifecycleExperiment}),
+  Object.freeze({id:'RD-43',variantId:'fixture-inspector',scenarioId:'F03-SHELTER-REPLAY',preset:Object.freeze({id:'fixture-inspector'}),create:createInspectorExperiment}),
+  ...(['source-query', 'depth-projection', 'unshielded-control'] as const).map((variantId) => Object.freeze({ id: 'RD-31', variantId, scenarioId: 'F03-SHELTER-REPLAY', preset: Object.freeze({ id: variantId }), create: createRainExperiment })),
+  ...(['basic-lit', 'rough-wet'] as const).map((variantId) => Object.freeze({ id: 'RD-14', variantId, scenarioId: 'F06-MATERIAL-REPLAY', preset: Object.freeze({ id: variantId }), create: createMaterialLightExperiment })),
+  Object.freeze({id:'RD-32',variantId:'analytic-current-exposure',scenarioId:'F03-SHELTER-REPLAY',preset:Object.freeze({id:'analytic-current-exposure'}),create:createWetSurfaceExperiment}),
+  ...(['control','push-in','clip-corridor'] as const).map(variantId=>Object.freeze({id:'RD-15',variantId,scenarioId:'F05-CUTOUT-REPLAY',preset:Object.freeze({id:variantId}),create:createCameraOcclusionExperiment})),
 ]);
 
 export async function startControlPage(): Promise<void> {

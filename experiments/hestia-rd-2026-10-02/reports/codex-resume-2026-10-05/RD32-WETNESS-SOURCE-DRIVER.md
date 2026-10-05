@@ -1,0 +1,15 @@
+# RD32 source-bound wetness driver - working implementation
+
+The actual mounted driver uses RD14's material channel and RD31's particle/source-query module in the same Three host. Each original source quad has a receiver offset outward by q/4. A bounded direction/source cache preserves unknown coverage and exact owner transforms; values go into private material attributes. No geometry, collider, material IDs, source payloads, friction or mass change.
+
+Declared model `current-exposure-analytic`: reconstruct a bounded rain history under the CURRENT source/exposure; reset private moisture at the explicit active snapshot/reset tick. It is an approximation, not physical accumulated old-world wetness. The preset validates schema, model/source policy, rates and at most64 sorted events. The current rain amplitude must match that declared history. Unknown samples remain unqualified and never certify dry/protected physical truth.
+
+The simple per-owner mean candidate is REJECT: the same F03 shelter-shell owner contains both protected-zero and exposed-positive faces. One mean changes both known source responses. The chosen per-face source cache caps8192 samples/2million conservative region queries per refresh before output allocation/work; topology outside the validated original quad projection is explicitly UNSUPPORTED.
+
+Tests: `rd32-wetness-red-01.json` missing-module RED;5 original WET IDs pass in `rd32-wetness-green-02.json`. The added real material/rain mount found wet shader values surviving backward seek into pre-rain time (`rd32-real-shared-driver-red-02.json`:5/6). The common driver now zeroes existing attributes when history is empty. `rd32-real-shared-driver-green-03.json` passes40/40 original/adjacent/real-driver cases, including actual shader-buffer dry/wet reconstruction, source opening/reset and disposal.
+
+BUILD11/strict typecheck21 exit0. `rd32-browser-shared-native-01/report.json` passes4/4 with0 skipped/flaky in11.9s (2 MAT and2 WET tests). Native screenshots/videos show source-clipped rain with protected/exposed material responses, roof opening, drying, exact same-input wet/dry screenshot restoration, F06 shader views and F04 rotation/source epoch. Console shader/JS errors are checked. Water/rain-ring normal hook and normal debug view now share the same owned implementation, also reproduced on native F01 by MAT cases. These are Q0 functional diagnostics, not GPU/performance/art acceptance.
+
+Pending independent review, combined Wind/Detach/Occlusion route, quality/budget qualification and final seals. No full-product physics/save/cut claim. RD32 remains open; ART=PENDING_OWNER, PRODUCT_INTEGRATED=false.
+
+Review06's shared-payload gap was repaired at the material owner and exact mesh lookup here; legal multiple owners/meshes now produce unique surface/face IDs and separate values. Focused41/41 plus native reviewed run03's7/7 pass (including2 WET bodies), with earlier6/7 raw browser failure retained. Direct shader-view commands invalidate native presentation; timeline configuration remains input for the next explicit setFrame.

@@ -1,0 +1,768 @@
+{
+  "config": {
+    "argv": [
+      "C:\\IFI_SourceCode\\Utils\\npm-tmp\\opencode\\node-v22.23.2-win-x64\\node.exe",
+      "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "--config",
+      "reports/RD-13/phase2-16a5d29a/playwright.config.ts"
+    ],
+    "configFile": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\reports\\RD-13\\phase2-16a5d29a\\playwright.config.ts",
+    "rootDir": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-worktrees/Hestia-RD-RD13/experiments/hestia-rd-2026-10-02/tests/RD-13",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "source": "16a5d29a5cddea372abae139da618aa000a058be",
+      "leaseId": "rd13-native-16a5d29a-20261004-a",
+      "admissionSha256": "236b86ef1831498ad4b5072778d5ad9b8868bf61ca3a064bb73494beaa0761b7",
+      "functionalDiagnosticOnly": true,
+      "qualifiedGpuPerformance": "NOT_GRANTED",
+      "productIntegrated": false,
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-13/phase2-16a5d29a-20261004-a/pw-output",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "source": "16a5d29a5cddea372abae139da618aa000a058be",
+          "leaseId": "rd13-native-16a5d29a-20261004-a",
+          "admissionSha256": "236b86ef1831498ad4b5072778d5ad9b8868bf61ca3a064bb73494beaa0761b7",
+          "functionalDiagnosticOnly": true,
+          "qualifiedGpuPerformance": "NOT_GRANTED",
+          "productIntegrated": false,
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-worktrees/Hestia-RD-RD13/experiments/hestia-rd-2026-10-02/tests/RD-13",
+        "testIgnore": [],
+        "testMatch": [
+          "phase2-original-16a5d29a.spec.ts",
+          "phase2-supplement-16a5d29a.spec.ts"
+        ],
+        "timeout": 120000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-13/phase2-16a5d29a-20261004-a/native-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.1",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "phase2-original-16a5d29a.spec.ts",
+      "file": "phase2-original-16a5d29a.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "RAY01: unabhängiges CPU-DDA-Oracle für Randtreffer, negative Richtung, Nullkomponente, innen startenden Strahl und Unknown",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 6549,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#status')\nExpected substring: \u001b[32m\"\u001b[7mHost render submitt\u001b[27med\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[7mFAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is requir\u001b[27med\u001b[7m.\u001b[27m\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#status')\u001b[22m\n\u001b[2m    5 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">Disposed; no render loop owned by this entry. Fai…</p>\u001b[22m\n\u001b[2m      - unexpected value \"Disposed; no render loop owned by this entry. Failure history retained.\"\u001b[22m\n\u001b[2m    8 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">FAIL / hidden, no old version drawing: Error: Pro…</p>\u001b[22m\n\u001b[2m      - unexpected value \"FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#status')\nExpected substring: \u001b[32m\"\u001b[7mHost render submitt\u001b[27med\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[7mFAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is requir\u001b[27med\u001b[7m.\u001b[27m\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#status')\u001b[22m\n\u001b[2m    5 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">Disposed; no render loop owned by this entry. Fai…</p>\u001b[22m\n\u001b[2m      - unexpected value \"Disposed; no render loop owned by this entry. Failure history retained.\"\u001b[22m\n\u001b[2m    8 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">FAIL / hidden, no old version drawing: Error: Pro…</p>\u001b[22m\n\u001b[2m      - unexpected value \"FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.\"\u001b[22m\n\n    at ready (C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:5:41)\n    at C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:8:51",
+                    "location": {
+                      "file": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts",
+                      "column": 41,
+                      "line": 5
+                    },
+                    "snippet": "  3 | const entry='/src/experiments/voxel-rays/index.html';\n  4 | async function ready(page:Page) {\n> 5 |   await expect(page.locator('#status')).toContainText('Host render submitted');\n    |                                         ^\n  6 | }\n  7 | test('RAY01: unabhängiges CPU-DDA-Oracle für Randtreffer, negative Richtung, Nullkomponente, innen startenden Strahl und Unknown',async({page})=>{\n  8 |   await page.goto(`${entry}?testBridge=1`); await ready(page);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts",
+                        "column": 41,
+                        "line": 5
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#status')\nExpected substring: \u001b[32m\"\u001b[7mHost render submitt\u001b[27med\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[7mFAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is requir\u001b[27med\u001b[7m.\u001b[27m\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#status')\u001b[22m\n\u001b[2m    5 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">Disposed; no render loop owned by this entry. Fai…</p>\u001b[22m\n\u001b[2m      - unexpected value \"Disposed; no render loop owned by this entry. Failure history retained.\"\u001b[22m\n\u001b[2m    8 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">FAIL / hidden, no old version drawing: Error: Pro…</p>\u001b[22m\n\u001b[2m      - unexpected value \"FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.\"\u001b[22m\n\n\n  3 | const entry='/src/experiments/voxel-rays/index.html';\n  4 | async function ready(page:Page) {\n> 5 |   await expect(page.locator('#status')).toContainText('Host render submitted');\n    |                                         ^\n  6 | }\n  7 | test('RAY01: unabhängiges CPU-DDA-Oracle für Randtreffer, negative Richtung, Nullkomponente, innen startenden Strahl und Unknown',async({page})=>{\n  8 |   await page.goto(`${entry}?testBridge=1`); await ready(page);\n    at ready (C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:5:41)\n    at C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:8:51"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T17:50:13.522Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-13\\phase2-16a5d29a-20261004-a\\pw-output\\phase2-original-16a5d29a-R-44857-artenden-Strahl-und-Unknown\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-13\\phase2-16a5d29a-20261004-a\\pw-output\\phase2-original-16a5d29a-R-44857-artenden-Strahl-und-Unknown\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-13\\phase2-16a5d29a-20261004-a\\pw-output\\phase2-original-16a5d29a-R-44857-artenden-Strahl-und-Unknown\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts",
+                    "column": 41,
+                    "line": 5
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "602461a8e9c6ca5d922b-dada161e44d3df207d45",
+          "file": "native.spec.ts",
+          "line": 7,
+          "column": 1
+        },
+        {
+          "title": "RAY02: Position/Depth/Material/Normal nach Edit stimmt mit belegter Quelle; keine geglättete SDF-Oberfläche",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 11276,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#status')\nExpected substring: \u001b[32m\"\u001b[7mHost render submitt\u001b[27med\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[7mFAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is requir\u001b[27med\u001b[7m.\u001b[27m\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#status')\u001b[22m\n\u001b[2m    5 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">Disposed; no render loop owned by this entry. Fai…</p>\u001b[22m\n\u001b[2m      - unexpected value \"Disposed; no render loop owned by this entry. Failure history retained.\"\u001b[22m\n\u001b[2m    8 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">FAIL / hidden, no old version drawing: Error: Pro…</p>\u001b[22m\n\u001b[2m      - unexpected value \"FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#status')\nExpected substring: \u001b[32m\"\u001b[7mHost render submitt\u001b[27med\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[7mFAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is requir\u001b[27med\u001b[7m.\u001b[27m\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#status')\u001b[22m\n\u001b[2m    5 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">Disposed; no render loop owned by this entry. Fai…</p>\u001b[22m\n\u001b[2m      - unexpected value \"Disposed; no render loop owned by this entry. Failure history retained.\"\u001b[22m\n\u001b[2m    8 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">FAIL / hidden, no old version drawing: Error: Pro…</p>\u001b[22m\n\u001b[2m      - unexpected value \"FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.\"\u001b[22m\n\n    at ready (C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:5:41)\n    at C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:15:51",
+                    "location": {
+                      "file": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts",
+                      "column": 41,
+                      "line": 5
+                    },
+                    "snippet": "  3 | const entry='/src/experiments/voxel-rays/index.html';\n  4 | async function ready(page:Page) {\n> 5 |   await expect(page.locator('#status')).toContainText('Host render submitted');\n    |                                         ^\n  6 | }\n  7 | test('RAY01: unabhängiges CPU-DDA-Oracle für Randtreffer, negative Richtung, Nullkomponente, innen startenden Strahl und Unknown',async({page})=>{\n  8 |   await page.goto(`${entry}?testBridge=1`); await ready(page);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts",
+                        "column": 41,
+                        "line": 5
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#status')\nExpected substring: \u001b[32m\"\u001b[7mHost render submitt\u001b[27med\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[7mFAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is requir\u001b[27med\u001b[7m.\u001b[27m\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#status')\u001b[22m\n\u001b[2m    5 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">Disposed; no render loop owned by this entry. Fai…</p>\u001b[22m\n\u001b[2m      - unexpected value \"Disposed; no render loop owned by this entry. Failure history retained.\"\u001b[22m\n\u001b[2m    8 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">FAIL / hidden, no old version drawing: Error: Pro…</p>\u001b[22m\n\u001b[2m      - unexpected value \"FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.\"\u001b[22m\n\n\n  3 | const entry='/src/experiments/voxel-rays/index.html';\n  4 | async function ready(page:Page) {\n> 5 |   await expect(page.locator('#status')).toContainText('Host render submitted');\n    |                                         ^\n  6 | }\n  7 | test('RAY01: unabhängiges CPU-DDA-Oracle für Randtreffer, negative Richtung, Nullkomponente, innen startenden Strahl und Unknown',async({page})=>{\n  8 |   await page.goto(`${entry}?testBridge=1`); await ready(page);\n    at ready (C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:5:41)\n    at C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:15:51"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T17:50:21.617Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-13\\phase2-16a5d29a-20261004-a\\pw-output\\phase2-original-16a5d29a-R-0450e-e-geglättete-SDF-Oberfläche\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-13\\phase2-16a5d29a-20261004-a\\pw-output\\phase2-original-16a5d29a-R-0450e-e-geglättete-SDF-Oberfläche\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-13\\phase2-16a5d29a-20261004-a\\pw-output\\phase2-original-16a5d29a-R-0450e-e-geglättete-SDF-Oberfläche\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts",
+                    "column": 41,
+                    "line": 5
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "602461a8e9c6ca5d922b-d6644af111ad5881adf2",
+          "file": "native.spec.ts",
+          "line": 14,
+          "column": 1
+        },
+        {
+          "title": "RAY03: Transform eines lokalen Volumens ändert keine Source-ID; Kamera im Volumen und Überhang korrekt",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 6045,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#status')\nExpected substring: \u001b[32m\"\u001b[7mHost render submitt\u001b[27med\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[7mFAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is requir\u001b[27med\u001b[7m.\u001b[27m\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#status')\u001b[22m\n\u001b[2m    4 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">Disposed; no render loop owned by this entry. Fai…</p>\u001b[22m\n\u001b[2m      - unexpected value \"Disposed; no render loop owned by this entry. Failure history retained.\"\u001b[22m\n\u001b[2m    9 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">FAIL / hidden, no old version drawing: Error: Pro…</p>\u001b[22m\n\u001b[2m      - unexpected value \"FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#status')\nExpected substring: \u001b[32m\"\u001b[7mHost render submitt\u001b[27med\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[7mFAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is requir\u001b[27med\u001b[7m.\u001b[27m\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#status')\u001b[22m\n\u001b[2m    4 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">Disposed; no render loop owned by this entry. Fai…</p>\u001b[22m\n\u001b[2m      - unexpected value \"Disposed; no render loop owned by this entry. Failure history retained.\"\u001b[22m\n\u001b[2m    9 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">FAIL / hidden, no old version drawing: Error: Pro…</p>\u001b[22m\n\u001b[2m      - unexpected value \"FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.\"\u001b[22m\n\n    at ready (C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:5:41)\n    at C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:23:51",
+                    "location": {
+                      "file": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts",
+                      "column": 41,
+                      "line": 5
+                    },
+                    "snippet": "  3 | const entry='/src/experiments/voxel-rays/index.html';\n  4 | async function ready(page:Page) {\n> 5 |   await expect(page.locator('#status')).toContainText('Host render submitted');\n    |                                         ^\n  6 | }\n  7 | test('RAY01: unabhängiges CPU-DDA-Oracle für Randtreffer, negative Richtung, Nullkomponente, innen startenden Strahl und Unknown',async({page})=>{\n  8 |   await page.goto(`${entry}?testBridge=1`); await ready(page);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts",
+                        "column": 41,
+                        "line": 5
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#status')\nExpected substring: \u001b[32m\"\u001b[7mHost render submitt\u001b[27med\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[7mFAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is requir\u001b[27med\u001b[7m.\u001b[27m\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#status')\u001b[22m\n\u001b[2m    4 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">Disposed; no render loop owned by this entry. Fai…</p>\u001b[22m\n\u001b[2m      - unexpected value \"Disposed; no render loop owned by this entry. Failure history retained.\"\u001b[22m\n\u001b[2m    9 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">FAIL / hidden, no old version drawing: Error: Pro…</p>\u001b[22m\n\u001b[2m      - unexpected value \"FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.\"\u001b[22m\n\n\n  3 | const entry='/src/experiments/voxel-rays/index.html';\n  4 | async function ready(page:Page) {\n> 5 |   await expect(page.locator('#status')).toContainText('Host render submitted');\n    |                                         ^\n  6 | }\n  7 | test('RAY01: unabhängiges CPU-DDA-Oracle für Randtreffer, negative Richtung, Nullkomponente, innen startenden Strahl und Unknown',async({page})=>{\n  8 |   await page.goto(`${entry}?testBridge=1`); await ready(page);\n    at ready (C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:5:41)\n    at C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:23:51"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T17:50:34.994Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-13\\phase2-16a5d29a-20261004-a\\pw-output\\phase2-original-16a5d29a-R-de2b6-olumen-und-Überhang-korrekt\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-13\\phase2-16a5d29a-20261004-a\\pw-output\\phase2-original-16a5d29a-R-de2b6-olumen-und-Überhang-korrekt\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-13\\phase2-16a5d29a-20261004-a\\pw-output\\phase2-original-16a5d29a-R-de2b6-olumen-und-Überhang-korrekt\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts",
+                    "column": 41,
+                    "line": 5
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "602461a8e9c6ca5d922b-01f90e4166f6ab9fe7b8",
+          "file": "native.spec.ts",
+          "line": 22,
+          "column": 1
+        },
+        {
+          "title": "RAY04: GPU-Formatlimit oder Uploadüberlauf scheitert vor Allokation; alte Volumenversion wird nicht weitergezeichnet",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 6421,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#status')\nExpected substring: \u001b[32m\"\u001b[7mHost render submitt\u001b[27med\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[7mFAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is requir\u001b[27med\u001b[7m.\u001b[27m\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#status')\u001b[22m\n\u001b[2m    5 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">Disposed; no render loop owned by this entry. Fai…</p>\u001b[22m\n\u001b[2m      - unexpected value \"Disposed; no render loop owned by this entry. Failure history retained.\"\u001b[22m\n\u001b[2m    8 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">FAIL / hidden, no old version drawing: Error: Pro…</p>\u001b[22m\n\u001b[2m      - unexpected value \"FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#status')\nExpected substring: \u001b[32m\"\u001b[7mHost render submitt\u001b[27med\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[7mFAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is requir\u001b[27med\u001b[7m.\u001b[27m\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#status')\u001b[22m\n\u001b[2m    5 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">Disposed; no render loop owned by this entry. Fai…</p>\u001b[22m\n\u001b[2m      - unexpected value \"Disposed; no render loop owned by this entry. Failure history retained.\"\u001b[22m\n\u001b[2m    8 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">FAIL / hidden, no old version drawing: Error: Pro…</p>\u001b[22m\n\u001b[2m      - unexpected value \"FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.\"\u001b[22m\n\n    at ready (C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:5:41)\n    at C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:32:51",
+                    "location": {
+                      "file": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts",
+                      "column": 41,
+                      "line": 5
+                    },
+                    "snippet": "  3 | const entry='/src/experiments/voxel-rays/index.html';\n  4 | async function ready(page:Page) {\n> 5 |   await expect(page.locator('#status')).toContainText('Host render submitted');\n    |                                         ^\n  6 | }\n  7 | test('RAY01: unabhängiges CPU-DDA-Oracle für Randtreffer, negative Richtung, Nullkomponente, innen startenden Strahl und Unknown',async({page})=>{\n  8 |   await page.goto(`${entry}?testBridge=1`); await ready(page);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts",
+                        "column": 41,
+                        "line": 5
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#status')\nExpected substring: \u001b[32m\"\u001b[7mHost render submitt\u001b[27med\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[7mFAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is requir\u001b[27med\u001b[7m.\u001b[27m\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#status')\u001b[22m\n\u001b[2m    5 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">Disposed; no render loop owned by this entry. Fai…</p>\u001b[22m\n\u001b[2m      - unexpected value \"Disposed; no render loop owned by this entry. Failure history retained.\"\u001b[22m\n\u001b[2m    8 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">FAIL / hidden, no old version drawing: Error: Pro…</p>\u001b[22m\n\u001b[2m      - unexpected value \"FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.\"\u001b[22m\n\n\n  3 | const entry='/src/experiments/voxel-rays/index.html';\n  4 | async function ready(page:Page) {\n> 5 |   await expect(page.locator('#status')).toContainText('Host render submitted');\n    |                                         ^\n  6 | }\n  7 | test('RAY01: unabhängiges CPU-DDA-Oracle für Randtreffer, negative Richtung, Nullkomponente, innen startenden Strahl und Unknown',async({page})=>{\n  8 |   await page.goto(`${entry}?testBridge=1`); await ready(page);\n    at ready (C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:5:41)\n    at C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:32:51"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T17:50:41.837Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-13\\phase2-16a5d29a-20261004-a\\pw-output\\phase2-original-16a5d29a-R-8c8d8-wird-nicht-weitergezeichnet\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-13\\phase2-16a5d29a-20261004-a\\pw-output\\phase2-original-16a5d29a-R-8c8d8-wird-nicht-weitergezeichnet\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-13\\phase2-16a5d29a-20261004-a\\pw-output\\phase2-original-16a5d29a-R-8c8d8-wird-nicht-weitergezeichnet\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts",
+                    "column": 41,
+                    "line": 5
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "602461a8e9c6ca5d922b-dda7db0095ea54f4b980",
+          "file": "native.spec.ts",
+          "line": 31,
+          "column": 1
+        },
+        {
+          "title": "normal controls, real greedy, source revisions, disposal, and no TestBridge on normal entry",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 5823,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#status')\nExpected substring: \u001b[32m\"\u001b[7mHost render submitt\u001b[27med\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[7mFAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is requir\u001b[27med\u001b[7m.\u001b[27m\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#status')\u001b[22m\n\u001b[2m    4 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">Disposed; no render loop owned by this entry. Fai…</p>\u001b[22m\n\u001b[2m      - unexpected value \"Disposed; no render loop owned by this entry. Failure history retained.\"\u001b[22m\n\u001b[2m    9 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">FAIL / hidden, no old version drawing: Error: Pro…</p>\u001b[22m\n\u001b[2m      - unexpected value \"FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#status')\nExpected substring: \u001b[32m\"\u001b[7mHost render submitt\u001b[27med\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[7mFAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is requir\u001b[27med\u001b[7m.\u001b[27m\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#status')\u001b[22m\n\u001b[2m    4 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">Disposed; no render loop owned by this entry. Fai…</p>\u001b[22m\n\u001b[2m      - unexpected value \"Disposed; no render loop owned by this entry. Failure history retained.\"\u001b[22m\n\u001b[2m    9 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">FAIL / hidden, no old version drawing: Error: Pro…</p>\u001b[22m\n\u001b[2m      - unexpected value \"FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.\"\u001b[22m\n\n    at ready (C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:5:41)\n    at C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:40:33",
+                    "location": {
+                      "file": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts",
+                      "column": 41,
+                      "line": 5
+                    },
+                    "snippet": "  3 | const entry='/src/experiments/voxel-rays/index.html';\n  4 | async function ready(page:Page) {\n> 5 |   await expect(page.locator('#status')).toContainText('Host render submitted');\n    |                                         ^\n  6 | }\n  7 | test('RAY01: unabhängiges CPU-DDA-Oracle für Randtreffer, negative Richtung, Nullkomponente, innen startenden Strahl und Unknown',async({page})=>{\n  8 |   await page.goto(`${entry}?testBridge=1`); await ready(page);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts",
+                        "column": 41,
+                        "line": 5
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#status')\nExpected substring: \u001b[32m\"\u001b[7mHost render submitt\u001b[27med\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[7mFAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is requir\u001b[27med\u001b[7m.\u001b[27m\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#status')\u001b[22m\n\u001b[2m    4 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">Disposed; no render loop owned by this entry. Fai…</p>\u001b[22m\n\u001b[2m      - unexpected value \"Disposed; no render loop owned by this entry. Failure history retained.\"\u001b[22m\n\u001b[2m    9 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">FAIL / hidden, no old version drawing: Error: Pro…</p>\u001b[22m\n\u001b[2m      - unexpected value \"FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.\"\u001b[22m\n\n\n  3 | const entry='/src/experiments/voxel-rays/index.html';\n  4 | async function ready(page:Page) {\n> 5 |   await expect(page.locator('#status')).toContainText('Host render submitted');\n    |                                         ^\n  6 | }\n  7 | test('RAY01: unabhängiges CPU-DDA-Oracle für Randtreffer, negative Richtung, Nullkomponente, innen startenden Strahl und Unknown',async({page})=>{\n  8 |   await page.goto(`${entry}?testBridge=1`); await ready(page);\n    at ready (C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:5:41)\n    at C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:40:33"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T17:50:49.320Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-13\\phase2-16a5d29a-20261004-a\\pw-output\\phase2-original-16a5d29a-n-79997--TestBridge-on-normal-entry\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-13\\phase2-16a5d29a-20261004-a\\pw-output\\phase2-original-16a5d29a-n-79997--TestBridge-on-normal-entry\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-13\\phase2-16a5d29a-20261004-a\\pw-output\\phase2-original-16a5d29a-n-79997--TestBridge-on-normal-entry\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts",
+                    "column": 41,
+                    "line": 5
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "602461a8e9c6ca5d922b-e4bb4e44b76a9aedc3b3",
+          "file": "native.spec.ts",
+          "line": 39,
+          "column": 1
+        },
+        {
+          "title": "selected F01 solid attachment depth / proxy fault under original translucent-water presentation; not an image-parity gate",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 5897,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#status')\nExpected substring: \u001b[32m\"\u001b[7mHost render submitt\u001b[27med\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[7mFAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is requir\u001b[27med\u001b[7m.\u001b[27m\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#status')\u001b[22m\n\u001b[2m    4 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">Disposed; no render loop owned by this entry. Fai…</p>\u001b[22m\n\u001b[2m      - unexpected value \"Disposed; no render loop owned by this entry. Failure history retained.\"\u001b[22m\n\u001b[2m    10 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">FAIL / hidden, no old version drawing: Error: Pro…</p>\u001b[22m\n\u001b[2m       - unexpected value \"FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#status')\nExpected substring: \u001b[32m\"\u001b[7mHost render submitt\u001b[27med\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[7mFAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is requir\u001b[27med\u001b[7m.\u001b[27m\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#status')\u001b[22m\n\u001b[2m    4 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">Disposed; no render loop owned by this entry. Fai…</p>\u001b[22m\n\u001b[2m      - unexpected value \"Disposed; no render loop owned by this entry. Failure history retained.\"\u001b[22m\n\u001b[2m    10 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">FAIL / hidden, no old version drawing: Error: Pro…</p>\u001b[22m\n\u001b[2m       - unexpected value \"FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.\"\u001b[22m\n\n    at ready (C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:5:41)\n    at C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:48:50",
+                    "location": {
+                      "file": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts",
+                      "column": 41,
+                      "line": 5
+                    },
+                    "snippet": "  3 | const entry='/src/experiments/voxel-rays/index.html';\n  4 | async function ready(page:Page) {\n> 5 |   await expect(page.locator('#status')).toContainText('Host render submitted');\n    |                                         ^\n  6 | }\n  7 | test('RAY01: unabhängiges CPU-DDA-Oracle für Randtreffer, negative Richtung, Nullkomponente, innen startenden Strahl und Unknown',async({page})=>{\n  8 |   await page.goto(`${entry}?testBridge=1`); await ready(page);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts",
+                        "column": 41,
+                        "line": 5
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#status')\nExpected substring: \u001b[32m\"\u001b[7mHost render submitt\u001b[27med\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[7mFAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is requir\u001b[27med\u001b[7m.\u001b[27m\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#status')\u001b[22m\n\u001b[2m    4 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">Disposed; no render loop owned by this entry. Fai…</p>\u001b[22m\n\u001b[2m      - unexpected value \"Disposed; no render loop owned by this entry. Failure history retained.\"\u001b[22m\n\u001b[2m    10 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">FAIL / hidden, no old version drawing: Error: Pro…</p>\u001b[22m\n\u001b[2m       - unexpected value \"FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.\"\u001b[22m\n\n\n  3 | const entry='/src/experiments/voxel-rays/index.html';\n  4 | async function ready(page:Page) {\n> 5 |   await expect(page.locator('#status')).toContainText('Host render submitted');\n    |                                         ^\n  6 | }\n  7 | test('RAY01: unabhängiges CPU-DDA-Oracle für Randtreffer, negative Richtung, Nullkomponente, innen startenden Strahl und Unknown',async({page})=>{\n  8 |   await page.goto(`${entry}?testBridge=1`); await ready(page);\n    at ready (C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:5:41)\n    at C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:48:50"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T17:50:56.317Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-13\\phase2-16a5d29a-20261004-a\\pw-output\\phase2-original-16a5d29a-s-24764-on-not-an-image-parity-gate\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-13\\phase2-16a5d29a-20261004-a\\pw-output\\phase2-original-16a5d29a-s-24764-on-not-an-image-parity-gate\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-13\\phase2-16a5d29a-20261004-a\\pw-output\\phase2-original-16a5d29a-s-24764-on-not-an-image-parity-gate\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts",
+                    "column": 41,
+                    "line": 5
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "602461a8e9c6ca5d922b-f1ce1fef534bae4ad5fd",
+          "file": "native.spec.ts",
+          "line": 47,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "phase2-supplement-16a5d29a.spec.ts",
+      "file": "phase2-supplement-16a5d29a.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "supplement v1: original geometric probes without substituting their authored ready gate",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 6,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 1833,
+                  "error": {
+                    "message": "Error: {\"id\":\"entry-first-cell\",\"result\":{\"status\":\"FAIL\",\"reason\":\"Error: Native shader compile failed: ERROR: 0:51: 'sample' : Illegal use of reserved word\\nERROR: 0:51: 'sample' : syntax error\\n\\u0000\",\"kernelSha256\":\"4998595025abd4f77a989bd7144b1dcb1c1422cbb0a2d1ffb0ddbd1c14717600\",\"shaderSha256\":\"4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb\",\"productIntegrated\":false,\"source\":{\"ownerId\":\"rd13-synthetic-test\",\"sourceNamespace\":\"rd13-synthetic-not-fixture\",\"sourceRevision\":0,\"regionId\":\"synthetic-cells\",\"fixtureDigest\":\"0000000000000000000000000000000000000000000000000000000000000000\",\"recipeSha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"sourceIds\":[],\"sourceIdMeaning\":{},\"originalDimensions\":[4,1,1],\"originalOriginMeters\":[0,0,0]},\"sourceSlotSha256\":\"2222222222222222222222222222222222222222222222222222222222222222\",\"inputPackedSha256\":\"630f7b37b2d17dba0c8815b91beff8b90bab42278003187c7f28b68e6dac3655\",\"fault\":\"none\",\"nativeGpuBytes\":{\"status\":\"unsupported\",\"reason\":\"Even context-only acquisition consumes unknown native VRAM\"},\"expected\":{\"status\":\"hit\",\"t\":1,\"point\":[0,0.5,0.5],\"normal\":[-1,0,0],\"slot\":1,\"materialId\":\"synthetic-dry\",\"cell\":[0,0,0],\"originalCell\":[0,0,0],\"sourceIds\":[],\"unknownTraversed\":false,\"outsideUnknown\":true},\"mismatches\":[],\"projectionAllocations\":10,\"cleanup\":{\"textures\":6,\"programs\":1,\"shaders\":2,\"framebuffers\":1,\"vaos\":0},\"device\":{\"renderer\":\"ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)\",\"vendor\":\"Google Inc. (Intel)\",\"version\":\"WebGL 2.0 (OpenGL ES 3.0 Chromium)\",\"shadingLanguageVersion\":\"WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)\",\"classification\":\"hardware-candidate\"},\"uploadedPackedSha256\":\"630f7b37b2d17dba0c8815b91beff8b90bab42278003187c7f28b68e6dac3655\"}}\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"PASS\"\u001b[39m\nReceived: \u001b[31m\"FAIL\"\u001b[39m",
+                    "stack": "Error: {\"id\":\"entry-first-cell\",\"result\":{\"status\":\"FAIL\",\"reason\":\"Error: Native shader compile failed: ERROR: 0:51: 'sample' : Illegal use of reserved word\\nERROR: 0:51: 'sample' : syntax error\\n\\u0000\",\"kernelSha256\":\"4998595025abd4f77a989bd7144b1dcb1c1422cbb0a2d1ffb0ddbd1c14717600\",\"shaderSha256\":\"4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb\",\"productIntegrated\":false,\"source\":{\"ownerId\":\"rd13-synthetic-test\",\"sourceNamespace\":\"rd13-synthetic-not-fixture\",\"sourceRevision\":0,\"regionId\":\"synthetic-cells\",\"fixtureDigest\":\"0000000000000000000000000000000000000000000000000000000000000000\",\"recipeSha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"sourceIds\":[],\"sourceIdMeaning\":{},\"originalDimensions\":[4,1,1],\"originalOriginMeters\":[0,0,0]},\"sourceSlotSha256\":\"2222222222222222222222222222222222222222222222222222222222222222\",\"inputPackedSha256\":\"630f7b37b2d17dba0c8815b91beff8b90bab42278003187c7f28b68e6dac3655\",\"fault\":\"none\",\"nativeGpuBytes\":{\"status\":\"unsupported\",\"reason\":\"Even context-only acquisition consumes unknown native VRAM\"},\"expected\":{\"status\":\"hit\",\"t\":1,\"point\":[0,0.5,0.5],\"normal\":[-1,0,0],\"slot\":1,\"materialId\":\"synthetic-dry\",\"cell\":[0,0,0],\"originalCell\":[0,0,0],\"sourceIds\":[],\"unknownTraversed\":false,\"outsideUnknown\":true},\"mismatches\":[],\"projectionAllocations\":10,\"cleanup\":{\"textures\":6,\"programs\":1,\"shaders\":2,\"framebuffers\":1,\"vaos\":0},\"device\":{\"renderer\":\"ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)\",\"vendor\":\"Google Inc. (Intel)\",\"version\":\"WebGL 2.0 (OpenGL ES 3.0 Chromium)\",\"shadingLanguageVersion\":\"WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)\",\"classification\":\"hardware-candidate\"},\"uploadedPackedSha256\":\"630f7b37b2d17dba0c8815b91beff8b90bab42278003187c7f28b68e6dac3655\"}}\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"PASS\"\u001b[39m\nReceived: \u001b[31m\"FAIL\"\u001b[39m\n    at C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\phase2-supplement-16a5d29a.spec.ts:14:138",
+                    "location": {
+                      "file": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\phase2-supplement-16a5d29a.spec.ts",
+                      "column": 138,
+                      "line": 14
+                    },
+                    "snippet": "  12 |  try {result=await page.evaluate(async()=>await (window as any).TestBridge.probeCases());}catch(e){result={status:'FAIL',reason:String(e)};}\n  13 |  record('diagnosis/geometric-v1.json',{source,productIntegrated:false,admission,result,originalReadyGateUnchanged:true,originalBodiesStatus:'SEPARATE_ORIGINAL_REPORT'});\n> 14 |  expect(result.results,JSON.stringify(result)).toHaveLength(12);for(const r of result.results){expect(r.result.status,JSON.stringify(r)).toBe('PASS');}for(const r of result.faults){expect(r.status,JSON.stringify(r)).toBe('FAIL');}\n     |                                                                                                                                          ^\n  15 | });\n  16 | test('supplement v1: native visible-mode P2 witness with actual float MRT and resolved attachment depth',async({page})=>{\n  17 |  await page.goto(entry+'?testBridge=1');await settle(page);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\phase2-supplement-16a5d29a.spec.ts",
+                        "column": 138,
+                        "line": 14
+                      },
+                      "message": "Error: {\"id\":\"entry-first-cell\",\"result\":{\"status\":\"FAIL\",\"reason\":\"Error: Native shader compile failed: ERROR: 0:51: 'sample' : Illegal use of reserved word\\nERROR: 0:51: 'sample' : syntax error\\n\\u0000\",\"kernelSha256\":\"4998595025abd4f77a989bd7144b1dcb1c1422cbb0a2d1ffb0ddbd1c14717600\",\"shaderSha256\":\"4abe5b154bde3712f4ed8d176f0b92b27d3e8f993acc7f21a2edaa40ebb792fb\",\"productIntegrated\":false,\"source\":{\"ownerId\":\"rd13-synthetic-test\",\"sourceNamespace\":\"rd13-synthetic-not-fixture\",\"sourceRevision\":0,\"regionId\":\"synthetic-cells\",\"fixtureDigest\":\"0000000000000000000000000000000000000000000000000000000000000000\",\"recipeSha256\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"sourceIds\":[],\"sourceIdMeaning\":{},\"originalDimensions\":[4,1,1],\"originalOriginMeters\":[0,0,0]},\"sourceSlotSha256\":\"2222222222222222222222222222222222222222222222222222222222222222\",\"inputPackedSha256\":\"630f7b37b2d17dba0c8815b91beff8b90bab42278003187c7f28b68e6dac3655\",\"fault\":\"none\",\"nativeGpuBytes\":{\"status\":\"unsupported\",\"reason\":\"Even context-only acquisition consumes unknown native VRAM\"},\"expected\":{\"status\":\"hit\",\"t\":1,\"point\":[0,0.5,0.5],\"normal\":[-1,0,0],\"slot\":1,\"materialId\":\"synthetic-dry\",\"cell\":[0,0,0],\"originalCell\":[0,0,0],\"sourceIds\":[],\"unknownTraversed\":false,\"outsideUnknown\":true},\"mismatches\":[],\"projectionAllocations\":10,\"cleanup\":{\"textures\":6,\"programs\":1,\"shaders\":2,\"framebuffers\":1,\"vaos\":0},\"device\":{\"renderer\":\"ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)\",\"vendor\":\"Google Inc. (Intel)\",\"version\":\"WebGL 2.0 (OpenGL ES 3.0 Chromium)\",\"shadingLanguageVersion\":\"WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)\",\"classification\":\"hardware-candidate\"},\"uploadedPackedSha256\":\"630f7b37b2d17dba0c8815b91beff8b90bab42278003187c7f28b68e6dac3655\"}}\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"PASS\"\u001b[39m\nReceived: \u001b[31m\"FAIL\"\u001b[39m\n\n  12 |  try {result=await page.evaluate(async()=>await (window as any).TestBridge.probeCases());}catch(e){result={status:'FAIL',reason:String(e)};}\n  13 |  record('diagnosis/geometric-v1.json',{source,productIntegrated:false,admission,result,originalReadyGateUnchanged:true,originalBodiesStatus:'SEPARATE_ORIGINAL_REPORT'});\n> 14 |  expect(result.results,JSON.stringify(result)).toHaveLength(12);for(const r of result.results){expect(r.result.status,JSON.stringify(r)).toBe('PASS');}for(const r of result.faults){expect(r.status,JSON.stringify(r)).toBe('FAIL');}\n     |                                                                                                                                          ^\n  15 | });\n  16 | test('supplement v1: native visible-mode P2 witness with actual float MRT and resolved attachment depth',async({page})=>{\n  17 |  await page.goto(entry+'?testBridge=1');await settle(page);\n    at C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\phase2-supplement-16a5d29a.spec.ts:14:138"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T17:51:04.064Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-13\\phase2-16a5d29a-20261004-a\\pw-output\\phase2-supplement-16a5d29a-ecfbb-g-their-authored-ready-gate\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-13\\phase2-16a5d29a-20261004-a\\pw-output\\phase2-supplement-16a5d29a-ecfbb-g-their-authored-ready-gate\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-13\\phase2-16a5d29a-20261004-a\\pw-output\\phase2-supplement-16a5d29a-ecfbb-g-their-authored-ready-gate\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\phase2-supplement-16a5d29a.spec.ts",
+                    "column": 138,
+                    "line": 14
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "f92d190c9fcb38209a65-0479a647062decd0715d",
+          "file": "phase2-supplement-16a5d29a.spec.ts",
+          "line": 10,
+          "column": 1
+        },
+        {
+          "title": "supplement v1: native visible-mode P2 witness with actual float MRT and resolved attachment depth",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 7,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 1211,
+                  "error": {
+                    "message": "Error: {\"status\":\"FAIL\",\"reason\":\"Error: Native shader compile AFTER allocation: ERROR: 0:48: 'sample' : Illegal use of reserved word\\nERROR: 0:48: 'sample' : syntax error\\n\\u0000\",\"fragment\":\"#version 300 es\\nprecision highp float; precision highp int;\\nlayout(location=0) out vec4 positionT; layout(location=1) out vec4 normalSlot;\\nlayout(location=2) out vec4 cellStatus; layout(location=3) out vec4 uncertainty;\\nuniform mat4 projectionView; uniform int visibleMode; uniform int fault;\\n\\nuniform highp usampler3D voxelData;\\nuniform ivec3 gridSize;\\nuniform int slotDoubleSided[8];\\nfloat projectionDepth(vec3 worldHit,mat4 projectionView) { vec4 clip=projectionView*vec4(worldHit,1.0); return clip.z/clip.w*0.5+0.5; }\\nstruct VoxelHit { bool hit; bool unknown; bool traversalFault; float t; ivec3 cell; int slot; vec3 normal; };\\nuvec4 sourceCell(ivec3 c) {\\n  if (any(lessThan(c,ivec3(0))) || any(greaterThanEqual(c,gridSize))) { return uvec4(0); }\\n  return texelFetch(voxelData,c,0);\\n}\\nvec3 axisNormal(int a,float signValue) { vec3 n=vec3(0); n[a]=signValue; return n; }\\nVoxelHit traceVoxels(vec3 o,vec3 gridDirection,bool selectVisible) {\\n  VoxelHit h; h.hit=false; h.unknown=false; h.traversalFault=false; h.t=0.0; h.cell=ivec3(-1); h.slot=0; h.normal=vec3(0);\\n  float entry=-1e30; float leave=1e30; int entryAxis=0;\\n  for (int a=0;a<3;a++) {\\n    if (gridDirection[a]==0.0) {\\n      if (o[a]<0.0 || o[a]>=float(gridSize[a])) { return h; }\\n    } else {\\n      float t0=(0.0-o[a])/gridDirection[a]; float t1=(float(gridSize[a])-o[a])/gridDirection[a];\\n      float nearT=min(t0,t1); float farT=max(t0,t1);\\n      if (nearT>entry) { entry=nearT; entryAxis=a; }\\n      leave=min(leave,farT);\\n    }\\n  }\\n  float t=max(0.0,entry); if (leave<=t) { return h; }\\n  vec3 p=o+t*gridDirection; ivec3 cell=ivec3(floor(p)); ivec3 stepDir=ivec3(sign(gridDirection));\\n  for (int a=0;a<3;a++) {\\n    if (gridDirection[a]<0.0 && p[a]==floor(p[a])) { cell[a]-=1; }\\n  }\\n  // Only a mathematically proved BOX ENTRY permits a roundoff clamp.\\n  if (entry>=0.0) { cell=clamp(cell,ivec3(0),gridSize-ivec3(1)); }\\n  if (any(lessThan(cell,ivec3(0))) || any(greaterThanEqual(cell,gridSize))) { return h; }\\n  vec3 crossing=vec3(1e30);\\n  for (int a=0;a<3;a++) {\\n    if (gridDirection[a]!=0.0) { crossing[a]=(float(cell[a]+(stepDir[a]>0?1:0))-o[a])/gridDirection[a]; }\\n  }\\n  bool insideRun=entry<0.0 && sourceCell(cell).r!=0u; ivec3 previous=cell; int previousSlot=int(sourceCell(cell).b);\\n  vec3 face=axisNormal(entryAxis,-float(stepDir[entryAxis]));\\n  // First valid cell tested BEFORE any step. A ray crosses at most sum(dimensions) planes.\\n  int admittedSteps=gridSize.x+gridSize.y+gridSize.z+1;\\n  for (int iteration=0;iteration<193;iteration++) {\\n    if (iteration>=admittedSteps) { h.traversalFault=true; return h; }\\n    uvec4 sample=sourceCell(cell); h.unknown=h.unknown || sample.g==0u;\\n    bool solid=sample.r!=0u;\\n    if (!insideRun && solid) { h.hit=true; h.t=t; h.cell=cell; h.slot=int(sample.b); h.normal=face; return h; }\\n    if (insideRun && !solid) {\\n      if (!selectVisible || slotDoubleSided[previousSlot]!=0) { h.hit=true; h.t=t; h.cell=previous; h.slot=previousSlot; h.normal=-face; return h; }\\n      // Rejected back exit: keep this empty interval, Unknown, world t and ONE traversal budget.\\n      insideRun=false;\\n    }\\n    if (solid) { previous=cell; previousSlot=int(sample.b); }\\n    float nextT=min(crossing.x,min(crossing.y,crossing.z));\\n    if (nextT<=t) { h.traversalFault=true; return h; }\\n    bvec3 tied=equal(crossing,vec3(nextT)); int a=tied.x?0:(tied.y?1:2); face=axisNormal(a,-float(stepDir[a]));\\n    if (nextT>=leave) {\\n      if (insideRun && (!selectVisible || slotDoubleSided[previousSlot]!=0)) { h.hit=true; h.t=leave; h.cell=previous; h.slot=previousSlot; h.normal=-face; }\\n      return h;\\n    }\\n    // ALL tied axes advance; no zero-length intermediate cells are ever sampled.\\n    for (int j=0;j<3;j++) {\\n      if (tied[j]) { cell[j]+=stepDir[j]; crossing[j]=(float(cell[j]+(stepDir[j]>0?1:0))-o[j])/gridDirection[j]; }\\n    }\\n    t=nextT;\\n  }\\n  h.traversalFault=true; return h;\\n}\\n// Geometric first-exit semantics are unchanged; only visible projection filters exits during traversal.\\nVoxelHit traceVoxels(vec3 o,vec3 gridDirection) { return traceVoxels(o,gridDirection,false); }\\nVoxelHit traceVisibleVoxels(vec3 o,vec3 gridDirection) { return traceVoxels(o,gridDirection,true); }\\n\\nvoid main(){\\n vec3 o=vec3(.5);vec3 d=vec3(1,0,0);\\n VoxelHit h=visibleMode==1?traceVisibleVoxels(o,d):traceVoxels(o,d);\\n if(fault==3){h.hit=false;}if(fault==4){h.unknown=false;}\\n positionT=vec4(0);normalSlot=vec4(0);cellStatus=vec4(-1,-1,-1,h.traversalFault?-1.0:0.0);\\n uncertainty=vec4(h.unknown?1.0:0.0,1.0,0,1);gl_FragDepth=fault==5?0.0:1.0;\\n if(h.hit){vec3 p=o+h.t*d;positionT=vec4(p,h.t);normalSlot=vec4(fault==2?-h.normal:h.normal,float(fault==1?2:h.slot));\\n cellStatus=vec4(vec3(h.cell),1);gl_FragDepth=fault==5?0.0:projectionDepth(p,projectionView);}\\n}\",\"vertex\":\"#version 300 es\\nvoid main(){vec2 p=gl_VertexID==0?vec2(-1,-1):(gl_VertexID==1?vec2(3,-1):vec2(-1,3));gl_Position=vec4(p,0,1);}\",\"depthShader\":\"#version 300 es\\nprecision highp float;layout(location=0) out vec4 depthValue;uniform highp sampler2D attachmentDepth;void main(){depthValue=vec4(texelFetch(attachmentDepth,ivec2(0),0).r,0,0,1);}\",\"rows\":[],\"allocations\":10,\"cleanup\":{\"textures\":6,\"programs\":1,\"shaders\":2,\"framebuffers\":1,\"vaos\":0,\"logicalOnly\":true},\"firstTerminal\":{\"reason\":\"Error: Native shader compile AFTER allocation: ERROR: 0:48: 'sample' : Illegal use of reserved word\\nERROR: 0:48: 'sample' : syntax error\\n\\u0000\",\"allocations\":10},\"productIntegrated\":false,\"nativeVram\":\"UNKNOWN\",\"device\":{\"renderer\":\"ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)\",\"vendor\":\"Google Inc. (Intel)\",\"version\":\"WebGL 2.0 (OpenGL ES 3.0 Chromium)\",\"glsl\":\"WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)\",\"classification\":\"hardware-candidate\"},\"caps\":{\"float\":true,\"drawBuffers\":8,\"attachments\":8,\"max3D\":2048},\"formatQueries\":{\"rgba32f\":[8,4,2,1],\"depth32f\":[8,4,2,1]},\"formatError\":0,\"targetFbo\":36053,\"shaderLogs\":[{\"type\":35633,\"status\":true,\"log\":\"\"},{\"type\":35632,\"status\":false,\"log\":\"ERROR: 0:48: 'sample' : Illegal use of reserved word\\nERROR: 0:48: 'sample' : syntax error\\n\\u0000\"}]}\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"READBACK_COMPLETE\"\u001b[39m\nReceived: \u001b[31m\"FAIL\"\u001b[39m",
+                    "stack": "Error: {\"status\":\"FAIL\",\"reason\":\"Error: Native shader compile AFTER allocation: ERROR: 0:48: 'sample' : Illegal use of reserved word\\nERROR: 0:48: 'sample' : syntax error\\n\\u0000\",\"fragment\":\"#version 300 es\\nprecision highp float; precision highp int;\\nlayout(location=0) out vec4 positionT; layout(location=1) out vec4 normalSlot;\\nlayout(location=2) out vec4 cellStatus; layout(location=3) out vec4 uncertainty;\\nuniform mat4 projectionView; uniform int visibleMode; uniform int fault;\\n\\nuniform highp usampler3D voxelData;\\nuniform ivec3 gridSize;\\nuniform int slotDoubleSided[8];\\nfloat projectionDepth(vec3 worldHit,mat4 projectionView) { vec4 clip=projectionView*vec4(worldHit,1.0); return clip.z/clip.w*0.5+0.5; }\\nstruct VoxelHit { bool hit; bool unknown; bool traversalFault; float t; ivec3 cell; int slot; vec3 normal; };\\nuvec4 sourceCell(ivec3 c) {\\n  if (any(lessThan(c,ivec3(0))) || any(greaterThanEqual(c,gridSize))) { return uvec4(0); }\\n  return texelFetch(voxelData,c,0);\\n}\\nvec3 axisNormal(int a,float signValue) { vec3 n=vec3(0); n[a]=signValue; return n; }\\nVoxelHit traceVoxels(vec3 o,vec3 gridDirection,bool selectVisible) {\\n  VoxelHit h; h.hit=false; h.unknown=false; h.traversalFault=false; h.t=0.0; h.cell=ivec3(-1); h.slot=0; h.normal=vec3(0);\\n  float entry=-1e30; float leave=1e30; int entryAxis=0;\\n  for (int a=0;a<3;a++) {\\n    if (gridDirection[a]==0.0) {\\n      if (o[a]<0.0 || o[a]>=float(gridSize[a])) { return h; }\\n    } else {\\n      float t0=(0.0-o[a])/gridDirection[a]; float t1=(float(gridSize[a])-o[a])/gridDirection[a];\\n      float nearT=min(t0,t1); float farT=max(t0,t1);\\n      if (nearT>entry) { entry=nearT; entryAxis=a; }\\n      leave=min(leave,farT);\\n    }\\n  }\\n  float t=max(0.0,entry); if (leave<=t) { return h; }\\n  vec3 p=o+t*gridDirection; ivec3 cell=ivec3(floor(p)); ivec3 stepDir=ivec3(sign(gridDirection));\\n  for (int a=0;a<3;a++) {\\n    if (gridDirection[a]<0.0 && p[a]==floor(p[a])) { cell[a]-=1; }\\n  }\\n  // Only a mathematically proved BOX ENTRY permits a roundoff clamp.\\n  if (entry>=0.0) { cell=clamp(cell,ivec3(0),gridSize-ivec3(1)); }\\n  if (any(lessThan(cell,ivec3(0))) || any(greaterThanEqual(cell,gridSize))) { return h; }\\n  vec3 crossing=vec3(1e30);\\n  for (int a=0;a<3;a++) {\\n    if (gridDirection[a]!=0.0) { crossing[a]=(float(cell[a]+(stepDir[a]>0?1:0))-o[a])/gridDirection[a]; }\\n  }\\n  bool insideRun=entry<0.0 && sourceCell(cell).r!=0u; ivec3 previous=cell; int previousSlot=int(sourceCell(cell).b);\\n  vec3 face=axisNormal(entryAxis,-float(stepDir[entryAxis]));\\n  // First valid cell tested BEFORE any step. A ray crosses at most sum(dimensions) planes.\\n  int admittedSteps=gridSize.x+gridSize.y+gridSize.z+1;\\n  for (int iteration=0;iteration<193;iteration++) {\\n    if (iteration>=admittedSteps) { h.traversalFault=true; return h; }\\n    uvec4 sample=sourceCell(cell); h.unknown=h.unknown || sample.g==0u;\\n    bool solid=sample.r!=0u;\\n    if (!insideRun && solid) { h.hit=true; h.t=t; h.cell=cell; h.slot=int(sample.b); h.normal=face; return h; }\\n    if (insideRun && !solid) {\\n      if (!selectVisible || slotDoubleSided[previousSlot]!=0) { h.hit=true; h.t=t; h.cell=previous; h.slot=previousSlot; h.normal=-face; return h; }\\n      // Rejected back exit: keep this empty interval, Unknown, world t and ONE traversal budget.\\n      insideRun=false;\\n    }\\n    if (solid) { previous=cell; previousSlot=int(sample.b); }\\n    float nextT=min(crossing.x,min(crossing.y,crossing.z));\\n    if (nextT<=t) { h.traversalFault=true; return h; }\\n    bvec3 tied=equal(crossing,vec3(nextT)); int a=tied.x?0:(tied.y?1:2); face=axisNormal(a,-float(stepDir[a]));\\n    if (nextT>=leave) {\\n      if (insideRun && (!selectVisible || slotDoubleSided[previousSlot]!=0)) { h.hit=true; h.t=leave; h.cell=previous; h.slot=previousSlot; h.normal=-face; }\\n      return h;\\n    }\\n    // ALL tied axes advance; no zero-length intermediate cells are ever sampled.\\n    for (int j=0;j<3;j++) {\\n      if (tied[j]) { cell[j]+=stepDir[j]; crossing[j]=(float(cell[j]+(stepDir[j]>0?1:0))-o[j])/gridDirection[j]; }\\n    }\\n    t=nextT;\\n  }\\n  h.traversalFault=true; return h;\\n}\\n// Geometric first-exit semantics are unchanged; only visible projection filters exits during traversal.\\nVoxelHit traceVoxels(vec3 o,vec3 gridDirection) { return traceVoxels(o,gridDirection,false); }\\nVoxelHit traceVisibleVoxels(vec3 o,vec3 gridDirection) { return traceVoxels(o,gridDirection,true); }\\n\\nvoid main(){\\n vec3 o=vec3(.5);vec3 d=vec3(1,0,0);\\n VoxelHit h=visibleMode==1?traceVisibleVoxels(o,d):traceVoxels(o,d);\\n if(fault==3){h.hit=false;}if(fault==4){h.unknown=false;}\\n positionT=vec4(0);normalSlot=vec4(0);cellStatus=vec4(-1,-1,-1,h.traversalFault?-1.0:0.0);\\n uncertainty=vec4(h.unknown?1.0:0.0,1.0,0,1);gl_FragDepth=fault==5?0.0:1.0;\\n if(h.hit){vec3 p=o+h.t*d;positionT=vec4(p,h.t);normalSlot=vec4(fault==2?-h.normal:h.normal,float(fault==1?2:h.slot));\\n cellStatus=vec4(vec3(h.cell),1);gl_FragDepth=fault==5?0.0:projectionDepth(p,projectionView);}\\n}\",\"vertex\":\"#version 300 es\\nvoid main(){vec2 p=gl_VertexID==0?vec2(-1,-1):(gl_VertexID==1?vec2(3,-1):vec2(-1,3));gl_Position=vec4(p,0,1);}\",\"depthShader\":\"#version 300 es\\nprecision highp float;layout(location=0) out vec4 depthValue;uniform highp sampler2D attachmentDepth;void main(){depthValue=vec4(texelFetch(attachmentDepth,ivec2(0),0).r,0,0,1);}\",\"rows\":[],\"allocations\":10,\"cleanup\":{\"textures\":6,\"programs\":1,\"shaders\":2,\"framebuffers\":1,\"vaos\":0,\"logicalOnly\":true},\"firstTerminal\":{\"reason\":\"Error: Native shader compile AFTER allocation: ERROR: 0:48: 'sample' : Illegal use of reserved word\\nERROR: 0:48: 'sample' : syntax error\\n\\u0000\",\"allocations\":10},\"productIntegrated\":false,\"nativeVram\":\"UNKNOWN\",\"device\":{\"renderer\":\"ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)\",\"vendor\":\"Google Inc. (Intel)\",\"version\":\"WebGL 2.0 (OpenGL ES 3.0 Chromium)\",\"glsl\":\"WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)\",\"classification\":\"hardware-candidate\"},\"caps\":{\"float\":true,\"drawBuffers\":8,\"attachments\":8,\"max3D\":2048},\"formatQueries\":{\"rgba32f\":[8,4,2,1],\"depth32f\":[8,4,2,1]},\"formatError\":0,\"targetFbo\":36053,\"shaderLogs\":[{\"type\":35633,\"status\":true,\"log\":\"\"},{\"type\":35632,\"status\":false,\"log\":\"ERROR: 0:48: 'sample' : Illegal use of reserved word\\nERROR: 0:48: 'sample' : syntax error\\n\\u0000\"}]}\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"READBACK_COMPLETE\"\u001b[39m\nReceived: \u001b[31m\"FAIL\"\u001b[39m\n    at C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\phase2-supplement-16a5d29a.spec.ts:29:47",
+                    "location": {
+                      "file": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\phase2-supplement-16a5d29a.spec.ts",
+                      "column": 47,
+                      "line": 29
+                    },
+                    "snippet": "  27 |   depthShaderSha256:digest(result.depthShader),originalIndependentGeometricOracle:geometric,visibleExpectedAuthority:'Analytical x=2 entry plane of declared [1,0,1] input; no epsilon/restart/crop or changed original oracle',\n  28 |   result:{...result,rows},inputPackedSha256:digest(volume.packed),fixtureAuthority:'OWNED SYNTHETIC TEST ONLY, not an original gallery fixture',nativeGpuMs:'UNKNOWN',nativeVram:'UNKNOWN'});\n> 29 |  expect(result.status,JSON.stringify(result)).toBe('READBACK_COMPLETE');expect(rows).toHaveLength(9);\n     |                                               ^\n  30 |  for(const r of rows){expect(r.status,JSON.stringify(r)).toBe(r.fault?'FAIL':'PASS');}\n  31 | });\n  32 | test('supplement v1: normal home/gallery visible links and bounded ordinary control/compositor matrix, diagnostic collection not native acceptance',async({page})=>{"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\phase2-supplement-16a5d29a.spec.ts",
+                        "column": 47,
+                        "line": 29
+                      },
+                      "message": "Error: {\"status\":\"FAIL\",\"reason\":\"Error: Native shader compile AFTER allocation: ERROR: 0:48: 'sample' : Illegal use of reserved word\\nERROR: 0:48: 'sample' : syntax error\\n\\u0000\",\"fragment\":\"#version 300 es\\nprecision highp float; precision highp int;\\nlayout(location=0) out vec4 positionT; layout(location=1) out vec4 normalSlot;\\nlayout(location=2) out vec4 cellStatus; layout(location=3) out vec4 uncertainty;\\nuniform mat4 projectionView; uniform int visibleMode; uniform int fault;\\n\\nuniform highp usampler3D voxelData;\\nuniform ivec3 gridSize;\\nuniform int slotDoubleSided[8];\\nfloat projectionDepth(vec3 worldHit,mat4 projectionView) { vec4 clip=projectionView*vec4(worldHit,1.0); return clip.z/clip.w*0.5+0.5; }\\nstruct VoxelHit { bool hit; bool unknown; bool traversalFault; float t; ivec3 cell; int slot; vec3 normal; };\\nuvec4 sourceCell(ivec3 c) {\\n  if (any(lessThan(c,ivec3(0))) || any(greaterThanEqual(c,gridSize))) { return uvec4(0); }\\n  return texelFetch(voxelData,c,0);\\n}\\nvec3 axisNormal(int a,float signValue) { vec3 n=vec3(0); n[a]=signValue; return n; }\\nVoxelHit traceVoxels(vec3 o,vec3 gridDirection,bool selectVisible) {\\n  VoxelHit h; h.hit=false; h.unknown=false; h.traversalFault=false; h.t=0.0; h.cell=ivec3(-1); h.slot=0; h.normal=vec3(0);\\n  float entry=-1e30; float leave=1e30; int entryAxis=0;\\n  for (int a=0;a<3;a++) {\\n    if (gridDirection[a]==0.0) {\\n      if (o[a]<0.0 || o[a]>=float(gridSize[a])) { return h; }\\n    } else {\\n      float t0=(0.0-o[a])/gridDirection[a]; float t1=(float(gridSize[a])-o[a])/gridDirection[a];\\n      float nearT=min(t0,t1); float farT=max(t0,t1);\\n      if (nearT>entry) { entry=nearT; entryAxis=a; }\\n      leave=min(leave,farT);\\n    }\\n  }\\n  float t=max(0.0,entry); if (leave<=t) { return h; }\\n  vec3 p=o+t*gridDirection; ivec3 cell=ivec3(floor(p)); ivec3 stepDir=ivec3(sign(gridDirection));\\n  for (int a=0;a<3;a++) {\\n    if (gridDirection[a]<0.0 && p[a]==floor(p[a])) { cell[a]-=1; }\\n  }\\n  // Only a mathematically proved BOX ENTRY permits a roundoff clamp.\\n  if (entry>=0.0) { cell=clamp(cell,ivec3(0),gridSize-ivec3(1)); }\\n  if (any(lessThan(cell,ivec3(0))) || any(greaterThanEqual(cell,gridSize))) { return h; }\\n  vec3 crossing=vec3(1e30);\\n  for (int a=0;a<3;a++) {\\n    if (gridDirection[a]!=0.0) { crossing[a]=(float(cell[a]+(stepDir[a]>0?1:0))-o[a])/gridDirection[a]; }\\n  }\\n  bool insideRun=entry<0.0 && sourceCell(cell).r!=0u; ivec3 previous=cell; int previousSlot=int(sourceCell(cell).b);\\n  vec3 face=axisNormal(entryAxis,-float(stepDir[entryAxis]));\\n  // First valid cell tested BEFORE any step. A ray crosses at most sum(dimensions) planes.\\n  int admittedSteps=gridSize.x+gridSize.y+gridSize.z+1;\\n  for (int iteration=0;iteration<193;iteration++) {\\n    if (iteration>=admittedSteps) { h.traversalFault=true; return h; }\\n    uvec4 sample=sourceCell(cell); h.unknown=h.unknown || sample.g==0u;\\n    bool solid=sample.r!=0u;\\n    if (!insideRun && solid) { h.hit=true; h.t=t; h.cell=cell; h.slot=int(sample.b); h.normal=face; return h; }\\n    if (insideRun && !solid) {\\n      if (!selectVisible || slotDoubleSided[previousSlot]!=0) { h.hit=true; h.t=t; h.cell=previous; h.slot=previousSlot; h.normal=-face; return h; }\\n      // Rejected back exit: keep this empty interval, Unknown, world t and ONE traversal budget.\\n      insideRun=false;\\n    }\\n    if (solid) { previous=cell; previousSlot=int(sample.b); }\\n    float nextT=min(crossing.x,min(crossing.y,crossing.z));\\n    if (nextT<=t) { h.traversalFault=true; return h; }\\n    bvec3 tied=equal(crossing,vec3(nextT)); int a=tied.x?0:(tied.y?1:2); face=axisNormal(a,-float(stepDir[a]));\\n    if (nextT>=leave) {\\n      if (insideRun && (!selectVisible || slotDoubleSided[previousSlot]!=0)) { h.hit=true; h.t=leave; h.cell=previous; h.slot=previousSlot; h.normal=-face; }\\n      return h;\\n    }\\n    // ALL tied axes advance; no zero-length intermediate cells are ever sampled.\\n    for (int j=0;j<3;j++) {\\n      if (tied[j]) { cell[j]+=stepDir[j]; crossing[j]=(float(cell[j]+(stepDir[j]>0?1:0))-o[j])/gridDirection[j]; }\\n    }\\n    t=nextT;\\n  }\\n  h.traversalFault=true; return h;\\n}\\n// Geometric first-exit semantics are unchanged; only visible projection filters exits during traversal.\\nVoxelHit traceVoxels(vec3 o,vec3 gridDirection) { return traceVoxels(o,gridDirection,false); }\\nVoxelHit traceVisibleVoxels(vec3 o,vec3 gridDirection) { return traceVoxels(o,gridDirection,true); }\\n\\nvoid main(){\\n vec3 o=vec3(.5);vec3 d=vec3(1,0,0);\\n VoxelHit h=visibleMode==1?traceVisibleVoxels(o,d):traceVoxels(o,d);\\n if(fault==3){h.hit=false;}if(fault==4){h.unknown=false;}\\n positionT=vec4(0);normalSlot=vec4(0);cellStatus=vec4(-1,-1,-1,h.traversalFault?-1.0:0.0);\\n uncertainty=vec4(h.unknown?1.0:0.0,1.0,0,1);gl_FragDepth=fault==5?0.0:1.0;\\n if(h.hit){vec3 p=o+h.t*d;positionT=vec4(p,h.t);normalSlot=vec4(fault==2?-h.normal:h.normal,float(fault==1?2:h.slot));\\n cellStatus=vec4(vec3(h.cell),1);gl_FragDepth=fault==5?0.0:projectionDepth(p,projectionView);}\\n}\",\"vertex\":\"#version 300 es\\nvoid main(){vec2 p=gl_VertexID==0?vec2(-1,-1):(gl_VertexID==1?vec2(3,-1):vec2(-1,3));gl_Position=vec4(p,0,1);}\",\"depthShader\":\"#version 300 es\\nprecision highp float;layout(location=0) out vec4 depthValue;uniform highp sampler2D attachmentDepth;void main(){depthValue=vec4(texelFetch(attachmentDepth,ivec2(0),0).r,0,0,1);}\",\"rows\":[],\"allocations\":10,\"cleanup\":{\"textures\":6,\"programs\":1,\"shaders\":2,\"framebuffers\":1,\"vaos\":0,\"logicalOnly\":true},\"firstTerminal\":{\"reason\":\"Error: Native shader compile AFTER allocation: ERROR: 0:48: 'sample' : Illegal use of reserved word\\nERROR: 0:48: 'sample' : syntax error\\n\\u0000\",\"allocations\":10},\"productIntegrated\":false,\"nativeVram\":\"UNKNOWN\",\"device\":{\"renderer\":\"ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)\",\"vendor\":\"Google Inc. (Intel)\",\"version\":\"WebGL 2.0 (OpenGL ES 3.0 Chromium)\",\"glsl\":\"WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)\",\"classification\":\"hardware-candidate\"},\"caps\":{\"float\":true,\"drawBuffers\":8,\"attachments\":8,\"max3D\":2048},\"formatQueries\":{\"rgba32f\":[8,4,2,1],\"depth32f\":[8,4,2,1]},\"formatError\":0,\"targetFbo\":36053,\"shaderLogs\":[{\"type\":35633,\"status\":true,\"log\":\"\"},{\"type\":35632,\"status\":false,\"log\":\"ERROR: 0:48: 'sample' : Illegal use of reserved word\\nERROR: 0:48: 'sample' : syntax error\\n\\u0000\"}]}\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m\"READBACK_COMPLETE\"\u001b[39m\nReceived: \u001b[31m\"FAIL\"\u001b[39m\n\n  27 |   depthShaderSha256:digest(result.depthShader),originalIndependentGeometricOracle:geometric,visibleExpectedAuthority:'Analytical x=2 entry plane of declared [1,0,1] input; no epsilon/restart/crop or changed original oracle',\n  28 |   result:{...result,rows},inputPackedSha256:digest(volume.packed),fixtureAuthority:'OWNED SYNTHETIC TEST ONLY, not an original gallery fixture',nativeGpuMs:'UNKNOWN',nativeVram:'UNKNOWN'});\n> 29 |  expect(result.status,JSON.stringify(result)).toBe('READBACK_COMPLETE');expect(rows).toHaveLength(9);\n     |                                               ^\n  30 |  for(const r of rows){expect(r.status,JSON.stringify(r)).toBe(r.fault?'FAIL':'PASS');}\n  31 | });\n  32 | test('supplement v1: normal home/gallery visible links and bounded ordinary control/compositor matrix, diagnostic collection not native acceptance',async({page})=>{\n    at C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\phase2-supplement-16a5d29a.spec.ts:29:47"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T17:51:07.623Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-13\\phase2-16a5d29a-20261004-a\\pw-output\\phase2-supplement-16a5d29a-af083-d-resolved-attachment-depth\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-13\\phase2-16a5d29a-20261004-a\\pw-output\\phase2-supplement-16a5d29a-af083-d-resolved-attachment-depth\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-13\\phase2-16a5d29a-20261004-a\\pw-output\\phase2-supplement-16a5d29a-af083-d-resolved-attachment-depth\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\phase2-supplement-16a5d29a.spec.ts",
+                    "column": 47,
+                    "line": 29
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "f92d190c9fcb38209a65-f62c70ff40e2d09b708f",
+          "file": "phase2-supplement-16a5d29a.spec.ts",
+          "line": 16,
+          "column": 1
+        },
+        {
+          "title": "supplement v1: normal home/gallery visible links and bounded ordinary control/compositor matrix, diagnostic collection not native acceptance",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 360000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 8,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 23382,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T17:51:09.993Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f92d190c9fcb38209a65-bf30c1be919386120cb7",
+          "file": "phase2-supplement-16a5d29a.spec.ts",
+          "line": 32,
+          "column": 1
+        },
+        {
+          "title": "supplement v1: R1 terminal facts after real F06 adoption only, no forced ready state",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 120000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 8,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4840,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-04T17:51:33.453Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f92d190c9fcb38209a65-3ee689af714b72597551",
+          "file": "phase2-supplement-16a5d29a.spec.ts",
+          "line": 56,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-04T17:50:11.896Z",
+    "duration": 87078.03,
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 8,
+    "flaky": 0
+  }
+}

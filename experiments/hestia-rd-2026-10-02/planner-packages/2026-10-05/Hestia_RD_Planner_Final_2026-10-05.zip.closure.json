@@ -1,0 +1,169 @@
+{
+  "schema": "hestia-rd-final-workflow-closure-v1",
+  "manifestSha256": "254a797d75646c8f390832483dfabb05bb291c0bd84ace1c33e55f5156ddc170",
+  "zipSha256": "87cddafc768dd24bbde7bf5a260dfeb1d184d66d600e967f09a22971034e4a4a",
+  "coreCards": 23,
+  "originalCases": 97,
+  "caseStatuses": {
+    "PASS": 82,
+    "PARTIAL": 15,
+    "NOT_RUN": 0
+  },
+  "productIntegrated": false,
+  "art": "PENDING_OWNER",
+  "qualification": "Q0_FUNCTIONAL_UNQUALIFIED",
+  "executionId": "26b06f3c90234c969af351dfee16ca58",
+  "specStatus": "completed",
+  "tasks": [
+    {
+      "sourceLine": 4,
+      "task": "B00 Preserve original inputs/RD13, verify launcher/baseline/control and source scope.",
+      "preflight": "pass",
+      "isDone": true
+    },
+    {
+      "sourceLine": 7,
+      "task": "RD-00 Isolated lab and frozen contracts, current verification.",
+      "preflight": "pass",
+      "isDone": true
+    },
+    {
+      "sourceLine": 8,
+      "task": "RD-01 Seven source cards, concepts and LFS/media provenance.",
+      "preflight": "pass",
+      "isDone": true
+    },
+    {
+      "sourceLine": 9,
+      "task": "RD-02 Frozen fixture export and independent mini-scenes.",
+      "preflight": "pass",
+      "isDone": true
+    },
+    {
+      "sourceLine": 10,
+      "task": "RD-03 Control renderer, runner and reproducible captures.",
+      "preflight": "pass",
+      "isDone": true
+    },
+    {
+      "sourceLine": 11,
+      "task": "RD-10 Renderer capability and migration comparison.",
+      "preflight": "pass",
+      "isDone": true
+    },
+    {
+      "sourceLine": 12,
+      "task": "RD-11 Three WebGPU/TSL with REN12-v2 independent sensitivity qualification.",
+      "preflight": "pass",
+      "isDone": true
+    },
+    {
+      "sourceLine": 13,
+      "task": "RD-12 Babylon native case classification and honest candidate outcome.",
+      "preflight": "pass",
+      "isDone": true
+    },
+    {
+      "sourceLine": 14,
+      "task": "RD-13 Preserve newer harness; qualify ray/greedy candidate honestly.",
+      "preflight": "pass",
+      "isDone": true
+    },
+    {
+      "sourceLine": 15,
+      "task": "RD-14 Materials and lighting after geometry changes.",
+      "preflight": "pass",
+      "isDone": true
+    },
+    {
+      "sourceLine": 16,
+      "task": "RD-15 Camera occlusion without source modification.",
+      "preflight": "pass",
+      "isDone": true
+    },
+    {
+      "sourceLine": 17,
+      "task": "RD-20 Three tree forms, two undergrowth forms, habitat and full population bounds.",
+      "preflight": "pass",
+      "isDone": true
+    },
+    {
+      "sourceLine": 18,
+      "task": "RD-21 Shared-clock rigid-cluster and bounded vertex wind comparison.",
+      "preflight": "pass",
+      "isDone": true
+    },
+    {
+      "sourceLine": 19,
+      "task": "RD-23 Source/owner/LOD/attachment replay lifecycle.",
+      "preflight": "pass",
+      "isDone": true
+    },
+    {
+      "sourceLine": 20,
+      "task": "RD-30 Four bounded shared weather presets/field.",
+      "preflight": "pass",
+      "isDone": true
+    },
+    {
+      "sourceLine": 21,
+      "task": "RD-31 Direction-projection and bundled-query rain shielding candidates.",
+      "preflight": "pass",
+      "isDone": true
+    },
+    {
+      "sourceLine": 22,
+      "task": "RD-32 Source-bound wetness, drying, rotated owner and cosmetic water.",
+      "preflight": "pass",
+      "isDone": true
+    },
+    {
+      "sourceLine": 23,
+      "task": "RD-40 Preserve gallery and reference new qualified results.",
+      "preflight": "pass",
+      "isDone": true
+    },
+    {
+      "sourceLine": 24,
+      "task": "RD-41 Usable shared-generator habitat preset workbench.",
+      "preflight": "pass",
+      "isDone": true
+    },
+    {
+      "sourceLine": 25,
+      "task": "RD-42 Usable shared-weather tuner/scrubber and validated preset IO.",
+      "preflight": "pass",
+      "isDone": true
+    },
+    {
+      "sourceLine": 26,
+      "task": "RD-43 Usable asset/attachment source/mesh/material/owner/bounds/budget inspector.",
+      "preflight": "pass",
+      "isDone": true
+    },
+    {
+      "sourceLine": 27,
+      "task": "RD-50 Independent truth/scope/clock/lifecycle/negative qualification.",
+      "preflight": "pass",
+      "isDone": true
+    },
+    {
+      "sourceLine": 28,
+      "task": "RD-51 One-canvas combined route, complete original cases and 100 transitions.",
+      "preflight": "pass",
+      "isDone": true
+    },
+    {
+      "sourceLine": 29,
+      "task": "RD-52 Fresh build, final matrix and reproducible source-bound planner archive.",
+      "preflight": "pass",
+      "isDone": true
+    }
+  ],
+  "reviews": {
+    "technical": "Exactfinal03 bounded technical clearance;2219 unchanged artifacts plus3 byte-exact installed vendor license/notice files; independently confirmed ZIP SHA.",
+    "semantic": "Exactfinal03 bounded semantic clearance; complete23/97 original-case accounting, actual combined/tools, source bound REN12-v2, separate original and fresh negative populations; no material missing deliverable."
+  },
+  "boundary": "final-boundary-02.json: PASS52 original inputs0violations; unchangedHEAD16a5/productReadb3; own port5280free",
+  "commitPushPublication": "NOT_PERFORMED; sourceState UNCOMMITTED_HASH_BOUND"
+}

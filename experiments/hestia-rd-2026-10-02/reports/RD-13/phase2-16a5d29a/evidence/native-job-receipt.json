@@ -1,0 +1,16 @@
+{
+  "exitCode": 1,
+  "signal": null,
+  "elapsedCommandMs": 90063,
+  "timedOut": false,
+  "raw": {
+    "path": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-13/phase2-16a5d29a-20261004-a/native.raw.log",
+    "bytes": 40527,
+    "sha256": "834d059ec3d1bf2ef2d3e6bc13554f393acd688a6340a3917686874007b8db8e"
+  },
+  "source": "16a5d29a5cddea372abae139da618aa000a058be",
+  "tree": "abb0bdde3039c33d1a815d2f2754103fcb16c100",
+  "originalSuiteStatus": "ACTUAL_JSON_REPORT_NOT_RELABELLED",
+  "nativeExecution": "FUNCTIONAL_DIAGNOSTIC_ONLY",
+  "productIntegrated": false
+}

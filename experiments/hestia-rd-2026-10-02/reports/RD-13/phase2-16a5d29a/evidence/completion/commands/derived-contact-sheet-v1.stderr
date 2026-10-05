@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "C:\IFI_SourceCode\Temp\Hestia-RD-2026-10-02-worktrees\Hestia-RD-RD13\experiments\hestia-rd-2026-10-02\reports\RD-13\phase2-16a5d29a\contact-sheet.py", line 11, in <module>
+    assert str(pathlib.Path(PIL.__file__).resolve()).lower().startswith('c:\\ifi_sourcecode\\')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

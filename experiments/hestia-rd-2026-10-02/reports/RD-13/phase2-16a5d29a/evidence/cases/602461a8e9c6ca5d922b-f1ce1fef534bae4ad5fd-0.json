@@ -1,0 +1,1735 @@
+{
+  "schema": "rd13-original-and-supplement-observation-v1",
+  "source": "16a5d29a5cddea372abae139da618aa000a058be",
+  "productIntegrated": false,
+  "title": "selected F01 solid attachment depth / proxy fault under original translucent-water presentation; not an image-parity gate",
+  "file": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts",
+  "status": "failed",
+  "expectedStatus": "passed",
+  "testErrors": [
+    {
+      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#status')\nExpected substring: \u001b[32m\"\u001b[7mHost render submitt\u001b[27med\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[7mFAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is requir\u001b[27med\u001b[7m.\u001b[27m\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#status')\u001b[22m\n\u001b[2m    4 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">Disposed; no render loop owned by this entry. Fai…</p>\u001b[22m\n\u001b[2m      - unexpected value \"Disposed; no render loop owned by this entry. Failure history retained.\"\u001b[22m\n\u001b[2m    10 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">FAIL / hidden, no old version drawing: Error: Pro…</p>\u001b[22m\n\u001b[2m       - unexpected value \"FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.\"\u001b[22m\n",
+      "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#status')\nExpected substring: \u001b[32m\"\u001b[7mHost render submitt\u001b[27med\"\u001b[39m\nReceived string:    \u001b[31m\"\u001b[7mFAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is requir\u001b[27med\u001b[7m.\u001b[27m\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#status')\u001b[22m\n\u001b[2m    4 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">Disposed; no render loop owned by this entry. Fai…</p>\u001b[22m\n\u001b[2m      - unexpected value \"Disposed; no render loop owned by this entry. Failure history retained.\"\u001b[22m\n\u001b[2m    10 × locator resolved to <p id=\"status\" role=\"status\" aria-live=\"polite\">FAIL / hidden, no old version drawing: Error: Pro…</p>\u001b[22m\n\u001b[2m       - unexpected value \"FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.\"\u001b[22m\n\n    at ready (C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:5:41)\n    at C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-worktrees\\Hestia-RD-RD13\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:48:50",
+      "errorContext": "- status: \"FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.\""
+    }
+  ],
+  "originalSpecSha256": "cc7de7da85c024c8ebeed231f44517fa6711b3a836ec8f0c49f7051c24dafdc0",
+  "final": {
+    "url": "http://127.0.0.1:5280/src/experiments/voxel-rays/index.html?testBridge=1",
+    "bridgePresent": true,
+    "status": "FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.",
+    "projected": {
+      "productIntegrated": false,
+      "history": [
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission"
+      ],
+      "terminal": {
+        "firstFailure": "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "pending": false,
+        "disposed": true,
+        "productIntegrated": false
+      }
+    },
+    "selections": {
+      "fixture": "F00-CONTROL-REPLAY",
+      "variant": "rays-no-ao",
+      "camera": "far",
+      "tick": "0",
+      "resolution": "1280x720",
+      "dpr": "1"
+    },
+    "canvas": {
+      "hidden": true,
+      "width": 1280,
+      "height": 720,
+      "box": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "devicePixelRatio": 1
+    }
+  },
+  "beforeCleanup": {
+    "schema": "rd13-read-only-native-observer-v1",
+    "contexts": [
+      {
+        "index": 0,
+        "request": "webgl2",
+        "canvasId": "viewport",
+        "actualWebGL2": true,
+        "attributes": {
+          "alpha": false,
+          "antialias": true,
+          "depth": true,
+          "desynchronized": false,
+          "failIfMajorPerformanceCaveat": false,
+          "powerPreference": "high-performance",
+          "premultipliedAlpha": true,
+          "preserveDrawingBuffer": false,
+          "stencil": false,
+          "xrCompatible": false
+        },
+        "renderer": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "vendor": "Google Inc. (Intel)",
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "glsl": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+        "caps": {
+          "max3D": 2048,
+          "maxDrawBuffers": 8,
+          "maxAttachments": 8
+        },
+        "extensions": [
+          "EXT_clip_control",
+          "EXT_color_buffer_float",
+          "EXT_color_buffer_half_float",
+          "EXT_conservative_depth",
+          "EXT_depth_clamp",
+          "EXT_disjoint_timer_query_webgl2",
+          "EXT_float_blend",
+          "EXT_polygon_offset_clamp",
+          "EXT_render_snorm",
+          "EXT_texture_compression_bptc",
+          "EXT_texture_compression_rgtc",
+          "EXT_texture_filter_anisotropic",
+          "EXT_texture_mirror_clamp_to_edge",
+          "EXT_texture_norm16",
+          "KHR_parallel_shader_compile",
+          "NV_shader_noperspective_interpolation",
+          "OES_draw_buffers_indexed",
+          "OES_sample_variables",
+          "OES_shader_multisample_interpolation",
+          "OES_texture_float_linear",
+          "OVR_multiview2",
+          "WEBGL_blend_func_extended",
+          "WEBGL_clip_cull_distance",
+          "WEBGL_compressed_texture_s3tc",
+          "WEBGL_compressed_texture_s3tc_srgb",
+          "WEBGL_debug_renderer_info",
+          "WEBGL_debug_shaders",
+          "WEBGL_lose_context",
+          "WEBGL_multi_draw",
+          "WEBGL_polygon_mode",
+          "WEBGL_provoking_vertex",
+          "WEBGL_stencil_texturing"
+        ],
+        "nativeDriverIdentityQualified": false
+      }
+    ],
+    "shaders": [
+      {
+        "context": 0,
+        "shader": 10,
+        "code": "#version 300 es\n\n#define attribute in\n#define varying out\n#define texture2D texture\nprecision highp float;\n\tprecision highp int;\n\tprecision highp sampler2D;\n\tprecision highp samplerCube;\n\tprecision highp sampler3D;\n\tprecision highp sampler2DArray;\n\tprecision highp sampler2DShadow;\n\tprecision highp samplerCubeShadow;\n\tprecision highp sampler2DArrayShadow;\n\tprecision highp isampler2D;\n\tprecision highp isampler3D;\n\tprecision highp isamplerCube;\n\tprecision highp isampler2DArray;\n\tprecision highp usampler2D;\n\tprecision highp usampler3D;\n\tprecision highp usamplerCube;\n\tprecision highp usampler2DArray;\n\t\n#define HIGH_PRECISION\n#define SHADER_TYPE ShaderMaterial\n#define SHADER_NAME \nuniform mat4 modelMatrix;\nuniform mat4 modelViewMatrix;\nuniform mat4 projectionMatrix;\nuniform mat4 viewMatrix;\nuniform mat3 normalMatrix;\nuniform vec3 cameraPosition;\nuniform bool isOrthographic;\n#ifdef USE_INSTANCING\n\tattribute mat4 instanceMatrix;\n#endif\n#ifdef USE_INSTANCING_COLOR\n\tattribute vec3 instanceColor;\n#endif\n#ifdef USE_INSTANCING_MORPH\n\tuniform sampler2D morphTexture;\n#endif\nattribute vec3 position;\nattribute vec3 normal;\nattribute vec2 uv;\n#ifdef USE_UV1\n\tattribute vec2 uv1;\n#endif\n#ifdef USE_UV2\n\tattribute vec2 uv2;\n#endif\n#ifdef USE_UV3\n\tattribute vec2 uv3;\n#endif\n#ifdef USE_TANGENT\n\tattribute vec4 tangent;\n#endif\n#if defined( USE_COLOR_ALPHA )\n\tattribute vec4 color;\n#elif defined( USE_COLOR )\n\tattribute vec3 color;\n#endif\n#ifdef USE_SKINNING\n\tattribute vec4 skinIndex;\n\tattribute vec4 skinWeight;\n#endif\n\nvoid main() { gl_Position=vec4(position.xy,0.0,1.0); }"
+      },
+      {
+        "context": 0,
+        "shader": 11,
+        "code": "#version 300 es\n#define varying in\n\n\n#define gl_FragDepthEXT gl_FragDepth\n#define texture2D texture\n#define textureCube texture\n#define texture2DProj textureProj\n#define texture2DLodEXT textureLod\n#define texture2DProjLodEXT textureProjLod\n#define textureCubeLodEXT textureLod\n#define texture2DGradEXT textureGrad\n#define texture2DProjGradEXT textureProjGrad\n#define textureCubeGradEXT textureGrad\nprecision highp float;\n\tprecision highp int;\n\tprecision highp sampler2D;\n\tprecision highp samplerCube;\n\tprecision highp sampler3D;\n\tprecision highp sampler2DArray;\n\tprecision highp sampler2DShadow;\n\tprecision highp samplerCubeShadow;\n\tprecision highp sampler2DArrayShadow;\n\tprecision highp isampler2D;\n\tprecision highp isampler3D;\n\tprecision highp isamplerCube;\n\tprecision highp isampler2DArray;\n\tprecision highp usampler2D;\n\tprecision highp usampler3D;\n\tprecision highp usamplerCube;\n\tprecision highp usampler2DArray;\n\t\n#define HIGH_PRECISION\n#define SHADER_TYPE ShaderMaterial\n#define SHADER_NAME \nuniform mat4 viewMatrix;\nuniform vec3 cameraPosition;\nuniform bool isOrthographic;\n#define OPAQUE\nvec4 LinearTransferOETF( in vec4 value ) {\n\treturn value;\n}\nvec4 sRGBTransferEOTF( in vec4 value ) {\n\treturn vec4( mix( pow( value.rgb * 0.9478672986 + vec3( 0.0521327014 ), vec3( 2.4 ) ), value.rgb * 0.0773993808, vec3( lessThanEqual( value.rgb, vec3( 0.04045 ) ) ) ), value.a );\n}\nvec4 sRGBTransferOETF( in vec4 value ) {\n\treturn vec4( mix( pow( value.rgb, vec3( 0.41666 ) ) * 1.055 - vec3( 0.055 ), value.rgb * 12.92, vec3( lessThanEqual( value.rgb, vec3( 0.0031308 ) ) ) ), value.a );\n}\nvec4 linearToOutputTexel( vec4 value ) {\n\treturn sRGBTransferOETF( vec4( value.rgb * mat3( 1.0000,-0.0000,-0.0000,-0.0000,1.0000,0.0000,0.0000,0.0000,1.0000 ), value.a ) );\n}\nfloat luminance( const in vec3 rgb ) {\n\tconst vec3 weights = vec3( 0.2126, 0.7152, 0.0722 );\n\treturn dot( weights, rgb );\n}\n\n\nlayout(location=0) out vec4 rayColor;\n#define gl_FragColor rayColor\n#define PI 3.141592653589793\n#define PI2 6.283185307179586\n#define PI_HALF 1.5707963267948966\n#define RECIPROCAL_PI 0.3183098861837907\n#define RECIPROCAL_PI2 0.15915494309189535\n#define EPSILON 1e-6\n#ifndef saturate\n#define saturate( a ) clamp( a, 0.0, 1.0 )\n#endif\n#define whiteComplement( a ) ( 1.0 - saturate( a ) )\nfloat pow2( const in float x ) { return x*x; }\nvec3 pow2( const in vec3 x ) { return x*x; }\nfloat pow3( const in float x ) { return x*x*x; }\nfloat pow4( const in float x ) { float x2 = x*x; return x2*x2; }\nfloat max3( const in vec3 v ) { return max( max( v.x, v.y ), v.z ); }\nfloat average( const in vec3 v ) { return dot( v, vec3( 0.3333333 ) ); }\nhighp float rand( const in vec2 uv ) {\n\tconst highp float a = 12.9898, b = 78.233, c = 43758.5453;\n\thighp float dt = dot( uv.xy, vec2( a,b ) ), sn = mod( dt, PI );\n\treturn fract( sin( sn ) * c );\n}\n#ifdef HIGH_PRECISION\n\tfloat precisionSafeLength( vec3 v ) { return length( v ); }\n#else\n\tfloat precisionSafeLength( vec3 v ) {\n\t\tfloat maxComponent = max3( abs( v ) );\n\t\treturn length( v / maxComponent ) * maxComponent;\n\t}\n#endif\nstruct IncidentLight {\n\tvec3 color;\n\tvec3 direction;\n\tbool visible;\n};\nstruct ReflectedLight {\n\tvec3 directDiffuse;\n\tvec3 directSpecular;\n\tvec3 indirectDiffuse;\n\tvec3 indirectSpecular;\n};\n#ifdef USE_ALPHAHASH\n\tvarying vec3 vPosition;\n#endif\nvec3 transformDirection( in vec3 dir, in mat4 matrix ) {\n\treturn normalize( ( matrix * vec4( dir, 0.0 ) ).xyz );\n}\n#define inverseTransformDirection transformDirectionByInverseViewMatrix\nvec3 transformNormalByInverseViewMatrix( in vec3 normal, in mat4 viewMatrix ) {\n\treturn normalize( ( vec4( normal, 0.0 ) * viewMatrix ).xyz );\n}\nvec3 transformDirectionByInverseViewMatrix( in vec3 dir, in mat4 viewMatrix ) {\n\treturn normalize( ( vec4( dir, 0.0 ) * viewMatrix ).xyz );\n}\nbool isPerspectiveMatrix( mat4 m ) {\n\treturn m[ 2 ][ 3 ] == - 1.0;\n}\nvec2 equirectUv( in vec3 dir ) {\n\tfloat u = atan( dir.z, dir.x ) * RECIPROCAL_PI2 + 0.5;\n\tfloat v = asin( clamp( dir.y, - 1.0, 1.0 ) ) * RECIPROCAL_PI + 0.5;\n\treturn vec2( u, v );\n}\nvec3 BRDF_Lambert( const in vec3 diffuseColor ) {\n\treturn RECIPROCAL_PI * diffuseColor;\n}\nvec3 F_Schlick( const in vec3 f0, const in float f90, const in float dotVH ) {\n\tfloat fresnel = exp2( ( - 5.55473 * dotVH - 6.98316 ) * dotVH );\n\treturn f0 * ( 1.0 - fresnel ) + ( f90 * fresnel );\n}\nfloat F_Schlick( const in float f0, const in float f90, const in float dotVH ) {\n\tfloat fresnel = exp2( ( - 5.55473 * dotVH - 6.98316 ) * dotVH );\n\treturn f0 * ( 1.0 - fresnel ) + ( f90 * fresnel );\n} // validated\nfloat G_BlinnPhong_Implicit( ) {\n\treturn 0.25;\n}\nfloat D_BlinnPhong( const in float shininess, const in float dotNH ) {\n\treturn RECIPROCAL_PI * ( shininess * 0.5 + 1.0 ) * pow( dotNH, shininess );\n}\nvec3 BRDF_BlinnPhong( const in vec3 lightDir, const in vec3 viewDir, const in vec3 normal, const in vec3 specularColor, const in float shininess ) {\n\tvec3 halfDir = normalize( lightDir + viewDir );\n\tfloat dotNH = saturate( dot( normal, halfDir ) );\n\tfloat dotVH = saturate( dot( viewDir, halfDir ) );\n\tvec3 F = F_Schlick( specularColor, 1.0, dotVH );\n\tfloat G = G_BlinnPhong_Implicit( );\n\tfloat D = D_BlinnPhong( shininess, dotNH );\n\treturn F * ( G * D );\n} // validated\nuniform bool receiveShadow;\nuniform vec3 ambientLightColor;\n#if defined( USE_LIGHT_PROBES )\n\tuniform vec3 lightProbe[ 9 ];\n#endif\nvec3 shGetIrradianceAt( in vec3 normal, in vec3 shCoefficients[ 9 ] ) {\n\tfloat x = normal.x, y = normal.y, z = normal.z;\n\tvec3 result = shCoefficients[ 0 ] * 0.886227;\n\tresult += shCoefficients[ 1 ] * 2.0 * 0.511664 * y;\n\tresult += shCoefficients[ 2 ] * 2.0 * 0.511664 * z;\n\tresult += shCoefficients[ 3 ] * 2.0 * 0.511664 * x;\n\tresult += shCoefficients[ 4 ] * 2.0 * 0.429043 * x * y;\n\tresult += shCoefficients[ 5 ] * 2.0 * 0.429043 * y * z;\n\tresult += shCoefficients[ 6 ] * ( 0.743125 * z * z - 0.247708 );\n\tresult += shCoefficients[ 7 ] * 2.0 * 0.429043 * x * z;\n\tresult += shCoefficients[ 8 ] * 0.429043 * ( x * x - y * y );\n\treturn result;\n}\nvec3 getLightProbeIrradiance( const in vec3 lightProbe[ 9 ], const in vec3 normal ) {\n\tvec3 worldNormal = transformNormalByInverseViewMatrix( normal, viewMatrix );\n\tvec3 irradiance = shGetIrradianceAt( worldNormal, lightProbe );\n\treturn irradiance;\n}\nvec3 getAmbientLightIrradiance( const in vec3 ambientLightColor ) {\n\tvec3 irradiance = ambientLightColor;\n\treturn irradiance;\n}\nfloat getDistanceAttenuation( const in float lightDistance, const in float cutoffDistance, const in float decayExponent ) {\n\tfloat distanceFalloff = 1.0 / max( pow( lightDistance, decayExponent ), 0.01 );\n\tif ( cutoffDistance > 0.0 ) {\n\t\tdistanceFalloff *= pow2( saturate( 1.0 - pow4( lightDistance / cutoffDistance ) ) );\n\t}\n\treturn distanceFalloff;\n}\nfloat getSpotAttenuation( const in float coneCosine, const in float penumbraCosine, const in float angleCosine ) {\n\treturn smoothstep( coneCosine, penumbraCosine, angleCosine );\n}\n#if 2 > 0\n\tstruct DirectionalLight {\n\t\tvec3 direction;\n\t\tvec3 color;\n\t};\n\tuniform DirectionalLight directionalLights[ 2 ];\n\tvoid getDirectionalLightInfo( const in DirectionalLight directionalLight, out IncidentLight light ) {\n\t\tlight.color = directionalLight.color;\n\t\tlight.direction = directionalLight.direction;\n\t\tlight.visible = true;\n\t}\n#endif\n#if 0 > 0\n\tstruct PointLight {\n\t\tvec3 position;\n\t\tvec3 color;\n\t\tfloat distance;\n\t\tfloat decay;\n\t};\n\tuniform PointLight pointLights[ 0 ];\n\tvoid getPointLightInfo( const in PointLight pointLight, const in vec3 geometryPosition, out IncidentLight light ) {\n\t\tvec3 lVector = pointLight.position - geometryPosition;\n\t\tlight.direction = normalize( lVector );\n\t\tfloat lightDistance = length( lVector );\n\t\tlight.color = pointLight.color;\n\t\tlight.color *= getDistanceAttenuation( lightDistance, pointLight.distance, pointLight.decay );\n\t\tlight.visible = ( light.color != vec3( 0.0 ) );\n\t}\n#endif\n#if 0 > 0\n\tstruct SpotLight {\n\t\tvec3 position;\n\t\tvec3 direction;\n\t\tvec3 color;\n\t\tfloat distance;\n\t\tfloat decay;\n\t\tfloat coneCos;\n\t\tfloat penumbraCos;\n\t};\n\tuniform SpotLight spotLights[ 0 ];\n\tvoid getSpotLightInfo( const in SpotLight spotLight, const in vec3 geometryPosition, out IncidentLight light ) {\n\t\tvec3 lVector = spotLight.position - geometryPosition;\n\t\tlight.direction = normalize( lVector );\n\t\tfloat angleCos = dot( light.direction, spotLight.direction );\n\t\tfloat spotAttenuation = getSpotAttenuation( spotLight.coneCos, spotLight.penumbraCos, angleCos );\n\t\tif ( spotAttenuation > 0.0 ) {\n\t\t\tfloat lightDistance = length( lVector );\n\t\t\tlight.color = spotLight.color * spotAttenuation;\n\t\t\tlight.color *= getDistanceAttenuation( lightDistance, spotLight.distance, spotLight.decay );\n\t\t\tlight.visible = ( light.color != vec3( 0.0 ) );\n\t\t} else {\n\t\t\tlight.color = vec3( 0.0 );\n\t\t\tlight.visible = false;\n\t\t}\n\t}\n#endif\n#if 0 > 0\n\tstruct RectAreaLight {\n\t\tvec3 color;\n\t\tvec3 position;\n\t\tvec3 halfWidth;\n\t\tvec3 halfHeight;\n\t};\n\tuniform sampler2D ltc_1;\tuniform sampler2D ltc_2;\n\tuniform RectAreaLight rectAreaLights[ 0 ];\n#endif\n#if 1 > 0\n\tstruct HemisphereLight {\n\t\tvec3 direction;\n\t\tvec3 skyColor;\n\t\tvec3 groundColor;\n\t};\n\tuniform HemisphereLight hemisphereLights[ 1 ];\n\tvec3 getHemisphereLightIrradiance( const in HemisphereLight hemiLight, const in vec3 normal ) {\n\t\tfloat dotNL = dot( normal, hemiLight.direction );\n\t\tfloat hemiDiffuseWeight = 0.5 * dotNL + 0.5;\n\t\tvec3 irradiance = mix( hemiLight.groundColor, hemiLight.skyColor, hemiDiffuseWeight );\n\t\treturn irradiance;\n\t}\n#endif\n#ifdef USE_LIGHT_PROBES_GRID\nuniform highp sampler3D probesSH;\nuniform vec3 probesMin;\nuniform vec3 probesMax;\nuniform vec3 probesResolution;\nvec3 getLightProbeGridIrradiance( vec3 worldPos, vec3 worldNormal ) {\n\tvec3 res = probesResolution;\n\tvec3 gridRange = probesMax - probesMin;\n\tvec3 resMinusOne = res - 1.0;\n\tvec3 probeSpacing = gridRange / resMinusOne;\n\tvec3 samplePos = worldPos + worldNormal * probeSpacing * 0.5;\n\tvec3 uvw = clamp( ( samplePos - probesMin ) / gridRange, 0.0, 1.0 );\n\tuvw = uvw * resMinusOne / res + 0.5 / res;\n\tfloat nz          = res.z;\n\tfloat paddedSlices = nz + 2.0;\n\tfloat atlasDepth  = 7.0 * paddedSlices;\n\tfloat uvZBase     = uvw.z * nz + 1.0;\n\tvec4 s0 = texture( probesSH, vec3( uvw.xy, ( uvZBase                       ) / atlasDepth ) );\n\tvec4 s1 = texture( probesSH, vec3( uvw.xy, ( uvZBase +       paddedSlices   ) / atlasDepth ) );\n\tvec4 s2 = texture( probesSH, vec3( uvw.xy, ( uvZBase + 2.0 * paddedSlices   ) / atlasDepth ) );\n\tvec4 s3 = texture( probesSH, vec3( uvw.xy, ( uvZBase + 3.0 * paddedSlices   ) / atlasDepth ) );\n\tvec4 s4 = texture( probesSH, vec3( uvw.xy, ( uvZBase + 4.0 * paddedSlices   ) / atlasDepth ) );\n\tvec4 s5 = texture( probesSH, vec3( uvw.xy, ( uvZBase + 5.0 * paddedSlices   ) / atlasDepth ) );\n\tvec4 s6 = texture( probesSH, vec3( uvw.xy, ( uvZBase + 6.0 * paddedSlices   ) / atlasDepth ) );\n\tvec3 c0 = s0.xyz;\n\tvec3 c1 = vec3( s0.w, s1.xy );\n\tvec3 c2 = vec3( s1.zw, s2.x );\n\tvec3 c3 = s2.yzw;\n\tvec3 c4 = s3.xyz;\n\tvec3 c5 = vec3( s3.w, s4.xy );\n\tvec3 c6 = vec3( s4.zw, s5.x );\n\tvec3 c7 = s5.yzw;\n\tvec3 c8 = s6.xyz;\n\tfloat x = worldNormal.x, y = worldNormal.y, z = worldNormal.z;\n\tvec3 result = c0 * 0.886227;\n\tresult += c1 * 2.0 * 0.511664 * y;\n\tresult += c2 * 2.0 * 0.511664 * z;\n\tresult += c3 * 2.0 * 0.511664 * x;\n\tresult += c4 * 2.0 * 0.429043 * x * y;\n\tresult += c5 * 2.0 * 0.429043 * y * z;\n\tresult += c6 * ( 0.743125 * z * z - 0.247708 );\n\tresult += c7 * 2.0 * 0.429043 * x * z;\n\tresult += c8 * 0.429043 * ( x * x - y * y );\n\treturn max( result, vec3( 0.0 ) );\n}\n#endif\nuniform mat4 rayInverseProjection;\nuniform mat4 projectionMatrix;\nuniform mat4 rayCameraWorld;\nuniform mat4 gridFromWorld;\nuniform mat3 worldNormalMatrix;\nuniform vec2 drawingBuffer;\nuniform vec3 slotColor[8];\nuniform vec3 slotEmission[8];\n#ifdef USE_FOG\nuniform vec3 fogColor;\nuniform float fogNear;\nuniform float fogFar;\n#endif\n\nuniform highp usampler3D voxelData;\nuniform ivec3 gridSize;\nuniform int slotDoubleSided[8];\nfloat projectionDepth(vec3 worldHit,mat4 projectionView) { vec4 clip=projectionView*vec4(worldHit,1.0); return clip.z/clip.w*0.5+0.5; }\nstruct VoxelHit { bool hit; bool unknown; bool traversalFault; float t; ivec3 cell; int slot; vec3 normal; };\nuvec4 sourceCell(ivec3 c) {\n  if (any(lessThan(c,ivec3(0))) || any(greaterThanEqual(c,gridSize))) { return uvec4(0); }\n  return texelFetch(voxelData,c,0);\n}\nvec3 axisNormal(int a,float signValue) { vec3 n=vec3(0); n[a]=signValue; return n; }\nVoxelHit traceVoxels(vec3 o,vec3 gridDirection,bool selectVisible) {\n  VoxelHit h; h.hit=false; h.unknown=false; h.traversalFault=false; h.t=0.0; h.cell=ivec3(-1); h.slot=0; h.normal=vec3(0);\n  float entry=-1e30; float leave=1e30; int entryAxis=0;\n  for (int a=0;a<3;a++) {\n    if (gridDirection[a]==0.0) {\n      if (o[a]<0.0 || o[a]>=float(gridSize[a])) { return h; }\n    } else {\n      float t0=(0.0-o[a])/gridDirection[a]; float t1=(float(gridSize[a])-o[a])/gridDirection[a];\n      float nearT=min(t0,t1); float farT=max(t0,t1);\n      if (nearT>entry) { entry=nearT; entryAxis=a; }\n      leave=min(leave,farT);\n    }\n  }\n  float t=max(0.0,entry); if (leave<=t) { return h; }\n  vec3 p=o+t*gridDirection; ivec3 cell=ivec3(floor(p)); ivec3 stepDir=ivec3(sign(gridDirection));\n  for (int a=0;a<3;a++) {\n    if (gridDirection[a]<0.0 && p[a]==floor(p[a])) { cell[a]-=1; }\n  }\n  // Only a mathematically proved BOX ENTRY permits a roundoff clamp.\n  if (entry>=0.0) { cell=clamp(cell,ivec3(0),gridSize-ivec3(1)); }\n  if (any(lessThan(cell,ivec3(0))) || any(greaterThanEqual(cell,gridSize))) { return h; }\n  vec3 crossing=vec3(1e30);\n  for (int a=0;a<3;a++) {\n    if (gridDirection[a]!=0.0) { crossing[a]=(float(cell[a]+(stepDir[a]>0?1:0))-o[a])/gridDirection[a]; }\n  }\n  bool insideRun=entry<0.0 && sourceCell(cell).r!=0u; ivec3 previous=cell; int previousSlot=int(sourceCell(cell).b);\n  vec3 face=axisNormal(entryAxis,-float(stepDir[entryAxis]));\n  // First valid cell tested BEFORE any step. A ray crosses at most sum(dimensions) planes.\n  int admittedSteps=gridSize.x+gridSize.y+gridSize.z+1;\n  for (int iteration=0;iteration<193;iteration++) {\n    if (iteration>=admittedSteps) { h.traversalFault=true; return h; }\n    uvec4 sample=sourceCell(cell); h.unknown=h.unknown || sample.g==0u;\n    bool solid=sample.r!=0u;\n    if (!insideRun && solid) { h.hit=true; h.t=t; h.cell=cell; h.slot=int(sample.b); h.normal=face; return h; }\n    if (insideRun && !solid) {\n      if (!selectVisible || slotDoubleSided[previousSlot]!=0) { h.hit=true; h.t=t; h.cell=previous; h.slot=previousSlot; h.normal=-face; return h; }\n      // Rejected back exit: keep this empty interval, Unknown, world t and ONE traversal budget.\n      insideRun=false;\n    }\n    if (solid) { previous=cell; previousSlot=int(sample.b); }\n    float nextT=min(crossing.x,min(crossing.y,crossing.z));\n    if (nextT<=t) { h.traversalFault=true; return h; }\n    bvec3 tied=equal(crossing,vec3(nextT)); int a=tied.x?0:(tied.y?1:2); face=axisNormal(a,-float(stepDir[a]));\n    if (nextT>=leave) {\n      if (insideRun && (!selectVisible || slotDoubleSided[previousSlot]!=0)) { h.hit=true; h.t=leave; h.cell=previous; h.slot=previousSlot; h.normal=-face; }\n      return h;\n    }\n    // ALL tied axes advance; no zero-length intermediate cells are ever sampled.\n    for (int j=0;j<3;j++) {\n      if (tied[j]) { cell[j]+=stepDir[j]; crossing[j]=(float(cell[j]+(stepDir[j]>0?1:0))-o[j])/gridDirection[j]; }\n    }\n    t=nextT;\n  }\n  h.traversalFault=true; return h;\n}\n// Geometric first-exit semantics are unchanged; only visible projection filters exits during traversal.\nVoxelHit traceVoxels(vec3 o,vec3 gridDirection) { return traceVoxels(o,gridDirection,false); }\nVoxelHit traceVisibleVoxels(vec3 o,vec3 gridDirection) { return traceVoxels(o,gridDirection,true); }\n\nvoid main() {\n  vec2 ndc=gl_FragCoord.xy/drawingBuffer*2.0-1.0;\n  vec4 nearPoint=rayCameraWorld*rayInverseProjection*vec4(ndc,-1.0,1.0);\n  vec4 farPoint=rayCameraWorld*rayInverseProjection*vec4(ndc,1.0,1.0);\n  vec3 worldOrigin=nearPoint.xyz/nearPoint.w;\n  vec3 worldDirection=normalize(farPoint.xyz/farPoint.w-worldOrigin);\n  vec3 gridOrigin=(gridFromWorld*vec4(worldOrigin,1.0)).xyz;\n  vec3 gridDirection=(gridFromWorld*vec4(worldDirection,0.0)).xyz;\n  VoxelHit h=traceVisibleVoxels(gridOrigin,gridDirection);\n  if (h.traversalFault) { gl_FragColor=vec4(1.0,0.0,1.0,1.0); gl_FragDepth=0.0; return; }\n  if (!h.hit) { discard; }\n  vec3 worldHit=worldOrigin+h.t*worldDirection;\n  vec3 worldNormal=normalize(worldNormalMatrix*h.normal);\n  bool back=dot(worldNormal,worldDirection)>0.0;\n  if (back) { worldNormal=-worldNormal; }\n  vec4 viewHit=viewMatrix*vec4(worldHit,1.0);\n  vec4 clip=projectionMatrix*viewHit;\n  float hitDepth=projectionDepth(worldHit,projectionMatrix*viewMatrix);\n  if (clip.w<=0.0 || hitDepth<0.0 || hitDepth>1.0) { discard; }\n  gl_FragDepth=hitDepth;\n  vec3 normal=normalize(mat3(viewMatrix)*worldNormal);\n  vec3 irradiance=getAmbientLightIrradiance(ambientLightColor);\n  #if 1 > 0\n  for (int i=0;i<1;i++) { irradiance+=getHemisphereLightIrradiance(hemisphereLights[i],normal); }\n  #endif\n  #if 2 > 0\n  for (int i=0;i<2;i++) { irradiance+=max(dot(normal,directionalLights[i].direction),0.0)*directionalLights[i].color; }\n  #endif\n  gl_FragColor=vec4(slotColor[h.slot]*irradiance*RECIPROCAL_PI+slotEmission[h.slot],1.0);\n#if defined( TONE_MAPPING )\n\tgl_FragColor.rgb = toneMapping( gl_FragColor.rgb );\n#endif\ngl_FragColor = linearToOutputTexel( gl_FragColor );\n  #ifdef USE_FOG\n  float fogFactor=smoothstep(fogNear,fogFar,-viewHit.z);\n  gl_FragColor.rgb=mix(gl_FragColor.rgb,fogColor,fogFactor);\n  #endif\n}\n"
+      }
+    ],
+    "queries": [
+      {
+        "context": 0,
+        "name": "getInternalformatParameter",
+        "args": [
+          36161,
+          36220,
+          32937
+        ],
+        "value": []
+      },
+      {
+        "context": 0,
+        "name": "getProgramInfoLog",
+        "args": [
+          9
+        ],
+        "value": "Fragment shader is not compiled.\n\u0000"
+      },
+      {
+        "context": 0,
+        "name": "getShaderInfoLog",
+        "args": [
+          10
+        ],
+        "value": ""
+      },
+      {
+        "context": 0,
+        "name": "getShaderInfoLog",
+        "args": [
+          11
+        ],
+        "value": "ERROR: 0:365: 'sample' : Illegal use of reserved word\nERROR: 0:365: 'sample' : syntax error\n\u0000"
+      },
+      {
+        "context": 0,
+        "name": "getProgramParameter",
+        "args": [
+          9,
+          35714
+        ],
+        "value": false
+      },
+      {
+        "context": 0,
+        "name": "getShaderParameter",
+        "args": [
+          10,
+          35713
+        ],
+        "value": true
+      },
+      {
+        "context": 0,
+        "name": "getShaderInfoLog",
+        "args": [
+          10
+        ],
+        "value": ""
+      },
+      {
+        "context": 0,
+        "name": "getShaderParameter",
+        "args": [
+          11,
+          35713
+        ],
+        "value": false
+      },
+      {
+        "context": 0,
+        "name": "getShaderInfoLog",
+        "args": [
+          11
+        ],
+        "value": "ERROR: 0:365: 'sample' : Illegal use of reserved word\nERROR: 0:365: 'sample' : syntax error\n\u0000"
+      },
+      {
+        "context": 0,
+        "name": "getProgramParameter",
+        "args": [
+          9,
+          35715
+        ],
+        "value": false
+      },
+      {
+        "context": 0,
+        "name": "getProgramParameter",
+        "args": [
+          9,
+          35718
+        ],
+        "value": 0
+      },
+      {
+        "context": 0,
+        "name": "getProgramParameter",
+        "args": [
+          9,
+          35721
+        ],
+        "value": 0
+      },
+      {
+        "context": 0,
+        "name": "getError",
+        "args": [],
+        "value": 1282
+      }
+    ],
+    "readbacks": [],
+    "created": {
+      "createTexture": 4,
+      "createFramebuffer": 3,
+      "createBuffer": 1,
+      "createProgram": 1,
+      "createShader": 2,
+      "createVertexArray": 1
+    },
+    "deleted": {
+      "deleteShader": 2,
+      "deleteBuffer": 1,
+      "deleteVertexArray": 1,
+      "deleteProgram": 1
+    },
+    "canvasEvents": [
+      {
+        "type": "three-lab-error",
+        "detail": "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "facts": "{\n  \"productIntegrated\": false,\n  \"facts\": {\n    \"backend\": \"Three-WebGLRenderer-WebGL2\",\n    \"errors\": [],\n    \"experimentId\": \"RD-13\",\n    \"fixtureDigest\": \"378513d00d5f2a11f569ff0748d4e42ac1832674104febd052070f0fd258b81d\",\n    \"liveResources\": {\n      \"geometries\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 0\n      },\n      \"hostListeners\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 2\n      },\n      \"renderers\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 1\n      },\n      \"renderloops\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 1\n      },\n      \"textures\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 0\n      }\n    },\n    \"logicalCosts\": {\n      \"effect-0-cpuPeakBytes\": {\n        \"reason\": \"Conservative source transport/private/copy/old-new estimate, not JS heap\",\n        \"status\": \"estimated\",\n        \"unit\": \"byte\",\n        \"value\": 1066176\n      },\n      \"effect-0-fullScreenVolumes\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 1\n      },\n      \"effect-0-greedyBuildMs\": {\n        \"status\": \"measured\",\n        \"unit\": \"ms\",\n        \"value\": 0\n      },\n      \"effect-0-maxStepsPerRay\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 81\n      },\n      \"effect-0-nativeGpuBytes\": {\n        \"reason\": \"Native context/driver VRAM cannot be measured here\",\n        \"status\": \"unsupported\",\n        \"unit\": \"byte\"\n      },\n      \"effect-0-prepareMs\": {\n        \"status\": \"measured\",\n        \"unit\": \"ms\",\n        \"value\": 9.199999988079071\n      },\n      \"effect-0-projectionBuildMs\": {\n        \"status\": \"measured\",\n        \"unit\": \"ms\",\n        \"value\": 0.4000000059604645\n      },\n      \"effect-0-projectionBytes\": {\n        \"reason\": \"Typed texture/mesh payload; excludes native allocator/driver/context\",\n        \"status\": \"estimated\",\n        \"unit\": \"byte\",\n        \"value\": 73764\n      },\n      \"effect-0-triangles\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 1\n      },\n      \"effect-0-uploadCommandCpuMs\": {\n        \"reason\": \"Three upload occurs during native render; CPU preparation is not upload time\",\n        \"status\": \"not-run\",\n        \"unit\": \"ms\"\n      },\n      \"gpuBytes\": {\n        \"reason\": \"Native GPU memory unavailable\",\n        \"status\": \"unsupported\",\n        \"unit\": \"byte\"\n      },\n      \"gpuMs\": {\n        \"reason\": \"Timer available; diagnostic loop does not sample GPU timing\",\n        \"status\": \"not-run\",\n        \"unit\": \"ms\"\n      },\n      \"renderCalls\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 0\n      },\n      \"triangles\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 0\n      }\n    },\n    \"sourceRevision\": 0,\n    \"unsupportedFeatures\": [\n      \"native-pcf-shadow-parity\",\n      \"native-sky-shader-parity\",\n      \"native-numeric-qualification-not-run\",\n      \"native-water-shader-parity\",\n      \"native-material-shader-hooks\",\n      \"face-ambient-occlusion\",\n      \"gi-and-reflections\",\n      \"unknown-is-not-world-clearance\",\n      \"native-vram-unavailable\",\n      \"gpu-timing-not-qualified\"\n    ],\n    \"variantId\": \"rays-no-ao\"\n  },\n  \"private\": {\n    \"productIntegrated\": false,\n    \"variant\": \"rays-no-ao\",\n    \"caps\": {\n      \"max3D\": 2048,\n      \"maxTexture\": 16384,\n      \"maxViewport\": [\n        32767,\n        32767\n      ],\n      \"fragmentSamplers\": 16,\n      \"rgba8ui\": true,\n      \"contextLost\": false,\n      \"formatSampleCounts\": []\n    },\n    \"host\": {\n      \"backend\": \"Three-WebGLRenderer-WebGL2\",\n      \"webgl2\": true,\n      \"fixtureId\": \"F00-CONTROL\",\n      \"fixtureDigest\": \"378513d00d5f2a11f569ff0748d4e42ac1832674104febd052070f0fd258b81d\",\n      \"sourceRevision\": 0,\n      \"payloadBindings\": [\n        {\n          \"id\": \"control-cells-coverage\",\n          \"byteLength\": 18432,\n          \"sha256\": \"19a1cc81b9d025fe2f8c0decb0111ef580a499a09654a662cef2e1ba75732db1\"\n        },\n        {\n          \"id\": \"control-cells-material-slots\",\n          \"byteLength\": 18432,\n          \"sha256\": \"b51a18f630293e605a51dbeaf0052f0c8665f3ce2e849de1d67ebcfaadeb92cc\"\n        },\n        {\n          \"id\": \"control-cells-occupancy\",\n          \"byteLength\": 18432,\n          \"sha256\": \"0a1235ca30a59e9016fd9989ecfe452f598be55428bbc1982bd2aec5038f9bf0\"\n        },\n        {\n          \"id\": \"control-cells-slot-1-indices\",\n          \"byteLength\": 36912,\n          \"sha256\": \"d0ddbde922189dc197cdbf105e859603b479441b7bda26fcc41da60ea479faa6\"\n        },\n        {\n          \"id\": \"control-cells-slot-1-normals\",\n          \"byteLength\": 73824,\n          \"sha256\": \"f9297e5ae59b73fa69e2c4b1544cdf0e0c52519967928d34180bfec3a87dada8\"\n        },\n        {\n          \"id\": \"control-cells-slot-1-positions\",\n          \"byteLength\": 73824,\n          \"sha256\": \"482412f7df8a3b458b2e879cff5e2f7dbc7a096d8e77e4106ab82a963ebc9e6b\"\n        },\n        {\n          \"id\": \"control-cells-slot-2-indices\",\n          \"byteLength\": 1104,\n          \"sha256\": \"d33bb49f9ba61840948479296e89ed9ec243da0ff2d5554690a51809558b223f\"\n        },\n        {\n          \"id\": \"control-cells-slot-2-normals\",\n          \"byteLength\": 2208,\n          \"sha256\": \"b4c6dd75a54bcd8f367cea231c6cf67f0d2dfe6a258b88b7f08d739b2ab46cf7\"\n        },\n        {\n          \"id\": \"control-cells-slot-2-positions\",\n          \"byteLength\": 2208,\n          \"sha256\": \"f77a0e7f518dddc174169750642186f6a0ba194d94e57d70e15dbc5948fef500\"\n        },\n        {\n          \"id\": \"control-cells-slot-3-indices\",\n          \"byteLength\": 5040,\n          \"sha256\": \"e78b2875056779308bcdd6e32815bbba32a153ac55bf77160da4f26e58b0e82d\"\n        },\n        {\n          \"id\": \"control-cells-slot-3-normals\",\n          \"byteLength\": 10080,\n          \"sha256\": \"c259b6b39e9d7aa257ad005e5cf1007f7f3095fefde533131cd936a39286a4b5\"\n        },\n        {\n          \"id\": \"control-cells-slot-3-positions\",\n          \"byteLength\": 10080,\n          \"sha256\": \"8d2b3f33dd54ccab2c506f98097c704598369e1c3c00a0297fcdd0ccafe39cbb\"\n        },\n        {\n          \"id\": \"control-cells-slot-4-indices\",\n          \"byteLength\": 1488,\n          \"sha256\": \"87255534af1375ddb02d11d03c17c5650b074735cd175c0ca6247061512b6191\"\n        },\n        {\n          \"id\": \"control-cells-slot-4-normals\",\n          \"byteLength\": 2976,\n          \"sha256\": \"9c5d2bea13e3e4ae216ed02446bff2c8c04b0680927d29b30aee5a62c88eccdc\"\n        },\n        {\n          \"id\": \"control-cells-slot-4-positions\",\n          \"byteLength\": 2976,\n          \"sha256\": \"9226ccf58d6b0ba5da8f171a9a9beebcd973d877790a44aa0bf0fa41732777db\"\n        },\n        {\n          \"id\": \"control-cells-slot-5-indices\",\n          \"byteLength\": 1680,\n          \"sha256\": \"406d0fa517f2a430037ff41c9918ff0c96b6bc3b62cb0a0a19b3332de11ce04e\"\n        },\n        {\n          \"id\": \"control-cells-slot-5-normals\",\n          \"byteLength\": 3360,\n          \"sha256\": \"53f1b75bc284ee8ba7831a4711369cb386c14d6b462c3a793f789f00f05c0f7d\"\n        },\n        {\n          \"id\": \"control-cells-slot-5-positions\",\n          \"byteLength\": 3360,\n          \"sha256\": \"5f5b5867d8d8dcae9efa7140078c8619830cb584ea2d87d515f468cb90b582cf\"\n        },\n        {\n          \"id\": \"control-cells-slot-6-indices\",\n          \"byteLength\": 2736,\n          \"sha256\": \"12e689078e30a9e53b78e9c70f12bfd87e8c58f745871ae5f8710640a7648a78\"\n        },\n        {\n          \"id\": \"control-cells-slot-6-normals\",\n          \"byteLength\": 5472,\n          \"sha256\": \"2f41e44be5536833ce21c6903306d58f23c408fcee479db1707dc3d7c7ebf6b8\"\n        },\n        {\n          \"id\": \"control-cells-slot-6-positions\",\n          \"byteLength\": 5472,\n          \"sha256\": \"59d244a01639cc7e2e5cb9b14c5c1e507ef93454b6e372ab16f80de0270d4c33\"\n        }\n      ],\n      \"presentationProfile\": \"synthetic-lab-light-v1-no-shadows\",\n      \"frame\": {\n        \"cameraId\": \"far\",\n        \"paused\": false,\n        \"seconds\": 0,\n        \"sourceRevision\": 0,\n        \"tick\": 0,\n        \"weather\": {\n          \"cloud01\": 0.1,\n          \"rain01\": 0,\n          \"snow01\": 0,\n          \"windMps\": [\n            0,\n            0,\n            0\n          ]\n        }\n      },\n      \"resetTick\": null,\n      \"resolution\": {\n        \"width\": 1280,\n        \"height\": 720,\n        \"dpr\": 1,\n        \"bufferWidth\": 1280,\n        \"bufferHeight\": 720\n      },\n      \"colorSpace\": \"srgb\",\n      \"toneMapping\": 0,\n      \"exposure\": 1,\n      \"timerQueryAvailable\": true,\n      \"gpuMs\": {\n        \"status\": \"not-run\",\n        \"unit\": \"ms\",\n        \"reason\": \"Timer available; no qualified timer-query sampling in diagnostic control\"\n      },\n      \"nativeGpuBytes\": {\n        \"status\": \"unsupported\",\n        \"unit\": \"byte\",\n        \"reason\": \"WebGL does not expose native/driver allocation bytes\"\n      },\n      \"device\": \"ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)\",\n      \"submittedFrames\": 0,\n      \"rendered\": null,\n      \"rendererInfo\": {\n        \"geometries\": 0,\n        \"textures\": 0,\n        \"programs\": 0,\n        \"calls\": 0,\n        \"triangles\": 0\n      },\n      \"liveHosts\": {\n        \"renderers\": 1,\n        \"renderloops\": 1,\n        \"hostListeners\": 2\n      },\n      \"productIntegrated\": false\n    },\n    \"source\": [\n      {\n        \"ownerId\": \"control\",\n        \"sourceNamespace\": \"rd02-authored-cells-v1\",\n        \"sourceRevision\": 0,\n        \"regionId\": \"control-cells\",\n        \"fixtureDigest\": \"378513d00d5f2a11f569ff0748d4e42ac1832674104febd052070f0fd258b81d\",\n        \"recipeSha256\": \"6a4e4b7d2fde3944b1efb434453d1651697a005fb43af02d92b688ccecdaa5c8\",\n        \"sourceIds\": [\n          \"material-planes\",\n          \"single-shadow-caster\",\n          \"steps\"\n        ],\n        \"sourceIdMeaning\": {},\n        \"originalDimensions\": [\n          32,\n          24,\n          24\n        ],\n        \"originalOriginMeters\": [\n          0,\n          0,\n          0\n        ],\n        \"dimensions\": [\n          32,\n          24,\n          24\n        ],\n        \"offset\": [\n          0,\n          0,\n          0\n        ],\n        \"sourceSlotSha256\": \"b51a18f630293e605a51dbeaf0052f0c8665f3ce2e849de1d67ebcfaadeb92cc\"\n      }\n    ],\n    \"costs\": {\n      \"canonicalPayloadBytes\": 300096,\n      \"wholeRegionCopyBytes\": 55296,\n      \"selectedCpuBytes\": 110592,\n      \"cpuPeakEstimateBytes\": 1066176,\n      \"projectionBytes\": 73728\n    },\n    \"terminal\": {\n      \"firstFailure\": null,\n      \"pending\": false,\n      \"disposed\": false,\n      \"productIntegrated\": false\n    }\n  },\n  \"history\": []\n}"
+      },
+      {
+        "type": "voxel-rays-error",
+        "detail": "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "facts": "{\n  \"productIntegrated\": false,\n  \"history\": [\n    \"Error: Driver upload/link/draw failure after allocation: GL 1282\"\n  ],\n  \"terminal\": {\n    \"firstFailure\": \"Error: Driver upload/link/draw failure after allocation: GL 1282\",\n    \"pending\": false,\n    \"disposed\": true,\n    \"productIntegrated\": false\n  }\n}"
+      }
+    ],
+    "listeners": [
+      {
+        "operation": "addEventListener",
+        "canvasId": "viewport",
+        "type": "voxel-rays-rendered",
+        "capture": false
+      },
+      {
+        "operation": "addEventListener",
+        "canvasId": "viewport",
+        "type": "voxel-rays-error",
+        "capture": false
+      },
+      {
+        "operation": "addEventListener",
+        "canvasId": "viewport",
+        "type": "three-lab-rendered",
+        "capture": false
+      },
+      {
+        "operation": "addEventListener",
+        "canvasId": "viewport",
+        "type": "three-lab-error",
+        "capture": false
+      },
+      {
+        "operation": "addEventListener",
+        "canvasId": "viewport",
+        "type": "voxel-rays-rendered",
+        "capture": false
+      },
+      {
+        "operation": "addEventListener",
+        "canvasId": "viewport",
+        "type": "voxel-rays-error",
+        "capture": false
+      },
+      {
+        "operation": "addEventListener",
+        "canvasId": "viewport",
+        "type": "webglcontextlost",
+        "capture": false
+      },
+      {
+        "operation": "addEventListener",
+        "canvasId": "viewport",
+        "type": "webglcontextrestored",
+        "capture": false
+      },
+      {
+        "operation": "addEventListener",
+        "canvasId": "viewport",
+        "type": "webglcontextcreationerror",
+        "capture": false
+      },
+      {
+        "operation": "addEventListener",
+        "canvasId": "viewport",
+        "type": "webglcontextlost",
+        "capture": false
+      },
+      {
+        "operation": "addEventListener",
+        "canvasId": "viewport",
+        "type": "three-lab-rendered",
+        "capture": false
+      },
+      {
+        "operation": "addEventListener",
+        "canvasId": "viewport",
+        "type": "three-lab-error",
+        "capture": false
+      },
+      {
+        "operation": "removeEventListener",
+        "canvasId": "viewport",
+        "type": "webglcontextlost",
+        "capture": false
+      },
+      {
+        "operation": "removeEventListener",
+        "canvasId": "viewport",
+        "type": "webglcontextlost",
+        "capture": false
+      },
+      {
+        "operation": "removeEventListener",
+        "canvasId": "viewport",
+        "type": "webglcontextrestored",
+        "capture": false
+      },
+      {
+        "operation": "removeEventListener",
+        "canvasId": "viewport",
+        "type": "webglcontextcreationerror",
+        "capture": false
+      },
+      {
+        "operation": "removeEventListener",
+        "canvasId": "viewport",
+        "type": "three-lab-rendered",
+        "capture": false
+      },
+      {
+        "operation": "removeEventListener",
+        "canvasId": "viewport",
+        "type": "three-lab-error",
+        "capture": false
+      }
+    ],
+    "raf": {
+      "requested": 1,
+      "settled": 1,
+      "cancelled": 2,
+      "active": 0
+    }
+  },
+  "afterCleanup": {
+    "schema": "rd13-read-only-native-observer-v1",
+    "contexts": [
+      {
+        "index": 0,
+        "request": "webgl2",
+        "canvasId": "viewport",
+        "actualWebGL2": true,
+        "attributes": {
+          "alpha": false,
+          "antialias": true,
+          "depth": true,
+          "desynchronized": false,
+          "failIfMajorPerformanceCaveat": false,
+          "powerPreference": "high-performance",
+          "premultipliedAlpha": true,
+          "preserveDrawingBuffer": false,
+          "stencil": false,
+          "xrCompatible": false
+        },
+        "renderer": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "vendor": "Google Inc. (Intel)",
+        "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+        "glsl": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+        "caps": {
+          "max3D": 2048,
+          "maxDrawBuffers": 8,
+          "maxAttachments": 8
+        },
+        "extensions": [
+          "EXT_clip_control",
+          "EXT_color_buffer_float",
+          "EXT_color_buffer_half_float",
+          "EXT_conservative_depth",
+          "EXT_depth_clamp",
+          "EXT_disjoint_timer_query_webgl2",
+          "EXT_float_blend",
+          "EXT_polygon_offset_clamp",
+          "EXT_render_snorm",
+          "EXT_texture_compression_bptc",
+          "EXT_texture_compression_rgtc",
+          "EXT_texture_filter_anisotropic",
+          "EXT_texture_mirror_clamp_to_edge",
+          "EXT_texture_norm16",
+          "KHR_parallel_shader_compile",
+          "NV_shader_noperspective_interpolation",
+          "OES_draw_buffers_indexed",
+          "OES_sample_variables",
+          "OES_shader_multisample_interpolation",
+          "OES_texture_float_linear",
+          "OVR_multiview2",
+          "WEBGL_blend_func_extended",
+          "WEBGL_clip_cull_distance",
+          "WEBGL_compressed_texture_s3tc",
+          "WEBGL_compressed_texture_s3tc_srgb",
+          "WEBGL_debug_renderer_info",
+          "WEBGL_debug_shaders",
+          "WEBGL_lose_context",
+          "WEBGL_multi_draw",
+          "WEBGL_polygon_mode",
+          "WEBGL_provoking_vertex",
+          "WEBGL_stencil_texturing"
+        ],
+        "nativeDriverIdentityQualified": false
+      }
+    ],
+    "shaders": [
+      {
+        "context": 0,
+        "shader": 10,
+        "code": "#version 300 es\n\n#define attribute in\n#define varying out\n#define texture2D texture\nprecision highp float;\n\tprecision highp int;\n\tprecision highp sampler2D;\n\tprecision highp samplerCube;\n\tprecision highp sampler3D;\n\tprecision highp sampler2DArray;\n\tprecision highp sampler2DShadow;\n\tprecision highp samplerCubeShadow;\n\tprecision highp sampler2DArrayShadow;\n\tprecision highp isampler2D;\n\tprecision highp isampler3D;\n\tprecision highp isamplerCube;\n\tprecision highp isampler2DArray;\n\tprecision highp usampler2D;\n\tprecision highp usampler3D;\n\tprecision highp usamplerCube;\n\tprecision highp usampler2DArray;\n\t\n#define HIGH_PRECISION\n#define SHADER_TYPE ShaderMaterial\n#define SHADER_NAME \nuniform mat4 modelMatrix;\nuniform mat4 modelViewMatrix;\nuniform mat4 projectionMatrix;\nuniform mat4 viewMatrix;\nuniform mat3 normalMatrix;\nuniform vec3 cameraPosition;\nuniform bool isOrthographic;\n#ifdef USE_INSTANCING\n\tattribute mat4 instanceMatrix;\n#endif\n#ifdef USE_INSTANCING_COLOR\n\tattribute vec3 instanceColor;\n#endif\n#ifdef USE_INSTANCING_MORPH\n\tuniform sampler2D morphTexture;\n#endif\nattribute vec3 position;\nattribute vec3 normal;\nattribute vec2 uv;\n#ifdef USE_UV1\n\tattribute vec2 uv1;\n#endif\n#ifdef USE_UV2\n\tattribute vec2 uv2;\n#endif\n#ifdef USE_UV3\n\tattribute vec2 uv3;\n#endif\n#ifdef USE_TANGENT\n\tattribute vec4 tangent;\n#endif\n#if defined( USE_COLOR_ALPHA )\n\tattribute vec4 color;\n#elif defined( USE_COLOR )\n\tattribute vec3 color;\n#endif\n#ifdef USE_SKINNING\n\tattribute vec4 skinIndex;\n\tattribute vec4 skinWeight;\n#endif\n\nvoid main() { gl_Position=vec4(position.xy,0.0,1.0); }"
+      },
+      {
+        "context": 0,
+        "shader": 11,
+        "code": "#version 300 es\n#define varying in\n\n\n#define gl_FragDepthEXT gl_FragDepth\n#define texture2D texture\n#define textureCube texture\n#define texture2DProj textureProj\n#define texture2DLodEXT textureLod\n#define texture2DProjLodEXT textureProjLod\n#define textureCubeLodEXT textureLod\n#define texture2DGradEXT textureGrad\n#define texture2DProjGradEXT textureProjGrad\n#define textureCubeGradEXT textureGrad\nprecision highp float;\n\tprecision highp int;\n\tprecision highp sampler2D;\n\tprecision highp samplerCube;\n\tprecision highp sampler3D;\n\tprecision highp sampler2DArray;\n\tprecision highp sampler2DShadow;\n\tprecision highp samplerCubeShadow;\n\tprecision highp sampler2DArrayShadow;\n\tprecision highp isampler2D;\n\tprecision highp isampler3D;\n\tprecision highp isamplerCube;\n\tprecision highp isampler2DArray;\n\tprecision highp usampler2D;\n\tprecision highp usampler3D;\n\tprecision highp usamplerCube;\n\tprecision highp usampler2DArray;\n\t\n#define HIGH_PRECISION\n#define SHADER_TYPE ShaderMaterial\n#define SHADER_NAME \nuniform mat4 viewMatrix;\nuniform vec3 cameraPosition;\nuniform bool isOrthographic;\n#define OPAQUE\nvec4 LinearTransferOETF( in vec4 value ) {\n\treturn value;\n}\nvec4 sRGBTransferEOTF( in vec4 value ) {\n\treturn vec4( mix( pow( value.rgb * 0.9478672986 + vec3( 0.0521327014 ), vec3( 2.4 ) ), value.rgb * 0.0773993808, vec3( lessThanEqual( value.rgb, vec3( 0.04045 ) ) ) ), value.a );\n}\nvec4 sRGBTransferOETF( in vec4 value ) {\n\treturn vec4( mix( pow( value.rgb, vec3( 0.41666 ) ) * 1.055 - vec3( 0.055 ), value.rgb * 12.92, vec3( lessThanEqual( value.rgb, vec3( 0.0031308 ) ) ) ), value.a );\n}\nvec4 linearToOutputTexel( vec4 value ) {\n\treturn sRGBTransferOETF( vec4( value.rgb * mat3( 1.0000,-0.0000,-0.0000,-0.0000,1.0000,0.0000,0.0000,0.0000,1.0000 ), value.a ) );\n}\nfloat luminance( const in vec3 rgb ) {\n\tconst vec3 weights = vec3( 0.2126, 0.7152, 0.0722 );\n\treturn dot( weights, rgb );\n}\n\n\nlayout(location=0) out vec4 rayColor;\n#define gl_FragColor rayColor\n#define PI 3.141592653589793\n#define PI2 6.283185307179586\n#define PI_HALF 1.5707963267948966\n#define RECIPROCAL_PI 0.3183098861837907\n#define RECIPROCAL_PI2 0.15915494309189535\n#define EPSILON 1e-6\n#ifndef saturate\n#define saturate( a ) clamp( a, 0.0, 1.0 )\n#endif\n#define whiteComplement( a ) ( 1.0 - saturate( a ) )\nfloat pow2( const in float x ) { return x*x; }\nvec3 pow2( const in vec3 x ) { return x*x; }\nfloat pow3( const in float x ) { return x*x*x; }\nfloat pow4( const in float x ) { float x2 = x*x; return x2*x2; }\nfloat max3( const in vec3 v ) { return max( max( v.x, v.y ), v.z ); }\nfloat average( const in vec3 v ) { return dot( v, vec3( 0.3333333 ) ); }\nhighp float rand( const in vec2 uv ) {\n\tconst highp float a = 12.9898, b = 78.233, c = 43758.5453;\n\thighp float dt = dot( uv.xy, vec2( a,b ) ), sn = mod( dt, PI );\n\treturn fract( sin( sn ) * c );\n}\n#ifdef HIGH_PRECISION\n\tfloat precisionSafeLength( vec3 v ) { return length( v ); }\n#else\n\tfloat precisionSafeLength( vec3 v ) {\n\t\tfloat maxComponent = max3( abs( v ) );\n\t\treturn length( v / maxComponent ) * maxComponent;\n\t}\n#endif\nstruct IncidentLight {\n\tvec3 color;\n\tvec3 direction;\n\tbool visible;\n};\nstruct ReflectedLight {\n\tvec3 directDiffuse;\n\tvec3 directSpecular;\n\tvec3 indirectDiffuse;\n\tvec3 indirectSpecular;\n};\n#ifdef USE_ALPHAHASH\n\tvarying vec3 vPosition;\n#endif\nvec3 transformDirection( in vec3 dir, in mat4 matrix ) {\n\treturn normalize( ( matrix * vec4( dir, 0.0 ) ).xyz );\n}\n#define inverseTransformDirection transformDirectionByInverseViewMatrix\nvec3 transformNormalByInverseViewMatrix( in vec3 normal, in mat4 viewMatrix ) {\n\treturn normalize( ( vec4( normal, 0.0 ) * viewMatrix ).xyz );\n}\nvec3 transformDirectionByInverseViewMatrix( in vec3 dir, in mat4 viewMatrix ) {\n\treturn normalize( ( vec4( dir, 0.0 ) * viewMatrix ).xyz );\n}\nbool isPerspectiveMatrix( mat4 m ) {\n\treturn m[ 2 ][ 3 ] == - 1.0;\n}\nvec2 equirectUv( in vec3 dir ) {\n\tfloat u = atan( dir.z, dir.x ) * RECIPROCAL_PI2 + 0.5;\n\tfloat v = asin( clamp( dir.y, - 1.0, 1.0 ) ) * RECIPROCAL_PI + 0.5;\n\treturn vec2( u, v );\n}\nvec3 BRDF_Lambert( const in vec3 diffuseColor ) {\n\treturn RECIPROCAL_PI * diffuseColor;\n}\nvec3 F_Schlick( const in vec3 f0, const in float f90, const in float dotVH ) {\n\tfloat fresnel = exp2( ( - 5.55473 * dotVH - 6.98316 ) * dotVH );\n\treturn f0 * ( 1.0 - fresnel ) + ( f90 * fresnel );\n}\nfloat F_Schlick( const in float f0, const in float f90, const in float dotVH ) {\n\tfloat fresnel = exp2( ( - 5.55473 * dotVH - 6.98316 ) * dotVH );\n\treturn f0 * ( 1.0 - fresnel ) + ( f90 * fresnel );\n} // validated\nfloat G_BlinnPhong_Implicit( ) {\n\treturn 0.25;\n}\nfloat D_BlinnPhong( const in float shininess, const in float dotNH ) {\n\treturn RECIPROCAL_PI * ( shininess * 0.5 + 1.0 ) * pow( dotNH, shininess );\n}\nvec3 BRDF_BlinnPhong( const in vec3 lightDir, const in vec3 viewDir, const in vec3 normal, const in vec3 specularColor, const in float shininess ) {\n\tvec3 halfDir = normalize( lightDir + viewDir );\n\tfloat dotNH = saturate( dot( normal, halfDir ) );\n\tfloat dotVH = saturate( dot( viewDir, halfDir ) );\n\tvec3 F = F_Schlick( specularColor, 1.0, dotVH );\n\tfloat G = G_BlinnPhong_Implicit( );\n\tfloat D = D_BlinnPhong( shininess, dotNH );\n\treturn F * ( G * D );\n} // validated\nuniform bool receiveShadow;\nuniform vec3 ambientLightColor;\n#if defined( USE_LIGHT_PROBES )\n\tuniform vec3 lightProbe[ 9 ];\n#endif\nvec3 shGetIrradianceAt( in vec3 normal, in vec3 shCoefficients[ 9 ] ) {\n\tfloat x = normal.x, y = normal.y, z = normal.z;\n\tvec3 result = shCoefficients[ 0 ] * 0.886227;\n\tresult += shCoefficients[ 1 ] * 2.0 * 0.511664 * y;\n\tresult += shCoefficients[ 2 ] * 2.0 * 0.511664 * z;\n\tresult += shCoefficients[ 3 ] * 2.0 * 0.511664 * x;\n\tresult += shCoefficients[ 4 ] * 2.0 * 0.429043 * x * y;\n\tresult += shCoefficients[ 5 ] * 2.0 * 0.429043 * y * z;\n\tresult += shCoefficients[ 6 ] * ( 0.743125 * z * z - 0.247708 );\n\tresult += shCoefficients[ 7 ] * 2.0 * 0.429043 * x * z;\n\tresult += shCoefficients[ 8 ] * 0.429043 * ( x * x - y * y );\n\treturn result;\n}\nvec3 getLightProbeIrradiance( const in vec3 lightProbe[ 9 ], const in vec3 normal ) {\n\tvec3 worldNormal = transformNormalByInverseViewMatrix( normal, viewMatrix );\n\tvec3 irradiance = shGetIrradianceAt( worldNormal, lightProbe );\n\treturn irradiance;\n}\nvec3 getAmbientLightIrradiance( const in vec3 ambientLightColor ) {\n\tvec3 irradiance = ambientLightColor;\n\treturn irradiance;\n}\nfloat getDistanceAttenuation( const in float lightDistance, const in float cutoffDistance, const in float decayExponent ) {\n\tfloat distanceFalloff = 1.0 / max( pow( lightDistance, decayExponent ), 0.01 );\n\tif ( cutoffDistance > 0.0 ) {\n\t\tdistanceFalloff *= pow2( saturate( 1.0 - pow4( lightDistance / cutoffDistance ) ) );\n\t}\n\treturn distanceFalloff;\n}\nfloat getSpotAttenuation( const in float coneCosine, const in float penumbraCosine, const in float angleCosine ) {\n\treturn smoothstep( coneCosine, penumbraCosine, angleCosine );\n}\n#if 2 > 0\n\tstruct DirectionalLight {\n\t\tvec3 direction;\n\t\tvec3 color;\n\t};\n\tuniform DirectionalLight directionalLights[ 2 ];\n\tvoid getDirectionalLightInfo( const in DirectionalLight directionalLight, out IncidentLight light ) {\n\t\tlight.color = directionalLight.color;\n\t\tlight.direction = directionalLight.direction;\n\t\tlight.visible = true;\n\t}\n#endif\n#if 0 > 0\n\tstruct PointLight {\n\t\tvec3 position;\n\t\tvec3 color;\n\t\tfloat distance;\n\t\tfloat decay;\n\t};\n\tuniform PointLight pointLights[ 0 ];\n\tvoid getPointLightInfo( const in PointLight pointLight, const in vec3 geometryPosition, out IncidentLight light ) {\n\t\tvec3 lVector = pointLight.position - geometryPosition;\n\t\tlight.direction = normalize( lVector );\n\t\tfloat lightDistance = length( lVector );\n\t\tlight.color = pointLight.color;\n\t\tlight.color *= getDistanceAttenuation( lightDistance, pointLight.distance, pointLight.decay );\n\t\tlight.visible = ( light.color != vec3( 0.0 ) );\n\t}\n#endif\n#if 0 > 0\n\tstruct SpotLight {\n\t\tvec3 position;\n\t\tvec3 direction;\n\t\tvec3 color;\n\t\tfloat distance;\n\t\tfloat decay;\n\t\tfloat coneCos;\n\t\tfloat penumbraCos;\n\t};\n\tuniform SpotLight spotLights[ 0 ];\n\tvoid getSpotLightInfo( const in SpotLight spotLight, const in vec3 geometryPosition, out IncidentLight light ) {\n\t\tvec3 lVector = spotLight.position - geometryPosition;\n\t\tlight.direction = normalize( lVector );\n\t\tfloat angleCos = dot( light.direction, spotLight.direction );\n\t\tfloat spotAttenuation = getSpotAttenuation( spotLight.coneCos, spotLight.penumbraCos, angleCos );\n\t\tif ( spotAttenuation > 0.0 ) {\n\t\t\tfloat lightDistance = length( lVector );\n\t\t\tlight.color = spotLight.color * spotAttenuation;\n\t\t\tlight.color *= getDistanceAttenuation( lightDistance, spotLight.distance, spotLight.decay );\n\t\t\tlight.visible = ( light.color != vec3( 0.0 ) );\n\t\t} else {\n\t\t\tlight.color = vec3( 0.0 );\n\t\t\tlight.visible = false;\n\t\t}\n\t}\n#endif\n#if 0 > 0\n\tstruct RectAreaLight {\n\t\tvec3 color;\n\t\tvec3 position;\n\t\tvec3 halfWidth;\n\t\tvec3 halfHeight;\n\t};\n\tuniform sampler2D ltc_1;\tuniform sampler2D ltc_2;\n\tuniform RectAreaLight rectAreaLights[ 0 ];\n#endif\n#if 1 > 0\n\tstruct HemisphereLight {\n\t\tvec3 direction;\n\t\tvec3 skyColor;\n\t\tvec3 groundColor;\n\t};\n\tuniform HemisphereLight hemisphereLights[ 1 ];\n\tvec3 getHemisphereLightIrradiance( const in HemisphereLight hemiLight, const in vec3 normal ) {\n\t\tfloat dotNL = dot( normal, hemiLight.direction );\n\t\tfloat hemiDiffuseWeight = 0.5 * dotNL + 0.5;\n\t\tvec3 irradiance = mix( hemiLight.groundColor, hemiLight.skyColor, hemiDiffuseWeight );\n\t\treturn irradiance;\n\t}\n#endif\n#ifdef USE_LIGHT_PROBES_GRID\nuniform highp sampler3D probesSH;\nuniform vec3 probesMin;\nuniform vec3 probesMax;\nuniform vec3 probesResolution;\nvec3 getLightProbeGridIrradiance( vec3 worldPos, vec3 worldNormal ) {\n\tvec3 res = probesResolution;\n\tvec3 gridRange = probesMax - probesMin;\n\tvec3 resMinusOne = res - 1.0;\n\tvec3 probeSpacing = gridRange / resMinusOne;\n\tvec3 samplePos = worldPos + worldNormal * probeSpacing * 0.5;\n\tvec3 uvw = clamp( ( samplePos - probesMin ) / gridRange, 0.0, 1.0 );\n\tuvw = uvw * resMinusOne / res + 0.5 / res;\n\tfloat nz          = res.z;\n\tfloat paddedSlices = nz + 2.0;\n\tfloat atlasDepth  = 7.0 * paddedSlices;\n\tfloat uvZBase     = uvw.z * nz + 1.0;\n\tvec4 s0 = texture( probesSH, vec3( uvw.xy, ( uvZBase                       ) / atlasDepth ) );\n\tvec4 s1 = texture( probesSH, vec3( uvw.xy, ( uvZBase +       paddedSlices   ) / atlasDepth ) );\n\tvec4 s2 = texture( probesSH, vec3( uvw.xy, ( uvZBase + 2.0 * paddedSlices   ) / atlasDepth ) );\n\tvec4 s3 = texture( probesSH, vec3( uvw.xy, ( uvZBase + 3.0 * paddedSlices   ) / atlasDepth ) );\n\tvec4 s4 = texture( probesSH, vec3( uvw.xy, ( uvZBase + 4.0 * paddedSlices   ) / atlasDepth ) );\n\tvec4 s5 = texture( probesSH, vec3( uvw.xy, ( uvZBase + 5.0 * paddedSlices   ) / atlasDepth ) );\n\tvec4 s6 = texture( probesSH, vec3( uvw.xy, ( uvZBase + 6.0 * paddedSlices   ) / atlasDepth ) );\n\tvec3 c0 = s0.xyz;\n\tvec3 c1 = vec3( s0.w, s1.xy );\n\tvec3 c2 = vec3( s1.zw, s2.x );\n\tvec3 c3 = s2.yzw;\n\tvec3 c4 = s3.xyz;\n\tvec3 c5 = vec3( s3.w, s4.xy );\n\tvec3 c6 = vec3( s4.zw, s5.x );\n\tvec3 c7 = s5.yzw;\n\tvec3 c8 = s6.xyz;\n\tfloat x = worldNormal.x, y = worldNormal.y, z = worldNormal.z;\n\tvec3 result = c0 * 0.886227;\n\tresult += c1 * 2.0 * 0.511664 * y;\n\tresult += c2 * 2.0 * 0.511664 * z;\n\tresult += c3 * 2.0 * 0.511664 * x;\n\tresult += c4 * 2.0 * 0.429043 * x * y;\n\tresult += c5 * 2.0 * 0.429043 * y * z;\n\tresult += c6 * ( 0.743125 * z * z - 0.247708 );\n\tresult += c7 * 2.0 * 0.429043 * x * z;\n\tresult += c8 * 0.429043 * ( x * x - y * y );\n\treturn max( result, vec3( 0.0 ) );\n}\n#endif\nuniform mat4 rayInverseProjection;\nuniform mat4 projectionMatrix;\nuniform mat4 rayCameraWorld;\nuniform mat4 gridFromWorld;\nuniform mat3 worldNormalMatrix;\nuniform vec2 drawingBuffer;\nuniform vec3 slotColor[8];\nuniform vec3 slotEmission[8];\n#ifdef USE_FOG\nuniform vec3 fogColor;\nuniform float fogNear;\nuniform float fogFar;\n#endif\n\nuniform highp usampler3D voxelData;\nuniform ivec3 gridSize;\nuniform int slotDoubleSided[8];\nfloat projectionDepth(vec3 worldHit,mat4 projectionView) { vec4 clip=projectionView*vec4(worldHit,1.0); return clip.z/clip.w*0.5+0.5; }\nstruct VoxelHit { bool hit; bool unknown; bool traversalFault; float t; ivec3 cell; int slot; vec3 normal; };\nuvec4 sourceCell(ivec3 c) {\n  if (any(lessThan(c,ivec3(0))) || any(greaterThanEqual(c,gridSize))) { return uvec4(0); }\n  return texelFetch(voxelData,c,0);\n}\nvec3 axisNormal(int a,float signValue) { vec3 n=vec3(0); n[a]=signValue; return n; }\nVoxelHit traceVoxels(vec3 o,vec3 gridDirection,bool selectVisible) {\n  VoxelHit h; h.hit=false; h.unknown=false; h.traversalFault=false; h.t=0.0; h.cell=ivec3(-1); h.slot=0; h.normal=vec3(0);\n  float entry=-1e30; float leave=1e30; int entryAxis=0;\n  for (int a=0;a<3;a++) {\n    if (gridDirection[a]==0.0) {\n      if (o[a]<0.0 || o[a]>=float(gridSize[a])) { return h; }\n    } else {\n      float t0=(0.0-o[a])/gridDirection[a]; float t1=(float(gridSize[a])-o[a])/gridDirection[a];\n      float nearT=min(t0,t1); float farT=max(t0,t1);\n      if (nearT>entry) { entry=nearT; entryAxis=a; }\n      leave=min(leave,farT);\n    }\n  }\n  float t=max(0.0,entry); if (leave<=t) { return h; }\n  vec3 p=o+t*gridDirection; ivec3 cell=ivec3(floor(p)); ivec3 stepDir=ivec3(sign(gridDirection));\n  for (int a=0;a<3;a++) {\n    if (gridDirection[a]<0.0 && p[a]==floor(p[a])) { cell[a]-=1; }\n  }\n  // Only a mathematically proved BOX ENTRY permits a roundoff clamp.\n  if (entry>=0.0) { cell=clamp(cell,ivec3(0),gridSize-ivec3(1)); }\n  if (any(lessThan(cell,ivec3(0))) || any(greaterThanEqual(cell,gridSize))) { return h; }\n  vec3 crossing=vec3(1e30);\n  for (int a=0;a<3;a++) {\n    if (gridDirection[a]!=0.0) { crossing[a]=(float(cell[a]+(stepDir[a]>0?1:0))-o[a])/gridDirection[a]; }\n  }\n  bool insideRun=entry<0.0 && sourceCell(cell).r!=0u; ivec3 previous=cell; int previousSlot=int(sourceCell(cell).b);\n  vec3 face=axisNormal(entryAxis,-float(stepDir[entryAxis]));\n  // First valid cell tested BEFORE any step. A ray crosses at most sum(dimensions) planes.\n  int admittedSteps=gridSize.x+gridSize.y+gridSize.z+1;\n  for (int iteration=0;iteration<193;iteration++) {\n    if (iteration>=admittedSteps) { h.traversalFault=true; return h; }\n    uvec4 sample=sourceCell(cell); h.unknown=h.unknown || sample.g==0u;\n    bool solid=sample.r!=0u;\n    if (!insideRun && solid) { h.hit=true; h.t=t; h.cell=cell; h.slot=int(sample.b); h.normal=face; return h; }\n    if (insideRun && !solid) {\n      if (!selectVisible || slotDoubleSided[previousSlot]!=0) { h.hit=true; h.t=t; h.cell=previous; h.slot=previousSlot; h.normal=-face; return h; }\n      // Rejected back exit: keep this empty interval, Unknown, world t and ONE traversal budget.\n      insideRun=false;\n    }\n    if (solid) { previous=cell; previousSlot=int(sample.b); }\n    float nextT=min(crossing.x,min(crossing.y,crossing.z));\n    if (nextT<=t) { h.traversalFault=true; return h; }\n    bvec3 tied=equal(crossing,vec3(nextT)); int a=tied.x?0:(tied.y?1:2); face=axisNormal(a,-float(stepDir[a]));\n    if (nextT>=leave) {\n      if (insideRun && (!selectVisible || slotDoubleSided[previousSlot]!=0)) { h.hit=true; h.t=leave; h.cell=previous; h.slot=previousSlot; h.normal=-face; }\n      return h;\n    }\n    // ALL tied axes advance; no zero-length intermediate cells are ever sampled.\n    for (int j=0;j<3;j++) {\n      if (tied[j]) { cell[j]+=stepDir[j]; crossing[j]=(float(cell[j]+(stepDir[j]>0?1:0))-o[j])/gridDirection[j]; }\n    }\n    t=nextT;\n  }\n  h.traversalFault=true; return h;\n}\n// Geometric first-exit semantics are unchanged; only visible projection filters exits during traversal.\nVoxelHit traceVoxels(vec3 o,vec3 gridDirection) { return traceVoxels(o,gridDirection,false); }\nVoxelHit traceVisibleVoxels(vec3 o,vec3 gridDirection) { return traceVoxels(o,gridDirection,true); }\n\nvoid main() {\n  vec2 ndc=gl_FragCoord.xy/drawingBuffer*2.0-1.0;\n  vec4 nearPoint=rayCameraWorld*rayInverseProjection*vec4(ndc,-1.0,1.0);\n  vec4 farPoint=rayCameraWorld*rayInverseProjection*vec4(ndc,1.0,1.0);\n  vec3 worldOrigin=nearPoint.xyz/nearPoint.w;\n  vec3 worldDirection=normalize(farPoint.xyz/farPoint.w-worldOrigin);\n  vec3 gridOrigin=(gridFromWorld*vec4(worldOrigin,1.0)).xyz;\n  vec3 gridDirection=(gridFromWorld*vec4(worldDirection,0.0)).xyz;\n  VoxelHit h=traceVisibleVoxels(gridOrigin,gridDirection);\n  if (h.traversalFault) { gl_FragColor=vec4(1.0,0.0,1.0,1.0); gl_FragDepth=0.0; return; }\n  if (!h.hit) { discard; }\n  vec3 worldHit=worldOrigin+h.t*worldDirection;\n  vec3 worldNormal=normalize(worldNormalMatrix*h.normal);\n  bool back=dot(worldNormal,worldDirection)>0.0;\n  if (back) { worldNormal=-worldNormal; }\n  vec4 viewHit=viewMatrix*vec4(worldHit,1.0);\n  vec4 clip=projectionMatrix*viewHit;\n  float hitDepth=projectionDepth(worldHit,projectionMatrix*viewMatrix);\n  if (clip.w<=0.0 || hitDepth<0.0 || hitDepth>1.0) { discard; }\n  gl_FragDepth=hitDepth;\n  vec3 normal=normalize(mat3(viewMatrix)*worldNormal);\n  vec3 irradiance=getAmbientLightIrradiance(ambientLightColor);\n  #if 1 > 0\n  for (int i=0;i<1;i++) { irradiance+=getHemisphereLightIrradiance(hemisphereLights[i],normal); }\n  #endif\n  #if 2 > 0\n  for (int i=0;i<2;i++) { irradiance+=max(dot(normal,directionalLights[i].direction),0.0)*directionalLights[i].color; }\n  #endif\n  gl_FragColor=vec4(slotColor[h.slot]*irradiance*RECIPROCAL_PI+slotEmission[h.slot],1.0);\n#if defined( TONE_MAPPING )\n\tgl_FragColor.rgb = toneMapping( gl_FragColor.rgb );\n#endif\ngl_FragColor = linearToOutputTexel( gl_FragColor );\n  #ifdef USE_FOG\n  float fogFactor=smoothstep(fogNear,fogFar,-viewHit.z);\n  gl_FragColor.rgb=mix(gl_FragColor.rgb,fogColor,fogFactor);\n  #endif\n}\n"
+      }
+    ],
+    "queries": [
+      {
+        "context": 0,
+        "name": "getInternalformatParameter",
+        "args": [
+          36161,
+          36220,
+          32937
+        ],
+        "value": []
+      },
+      {
+        "context": 0,
+        "name": "getProgramInfoLog",
+        "args": [
+          9
+        ],
+        "value": "Fragment shader is not compiled.\n\u0000"
+      },
+      {
+        "context": 0,
+        "name": "getShaderInfoLog",
+        "args": [
+          10
+        ],
+        "value": ""
+      },
+      {
+        "context": 0,
+        "name": "getShaderInfoLog",
+        "args": [
+          11
+        ],
+        "value": "ERROR: 0:365: 'sample' : Illegal use of reserved word\nERROR: 0:365: 'sample' : syntax error\n\u0000"
+      },
+      {
+        "context": 0,
+        "name": "getProgramParameter",
+        "args": [
+          9,
+          35714
+        ],
+        "value": false
+      },
+      {
+        "context": 0,
+        "name": "getShaderParameter",
+        "args": [
+          10,
+          35713
+        ],
+        "value": true
+      },
+      {
+        "context": 0,
+        "name": "getShaderInfoLog",
+        "args": [
+          10
+        ],
+        "value": ""
+      },
+      {
+        "context": 0,
+        "name": "getShaderParameter",
+        "args": [
+          11,
+          35713
+        ],
+        "value": false
+      },
+      {
+        "context": 0,
+        "name": "getShaderInfoLog",
+        "args": [
+          11
+        ],
+        "value": "ERROR: 0:365: 'sample' : Illegal use of reserved word\nERROR: 0:365: 'sample' : syntax error\n\u0000"
+      },
+      {
+        "context": 0,
+        "name": "getProgramParameter",
+        "args": [
+          9,
+          35715
+        ],
+        "value": false
+      },
+      {
+        "context": 0,
+        "name": "getProgramParameter",
+        "args": [
+          9,
+          35718
+        ],
+        "value": 0
+      },
+      {
+        "context": 0,
+        "name": "getProgramParameter",
+        "args": [
+          9,
+          35721
+        ],
+        "value": 0
+      },
+      {
+        "context": 0,
+        "name": "getError",
+        "args": [],
+        "value": 1282
+      }
+    ],
+    "readbacks": [],
+    "created": {
+      "createTexture": 4,
+      "createFramebuffer": 3,
+      "createBuffer": 1,
+      "createProgram": 1,
+      "createShader": 2,
+      "createVertexArray": 1
+    },
+    "deleted": {
+      "deleteShader": 2,
+      "deleteBuffer": 1,
+      "deleteVertexArray": 1,
+      "deleteProgram": 1
+    },
+    "canvasEvents": [
+      {
+        "type": "three-lab-error",
+        "detail": "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "facts": "{\n  \"productIntegrated\": false,\n  \"facts\": {\n    \"backend\": \"Three-WebGLRenderer-WebGL2\",\n    \"errors\": [],\n    \"experimentId\": \"RD-13\",\n    \"fixtureDigest\": \"378513d00d5f2a11f569ff0748d4e42ac1832674104febd052070f0fd258b81d\",\n    \"liveResources\": {\n      \"geometries\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 0\n      },\n      \"hostListeners\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 2\n      },\n      \"renderers\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 1\n      },\n      \"renderloops\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 1\n      },\n      \"textures\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 0\n      }\n    },\n    \"logicalCosts\": {\n      \"effect-0-cpuPeakBytes\": {\n        \"reason\": \"Conservative source transport/private/copy/old-new estimate, not JS heap\",\n        \"status\": \"estimated\",\n        \"unit\": \"byte\",\n        \"value\": 1066176\n      },\n      \"effect-0-fullScreenVolumes\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 1\n      },\n      \"effect-0-greedyBuildMs\": {\n        \"status\": \"measured\",\n        \"unit\": \"ms\",\n        \"value\": 0\n      },\n      \"effect-0-maxStepsPerRay\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 81\n      },\n      \"effect-0-nativeGpuBytes\": {\n        \"reason\": \"Native context/driver VRAM cannot be measured here\",\n        \"status\": \"unsupported\",\n        \"unit\": \"byte\"\n      },\n      \"effect-0-prepareMs\": {\n        \"status\": \"measured\",\n        \"unit\": \"ms\",\n        \"value\": 9.199999988079071\n      },\n      \"effect-0-projectionBuildMs\": {\n        \"status\": \"measured\",\n        \"unit\": \"ms\",\n        \"value\": 0.4000000059604645\n      },\n      \"effect-0-projectionBytes\": {\n        \"reason\": \"Typed texture/mesh payload; excludes native allocator/driver/context\",\n        \"status\": \"estimated\",\n        \"unit\": \"byte\",\n        \"value\": 73764\n      },\n      \"effect-0-triangles\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 1\n      },\n      \"effect-0-uploadCommandCpuMs\": {\n        \"reason\": \"Three upload occurs during native render; CPU preparation is not upload time\",\n        \"status\": \"not-run\",\n        \"unit\": \"ms\"\n      },\n      \"gpuBytes\": {\n        \"reason\": \"Native GPU memory unavailable\",\n        \"status\": \"unsupported\",\n        \"unit\": \"byte\"\n      },\n      \"gpuMs\": {\n        \"reason\": \"Timer available; diagnostic loop does not sample GPU timing\",\n        \"status\": \"not-run\",\n        \"unit\": \"ms\"\n      },\n      \"renderCalls\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 0\n      },\n      \"triangles\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 0\n      }\n    },\n    \"sourceRevision\": 0,\n    \"unsupportedFeatures\": [\n      \"native-pcf-shadow-parity\",\n      \"native-sky-shader-parity\",\n      \"native-numeric-qualification-not-run\",\n      \"native-water-shader-parity\",\n      \"native-material-shader-hooks\",\n      \"face-ambient-occlusion\",\n      \"gi-and-reflections\",\n      \"unknown-is-not-world-clearance\",\n      \"native-vram-unavailable\",\n      \"gpu-timing-not-qualified\"\n    ],\n    \"variantId\": \"rays-no-ao\"\n  },\n  \"private\": {\n    \"productIntegrated\": false,\n    \"variant\": \"rays-no-ao\",\n    \"caps\": {\n      \"max3D\": 2048,\n      \"maxTexture\": 16384,\n      \"maxViewport\": [\n        32767,\n        32767\n      ],\n      \"fragmentSamplers\": 16,\n      \"rgba8ui\": true,\n      \"contextLost\": false,\n      \"formatSampleCounts\": []\n    },\n    \"host\": {\n      \"backend\": \"Three-WebGLRenderer-WebGL2\",\n      \"webgl2\": true,\n      \"fixtureId\": \"F00-CONTROL\",\n      \"fixtureDigest\": \"378513d00d5f2a11f569ff0748d4e42ac1832674104febd052070f0fd258b81d\",\n      \"sourceRevision\": 0,\n      \"payloadBindings\": [\n        {\n          \"id\": \"control-cells-coverage\",\n          \"byteLength\": 18432,\n          \"sha256\": \"19a1cc81b9d025fe2f8c0decb0111ef580a499a09654a662cef2e1ba75732db1\"\n        },\n        {\n          \"id\": \"control-cells-material-slots\",\n          \"byteLength\": 18432,\n          \"sha256\": \"b51a18f630293e605a51dbeaf0052f0c8665f3ce2e849de1d67ebcfaadeb92cc\"\n        },\n        {\n          \"id\": \"control-cells-occupancy\",\n          \"byteLength\": 18432,\n          \"sha256\": \"0a1235ca30a59e9016fd9989ecfe452f598be55428bbc1982bd2aec5038f9bf0\"\n        },\n        {\n          \"id\": \"control-cells-slot-1-indices\",\n          \"byteLength\": 36912,\n          \"sha256\": \"d0ddbde922189dc197cdbf105e859603b479441b7bda26fcc41da60ea479faa6\"\n        },\n        {\n          \"id\": \"control-cells-slot-1-normals\",\n          \"byteLength\": 73824,\n          \"sha256\": \"f9297e5ae59b73fa69e2c4b1544cdf0e0c52519967928d34180bfec3a87dada8\"\n        },\n        {\n          \"id\": \"control-cells-slot-1-positions\",\n          \"byteLength\": 73824,\n          \"sha256\": \"482412f7df8a3b458b2e879cff5e2f7dbc7a096d8e77e4106ab82a963ebc9e6b\"\n        },\n        {\n          \"id\": \"control-cells-slot-2-indices\",\n          \"byteLength\": 1104,\n          \"sha256\": \"d33bb49f9ba61840948479296e89ed9ec243da0ff2d5554690a51809558b223f\"\n        },\n        {\n          \"id\": \"control-cells-slot-2-normals\",\n          \"byteLength\": 2208,\n          \"sha256\": \"b4c6dd75a54bcd8f367cea231c6cf67f0d2dfe6a258b88b7f08d739b2ab46cf7\"\n        },\n        {\n          \"id\": \"control-cells-slot-2-positions\",\n          \"byteLength\": 2208,\n          \"sha256\": \"f77a0e7f518dddc174169750642186f6a0ba194d94e57d70e15dbc5948fef500\"\n        },\n        {\n          \"id\": \"control-cells-slot-3-indices\",\n          \"byteLength\": 5040,\n          \"sha256\": \"e78b2875056779308bcdd6e32815bbba32a153ac55bf77160da4f26e58b0e82d\"\n        },\n        {\n          \"id\": \"control-cells-slot-3-normals\",\n          \"byteLength\": 10080,\n          \"sha256\": \"c259b6b39e9d7aa257ad005e5cf1007f7f3095fefde533131cd936a39286a4b5\"\n        },\n        {\n          \"id\": \"control-cells-slot-3-positions\",\n          \"byteLength\": 10080,\n          \"sha256\": \"8d2b3f33dd54ccab2c506f98097c704598369e1c3c00a0297fcdd0ccafe39cbb\"\n        },\n        {\n          \"id\": \"control-cells-slot-4-indices\",\n          \"byteLength\": 1488,\n          \"sha256\": \"87255534af1375ddb02d11d03c17c5650b074735cd175c0ca6247061512b6191\"\n        },\n        {\n          \"id\": \"control-cells-slot-4-normals\",\n          \"byteLength\": 2976,\n          \"sha256\": \"9c5d2bea13e3e4ae216ed02446bff2c8c04b0680927d29b30aee5a62c88eccdc\"\n        },\n        {\n          \"id\": \"control-cells-slot-4-positions\",\n          \"byteLength\": 2976,\n          \"sha256\": \"9226ccf58d6b0ba5da8f171a9a9beebcd973d877790a44aa0bf0fa41732777db\"\n        },\n        {\n          \"id\": \"control-cells-slot-5-indices\",\n          \"byteLength\": 1680,\n          \"sha256\": \"406d0fa517f2a430037ff41c9918ff0c96b6bc3b62cb0a0a19b3332de11ce04e\"\n        },\n        {\n          \"id\": \"control-cells-slot-5-normals\",\n          \"byteLength\": 3360,\n          \"sha256\": \"53f1b75bc284ee8ba7831a4711369cb386c14d6b462c3a793f789f00f05c0f7d\"\n        },\n        {\n          \"id\": \"control-cells-slot-5-positions\",\n          \"byteLength\": 3360,\n          \"sha256\": \"5f5b5867d8d8dcae9efa7140078c8619830cb584ea2d87d515f468cb90b582cf\"\n        },\n        {\n          \"id\": \"control-cells-slot-6-indices\",\n          \"byteLength\": 2736,\n          \"sha256\": \"12e689078e30a9e53b78e9c70f12bfd87e8c58f745871ae5f8710640a7648a78\"\n        },\n        {\n          \"id\": \"control-cells-slot-6-normals\",\n          \"byteLength\": 5472,\n          \"sha256\": \"2f41e44be5536833ce21c6903306d58f23c408fcee479db1707dc3d7c7ebf6b8\"\n        },\n        {\n          \"id\": \"control-cells-slot-6-positions\",\n          \"byteLength\": 5472,\n          \"sha256\": \"59d244a01639cc7e2e5cb9b14c5c1e507ef93454b6e372ab16f80de0270d4c33\"\n        }\n      ],\n      \"presentationProfile\": \"synthetic-lab-light-v1-no-shadows\",\n      \"frame\": {\n        \"cameraId\": \"far\",\n        \"paused\": false,\n        \"seconds\": 0,\n        \"sourceRevision\": 0,\n        \"tick\": 0,\n        \"weather\": {\n          \"cloud01\": 0.1,\n          \"rain01\": 0,\n          \"snow01\": 0,\n          \"windMps\": [\n            0,\n            0,\n            0\n          ]\n        }\n      },\n      \"resetTick\": null,\n      \"resolution\": {\n        \"width\": 1280,\n        \"height\": 720,\n        \"dpr\": 1,\n        \"bufferWidth\": 1280,\n        \"bufferHeight\": 720\n      },\n      \"colorSpace\": \"srgb\",\n      \"toneMapping\": 0,\n      \"exposure\": 1,\n      \"timerQueryAvailable\": true,\n      \"gpuMs\": {\n        \"status\": \"not-run\",\n        \"unit\": \"ms\",\n        \"reason\": \"Timer available; no qualified timer-query sampling in diagnostic control\"\n      },\n      \"nativeGpuBytes\": {\n        \"status\": \"unsupported\",\n        \"unit\": \"byte\",\n        \"reason\": \"WebGL does not expose native/driver allocation bytes\"\n      },\n      \"device\": \"ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)\",\n      \"submittedFrames\": 0,\n      \"rendered\": null,\n      \"rendererInfo\": {\n        \"geometries\": 0,\n        \"textures\": 0,\n        \"programs\": 0,\n        \"calls\": 0,\n        \"triangles\": 0\n      },\n      \"liveHosts\": {\n        \"renderers\": 1,\n        \"renderloops\": 1,\n        \"hostListeners\": 2\n      },\n      \"productIntegrated\": false\n    },\n    \"source\": [\n      {\n        \"ownerId\": \"control\",\n        \"sourceNamespace\": \"rd02-authored-cells-v1\",\n        \"sourceRevision\": 0,\n        \"regionId\": \"control-cells\",\n        \"fixtureDigest\": \"378513d00d5f2a11f569ff0748d4e42ac1832674104febd052070f0fd258b81d\",\n        \"recipeSha256\": \"6a4e4b7d2fde3944b1efb434453d1651697a005fb43af02d92b688ccecdaa5c8\",\n        \"sourceIds\": [\n          \"material-planes\",\n          \"single-shadow-caster\",\n          \"steps\"\n        ],\n        \"sourceIdMeaning\": {},\n        \"originalDimensions\": [\n          32,\n          24,\n          24\n        ],\n        \"originalOriginMeters\": [\n          0,\n          0,\n          0\n        ],\n        \"dimensions\": [\n          32,\n          24,\n          24\n        ],\n        \"offset\": [\n          0,\n          0,\n          0\n        ],\n        \"sourceSlotSha256\": \"b51a18f630293e605a51dbeaf0052f0c8665f3ce2e849de1d67ebcfaadeb92cc\"\n      }\n    ],\n    \"costs\": {\n      \"canonicalPayloadBytes\": 300096,\n      \"wholeRegionCopyBytes\": 55296,\n      \"selectedCpuBytes\": 110592,\n      \"cpuPeakEstimateBytes\": 1066176,\n      \"projectionBytes\": 73728\n    },\n    \"terminal\": {\n      \"firstFailure\": null,\n      \"pending\": false,\n      \"disposed\": false,\n      \"productIntegrated\": false\n    }\n  },\n  \"history\": []\n}"
+      },
+      {
+        "type": "voxel-rays-error",
+        "detail": "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "facts": "{\n  \"productIntegrated\": false,\n  \"history\": [\n    \"Error: Driver upload/link/draw failure after allocation: GL 1282\"\n  ],\n  \"terminal\": {\n    \"firstFailure\": \"Error: Driver upload/link/draw failure after allocation: GL 1282\",\n    \"pending\": false,\n    \"disposed\": true,\n    \"productIntegrated\": false\n  }\n}"
+      }
+    ],
+    "listeners": [
+      {
+        "operation": "addEventListener",
+        "canvasId": "viewport",
+        "type": "voxel-rays-rendered",
+        "capture": false
+      },
+      {
+        "operation": "addEventListener",
+        "canvasId": "viewport",
+        "type": "voxel-rays-error",
+        "capture": false
+      },
+      {
+        "operation": "addEventListener",
+        "canvasId": "viewport",
+        "type": "three-lab-rendered",
+        "capture": false
+      },
+      {
+        "operation": "addEventListener",
+        "canvasId": "viewport",
+        "type": "three-lab-error",
+        "capture": false
+      },
+      {
+        "operation": "addEventListener",
+        "canvasId": "viewport",
+        "type": "voxel-rays-rendered",
+        "capture": false
+      },
+      {
+        "operation": "addEventListener",
+        "canvasId": "viewport",
+        "type": "voxel-rays-error",
+        "capture": false
+      },
+      {
+        "operation": "addEventListener",
+        "canvasId": "viewport",
+        "type": "webglcontextlost",
+        "capture": false
+      },
+      {
+        "operation": "addEventListener",
+        "canvasId": "viewport",
+        "type": "webglcontextrestored",
+        "capture": false
+      },
+      {
+        "operation": "addEventListener",
+        "canvasId": "viewport",
+        "type": "webglcontextcreationerror",
+        "capture": false
+      },
+      {
+        "operation": "addEventListener",
+        "canvasId": "viewport",
+        "type": "webglcontextlost",
+        "capture": false
+      },
+      {
+        "operation": "addEventListener",
+        "canvasId": "viewport",
+        "type": "three-lab-rendered",
+        "capture": false
+      },
+      {
+        "operation": "addEventListener",
+        "canvasId": "viewport",
+        "type": "three-lab-error",
+        "capture": false
+      },
+      {
+        "operation": "removeEventListener",
+        "canvasId": "viewport",
+        "type": "webglcontextlost",
+        "capture": false
+      },
+      {
+        "operation": "removeEventListener",
+        "canvasId": "viewport",
+        "type": "webglcontextlost",
+        "capture": false
+      },
+      {
+        "operation": "removeEventListener",
+        "canvasId": "viewport",
+        "type": "webglcontextrestored",
+        "capture": false
+      },
+      {
+        "operation": "removeEventListener",
+        "canvasId": "viewport",
+        "type": "webglcontextcreationerror",
+        "capture": false
+      },
+      {
+        "operation": "removeEventListener",
+        "canvasId": "viewport",
+        "type": "three-lab-rendered",
+        "capture": false
+      },
+      {
+        "operation": "removeEventListener",
+        "canvasId": "viewport",
+        "type": "three-lab-error",
+        "capture": false
+      }
+    ],
+    "raf": {
+      "requested": 1,
+      "settled": 1,
+      "cancelled": 2,
+      "active": 0
+    }
+  },
+  "evaluations": [
+    {
+      "fn": "() => {\n    var _document$querySelect, _document$querySelect2, _document$querySelect4;\n    const canvas = document.querySelector('#viewport');\n    const text = (_document$querySelect = (_document$querySelect2 = document.querySelector('#facts')) === null || _document$querySelect2 === void 0 ? void 0 : _document$querySelect2.textContent) !== null && _document$querySelect !== void 0 ? _document$querySelect : '';\n    let projected;\n    try {\n      projected = text ? JSON.parse(text) : null;\n    } catch {\n      projected = {\n        unparsed: text\n      };\n    }\n    const selections = Object.fromEntries(['fixture', 'variant', 'camera', 'tick', 'resolution', 'dpr'].map(name => {\n      var _value, _document$querySelect3;\n      return [name, (_value = (_document$querySelect3 = document.querySelector('#' + name)) === null || _document$querySelect3 === void 0 ? void 0 : _document$querySelect3.value) !== null && _value !== void 0 ? _value : null];\n    }));\n    return {\n      url: location.href,\n      bridgePresent: Object.hasOwn(window, 'TestBridge'),\n      status: (_document$querySelect4 = document.querySelector('#status')) === null || _document$querySelect4 === void 0 ? void 0 : _document$querySelect4.textContent,\n      projected,\n      selections,\n      canvas: canvas ? {\n        hidden: canvas.hidden,\n        width: canvas.width,\n        height: canvas.height,\n        box: canvas.getBoundingClientRect().toJSON(),\n        devicePixelRatio\n      } : null\n    };\n  }",
+      "fnSha256": "09c86441a07eca7bacb55928478907c590ab13c947c02aef76573e3b6e79e00e",
+      "value": {
+        "url": "http://127.0.0.1:5280/src/experiments/voxel-rays/index.html?testBridge=1",
+        "bridgePresent": true,
+        "status": "FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.",
+        "projected": {
+          "productIntegrated": false,
+          "history": [
+            "Error: Driver upload/link/draw failure after allocation: GL 1282",
+            "Error: Projection terminated before render submission"
+          ],
+          "terminal": {
+            "firstFailure": "Error: Driver upload/link/draw failure after allocation: GL 1282",
+            "pending": false,
+            "disposed": true,
+            "productIntegrated": false
+          }
+        },
+        "selections": {
+          "fixture": "F00-CONTROL-REPLAY",
+          "variant": "rays-no-ao",
+          "camera": "far",
+          "tick": "0",
+          "resolution": "1280x720",
+          "dpr": "1"
+        },
+        "canvas": {
+          "hidden": true,
+          "width": 1280,
+          "height": 720,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          },
+          "devicePixelRatio": 1
+        }
+      }
+    },
+    {
+      "fn": "() => window.__RD13Observe",
+      "fnSha256": "2c2cf5e88cab515d9e7efc5aa3b39f2521fa177739a1fbe3c86d31bffa31ed9c",
+      "value": {
+        "schema": "rd13-read-only-native-observer-v1",
+        "contexts": [
+          {
+            "index": 0,
+            "request": "webgl2",
+            "canvasId": "viewport",
+            "actualWebGL2": true,
+            "attributes": {
+              "alpha": false,
+              "antialias": true,
+              "depth": true,
+              "desynchronized": false,
+              "failIfMajorPerformanceCaveat": false,
+              "powerPreference": "high-performance",
+              "premultipliedAlpha": true,
+              "preserveDrawingBuffer": false,
+              "stencil": false,
+              "xrCompatible": false
+            },
+            "renderer": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+            "vendor": "Google Inc. (Intel)",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "glsl": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+            "caps": {
+              "max3D": 2048,
+              "maxDrawBuffers": 8,
+              "maxAttachments": 8
+            },
+            "extensions": [
+              "EXT_clip_control",
+              "EXT_color_buffer_float",
+              "EXT_color_buffer_half_float",
+              "EXT_conservative_depth",
+              "EXT_depth_clamp",
+              "EXT_disjoint_timer_query_webgl2",
+              "EXT_float_blend",
+              "EXT_polygon_offset_clamp",
+              "EXT_render_snorm",
+              "EXT_texture_compression_bptc",
+              "EXT_texture_compression_rgtc",
+              "EXT_texture_filter_anisotropic",
+              "EXT_texture_mirror_clamp_to_edge",
+              "EXT_texture_norm16",
+              "KHR_parallel_shader_compile",
+              "NV_shader_noperspective_interpolation",
+              "OES_draw_buffers_indexed",
+              "OES_sample_variables",
+              "OES_shader_multisample_interpolation",
+              "OES_texture_float_linear",
+              "OVR_multiview2",
+              "WEBGL_blend_func_extended",
+              "WEBGL_clip_cull_distance",
+              "WEBGL_compressed_texture_s3tc",
+              "WEBGL_compressed_texture_s3tc_srgb",
+              "WEBGL_debug_renderer_info",
+              "WEBGL_debug_shaders",
+              "WEBGL_lose_context",
+              "WEBGL_multi_draw",
+              "WEBGL_polygon_mode",
+              "WEBGL_provoking_vertex",
+              "WEBGL_stencil_texturing"
+            ],
+            "nativeDriverIdentityQualified": false
+          }
+        ],
+        "shaders": [
+          {
+            "context": 0,
+            "shader": 10,
+            "code": "#version 300 es\n\n#define attribute in\n#define varying out\n#define texture2D texture\nprecision highp float;\n\tprecision highp int;\n\tprecision highp sampler2D;\n\tprecision highp samplerCube;\n\tprecision highp sampler3D;\n\tprecision highp sampler2DArray;\n\tprecision highp sampler2DShadow;\n\tprecision highp samplerCubeShadow;\n\tprecision highp sampler2DArrayShadow;\n\tprecision highp isampler2D;\n\tprecision highp isampler3D;\n\tprecision highp isamplerCube;\n\tprecision highp isampler2DArray;\n\tprecision highp usampler2D;\n\tprecision highp usampler3D;\n\tprecision highp usamplerCube;\n\tprecision highp usampler2DArray;\n\t\n#define HIGH_PRECISION\n#define SHADER_TYPE ShaderMaterial\n#define SHADER_NAME \nuniform mat4 modelMatrix;\nuniform mat4 modelViewMatrix;\nuniform mat4 projectionMatrix;\nuniform mat4 viewMatrix;\nuniform mat3 normalMatrix;\nuniform vec3 cameraPosition;\nuniform bool isOrthographic;\n#ifdef USE_INSTANCING\n\tattribute mat4 instanceMatrix;\n#endif\n#ifdef USE_INSTANCING_COLOR\n\tattribute vec3 instanceColor;\n#endif\n#ifdef USE_INSTANCING_MORPH\n\tuniform sampler2D morphTexture;\n#endif\nattribute vec3 position;\nattribute vec3 normal;\nattribute vec2 uv;\n#ifdef USE_UV1\n\tattribute vec2 uv1;\n#endif\n#ifdef USE_UV2\n\tattribute vec2 uv2;\n#endif\n#ifdef USE_UV3\n\tattribute vec2 uv3;\n#endif\n#ifdef USE_TANGENT\n\tattribute vec4 tangent;\n#endif\n#if defined( USE_COLOR_ALPHA )\n\tattribute vec4 color;\n#elif defined( USE_COLOR )\n\tattribute vec3 color;\n#endif\n#ifdef USE_SKINNING\n\tattribute vec4 skinIndex;\n\tattribute vec4 skinWeight;\n#endif\n\nvoid main() { gl_Position=vec4(position.xy,0.0,1.0); }"
+          },
+          {
+            "context": 0,
+            "shader": 11,
+            "code": "#version 300 es\n#define varying in\n\n\n#define gl_FragDepthEXT gl_FragDepth\n#define texture2D texture\n#define textureCube texture\n#define texture2DProj textureProj\n#define texture2DLodEXT textureLod\n#define texture2DProjLodEXT textureProjLod\n#define textureCubeLodEXT textureLod\n#define texture2DGradEXT textureGrad\n#define texture2DProjGradEXT textureProjGrad\n#define textureCubeGradEXT textureGrad\nprecision highp float;\n\tprecision highp int;\n\tprecision highp sampler2D;\n\tprecision highp samplerCube;\n\tprecision highp sampler3D;\n\tprecision highp sampler2DArray;\n\tprecision highp sampler2DShadow;\n\tprecision highp samplerCubeShadow;\n\tprecision highp sampler2DArrayShadow;\n\tprecision highp isampler2D;\n\tprecision highp isampler3D;\n\tprecision highp isamplerCube;\n\tprecision highp isampler2DArray;\n\tprecision highp usampler2D;\n\tprecision highp usampler3D;\n\tprecision highp usamplerCube;\n\tprecision highp usampler2DArray;\n\t\n#define HIGH_PRECISION\n#define SHADER_TYPE ShaderMaterial\n#define SHADER_NAME \nuniform mat4 viewMatrix;\nuniform vec3 cameraPosition;\nuniform bool isOrthographic;\n#define OPAQUE\nvec4 LinearTransferOETF( in vec4 value ) {\n\treturn value;\n}\nvec4 sRGBTransferEOTF( in vec4 value ) {\n\treturn vec4( mix( pow( value.rgb * 0.9478672986 + vec3( 0.0521327014 ), vec3( 2.4 ) ), value.rgb * 0.0773993808, vec3( lessThanEqual( value.rgb, vec3( 0.04045 ) ) ) ), value.a );\n}\nvec4 sRGBTransferOETF( in vec4 value ) {\n\treturn vec4( mix( pow( value.rgb, vec3( 0.41666 ) ) * 1.055 - vec3( 0.055 ), value.rgb * 12.92, vec3( lessThanEqual( value.rgb, vec3( 0.0031308 ) ) ) ), value.a );\n}\nvec4 linearToOutputTexel( vec4 value ) {\n\treturn sRGBTransferOETF( vec4( value.rgb * mat3( 1.0000,-0.0000,-0.0000,-0.0000,1.0000,0.0000,0.0000,0.0000,1.0000 ), value.a ) );\n}\nfloat luminance( const in vec3 rgb ) {\n\tconst vec3 weights = vec3( 0.2126, 0.7152, 0.0722 );\n\treturn dot( weights, rgb );\n}\n\n\nlayout(location=0) out vec4 rayColor;\n#define gl_FragColor rayColor\n#define PI 3.141592653589793\n#define PI2 6.283185307179586\n#define PI_HALF 1.5707963267948966\n#define RECIPROCAL_PI 0.3183098861837907\n#define RECIPROCAL_PI2 0.15915494309189535\n#define EPSILON 1e-6\n#ifndef saturate\n#define saturate( a ) clamp( a, 0.0, 1.0 )\n#endif\n#define whiteComplement( a ) ( 1.0 - saturate( a ) )\nfloat pow2( const in float x ) { return x*x; }\nvec3 pow2( const in vec3 x ) { return x*x; }\nfloat pow3( const in float x ) { return x*x*x; }\nfloat pow4( const in float x ) { float x2 = x*x; return x2*x2; }\nfloat max3( const in vec3 v ) { return max( max( v.x, v.y ), v.z ); }\nfloat average( const in vec3 v ) { return dot( v, vec3( 0.3333333 ) ); }\nhighp float rand( const in vec2 uv ) {\n\tconst highp float a = 12.9898, b = 78.233, c = 43758.5453;\n\thighp float dt = dot( uv.xy, vec2( a,b ) ), sn = mod( dt, PI );\n\treturn fract( sin( sn ) * c );\n}\n#ifdef HIGH_PRECISION\n\tfloat precisionSafeLength( vec3 v ) { return length( v ); }\n#else\n\tfloat precisionSafeLength( vec3 v ) {\n\t\tfloat maxComponent = max3( abs( v ) );\n\t\treturn length( v / maxComponent ) * maxComponent;\n\t}\n#endif\nstruct IncidentLight {\n\tvec3 color;\n\tvec3 direction;\n\tbool visible;\n};\nstruct ReflectedLight {\n\tvec3 directDiffuse;\n\tvec3 directSpecular;\n\tvec3 indirectDiffuse;\n\tvec3 indirectSpecular;\n};\n#ifdef USE_ALPHAHASH\n\tvarying vec3 vPosition;\n#endif\nvec3 transformDirection( in vec3 dir, in mat4 matrix ) {\n\treturn normalize( ( matrix * vec4( dir, 0.0 ) ).xyz );\n}\n#define inverseTransformDirection transformDirectionByInverseViewMatrix\nvec3 transformNormalByInverseViewMatrix( in vec3 normal, in mat4 viewMatrix ) {\n\treturn normalize( ( vec4( normal, 0.0 ) * viewMatrix ).xyz );\n}\nvec3 transformDirectionByInverseViewMatrix( in vec3 dir, in mat4 viewMatrix ) {\n\treturn normalize( ( vec4( dir, 0.0 ) * viewMatrix ).xyz );\n}\nbool isPerspectiveMatrix( mat4 m ) {\n\treturn m[ 2 ][ 3 ] == - 1.0;\n}\nvec2 equirectUv( in vec3 dir ) {\n\tfloat u = atan( dir.z, dir.x ) * RECIPROCAL_PI2 + 0.5;\n\tfloat v = asin( clamp( dir.y, - 1.0, 1.0 ) ) * RECIPROCAL_PI + 0.5;\n\treturn vec2( u, v );\n}\nvec3 BRDF_Lambert( const in vec3 diffuseColor ) {\n\treturn RECIPROCAL_PI * diffuseColor;\n}\nvec3 F_Schlick( const in vec3 f0, const in float f90, const in float dotVH ) {\n\tfloat fresnel = exp2( ( - 5.55473 * dotVH - 6.98316 ) * dotVH );\n\treturn f0 * ( 1.0 - fresnel ) + ( f90 * fresnel );\n}\nfloat F_Schlick( const in float f0, const in float f90, const in float dotVH ) {\n\tfloat fresnel = exp2( ( - 5.55473 * dotVH - 6.98316 ) * dotVH );\n\treturn f0 * ( 1.0 - fresnel ) + ( f90 * fresnel );\n} // validated\nfloat G_BlinnPhong_Implicit( ) {\n\treturn 0.25;\n}\nfloat D_BlinnPhong( const in float shininess, const in float dotNH ) {\n\treturn RECIPROCAL_PI * ( shininess * 0.5 + 1.0 ) * pow( dotNH, shininess );\n}\nvec3 BRDF_BlinnPhong( const in vec3 lightDir, const in vec3 viewDir, const in vec3 normal, const in vec3 specularColor, const in float shininess ) {\n\tvec3 halfDir = normalize( lightDir + viewDir );\n\tfloat dotNH = saturate( dot( normal, halfDir ) );\n\tfloat dotVH = saturate( dot( viewDir, halfDir ) );\n\tvec3 F = F_Schlick( specularColor, 1.0, dotVH );\n\tfloat G = G_BlinnPhong_Implicit( );\n\tfloat D = D_BlinnPhong( shininess, dotNH );\n\treturn F * ( G * D );\n} // validated\nuniform bool receiveShadow;\nuniform vec3 ambientLightColor;\n#if defined( USE_LIGHT_PROBES )\n\tuniform vec3 lightProbe[ 9 ];\n#endif\nvec3 shGetIrradianceAt( in vec3 normal, in vec3 shCoefficients[ 9 ] ) {\n\tfloat x = normal.x, y = normal.y, z = normal.z;\n\tvec3 result = shCoefficients[ 0 ] * 0.886227;\n\tresult += shCoefficients[ 1 ] * 2.0 * 0.511664 * y;\n\tresult += shCoefficients[ 2 ] * 2.0 * 0.511664 * z;\n\tresult += shCoefficients[ 3 ] * 2.0 * 0.511664 * x;\n\tresult += shCoefficients[ 4 ] * 2.0 * 0.429043 * x * y;\n\tresult += shCoefficients[ 5 ] * 2.0 * 0.429043 * y * z;\n\tresult += shCoefficients[ 6 ] * ( 0.743125 * z * z - 0.247708 );\n\tresult += shCoefficients[ 7 ] * 2.0 * 0.429043 * x * z;\n\tresult += shCoefficients[ 8 ] * 0.429043 * ( x * x - y * y );\n\treturn result;\n}\nvec3 getLightProbeIrradiance( const in vec3 lightProbe[ 9 ], const in vec3 normal ) {\n\tvec3 worldNormal = transformNormalByInverseViewMatrix( normal, viewMatrix );\n\tvec3 irradiance = shGetIrradianceAt( worldNormal, lightProbe );\n\treturn irradiance;\n}\nvec3 getAmbientLightIrradiance( const in vec3 ambientLightColor ) {\n\tvec3 irradiance = ambientLightColor;\n\treturn irradiance;\n}\nfloat getDistanceAttenuation( const in float lightDistance, const in float cutoffDistance, const in float decayExponent ) {\n\tfloat distanceFalloff = 1.0 / max( pow( lightDistance, decayExponent ), 0.01 );\n\tif ( cutoffDistance > 0.0 ) {\n\t\tdistanceFalloff *= pow2( saturate( 1.0 - pow4( lightDistance / cutoffDistance ) ) );\n\t}\n\treturn distanceFalloff;\n}\nfloat getSpotAttenuation( const in float coneCosine, const in float penumbraCosine, const in float angleCosine ) {\n\treturn smoothstep( coneCosine, penumbraCosine, angleCosine );\n}\n#if 2 > 0\n\tstruct DirectionalLight {\n\t\tvec3 direction;\n\t\tvec3 color;\n\t};\n\tuniform DirectionalLight directionalLights[ 2 ];\n\tvoid getDirectionalLightInfo( const in DirectionalLight directionalLight, out IncidentLight light ) {\n\t\tlight.color = directionalLight.color;\n\t\tlight.direction = directionalLight.direction;\n\t\tlight.visible = true;\n\t}\n#endif\n#if 0 > 0\n\tstruct PointLight {\n\t\tvec3 position;\n\t\tvec3 color;\n\t\tfloat distance;\n\t\tfloat decay;\n\t};\n\tuniform PointLight pointLights[ 0 ];\n\tvoid getPointLightInfo( const in PointLight pointLight, const in vec3 geometryPosition, out IncidentLight light ) {\n\t\tvec3 lVector = pointLight.position - geometryPosition;\n\t\tlight.direction = normalize( lVector );\n\t\tfloat lightDistance = length( lVector );\n\t\tlight.color = pointLight.color;\n\t\tlight.color *= getDistanceAttenuation( lightDistance, pointLight.distance, pointLight.decay );\n\t\tlight.visible = ( light.color != vec3( 0.0 ) );\n\t}\n#endif\n#if 0 > 0\n\tstruct SpotLight {\n\t\tvec3 position;\n\t\tvec3 direction;\n\t\tvec3 color;\n\t\tfloat distance;\n\t\tfloat decay;\n\t\tfloat coneCos;\n\t\tfloat penumbraCos;\n\t};\n\tuniform SpotLight spotLights[ 0 ];\n\tvoid getSpotLightInfo( const in SpotLight spotLight, const in vec3 geometryPosition, out IncidentLight light ) {\n\t\tvec3 lVector = spotLight.position - geometryPosition;\n\t\tlight.direction = normalize( lVector );\n\t\tfloat angleCos = dot( light.direction, spotLight.direction );\n\t\tfloat spotAttenuation = getSpotAttenuation( spotLight.coneCos, spotLight.penumbraCos, angleCos );\n\t\tif ( spotAttenuation > 0.0 ) {\n\t\t\tfloat lightDistance = length( lVector );\n\t\t\tlight.color = spotLight.color * spotAttenuation;\n\t\t\tlight.color *= getDistanceAttenuation( lightDistance, spotLight.distance, spotLight.decay );\n\t\t\tlight.visible = ( light.color != vec3( 0.0 ) );\n\t\t} else {\n\t\t\tlight.color = vec3( 0.0 );\n\t\t\tlight.visible = false;\n\t\t}\n\t}\n#endif\n#if 0 > 0\n\tstruct RectAreaLight {\n\t\tvec3 color;\n\t\tvec3 position;\n\t\tvec3 halfWidth;\n\t\tvec3 halfHeight;\n\t};\n\tuniform sampler2D ltc_1;\tuniform sampler2D ltc_2;\n\tuniform RectAreaLight rectAreaLights[ 0 ];\n#endif\n#if 1 > 0\n\tstruct HemisphereLight {\n\t\tvec3 direction;\n\t\tvec3 skyColor;\n\t\tvec3 groundColor;\n\t};\n\tuniform HemisphereLight hemisphereLights[ 1 ];\n\tvec3 getHemisphereLightIrradiance( const in HemisphereLight hemiLight, const in vec3 normal ) {\n\t\tfloat dotNL = dot( normal, hemiLight.direction );\n\t\tfloat hemiDiffuseWeight = 0.5 * dotNL + 0.5;\n\t\tvec3 irradiance = mix( hemiLight.groundColor, hemiLight.skyColor, hemiDiffuseWeight );\n\t\treturn irradiance;\n\t}\n#endif\n#ifdef USE_LIGHT_PROBES_GRID\nuniform highp sampler3D probesSH;\nuniform vec3 probesMin;\nuniform vec3 probesMax;\nuniform vec3 probesResolution;\nvec3 getLightProbeGridIrradiance( vec3 worldPos, vec3 worldNormal ) {\n\tvec3 res = probesResolution;\n\tvec3 gridRange = probesMax - probesMin;\n\tvec3 resMinusOne = res - 1.0;\n\tvec3 probeSpacing = gridRange / resMinusOne;\n\tvec3 samplePos = worldPos + worldNormal * probeSpacing * 0.5;\n\tvec3 uvw = clamp( ( samplePos - probesMin ) / gridRange, 0.0, 1.0 );\n\tuvw = uvw * resMinusOne / res + 0.5 / res;\n\tfloat nz          = res.z;\n\tfloat paddedSlices = nz + 2.0;\n\tfloat atlasDepth  = 7.0 * paddedSlices;\n\tfloat uvZBase     = uvw.z * nz + 1.0;\n\tvec4 s0 = texture( probesSH, vec3( uvw.xy, ( uvZBase                       ) / atlasDepth ) );\n\tvec4 s1 = texture( probesSH, vec3( uvw.xy, ( uvZBase +       paddedSlices   ) / atlasDepth ) );\n\tvec4 s2 = texture( probesSH, vec3( uvw.xy, ( uvZBase + 2.0 * paddedSlices   ) / atlasDepth ) );\n\tvec4 s3 = texture( probesSH, vec3( uvw.xy, ( uvZBase + 3.0 * paddedSlices   ) / atlasDepth ) );\n\tvec4 s4 = texture( probesSH, vec3( uvw.xy, ( uvZBase + 4.0 * paddedSlices   ) / atlasDepth ) );\n\tvec4 s5 = texture( probesSH, vec3( uvw.xy, ( uvZBase + 5.0 * paddedSlices   ) / atlasDepth ) );\n\tvec4 s6 = texture( probesSH, vec3( uvw.xy, ( uvZBase + 6.0 * paddedSlices   ) / atlasDepth ) );\n\tvec3 c0 = s0.xyz;\n\tvec3 c1 = vec3( s0.w, s1.xy );\n\tvec3 c2 = vec3( s1.zw, s2.x );\n\tvec3 c3 = s2.yzw;\n\tvec3 c4 = s3.xyz;\n\tvec3 c5 = vec3( s3.w, s4.xy );\n\tvec3 c6 = vec3( s4.zw, s5.x );\n\tvec3 c7 = s5.yzw;\n\tvec3 c8 = s6.xyz;\n\tfloat x = worldNormal.x, y = worldNormal.y, z = worldNormal.z;\n\tvec3 result = c0 * 0.886227;\n\tresult += c1 * 2.0 * 0.511664 * y;\n\tresult += c2 * 2.0 * 0.511664 * z;\n\tresult += c3 * 2.0 * 0.511664 * x;\n\tresult += c4 * 2.0 * 0.429043 * x * y;\n\tresult += c5 * 2.0 * 0.429043 * y * z;\n\tresult += c6 * ( 0.743125 * z * z - 0.247708 );\n\tresult += c7 * 2.0 * 0.429043 * x * z;\n\tresult += c8 * 0.429043 * ( x * x - y * y );\n\treturn max( result, vec3( 0.0 ) );\n}\n#endif\nuniform mat4 rayInverseProjection;\nuniform mat4 projectionMatrix;\nuniform mat4 rayCameraWorld;\nuniform mat4 gridFromWorld;\nuniform mat3 worldNormalMatrix;\nuniform vec2 drawingBuffer;\nuniform vec3 slotColor[8];\nuniform vec3 slotEmission[8];\n#ifdef USE_FOG\nuniform vec3 fogColor;\nuniform float fogNear;\nuniform float fogFar;\n#endif\n\nuniform highp usampler3D voxelData;\nuniform ivec3 gridSize;\nuniform int slotDoubleSided[8];\nfloat projectionDepth(vec3 worldHit,mat4 projectionView) { vec4 clip=projectionView*vec4(worldHit,1.0); return clip.z/clip.w*0.5+0.5; }\nstruct VoxelHit { bool hit; bool unknown; bool traversalFault; float t; ivec3 cell; int slot; vec3 normal; };\nuvec4 sourceCell(ivec3 c) {\n  if (any(lessThan(c,ivec3(0))) || any(greaterThanEqual(c,gridSize))) { return uvec4(0); }\n  return texelFetch(voxelData,c,0);\n}\nvec3 axisNormal(int a,float signValue) { vec3 n=vec3(0); n[a]=signValue; return n; }\nVoxelHit traceVoxels(vec3 o,vec3 gridDirection,bool selectVisible) {\n  VoxelHit h; h.hit=false; h.unknown=false; h.traversalFault=false; h.t=0.0; h.cell=ivec3(-1); h.slot=0; h.normal=vec3(0);\n  float entry=-1e30; float leave=1e30; int entryAxis=0;\n  for (int a=0;a<3;a++) {\n    if (gridDirection[a]==0.0) {\n      if (o[a]<0.0 || o[a]>=float(gridSize[a])) { return h; }\n    } else {\n      float t0=(0.0-o[a])/gridDirection[a]; float t1=(float(gridSize[a])-o[a])/gridDirection[a];\n      float nearT=min(t0,t1); float farT=max(t0,t1);\n      if (nearT>entry) { entry=nearT; entryAxis=a; }\n      leave=min(leave,farT);\n    }\n  }\n  float t=max(0.0,entry); if (leave<=t) { return h; }\n  vec3 p=o+t*gridDirection; ivec3 cell=ivec3(floor(p)); ivec3 stepDir=ivec3(sign(gridDirection));\n  for (int a=0;a<3;a++) {\n    if (gridDirection[a]<0.0 && p[a]==floor(p[a])) { cell[a]-=1; }\n  }\n  // Only a mathematically proved BOX ENTRY permits a roundoff clamp.\n  if (entry>=0.0) { cell=clamp(cell,ivec3(0),gridSize-ivec3(1)); }\n  if (any(lessThan(cell,ivec3(0))) || any(greaterThanEqual(cell,gridSize))) { return h; }\n  vec3 crossing=vec3(1e30);\n  for (int a=0;a<3;a++) {\n    if (gridDirection[a]!=0.0) { crossing[a]=(float(cell[a]+(stepDir[a]>0?1:0))-o[a])/gridDirection[a]; }\n  }\n  bool insideRun=entry<0.0 && sourceCell(cell).r!=0u; ivec3 previous=cell; int previousSlot=int(sourceCell(cell).b);\n  vec3 face=axisNormal(entryAxis,-float(stepDir[entryAxis]));\n  // First valid cell tested BEFORE any step. A ray crosses at most sum(dimensions) planes.\n  int admittedSteps=gridSize.x+gridSize.y+gridSize.z+1;\n  for (int iteration=0;iteration<193;iteration++) {\n    if (iteration>=admittedSteps) { h.traversalFault=true; return h; }\n    uvec4 sample=sourceCell(cell); h.unknown=h.unknown || sample.g==0u;\n    bool solid=sample.r!=0u;\n    if (!insideRun && solid) { h.hit=true; h.t=t; h.cell=cell; h.slot=int(sample.b); h.normal=face; return h; }\n    if (insideRun && !solid) {\n      if (!selectVisible || slotDoubleSided[previousSlot]!=0) { h.hit=true; h.t=t; h.cell=previous; h.slot=previousSlot; h.normal=-face; return h; }\n      // Rejected back exit: keep this empty interval, Unknown, world t and ONE traversal budget.\n      insideRun=false;\n    }\n    if (solid) { previous=cell; previousSlot=int(sample.b); }\n    float nextT=min(crossing.x,min(crossing.y,crossing.z));\n    if (nextT<=t) { h.traversalFault=true; return h; }\n    bvec3 tied=equal(crossing,vec3(nextT)); int a=tied.x?0:(tied.y?1:2); face=axisNormal(a,-float(stepDir[a]));\n    if (nextT>=leave) {\n      if (insideRun && (!selectVisible || slotDoubleSided[previousSlot]!=0)) { h.hit=true; h.t=leave; h.cell=previous; h.slot=previousSlot; h.normal=-face; }\n      return h;\n    }\n    // ALL tied axes advance; no zero-length intermediate cells are ever sampled.\n    for (int j=0;j<3;j++) {\n      if (tied[j]) { cell[j]+=stepDir[j]; crossing[j]=(float(cell[j]+(stepDir[j]>0?1:0))-o[j])/gridDirection[j]; }\n    }\n    t=nextT;\n  }\n  h.traversalFault=true; return h;\n}\n// Geometric first-exit semantics are unchanged; only visible projection filters exits during traversal.\nVoxelHit traceVoxels(vec3 o,vec3 gridDirection) { return traceVoxels(o,gridDirection,false); }\nVoxelHit traceVisibleVoxels(vec3 o,vec3 gridDirection) { return traceVoxels(o,gridDirection,true); }\n\nvoid main() {\n  vec2 ndc=gl_FragCoord.xy/drawingBuffer*2.0-1.0;\n  vec4 nearPoint=rayCameraWorld*rayInverseProjection*vec4(ndc,-1.0,1.0);\n  vec4 farPoint=rayCameraWorld*rayInverseProjection*vec4(ndc,1.0,1.0);\n  vec3 worldOrigin=nearPoint.xyz/nearPoint.w;\n  vec3 worldDirection=normalize(farPoint.xyz/farPoint.w-worldOrigin);\n  vec3 gridOrigin=(gridFromWorld*vec4(worldOrigin,1.0)).xyz;\n  vec3 gridDirection=(gridFromWorld*vec4(worldDirection,0.0)).xyz;\n  VoxelHit h=traceVisibleVoxels(gridOrigin,gridDirection);\n  if (h.traversalFault) { gl_FragColor=vec4(1.0,0.0,1.0,1.0); gl_FragDepth=0.0; return; }\n  if (!h.hit) { discard; }\n  vec3 worldHit=worldOrigin+h.t*worldDirection;\n  vec3 worldNormal=normalize(worldNormalMatrix*h.normal);\n  bool back=dot(worldNormal,worldDirection)>0.0;\n  if (back) { worldNormal=-worldNormal; }\n  vec4 viewHit=viewMatrix*vec4(worldHit,1.0);\n  vec4 clip=projectionMatrix*viewHit;\n  float hitDepth=projectionDepth(worldHit,projectionMatrix*viewMatrix);\n  if (clip.w<=0.0 || hitDepth<0.0 || hitDepth>1.0) { discard; }\n  gl_FragDepth=hitDepth;\n  vec3 normal=normalize(mat3(viewMatrix)*worldNormal);\n  vec3 irradiance=getAmbientLightIrradiance(ambientLightColor);\n  #if 1 > 0\n  for (int i=0;i<1;i++) { irradiance+=getHemisphereLightIrradiance(hemisphereLights[i],normal); }\n  #endif\n  #if 2 > 0\n  for (int i=0;i<2;i++) { irradiance+=max(dot(normal,directionalLights[i].direction),0.0)*directionalLights[i].color; }\n  #endif\n  gl_FragColor=vec4(slotColor[h.slot]*irradiance*RECIPROCAL_PI+slotEmission[h.slot],1.0);\n#if defined( TONE_MAPPING )\n\tgl_FragColor.rgb = toneMapping( gl_FragColor.rgb );\n#endif\ngl_FragColor = linearToOutputTexel( gl_FragColor );\n  #ifdef USE_FOG\n  float fogFactor=smoothstep(fogNear,fogFar,-viewHit.z);\n  gl_FragColor.rgb=mix(gl_FragColor.rgb,fogColor,fogFactor);\n  #endif\n}\n"
+          }
+        ],
+        "queries": [
+          {
+            "context": 0,
+            "name": "getInternalformatParameter",
+            "args": [
+              36161,
+              36220,
+              32937
+            ],
+            "value": []
+          },
+          {
+            "context": 0,
+            "name": "getProgramInfoLog",
+            "args": [
+              9
+            ],
+            "value": "Fragment shader is not compiled.\n\u0000"
+          },
+          {
+            "context": 0,
+            "name": "getShaderInfoLog",
+            "args": [
+              10
+            ],
+            "value": ""
+          },
+          {
+            "context": 0,
+            "name": "getShaderInfoLog",
+            "args": [
+              11
+            ],
+            "value": "ERROR: 0:365: 'sample' : Illegal use of reserved word\nERROR: 0:365: 'sample' : syntax error\n\u0000"
+          },
+          {
+            "context": 0,
+            "name": "getProgramParameter",
+            "args": [
+              9,
+              35714
+            ],
+            "value": false
+          },
+          {
+            "context": 0,
+            "name": "getShaderParameter",
+            "args": [
+              10,
+              35713
+            ],
+            "value": true
+          },
+          {
+            "context": 0,
+            "name": "getShaderInfoLog",
+            "args": [
+              10
+            ],
+            "value": ""
+          },
+          {
+            "context": 0,
+            "name": "getShaderParameter",
+            "args": [
+              11,
+              35713
+            ],
+            "value": false
+          },
+          {
+            "context": 0,
+            "name": "getShaderInfoLog",
+            "args": [
+              11
+            ],
+            "value": "ERROR: 0:365: 'sample' : Illegal use of reserved word\nERROR: 0:365: 'sample' : syntax error\n\u0000"
+          },
+          {
+            "context": 0,
+            "name": "getProgramParameter",
+            "args": [
+              9,
+              35715
+            ],
+            "value": false
+          },
+          {
+            "context": 0,
+            "name": "getProgramParameter",
+            "args": [
+              9,
+              35718
+            ],
+            "value": 0
+          },
+          {
+            "context": 0,
+            "name": "getProgramParameter",
+            "args": [
+              9,
+              35721
+            ],
+            "value": 0
+          },
+          {
+            "context": 0,
+            "name": "getError",
+            "args": [],
+            "value": 1282
+          }
+        ],
+        "readbacks": [],
+        "created": {
+          "createTexture": 4,
+          "createFramebuffer": 3,
+          "createBuffer": 1,
+          "createProgram": 1,
+          "createShader": 2,
+          "createVertexArray": 1
+        },
+        "deleted": {
+          "deleteShader": 2,
+          "deleteBuffer": 1,
+          "deleteVertexArray": 1,
+          "deleteProgram": 1
+        },
+        "canvasEvents": [
+          {
+            "type": "three-lab-error",
+            "detail": "Error: Driver upload/link/draw failure after allocation: GL 1282",
+            "facts": "{\n  \"productIntegrated\": false,\n  \"facts\": {\n    \"backend\": \"Three-WebGLRenderer-WebGL2\",\n    \"errors\": [],\n    \"experimentId\": \"RD-13\",\n    \"fixtureDigest\": \"378513d00d5f2a11f569ff0748d4e42ac1832674104febd052070f0fd258b81d\",\n    \"liveResources\": {\n      \"geometries\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 0\n      },\n      \"hostListeners\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 2\n      },\n      \"renderers\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 1\n      },\n      \"renderloops\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 1\n      },\n      \"textures\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 0\n      }\n    },\n    \"logicalCosts\": {\n      \"effect-0-cpuPeakBytes\": {\n        \"reason\": \"Conservative source transport/private/copy/old-new estimate, not JS heap\",\n        \"status\": \"estimated\",\n        \"unit\": \"byte\",\n        \"value\": 1066176\n      },\n      \"effect-0-fullScreenVolumes\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 1\n      },\n      \"effect-0-greedyBuildMs\": {\n        \"status\": \"measured\",\n        \"unit\": \"ms\",\n        \"value\": 0\n      },\n      \"effect-0-maxStepsPerRay\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 81\n      },\n      \"effect-0-nativeGpuBytes\": {\n        \"reason\": \"Native context/driver VRAM cannot be measured here\",\n        \"status\": \"unsupported\",\n        \"unit\": \"byte\"\n      },\n      \"effect-0-prepareMs\": {\n        \"status\": \"measured\",\n        \"unit\": \"ms\",\n        \"value\": 9.199999988079071\n      },\n      \"effect-0-projectionBuildMs\": {\n        \"status\": \"measured\",\n        \"unit\": \"ms\",\n        \"value\": 0.4000000059604645\n      },\n      \"effect-0-projectionBytes\": {\n        \"reason\": \"Typed texture/mesh payload; excludes native allocator/driver/context\",\n        \"status\": \"estimated\",\n        \"unit\": \"byte\",\n        \"value\": 73764\n      },\n      \"effect-0-triangles\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 1\n      },\n      \"effect-0-uploadCommandCpuMs\": {\n        \"reason\": \"Three upload occurs during native render; CPU preparation is not upload time\",\n        \"status\": \"not-run\",\n        \"unit\": \"ms\"\n      },\n      \"gpuBytes\": {\n        \"reason\": \"Native GPU memory unavailable\",\n        \"status\": \"unsupported\",\n        \"unit\": \"byte\"\n      },\n      \"gpuMs\": {\n        \"reason\": \"Timer available; diagnostic loop does not sample GPU timing\",\n        \"status\": \"not-run\",\n        \"unit\": \"ms\"\n      },\n      \"renderCalls\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 0\n      },\n      \"triangles\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 0\n      }\n    },\n    \"sourceRevision\": 0,\n    \"unsupportedFeatures\": [\n      \"native-pcf-shadow-parity\",\n      \"native-sky-shader-parity\",\n      \"native-numeric-qualification-not-run\",\n      \"native-water-shader-parity\",\n      \"native-material-shader-hooks\",\n      \"face-ambient-occlusion\",\n      \"gi-and-reflections\",\n      \"unknown-is-not-world-clearance\",\n      \"native-vram-unavailable\",\n      \"gpu-timing-not-qualified\"\n    ],\n    \"variantId\": \"rays-no-ao\"\n  },\n  \"private\": {\n    \"productIntegrated\": false,\n    \"variant\": \"rays-no-ao\",\n    \"caps\": {\n      \"max3D\": 2048,\n      \"maxTexture\": 16384,\n      \"maxViewport\": [\n        32767,\n        32767\n      ],\n      \"fragmentSamplers\": 16,\n      \"rgba8ui\": true,\n      \"contextLost\": false,\n      \"formatSampleCounts\": []\n    },\n    \"host\": {\n      \"backend\": \"Three-WebGLRenderer-WebGL2\",\n      \"webgl2\": true,\n      \"fixtureId\": \"F00-CONTROL\",\n      \"fixtureDigest\": \"378513d00d5f2a11f569ff0748d4e42ac1832674104febd052070f0fd258b81d\",\n      \"sourceRevision\": 0,\n      \"payloadBindings\": [\n        {\n          \"id\": \"control-cells-coverage\",\n          \"byteLength\": 18432,\n          \"sha256\": \"19a1cc81b9d025fe2f8c0decb0111ef580a499a09654a662cef2e1ba75732db1\"\n        },\n        {\n          \"id\": \"control-cells-material-slots\",\n          \"byteLength\": 18432,\n          \"sha256\": \"b51a18f630293e605a51dbeaf0052f0c8665f3ce2e849de1d67ebcfaadeb92cc\"\n        },\n        {\n          \"id\": \"control-cells-occupancy\",\n          \"byteLength\": 18432,\n          \"sha256\": \"0a1235ca30a59e9016fd9989ecfe452f598be55428bbc1982bd2aec5038f9bf0\"\n        },\n        {\n          \"id\": \"control-cells-slot-1-indices\",\n          \"byteLength\": 36912,\n          \"sha256\": \"d0ddbde922189dc197cdbf105e859603b479441b7bda26fcc41da60ea479faa6\"\n        },\n        {\n          \"id\": \"control-cells-slot-1-normals\",\n          \"byteLength\": 73824,\n          \"sha256\": \"f9297e5ae59b73fa69e2c4b1544cdf0e0c52519967928d34180bfec3a87dada8\"\n        },\n        {\n          \"id\": \"control-cells-slot-1-positions\",\n          \"byteLength\": 73824,\n          \"sha256\": \"482412f7df8a3b458b2e879cff5e2f7dbc7a096d8e77e4106ab82a963ebc9e6b\"\n        },\n        {\n          \"id\": \"control-cells-slot-2-indices\",\n          \"byteLength\": 1104,\n          \"sha256\": \"d33bb49f9ba61840948479296e89ed9ec243da0ff2d5554690a51809558b223f\"\n        },\n        {\n          \"id\": \"control-cells-slot-2-normals\",\n          \"byteLength\": 2208,\n          \"sha256\": \"b4c6dd75a54bcd8f367cea231c6cf67f0d2dfe6a258b88b7f08d739b2ab46cf7\"\n        },\n        {\n          \"id\": \"control-cells-slot-2-positions\",\n          \"byteLength\": 2208,\n          \"sha256\": \"f77a0e7f518dddc174169750642186f6a0ba194d94e57d70e15dbc5948fef500\"\n        },\n        {\n          \"id\": \"control-cells-slot-3-indices\",\n          \"byteLength\": 5040,\n          \"sha256\": \"e78b2875056779308bcdd6e32815bbba32a153ac55bf77160da4f26e58b0e82d\"\n        },\n        {\n          \"id\": \"control-cells-slot-3-normals\",\n          \"byteLength\": 10080,\n          \"sha256\": \"c259b6b39e9d7aa257ad005e5cf1007f7f3095fefde533131cd936a39286a4b5\"\n        },\n        {\n          \"id\": \"control-cells-slot-3-positions\",\n          \"byteLength\": 10080,\n          \"sha256\": \"8d2b3f33dd54ccab2c506f98097c704598369e1c3c00a0297fcdd0ccafe39cbb\"\n        },\n        {\n          \"id\": \"control-cells-slot-4-indices\",\n          \"byteLength\": 1488,\n          \"sha256\": \"87255534af1375ddb02d11d03c17c5650b074735cd175c0ca6247061512b6191\"\n        },\n        {\n          \"id\": \"control-cells-slot-4-normals\",\n          \"byteLength\": 2976,\n          \"sha256\": \"9c5d2bea13e3e4ae216ed02446bff2c8c04b0680927d29b30aee5a62c88eccdc\"\n        },\n        {\n          \"id\": \"control-cells-slot-4-positions\",\n          \"byteLength\": 2976,\n          \"sha256\": \"9226ccf58d6b0ba5da8f171a9a9beebcd973d877790a44aa0bf0fa41732777db\"\n        },\n        {\n          \"id\": \"control-cells-slot-5-indices\",\n          \"byteLength\": 1680,\n          \"sha256\": \"406d0fa517f2a430037ff41c9918ff0c96b6bc3b62cb0a0a19b3332de11ce04e\"\n        },\n        {\n          \"id\": \"control-cells-slot-5-normals\",\n          \"byteLength\": 3360,\n          \"sha256\": \"53f1b75bc284ee8ba7831a4711369cb386c14d6b462c3a793f789f00f05c0f7d\"\n        },\n        {\n          \"id\": \"control-cells-slot-5-positions\",\n          \"byteLength\": 3360,\n          \"sha256\": \"5f5b5867d8d8dcae9efa7140078c8619830cb584ea2d87d515f468cb90b582cf\"\n        },\n        {\n          \"id\": \"control-cells-slot-6-indices\",\n          \"byteLength\": 2736,\n          \"sha256\": \"12e689078e30a9e53b78e9c70f12bfd87e8c58f745871ae5f8710640a7648a78\"\n        },\n        {\n          \"id\": \"control-cells-slot-6-normals\",\n          \"byteLength\": 5472,\n          \"sha256\": \"2f41e44be5536833ce21c6903306d58f23c408fcee479db1707dc3d7c7ebf6b8\"\n        },\n        {\n          \"id\": \"control-cells-slot-6-positions\",\n          \"byteLength\": 5472,\n          \"sha256\": \"59d244a01639cc7e2e5cb9b14c5c1e507ef93454b6e372ab16f80de0270d4c33\"\n        }\n      ],\n      \"presentationProfile\": \"synthetic-lab-light-v1-no-shadows\",\n      \"frame\": {\n        \"cameraId\": \"far\",\n        \"paused\": false,\n        \"seconds\": 0,\n        \"sourceRevision\": 0,\n        \"tick\": 0,\n        \"weather\": {\n          \"cloud01\": 0.1,\n          \"rain01\": 0,\n          \"snow01\": 0,\n          \"windMps\": [\n            0,\n            0,\n            0\n          ]\n        }\n      },\n      \"resetTick\": null,\n      \"resolution\": {\n        \"width\": 1280,\n        \"height\": 720,\n        \"dpr\": 1,\n        \"bufferWidth\": 1280,\n        \"bufferHeight\": 720\n      },\n      \"colorSpace\": \"srgb\",\n      \"toneMapping\": 0,\n      \"exposure\": 1,\n      \"timerQueryAvailable\": true,\n      \"gpuMs\": {\n        \"status\": \"not-run\",\n        \"unit\": \"ms\",\n        \"reason\": \"Timer available; no qualified timer-query sampling in diagnostic control\"\n      },\n      \"nativeGpuBytes\": {\n        \"status\": \"unsupported\",\n        \"unit\": \"byte\",\n        \"reason\": \"WebGL does not expose native/driver allocation bytes\"\n      },\n      \"device\": \"ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)\",\n      \"submittedFrames\": 0,\n      \"rendered\": null,\n      \"rendererInfo\": {\n        \"geometries\": 0,\n        \"textures\": 0,\n        \"programs\": 0,\n        \"calls\": 0,\n        \"triangles\": 0\n      },\n      \"liveHosts\": {\n        \"renderers\": 1,\n        \"renderloops\": 1,\n        \"hostListeners\": 2\n      },\n      \"productIntegrated\": false\n    },\n    \"source\": [\n      {\n        \"ownerId\": \"control\",\n        \"sourceNamespace\": \"rd02-authored-cells-v1\",\n        \"sourceRevision\": 0,\n        \"regionId\": \"control-cells\",\n        \"fixtureDigest\": \"378513d00d5f2a11f569ff0748d4e42ac1832674104febd052070f0fd258b81d\",\n        \"recipeSha256\": \"6a4e4b7d2fde3944b1efb434453d1651697a005fb43af02d92b688ccecdaa5c8\",\n        \"sourceIds\": [\n          \"material-planes\",\n          \"single-shadow-caster\",\n          \"steps\"\n        ],\n        \"sourceIdMeaning\": {},\n        \"originalDimensions\": [\n          32,\n          24,\n          24\n        ],\n        \"originalOriginMeters\": [\n          0,\n          0,\n          0\n        ],\n        \"dimensions\": [\n          32,\n          24,\n          24\n        ],\n        \"offset\": [\n          0,\n          0,\n          0\n        ],\n        \"sourceSlotSha256\": \"b51a18f630293e605a51dbeaf0052f0c8665f3ce2e849de1d67ebcfaadeb92cc\"\n      }\n    ],\n    \"costs\": {\n      \"canonicalPayloadBytes\": 300096,\n      \"wholeRegionCopyBytes\": 55296,\n      \"selectedCpuBytes\": 110592,\n      \"cpuPeakEstimateBytes\": 1066176,\n      \"projectionBytes\": 73728\n    },\n    \"terminal\": {\n      \"firstFailure\": null,\n      \"pending\": false,\n      \"disposed\": false,\n      \"productIntegrated\": false\n    }\n  },\n  \"history\": []\n}"
+          },
+          {
+            "type": "voxel-rays-error",
+            "detail": "Error: Driver upload/link/draw failure after allocation: GL 1282",
+            "facts": "{\n  \"productIntegrated\": false,\n  \"history\": [\n    \"Error: Driver upload/link/draw failure after allocation: GL 1282\"\n  ],\n  \"terminal\": {\n    \"firstFailure\": \"Error: Driver upload/link/draw failure after allocation: GL 1282\",\n    \"pending\": false,\n    \"disposed\": true,\n    \"productIntegrated\": false\n  }\n}"
+          }
+        ],
+        "listeners": [
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          }
+        ],
+        "raf": {
+          "requested": 1,
+          "settled": 1,
+          "cancelled": 2,
+          "active": 0
+        }
+      }
+    },
+    {
+      "fn": "() => {\n    var _document$querySelect, _document$querySelect2, _document$querySelect4;\n    const canvas = document.querySelector('#viewport');\n    const text = (_document$querySelect = (_document$querySelect2 = document.querySelector('#facts')) === null || _document$querySelect2 === void 0 ? void 0 : _document$querySelect2.textContent) !== null && _document$querySelect !== void 0 ? _document$querySelect : '';\n    let projected;\n    try {\n      projected = text ? JSON.parse(text) : null;\n    } catch {\n      projected = {\n        unparsed: text\n      };\n    }\n    const selections = Object.fromEntries(['fixture', 'variant', 'camera', 'tick', 'resolution', 'dpr'].map(name => {\n      var _value, _document$querySelect3;\n      return [name, (_value = (_document$querySelect3 = document.querySelector('#' + name)) === null || _document$querySelect3 === void 0 ? void 0 : _document$querySelect3.value) !== null && _value !== void 0 ? _value : null];\n    }));\n    return {\n      url: location.href,\n      bridgePresent: Object.hasOwn(window, 'TestBridge'),\n      status: (_document$querySelect4 = document.querySelector('#status')) === null || _document$querySelect4 === void 0 ? void 0 : _document$querySelect4.textContent,\n      projected,\n      selections,\n      canvas: canvas ? {\n        hidden: canvas.hidden,\n        width: canvas.width,\n        height: canvas.height,\n        box: canvas.getBoundingClientRect().toJSON(),\n        devicePixelRatio\n      } : null\n    };\n  }",
+      "fnSha256": "09c86441a07eca7bacb55928478907c590ab13c947c02aef76573e3b6e79e00e",
+      "value": {
+        "url": "http://127.0.0.1:5280/src/experiments/voxel-rays/index.html?testBridge=1",
+        "bridgePresent": true,
+        "status": "Disposed; no render loop owned by this entry. Failure history retained.",
+        "projected": {
+          "productIntegrated": false,
+          "history": [
+            "Error: Driver upload/link/draw failure after allocation: GL 1282",
+            "Error: Projection terminated before render submission"
+          ],
+          "terminal": {
+            "firstFailure": "Error: Driver upload/link/draw failure after allocation: GL 1282",
+            "pending": false,
+            "disposed": true,
+            "productIntegrated": false
+          }
+        },
+        "selections": {
+          "fixture": "F00-CONTROL-REPLAY",
+          "variant": "rays-no-ao",
+          "camera": "far",
+          "tick": "0",
+          "resolution": "1280x720",
+          "dpr": "1"
+        },
+        "canvas": {
+          "hidden": true,
+          "width": 1280,
+          "height": 720,
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          },
+          "devicePixelRatio": 1
+        }
+      }
+    },
+    {
+      "fn": "() => window.__RD13Observe",
+      "fnSha256": "2c2cf5e88cab515d9e7efc5aa3b39f2521fa177739a1fbe3c86d31bffa31ed9c",
+      "value": {
+        "schema": "rd13-read-only-native-observer-v1",
+        "contexts": [
+          {
+            "index": 0,
+            "request": "webgl2",
+            "canvasId": "viewport",
+            "actualWebGL2": true,
+            "attributes": {
+              "alpha": false,
+              "antialias": true,
+              "depth": true,
+              "desynchronized": false,
+              "failIfMajorPerformanceCaveat": false,
+              "powerPreference": "high-performance",
+              "premultipliedAlpha": true,
+              "preserveDrawingBuffer": false,
+              "stencil": false,
+              "xrCompatible": false
+            },
+            "renderer": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+            "vendor": "Google Inc. (Intel)",
+            "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+            "glsl": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+            "caps": {
+              "max3D": 2048,
+              "maxDrawBuffers": 8,
+              "maxAttachments": 8
+            },
+            "extensions": [
+              "EXT_clip_control",
+              "EXT_color_buffer_float",
+              "EXT_color_buffer_half_float",
+              "EXT_conservative_depth",
+              "EXT_depth_clamp",
+              "EXT_disjoint_timer_query_webgl2",
+              "EXT_float_blend",
+              "EXT_polygon_offset_clamp",
+              "EXT_render_snorm",
+              "EXT_texture_compression_bptc",
+              "EXT_texture_compression_rgtc",
+              "EXT_texture_filter_anisotropic",
+              "EXT_texture_mirror_clamp_to_edge",
+              "EXT_texture_norm16",
+              "KHR_parallel_shader_compile",
+              "NV_shader_noperspective_interpolation",
+              "OES_draw_buffers_indexed",
+              "OES_sample_variables",
+              "OES_shader_multisample_interpolation",
+              "OES_texture_float_linear",
+              "OVR_multiview2",
+              "WEBGL_blend_func_extended",
+              "WEBGL_clip_cull_distance",
+              "WEBGL_compressed_texture_s3tc",
+              "WEBGL_compressed_texture_s3tc_srgb",
+              "WEBGL_debug_renderer_info",
+              "WEBGL_debug_shaders",
+              "WEBGL_lose_context",
+              "WEBGL_multi_draw",
+              "WEBGL_polygon_mode",
+              "WEBGL_provoking_vertex",
+              "WEBGL_stencil_texturing"
+            ],
+            "nativeDriverIdentityQualified": false
+          }
+        ],
+        "shaders": [
+          {
+            "context": 0,
+            "shader": 10,
+            "code": "#version 300 es\n\n#define attribute in\n#define varying out\n#define texture2D texture\nprecision highp float;\n\tprecision highp int;\n\tprecision highp sampler2D;\n\tprecision highp samplerCube;\n\tprecision highp sampler3D;\n\tprecision highp sampler2DArray;\n\tprecision highp sampler2DShadow;\n\tprecision highp samplerCubeShadow;\n\tprecision highp sampler2DArrayShadow;\n\tprecision highp isampler2D;\n\tprecision highp isampler3D;\n\tprecision highp isamplerCube;\n\tprecision highp isampler2DArray;\n\tprecision highp usampler2D;\n\tprecision highp usampler3D;\n\tprecision highp usamplerCube;\n\tprecision highp usampler2DArray;\n\t\n#define HIGH_PRECISION\n#define SHADER_TYPE ShaderMaterial\n#define SHADER_NAME \nuniform mat4 modelMatrix;\nuniform mat4 modelViewMatrix;\nuniform mat4 projectionMatrix;\nuniform mat4 viewMatrix;\nuniform mat3 normalMatrix;\nuniform vec3 cameraPosition;\nuniform bool isOrthographic;\n#ifdef USE_INSTANCING\n\tattribute mat4 instanceMatrix;\n#endif\n#ifdef USE_INSTANCING_COLOR\n\tattribute vec3 instanceColor;\n#endif\n#ifdef USE_INSTANCING_MORPH\n\tuniform sampler2D morphTexture;\n#endif\nattribute vec3 position;\nattribute vec3 normal;\nattribute vec2 uv;\n#ifdef USE_UV1\n\tattribute vec2 uv1;\n#endif\n#ifdef USE_UV2\n\tattribute vec2 uv2;\n#endif\n#ifdef USE_UV3\n\tattribute vec2 uv3;\n#endif\n#ifdef USE_TANGENT\n\tattribute vec4 tangent;\n#endif\n#if defined( USE_COLOR_ALPHA )\n\tattribute vec4 color;\n#elif defined( USE_COLOR )\n\tattribute vec3 color;\n#endif\n#ifdef USE_SKINNING\n\tattribute vec4 skinIndex;\n\tattribute vec4 skinWeight;\n#endif\n\nvoid main() { gl_Position=vec4(position.xy,0.0,1.0); }"
+          },
+          {
+            "context": 0,
+            "shader": 11,
+            "code": "#version 300 es\n#define varying in\n\n\n#define gl_FragDepthEXT gl_FragDepth\n#define texture2D texture\n#define textureCube texture\n#define texture2DProj textureProj\n#define texture2DLodEXT textureLod\n#define texture2DProjLodEXT textureProjLod\n#define textureCubeLodEXT textureLod\n#define texture2DGradEXT textureGrad\n#define texture2DProjGradEXT textureProjGrad\n#define textureCubeGradEXT textureGrad\nprecision highp float;\n\tprecision highp int;\n\tprecision highp sampler2D;\n\tprecision highp samplerCube;\n\tprecision highp sampler3D;\n\tprecision highp sampler2DArray;\n\tprecision highp sampler2DShadow;\n\tprecision highp samplerCubeShadow;\n\tprecision highp sampler2DArrayShadow;\n\tprecision highp isampler2D;\n\tprecision highp isampler3D;\n\tprecision highp isamplerCube;\n\tprecision highp isampler2DArray;\n\tprecision highp usampler2D;\n\tprecision highp usampler3D;\n\tprecision highp usamplerCube;\n\tprecision highp usampler2DArray;\n\t\n#define HIGH_PRECISION\n#define SHADER_TYPE ShaderMaterial\n#define SHADER_NAME \nuniform mat4 viewMatrix;\nuniform vec3 cameraPosition;\nuniform bool isOrthographic;\n#define OPAQUE\nvec4 LinearTransferOETF( in vec4 value ) {\n\treturn value;\n}\nvec4 sRGBTransferEOTF( in vec4 value ) {\n\treturn vec4( mix( pow( value.rgb * 0.9478672986 + vec3( 0.0521327014 ), vec3( 2.4 ) ), value.rgb * 0.0773993808, vec3( lessThanEqual( value.rgb, vec3( 0.04045 ) ) ) ), value.a );\n}\nvec4 sRGBTransferOETF( in vec4 value ) {\n\treturn vec4( mix( pow( value.rgb, vec3( 0.41666 ) ) * 1.055 - vec3( 0.055 ), value.rgb * 12.92, vec3( lessThanEqual( value.rgb, vec3( 0.0031308 ) ) ) ), value.a );\n}\nvec4 linearToOutputTexel( vec4 value ) {\n\treturn sRGBTransferOETF( vec4( value.rgb * mat3( 1.0000,-0.0000,-0.0000,-0.0000,1.0000,0.0000,0.0000,0.0000,1.0000 ), value.a ) );\n}\nfloat luminance( const in vec3 rgb ) {\n\tconst vec3 weights = vec3( 0.2126, 0.7152, 0.0722 );\n\treturn dot( weights, rgb );\n}\n\n\nlayout(location=0) out vec4 rayColor;\n#define gl_FragColor rayColor\n#define PI 3.141592653589793\n#define PI2 6.283185307179586\n#define PI_HALF 1.5707963267948966\n#define RECIPROCAL_PI 0.3183098861837907\n#define RECIPROCAL_PI2 0.15915494309189535\n#define EPSILON 1e-6\n#ifndef saturate\n#define saturate( a ) clamp( a, 0.0, 1.0 )\n#endif\n#define whiteComplement( a ) ( 1.0 - saturate( a ) )\nfloat pow2( const in float x ) { return x*x; }\nvec3 pow2( const in vec3 x ) { return x*x; }\nfloat pow3( const in float x ) { return x*x*x; }\nfloat pow4( const in float x ) { float x2 = x*x; return x2*x2; }\nfloat max3( const in vec3 v ) { return max( max( v.x, v.y ), v.z ); }\nfloat average( const in vec3 v ) { return dot( v, vec3( 0.3333333 ) ); }\nhighp float rand( const in vec2 uv ) {\n\tconst highp float a = 12.9898, b = 78.233, c = 43758.5453;\n\thighp float dt = dot( uv.xy, vec2( a,b ) ), sn = mod( dt, PI );\n\treturn fract( sin( sn ) * c );\n}\n#ifdef HIGH_PRECISION\n\tfloat precisionSafeLength( vec3 v ) { return length( v ); }\n#else\n\tfloat precisionSafeLength( vec3 v ) {\n\t\tfloat maxComponent = max3( abs( v ) );\n\t\treturn length( v / maxComponent ) * maxComponent;\n\t}\n#endif\nstruct IncidentLight {\n\tvec3 color;\n\tvec3 direction;\n\tbool visible;\n};\nstruct ReflectedLight {\n\tvec3 directDiffuse;\n\tvec3 directSpecular;\n\tvec3 indirectDiffuse;\n\tvec3 indirectSpecular;\n};\n#ifdef USE_ALPHAHASH\n\tvarying vec3 vPosition;\n#endif\nvec3 transformDirection( in vec3 dir, in mat4 matrix ) {\n\treturn normalize( ( matrix * vec4( dir, 0.0 ) ).xyz );\n}\n#define inverseTransformDirection transformDirectionByInverseViewMatrix\nvec3 transformNormalByInverseViewMatrix( in vec3 normal, in mat4 viewMatrix ) {\n\treturn normalize( ( vec4( normal, 0.0 ) * viewMatrix ).xyz );\n}\nvec3 transformDirectionByInverseViewMatrix( in vec3 dir, in mat4 viewMatrix ) {\n\treturn normalize( ( vec4( dir, 0.0 ) * viewMatrix ).xyz );\n}\nbool isPerspectiveMatrix( mat4 m ) {\n\treturn m[ 2 ][ 3 ] == - 1.0;\n}\nvec2 equirectUv( in vec3 dir ) {\n\tfloat u = atan( dir.z, dir.x ) * RECIPROCAL_PI2 + 0.5;\n\tfloat v = asin( clamp( dir.y, - 1.0, 1.0 ) ) * RECIPROCAL_PI + 0.5;\n\treturn vec2( u, v );\n}\nvec3 BRDF_Lambert( const in vec3 diffuseColor ) {\n\treturn RECIPROCAL_PI * diffuseColor;\n}\nvec3 F_Schlick( const in vec3 f0, const in float f90, const in float dotVH ) {\n\tfloat fresnel = exp2( ( - 5.55473 * dotVH - 6.98316 ) * dotVH );\n\treturn f0 * ( 1.0 - fresnel ) + ( f90 * fresnel );\n}\nfloat F_Schlick( const in float f0, const in float f90, const in float dotVH ) {\n\tfloat fresnel = exp2( ( - 5.55473 * dotVH - 6.98316 ) * dotVH );\n\treturn f0 * ( 1.0 - fresnel ) + ( f90 * fresnel );\n} // validated\nfloat G_BlinnPhong_Implicit( ) {\n\treturn 0.25;\n}\nfloat D_BlinnPhong( const in float shininess, const in float dotNH ) {\n\treturn RECIPROCAL_PI * ( shininess * 0.5 + 1.0 ) * pow( dotNH, shininess );\n}\nvec3 BRDF_BlinnPhong( const in vec3 lightDir, const in vec3 viewDir, const in vec3 normal, const in vec3 specularColor, const in float shininess ) {\n\tvec3 halfDir = normalize( lightDir + viewDir );\n\tfloat dotNH = saturate( dot( normal, halfDir ) );\n\tfloat dotVH = saturate( dot( viewDir, halfDir ) );\n\tvec3 F = F_Schlick( specularColor, 1.0, dotVH );\n\tfloat G = G_BlinnPhong_Implicit( );\n\tfloat D = D_BlinnPhong( shininess, dotNH );\n\treturn F * ( G * D );\n} // validated\nuniform bool receiveShadow;\nuniform vec3 ambientLightColor;\n#if defined( USE_LIGHT_PROBES )\n\tuniform vec3 lightProbe[ 9 ];\n#endif\nvec3 shGetIrradianceAt( in vec3 normal, in vec3 shCoefficients[ 9 ] ) {\n\tfloat x = normal.x, y = normal.y, z = normal.z;\n\tvec3 result = shCoefficients[ 0 ] * 0.886227;\n\tresult += shCoefficients[ 1 ] * 2.0 * 0.511664 * y;\n\tresult += shCoefficients[ 2 ] * 2.0 * 0.511664 * z;\n\tresult += shCoefficients[ 3 ] * 2.0 * 0.511664 * x;\n\tresult += shCoefficients[ 4 ] * 2.0 * 0.429043 * x * y;\n\tresult += shCoefficients[ 5 ] * 2.0 * 0.429043 * y * z;\n\tresult += shCoefficients[ 6 ] * ( 0.743125 * z * z - 0.247708 );\n\tresult += shCoefficients[ 7 ] * 2.0 * 0.429043 * x * z;\n\tresult += shCoefficients[ 8 ] * 0.429043 * ( x * x - y * y );\n\treturn result;\n}\nvec3 getLightProbeIrradiance( const in vec3 lightProbe[ 9 ], const in vec3 normal ) {\n\tvec3 worldNormal = transformNormalByInverseViewMatrix( normal, viewMatrix );\n\tvec3 irradiance = shGetIrradianceAt( worldNormal, lightProbe );\n\treturn irradiance;\n}\nvec3 getAmbientLightIrradiance( const in vec3 ambientLightColor ) {\n\tvec3 irradiance = ambientLightColor;\n\treturn irradiance;\n}\nfloat getDistanceAttenuation( const in float lightDistance, const in float cutoffDistance, const in float decayExponent ) {\n\tfloat distanceFalloff = 1.0 / max( pow( lightDistance, decayExponent ), 0.01 );\n\tif ( cutoffDistance > 0.0 ) {\n\t\tdistanceFalloff *= pow2( saturate( 1.0 - pow4( lightDistance / cutoffDistance ) ) );\n\t}\n\treturn distanceFalloff;\n}\nfloat getSpotAttenuation( const in float coneCosine, const in float penumbraCosine, const in float angleCosine ) {\n\treturn smoothstep( coneCosine, penumbraCosine, angleCosine );\n}\n#if 2 > 0\n\tstruct DirectionalLight {\n\t\tvec3 direction;\n\t\tvec3 color;\n\t};\n\tuniform DirectionalLight directionalLights[ 2 ];\n\tvoid getDirectionalLightInfo( const in DirectionalLight directionalLight, out IncidentLight light ) {\n\t\tlight.color = directionalLight.color;\n\t\tlight.direction = directionalLight.direction;\n\t\tlight.visible = true;\n\t}\n#endif\n#if 0 > 0\n\tstruct PointLight {\n\t\tvec3 position;\n\t\tvec3 color;\n\t\tfloat distance;\n\t\tfloat decay;\n\t};\n\tuniform PointLight pointLights[ 0 ];\n\tvoid getPointLightInfo( const in PointLight pointLight, const in vec3 geometryPosition, out IncidentLight light ) {\n\t\tvec3 lVector = pointLight.position - geometryPosition;\n\t\tlight.direction = normalize( lVector );\n\t\tfloat lightDistance = length( lVector );\n\t\tlight.color = pointLight.color;\n\t\tlight.color *= getDistanceAttenuation( lightDistance, pointLight.distance, pointLight.decay );\n\t\tlight.visible = ( light.color != vec3( 0.0 ) );\n\t}\n#endif\n#if 0 > 0\n\tstruct SpotLight {\n\t\tvec3 position;\n\t\tvec3 direction;\n\t\tvec3 color;\n\t\tfloat distance;\n\t\tfloat decay;\n\t\tfloat coneCos;\n\t\tfloat penumbraCos;\n\t};\n\tuniform SpotLight spotLights[ 0 ];\n\tvoid getSpotLightInfo( const in SpotLight spotLight, const in vec3 geometryPosition, out IncidentLight light ) {\n\t\tvec3 lVector = spotLight.position - geometryPosition;\n\t\tlight.direction = normalize( lVector );\n\t\tfloat angleCos = dot( light.direction, spotLight.direction );\n\t\tfloat spotAttenuation = getSpotAttenuation( spotLight.coneCos, spotLight.penumbraCos, angleCos );\n\t\tif ( spotAttenuation > 0.0 ) {\n\t\t\tfloat lightDistance = length( lVector );\n\t\t\tlight.color = spotLight.color * spotAttenuation;\n\t\t\tlight.color *= getDistanceAttenuation( lightDistance, spotLight.distance, spotLight.decay );\n\t\t\tlight.visible = ( light.color != vec3( 0.0 ) );\n\t\t} else {\n\t\t\tlight.color = vec3( 0.0 );\n\t\t\tlight.visible = false;\n\t\t}\n\t}\n#endif\n#if 0 > 0\n\tstruct RectAreaLight {\n\t\tvec3 color;\n\t\tvec3 position;\n\t\tvec3 halfWidth;\n\t\tvec3 halfHeight;\n\t};\n\tuniform sampler2D ltc_1;\tuniform sampler2D ltc_2;\n\tuniform RectAreaLight rectAreaLights[ 0 ];\n#endif\n#if 1 > 0\n\tstruct HemisphereLight {\n\t\tvec3 direction;\n\t\tvec3 skyColor;\n\t\tvec3 groundColor;\n\t};\n\tuniform HemisphereLight hemisphereLights[ 1 ];\n\tvec3 getHemisphereLightIrradiance( const in HemisphereLight hemiLight, const in vec3 normal ) {\n\t\tfloat dotNL = dot( normal, hemiLight.direction );\n\t\tfloat hemiDiffuseWeight = 0.5 * dotNL + 0.5;\n\t\tvec3 irradiance = mix( hemiLight.groundColor, hemiLight.skyColor, hemiDiffuseWeight );\n\t\treturn irradiance;\n\t}\n#endif\n#ifdef USE_LIGHT_PROBES_GRID\nuniform highp sampler3D probesSH;\nuniform vec3 probesMin;\nuniform vec3 probesMax;\nuniform vec3 probesResolution;\nvec3 getLightProbeGridIrradiance( vec3 worldPos, vec3 worldNormal ) {\n\tvec3 res = probesResolution;\n\tvec3 gridRange = probesMax - probesMin;\n\tvec3 resMinusOne = res - 1.0;\n\tvec3 probeSpacing = gridRange / resMinusOne;\n\tvec3 samplePos = worldPos + worldNormal * probeSpacing * 0.5;\n\tvec3 uvw = clamp( ( samplePos - probesMin ) / gridRange, 0.0, 1.0 );\n\tuvw = uvw * resMinusOne / res + 0.5 / res;\n\tfloat nz          = res.z;\n\tfloat paddedSlices = nz + 2.0;\n\tfloat atlasDepth  = 7.0 * paddedSlices;\n\tfloat uvZBase     = uvw.z * nz + 1.0;\n\tvec4 s0 = texture( probesSH, vec3( uvw.xy, ( uvZBase                       ) / atlasDepth ) );\n\tvec4 s1 = texture( probesSH, vec3( uvw.xy, ( uvZBase +       paddedSlices   ) / atlasDepth ) );\n\tvec4 s2 = texture( probesSH, vec3( uvw.xy, ( uvZBase + 2.0 * paddedSlices   ) / atlasDepth ) );\n\tvec4 s3 = texture( probesSH, vec3( uvw.xy, ( uvZBase + 3.0 * paddedSlices   ) / atlasDepth ) );\n\tvec4 s4 = texture( probesSH, vec3( uvw.xy, ( uvZBase + 4.0 * paddedSlices   ) / atlasDepth ) );\n\tvec4 s5 = texture( probesSH, vec3( uvw.xy, ( uvZBase + 5.0 * paddedSlices   ) / atlasDepth ) );\n\tvec4 s6 = texture( probesSH, vec3( uvw.xy, ( uvZBase + 6.0 * paddedSlices   ) / atlasDepth ) );\n\tvec3 c0 = s0.xyz;\n\tvec3 c1 = vec3( s0.w, s1.xy );\n\tvec3 c2 = vec3( s1.zw, s2.x );\n\tvec3 c3 = s2.yzw;\n\tvec3 c4 = s3.xyz;\n\tvec3 c5 = vec3( s3.w, s4.xy );\n\tvec3 c6 = vec3( s4.zw, s5.x );\n\tvec3 c7 = s5.yzw;\n\tvec3 c8 = s6.xyz;\n\tfloat x = worldNormal.x, y = worldNormal.y, z = worldNormal.z;\n\tvec3 result = c0 * 0.886227;\n\tresult += c1 * 2.0 * 0.511664 * y;\n\tresult += c2 * 2.0 * 0.511664 * z;\n\tresult += c3 * 2.0 * 0.511664 * x;\n\tresult += c4 * 2.0 * 0.429043 * x * y;\n\tresult += c5 * 2.0 * 0.429043 * y * z;\n\tresult += c6 * ( 0.743125 * z * z - 0.247708 );\n\tresult += c7 * 2.0 * 0.429043 * x * z;\n\tresult += c8 * 0.429043 * ( x * x - y * y );\n\treturn max( result, vec3( 0.0 ) );\n}\n#endif\nuniform mat4 rayInverseProjection;\nuniform mat4 projectionMatrix;\nuniform mat4 rayCameraWorld;\nuniform mat4 gridFromWorld;\nuniform mat3 worldNormalMatrix;\nuniform vec2 drawingBuffer;\nuniform vec3 slotColor[8];\nuniform vec3 slotEmission[8];\n#ifdef USE_FOG\nuniform vec3 fogColor;\nuniform float fogNear;\nuniform float fogFar;\n#endif\n\nuniform highp usampler3D voxelData;\nuniform ivec3 gridSize;\nuniform int slotDoubleSided[8];\nfloat projectionDepth(vec3 worldHit,mat4 projectionView) { vec4 clip=projectionView*vec4(worldHit,1.0); return clip.z/clip.w*0.5+0.5; }\nstruct VoxelHit { bool hit; bool unknown; bool traversalFault; float t; ivec3 cell; int slot; vec3 normal; };\nuvec4 sourceCell(ivec3 c) {\n  if (any(lessThan(c,ivec3(0))) || any(greaterThanEqual(c,gridSize))) { return uvec4(0); }\n  return texelFetch(voxelData,c,0);\n}\nvec3 axisNormal(int a,float signValue) { vec3 n=vec3(0); n[a]=signValue; return n; }\nVoxelHit traceVoxels(vec3 o,vec3 gridDirection,bool selectVisible) {\n  VoxelHit h; h.hit=false; h.unknown=false; h.traversalFault=false; h.t=0.0; h.cell=ivec3(-1); h.slot=0; h.normal=vec3(0);\n  float entry=-1e30; float leave=1e30; int entryAxis=0;\n  for (int a=0;a<3;a++) {\n    if (gridDirection[a]==0.0) {\n      if (o[a]<0.0 || o[a]>=float(gridSize[a])) { return h; }\n    } else {\n      float t0=(0.0-o[a])/gridDirection[a]; float t1=(float(gridSize[a])-o[a])/gridDirection[a];\n      float nearT=min(t0,t1); float farT=max(t0,t1);\n      if (nearT>entry) { entry=nearT; entryAxis=a; }\n      leave=min(leave,farT);\n    }\n  }\n  float t=max(0.0,entry); if (leave<=t) { return h; }\n  vec3 p=o+t*gridDirection; ivec3 cell=ivec3(floor(p)); ivec3 stepDir=ivec3(sign(gridDirection));\n  for (int a=0;a<3;a++) {\n    if (gridDirection[a]<0.0 && p[a]==floor(p[a])) { cell[a]-=1; }\n  }\n  // Only a mathematically proved BOX ENTRY permits a roundoff clamp.\n  if (entry>=0.0) { cell=clamp(cell,ivec3(0),gridSize-ivec3(1)); }\n  if (any(lessThan(cell,ivec3(0))) || any(greaterThanEqual(cell,gridSize))) { return h; }\n  vec3 crossing=vec3(1e30);\n  for (int a=0;a<3;a++) {\n    if (gridDirection[a]!=0.0) { crossing[a]=(float(cell[a]+(stepDir[a]>0?1:0))-o[a])/gridDirection[a]; }\n  }\n  bool insideRun=entry<0.0 && sourceCell(cell).r!=0u; ivec3 previous=cell; int previousSlot=int(sourceCell(cell).b);\n  vec3 face=axisNormal(entryAxis,-float(stepDir[entryAxis]));\n  // First valid cell tested BEFORE any step. A ray crosses at most sum(dimensions) planes.\n  int admittedSteps=gridSize.x+gridSize.y+gridSize.z+1;\n  for (int iteration=0;iteration<193;iteration++) {\n    if (iteration>=admittedSteps) { h.traversalFault=true; return h; }\n    uvec4 sample=sourceCell(cell); h.unknown=h.unknown || sample.g==0u;\n    bool solid=sample.r!=0u;\n    if (!insideRun && solid) { h.hit=true; h.t=t; h.cell=cell; h.slot=int(sample.b); h.normal=face; return h; }\n    if (insideRun && !solid) {\n      if (!selectVisible || slotDoubleSided[previousSlot]!=0) { h.hit=true; h.t=t; h.cell=previous; h.slot=previousSlot; h.normal=-face; return h; }\n      // Rejected back exit: keep this empty interval, Unknown, world t and ONE traversal budget.\n      insideRun=false;\n    }\n    if (solid) { previous=cell; previousSlot=int(sample.b); }\n    float nextT=min(crossing.x,min(crossing.y,crossing.z));\n    if (nextT<=t) { h.traversalFault=true; return h; }\n    bvec3 tied=equal(crossing,vec3(nextT)); int a=tied.x?0:(tied.y?1:2); face=axisNormal(a,-float(stepDir[a]));\n    if (nextT>=leave) {\n      if (insideRun && (!selectVisible || slotDoubleSided[previousSlot]!=0)) { h.hit=true; h.t=leave; h.cell=previous; h.slot=previousSlot; h.normal=-face; }\n      return h;\n    }\n    // ALL tied axes advance; no zero-length intermediate cells are ever sampled.\n    for (int j=0;j<3;j++) {\n      if (tied[j]) { cell[j]+=stepDir[j]; crossing[j]=(float(cell[j]+(stepDir[j]>0?1:0))-o[j])/gridDirection[j]; }\n    }\n    t=nextT;\n  }\n  h.traversalFault=true; return h;\n}\n// Geometric first-exit semantics are unchanged; only visible projection filters exits during traversal.\nVoxelHit traceVoxels(vec3 o,vec3 gridDirection) { return traceVoxels(o,gridDirection,false); }\nVoxelHit traceVisibleVoxels(vec3 o,vec3 gridDirection) { return traceVoxels(o,gridDirection,true); }\n\nvoid main() {\n  vec2 ndc=gl_FragCoord.xy/drawingBuffer*2.0-1.0;\n  vec4 nearPoint=rayCameraWorld*rayInverseProjection*vec4(ndc,-1.0,1.0);\n  vec4 farPoint=rayCameraWorld*rayInverseProjection*vec4(ndc,1.0,1.0);\n  vec3 worldOrigin=nearPoint.xyz/nearPoint.w;\n  vec3 worldDirection=normalize(farPoint.xyz/farPoint.w-worldOrigin);\n  vec3 gridOrigin=(gridFromWorld*vec4(worldOrigin,1.0)).xyz;\n  vec3 gridDirection=(gridFromWorld*vec4(worldDirection,0.0)).xyz;\n  VoxelHit h=traceVisibleVoxels(gridOrigin,gridDirection);\n  if (h.traversalFault) { gl_FragColor=vec4(1.0,0.0,1.0,1.0); gl_FragDepth=0.0; return; }\n  if (!h.hit) { discard; }\n  vec3 worldHit=worldOrigin+h.t*worldDirection;\n  vec3 worldNormal=normalize(worldNormalMatrix*h.normal);\n  bool back=dot(worldNormal,worldDirection)>0.0;\n  if (back) { worldNormal=-worldNormal; }\n  vec4 viewHit=viewMatrix*vec4(worldHit,1.0);\n  vec4 clip=projectionMatrix*viewHit;\n  float hitDepth=projectionDepth(worldHit,projectionMatrix*viewMatrix);\n  if (clip.w<=0.0 || hitDepth<0.0 || hitDepth>1.0) { discard; }\n  gl_FragDepth=hitDepth;\n  vec3 normal=normalize(mat3(viewMatrix)*worldNormal);\n  vec3 irradiance=getAmbientLightIrradiance(ambientLightColor);\n  #if 1 > 0\n  for (int i=0;i<1;i++) { irradiance+=getHemisphereLightIrradiance(hemisphereLights[i],normal); }\n  #endif\n  #if 2 > 0\n  for (int i=0;i<2;i++) { irradiance+=max(dot(normal,directionalLights[i].direction),0.0)*directionalLights[i].color; }\n  #endif\n  gl_FragColor=vec4(slotColor[h.slot]*irradiance*RECIPROCAL_PI+slotEmission[h.slot],1.0);\n#if defined( TONE_MAPPING )\n\tgl_FragColor.rgb = toneMapping( gl_FragColor.rgb );\n#endif\ngl_FragColor = linearToOutputTexel( gl_FragColor );\n  #ifdef USE_FOG\n  float fogFactor=smoothstep(fogNear,fogFar,-viewHit.z);\n  gl_FragColor.rgb=mix(gl_FragColor.rgb,fogColor,fogFactor);\n  #endif\n}\n"
+          }
+        ],
+        "queries": [
+          {
+            "context": 0,
+            "name": "getInternalformatParameter",
+            "args": [
+              36161,
+              36220,
+              32937
+            ],
+            "value": []
+          },
+          {
+            "context": 0,
+            "name": "getProgramInfoLog",
+            "args": [
+              9
+            ],
+            "value": "Fragment shader is not compiled.\n\u0000"
+          },
+          {
+            "context": 0,
+            "name": "getShaderInfoLog",
+            "args": [
+              10
+            ],
+            "value": ""
+          },
+          {
+            "context": 0,
+            "name": "getShaderInfoLog",
+            "args": [
+              11
+            ],
+            "value": "ERROR: 0:365: 'sample' : Illegal use of reserved word\nERROR: 0:365: 'sample' : syntax error\n\u0000"
+          },
+          {
+            "context": 0,
+            "name": "getProgramParameter",
+            "args": [
+              9,
+              35714
+            ],
+            "value": false
+          },
+          {
+            "context": 0,
+            "name": "getShaderParameter",
+            "args": [
+              10,
+              35713
+            ],
+            "value": true
+          },
+          {
+            "context": 0,
+            "name": "getShaderInfoLog",
+            "args": [
+              10
+            ],
+            "value": ""
+          },
+          {
+            "context": 0,
+            "name": "getShaderParameter",
+            "args": [
+              11,
+              35713
+            ],
+            "value": false
+          },
+          {
+            "context": 0,
+            "name": "getShaderInfoLog",
+            "args": [
+              11
+            ],
+            "value": "ERROR: 0:365: 'sample' : Illegal use of reserved word\nERROR: 0:365: 'sample' : syntax error\n\u0000"
+          },
+          {
+            "context": 0,
+            "name": "getProgramParameter",
+            "args": [
+              9,
+              35715
+            ],
+            "value": false
+          },
+          {
+            "context": 0,
+            "name": "getProgramParameter",
+            "args": [
+              9,
+              35718
+            ],
+            "value": 0
+          },
+          {
+            "context": 0,
+            "name": "getProgramParameter",
+            "args": [
+              9,
+              35721
+            ],
+            "value": 0
+          },
+          {
+            "context": 0,
+            "name": "getError",
+            "args": [],
+            "value": 1282
+          }
+        ],
+        "readbacks": [],
+        "created": {
+          "createTexture": 4,
+          "createFramebuffer": 3,
+          "createBuffer": 1,
+          "createProgram": 1,
+          "createShader": 2,
+          "createVertexArray": 1
+        },
+        "deleted": {
+          "deleteShader": 2,
+          "deleteBuffer": 1,
+          "deleteVertexArray": 1,
+          "deleteProgram": 1
+        },
+        "canvasEvents": [
+          {
+            "type": "three-lab-error",
+            "detail": "Error: Driver upload/link/draw failure after allocation: GL 1282",
+            "facts": "{\n  \"productIntegrated\": false,\n  \"facts\": {\n    \"backend\": \"Three-WebGLRenderer-WebGL2\",\n    \"errors\": [],\n    \"experimentId\": \"RD-13\",\n    \"fixtureDigest\": \"378513d00d5f2a11f569ff0748d4e42ac1832674104febd052070f0fd258b81d\",\n    \"liveResources\": {\n      \"geometries\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 0\n      },\n      \"hostListeners\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 2\n      },\n      \"renderers\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 1\n      },\n      \"renderloops\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 1\n      },\n      \"textures\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 0\n      }\n    },\n    \"logicalCosts\": {\n      \"effect-0-cpuPeakBytes\": {\n        \"reason\": \"Conservative source transport/private/copy/old-new estimate, not JS heap\",\n        \"status\": \"estimated\",\n        \"unit\": \"byte\",\n        \"value\": 1066176\n      },\n      \"effect-0-fullScreenVolumes\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 1\n      },\n      \"effect-0-greedyBuildMs\": {\n        \"status\": \"measured\",\n        \"unit\": \"ms\",\n        \"value\": 0\n      },\n      \"effect-0-maxStepsPerRay\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 81\n      },\n      \"effect-0-nativeGpuBytes\": {\n        \"reason\": \"Native context/driver VRAM cannot be measured here\",\n        \"status\": \"unsupported\",\n        \"unit\": \"byte\"\n      },\n      \"effect-0-prepareMs\": {\n        \"status\": \"measured\",\n        \"unit\": \"ms\",\n        \"value\": 9.199999988079071\n      },\n      \"effect-0-projectionBuildMs\": {\n        \"status\": \"measured\",\n        \"unit\": \"ms\",\n        \"value\": 0.4000000059604645\n      },\n      \"effect-0-projectionBytes\": {\n        \"reason\": \"Typed texture/mesh payload; excludes native allocator/driver/context\",\n        \"status\": \"estimated\",\n        \"unit\": \"byte\",\n        \"value\": 73764\n      },\n      \"effect-0-triangles\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 1\n      },\n      \"effect-0-uploadCommandCpuMs\": {\n        \"reason\": \"Three upload occurs during native render; CPU preparation is not upload time\",\n        \"status\": \"not-run\",\n        \"unit\": \"ms\"\n      },\n      \"gpuBytes\": {\n        \"reason\": \"Native GPU memory unavailable\",\n        \"status\": \"unsupported\",\n        \"unit\": \"byte\"\n      },\n      \"gpuMs\": {\n        \"reason\": \"Timer available; diagnostic loop does not sample GPU timing\",\n        \"status\": \"not-run\",\n        \"unit\": \"ms\"\n      },\n      \"renderCalls\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 0\n      },\n      \"triangles\": {\n        \"status\": \"measured\",\n        \"unit\": \"count\",\n        \"value\": 0\n      }\n    },\n    \"sourceRevision\": 0,\n    \"unsupportedFeatures\": [\n      \"native-pcf-shadow-parity\",\n      \"native-sky-shader-parity\",\n      \"native-numeric-qualification-not-run\",\n      \"native-water-shader-parity\",\n      \"native-material-shader-hooks\",\n      \"face-ambient-occlusion\",\n      \"gi-and-reflections\",\n      \"unknown-is-not-world-clearance\",\n      \"native-vram-unavailable\",\n      \"gpu-timing-not-qualified\"\n    ],\n    \"variantId\": \"rays-no-ao\"\n  },\n  \"private\": {\n    \"productIntegrated\": false,\n    \"variant\": \"rays-no-ao\",\n    \"caps\": {\n      \"max3D\": 2048,\n      \"maxTexture\": 16384,\n      \"maxViewport\": [\n        32767,\n        32767\n      ],\n      \"fragmentSamplers\": 16,\n      \"rgba8ui\": true,\n      \"contextLost\": false,\n      \"formatSampleCounts\": []\n    },\n    \"host\": {\n      \"backend\": \"Three-WebGLRenderer-WebGL2\",\n      \"webgl2\": true,\n      \"fixtureId\": \"F00-CONTROL\",\n      \"fixtureDigest\": \"378513d00d5f2a11f569ff0748d4e42ac1832674104febd052070f0fd258b81d\",\n      \"sourceRevision\": 0,\n      \"payloadBindings\": [\n        {\n          \"id\": \"control-cells-coverage\",\n          \"byteLength\": 18432,\n          \"sha256\": \"19a1cc81b9d025fe2f8c0decb0111ef580a499a09654a662cef2e1ba75732db1\"\n        },\n        {\n          \"id\": \"control-cells-material-slots\",\n          \"byteLength\": 18432,\n          \"sha256\": \"b51a18f630293e605a51dbeaf0052f0c8665f3ce2e849de1d67ebcfaadeb92cc\"\n        },\n        {\n          \"id\": \"control-cells-occupancy\",\n          \"byteLength\": 18432,\n          \"sha256\": \"0a1235ca30a59e9016fd9989ecfe452f598be55428bbc1982bd2aec5038f9bf0\"\n        },\n        {\n          \"id\": \"control-cells-slot-1-indices\",\n          \"byteLength\": 36912,\n          \"sha256\": \"d0ddbde922189dc197cdbf105e859603b479441b7bda26fcc41da60ea479faa6\"\n        },\n        {\n          \"id\": \"control-cells-slot-1-normals\",\n          \"byteLength\": 73824,\n          \"sha256\": \"f9297e5ae59b73fa69e2c4b1544cdf0e0c52519967928d34180bfec3a87dada8\"\n        },\n        {\n          \"id\": \"control-cells-slot-1-positions\",\n          \"byteLength\": 73824,\n          \"sha256\": \"482412f7df8a3b458b2e879cff5e2f7dbc7a096d8e77e4106ab82a963ebc9e6b\"\n        },\n        {\n          \"id\": \"control-cells-slot-2-indices\",\n          \"byteLength\": 1104,\n          \"sha256\": \"d33bb49f9ba61840948479296e89ed9ec243da0ff2d5554690a51809558b223f\"\n        },\n        {\n          \"id\": \"control-cells-slot-2-normals\",\n          \"byteLength\": 2208,\n          \"sha256\": \"b4c6dd75a54bcd8f367cea231c6cf67f0d2dfe6a258b88b7f08d739b2ab46cf7\"\n        },\n        {\n          \"id\": \"control-cells-slot-2-positions\",\n          \"byteLength\": 2208,\n          \"sha256\": \"f77a0e7f518dddc174169750642186f6a0ba194d94e57d70e15dbc5948fef500\"\n        },\n        {\n          \"id\": \"control-cells-slot-3-indices\",\n          \"byteLength\": 5040,\n          \"sha256\": \"e78b2875056779308bcdd6e32815bbba32a153ac55bf77160da4f26e58b0e82d\"\n        },\n        {\n          \"id\": \"control-cells-slot-3-normals\",\n          \"byteLength\": 10080,\n          \"sha256\": \"c259b6b39e9d7aa257ad005e5cf1007f7f3095fefde533131cd936a39286a4b5\"\n        },\n        {\n          \"id\": \"control-cells-slot-3-positions\",\n          \"byteLength\": 10080,\n          \"sha256\": \"8d2b3f33dd54ccab2c506f98097c704598369e1c3c00a0297fcdd0ccafe39cbb\"\n        },\n        {\n          \"id\": \"control-cells-slot-4-indices\",\n          \"byteLength\": 1488,\n          \"sha256\": \"87255534af1375ddb02d11d03c17c5650b074735cd175c0ca6247061512b6191\"\n        },\n        {\n          \"id\": \"control-cells-slot-4-normals\",\n          \"byteLength\": 2976,\n          \"sha256\": \"9c5d2bea13e3e4ae216ed02446bff2c8c04b0680927d29b30aee5a62c88eccdc\"\n        },\n        {\n          \"id\": \"control-cells-slot-4-positions\",\n          \"byteLength\": 2976,\n          \"sha256\": \"9226ccf58d6b0ba5da8f171a9a9beebcd973d877790a44aa0bf0fa41732777db\"\n        },\n        {\n          \"id\": \"control-cells-slot-5-indices\",\n          \"byteLength\": 1680,\n          \"sha256\": \"406d0fa517f2a430037ff41c9918ff0c96b6bc3b62cb0a0a19b3332de11ce04e\"\n        },\n        {\n          \"id\": \"control-cells-slot-5-normals\",\n          \"byteLength\": 3360,\n          \"sha256\": \"53f1b75bc284ee8ba7831a4711369cb386c14d6b462c3a793f789f00f05c0f7d\"\n        },\n        {\n          \"id\": \"control-cells-slot-5-positions\",\n          \"byteLength\": 3360,\n          \"sha256\": \"5f5b5867d8d8dcae9efa7140078c8619830cb584ea2d87d515f468cb90b582cf\"\n        },\n        {\n          \"id\": \"control-cells-slot-6-indices\",\n          \"byteLength\": 2736,\n          \"sha256\": \"12e689078e30a9e53b78e9c70f12bfd87e8c58f745871ae5f8710640a7648a78\"\n        },\n        {\n          \"id\": \"control-cells-slot-6-normals\",\n          \"byteLength\": 5472,\n          \"sha256\": \"2f41e44be5536833ce21c6903306d58f23c408fcee479db1707dc3d7c7ebf6b8\"\n        },\n        {\n          \"id\": \"control-cells-slot-6-positions\",\n          \"byteLength\": 5472,\n          \"sha256\": \"59d244a01639cc7e2e5cb9b14c5c1e507ef93454b6e372ab16f80de0270d4c33\"\n        }\n      ],\n      \"presentationProfile\": \"synthetic-lab-light-v1-no-shadows\",\n      \"frame\": {\n        \"cameraId\": \"far\",\n        \"paused\": false,\n        \"seconds\": 0,\n        \"sourceRevision\": 0,\n        \"tick\": 0,\n        \"weather\": {\n          \"cloud01\": 0.1,\n          \"rain01\": 0,\n          \"snow01\": 0,\n          \"windMps\": [\n            0,\n            0,\n            0\n          ]\n        }\n      },\n      \"resetTick\": null,\n      \"resolution\": {\n        \"width\": 1280,\n        \"height\": 720,\n        \"dpr\": 1,\n        \"bufferWidth\": 1280,\n        \"bufferHeight\": 720\n      },\n      \"colorSpace\": \"srgb\",\n      \"toneMapping\": 0,\n      \"exposure\": 1,\n      \"timerQueryAvailable\": true,\n      \"gpuMs\": {\n        \"status\": \"not-run\",\n        \"unit\": \"ms\",\n        \"reason\": \"Timer available; no qualified timer-query sampling in diagnostic control\"\n      },\n      \"nativeGpuBytes\": {\n        \"status\": \"unsupported\",\n        \"unit\": \"byte\",\n        \"reason\": \"WebGL does not expose native/driver allocation bytes\"\n      },\n      \"device\": \"ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)\",\n      \"submittedFrames\": 0,\n      \"rendered\": null,\n      \"rendererInfo\": {\n        \"geometries\": 0,\n        \"textures\": 0,\n        \"programs\": 0,\n        \"calls\": 0,\n        \"triangles\": 0\n      },\n      \"liveHosts\": {\n        \"renderers\": 1,\n        \"renderloops\": 1,\n        \"hostListeners\": 2\n      },\n      \"productIntegrated\": false\n    },\n    \"source\": [\n      {\n        \"ownerId\": \"control\",\n        \"sourceNamespace\": \"rd02-authored-cells-v1\",\n        \"sourceRevision\": 0,\n        \"regionId\": \"control-cells\",\n        \"fixtureDigest\": \"378513d00d5f2a11f569ff0748d4e42ac1832674104febd052070f0fd258b81d\",\n        \"recipeSha256\": \"6a4e4b7d2fde3944b1efb434453d1651697a005fb43af02d92b688ccecdaa5c8\",\n        \"sourceIds\": [\n          \"material-planes\",\n          \"single-shadow-caster\",\n          \"steps\"\n        ],\n        \"sourceIdMeaning\": {},\n        \"originalDimensions\": [\n          32,\n          24,\n          24\n        ],\n        \"originalOriginMeters\": [\n          0,\n          0,\n          0\n        ],\n        \"dimensions\": [\n          32,\n          24,\n          24\n        ],\n        \"offset\": [\n          0,\n          0,\n          0\n        ],\n        \"sourceSlotSha256\": \"b51a18f630293e605a51dbeaf0052f0c8665f3ce2e849de1d67ebcfaadeb92cc\"\n      }\n    ],\n    \"costs\": {\n      \"canonicalPayloadBytes\": 300096,\n      \"wholeRegionCopyBytes\": 55296,\n      \"selectedCpuBytes\": 110592,\n      \"cpuPeakEstimateBytes\": 1066176,\n      \"projectionBytes\": 73728\n    },\n    \"terminal\": {\n      \"firstFailure\": null,\n      \"pending\": false,\n      \"disposed\": false,\n      \"productIntegrated\": false\n    }\n  },\n  \"history\": []\n}"
+          },
+          {
+            "type": "voxel-rays-error",
+            "detail": "Error: Driver upload/link/draw failure after allocation: GL 1282",
+            "facts": "{\n  \"productIntegrated\": false,\n  \"history\": [\n    \"Error: Driver upload/link/draw failure after allocation: GL 1282\"\n  ],\n  \"terminal\": {\n    \"firstFailure\": \"Error: Driver upload/link/draw failure after allocation: GL 1282\",\n    \"pending\": false,\n    \"disposed\": true,\n    \"productIntegrated\": false\n  }\n}"
+          }
+        ],
+        "listeners": [
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "voxel-rays-error",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "addEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextlost",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextrestored",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "webglcontextcreationerror",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-rendered",
+            "capture": false
+          },
+          {
+            "operation": "removeEventListener",
+            "canvasId": "viewport",
+            "type": "three-lab-error",
+            "capture": false
+          }
+        ],
+        "raf": {
+          "requested": 1,
+          "settled": 1,
+          "cancelled": 2,
+          "active": 0
+        }
+      }
+    }
+  ],
+  "network": [
+    {
+      "url": "http://127.0.0.1:5280/src/experiments/voxel-rays/index.html?testBridge=1",
+      "status": 200,
+      "bytes": 3135,
+      "sha256": "fd94b936b2f7368b6dd4d94421d19c983be1db791bb3cb2882ac8523afd8b111"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/rd13-rP4kbG1L.js",
+      "status": 200,
+      "bytes": 7412,
+      "sha256": "522276ea4a010f77e4a88841b839b950a70abf030f3d854afbec9608a3cb68d6"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/validation-DshwGweA.js",
+      "status": 200,
+      "bytes": 1986,
+      "sha256": "5285901cd9c4accaebb7816ec154bf4aea039e7097d8315fb2b344a5489d0c86"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/assets-6jPS5j9G.js",
+      "status": 200,
+      "bytes": 23061,
+      "sha256": "3f6caa4b69c1583a1808d4effbdbc20f311a4d2f25c60b6a423e52d2d6303579"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/preload-helper-Czpn1I53.js",
+      "status": 200,
+      "bytes": 1196,
+      "sha256": "aba87f2a53e45ecdc9113fc30387d16e449d1676428cf5f82dd624c1df97d152"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/ray-Ca4hU8vh.js",
+      "status": 200,
+      "bytes": 8322,
+      "sha256": "5a8e60d97d11efc157fd3f65a0518ba3e309dfd8d6bb74e379f976d3c1c78bcf"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/scenarioRunner-5VptEXLC.js",
+      "status": 200,
+      "bytes": 708,
+      "sha256": "dfce56e655f99afd78aa2f9a19d489ef625292c76abc3f90504e2b5764de77c6"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/voxel-rays-BiO9aFha.js",
+      "status": 200,
+      "bytes": 32526,
+      "sha256": "4e011a2ffef1c58e58771cd18f980c1efadb174ec8046a58ac824ad000351a2d"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/three.core-DXm14g9n.js",
+      "status": 200,
+      "bytes": 208141,
+      "sha256": "f88771ec73093547966bd73a5381ec1baa3dbab2a341f60e740da2f7cbc365d4"
+    },
+    {
+      "url": "http://127.0.0.1:5280/assets/three-control-CTbaiuDa.js",
+      "status": 200,
+      "bytes": 356427,
+      "sha256": "a2dab247c7bbcebf1164cfaeedd89ea66244e90180fcb39237736d19cd6aaf73"
+    },
+    {
+      "url": "http://127.0.0.1:5280/inventory.json",
+      "status": 200,
+      "bytes": 122718,
+      "sha256": "26bf86bba1cbd1955d069ab2eac8d491b6cade59d16a004f1d094cc117ebc9c6"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F00-CONTROL/manifest.json",
+      "status": 200,
+      "bytes": 7886,
+      "sha256": "378513d00d5f2a11f569ff0748d4e42ac1832674104febd052070f0fd258b81d"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-coverage.bin",
+      "status": 200,
+      "bytes": 18432,
+      "sha256": "19a1cc81b9d025fe2f8c0decb0111ef580a499a09654a662cef2e1ba75732db1"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-material-slots.bin",
+      "status": 200,
+      "bytes": 18432,
+      "sha256": "b51a18f630293e605a51dbeaf0052f0c8665f3ce2e849de1d67ebcfaadeb92cc"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-occupancy.bin",
+      "status": 200,
+      "bytes": 18432,
+      "sha256": "0a1235ca30a59e9016fd9989ecfe452f598be55428bbc1982bd2aec5038f9bf0"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-slot-1-indices.bin",
+      "status": 200,
+      "bytes": 36912,
+      "sha256": "d0ddbde922189dc197cdbf105e859603b479441b7bda26fcc41da60ea479faa6"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-slot-1-normals.bin",
+      "status": 200,
+      "bytes": 73824,
+      "sha256": "f9297e5ae59b73fa69e2c4b1544cdf0e0c52519967928d34180bfec3a87dada8"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-slot-1-positions.bin",
+      "failure": {
+        "errorText": "net::ERR_ABORTED"
+      }
+    },
+    {
+      "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-slot-1-positions.bin",
+      "status": 200,
+      "bodyError": "Error: response.body: Protocol error (Network.getResponseBody): No data found for resource with given identifier"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-slot-2-indices.bin",
+      "status": 200,
+      "bytes": 1104,
+      "sha256": "d33bb49f9ba61840948479296e89ed9ec243da0ff2d5554690a51809558b223f"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-slot-2-normals.bin",
+      "status": 200,
+      "bytes": 2208,
+      "sha256": "b4c6dd75a54bcd8f367cea231c6cf67f0d2dfe6a258b88b7f08d739b2ab46cf7"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-slot-2-positions.bin",
+      "status": 200,
+      "bytes": 2208,
+      "sha256": "f77a0e7f518dddc174169750642186f6a0ba194d94e57d70e15dbc5948fef500"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-slot-3-indices.bin",
+      "status": 200,
+      "bytes": 5040,
+      "sha256": "e78b2875056779308bcdd6e32815bbba32a153ac55bf77160da4f26e58b0e82d"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-slot-3-normals.bin",
+      "status": 200,
+      "bytes": 10080,
+      "sha256": "c259b6b39e9d7aa257ad005e5cf1007f7f3095fefde533131cd936a39286a4b5"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-slot-3-positions.bin",
+      "status": 200,
+      "bytes": 10080,
+      "sha256": "8d2b3f33dd54ccab2c506f98097c704598369e1c3c00a0297fcdd0ccafe39cbb"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-slot-4-indices.bin",
+      "status": 200,
+      "bytes": 1488,
+      "sha256": "87255534af1375ddb02d11d03c17c5650b074735cd175c0ca6247061512b6191"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-slot-4-normals.bin",
+      "status": 200,
+      "bytes": 2976,
+      "sha256": "9c5d2bea13e3e4ae216ed02446bff2c8c04b0680927d29b30aee5a62c88eccdc"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-slot-4-positions.bin",
+      "status": 200,
+      "bytes": 2976,
+      "sha256": "9226ccf58d6b0ba5da8f171a9a9beebcd973d877790a44aa0bf0fa41732777db"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-slot-5-indices.bin",
+      "status": 200,
+      "bytes": 1680,
+      "sha256": "406d0fa517f2a430037ff41c9918ff0c96b6bc3b62cb0a0a19b3332de11ce04e"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-slot-5-normals.bin",
+      "status": 200,
+      "bytes": 3360,
+      "sha256": "53f1b75bc284ee8ba7831a4711369cb386c14d6b462c3a793f789f00f05c0f7d"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-slot-5-positions.bin",
+      "status": 200,
+      "bytes": 3360,
+      "sha256": "5f5b5867d8d8dcae9efa7140078c8619830cb584ea2d87d515f468cb90b582cf"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-slot-6-indices.bin",
+      "status": 200,
+      "bytes": 2736,
+      "sha256": "12e689078e30a9e53b78e9c70f12bfd87e8c58f745871ae5f8710640a7648a78"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-slot-6-normals.bin",
+      "status": 200,
+      "bytes": 5472,
+      "sha256": "2f41e44be5536833ce21c6903306d58f23c408fcee479db1707dc3d7c7ebf6b8"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F00-CONTROL/payloads/control-cells-slot-6-positions.bin",
+      "status": 200,
+      "bytes": 5472,
+      "sha256": "59d244a01639cc7e2e5cb9b14c5c1e507ef93454b6e372ab16f80de0270d4c33"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F00-CONTROL/scenario.json",
+      "status": 200,
+      "bytes": 758,
+      "sha256": "24de3e02b3c7d2cf38f0f1dbf0b5f82a5107bc2507118726b5c081b3d05bf878"
+    },
+    {
+      "url": "http://127.0.0.1:5280/inventory.json",
+      "status": 200,
+      "bytes": 122718,
+      "sha256": "26bf86bba1cbd1955d069ab2eac8d491b6cade59d16a004f1d094cc117ebc9c6"
+    },
+    {
+      "url": "http://127.0.0.1:5280/F00-CONTROL/recipe.json",
+      "status": 200,
+      "bytes": 1628,
+      "sha256": "6a4e4b7d2fde3944b1efb434453d1651697a005fb43af02d92b688ccecdaa5c8"
+    }
+  ],
+  "console": [
+    {
+      "type": "error",
+      "text": "THREE.WebGLProgram: Shader Error 0 - VALIDATE_STATUS false\n\nMaterial Name: \nMaterial Type: ShaderMaterial\n\nProgram Info Log: Fragment shader is not compiled.\n\u0000\n\nFRAGMENT\n\nERROR: 0:365: 'sample' : Illegal use of reserved word\nERROR: 0:365: 'sample' : syntax error\n\u0000\n\n  360:   vec3 face=axisNormal(entryAxis,-float(stepDir[entryAxis]));\n  361:   // First valid cell tested BEFORE any step. A ray crosses at most sum(dimensions) planes.\n  362:   int admittedSteps=gridSize.x+gridSize.y+gridSize.z+1;\n  363:   for (int iteration=0;iteration<193;iteration++) {\n  364:     if (iteration>=admittedSteps) { h.traversalFault=true; return h; }\n> 365:     uvec4 sample=sourceCell(cell); h.unknown=h.unknown || sample.g==0u;\n  366:     bool solid=sample.r!=0u;\n  367:     if (!insideRun && solid) { h.hit=true; h.t=t; h.cell=cell; h.slot=int(sample.b); h.normal=face; return h; }\n  368:     if (insideRun && !solid) {\n  369:       if (!selectVisible || slotDoubleSided[previousSlot]!=0) { h.hit=true; h.t=t; h.cell=previous; h.slot=previousSlot; h.normal=-face; return h; }\n  370:       // Rejected back exit: keep this empty interval, Unknown, world t and ONE traversal budget.\n  371:       insideRun=false;"
+    },
+    {
+      "type": "warning",
+      "text": "WebGL: INVALID_OPERATION: useProgram: program not valid"
+    },
+    {
+      "type": "warning",
+      "text": "WebGL: INVALID_OPERATION: drawArrays: no valid shader program in use"
+    }
+  ],
+  "errors": []
+}

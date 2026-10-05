@@ -1,0 +1,98 @@
+{
+  "copied_original_bytes": true,
+  "sources": [
+    {
+      "source_name": "hestia-cut-rt-v3-checkpoint-2026-10-02.md",
+      "package_path": "context/CHECKPOINT_ORIGINAL.md",
+      "bytes": 7439,
+      "sha256": "e16a2d766ce86dac7cb8826141bea979de0a7af736f8ea07b9353dec31176f84",
+      "note": "Aktueller bereitgestellter Checkpoint, keine unabhängige erneute Testausführung."
+    },
+    {
+      "source_name": "Hestia_Parallelplan_b3c6523a_2026-10-02.md",
+      "package_path": "context/VORHERIGER_PARALLELPLAN_ORIGINAL.md",
+      "bytes": 26354,
+      "sha256": "e65c5b13e9a3e2fc73b067d3fecf3d74ed2fe3e2f86c2ad1e10fceb21a3bc454",
+      "note": "Alte Schreibbesitz-/Abnahmekarte; keine neuen Produktrechte für RD."
+    },
+    {
+      "source_name": "Reddit Referenzen ergänzen.txt",
+      "package_path": "context/REDDIT_CHAT_ORIGINAL.txt",
+      "bytes": 13246,
+      "sha256": "b76a07a1cf38ed6267eb2fdc5daed6337c39fa2ac661ac1d52fe01041ebd0588",
+      "note": "Vorheriger Chat, teilweise maskierte Links und historische Toolzitate bleiben als Original erhalten."
+    },
+    {
+      "source_name": "G01_core_game_loop_progression_vertical_slices_abschlussbericht_2026-08-12(1).md",
+      "package_path": "context/G01_GAMELOOP_ORIGINAL.md",
+      "bytes": 84837,
+      "sha256": "6297388fc9f6fa40547250d68a61c9b4539ff17df16507af22bf476c0aec790c",
+      "note": "Historisches vorgeschlagenes Zielbild, keine jetzige Gameplayimplementierung."
+    },
+    {
+      "source_name": "G02_unified_ingame_authoring_platform_abschlussbericht_2026-08-12(2).md",
+      "package_path": "context/G02_AUTHORING_ORIGINAL.md",
+      "bytes": 79148,
+      "sha256": "661bb79819c24fbdcf66009526bb1c26c8ec74dec28a46d67243ee308133f20d",
+      "note": "Historischer Entwurf. Kein Auftrag zum kompletten Plattformbau."
+    },
+    {
+      "source_name": "G12_Blender_to_HVOX_Toolchain_Architekturbericht_2026-08-12(2).md",
+      "package_path": "context/G12_TOOLCHAIN_ORIGINAL.md",
+      "bytes": 50338,
+      "sha256": "79b7c7116768faf6b1c7f10519943e1930796514cf6b10132db424b94dcc11a6",
+      "note": "Historischer .25-m-Vertrag und offene Extraktions-/Compilerfragen, nicht still neue Produktnorm."
+    },
+    {
+      "source_name": "G13_Content_Data_Modding_Versioning_Hot_Reload_Abschlussbericht_2026-08-12(2).md",
+      "package_path": "context/G13_CONTENT_ORIGINAL.md",
+      "bytes": 77292,
+      "sha256": "dfd28aec6ca16ed6f65fa032f55f5c9760cedf2a12b27ad43dc7c235f64b0b28",
+      "note": "Historischer Contententwurf. Labpresets werden nicht als dessen akzeptierte Umsetzung ausgegeben."
+    },
+    {
+      "source_name": "G17_Editor_QA_Validation_Playwright_Automation_Abschlussbericht_2026-08-12(1).md",
+      "package_path": "context/G17_QA_ORIGINAL.md",
+      "bytes": 90840,
+      "sha256": "a46416858744904359b7719fd5ca158b6d90fce17f9c00b6415ca4fdf0dc1365",
+      "note": "Historische Evidenzdisziplin und QA-Ideen, keine alte Technologie-Statusbeschreibung als aktuelle Wahrheit."
+    },
+    {
+      "source_name": "Storyboard-Editor Recherche.txt",
+      "package_path": "context/SEQUENCE_RESEARCH_ORIGINAL.txt",
+      "bytes": 50790,
+      "sha256": "61b9ca2ec8b4903857bdb8df0bc3efea9cdcb9b0b8b2fd8d0a3c25bf1b35ab02",
+      "note": "Historischer Sequenceentwurf. Der Wetter-Scrubber ist kein implementierter SequenceDocument-Player."
+    },
+    {
+      "source_name": "hestia_rd_sources/01_Hestia_Visual_Design_Language_v1.md",
+      "package_path": "context/HESTIA_VISUAL_BIBLE_ORIGINAL.md",
+      "bytes": 58291,
+      "sha256": "ff9c82548870a761aacc6a6e91115e68f3a52757e19b541ac4ed3c3fb45c0333",
+      "note": "Autorisierte Library-Rawdatei; primäre visuelle Grammatik. Originale Bilddateien sind nicht beigefügt."
+    }
+  ],
+  "repository_reads": [
+    {
+      "repository": "BenjaminHornung/Weltraum-Spiel",
+      "ref": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+      "path": "apps/weltraum-browser/src/hestia-prototype/presentation/visualEffects.ts",
+      "read_extent": "lines 1-68, plus prior conversation source readings",
+      "finding": "WebGLRenderer, onBeforeCompile GLSL hooks, hardcoded water glint direction"
+    },
+    {
+      "repository": "BenjaminHornung/Weltraum-Spiel",
+      "ref": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+      "path": "docs/browser-mainline/adr-0001-threejs-mainline.md",
+      "read_extent": "full",
+      "finding": "Accepted browser/Three mainline transition. Old low-poly text is superseded by later Visual Bible; no automatic engine change."
+    }
+  ],
+  "not_claimed": [
+    "full current repository audit",
+    "fresh product build or tests",
+    "fresh GPU benchmark",
+    "video inspection of the seven Reddit clips",
+    "current uncommitted A0 state"
+  ]
+}

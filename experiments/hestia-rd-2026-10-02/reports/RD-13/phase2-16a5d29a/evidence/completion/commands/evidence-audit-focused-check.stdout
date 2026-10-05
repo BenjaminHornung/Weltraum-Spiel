@@ -1,0 +1,16 @@
+TAP version 13
+# Subtest: sealed evidence rejects changed bytes, fake dimensions and relabelled/no-allocation shader failures
+ok 1 - sealed evidence rejects changed bytes, fake dimensions and relabelled/no-allocation shader failures
+  ---
+  duration_ms: 50.6632
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 415.2271

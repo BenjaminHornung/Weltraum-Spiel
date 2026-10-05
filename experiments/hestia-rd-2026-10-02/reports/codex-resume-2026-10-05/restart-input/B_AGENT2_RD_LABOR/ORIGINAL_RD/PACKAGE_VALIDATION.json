@@ -1,0 +1,50 @@
+{
+  "status": "PASS",
+  "scope": "Generated planning package only. No product/lab implementation tests or benchmarks executed.",
+  "checks": {
+    "unique_task_ids": 25,
+    "core_tasks": 23,
+    "gated_tasks": 2,
+    "suborchestrators": 6,
+    "acyclic_dependency_graph": true,
+    "disjoint_task_write_allowlists": true,
+    "authored_markdown_links_resolve": true,
+    "all_seven_reddit_references_present": true,
+    "copied_source_files_hash_verified": 10,
+    "no_em_dashes_in_authored_documents": true
+  },
+  "topological_order": [
+    "RD-00",
+    "RD-01",
+    "RD-02",
+    "RD-03",
+    "RD-10",
+    "RD-11",
+    "RD-12",
+    "RD-13",
+    "RD-14",
+    "RD-15",
+    "RD-20",
+    "RD-21",
+    "RD-22",
+    "RD-23",
+    "RD-30",
+    "RD-31",
+    "RD-32",
+    "RD-33",
+    "RD-40",
+    "RD-41",
+    "RD-42",
+    "RD-43",
+    "RD-50",
+    "RD-51",
+    "RD-52"
+  ],
+  "not_run": [
+    "product build",
+    "product test suite",
+    "lab runtime implementation",
+    "lab GPU benchmarks",
+    "human visual acceptance"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "pid": 21536,
+  "source": "16a5d29a5cddea372abae139da618aa000a058be",
+  "tree": "abb0bdde3039c33d1a815d2f2754103fcb16c100",
+  "buildRoot": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/HEAD/rd13-wiring-c5307386-20261004-b/build",
+  "buildFiles": 517,
+  "baseURL": "http://127.0.0.1:5280",
+  "exclusive": true,
+  "readiness": "ACTUAL_LISTENING",
+  "productIntegrated": false
+}

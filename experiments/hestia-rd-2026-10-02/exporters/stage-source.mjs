@@ -101,7 +101,7 @@ export function verifyFreeze(inputRef = START) {
   if (rows.some(r => r.expectedSha256 !== r.actualSha256)) { throw new Error('Input freeze current-byte drift'); }
   return rows;
 }
-function adapt(source, known, subset = false) {
+export function adapt(source, known, subset = false) {
   const erased = stripTypeScriptTypes(source, { mode: 'strip' });
   const replacements = [];
   const code = erased.replace(/(\b(?:from|import)\s*['"])(\.{1,2}\/[^'"]+)(['"])/g, (match, before, specifier, after) => {

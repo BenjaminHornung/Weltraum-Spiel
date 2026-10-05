@@ -33,9 +33,16 @@
   <output id="facts" aria-live="polite"></output>
   <p>GPU time/memory: unsupported. Performance qualification: NOT_RUN (no GPU lease).
     Art acceptance: NOT_RUN. ProductIntegrated=false.</p>
-  <p><a href="./src/tools/variant-gallery/index.html">RD40 variant gallery</a></p>
-  <p><a href="./src/experiments/babylon/index.html">RD12 Babylon fixture renderer · C3 WebGL2 / C4 WebGPU</a> — native qualification pending.</p>
-  <p><a href="./src/experiments/voxel-rays/index.html">RD13 bounded voxel rays / greedy control</a> — selected F01 window, no AO; native qualification pending.</p>
+  <p><a href="./RD-RESULTS.html">Current23-card results and planner package</a> · <a href="./src/tools/variant-gallery/index.html">RD40 variant gallery</a></p>
+  <p><a href="./src/tools/foliage-workbench/index.html">RD41 Habitatwerkbank</a> · <a href="./src/tools/weather-workbench/index.html">RD42 Wetterwerkbank</a> · <a href="./src/tools/asset-inspector/index.html">RD43 Asset-/Attachment-Inspector</a></p>
+  <p><a href="./src/experiments/foliage-wind/index.html?mode=lifecycle">RD23 Detach → Rotate → Remove → Reload</a> — gefrorene Source-Snapshots, keine native Physik.</p>
+  <p><a href="./src/experiments/foliage-wind/index.html">RD21 Windlabor</a> · <a href="./src/experiments/rain/index.html">RD31 Regenlabor</a> — Source-Replay, keine Produktintegration.</p>
+  <p><a href="./src/experiments/material-light/index.html">RD14 Materiallabor</a> — sourcegebundene Nässe-/Rauheitsparameter und native Ansichten.</p>
+  <p><a href="./src/experiments/wet-surface/index.html">RD32 Nässe + Regen</a> — analytische Feuchte und sourcegebundene Exposition im selben Renderer.</p>
+  <p><a href="./src/experiments/camera-occlusion/index.html">RD15 Kameraverdeckung</a> — unveränderte Source, begrenztes Push-in und lokaler Clip-Korridor.</p>
+  <p><a href="./src/qa/combined-scene/index.html">RD51 kombinierte Wind-Regen-Strecke</a> — eine Quelle pro Snapshot, ein gemeinsamer Renderer und gesteuerter Tick.</p>
+  <p><a href="./src/experiments/babylon/index.html">RD12 Babylon fixture renderer · C3 WebGL2 / C4 WebGPU</a> — DEFER: native parity/readback unqualified.</p>
+  <p><a href="./src/experiments/voxel-rays/index.html">RD13 bounded voxel rays / greedy control</a> — native ray candidate REJECT (shader compile); greedy control retained.</p>
   <script type="module">
     import { startControlPage } from './src/registration.ts';
     startControlPage().catch((error) => { document.querySelector('#status').value = `Initialization failed: ${error.message}`; });

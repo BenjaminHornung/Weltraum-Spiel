@@ -1,0 +1,1098 @@
+{
+  "schema": "rd13-native-compositor-capture-v1",
+  "source": "16a5d29a5cddea372abae139da618aa000a058be",
+  "productIntegrated": false,
+  "name": "F04-greedy-no-ao-tick120",
+  "before": {
+    "url": "http://127.0.0.1:5280/src/experiments/voxel-rays/index.html",
+    "bridgePresent": false,
+    "status": "Host render submitted. Native numeric/image/depth-water qualification still NOT RUN; this is not an art/performance PASS.",
+    "projected": {
+      "productIntegrated": false,
+      "facts": {
+        "backend": "Three-WebGLRenderer-WebGL2",
+        "errors": [],
+        "experimentId": "RD-13",
+        "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+        "liveResources": {
+          "geometries": {
+            "status": "measured",
+            "unit": "count",
+            "value": 3
+          },
+          "hostListeners": {
+            "status": "measured",
+            "unit": "count",
+            "value": 2
+          },
+          "renderers": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "renderloops": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "textures": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          }
+        },
+        "logicalCosts": {
+          "effect-0-cpuPeakBytes": {
+            "reason": "Conservative source transport/private/copy/old-new estimate, not JS heap",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 589104
+          },
+          "effect-0-fullScreenVolumes": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          },
+          "effect-0-greedyBuildMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 2.4000000059604645
+          },
+          "effect-0-maxStepsPerRay": {
+            "status": "measured",
+            "unit": "count",
+            "value": 81
+          },
+          "effect-0-nativeGpuBytes": {
+            "reason": "Native context/driver VRAM cannot be measured here",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "effect-0-prepareMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 6
+          },
+          "effect-0-projectionBuildMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 2.9000000059604645
+          },
+          "effect-0-projectionBytes": {
+            "reason": "Typed texture/mesh payload; excludes native allocator/driver/context",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 1944
+          },
+          "effect-0-triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 36
+          },
+          "effect-0-uploadCommandCpuMs": {
+            "reason": "Three upload occurs during native render; CPU preparation is not upload time",
+            "status": "not-run",
+            "unit": "ms"
+          },
+          "gpuBytes": {
+            "reason": "Native GPU memory unavailable",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "gpuMs": {
+            "reason": "Timer available; diagnostic loop does not sample GPU timing",
+            "status": "not-run",
+            "unit": "ms"
+          },
+          "renderCalls": {
+            "status": "measured",
+            "unit": "count",
+            "value": 3
+          },
+          "triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 36
+          }
+        },
+        "sourceRevision": 0,
+        "unsupportedFeatures": [
+          "native-pcf-shadow-parity",
+          "native-sky-shader-parity",
+          "native-numeric-qualification-not-run",
+          "native-water-shader-parity",
+          "native-material-shader-hooks",
+          "face-ambient-occlusion",
+          "gi-and-reflections",
+          "unknown-is-not-world-clearance",
+          "native-vram-unavailable",
+          "gpu-timing-not-qualified"
+        ],
+        "variantId": "greedy-no-ao"
+      },
+      "private": {
+        "productIntegrated": false,
+        "variant": "greedy-no-ao",
+        "caps": {
+          "max3D": 2048,
+          "maxTexture": 16384,
+          "maxViewport": [
+            32767,
+            32767
+          ],
+          "fragmentSamplers": 16,
+          "rgba8ui": true,
+          "contextLost": false,
+          "formatSampleCounts": []
+        },
+        "host": {
+          "backend": "Three-WebGLRenderer-WebGL2",
+          "webgl2": true,
+          "fixtureId": "F04-DETACH",
+          "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+          "sourceRevision": 0,
+          "payloadBindings": [
+            {
+              "id": "fragment-leaf-coverage",
+              "byteLength": 48,
+              "sha256": "5bf90435cd45d0475cbb0ace7e7e3a672ed2a3a4984ad3e8624d8878725a9c2e"
+            },
+            {
+              "id": "fragment-leaf-material-slots",
+              "byteLength": 48,
+              "sha256": "9d4d9b7e821f3cc4c1d92c6c31d71862dbb0ba643a414b3960d750bab09c4b82"
+            },
+            {
+              "id": "fragment-leaf-occupancy",
+              "byteLength": 48,
+              "sha256": "5bf90435cd45d0475cbb0ace7e7e3a672ed2a3a4984ad3e8624d8878725a9c2e"
+            },
+            {
+              "id": "fragment-leaf-slot-4-indices",
+              "byteLength": 1920,
+              "sha256": "c4ef25f22436617659998b73d66296a7c6a5d83e1f425b7e9b48d3faae41b54d"
+            },
+            {
+              "id": "fragment-leaf-slot-4-normals",
+              "byteLength": 3840,
+              "sha256": "012f2ba248cb07e0fd81029d7d93e60323dcabe5ed640771a47867e7fcea5fab"
+            },
+            {
+              "id": "fragment-leaf-slot-4-positions",
+              "byteLength": 3840,
+              "sha256": "16ca5d7dc0177aae8a22959a4c4f7b6f8952c5a5b405e2b20e490fee87a84af3"
+            },
+            {
+              "id": "fragment-wood-coverage",
+              "byteLength": 128,
+              "sha256": "7eb24a18990ee4c958c89773da6cc9fbc5c278357762d02ec6ab947eb28726ff"
+            },
+            {
+              "id": "fragment-wood-material-slots",
+              "byteLength": 128,
+              "sha256": "b9cc204811abcb8134013ac53ee69b449ea38afd9cdcc30efb67358b4b885ee7"
+            },
+            {
+              "id": "fragment-wood-occupancy",
+              "byteLength": 128,
+              "sha256": "2403d6f8ff30779590a7e8d9a00548ca83e32b870bbf3e1d6901ef438f445db2"
+            },
+            {
+              "id": "fragment-wood-slot-3-indices",
+              "byteLength": 2736,
+              "sha256": "12e689078e30a9e53b78e9c70f12bfd87e8c58f745871ae5f8710640a7648a78"
+            },
+            {
+              "id": "fragment-wood-slot-3-normals",
+              "byteLength": 5472,
+              "sha256": "34f489283e5773ae18b996685e0694e0f36454dbde328251669cf487bc2875b5"
+            },
+            {
+              "id": "fragment-wood-slot-3-positions",
+              "byteLength": 5472,
+              "sha256": "b313fc9bfff18706cbd5cdbc990600da3d3a81f2d9ea9b679b2b67b29309713b"
+            },
+            {
+              "id": "trunk-cells-coverage",
+              "byteLength": 18432,
+              "sha256": "19a1cc81b9d025fe2f8c0decb0111ef580a499a09654a662cef2e1ba75732db1"
+            },
+            {
+              "id": "trunk-cells-material-slots",
+              "byteLength": 18432,
+              "sha256": "97263e5d297ce8812be7ea167a18091c60eb67ca1235ec7187b5d61331b3a030"
+            },
+            {
+              "id": "trunk-cells-occupancy",
+              "byteLength": 18432,
+              "sha256": "0c6fdae94658c4021f7af16029e4a8ce72448b3f7f2cec0b555d6dcd35d01d59"
+            },
+            {
+              "id": "trunk-cells-slot-3-indices",
+              "byteLength": 12288,
+              "sha256": "a571dba5603586ae9d62cf681489d062dd2ae233d0a2c57b742993d98b8ccbdd"
+            },
+            {
+              "id": "trunk-cells-slot-3-normals",
+              "byteLength": 24576,
+              "sha256": "bdaa0d6f2bdd2a6bf81237a55a6309722bfe37c762552314f06e9456182792b8"
+            },
+            {
+              "id": "trunk-cells-slot-3-positions",
+              "byteLength": 24576,
+              "sha256": "400625cf7de24598bbea92555a9449af83f7468d20e8d9ad31f0c68fb9ebbd45"
+            }
+          ],
+          "presentationProfile": "synthetic-lab-light-v1-no-shadows",
+          "frame": {
+            "cameraId": "far",
+            "paused": false,
+            "seconds": 2,
+            "sourceRevision": 0,
+            "tick": 120,
+            "weather": {
+              "cloud01": 0.1,
+              "rain01": 0,
+              "snow01": 0,
+              "windMps": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          "resetTick": null,
+          "resolution": {
+            "width": 1280,
+            "height": 720,
+            "dpr": 1,
+            "bufferWidth": 1280,
+            "bufferHeight": 720
+          },
+          "colorSpace": "srgb",
+          "toneMapping": 0,
+          "exposure": 1,
+          "timerQueryAvailable": true,
+          "gpuMs": {
+            "status": "not-run",
+            "unit": "ms",
+            "reason": "Timer available; no qualified timer-query sampling in diagnostic control"
+          },
+          "nativeGpuBytes": {
+            "status": "unsupported",
+            "unit": "byte",
+            "reason": "WebGL does not expose native/driver allocation bytes"
+          },
+          "device": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "submittedFrames": 8,
+          "rendered": {
+            "tick": 120,
+            "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+            "sourceRevision": 0,
+            "resetTick": null
+          },
+          "rendererInfo": {
+            "geometries": 3,
+            "textures": 0,
+            "programs": 1,
+            "calls": 3,
+            "triangles": 36
+          },
+          "liveHosts": {
+            "renderers": 1,
+            "renderloops": 1,
+            "hostListeners": 2
+          },
+          "productIntegrated": false
+        },
+        "source": [
+          {
+            "ownerId": "tree-main",
+            "sourceNamespace": "rd02-authored-cells-v1",
+            "sourceRevision": 0,
+            "regionId": "fragment-leaf",
+            "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+            "recipeSha256": "643f409f26aa4dabe3926f2141701c797c21a753ae8d117a92c45d176f194b45",
+            "sourceIds": [
+              "branch:leaf/0/0/0",
+              "branch:wood/0/0/0",
+              "trunk/10/0/10"
+            ],
+            "sourceIdMeaning": {
+              "branch:leaf/0/0/0": {
+                "region": "fragment-leaf",
+                "cell": [
+                  0,
+                  0,
+                  0
+                ]
+              },
+              "branch:wood/0/0/0": {
+                "region": "fragment-wood",
+                "cell": [
+                  0,
+                  0,
+                  0
+                ]
+              },
+              "trunk/10/0/10": {
+                "region": "trunk-cells",
+                "cell": [
+                  10,
+                  0,
+                  10
+                ]
+              }
+            },
+            "originalDimensions": [
+              4,
+              3,
+              4
+            ],
+            "originalOriginMeters": [
+              1,
+              2.875,
+              -0.25
+            ],
+            "dimensions": [
+              4,
+              3,
+              4
+            ],
+            "offset": [
+              0,
+              0,
+              0
+            ],
+            "sourceSlotSha256": "9d4d9b7e821f3cc4c1d92c6c31d71862dbb0ba643a414b3960d750bab09c4b82"
+          },
+          {
+            "ownerId": "tree-main",
+            "sourceNamespace": "rd02-authored-cells-v1",
+            "sourceRevision": 0,
+            "regionId": "fragment-wood",
+            "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+            "recipeSha256": "643f409f26aa4dabe3926f2141701c797c21a753ae8d117a92c45d176f194b45",
+            "sourceIds": [
+              "branch:leaf/0/0/0",
+              "branch:wood/0/0/0",
+              "trunk/10/0/10"
+            ],
+            "sourceIdMeaning": {
+              "branch:leaf/0/0/0": {
+                "region": "fragment-leaf",
+                "cell": [
+                  0,
+                  0,
+                  0
+                ]
+              },
+              "branch:wood/0/0/0": {
+                "region": "fragment-wood",
+                "cell": [
+                  0,
+                  0,
+                  0
+                ]
+              },
+              "trunk/10/0/10": {
+                "region": "trunk-cells",
+                "cell": [
+                  10,
+                  0,
+                  10
+                ]
+              }
+            },
+            "originalDimensions": [
+              8,
+              4,
+              4
+            ],
+            "originalOriginMeters": [
+              0.25,
+              2.5,
+              -0.25
+            ],
+            "dimensions": [
+              8,
+              4,
+              4
+            ],
+            "offset": [
+              0,
+              0,
+              0
+            ],
+            "sourceSlotSha256": "b9cc204811abcb8134013ac53ee69b449ea38afd9cdcc30efb67358b4b885ee7"
+          },
+          {
+            "ownerId": "tree-main",
+            "sourceNamespace": "rd02-authored-cells-v1",
+            "sourceRevision": 0,
+            "regionId": "trunk-cells",
+            "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+            "recipeSha256": "643f409f26aa4dabe3926f2141701c797c21a753ae8d117a92c45d176f194b45",
+            "sourceIds": [
+              "branch:leaf/0/0/0",
+              "branch:wood/0/0/0",
+              "trunk/10/0/10"
+            ],
+            "sourceIdMeaning": {
+              "branch:leaf/0/0/0": {
+                "region": "fragment-leaf",
+                "cell": [
+                  0,
+                  0,
+                  0
+                ]
+              },
+              "branch:wood/0/0/0": {
+                "region": "fragment-wood",
+                "cell": [
+                  0,
+                  0,
+                  0
+                ]
+              },
+              "trunk/10/0/10": {
+                "region": "trunk-cells",
+                "cell": [
+                  10,
+                  0,
+                  10
+                ]
+              }
+            },
+            "originalDimensions": [
+              24,
+              32,
+              24
+            ],
+            "originalOriginMeters": [
+              -1.5,
+              0,
+              -1.5
+            ],
+            "dimensions": [
+              24,
+              32,
+              24
+            ],
+            "offset": [
+              0,
+              0,
+              0
+            ],
+            "sourceSlotSha256": "97263e5d297ce8812be7ea167a18091c60eb67ca1235ec7187b5d61331b3a030"
+          }
+        ],
+        "costs": {
+          "canonicalPayloadBytes": 140544,
+          "wholeRegionCopyBytes": 55824,
+          "selectedCpuBytes": 111648,
+          "cpuPeakEstimateBytes": 589104,
+          "projectionBytes": 74432
+        },
+        "terminal": {
+          "firstFailure": null,
+          "pending": false,
+          "disposed": false,
+          "productIntegrated": false
+        }
+      },
+      "history": [
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission"
+      ]
+    },
+    "selections": {
+      "fixture": "F04-DETACH-REPLAY",
+      "variant": "greedy-no-ao",
+      "camera": "far",
+      "tick": "120",
+      "resolution": "1280x720",
+      "dpr": "1"
+    },
+    "canvas": {
+      "hidden": false,
+      "width": 1280,
+      "height": 720,
+      "box": {
+        "x": 140,
+        "y": 334.0625,
+        "width": 1320,
+        "height": 742.5,
+        "top": 334.0625,
+        "right": 1460,
+        "bottom": 1076.5625,
+        "left": 140
+      },
+      "devicePixelRatio": 1
+    }
+  },
+  "after": {
+    "url": "http://127.0.0.1:5280/src/experiments/voxel-rays/index.html",
+    "bridgePresent": false,
+    "status": "Host render submitted. Native numeric/image/depth-water qualification still NOT RUN; this is not an art/performance PASS.",
+    "projected": {
+      "productIntegrated": false,
+      "facts": {
+        "backend": "Three-WebGLRenderer-WebGL2",
+        "errors": [],
+        "experimentId": "RD-13",
+        "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+        "liveResources": {
+          "geometries": {
+            "status": "measured",
+            "unit": "count",
+            "value": 3
+          },
+          "hostListeners": {
+            "status": "measured",
+            "unit": "count",
+            "value": 2
+          },
+          "renderers": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "renderloops": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "textures": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          }
+        },
+        "logicalCosts": {
+          "effect-0-cpuPeakBytes": {
+            "reason": "Conservative source transport/private/copy/old-new estimate, not JS heap",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 589104
+          },
+          "effect-0-fullScreenVolumes": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          },
+          "effect-0-greedyBuildMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 2.4000000059604645
+          },
+          "effect-0-maxStepsPerRay": {
+            "status": "measured",
+            "unit": "count",
+            "value": 81
+          },
+          "effect-0-nativeGpuBytes": {
+            "reason": "Native context/driver VRAM cannot be measured here",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "effect-0-prepareMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 6
+          },
+          "effect-0-projectionBuildMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 2.9000000059604645
+          },
+          "effect-0-projectionBytes": {
+            "reason": "Typed texture/mesh payload; excludes native allocator/driver/context",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 1944
+          },
+          "effect-0-triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 36
+          },
+          "effect-0-uploadCommandCpuMs": {
+            "reason": "Three upload occurs during native render; CPU preparation is not upload time",
+            "status": "not-run",
+            "unit": "ms"
+          },
+          "gpuBytes": {
+            "reason": "Native GPU memory unavailable",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "gpuMs": {
+            "reason": "Timer available; diagnostic loop does not sample GPU timing",
+            "status": "not-run",
+            "unit": "ms"
+          },
+          "renderCalls": {
+            "status": "measured",
+            "unit": "count",
+            "value": 3
+          },
+          "triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 36
+          }
+        },
+        "sourceRevision": 0,
+        "unsupportedFeatures": [
+          "native-pcf-shadow-parity",
+          "native-sky-shader-parity",
+          "native-numeric-qualification-not-run",
+          "native-water-shader-parity",
+          "native-material-shader-hooks",
+          "face-ambient-occlusion",
+          "gi-and-reflections",
+          "unknown-is-not-world-clearance",
+          "native-vram-unavailable",
+          "gpu-timing-not-qualified"
+        ],
+        "variantId": "greedy-no-ao"
+      },
+      "private": {
+        "productIntegrated": false,
+        "variant": "greedy-no-ao",
+        "caps": {
+          "max3D": 2048,
+          "maxTexture": 16384,
+          "maxViewport": [
+            32767,
+            32767
+          ],
+          "fragmentSamplers": 16,
+          "rgba8ui": true,
+          "contextLost": false,
+          "formatSampleCounts": []
+        },
+        "host": {
+          "backend": "Three-WebGLRenderer-WebGL2",
+          "webgl2": true,
+          "fixtureId": "F04-DETACH",
+          "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+          "sourceRevision": 0,
+          "payloadBindings": [
+            {
+              "id": "fragment-leaf-coverage",
+              "byteLength": 48,
+              "sha256": "5bf90435cd45d0475cbb0ace7e7e3a672ed2a3a4984ad3e8624d8878725a9c2e"
+            },
+            {
+              "id": "fragment-leaf-material-slots",
+              "byteLength": 48,
+              "sha256": "9d4d9b7e821f3cc4c1d92c6c31d71862dbb0ba643a414b3960d750bab09c4b82"
+            },
+            {
+              "id": "fragment-leaf-occupancy",
+              "byteLength": 48,
+              "sha256": "5bf90435cd45d0475cbb0ace7e7e3a672ed2a3a4984ad3e8624d8878725a9c2e"
+            },
+            {
+              "id": "fragment-leaf-slot-4-indices",
+              "byteLength": 1920,
+              "sha256": "c4ef25f22436617659998b73d66296a7c6a5d83e1f425b7e9b48d3faae41b54d"
+            },
+            {
+              "id": "fragment-leaf-slot-4-normals",
+              "byteLength": 3840,
+              "sha256": "012f2ba248cb07e0fd81029d7d93e60323dcabe5ed640771a47867e7fcea5fab"
+            },
+            {
+              "id": "fragment-leaf-slot-4-positions",
+              "byteLength": 3840,
+              "sha256": "16ca5d7dc0177aae8a22959a4c4f7b6f8952c5a5b405e2b20e490fee87a84af3"
+            },
+            {
+              "id": "fragment-wood-coverage",
+              "byteLength": 128,
+              "sha256": "7eb24a18990ee4c958c89773da6cc9fbc5c278357762d02ec6ab947eb28726ff"
+            },
+            {
+              "id": "fragment-wood-material-slots",
+              "byteLength": 128,
+              "sha256": "b9cc204811abcb8134013ac53ee69b449ea38afd9cdcc30efb67358b4b885ee7"
+            },
+            {
+              "id": "fragment-wood-occupancy",
+              "byteLength": 128,
+              "sha256": "2403d6f8ff30779590a7e8d9a00548ca83e32b870bbf3e1d6901ef438f445db2"
+            },
+            {
+              "id": "fragment-wood-slot-3-indices",
+              "byteLength": 2736,
+              "sha256": "12e689078e30a9e53b78e9c70f12bfd87e8c58f745871ae5f8710640a7648a78"
+            },
+            {
+              "id": "fragment-wood-slot-3-normals",
+              "byteLength": 5472,
+              "sha256": "34f489283e5773ae18b996685e0694e0f36454dbde328251669cf487bc2875b5"
+            },
+            {
+              "id": "fragment-wood-slot-3-positions",
+              "byteLength": 5472,
+              "sha256": "b313fc9bfff18706cbd5cdbc990600da3d3a81f2d9ea9b679b2b67b29309713b"
+            },
+            {
+              "id": "trunk-cells-coverage",
+              "byteLength": 18432,
+              "sha256": "19a1cc81b9d025fe2f8c0decb0111ef580a499a09654a662cef2e1ba75732db1"
+            },
+            {
+              "id": "trunk-cells-material-slots",
+              "byteLength": 18432,
+              "sha256": "97263e5d297ce8812be7ea167a18091c60eb67ca1235ec7187b5d61331b3a030"
+            },
+            {
+              "id": "trunk-cells-occupancy",
+              "byteLength": 18432,
+              "sha256": "0c6fdae94658c4021f7af16029e4a8ce72448b3f7f2cec0b555d6dcd35d01d59"
+            },
+            {
+              "id": "trunk-cells-slot-3-indices",
+              "byteLength": 12288,
+              "sha256": "a571dba5603586ae9d62cf681489d062dd2ae233d0a2c57b742993d98b8ccbdd"
+            },
+            {
+              "id": "trunk-cells-slot-3-normals",
+              "byteLength": 24576,
+              "sha256": "bdaa0d6f2bdd2a6bf81237a55a6309722bfe37c762552314f06e9456182792b8"
+            },
+            {
+              "id": "trunk-cells-slot-3-positions",
+              "byteLength": 24576,
+              "sha256": "400625cf7de24598bbea92555a9449af83f7468d20e8d9ad31f0c68fb9ebbd45"
+            }
+          ],
+          "presentationProfile": "synthetic-lab-light-v1-no-shadows",
+          "frame": {
+            "cameraId": "far",
+            "paused": false,
+            "seconds": 2,
+            "sourceRevision": 0,
+            "tick": 120,
+            "weather": {
+              "cloud01": 0.1,
+              "rain01": 0,
+              "snow01": 0,
+              "windMps": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          "resetTick": null,
+          "resolution": {
+            "width": 1280,
+            "height": 720,
+            "dpr": 1,
+            "bufferWidth": 1280,
+            "bufferHeight": 720
+          },
+          "colorSpace": "srgb",
+          "toneMapping": 0,
+          "exposure": 1,
+          "timerQueryAvailable": true,
+          "gpuMs": {
+            "status": "not-run",
+            "unit": "ms",
+            "reason": "Timer available; no qualified timer-query sampling in diagnostic control"
+          },
+          "nativeGpuBytes": {
+            "status": "unsupported",
+            "unit": "byte",
+            "reason": "WebGL does not expose native/driver allocation bytes"
+          },
+          "device": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "submittedFrames": 8,
+          "rendered": {
+            "tick": 120,
+            "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+            "sourceRevision": 0,
+            "resetTick": null
+          },
+          "rendererInfo": {
+            "geometries": 3,
+            "textures": 0,
+            "programs": 1,
+            "calls": 3,
+            "triangles": 36
+          },
+          "liveHosts": {
+            "renderers": 1,
+            "renderloops": 1,
+            "hostListeners": 2
+          },
+          "productIntegrated": false
+        },
+        "source": [
+          {
+            "ownerId": "tree-main",
+            "sourceNamespace": "rd02-authored-cells-v1",
+            "sourceRevision": 0,
+            "regionId": "fragment-leaf",
+            "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+            "recipeSha256": "643f409f26aa4dabe3926f2141701c797c21a753ae8d117a92c45d176f194b45",
+            "sourceIds": [
+              "branch:leaf/0/0/0",
+              "branch:wood/0/0/0",
+              "trunk/10/0/10"
+            ],
+            "sourceIdMeaning": {
+              "branch:leaf/0/0/0": {
+                "region": "fragment-leaf",
+                "cell": [
+                  0,
+                  0,
+                  0
+                ]
+              },
+              "branch:wood/0/0/0": {
+                "region": "fragment-wood",
+                "cell": [
+                  0,
+                  0,
+                  0
+                ]
+              },
+              "trunk/10/0/10": {
+                "region": "trunk-cells",
+                "cell": [
+                  10,
+                  0,
+                  10
+                ]
+              }
+            },
+            "originalDimensions": [
+              4,
+              3,
+              4
+            ],
+            "originalOriginMeters": [
+              1,
+              2.875,
+              -0.25
+            ],
+            "dimensions": [
+              4,
+              3,
+              4
+            ],
+            "offset": [
+              0,
+              0,
+              0
+            ],
+            "sourceSlotSha256": "9d4d9b7e821f3cc4c1d92c6c31d71862dbb0ba643a414b3960d750bab09c4b82"
+          },
+          {
+            "ownerId": "tree-main",
+            "sourceNamespace": "rd02-authored-cells-v1",
+            "sourceRevision": 0,
+            "regionId": "fragment-wood",
+            "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+            "recipeSha256": "643f409f26aa4dabe3926f2141701c797c21a753ae8d117a92c45d176f194b45",
+            "sourceIds": [
+              "branch:leaf/0/0/0",
+              "branch:wood/0/0/0",
+              "trunk/10/0/10"
+            ],
+            "sourceIdMeaning": {
+              "branch:leaf/0/0/0": {
+                "region": "fragment-leaf",
+                "cell": [
+                  0,
+                  0,
+                  0
+                ]
+              },
+              "branch:wood/0/0/0": {
+                "region": "fragment-wood",
+                "cell": [
+                  0,
+                  0,
+                  0
+                ]
+              },
+              "trunk/10/0/10": {
+                "region": "trunk-cells",
+                "cell": [
+                  10,
+                  0,
+                  10
+                ]
+              }
+            },
+            "originalDimensions": [
+              8,
+              4,
+              4
+            ],
+            "originalOriginMeters": [
+              0.25,
+              2.5,
+              -0.25
+            ],
+            "dimensions": [
+              8,
+              4,
+              4
+            ],
+            "offset": [
+              0,
+              0,
+              0
+            ],
+            "sourceSlotSha256": "b9cc204811abcb8134013ac53ee69b449ea38afd9cdcc30efb67358b4b885ee7"
+          },
+          {
+            "ownerId": "tree-main",
+            "sourceNamespace": "rd02-authored-cells-v1",
+            "sourceRevision": 0,
+            "regionId": "trunk-cells",
+            "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+            "recipeSha256": "643f409f26aa4dabe3926f2141701c797c21a753ae8d117a92c45d176f194b45",
+            "sourceIds": [
+              "branch:leaf/0/0/0",
+              "branch:wood/0/0/0",
+              "trunk/10/0/10"
+            ],
+            "sourceIdMeaning": {
+              "branch:leaf/0/0/0": {
+                "region": "fragment-leaf",
+                "cell": [
+                  0,
+                  0,
+                  0
+                ]
+              },
+              "branch:wood/0/0/0": {
+                "region": "fragment-wood",
+                "cell": [
+                  0,
+                  0,
+                  0
+                ]
+              },
+              "trunk/10/0/10": {
+                "region": "trunk-cells",
+                "cell": [
+                  10,
+                  0,
+                  10
+                ]
+              }
+            },
+            "originalDimensions": [
+              24,
+              32,
+              24
+            ],
+            "originalOriginMeters": [
+              -1.5,
+              0,
+              -1.5
+            ],
+            "dimensions": [
+              24,
+              32,
+              24
+            ],
+            "offset": [
+              0,
+              0,
+              0
+            ],
+            "sourceSlotSha256": "97263e5d297ce8812be7ea167a18091c60eb67ca1235ec7187b5d61331b3a030"
+          }
+        ],
+        "costs": {
+          "canonicalPayloadBytes": 140544,
+          "wholeRegionCopyBytes": 55824,
+          "selectedCpuBytes": 111648,
+          "cpuPeakEstimateBytes": 589104,
+          "projectionBytes": 74432
+        },
+        "terminal": {
+          "firstFailure": null,
+          "pending": false,
+          "disposed": false,
+          "productIntegrated": false
+        }
+      },
+      "history": [
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission"
+      ]
+    },
+    "selections": {
+      "fixture": "F04-DETACH-REPLAY",
+      "variant": "greedy-no-ao",
+      "camera": "far",
+      "tick": "120",
+      "resolution": "1280x720",
+      "dpr": "1"
+    },
+    "canvas": {
+      "hidden": false,
+      "width": 1280,
+      "height": 720,
+      "box": {
+        "x": 140,
+        "y": 334.0625,
+        "width": 1320,
+        "height": 742.5,
+        "top": 334.0625,
+        "right": 1460,
+        "bottom": 1076.5625,
+        "left": 140
+      },
+      "devicePixelRatio": 1
+    }
+  },
+  "stableSourceFrame": true,
+  "fractionalElementBox": {
+    "x": 140,
+    "y": 334.0625,
+    "width": 1320,
+    "height": 742.5
+  },
+  "ui": {
+    "path": "F04-greedy-no-ao-tick120-ui.png",
+    "bytes": 48865,
+    "sha256": "04692e56cd202965c816721a52ed73c69088f6aa12e0beff4888776910a44cf7",
+    "width": 1600,
+    "height": 1118
+  },
+  "canvas": {
+    "path": "F04-greedy-no-ao-tick120-canvas.png",
+    "bytes": 7008,
+    "sha256": "44930cff9939f8995284a1dd4cbea5b85ded4afc2fac6443ba0d82865af9c2d8",
+    "width": 1320,
+    "height": 743
+  },
+  "imageAuthority": "Playwright Chromium compositor only; NOT native hit-buffer identity",
+  "nativeGpuMs": "UNKNOWN",
+  "nativeVram": "UNKNOWN"
+}

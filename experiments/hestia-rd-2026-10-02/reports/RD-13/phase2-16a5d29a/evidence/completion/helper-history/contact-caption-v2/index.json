@@ -1,0 +1,1474 @@
+{
+  "schema": "rd13-local-functional-slice-index-v1",
+  "status": "FAIL_NATIVE_RAY_SHADER_COMPILE",
+  "sourceExecuted": "16a5d29a5cddea372abae139da618aa000a058be",
+  "sourceTree": "abb0bdde3039c33d1a815d2f2754103fcb16c100",
+  "runId": "phase2-16a5d29a-20261004-a",
+  "productIntegrated": false,
+  "entries": [
+    {
+      "id": "explicit-dispose",
+      "facts": "evidence/captures/explicit-dispose.json",
+      "requestedTick": null,
+      "actualSelectedTick": "0",
+      "actualRenderedTick": 0,
+      "status": "Disposed; no render loop owned by this entry. Failure history retained.",
+      "actualSubmission": false,
+      "testBridgePresent": false,
+      "fixture": "F03-SHELTER-REPLAY",
+      "variant": "greedy-no-ao",
+      "cameraId": "medium",
+      "frame": {
+        "cameraId": "medium",
+        "paused": false,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+      "sourceRevision": 0,
+      "source": [
+        {
+          "ownerId": "removable-roof",
+          "sourceNamespace": "rd02-authored-cells-v1",
+          "sourceRevision": 0,
+          "regionId": "removable-roof-cells",
+          "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+          "recipeSha256": "0ff438e3dcc43bcbe33069577b8cd1c61a3ab6752ccc37cdb3b892ca1d886af4",
+          "sourceIds": [
+            "roof-piece"
+          ],
+          "sourceIdMeaning": {},
+          "originalDimensions": [
+            8,
+            1,
+            17
+          ],
+          "originalOriginMeters": [
+            2,
+            1.5,
+            0.375
+          ],
+          "dimensions": [
+            8,
+            1,
+            17
+          ],
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "sourceSlotSha256": "3654da25dd1bae2cc27c2e3d0d7e9e9755280ca7f3ae5d4aa18d32a0fc094384"
+        },
+        {
+          "ownerId": "shelter-shell",
+          "sourceNamespace": "rd02-authored-cells-v1",
+          "sourceRevision": 0,
+          "regionId": "shelter-shell",
+          "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+          "recipeSha256": "0ff438e3dcc43bcbe33069577b8cd1c61a3ab6752ccc37cdb3b892ca1d886af4",
+          "sourceIds": [
+            "cave",
+            "high-roof",
+            "low-roof",
+            "overhang",
+            "side-entry"
+          ],
+          "sourceIdMeaning": {},
+          "originalDimensions": [
+            40,
+            32,
+            32
+          ],
+          "originalOriginMeters": [
+            0,
+            0,
+            0
+          ],
+          "dimensions": [
+            40,
+            32,
+            32
+          ],
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "sourceSlotSha256": "b1aa334474aee82b8a621369edf72edfb539bf9bb436b0b8bb5d37df1bcf08dc"
+        }
+      ],
+      "quality": [
+        "native-pcf-shadow-parity",
+        "native-sky-shader-parity",
+        "native-numeric-qualification-not-run",
+        "native-water-shader-parity",
+        "native-material-shader-hooks",
+        "face-ambient-occlusion",
+        "gi-and-reflections",
+        "unknown-is-not-world-clearance",
+        "native-vram-unavailable",
+        "gpu-timing-not-qualified"
+      ],
+      "firstTerminal": {
+        "firstFailure": null,
+        "pending": false,
+        "disposed": false,
+        "productIntegrated": false
+      },
+      "stableSourceFrame": true,
+      "browserDpr": 1,
+      "rendererDpr": 2,
+      "drawingBuffer": {
+        "width": 1920,
+        "height": 1080
+      },
+      "fractionalElementBox": null,
+      "ui": {
+        "path": "evidence/captures/explicit-dispose-ui.png",
+        "bytes": 44430,
+        "sha256": "899c1107504a4e228f8ec0a1c9757f63d83f75f1da95b00c1042f60764296d1a",
+        "width": 1600,
+        "height": 1100
+      },
+      "canvas": null,
+      "imageAuthority": "Playwright Chromium compositor only; NOT native hit-buffer identity"
+    },
+    {
+      "id": "F00-greedy-no-ao-tick0",
+      "facts": "evidence/captures/F00-greedy-no-ao-tick0.json",
+      "requestedTick": 0,
+      "actualSelectedTick": "0",
+      "actualRenderedTick": 0,
+      "status": "Host render submitted. Native numeric/image/depth-water qualification still NOT RUN; this is not an art/performance PASS.",
+      "actualSubmission": true,
+      "testBridgePresent": false,
+      "fixture": "F00-CONTROL-REPLAY",
+      "variant": "greedy-no-ao",
+      "cameraId": "far",
+      "frame": {
+        "cameraId": "far",
+        "paused": false,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "378513d00d5f2a11f569ff0748d4e42ac1832674104febd052070f0fd258b81d",
+      "sourceRevision": 0,
+      "source": [
+        {
+          "ownerId": "control",
+          "sourceNamespace": "rd02-authored-cells-v1",
+          "sourceRevision": 0,
+          "regionId": "control-cells",
+          "fixtureDigest": "378513d00d5f2a11f569ff0748d4e42ac1832674104febd052070f0fd258b81d",
+          "recipeSha256": "6a4e4b7d2fde3944b1efb434453d1651697a005fb43af02d92b688ccecdaa5c8",
+          "sourceIds": [
+            "material-planes",
+            "single-shadow-caster",
+            "steps"
+          ],
+          "sourceIdMeaning": {},
+          "originalDimensions": [
+            32,
+            24,
+            24
+          ],
+          "originalOriginMeters": [
+            0,
+            0,
+            0
+          ],
+          "dimensions": [
+            32,
+            24,
+            24
+          ],
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "sourceSlotSha256": "b51a18f630293e605a51dbeaf0052f0c8665f3ce2e849de1d67ebcfaadeb92cc"
+        }
+      ],
+      "quality": [
+        "native-pcf-shadow-parity",
+        "native-sky-shader-parity",
+        "native-numeric-qualification-not-run",
+        "native-water-shader-parity",
+        "native-material-shader-hooks",
+        "face-ambient-occlusion",
+        "gi-and-reflections",
+        "unknown-is-not-world-clearance",
+        "native-vram-unavailable",
+        "gpu-timing-not-qualified"
+      ],
+      "firstTerminal": {
+        "firstFailure": null,
+        "pending": false,
+        "disposed": false,
+        "productIntegrated": false
+      },
+      "stableSourceFrame": true,
+      "browserDpr": 1,
+      "rendererDpr": 1,
+      "drawingBuffer": {
+        "width": 1280,
+        "height": 720
+      },
+      "fractionalElementBox": {
+        "x": 140,
+        "y": 334.0625,
+        "width": 1320,
+        "height": 742.5
+      },
+      "ui": {
+        "path": "evidence/captures/F00-greedy-no-ao-tick0-ui.png",
+        "bytes": 53987,
+        "sha256": "3a563071b8de928b3a3d5afbe56b2d6b7c5acd9731d095e403e55d4aae9763cb",
+        "width": 1600,
+        "height": 1118
+      },
+      "canvas": {
+        "path": "evidence/captures/F00-greedy-no-ao-tick0-canvas.png",
+        "bytes": 11880,
+        "sha256": "06f8f264493268da472a0c840c7eeef0384a757d507a50faf227900dc928eb15",
+        "width": 1320,
+        "height": 743
+      },
+      "imageAuthority": "Playwright Chromium compositor only; NOT native hit-buffer identity"
+    },
+    {
+      "id": "F00-rays-no-ao-tick0",
+      "facts": "evidence/captures/F00-rays-no-ao-tick0.json",
+      "requestedTick": 0,
+      "actualSelectedTick": "0",
+      "actualRenderedTick": null,
+      "status": "FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.",
+      "actualSubmission": false,
+      "testBridgePresent": false,
+      "fixture": "F00-CONTROL-REPLAY",
+      "variant": "rays-no-ao",
+      "cameraId": "far",
+      "frame": null,
+      "fixtureDigest": null,
+      "sourceRevision": null,
+      "source": null,
+      "quality": null,
+      "firstTerminal": {
+        "firstFailure": "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "pending": false,
+        "disposed": true,
+        "productIntegrated": false
+      },
+      "stableSourceFrame": true,
+      "browserDpr": 1,
+      "rendererDpr": 1,
+      "drawingBuffer": {
+        "width": 1280,
+        "height": 720
+      },
+      "fractionalElementBox": null,
+      "ui": {
+        "path": "evidence/captures/F00-rays-no-ao-tick0-ui.png",
+        "bytes": 45078,
+        "sha256": "df40f69cac27f1d435bbd5720535465dbf759ac415a1672677b1d3d16c9dd9b9",
+        "width": 1600,
+        "height": 1100
+      },
+      "canvas": null,
+      "imageAuthority": "Playwright Chromium compositor only; NOT native hit-buffer identity"
+    },
+    {
+      "id": "F01-greedy-no-ao-tick0",
+      "facts": "evidence/captures/F01-greedy-no-ao-tick0.json",
+      "requestedTick": 0,
+      "actualSelectedTick": "0",
+      "actualRenderedTick": 0,
+      "status": "Host render submitted. Native numeric/image/depth-water qualification still NOT RUN; this is not an art/performance PASS.",
+      "actualSubmission": true,
+      "testBridgePresent": false,
+      "fixture": "F01-HVP-COAST-REPLAY",
+      "variant": "greedy-no-ao",
+      "cameraId": "C02-SHORE",
+      "frame": {
+        "cameraId": "C02-SHORE",
+        "paused": false,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+      "sourceRevision": 0,
+      "source": [
+        {
+          "ownerId": "hvp:terrain",
+          "sourceNamespace": "hvp-source-global-slot-v5",
+          "sourceRevision": 0,
+          "regionId": "coast-crop",
+          "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "recipeSha256": "e65416ef10e7e07a72bdd2129cd2a26523d5ffbbe293a27f3542957ec17b5df8",
+          "sourceIds": [
+            "crop-volume",
+            "slot/100/75/88",
+            "slot/160/61/76",
+            "slot/76/73/124",
+            "slot/88/79/88"
+          ],
+          "sourceIdMeaning": {},
+          "originalDimensions": [
+            192,
+            80,
+            192
+          ],
+          "originalOriginMeters": [
+            -8,
+            -2,
+            -8
+          ],
+          "dimensions": [
+            64,
+            64,
+            64
+          ],
+          "offset": [
+            32,
+            0,
+            16
+          ],
+          "sourceSlotSha256": "561b1ea853ee6377ec78337016725d6771f178e734925dd0d6d3a33ec7056c0a"
+        }
+      ],
+      "quality": [
+        "native-pcf-shadow-parity",
+        "native-sky-shader-parity",
+        "native-numeric-qualification-not-run",
+        "native-water-shader-parity",
+        "native-material-shader-hooks",
+        "face-ambient-occlusion",
+        "gi-and-reflections",
+        "unknown-is-not-world-clearance",
+        "native-vram-unavailable",
+        "gpu-timing-not-qualified",
+        "selected-f01-not-full-parity",
+        "f01-vegetation-omitted"
+      ],
+      "firstTerminal": {
+        "firstFailure": null,
+        "pending": false,
+        "disposed": false,
+        "productIntegrated": false
+      },
+      "stableSourceFrame": true,
+      "browserDpr": 1,
+      "rendererDpr": 1,
+      "drawingBuffer": {
+        "width": 1280,
+        "height": 720
+      },
+      "fractionalElementBox": {
+        "x": 140,
+        "y": 334.0625,
+        "width": 1320,
+        "height": 742.5
+      },
+      "ui": {
+        "path": "evidence/captures/F01-greedy-no-ao-tick0-ui.png",
+        "bytes": 140659,
+        "sha256": "d85862e6ee8b68dfcedc56d107f6eeef86f92ddafe09bf5b7af14ae9f42cb12c",
+        "width": 1600,
+        "height": 1118
+      },
+      "canvas": {
+        "path": "evidence/captures/F01-greedy-no-ao-tick0-canvas.png",
+        "bytes": 96377,
+        "sha256": "ffdf2a4f33fd8336e4889347c36c1535134c97b399d368bd0d0c64b38549f094",
+        "width": 1320,
+        "height": 743
+      },
+      "imageAuthority": "Playwright Chromium compositor only; NOT native hit-buffer identity"
+    },
+    {
+      "id": "F01-rays-no-ao-tick0",
+      "facts": "evidence/captures/F01-rays-no-ao-tick0.json",
+      "requestedTick": 0,
+      "actualSelectedTick": "0",
+      "actualRenderedTick": null,
+      "status": "FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.",
+      "actualSubmission": false,
+      "testBridgePresent": false,
+      "fixture": "F01-HVP-COAST-REPLAY",
+      "variant": "rays-no-ao",
+      "cameraId": "C02-SHORE",
+      "frame": null,
+      "fixtureDigest": null,
+      "sourceRevision": null,
+      "source": null,
+      "quality": null,
+      "firstTerminal": {
+        "firstFailure": "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "pending": false,
+        "disposed": true,
+        "productIntegrated": false
+      },
+      "stableSourceFrame": true,
+      "browserDpr": 1,
+      "rendererDpr": 1,
+      "drawingBuffer": {
+        "width": 1280,
+        "height": 720
+      },
+      "fractionalElementBox": null,
+      "ui": {
+        "path": "evidence/captures/F01-rays-no-ao-tick0-ui.png",
+        "bytes": 45596,
+        "sha256": "37850fd234bf765c8184bcca8a47d907cea59bccf5f9feb7478718072fb42d1f",
+        "width": 1600,
+        "height": 1100
+      },
+      "canvas": null,
+      "imageAuthority": "Playwright Chromium compositor only; NOT native hit-buffer identity"
+    },
+    {
+      "id": "F03-greedy-dpr2-controls",
+      "facts": "evidence/captures/F03-greedy-dpr2-controls.json",
+      "requestedTick": null,
+      "actualSelectedTick": "0",
+      "actualRenderedTick": 0,
+      "status": "Host render submitted. Native numeric/image/depth-water qualification still NOT RUN; this is not an art/performance PASS.",
+      "actualSubmission": true,
+      "testBridgePresent": false,
+      "fixture": "F03-SHELTER-REPLAY",
+      "variant": "greedy-no-ao",
+      "cameraId": "medium",
+      "frame": {
+        "cameraId": "medium",
+        "paused": false,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+      "sourceRevision": 0,
+      "source": [
+        {
+          "ownerId": "removable-roof",
+          "sourceNamespace": "rd02-authored-cells-v1",
+          "sourceRevision": 0,
+          "regionId": "removable-roof-cells",
+          "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+          "recipeSha256": "0ff438e3dcc43bcbe33069577b8cd1c61a3ab6752ccc37cdb3b892ca1d886af4",
+          "sourceIds": [
+            "roof-piece"
+          ],
+          "sourceIdMeaning": {},
+          "originalDimensions": [
+            8,
+            1,
+            17
+          ],
+          "originalOriginMeters": [
+            2,
+            1.5,
+            0.375
+          ],
+          "dimensions": [
+            8,
+            1,
+            17
+          ],
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "sourceSlotSha256": "3654da25dd1bae2cc27c2e3d0d7e9e9755280ca7f3ae5d4aa18d32a0fc094384"
+        },
+        {
+          "ownerId": "shelter-shell",
+          "sourceNamespace": "rd02-authored-cells-v1",
+          "sourceRevision": 0,
+          "regionId": "shelter-shell",
+          "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+          "recipeSha256": "0ff438e3dcc43bcbe33069577b8cd1c61a3ab6752ccc37cdb3b892ca1d886af4",
+          "sourceIds": [
+            "cave",
+            "high-roof",
+            "low-roof",
+            "overhang",
+            "side-entry"
+          ],
+          "sourceIdMeaning": {},
+          "originalDimensions": [
+            40,
+            32,
+            32
+          ],
+          "originalOriginMeters": [
+            0,
+            0,
+            0
+          ],
+          "dimensions": [
+            40,
+            32,
+            32
+          ],
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "sourceSlotSha256": "b1aa334474aee82b8a621369edf72edfb539bf9bb436b0b8bb5d37df1bcf08dc"
+        }
+      ],
+      "quality": [
+        "native-pcf-shadow-parity",
+        "native-sky-shader-parity",
+        "native-numeric-qualification-not-run",
+        "native-water-shader-parity",
+        "native-material-shader-hooks",
+        "face-ambient-occlusion",
+        "gi-and-reflections",
+        "unknown-is-not-world-clearance",
+        "native-vram-unavailable",
+        "gpu-timing-not-qualified"
+      ],
+      "firstTerminal": {
+        "firstFailure": null,
+        "pending": false,
+        "disposed": false,
+        "productIntegrated": false
+      },
+      "stableSourceFrame": true,
+      "browserDpr": 1,
+      "rendererDpr": 2,
+      "drawingBuffer": {
+        "width": 1920,
+        "height": 1080
+      },
+      "fractionalElementBox": {
+        "x": 140,
+        "y": 334.0625,
+        "width": 1320,
+        "height": 742.5
+      },
+      "ui": {
+        "path": "evidence/captures/F03-greedy-dpr2-controls-ui.png",
+        "bytes": 62431,
+        "sha256": "c72181af63352388d4b75a57f781cbc7b9aa5b59a9a3573010e0f7112faf31f0",
+        "width": 1600,
+        "height": 1118
+      },
+      "canvas": {
+        "path": "evidence/captures/F03-greedy-dpr2-controls-canvas.png",
+        "bytes": 19745,
+        "sha256": "4d51d3895cc7b46748431e37bd8944cd673ce23465bb63d7ec22430f47a8cccb",
+        "width": 1320,
+        "height": 743
+      },
+      "imageAuthority": "Playwright Chromium compositor only; NOT native hit-buffer identity"
+    },
+    {
+      "id": "F03-greedy-no-ao-tick120",
+      "facts": "evidence/captures/F03-greedy-no-ao-tick120.json",
+      "requestedTick": 120,
+      "actualSelectedTick": "120",
+      "actualRenderedTick": 120,
+      "status": "Host render submitted. Native numeric/image/depth-water qualification still NOT RUN; this is not an art/performance PASS.",
+      "actualSubmission": true,
+      "testBridgePresent": false,
+      "fixture": "F03-SHELTER-REPLAY",
+      "variant": "greedy-no-ao",
+      "cameraId": "far",
+      "frame": {
+        "cameraId": "far",
+        "paused": false,
+        "seconds": 2,
+        "sourceRevision": 0,
+        "tick": 120,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+      "sourceRevision": 0,
+      "source": [
+        {
+          "ownerId": "removable-roof",
+          "sourceNamespace": "rd02-authored-cells-v1",
+          "sourceRevision": 0,
+          "regionId": "removable-roof-cells",
+          "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+          "recipeSha256": "0ff438e3dcc43bcbe33069577b8cd1c61a3ab6752ccc37cdb3b892ca1d886af4",
+          "sourceIds": [
+            "roof-piece"
+          ],
+          "sourceIdMeaning": {},
+          "originalDimensions": [
+            8,
+            1,
+            17
+          ],
+          "originalOriginMeters": [
+            2,
+            1.5,
+            0.375
+          ],
+          "dimensions": [
+            8,
+            1,
+            17
+          ],
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "sourceSlotSha256": "3654da25dd1bae2cc27c2e3d0d7e9e9755280ca7f3ae5d4aa18d32a0fc094384"
+        },
+        {
+          "ownerId": "shelter-shell",
+          "sourceNamespace": "rd02-authored-cells-v1",
+          "sourceRevision": 0,
+          "regionId": "shelter-shell",
+          "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+          "recipeSha256": "0ff438e3dcc43bcbe33069577b8cd1c61a3ab6752ccc37cdb3b892ca1d886af4",
+          "sourceIds": [
+            "cave",
+            "high-roof",
+            "low-roof",
+            "overhang",
+            "side-entry"
+          ],
+          "sourceIdMeaning": {},
+          "originalDimensions": [
+            40,
+            32,
+            32
+          ],
+          "originalOriginMeters": [
+            0,
+            0,
+            0
+          ],
+          "dimensions": [
+            40,
+            32,
+            32
+          ],
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "sourceSlotSha256": "b1aa334474aee82b8a621369edf72edfb539bf9bb436b0b8bb5d37df1bcf08dc"
+        }
+      ],
+      "quality": [
+        "native-pcf-shadow-parity",
+        "native-sky-shader-parity",
+        "native-numeric-qualification-not-run",
+        "native-water-shader-parity",
+        "native-material-shader-hooks",
+        "face-ambient-occlusion",
+        "gi-and-reflections",
+        "unknown-is-not-world-clearance",
+        "native-vram-unavailable",
+        "gpu-timing-not-qualified"
+      ],
+      "firstTerminal": {
+        "firstFailure": null,
+        "pending": false,
+        "disposed": false,
+        "productIntegrated": false
+      },
+      "stableSourceFrame": true,
+      "browserDpr": 1,
+      "rendererDpr": 1,
+      "drawingBuffer": {
+        "width": 1280,
+        "height": 720
+      },
+      "fractionalElementBox": {
+        "x": 140,
+        "y": 334.0625,
+        "width": 1320,
+        "height": 742.5
+      },
+      "ui": {
+        "path": "evidence/captures/F03-greedy-no-ao-tick120-ui.png",
+        "bytes": 57417,
+        "sha256": "2264abfcf091b40cfed655e3e492e65ae284331711f4d13a1cdd2023729bc1ec",
+        "width": 1600,
+        "height": 1118
+      },
+      "canvas": {
+        "path": "evidence/captures/F03-greedy-no-ao-tick120-canvas.png",
+        "bytes": 15351,
+        "sha256": "4a2aa39aab16830a0961c51917b29e78d884e675c0d14184cc3ff847e6b10677",
+        "width": 1320,
+        "height": 743
+      },
+      "imageAuthority": "Playwright Chromium compositor only; NOT native hit-buffer identity"
+    },
+    {
+      "id": "F03-rays-no-ao-tick120",
+      "facts": "evidence/captures/F03-rays-no-ao-tick120.json",
+      "requestedTick": 120,
+      "actualSelectedTick": "0",
+      "actualRenderedTick": null,
+      "status": "FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.",
+      "actualSubmission": false,
+      "testBridgePresent": false,
+      "fixture": "F03-SHELTER-REPLAY",
+      "variant": "rays-no-ao",
+      "cameraId": "far",
+      "frame": null,
+      "fixtureDigest": null,
+      "sourceRevision": null,
+      "source": null,
+      "quality": null,
+      "firstTerminal": {
+        "firstFailure": "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "pending": false,
+        "disposed": true,
+        "productIntegrated": false
+      },
+      "stableSourceFrame": true,
+      "browserDpr": 1,
+      "rendererDpr": 1,
+      "drawingBuffer": {
+        "width": 1280,
+        "height": 720
+      },
+      "fractionalElementBox": null,
+      "ui": {
+        "path": "evidence/captures/F03-rays-no-ao-tick120-ui.png",
+        "bytes": 44905,
+        "sha256": "3710b2a94d6421ea5d3a4ecae5c6f3ca2b59d456dac13a6cd23de28c3bd36ffa",
+        "width": 1600,
+        "height": 1100
+      },
+      "canvas": null,
+      "imageAuthority": "Playwright Chromium compositor only; NOT native hit-buffer identity"
+    },
+    {
+      "id": "F04-greedy-no-ao-tick120",
+      "facts": "evidence/captures/F04-greedy-no-ao-tick120.json",
+      "requestedTick": 120,
+      "actualSelectedTick": "120",
+      "actualRenderedTick": 120,
+      "status": "Host render submitted. Native numeric/image/depth-water qualification still NOT RUN; this is not an art/performance PASS.",
+      "actualSubmission": true,
+      "testBridgePresent": false,
+      "fixture": "F04-DETACH-REPLAY",
+      "variant": "greedy-no-ao",
+      "cameraId": "far",
+      "frame": {
+        "cameraId": "far",
+        "paused": false,
+        "seconds": 2,
+        "sourceRevision": 0,
+        "tick": 120,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+      "sourceRevision": 0,
+      "source": [
+        {
+          "ownerId": "tree-main",
+          "sourceNamespace": "rd02-authored-cells-v1",
+          "sourceRevision": 0,
+          "regionId": "fragment-leaf",
+          "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+          "recipeSha256": "643f409f26aa4dabe3926f2141701c797c21a753ae8d117a92c45d176f194b45",
+          "sourceIds": [
+            "branch:leaf/0/0/0",
+            "branch:wood/0/0/0",
+            "trunk/10/0/10"
+          ],
+          "sourceIdMeaning": {
+            "branch:leaf/0/0/0": {
+              "region": "fragment-leaf",
+              "cell": [
+                0,
+                0,
+                0
+              ]
+            },
+            "branch:wood/0/0/0": {
+              "region": "fragment-wood",
+              "cell": [
+                0,
+                0,
+                0
+              ]
+            },
+            "trunk/10/0/10": {
+              "region": "trunk-cells",
+              "cell": [
+                10,
+                0,
+                10
+              ]
+            }
+          },
+          "originalDimensions": [
+            4,
+            3,
+            4
+          ],
+          "originalOriginMeters": [
+            1,
+            2.875,
+            -0.25
+          ],
+          "dimensions": [
+            4,
+            3,
+            4
+          ],
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "sourceSlotSha256": "9d4d9b7e821f3cc4c1d92c6c31d71862dbb0ba643a414b3960d750bab09c4b82"
+        },
+        {
+          "ownerId": "tree-main",
+          "sourceNamespace": "rd02-authored-cells-v1",
+          "sourceRevision": 0,
+          "regionId": "fragment-wood",
+          "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+          "recipeSha256": "643f409f26aa4dabe3926f2141701c797c21a753ae8d117a92c45d176f194b45",
+          "sourceIds": [
+            "branch:leaf/0/0/0",
+            "branch:wood/0/0/0",
+            "trunk/10/0/10"
+          ],
+          "sourceIdMeaning": {
+            "branch:leaf/0/0/0": {
+              "region": "fragment-leaf",
+              "cell": [
+                0,
+                0,
+                0
+              ]
+            },
+            "branch:wood/0/0/0": {
+              "region": "fragment-wood",
+              "cell": [
+                0,
+                0,
+                0
+              ]
+            },
+            "trunk/10/0/10": {
+              "region": "trunk-cells",
+              "cell": [
+                10,
+                0,
+                10
+              ]
+            }
+          },
+          "originalDimensions": [
+            8,
+            4,
+            4
+          ],
+          "originalOriginMeters": [
+            0.25,
+            2.5,
+            -0.25
+          ],
+          "dimensions": [
+            8,
+            4,
+            4
+          ],
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "sourceSlotSha256": "b9cc204811abcb8134013ac53ee69b449ea38afd9cdcc30efb67358b4b885ee7"
+        },
+        {
+          "ownerId": "tree-main",
+          "sourceNamespace": "rd02-authored-cells-v1",
+          "sourceRevision": 0,
+          "regionId": "trunk-cells",
+          "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+          "recipeSha256": "643f409f26aa4dabe3926f2141701c797c21a753ae8d117a92c45d176f194b45",
+          "sourceIds": [
+            "branch:leaf/0/0/0",
+            "branch:wood/0/0/0",
+            "trunk/10/0/10"
+          ],
+          "sourceIdMeaning": {
+            "branch:leaf/0/0/0": {
+              "region": "fragment-leaf",
+              "cell": [
+                0,
+                0,
+                0
+              ]
+            },
+            "branch:wood/0/0/0": {
+              "region": "fragment-wood",
+              "cell": [
+                0,
+                0,
+                0
+              ]
+            },
+            "trunk/10/0/10": {
+              "region": "trunk-cells",
+              "cell": [
+                10,
+                0,
+                10
+              ]
+            }
+          },
+          "originalDimensions": [
+            24,
+            32,
+            24
+          ],
+          "originalOriginMeters": [
+            -1.5,
+            0,
+            -1.5
+          ],
+          "dimensions": [
+            24,
+            32,
+            24
+          ],
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "sourceSlotSha256": "97263e5d297ce8812be7ea167a18091c60eb67ca1235ec7187b5d61331b3a030"
+        }
+      ],
+      "quality": [
+        "native-pcf-shadow-parity",
+        "native-sky-shader-parity",
+        "native-numeric-qualification-not-run",
+        "native-water-shader-parity",
+        "native-material-shader-hooks",
+        "face-ambient-occlusion",
+        "gi-and-reflections",
+        "unknown-is-not-world-clearance",
+        "native-vram-unavailable",
+        "gpu-timing-not-qualified"
+      ],
+      "firstTerminal": {
+        "firstFailure": null,
+        "pending": false,
+        "disposed": false,
+        "productIntegrated": false
+      },
+      "stableSourceFrame": true,
+      "browserDpr": 1,
+      "rendererDpr": 1,
+      "drawingBuffer": {
+        "width": 1280,
+        "height": 720
+      },
+      "fractionalElementBox": {
+        "x": 140,
+        "y": 334.0625,
+        "width": 1320,
+        "height": 742.5
+      },
+      "ui": {
+        "path": "evidence/captures/F04-greedy-no-ao-tick120-ui.png",
+        "bytes": 48865,
+        "sha256": "04692e56cd202965c816721a52ed73c69088f6aa12e0beff4888776910a44cf7",
+        "width": 1600,
+        "height": 1118
+      },
+      "canvas": {
+        "path": "evidence/captures/F04-greedy-no-ao-tick120-canvas.png",
+        "bytes": 7008,
+        "sha256": "44930cff9939f8995284a1dd4cbea5b85ded4afc2fac6443ba0d82865af9c2d8",
+        "width": 1320,
+        "height": 743
+      },
+      "imageAuthority": "Playwright Chromium compositor only; NOT native hit-buffer identity"
+    },
+    {
+      "id": "F04-rays-no-ao-tick120",
+      "facts": "evidence/captures/F04-rays-no-ao-tick120.json",
+      "requestedTick": 120,
+      "actualSelectedTick": "0",
+      "actualRenderedTick": null,
+      "status": "FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.",
+      "actualSubmission": false,
+      "testBridgePresent": false,
+      "fixture": "F04-DETACH-REPLAY",
+      "variant": "rays-no-ao",
+      "cameraId": "far",
+      "frame": null,
+      "fixtureDigest": null,
+      "sourceRevision": null,
+      "source": null,
+      "quality": null,
+      "firstTerminal": {
+        "firstFailure": "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "pending": false,
+        "disposed": true,
+        "productIntegrated": false
+      },
+      "stableSourceFrame": true,
+      "browserDpr": 1,
+      "rendererDpr": 1,
+      "drawingBuffer": {
+        "width": 1280,
+        "height": 720
+      },
+      "fractionalElementBox": null,
+      "ui": {
+        "path": "evidence/captures/F04-rays-no-ao-tick120-ui.png",
+        "bytes": 45101,
+        "sha256": "54a0c376ef7df0e26ecf1d3078d14c208331c4f55535effb2248b5fb4e62a9a2",
+        "width": 1600,
+        "height": 1100
+      },
+      "canvas": null,
+      "imageAuthority": "Playwright Chromium compositor only; NOT native hit-buffer identity"
+    },
+    {
+      "id": "F05-greedy-no-ao-tick0",
+      "facts": "evidence/captures/F05-greedy-no-ao-tick0.json",
+      "requestedTick": 0,
+      "actualSelectedTick": "0",
+      "actualRenderedTick": 0,
+      "status": "Host render submitted. Native numeric/image/depth-water qualification still NOT RUN; this is not an art/performance PASS.",
+      "actualSubmission": true,
+      "testBridgePresent": false,
+      "fixture": "F05-CUTOUT-REPLAY",
+      "variant": "greedy-no-ao",
+      "cameraId": "far",
+      "frame": {
+        "cameraId": "far",
+        "paused": false,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "c24de4c1597713e11935bf98e8fe7c5a312a615ee3544831f6f97b74c948b904",
+      "sourceRevision": 0,
+      "source": [
+        {
+          "ownerId": "cutout-obstacles",
+          "sourceNamespace": "rd02-authored-cells-v1",
+          "sourceRevision": 0,
+          "regionId": "cutout-obstacles",
+          "fixtureDigest": "c24de4c1597713e11935bf98e8fe7c5a312a615ee3544831f6f97b74c948b904",
+          "recipeSha256": "dce3b1403515e723955df758894f0d3eabff74971953d72a7576f3755e626d10",
+          "sourceIds": [
+            "left-wall",
+            "right-wall",
+            "root-arch",
+            "window"
+          ],
+          "sourceIdMeaning": {},
+          "originalDimensions": [
+            40,
+            28,
+            40
+          ],
+          "originalOriginMeters": [
+            0,
+            0,
+            0
+          ],
+          "dimensions": [
+            40,
+            28,
+            40
+          ],
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "sourceSlotSha256": "09481596d2a2a977dd4494caf151028f04750a1981b6104b4cdfd594445145bc"
+        }
+      ],
+      "quality": [
+        "native-pcf-shadow-parity",
+        "native-sky-shader-parity",
+        "native-numeric-qualification-not-run",
+        "native-water-shader-parity",
+        "native-material-shader-hooks",
+        "face-ambient-occlusion",
+        "gi-and-reflections",
+        "unknown-is-not-world-clearance",
+        "native-vram-unavailable",
+        "gpu-timing-not-qualified"
+      ],
+      "firstTerminal": {
+        "firstFailure": null,
+        "pending": false,
+        "disposed": false,
+        "productIntegrated": false
+      },
+      "stableSourceFrame": true,
+      "browserDpr": 1,
+      "rendererDpr": 1,
+      "drawingBuffer": {
+        "width": 1280,
+        "height": 720
+      },
+      "fractionalElementBox": {
+        "x": 140,
+        "y": 334.0625,
+        "width": 1320,
+        "height": 742.5
+      },
+      "ui": {
+        "path": "evidence/captures/F05-greedy-no-ao-tick0-ui.png",
+        "bytes": 57421,
+        "sha256": "10bb2319264b253888a60bb9db3cb83d8aa8019e51c5a71c0a9ba0eba3e80687",
+        "width": 1600,
+        "height": 1118
+      },
+      "canvas": {
+        "path": "evidence/captures/F05-greedy-no-ao-tick0-canvas.png",
+        "bytes": 15014,
+        "sha256": "a9b7ec0512a8a23ad27e639809e32aba858d0b7cf1566c0011f8e44ab3adf699",
+        "width": 1320,
+        "height": 743
+      },
+      "imageAuthority": "Playwright Chromium compositor only; NOT native hit-buffer identity"
+    },
+    {
+      "id": "F05-rays-no-ao-tick0",
+      "facts": "evidence/captures/F05-rays-no-ao-tick0.json",
+      "requestedTick": 0,
+      "actualSelectedTick": "0",
+      "actualRenderedTick": null,
+      "status": "FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.",
+      "actualSubmission": false,
+      "testBridgePresent": false,
+      "fixture": "F05-CUTOUT-REPLAY",
+      "variant": "rays-no-ao",
+      "cameraId": "far",
+      "frame": null,
+      "fixtureDigest": null,
+      "sourceRevision": null,
+      "source": null,
+      "quality": null,
+      "firstTerminal": {
+        "firstFailure": "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "pending": false,
+        "disposed": true,
+        "productIntegrated": false
+      },
+      "stableSourceFrame": true,
+      "browserDpr": 1,
+      "rendererDpr": 1,
+      "drawingBuffer": {
+        "width": 1280,
+        "height": 720
+      },
+      "fractionalElementBox": null,
+      "ui": {
+        "path": "evidence/captures/F05-rays-no-ao-tick0-ui.png",
+        "bytes": 45055,
+        "sha256": "f3536f023e08d2d2ff7138c94d32dfa3dcaee996409fca5779ef89c68575ddbd",
+        "width": 1600,
+        "height": 1100
+      },
+      "canvas": null,
+      "imageAuthority": "Playwright Chromium compositor only; NOT native hit-buffer identity"
+    },
+    {
+      "id": "F06-greedy-no-ao-tick90",
+      "facts": "evidence/captures/F06-greedy-no-ao-tick90.json",
+      "requestedTick": 90,
+      "actualSelectedTick": "90",
+      "actualRenderedTick": 90,
+      "status": "Host render submitted. Native numeric/image/depth-water qualification still NOT RUN; this is not an art/performance PASS.",
+      "actualSubmission": true,
+      "testBridgePresent": false,
+      "fixture": "F06-MATERIAL-REPLAY",
+      "variant": "greedy-no-ao",
+      "cameraId": "far",
+      "frame": {
+        "cameraId": "far",
+        "paused": false,
+        "seconds": 1.5,
+        "sourceRevision": 0,
+        "tick": 90,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+      "sourceRevision": 0,
+      "source": [
+        {
+          "ownerId": "material-room",
+          "sourceNamespace": "rd02-authored-cells-v1",
+          "sourceRevision": 0,
+          "regionId": "material-room",
+          "fixtureDigest": "5976e63aa161bd738d2267d67594c0c6cb8c6a1db2131c9ad3a71b2021ddc5cf",
+          "recipeSha256": "6040b36db450654c3688e2233f8cfb55f53da30fc0d0f0340d6c29200c99c433",
+          "sourceIds": [
+            "dry-face",
+            "emitter",
+            "foliage",
+            "opening",
+            "wet-face",
+            "wood"
+          ],
+          "sourceIdMeaning": {},
+          "originalDimensions": [
+            40,
+            28,
+            32
+          ],
+          "originalOriginMeters": [
+            0,
+            0,
+            0
+          ],
+          "dimensions": [
+            40,
+            28,
+            32
+          ],
+          "offset": [
+            0,
+            0,
+            0
+          ],
+          "sourceSlotSha256": "a487a59ca423d87f08307933769d91f01caab957a9aaa71278f0bec7976c8559"
+        }
+      ],
+      "quality": [
+        "native-pcf-shadow-parity",
+        "native-sky-shader-parity",
+        "native-numeric-qualification-not-run",
+        "native-water-shader-parity",
+        "native-material-shader-hooks",
+        "face-ambient-occlusion",
+        "gi-and-reflections",
+        "unknown-is-not-world-clearance",
+        "native-vram-unavailable",
+        "gpu-timing-not-qualified"
+      ],
+      "firstTerminal": {
+        "firstFailure": null,
+        "pending": false,
+        "disposed": false,
+        "productIntegrated": false
+      },
+      "stableSourceFrame": true,
+      "browserDpr": 1,
+      "rendererDpr": 1,
+      "drawingBuffer": {
+        "width": 1280,
+        "height": 720
+      },
+      "fractionalElementBox": {
+        "x": 140,
+        "y": 334.0625,
+        "width": 1320,
+        "height": 742.5
+      },
+      "ui": {
+        "path": "evidence/captures/F06-greedy-no-ao-tick90-ui.png",
+        "bytes": 58224,
+        "sha256": "18f1d0e43b4dabe72f8b73c542639b0d9dc201e3735ab3ffec24680e877a434a",
+        "width": 1600,
+        "height": 1118
+      },
+      "canvas": {
+        "path": "evidence/captures/F06-greedy-no-ao-tick90-canvas.png",
+        "bytes": 15655,
+        "sha256": "2b46d855dd8f363d7d586660ffe0c3621add3a41a9ed44741037cdb8c240e705",
+        "width": 1320,
+        "height": 743
+      },
+      "imageAuthority": "Playwright Chromium compositor only; NOT native hit-buffer identity"
+    },
+    {
+      "id": "F06-rays-no-ao-tick90",
+      "facts": "evidence/captures/F06-rays-no-ao-tick90.json",
+      "requestedTick": 90,
+      "actualSelectedTick": "0",
+      "actualRenderedTick": null,
+      "status": "FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.",
+      "actualSubmission": false,
+      "testBridgePresent": false,
+      "fixture": "F06-MATERIAL-REPLAY",
+      "variant": "rays-no-ao",
+      "cameraId": "far",
+      "frame": null,
+      "fixtureDigest": null,
+      "sourceRevision": null,
+      "source": null,
+      "quality": null,
+      "firstTerminal": {
+        "firstFailure": "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "pending": false,
+        "disposed": true,
+        "productIntegrated": false
+      },
+      "stableSourceFrame": true,
+      "browserDpr": 1,
+      "rendererDpr": 1,
+      "drawingBuffer": {
+        "width": 1280,
+        "height": 720
+      },
+      "fractionalElementBox": null,
+      "ui": {
+        "path": "evidence/captures/F06-rays-no-ao-tick90-ui.png",
+        "bytes": 45190,
+        "sha256": "2cab10a08447a30eafdc8baaca8c3c7ed3dfb94192e8838523d43bff64750f77",
+        "width": 1600,
+        "height": 1100
+      },
+      "canvas": null,
+      "imageAuthority": "Playwright Chromium compositor only; NOT native hit-buffer identity"
+    },
+    {
+      "id": "normal-home-tool",
+      "facts": "evidence/captures/normal-home-tool.json",
+      "requestedTick": null,
+      "actualSelectedTick": "0",
+      "actualRenderedTick": null,
+      "status": "FAIL / hidden, no old version drawing: Error: Projection terminated before render submission. Explicit Remount is required.",
+      "actualSubmission": false,
+      "testBridgePresent": false,
+      "fixture": "F00-CONTROL-REPLAY",
+      "variant": "rays-no-ao",
+      "cameraId": "far",
+      "frame": null,
+      "fixtureDigest": null,
+      "sourceRevision": null,
+      "source": null,
+      "quality": null,
+      "firstTerminal": {
+        "firstFailure": "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "pending": false,
+        "disposed": true,
+        "productIntegrated": false
+      },
+      "stableSourceFrame": true,
+      "browserDpr": 1,
+      "rendererDpr": 1,
+      "drawingBuffer": {
+        "width": 1280,
+        "height": 720
+      },
+      "fractionalElementBox": null,
+      "ui": {
+        "path": "evidence/captures/normal-home-tool-ui.png",
+        "bytes": 45063,
+        "sha256": "d564aa8242c2232a5d2ae2503d4c7c87155a7b99d7c06b511870fb54b6ef8ca3",
+        "width": 1600,
+        "height": 1100
+      },
+      "canvas": null,
+      "imageAuthority": "Playwright Chromium compositor only; NOT native hit-buffer identity"
+    }
+  ],
+  "contactSheet": "contact-sheet.png",
+  "contactSheetAuthority": "Derived visualization of this index only, not an additional capture/readback",
+  "nativeGpuMs": "UNKNOWN",
+  "nativeVram": "UNKNOWN",
+  "qualifiedGpuPerformance": "NOT_GRANTED",
+  "missingReferences": {
+    "unseenReddit": 7,
+    "missingConceptImages": 6,
+    "lfsPointerOnlyImages": 5
+  }
+}

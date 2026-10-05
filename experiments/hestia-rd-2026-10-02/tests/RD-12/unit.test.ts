@@ -115,7 +115,7 @@ it('BAB01 exact F01/F04/F06 winding/index/frame/normal/linear-RGB material-slot/
       expect(getFixtureDigest(fixture)).toBe(before); projection.dispose(); projection.dispose(); expect(scene.meshes).toHaveLength(0); expect(scene.materials).toHaveLength(0); expect(scene.lights).toHaveLength(0);
     }
   } finally { scene.dispose(); engine.dispose(); }
-});
+},120_000); // Reuse the documented RD12 v2 CPU execution budget; all assertions unchanged.
 
 it('BAB02 declared blend/depth/shadow/emission and lighting/fog/tone profiles do not import F01 defaults into synthetic replay', async () => {
   for (const id of ['F01-HVP-COAST-REPLAY', 'F04-DETACH-REPLAY', 'F06-MATERIAL-REPLAY']) {
@@ -136,7 +136,7 @@ it('BAB02 declared blend/depth/shadow/emission and lighting/fog/tone profiles do
     expect(diagnostic.presentation.lights.map((light: any) => light.intensity)).toEqual(fixture.presentation ? ['ambient', 'key', 'fill'].map((role) => (fixture.presentation!.lighting as any)[role].intensity) : [0.85, 2, 0.5]);
     expect(host.readFacts().unsupportedFeatures).toEqual(expect.arrayContaining(UNSUPPORTED_FEATURES)); await host.dispose();
   }
-});
+},120_000); // Millions of source projection assertions, not a native benchmark deadline.
 
 it('BAB02 private compile rejection retains previous complete generation/source/rendered identity and removes all rejected autojoined resources', async () => {
   const data = await replay('F06-MATERIAL-REPLAY'); const host = await mount(data.initialFixture); pump(); const previous = host.readDiagnostics(); const old = [...host.scene.meshes];

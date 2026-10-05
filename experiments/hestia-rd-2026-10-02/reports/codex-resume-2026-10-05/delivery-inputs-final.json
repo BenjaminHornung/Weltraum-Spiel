@@ -1,0 +1,313 @@
+{
+  "runs": [
+    "final-source-units-01",
+    "final-source-native-01",
+    "final-gallery-export-02",
+    "final-planner-delivery-01"
+  ],
+  "historical": [
+    {
+      "source": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-11/phase2-c5317835-20261003/commands/native-01/test-results.json",
+      "kind": "HISTORICAL_NEGATIVE",
+      "sha256": "52b2fb7a0f47359d84ccfcb28131507ae0535c3a3951506760916d1c728fad8d",
+      "path": "evidence/historical/RD11-original-native.json"
+    },
+    {
+      "source": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-12/phase2-5e4c1b8f-20261004-a/native-results.json",
+      "kind": "HISTORICAL_NEGATIVE",
+      "sha256": "0b25a34aa663885fd85b63b29c5bdd9fbbde0506ba8cba19768f7d8170a5ee7b",
+      "path": "evidence/historical/RD12-original-native.json"
+    },
+    {
+      "source": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-12/phase2-5e4c1b8f-20261004-a/diagnosis-v1-results.json",
+      "kind": "HISTORICAL_DIAGNOSTIC",
+      "sha256": "e7156837c5e09333b27f07373e406dad5a51b4dd3ff7cd9c43dec9b28f675eed",
+      "path": "evidence/historical/RD12-diagnosis-v1.json"
+    },
+    {
+      "source": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-12/phase2-5e4c1b8f-20261004-a/functional-v2-results.json",
+      "kind": "HISTORICAL_SEPARATE_POPULATION",
+      "sha256": "e7b346c5a0756795ac85665fc688e3f8645a686dcf61e9cfdc76ff5232d0a46e",
+      "path": "evidence/historical/RD12-functional-v2.json"
+    },
+    {
+      "source": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-13/phase2-16a5d29a-20261004-a/native-results.json",
+      "kind": "HISTORICAL_NEGATIVE",
+      "sha256": "cc99bd51f533b3aaf483e8d023c9f237e8d6ce0215d24c15facfca0440ce7d7b",
+      "path": "evidence/historical/RD13-original-and-supplements.json"
+    },
+    {
+      "source": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-13/phase2-16a5d29a-20261004-a/native.raw.log",
+      "kind": "HISTORICAL_NEGATIVE",
+      "sha256": "834d059ec3d1bf2ef2d3e6bc13554f393acd688a6340a3917686874007b8db8e",
+      "path": "evidence/historical/RD13-native.raw.log"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-00\\browser\\final-hestia-native-01\\byte-bindings.json",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "6c0152f8e89caf0952668a80421f9d45838e1e4012e05e0ff136d79171a32951",
+      "path": "evidence/fresh/RD-00/byte-bindings.json"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-00\\browser\\final-hestia-native-01\\diagnostic.json",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "96b0928f020f1f5f1555f163928c48b5a72f9e6858c55bc1753d931254ad5447",
+      "path": "evidence/fresh/RD-00/diagnostic.json"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-00\\browser\\final-hestia-native-01\\result.json",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "5f8de620f1cec968bf94e6235b432588d94786fa675f0fc17239b088764def26",
+      "path": "evidence/fresh/RD-00/result.json"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03\\functional.json",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "64fcfafbad4946f64719f25c780c53b165223af10609057038a9fde1efb919c5",
+      "path": "evidence/fresh/RD-03/RUN03/functional.json"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03\\webgl2.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "61170b3acadd87cde3827e6aa4c71109fbdfcd4586b80947d160362cbdb26f77",
+      "path": "evidence/fresh/RD-03/RUN03/webgl2.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-MISSING-WEBGL2\\capability.json",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "df5307e4bd4db198da1009ca8f98d00964530dc470d4d3ceb1406f71d04d38a9",
+      "path": "evidence/fresh/RD-03/RUN03-MISSING-WEBGL2/capability.json"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F00-CONTROL-REPLAY-0-0.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "61170b3acadd87cde3827e6aa4c71109fbdfcd4586b80947d160362cbdb26f77",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F00-CONTROL-REPLAY-0-0.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F00-CONTROL-REPLAY-1-120.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "8cbbfc74914b0756b923472bf96b41a0c64e0322630fc4eb6e69f14fe7d75ee7",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F00-CONTROL-REPLAY-1-120.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F00-CONTROL-REPLAY-2-240.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "8cbbfc74914b0756b923472bf96b41a0c64e0322630fc4eb6e69f14fe7d75ee7",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F00-CONTROL-REPLAY-2-240.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F00-CONTROL-REPLAY-3-900.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "61170b3acadd87cde3827e6aa4c71109fbdfcd4586b80947d160362cbdb26f77",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F00-CONTROL-REPLAY-3-900.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F00-CONTROL-REPLAY-4-1560.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "61170b3acadd87cde3827e6aa4c71109fbdfcd4586b80947d160362cbdb26f77",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F00-CONTROL-REPLAY-4-1560.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F00-CONTROL-REPLAY-5-0.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "61170b3acadd87cde3827e6aa4c71109fbdfcd4586b80947d160362cbdb26f77",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F00-CONTROL-REPLAY-5-0.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F01-HVP-COAST-REPLAY-0-0.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "ee91f6ace185a74d97a9e8022da7075b93deb5712461928d9c34bc7649487991",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F01-HVP-COAST-REPLAY-0-0.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F01-HVP-COAST-REPLAY-1-120.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "73324250039d675eed16131045a7d4804253a121c5417fbe0ec5391a6b71310f",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F01-HVP-COAST-REPLAY-1-120.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F01-HVP-COAST-REPLAY-2-240.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "73324250039d675eed16131045a7d4804253a121c5417fbe0ec5391a6b71310f",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F01-HVP-COAST-REPLAY-2-240.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F01-HVP-COAST-REPLAY-3-900.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "ee91f6ace185a74d97a9e8022da7075b93deb5712461928d9c34bc7649487991",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F01-HVP-COAST-REPLAY-3-900.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F01-HVP-COAST-REPLAY-4-1560.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "ee91f6ace185a74d97a9e8022da7075b93deb5712461928d9c34bc7649487991",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F01-HVP-COAST-REPLAY-4-1560.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F01-HVP-COAST-REPLAY-5-0.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "ee91f6ace185a74d97a9e8022da7075b93deb5712461928d9c34bc7649487991",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F01-HVP-COAST-REPLAY-5-0.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F04-DETACH-REPLAY-0-0.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "3741eb13b9cde5af7ee4984876a0147301115caacb97a9133dba23008abd6251",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F04-DETACH-REPLAY-0-0.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F04-DETACH-REPLAY-1-359.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "fe066c805933d15a9344390eb2534cb8d727a2aab9db182e01a80ddd95f680e4",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F04-DETACH-REPLAY-1-359.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F04-DETACH-REPLAY-10-1560.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "d00414251c4e9e175efd2f5000317470632c53164a817075635c0793f95f9228",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F04-DETACH-REPLAY-10-1560.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F04-DETACH-REPLAY-11-1559.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "d00414251c4e9e175efd2f5000317470632c53164a817075635c0793f95f9228",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F04-DETACH-REPLAY-11-1559.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F04-DETACH-REPLAY-12-0.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "3741eb13b9cde5af7ee4984876a0147301115caacb97a9133dba23008abd6251",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F04-DETACH-REPLAY-12-0.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F04-DETACH-REPLAY-2-360.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "ffc57f83d0438e48e3e724d2bef5bdd300538f6f37a2ed3a5b416836266e6563",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F04-DETACH-REPLAY-2-360.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F04-DETACH-REPLAY-3-719.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "cbfb3b17c8ea4197457fe09b89ce85845a3bdf059f27271a041765e2055e8d1c",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F04-DETACH-REPLAY-3-719.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F04-DETACH-REPLAY-4-720.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "20e9dedcd0a3fc4776a6e653da4f43e1ea7feb6fe85eca2f286c1ee66f4c9346",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F04-DETACH-REPLAY-4-720.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F04-DETACH-REPLAY-5-1079.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "20e9dedcd0a3fc4776a6e653da4f43e1ea7feb6fe85eca2f286c1ee66f4c9346",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F04-DETACH-REPLAY-5-1079.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F04-DETACH-REPLAY-6-1080.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "d00414251c4e9e175efd2f5000317470632c53164a817075635c0793f95f9228",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F04-DETACH-REPLAY-6-1080.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F04-DETACH-REPLAY-7-1439.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "d00414251c4e9e175efd2f5000317470632c53164a817075635c0793f95f9228",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F04-DETACH-REPLAY-7-1439.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F04-DETACH-REPLAY-8-1440.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "d00414251c4e9e175efd2f5000317470632c53164a817075635c0793f95f9228",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F04-DETACH-REPLAY-8-1440.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F04-DETACH-REPLAY-9-1559.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "d00414251c4e9e175efd2f5000317470632c53164a817075635c0793f95f9228",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F04-DETACH-REPLAY-9-1559.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F05-CUTOUT-REPLAY-0-0.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "a4cb424fa0d0d68414e6d549be0100e7f06572ac9fd81e78245bed0a23b26557",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F05-CUTOUT-REPLAY-0-0.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F05-CUTOUT-REPLAY-1-120.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "36c8dc283365a832482fb306f454f3468cba336ff5b72303a7bf8beb91ed7e44",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F05-CUTOUT-REPLAY-1-120.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F05-CUTOUT-REPLAY-2-240.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "36c8dc283365a832482fb306f454f3468cba336ff5b72303a7bf8beb91ed7e44",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F05-CUTOUT-REPLAY-2-240.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F05-CUTOUT-REPLAY-3-900.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "a4cb424fa0d0d68414e6d549be0100e7f06572ac9fd81e78245bed0a23b26557",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F05-CUTOUT-REPLAY-3-900.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F05-CUTOUT-REPLAY-4-1560.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "a4cb424fa0d0d68414e6d549be0100e7f06572ac9fd81e78245bed0a23b26557",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F05-CUTOUT-REPLAY-4-1560.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\F05-CUTOUT-REPLAY-5-0.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "a4cb424fa0d0d68414e6d549be0100e7f06572ac9fd81e78245bed0a23b26557",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/F05-CUTOUT-REPLAY-5-0.png"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-REPLAY\\replay.json",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "3a96f205ada60f82f4669d5711b5a073339f1ba48207875c69da89cb3babd59b",
+      "path": "evidence/fresh/RD-03/RUN03-REPLAY/replay.json"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN03-TIMER-CONTEXT-LOSS\\capability-loss.json",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "534e3eaed8d32ad8e1bdbba36e128208ec01a20413f859bd7c5a30c99568f9fb",
+      "path": "evidence/fresh/RD-03/RUN03-TIMER-CONTEXT-LOSS/capability-loss.json"
+    },
+    {
+      "source": "C:\\IFI_SourceCode\\Temp\\Hestia-RD-2026-10-02-runs\\RD-03\\browser\\final-hestia-native-01\\RUN04\\lifecycle.json",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "680a8b57adf11b4a6bff11fa929c07a87b0c34417176c0a73e945706b3e9f53c",
+      "path": "evidence/fresh/RD-03/RUN04/lifecycle.json"
+    },
+    {
+      "source": "C:/IFI_SourceCode/Temp/Hestia-RD-2026-10-02-runs/RD-00/media/final-hestia-native-01.png",
+      "kind": "FRESH_EXTERNAL_CAPTURE",
+      "sha256": "8f5eb35e4051edce4f7982acee726bd4fc0df5c74879e5091a5f4e8158a4d652",
+      "path": "evidence/fresh/RD-00/control.png"
+    }
+  ],
+  "evidence": [
+    ".resume-runs/final-boundary-01.json",
+    ".resume-runs/gallery-resume-admission.json",
+    ".resume-runs/recovery-source-receipt.json",
+    ".resume-runs/b00-baseline-02/unit.json",
+    ".resume-runs/whole-final-candidate-units-01.json",
+    ".resume-runs/whole-final-candidate-units-02.json",
+    ".resume-runs/final-source-type-01/command.log",
+    ".resume-runs/final-source-type-01/receipt.json",
+    ".resume-runs/final-source-type-01/source-after.json",
+    ".resume-runs/final-source-type-01/source-before.json",
+    ".resume-runs/final-source-type-02/command.log",
+    ".resume-runs/final-source-type-02/receipt.json",
+    ".resume-runs/final-source-type-02/source-after.json",
+    ".resume-runs/final-source-type-02/source-before.json",
+    ".resume-runs/final-source-build-01/command.log",
+    ".resume-runs/final-source-build-01/receipt.json",
+    ".resume-runs/final-source-build-01/source-after.json",
+    ".resume-runs/final-source-build-01/source-before.json"
+  ],
+  "deliveryComplete": true
+}

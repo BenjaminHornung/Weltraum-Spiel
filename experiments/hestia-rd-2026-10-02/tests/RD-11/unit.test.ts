@@ -198,7 +198,7 @@ it('REN13 controlled Q0 100 frozen source replacements and 20 disposable owners;
   }
   await host.dispose();
   for (let cycle = 0; cycle < 20; cycle += 1) { const next = await mount(data.initialFixture, cycle % 2 ? 'C1' : 'C2'); await next.dispose(); expect(next.readCleanup()).toMatchObject({ disposed: true, ownedGeometries: 0, ownedMaterials: 0 }); }
-});
+},120_000); // CPU harness budget; unchanged100/20 population, no native performance threshold.
 
 it('REN14 controlled init and shader compilation failures preserve first error and release partial/complete owned resources', async () => {
   const { initialFixture } = await replay('F04-DETACH-REPLAY'); control.initError = 'controlled-adapter-init-failure';

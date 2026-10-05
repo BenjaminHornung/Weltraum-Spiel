@@ -1,0 +1,1198 @@
+{
+  "schema": "rd13-native-compositor-capture-v1",
+  "source": "16a5d29a5cddea372abae139da618aa000a058be",
+  "productIntegrated": false,
+  "name": "F01-greedy-no-ao-tick0",
+  "before": {
+    "url": "http://127.0.0.1:5280/src/experiments/voxel-rays/index.html",
+    "bridgePresent": false,
+    "status": "Host render submitted. Native numeric/image/depth-water qualification still NOT RUN; this is not an art/performance PASS.",
+    "projected": {
+      "productIntegrated": false,
+      "facts": {
+        "backend": "Three-WebGLRenderer-WebGL2",
+        "errors": [],
+        "experimentId": "RD-13",
+        "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+        "liveResources": {
+          "geometries": {
+            "status": "measured",
+            "unit": "count",
+            "value": 2
+          },
+          "hostListeners": {
+            "status": "measured",
+            "unit": "count",
+            "value": 2
+          },
+          "renderers": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "renderloops": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "textures": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          }
+        },
+        "logicalCosts": {
+          "effect-0-cpuPeakBytes": {
+            "reason": "Conservative source transport/private/copy/old-new estimate, not JS heap",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 79872108
+          },
+          "effect-0-fullScreenVolumes": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          },
+          "effect-0-greedyBuildMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 36.400000005960464
+          },
+          "effect-0-maxStepsPerRay": {
+            "status": "measured",
+            "unit": "count",
+            "value": 193
+          },
+          "effect-0-nativeGpuBytes": {
+            "reason": "Native context/driver VRAM cannot be measured here",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "effect-0-prepareMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 666.2000000178814
+          },
+          "effect-0-projectionBuildMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 37.19999998807907
+          },
+          "effect-0-projectionBytes": {
+            "reason": "Typed texture/mesh payload; excludes native allocator/driver/context",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 217296
+          },
+          "effect-0-triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 4024
+          },
+          "effect-0-uploadCommandCpuMs": {
+            "reason": "Three upload occurs during native render; CPU preparation is not upload time",
+            "status": "not-run",
+            "unit": "ms"
+          },
+          "gpuBytes": {
+            "reason": "Native GPU memory unavailable",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "gpuMs": {
+            "reason": "Timer available; diagnostic loop does not sample GPU timing",
+            "status": "not-run",
+            "unit": "ms"
+          },
+          "renderCalls": {
+            "status": "measured",
+            "unit": "count",
+            "value": 6
+          },
+          "triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 4332
+          }
+        },
+        "sourceRevision": 0,
+        "unsupportedFeatures": [
+          "native-pcf-shadow-parity",
+          "native-sky-shader-parity",
+          "native-numeric-qualification-not-run",
+          "native-water-shader-parity",
+          "native-material-shader-hooks",
+          "face-ambient-occlusion",
+          "gi-and-reflections",
+          "unknown-is-not-world-clearance",
+          "native-vram-unavailable",
+          "gpu-timing-not-qualified",
+          "selected-f01-not-full-parity",
+          "f01-vegetation-omitted"
+        ],
+        "variantId": "greedy-no-ao"
+      },
+      "private": {
+        "productIntegrated": false,
+        "variant": "greedy-no-ao",
+        "caps": {
+          "max3D": 2048,
+          "maxTexture": 16384,
+          "maxViewport": [
+            32767,
+            32767
+          ],
+          "fragmentSamplers": 16,
+          "rgba8ui": true,
+          "contextLost": false,
+          "formatSampleCounts": []
+        },
+        "host": {
+          "backend": "Three-WebGLRenderer-WebGL2",
+          "webgl2": true,
+          "fixtureId": "F01-HVP-COAST",
+          "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "sourceRevision": 0,
+          "payloadBindings": [
+            {
+              "id": "coast-crop-coverage",
+              "byteLength": 2949120,
+              "sha256": "1d433f1aa37993106ee691d7dfc033363ca7201fbbab132742340d3a08e92259"
+            },
+            {
+              "id": "coast-crop-material-slots",
+              "byteLength": 2949120,
+              "sha256": "561b1ea853ee6377ec78337016725d6771f178e734925dd0d6d3a33ec7056c0a"
+            },
+            {
+              "id": "coast-crop-occupancy",
+              "byteLength": 2949120,
+              "sha256": "04ba6e9254fe1940801f40679af6dfb1d95ffd828955c886823c519630c01f7c"
+            },
+            {
+              "id": "coast-slot-1-colors",
+              "byteLength": 1433664,
+              "sha256": "f020daf02341c6ab0f1511cf5b5bf14fea8e2ce4d2d8c8b4fbf5f587f4ad3ca5"
+            },
+            {
+              "id": "coast-slot-1-indices",
+              "byteLength": 410640,
+              "sha256": "ad41ac068cc45ebce3da452a21dfd6c2066c7a518305e26a8ad42020a0db1a48"
+            },
+            {
+              "id": "coast-slot-1-normals",
+              "byteLength": 1433664,
+              "sha256": "16b3807d274a6bbfb7ed54749f89c5240d963abcd50798ea051544423a4552c3"
+            },
+            {
+              "id": "coast-slot-1-positions",
+              "byteLength": 1433664,
+              "sha256": "48f478a1647152e7593727a1b1e53265f8978949b1a12e9ad2da9d360754e680"
+            },
+            {
+              "id": "coast-slot-2-indices",
+              "byteLength": 266640,
+              "sha256": "11018e41244c359d27137788b8d256bcbf135118481b0513221281cb3e3bb492"
+            },
+            {
+              "id": "coast-slot-3-indices",
+              "byteLength": 27192,
+              "sha256": "d7e16db83dcaa8a22f2155fb4129c4b951356f38d24578edf29b2f26e7f8accf"
+            },
+            {
+              "id": "coast-slot-4-indices",
+              "byteLength": 12360,
+              "sha256": "546154522f8a0171c5ffa93335b8c05eb0ddbc272f4d0b72dd8dbd0fb2480ed9"
+            },
+            {
+              "id": "coast-water-indices",
+              "byteLength": 1848,
+              "sha256": "e0810d67d0319761e19e7d3364f5ad4e18a7a3c43cb5b1ef92b68c0258a13d64"
+            },
+            {
+              "id": "coast-water-normals",
+              "byteLength": 7392,
+              "sha256": "f87c0ea807d66296a2d3c496ab3992b378668427d9f4c0c0d67b7c75525fbe43"
+            },
+            {
+              "id": "coast-water-positions",
+              "byteLength": 7392,
+              "sha256": "1614f45e69000d39b1ee2b6db7f800190e7d68fd0025896b29448fb80d1356e7"
+            },
+            {
+              "id": "plant-0-decor-coverage",
+              "byteLength": 1105920,
+              "sha256": "d5cdcf75112ecd21d5fe3c0ba1c5486dafd27ee3b27b507e9c99cc9ed46801b4"
+            },
+            {
+              "id": "plant-0-decor-material-slots",
+              "byteLength": 1105920,
+              "sha256": "223576632d466275dc1abfe05496975d0032a06e784b16a71238aa0f9a21abd5"
+            },
+            {
+              "id": "plant-0-decor-occupancy",
+              "byteLength": 1105920,
+              "sha256": "d5cdcf75112ecd21d5fe3c0ba1c5486dafd27ee3b27b507e9c99cc9ed46801b4"
+            },
+            {
+              "id": "plant-0-decor-slot-1-colors",
+              "byteLength": 369936,
+              "sha256": "8f33b27ca9605e203699c2bdd50f52d84acb88e27c0a5ca9c9ed575114cf0a6c"
+            },
+            {
+              "id": "plant-0-decor-slot-1-indices",
+              "byteLength": 92484,
+              "sha256": "ca40fca8cce7d6c665104c45a02e292d828e7bc0cc43e8864eabbdac893ff9a2"
+            },
+            {
+              "id": "plant-0-decor-slot-1-normals",
+              "byteLength": 369936,
+              "sha256": "391e52de3443bc6056cb558b723a4fd76244766d16171240f09e230360a1dd98"
+            },
+            {
+              "id": "plant-0-decor-slot-1-positions",
+              "byteLength": 369936,
+              "sha256": "9b58b212aa70357248cab4f00c216d06b9c15a9c78f638509b125bb84aac51fb"
+            },
+            {
+              "id": "plant-0-wood-coverage",
+              "byteLength": 1105920,
+              "sha256": "dc0683f9ec347e4494344138f1771d0ae27d2577089a3637df52e52607576516"
+            },
+            {
+              "id": "plant-0-wood-material-slots",
+              "byteLength": 1105920,
+              "sha256": "dc0683f9ec347e4494344138f1771d0ae27d2577089a3637df52e52607576516"
+            },
+            {
+              "id": "plant-0-wood-occupancy",
+              "byteLength": 1105920,
+              "sha256": "dc0683f9ec347e4494344138f1771d0ae27d2577089a3637df52e52607576516"
+            },
+            {
+              "id": "plant-0-wood-slot-1-colors",
+              "byteLength": 294864,
+              "sha256": "17178e79ed0fa169d9038056d40c514930111bae3b733ba291b3256d73d441a4"
+            },
+            {
+              "id": "plant-0-wood-slot-1-indices",
+              "byteLength": 73716,
+              "sha256": "18f25b64520cd1ec14c53e0f7d1ad1e5dae95e61a6ecb95b179de262512e427d"
+            },
+            {
+              "id": "plant-0-wood-slot-1-normals",
+              "byteLength": 294864,
+              "sha256": "122e14d0eef0c99c950bc085274391837b2dc2ca92f217665949517a65e9d78d"
+            },
+            {
+              "id": "plant-0-wood-slot-1-positions",
+              "byteLength": 294864,
+              "sha256": "b2896724b73955c4ccdd92c3035516827f2d6e4ff09ee716cc580abc77649935"
+            },
+            {
+              "id": "plant-1-decor-coverage",
+              "byteLength": 23232,
+              "sha256": "e14fe300404fc6c6f74051a1bd6ae57b514916c453ab04b60d12df7045b7b4f2"
+            },
+            {
+              "id": "plant-1-decor-material-slots",
+              "byteLength": 23232,
+              "sha256": "161f987495f38b17f1a193248327361c507f29c7b72b590e9bb68ed7631189f7"
+            },
+            {
+              "id": "plant-1-decor-occupancy",
+              "byteLength": 23232,
+              "sha256": "e14fe300404fc6c6f74051a1bd6ae57b514916c453ab04b60d12df7045b7b4f2"
+            },
+            {
+              "id": "plant-1-decor-slot-1-colors",
+              "byteLength": 12672,
+              "sha256": "e4e0a8da74b3442311206183f8258de6d2d0a3aaf28a8f43bec41c52d10f3fdf"
+            },
+            {
+              "id": "plant-1-decor-slot-1-indices",
+              "byteLength": 3168,
+              "sha256": "e185ece4977751d05af409a2dfcb0cf412aab54be953def36e45a171b6da6a1b"
+            },
+            {
+              "id": "plant-1-decor-slot-1-normals",
+              "byteLength": 12672,
+              "sha256": "fafbf9380f74c4d2aa388c8601693c9fccac4e86a5a7ca0d30b5a6caa428a4fc"
+            },
+            {
+              "id": "plant-1-decor-slot-1-positions",
+              "byteLength": 12672,
+              "sha256": "f792c46920bcc67e17bf28339dc574a4b43bb1769fb8f40503c7d88d54c037f0"
+            },
+            {
+              "id": "plant-2-decor-coverage",
+              "byteLength": 23232,
+              "sha256": "81a984ec399f208ffb5e9fa7ec0c8fb8b1fd4bdfef2143354bfa1b446af741bc"
+            },
+            {
+              "id": "plant-2-decor-material-slots",
+              "byteLength": 23232,
+              "sha256": "fc0ffea11a4f961b287b574e00c50b0f6a5e511a1ef759a7f2681334d139ca90"
+            },
+            {
+              "id": "plant-2-decor-occupancy",
+              "byteLength": 23232,
+              "sha256": "81a984ec399f208ffb5e9fa7ec0c8fb8b1fd4bdfef2143354bfa1b446af741bc"
+            },
+            {
+              "id": "plant-2-decor-slot-1-colors",
+              "byteLength": 23184,
+              "sha256": "dc3b80996153751cf303ecdf82d2bf3a097230434847cdab4879d161ec4ec594"
+            },
+            {
+              "id": "plant-2-decor-slot-1-indices",
+              "byteLength": 5796,
+              "sha256": "66f92ff37eb1c7d4a14485b8ec2d52ec51e20cd129f0f3e4a47cb6e7f3b688c8"
+            },
+            {
+              "id": "plant-2-decor-slot-1-normals",
+              "byteLength": 23184,
+              "sha256": "7fbf82b50b94809442d7d6eac1ba82c9f0697ad2d8dec85becef8dfb43f54acf"
+            },
+            {
+              "id": "plant-2-decor-slot-1-positions",
+              "byteLength": 23184,
+              "sha256": "cd25e56458532611ac4cbe91d0608c7166f80913d3225041aa42ef28738703b8"
+            },
+            {
+              "id": "plant-3-decor-coverage",
+              "byteLength": 23232,
+              "sha256": "b5586b65bcdf7df411677e6edba5a6f5145eaed8c4d307fc8b5f682663e9bad4"
+            },
+            {
+              "id": "plant-3-decor-material-slots",
+              "byteLength": 23232,
+              "sha256": "1ebfb6571a3fa4d6d9282dd487e25e850356c6eb30de4be2fa5249e0b38c16ac"
+            },
+            {
+              "id": "plant-3-decor-occupancy",
+              "byteLength": 23232,
+              "sha256": "b5586b65bcdf7df411677e6edba5a6f5145eaed8c4d307fc8b5f682663e9bad4"
+            },
+            {
+              "id": "plant-3-decor-slot-1-colors",
+              "byteLength": 13152,
+              "sha256": "5fc8ed40fa995e76e72cdad053402183ff713922c3fc15af5de507ec0e35b871"
+            },
+            {
+              "id": "plant-3-decor-slot-1-indices",
+              "byteLength": 3288,
+              "sha256": "fb86341feb5e8daa01a8b0ede399f588edada24dcebee785f96d22f8abcf9652"
+            },
+            {
+              "id": "plant-3-decor-slot-1-normals",
+              "byteLength": 13152,
+              "sha256": "11b80a769aa070a1f43137c7e403585bce7fba62d4e9392170198fb3bc144ef6"
+            },
+            {
+              "id": "plant-3-decor-slot-1-positions",
+              "byteLength": 13152,
+              "sha256": "ab12e22b3fb5d7ad0a5929f17c07bac63862416e0f8df7a5882cc9a487f7542f"
+            },
+            {
+              "id": "plant-4-decor-coverage",
+              "byteLength": 23232,
+              "sha256": "0d9e714a249b3552fc8a33b5d1ae2c09239dc06ff7120f1db5f051ec8f44d6a6"
+            },
+            {
+              "id": "plant-4-decor-material-slots",
+              "byteLength": 23232,
+              "sha256": "f3335c5899fe34577af80f457cacb1be7be7ed0c855245293fc125d28467d6f5"
+            },
+            {
+              "id": "plant-4-decor-occupancy",
+              "byteLength": 23232,
+              "sha256": "0d9e714a249b3552fc8a33b5d1ae2c09239dc06ff7120f1db5f051ec8f44d6a6"
+            },
+            {
+              "id": "plant-4-decor-slot-1-colors",
+              "byteLength": 10656,
+              "sha256": "c1f7c8ab99e090cf296641e1577b0d7f93ae078a9d655161981e528311bd546a"
+            },
+            {
+              "id": "plant-4-decor-slot-1-indices",
+              "byteLength": 2664,
+              "sha256": "08df4a3c7b06e1b3114c5c66267d140af62f071f233615be524f83b3ecbe85b8"
+            },
+            {
+              "id": "plant-4-decor-slot-1-normals",
+              "byteLength": 10656,
+              "sha256": "728d73385828153bd3f7d4792fe6a262c8e667cdf8ee69cc0eaf08b782758232"
+            },
+            {
+              "id": "plant-4-decor-slot-1-positions",
+              "byteLength": 10656,
+              "sha256": "6e28c21ec65e8b714a34df565b7c482e5756df7254a3c395b964dcd67d9728cb"
+            }
+          ],
+          "presentationProfile": "hvp:readable-coast-v6",
+          "frame": {
+            "cameraId": "C02-SHORE",
+            "paused": false,
+            "seconds": 0,
+            "sourceRevision": 0,
+            "tick": 0,
+            "weather": {
+              "cloud01": 0.1,
+              "rain01": 0,
+              "snow01": 0,
+              "windMps": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          "resetTick": null,
+          "resolution": {
+            "width": 1280,
+            "height": 720,
+            "dpr": 1,
+            "bufferWidth": 1280,
+            "bufferHeight": 720
+          },
+          "colorSpace": "srgb",
+          "toneMapping": 4,
+          "exposure": 1.05,
+          "timerQueryAvailable": true,
+          "gpuMs": {
+            "status": "not-run",
+            "unit": "ms",
+            "reason": "Timer available; no qualified timer-query sampling in diagnostic control"
+          },
+          "nativeGpuBytes": {
+            "status": "unsupported",
+            "unit": "byte",
+            "reason": "WebGL does not expose native/driver allocation bytes"
+          },
+          "device": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "submittedFrames": 13,
+          "rendered": {
+            "tick": 0,
+            "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+            "sourceRevision": 0,
+            "resetTick": null
+          },
+          "rendererInfo": {
+            "geometries": 2,
+            "textures": 0,
+            "programs": 3,
+            "calls": 6,
+            "triangles": 4332
+          },
+          "liveHosts": {
+            "renderers": 1,
+            "renderloops": 1,
+            "hostListeners": 2
+          },
+          "productIntegrated": false
+        },
+        "source": [
+          {
+            "ownerId": "hvp:terrain",
+            "sourceNamespace": "hvp-source-global-slot-v5",
+            "sourceRevision": 0,
+            "regionId": "coast-crop",
+            "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+            "recipeSha256": "e65416ef10e7e07a72bdd2129cd2a26523d5ffbbe293a27f3542957ec17b5df8",
+            "sourceIds": [
+              "crop-volume",
+              "slot/100/75/88",
+              "slot/160/61/76",
+              "slot/76/73/124",
+              "slot/88/79/88"
+            ],
+            "sourceIdMeaning": {},
+            "originalDimensions": [
+              192,
+              80,
+              192
+            ],
+            "originalOriginMeters": [
+              -8,
+              -2,
+              -8
+            ],
+            "dimensions": [
+              64,
+              64,
+              64
+            ],
+            "offset": [
+              32,
+              0,
+              16
+            ],
+            "sourceSlotSha256": "561b1ea853ee6377ec78337016725d6771f178e734925dd0d6d3a33ec7056c0a"
+          }
+        ],
+        "costs": {
+          "canonicalPayloadBytes": 23150628,
+          "wholeRegionCopyBytes": 8847360,
+          "selectedCpuBytes": 1572864,
+          "cpuPeakEstimateBytes": 79872108,
+          "projectionBytes": 1048576
+        },
+        "terminal": {
+          "firstFailure": null,
+          "pending": false,
+          "disposed": false,
+          "productIntegrated": false
+        }
+      },
+      "history": [
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission"
+      ]
+    },
+    "selections": {
+      "fixture": "F01-HVP-COAST-REPLAY",
+      "variant": "greedy-no-ao",
+      "camera": "C02-SHORE",
+      "tick": "0",
+      "resolution": "1280x720",
+      "dpr": "1"
+    },
+    "canvas": {
+      "hidden": false,
+      "width": 1280,
+      "height": 720,
+      "box": {
+        "x": 140,
+        "y": 334.0625,
+        "width": 1320,
+        "height": 742.5,
+        "top": 334.0625,
+        "right": 1460,
+        "bottom": 1076.5625,
+        "left": 140
+      },
+      "devicePixelRatio": 1
+    }
+  },
+  "after": {
+    "url": "http://127.0.0.1:5280/src/experiments/voxel-rays/index.html",
+    "bridgePresent": false,
+    "status": "Host render submitted. Native numeric/image/depth-water qualification still NOT RUN; this is not an art/performance PASS.",
+    "projected": {
+      "productIntegrated": false,
+      "facts": {
+        "backend": "Three-WebGLRenderer-WebGL2",
+        "errors": [],
+        "experimentId": "RD-13",
+        "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+        "liveResources": {
+          "geometries": {
+            "status": "measured",
+            "unit": "count",
+            "value": 2
+          },
+          "hostListeners": {
+            "status": "measured",
+            "unit": "count",
+            "value": 2
+          },
+          "renderers": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "renderloops": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "textures": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          }
+        },
+        "logicalCosts": {
+          "effect-0-cpuPeakBytes": {
+            "reason": "Conservative source transport/private/copy/old-new estimate, not JS heap",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 79872108
+          },
+          "effect-0-fullScreenVolumes": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          },
+          "effect-0-greedyBuildMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 36.400000005960464
+          },
+          "effect-0-maxStepsPerRay": {
+            "status": "measured",
+            "unit": "count",
+            "value": 193
+          },
+          "effect-0-nativeGpuBytes": {
+            "reason": "Native context/driver VRAM cannot be measured here",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "effect-0-prepareMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 666.2000000178814
+          },
+          "effect-0-projectionBuildMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 37.19999998807907
+          },
+          "effect-0-projectionBytes": {
+            "reason": "Typed texture/mesh payload; excludes native allocator/driver/context",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 217296
+          },
+          "effect-0-triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 4024
+          },
+          "effect-0-uploadCommandCpuMs": {
+            "reason": "Three upload occurs during native render; CPU preparation is not upload time",
+            "status": "not-run",
+            "unit": "ms"
+          },
+          "gpuBytes": {
+            "reason": "Native GPU memory unavailable",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "gpuMs": {
+            "reason": "Timer available; diagnostic loop does not sample GPU timing",
+            "status": "not-run",
+            "unit": "ms"
+          },
+          "renderCalls": {
+            "status": "measured",
+            "unit": "count",
+            "value": 6
+          },
+          "triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 4332
+          }
+        },
+        "sourceRevision": 0,
+        "unsupportedFeatures": [
+          "native-pcf-shadow-parity",
+          "native-sky-shader-parity",
+          "native-numeric-qualification-not-run",
+          "native-water-shader-parity",
+          "native-material-shader-hooks",
+          "face-ambient-occlusion",
+          "gi-and-reflections",
+          "unknown-is-not-world-clearance",
+          "native-vram-unavailable",
+          "gpu-timing-not-qualified",
+          "selected-f01-not-full-parity",
+          "f01-vegetation-omitted"
+        ],
+        "variantId": "greedy-no-ao"
+      },
+      "private": {
+        "productIntegrated": false,
+        "variant": "greedy-no-ao",
+        "caps": {
+          "max3D": 2048,
+          "maxTexture": 16384,
+          "maxViewport": [
+            32767,
+            32767
+          ],
+          "fragmentSamplers": 16,
+          "rgba8ui": true,
+          "contextLost": false,
+          "formatSampleCounts": []
+        },
+        "host": {
+          "backend": "Three-WebGLRenderer-WebGL2",
+          "webgl2": true,
+          "fixtureId": "F01-HVP-COAST",
+          "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "sourceRevision": 0,
+          "payloadBindings": [
+            {
+              "id": "coast-crop-coverage",
+              "byteLength": 2949120,
+              "sha256": "1d433f1aa37993106ee691d7dfc033363ca7201fbbab132742340d3a08e92259"
+            },
+            {
+              "id": "coast-crop-material-slots",
+              "byteLength": 2949120,
+              "sha256": "561b1ea853ee6377ec78337016725d6771f178e734925dd0d6d3a33ec7056c0a"
+            },
+            {
+              "id": "coast-crop-occupancy",
+              "byteLength": 2949120,
+              "sha256": "04ba6e9254fe1940801f40679af6dfb1d95ffd828955c886823c519630c01f7c"
+            },
+            {
+              "id": "coast-slot-1-colors",
+              "byteLength": 1433664,
+              "sha256": "f020daf02341c6ab0f1511cf5b5bf14fea8e2ce4d2d8c8b4fbf5f587f4ad3ca5"
+            },
+            {
+              "id": "coast-slot-1-indices",
+              "byteLength": 410640,
+              "sha256": "ad41ac068cc45ebce3da452a21dfd6c2066c7a518305e26a8ad42020a0db1a48"
+            },
+            {
+              "id": "coast-slot-1-normals",
+              "byteLength": 1433664,
+              "sha256": "16b3807d274a6bbfb7ed54749f89c5240d963abcd50798ea051544423a4552c3"
+            },
+            {
+              "id": "coast-slot-1-positions",
+              "byteLength": 1433664,
+              "sha256": "48f478a1647152e7593727a1b1e53265f8978949b1a12e9ad2da9d360754e680"
+            },
+            {
+              "id": "coast-slot-2-indices",
+              "byteLength": 266640,
+              "sha256": "11018e41244c359d27137788b8d256bcbf135118481b0513221281cb3e3bb492"
+            },
+            {
+              "id": "coast-slot-3-indices",
+              "byteLength": 27192,
+              "sha256": "d7e16db83dcaa8a22f2155fb4129c4b951356f38d24578edf29b2f26e7f8accf"
+            },
+            {
+              "id": "coast-slot-4-indices",
+              "byteLength": 12360,
+              "sha256": "546154522f8a0171c5ffa93335b8c05eb0ddbc272f4d0b72dd8dbd0fb2480ed9"
+            },
+            {
+              "id": "coast-water-indices",
+              "byteLength": 1848,
+              "sha256": "e0810d67d0319761e19e7d3364f5ad4e18a7a3c43cb5b1ef92b68c0258a13d64"
+            },
+            {
+              "id": "coast-water-normals",
+              "byteLength": 7392,
+              "sha256": "f87c0ea807d66296a2d3c496ab3992b378668427d9f4c0c0d67b7c75525fbe43"
+            },
+            {
+              "id": "coast-water-positions",
+              "byteLength": 7392,
+              "sha256": "1614f45e69000d39b1ee2b6db7f800190e7d68fd0025896b29448fb80d1356e7"
+            },
+            {
+              "id": "plant-0-decor-coverage",
+              "byteLength": 1105920,
+              "sha256": "d5cdcf75112ecd21d5fe3c0ba1c5486dafd27ee3b27b507e9c99cc9ed46801b4"
+            },
+            {
+              "id": "plant-0-decor-material-slots",
+              "byteLength": 1105920,
+              "sha256": "223576632d466275dc1abfe05496975d0032a06e784b16a71238aa0f9a21abd5"
+            },
+            {
+              "id": "plant-0-decor-occupancy",
+              "byteLength": 1105920,
+              "sha256": "d5cdcf75112ecd21d5fe3c0ba1c5486dafd27ee3b27b507e9c99cc9ed46801b4"
+            },
+            {
+              "id": "plant-0-decor-slot-1-colors",
+              "byteLength": 369936,
+              "sha256": "8f33b27ca9605e203699c2bdd50f52d84acb88e27c0a5ca9c9ed575114cf0a6c"
+            },
+            {
+              "id": "plant-0-decor-slot-1-indices",
+              "byteLength": 92484,
+              "sha256": "ca40fca8cce7d6c665104c45a02e292d828e7bc0cc43e8864eabbdac893ff9a2"
+            },
+            {
+              "id": "plant-0-decor-slot-1-normals",
+              "byteLength": 369936,
+              "sha256": "391e52de3443bc6056cb558b723a4fd76244766d16171240f09e230360a1dd98"
+            },
+            {
+              "id": "plant-0-decor-slot-1-positions",
+              "byteLength": 369936,
+              "sha256": "9b58b212aa70357248cab4f00c216d06b9c15a9c78f638509b125bb84aac51fb"
+            },
+            {
+              "id": "plant-0-wood-coverage",
+              "byteLength": 1105920,
+              "sha256": "dc0683f9ec347e4494344138f1771d0ae27d2577089a3637df52e52607576516"
+            },
+            {
+              "id": "plant-0-wood-material-slots",
+              "byteLength": 1105920,
+              "sha256": "dc0683f9ec347e4494344138f1771d0ae27d2577089a3637df52e52607576516"
+            },
+            {
+              "id": "plant-0-wood-occupancy",
+              "byteLength": 1105920,
+              "sha256": "dc0683f9ec347e4494344138f1771d0ae27d2577089a3637df52e52607576516"
+            },
+            {
+              "id": "plant-0-wood-slot-1-colors",
+              "byteLength": 294864,
+              "sha256": "17178e79ed0fa169d9038056d40c514930111bae3b733ba291b3256d73d441a4"
+            },
+            {
+              "id": "plant-0-wood-slot-1-indices",
+              "byteLength": 73716,
+              "sha256": "18f25b64520cd1ec14c53e0f7d1ad1e5dae95e61a6ecb95b179de262512e427d"
+            },
+            {
+              "id": "plant-0-wood-slot-1-normals",
+              "byteLength": 294864,
+              "sha256": "122e14d0eef0c99c950bc085274391837b2dc2ca92f217665949517a65e9d78d"
+            },
+            {
+              "id": "plant-0-wood-slot-1-positions",
+              "byteLength": 294864,
+              "sha256": "b2896724b73955c4ccdd92c3035516827f2d6e4ff09ee716cc580abc77649935"
+            },
+            {
+              "id": "plant-1-decor-coverage",
+              "byteLength": 23232,
+              "sha256": "e14fe300404fc6c6f74051a1bd6ae57b514916c453ab04b60d12df7045b7b4f2"
+            },
+            {
+              "id": "plant-1-decor-material-slots",
+              "byteLength": 23232,
+              "sha256": "161f987495f38b17f1a193248327361c507f29c7b72b590e9bb68ed7631189f7"
+            },
+            {
+              "id": "plant-1-decor-occupancy",
+              "byteLength": 23232,
+              "sha256": "e14fe300404fc6c6f74051a1bd6ae57b514916c453ab04b60d12df7045b7b4f2"
+            },
+            {
+              "id": "plant-1-decor-slot-1-colors",
+              "byteLength": 12672,
+              "sha256": "e4e0a8da74b3442311206183f8258de6d2d0a3aaf28a8f43bec41c52d10f3fdf"
+            },
+            {
+              "id": "plant-1-decor-slot-1-indices",
+              "byteLength": 3168,
+              "sha256": "e185ece4977751d05af409a2dfcb0cf412aab54be953def36e45a171b6da6a1b"
+            },
+            {
+              "id": "plant-1-decor-slot-1-normals",
+              "byteLength": 12672,
+              "sha256": "fafbf9380f74c4d2aa388c8601693c9fccac4e86a5a7ca0d30b5a6caa428a4fc"
+            },
+            {
+              "id": "plant-1-decor-slot-1-positions",
+              "byteLength": 12672,
+              "sha256": "f792c46920bcc67e17bf28339dc574a4b43bb1769fb8f40503c7d88d54c037f0"
+            },
+            {
+              "id": "plant-2-decor-coverage",
+              "byteLength": 23232,
+              "sha256": "81a984ec399f208ffb5e9fa7ec0c8fb8b1fd4bdfef2143354bfa1b446af741bc"
+            },
+            {
+              "id": "plant-2-decor-material-slots",
+              "byteLength": 23232,
+              "sha256": "fc0ffea11a4f961b287b574e00c50b0f6a5e511a1ef759a7f2681334d139ca90"
+            },
+            {
+              "id": "plant-2-decor-occupancy",
+              "byteLength": 23232,
+              "sha256": "81a984ec399f208ffb5e9fa7ec0c8fb8b1fd4bdfef2143354bfa1b446af741bc"
+            },
+            {
+              "id": "plant-2-decor-slot-1-colors",
+              "byteLength": 23184,
+              "sha256": "dc3b80996153751cf303ecdf82d2bf3a097230434847cdab4879d161ec4ec594"
+            },
+            {
+              "id": "plant-2-decor-slot-1-indices",
+              "byteLength": 5796,
+              "sha256": "66f92ff37eb1c7d4a14485b8ec2d52ec51e20cd129f0f3e4a47cb6e7f3b688c8"
+            },
+            {
+              "id": "plant-2-decor-slot-1-normals",
+              "byteLength": 23184,
+              "sha256": "7fbf82b50b94809442d7d6eac1ba82c9f0697ad2d8dec85becef8dfb43f54acf"
+            },
+            {
+              "id": "plant-2-decor-slot-1-positions",
+              "byteLength": 23184,
+              "sha256": "cd25e56458532611ac4cbe91d0608c7166f80913d3225041aa42ef28738703b8"
+            },
+            {
+              "id": "plant-3-decor-coverage",
+              "byteLength": 23232,
+              "sha256": "b5586b65bcdf7df411677e6edba5a6f5145eaed8c4d307fc8b5f682663e9bad4"
+            },
+            {
+              "id": "plant-3-decor-material-slots",
+              "byteLength": 23232,
+              "sha256": "1ebfb6571a3fa4d6d9282dd487e25e850356c6eb30de4be2fa5249e0b38c16ac"
+            },
+            {
+              "id": "plant-3-decor-occupancy",
+              "byteLength": 23232,
+              "sha256": "b5586b65bcdf7df411677e6edba5a6f5145eaed8c4d307fc8b5f682663e9bad4"
+            },
+            {
+              "id": "plant-3-decor-slot-1-colors",
+              "byteLength": 13152,
+              "sha256": "5fc8ed40fa995e76e72cdad053402183ff713922c3fc15af5de507ec0e35b871"
+            },
+            {
+              "id": "plant-3-decor-slot-1-indices",
+              "byteLength": 3288,
+              "sha256": "fb86341feb5e8daa01a8b0ede399f588edada24dcebee785f96d22f8abcf9652"
+            },
+            {
+              "id": "plant-3-decor-slot-1-normals",
+              "byteLength": 13152,
+              "sha256": "11b80a769aa070a1f43137c7e403585bce7fba62d4e9392170198fb3bc144ef6"
+            },
+            {
+              "id": "plant-3-decor-slot-1-positions",
+              "byteLength": 13152,
+              "sha256": "ab12e22b3fb5d7ad0a5929f17c07bac63862416e0f8df7a5882cc9a487f7542f"
+            },
+            {
+              "id": "plant-4-decor-coverage",
+              "byteLength": 23232,
+              "sha256": "0d9e714a249b3552fc8a33b5d1ae2c09239dc06ff7120f1db5f051ec8f44d6a6"
+            },
+            {
+              "id": "plant-4-decor-material-slots",
+              "byteLength": 23232,
+              "sha256": "f3335c5899fe34577af80f457cacb1be7be7ed0c855245293fc125d28467d6f5"
+            },
+            {
+              "id": "plant-4-decor-occupancy",
+              "byteLength": 23232,
+              "sha256": "0d9e714a249b3552fc8a33b5d1ae2c09239dc06ff7120f1db5f051ec8f44d6a6"
+            },
+            {
+              "id": "plant-4-decor-slot-1-colors",
+              "byteLength": 10656,
+              "sha256": "c1f7c8ab99e090cf296641e1577b0d7f93ae078a9d655161981e528311bd546a"
+            },
+            {
+              "id": "plant-4-decor-slot-1-indices",
+              "byteLength": 2664,
+              "sha256": "08df4a3c7b06e1b3114c5c66267d140af62f071f233615be524f83b3ecbe85b8"
+            },
+            {
+              "id": "plant-4-decor-slot-1-normals",
+              "byteLength": 10656,
+              "sha256": "728d73385828153bd3f7d4792fe6a262c8e667cdf8ee69cc0eaf08b782758232"
+            },
+            {
+              "id": "plant-4-decor-slot-1-positions",
+              "byteLength": 10656,
+              "sha256": "6e28c21ec65e8b714a34df565b7c482e5756df7254a3c395b964dcd67d9728cb"
+            }
+          ],
+          "presentationProfile": "hvp:readable-coast-v6",
+          "frame": {
+            "cameraId": "C02-SHORE",
+            "paused": false,
+            "seconds": 0,
+            "sourceRevision": 0,
+            "tick": 0,
+            "weather": {
+              "cloud01": 0.1,
+              "rain01": 0,
+              "snow01": 0,
+              "windMps": [
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          "resetTick": null,
+          "resolution": {
+            "width": 1280,
+            "height": 720,
+            "dpr": 1,
+            "bufferWidth": 1280,
+            "bufferHeight": 720
+          },
+          "colorSpace": "srgb",
+          "toneMapping": 4,
+          "exposure": 1.05,
+          "timerQueryAvailable": true,
+          "gpuMs": {
+            "status": "not-run",
+            "unit": "ms",
+            "reason": "Timer available; no qualified timer-query sampling in diagnostic control"
+          },
+          "nativeGpuBytes": {
+            "status": "unsupported",
+            "unit": "byte",
+            "reason": "WebGL does not expose native/driver allocation bytes"
+          },
+          "device": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+          "submittedFrames": 13,
+          "rendered": {
+            "tick": 0,
+            "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+            "sourceRevision": 0,
+            "resetTick": null
+          },
+          "rendererInfo": {
+            "geometries": 2,
+            "textures": 0,
+            "programs": 3,
+            "calls": 6,
+            "triangles": 4332
+          },
+          "liveHosts": {
+            "renderers": 1,
+            "renderloops": 1,
+            "hostListeners": 2
+          },
+          "productIntegrated": false
+        },
+        "source": [
+          {
+            "ownerId": "hvp:terrain",
+            "sourceNamespace": "hvp-source-global-slot-v5",
+            "sourceRevision": 0,
+            "regionId": "coast-crop",
+            "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+            "recipeSha256": "e65416ef10e7e07a72bdd2129cd2a26523d5ffbbe293a27f3542957ec17b5df8",
+            "sourceIds": [
+              "crop-volume",
+              "slot/100/75/88",
+              "slot/160/61/76",
+              "slot/76/73/124",
+              "slot/88/79/88"
+            ],
+            "sourceIdMeaning": {},
+            "originalDimensions": [
+              192,
+              80,
+              192
+            ],
+            "originalOriginMeters": [
+              -8,
+              -2,
+              -8
+            ],
+            "dimensions": [
+              64,
+              64,
+              64
+            ],
+            "offset": [
+              32,
+              0,
+              16
+            ],
+            "sourceSlotSha256": "561b1ea853ee6377ec78337016725d6771f178e734925dd0d6d3a33ec7056c0a"
+          }
+        ],
+        "costs": {
+          "canonicalPayloadBytes": 23150628,
+          "wholeRegionCopyBytes": 8847360,
+          "selectedCpuBytes": 1572864,
+          "cpuPeakEstimateBytes": 79872108,
+          "projectionBytes": 1048576
+        },
+        "terminal": {
+          "firstFailure": null,
+          "pending": false,
+          "disposed": false,
+          "productIntegrated": false
+        }
+      },
+      "history": [
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission",
+        "Error: Driver upload/link/draw failure after allocation: GL 1282",
+        "Error: Projection terminated before render submission"
+      ]
+    },
+    "selections": {
+      "fixture": "F01-HVP-COAST-REPLAY",
+      "variant": "greedy-no-ao",
+      "camera": "C02-SHORE",
+      "tick": "0",
+      "resolution": "1280x720",
+      "dpr": "1"
+    },
+    "canvas": {
+      "hidden": false,
+      "width": 1280,
+      "height": 720,
+      "box": {
+        "x": 140,
+        "y": 334.0625,
+        "width": 1320,
+        "height": 742.5,
+        "top": 334.0625,
+        "right": 1460,
+        "bottom": 1076.5625,
+        "left": 140
+      },
+      "devicePixelRatio": 1
+    }
+  },
+  "stableSourceFrame": true,
+  "fractionalElementBox": {
+    "x": 140,
+    "y": 334.0625,
+    "width": 1320,
+    "height": 742.5
+  },
+  "ui": {
+    "path": "F01-greedy-no-ao-tick0-ui.png",
+    "bytes": 140659,
+    "sha256": "d85862e6ee8b68dfcedc56d107f6eeef86f92ddafe09bf5b7af14ae9f42cb12c",
+    "width": 1600,
+    "height": 1118
+  },
+  "canvas": {
+    "path": "F01-greedy-no-ao-tick0-canvas.png",
+    "bytes": 96377,
+    "sha256": "ffdf2a4f33fd8336e4889347c36c1535134c97b399d368bd0d0c64b38549f094",
+    "width": 1320,
+    "height": 743
+  },
+  "imageAuthority": "Playwright Chromium compositor only; NOT native hit-buffer identity",
+  "nativeGpuMs": "UNKNOWN",
+  "nativeVram": "UNKNOWN"
+}

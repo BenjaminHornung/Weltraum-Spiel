@@ -1,0 +1,1 @@
+{"schema":"hestia-rd-weather-v1","id":"clear","seed":23,"windMps":[0,0,0],"rain01":0,"cloud01":0.1,"gust":{"startTick":300,"endTick":900,"amplitudeMps":0,"periodTicks":240},"localSources":[]}

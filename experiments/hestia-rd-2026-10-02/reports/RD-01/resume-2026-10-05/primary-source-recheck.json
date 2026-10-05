@@ -1,0 +1,77 @@
+{
+  "schema": "hestia-rd-primary-source-observations-v2",
+  "observedOn": "2026-10-05",
+  "artifactType": "authored-source-summary-not-raw-page-snapshot",
+  "reader": "ren12_control_research read-only primary web recheck",
+  "rawPageSnapshotSha256": null,
+  "productIntegrated": false,
+  "art": "PENDING_OWNER",
+  "cards": [
+    {
+      "id": "RR-01", "url": "https://www.reddit.com/r/VoxelGameDev/comments/1wbp8kq/camera_cutout_for_voxels/",
+      "title": "Camera cutout for voxels", "author": "bonzajplc", "observedRelativeAge": "19d ago", "exactPostedAt": null,
+      "authorClaims": ["Post requests feedback on camera cutout, simulation and editor.", "Author comments describe raymarching, a global voxel grid and removing a cone between camera and player."],
+      "commenterClaims": ["Fixed-camera known-wall fading is a separate commenter suggestion, not the author's implementation."],
+      "media": {"kind": "post-exposed preview", "url": "https://external-preview.redd.it/camera-cutout-for-voxels-v0-bmZkcTdlZ2VtaW9oMW2yK0REJJRffzkJAqVa2eJL7YDCy1aorXNLXRDKh3Lh.png?auto=webp&crop=smart&format=pjpg&s=09d82a0803c3f3f5877c6b554937156bf551ef01&width=640", "retrieval": "CACHE_MISS", "pixelsViewed": false, "videoPlayed": false},
+      "authorCode": null, "codeLicense": "UNAVAILABLE", "mediaLicense": "UNKNOWN", "experiments": ["RD-15", "RD-50", "RD-51"],
+      "labDecision": "Test a view-only bounded corridor; never remove canonical cells or imply footage-equivalent art."
+    },
+    {
+      "id": "RR-02", "url": "https://www.reddit.com/r/VoxelGameDev/comments/1u2b62l/bfs_new_snow_system_implemented_snow_squares_to/",
+      "title": "BFS - new snow system implemented. Snow Squares to match voxels", "author": "bonzajplc", "observedRelativeAge": "3mo ago", "exactPostedAt": null,
+      "authorClaims": ["Post separates heightmap/thin snow voxel layer, turbulent square VFX particles and physical snow voxel particles.", "Author comment names modified PBD; cellular automata are described as a future wish.", "OpenGL to Unity to Unreal and GPU physics/VFX/compute are author-comment claims, not original post text."],
+      "commenterClaims": ["Whether its physics is voxel-native is asked by commenters, not verified."],
+      "media": {"kind": "post-exposed preview", "url": "https://external-preview.redd.it/bfs-new-snow-system-implemented-snow-squares-to-match-voxels-v0-bjQ2cGVvN20zaTZoMQEC9AssdMhvV3NaS6klvYy9ycd6odFB7J6P7ILTr1dk.png?auto=webp&crop=smart&format=pjpg&s=216dfbd5d45db6e3a5983d3eb4c65f13fb9184d1&width=640", "retrieval": "CACHE_MISS", "pixelsViewed": false, "videoPlayed": false},
+      "authorCode": null, "codeLicense": "UNAVAILABLE", "mediaLicense": "UNKNOWN", "experiments": ["RD-30", "RD-33"],
+      "labDecision": "Separate cosmetic fields from material/physical source; snow remains NOT_STARTED_OPTIONAL."
+    },
+    {
+      "id": "RR-03", "url": "https://www.reddit.com/r/VoxelGameDev/comments/1s6e1gk/my_raymarching_engine/",
+      "title": "My raymarching engine!", "author": "jarmesssss", "observedRelativeAge": "5mo ago", "exactPostedAt": null, "indexedDateEvidence": "2026-03-28 Saturday from Reddit search index; not an exact post timestamp",
+      "authorClaims": ["Rust/wgpu work in progress, sparse 64-trees, an unfinished glTF parser and normal/emission/roughness/metallic voxel data.", "Screen-space specular effects versus voxel-space irradiance/shadows, eight bytes per voxel for lighting and incomplete accumulation.", "Post explicitly says no coherent video yet, only an attachment/image."],
+      "commenterClaims": [],
+      "media": {"kind": "post-exposed image", "url": "https://preview.redd.it/my-raymarching-engine-v0-dd7r2civzurg1.png?auto=webp&crop=smart&s=f0d6cdd9f567dd084d5bdd7fa481ffdcdd5627a2&width=640", "retrieval": "REDIRECTED_MEDIA_HTML_NO_PIXELS", "pixelsViewed": false, "videoPlayed": false},
+      "authorCode": "https://github.com/jamescatania1/voxel-raymarching", "codeLicense": "MIT_DECLARED_BY_REPOSITORY_ROOT_METADATA", "mediaLicense": "UNKNOWN", "experiments": ["RD-10", "RD-11", "RD-13", "RD-14"],
+      "labDecision": "A renderer/cost hypothesis, not Hestia parity or asset/model reuse permission."
+    },
+    {
+      "id": "RR-04", "url": "https://www.reddit.com/r/VoxelGameDev/comments/1jtt18s/destruction_and_building_in_our_unannounced_voxel/",
+      "title": "Destruction and building in our unannounced voxel physics survival game", "author": "LVermeulen", "observedRelativeAge": "1y ago", "exactPostedAt": null,
+      "authorClaims": ["Post is media-only; technical implementation details occur in author replies.", "Unity jobs/Burst/GPU voxel compute; greedy triangle meshes and splitting disconnected voxel volumes.", "Sphere-mode replies mention marching cubes, LOD and transvoxel."],
+      "commenterClaims": ["Other linked implementations in the discussion are not author code provenance."],
+      "media": {"kind": "post-exposed preview", "url": "https://external-preview.redd.it/destruction-and-building-in-our-unannounced-voxel-physics-v0-MnUxYXBmaXJsZ3RlMX8UmhAa7nl1M60XHbCKfxh5SCbhhMV59ph5zJhDShCb.png?auto=webp&crop=smart&format=pjpg&s=28cbd5e29185f16691b26f8fd6c5d9438e46d73a&width=640", "retrieval": "CACHE_MISS", "pixelsViewed": false, "videoPlayed": false},
+      "authorCode": null, "codeLicense": "UNAVAILABLE", "mediaLicense": "UNKNOWN", "experiments": ["RD-02", "RD-13", "RD-23", "RD-50"],
+      "labDecision": "Use the existing source snapshot lifecycle for the lab; no new production cut/body transaction."
+    },
+    {
+      "id": "RR-05", "url": "https://www.reddit.com/r/VoxelGameDev/comments/1jbqhv5/my_tiny_voxel_game_is_fully_destructable_rendered/",
+      "title": "My Tiny Voxel game is fully destructable, rendered with Ray Tracing and runs at 4K 120 FPS! The magic is Sparse Voxel Octrees!", "author": "JojoSchlansky", "observedRelativeAge": "2y ago", "exactPostedAt": null,
+      "authorClaims": ["4K/120FPS is an author/title claim, not a measured Hestia result.", "Author replies describe Unity/SVO fragment traversal to g-buffers and shadow maps; screen-space AO/reflections.", "Sampled box colliders around entities are described by the author."],
+      "commenterClaims": [],
+      "media": {"kind": "post-exposed preview", "url": "https://external-preview.redd.it/my-tiny-voxel-game-is-fully-destructable-rendered-with-ray-v0-dmpxYmY0NzZidG9lMee1yWhPBVh9aCAxYknvlAPKWKueJpG4XjpTFcrP6wgz.png?auto=webp&crop=smart&format=pjpg&s=92ecc1f6583c9f8ae0253916a66bd0734f35bfa4&width=640", "retrieval": "CACHE_MISS", "pixelsViewed": false, "videoPlayed": false},
+      "otherMedia": {"url": "https://www.youtube.com/watch?v=tt_1eD-JSaA", "retrieval": "OPEN_FAILED", "pixelsViewed": false, "videoPlayed": false},
+      "authorCode": null, "codeLicense": "UNAVAILABLE", "mediaLicense": "UNKNOWN", "experiments": ["RD-10", "RD-13", "RD-50"],
+      "labDecision": "Benchmark only the same own workload/device with truthful failure denominator; never import the author's FPS claim."
+    },
+    {
+      "id": "RR-06", "url": "https://www.reddit.com/r/VoxelGameDev/comments/1l7r6un/windy_voxel_forest/",
+      "title": "Windy voxel forest", "author": "UnalignedAxis111", "observedRelativeAge": "1y ago", "exactPostedAt": null,
+      "authorClaims": ["Roughly eight thousand BVH tree instances; baked frames voxelized from skinned glTF.", "About630MB for four trees/five seconds/12.5FPS and about10MB combined frames copied to animation BLAS; color dominates storage.", "Author comments describe a hobby C++/Vulkan compute prototype, claimed15-20FPS at720p integrated graphics, footage1440p on a borrowed RTX3080 and downsampled.", "Author explicitly says code is hardcoded/prototype and not public/open-source."],
+      "commenterClaims": [],
+      "media": {"kind": "post-exposed preview", "url": "https://external-preview.redd.it/windy-voxel-forest-v0-NjVtdjQ4Y3o2MTZmMRAbCNDRPXzWngbFNB79LCWJ9owPf5eoxxx20vpE50pw.png?auto=webp&crop=smart&format=pjpg&s=cda1096f9c3429e5baa1deec024a2469e6f8a5df&width=640", "retrieval": "CACHE_MISS", "pixelsViewed": false, "videoPlayed": false},
+      "authorCode": null, "codeLicense": "UNAVAILABLE", "mediaLicense": "UNKNOWN", "experiments": ["RD-20", "RD-21", "RD-22", "RD-23", "RD-41"],
+      "labDecision": "Measure own complete population and retained copies. Baked animation remains NOT_STARTED_OPTIONAL; own supported clusters are independent synthetic prototypes."
+    },
+    {
+      "id": "RR-07", "url": "https://www.reddit.com/r/VoxelGameDev/comments/yelhom/were_using_blocky_voxels_with_lots_of_foliage_to/",
+      "title": "We're using blocky voxels with lots of foliage to create lush environments in Castle Craft", "author": "lordscottish", "observedRelativeAge": "4y ago", "exactPostedAt": null,
+      "authorClaims": ["Original post is media-only.", "Author later describes individually textured1x1x1m blocks, hierarchical instanced static-mesh grass and non-voxel trees."],
+      "commenterClaims": ["Alternative leaf/dust suggestions and criticism of a sparse tree are separate commenters' observations."],
+      "media": {"kind": "post-exposed preview", "url": "https://external-preview.redd.it/were-using-blocky-voxels-with-lots-of-foliage-to-create-v0-35G3ztsSgnmYOdVvzQXQ35JvuBnUvFNRchvtlCR0cLA.png?auto=webp&crop=smart&format=pjpg&s=3ff5fe9230b58391960e28c7b3a5c5b2a76a84d7&width=640", "retrieval": "REDIRECTED_HTML_NO_PIXELS", "pixelsViewed": false, "videoPlayed": false},
+      "authorCode": null, "codeLicense": "UNAVAILABLE", "mediaLicense": "UNKNOWN", "experiments": ["RD-20", "RD-21", "RD-40", "RD-41"],
+      "labDecision": "A foliage-density/instancing hypothesis; not permission to rewrite Hestia cell scale or replace its trees with an ungrounded asset."
+    }
+  ],
+  "summary": {"primaryPostsReadable":7,"posterAttempts":7,"posterPixelsViewed":0,"videoPlaybackObserved":0,"authorLinkedCodeLicenseDeclarationsChecked":1,"downloads":0},
+  "limits": ["Relative ages are displayed-page observations, not calculated calendar timestamps.","Record hashes describe this authored observation file only, never pretend to hash an unseen raw HTTP response.","Media and model rights remain unknown even when a linked code repository declares MIT.","Old2026-10-02 JS_CHALLENGE records remain immutable historical attempts."]
+}

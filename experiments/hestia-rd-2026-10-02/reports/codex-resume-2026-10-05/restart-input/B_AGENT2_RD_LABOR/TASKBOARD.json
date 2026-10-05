@@ -1,0 +1,534 @@
+{
+  "schema": "hestia-resume-rd-board-v1",
+  "baseCommit": "16a5d29a5cddea372abae139da618aa000a058be",
+  "productReadBase": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+  "executionStatus": "NOT_STARTED",
+  "counts": {
+    "core": 23,
+    "optional": 2,
+    "implemented_reported": 9,
+    "not_implemented_core_reported": 14
+  },
+  "orchestration": "flat direct children only",
+  "tasks": [
+    {
+      "id": "RD-00",
+      "orchestrator": "B_MAIN_DIRECT",
+      "title": "Isolierter Laborstart und kleiner Vertragsfreeze",
+      "dependencies": [],
+      "goal": "Ein unabhängig installierbares, startbares Labor mit überprüfbarem Schreibschutz und den drei gemeinsamen Daten-/Laufzeitgrenzen.",
+      "priority": "core",
+      "status": "REVERIFY",
+      "write_allowlist": [
+        "package.json",
+        "package-lock.json",
+        "tsconfig.json",
+        "vite.config.ts",
+        "vitest.config.ts",
+        "playwright.config.ts",
+        "index.html",
+        ".gitignore",
+        "src/contracts/**",
+        "src/registration.ts",
+        "scripts/verify-boundary.mjs",
+        "docs/coordination/**",
+        "tests/RD-00/**",
+        "reports/RD-00/**"
+      ],
+      "original_prompt": "ORIGINAL_RD/tasks/RD-00.md",
+      "prior_status": "IMPLEMENTED_REPORTED_PARTIAL_QUALIFICATION"
+    },
+    {
+      "id": "RD-01",
+      "orchestrator": "B_MAIN_DIRECT",
+      "title": "Sieben Referenzkarten und echte Medienprovenienz",
+      "dependencies": [
+        "RD-00"
+      ],
+      "goal": "Alle sieben Reddit-Referenzen und die Hestia-Konzeptbasis werden auffindbar, prüfbar und konkreten Versuchen zugeordnet.",
+      "priority": "core",
+      "status": "REVERIFY",
+      "write_allowlist": [
+        "reference-cards/**",
+        "src/tools/reference-index/**",
+        "tests/RD-01/**",
+        "reports/RD-01/**"
+      ],
+      "original_prompt": "ORIGINAL_RD/tasks/RD-01.md",
+      "prior_status": "IMPLEMENTED_REPORTED_PARTIAL_QUALIFICATION"
+    },
+    {
+      "id": "RD-02",
+      "orchestrator": "B_MAIN_DIRECT",
+      "title": "Quellgebundener Fixtureexport und unabhängige Kleinszenen",
+      "dependencies": [
+        "RD-00"
+      ],
+      "goal": "Renderer und Effekte vergleichen denselben Hestia-Datenbestand und dieselben bewusst kleinen Problemfälle.",
+      "priority": "core",
+      "status": "REVERIFY",
+      "write_allowlist": [
+        "exporters/**",
+        "fixtures/**",
+        "tests/RD-02/**",
+        "reports/RD-02/**"
+      ],
+      "original_prompt": "ORIGINAL_RD/tasks/RD-02.md",
+      "prior_status": "IMPLEMENTED_REPORTED_PARTIAL_QUALIFICATION"
+    },
+    {
+      "id": "RD-03",
+      "orchestrator": "B_MAIN_DIRECT",
+      "title": "Kontrollrenderer, Szenario-Runner und reproduzierbare Aufnahmen",
+      "dependencies": [
+        "RD-00",
+        "RD-02"
+      ],
+      "goal": "Eine lauffähige Kontrollansicht und ein einheitlicher Runner für Varianten, Replays, Bilder und Messungen.",
+      "priority": "core",
+      "status": "REVERIFY",
+      "write_allowlist": [
+        "src/runner/**",
+        "src/experiments/three-control/**",
+        "scripts/run-lab.mjs",
+        "tests/RD-03/**",
+        "reports/RD-03/**"
+      ],
+      "original_prompt": "ORIGINAL_RD/tasks/RD-03.md",
+      "prior_status": "IMPLEMENTED_REPORTED_PARTIAL_QUALIFICATION"
+    },
+    {
+      "id": "RD-10",
+      "orchestrator": "B_MAIN_DIRECT",
+      "title": "Renderer-Fähigkeitsprüfung und Migrationskosten",
+      "dependencies": [
+        "RD-00"
+      ],
+      "goal": "Eine begründete Vorauswahl und ein ausführbarer Capabilityprobe statt pauschalem Engine-Ranking.",
+      "priority": "core",
+      "status": "REVERIFY",
+      "write_allowlist": [
+        "src/experiments/renderer-probe/**",
+        "tests/RD-10/**",
+        "reports/RD-10/**"
+      ],
+      "original_prompt": "ORIGINAL_RD/tasks/RD-10.md",
+      "prior_status": "IMPLEMENTED_REPORTED_PARTIAL_QUALIFICATION"
+    },
+    {
+      "id": "RD-11",
+      "orchestrator": "B_MAIN_DIRECT",
+      "title": "Three-WebGPU-/TSL-Vergleich auf derselben Szene",
+      "dependencies": [
+        "RD-03",
+        "RD-10"
+      ],
+      "goal": "Den tatsächlichen Nutzen und Portierungsaufwand von Three/WebGPU gegenüber der vorhandenen WebGL-Kontrolle messen.",
+      "priority": "core",
+      "status": "REVERIFY",
+      "write_allowlist": [
+        "src/experiments/three-webgpu/**",
+        "tests/RD-11/**",
+        "reports/RD-11/**"
+      ],
+      "original_prompt": "ORIGINAL_RD/tasks/RD-11.md",
+      "prior_status": "IMPLEMENTED_REPORTED_PARTIAL_QUALIFICATION"
+    },
+    {
+      "id": "RD-12",
+      "orchestrator": "B_MAIN_DIRECT",
+      "title": "Babylon als schmaler Gegenrenderer",
+      "dependencies": [
+        "RD-03",
+        "RD-10"
+      ],
+      "goal": "Prüfen, ob ein anderer Browserrenderer bei identischer Hestia-Geometrie messbare Vorteile oder relevante bessere Tools bietet.",
+      "priority": "core",
+      "status": "REVERIFY",
+      "write_allowlist": [
+        "src/experiments/babylon/**",
+        "tests/RD-12/**",
+        "reports/RD-12/**"
+      ],
+      "original_prompt": "ORIGINAL_RD/tasks/RD-12.md",
+      "prior_status": "IMPLEMENTED_REPORTED_PARTIAL_QUALIFICATION"
+    },
+    {
+      "id": "RD-13",
+      "orchestrator": "B_MAIN_DIRECT",
+      "title": "Begrenzter Voxel-Raymarching-Gegenversuch",
+      "dependencies": [
+        "RD-03",
+        "RD-10"
+      ],
+      "goal": "Direkte Voxelprojektion gegen Greedy-Mesh bei derselben Belegung vergleichen, ohne eine neue Engine zu bauen.",
+      "priority": "core",
+      "status": "REVERIFY",
+      "write_allowlist": [
+        "src/experiments/voxel-rays/**",
+        "tests/RD-13/**",
+        "reports/RD-13/**"
+      ],
+      "original_prompt": "ORIGINAL_RD/tasks/RD-13.md",
+      "prior_status": "IMPLEMENTED_REPORTED_PARTIAL_QUALIFICATION"
+    },
+    {
+      "id": "RD-14",
+      "orchestrator": "B_MAIN_DIRECT",
+      "title": "Materialantwort und Beleuchtung nach Geometrieänderung",
+      "dependencies": [
+        "RD-03",
+        "RD-10"
+      ],
+      "goal": "Mehr Material-/Lichtqualität in Hestia prüfen, ohne bloß Palettenwerte des laufenden P04 zu ändern.",
+      "priority": "core",
+      "status": "PLANNED",
+      "write_allowlist": [
+        "src/experiments/material-light/**",
+        "tests/RD-14/**",
+        "reports/RD-14/**"
+      ],
+      "original_prompt": "ORIGINAL_RD/tasks/RD-14.md",
+      "prior_status": "NOT_IMPLEMENTED_REPORTED"
+    },
+    {
+      "id": "RD-15",
+      "orchestrator": "B_MAIN_DIRECT",
+      "title": "Kameraverdeckung ohne Weltzerstörung",
+      "dependencies": [
+        "RD-03",
+        "RD-10"
+      ],
+      "goal": "Third-Person unter Wurzelbögen, in schmalen Räumen und hinter Felswänden lesbar machen.",
+      "priority": "core",
+      "status": "PLANNED",
+      "write_allowlist": [
+        "src/experiments/camera-occlusion/**",
+        "tests/RD-15/**",
+        "reports/RD-15/**"
+      ],
+      "original_prompt": "ORIGINAL_RD/tasks/RD-15.md",
+      "prior_status": "NOT_IMPLEMENTED_REPORTED"
+    },
+    {
+      "id": "RD-20",
+      "orchestrator": "B_MAIN_DIRECT",
+      "title": "Hestia-Pflanzenvarianten und Habitat-Patch",
+      "dependencies": [
+        "RD-00",
+        "RD-02"
+      ],
+      "goal": "Konzepttreue Pflanzen-/Unterwuchsschichten in einem kleinen veränderbaren Lab-Patch, ohne Produktvegetation umzubauen.",
+      "priority": "core",
+      "status": "PLANNED",
+      "write_allowlist": [
+        "src/experiments/foliage-shapes/**",
+        "tests/RD-20/**",
+        "reports/RD-20/**"
+      ],
+      "original_prompt": "ORIGINAL_RD/tasks/RD-20.md",
+      "prior_status": "NOT_IMPLEMENTED_REPORTED"
+    },
+    {
+      "id": "RD-21",
+      "orchestrator": "B_MAIN_DIRECT",
+      "title": "Prozeduraler Wind mit blocktreuen Dekorclustern",
+      "dependencies": [
+        "RD-03",
+        "RD-20"
+      ],
+      "goal": "Lebendige Vegetation mit wenig Speicher und nachvollziehbarer Source-/Supportbindung ausprobieren.",
+      "priority": "core",
+      "status": "PLANNED",
+      "write_allowlist": [
+        "src/experiments/foliage-wind/**",
+        "tests/RD-21/**",
+        "reports/RD-21/**"
+      ],
+      "original_prompt": "ORIGINAL_RD/tasks/RD-21.md",
+      "prior_status": "NOT_IMPLEMENTED_REPORTED"
+    },
+    {
+      "id": "RD-22",
+      "orchestrator": "B_MAIN_DIRECT",
+      "title": "Kleiner vorgebackener Voxelanimations-Vergleich",
+      "dependencies": [
+        "RD-03",
+        "RD-20"
+      ],
+      "goal": "Die Windy-forest-Technik anhand eines begrenzten eigenen Beispiels auf Speicher, Uploads und Zerstörungskompatibilität prüfen.",
+      "priority": "gated",
+      "status": "OPTIONAL",
+      "write_allowlist": [
+        "src/experiments/foliage-baked/**",
+        "tests/RD-22/**",
+        "reports/RD-22/**"
+      ],
+      "original_prompt": "ORIGINAL_RD/tasks/RD-22.md",
+      "prior_status": "OPTIONAL_NOT_REQUIRED"
+    },
+    {
+      "id": "RD-23",
+      "orchestrator": "B_MAIN_DIRECT",
+      "title": "Attachment-, Zerstörungs- und LOD-Folgekonsistenz",
+      "dependencies": [
+        "RD-03",
+        "RD-21"
+      ],
+      "goal": "Wind bleibt bei Sourcewechsel, neuer Ownerpose und fehlendem Support konsistent.",
+      "priority": "core",
+      "status": "PLANNED",
+      "write_allowlist": [
+        "src/experiments/foliage-lifecycle/**",
+        "tests/RD-23/**",
+        "reports/RD-23/**"
+      ],
+      "original_prompt": "ORIGINAL_RD/tasks/RD-23.md",
+      "prior_status": "NOT_IMPLEMENTED_REPORTED"
+    },
+    {
+      "id": "RD-30",
+      "orchestrator": "B_MAIN_DIRECT",
+      "title": "Kleines räumliches Wetter- und Windfeld",
+      "dependencies": [
+        "RD-00",
+        "RD-02"
+      ],
+      "goal": "Ein kontrollierbarer, reproduzierbarer Wetterinput für Foliage, Regen, Wasser und die Lab-Zeitachse.",
+      "priority": "core",
+      "status": "PLANNED",
+      "write_allowlist": [
+        "src/experiments/weather-field/**",
+        "tests/RD-30/**",
+        "reports/RD-30/**"
+      ],
+      "original_prompt": "ORIGINAL_RD/tasks/RD-30.md",
+      "prior_status": "NOT_IMPLEMENTED_REPORTED"
+    },
+    {
+      "id": "RD-31",
+      "orchestrator": "B_MAIN_DIRECT",
+      "title": "Regen mit Dach-/Überhangabschattung",
+      "dependencies": [
+        "RD-03",
+        "RD-30"
+      ],
+      "goal": "Sichtbarer Regen, der in den geprüften Fällen weder durch Dächer fällt noch an der Kamera klebt.",
+      "priority": "core",
+      "status": "PLANNED",
+      "write_allowlist": [
+        "src/experiments/rain/**",
+        "tests/RD-31/**",
+        "reports/RD-31/**"
+      ],
+      "original_prompt": "ORIGINAL_RD/tasks/RD-31.md",
+      "prior_status": "NOT_IMPLEMENTED_REPORTED"
+    },
+    {
+      "id": "RD-32",
+      "orchestrator": "B_MAIN_DIRECT",
+      "title": "Nässe, Wasseroberfläche und einfacher Wetterlook",
+      "dependencies": [
+        "RD-03",
+        "RD-14",
+        "RD-30",
+        "RD-31"
+      ],
+      "goal": "Regen und Wind sollen Oberflächen, Wasser und Atmosphäre nachvollziehbar beeinflussen, statt nur Partikel darüberzulegen.",
+      "priority": "core",
+      "status": "PLANNED",
+      "write_allowlist": [
+        "src/experiments/wet-surface/**",
+        "tests/RD-32/**",
+        "reports/RD-32/**"
+      ],
+      "original_prompt": "ORIGINAL_RD/tasks/RD-32.md",
+      "prior_status": "NOT_IMPLEMENTED_REPORTED"
+    },
+    {
+      "id": "RD-33",
+      "orchestrator": "B_MAIN_DIRECT",
+      "title": "Schnee als begrenzte Auflage, nicht Klimasystem",
+      "dependencies": [
+        "RD-03",
+        "RD-30",
+        "RD-31"
+      ],
+      "goal": "Die Snow-Referenz in einem kleinen Test überprüfbar machen, ohne Schnee zur Voraussetzung des Küstenprototyps zu erklären.",
+      "priority": "gated",
+      "status": "OPTIONAL",
+      "write_allowlist": [
+        "src/experiments/snow-layer/**",
+        "tests/RD-33/**",
+        "reports/RD-33/**"
+      ],
+      "original_prompt": "ORIGINAL_RD/tasks/RD-33.md",
+      "prior_status": "OPTIONAL_NOT_REQUIRED"
+    },
+    {
+      "id": "RD-40",
+      "orchestrator": "B_MAIN_DIRECT",
+      "title": "Referenz- und Varianten-Galerie",
+      "dependencies": [
+        "RD-01",
+        "RD-03"
+      ],
+      "goal": "Ein nutzbarer Browserarbeitsplatz zum Auswählen, Ansehen und Vergleichen der real implementierten Laborvarianten.",
+      "priority": "core",
+      "status": "REVERIFY",
+      "write_allowlist": [
+        "src/tools/variant-gallery/**",
+        "tests/RD-40/**",
+        "reports/RD-40/**"
+      ],
+      "original_prompt": "ORIGINAL_RD/tasks/RD-40.md",
+      "prior_status": "IMPLEMENTED_REPORTED_PARTIAL_QUALIFICATION"
+    },
+    {
+      "id": "RD-41",
+      "orchestrator": "B_MAIN_DIRECT",
+      "title": "Foliage-/Habitat-Presetwerkbank",
+      "dependencies": [
+        "RD-20",
+        "RD-21",
+        "RD-40"
+      ],
+      "goal": "Bäume, Bodenbewuchs und Windparameter visuell iterieren und als reproduzierbare Labpresets sichern.",
+      "priority": "core",
+      "status": "PLANNED",
+      "write_allowlist": [
+        "src/tools/foliage-workbench/**",
+        "tests/RD-41/**",
+        "reports/RD-41/**"
+      ],
+      "original_prompt": "ORIGINAL_RD/tasks/RD-41.md",
+      "prior_status": "NOT_IMPLEMENTED_REPORTED"
+    },
+    {
+      "id": "RD-42",
+      "orchestrator": "B_MAIN_DIRECT",
+      "title": "Wetter-Tuner und kleiner Szenario-Scrubber",
+      "dependencies": [
+        "RD-30",
+        "RD-31",
+        "RD-32",
+        "RD-40"
+      ],
+      "goal": "Wetterwechsel und definierte Source-Snapshotfolgen reproduzierbar einstellen, abspielen, speichern und testen.",
+      "priority": "core",
+      "status": "PLANNED",
+      "write_allowlist": [
+        "src/tools/weather-workbench/**",
+        "tests/RD-42/**",
+        "reports/RD-42/**"
+      ],
+      "original_prompt": "ORIGINAL_RD/tasks/RD-42.md",
+      "prior_status": "NOT_IMPLEMENTED_REPORTED"
+    },
+    {
+      "id": "RD-43",
+      "orchestrator": "B_MAIN_DIRECT",
+      "title": "Asset-, Source- und Attachment-Inspector",
+      "dependencies": [
+        "RD-02",
+        "RD-03",
+        "RD-40"
+      ],
+      "goal": "Geometrie-, Material-, Anbindungs- und Speicherprobleme in den Prototypdaten sichtbar und überprüfbar machen.",
+      "priority": "core",
+      "status": "PLANNED",
+      "write_allowlist": [
+        "src/tools/asset-inspector/**",
+        "tests/RD-43/**",
+        "reports/RD-43/**"
+      ],
+      "original_prompt": "ORIGINAL_RD/tasks/RD-43.md",
+      "prior_status": "NOT_IMPLEMENTED_REPORTED"
+    },
+    {
+      "id": "RD-50",
+      "orchestrator": "B_MAIN_DIRECT",
+      "title": "Unabhängige Oracles, Scope- und Lifecycleprüfung",
+      "dependencies": [
+        "RD-00"
+      ],
+      "goal": "Fehler in Tests, Sourcebindungen und Effektlebenszyklen unabhängig von den Implementierern aufdecken.",
+      "priority": "core",
+      "status": "PLANNED",
+      "write_allowlist": [
+        "src/qa/oracles/**",
+        "scripts/check-rd-results.mjs",
+        "tests/RD-50/**",
+        "reports/RD-50/**"
+      ],
+      "original_prompt": "ORIGINAL_RD/tasks/RD-50.md",
+      "prior_status": "NOT_IMPLEMENTED_REPORTED"
+    },
+    {
+      "id": "RD-51",
+      "orchestrator": "B_MAIN_DIRECT",
+      "title": "Kombinierte lebendige Hestia-Laborstrecke",
+      "dependencies": [
+        "RD-14",
+        "RD-15",
+        "RD-21",
+        "RD-23",
+        "RD-31",
+        "RD-32",
+        "RD-40",
+        "RD-50"
+      ],
+      "goal": "Die ausgewählten Wind-, Regen-, Nässe-, Licht- und Verdeckungskomponenten zusammen testen, statt Einzelerfolge zu addieren.",
+      "priority": "core",
+      "status": "PLANNED",
+      "write_allowlist": [
+        "src/qa/combined-scene/**",
+        "tests/RD-51/**",
+        "reports/RD-51/**"
+      ],
+      "original_prompt": "ORIGINAL_RD/tasks/RD-51.md",
+      "prior_status": "NOT_IMPLEMENTED_REPORTED"
+    },
+    {
+      "id": "RD-52",
+      "orchestrator": "B_MAIN_DIRECT",
+      "title": "Entwicklungsentscheidung und konkrete Übernahmekarten",
+      "dependencies": [
+        "RD-01",
+        "RD-02",
+        "RD-03",
+        "RD-10",
+        "RD-11",
+        "RD-12",
+        "RD-13",
+        "RD-14",
+        "RD-15",
+        "RD-20",
+        "RD-21",
+        "RD-23",
+        "RD-30",
+        "RD-31",
+        "RD-32",
+        "RD-40",
+        "RD-41",
+        "RD-42",
+        "RD-43",
+        "RD-50",
+        "RD-51"
+      ],
+      "goal": "Eine entscheidungsfähige Antwort auf Renderer-, Wind-, Wetter- und Toolingrichtung, gebunden an lauffähige Ergebnisse.",
+      "priority": "core",
+      "status": "PLANNED",
+      "write_allowlist": [
+        "src/qa/decision-report/**",
+        "ADOPTION_QUEUE.md",
+        "RUNBOOK.md",
+        "RESULTS.md",
+        "tests/RD-52/**",
+        "reports/RD-52/**"
+      ],
+      "original_prompt": "ORIGINAL_RD/tasks/RD-52.md",
+      "prior_status": "NOT_IMPLEMENTED_REPORTED"
+    }
+  ]
+}
