@@ -1,0 +1,15 @@
+node:fs:560
+  return binding.open(
+                 ^
+
+Error: ENOENT: no such file or directory, open 'C:\IFI_SourceCode\Temp\WeltraumSpiel\.worktrees\Hestia-RD-followup-ebb913d-2026-10-07\experiments\hestia-rd-2026-10-02\reports\planner-followup-ebb913d\builds\control-direction-01\src\qa\combined-scene\index.html'
+    at Object.openSync (node:fs:560:18)
+    at readFileSync (node:fs:444:35)
+    at file:///C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/reports/planner-followup-ebb913d/measure-combined.mjs:50:53 {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-RD-followup-ebb913d-2026-10-07\\experiments\\hestia-rd-2026-10-02\\reports\\planner-followup-ebb913d\\builds\\control-direction-01\\src\\qa\\combined-scene\\index.html'
+}
+
+Node.js v22.23.2

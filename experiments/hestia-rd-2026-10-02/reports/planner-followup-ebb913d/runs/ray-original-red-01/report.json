@@ -1,0 +1,322 @@
+{
+  "runId": "ray-original-red-01",
+  "source": "immutable original ZIP",
+  "manifestSha256": "254a797d75646c8f390832483dfabb05bb291c0bd84ace1c33e55f5156ddc170",
+  "result": {
+    "status": "FAIL / hidden, no old version drawing: Error: Driver upload/link/draw failure after allocation: GL 1282. Explicit Remount is required.",
+    "state": {
+      "productIntegrated": false,
+      "facts": {
+        "backend": "Three-WebGLRenderer-WebGL2",
+        "errors": [
+          "Error: Driver upload/link/draw failure after allocation: GL 1282"
+        ],
+        "experimentId": "RD-13",
+        "fixtureDigest": "378513d00d5f2a11f569ff0748d4e42ac1832674104febd052070f0fd258b81d",
+        "liveResources": {
+          "geometries": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          },
+          "hostListeners": {
+            "status": "measured",
+            "unit": "count",
+            "value": 2
+          },
+          "renderers": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "renderloops": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "textures": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          }
+        },
+        "logicalCosts": {
+          "effect-0-cpuPeakBytes": {
+            "reason": "Conservative source transport/private/copy/old-new estimate, not JS heap",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 1066176
+          },
+          "effect-0-fullScreenVolumes": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "effect-0-greedyBuildMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 0
+          },
+          "effect-0-maxStepsPerRay": {
+            "status": "measured",
+            "unit": "count",
+            "value": 81
+          },
+          "effect-0-nativeGpuBytes": {
+            "reason": "Native context/driver VRAM cannot be measured here",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "effect-0-prepareMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 5.699999999254942
+          },
+          "effect-0-projectionBuildMs": {
+            "status": "measured",
+            "unit": "ms",
+            "value": 0.3999999985098839
+          },
+          "effect-0-projectionBytes": {
+            "reason": "Typed texture/mesh payload; excludes native allocator/driver/context",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 73764
+          },
+          "effect-0-triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "effect-0-uploadCommandCpuMs": {
+            "reason": "Three upload occurs during native render; CPU preparation is not upload time",
+            "status": "not-run",
+            "unit": "ms"
+          },
+          "gpuBytes": {
+            "reason": "Native GPU memory unavailable",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "gpuMs": {
+            "reason": "Timer available; diagnostic loop does not sample GPU timing",
+            "status": "not-run",
+            "unit": "ms"
+          },
+          "renderCalls": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          },
+          "triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          }
+        },
+        "sourceRevision": 0,
+        "unsupportedFeatures": [
+          "native-pcf-shadow-parity",
+          "native-sky-shader-parity",
+          "native-numeric-qualification-not-run",
+          "native-water-shader-parity",
+          "native-material-shader-hooks",
+          "face-ambient-occlusion",
+          "gi-and-reflections",
+          "unknown-is-not-world-clearance",
+          "native-vram-unavailable",
+          "gpu-timing-not-qualified"
+        ],
+        "variantId": "rays-no-ao"
+      },
+      "diagnostics": {
+        "productIntegrated": false,
+        "variant": "rays-no-ao",
+        "caps": {
+          "max3D": 2048,
+          "maxTexture": 16384,
+          "maxViewport": [
+            32767,
+            32767
+          ],
+          "fragmentSamplers": 16,
+          "rgba8ui": true,
+          "contextLost": false,
+          "formatSampleCounts": []
+        },
+        "host": null,
+        "source": [
+          {
+            "ownerId": "control",
+            "sourceNamespace": "rd02-authored-cells-v1",
+            "sourceRevision": 0,
+            "regionId": "control-cells",
+            "fixtureDigest": "378513d00d5f2a11f569ff0748d4e42ac1832674104febd052070f0fd258b81d",
+            "recipeSha256": "6a4e4b7d2fde3944b1efb434453d1651697a005fb43af02d92b688ccecdaa5c8",
+            "sourceIds": [
+              "material-planes",
+              "single-shadow-caster",
+              "steps"
+            ],
+            "sourceIdMeaning": {},
+            "originalDimensions": [
+              32,
+              24,
+              24
+            ],
+            "originalOriginMeters": [
+              0,
+              0,
+              0
+            ],
+            "dimensions": [
+              32,
+              24,
+              24
+            ],
+            "offset": [
+              0,
+              0,
+              0
+            ],
+            "sourceSlotSha256": "b51a18f630293e605a51dbeaf0052f0c8665f3ce2e849de1d67ebcfaadeb92cc"
+          }
+        ],
+        "costs": {
+          "canonicalPayloadBytes": 300096,
+          "wholeRegionCopyBytes": 55296,
+          "selectedCpuBytes": 110592,
+          "cpuPeakEstimateBytes": 1066176,
+          "projectionBytes": 73728
+        },
+        "terminal": {
+          "firstFailure": "Error: Driver upload/link/draw failure after allocation: GL 1282",
+          "pending": false,
+          "disposed": true,
+          "productIntegrated": false
+        }
+      },
+      "clock": {
+        "tick": 0,
+        "seconds": 0,
+        "paused": false
+      },
+      "history": [
+        "Error: Driver upload/link/draw failure after allocation: GL 1282"
+      ],
+      "hidden": true
+    },
+    "native": {
+      "live": {
+        "Buffer": 0,
+        "Texture": 4,
+        "Program": 0,
+        "Shader": 0,
+        "Framebuffer": 3,
+        "VertexArray": 0,
+        "Renderbuffer": 0,
+        "Query": 0,
+        "Sampler": 0,
+        "TransformFeedback": 0
+      },
+      "created": {
+        "Buffer": 1,
+        "Texture": 4,
+        "Program": 1,
+        "Shader": 2,
+        "Framebuffer": 3,
+        "VertexArray": 1,
+        "Renderbuffer": 0,
+        "Query": 0,
+        "Sampler": 0,
+        "TransformFeedback": 0
+      },
+      "deleted": {
+        "Buffer": 1,
+        "Texture": 0,
+        "Program": 1,
+        "Shader": 2,
+        "Framebuffer": 0,
+        "VertexArray": 1,
+        "Renderbuffer": 0,
+        "Query": 0,
+        "Sampler": 0,
+        "TransformFeedback": 0
+      },
+      "events": [
+        {
+          "nativeError": 1282
+        }
+      ],
+      "compiled": [
+        {
+          "type": 35633,
+          "ok": true,
+          "log": "",
+          "code": "#version 300 es\n\n#define attribute in\n#define varying out\n#define texture2D texture\nprecision highp float;\n\tprecision highp int;\n\tprecision highp sampler2D;\n\tprecision highp samplerCube;\n\tprecision highp sampler3D;\n\tprecision highp sampler2DArray;\n\tprecision highp sampler2DShadow;\n\tprecision highp samplerCubeShadow;\n\tprecision highp sampler2DArrayShadow;\n\tprecision highp isampler2D;\n\tprecision highp isampler3D;\n\tprecision highp isamplerCube;\n\tprecision highp isampler2DArray;\n\tprecision highp usampler2D;\n\tprecision highp usampler3D;\n\tprecision highp usamplerCube;\n\tprecision highp usampler2DArray;\n\t\n#define HIGH_PRECISION\n#define SHADER_TYPE ShaderMaterial\n#define SHADER_NAME \nuniform mat4 modelMatrix;\nuniform mat4 modelViewMatrix;\nuniform mat4 projectionMatrix;\nuniform mat4 viewMatrix;\nuniform mat3 normalMatrix;\nuniform vec3 cameraPosition;\nuniform bool isOrthographic;\n#ifdef USE_INSTANCING\n\tattribute mat4 instanceMatrix;\n#endif\n#ifdef USE_INSTANCING_COLOR\n\tattribute vec3 instanceColor;\n#endif\n#ifdef USE_INSTANCING_MORPH\n\tuniform sampler2D morphTexture;\n#endif\nattribute vec3 position;\nattribute vec3 normal;\nattribute vec2 uv;\n#ifdef USE_UV1\n\tattribute vec2 uv1;\n#endif\n#ifdef USE_UV2\n\tattribute vec2 uv2;\n#endif\n#ifdef USE_UV3\n\tattribute vec2 uv3;\n#endif\n#ifdef USE_TANGENT\n\tattribute vec4 tangent;\n#endif\n#if defined( USE_COLOR_ALPHA )\n\tattribute vec4 color;\n#elif defined( USE_COLOR )\n\tattribute vec3 color;\n#endif\n#ifdef USE_SKINNING\n\tattribute vec4 skinIndex;\n\tattribute vec4 skinWeight;\n#endif\n\nvoid main() { gl_Position=vec4(position.xy,0.0,1.0); }",
+          "live": {
+            "Buffer": 1,
+            "Texture": 4,
+            "Program": 1,
+            "Shader": 1,
+            "Framebuffer": 3,
+            "VertexArray": 0,
+            "Renderbuffer": 0,
+            "Query": 0,
+            "Sampler": 0,
+            "TransformFeedback": 0
+          },
+          "sha256": "d05836c371ce61c7329cb8ed4462b70bf2641a2e574086651dc1a50d11d7e173"
+        },
+        {
+          "type": 35632,
+          "ok": false,
+          "log": "ERROR: 0:365: 'sample' : Illegal use of reserved word\nERROR: 0:365: 'sample' : syntax error\n\u0000",
+          "code": "#version 300 es\n#define varying in\n\n\n#define gl_FragDepthEXT gl_FragDepth\n#define texture2D texture\n#define textureCube texture\n#define texture2DProj textureProj\n#define texture2DLodEXT textureLod\n#define texture2DProjLodEXT textureProjLod\n#define textureCubeLodEXT textureLod\n#define texture2DGradEXT textureGrad\n#define texture2DProjGradEXT textureProjGrad\n#define textureCubeGradEXT textureGrad\nprecision highp float;\n\tprecision highp int;\n\tprecision highp sampler2D;\n\tprecision highp samplerCube;\n\tprecision highp sampler3D;\n\tprecision highp sampler2DArray;\n\tprecision highp sampler2DShadow;\n\tprecision highp samplerCubeShadow;\n\tprecision highp sampler2DArrayShadow;\n\tprecision highp isampler2D;\n\tprecision highp isampler3D;\n\tprecision highp isamplerCube;\n\tprecision highp isampler2DArray;\n\tprecision highp usampler2D;\n\tprecision highp usampler3D;\n\tprecision highp usamplerCube;\n\tprecision highp usampler2DArray;\n\t\n#define HIGH_PRECISION\n#define SHADER_TYPE ShaderMaterial\n#define SHADER_NAME \nuniform mat4 viewMatrix;\nuniform vec3 cameraPosition;\nuniform bool isOrthographic;\n#define OPAQUE\nvec4 LinearTransferOETF( in vec4 value ) {\n\treturn value;\n}\nvec4 sRGBTransferEOTF( in vec4 value ) {\n\treturn vec4( mix( pow( value.rgb * 0.9478672986 + vec3( 0.0521327014 ), vec3( 2.4 ) ), value.rgb * 0.0773993808, vec3( lessThanEqual( value.rgb, vec3( 0.04045 ) ) ) ), value.a );\n}\nvec4 sRGBTransferOETF( in vec4 value ) {\n\treturn vec4( mix( pow( value.rgb, vec3( 0.41666 ) ) * 1.055 - vec3( 0.055 ), value.rgb * 12.92, vec3( lessThanEqual( value.rgb, vec3( 0.0031308 ) ) ) ), value.a );\n}\nvec4 linearToOutputTexel( vec4 value ) {\n\treturn sRGBTransferOETF( vec4( value.rgb * mat3( 1.0000,-0.0000,-0.0000,-0.0000,1.0000,0.0000,0.0000,0.0000,1.0000 ), value.a ) );\n}\nfloat luminance( const in vec3 rgb ) {\n\tconst vec3 weights = vec3( 0.2126, 0.7152, 0.0722 );\n\treturn dot( weights, rgb );\n}\n\n\nlayout(location=0) out vec4 rayColor;\n#define gl_FragColor rayColor\n#define PI 3.141592653589793\n#define PI2 6.283185307179586\n#define PI_HALF 1.5707963267948966\n#define RECIPROCAL_PI 0.3183098861837907\n#define RECIPROCAL_PI2 0.15915494309189535\n#define EPSILON 1e-6\n#ifndef saturate\n#define saturate( a ) clamp( a, 0.0, 1.0 )\n#endif\n#define whiteComplement( a ) ( 1.0 - saturate( a ) )\nfloat pow2( const in float x ) { return x*x; }\nvec3 pow2( const in vec3 x ) { return x*x; }\nfloat pow3( const in float x ) { return x*x*x; }\nfloat pow4( const in float x ) { float x2 = x*x; return x2*x2; }\nfloat max3( const in vec3 v ) { return max( max( v.x, v.y ), v.z ); }\nfloat average( const in vec3 v ) { return dot( v, vec3( 0.3333333 ) ); }\nhighp float rand( const in vec2 uv ) {\n\tconst highp float a = 12.9898, b = 78.233, c = 43758.5453;\n\thighp float dt = dot( uv.xy, vec2( a,b ) ), sn = mod( dt, PI );\n\treturn fract( sin( sn ) * c );\n}\n#ifdef HIGH_PRECISION\n\tfloat precisionSafeLength( vec3 v ) { return length( v ); }\n#else\n\tfloat precisionSafeLength( vec3 v ) {\n\t\tfloat maxComponent = max3( abs( v ) );\n\t\treturn length( v / maxComponent ) * maxComponent;\n\t}\n#endif\nstruct IncidentLight {\n\tvec3 color;\n\tvec3 direction;\n\tbool visible;\n};\nstruct ReflectedLight {\n\tvec3 directDiffuse;\n\tvec3 directSpecular;\n\tvec3 indirectDiffuse;\n\tvec3 indirectSpecular;\n};\n#ifdef USE_ALPHAHASH\n\tvarying vec3 vPosition;\n#endif\nvec3 transformDirection( in vec3 dir, in mat4 matrix ) {\n\treturn normalize( ( matrix * vec4( dir, 0.0 ) ).xyz );\n}\n#define inverseTransformDirection transformDirectionByInverseViewMatrix\nvec3 transformNormalByInverseViewMatrix( in vec3 normal, in mat4 viewMatrix ) {\n\treturn normalize( ( vec4( normal, 0.0 ) * viewMatrix ).xyz );\n}\nvec3 transformDirectionByInverseViewMatrix( in vec3 dir, in mat4 viewMatrix ) {\n\treturn normalize( ( vec4( dir, 0.0 ) * viewMatrix ).xyz );\n}\nbool isPerspectiveMatrix( mat4 m ) {\n\treturn m[ 2 ][ 3 ] == - 1.0;\n}\nvec2 equirectUv( in vec3 dir ) {\n\tfloat u = atan( dir.z, dir.x ) * RECIPROCAL_PI2 + 0.5;\n\tfloat v = asin( clamp( dir.y, - 1.0, 1.0 ) ) * RECIPROCAL_PI + 0.5;\n\treturn vec2( u, v );\n}\nvec3 BRDF_Lambert( const in vec3 diffuseColor ) {\n\treturn RECIPROCAL_PI * diffuseColor;\n}\nvec3 F_Schlick( const in vec3 f0, const in float f90, const in float dotVH ) {\n\tfloat fresnel = exp2( ( - 5.55473 * dotVH - 6.98316 ) * dotVH );\n\treturn f0 * ( 1.0 - fresnel ) + ( f90 * fresnel );\n}\nfloat F_Schlick( const in float f0, const in float f90, const in float dotVH ) {\n\tfloat fresnel = exp2( ( - 5.55473 * dotVH - 6.98316 ) * dotVH );\n\treturn f0 * ( 1.0 - fresnel ) + ( f90 * fresnel );\n} // validated\nfloat G_BlinnPhong_Implicit( ) {\n\treturn 0.25;\n}\nfloat D_BlinnPhong( const in float shininess, const in float dotNH ) {\n\treturn RECIPROCAL_PI * ( shininess * 0.5 + 1.0 ) * pow( dotNH, shininess );\n}\nvec3 BRDF_BlinnPhong( const in vec3 lightDir, const in vec3 viewDir, const in vec3 normal, const in vec3 specularColor, const in float shininess ) {\n\tvec3 halfDir = normalize( lightDir + viewDir );\n\tfloat dotNH = saturate( dot( normal, halfDir ) );\n\tfloat dotVH = saturate( dot( viewDir, halfDir ) );\n\tvec3 F = F_Schlick( specularColor, 1.0, dotVH );\n\tfloat G = G_BlinnPhong_Implicit( );\n\tfloat D = D_BlinnPhong( shininess, dotNH );\n\treturn F * ( G * D );\n} // validated\nuniform bool receiveShadow;\nuniform vec3 ambientLightColor;\n#if defined( USE_LIGHT_PROBES )\n\tuniform vec3 lightProbe[ 9 ];\n#endif\nvec3 shGetIrradianceAt( in vec3 normal, in vec3 shCoefficients[ 9 ] ) {\n\tfloat x = normal.x, y = normal.y, z = normal.z;\n\tvec3 result = shCoefficients[ 0 ] * 0.886227;\n\tresult += shCoefficients[ 1 ] * 2.0 * 0.511664 * y;\n\tresult += shCoefficients[ 2 ] * 2.0 * 0.511664 * z;\n\tresult += shCoefficients[ 3 ] * 2.0 * 0.511664 * x;\n\tresult += shCoefficients[ 4 ] * 2.0 * 0.429043 * x * y;\n\tresult += shCoefficients[ 5 ] * 2.0 * 0.429043 * y * z;\n\tresult += shCoefficients[ 6 ] * ( 0.743125 * z * z - 0.247708 );\n\tresult += shCoefficients[ 7 ] * 2.0 * 0.429043 * x * z;\n\tresult += shCoefficients[ 8 ] * 0.429043 * ( x * x - y * y );\n\treturn result;\n}\nvec3 getLightProbeIrradiance( const in vec3 lightProbe[ 9 ], const in vec3 normal ) {\n\tvec3 worldNormal = transformNormalByInverseViewMatrix( normal, viewMatrix );\n\tvec3 irradiance = shGetIrradianceAt( worldNormal, lightProbe );\n\treturn irradiance;\n}\nvec3 getAmbientLightIrradiance( const in vec3 ambientLightColor ) {\n\tvec3 irradiance = ambientLightColor;\n\treturn irradiance;\n}\nfloat getDistanceAttenuation( const in float lightDistance, const in float cutoffDistance, const in float decayExponent ) {\n\tfloat distanceFalloff = 1.0 / max( pow( lightDistance, decayExponent ), 0.01 );\n\tif ( cutoffDistance > 0.0 ) {\n\t\tdistanceFalloff *= pow2( saturate( 1.0 - pow4( lightDistance / cutoffDistance ) ) );\n\t}\n\treturn distanceFalloff;\n}\nfloat getSpotAttenuation( const in float coneCosine, const in float penumbraCosine, const in float angleCosine ) {\n\treturn smoothstep( coneCosine, penumbraCosine, angleCosine );\n}\n#if 2 > 0\n\tstruct DirectionalLight {\n\t\tvec3 direction;\n\t\tvec3 color;\n\t};\n\tuniform DirectionalLight directionalLights[ 2 ];\n\tvoid getDirectionalLightInfo( const in DirectionalLight directionalLight, out IncidentLight light ) {\n\t\tlight.color = directionalLight.color;\n\t\tlight.direction = directionalLight.direction;\n\t\tlight.visible = true;\n\t}\n#endif\n#if 0 > 0\n\tstruct PointLight {\n\t\tvec3 position;\n\t\tvec3 color;\n\t\tfloat distance;\n\t\tfloat decay;\n\t};\n\tuniform PointLight pointLights[ 0 ];\n\tvoid getPointLightInfo( const in PointLight pointLight, const in vec3 geometryPosition, out IncidentLight light ) {\n\t\tvec3 lVector = pointLight.position - geometryPosition;\n\t\tlight.direction = normalize( lVector );\n\t\tfloat lightDistance = length( lVector );\n\t\tlight.color = pointLight.color;\n\t\tlight.color *= getDistanceAttenuation( lightDistance, pointLight.distance, pointLight.decay );\n\t\tlight.visible = ( light.color != vec3( 0.0 ) );\n\t}\n#endif\n#if 0 > 0\n\tstruct SpotLight {\n\t\tvec3 position;\n\t\tvec3 direction;\n\t\tvec3 color;\n\t\tfloat distance;\n\t\tfloat decay;\n\t\tfloat coneCos;\n\t\tfloat penumbraCos;\n\t};\n\tuniform SpotLight spotLights[ 0 ];\n\tvoid getSpotLightInfo( const in SpotLight spotLight, const in vec3 geometryPosition, out IncidentLight light ) {\n\t\tvec3 lVector = spotLight.position - geometryPosition;\n\t\tlight.direction = normalize( lVector );\n\t\tfloat angleCos = dot( light.direction, spotLight.direction );\n\t\tfloat spotAttenuation = getSpotAttenuation( spotLight.coneCos, spotLight.penumbraCos, angleCos );\n\t\tif ( spotAttenuation > 0.0 ) {\n\t\t\tfloat lightDistance = length( lVector );\n\t\t\tlight.color = spotLight.color * spotAttenuation;\n\t\t\tlight.color *= getDistanceAttenuation( lightDistance, spotLight.distance, spotLight.decay );\n\t\t\tlight.visible = ( light.color != vec3( 0.0 ) );\n\t\t} else {\n\t\t\tlight.color = vec3( 0.0 );\n\t\t\tlight.visible = false;\n\t\t}\n\t}\n#endif\n#if 0 > 0\n\tstruct RectAreaLight {\n\t\tvec3 color;\n\t\tvec3 position;\n\t\tvec3 halfWidth;\n\t\tvec3 halfHeight;\n\t};\n\tuniform sampler2D ltc_1;\tuniform sampler2D ltc_2;\n\tuniform RectAreaLight rectAreaLights[ 0 ];\n#endif\n#if 1 > 0\n\tstruct HemisphereLight {\n\t\tvec3 direction;\n\t\tvec3 skyColor;\n\t\tvec3 groundColor;\n\t};\n\tuniform HemisphereLight hemisphereLights[ 1 ];\n\tvec3 getHemisphereLightIrradiance( const in HemisphereLight hemiLight, const in vec3 normal ) {\n\t\tfloat dotNL = dot( normal, hemiLight.direction );\n\t\tfloat hemiDiffuseWeight = 0.5 * dotNL + 0.5;\n\t\tvec3 irradiance = mix( hemiLight.groundColor, hemiLight.skyColor, hemiDiffuseWeight );\n\t\treturn irradiance;\n\t}\n#endif\n#ifdef USE_LIGHT_PROBES_GRID\nuniform highp sampler3D probesSH;\nuniform vec3 probesMin;\nuniform vec3 probesMax;\nuniform vec3 probesResolution;\nvec3 getLightProbeGridIrradiance( vec3 worldPos, vec3 worldNormal ) {\n\tvec3 res = probesResolution;\n\tvec3 gridRange = probesMax - probesMin;\n\tvec3 resMinusOne = res - 1.0;\n\tvec3 probeSpacing = gridRange / resMinusOne;\n\tvec3 samplePos = worldPos + worldNormal * probeSpacing * 0.5;\n\tvec3 uvw = clamp( ( samplePos - probesMin ) / gridRange, 0.0, 1.0 );\n\tuvw = uvw * resMinusOne / res + 0.5 / res;\n\tfloat nz          = res.z;\n\tfloat paddedSlices = nz + 2.0;\n\tfloat atlasDepth  = 7.0 * paddedSlices;\n\tfloat uvZBase     = uvw.z * nz + 1.0;\n\tvec4 s0 = texture( probesSH, vec3( uvw.xy, ( uvZBase                       ) / atlasDepth ) );\n\tvec4 s1 = texture( probesSH, vec3( uvw.xy, ( uvZBase +       paddedSlices   ) / atlasDepth ) );\n\tvec4 s2 = texture( probesSH, vec3( uvw.xy, ( uvZBase + 2.0 * paddedSlices   ) / atlasDepth ) );\n\tvec4 s3 = texture( probesSH, vec3( uvw.xy, ( uvZBase + 3.0 * paddedSlices   ) / atlasDepth ) );\n\tvec4 s4 = texture( probesSH, vec3( uvw.xy, ( uvZBase + 4.0 * paddedSlices   ) / atlasDepth ) );\n\tvec4 s5 = texture( probesSH, vec3( uvw.xy, ( uvZBase + 5.0 * paddedSlices   ) / atlasDepth ) );\n\tvec4 s6 = texture( probesSH, vec3( uvw.xy, ( uvZBase + 6.0 * paddedSlices   ) / atlasDepth ) );\n\tvec3 c0 = s0.xyz;\n\tvec3 c1 = vec3( s0.w, s1.xy );\n\tvec3 c2 = vec3( s1.zw, s2.x );\n\tvec3 c3 = s2.yzw;\n\tvec3 c4 = s3.xyz;\n\tvec3 c5 = vec3( s3.w, s4.xy );\n\tvec3 c6 = vec3( s4.zw, s5.x );\n\tvec3 c7 = s5.yzw;\n\tvec3 c8 = s6.xyz;\n\tfloat x = worldNormal.x, y = worldNormal.y, z = worldNormal.z;\n\tvec3 result = c0 * 0.886227;\n\tresult += c1 * 2.0 * 0.511664 * y;\n\tresult += c2 * 2.0 * 0.511664 * z;\n\tresult += c3 * 2.0 * 0.511664 * x;\n\tresult += c4 * 2.0 * 0.429043 * x * y;\n\tresult += c5 * 2.0 * 0.429043 * y * z;\n\tresult += c6 * ( 0.743125 * z * z - 0.247708 );\n\tresult += c7 * 2.0 * 0.429043 * x * z;\n\tresult += c8 * 0.429043 * ( x * x - y * y );\n\treturn max( result, vec3( 0.0 ) );\n}\n#endif\nuniform mat4 rayInverseProjection;\nuniform mat4 projectionMatrix;\nuniform mat4 rayCameraWorld;\nuniform mat4 gridFromWorld;\nuniform mat3 worldNormalMatrix;\nuniform vec2 drawingBuffer;\nuniform vec3 slotColor[8];\nuniform vec3 slotEmission[8];\n#ifdef USE_FOG\nuniform vec3 fogColor;\nuniform float fogNear;\nuniform float fogFar;\n#endif\n\nuniform highp usampler3D voxelData;\nuniform ivec3 gridSize;\nuniform int slotDoubleSided[8];\nfloat projectionDepth(vec3 worldHit,mat4 projectionView) { vec4 clip=projectionView*vec4(worldHit,1.0); return clip.z/clip.w*0.5+0.5; }\nstruct VoxelHit { bool hit; bool unknown; bool traversalFault; float t; ivec3 cell; int slot; vec3 normal; };\nuvec4 sourceCell(ivec3 c) {\n  if (any(lessThan(c,ivec3(0))) || any(greaterThanEqual(c,gridSize))) { return uvec4(0); }\n  return texelFetch(voxelData,c,0);\n}\nvec3 axisNormal(int a,float signValue) { vec3 n=vec3(0); n[a]=signValue; return n; }\nVoxelHit traceVoxels(vec3 o,vec3 gridDirection,bool selectVisible) {\n  VoxelHit h; h.hit=false; h.unknown=false; h.traversalFault=false; h.t=0.0; h.cell=ivec3(-1); h.slot=0; h.normal=vec3(0);\n  float entry=-1e30; float leave=1e30; int entryAxis=0;\n  for (int a=0;a<3;a++) {\n    if (gridDirection[a]==0.0) {\n      if (o[a]<0.0 || o[a]>=float(gridSize[a])) { return h; }\n    } else {\n      float t0=(0.0-o[a])/gridDirection[a]; float t1=(float(gridSize[a])-o[a])/gridDirection[a];\n      float nearT=min(t0,t1); float farT=max(t0,t1);\n      if (nearT>entry) { entry=nearT; entryAxis=a; }\n      leave=min(leave,farT);\n    }\n  }\n  float t=max(0.0,entry); if (leave<=t) { return h; }\n  vec3 p=o+t*gridDirection; ivec3 cell=ivec3(floor(p)); ivec3 stepDir=ivec3(sign(gridDirection));\n  for (int a=0;a<3;a++) {\n    if (gridDirection[a]<0.0 && p[a]==floor(p[a])) { cell[a]-=1; }\n  }\n  // Only a mathematically proved BOX ENTRY permits a roundoff clamp.\n  if (entry>=0.0) { cell=clamp(cell,ivec3(0),gridSize-ivec3(1)); }\n  if (any(lessThan(cell,ivec3(0))) || any(greaterThanEqual(cell,gridSize))) { return h; }\n  vec3 crossing=vec3(1e30);\n  for (int a=0;a<3;a++) {\n    if (gridDirection[a]!=0.0) { crossing[a]=(float(cell[a]+(stepDir[a]>0?1:0))-o[a])/gridDirection[a]; }\n  }\n  bool insideRun=entry<0.0 && sourceCell(cell).r!=0u; ivec3 previous=cell; int previousSlot=int(sourceCell(cell).b);\n  vec3 face=axisNormal(entryAxis,-float(stepDir[entryAxis]));\n  // First valid cell tested BEFORE any step. A ray crosses at most sum(dimensions) planes.\n  int admittedSteps=gridSize.x+gridSize.y+gridSize.z+1;\n  for (int iteration=0;iteration<193;iteration++) {\n    if (iteration>=admittedSteps) { h.traversalFault=true; return h; }\n    uvec4 sample=sourceCell(cell); h.unknown=h.unknown || sample.g==0u;\n    bool solid=sample.r!=0u;\n    if (!insideRun && solid) { h.hit=true; h.t=t; h.cell=cell; h.slot=int(sample.b); h.normal=face; return h; }\n    if (insideRun && !solid) {\n      if (!selectVisible || slotDoubleSided[previousSlot]!=0) { h.hit=true; h.t=t; h.cell=previous; h.slot=previousSlot; h.normal=-face; return h; }\n      // Rejected back exit: keep this empty interval, Unknown, world t and ONE traversal budget.\n      insideRun=false;\n    }\n    if (solid) { previous=cell; previousSlot=int(sample.b); }\n    float nextT=min(crossing.x,min(crossing.y,crossing.z));\n    if (nextT<=t) { h.traversalFault=true; return h; }\n    bvec3 tied=equal(crossing,vec3(nextT)); int a=tied.x?0:(tied.y?1:2); face=axisNormal(a,-float(stepDir[a]));\n    if (nextT>=leave) {\n      if (insideRun && (!selectVisible || slotDoubleSided[previousSlot]!=0)) { h.hit=true; h.t=leave; h.cell=previous; h.slot=previousSlot; h.normal=-face; }\n      return h;\n    }\n    // ALL tied axes advance; no zero-length intermediate cells are ever sampled.\n    for (int j=0;j<3;j++) {\n      if (tied[j]) { cell[j]+=stepDir[j]; crossing[j]=(float(cell[j]+(stepDir[j]>0?1:0))-o[j])/gridDirection[j]; }\n    }\n    t=nextT;\n  }\n  h.traversalFault=true; return h;\n}\n// Geometric first-exit semantics are unchanged; only visible projection filters exits during traversal.\nVoxelHit traceVoxels(vec3 o,vec3 gridDirection) { return traceVoxels(o,gridDirection,false); }\nVoxelHit traceVisibleVoxels(vec3 o,vec3 gridDirection) { return traceVoxels(o,gridDirection,true); }\n\nvoid main() {\n  vec2 ndc=gl_FragCoord.xy/drawingBuffer*2.0-1.0;\n  vec4 nearPoint=rayCameraWorld*rayInverseProjection*vec4(ndc,-1.0,1.0);\n  vec4 farPoint=rayCameraWorld*rayInverseProjection*vec4(ndc,1.0,1.0);\n  vec3 worldOrigin=nearPoint.xyz/nearPoint.w;\n  vec3 worldDirection=normalize(farPoint.xyz/farPoint.w-worldOrigin);\n  vec3 gridOrigin=(gridFromWorld*vec4(worldOrigin,1.0)).xyz;\n  vec3 gridDirection=(gridFromWorld*vec4(worldDirection,0.0)).xyz;\n  VoxelHit h=traceVisibleVoxels(gridOrigin,gridDirection);\n  if (h.traversalFault) { gl_FragColor=vec4(1.0,0.0,1.0,1.0); gl_FragDepth=0.0; return; }\n  if (!h.hit) { discard; }\n  vec3 worldHit=worldOrigin+h.t*worldDirection;\n  vec3 worldNormal=normalize(worldNormalMatrix*h.normal);\n  bool back=dot(worldNormal,worldDirection)>0.0;\n  if (back) { worldNormal=-worldNormal; }\n  vec4 viewHit=viewMatrix*vec4(worldHit,1.0);\n  vec4 clip=projectionMatrix*viewHit;\n  float hitDepth=projectionDepth(worldHit,projectionMatrix*viewMatrix);\n  if (clip.w<=0.0 || hitDepth<0.0 || hitDepth>1.0) { discard; }\n  gl_FragDepth=hitDepth;\n  vec3 normal=normalize(mat3(viewMatrix)*worldNormal);\n  vec3 irradiance=getAmbientLightIrradiance(ambientLightColor);\n  #if 1 > 0\n  for (int i=0;i<1;i++) { irradiance+=getHemisphereLightIrradiance(hemisphereLights[i],normal); }\n  #endif\n  #if 2 > 0\n  for (int i=0;i<2;i++) { irradiance+=max(dot(normal,directionalLights[i].direction),0.0)*directionalLights[i].color; }\n  #endif\n  gl_FragColor=vec4(slotColor[h.slot]*irradiance*RECIPROCAL_PI+slotEmission[h.slot],1.0);\n#if defined( TONE_MAPPING )\n\tgl_FragColor.rgb = toneMapping( gl_FragColor.rgb );\n#endif\ngl_FragColor = linearToOutputTexel( gl_FragColor );\n  #ifdef USE_FOG\n  float fogFactor=smoothstep(fogNear,fogFar,-viewHit.z);\n  gl_FragColor.rgb=mix(gl_FragColor.rgb,fogColor,fogFactor);\n  #endif\n}\n",
+          "live": {
+            "Buffer": 1,
+            "Texture": 4,
+            "Program": 1,
+            "Shader": 2,
+            "Framebuffer": 3,
+            "VertexArray": 0,
+            "Renderbuffer": 0,
+            "Query": 0,
+            "Sampler": 0,
+            "TransformFeedback": 0
+          },
+          "sha256": "a161dd4d1a87af0c54f3414b1be2c93b7c397f2793c7657219501ec45a0f929a"
+        }
+      ],
+      "linked": [
+        {
+          "ok": false,
+          "log": "Fragment shader is not compiled.\n\u0000",
+          "live": {
+            "Buffer": 1,
+            "Texture": 4,
+            "Program": 1,
+            "Shader": 2,
+            "Framebuffer": 3,
+            "VertexArray": 0,
+            "Renderbuffer": 0,
+            "Query": 0,
+            "Sampler": 0,
+            "TransformFeedback": 0
+          }
+        }
+      ],
+      "draws": [
+        {
+          "name": "drawArrays",
+          "linkedProgram": false
+        }
+      ],
+      "inject": null
+    }
+  },
+  "errors": [
+    "THREE.WebGLProgram: Shader Error 0 - VALIDATE_STATUS false\n\nMaterial Name: \nMaterial Type: ShaderMaterial\n\nProgram Info Log: Fragment shader is not compiled.\n\u0000\n\nFRAGMENT\n\nERROR: 0:365: 'sample' : Illegal use of reserved word\nERROR: 0:365: 'sample' : syntax error\n\u0000\n\n  360:   vec3 face=axisNormal(entryAxis,-float(stepDir[entryAxis]));\n  361:   // First valid cell tested BEFORE any step. A ray crosses at most sum(dimensions) planes.\n  362:   int admittedSteps=gridSize.x+gridSize.y+gridSize.z+1;\n  363:   for (int iteration=0;iteration<193;iteration++) {\n  364:     if (iteration>=admittedSteps) { h.traversalFault=true; return h; }\n> 365:     uvec4 sample=sourceCell(cell); h.unknown=h.unknown || sample.g==0u;\n  366:     bool solid=sample.r!=0u;\n  367:     if (!insideRun && solid) { h.hit=true; h.t=t; h.cell=cell; h.slot=int(sample.b); h.normal=face; return h; }\n  368:     if (insideRun && !solid) {\n  369:       if (!selectVisible || slotDoubleSided[previousSlot]!=0) { h.hit=true; h.t=t; h.cell=previous; h.slot=previousSlot; h.normal=-face; return h; }\n  370:       // Rejected back exit: keep this empty interval, Unknown, world t and ONE traversal budget.\n  371:       insideRun=false;"
+  ],
+  "productIntegrated": false
+}

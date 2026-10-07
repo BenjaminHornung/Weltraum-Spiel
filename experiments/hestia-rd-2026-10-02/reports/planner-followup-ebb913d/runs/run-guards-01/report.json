@@ -1,0 +1,57 @@
+{
+  "runId": "run-guards-01",
+  "cases": [
+    {
+      "config": "vitest",
+      "runId": null,
+      "status": "PASS",
+      "exit": 1,
+      "error": "file:///C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/reports/planner-followup-ebb913d/vitest.followup.config.mjs:7\r\nif (!/^[a-z0-9-]+$/.test(runId ?? '')) throw Error('Set a fresh HESTIA_FOLLOWUP_RUN_ID');\r\n                                             ^\r\n\r\nError: Set a fresh HESTIA_FOLLOWUP_RUN_ID\r\n    at file:///C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/reports/planner-followup-ebb913d/vitest.followup.config.mjs:7:46\r\n    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)\r\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)\r\n    at async file:///C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/reports/planner-followup-ebb913d/[eval1]:1:1\r\n\r\nNode.js v22.23.2\r\n"
+    },
+    {
+      "config": "playwright",
+      "runId": null,
+      "status": "PASS",
+      "exit": 1,
+      "error": "file:///C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/reports/planner-followup-ebb913d/playwright.followup.config.mjs:7\r\nif (!/^[a-z0-9-]+$/.test(runId ?? '')) throw Error('Set a fresh HESTIA_FOLLOWUP_RUN_ID');\r\n                                             ^\r\n\r\nError: Set a fresh HESTIA_FOLLOWUP_RUN_ID\r\n    at file:///C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/reports/planner-followup-ebb913d/playwright.followup.config.mjs:7:46\r\n    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)\r\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)\r\n    at async file:///C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/reports/planner-followup-ebb913d/[eval1]:1:1\r\n\r\nNode.js v22.23.2\r\n"
+    },
+    {
+      "config": "vitest",
+      "runId": "focused-units-01",
+      "status": "PASS",
+      "exit": 1,
+      "error": "file:///C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/reports/planner-followup-ebb913d/vitest.followup.config.mjs:8\r\nif (existsSync(path.join(own, 'runs', runId + '.json'))) throw Error('Preserve prior single-file run; choose a fresh ID');\r\n                                                               ^\r\n\r\nError: Preserve prior single-file run; choose a fresh ID\r\n    at file:///C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/reports/planner-followup-ebb913d/vitest.followup.config.mjs:8:64\r\n    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)\r\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)\r\n    at async file:///C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/reports/planner-followup-ebb913d/[eval1]:1:1\r\n\r\nNode.js v22.23.2\r\n"
+    },
+    {
+      "config": "vitest",
+      "runId": "focused-units-03",
+      "status": "PASS",
+      "exit": 1,
+      "error": "node:fs:1370\r\n  const result = binding.mkdir(\r\n                         ^\r\n\r\nError: EEXIST: file already exists, mkdir 'C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-RD-followup-ebb913d-2026-10-07\\experiments\\hestia-rd-2026-10-02\\reports\\planner-followup-ebb913d\\runs\\focused-units-03'\r\n    at mkdirSync (node:fs:1370:26)\r\n    at file:///C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/reports/planner-followup-ebb913d/vitest.followup.config.mjs:9:44\r\n    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)\r\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)\r\n    at async file:///C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/reports/planner-followup-ebb913d/[eval1]:1:1 {\r\n  errno: -4075,\r\n  code: 'EEXIST',\r\n  syscall: 'mkdir',\r\n  path: 'C:\\\\IFI_SourceCode\\\\Temp\\\\WeltraumSpiel\\\\.worktrees\\\\Hestia-RD-followup-ebb913d-2026-10-07\\\\experiments\\\\hestia-rd-2026-10-02\\\\reports\\\\planner-followup-ebb913d\\\\runs\\\\focused-units-03'\r\n}\r\n\r\nNode.js v22.23.2\r\n"
+    },
+    {
+      "config": "playwright",
+      "runId": "ray-original-assertions-01",
+      "status": "PASS",
+      "exit": 1,
+      "error": "node:fs:1370\r\n  const result = binding.mkdir(\r\n                         ^\r\n\r\nError: EEXIST: file already exists, mkdir 'C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-RD-followup-ebb913d-2026-10-07\\experiments\\hestia-rd-2026-10-02\\reports\\planner-followup-ebb913d\\runs\\ray-original-assertions-01'\r\n    at mkdirSync (node:fs:1370:26)\r\n    at file:///C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/reports/planner-followup-ebb913d/playwright.followup.config.mjs:13:50\r\n    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)\r\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)\r\n    at async file:///C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/reports/planner-followup-ebb913d/[eval1]:1:1 {\r\n  errno: -4075,\r\n  code: 'EEXIST',\r\n  syscall: 'mkdir',\r\n  path: 'C:\\\\IFI_SourceCode\\\\Temp\\\\WeltraumSpiel\\\\.worktrees\\\\Hestia-RD-followup-ebb913d-2026-10-07\\\\experiments\\\\hestia-rd-2026-10-02\\\\reports\\\\planner-followup-ebb913d\\\\runs\\\\ray-original-assertions-01'\r\n}\r\n\r\nNode.js v22.23.2\r\n"
+    }
+  ],
+  "existing": [
+    "focused-units-01.json",
+    "focused-units-03/report.json",
+    "ray-original-assertions-01/report.json"
+  ],
+  "before": [
+    "bad1729b6fcb0f79d275a60341fb0b575d2384a7519cab45d514f307d806b1c8",
+    "1f528391faf4db0959bb83128ae73124805b943f9be0cc3cd573f2afec67eac4",
+    "28daee890272aea2ef0f13d4f3e5185ec4d28479691caf9ad3e7cf436f79e932"
+  ],
+  "after": [
+    "bad1729b6fcb0f79d275a60341fb0b575d2384a7519cab45d514f307d806b1c8",
+    "1f528391faf4db0959bb83128ae73124805b943f9be0cc3cd573f2afec67eac4",
+    "28daee890272aea2ef0f13d4f3e5185ec4d28479691caf9ad3e7cf436f79e932"
+  ],
+  "unchanged": true,
+  "productIntegrated": false
+}

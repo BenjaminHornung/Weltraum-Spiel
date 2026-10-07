@@ -1,0 +1,8 @@
+
+Running 1 test using 1 worker
+
+(node:43352) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 ..\..\..\..\tests\RD-11-v2\browser.spec.ts:10:1 › REN12-v2 actual native control population: repeat, restore, all real faults and C2 held-out example (1.2m)
+
+  1 passed (1.2m)

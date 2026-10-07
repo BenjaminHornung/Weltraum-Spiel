@@ -1,0 +1,680 @@
+{
+  "mode": "LAB_DRAFT",
+  "draft": {
+    "candidates": [
+      {
+        "clearing": true,
+        "id": "corridor",
+        "positionMeters": [
+          0,
+          0,
+          0
+        ],
+        "slope01": 0,
+        "water": false
+      },
+      {
+        "clearing": false,
+        "id": "east",
+        "positionMeters": [
+          3,
+          0,
+          0
+        ],
+        "slope01": 0.1,
+        "water": false
+      },
+      {
+        "clearing": false,
+        "id": "shore",
+        "positionMeters": [
+          0,
+          0,
+          3
+        ],
+        "slope01": 0,
+        "water": true
+      },
+      {
+        "clearing": false,
+        "id": "west",
+        "positionMeters": [
+          -3,
+          0,
+          0
+        ],
+        "slope01": 0.1,
+        "water": false
+      }
+    ],
+    "density01": 1,
+    "maxSlope01": 0.4,
+    "plant": {
+      "crownRadiusCells": 4,
+      "heightCells": 30,
+      "rootScale01": 1,
+      "shape": "mixed"
+    },
+    "seed": 23
+  },
+  "activeRecipe": "8b5dcbd534b783699502dddb2ec686993be59235075ddf82710a7c2e4d1258b0",
+  "queue": {
+    "pending": 0,
+    "inFlight": 0
+  },
+  "builds": 1,
+  "lastPreviewMs": 42.09999999962747,
+  "costs": {
+    "payloadBytes": 931818,
+    "projectionBytes": 391440,
+    "indexedCells": 271869,
+    "owners": 16,
+    "templates": 14,
+    "woodMassKg": 317,
+    "decorMassKg": 0
+  },
+  "warnings": [],
+  "wood": [
+    {
+      "ownerId": "plant:east",
+      "shape": "umbrella",
+      "woodCells": 186,
+      "supportedLobes": 5
+    },
+    {
+      "ownerId": "plant:west",
+      "shape": "young",
+      "woodCells": 131,
+      "supportedLobes": 5
+    }
+  ],
+  "wind": {
+    "clusters": [
+      {
+        "id": "wind:072c17cc5bbaa102482db5e715b012ce8abd61c5a83bdaf5afe56b2fe75af7b2",
+        "ownerId": "plant:east/decor:umbrella:0",
+        "anchor": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "id": "wind:217db43c7dbcb16474fdddb943d7fbb16026f91ac6788c5b95830a42b2ba4358",
+        "ownerId": "plant:east/decor:umbrella:1",
+        "anchor": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "id": "wind:c8720df843ad72569da824d6a30a38af9afa348b1fd03a4a95773d64b1b42490",
+        "ownerId": "plant:east/decor:umbrella:2",
+        "anchor": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "id": "wind:95d2fcdfab4071a08e6c218c97191baf7610144073a819d99aea31e46b2e8d38",
+        "ownerId": "plant:east/decor:umbrella:3",
+        "anchor": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "id": "wind:3acc0c5c3c26b1b504ac44f2e996c6d703005280719232759771626eed80b9bb",
+        "ownerId": "plant:east/decor:umbrella:4",
+        "anchor": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "id": "wind:f4f280aec69221d6643f5ff7b79517139feaef69ca10df988c556bd9c1389f0c",
+        "ownerId": "plant:west/decor:young:0",
+        "anchor": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "id": "wind:e1a97dcac547d247a72d25661946ba08de7c48b324be58c8085bb583f8ec0c8d",
+        "ownerId": "plant:west/decor:young:1",
+        "anchor": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "id": "wind:af06067f06747e044dde6d2beefdad3826164a7fcf78a825721636b207a4ab33",
+        "ownerId": "plant:west/decor:young:2",
+        "anchor": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "id": "wind:4a42eb0ee27a4007a4a007eab169e04fec6f370884e666d168dc7d1eeb3b1a40",
+        "ownerId": "plant:west/decor:young:3",
+        "anchor": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "id": "wind:6d830b243bf01be4b83726e17bc70138a0aa2912c2f62b1e1f81b342c47391c2",
+        "ownerId": "plant:west/decor:young:4",
+        "anchor": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "id": "wind:61103e07f44f2cdc36b95f983331f9b147aedce350ed1e9e37935d759dbbbfdd",
+        "ownerId": "under:east",
+        "anchor": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "id": "wind:1a06ccd1bee7ba375e31a76aa0e003acc2cc6e7ddb7782b189f1c990e3439d51",
+        "ownerId": "under:shore",
+        "anchor": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "id": "wind:9bc8f86057a775b610767ec0d28d2b29407d88813acdfae160d9a9995b0e5f9d",
+        "ownerId": "under:west",
+        "anchor": [
+          0,
+          0,
+          0
+        ]
+      }
+    ],
+    "stiffness": 0.75,
+    "reducedMotion": false,
+    "phaseTicks": 0
+  },
+  "facts": {
+    "backend": "Three-WebGLRenderer-WebGL2",
+    "errors": [],
+    "experimentId": "RD-21",
+    "fixtureDigest": "08525737b327343b1f69e793c06484ac6d743890bfaa2d3b5f9c2572fab0c655",
+    "liveResources": {
+      "geometries": {
+        "status": "measured",
+        "unit": "count",
+        "value": 16
+      },
+      "hostListeners": {
+        "status": "measured",
+        "unit": "count",
+        "value": 2
+      },
+      "renderers": {
+        "status": "measured",
+        "unit": "count",
+        "value": 1
+      },
+      "renderloops": {
+        "status": "measured",
+        "unit": "count",
+        "value": 1
+      },
+      "textures": {
+        "status": "measured",
+        "unit": "count",
+        "value": 0
+      }
+    },
+    "logicalCosts": {
+      "effect-0-gpuBytes": {
+        "reason": "Native GPU memory is not exposed by WebGL",
+        "status": "unsupported",
+        "unit": "byte"
+      },
+      "effect-0-projectionBufferBytes": {
+        "reason": "Typed attribute/index bytes; excludes GPU allocator, driver and shaders",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 391440
+      },
+      "effect-0-triangles": {
+        "status": "measured",
+        "unit": "count",
+        "value": 6524
+      },
+      "effect-0-windClusters": {
+        "status": "measured",
+        "unit": "count",
+        "value": 13
+      },
+      "effect-0-windRetainedCopyBytes": {
+        "reason": "Private source/normal typed copies per cluster, additional to projection buffers; excludes native allocation",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 190848
+      },
+      "effect-0-windUploadBytes": {
+        "reason": "Changed attribute bytes; excludes native driver/matrix uniform traffic",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 0
+      },
+      "gpuBytes": {
+        "reason": "Native GPU memory unavailable",
+        "status": "unsupported",
+        "unit": "byte"
+      },
+      "gpuMs": {
+        "reason": "Timer available; diagnostic loop does not sample GPU timing",
+        "status": "not-run",
+        "unit": "ms"
+      },
+      "renderCalls": {
+        "status": "measured",
+        "unit": "count",
+        "value": 16
+      },
+      "triangles": {
+        "status": "measured",
+        "unit": "count",
+        "value": 6524
+      }
+    },
+    "sourceRevision": 0,
+    "unsupportedFeatures": [
+      "native-pcf-shadow-parity",
+      "native-sky-shader-parity",
+      "native-water-shader-parity",
+      "native-material-shader-hooks",
+      "wind-art-owner-pending",
+      "native-shadow-parity-unqualified"
+    ],
+    "variantId": "rigid"
+  },
+  "diagnostics": {
+    "backend": "Three-WebGLRenderer-WebGL2",
+    "webgl2": true,
+    "fixtureId": "F20-HABITAT-PATCH",
+    "fixtureDigest": "08525737b327343b1f69e793c06484ac6d743890bfaa2d3b5f9c2572fab0c655",
+    "sourceRevision": 0,
+    "payloadBindings": [
+      {
+        "id": "patch-payload-0",
+        "byteLength": 288,
+        "sha256": "81b08e52b692291d95a6615191570043ee9f0ebcb3ae3a526fc0ff3edee55465"
+      },
+      {
+        "id": "patch-payload-1",
+        "byteLength": 288,
+        "sha256": "1d25335f006dfec1dd5deb082ea469d6f41b5f72d651220fa52367f3a28b3e72"
+      },
+      {
+        "id": "patch-payload-2",
+        "byteLength": 144,
+        "sha256": "15e4544087ac886e83ea2c6f84406b56b09370208d305b0ed3c2a2cae4bdf76b"
+      },
+      {
+        "id": "patch-payload-3",
+        "byteLength": 242730,
+        "sha256": "5db3eecf5b8c5573e5355c5fb43143d32db987f36065dcafe8855019885dbe1f"
+      },
+      {
+        "id": "patch-payload-4",
+        "byteLength": 242730,
+        "sha256": "9b816751b8b0dab3dab404def64d58cb45055db74a17d9f5c2e71ca97626f741"
+      },
+      {
+        "id": "patch-payload-5",
+        "byteLength": 35712,
+        "sha256": "3e17dbbbe81689067bc7d7b40c11408337efdb10dccfbe15f566b9206585687c"
+      },
+      {
+        "id": "patch-payload-6",
+        "byteLength": 35712,
+        "sha256": "da0141b614da1ea7f1b84b300797ad1d90608386a240095088d421d61e8d5f77"
+      },
+      {
+        "id": "patch-payload-7",
+        "byteLength": 17856,
+        "sha256": "0c1d000cc5e7ac20c9cfe8f0c6b2c13fe3ec982ce5e333b0de879f3ef91bd285"
+      },
+      {
+        "id": "patch-payload-8",
+        "byteLength": 24057,
+        "sha256": "3d19a1ad1f1b4366487959284e8b6985e0a5b253ba262c292f17efedb8636c1f"
+      },
+      {
+        "id": "patch-payload-9",
+        "byteLength": 24057,
+        "sha256": "648721daf601ca49307947c1e0dd8ec95128b89d387fd9685ce48a50c76ad94c"
+      },
+      {
+        "id": "patch-payload-10",
+        "byteLength": 9120,
+        "sha256": "85c72f21074a111a42358abbf5ef34a7240544651568b3e211afd0eda15ed912"
+      },
+      {
+        "id": "patch-payload-11",
+        "byteLength": 9120,
+        "sha256": "03fe2aaa9282bcdf9b6cd53e9abfef684fad3a302061a7e01b219fc69f3d081c"
+      },
+      {
+        "id": "patch-payload-12",
+        "byteLength": 4560,
+        "sha256": "1f023d62b7455bab7aef93fde2176649e3f501b85d09257ef5d10b9945e9f857"
+      },
+      {
+        "id": "patch-payload-13",
+        "byteLength": 9120,
+        "sha256": "85c72f21074a111a42358abbf5ef34a7240544651568b3e211afd0eda15ed912"
+      },
+      {
+        "id": "patch-payload-14",
+        "byteLength": 9120,
+        "sha256": "03fe2aaa9282bcdf9b6cd53e9abfef684fad3a302061a7e01b219fc69f3d081c"
+      },
+      {
+        "id": "patch-payload-15",
+        "byteLength": 4560,
+        "sha256": "1f023d62b7455bab7aef93fde2176649e3f501b85d09257ef5d10b9945e9f857"
+      },
+      {
+        "id": "patch-payload-16",
+        "byteLength": 9120,
+        "sha256": "85c72f21074a111a42358abbf5ef34a7240544651568b3e211afd0eda15ed912"
+      },
+      {
+        "id": "patch-payload-17",
+        "byteLength": 9120,
+        "sha256": "03fe2aaa9282bcdf9b6cd53e9abfef684fad3a302061a7e01b219fc69f3d081c"
+      },
+      {
+        "id": "patch-payload-18",
+        "byteLength": 4560,
+        "sha256": "1f023d62b7455bab7aef93fde2176649e3f501b85d09257ef5d10b9945e9f857"
+      },
+      {
+        "id": "patch-payload-19",
+        "byteLength": 9120,
+        "sha256": "85c72f21074a111a42358abbf5ef34a7240544651568b3e211afd0eda15ed912"
+      },
+      {
+        "id": "patch-payload-20",
+        "byteLength": 9120,
+        "sha256": "03fe2aaa9282bcdf9b6cd53e9abfef684fad3a302061a7e01b219fc69f3d081c"
+      },
+      {
+        "id": "patch-payload-21",
+        "byteLength": 4560,
+        "sha256": "1f023d62b7455bab7aef93fde2176649e3f501b85d09257ef5d10b9945e9f857"
+      },
+      {
+        "id": "patch-payload-22",
+        "byteLength": 9120,
+        "sha256": "85c72f21074a111a42358abbf5ef34a7240544651568b3e211afd0eda15ed912"
+      },
+      {
+        "id": "patch-payload-23",
+        "byteLength": 9120,
+        "sha256": "03fe2aaa9282bcdf9b6cd53e9abfef684fad3a302061a7e01b219fc69f3d081c"
+      },
+      {
+        "id": "patch-payload-24",
+        "byteLength": 4560,
+        "sha256": "1f023d62b7455bab7aef93fde2176649e3f501b85d09257ef5d10b9945e9f857"
+      },
+      {
+        "id": "patch-payload-25",
+        "byteLength": 25152,
+        "sha256": "e60c03792ace8f1bf4709eb829652380dc8a73fe1871d022ad4e4709e7322b50"
+      },
+      {
+        "id": "patch-payload-26",
+        "byteLength": 25152,
+        "sha256": "e25ba31cd40bed8ab920270a1a2155420916d9de74ac56e261320ff10df5ecbb"
+      },
+      {
+        "id": "patch-payload-27",
+        "byteLength": 12576,
+        "sha256": "d852d60b661a26c805adcef37f884395be62d93f8178a9c64e895349ff32d625"
+      },
+      {
+        "id": "patch-payload-28",
+        "byteLength": 5082,
+        "sha256": "378913660ce5f5db10316b37e92bcfce96947b44b0bfca5a888c9c74303f9f84"
+      },
+      {
+        "id": "patch-payload-29",
+        "byteLength": 5082,
+        "sha256": "db210b7c07978a494422df07dd4eaf93f8dbbe9a53042899cd726215e0cf033d"
+      },
+      {
+        "id": "patch-payload-30",
+        "byteLength": 9120,
+        "sha256": "85c72f21074a111a42358abbf5ef34a7240544651568b3e211afd0eda15ed912"
+      },
+      {
+        "id": "patch-payload-31",
+        "byteLength": 9120,
+        "sha256": "03fe2aaa9282bcdf9b6cd53e9abfef684fad3a302061a7e01b219fc69f3d081c"
+      },
+      {
+        "id": "patch-payload-32",
+        "byteLength": 4560,
+        "sha256": "1f023d62b7455bab7aef93fde2176649e3f501b85d09257ef5d10b9945e9f857"
+      },
+      {
+        "id": "patch-payload-33",
+        "byteLength": 9120,
+        "sha256": "85c72f21074a111a42358abbf5ef34a7240544651568b3e211afd0eda15ed912"
+      },
+      {
+        "id": "patch-payload-34",
+        "byteLength": 9120,
+        "sha256": "03fe2aaa9282bcdf9b6cd53e9abfef684fad3a302061a7e01b219fc69f3d081c"
+      },
+      {
+        "id": "patch-payload-35",
+        "byteLength": 4560,
+        "sha256": "1f023d62b7455bab7aef93fde2176649e3f501b85d09257ef5d10b9945e9f857"
+      },
+      {
+        "id": "patch-payload-36",
+        "byteLength": 9120,
+        "sha256": "85c72f21074a111a42358abbf5ef34a7240544651568b3e211afd0eda15ed912"
+      },
+      {
+        "id": "patch-payload-37",
+        "byteLength": 9120,
+        "sha256": "03fe2aaa9282bcdf9b6cd53e9abfef684fad3a302061a7e01b219fc69f3d081c"
+      },
+      {
+        "id": "patch-payload-38",
+        "byteLength": 4560,
+        "sha256": "1f023d62b7455bab7aef93fde2176649e3f501b85d09257ef5d10b9945e9f857"
+      },
+      {
+        "id": "patch-payload-39",
+        "byteLength": 9120,
+        "sha256": "85c72f21074a111a42358abbf5ef34a7240544651568b3e211afd0eda15ed912"
+      },
+      {
+        "id": "patch-payload-40",
+        "byteLength": 9120,
+        "sha256": "03fe2aaa9282bcdf9b6cd53e9abfef684fad3a302061a7e01b219fc69f3d081c"
+      },
+      {
+        "id": "patch-payload-41",
+        "byteLength": 4560,
+        "sha256": "1f023d62b7455bab7aef93fde2176649e3f501b85d09257ef5d10b9945e9f857"
+      },
+      {
+        "id": "patch-payload-42",
+        "byteLength": 9120,
+        "sha256": "85c72f21074a111a42358abbf5ef34a7240544651568b3e211afd0eda15ed912"
+      },
+      {
+        "id": "patch-payload-43",
+        "byteLength": 9120,
+        "sha256": "03fe2aaa9282bcdf9b6cd53e9abfef684fad3a302061a7e01b219fc69f3d081c"
+      },
+      {
+        "id": "patch-payload-44",
+        "byteLength": 4560,
+        "sha256": "1f023d62b7455bab7aef93fde2176649e3f501b85d09257ef5d10b9945e9f857"
+      },
+      {
+        "id": "patch-payload-45",
+        "byteLength": 1344,
+        "sha256": "aab6fd46072df12ab88c76e9c62258823512dde456040a811d95decbe9fb0ddf"
+      },
+      {
+        "id": "patch-payload-46",
+        "byteLength": 1344,
+        "sha256": "ddf159659c43447f3adbfb7ff74b9be8ce82f065c388a3a1cb989cb21114545b"
+      },
+      {
+        "id": "patch-payload-47",
+        "byteLength": 672,
+        "sha256": "5e3c1b160037e176eccbc6ecb4969cf994ff9afdc3ecc61f6c4fe284dfa8930d"
+      },
+      {
+        "id": "patch-payload-48",
+        "byteLength": 1536,
+        "sha256": "936129b2bfe792fa87ee646a41d5a046af9898b39447b22af4bb22245cf6aec7"
+      },
+      {
+        "id": "patch-payload-49",
+        "byteLength": 1536,
+        "sha256": "429f043130587bb7c6243d71d63b69a4ac3fffebd8af3a75abc128b9b46b8810"
+      },
+      {
+        "id": "patch-payload-50",
+        "byteLength": 768,
+        "sha256": "369c31ac43fd7a5c24ef42b7d148fd8906f9e2d0ee0063f99e4da5485a56f4ca"
+      }
+    ],
+    "presentationProfile": "synthetic-lab-light-v1-no-shadows",
+    "frame": {
+      "cameraId": "habitat-overview",
+      "paused": true,
+      "seconds": 0,
+      "sourceRevision": 0,
+      "tick": 0,
+      "weather": {
+        "cloud01": 0.25,
+        "rain01": 0,
+        "snow01": 0,
+        "windMps": [
+          3,
+          0,
+          0.75
+        ]
+      }
+    },
+    "resetTick": null,
+    "resolution": {
+      "width": 1280,
+      "height": 720,
+      "dpr": 1,
+      "bufferWidth": 1280,
+      "bufferHeight": 720
+    },
+    "colorSpace": "srgb",
+    "toneMapping": 0,
+    "exposure": 1,
+    "cameraActual": {
+      "positionMeters": [
+        12.8125,
+        9,
+        -13.5
+      ],
+      "direction": [
+        -0.6084241518760727,
+        -0.3549140885943757,
+        0.7098281771887514
+      ],
+      "fov": 55
+    },
+    "timerQueryAvailable": true,
+    "gpuMs": {
+      "status": "not-run",
+      "unit": "ms",
+      "reason": "Timer available; no qualified timer-query sampling in diagnostic control"
+    },
+    "nativeGpuBytes": {
+      "status": "unsupported",
+      "unit": "byte",
+      "reason": "WebGL does not expose native/driver allocation bytes"
+    },
+    "device": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "submittedFrames": 1,
+    "frameVersion": 2,
+    "rendered": {
+      "tick": 0,
+      "fixtureDigest": "08525737b327343b1f69e793c06484ac6d743890bfaa2d3b5f9c2572fab0c655",
+      "sourceRevision": 0,
+      "resetTick": null,
+      "cameraId": "habitat-overview",
+      "frame": {
+        "cameraId": "habitat-overview",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.25,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            3,
+            0,
+            0.75
+          ]
+        }
+      },
+      "frameVersion": 2
+    },
+    "rendererInfo": {
+      "geometries": 16,
+      "textures": 0,
+      "programs": 1,
+      "calls": 16,
+      "triangles": 6524
+    },
+    "liveHosts": {
+      "renderers": 1,
+      "renderloops": 1,
+      "hostListeners": 2
+    },
+    "productIntegrated": false,
+    "lastReplacement": null
+  },
+  "mounts": 1,
+  "liveHosts": {
+    "renderers": 1,
+    "renderloops": 1,
+    "hostListeners": 2
+  },
+  "productIntegrated": false,
+  "art": "PENDING_OWNER"
+}

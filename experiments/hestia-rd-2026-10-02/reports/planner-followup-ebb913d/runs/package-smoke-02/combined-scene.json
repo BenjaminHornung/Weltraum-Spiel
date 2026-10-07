@@ -1,0 +1,1262 @@
+{
+  "mode": "COMBINED_SOURCE_REPLAY",
+  "stage": {
+    "tick": 0,
+    "id": "coast-clear",
+    "label": "Klare Küste — Original F01"
+  },
+  "clock": {
+    "tick": 0,
+    "seconds": 0,
+    "paused": true
+  },
+  "scenarioDigest": "f35f41b874373993dde21976b594722835f19e9b74db11980b7e0cb6e396c153",
+  "inputBindings": [
+    {
+      "role": "coast",
+      "scenarioId": "F01-HVP-COAST-REPLAY",
+      "scenarioDigest": "e41d4965131f17ad47ec7a7ce6db4a841d60a550abb86cd51206fa973c500bd9",
+      "initialDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+      "sources": [
+        {
+          "id": "F01-HVP-COAST",
+          "digest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "sourceRefs": [
+            {
+              "commit": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+              "files": [
+                {
+                  "blobSha": "d0613db4fbaecc8bfbf2ff80ad6a483e20430833",
+                  "path": "apps/weltraum-browser/src/core/hash.ts",
+                  "sha256": "7514fc507d6c83404462d967ff4736790abf6425842b676cefedc4928a2febee"
+                },
+                {
+                  "blobSha": "d4cd91baca674a027416e9cd8eab97532803080d",
+                  "path": "apps/weltraum-browser/src/hestia-prototype/presentation/look.ts",
+                  "sha256": "1c058c73d4313b6da757b341f6dad66173d73332d169d7dbe04710b96c0219ea"
+                },
+                {
+                  "blobSha": "089e5e985ee9ad271a3ed44e0bb3214ab28c0879",
+                  "path": "apps/weltraum-browser/src/hestia-prototype/presentation/vegetation.ts",
+                  "sha256": "64806d7f77d6e562c8f1a36e7fb313c6353acca04d05331063af3773a519e1ae"
+                },
+                {
+                  "blobSha": "5d99e23a6bc8dfd80e8bd8d056d3dea393daad2b",
+                  "path": "apps/weltraum-browser/src/hestia-prototype/presentation/visualEffects.ts",
+                  "sha256": "b02f1d1a114fd143201fd7f516c6bec52dd574d3e511fdc09aa5ffd7931ba31f"
+                },
+                {
+                  "blobSha": "3f87cadac0664db2b32aae04b25356bb0ead8c8d",
+                  "path": "apps/weltraum-browser/src/hvp/hvpCamera.ts",
+                  "sha256": "b7bec67081a4ec0a9a532cc6b4dbc929fd0be56dd5367a965c66891ae487bf56"
+                },
+                {
+                  "blobSha": "1fad35b9ca837256f8acfd1ed1ebeb97ca5b4c26",
+                  "path": "apps/weltraum-browser/src/hvp/hvpCoastMesher.ts",
+                  "sha256": "437f3f48a3e578174f23b0956e3a3a2fee975a25b4576cc77b7af87c91930a6a"
+                },
+                {
+                  "blobSha": "0e9d3226828cc0a233791b77b634aa91c0c39771",
+                  "path": "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+                  "sha256": "c13e3107a542b402faf342befb479e6bf74d94730b16c4caf73d1f911fad8be4"
+                },
+                {
+                  "blobSha": "86aeb3b74a8a2c04fb8e8f6624f6ecdd9b66b9d0",
+                  "path": "apps/weltraum-browser/src/hvp/hvpTerrain.ts",
+                  "sha256": "93019417d3f022ead0ee3f9bf42eefce6e249fe135fa61916424d78b19ba1a11"
+                },
+                {
+                  "blobSha": "54720c15972daeccfa1b8bc781deb2933da4c4b4",
+                  "path": "apps/weltraum-browser/src/presentation/canonical.ts",
+                  "sha256": "67558d89ff09e99588101618eb02c5820a042a27850e884db91b0e80188862c8"
+                },
+                {
+                  "blobSha": "a201fa411bd72e4cd39504a6d84ba008267263f1",
+                  "path": "apps/weltraum-browser/src/presentation/ids.ts",
+                  "sha256": "50d7642fe0fbf097bf2cd80275ff5d4243b69cb62c93a7bad14612f5c2ce96a2"
+                },
+                {
+                  "blobSha": "17b2f92823dc571ba2c16268907a904e68f9e3f0",
+                  "path": "apps/weltraum-browser/src/presentation/index.ts",
+                  "sha256": "d1cc7c04ed7bf95d023f8a75c8d6b6edb558bc67e0c24e16298d81f7d6321d49"
+                },
+                {
+                  "blobSha": "8c4d6e98721d03d90881c99b152c96bfd20cf063",
+                  "path": "apps/weltraum-browser/src/presentation/materialProfile.ts",
+                  "sha256": "1d871f968781bdf67c9e6b5517daad94bddccf373950b3f022e68769e7278134"
+                },
+                {
+                  "blobSha": "d6e3d92f52370e380a081c6a6b5bf1af88ebadc0",
+                  "path": "apps/weltraum-browser/src/presentation/meshArtifact.ts",
+                  "sha256": "070a4bef18182a666a8bdd57518da057370ccca2c8d3c9047506a0a12e4ff671"
+                },
+                {
+                  "blobSha": "351b6f7385dd612724912d58c8288ddb99109117",
+                  "path": "apps/weltraum-browser/src/presentation/validation.ts",
+                  "sha256": "e93eadb015c284865184a997b9542fc351ab4c0b4f67247a9adb80890bafb1ff"
+                },
+                {
+                  "blobSha": "e01256c79c2c0efa1e871c5de835102adb66f65c",
+                  "path": "apps/weltraum-browser/src/voxel/blockAmbientOcclusion.ts",
+                  "sha256": "ddfb1d22eccdcb83e48f8c21d82605339936600a6afbbc452bdcdce497ca7675"
+                }
+              ],
+              "generatorVersion": "hvp-authored-coast-v5+hvp-root-umbrella-v3",
+              "kind": "product",
+              "repository": "BenjaminHornung/Weltraum-Spiel",
+              "sourceDigest": "b8fde6b0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "shelter",
+      "scenarioId": "F03-SHELTER-REPLAY",
+      "scenarioDigest": "5ae34ae681ab5525e410f5e815f92e6fa603aa253f1c50377c33fdfd80b21ced",
+      "initialDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+      "sources": [
+        {
+          "id": "F03-SHELTER",
+          "digest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+          "sourceRefs": [
+            {
+              "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+              "generatorPath": "exporters/synthetic.mjs",
+              "generatorVersion": "rd02-small-fixtures-v1",
+              "kind": "synthetic",
+              "seed": 20261002,
+              "sourceDigest": "9d59fa387a6c507f3ac3a3c538a8df41efa4eabcc5adaed4f13bebd9b3902f06",
+              "testOnly": true
+            }
+          ]
+        },
+        {
+          "id": "F03-SHELTER-R1",
+          "digest": "e678890af9ca58964bed5ac8a109411e3777e62202a6d576d7dd33d436f91538",
+          "sourceRefs": [
+            {
+              "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+              "generatorPath": "exporters/synthetic.mjs",
+              "generatorVersion": "rd02-small-fixtures-v1",
+              "kind": "synthetic",
+              "seed": 20261002,
+              "sourceDigest": "5aa44fe5e4264d75e18c435d66fff937a77dc2d77d5a845e15c55db4c9d3792a",
+              "testOnly": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "detach",
+      "scenarioId": "F04-DETACH-REPLAY",
+      "scenarioDigest": "0d9012b86bac2c620864774038a1aed987d81e2338f1618b4a434b49f9f0a623",
+      "initialDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+      "sources": [
+        {
+          "id": "F04-DETACH",
+          "digest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+          "sourceRefs": [
+            {
+              "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+              "generatorPath": "exporters/synthetic.mjs",
+              "generatorVersion": "rd02-small-fixtures-v1",
+              "kind": "synthetic",
+              "seed": 20261002,
+              "sourceDigest": "c4151167bdfd1ee22ad4ba66b0f5374617e16b32b9770cb92ab1f88a5963886b",
+              "testOnly": true
+            }
+          ]
+        },
+        {
+          "id": "F04-DETACH-R1",
+          "digest": "c45992d7a859482a869e8deebbecd0e54263986a0acbeca1dc0bde9d8cab4e3b",
+          "sourceRefs": [
+            {
+              "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+              "generatorPath": "exporters/synthetic.mjs",
+              "generatorVersion": "rd02-small-fixtures-v1",
+              "kind": "synthetic",
+              "seed": 20261002,
+              "sourceDigest": "52fdd9dc8886a853e43ed1b23deeae292d3642f845dbf1cce4457a7adea573d3",
+              "testOnly": true
+            }
+          ]
+        },
+        {
+          "id": "F04-DETACH-R2",
+          "digest": "7e1bb35d1a0ada1ff5ddda9719e7d2ad5710d11d59f0f28c7f72b20a04dce37e",
+          "sourceRefs": [
+            {
+              "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+              "generatorPath": "exporters/synthetic.mjs",
+              "generatorVersion": "rd02-small-fixtures-v1",
+              "kind": "synthetic",
+              "seed": 20261002,
+              "sourceDigest": "c1429c283b570945593a62014f63a58bde41949533be6624d58639807977d45e",
+              "testOnly": true
+            }
+          ]
+        },
+        {
+          "id": "F04-DETACH-R3",
+          "digest": "95e4ebc916e34c14d7ff46b0aa98ad2007d7c9f4e03c2463cc2bd75d7d5414bd",
+          "sourceRefs": [
+            {
+              "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+              "generatorPath": "exporters/synthetic.mjs",
+              "generatorVersion": "rd02-small-fixtures-v1",
+              "kind": "synthetic",
+              "seed": 20261002,
+              "sourceDigest": "e27b26e1a4bbfb0694dbabb9e88d7b69ef1b4cf7a4422acebb3cc71302461a43",
+              "testOnly": true
+            }
+          ]
+        },
+        {
+          "id": "F04-DETACH-R4",
+          "digest": "8b7af46b9292ce40ead9545cf02d38bb7e57bf1205d7fbf1bf9f4c7af783832b",
+          "sourceRefs": [
+            {
+              "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+              "generatorPath": "exporters/synthetic.mjs",
+              "generatorVersion": "rd02-small-fixtures-v1",
+              "kind": "synthetic",
+              "seed": 20261002,
+              "sourceDigest": "0654c0e77a2ab0b14594f2f21ed70ffd6720e39019fee0fee2814f76093e9038",
+              "testOnly": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "figure",
+      "scenarioId": "F05-CUTOUT-REPLAY",
+      "scenarioDigest": "d5192a3f8198faac430c232cd3604716daeb034211d309031749170c52abae64",
+      "initialDigest": "c24de4c1597713e11935bf98e8fe7c5a312a615ee3544831f6f97b74c948b904",
+      "sources": [
+        {
+          "id": "F05-CUTOUT",
+          "digest": "c24de4c1597713e11935bf98e8fe7c5a312a615ee3544831f6f97b74c948b904",
+          "sourceRefs": [
+            {
+              "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+              "generatorPath": "exporters/synthetic.mjs",
+              "generatorVersion": "rd02-small-fixtures-v1",
+              "kind": "synthetic",
+              "seed": 20261002,
+              "sourceDigest": "339dabb8f5d378c8f7ec42f50b901eef97b105f0f1cfb85f967434cf71db06bd",
+              "testOnly": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "debugSamplePreview": null,
+  "combined": {
+    "wet": {
+      "result": null,
+      "sourceStartTick": 0,
+      "preset": {
+        "schema": "hestia-rd-wetness-v1",
+        "id": "combined-rain-timeline",
+        "sourcePolicy": "reset-at-snapshot",
+        "model": "current-exposure-analytic",
+        "wettingPerSecond": 0.35,
+        "dryingPerSecond": 0.08,
+        "rainHistory": [
+          {
+            "tick": 0,
+            "rain01": 0
+          },
+          {
+            "tick": 240,
+            "rain01": 0.8
+          },
+          {
+            "tick": 1320,
+            "rain01": 0
+          }
+        ]
+      },
+      "material": {
+        "generation": 0,
+        "viewMode": "color",
+        "sunDirectionWorld": [
+          -0.5224753596034531,
+          0.7837130394051798,
+          -0.3358770168879342
+        ]
+      },
+      "rain": {
+        "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+        "sourceRevision": 0,
+        "sourceFrame": {
+          "basis": "right-handed-y-up",
+          "id": "hvp:coast-frame",
+          "originMeters": [
+            0,
+            0,
+            0
+          ],
+          "rotationXyzw": [
+            0,
+            0,
+            0,
+            1
+          ]
+        },
+        "coverageBindings": [
+          {
+            "regionId": "coast-crop",
+            "ownerId": "hvp:terrain",
+            "payloadId": "coast-crop-coverage",
+            "sha256": "1d433f1aa37993106ee691d7dfc033363ca7201fbbab132742340d3a08e92259"
+          },
+          {
+            "regionId": "plant-0-decor",
+            "ownerId": "hvp:flora:hero",
+            "payloadId": "plant-0-decor-coverage",
+            "sha256": "d5cdcf75112ecd21d5fe3c0ba1c5486dafd27ee3b27b507e9c99cc9ed46801b4"
+          },
+          {
+            "regionId": "plant-0-wood",
+            "ownerId": "hvp:flora:hero",
+            "payloadId": "plant-0-wood-coverage",
+            "sha256": "dc0683f9ec347e4494344138f1771d0ae27d2577089a3637df52e52607576516"
+          },
+          {
+            "regionId": "plant-1-decor",
+            "ownerId": "hvp:flora:bed-160-76",
+            "payloadId": "plant-1-decor-coverage",
+            "sha256": "e14fe300404fc6c6f74051a1bd6ae57b514916c453ab04b60d12df7045b7b4f2"
+          },
+          {
+            "regionId": "plant-2-decor",
+            "ownerId": "hvp:flora:bed-100-88",
+            "payloadId": "plant-2-decor-coverage",
+            "sha256": "81a984ec399f208ffb5e9fa7ec0c8fb8b1fd4bdfef2143354bfa1b446af741bc"
+          },
+          {
+            "regionId": "plant-3-decor",
+            "ownerId": "hvp:flora:bed-88-88",
+            "payloadId": "plant-3-decor-coverage",
+            "sha256": "b5586b65bcdf7df411677e6edba5a6f5145eaed8c4d307fc8b5f682663e9bad4"
+          },
+          {
+            "regionId": "plant-4-decor",
+            "ownerId": "hvp:flora:bed-76-124",
+            "payloadId": "plant-4-decor-coverage",
+            "sha256": "0d9e714a249b3552fc8a33b5d1ae2c09239dc06ff7120f1db5f051ec8f44d6a6"
+          }
+        ],
+        "tick": 0,
+        "direction": [
+          0,
+          -1,
+          0
+        ],
+        "coverage": "not-sampled",
+        "field": null,
+        "visibleParticles": 0,
+        "clippedParticles": 0,
+        "unknownParticles": 0,
+        "splashes": 0
+      }
+    },
+    "wind": {
+      "clusters": [
+        {
+          "id": "wind:70ecbd224c3d9b6620a05182a3f39b9a8e8d49e456f7dcf76467f15e98d0944b",
+          "ownerId": "hvp:flora:bed-100-88",
+          "anchor": [
+            -0.125,
+            0.3125,
+            -0.1875
+          ]
+        },
+        {
+          "id": "wind:dca64426d028e42d8289370fb9d04f5790b9f18cb76188522e01d315fc02f52b",
+          "ownerId": "hvp:flora:bed-160-76",
+          "anchor": [
+            0.0625,
+            0.4375,
+            0
+          ]
+        },
+        {
+          "id": "wind:a512ed8333401608d2193d04872eaa73bcc3ed983eaf976e7d396d93c767deda",
+          "ownerId": "hvp:flora:bed-76-124",
+          "anchor": [
+            0.0625,
+            0.875,
+            -0.1875
+          ]
+        },
+        {
+          "id": "wind:e802402ff91d742cc5955554b0a66da4b056e655be68172e3ff46794a3c7ea3f",
+          "ownerId": "hvp:flora:bed-88-88",
+          "anchor": [
+            0.1875,
+            0.25,
+            0
+          ]
+        },
+        {
+          "id": "wind:e40150aeb54e032882c09ccc680f7bdbcb55d1a8635b13a275224f9b66416f98",
+          "ownerId": "hvp:flora:hero",
+          "anchor": [
+            -0.0625,
+            6.75,
+            0.5625
+          ]
+        }
+      ],
+      "stiffness": 0.75,
+      "reducedMotion": false,
+      "phaseTicks": 0
+    },
+    "camera": {
+      "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+      "sourceRevision": 0,
+      "cameraId": "C01-EYE",
+      "variant": "clip-corridor",
+      "stability": "DISCRETE_CAMERA_PRESETS",
+      "cameraPosition": [
+        -8,
+        3.15,
+        -11
+      ],
+      "planes": [],
+      "cameraView": null,
+      "queries": 0,
+      "status": "NOT_APPLICABLE_NO_TARGET",
+      "targetPosition": null
+    },
+    "effects": [
+      {
+        "backend": "Three-WebGLRenderer-WebGL2",
+        "errors": [],
+        "experimentId": "RD-32",
+        "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+        "liveResources": {
+          "material-geometries": {
+            "status": "measured",
+            "unit": "count",
+            "value": 6
+          },
+          "material-materials": {
+            "status": "measured",
+            "unit": "count",
+            "value": 6
+          },
+          "material-ownedMaterialVariants": {
+            "status": "measured",
+            "unit": "count",
+            "value": 6
+          },
+          "material-textures": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          },
+          "rain-geometries": {
+            "status": "measured",
+            "unit": "count",
+            "value": 2
+          },
+          "rain-materials": {
+            "status": "measured",
+            "unit": "count",
+            "value": 2
+          },
+          "rain-particles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          },
+          "rain-splashes": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          }
+        },
+        "logicalCosts": {
+          "material-gpuBytes": {
+            "reason": "Native GPU memory is not exposed by WebGL",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "material-projectionBufferBytes": {
+            "reason": "Typed attribute/index bytes; excludes GPU allocator, driver and shaders",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 18895740
+          },
+          "material-triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 72330
+          },
+          "material-wetnessAttributeBytes": {
+            "reason": "Full private wetness attributes; excludes native allocator/shader memory",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 2012304
+          },
+          "rain-depthProjectionBytes": {
+            "reason": "CPU mesh depth candidate buffers",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 0
+          },
+          "rain-fieldQueries": {
+            "reason": "Conservative region-test count for last source/direction refresh, not per-particle queries",
+            "status": "estimated",
+            "unit": "count",
+            "value": 0
+          },
+          "rain-instanceUploadBytes": {
+            "reason": "Full reserved matrix attributes marked dirty without update ranges, including zero visible population; excludes native driver allocations",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 53248
+          },
+          "rain-sourceIndexBytes": {
+            "reason": "Private source occupancy/coverage buffers",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 0
+          },
+          "wetnessDriverValueBytes": {
+            "reason": "Private per-surface driver Float32 arrays, separate from material attributes",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 0
+          },
+          "wetnessQueryRefresh": {
+            "reason": "Conservative region-test count in last direction/source refresh",
+            "status": "estimated",
+            "unit": "count",
+            "value": 0
+          },
+          "wetnessSamples": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          },
+          "wetnessSourceCopyBytes": {
+            "reason": "Retained private source-index typed copies, including same-source pre-rain backward seek; additional to the rain index",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 0
+          }
+        },
+        "sourceRevision": 0,
+        "unsupportedFeatures": [
+          "native-pcf-shadow-parity",
+          "native-sky-shader-parity",
+          "native-water-shader-parity",
+          "native-material-shader-hooks",
+          "native-depth-readback-unsupported",
+          "material-art-owner-pending",
+          "no-temporal-history-or-probe-gi",
+          "water-shader-is-lab-preview-only",
+          "native-gpu-depth-projection-not-measured",
+          "rain-shadow-art-owner-pending",
+          "wetness-current-exposure-history-approximation"
+        ],
+        "variantId": "analytic-current-exposure"
+      },
+      {
+        "backend": "Three-WebGLRenderer-WebGL2",
+        "errors": [],
+        "experimentId": "RD-21",
+        "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+        "liveResources": {
+          "geometries": {
+            "status": "measured",
+            "unit": "count",
+            "value": 5
+          },
+          "materials": {
+            "status": "measured",
+            "unit": "count",
+            "value": 5
+          },
+          "textures": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          }
+        },
+        "logicalCosts": {
+          "gpuBytes": {
+            "reason": "Native GPU memory is not exposed by WebGL",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "projectionBufferBytes": {
+            "reason": "Typed attribute/index bytes; excludes GPU allocator, driver and shaders",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 1396200
+          },
+          "triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 17900
+          },
+          "windClusters": {
+            "status": "measured",
+            "unit": "count",
+            "value": 5
+          },
+          "windRetainedCopyBytes": {
+            "reason": "Private source/normal typed copies per cluster, additional to projection buffers; excludes native allocation",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 859200
+          },
+          "windUploadBytes": {
+            "reason": "Changed attribute bytes; excludes native driver/matrix uniform traffic",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 0
+          }
+        },
+        "sourceRevision": 0,
+        "unsupportedFeatures": [
+          "native-pcf-shadow-parity",
+          "native-sky-shader-parity",
+          "native-water-shader-parity",
+          "native-material-shader-hooks",
+          "wind-art-owner-pending",
+          "native-shadow-parity-unqualified"
+        ],
+        "variantId": "rigid"
+      },
+      {
+        "backend": "Three-WebGLRenderer-WebGL2",
+        "errors": [],
+        "experimentId": "RD-15",
+        "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+        "liveResources": {
+          "sourceIndices": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          }
+        },
+        "logicalCosts": {
+          "nativeGpuBytes": {
+            "reason": "Native allocation unavailable",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "queries": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          },
+          "sourceQueryCopies": {
+            "reason": "Canonical source-query typed copies, no physics world",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 0
+          }
+        },
+        "sourceRevision": 0,
+        "unsupportedFeatures": [
+          "camera-discrete-presets-only-no-free-look-hysteresis",
+          "native-shadow-and-product-pick-parity-unqualified",
+          "camera-art-owner-pending"
+        ],
+        "variantId": "clip-corridor"
+      }
+    ]
+  },
+  "facts": {
+    "backend": "Three-WebGLRenderer-WebGL2",
+    "errors": [],
+    "experimentId": "RD-51",
+    "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+    "liveResources": {
+      "geometries": {
+        "status": "measured",
+        "unit": "count",
+        "value": 13
+      },
+      "hostListeners": {
+        "status": "measured",
+        "unit": "count",
+        "value": 2
+      },
+      "renderers": {
+        "status": "measured",
+        "unit": "count",
+        "value": 1
+      },
+      "renderloops": {
+        "status": "measured",
+        "unit": "count",
+        "value": 1
+      },
+      "textures": {
+        "status": "measured",
+        "unit": "count",
+        "value": 1
+      }
+    },
+    "logicalCosts": {
+      "effect-0-material-gpuBytes": {
+        "reason": "Native GPU memory is not exposed by WebGL",
+        "status": "unsupported",
+        "unit": "byte"
+      },
+      "effect-0-material-projectionBufferBytes": {
+        "reason": "Typed attribute/index bytes; excludes GPU allocator, driver and shaders",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 18895740
+      },
+      "effect-0-material-triangles": {
+        "status": "measured",
+        "unit": "count",
+        "value": 72330
+      },
+      "effect-0-material-wetnessAttributeBytes": {
+        "reason": "Full private wetness attributes; excludes native allocator/shader memory",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 2012304
+      },
+      "effect-0-rain-depthProjectionBytes": {
+        "reason": "CPU mesh depth candidate buffers",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 0
+      },
+      "effect-0-rain-fieldQueries": {
+        "reason": "Conservative region-test count for last source/direction refresh, not per-particle queries",
+        "status": "estimated",
+        "unit": "count",
+        "value": 0
+      },
+      "effect-0-rain-instanceUploadBytes": {
+        "reason": "Full reserved matrix attributes marked dirty without update ranges, including zero visible population; excludes native driver allocations",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 53248
+      },
+      "effect-0-rain-sourceIndexBytes": {
+        "reason": "Private source occupancy/coverage buffers",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 0
+      },
+      "effect-0-wetnessDriverValueBytes": {
+        "reason": "Private per-surface driver Float32 arrays, separate from material attributes",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 0
+      },
+      "effect-0-wetnessQueryRefresh": {
+        "reason": "Conservative region-test count in last direction/source refresh",
+        "status": "estimated",
+        "unit": "count",
+        "value": 0
+      },
+      "effect-0-wetnessSamples": {
+        "status": "measured",
+        "unit": "count",
+        "value": 0
+      },
+      "effect-0-wetnessSourceCopyBytes": {
+        "reason": "Retained private source-index typed copies, including same-source pre-rain backward seek; additional to the rain index",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 0
+      },
+      "effect-1-gpuBytes": {
+        "reason": "Native GPU memory is not exposed by WebGL",
+        "status": "unsupported",
+        "unit": "byte"
+      },
+      "effect-1-projectionBufferBytes": {
+        "reason": "Typed attribute/index bytes; excludes GPU allocator, driver and shaders",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 1396200
+      },
+      "effect-1-triangles": {
+        "status": "measured",
+        "unit": "count",
+        "value": 17900
+      },
+      "effect-1-windClusters": {
+        "status": "measured",
+        "unit": "count",
+        "value": 5
+      },
+      "effect-1-windRetainedCopyBytes": {
+        "reason": "Private source/normal typed copies per cluster, additional to projection buffers; excludes native allocation",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 859200
+      },
+      "effect-1-windUploadBytes": {
+        "reason": "Changed attribute bytes; excludes native driver/matrix uniform traffic",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 0
+      },
+      "effect-2-nativeGpuBytes": {
+        "reason": "Native allocation unavailable",
+        "status": "unsupported",
+        "unit": "byte"
+      },
+      "effect-2-queries": {
+        "status": "measured",
+        "unit": "count",
+        "value": 0
+      },
+      "effect-2-sourceQueryCopies": {
+        "reason": "Canonical source-query typed copies, no physics world",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 0
+      },
+      "gpuBytes": {
+        "reason": "Native GPU memory unavailable",
+        "status": "unsupported",
+        "unit": "byte"
+      },
+      "gpuMs": {
+        "reason": "Timer available; diagnostic loop does not sample GPU timing",
+        "status": "not-run",
+        "unit": "ms"
+      },
+      "renderCalls": {
+        "status": "measured",
+        "unit": "count",
+        "value": 12
+      },
+      "triangles": {
+        "status": "measured",
+        "unit": "count",
+        "value": 90538
+      }
+    },
+    "sourceRevision": 0,
+    "unsupportedFeatures": [
+      "native-pcf-shadow-parity",
+      "native-sky-shader-parity",
+      "native-water-shader-parity",
+      "native-material-shader-hooks",
+      "native-depth-readback-unsupported",
+      "material-art-owner-pending",
+      "no-temporal-history-or-probe-gi",
+      "water-shader-is-lab-preview-only",
+      "native-gpu-depth-projection-not-measured",
+      "rain-shadow-art-owner-pending",
+      "wetness-current-exposure-history-approximation",
+      "wind-art-owner-pending",
+      "native-shadow-parity-unqualified",
+      "camera-discrete-presets-only-no-free-look-hysteresis",
+      "native-shadow-and-product-pick-parity-unqualified",
+      "camera-art-owner-pending"
+    ],
+    "variantId": "combined-rigid"
+  },
+  "diagnostics": {
+    "backend": "Three-WebGLRenderer-WebGL2",
+    "webgl2": true,
+    "fixtureId": "F01-HVP-COAST",
+    "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+    "sourceRevision": 0,
+    "payloadBindings": [
+      {
+        "id": "coast-crop-coverage",
+        "byteLength": 2949120,
+        "sha256": "1d433f1aa37993106ee691d7dfc033363ca7201fbbab132742340d3a08e92259"
+      },
+      {
+        "id": "coast-crop-material-slots",
+        "byteLength": 2949120,
+        "sha256": "561b1ea853ee6377ec78337016725d6771f178e734925dd0d6d3a33ec7056c0a"
+      },
+      {
+        "id": "coast-crop-occupancy",
+        "byteLength": 2949120,
+        "sha256": "04ba6e9254fe1940801f40679af6dfb1d95ffd828955c886823c519630c01f7c"
+      },
+      {
+        "id": "coast-slot-1-colors",
+        "byteLength": 1433664,
+        "sha256": "f020daf02341c6ab0f1511cf5b5bf14fea8e2ce4d2d8c8b4fbf5f587f4ad3ca5"
+      },
+      {
+        "id": "coast-slot-1-indices",
+        "byteLength": 410640,
+        "sha256": "ad41ac068cc45ebce3da452a21dfd6c2066c7a518305e26a8ad42020a0db1a48"
+      },
+      {
+        "id": "coast-slot-1-normals",
+        "byteLength": 1433664,
+        "sha256": "16b3807d274a6bbfb7ed54749f89c5240d963abcd50798ea051544423a4552c3"
+      },
+      {
+        "id": "coast-slot-1-positions",
+        "byteLength": 1433664,
+        "sha256": "48f478a1647152e7593727a1b1e53265f8978949b1a12e9ad2da9d360754e680"
+      },
+      {
+        "id": "coast-slot-2-indices",
+        "byteLength": 266640,
+        "sha256": "11018e41244c359d27137788b8d256bcbf135118481b0513221281cb3e3bb492"
+      },
+      {
+        "id": "coast-slot-3-indices",
+        "byteLength": 27192,
+        "sha256": "d7e16db83dcaa8a22f2155fb4129c4b951356f38d24578edf29b2f26e7f8accf"
+      },
+      {
+        "id": "coast-slot-4-indices",
+        "byteLength": 12360,
+        "sha256": "546154522f8a0171c5ffa93335b8c05eb0ddbc272f4d0b72dd8dbd0fb2480ed9"
+      },
+      {
+        "id": "coast-water-indices",
+        "byteLength": 1848,
+        "sha256": "e0810d67d0319761e19e7d3364f5ad4e18a7a3c43cb5b1ef92b68c0258a13d64"
+      },
+      {
+        "id": "coast-water-normals",
+        "byteLength": 7392,
+        "sha256": "f87c0ea807d66296a2d3c496ab3992b378668427d9f4c0c0d67b7c75525fbe43"
+      },
+      {
+        "id": "coast-water-positions",
+        "byteLength": 7392,
+        "sha256": "1614f45e69000d39b1ee2b6db7f800190e7d68fd0025896b29448fb80d1356e7"
+      },
+      {
+        "id": "plant-0-decor-coverage",
+        "byteLength": 1105920,
+        "sha256": "d5cdcf75112ecd21d5fe3c0ba1c5486dafd27ee3b27b507e9c99cc9ed46801b4"
+      },
+      {
+        "id": "plant-0-decor-material-slots",
+        "byteLength": 1105920,
+        "sha256": "223576632d466275dc1abfe05496975d0032a06e784b16a71238aa0f9a21abd5"
+      },
+      {
+        "id": "plant-0-decor-occupancy",
+        "byteLength": 1105920,
+        "sha256": "d5cdcf75112ecd21d5fe3c0ba1c5486dafd27ee3b27b507e9c99cc9ed46801b4"
+      },
+      {
+        "id": "plant-0-decor-slot-1-colors",
+        "byteLength": 369936,
+        "sha256": "8f33b27ca9605e203699c2bdd50f52d84acb88e27c0a5ca9c9ed575114cf0a6c"
+      },
+      {
+        "id": "plant-0-decor-slot-1-indices",
+        "byteLength": 92484,
+        "sha256": "ca40fca8cce7d6c665104c45a02e292d828e7bc0cc43e8864eabbdac893ff9a2"
+      },
+      {
+        "id": "plant-0-decor-slot-1-normals",
+        "byteLength": 369936,
+        "sha256": "391e52de3443bc6056cb558b723a4fd76244766d16171240f09e230360a1dd98"
+      },
+      {
+        "id": "plant-0-decor-slot-1-positions",
+        "byteLength": 369936,
+        "sha256": "9b58b212aa70357248cab4f00c216d06b9c15a9c78f638509b125bb84aac51fb"
+      },
+      {
+        "id": "plant-0-wood-coverage",
+        "byteLength": 1105920,
+        "sha256": "dc0683f9ec347e4494344138f1771d0ae27d2577089a3637df52e52607576516"
+      },
+      {
+        "id": "plant-0-wood-material-slots",
+        "byteLength": 1105920,
+        "sha256": "dc0683f9ec347e4494344138f1771d0ae27d2577089a3637df52e52607576516"
+      },
+      {
+        "id": "plant-0-wood-occupancy",
+        "byteLength": 1105920,
+        "sha256": "dc0683f9ec347e4494344138f1771d0ae27d2577089a3637df52e52607576516"
+      },
+      {
+        "id": "plant-0-wood-slot-1-colors",
+        "byteLength": 294864,
+        "sha256": "17178e79ed0fa169d9038056d40c514930111bae3b733ba291b3256d73d441a4"
+      },
+      {
+        "id": "plant-0-wood-slot-1-indices",
+        "byteLength": 73716,
+        "sha256": "18f25b64520cd1ec14c53e0f7d1ad1e5dae95e61a6ecb95b179de262512e427d"
+      },
+      {
+        "id": "plant-0-wood-slot-1-normals",
+        "byteLength": 294864,
+        "sha256": "122e14d0eef0c99c950bc085274391837b2dc2ca92f217665949517a65e9d78d"
+      },
+      {
+        "id": "plant-0-wood-slot-1-positions",
+        "byteLength": 294864,
+        "sha256": "b2896724b73955c4ccdd92c3035516827f2d6e4ff09ee716cc580abc77649935"
+      },
+      {
+        "id": "plant-1-decor-coverage",
+        "byteLength": 23232,
+        "sha256": "e14fe300404fc6c6f74051a1bd6ae57b514916c453ab04b60d12df7045b7b4f2"
+      },
+      {
+        "id": "plant-1-decor-material-slots",
+        "byteLength": 23232,
+        "sha256": "161f987495f38b17f1a193248327361c507f29c7b72b590e9bb68ed7631189f7"
+      },
+      {
+        "id": "plant-1-decor-occupancy",
+        "byteLength": 23232,
+        "sha256": "e14fe300404fc6c6f74051a1bd6ae57b514916c453ab04b60d12df7045b7b4f2"
+      },
+      {
+        "id": "plant-1-decor-slot-1-colors",
+        "byteLength": 12672,
+        "sha256": "e4e0a8da74b3442311206183f8258de6d2d0a3aaf28a8f43bec41c52d10f3fdf"
+      },
+      {
+        "id": "plant-1-decor-slot-1-indices",
+        "byteLength": 3168,
+        "sha256": "e185ece4977751d05af409a2dfcb0cf412aab54be953def36e45a171b6da6a1b"
+      },
+      {
+        "id": "plant-1-decor-slot-1-normals",
+        "byteLength": 12672,
+        "sha256": "fafbf9380f74c4d2aa388c8601693c9fccac4e86a5a7ca0d30b5a6caa428a4fc"
+      },
+      {
+        "id": "plant-1-decor-slot-1-positions",
+        "byteLength": 12672,
+        "sha256": "f792c46920bcc67e17bf28339dc574a4b43bb1769fb8f40503c7d88d54c037f0"
+      },
+      {
+        "id": "plant-2-decor-coverage",
+        "byteLength": 23232,
+        "sha256": "81a984ec399f208ffb5e9fa7ec0c8fb8b1fd4bdfef2143354bfa1b446af741bc"
+      },
+      {
+        "id": "plant-2-decor-material-slots",
+        "byteLength": 23232,
+        "sha256": "fc0ffea11a4f961b287b574e00c50b0f6a5e511a1ef759a7f2681334d139ca90"
+      },
+      {
+        "id": "plant-2-decor-occupancy",
+        "byteLength": 23232,
+        "sha256": "81a984ec399f208ffb5e9fa7ec0c8fb8b1fd4bdfef2143354bfa1b446af741bc"
+      },
+      {
+        "id": "plant-2-decor-slot-1-colors",
+        "byteLength": 23184,
+        "sha256": "dc3b80996153751cf303ecdf82d2bf3a097230434847cdab4879d161ec4ec594"
+      },
+      {
+        "id": "plant-2-decor-slot-1-indices",
+        "byteLength": 5796,
+        "sha256": "66f92ff37eb1c7d4a14485b8ec2d52ec51e20cd129f0f3e4a47cb6e7f3b688c8"
+      },
+      {
+        "id": "plant-2-decor-slot-1-normals",
+        "byteLength": 23184,
+        "sha256": "7fbf82b50b94809442d7d6eac1ba82c9f0697ad2d8dec85becef8dfb43f54acf"
+      },
+      {
+        "id": "plant-2-decor-slot-1-positions",
+        "byteLength": 23184,
+        "sha256": "cd25e56458532611ac4cbe91d0608c7166f80913d3225041aa42ef28738703b8"
+      },
+      {
+        "id": "plant-3-decor-coverage",
+        "byteLength": 23232,
+        "sha256": "b5586b65bcdf7df411677e6edba5a6f5145eaed8c4d307fc8b5f682663e9bad4"
+      },
+      {
+        "id": "plant-3-decor-material-slots",
+        "byteLength": 23232,
+        "sha256": "1ebfb6571a3fa4d6d9282dd487e25e850356c6eb30de4be2fa5249e0b38c16ac"
+      },
+      {
+        "id": "plant-3-decor-occupancy",
+        "byteLength": 23232,
+        "sha256": "b5586b65bcdf7df411677e6edba5a6f5145eaed8c4d307fc8b5f682663e9bad4"
+      },
+      {
+        "id": "plant-3-decor-slot-1-colors",
+        "byteLength": 13152,
+        "sha256": "5fc8ed40fa995e76e72cdad053402183ff713922c3fc15af5de507ec0e35b871"
+      },
+      {
+        "id": "plant-3-decor-slot-1-indices",
+        "byteLength": 3288,
+        "sha256": "fb86341feb5e8daa01a8b0ede399f588edada24dcebee785f96d22f8abcf9652"
+      },
+      {
+        "id": "plant-3-decor-slot-1-normals",
+        "byteLength": 13152,
+        "sha256": "11b80a769aa070a1f43137c7e403585bce7fba62d4e9392170198fb3bc144ef6"
+      },
+      {
+        "id": "plant-3-decor-slot-1-positions",
+        "byteLength": 13152,
+        "sha256": "ab12e22b3fb5d7ad0a5929f17c07bac63862416e0f8df7a5882cc9a487f7542f"
+      },
+      {
+        "id": "plant-4-decor-coverage",
+        "byteLength": 23232,
+        "sha256": "0d9e714a249b3552fc8a33b5d1ae2c09239dc06ff7120f1db5f051ec8f44d6a6"
+      },
+      {
+        "id": "plant-4-decor-material-slots",
+        "byteLength": 23232,
+        "sha256": "f3335c5899fe34577af80f457cacb1be7be7ed0c855245293fc125d28467d6f5"
+      },
+      {
+        "id": "plant-4-decor-occupancy",
+        "byteLength": 23232,
+        "sha256": "0d9e714a249b3552fc8a33b5d1ae2c09239dc06ff7120f1db5f051ec8f44d6a6"
+      },
+      {
+        "id": "plant-4-decor-slot-1-colors",
+        "byteLength": 10656,
+        "sha256": "c1f7c8ab99e090cf296641e1577b0d7f93ae078a9d655161981e528311bd546a"
+      },
+      {
+        "id": "plant-4-decor-slot-1-indices",
+        "byteLength": 2664,
+        "sha256": "08df4a3c7b06e1b3114c5c66267d140af62f071f233615be524f83b3ecbe85b8"
+      },
+      {
+        "id": "plant-4-decor-slot-1-normals",
+        "byteLength": 10656,
+        "sha256": "728d73385828153bd3f7d4792fe6a262c8e667cdf8ee69cc0eaf08b782758232"
+      },
+      {
+        "id": "plant-4-decor-slot-1-positions",
+        "byteLength": 10656,
+        "sha256": "6e28c21ec65e8b714a34df565b7c482e5756df7254a3c395b964dcd67d9728cb"
+      }
+    ],
+    "presentationProfile": "hvp:readable-coast-v6",
+    "frame": {
+      "cameraId": "C01-EYE",
+      "paused": true,
+      "seconds": 0,
+      "sourceRevision": 0,
+      "tick": 0,
+      "weather": {
+        "cloud01": 0.1,
+        "rain01": 0,
+        "snow01": 0,
+        "windMps": [
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "resetTick": null,
+    "resolution": {
+      "width": 1280,
+      "height": 720,
+      "dpr": 1,
+      "bufferWidth": 1280,
+      "bufferHeight": 720
+    },
+    "colorSpace": "srgb",
+    "toneMapping": 4,
+    "exposure": 1.05,
+    "cameraActual": {
+      "positionMeters": [
+        -8,
+        3.15,
+        -11
+      ],
+      "direction": [
+        0.4440181039584646,
+        -0.11932986543883735,
+        0.888036207916929
+      ],
+      "fov": 60
+    },
+    "timerQueryAvailable": true,
+    "gpuMs": {
+      "status": "not-run",
+      "unit": "ms",
+      "reason": "Timer available; no qualified timer-query sampling in diagnostic control"
+    },
+    "nativeGpuBytes": {
+      "status": "unsupported",
+      "unit": "byte",
+      "reason": "WebGL does not expose native/driver allocation bytes"
+    },
+    "device": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "submittedFrames": 1,
+    "frameVersion": 3,
+    "rendered": {
+      "tick": 0,
+      "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+      "sourceRevision": 0,
+      "resetTick": null,
+      "cameraId": "C01-EYE",
+      "frame": {
+        "cameraId": "C01-EYE",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "frameVersion": 3
+    },
+    "rendererInfo": {
+      "geometries": 13,
+      "textures": 1,
+      "programs": 7,
+      "calls": 12,
+      "triangles": 90538
+    },
+    "liveHosts": {
+      "renderers": 1,
+      "renderloops": 1,
+      "hostListeners": 2
+    },
+    "productIntegrated": false,
+    "lastReplacement": null
+  },
+  "mounts": 1,
+  "liveHosts": {
+    "renderers": 1,
+    "renderloops": 1,
+    "hostListeners": 2
+  },
+  "productIntegrated": false,
+  "art": "PENDING_OWNER"
+}

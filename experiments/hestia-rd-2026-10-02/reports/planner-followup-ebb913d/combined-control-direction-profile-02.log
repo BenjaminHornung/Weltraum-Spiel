@@ -1,0 +1,1 @@
+{"runId":"combined-control-direction-profile-02","mode":"profile","populations":[{"name":"profile-running-changing-direction","calls":26,"wallMs":2780.2999999988824},{"name":"profile-warm-unchanged","calls":6,"wallMs":403.59999999962747},{"name":"profile-transitions","calls":4,"wallMs":573.5999999996275}]}

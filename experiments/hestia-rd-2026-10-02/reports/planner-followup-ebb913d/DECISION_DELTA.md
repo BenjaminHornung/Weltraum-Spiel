@@ -1,0 +1,19 @@
+# Decision delta — finite follow-up results
+
+Only new decision-relevant facts are listed. All 23-card implementations/research artifacts, historical 97-case accounting and earlier negative populations remain preserved. PRODUCT_INTEGRATED=false; ART=PENDING_OWNER.
+
+| Axis | Fresh delta | Current boundary |
+|---|---|---|
+| Reproduction | Original ZIP length/hash/member/CRC/MANIFEST/content checker verified; four actual tool/combined mounts | New local smoke, not a 23-card rerun or art/performance release |
+| Combined cost | Ordinary rain Play is constant-direction; actual 24-direction population measures p50 88.6 ms / p95 93 ms, 9.4667 controlled ticks/s | Exact source/device/build/input population; conservative query counters are not measured iterations, GPU time or VRAM |
+| Optimization | Per-evaluation owner transforms reused; full face/rain equality and native RGBA exact;22/22 focused tests/type/final builds PASS | Warm median19.6→14 ms; direction-changing p95 unchanged93→93.6 and about9.6 ticks/s. Mixed small transition samples, no general performance release |
+| Native rays | Actual visible compile/link/draw and12 numeric cases execute; ordinary and injected compiler/link cleanup release observed native handles; direct factory Abort3/3 after reproduced RED | Unchanged original suite4/6, final helper10/12: RAY02-tick90 removed-cell prerequisite and RAY03 positive-distance FAIL. Actual360 edit and occupied-voxel720 supplement separately PASS. Adapted11/12 and historical0/6+2/4 preserved |
+| Image/fidelity | Existing narrow REN12-v2 body1/1 PASS, unchanged caps, five actual faults and C2 holdout; eight combined observations+running clip | Combined A/B RGBA exact. Ray/Greedy PNGs differ; full AA/interior/depth-water fidelity and equal-quality ray cost DEFER_NEW_SPIKE_REQUIRED |
+
+Current-exposure-analytic reconstructs bounded history under current source/exposure and resets at source snapshots; it does not save previous-pose wetness. Fixed camera corridors remain preset checks; freelook, hysteresis and product camera/shadow integration are separate gates. These contracts are preserved, not newly adopted.
+
+Five original HVP PNGs remain bound to exact b3c6523a LFS OIDs/SHA/dimensions and are included in the freshly verified immutable original package; their prior whole-image-decode receipt is preserved. The bounded local source/catalogue check found no new authorized concept originals. Six absent concept images and unavailable/unwatched Reddit video payloads remain absent; no repeated external fetch or invented footage. Existing authored page summaries retain their original attribution and media/license limits.
+
+Human ART, native physical memory/GPU timings, full ray beauty/AO/shadow/water fidelity and actual product integration are not cleared. New ray decision: EXECUTABLE_COMPARISON_CANDIDATE for this bound research probe; full image/performance adoption remains DEFER_NEW_SPIKE_REQUIRED. Existing Three/source-query selection, Babylon/WebGPU migration limits, rejected owner-mean/depth candidates, optional cards and product adoption gates are unchanged.
+
+A0 device priority was enforced across four explicit windows. The final review-correction grant was10:33:15–10:43:15 UTC; all actual native/build/type/unit/guard probes and own Python sessions ended before10:40 UTC, and A0 received actual completion before resuming. No foreign process was stopped. Final full-source-bound focused checks22/22, typecheck and build pass; missing/reused run-ID guards5/5 reject without changing previous evidence hashes. Initial sandbox EPERM startup attempts are preserved separately. There is no merge, dependency/global configuration/main/product change or inferred publication permission. The same single independent reviewer completed the four correction checks with no blocking findings; exact-diff Plannotator approval precedes any new commit. New publication needs actual authority.

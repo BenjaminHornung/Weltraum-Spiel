@@ -1,0 +1,9 @@
+# Design
+
+Reuse existing pinned Three/WebGL2 host, combined UI, effects, fixture loaders, native analytical probe and four tool pages. New helpers adapt these exact modules; no second renderer/effect implementation or QA framework. Archive reproduction uses Python stdlib zipfile and the contained Node checker. New builds and regular dependency reuse stay inside the report subtree, with distinct control/candidate source receipts.
+
+Separate clean timing from profiler overhead. Measure full production UI, simulation ticks, elapsed wall time, synchronous calls and observed native submissions; do not substitute a warm unchanged cache hit for changing-direction work. Attribute Wind, rain queries, wetness, material updates and JSON diagnostics in a distinct profiling run. One measured bottleneck only, equal-quality A/B, reject a patch within noise.
+
+Ray repair starts with native RED, then renames only the reserved local identifier in the shared visible/numeric GLSL kernel. Additional index/qualification edits require a causal freshly reproduced program/lifecycle defect. Actual compile/link, draw/readback, native fault sensitivity and terminal cleanup determine new results. Pre-allocation format admission and post-allocation compiler cleanup are different gates. Stop after one small cleanup round if architecture changes are needed.
+
+Historical source/read/build identities and 0/6, 2/4 populations remain separate. New evidence binds hashes, run IDs, device and denominators. A0 measurement-window status controls qualification; missing lease means diagnostic timing plus an explicit target-device gate. Logical resource deletion is not VRAM proof. Current-exposure-analytic remains an approximation; fixed camera presets are not freelook/hysteresis/shadow qualification. ART remains human-owned.

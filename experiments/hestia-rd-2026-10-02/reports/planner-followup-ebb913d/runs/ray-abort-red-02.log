@@ -1,0 +1,1 @@
+{"runId":"ray-abort-red-02","cases":[{"mode":"ready","status":"FAIL","reason":"AssertionError [ERR_ASSERTION]: Direct Abort must immediately retire the terminal\n\nfalse !== true\n"},{"mode":"during-init","status":"PASS"},{"mode":"before-init","status":"PASS"}]}

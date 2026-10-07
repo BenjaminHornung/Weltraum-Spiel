@@ -1,0 +1,24 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
++ [
++   'Failed to load resource: the server responded with a status of 404 (File not found)'
++ ]
+- []
+
+    at file:///C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/reports/planner-followup-ebb913d/smoke.mjs:45:10 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: [
+    'Failed to load resource: the server responded with a status of 404 (File not found)'
+  ],
+  expected: [],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.23.2

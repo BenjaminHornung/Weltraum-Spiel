@@ -1,0 +1,2968 @@
+{
+  "mode": "COMBINED_SOURCE_REPLAY",
+  "stage": {
+    "tick": 240,
+    "id": "rain",
+    "label": "Regen + Wind"
+  },
+  "clock": {
+    "tick": 300,
+    "seconds": 5,
+    "paused": true
+  },
+  "scenarioDigest": "f35f41b874373993dde21976b594722835f19e9b74db11980b7e0cb6e396c153",
+  "inputBindings": [
+    {
+      "role": "coast",
+      "scenarioId": "F01-HVP-COAST-REPLAY",
+      "scenarioDigest": "e41d4965131f17ad47ec7a7ce6db4a841d60a550abb86cd51206fa973c500bd9",
+      "initialDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+      "sources": [
+        {
+          "id": "F01-HVP-COAST",
+          "digest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "sourceRefs": [
+            {
+              "commit": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+              "files": [
+                {
+                  "blobSha": "d0613db4fbaecc8bfbf2ff80ad6a483e20430833",
+                  "path": "apps/weltraum-browser/src/core/hash.ts",
+                  "sha256": "7514fc507d6c83404462d967ff4736790abf6425842b676cefedc4928a2febee"
+                },
+                {
+                  "blobSha": "d4cd91baca674a027416e9cd8eab97532803080d",
+                  "path": "apps/weltraum-browser/src/hestia-prototype/presentation/look.ts",
+                  "sha256": "1c058c73d4313b6da757b341f6dad66173d73332d169d7dbe04710b96c0219ea"
+                },
+                {
+                  "blobSha": "089e5e985ee9ad271a3ed44e0bb3214ab28c0879",
+                  "path": "apps/weltraum-browser/src/hestia-prototype/presentation/vegetation.ts",
+                  "sha256": "64806d7f77d6e562c8f1a36e7fb313c6353acca04d05331063af3773a519e1ae"
+                },
+                {
+                  "blobSha": "5d99e23a6bc8dfd80e8bd8d056d3dea393daad2b",
+                  "path": "apps/weltraum-browser/src/hestia-prototype/presentation/visualEffects.ts",
+                  "sha256": "b02f1d1a114fd143201fd7f516c6bec52dd574d3e511fdc09aa5ffd7931ba31f"
+                },
+                {
+                  "blobSha": "3f87cadac0664db2b32aae04b25356bb0ead8c8d",
+                  "path": "apps/weltraum-browser/src/hvp/hvpCamera.ts",
+                  "sha256": "b7bec67081a4ec0a9a532cc6b4dbc929fd0be56dd5367a965c66891ae487bf56"
+                },
+                {
+                  "blobSha": "1fad35b9ca837256f8acfd1ed1ebeb97ca5b4c26",
+                  "path": "apps/weltraum-browser/src/hvp/hvpCoastMesher.ts",
+                  "sha256": "437f3f48a3e578174f23b0956e3a3a2fee975a25b4576cc77b7af87c91930a6a"
+                },
+                {
+                  "blobSha": "0e9d3226828cc0a233791b77b634aa91c0c39771",
+                  "path": "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+                  "sha256": "c13e3107a542b402faf342befb479e6bf74d94730b16c4caf73d1f911fad8be4"
+                },
+                {
+                  "blobSha": "86aeb3b74a8a2c04fb8e8f6624f6ecdd9b66b9d0",
+                  "path": "apps/weltraum-browser/src/hvp/hvpTerrain.ts",
+                  "sha256": "93019417d3f022ead0ee3f9bf42eefce6e249fe135fa61916424d78b19ba1a11"
+                },
+                {
+                  "blobSha": "54720c15972daeccfa1b8bc781deb2933da4c4b4",
+                  "path": "apps/weltraum-browser/src/presentation/canonical.ts",
+                  "sha256": "67558d89ff09e99588101618eb02c5820a042a27850e884db91b0e80188862c8"
+                },
+                {
+                  "blobSha": "a201fa411bd72e4cd39504a6d84ba008267263f1",
+                  "path": "apps/weltraum-browser/src/presentation/ids.ts",
+                  "sha256": "50d7642fe0fbf097bf2cd80275ff5d4243b69cb62c93a7bad14612f5c2ce96a2"
+                },
+                {
+                  "blobSha": "17b2f92823dc571ba2c16268907a904e68f9e3f0",
+                  "path": "apps/weltraum-browser/src/presentation/index.ts",
+                  "sha256": "d1cc7c04ed7bf95d023f8a75c8d6b6edb558bc67e0c24e16298d81f7d6321d49"
+                },
+                {
+                  "blobSha": "8c4d6e98721d03d90881c99b152c96bfd20cf063",
+                  "path": "apps/weltraum-browser/src/presentation/materialProfile.ts",
+                  "sha256": "1d871f968781bdf67c9e6b5517daad94bddccf373950b3f022e68769e7278134"
+                },
+                {
+                  "blobSha": "d6e3d92f52370e380a081c6a6b5bf1af88ebadc0",
+                  "path": "apps/weltraum-browser/src/presentation/meshArtifact.ts",
+                  "sha256": "070a4bef18182a666a8bdd57518da057370ccca2c8d3c9047506a0a12e4ff671"
+                },
+                {
+                  "blobSha": "351b6f7385dd612724912d58c8288ddb99109117",
+                  "path": "apps/weltraum-browser/src/presentation/validation.ts",
+                  "sha256": "e93eadb015c284865184a997b9542fc351ab4c0b4f67247a9adb80890bafb1ff"
+                },
+                {
+                  "blobSha": "e01256c79c2c0efa1e871c5de835102adb66f65c",
+                  "path": "apps/weltraum-browser/src/voxel/blockAmbientOcclusion.ts",
+                  "sha256": "ddfb1d22eccdcb83e48f8c21d82605339936600a6afbbc452bdcdce497ca7675"
+                }
+              ],
+              "generatorVersion": "hvp-authored-coast-v5+hvp-root-umbrella-v3",
+              "kind": "product",
+              "repository": "BenjaminHornung/Weltraum-Spiel",
+              "sourceDigest": "b8fde6b0"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "shelter",
+      "scenarioId": "F03-SHELTER-REPLAY",
+      "scenarioDigest": "5ae34ae681ab5525e410f5e815f92e6fa603aa253f1c50377c33fdfd80b21ced",
+      "initialDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+      "sources": [
+        {
+          "id": "F03-SHELTER",
+          "digest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+          "sourceRefs": [
+            {
+              "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+              "generatorPath": "exporters/synthetic.mjs",
+              "generatorVersion": "rd02-small-fixtures-v1",
+              "kind": "synthetic",
+              "seed": 20261002,
+              "sourceDigest": "9d59fa387a6c507f3ac3a3c538a8df41efa4eabcc5adaed4f13bebd9b3902f06",
+              "testOnly": true
+            }
+          ]
+        },
+        {
+          "id": "F03-SHELTER-R1",
+          "digest": "e678890af9ca58964bed5ac8a109411e3777e62202a6d576d7dd33d436f91538",
+          "sourceRefs": [
+            {
+              "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+              "generatorPath": "exporters/synthetic.mjs",
+              "generatorVersion": "rd02-small-fixtures-v1",
+              "kind": "synthetic",
+              "seed": 20261002,
+              "sourceDigest": "5aa44fe5e4264d75e18c435d66fff937a77dc2d77d5a845e15c55db4c9d3792a",
+              "testOnly": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "detach",
+      "scenarioId": "F04-DETACH-REPLAY",
+      "scenarioDigest": "0d9012b86bac2c620864774038a1aed987d81e2338f1618b4a434b49f9f0a623",
+      "initialDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+      "sources": [
+        {
+          "id": "F04-DETACH",
+          "digest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+          "sourceRefs": [
+            {
+              "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+              "generatorPath": "exporters/synthetic.mjs",
+              "generatorVersion": "rd02-small-fixtures-v1",
+              "kind": "synthetic",
+              "seed": 20261002,
+              "sourceDigest": "c4151167bdfd1ee22ad4ba66b0f5374617e16b32b9770cb92ab1f88a5963886b",
+              "testOnly": true
+            }
+          ]
+        },
+        {
+          "id": "F04-DETACH-R1",
+          "digest": "c45992d7a859482a869e8deebbecd0e54263986a0acbeca1dc0bde9d8cab4e3b",
+          "sourceRefs": [
+            {
+              "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+              "generatorPath": "exporters/synthetic.mjs",
+              "generatorVersion": "rd02-small-fixtures-v1",
+              "kind": "synthetic",
+              "seed": 20261002,
+              "sourceDigest": "52fdd9dc8886a853e43ed1b23deeae292d3642f845dbf1cce4457a7adea573d3",
+              "testOnly": true
+            }
+          ]
+        },
+        {
+          "id": "F04-DETACH-R2",
+          "digest": "7e1bb35d1a0ada1ff5ddda9719e7d2ad5710d11d59f0f28c7f72b20a04dce37e",
+          "sourceRefs": [
+            {
+              "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+              "generatorPath": "exporters/synthetic.mjs",
+              "generatorVersion": "rd02-small-fixtures-v1",
+              "kind": "synthetic",
+              "seed": 20261002,
+              "sourceDigest": "c1429c283b570945593a62014f63a58bde41949533be6624d58639807977d45e",
+              "testOnly": true
+            }
+          ]
+        },
+        {
+          "id": "F04-DETACH-R3",
+          "digest": "95e4ebc916e34c14d7ff46b0aa98ad2007d7c9f4e03c2463cc2bd75d7d5414bd",
+          "sourceRefs": [
+            {
+              "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+              "generatorPath": "exporters/synthetic.mjs",
+              "generatorVersion": "rd02-small-fixtures-v1",
+              "kind": "synthetic",
+              "seed": 20261002,
+              "sourceDigest": "e27b26e1a4bbfb0694dbabb9e88d7b69ef1b4cf7a4422acebb3cc71302461a43",
+              "testOnly": true
+            }
+          ]
+        },
+        {
+          "id": "F04-DETACH-R4",
+          "digest": "8b7af46b9292ce40ead9545cf02d38bb7e57bf1205d7fbf1bf9f4c7af783832b",
+          "sourceRefs": [
+            {
+              "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+              "generatorPath": "exporters/synthetic.mjs",
+              "generatorVersion": "rd02-small-fixtures-v1",
+              "kind": "synthetic",
+              "seed": 20261002,
+              "sourceDigest": "0654c0e77a2ab0b14594f2f21ed70ffd6720e39019fee0fee2814f76093e9038",
+              "testOnly": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "role": "figure",
+      "scenarioId": "F05-CUTOUT-REPLAY",
+      "scenarioDigest": "d5192a3f8198faac430c232cd3604716daeb034211d309031749170c52abae64",
+      "initialDigest": "c24de4c1597713e11935bf98e8fe7c5a312a615ee3544831f6f97b74c948b904",
+      "sources": [
+        {
+          "id": "F05-CUTOUT",
+          "digest": "c24de4c1597713e11935bf98e8fe7c5a312a615ee3544831f6f97b74c948b904",
+          "sourceRefs": [
+            {
+              "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+              "generatorPath": "exporters/synthetic.mjs",
+              "generatorVersion": "rd02-small-fixtures-v1",
+              "kind": "synthetic",
+              "seed": 20261002,
+              "sourceDigest": "339dabb8f5d378c8f7ec42f50b901eef97b105f0f1cfb85f967434cf71db06bd",
+              "testOnly": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "composition": {
+    "schema": "hestia-rd-composition-v1",
+    "inputs": [
+      {
+        "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+        "owners": [
+          "removable-roof",
+          "shelter-shell"
+        ]
+      },
+      {
+        "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+        "owners": [
+          "tree-main"
+        ]
+      },
+      {
+        "fixtureDigest": "c24de4c1597713e11935bf98e8fe7c5a312a615ee3544831f6f97b74c948b904",
+        "owners": [
+          "figure-marker"
+        ]
+      },
+      {
+        "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+        "owners": [
+          "hvp:water"
+        ]
+      }
+    ],
+    "revision": 0,
+    "policy": "original-payloads-frames-materials-and-supports-no-product-export"
+  },
+  "debugSamplePreview": {
+    "shown": 32,
+    "total": 5656
+  },
+  "combined": {
+    "wet": {
+      "result": {
+        "fixtureDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+        "sourceRevision": 0,
+        "sourceFrame": {
+          "basis": "right-handed-y-up",
+          "id": "lab",
+          "originMeters": [
+            0,
+            0,
+            0
+          ],
+          "rotationXyzw": [
+            0,
+            0,
+            0,
+            1
+          ]
+        },
+        "coverageBindings": [
+          {
+            "regionId": "removable-roof-cells",
+            "ownerId": "removable-roof",
+            "payloadId": "removable-roof-cells-coverage",
+            "sha256": "3654da25dd1bae2cc27c2e3d0d7e9e9755280ca7f3ae5d4aa18d32a0fc094384"
+          },
+          {
+            "regionId": "shelter-shell",
+            "ownerId": "shelter-shell",
+            "payloadId": "shelter-shell-coverage",
+            "sha256": "2d79cff9e3fd90907d81177f9b314b7a7ab5c514a15348c04261fe6a08d4c3c8"
+          },
+          {
+            "regionId": "fragment-leaf",
+            "ownerId": "tree-main",
+            "payloadId": "fragment-leaf-coverage",
+            "sha256": "5bf90435cd45d0475cbb0ace7e7e3a672ed2a3a4984ad3e8624d8878725a9c2e"
+          },
+          {
+            "regionId": "fragment-wood",
+            "ownerId": "tree-main",
+            "payloadId": "fragment-wood-coverage",
+            "sha256": "7eb24a18990ee4c958c89773da6cc9fbc5c278357762d02ec6ab947eb28726ff"
+          },
+          {
+            "regionId": "trunk-cells",
+            "ownerId": "tree-main",
+            "payloadId": "trunk-cells-coverage",
+            "sha256": "19a1cc81b9d025fe2f8c0decb0111ef580a499a09654a662cef2e1ba75732db1"
+          }
+        ],
+        "frame": {
+          "cameraId": "near",
+          "paused": true,
+          "seconds": 5,
+          "sourceRevision": 0,
+          "tick": 300,
+          "weather": {
+            "cloud01": 0.85,
+            "rain01": 0.8,
+            "snow01": 0,
+            "windMps": [
+              3.023379569560454,
+              0,
+              1.0081828493461589
+            ]
+          }
+        },
+        "direction": [
+          0.05031872335595408,
+          -0.9985922481430843,
+          0.016779392967798023
+        ],
+        "sourceStartTick": 120,
+        "sourcePolicy": "reset-at-snapshot",
+        "model": "current-exposure-analytic",
+        "samples": [
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/0",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              1.96875,
+              1.5625,
+              0.4375
+            ],
+            "exposure": "shielded",
+            "wetness01": 0,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/1",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              2.0625,
+              1.46875,
+              0.4375
+            ],
+            "exposure": "shielded",
+            "wetness01": 0,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/2",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              2.0625,
+              1.65625,
+              0.4375
+            ],
+            "exposure": "exposed",
+            "wetness01": 0.26399999999999996,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/3",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              2.0625,
+              1.5625,
+              0.34375
+            ],
+            "exposure": "exposed",
+            "wetness01": 0.26399999999999996,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/4",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              2.1875,
+              1.46875,
+              0.4375
+            ],
+            "exposure": "shielded",
+            "wetness01": 0,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/5",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              2.1875,
+              1.65625,
+              0.4375
+            ],
+            "exposure": "exposed",
+            "wetness01": 0.26399999999999996,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/6",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              2.1875,
+              1.5625,
+              0.34375
+            ],
+            "exposure": "exposed",
+            "wetness01": 0.26399999999999996,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/7",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              2.3125,
+              1.46875,
+              0.4375
+            ],
+            "exposure": "shielded",
+            "wetness01": 0,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/8",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              2.3125,
+              1.65625,
+              0.4375
+            ],
+            "exposure": "exposed",
+            "wetness01": 0.26399999999999996,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/9",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              2.3125,
+              1.5625,
+              0.34375
+            ],
+            "exposure": "exposed",
+            "wetness01": 0.26399999999999996,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/10",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              2.4375,
+              1.46875,
+              0.4375
+            ],
+            "exposure": "shielded",
+            "wetness01": 0,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/11",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              2.4375,
+              1.65625,
+              0.4375
+            ],
+            "exposure": "exposed",
+            "wetness01": 0.26399999999999996,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/12",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              2.4375,
+              1.5625,
+              0.34375
+            ],
+            "exposure": "exposed",
+            "wetness01": 0.26399999999999996,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/13",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              2.5625,
+              1.46875,
+              0.4375
+            ],
+            "exposure": "shielded",
+            "wetness01": 0,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/14",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              2.5625,
+              1.65625,
+              0.4375
+            ],
+            "exposure": "exposed",
+            "wetness01": 0.26399999999999996,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/15",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              2.5625,
+              1.5625,
+              0.34375
+            ],
+            "exposure": "exposed",
+            "wetness01": 0.26399999999999996,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/16",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              2.6875,
+              1.46875,
+              0.4375
+            ],
+            "exposure": "shielded",
+            "wetness01": 0,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/17",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              2.6875,
+              1.65625,
+              0.4375
+            ],
+            "exposure": "exposed",
+            "wetness01": 0.26399999999999996,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/18",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              2.6875,
+              1.5625,
+              0.34375
+            ],
+            "exposure": "exposed",
+            "wetness01": 0.26399999999999996,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/19",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              2.8125,
+              1.46875,
+              0.4375
+            ],
+            "exposure": "shielded",
+            "wetness01": 0,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/20",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              2.8125,
+              1.65625,
+              0.4375
+            ],
+            "exposure": "exposed",
+            "wetness01": 0.26399999999999996,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/21",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              2.8125,
+              1.5625,
+              0.34375
+            ],
+            "exposure": "exposed",
+            "wetness01": 0.26399999999999996,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/22",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              3.03125,
+              1.5625,
+              0.4375
+            ],
+            "exposure": "exposed",
+            "wetness01": 0.26399999999999996,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/23",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              2.9375,
+              1.46875,
+              0.4375
+            ],
+            "exposure": "shielded",
+            "wetness01": 0,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/24",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              2.9375,
+              1.65625,
+              0.4375
+            ],
+            "exposure": "exposed",
+            "wetness01": 0.26399999999999996,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/25",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              2.9375,
+              1.5625,
+              0.34375
+            ],
+            "exposure": "exposed",
+            "wetness01": 0.26399999999999996,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/26",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              1.96875,
+              1.5625,
+              0.5625
+            ],
+            "exposure": "shielded",
+            "wetness01": 0,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/27",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              2.0625,
+              1.46875,
+              0.5625
+            ],
+            "exposure": "shielded",
+            "wetness01": 0,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/28",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              2.0625,
+              1.65625,
+              0.5625
+            ],
+            "exposure": "exposed",
+            "wetness01": 0.26399999999999996,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/29",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              2.1875,
+              1.46875,
+              0.5625
+            ],
+            "exposure": "shielded",
+            "wetness01": 0,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/30",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              2.1875,
+              1.65625,
+              0.5625
+            ],
+            "exposure": "exposed",
+            "wetness01": 0.26399999999999996,
+            "qualification": "known"
+          },
+          {
+            "id": "surface:4cf2777bc673ee31d891f5fa6955ea06746aa3a5611e3e9455e6a58559488eea/face/31",
+            "ownerId": "removable-roof",
+            "ownerRevision": 0,
+            "receiverWorldMeters": [
+              2.3125,
+              1.46875,
+              0.5625
+            ],
+            "exposure": "shielded",
+            "wetness01": 0,
+            "qualification": "known"
+          }
+        ],
+        "unknownSamples": 393,
+        "refreshQueries": 1302040,
+        "potentialQueries": 3676400,
+        "copiedSourceBytes": 119408
+      },
+      "sourceStartTick": 120,
+      "preset": {
+        "schema": "hestia-rd-wetness-v1",
+        "id": "combined-rain-timeline",
+        "sourcePolicy": "reset-at-snapshot",
+        "model": "current-exposure-analytic",
+        "wettingPerSecond": 0.35,
+        "dryingPerSecond": 0.08,
+        "rainHistory": [
+          {
+            "tick": 0,
+            "rain01": 0
+          },
+          {
+            "tick": 240,
+            "rain01": 0.8
+          },
+          {
+            "tick": 1320,
+            "rain01": 0
+          }
+        ]
+      },
+      "material": {
+        "generation": 0,
+        "viewMode": "color",
+        "sunDirectionWorld": [
+          -0.408248290463863,
+          0.816496580927726,
+          -0.408248290463863
+        ]
+      },
+      "rain": {
+        "fixtureDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+        "sourceRevision": 0,
+        "sourceFrame": {
+          "basis": "right-handed-y-up",
+          "id": "lab",
+          "originMeters": [
+            0,
+            0,
+            0
+          ],
+          "rotationXyzw": [
+            0,
+            0,
+            0,
+            1
+          ]
+        },
+        "coverageBindings": [
+          {
+            "regionId": "removable-roof-cells",
+            "ownerId": "removable-roof",
+            "payloadId": "removable-roof-cells-coverage",
+            "sha256": "3654da25dd1bae2cc27c2e3d0d7e9e9755280ca7f3ae5d4aa18d32a0fc094384"
+          },
+          {
+            "regionId": "shelter-shell",
+            "ownerId": "shelter-shell",
+            "payloadId": "shelter-shell-coverage",
+            "sha256": "2d79cff9e3fd90907d81177f9b314b7a7ab5c514a15348c04261fe6a08d4c3c8"
+          },
+          {
+            "regionId": "fragment-leaf",
+            "ownerId": "tree-main",
+            "payloadId": "fragment-leaf-coverage",
+            "sha256": "5bf90435cd45d0475cbb0ace7e7e3a672ed2a3a4984ad3e8624d8878725a9c2e"
+          },
+          {
+            "regionId": "fragment-wood",
+            "ownerId": "tree-main",
+            "payloadId": "fragment-wood-coverage",
+            "sha256": "7eb24a18990ee4c958c89773da6cc9fbc5c278357762d02ec6ab947eb28726ff"
+          },
+          {
+            "regionId": "trunk-cells",
+            "ownerId": "tree-main",
+            "payloadId": "trunk-cells-coverage",
+            "sha256": "19a1cc81b9d025fe2f8c0decb0111ef580a499a09654a662cef2e1ba75732db1"
+          }
+        ],
+        "tick": 300,
+        "direction": [
+          0.05031872335595408,
+          -0.9985922481430843,
+          0.016779392967798023
+        ],
+        "coverage": "partly-unknown",
+        "field": {
+          "fixtureDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "sourceFrame": {
+            "basis": "right-handed-y-up",
+            "id": "lab",
+            "originMeters": [
+              0,
+              0,
+              0
+            ],
+            "rotationXyzw": [
+              0,
+              0,
+              0,
+              1
+            ]
+          },
+          "coverageBindings": [
+            {
+              "regionId": "removable-roof-cells",
+              "ownerId": "removable-roof",
+              "payloadId": "removable-roof-cells-coverage",
+              "sha256": "3654da25dd1bae2cc27c2e3d0d7e9e9755280ca7f3ae5d4aa18d32a0fc094384"
+            },
+            {
+              "regionId": "shelter-shell",
+              "ownerId": "shelter-shell",
+              "payloadId": "shelter-shell-coverage",
+              "sha256": "2d79cff9e3fd90907d81177f9b314b7a7ab5c514a15348c04261fe6a08d4c3c8"
+            },
+            {
+              "regionId": "fragment-leaf",
+              "ownerId": "tree-main",
+              "payloadId": "fragment-leaf-coverage",
+              "sha256": "5bf90435cd45d0475cbb0ace7e7e3a672ed2a3a4984ad3e8624d8878725a9c2e"
+            },
+            {
+              "regionId": "fragment-wood",
+              "ownerId": "tree-main",
+              "payloadId": "fragment-wood-coverage",
+              "sha256": "7eb24a18990ee4c958c89773da6cc9fbc5c278357762d02ec6ab947eb28726ff"
+            },
+            {
+              "regionId": "trunk-cells",
+              "ownerId": "tree-main",
+              "payloadId": "trunk-cells-coverage",
+              "sha256": "19a1cc81b9d025fe2f8c0decb0111ef580a499a09654a662cef2e1ba75732db1"
+            }
+          ],
+          "direction": [
+            0.05031872335595408,
+            -0.9985922481430843,
+            0.016779392967798023
+          ],
+          "travelMeters": 3.9430508371378936,
+          "columns": [
+            {
+              "originMeters": [
+                -1.09375,
+                3.96875,
+                -1.15625
+              ],
+              "status": "air"
+            },
+            {
+              "originMeters": [
+                -0.28125,
+                3.96875,
+                -1.15625
+              ],
+              "status": "air"
+            },
+            {
+              "originMeters": [
+                0.53125,
+                3.96875,
+                -1.15625
+              ],
+              "status": "air"
+            },
+            {
+              "originMeters": [
+                1.34375,
+                3.96875,
+                -1.15625
+              ],
+              "status": "unknown"
+            },
+            {
+              "originMeters": [
+                2.15625,
+                3.96875,
+                -1.15625
+              ],
+              "status": "unknown"
+            },
+            {
+              "originMeters": [
+                2.96875,
+                3.96875,
+                -1.15625
+              ],
+              "status": "unknown"
+            },
+            {
+              "originMeters": [
+                3.78125,
+                3.96875,
+                -1.15625
+              ],
+              "status": "unknown"
+            },
+            {
+              "originMeters": [
+                4.59375,
+                3.96875,
+                -1.15625
+              ],
+              "status": "unknown"
+            },
+            {
+              "originMeters": [
+                -1.09375,
+                3.96875,
+                -0.46875
+              ],
+              "status": "air"
+            },
+            {
+              "originMeters": [
+                -0.28125,
+                3.96875,
+                -0.46875
+              ],
+              "status": "air"
+            },
+            {
+              "originMeters": [
+                0.53125,
+                3.96875,
+                -0.46875
+              ],
+              "status": "air"
+            },
+            {
+              "originMeters": [
+                1.34375,
+                3.96875,
+                -0.46875
+              ],
+              "status": "unknown"
+            },
+            {
+              "originMeters": [
+                2.15625,
+                3.96875,
+                -0.46875
+              ],
+              "status": "unknown"
+            },
+            {
+              "originMeters": [
+                2.96875,
+                3.96875,
+                -0.46875
+              ],
+              "status": "unknown"
+            },
+            {
+              "originMeters": [
+                3.78125,
+                3.96875,
+                -0.46875
+              ],
+              "status": "unknown"
+            },
+            {
+              "originMeters": [
+                4.59375,
+                3.96875,
+                -0.46875
+              ],
+              "status": "unknown"
+            },
+            {
+              "originMeters": [
+                -1.09375,
+                3.96875,
+                0.21875
+              ],
+              "status": "air"
+            },
+            {
+              "originMeters": [
+                -0.28125,
+                3.96875,
+                0.21875
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 0.6520005321251635,
+              "hitPointMeters": [
+                -0.24844216559605906,
+                3.317667322834646,
+                0.22969017314374154
+              ]
+            },
+            {
+              "originMeters": [
+                0.53125,
+                3.96875,
+                0.21875
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 3.7257173264295056,
+              "hitPointMeters": [
+                0.7187233394510911,
+                0.2482775590551185,
+                0.2812652751070945
+              ]
+            },
+            {
+              "originMeters": [
+                1.34375,
+                3.96875,
+                0.21875
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 0.7451434652859013,
+              "hitPointMeters": [
+                1.3812446678902182,
+                3.2246555118110236,
+                0.2312530550214189
+              ]
+            },
+            {
+              "originMeters": [
+                2.15625,
+                3.96875,
+                0.21875
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 3.7257173264295056,
+              "hitPointMeters": [
+                2.343723339451091,
+                0.2482775590551185,
+                0.2812652751070945
+              ]
+            },
+            {
+              "originMeters": [
+                2.96875,
+                3.96875,
+                0.21875
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 3.7257173264295056,
+              "hitPointMeters": [
+                3.156223339451091,
+                0.2482775590551185,
+                0.2812652751070945
+              ]
+            },
+            {
+              "originMeters": [
+                3.78125,
+                3.96875,
+                0.21875
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 3.7257173264295056,
+              "hitPointMeters": [
+                3.968723339451091,
+                0.2482775590551185,
+                0.2812652751070945
+              ]
+            },
+            {
+              "originMeters": [
+                4.59375,
+                3.96875,
+                0.21875
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 3.7257173264295056,
+              "hitPointMeters": [
+                4.781223339451091,
+                0.2482775590551185,
+                0.2812652751070945
+              ]
+            },
+            {
+              "originMeters": [
+                -1.09375,
+                3.96875,
+                0.90625
+              ],
+              "status": "air"
+            },
+            {
+              "originMeters": [
+                -0.28125,
+                3.96875,
+                0.90625
+              ],
+              "status": "air"
+            },
+            {
+              "originMeters": [
+                0.53125,
+                3.96875,
+                0.90625
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 2.3596209734053537,
+              "hitPointMeters": [
+                0.6499831149856911,
+                1.612450787401575,
+                0.9458430075678265
+              ]
+            },
+            {
+              "originMeters": [
+                1.34375,
+                3.96875,
+                0.90625
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 2.3596209734053537,
+              "hitPointMeters": [
+                1.4624831149856912,
+                1.612450787401575,
+                0.9458430075678265
+              ]
+            },
+            {
+              "originMeters": [
+                2.15625,
+                3.96875,
+                0.90625
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 2.3596209734053537,
+              "hitPointMeters": [
+                2.274983114985691,
+                1.612450787401575,
+                0.9458430075678265
+              ]
+            },
+            {
+              "originMeters": [
+                2.96875,
+                3.96875,
+                0.90625
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 0.9935246203812016,
+              "hitPointMeters": [
+                3.018742890520291,
+                2.9766240157480315,
+                0.9229207400285585
+              ]
+            },
+            {
+              "originMeters": [
+                3.78125,
+                3.96875,
+                0.90625
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 0.9935246203812016,
+              "hitPointMeters": [
+                3.831242890520291,
+                2.9766240157480315,
+                0.9229207400285585
+              ]
+            },
+            {
+              "originMeters": [
+                4.59375,
+                3.96875,
+                0.90625
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 3.7257173264295056,
+              "hitPointMeters": [
+                4.781223339451091,
+                0.2482775590551185,
+                0.9687652751070945
+              ]
+            },
+            {
+              "originMeters": [
+                -1.09375,
+                3.96875,
+                1.59375
+              ],
+              "status": "unknown"
+            },
+            {
+              "originMeters": [
+                -0.28125,
+                3.96875,
+                1.59375
+              ],
+              "status": "unknown"
+            },
+            {
+              "originMeters": [
+                0.53125,
+                3.96875,
+                1.59375
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 2.3596209734053537,
+              "hitPointMeters": [
+                0.6499831149856911,
+                1.612450787401575,
+                1.6333430075678266
+              ]
+            },
+            {
+              "originMeters": [
+                1.34375,
+                3.96875,
+                1.59375
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 2.3596209734053537,
+              "hitPointMeters": [
+                1.4624831149856912,
+                1.612450787401575,
+                1.6333430075678266
+              ]
+            },
+            {
+              "originMeters": [
+                2.15625,
+                3.96875,
+                1.59375
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 2.3596209734053537,
+              "hitPointMeters": [
+                2.274983114985691,
+                1.612450787401575,
+                1.6333430075678266
+              ]
+            },
+            {
+              "originMeters": [
+                2.96875,
+                3.96875,
+                1.59375
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 0.9935246203812016,
+              "hitPointMeters": [
+                3.018742890520291,
+                2.9766240157480315,
+                1.6104207400285586
+              ]
+            },
+            {
+              "originMeters": [
+                3.78125,
+                3.96875,
+                1.59375
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 0.9935246203812016,
+              "hitPointMeters": [
+                3.831242890520291,
+                2.9766240157480315,
+                1.6104207400285586
+              ]
+            },
+            {
+              "originMeters": [
+                4.59375,
+                3.96875,
+                1.59375
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 3.7257173264295056,
+              "hitPointMeters": [
+                4.781223339451091,
+                0.2482775590551185,
+                1.6562652751070945
+              ]
+            },
+            {
+              "originMeters": [
+                -1.09375,
+                3.96875,
+                2.28125
+              ],
+              "status": "unknown"
+            },
+            {
+              "originMeters": [
+                -0.28125,
+                3.96875,
+                2.28125
+              ],
+              "status": "unknown"
+            },
+            {
+              "originMeters": [
+                0.53125,
+                3.96875,
+                2.28125
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 2.3596209734053537,
+              "hitPointMeters": [
+                0.6499831149856911,
+                1.612450787401575,
+                2.3208430075678264
+              ]
+            },
+            {
+              "originMeters": [
+                1.34375,
+                3.96875,
+                2.28125
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 2.3596209734053537,
+              "hitPointMeters": [
+                1.4624831149856912,
+                1.612450787401575,
+                2.3208430075678264
+              ]
+            },
+            {
+              "originMeters": [
+                2.15625,
+                3.96875,
+                2.28125
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 2.3596209734053537,
+              "hitPointMeters": [
+                2.274983114985691,
+                1.612450787401575,
+                2.3208430075678264
+              ]
+            },
+            {
+              "originMeters": [
+                2.96875,
+                3.96875,
+                2.28125
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 0.9935246203812016,
+              "hitPointMeters": [
+                3.018742890520291,
+                2.9766240157480315,
+                2.2979207400285584
+              ]
+            },
+            {
+              "originMeters": [
+                3.78125,
+                3.96875,
+                2.28125
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 0.9935246203812016,
+              "hitPointMeters": [
+                3.831242890520291,
+                2.9766240157480315,
+                2.2979207400285584
+              ]
+            },
+            {
+              "originMeters": [
+                4.59375,
+                3.96875,
+                2.28125
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 3.7257173264295056,
+              "hitPointMeters": [
+                4.781223339451091,
+                0.2482775590551185,
+                2.3437652751070943
+              ]
+            },
+            {
+              "originMeters": [
+                -1.09375,
+                3.96875,
+                2.96875
+              ],
+              "status": "unknown"
+            },
+            {
+              "originMeters": [
+                -0.28125,
+                3.96875,
+                2.96875
+              ],
+              "status": "unknown"
+            },
+            {
+              "originMeters": [
+                0.53125,
+                3.96875,
+                2.96875
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 3.7257173264295056,
+              "hitPointMeters": [
+                0.7187233394510911,
+                0.2482775590551185,
+                3.0312652751070943
+              ]
+            },
+            {
+              "originMeters": [
+                1.34375,
+                3.96875,
+                2.96875
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 3.7257173264295056,
+              "hitPointMeters": [
+                1.5312233394510912,
+                0.2482775590551185,
+                3.0312652751070943
+              ]
+            },
+            {
+              "originMeters": [
+                2.15625,
+                3.96875,
+                2.96875
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 3.7257173264295056,
+              "hitPointMeters": [
+                2.343723339451091,
+                0.2482775590551185,
+                3.0312652751070943
+              ]
+            },
+            {
+              "originMeters": [
+                2.96875,
+                3.96875,
+                2.96875
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 0.9935246203812016,
+              "hitPointMeters": [
+                3.018742890520291,
+                2.9766240157480315,
+                2.9854207400285584
+              ]
+            },
+            {
+              "originMeters": [
+                3.78125,
+                3.96875,
+                2.96875
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 0.9935246203812016,
+              "hitPointMeters": [
+                3.831242890520291,
+                2.9766240157480315,
+                2.9854207400285584
+              ]
+            },
+            {
+              "originMeters": [
+                4.59375,
+                3.96875,
+                2.96875
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 3.7257173264295056,
+              "hitPointMeters": [
+                4.781223339451091,
+                0.2482775590551185,
+                3.0312652751070943
+              ]
+            },
+            {
+              "originMeters": [
+                -1.09375,
+                3.96875,
+                3.65625
+              ],
+              "status": "unknown"
+            },
+            {
+              "originMeters": [
+                -0.28125,
+                3.96875,
+                3.65625
+              ],
+              "status": "unknown"
+            },
+            {
+              "originMeters": [
+                0.53125,
+                3.96875,
+                3.65625
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 3.7257173264295056,
+              "hitPointMeters": [
+                0.7187233394510911,
+                0.2482775590551185,
+                3.7187652751070943
+              ]
+            },
+            {
+              "originMeters": [
+                1.34375,
+                3.96875,
+                3.65625
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 3.7257173264295056,
+              "hitPointMeters": [
+                1.5312233394510912,
+                0.2482775590551185,
+                3.7187652751070943
+              ]
+            },
+            {
+              "originMeters": [
+                2.15625,
+                3.96875,
+                3.65625
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 3.7257173264295056,
+              "hitPointMeters": [
+                2.343723339451091,
+                0.2482775590551185,
+                3.7187652751070943
+              ]
+            },
+            {
+              "originMeters": [
+                2.96875,
+                3.96875,
+                3.65625
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 3.7257173264295056,
+              "hitPointMeters": [
+                3.156223339451091,
+                0.2482775590551185,
+                3.7187652751070943
+              ]
+            },
+            {
+              "originMeters": [
+                3.78125,
+                3.96875,
+                3.65625
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 3.7257173264295056,
+              "hitPointMeters": [
+                3.968723339451091,
+                0.2482775590551185,
+                3.7187652751070943
+              ]
+            },
+            {
+              "originMeters": [
+                4.59375,
+                3.96875,
+                3.65625
+              ],
+              "status": "solid",
+              "hitDistanceMeters": 3.7257173264295056,
+              "hitPointMeters": [
+                4.781223339451091,
+                0.2482775590551185,
+                3.7187652751070943
+              ]
+            }
+          ],
+          "queries": 33190,
+          "variant": "source-query"
+        },
+        "visibleParticles": 297,
+        "clippedParticles": 143,
+        "unknownParticles": 174,
+        "splashes": 37
+      }
+    },
+    "wind": {
+      "clusters": [
+        {
+          "id": "wind:f748342274a8c481013966b441564e7c7846c84c238c28e4225a91ff62f6e8b6",
+          "ownerId": "tree-main",
+          "anchor": [
+            0.25,
+            2.5,
+            -0.25
+          ]
+        }
+      ],
+      "stiffness": 0.75,
+      "reducedMotion": false,
+      "phaseTicks": 0
+    },
+    "camera": {
+      "fixtureDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+      "sourceRevision": 0,
+      "cameraId": "near",
+      "variant": "clip-corridor",
+      "stability": "DISCRETE_CAMERA_PRESETS",
+      "cameraPosition": [
+        5,
+        3,
+        -5
+      ],
+      "planes": [
+        {
+          "normal": [
+            -0.889396187890355,
+            0,
+            -0.45713720146811954
+          ],
+          "constant": 1.7112949321111774
+        },
+        {
+          "normal": [
+            0.889396187890355,
+            0,
+            0.45713720146811954
+          ],
+          "constant": -2.6112949321111776
+        },
+        {
+          "normal": [
+            0.10251849796204332,
+            -0.9745288915025823,
+            -0.19945775793975776
+          ],
+          "constant": 0.9637053949987415
+        },
+        {
+          "normal": [
+            -0.10251849796204332,
+            0.9745288915025823,
+            0.19945775793975776
+          ],
+          "constant": -1.8637053949987414
+        },
+        {
+          "normal": [
+            -0.4454934102113191,
+            -0.22426198881386133,
+            0.86674228109141
+          ],
+          "constant": -0.6653158486805936
+        },
+        {
+          "normal": [
+            0.4454934102113191,
+            0.22426198881386133,
+            -0.86674228109141
+          ],
+          "constant": -7.18396442295523
+        }
+      ],
+      "cameraView": null,
+      "queries": 0,
+      "targetPosition": [
+        1.325,
+        1.15,
+        2.15
+      ],
+      "status": "VIEW_ONLY_FINITE_CORRIDOR"
+    },
+    "effects": [
+      {
+        "backend": "Three-WebGLRenderer-WebGL2",
+        "errors": [],
+        "experimentId": "RD-32",
+        "fixtureDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+        "liveResources": {
+          "material-geometries": {
+            "status": "measured",
+            "unit": "count",
+            "value": 5
+          },
+          "material-materials": {
+            "status": "measured",
+            "unit": "count",
+            "value": 5
+          },
+          "material-ownedMaterialVariants": {
+            "status": "measured",
+            "unit": "count",
+            "value": 5
+          },
+          "material-textures": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          },
+          "rain-geometries": {
+            "status": "measured",
+            "unit": "count",
+            "value": 2
+          },
+          "rain-materials": {
+            "status": "measured",
+            "unit": "count",
+            "value": 2
+          },
+          "rain-particles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 297
+          },
+          "rain-splashes": {
+            "status": "measured",
+            "unit": "count",
+            "value": 37
+          }
+        },
+        "logicalCosts": {
+          "material-gpuBytes": {
+            "reason": "Native GPU memory is not exposed by WebGL",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "material-projectionBufferBytes": {
+            "reason": "Typed attribute/index bytes; excludes GPU allocator, driver and shaders",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 676872
+          },
+          "material-triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 11312
+          },
+          "material-wetnessAttributeBytes": {
+            "reason": "Full private wetness attributes; excludes native allocator/shader memory",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 90496
+          },
+          "rain-depthProjectionBytes": {
+            "reason": "CPU mesh depth candidate buffers",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 0
+          },
+          "rain-fieldQueries": {
+            "reason": "Conservative region-test count for last source/direction refresh, not per-particle queries",
+            "status": "estimated",
+            "unit": "count",
+            "value": 33190
+          },
+          "rain-instanceUploadBytes": {
+            "reason": "Full reserved matrix attributes marked dirty without update ranges, including zero visible population; excludes native driver allocations",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 53248
+          },
+          "rain-sourceIndexBytes": {
+            "reason": "Private source occupancy/coverage buffers",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 119408
+          },
+          "wetnessDriverValueBytes": {
+            "reason": "Private per-surface driver Float32 arrays, separate from material attributes",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 90496
+          },
+          "wetnessQueryRefresh": {
+            "reason": "Conservative region-test count in last direction/source refresh",
+            "status": "estimated",
+            "unit": "count",
+            "value": 1302040
+          },
+          "wetnessSamples": {
+            "status": "measured",
+            "unit": "count",
+            "value": 5656
+          },
+          "wetnessSourceCopyBytes": {
+            "reason": "Retained private source-index typed copies, including same-source pre-rain backward seek; additional to the rain index",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 119408
+          }
+        },
+        "sourceRevision": 0,
+        "unsupportedFeatures": [
+          "native-pcf-shadow-parity",
+          "native-sky-shader-parity",
+          "native-water-shader-parity",
+          "native-material-shader-hooks",
+          "native-depth-readback-unsupported",
+          "material-art-owner-pending",
+          "no-temporal-history-or-probe-gi",
+          "water-shader-is-lab-preview-only",
+          "native-gpu-depth-projection-not-measured",
+          "rain-shadow-art-owner-pending",
+          "rain-coverage-partly-unknown",
+          "wetness-current-exposure-history-approximation",
+          "wetness-coverage-partly-unknown"
+        ],
+        "variantId": "analytic-current-exposure"
+      },
+      {
+        "backend": "Three-WebGLRenderer-WebGL2",
+        "errors": [],
+        "experimentId": "RD-21",
+        "fixtureDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+        "liveResources": {
+          "geometries": {
+            "status": "measured",
+            "unit": "count",
+            "value": 2
+          },
+          "materials": {
+            "status": "measured",
+            "unit": "count",
+            "value": 2
+          },
+          "textures": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          }
+        },
+        "logicalCosts": {
+          "gpuBytes": {
+            "reason": "Native GPU memory is not exposed by WebGL",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "projectionBufferBytes": {
+            "reason": "Typed attribute/index bytes; excludes GPU allocator, driver and shaders",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 10248
+          },
+          "triangles": {
+            "status": "measured",
+            "unit": "count",
+            "value": 172
+          },
+          "windClusters": {
+            "status": "measured",
+            "unit": "count",
+            "value": 1
+          },
+          "windRetainedCopyBytes": {
+            "reason": "Private source/normal typed copies per cluster, additional to projection buffers; excludes native allocation",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 7680
+          },
+          "windUploadBytes": {
+            "reason": "Changed attribute bytes; excludes native driver/matrix uniform traffic",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 0
+          }
+        },
+        "sourceRevision": 0,
+        "unsupportedFeatures": [
+          "native-pcf-shadow-parity",
+          "native-sky-shader-parity",
+          "native-water-shader-parity",
+          "native-material-shader-hooks",
+          "wind-art-owner-pending",
+          "native-shadow-parity-unqualified"
+        ],
+        "variantId": "rigid"
+      },
+      {
+        "backend": "Three-WebGLRenderer-WebGL2",
+        "errors": [],
+        "experimentId": "RD-15",
+        "fixtureDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+        "liveResources": {
+          "sourceIndices": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          }
+        },
+        "logicalCosts": {
+          "nativeGpuBytes": {
+            "reason": "Native allocation unavailable",
+            "status": "unsupported",
+            "unit": "byte"
+          },
+          "queries": {
+            "status": "measured",
+            "unit": "count",
+            "value": 0
+          },
+          "sourceQueryCopies": {
+            "reason": "Canonical source-query typed copies, no physics world",
+            "status": "estimated",
+            "unit": "byte",
+            "value": 0
+          }
+        },
+        "sourceRevision": 0,
+        "unsupportedFeatures": [
+          "camera-discrete-presets-only-no-free-look-hysteresis",
+          "native-shadow-and-product-pick-parity-unqualified",
+          "camera-art-owner-pending"
+        ],
+        "variantId": "clip-corridor"
+      }
+    ]
+  },
+  "facts": {
+    "backend": "Three-WebGLRenderer-WebGL2",
+    "errors": [],
+    "experimentId": "RD-51",
+    "fixtureDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+    "liveResources": {
+      "geometries": {
+        "status": "measured",
+        "unit": "count",
+        "value": 9
+      },
+      "hostListeners": {
+        "status": "measured",
+        "unit": "count",
+        "value": 2
+      },
+      "renderers": {
+        "status": "measured",
+        "unit": "count",
+        "value": 1
+      },
+      "renderloops": {
+        "status": "measured",
+        "unit": "count",
+        "value": 1
+      },
+      "textures": {
+        "status": "measured",
+        "unit": "count",
+        "value": 1
+      }
+    },
+    "logicalCosts": {
+      "effect-0-material-gpuBytes": {
+        "reason": "Native GPU memory is not exposed by WebGL",
+        "status": "unsupported",
+        "unit": "byte"
+      },
+      "effect-0-material-projectionBufferBytes": {
+        "reason": "Typed attribute/index bytes; excludes GPU allocator, driver and shaders",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 676872
+      },
+      "effect-0-material-triangles": {
+        "status": "measured",
+        "unit": "count",
+        "value": 11312
+      },
+      "effect-0-material-wetnessAttributeBytes": {
+        "reason": "Full private wetness attributes; excludes native allocator/shader memory",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 90496
+      },
+      "effect-0-rain-depthProjectionBytes": {
+        "reason": "CPU mesh depth candidate buffers",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 0
+      },
+      "effect-0-rain-fieldQueries": {
+        "reason": "Conservative region-test count for last source/direction refresh, not per-particle queries",
+        "status": "estimated",
+        "unit": "count",
+        "value": 33190
+      },
+      "effect-0-rain-instanceUploadBytes": {
+        "reason": "Full reserved matrix attributes marked dirty without update ranges, including zero visible population; excludes native driver allocations",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 53248
+      },
+      "effect-0-rain-sourceIndexBytes": {
+        "reason": "Private source occupancy/coverage buffers",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 119408
+      },
+      "effect-0-wetnessDriverValueBytes": {
+        "reason": "Private per-surface driver Float32 arrays, separate from material attributes",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 90496
+      },
+      "effect-0-wetnessQueryRefresh": {
+        "reason": "Conservative region-test count in last direction/source refresh",
+        "status": "estimated",
+        "unit": "count",
+        "value": 1302040
+      },
+      "effect-0-wetnessSamples": {
+        "status": "measured",
+        "unit": "count",
+        "value": 5656
+      },
+      "effect-0-wetnessSourceCopyBytes": {
+        "reason": "Retained private source-index typed copies, including same-source pre-rain backward seek; additional to the rain index",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 119408
+      },
+      "effect-1-gpuBytes": {
+        "reason": "Native GPU memory is not exposed by WebGL",
+        "status": "unsupported",
+        "unit": "byte"
+      },
+      "effect-1-projectionBufferBytes": {
+        "reason": "Typed attribute/index bytes; excludes GPU allocator, driver and shaders",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 10248
+      },
+      "effect-1-triangles": {
+        "status": "measured",
+        "unit": "count",
+        "value": 172
+      },
+      "effect-1-windClusters": {
+        "status": "measured",
+        "unit": "count",
+        "value": 1
+      },
+      "effect-1-windRetainedCopyBytes": {
+        "reason": "Private source/normal typed copies per cluster, additional to projection buffers; excludes native allocation",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 7680
+      },
+      "effect-1-windUploadBytes": {
+        "reason": "Changed attribute bytes; excludes native driver/matrix uniform traffic",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 0
+      },
+      "effect-2-nativeGpuBytes": {
+        "reason": "Native allocation unavailable",
+        "status": "unsupported",
+        "unit": "byte"
+      },
+      "effect-2-queries": {
+        "status": "measured",
+        "unit": "count",
+        "value": 0
+      },
+      "effect-2-sourceQueryCopies": {
+        "reason": "Canonical source-query typed copies, no physics world",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 0
+      },
+      "gpuBytes": {
+        "reason": "Native GPU memory unavailable",
+        "status": "unsupported",
+        "unit": "byte"
+      },
+      "gpuMs": {
+        "reason": "Timer available; diagnostic loop does not sample GPU timing",
+        "status": "not-run",
+        "unit": "ms"
+      },
+      "renderCalls": {
+        "status": "measured",
+        "unit": "count",
+        "value": 11
+      },
+      "triangles": {
+        "status": "measured",
+        "unit": "count",
+        "value": 15948
+      }
+    },
+    "sourceRevision": 0,
+    "unsupportedFeatures": [
+      "native-pcf-shadow-parity",
+      "native-sky-shader-parity",
+      "native-water-shader-parity",
+      "native-material-shader-hooks",
+      "native-depth-readback-unsupported",
+      "material-art-owner-pending",
+      "no-temporal-history-or-probe-gi",
+      "water-shader-is-lab-preview-only",
+      "native-gpu-depth-projection-not-measured",
+      "rain-shadow-art-owner-pending",
+      "rain-coverage-partly-unknown",
+      "wetness-current-exposure-history-approximation",
+      "wetness-coverage-partly-unknown",
+      "wind-art-owner-pending",
+      "native-shadow-parity-unqualified",
+      "camera-discrete-presets-only-no-free-look-hysteresis",
+      "native-shadow-and-product-pick-parity-unqualified",
+      "camera-art-owner-pending"
+    ],
+    "variantId": "combined-rigid"
+  },
+  "diagnostics": {
+    "backend": "Three-WebGLRenderer-WebGL2",
+    "webgl2": true,
+    "fixtureId": "F51-COMBINED-R0",
+    "fixtureDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+    "sourceRevision": 0,
+    "payloadBindings": [
+      {
+        "id": "removable-roof-cells-slot-1-positions",
+        "byteLength": 15456,
+        "sha256": "615f18b046bd9a70da02edf2df95a74939de0c27e0376bd6af7eac5f0cba709f"
+      },
+      {
+        "id": "removable-roof-cells-slot-1-indices",
+        "byteLength": 7728,
+        "sha256": "b10bd08dca4cbf97fa51375be174e5396e3fc6ff5f0648f50765378ff01f742f"
+      },
+      {
+        "id": "removable-roof-cells-slot-1-normals",
+        "byteLength": 15456,
+        "sha256": "b36ff3b829df46d849b93797d1ef8239c7673d3554e15524e1fdac3ac60bb498"
+      },
+      {
+        "id": "shelter-shell-slot-1-positions",
+        "byteLength": 218592,
+        "sha256": "1665185104623c07027505f74d484ee47a6cfa8cb0aeac3a07be914be618ed61"
+      },
+      {
+        "id": "shelter-shell-slot-1-indices",
+        "byteLength": 109296,
+        "sha256": "67fa506099809e930e61568310510890d84e55331c831c6a7b14b983796fbaab"
+      },
+      {
+        "id": "shelter-shell-slot-1-normals",
+        "byteLength": 218592,
+        "sha256": "1ea36a19595227696c3b7d164d15e8f778df5d6e9e495aeb0dc057f1d92efa0d"
+      },
+      {
+        "id": "removable-roof-cells-occupancy",
+        "byteLength": 136,
+        "sha256": "3654da25dd1bae2cc27c2e3d0d7e9e9755280ca7f3ae5d4aa18d32a0fc094384"
+      },
+      {
+        "id": "removable-roof-cells-coverage",
+        "byteLength": 136,
+        "sha256": "3654da25dd1bae2cc27c2e3d0d7e9e9755280ca7f3ae5d4aa18d32a0fc094384"
+      },
+      {
+        "id": "shelter-shell-occupancy",
+        "byteLength": 40960,
+        "sha256": "b1aa334474aee82b8a621369edf72edfb539bf9bb436b0b8bb5d37df1bcf08dc"
+      },
+      {
+        "id": "shelter-shell-coverage",
+        "byteLength": 40960,
+        "sha256": "2d79cff9e3fd90907d81177f9b314b7a7ab5c514a15348c04261fe6a08d4c3c8"
+      },
+      {
+        "id": "fragment-leaf-slot-4-positions",
+        "byteLength": 3840,
+        "sha256": "16ca5d7dc0177aae8a22959a4c4f7b6f8952c5a5b405e2b20e490fee87a84af3"
+      },
+      {
+        "id": "fragment-leaf-slot-4-indices",
+        "byteLength": 1920,
+        "sha256": "c4ef25f22436617659998b73d66296a7c6a5d83e1f425b7e9b48d3faae41b54d"
+      },
+      {
+        "id": "fragment-leaf-slot-4-normals",
+        "byteLength": 3840,
+        "sha256": "012f2ba248cb07e0fd81029d7d93e60323dcabe5ed640771a47867e7fcea5fab"
+      },
+      {
+        "id": "fragment-wood-slot-3-positions",
+        "byteLength": 5472,
+        "sha256": "b313fc9bfff18706cbd5cdbc990600da3d3a81f2d9ea9b679b2b67b29309713b"
+      },
+      {
+        "id": "fragment-wood-slot-3-indices",
+        "byteLength": 2736,
+        "sha256": "12e689078e30a9e53b78e9c70f12bfd87e8c58f745871ae5f8710640a7648a78"
+      },
+      {
+        "id": "fragment-wood-slot-3-normals",
+        "byteLength": 5472,
+        "sha256": "34f489283e5773ae18b996685e0694e0f36454dbde328251669cf487bc2875b5"
+      },
+      {
+        "id": "trunk-cells-slot-3-positions",
+        "byteLength": 24576,
+        "sha256": "400625cf7de24598bbea92555a9449af83f7468d20e8d9ad31f0c68fb9ebbd45"
+      },
+      {
+        "id": "trunk-cells-slot-3-indices",
+        "byteLength": 12288,
+        "sha256": "a571dba5603586ae9d62cf681489d062dd2ae233d0a2c57b742993d98b8ccbdd"
+      },
+      {
+        "id": "trunk-cells-slot-3-normals",
+        "byteLength": 24576,
+        "sha256": "bdaa0d6f2bdd2a6bf81237a55a6309722bfe37c762552314f06e9456182792b8"
+      },
+      {
+        "id": "fragment-leaf-occupancy",
+        "byteLength": 48,
+        "sha256": "5bf90435cd45d0475cbb0ace7e7e3a672ed2a3a4984ad3e8624d8878725a9c2e"
+      },
+      {
+        "id": "fragment-leaf-coverage",
+        "byteLength": 48,
+        "sha256": "5bf90435cd45d0475cbb0ace7e7e3a672ed2a3a4984ad3e8624d8878725a9c2e"
+      },
+      {
+        "id": "fragment-wood-occupancy",
+        "byteLength": 128,
+        "sha256": "2403d6f8ff30779590a7e8d9a00548ca83e32b870bbf3e1d6901ef438f445db2"
+      },
+      {
+        "id": "fragment-wood-coverage",
+        "byteLength": 128,
+        "sha256": "7eb24a18990ee4c958c89773da6cc9fbc5c278357762d02ec6ab947eb28726ff"
+      },
+      {
+        "id": "trunk-cells-occupancy",
+        "byteLength": 18432,
+        "sha256": "0c6fdae94658c4021f7af16029e4a8ce72448b3f7f2cec0b555d6dcd35d01d59"
+      },
+      {
+        "id": "trunk-cells-coverage",
+        "byteLength": 18432,
+        "sha256": "19a1cc81b9d025fe2f8c0decb0111ef580a499a09654a662cef2e1ba75732db1"
+      },
+      {
+        "id": "figure-marker-positions",
+        "byteLength": 576,
+        "sha256": "a506fca253d18710c247856a569966c95d162353536d0b3df2d94774742d6a9a"
+      },
+      {
+        "id": "figure-marker-indices",
+        "byteLength": 72,
+        "sha256": "111344a69a3f4c9c714bfdd23c3b16f9ad6beb430821bd310f33d9f795061012"
+      },
+      {
+        "id": "figure-marker-normals",
+        "byteLength": 288,
+        "sha256": "1d25335f006dfec1dd5deb082ea469d6f41b5f72d651220fa52367f3a28b3e72"
+      },
+      {
+        "id": "coast-water-positions",
+        "byteLength": 7392,
+        "sha256": "1614f45e69000d39b1ee2b6db7f800190e7d68fd0025896b29448fb80d1356e7"
+      },
+      {
+        "id": "coast-water-indices",
+        "byteLength": 1848,
+        "sha256": "e0810d67d0319761e19e7d3364f5ad4e18a7a3c43cb5b1ef92b68c0258a13d64"
+      },
+      {
+        "id": "coast-water-normals",
+        "byteLength": 7392,
+        "sha256": "f87c0ea807d66296a2d3c496ab3992b378668427d9f4c0c0d67b7c75525fbe43"
+      }
+    ],
+    "presentationProfile": "synthetic-lab-light-v1-no-shadows",
+    "frame": {
+      "cameraId": "near",
+      "paused": true,
+      "seconds": 5,
+      "sourceRevision": 0,
+      "tick": 300,
+      "weather": {
+        "cloud01": 0.85,
+        "rain01": 0.8,
+        "snow01": 0,
+        "windMps": [
+          3.023379569560454,
+          0,
+          1.0081828493461589
+        ]
+      }
+    },
+    "resetTick": null,
+    "resolution": {
+      "width": 1280,
+      "height": 720,
+      "dpr": 1,
+      "bufferWidth": 1280,
+      "bufferHeight": 720
+    },
+    "colorSpace": "srgb",
+    "toneMapping": 0,
+    "exposure": 1,
+    "cameraActual": {
+      "positionMeters": [
+        5,
+        3,
+        -5
+      ],
+      "direction": [
+        -0.3891184778074639,
+        -0.15564739112298553,
+        0.9079431148840826
+      ],
+      "fov": 60
+    },
+    "timerQueryAvailable": true,
+    "gpuMs": {
+      "status": "not-run",
+      "unit": "ms",
+      "reason": "Timer available; no qualified timer-query sampling in diagnostic control"
+    },
+    "nativeGpuBytes": {
+      "status": "unsupported",
+      "unit": "byte",
+      "reason": "WebGL does not expose native/driver allocation bytes"
+    },
+    "device": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "submittedFrames": 191,
+    "frameVersion": 198,
+    "rendered": {
+      "tick": 300,
+      "fixtureDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+      "sourceRevision": 0,
+      "resetTick": null,
+      "cameraId": "near",
+      "frame": {
+        "cameraId": "near",
+        "paused": true,
+        "seconds": 5,
+        "sourceRevision": 0,
+        "tick": 300,
+        "weather": {
+          "cloud01": 0.85,
+          "rain01": 0.8,
+          "snow01": 0,
+          "windMps": [
+            3.023379569560454,
+            0,
+            1.0081828493461589
+          ]
+        }
+      },
+      "frameVersion": 198
+    },
+    "rendererInfo": {
+      "geometries": 9,
+      "textures": 1,
+      "programs": 6,
+      "calls": 11,
+      "triangles": 15948
+    },
+    "liveHosts": {
+      "renderers": 1,
+      "renderloops": 1,
+      "hostListeners": 2
+    },
+    "productIntegrated": false,
+    "lastReplacement": {
+      "oldDigest": "8b1ae0faa0931cb785b29815a482e1c23f55f4b55198f0f01acb866c1d6faec6",
+      "candidateDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+      "oldFacts": [
+        {
+          "backend": "Three-WebGLRenderer-WebGL2",
+          "errors": [],
+          "experimentId": "RD-32",
+          "fixtureDigest": "8b1ae0faa0931cb785b29815a482e1c23f55f4b55198f0f01acb866c1d6faec6",
+          "liveResources": {
+            "material-geometries": {
+              "status": "measured",
+              "unit": "count",
+              "value": 5
+            },
+            "material-materials": {
+              "status": "measured",
+              "unit": "count",
+              "value": 5
+            },
+            "material-ownedMaterialVariants": {
+              "status": "measured",
+              "unit": "count",
+              "value": 5
+            },
+            "material-textures": {
+              "status": "measured",
+              "unit": "count",
+              "value": 0
+            },
+            "rain-geometries": {
+              "status": "measured",
+              "unit": "count",
+              "value": 2
+            },
+            "rain-materials": {
+              "status": "measured",
+              "unit": "count",
+              "value": 2
+            },
+            "rain-particles": {
+              "status": "measured",
+              "unit": "count",
+              "value": 355
+            },
+            "rain-splashes": {
+              "status": "measured",
+              "unit": "count",
+              "value": 37
+            }
+          },
+          "logicalCosts": {
+            "material-gpuBytes": {
+              "reason": "Native GPU memory is not exposed by WebGL",
+              "status": "unsupported",
+              "unit": "byte"
+            },
+            "material-projectionBufferBytes": {
+              "reason": "Typed attribute/index bytes; excludes GPU allocator, driver and shaders",
+              "status": "estimated",
+              "unit": "byte",
+              "value": 671112
+            },
+            "material-triangles": {
+              "status": "measured",
+              "unit": "count",
+              "value": 11216
+            },
+            "material-wetnessAttributeBytes": {
+              "reason": "Full private wetness attributes; excludes native allocator/shader memory",
+              "status": "estimated",
+              "unit": "byte",
+              "value": 89728
+            },
+            "rain-depthProjectionBytes": {
+              "reason": "CPU mesh depth candidate buffers",
+              "status": "estimated",
+              "unit": "byte",
+              "value": 0
+            },
+            "rain-fieldQueries": {
+              "reason": "Conservative region-test count for last source/direction refresh, not per-particle queries",
+              "status": "estimated",
+              "unit": "count",
+              "value": 26776
+            },
+            "rain-instanceUploadBytes": {
+              "reason": "Full reserved matrix attributes marked dirty without update ranges, including zero visible population; excludes native driver allocations",
+              "status": "estimated",
+              "unit": "byte",
+              "value": 53248
+            },
+            "rain-sourceIndexBytes": {
+              "reason": "Private source occupancy/coverage buffers",
+              "status": "estimated",
+              "unit": "byte",
+              "value": 119312
+            },
+            "wetnessDriverValueBytes": {
+              "reason": "Private per-surface driver Float32 arrays, separate from material attributes",
+              "status": "estimated",
+              "unit": "byte",
+              "value": 89728
+            },
+            "wetnessQueryRefresh": {
+              "reason": "Conservative region-test count in last direction/source refresh",
+              "status": "estimated",
+              "unit": "count",
+              "value": 1044880
+            },
+            "wetnessSamples": {
+              "status": "measured",
+              "unit": "count",
+              "value": 5608
+            },
+            "wetnessSourceCopyBytes": {
+              "reason": "Retained private source-index typed copies, including same-source pre-rain backward seek; additional to the rain index",
+              "status": "estimated",
+              "unit": "byte",
+              "value": 119312
+            }
+          },
+          "sourceRevision": 5,
+          "unsupportedFeatures": [
+            "native-pcf-shadow-parity",
+            "native-sky-shader-parity",
+            "native-water-shader-parity",
+            "native-material-shader-hooks",
+            "native-depth-readback-unsupported",
+            "material-art-owner-pending",
+            "no-temporal-history-or-probe-gi",
+            "water-shader-is-lab-preview-only",
+            "native-gpu-depth-projection-not-measured",
+            "rain-shadow-art-owner-pending",
+            "rain-coverage-partly-unknown",
+            "wetness-current-exposure-history-approximation",
+            "wetness-coverage-partly-unknown"
+          ],
+          "variantId": "analytic-current-exposure"
+        },
+        {
+          "backend": "Three-WebGLRenderer-WebGL2",
+          "errors": [],
+          "experimentId": "RD-21",
+          "fixtureDigest": "8b1ae0faa0931cb785b29815a482e1c23f55f4b55198f0f01acb866c1d6faec6",
+          "liveResources": {
+            "geometries": {
+              "status": "measured",
+              "unit": "count",
+              "value": 1
+            },
+            "materials": {
+              "status": "measured",
+              "unit": "count",
+              "value": 1
+            },
+            "textures": {
+              "status": "measured",
+              "unit": "count",
+              "value": 0
+            }
+          },
+          "logicalCosts": {
+            "gpuBytes": {
+              "reason": "Native GPU memory is not exposed by WebGL",
+              "status": "unsupported",
+              "unit": "byte"
+            },
+            "projectionBufferBytes": {
+              "reason": "Typed attribute/index bytes; excludes GPU allocator, driver and shaders",
+              "status": "estimated",
+              "unit": "byte",
+              "value": 648
+            },
+            "triangles": {
+              "status": "measured",
+              "unit": "count",
+              "value": 12
+            },
+            "windClusters": {
+              "status": "measured",
+              "unit": "count",
+              "value": 0
+            },
+            "windRetainedCopyBytes": {
+              "reason": "Private source/normal typed copies per cluster, additional to projection buffers; excludes native allocation",
+              "status": "estimated",
+              "unit": "byte",
+              "value": 0
+            },
+            "windUploadBytes": {
+              "reason": "Changed attribute bytes; excludes native driver/matrix uniform traffic",
+              "status": "estimated",
+              "unit": "byte",
+              "value": 0
+            }
+          },
+          "sourceRevision": 5,
+          "unsupportedFeatures": [
+            "native-pcf-shadow-parity",
+            "native-sky-shader-parity",
+            "native-water-shader-parity",
+            "native-material-shader-hooks",
+            "wind-art-owner-pending",
+            "native-shadow-parity-unqualified"
+          ],
+          "variantId": "rigid"
+        },
+        {
+          "backend": "Three-WebGLRenderer-WebGL2",
+          "errors": [],
+          "experimentId": "RD-15",
+          "fixtureDigest": "8b1ae0faa0931cb785b29815a482e1c23f55f4b55198f0f01acb866c1d6faec6",
+          "liveResources": {
+            "sourceIndices": {
+              "status": "measured",
+              "unit": "count",
+              "value": 0
+            }
+          },
+          "logicalCosts": {
+            "nativeGpuBytes": {
+              "reason": "Native allocation unavailable",
+              "status": "unsupported",
+              "unit": "byte"
+            },
+            "queries": {
+              "status": "measured",
+              "unit": "count",
+              "value": 0
+            },
+            "sourceQueryCopies": {
+              "reason": "Canonical source-query typed copies, no physics world",
+              "status": "estimated",
+              "unit": "byte",
+              "value": 0
+            }
+          },
+          "sourceRevision": 5,
+          "unsupportedFeatures": [
+            "camera-discrete-presets-only-no-free-look-hysteresis",
+            "native-shadow-and-product-pick-parity-unqualified",
+            "camera-art-owner-pending"
+          ],
+          "variantId": "clip-corridor"
+        }
+      ],
+      "candidateFacts": [
+        {
+          "backend": "Three-WebGLRenderer-WebGL2",
+          "errors": [],
+          "experimentId": "RD-32",
+          "fixtureDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "liveResources": {
+            "material-geometries": {
+              "status": "measured",
+              "unit": "count",
+              "value": 5
+            },
+            "material-materials": {
+              "status": "measured",
+              "unit": "count",
+              "value": 5
+            },
+            "material-ownedMaterialVariants": {
+              "status": "measured",
+              "unit": "count",
+              "value": 5
+            },
+            "material-textures": {
+              "status": "measured",
+              "unit": "count",
+              "value": 0
+            },
+            "rain-geometries": {
+              "status": "measured",
+              "unit": "count",
+              "value": 2
+            },
+            "rain-materials": {
+              "status": "measured",
+              "unit": "count",
+              "value": 2
+            },
+            "rain-particles": {
+              "status": "measured",
+              "unit": "count",
+              "value": 0
+            },
+            "rain-splashes": {
+              "status": "measured",
+              "unit": "count",
+              "value": 0
+            }
+          },
+          "logicalCosts": {
+            "material-gpuBytes": {
+              "reason": "Native GPU memory is not exposed by WebGL",
+              "status": "unsupported",
+              "unit": "byte"
+            },
+            "material-projectionBufferBytes": {
+              "reason": "Typed attribute/index bytes; excludes GPU allocator, driver and shaders",
+              "status": "estimated",
+              "unit": "byte",
+              "value": 676872
+            },
+            "material-triangles": {
+              "status": "measured",
+              "unit": "count",
+              "value": 11312
+            },
+            "material-wetnessAttributeBytes": {
+              "reason": "Full private wetness attributes; excludes native allocator/shader memory",
+              "status": "estimated",
+              "unit": "byte",
+              "value": 90496
+            },
+            "rain-depthProjectionBytes": {
+              "reason": "CPU mesh depth candidate buffers",
+              "status": "estimated",
+              "unit": "byte",
+              "value": 0
+            },
+            "rain-fieldQueries": {
+              "reason": "Conservative region-test count for last source/direction refresh, not per-particle queries",
+              "status": "estimated",
+              "unit": "count",
+              "value": 0
+            },
+            "rain-instanceUploadBytes": {
+              "reason": "Full reserved matrix attributes marked dirty without update ranges, including zero visible population; excludes native driver allocations",
+              "status": "estimated",
+              "unit": "byte",
+              "value": 53248
+            },
+            "rain-sourceIndexBytes": {
+              "reason": "Private source occupancy/coverage buffers",
+              "status": "estimated",
+              "unit": "byte",
+              "value": 0
+            },
+            "wetnessDriverValueBytes": {
+              "reason": "Private per-surface driver Float32 arrays, separate from material attributes",
+              "status": "estimated",
+              "unit": "byte",
+              "value": 0
+            },
+            "wetnessQueryRefresh": {
+              "reason": "Conservative region-test count in last direction/source refresh",
+              "status": "estimated",
+              "unit": "count",
+              "value": 0
+            },
+            "wetnessSamples": {
+              "status": "measured",
+              "unit": "count",
+              "value": 0
+            },
+            "wetnessSourceCopyBytes": {
+              "reason": "Retained private source-index typed copies, including same-source pre-rain backward seek; additional to the rain index",
+              "status": "estimated",
+              "unit": "byte",
+              "value": 0
+            }
+          },
+          "sourceRevision": 0,
+          "unsupportedFeatures": [
+            "native-pcf-shadow-parity",
+            "native-sky-shader-parity",
+            "native-water-shader-parity",
+            "native-material-shader-hooks",
+            "native-depth-readback-unsupported",
+            "material-art-owner-pending",
+            "no-temporal-history-or-probe-gi",
+            "water-shader-is-lab-preview-only",
+            "native-gpu-depth-projection-not-measured",
+            "rain-shadow-art-owner-pending",
+            "wetness-current-exposure-history-approximation"
+          ],
+          "variantId": "analytic-current-exposure"
+        },
+        {
+          "backend": "Three-WebGLRenderer-WebGL2",
+          "errors": [],
+          "experimentId": "RD-21",
+          "fixtureDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "liveResources": {
+            "geometries": {
+              "status": "measured",
+              "unit": "count",
+              "value": 2
+            },
+            "materials": {
+              "status": "measured",
+              "unit": "count",
+              "value": 2
+            },
+            "textures": {
+              "status": "measured",
+              "unit": "count",
+              "value": 0
+            }
+          },
+          "logicalCosts": {
+            "gpuBytes": {
+              "reason": "Native GPU memory is not exposed by WebGL",
+              "status": "unsupported",
+              "unit": "byte"
+            },
+            "projectionBufferBytes": {
+              "reason": "Typed attribute/index bytes; excludes GPU allocator, driver and shaders",
+              "status": "estimated",
+              "unit": "byte",
+              "value": 10248
+            },
+            "triangles": {
+              "status": "measured",
+              "unit": "count",
+              "value": 172
+            },
+            "windClusters": {
+              "status": "measured",
+              "unit": "count",
+              "value": 1
+            },
+            "windRetainedCopyBytes": {
+              "reason": "Private source/normal typed copies per cluster, additional to projection buffers; excludes native allocation",
+              "status": "estimated",
+              "unit": "byte",
+              "value": 7680
+            },
+            "windUploadBytes": {
+              "reason": "Changed attribute bytes; excludes native driver/matrix uniform traffic",
+              "status": "estimated",
+              "unit": "byte",
+              "value": 0
+            }
+          },
+          "sourceRevision": 0,
+          "unsupportedFeatures": [
+            "native-pcf-shadow-parity",
+            "native-sky-shader-parity",
+            "native-water-shader-parity",
+            "native-material-shader-hooks",
+            "wind-art-owner-pending",
+            "native-shadow-parity-unqualified"
+          ],
+          "variantId": "rigid"
+        },
+        {
+          "backend": "Three-WebGLRenderer-WebGL2",
+          "errors": [],
+          "experimentId": "RD-15",
+          "fixtureDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "liveResources": {
+            "sourceIndices": {
+              "status": "measured",
+              "unit": "count",
+              "value": 0
+            }
+          },
+          "logicalCosts": {
+            "nativeGpuBytes": {
+              "reason": "Native allocation unavailable",
+              "status": "unsupported",
+              "unit": "byte"
+            },
+            "queries": {
+              "status": "measured",
+              "unit": "count",
+              "value": 0
+            },
+            "sourceQueryCopies": {
+              "reason": "Canonical source-query typed copies, no physics world",
+              "status": "estimated",
+              "unit": "byte",
+              "value": 0
+            }
+          },
+          "sourceRevision": 0,
+          "unsupportedFeatures": [
+            "camera-discrete-presets-only-no-free-look-hysteresis",
+            "native-shadow-and-product-pick-parity-unqualified",
+            "camera-art-owner-pending"
+          ],
+          "variantId": "clip-corridor"
+        }
+      ],
+      "canonicalPayloadBytes": 1598176,
+      "qualification": "KNOWN_TYPED_SOURCE_AND_EFFECT_COSTS_ONLY"
+    }
+  },
+  "mounts": 1,
+  "liveHosts": {
+    "renderers": 1,
+    "renderloops": 1,
+    "hostListeners": 2
+  },
+  "productIntegrated": false,
+  "art": "PENDING_OWNER"
+}

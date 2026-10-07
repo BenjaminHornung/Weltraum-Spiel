@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "paths": {
+      "@playwright/test": ["./runtime/node_modules/@playwright/test/index.mjs"]
+    }
+  }
+}

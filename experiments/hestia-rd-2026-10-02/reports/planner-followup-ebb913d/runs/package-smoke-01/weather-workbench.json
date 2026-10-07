@@ -1,0 +1,445 @@
+{
+  "mode": "WEATHER_WORKBENCH_PRESENTATION_REPLAY",
+  "clock": {
+    "tick": 0,
+    "seconds": 0,
+    "paused": true
+  },
+  "source": {
+    "inventoryDigest": "26bf86bba1cbd1955d069ab2eac8d491b6cade59d16a004f1d094cc117ebc9c6",
+    "scenarioId": "F03-SHELTER-REPLAY",
+    "scenarioDigest": "5ae34ae681ab5525e410f5e815f92e6fa603aa253f1c50377c33fdfd80b21ced",
+    "fixtures": [
+      "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+      "e678890af9ca58964bed5ac8a109411e3777e62202a6d576d7dd33d436f91538"
+    ]
+  },
+  "keyframes": [
+    {
+      "presetId": "breeze",
+      "tick": 120,
+      "type": "SetWeatherPreset"
+    },
+    {
+      "presetId": "rain",
+      "tick": 240,
+      "type": "SetWeatherPreset"
+    },
+    {
+      "presetId": "breeze",
+      "tick": 900,
+      "type": "SetWeatherPreset"
+    }
+  ],
+  "facts": {
+    "backend": "Three-WebGLRenderer-WebGL2",
+    "errors": [],
+    "experimentId": "RD-32",
+    "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+    "liveResources": {
+      "geometries": {
+        "status": "measured",
+        "unit": "count",
+        "value": 4
+      },
+      "hostListeners": {
+        "status": "measured",
+        "unit": "count",
+        "value": 2
+      },
+      "renderers": {
+        "status": "measured",
+        "unit": "count",
+        "value": 1
+      },
+      "renderloops": {
+        "status": "measured",
+        "unit": "count",
+        "value": 1
+      },
+      "textures": {
+        "status": "measured",
+        "unit": "count",
+        "value": 1
+      }
+    },
+    "logicalCosts": {
+      "effect-0-material-gpuBytes": {
+        "reason": "Native GPU memory is not exposed by WebGL",
+        "status": "unsupported",
+        "unit": "byte"
+      },
+      "effect-0-material-projectionBufferBytes": {
+        "reason": "Typed attribute/index bytes; excludes GPU allocator, driver and shaders",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 585120
+      },
+      "effect-0-material-triangles": {
+        "status": "measured",
+        "unit": "count",
+        "value": 9752
+      },
+      "effect-0-material-wetnessAttributeBytes": {
+        "reason": "Full private wetness attributes; excludes native allocator/shader memory",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 78016
+      },
+      "effect-0-rain-depthProjectionBytes": {
+        "reason": "CPU mesh depth candidate buffers",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 0
+      },
+      "effect-0-rain-fieldQueries": {
+        "reason": "Conservative region-test count for last source/direction refresh, not per-particle queries",
+        "status": "estimated",
+        "unit": "count",
+        "value": 0
+      },
+      "effect-0-rain-instanceUploadBytes": {
+        "reason": "Full reserved matrix attributes marked dirty without update ranges, including zero visible population; excludes native driver allocations",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 53248
+      },
+      "effect-0-rain-sourceIndexBytes": {
+        "reason": "Private source occupancy/coverage buffers",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 0
+      },
+      "effect-0-wetnessDriverValueBytes": {
+        "reason": "Private per-surface driver Float32 arrays, separate from material attributes",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 0
+      },
+      "effect-0-wetnessQueryRefresh": {
+        "reason": "Conservative region-test count in last direction/source refresh",
+        "status": "estimated",
+        "unit": "count",
+        "value": 0
+      },
+      "effect-0-wetnessSamples": {
+        "status": "measured",
+        "unit": "count",
+        "value": 0
+      },
+      "effect-0-wetnessSourceCopyBytes": {
+        "reason": "Retained private source-index typed copies, including same-source pre-rain backward seek; additional to the rain index",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 0
+      },
+      "effect-1-gpuBytes": {
+        "reason": "Native GPU memory is not exposed by WebGL",
+        "status": "unsupported",
+        "unit": "byte"
+      },
+      "effect-1-projectionBufferBytes": {
+        "reason": "Typed attribute/index bytes; excludes GPU allocator, driver and shaders",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 0
+      },
+      "effect-1-triangles": {
+        "status": "measured",
+        "unit": "count",
+        "value": 0
+      },
+      "gpuBytes": {
+        "reason": "Native GPU memory unavailable",
+        "status": "unsupported",
+        "unit": "byte"
+      },
+      "gpuMs": {
+        "reason": "Timer available; diagnostic loop does not sample GPU timing",
+        "status": "not-run",
+        "unit": "ms"
+      },
+      "renderCalls": {
+        "status": "measured",
+        "unit": "count",
+        "value": 2
+      },
+      "triangles": {
+        "status": "measured",
+        "unit": "count",
+        "value": 9752
+      }
+    },
+    "sourceRevision": 0,
+    "unsupportedFeatures": [
+      "native-pcf-shadow-parity",
+      "native-sky-shader-parity",
+      "native-water-shader-parity",
+      "native-material-shader-hooks",
+      "native-depth-readback-unsupported",
+      "material-art-owner-pending",
+      "no-temporal-history-or-probe-gi",
+      "water-shader-is-lab-preview-only",
+      "native-gpu-depth-projection-not-measured",
+      "rain-shadow-art-owner-pending",
+      "wetness-current-exposure-history-approximation"
+    ],
+    "variantId": "analytic-current-exposure"
+  },
+  "diagnostics": {
+    "backend": "Three-WebGLRenderer-WebGL2",
+    "webgl2": true,
+    "fixtureId": "F03-SHELTER",
+    "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+    "sourceRevision": 0,
+    "payloadBindings": [
+      {
+        "id": "removable-roof-cells-coverage",
+        "byteLength": 136,
+        "sha256": "3654da25dd1bae2cc27c2e3d0d7e9e9755280ca7f3ae5d4aa18d32a0fc094384"
+      },
+      {
+        "id": "removable-roof-cells-material-slots",
+        "byteLength": 136,
+        "sha256": "3654da25dd1bae2cc27c2e3d0d7e9e9755280ca7f3ae5d4aa18d32a0fc094384"
+      },
+      {
+        "id": "removable-roof-cells-occupancy",
+        "byteLength": 136,
+        "sha256": "3654da25dd1bae2cc27c2e3d0d7e9e9755280ca7f3ae5d4aa18d32a0fc094384"
+      },
+      {
+        "id": "removable-roof-cells-slot-1-indices",
+        "byteLength": 7728,
+        "sha256": "b10bd08dca4cbf97fa51375be174e5396e3fc6ff5f0648f50765378ff01f742f"
+      },
+      {
+        "id": "removable-roof-cells-slot-1-normals",
+        "byteLength": 15456,
+        "sha256": "b36ff3b829df46d849b93797d1ef8239c7673d3554e15524e1fdac3ac60bb498"
+      },
+      {
+        "id": "removable-roof-cells-slot-1-positions",
+        "byteLength": 15456,
+        "sha256": "615f18b046bd9a70da02edf2df95a74939de0c27e0376bd6af7eac5f0cba709f"
+      },
+      {
+        "id": "shelter-shell-coverage",
+        "byteLength": 40960,
+        "sha256": "2d79cff9e3fd90907d81177f9b314b7a7ab5c514a15348c04261fe6a08d4c3c8"
+      },
+      {
+        "id": "shelter-shell-material-slots",
+        "byteLength": 40960,
+        "sha256": "b1aa334474aee82b8a621369edf72edfb539bf9bb436b0b8bb5d37df1bcf08dc"
+      },
+      {
+        "id": "shelter-shell-occupancy",
+        "byteLength": 40960,
+        "sha256": "b1aa334474aee82b8a621369edf72edfb539bf9bb436b0b8bb5d37df1bcf08dc"
+      },
+      {
+        "id": "shelter-shell-slot-1-indices",
+        "byteLength": 109296,
+        "sha256": "67fa506099809e930e61568310510890d84e55331c831c6a7b14b983796fbaab"
+      },
+      {
+        "id": "shelter-shell-slot-1-normals",
+        "byteLength": 218592,
+        "sha256": "1ea36a19595227696c3b7d164d15e8f778df5d6e9e495aeb0dc057f1d92efa0d"
+      },
+      {
+        "id": "shelter-shell-slot-1-positions",
+        "byteLength": 218592,
+        "sha256": "1665185104623c07027505f74d484ee47a6cfa8cb0aeac3a07be914be618ed61"
+      }
+    ],
+    "presentationProfile": "synthetic-lab-light-v1-no-shadows",
+    "frame": {
+      "cameraId": "near",
+      "paused": true,
+      "seconds": 0,
+      "sourceRevision": 0,
+      "tick": 0,
+      "weather": {
+        "cloud01": 0.1,
+        "rain01": 0,
+        "snow01": 0,
+        "windMps": [
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "resetTick": null,
+    "resolution": {
+      "width": 1280,
+      "height": 720,
+      "dpr": 1,
+      "bufferWidth": 1280,
+      "bufferHeight": 720
+    },
+    "colorSpace": "srgb",
+    "toneMapping": 0,
+    "exposure": 1,
+    "cameraActual": {
+      "positionMeters": [
+        5,
+        3,
+        -5
+      ],
+      "direction": [
+        -0.3891184778074639,
+        -0.15564739112298553,
+        0.9079431148840826
+      ],
+      "fov": 60
+    },
+    "timerQueryAvailable": true,
+    "gpuMs": {
+      "status": "not-run",
+      "unit": "ms",
+      "reason": "Timer available; no qualified timer-query sampling in diagnostic control"
+    },
+    "nativeGpuBytes": {
+      "status": "unsupported",
+      "unit": "byte",
+      "reason": "WebGL does not expose native/driver allocation bytes"
+    },
+    "device": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "submittedFrames": 1,
+    "frameVersion": 2,
+    "rendered": {
+      "tick": 0,
+      "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+      "sourceRevision": 0,
+      "resetTick": null,
+      "cameraId": "near",
+      "frame": {
+        "cameraId": "near",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0.1,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "frameVersion": 2
+    },
+    "rendererInfo": {
+      "geometries": 4,
+      "textures": 1,
+      "programs": 3,
+      "calls": 2,
+      "triangles": 9752
+    },
+    "liveHosts": {
+      "renderers": 1,
+      "renderloops": 1,
+      "hostListeners": 2
+    },
+    "productIntegrated": false,
+    "lastReplacement": null
+  },
+  "wetness": {
+    "result": null,
+    "sourceStartTick": 0,
+    "preset": {
+      "schema": "hestia-rd-wetness-v1",
+      "id": "weather-workbench",
+      "model": "current-exposure-analytic",
+      "sourcePolicy": "reset-at-snapshot",
+      "wettingPerSecond": 0.35,
+      "dryingPerSecond": 0.08,
+      "rainHistory": [
+        {
+          "tick": 0,
+          "rain01": 0
+        },
+        {
+          "tick": 120,
+          "rain01": 0
+        },
+        {
+          "tick": 240,
+          "rain01": 0.8
+        },
+        {
+          "tick": 900,
+          "rain01": 0
+        }
+      ]
+    },
+    "material": {
+      "generation": 0,
+      "viewMode": "color",
+      "sunDirectionWorld": [
+        -0.408248290463863,
+        0.816496580927726,
+        -0.408248290463863
+      ]
+    },
+    "rain": {
+      "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+      "sourceRevision": 0,
+      "sourceFrame": {
+        "basis": "right-handed-y-up",
+        "id": "lab",
+        "originMeters": [
+          0,
+          0,
+          0
+        ],
+        "rotationXyzw": [
+          0,
+          0,
+          0,
+          1
+        ]
+      },
+      "coverageBindings": [
+        {
+          "regionId": "removable-roof-cells",
+          "ownerId": "removable-roof",
+          "payloadId": "removable-roof-cells-coverage",
+          "sha256": "3654da25dd1bae2cc27c2e3d0d7e9e9755280ca7f3ae5d4aa18d32a0fc094384"
+        },
+        {
+          "regionId": "shelter-shell",
+          "ownerId": "shelter-shell",
+          "payloadId": "shelter-shell-coverage",
+          "sha256": "2d79cff9e3fd90907d81177f9b314b7a7ab5c514a15348c04261fe6a08d4c3c8"
+        }
+      ],
+      "tick": 0,
+      "direction": [
+        0,
+        -1,
+        0
+      ],
+      "coverage": "not-sampled",
+      "field": null,
+      "visibleParticles": 0,
+      "clippedParticles": 0,
+      "unknownParticles": 0,
+      "splashes": 0
+    }
+  },
+  "mounts": 1,
+  "liveHosts": {
+    "renderers": 1,
+    "renderloops": 1,
+    "hostListeners": 2
+  },
+  "productIntegrated": false,
+  "art": "PENDING_OWNER"
+}

@@ -1,0 +1,39 @@
+{
+  "runId": "package-smoke-02",
+  "browser": "151.0.7922.34",
+  "optionalFaviconSuppressed": true,
+  "playwright": "1.61.1",
+  "sourceState": "ORIGINAL_PACKAGE_UNCOMMITTED_HASH_BOUND",
+  "executionAnchor": "16a5d29a5cddea372abae139da618aa000a058be",
+  "publishedCommit": "ebb913d133f4109a8898e70e9b0889edcc2d7662",
+  "manifestSha256": "254a797d75646c8f390832483dfabb05bb291c0bd84ace1c33e55f5156ddc170",
+  "pages": [
+    {
+      "route": "/src/qa/combined-scene/index.html",
+      "htmlSha256": "aaa4920b150bd9989d8d028d3300c9321221d4edb8ae44606d63505e941eeffa",
+      "status": "Kombinierte Strecke aktiv",
+      "observed": true
+    },
+    {
+      "route": "/src/tools/foliage-workbench/index.html",
+      "htmlSha256": "d5665ede2bde0cdc82e75cca00cda3dd47f3a13b7a59e6c272c08da2c03f3062",
+      "status": "Preview aktiv",
+      "observed": true
+    },
+    {
+      "route": "/src/tools/weather-workbench/index.html",
+      "htmlSha256": "54358b0afba45b1023c74fad6f2c71fc63bd3f97ea8e32447c0ef3234cc3e9de",
+      "status": "Wetter + Regen + Nässe aktiv",
+      "observed": true
+    },
+    {
+      "route": "/src/tools/asset-inspector/index.html",
+      "htmlSha256": "033cf5bd94728058808e2c7857cf139057791265bcf07baf63bb37555a98b4d1",
+      "status": "Inspector aktiv",
+      "observed": true
+    }
+  ],
+  "errors": [],
+  "productIntegrated": false,
+  "qualification": "FUNCTIONAL_SMOKE_ONLY"
+}

@@ -1,0 +1,10 @@
+{
+  "archiveSha256": "87cddafc768dd24bbde7bf5a260dfeb1d184d66d600e967f09a22971034e4a4a",
+  "archiveBytes": 68078891,
+  "manifestSha256": "254a797d75646c8f390832483dfabb05bb291c0bd84ace1c33e55f5156ddc170",
+  "members": 2223,
+  "safePaths": true,
+  "crc": "PASS",
+  "freshRegularDirectory": "reproduction\\package-01",
+  "productIntegrated": false
+}

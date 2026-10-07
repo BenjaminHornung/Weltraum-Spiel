@@ -1,0 +1,59 @@
+{
+  "scope": "finite Q0-Q3 follow-up from ebb913d",
+  "productIntegrated": false,
+  "art": "PENDING_OWNER",
+  "buildReceipt": "candidate-original-04-build.json",
+  "sourceFiles": 83,
+  "currentSourceMismatches": [],
+  "originalNativeTestSha256": "cc7de7da85c024c8ebeed231f44517fa6711b3a836ec8f0c49f7051c24dafdc0",
+  "focused": {
+    "passed": 22,
+    "total": 22,
+    "exitCode": 0,
+    "runId": "focused-units-03"
+  },
+  "typecheck": {
+    "exitCode": 0,
+    "evidence": "exec_command completed chunk533558 during actual fourth A0 grant; this records the tool result, not an additional test invocation",
+    "output": "empty",
+    "command": "Node22.23.2 runtime/node_modules/typescript/bin/tsc --project tsconfig.followup.json --noEmit"
+  },
+  "originalNative": {
+    "passed": 4,
+    "exitCode": 1,
+    "failed": 2,
+    "runId": "ray-original-assertions-01"
+  },
+  "correctedHelper": {
+    "passed": 10,
+    "total": 12,
+    "exitCode": 1,
+    "runId": "ray-candidate-native-02"
+  },
+  "directAbort": {
+    "passed": 3,
+    "red": "ray-abort-red-02",
+    "exitCode": 0,
+    "green": "ray-abort-green-01",
+    "total": 3
+  },
+  "runGuards": {
+    "passed": 5,
+    "total": 5,
+    "unchanged": true,
+    "exitCode": 0,
+    "runId": "run-guards-01"
+  },
+  "device": {
+    "reportedToA0": true,
+    "actualAllProbesServersStoppedBeforeUtc": "2026-10-07T10:40:00Z",
+    "grantStartsUtc": "2026-10-07T10:33:15Z",
+    "grantExpiresUtc": "2026-10-07T10:43:15Z"
+  },
+  "remainingGates": [
+    "ART_Pending_Owner",
+    "ray fidelity and equal-quality costs: DEFER_NEW_SPIKE_REQUIRED",
+    "physical GPU/VRAM unsupported",
+    "product integration false"
+  ]
+}

@@ -1,0 +1,3319 @@
+{
+  "runId": "combined-candidate-direction-timing-02",
+  "build": "candidate-direction-02",
+  "mode": "timing",
+  "browser": "151.0.7922.34",
+  "node": "v22.23.2",
+  "windowReceipt": {
+    "id": "a0-after-four-probes-20261007-093239",
+    "startsUtc": "2026-10-07T09:32:39Z",
+    "expiresUtc": "2026-10-07T09:47:39Z",
+    "authority": "A0 confirmed six known completed probe browser/server PIDs absent and rejected restart never reached CreateProcess. No A0 browser/GPU/build/test/profiler active; only source/report work during this explicit 15-minute window. Prior confirmed windows were 07:59:20-08:14:20 and 08:16:51-08:31:51 UTC.",
+    "a0Checkpoint": "aa2eabd918e03c475a489b412cd18e05f781a0f9",
+    "rdStartCommit": "ebb913d133f4109a8898e70e9b0889edcc2d7662",
+    "productIntegrated": false
+  },
+  "environment": {
+    "backend": "Three-WebGLRenderer-WebGL2",
+    "device": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "resolution": {
+      "width": 1280,
+      "height": 720,
+      "dpr": 1,
+      "bufferWidth": 1280,
+      "bufferHeight": 720
+    },
+    "colorSpace": "srgb",
+    "toneMapping": 4,
+    "exposure": 1.05,
+    "viewport": {
+      "width": 1400,
+      "height": 1000
+    },
+    "dpr": 1,
+    "htmlSha256": "000098ad4183bc018be1a6cf846c1f50a53bc7443a7b68244031d7786674fcfa"
+  },
+  "populations": [
+    {
+      "name": "cold-first-wet-refresh",
+      "wallMs": 2395,
+      "nativeSubmitsBefore": 1,
+      "observedNativeClearPasses": 29,
+      "observedNativeDraws": 326,
+      "nativeSubmitsAfter": 5,
+      "distinctRenderEvents": [
+        {
+          "ms": 1949.5,
+          "draws": 59
+        },
+        {
+          "ms": 2085.699999999255,
+          "draws": 92
+        },
+        {
+          "ms": 2547.199999999255,
+          "draws": 126
+        },
+        {
+          "ms": 2610.0999999996275,
+          "draws": 149
+        },
+        {
+          "ms": 2735.199999999255,
+          "draws": 171
+        },
+        {
+          "ms": 3233.39999999851,
+          "draws": 205
+        },
+        {
+          "ms": 3304.699999999255,
+          "draws": 228
+        },
+        {
+          "ms": 3441.39999999851,
+          "draws": 261
+        },
+        {
+          "ms": 3965.39999999851,
+          "draws": 295
+        },
+        {
+          "ms": 4043.0999999996275,
+          "draws": 318
+        },
+        {
+          "ms": 4164.5999999996275,
+          "draws": 340
+        }
+      ],
+      "calls": [
+        {
+          "kind": "seek",
+          "startMs": 1804.199999999255,
+          "endMs": 1834.3999999985099,
+          "workMs": 30.199999999254942,
+          "domWriteMs": 0.09999999962747097,
+          "status": "Seek angewendet",
+          "tick": 240,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.04993069989739547,
+            -0.9986139979479094,
+            0.016643566632465155
+          ],
+          "samples": 0,
+          "conservativeWetRefreshQueries": 0,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 4,
+          "renderedTick": 0,
+          "renderedVersion": 3,
+          "frameVersion": 6,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 0,
+          "sourceCopyBytes": 0,
+          "unknownSamples": 0,
+          "visibleParticles": 315,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 1975.7999999988824,
+          "endMs": 2083.39999999851,
+          "workMs": 107.59999999962747,
+          "domWriteMs": 0.19999999925494194,
+          "status": "Seek angewendet",
+          "tick": 300,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05031872335595408,
+            -0.9985922481430843,
+            0.016779392967798023
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1302040,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 7,
+          "renderedTick": 240,
+          "renderedVersion": 6,
+          "frameVersion": 9,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 297,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "dispose",
+          "startMs": 2115.0999999996275,
+          "endMs": 2116.0999999996275,
+          "workMs": 1,
+          "domWriteMs": 0.09999999962747097,
+          "status": "Disposed",
+          "tick": 300,
+          "paused": true,
+          "samples": 0,
+          "conservativeWetRefreshQueries": 0,
+          "conservativeRainLastFieldQueries": 0,
+          "nativeDrawCalls": 0,
+          "unknownSamples": 0,
+          "visibleParticles": 0,
+          "effectErrors": []
+        },
+        {
+          "kind": "mount",
+          "startMs": 2117.2999999988824,
+          "endMs": 2508.699999999255,
+          "workMs": 391.40000000037253,
+          "domWriteMs": 0.19999999925494194,
+          "status": "Kombinierte Strecke aktiv",
+          "tick": 0,
+          "paused": true,
+          "sourceDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0,
+            -1,
+            0
+          ],
+          "samples": 0,
+          "conservativeWetRefreshQueries": 0,
+          "conservativeRainLastFieldQueries": 0,
+          "nativeSubmits": 0,
+          "frameVersion": 3,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 0,
+          "sourceCopyBytes": 0,
+          "unknownSamples": 0,
+          "visibleParticles": 0,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 2558.5,
+          "endMs": 2588.5999999996275,
+          "workMs": 30.09999999962747,
+          "domWriteMs": 0,
+          "status": "Seek angewendet",
+          "tick": 240,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.04993069989739547,
+            -0.9986139979479094,
+            0.016643566632465155
+          ],
+          "samples": 0,
+          "conservativeWetRefreshQueries": 0,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 2,
+          "renderedTick": 0,
+          "renderedVersion": 3,
+          "frameVersion": 6,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 0,
+          "sourceCopyBytes": 0,
+          "unknownSamples": 0,
+          "visibleParticles": 315,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 2632,
+          "endMs": 2733.39999999851,
+          "workMs": 101.39999999850988,
+          "domWriteMs": 0.10000000149011612,
+          "status": "Seek angewendet",
+          "tick": 300,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05031872335595408,
+            -0.9985922481430843,
+            0.016779392967798023
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1302040,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 4,
+          "renderedTick": 240,
+          "renderedVersion": 6,
+          "frameVersion": 9,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 297,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "dispose",
+          "startMs": 2766.7999999988824,
+          "endMs": 2767.2999999988824,
+          "workMs": 0.5,
+          "domWriteMs": 0.09999999962747097,
+          "status": "Disposed",
+          "tick": 300,
+          "paused": true,
+          "samples": 0,
+          "conservativeWetRefreshQueries": 0,
+          "conservativeRainLastFieldQueries": 0,
+          "nativeDrawCalls": 0,
+          "unknownSamples": 0,
+          "visibleParticles": 0,
+          "effectErrors": []
+        },
+        {
+          "kind": "mount",
+          "startMs": 2768,
+          "endMs": 3190.5999999996275,
+          "workMs": 422.59999999962747,
+          "domWriteMs": 0,
+          "status": "Kombinierte Strecke aktiv",
+          "tick": 0,
+          "paused": true,
+          "sourceDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0,
+            -1,
+            0
+          ],
+          "samples": 0,
+          "conservativeWetRefreshQueries": 0,
+          "conservativeRainLastFieldQueries": 0,
+          "nativeSubmits": 0,
+          "frameVersion": 3,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 0,
+          "sourceCopyBytes": 0,
+          "unknownSamples": 0,
+          "visibleParticles": 0,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 3243.7999999988824,
+          "endMs": 3276.39999999851,
+          "workMs": 32.59999999962747,
+          "domWriteMs": 0,
+          "status": "Seek angewendet",
+          "tick": 240,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.04993069989739547,
+            -0.9986139979479094,
+            0.016643566632465155
+          ],
+          "samples": 0,
+          "conservativeWetRefreshQueries": 0,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 2,
+          "renderedTick": 0,
+          "renderedVersion": 3,
+          "frameVersion": 6,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 0,
+          "sourceCopyBytes": 0,
+          "unknownSamples": 0,
+          "visibleParticles": 315,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 3331.5999999996275,
+          "endMs": 3438.39999999851,
+          "workMs": 106.79999999888241,
+          "domWriteMs": 0.19999999925494194,
+          "status": "Seek angewendet",
+          "tick": 300,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05031872335595408,
+            -0.9985922481430843,
+            0.016779392967798023
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1302040,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 5,
+          "renderedTick": 240,
+          "renderedVersion": 6,
+          "frameVersion": 9,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 297,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "dispose",
+          "startMs": 3471.199999999255,
+          "endMs": 3471.699999999255,
+          "workMs": 0.5,
+          "domWriteMs": 0.09999999962747097,
+          "status": "Disposed",
+          "tick": 300,
+          "paused": true,
+          "samples": 0,
+          "conservativeWetRefreshQueries": 0,
+          "conservativeRainLastFieldQueries": 0,
+          "nativeDrawCalls": 0,
+          "unknownSamples": 0,
+          "visibleParticles": 0,
+          "effectErrors": []
+        },
+        {
+          "kind": "mount",
+          "startMs": 3472.89999999851,
+          "endMs": 3919.699999999255,
+          "workMs": 446.80000000074506,
+          "domWriteMs": 0.19999999925494194,
+          "status": "Kombinierte Strecke aktiv",
+          "tick": 0,
+          "paused": true,
+          "sourceDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0,
+            -1,
+            0
+          ],
+          "samples": 0,
+          "conservativeWetRefreshQueries": 0,
+          "conservativeRainLastFieldQueries": 0,
+          "nativeSubmits": 0,
+          "frameVersion": 3,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 0,
+          "sourceCopyBytes": 0,
+          "unknownSamples": 0,
+          "visibleParticles": 0,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 3981.39999999851,
+          "endMs": 4016.89999999851,
+          "workMs": 35.5,
+          "domWriteMs": 0,
+          "status": "Seek angewendet",
+          "tick": 240,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.04993069989739547,
+            -0.9986139979479094,
+            0.016643566632465155
+          ],
+          "samples": 0,
+          "conservativeWetRefreshQueries": 0,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 2,
+          "renderedTick": 0,
+          "renderedVersion": 3,
+          "frameVersion": 6,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 0,
+          "sourceCopyBytes": 0,
+          "unknownSamples": 0,
+          "visibleParticles": 315,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 4065.699999999255,
+          "endMs": 4162.699999999255,
+          "workMs": 97,
+          "domWriteMs": 0.09999999962747097,
+          "status": "Seek angewendet",
+          "tick": 300,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05031872335595408,
+            -0.9985922481430843,
+            0.016779392967798023
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1302040,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 4,
+          "renderedTick": 240,
+          "renderedVersion": 6,
+          "frameVersion": 9,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 297,
+          "materialView": "color",
+          "effectErrors": []
+        }
+      ],
+      "final": {
+        "tick": 300,
+        "device": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "resolution": {
+          "width": 1280,
+          "height": 720,
+          "dpr": 1,
+          "bufferWidth": 1280,
+          "bufferHeight": 720
+        },
+        "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+        "rendered": {
+          "tick": 300,
+          "fixtureDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "resetTick": null,
+          "cameraId": "near",
+          "frame": {
+            "cameraId": "near",
+            "paused": true,
+            "seconds": 5,
+            "sourceRevision": 0,
+            "tick": 300,
+            "weather": {
+              "cloud01": 0.85,
+              "rain01": 0.8,
+              "snow01": 0,
+              "windMps": [
+                3.023379569560454,
+                0,
+                1.0081828493461589
+              ]
+            }
+          },
+          "frameVersion": 9
+        },
+        "liveHosts": {
+          "renderers": 1,
+          "renderloops": 1,
+          "hostListeners": 2
+        }
+      }
+    },
+    {
+      "name": "warm-identical-tick",
+      "wallMs": 596.5,
+      "nativeSubmitsBefore": 5,
+      "observedNativeClearPasses": 35,
+      "observedNativeDraws": 385,
+      "nativeSubmitsAfter": 42,
+      "distinctRenderEvents": [
+        {
+          "ms": 4263.89999999851,
+          "draws": 406
+        },
+        {
+          "ms": 4312.39999999851,
+          "draws": 439
+        },
+        {
+          "ms": 4360.199999999255,
+          "draws": 472
+        },
+        {
+          "ms": 4412,
+          "draws": 505
+        },
+        {
+          "ms": 4460.299999998882,
+          "draws": 538
+        },
+        {
+          "ms": 4505.699999999255,
+          "draws": 571
+        },
+        {
+          "ms": 4552.89999999851,
+          "draws": 593
+        },
+        {
+          "ms": 4605.199999999255,
+          "draws": 626
+        },
+        {
+          "ms": 4649.199999999255,
+          "draws": 648
+        },
+        {
+          "ms": 4699.299999998882,
+          "draws": 681
+        },
+        {
+          "ms": 4744.299999998882,
+          "draws": 714
+        },
+        {
+          "ms": 4789.89999999851,
+          "draws": 747
+        }
+      ],
+      "calls": [
+        {
+          "kind": "seek",
+          "startMs": 4243.699999999255,
+          "endMs": 4260.699999999255,
+          "workMs": 17,
+          "domWriteMs": 0.2000000011175871,
+          "status": "Seek angewendet",
+          "tick": 300,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05031872335595408,
+            -0.9985922481430843,
+            0.016779392967798023
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 0,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 10,
+          "renderedTick": 300,
+          "renderedVersion": 9,
+          "frameVersion": 12,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 297,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 4294.299999998882,
+          "endMs": 4309.699999999255,
+          "workMs": 15.400000000372529,
+          "domWriteMs": 0.10000000149011612,
+          "status": "Seek angewendet",
+          "tick": 300,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05031872335595408,
+            -0.9985922481430843,
+            0.016779392967798023
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 0,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 13,
+          "renderedTick": 300,
+          "renderedVersion": 12,
+          "frameVersion": 15,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 297,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 4343.5999999996275,
+          "endMs": 4356.799999998882,
+          "workMs": 13.199999999254942,
+          "domWriteMs": 0.09999999962747097,
+          "status": "Seek angewendet",
+          "tick": 300,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05031872335595408,
+            -0.9985922481430843,
+            0.016779392967798023
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 0,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 16,
+          "renderedTick": 300,
+          "renderedVersion": 15,
+          "frameVersion": 18,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 297,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 4396.0999999996275,
+          "endMs": 4409.5999999996275,
+          "workMs": 13.5,
+          "domWriteMs": 0.2999999988824129,
+          "status": "Seek angewendet",
+          "tick": 300,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05031872335595408,
+            -0.9985922481430843,
+            0.016779392967798023
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 0,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 19,
+          "renderedTick": 300,
+          "renderedVersion": 18,
+          "frameVersion": 21,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 297,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 4444.299999998882,
+          "endMs": 4458.299999998882,
+          "workMs": 14,
+          "domWriteMs": 0.19999999925494194,
+          "status": "Seek angewendet",
+          "tick": 300,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05031872335595408,
+            -0.9985922481430843,
+            0.016779392967798023
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 0,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 22,
+          "renderedTick": 300,
+          "renderedVersion": 21,
+          "frameVersion": 24,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 297,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 4490.5,
+          "endMs": 4502.299999998882,
+          "workMs": 11.799999998882413,
+          "domWriteMs": 0.19999999925494194,
+          "status": "Seek angewendet",
+          "tick": 300,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05031872335595408,
+            -0.9985922481430843,
+            0.016779392967798023
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 0,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 25,
+          "renderedTick": 300,
+          "renderedVersion": 24,
+          "frameVersion": 27,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 297,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 4535.299999998882,
+          "endMs": 4550.39999999851,
+          "workMs": 15.099999999627471,
+          "domWriteMs": 0.09999999962747097,
+          "status": "Seek angewendet",
+          "tick": 300,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05031872335595408,
+            -0.9985922481430843,
+            0.016779392967798023
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 0,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 27,
+          "renderedTick": 300,
+          "renderedVersion": 27,
+          "frameVersion": 30,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 297,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 4587.299999998882,
+          "endMs": 4602,
+          "workMs": 14.700000001117587,
+          "domWriteMs": 0.2000000011175871,
+          "status": "Seek angewendet",
+          "tick": 300,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05031872335595408,
+            -0.9985922481430843,
+            0.016779392967798023
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 0,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 30,
+          "renderedTick": 300,
+          "renderedVersion": 30,
+          "frameVersion": 33,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 297,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 4635.0999999996275,
+          "endMs": 4647.39999999851,
+          "workMs": 12.299999998882413,
+          "domWriteMs": 0.2000000011175871,
+          "status": "Seek angewendet",
+          "tick": 300,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05031872335595408,
+            -0.9985922481430843,
+            0.016779392967798023
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 0,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 32,
+          "renderedTick": 300,
+          "renderedVersion": 33,
+          "frameVersion": 36,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 297,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 4681.89999999851,
+          "endMs": 4696.89999999851,
+          "workMs": 15,
+          "domWriteMs": 0.30000000074505806,
+          "status": "Seek angewendet",
+          "tick": 300,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05031872335595408,
+            -0.9985922481430843,
+            0.016779392967798023
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 0,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 35,
+          "renderedTick": 300,
+          "renderedVersion": 36,
+          "frameVersion": 39,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 297,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 4729.5999999996275,
+          "endMs": 4742.199999999255,
+          "workMs": 12.599999999627471,
+          "domWriteMs": 0.19999999925494194,
+          "status": "Seek angewendet",
+          "tick": 300,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05031872335595408,
+            -0.9985922481430843,
+            0.016779392967798023
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 0,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 38,
+          "renderedTick": 300,
+          "renderedVersion": 39,
+          "frameVersion": 42,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 297,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 4773.199999999255,
+          "endMs": 4787.699999999255,
+          "workMs": 14.5,
+          "domWriteMs": 0.10000000149011612,
+          "status": "Seek angewendet",
+          "tick": 300,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05031872335595408,
+            -0.9985922481430843,
+            0.016779392967798023
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 0,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 41,
+          "renderedTick": 300,
+          "renderedVersion": 42,
+          "frameVersion": 45,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 297,
+          "materialView": "color",
+          "effectErrors": []
+        }
+      ],
+      "final": {
+        "tick": 300,
+        "device": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "resolution": {
+          "width": 1280,
+          "height": 720,
+          "dpr": 1,
+          "bufferWidth": 1280,
+          "bufferHeight": 720
+        },
+        "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+        "rendered": {
+          "tick": 300,
+          "fixtureDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "resetTick": null,
+          "cameraId": "near",
+          "frame": {
+            "cameraId": "near",
+            "paused": true,
+            "seconds": 5,
+            "sourceRevision": 0,
+            "tick": 300,
+            "weather": {
+              "cloud01": 0.85,
+              "rain01": 0.8,
+              "snow01": 0,
+              "windMps": [
+                3.023379569560454,
+                0,
+                1.0081828493461589
+              ]
+            }
+          },
+          "frameVersion": 45
+        },
+        "liveHosts": {
+          "renderers": 1,
+          "renderloops": 1,
+          "hostListeners": 2
+        }
+      }
+    },
+    {
+      "name": "continuous-changing-direction",
+      "wallMs": 2618.199999999255,
+      "nativeSubmitsBefore": 42,
+      "observedNativeClearPasses": 45,
+      "observedNativeDraws": 495,
+      "nativeSubmitsAfter": 91,
+      "distinctRenderEvents": [
+        {
+          "ms": 4906.699999999255,
+          "draws": 824
+        },
+        {
+          "ms": 5016.5999999996275,
+          "draws": 835
+        },
+        {
+          "ms": 5122.89999999851,
+          "draws": 846
+        },
+        {
+          "ms": 5227.5999999996275,
+          "draws": 857
+        },
+        {
+          "ms": 5335.199999999255,
+          "draws": 868
+        },
+        {
+          "ms": 5451.799999998882,
+          "draws": 879
+        },
+        {
+          "ms": 5557.5,
+          "draws": 890
+        },
+        {
+          "ms": 5660.699999999255,
+          "draws": 912
+        },
+        {
+          "ms": 5767.39999999851,
+          "draws": 923
+        },
+        {
+          "ms": 5879.89999999851,
+          "draws": 945
+        },
+        {
+          "ms": 5993.299999998882,
+          "draws": 956
+        },
+        {
+          "ms": 6104.5,
+          "draws": 967
+        },
+        {
+          "ms": 6211.5,
+          "draws": 989
+        },
+        {
+          "ms": 6312,
+          "draws": 1011
+        },
+        {
+          "ms": 6403.699999999255,
+          "draws": 1033
+        },
+        {
+          "ms": 6491.0999999996275,
+          "draws": 1066
+        },
+        {
+          "ms": 6587.799999998882,
+          "draws": 1088
+        },
+        {
+          "ms": 6672.89999999851,
+          "draws": 1121
+        },
+        {
+          "ms": 6761.299999998882,
+          "draws": 1154
+        },
+        {
+          "ms": 6862.799999998882,
+          "draws": 1176
+        },
+        {
+          "ms": 6971.799999998882,
+          "draws": 1187
+        },
+        {
+          "ms": 7082.699999999255,
+          "draws": 1209
+        },
+        {
+          "ms": 7196.5999999996275,
+          "draws": 1231
+        },
+        {
+          "ms": 7307.5,
+          "draws": 1253
+        },
+        {
+          "ms": 7428.39999999851,
+          "draws": 1275
+        },
+        {
+          "ms": 7471.5999999996275,
+          "draws": 1286
+        }
+      ],
+      "calls": [
+        {
+          "kind": "play",
+          "startMs": 4887.39999999851,
+          "endMs": 4902.299999998882,
+          "workMs": 14.900000000372529,
+          "domWriteMs": 0.19999999925494194,
+          "status": "Play",
+          "tick": 300,
+          "paused": false,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05031872335595408,
+            -0.9985922481430843,
+            0.016779392967798023
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 0,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 48,
+          "renderedTick": 300,
+          "renderedVersion": 45,
+          "frameVersion": 48,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 297,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "running",
+          "startMs": 4924.89999999851,
+          "endMs": 5013.299999998882,
+          "workMs": 88.40000000037253,
+          "domWriteMs": 0.3999999985098839,
+          "status": "Play — kontrollierte Ticks",
+          "tick": 301,
+          "paused": false,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.0502897050903606,
+            -0.9985938805701976,
+            0.01676923521448438
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1302045,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 49,
+          "renderedTick": 300,
+          "renderedVersion": 48,
+          "frameVersion": 51,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 279,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "running",
+          "startMs": 5034.299999998882,
+          "endMs": 5119.0999999996275,
+          "workMs": 84.80000000074506,
+          "domWriteMs": 0.09999999962747097,
+          "status": "Play — kontrollierte Ticks",
+          "tick": 302,
+          "paused": false,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05026006051214897,
+            -0.9985955472504218,
+            0.016758858223210122
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1302045,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 50,
+          "renderedTick": 301,
+          "renderedVersion": 51,
+          "frameVersion": 54,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 261,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "running",
+          "startMs": 5141.299999998882,
+          "endMs": 5225.0999999996275,
+          "workMs": 83.80000000074506,
+          "domWriteMs": 0.09999999962747097,
+          "status": "Play — kontrollierte Ticks",
+          "tick": 303,
+          "paused": false,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05023002667181923,
+            -0.9985972348055149,
+            0.0167483449727988
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1302045,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 51,
+          "renderedTick": 302,
+          "renderedVersion": 54,
+          "frameVersion": 57,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 258,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "running",
+          "startMs": 5247.5,
+          "endMs": 5332.5,
+          "workMs": 85,
+          "domWriteMs": 0.19999999925494194,
+          "status": "Play — kontrollierte Ticks",
+          "tick": 304,
+          "paused": false,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05019985533914767,
+            -0.99859892906225,
+            0.016737783594483142
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1302045,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 52,
+          "renderedTick": 303,
+          "renderedVersion": 57,
+          "frameVersion": 60,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 258,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "running",
+          "startMs": 5352.299999998882,
+          "endMs": 5444.39999999851,
+          "workMs": 92.09999999962747,
+          "domWriteMs": 0.19999999925494194,
+          "status": "Play — kontrollierte Ticks",
+          "tick": 305,
+          "paused": false,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05016981229788586,
+            -0.9986006150952056,
+            0.016727267125014045
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1302045,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 53,
+          "renderedTick": 304,
+          "renderedVersion": 60,
+          "frameVersion": 63,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 240,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "running",
+          "startMs": 5468.799999998882,
+          "endMs": 5550.0999999996275,
+          "workMs": 81.30000000074506,
+          "domWriteMs": 0.19999999925494194,
+          "status": "Play — kontrollierte Ticks",
+          "tick": 306,
+          "paused": false,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05014017655508784,
+            -0.9986022772734725,
+            0.016716893229886183
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1302045,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 54,
+          "renderedTick": 305,
+          "renderedVersion": 63,
+          "frameVersion": 66,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 224,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "running",
+          "startMs": 5572.39999999851,
+          "endMs": 5656.89999999851,
+          "workMs": 84.5,
+          "domWriteMs": 0.09999999962747097,
+          "status": "Play — kontrollierte Ticks",
+          "tick": 307,
+          "paused": false,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.050111239466889355,
+            -0.9986038993110189,
+            0.01670676389731876
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1302045,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 56,
+          "renderedTick": 306,
+          "renderedVersion": 66,
+          "frameVersion": 69,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 265,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "running",
+          "startMs": 5676.5999999996275,
+          "endMs": 5765.299999998882,
+          "workMs": 88.69999999925494,
+          "domWriteMs": 0.09999999962747097,
+          "status": "Play — kontrollierte Ticks",
+          "tick": 308,
+          "paused": false,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05008330378296517,
+            -0.998605464320433,
+            0.01669698510377078
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1302045,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 57,
+          "renderedTick": 307,
+          "renderedVersion": 69,
+          "frameVersion": 72,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 303,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "running",
+          "startMs": 5785.5999999996275,
+          "endMs": 5877.5,
+          "workMs": 91.90000000037253,
+          "domWriteMs": 0.30000000074505806,
+          "status": "Play — kontrollierte Ticks",
+          "tick": 309,
+          "paused": false,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05005668261228827,
+            -0.9986069548697538,
+            0.01668766645190943
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1302045,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 59,
+          "renderedTick": 308,
+          "renderedVersion": 72,
+          "frameVersion": 75,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 341,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "running",
+          "startMs": 5897.299999998882,
+          "endMs": 5990.89999999851,
+          "workMs": 93.59999999962747,
+          "domWriteMs": 0.19999999925494194,
+          "status": "Play — kontrollierte Ticks",
+          "tick": 310,
+          "paused": false,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05003169831320802,
+            -0.9986083530420928,
+            0.016678920782087728
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1302045,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 60,
+          "renderedTick": 309,
+          "renderedVersion": 75,
+          "frameVersion": 78,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 410,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "running",
+          "startMs": 6010.89999999851,
+          "endMs": 6100.89999999851,
+          "workMs": 90,
+          "domWriteMs": 0.09999999962747097,
+          "status": "Play — kontrollierte Ticks",
+          "tick": 311,
+          "paused": false,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.0500086813112492,
+            -0.9986096404977545,
+            0.016670863758522426
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1302045,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 61,
+          "renderedTick": 310,
+          "renderedVersion": 78,
+          "frameVersion": 81,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 422,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "running",
+          "startMs": 6123.5,
+          "endMs": 6208.799999998882,
+          "workMs": 85.29999999888241,
+          "domWriteMs": 0.19999999925494194,
+          "status": "Play — kontrollierte Ticks",
+          "tick": 312,
+          "paused": false,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.049987968848409725,
+            -0.9986107985385578,
+            0.016663613431494605
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1302045,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 63,
+          "renderedTick": 311,
+          "renderedVersion": 81,
+          "frameVersion": 84,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 402,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "running",
+          "startMs": 6230.699999999255,
+          "endMs": 6310.199999999255,
+          "workMs": 79.5,
+          "domWriteMs": 0.09999999962747097,
+          "status": "Play — kontrollierte Ticks",
+          "tick": 313,
+          "paused": false,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.04996990366810008,
+            -0.9986118081740697,
+            0.016657289777023302
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1302045,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 65,
+          "renderedTick": 312,
+          "renderedVersion": 84,
+          "frameVersion": 87,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 382,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "running",
+          "startMs": 6333.299999998882,
+          "endMs": 6401.89999999851,
+          "workMs": 68.59999999962747,
+          "domWriteMs": 0.09999999962747097,
+          "status": "Play — kontrollierte Ticks",
+          "tick": 314,
+          "paused": false,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.04995483264022047,
+            -0.9986126501894772,
+            0.01665201421558593
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1302045,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 67,
+          "renderedTick": 313,
+          "renderedVersion": 87,
+          "frameVersion": 90,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 363,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "running",
+          "startMs": 6420.0999999996275,
+          "endMs": 6489.199999999255,
+          "workMs": 69.09999999962747,
+          "domWriteMs": 0.09999999962747097,
+          "status": "Play — kontrollierte Ticks",
+          "tick": 315,
+          "paused": false,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.049943105331209804,
+            -0.9986133052148305,
+            0.01664790911157774
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1302045,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 70,
+          "renderedTick": 314,
+          "renderedVersion": 90,
+          "frameVersion": 93,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 345,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "running",
+          "startMs": 6518.199999999255,
+          "endMs": 6586.0999999996275,
+          "workMs": 67.90000000037253,
+          "domWriteMs": 0.19999999925494194,
+          "status": "Play — kontrollierte Ticks",
+          "tick": 316,
+          "paused": false,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.04993507252422339,
+            -0.998613753795411,
+            0.016645097255315343
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1302045,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 72,
+          "renderedTick": 315,
+          "renderedVersion": 93,
+          "frameVersion": 96,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 345,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "running",
+          "startMs": 6603.39999999851,
+          "endMs": 6670.799999998882,
+          "workMs": 67.40000000037253,
+          "domWriteMs": 0.09999999962747097,
+          "status": "Play — kontrollierte Ticks",
+          "tick": 317,
+          "paused": false,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.04993108469490243,
+            -0.998613976463,
+            0.016643701329496684
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1302045,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 75,
+          "renderedTick": 316,
+          "renderedVersion": 96,
+          "frameVersion": 99,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 345,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "running",
+          "startMs": 6687.0999999996275,
+          "endMs": 6759.5999999996275,
+          "workMs": 72.5,
+          "domWriteMs": 0.19999999925494194,
+          "status": "Play — kontrollierte Ticks",
+          "tick": 318,
+          "paused": false,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.049931490448484085,
+            -0.9986139538078416,
+            0.016643843362129557
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1302045,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 78,
+          "renderedTick": 317,
+          "renderedVersion": 99,
+          "frameVersion": 102,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 330,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "running",
+          "startMs": 6775.5999999996275,
+          "endMs": 6860.299999998882,
+          "workMs": 84.69999999925494,
+          "domWriteMs": 0.09999999962747097,
+          "status": "Play — kontrollierte Ticks",
+          "tick": 319,
+          "paused": false,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.0499366349242685,
+            -0.9986136665511199,
+            0.016645644168034705
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1302045,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 80,
+          "renderedTick": 318,
+          "renderedVersion": 102,
+          "frameVersion": 105,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 309,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "running",
+          "startMs": 6880.199999999255,
+          "endMs": 6969.39999999851,
+          "workMs": 89.19999999925494,
+          "domWriteMs": 0.19999999925494194,
+          "status": "Play — kontrollierte Ticks",
+          "tick": 320,
+          "paused": false,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.049946858173703104,
+            -0.9986130956177979,
+            0.016649222781114588
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1302045,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 81,
+          "renderedTick": 319,
+          "renderedVersion": 105,
+          "frameVersion": 108,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 291,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "running",
+          "startMs": 6989.799999998882,
+          "endMs": 7080.39999999851,
+          "workMs": 90.59999999962747,
+          "domWriteMs": 0.2000000011175871,
+          "status": "Play — kontrollierte Ticks",
+          "tick": 321,
+          "paused": false,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.04996249351856714,
+            -0.9986122222096839,
+            0.016654695879657098
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1302045,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 83,
+          "renderedTick": 320,
+          "renderedVersion": 108,
+          "frameVersion": 111,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 271,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "running",
+          "startMs": 7101.89999999851,
+          "endMs": 7193.89999999851,
+          "workMs": 92,
+          "domWriteMs": 0.2999999988824129,
+          "status": "Play — kontrollierte Ticks",
+          "tick": 322,
+          "paused": false,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.04998386589593742,
+            -0.9986110278786327,
+            0.016662177207012567
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1302045,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 85,
+          "renderedTick": 321,
+          "renderedVersion": 111,
+          "frameVersion": 114,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 258,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "running",
+          "startMs": 7216,
+          "endMs": 7304.89999999851,
+          "workMs": 88.89999999850988,
+          "domWriteMs": 0.2999999988824129,
+          "status": "Play — kontrollierte Ticks",
+          "tick": 323,
+          "paused": false,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.050011290196787773,
+            -0.9986094945997894,
+            0.01667177699004256
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1302045,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 87,
+          "renderedTick": 322,
+          "renderedVersion": 114,
+          "frameVersion": 117,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 258,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "running",
+          "startMs": 7329.89999999851,
+          "endMs": 7425.299999998882,
+          "workMs": 95.40000000037253,
+          "domWriteMs": 0.2999999988824129,
+          "status": "Play — kontrollierte Ticks",
+          "tick": 324,
+          "paused": false,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05004506960522307,
+            -0.9986076048448372,
+            0.01668360135779071
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1302045,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 89,
+          "renderedTick": 323,
+          "renderedVersion": 117,
+          "frameVersion": 120,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 258,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "pause",
+          "startMs": 7450.89999999851,
+          "endMs": 7468.799999998882,
+          "workMs": 17.90000000037253,
+          "domWriteMs": 0.10000000149011612,
+          "status": "Pausiert",
+          "tick": 324,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05004506960522307,
+            -0.9986076048448372,
+            0.01668360135779071
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 0,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 90,
+          "renderedTick": 324,
+          "renderedVersion": 120,
+          "frameVersion": 123,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 258,
+          "materialView": "color",
+          "effectErrors": []
+        }
+      ],
+      "final": {
+        "tick": 324,
+        "device": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "resolution": {
+          "width": 1280,
+          "height": 720,
+          "dpr": 1,
+          "bufferWidth": 1280,
+          "bufferHeight": 720
+        },
+        "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+        "rendered": {
+          "tick": 324,
+          "fixtureDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "resetTick": null,
+          "cameraId": "near",
+          "frame": {
+            "cameraId": "near",
+            "paused": true,
+            "seconds": 5.4,
+            "sourceRevision": 0,
+            "tick": 324,
+            "weather": {
+              "cloud01": 0.85,
+              "rain01": 0.8,
+              "snow01": 0,
+              "windMps": [
+                3.0068909567136144,
+                0,
+                1.002411834849765
+              ]
+            }
+          },
+          "frameVersion": 123
+        },
+        "liveHosts": {
+          "renderers": 1,
+          "renderloops": 1,
+          "hostListeners": 2
+        }
+      }
+    },
+    {
+      "name": "roof-opening",
+      "wallMs": 1051.9000000003725,
+      "nativeSubmitsBefore": 91,
+      "observedNativeClearPasses": 19,
+      "observedNativeDraws": 201,
+      "nativeSubmitsAfter": 113,
+      "distinctRenderEvents": [
+        {
+          "ms": 7666.89999999851,
+          "draws": 1363
+        },
+        {
+          "ms": 7859.89999999851,
+          "draws": 1395
+        },
+        {
+          "ms": 8027.799999998882,
+          "draws": 1416
+        },
+        {
+          "ms": 8187.299999998882,
+          "draws": 1448
+        },
+        {
+          "ms": 8365.199999999255,
+          "draws": 1479
+        },
+        {
+          "ms": 8579,
+          "draws": 1522
+        }
+      ],
+      "calls": [
+        {
+          "kind": "seek",
+          "startMs": 7579.5999999996275,
+          "endMs": 7664.5,
+          "workMs": 84.90000000037253,
+          "domWriteMs": 0.2000000011175871,
+          "status": "Seek angewendet",
+          "tick": 420,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05314696490554455,
+            -0.9984285893599234,
+            0.01776941389247399
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1305605,
+          "conservativeRainLastFieldQueries": 33180,
+          "nativeSubmits": 97,
+          "renderedTick": 324,
+          "renderedVersion": 123,
+          "frameVersion": 126,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 437,
+          "visibleParticles": 261,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 7701.199999999255,
+          "endMs": 7833.0999999996275,
+          "workMs": 131.90000000037253,
+          "domWriteMs": 0.09999999962747097,
+          "status": "Seek angewendet",
+          "tick": 600,
+          "paused": true,
+          "sourceDigest": "7543994c636e93dc9db7b02569f78f27bd1cbe15746ebe06967f2d58fb977642",
+          "sourceRevision": 1,
+          "rainDirection": [
+            0.08989992758595558,
+            -0.9954795200168186,
+            0.03063540838840377
+          ],
+          "samples": 5334,
+          "conservativeWetRefreshQueries": 1012740,
+          "conservativeRainLastFieldQueries": 27072,
+          "nativeSubmits": 100,
+          "renderedTick": 420,
+          "renderedVersion": 126,
+          "frameVersion": 129,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 85344,
+          "sourceCopyBytes": 119136,
+          "unknownSamples": 454,
+          "visibleParticles": 223,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 7886.299999998882,
+          "endMs": 8005.39999999851,
+          "workMs": 119.09999999962747,
+          "domWriteMs": 0.09999999962747097,
+          "status": "Seek angewendet",
+          "tick": 420,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05314696490554455,
+            -0.9984285893599234,
+            0.01776941389247399
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1305605,
+          "conservativeRainLastFieldQueries": 33180,
+          "nativeSubmits": 102,
+          "renderedTick": 600,
+          "renderedVersion": 129,
+          "frameVersion": 132,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 437,
+          "visibleParticles": 261,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 8056.0999999996275,
+          "endMs": 8165.0999999996275,
+          "workMs": 109,
+          "domWriteMs": 0.19999999925494194,
+          "status": "Seek angewendet",
+          "tick": 600,
+          "paused": true,
+          "sourceDigest": "7543994c636e93dc9db7b02569f78f27bd1cbe15746ebe06967f2d58fb977642",
+          "sourceRevision": 1,
+          "rainDirection": [
+            0.08989992758595558,
+            -0.9954795200168186,
+            0.03063540838840377
+          ],
+          "samples": 5334,
+          "conservativeWetRefreshQueries": 1012740,
+          "conservativeRainLastFieldQueries": 27072,
+          "nativeSubmits": 105,
+          "renderedTick": 420,
+          "renderedVersion": 132,
+          "frameVersion": 135,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 85344,
+          "sourceCopyBytes": 119136,
+          "unknownSamples": 454,
+          "visibleParticles": 223,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 8212.799999998882,
+          "endMs": 8337.39999999851,
+          "workMs": 124.59999999962747,
+          "domWriteMs": 0.2000000011175871,
+          "status": "Seek angewendet",
+          "tick": 420,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05314696490554455,
+            -0.9984285893599234,
+            0.01776941389247399
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1305605,
+          "conservativeRainLastFieldQueries": 33180,
+          "nativeSubmits": 108,
+          "renderedTick": 600,
+          "renderedVersion": 135,
+          "frameVersion": 138,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 437,
+          "visibleParticles": 261,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 8408.5,
+          "endMs": 8549.699999999255,
+          "workMs": 141.19999999925494,
+          "domWriteMs": 0.09999999962747097,
+          "status": "Seek angewendet",
+          "tick": 600,
+          "paused": true,
+          "sourceDigest": "7543994c636e93dc9db7b02569f78f27bd1cbe15746ebe06967f2d58fb977642",
+          "sourceRevision": 1,
+          "rainDirection": [
+            0.08989992758595558,
+            -0.9954795200168186,
+            0.03063540838840377
+          ],
+          "samples": 5334,
+          "conservativeWetRefreshQueries": 1012740,
+          "conservativeRainLastFieldQueries": 27072,
+          "nativeSubmits": 112,
+          "renderedTick": 420,
+          "renderedVersion": 138,
+          "frameVersion": 141,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 85344,
+          "sourceCopyBytes": 119136,
+          "unknownSamples": 454,
+          "visibleParticles": 223,
+          "materialView": "color",
+          "effectErrors": []
+        }
+      ],
+      "final": {
+        "tick": 600,
+        "device": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "resolution": {
+          "width": 1280,
+          "height": 720,
+          "dpr": 1,
+          "bufferWidth": 1280,
+          "bufferHeight": 720
+        },
+        "sourceDigest": "7543994c636e93dc9db7b02569f78f27bd1cbe15746ebe06967f2d58fb977642",
+        "rendered": {
+          "tick": 600,
+          "fixtureDigest": "7543994c636e93dc9db7b02569f78f27bd1cbe15746ebe06967f2d58fb977642",
+          "sourceRevision": 1,
+          "resetTick": null,
+          "cameraId": "near",
+          "frame": {
+            "cameraId": "near",
+            "paused": true,
+            "seconds": 10,
+            "sourceRevision": 1,
+            "tick": 600,
+            "weather": {
+              "cloud01": 0.85,
+              "rain01": 0.8,
+              "snow01": 0,
+              "windMps": [
+                5.418489829972799,
+                0,
+                1.8464714404904794
+              ]
+            }
+          },
+          "frameVersion": 141
+        },
+        "liveHosts": {
+          "renderers": 1,
+          "renderloops": 1,
+          "hostListeners": 2
+        }
+      }
+    },
+    {
+      "name": "owner-rotation",
+      "wallMs": 1094.4000000003725,
+      "nativeSubmitsBefore": 113,
+      "observedNativeClearPasses": 19,
+      "observedNativeDraws": 190,
+      "nativeSubmitsAfter": 137,
+      "distinctRenderEvents": [
+        {
+          "ms": 8866.599999999627,
+          "draws": 1612
+        },
+        {
+          "ms": 9029.099999999627,
+          "draws": 1642
+        },
+        {
+          "ms": 9186.699999999255,
+          "draws": 1672
+        },
+        {
+          "ms": 9355.299999998882,
+          "draws": 1702
+        },
+        {
+          "ms": 9558.299999998882,
+          "draws": 1732
+        },
+        {
+          "ms": 9756.199999999255,
+          "draws": 1762
+        }
+      ],
+      "calls": [
+        {
+          "kind": "seek",
+          "startMs": 8711,
+          "endMs": 8844.199999999255,
+          "workMs": 133.19999999925494,
+          "domWriteMs": 0.09999999962747097,
+          "status": "Seek angewendet",
+          "tick": 780,
+          "paused": true,
+          "sourceDigest": "e543e6af19f8b1441deb6e1d360112d35d4cf6e81a232fa8b8ad664b18dcbad6",
+          "sourceRevision": 2,
+          "rainDirection": [
+            0.06278421674795245,
+            -0.9978031453197017,
+            0.021142973240683607
+          ],
+          "samples": 5334,
+          "conservativeWetRefreshQueries": 1040648,
+          "conservativeRainLastFieldQueries": 27112,
+          "nativeSubmits": 121,
+          "renderedTick": 600,
+          "renderedVersion": 141,
+          "frameVersion": 144,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 85344,
+          "sourceCopyBytes": 119136,
+          "unknownSamples": 432,
+          "visibleParticles": 292,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 8892.39999999851,
+          "endMs": 9006.099999999627,
+          "workMs": 113.70000000111759,
+          "domWriteMs": 0.10000000149011612,
+          "status": "Seek angewendet",
+          "tick": 960,
+          "paused": true,
+          "sourceDigest": "e2a3df629509f6af943335cefe9edac324c3b218d5e95ff5e7c5c82f605a6692",
+          "sourceRevision": 3,
+          "rainDirection": [
+            0.08989992758595558,
+            -0.9954795200168186,
+            0.03063540838840377
+          ],
+          "samples": 5334,
+          "conservativeWetRefreshQueries": 1017844,
+          "conservativeRainLastFieldQueries": 27232,
+          "nativeSubmits": 124,
+          "renderedTick": 780,
+          "renderedVersion": 144,
+          "frameVersion": 147,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 85344,
+          "sourceCopyBytes": 119136,
+          "unknownSamples": 459,
+          "visibleParticles": 372,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 9057.199999999255,
+          "endMs": 9165,
+          "workMs": 107.80000000074506,
+          "domWriteMs": 0.3000000026077032,
+          "status": "Seek angewendet",
+          "tick": 780,
+          "paused": true,
+          "sourceDigest": "e543e6af19f8b1441deb6e1d360112d35d4cf6e81a232fa8b8ad664b18dcbad6",
+          "sourceRevision": 2,
+          "rainDirection": [
+            0.06278421674795245,
+            -0.9978031453197017,
+            0.021142973240683607
+          ],
+          "samples": 5334,
+          "conservativeWetRefreshQueries": 1040648,
+          "conservativeRainLastFieldQueries": 27112,
+          "nativeSubmits": 127,
+          "renderedTick": 960,
+          "renderedVersion": 147,
+          "frameVersion": 150,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 85344,
+          "sourceCopyBytes": 119136,
+          "unknownSamples": 432,
+          "visibleParticles": 292,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 9212.599999999627,
+          "endMs": 9326.89999999851,
+          "workMs": 114.29999999888241,
+          "domWriteMs": 0.09999999962747097,
+          "status": "Seek angewendet",
+          "tick": 960,
+          "paused": true,
+          "sourceDigest": "e2a3df629509f6af943335cefe9edac324c3b218d5e95ff5e7c5c82f605a6692",
+          "sourceRevision": 3,
+          "rainDirection": [
+            0.08989992758595558,
+            -0.9954795200168186,
+            0.03063540838840377
+          ],
+          "samples": 5334,
+          "conservativeWetRefreshQueries": 1017844,
+          "conservativeRainLastFieldQueries": 27232,
+          "nativeSubmits": 130,
+          "renderedTick": 780,
+          "renderedVersion": 150,
+          "frameVersion": 153,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 85344,
+          "sourceCopyBytes": 119136,
+          "unknownSamples": 459,
+          "visibleParticles": 372,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 9388.89999999851,
+          "endMs": 9529.799999998882,
+          "workMs": 140.90000000037253,
+          "domWriteMs": 0.3999999985098839,
+          "status": "Seek angewendet",
+          "tick": 780,
+          "paused": true,
+          "sourceDigest": "e543e6af19f8b1441deb6e1d360112d35d4cf6e81a232fa8b8ad664b18dcbad6",
+          "sourceRevision": 2,
+          "rainDirection": [
+            0.06278421674795245,
+            -0.9978031453197017,
+            0.021142973240683607
+          ],
+          "samples": 5334,
+          "conservativeWetRefreshQueries": 1040648,
+          "conservativeRainLastFieldQueries": 27112,
+          "nativeSubmits": 133,
+          "renderedTick": 960,
+          "renderedVersion": 153,
+          "frameVersion": 156,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 85344,
+          "sourceCopyBytes": 119136,
+          "unknownSamples": 432,
+          "visibleParticles": 292,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 9592.599999999627,
+          "endMs": 9727.799999998882,
+          "workMs": 135.19999999925494,
+          "domWriteMs": 0.2000000011175871,
+          "status": "Seek angewendet",
+          "tick": 960,
+          "paused": true,
+          "sourceDigest": "e2a3df629509f6af943335cefe9edac324c3b218d5e95ff5e7c5c82f605a6692",
+          "sourceRevision": 3,
+          "rainDirection": [
+            0.08989992758595558,
+            -0.9954795200168186,
+            0.03063540838840377
+          ],
+          "samples": 5334,
+          "conservativeWetRefreshQueries": 1017844,
+          "conservativeRainLastFieldQueries": 27232,
+          "nativeSubmits": 136,
+          "renderedTick": 780,
+          "renderedVersion": 156,
+          "frameVersion": 159,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 85344,
+          "sourceCopyBytes": 119136,
+          "unknownSamples": 459,
+          "visibleParticles": 372,
+          "materialView": "color",
+          "effectErrors": []
+        }
+      ],
+      "final": {
+        "tick": 960,
+        "device": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "resolution": {
+          "width": 1280,
+          "height": 720,
+          "dpr": 1,
+          "bufferWidth": 1280,
+          "bufferHeight": 720
+        },
+        "sourceDigest": "e2a3df629509f6af943335cefe9edac324c3b218d5e95ff5e7c5c82f605a6692",
+        "rendered": {
+          "tick": 960,
+          "fixtureDigest": "e2a3df629509f6af943335cefe9edac324c3b218d5e95ff5e7c5c82f605a6692",
+          "sourceRevision": 3,
+          "resetTick": null,
+          "cameraId": "near",
+          "frame": {
+            "cameraId": "near",
+            "paused": true,
+            "seconds": 16,
+            "sourceRevision": 3,
+            "tick": 960,
+            "weather": {
+              "cloud01": 0.85,
+              "rain01": 0.8,
+              "snow01": 0,
+              "windMps": [
+                5.418489829972799,
+                0,
+                1.8464714404904794
+              ]
+            }
+          },
+          "frameVersion": 159
+        },
+        "liveHosts": {
+          "renderers": 1,
+          "renderloops": 1,
+          "hostListeners": 2
+        }
+      }
+    },
+    {
+      "name": "backward-seek",
+      "wallMs": 330.90000000037253,
+      "nativeSubmitsBefore": 137,
+      "observedNativeClearPasses": 12,
+      "observedNativeDraws": 117,
+      "nativeSubmitsAfter": 157,
+      "distinctRenderEvents": [
+        {
+          "ms": 10035.89999999851,
+          "draws": 1853
+        },
+        {
+          "ms": 10071,
+          "draws": 1883
+        },
+        {
+          "ms": 10104.89999999851,
+          "draws": 1902
+        },
+        {
+          "ms": 10137.5,
+          "draws": 1921
+        },
+        {
+          "ms": 10171.599999999627,
+          "draws": 1940
+        },
+        {
+          "ms": 10204.199999999255,
+          "draws": 1959
+        }
+      ],
+      "calls": [
+        {
+          "kind": "seek",
+          "startMs": 9898.699999999255,
+          "endMs": 10013.5,
+          "workMs": 114.80000000074506,
+          "domWriteMs": 0.09999999962747097,
+          "status": "Seek angewendet",
+          "tick": 300,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05031872335595408,
+            -0.9985922481430843,
+            0.016779392967798023
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 1302040,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 145,
+          "renderedTick": 960,
+          "renderedVersion": 159,
+          "frameVersion": 162,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 297,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 10066.199999999255,
+          "endMs": 10068.599999999627,
+          "workMs": 2.400000000372529,
+          "domWriteMs": 0.19999999925494194,
+          "status": "Seek angewendet",
+          "tick": 120,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.03331256572064951,
+            -0.9993769716194851,
+            0.011659398002227326
+          ],
+          "samples": 0,
+          "conservativeWetRefreshQueries": 0,
+          "conservativeRainLastFieldQueries": 0,
+          "nativeSubmits": 148,
+          "renderedTick": 300,
+          "renderedVersion": 162,
+          "frameVersion": 165,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 0,
+          "visibleParticles": 0,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 10087.5,
+          "endMs": 10100.099999999627,
+          "workMs": 12.599999999627471,
+          "domWriteMs": 0.09999999962747097,
+          "status": "Seek angewendet",
+          "tick": 300,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05031872335595408,
+            -0.9985922481430843,
+            0.016779392967798023
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 0,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 150,
+          "renderedTick": 120,
+          "renderedVersion": 165,
+          "frameVersion": 168,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 297,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 10129.39999999851,
+          "endMs": 10131.5,
+          "workMs": 2.100000001490116,
+          "domWriteMs": 0.2000000011175871,
+          "status": "Seek angewendet",
+          "tick": 120,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.03331256572064951,
+            -0.9993769716194851,
+            0.011659398002227326
+          ],
+          "samples": 0,
+          "conservativeWetRefreshQueries": 0,
+          "conservativeRainLastFieldQueries": 0,
+          "nativeSubmits": 152,
+          "renderedTick": 300,
+          "renderedVersion": 168,
+          "frameVersion": 171,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 0,
+          "visibleParticles": 0,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 10153.799999998882,
+          "endMs": 10167.199999999255,
+          "workMs": 13.400000000372529,
+          "domWriteMs": 0.09999999962747097,
+          "status": "Seek angewendet",
+          "tick": 300,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.05031872335595408,
+            -0.9985922481430843,
+            0.016779392967798023
+          ],
+          "samples": 5656,
+          "conservativeWetRefreshQueries": 0,
+          "conservativeRainLastFieldQueries": 33190,
+          "nativeSubmits": 154,
+          "renderedTick": 120,
+          "renderedVersion": 171,
+          "frameVersion": 174,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 393,
+          "visibleParticles": 297,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 10195.799999998882,
+          "endMs": 10197.799999998882,
+          "workMs": 2,
+          "domWriteMs": 0.19999999925494194,
+          "status": "Seek angewendet",
+          "tick": 120,
+          "paused": true,
+          "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "rainDirection": [
+            0.03331256572064951,
+            -0.9993769716194851,
+            0.011659398002227326
+          ],
+          "samples": 0,
+          "conservativeWetRefreshQueries": 0,
+          "conservativeRainLastFieldQueries": 0,
+          "nativeSubmits": 156,
+          "renderedTick": 300,
+          "renderedVersion": 174,
+          "frameVersion": 177,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 90496,
+          "sourceCopyBytes": 119408,
+          "unknownSamples": 0,
+          "visibleParticles": 0,
+          "materialView": "color",
+          "effectErrors": []
+        }
+      ],
+      "final": {
+        "tick": 120,
+        "device": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "resolution": {
+          "width": 1280,
+          "height": 720,
+          "dpr": 1,
+          "bufferWidth": 1280,
+          "bufferHeight": 720
+        },
+        "sourceDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+        "rendered": {
+          "tick": 120,
+          "fixtureDigest": "2e9580153c0e01155d9494e04625d089d7cc7cb0919d16bafea7e51c4513ed24",
+          "sourceRevision": 0,
+          "resetTick": null,
+          "cameraId": "near",
+          "frame": {
+            "cameraId": "near",
+            "paused": true,
+            "seconds": 2,
+            "sourceRevision": 0,
+            "tick": 120,
+            "weather": {
+              "cloud01": 0.25,
+              "rain01": 0,
+              "snow01": 0,
+              "windMps": [
+                2,
+                0,
+                0.7
+              ]
+            }
+          },
+          "frameVersion": 177
+        },
+        "liveHosts": {
+          "renderers": 1,
+          "renderloops": 1,
+          "hostListeners": 2
+        }
+      }
+    },
+    {
+      "name": "source-reload",
+      "wallMs": 1098.699999999255,
+      "nativeSubmitsBefore": 157,
+      "observedNativeClearPasses": 20,
+      "observedNativeDraws": 189,
+      "nativeSubmitsAfter": 181,
+      "distinctRenderEvents": [
+        {
+          "ms": 10506.799999998882,
+          "draws": 2024
+        },
+        {
+          "ms": 10702,
+          "draws": 2052
+        },
+        {
+          "ms": 10892.099999999627,
+          "draws": 2091
+        },
+        {
+          "ms": 11056.599999999627,
+          "draws": 2119
+        },
+        {
+          "ms": 11221.699999999255,
+          "draws": 2148
+        },
+        {
+          "ms": 11396.099999999627,
+          "draws": 2176
+        }
+      ],
+      "calls": [
+        {
+          "kind": "seek",
+          "startMs": 10344.39999999851,
+          "endMs": 10480.699999999255,
+          "workMs": 136.30000000074506,
+          "domWriteMs": 0.09999999962747097,
+          "status": "Seek angewendet",
+          "tick": 1140,
+          "paused": true,
+          "sourceDigest": "9fe2e625259795986dd5233402a47f84630d2ea6345b9b0c4fccd7cdd3efdd4a",
+          "sourceRevision": 4,
+          "rainDirection": [
+            0.05314696490554458,
+            -0.9984285893599234,
+            0.017769413892474002
+          ],
+          "samples": 5286,
+          "conservativeWetRefreshQueries": 784278,
+          "conservativeRainLastFieldQueries": 20472,
+          "nativeSubmits": 164,
+          "renderedTick": 120,
+          "renderedVersion": 177,
+          "frameVersion": 180,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 84576,
+          "sourceCopyBytes": 119040,
+          "unknownSamples": 439,
+          "visibleParticles": 387,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 10539.599999999627,
+          "endMs": 10676.39999999851,
+          "workMs": 136.7999999988824,
+          "domWriteMs": 0.19999999925494194,
+          "status": "Seek angewendet",
+          "tick": 1260,
+          "paused": true,
+          "sourceDigest": "8b1ae0faa0931cb785b29815a482e1c23f55f4b55198f0f01acb866c1d6faec6",
+          "sourceRevision": 5,
+          "rainDirection": [
+            0.05031872335595407,
+            -0.9985922481430843,
+            0.016779392967798023
+          ],
+          "samples": 5608,
+          "conservativeWetRefreshQueries": 1044880,
+          "conservativeRainLastFieldQueries": 26776,
+          "nativeSubmits": 167,
+          "renderedTick": 1140,
+          "renderedVersion": 180,
+          "frameVersion": 183,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 89728,
+          "sourceCopyBytes": 119312,
+          "unknownSamples": 395,
+          "visibleParticles": 355,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 10737.5,
+          "endMs": 10863,
+          "workMs": 125.5,
+          "domWriteMs": 0.19999999925494194,
+          "status": "Seek angewendet",
+          "tick": 1140,
+          "paused": true,
+          "sourceDigest": "9fe2e625259795986dd5233402a47f84630d2ea6345b9b0c4fccd7cdd3efdd4a",
+          "sourceRevision": 4,
+          "rainDirection": [
+            0.05314696490554458,
+            -0.9984285893599234,
+            0.017769413892474002
+          ],
+          "samples": 5286,
+          "conservativeWetRefreshQueries": 784278,
+          "conservativeRainLastFieldQueries": 20472,
+          "nativeSubmits": 171,
+          "renderedTick": 1260,
+          "renderedVersion": 183,
+          "frameVersion": 186,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 84576,
+          "sourceCopyBytes": 119040,
+          "unknownSamples": 439,
+          "visibleParticles": 387,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 10920.5,
+          "endMs": 11027.799999998882,
+          "workMs": 107.29999999888241,
+          "domWriteMs": 0.2000000011175871,
+          "status": "Seek angewendet",
+          "tick": 1260,
+          "paused": true,
+          "sourceDigest": "8b1ae0faa0931cb785b29815a482e1c23f55f4b55198f0f01acb866c1d6faec6",
+          "sourceRevision": 5,
+          "rainDirection": [
+            0.05031872335595407,
+            -0.9985922481430843,
+            0.016779392967798023
+          ],
+          "samples": 5608,
+          "conservativeWetRefreshQueries": 1044880,
+          "conservativeRainLastFieldQueries": 26776,
+          "nativeSubmits": 174,
+          "renderedTick": 1140,
+          "renderedVersion": 186,
+          "frameVersion": 189,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 89728,
+          "sourceCopyBytes": 119312,
+          "unknownSamples": 395,
+          "visibleParticles": 355,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 11090.39999999851,
+          "endMs": 11198.39999999851,
+          "workMs": 108,
+          "domWriteMs": 0.2000000011175871,
+          "status": "Seek angewendet",
+          "tick": 1140,
+          "paused": true,
+          "sourceDigest": "9fe2e625259795986dd5233402a47f84630d2ea6345b9b0c4fccd7cdd3efdd4a",
+          "sourceRevision": 4,
+          "rainDirection": [
+            0.05314696490554458,
+            -0.9984285893599234,
+            0.017769413892474002
+          ],
+          "samples": 5286,
+          "conservativeWetRefreshQueries": 784278,
+          "conservativeRainLastFieldQueries": 20472,
+          "nativeSubmits": 177,
+          "renderedTick": 1260,
+          "renderedVersion": 189,
+          "frameVersion": 192,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 84576,
+          "sourceCopyBytes": 119040,
+          "unknownSamples": 439,
+          "visibleParticles": 387,
+          "materialView": "color",
+          "effectErrors": []
+        },
+        {
+          "kind": "seek",
+          "startMs": 11248,
+          "endMs": 11368.699999999255,
+          "workMs": 120.69999999925494,
+          "domWriteMs": 0.19999999925494194,
+          "status": "Seek angewendet",
+          "tick": 1260,
+          "paused": true,
+          "sourceDigest": "8b1ae0faa0931cb785b29815a482e1c23f55f4b55198f0f01acb866c1d6faec6",
+          "sourceRevision": 5,
+          "rainDirection": [
+            0.05031872335595407,
+            -0.9985922481430843,
+            0.016779392967798023
+          ],
+          "samples": 5608,
+          "conservativeWetRefreshQueries": 1044880,
+          "conservativeRainLastFieldQueries": 26776,
+          "nativeSubmits": 180,
+          "renderedTick": 1140,
+          "renderedVersion": 192,
+          "frameVersion": 195,
+          "nativeDrawCalls": 0,
+          "driverValueBytes": 89728,
+          "sourceCopyBytes": 119312,
+          "unknownSamples": 395,
+          "visibleParticles": 355,
+          "materialView": "color",
+          "effectErrors": []
+        }
+      ],
+      "final": {
+        "tick": 1260,
+        "device": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "resolution": {
+          "width": 1280,
+          "height": 720,
+          "dpr": 1,
+          "bufferWidth": 1280,
+          "bufferHeight": 720
+        },
+        "sourceDigest": "8b1ae0faa0931cb785b29815a482e1c23f55f4b55198f0f01acb866c1d6faec6",
+        "rendered": {
+          "tick": 1260,
+          "fixtureDigest": "8b1ae0faa0931cb785b29815a482e1c23f55f4b55198f0f01acb866c1d6faec6",
+          "sourceRevision": 5,
+          "resetTick": null,
+          "cameraId": "near",
+          "frame": {
+            "cameraId": "near",
+            "paused": true,
+            "seconds": 21,
+            "sourceRevision": 5,
+            "tick": 1260,
+            "weather": {
+              "cloud01": 0.85,
+              "rain01": 0.8,
+              "snow01": 0,
+              "windMps": [
+                3.0233795695604537,
+                0,
+                1.0081828493461589
+              ]
+            }
+          },
+          "frameVersion": 195
+        },
+        "liveHosts": {
+          "renderers": 1,
+          "renderloops": 1,
+          "hostListeners": 2
+        }
+      }
+    }
+  ],
+  "cleanup": {
+    "mode": "COMBINED_SOURCE_REPLAY",
+    "stage": {
+      "tick": 240,
+      "id": "rain",
+      "label": "Regen + Wind"
+    },
+    "clock": {
+      "tick": 300,
+      "seconds": 5,
+      "paused": true
+    },
+    "scenarioDigest": "f35f41b874373993dde21976b594722835f19e9b74db11980b7e0cb6e396c153",
+    "inputBindings": [
+      {
+        "role": "coast",
+        "scenarioId": "F01-HVP-COAST-REPLAY",
+        "scenarioDigest": "e41d4965131f17ad47ec7a7ce6db4a841d60a550abb86cd51206fa973c500bd9",
+        "initialDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+        "sources": [
+          {
+            "id": "F01-HVP-COAST",
+            "digest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+            "sourceRefs": [
+              {
+                "commit": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+                "files": [
+                  {
+                    "blobSha": "d0613db4fbaecc8bfbf2ff80ad6a483e20430833",
+                    "path": "apps/weltraum-browser/src/core/hash.ts",
+                    "sha256": "7514fc507d6c83404462d967ff4736790abf6425842b676cefedc4928a2febee"
+                  },
+                  {
+                    "blobSha": "d4cd91baca674a027416e9cd8eab97532803080d",
+                    "path": "apps/weltraum-browser/src/hestia-prototype/presentation/look.ts",
+                    "sha256": "1c058c73d4313b6da757b341f6dad66173d73332d169d7dbe04710b96c0219ea"
+                  },
+                  {
+                    "blobSha": "089e5e985ee9ad271a3ed44e0bb3214ab28c0879",
+                    "path": "apps/weltraum-browser/src/hestia-prototype/presentation/vegetation.ts",
+                    "sha256": "64806d7f77d6e562c8f1a36e7fb313c6353acca04d05331063af3773a519e1ae"
+                  },
+                  {
+                    "blobSha": "5d99e23a6bc8dfd80e8bd8d056d3dea393daad2b",
+                    "path": "apps/weltraum-browser/src/hestia-prototype/presentation/visualEffects.ts",
+                    "sha256": "b02f1d1a114fd143201fd7f516c6bec52dd574d3e511fdc09aa5ffd7931ba31f"
+                  },
+                  {
+                    "blobSha": "3f87cadac0664db2b32aae04b25356bb0ead8c8d",
+                    "path": "apps/weltraum-browser/src/hvp/hvpCamera.ts",
+                    "sha256": "b7bec67081a4ec0a9a532cc6b4dbc929fd0be56dd5367a965c66891ae487bf56"
+                  },
+                  {
+                    "blobSha": "1fad35b9ca837256f8acfd1ed1ebeb97ca5b4c26",
+                    "path": "apps/weltraum-browser/src/hvp/hvpCoastMesher.ts",
+                    "sha256": "437f3f48a3e578174f23b0956e3a3a2fee975a25b4576cc77b7af87c91930a6a"
+                  },
+                  {
+                    "blobSha": "0e9d3226828cc0a233791b77b634aa91c0c39771",
+                    "path": "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+                    "sha256": "c13e3107a542b402faf342befb479e6bf74d94730b16c4caf73d1f911fad8be4"
+                  },
+                  {
+                    "blobSha": "86aeb3b74a8a2c04fb8e8f6624f6ecdd9b66b9d0",
+                    "path": "apps/weltraum-browser/src/hvp/hvpTerrain.ts",
+                    "sha256": "93019417d3f022ead0ee3f9bf42eefce6e249fe135fa61916424d78b19ba1a11"
+                  },
+                  {
+                    "blobSha": "54720c15972daeccfa1b8bc781deb2933da4c4b4",
+                    "path": "apps/weltraum-browser/src/presentation/canonical.ts",
+                    "sha256": "67558d89ff09e99588101618eb02c5820a042a27850e884db91b0e80188862c8"
+                  },
+                  {
+                    "blobSha": "a201fa411bd72e4cd39504a6d84ba008267263f1",
+                    "path": "apps/weltraum-browser/src/presentation/ids.ts",
+                    "sha256": "50d7642fe0fbf097bf2cd80275ff5d4243b69cb62c93a7bad14612f5c2ce96a2"
+                  },
+                  {
+                    "blobSha": "17b2f92823dc571ba2c16268907a904e68f9e3f0",
+                    "path": "apps/weltraum-browser/src/presentation/index.ts",
+                    "sha256": "d1cc7c04ed7bf95d023f8a75c8d6b6edb558bc67e0c24e16298d81f7d6321d49"
+                  },
+                  {
+                    "blobSha": "8c4d6e98721d03d90881c99b152c96bfd20cf063",
+                    "path": "apps/weltraum-browser/src/presentation/materialProfile.ts",
+                    "sha256": "1d871f968781bdf67c9e6b5517daad94bddccf373950b3f022e68769e7278134"
+                  },
+                  {
+                    "blobSha": "d6e3d92f52370e380a081c6a6b5bf1af88ebadc0",
+                    "path": "apps/weltraum-browser/src/presentation/meshArtifact.ts",
+                    "sha256": "070a4bef18182a666a8bdd57518da057370ccca2c8d3c9047506a0a12e4ff671"
+                  },
+                  {
+                    "blobSha": "351b6f7385dd612724912d58c8288ddb99109117",
+                    "path": "apps/weltraum-browser/src/presentation/validation.ts",
+                    "sha256": "e93eadb015c284865184a997b9542fc351ab4c0b4f67247a9adb80890bafb1ff"
+                  },
+                  {
+                    "blobSha": "e01256c79c2c0efa1e871c5de835102adb66f65c",
+                    "path": "apps/weltraum-browser/src/voxel/blockAmbientOcclusion.ts",
+                    "sha256": "ddfb1d22eccdcb83e48f8c21d82605339936600a6afbbc452bdcdce497ca7675"
+                  }
+                ],
+                "generatorVersion": "hvp-authored-coast-v5+hvp-root-umbrella-v3",
+                "kind": "product",
+                "repository": "BenjaminHornung/Weltraum-Spiel",
+                "sourceDigest": "b8fde6b0"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "role": "shelter",
+        "scenarioId": "F03-SHELTER-REPLAY",
+        "scenarioDigest": "5ae34ae681ab5525e410f5e815f92e6fa603aa253f1c50377c33fdfd80b21ced",
+        "initialDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+        "sources": [
+          {
+            "id": "F03-SHELTER",
+            "digest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+            "sourceRefs": [
+              {
+                "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+                "generatorPath": "exporters/synthetic.mjs",
+                "generatorVersion": "rd02-small-fixtures-v1",
+                "kind": "synthetic",
+                "seed": 20261002,
+                "sourceDigest": "9d59fa387a6c507f3ac3a3c538a8df41efa4eabcc5adaed4f13bebd9b3902f06",
+                "testOnly": true
+              }
+            ]
+          },
+          {
+            "id": "F03-SHELTER-R1",
+            "digest": "e678890af9ca58964bed5ac8a109411e3777e62202a6d576d7dd33d436f91538",
+            "sourceRefs": [
+              {
+                "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+                "generatorPath": "exporters/synthetic.mjs",
+                "generatorVersion": "rd02-small-fixtures-v1",
+                "kind": "synthetic",
+                "seed": 20261002,
+                "sourceDigest": "5aa44fe5e4264d75e18c435d66fff937a77dc2d77d5a845e15c55db4c9d3792a",
+                "testOnly": true
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "role": "detach",
+        "scenarioId": "F04-DETACH-REPLAY",
+        "scenarioDigest": "0d9012b86bac2c620864774038a1aed987d81e2338f1618b4a434b49f9f0a623",
+        "initialDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+        "sources": [
+          {
+            "id": "F04-DETACH",
+            "digest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+            "sourceRefs": [
+              {
+                "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+                "generatorPath": "exporters/synthetic.mjs",
+                "generatorVersion": "rd02-small-fixtures-v1",
+                "kind": "synthetic",
+                "seed": 20261002,
+                "sourceDigest": "c4151167bdfd1ee22ad4ba66b0f5374617e16b32b9770cb92ab1f88a5963886b",
+                "testOnly": true
+              }
+            ]
+          },
+          {
+            "id": "F04-DETACH-R1",
+            "digest": "c45992d7a859482a869e8deebbecd0e54263986a0acbeca1dc0bde9d8cab4e3b",
+            "sourceRefs": [
+              {
+                "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+                "generatorPath": "exporters/synthetic.mjs",
+                "generatorVersion": "rd02-small-fixtures-v1",
+                "kind": "synthetic",
+                "seed": 20261002,
+                "sourceDigest": "52fdd9dc8886a853e43ed1b23deeae292d3642f845dbf1cce4457a7adea573d3",
+                "testOnly": true
+              }
+            ]
+          },
+          {
+            "id": "F04-DETACH-R2",
+            "digest": "7e1bb35d1a0ada1ff5ddda9719e7d2ad5710d11d59f0f28c7f72b20a04dce37e",
+            "sourceRefs": [
+              {
+                "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+                "generatorPath": "exporters/synthetic.mjs",
+                "generatorVersion": "rd02-small-fixtures-v1",
+                "kind": "synthetic",
+                "seed": 20261002,
+                "sourceDigest": "c1429c283b570945593a62014f63a58bde41949533be6624d58639807977d45e",
+                "testOnly": true
+              }
+            ]
+          },
+          {
+            "id": "F04-DETACH-R3",
+            "digest": "95e4ebc916e34c14d7ff46b0aa98ad2007d7c9f4e03c2463cc2bd75d7d5414bd",
+            "sourceRefs": [
+              {
+                "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+                "generatorPath": "exporters/synthetic.mjs",
+                "generatorVersion": "rd02-small-fixtures-v1",
+                "kind": "synthetic",
+                "seed": 20261002,
+                "sourceDigest": "e27b26e1a4bbfb0694dbabb9e88d7b69ef1b4cf7a4422acebb3cc71302461a43",
+                "testOnly": true
+              }
+            ]
+          },
+          {
+            "id": "F04-DETACH-R4",
+            "digest": "8b7af46b9292ce40ead9545cf02d38bb7e57bf1205d7fbf1bf9f4c7af783832b",
+            "sourceRefs": [
+              {
+                "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+                "generatorPath": "exporters/synthetic.mjs",
+                "generatorVersion": "rd02-small-fixtures-v1",
+                "kind": "synthetic",
+                "seed": 20261002,
+                "sourceDigest": "0654c0e77a2ab0b14594f2f21ed70ffd6720e39019fee0fee2814f76093e9038",
+                "testOnly": true
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "role": "figure",
+        "scenarioId": "F05-CUTOUT-REPLAY",
+        "scenarioDigest": "d5192a3f8198faac430c232cd3604716daeb034211d309031749170c52abae64",
+        "initialDigest": "c24de4c1597713e11935bf98e8fe7c5a312a615ee3544831f6f97b74c948b904",
+        "sources": [
+          {
+            "id": "F05-CUTOUT",
+            "digest": "c24de4c1597713e11935bf98e8fe7c5a312a615ee3544831f6f97b74c948b904",
+            "sourceRefs": [
+              {
+                "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+                "generatorPath": "exporters/synthetic.mjs",
+                "generatorVersion": "rd02-small-fixtures-v1",
+                "kind": "synthetic",
+                "seed": 20261002,
+                "sourceDigest": "339dabb8f5d378c8f7ec42f50b901eef97b105f0f1cfb85f967434cf71db06bd",
+                "testOnly": true
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "composition": {
+      "schema": "hestia-rd-composition-v1",
+      "inputs": [
+        {
+          "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+          "owners": [
+            "removable-roof",
+            "shelter-shell"
+          ]
+        },
+        {
+          "fixtureDigest": "92296096278b054830d3aabf3f320a68f568ec3a9e3b00e310a6c83751c7095b",
+          "owners": [
+            "tree-main"
+          ]
+        },
+        {
+          "fixtureDigest": "c24de4c1597713e11935bf98e8fe7c5a312a615ee3544831f6f97b74c948b904",
+          "owners": [
+            "figure-marker"
+          ]
+        },
+        {
+          "fixtureDigest": "688fda7d61d4d4a68a9917841ba8b7cb2722e04ddd6c4d9ce53039314d0b5b08",
+          "owners": [
+            "hvp:water"
+          ]
+        }
+      ],
+      "revision": 0,
+      "policy": "original-payloads-frames-materials-and-supports-no-product-export"
+    },
+    "debugSamplePreview": null,
+    "mounts": 0,
+    "liveHosts": {
+      "renderers": 0,
+      "renderloops": 0,
+      "hostListeners": 0
+    },
+    "productIntegrated": false,
+    "art": "PENDING_OWNER"
+  },
+  "errors": [],
+  "qualification": "EXCLUSIVE_DEVICE_COST_DIAGNOSTIC_NOT_PRODUCT_RELEASE",
+  "productIntegrated": false,
+  "method": "Existing UI handlers/timer; work spans end after final full facts DOM write. Wall spans include observation waits and native frame/layout scheduling. Clean timing has no CPU profiler or cache hooks. Native submits are actual renderer submissions with draw-call observations; compositor present cadence and GPU duration are not measured."
+}

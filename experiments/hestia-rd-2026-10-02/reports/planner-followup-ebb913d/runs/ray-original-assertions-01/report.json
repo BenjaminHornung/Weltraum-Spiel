@@ -1,0 +1,350 @@
+{
+  "config": {
+    "argv": [
+      "C:\\IFI_SourceCode\\Utils\\npm-tmp\\opencode\\node-v22.23.2-win-x64\\node.exe",
+      "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-RD-followup-ebb913d-2026-10-07\\experiments\\hestia-rd-2026-10-02\\reports\\planner-followup-ebb913d\\runtime\\node_modules\\playwright\\cli.js",
+      "test",
+      "--config",
+      ".\\playwright.followup.config.mjs"
+    ],
+    "configFile": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-RD-followup-ebb913d-2026-10-07\\experiments\\hestia-rd-2026-10-02\\reports\\planner-followup-ebb913d\\playwright.followup.config.mjs",
+    "rootDir": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/tests/RD-13",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/reports/planner-followup-ebb913d/runs/ray-original-assertions-01/results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/tests/RD-13",
+        "testIgnore": [],
+        "testMatch": [
+          "native.spec.ts"
+        ],
+        "timeout": 180000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-RD-followup-ebb913d-2026-10-07\\experiments\\hestia-rd-2026-10-02\\reports\\planner-followup-ebb913d\\runs\\ray-original-assertions-01\\report.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.61.1",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "native.spec.ts",
+      "file": "native.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "RAY01: unabhängiges CPU-DDA-Oracle für Randtreffer, negative Richtung, Nullkomponente, innen startenden Strahl und Unknown",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1627,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-07T10:36:54.278Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dadda6b3ddfdf57c4974-764878643e128a7238fa",
+          "file": "native.spec.ts",
+          "line": 7,
+          "column": 1
+        },
+        {
+          "title": "RAY02: Position/Depth/Material/Normal nach Edit stimmt mit belegter Quelle; keine geglättete SDF-Oberfläche",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 1129,
+                  "error": {
+                    "message": "Error: page.evaluate: Error: Actual removed source cell required\n    at r (http://127.0.0.1:5280/assets/validation-DshwGweA.js:1:106)\n    at Object.probeEdit (http://127.0.0.1:5280/assets/entry8-CzSJrQ9J.js:2:6491)\n    at async eval (eval at evaluate (:303:30), <anonymous>:3:11)\n    at async <anonymous>:329:30",
+                    "stack": "Error: page.evaluate: Error: Actual removed source cell required\n    at r (http://127.0.0.1:5280/assets/validation-DshwGweA.js:1:106)\n    at Object.probeEdit (http://127.0.0.1:5280/assets/entry8-CzSJrQ9J.js:2:6491)\n    at async eval (eval at evaluate (:303:30), <anonymous>:3:11)\n    at async <anonymous>:329:30\n    at r (http://127.0.0.1:5280/assets/validation-DshwGweA.js:1:106)\n    at Object.probeEdit (http://127.0.0.1:5280/assets/entry8-CzSJrQ9J.js:2:6491)\n    at async eval (eval at evaluate (:303:30), <anonymous>:3:11)\n    at async <anonymous>:329:30\n    at C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-RD-followup-ebb913d-2026-10-07\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:18:27",
+                    "location": {
+                      "file": "http://127.0.0.1:5280/assets/validation-DshwGweA.js",
+                      "column": 106,
+                      "line": 1
+                    }
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "http://127.0.0.1:5280/assets/validation-DshwGweA.js",
+                        "column": 106,
+                        "line": 1
+                      },
+                      "message": "Error: page.evaluate: Error: Actual removed source cell required\n    at r (http://127.0.0.1:5280/assets/validation-DshwGweA.js:1:106)\n    at Object.probeEdit (http://127.0.0.1:5280/assets/entry8-CzSJrQ9J.js:2:6491)\n    at async eval (eval at evaluate (:303:30), <anonymous>:3:11)\n    at async <anonymous>:329:30\n    at r (http://127.0.0.1:5280/assets/validation-DshwGweA.js:1:106)\n    at Object.probeEdit (http://127.0.0.1:5280/assets/entry8-CzSJrQ9J.js:2:6491)\n    at async eval (eval at evaluate (:303:30), <anonymous>:3:11)\n    at async <anonymous>:329:30\n    at C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-RD-followup-ebb913d-2026-10-07\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:18:27"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-07T10:36:56.137Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-RD-followup-ebb913d-2026-10-07\\experiments\\hestia-rd-2026-10-02\\reports\\planner-followup-ebb913d\\runs\\ray-original-assertions-01\\results\\native-RAY02-Position-Dept-4e303-e-geglättete-SDF-Oberfläche\\error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "http://127.0.0.1:5280/assets/validation-DshwGweA.js",
+                    "column": 106,
+                    "line": 1
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "dadda6b3ddfdf57c4974-4d9790e89469205f274d",
+          "file": "native.spec.ts",
+          "line": 14,
+          "column": 1
+        },
+        {
+          "title": "RAY03: Transform eines lokalen Volumens ändert keine Source-ID; Kamera im Volumen und Überhang korrekt",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 1947,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\n\u001b[1mMatcher error\u001b[22m: \u001b[31mreceived\u001b[39m value must be a number or bigint\n\nReceived has value: \u001b[31mundefined\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\n\u001b[1mMatcher error\u001b[22m: \u001b[31mreceived\u001b[39m value must be a number or bigint\n\nReceived has value: \u001b[31mundefined\u001b[39m\n    at C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-RD-followup-ebb913d-2026-10-07\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:27:109",
+                    "location": {
+                      "file": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-RD-followup-ebb913d-2026-10-07\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts",
+                      "column": 109,
+                      "line": 27
+                    },
+                    "snippet": "  25 |   await page.fill('#tick','120'); await page.click('#seek'); await ready(page); const result=await page.evaluate(async()=>({volumes:(window as any).TestBridge.volumes(),\n  26 |     inside:await (window as any).TestBridge.probe('fragment-wood',[0.9375,1.0625,0.3125],[0,1,0])}));\n> 27 |   expect(result.inside.status,JSON.stringify(result.inside)).toBe('PASS'); expect(result.inside.expected.t).toBeGreaterThan(0);\n     |                                                                                                             ^\n  28 |   const a=before.find((v:any)=>v.source.regionId==='fragment-wood'); const b=result.volumes.find((v:any)=>v.source.regionId==='fragment-wood');\n  29 |   expect(b.source.sourceIds).toEqual(a.source.sourceIds); expect(b.source.ownerId).toBe(a.source.ownerId);\n  30 | });"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-RD-followup-ebb913d-2026-10-07\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts",
+                        "column": 109,
+                        "line": 27
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThan\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\n\u001b[1mMatcher error\u001b[22m: \u001b[31mreceived\u001b[39m value must be a number or bigint\n\nReceived has value: \u001b[31mundefined\u001b[39m\n\n  25 |   await page.fill('#tick','120'); await page.click('#seek'); await ready(page); const result=await page.evaluate(async()=>({volumes:(window as any).TestBridge.volumes(),\n  26 |     inside:await (window as any).TestBridge.probe('fragment-wood',[0.9375,1.0625,0.3125],[0,1,0])}));\n> 27 |   expect(result.inside.status,JSON.stringify(result.inside)).toBe('PASS'); expect(result.inside.expected.t).toBeGreaterThan(0);\n     |                                                                                                             ^\n  28 |   const a=before.find((v:any)=>v.source.regionId==='fragment-wood'); const b=result.volumes.find((v:any)=>v.source.regionId==='fragment-wood');\n  29 |   expect(b.source.sourceIds).toEqual(a.source.sourceIds); expect(b.source.ownerId).toBe(a.source.ownerId);\n  30 | });\n    at C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-RD-followup-ebb913d-2026-10-07\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts:27:109"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-07T10:36:57.811Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-RD-followup-ebb913d-2026-10-07\\experiments\\hestia-rd-2026-10-02\\reports\\planner-followup-ebb913d\\runs\\ray-original-assertions-01\\results\\native-RAY03-Transform-ein-fb4fb-olumen-und-Überhang-korrekt\\error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-RD-followup-ebb913d-2026-10-07\\experiments\\hestia-rd-2026-10-02\\tests\\RD-13\\native.spec.ts",
+                    "column": 109,
+                    "line": 27
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "dadda6b3ddfdf57c4974-9ffecbc5f1622b3e5308",
+          "file": "native.spec.ts",
+          "line": 22,
+          "column": 1
+        },
+        {
+          "title": "RAY04: GPU-Formatlimit oder Uploadüberlauf scheitert vor Allokation; alte Volumenversion wird nicht weitergezeichnet",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 874,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-07T10:37:00.513Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dadda6b3ddfdf57c4974-e115dd8fb1b0c3b47c7f",
+          "file": "native.spec.ts",
+          "line": 31,
+          "column": 1
+        },
+        {
+          "title": "normal controls, real greedy, source revisions, disposal, and no TestBridge on normal entry",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1069,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-07T10:37:01.592Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dadda6b3ddfdf57c4974-7afa2159f81f9e4bcd01",
+          "file": "native.spec.ts",
+          "line": 39,
+          "column": 1
+        },
+        {
+          "title": "selected F01 solid attachment depth / proxy fault under original translucent-water presentation; not an image-parity gate",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 180000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2373,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-07T10:37:02.671Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "dadda6b3ddfdf57c4974-fa00b706597b2f1f3308",
+          "file": "native.spec.ts",
+          "line": 47,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-07T10:36:53.880Z",
+    "duration": 11337.672999999999,
+    "expected": 4,
+    "skipped": 0,
+    "unexpected": 2,
+    "flaky": 0
+  }
+}

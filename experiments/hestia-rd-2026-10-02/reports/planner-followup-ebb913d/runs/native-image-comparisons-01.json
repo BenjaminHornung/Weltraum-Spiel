@@ -1,0 +1,48 @@
+{
+  "combined": {
+    "first": "runs\\combined-control-direction-timing-02\\same-tick-color.png",
+    "second": "runs\\combined-candidate-direction-timing-02\\same-tick-color.png",
+    "dimensions": [
+      1280,
+      721
+    ],
+    "rgbaByteExact": true,
+    "meanRgbError": 0.0,
+    "maxRgbErrorByte": 0,
+    "alphaByteExact": true,
+    "firstSha256": "e29f9c66b07dfdc38383b59a4083d9d82f52b9f646fabd8def77ff44b289a36d",
+    "secondSha256": "e29f9c66b07dfdc38383b59a4083d9d82f52b9f646fabd8def77ff44b289a36d"
+  },
+  "rays": [
+    {
+      "first": "runs\\ray-candidate-native-01\\F00-CONTROL-REPLAY-greedy-no-ao.png",
+      "second": "runs\\ray-candidate-native-01\\F00-CONTROL-REPLAY-rays-no-ao.png",
+      "dimensions": [
+        1320,
+        743
+      ],
+      "rgbaByteExact": false,
+      "meanRgbError": 8.232644445137517e-05,
+      "maxRgbErrorByte": 83,
+      "alphaByteExact": true,
+      "firstSha256": "06f8f264493268da472a0c840c7eeef0384a757d507a50faf227900dc928eb15",
+      "secondSha256": "4b00c6309e48ffdb0c7a9628fa809b82f5e3b1babdf89ec4e49d93b452a9a204"
+    },
+    {
+      "first": "runs\\ray-candidate-native-01\\F01-HVP-COAST-REPLAY-greedy-no-ao.png",
+      "second": "runs\\ray-candidate-native-01\\F01-HVP-COAST-REPLAY-rays-no-ao.png",
+      "dimensions": [
+        1320,
+        743
+      ],
+      "rgbaByteExact": false,
+      "meanRgbError": 0.0006223411642618356,
+      "maxRgbErrorByte": 78,
+      "alphaByteExact": true,
+      "firstSha256": "ffdf2a4f33fd8336e4889347c36c1535134c97b399d368bd0d0c64b38549f094",
+      "secondSha256": "78d89b736068382f04c652466f93a5a93f975258145809e6a211e1a6c0234e28"
+    }
+  ],
+  "method": "Actual full decoded PNG pixels, no resampling; comparisons are observations, not a newly invented parity threshold.",
+  "productIntegrated": false
+}

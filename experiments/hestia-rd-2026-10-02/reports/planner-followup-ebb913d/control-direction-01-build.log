@@ -1,0 +1,26 @@
+vite v8.1.5 building client environment for production...
+[2K
+transforming...✓ 709 modules transformed.
+✗ Build failed in 176ms
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+Build failed with 1 error:
+
+[plugin followup-declared-direction-input] C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/src/qa/combined-scene/main.ts
+Error: Declared input seam changed; refuse silent replacement
+    at TransformPluginContextImpl.transform (file:///C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/reports/planner-followup-ebb913d/build.mjs:25:41)
+    at TransformPluginContextImpl.handler (file:///C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/reports/planner-followup-ebb913d/runtime/node_modules/vite/dist/node/chunks/node.js:33304:13)
+    at plugin (file:///C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/reports/planner-followup-ebb913d/runtime/node_modules/rolldown/dist/shared/bindingify-input-options-XPJLJOD0.mjs:1511:30)
+    at plugin.<computed> (file:///C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/reports/planner-followup-ebb913d/runtime/node_modules/rolldown/dist/shared/bindingify-input-options-XPJLJOD0.mjs:1959:18)
+    at aggregateBindingErrorsIntoJsError (file:///C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/reports/planner-followup-ebb913d/runtime/node_modules/rolldown/dist/shared/error-BHRSI0R7.mjs:48:18)
+    at unwrapBindingResult (file:///C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/reports/planner-followup-ebb913d/runtime/node_modules/rolldown/dist/shared/error-BHRSI0R7.mjs:18:128)
+    at #build (file:///C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/reports/planner-followup-ebb913d/runtime/node_modules/rolldown/dist/shared/rolldown-build-CtPvmZgJ.mjs:3276:34)
+    at async buildEnvironment (file:///C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/reports/planner-followup-ebb913d/runtime/node_modules/vite/dist/node/chunks/node.js:33061:66)
+    at async Object.build (file:///C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/reports/planner-followup-ebb913d/runtime/node_modules/vite/dist/node/chunks/node.js:33483:19)
+    at async file:///C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/reports/planner-followup-ebb913d/build.mjs:21:1 {
+  errors: [Getter/Setter]
+}
+
+Node.js v22.23.2

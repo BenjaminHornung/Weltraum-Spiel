@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "types": [],
+    "paths": {
+      "three": ["./runtime/node_modules/@types/three/index.d.ts"],
+      "three/webgpu": ["./runtime/node_modules/@types/three/build/three.webgpu.d.ts"],
+      "three/tsl": ["./runtime/node_modules/@types/three/build/three.tsl.d.ts"],
+      "three/*": ["./runtime/node_modules/@types/three/*"],
+      "vitest": ["./runtime/node_modules/vitest/dist/index.d.ts"],
+      "@playwright/test": ["./runtime/node_modules/@playwright/test/index.d.ts"],
+      "@babylonjs/core/*": ["./runtime/node_modules/@babylonjs/core/*"],
+      "@babylonjs/core": ["./runtime/node_modules/@babylonjs/core/index.d.ts"],
+      "vite/client": ["./runtime/node_modules/vite/client.d.ts"]
+    }
+  },
+  "include": ["../../src/**/*.ts", "direction-input.ts", "native-abort.ts", "followup.test.ts", "runtime/node_modules/vite/client.d.ts", "runtime/node_modules/@types/node/index.d.ts"]
+}

@@ -1,0 +1,19 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02
+
+ ✓ tests/RD-13/unit.test.ts (12 tests) 1551ms
+   ✓ RAY04: selected F01 window is frozen, outside Unknown, same greedy/ray input; full F01 refused  1133ms
+ ✓ tests/RD-32/unit.test.ts (6 tests) 608ms
+   ✓ WET01/WET03/WET04 actual shared material/rain mount: source-clipped wet faces reconstruct dry/wet/reset without ghosting  328ms
+ ✓ tests/RD-51/unit.test.ts (3 tests) 3437ms
+   ✓ COM01 fixed original source composition and shared weather/tick binding is reproducible through direct seek  1149ms
+   ✓ COM02/COM03 real composed effect mounts stay within original whole budgets with simultaneous rain wind wetness and cutout  2244ms
+ ✓ reports/planner-followup-ebb913d/followup.test.ts (1 test) 2344ms
+   ✓ whole actual face populations remain byte-equivalent across direction, opening, rotated owner and backward seek  2343ms
+
+ Test Files  4 passed (4)
+      Tests  22 passed (22)
+   Start at  12:37:53
+   Duration  9.89s (transform 626ms, setup 0ms, import 1.34s, tests 7.94s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-RD-followup-ebb913d-2026-10-07/experiments/hestia-rd-2026-10-02/reports/planner-followup-ebb913d/runs/focused-units-03/report.json

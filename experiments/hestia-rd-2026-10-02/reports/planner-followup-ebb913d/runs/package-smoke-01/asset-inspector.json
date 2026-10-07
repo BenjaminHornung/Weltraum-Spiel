@@ -1,0 +1,441 @@
+{
+  "mode": "SOURCE_ASSET_INSPECTOR",
+  "inspection": {
+    "schema": "hestia-rd-inspector-findings-v1",
+    "productIntegrated": false,
+    "fixtureId": "F03-SHELTER",
+    "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+    "sourceRevision": 0,
+    "recipeDigest": "0ff438e3dcc43bcbe33069577b8cd1c61a3ab6752ccc37cdb3b892ca1d886af4",
+    "status": "PASS",
+    "findings": [],
+    "limits": [],
+    "quantumMeters": 0.125,
+    "frame": {
+      "basis": "right-handed-y-up",
+      "id": "lab",
+      "originMeters": [
+        0,
+        0,
+        0
+      ],
+      "rotationXyzw": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    "sourceRefs": [
+      {
+        "generatorCodeSha256": "ffaaee3e48678eac172fa66dfecd4f48a8b966583f167bbae3918803aceb1dd9",
+        "generatorPath": "exporters/synthetic.mjs",
+        "generatorVersion": "rd02-small-fixtures-v1",
+        "kind": "synthetic",
+        "seed": 20261002,
+        "sourceDigest": "9d59fa387a6c507f3ac3a3c538a8df41efa4eabcc5adaed4f13bebd9b3902f06",
+        "testOnly": true
+      }
+    ],
+    "owners": [
+      {
+        "ownerId": "removable-roof",
+        "namespace": "rd02-authored-cells-v1",
+        "revision": 0,
+        "frame": {
+          "basis": "right-handed-y-up",
+          "id": "removable-roof",
+          "originMeters": [
+            0,
+            0,
+            0
+          ],
+          "rotationXyzw": [
+            0,
+            0,
+            0,
+            1
+          ]
+        },
+        "sourceIds": [
+          "roof-piece"
+        ],
+        "materialRoles": [
+          "limestone-dry"
+        ],
+        "bounds": {
+          "max": [
+            3,
+            1.625,
+            2.5
+          ],
+          "min": [
+            2,
+            1.5,
+            0.375
+          ]
+        },
+        "animatedBounds": {
+          "min": [
+            1.2474044911109288,
+            0.7474044911109289,
+            -0.3775955088890711
+          ],
+          "max": [
+            3.7525955088890712,
+            2.3775955088890712,
+            3.2525955088890712
+          ]
+        }
+      },
+      {
+        "ownerId": "shelter-shell",
+        "namespace": "rd02-authored-cells-v1",
+        "revision": 0,
+        "frame": {
+          "basis": "right-handed-y-up",
+          "id": "shelter-shell",
+          "originMeters": [
+            0,
+            0,
+            0
+          ],
+          "rotationXyzw": [
+            0,
+            0,
+            0,
+            1
+          ]
+        },
+        "sourceIds": [
+          "cave",
+          "high-roof",
+          "low-roof",
+          "overhang",
+          "side-entry"
+        ],
+        "materialRoles": [
+          "limestone-dry"
+        ],
+        "bounds": {
+          "max": [
+            4.875,
+            3,
+            4
+          ],
+          "min": [
+            0,
+            0,
+            0
+          ]
+        },
+        "animatedBounds": {
+          "min": [
+            -2.234636435754147,
+            -2.234636435754147,
+            -2.234636435754147
+          ],
+          "max": [
+            7.1096364357541475,
+            5.2346364357541475,
+            6.2346364357541475
+          ]
+        }
+      }
+    ],
+    "attachments": [],
+    "costs": {
+      "sourcePayloadBytes": 708408,
+      "comparisonCopiedBytes": 474360,
+      "sourceCells": 41096,
+      "sourceCountsPartial": false,
+      "actualCountsPartial": false,
+      "knownCells": 40072,
+      "occupiedCells": 3880,
+      "expectedFaces": 4876,
+      "checkedQuads": 4876,
+      "processedQuads": 4876,
+      "nativeGpuBytes": "UNSUPPORTED",
+      "gpuMs": "NOT_RUN_NO_LEASE"
+    },
+    "authority": "CELL_SOURCE_AND_BOUND_RECIPE_ONLY; GLB_WITHOUT_CELLS_IS_PREVIEW_ONLY; NO_NATIVE_PHYSICS_OR_ART_ACCEPTANCE"
+  },
+  "selection": {
+    "ownerId": "all",
+    "view": "color",
+    "hidden": false,
+    "slice": null,
+    "voxelInstances": 0,
+    "boundsHelpers": 0,
+    "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+    "decorNormals": "UNSUPPORTED_DECOR_MATERIAL_NORMAL_VIEW"
+  },
+  "facts": {
+    "backend": "Three-WebGLRenderer-WebGL2",
+    "errors": [],
+    "experimentId": "RD-43",
+    "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+    "liveResources": {
+      "geometries": {
+        "status": "measured",
+        "unit": "count",
+        "value": 2
+      },
+      "hostListeners": {
+        "status": "measured",
+        "unit": "count",
+        "value": 2
+      },
+      "renderers": {
+        "status": "measured",
+        "unit": "count",
+        "value": 1
+      },
+      "renderloops": {
+        "status": "measured",
+        "unit": "count",
+        "value": 1
+      },
+      "textures": {
+        "status": "measured",
+        "unit": "count",
+        "value": 0
+      }
+    },
+    "logicalCosts": {
+      "effect-0-decorProjectionBytes": {
+        "reason": "Typed attribute/index bytes; excludes GPU allocator, driver and shaders",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 0
+      },
+      "effect-0-gpuBytes": {
+        "reason": "Native GPU memory is not exposed by WebGL",
+        "status": "unsupported",
+        "unit": "byte"
+      },
+      "effect-0-projectionBufferBytes": {
+        "reason": "Typed attribute/index bytes; excludes GPU allocator, driver and shaders",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 585120
+      },
+      "effect-0-triangles": {
+        "status": "measured",
+        "unit": "count",
+        "value": 9752
+      },
+      "effect-0-wetnessAttributeBytes": {
+        "reason": "Full private wetness attributes; excludes native allocator/shader memory",
+        "status": "estimated",
+        "unit": "byte",
+        "value": 78016
+      },
+      "gpuBytes": {
+        "reason": "Native GPU memory unavailable",
+        "status": "unsupported",
+        "unit": "byte"
+      },
+      "gpuMs": {
+        "reason": "Timer available; diagnostic loop does not sample GPU timing",
+        "status": "not-run",
+        "unit": "ms"
+      },
+      "renderCalls": {
+        "status": "measured",
+        "unit": "count",
+        "value": 2
+      },
+      "triangles": {
+        "status": "measured",
+        "unit": "count",
+        "value": 9752
+      }
+    },
+    "sourceRevision": 0,
+    "unsupportedFeatures": [
+      "native-pcf-shadow-parity",
+      "native-sky-shader-parity",
+      "native-water-shader-parity",
+      "native-material-shader-hooks",
+      "native-depth-readback-unsupported",
+      "material-art-owner-pending",
+      "no-temporal-history-or-probe-gi",
+      "water-shader-is-lab-preview-only",
+      "glb-without-source-is-preview-only",
+      "decor-normal-overlay-unqualified"
+    ],
+    "variantId": "fixture-inspector"
+  },
+  "diagnostics": {
+    "backend": "Three-WebGLRenderer-WebGL2",
+    "webgl2": true,
+    "fixtureId": "F03-SHELTER",
+    "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+    "sourceRevision": 0,
+    "payloadBindings": [
+      {
+        "id": "removable-roof-cells-coverage",
+        "byteLength": 136,
+        "sha256": "3654da25dd1bae2cc27c2e3d0d7e9e9755280ca7f3ae5d4aa18d32a0fc094384"
+      },
+      {
+        "id": "removable-roof-cells-material-slots",
+        "byteLength": 136,
+        "sha256": "3654da25dd1bae2cc27c2e3d0d7e9e9755280ca7f3ae5d4aa18d32a0fc094384"
+      },
+      {
+        "id": "removable-roof-cells-occupancy",
+        "byteLength": 136,
+        "sha256": "3654da25dd1bae2cc27c2e3d0d7e9e9755280ca7f3ae5d4aa18d32a0fc094384"
+      },
+      {
+        "id": "removable-roof-cells-slot-1-indices",
+        "byteLength": 7728,
+        "sha256": "b10bd08dca4cbf97fa51375be174e5396e3fc6ff5f0648f50765378ff01f742f"
+      },
+      {
+        "id": "removable-roof-cells-slot-1-normals",
+        "byteLength": 15456,
+        "sha256": "b36ff3b829df46d849b93797d1ef8239c7673d3554e15524e1fdac3ac60bb498"
+      },
+      {
+        "id": "removable-roof-cells-slot-1-positions",
+        "byteLength": 15456,
+        "sha256": "615f18b046bd9a70da02edf2df95a74939de0c27e0376bd6af7eac5f0cba709f"
+      },
+      {
+        "id": "shelter-shell-coverage",
+        "byteLength": 40960,
+        "sha256": "2d79cff9e3fd90907d81177f9b314b7a7ab5c514a15348c04261fe6a08d4c3c8"
+      },
+      {
+        "id": "shelter-shell-material-slots",
+        "byteLength": 40960,
+        "sha256": "b1aa334474aee82b8a621369edf72edfb539bf9bb436b0b8bb5d37df1bcf08dc"
+      },
+      {
+        "id": "shelter-shell-occupancy",
+        "byteLength": 40960,
+        "sha256": "b1aa334474aee82b8a621369edf72edfb539bf9bb436b0b8bb5d37df1bcf08dc"
+      },
+      {
+        "id": "shelter-shell-slot-1-indices",
+        "byteLength": 109296,
+        "sha256": "67fa506099809e930e61568310510890d84e55331c831c6a7b14b983796fbaab"
+      },
+      {
+        "id": "shelter-shell-slot-1-normals",
+        "byteLength": 218592,
+        "sha256": "1ea36a19595227696c3b7d164d15e8f778df5d6e9e495aeb0dc057f1d92efa0d"
+      },
+      {
+        "id": "shelter-shell-slot-1-positions",
+        "byteLength": 218592,
+        "sha256": "1665185104623c07027505f74d484ee47a6cfa8cb0aeac3a07be914be618ed61"
+      }
+    ],
+    "presentationProfile": "synthetic-lab-light-v1-no-shadows",
+    "frame": {
+      "cameraId": "near",
+      "paused": true,
+      "seconds": 0,
+      "sourceRevision": 0,
+      "tick": 0,
+      "weather": {
+        "cloud01": 0,
+        "rain01": 0,
+        "snow01": 0,
+        "windMps": [
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "resetTick": null,
+    "resolution": {
+      "width": 1280,
+      "height": 720,
+      "dpr": 1,
+      "bufferWidth": 1280,
+      "bufferHeight": 720
+    },
+    "colorSpace": "srgb",
+    "toneMapping": 0,
+    "exposure": 1,
+    "cameraActual": {
+      "positionMeters": [
+        5,
+        3,
+        -5
+      ],
+      "direction": [
+        -0.3891184778074639,
+        -0.15564739112298553,
+        0.9079431148840826
+      ],
+      "fov": 60
+    },
+    "timerQueryAvailable": true,
+    "gpuMs": {
+      "status": "not-run",
+      "unit": "ms",
+      "reason": "Timer available; no qualified timer-query sampling in diagnostic control"
+    },
+    "nativeGpuBytes": {
+      "status": "unsupported",
+      "unit": "byte",
+      "reason": "WebGL does not expose native/driver allocation bytes"
+    },
+    "device": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "submittedFrames": 1,
+    "frameVersion": 1,
+    "rendered": {
+      "tick": 0,
+      "fixtureDigest": "442cf721ac4cccdc75004e9d03848fa57cebaac2a9b930ab731bbead417af3b2",
+      "sourceRevision": 0,
+      "resetTick": null,
+      "cameraId": "near",
+      "frame": {
+        "cameraId": "near",
+        "paused": true,
+        "seconds": 0,
+        "sourceRevision": 0,
+        "tick": 0,
+        "weather": {
+          "cloud01": 0,
+          "rain01": 0,
+          "snow01": 0,
+          "windMps": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "frameVersion": 1
+    },
+    "rendererInfo": {
+      "geometries": 2,
+      "textures": 0,
+      "programs": 1,
+      "calls": 2,
+      "triangles": 9752
+    },
+    "liveHosts": {
+      "renderers": 1,
+      "renderloops": 1,
+      "hostListeners": 2
+    },
+    "productIntegrated": false,
+    "lastReplacement": null
+  },
+  "mounts": 1,
+  "liveHosts": {
+    "renderers": 1,
+    "renderloops": 1,
+    "hostListeners": 2
+  },
+  "productIntegrated": false
+}
