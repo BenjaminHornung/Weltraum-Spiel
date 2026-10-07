@@ -187,6 +187,13 @@ export const createVoxelRayExperiment:LabExperimentFactory = async (context:LabE
   context.signal.throwIfAborted(); context.canvas.hidden=true;
   const gl=context.canvas.getContext('webgl2',{antialias:true,alpha:false,powerPreference:'high-performance'});
   requireValue(gl,'UNSUPPORTED: WebGL2 required'); const caps=queryRayCaps(gl);
+  // Pinned Three creates four fallback textures and three scratch FBOs in its synchronous constructor,
+  // but renderer.dispose() does not delete them. Own only those returned handles in this RD13 host.
+  const constructorTextures:WebGLTexture[]=[],constructorFramebuffers:WebGLFramebuffer[]=[];
+  function releaseConstructorResources(){
+    constructorTextures.forEach(texture=>gl!.deleteTexture(texture));constructorTextures.length=0;
+    constructorFramebuffers.forEach(framebuffer=>gl!.deleteFramebuffer(framebuffer));constructorFramebuffers.length=0;
+  }
   const assetRoot=publicAssetRoot(import.meta.env.BASE_URL,window.location.href); const projections=new Set<Projection>();
   let latest:Projection|undefined; let host:ThreeLabHost|undefined;
   let activeTerminal:TerminalHost|undefined; let submissionQueued=false;
@@ -230,14 +237,32 @@ export const createVoxelRayExperiment:LabExperimentFactory = async (context:LabE
       async dispose() { p.dispose(); projections.delete(p); },
     };
   };
-  try { host=await createThreeLabHost(context,[{mount,preset:context.preset}]); }
-  catch (error) { retire(); for (const p of projections) { p.dispose(); } projections.clear(); throw error; }
+  try {
+    const createTexture=gl.createTexture,createFramebuffer=gl.createFramebuffer;
+    const textureDescriptor=Object.getOwnPropertyDescriptor(gl,'createTexture'),framebufferDescriptor=Object.getOwnPropertyDescriptor(gl,'createFramebuffer');
+    let creation:Promise<ThreeLabHost>;
+    try {
+      gl.createTexture=()=>{const value=createTexture.call(gl);if(value)constructorTextures.push(value);return value;};
+      gl.createFramebuffer=()=>{const value=createFramebuffer.call(gl);if(value)constructorFramebuffers.push(value);return value;};
+      creation=createThreeLabHost(context,[{mount,preset:context.preset}]);
+    } finally {
+      // Restore before the async fixture build or first draw; payload uploads are ordinary effect-owned resources.
+      if(textureDescriptor)Object.defineProperty(gl,'createTexture',textureDescriptor);else delete (gl as unknown as {createTexture?:unknown}).createTexture;
+      if(framebufferDescriptor)Object.defineProperty(gl,'createFramebuffer',framebufferDescriptor);else delete (gl as unknown as {createFramebuffer?:unknown}).createFramebuffer;
+    }
+    host=await creation;
+  }
+  catch (error) { retire(); for (const p of projections) { p.dispose(); } projections.clear();releaseConstructorResources(); throw error; }
+  const baseDispose=host.dispose.bind(host);
+  host.dispose=async()=>{try{await baseDispose();}finally{releaseConstructorResources();}};
+  if(context.signal.aborted){await host.dispose();context.signal.throwIfAborted();}
   const terminal=wrapTerminalHost(host,retire,context.canvas);activeTerminal=terminal;
   const rendered=()=>{ if (!terminal.readPrivateDiagnostics().pending&&!terminal.readPrivateDiagnostics().disposed) { context.canvas.hidden=false; } };
   const error=(event:Event)=>{ retire(); context.canvas.hidden=true; void terminal.terminate((event as CustomEvent).detail??'Context/render failure');
     context.canvas.dispatchEvent(new CustomEvent('voxel-rays-error',{detail:(event as CustomEvent).detail??'Context/render failure'})); };
   context.canvas.addEventListener('three-lab-rendered',rendered); context.canvas.addEventListener('three-lab-error',error);
-  const dispose=async()=>{ context.canvas.removeEventListener('three-lab-rendered',rendered); context.canvas.removeEventListener('three-lab-error',error); await terminal.dispose(); };
+  const dispose=async()=>{ context.canvas.removeEventListener('three-lab-rendered',rendered); context.canvas.removeEventListener('three-lab-error',error);context.signal.removeEventListener('abort',aborted); await terminal.dispose(); };
+  const aborted=()=>{void dispose().catch(()=>{});};context.signal.addEventListener('abort',aborted,{once:true});
   return {...terminal,resize:(w,h,dpr)=>{
       requireValue(Number.isInteger(w)&&Number.isInteger(h)&&w>=1&&h>=1&&Number.isFinite(dpr)&&dpr>=1&&dpr<=4
         && w*dpr<=Math.min(caps.maxTexture,caps.maxViewport[0])&&h*dpr<=Math.min(caps.maxTexture,caps.maxViewport[1]),'Viewport dimension/format limit');

@@ -62,12 +62,17 @@ export function createWetnessSourceCache(fixture:LabFixtureV1) {
       // Full-length multiplication over-rejected the combined shelter. The unchanged hard cap is enforced before each region query.
       const potentialQueries=points.length*maxSteps*index.regionCount;
       let queries=0;const next=new Map<string,RainExposure>(),ids=new Set<string>();
+      // The imported source/owner poses are immutable for this evaluation; do not rebuild them per face.
+      const transforms=new Map<string,{owner:NonNullable<ReturnType<typeof ownerPose>>;rotation:Quaternion;origin:Vector3}>();
       const samples=points.map((point)=>{
         keys(point,['id','ownerId','positionLocalMeters','normalLocal']);id(point.id);id(point.ownerId);vector(point.positionLocalMeters);vector(point.normalLocal);
         requireValue(!ids.has(point.id),'Duplicate wetness surface ID');ids.add(point.id);
         requireValue(Math.abs(Math.hypot(...point.normalLocal)-1)<1e-6,'Wetness face normal must be unit length');
-        const owner=ownerPose(fixture,point.ownerId);requireValue(owner,'staleOwner');const rotation=new Quaternion(...owner.rotationXyzw);
-        const normal=new Vector3(...point.normalLocal).applyQuaternion(rotation),receiver=new Vector3(...point.positionLocalMeters).applyQuaternion(rotation).add(new Vector3(...owner.originMeters)).addScaledVector(normal,index.quantumMeters/4);
+        let transform=transforms.get(point.ownerId);
+        if(!transform){const owner=ownerPose(fixture,point.ownerId);requireValue(owner,'staleOwner');
+          transform={owner,rotation:new Quaternion(...owner.rotationXyzw),origin:new Vector3(...owner.originMeters)};transforms.set(point.ownerId,transform);}
+        const {owner,rotation,origin}=transform;
+        const normal=new Vector3(...point.normalLocal).applyQuaternion(rotation),receiver=new Vector3(...point.positionLocalMeters).applyQuaternion(rotation).add(origin).addScaledVector(normal,index.quantumMeters/4);
         const world=receiver.toArray() as unknown as Vec3,pointKey=JSON.stringify([point.ownerId,world]);let exposure=cache.get(pointKey);
         if(!exposure){
           const travel=(index.bounds.max[1]-index.quantumMeters/4-world[1])/-direction[1];

@@ -99,15 +99,15 @@ VoxelHit traceVoxels(vec3 o,vec3 gridDirection,bool selectVisible) {
   int admittedSteps=gridSize.x+gridSize.y+gridSize.z+1;
   for (int iteration=0;iteration<193;iteration++) {
     if (iteration>=admittedSteps) { h.traversalFault=true; return h; }
-    uvec4 sample=sourceCell(cell); h.unknown=h.unknown || sample.g==0u;
-    bool solid=sample.r!=0u;
-    if (!insideRun && solid) { h.hit=true; h.t=t; h.cell=cell; h.slot=int(sample.b); h.normal=face; return h; }
+    uvec4 cellValue=sourceCell(cell); h.unknown=h.unknown || cellValue.g==0u;
+    bool solid=cellValue.r!=0u;
+    if (!insideRun && solid) { h.hit=true; h.t=t; h.cell=cell; h.slot=int(cellValue.b); h.normal=face; return h; }
     if (insideRun && !solid) {
       if (!selectVisible || slotDoubleSided[previousSlot]!=0) { h.hit=true; h.t=t; h.cell=previous; h.slot=previousSlot; h.normal=-face; return h; }
       // Rejected back exit: keep this empty interval, Unknown, world t and ONE traversal budget.
       insideRun=false;
     }
-    if (solid) { previous=cell; previousSlot=int(sample.b); }
+    if (solid) { previous=cell; previousSlot=int(cellValue.b); }
     float nextT=min(crossing.x,min(crossing.y,crossing.z));
     if (nextT<=t) { h.traversalFault=true; return h; }
     bvec3 tied=equal(crossing,vec3(nextT)); int a=tied.x?0:(tied.y?1:2); face=axisNormal(a,-float(stepDir[a]));
