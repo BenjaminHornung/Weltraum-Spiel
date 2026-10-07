@@ -221,6 +221,8 @@ export interface InternalStructuralObjectReconstructionInput {
 
 // Provenance only: no derived payload or caller-supplied clone is retained.
 const issuedObjects=new WeakSet<object>();
+// General public map/Species observations are not an owned-graph capability.
+const ownedGraphs=new WeakSet<object>(),ownedAdmissions=new WeakMap<StructuralObject,StructuralObject>();
 // A command-local derivation capability is NOT final Structural/evidence/World issuance.
 const preliminarySources = new WeakMap<object, StructuralObject>();
 export const isIssuedStructuralObject=(value:unknown):value is StructuralObject=>
@@ -253,11 +255,81 @@ export function* ownedStructuralReconstructionSteps(source: StructuralObject, va
   return yield* structuralReconstructionSteps(value, reserve);
 }
 
+/** Cold admission once for a general issued Source. No borrowed public container enters ownedGraphs. */
+export function* admitOwnedStructuralGraphSteps(source:StructuralObject,reserve:StructuralOwnedReserve):Generator<void,StructuralObject,void>{
+  if(!isIssuedStructuralObject(source)){return structuralFail("InvalidContract","owned/source","Owned graph requires an issued Source.");}
+  if(ownedGraphs.has(source)){return source;}
+  const cached=ownedAdmissions.get(source);if(cached){return cached;}
+  const result=yield* structuralReconstructionSteps({objectId:source.objectId,frame:source.frame,source:source.source,materials:source.materials,
+    bricks:source.bricks,anchors:source.anchors,joints:source.joints,objectRevision:source.objectRevision,editRevision:source.editRevision,commandEvidence:source.commandEvidence},reserve);
+  if(result.contentHash!==source.contentHash||result.evidenceHash!==source.evidenceHash){return structuralFail("InvalidContract","owned/source","Changed Source during owned admission.");}
+  ownedAdmissions.set(source,result);return result;
+}
+
+/** Internal subset builder. Exact issued graph, private selectors, genuine ancestor states only.
+ * No caller bricks/states or preliminary capability can be promoted to final issuance. */
+export function* ownedStructuralSubsetSteps(ancestor:StructuralObject,id:string,
+  input:readonly Readonly<{x:number;y:number;z:number;materialId:number}>[],reserve:StructuralOwnedReserve):Generator<void,StructuralObject,void>{
+  if(!isIssuedStructuralObject(ancestor)){return structuralFail("InvalidContract","subset/source","Subset requires an issued Source.");}
+  ancestor=yield* admitOwnedStructuralGraphSteps(ancestor,reserve);
+  const objectId=stableAuthorityId(id,"objectId");
+  const length=Array.isArray(input)?Object.getOwnPropertyDescriptor(input,"length")?.value:undefined;
+  if(!Number.isSafeInteger(length)||length<1||length>32_768||objectId===ancestor.objectId||ancestor.anchors.length||ancestor.joints.length){
+    return structuralFail("InvalidContract","subset","New identity and bounded unanchored subset required.");
+  }
+  reserve(2_048+length*256,true);
+  const selected=new Map<string,number>();
+  for(let index=0;index<length;index++){
+    const cell=input[index]!;
+    const {x,y,z,materialId}=cell;
+    if(![x,y,z,materialId].every(n=>Number.isSafeInteger(n)&&!Object.is(n,-0))){return structuralFail("InvalidCoordinate","subset/cell","Invalid subset selector.");}
+    const key=`${x}:${y}:${z}`;
+    if(selected.has(key)){return structuralFail("InvalidContract","subset/cell","Duplicate subset selector.");}
+    selected.set(key,materialId);yield;
+  }
+  const bricks:StructuralBrick[]=[],projectedBricks:Readonly<{schemaVersion:string;key:string;cells:readonly StructuralBrickCell[]}>[]=[];
+  let count=0,visited=0;
+  for(let b=0;b<ancestor.bricks.length;b++){
+    const brick=ancestor.bricks[b]!;
+    const cells:StructuralBrickCell[]=[];
+    for(let c=0;c<brick.cells.length;c++){
+      const cell=brick.cells[c]!;
+      if(++visited>32_768){return structuralFail("InvalidBudget","subset/cells","Subset ancestor exceeds owner cell budget.");}
+      const q=brick.key.originQuantum,o=ancestor.frame.objectOriginQuantum,i=cell.localIndex;
+      const x=q.x+i%16-o.x,y=q.y+Math.floor(i/16)%16-o.y,z=q.z+Math.floor(i/256)-o.z;
+      if(![x,y,z].every(Number.isSafeInteger)){return structuralFail("ArithmeticOverflow","subset/cell","Subset translation overflow.");}
+      const material=selected.get(`${x}:${y}:${z}`);
+      if(material!==undefined){
+        if(material!==cell.state.materialId){return structuralFail("InvalidMaterial","subset/cell","Subset material differs from ancestor.");}
+        cells.push(cell);count++;
+      }
+      yield;
+    }
+    if(cells.length){
+      reserve(256+cells.length*16,true);
+      const locked=yield* structuralFreezeArraySteps(cells,reserve);
+      bricks.push(Object.freeze({schemaVersion:brick.schemaVersion,key:brick.key,cells:locked}));
+      projectedBricks.push(Object.freeze({schemaVersion:brick.schemaVersion,key:serializeAdaptiveKey(brick.key),cells:locked}));
+    }
+    yield;
+  }
+  if(count!==selected.size){return structuralFail("InvalidContract","subset/cells","Subset occupancy missing from ancestor.");}
+  const empty=yield* structuralFreezeArraySteps([],reserve);
+  const payload=Object.freeze({schemaVersion:STRUCTURAL_OBJECT_SCHEMA_VERSION,objectId,frame:ancestor.frame,source:ancestor.source,
+    materials:ancestor.materials,bricks:yield* structuralFreezeArraySteps(projectedBricks,reserve),anchors:empty,joints:empty});
+  const contentHash=yield* structuralCanonicalHashSteps(payload,reserve),evidenceHash=yield* structuralCanonicalHashSteps(empty,reserve);
+  reserve(1_024,true);
+  const result:StructuralObject=Object.freeze({...payload,bricks:yield* structuralFreezeArraySteps(bricks,reserve),
+    objectRevision:structuralRevision(0),editRevision:structuralRevision(0),contentHash,commandEvidence:empty,evidenceHash});
+  issuedObjects.add(result);ownedGraphs.add(result);return result;
+}
+
 /** Existing synchronous entry drains the single reconstruction algorithm, with native generic observations. */
 export const reconstructStructuralObjectInternal = (value: unknown): StructuralObject =>
   drainStructuralSteps(structuralReconstructionSteps(value));
 
-function* structuralReconstructionSteps(value: unknown, reserve?: StructuralOwnedReserve): Generator<void, StructuralObject, void> {
+/** Module-internal step admission; same full validator for a cold structured-cloned input. */
+export function* structuralReconstructionSteps(value: unknown, reserve?: StructuralOwnedReserve): Generator<void, StructuralObject, void> {
   const input = requirePlainRecord(value, "objectInput");
   requireExactKeys(input, ["objectId", "frame", "source", "materials", "bricks", "anchors", "joints", "objectRevision", "editRevision", "commandEvidence"], "objectInput");
   reserve?.(1_024, true);
@@ -342,6 +414,7 @@ function* structuralReconstructionSteps(value: unknown, reserve?: StructuralOwne
   reserve?.(512, true);
   const result=freezeStructuralProduced({ ...contentCandidate, contentHash, commandEvidence, evidenceHash }, reserve);
   issuedObjects.add(result);
+  if(reserve!==undefined){ownedGraphs.add(result);}
   return result;
 }
 

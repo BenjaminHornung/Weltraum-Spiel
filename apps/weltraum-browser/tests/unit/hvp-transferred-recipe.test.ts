@@ -12,8 +12,30 @@ import {reconstructStructuralObjectInternal} from "../../src/voxel/structural/mo
 import {createStructuralOwnerLedger} from "../../src/voxel/structural/model";
 import * as recipes from "../../src/hestia-prototype/physics/rigidRecipe";
 import {prepareHvpTerrainFragment,prepareHvpTerrainFragmentOwnedSteps} from "../../src/hestia-prototype/physics/terrainFragment";
+import * as fragments from "../../src/hestia-prototype/physics/terrainFragment";
+import {encodeStructuralObject} from "../../src/voxel/structural";
 
 beforeAll(initializeHvpRapier);
+
+it("admits a bound experimental Source once while the ordinary fragment path keeps its original contract",()=>{
+  const input={ownerId:"hvp:terrain-fragment:r1:12345678",origin:{x:-16,y:-8,z:-16},massKg:9.375,
+    cells:[{x:128,y:76,z:128,materialId:1},{x:129,y:76,z:128,materialId:1}],
+    colliderBoxes:[{min:[128,76,128],max:[130,77,129]}] as const};
+  const expected=prepareHvpTerrainFragment(input,1);
+  expect(prepareHvpTerrainFragment({...input,sourceRegion:"untrusted"} as typeof input,1)).toEqual(expected);
+  const direct=(fragments as unknown as {prepareHvpProbeTerrainFragmentOwnedSteps?:
+    (r:typeof input&{sourceRegion:string},g:number,reserve:ReturnType<typeof createStructuralOwnerLedger>["reserve"])=>Generator<string,typeof expected,unknown>}).prepareHvpProbeTerrainFragmentOwnedSteps;
+  expect(direct).toBeTypeOf("function");
+  const ledger=createStructuralOwnerLedger(0,96*1024*1024,128);
+  const drain=(request:typeof input&{sourceRegion:string})=>{const steps=direct!(request,1,ledger.reserve);
+    for(;;){const s=steps.next();if(s.done){return s.value;}}};
+  try{
+    const region=encodeStructuralObject(expected.source),actual=drain({...input,sourceRegion:region});
+    expect(actual).toEqual(expected);
+    expect(()=>drain({...input,sourceRegion:"{}"})).toThrow();
+    expect(()=>drain({...input,sourceRegion:region,cells:[{...input.cells[0]!,materialId:2},input.cells[1]!]})).toThrow(/source|material|occupancy/i);
+  }finally{ledger.release();}
+});
 
 const materials=HVP_COAST_MATERIAL_REGISTRY.map(m=>({materialId:m.slot,densityKgPerCubicMeter:m.densityKgPerM3,
   structuralClass:m.role,destructible:true,tags:null}));

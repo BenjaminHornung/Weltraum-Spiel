@@ -8,6 +8,8 @@ import { ingestHvpStructuralCells } from "../terrain/structuralIngest";
 import { prepareHvpRigidBody, installHvpRigidBody } from "./rigidBody";
 import { createHvpBranchSession, type HvpBranchRequest } from "./branchSession";
 import {prepareHvpTerrainFragment,prepareHvpTerrainFragmentOwnedSteps,type HvpTerrainFragmentRequest} from "./terrainFragment";
+import {prepareHvpProbeTerrainFragmentOwnedSteps,createHvpProbeTerrainSourceOwner} from "./terrainFragment";
+import {isProbeKernelEnabled,isProbeTerrainSubsetEnabled,markProbeSource} from "../experiments/cutKernelProbe";
 import type {StructuralOwnedReserve} from "../../voxel/structural/validation";
 import {createHvpBodyMeshTaskPump} from "../../workers/hvpBoundedPump";
 import {ADAPTIVE_BRICK_ESTIMATED_BYTES} from "../../voxel/adaptive";
@@ -96,6 +98,7 @@ const physicsSessionFor = (workerOwned: boolean) => async (
   if(sectors.filter(s=>s.indices.length>0).length+bodyColliderCount+(player===undefined?0:1)>4096) { throw new Error("Physics collider BudgetExceeded"); }
   const world = new R.World({ x: 0, y: -gravity, z: 0 });
   let disposed = false;
+  const probeTerrainSource=workerOwned&&isProbeTerrainSubsetEnabled()?createHvpProbeTerrainSourceOwner():undefined;
   try {
     world.timestep = HVP_PHYSICS_DT;
     const collision = new Map<number, { mesh: HvpCollisionSector; collider?: R.Collider }>();
@@ -111,6 +114,7 @@ const physicsSessionFor = (workerOwned: boolean) => async (
     const restoredFixed:HvpCuttableBody[]=[];
     if(restored){for(const data of restored.bodies){
       if(parkedIds.has(data.checkpoint.ownerId)){continue;}
+      if(workerOwned&&isProbeKernelEnabled()&&data.checkpoint.family==="terrain"){markProbeSource(data.recipe.source);}
       const body=restoreHvpBody(world,data),ownerId=data.checkpoint.ownerId;
       if(data.checkpoint.family==="branch"&&!data.checkpoint.dynamic){restoredFixed.push({ownerId,body,recipe:data.recipe,family:"branch"});}
       else{bodies.set(ownerId,body);}
@@ -157,6 +161,7 @@ const physicsSessionFor = (workerOwned: boolean) => async (
         if(workerOwned&&moving.resources()?.reservedBytes){
           console.debug(`hvp-owned-body-plan-budget ${JSON.stringify({commandId:trace.commandId,outcome:trace.outcome,
             origin:performance.timeOrigin,steps:trace.totalSteps,maxMs:trace.max?.duration,
+            timing:trace.timing,
             phases:trace.phases.map(phase=>({label:phase.label,count:phase.count,totalMs:phase.totalMs,maxMs:phase.maxMs}))})}`);
         }
       }:undefined);
@@ -294,7 +299,7 @@ const physicsSessionFor = (workerOwned: boolean) => async (
          // Logical source/recipe allowance; native allocator bytes remain unsupported above.
          bodySourceResidentBytes:disposed?0:[...movingBodies.values()].reduce((sum,target)=>sum
            +target.recipe.source.bricks.length*ADAPTIVE_BRICK_ESTIMATED_BYTES+4096+target.recipe.colliders.length*256,0)
-           +validatedFrozenDenseArrayInitializationBytes(),
+           +validatedFrozenDenseArrayInitializationBytes()+(probeTerrainSource?.residentBytes()??0),
          bodyResidencyId:disposed?null:bodyResidencyWork?.id??null,
          bodyResidencyTransaction:disposed?"Idle":bodyResidencyWork?.hold?"RecoveryHold":bodyResidencyWork?(bodyResidencyWork.committed?"CommittedHeld":"PreparedHeld"):"Idle",
         neighborTransaction:disposed?"Idle":residency!.held?"RecoveryHold":neighbor?.read().state??"Idle",
@@ -577,7 +582,8 @@ const physicsSessionFor = (workerOwned: boolean) => async (
           }
           if(bytes>8*1024*1024){throw new Error("Terrain collision BudgetExceeded");}
           const recipes:ReturnType<typeof prepareHvpTerrainFragment>[]=[],start=performance.now();
-          for(const fragment of fragments){recipes.push(yield* prepareHvpTerrainFragmentOwnedSteps(fragment,expected+1,reserve));yield "terrainNativeRecipe";}
+          for(const fragment of fragments){recipes.push(yield* (probeTerrainSource?probeTerrainSource.prepareSteps(fragment,expected+1,reserve)
+            :(workerOwned&&isProbeKernelEnabled()?prepareHvpProbeTerrainFragmentOwnedSteps:prepareHvpTerrainFragmentOwnedSteps)(fragment,expected+1,reserve)));yield "terrainNativeRecipe";}
           return {recipes,recipeMs:performance.now()-start};
         })();
         let failed=false;
@@ -675,13 +681,13 @@ const physicsSessionFor = (workerOwned: boolean) => async (
       },
       dispose(): void {
         if (disposed) { return; }
-         disposed = true; tick.dispose(); character?.dispose();
+         disposed = true;probeTerrainSource?.dispose();tick.dispose(); character?.dispose();
          bodyChannel?.port1.close();bodyChannel?.port2.close();bodyChannel=undefined;
          const waiting=bodyYield;bodyYield=undefined;waiting?.reject(new Error("Moving preparation disposed"));
          bodies.clear();movingBodies.clear();world.free();moving.dispose();
       }
     };
-  } catch (error) { world.free(); throw error; }
+  } catch (error) {probeTerrainSource?.dispose();world.free();throw error;}
 };
 export const createHvpPhysicsSession = physicsSessionFor(false);
 /**

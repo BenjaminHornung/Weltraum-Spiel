@@ -12,6 +12,7 @@ import {createHvpBodyMeshTaskPump} from "../../workers/hvpBoundedPump";
 import type { HvpCollisionCoverage, HvpPlayerInput } from "../player/locomotion";
 import type { HvpBranchRequest } from "./branchSession";
 import type {HvpTerrainFragmentRequest} from "./terrainFragment";
+import {hvpTerrainSubsetCloneBytes,copyHvpTerrainSubset} from "./terrainFragment";
 import type {HvpMovingCutRequest,HvpMovingCutPreparation,HvpBodyCutAdmission,HvpBodyChildProjection} from "./bodyCutSession";
 import type {HvpWorldCheckpoint} from "../persistence/worldCheckpoint";
 import {validateHvpNeighborCheckpoint,type HvpNeighborCheckpoint} from "../runtime/residency";
@@ -84,7 +85,7 @@ export const chooseHvpParallelism = (current: number, available: number, recentM
 /** Existing bounded pool prepares exact sectors. Never more than two heavy jobs. */
 export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSource[], spawn: { x: number; y: number; z: number }, signal: AbortSignal,
   playerSpawn?: { x: number; y: number; z: number }, inertiaSpawn?:{x:number;y:number;z:number},branchSpawn?:{x:number;y:number;z:number},checkpoint?:HvpWorldCheckpoint,branchKind:"branch"|"salvage"="branch",
-  onTimings?:(batch:NonNullable<HvpPhysicsReply["timings"]>)=>void): Promise<HvpPhysicsClient> => {
+  onTimings?:(batch:NonNullable<HvpPhysicsReply["timings"]>)=>void,experimentalKernel?:"direct-known-cells-v1"|"owned-moving-subset-v2"|"owned-terrain-subset-v3"): Promise<HvpPhysicsClient> => {
   const hinted = globalThis.navigator?.hardwareConcurrency ?? 2;
   const workerCount = Math.max(1, Math.min(2, Number.isSafeInteger(hinted) ? hinted - 1 : 1));
   const pool = new WorkerPool({ workerCount, queueCapacity: 32 });
@@ -238,7 +239,7 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
   };
   signal.addEventListener("abort", abort, { once: true });
   try {
-    await send({ kind: "Initialize", sectors, spawn, gravity: resolveHvpGravity(), inertiaSpawn,branchSpawn,checkpoint,branchKind,measure:onTimings!==undefined,
+    await send({ kind: "Initialize", sectors, spawn, gravity: resolveHvpGravity(), inertiaSpawn,branchSpawn,checkpoint,branchKind,measure:onTimings!==undefined,...(experimentalKernel===undefined?{}:{experimentalKernel}),
       sessionId:checkpoint?.sessionId??crypto.randomUUID(), player: playerSpawn === undefined ? undefined : { spawn: playerSpawn, coverage } },
       sectors.flatMap(s => [s.vertices.buffer as ArrayBuffer, s.indices.buffer as ArrayBuffer]));
     if (signal.aborted || snapshot === undefined) { throw new Error("Physics initialization did not publish a snapshot"); }
@@ -501,14 +502,17 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
         const pump=createHvpBodyMeshTaskPump(()=>{if(failure){throw failure;}if(disposed||terminated){throw new Error("Physics disposed");}});
         try{
           const reserve=createHvpBodyMeshPhaseReserve(work.copyBytes);
+          // Capture the immutable plain packet before any cell-copy yield. Quote the transported bytes.
+          const subsets=fragments.map(f=>f.sourceSubset===undefined?undefined:copyHvpTerrainSubset(f.sourceSubset));
           const copies=await pump.run((function*(){
             reserve(32_768+replacements.reduce((n,r)=>n+r.mesh.vertices.byteLength+r.mesh.indices.byteLength,0)*2
-              +fragments.reduce((n,f)=>n+f.cells.length*256+f.colliderBoxes.length*512+1024,0));
+              +fragments.reduce((n,f,i)=>n+f.cells.length*256+f.colliderBoxes.length*512+1024+(f.sourceRegion?.length??0)*4+hvpTerrainSubsetCloneBytes(subsets[i]),0));
             const copies:HvpTerrainFragmentRequest[]=[];
-            for(const f of fragments){const cells=[];
+            for(const [index,f] of fragments.entries()){const cells=[];
               for(const c of f.cells){cells.push({x:c.x,y:c.y,z:c.z,materialId:c.materialId});yield "terrainNativeCopy";}
               copies.push({ownerId:f.ownerId,massKg:f.massKg,origin:{x:f.origin.x,y:f.origin.y,z:f.origin.z},cells,
-                colliderBoxes:f.colliderBoxes.map(b=>({min:[...b.min] as [number,number,number],max:[...b.max] as [number,number,number]}))});
+                colliderBoxes:f.colliderBoxes.map(b=>({min:[...b.min] as [number,number,number],max:[...b.max] as [number,number,number]})),
+                ...(f.sourceRegion===undefined?{}:{sourceRegion:f.sourceRegion}),...(subsets[index]===undefined?{}:{sourceSubset:subsets[index]})});
             }return copies;
           })());
           await send({kind:"PrepareTerrainPlan",transactionId:id,generation,sourceDigest:work.sourceDigest,sourceSessionId:work.sourceSessionId,sourceEpoch:work.sourceEpoch,allowanceBytes:work.nativeBytes,replacements,fragments:copies},

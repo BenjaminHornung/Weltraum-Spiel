@@ -3,6 +3,7 @@ import { assertHvpSafeQuarry, snapshotHvpCutRequest, type HvpCutRequest, type Hv
 import type { HvpTerrainProducts } from "./terrainProducts";
 import {hvpTerrainProductPhaseCredits,releaseHvpOwnedTerrainProducts} from "./terrainProducts";
 import type {HvpTerrainFragmentRequest} from "../physics/terrainFragment";
+import {hvpTerrainSubsetCloneBytes} from "../physics/terrainFragment";
 import type {HvpPhysicsSnapshot} from "../physics/physicsWorker";
 import type {HvpSupportPlan,HvpSupportPhaseCredits} from "./supportPlan";
 import {assertHvpSupportCurrent,releaseHvpOwnedSupportPlan,bindHvpOwnedSupportCut} from "./supportPlan";
@@ -119,11 +120,12 @@ export const createHvpTerrainConsumer = (
           ownedProducts=compiled;phaseCredits??=hvpTerrainProductPhaseCredits(compiled);
           if(disposed||root.read()!==currentPlan.before||compiled.source!==currentPlan.after) { throw new Error("Stale prepared terrain"); }
           const fragments:HvpTerrainFragmentRequest[]=transfer?.fragments.map(f=>({ownerId:`hvp:terrain-fragment:r${currentPlan.after.revision}:${f.digest}`,
-            origin:currentPlan.after.originMeters,cells:f.cells,massKg:f.massKg,colliderBoxes:f.colliderBoxes}))??[];
+            origin:currentPlan.after.originMeters,cells:f.cells,massKg:f.massKg,colliderBoxes:f.colliderBoxes,
+            ...(f.sourceRegion===undefined?{}:{sourceRegion:f.sourceRegion}),...(f.sourceSubset===undefined?{}:{sourceSubset:f.sourceSubset})}))??[];
           if(fragments.length===0){products=measure("cutGraphicsStageMs",()=>trace?stage(compiled,undefined,bound.commandId):stage(compiled));} // New resources remain hidden.
           const replacements=[...compiled.collision].map(([index,mesh])=>({index,mesh}));
           const copyBytes=33_024+1024*fragments.length+replacements.reduce((n,r)=>n+r.mesh.vertices.byteLength+r.mesh.indices.byteLength,0)*2
-            +fragments.reduce((n,f)=>n+f.cells.length*256+f.colliderBoxes.length*512+1024,0);
+            +fragments.reduce((n,f)=>n+f.cells.length*256+f.colliderBoxes.length*512+1024+(f.sourceRegion?.length??0)*4+hvpTerrainSubsetCloneBytes(f.sourceSubset),0);
           const preGraphics=phaseCredits!==undefined&&fragments.length>0&&quoteStage!==undefined;
           const graphicsBytes=preGraphics?await quoteStage!(compiled,fragments,phaseCredits!):0;
           if(preGraphics&&(disposed||root.read()!==currentPlan.before||compiled.source!==currentPlan.after)){throw new Error("Stale terrain after graphics quote");}

@@ -11,6 +11,8 @@ export interface HvpTerrainFragment {
   readonly id:string;readonly digest:string;readonly cells:readonly HvpStructuralCell[];
   readonly min:HvpCell;readonly max:HvpCell;readonly massKg:number;readonly colliders:number;
   readonly affectedLeaves:readonly string[];readonly colliderBoxes:readonly HvpTransferredColliderBox[];
+  readonly sourceRegion?:string;
+  readonly sourceSubset?:import("../physics/terrainFragment").HvpTerrainSourceSubset;
 }
 /** Optional wall-clock sub-spans; only the support worker populates them. */
 export interface HvpSupportTimings {
@@ -120,6 +122,7 @@ export const analyzeHvpSupportSnapshot=(source:HvpCellReader,changed:readonly Hv
 export interface HvpOwnedSupportWork {
   readonly reserve:StructuralOwnedReserve;readonly retain:(bytes:number)=>void;
   readonly beginFragment:()=>void;readonly endFragment:()=>void;
+  readonly sourceFromCells?:(id:string,cells:readonly HvpStructuralCell[],reserve:StructuralOwnedReserve)=>Generator<string|void,ReturnType<typeof ingestHvpStructuralCells>,unknown>;
 }
 export function* analyzeHvpSupportSnapshotOwnedSteps(source:HvpCellReader,changed:readonly HvpCell[],
   budgets:{maxProbes?:number;maxFragmentCells?:number},clock:HvpSupportTimingsCollector|undefined,work:HvpOwnedSupportWork){
@@ -219,7 +222,8 @@ function* supportSnapshotSteps(source:HvpCellReader,changed:readonly HvpCell[],b
       try{
         clock?.mark("ingest");
         const source=owned===undefined?ingestHvpStructuralCells(`hvp-terrain-fragment-${digest}`,cells,materials)
-          :yield* borrowedHvpPlanSteps(prepareHvpStructuralIngestOwnedSteps(`hvp-terrain-fragment-${digest}`,cells,materials,[],owned.reserve),"supportIngest");
+          :yield* borrowedHvpPlanSteps(owned.sourceFromCells?.(`hvp-terrain-fragment-${digest}`,cells,owned.reserve)
+            ??prepareHvpStructuralIngestOwnedSteps(`hvp-terrain-fragment-${digest}`,cells,materials,[],owned.reserve),"supportIngest");
         clock?.mark("recipe");
         const spans:HvpRigidRecipeSpans={};
         const recipe=owned===undefined?prepareHvpRigidBody(source,clock?spans:undefined)

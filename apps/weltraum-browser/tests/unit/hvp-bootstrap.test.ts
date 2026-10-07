@@ -1258,6 +1258,30 @@ describe("HVP T08 bootstrap lifecycle", () => {
     }finally{await handle.dispose();}
   });
 
+  it("experimental draw-off retains the backend frame work without confirming a submitted Cut frame", async () => {
+    const source=harness();
+    Object.defineProperty(source.windowPort,"location",{value:{search:"?hvpMeasure=1"}});
+    const create=cutTraceModule.createHvpCutObservation, render=vi.fn();
+    const observation=vi.spyOn(cutTraceModule,"createHvpCutObservation").mockImplementation((...args)=>{
+      const actual=create(...args);
+      return {...actual,render:(submit)=>{render();return actual.render(submit);}};
+    });
+    let drawing=false;
+    let handle: HvpBootstrapHandle|undefined;
+    try{
+      handle=await startHvp(source.overrides({drawEnabled:()=>drawing} as Parameters<typeof startHvp>[0]));
+      const frame=source.windowPort.animationFrames.values().next().value!;
+      const before=source.counts().renders;
+      frame(performance.now());
+      expect(source.counts().renders).toBe(before+1);
+      expect(render).not.toHaveBeenCalled();
+      expect(source.body.dataset.hestiaExperimentDrawSuppressed).toBe("true");
+      drawing=true; frame(performance.now()+16);
+      expect(render).toHaveBeenCalledTimes(1);
+      expect(source.body.dataset.hestiaExperimentDrawSuppressed).toBe("false");
+    }finally{await handle?.dispose();observation.mockRestore();}
+  });
+
   it("C2B wires the real confirm, terrain trace, and accepted render callbacks", async () => {
     const source = harness();
     Object.defineProperty(source.windowPort, "location", { value: { search: "?hvpMeasure=1" } });

@@ -1,0 +1,6 @@
+{
+  "extends": "../../../../../apps/weltraum-browser/tsconfig.json",
+  "compilerOptions": {"types": ["node"], "typeRoots": ["../../../../../apps/weltraum-browser/node_modules/@types"], "noEmit": true},
+  "include": ["kernel-contract.test.ts", "owned-subset.test.ts", "terrain-owner.test.ts", "render-probe.ts", "render-probe.spec.ts", "cpu-probe.ts", "compiler-probe.ts", "env.d.ts"],
+  "exclude": []
+}

@@ -1,3 +1,4 @@
+import {deriveMovingProbeFragmentSteps,isProbeSource,isProbeKernelEnabled,markProbeSource} from "../experiments/cutKernelProbe";
 import {deriveStructuralObjectMassProperties,globalQuantumForStructuralCell,objectLocalQuantumForGlobal,
   structuralAddressForBrickCell,type StructuralObject} from "../../voxel/structural";
 import {fnv1aHash} from "../../core/hash";
@@ -43,6 +44,7 @@ export function* prepareHvpLocalBodyCutOwnedHashSteps(source:StructuralObject,ce
   return yield* localBodyCutSteps(true,source,cell,commandId,edge,brush,probe,parentRecipe,reserve);
 }
 function* localBodyCutSteps(ownedHash:boolean,source:StructuralObject,cell:HvpCell,commandId:string,edge:number,brush:"Box"|"Sphere",probe?:HvpPlanProbe,parentRecipe?:HvpRigidRecipe,reserve?:StructuralOwnedReserve){
+  if(ownedHash&&reserve!==undefined&&isProbeKernelEnabled()&&source.objectId.startsWith("hvp:terrain-fragment:")){markProbeSource(source);}
   if(!Number.isSafeInteger(edge)||edge<1||edge>8||cell.length!==3||!cell.every(Number.isSafeInteger)){
     throw new Error("Invalid local body cut");
   }
@@ -73,7 +75,8 @@ function* localBodyCutSteps(ownedHash:boolean,source:StructuralObject,cell:HvpCe
   reserve?.(8_192);
   const removedId=`hvp-removed-${fnv1aHash(source.contentHash+commandId)}`;
   const removedSource=reserve===undefined?ingestHvpStructuralCells(removedId,removed,source.materials,[],probe?.ingest)
-    :yield* borrowedHvpPlanSteps(prepareHvpStructuralIngestOwnedSteps(removedId,removed,source.materials,[],reserve),"ownerIngest");
+    :yield* borrowedHvpPlanSteps(isProbeSource(source)?deriveMovingProbeFragmentSteps(source,removedId,removed,reserve)
+      :prepareHvpStructuralIngestOwnedSteps(removedId,removed,source.materials,[],reserve),"ownerIngest");
   const removedMass=reserve===undefined?measureHvpPlanPhase(probe,"removedMassDeriveMs",()=>deriveStructuralObjectMassProperties(removedSource,{maxVisitedCells:512}))
     :yield* borrowedHvpPlanSteps(structuralOwnedObjectMassSteps(removedSource,{maxVisitedCells:512},reserve),"ownerMass");
   reserve?.(2_048,true);

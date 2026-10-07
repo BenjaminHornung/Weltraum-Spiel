@@ -14,6 +14,7 @@ import type {HvpBodyMeshBudget} from "../presentation/bodyMeshAdmission";
 import type {HvpBodyChildProjection} from "./bodyCutSession";
 import {createHvpBodyMeshTaskPump} from "../../workers/hvpBoundedPump";
 import {createHvpBodyMeshPhaseReserve} from "../presentation/bodyMeshAdmission";
+import {enableProbeKernel} from "../experiments/cutKernelProbe";
 
 export type HvpPhysicsSnapshot = ReturnType<HvpPhysicsSession["read"]>;
 export interface HvpPhysicsClock {
@@ -28,7 +29,7 @@ export interface HvpPhysicsClock {
 }
 export type HvpPhysicsMessage = HvpPhysicsBinding & { readonly id: number } & (
   | { readonly kind: "Initialize"; readonly sectors: readonly HvpCollisionSector[]; readonly spawn: { x: number; y: number; z: number }; readonly gravity: number;
-      readonly player?: { spawn: { x: number; y: number; z: number }; coverage: readonly HvpCollisionCoverage[] }; readonly inertiaSpawn?: {x:number;y:number;z:number}; readonly branchSpawn?:{x:number;y:number;z:number};readonly sessionId:string;readonly checkpoint?:HvpWorldCheckpoint;readonly branchKind?:"branch"|"salvage";readonly measure?:boolean }
+      readonly player?: { spawn: { x: number; y: number; z: number }; coverage: readonly HvpCollisionCoverage[] }; readonly inertiaSpawn?: {x:number;y:number;z:number}; readonly branchSpawn?:{x:number;y:number;z:number};readonly sessionId:string;readonly checkpoint?:HvpWorldCheckpoint;readonly branchKind?:"branch"|"salvage";readonly measure?:boolean;readonly experimentalKernel?:"direct-known-cells-v1"|"owned-moving-subset-v2"|"owned-terrain-subset-v3" }
    | { readonly kind: "Read"; readonly input?: HvpPlayerInput; readonly cameraOffset?: { x: number; y: number; z: number };
        readonly cutAim?:{x:number;y:number;z:number};readonly measure?:false }
   | { readonly kind: "Pause" | "Resume" | "Drop" | "Play" | "Inspect" | "Dispose" }
@@ -180,6 +181,7 @@ port.onmessage = async ({ data }) => {
     else if (data.kind === "Initialize") {
       if (initializing || session !== undefined || disposed) { throw new Error("Physics already initialized/disposed"); }
       initializing = true;
+      if(data.experimentalKernel!==undefined){if(!["direct-known-cells-v1","owned-moving-subset-v2","owned-terrain-subset-v3"].includes(data.experimentalKernel)){throw new Error("Unknown experimental kernel");}enableProbeKernel(data.experimentalKernel!=="direct-known-cells-v1",data.experimentalKernel==="owned-terrain-subset-v3");}
       measure=data.measure===true;
        session = await createHvpWorkerPhysicsSession(data.sectors, data.spawn, data.gravity, data.player, data.inertiaSpawn,data.branchSpawn,data.sessionId,data.checkpoint,data.branchKind,measure);
       if (disposed) { session.dispose(); }
@@ -334,6 +336,7 @@ port.onmessage = async ({ data }) => {
           assertCurrent();
           requireHvpBodyProjectionBinding(data.binding,ticket!.binding);
           if(data.kind==="PrepareBodyMeshWork"){bodyMeshWorkTicket=ticket;}
+          const rpcStart=measure&&data.kind==="PrepareBodyMeshWork"?performance.now():undefined;
           const prepared=data.kind==="PrepareBodyChildProjection"
             ?await owner.prepareBodyChildProjection(ticket!.binding.commandId,data.residentBytes)
             :data.kind==="PrepareBodyMeshWork"?await owner.prepareBodyMeshWork(ticket!.binding.commandId,data.residentBytes,data.renderExtraBytes)
@@ -344,6 +347,8 @@ port.onmessage = async ({ data }) => {
           if(data.kind==="PrepareBodyChildProjection"){
             reply({id:data.id,bodyChildProjection:{beginRequestId:ticket!.binding.beginRequestId,projection:prepared as HvpBodyProjectionReply["projection"]}});
           }else if(data.kind==="PrepareBodyMeshWork"){
+            if(rpcStart!==undefined){try{console.debug(`hvp-owned-body-rpc ${JSON.stringify({commandId:ticket!.binding.commandId,origin:performance.timeOrigin,
+              received:rpcStart,replyReady:performance.now()})}`);}catch{/* Observation has no authority. */}}
             reply({id:data.id,bodyMeshWork:{beginRequestId:ticket!.binding.beginRequestId,...prepared as {projection:HvpBodyChildProjection;budget:HvpBodyMeshBudget}}});
           }else{
             const output=prepared as TransferableBufferBundle;

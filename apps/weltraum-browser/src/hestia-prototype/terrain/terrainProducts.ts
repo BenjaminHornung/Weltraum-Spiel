@@ -139,10 +139,14 @@ export const copyHvpTerrainSlots=async(source:HvpTerrainSnapshot,cancelled:()=>b
 };
 
 /** At most two concurrent derived jobs; accepted edits remain in the source owner. */
-export const createHvpTerrainCompiler = () => {
+export const createHvpTerrainCompiler = (observePoolStartup?:((start:number,duration:number)=>void)) => {
   const count=Math.max(1,Math.min(2,(globalThis.navigator?.hardwareConcurrency??2)-1));
   const createPool=()=>new WorkerPool({workerCount:count,queueCapacity:32});
   let pool=createPool(),started:Promise<void>|undefined,sequence=0,disposed=false,rollingOver=false,rolloverFailed=false,activeOperations=0;
+  const startPool=()=>started??=(observePoolStartup===undefined?pool.start():(async()=>{
+    const start=performance.now();
+    try{await pool.start();}finally{try{observePoolStartup?.(start,performance.now()-start);}catch{/* Diagnostics have no authority. */}}
+  })());
   let disposePromise:Promise<void>|undefined,idleResolve:(()=>void)|undefined;
   const retainedSupport=new Set<HvpSupportPlan>();
   const retainedProducts=new Set<HvpTerrainProducts>();
@@ -160,7 +164,7 @@ export const createHvpTerrainCompiler = () => {
     const render=new Map<number,HvpCompactMesh>(),collision=new Map<number,HvpCollisionSector>();
     const work=[...renderIds.map(id=>({id,render:true})),...collisionIds.map(id=>({id,render:false}))];
     if(work.length>limit||new Set(renderIds).size!==renderIds.length||new Set(collisionIds).size!==collisionIds.length){throw new Error("Terrain derivative BudgetExceeded");}
-    if(work.length!==0){await (started??=pool.start());}
+    if(work.length!==0){await startPool();}
     const active=new Set<WorkerJobTicket>();
     const results=await runHvpBounded(work,parallel,async part=>{
       if(disposed){throw new Error("Terrain compiler disposed");}
@@ -249,7 +253,7 @@ export const createHvpTerrainCompiler = () => {
         const payload:HvpNeighborPayload={epoch,primaryRevision:primary.revision,eastRevision:east.revision,primaryDigest:primary.sourceDigest,eastDigest:east.sourceDigest,lod,key};
         const bundle:TransferableBufferBundle={ownership:"SenderToWorker",revision:contentRevision(east.revision),buffers,
           byteLength:byteCount(buffers.reduce((n,b)=>n+b.byteLength,0)),views:buffers.map((b,i)=>({name:["primary","east","proxies"][i]!,kind:"Uint8Array",bufferIndex:i,byteOffset:0,elementCount:b.byteLength}))};
-        await(started??=pool.start());if(disposed||signal?.aborted){throw new Error("Cancelled neighbour preparation");}
+        await startPool();if(disposed||signal?.aborted){throw new Error("Cancelled neighbour preparation");}
         const job=sequence++,ticket=pool.enqueue({jobId:workerJobId(`hvp-neighbor-${job}`),targetKey:workerTargetKey("hvp-east-projection"),jobKind:workerJobKind(HVP_NEIGHBOR_JOB),
           workerEpoch:workerEpoch(0),planningEpoch:planningEpoch(0),inputRevision:contentRevision(east.revision),sourceInputDigest:hvpNeighborInputDigest(payload,buffers),
           algorithmVersion:algorithmVersion(1),priority:"Normal",deadline:jobDeadline(job),estimatedInputBytes:bundle.byteLength,estimatedOutputBytes:byteCount(HVP_NEIGHBOR_MAX_OUTPUT),payload},bundle);
@@ -270,7 +274,7 @@ export const createHvpTerrainCompiler = () => {
         }
         const buffers=[cells.buffer as ArrayBuffer],bundle:TransferableBufferBundle={buffers,ownership:"SenderToWorker",revision:contentRevision(p.revision),
           byteLength:byteCount(cells.byteLength),views:[{name:"cells",kind:"Int32Array",bufferIndex:0,byteOffset:0,elementCount:cells.length}]};
-        await (started??=pool.start());
+        await startPool();
         const terminal=await pool.enqueue({jobId:workerJobId(`hvp-body-${sequence++}`),targetKey:workerTargetKey(p.ownerId),jobKind:workerJobKind(HVP_BODY_CUT_JOB),
           workerEpoch:workerEpoch(0),planningEpoch:planningEpoch(0),inputRevision:contentRevision(p.revision),sourceInputDigest:hvpBodyCutInputDigest(p,buffers),
           algorithmVersion:algorithmVersion(HVP_BODY_CUT_ALGORITHM),priority:"Urgent",deadline:jobDeadline(sequence),estimatedInputBytes:bundle.byteLength,
@@ -288,7 +292,7 @@ export const createHvpTerrainCompiler = () => {
         try{
         const packed=pump===undefined?buildHvpBodyMeshInput(projection)
           :await pump.run(buildHvpBodyMeshInputSteps(projection,createHvpBodyMeshPhaseReserve(budget!.packBytes)));
-        await(started??=pool.start());
+        await startPool();
         if(disposed){throw new Error("Terrain compiler disposed");}
         const request={jobId:workerJobId(`hvp-body-mesh-${sequence++}`),targetKey:workerTargetKey(packed.payload.ownerId),
           jobKind:workerJobKind(HVP_BODY_MESH_JOB),workerEpoch:workerEpoch(0),planningEpoch:planningEpoch(0),
@@ -336,7 +340,7 @@ export const createHvpTerrainCompiler = () => {
           workerEpoch:workerEpoch(0),planningEpoch:planningEpoch(0),inputRevision:contentRevision(s.revision),
           sourceInputDigest:await measure("cutSupportInputHashMs",()=>pump.run(hvpSupportInputDigestSteps(payload,buffers))),algorithmVersion:algorithmVersion(1),priority:"Urgent" as const,
           deadline:jobDeadline(sequence),estimatedInputBytes:input.byteLength,estimatedOutputBytes:byteCount(HVP_SUPPORT_MAX_OUTPUT),payload};
-        await (started??=pool.start());
+        await startPool();
         const ticket=await measure("cutSupportAdmissionMs",()=>pool.enqueueSupport(request,input,pump.host,packReserve,workerGrant,resultReserve));
         const terminal=await measure("cutSupportWorkerWaitMs",()=>ticket.result);
         if(disposed||terminal.kind!=="Completed"||!pool.isAcceptedCompletedTerminal(terminal)){throw new Error(`Support prepare ${terminal.kind}`);}

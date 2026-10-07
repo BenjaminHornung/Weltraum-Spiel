@@ -57,6 +57,7 @@ export interface HvpBodyPlanTrace {
   readonly totalSteps:number;
   readonly max:HvpBodyPlanStepTiming|undefined;
   readonly phases:readonly HvpBodyPlanPhaseAggregate[];
+  readonly timing:Readonly<{elapsedMs:number;workMs:number;taskWaitMs:number;taskWaitCount:number;maxTaskWaitMs:number}>;
 }
 // ponytail: fixed caps. Legal budgets can exceed 64 steps (bounded cell batches of the parent and of
 // each child); those are only aggregated. Labels are bounded by the plan: 5 fixed (destruction,
@@ -86,7 +87,8 @@ interface HvpBodyPlanWork {
   failure?:{readonly error:unknown};
   running?:Promise<void>;
   trace?:{readonly commandId:string;readonly steps:HvpBodyPlanStepTiming[];current?:HvpBodyPlanSubspan[];
-    totalSteps:number;max?:HvpBodyPlanStepTiming;readonly phases:Map<string,{count:number;totalMs:number;maxMs:number}>};
+    totalSteps:number;max?:HvpBodyPlanStepTiming;readonly phases:Map<string,{count:number;totalMs:number;maxMs:number}>;
+    startedAt?:number;workMs:number;taskWaitMs:number;taskWaitCount:number;maxTaskWaitMs:number};
 }
 
 /**
@@ -136,7 +138,7 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
       const work:HvpBodyPlanWork={};
       ticket.work=work;
       if(observer!==undefined){
-        work.trace={commandId:ticket.request.id,steps:[],totalSteps:0,phases:new Map()};
+        work.trace={commandId:ticket.request.id,steps:[],totalSteps:0,phases:new Map(),workMs:0,taskWaitMs:0,taskWaitCount:0,maxTaskWaitMs:0};
       }
       try{
         if(residentBytes!==undefined){
@@ -190,6 +192,8 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
     }
     try{
       observer(Object.freeze({commandId:trace.commandId,outcome,steps:Object.freeze(trace.steps),totalSteps:trace.totalSteps,max:trace.max,
+        timing:Object.freeze({elapsedMs:trace.startedAt===undefined?0:performance.now()-trace.startedAt,workMs:trace.workMs,
+          taskWaitMs:trace.taskWaitMs,taskWaitCount:trace.taskWaitCount,maxTaskWaitMs:trace.maxTaskWaitMs}),
         phases:Object.freeze([...trace.phases].map(([label,value])=>Object.freeze({label,...value})))}));
     }catch{
       // Measurement can never change the command outcome.
@@ -208,6 +212,7 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
       if(worst){trace.max=timing;}
     }
     trace.totalSteps+=1;
+    trace.workMs+=duration;
     const phase=trace.phases.get(label);
     if(phase!==undefined){
       phase.count+=1;phase.totalMs+=duration;phase.maxMs=Math.max(phase.maxMs,duration);
@@ -221,6 +226,7 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
       return true;
     }
     const trace=work.trace,start=trace===undefined?0:performance.now();
+    if(trace!==undefined){trace.startedAt??=start;}
     if(trace!==undefined){
       trace.current=work.ledger===undefined?[]:undefined;
     }
@@ -291,7 +297,10 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
               &&host.continuePlan?.()===true;
             previousPhase=work.phase;
             if(!continuation){
-              await host.yieldTask();
+              const timing=work.trace,waitStart=timing===undefined?0:performance.now();
+              try{await host.yieldTask();}finally{if(timing!==undefined){
+                const duration=performance.now()-waitStart;timing.taskWaitMs+=duration;timing.taskWaitCount++;timing.maxTaskWaitMs=Math.max(timing.maxTaskWaitMs,duration);
+              }}
             }
             if(pending!==ticket||held){
               throw new Error("Moving preparation cancelled");
@@ -423,6 +432,10 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
       if(work.externalMeshBudgetStarted||work.externalMeshWorkStarted){throw new Error("External body mesh quote is once-only");}
       if(work.meshAdmissionStarted){throw new Error("External body mesh quote must precede mesh admission");}
       work.externalMeshBudgetStarted=true;work.activeOperations=(work.activeOperations??0)+1;
+      const timing=observer===undefined?undefined:{start:performance.now(),workWallMs:0,yieldWaitWallMs:0,maxStepWallMs:0,yields:0};
+      const yieldQuote=async()=>{const start=timing===undefined?0:performance.now();try{await host.yieldTask();}finally{
+        if(timing){timing.yieldWaitWallMs+=performance.now()-start;timing.yields++;}
+      }};
       try{
         if(!Number.isSafeInteger(renderExtraBytes)||renderExtraBytes<=0||renderExtraBytes>96*1024*1024){throw new Error("Invalid body mesh render allowance");}
         work.ledger.reserve(8192+work.projection.parts.length*256);
@@ -435,8 +448,10 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
           });
           let failed=false;
           try{for(;;){
-            const next=steps.next();if(next.done){counts.push(next.value);break;}
-            if(host.continuePlan?.()!==true){await host.yieldTask();}
+            const start=timing===undefined?0:performance.now(),next=steps.next();
+            if(timing){const duration=performance.now()-start;timing.workWallMs+=duration;timing.maxStepWallMs=Math.max(timing.maxStepWallMs,duration);}
+            if(next.done){counts.push(next.value);break;}
+            if(host.continuePlan?.()!==true){await yieldQuote();}
             host.assertCurrent();if(requirePreparing(id)!==ticket){throw new Error("Moving mesh quote cancelled");}
           }}catch(error){failed=true;throw error;}
           finally{try{steps.return(undefined as never);}catch(error){if(!failed){throw error;}}}
@@ -447,7 +462,7 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
           metadataBytes+=512+material.structuralClass.length*2;
           for(const tag of material.tags??[]){
             metadataBytes+=128+tag.length*2;visited+=1;
-            if(visited%128===0&&host.continuePlan?.()!==true){await host.yieldTask();host.assertCurrent();
+            if(visited%128===0&&host.continuePlan?.()!==true){await yieldQuote();host.assertCurrent();
               if(requirePreparing(id)!==ticket){throw new Error("Moving mesh quote cancelled");}}
           }
         }
@@ -466,7 +481,9 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
         work.meshBudget=budget;
         return {budget,release};
       }catch(error){work.failure??=Object.freeze({error});throw work.failure.error;}
-      finally{work.activeOperations!-=1;releaseRetiredWork(work);}
+      finally{if(timing){try{console.debug(`hvp-owned-body-quote ${JSON.stringify({commandId:id,origin:performance.timeOrigin,...timing,
+        elapsedWallMs:performance.now()-timing.start,outcome:work.meshBudget===undefined?"Failed":"Quoted"})}`);}catch{/* Observation has no authority. */}}
+        work.activeOperations!-=1;releaseRetiredWork(work);}
     },
     /** Owner-local only. Producer retains exclusive, immutable decoded mesh data for this lifetime. */
     async admitChildMesh(id:string,products:HvpBodyCutProducts|((reserve?:StructuralOwnedReserve)=>HvpBodyCutProducts|Promise<HvpBodyCutProducts>),host:HvpBodyPlanHost):Promise<void> {

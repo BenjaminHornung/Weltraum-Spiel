@@ -383,7 +383,7 @@ const disposeThreeResources = (root: THREE.Object3D): void => {
   materials.forEach((material) => material.dispose());
 };
 
-const createHvpLookScene = (scene: THREE.Scene, look: HvpLookProfile): HvpLookScene => {
+export const createHvpLookScene = (scene: THREE.Scene, look: HvpLookProfile): HvpLookScene => {
   const root = new THREE.Group();
   root.name = "hvp-readable-coast-presentation";
   root.userData.hvpRenderOnly = true;
@@ -761,6 +761,12 @@ export const startHvp = async (
     readonly createSourceSnapshot?: () => Promise<HvpCoastSourceSnapshot> | HvpCoastSourceSnapshot;
     readonly resourceCaps?: Partial<HvpResourceCaps>;
     readonly createPhysics?: typeof createHvpPhysicsClient;
+    /** Throwaway E1 probe; suppress only GPU draw, never Cut preparation or staging. */
+    readonly drawEnabled?: () => boolean;
+    /** Experimental capture receives the actual logical cleanup receipt. */
+    readonly onDisposed?: (receipt: unknown) => void;
+    readonly createTerrainCompiler?: typeof createHvpTerrainCompiler;
+    readonly extraCpuBytes?: () => number;
   } = {}
 ): Promise<HvpBootstrapHandle> => {
   const documentPort = overrides.documentPort ?? document;
@@ -770,6 +776,8 @@ export const startHvp = async (
   activeHvpMount = true;
   const myEpoch = ++hvpMountEpoch;
   const windowPort = overrides.windowPort ?? window;
+  let submitDraw = true;
+  let experimentalDrawSubmits=0;
   const measurement=createHvpMeasurements(new URLSearchParams(windowPort.location?.search??"").get("hvpMeasure")==="1");
   const measurementStarted=performance.now();
   let startupPhaseStarted=measurementStarted;
@@ -837,6 +845,7 @@ export const startHvp = async (
   const listeners=createHvpListeners();
   let visualDisposal:Readonly<{geometries:number;textures:number}>|undefined;
   let disposalReceipt:Record<string,unknown>|undefined;
+  let readFinalTerrainRoot:(()=>unknown)|undefined;
   // The post-session launcher must not retain the inner scene/cell closures.
   const launcherListeners=createHvpListeners();
   let launcher:HTMLElement|undefined;
@@ -932,7 +941,9 @@ export const startHvp = async (
         }
       }
       const native=closingPhysics?.lifecycle?.(),jobs=closingCompiler?.diagnostics(),render=closingBackend?.readDiagnostics();
-      disposalReceipt={state:errors.length?"Failed":"Disposed",errors:errors.map(String),
+      let finalTerrainRoot:unknown=null;
+      await attempt(()=>{finalTerrainRoot=readFinalTerrainRoot?.()??null;});readFinalTerrainRoot=undefined;
+      disposalReceipt={state:errors.length?"Failed":"Disposed",errors:errors.map(String),finalTerrainRoot,
         scope:"HVP-owned registrations, worker timers, backend/cache objects; not process or GPU byte usage",
         disposed:{geometries:render?render.geometryAllocations-render.geometryDisposals:null,
           materials:render?render.materialAllocations-render.materialDisposals:null,textures:visualDisposal?.textures??null,
@@ -942,6 +953,7 @@ export const startHvp = async (
           bodies:native?.native?.bodies??null,colliders:native?.native?.colliders??null,ownedBytes:render?.ownedCpuBytes??null},
         cacheBytes:neighborCache.totalBytes,visual:visualDisposal??null,native:native?.native??null,
          measurementHealth:{...measurement.read(),cutObservation:cutObservationReport(),timingSinkFailures:native?.timingSinkFailures??null}};
+      overrides.onDisposed?.(disposalReceipt);
       if(errors.length){throw errors[0];}
     })();
     disposePromise = cleanup.finally(() => { releaseMount(); });
@@ -970,7 +982,11 @@ export const startHvp = async (
       antialias: true,
       backgroundColor: 0x0a141c,
       lightingMode: "None",
-       rendererFactory: (canvas,parameters)=>createHvpVisualRenderer(canvas,parameters,undefined,remaining=>{visualDisposal=remaining;},measurement.enabled)
+       rendererFactory: (canvas,parameters)=>createHvpVisualRenderer(canvas,parameters,overrides.drawEnabled===undefined?undefined:options=>{
+         const renderer=new THREE.WebGLRenderer(options),draw=renderer.render.bind(renderer);
+         renderer.render=(scene,camera)=>{if(submitDraw){draw(scene,camera);documentPort.body.dataset.hestiaExperimentDrawSubmits=String(++experimentalDrawSubmits);}};
+         return renderer;
+       },remaining=>{visualDisposal=remaining;},measurement.enabled)
     });
     requireAccepted(backend.dispatch(createRenderCommand({
       kind: "InitializeBackend",
@@ -1186,9 +1202,14 @@ export const startHvp = async (
         activeTerrainKeys:active,visibleTerrainKeys:visibleKeys,
         ...(bodyCommandId===undefined?{}:{body:readBodyCutFrame(bodyCommandId,native,representationRoot)})};
     };
+    const extraCpu=()=>{
+      const bytes=overrides.extraCpuBytes?.()??0;
+      if(!Number.isSafeInteger(bytes)||bytes<0||bytes>caps.maxCpuBytes){throw new Error("Invalid experimental CPU reservation");}return bytes;
+    };
+    const reportResources=(candidate:Parameters<typeof resourceReport>[0],limits:HvpResourceCaps)=>resourceReport({...candidate,totalCpuBytes:candidate.totalCpuBytes+extraCpu()},limits);
     const admitScene=(candidate:Parameters<typeof admitHvpResources>[0]):void=>{
-      admitHvpResources(candidate,caps);
-      admittedGameplayPeak=Math.max(admittedGameplayPeak,candidate.totalCpuBytes);
+      const bytes=candidate.totalCpuBytes+extraCpu();admitHvpResources({...candidate,totalCpuBytes:bytes},caps);
+      admittedGameplayPeak=Math.max(admittedGameplayPeak,bytes);
       if(cutObservation!==undefined&&admittedGameplayPeak+HVP_CUT_TRACE_RESERVE_BYTES>caps.maxCpuBytes){
         releaseCutObservation("budget-disabled");
       }
@@ -1224,6 +1245,8 @@ export const startHvp = async (
     startupPhase("startupSourceMs");
     documentPort.body.dataset.hestiaPrototypeSourceDigest = prepared.sourceDigest;
     const terrainRoot = createHvpTerrainOwner(coldGame?.root??createHvpTerrainRoot(prepared, `hvp-session-${myEpoch}`, myEpoch));
+    if(overrides.onDisposed){readFinalTerrainRoot=()=>{const value=terrainRoot.read();return {
+      sourceSessionId:value.sessionId,epoch:value.epoch,revision:value.revision,sourceDigest:value.sourceDigest};};}
     documentPort.body.dataset.hestiaPrototypeRestoreSource=coldGame?"artifact":"authored-start";
     const coldEast=coldGame?.checkpoint.world.neighbor?.resident?coldGame.neighborRoot?.read():undefined;
     const initialTerrain = meshInitialHvpTerrain(terrainRoot.read(),coldEast);
@@ -1371,7 +1394,7 @@ export const startHvp = async (
     lookScene = createHvpLookScene(scene, look);
     documentPort.body.dataset.hestiaPrototypeWaterDigest = mask.digest;
     documentPort.body.dataset.hestiaPrototypeTriangles = String(ledger.triangles);
-     documentPort.body.dataset.hestiaPrototypeResources = JSON.stringify({ ledger: admittedLedger, ...resourceReport(admittedLedger,caps) });
+     documentPort.body.dataset.hestiaPrototypeResources = JSON.stringify({ ledger: admittedLedger, ...reportResources(admittedLedger,caps) });
     documentPort.body.dataset.hestiaPrototypePhysicsWorkers = String(physics.workerCount);
     documentPort.body.dataset.hestiaPrototypePhysicsPreparation = JSON.stringify(physics.preparation);
     documentPort.body.dataset.hestiaPrototypeEffects = HVP_EFFECT_VERSION;
@@ -1711,7 +1734,7 @@ export const startHvp = async (
       documentPort.body.dataset.hestiaPrototypeTerrainSectors=JSON.stringify(entries.map(e=>({id:e.id,key:e.artifact.representationKey,hash:e.artifact.contentHash})));
       documentPort.body.dataset.hestiaPrototypeTriangles=String(ledger.triangles);
        const resourceLedger={...ledger,physicsPayloadBytes:physics!.collisionBytes*2,physicsPrepareBytes,dynamicFragmentSourceBytes:fragmentSourceBytes()};
-       documentPort.body.dataset.hestiaPrototypeResources=JSON.stringify({ledger:resourceLedger,...resourceReport(resourceLedger,caps)});
+       documentPort.body.dataset.hestiaPrototypeResources=JSON.stringify({ledger:resourceLedger,...reportResources(resourceLedger,caps)});
       documentPort.body.dataset.hestiaPrototypeTerrainFragments=JSON.stringify(physics!.read().terrainFragments??[]);
       hud?.update("Ready",camera!.readPose(),stats);
      };
@@ -1957,7 +1980,7 @@ export const startHvp = async (
        }
        const stageTerrain=(products:HvpTerrainProducts,fragments:readonly HvpPreparedTerrainBody[]=[],commandId?:string):HvpStagedTerrain=>
          stageTerrainSteps(products,fragments,commandId,false).next().value as HvpStagedTerrain;
-     terrainCompiler=createHvpTerrainCompiler();
+    terrainCompiler=(overrides.createTerrainCompiler??createHvpTerrainCompiler)();
     terrainConsumer=createHvpTerrainConsumer(terrainRoot,(plan,support)=>{
        admitScene({...ledger,totalCpuBytes:ledger.totalCpuBytes-ledger.tempEstimateBytes+physicsPrepareBytes+plan.after.overlayBytes*2});
       const native=physics!.read(),resident=ledger.totalCpuBytes-ledger.tempEstimateBytes+native.collisionBytes*2+native.bodySourceResidentBytes+plan.after.overlayBytes*2;
@@ -2694,7 +2717,9 @@ export const startHvp = async (
       camera!.update(deltaSeconds);
       if (disposed) return;
       if(measurement.enabled){measurement.record("mainFrameCpuMs",frameStarted,performance.now()-frameStarted);}
-       if(cutObservation!==undefined){cutObservation.render(submitRenderFrame);}else{submitRenderFrame();}
+       submitDraw=overrides.drawEnabled?.()!==false;
+       if(overrides.drawEnabled!==undefined){documentPort.body.dataset.hestiaExperimentDrawSuppressed=String(!submitDraw);}
+       if(cutObservation!==undefined&&submitDraw){cutObservation.render(submitRenderFrame);}else{submitRenderFrame();}
       if(measurement.enabled){
         if(!firstReadyFrame){
           firstReadyFrame=true;const now=performance.now();
@@ -2703,7 +2728,7 @@ export const startHvp = async (
         }
         if(++measurementFrame%15===0){
           const state=physics!.read(),jobs=terrainCompiler!.diagnostics();
-           const report=resourceReport(ledger,caps);
+           const report=reportResources(ledger,caps);
            measurement.record("resources",performance.now(),0,{triangles:ledger.triangles,draws:ledger.drawCalls,cpuBytes:ledger.totalCpuBytes,
              gameplayCpuBytes:report.gameplayCpuBytes,diagnosticReservedBytes:report.diagnosticReservedBytes,totalCpuBytes:report.totalCpuBytes,
              diagnosticRuntimeOverhead:report.diagnosticRuntimeOverhead,cutObservation:report.cutObservation,

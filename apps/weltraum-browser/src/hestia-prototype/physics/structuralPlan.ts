@@ -1,3 +1,4 @@
+import {deriveMovingProbeFragmentSteps,isProbeSource} from "../experiments/cutKernelProbe";
 import {applyStructuralDestructionCommand,deriveStructuralComponentClassification,deriveStructuralObjectMassProperties,
   globalQuantumForStructuralCell,objectLocalQuantumForGlobal,structuralAddressForBrickCell,getStructuralVoxel,STRUCTURAL_COMMAND_SCHEMA_VERSION,type StructuralObject} from "../../voxel/structural";
 import {selectHvpCutCells,type HvpCutShape} from "../terrain/cutPlan";
@@ -155,7 +156,8 @@ function* preparePartSteps(ownedHash:boolean,before:StructuralObject,after:Struc
   let ingestPhase="ownerIngest";
   const onPhase=ingest===undefined?undefined:(phase:string)=>{ingestPhase=phase;};
   const source=reserve===undefined?ingestHvpStructuralCells(sourceId,cells,after.materials,[],ingest)
-    :yield* borrowedHvpPlanSteps(prepareHvpStructuralIngestOwnedSteps(sourceId,cells,after.materials,[],reserve,onPhase),
+    :yield* borrowedHvpPlanSteps(isProbeSource(before)?deriveMovingProbeFragmentSteps(before,sourceId,cells,reserve)
+      :prepareHvpStructuralIngestOwnedSteps(sourceId,cells,after.materials,[],reserve,onPhase),
       onPhase===undefined?"ownerIngest":()=>ingestPhase);
   // Held across the child classification's yields: ingestHvpStructuralCells returns the fresh deepFreeze
   // result of reconstructStructuralObjectInternal (also issued there), created here and reachable by no

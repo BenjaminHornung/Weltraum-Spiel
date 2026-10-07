@@ -1,0 +1,1155 @@
+{
+  "classification": "finite production pilot; not 14-population/p95 qualification",
+  "A": {
+    "reference": {
+      "coldTerrain": {
+        "inputToRenderMs": {
+          "n": 10,
+          "median": 553.7000732421875,
+          "min": 513.5,
+          "max": 653.199951171875,
+          "p95NearestRank": 653.199951171875,
+          "atMost250": 0
+        },
+        "rawTimes": [
+          527.39990234375,
+          518.39990234375,
+          591.300048828125,
+          517.199951171875,
+          618.0,
+          513.5,
+          611.400146484375,
+          527.7001953125,
+          579.699951171875,
+          653.199951171875
+        ],
+        "spansOverlappingDoNotSum": {
+          "cutSupportAnalyzeMs": {
+            "n": 10,
+            "median": 266.1499999985099,
+            "min": 235,
+            "max": 313.19999999925494,
+            "p95NearestRank": 313.19999999925494,
+            "atMost250": 4
+          },
+          "cutCompileMs": {
+            "n": 10,
+            "median": 119.50000000186265,
+            "min": 109.30000000074506,
+            "max": 147.10000000149012,
+            "p95NearestRank": 147.10000000149012,
+            "atMost250": 10
+          },
+          "cutNativePrepareMs": {
+            "n": 10,
+            "median": 150.0,
+            "min": 127.39999999850988,
+            "max": 164.69999999925494,
+            "p95NearestRank": 164.69999999925494,
+            "atMost250": 10
+          },
+          "cutGraphicsStageMs": {
+            "n": 10,
+            "median": 62.9499999973923,
+            "min": 54.69999999925494,
+            "max": 72.90000000223517,
+            "p95NearestRank": 72.90000000223517,
+            "atMost250": 10
+          }
+        },
+        "mainSupportQuantumMaxMs": 0,
+        "logicalCpuPeak": 249328696
+      },
+      "moving": {
+        "inputToRenderMs": {
+          "n": 10,
+          "median": 314.5499267578125,
+          "min": 295.7001953125,
+          "max": 334.800048828125,
+          "p95NearestRank": 334.800048828125,
+          "atMost250": 0
+        },
+        "rawTimes": [
+          312.89990234375,
+          307.400146484375,
+          299.300048828125,
+          316.89990234375,
+          295.7001953125,
+          334.800048828125,
+          299.300048828125,
+          317.0,
+          325.300048828125,
+          316.199951171875
+        ],
+        "spansOverlappingDoNotSum": {
+          "cutBodyOwnerPlanMs": {
+            "n": 10,
+            "median": 251.5,
+            "min": 238.20000000298023,
+            "max": 273.19999999925494,
+            "p95NearestRank": 273.19999999925494,
+            "atMost250": 5
+          },
+          "cutBodyMeshWorkerMs": {
+            "n": 10,
+            "median": 8.349999999627471,
+            "min": 6.299999997019768,
+            "max": 12.399999998509884,
+            "p95NearestRank": 12.399999998509884,
+            "atMost250": 10
+          },
+          "cutBodyMainDecodeMs": {
+            "n": 10,
+            "median": 2.649999998509884,
+            "min": 1.9000000022351742,
+            "max": 6.199999999254942,
+            "p95NearestRank": 6.199999999254942,
+            "atMost250": 10
+          }
+        },
+        "mainSupportQuantumMaxMs": 0,
+        "logicalCpuPeak": 249345816
+      },
+      "ownerPlanWorkWall": {
+        "childCells": {
+          "n": 10,
+          "median": 16.150000002235174,
+          "min": 15.099999997764826,
+          "max": 18.5,
+          "p95NearestRank": 18.5,
+          "atMost250": 10
+        },
+        "childRecipe0": {
+          "n": 10,
+          "median": 0.09999999776482582,
+          "min": 0,
+          "max": 0.10000000149011612,
+          "p95NearestRank": 0.10000000149011612,
+          "atMost250": 10
+        },
+        "classification": {
+          "n": 10,
+          "median": 0.24999999813735485,
+          "min": 0,
+          "max": 0.9000000022351742,
+          "p95NearestRank": 0.9000000022351742,
+          "atMost250": 10
+        },
+        "destruction": {
+          "n": 10,
+          "median": 0.650000000372529,
+          "min": 0,
+          "max": 0.9000000022351742,
+          "p95NearestRank": 0.9000000022351742,
+          "atMost250": 10
+        },
+        "ownerCells": {
+          "n": 10,
+          "median": 0.2000000011175871,
+          "min": 0.10000000149011612,
+          "max": 0.3999999985098839,
+          "p95NearestRank": 0.3999999985098839,
+          "atMost250": 10
+        },
+        "ownerClassification": {
+          "n": 10,
+          "median": 20.399999998509884,
+          "min": 17.799999997019768,
+          "max": 22.600000001490116,
+          "p95NearestRank": 22.600000001490116,
+          "atMost250": 10
+        },
+        "ownerCommand": {
+          "n": 10,
+          "median": 47.50000000372529,
+          "min": 39.600000005215406,
+          "max": 57.30000000074506,
+          "p95NearestRank": 57.30000000074506,
+          "atMost250": 10
+        },
+        "ownerIngest": {
+          "n": 10,
+          "median": 25.40000000037253,
+          "min": 23.099999997764826,
+          "max": 27.100000008940697,
+          "p95NearestRank": 27.100000008940697,
+          "atMost250": 10
+        },
+        "ownerIngestBricks": {
+          "n": 10,
+          "median": 29.899999998509884,
+          "min": 25.100000001490116,
+          "max": 34.80000000447035,
+          "p95NearestRank": 34.80000000447035,
+          "atMost250": 10
+        },
+        "ownerIngestPrefix": {
+          "n": 10,
+          "median": 3.850000001490116,
+          "min": 2.699999999254942,
+          "max": 4.5,
+          "p95NearestRank": 4.5,
+          "atMost250": 10
+        },
+        "ownerIngestProofs": {
+          "n": 10,
+          "median": 8.249999998137355,
+          "min": 6.399999998509884,
+          "max": 11.199999999254942,
+          "p95NearestRank": 11.199999999254942,
+          "atMost250": 10
+        },
+        "ownerIngestStructural": {
+          "n": 10,
+          "median": 17.200000006705523,
+          "min": 13.50000000372529,
+          "max": 22.100000001490116,
+          "p95NearestRank": 22.100000001490116,
+          "atMost250": 10
+        },
+        "ownerMass": {
+          "n": 10,
+          "median": 0.7999999970197678,
+          "min": 0.6999999955296516,
+          "max": 1.199999999254942,
+          "p95NearestRank": 1.199999999254942,
+          "atMost250": 10
+        },
+        "ownerRecipe": {
+          "n": 10,
+          "median": 55.099999994039536,
+          "min": 52.19999999925494,
+          "max": 57.599999994039536,
+          "p95NearestRank": 57.599999994039536,
+          "atMost250": 10
+        },
+        "parentMass": {
+          "n": 10,
+          "median": 0.0,
+          "min": 0,
+          "max": 0.10000000149011612,
+          "p95NearestRank": 0.10000000149011612,
+          "atMost250": 10
+        },
+        "removedMass": {
+          "n": 10,
+          "median": 0.19999999925494194,
+          "min": 0,
+          "max": 0.30000000074505806,
+          "p95NearestRank": 0.30000000074505806,
+          "atMost250": 10
+        }
+      },
+      "explicitYieldWaitWall": {
+        "n": 10,
+        "median": 18.550000000745058,
+        "min": 14.200000002980232,
+        "max": 23.099999979138374,
+        "p95NearestRank": 23.099999979138374,
+        "atMost250": 10
+      }
+    },
+    "direct": {
+      "coldTerrain": {
+        "inputToRenderMs": {
+          "n": 10,
+          "median": 533.60009765625,
+          "min": 489.39990234375,
+          "max": 598.900146484375,
+          "p95NearestRank": 598.900146484375,
+          "atMost250": 0
+        },
+        "rawTimes": [
+          560.0,
+          495.7001953125,
+          489.39990234375,
+          513.89990234375,
+          557.099853515625,
+          545.800048828125,
+          521.400146484375,
+          562.300048828125,
+          598.900146484375,
+          516.39990234375
+        ],
+        "spansOverlappingDoNotSum": {
+          "cutSupportAnalyzeMs": {
+            "n": 10,
+            "median": 263.7000000011176,
+            "min": 245.39999999850988,
+            "max": 304.5,
+            "p95NearestRank": 304.5,
+            "atMost250": 1
+          },
+          "cutCompileMs": {
+            "n": 10,
+            "median": 135.4500000011176,
+            "min": 124,
+            "max": 164.19999999925494,
+            "p95NearestRank": 164.19999999925494,
+            "atMost250": 10
+          },
+          "cutNativePrepareMs": {
+            "n": 10,
+            "median": 101.54999999888241,
+            "min": 92.89999999850988,
+            "max": 112.40000000223517,
+            "p95NearestRank": 112.40000000223517,
+            "atMost250": 10
+          },
+          "cutGraphicsStageMs": {
+            "n": 10,
+            "median": 60.69999999925494,
+            "min": 53.400000002235174,
+            "max": 66.10000000149012,
+            "p95NearestRank": 66.10000000149012,
+            "atMost250": 10
+          }
+        },
+        "mainSupportQuantumMaxMs": 27.400000002235174,
+        "logicalCpuPeak": 259814456
+      },
+      "moving": {
+        "inputToRenderMs": {
+          "n": 10,
+          "median": 245.800048828125,
+          "min": 199.400146484375,
+          "max": 281.800048828125,
+          "p95NearestRank": 281.800048828125,
+          "atMost250": 8
+        },
+        "rawTimes": [
+          248.5,
+          243.10009765625,
+          220.400146484375,
+          271.89990234375,
+          249.89990234375,
+          249.400146484375,
+          225.699951171875,
+          237.5,
+          281.800048828125,
+          199.400146484375
+        ],
+        "spansOverlappingDoNotSum": {
+          "cutBodyOwnerPlanMs": {
+            "n": 10,
+            "median": 183.04999999701977,
+            "min": 145.5,
+            "max": 217.69999999925494,
+            "p95NearestRank": 217.69999999925494,
+            "atMost250": 10
+          },
+          "cutBodyMeshWorkerMs": {
+            "n": 10,
+            "median": 7.5,
+            "min": 5.600000001490116,
+            "max": 8.600000001490116,
+            "p95NearestRank": 8.600000001490116,
+            "atMost250": 10
+          },
+          "cutBodyMainDecodeMs": {
+            "n": 10,
+            "median": 2.349999999627471,
+            "min": 2,
+            "max": 6.799999997019768,
+            "p95NearestRank": 6.799999997019768,
+            "atMost250": 10
+          }
+        },
+        "mainSupportQuantumMaxMs": 27.400000002235174,
+        "logicalCpuPeak": 259831576
+      },
+      "ownerPlanWorkWall": {
+        "childCells": {
+          "n": 10,
+          "median": 16.000000001862645,
+          "min": 12.699999999254942,
+          "max": 17.299999997019768,
+          "p95NearestRank": 17.299999997019768,
+          "atMost250": 10
+        },
+        "childRecipe0": {
+          "n": 10,
+          "median": 0.0,
+          "min": 0,
+          "max": 0.10000000149011612,
+          "p95NearestRank": 0.10000000149011612,
+          "atMost250": 10
+        },
+        "classification": {
+          "n": 10,
+          "median": 0.10000000149011612,
+          "min": 0,
+          "max": 0.6999999992549419,
+          "p95NearestRank": 0.6999999992549419,
+          "atMost250": 10
+        },
+        "destruction": {
+          "n": 10,
+          "median": 0.6999999992549419,
+          "min": 0.30000000074505806,
+          "max": 1,
+          "p95NearestRank": 1,
+          "atMost250": 10
+        },
+        "ownerCells": {
+          "n": 10,
+          "median": 0.19999999925494194,
+          "min": 0,
+          "max": 0.3999999985098839,
+          "p95NearestRank": 0.3999999985098839,
+          "atMost250": 10
+        },
+        "ownerClassification": {
+          "n": 10,
+          "median": 20.99999999627471,
+          "min": 16.600000001490116,
+          "max": 25.700000002980232,
+          "p95NearestRank": 25.700000002980232,
+          "atMost250": 10
+        },
+        "ownerCommand": {
+          "n": 10,
+          "median": 46.60000000335276,
+          "min": 37.69999999180436,
+          "max": 58,
+          "p95NearestRank": 58,
+          "atMost250": 10
+        },
+        "ownerIngest": {
+          "n": 10,
+          "median": 18.699999997392297,
+          "min": 14.899999994784594,
+          "max": 20.599999997764826,
+          "p95NearestRank": 20.599999997764826,
+          "atMost250": 10
+        },
+        "ownerMass": {
+          "n": 10,
+          "median": 0.9999999981373549,
+          "min": 0.6999999992549419,
+          "max": 1.300000000745058,
+          "p95NearestRank": 1.300000000745058,
+          "atMost250": 10
+        },
+        "ownerRecipe": {
+          "n": 10,
+          "median": 57.000000001862645,
+          "min": 47.099999986588955,
+          "max": 73.50000000372529,
+          "p95NearestRank": 73.50000000372529,
+          "atMost250": 10
+        },
+        "parentMass": {
+          "n": 10,
+          "median": 0.04999999888241291,
+          "min": 0,
+          "max": 0.19999999925494194,
+          "p95NearestRank": 0.19999999925494194,
+          "atMost250": 10
+        },
+        "removedMass": {
+          "n": 10,
+          "median": 0.10000000149011612,
+          "min": 0.09999999776482582,
+          "max": 0.6000000014901161,
+          "p95NearestRank": 0.6000000014901161,
+          "atMost250": 10
+        }
+      },
+      "explicitYieldWaitWall": {
+        "n": 10,
+        "median": 14.049999997019768,
+        "min": 8.100000016391277,
+        "max": 20.400000002235174,
+        "p95NearestRank": 20.400000002235174,
+        "atMost250": 10
+      }
+    }
+  },
+  "BFinal": {
+    "direct": {
+      "coldTerrain": {
+        "inputToRenderMs": {
+          "n": 10,
+          "median": 515.4000244140625,
+          "min": 479.10009765625,
+          "max": 662.300048828125,
+          "p95NearestRank": 662.300048828125,
+          "atMost250": 0
+        },
+        "rawTimes": [
+          516.199951171875,
+          479.10009765625,
+          662.300048828125,
+          517.300048828125,
+          514.60009765625,
+          633.60009765625,
+          516.89990234375,
+          496.2998046875,
+          512.800048828125,
+          500.5
+        ],
+        "spansOverlappingDoNotSum": {
+          "cutSupportAnalyzeMs": {
+            "n": 10,
+            "median": 246.7999999988824,
+            "min": 235.30000000447035,
+            "max": 333.6000000014901,
+            "p95NearestRank": 333.6000000014901,
+            "atMost250": 6
+          },
+          "cutCompileMs": {
+            "n": 10,
+            "median": 140.54999999701977,
+            "min": 126,
+            "max": 164.20000000298023,
+            "p95NearestRank": 164.20000000298023,
+            "atMost250": 10
+          },
+          "cutNativePrepareMs": {
+            "n": 10,
+            "median": 102.39999999850988,
+            "min": 93.29999999701977,
+            "max": 129.09999999403954,
+            "p95NearestRank": 129.09999999403954,
+            "atMost250": 10
+          },
+          "cutGraphicsStageMs": {
+            "n": 10,
+            "median": 59.849999997764826,
+            "min": 53.79999999701977,
+            "max": 69.5,
+            "p95NearestRank": 69.5,
+            "atMost250": 10
+          }
+        },
+        "mainSupportQuantumMaxMs": 27,
+        "logicalCpuPeak": 259814456
+      },
+      "moving": {
+        "inputToRenderMs": {
+          "n": 10,
+          "median": 238.5001220703125,
+          "min": 214.800048828125,
+          "max": 266.2998046875,
+          "p95NearestRank": 266.2998046875,
+          "atMost250": 9
+        },
+        "rawTimes": [
+          247.5,
+          214.800048828125,
+          246.2001953125,
+          245.60009765625,
+          214.900146484375,
+          266.2998046875,
+          216.10009765625,
+          231.400146484375,
+          247.099853515625,
+          216.900146484375
+        ],
+        "spansOverlappingDoNotSum": {
+          "cutBodyOwnerPlanMs": {
+            "n": 10,
+            "median": 178.19999999925494,
+            "min": 156.69999999552965,
+            "max": 193.5,
+            "p95NearestRank": 193.5,
+            "atMost250": 10
+          },
+          "cutBodyMeshWorkerMs": {
+            "n": 10,
+            "median": 7.799999998882413,
+            "min": 5.799999997019768,
+            "max": 17.900000005960464,
+            "p95NearestRank": 17.900000005960464,
+            "atMost250": 10
+          },
+          "cutBodyMainDecodeMs": {
+            "n": 10,
+            "median": 2.400000002235174,
+            "min": 1.7999999970197678,
+            "max": 2.600000001490116,
+            "p95NearestRank": 2.600000001490116,
+            "atMost250": 10
+          }
+        },
+        "mainSupportQuantumMaxMs": 27,
+        "logicalCpuPeak": 259831576
+      },
+      "ownerPlanWorkWall": {
+        "childCells": {
+          "n": 10,
+          "median": 15.150000002235174,
+          "min": 12.100000001490116,
+          "max": 20.200000002980232,
+          "p95NearestRank": 20.200000002980232,
+          "atMost250": 10
+        },
+        "childRecipe0": {
+          "n": 10,
+          "median": 0.0,
+          "min": 0,
+          "max": 0.10000000149011612,
+          "p95NearestRank": 0.10000000149011612,
+          "atMost250": 10
+        },
+        "classification": {
+          "n": 10,
+          "median": 0.5,
+          "min": 0,
+          "max": 1,
+          "p95NearestRank": 1,
+          "atMost250": 10
+        },
+        "destruction": {
+          "n": 10,
+          "median": 0.7999999970197678,
+          "min": 0,
+          "max": 0.8999999985098839,
+          "p95NearestRank": 0.8999999985098839,
+          "atMost250": 10
+        },
+        "ownerCells": {
+          "n": 10,
+          "median": 0.29999999701976776,
+          "min": 0.09999999403953552,
+          "max": 0.7000000029802322,
+          "p95NearestRank": 0.7000000029802322,
+          "atMost250": 10
+        },
+        "ownerClassification": {
+          "n": 10,
+          "median": 19.600000005215406,
+          "min": 18.399999991059303,
+          "max": 21.399999998509884,
+          "p95NearestRank": 21.399999998509884,
+          "atMost250": 10
+        },
+        "ownerCommand": {
+          "n": 10,
+          "median": 45.94999999552965,
+          "min": 42.19999999552965,
+          "max": 57,
+          "p95NearestRank": 57,
+          "atMost250": 10
+        },
+        "ownerIngest": {
+          "n": 10,
+          "median": 18.00000000372529,
+          "min": 15.400000005960464,
+          "max": 23.899999991059303,
+          "p95NearestRank": 23.899999991059303,
+          "atMost250": 10
+        },
+        "ownerMass": {
+          "n": 10,
+          "median": 0.8500000014901161,
+          "min": 0.6000000014901161,
+          "max": 1.1000000014901161,
+          "p95NearestRank": 1.1000000014901161,
+          "atMost250": 10
+        },
+        "ownerRecipe": {
+          "n": 10,
+          "median": 54.649999998509884,
+          "min": 45.900000005960464,
+          "max": 57.79999999701977,
+          "p95NearestRank": 57.79999999701977,
+          "atMost250": 10
+        },
+        "parentMass": {
+          "n": 10,
+          "median": 0.0,
+          "min": 0,
+          "max": 0.10000000149011612,
+          "p95NearestRank": 0.10000000149011612,
+          "atMost250": 10
+        },
+        "removedMass": {
+          "n": 10,
+          "median": 0.10000000149011612,
+          "min": 0,
+          "max": 0.10000000149011612,
+          "p95NearestRank": 0.10000000149011612,
+          "atMost250": 10
+        }
+      },
+      "explicitYieldWaitWall": {
+        "n": 10,
+        "median": 12.299999993294477,
+        "min": 8.599999986588955,
+        "max": 15.100000016391277,
+        "p95NearestRank": 15.100000016391277,
+        "atMost250": 10
+      }
+    },
+    "owned-moving": {
+      "coldTerrain": {
+        "inputToRenderMs": {
+          "n": 10,
+          "median": 520.6500244140625,
+          "min": 484.0,
+          "max": 700.699951171875,
+          "p95NearestRank": 700.699951171875,
+          "atMost250": 0
+        },
+        "rawTimes": [
+          554.5,
+          531.89990234375,
+          499.699951171875,
+          496.800048828125,
+          532.400146484375,
+          484.0,
+          529.60009765625,
+          484.300048828125,
+          511.699951171875,
+          700.699951171875
+        ],
+        "spansOverlappingDoNotSum": {
+          "cutSupportAnalyzeMs": {
+            "n": 10,
+            "median": 242.19999999925494,
+            "min": 235.20000000298023,
+            "max": 352.6000000014901,
+            "p95NearestRank": 352.6000000014901,
+            "atMost250": 6
+          },
+          "cutCompileMs": {
+            "n": 10,
+            "median": 131.39999999850988,
+            "min": 127.29999999701977,
+            "max": 173.29999999701977,
+            "p95NearestRank": 173.29999999701977,
+            "atMost250": 10
+          },
+          "cutNativePrepareMs": {
+            "n": 10,
+            "median": 103.14999999850988,
+            "min": 97.39999999850988,
+            "max": 148.89999999850988,
+            "p95NearestRank": 148.89999999850988,
+            "atMost250": 10
+          },
+          "cutGraphicsStageMs": {
+            "n": 10,
+            "median": 56.899999998509884,
+            "min": 53.899999998509884,
+            "max": 79.69999999552965,
+            "p95NearestRank": 79.69999999552965,
+            "atMost250": 10
+          }
+        },
+        "mainSupportQuantumMaxMs": 28,
+        "logicalCpuPeak": 259814456
+      },
+      "moving": {
+        "inputToRenderMs": {
+          "n": 10,
+          "median": 222.25,
+          "min": 179.5,
+          "max": 233.89990234375,
+          "p95NearestRank": 233.89990234375,
+          "atMost250": 10
+        },
+        "rawTimes": [
+          199.10009765625,
+          231.7001953125,
+          216.5,
+          232.199951171875,
+          228.0,
+          233.5,
+          198.300048828125,
+          179.5,
+          233.89990234375,
+          195.900146484375
+        ],
+        "spansOverlappingDoNotSum": {
+          "cutBodyOwnerPlanMs": {
+            "n": 10,
+            "median": 163.90000000223517,
+            "min": 130.69999999552965,
+            "max": 173.30000000447035,
+            "p95NearestRank": 173.30000000447035,
+            "atMost250": 10
+          },
+          "cutBodyMeshWorkerMs": {
+            "n": 10,
+            "median": 7.50000000372529,
+            "min": 6.100000001490116,
+            "max": 11.700000002980232,
+            "p95NearestRank": 11.700000002980232,
+            "atMost250": 10
+          },
+          "cutBodyMainDecodeMs": {
+            "n": 10,
+            "median": 2.2999999970197678,
+            "min": 1.6999999955296516,
+            "max": 2.7000000029802322,
+            "p95NearestRank": 2.7000000029802322,
+            "atMost250": 10
+          }
+        },
+        "mainSupportQuantumMaxMs": 28,
+        "logicalCpuPeak": 259831576
+      },
+      "ownerPlanWorkWall": {
+        "childCells": {
+          "n": 10,
+          "median": 15.849999997764826,
+          "min": 12.199999995529652,
+          "max": 18.49999999254942,
+          "p95NearestRank": 18.49999999254942,
+          "atMost250": 10
+        },
+        "childRecipe0": {
+          "n": 10,
+          "median": 0.0,
+          "min": 0,
+          "max": 0.10000000149011612,
+          "p95NearestRank": 0.10000000149011612,
+          "atMost250": 10
+        },
+        "classification": {
+          "n": 10,
+          "median": 0.15000000223517418,
+          "min": 0,
+          "max": 0.8999999985098839,
+          "p95NearestRank": 0.8999999985098839,
+          "atMost250": 10
+        },
+        "destruction": {
+          "n": 10,
+          "median": 0.7000000029802322,
+          "min": 0.29999999701976776,
+          "max": 0.8999999985098839,
+          "p95NearestRank": 0.8999999985098839,
+          "atMost250": 10
+        },
+        "ownerCells": {
+          "n": 10,
+          "median": 0.25,
+          "min": 0,
+          "max": 0.3999999985098839,
+          "p95NearestRank": 0.3999999985098839,
+          "atMost250": 10
+        },
+        "ownerClassification": {
+          "n": 10,
+          "median": 20.75000000372529,
+          "min": 16.399999991059303,
+          "max": 25.600000001490116,
+          "p95NearestRank": 25.600000001490116,
+          "atMost250": 10
+        },
+        "ownerCommand": {
+          "n": 10,
+          "median": 46.05000000447035,
+          "min": 37.100000001490116,
+          "max": 49.99999999254942,
+          "p95NearestRank": 49.99999999254942,
+          "atMost250": 10
+        },
+        "ownerIngest": {
+          "n": 10,
+          "median": 3.0499999932944775,
+          "min": 2.4000000059604645,
+          "max": 3.8000000044703484,
+          "p95NearestRank": 3.8000000044703484,
+          "atMost250": 10
+        },
+        "ownerMass": {
+          "n": 10,
+          "median": 0.8500000014901161,
+          "min": 0.5999999940395355,
+          "max": 1.5,
+          "p95NearestRank": 1.5,
+          "atMost250": 10
+        },
+        "ownerRecipe": {
+          "n": 10,
+          "median": 54.69999999552965,
+          "min": 45.8999999910593,
+          "max": 58.20000001043081,
+          "p95NearestRank": 58.20000001043081,
+          "atMost250": 10
+        },
+        "parentMass": {
+          "n": 10,
+          "median": 0.0,
+          "min": 0,
+          "max": 0.10000000149011612,
+          "p95NearestRank": 0.10000000149011612,
+          "atMost250": 10
+        },
+        "removedMass": {
+          "n": 10,
+          "median": 0.10000000149011612,
+          "min": 0,
+          "max": 0.19999999552965164,
+          "p95NearestRank": 0.19999999552965164,
+          "atMost250": 10
+        }
+      },
+      "explicitYieldWaitWall": {
+        "n": 10,
+        "median": 11.399999998509884,
+        "min": 7.8000000193715096,
+        "max": 15.000000029802322,
+        "p95NearestRank": 15.000000029802322,
+        "atMost250": 10
+      }
+    }
+  },
+  "CFinal": {
+    "owned-moving": {
+      "coldTerrain": {
+        "inputToRenderMs": {
+          "n": 10,
+          "median": 501.3499755859375,
+          "min": 480.5,
+          "max": 746.300048828125,
+          "p95NearestRank": 746.300048828125,
+          "atMost250": 0
+        },
+        "rawTimes": [
+          629.0,
+          531.800048828125,
+          496.60009765625,
+          746.300048828125,
+          547.89990234375,
+          498.0,
+          483.5,
+          504.699951171875,
+          480.5,
+          487.7001953125
+        ],
+        "spansOverlappingDoNotSum": {
+          "cutSupportAnalyzeMs": {
+            "n": 10,
+            "median": 248.19999999925494,
+            "min": 235.39999999850988,
+            "max": 380.69999999552965,
+            "p95NearestRank": 380.69999999552965,
+            "atMost250": 5
+          },
+          "cutCompileMs": {
+            "n": 10,
+            "median": 128.90000000223517,
+            "min": 121.69999999552965,
+            "max": 192.10000000149012,
+            "p95NearestRank": 192.10000000149012,
+            "atMost250": 10
+          },
+          "cutNativePrepareMs": {
+            "n": 10,
+            "median": 104.55000000447035,
+            "min": 97.39999999850988,
+            "max": 143.60000000149012,
+            "p95NearestRank": 143.60000000149012,
+            "atMost250": 10
+          },
+          "cutGraphicsStageMs": {
+            "n": 10,
+            "median": 58.30000000074506,
+            "min": 53.100000001490116,
+            "max": 79.19999999552965,
+            "p95NearestRank": 79.19999999552965,
+            "atMost250": 10
+          }
+        },
+        "mainSupportQuantumMaxMs": 29.200000002980232,
+        "logicalCpuPeak": 259814456
+      },
+      "warmTerrain": {
+        "inputToRenderMs": {
+          "n": 10,
+          "median": 167.199951171875,
+          "min": 163.39990234375,
+          "max": 212.89990234375,
+          "p95NearestRank": 212.89990234375,
+          "atMost250": 10
+        },
+        "rawTimes": [
+          212.89990234375,
+          171.900146484375,
+          167.699951171875,
+          200.699951171875,
+          184.5,
+          165.10009765625,
+          163.7998046875,
+          166.699951171875,
+          164.699951171875,
+          163.39990234375
+        ],
+        "spansOverlappingDoNotSum": {
+          "cutSupportAnalyzeMs": {
+            "n": 10,
+            "median": 34.75,
+            "min": 30.599999994039536,
+            "max": 51.19999999552965,
+            "p95NearestRank": 51.19999999552965,
+            "atMost250": 10
+          },
+          "cutCompileMs": {
+            "n": 10,
+            "median": 80.60000000149012,
+            "min": 71.60000000149012,
+            "max": 93.09999999403954,
+            "p95NearestRank": 93.09999999403954,
+            "atMost250": 10
+          },
+          "cutNativePrepareMs": {
+            "n": 10,
+            "median": 38.55000000074506,
+            "min": 36.399999998509884,
+            "max": 46.29999999701977,
+            "p95NearestRank": 46.29999999701977,
+            "atMost250": 10
+          },
+          "cutGraphicsStageMs": {
+            "n": 10,
+            "median": 32.30000000074506,
+            "min": 28.30000000447035,
+            "max": 38.099999994039536,
+            "p95NearestRank": 38.099999994039536,
+            "atMost250": 10
+          }
+        },
+        "mainSupportQuantumMaxMs": 29.200000002980232,
+        "logicalCpuPeak": 259950864
+      }
+    },
+    "owned-terrain": {
+      "coldTerrain": {
+        "inputToRenderMs": {
+          "n": 10,
+          "median": 457.050048828125,
+          "min": 429.699951171875,
+          "max": 628.0,
+          "p95NearestRank": 628.0,
+          "atMost250": 0
+        },
+        "rawTimes": [
+          465,
+          451.300048828125,
+          483.2998046875,
+          628.0,
+          532.400146484375,
+          446.800048828125,
+          430.300048828125,
+          429.699951171875,
+          432.0,
+          462.800048828125
+        ],
+        "spansOverlappingDoNotSum": {
+          "cutSupportAnalyzeMs": {
+            "n": 10,
+            "median": 204.05000000074506,
+            "min": 196.89999999850988,
+            "max": 316.59999999403954,
+            "p95NearestRank": 316.59999999403954,
+            "atMost250": 8
+          },
+          "cutCompileMs": {
+            "n": 10,
+            "median": 135.0,
+            "min": 124.10000000149012,
+            "max": 159.89999999850988,
+            "p95NearestRank": 159.89999999850988,
+            "atMost250": 10
+          },
+          "cutNativePrepareMs": {
+            "n": 10,
+            "median": 91.55000000074506,
+            "min": 86.80000000447035,
+            "max": 122.80000000447035,
+            "p95NearestRank": 122.80000000447035,
+            "atMost250": 10
+          },
+          "cutGraphicsStageMs": {
+            "n": 10,
+            "median": 56.099999997764826,
+            "min": 53.69999999552965,
+            "max": 71.09999999403954,
+            "p95NearestRank": 71.09999999403954,
+            "atMost250": 10
+          }
+        },
+        "mainSupportQuantumMaxMs": 3.5,
+        "logicalCpuPeak": 259814456
+      },
+      "warmTerrain": {
+        "inputToRenderMs": {
+          "n": 10,
+          "median": 154.4000244140625,
+          "min": 146.300048828125,
+          "max": 185.10009765625,
+          "p95NearestRank": 185.10009765625,
+          "atMost250": 10
+        },
+        "rawTimes": [
+          154.7001953125,
+          146.300048828125,
+          185.10009765625,
+          179.699951171875,
+          167.10009765625,
+          146.5,
+          154.5,
+          154.300048828125,
+          146.800048828125,
+          147.0
+        ],
+        "spansOverlappingDoNotSum": {
+          "cutSupportAnalyzeMs": {
+            "n": 10,
+            "median": 19.650000002235174,
+            "min": 16.100000001490116,
+            "max": 22.69999999552965,
+            "p95NearestRank": 22.69999999552965,
+            "atMost250": 10
+          },
+          "cutCompileMs": {
+            "n": 10,
+            "median": 74.90000000223517,
+            "min": 67.79999999701977,
+            "max": 110.39999999850988,
+            "p95NearestRank": 110.39999999850988,
+            "atMost250": 10
+          },
+          "cutNativePrepareMs": {
+            "n": 10,
+            "median": 36.100000001490116,
+            "min": 32.5,
+            "max": 47.400000005960464,
+            "p95NearestRank": 47.400000005960464,
+            "atMost250": 10
+          },
+          "cutGraphicsStageMs": {
+            "n": 10,
+            "median": 32.149999998509884,
+            "min": 27.600000001490116,
+            "max": 40.69999999552965,
+            "p95NearestRank": 40.69999999552965,
+            "atMost250": 10
+          }
+        },
+        "mainSupportQuantumMaxMs": 3.5,
+        "logicalCpuPeak": 259950864
+      }
+    }
+  },
+  "allFailedBrowserAttempts": [
+    {
+      "path": "tests/B-native-r02/pair-6-owned-moving-draw-on-repeat-0.json",
+      "failed": "Error",
+      "completedCuts": 0,
+      "errors": []
+    }
+  ],
+  "gc": "Historical 667.8ms Owner outlier not reproduced/independently attributed; work-wall includes scheduling/GC during execution.",
+  "sourceAndBuildBinding": "See final-r02-binding.json; exact frozen Source and actual built bytes retained.",
+  "originalGoal": "PAUSED_INCOMPLETE",
+  "formal42": false,
+  "formal1400": false,
+  "productAdoption": false
+}
