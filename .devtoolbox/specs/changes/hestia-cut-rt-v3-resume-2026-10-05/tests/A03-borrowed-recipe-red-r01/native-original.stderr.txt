@@ -1,0 +1,58 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-borrowed-rigid-recipe.test.ts > derives the identical issued rigid recipe while retaining all nested charges in one borrowed parent
+AssertionError: expected 0 to be greater than 0
+ ❯ tests/unit/hvp-borrowed-rigid-recipe.test.ts:19:42
+     17|   expect(JSON.stringify(result.recipe)).toBe(JSON.stringify(expected))…
+     18|   expect(result.recipe.source).toBe(input);expect(isIssuedStructuralOb…
+     19|   expect(ledger.resources.reservedBytes).toBeGreaterThan(0);expect(led…
+       |                                          ^
+     20|   expect(result.units).toBeGreaterThan(100);ledger.release(true);expec…
+     21| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/hvp-borrowed-rigid-recipe.test.ts > propagates the first parent reserve failure before issuing any recipe
+AssertionError: expected function to throw an error, but it didn't
+ ❯ tests/unit/hvp-borrowed-rigid-recipe.test.ts:25:29
+     23|   const first=new Error("borrowed parent allocation failure"),reserve=…
+     24|   const steps=prepareHvpRigidBodyOwnedHashSteps(source(),undefined,und…
+     25|   expect(()=>finish(steps)).toThrow(first);expect(reserve).toHaveBeenC…
+       |                             ^
+     26| });
+     27| it("cancellation closes nested work without releasing the parent or cr…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/hvp-borrowed-rigid-recipe.test.ts > cancellation closes nested work without releasing the parent or creating a final recipe
+AssertionError: expected 0 to be greater than 0
+ ❯ tests/unit/hvp-borrowed-rigid-recipe.test.ts:29:80
+     27| it("cancellation closes nested work without releasing the parent or cr…
+     28|   const ledger=createStructuralOwnerLedger(32*1024*1024),steps=prepare…
+     29|   expect(steps.next().done).toBe(false);expect(ledger.resources.reserv…
+       |                                                                                ^
+     30|   expect(steps.return(undefined as never)).toEqual({done:true,value:un…
+     31|   expect(ledger.resources.reservedBytes).toBeGreaterThan(0);ledger.rel…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/unit/hvp-borrowed-rigid-recipe.test.ts > requires a first-party issued source when borrowing the owned parent ledger
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ tests/unit/hvp-borrowed-rigid-recipe.test.ts:35:92
+     33| it("requires a first-party issued source when borrowing the owned pare…
+     34|   const clone=deepFreeze({...source()}),reserve=vi.fn();expect(isIssue…
+     35|   expect(()=>finish(prepareHvpRigidBodyOwnedHashSteps(clone,undefined,…
+       |                                                                                            ^
+     36|   expect(reserve).not.toHaveBeenCalled();
+     37| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+

@@ -1,0 +1,10 @@
+{
+  "runId": "A03-escrow-client-red-r01",
+  "binding": "A03-escrow-client-red-r01-binding.json",
+  "nativeCapSeconds": 180,
+  "classification": "Genuine RED Main client prepaid bridge and no clock/state/restore publication",
+  "files": [
+    "tests/unit/hvp-body-mesh-client.test.ts"
+  ],
+  "mode": "tests"
+}

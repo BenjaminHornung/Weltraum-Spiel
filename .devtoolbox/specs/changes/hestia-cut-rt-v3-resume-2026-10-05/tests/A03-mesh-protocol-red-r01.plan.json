@@ -1,0 +1,10 @@
+{
+  "runId": "A03-mesh-protocol-red-r01",
+  "binding": "A03-mesh-protocol-red-source-binding-r01.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-body-mesh-protocol.test.ts"
+  ],
+  "nativeCapSeconds": 180,
+  "classification": "Missing private mesh admission reply seam RED; no deadline change"
+}

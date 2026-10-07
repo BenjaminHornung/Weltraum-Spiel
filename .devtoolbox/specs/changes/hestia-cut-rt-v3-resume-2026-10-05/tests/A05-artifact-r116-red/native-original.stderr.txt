@@ -1,0 +1,15 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/presentationMeshArtifact.test.ts > MeshArtifact > prepares owned snapshots and every validation hash in bounded steps with unchanged results
+TypeError: owned.createMeshArtifactOwnedSteps is not a function
+ ❯ tests/unit/presentationMeshArtifact.test.ts:47:33
+     45|     };
+     46|     const input = meshInput(), expected = createMeshArtifact(input);
+     47|     const actual = finish(owned.createMeshArtifactOwnedSteps(input));
+       |                                 ^
+     48|     expect(actual).toEqual(expected); expect(actual.positions).not.toB…
+     49|     input.positions[0] = 42;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

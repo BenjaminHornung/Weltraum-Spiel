@@ -1,0 +1,8 @@
+{
+  "runId": "A03-escrow-rpc-r37-r02",
+  "startedUtc": "2026-10-05T18:46:25.3707470+00:00",
+  "endedUtc": "2026-10-05T18:47:03.7673380+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 38.3922345,
+  "planFile": "A03-escrow-rpc-r37-r02.plan.json"
+}

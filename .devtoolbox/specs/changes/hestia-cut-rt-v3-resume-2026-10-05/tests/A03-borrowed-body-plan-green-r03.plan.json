@@ -1,0 +1,11 @@
+{
+  "files": [
+    "tests/unit/hvp-borrowed-body-plan.test.ts",
+    "tests/unit/v3StructuralRecipeParity.test.ts"
+  ],
+  "classification": "New full shared-parent Box/Sphere/cancel/failure controls plus original complete recipe/observer parity",
+  "nativeCapSeconds": 180,
+  "runId": "A03-borrowed-body-plan-green-r03",
+  "binding": "A03-borrowed-body-plan-source-binding-r03.json",
+  "mode": "tests"
+}

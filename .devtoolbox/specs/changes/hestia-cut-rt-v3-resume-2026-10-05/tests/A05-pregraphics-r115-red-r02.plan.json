@@ -1,0 +1,10 @@
+{
+  "runId": "A05-pregraphics-r115-red-r02",
+  "classification": "Meaningful missing owned preStage graphics callback after repaired test syntax",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-terrain-consumer.test.ts"
+  ],
+  "binding": "A05-pregraphics-r115-binding-red-r02.json",
+  "nativeCapSeconds": 180
+}

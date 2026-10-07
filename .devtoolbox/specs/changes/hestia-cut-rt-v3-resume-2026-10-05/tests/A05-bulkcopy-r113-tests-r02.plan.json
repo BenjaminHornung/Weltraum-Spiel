@@ -1,0 +1,10 @@
+{
+  "runId": "A05-bulkcopy-r113-tests-r02",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-owned-slot-copy.test.ts"
+  ],
+  "nativeCapSeconds": 180,
+  "binding": "A05-bulkcopy-r113-binding-r02.json",
+  "classification": "Current complete byte equality via native Buffer without per-index deep object comparison"
+}

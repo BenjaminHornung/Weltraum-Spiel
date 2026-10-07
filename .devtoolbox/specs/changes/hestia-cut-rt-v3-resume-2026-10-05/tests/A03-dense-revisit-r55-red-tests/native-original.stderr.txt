@@ -1,0 +1,22 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-owned-hash-array-open.test.ts > checks immutable owned dense shape once without changing descriptor, credit, hole or cancellation precedence
+AssertionError: expected 3 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 3
+
+ ❯ tests/unit/hvp-owned-hash-array-open.test.ts:73:19
+     71|     let result:readonly unknown[];
+     72|     try{result=drain(value,retain);}finally{Object.getOwnPropertyDescr…
+     73|     expect(reads).toBe(expected);expect(result!).toEqual(value);
+       |                   ^
+     74|     expect(result! === value).toBe(retain&&value===frozen);
+     75|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

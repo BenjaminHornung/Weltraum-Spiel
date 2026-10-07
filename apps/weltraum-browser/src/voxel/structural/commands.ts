@@ -592,6 +592,25 @@ export const applyStructuralDestructionCommand = (object: StructuralObject, comm
   for (;;) { const step = steps.next(); if (step.done) { return step.value; } }
 };
 
+/** Nested first-party work: parent owns all live inputs/results and releases its reserve at command terminal. */
+export function* ownedStructuralCommandSteps(source:StructuralObject,commandValue:unknown,reserve:StructuralOwnedReserve){
+  if(!isIssuedStructuralObject(source)){return structuralFail("InvalidContract","cursor/source","Owned commands require a first-party issued source.");}
+  reserve(16_384);
+  let failure:{readonly error:unknown}|undefined;
+  const charge:StructuralOwnedReserve=(...args)=>{
+    try{reserve(...args);}catch(error){
+      failure??={error};
+      // The existing core distinguishes resource failure from command rejection by cursor path.
+      if(error instanceof StructuralValidationError&&error.path.startsWith("cursor/")){throw error;}
+      throw new StructuralValidationError("InvalidBudget","cursor/parentReserve","Parent reserve failed.");
+    }
+  };
+  const quantum=Object.getOwnPropertyDescriptor(reserve,"hashUnits");
+  if(quantum!==undefined){Object.defineProperty(charge,"hashUnits",quantum);}
+  try{return yield* structuralCommandSteps(source,commandValue,charge);}
+  catch(error){throw failure===undefined?error:failure.error;}
+}
+
 /** INACTIVE first-party module route. The caller retains issued source, command and other live
  * results immutable for the cursor lifetime and includes ALL of them in residentBytesValue.
  * New containers above are plain index-only producers locked before publication. No Worker caller. */

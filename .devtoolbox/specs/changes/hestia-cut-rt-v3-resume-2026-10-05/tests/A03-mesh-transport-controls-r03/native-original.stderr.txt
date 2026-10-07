@@ -1,0 +1,18 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-body-mesh-client.test.ts > transfers exclusive mesh data and preserves client state (valid)
+ FAIL  tests/unit/hvp-body-mesh-client.test.ts > transfers exclusive mesh data and preserves client state (bad-begin)
+ FAIL  tests/unit/hvp-body-mesh-client.test.ts > transfers exclusive mesh data and preserves client state (late-rollback)
+Error: Missing native disposal receipt
+ ❯ Object.dispose src/hestia-prototype/physics/client.ts:471:120
+    469|         if(failure!==undefined){throw failure;}
+    470|         await send({ kind: "Dispose" });
+    471|         if(snapshot?.status!=="Disposed"||snapshot.bodyCount!==0||snap…
+       |                                                                                                                        ^
+    472|       }
+    473|       finally { disposed = true; fail(new Error("Physics disposed")); }
+ ❯ tests/unit/hvp-body-mesh-client.test.ts:63:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+

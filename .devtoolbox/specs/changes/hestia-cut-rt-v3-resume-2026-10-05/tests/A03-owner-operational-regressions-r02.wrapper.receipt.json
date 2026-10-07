@@ -1,0 +1,8 @@
+{
+  "runId": "A03-owner-operational-regressions-r02",
+  "startedUtc": "2026-10-05T14:51:22.9758486+00:00",
+  "endedUtc": "2026-10-05T14:52:26.9060022+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 63.9246335,
+  "planFile": "A03-owner-operational-regressions-r02.plan.json"
+}

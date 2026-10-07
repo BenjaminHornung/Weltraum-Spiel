@@ -1,0 +1,22 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/presentationCanonical.test.ts > reuses one scalar scratch per writer while preserving mixed numeric length string and typed bytes
+AssertionError: expected 783 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 783
+
+ ❯ tests/unit/presentationCanonical.test.ts:59:74
+     57|     if((args[0] as ArrayBuffer).byteLength===8){scalarViews+=1;}return…
+     58|   }});
+     59|     expect(canonicalSignature(value)).toBe(expected);expect(scalarView…
+       |                                                                          ^
+     60|   }finally{globalThis.DataView=Original;}
+     61| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

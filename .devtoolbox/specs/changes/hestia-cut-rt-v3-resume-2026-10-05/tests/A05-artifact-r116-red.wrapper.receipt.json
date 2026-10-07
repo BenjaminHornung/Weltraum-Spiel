@@ -1,0 +1,8 @@
+{
+  "runId": "A05-artifact-r116-red",
+  "startedUtc": "2026-10-06T22:24:56.1036238+00:00",
+  "endedUtc": "2026-10-06T22:24:58.5573158+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 2.4348072,
+  "planFile": "A05-artifact-r116-red.plan.json"
+}

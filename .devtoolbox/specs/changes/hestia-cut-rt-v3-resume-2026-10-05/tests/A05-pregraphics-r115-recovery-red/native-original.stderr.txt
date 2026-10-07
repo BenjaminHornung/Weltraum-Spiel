@@ -1,0 +1,19 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-terrain-consumer.test.ts > HVP paired terrain consumer > stages owned graphics before NativeStage and compares exact actual Source views (render-recovery)
+AssertionError: expected 'Rejected' to be 'RecoveryHold' // Object.is equality
+
+Expected: "RecoveryHold"
+Received: "Rejected"
+
+ ❯ tests/unit/hvp-terrain-consumer.test.ts:61:29
+     59|       shape:{kind:"Box",min:[176,79,77],max:[177,80,78]}});
+     60|     if(fault==="render-recovery"){
+     61|       expect(result.status).toBe("RecoveryHold");expect(released).toBe…
+       |                             ^
+     62|       expect(events).toContain("source-release");expect(events).not.to…
+     63|       expect(consumer.read().state).toBe("RecoveryHold");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

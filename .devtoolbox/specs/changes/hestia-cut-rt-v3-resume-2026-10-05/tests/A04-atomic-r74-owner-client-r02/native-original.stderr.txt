@@ -1,0 +1,17 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-body-mesh-client.test.ts > R74 retires deferred StageBodyCut success across Dispose and remount
+ FAIL  tests/unit/hvp-body-mesh-client.test.ts > R74 retires deferred CommitBodyCut success across Dispose and remount
+Error: Physics disposed
+ ❯ Object.dispose src/hestia-prototype/physics/client.ts:526:39
+    524|         if(snapshot?.status!=="Disposed"||snapshot.bodyCount!==0||snap…
+    525|       }
+    526|       finally { disposed = true; fail(new Error("Physics disposed")); }
+       |                                       ^
+    527|     }
+    528|   };
+ ❯ tests/unit/hvp-body-mesh-client.test.ts:71:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+

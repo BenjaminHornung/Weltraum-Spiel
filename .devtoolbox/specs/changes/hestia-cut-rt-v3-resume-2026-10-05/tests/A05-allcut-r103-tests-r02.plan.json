@@ -1,0 +1,20 @@
+{
+  "runId": "A05-allcut-r103-tests-r02",
+  "classification": "Current whole Cut private derivative Native prepare Release Restore barrier and Bootstrap",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-terrain-native-plan.test.ts",
+    "tests/unit/hvp-terrain-native-worker.test.ts",
+    "tests/unit/hvp-terrain-fragment-world.test.ts",
+    "tests/unit/hvp-transferred-recipe.test.ts",
+    "tests/unit/hvp-physics-worker-clock.test.ts",
+    "tests/unit/hvp-terrain-consumer.test.ts",
+    "tests/unit/hvp-terrain-products.test.ts",
+    "tests/unit/workerPoolLifecycle.test.ts",
+    "tests/unit/hvp-owned-terrain-products.test.ts",
+    "tests/unit/hvp-support-phase-budget.test.ts",
+    "tests/unit/hvp-bootstrap.test.ts"
+  ],
+  "binding": "A05-allcut-r103-binding-r02.json",
+  "nativeCapSeconds": 1200
+}

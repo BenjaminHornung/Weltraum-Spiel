@@ -1,0 +1,11 @@
+{
+  "nativeCapSeconds": 900,
+  "classification": "Private4096byte boundedintegration with exactslot/lifecycle/drain ownership; genericordering/publicsurface/caps unchanged",
+  "binding": "A03-main-result-r68-binding.json",
+  "files": [
+    "tests/unit/workerPoolLifecycle.test.ts",
+    "tests/unit/workerResultGate.test.ts"
+  ],
+  "runId": "A03-main-result-r68-controls",
+  "mode": "tests"
+}

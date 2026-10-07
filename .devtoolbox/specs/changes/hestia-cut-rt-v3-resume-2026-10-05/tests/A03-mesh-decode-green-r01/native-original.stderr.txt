@@ -1,0 +1,44 @@
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-borrowed-bytehash.test.ts [ tests/unit/hvp-borrowed-bytehash.test.ts ]
+Error: Transform failed with 1 error:
+
+[31m[PARSE_ERROR] [0mUnexpected token
+     [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m src/workers/hvpBodyMeshJob.ts:443:5 [38;5;246m][0m
+     [38;5;246m│[0m
+ [38;5;246m443 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m||[38;5;249m [0m[38;5;249mw[0m[38;5;249mi[0m[38;5;249mr[0m[38;5;249me[0m[38;5;249m.[0m[38;5;249mh[0m[38;5;249me[0m[38;5;249ma[0m[38;5;249md[0m[38;5;249me[0m[38;5;249mr[0m[38;5;249m.[0m[38;5;249mr[0m[38;5;249me[0m[38;5;249mm[0m[38;5;249mo[0m[38;5;249mv[0m[38;5;249me[0m[38;5;249md[0m[38;5;249mC[0m[38;5;249me[0m[38;5;249ml[0m[38;5;249ml[0m[38;5;249ms[0m[38;5;249m [0m[38;5;249m![0m[38;5;249m=[0m[38;5;249m=[0m[38;5;249m [0m[38;5;249me[0m[38;5;249mx[0m[38;5;249mp[0m[38;5;249me[0m[38;5;249mc[0m[38;5;249mt[0m[38;5;249me[0m[38;5;249md[0m[38;5;249m.[0m[38;5;249mp[0m[38;5;249ma[0m[38;5;249my[0m[38;5;249ml[0m[38;5;249mo[0m[38;5;249ma[0m[38;5;249md[0m[38;5;249m.[0m[38;5;249mr[0m[38;5;249me[0m[38;5;249mm[0m[38;5;249mo[0m[38;5;249mv[0m[38;5;249me[0m[38;5;249md[0m[38;5;249mC[0m[38;5;249me[0m[38;5;249ml[0m[38;5;249ml[0m[38;5;249ms[0m
+ [38;5;240m    │[0m     ─┬  
+ [38;5;240m    │[0m      ╰── 
+[38;5;246m─────╯[0m
+
+  Plugin: vite:oxc
+  File: C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser/src/workers/hvpBodyMeshJob.ts
+ ❯ transformWithOxc node_modules/vite/dist/node/chunks/node.js:4033:19
+ ❯ TransformPluginContext.transform node_modules/vite/dist/node/chunks/node.js:4104:26
+ ❯ EnvironmentPluginContainer.transform node_modules/vite/dist/node/chunks/node.js:30201:51
+ ❯ loadAndTransform node_modules/vite/dist/node/chunks/node.js:20124:26
+ ❯ fetchModule node_modules/vite/dist/node/chunks/node.js:33584:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/hvp-borrowed-mesh-decode.test.ts [ tests/unit/hvp-borrowed-mesh-decode.test.ts ]
+Error: Transform failed with 1 error:
+
+[31m[PARSE_ERROR] [0mUnexpected token
+     [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m src/workers/hvpBodyMeshJob.ts:443:5 [38;5;246m][0m
+     [38;5;246m│[0m
+ [38;5;246m443 │[0m [38;5;249m [0m[38;5;249m [0m[38;5;249m [0m[38;5;249m [0m||[38;5;249m [0m[38;5;249mw[0m[38;5;249mi[0m[38;5;249mr[0m[38;5;249me[0m[38;5;249m.[0m[38;5;249mh[0m[38;5;249me[0m[38;5;249ma[0m[38;5;249md[0m[38;5;249me[0m[38;5;249mr[0m[38;5;249m.[0m[38;5;249mr[0m[38;5;249me[0m[38;5;249mm[0m[38;5;249mo[0m[38;5;249mv[0m[38;5;249me[0m[38;5;249md[0m[38;5;249mC[0m[38;5;249me[0m[38;5;249ml[0m[38;5;249ml[0m[38;5;249ms[0m[38;5;249m [0m[38;5;249m![0m[38;5;249m=[0m[38;5;249m=[0m[38;5;249m [0m[38;5;249me[0m[38;5;249mx[0m[38;5;249mp[0m[38;5;249me[0m[38;5;249mc[0m[38;5;249mt[0m[38;5;249me[0m[38;5;249md[0m[38;5;249m.[0m[38;5;249mp[0m[38;5;249ma[0m[38;5;249my[0m[38;5;249ml[0m[38;5;249mo[0m[38;5;249ma[0m[38;5;249md[0m[38;5;249m.[0m[38;5;249mr[0m[38;5;249me[0m[38;5;249mm[0m[38;5;249mo[0m[38;5;249mv[0m[38;5;249me[0m[38;5;249md[0m[38;5;249mC[0m[38;5;249me[0m[38;5;249ml[0m[38;5;249ml[0m[38;5;249ms[0m
+ [38;5;240m    │[0m     ─┬  
+ [38;5;240m    │[0m      ╰── 
+[38;5;246m─────╯[0m
+
+  Plugin: vite:oxc
+  File: C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser/src/workers/hvpBodyMeshJob.ts
+ ❯ transformWithOxc node_modules/vite/dist/node/chunks/node.js:4033:19
+ ❯ TransformPluginContext.transform node_modules/vite/dist/node/chunks/node.js:4104:26
+ ❯ EnvironmentPluginContainer.transform node_modules/vite/dist/node/chunks/node.js:30201:51
+ ❯ loadAndTransform node_modules/vite/dist/node/chunks/node.js:20124:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+

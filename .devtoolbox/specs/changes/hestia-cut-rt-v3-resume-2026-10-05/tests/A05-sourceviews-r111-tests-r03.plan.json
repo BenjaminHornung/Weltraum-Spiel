@@ -1,0 +1,12 @@
+{
+  "runId": "A05-sourceviews-r111-tests-r03",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-terrain-native-plan.test.ts",
+    "tests/unit/hvp-terrain-native-worker.test.ts",
+    "tests/unit/hvp-body-mesh-client.test.ts"
+  ],
+  "nativeCapSeconds": 180,
+  "binding": "A05-sourceviews-r111-binding-r03.json",
+  "classification": "Current Source views metadata quote malformed ACK and suspended callback Dispose"
+}

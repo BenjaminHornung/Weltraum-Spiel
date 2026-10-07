@@ -1,0 +1,49 @@
+{
+  "classification": "ACTUAL_R72_OPEN_PREVIEW_SELECTED_GPU_AND_ASSETS_NOT_FORMAL_ENVIRONMENT_FREEZE",
+  "binding": "A04-fixed-cold-render-r72-binding-r03.json",
+  "selected": {
+    "vendor": "Google Inc. (Intel)",
+    "renderer": "ANGLE (Intel, Intel(R) Arc(TM) Pro 140T GPU (16GB) (0x00007D51) Direct3D11 vs_5_0 ps_5_0, D3D11)"
+  },
+  "viewport": {
+    "width": 1280,
+    "height": 720,
+    "dpr": 1.0000000149011612,
+    "bufferWidth": 1280,
+    "bufferHeight": 720
+  },
+  "state": "State: Ready",
+  "physicsStatus": "Paused",
+  "saveRevision": 3,
+  "assets": [
+    "hvpBootstrap-DgZmbAMH.js",
+    "physicsWorker-DuNx_6Fw.js"
+  ],
+  "gpuDevices": [
+    {
+      "vendorId": 32902,
+      "deviceId": 32081,
+      "vendorString": "",
+      "deviceString": "Intel(R) Arc(TM) Pro 140T GPU (16GB)",
+      "driverVendor": "Intel",
+      "driverVersion": "32.0.101.8517"
+    },
+    {
+      "vendorId": 4318,
+      "deviceId": 11705,
+      "vendorString": "",
+      "deviceString": "NVIDIA RTX PRO 500 Blackwell Generation Laptop GPU",
+      "driverVendor": "",
+      "driverVersion": "32.0.15.9658"
+    },
+    {
+      "vendorId": 5140,
+      "deviceId": 140,
+      "vendorString": "",
+      "deviceString": "Microsoft Basic Render Driver",
+      "driverVendor": "",
+      "driverVersion": "10.0.26100.9278"
+    }
+  ],
+  "formalDprExactOne": false
+}

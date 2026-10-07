@@ -1,0 +1,8 @@
+{
+  "runId": "A03-dense-once-r53-red-r02-type",
+  "binding": "A03-dense-once-r53-red-r02-binding.json",
+  "mode": "type",
+  "files": [],
+  "nativeCapSeconds": 60,
+  "classification": "Immutable owned shape single-pass RED control; whole original hash-array file and original deadlines"
+}

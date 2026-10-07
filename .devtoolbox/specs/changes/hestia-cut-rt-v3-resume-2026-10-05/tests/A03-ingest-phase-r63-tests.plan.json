@@ -1,0 +1,11 @@
+{
+  "runId": "A03-ingest-phase-r63-tests",
+  "files": [
+    "tests/unit/hvp-borrowed-body-plan.test.ts",
+    "tests/unit/hvp-structural-ingest-trace.test.ts"
+  ],
+  "classification": "Existing opt-in body quantum labels resolve four existing ingest stages; no extra clocks/scalar timing/authority/work changes; full direct and generic trace files",
+  "binding": "A03-ingest-phase-r63-binding.json",
+  "nativeCapSeconds": 600,
+  "mode": "tests"
+}

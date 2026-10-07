@@ -1,0 +1,26 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-body-mesh-owner-integration.test.ts > keeps a packet decoder failure terminal before geometry work and rejects a later good packet
+AssertionError: expected TypeError: Cannot read properties of unde… to be Error: first packet decoding failure // Object.is equality
+
+- Expected
++ Received
+
+- Error {
+-   "message": "first packet decoding failure",
++ TypeError {
++   "message": "Cannot read properties of undefined (reading 'length')",
+  }
+
+ ❯ tests/unit/hvp-body-mesh-owner-integration.test.ts:86:55
+     84| it("keeps a packet decoder failure terminal before geometry work and r…
+     85|   const first=new Error("first packet decoding failure"),decode=vi.fn(…
+     86|   await expect(session.admitChildMesh(id,decode,host)).rejects.toBe(fi…
+       |                                                       ^
+     87|   const products=await productsFor(projection);
+     88|   await expect(session.admitChildMesh(id,products,host)).rejects.toBe(…
+ ❯ withOwner tests/unit/hvp-body-mesh-owner-integration.test.ts:37:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

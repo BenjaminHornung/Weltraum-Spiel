@@ -1,0 +1,10 @@
+{
+  "mode": "tests",
+  "nativeCapSeconds": 180,
+  "classification": "Deterministic completebyte and sinkprefix baseline before local generator overhead change",
+  "files": [
+    "tests/unit/hvp-owned-hash-emission-boundary.test.ts"
+  ],
+  "binding": "A03-hash-emission-r67-baseline-binding.json",
+  "runId": "A03-hash-emission-r67-baseline"
+}

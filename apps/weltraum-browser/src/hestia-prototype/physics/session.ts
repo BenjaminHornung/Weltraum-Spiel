@@ -7,8 +7,11 @@ import { createHvpLocomotion, type HvpCollisionCoverage, type HvpPlayerInput } f
 import { ingestHvpStructuralCells } from "../terrain/structuralIngest";
 import { prepareHvpRigidBody, installHvpRigidBody } from "./rigidBody";
 import { createHvpBranchSession, type HvpBranchRequest } from "./branchSession";
-import {prepareHvpTerrainFragment,type HvpTerrainFragmentRequest} from "./terrainFragment";
+import {prepareHvpTerrainFragment,prepareHvpTerrainFragmentOwnedSteps,type HvpTerrainFragmentRequest} from "./terrainFragment";
+import type {StructuralOwnedReserve} from "../../voxel/structural/validation";
+import {createHvpBodyMeshTaskPump} from "../../workers/hvpBoundedPump";
 import {ADAPTIVE_BRICK_ESTIMATED_BYTES} from "../../voxel/adaptive";
+import {validatedFrozenDenseArrayInitializationBytes} from "../../voxel/adaptive/validation";
 import {createHvpBodyCutSession,createHvpOwnedHashBodyCutSession,type HvpMovingCutRequest,type HvpBodyCutAdmission,type HvpBodyPlanTrace,type HvpBodyChildProjection} from "./bodyCutSession";
 import type {HvpCuttableBody} from "./bodyCut";
 import {decodeHvpWorld,hvpCollisionDigest,type HvpWorldCheckpoint} from "../persistence/worldCheckpoint";
@@ -17,8 +20,14 @@ import {restoreHvpBody} from "./restoreBody";
 import {createHvpNeighborCollision} from "./neighborRegion";
 import {createHvpBodyResidency} from "./bodyResidency";
 import type {HvpNeighborCheckpoint} from "../runtime/residency";
+import type {WorkerJobRequest,TransferableBufferBundle} from "../../workers/protocol";
+import {decodeHvpBodyMeshOutput,decodeHvpBodyMeshOutputSteps} from "../../workers/hvpBodyMeshJob";
+import type {HvpBodyMeshBudget} from "../presentation/bodyMeshAdmission";
 
 export type HvpPhysicsSession = Awaited<ReturnType<typeof createHvpPhysicsSession>>;
+type TerrainReplacement=Readonly<{index:number;mesh:HvpCollisionSector}>;
+type TerrainPlan={readonly id:string;readonly expected:number;readonly replacements:readonly TerrainReplacement[];
+  readonly fragments:readonly HvpTerrainFragmentRequest[];readonly recipes:readonly ReturnType<typeof prepareHvpTerrainFragment>[];readonly recipeMs:number};
 /** Ephemeral native contact information, never persisted or used as a command authorization. */
 export interface HvpImpulseTarget {
   readonly kind:"NotPlaying"|"Busy"|"InvalidAim"|"NoContact"|"Fixed"|"Dynamic"|"Cooldown"|"SpeedLimit";
@@ -143,9 +152,17 @@ const physicsSessionFor = (workerOwned: boolean) => async (
     let terrainGeneration = saved?.terrainGeneration??0;
     type Fragment=HvpCuttableBody;
     const moving=(workerOwned?createHvpOwnedHashBodyCutSession:createHvpBodyCutSession)(world,movingBodies,bodies,sessionId,saved?.moving,residentExtras,
-      measureBodyHold?logSlowHvpBodyPlan:undefined);
+      measureBodyHold?trace=>{
+        logSlowHvpBodyPlan(trace);
+        if(workerOwned&&moving.resources()?.reservedBytes){
+          console.debug(`hvp-owned-body-plan-budget ${JSON.stringify({commandId:trace.commandId,outcome:trace.outcome,
+            origin:performance.timeOrigin,steps:trace.totalSteps,maxMs:trace.max?.duration,
+            phases:trace.phases.map(phase=>({label:phase.label,count:phase.count,totalMs:phase.totalMs,maxMs:phase.maxMs}))})}`);
+        }
+      }:undefined);
     let movingWasRunning=false;
     let terrainHeld=false;
+    const terrainPlans=new WeakSet<TerrainPlan>();
     let bodyResidencyWork:{id:string;running:boolean;committed:boolean;changed:boolean;hold:boolean}|undefined;
     let staged: { id: string; expected: number; running: boolean; committed: boolean;
       old: Map<number, { mesh: HvpCollisionSector; collider?: R.Collider }>;
@@ -176,6 +193,23 @@ const physicsSessionFor = (workerOwned: boolean) => async (
         throw new Error("Moving preparation disposed");
       }
     }};
+    // Only the borrowed fine-grained path uses these two owner-local task ports. No timer-clamp chain.
+    let bodyChannel:MessageChannel|undefined,bodyYield:{resolve:()=>void;reject:(error:Error)=>void}|undefined;
+    let borrowedSliceStart=0,borrowedSliceSteps=0;
+    const borrowedBodyHost={assertCurrent:bodyPlanHost.assertCurrent,yieldTask:():Promise<void>=>new Promise<void>((resolve,reject)=>{
+      bodyPlanHost.assertCurrent();
+      if(bodyYield!==undefined){reject(new Error("Concurrent body owner yield"));return;}
+      if(bodyChannel===undefined){
+        bodyChannel=new MessageChannel();
+        bodyChannel.port1.onmessage=()=>{
+          const waiting=bodyYield;bodyYield=undefined;
+          borrowedSliceStart=performance.now();borrowedSliceSteps=0;waiting?.resolve();
+        };
+      }
+      bodyYield={resolve,reject};bodyChannel.port2.postMessage(0);
+    }),continuePlan:()=>++borrowedSliceSteps<4096&&performance.now()-borrowedSliceStart<2};
+    const currentBodyHost=()=>moving.resources()?.reservedBytes?borrowedBodyHost:bodyPlanHost;
+    let externalBodyMeshWork:{id:string;budget:HvpBodyMeshBudget;release:()=>void}|undefined;
     let impulseTarget:HvpImpulseTarget=noImpulseTarget;
     const queryImpulse=(direction?:Readonly<{x:number;y:number;z:number}>):{
       preview:HvpImpulseTarget;reason:string;body?:R.RigidBody;magnitude?:number
@@ -244,7 +278,7 @@ const physicsSessionFor = (workerOwned: boolean) => async (
       if(transaction.running){tick.resume();}
       finishTerrainHold();
     };
-    const fragmentView=(f:Fragment)=>Object.freeze({ownerId:f.ownerId,sourceDigest:f.recipe.source.contentHash,
+    const fragmentView=(f:Pick<Fragment,"ownerId"|"recipe">)=>Object.freeze({ownerId:f.ownerId,sourceDigest:f.recipe.source.contentHash,
       centerOfMass:f.recipe.mass.centerOfMassMeters!,cellCount:f.recipe.mass.occupiedVoxelCount,
       massKg:f.recipe.mass.totalMassKg,colliders:f.recipe.colliders.length,sourceBytes:f.recipe.source.bricks.length*ADAPTIVE_BRICK_ESTIMATED_BYTES});
     const read = (includeBranchCells=false) => {const structural=disposed?null:branch?.read(includeBranchCells)??null;
@@ -257,6 +291,10 @@ const physicsSessionFor = (workerOwned: boolean) => async (
          terrainFragments:disposed?[]:[...[...movingBodies.values()].filter(f=>f.family!=="branch").map(fragmentView),...residency!.sources()],
          parked:disposed?[]:residency!.read(),neighbor:disposed?null:neighbor?.read().checkpoint??null,
          dormantCheckpointBytes:disposed?0:residency!.bytes,
+         // Logical source/recipe allowance; native allocator bytes remain unsupported above.
+         bodySourceResidentBytes:disposed?0:[...movingBodies.values()].reduce((sum,target)=>sum
+           +target.recipe.source.bricks.length*ADAPTIVE_BRICK_ESTIMATED_BYTES+4096+target.recipe.colliders.length*256,0)
+           +validatedFrozenDenseArrayInitializationBytes(),
          bodyResidencyId:disposed?null:bodyResidencyWork?.id??null,
          bodyResidencyTransaction:disposed?"Idle":bodyResidencyWork?.hold?"RecoveryHold":bodyResidencyWork?(bodyResidencyWork.committed?"CommittedHeld":"PreparedHeld"):"Idle",
         neighborTransaction:disposed?"Idle":residency!.held?"RecoveryHold":neighbor?.read().state??"Idle",
@@ -410,15 +448,58 @@ const physicsSessionFor = (workerOwned: boolean) => async (
         if(state.state!=="Preparing"||state.pendingId!==id){
           throw new Error("Stale body preparation");
         }
-         await moving.preparePlan(id,bodyPlanHost);
+         await moving.preparePlan(id,currentBodyHost());
        },
        /** Private source-only projection, not exposed by the Worker/Client or production compiler. */
-       async prepareBodyChildProjection(id:string):Promise<HvpBodyChildProjection> {
+       async prepareBodyChildProjection(id:string,residentBytes?:number):Promise<HvpBodyChildProjection> {
          bodyPlanHost.assertCurrent();
          if(terrainHeld||staged||branch?.busy||extraHeld()){
            throw new Error("World transaction pending");
          }
-         return moving.prepareChildProjection(id,bodyPlanHost);
+         if(residentBytes!==undefined){borrowedSliceStart=performance.now();borrowedSliceSteps=0;}
+         return moving.prepareChildProjection(id,residentBytes===undefined?currentBodyHost():borrowedBodyHost,residentBytes);
+       },
+       async prepareBodyMeshWork(id:string,residentBytes:number,renderExtraBytes:number):Promise<{projection:HvpBodyChildProjection;budget:HvpBodyMeshBudget}> {
+         bodyPlanHost.assertCurrent();
+         if(!Number.isSafeInteger(residentBytes)||residentBytes<=0||residentBytes>256*1024*1024){throw new Error("Invalid body owner resident estimate");}
+         if(terrainHeld||staged||branch?.busy||extraHeld()||externalBodyMeshWork!==undefined){throw new Error("World transaction pending");}
+         borrowedSliceStart=performance.now();borrowedSliceSteps=0;
+         const projection=await moving.prepareChildProjection(id,borrowedBodyHost,residentBytes);
+         const work=await moving.prepareExternalMeshWork(id,borrowedBodyHost,renderExtraBytes);
+         externalBodyMeshWork={id,...work};bodyPlanHost.assertCurrent();
+         return {projection,budget:work.budget};
+       },
+       /** The ticket-bound transport calls this only after actual external terminal and cleanup. */
+       releaseBodyMeshWork(id:string):void {
+         if(externalBodyMeshWork===undefined){return;}
+         if(externalBodyMeshWork.id!==id){throw new Error("Stale body mesh release");}
+         externalBodyMeshWork.release();externalBodyMeshWork=undefined;
+       },
+       /** Exclusive transferred buffers are checked against the retained owner plan before any hold. */
+       async admitBodyMeshOutput(id:string,request:WorkerJobRequest,output:TransferableBufferBundle):Promise<TransferableBufferBundle> {
+         bodyPlanHost.assertCurrent();
+         if(terrainHeld||staged||branch?.busy||extraHeld()){throw new Error("World transaction pending");}
+         const host=currentBodyHost(),projection=await moving.prepareChildProjection(id,host);
+         bodyPlanHost.assertCurrent();
+         await moving.admitChildMesh(id,reserve=>{
+           if(reserve===undefined){return decodeHvpBodyMeshOutput(request,projection,output);}
+           // Decoded copies are verification scratch, not results transferred at Finalize.
+           const steps=decodeHvpBodyMeshOutputSteps(request,projection,output,(bytes,_retained,kind)=>reserve(bytes,false,kind),externalBodyMeshWork?.budget.faceLimits);
+           return (async()=>{
+             let failed=false;
+             try{for(;;){
+               const step=steps.next();if(step.done){return step.value;}
+               if(host.continuePlan?.()!==true){
+                 await host.yieldTask();host.assertCurrent();
+                 const current=moving.read();
+                 if(current.state!=="Preparing"||current.pendingId!==id){throw new Error("Stale body preparation");}
+               }
+             }}catch(error){failed=true;throw error;}
+             finally{try{steps.return(undefined as never);}catch(error){if(!failed){throw error;}}}
+           })();
+         },host);
+         bodyPlanHost.assertCurrent();
+         return output;
        },
        stageBodyCut(id:string,products:HvpBodyCutAdmission):void {
          if(terrainHeld||staged||branch?.busy||extraHeld()){throw new Error("World transaction pending");}
@@ -465,7 +546,50 @@ const physicsSessionFor = (workerOwned: boolean) => async (
         lastImpulse=Object.freeze({status:"Applied",reason:"Solver contact impulse",point:Object.freeze(point),impulse:Object.freeze(impulse),
           target:contact.preview.target!});
       },
-       prepareTerrain(id: string, expected: number, replacements: readonly { index: number; mesh: HvpCollisionSector }[],fragments:readonly HvpTerrainFragmentRequest[]=[]): void {
+      terrainPlanSourceViews(plan:TerrainPlan){
+        if(disposed||!terrainPlans.has(plan)||terrainGeneration!==plan.expected){throw new Error("Stale Native terrain preparation ticket");}
+        return Object.freeze(plan.fragments.map((fragment,index)=>fragmentView({ownerId:fragment.ownerId,recipe:plan.recipes[index]!})));
+      },
+      async prepareTerrainPlan(id:string,expected:number,replacements:readonly TerrainReplacement[],fragments:readonly HvpTerrainFragmentRequest[],
+        reserve:StructuralOwnedReserve,host:ReturnType<typeof createHvpBodyMeshTaskPump>["host"]):Promise<TerrainPlan>{
+        if(!workerOwned){throw new Error("Terrain source preparation is Native worker internal");}
+        const current=()=>{host.assertCurrent();if(disposed){throw new Error("Terrain preparation disposed");}
+          if(terrainHeld||staged||branch?.busy||moving.busy||extraHeld()||terrainGeneration!==expected){throw new Error("Stale terrain preparation");}};
+        current();reserve(32_768);
+        if(!/^[A-Za-z0-9:._-]{1,128}$/.test(id)||!Array.isArray(replacements)||replacements.length===0||replacements.length>16
+          ||!Array.isArray(fragments)||fragments.length>32||fragments.reduce((n,f)=>n+f.cells.length,0)>32768
+          ||new Set(fragments.map(f=>f.ownerId)).size!==fragments.length
+          ||fragments.some(f=>movingBodies.has(f.ownerId)||residency!.read().some(p=>p.ownerId===f.ownerId))){throw new Error("Stale or invalid terrain transaction");}
+        const steps=(function*(){
+          const seen=new Set<number>();let bytes=collisionBytes();
+          for(const {index,mesh} of replacements){
+            const previous=collision.get(index);
+            if(!Number.isSafeInteger(index)||index<0||index>=64||previous===undefined||seen.has(index)
+              ||!(mesh.vertices instanceof Float32Array)||!(mesh.indices instanceof Uint32Array)
+              ||mesh.vertices.length%3!==0||mesh.indices.length%3!==0){throw new Error("Invalid terrain collision replacement");}
+            seen.add(index);
+            for(let i=0;i<mesh.vertices.length;i+=1){if(!Number.isFinite(mesh.vertices[i])){throw new Error("Invalid terrain collision replacement");}
+              if((i+1)%4096===0){yield "terrainNativeCollision";}}
+            for(let i=0;i<mesh.indices.length;i+=1){if(mesh.indices[i]!>=mesh.vertices.length/3){throw new Error("Invalid terrain collision replacement");}
+              if((i+1)%4096===0){yield "terrainNativeCollision";}}
+            bytes+=mesh.vertices.byteLength+mesh.indices.byteLength-previous.mesh.vertices.byteLength-previous.mesh.indices.byteLength;
+            yield "terrainNativeCollision";
+          }
+          if(bytes>8*1024*1024){throw new Error("Terrain collision BudgetExceeded");}
+          const recipes:ReturnType<typeof prepareHvpTerrainFragment>[]=[],start=performance.now();
+          for(const fragment of fragments){recipes.push(yield* prepareHvpTerrainFragmentOwnedSteps(fragment,expected+1,reserve));yield "terrainNativeRecipe";}
+          return {recipes,recipeMs:performance.now()-start};
+        })();
+        let failed=false;
+        try{for(;;){current();const step=steps.next();if(step.done){current();const ticket=Object.freeze({id,expected,replacements,fragments,...step.value});
+            terrainPlans.add(ticket);return ticket;}if(host.continuePlan?.()!==true){await host.yieldTask();}}}
+        catch(error){failed=true;throw error;}
+        finally{try{steps.return(undefined as never);}catch(error){if(!failed){throw error;}}}
+      },
+       prepareTerrain(id: string, expected: number, replacements: readonly { index: number; mesh: HvpCollisionSector }[],fragments:readonly HvpTerrainFragmentRequest[]=[],ready?:TerrainPlan): void {
+         if(ready!==undefined&&(!terrainPlans.has(ready)||ready.id!==id||ready.expected!==expected||ready.replacements!==replacements||ready.fragments!==fragments)){
+           throw new Error("Foreign or stale terrain preparation ticket");
+         }
          if(staged===undefined&&!terrainHeld){terrainSpans=undefined;terrainHoldStart=undefined;}
          if (disposed || terrainHeld || staged !== undefined || branch?.busy || moving.busy || extraHeld() || terrainGeneration !== expected || !/^[A-Za-z0-9:._-]{1,128}$/.test(id)
            || replacements.length === 0 || replacements.length > 16||fragments.length>32
@@ -478,7 +602,7 @@ const physicsSessionFor = (workerOwned: boolean) => async (
           if (!Number.isSafeInteger(index) || index < 0 || index >= 64 || previous === undefined || old.has(index)
             || !(mesh.vertices instanceof Float32Array) || !(mesh.indices instanceof Uint32Array)
             || mesh.vertices.length % 3 !== 0 || mesh.indices.length % 3 !== 0
-            || mesh.vertices.some(v=>!Number.isFinite(v)) || mesh.indices.some(v=>v>=mesh.vertices.length/3)) {
+            || (ready===undefined&&(mesh.vertices.some(v=>!Number.isFinite(v)) || mesh.indices.some(v=>v>=mesh.vertices.length/3)))) {
             throw new Error("Invalid terrain collision replacement");
           }
           old.set(index, previous);
@@ -487,6 +611,7 @@ const physicsSessionFor = (workerOwned: boolean) => async (
         if (bytes > 8*1024*1024) { throw new Error("Terrain collision BudgetExceeded"); }
          const next = new Map<number, { mesh: HvpCollisionSector; collider?: R.Collider }>();
          const running = tick.read().status === "Running";
+         if(ready!==undefined){terrainPlans.delete(ready);}
          tick.pause();terrainHoldStart=performance.now();
          terrainSpans=Object.freeze({transactionId:id,recipeMs:null,cookMs:null,installMs:null,holdMs:null});
          const bodiesBefore=new Map<number,R.RigidBody>(),collidersBefore=new Map<number,R.Collider>();
@@ -495,8 +620,8 @@ const physicsSessionFor = (workerOwned: boolean) => async (
          staged=transaction;
          try {
             const tRecipe=performance.now();
-            const recipes=fragments.map(f=>prepareHvpTerrainFragment(f,expected+1));
-            const recipeMs=performance.now()-tRecipe;
+            const recipes=ready?.recipes??fragments.map(f=>prepareHvpTerrainFragment(f,expected+1));
+            const recipeMs=ready?.recipeMs??performance.now()-tRecipe;
             terrainSpans=Object.freeze({...terrainSpans!,recipeMs});
            if(world.bodies.len()+residency!.count+fragments.length>64||[...bodiesBefore.values()].filter(b=>b.isDynamic()).length+fragments.length>32
              ||world.colliders.len()+replacements.length+recipes.reduce((n,r)=>n+r.colliders.length,0)>4096){throw new Error("Terrain fragment BudgetExceeded");}
@@ -550,7 +675,10 @@ const physicsSessionFor = (workerOwned: boolean) => async (
       },
       dispose(): void {
         if (disposed) { return; }
-         disposed = true; tick.dispose(); character?.dispose(); bodies.clear();movingBodies.clear();world.free();
+         disposed = true; tick.dispose(); character?.dispose();
+         bodyChannel?.port1.close();bodyChannel?.port2.close();bodyChannel=undefined;
+         const waiting=bodyYield;bodyYield=undefined;waiting?.reject(new Error("Moving preparation disposed"));
+         bodies.clear();movingBodies.clear();world.free();moving.dispose();
       }
     };
   } catch (error) { world.free(); throw error; }

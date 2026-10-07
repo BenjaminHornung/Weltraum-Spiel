@@ -1,0 +1,6 @@
+{
+  "reason": "Original first release observation NOT_PROVEN; preserve it and re-observe only exact recorded PID plus creation identities",
+  "originalRun": "A03-mesh-freeze-pack-final-r01",
+  "classification": "OBSERVATION_ONLY_NOT_A_NEW_NATIVE_RUN",
+  "copiedTerminalSha256": "364c0d13002eb859ff5068c46783a6d97ed6c608a55cf09aa0bb444d972ae195"
+}

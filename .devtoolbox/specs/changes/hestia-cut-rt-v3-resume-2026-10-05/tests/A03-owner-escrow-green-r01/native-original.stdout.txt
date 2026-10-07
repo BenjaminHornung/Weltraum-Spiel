@@ -1,0 +1,51 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-body-mesh-owner-integration.test.ts (35 tests) 19521ms
+   ✓ rejects projected owner-route Stage until the retained plan has admitted complete geometry  532ms
+   ✓ admits mesh-only output against the single retained native plan before Stage, commit and finalize  782ms
+   ✓ rejects altered color geometry with stable first failure and no native Stage or retry revival  623ms
+   ✓ keeps a thrown real admission yield terminal without mutating the native World  544ms
+   ✓ keeps a packet decoder failure terminal before geometry work and rejects a later good packet  532ms
+   ✓ cannot revive an admission after Rollback at a real verifier yield  526ms
+   ✓ preserves the first yielded failure when verifier cleanup also throws  561ms
+   ✓ retains one borrowed owner ledger through mesh admission and transfers results only at Finalize  903ms
+   ✓ rejects Dispose after native Stage until rollback or actual World release  919ms
+   ✓ keeps a failed projection reserve terminal for projection, mesh and native Stage  552ms
+   ✓ returns a latched post-projection owner failure before the missing-mesh guard  511ms
+   ✓ preserves non-Error mesh failure identity at Stage (null)  433ms
+   ✓ preserves non-Error mesh failure identity at Stage (undefined)  466ms
+   ✓ shares the first failure across later projection, decoder and Stage (Error: first cross-seam mesh error)  464ms
+   ✓ shares the first failure across later projection, decoder and Stage (null)  457ms
+   ✓ shares the first failure across later projection, decoder and Stage (undefined)  465ms
+   ✓ keeps a retired ledger until the suspended verifier actually closes  594ms
+   ✓ cannot switch the budget of an already derived plan (undefined)  407ms
+   ✓ cannot switch the budget of an already derived plan (33554432)  510ms
+   ✓ closes owner scratch on Dispose and retains credits until its suspended admission returns  520ms
+   ✓ awaits packet decoding under the same parent credit before starting geometry admission  886ms
+   ✓ keeps decoding credit through Rollback and refuses the late decoded packet  579ms
+   ✓ preserves an asynchronous decoder rejection as the first cross-seam failure  512ms
+   ✓ reuses one expected-mesh workspace across multiple native children without releasing parent credit  845ms
+   ✓ keeps the single parent credit after Finalize until the external mesh operation really closes  887ms
+   ✓ keeps external producer credit through Rollback until its explicit terminal closure  503ms
+   ✓ keeps external producer credit through Dispose until its explicit terminal closure  498ms
+   ✓ reserves external mesh work once and does not release its live parent early  490ms
+   ✓ refuses external ownership without the original borrowed ledger  427ms
+   ✓ refuses early external ownership without poisoning later borrowed preparation  502ms
+   ✓ keeps an exhausted external quote as the first owner failure without partial credit  501ms
+   ✓ prepares and reserves one source-derived external quote before exporting mesh work  833ms
+   ✓ keeps a quote-preflight cancellation terminal without acquiring external work  505ms
+ ✓ tests/unit/hvpOwnedBodyMesh.test.ts (11 tests) 2086ms
+   ✓ reuses the mesh kernel without changing mixed-material local Float32 bytes or metadata  391ms
+   ✓ rejects changed geometry against the issued local source, not changed foreign cells or matching digest  335ms
+   ✓ closes owned cursors at local-position and geometry-comparison yields  340ms
+   ✓ charges the borrowed parent before allocating any owned occupancy mesh  332ms
+   ✓ charges actual face/quad containers without changing mixed-material bytes  323ms
+   ✓ keeps expected-geometry verification inside the same borrowed parent budget  331ms
+
+ Test Files  2 passed (2)
+      Tests  46 passed (46)
+   Start at  20:39:32
+   Duration  23.63s (transform 778ms, setup 0ms, import 1.73s, tests 21.61s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-owner-escrow-green-r01/original-vitest.json

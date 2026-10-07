@@ -1,0 +1,10 @@
+{
+  "classification": "Asynchronous decoder retained-parent admission genuine RED, whole file unchanged original deadlines",
+  "mode": "tests",
+  "binding": "A03-async-owner-red-r01-binding.json",
+  "runId": "A03-async-owner-red-r01",
+  "files": [
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts"
+  ],
+  "nativeCapSeconds": 180
+}

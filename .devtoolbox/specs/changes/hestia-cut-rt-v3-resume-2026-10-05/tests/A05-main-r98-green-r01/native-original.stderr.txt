@@ -1,0 +1,22 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-terrain-products.test.ts > HVP local terrain derivation > blocks rollover while compiler source copying is still before worker enqueue
+AssertionError: expected [Function] to throw error matching /Cancelled/ but got 'Support compiler disposed'
+
+- Expected:
+/Cancelled/
+
++ Received:
+"Support compiler disposed"
+
+ ❯ tests/unit/hvp-terrain-products.test.ts:124:30
+    122|       await expect(compiler.rolloverAfterLoad(()=>true)).rejects.toThr…
+    123|       await compiler.dispose();
+    124|       await expect(analyzing).rejects.toThrow(/Cancelled/);
+       |                              ^
+    125|     }finally{await compiler.dispose();}
+    126|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

@@ -1,0 +1,39 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvpBodyCutWire.test.ts > preserves all seven original wire buffers and hash through borrowed copy steps
+AssertionError: expected undefined to be type of 'function'
+
+Expected: "function"
+Received: "undefined"
+
+ ❯ borrowedWire tests/unit/hvpBodyCutWire.test.ts:75:16
+
+ ❯ tests/unit/hvpBodyCutWire.test.ts:78:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/unit/hvpBodyCutWire.test.ts > rejects wire parent credit before allocating output channels
+AssertionError: expected undefined to be type of 'function'
+
+Expected: "function"
+Received: "undefined"
+
+ ❯ borrowedWire tests/unit/hvpBodyCutWire.test.ts:75:16
+
+ ❯ tests/unit/hvpBodyCutWire.test.ts:87:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/unit/hvpBodyCutWire.test.ts > closes wire copies on cancellation without publishing a partial packet or releasing parent credit
+AssertionError: expected undefined to be type of 'function'
+
+Expected: "function"
+Received: "undefined"
+
+ ❯ borrowedWire tests/unit/hvpBodyCutWire.test.ts:75:16
+
+ ❯ tests/unit/hvpBodyCutWire.test.ts:92:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+

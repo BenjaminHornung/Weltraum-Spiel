@@ -1,0 +1,8 @@
+{
+  "mode": "type",
+  "runId": "A03-bytehash-type-r01",
+  "classification": "Full final minimal bytehash type; original60 cap",
+  "nativeCapSeconds": 60,
+  "binding": "A03-bytehash-final-r03-binding.json",
+  "files": []
+}

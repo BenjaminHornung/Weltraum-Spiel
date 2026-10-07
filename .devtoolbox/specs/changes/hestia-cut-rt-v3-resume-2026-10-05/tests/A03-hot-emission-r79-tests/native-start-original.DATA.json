@@ -1,0 +1,65 @@
+{
+  "startUtc": "2026-10-06T04:43:46.473230+00:00",
+  "cwd": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\apps\\weltraum-browser",
+  "argv": [
+    "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+    "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\apps\\weltraum-browser\\node_modules\\vitest\\vitest.mjs",
+    "run",
+    "tests/unit/hvp-owned-ingest-journal-prefix.test.ts",
+    "tests/unit/hvp-owned-materialization.test.ts",
+    "tests/unit/hvp-owned-resident-source.test.ts",
+    "tests/unit/hvp-owned-structural-ingest.test.ts",
+    "tests/unit/hvp-borrowed-body-plan.test.ts",
+    "tests/unit/hvp-body-plan-task-quantum.test.ts",
+    "tests/unit/hvp-owned-single-component-masses.test.ts",
+    "tests/unit/hvp-classification-contract-controls.test.ts",
+    "tests/unit/hvp-parallel-p01-classification.test.ts",
+    "tests/unit/hvp-owned-hash-array-open.test.ts",
+    "tests/unit/hvp-structural-ingest-trace.test.ts",
+    "tests/unit/hvp-body-mesh-worker.test.ts",
+    "tests/unit/hvp-body-mesh-protocol.test.ts",
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts",
+    "tests/unit/hvp-body-mesh-client.test.ts",
+    "tests/unit/hvpOwnedCanonicalHash.test.ts",
+    "tests/unit/hvp-owned-hash-emission-boundary.test.ts",
+    "--maxWorkers=1",
+    "--no-file-parallelism",
+    "--reporter=default",
+    "--reporter=json",
+    "--outputFile=C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\.devtoolbox\\specs\\changes\\hestia-cut-rt-v3-resume-2026-10-05\\tests\\A03-hot-emission-r79-tests\\original-vitest.json"
+  ],
+  "scope": [
+    {
+      "role": "caller",
+      "pid": 39444,
+      "presence": "PRESENT",
+      "creationFileTime": 134357354256147523
+    },
+    {
+      "role": "wrapper",
+      "pid": 52252,
+      "presence": "PRESENT",
+      "creationFileTime": 134357354263038799
+    },
+    {
+      "role": "native",
+      "pid": 52780,
+      "presence": "PRESENT",
+      "creationFileTime": 134357354264888553
+    }
+  ],
+  "nativeInvocations": 1,
+  "jobAdmissionCounts": {
+    "outer": {
+      "TotalProcesses": 2,
+      "ActiveProcesses": 2,
+      "TotalTerminatedProcesses": 0
+    },
+    "native": {
+      "TotalProcesses": 1,
+      "ActiveProcesses": 1,
+      "TotalTerminatedProcesses": 0
+    }
+  },
+  "job": "Outer wrapper job with kill-on-close protects startup failure; native-only nested job with kill-on-close and whole-job timeout termination"
+}

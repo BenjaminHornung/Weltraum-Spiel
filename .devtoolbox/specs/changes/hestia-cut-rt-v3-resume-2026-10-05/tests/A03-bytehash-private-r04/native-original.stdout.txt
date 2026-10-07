@@ -1,0 +1,12 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/workerProtocol.test.ts (11 tests) 128ms
+ ✓ tests/unit/hvp-borrowed-bytehash.test.ts (6 tests) 46ms
+
+ Test Files  2 passed (2)
+      Tests  17 passed (17)
+   Start at  17:28:52
+   Duration  2.10s (transform 810ms, setup 0ms, import 1.63s, tests 174ms, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-bytehash-private-r04/original-vitest.json

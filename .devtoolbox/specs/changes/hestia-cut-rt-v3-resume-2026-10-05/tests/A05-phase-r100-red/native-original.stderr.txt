@@ -1,0 +1,19 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-support-phase-budget.test.ts > adds concurrent lane grants and retained products under the same original Prepare96/CPU256 envelope
+TypeError: createHvpSupportPhaseCredits is not a function
+ ❯ create tests/unit/hvp-support-phase-budget.test.ts:6:107
+
+ ❯ tests/unit/hvp-support-phase-budget.test.ts:8:38
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/hvp-support-phase-budget.test.ts > rejects foreign or overspent grants and invalid scene/copy credits before allocation
+TypeError: createHvpSupportPhaseCredits is not a function
+ ❯ create tests/unit/hvp-support-phase-budget.test.ts:6:107
+
+ ❯ tests/unit/hvp-support-phase-budget.test.ts:17:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+

@@ -1,0 +1,10 @@
+{
+  "changedInstalledDependency": "ONLY_94BYTE_SAME_VERSION_INTEGRITY_REPAIR_PREIMAGE_RETAINED",
+  "helperSha256": "a8bb3d85749079d0d9928fd08badaa3f930b30442080791d12256c058a811623",
+  "owner180": "UNCHANGED",
+  "classification": "LOGICAL_DELTA_EXACT_TWO_CONSTANT_REBINDINGS_ONLY",
+  "nodePinned": "UNCHANGED",
+  "launcherSha256": "a5466f9f83ef563252219193fa7cc1cbcc251593ba0aa07906c6c0a9aba83820",
+  "jobContainment": "UNCHANGED",
+  "historicalEol": "ACTUAL_RAW_BOUND_NOT_REWRITTEN"
+}

@@ -1,0 +1,7 @@
+{
+  "runId": "A03-borrowed-command-type-r02",
+  "nativeCapSeconds": 60,
+  "mode": "type",
+  "binding": "A03-borrowed-command-source-binding-r02.json",
+  "classification": "Full type of borrowed command entry and original source compatibility"
+}

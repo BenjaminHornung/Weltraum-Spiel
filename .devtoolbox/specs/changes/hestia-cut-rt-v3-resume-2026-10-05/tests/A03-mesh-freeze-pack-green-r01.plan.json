@@ -1,0 +1,12 @@
+{
+  "mode": "tests",
+  "classification": "R28 freeze accessor observation preserved plus bounded packing; full original files and unchanged default limits",
+  "runId": "A03-mesh-freeze-pack-green-r01",
+  "binding": "A03-mesh-freeze-pack-green-r01-binding.json",
+  "files": [
+    "tests/unit/hvpMesherHistoricalContract.test.ts",
+    "tests/unit/hvp-borrowed-mesh-decode.test.ts",
+    "tests/unit/hvpBodyMeshJob.test.ts"
+  ],
+  "nativeCapSeconds": 180
+}

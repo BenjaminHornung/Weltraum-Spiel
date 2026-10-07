@@ -1,0 +1,10 @@
+{
+  "runId": "A03-recipe-quantum-r54-red-tests",
+  "binding": "A03-recipe-quantum-r54-red-binding.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-borrowed-body-plan.test.ts"
+  ],
+  "nativeCapSeconds": 180,
+  "classification": "Whole borrowed-plan population plus productive recipe outer-step bound RED; original deadlines"
+}

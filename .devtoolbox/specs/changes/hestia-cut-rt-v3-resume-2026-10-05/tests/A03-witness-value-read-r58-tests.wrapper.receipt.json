@@ -1,0 +1,8 @@
+{
+  "runId": "A03-witness-value-read-r58-tests",
+  "startedUtc": "2026-10-05T23:16:40.4958317+00:00",
+  "endedUtc": "2026-10-05T23:18:16.5779149+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 96.0759079,
+  "planFile": "A03-witness-value-read-r58-tests.plan.json"
+}

@@ -1,0 +1,11 @@
+{
+  "runId": "A05-sourceviews-r111-red",
+  "classification": "Meaningful missing Source-only exact native recipe views without Stage or handles",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-terrain-native-plan.test.ts",
+    "tests/unit/hvp-terrain-native-worker.test.ts"
+  ],
+  "binding": "A05-sourceviews-r111-binding-red.json",
+  "nativeCapSeconds": 180
+}

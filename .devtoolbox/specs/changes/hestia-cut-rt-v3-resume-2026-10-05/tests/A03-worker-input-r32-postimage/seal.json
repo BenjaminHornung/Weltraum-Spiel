@@ -1,0 +1,17 @@
+[
+  {
+    "appRelative": "src/workers/hvpBodyMeshJob.ts",
+    "bytes": 36086,
+    "sha256": "6e02dc6d5fa1588015d65ebff59cf6b5740f87b9a6979cbbdf14f5fd35162cf4"
+  },
+  {
+    "appRelative": "src/hvp/hvpCoastMesher.ts",
+    "bytes": 55719,
+    "sha256": "d0bd08b38db2a9b7a4a9cf8d7aae9f5e5dadf0d18f7bf56db9760a507a795f57"
+  },
+  {
+    "appRelative": "tests/unit/hvpBodyMeshJob.test.ts",
+    "bytes": 22122,
+    "sha256": "7d53503f60d40d85982d2228c730370d005232ba531dd9f3967df72f1336b482"
+  }
+]

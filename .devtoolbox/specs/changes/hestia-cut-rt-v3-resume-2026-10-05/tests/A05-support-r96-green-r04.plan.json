@@ -1,0 +1,13 @@
+{
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-owned-support-plan.test.ts",
+    "tests/unit/hvp-terrain-support.test.ts",
+    "tests/unit/hvp-terrain-transfer.test.ts",
+    "tests/unit/workerPoolLifecycle.test.ts"
+  ],
+  "runId": "A05-support-r96-green-r04",
+  "binding": "A05-support-r96-binding-r04.json",
+  "nativeCapSeconds": 180,
+  "classification": "Current support firstslice after exactdefault native-observation restoration"
+}

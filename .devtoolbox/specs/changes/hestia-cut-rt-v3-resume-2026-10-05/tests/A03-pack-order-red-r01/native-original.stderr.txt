@@ -1,0 +1,15 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-borrowed-mesh-decode.test.ts > preserves the generic outer freeze lookup before its second byte hash
+AssertionError: expected [] to include 'freeze'
+ ❯ tests/unit/hvp-borrowed-mesh-decode.test.ts:89:49
+     87|   try{buildHvpBodyMeshInput(f.projection);}finally{Object.defineProper…
+     88|   const hashes=events.flatMap((entry,index)=>entry==="bytes"?[index]:[…
+     89|   expect(events.slice(hashes[0]!+1,hashes[1]!)).toContain("freeze");
+       |                                                 ^
+     90| });
+     91|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

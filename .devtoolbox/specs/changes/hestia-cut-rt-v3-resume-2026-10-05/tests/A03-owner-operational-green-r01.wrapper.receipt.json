@@ -1,0 +1,8 @@
+{
+  "runId": "A03-owner-operational-green-r01",
+  "startedUtc": "2026-10-05T14:43:14.0544164+00:00",
+  "endedUtc": "2026-10-05T14:43:27.0760341+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 13.0174274,
+  "planFile": "A03-owner-operational-green-r01.plan.json"
+}

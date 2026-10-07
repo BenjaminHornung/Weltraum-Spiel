@@ -1,0 +1,25 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/workerResultGate.test.ts > worker result integration gate > hashes before freezing the one generic Accepted decision
+AssertionError: expected [ 'AcceptedFreeze', 'HashView', …(1) ] to deeply equal [ 'HashView', 'AcceptedFreeze' ]
+
+- Expected
++ Received
+
+  [
++   "AcceptedFreeze",
+    "HashView",
+    "AcceptedFreeze",
+  ]
+
+ ❯ tests/unit/workerResultGate.test.ts:48:20
+     46|     try{integrateWorkerResult(expectation,result,bundle);}
+     47|     finally{vi.unstubAllGlobals();freeze.mockRestore();}
+     48|     expect(events).toEqual(["HashView","AcceptedFreeze"]);
+       |                    ^
+     49|   });
+     50|   it("keeps private bounded integration out of the barrel and verifies…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

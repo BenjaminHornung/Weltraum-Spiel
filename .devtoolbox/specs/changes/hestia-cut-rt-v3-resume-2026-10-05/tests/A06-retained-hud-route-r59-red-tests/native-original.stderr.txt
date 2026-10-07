@@ -1,0 +1,110 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-hud-hotpath.test.ts > HVP HUD frame hotpath > measures an identical snapshot twice without redundant mutations on the second call
+AssertionError: expected { textContent: 15, …(5) } to deeply equal { textContent: +0, …(5) }
+
+- Expected
++ Received
+
+  {
+-   "dataset": 0,
+-   "disabled": 0,
+-   "hidden": 0,
++   "dataset": 1,
++   "disabled": 32,
++   "hidden": 6,
+    "setAttribute": 0,
+-   "style": 0,
+-   "textContent": 0,
++   "style": 3,
++   "textContent": 15,
+  }
+
+ ❯ tests/unit/hvp-hud-hotpath.test.ts:127:24
+    125|       h.resetCounts(); h.hud.updatePhysics();
+    126|       console.info("HVP HUD mutations", JSON.stringify({ first, repeat…
+    127|       expect(h.writes).toEqual(emptyWrites());
+       |                        ^
+    128|       expect(h.reads()).toEqual({ readPhysics: 1, readTool: 1, readSav…
+    129|         readDormancy: 1, readSupport: 1, readThirdPerson: 1, readAimSc…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/hvp-hud-hotpath.test.ts > HVP HUD frame hotpath > does not publish a late command rejection after disposal
+AssertionError: expected { textContent: 1, …(5) } to deeply equal { textContent: +0, …(5) }
+
+- Expected
++ Received
+
+@@ -2,7 +2,7 @@
+    "dataset": 0,
+    "disabled": 0,
+    "hidden": 0,
+    "setAttribute": 0,
+    "style": 0,
+-   "textContent": 0,
++   "textContent": 1,
+  }
+
+ ❯ tests/unit/hvp-hud-hotpath.test.ts:289:22
+    287|     h.find("hvp-physics-pause").dispatchEvent(new Event("click")); h.h…
+    288|     reject(new Error("Late rejection")); await pending.catch(() => {});
+    289|     expect(h.writes).toEqual(emptyWrites());
+       |                      ^
+    290|   });
+    291|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/hvp-hud-hotpath.test.ts > HVP HUD frame hotpath > does not read actions or update retained DOM nodes after disposal
+AssertionError: expected { textContent: 16, …(5) } to deeply equal { textContent: +0, …(5) }
+
+- Expected
++ Received
+
+  {
+-   "dataset": 0,
+-   "disabled": 0,
+-   "hidden": 0,
++   "dataset": 2,
++   "disabled": 64,
++   "hidden": 6,
+    "setAttribute": 0,
+-   "style": 0,
+-   "textContent": 0,
++   "style": 3,
++   "textContent": 16,
+  }
+
+ ❯ tests/unit/hvp-hud-hotpath.test.ts:309:22
+    307|     const h = harness(); h.hud.updatePhysics(); h.hud.dispose(); h.res…
+    308|     h.hud.updatePhysics(); h.hud.updateSave();
+    309|     expect(h.writes).toEqual(emptyWrites());
+       |                      ^
+    310|     expect(Object.values(h.reads())).toEqual(Array(9).fill(0));
+    311|     expect(h.host.children).toHaveLength(0); expect(h.hud.listenerCoun…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/unit/hvp-route-bundle.test.ts > HVP route bundle boundary > keeps the HVP bootstrap and route owners outside the static entry dependency graph
+AssertionError: /src/hvp/hvpBootstrap.ts: expected [ Array(1) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
++ ]
+
+ ❯ tests/unit/hvp-route-bundle.test.ts:39:77
+     37|       "/src/hestia-prototype/player/input.ts"
+     38|     ]) {
+     39|       expect([...initialModules].filter((id) => id.endsWith(owner)), o…
+       |                                                                             ^
+     40|     }
+     41|     const bootstrap = chunks.find((chunk) => chunk.moduleIds.some((id)…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+

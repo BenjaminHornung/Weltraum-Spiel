@@ -1,0 +1,24 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-body-mesh-client.test.ts > awaits native Source-only views before Stage and proves exact preStage release (ready)
+ FAIL  tests/unit/hvp-body-mesh-client.test.ts > awaits native Source-only views before Stage and proves exact preStage release (callback-fails)
+ FAIL  tests/unit/hvp-body-mesh-client.test.ts > awaits native Source-only views before Stage and proves exact preStage release (release-fails)
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/hvp-body-mesh-client.test.ts:63:40
+     61|     port.deliver(prepared,{terrainPlan:{prepareRequestId:prepared.id,t…
+     62|       sourceDigest:prepared.sourceDigest,sourceSessionId:prepared.sour…
+     63|     await vi.waitFor(()=>expect(calls).toBe(1));expect(port.last).toBe…
+       |                                        ^
+     64|     if(mode==="ready"){expect(await result).toEqual({accepted:true});e…
+     65|     else{
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+

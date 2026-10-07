@@ -1,0 +1,7 @@
+{
+  "classification": "Full type after preserving raw command validation and shared nested body plan composition",
+  "runId": "A03-borrowed-body-plan-type-r03",
+  "mode": "type",
+  "binding": "A03-borrowed-body-plan-source-binding-r03.json",
+  "nativeCapSeconds": 60
+}

@@ -1,0 +1,8 @@
+{
+  "runId": "A03-mesh-reserve-green-r01",
+  "startedUtc": "2026-10-05T16:32:36.9369252+00:00",
+  "endedUtc": "2026-10-05T16:32:54.8092582+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 17.8680927,
+  "planFile": "A03-mesh-reserve-green-r01.plan.json"
+}

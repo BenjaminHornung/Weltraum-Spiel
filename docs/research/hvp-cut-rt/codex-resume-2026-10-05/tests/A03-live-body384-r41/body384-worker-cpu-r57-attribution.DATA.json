@@ -1,0 +1,339 @@
+{
+  "classification": "SAMPLED_CALLER_ATTRIBUTION_NOT_LATENCY_ACCEPTANCE",
+  "sampledMs": 2648.576,
+  "borrowedBodyAncestorSampledMs": 356.327,
+  "topAll": [
+    {
+      "id": 2,
+      "name": "(idle)",
+      "file": "<native>",
+      "line": 0,
+      "column": 0,
+      "selfMs": 1917.419000000002
+    },
+    {
+      "id": 90,
+      "name": "W",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 1,
+      "column": 2075776,
+      "selfMs": 122.37199999999999
+    },
+    {
+      "id": 100,
+      "name": "ai",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 1,
+      "column": 2071963,
+      "selfMs": 37.697
+    },
+    {
+      "id": 531,
+      "name": "now",
+      "file": "<native>",
+      "line": 0,
+      "column": 0,
+      "selfMs": 36.736000000000004
+    },
+    {
+      "id": 104,
+      "name": "fi",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 1,
+      "column": 2076010,
+      "selfMs": 27.702999999999996
+    },
+    {
+      "id": 157,
+      "name": "H",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 1,
+      "column": 2075010,
+      "selfMs": 27.630000000000003
+    },
+    {
+      "id": 432,
+      "name": "yg",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 5,
+      "column": 28704,
+      "selfMs": 24.804000000000002
+    },
+    {
+      "id": 108,
+      "name": "(garbage collector)",
+      "file": "<native>",
+      "line": 0,
+      "column": 0,
+      "selfMs": 19.854
+    },
+    {
+      "id": 469,
+      "name": "Fs",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 1,
+      "column": 2129624,
+      "selfMs": 19.249000000000002
+    },
+    {
+      "id": 107,
+      "name": "fa",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 1,
+      "column": 2095448,
+      "selfMs": 17.533
+    },
+    {
+      "id": 539,
+      "name": "Ls",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 1,
+      "column": 2131479,
+      "selfMs": 17.486
+    },
+    {
+      "id": 97,
+      "name": "da",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 1,
+      "column": 2094633,
+      "selfMs": 11.51
+    },
+    {
+      "id": 69,
+      "name": "(program)",
+      "file": "<native>",
+      "line": 0,
+      "column": 0,
+      "selfMs": 11.065000000000001
+    },
+    {
+      "id": 68,
+      "name": "Ox",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 5,
+      "column": 218333,
+      "selfMs": 11.056
+    },
+    {
+      "id": 121,
+      "name": "ca",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 1,
+      "column": 2089952,
+      "selfMs": 10.216999999999999
+    },
+    {
+      "id": 723,
+      "name": "Fv",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 5,
+      "column": 116402,
+      "selfMs": 9.987000000000002
+    },
+    {
+      "id": 545,
+      "name": "Is",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 1,
+      "column": 2131048,
+      "selfMs": 8.573
+    },
+    {
+      "id": 232,
+      "name": "U",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 1,
+      "column": 2075588,
+      "selfMs": 8.259
+    }
+  ],
+  "topBorrowed": [
+    {
+      "id": 531,
+      "name": "now",
+      "file": "<native>",
+      "line": 0,
+      "column": 0,
+      "selfMs": 36.736000000000004
+    },
+    {
+      "id": 90,
+      "name": "W",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 1,
+      "column": 2075776,
+      "selfMs": 34.967
+    },
+    {
+      "id": 432,
+      "name": "yg",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 5,
+      "column": 28704,
+      "selfMs": 24.804000000000002
+    },
+    {
+      "id": 469,
+      "name": "Fs",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 1,
+      "column": 2129624,
+      "selfMs": 19.249000000000002
+    },
+    {
+      "id": 104,
+      "name": "fi",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 1,
+      "column": 2076010,
+      "selfMs": 18.756
+    },
+    {
+      "id": 539,
+      "name": "Ls",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 1,
+      "column": 2131479,
+      "selfMs": 17.486
+    },
+    {
+      "id": 157,
+      "name": "H",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 1,
+      "column": 2075010,
+      "selfMs": 14.488999999999999
+    },
+    {
+      "id": 723,
+      "name": "Fv",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 5,
+      "column": 116402,
+      "selfMs": 9.987000000000002
+    },
+    {
+      "id": 121,
+      "name": "ca",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 1,
+      "column": 2089952,
+      "selfMs": 8.696
+    },
+    {
+      "id": 545,
+      "name": "Is",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 1,
+      "column": 2131048,
+      "selfMs": 8.573
+    },
+    {
+      "id": 482,
+      "name": "Ns",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 1,
+      "column": 2129214,
+      "selfMs": 7.256
+    },
+    {
+      "id": 932,
+      "name": "Si",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 1,
+      "column": 2076695,
+      "selfMs": 6.796
+    },
+    {
+      "id": 479,
+      "name": "encodeInto",
+      "file": "<native>",
+      "line": 0,
+      "column": 0,
+      "selfMs": 6.344
+    },
+    {
+      "id": 487,
+      "name": "Ml",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 1,
+      "column": 2161753,
+      "selfMs": 5.949
+    },
+    {
+      "id": 889,
+      "name": "Yc",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 1,
+      "column": 2145584,
+      "selfMs": 5.672999999999973
+    },
+    {
+      "id": 709,
+      "name": "Vv",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 5,
+      "column": 120642,
+      "selfMs": 5.082000000000001
+    },
+    {
+      "id": 710,
+      "name": "zv",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 5,
+      "column": 120188,
+      "selfMs": 5.01
+    },
+    {
+      "id": 97,
+      "name": "da",
+      "file": "physicsWorker-DkYrBaaS.js",
+      "line": 1,
+      "column": 2094633,
+      "selfMs": 4.808
+    }
+  ],
+  "deepFreezeCallers": [
+    {
+      "caller": "da:1:2094633 > da:1:2094633 > pa:1:2095623 > ma:1:2095654 > ea:1:2086349 > ra:1:2086808 > ca:1:2089952",
+      "selfMs": 14.741000000000001
+    },
+    {
+      "caller": "W:1:2075776 > da:1:2094633 > pa:1:2095623 > ma:1:2095654 > ea:1:2086349 > ra:1:2086808 > ca:1:2089952",
+      "selfMs": 10.365
+    },
+    {
+      "caller": "vi:1:2076371 > Ci:1:2077211 > wi:1:2077742 > <anonymous>:1:2112188 > bo:1:2112058 > xs:1:2127513 > Ss:1:2127687",
+      "selfMs": 6.285
+    },
+    {
+      "caller": "W:1:2075776 > oa:1:2087204 > ti:1:2071850 > aa:1:2087180 > <anonymous>:5:116923 > Fv:5:116402 > ti:1:2071850",
+      "selfMs": 6.074999999999999
+    },
+    {
+      "caller": "W:1:2075776 > ca:1:2089952 > ti:1:2071850 > sa:1:2089928 > <anonymous>:1:2112188 > bo:1:2112058 > Yc:1:2145584",
+      "selfMs": 5.031
+    },
+    {
+      "caller": "W:1:2075776 > ca:1:2089952 > ti:1:2071850 > sa:1:2089928 > <anonymous>:1:2112177 > <anonymous>:1:2148255 > <anonymous>:1:2114434",
+      "selfMs": 3.158
+    },
+    {
+      "caller": "oa:1:2087204 > ti:1:2071850 > aa:1:2087180 > <anonymous>:5:116923 > Fv:5:116402 > ti:1:2071850 > <anonymous>:5:120315",
+      "selfMs": 3.141
+    },
+    {
+      "caller": "vi:1:2076371 > Ci:1:2077211 > wi:1:2077742 > xa:1:2097187 > <anonymous>:1:2112188 > bo:1:2112058 > el:1:2150245",
+      "selfMs": 3.14
+    },
+    {
+      "caller": "W:1:2075776 > Ci:1:2077211 > wi:1:2077742 > <anonymous>:1:2112188 > bo:1:2112058 > xs:1:2127513 > Ss:1:2127687",
+      "selfMs": 3.138
+    },
+    {
+      "caller": "W:1:2075776 > da:1:2094633 > pa:1:2095623 > ma:1:2095654 > ea:1:2086349 > ra:1:2086808 > oa:1:2087204",
+      "selfMs": 3.13
+    }
+  ]
+}

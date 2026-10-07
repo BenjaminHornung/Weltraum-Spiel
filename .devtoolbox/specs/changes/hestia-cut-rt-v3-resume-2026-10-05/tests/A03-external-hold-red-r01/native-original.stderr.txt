@@ -1,0 +1,38 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-body-mesh-owner-integration.test.ts > keeps the single parent credit after Finalize until the external mesh operation really closes
+AssertionError: expected undefined to be type of 'function'
+
+Expected: "function"
+Received: "undefined"
+
+ ❯ tests/unit/hvp-body-mesh-owner-integration.test.ts:260:124
+    258|
+    259| it("keeps the single parent credit after Finalize until the external m…
+    260|   const hold=Reflect.get(session,"reserveExternalMeshWork") as ((id:st…
+       |                                                                                                                            ^
+    261|   const before=session.resources()!.reservedBytes,release=hold!(id,655…
+    262|   try{expect(session.resources()!.reservedBytes).toBe(before+65536);co…
+ ❯ withOwner tests/unit/hvp-body-mesh-owner-integration.test.ts:41:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/unit/hvp-body-mesh-owner-integration.test.ts > keeps external producer credit through Rollback until its explicit terminal closure
+ FAIL  tests/unit/hvp-body-mesh-owner-integration.test.ts > keeps external producer credit through Dispose until its explicit terminal closure
+AssertionError: expected undefined to be type of 'function'
+
+Expected: "function"
+Received: "undefined"
+
+ ❯ tests/unit/hvp-body-mesh-owner-integration.test.ts:270:124
+    268| },1,32*1024*1024));
+    269| it.each(["Rollback","Dispose"] as const)("keeps external producer cred…
+    270|   const hold=Reflect.get(session,"reserveExternalMeshWork") as ((id:st…
+       |                                                                                                                            ^
+    271|   try{if(action==="Rollback"){session.rollback(id);}else{session.dispo…
+    272|     expect(session.resources()?.reservedBytes).toBeGreaterThan(0);expe…
+ ❯ withOwner tests/unit/hvp-body-mesh-owner-integration.test.ts:41:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+

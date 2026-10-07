@@ -1,0 +1,15 @@
+# R117 scoped source review
+
+Independent read-only reviewer r117_graphics_review inspected canonical.ts, meshArtifact.ts, renderCommands.ts, threeRenderBackend.ts, hvpBootstrap.ts and terrainConsumer.ts. No edits, tests or browser actions by reviewer.
+
+P1: cancellation via generator.return invokes cleanupEphemeralScope/retireEphemeral, releasing backend geometry but skipping extra plainTerrainLeases ownership created after an accepted hidden upload. Reuse exact per-key release helper from scope cleanup and ordinary removeTerrainEntry; release before splice; retain failed pair and declare RecoveryHold. New actual Three backend/two-entry/current-cancellation RED control covers healthy and renderer-uncertain cleanup; add direct lease-release failure control. Current red wholeBootstrap Native attempt remains RUNNING.
+
+No other concrete scoped correctness/hash-format/ownership blocker found. All five full content traversals remain; public native forEach/getter/error order preserved; owned snapshots stay local until upload. Backend rechecks availability/revision/ephemeral registration after suspended full signature; registry ledger is read afterward. Task pump checks mount/Root/epoch each advance; Dispose waits for Terrain whenIdle before backend destruction. Upload finalizer uses existing BufferAttribute references/bounds-only sphere, no concealed complete typed-array scan found there. Its real quantum and projection-flush time remain unmeasured.
+
+Disposition: NOT_READY until lease fix, complete fresh populations/type/build, fresh actual Cut quantum/frame/gap/250 proof and final AC-qualified42-before1400. Prior interrupted whole8 remains UNKNOWN. No physical-memory, ART or overall completion claim.
+
+WholeBootstrap RED completed KNOWN417.8535535s,68PASS/1FAIL (69total). The healthy current-cancel case fails its materiallease-count equality exactly; originalcases and unprovenrenderer case pass. Native0/outer1 and scoped release2.456197s PASS. Immutable attempt A05-graphics-cleanup-r117-red retained.
+
+Root applied one releaseTerrainLease helper shared by scope cleanup and ordinary retirement, release before splice/AO removal; failed release retains pair and enters existing RecoveryHold. Extended actualbackend control to healthy/renderer-uncertain/plainlease-release-throws, with originalerror/no falseownership recovery and visible-state assertions. Full type0/native6.0499212s/release3.029776s PASS. Whole8 A05-graphics-cleanup-r117-green-r01 now RUNNING; this is not a population success claim. Source review recheck and actual rebuild/Cut remain pending.
+
+Checkpoint update2026-10-07: whole8 completed170/170PASS native447.7821721s, source binding487unchanged, native0/outer1, scoped release2.356675s PASS. Independent exactleasefix source ACCEPT; no other scoped blocker. Production build0/native2.3338736s/release2.260305s PASS. Original build warning remains. User requested commit/push and external architecture discussion; no further optimization or actualR117Cut started. Latest actual timings remain R115, not current-source performance acceptance. Full B2/B3/P01-P06/42/1400/finalPlanner requirements remain OPEN.

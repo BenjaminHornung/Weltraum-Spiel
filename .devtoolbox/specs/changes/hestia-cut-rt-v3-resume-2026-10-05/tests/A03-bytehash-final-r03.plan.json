@@ -1,0 +1,11 @@
+{
+  "files": [
+    "tests/unit/hvp-borrowed-bytehash.test.ts",
+    "tests/unit/workerProtocol.test.ts"
+  ],
+  "runId": "A03-bytehash-final-r03",
+  "classification": "Minimal final bounded bytehash; private span candidate NO_ADOPTION after no demonstrated CPU improvement; original deadlines",
+  "nativeCapSeconds": 180,
+  "binding": "A03-bytehash-final-r03-binding.json",
+  "mode": "tests"
+}

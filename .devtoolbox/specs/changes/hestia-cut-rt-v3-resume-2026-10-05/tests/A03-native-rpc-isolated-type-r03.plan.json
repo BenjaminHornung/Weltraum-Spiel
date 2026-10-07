@@ -1,0 +1,7 @@
+{
+  "binding": "A03-native-rpc-isolated-source-binding-r03.json",
+  "nativeCapSeconds": 60,
+  "runId": "A03-native-rpc-isolated-type-r03",
+  "mode": "type",
+  "classification": "Full type after standalone actual RPC and original65 byte restoration"
+}

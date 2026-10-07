@@ -1,0 +1,8 @@
+{
+  "runId": "A03-phase-timing-r42-type",
+  "binding": "A03-phase-timing-r42-binding.json",
+  "mode": "type",
+  "files": [],
+  "nativeCapSeconds": 60,
+  "classification": "Fresh complete type / five whole regression populations / production build; terminal trace and contiguous quantum fix plus four measurement-only phase spans; original test defaults"
+}

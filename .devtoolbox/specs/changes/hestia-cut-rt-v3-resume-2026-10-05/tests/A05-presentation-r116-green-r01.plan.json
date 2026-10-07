@@ -1,0 +1,10 @@
+{
+  "runId": "A05-presentation-r116-green-r01",
+  "classification": "Whole canonical owned binary format controls",
+  "mode": "tests",
+  "files": [
+    "tests/unit/presentationCanonical.test.ts"
+  ],
+  "binding": "A05-presentation-r116-binding-green-r01.json",
+  "nativeCapSeconds": 180
+}

@@ -1,0 +1,8 @@
+{
+  "runId": "A03-ingest-phase-r63-build",
+  "files": [],
+  "classification": "Existing opt-in body quantum labels resolve four existing ingest stages; no extra clocks/scalar timing/authority/work changes; full direct and generic trace files",
+  "binding": "A03-ingest-phase-r63-binding.json",
+  "nativeCapSeconds": 600,
+  "mode": "build"
+}

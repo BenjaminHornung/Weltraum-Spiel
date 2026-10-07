@@ -1,0 +1,22 @@
+{
+  "runId": "A03-borrowed-recipe-regressions-r05",
+  "nativeCapSeconds": 600,
+  "files": [
+    "tests/unit/hvp-borrowed-rigid-recipe.test.ts",
+    "tests/unit/hvp-parallel-p01-classification.test.ts",
+    "tests/unit/structuralPgTragwerkF7.test.ts",
+    "tests/unit/structuralPgTragwerkF8.test.ts",
+    "tests/unit/structuralPgTragwerkR4.test.ts",
+    "tests/unit/structuralPgTragwerkR5b.test.ts",
+    "tests/unit/structuralPgTragwerkR3.test.ts",
+    "tests/unit/structuralPgTragwerkR5.test.ts",
+    "tests/unit/structuralPgTragwerkSlice3.test.ts",
+    "tests/unit/hvpOwnedCanonicalHash.test.ts",
+    "tests/unit/structuralPgTragwerkSlice4.test.ts",
+    "tests/unit/structuralPgTragwerkSlice2.test.ts",
+    "tests/unit/v3StructuralRecipeParity.test.ts"
+  ],
+  "mode": "tests",
+  "binding": "A03-borrowed-recipe-source-binding-r05.json",
+  "classification": "Whole13 affected files after R12/R13 fixes including original observer/literal routes and full7 borrowed controls; no caller activation or test-deadline change"
+}

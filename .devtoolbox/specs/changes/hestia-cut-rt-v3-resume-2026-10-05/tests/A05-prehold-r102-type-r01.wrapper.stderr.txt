@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "C:\IFI_SourceCode\Temp\WeltraumSpiel\.worktrees\Hestia-CutV3-Resume-2026-10-05\.devtoolbox\specs\changes\hestia-cut-rt-v3-resume-2026-10-05\tests\native_receipt.py", line 69, in <module>
+    assert mode in ['type', 'tests', 'build']
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

@@ -386,10 +386,11 @@ export const createStructuralReconstructionCursor = (value: unknown) => reconstr
  * public getters/proxies/Species products. Frozen alone is never authority. No World/plan is issued.
  * residentBytes includes the retained source, old/result coexistence and other owner allocations.
  */
-export const createStructuralOwnerLedger = (residentBytesValue: number, prepareLimitValue = 96 * 1024 * 1024) => {
+export const createStructuralOwnerLedger = (residentBytesValue: number, prepareLimitValue = 96 * 1024 * 1024, hashUnits: 1 | 128 = 1) => {
   const residentBytes = structuralNonNegativeSafeInteger(residentBytesValue, "cursor/residentBytes");
   const prepareLimitBytes = structuralPositiveBudget(prepareLimitValue, "cursor/prepareLimitBytes");
   if (prepareLimitBytes > 96 * 1024 * 1024) { return structuralFail("InvalidBudget", "cursor/prepareLimitBytes", "Prepare limit cannot exceed Prepare96MiB."); }
+  if (hashUnits !== 1 && hashUnits !== 128) { return structuralFail("InvalidBudget", "cursor/hashUnits", "Owned hash quantum must be 1 or 128."); }
   let reservedBytes = 0, retainedEstimateBytes = 0, transferredResultEstimateBytes = 0, peakEstimateBytes = residentBytes, hashReservations = 0;
   const reserve: StructuralOwnedReserve = (bytes, retained = false, kind) => {
     const next = reservedBytes + bytes;
@@ -401,6 +402,7 @@ export const createStructuralOwnerLedger = (residentBytesValue: number, prepareL
     peakEstimateBytes = Math.max(peakEstimateBytes, residentBytes + next);
     if (kind === "hash") { hashReservations += 1; }
   };
+  if (hashUnits === 128) { Object.defineProperty(reserve, "hashUnits", { value: 128 }); }
   return {
     reserve,
     release(completed = false): void {

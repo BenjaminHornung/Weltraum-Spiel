@@ -1,0 +1,8 @@
+{
+  "runId": "A03-recipe-measure-quantum-r60-type-r02",
+  "binding": "A03-recipe-measure-quantum-r60-binding.json",
+  "files": [],
+  "classification": "Fresh plan after null-files runner rejection before native; exact same source",
+  "nativeCapSeconds": 60,
+  "mode": "type"
+}

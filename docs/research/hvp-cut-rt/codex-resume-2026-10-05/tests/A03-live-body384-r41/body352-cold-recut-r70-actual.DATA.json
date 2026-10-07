@@ -1,0 +1,156 @@
+{
+  "classification": "GENUINE_NORMAL_COLD_RECUT_NATIVE_FUNCTIONAL_NOT_LATENCY_ACCEPTANCE",
+  "snapshot": {
+    "moving": {
+      "sequence": 2,
+      "pendingId": null,
+      "state": "Idle",
+      "preview": null,
+      "last": {
+        "id": "moving-cut-2",
+        "status": "Applied",
+        "parentId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+        "children": [
+          "hvp:terrain-fragment:r1:1b4aa69d:r1:p0:r1:p0",
+          "hvp:terrain-fragment:r1:1b4aa69d:r1:p0:r1:p1"
+        ],
+        "removedCells": 32,
+        "removedMassKg": 150,
+        "issuedTick": 2962,
+        "commitTick": 2985,
+        "parentPose": {
+          "position": {
+            "x": 8.422820091247559,
+            "y": 0.9610478281974792,
+            "z": -4.889142036437988
+          },
+          "rotation": {
+            "x": 0.03763234615325928,
+            "y": 0.6483237147331238,
+            "z": 0.014170724898576736,
+            "w": 0.7603020668029785
+          },
+          "velocity": {
+            "x": -0.000037983700167387724,
+            "y": 0.0000213512139453087,
+            "z": -0.00021059026767034084
+          },
+          "angularVelocity": {
+            "x": 0.000011011225069523789,
+            "y": -0.00010075733007397503,
+            "z": -0.000011993128282483667
+          }
+        },
+        "removedMomentum": {
+          "massKg": 150,
+          "referencePoint": {
+            "x": 8.422820091247559,
+            "y": 0.9610478281974792,
+            "z": -4.889142036437988
+          },
+          "center": {
+            "x": 8.457193573403721,
+            "y": 0.8745420410648412,
+            "z": -5.159199437181008
+          },
+          "linear": {
+            "x": -0.0017716368756093743,
+            "y": 0.0035868946778349225,
+            "z": -0.031211913311231142
+          },
+          "angular": {
+            "x": 0.003705238662296103,
+            "y": 0.0009216802458954139,
+            "z": -0.00009471322715892658
+          }
+        }
+      }
+    },
+    "tool": {
+      "state": "Idle",
+      "last": {
+        "id": "moving-cut-2",
+        "status": "Applied",
+        "reason": "Current-pose fragment replacement"
+      },
+      "issued": 2
+    },
+    "fragments": [
+      {
+        "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0:r1:p0",
+        "sourceDigest": "fnv1a64-v1:95bc67f8c2e325bb",
+        "centerOfMass": {
+          "x": 22.75,
+          "y": 10.49077868852459,
+          "z": 9.756147540983607
+        },
+        "cellCount": 192,
+        "massKg": 857.8125,
+        "colliders": 1,
+        "sourceBytes": 131072
+      },
+      {
+        "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0:r1:p1",
+        "sourceDigest": "fnv1a64-v1:3c023d5d13cdab04",
+        "centerOfMass": {
+          "x": 24.504554655870447,
+          "y": 10.493168016194332,
+          "z": 9.754554655870445
+        },
+        "cellCount": 128,
+        "massKg": 578.90625,
+        "colliders": 1,
+        "sourceBytes": 131072
+      }
+    ],
+    "status": "Paused",
+    "bodyCount": 6,
+    "colliderCount": 90,
+    "resources": {
+      "ledger": {
+        "slotBytes": 8388608,
+        "preparedCopyBytes": 8388608,
+        "maskBytes": 1089536,
+        "meshBytes": 28104264,
+        "groupedIndexBytes": 2448336,
+        "artifactCopyBytes": 28104264,
+        "retainedMeshBytes": 28117832,
+        "tempEstimateBytes": 157073768,
+        "vegetationSourceBytes": 7158400,
+        "checkpointSourceBytes": 3234768,
+        "totalCpuBytes": 252052120,
+        "gpuBytes": "unsupported",
+        "triangles": 374644,
+        "drawCalls": 173,
+        "dormantCheckpointBytes": 0,
+        "neighborSourceBytes": 0,
+        "neighborCacheBytes": 0,
+        "neighborCheckpointBytes": 0,
+        "neighborBaseProxyBytes": 0,
+        "physicsPayloadBytes": 4980528,
+        "physicsPrepareBytes": 100663296,
+        "dynamicFragmentSourceBytes": 272384
+      },
+      "gameplayCpuBytes": 252052120,
+      "diagnosticReservedBytes": 524288,
+      "totalCpuBytes": 252576408,
+      "diagnosticRuntimeOverhead": "not-measured",
+      "cutObservation": {
+        "status": "armed",
+        "drops": 0,
+        "disables": 0,
+        "inputCount": 1,
+        "pendingRender": false
+      },
+      "caps": {
+        "maxCpuBytes": 268435456,
+        "maxMeshBytes": 134217728,
+        "maxTriangles": 500000,
+        "maxDrawCalls": 300
+      }
+    }
+  },
+  "cellsConserved": true,
+  "massConserved": true,
+  "earlierHelperAttempt": "INVALID_PREMATURE_OLD_RECEIPT_DRAIN_EXCLUDED_FROM_PERFORMANCE"
+}

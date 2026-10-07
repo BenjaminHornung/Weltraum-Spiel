@@ -1,0 +1,8 @@
+{
+  "binding": "A03-quote-count-regressions-r01-binding.json",
+  "runId": "A03-quote-count-type-r01",
+  "files": [],
+  "mode": "type",
+  "nativeCapSeconds": 60,
+  "classification": "Exact allocation-only shared occupancy/exposure preflight final type original60"
+}

@@ -1,0 +1,67 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-bootstrap.test.ts (67 tests) 607842ms
+   ✓ restores original fixed specimen geometry and materials on a real decoded cold checkpoint  25655ms
+     ✓ records measured cold Ready only after the first submitted scene frame  9166ms
+     ✓ binds the rendered daylight look scene instead of only publishing dataset claims  7681ms
+     ✓ proves the far field arrives bound through the pipeline as render-only data  7228ms
+     ✓ keeps source-derived terrain geometry intact while grouping readable material ranges  7509ms
+     ✓ reaches Ready with exactly one tick loop and disposes start/dispose exactly once  7873ms
+     ✓ fails a double mount closed with no duplicate HUD and no second backend  17288ms
+     ✓ fails a restart closed while dispose is pending and recovers after settle  17445ms
+     ✓ keeps the live session clean when the route entry fires twice  7985ms
+     ✓ never installs failure UI into a torn-down or newer mount  7482ms
+     ✓ cancels a deferred source on pagehide without publishing products  9588ms
+     ✓ does not let a late failure teardown wipe a newer mount  9324ms
+     ✓ rejects over-cap scenes before attaching products or reaching Ready  16759ms
+     ✓ exposes a real Inspect-only AO toggle defaulting to on  9038ms
+     ✓ swaps whole material arrays on toggle without mutating cached instances  9309ms
+     ✓ rejects a World missing the planned inertia specimen before publishing meshes  7581ms
+     ✓ never reaches Ready on an invalid source and stays fail-closed  7611ms
+     ✓ hides the leftover flight reticle on entry and restores it on dispose  9372ms
+     ✓ exposes an accessible HUD hide control and a labeled camera inspection mode  9666ms
+     ✓ keeps HUD inspection state tied to the real camera across presets reset Play and restored modes  8438ms
+     ✓ publishes save busy and rejection immediately without waiting for a render frame  8368ms
+     ✓ C2B wires the real confirm, terrain trace, and accepted render callbacks  8915ms
+     ✓ C2B reports the controlled observation reservation separately from gameplay bytes  8923ms
+     ✓ C2B remains inert by default and preserves the original resource ledger  8270ms
+     ✓ C2B does not allocate the observer when startup leaves less than its reserve  17585ms
+     ✓ C2B admits an exact-cap preview, releases diagnostics, and stays disabled after rollback  15746ms
+     ✓ P07 binds a body outcome to actual staged source, native receipt and Three projection  9958ms
+     ✓ V3-01 exposes the already validated support phase numbers without forging worker start times  9474ms
+     ✓ V3-00 keeps an occupied native fragment representation through terrain staging and rollback  9634ms
+     ✓ V3-05 keeps a restored owner representation during body-foliage-parked staging  8449ms
+     ✓ V3-05 keeps a restored owner representation during body-foliage-product-alias staging  9954ms
+     ✓ V3-05 keeps a restored owner representation during structural-branch staging  9750ms
+     ✓ preflights moving-body coexistence over the cpu cap before allocation  17762ms
+     ✓ preflights moving-body coexistence over the mesh cap before allocation  18020ms
+     ✓ K34 uses an issued save and atomic replacement before Rejected epoch outcome  14222ms
+     ✓ K34 uses an issued save and atomic replacement before ThrowAfterAcceptance epoch outcome  14551ms
+     ✓ K34 uses an issued save and atomic replacement before PageHide epoch outcome  13453ms
+     ✓ K34 uses an issued save and atomic replacement before SuccessfulLoad epoch outcome  15316ms
+     ✓ K34 uses an issued save and atomic replacement before RolloverFailure epoch outcome  14059ms
+     ✓ K34 uses an issued save and atomic replacement before PageHideDuringRollover epoch outcome  14969ms
+     ✓ K34 registers neighbour role aliases once and keeps reused proxies live  11941ms
+     ✓ K34 keeps a parked ephemeral fragment registered across Evict and wake  8610ms
+     ✓ R01/T04 moving stage reports renderer cleanup authority (unproven=false)  10567ms
+     ✓ R01/T04 moving stage reports renderer cleanup authority (unproven=true)  8849ms
+     ✓ R74 keeps body publication atomic after accepted visibility throws (restored)  10458ms
+     ✓ R74 keeps body publication atomic after accepted visibility throws (renderer-unproven)  9846ms
+     ✓ R74 keeps body publication atomic after accepted visibility throws (native-unproven)  10507ms
+     ✓ K34 removes an accepted terrain Upsert after visibility publication throws  9880ms
+     ✓ C2B bounds visible representation reads before the sentinel  8040ms
+     ✓ C2B renders once and emits no committed marker when frame facts fail  8767ms
+     ✓ C2B preserves backend unavailable and thrown render results  7864ms
+     ✓ C2B maps the native RecoveryHold fact into the observer frame  8395ms
+     ✓ C2B delegates the real structural admission without re-arming  8464ms
+     ✓ C2B preserves observer drops in live and disposed measurement health  7349ms
+     ✓ V3-01 records a sink failure after health publication (publish next: false)  9127ms
+     ✓ V3-01 records a sink failure after health publication (publish next: true)  9730ms
+
+ Test Files  1 passed (1)
+      Tests  67 passed (67)
+   Start at  05:42:56
+   Duration  614.41s (transform 3.06s, setup 0ms, import 6.33s, tests 607.84s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A04-atomic-r74-bootstrap-r08/original-vitest.json

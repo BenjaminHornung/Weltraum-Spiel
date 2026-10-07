@@ -1,0 +1,58 @@
+{
+  "kind": "SOURCE_EXACT_NODE_EQUAL_TOTAL_CLOCKS_NOT_BROWSER_OR_FORMAL_GATE",
+  "node": "v22.23.2",
+  "originalSHA": "5e887ecc1258b31488d8f14297d6e9b94a6519e1835afdf46a9d98a19f5ce687",
+  "candidateSHA": "7da7c19b129e97c6d48f6e789c8ae58ca3bb713a268a67170c529dff5d391895",
+  "bytes": 8388608,
+  "hash": "82a97ace",
+  "pairs": [
+    {
+      "order": "original-candidate",
+      "originalMs": 7.121,
+      "candidateMs": 14.2433
+    },
+    {
+      "order": "candidate-original",
+      "originalMs": 7.1302,
+      "candidateMs": 14.3598
+    },
+    {
+      "order": "original-candidate",
+      "originalMs": 7.061,
+      "candidateMs": 21.7379
+    },
+    {
+      "order": "candidate-original",
+      "originalMs": 7.1629,
+      "candidateMs": 15.3256
+    },
+    {
+      "order": "original-candidate",
+      "originalMs": 7.0325,
+      "candidateMs": 14.5136
+    },
+    {
+      "order": "candidate-original",
+      "originalMs": 8.2565,
+      "candidateMs": 14.916
+    },
+    {
+      "order": "original-candidate",
+      "originalMs": 8.266,
+      "candidateMs": 14.3083
+    },
+    {
+      "order": "candidate-original",
+      "originalMs": 7.0801,
+      "candidateMs": 17.0561
+    },
+    {
+      "order": "original-candidate",
+      "originalMs": 7.2821,
+      "candidateMs": 14.629
+    }
+  ],
+  "medianOriginalMs": 7.1302,
+  "medianCandidateMs": 14.629,
+  "priorPerUnitSampleOverhead": "A03-bytehash-alternating-r01 includes candidate unit clocks; do not use that total as an equal-clock CPU comparison"
+}

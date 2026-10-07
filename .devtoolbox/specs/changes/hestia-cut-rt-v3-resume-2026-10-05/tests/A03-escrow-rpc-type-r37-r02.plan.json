@@ -1,0 +1,8 @@
+{
+  "binding": "A03-escrow-rpc-r37-r02-binding.json",
+  "files": [],
+  "runId": "A03-escrow-rpc-type-r37-r02",
+  "classification": "Fresh shared escrow owner/session/RPC source typecheck",
+  "nativeCapSeconds": 60,
+  "mode": "type"
+}

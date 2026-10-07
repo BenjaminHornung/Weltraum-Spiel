@@ -1,0 +1,12 @@
+{
+  "runId": "A02-freeze-contract-baseline-r01",
+  "binding": "A02-freeze-baseline-source-binding-r01.json",
+  "mode": "tests",
+  "files": ["tests/unit/hvp-deep-freeze-traversal.test.ts"],
+  "classification": "semantic preimage baseline; original full deepFreeze unchanged",
+  "nativeCapSeconds": 180,
+  "originalTestDeadlines": "unchanged",
+  "retry": 0,
+  "bail": false,
+  "skip": false
+}

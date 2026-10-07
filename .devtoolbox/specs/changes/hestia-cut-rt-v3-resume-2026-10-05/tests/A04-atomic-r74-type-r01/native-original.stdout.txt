@@ -1,0 +1,1 @@
+tests/unit/hvp-bootstrap.test.ts(2251,29): error TS2454: Variable 'oldNative' is used before being assigned.

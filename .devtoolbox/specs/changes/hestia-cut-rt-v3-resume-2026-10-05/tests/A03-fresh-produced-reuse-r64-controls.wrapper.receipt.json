@@ -1,0 +1,8 @@
+{
+  "runId": "A03-fresh-produced-reuse-r64-controls",
+  "startedUtc": "2026-10-06T00:16:31.6743494+00:00",
+  "endedUtc": "2026-10-06T00:16:40.2720371+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 8.5925813,
+  "planFile": "A03-fresh-produced-reuse-r64-controls.plan.json"
+}

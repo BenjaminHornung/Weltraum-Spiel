@@ -1,0 +1,28 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-support-json.test.ts > reads the existing JSON wire across real UTF8 and escape boundaries without a bulk parse
+TypeError: readHvpSupportJsonSteps is not a function
+ ❯ read tests/unit/hvp-support-json.test.ts:6:76
+      4| type Reader=(bytes:Uint8Array)=>Generator<string,unknown,unknown>;
+      5| const read=(bytes:Uint8Array)=>{
+      6|   const steps=(supportJson as unknown as {readHvpSupportJsonSteps:Read…
+       |                                                                            ^
+      7|   for(;;){const step=steps.next();if(step.done){return {value:step.val…
+      8| };
+ ❯ tests/unit/hvp-support-json.test.ts:13:70
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/hvp-support-json.test.ts > rejects malformed syntax and UTF8, and cancellation never returns a partial graph
+TypeError: readHvpSupportJsonSteps is not a function
+ ❯ tests/unit/hvp-support-json.test.ts:21:76
+     19|   }
+     20|   expect(()=>read(new Uint8Array([123,34,120,34,58,34,0xff,34,125]))).…
+     21|   const steps=(supportJson as unknown as {readHvpSupportJsonSteps:Read…
+       |                                                                            ^
+     22|   expect(steps.next().done).toBe(false);expect(steps.return(undefined)…
+     23| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+

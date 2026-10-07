@@ -1,0 +1,8 @@
+{
+  "runId": "A02-freeze-paired-ab-r01",
+  "startedUtc": "2026-10-05T10:31:18.8809370+00:00",
+  "endedUtc": "2026-10-05T10:31:19.7405885+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 0.8543514,
+  "planFile": "A02-freeze-paired-ab-r01.plan.json"
+}

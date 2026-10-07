@@ -1,0 +1,10 @@
+{
+  "runId": "A03-owner-admission-controls-r01",
+  "binding": "A03-owner-admission-controls-source-binding-r01.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts"
+  ],
+  "nativeCapSeconds": 180,
+  "classification": "Complete5 real-native admission controls, default5000 unchanged; no productive activation acceptance"
+}

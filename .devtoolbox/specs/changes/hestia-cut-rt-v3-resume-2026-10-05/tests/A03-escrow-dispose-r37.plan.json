@@ -1,0 +1,10 @@
+{
+  "binding": "A03-escrow-dispose-r37-binding.json",
+  "files": [
+    "tests/unit/hvp-body-mesh-worker.test.ts"
+  ],
+  "classification": "Final reviewer Dispose release fix, original5+2escrow+Dispose capturedticket tests",
+  "nativeCapSeconds": 180,
+  "runId": "A03-escrow-dispose-r37",
+  "mode": "tests"
+}

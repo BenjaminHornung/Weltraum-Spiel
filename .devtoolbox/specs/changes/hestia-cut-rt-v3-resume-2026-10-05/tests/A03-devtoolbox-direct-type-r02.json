@@ -1,0 +1,36 @@
+{
+  "scope": "A03 partial verification only; overall INCOMPLETE",
+  "sourceBinding": "A03-owner-operational-regressions-r02-binding.json",
+  "executionId": "16152b5959ca4aec9e2e95eca1e70d7a",
+  "status": "verified",
+  "results": [
+    {
+      "name": "Specs",
+      "commandLine": "specs validate",
+      "workingDirectory": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05",
+      "status": "passed",
+      "exitCode": 0,
+      "message": "Passed.",
+      "output": "Passed: Proposal - Proposal exists.\r\nPassed: Tasks - Tasks exists.\r\nPassed: Specs - 1 spec file(s) found.\r\nPassed: Design - Design exists.\r\nPassed: Task parsing - 9 task item(s) parsed.\r\nPassed: Change root - Change path resolves inside .devtoolbox/specs.",
+      "startedAtUtc": "2026-10-05T14:56:19.5565178+00:00",
+      "completedAtUtc": "2026-10-05T14:56:19.5796342+00:00"
+    },
+    {
+      "name": "Pinned Node22 full typecheck",
+      "commandLine": "\"C:\\IFI_SourceCode\\Utils\\npm-tmp\\opencode\\node-v22.23.2-win-x64\\node.exe\" node_modules/typescript/bin/tsc --noEmit",
+      "workingDirectory": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\apps\\weltraum-browser",
+      "status": "passed",
+      "exitCode": 0,
+      "message": "Passed.",
+      "output": "",
+      "startedAtUtc": "2026-10-05T14:56:19.5796539+00:00",
+      "completedAtUtc": "2026-10-05T14:56:20.9257071+00:00"
+    }
+  ],
+  "previousAttempt": {
+    "phase": "A03-devtoolbox-type-r01",
+    "status": "COMMAND_TIMEOUT_60_BEFORE_NATIVE_FIRST_NOT_PROVEN",
+    "preserved": true,
+    "limitsUnchanged": true
+  }
+}

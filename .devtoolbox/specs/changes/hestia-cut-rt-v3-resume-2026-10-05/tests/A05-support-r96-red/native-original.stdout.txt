@@ -1,0 +1,13 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-owned-support-plan.test.ts (2 tests | 2 failed) 290ms
+   × shares full support reports and every source read with the original algorithm while using one borrowed lifetime 289ms
+   × closes borrowed fragment work on cancellation without publishing a partial report 0ms
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  19:43:10
+   Duration  1.64s (transform 639ms, setup 0ms, import 1.21s, tests 290ms, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-support-r96-red/original-vitest.json

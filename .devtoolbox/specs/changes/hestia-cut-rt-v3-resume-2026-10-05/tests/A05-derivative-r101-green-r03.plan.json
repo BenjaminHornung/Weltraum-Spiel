@@ -1,0 +1,13 @@
+{
+  "runId": "A05-derivative-r101-green-r03",
+  "classification": "Full actual privateDerivative dispatch hash decoder cleanup and byte parity plus originalwhole WorkerPool and phasequote",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-owned-terrain-products.test.ts",
+    "tests/unit/hvp-terrain-products.test.ts",
+    "tests/unit/workerPoolLifecycle.test.ts",
+    "tests/unit/hvp-support-phase-budget.test.ts"
+  ],
+  "binding": "A05-derivative-r101-binding-r03.json",
+  "nativeCapSeconds": 180
+}

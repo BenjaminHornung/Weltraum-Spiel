@@ -1,0 +1,8 @@
+{
+  "classification": "Same bounded quantum moved inside reserved recipe relabel; whole unchanged controls plus measurement lifetime control",
+  "binding": "A03-recipe-measure-quantum-r60-binding.json",
+  "files": null,
+  "runId": "A03-recipe-measure-quantum-r60-build",
+  "nativeCapSeconds": 600,
+  "mode": "build"
+}

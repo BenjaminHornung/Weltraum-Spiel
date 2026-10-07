@@ -1,0 +1,12 @@
+[
+  {
+    "appRelative": "src/hestia-prototype/presentation/bodyMeshAdmission.ts",
+    "bytes": 7276,
+    "sha256": "c60fd84fab5c5c5a9183d334f0ffa783b6968b149fb19ebaf0604fcbd204f6b1"
+  },
+  {
+    "appRelative": "tests/unit/hvpOwnedBodyMesh.test.ts",
+    "bytes": 7687,
+    "sha256": "3e150c72e59012581158041fd4d490a5aff68826732a7730816e15546dec7109"
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "classification": "Whole real RPC binding controls before opt-in transport; finite command window, unchanged120 per-test",
+  "files": [
+    "tests/unit/hvp-body-mesh-worker.test.ts"
+  ],
+  "runId": "A03-owner-operational-pre-r01",
+  "binding": "A03-owner-operational-pre-r01-binding.json",
+  "mode": "tests",
+  "nativeCapSeconds": 360
+}

@@ -1,0 +1,8 @@
+{
+  "runId": "A03-owner-timeout-diagnostic-r03",
+  "startedUtc": "2026-10-05T12:32:50.8579562+00:00",
+  "endedUtc": "2026-10-05T12:32:50.9920040+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 0.127981,
+  "planFile": "A03-owner-timeout-diagnostic-r03.plan.json"
+}

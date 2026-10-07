@@ -1,0 +1,190 @@
+{
+  "originalCostCardSha256": "811cec38453f3e6a221b67e7cd372ca814dc52bbd86bbc741470a3cd6c136573",
+  "pairedColdMedianMs": -3.366300000000024,
+  "classification": "HISTORICAL_P02_DIAGNOSTIC_NO_ADOPTION_NOT_V3_ACCEPTANCE",
+  "originalJsonSha256": "d2b277f25934510a430c2aacd096417d2dd6d59269cddfd10da6b6525e4cb3d0",
+  "pairedWarmMedianMs": 17.861250000001746,
+  "warmPairs": [
+    {
+      "i": 0,
+      "order": [
+        "A",
+        "B"
+      ],
+      "a": 667.1746999999996,
+      "b": 676.7610999999997,
+      "differenceMs": 9.58640000000014
+    },
+    {
+      "i": 1,
+      "order": [
+        "B",
+        "A"
+      ],
+      "a": 700.1885000000002,
+      "b": 710.7243000000017,
+      "differenceMs": 10.535800000001473
+    },
+    {
+      "i": 2,
+      "order": [
+        "A",
+        "B"
+      ],
+      "a": 690.9406000000017,
+      "b": 728.8015000000014,
+      "differenceMs": 37.860899999999674
+    },
+    {
+      "i": 3,
+      "order": [
+        "B",
+        "A"
+      ],
+      "a": 805.0110999999997,
+      "b": 730.9193999999989,
+      "differenceMs": -74.09170000000086
+    },
+    {
+      "i": 4,
+      "order": [
+        "A",
+        "B"
+      ],
+      "a": 794.9455999999991,
+      "b": 753.9144000000015,
+      "differenceMs": -41.031199999997625
+    },
+    {
+      "i": 5,
+      "order": [
+        "B",
+        "A"
+      ],
+      "a": 694.0835000000006,
+      "b": 756.6546999999991,
+      "differenceMs": 62.5711999999985
+    },
+    {
+      "i": 6,
+      "order": [
+        "A",
+        "B"
+      ],
+      "a": 717.6625000000022,
+      "b": 776.6160000000018,
+      "differenceMs": 58.95349999999962
+    },
+    {
+      "i": 7,
+      "order": [
+        "B",
+        "A"
+      ],
+      "a": 726.9218999999975,
+      "b": 752.1085999999996,
+      "differenceMs": 25.18670000000202
+    }
+  ],
+  "nativeStatus": "PASS_NOT_PERF_ACCEPTED",
+  "conclusion": "No relevant reproducible positive gain in this controlled Node run: small cold effect vs paired scatter; warm candidate slower; recommend exact own C1 hunk NO_CHANGE only under separate closeout authorization, no revert now",
+  "population": {
+    "owners": 99,
+    "trees": 4,
+    "sourceBytes": 7158400,
+    "products": 103,
+    "draws": 103,
+    "triangles": 153716,
+    "rawBytes": 11989848,
+    "artifactBytes": 11989848,
+    "baselineBuilderCopiedBytes": 9634080
+  },
+  "retentionStatus": "S47_S50_METADATA_OPEN_LEXICAL_CWD_DRIFT_NOT_REQUALIFIED",
+  "coldPairs": [
+    {
+      "i": 0,
+      "order": [
+        "A",
+        "B"
+      ],
+      "a": 843.0032,
+      "b": 847.9685,
+      "differenceMs": 4.9652999999999565
+    },
+    {
+      "i": 1,
+      "order": [
+        "B",
+        "A"
+      ],
+      "a": 794.7739,
+      "b": 786.2184,
+      "differenceMs": -8.555500000000052
+    },
+    {
+      "i": 2,
+      "order": [
+        "A",
+        "B"
+      ],
+      "a": 782.0042,
+      "b": 771.5649,
+      "differenceMs": -10.439300000000003
+    },
+    {
+      "i": 3,
+      "order": [
+        "B",
+        "A"
+      ],
+      "a": 832.0529,
+      "b": 833.8758,
+      "differenceMs": 1.8229000000000042
+    },
+    {
+      "i": 4,
+      "order": [
+        "A",
+        "B"
+      ],
+      "a": 778.4743,
+      "b": 787.902,
+      "differenceMs": 9.427700000000073
+    },
+    {
+      "i": 5,
+      "order": [
+        "B",
+        "A"
+      ],
+      "a": 859.7762,
+      "b": 838.5206,
+      "differenceMs": -21.255600000000072
+    },
+    {
+      "i": 6,
+      "order": [
+        "A",
+        "B"
+      ],
+      "a": 814.7312000000001,
+      "b": 805.3388000000001,
+      "differenceMs": -9.392399999999952
+    },
+    {
+      "i": 7,
+      "order": [
+        "B",
+        "A"
+      ],
+      "a": 658.0419,
+      "b": 738.0688,
+      "differenceMs": 80.02689999999996
+    }
+  ],
+  "pairedMedianDefinition": "arithmetic mean of central two in sorted eight paired deltas",
+  "armMedianDeltas": {
+    "cold": -8.132150000000024,
+    "warm": 32.58849999999802
+  }
+}

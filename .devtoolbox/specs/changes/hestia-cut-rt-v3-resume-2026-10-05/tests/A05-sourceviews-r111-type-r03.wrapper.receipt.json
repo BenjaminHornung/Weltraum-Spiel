@@ -1,0 +1,8 @@
+{
+  "runId": "A05-sourceviews-r111-type-r03",
+  "startedUtc": "2026-10-06T21:38:18.1084279+00:00",
+  "endedUtc": "2026-10-06T21:38:21.4338921+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 3.3082906,
+  "planFile": "A05-sourceviews-r111-type-r03.plan.json"
+}

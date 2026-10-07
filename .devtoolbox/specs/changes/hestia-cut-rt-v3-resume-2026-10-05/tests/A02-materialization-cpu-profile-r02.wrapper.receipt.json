@@ -1,0 +1,8 @@
+{
+  "runId": "A02-materialization-cpu-profile-r02",
+  "startedUtc": "2026-10-05T10:22:56.7420250+00:00",
+  "endedUtc": "2026-10-05T10:23:02.6133037+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 5.8654365,
+  "planFile": "A02-materialization-cpu-profile-r02.plan.json"
+}

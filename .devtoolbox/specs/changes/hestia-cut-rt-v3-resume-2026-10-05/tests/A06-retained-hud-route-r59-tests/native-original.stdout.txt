@@ -1,0 +1,17 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-route-bundle.test.ts (1 test) 1487ms
+     ✓ keeps the HVP bootstrap and route owners outside the static entry dependency graph  1484ms
+stdout | tests/unit/hvp-hud-hotpath.test.ts > HVP HUD frame hotpath > measures an identical snapshot twice without redundant mutations on the second call
+HVP HUD mutations {"first":{"writes":{"textContent":9,"setAttribute":0,"disabled":0,"hidden":6,"dataset":0,"style":3},"reads":{"readPhysics":1,"readTool":1,"readSave":1,"readSalvage":1,"readNeighbor":1,"readDormancy":1,"readSupport":1,"readThirdPerson":1,"readAimScreen":1}},"repeated":{"writes":{"textContent":0,"setAttribute":0,"disabled":0,"hidden":0,"dataset":0,"style":0},"reads":{"readPhysics":1,"readTool":1,"readSave":1,"readSalvage":1,"readNeighbor":1,"readDormancy":1,"readSupport":1,"readThirdPerson":1,"readAimScreen":1}}}
+
+ ✓ tests/unit/hvp-hud-hotpath.test.ts (18 tests) 1167ms
+ ✓ tests/unit/hvp-moving-consumer.test.ts (26 tests) 16ms
+
+ Test Files  3 passed (3)
+      Tests  45 passed (45)
+   Start at  01:33:03
+   Duration  7.02s (transform 1.60s, setup 0ms, import 3.74s, tests 2.67s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A06-retained-hud-route-r59-tests/original-vitest.json

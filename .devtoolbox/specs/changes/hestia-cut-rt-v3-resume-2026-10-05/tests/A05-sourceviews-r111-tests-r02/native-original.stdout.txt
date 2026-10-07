@@ -1,0 +1,16 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-body-mesh-client.test.ts (17 tests) 667ms
+ ✓ tests/unit/hvp-terrain-native-plan.test.ts (3 tests) 803ms
+   ✓ prepares full native recipes while real solver ticks continue, then stages the exact local ticket  439ms
+   ✓ rejects forged native claims and foreign ticket references before a hold or World mutation  356ms
+ ✓ tests/unit/hvp-terrain-native-worker.test.ts (2 tests) 738ms
+   ✓ binds actual source-only ACK and Stage, releases a rejected preStage ticket, and admits a fresh retry  695ms
+
+ Test Files  3 passed (3)
+      Tests  22 passed (22)
+   Start at  23:32:32
+   Duration  8.14s (transform 2.49s, setup 0ms, import 4.94s, tests 2.21s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-sourceviews-r111-tests-r02/original-vitest.json

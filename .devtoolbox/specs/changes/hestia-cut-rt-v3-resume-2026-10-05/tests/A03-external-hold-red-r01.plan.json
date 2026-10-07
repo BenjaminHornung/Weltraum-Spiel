@@ -1,0 +1,10 @@
+{
+  "files": [
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts"
+  ],
+  "runId": "A03-external-hold-red-r01",
+  "mode": "tests",
+  "classification": "One parent external operation lifetime through Finalize/Rollback/Dispose genuine RED; local Native boundary harness, not actual pool termination proof",
+  "binding": "A03-external-hold-red-r01-binding.json",
+  "nativeCapSeconds": 180
+}

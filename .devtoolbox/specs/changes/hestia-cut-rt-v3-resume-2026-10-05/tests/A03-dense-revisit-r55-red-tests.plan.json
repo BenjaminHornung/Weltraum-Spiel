@@ -1,0 +1,10 @@
+{
+  "runId": "A03-dense-revisit-r55-red-tests",
+  "binding": "A03-dense-revisit-r55-red-binding.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-owned-hash-array-open.test.ts"
+  ],
+  "nativeCapSeconds": 180,
+  "classification": "Existing immutable identity witness repeateddensevisit RED; fullhash-array population originaldeadlines"
+}

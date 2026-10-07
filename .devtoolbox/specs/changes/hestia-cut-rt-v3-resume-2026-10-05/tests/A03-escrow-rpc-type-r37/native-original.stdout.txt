@@ -1,0 +1,3 @@
+tests/unit/hvp-body-mesh-worker.test.ts(18,262): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Type '(malformed: boolean, owned: boolean, tight: boolean, escrow: boolean | undefined) => Promise<void>' has no properties in common with type 'TestCollectorOptions'.

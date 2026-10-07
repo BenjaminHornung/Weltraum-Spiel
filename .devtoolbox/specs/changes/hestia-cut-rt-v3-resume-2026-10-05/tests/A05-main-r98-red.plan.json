@@ -1,0 +1,10 @@
+{
+  "files": [
+    "tests/unit/workerPoolLifecycle.test.ts"
+  ],
+  "nativeCapSeconds": 180,
+  "binding": "A05-main-r98-binding-red.json",
+  "classification": "Meaningful privateSupport admission absent RED4; originalwhole WorkerPool unaffected preserved",
+  "mode": "tests",
+  "runId": "A05-main-r98-red"
+}

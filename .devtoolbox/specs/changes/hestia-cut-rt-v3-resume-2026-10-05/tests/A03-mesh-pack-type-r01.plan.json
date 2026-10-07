@@ -1,0 +1,8 @@
+{
+  "mode": "type",
+  "runId": "A03-mesh-pack-type-r01",
+  "binding": "A03-mesh-pack-green-r01-binding.json",
+  "files": [],
+  "classification": "Private bounded pack full type unchanged sixty-second cap",
+  "nativeCapSeconds": 60
+}

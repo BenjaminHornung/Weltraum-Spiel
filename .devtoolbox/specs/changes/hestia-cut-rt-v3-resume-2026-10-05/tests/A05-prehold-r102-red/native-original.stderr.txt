@@ -1,0 +1,39 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-terrain-native-plan.test.ts > prepares full native recipes while real solver ticks continue, then stages the exact local ticket
+TypeError: session.prepareTerrainPlan is not a function
+ ❯ tests/unit/hvp-terrain-native-plan.test.ts:19:32
+     17|   try{
+     18|     const before=session.read();
+     19|     const ticket=await session.prepareTerrainPlan("owned",0,replacemen…
+       |                                ^
+     20|     expect(yields).toBeGreaterThan(1);expect(session.read().ticks).toB…
+     21|     expect(session.read()).toMatchObject({terrainTransaction:"Idle",bo…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/unit/hvp-terrain-native-plan.test.ts > rejects forged native claims and foreign ticket references before a hold or World mutation
+TypeError: session.prepareTerrainPlan is not a function
+ ❯ tests/unit/hvp-terrain-native-plan.test.ts:34:26
+     32|   try{
+     33|     const before=session.read();
+     34|     await expect(session.prepareTerrainPlan("bad",0,replacements,[{...…
+       |                          ^
+     35|     expect(session.read()).toMatchObject({terrainTransaction:"Idle",bo…
+     36|     const ticket=await session.prepareTerrainPlan("good",0,replacement…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/unit/hvp-terrain-native-plan.test.ts > closes actual yielded source work on cancellation or owner disposal before any late Stage
+TypeError: session.prepareTerrainPlan is not a function
+ ❯ tests/unit/hvp-terrain-native-plan.test.ts:47:28
+     45|     const host={assertCurrent:()=>{},continuePlan:()=>false,yieldTask:…
+     46|     try{
+     47|       await expect(session.prepareTerrainPlan("cancel",0,replacements,…
+       |                            ^
+     48|       expect(yields).toBe(1);expect(session.read().terrainTransaction)…
+     49|       if(dispose){expect(session.read()).toMatchObject({status:"Dispos…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+

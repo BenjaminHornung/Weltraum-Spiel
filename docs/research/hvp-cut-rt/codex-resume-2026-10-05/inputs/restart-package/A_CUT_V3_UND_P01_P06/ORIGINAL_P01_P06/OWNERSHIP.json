@@ -1,0 +1,155 @@
+{
+  "kind": "proposed-parallel-plan-not-granted-leases",
+  "repository": "https://github.com/BenjaminHornung/Weltraum-Spiel",
+  "date": "2026-10-02",
+  "base_sha": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+  "parent_sha": "f2ee73cfbfa80b6c09d540c784d3ad426ae83a04",
+  "observed_main_sha": "25bc7f5bbd2db6317c42193873eadeaf10a092c5",
+  "existing_agent": {
+    "id": "A0",
+    "continues": true,
+    "role": "existing V3 owner and sole feature-branch integrator",
+    "reserve": [
+      "owner-first mesh-only pipeline integration",
+      "native Stage/Commit/Publish/Rollback/Finalize",
+      "aggregate memory and lifecycle admission",
+      "incarnation/ticket/snapshot coordination",
+      "hvpBootstrap and remaining B1/B2/B3 work"
+    ]
+  },
+  "agents": [
+    {
+      "id": "P01",
+      "prompt_file": "01_AGENT_P01_KLASSIFIKATION.md",
+      "branch": "agent/hvp-parallel-p01-classification-2026-10-02",
+      "production_allowlist": [
+        "apps/weltraum-browser/src/voxel/structural/classificationSteps.ts",
+        "apps/weltraum-browser/src/voxel/structural/occupiedEntries.ts"
+      ],
+      "new_test_allowlist": [
+        "apps/weltraum-browser/tests/unit/hvp-parallel-p01-classification.test.ts",
+        "apps/weltraum-browser/tests/reference/hvp-parallel-p01-classification-reference.ts"
+      ],
+      "new_documentation_allowlist": [
+        "docs/research/hvp-parallel-2026-10-02/P01-PLAN.md",
+        "docs/research/hvp-parallel-2026-10-02/P01-RESULT.md"
+      ],
+      "fixture_directory": null,
+      "write_precondition": "Explicit two-file transfer with immutable handoff SHA from A0",
+      "narrowed_symbol_scope": null
+    },
+    {
+      "id": "P02",
+      "prompt_file": "02_AGENT_P02_VEGETATION_PERFORMANCE.md",
+      "branch": "agent/hvp-parallel-p02-vegetation-2026-10-02",
+      "production_allowlist": [
+        "apps/weltraum-browser/src/hestia-prototype/presentation/vegetation.ts"
+      ],
+      "new_test_allowlist": [
+        "apps/weltraum-browser/tests/unit/hvp-parallel-p02-vegetation.test.ts",
+        "apps/weltraum-browser/tests/reference/hvp-parallel-p02-vegetation-reference.ts"
+      ],
+      "new_documentation_allowlist": [
+        "docs/research/hvp-parallel-2026-10-02/P02-PLAN.md",
+        "docs/research/hvp-parallel-2026-10-02/P02-RESULT.md"
+      ],
+      "fixture_directory": null,
+      "write_precondition": "A0 confirms no conflicting current WIP in exact paths",
+      "narrowed_symbol_scope": null
+    },
+    {
+      "id": "P03",
+      "prompt_file": "03_AGENT_P03_PLAYER_KAMERA.md",
+      "branch": "agent/hvp-parallel-p03-camera-2026-10-02",
+      "production_allowlist": [
+        "apps/weltraum-browser/src/hestia-prototype/player/presentation.ts",
+        "apps/weltraum-browser/src/hvp/hvpCamera.ts"
+      ],
+      "new_test_allowlist": [
+        "apps/weltraum-browser/tests/unit/hvp-parallel-p03-camera.test.ts",
+        "apps/weltraum-browser/tests/reference/hvp-parallel-p03-camera-reference.ts"
+      ],
+      "new_documentation_allowlist": [
+        "docs/research/hvp-parallel-2026-10-02/P03-PLAN.md",
+        "docs/research/hvp-parallel-2026-10-02/P03-RESULT.md"
+      ],
+      "fixture_directory": null,
+      "write_precondition": "A0 confirms no conflicting current WIP in exact paths",
+      "narrowed_symbol_scope": "createHvpPlayerVisualPose only in player/presentation.ts; avatar unchanged"
+    },
+    {
+      "id": "P04",
+      "prompt_file": "04_AGENT_P04_LOOK_KANDIDAT.md",
+      "branch": "agent/hvp-parallel-p04-look-2026-10-02",
+      "production_allowlist": [
+        "apps/weltraum-browser/src/hestia-prototype/presentation/look.ts"
+      ],
+      "new_test_allowlist": [
+        "apps/weltraum-browser/tests/unit/hvp-parallel-p04-look.test.ts",
+        "apps/weltraum-browser/tests/e2e/hvp-parallel-p04-look.spec.ts"
+      ],
+      "new_documentation_allowlist": [
+        "docs/research/hvp-parallel-2026-10-02/P04-PLAN.md",
+        "docs/research/hvp-parallel-2026-10-02/P04-RESULT.md"
+      ],
+      "fixture_directory": null,
+      "write_precondition": "A0 confirms no conflicting current WIP in exact paths",
+      "narrowed_symbol_scope": null
+    },
+    {
+      "id": "P05",
+      "prompt_file": "05_AGENT_P05_REVIEW_UND_NEGATIVTESTS.md",
+      "branch": "audit/hvp-parallel-p05-contracts-2026-10-02",
+      "production_allowlist": [],
+      "new_test_allowlist": [
+        "apps/weltraum-browser/tests/unit/hvp-parallel-p05-admission.test.ts",
+        "apps/weltraum-browser/tests/unit/hvp-parallel-p05-lifecycle.test.ts",
+        "apps/weltraum-browser/tests/unit/hvp-parallel-p05-memory.test.ts"
+      ],
+      "new_documentation_allowlist": [
+        "docs/research/hvp-parallel-2026-10-02/P05-PLAN.md",
+        "docs/research/hvp-parallel-2026-10-02/P05-RESULT.md"
+      ],
+      "fixture_directory": "apps/weltraum-browser/tests/reference/hvp-parallel-p05/",
+      "write_precondition": "No production writes; own isolated tests/docs or read-only browser execution",
+      "narrowed_symbol_scope": null
+    },
+    {
+      "id": "P06",
+      "prompt_file": "06_AGENT_P06_BROWSER_EVIDENCE.md",
+      "branch": "audit/hvp-parallel-p06-evidence-2026-10-02",
+      "production_allowlist": [],
+      "new_test_allowlist": [],
+      "new_documentation_allowlist": [
+        "docs/research/hvp-parallel-2026-10-02/P06-PLAN.md",
+        "docs/research/hvp-parallel-2026-10-02/P06-RESULT.md"
+      ],
+      "fixture_directory": null,
+      "write_precondition": "No production writes; own isolated tests/docs or read-only browser execution",
+      "narrowed_symbol_scope": null
+    }
+  ],
+  "measurement": {
+    "owner": "P06",
+    "exclusive_reference_device": true,
+    "full_matrix_precondition": "working normal UI flow, defensible gates, immutable integrated candidate",
+    "variants": 7,
+    "temperatures": 2,
+    "target_attempts_each": 100,
+    "sessions_schedule": [
+      34,
+      33,
+      33
+    ],
+    "planned_target_measurements": 1400,
+    "tests_run_by_planner": false
+  },
+  "forbidden": [
+    "main merge",
+    "release",
+    "deployment",
+    "foreign worktree mutation",
+    "force push",
+    "automatic art acceptance"
+  ]
+}

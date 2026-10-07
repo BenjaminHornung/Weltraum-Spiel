@@ -1,0 +1,8 @@
+{
+  "runId": "A03-owner-admission-type-r02",
+  "binding": "A03-owner-admission-controls-source-binding-r02.json",
+  "mode": "type",
+  "files": [],
+  "nativeCapSeconds": 60,
+  "classification": "Full typecheck of direct-owner mesh admission slice"
+}

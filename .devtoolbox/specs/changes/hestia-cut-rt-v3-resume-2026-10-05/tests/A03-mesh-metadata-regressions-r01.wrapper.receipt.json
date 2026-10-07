@@ -1,0 +1,8 @@
+{
+  "runId": "A03-mesh-metadata-regressions-r01",
+  "startedUtc": "2026-10-05T16:13:50.4445658+00:00",
+  "endedUtc": "2026-10-05T16:14:28.7517237+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 38.3023649,
+  "planFile": "A03-mesh-metadata-regressions-r01.plan.json"
+}

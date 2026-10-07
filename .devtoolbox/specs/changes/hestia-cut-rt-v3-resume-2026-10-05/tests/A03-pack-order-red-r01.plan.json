@@ -1,0 +1,10 @@
+{
+  "nativeCapSeconds": 180,
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-borrowed-mesh-decode.test.ts"
+  ],
+  "classification": "R29 generic pack outer-freeze versus second actual byte hash lookup observation genuine RED",
+  "runId": "A03-pack-order-red-r01",
+  "binding": "A03-pack-order-red-r01-binding.json"
+}

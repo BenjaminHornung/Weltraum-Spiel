@@ -1,0 +1,100 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-bootstrap.test.ts (67 tests) 998485ms
+   ✓ restores original fixed specimen geometry and materials on a real decoded cold checkpoint  44532ms
+     ✓ records measured cold Ready only after the first submitted scene frame  13401ms
+     ✓ binds the rendered daylight look scene instead of only publishing dataset claims  14427ms
+     ✓ proves the far field arrives bound through the pipeline as render-only data  14146ms
+     ✓ keeps source-derived terrain geometry intact while grouping readable material ranges  13874ms
+     ✓ reaches Ready with exactly one tick loop and disposes start/dispose exactly once  14444ms
+     ✓ fails a double mount closed with no duplicate HUD and no second backend  26805ms
+     ✓ fails a restart closed while dispose is pending and recovers after settle  27555ms
+     ✓ keeps the live session clean when the route entry fires twice  14420ms
+     ✓ never installs failure UI into a torn-down or newer mount  14851ms
+     ✓ cancels a deferred source on pagehide without publishing products  15360ms
+     ✓ does not let a late failure teardown wipe a newer mount  13365ms
+     ✓ rejects over-cap scenes before attaching products or reaching Ready  27143ms
+     ✓ exposes a real Inspect-only AO toggle defaulting to on  13494ms
+     ✓ swaps whole material arrays on toggle without mutating cached instances  14409ms
+     ✓ rejects a World missing the planned inertia specimen before publishing meshes  11448ms
+     ✓ never reaches Ready on an invalid source and stays fail-closed  14111ms
+     ✓ hides the leftover flight reticle on entry and restores it on dispose  13271ms
+     ✓ exposes an accessible HUD hide control and a labeled camera inspection mode  14346ms
+     ✓ keeps HUD inspection state tied to the real camera across presets reset Play and restored modes  13171ms
+     ✓ publishes save busy and rejection immediately without waiting for a render frame  13140ms
+     ✓ C2B wires the real confirm, terrain trace, and accepted render callbacks  14097ms
+     ✓ C2B reports the controlled observation reservation separately from gameplay bytes  13727ms
+     ✓ C2B remains inert by default and preserves the original resource ledger  13533ms
+     ✓ C2B does not allocate the observer when startup leaves less than its reserve  28941ms
+     ✓ C2B admits an exact-cap preview, releases diagnostics, and stays disabled after rollback  28497ms
+     ✓ P07 binds a body outcome to actual staged source, native receipt and Three projection  15879ms
+     ✓ V3-01 exposes the already validated support phase numbers without forging worker start times  14828ms
+     ✓ V3-00 keeps an occupied native fragment representation through terrain staging and rollback  15694ms
+     ✓ V3-05 keeps a restored owner representation during body-foliage-parked staging  16540ms
+     ✓ V3-05 keeps a restored owner representation during body-foliage-product-alias staging  15493ms
+     ✓ V3-05 keeps a restored owner representation during structural-branch staging  15602ms
+     ✓ preflights moving-body coexistence over the cpu cap before allocation  26942ms
+     ✓ preflights moving-body coexistence over the mesh cap before allocation  27026ms
+     ✓ K34 uses an issued save and atomic replacement before Rejected epoch outcome  22759ms
+     ✓ K34 uses an issued save and atomic replacement before ThrowAfterAcceptance epoch outcome  23330ms
+     ✓ K34 uses an issued save and atomic replacement before PageHide epoch outcome  23981ms
+     ✓ K34 uses an issued save and atomic replacement before SuccessfulLoad epoch outcome  23836ms
+     ✓ K34 uses an issued save and atomic replacement before RolloverFailure epoch outcome  23225ms
+     ✓ K34 uses an issued save and atomic replacement before PageHideDuringRollover epoch outcome  23320ms
+     ✓ K34 registers neighbour role aliases once and keeps reused proxies live  18148ms
+     ✓ K34 keeps a parked ephemeral fragment registered across Evict and wake  16913ms
+     ✓ R01/T04 moving stage reports renderer cleanup authority (unproven=false)  15982ms
+     ✓ R01/T04 moving stage reports renderer cleanup authority (unproven=true)  15697ms
+     ✓ R74 keeps body publication atomic after accepted visibility throws (restored)  16251ms
+     ✓ R74 keeps body publication atomic after accepted visibility throws (renderer-unproven)  16929ms
+     ✓ R74 keeps body publication atomic after accepted visibility throws (native-unproven)  16097ms
+     ✓ K34 removes an accepted terrain Upsert after visibility publication throws  15628ms
+     ✓ C2B bounds visible representation reads before the sentinel  14043ms
+     ✓ C2B renders once and emits no committed marker when frame facts fail  14831ms
+     ✓ C2B preserves backend unavailable and thrown render results  14165ms
+     ✓ C2B maps the native RecoveryHold fact into the observer frame  14170ms
+     ✓ C2B delegates the real structural admission without re-arming  14608ms
+     ✓ C2B preserves observer drops in live and disposed measurement health  15096ms
+     ✓ V3-01 records a sink failure after health publication (publish next: false)  15568ms
+     ✓ V3-01 records a sink failure after health publication (publish next: true)  15284ms
+ ✓ tests/unit/workerPoolLifecycle.test.ts (51 tests) 17881ms
+   ✓ transfers source-bound neighbour projections through the real pool and rejects a foreign ticket before transfer  13418ms
+   ✓ prepares local body cuts through the pool without accepting foreign owners or forged removed mass  1145ms
+     ✓ rejects stale planning results after the planning epoch advances  909ms
+ ✓ tests/unit/hvp-transferred-recipe.test.ts (11 tests) 5936ms
+   ✓ keeps full transferred recipe admission and exact rejection messages on the bounded owned path  361ms
+   ✓ closes bounded transferred admission before cancellation can publish a recipe  315ms
+   ✓ admits a transferred recipe with byte-identical mechanics to the recomputed one  495ms
+   ✓ rejects tampered mass, overlapping or gapped coverage and foreign cells  939ms
+   ✓ rejects malformed boxes, empty claims and split components  1364ms
+   ✓ rejects canonical transferred boxes in a different order  521ms
+   ✓ rejects anchored, joint-bearing and nonzero-origin sources  611ms
+   ✓ freezes the transferred collider array and preserves canonical content  345ms
+   ✓ preserves canonical mechanics through a native save round trip  500ms
+ ✓ tests/unit/hvp-terrain-consumer.test.ts (24 tests) 4608ms
+     ✓ cut trace keeps canonical outcomes and publication order unchanged when tracing is absent, present, or throwing  3569ms
+ ✓ tests/unit/hvp-terrain-fragment-world.test.ts (4 tests) 3018ms
+   ✓ bounds the actual Float32 render vertices after mixed-density native COM recentering  1896ms
+   ✓ restores native membership on rollback and rejects forged mass before publication  393ms
+   ✓ cleans actual post-create faults, and freezes rather than claiming rollback when cleanup fails  440ms
+ ✓ tests/unit/hvp-terrain-products.test.ts (9 tests) 2881ms
+     ✓ copies immutable COW leaves in canonical order without millions of per-cell map lookups  302ms
+     ✓ covers sixteen 8m sectors exactly and invalidates only local content/halo products  1886ms
+     ✓ blocks rollover through accepted-terminal decoding and the compiler's post-terminal yield  346ms
+ ✓ tests/unit/hvp-physics-worker-clock.test.ts (1 test) 1694ms
+   ✓ terrain timing projects one coherent transaction through the real worker handler  1691ms
+ ✓ tests/unit/hvp-terrain-native-worker.test.ts (2 tests) 651ms
+   ✓ binds actual source-only ACK and Stage, releases a rejected preStage ticket, and admits a fresh retry  609ms
+ ✓ tests/unit/hvp-terrain-native-plan.test.ts (3 tests) 824ms
+   ✓ prepares full native recipes while real solver ticks continue, then stages the exact local ticket  439ms
+   ✓ rejects forged native claims and foreign ticket references before a hold or World mutation  377ms
+ ✓ tests/unit/hvp-owned-terrain-products.test.ts (2 tests) 280ms
+ ✓ tests/unit/hvp-support-phase-budget.test.ts (2 tests) 7ms
+
+ Test Files  11 passed (11)
+      Tests  176 passed (176)
+   Start at  21:43:08
+   Duration  1051.87s (transform 4.79s, setup 0ms, import 12.11s, tests 1036.26s, environment 2ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-allcut-r103-tests-r02/original-vitest.json

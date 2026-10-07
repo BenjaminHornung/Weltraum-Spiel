@@ -1,0 +1,15 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-borrowed-command.test.ts (4 tests | 4 failed) 324ms
+   × uses the same complete command bytes and legitimate issuer without resetting the borrowed parent 109ms
+   × cancels nested command work while its charges remain with the real parent 66ms
+   × preserves the actual parent budget error instead of a new rejection receipt or nested reset 73ms
+   × rejects an unissued clone before allocating borrowed command storage 74ms
+
+ Test Files  1 failed (1)
+      Tests  4 failed (4)
+   Start at  15:17:32
+   Duration  1.96s (transform 659ms, setup 0ms, import 1.47s, tests 324ms, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-borrowed-command-red-r01/original-vitest.json

@@ -1,0 +1,8 @@
+{
+  "runId": "A03-fresh-produced-reuse-r64-build-r03",
+  "startedUtc": "2026-10-06T00:32:47.5127308+00:00",
+  "endedUtc": "2026-10-06T00:32:49.9751226+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 2.4567004,
+  "planFile": "A03-fresh-produced-reuse-r64-build-r03.plan.json"
+}

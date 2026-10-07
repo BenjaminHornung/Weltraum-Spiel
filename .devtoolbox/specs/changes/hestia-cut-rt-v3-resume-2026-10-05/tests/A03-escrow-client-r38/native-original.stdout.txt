@@ -1,0 +1,11 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-body-mesh-client.test.ts (9 tests) 26ms
+
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
+   Start at  20:59:59
+   Duration  1.94s (transform 758ms, setup 0ms, import 1.77s, tests 26ms, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-escrow-client-r38/original-vitest.json

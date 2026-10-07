@@ -1,0 +1,7 @@
+{
+  "runId": "A03-borrowed-body-plan-type-r02",
+  "mode": "type",
+  "nativeCapSeconds": 60,
+  "binding": "A03-borrowed-body-plan-source-binding-r02.json",
+  "classification": "Full type of same-algorithm nested parent body composition, no runtime activation"
+}

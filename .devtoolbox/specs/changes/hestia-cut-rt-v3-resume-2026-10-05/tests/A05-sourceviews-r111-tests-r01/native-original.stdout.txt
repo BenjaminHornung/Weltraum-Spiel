@@ -1,0 +1,33 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-body-mesh-client.test.ts (17 tests | 1 failed) 668ms
+   ✓ awaits native Source-only views before Stage and proves exact preStage release (ready) 146ms
+   ✓ awaits native Source-only views before Stage and proves exact preStage release (callback-fails) 183ms
+   × awaits native Source-only views before Stage and proves exact preStage release (release-fails) 192ms
+   ✓ R74 ignores a duplicate successful Begin reply with a higher sequence without moving owner watermarks 3ms
+   ✓ R74 retires deferred StageBodyCut success across Dispose and remount 68ms
+   ✓ R74 retires deferred CommitBodyCut success across Dispose and remount 2ms
+   ✓ transfers exclusive mesh data and preserves client state (valid) 4ms
+   ✓ transfers exclusive mesh data and preserves client state (bad-begin) 1ms
+   ✓ transfers exclusive mesh data and preserves client state (late-rollback) 2ms
+   ✓ binds prepaid projection and late resource release without publishing data replies (valid) 5ms
+   ✓ binds prepaid projection and late resource release without publishing data replies (bad-budget) 1ms
+   ✓ binds prepaid projection and late resource release without publishing data replies (late-rollback) 2ms
+   ✓ binds prepaid projection and late resource release without publishing data replies (concurrent-release) 2ms
+   ✓ uses actual task ports and closes suspended scratch on pump disposal 46ms
+   ✓ keeps the first pump error when cursor cleanup also throws 1ms
+   ✓ exhausts a prepaid phase before another allocation and keeps its first failure 1ms
+   ✓ reports actual contiguous work quanta instead of allocating a diagnostic entry per cell step 5ms
+ ✓ tests/unit/hvp-terrain-native-plan.test.ts (3 tests) 931ms
+   ✓ prepares full native recipes while real solver ticks continue, then stages the exact local ticket  521ms
+   ✓ rejects forged native claims and foreign ticket references before a hold or World mutation  403ms
+ ✓ tests/unit/hvp-terrain-native-worker.test.ts (2 tests) 709ms
+   ✓ binds actual source-only ACK and Stage, releases a rejected preStage ticket, and admits a fresh retry  665ms
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 21 passed (22)
+   Start at  23:29:46
+   Duration  8.97s (transform 3.08s, setup 0ms, import 5.54s, tests 2.31s, environment 1ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-sourceviews-r111-tests-r01/original-vitest.json

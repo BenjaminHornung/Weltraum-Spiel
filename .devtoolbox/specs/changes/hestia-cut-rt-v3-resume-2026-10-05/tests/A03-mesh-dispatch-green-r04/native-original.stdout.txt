@@ -1,0 +1,24 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/workerPoolLifecycle.test.ts (34 tests) 9804ms
+   ✓ transfers source-bound neighbour projections through the real pool and rejects a foreign ticket before transfer  6283ms
+   ✓ prepares local body cuts through the pool without accepting foreign owners or forged removed mass  1107ms
+     ✓ rejects stale planning results after the planning epoch advances  968ms
+ ✓ tests/unit/hvpBodyMeshJob.test.ts (22 tests) 4255ms
+   ✓ keeps original ordered owner cells and source identities through mesh-only packing and exact local verification  571ms
+   ✓ preserves original occupied material 8 through the complete private mesh-only roundtrip  473ms
+   ✓ preserves original occupied material 256 through the complete private mesh-only roundtrip  470ms
+   ✓ preserves original occupied material 65535 through the complete private mesh-only roundtrip  483ms
+   ✓ preserves mixed Uint16 materials at their original coordinates without aliasing or sorting owner parts  447ms
+   ✓ rejects Air, negative zero and overflow before packing without rewriting valid owner data  409ms
+   ✓ rejects wrong input and output bindings without replacing the retained source  457ms
+   ✓ rejects damaged in-bounds geometry against the retained native plan even when framing and hashes pass  485ms
+   ✓ closes the cursor once on cancellation and preserves the first error when cleanup also throws  348ms
+
+ Test Files  2 passed (2)
+      Tests  56 passed (56)
+   Start at  14:16:44
+   Duration  16.68s (transform 925ms, setup 0ms, import 2.22s, tests 14.06s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-mesh-dispatch-green-r04/original-vitest.json

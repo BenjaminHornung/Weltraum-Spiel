@@ -1,0 +1,11 @@
+{
+  "files": [
+    "tests/unit/hvp-borrowed-command.test.ts",
+    "tests/unit/structuralOwnedCommandCursor.test.ts"
+  ],
+  "mode": "tests",
+  "binding": "A03-borrowed-command-source-binding-r02.json",
+  "nativeCapSeconds": 180,
+  "classification": "New borrowed4 plus whole unchanged original CommandCursor literal/observer/negative population",
+  "runId": "A03-borrowed-command-green-r02"
+}

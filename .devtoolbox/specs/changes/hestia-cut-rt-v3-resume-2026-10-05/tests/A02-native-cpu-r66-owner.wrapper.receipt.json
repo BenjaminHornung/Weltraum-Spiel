@@ -1,0 +1,8 @@
+{
+  "runId": "A02-native-cpu-r66-owner",
+  "startedUtc": "2026-10-06T01:14:57.7061370+00:00",
+  "endedUtc": "2026-10-06T01:17:57.3178864+00:00",
+  "wrapperExitCode": 91,
+  "elapsedSeconds": 179.6049791,
+  "planFile": "A02-native-cpu-r66-owner.plan.json"
+}

@@ -1,0 +1,8 @@
+{
+  "runId": "A05-utf8-r106-type-r01",
+  "classification": "Full current TypeScript",
+  "mode": "type",
+  "files": [],
+  "binding": "A05-utf8-r106-binding-r01.json",
+  "nativeCapSeconds": 60
+}

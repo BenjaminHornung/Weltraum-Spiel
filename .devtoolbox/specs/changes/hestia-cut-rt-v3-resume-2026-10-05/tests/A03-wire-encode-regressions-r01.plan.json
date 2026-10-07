@@ -1,0 +1,13 @@
+{
+  "files": [
+    "tests/unit/hvpBodyCutWire.test.ts",
+    "tests/unit/hvpBodyMeshJob.test.ts",
+    "tests/unit/hvpBodyMeshAdmission.test.ts",
+    "tests/unit/hvp-borrowed-mesh-decode.test.ts"
+  ],
+  "binding": "A03-wire-encode-regressions-r01-binding.json",
+  "mode": "tests",
+  "classification": "Exact shared wire source plus statictyped and literal floatbits; full4 framing/job/admission/pack files; original per-test/default deadlines unchanged",
+  "nativeCapSeconds": 600,
+  "runId": "A03-wire-encode-regressions-r01"
+}

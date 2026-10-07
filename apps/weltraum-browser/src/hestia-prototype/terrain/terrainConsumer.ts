@@ -1,13 +1,15 @@
 import type { HvpPhysicsClient } from "../physics/client";
 import { assertHvpSafeQuarry, snapshotHvpCutRequest, type HvpCutRequest, type HvpPreparedCut, createHvpTerrainRoot } from "./cutPlan";
 import type { HvpTerrainProducts } from "./terrainProducts";
+import {hvpTerrainProductPhaseCredits,releaseHvpOwnedTerrainProducts} from "./terrainProducts";
 import type {HvpTerrainFragmentRequest} from "../physics/terrainFragment";
 import type {HvpPhysicsSnapshot} from "../physics/physicsWorker";
-import type {HvpSupportPlan} from "./supportPlan";
-import {assertHvpSupportCurrent} from "./supportPlan";
+import type {HvpSupportPlan,HvpSupportPhaseCredits} from "./supportPlan";
+import {assertHvpSupportCurrent,releaseHvpOwnedSupportPlan,bindHvpOwnedSupportCut} from "./supportPlan";
 import {isHvpRockArmCut,prepareHvpTerrainTransfer} from "./terrainTransfer";
 import {decodeHvpReceipts,type HvpReceiptCheckpoint} from "../persistence/receiptCheckpoint";
 import {measureHvpCut,measureHvpCutAsync,type HvpCutTrace} from "../runtime/cutTrace";
+import {HvpRenderStageRecoveryError} from "../presentation/renderStageRecovery";
 export interface HvpPreparedTerrainBody {readonly request:HvpTerrainFragmentRequest;readonly state:HvpPhysicsSnapshot["preparedTerrainFragments"][number]}
 
 export interface HvpCutOutcome {
@@ -28,12 +30,14 @@ export interface HvpStagedTerrain {
 type HvpStageTerrain=(products:HvpTerrainProducts,fragments?:readonly HvpPreparedTerrainBody[],commandId?:string)=>HvpStagedTerrain;
 export const createHvpTerrainConsumer = (
   root: ReturnType<typeof createHvpTerrainRoot>,
-  compile: (plan: HvpPreparedCut) => Promise<HvpTerrainProducts>,
+  compile: (plan: HvpPreparedCut,support?:HvpSupportPlan) => Promise<HvpTerrainProducts>,
   stage: HvpStageTerrain,
   physics: Pick<HvpPhysicsClient,"prepareTerrain"|"commitTerrain"|"publishTerrain"|"rollbackTerrain"|"finalizeTerrain"|"command">&Partial<Pick<HvpPhysicsClient,"preparedTerrainFragments"|"read">>,
   supports: readonly Readonly<{x:number;z:number}>[] = [],
   analyze?: (plan:HvpPreparedCut)=>Promise<HvpSupportPlan>,
-  traceInput?: HvpCutTrace
+  traceInput?: HvpCutTrace,
+  quoteStage?:(products:HvpTerrainProducts,fragments:readonly HvpTerrainFragmentRequest[],credits:HvpSupportPhaseCredits)=>Promise<number>,
+  stageOwned?:(products:HvpTerrainProducts,fragments:readonly HvpPreparedTerrainBody[],commandId?:string)=>Promise<HvpStagedTerrain>
 ) => {
   let trace=traceInput;
   const receipts=new Map<string,{signature:string;result:Promise<HvpCutOutcome>}>();
@@ -88,6 +92,9 @@ export const createHvpTerrainConsumer = (
       const run=async():Promise<HvpCutOutcome>=>{
         let plan:HvpPreparedCut|undefined, products:HvpStagedTerrain|undefined;
         let transfer:ReturnType<typeof prepareHvpTerrainTransfer>|undefined;
+        let ownedSupport:HvpSupportPlan|undefined;
+        let ownedProducts:HvpTerrainProducts|undefined;
+        let sourceViews:readonly HvpPhysicsSnapshot["preparedTerrainFragments"][number][]|undefined;
         let worldPrepared=false, rootPublished=false, finalized=false;
         if(trace) {
           try { trace({commandId:bound.commandId,thread:"main",phase:"cutQueueWaitMs",origin:performance.timeOrigin,start:submitted,duration:performance.now()-submitted}); }
@@ -101,29 +108,57 @@ export const createHvpTerrainConsumer = (
           plan=rootPlan;
           let activePlan=rootPlan;
           if(isHvpRockArmCut(rootPlan)&&analyze){
-            const support=await measureAsync("cutSupportAnalyzeMs",()=>analyze(rootPlan));
+            const support=await measureAsync("cutSupportAnalyzeMs",()=>analyze(rootPlan));ownedSupport=support;
             assertHvpSupportCurrent(support,root.read());
             if(support.fragments.length>0){const preparedTransfer=measure("cutTransferPrepareMs",()=>prepareHvpTerrainTransfer(root,support));transfer=preparedTransfer;activePlan=preparedTransfer.plan;plan=activePlan;}
           }else{assertHvpSafeQuarry(rootPlan,supports);}
           const currentPlan=activePlan;
+          let phaseCredits=ownedSupport===undefined?undefined:bindHvpOwnedSupportCut(ownedSupport,currentPlan);
           if(currentPlan.changed.length===0) { return finishTerminal(last=outcome(bound,"NoOp",0,"Known air")); }
-          const compiled=await measureAsync("cutCompileMs",()=>compile(currentPlan));
+          const compiled=await measureAsync("cutCompileMs",()=>phaseCredits===undefined?compile(currentPlan):compile(currentPlan,ownedSupport));
+          ownedProducts=compiled;phaseCredits??=hvpTerrainProductPhaseCredits(compiled);
           if(disposed||root.read()!==currentPlan.before||compiled.source!==currentPlan.after) { throw new Error("Stale prepared terrain"); }
           const fragments:HvpTerrainFragmentRequest[]=transfer?.fragments.map(f=>({ownerId:`hvp:terrain-fragment:r${currentPlan.after.revision}:${f.digest}`,
             origin:currentPlan.after.originMeters,cells:f.cells,massKg:f.massKg,colliderBoxes:f.colliderBoxes}))??[];
           if(fragments.length===0){products=measure("cutGraphicsStageMs",()=>trace?stage(compiled,undefined,bound.commandId):stage(compiled));} // New resources remain hidden.
-          await measureAsync("cutNativePrepareMs",()=>physics.prepareTerrain(bound.commandId,currentPlan.before.revision,
-            [...compiled.collision].map(([index,mesh])=>({index,mesh})),fragments));
+          const replacements=[...compiled.collision].map(([index,mesh])=>({index,mesh}));
+          const copyBytes=33_024+1024*fragments.length+replacements.reduce((n,r)=>n+r.mesh.vertices.byteLength+r.mesh.indices.byteLength,0)*2
+            +fragments.reduce((n,f)=>n+f.cells.length*256+f.colliderBoxes.length*512+1024,0);
+          const preGraphics=phaseCredits!==undefined&&fragments.length>0&&quoteStage!==undefined;
+          const graphicsBytes=preGraphics?await quoteStage!(compiled,fragments,phaseCredits!):0;
+          if(preGraphics&&(disposed||root.read()!==currentPlan.before||compiled.source!==currentPlan.after)){throw new Error("Stale terrain after graphics quote");}
+          if(preGraphics&&(!Number.isSafeInteger(graphicsBytes)||graphicsBytes<=0)){throw new Error("Invalid terrain graphics allowance");}
+          const nativeWork=phaseCredits===undefined?undefined:{sourceDigest:currentPlan.after.sourceDigest,sourceSessionId:currentPlan.after.sessionId,sourceEpoch:currentPlan.after.epoch,
+            copyBytes,nativeBytes:phaseCredits.nativeGrant(copyBytes+graphicsBytes),
+            ...(preGraphics?{onSourcePrepared:async(views:readonly HvpPhysicsSnapshot["preparedTerrainFragments"][number][])=>{
+              if(disposed||root.read()!==currentPlan.before){throw new Error("Stale terrain before graphics");}
+              if(views.length!==fragments.length||views.some((view,index)=>view.ownerId!==fragments[index]!.ownerId
+                ||view.cellCount!==fragments[index]!.cells.length||Math.abs(view.massKg-fragments[index]!.massKg)>1e-8)){throw new Error("Native source view binding mismatch");}
+              sourceViews=views;
+              const bodies=fragments.map((request,index)=>({request,state:views[index]!}));
+              products=stageOwned===undefined
+                ?measure("cutGraphicsStageMs",()=>trace?stage(compiled,bodies,bound.commandId):stage(compiled,bodies))
+                :await measureAsync("cutGraphicsStageMs",()=>stageOwned(compiled,bodies,trace?bound.commandId:undefined));
+              if(disposed||root.read()!==currentPlan.before){throw new Error("Stale terrain after graphics");}
+            }}:{})};
+          await measureAsync("cutNativePrepareMs",()=>nativeWork===undefined?physics.prepareTerrain(bound.commandId,currentPlan.before.revision,replacements,fragments)
+            :physics.prepareTerrain(bound.commandId,currentPlan.before.revision,replacements,fragments,nativeWork));
           worldPrepared=true;
           if(fragments.length>0){
             const prepared=physics.preparedTerrainFragments?.();
             if(!prepared||prepared.length!==fragments.length){throw new Error("Missing native fragment admission");}
+            if(sourceViews!==undefined){for(let i=0;i<prepared.length;i+=1){const actual=prepared[i]!,expected=sourceViews[i]!;
+              if(actual.ownerId!==expected.ownerId||actual.sourceDigest!==expected.sourceDigest
+                ||!Object.is(actual.centerOfMass.x,expected.centerOfMass.x)||!Object.is(actual.centerOfMass.y,expected.centerOfMass.y)||!Object.is(actual.centerOfMass.z,expected.centerOfMass.z)
+                ||!Object.is(actual.massKg,expected.massKg)||actual.cellCount!==expected.cellCount||actual.colliders!==expected.colliders||actual.sourceBytes!==expected.sourceBytes){
+                throw new Error("Native Stage source view mismatch");}
+            }}
             const bodies=fragments.map(request=>{
               const state=prepared.find(p=>p.ownerId===request.ownerId);
               if(!state||state.cellCount!==request.cells.length||Math.abs(state.massKg-request.massKg)>1e-8){throw new Error("Native fragment binding mismatch");}
               return {request,state};
             });
-            products=measure("cutGraphicsStageMs",()=>trace?stage(compiled,bodies,bound.commandId):stage(compiled,bodies));
+            if(sourceViews===undefined){products=measure("cutGraphicsStageMs",()=>trace?stage(compiled,bodies,bound.commandId):stage(compiled,bodies));}
           }
           if(disposed||root.read()!==currentPlan.before) { throw new Error("Stale terrain before commit"); }
           await measureAsync("cutNativeCommitMs",()=>physics.commitTerrain(bound.commandId)); // World stays held until the main owner publishes.
@@ -145,6 +180,7 @@ export const createHvpTerrainConsumer = (
             products?.rollback();
             if(worldPrepared) { await physics.rollbackTerrain(bound.commandId); }
             if(physics.read?.().terrainTransaction==="RecoveryHold"){throw new Error("Native terrain recovery is unproven");}
+            if(error instanceof HvpRenderStageRecoveryError){throw error;}
           } catch(rollbackError) {
             if(trace) {
               try { trace({commandId:bound.commandId,thread:"main",phase:"cutRollbackMs",origin:performance.timeOrigin,start:rollbackStart,duration:performance.now()-rollbackStart}); }
@@ -160,13 +196,14 @@ export const createHvpTerrainConsumer = (
             catch { /* Diagnostic sinks are non-authoritative. */ }
           }
           return finishTerminal(last=outcome(bound,"Rejected",0,reason));
-        } finally { queued-=1; }
+        } finally {if(!held){if(ownedSupport){releaseHvpOwnedSupportPlan(ownedSupport);}if(ownedProducts){releaseHvpOwnedTerrainProducts(ownedProducts);}} queued-=1; }
       };
       const result=tail.then(run,run);
       receipts.set(bound.commandId,{signature,result}); tail=result;
       return result;
     },
     dispose():void { disposed=true; },
+    whenIdle:():Promise<void>=>tail.then(()=>undefined,()=>undefined),
     disableTrace():void { trace=undefined; }
   };
 };

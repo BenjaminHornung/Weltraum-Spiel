@@ -1,0 +1,10 @@
+{
+  "mode": "tests",
+  "nativeCapSeconds": 180,
+  "files": [
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts"
+  ],
+  "binding": "A03-owner-first-error-red-r01-binding.json",
+  "runId": "A03-owner-first-error-red-r01",
+  "classification": "R20 first-error/null/undefined RED; original whole-file limits"
+}

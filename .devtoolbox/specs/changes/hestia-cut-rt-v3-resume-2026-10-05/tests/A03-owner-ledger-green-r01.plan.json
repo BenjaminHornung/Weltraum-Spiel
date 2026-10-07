@@ -1,0 +1,10 @@
+{
+  "runId": "A03-owner-ledger-green-r01",
+  "binding": "A03-owner-ledger-green-r01-binding.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts"
+  ],
+  "nativeCapSeconds": 180,
+  "classification": "One parent owner lifetime; unchanged whole-file/default deadlines; source-only not full mesh accounting"
+}

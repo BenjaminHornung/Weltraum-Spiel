@@ -1,0 +1,45 @@
+{
+  "startUtc": "2026-10-06T01:36:46.859509+00:00",
+  "cwd": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\apps\\weltraum-browser",
+  "argv": [
+    "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+    "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\apps\\weltraum-browser\\node_modules\\typescript\\bin\\tsc",
+    "-p",
+    "tsconfig.json",
+    "--noEmit"
+  ],
+  "scope": [
+    {
+      "role": "caller",
+      "pid": 68404,
+      "presence": "PRESENT",
+      "creationFileTime": 134357242062206214
+    },
+    {
+      "role": "wrapper",
+      "pid": 39284,
+      "presence": "PRESENT",
+      "creationFileTime": 134357242067307067
+    },
+    {
+      "role": "native",
+      "pid": 2152,
+      "presence": "PRESENT",
+      "creationFileTime": 134357242068650172
+    }
+  ],
+  "nativeInvocations": 1,
+  "jobAdmissionCounts": {
+    "outer": {
+      "TotalProcesses": 2,
+      "ActiveProcesses": 2,
+      "TotalTerminatedProcesses": 0
+    },
+    "native": {
+      "TotalProcesses": 1,
+      "ActiveProcesses": 1,
+      "TotalTerminatedProcesses": 0
+    }
+  },
+  "job": "Outer wrapper job with kill-on-close protects startup failure; native-only nested job with kill-on-close and whole-job timeout termination"
+}

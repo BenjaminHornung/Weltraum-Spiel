@@ -1,0 +1,30 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-body-mesh-owner-integration.test.ts (19 tests | 3 failed) 13747ms
+   ✓ rejects projected owner-route Stage until the retained plan has admitted complete geometry  513ms
+   ✓ admits mesh-only output against the single retained native plan before Stage, commit and finalize  782ms
+   ✓ rejects altered color geometry with stable first failure and no native Stage or retry revival  685ms
+   ✓ keeps a thrown real admission yield terminal without mutating the native World  669ms
+   ✓ keeps a packet decoder failure terminal before geometry work and rejects a later good packet  655ms
+   ✓ cannot revive an admission after Rollback at a real verifier yield  687ms
+   ✓ preserves the first yielded failure when verifier cleanup also throws  767ms
+   ✓ admits an empty child set after complete legal removal without a first-part assumption 206ms
+   ✓ retains one borrowed owner ledger through mesh admission and transfers results only at Finalize  1150ms
+   ✓ rejects Dispose after native Stage until rollback or actual World release  1254ms
+   ✓ keeps ledger-construction failure identical on retry before any plan issuance 101ms
+   ✓ keeps a failed projection reserve terminal for projection, mesh and native Stage  967ms
+   × returns a latched post-projection owner failure before the missing-mesh guard 940ms
+   × preserves non-Error mesh failure identity at Stage (null) 578ms
+   × preserves non-Error mesh failure identity at Stage (undefined) 583ms
+   ✓ keeps a retired ledger until the suspended verifier actually closes  752ms
+   ✓ cannot switch the budget of an already derived plan (undefined)  586ms
+   ✓ cannot switch the budget of an already derived plan (33554432)  876ms
+   ✓ closes owner scratch on Dispose and retains credits until its suspended admission returns  965ms
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 16 passed (19)
+   Start at  16:34:58
+   Duration  15.50s (transform 761ms, setup 0ms, import 1.60s, tests 13.75s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-owner-first-error-red-r01/original-vitest.json

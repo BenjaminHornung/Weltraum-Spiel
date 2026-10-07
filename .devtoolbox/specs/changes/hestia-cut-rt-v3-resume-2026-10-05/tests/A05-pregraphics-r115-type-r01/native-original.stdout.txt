@@ -1,0 +1,7 @@
+tests/unit/hvp-terrain-consumer.test.ts(43,45): error TS2540: Cannot assign to 'centerOfMass' because it is a read-only property.
+tests/unit/hvp-terrain-consumer.test.ts(44,69): error TS2540: Cannot assign to 'ownerId' because it is a read-only property.
+tests/unit/hvp-terrain-consumer.test.ts(44,69): error TS2540: Cannot assign to 'sourceDigest' because it is a read-only property.
+tests/unit/hvp-terrain-consumer.test.ts(45,43): error TS2540: Cannot assign to 'cellCount' because it is a read-only property.
+tests/unit/hvp-terrain-consumer.test.ts(45,43): error TS2540: Cannot assign to 'colliders' because it is a read-only property.
+tests/unit/hvp-terrain-consumer.test.ts(45,43): error TS2540: Cannot assign to 'massKg' because it is a read-only property.
+tests/unit/hvp-terrain-consumer.test.ts(45,43): error TS2540: Cannot assign to 'sourceBytes' because it is a read-only property.

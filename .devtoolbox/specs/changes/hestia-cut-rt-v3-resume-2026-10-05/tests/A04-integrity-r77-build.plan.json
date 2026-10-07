@@ -1,0 +1,8 @@
+{
+  "files": [],
+  "runId": "A04-integrity-r77-build",
+  "mode": "build",
+  "nativeCapSeconds": 60,
+  "classification": "Fresh production build after exact same-version94B Three integrity restoration; final R74 test source unchanged",
+  "binding": "A04-integrity-r77-binding-r01.json"
+}

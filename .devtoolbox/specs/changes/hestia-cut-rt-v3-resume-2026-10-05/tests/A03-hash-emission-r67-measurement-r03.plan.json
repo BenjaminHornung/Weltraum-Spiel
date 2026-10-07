@@ -1,0 +1,10 @@
+{
+  "binding": "A03-hash-emission-r67-binding-r04.json",
+  "runId": "A03-hash-emission-r67-measurement-r03",
+  "classification": "Sameprocess alternating9-pair actual full384 Structuralpayload canonical kernel only; no latencyacceptance",
+  "files": [
+    "tests/unit/hvp-owned-hash-r67-measurement.test.ts"
+  ],
+  "nativeCapSeconds": 180,
+  "mode": "tests"
+}

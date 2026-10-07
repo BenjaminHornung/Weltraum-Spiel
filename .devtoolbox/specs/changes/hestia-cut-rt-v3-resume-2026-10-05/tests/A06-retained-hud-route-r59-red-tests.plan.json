@@ -1,0 +1,11 @@
+{
+  "runId": "A06-retained-hud-route-r59-red-tests",
+  "binding": "A06-retained-hud-route-r59-red-binding.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-hud-hotpath.test.ts",
+    "tests/unit/hvp-route-bundle.test.ts"
+  ],
+  "nativeCapSeconds": 600,
+  "classification": "Exact recovered HUD/route controls on unchanged baseline; no individual deadlines changed"
+}

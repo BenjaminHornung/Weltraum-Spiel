@@ -1,0 +1,8 @@
+{
+  "runId": "A03-owner-ledger-review-type-r01",
+  "files": [],
+  "mode": "type",
+  "binding": "A03-owner-ledger-review-green-r01-binding.json",
+  "nativeCapSeconds": 60,
+  "classification": "Full type R20 final fault fixes; original cap"
+}

@@ -1,0 +1,8 @@
+{
+  "nativeCapSeconds": 60,
+  "files": [],
+  "classification": "Async retained owner full type original sixty-second boundary; correct existing validation type import",
+  "mode": "type",
+  "binding": "A03-async-owner-type-r02-binding.json",
+  "runId": "A03-async-owner-type-r02"
+}

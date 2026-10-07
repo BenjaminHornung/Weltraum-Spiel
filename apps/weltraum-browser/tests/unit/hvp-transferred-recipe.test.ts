@@ -9,6 +9,9 @@ import {admitHvpTransferredRigidBody,hvpRigidColliderBoxes,prepareHvpRigidBody,
 import {HVP_COAST_MATERIAL_REGISTRY} from "../../src/hvp/hvpCoastSource";
 import {createStructuralCellAddress} from "../../src/voxel/structural";
 import {reconstructStructuralObjectInternal} from "../../src/voxel/structural/model";
+import {createStructuralOwnerLedger} from "../../src/voxel/structural/model";
+import * as recipes from "../../src/hestia-prototype/physics/rigidRecipe";
+import {prepareHvpTerrainFragment,prepareHvpTerrainFragmentOwnedSteps} from "../../src/hestia-prototype/physics/terrainFragment";
 
 beforeAll(initializeHvpRapier);
 
@@ -27,6 +30,36 @@ const reconstruct=(value:ReturnType<typeof source>,frame:unknown=value.frame,anc
     anchors,joints,objectRevision:value.objectRevision,editRevision:value.editRevision,commandEvidence:value.commandEvidence});
 const bodySnapshot=(body:R.RigidBody)=>({position:{...body.translation()},rotation:{...body.rotation()},v:{...body.linvel()},w:{...body.angvel()},
   mass:body.mass(),count:body.numColliders(),friction:body.collider(0).friction()});
+
+it("keeps full transferred recipe admission and exact rejection messages on the bounded owned path",()=>{
+  const {claimed}=claim(),actualSource=source();
+  const owned=(recipes as unknown as {admitHvpTransferredRigidBodyOwnedSteps:(s:typeof actualSource,c:typeof claimed,spans:undefined,reserve:ReturnType<typeof createStructuralOwnerLedger>["reserve"])=>Generator<string,ReturnType<typeof admitHvpTransferredRigidBody>,unknown>}).admitHvpTransferredRigidBodyOwnedSteps;
+  for(const candidate of [claimed,{...claimed,massKg:claimed.massKg*2},{...claimed,colliderBoxes:[...claimed.colliderBoxes].reverse()},
+    {...claimed,colliderBoxes:[claimed.colliderBoxes[0]!,claimed.colliderBoxes[0]!]}]){
+    const ledger=createStructuralOwnerLedger(0,96*1024*1024,128);let expected:ReturnType<typeof admitHvpTransferredRigidBody>|undefined,first:unknown;
+    try{expected=admitHvpTransferredRigidBody(actualSource,candidate);}catch(error){first=error;}
+    const steps=owned(actualSource,candidate,undefined,ledger.reserve);let units=0;
+    try{for(;;){const step=steps.next();if(step.done){expect(first).toBeUndefined();expect(step.value).toEqual(expected);expect(step.value.source).toBe(actualSource);break;}units+=1;}}
+    catch(error){expect(first).toBeInstanceOf(Error);expect(error).toBeInstanceOf(Error);expect((error as Error).message).toBe((first as Error).message);}
+    finally{steps.return(undefined as never);ledger.release();}if(expected!==undefined){expect(units).toBeGreaterThan(0);}
+  }
+});
+it("closes bounded transferred admission before cancellation can publish a recipe",()=>{
+  const {claimed}=claim(),s=source(),ledger=createStructuralOwnerLedger(0,96*1024*1024,128);
+  const owned=(recipes as unknown as {admitHvpTransferredRigidBodyOwnedSteps:(sourceValue:typeof s,c:typeof claimed,spans:undefined,reserve:typeof ledger.reserve)=>Generator<string,unknown,unknown>}).admitHvpTransferredRigidBodyOwnedSteps;
+  const steps=owned(s,claimed,undefined,ledger.reserve);expect(steps.next().done).toBe(false);
+  expect(steps.return(undefined)).toEqual({done:true,value:undefined});expect(steps.next()).toEqual({done:true,value:undefined});
+  ledger.release();expect(ledger.resources.reservedBytes).toBe(0);
+});
+it("uses exactly the independent Native terrain source and full admission on the owned fragment path",()=>{
+  const input={ownerId:"hvp:terrain-fragment:r1:12345678",origin:{x:-16,y:-8,z:-16},massKg:9.375,
+    cells:[{x:128,y:76,z:128,materialId:1},{x:129,y:76,z:128,materialId:1}],
+    colliderBoxes:[{min:[128,76,128],max:[130,77,129]}] as const};
+  const expected=prepareHvpTerrainFragment(input,1),ledger=createStructuralOwnerLedger(0,96*1024*1024,128);
+  const steps=prepareHvpTerrainFragmentOwnedSteps(input,1,ledger.reserve);let units=0;
+  try{for(;;){const step=steps.next();if(step.done){expect(step.value).toEqual(expected);expect(step.value.source.contentHash).toBe(expected.source.contentHash);break;}units+=1;}}
+  finally{steps.return(undefined as never);ledger.release();}expect(units).toBeGreaterThan(0);
+});
 
 it("admits a transferred recipe with byte-identical mechanics to the recomputed one",()=>{
   const {derived,claimed}=claim();

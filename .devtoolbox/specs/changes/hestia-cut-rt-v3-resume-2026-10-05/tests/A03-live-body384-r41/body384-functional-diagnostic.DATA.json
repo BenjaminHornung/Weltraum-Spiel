@@ -1,0 +1,223 @@
+{
+  "classification": "FUNCTIONAL_DIAGNOSTIC_NOT_FORMAL_42_OR_LATENCY_ACCEPTANCE",
+  "buildRun": "A03-productive-build-r41",
+  "binding": "A03-productive-owner-r40-binding.json",
+  "browser": "154.0.8037.98",
+  "gpu": {
+    "devices": [
+      {
+        "vendorId": 32902,
+        "deviceId": 32081,
+        "vendorString": "",
+        "deviceString": "Intel(R) Arc(TM) Pro 140T GPU (16GB)",
+        "driverVendor": "Intel",
+        "driverVersion": "32.0.101.8517"
+      },
+      {
+        "vendorId": 4318,
+        "deviceId": 11705,
+        "vendorString": "",
+        "deviceString": "NVIDIA RTX PRO 500 Blackwell Generation Laptop GPU",
+        "driverVendor": "",
+        "driverVersion": "32.0.15.9658"
+      },
+      {
+        "vendorId": 5140,
+        "deviceId": 140,
+        "vendorString": "",
+        "deviceString": "Microsoft Basic Render Driver",
+        "driverVendor": "",
+        "driverVersion": "10.0.26100.9278"
+      }
+    ]
+  },
+  "surface": {
+    "width": 1280,
+    "height": 720,
+    "dpr": 1.0000000149011612,
+    "visible": "visible",
+    "focused": true,
+    "testBridge": false
+  },
+  "body384": {
+    "before": {
+      "hit": {
+        "ownerId": "hvp:terrain-fragment:r1:1b4aa69d",
+        "sourceDigest": "fnv1a64-v1:70d85a5593bd44c9",
+        "revision": 0,
+        "issuedTick": 24815,
+        "cell": [
+          189,
+          84,
+          76
+        ],
+        "pose": {
+          "position": {
+            "x": 8.427064895629883,
+            "y": 0.9733360409736633,
+            "z": -4.908839225769043
+          },
+          "rotation": {
+            "x": 0.037648580968379974,
+            "y": 0.6483242511749268,
+            "z": 0.014156426303088665,
+            "w": 0.7603011727333069
+          }
+        }
+      },
+      "body": {
+        "ownerId": "hvp:terrain-fragment:r1:1b4aa69d",
+        "position": {
+          "x": 8.427064895629883,
+          "y": 0.9733360409736633,
+          "z": -4.908839225769043
+        },
+        "orientation": {
+          "x": 0.037648580968379974,
+          "y": 0.6483242511749268,
+          "z": 0.014156426303088665,
+          "w": 0.7603011727333069
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "sleeping": true,
+        "massKg": 1722.6561279296875
+      },
+      "sourceCells": 384,
+      "generation": 1,
+      "pointerLock": "debug-scene",
+      "focused": true
+    },
+    "after": {
+      "terminal": {
+        "state": "Idle",
+        "last": {
+          "id": "moving-cut-1",
+          "status": "Applied",
+          "reason": "Current-pose fragment replacement"
+        },
+        "issued": 1
+      },
+      "status": "Running",
+      "native": {
+        "sequence": 1,
+        "pendingId": null,
+        "state": "Idle",
+        "preview": {
+          "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+          "sourceDigest": "fnv1a64-v1:c05b830d110a061f",
+          "revision": 0,
+          "issuedTick": 24926,
+          "cell": [
+            188,
+            83,
+            77
+          ],
+          "pose": {
+            "position": {
+              "x": 8.422795295715332,
+              "y": 0.9610996246337891,
+              "z": -4.889207363128662
+            },
+            "rotation": {
+              "x": 0.03749442473053932,
+              "y": 0.6483309864997864,
+              "z": 0.014103056862950325,
+              "w": 0.7603040933609009
+            }
+          }
+        },
+        "last": {
+          "id": "moving-cut-1",
+          "status": "Applied",
+          "parentId": "hvp:terrain-fragment:r1:1b4aa69d",
+          "children": [
+            "hvp:terrain-fragment:r1:1b4aa69d:r1:p0"
+          ],
+          "removedCells": 32,
+          "removedMassKg": 135.9375,
+          "issuedTick": 24818,
+          "commitTick": 24922,
+          "parentPose": {
+            "position": {
+              "x": 8.427064895629883,
+              "y": 0.9733362793922424,
+              "z": -4.908839225769043
+            },
+            "rotation": {
+              "x": 0.037649985402822495,
+              "y": 0.6483259797096252,
+              "z": 0.014155589044094086,
+              "w": 0.760299563407898
+            },
+            "velocity": {
+              "x": -0.00004207216261420399,
+              "y": 0.0000384414815925993,
+              "z": -0.00022239335521589965
+            },
+            "angularVelocity": {
+              "x": 0.00002130114080500789,
+              "y": -0.00021029742492828518,
+              "z": -0.000045136861444916576
+            }
+          },
+          "removedMomentum": {
+            "massKg": 135.9375,
+            "referencePoint": {
+              "x": 8.427064895629883,
+              "y": 0.9733362793922424,
+              "z": -4.908839225769043
+            },
+            "center": {
+              "x": 8.476597403217617,
+              "y": 1.1167848544675811,
+              "z": -5.138763112346583
+            },
+            "linear": {
+              "x": 0.001733890577277459,
+              "y": 0.0055874908197536405,
+              "z": -0.028400222651231356
+            },
+            "angular": {
+              "x": -0.002700980464759749,
+              "y": -0.00018509892520383354,
+              "z": -0.0001607665077706176
+            }
+          }
+        }
+      },
+      "fragments": [
+        {
+          "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+          "sourceDigest": "fnv1a64-v1:c05b830d110a061f",
+          "centerOfMass": {
+            "x": 23.484675036927623,
+            "y": 10.480705317577549,
+            "z": 9.754985228951256
+          },
+          "cellCount": 352,
+          "massKg": 1586.71875,
+          "colliders": 3,
+          "sourceBytes": 262144
+        }
+      ],
+      "generation": 1,
+      "triangles": 374660,
+      "cutObservation": {
+        "status": "armed",
+        "drops": 0,
+        "disables": 0,
+        "inputCount": 1,
+        "pendingRender": false
+      },
+      "inputError": null,
+      "pointerLock": "debug-scene",
+      "focused": true
+    }
+  },
+  "renderProof": "Native Applied and render publish/finish completed; explicit PerformanceObserver render binding still pending",
+  "latencyAcceptance": "NOT_PASSED: issued-to-commit 104 ticks; no formal uninstrumented timing captured"
+}

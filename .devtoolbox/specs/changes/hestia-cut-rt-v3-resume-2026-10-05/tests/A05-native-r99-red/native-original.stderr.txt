@@ -1,0 +1,22 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-transferred-recipe.test.ts > keeps full transferred recipe admission and exact rejection messages on the bounded owned path
+TypeError: owned is not a function
+ ❯ tests/unit/hvp-transferred-recipe.test.ts:40:17
+     38|     const ledger=createStructuralOwnerLedger(0,96*1024*1024,128);let e…
+     39|     try{expected=admitHvpTransferredRigidBody(actualSource,candidate);…
+     40|     const steps=owned(actualSource,candidate,undefined,ledger.reserve)…
+       |                 ^
+     41|     try{for(;;){const step=steps.next();if(step.done){expect(first).to…
+     42|     catch(error){expect(first).toBeInstanceOf(Error);expect(error).toB…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/hvp-transferred-recipe.test.ts > closes bounded transferred admission before cancellation can publish a recipe
+TypeError: owned is not a function
+ ❯ tests/unit/hvp-transferred-recipe.test.ts:49:15
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+

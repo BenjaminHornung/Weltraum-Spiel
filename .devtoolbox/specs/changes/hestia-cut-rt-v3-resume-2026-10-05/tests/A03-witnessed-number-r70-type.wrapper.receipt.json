@@ -1,0 +1,8 @@
+{
+  "runId": "A03-witnessed-number-r70-type",
+  "startedUtc": "2026-10-06T01:57:35.1213733+00:00",
+  "endedUtc": "2026-10-06T01:57:36.8008633+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 1.6723852,
+  "planFile": "A03-witnessed-number-r70-type.plan.json"
+}

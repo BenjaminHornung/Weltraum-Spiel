@@ -1,0 +1,8 @@
+{
+  "runId": "A03-plan-quantum-r45-build",
+  "binding": "A03-plan-quantum-r45-binding.json",
+  "mode": "build",
+  "files": [],
+  "nativeCapSeconds": 180,
+  "classification": "Borrowed plan nested128-unit/1ms batching; full literal/hash/error/resource/cancellation populations; original defaults unchanged"
+}

@@ -1,0 +1,32 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-owned-slot-copy.test.ts > copies exact validated cold-grid and COW bytes defensively without changing public leaf bytes or digests
+TypeError: copyHvpOwnedTerrainLeaf is not a function
+ ❯ owned tests/unit/hvp-owned-slot-copy.test.ts:8:109
+      6| const base={sizeX:32,sizeY:16,sizeZ:16,cellMeters:.125,originMeters:{x…
+      7| const owned=(source:terrain.HvpTerrainSnapshot,x:number,y:number,z:num…
+      8|   copyHvpOwnedTerrainLeaf:(s:terrain.HvpTerrainSnapshot,x:number,y:num…
+       |                                                                                                             ^
+      9| it("copies exact validated cold-grid and COW bytes defensively without…
+     10|   const first=terrain.createHvpTerrainRoot(base,"owned-copy",0),root=t…
+ ❯ tests/unit/hvp-owned-slot-copy.test.ts:11:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/hvp-owned-slot-copy.test.ts > keeps generic reader errors and copy observations, and cancels an actual owned copy after yielding
+AssertionError: expected [Function] to throw error including 'late unknown coverage' but got 'Unsupported terrain snapshot size'
+
+Expected: "late unknown coverage"
+Received: "Unsupported terrain snapshot size"
+
+ ❯ tests/unit/hvp-owned-slot-copy.test.ts:24:69
+     22|   let reads=0;const generic={...source,copyLeaf:(x:number,y:number,z:n…
+     23|   const pump=createHvpBodyMeshTaskPump(()=>{});
+     24|   try{await expect(copyHvpTerrainSlots(generic,()=>false,pump.host)).r…
+       |                                                                     ^
+     25|   finally{pump.dispose();}
+     26|   let yielded=false;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+

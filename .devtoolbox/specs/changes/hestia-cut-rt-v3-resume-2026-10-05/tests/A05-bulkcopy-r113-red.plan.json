@@ -1,0 +1,10 @@
+{
+  "runId": "A05-bulkcopy-r113-red",
+  "classification": "Meaningful missing exact owned complete4096 base copy without nested COW base adoption",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-owned-slot-copy.test.ts"
+  ],
+  "binding": "A05-bulkcopy-r113-binding-red.json",
+  "nativeCapSeconds": 180
+}

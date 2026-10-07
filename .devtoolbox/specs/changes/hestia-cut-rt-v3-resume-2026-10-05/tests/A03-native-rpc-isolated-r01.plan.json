@@ -1,0 +1,10 @@
+{
+  "nativeCapSeconds": 180,
+  "files": [
+    "tests/unit/hvp-body-mesh-worker.test.ts"
+  ],
+  "mode": "tests",
+  "classification": "Standalone genuine RPC including structured-clone transfer controls; originalOwner65 restored intact and remains separate",
+  "runId": "A03-native-rpc-isolated-r01",
+  "binding": "A03-native-rpc-isolated-source-binding-r01.json"
+}

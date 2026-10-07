@@ -1,0 +1,14 @@
+{
+  "nativeCapSeconds": 600,
+  "binding": "A03-prepaid-pool-r39-r03-binding.json",
+  "files": [
+    "tests/unit/workerPoolLifecycle.test.ts",
+    "tests/unit/hvp-body-mesh-client.test.ts",
+    "tests/unit/hvpBoundedPump.test.ts",
+    "tests/unit/workerProtocol.test.ts",
+    "tests/unit/voxelWorkerProtocol.test.ts"
+  ],
+  "runId": "A03-prepaid-pool-r39-r03",
+  "mode": "tests",
+  "classification": "Finite aggregate full Pool/Client/Pump and generic Worker protocol populations after reviewer metadata guard; original pertest deadlines unchanged"
+}

@@ -1,0 +1,58 @@
+{
+  "startUtc": "2026-10-05T21:50:22.994376+00:00",
+  "cwd": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\apps\\weltraum-browser",
+  "argv": [
+    "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+    "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\apps\\weltraum-browser\\node_modules\\vitest\\vitest.mjs",
+    "run",
+    "tests/unit/hvp-owned-ingest-journal-prefix.test.ts",
+    "tests/unit/hvp-owned-materialization.test.ts",
+    "tests/unit/hvp-owned-resident-source.test.ts",
+    "tests/unit/hvp-owned-structural-ingest.test.ts",
+    "tests/unit/hvp-borrowed-body-plan.test.ts",
+    "tests/unit/hvp-body-plan-task-quantum.test.ts",
+    "tests/unit/hvp-owned-single-component-masses.test.ts",
+    "tests/unit/hvp-classification-contract-controls.test.ts",
+    "tests/unit/hvp-parallel-p01-classification.test.ts",
+    "tests/unit/hvp-owned-hash-array-open.test.ts",
+    "--maxWorkers=1",
+    "--no-file-parallelism",
+    "--reporter=default",
+    "--reporter=json",
+    "--outputFile=C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\.devtoolbox\\specs\\changes\\hestia-cut-rt-v3-resume-2026-10-05\\tests\\A03-dense-witness-r51-tests\\original-vitest.json"
+  ],
+  "scope": [
+    {
+      "role": "caller",
+      "pid": 45164,
+      "presence": "PRESENT",
+      "creationFileTime": 134357106222760806
+    },
+    {
+      "role": "wrapper",
+      "pid": 62752,
+      "presence": "PRESENT",
+      "creationFileTime": 134357106228683068
+    },
+    {
+      "role": "native",
+      "pid": 48972,
+      "presence": "PRESENT",
+      "creationFileTime": 134357106230204520
+    }
+  ],
+  "nativeInvocations": 1,
+  "jobAdmissionCounts": {
+    "outer": {
+      "TotalProcesses": 2,
+      "ActiveProcesses": 2,
+      "TotalTerminatedProcesses": 0
+    },
+    "native": {
+      "TotalProcesses": 1,
+      "ActiveProcesses": 1,
+      "TotalTerminatedProcesses": 0
+    }
+  },
+  "job": "Outer wrapper job with kill-on-close protects startup failure; native-only nested job with kill-on-close and whole-job timeout termination"
+}

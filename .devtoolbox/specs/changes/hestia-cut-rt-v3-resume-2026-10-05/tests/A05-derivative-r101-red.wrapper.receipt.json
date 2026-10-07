@@ -1,0 +1,8 @@
+{
+  "runId": "A05-derivative-r101-red",
+  "startedUtc": "2026-10-06T19:02:59.6212235+00:00",
+  "endedUtc": "2026-10-06T19:03:04.1513846+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 4.5204715,
+  "planFile": "A05-derivative-r101-red.plan.json"
+}

@@ -1,0 +1,8 @@
+{
+  "classification": "Measured native shallow tail for proven privatehash128 arrays<=32768, full bounded per-entry shape verification and prior fallback/default/binary/native errors; same full15files",
+  "runId": "A03-bounded-native-freeze-r65-type",
+  "binding": "A03-bounded-native-freeze-r65-binding.json",
+  "files": [],
+  "nativeCapSeconds": 60,
+  "mode": "type"
+}

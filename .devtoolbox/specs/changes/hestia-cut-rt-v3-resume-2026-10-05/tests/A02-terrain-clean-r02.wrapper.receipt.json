@@ -1,0 +1,8 @@
+{
+  "runId": "A02-terrain-clean-r02",
+  "startedUtc": "2026-10-05T10:57:44.5297453+00:00",
+  "endedUtc": "2026-10-05T10:57:51.3215907+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 6.7874509,
+  "planFile": "A02-terrain-clean-r02.plan.json"
+}

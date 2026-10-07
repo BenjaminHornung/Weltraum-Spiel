@@ -1,0 +1,8 @@
+{
+  "runId": "A03-hash-emission-r67-measurement-r03",
+  "startedUtc": "2026-10-06T01:26:45.6384575+00:00",
+  "endedUtc": "2026-10-06T01:26:50.0642328+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 4.4147076,
+  "planFile": "A03-hash-emission-r67-measurement-r03.plan.json"
+}

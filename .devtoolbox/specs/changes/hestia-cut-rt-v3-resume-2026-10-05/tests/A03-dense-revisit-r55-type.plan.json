@@ -1,0 +1,8 @@
+{
+  "runId": "A03-dense-revisit-r55-type",
+  "binding": "A03-dense-revisit-r55-binding.json",
+  "mode": "type",
+  "files": [],
+  "nativeCapSeconds": 60,
+  "classification": "Reuse existing exactimmutable shape identity only for retainFrozen/owned visits; header/length/credit/yield/fullvalues/proofs/bytes unchanged; original deadlines"
+}

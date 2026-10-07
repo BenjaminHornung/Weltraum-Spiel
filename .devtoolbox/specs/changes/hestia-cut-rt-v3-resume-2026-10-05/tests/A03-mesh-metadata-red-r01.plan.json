@@ -1,0 +1,10 @@
+{
+  "nativeCapSeconds": 180,
+  "files": [
+    "tests/unit/hvp-borrowed-mesh-decode.test.ts"
+  ],
+  "binding": "A03-mesh-metadata-red-r01-binding.json",
+  "runId": "A03-mesh-metadata-red-r01",
+  "classification": "R25 oversized zero-byte metadata negative-path RED; original default deadlines",
+  "mode": "tests"
+}

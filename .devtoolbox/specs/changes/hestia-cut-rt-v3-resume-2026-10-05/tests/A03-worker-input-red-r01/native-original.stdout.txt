@@ -1,0 +1,36 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvpBodyMeshJob.test.ts (25 tests | 3 failed) 4779ms
+   × rejects borrowed worker input credit before cell materialization or meshing 461ms
+   × keeps exact mixed wide-ID wire bytes when every worker phase borrows one parent 471ms
+   × cancels at the first borrowed input task before meshing and keeps parent credit until caller cleanup 308ms
+   ✓ keeps original ordered owner cells and source identities through mesh-only packing and exact local verification  402ms
+   ✓ preserves original occupied material 8 through the complete private mesh-only roundtrip  403ms
+   ✓ preserves original occupied material 256 through the complete private mesh-only roundtrip  420ms
+   ✓ preserves original occupied material 65535 through the complete private mesh-only roundtrip  403ms
+   ✓ preserves mixed Uint16 materials at their original coordinates without aliasing or sorting owner parts  406ms
+   ✓ rejects Air, negative zero and overflow before packing without rewriting valid owner data  317ms
+   ✓ rejects wrong input and output bindings without replacing the retained source  358ms
+   ✓ rejects damaged in-bounds geometry against the retained native plan even when framing and hashes pass  423ms
+   ✓ keeps literal cube bytes, open AO, winding and original material 1 5ms
+   ✓ keeps literal cube bytes, open AO, winding and original material 2 4ms
+   ✓ keeps literal cube bytes, open AO, winding and original material 3 4ms
+   ✓ keeps literal cube bytes, open AO, winding and original material 4 4ms
+   ✓ keeps literal cube bytes, open AO, winding and original material 5 3ms
+   ✓ keeps literal cube bytes, open AO, winding and original material 6 4ms
+   ✓ keeps literal cube bytes, open AO, winding and original material 7 3ms
+   ✓ keeps literal cube bytes, open AO, winding and original material 8 3ms
+   ✓ keeps literal cube bytes, open AO, winding and original material 256 3ms
+   ✓ keeps literal cube bytes, open AO, winding and original material 65535 4ms
+   ✓ covers independent tiny unit faces: 'adjacent original materials' 3ms
+   ✓ covers independent tiny unit faces: 'greedy outside-column probe' 5ms
+   ✓ covers independent tiny unit faces: 'positive boundary at volume cap' 11ms
+   ✓ closes the cursor once on cancellation and preserves the first error when cleanup also throws  323ms
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 22 passed (25)
+   Start at  19:16:00
+   Duration  6.60s (transform 743ms, setup 0ms, import 1.67s, tests 4.78s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-worker-input-red-r01/original-vitest.json

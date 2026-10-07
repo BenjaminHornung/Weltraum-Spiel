@@ -1,0 +1,11 @@
+{
+  "nativeCapSeconds": 180,
+  "binding": "A03-owner-escrow-green-r01-binding.json",
+  "files": [
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts",
+    "tests/unit/hvpOwnedBodyMesh.test.ts"
+  ],
+  "classification": "Whole owner and count/quote regression files, one parent escrow no double native charge",
+  "mode": "tests",
+  "runId": "A03-owner-escrow-green-r01"
+}

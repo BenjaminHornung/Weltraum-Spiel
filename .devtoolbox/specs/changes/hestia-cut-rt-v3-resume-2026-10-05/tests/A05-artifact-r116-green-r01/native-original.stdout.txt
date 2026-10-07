@@ -1,0 +1,12 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/presentationMeshArtifact.test.ts (12 tests) 65ms
+ ✓ tests/unit/presentationCanonical.test.ts (4 tests) 265ms
+
+ Test Files  2 passed (2)
+      Tests  16 passed (16)
+   Start at  00:26:06
+   Duration  1.38s (transform 214ms, setup 0ms, import 410ms, tests 331ms, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-artifact-r116-green-r01/original-vitest.json

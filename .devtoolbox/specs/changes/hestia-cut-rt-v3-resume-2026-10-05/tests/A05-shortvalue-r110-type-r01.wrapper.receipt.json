@@ -1,0 +1,8 @@
+{
+  "runId": "A05-shortvalue-r110-type-r01",
+  "startedUtc": "2026-10-06T21:23:37.5779908+00:00",
+  "endedUtc": "2026-10-06T21:23:40.8491476+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 3.2582123,
+  "planFile": "A05-shortvalue-r110-type-r01.plan.json"
+}

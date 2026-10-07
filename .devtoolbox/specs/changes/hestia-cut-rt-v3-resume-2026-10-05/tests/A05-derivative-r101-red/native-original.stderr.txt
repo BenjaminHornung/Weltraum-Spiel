@@ -1,0 +1,16 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-owned-terrain-products.test.ts > keeps full typed render product bytes under the borrowed lane grant and closes cancellation
+ FAIL  tests/unit/hvp-owned-terrain-products.test.ts > keeps full typed collision product bytes under the borrowed lane grant and closes cancellation
+TypeError: execute is not a function
+ ❯ tests/unit/hvp-owned-terrain-products.test.ts:26:26
+     24|   const execute=kind==="render"?(owned as {executeHvpTerrainJobOwned:O…
+     25|   const pump=createHvpBodyMeshTaskPump(()=>{});
+     26|   try{const actual=await execute(job,input,pump,createHvpBodyMeshPhase…
+       |                          ^
+     27|   finally{pump.dispose();}
+     28|   const sentinel=new Error("product lane cancelled"),stopped=createHvp…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+

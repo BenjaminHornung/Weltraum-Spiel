@@ -1,0 +1,8 @@
+{
+  "runId": "A03-recipe-quantum-r54-type",
+  "binding": "A03-recipe-quantum-r54-binding.json",
+  "mode": "type",
+  "files": [],
+  "nativeCapSeconds": 60,
+  "classification": "Borrowed recipe uses existing128or1ms helper; exact generic/noreseve route/recipes/parentcredits/cancellation; original deadlines"
+}

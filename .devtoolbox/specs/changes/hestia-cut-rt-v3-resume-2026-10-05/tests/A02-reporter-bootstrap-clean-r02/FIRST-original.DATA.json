@@ -1,0 +1,19 @@
+{
+  "firstUtc": "2026-10-05T10:38:08.794353+00:00",
+  "adminSeconds": 600,
+  "DworkSeconds": 540,
+  "finalSeconds": 60,
+  "cleanupSeconds": 60,
+  "legacyAdministrativeChecklist": "SUPERSEDED_BY_RESTART_BETRIEB_SECTION_9",
+  "capSecondsIncludingWrapper": 1200,
+  "capScope": "DECLARED_COMMAND_WINDOW_NOT_TEST_DEADLINE",
+  "wholeFiles": [
+    "tests/unit/hvpCutRtReport.test.ts",
+    "tests/unit/hvp-bootstrap.test.ts"
+  ],
+  "modeInjection": "NONE",
+  "cpuProfile": false,
+  "selectorsBailDeadlineChange": "NONE",
+  "testTimeout": "DEFAULT5000_AND_ORIGINAL_EXPLICIT_DECLARATIONS_UNCHANGED",
+  "helperSha256": "3b63507d181a22c4f7aa043eeb521edba02aed8d196752b085f1cedfd97fb66e"
+}

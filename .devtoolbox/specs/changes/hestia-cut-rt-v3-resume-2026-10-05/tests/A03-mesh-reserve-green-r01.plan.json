@@ -1,0 +1,11 @@
+{
+  "files": [
+    "tests/unit/hvpOwnedBodyMesh.test.ts",
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts"
+  ],
+  "mode": "tests",
+  "binding": "A03-mesh-reserve-green-r01-binding.json",
+  "classification": "Same-parent mesh occupancy/face/quad/copy/expected geometry GREEN; original whole files and default deadlines",
+  "runId": "A03-mesh-reserve-green-r01",
+  "nativeCapSeconds": 180
+}

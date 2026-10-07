@@ -1,0 +1,34 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+stdout | tests/unit/hvp-body-contact.test.ts > keeps a genuine native Body384 contact pickable across recorded micrometer motion
+R90 genuine contact {
+  index: 0,
+  toi: 1.7885565757751465,
+  start: { x: 23.68560937117351, y: 10.59765175962662, z: 9.500001142093222 },
+  bounds: {
+    minMeters: { x: 22, y: 10.25, z: 9.5 },
+    maxMeters: { x: 25, y: 10.75, z: 10 }
+  },
+  cell: [ 189, 84, 76 ]
+}
+R90 genuine contact {
+  index: 1,
+  toi: 1.7885489463806152,
+  start: { x: 23.685613200122113, y: 10.597657960294224, z: 9.50000026068285 },
+  bounds: {
+    minMeters: { x: 22, y: 10.25, z: 9.5 },
+    maxMeters: { x: 25, y: 10.75, z: 10 }
+  },
+  cell: [ 189, 84, 76 ]
+}
+
+ ✓ tests/unit/hvp-body-contact.test.ts (1 test) 445ms
+   ✓ keeps a genuine native Body384 contact pickable across recorded micrometer motion  419ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  16:59:51
+   Duration  2.07s (transform 640ms, setup 0ms, import 1.45s, tests 445ms, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A04-contact-r90-tests-r02/original-vitest.json

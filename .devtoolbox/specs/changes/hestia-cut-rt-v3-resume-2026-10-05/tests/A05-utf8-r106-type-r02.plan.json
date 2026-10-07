@@ -1,0 +1,8 @@
+{
+  "runId": "A05-utf8-r106-type-r02",
+  "mode": "type",
+  "files": [],
+  "nativeCapSeconds": 60,
+  "binding": "A05-utf8-r106-binding-r02.json",
+  "classification": "Current UTF8 scratch complete bytes and ordinary native controls"
+}

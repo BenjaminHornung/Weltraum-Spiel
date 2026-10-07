@@ -1,0 +1,10 @@
+{
+  "runId": "A03-dense-once-r53-controls",
+  "binding": "A03-dense-once-r53-binding.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-owned-hash-array-open.test.ts"
+  ],
+  "nativeCapSeconds": 180,
+  "classification": "Owned immutable full descriptor pass reused; same complete values/bytes/proofs/generic paths/credits/errors/deadlines"
+}

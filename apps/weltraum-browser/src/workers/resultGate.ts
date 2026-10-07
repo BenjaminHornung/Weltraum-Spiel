@@ -7,6 +7,7 @@ import {
   type TransferableBufferBundle,
   type WorkerJobResult,
 } from "./protocol";
+import {fnv1aBytesSteps,HVP_BODY_CUT_MAX_OUTPUT} from "./hvpBodyCutWire";
 
 export interface WorkerResultExpectation {
   readonly jobId: WorkerJobId;
@@ -37,10 +38,11 @@ export type WorkerResultIntegrationDecision =
   | { readonly kind: "RejectedSourceInputDigestMismatch" }
   | { readonly kind: "RejectedContentHashMismatch" };
 
-export const integrateWorkerResult = (
+const validateWorkerResultHeader = (
   expectation: WorkerResultExpectation | undefined,
   result: WorkerJobResult,
   bundle: TransferableBufferBundle,
+  privateChannels?:1|2|6|7,
 ): WorkerResultIntegrationDecision => {
   if (!expectation || expectation.jobId !== result.jobId) return Object.freeze({ kind: "RejectedUnknownJob" });
   if (expectation.cancelled) return Object.freeze({ kind: "RejectedCancelled" });
@@ -56,11 +58,20 @@ export const integrateWorkerResult = (
   if (bundleRevision !== result.outputRevision) return Object.freeze({ kind: "RejectedRevisionMismatch" });
   if (expectation.algorithmVersion !== result.algorithmVersion) return Object.freeze({ kind: "RejectedAlgorithmMismatch" });
   let validated: TransferableBufferBundle;
-  try { validated = validateTransferableBundle(bundle); }
+  try {
+    if(privateChannels!==undefined&&(!Array.isArray(bundle.buffers)||bundle.buffers.length!==privateChannels||!Array.isArray(bundle.views)||bundle.views.length!==privateChannels)) {
+      throw new Error("Invalid body-mesh output channel count.");
+    }
+    validated = validateTransferableBundle(bundle);
+  }
   catch (error) { return Object.freeze({ kind: "RejectedInvalidLayout", message: error instanceof Error ? error.message : "Invalid output layout." }); }
   if (validated.ownership !== "WorkerToConsumer") return Object.freeze({ kind: "RejectedInvalidLayout", message: "Output bundle ownership must be WorkerToConsumer." });
   if (validated.byteLength !== result.outputBytes || validated.byteLength > expectation.maximumOutputBytes) return Object.freeze({ kind: "RejectedOverBudget" });
-  const actualHash = fnv1aBytes(validated.buffers);
+  return {kind:"Accepted",bundle:validated};
+};
+
+const finishWorkerResult = (expectation:WorkerResultExpectation,result:WorkerJobResult,
+  validated:TransferableBufferBundle,actualHash:string):WorkerResultIntegrationDecision => {
   if ((expectation.expectedContentHash !== undefined && actualHash !== expectation.expectedContentHash)
     || (result.contentHash !== undefined && actualHash !== result.contentHash)
     || (validated.contentHash !== undefined && actualHash !== validated.contentHash)) return Object.freeze({ kind: "RejectedContentHashMismatch" });
@@ -70,3 +81,38 @@ export const integrateWorkerResult = (
   }
   return Object.freeze({ kind: "Accepted", bundle: validated });
 };
+
+export const integrateWorkerResult = (
+  expectation:WorkerResultExpectation|undefined,result:WorkerJobResult,bundle:TransferableBufferBundle
+):WorkerResultIntegrationDecision => {
+  const header=validateWorkerResultHeader(expectation,result,bundle);
+  if(header.kind!=="Accepted") return header;
+  return finishWorkerResult(expectation!,result,header.bundle,fnv1aBytes(header.bundle.buffers));
+};
+
+/** Private module-only body route; the owning pool keeps buffers exclusive through every yield. */
+export function* integrateBodyMeshWorkerResultSteps(
+  expectation:WorkerResultExpectation|undefined,result:WorkerJobResult,bundle:TransferableBufferBundle
+):Generator<string,WorkerResultIntegrationDecision,unknown> {
+  const header=validateWorkerResultHeader(expectation,result,bundle,7);
+  if(header.kind!=="Accepted") return header;
+  if(header.bundle.byteLength>HVP_BODY_CUT_MAX_OUTPUT) return Object.freeze({kind:"RejectedOverBudget"});
+  const hash=yield* fnv1aBytesSteps(header.bundle.buffers);
+  return finishWorkerResult(expectation!,result,header.bundle,hash);
+}
+
+/** Same header/hash gate for an exclusive support result; schema admission follows in its owning pool. */
+export function* integrateHvpSupportWorkerResultSteps(
+  expectation:WorkerResultExpectation|undefined,result:WorkerJobResult,bundle:TransferableBufferBundle
+):Generator<string,WorkerResultIntegrationDecision,unknown>{
+  const header=validateWorkerResultHeader(expectation,result,bundle,1);
+  if(header.kind!=="Accepted"){return header;}
+  if(header.bundle.byteLength>HVP_BODY_CUT_MAX_OUTPUT){return Object.freeze({kind:"RejectedOverBudget"});}
+  return finishWorkerResult(expectation!,result,header.bundle,yield* fnv1aBytesSteps(header.bundle.buffers));
+}
+export function* integrateHvpDerivativeWorkerResultSteps(expectation:WorkerResultExpectation|undefined,result:WorkerJobResult,
+  bundle:TransferableBufferBundle,channels:2|6):Generator<string,WorkerResultIntegrationDecision,unknown>{
+  const header=validateWorkerResultHeader(expectation,result,bundle,channels);if(header.kind!=="Accepted"){return header;}
+  if(header.bundle.byteLength>HVP_BODY_CUT_MAX_OUTPUT){return Object.freeze({kind:"RejectedOverBudget"});}
+  return finishWorkerResult(expectation!,result,header.bundle,yield* fnv1aBytesSteps(header.bundle.buffers));
+}

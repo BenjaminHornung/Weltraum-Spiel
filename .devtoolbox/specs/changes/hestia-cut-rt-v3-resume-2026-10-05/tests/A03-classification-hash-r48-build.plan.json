@@ -1,0 +1,8 @@
+{
+  "runId": "A03-classification-hash-r48-build",
+  "binding": "A03-classification-hash-r48-binding.json",
+  "mode": "build",
+  "files": [],
+  "nativeCapSeconds": 180,
+  "classification": "Useexisting Structural hash adapter for borrowed classification; fullhash/credit/labels preserved, defaults1; ninewhole populations originaldeadlines"
+}

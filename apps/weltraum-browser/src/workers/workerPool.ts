@@ -17,12 +17,15 @@ import {
   type WorkerJobResult,
 } from "./protocol";
 import { StableWorkerJobQueue, type WorkerJobQueueSnapshot } from "./queue";
-import { integrateWorkerResult, type WorkerResultIntegrationDecision } from "./resultGate";
+import { integrateWorkerResult,integrateBodyMeshWorkerResultSteps,integrateHvpSupportWorkerResultSteps,integrateHvpDerivativeWorkerResultSteps, type WorkerResultIntegrationDecision } from "./resultGate";
 import { WorkerHandle, createBrowserWorkerTransport, type WorkerHandleCallbacks, type WorkerTransportFactory } from "./workerHandle";
-import { HVP_COLLISION_JOB, validateHvpCollisionPayload, validateHvpCollisionRequest, decodeHvpCollisionOutput } from "./hvpCollisionJob";
-import { HVP_TERRAIN_JOB, validateHvpTerrainPayload, validateHvpTerrainRequest, decodeHvpTerrainOutput } from "./hvpTerrainJob";
-import {HVP_SUPPORT_JOB,validateHvpSupportPayload,validateHvpSupportRequest,decodeHvpSupportOutput} from "./hvpSupportJob";
+import { HVP_COLLISION_JOB, validateHvpCollisionPayload, validateHvpCollisionRequest,validateHvpCollisionRequestSteps, decodeHvpCollisionOutput,decodeHvpCollisionOutputSteps } from "./hvpCollisionJob";
+import { HVP_TERRAIN_JOB, validateHvpTerrainPayload, validateHvpTerrainRequest,validateHvpTerrainRequestSteps, decodeHvpTerrainOutput,decodeHvpTerrainOutputSteps } from "./hvpTerrainJob";
+import {HVP_SUPPORT_JOB,validateHvpSupportPayload,validateHvpSupportRequest,validateHvpSupportRequestSteps,decodeHvpSupportOutput,decodeHvpSupportOutputSteps} from "./hvpSupportJob";
 import {HVP_BODY_CUT_JOB,validateHvpBodyCutPayload,validateHvpBodyCutRequest,decodeHvpBodyCutOutput} from "./hvpBodyCutJob";
+import {HVP_BODY_MESH_JOB,validateHvpBodyMeshPayload,validateHvpBodyMeshRequest,validateHvpBodyMeshRequestSteps} from "./hvpBodyMeshJob";
+import type {HvpBodyPlanHost} from "../hestia-prototype/physics/bodyCutSession";
+import type {StructuralOwnedReserve} from "../voxel/structural/validation";
 import {HVP_NEIGHBOR_JOB,validateHvpNeighborPayload,validateHvpNeighborRequest,decodeHvpNeighborOutput} from "./hvpNeighborJob";
 
 export type WorkerJobTerminal =
@@ -72,6 +75,13 @@ interface TicketRecord {
   handle: WorkerHandle | undefined;
   workerEpoch: WorkerEpoch;
   cancelRequested: boolean;
+  bodyMeshAllowanceBytes?:number;
+  supportPrepareAllowanceBytes?:number;
+  terrainPrepareAllowanceBytes?:number;
+  bodyMeshHost?:HvpBodyPlanHost;
+  bodyMeshReserve?:StructuralOwnedReserve;
+  integrationActive?:boolean;
+  deferredTerminal?:WorkerJobTerminal;
 }
 
 export interface WorkerPoolSnapshot {
@@ -87,12 +97,15 @@ export interface WorkerPoolSnapshot {
 }
 
 export class WorkerPool {
+  readonly #bodyMeshAdmissions=new WeakSet<object>();
   private readonly queue: StableWorkerJobQueue;
   private readonly records = new Map<WorkerJobId, TicketRecord>();
   private readonly seen = new Set<WorkerJobId>();
   private readonly acceptedCompletedTerminals = new WeakSet<CompletedWorkerJobTerminal>();
   private readonly handles: WorkerHandle[] = [];
   private readonly replacementCandidates = new Set<WorkerHandle>();
+  private readonly bodyMeshIntegrations = new Map<number,TicketRecord>();
+  private readonly bodyMeshDrains = new Set<Promise<void>>();
   private readonly transportFactory: WorkerTransportFactory;
   private lifecycle: WorkerPoolSnapshot["state"] = "Stopped";
   private epoch: WorkerEpoch = workerEpoch(0);
@@ -135,8 +148,80 @@ export class WorkerPool {
   }
 
   public enqueue(source: WorkerJobRequest, sourceInput: TransferableBufferBundle): WorkerJobTicket {
+    return this.enqueueFor(source,sourceInput);
+  }
+
+  /** Private first-party route: own the exact bytes before yielding, then admit that one validation. */
+  public async enqueueBodyMesh(source:WorkerJobRequest,sourceInput:TransferableBufferBundle,workerAllowanceBytes:number,
+    host:HvpBodyPlanHost,reserve:StructuralOwnedReserve):Promise<WorkerJobTicket> {
+    if(this.lifecycle!=="Running"){throw new Error("WorkerPool is not accepting jobs.");}
+    if(source.jobKind!==HVP_BODY_MESH_JOB||!Number.isSafeInteger(workerAllowanceBytes)||workerAllowanceBytes<=0||workerAllowanceBytes>96*1024*1024){
+      throw new Error("Invalid private body mesh prepaid allowance");
+    }
+    host.assertCurrent();reserve(16384);
+    validateHvpBodyMeshPayload(source.payload);
+    const request=snapshotWorkerJobRequest(source);
+    if(!Array.isArray(sourceInput.buffers)||sourceInput.buffers.length!==1||!Array.isArray(sourceInput.views)||sourceInput.views.length!==1
+      ||!Number.isSafeInteger(sourceInput.byteLength)||sourceInput.byteLength<0||sourceInput.byteLength>32768*16){throw new Error("Invalid private body mesh input budget");}
+    const input=validateTransferableBundle(sourceInput);
+    reserve(8192+input.byteLength);
+    const owned=validateTransferableBundle(structuredClone(input,{transfer:transferListFor(input)}));
+    const steps=validateHvpBodyMeshRequestSteps(request,owned,reserve);let failed=false;
+    try{for(;;){
+      host.assertCurrent();const step=steps.next();if(step.done){break;}
+      if(host.continuePlan?.()!==true){await host.yieldTask();}
+    }}catch(error){failed=true;throw error;}
+    finally{try{steps.return(undefined as never);}catch(error){if(!failed){throw error;}}}
+    host.assertCurrent();
+    const admission={request,input:owned,workerAllowanceBytes,host,reserve};this.#bodyMeshAdmissions.add(admission);
+    return this.enqueueFor(request,owned,admission);
+  }
+
+  /** Support borrows the same exclusive-admission/result-drain lifecycle, with its own aggregate ledger. */
+  public async enqueueSupport(source:WorkerJobRequest,sourceInput:TransferableBufferBundle,
+    host:HvpBodyPlanHost,reserve:StructuralOwnedReserve,supportPrepareAllowanceBytes=96*1024*1024,resultReserve=reserve):Promise<WorkerJobTicket>{
+    if(this.lifecycle!=="Running"||source.jobKind!==HVP_SUPPORT_JOB){throw new Error("Invalid private support admission");}
+    if(!Number.isSafeInteger(supportPrepareAllowanceBytes)||supportPrepareAllowanceBytes<=0||supportPrepareAllowanceBytes>96*1024*1024){throw new Error("Invalid private support allowance");}
+    host.assertCurrent();reserve(16_384);validateHvpSupportPayload(source.payload);
+    const request=snapshotWorkerJobRequest(source);
+    if(!Array.isArray(sourceInput.buffers)||sourceInput.buffers.length!==1||!Array.isArray(sourceInput.views)||sourceInput.views.length!==1
+      ||!Number.isSafeInteger(sourceInput.byteLength)||sourceInput.byteLength<0||sourceInput.byteLength>8_388_608){throw new Error("Invalid private support input budget");}
+    const input=validateTransferableBundle(sourceInput);reserve(8192+input.byteLength);
+    const owned=validateTransferableBundle(structuredClone(input,{transfer:transferListFor(input)}));
+    const steps=validateHvpSupportRequestSteps(request,owned);let failed=false;
+    try{for(;;){host.assertCurrent();const step=steps.next();if(step.done){break;}if(host.continuePlan?.()!==true){await host.yieldTask();}}}
+    catch(error){failed=true;throw error;}
+    finally{try{steps.return(undefined as never);}catch(error){if(!failed){throw error;}}}
+    host.assertCurrent();const admission={request,input:owned,host,reserve:resultReserve,supportPrepareAllowanceBytes};this.#bodyMeshAdmissions.add(admission);
+    return this.enqueueFor(request,owned,admission);
+  }
+
+  public async enqueueTerrainDerivative(source:WorkerJobRequest,sourceInput:TransferableBufferBundle,workerAllowanceBytes:number,
+    host:HvpBodyPlanHost,reserve:StructuralOwnedReserve,resultReserve:StructuralOwnedReserve):Promise<WorkerJobTicket>{
+    if(this.lifecycle!=="Running"||(source.jobKind!==HVP_TERRAIN_JOB&&source.jobKind!==HVP_COLLISION_JOB)
+      ||!Number.isSafeInteger(workerAllowanceBytes)||workerAllowanceBytes<=0||workerAllowanceBytes>96*1024*1024){throw new Error("Invalid private terrain derivative admission");}
+    host.assertCurrent();reserve(16_384);
+    if(source.jobKind===HVP_TERRAIN_JOB){validateHvpTerrainPayload(source.payload);}else{validateHvpCollisionPayload(source.payload);}
+    const request=snapshotWorkerJobRequest(source);
+    if(!Array.isArray(sourceInput.buffers)||sourceInput.buffers.length!==1||!Array.isArray(sourceInput.views)||sourceInput.views.length!==1
+      ||!Number.isSafeInteger(sourceInput.byteLength)||sourceInput.byteLength<0||sourceInput.byteLength>66*130*66){throw new Error("Invalid private terrain input budget");}
+    const input=validateTransferableBundle(sourceInput);reserve(8192+input.byteLength);
+    const owned=validateTransferableBundle(structuredClone(input,{transfer:transferListFor(input)}));
+    const steps=request.jobKind===HVP_TERRAIN_JOB?validateHvpTerrainRequestSteps(request,owned):validateHvpCollisionRequestSteps(request,owned);let failed=false;
+    try{for(;;){host.assertCurrent();const step=steps.next();if(step.done){break;}if(host.continuePlan?.()!==true){await host.yieldTask();}}}
+    catch(error){failed=true;throw error;}
+    finally{try{steps.return(undefined as never);}catch(error){if(!failed){throw error;}}}
+    host.assertCurrent();const admission={request,input:owned,host,reserve:resultReserve,terrainPrepareAllowanceBytes:workerAllowanceBytes};this.#bodyMeshAdmissions.add(admission);
+    return this.enqueueFor(request,owned,admission);
+  }
+
+  private enqueueFor(source:WorkerJobRequest,sourceInput:TransferableBufferBundle,
+    bodyMesh?:{request:WorkerJobRequest;input:TransferableBufferBundle;workerAllowanceBytes?:number;supportPrepareAllowanceBytes?:number;terrainPrepareAllowanceBytes?:number;host:HvpBodyPlanHost;reserve:StructuralOwnedReserve}):WorkerJobTicket {
+    if(bodyMesh!==undefined&&(!this.#bodyMeshAdmissions.delete(bodyMesh)||bodyMesh.request!==source||bodyMesh.input!==sourceInput)){
+      throw new Error("Foreign private body mesh validation");
+    }
     if (this.lifecycle !== "Running") throw new Error("WorkerPool is not accepting jobs.");
-    const request = snapshotWorkerJobRequest(source);
+    const request = bodyMesh===undefined?snapshotWorkerJobRequest(source):bodyMesh.request;
     if (request.workerEpoch !== 0) throw new RangeError("Caller requests must use workerEpoch 0; the pool binds it at dispatch.");
     if (request.planningEpoch !== this.plan) throw new RangeError("Request planningEpoch does not match the pool planning epoch.");
     if (request.jobKind === "TransformBuffer") validateTransformPayload(request.payload);
@@ -154,12 +239,14 @@ export class WorkerPool {
       throw new RangeError("Input bundle does not match request ownership, revision, or byte estimate.");
     }
     if (hestiaPayload !== undefined) validateHestiaVoxelInputBundle(hestiaPayload, input);
-    if (request.jobKind === HVP_COLLISION_JOB) { validateHvpCollisionRequest(request, input); }
-    if (request.jobKind === HVP_TERRAIN_JOB) { validateHvpTerrainRequest(request, input); }
+    if (request.jobKind === HVP_COLLISION_JOB&&bodyMesh===undefined) { validateHvpCollisionRequest(request, input); }
+    if (request.jobKind === HVP_TERRAIN_JOB&&bodyMesh===undefined) { validateHvpTerrainRequest(request, input); }
     if (request.jobKind === HVP_BODY_CUT_JOB) { validateHvpBodyCutRequest(request, input); }
+    if (request.jobKind === HVP_BODY_MESH_JOB&&bodyMesh===undefined) { validateHvpBodyMeshRequest(request, input); }
     if (request.jobKind === HVP_NEIGHBOR_JOB) { validateHvpNeighborRequest(request, input); }
-    if (request.jobKind === HVP_SUPPORT_JOB) { validateHvpSupportRequest(request, input); }
+    if (request.jobKind === HVP_SUPPORT_JOB&&bodyMesh===undefined) { validateHvpSupportRequest(request, input); }
     const record = this.createRecord(request, input);
+    if(bodyMesh!==undefined){record.bodyMeshAllowanceBytes=bodyMesh.workerAllowanceBytes;record.supportPrepareAllowanceBytes=bodyMesh.supportPrepareAllowanceBytes;record.terrainPrepareAllowanceBytes=bodyMesh.terrainPrepareAllowanceBytes;record.bodyMeshHost=bodyMesh.host;record.bodyMeshReserve=bodyMesh.reserve;}
     if (this.seen.has(request.jobId)) {
       this.fail(record, "DuplicateJob", "Job IDs are unique for the lifetime of a pool.");
       return this.ticket(record);
@@ -194,6 +281,7 @@ export class WorkerPool {
       return true;
     }
     if (record.cancelRequested) return true;
+    if(record.integrationActive){record.cancelRequested=true;return true;}
     const accepted = record.handle?.cancel(jobId) ?? false;
     if (accepted) record.cancelRequested = true;
     return accepted;
@@ -236,6 +324,7 @@ export class WorkerPool {
 
   public async shutdown(): Promise<void> {
     if (this.lifecycle === "Stopped") return;
+    if(this.lifecycle==="ShuttingDown"){if(this.bodyMeshDrains.size>0)await Promise.all([...this.bodyMeshDrains]);return;}
     this.lifecycle = "ShuttingDown";
     for (const candidate of this.replacementCandidates) candidate.terminate();
     this.replacementCandidates.clear();
@@ -257,6 +346,7 @@ export class WorkerPool {
     }
     this.handles.length = 0;
     this.emitWorkerState();
+    if(this.bodyMeshDrains.size>0)await Promise.all([...this.bodyMeshDrains]);
     this.lifecycle = "Stopped";
   }
 
@@ -346,7 +436,7 @@ export class WorkerPool {
   private dispatch(): void {
     if (this.lifecycle !== "Running") return;
     for (const handle of this.handles) {
-      if (handle.state !== "Ready") continue;
+      if (handle.state !== "Ready"||this.bodyMeshIntegrations.has(handle.slot)) continue;
       const request = this.queue.dispatchNext();
       if (!request) return;
       const record = this.records.get(request.jobId);
@@ -357,7 +447,7 @@ export class WorkerPool {
       record.handle = handle;
       record.workerEpoch = handle.workerEpoch;
       try {
-        handle.assign(snapshotWorkerJobRequest({ ...request, workerEpoch: handle.workerEpoch }), input);
+        handle.assign(snapshotWorkerJobRequest({ ...request, workerEpoch: handle.workerEpoch }), input,record.bodyMeshAllowanceBytes,record.supportPrepareAllowanceBytes,record.terrainPrepareAllowanceBytes);
         this.emit({ type: "Dispatched", jobId: request.jobId, workerEpoch: handle.workerEpoch, inputBytes: input.byteLength });
       } catch (error) {
         this.fail(record, "WorkerFault", error instanceof Error ? error.message : "Worker dispatch failed.", handle.workerEpoch);
@@ -367,7 +457,86 @@ export class WorkerPool {
   }
 
   private completed(handle: WorkerHandle, result: WorkerJobResult, output: JobOutputDataMessage): void {
+    const owned=this.records.get(result.jobId);
+    if(owned?.handle===handle&&owned.bodyMeshHost!==undefined){
+      owned.integrationActive=true;this.bodyMeshIntegrations.set(handle.slot,owned);
+      let drained!:()=>void;const done=new Promise<void>(resolve=>{drained=resolve;});this.bodyMeshDrains.add(done);
+      this.emit({type:"OutputTransferred",jobId:result.jobId,outputBytes:output.outputBytes});
+      void this.completeBodyMesh(handle,owned,result,output).finally(()=>{this.bodyMeshDrains.delete(done);drained();});
+      return;
+    }
     this.emit({ type: "OutputTransferred", jobId: result.jobId, outputBytes: output.outputBytes });
+    this.applyCompleted(handle,result,output);
+  }
+
+  private bodyMeshCurrent(handle:WorkerHandle,record:TicketRecord):boolean {
+    if(record.deferredTerminal!==undefined)return false;
+    if(record.cancelRequested){this.settle(record,Object.freeze({kind:"Cancelled",reason:"CancelledDuringExecution"}));return false;}
+    if(record.request.planningEpoch!==this.plan){
+      this.fail(record,"ProtocolFault","Worker result rejected: RejectedStalePlanningEpoch.",handle.workerEpoch,Object.freeze({kind:"RejectedStalePlanningEpoch"}));return false;
+    }
+    if(this.records.get(record.request.jobId)!==record||record.handle!==handle||!this.handles.includes(handle)||record.workerEpoch!==handle.workerEpoch){
+      this.fail(record,"WorkerFault","Worker changed during body mesh result integration.",handle.workerEpoch);return false;
+    }
+    record.bodyMeshHost!.assertCurrent();return true;
+  }
+
+  private async completeBodyMesh(handle:WorkerHandle,record:TicketRecord,result:WorkerJobResult,output:JobOutputDataMessage):Promise<void> {
+    let steps:ReturnType<typeof integrateBodyMeshWorkerResultSteps>|undefined,decision:WorkerResultIntegrationDecision|undefined;
+    const support=record.request.jobKind===HVP_SUPPORT_JOB;let supportValidated=false;
+    const derivative=record.terrainPrepareAllowanceBytes!==undefined;let derivativeValidated=false;
+    try{
+      if(this.bodyMeshCurrent(handle,record)){
+        record.bodyMeshReserve!(8192);
+        const expectation=Object.freeze({jobId:record.request.jobId,cancelled:record.cancelRequested,
+          planningEpoch:this.plan,workerEpoch:handle.workerEpoch,targetKey:record.request.targetKey,inputRevision:record.request.inputRevision,
+          sourceInputDigest:record.request.sourceInputDigest,outputRevision:contentRevision(support?validateHvpSupportPayload(record.request.payload).generation
+            :derivative?record.request.jobKind===HVP_TERRAIN_JOB?validateHvpTerrainPayload(record.request.payload).generation:validateHvpCollisionPayload(record.request.payload).outputRevision
+            :validateHvpBodyMeshPayload(record.request.payload).revision),algorithmVersion:record.request.algorithmVersion,maximumOutputBytes:record.request.estimatedOutputBytes});
+        steps=derivative?integrateHvpDerivativeWorkerResultSteps(expectation,result,output.bundle,record.request.jobKind===HVP_TERRAIN_JOB?6:2)
+          :(support?integrateHvpSupportWorkerResultSteps:integrateBodyMeshWorkerResultSteps)(expectation,result,output.bundle);
+        for(;;){
+          if(!this.bodyMeshCurrent(handle,record))break;
+          const step=steps.next();if(step.done){if(this.bodyMeshCurrent(handle,record))decision=step.value;break;}
+          if(record.bodyMeshHost!.continuePlan?.()!==true)await record.bodyMeshHost!.yieldTask();
+        }
+        if(support&&decision?.kind==="Accepted"&&this.bodyMeshCurrent(handle,record)){
+          record.bodyMeshReserve!(65_536+decision.bundle.byteLength*2);
+          const decode=decodeHvpSupportOutputSteps(decision.bundle,validateHvpSupportPayload(record.request.payload),record.bodyMeshReserve!);let failed=false;
+          try{for(;;){if(!this.bodyMeshCurrent(handle,record)){break;}const step=decode.next();
+            if(step.done){supportValidated=this.bodyMeshCurrent(handle,record);break;}
+            if(record.bodyMeshHost!.continuePlan?.()!==true){await record.bodyMeshHost!.yieldTask();}
+          }}catch(error){failed=true;throw error;}
+          finally{try{decode.return(undefined as never);}catch(error){if(!failed){throw error;}}}
+        }
+        if(derivative&&decision?.kind==="Accepted"&&this.bodyMeshCurrent(handle,record)){
+          record.bodyMeshReserve!(16_384+decision.bundle.byteLength);
+          const decode=record.request.jobKind===HVP_TERRAIN_JOB?decodeHvpTerrainOutputSteps(decision.bundle,validateHvpTerrainPayload(record.request.payload),record.bodyMeshReserve!)
+            :decodeHvpCollisionOutputSteps(decision.bundle,validateHvpCollisionPayload(record.request.payload),record.bodyMeshReserve!);let failed=false;
+          try{for(;;){if(!this.bodyMeshCurrent(handle,record)){break;}const step=decode.next();
+            if(step.done){derivativeValidated=this.bodyMeshCurrent(handle,record);break;}if(record.bodyMeshHost!.continuePlan?.()!==true){await record.bodyMeshHost!.yieldTask();}
+          }}catch(error){failed=true;throw error;}
+          finally{try{decode.return(undefined as never);}catch(error){if(!failed){throw error;}}}
+        }
+      }
+    }catch(error){this.fail(record,"ProtocolFault",error instanceof Error?error.message:"Body mesh result integration failed.",handle.workerEpoch);}
+    finally{
+      try{steps?.return(undefined as never);}catch(error){this.fail(record,"ProtocolFault",error instanceof Error?error.message:"Body mesh result cursor closure failed.",handle.workerEpoch);}
+      record.integrationActive=false;record.bodyMeshHost=undefined;record.bodyMeshReserve=undefined;
+      if(this.bodyMeshIntegrations.get(handle.slot)===record)this.bodyMeshIntegrations.delete(handle.slot);
+      const terminal=record.deferredTerminal;record.deferredTerminal=undefined;
+      if(terminal!==undefined){
+        this.settle(record,terminal);this.emit({type:terminal.kind==="Cancelled"?"Cancelled":"Failed",jobId:record.request.jobId});
+        if(terminal.kind==="Failed"&&terminal.integrationDecision?.kind==="RejectedStalePlanningEpoch")this.emit({type:"StaleResultRejected",jobId:record.request.jobId});
+      }else if(decision!==undefined){
+        try{this.applyCompleted(handle,result,output,decision,supportValidated,derivativeValidated);}
+        catch(error){this.fail(record,"ProtocolFault",error instanceof Error?error.message:"Body mesh result acceptance failed.",handle.workerEpoch);}
+      }
+      this.dispatch();
+    }
+  }
+
+  private applyCompleted(handle: WorkerHandle, result: WorkerJobResult, output: JobOutputDataMessage,providedDecision?:WorkerResultIntegrationDecision,supportValidated=false,derivativeValidated=false): void {
     const record = this.records.get(result.jobId);
     if (!record || record.handle !== handle) return this.replaceAfterFault(handle, "Result belongs to an unknown job.");
     const hestiaPayload = record.request.jobKind === GENERATE_HESTIA_VOXEL_BRICK_MESH_JOB_KIND
@@ -377,13 +546,15 @@ export class WorkerPool {
     const terrainPayload = record.request.jobKind === HVP_TERRAIN_JOB ? validateHvpTerrainPayload(record.request.payload) : undefined;
     const supportPayload=record.request.jobKind===HVP_SUPPORT_JOB?validateHvpSupportPayload(record.request.payload):undefined;
     const bodyPayload=record.request.jobKind===HVP_BODY_CUT_JOB?validateHvpBodyCutPayload(record.request.payload):undefined;
+    const bodyMeshPayload=record.request.jobKind===HVP_BODY_MESH_JOB?validateHvpBodyMeshPayload(record.request.payload):undefined;
     const neighborPayload=record.request.jobKind===HVP_NEIGHBOR_JOB?validateHvpNeighborPayload(record.request.payload):undefined;
     const outputRevision = hestiaPayload?.outputRevision ?? collisionPayload?.outputRevision
       ?? (supportPayload===undefined?undefined:contentRevision(supportPayload.generation))
       ?? (bodyPayload===undefined?undefined:contentRevision(bodyPayload.revision+1))
+      ?? (bodyMeshPayload===undefined?undefined:contentRevision(bodyMeshPayload.revision))
       ?? (neighborPayload===undefined?undefined:contentRevision(neighborPayload.eastRevision))
       ?? (terrainPayload === undefined ? validateTransformPayload(record.request.payload).outputRevision : contentRevision(terrainPayload.generation));
-    const decision = integrateWorkerResult(Object.freeze({
+    const decision = providedDecision??integrateWorkerResult(Object.freeze({
       jobId: record.request.jobId,
       cancelled: record.cancelRequested,
       planningEpoch: this.plan,
@@ -409,20 +580,20 @@ export class WorkerPool {
           this.dispatch();return;
         }
       }
-      if(supportPayload!==undefined){
+      if(supportPayload!==undefined&&!supportValidated){
         try{decodeHvpSupportOutput(decision.bundle,supportPayload);}catch(error){
           this.fail(record,"ProtocolFault",error instanceof Error?error.message:"Invalid support output",handle.workerEpoch);
           this.dispatch();return;
         }
       }
-      if (terrainPayload !== undefined) {
+      if (terrainPayload !== undefined&&!derivativeValidated) {
         try { decodeHvpTerrainOutput(decision.bundle, terrainPayload); }
         catch (error) {
           this.fail(record, "ProtocolFault", error instanceof Error ? error.message : "Invalid terrain output", handle.workerEpoch);
           this.dispatch(); return;
         }
       }
-      if (collisionPayload !== undefined) {
+      if (collisionPayload !== undefined&&!derivativeValidated) {
         try { decodeHvpCollisionOutput(decision.bundle, collisionPayload); }
         catch (error) {
           this.fail(record, "ProtocolFault", error instanceof Error ? error.message : "Invalid collision output", handle.workerEpoch);
@@ -516,6 +687,7 @@ export class WorkerPool {
     for (const record of [...this.records.values()].filter((entry) => entry.status !== "Terminal").sort(compareRecords)) {
       this.fail(record, "WorkerFault", message);
     }
+    if(this.bodyMeshDrains.size>0){void this.shutdown();return;}
     for (const handle of this.handles) handle.terminate();
     this.handles.length = 0;
     this.emitWorkerState();
@@ -523,24 +695,29 @@ export class WorkerPool {
   }
 
   private failActive(handle: WorkerHandle, reason: string): void {
-    const record = handle.jobId === undefined ? undefined : this.records.get(handle.jobId);
+    const held=this.bodyMeshIntegrations.get(handle.slot);
+    const record = handle.jobId === undefined ? held?.handle===handle?held:undefined : this.records.get(handle.jobId);
     if (record) this.fail(record, "WorkerFault", reason, handle.workerEpoch);
   }
 
   private fail(record: TicketRecord, code: WorkerJobFailure["code"], message: string, epoch?: WorkerEpoch, decision?: WorkerResultIntegrationDecision): void {
     if (record.status === "Terminal") return;
     const failure: WorkerJobFailure = Object.freeze({ jobId: record.request.jobId, code, message, ...(epoch === undefined ? {} : { workerEpoch: epoch }) });
-    this.settle(record, Object.freeze({ kind: "Failed", failure, ...(decision === undefined ? {} : { integrationDecision: decision }) }));
-    this.emit({ type: "Failed", jobId: record.request.jobId });
+    if(this.settle(record, Object.freeze({ kind: "Failed", failure, ...(decision === undefined ? {} : { integrationDecision: decision }) }))) {
+      this.emit({ type: "Failed", jobId: record.request.jobId });
+    }
   }
 
-  private settle(record: TicketRecord, terminal: WorkerJobTerminal): void {
-    if (record.status === "Terminal") return;
+  private settle(record: TicketRecord, terminal: WorkerJobTerminal): boolean {
+    if (record.status === "Terminal") return false;
+    if(record.integrationActive){record.deferredTerminal??=terminal;return false;}
     record.status = "Terminal";
     record.handle = undefined;
     record.input = undefined;
+    record.bodyMeshHost=undefined;record.bodyMeshReserve=undefined;
     if (this.records.get(record.request.jobId) === record) this.records.delete(record.request.jobId);
     record.resolve(terminal);
+    return true;
   }
 
   private emit(event: WorkerPoolEvent): void {

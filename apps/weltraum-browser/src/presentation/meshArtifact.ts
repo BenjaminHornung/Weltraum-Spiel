@@ -1,4 +1,4 @@
-import { canonicalSignature } from "./canonical";
+import { canonicalSignature, canonicalSignatureOwnedSteps } from "./canonical";
 import {
   isContentHash,
   compareAscii,
@@ -111,7 +111,7 @@ const validateFullExclusiveBuffer = (
   usedBuffers.add(buffer);
 };
 
-const validateFloatArray = (value: unknown, path: string, components: number, vertexCount: number | undefined, issues: ValidationIssue[]): void => {
+function* validateFloatArraySteps(value: unknown, path: string, components: number, vertexCount: number | undefined, issues: ValidationIssue[], owned: boolean): Generator<string, void, unknown> {
   if (!(value instanceof Float32Array)) {
     issues.push(issue("UnsupportedAttributeType", path, "must be a Float32Array"));
     return;
@@ -127,10 +127,11 @@ const validateFloatArray = (value: unknown, path: string, components: number, ve
       issues.push(issue("NonFiniteAttribute", `${path}[${index}]`, "must be finite"));
       break;
     }
+    if (owned && (index + 1) % 1024 === 0) yield "artifactFloatScan";
   }
-};
+}
 
-export const validateMeshArtifact = (artifact: MeshArtifact): ValidationResult => {
+function* validateMeshArtifactSteps(artifact: MeshArtifact, owned: boolean): Generator<string, ValidationResult, unknown> {
   const issues: ValidationIssue[] = [];
   const add = (result: ValidationResult): void => {
     if (!result.valid) issues.push(...result.issues);
@@ -147,12 +148,12 @@ export const validateMeshArtifact = (artifact: MeshArtifact): ValidationResult =
     issues.push(issue("InvalidContentHash", "contentHash", "must use the canonical fnv1a64 format"));
   }
 
-  validateFloatArray(artifact.positions, "positions", 3, undefined, issues);
+  yield* validateFloatArraySteps(artifact.positions, "positions", 3, undefined, issues, owned);
   const vertexCount = artifact.positions instanceof Float32Array ? artifact.positions.length / 3 : 0;
   if (!Number.isInteger(vertexCount) || vertexCount < 3) {
     issues.push(issue("EmptyMeshUnsupported", "positions", "must contain at least three vertices"));
   }
-  validateFloatArray(artifact.normals, "normals", 3, Number.isInteger(vertexCount) ? vertexCount : undefined, issues);
+  yield* validateFloatArraySteps(artifact.normals, "normals", 3, Number.isInteger(vertexCount) ? vertexCount : undefined, issues, owned);
   if (!(artifact.indices instanceof Uint16Array) && !(artifact.indices instanceof Uint32Array)) {
     issues.push(issue("UnsupportedIndexWidth", "indices", "must be Uint16Array or Uint32Array"));
   } else {
@@ -164,14 +165,15 @@ export const validateMeshArtifact = (artifact: MeshArtifact): ValidationResult =
         issues.push(issue("IndexOutOfRange", `indices[${index}]`, "must reference an existing vertex"));
         break;
       }
+      if (owned && (index + 1) % 1024 === 0) yield "artifactIndexScan";
     }
   }
 
   if (artifact.attributes?.uv !== undefined) {
-    validateFloatArray(artifact.attributes.uv, "attributes.uv", 2, vertexCount, issues);
+    yield* validateFloatArraySteps(artifact.attributes.uv, "attributes.uv", 2, vertexCount, issues, owned);
   }
   if (artifact.attributes?.color !== undefined) {
-    validateFloatArray(artifact.attributes.color, "attributes.color", 3, vertexCount, issues);
+    yield* validateFloatArraySteps(artifact.attributes.color, "attributes.color", 3, vertexCount, issues, owned);
   }
 
   const usedBuffers = new Set<ArrayBufferLike>();
@@ -229,14 +231,23 @@ export const validateMeshArtifact = (artifact: MeshArtifact): ValidationResult =
         issues.push(issue("BoundsExcludeVertex", `positions[${index / 3}]`, "bounds must contain every vertex"));
         break;
       }
+      if (owned && (index / 3 + 1) % 341 === 0) yield "artifactBoundsScan";
     }
   }
 
-  if (issues.length === 0 && artifact.contentHash !== calculateMeshArtifactContentHash(artifact)) {
-    issues.push(issue("ContentHashMismatch", "contentHash", "does not match canonical mesh content"));
+  if (issues.length === 0) {
+    const claimedHash = artifact.contentHash;
+    const hash = owned ? yield* canonicalSignatureOwnedSteps(contentFields(artifact)) : calculateMeshArtifactContentHash(artifact);
+    if (claimedHash !== hash) issues.push(issue("ContentHashMismatch", "contentHash", "does not match canonical mesh content"));
   }
   return issues.length === 0 ? validResult() : invalidResult(issues);
-};
+}
+
+export const validateMeshArtifact = (artifact: MeshArtifact): ValidationResult => validateMeshArtifactSteps(artifact, false).next().value as ValidationResult;
+
+export function* validateMeshArtifactOwnedSteps(artifact: MeshArtifact): Generator<string, ValidationResult, unknown> {
+  return yield* validateMeshArtifactSteps(artifact, true);
+}
 
 const invalidInput = (path: string, message: string): never => {
   throwIfInvalid("MeshArtifactInput", invalidResult([issue("InvalidMeshArtifactInput", path, message)]));
@@ -290,7 +301,7 @@ const adoptedBuffers = (input: MeshArtifactInput): MeshArtifactBuffers => ({
       }
 });
 
-const buildMeshArtifact = (input: MeshArtifactInput, ownership: MeshArtifactOwnership, buffers: MeshArtifactBuffers): MeshArtifact => {
+function* buildMeshArtifactSteps(input: MeshArtifactInput, ownership: MeshArtifactOwnership, buffers: MeshArtifactBuffers, owned: boolean): Generator<string, MeshArtifact, unknown> {
   const materialRanges = canonicalRanges(input.materialRanges);
   const attributes = canonicalAttributes(buffers.attributes);
   const bounds = Object.freeze({ min: vectorRecord(input.bounds.min), max: vectorRecord(input.bounds.max) });
@@ -313,11 +324,39 @@ const buildMeshArtifact = (input: MeshArtifactInput, ownership: MeshArtifactOwne
   };
   const artifact: MeshArtifact = Object.freeze({
     ...withoutHash,
-    contentHash: calculateMeshArtifactContentHash(content)
+    contentHash: owned ? yield* canonicalSignatureOwnedSteps(contentFields(content)) : calculateMeshArtifactContentHash(content)
   });
-  throwIfInvalid("MeshArtifact", validateMeshArtifact(artifact));
+  throwIfInvalid("MeshArtifact", yield* validateMeshArtifactSteps(artifact, owned));
   return deepFreezeMetadata(artifact);
-};
+}
+
+const buildMeshArtifact = (input: MeshArtifactInput, ownership: MeshArtifactOwnership, buffers: MeshArtifactBuffers): MeshArtifact =>
+  buildMeshArtifactSteps(input, ownership, buffers, false).next().value as MeshArtifact;
+
+function* copyOwnedArraySteps<T extends Float32Array | MeshIndexArray>(value: T): Generator<string, T, unknown> {
+  const copy = (value instanceof Float32Array ? new Float32Array(value.length)
+    : value instanceof Uint16Array ? new Uint16Array(value.length) : new Uint32Array(value.length)) as T;
+  const perChunk = value instanceof Uint16Array ? 2048 : 1024;
+  for (let start = 0; start < value.length; start += perChunk) {
+    const end = Math.min(start + perChunk, value.length);
+    for (let index = start; index < end; index += 1) copy[index] = value[index]!;
+    yield "artifactCopy";
+  }
+  return copy;
+}
+
+export function* createMeshArtifactOwnedSteps(input: MeshArtifactInput): Generator<string, MeshArtifact, unknown> {
+  const buffers: MeshArtifactBuffers = {
+    positions: yield* copyOwnedArraySteps(requireFloat32Array(input.positions, "positions")),
+    normals: yield* copyOwnedArraySteps(requireFloat32Array(input.normals, "normals")),
+    indices: yield* copyOwnedArraySteps(requireMeshIndexArray(input.indices, "indices")),
+    attributes: input.attributes === undefined ? undefined : {
+      uv: input.attributes.uv === undefined ? undefined : yield* copyOwnedArraySteps(requireFloat32Array(input.attributes.uv, "attributes.uv")),
+      color: input.attributes.color === undefined ? undefined : yield* copyOwnedArraySteps(requireFloat32Array(input.attributes.color, "attributes.color"))
+    }
+  };
+  return yield* buildMeshArtifactSteps(input, "SnapshotOwned", buffers, true);
+}
 
 /**
  * Creates the normal public MeshArtifact snapshot. Every caller Typed Array is

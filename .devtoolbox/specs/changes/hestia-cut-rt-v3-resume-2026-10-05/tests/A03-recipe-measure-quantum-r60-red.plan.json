@@ -1,0 +1,10 @@
+{
+  "mode": "tests",
+  "binding": "A03-recipe-measure-quantum-r60-red-binding.json",
+  "nativeCapSeconds": 180,
+  "classification": "Whole original file plus actual recipe measurement-quantum control; RED expected",
+  "runId": "A03-recipe-measure-quantum-r60-red",
+  "files": [
+    "tests/unit/hvp-borrowed-body-plan.test.ts"
+  ]
+}

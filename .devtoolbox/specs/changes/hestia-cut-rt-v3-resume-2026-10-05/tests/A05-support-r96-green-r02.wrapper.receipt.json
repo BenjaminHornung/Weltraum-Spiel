@@ -1,0 +1,8 @@
+{
+  "runId": "A05-support-r96-green-r02",
+  "startedUtc": "2026-10-06T17:53:05.2854842+00:00",
+  "endedUtc": "2026-10-06T17:53:10.8423688+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 5.5525201,
+  "planFile": "A05-support-r96-green-r02.plan.json"
+}

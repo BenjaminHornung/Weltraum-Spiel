@@ -1,0 +1,16 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-borrowed-body-plan.test.ts (4 tests) 1828ms
+   ✓ composes the same complete Box plan, children and removed mass under one retained parent  767ms
+   ✓ composes the same complete Sphere plan, children and removed mass under one retained parent  911ms
+ ✓ tests/unit/v3StructuralRecipeParity.test.ts (8 tests) 4182ms
+   ✓ freezes independent pre-change elbow and real authored 384-cell rock-arm results  1428ms
+   ✓ B1 owner hash route issues the exact child352 transition, recipe and labels of the generic route  2143ms
+
+ Test Files  2 passed (2)
+      Tests  12 passed (12)
+   Start at  15:49:50
+   Duration  7.81s (transform 622ms, setup 0ms, import 1.52s, tests 6.01s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-borrowed-body-plan-green-r03/original-vitest.json

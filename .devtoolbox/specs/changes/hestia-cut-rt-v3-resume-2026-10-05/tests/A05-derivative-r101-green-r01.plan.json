@@ -1,0 +1,11 @@
+{
+  "classification": "Default and borrowed same-mesher typed terrain collision byte parity; productionprivateDerivative notactivated untilboundeddecoder",
+  "runId": "A05-derivative-r101-green-r01",
+  "files": [
+    "tests/unit/hvp-owned-terrain-products.test.ts",
+    "tests/unit/hvp-terrain-products.test.ts"
+  ],
+  "mode": "tests",
+  "nativeCapSeconds": 180,
+  "binding": "A05-derivative-r101-binding-r01.json"
+}

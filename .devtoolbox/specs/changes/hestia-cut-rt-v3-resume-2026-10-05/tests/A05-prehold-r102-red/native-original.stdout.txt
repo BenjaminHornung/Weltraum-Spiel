@@ -1,0 +1,14 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-terrain-native-plan.test.ts (3 tests | 3 failed) 88ms
+   × prepares full native recipes while real solver ticks continue, then stages the exact local ticket 80ms
+   × rejects forged native claims and foreign ticket references before a hold or World mutation 3ms
+   × closes actual yielded source work on cancellation or owner disposal before any late Stage 3ms
+
+ Test Files  1 failed (1)
+      Tests  3 failed (3)
+   Start at  21:29:00
+   Duration  5.37s (transform 2.56s, setup 0ms, import 4.94s, tests 88ms, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-prehold-r102-red/original-vitest.json

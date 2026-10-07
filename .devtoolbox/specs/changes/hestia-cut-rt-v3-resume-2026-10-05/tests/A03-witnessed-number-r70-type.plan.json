@@ -1,0 +1,8 @@
+{
+  "classification": "Witnessedprivate numericemission only; samefullbytes/unit/error/default/sink/cancel; actualcompletecontentenvelope kernelmeasurement",
+  "binding": "A03-witnessed-number-r70-binding.json",
+  "files": [],
+  "runId": "A03-witnessed-number-r70-type",
+  "nativeCapSeconds": 60,
+  "mode": "type"
+}

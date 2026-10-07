@@ -1,0 +1,8 @@
+{
+  "runId": "A03-mesh-freeze-red-r01",
+  "startedUtc": "2026-10-05T16:47:45.8127505+00:00",
+  "endedUtc": "2026-10-05T16:47:46.9586766+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 1.1394315,
+  "planFile": "A03-mesh-freeze-red-r01.plan.json"
+}

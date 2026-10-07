@@ -1,0 +1,10 @@
+{
+  "runId": "A05-codec-r97-red",
+  "files": [
+    "tests/unit/hvp-support-json.test.ts"
+  ],
+  "nativeCapSeconds": 60,
+  "mode": "tests",
+  "binding": "A05-codec-r97-binding-red.json",
+  "classification": "Meaningful preimplementation wire-parity malformed UTF8 and cancellation RED"
+}

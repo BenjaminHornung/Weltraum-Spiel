@@ -1,0 +1,6 @@
+{
+  "originalTerminal": "A03-owner-first-error-green-r01/native-terminal-original.DATA.json",
+  "prior": "Original immediate release observation had remaining process handles and is preserved NOT_PROVEN",
+  "sha256": "db3dc6951f1627d52f3dab20b9e27277fae0b58a4fd46e820f1611fcb4534ffe",
+  "kind": "OBSERVATION_ONLY_NOT_A_NEW_NATIVE_RUN"
+}

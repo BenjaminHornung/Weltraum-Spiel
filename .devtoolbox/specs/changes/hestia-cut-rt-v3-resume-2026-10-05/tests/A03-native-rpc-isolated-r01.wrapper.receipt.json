@@ -1,0 +1,8 @@
+{
+  "runId": "A03-native-rpc-isolated-r01",
+  "startedUtc": "2026-10-05T12:25:33.5470857+00:00",
+  "endedUtc": "2026-10-05T12:25:48.0662838+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 14.5009967,
+  "planFile": "A03-native-rpc-isolated-r01.plan.json"
+}

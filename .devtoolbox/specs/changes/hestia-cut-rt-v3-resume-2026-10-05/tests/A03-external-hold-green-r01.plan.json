@@ -1,0 +1,10 @@
+{
+  "nativeCapSeconds": 180,
+  "files": [
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts"
+  ],
+  "mode": "tests",
+  "binding": "A03-external-hold-green-r01-binding.json",
+  "runId": "A03-external-hold-green-r01",
+  "classification": "Whole-file local external mesh lifetime GREEN; no productive pool claim"
+}

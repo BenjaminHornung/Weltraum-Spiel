@@ -1,0 +1,19 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-owned-hash-r67-measurement.test.ts > compares alternating exact preimage/current kernels on the complete384-cell structural payload
+AdaptiveAuthorityError: Unsupported canonical value.
+ ❯ fail src/voxel/adaptive/validation.ts:37:9
+     35|
+     36| export const fail = (code: AdaptiveAuthorityErrorCode, path: string, m…
+     37|   throw new AdaptiveAuthorityError(code, path, message);
+       |         ^
+     38| };
+     39|
+ ❯ canonicalize src/voxel/adaptive/canonical.ts:67:12
+ ❯ canonicalize src/voxel/adaptive/canonical.ts:85:19
+ ❯ canonicalAdaptiveJson src/voxel/adaptive/canonical.ts:100:76
+ ❯ tests/unit/hvp-owned-hash-r67-measurement.test.ts:12:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

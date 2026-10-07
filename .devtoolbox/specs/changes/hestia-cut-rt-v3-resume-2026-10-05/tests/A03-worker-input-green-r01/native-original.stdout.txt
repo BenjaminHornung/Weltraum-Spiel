@@ -1,0 +1,23 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvpBodyMeshJob.test.ts (25 tests) 4605ms
+   ✓ rejects borrowed worker input credit before cell materialization or meshing  357ms
+   ✓ keeps exact mixed wide-ID wire bytes when every worker phase borrows one parent  403ms
+   ✓ cancels at the first borrowed input task before meshing and keeps parent credit until caller cleanup  329ms
+   ✓ keeps original ordered owner cells and source identities through mesh-only packing and exact local verification  418ms
+   ✓ preserves original occupied material 8 through the complete private mesh-only roundtrip  397ms
+   ✓ preserves original occupied material 256 through the complete private mesh-only roundtrip  406ms
+   ✓ preserves original occupied material 65535 through the complete private mesh-only roundtrip  375ms
+   ✓ preserves mixed Uint16 materials at their original coordinates without aliasing or sorting owner parts  409ms
+   ✓ rejects Air, negative zero and overflow before packing without rewriting valid owner data  336ms
+   ✓ rejects wrong input and output bindings without replacing the retained source  386ms
+   ✓ rejects damaged in-bounds geometry against the retained native plan even when framing and hashes pass  407ms
+   ✓ closes the cursor once on cancellation and preserves the first error when cleanup also throws  300ms
+
+ Test Files  1 passed (1)
+      Tests  25 passed (25)
+   Start at  19:19:24
+   Duration  6.36s (transform 788ms, setup 0ms, import 1.61s, tests 4.61s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-worker-input-green-r01/original-vitest.json

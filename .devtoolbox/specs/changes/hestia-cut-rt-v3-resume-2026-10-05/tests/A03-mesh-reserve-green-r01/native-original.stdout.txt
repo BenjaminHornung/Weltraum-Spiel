@@ -1,0 +1,41 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvpOwnedBodyMesh.test.ts (7 tests) 2088ms
+   ✓ reuses the mesh kernel without changing mixed-material local Float32 bytes or metadata  395ms
+   ✓ rejects changed geometry against the issued local source, not changed foreign cells or matching digest  333ms
+   ✓ closes owned cursors at local-position and geometry-comparison yields  335ms
+   ✓ charges the borrowed parent before allocating any owned occupancy mesh  327ms
+   ✓ charges actual face/quad containers without changing mixed-material bytes  338ms
+   ✓ keeps expected-geometry verification inside the same borrowed parent budget  352ms
+ ✓ tests/unit/hvp-body-mesh-owner-integration.test.ts (25 tests) 13365ms
+   ✓ rejects projected owner-route Stage until the retained plan has admitted complete geometry  522ms
+   ✓ admits mesh-only output against the single retained native plan before Stage, commit and finalize  797ms
+   ✓ rejects altered color geometry with stable first failure and no native Stage or retry revival  625ms
+   ✓ keeps a thrown real admission yield terminal without mutating the native World  549ms
+   ✓ keeps a packet decoder failure terminal before geometry work and rejects a later good packet  561ms
+   ✓ cannot revive an admission after Rollback at a real verifier yield  495ms
+   ✓ preserves the first yielded failure when verifier cleanup also throws  533ms
+   ✓ retains one borrowed owner ledger through mesh admission and transfers results only at Finalize  909ms
+   ✓ rejects Dispose after native Stage until rollback or actual World release  950ms
+   ✓ keeps a failed projection reserve terminal for projection, mesh and native Stage  546ms
+   ✓ returns a latched post-projection owner failure before the missing-mesh guard  496ms
+   ✓ preserves non-Error mesh failure identity at Stage (null)  458ms
+   ✓ preserves non-Error mesh failure identity at Stage (undefined)  468ms
+   ✓ shares the first failure across later projection, decoder and Stage (Error: first cross-seam mesh error)  459ms
+   ✓ shares the first failure across later projection, decoder and Stage (null)  450ms
+   ✓ shares the first failure across later projection, decoder and Stage (undefined)  399ms
+   ✓ keeps a retired ledger until the suspended verifier actually closes  503ms
+   ✓ cannot switch the budget of an already derived plan (undefined)  437ms
+   ✓ cannot switch the budget of an already derived plan (33554432)  479ms
+   ✓ closes owner scratch on Dispose and retains credits until its suspended admission returns  551ms
+   ✓ awaits packet decoding under the same parent credit before starting geometry admission  890ms
+   ✓ keeps decoding credit through Rollback and refuses the late decoded packet  529ms
+   ✓ preserves an asynchronous decoder rejection as the first cross-seam failure  491ms
+
+ Test Files  2 passed (2)
+      Tests  32 passed (32)
+   Start at  18:32:37
+   Duration  17.39s (transform 680ms, setup 0ms, import 1.65s, tests 15.45s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-mesh-reserve-green-r01/original-vitest.json

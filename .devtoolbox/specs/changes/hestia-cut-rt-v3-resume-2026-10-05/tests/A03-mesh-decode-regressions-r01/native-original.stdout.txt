@@ -1,0 +1,66 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvpBodyCutWire.test.ts (57 tests) 18629ms
+     ✓ packs actual legacy products without global rebasing or changing input arrays  373ms
+     ✓ rejects oversized metadata and aggregate arrays before channel copies  317ms
+     ✓ keeps full owned index width at 65532 vertices (decoder-only allocation fixture)  330ms
+     ✓ keeps full owned index width at 65536 vertices (decoder-only allocation fixture)  332ms
+     ✓ preserves every actual box product, local array byte and mechanical field  323ms
+     ✓ preserves sphere selection, mixed materials and negative object coordinates  2507ms
+     ✓ keeps the original absolute mass and COM tolerances  321ms
+     ✓ rejects forged ownerId despite a fresh transport hash  330ms
+     ✓ rejects forged sourceDigest despite a fresh transport hash  325ms
+     ✓ rejects forged massKg despite a fresh transport hash  316ms
+     ✓ rejects forged center despite a fresh transport hash  314ms
+     ✓ rejects forged sourceBytes despite a fresh transport hash  325ms
+     ✓ rejects forged removedCells despite a fresh transport hash  319ms
+     ✓ rejects forged removedMassKg despite a fresh transport hash  327ms
+     ✓ rejects positionNaN with unchanged valid layout and refreshed hash  323ms
+     ✓ rejects positionInfinity with unchanged valid layout and refreshed hash  322ms
+     ✓ rejects normal with unchanged valid layout and refreshed hash  323ms
+     ✓ rejects color with unchanged valid layout and refreshed hash  326ms
+     ✓ rejects index with unchanged valid layout and refreshed hash  317ms
+     ✓ rejects duplicate with unchanged valid layout and refreshed hash  316ms
+     ✓ rejects removed with unchanged valid layout and refreshed hash  333ms
+     ✓ rejects material with unchanged valid layout and refreshed hash  337ms
+     ✓ rejects rangeSlot with unchanged valid layout and refreshed hash  320ms
+     ✓ rejects rangeStart with unchanged valid layout and refreshed hash  328ms
+     ✓ rejects rangeCount with unchanged valid layout and refreshed hash  323ms
+     ✓ rejects a JSON numeric overflow in COM, not only a JSON null  319ms
+     ✓ owns returned arrays/cells and validates later transport mutations again  362ms
+     ✓ rejects an oversized source-mesh set before retaining more parts or aggregating buffers  592ms
+     ✓ executes actual V1/V2 jobs with identical box products  586ms
+     ✓ executes actual V1/V2 jobs with identical sphere products  4547ms
+     ✓ executes actual V1/V2 jobs with identical complete products  315ms
+     ✓ leaves algorithm/hash/epoch admission at the unchanged result gate  575ms
+     ✓ transfers all seven buffers through the existing real runtime/pool protocol  579ms
+ ✓ tests/unit/hvp-borrowed-mesh-decode.test.ts (4 tests) 6168ms
+   ✓ preserves all mixed/wide cell IDs and exact decoded mesh bytes while charging one retained parent  1677ms
+   ✓ preserves the original malformed-index rejection even when the attacker recomputes the packet hash  1510ms
+   ✓ rejects a parent reserve failure before creating decoded products  1485ms
+   ✓ closes mid-decode scratch without releasing the shared parent or publishing a partial product  1495ms
+ ✓ tests/unit/hvpBodyMeshAdmission.test.ts (12 tests) 3787ms
+     ✓ keeps owner expectation independent of foreign child cells paired with a fake digest  1137ms
+ ✓ tests/unit/hvpBodyMeshJob.test.ts (22 tests) 3635ms
+   ✓ keeps original ordered owner cells and source identities through mesh-only packing and exact local verification  438ms
+   ✓ preserves original occupied material 8 through the complete private mesh-only roundtrip  372ms
+   ✓ preserves original occupied material 256 through the complete private mesh-only roundtrip  422ms
+   ✓ preserves original occupied material 65535 through the complete private mesh-only roundtrip  434ms
+   ✓ preserves mixed Uint16 materials at their original coordinates without aliasing or sorting owner parts  429ms
+   ✓ rejects Air, negative zero and overflow before packing without rewriting valid owner data  309ms
+   ✓ rejects wrong input and output bindings without replacing the retained source  427ms
+   ✓ rejects damaged in-bounds geometry against the retained native plan even when framing and hashes pass  389ms
+   ✓ closes the cursor once on cancellation and preserves the first error when cleanup also throws  328ms
+ ✓ tests/unit/hvpOwnedBodyMesh.test.ts (4 tests) 1047ms
+   ✓ reuses the mesh kernel without changing mixed-material local Float32 bytes or metadata  383ms
+   ✓ rejects changed geometry against the issued local source, not changed foreign cells or matching digest  331ms
+   ✓ closes owned cursors at local-position and geometry-comparison yields  327ms
+ ✓ tests/unit/hvp-borrowed-bytehash.test.ts (6 tests) 42ms
+
+ Test Files  6 passed (6)
+      Tests  105 passed (105)
+   Start at  17:41:09
+   Duration  37.07s (transform 797ms, setup 0ms, import 2.93s, tests 33.31s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-mesh-decode-regressions-r01/original-vitest.json

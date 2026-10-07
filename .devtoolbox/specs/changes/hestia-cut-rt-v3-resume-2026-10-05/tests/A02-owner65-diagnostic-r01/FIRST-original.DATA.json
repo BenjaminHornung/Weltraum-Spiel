@@ -1,0 +1,16 @@
+{
+  "firstUtc": "2026-10-05T10:03:48.238639+00:00",
+  "adminSeconds": 600,
+  "DworkSeconds": 540,
+  "finalSeconds": 60,
+  "cleanupSeconds": 60,
+  "H60Admission": true,
+  "capSecondsIncludingWrapper": 180,
+  "wholeFiles": [
+    "tests/unit/hvp-body-plan-owner.test.ts"
+  ],
+  "modeInjection": "TEST_LOCAL_A02_TRACE",
+  "selectorsBailDeadlineChange": "NONE",
+  "testTimeout": "DEFAULT5000_AND_ORIGINAL_EXPLICIT_DECLARATIONS_UNCHANGED",
+  "helperSha256": "11d936f83a2276ae924579da18c04a6ae88fba67c82296f0d86bc3f93f530b1a"
+}

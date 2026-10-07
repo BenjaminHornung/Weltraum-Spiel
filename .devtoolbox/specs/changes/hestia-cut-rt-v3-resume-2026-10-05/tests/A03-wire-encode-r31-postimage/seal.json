@@ -1,0 +1,12 @@
+[
+  {
+    "appRelative": "src/workers/hvpBodyCutWire.ts",
+    "bytes": 15866,
+    "sha256": "daaa92b2343084d7cf7957497664512e2f10d721c080ad3b7f7229fc0c3f5edf"
+  },
+  {
+    "appRelative": "tests/unit/hvpBodyCutWire.test.ts",
+    "bytes": 30714,
+    "sha256": "14524b80709a421e002c326e5eaf2bae6159c7820d90721da86e1f73afc4fa4e"
+  }
+]

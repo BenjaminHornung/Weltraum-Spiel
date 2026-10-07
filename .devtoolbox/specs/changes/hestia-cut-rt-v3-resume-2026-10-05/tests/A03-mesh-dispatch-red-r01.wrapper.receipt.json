@@ -1,0 +1,8 @@
+{
+  "runId": "A03-mesh-dispatch-red-r01",
+  "startedUtc": "2026-10-05T12:09:34.5118984+00:00",
+  "endedUtc": "2026-10-05T12:09:44.5432850+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 10.0254547,
+  "planFile": "A03-mesh-dispatch-red-r01.plan.json"
+}

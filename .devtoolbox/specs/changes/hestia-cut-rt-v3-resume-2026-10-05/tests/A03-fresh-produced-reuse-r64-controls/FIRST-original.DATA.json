@@ -1,0 +1,19 @@
+{
+  "firstUtc": "2026-10-06T00:16:31.185554+00:00",
+  "adminSeconds": 600,
+  "DworkSeconds": 540,
+  "finalSeconds": 60,
+  "cleanupSeconds": 60,
+  "legacyAdministrativeChecklist": "SUPERSEDED_BY_RESTART_BETRIEB_SECTION_9",
+  "capSecondsIncludingWrapper": 900,
+  "capScope": "DECLARED_COMMAND_WINDOW_NOT_TEST_DEADLINE",
+  "wholeFiles": [
+    "tests/unit/hvp-borrowed-body-plan.test.ts",
+    "tests/unit/hvp-owned-hash-array-open.test.ts"
+  ],
+  "modeInjection": "NONE",
+  "cpuProfile": false,
+  "selectorsBailDeadlineChange": "NONE",
+  "testTimeout": "DEFAULT5000_AND_ORIGINAL_EXPLICIT_DECLARATIONS_UNCHANGED",
+  "helperSha256": "2f81776f8f44167a7bed792cc6847144329af788af90604df876e4e7caa18295"
+}

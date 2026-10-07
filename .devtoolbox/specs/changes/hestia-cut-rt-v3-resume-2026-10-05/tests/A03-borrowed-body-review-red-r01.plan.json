@@ -1,0 +1,10 @@
+{
+  "classification": "R17 warm cache and material work genuine RED; unchanged per-test deadlines",
+  "files": [
+    "tests/unit/hvp-borrowed-body-plan.test.ts"
+  ],
+  "binding": "A03-borrowed-body-review-red-r01-binding.json",
+  "runId": "A03-borrowed-body-review-red-r01",
+  "mode": "tests",
+  "nativeCapSeconds": 180
+}

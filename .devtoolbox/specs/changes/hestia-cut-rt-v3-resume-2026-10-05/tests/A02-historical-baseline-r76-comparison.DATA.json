@@ -1,0 +1,304 @@
+{
+  "oldAcceptedComparableSumMs": 113220.7294,
+  "cases": [
+    {
+      "oldVsCurrentTodayDeltaMs": 103.86999999999989,
+      "oldKernelTodayMs": 727.9911999999995,
+      "oldAcceptedMs": 349.41280000000006,
+      "currentKernelTodayMs": 624.1211999999996,
+      "name": "owner-first child projection: reuses one finished plan before CURRENT-pose Stage"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": 224.5103999999992,
+      "oldKernelTodayMs": 613.6781999999994,
+      "oldAcceptedMs": 379.71399999999994,
+      "currentKernelTodayMs": 389.16780000000017,
+      "name": "owner-first child projection: rejects cancelled old work for a reused command id"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": -4.679900000000998,
+      "oldKernelTodayMs": 109.64229999999952,
+      "oldAcceptedMs": 99.96039999999994,
+      "currentKernelTodayMs": 114.32220000000052,
+      "name": "owner-first child projection: retains the original plan failure on retry"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": 31.805999999999585,
+      "oldKernelTodayMs": 599.2946999999995,
+      "oldAcceptedMs": 456.6875,
+      "currentKernelTodayMs": 567.4886999999999,
+      "name": "owner-first child projection: uses the issued-hash factory without recut or native installation"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": -21.83680000000004,
+      "oldKernelTodayMs": 203.4376000000002,
+      "oldAcceptedMs": 185.24089999999978,
+      "currentKernelTodayMs": 225.27440000000024,
+      "name": "owner-first child projection: permits a finished full-removal plan with no children"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": 192.97440000000006,
+      "oldKernelTodayMs": 595.4705000000004,
+      "oldAcceptedMs": 347.03960000000006,
+      "currentKernelTodayMs": 402.4961000000003,
+      "name": "owner-first child projection: rechecks cached target identity"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": 62.30819999999949,
+      "oldKernelTodayMs": 520.5078999999996,
+      "oldAcceptedMs": 375.03899999999976,
+      "currentKernelTodayMs": 458.1997000000001,
+      "name": "owner-first child projection: rechecks cached registry identity"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": 15.074000000000524,
+      "oldKernelTodayMs": 525.3106000000007,
+      "oldAcceptedMs": 402.8698999999997,
+      "currentKernelTodayMs": 510.2366000000002,
+      "name": "owner-first child projection: rechecks cached native identity"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": 93.81199999999808,
+      "oldKernelTodayMs": 1039.1152999999995,
+      "oldAcceptedMs": 692.8995999999997,
+      "currentKernelTodayMs": 945.3033000000014,
+      "name": "derives exactly one native plan per command across task-yielding preparation, a failed stage and its retry"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": 105.4452999999994,
+      "oldKernelTodayMs": 1088.932999999999,
+      "oldAcceptedMs": 725.4002,
+      "currentKernelTodayMs": 983.4876999999997,
+      "name": "keeps the parent simulated between plan phases and stages the original hit at the current native pose"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": -47.09680000000117,
+      "oldKernelTodayMs": 723.5257999999994,
+      "oldAcceptedMs": 358.9935999999998,
+      "currentKernelTodayMs": 770.6226000000006,
+      "name": "drops a cancelled or disposed preparation: no revived plan, no stage and unchanged native membership"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": 2.22570000000087,
+      "oldKernelTodayMs": 630.4621000000006,
+      "oldAcceptedMs": 358.3180000000002,
+      "currentKernelTodayMs": 628.2363999999998,
+      "name": "keeps a rejected task-yield adapter fatal for the command instead of resuming the steps in Stage"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": -63.55189999999857,
+      "oldKernelTodayMs": 1180.8563000000013,
+      "oldAcceptedMs": 591.2046,
+      "currentKernelTodayMs": 1244.4081999999999,
+      "name": "rejects a removed or replaced parent after a finished plan without touching the World"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": -85.00959999999759,
+      "oldKernelTodayMs": 105.60120000000097,
+      "oldAcceptedMs": 78.40950000000066,
+      "currentKernelTodayMs": 190.61079999999856,
+      "name": "keeps the original plan error identity and never stages a protected Sphere cut"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": -106.95030000000042,
+      "oldKernelTodayMs": 506.41489999999976,
+      "oldAcceptedMs": 333.1079,
+      "currentKernelTodayMs": 613.3652000000002,
+      "name": "stages a Sphere that removes every cell with zero children and no invented body"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": -104.54379999999946,
+      "oldKernelTodayMs": 3005.103000000001,
+      "oldAcceptedMs": 1760.185199999999,
+      "currentKernelTodayMs": 3109.6468000000004,
+      "name": "owner-first child projection: leaves the World running and rejects actual owner disposal"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": 92.67060000000129,
+      "oldKernelTodayMs": 3847.0545999999995,
+      "oldAcceptedMs": 2168.7662,
+      "currentKernelTodayMs": 3754.383999999998,
+      "name": "runs session source preparation outside the World hold and preserves Running after release"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": -215.2472999999991,
+      "oldKernelTodayMs": 3734.8701,
+      "oldAcceptedMs": 2196.6335,
+      "currentKernelTodayMs": 3950.117399999999,
+      "name": "runs session source preparation outside the World hold and preserves Paused after release"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": -742.6988999999994,
+      "oldKernelTodayMs": 2428.4465999999993,
+      "oldAcceptedMs": 1797.5051999999996,
+      "currentKernelTodayMs": 3171.1454999999987,
+      "name": "logs slow contiguous plan steps and their existing sub-hooks only while measuring (on)"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": -279.23870000000534,
+      "oldKernelTodayMs": 2851.1384999999973,
+      "oldAcceptedMs": 1848.669100000001,
+      "currentKernelTodayMs": 3130.3772000000026,
+      "name": "logs slow contiguous plan steps and their existing sub-hooks only while measuring (off)"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": 312.55769999999757,
+      "oldKernelTodayMs": 2930.4074,
+      "oldAcceptedMs": 1729.9314000000013,
+      "currentKernelTodayMs": 2617.8497000000025,
+      "name": "logs slow contiguous plan steps and their existing sub-hooks only while measuring (disabledMidYield)"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": -131.49429999999847,
+      "oldKernelTodayMs": 1315.426099999997,
+      "oldAcceptedMs": 854.5671000000002,
+      "currentKernelTodayMs": 1446.9203999999954,
+      "name": "rejects foreign and mixed-version Dispose without mutating the current Worker owner"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": -619.1271999999954,
+      "oldKernelTodayMs": 3982.6686000000045,
+      "oldAcceptedMs": 2241.5963999999985,
+      "currentKernelTodayMs": 4601.7958,
+      "name": "serves Read, input and the fixed-step timer while the worker's source-only plan is suspended"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": 733.927300000003,
+      "oldKernelTodayMs": 3522.500200000002,
+      "oldAcceptedMs": 2408.430199999999,
+      "currentKernelTodayMs": 2788.572899999999,
+      "name": "rejects Stage during a safety SimulationHold without Applied, manual-pause label, auto-resume or native mutation"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": 584.4310999999943,
+      "oldKernelTodayMs": 9396.582599999994,
+      "oldAcceptedMs": 6745.588100000001,
+      "currentKernelTodayMs": 8812.1515,
+      "name": "stops the temporary plan trace on a dynamic measure:false Read, including an in-flight plan, without changing the native cut"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": -1013.7567000000054,
+      "oldKernelTodayMs": 8551.9464,
+      "oldAcceptedMs": 7037.869699999999,
+      "currentKernelTodayMs": 9565.703100000006,
+      "name": "keeps the plan trace off on the old World returned by RollbackRestore after an opt-out during a committed restore"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": -75.41180000000168,
+      "oldKernelTodayMs": 3064.6587,
+      "oldAcceptedMs": 2243.4257,
+      "currentKernelTodayMs": 3140.0705000000016,
+      "name": "serves Read, input and the timer at a yield inside the Worker child hash, then cancels it without native mutation"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": -1525.0316999999923,
+      "oldKernelTodayMs": 5856.422900000005,
+      "oldAcceptedMs": 4409.880099999995,
+      "currentKernelTodayMs": 7381.454599999997,
+      "name": "keeps the Worker owner-hash route on a finalized Restore candidate and applies its new body cut"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": -693.3794999999955,
+      "oldKernelTodayMs": 1940.3445000000065,
+      "oldAcceptedMs": 1498.4303999999975,
+      "currentKernelTodayMs": 2633.724000000002,
+      "name": "issues identical children, masses, colliders and receipts on the generic and the owner-hash body session"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": 266.9916000000085,
+      "oldKernelTodayMs": 2024.4581000000035,
+      "oldAcceptedMs": 1349.786500000002,
+      "currentKernelTodayMs": 1757.466499999995,
+      "name": "runs a partial Sphere through the owner-hash factory's re-ingest route to one Applied child with generic parity"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": 86.92500000000291,
+      "oldKernelTodayMs": 562.7700000000041,
+      "oldAcceptedMs": 366.41399999999703,
+      "currentKernelTodayMs": 475.84500000000116,
+      "name": "runs an all-removing Sphere through the owner-hash factory without a child, hash cursor or native body"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": -120.34019999999146,
+      "oldKernelTodayMs": 1342.9447000000073,
+      "oldAcceptedMs": 1002.4006999999983,
+      "currentKernelTodayMs": 1463.2848999999987,
+      "name": "traces the owner-hash labels and recipe subspans exactly on a measured owner session and reads no clock without one"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": 89.13259999999718,
+      "oldKernelTodayMs": 1129.5936999999976,
+      "oldAcceptedMs": 649.4842000000062,
+      "currentKernelTodayMs": 1040.4611000000004,
+      "name": "closes the owner child hash on a cancel or dispose at its own yield without a revived plan or native mutation"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": -493.98820000000705,
+      "oldKernelTodayMs": 3876.439299999998,
+      "oldAcceptedMs": 2485.945099999997,
+      "currentKernelTodayMs": 4370.427500000005,
+      "name": "settles a pending Worker plan before restoring the ports even when the Dispose reply fails, keeping the original error"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": 737.7831000000006,
+      "oldKernelTodayMs": 24109.644799999995,
+      "oldAcceptedMs": 17138.942499999997,
+      "currentKernelTodayMs": 23371.861699999994,
+      "name": "projects row200 child cells in bounded owner batches with generic parity of sources, IDs, masses, colliders and receipt"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": 429.343200000003,
+      "oldKernelTodayMs": 7011.031799999997,
+      "oldAcceptedMs": 4445.771099999998,
+      "currentKernelTodayMs": 6581.688599999994,
+      "name": "fails closed on a cancel or dispose between owner child-cell batches without a new Stage, hash or native mutation"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": -17.461899999994785,
+      "oldKernelTodayMs": 6192.639899999995,
+      "oldAcceptedMs": 4294.765499999994,
+      "currentKernelTodayMs": 6210.101799999989,
+      "name": "stops every optional owner clock read after an opt-out at a child-cell batch yield"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": -365.6960000000108,
+      "oldKernelTodayMs": 4700.916700000002,
+      "oldAcceptedMs": 4024.868000000002,
+      "currentKernelTodayMs": 5066.612700000012,
+      "name": "serves Read, input and the timer at a real Worker child-cell batch yield, then cancels without a new Stage"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": -529.1412999999884,
+      "oldKernelTodayMs": 7132.556500000006,
+      "oldAcceptedMs": 5447.3343999999925,
+      "currentKernelTodayMs": 7661.6977999999945,
+      "name": "yields inside the post-destruction classification in bounded cell batches and stages the same products"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": 791.0430999999808,
+      "oldKernelTodayMs": 14508.972500000003,
+      "oldAcceptedMs": 8786.148700000005,
+      "currentKernelTodayMs": 13717.929400000023,
+      "name": "cancels a yielding plan at its first yield without revival or native change"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": 2925.253700000001,
+      "oldKernelTodayMs": 15229.163700000005,
+      "oldAcceptedMs": 8451.726600000009,
+      "currentKernelTodayMs": 12303.910000000003,
+      "name": "cancels a yielding plan at its midClassification yield without revival or native change"
+    },
+    {
+      "oldVsCurrentTodayDeltaMs": 1268.5375000000058,
+      "oldKernelTodayMs": 16513.232100000023,
+      "oldAcceptedMs": 10101.366299999994,
+      "currentKernelTodayMs": 15244.694600000017,
+      "name": "cancels a yielding plan at its midChildClassification yield without revival or native change"
+    }
+  ],
+  "historicalTodayComparableSumMs": 169932.17560000005,
+  "currentShaderIntegrityRepair": "SAME_VERSION_94BYTE_NORMAL_SOURCE_RESTORED_AFTER_R74_NO_CODE_CAUSE_CLAIM",
+  "classification": "DIAGNOSTIC_COUNTERFACTUAL_BOTH_WHOLE65_UNKNOWN180_NOT_CURRENT_ACCEPTANCE",
+  "completedDurationEvents": 42,
+  "currentTodayComparableSumMs": 168037.23590000003
+}

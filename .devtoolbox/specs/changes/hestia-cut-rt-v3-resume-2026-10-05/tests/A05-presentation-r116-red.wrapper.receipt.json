@@ -1,0 +1,8 @@
+{
+  "runId": "A05-presentation-r116-red",
+  "startedUtc": "2026-10-06T22:18:46.5541483+00:00",
+  "endedUtc": "2026-10-06T22:18:48.4130588+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 1.8500943,
+  "planFile": "A05-presentation-r116-red.plan.json"
+}

@@ -1,0 +1,8 @@
+{
+  "runId": "A05-slots-r104-type-r01",
+  "classification": "Same-owner private leaf copying full byte generic default error cancel and actual TD",
+  "mode": "type",
+  "files": [],
+  "binding": "A05-slots-r104-binding-r01.json",
+  "nativeCapSeconds": 60
+}

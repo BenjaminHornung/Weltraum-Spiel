@@ -1,0 +1,53 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-body-mesh-owner-integration.test.ts (36 tests) 20961ms
+   ✓ rejects projected owner-route Stage until the retained plan has admitted complete geometry  583ms
+   ✓ admits mesh-only output against the single retained native plan before Stage, commit and finalize  816ms
+   ✓ rejects altered color geometry with stable first failure and no native Stage or retry revival  604ms
+   ✓ keeps a thrown real admission yield terminal without mutating the native World  577ms
+   ✓ keeps a packet decoder failure terminal before geometry work and rejects a later good packet  577ms
+   ✓ cannot revive an admission after Rollback at a real verifier yield  574ms
+   ✓ preserves the first yielded failure when verifier cleanup also throws  560ms
+   ✓ retains one borrowed owner ledger through mesh admission and transfers results only at Finalize  951ms
+   ✓ rejects Dispose after native Stage until rollback or actual World release  890ms
+   ✓ keeps a failed projection reserve terminal for projection, mesh and native Stage  551ms
+   ✓ returns a latched post-projection owner failure before the missing-mesh guard  521ms
+   ✓ preserves non-Error mesh failure identity at Stage (null)  480ms
+   ✓ preserves non-Error mesh failure identity at Stage (undefined)  483ms
+   ✓ shares the first failure across later projection, decoder and Stage (Error: first cross-seam mesh error)  468ms
+   ✓ shares the first failure across later projection, decoder and Stage (null)  459ms
+   ✓ shares the first failure across later projection, decoder and Stage (undefined)  529ms
+   ✓ keeps a retired ledger until the suspended verifier actually closes  681ms
+   ✓ cannot switch the budget of an already derived plan (undefined)  409ms
+   ✓ cannot switch the budget of an already derived plan (33554432)  503ms
+   ✓ closes owner scratch on Dispose and retains credits until its suspended admission returns  571ms
+   ✓ awaits packet decoding under the same parent credit before starting geometry admission  964ms
+   ✓ keeps decoding credit through Rollback and refuses the late decoded packet  547ms
+   ✓ preserves an asynchronous decoder rejection as the first cross-seam failure  514ms
+   ✓ reuses one expected-mesh workspace across multiple native children without releasing parent credit  890ms
+   ✓ keeps the single parent credit after Finalize until the external mesh operation really closes  830ms
+   ✓ keeps external producer credit through Rollback until its explicit terminal closure  500ms
+   ✓ keeps external producer credit through Dispose until its explicit terminal closure  493ms
+   ✓ reserves external mesh work once and does not release its live parent early  506ms
+   ✓ refuses external ownership without the original borrowed ledger  409ms
+   ✓ refuses early external ownership without poisoning later borrowed preparation  500ms
+   ✓ keeps an exhausted external quote as the first owner failure without partial credit  498ms
+   ✓ prepares and reserves one source-derived external quote before exporting mesh work  834ms
+   ✓ keeps a quote-preflight cancellation terminal without acquiring external work  525ms
+   ✓ excludes mesh admission while its prepaid quote is suspended and admits after closure  898ms
+ ✓ tests/unit/hvpBoundedPump.test.ts (25 tests) 2973ms
+     ✓ preserves serial restore order and the empty restore path  389ms
+     ✓ requests algorithm two through the real compiler/pool and preserves legacy semantic products  657ms
+     ✓ does not retry a corrupted binary result as legacy JSON  344ms
+ ✓ tests/unit/hvp-terrain-products.test.ts (9 tests) 1358ms
+     ✓ covers sixteen 8m sectors exactly and invalidates only local content/halo products  901ms
+ ✓ tests/unit/hvp-body-mesh-client.test.ts (11 tests) 30ms
+ ✓ tests/unit/hvp-moving-consumer.test.ts (26 tests) 16ms
+
+ Test Files  5 passed (5)
+      Tests  107 passed (107)
+   Start at  22:13:51
+   Duration  29.22s (transform 1.20s, setup 0ms, import 3.08s, tests 25.34s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-phase-timing-r42-tests/original-vitest.json

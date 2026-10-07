@@ -1,0 +1,8 @@
+{
+  "runId": "A03-owner-cross-seam-green-r01",
+  "startedUtc": "2026-10-05T14:46:08.4688067+00:00",
+  "endedUtc": "2026-10-05T14:46:23.9999600+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 15.5259944,
+  "planFile": "A03-owner-cross-seam-green-r01.plan.json"
+}

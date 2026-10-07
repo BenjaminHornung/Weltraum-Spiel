@@ -1,0 +1,10 @@
+{
+  "nativeCapSeconds": 180,
+  "classification": "Whole hash/freezing controls plus measured bounded native tail control; RED expected per-index locks",
+  "mode": "tests",
+  "runId": "A03-bounded-native-freeze-r65-red",
+  "files": [
+    "tests/unit/hvp-owned-hash-array-open.test.ts"
+  ],
+  "binding": "A03-bounded-native-freeze-r65-red-binding.json"
+}

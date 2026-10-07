@@ -1,0 +1,27 @@
+[
+  {
+    "appRelative": "src/workers/protocol.ts",
+    "bytes": 31529,
+    "sha256": "adcc8222d774bf172d65c609cfd7800d33151958ccb1eb147de3decdef949bbe"
+  },
+  {
+    "appRelative": "src/workers/hvpBodyCutWire.ts",
+    "bytes": 14113,
+    "sha256": "4e23da99923cfbb50d25252132985d422dd375097e0aca36757dac7a8974d53f"
+  },
+  {
+    "appRelative": "src/workers/hvpBodyMeshJob.ts",
+    "bytes": 31671,
+    "sha256": "1a4a770b2870ccf7fac6d7c6b36f36bc6b473208316f9a78ee42acf281818877"
+  },
+  {
+    "appRelative": "tests/unit/hvp-borrowed-bytehash.test.ts",
+    "bytes": 2802,
+    "sha256": "d27baa07f2b842529c77b9177088306722b3fef7165cbd9190601744b4914c51"
+  },
+  {
+    "appRelative": "tests/unit/hvp-borrowed-mesh-decode.test.ts",
+    "bytes": 5088,
+    "sha256": "1a2a802e6e36af1c279163d6b8555991868a94aeafd638266821ef2a1c840da7"
+  }
+]

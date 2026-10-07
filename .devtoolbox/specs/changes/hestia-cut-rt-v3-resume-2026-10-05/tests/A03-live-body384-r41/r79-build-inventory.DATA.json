@@ -1,0 +1,467 @@
+[
+  {
+    "bytes": 67353,
+    "sha256": "a6c6a565367915e6d2a51617d691a4bb1249760f7d262af07e66f71ce65f4f53",
+    "file": "favicon.png"
+  },
+  {
+    "bytes": 40682,
+    "sha256": "a6efc4ca9c59054d8318ef534624083f1cc0615f0a29bc10865549bafe0352a2",
+    "file": "index.html"
+  },
+  {
+    "bytes": 98763,
+    "sha256": "02354aaddffb38bdc5982d2c92383764417a3c3cd734430432d77a362abeb262",
+    "file": "assets/backend-CAcgSEDT.js"
+  },
+  {
+    "bytes": 371996,
+    "sha256": "a10d6a349c2021d989807b4125301a79719de559e927019e46445632304f6e4f",
+    "file": "assets/backend-CAcgSEDT.js.map"
+  },
+  {
+    "bytes": 61660,
+    "sha256": "f7a54569914f984d42fe2f6e81e6df9780d016cf350eb76676c1e5f7a5bd9b33",
+    "file": "assets/browserBridge-tTKUnsOo.js"
+  },
+  {
+    "bytes": 179805,
+    "sha256": "1c4b642f246250506e6f85c15fa89a9c6283339890b2acb61bf74e4a3b0e6117",
+    "file": "assets/browserBridge-tTKUnsOo.js.map"
+  },
+  {
+    "bytes": 280287,
+    "sha256": "ea761fc5d9232f74eda38891392c6ca387d4fc3cfeffa4c4c17ffd69f37e6023",
+    "file": "assets/hvpBootstrap-C9fy9jjT.js"
+  },
+  {
+    "bytes": 944787,
+    "sha256": "ecba22f20729d43ede6f36891b0196098c698e0144ab1336c922efbdadfb4940",
+    "file": "assets/hvpBootstrap-C9fy9jjT.js.map"
+  },
+  {
+    "bytes": 1321368,
+    "sha256": "c34d482a2979b8a351a6638f7d482ef3e75bbcbed1bbc8af85dec8ccbfb30710",
+    "file": "assets/index-BP4oZ9f3.js"
+  },
+  {
+    "bytes": 5605994,
+    "sha256": "5e4dfa1354f9f93c567a82084c14855e604ea644a52be00186d2e2a4e87b7c8a",
+    "file": "assets/index-BP4oZ9f3.js.map"
+  },
+  {
+    "bytes": 170333,
+    "sha256": "252d286768f545feda6b7a69f8242535aaa7fbe6645ab93e2fb1500e3941e188",
+    "file": "assets/index-GeJ96uLU.css"
+  },
+  {
+    "bytes": 2482771,
+    "sha256": "440238dfb8cf9df51bfee1a4d19104e524abeee45400b18a490fa7f704368b38",
+    "file": "assets/physicsWorker-DA8MU_2d.js"
+  },
+  {
+    "bytes": 4109465,
+    "sha256": "fb50fbbf4100bd462e84ea2076c3914c00e71a042a004a1338546da908feb65e",
+    "file": "assets/physicsWorker-DA8MU_2d.js.map"
+  },
+  {
+    "bytes": 274534,
+    "sha256": "81eec61ca455d16fa68a03e8d80d78bc1000f3f682dc926bc20de5e807d7f4d6",
+    "file": "assets/streamingWorker-5iu8APKN.js"
+  },
+  {
+    "bytes": 1402809,
+    "sha256": "2fa85eb19350bd495909083da266b2ca087a332507c1c355902284d3d2467c15",
+    "file": "assets/streamingWorker-5iu8APKN.js.map"
+  },
+  {
+    "bytes": 56174,
+    "sha256": "ca6f8c3d649c316cc5d5c9f1b571b9e0a36865077046d2c095a387e6181433f2",
+    "file": "assets/surface-lab-CKx7nUXD.js"
+  },
+  {
+    "bytes": 221663,
+    "sha256": "fc5b52296997b54dc113b0ee94295af76035b5b610d1597719a7acbf948a0cef",
+    "file": "assets/surface-lab-CKx7nUXD.js.map"
+  },
+  {
+    "bytes": 1883578,
+    "sha256": "baada59bb18eff149644ca39355d9523b73da691726972d5ba919d93e2bce755",
+    "file": "concept/combat-asteroid-contact-clean.png"
+  },
+  {
+    "bytes": 4374,
+    "sha256": "abf39c566d85989a2a472694f17c24af2b5b719feccd76d5a07476063f165adf",
+    "file": "concept/combat-compass-overlay.png"
+  },
+  {
+    "bytes": 31981,
+    "sha256": "8ff8dc3ddda81cf097def3b9234626afe586d24227fbceec5e6b92272d395d25",
+    "file": "concept/combat-compass-reference.png"
+  },
+  {
+    "bytes": 4923,
+    "sha256": "50e4f9ea6fab985e2336dca0d680354e62a315a6e99bad227f560db5145590e8",
+    "file": "concept/combat-contact-marker-overlay.png"
+  },
+  {
+    "bytes": 58044,
+    "sha256": "eb8e9db397fe64a8cf6c3505d5dd6c01a432d68ed3f560fd3468d86a65d90512",
+    "file": "concept/combat-contact-marker-reference.png"
+  },
+  {
+    "bytes": 5562,
+    "sha256": "1a92d53cbae192d694c08a8afc9df346c54f72c695b909a257e555284a10298e",
+    "file": "concept/combat-reticle-overlay.png"
+  },
+  {
+    "bytes": 79272,
+    "sha256": "c2fab7ccd3335a5bcce8adbe4b02d6455bb8d26051a1907dbf564ae81664fffa",
+    "file": "concept/combat-reticle-reference.png"
+  },
+  {
+    "bytes": 1705277,
+    "sha256": "37f2dd8df449a5559e9d2fc444158a2b2028c91f751d71a7ca7be956b332710b",
+    "file": "concept/combat-scene-reference-clean.png"
+  },
+  {
+    "bytes": 2263806,
+    "sha256": "695b76d84db830a85ff868116608835a2e3b2447397dcb6540000717639cf69f",
+    "file": "concept/combat-scene-reference-composite.png"
+  },
+  {
+    "bytes": 19362,
+    "sha256": "40936daf57380ebc312bfe80f6c15732ffa51b3c840076a8a7be7a9560320db3",
+    "file": "concept/combat-target-wireframe.png"
+  },
+  {
+    "bytes": 1801256,
+    "sha256": "2cd08773ba51bfc1b41b7ef8c32c1f9d52dc4ea16ef08d0a600d92df054a5805",
+    "file": "concept/flight-asteroid-belt-clean.png"
+  },
+  {
+    "bytes": 1498339,
+    "sha256": "2148b766d76990d0aab32a84ef6c8672f2d77e5df87acfa4941dbdfbc1d91f94",
+    "file": "concept/flight-scene-reference-clean.png"
+  },
+  {
+    "bytes": 2108073,
+    "sha256": "65b3a0688742ff9f2788cdcf60a6137bd0ea3d126877e12d1a89100de8f64d07",
+    "file": "concept/flight-scene-reference-composite.png"
+  },
+  {
+    "bytes": 1062,
+    "sha256": "aea52542f7ba42d4ec678d48caed0e62eaa50014d60925f26b66667c36038248",
+    "file": "concept/icon-combat-active-weapon.png"
+  },
+  {
+    "bytes": 1104,
+    "sha256": "8ae768b25821bf317120ef8b5a0251e6c9af2d63ce7f0cbed9c43d9d062a0ea8",
+    "file": "concept/icon-combat-cannon.png"
+  },
+  {
+    "bytes": 1417,
+    "sha256": "67614e47509b438f9c209e13661fe5d285edc34715ab5c3912492fc887cb3a00",
+    "file": "concept/icon-combat-hull.png"
+  },
+  {
+    "bytes": 1184,
+    "sha256": "ec3424f68e94474d70106cb553a272426ae3d44069e5beec70a2969ee23b499c",
+    "file": "concept/icon-combat-laser.png"
+  },
+  {
+    "bytes": 1548,
+    "sha256": "fd3cb58e014048bc677a49bcac2fa552b083b770f8047e6bb4781f48ace77fa6",
+    "file": "concept/icon-combat-radar-contact.png"
+  },
+  {
+    "bytes": 2048,
+    "sha256": "6388db385169ebf4d642e8b81653fa2535edef0055f132ec319c5c976c7ce1a2",
+    "file": "concept/icon-combat-radar-target.png"
+  },
+  {
+    "bytes": 1800,
+    "sha256": "17e8b0988670044d006b1afb9ca3e16b8c4873a766103240e9a753dcaf8c856d",
+    "file": "concept/icon-combat-radar-threat.png"
+  },
+  {
+    "bytes": 1195,
+    "sha256": "c86a77812eaa9dd827ed618152e41a1ea4df981702f1de88f0b34c9658f9fb07",
+    "file": "concept/icon-combat-rockets.png"
+  },
+  {
+    "bytes": 1212,
+    "sha256": "ad3578b99da38130aab4f7329a25a33d460160e16f91e944002a530c45ff8b12",
+    "file": "concept/icon-combat-shield.png"
+  },
+  {
+    "bytes": 1579,
+    "sha256": "2f09c3c7cd04cb27030c7d75ec132c3105e15df33523424ad7fbce8327f8f524",
+    "file": "concept/icon-combat-target.png"
+  },
+  {
+    "bytes": 1314,
+    "sha256": "7e997e7acc8a784c2506aeb38df48e117ca8852ced1f6caeeb96a6e9cb77cd5d",
+    "file": "concept/icon-combat-thruster.png"
+  },
+  {
+    "bytes": 2055,
+    "sha256": "bd78d37dab86f79df0c5ddd9b0e3ccfa3acb4bc45c514d63d5e05ab0be22e68d",
+    "file": "concept/icon-flight-autopilot.png"
+  },
+  {
+    "bytes": 1279,
+    "sha256": "7755e21781ac143339450ee35589da8665d87c8c96401d913976d109dbb80e4d",
+    "file": "concept/icon-flight-course.png"
+  },
+  {
+    "bytes": 1347,
+    "sha256": "a863fe93e906525ac03bd04ff34cf9bb8f1946a71d2e8b8b4acd4e2d1081f25c",
+    "file": "concept/icon-flight-distance.png"
+  },
+  {
+    "bytes": 1133,
+    "sha256": "395bfbd1f3bb80758c70a2ee3002a2deee60b3d7b5f98367457ceddbebc47966",
+    "file": "concept/icon-flight-engage.png"
+  },
+  {
+    "bytes": 972,
+    "sha256": "fdaeaf8270dcfe687d456e064b8715b611f4b624e391a1541a843b0622218e00",
+    "file": "concept/icon-flight-eta.png"
+  },
+  {
+    "bytes": 1902,
+    "sha256": "bf5aabfeaeb7b15d92d674c71ea94fb2646aeab1ec41bc76d24497d73892bfb6",
+    "file": "concept/icon-flight-fuel.png"
+  },
+  {
+    "bytes": 1060,
+    "sha256": "f159b3126bda01c27cc25b3fe7c8c06cd1af4e1001ae5f3a59bc1d3c3799c403",
+    "file": "concept/icon-flight-navigation.png"
+  },
+  {
+    "bytes": 1804,
+    "sha256": "dfebef6485fa49eff392afcaafb45528289ef25b235ec2c668052e646eb4b6c6",
+    "file": "concept/icon-flight-rcs.png"
+  },
+  {
+    "bytes": 1665,
+    "sha256": "e990dd969ae12bc6f8b90898d662ea2bb948ef1c6ba96f25a6d4c531077bac2b",
+    "file": "concept/icon-flight-speed.png"
+  },
+  {
+    "bytes": 2888,
+    "sha256": "96895c275e788eaff7e943b5945de5f8bbe4fe8484a0d729e2b768eb42e09020",
+    "file": "concept/icon-flight-target-action.png"
+  },
+  {
+    "bytes": 1179,
+    "sha256": "a09768a2b002e5fd16130fc4571c540d45f9382aa646ccec069ce838114cd2e6",
+    "file": "concept/icon-flight-target.png"
+  },
+  {
+    "bytes": 2126,
+    "sha256": "4e429c17d6c744cace37da3ea1d7e2c68cbf7d7a551034b7796bff2d1cfa7756",
+    "file": "concept/icon-flight-thrust.png"
+  },
+  {
+    "bytes": 1237,
+    "sha256": "5d3d3aa390b13c10d45824361cb90715bc6af0b5f651823ae3e9097ef2df4b83",
+    "file": "concept/icon-flight-warning-fuel.png"
+  },
+  {
+    "bytes": 1245,
+    "sha256": "648ca2299895bc23aca9079ba5c0df4637dcbb4d5f23ede64e099e388e89f1c8",
+    "file": "concept/icon-flight-warning-target.png"
+  },
+  {
+    "bytes": 439,
+    "sha256": "8b84e2b74eb48d1521a77a6997adbf97de0727b5f9b9473b2d91f056596a8537",
+    "file": "concept/panel-border-cyan.png"
+  },
+  {
+    "bytes": 432,
+    "sha256": "dbc2c6c990f4818726c97b8169e3f165dcfd22f0a8f7e352c6db24d0b82670b4",
+    "file": "concept/panel-border-orange.png"
+  },
+  {
+    "bytes": 420,
+    "sha256": "ec4f6f332edf51793f280d158e421d4e972a669d0cb7c7821cd46f48dbfa79ae",
+    "file": "concept/panel-border-red.png"
+  },
+  {
+    "bytes": 45035,
+    "sha256": "fd065d5ef6c1aae0d59752b146015d9703c42cbf9ab27586d961265f81b9303e",
+    "file": "concept/planner-brand-lockup.png"
+  },
+  {
+    "bytes": 3607,
+    "sha256": "2cb303c3053a7eec12b47fd2033ee99888c10aadd637c423095965a7f85efc30",
+    "file": "concept/planner-icon-action-engage.png"
+  },
+  {
+    "bytes": 2887,
+    "sha256": "b723bd1777ef5040e848c4475b193bcb8711e64236287a67fd104d66fd086d74",
+    "file": "concept/planner-icon-action-preview.png"
+  },
+  {
+    "bytes": 3151,
+    "sha256": "5c325b51595105252a4f34acb83d8443b555a0c0e7141f356cee56405eb25047",
+    "file": "concept/planner-icon-action-replan.png"
+  },
+  {
+    "bytes": 3418,
+    "sha256": "a925f2cb802031a7a7ec3ee070fc7e8d20f511b25bdddb1d9936a761d4e90046",
+    "file": "concept/planner-icon-align.png"
+  },
+  {
+    "bytes": 3337,
+    "sha256": "8340eba00ba407d935cf1bb459f760d2dd01731e83feefcd308c88c8c6df8211",
+    "file": "concept/planner-icon-brake.png"
+  },
+  {
+    "bytes": 3191,
+    "sha256": "380c1166eb1f02a9f56713c582daa4fd831972ee309321002c4f08c2c7192d78",
+    "file": "concept/planner-icon-burn.png"
+  },
+  {
+    "bytes": 3163,
+    "sha256": "5b68b7e965b57d8e494da8eb4a2e7a43f7c440481e486bb626c7bbcbffc15a2a",
+    "file": "concept/planner-icon-flip.png"
+  },
+  {
+    "bytes": 2156,
+    "sha256": "dcfbe3f1e8817701e43185ccb06090da156816ce27035f961d43263bb36dfa5f",
+    "file": "concept/planner-icon-footer-credits.png"
+  },
+  {
+    "bytes": 2016,
+    "sha256": "35553582588785dc1f4f1bee509d20659b284c9060b031c8eac8843bd0489f79",
+    "file": "concept/planner-icon-footer-ruf.png"
+  },
+  {
+    "bytes": 3269,
+    "sha256": "6461d4a23d74b58d0acfee53b90a6d8e77514b6afc051de3b43a7750800cf405",
+    "file": "concept/planner-icon-header-brake.png"
+  },
+  {
+    "bytes": 3592,
+    "sha256": "f98711e8b1f8da12aa86a59510446c284e96342a2d3b374e1c50cafd7eb88c2d",
+    "file": "concept/planner-icon-header-eta.png"
+  },
+  {
+    "bytes": 3335,
+    "sha256": "9cf18db9563f6f48fae0c8c4c0542cc9545514c9434839c88dbec71ebfaa22de",
+    "file": "concept/planner-icon-header-fuel.png"
+  },
+  {
+    "bytes": 3592,
+    "sha256": "18add940bb4612a5e718f592a8bdbe8ba8db54a9da639411397cac0cd728b4cb",
+    "file": "concept/planner-icon-header-target.png"
+  },
+  {
+    "bytes": 3488,
+    "sha256": "f58308318a415cf4b12a9b5c91a282809bdff73dcf8a9e0ed8b27e6057ef18b9",
+    "file": "concept/planner-icon-hold.png"
+  },
+  {
+    "bytes": 2256,
+    "sha256": "01d6d20a47ac0c6a722fb3fd7389b647757a1950f9a27dd7790fceb7f3efe4d3",
+    "file": "concept/planner-icon-legend-avoidance.png"
+  },
+  {
+    "bytes": 3042,
+    "sha256": "0f757dd62faefa2e25c911fa0bfe5f430b74ea36e842ff9c3fa7fbc3270e8990",
+    "file": "concept/planner-icon-legend-hazard.png"
+  },
+  {
+    "bytes": 2959,
+    "sha256": "4c87c00302ffed6179bc638e88658c2ce0db7fc369a115b845374570b20d6957",
+    "file": "concept/planner-icon-legend-maneuver.png"
+  },
+  {
+    "bytes": 2329,
+    "sha256": "8f85cbbdb4e2e4f2d35dadb611defb271021e72ada6d287b288134da4a454be3",
+    "file": "concept/planner-icon-legend-route.png"
+  },
+  {
+    "bytes": 2836,
+    "sha256": "24fc0851b6aa93bab1dfa29994311c4132242323830b7707ef3f0096441e2590",
+    "file": "concept/planner-icon-legend-waypoint.png"
+  },
+  {
+    "bytes": 3023,
+    "sha256": "d76539fb8c290c1876379db7e71b1c63b1aaa07fe57241e76133491fa32adce6",
+    "file": "concept/planner-icon-map-focus.png"
+  },
+  {
+    "bytes": 3043,
+    "sha256": "de97ea4f936f147f044a2019f63ce8fb359324abf3c76a36f632a45dc60a909f",
+    "file": "concept/planner-icon-map-orbit.png"
+  },
+  {
+    "bytes": 2933,
+    "sha256": "86aa7f16e6b2f48147c590090d3865f2c159dd52cbab2fc0451fe4d0941e5333",
+    "file": "concept/planner-icon-map-zoom.png"
+  },
+  {
+    "bytes": 3780,
+    "sha256": "87918b33d7075eeeab900a281358efe758e8be7d3711d148ff9d7e175e468999",
+    "file": "concept/planner-icon-profile-balanced.png"
+  },
+  {
+    "bytes": 3175,
+    "sha256": "28ad64de326f107ac45c4e89227dc46f1eda6e4fbdb00527e3ad3cd46fe71cc7",
+    "file": "concept/planner-icon-profile-fast.png"
+  },
+  {
+    "bytes": 3397,
+    "sha256": "3d4e35aae43f14509ff8cbecf8b03a3afc856caae4620f712fd2f5fe5ec0f06e",
+    "file": "concept/planner-icon-profile-safe.png"
+  },
+  {
+    "bytes": 107195,
+    "sha256": "9881832facb2de0f801ecc5d7192dc16b486c935ba8aa04d0c6624a01e7bb673",
+    "file": "concept/planner-rail-reference.png"
+  },
+  {
+    "bytes": 34025,
+    "sha256": "046d3841cacaa22e28b74124b12aeeda321f6e7f1b3b81f8c78aa727bce977b3",
+    "file": "concept/planner-ship-marker.png"
+  },
+  {
+    "bytes": 28455,
+    "sha256": "fb05e8ff0a1efe3109a6e1f0680f15ec050b9bec5d80dbfbfb3297271c3544d3",
+    "file": "concept/planner-station-marker.png"
+  },
+  {
+    "bytes": 1652097,
+    "sha256": "9ebe0fb09e92b438c9b03b16835cec8c5617830561d6fde78b460f8c8114e087",
+    "file": "concept/planner-system-map-clean.png"
+  },
+  {
+    "bytes": 4465,
+    "sha256": "6390ee7459abec970abc294644b54e59ecad808158af03ab4ae53fef00472a53",
+    "file": "fonts/rajdhani/OFL.txt"
+  },
+  {
+    "bytes": 384348,
+    "sha256": "12ff7dcfe4c206e3875ac53b1762eab57de6a2fa7f5a86c26b97b88d6591eac2",
+    "file": "fonts/rajdhani/Rajdhani-Medium.ttf"
+  },
+  {
+    "bytes": 377860,
+    "sha256": "6e1fc228a8318251a6e569502ec57bac1e4656c582f92f59ccecc4688e039b98",
+    "file": "fonts/rajdhani/Rajdhani-Regular.ttf"
+  },
+  {
+    "bytes": 390340,
+    "sha256": "94bbd25a18ca665999feb05a537de9fd2b860dcfb78bbe9ca00270825bf235da",
+    "file": "fonts/rajdhani/Rajdhani-SemiBold.ttf"
+  },
+  {
+    "bytes": 127108,
+    "sha256": "d89533e7ab1409b698c066e382ce2cc46963e3c9b2feb75f1e51ab28e7dcb7d0",
+    "file": "ships/demo_scout_mk1.glb"
+  }
+]

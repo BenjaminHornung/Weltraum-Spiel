@@ -1,0 +1,10 @@
+{
+  "mode": "tests",
+  "binding": "A05-native-r99-binding-red.json",
+  "files": [
+    "tests/unit/hvp-transferred-recipe.test.ts"
+  ],
+  "classification": "Meaningful bounded full native-transferred recipe absent RED2 plus unchanged original8",
+  "runId": "A05-native-r99-red",
+  "nativeCapSeconds": 60
+}

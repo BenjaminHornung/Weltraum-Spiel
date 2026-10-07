@@ -1,0 +1,10 @@
+{
+  "binding": "A03-bytehash-red-r01-binding.json",
+  "classification": "Measured >8ms bytehash owned-step RED; original per-test/default deadlines",
+  "nativeCapSeconds": 180,
+  "files": [
+    "tests/unit/hvp-borrowed-bytehash.test.ts"
+  ],
+  "mode": "tests",
+  "runId": "A03-bytehash-red-r01"
+}

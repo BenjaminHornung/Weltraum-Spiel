@@ -1,0 +1,8 @@
+{
+  "runId": "A03-immutable-channels-r50-r02-build",
+  "binding": "A03-immutable-channels-r50-r02-binding.json",
+  "mode": "build",
+  "files": [],
+  "nativeCapSeconds": 180,
+  "classification": "Full owned frozenplainchannelvalidation reuse; originalfullvalidators/hashes/credits/errororder, -0/mutable/subclass fallbacks; ninewhole originalpopulations unchanged test deadlines"
+}

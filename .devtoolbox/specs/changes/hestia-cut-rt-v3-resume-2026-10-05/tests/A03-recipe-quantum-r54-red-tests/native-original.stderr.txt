@@ -1,0 +1,27 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-borrowed-body-plan.test.ts > composes the same complete Box plan, children and removed mass under one retained parent
+AssertionError: expected 1296 to be less than 1024
+ ❯ tests/unit/hvp-borrowed-body-plan.test.ts:85:62
+     83|     if(["ownerRecipe","childSourcePrepare","childClassificationCells",…
+     84|     yield step.value;}}finally{steps.return(undefined as never);}})());
+     85|   expect(recipeSteps).toBeGreaterThan(0);expect(recipeSteps).toBeLessT…
+       |                                                              ^
+     86|   expect(JSON.stringify(actual)).toBe(JSON.stringify(expected));expect…
+     87|   expect(isIssuedStructuralObject(actual.plan.after)).toBe(true);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/hvp-borrowed-body-plan.test.ts > composes the same complete Sphere plan, children and removed mass under one retained parent
+AssertionError: expected 1076 to be less than 1024
+ ❯ tests/unit/hvp-borrowed-body-plan.test.ts:85:62
+     83|     if(["ownerRecipe","childSourcePrepare","childClassificationCells",…
+     84|     yield step.value;}}finally{steps.return(undefined as never);}})());
+     85|   expect(recipeSteps).toBeGreaterThan(0);expect(recipeSteps).toBeLessT…
+       |                                                              ^
+     86|   expect(JSON.stringify(actual)).toBe(JSON.stringify(expected));expect…
+     87|   expect(isIssuedStructuralObject(actual.plan.after)).toBe(true);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+

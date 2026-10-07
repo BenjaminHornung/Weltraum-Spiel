@@ -1,4 +1,4 @@
-import { canonicalSignature } from "./canonical";
+import { canonicalSignature, canonicalSignatureOwnedSteps } from "./canonical";
 import {
   compareAscii,
   isContentHash,
@@ -12,7 +12,7 @@ import {
   SourceRevision
 } from "./ids";
 import { validateMaterialProfile, type MaterialProfile } from "./materialProfile";
-import { validateMeshArtifact, type MeshArtifact } from "./meshArtifact";
+import { validateMeshArtifact, validateMeshArtifactOwnedSteps, type MeshArtifact } from "./meshArtifact";
 import { validateFrameProjectionSnapshot, validateVisibilityPlan, type FrameProjectionSnapshot, type VisibilityPlan } from "./visibilityPlan";
 import { deepFreezeMetadata, invalidResult, issue, type ValidationIssue, type ValidationResult, validResult, throwIfInvalid } from "./validation";
 
@@ -132,7 +132,7 @@ export const renderCommandResult = (
   message?: string
 ): RenderCommandResult => Object.freeze({ status, ownership, reasonCode, message });
 
-export const createRenderCommand = <T extends RenderCommand>(command: T): T => {
+function* createRenderCommandSteps<T extends RenderCommand>(command: T, owned: boolean): Generator<string, T, unknown> {
   let frozen: T;
   if (command.kind === "UpsertMeshArtifact") {
     const profiles = Object.freeze([...command.materialProfiles].sort((left, right) => compareAscii(left.id, right.id)));
@@ -140,11 +140,17 @@ export const createRenderCommand = <T extends RenderCommand>(command: T): T => {
   } else {
     frozen = deepFreezeMetadata({ ...command }) as T;
   }
-  throwIfInvalid("RenderCommand", validateRenderCommand(frozen));
+  throwIfInvalid("RenderCommand", yield* validateRenderCommandSteps(frozen, owned));
   return frozen;
-};
+}
 
-export const validateRenderCommand = (command: unknown): ValidationResult => {
+export const createRenderCommand = <T extends RenderCommand>(command: T): T => createRenderCommandSteps(command, false).next().value as T;
+
+export function* createRenderCommandOwnedSteps<T extends RenderCommand>(command: T): Generator<string, T, unknown> {
+  return yield* createRenderCommandSteps(command, true);
+}
+
+function* validateRenderCommandSteps(command: unknown, owned: boolean): Generator<string, ValidationResult, unknown> {
   const issues: ValidationIssue[] = [];
   const add = (result: ValidationResult): void => {
     if (!result.valid) issues.push(...result.issues);
@@ -189,7 +195,7 @@ export const validateRenderCommand = (command: unknown): ValidationResult => {
         break;
       case "UpsertMeshArtifact": {
         const typed = record as unknown as UpsertMeshArtifactCommand;
-        add(validateMeshArtifact(typed.artifact));
+        add(owned ? yield* validateMeshArtifactOwnedSteps(typed.artifact) : validateMeshArtifact(typed.artifact));
         const ids = new Set<string>();
         typed.materialProfiles.forEach((profile, index) => {
           add(validateMaterialProfile(profile));
@@ -232,7 +238,13 @@ export const validateRenderCommand = (command: unknown): ValidationResult => {
     issues.push(issue("MalformedCommandPayload", "command", "does not contain the required payload for its kind"));
   }
   return issues.length === 0 ? validResult() : invalidResult(issues);
-};
+}
+
+export const validateRenderCommand = (command: unknown): ValidationResult => validateRenderCommandSteps(command, false).next().value as ValidationResult;
+
+export function* validateRenderCommandOwnedSteps(command: unknown): Generator<string, ValidationResult, unknown> {
+  return yield* validateRenderCommandSteps(command, true);
+}
 
 const commandFieldsForSignature = (command: RenderCommand): unknown => {
   if (command.kind === "UpsertMeshArtifact") {
@@ -248,3 +260,7 @@ const commandFieldsForSignature = (command: RenderCommand): unknown => {
 
 export const renderCommandSignature = (command: RenderCommand): ContentHash =>
   canonicalSignature({ version: 1, command: commandFieldsForSignature(command) });
+
+export function* renderCommandSignatureOwnedSteps(command: RenderCommand): Generator<string, ContentHash, unknown> {
+  return yield* canonicalSignatureOwnedSteps({ version: 1, command: commandFieldsForSignature(command) });
+}

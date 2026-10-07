@@ -1,0 +1,19 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-borrowed-mesh-decode.test.ts (8 tests | 1 failed) 12161ms
+   ✓ preserves all mixed/wide cell IDs and exact decoded mesh bytes while charging one retained parent  1684ms
+   ✓ preserves the original malformed-index rejection even when the attacker recomputes the packet hash  1524ms
+   ✓ rejects a parent reserve failure before creating decoded products  1502ms
+   ✓ closes mid-decode scratch without releasing the shared parent or publishing a partial product  1496ms
+   ✓ rejects an oversized zero-byte channel list before the generic metadata maps can allocate it  1524ms
+   ✓ packs the same private projection bytes and digests through borrowed bounded work  1472ms
+   ✓ fails the packing parent reservation before publishing or transferring input  1455ms
+   × preserves the generic outer freeze lookup before its second byte hash 1501ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 passed (8)
+   Start at  18:57:02
+   Duration  13.79s (transform 633ms, setup 0ms, import 1.46s, tests 12.16s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-pack-order-red-r01/original-vitest.json

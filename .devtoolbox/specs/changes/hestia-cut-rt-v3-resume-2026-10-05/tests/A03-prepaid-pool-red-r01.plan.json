@@ -1,0 +1,10 @@
+{
+  "binding": "A03-prepaid-pool-red-r01-binding.json",
+  "files": [
+    "tests/unit/workerPoolLifecycle.test.ts"
+  ],
+  "classification": "Finite aggregate full original WorkerPool lifecycle population plus3 genuine private prepaid RED controls; original pertest deadlines unchanged",
+  "nativeCapSeconds": 600,
+  "runId": "A03-prepaid-pool-red-r01",
+  "mode": "tests"
+}

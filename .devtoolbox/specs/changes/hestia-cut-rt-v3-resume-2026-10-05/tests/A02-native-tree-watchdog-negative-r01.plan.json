@@ -1,0 +1,9 @@
+{
+  "runId": "A02-native-tree-watchdog-negative-r01",
+  "binding": "A02-clean-source-binding-r02.json",
+  "mode": "tests",
+  "files": ["tests/unit/hvp-bootstrap.test.ts"],
+  "nativeCapSeconds": 1,
+  "classification": "deliberate command-window watchdog control, not test acceptance; original per-test declarations unchanged",
+  "expected": "UNKNOWN_NATIVE_TIMEOUT_STOP; native nested job zero and outer only wrapper; no foreign processes"
+}

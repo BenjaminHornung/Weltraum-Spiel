@@ -1,0 +1,10 @@
+{
+  "nativeCapSeconds": 180,
+  "mode": "tests",
+  "classification": "Byte-exact originalOwner65 whole population, native180 and test deadlines unchanged; newRPC2 isolated separately",
+  "binding": "A03-native-rpc-isolated-source-binding-r02.json",
+  "runId": "A03-owner-original65-r02",
+  "files": [
+    "tests/unit/hvp-body-plan-owner.test.ts"
+  ]
+}

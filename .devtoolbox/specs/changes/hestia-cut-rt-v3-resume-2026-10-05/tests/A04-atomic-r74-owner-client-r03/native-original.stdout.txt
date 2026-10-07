@@ -1,0 +1,38 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-body-mesh-client.test.ts (14 tests) 154ms
+ ✓ tests/unit/hvp-body-mesh-owner-integration.test.ts (38 tests) 19965ms
+   ✓ rejects projected owner-route Stage until the retained plan has admitted complete geometry  750ms
+   ✓ admits mesh-only output against the single retained native plan before Stage, commit and finalize  1012ms
+   ✓ rejects altered color geometry with stable first failure and no native Stage or retry revival  797ms
+   ✓ keeps a thrown real admission yield terminal without mutating the native World  734ms
+   ✓ keeps a packet decoder failure terminal before geometry work and rejects a later good packet  797ms
+   ✓ cannot revive an admission after Rollback at a real verifier yield  785ms
+   ✓ preserves the first yielded failure when verifier cleanup also throws  862ms
+   ✓ admits an empty child set after complete legal removal without a first-part assumption  328ms
+   ✓ retains one borrowed owner ledger through mesh admission and transfers results only at Finalize  610ms
+   ✓ rejects Dispose after native Stage until rollback or actual World release  682ms
+   ✓ keeps a failed projection reserve terminal for projection, mesh and native Stage  477ms
+   ✓ preserves non-Error mesh failure identity at Stage (null)  632ms
+   ✓ preserves non-Error mesh failure identity at Stage (undefined)  643ms
+   ✓ shares the first failure across later projection, decoder and Stage (Error: first cross-seam mesh error)  643ms
+   ✓ shares the first failure across later projection, decoder and Stage (null)  899ms
+   ✓ shares the first failure across later projection, decoder and Stage (undefined)  838ms
+   ✓ keeps a retired ledger until the suspended verifier actually closes  365ms
+   ✓ cannot switch the budget of an already derived plan (undefined)  883ms
+   ✓ closes owner scratch on Dispose and retains credits until its suspended admission returns  309ms
+   ✓ awaits packet decoding under the same parent credit before starting geometry admission  650ms
+   ✓ keeps decoding credit through Rollback and refuses the late decoded packet  354ms
+   ✓ reuses one expected-mesh workspace across multiple native children without releasing parent credit  573ms
+   ✓ keeps the single parent credit after Finalize until the external mesh operation really closes  624ms
+   ✓ refuses external ownership without the original borrowed ledger  736ms
+   ✓ prepares and reserves one source-derived external quote before exporting mesh work  444ms
+   ✓ excludes mesh admission while its prepaid quote is suspended and admits after closure  640ms
+
+ Test Files  2 passed (2)
+      Tests  52 passed (52)
+   Start at  05:21:55
+   Duration  25.08s (transform 1.96s, setup 0ms, import 4.37s, tests 20.12s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A04-atomic-r74-owner-client-r03/original-vitest.json

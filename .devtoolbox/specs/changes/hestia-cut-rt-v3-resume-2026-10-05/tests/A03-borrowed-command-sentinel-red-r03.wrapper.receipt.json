@@ -1,0 +1,8 @@
+{
+  "runId": "A03-borrowed-command-sentinel-red-r03",
+  "startedUtc": "2026-10-05T13:24:27.8672265+00:00",
+  "endedUtc": "2026-10-05T13:24:30.3750550+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 2.5033082,
+  "planFile": "A03-borrowed-command-sentinel-red-r03.plan.json"
+}

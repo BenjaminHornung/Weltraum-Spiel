@@ -1,0 +1,8 @@
+{
+  "runId": "A03-dense-revisit-r55-tests",
+  "startedUtc": "2026-10-05T22:30:21.6450944+00:00",
+  "endedUtc": "2026-10-05T22:31:55.1598225+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 93.50812,
+  "planFile": "A03-dense-revisit-r55-tests.plan.json"
+}

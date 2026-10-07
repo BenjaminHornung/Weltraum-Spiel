@@ -1,0 +1,47 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-borrowed-body-plan.test.ts > composes the same complete Box plan, children and removed mass under one retained parent
+ FAIL  tests/unit/hvp-borrowed-body-plan.test.ts > composes the same complete Sphere plan, children and removed mass under one retained parent
+AssertionError: expected 0 to be greater than 0
+ ❯ tests/unit/hvp-borrowed-body-plan.test.ts:23:42
+     21|   expect(isIssuedStructuralObject(actual.plan.after)).toBe(true);
+     22|   for(const part of actual.plan.parts){assertHvpRigidRecipe(part.recip…
+     23|   expect(ledger.resources.reservedBytes).toBeGreaterThan(0);expect(led…
+       |                                          ^
+     24| });
+     25| it("closes mid-plan command/ingest work without releasing the shared p…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/hvp-borrowed-body-plan.test.ts > closes mid-plan command/ingest work without releasing the shared parent
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/hvp-borrowed-body-plan.test.ts:28:62
+     26|   const before=source(),recipe=prepareHvpRigidBody(before),ledger=crea…
+     27|   const steps=prepareHvpLocalBodyCutOwnedHashSteps(before,[2,0,0],"can…
+     28|   for(let unit=0;unit<100;unit+=1){expect(steps.next().done).toBe(fals…
+       |                                                              ^
+     29|   steps.return(undefined as never);expect(ledger.resources.reservedByt…
+     30| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/hvp-borrowed-body-plan.test.ts > keeps the original parent failure before any final plan or retry work
+AssertionError: expected function to throw an error, but it didn't
+ ❯ tests/unit/hvp-borrowed-body-plan.test.ts:34:123
+     32|   const before=source(),recipe=prepareHvpRigidBody(before),ledger=crea…
+     33|   const reserve=vi.fn<typeof ledger.reserve>((...args)=>{calls+=1;if(c…
+     34|   expect(()=>finish(prepareHvpLocalBodyCutOwnedHashSteps(before,[2,0,0…
+       |                                                                                                                           ^
+     35|   expect(reserve).toHaveBeenCalledTimes(2);expect(ledger.resources.res…
+     36| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+

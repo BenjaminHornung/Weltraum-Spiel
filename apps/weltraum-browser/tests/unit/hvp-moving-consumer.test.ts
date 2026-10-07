@@ -158,3 +158,40 @@ it.each([["compile","Rejected"],["retire","RecoveryHold"]])("P07 emits the actua
     expect(h.consumer.read().last?.status).toBe(status);
   }finally{h.consumer.dispose();}
 });
+
+it("holds the save boundary until actual mesh cleanup acknowledgement after render finish",async()=>{
+  const events:string[]=[];let end:()=>void=()=>{},entered:()=>void=()=>{};
+  const ready=new Promise<void>(resolve=>{entered=resolve;}),closing=new Promise<void>(resolve=>{end=resolve;});
+  const physics={beginBodyCut:async()=>({}),stageBodyCut:async()=>{},commitBodyCut:async()=>{},publishBodyCut:()=>{},finalizeBodyCut:async()=>{events.push("native-finalize");},
+    rollbackBodyCut:async()=>{},command:async()=>{},read:()=>({moving:{state:"Idle"}})} as unknown as HvpPhysicsClient;
+  const consumer=createHvpBodyCutConsumer(physics,async()=>({parts:[],removedCells:1,removedMassKg:1}) as HvpBodyCutProducts,
+    ()=>({publish(){events.push("publish");},rollback(){},finish(){events.push("render-finish");}}),undefined,async()=>{
+      events.push("mesh-close");entered();await closing;events.push("mesh-closed");
+    });
+  try{const submitted=consumer.submit(request);await ready;expect(events).toEqual(["publish","native-finalize","render-finish","mesh-close"]);
+    expect(consumer.read().state).toBe("Pending");expect(()=>consumer.checkpoint()).toThrow("save boundary");
+    let idle=false;void consumer.whenIdle().then(()=>{idle=true;});await Promise.resolve();expect(idle).toBe(false);
+    end();await submitted;expect(consumer.read().last?.status).toBe("Applied");expect(consumer.checkpoint().entries).toHaveLength(1);
+  }finally{end();await consumer.whenIdle();consumer.dispose();}
+});
+
+it("retains a mesh release through render RecoveryHold until the coordinator confirms backend disposal",async()=>{
+  let backendReleased=false;const finish=vi.fn(async()=>{expect(backendReleased).toBe(true);});
+  const physics={beginBodyCut:async()=>({}),rollbackBodyCut:async()=>{},command:async()=>{},read:()=>({moving:{state:"Idle"}})} as unknown as HvpPhysicsClient;
+  const consumer=createHvpBodyCutConsumer(physics,async()=>({parts:[],removedCells:1,removedMassKg:1}) as HvpBodyCutProducts,
+    ()=>{throw new HvpRenderStageRecoveryError([new Error("upload"),new Error("cleanup")],"unproven render cleanup");},undefined,finish);
+  await consumer.submit(request);expect(consumer.read().state).toBe("RecoveryHold");expect(finish).not.toHaveBeenCalled();
+  consumer.dispose();await consumer.whenIdle();backendReleased=true;await consumer.releaseDisposedResources();await consumer.releaseDisposedResources();
+  expect(finish).toHaveBeenCalledTimes(1);expect(consumer.read().state).toBe("RecoveryHold");
+});
+
+it("emits only RecoveryHold when owned mesh cleanup acknowledgement rejects after render finish",async()=>{
+  const spans:HvpCutSpan[]=[];
+  const physics={beginBodyCut:async()=>({}),stageBodyCut:async()=>{},commitBodyCut:async()=>{},publishBodyCut:()=>{},finalizeBodyCut:async()=>{},
+    rollbackBodyCut:async()=>{},command:async()=>{},read:()=>({moving:{state:"Idle"}})} as unknown as HvpPhysicsClient;
+  const consumer=createHvpBodyCutConsumer(physics,async()=>({parts:[],removedCells:1,removedMassKg:1}) as HvpBodyCutProducts,
+    ()=>({publish(){},rollback(){},finish(){}}),span=>spans.push(span),async()=>{throw new Error("mesh terminal acknowledgement failed");});
+  try{await consumer.submit(request);expect(consumer.read().last?.status).toBe("RecoveryHold");
+    expect(spans.map(span=>span.phase)).toEqual(["cutBodySubmittedMs","cutBodyTotalRecoveryHoldMs"]);
+  }finally{consumer.dispose();}
+});

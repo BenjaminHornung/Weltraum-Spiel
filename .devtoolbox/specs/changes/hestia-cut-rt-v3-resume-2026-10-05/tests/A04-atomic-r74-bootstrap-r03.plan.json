@@ -1,0 +1,10 @@
+{
+  "files": [
+    "tests/unit/hvp-bootstrap.test.ts"
+  ],
+  "runId": "A04-atomic-r74-bootstrap-r03",
+  "mode": "tests",
+  "nativeCapSeconds": 1200,
+  "classification": "Complete Bootstrap population including actual renderer visibility after native fixture Commit; sticky recovery controls; original deadlines",
+  "binding": "A04-atomic-r74-binding-r03.json"
+}

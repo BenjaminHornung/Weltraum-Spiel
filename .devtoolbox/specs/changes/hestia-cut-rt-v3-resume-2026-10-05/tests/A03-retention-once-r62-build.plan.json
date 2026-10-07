@@ -1,0 +1,8 @@
+{
+  "binding": "A03-retention-once-r62-binding.json",
+  "runId": "A03-retention-once-r62-build",
+  "classification": "Remove only duplicate owned adapter retention construction; original final issuer/validators/proofs/full hashes remain; whole seven files",
+  "nativeCapSeconds": 600,
+  "files": [],
+  "mode": "build"
+}

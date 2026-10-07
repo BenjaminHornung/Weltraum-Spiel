@@ -1,0 +1,8 @@
+{
+  "runId": "A03-mesh-protocol-red-r01",
+  "startedUtc": "2026-10-05T11:47:48.7950742+00:00",
+  "endedUtc": "2026-10-05T11:47:49.9964491+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 1.1962933,
+  "planFile": "A03-mesh-protocol-red-r01.plan.json"
+}

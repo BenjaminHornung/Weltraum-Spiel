@@ -1,0 +1,8 @@
+{
+  "mode": "type",
+  "files": [],
+  "nativeCapSeconds": 60,
+  "classification": "Fresh private bounded pool/worker/client typecheck",
+  "runId": "A03-prepaid-pool-type-r39-r02",
+  "binding": "A03-prepaid-pool-r39-r02-binding.json"
+}

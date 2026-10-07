@@ -1,0 +1,14 @@
+{
+  "runId": "A03-phase-timing-r42-tests",
+  "binding": "A03-phase-timing-r42-binding.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-moving-consumer.test.ts",
+    "tests/unit/hvp-terrain-products.test.ts",
+    "tests/unit/hvp-body-mesh-client.test.ts",
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts",
+    "tests/unit/hvpBoundedPump.test.ts"
+  ],
+  "nativeCapSeconds": 600,
+  "classification": "Fresh complete type / five whole regression populations / production build; terminal trace and contiguous quantum fix plus four measurement-only phase spans; original test defaults"
+}

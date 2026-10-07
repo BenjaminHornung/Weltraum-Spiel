@@ -1,0 +1,878 @@
+{
+  "classification": "PROFILE_PERTURBED_DIAGNOSTIC_NOT_A_LATENCY_ACCEPTANCE",
+  "binding": "A03-plan-quantum-r45-binding.json",
+  "firstAttempt": {
+    "outcome": "NO_BODY_CUT",
+    "reason": "SimulationHold/Moving cut unavailable after profiler attach; not a causal Cut profile",
+    "scope": "Profiler stopped, exact attached target session detached, game worker retained"
+  },
+  "realCut": {
+    "receipt": {
+      "id": "moving-cut-2",
+      "status": "Applied",
+      "parentId": "hvp:terrain-fragment:r1:1b4aa69d",
+      "children": [
+        "hvp:terrain-fragment:r1:1b4aa69d:r1:p0"
+      ],
+      "removedCells": 32,
+      "removedMassKg": 135.9375,
+      "issuedTick": 3290,
+      "commitTick": 3360,
+      "parentPose": {
+        "position": {
+          "x": 8.4270658493042,
+          "y": 0.973335862159729,
+          "z": -4.908838748931885
+        },
+        "rotation": {
+          "x": 0.03764787316322327,
+          "y": 0.6483229398727417,
+          "z": 0.01415684912353754,
+          "w": 0.7603022456169128
+        },
+        "velocity": {
+          "x": -0.000006728128482791362,
+          "y": 0.00004201526826363988,
+          "z": -0.00022349160281009972
+        },
+        "angularVelocity": {
+          "x": 0.00003002483026648406,
+          "y": -0.00021114562696311623,
+          "z": -0.00009368753671878949
+        }
+      },
+      "removedMomentum": {
+        "massKg": 135.9375,
+        "referencePoint": {
+          "x": 8.4270658493042,
+          "y": 0.973335862159729,
+          "z": -4.908838748931885
+        },
+        "center": {
+          "x": 8.476599628239144,
+          "y": 1.1167842634658052,
+          "z": -5.138762472828931
+        },
+        "linear": {
+          "x": 0.00751171426788295,
+          "y": 0.006019039444396211,
+          "z": -0.028373656382318587
+        },
+        "angular": {
+          "x": -0.002567022587196921,
+          "y": -0.001527044402698522,
+          "z": -0.0011393068632740851
+        }
+      }
+    },
+    "metrics": [
+      {
+        "name": "hvp.cutBodyInputMs",
+        "duration": 0
+      },
+      {
+        "name": "hvp.cutBodySubmittedMs",
+        "duration": 0
+      },
+      {
+        "name": "hvp.cutBodyOwnerPlanMs",
+        "duration": 1107.2000000029802
+      },
+      {
+        "name": "hvp.cutBodyPrepareWorkMs",
+        "duration": 1.2000000029802322
+      },
+      {
+        "name": "hvp.cutBodyMeshWorkerMs",
+        "duration": 14.599999994039536
+      },
+      {
+        "name": "hvp.cutBodyNativeAdmissionMs",
+        "duration": 13.200000002980232
+      },
+      {
+        "name": "hvp.cutBodyPrepareWorkMs",
+        "duration": 2
+      },
+      {
+        "name": "hvp.cutBodyMainDecodeMs",
+        "duration": 3.100000001490116
+      },
+      {
+        "name": "hvp.cutBodyPrepareWorkMs",
+        "duration": 0.8000000044703484
+      },
+      {
+        "name": "hvp.cutBodyInputToAppliedMs",
+        "duration": 1251.900146484375
+      },
+      {
+        "name": "hvp.cutBodyFirstCommittedRenderSubmitMs",
+        "duration": 1277.60009765625
+      },
+      {
+        "name": "hvp.cutBodyTotalAppliedMs",
+        "duration": 1244.1000000014901
+      }
+    ],
+    "profileDurationMs": 1830.327,
+    "topSelf": [
+      {
+        "id": 2,
+        "fn": "(idle)",
+        "file": "",
+        "line": -1,
+        "column": -1,
+        "children": [],
+        "selfMs": 663.6479999999996
+      },
+      {
+        "id": 398,
+        "fn": "gg",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 28703,
+        "children": [
+          399,
+          424
+        ],
+        "selfMs": 46.599000000000004
+      },
+      {
+        "id": 88,
+        "fn": "(garbage collector)",
+        "file": "",
+        "line": -1,
+        "column": -1,
+        "children": [],
+        "selfMs": 40.966
+      },
+      {
+        "id": 424,
+        "fn": "now",
+        "file": "",
+        "line": -1,
+        "column": -1,
+        "children": [],
+        "selfMs": 28.033
+      },
+      {
+        "id": 638,
+        "fn": "s",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 37423,
+        "children": [
+          639,
+          658,
+          722
+        ],
+        "selfMs": 23.264999999999997
+      },
+      {
+        "id": 984,
+        "fn": "now",
+        "file": "",
+        "line": -1,
+        "column": -1,
+        "children": [],
+        "selfMs": 17.93
+      },
+      {
+        "id": 443,
+        "fn": "Ha",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2109995,
+        "children": [
+          444,
+          460
+        ],
+        "selfMs": 17.528000000000002
+      },
+      {
+        "id": 700,
+        "fn": "now",
+        "file": "",
+        "line": -1,
+        "column": -1,
+        "children": [],
+        "selfMs": 15.731
+      },
+      {
+        "id": 658,
+        "fn": "now",
+        "file": "",
+        "line": -1,
+        "column": -1,
+        "children": [],
+        "selfMs": 15.508000000000001
+      },
+      {
+        "id": 3,
+        "fn": "yx.onmessage",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 218519,
+        "children": [
+          4,
+          7,
+          56,
+          59,
+          1072
+        ],
+        "selfMs": 14.588999999999999
+      },
+      {
+        "id": 400,
+        "fn": "Iv",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 120137,
+        "children": [
+          401,
+          409,
+          442,
+          484
+        ],
+        "selfMs": 13.208
+      },
+      {
+        "id": 83,
+        "fn": "Ou",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2181346,
+        "children": [
+          84
+        ],
+        "selfMs": 13.093
+      },
+      {
+        "id": 965,
+        "fn": "gg",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 28703,
+        "children": [
+          966,
+          984,
+          1052
+        ],
+        "selfMs": 12.848
+      },
+      {
+        "id": 699,
+        "fn": "continuePlan",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 198029,
+        "children": [
+          704
+        ],
+        "selfMs": 12.358
+      },
+      {
+        "id": 967,
+        "fn": "Iv",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 120137,
+        "children": [
+          968,
+          985,
+          1005,
+          1021
+        ],
+        "selfMs": 12.254
+      },
+      {
+        "id": 497,
+        "fn": "Xc",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2145888,
+        "children": [
+          498,
+          554,
+          558,
+          586,
+          590,
+          596
+        ],
+        "selfMs": 12.213000000000001
+      },
+      {
+        "id": 833,
+        "fn": "Zu",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2193287,
+        "children": [
+          834,
+          946
+        ],
+        "selfMs": 11.478
+      },
+      {
+        "id": 580,
+        "fn": "Ms",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2128961,
+        "children": [
+          582
+        ],
+        "selfMs": 11.386
+      },
+      {
+        "id": 704,
+        "fn": "now",
+        "file": "",
+        "line": -1,
+        "column": -1,
+        "children": [],
+        "selfMs": 11.308
+      },
+      {
+        "id": 460,
+        "fn": "Ba",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2108523,
+        "children": [
+          461
+        ],
+        "selfMs": 11.217
+      },
+      {
+        "id": 1046,
+        "fn": "Ms",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2128961,
+        "children": [
+          1047
+        ],
+        "selfMs": 10.987
+      },
+      {
+        "id": 1021,
+        "fn": "Fv",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 118953,
+        "children": [
+          1022
+        ],
+        "selfMs": 10.927
+      },
+      {
+        "id": 74,
+        "fn": "ee",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 137938,
+        "children": [
+          75,
+          439,
+          700
+        ],
+        "selfMs": 10.83
+      },
+      {
+        "id": 561,
+        "fn": "aa",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2089474,
+        "children": [
+          562,
+          566,
+          568,
+          581,
+          584
+        ],
+        "selfMs": 10.561
+      },
+      {
+        "id": 5,
+        "fn": "Tx",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 218174,
+        "children": [
+          6
+        ],
+        "selfMs": 9.57
+      },
+      {
+        "id": 360,
+        "fn": "wg",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 30626,
+        "children": [
+          361,
+          398,
+          636
+        ],
+        "selfMs": 9.544
+      },
+      {
+        "id": 474,
+        "fn": "Ms",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2128961,
+        "children": [
+          475,
+          480
+        ],
+        "selfMs": 9.443
+      },
+      {
+        "id": 563,
+        "fn": "ni",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2071914,
+        "children": [],
+        "selfMs": 9.378
+      },
+      {
+        "id": 82,
+        "fn": "gg",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 28703,
+        "children": [
+          83,
+          103
+        ],
+        "selfMs": 9.283999999999999
+      },
+      {
+        "id": 439,
+        "fn": "E",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 137520,
+        "children": [],
+        "selfMs": 8.783999999999999
+      }
+    ]
+  },
+  "aggregate": {
+    "durationMs": 1830.327,
+    "topSelf": [
+      {
+        "fn": "(idle)",
+        "file": "",
+        "line": -1,
+        "column": -1,
+        "selfMs": 663.6479999999996,
+        "inclusiveMs": 663.6479999999996,
+        "callNodes": 1
+      },
+      {
+        "fn": "now",
+        "file": "",
+        "line": -1,
+        "column": -1,
+        "selfMs": 95.12199999999999,
+        "inclusiveMs": 95.12199999999999,
+        "callNodes": 7
+      },
+      {
+        "fn": "W",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2075301,
+        "selfMs": 85.80399999999999,
+        "inclusiveMs": 126.70600000000003,
+        "callNodes": 56
+      },
+      {
+        "fn": "gg",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 28703,
+        "selfMs": 72.19500000000001,
+        "inclusiveMs": 635.41,
+        "callNodes": 5
+      },
+      {
+        "fn": "Ms",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2128961,
+        "selfMs": 50.535,
+        "inclusiveMs": 123.94600000000003,
+        "callNodes": 28
+      },
+      {
+        "fn": "H",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2074535,
+        "selfMs": 45.739999999999995,
+        "inclusiveMs": 45.739999999999995,
+        "callNodes": 24
+      },
+      {
+        "fn": "(garbage collector)",
+        "file": "",
+        "line": -1,
+        "column": -1,
+        "selfMs": 40.966,
+        "inclusiveMs": 40.966,
+        "callNodes": 1
+      },
+      {
+        "fn": "Ns",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2130283,
+        "selfMs": 31.477999999999998,
+        "inclusiveMs": 212.31900000000002,
+        "callNodes": 52
+      },
+      {
+        "fn": "ai",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2073981,
+        "selfMs": 30.538,
+        "inclusiveMs": 30.538,
+        "callNodes": 6
+      },
+      {
+        "fn": "xi",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2077267,
+        "selfMs": 29.881,
+        "inclusiveMs": 110.19,
+        "callNodes": 31
+      },
+      {
+        "fn": "Ps",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2130714,
+        "selfMs": 28.951999999999995,
+        "inclusiveMs": 381.59900000000005,
+        "callNodes": 89
+      },
+      {
+        "fn": "Iv",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 120137,
+        "selfMs": 25.462,
+        "inclusiveMs": 353.426,
+        "callNodes": 2
+      },
+      {
+        "fn": "s",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 37423,
+        "selfMs": 23.264999999999997,
+        "inclusiveMs": 260.845,
+        "callNodes": 1
+      },
+      {
+        "fn": "aa",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2089474,
+        "selfMs": 20.019,
+        "inclusiveMs": 153.171,
+        "callNodes": 4
+      },
+      {
+        "fn": "Xc",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2145888,
+        "selfMs": 19.737000000000002,
+        "inclusiveMs": 156.66299999999998,
+        "callNodes": 2
+      },
+      {
+        "fn": "U",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2075113,
+        "selfMs": 18.569000000000003,
+        "inclusiveMs": 18.569000000000003,
+        "callNodes": 12
+      },
+      {
+        "fn": "Ha",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2109995,
+        "selfMs": 17.528000000000002,
+        "inclusiveMs": 92.449,
+        "callNodes": 2
+      },
+      {
+        "fn": "Fv",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 118953,
+        "selfMs": 17.474,
+        "inclusiveMs": 179.632,
+        "callNodes": 2
+      },
+      {
+        "fn": "ni",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2071914,
+        "selfMs": 16.233,
+        "inclusiveMs": 16.233,
+        "callNodes": 4
+      },
+      {
+        "fn": "li",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2075535,
+        "selfMs": 15.725999999999999,
+        "inclusiveMs": 15.725999999999999,
+        "callNodes": 9
+      },
+      {
+        "fn": "la",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2094785,
+        "selfMs": 15.516,
+        "inclusiveMs": 31.177000000000007,
+        "callNodes": 15
+      },
+      {
+        "fn": "Vo",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2113708,
+        "selfMs": 14.702000000000002,
+        "inclusiveMs": 132.2,
+        "callNodes": 14
+      },
+      {
+        "fn": "Ou",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2181346,
+        "selfMs": 14.672,
+        "inclusiveMs": 101.73400000000001,
+        "callNodes": 2
+      },
+      {
+        "fn": "yi",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2076220,
+        "selfMs": 14.632,
+        "inclusiveMs": 14.632,
+        "callNodes": 10
+      },
+      {
+        "fn": "yx.onmessage",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 218519,
+        "selfMs": 14.588999999999999,
+        "inclusiveMs": 65.516,
+        "callNodes": 1
+      }
+    ],
+    "topInclusive": [
+      {
+        "fn": "",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 138744,
+        "selfMs": 0.012,
+        "inclusiveMs": 1015.5889999999999,
+        "callNodes": 2
+      },
+      {
+        "fn": "ee",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 137938,
+        "selfMs": 10.83,
+        "inclusiveMs": 989.0329999999999,
+        "callNodes": 2
+      },
+      {
+        "fn": "ey",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 133839,
+        "selfMs": 6.189,
+        "inclusiveMs": 953.6879999999999,
+        "callNodes": 2
+      },
+      {
+        "fn": "ty",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 133908,
+        "selfMs": 1.708,
+        "inclusiveMs": 947.4989999999999,
+        "callNodes": 2
+      },
+      {
+        "fn": "Fg",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 35557,
+        "selfMs": 4.1850000000000005,
+        "inclusiveMs": 945.7909999999999,
+        "callNodes": 2
+      },
+      {
+        "fn": "Ig",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 35630,
+        "selfMs": 2.09,
+        "inclusiveMs": 941.606,
+        "callNodes": 2
+      },
+      {
+        "fn": "vg",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 29001,
+        "selfMs": 1.635,
+        "inclusiveMs": 798.52,
+        "callNodes": 2
+      },
+      {
+        "fn": "yg",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 29058,
+        "selfMs": 0.125,
+        "inclusiveMs": 796.885,
+        "callNodes": 2
+      },
+      {
+        "fn": "Tg",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 31356,
+        "selfMs": 6.912999999999999,
+        "inclusiveMs": 679.138,
+        "callNodes": 1
+      },
+      {
+        "fn": "gg",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 28703,
+        "selfMs": 72.19500000000001,
+        "inclusiveMs": 635.41,
+        "callNodes": 5
+      },
+      {
+        "fn": "wg",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 30626,
+        "selfMs": 9.544,
+        "inclusiveMs": 622.38,
+        "callNodes": 1
+      },
+      {
+        "fn": "Ps",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2130714,
+        "selfMs": 28.951999999999995,
+        "inclusiveMs": 381.59900000000005,
+        "callNodes": 89
+      },
+      {
+        "fn": "Rv",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 120591,
+        "selfMs": 10.59,
+        "inclusiveMs": 364.01599999999996,
+        "callNodes": 2
+      },
+      {
+        "fn": "Iv",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 120137,
+        "selfMs": 25.462,
+        "inclusiveMs": 353.426,
+        "callNodes": 2
+      },
+      {
+        "fn": "Hg",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 37213,
+        "selfMs": 0.253,
+        "inclusiveMs": 261.12100000000004,
+        "callNodes": 1
+      },
+      {
+        "fn": "Ug",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 37360,
+        "selfMs": 0.023,
+        "inclusiveMs": 260.86800000000005,
+        "callNodes": 1
+      },
+      {
+        "fn": "s",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 4,
+        "column": 37423,
+        "selfMs": 23.264999999999997,
+        "inclusiveMs": 260.845,
+        "callNodes": 1
+      },
+      {
+        "fn": "td",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2194927,
+        "selfMs": 3.142,
+        "inclusiveMs": 220.53900000000002,
+        "callNodes": 1
+      },
+      {
+        "fn": "$u",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2194321,
+        "selfMs": 1.701,
+        "inclusiveMs": 217.39700000000002,
+        "callNodes": 1
+      },
+      {
+        "fn": "Ns",
+        "file": "physicsWorker-BBrsANSZ.js",
+        "line": 0,
+        "column": 2130283,
+        "selfMs": 31.477999999999998,
+        "inclusiveMs": 212.31900000000002,
+        "callNodes": 52
+      }
+    ]
+  }
+}

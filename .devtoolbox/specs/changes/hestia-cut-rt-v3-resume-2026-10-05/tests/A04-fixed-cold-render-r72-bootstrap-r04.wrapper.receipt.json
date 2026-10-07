@@ -1,0 +1,8 @@
+{
+  "runId": "A04-fixed-cold-render-r72-bootstrap-r04",
+  "startedUtc": "2026-10-06T02:51:55.7478513+00:00",
+  "endedUtc": "2026-10-06T03:02:27.6575194+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 631.9019679,
+  "planFile": "A04-fixed-cold-render-r72-bootstrap-r04.plan.json"
+}

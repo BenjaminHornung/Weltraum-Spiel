@@ -1,0 +1,6 @@
+{
+  "originalRun": "A03-worker-input-green-r01",
+  "reason": "Original native identity PRESENT at first observer; original NOT_PROVEN receipt preserved",
+  "copiedTerminalSha256": "31fdbd73d8e3de6a683630f7ec064252d5c5389cb3331a3ef9ac79c7088e8251",
+  "classification": "OBSERVATION_ONLY_NOT_A_NEW_NATIVE_RUN"
+}

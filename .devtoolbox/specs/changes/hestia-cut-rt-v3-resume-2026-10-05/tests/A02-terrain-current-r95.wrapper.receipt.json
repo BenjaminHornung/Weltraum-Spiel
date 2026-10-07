@@ -1,0 +1,8 @@
+{
+  "runId": "A02-terrain-current-r95",
+  "startedUtc": "2026-10-06T17:32:01.3558055+00:00",
+  "endedUtc": "2026-10-06T17:32:07.0741516+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 5.7137857,
+  "planFile": "A02-terrain-current-r95.plan.json"
+}

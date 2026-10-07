@@ -1,0 +1,7 @@
+{
+  "runId": "A03-mesh-transport-type-r01",
+  "nativeCapSeconds": 60,
+  "binding": "A03-mesh-transport-source-binding-r01.json",
+  "classification": "Bounded private mesh admission transport full type check",
+  "mode": "type"
+}

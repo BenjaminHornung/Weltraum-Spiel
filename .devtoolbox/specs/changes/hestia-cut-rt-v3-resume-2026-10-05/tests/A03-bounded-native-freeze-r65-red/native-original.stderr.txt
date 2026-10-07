@@ -1,0 +1,22 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-owned-hash-array-open.test.ts > uses the measured native freeze only after bounded complete shape proof for at most32768 private hash entries
+AssertionError: expected 4096 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 4096
+
+ ❯ tests/unit/hvp-owned-hash-array-open.test.ts:19:65
+     17|     try{for(;;){const step=steps.next();if(step.done){expect(step.valu…
+     18|     finally{steps.return(undefined as never);Object.defineProperty=nat…
+     19|     expect(yields).toBeGreaterThanOrEqual(length);expect(locks).toBe(0…
+       |                                                                 ^
+     20|     expect(values.every((value,index)=>Object.is(value,before[index]))…
+     21|   }}finally{Object.defineProperty=nativeDefine;ledger.release();}
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

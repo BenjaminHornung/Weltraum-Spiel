@@ -1,0 +1,22 @@
+[
+  {
+    "appRelative": "src/hvp/hvpCoastMesher.ts",
+    "bytes": 55712,
+    "sha256": "53fe23187e3abbd65ffe6655afbe457c512650ae762dd2a916477dfcbf3e5aa0"
+  },
+  {
+    "appRelative": "src/workers/hvpBodyMeshJob.ts",
+    "bytes": 33349,
+    "sha256": "d291e25b3a1d23dab3fd409d14f88df41950aefd5d1c4ed899e8d37034bee0c5"
+  },
+  {
+    "appRelative": "tests/unit/hvp-borrowed-mesh-decode.test.ts",
+    "bytes": 7052,
+    "sha256": "54c75dc270ef05053a874ab4ff643487e9c9e2be123d1611e4154e6fd5087a43"
+  },
+  {
+    "appRelative": "tests/unit/hvpMesherHistoricalContract.test.ts",
+    "bytes": 7137,
+    "sha256": "439ad7faa849430f3474bfda8acbfd70bb1b123c193d2e912e179ff168b74192"
+  }
+]

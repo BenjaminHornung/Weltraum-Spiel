@@ -1,0 +1,30 @@
+{
+  "schema": "hestia-p02-historical-index-v1",
+  "classification": "HISTORICAL_NO_ADOPTION_SUPPORT_NOT_CURRENT_RUNTIME_ACCEPTANCE",
+  "coordinationRoot": "C:/IFI_SourceCode/Utils/opencode-migration/tmp/opencode/hestia-parallel-coordination-20261002",
+  "historicalWorktree": "C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-Parallel-P02-2026-10-02",
+  "coordinationFiles": [
+    {"path":"P02-c1-no-change-closeout-20261003-01/candidate-vegetation.ts.preimage","bytes":21569,"sha256":"158d82d5d55eea9ddc611a4be71cf851492b0b70f1515843f84af8ad91bb23e1"},
+    {"path":"P02-c1-no-change-closeout-20261003-01/candidate-product-raw.diff","bytes":1637,"sha256":"9a718f53245b698b2064bf3300ce65061534f1c517fcbb684e11a4d38e568958"},
+    {"path":"P02-c1-no-change-closeout-20261003-01/product-inverse.diff","bytes":1325,"sha256":"83038581a75cb78cc9cd8c2c744c71ab6e48252569caa4759ba0020bde258758"},
+    {"path":"P02-c1-no-change-closeout-20261003-01/product-tracked-after.diff","bytes":0,"sha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"},
+    {"path":"P02-evidence-c1-abba-native-20261003-01/cost-card.json","bytes":9857,"sha256":"811cec38453f3e6a221b67e7cd372ca814dc52bbd86bbc741470a3cd6c136573"},
+    {"path":"P02-evidence-c1-abba-native-20261003-01/vitest-original.json","bytes":3991,"sha256":"d2b277f25934510a430c2aacd096417d2dd6d59269cddfd10da6b6525e4cb3d0"},
+    {"path":"P02-evidence-c1-verification-20261003-r02/vitest-original.json","bytes":4157,"sha256":"72e197c5b2d1f11f36c121dc31185987ac3355dfc2e724215c3ee80deefccdf3"},
+    {"path":"P02-evidence-c1-lifecycle-native-20261003-01/vitest-original.json","bytes":3991,"sha256":"4d341e462b11eacea0fa53d6c72a9eb6944ee3ec069d00ccb3d89cc619db382e"}
+  ],
+  "historicalSources": [
+    {"path":"apps/weltraum-browser/tests/unit/hvp-parallel-p02-vegetation.test.ts","bytes":57668,"sha256":"02dacb19ba008a8b39478e6ddfd7c08737be31359f435e1ddc3088433b97d114"},
+    {"path":"apps/weltraum-browser/tests/reference/hvp-parallel-p02-vegetation-reference.ts","bytes":21954,"sha256":"c21a5288369772843947751889fa61dd89692d927a410747b9501ab1761ca8a8"},
+    {"path":"apps/weltraum-browser/tests/unit/hvp-vegetation.test.ts","bytes":15223,"sha256":"520241b1c12d2b22e1aa717275d5a91f2c834fe3d187c71fb75ec60cddde090b"}
+  ],
+  "historicalRuns": {
+    "S47": {"passed":7,"skipped":3,"collectorExit":1,"candidateSource":"158d82d5d55eea9ddc611a4be71cf851492b0b70f1515843f84af8ad91bb23e1","acceptance":"FAILED_COLLECTOR_RETAINED"},
+    "S50": {"passed":1,"skipped":9,"coldPairs":8,"warmPairs":8,"pairedMedianColdMs":-3.3663,"pairedMedianWarmMs":17.86125,"T07":"SKIPPED_IN_THIS_RUN","decision":"NO_ADOPTION","cwdRetention":"OPEN"},
+    "T07Separate": {"passed":1,"skipped":9,"cycles":20,"renderer":"NO_OP","nativeGpuLeaks":"NOT_MEASURED"},
+    "S58": {"card":"P02-RESTORED-RESTORE-FOLIAGE-CLOSEOUT-DATA-20261003-01.md","reportedPassed":42,"reportedBytes":15296,"reportedSha256":"43df5c7d0170375af576cf6cd1dc10e18c0177181006269a9b6dc147a99e2368","rawPath":"NOT_FOUND_IN_CARD","rawReceiptAcceptance":"NOT_PROVEN"}
+  },
+  "rawIndexDrift": "UNRESOLVED f3dab prefix to ac6aba prefix",
+  "currentIntegratedTests": "PENDING",
+  "safeProjection": "Only exact paths, sizes, hashes and selected status values; no argv, environment, secret or personal-log content"
+}

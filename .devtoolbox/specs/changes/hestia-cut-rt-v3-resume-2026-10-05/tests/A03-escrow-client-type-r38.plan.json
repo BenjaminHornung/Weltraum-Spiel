@@ -1,0 +1,8 @@
+{
+  "mode": "type",
+  "nativeCapSeconds": 60,
+  "classification": "Fresh Main Client bounded protocol/pump typecheck",
+  "runId": "A03-escrow-client-type-r38",
+  "files": [],
+  "binding": "A03-escrow-client-r38-binding.json"
+}

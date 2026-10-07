@@ -1,0 +1,18 @@
+{
+  "binding": "A03-main-result-r68-binding-r03.json",
+  "classification": "Corrected private integration with unchanged generic freeze/hash observation order; exact whole9files finalsource",
+  "mode": "tests",
+  "runId": "A03-main-result-r68-tests-r02",
+  "nativeCapSeconds": 900,
+  "files": [
+    "tests/unit/workerPoolLifecycle.test.ts",
+    "tests/unit/workerResultGate.test.ts",
+    "tests/unit/workerProtocol.test.ts",
+    "tests/unit/voxelWorkerProtocol.test.ts",
+    "tests/unit/surfaceLabWorkerAdoption.test.ts",
+    "tests/unit/hvp-body-mesh-protocol.test.ts",
+    "tests/unit/hvp-body-mesh-worker.test.ts",
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts",
+    "tests/unit/hvp-body-mesh-client.test.ts"
+  ]
+}

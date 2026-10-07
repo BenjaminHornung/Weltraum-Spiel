@@ -1,0 +1,24 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > R74 keeps body publication atomic after accepted visibility throws (restored)
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > R74 keeps body publication atomic after accepted visibility throws (renderer-unproven)
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > R74 keeps body publication atomic after accepted visibility throws (native-unproven)
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/hvp-bootstrap.test.ts:2247:43
+    2245|       const consumer=factory.mock.results[0]!.value!;failVisibility=tr…
+    2246|       const task=consumer.submit({id:"r74-publish",ownerId:HVP_BRANCH_…
+    2247|       await task;expect(visibilityFailed).toBe(true);expect(rollback).…
+       |                                           ^
+    2248|       expect(consumer.submit({id:"r74-publish",ownerId:HVP_BRANCH_KEY,…
+    2249|       const after=backend.readDiagnostics();expect(after.visibleRepres…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+

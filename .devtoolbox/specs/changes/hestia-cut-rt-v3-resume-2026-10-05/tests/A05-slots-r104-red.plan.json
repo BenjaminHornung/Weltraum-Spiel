@@ -1,0 +1,10 @@
+{
+  "runId": "A05-slots-r104-red",
+  "classification": "Missing exact same-owner defensive leaf copy entry",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-owned-slot-copy.test.ts"
+  ],
+  "binding": "A05-slots-r104-binding-red.json",
+  "nativeCapSeconds": 60
+}

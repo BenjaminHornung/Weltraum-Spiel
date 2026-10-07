@@ -1,0 +1,27 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-body-mesh-owner-integration.test.ts (16 tests | 3 failed) 12016ms
+   ✓ rejects projected owner-route Stage until the retained plan has admitted complete geometry  622ms
+   ✓ admits mesh-only output against the single retained native plan before Stage, commit and finalize  933ms
+   ✓ rejects altered color geometry with stable first failure and no native Stage or retry revival  790ms
+   ✓ keeps a thrown real admission yield terminal without mutating the native World  716ms
+   ✓ keeps a packet decoder failure terminal before geometry work and rejects a later good packet  669ms
+   ✓ cannot revive an admission after Rollback at a real verifier yield  686ms
+   ✓ preserves the first yielded failure when verifier cleanup also throws  643ms
+   ✓ admits an empty child set after complete legal removal without a first-part assumption 187ms
+   ✓ retains one borrowed owner ledger through mesh admission and transfers results only at Finalize  1155ms
+   × rejects Dispose after native Stage until rollback or actual World release 1188ms
+   × keeps ledger-construction failure identical on retry before any plan issuance 108ms
+   × keeps a failed projection reserve terminal for projection, mesh and native Stage 977ms
+   ✓ keeps a retired ledger until the suspended verifier actually closes  898ms
+   ✓ cannot switch the budget of an already derived plan (undefined)  563ms
+   ✓ cannot switch the budget of an already derived plan (33554432)  894ms
+   ✓ closes owner scratch on Dispose and retains credits until its suspended admission returns  946ms
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 13 passed (16)
+   Start at  16:26:36
+   Duration  14.25s (transform 851ms, setup 0ms, import 1.95s, tests 12.02s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-owner-ledger-review-red-r01/original-vitest.json

@@ -1,0 +1,14 @@
+{
+  "runId": "A02-owner-fresh-runtime-r90-r02",
+  "nativeCapSeconds": 180,
+  "classification": "Whole original65 after terminal old runtime and fresh native/browser lifecycle; unchanged R79 product",
+  "binding": "A04-contact-r90-binding-r02.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-body-plan-owner.test.ts"
+  ],
+  "progressReporter": {
+    "file": "owner65-progress-reporter.mjs",
+    "sha256": "57e616baa10c3edcb06189accaa36a00154b22e960322665d509b91faf312dc1"
+  }
+}

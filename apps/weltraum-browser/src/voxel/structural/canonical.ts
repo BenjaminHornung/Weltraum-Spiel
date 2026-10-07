@@ -30,7 +30,7 @@ import type {
   StructuralObject
 } from "./types";
 import { drainStructuralSteps, freezeStructuralProduced, structuralFreezeArraySteps, normalizeAdaptiveAuthorityFunction, structuralDenseArray, structuralDenseArraySteps, structuralMapSteps,
-  validateStructuralDestructionCommand, structuralDestructionCommandValidationSteps, type StructuralOwnedReserve } from "./validation";
+  validateStructuralDestructionCommand, structuralDestructionCommandValidationSteps, structuralFail, type StructuralOwnedReserve } from "./validation";
 import { createOwnedCanonicalHashCursor } from "../adaptive/ownedCanonicalHashSteps";
 
 const canonicalAdaptiveJson = normalizeAdaptiveAuthorityFunction(adaptiveCanonicalJson);
@@ -175,10 +175,15 @@ export function* structuralCanonicalHashSteps(payload: unknown, reserve?: Struct
   if (reserve === undefined) { return hashAdaptiveCanonical(payload); }
   // Includes actual 4096-byte backing buffer, <=2048 pending UTF-16 bytes, encoder/state and bounded schema-depth/key/path stack estimates.
   reserve(32_768, false, "hash");
-  const cursor = createOwnedCanonicalHashCursor(payload);
+  const quantum = Object.getOwnPropertyDescriptor(reserve, "hashUnits");
+  const hashUnits = quantum === undefined ? 1 : quantum.value;
+  if (quantum !== undefined && (!("value" in quantum) || quantum.writable || quantum.configurable || (hashUnits !== 1 && hashUnits !== 128))) {
+    return structuralFail("InvalidBudget", "cursor/hashUnits", "Owned hash quantum requires an immutable own value of 1 or 128.");
+  }
+  const cursor = createOwnedCanonicalHashCursor(payload, undefined, hashUnits === 128);
   try {
     for (;;) {
-      const result = normalizeAdaptiveAuthorityFunction(() => cursor.advance(1))();
+      const result = normalizeAdaptiveAuthorityFunction(() => cursor.advance(hashUnits))();
       if (result !== undefined) { return result.contentHash; }
       yield;
     }

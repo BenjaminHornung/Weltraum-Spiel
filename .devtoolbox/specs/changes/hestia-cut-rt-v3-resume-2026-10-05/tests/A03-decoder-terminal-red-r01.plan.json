@@ -1,0 +1,12 @@
+{
+  "binding": "A03-decoder-terminal-red-source-binding-r01.json",
+  "classification": "Genuine missing decoder terminality RED and corrected client cleanup control",
+  "nativeCapSeconds": 180,
+  "mode": "tests",
+  "runId": "A03-decoder-terminal-red-r01",
+  "files": [
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts",
+    "tests/unit/hvp-body-mesh-client.test.ts",
+    "tests/unit/hvp-body-mesh-protocol.test.ts"
+  ]
+}

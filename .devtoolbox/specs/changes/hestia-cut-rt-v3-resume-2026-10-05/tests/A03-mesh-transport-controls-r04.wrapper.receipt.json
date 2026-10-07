@@ -1,0 +1,8 @@
+{
+  "runId": "A03-mesh-transport-controls-r04",
+  "startedUtc": "2026-10-05T12:06:16.6983378+00:00",
+  "endedUtc": "2026-10-05T12:07:02.5337953+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 45.829662,
+  "planFile": "A03-mesh-transport-controls-r04.plan.json"
+}

@@ -1,0 +1,8 @@
+{
+  "nativeCapSeconds": 60,
+  "files": [],
+  "mode": "type",
+  "binding": "A03-external-hold-green-r01-binding.json",
+  "runId": "A03-external-hold-type-r01",
+  "classification": "Fresh final external mesh hold source typecheck"
+}

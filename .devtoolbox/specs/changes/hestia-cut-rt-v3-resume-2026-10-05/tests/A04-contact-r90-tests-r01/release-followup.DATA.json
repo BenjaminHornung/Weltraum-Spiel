@@ -1,0 +1,21 @@
+{
+  "observedUtc": "2026-10-06T14:59:45.8305081+00:00",
+  "scope": [
+    {
+      "role": "caller",
+      "pid": 63592,
+      "presence": "ABSENT"
+    },
+    {
+      "role": "wrapper",
+      "pid": 29056,
+      "presence": "ABSENT"
+    },
+    {
+      "role": "native",
+      "pid": 42748,
+      "presence": "ABSENT"
+    }
+  ],
+  "allAbsent": true
+}

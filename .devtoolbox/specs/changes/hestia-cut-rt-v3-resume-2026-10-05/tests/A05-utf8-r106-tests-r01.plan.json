@@ -1,0 +1,15 @@
+{
+  "runId": "A05-utf8-r106-tests-r01",
+  "classification": "Whole canonical artifact commands backend boundary lifecycle revision after native UTF8 scratch",
+  "mode": "tests",
+  "files": [
+    "tests/unit/presentationCanonical.test.ts",
+    "tests/unit/presentationMeshArtifact.test.ts",
+    "tests/unit/presentationCommands.test.ts",
+    "tests/unit/renderBackendBoundary.test.ts",
+    "tests/unit/renderBackendLifecycle.test.ts",
+    "tests/unit/renderBackendRevision.test.ts"
+  ],
+  "binding": "A05-utf8-r106-binding-r01.json",
+  "nativeCapSeconds": 180
+}

@@ -1,0 +1,8 @@
+{
+  "runId": "A03-worker-input-red-r01",
+  "startedUtc": "2026-10-05T17:16:00.2044599+00:00",
+  "endedUtc": "2026-10-05T17:16:07.3650241+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 7.1563252,
+  "planFile": "A03-worker-input-red-r01.plan.json"
+}

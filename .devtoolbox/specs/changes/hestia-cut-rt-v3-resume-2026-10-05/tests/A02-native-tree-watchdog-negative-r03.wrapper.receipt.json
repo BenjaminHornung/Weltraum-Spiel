@@ -1,0 +1,8 @@
+{
+  "runId": "A02-native-tree-watchdog-negative-r03",
+  "startedUtc": "2026-10-05T11:08:14.8909597+00:00",
+  "endedUtc": "2026-10-05T11:08:17.5926067+00:00",
+  "wrapperExitCode": 91,
+  "elapsedSeconds": 2.6969742,
+  "planFile": "A02-native-tree-watchdog-negative-r03.plan.json"
+}

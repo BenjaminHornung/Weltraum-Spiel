@@ -1,0 +1,8 @@
+{
+  "classification": "Full first-error type R21; original 60 cap",
+  "nativeCapSeconds": 60,
+  "files": [],
+  "runId": "A03-owner-first-error-type-r01",
+  "binding": "A03-owner-first-error-green-r01-binding.json",
+  "mode": "type"
+}

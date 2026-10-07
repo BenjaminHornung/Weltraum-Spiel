@@ -1,0 +1,30 @@
+{
+  "firstUtc": "2026-10-05T12:57:52.182645+00:00",
+  "adminSeconds": 600,
+  "DworkSeconds": 540,
+  "finalSeconds": 60,
+  "cleanupSeconds": 60,
+  "legacyAdministrativeChecklist": "SUPERSEDED_BY_RESTART_BETRIEB_SECTION_9",
+  "capSecondsIncludingWrapper": 600,
+  "capScope": "DECLARED_COMMAND_WINDOW_NOT_TEST_DEADLINE",
+  "wholeFiles": [
+    "tests/unit/hvp-borrowed-rigid-recipe.test.ts",
+    "tests/unit/hvp-parallel-p01-classification.test.ts",
+    "tests/unit/structuralPgTragwerkF7.test.ts",
+    "tests/unit/structuralPgTragwerkF8.test.ts",
+    "tests/unit/structuralPgTragwerkR4.test.ts",
+    "tests/unit/structuralPgTragwerkR5b.test.ts",
+    "tests/unit/structuralPgTragwerkR3.test.ts",
+    "tests/unit/structuralPgTragwerkR5.test.ts",
+    "tests/unit/structuralPgTragwerkSlice3.test.ts",
+    "tests/unit/hvpOwnedCanonicalHash.test.ts",
+    "tests/unit/structuralPgTragwerkSlice4.test.ts",
+    "tests/unit/structuralPgTragwerkSlice2.test.ts",
+    "tests/unit/v3StructuralRecipeParity.test.ts"
+  ],
+  "modeInjection": "NONE",
+  "cpuProfile": false,
+  "selectorsBailDeadlineChange": "NONE",
+  "testTimeout": "DEFAULT5000_AND_ORIGINAL_EXPLICIT_DECLARATIONS_UNCHANGED",
+  "helperSha256": "cdc626aa977435ca22741dc0967c1ec263bc7733a489838d7531f86e9226d488"
+}

@@ -1,0 +1,122 @@
+{
+  "schema": "hestia-codex-resume-package-v1",
+  "date": "2026-10-05",
+  "package": "A_CUT_V3_UND_P01_P06",
+  "files": [
+    {
+      "path": "00_MASTERPROMPT.md",
+      "bytes": 5753,
+      "sha256": "2401bf551ad259e8cae7535a3cfc792eaebd12c6c0a11480c72758de37bd6da7"
+    },
+    {
+      "path": "01_RESTPLAN.md",
+      "bytes": 10171,
+      "sha256": "da3b386ec2a56e98e54f78620187c471e21439d734c957e86a6365f71491caa5"
+    },
+    {
+      "path": "02_ABNAHME_UND_SCOPE.md",
+      "bytes": 3392,
+      "sha256": "09242bbac13e3f3d6c706e9070a027efa51175a92e237e5923ff5df04644438b"
+    },
+    {
+      "path": "03_P01_P06_ABDECKUNG.md",
+      "bytes": 1821,
+      "sha256": "dda225cbdf4571ca2115eb282a062630e34d128b16195a90965336825afc7091"
+    },
+    {
+      "path": "04_QUELLENLUECKEN.md",
+      "bytes": 1498,
+      "sha256": "c96dc1ead85f43f2231d5807363c1135b9f1e2f8ece4f5b6af4d6db4ae604460"
+    },
+    {
+      "path": "BETRIEB.md",
+      "bytes": 14187,
+      "sha256": "12770a02f7f3267394beff59a07f6a61484cea9047133d61446e659672624b78"
+    },
+    {
+      "path": "GOAL.txt",
+      "bytes": 475,
+      "sha256": "e7117382930a0650a512b5abb33f8c63477eecc11d232bf01af330f31ef5b633"
+    },
+    {
+      "path": "KIND_AUFTRAG_VORLAGE.md",
+      "bytes": 1342,
+      "sha256": "933f61ffaa5462fe8faa3d79a94addc8b7a33cddc14587a747b14352b64524d6"
+    },
+    {
+      "path": "ORIGINAL_P01_P06/00_ZUERST_AN_LAUFENDEN_AGENTEN.md",
+      "bytes": 5854,
+      "sha256": "9d1aa5ccd9dd3b996b3a0f4298c2465827cf733362127048128d79ae25b68182"
+    },
+    {
+      "path": "ORIGINAL_P01_P06/01_AGENT_P01_KLASSIFIKATION.md",
+      "bytes": 15939,
+      "sha256": "c590258fc0b4ec74d791aa472548af0d97f2f46bb2ff0b5c4145fbf734c0ea37"
+    },
+    {
+      "path": "ORIGINAL_P01_P06/02_AGENT_P02_VEGETATION_PERFORMANCE.md",
+      "bytes": 15263,
+      "sha256": "aa1948f91680a92554061e2cd9df10dc3c90d1579f49efd66d10e62e80bf307c"
+    },
+    {
+      "path": "ORIGINAL_P01_P06/03_AGENT_P03_PLAYER_KAMERA.md",
+      "bytes": 14771,
+      "sha256": "20c79cf005823fbfb929c6590319165e86572dd6f58f9015a1ddb51c0f09c261"
+    },
+    {
+      "path": "ORIGINAL_P01_P06/04_AGENT_P04_LOOK_KANDIDAT.md",
+      "bytes": 16365,
+      "sha256": "0fb25d31059ef6222eeef33c16b4eaeaacc2073a8239752d21ffb52e98178909"
+    },
+    {
+      "path": "ORIGINAL_P01_P06/05_AGENT_P05_REVIEW_UND_NEGATIVTESTS.md",
+      "bytes": 17211,
+      "sha256": "6d4f764a2bbed574bd698c6a78dc601cccbe6a962cfb21de424b0f83e7879f76"
+    },
+    {
+      "path": "ORIGINAL_P01_P06/06_AGENT_P06_BROWSER_EVIDENCE.md",
+      "bytes": 16760,
+      "sha256": "487edb879b9a07ced48d18a31ea39fc91629d62a13bae286c6592b5ad40a398c"
+    },
+    {
+      "path": "ORIGINAL_P01_P06/07_PRUEFUMFANG_UND_QUELLEN.md",
+      "bytes": 11471,
+      "sha256": "6476e521bc6ab2dac5fefc8c7cec4461010cf589cdeea402c85fb28b3d75f0b7"
+    },
+    {
+      "path": "ORIGINAL_P01_P06/MANIFEST.json",
+      "bytes": 2681,
+      "sha256": "046005b80d710f130d8ab477508a0051278db9dc7ea60ae2895e32146d2d6e9b"
+    },
+    {
+      "path": "ORIGINAL_P01_P06/OWNERSHIP.json",
+      "bytes": 6148,
+      "sha256": "bdb469c144e3d405c9811b5bbd691551b1229a6f6316d1a8ae44ed9a39041484"
+    },
+    {
+      "path": "ORIGINAL_P01_P06/QUELLE_CHECKPOINT_2026-10-02.md",
+      "bytes": 7439,
+      "sha256": "e16a2d766ce86dac7cb8826141bea979de0a7af736f8ea07b9353dec31176f84"
+    },
+    {
+      "path": "ORIGINAL_P01_P06/README_PARALLELPLAN.md",
+      "bytes": 26354,
+      "sha256": "e65c5b13e9a3e2fc73b067d3fecf3d74ed2fe3e2f86c2ad1e10fceb21a3bc454"
+    },
+    {
+      "path": "QUELLEN.json",
+      "bytes": 2895,
+      "sha256": "aff76bd4bcff1acc01d6081bb8bc9cfc4f6da5c0d42ca51594ffb08777cbf003"
+    },
+    {
+      "path": "TASKBOARD.json",
+      "bytes": 1750,
+      "sha256": "5b98f049b9b502bdbc4bdfe25cfa9c1ca3b9266e3686d32e03bcf448dfa81e7b"
+    },
+    {
+      "path": "TASK_RESULT_VORLAGE.json",
+      "bytes": 1121,
+      "sha256": "2971c418802a425bc5c2618002255194174923991081662a86c90edeb35395de"
+    }
+  ]
+}

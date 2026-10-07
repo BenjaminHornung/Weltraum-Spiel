@@ -1,0 +1,8 @@
+{
+  "runId": "A03-recipe-measure-quantum-r60-build-r02",
+  "startedUtc": "2026-10-05T23:46:17.9660124+00:00",
+  "endedUtc": "2026-10-05T23:46:21.1157457+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 3.1402153,
+  "planFile": "A03-recipe-measure-quantum-r60-build-r02.plan.json"
+}

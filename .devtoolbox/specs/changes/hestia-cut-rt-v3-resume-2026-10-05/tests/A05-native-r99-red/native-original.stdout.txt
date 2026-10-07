@@ -1,0 +1,21 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-transferred-recipe.test.ts (10 tests | 2 failed) 7081ms
+   × keeps full transferred recipe admission and exact rejection messages on the bounded owned path 413ms
+   × closes bounded transferred admission before cancellation can publish a recipe 457ms
+   ✓ admits a transferred recipe with byte-identical mechanics to the recomputed one  656ms
+   ✓ rejects tampered mass, overlapping or gapped coverage and foreign cells  1498ms
+   ✓ rejects malformed boxes, empty claims and split components  1522ms
+   ✓ requires the canonical greedy partition for adjacent cells 238ms
+   ✓ rejects canonical transferred boxes in a different order  596ms
+   ✓ rejects anchored, joint-bearing and nonzero-origin sources  645ms
+   ✓ freezes the transferred collider array and preserves canonical content  446ms
+   ✓ preserves canonical mechanics through a native save round trip  550ms
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 8 passed (10)
+   Start at  20:39:47
+   Duration  9.88s (transform 1.42s, setup 0ms, import 2.47s, tests 7.08s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-native-r99-red/original-vitest.json

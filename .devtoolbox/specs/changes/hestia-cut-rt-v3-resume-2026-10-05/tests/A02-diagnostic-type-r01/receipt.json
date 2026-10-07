@@ -1,0 +1,10 @@
+{
+  "runId": "A02-diagnostic-type-r01",
+  "startedUtc": "2026-10-05T09:52:59.2454217+00:00",
+  "endedUtc": "2026-10-05T09:53:00.9528328+00:00",
+  "elapsedSeconds": 1.7036209,
+  "exitCode": 0,
+  "scope": "test-local bounded real hrtime/CPU markers; no product change",
+  "deadlineSeconds": 60,
+  "deadlinePassed": true
+}

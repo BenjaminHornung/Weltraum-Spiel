@@ -1,0 +1,64 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/structuralPgTragwerkF7.test.ts (9 tests) 3699ms
+     ✓ T1: Dichtepfad antwortet mit Ixx_eff = 2,722... statt 0,1205 (Defektbeleg)  339ms
+     ✓ T2: Translation/Rotation des bewegten Parents + Vor-Schnitt-COM -> Kindpose/COM/Velocities  323ms
+     ✓ T2b: Drehimpulsantwort unter 90-Grad-Rotation (Tensor rotiert mit dem Body)  354ms
+     ✓ T3: Commit-Fehler NACH Mutationsbeginn — Rollback, Parent unberuehrt  598ms
+     ✓ T3b: fail()-Fehler VOR Mutationsbeginn (fehlendes Plan-Fragment, validate-Phase) — Welt unberuehrt  516ms
+     ✓ T3c: typisierter fail()-Fehler NACH Mutationsbeginn (Fragment-Colliderzaehlung) — Rollback, Parent unberuehrt  386ms
+     ✓ T4: Autorpose-Commit, echte Zaehler, Herkunftslabel  419ms
+     ✓ T4b: Autoren-Aufruf ohne Parentpose mit live-parent-body-Plan wird symmetrisch abgewiesen  436ms
+ ✓ tests/unit/hvp-parallel-p01-classification.test.ts (17 tests) 47423ms
+   ✓ P01-T01/T02: historical full fields, negative seams, inactive facts and input ordering  1220ms
+   ✓ P01-T03: legal 32768-cell signed dense source and N-1 rejection  37782ms
+   ✓ P01-T03: exact 32 components; 33 rejects, never truncates  1763ms
+   ✓ P01-T06: return/throw at every observed b3 yield closes a borrowed iterator once  1865ms
+   ✓ P01-R03: exact generic constructor/Species receiver and throw-prefix order stays historical  607ms
+   ✓ P01-R02: genuine anchor/endpoint work yields and preserves independent b3 fields and budget errors  2548ms
+ ✓ tests/unit/structuralPgTragwerkR4.test.ts (12 tests) 6309ms
+     ✓ R4B-N0: rein verankerte Region erlaubt leere Motions und Restore-Roundtrip  623ms
+     ✓ R4B-N2b: expliziter Restore ohne Motion-Satz scheitert, frische Installation bleibt gueltig  360ms
+     ✓ R4B-Y-seed: Pre-Cut-Seeding nutzt die kanonische Zellmitte  345ms
+     ✓ R4B-Y: kanonische Collider-Weltpositionen + COM nach Reload (unabhaengiges Orakel)  414ms
+     ✓ R4a: Bewegtes Fragment — Voll-Save, echte Freigabe, Rehydration nur aus Artefakt  617ms
+     ✓ R4b: Region evicten und zurueckkehren ohne Res/Doppel (gleiche Welt, Commit-Restore)  744ms
+     ✓ R4B-N1: Bewegungsdaten-Tamper und Torn-Write werden fail-closed abgewiesen  721ms
+     ✓ R4B-N2: Artefakt ohne Motion -> keine Rehydration; ohne Artefakt kein Bewegungszustand  754ms
+     ✓ R4B-N3: unvollstaendige/fremde Motions scheitern am Commit VOR Weltmutation  442ms
+     ✓ R4B-N4: fehlgeschlagene Speichertransaktion hinterlaesst kein ladbares Artefakt  516ms
+     ✓ R4c: Stale Worker-/Proxyresultate nach neuerem Edit + Cancel → keine Adoption  346ms
+     ✓ R4d: Save-Failpfade fail-closed (Tamper/Uebergroesse/nicht-kanonisch)  395ms
+ ✓ tests/unit/v3StructuralRecipeParity.test.ts (8 tests) 4862ms
+   ✓ freezes independent pre-change elbow and real authored 384-cell rock-arm results  1571ms
+   ✓ B1 owner hash route issues the exact child352 transition, recipe and labels of the generic route  2567ms
+ ✓ tests/unit/structuralPgTragwerkR3.test.ts (8 tests) 2232ms
+     ✓ P1-Repro aus dem Audit: verschobene Fragmentzellen werden rejected  383ms
+     ✓ doppelte Fragmentzellen werden rejected (kein stilles Set-Schlucken)  326ms
+     ✓ ehrliche Klassifikation installiert weiterhin (Positivkontrolle)  326ms
+     ✓ Cuboid-Zusammenfassungen im Vergleich: Voxel-Cuboid-Compound vs Greedy-Cuboid-Compound  366ms
+ ✓ tests/unit/structuralPgTragwerkF8.test.ts (6 tests) 1138ms
+ ✓ tests/unit/hvpOwnedCanonicalHash.test.ts (28 tests) 2174ms
+     ✓ streams the real Installed child352 transition exactly in 1-unit advances  1465ms
+ ✓ tests/unit/structuralPgTragwerkR5.test.ts (7 tests) 1874ms
+     ✓ R5a: vollstaendige bekannte Coverage erzeugt Mesh; kein erfundener Face-Schein  412ms
+     ✓ R5f: Pruef-Szene ist deterministisch; Material/Licht/Komposition aus Authority  359ms
+ ✓ tests/unit/structuralPgTragwerkR5b.test.ts (7 tests) 2050ms
+     ✓ R5B-d: Coverage ist an das geschlossene authored Fixture gebunden (fail-closed sonst)  648ms
+     ✓ R5B-f: Deferred bindet fremde und veraltete Jobs ab und requeued Hook-Fehler  323ms
+ ✓ tests/unit/structuralPgTragwerkSlice4.test.ts (6 tests) 990ms
+stdout | tests/unit/structuralPgTragwerkSlice2.test.ts > PG-TRAGWERK-01 proving-ground slice 2 (G3) > G3: Rapier-Gegenprobe (Greedy-Cuboid-Compound vs Voxelshape) > faellt/rotiert/kollidiert/schlaeft in beiden Varianten mit gleicher Masse
+PG-SLICE2-MEASUREMENT {"variant":"greedy","rapierVersion":"0.12.0","colliderCount":1,"staticColliderCount":25,"ccdEnabled":true,"installMs":3.35,"stepMs":18.06,"steps":170,"fellMeters":0.6264,"rotatedRad":3.1412,"restY":0.0611,"slept":true}
+PG-SLICE2-MEASUREMENT {"variant":"voxel","rapierVersion":"0.12.0","colliderCount":2,"staticColliderCount":25,"ccdEnabled":true,"installMs":0.26,"stepMs":5.37,"steps":172,"fellMeters":0.6255,"rotatedRad":3.1402,"restY":0.062,"slept":true}
+
+ ✓ tests/unit/structuralPgTragwerkSlice2.test.ts (3 tests) 676ms
+ ✓ tests/unit/structuralPgTragwerkSlice3.test.ts (4 tests) 880ms
+ ✓ tests/unit/hvp-borrowed-rigid-recipe.test.ts (4 tests) 348ms
+
+ Test Files  13 passed (13)
+      Tests  119 passed (119)
+   Start at  14:57:52
+   Duration  80.64s (transform 1.14s, setup 0ms, import 4.01s, tests 74.66s, environment 1ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-borrowed-recipe-regressions-r03/original-vitest.json

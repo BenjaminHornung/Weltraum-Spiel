@@ -1,0 +1,10 @@
+{
+  "classification": "All unchanged original65 plus2 genuine mesh RPC controls; original native180 and per-test deadlines preserved",
+  "nativeCapSeconds": 180,
+  "files": [
+    "tests/unit/hvp-body-plan-owner.test.ts"
+  ],
+  "runId": "A03-owner-full-r01",
+  "binding": "A03-mesh-dispatch-source-binding-r04.json",
+  "mode": "tests"
+}

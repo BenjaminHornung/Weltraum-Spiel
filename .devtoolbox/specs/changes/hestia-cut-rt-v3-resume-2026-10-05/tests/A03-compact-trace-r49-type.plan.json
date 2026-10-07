@@ -1,0 +1,8 @@
+{
+  "runId": "A03-compact-trace-r49-type",
+  "binding": "A03-compact-trace-r49-binding.json",
+  "mode": "type",
+  "files": [],
+  "nativeCapSeconds": 60,
+  "classification": "Compact borrowed step diagnostics only; full original Owner65population plus existing additions, same180cap/5000defaults/generictraces unchanged"
+}

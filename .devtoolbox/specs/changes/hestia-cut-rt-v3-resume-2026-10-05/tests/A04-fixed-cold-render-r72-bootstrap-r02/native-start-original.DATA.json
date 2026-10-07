@@ -1,0 +1,49 @@
+{
+  "startUtc": "2026-10-06T02:36:10.594157+00:00",
+  "cwd": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\apps\\weltraum-browser",
+  "argv": [
+    "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+    "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\apps\\weltraum-browser\\node_modules\\vitest\\vitest.mjs",
+    "run",
+    "tests/unit/hvp-bootstrap.test.ts",
+    "--maxWorkers=1",
+    "--no-file-parallelism",
+    "--reporter=default",
+    "--reporter=json",
+    "--outputFile=C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\.devtoolbox\\specs\\changes\\hestia-cut-rt-v3-resume-2026-10-05\\tests\\A04-fixed-cold-render-r72-bootstrap-r02\\original-vitest.json"
+  ],
+  "scope": [
+    {
+      "role": "caller",
+      "pid": 15168,
+      "presence": "PRESENT",
+      "creationFileTime": 134357277698604626
+    },
+    {
+      "role": "wrapper",
+      "pid": 50812,
+      "presence": "PRESENT",
+      "creationFileTime": 134357277703744310
+    },
+    {
+      "role": "native",
+      "pid": 61336,
+      "presence": "PRESENT",
+      "creationFileTime": 134357277706003965
+    }
+  ],
+  "nativeInvocations": 1,
+  "jobAdmissionCounts": {
+    "outer": {
+      "TotalProcesses": 2,
+      "ActiveProcesses": 2,
+      "TotalTerminatedProcesses": 0
+    },
+    "native": {
+      "TotalProcesses": 1,
+      "ActiveProcesses": 1,
+      "TotalTerminatedProcesses": 0
+    }
+  },
+  "job": "Outer wrapper job with kill-on-close protects startup failure; native-only nested job with kill-on-close and whole-job timeout termination"
+}

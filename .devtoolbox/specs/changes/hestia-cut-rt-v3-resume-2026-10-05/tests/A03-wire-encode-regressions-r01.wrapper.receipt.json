@@ -1,0 +1,8 @@
+{
+  "runId": "A03-wire-encode-regressions-r01",
+  "startedUtc": "2026-10-05T17:06:01.2649611+00:00",
+  "endedUtc": "2026-10-05T17:06:56.2770986+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 55.0055593,
+  "planFile": "A03-wire-encode-regressions-r01.plan.json"
+}

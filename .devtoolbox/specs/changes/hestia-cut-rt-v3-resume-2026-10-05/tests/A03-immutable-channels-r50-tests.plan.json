@@ -1,0 +1,18 @@
+{
+  "runId": "A03-immutable-channels-r50-tests",
+  "binding": "A03-immutable-channels-r50-binding.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-owned-ingest-journal-prefix.test.ts",
+    "tests/unit/hvp-owned-materialization.test.ts",
+    "tests/unit/hvp-owned-resident-source.test.ts",
+    "tests/unit/hvp-owned-structural-ingest.test.ts",
+    "tests/unit/hvp-borrowed-body-plan.test.ts",
+    "tests/unit/hvp-body-plan-task-quantum.test.ts",
+    "tests/unit/hvp-owned-single-component-masses.test.ts",
+    "tests/unit/hvp-classification-contract-controls.test.ts",
+    "tests/unit/hvp-parallel-p01-classification.test.ts"
+  ],
+  "nativeCapSeconds": 900,
+  "classification": "Full owned frozenplainchannelvalidation reuse; originalfullvalidators/hashes/credits/errororder, -0/mutable/subclass fallbacks; ninewhole originalpopulations unchanged test deadlines"
+}

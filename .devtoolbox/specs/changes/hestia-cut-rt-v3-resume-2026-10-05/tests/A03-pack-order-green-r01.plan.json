@@ -1,0 +1,12 @@
+{
+  "nativeCapSeconds": 180,
+  "runId": "A03-pack-order-green-r01",
+  "classification": "R29 generic second-hash freeze lookup restored plus original bounded pack and historical mesh whole-file controls",
+  "mode": "tests",
+  "binding": "A03-pack-order-green-r01-binding.json",
+  "files": [
+    "tests/unit/hvpMesherHistoricalContract.test.ts",
+    "tests/unit/hvp-borrowed-mesh-decode.test.ts",
+    "tests/unit/hvpBodyMeshJob.test.ts"
+  ]
+}

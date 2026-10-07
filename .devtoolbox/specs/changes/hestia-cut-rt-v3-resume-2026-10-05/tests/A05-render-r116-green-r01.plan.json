@@ -1,0 +1,15 @@
+{
+  "runId": "A05-render-r116-green-r01",
+  "classification": "Whole owned presentation bounded controls",
+  "mode": "tests",
+  "files": [
+    "tests/unit/presentationCanonical.test.ts",
+    "tests/unit/presentationMeshArtifact.test.ts",
+    "tests/unit/presentationCommands.test.ts",
+    "tests/unit/renderBackendRevision.test.ts",
+    "tests/unit/renderBackendLifecycle.test.ts",
+    "tests/unit/renderBackendBoundary.test.ts"
+  ],
+  "binding": "A05-render-r116-green-r01.binding.json",
+  "nativeCapSeconds": 180
+}

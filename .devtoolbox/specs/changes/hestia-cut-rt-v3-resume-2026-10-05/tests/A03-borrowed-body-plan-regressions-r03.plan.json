@@ -1,0 +1,21 @@
+{
+  "runId": "A03-borrowed-body-plan-regressions-r03",
+  "nativeCapSeconds": 600,
+  "files": [
+    "tests/unit/hvp-borrowed-body-plan.test.ts",
+    "tests/unit/hvp-moving-cut.test.ts",
+    "tests/unit/hvp-parallel-p05-admission.test.ts",
+    "tests/unit/hvp-physics-worker-body-clock.test.ts",
+    "tests/unit/hvp-structural-break.test.ts",
+    "tests/unit/hvp-world-save.test.ts",
+    "tests/unit/hvpIssuedParentMass.test.ts",
+    "tests/unit/hvpBodyMeshAdmission.test.ts",
+    "tests/unit/hvpBoundedPump.test.ts",
+    "tests/unit/hvpOwnedCanonicalHash.test.ts",
+    "tests/unit/hvpOwnedBodyMesh.test.ts",
+    "tests/unit/v3StructuralRecipeParity.test.ts"
+  ],
+  "mode": "tests",
+  "binding": "A03-borrowed-body-plan-regression-source-binding-r03.json",
+  "classification": "Whole12 directly calling affected files; unchanged testdeadlines; Owner65 kept whole in separate original180 lane"
+}

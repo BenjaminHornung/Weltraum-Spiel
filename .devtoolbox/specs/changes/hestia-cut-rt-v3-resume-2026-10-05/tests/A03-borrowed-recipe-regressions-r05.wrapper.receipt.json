@@ -1,0 +1,8 @@
+{
+  "runId": "A03-borrowed-recipe-regressions-r05",
+  "startedUtc": "2026-10-05T13:09:44.7860399+00:00",
+  "endedUtc": "2026-10-05T13:10:57.2193711+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 72.4287598,
+  "planFile": "A03-borrowed-recipe-regressions-r05.plan.json"
+}

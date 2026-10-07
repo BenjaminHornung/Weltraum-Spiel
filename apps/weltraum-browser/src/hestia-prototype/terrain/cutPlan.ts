@@ -1,7 +1,9 @@
 import { fnv1aHash } from "../../core/hash";
 import { fnv1aBytes } from "../../workers/protocol";
 import type { HvpCell, HvpCellReader } from "./picking";
-import {encodeHvpGridChunks,decodeHvpGrid,type HvpGridCheckpoint} from "../persistence/gridCheckpoint";
+import {encodeHvpGridChunks,decodeHvpGrid,hvpOwnedGridLeafCopy,hvpOwnedGridSlotBlockCopy,type HvpGridCheckpoint} from "../persistence/gridCheckpoint";
+import {hvpOwnedCoastLeafCopy,hvpOwnedCoastSlotBlockCopy} from "../../hvp/hvpCoastSource";
+import type {HvpOwnedLeafCopy,HvpOwnedSlotBlockCopy} from "./ownedSlotCopy";
 
 export interface HvpTerrainCheckpoint {
   readonly version:"hvp-terrain-checkpoint-v1";
@@ -11,6 +13,12 @@ export interface HvpTerrainCheckpoint {
 }
 const terrainOwners=new WeakSet<object>();
 const terrainSnapshots=new WeakSet<object>();
+const ownedLeafCopies=new WeakMap<object,HvpOwnedLeafCopy>();
+const decodedBaseBlocks=new WeakMap<object,HvpOwnedSlotBlockCopy>();
+const ownedSlotSteps=new WeakMap<object,(target:Uint8Array)=>Generator<string,void,unknown>>();
+export const copyHvpOwnedTerrainSlotsSteps=(snapshot:HvpTerrainSnapshot,target:Uint8Array)=>ownedSlotSteps.get(snapshot)?.(target);
+/** Exact local owner identities only; Proxy/spread/foreign readers keep the public path. */
+export const copyHvpOwnedTerrainLeaf=(snapshot:HvpTerrainSnapshot,x:number,y:number,z:number):Uint8Array|undefined=>ownedLeafCopies.get(snapshot)?.(x,y,z);
 export const assertHvpTerrainSnapshot=(snapshot:HvpTerrainSnapshot):void=>{
   if(!terrainSnapshots.has(snapshot)){throw new Error("Unvalidated terrain snapshot");}
 };
@@ -92,6 +100,9 @@ export const createHvpTerrainRoot = (base: HvpCellReader & { sourceDigest: strin
   type Leaf = { slots: Uint8Array; revision: number; digest: string };
   const maps = new WeakMap<HvpTerrainSnapshot, ReadonlyMap<string, Leaf>>();
   const issued = new WeakSet<HvpPreparedCut>();
+  const ownedBaseCopy=ownedLeafCopies.get(base)??hvpOwnedCoastLeafCopy(base)??hvpOwnedGridLeafCopy(base);
+  // Deliberately no terrain-snapshot inheritance: its older COW overlays are not the raw base.
+  const ownedBaseBlock=decodedBaseBlocks.get(base)??hvpOwnedCoastSlotBlockCopy(base)??hvpOwnedGridSlotBlockCopy(base);
   const inside = (x: number, y: number, z: number): boolean => x >= 0 && x < base.sizeX && y >= 0 && y < base.sizeY && z >= 0 && z < base.sizeZ;
   const make = (leaves: ReadonlyMap<string, Leaf>, revision: number): HvpTerrainSnapshot => {
     const leafCountX=Math.ceil(base.sizeX/16),leafCountY=Math.ceil(base.sizeY/16);
@@ -137,6 +148,22 @@ export const createHvpTerrainRoot = (base: HvpCellReader & { sourceDigest: strin
     });
     maps.set(snapshot, leaves);
     terrainSnapshots.add(snapshot);
+    if(ownedBaseCopy!==undefined){ownedLeafCopies.set(snapshot,(x,y,z)=>{
+      if(![x,y,z].every(Number.isSafeInteger)){return undefined;}
+      // Public COW production keeps its Species observations; it supplies no exclusive-copy capability.
+      if(leaves.has(`${x}:${y}:${z}`)){return undefined;}return ownedBaseCopy(x,y,z);
+    });}
+    if(ownedBaseBlock!==undefined&&base.sizeX===256&&base.sizeY===128&&base.sizeZ===256){ownedSlotSteps.set(snapshot,function*(target){
+      const total=base.sizeX*base.sizeY*base.sizeZ;
+      for(let offset=0;offset<total;offset+=4096){ownedBaseBlock(target,offset,Math.min(4096,total-offset));yield "terrainBaseBlock";}
+      if(changedLeaves!==null){for(let lz=0;lz<Math.ceil(base.sizeZ/16);lz+=1){for(let ly=0;ly<leafCountY;ly+=1){for(let lx=0;lx<leafCountX;lx+=1){
+        if(changedLeaves[lx+ly*leafCountX+lz*leafCountX*leafCountY]===0){continue;}
+        const leaf=snapshot.copyLeaf(lx,ly,lz);if(leaf.length!==4096){throw new Error("Incomplete canonical leaf");}
+        for(let z=0;z<16;z+=1){for(let y=0;y<16;y+=1){
+          target.set(leaf.subarray(y*16+z*256,y*16+z*256+16),lx*16+(ly*16+y)*base.sizeX+(lz*16+z)*base.sizeX*base.sizeY);
+        }}yield "terrainOverlayLeaf";
+      }}}}
+    });}
     return snapshot;
   };
   const restored=new Map<string,Leaf>();
@@ -298,7 +325,10 @@ export const validateHvpTerrainCheckpointHeader=(value:unknown):HvpTerrainCheckp
 export const restoreHvpTerrainRoot=(value:unknown)=>{
   const saved=validateHvpTerrainCheckpointHeader(value);
   const base=decodeHvpGrid(saved.base);
-  return createHvpTerrainRoot({...base,sourceDigest:saved.baseDigest},saved.sessionId,saved.epoch,undefined,saved);
+  const local={...base,sourceDigest:saved.baseDigest},copy=hvpOwnedGridLeafCopy(base);
+  if(copy!==undefined){ownedLeafCopies.set(local,copy);}
+  const block=hvpOwnedGridSlotBlockCopy(base);if(block!==undefined){decodedBaseBlocks.set(local,block);}
+  return createHvpTerrainRoot(local,saved.sessionId,saved.epoch,undefined,saved);
 };
 
 /** Initial top-only quarry contract. Other support/detachment awaits HVP-09B. */

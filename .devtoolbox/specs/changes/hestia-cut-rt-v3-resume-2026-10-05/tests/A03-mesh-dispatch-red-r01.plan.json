@@ -1,0 +1,10 @@
+{
+  "binding": "A03-mesh-dispatch-red-source-binding-r01.json",
+  "runId": "A03-mesh-dispatch-red-r01",
+  "files": [
+    "tests/unit/workerPoolLifecycle.test.ts"
+  ],
+  "classification": "Complete original pool population plus missing mesh-only dispatch RED; test deadlines unchanged",
+  "mode": "tests",
+  "nativeCapSeconds": 360
+}

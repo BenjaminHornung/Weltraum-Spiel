@@ -1,0 +1,24 @@
+{
+  "proof": {
+    "lastImpulse": {
+      "status": "Applied",
+      "reason": "Solver contact impulse",
+      "point": {
+        "x": 8.205627131021501,
+        "y": 1.1001682003676407,
+        "z": -5.114181522195057
+      },
+      "impulse": {
+        "x": 10.089534429709504,
+        "y": -5.731497293587877,
+        "z": 9.505326599612523
+      },
+      "target": "hvp:terrain-fragment:r1:1b4aa69d"
+    },
+    "lastImpulseTick": 584,
+    "tick": 585,
+    "workersAfterNormalEnd": 0
+  },
+  "blank": "",
+  "workers": 0
+}

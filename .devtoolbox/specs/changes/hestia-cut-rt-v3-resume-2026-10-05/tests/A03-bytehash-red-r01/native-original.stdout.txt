@@ -1,0 +1,15 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-borrowed-bytehash.test.ts (4 tests | 3 failed) 24ms
+   × preserves the existing literal byte hash across empty and split buffers 12ms
+   × hashes the full legal 8MiB output in cooperative units without changing its bytes 10ms
+   × closes a partial hash without exposing a final hash after cancellation 0ms
+   ✓ preserves the original detached-buffer error class at its actual read 1ms
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 1 passed (4)
+   Start at  17:06:34
+   Duration  491ms (transform 145ms, setup 0ms, import 317ms, tests 24ms, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-bytehash-red-r01/original-vitest.json

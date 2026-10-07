@@ -1,0 +1,8 @@
+{
+  "runId": "A03-hash-quantum-r44-build",
+  "binding": "A03-hash-quantum-r44-binding.json",
+  "mode": "build",
+  "files": [],
+  "nativeCapSeconds": 180,
+  "classification": "Bounded128-unit owned hash folding experiment; complete literal/hash/error/resource/cancellation populations, original per-test deadlines"
+}

@@ -1,0 +1,20 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-borrowed-body-plan.test.ts (18 tests) 3476ms
+   ✓ composes the same complete Box plan, children and removed mass under one retained parent  766ms
+   ✓ composes the same complete Sphere plan, children and removed mass under one retained parent  865ms
+   ✓ cancels the actual borrowed recipe at its first outer quantum while retaining its parent credit  314ms
+   ✓ yields through Sphere material comparisons while preserving first-match semantics  829ms
+stdout | tests/unit/hvp-owned-hash-array-open.test.ts > opens owned4096 arrays cooperatively without changing bytes, integrity precedence or cleanup
+OWNED_HASH_ARRAY_OPEN {"samples":[{"units":1,"advances":12297,"indexChecks":12288,"maxChecks":1,"bulkFrozenCalls":0,"prototypeAfterIntegrityIndices":4096},{"units":7,"advances":1757,"indexChecks":12288,"maxChecks":7,"bulkFrozenCalls":0,"prototypeAfterIntegrityIndices":4096},{"units":64,"advances":193,"indexChecks":12288,"maxChecks":64,"bulkFrozenCalls":0,"prototypeAfterIntegrityIndices":4096},{"units":257,"advances":48,"indexChecks":12288,"maxChecks":257,"bulkFrozenCalls":0,"prototypeAfterIntegrityIndices":4096}],"canonicalBytes":19401,"contentHash":"fnv1a64-v1:e15bf64571353054","activation":"OFF","physicalAndTimingAcceptance":"NOT_PROVEN"}
+
+ ✓ tests/unit/hvp-owned-hash-array-open.test.ts (4 tests) 551ms
+   ✓ opens owned4096 arrays cooperatively without changing bytes, integrity precedence or cleanup  451ms
+
+ Test Files  2 passed (2)
+      Tests  22 passed (22)
+   Start at  02:18:45
+   Duration  7.19s (transform 1.24s, setup 0ms, import 2.63s, tests 4.03s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-fresh-produced-reuse-r64-controls-r02/original-vitest.json

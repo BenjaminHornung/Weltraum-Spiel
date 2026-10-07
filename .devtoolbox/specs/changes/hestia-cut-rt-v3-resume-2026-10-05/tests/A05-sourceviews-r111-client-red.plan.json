@@ -1,0 +1,10 @@
+{
+  "runId": "A05-sourceviews-r111-client-red",
+  "classification": "Meaningful awaited callback failure exact native ticket release before Stage",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-body-mesh-client.test.ts"
+  ],
+  "binding": "A05-sourceviews-r111-binding-client-red.json",
+  "nativeCapSeconds": 180
+}

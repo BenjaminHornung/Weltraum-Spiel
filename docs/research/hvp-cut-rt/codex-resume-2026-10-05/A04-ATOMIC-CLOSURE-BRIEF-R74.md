@@ -1,0 +1,17 @@
+# A04 missing atomic interleavings
+
+Status: implemented and scoped verification passed; B1 technical gate remains open for currentOwner65/resources/real lifecycle/qualification. Read-only coverage review identified missing checks, not product defects.
+
+Reuse hvp-body-mesh-owner-integration.test.ts native five-cell fixture and borrowed ledger. Inject after a real child enable and after real updateSceneQueries during Commit. Assert native parent membership/enabled/sleep/motion, body/target registries, sequence/receipt and credit lifetime before/after rollback. Do not change original Owner65 test population.
+
+Reuse hvp-bootstrap.test.ts real ThreeRenderBackend harness and existing moving stage callback. Throw after accepted ApplyVisibilityPlan for a body transaction; assert complete old renderer publication/resources after rollback and visible sticky RecoveryHold if native or renderer rollback cannot prove cleanup. Existing terrain visibility test supplies the adjacent pattern; no new renderer or transaction layer.
+
+Reuse existing client transport stub in hvp-body-mesh-client.test.ts/physics client reply-order cases. Deliver duplicate successful body reply at a higher sequence after settlement, and deferred Stage/Commit success after Dispose/remount. Assert unchanged current snapshot/clock/watermark, no republished terminal or revived authority and no premature external-credit release. Reset uses actual Dispose/remount/Restore; no new Reset RPC.
+
+Write set: the three existing focused test files; only a reproduced product defect justifies the smallest shared production correction and a revised brief. Preserve caps, full geometry, source/issuer/error semantics, original individual deadlines and Owner65 native180. Fresh complete affected files/type plus independent source review, then genuine browser lifecycle proof. Unit faults do not substitute for the mandated50 actual load/cut/rollback-retry/cleanup cycles or42-before1400 qualification.
+
+Native owner/client whole52 passed onr03:25.57343s/release1.80494s. Client fixture initially called disposed.read() though its contract throws; repaired to error/lifecycle oracles, then strengthened exactstickyErrorreference/nativeDisposed0/workers0/pending0. Finalfullclient14 passedr08:4.16189s/release1.991855s. Fulltype-r08 native1.44241/release1.874319 PASS.
+
+WholeBootstrap-r04 exit1/64PASS/3newFAIL retained. Root cause of newcontrols: presentation.batch also updates visibility during Stage; the injection erroneously asserted postCommit flags then, and repeated during cleanup. Bound injection to actual committed&&published state. Reuse adjacentP07 support-removedchild[0,0,0]/coherentNativebody/parts fixture to avoid unrelated attachment mismatch. Finalize vi.fn plus zeroCalls closes reviewer oracle finding. Narrowr05 selectsnone/all67SKIP=>NOT_RUN; r06 actual3FAIL/64SKIP diagnosesfixture; r07 actual3PASS/64SKIP isDIAGNOSTIC_ONLY, not wholeacceptance.
+
+Final wholeBootstrap-r08 withoutselector passed67/67, native615.3903705/wrapper616.248505/release1.955287s, Native0/outer1, sourcebindingr08. Originaldeadlines and finite1200 retained; legacyadmin540/600FAIL remains raw/superseded. No productioncode changed by this slice. Real renderer/consumer uses explicitly controlled Native fixture; real Rapier aftereffects covered separately in owner tests. No unit success claims50 realbrowsercycles or250ms/42/1400 acceptance.

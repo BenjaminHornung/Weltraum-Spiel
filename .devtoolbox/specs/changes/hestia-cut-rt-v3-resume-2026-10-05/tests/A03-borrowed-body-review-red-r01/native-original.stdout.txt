@@ -1,0 +1,17 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-borrowed-body-plan.test.ts (6 tests | 2 failed) 2877ms
+   ✓ composes the same complete Box plan, children and removed mass under one retained parent  756ms
+   ✓ composes the same complete Sphere plan, children and removed mass under one retained parent  880ms
+   ✓ closes mid-plan command/ingest work without releasing the shared parent 86ms
+   ✓ keeps the original parent failure before any final plan or retry work 74ms
+   × credits a warm cell projection before borrowing it from the parent 73ms
+   × yields through Sphere material comparisons while preserving first-match semantics 1007ms
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 4 passed (6)
+   Start at  16:04:46
+   Duration  4.44s (transform 612ms, setup 0ms, import 1.38s, tests 2.88s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-borrowed-body-review-red-r01/original-vitest.json

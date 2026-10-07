@@ -1,0 +1,10 @@
+{
+  "classification": "Genuine RED escrow ticket RPC and release after Finalize/Rollback; original5 cases preserved plus2 escrow cases",
+  "binding": "A03-escrow-rpc-red-r01-binding.json",
+  "nativeCapSeconds": 180,
+  "files": [
+    "tests/unit/hvp-body-mesh-worker.test.ts"
+  ],
+  "runId": "A03-escrow-rpc-red-r01",
+  "mode": "tests"
+}

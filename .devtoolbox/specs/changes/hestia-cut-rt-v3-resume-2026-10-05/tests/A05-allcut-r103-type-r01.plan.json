@@ -1,0 +1,8 @@
+{
+  "runId": "A05-allcut-r103-type-r01",
+  "classification": "All productive Cut derivative and Native phase quote integration fulltype",
+  "mode": "type",
+  "files": [],
+  "binding": "A05-allcut-r103-binding-r01.json",
+  "nativeCapSeconds": 60
+}

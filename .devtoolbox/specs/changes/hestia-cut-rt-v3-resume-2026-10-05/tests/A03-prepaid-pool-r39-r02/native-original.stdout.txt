@@ -1,0 +1,20 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/workerPoolLifecycle.test.ts (37 tests) 7135ms
+   ✓ transfers source-bound neighbour projections through the real pool and rejects a foreign ticket before transfer  4671ms
+   ✓ prepares local body cuts through the pool without accepting foreign owners or forged removed mass  375ms
+     ✓ rejects stale planning results after the planning epoch advances  1021ms
+ ✓ tests/unit/hvpBoundedPump.test.ts (25 tests) 2986ms
+     ✓ packs at most two active inputs, refills before the held sibling, and returns work-list order  314ms
+     ✓ preserves serial restore order and the empty restore path  406ms
+     ✓ requests algorithm two through the real compiler/pool and preserves legacy semantic products  615ms
+     ✓ does not retry a corrupted binary result as legacy JSON  330ms
+ ✓ tests/unit/hvp-body-mesh-client.test.ts (10 tests) 27ms
+
+ Test Files  3 passed (3)
+      Tests  72 passed (72)
+   Start at  21:11:40
+   Duration  12.63s (transform 883ms, setup 0ms, import 2.04s, tests 10.15s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-prepaid-pool-r39-r02/original-vitest.json

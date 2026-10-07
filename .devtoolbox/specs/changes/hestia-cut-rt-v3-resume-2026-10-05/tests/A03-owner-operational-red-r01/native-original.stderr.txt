@@ -1,0 +1,22 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-body-mesh-worker.test.ts > native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=true, tight=true)
+AssertionError: expected undefined to be 'Owned reconstruction exceeds Prepare9…' // Object.is equality
+
+- Expected:
+"Owned reconstruction exceeds Prepare96MiB or CPU256MiB coexistence."
+
++ Received:
+undefined
+
+ ❯ tests/unit/hvp-body-mesh-worker.test.ts:53:34
+     51|     const projected=await send({kind:"PrepareBodyChildProjection",bind…
+     52|     if(tight){
+     53|       expect(projected.rejected).toBe("Owned reconstruction exceeds Pr…
+       |                                  ^
+     54|       const retry=await send({kind:"PrepareBodyChildProjection",bindin…
+     55|       const stage=await send({kind:"StageBodyCut",transactionId:"recut…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

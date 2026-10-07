@@ -1,0 +1,14 @@
+{
+  "runId": "A02-shared-cpu-profile-r01",
+  "binding": "A02-diagnostic-source-binding-r01.json",
+  "mode": "tests",
+  "files": ["tests/unit/hvp-owned-materialization.test.ts", "tests/unit/hvp-owned-structural-ingest.test.ts"],
+  "diagnosticTrace": true,
+  "cpuProfile": true,
+  "classification": "CPU diagnosis only; not clean acceptance or formal measurement",
+  "nativeCapSeconds": 180,
+  "originalTestDeadlines": "unchanged including explicit declarations",
+  "retry": 0,
+  "bail": false,
+  "skip": false
+}

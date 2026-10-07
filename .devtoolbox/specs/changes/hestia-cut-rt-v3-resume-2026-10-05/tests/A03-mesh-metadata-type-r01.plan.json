@@ -1,0 +1,8 @@
+{
+  "nativeCapSeconds": 60,
+  "runId": "A03-mesh-metadata-type-r01",
+  "binding": "A03-mesh-metadata-regressions-r01-binding.json",
+  "classification": "R26 full app type, original sixty-second boundary",
+  "files": [],
+  "mode": "type"
+}

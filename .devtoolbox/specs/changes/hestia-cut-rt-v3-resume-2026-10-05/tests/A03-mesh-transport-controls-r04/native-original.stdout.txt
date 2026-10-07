@@ -1,0 +1,28 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-body-mesh-owner-integration.test.ts (8 tests) 5013ms
+   ✓ rejects projected owner-route Stage until the retained plan has admitted complete geometry  593ms
+   ✓ admits mesh-only output against the single retained native plan before Stage, commit and finalize  867ms
+   ✓ rejects altered color geometry with stable first failure and no native Stage or retry revival  749ms
+   ✓ keeps a thrown real admission yield terminal without mutating the native World  673ms
+   ✓ keeps a packet decoder failure terminal before geometry work and rejects a later good packet  606ms
+   ✓ cannot revive an admission after Rollback at a real verifier yield  592ms
+   ✓ preserves the first yielded failure when verifier cleanup also throws  644ms
+ ✓ tests/unit/hvp-physics-worker-body-clock.test.ts (5 tests) 36192ms
+   ✓ measures native body World-Hold without simulating the timer gap  6172ms
+   ✓ corrects a restored native body-stage hold once in both measurement modes  5803ms
+   ✓ keeps unrecoverable native body restoration held and disposes safely  5468ms
+   ✓ retains body clock diagnostics after restoring the worker world  5077ms
+   ✓ disables optional timing during a prepared restore without changing the native cut  13670ms
+ ✓ tests/unit/hvp-physics-client-diagnostics.test.ts (3 tests) 51ms
+ ✓ tests/unit/hvpPhysicsReplyOrder.test.ts (12 tests) 18ms
+ ✓ tests/unit/hvp-body-mesh-client.test.ts (3 tests) 9ms
+ ✓ tests/unit/hvp-body-mesh-protocol.test.ts (2 tests) 6ms
+
+ Test Files  6 passed (6)
+      Tests  33 passed (33)
+   Start at  14:06:17
+   Duration  45.18s (transform 1.32s, setup 0ms, import 2.84s, tests 41.29s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-mesh-transport-controls-r04/original-vitest.json

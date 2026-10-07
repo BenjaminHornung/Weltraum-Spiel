@@ -1,0 +1,8 @@
+{
+  "runId": "A03-borrowed-command-type-r02",
+  "startedUtc": "2026-10-05T13:21:15.1047931+00:00",
+  "endedUtc": "2026-10-05T13:21:19.2119854+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 4.0968773,
+  "planFile": "A03-borrowed-command-type-r02.plan.json"
+}

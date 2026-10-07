@@ -1,0 +1,85 @@
+{
+  "checked": "2026-10-05",
+  "sources": [
+    {
+      "id": "A_HEAD",
+      "kind": "live_git_ref",
+      "repo": "BenjaminHornung/Weltraum-Spiel",
+      "branch": "feature/hvp-cut-rt-v3-completion-2026-09-23",
+      "commit": "0bfd1e67117d0dd6184e592e9a2a1b8b9f58241a"
+    },
+    {
+      "id": "A_PLAN",
+      "kind": "read_source",
+      "repo": "BenjaminHornung/Weltraum-Spiel",
+      "commit": "0bfd1e67117d0dd6184e592e9a2a1b8b9f58241a",
+      "path": "docs/research/hvp-cut-rt/V3-AUTONOMOUS-COMPLETION-20261003-EXECPLAN.md",
+      "blob": "205134c81417956191f78d11e1d4485c2d14b69e"
+    },
+    {
+      "id": "B_HEAD",
+      "kind": "live_git_ref",
+      "repo": "BenjaminHornung/Weltraum-Spiel",
+      "branch": "feature/hestia-rd-2026-10-02",
+      "commit": "16a5d29a5cddea372abae139da618aa000a058be"
+    },
+    {
+      "id": "B_REN12",
+      "kind": "read_source",
+      "repo": "BenjaminHornung/Weltraum-Spiel",
+      "commit": "16a5d29a5cddea372abae139da618aa000a058be",
+      "path": "experiments/hestia-rd-2026-10-02/reports/RD-11/PHASE2-HANDOFF.md",
+      "blob": "0fa63778ec929dbdf7052f96b33057cdfe124e77"
+    },
+    {
+      "id": "B_PACKAGE",
+      "kind": "read_source",
+      "repo": "BenjaminHornung/Weltraum-Spiel",
+      "commit": "16a5d29a5cddea372abae139da618aa000a058be",
+      "path": "experiments/hestia-rd-2026-10-02/package.json",
+      "blob": "402c909d2ae4698d45deaff001922080bd4f7691"
+    },
+    {
+      "id": "C_HEAD",
+      "kind": "live_git_ref",
+      "repo": "BenjaminHornung/Weltraum-Spiel",
+      "branch": "agent/hestia-asset-compiler-spike-2026-10-02",
+      "commit": "1592ff882cd6f30cc3ee96df6e61f630dee167a7"
+    },
+    {
+      "id": "C_REPORT",
+      "kind": "read_source",
+      "repo": "BenjaminHornung/Weltraum-Spiel",
+      "commit": "1592ff882cd6f30cc3ee96df6e61f630dee167a7",
+      "path": "docs/research/hestia-asset-compiler-spike-2026-10-02/REPORT.md",
+      "blob": "4118dd28bd6c199d1febf3637d6d3d33451ec431"
+    },
+    {
+      "id": "C_BUNDLE_CODE",
+      "kind": "read_source",
+      "repo": "BenjaminHornung/Weltraum-Spiel",
+      "commit": "1592ff882cd6f30cc3ee96df6e61f630dee167a7",
+      "path": "tools/hestia_asset_compiler/review_bundle.py",
+      "blob": "7d1a293a42be8364686b6f3e18691f6f199d1284"
+    },
+    {
+      "id": "MAIN",
+      "kind": "live_git_ref",
+      "repo": "BenjaminHornung/Weltraum-Spiel",
+      "branch": "main",
+      "commit": "25bc7f5bbd2db6317c42193873eadeaf10a092c5"
+    },
+    {
+      "id": "CODEX_GOALS",
+      "kind": "official_documentation",
+      "url": "https://developers.openai.com/cookbook/examples/codex/using_goals_in_codex"
+    },
+    {
+      "id": "PASEO_SKILL",
+      "kind": "official_documentation",
+      "url": "https://github.com/getpaseo/paseo/blob/main/skills/paseo/SKILL.md",
+      "blob": "60ca70057a606181e5295772c016446ff2ab1126"
+    }
+  ],
+  "localLiveSessionsInspected": false
+}

@@ -1,0 +1,10 @@
+{
+  "runId": "A05-graphics-cleanup-r117-red",
+  "classification": "Whole owned presentation bounded controls",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-bootstrap.test.ts"
+  ],
+  "binding": "A05-graphics-cleanup-r117-red.binding.json",
+  "nativeCapSeconds": 1200
+}

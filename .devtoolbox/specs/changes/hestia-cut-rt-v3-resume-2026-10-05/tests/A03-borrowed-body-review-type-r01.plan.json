@@ -1,0 +1,8 @@
+{
+  "mode": "type",
+  "nativeCapSeconds": 60,
+  "binding": "A03-borrowed-body-review-green-r01-binding.json",
+  "files": [],
+  "runId": "A03-borrowed-body-review-type-r01",
+  "classification": "Full typecheck R18 exact final three-file source; original 60 cap"
+}

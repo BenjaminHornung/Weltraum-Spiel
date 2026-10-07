@@ -1,0 +1,12 @@
+{
+  "runId": "A05-render-r116-red",
+  "classification": "Whole owned presentation bounded controls",
+  "mode": "tests",
+  "files": [
+    "tests/unit/presentationCanonical.test.ts",
+    "tests/unit/presentationCommands.test.ts",
+    "tests/unit/renderBackendRevision.test.ts"
+  ],
+  "binding": "A05-render-r116-red.binding.json",
+  "nativeCapSeconds": 180
+}

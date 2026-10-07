@@ -1,0 +1,8 @@
+{
+  "runId": "A03-prepaid-pool-type-r39-r02",
+  "startedUtc": "2026-10-05T19:12:32.2089851+00:00",
+  "endedUtc": "2026-10-05T19:12:33.7691244+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 1.5559244,
+  "planFile": "A03-prepaid-pool-type-r39-r02.plan.json"
+}

@@ -1,0 +1,10 @@
+{
+  "files": [
+    "tests/unit/hvp-fixed-specimen-render.test.ts"
+  ],
+  "nativeCapSeconds": 180,
+  "binding": "A04-fixed-cold-render-r72-red-binding.json",
+  "mode": "tests",
+  "runId": "A04-fixed-cold-render-r72-red",
+  "classification": "Actual originalAOoff vs coldforcedAOon completegeometry helper RED; originaltestdeadlinesunchanged"
+}

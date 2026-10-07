@@ -1,0 +1,14 @@
+{
+  "nativeCapSeconds": 180,
+  "files": [
+    "tests/unit/hvp-body-plan-owner.test.ts"
+  ],
+  "binding": "A04-fixed-cold-render-r72-binding-r03.json",
+  "progressReporter": {
+    "sha256": "57e616baa10c3edcb06189accaa36a00154b22e960322665d509b91faf312dc1",
+    "file": "owner65-progress-reporter.mjs"
+  },
+  "mode": "tests",
+  "classification": "DIAGNOSTIC_ONLY: full unchanged65/original180/defaultdeadlines/default+JSON reporters; completed actual Vitest duration separately from arrival; normal diagnosticEnd workers0/foregroundblank; no CPU profiler",
+  "runId": "A02-owner-duration-r73"
+}

@@ -1,0 +1,8 @@
+{
+  "runId": "A02-historical-baseline-r76",
+  "startedUtc": "2026-10-06T03:58:49.6485646+00:00",
+  "endedUtc": "2026-10-06T04:01:49.2991083+00:00",
+  "wrapperExitCode": 91,
+  "elapsedSeconds": 179.6407062,
+  "planFile": "A02-historical-baseline-r76.plan.json"
+}

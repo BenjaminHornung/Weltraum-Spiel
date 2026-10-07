@@ -1,0 +1,15 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-borrowed-rigid-recipe.test.ts (4 tests | 4 failed) 320ms
+   × derives the identical issued rigid recipe while retaining all nested charges in one borrowed parent 103ms
+   × propagates the first parent reserve failure before issuing any recipe 72ms
+   × cancellation closes nested work without releasing the parent or creating a final recipe 72ms
+   × requires a first-party issued source when borrowing the owned parent ledger 72ms
+
+ Test Files  1 failed (1)
+      Tests  4 failed (4)
+   Start at  14:45:08
+   Duration  1.96s (transform 667ms, setup 0ms, import 1.49s, tests 320ms, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-borrowed-recipe-red-r01/original-vitest.json

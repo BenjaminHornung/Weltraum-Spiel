@@ -1,0 +1,29 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/workerPoolLifecycle.test.ts (38 tests) 6918ms
+   ✓ transfers source-bound neighbour projections through the real pool and rejects a foreign ticket before transfer  4523ms
+   ✓ prepares local body cuts through the pool without accepting foreign owners or forged removed mass  365ms
+     ✓ rejects stale planning results after the planning epoch advances  949ms
+ ✓ tests/unit/voxelWorkerProtocol.test.ts (15 tests) 21063ms
+     ✓ shares deterministic generation between synchronous and cooperative sliced APIs  1840ms
+     ✓ routes the real Hestia job through the existing WorkerPool and result gate  4231ms
+     ✓ binds cached-mode output to the requested canonical brick hash  651ms
+     ✓ caches only canonical density/material channels and replays them through the same worker job  4424ms
+     ✓ rejects a host-side cancellation racing a held completion without consumer or cache admission  4240ms
+     ✓ rejects a stale pool result before Hestia cache admission  4288ms
+     ✓ publishes and validates an empty mesh through the five-buffer worker protocol  650ms
+ ✓ tests/unit/hvpBoundedPump.test.ts (25 tests) 2911ms
+     ✓ packs at most two active inputs, refills before the held sibling, and returns work-list order  313ms
+     ✓ preserves serial restore order and the empty restore path  405ms
+     ✓ requests algorithm two through the real compiler/pool and preserves legacy semantic products  631ms
+     ✓ does not retry a corrupted binary result as legacy JSON  333ms
+ ✓ tests/unit/workerProtocol.test.ts (11 tests) 130ms
+ ✓ tests/unit/hvp-body-mesh-client.test.ts (10 tests) 25ms
+
+ Test Files  5 passed (5)
+      Tests  99 passed (99)
+   Start at  21:18:04
+   Duration  34.20s (transform 973ms, setup 0ms, import 2.49s, tests 31.05s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-prepaid-pool-r39-r03/original-vitest.json

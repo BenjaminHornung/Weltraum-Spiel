@@ -1,0 +1,16 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-owned-support-plan.test.ts > compares full384 support CPU and actual task quanta on the same occupancy without changing results
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/unit/hvp-owned-support-plan.test.ts:75:1
+     73|   }
+     74| });
+     75| it("compares full384 support CPU and actual task quanta on the same oc…
+       | ^
+     76|   const slots=new Uint8Array(32*8*8);
+     77|   for(let z=3;z<7;z+=1)for(let y=3;y<7;y+=1)for(let x=8;x<32;x+=1){slo…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

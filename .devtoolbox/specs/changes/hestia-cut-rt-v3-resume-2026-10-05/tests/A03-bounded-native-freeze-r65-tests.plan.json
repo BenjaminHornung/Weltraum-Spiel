@@ -1,0 +1,24 @@
+{
+  "classification": "Measured native shallow tail for proven privatehash128 arrays<=32768, full bounded per-entry shape verification and prior fallback/default/binary/native errors; same full15files",
+  "runId": "A03-bounded-native-freeze-r65-tests",
+  "binding": "A03-bounded-native-freeze-r65-binding.json",
+  "files": [
+    "tests/unit/hvp-owned-ingest-journal-prefix.test.ts",
+    "tests/unit/hvp-owned-materialization.test.ts",
+    "tests/unit/hvp-owned-resident-source.test.ts",
+    "tests/unit/hvp-owned-structural-ingest.test.ts",
+    "tests/unit/hvp-borrowed-body-plan.test.ts",
+    "tests/unit/hvp-body-plan-task-quantum.test.ts",
+    "tests/unit/hvp-owned-single-component-masses.test.ts",
+    "tests/unit/hvp-classification-contract-controls.test.ts",
+    "tests/unit/hvp-parallel-p01-classification.test.ts",
+    "tests/unit/hvp-owned-hash-array-open.test.ts",
+    "tests/unit/hvp-structural-ingest-trace.test.ts",
+    "tests/unit/hvp-body-mesh-worker.test.ts",
+    "tests/unit/hvp-body-mesh-protocol.test.ts",
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts",
+    "tests/unit/hvp-body-mesh-client.test.ts"
+  ],
+  "nativeCapSeconds": 900,
+  "mode": "tests"
+}

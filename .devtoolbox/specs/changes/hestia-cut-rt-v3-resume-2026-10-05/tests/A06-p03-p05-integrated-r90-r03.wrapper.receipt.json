@@ -1,0 +1,8 @@
+{
+  "runId": "A06-p03-p05-integrated-r90-r03",
+  "startedUtc": "2026-10-06T15:06:49.1620414+00:00",
+  "endedUtc": "2026-10-06T15:06:53.2940946+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 4.1280015,
+  "planFile": "A06-p03-p05-integrated-r90-r03.plan.json"
+}

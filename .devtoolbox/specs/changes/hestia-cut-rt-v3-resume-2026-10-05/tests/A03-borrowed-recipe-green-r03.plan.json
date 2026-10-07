@@ -1,0 +1,11 @@
+{
+  "classification": "Whole new borrowed recipe controls and unchanged existing V3 full literal/observer recipe parity population",
+  "runId": "A03-borrowed-recipe-green-r03",
+  "mode": "tests",
+  "binding": "A03-borrowed-recipe-source-binding-r03.json",
+  "nativeCapSeconds": 180,
+  "files": [
+    "tests/unit/hvp-borrowed-rigid-recipe.test.ts",
+    "tests/unit/v3StructuralRecipeParity.test.ts"
+  ]
+}

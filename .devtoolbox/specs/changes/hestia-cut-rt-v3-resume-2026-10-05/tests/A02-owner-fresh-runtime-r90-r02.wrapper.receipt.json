@@ -1,0 +1,8 @@
+{
+  "runId": "A02-owner-fresh-runtime-r90-r02",
+  "startedUtc": "2026-10-06T15:02:19.5078531+00:00",
+  "endedUtc": "2026-10-06T15:05:00.0396798+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 160.5265153,
+  "planFile": "A02-owner-fresh-runtime-r90-r02.plan.json"
+}

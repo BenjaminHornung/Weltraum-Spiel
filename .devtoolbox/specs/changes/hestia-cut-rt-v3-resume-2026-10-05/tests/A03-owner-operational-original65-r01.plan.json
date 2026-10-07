@@ -1,0 +1,10 @@
+{
+  "files": [
+    "tests/unit/hvp-body-plan-owner.test.ts"
+  ],
+  "nativeCapSeconds": 180,
+  "classification": "Clean original wholeOwner65 after operational optional wiring; no hooks/retries/bail/skips/deadline/assertion changes",
+  "binding": "A03-owner-operational-regressions-r02-binding.json",
+  "runId": "A03-owner-operational-original65-r01",
+  "mode": "tests"
+}

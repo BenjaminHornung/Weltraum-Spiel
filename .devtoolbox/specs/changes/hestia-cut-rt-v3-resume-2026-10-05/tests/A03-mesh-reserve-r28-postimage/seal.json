@@ -1,0 +1,32 @@
+[
+  {
+    "appRelative": "src/hvp/hvpCoastMesher.ts",
+    "bytes": 55691,
+    "sha256": "74a4ef5e5e2a45cf5d39ac42864b1200ea94f796a090b32a8fb422ee81b61843"
+  },
+  {
+    "appRelative": "src/hestia-prototype/presentation/bodyMeshAdmission.ts",
+    "bytes": 5959,
+    "sha256": "4f9697e47164223714a83d5b37d8643046a713d3d0da6aa4d5553309aa580d6c"
+  },
+  {
+    "appRelative": "src/hestia-prototype/physics/bodyCutSession.ts",
+    "bytes": 26445,
+    "sha256": "82a67bd23ef190b27ff4ca6be4600151add3658fc1d0ac643f46b5caaeb99e44"
+  },
+  {
+    "appRelative": "src/workers/hvpBodyMeshJob.ts",
+    "bytes": 32502,
+    "sha256": "a6a3fa0587b1f3f4f88d5ea14cb3479452e5156be268f278b3ab9bdd0c63975b"
+  },
+  {
+    "appRelative": "tests/unit/hvpOwnedBodyMesh.test.ts",
+    "bytes": 6587,
+    "sha256": "472ef0185a6d92c2660560cd524c28d1547df2b2e492838838f9a95c0a22d3a0"
+  },
+  {
+    "appRelative": "tests/unit/hvp-body-mesh-owner-integration.test.ts",
+    "bytes": 20204,
+    "sha256": "af2df9fbf6adaa25a1cec58c6b630315e8953adb53f4bc9c7928032bc72e7628"
+  }
+]

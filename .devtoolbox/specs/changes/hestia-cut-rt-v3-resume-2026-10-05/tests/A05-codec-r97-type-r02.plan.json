@@ -1,0 +1,8 @@
+{
+  "nativeCapSeconds": 60,
+  "mode": "type",
+  "classification": "Integrated bounded codec default semantics and current source",
+  "runId": "A05-codec-r97-type-r02",
+  "binding": "A05-codec-r97-binding-r02.json",
+  "files": []
+}

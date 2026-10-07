@@ -1,0 +1,22 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > R116 cancels after a real hidden upload and releases every material lease (unproven=false)
+AssertionError: expected 149 to be 148 // Object.is equality
+
+- Expected
++ Received
+
+- 148
++ 149
+
+ ❯ tests/unit/hvp-bootstrap.test.ts:2302:59
+    2300|       if(unproven){expect(caught).toBeInstanceOf(HvpRenderStageRecover…
+    2301|         expect(source.body.dataset.hestiaPrototypeSave).toContain("Rec…
+    2302|       }else{expect(caught).toBe(cancel);expect(live.size).toBe(leaseCo…
+       |                                                           ^
+    2303|         expect(backend.readDiagnostics().residentRepresentationKeys).t…
+    2304|         expect(backend.readDiagnostics().ownedCpuBytes).toBe(before.ow…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

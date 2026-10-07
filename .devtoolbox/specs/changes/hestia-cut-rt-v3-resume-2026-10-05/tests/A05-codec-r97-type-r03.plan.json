@@ -1,0 +1,8 @@
+{
+  "binding": "A05-codec-r97-binding-r03.json",
+  "nativeCapSeconds": 60,
+  "files": [],
+  "mode": "type",
+  "classification": "Current codec and same384 total CPU real task slice comparison",
+  "runId": "A05-codec-r97-type-r03"
+}

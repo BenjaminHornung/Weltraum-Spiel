@@ -1,0 +1,65 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+stdout | tests/unit/hvp-owned-support-plan.test.ts > compares full384 support CPU and actual task quanta on the same occupancy without changing results, pair 0
+R97_SUPPORT384_CPU_AND_QUANTA [
+  {
+    baselineCpuMs: 1234.0780000000013,
+    ownedWorkMs: 452.6243000000013,
+    ownedWallMs: 478.07830000000104,
+    maxQuantumMs: 9.214600000001155,
+    quanta: 192
+  }
+]
+
+stdout | tests/unit/hvp-owned-support-plan.test.ts > compares full384 support CPU and actual task quanta on the same occupancy without changing results, pair 1
+R97_SUPPORT384_CPU_AND_QUANTA [
+  {
+    baselineCpuMs: 1185.4424999999992,
+    ownedWorkMs: 545.5246999999908,
+    ownedWallMs: 579.772500000001,
+    maxQuantumMs: 9.9375,
+    quanta: 223
+  }
+]
+
+stdout | tests/unit/hvp-owned-support-plan.test.ts > compares full384 support CPU and actual task quanta on the same occupancy without changing results, pair 2
+R97_SUPPORT384_CPU_AND_QUANTA [
+  {
+    baselineCpuMs: 1536.122299999999,
+    ownedWorkMs: 335.3911000000098,
+    ownedWallMs: 349.46180000000095,
+    maxQuantumMs: 3.0328000000008615,
+    quanta: 154
+  }
+]
+
+ ✓ tests/unit/hvp-owned-support-plan.test.ts (6 tests) 9831ms
+   ✓ shares full support reports and every source read with the original algorithm while using one borrowed lifetime  3807ms
+   ✓ runs the owned job through the existing real task pump and closes input/search/ingest/recipe cancellation  642ms
+   ✓ compares full384 support CPU and actual task quanta on the same occupancy without changing results, pair 0  1717ms
+   ✓ compares full384 support CPU and actual task quanta on the same occupancy without changing results, pair 1  1767ms
+   ✓ compares full384 support CPU and actual task quanta on the same occupancy without changing results, pair 2  1887ms
+stdout | tests/unit/hvp-owned-structural-ingest.test.ts > shares complete preimage-bound Adaptive-to-Structural issuance, generic observations and borrowed lifetime without World authority
+OWNED_STRUCTURAL_INGEST_EVIDENCE {"cases":[{"budget":1,"units":150394,"maxAdvance":1,"resources":{"residentBytes":8388608,"reservedBytes":0,"retainedEstimateBytes":0,"transferredResultEstimateBytes":4432512,"peakEstimateBytes":18191168,"hashReservations":19,"hashBackingBufferBytesPerCursor":4096,"pendingUtf16BytesPerCursor":2048,"physicalHeap":"NOT_PROVEN"}},{"budget":7,"units":117626,"maxAdvance":7,"resources":{"residentBytes":8388608,"reservedBytes":0,"retainedEstimateBytes":0,"transferredResultEstimateBytes":4431936,"peakEstimateBytes":18190592,"hashReservations":19,"hashBackingBufferBytesPerCursor":4096,"pendingUtf16BytesPerCursor":2048,"physicalHeap":"NOT_PROVEN"}},{"budget":16,"units":117626,"maxAdvance":16,"resources":{"residentBytes":8388608,"reservedBytes":0,"retainedEstimateBytes":0,"transferredResultEstimateBytes":4431936,"peakEstimateBytes":18190592,"hashReservations":19,"hashBackingBufferBytesPerCursor":4096,"pendingUtf16BytesPerCursor":2048,"physicalHeap":"NOT_PROVEN"}},{"budget":32,"units":117626,"maxAdvance":32,"resources":{"residentBytes":8388608,"reservedBytes":0,"retainedEstimateBytes":0,"transferredResultEstimateBytes":4431936,"peakEstimateBytes":18190592,"hashReservations":19,"hashBackingBufferBytesPerCursor":4096,"pendingUtf16BytesPerCursor":2048,"physicalHeap":"NOT_PROVEN"}},{"budget":64,"units":117626,"maxAdvance":64,"resources":{"residentBytes":8388608,"reservedBytes":0,"retainedEstimateBytes":0,"transferredResultEstimateBytes":4431936,"peakEstimateBytes":18190592,"hashReservations":19,"hashBackingBufferBytesPerCursor":4096,"pendingUtf16BytesPerCursor":2048,"physicalHeap":"NOT_PROVEN"}},{"budget":257,"units":117626,"maxAdvance":257,"resources":{"residentBytes":8388608,"reservedBytes":0,"retainedEstimateBytes":0,"transferredResultEstimateBytes":4431936,"peakEstimateBytes":18190592,"hashReservations":19,"hashBackingBufferBytesPerCursor":4096,"pendingUtf16BytesPerCursor":2048,"physicalHeap":"NOT_PROVEN"}}],"units":117626,"cellCount":32,"channelValues":32768,"completeLiteralBytes":5895,"contentHash":"fnv1a64-v1:8f1b55e6e6d4fc5d","evidenceHash":"fnv1a64-v1:09612b07b5ecb5a5","cancelBoundaries":6,"hostFinallyBoundaries":6,"invalidBudgetBoundaries":6,"finalReservations":0,"genuineResidentProofs":true,"genuineStructuralObject":true,"worldAuthority":false,"activation":"OFF","independentReview":"NOT_RUN","physicalHeap":"NOT_PROVEN","whole8ms":"NOT_PROVEN"}
+
+ ✓ tests/unit/hvp-owned-structural-ingest.test.ts (1 test) 4449ms
+   ✓ shares complete preimage-bound Adaptive-to-Structural issuance, generic observations and borrowed lifetime without World authority  4447ms
+stdout | tests/unit/hvp-owned-hash-emission-boundary.test.ts > measures complete actual owned ingest journal envelopes against the exact current preimage
+R91_RECORD_KERNEL {"classification":"DIAGNOSTIC_NOT_GAME_ACCEPTANCE","records":352,"payloads":1,"samples":{"baseline":[10.486366666666678,9.695266666666612,9.556066666666766,9.534499999999904,9.713066666666691,11.296833333333174,9.86853333333329,10.632333333333463,10.325766666666672,9.909500000000056,10.964366666666592],"candidate":[7.0743333333333185,7.737566666666605,5.925400000000006,7.007366666666788,6.7225333333332555,6.530699999999949,6.940033333333304,7.286433333333207,6.9681000000000495,6.539466666666613,8.093333333333248],"baselineDrain":[10.470100000000002,9.663233333333286,9.537100000000086,9.517233333333252,9.69399999999996,11.276466666666693,9.842899999999949,10.615000000000236,10.29966666666663,9.891966666666727,10.941233333333154],"candidateDrain":[7.056666666666691,7.722966666666632,5.91246666666666,6.996099999999994,6.705000000000079,6.518399999999929,6.9262000000000326,7.268133333333178,6.946666666666412,6.522566666666535,8.068066666666558]}}
+
+ ✓ tests/unit/hvp-owned-hash-emission-boundary.test.ts (5 tests) 1941ms
+   ✓ preserves every default and private emission boundary for scalar records and all key chunk edges  832ms
+   ✓ measures complete actual owned ingest journal envelopes against the exact current preimage  771ms
+stdout | tests/unit/hvp-owned-hash-array-open.test.ts > opens owned4096 arrays cooperatively without changing bytes, integrity precedence or cleanup
+OWNED_HASH_ARRAY_OPEN {"samples":[{"units":1,"advances":12297,"indexChecks":12288,"maxChecks":1,"bulkFrozenCalls":0,"prototypeAfterIntegrityIndices":4096},{"units":7,"advances":1757,"indexChecks":12288,"maxChecks":7,"bulkFrozenCalls":0,"prototypeAfterIntegrityIndices":4096},{"units":64,"advances":193,"indexChecks":12288,"maxChecks":64,"bulkFrozenCalls":0,"prototypeAfterIntegrityIndices":4096},{"units":257,"advances":48,"indexChecks":12288,"maxChecks":257,"bulkFrozenCalls":0,"prototypeAfterIntegrityIndices":4096}],"canonicalBytes":19401,"contentHash":"fnv1a64-v1:e15bf64571353054","activation":"OFF","physicalAndTimingAcceptance":"NOT_PROVEN"}
+
+ ✓ tests/unit/hvp-owned-hash-array-open.test.ts (5 tests) 813ms
+   ✓ opens owned4096 arrays cooperatively without changing bytes, integrity precedence or cleanup  657ms
+
+ Test Files  4 passed (4)
+      Tests  17 passed (17)
+   Start at  23:22:06
+   Duration  22.30s (transform 1.75s, setup 0ms, import 4.06s, tests 17.03s, environment 1ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-shortvalue-r110-tests-r01/original-vitest.json

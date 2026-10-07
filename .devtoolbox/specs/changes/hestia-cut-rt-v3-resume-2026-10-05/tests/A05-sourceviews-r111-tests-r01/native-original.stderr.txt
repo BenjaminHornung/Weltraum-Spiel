@@ -1,0 +1,11 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-body-mesh-client.test.ts > awaits native Source-only views before Stage and proves exact preStage release (release-fails)
+Error: Native terrain release unproven: Error: Missing Native terrain release receipt
+ ❯ Object.prepareTerrain src/hestia-prototype/physics/client.ts:547:42
+
+ ❯ tests/unit/hvp-body-mesh-client.test.ts:69:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

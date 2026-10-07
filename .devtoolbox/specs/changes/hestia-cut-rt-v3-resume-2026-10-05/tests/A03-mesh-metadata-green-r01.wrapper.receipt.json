@@ -1,0 +1,8 @@
+{
+  "runId": "A03-mesh-metadata-green-r01",
+  "startedUtc": "2026-10-05T16:13:05.0997802+00:00",
+  "endedUtc": "2026-10-05T16:13:15.2232683+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 10.1187131,
+  "planFile": "A03-mesh-metadata-green-r01.plan.json"
+}

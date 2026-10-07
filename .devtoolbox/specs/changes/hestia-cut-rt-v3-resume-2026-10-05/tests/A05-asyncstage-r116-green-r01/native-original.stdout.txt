@@ -1,0 +1,5 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-terrain-consumer.test.ts (38 tests) 8446ms
+     ✓ cut trace keeps canonical outcomes and publication order unchanged when tracing is absent, present, or throwing  4605ms

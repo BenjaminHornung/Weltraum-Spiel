@@ -1,0 +1,10 @@
+{
+  "runId": "A05-scratch-r105-red",
+  "classification": "Measured redundant scalar allocations before shared scratch",
+  "mode": "tests",
+  "files": [
+    "tests/unit/presentationCanonical.test.ts"
+  ],
+  "binding": "A05-scratch-r105-binding-red.json",
+  "nativeCapSeconds": 60
+}

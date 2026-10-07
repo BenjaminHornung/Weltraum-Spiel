@@ -1,0 +1,65 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-borrowed-mesh-decode.test.ts > preserves all mixed/wide cell IDs and exact decoded mesh bytes while charging one retained parent
+TypeError: decodeHvpBodyMeshOutputSteps is not a function
+ ❯ tests/unit/hvp-borrowed-mesh-decode.test.ts:28:27
+     26| it("preserves all mixed/wide cell IDs and exact decoded mesh bytes whi…
+     27|   const f=await fixture(),ledger=createStructuralOwnerLedger(32*1024*1…
+     28|   try{const actual=finish(decodeHvpBodyMeshOutputSteps(f.request,f.pro…
+       |                           ^
+     29|     expect(actual.value).toEqual(expected);expect(actual.labels).toCon…
+     30|     for(const field of ["positions","normals","colors","indices"] as c…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/hvp-borrowed-mesh-decode.test.ts > preserves the original malformed-index rejection even when the attacker recomputes the packet hash
+AssertionError: expected [Function] to throw error including 'Body-mesh index exceeds its part span' but got '(0 , __vite_ssr_import_1__.decodeHvpB…'
+
+Expected: "Body-mesh index exceeds its part span"
+Received: "(0 , __vite_ssr_import_1__.decodeHvpBodyMeshOutputSteps) is not a function"
+
+ ❯ tests/unit/hvp-borrowed-mesh-decode.test.ts:42:99
+     40|   try{decodeHvpBodyMeshOutput(f.request,f.projection,bad);}catch(error…
+     41|   expect(first?.message).toBe("Body-mesh index exceeds its part span");
+     42|   try{expect(()=>finish(decodeHvpBodyMeshOutputSteps(f.request,f.proje…
+       |                                                                                                   ^
+     43|   finally{ledger.release();}
+     44| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/hvp-borrowed-mesh-decode.test.ts > rejects a parent reserve failure before creating decoded products
+AssertionError: expected a thrown error to be Error: decode parent credit failed
+
+- Expected
++ Received
+
+- Error {
+-   "message": "decode parent credit failed",
++ TypeError {
++   "message": "(0 , __vite_ssr_import_1__.decodeHvpBodyMeshOutputSteps) is not a function",
+  }
+
+ ❯ tests/unit/hvp-borrowed-mesh-decode.test.ts:47:113
+     45| it("rejects a parent reserve failure before creating decoded products"…
+     46|   const f=await fixture(),first=new Error("decode parent credit failed…
+     47|   expect(()=>finish(decodeHvpBodyMeshOutputSteps(f.request,f.projectio…
+       |                                                                                                                 ^
+     48|   expect(calls).toBe(1);
+     49| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/unit/hvp-borrowed-mesh-decode.test.ts > closes mid-decode scratch without releasing the shared parent or publishing a partial product
+TypeError: decodeHvpBodyMeshOutputSteps is not a function
+ ❯ tests/unit/hvp-borrowed-mesh-decode.test.ts:51:82
+     49| });
+     50| it("closes mid-decode scratch without releasing the shared parent or p…
+     51|   const f=await fixture(),ledger=createStructuralOwnerLedger(32*1024*1…
+       |                                                                                  ^
+     52|   try{expect(steps.next().done).toBe(false);expect(ledger.resources.re…
+     53|     expect(steps.return(undefined as never)).toEqual({done:true,value:…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+

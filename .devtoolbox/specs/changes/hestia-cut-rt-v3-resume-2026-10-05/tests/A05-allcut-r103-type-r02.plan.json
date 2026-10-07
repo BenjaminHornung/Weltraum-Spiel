@@ -1,0 +1,8 @@
+{
+  "runId": "A05-allcut-r103-type-r02",
+  "classification": "Current whole Cut private derivative Native prepare Release Restore barrier and Bootstrap",
+  "mode": "type",
+  "files": [],
+  "binding": "A05-allcut-r103-binding-r02.json",
+  "nativeCapSeconds": 60
+}

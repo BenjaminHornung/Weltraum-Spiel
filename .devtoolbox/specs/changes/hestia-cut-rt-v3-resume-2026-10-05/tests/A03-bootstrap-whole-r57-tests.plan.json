@@ -1,0 +1,18 @@
+{
+  "runId": "A03-bootstrap-whole-r57-tests",
+  "binding": "A03-bootstrap-whole-r57-binding.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvpCutRtReport.test.ts",
+    "tests/unit/hvp-bootstrap.test.ts"
+  ],
+  "classification": "Complete unchanged reporter/bootstrap populations on productive current R56; original per-test deadlines; preserved original finite1200 command window",
+  "nativeCapSeconds": 1200,
+  "capBasis": "BETRIEB9 new finite command window; Owner180 and original individual test declarations remain unchanged",
+  "diagnosticTrace": false,
+  "cpuProfile": false,
+  "originalTestDeadlines": "unchanged including explicit declarations",
+  "retry": 0,
+  "bail": false,
+  "skip": false
+}

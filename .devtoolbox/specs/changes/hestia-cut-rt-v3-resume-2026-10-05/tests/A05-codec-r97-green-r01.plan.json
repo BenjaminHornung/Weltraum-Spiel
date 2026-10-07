@@ -1,0 +1,10 @@
+{
+  "classification": "Standalone bounded JSON reader/writer byte parity malformed UTF8 cancellation and cap",
+  "runId": "A05-codec-r97-green-r01",
+  "mode": "tests",
+  "binding": "A05-codec-r97-binding-r01.json",
+  "files": [
+    "tests/unit/hvp-support-json.test.ts"
+  ],
+  "nativeCapSeconds": 60
+}

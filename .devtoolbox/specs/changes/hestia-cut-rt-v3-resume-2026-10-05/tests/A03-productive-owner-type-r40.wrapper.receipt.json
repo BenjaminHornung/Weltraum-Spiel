@@ -1,0 +1,8 @@
+{
+  "runId": "A03-productive-owner-type-r40",
+  "startedUtc": "2026-10-05T19:30:05.9746157+00:00",
+  "endedUtc": "2026-10-05T19:30:07.3618414+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 1.3829788,
+  "planFile": "A03-productive-owner-type-r40.plan.json"
+}

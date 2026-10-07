@@ -1,0 +1,8 @@
+{
+  "runId": "A03-owner-ledger-green-r02",
+  "startedUtc": "2026-10-05T14:19:03.3127809+00:00",
+  "endedUtc": "2026-10-05T14:19:13.9961371+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 10.678441,
+  "planFile": "A03-owner-ledger-green-r02.plan.json"
+}

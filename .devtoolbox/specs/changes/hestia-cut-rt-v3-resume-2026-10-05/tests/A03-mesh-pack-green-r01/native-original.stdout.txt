@@ -1,0 +1,28 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-borrowed-mesh-decode.test.ts (7 tests) 10676ms
+   ✓ preserves all mixed/wide cell IDs and exact decoded mesh bytes while charging one retained parent  1717ms
+   ✓ preserves the original malformed-index rejection even when the attacker recomputes the packet hash  1500ms
+   ✓ rejects a parent reserve failure before creating decoded products  1507ms
+   ✓ closes mid-decode scratch without releasing the shared parent or publishing a partial product  1530ms
+   ✓ rejects an oversized zero-byte channel list before the generic metadata maps can allocate it  1510ms
+   ✓ packs the same private projection bytes and digests through borrowed bounded work  1456ms
+   ✓ fails the packing parent reservation before publishing or transferring input  1454ms
+ ✓ tests/unit/hvpBodyMeshJob.test.ts (22 tests) 3525ms
+   ✓ keeps original ordered owner cells and source identities through mesh-only packing and exact local verification  420ms
+   ✓ preserves original occupied material 8 through the complete private mesh-only roundtrip  389ms
+   ✓ preserves original occupied material 256 through the complete private mesh-only roundtrip  390ms
+   ✓ preserves original occupied material 65535 through the complete private mesh-only roundtrip  374ms
+   ✓ preserves mixed Uint16 materials at their original coordinates without aliasing or sorting owner parts  438ms
+   ✓ rejects Air, negative zero and overflow before packing without rewriting valid owner data  321ms
+   ✓ rejects wrong input and output bindings without replacing the retained source  389ms
+   ✓ rejects damaged in-bounds geometry against the retained native plan even when framing and hashes pass  405ms
+   ✓ closes the cursor once on cancellation and preserves the first error when cleanup also throws  306ms
+
+ Test Files  2 passed (2)
+      Tests  29 passed (29)
+   Start at  18:44:33
+   Duration  16.14s (transform 719ms, setup 0ms, import 1.66s, tests 14.20s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-mesh-pack-green-r01/original-vitest.json

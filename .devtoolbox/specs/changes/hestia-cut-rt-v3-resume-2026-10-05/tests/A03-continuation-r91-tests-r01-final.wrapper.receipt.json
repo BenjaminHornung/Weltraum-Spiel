@@ -1,0 +1,8 @@
+{
+  "runId": "A03-continuation-r91-tests-r01-final",
+  "startedUtc": "2026-10-06T15:16:26.1599054+00:00",
+  "endedUtc": "2026-10-06T15:16:32.2095800+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 6.0452087,
+  "planFile": "A03-continuation-r91-tests-r01-final.plan.json"
+}

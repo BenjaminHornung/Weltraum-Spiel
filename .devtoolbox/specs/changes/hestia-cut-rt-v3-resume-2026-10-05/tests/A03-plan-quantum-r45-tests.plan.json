@@ -1,0 +1,15 @@
+{
+  "runId": "A03-plan-quantum-r45-tests",
+  "binding": "A03-plan-quantum-r45-binding.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-owned-ingest-journal-prefix.test.ts",
+    "tests/unit/hvp-owned-materialization.test.ts",
+    "tests/unit/hvp-owned-resident-source.test.ts",
+    "tests/unit/hvp-owned-structural-ingest.test.ts",
+    "tests/unit/hvp-borrowed-body-plan.test.ts",
+    "tests/unit/hvp-body-plan-task-quantum.test.ts"
+  ],
+  "nativeCapSeconds": 900,
+  "classification": "Borrowed plan nested128-unit/1ms batching; full literal/hash/error/resource/cancellation populations; original defaults unchanged"
+}

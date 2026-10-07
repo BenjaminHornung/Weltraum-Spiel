@@ -1,0 +1,11 @@
+{
+  "binding": "A03-main-result-r68-red-binding.json",
+  "mode": "tests",
+  "nativeCapSeconds": 900,
+  "runId": "A03-main-result-r68-red",
+  "classification": "Wholeexistingpool/gate with actualprivateadmission held-result lifecycle controls beforepoolwiring; originaltestdeadlines",
+  "files": [
+    "tests/unit/workerPoolLifecycle.test.ts",
+    "tests/unit/workerResultGate.test.ts"
+  ]
+}

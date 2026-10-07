@@ -1,0 +1,57 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/workerPoolLifecycle.test.ts (45 tests | 7 failed) 17717ms
+   ✓ dispatches mesh-only owner projections through the existing accepted-terminal pool with exclusive buffers 57ms
+   × keeps private result ownership and ticket until bounded hash closes (enqueue) 1033ms
+   × keeps private result ownership and ticket until bounded hash closes (cancel) 1011ms
+   × keeps private result ownership and ticket until bounded hash closes (epoch) 1015ms
+   × keeps private result ownership and ticket until bounded hash closes (shutdown) 1012ms
+   × keeps private result ownership and ticket until bounded hash closes (replace) 1014ms
+   × keeps private result ownership and ticket until bounded hash closes (fault) 1004ms
+   × keeps private result ownership and ticket until bounded hash closes (host-error) 1013ms
+   ✓ debits private mesh work on owned input and reports terminal after actual scratch closure (valid) 8ms
+   ✓ debits private mesh work on owned input and reports terminal after actual scratch closure (cancel-preflight) 1ms
+   ✓ debits private mesh work on owned input and reports terminal after actual scratch closure (exhausted-worker) 6ms
+   ✓ debits private mesh work on owned input and reports terminal after actual scratch closure (oversized-metadata) 2ms
+   ✓ transfers source-bound neighbour projections through the real pool and rejects a foreign ticket before transfer  8039ms
+   ✓ prepares local body cuts through the pool without accepting foreign owners or forged removed mass  523ms
+   ✓ runs HVP canonical collision jobs through the real pool protocol and rejects tampered input 30ms
+   ✓ runs source-bound support analysis through the real worker protocol without adopting foreign coverage 97ms
+   ✓ cancels an HVP collision job after preparation without publishing buffers 1ms
+   ✓ support decode accepts valid reports and rejects stale or mass-bound reports 75ms
+   ✓ support decode requires truthful collider and timing counts 93ms
+   ✓ support decode rejects malformed timing values and freezes diagnostics 89ms
+   ✓ support decode keeps report and transfer aggregate budgets distinct 152ms
+     ✓ reports only ready workers as active across startup, replacement failure, and shutdown 3ms
+     ✓ completes deterministic work and detaches transferred input 7ms
+     ✓ authorizes only completed terminals produced by this pool 30ms
+     ✓ takes transferable ownership before an accepted job waits in the queue 32ms
+     ✓ cancels queued and running jobs with distinct outcomes 16ms
+     ✓ settles affected requests on worker error and replaces with a higher epoch 61ms
+     ✓ stops fail-closed when a fault replacement cannot start 2ms
+     ✓ keeps the admitted worker intact until a ready candidate swaps exactly once 1ms
+     ✓ discards a failed candidate without changing the admitted worker, work, epochs, restarts, or pool state 1ms
+     ✓ prevents candidate admission when shutdown wins during replacement startup 1ms
+     ✓ ignores late output from a terminated worker epoch after replacement 10ms
+     ✓ does not let a rejected late cancellation replace a completed outcome 15ms
+     ✓ rejects stale planning results after the planning epoch advances  945ms
+     ✓ shutdown leaves no queued or running ticket unresolved 1ms
+     ✓ replaces a ready worker that faults while another slot is still starting 62ms
+     ✓ rejects a pending pool start when shutdown terminates the starting handle 1ms
+     ✓ rejects startup when the initialize control message cannot be posted 0ms
+     ✓ finishes shutdown when the final control message cannot be posted 1ms
+     ✓ isolates throwing diagnostic observers from queue and lifecycle decisions 1ms
+     ✓ faults malformed protocol and messageerror events and replaces each worker 118ms
+     ✓ retires a worker whose completed result violates the integration contract 79ms
+     ✓ settles duplicate and full-queue rejections explicitly 1ms
+     ✓ keeps exact job-ID replay rejection after the original job settled 30ms
+     ✓ scopes completed terminals to sequential pool lifetimes 17ms
+ ✓ tests/unit/workerResultGate.test.ts (8 tests) 6ms
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  7 failed | 46 passed (53)
+   Start at  03:33:11
+   Duration  21.91s (transform 1.61s, setup 0ms, import 3.71s, tests 17.72s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-main-result-r68-red/original-vitest.json

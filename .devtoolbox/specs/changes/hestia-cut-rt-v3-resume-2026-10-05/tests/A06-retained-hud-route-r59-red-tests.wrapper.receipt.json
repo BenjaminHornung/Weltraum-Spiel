@@ -1,0 +1,8 @@
+{
+  "runId": "A06-retained-hud-route-r59-red-tests",
+  "startedUtc": "2026-10-05T23:31:31.2239708+00:00",
+  "endedUtc": "2026-10-05T23:31:42.3320290+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 11.1010556,
+  "planFile": "A06-retained-hud-route-r59-red-tests.plan.json"
+}

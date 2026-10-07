@@ -14,7 +14,6 @@ import type {StructuralCursorStep} from "../../voxel/structural/occupiedEntries"
 import {createOwnedCanonicalHashCursor} from "../../voxel/adaptive/ownedCanonicalHashSteps";
 import {adaptiveMaterializeBrickSteps} from "../../voxel/adaptive/materialization";
 import {adaptiveResidentValidationProofsSteps} from "../../voxel/adaptive/canonical";
-import {adaptiveAuthorityRetentionSteps} from "../../voxel/adaptive/residency";
 
 export interface HvpStructuralCell { readonly x:number;readonly y:number;readonly z:number;readonly materialId:number }
 
@@ -103,12 +102,14 @@ function* ingestJournalPrefixSteps(id:string,input:readonly HvpStructuralCell[],
 }
 
 /** Internal three-field journal envelope only; existing canonical/FNV authority remains unchanged. */
-export function* hvpIngestJournalHashSteps(payload:unknown,reserve:StructuralOwnedReserve):Generator<void,string,void>{
+export function* hvpIngestJournalHashSteps(payload:unknown,reserve:StructuralOwnedReserve,hashUnits=1):Generator<void,string,void>{
   reserve(32_768,false,"hash");
-  const cursor=createOwnedCanonicalHashCursor(payload);
+  const cursor=createOwnedCanonicalHashCursor(payload,undefined,hashUnits===128);
   try{
     for(;;){
-      const result=cursor.advance(1);
+      // The owner still yields on its 2ms task quantum; fold a bounded block here
+      // instead of forwarding every scalar through the entire nested plan stack.
+      const result=cursor.advance(hashUnits);
       if(result!==undefined){return result.contentHash;}
       yield;
     }
@@ -124,9 +125,10 @@ type OwnedIngestPrefix = Omit<IngestPrefix,"cells"|"origins"|"runs"> & {
 /** INACTIVE DATA-only borrowed form. Producer retains plain/index-only input literals immutable
  * for this lifetime and charges ALL retained inputs/old/results in its ONE aggregate ledger. */
 export function* prepareHvpStructuralIngestJournalOwnedSteps(id:string,input:readonly HvpStructuralCell[],
-  materialInput:readonly unknown[],reserve:StructuralOwnedReserve):Generator<void,OwnedIngestPrefix,void>{
+  materialInput:readonly unknown[],reserve:StructuralOwnedReserve,
+  hash:AdaptiveOwnedJournalOptions["hash"]=payload=>hvpIngestJournalHashSteps(payload,reserve)):Generator<void,OwnedIngestPrefix,void>{
   reserve(2_048);
-  const owned:AdaptiveOwnedJournalOptions={reserve,hash:payload=>hvpIngestJournalHashSteps(payload,reserve)};
+  const owned:AdaptiveOwnedJournalOptions={reserve,hash};
   const raw=yield* ingestJournalPrefixSteps(id,input,materialInput,owned);
   // No mutable Map is published. Work arrays/records are private until every index is locked.
   reserve(64+raw.origins.size*128,true);
@@ -280,8 +282,9 @@ function* ingestStructuralSteps(id:string,prefix:CompletePrefix,bricks:IngestBri
     yield* adaptiveFreezeArraySteps(anchors,owned.reserve);
   }
   reserve?.(16_384,true);
+  // The final Structural issuer constructs and fully validates this fresh immutable authority.
   const authority=owned===undefined?createAdaptiveAuthorityRetention({baseField,editJournal})
-    :yield* adaptiveAuthorityRetentionSteps(Object.freeze({baseField,editJournal}),owned);
+    :Object.freeze({baseField,editJournal});
   const attached=yield* adaptiveMapSteps(resident,(entry,index)=>{
     reserve?.(8_192,true);
     const value={...entry,validationProof:proofs[index]!};
@@ -303,13 +306,17 @@ function* ingestStructuralSteps(id:string,prefix:CompletePrefix,bricks:IngestBri
 }
 
 function* ingestHvpStructuralSteps(id:string,input:readonly HvpStructuralCell[],materialInput:readonly unknown[],anchorInput:readonly IngestAnchor[],
-  owned?:AdaptiveOwnedJournalOptions,measure:IngestMeasure=noMeasure){
+  owned?:AdaptiveOwnedJournalOptions,measure:IngestMeasure=noMeasure,onPhase?:(phase:string)=>void){
+  onPhase?.("ownerIngestPrefix");
   const prefix=owned===undefined?adaptiveDrainSteps(ingestJournalPrefixSteps(id,input,materialInput,undefined,measure))
-    :yield* prepareHvpStructuralIngestJournalOwnedSteps(id,input,materialInput,owned.reserve);
+    :yield* prepareHvpStructuralIngestJournalOwnedSteps(id,input,materialInput,owned.reserve,owned.hash);
+  onPhase?.("ownerIngestBricks");
   const bricks=owned===undefined?measure("ingestMaterializeMs",()=>adaptiveDrainSteps(ingestBricksSteps(prefix)))
     :yield* ingestBricksSteps(prefix,owned);
+  onPhase?.("ownerIngestProofs");
   const proofs=owned===undefined?measure("ingestProofsMs",()=>adaptiveDrainSteps(ingestProofsSteps(prefix,bricks)))
     :yield* ingestProofsSteps(prefix,bricks,owned);
+  onPhase?.("ownerIngestStructural");
   return owned===undefined?measure("ingestStructuralMs",()=>adaptiveDrainSteps(ingestStructuralSteps(id,prefix,bricks,proofs,anchorInput)))
     :yield* ingestStructuralSteps(id,prefix,bricks,proofs,anchorInput,owned);
 }
@@ -329,8 +336,8 @@ export const ingestHvpStructuralCells = (id:string, input:readonly HvpStructural
  * inputs/old/results belong to ONE higher aggregate ledger; this nested form never releases it.
  * Only the existing full proof/Structural issuers run. No plan, recipe, World or caller activation. */
 export function* prepareHvpStructuralIngestOwnedSteps(id:string,input:readonly HvpStructuralCell[],materialInput:readonly unknown[],
-  anchorInput:readonly IngestAnchor[],reserve:StructuralOwnedReserve){
+  anchorInput:readonly IngestAnchor[],reserve:StructuralOwnedReserve,onPhase?:(phase:string)=>void){
   reserve(16_384);
-  const owned:AdaptiveOwnedJournalOptions=Object.freeze({reserve,hash:(payload:unknown)=>hvpIngestJournalHashSteps(payload,reserve)});
-  return yield* ingestHvpStructuralSteps(id,input,materialInput,anchorInput,owned);
+  const owned:AdaptiveOwnedJournalOptions=Object.freeze({reserve,hash:(payload:unknown)=>hvpIngestJournalHashSteps(payload,reserve,128)});
+  return yield* ingestHvpStructuralSteps(id,input,materialInput,anchorInput,owned,noMeasure,onPhase);
 }

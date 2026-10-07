@@ -1,0 +1,15 @@
+{
+  "runId": "A02-owner65-diagnostic-r01",
+  "binding": "A02-diagnostic-source-binding-r01.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-body-plan-owner.test.ts"
+  ],
+  "diagnosticTrace": true,
+  "classification": "diagnostic-only; no clean acceptance",
+  "nativeCapSeconds": 180,
+  "originalTestDeadlines": "unchanged including explicit declarations",
+  "retry": 0,
+  "bail": false,
+  "skip": false
+}

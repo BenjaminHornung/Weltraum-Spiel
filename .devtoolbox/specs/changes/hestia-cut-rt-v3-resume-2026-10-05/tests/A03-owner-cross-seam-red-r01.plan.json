@@ -1,0 +1,10 @@
+{
+  "files": [
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts"
+  ],
+  "classification": "Cross-seam first failure RED; unchanged whole file and test deadlines",
+  "binding": "A03-owner-cross-seam-red-r01-binding.json",
+  "runId": "A03-owner-cross-seam-red-r01",
+  "mode": "tests",
+  "nativeCapSeconds": 180
+}

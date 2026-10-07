@@ -1,0 +1,8 @@
+{
+  "binding": "A03-main-result-r68-binding-r03.json",
+  "classification": "Corrected private integration with unchanged generic freeze/hash observation order; exact whole9files finalsource",
+  "mode": "build",
+  "runId": "A03-main-result-r68-build-r02",
+  "nativeCapSeconds": 60,
+  "files": []
+}

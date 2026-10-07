@@ -1,0 +1,19 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-owned-support-plan.test.ts (2 tests) 1220ms
+   ✓ shares full support reports and every source read with the original algorithm while using one borrowed lifetime  1216ms
+stdout | tests/unit/hvp-terrain-support.test.ts > previews the actual authored rock arm without detaching or changing its canonical root
+Authored rock-arm support { sourceDigest: 'b8fde6b0', probes: 2156, massKg: 1722.65625 }
+
+ ✓ tests/unit/hvp-terrain-support.test.ts (7 tests) 1790ms
+   ✓ rejects a complete component that would require more than 64 exact collider boxes  789ms
+   ✓ previews the actual authored rock arm without detaching or changing its canonical root  576ms
+ ✓ tests/unit/hvp-terrain-transfer.test.ts (2 tests) 163ms
+
+ Test Files  3 passed (3)
+      Tests  11 passed (11)
+   Start at  19:53:05
+   Duration  5.03s (transform 660ms, setup 0ms, import 1.45s, tests 3.17s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-support-r96-green-r02/original-vitest.json

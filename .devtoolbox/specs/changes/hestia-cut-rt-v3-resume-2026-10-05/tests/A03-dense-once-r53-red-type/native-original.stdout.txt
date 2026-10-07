@@ -1,0 +1,1 @@
+tests/unit/hvp-owned-hash-array-open.test.ts(74,21): error TS1109: Expression expected.

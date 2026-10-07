@@ -1,0 +1,16 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-borrowed-body-plan.test.ts (17 tests) 3155ms
+   ✓ composes the same complete Box plan, children and removed mass under one retained parent  562ms
+   ✓ composes the same complete Sphere plan, children and removed mass under one retained parent  1016ms
+   ✓ yields through Sphere material comparisons while preserving first-match semantics  743ms
+ ✓ tests/unit/hvp-structural-ingest-trace.test.ts (2 tests) 779ms
+     ✓ preserves complete canonical serialization with absent, present, and throwing observers  617ms
+
+ Test Files  2 passed (2)
+      Tests  19 passed (19)
+   Start at  02:04:00
+   Duration  6.60s (transform 1.01s, setup 0ms, import 2.31s, tests 3.93s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-ingest-phase-r63-tests/original-vitest.json

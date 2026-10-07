@@ -1,0 +1,8 @@
+{
+  "runId": "A03-borrowed-body-review-red-r01",
+  "startedUtc": "2026-10-05T14:04:45.7063564+00:00",
+  "endedUtc": "2026-10-05T14:04:50.7218097+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 5.0106021,
+  "planFile": "A03-borrowed-body-review-red-r01.plan.json"
+}

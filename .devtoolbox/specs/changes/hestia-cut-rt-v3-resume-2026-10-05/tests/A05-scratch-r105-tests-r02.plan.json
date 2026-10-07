@@ -1,0 +1,15 @@
+{
+  "runId": "A05-scratch-r105-tests-r02",
+  "classification": "Current whole canonical artifact command backend boundary lifecycle revision",
+  "mode": "tests",
+  "files": [
+    "tests/unit/presentationCanonical.test.ts",
+    "tests/unit/presentationMeshArtifact.test.ts",
+    "tests/unit/presentationCommands.test.ts",
+    "tests/unit/renderBackendBoundary.test.ts",
+    "tests/unit/renderBackendLifecycle.test.ts",
+    "tests/unit/renderBackendRevision.test.ts"
+  ],
+  "binding": "A05-scratch-r105-binding-r02.json",
+  "nativeCapSeconds": 180
+}

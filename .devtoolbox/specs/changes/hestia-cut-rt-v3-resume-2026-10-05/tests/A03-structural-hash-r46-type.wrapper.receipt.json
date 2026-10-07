@@ -1,0 +1,8 @@
+{
+  "runId": "A03-structural-hash-r46-type",
+  "startedUtc": "2026-10-05T20:44:44.5631867+00:00",
+  "endedUtc": "2026-10-05T20:44:49.0410065+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 4.4651988,
+  "planFile": "A03-structural-hash-r46-type.plan.json"
+}

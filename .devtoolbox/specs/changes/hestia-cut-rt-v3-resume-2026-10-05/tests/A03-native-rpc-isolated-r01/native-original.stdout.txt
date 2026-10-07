@@ -1,0 +1,13 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-body-mesh-worker.test.ts (2 tests) 8628ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false)  5435ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (true)  3191ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  14:25:35
+   Duration  12.75s (transform 2.28s, setup 0ms, import 3.59s, tests 8.63s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-native-rpc-isolated-r01/original-vitest.json

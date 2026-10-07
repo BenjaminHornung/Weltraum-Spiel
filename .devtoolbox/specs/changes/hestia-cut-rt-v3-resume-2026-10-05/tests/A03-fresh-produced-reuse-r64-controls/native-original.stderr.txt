@@ -1,0 +1,36 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-borrowed-body-plan.test.ts > cancels the actual borrowed recipe at its first outer quantum while retaining its parent credit
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/hvp-borrowed-body-plan.test.ts:145:85
+    143|   const steps=prepareHvpLocalBodyCutOwnedHashSteps(before,[2,0,0],"can…
+    144|   const clock=vi.spyOn(performance,"now").mockReturnValue(0);let reach…
+    145|   try{for(let unit=0;unit<100000;unit+=1){const step=steps.next();expe…
+       |                                                                                     ^
+    146|     if(step.value==="ownerRecipe"){reached=true;break;}}
+    147|     expect(reached).toBe(true);steps.return(undefined as never);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/hvp-owned-hash-array-open.test.ts > proves produced dense shape during both bounded freeze routes without witnessing holes, accessors or cancellation
+TypeError: Cannot define property 0, object is not extensible
+ ❯ adaptiveFreezeArraySteps src/voxel/adaptive/validation.ts:266:12
+    264|       dense=entry!==undefined&&entry.enumerable===true&&"value" in ent…
+    265|     }
+    266|     Object.defineProperty(values, String(index), { writable: false, co…
+       |            ^
+    267|     yield;
+    268|   }
+ ❯ drain tests/unit/hvp-owned-hash-array-open.test.ts:11:82
+ ❯ tests/unit/hvp-owned-hash-array-open.test.ts:18:46
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+

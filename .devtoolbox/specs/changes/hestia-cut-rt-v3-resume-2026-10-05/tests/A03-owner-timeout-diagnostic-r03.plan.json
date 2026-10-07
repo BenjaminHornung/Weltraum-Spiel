@@ -1,0 +1,10 @@
+{
+  "classification": "FullOwner65 temporary real hrtime CPU heap case hooks only; all original assertions/deadlines unchanged; diagnosis not final acceptance",
+  "nativeCapSeconds": 180,
+  "mode": "tests",
+  "binding": "A03-owner-timeout-diagnostic-source-binding-r03.json",
+  "files": [
+    "tests/unit/hvp-body-plan-owner.test.ts"
+  ],
+  "runId": "A03-owner-timeout-diagnostic-r03"
+}

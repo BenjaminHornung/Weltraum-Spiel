@@ -1,0 +1,35 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-owned-ingest-journal-prefix.test.ts > keeps literal ingest/journal bytes, original namespaces/observers and one inactive aggregate cursor lifetime
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/hvp-owned-ingest-journal-prefix.test.ts:172:60
+    170|   for(const boundary of boundaries){
+    171|     const canceled=createOwnedHvpStructuralIngestJournalCursor(id,cell…
+    172|     if(boundary>0){expect(canceled.advance(boundary).done).toBe(false)…
+       |                                                            ^
+    173|     const host=createOwnedHvpStructuralIngestJournalCursor(id,cells,ma…
+    174|     try{if(boundary>0){host.advance(boundary);}throw new Error("host s…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/hvp-owned-materialization.test.ts > preserves literal complete materialized bytes, original native namespaces and borrowed owned lifetimes
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/unit/hvp-owned-materialization.test.ts:102:1
+    100| };
+    101|
+    102| it("preserves literal complete materialized bytes, original native nam…
+       | ^
+    103|   const typeAliases:[AdaptiveCanonicalValue|null,AdaptiveValidatedRefi…
+    104|     CreateAdaptiveResidentValidationProofInput|null,CreateAdaptiveResi…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+

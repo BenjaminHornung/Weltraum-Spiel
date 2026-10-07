@@ -1,0 +1,19 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-body-mesh-worker.test.ts (8 tests) 15840ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=false, tight=false)  2753ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (true, owned=false, tight=false)  1839ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=true, tight=false)  1852ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (true, owned=true, tight=false)  1823ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=true, tight=true)  1143ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=true, tight=false)  2376ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (true, owned=true, tight=false)  2378ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=true, tight=false)  1673ms
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  20:54:10
+   Duration  17.41s (transform 919ms, setup 0ms, import 1.42s, tests 15.84s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-escrow-dispose-r37/original-vitest.json

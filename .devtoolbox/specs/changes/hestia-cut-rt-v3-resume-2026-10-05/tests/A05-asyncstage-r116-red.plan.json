@@ -1,0 +1,10 @@
+{
+  "runId": "A05-asyncstage-r116-red",
+  "classification": "Whole owned presentation bounded controls",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-terrain-consumer.test.ts"
+  ],
+  "binding": "A05-asyncstage-r116-red.binding.json",
+  "nativeCapSeconds": 180
+}

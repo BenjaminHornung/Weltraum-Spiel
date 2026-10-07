@@ -1,0 +1,22 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvpOwnedCanonicalHash.test.ts (28 tests) 2170ms
+     ✓ streams the real Installed child352 transition exactly in 1-unit advances  1401ms
+stdout | tests/unit/hvp-owned-hash-emission-boundary.test.ts > measures complete actual owned ingest journal envelopes against the exact current preimage
+R91_RECORD_KERNEL {"classification":"DIAGNOSTIC_NOT_GAME_ACCEPTANCE","records":352,"payloads":1,"samples":{"baseline":[4.261300000000044,4.228199999999977,4.2812333333333,4.259366666666627,4.332066666666719,4.299266666666654,4.314099999999978,5.03006666666666,4.353833333333379,4.365633333333373,4.307699999999954],"candidate":[2.900399999999953,3.3781666666666674,2.8957333333333204,2.909233333333342,3.083533333333321,3.575266666666645,3.071933333333353,3.4335999999999935,3.02963333333336,3.0480999999999767,3.6884333333333266],"baselineDrain":[4.256166666666672,4.224266666666722,4.277633333333331,4.254866666666658,4.326900000000023,4.293866666666645,4.282933333333328,5.021799999999985,4.347233333333331,4.360066666666701,4.301033333333332],"candidateDrain":[2.8958666666666204,3.3745666666666616,2.891233333333313,2.9068666666666254,3.0776333333332864,3.569566666666636,3.0663666666666813,3.427599999999984,3.0230666666666743,3.0414666666666412,3.6802666666665877]}}
+
+ ✓ tests/unit/hvp-owned-hash-emission-boundary.test.ts (4 tests) 867ms
+   ✓ preserves every default and private emission boundary for scalar records and all key chunk edges  379ms
+   ✓ measures complete actual owned ingest journal envelopes against the exact current preimage  336ms
+stdout | tests/unit/hvp-owned-hash-array-open.test.ts > opens owned4096 arrays cooperatively without changing bytes, integrity precedence or cleanup
+OWNED_HASH_ARRAY_OPEN {"samples":[{"units":1,"advances":12297,"indexChecks":12288,"maxChecks":1,"bulkFrozenCalls":0,"prototypeAfterIntegrityIndices":4096},{"units":7,"advances":1757,"indexChecks":12288,"maxChecks":7,"bulkFrozenCalls":0,"prototypeAfterIntegrityIndices":4096},{"units":64,"advances":193,"indexChecks":12288,"maxChecks":64,"bulkFrozenCalls":0,"prototypeAfterIntegrityIndices":4096},{"units":257,"advances":48,"indexChecks":12288,"maxChecks":257,"bulkFrozenCalls":0,"prototypeAfterIntegrityIndices":4096}],"canonicalBytes":19401,"contentHash":"fnv1a64-v1:e15bf64571353054","activation":"OFF","physicalAndTimingAcceptance":"NOT_PROVEN"}
+
+ ✓ tests/unit/hvp-owned-hash-array-open.test.ts (5 tests) 361ms
+
+ Test Files  3 passed (3)
+      Tests  37 passed (37)
+   Start at  17:10:39
+   Duration  5.19s (transform 673ms, setup 0ms, import 1.40s, tests 3.40s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-continuation-r91-tests-r01/original-vitest.json

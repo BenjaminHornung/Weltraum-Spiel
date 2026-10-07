@@ -1,0 +1,12 @@
+{
+  "runId": "A05-byteblock-r108-tests-r02",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-borrowed-bytehash.test.ts",
+    "tests/unit/hvp-owned-terrain-products.test.ts",
+    "tests/unit/hvp-owned-support-plan.test.ts"
+  ],
+  "nativeCapSeconds": 600,
+  "binding": "A05-byteblock-r108-binding-r02.json",
+  "classification": "Current full4096 block and tail control unchanged FNV admission"
+}

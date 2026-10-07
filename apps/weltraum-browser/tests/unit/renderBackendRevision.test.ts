@@ -79,6 +79,25 @@ const upsert = (instance: ThreeRenderBackend, artifact: MeshArtifact) => instanc
 });
 
 describe("ThreeRenderBackend revision safety", () => {
+  it("checks full owned upserts and live revision after suspension before allocating", () => {
+    const instance = backend();
+    const owned = instance as unknown as { dispatchOwnedSteps(command: import("../../src/presentation").RenderCommand): Generator<string, import("../../src/presentation").RenderCommandResult, unknown> };
+    const finish = <T>(steps: Generator<string, T, unknown>): T => { try { for (;;) { const n = steps.next(); if (n.done) return n.value; } } finally { steps.return(undefined as never); } };
+    const first = mesh(1), command = { kind: "UpsertMeshArtifact" as const, backendRevision: backendRevision(0), artifact: first, materialProfiles: [material] };
+    expect(finish(owned.dispatchOwnedSteps(command))).toMatchObject({ status: "Accepted", ownership: "MovedToBackend" });
+    expect(finish(owned.dispatchOwnedSteps(command))).toMatchObject({ status: "AlreadyApplied", ownership: "AlreadyOwnedByBackend" });
+    first.positions[0] = 99;
+    expect(finish(owned.dispatchOwnedSteps(command))).toMatchObject({ status: "RejectedInvalidArtifact", ownership: "RetainedByCaller" });
+    const pending = owned.dispatchOwnedSteps({ ...command, artifact: mesh(2) });
+    expect(pending.next().done).toBe(false);
+    expect(instance.dispatch({ kind: "ResetBackend", backendRevision: backendRevision(0), nextBackendRevision: backendRevision(1) }).status).toBe("Accepted");
+    expect(finish(pending)).toMatchObject({ status: "RejectedStaleRevision", ownership: "RetainedByCaller" });
+    expect(instance.readDiagnostics().activeRepresentations).toBe(0);
+    const cancelled = owned.dispatchOwnedSteps({ ...command, backendRevision: backendRevision(1), artifact: mesh(3) });
+    expect(cancelled.next().done).toBe(false); cancelled.return(undefined as never);
+    expect(instance.readDiagnostics().activeRepresentations).toBe(0);
+    instance.dispatch({ kind: "DisposeBackend", backendRevision: backendRevision(1) });
+  });
   it("treats a separate AdoptedExclusive artifact with equal content as AlreadyApplied", () => {
     const instance = backend();
     const snapshot = mesh(2);

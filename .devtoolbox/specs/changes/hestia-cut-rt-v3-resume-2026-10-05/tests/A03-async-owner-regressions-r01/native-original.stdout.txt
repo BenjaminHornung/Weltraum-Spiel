@@ -1,0 +1,50 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-body-mesh-owner-integration.test.ts (25 tests) 13373ms
+   ✓ rejects projected owner-route Stage until the retained plan has admitted complete geometry  504ms
+   ✓ admits mesh-only output against the single retained native plan before Stage, commit and finalize  839ms
+   ✓ rejects altered color geometry with stable first failure and no native Stage or retry revival  637ms
+   ✓ keeps a thrown real admission yield terminal without mutating the native World  528ms
+   ✓ keeps a packet decoder failure terminal before geometry work and rejects a later good packet  543ms
+   ✓ cannot revive an admission after Rollback at a real verifier yield  573ms
+   ✓ preserves the first yielded failure when verifier cleanup also throws  531ms
+   ✓ retains one borrowed owner ledger through mesh admission and transfers results only at Finalize  888ms
+   ✓ rejects Dispose after native Stage until rollback or actual World release  817ms
+   ✓ keeps a failed projection reserve terminal for projection, mesh and native Stage  549ms
+   ✓ returns a latched post-projection owner failure before the missing-mesh guard  513ms
+   ✓ preserves non-Error mesh failure identity at Stage (null)  473ms
+   ✓ preserves non-Error mesh failure identity at Stage (undefined)  479ms
+   ✓ shares the first failure across later projection, decoder and Stage (Error: first cross-seam mesh error)  463ms
+   ✓ shares the first failure across later projection, decoder and Stage (null)  439ms
+   ✓ shares the first failure across later projection, decoder and Stage (undefined)  391ms
+   ✓ keeps a retired ledger until the suspended verifier actually closes  591ms
+   ✓ cannot switch the budget of an already derived plan (undefined)  405ms
+   ✓ cannot switch the budget of an already derived plan (33554432)  490ms
+   ✓ closes owner scratch on Dispose and retains credits until its suspended admission returns  519ms
+   ✓ awaits packet decoding under the same parent credit before starting geometry admission  832ms
+   ✓ keeps decoding credit through Rollback and refuses the late decoded packet  596ms
+   ✓ preserves an asynchronous decoder rejection as the first cross-seam failure  506ms
+ ✓ tests/unit/hvp-body-mesh-worker.test.ts (5 tests) 9582ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=false, tight=false)  2805ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (true, owned=false, tight=false)  1895ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=true, tight=false)  1875ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (true, owned=true, tight=false)  1830ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=true, tight=true)  1176ms
+ ✓ tests/unit/hvp-borrowed-mesh-decode.test.ts (5 tests) 7753ms
+   ✓ preserves all mixed/wide cell IDs and exact decoded mesh bytes while charging one retained parent  1757ms
+   ✓ preserves the original malformed-index rejection even when the attacker recomputes the packet hash  1495ms
+   ✓ rejects a parent reserve failure before creating decoded products  1505ms
+   ✓ closes mid-decode scratch without releasing the shared parent or publishing a partial product  1499ms
+   ✓ rejects an oversized zero-byte channel list before the generic metadata maps can allocate it  1495ms
+ ✓ tests/unit/hvpBodyMeshAdmission.test.ts (12 tests) 4054ms
+     ✓ keeps owner expectation independent of foreign child cells paired with a fake digest  1216ms
+ ✓ tests/unit/hvp-body-mesh-client.test.ts (3 tests) 7ms
+ ✓ tests/unit/hvp-body-mesh-protocol.test.ts (2 tests) 4ms
+
+ Test Files  6 passed (6)
+      Tests  52 passed (52)
+   Start at  18:22:25
+   Duration  37.84s (transform 1.05s, setup 0ms, import 2.26s, tests 34.77s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-async-owner-regressions-r01/original-vitest.json

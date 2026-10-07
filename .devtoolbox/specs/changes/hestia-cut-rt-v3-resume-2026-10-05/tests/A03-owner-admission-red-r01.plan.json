@@ -1,0 +1,10 @@
+{
+  "runId": "A03-owner-admission-red-r01",
+  "binding": "A03-owner-admission-red-source-binding-r01.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts"
+  ],
+  "nativeCapSeconds": 180,
+  "classification": "Genuine behavior RED against original owned-hash session, original5000 unchanged"
+}

@@ -1,0 +1,8 @@
+{
+  "runId": "A03-retention-once-r62-build",
+  "startedUtc": "2026-10-05T23:59:02.6607049+00:00",
+  "endedUtc": "2026-10-05T23:59:05.0081548+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 2.3328313,
+  "planFile": "A03-retention-once-r62-build.plan.json"
+}

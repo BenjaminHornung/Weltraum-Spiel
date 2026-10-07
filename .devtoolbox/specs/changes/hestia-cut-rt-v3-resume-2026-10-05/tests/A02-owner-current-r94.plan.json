@@ -1,0 +1,14 @@
+{
+  "runId": "A02-owner-current-r94",
+  "nativeCapSeconds": 180,
+  "classification": "Whole original65 current finalR91 under original180 cap",
+  "binding": "A03-continuation-r91-binding-r02.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-body-plan-owner.test.ts"
+  ],
+  "progressReporter": {
+    "file": "owner65-progress-reporter.mjs",
+    "sha256": "57e616baa10c3edcb06189accaa36a00154b22e960322665d509b91faf312dc1"
+  }
+}

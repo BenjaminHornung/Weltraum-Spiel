@@ -1,0 +1,1 @@
+tests/unit/hvp-bootstrap.test.ts(294,94): error TS2339: Property 'location' does not exist on type 'FakeWindow'.

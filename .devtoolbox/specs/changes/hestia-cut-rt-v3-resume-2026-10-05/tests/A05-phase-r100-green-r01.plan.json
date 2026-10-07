@@ -1,0 +1,10 @@
+{
+  "runId": "A05-phase-r100-green-r01",
+  "files": [
+    "tests/unit/hvp-support-phase-budget.test.ts"
+  ],
+  "mode": "tests",
+  "classification": "Issued currentPlan phase binding counters and original phasecaps; derivative actualworker debit stillpending",
+  "binding": "A05-phase-r100-binding-r01.json",
+  "nativeCapSeconds": 60
+}

@@ -1,0 +1,17 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-body-mesh-worker.test.ts > native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=true, tight=false)
+ FAIL  tests/unit/hvp-body-mesh-worker.test.ts > native mesh RPC transfers exclusively and keeps a malformed first packet terminal (true, owned=true, tight=false)
+Error: Unknown physics command
+ ❯ send tests/unit/hvp-body-mesh-worker.test.ts:28:27
+     26|     await owner.onmessage!({data:structuredClone(packet,{transfer:tran…
+     27|     const reply=replies.get(packet.id);if(!reply){throw new Error("Mis…
+     28|     if(reply.error){throw new Error(reply.error);}return reply;
+       |                           ^
+     29|   };
+     30|   try{
+ ❯ tests/unit/hvp-body-mesh-worker.test.ts:51:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+

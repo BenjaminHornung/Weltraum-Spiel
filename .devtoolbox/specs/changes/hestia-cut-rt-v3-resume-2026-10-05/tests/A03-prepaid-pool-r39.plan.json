@@ -1,0 +1,12 @@
+{
+  "mode": "tests",
+  "files": [
+    "tests/unit/workerPoolLifecycle.test.ts",
+    "tests/unit/hvp-body-mesh-client.test.ts",
+    "tests/unit/hvpBoundedPump.test.ts"
+  ],
+  "nativeCapSeconds": 600,
+  "classification": "Finite aggregate full original Pool lifecycle plusprivateprepaid controls and Client concurrent release fix; all original per-test deadlines",
+  "runId": "A03-prepaid-pool-r39",
+  "binding": "A03-prepaid-pool-r39-binding.json"
+}

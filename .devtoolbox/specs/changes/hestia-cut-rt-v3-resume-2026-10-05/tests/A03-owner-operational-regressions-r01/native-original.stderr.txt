@@ -1,0 +1,20 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-physics-worker-body-clock.test.ts > keeps unrecoverable native body restoration held and disposes safely
+AssertionError: expected 'Idle' to be 'RecoveryHold' // Object.is equality
+
+Expected: "RecoveryHold"
+Received: "Idle"
+
+ ❯ runBodyCut tests/unit/hvp-physics-worker-body-clock.test.ts:282:47
+    280|       expect(disposed.snapshot?.colliderCount).toBe(0);
+    281|       expect(disposed.clock?.timers).toBe(0);
+    282|       expect(disposed.snapshot?.moving.state).toBe("RecoveryHold");
+       |                                               ^
+    283|       return bodyCutResult(disposed.snapshot!);
+    284|     }
+ ❯ tests/unit/hvp-physics-worker-body-clock.test.ts:442:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

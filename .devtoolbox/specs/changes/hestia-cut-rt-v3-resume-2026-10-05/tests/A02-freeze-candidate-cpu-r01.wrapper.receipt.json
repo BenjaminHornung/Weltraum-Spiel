@@ -1,0 +1,8 @@
+{
+  "runId": "A02-freeze-candidate-cpu-r01",
+  "startedUtc": "2026-10-05T10:28:51.2199967+00:00",
+  "endedUtc": "2026-10-05T10:28:55.4671018+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 4.2426373,
+  "planFile": "A02-freeze-candidate-cpu-r01.plan.json"
+}

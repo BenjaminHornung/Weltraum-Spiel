@@ -1,4 +1,6 @@
 import * as THREE from "three";
+import {presentHvpFailure} from "./hvpRoute";
+export {presentHvpFailure,startHvpRoute,type HvpModule} from "./hvpRoute";
 import {createHvpListeners} from "../hestia-prototype/runtime/listeners";
 import {createHvpNeighborController,type HvpNeighborStage} from "../hestia-prototype/runtime/neighborController";
 import {createHvpDormancyController} from "../hestia-prototype/runtime/dormancyController";
@@ -6,7 +8,7 @@ import {MemoryContentCache} from "../streaming/memoryContentCache";
 import {createHvpSalvageLoop,type HvpSalvageCheckpoint} from "../hestia-prototype/gameplay/salvageLoop";
 import {createHvpSalvageMarker,createHvpSalvageLink,HVP_SALVAGE_MARKER_KEY,HVP_SALVAGE_LINK_KEY} from "../hestia-prototype/presentation/salvageMarker";
 import { createHvpTerrainRoot,createHvpTerrainOwner,assertHvpTerrainSnapshot,type HvpTerrainSnapshot } from "../hestia-prototype/terrain/cutPlan";
-import {assertHvpSupportCurrent,type HvpSupportPlan} from "../hestia-prototype/terrain/supportPlan";
+import {assertHvpSupportCurrent,releaseHvpOwnedSupportPlan,type HvpSupportPlan} from "../hestia-prototype/terrain/supportPlan";
 import type {HvpCell} from "../hestia-prototype/terrain/picking";
 import { createHvpTerrainCompiler, meshInitialHvpTerrain, type HvpTerrainProducts } from "../hestia-prototype/terrain/terrainProducts";
 import { createHvpTerrainConsumer, type HvpStagedTerrain,type HvpPreparedTerrainBody } from "../hestia-prototype/terrain/terrainConsumer";
@@ -23,11 +25,16 @@ import { createHvpVisualRenderer, HVP_EFFECT_COST, HVP_EFFECT_VERSION } from "..
 import { createSynchronousBatch } from "../hestia-prototype/presentation/synchronousBatch";
 import { createHvpPhysicsClient, type HvpPhysicsClient } from "../hestia-prototype/physics/client";
 import {createHvpMeasurements} from "../hestia-prototype/runtime/measurements";
-import {createHvpCutObservation,HVP_CUT_TRACE_RESERVE_BYTES,measureHvpCut,type HvpBodyCutRenderFacts,type HvpBodyRenderBinding,type HvpCutRenderFacts,type HvpCutTrace} from "../hestia-prototype/runtime/cutTrace";
+import {createHvpCutObservation,HVP_CUT_TRACE_RESERVE_BYTES,measureHvpCut,measureHvpCutAsync,type HvpBodyCutRenderFacts,type HvpBodyRenderBinding,type HvpCutRenderFacts,type HvpCutTrace} from "../hestia-prototype/runtime/cutTrace";
 import { HVP_INERTIA_CELLS, HVP_INERTIA_KEY } from "../hestia-prototype/physics/profile";
 import {meshHvpBranchProducts,meshHvpBranchFoliage,type HvpBranchProduct} from "../hestia-prototype/presentation/structuralPart";
 import {createHvpStructuralConsumer,type HvpStagedBranch} from "../hestia-prototype/terrain/structuralConsumer";
 import {createHvpBodyCutConsumer} from "../hestia-prototype/terrain/bodyCutConsumer";
+import {decodeHvpBodyMeshOutputSteps} from "../workers/hvpBodyMeshJob";
+import {createHvpBodyMeshTaskPump} from "../workers/hvpBoundedPump";
+import {createHvpBodyMeshPhaseReserve,countHvpOwnedBodyMeshSteps,meshHvpOwnedBodyCellsSteps} from "../hestia-prototype/presentation/bodyMeshAdmission";
+import {createMeshArtifactOwnedSteps} from "../presentation/meshArtifact";
+import {createRenderCommandOwnedSteps} from "../presentation/renderCommands";
 import {HvpRenderStageRecoveryError} from "../hestia-prototype/presentation/renderStageRecovery";
 import { createHvpPlayerInput } from "../hestia-prototype/player/input";
 import { createHvpAvatarMesh, HVP_AVATAR_KEY } from "../hestia-prototype/player/presentation";
@@ -86,7 +93,7 @@ import {
   deriveHvpWaterMask,
   hvpSourceSlotRole,
   materializeHvpCoastSourceAsync,
-  prepareHvpCoastSource,
+  prepareHvpOwnedCoastSource,
   readHvpSourceColumnWorld,
   type HvpCoastSourceSnapshot,
   type HvpPreparedCoastSource,
@@ -124,6 +131,7 @@ type HvpWindowPort = Pick<Window,
   | "removeEventListener"
 > & Partial<Pick<Window,"location"|"confirm">>;
 type HvpBackend = RenderBackend & {
+  dispatchOwnedSteps?:(command:RenderCommand)=>Generator<string,RenderCommandResult,unknown>;
   readonly camera: THREE.PerspectiveCamera;
   readonly scene?: THREE.Scene;
   readonly representationRoot?: THREE.Group;
@@ -258,11 +266,12 @@ export const createHvpLookTerrain = (mesh: HvpBlockMesh, look: HvpLookProfile): 
  * spread over fine-mesh index runs. Partial mode (far proxy only) skips
  * absent roles while keeping order, divergence, and contiguity checks.
  */
-export const createHvpCompactLookTerrain = (
+function* createHvpCompactLookTerrainSteps(
   mesh: HvpCompactMesh,
   look: HvpLookProfile,
-  options: { allowPartialRoles?: boolean } = {}
-): HvpLookTerrain => {
+  options: { allowPartialRoles?: boolean },
+  owned:boolean
+): Generator<string,HvpLookTerrain,unknown> {
   if (look.materials.length !== HVP_LOOK_ROLES.length) {
     throw new Error(`HVP look must define exactly ${HVP_LOOK_ROLES.length} terrain material roles.`);
   }
@@ -286,12 +295,14 @@ export const createHvpCompactLookTerrain = (
   for (const role of HVP_LOOK_ROLES) {
     counts.set(role, 0);
   }
+  let visited=0;
   for (const range of mesh.materialRanges) {
     const role = roleBySlot.get(range.slot);
     if (role === undefined) {
       throw new Error(`HVP look role is not registered for slot ${String(range.slot)}`);
     }
     counts.set(role, counts.get(role)! + range.indexCount);
+    if(owned&&++visited%128===0)yield "lookRanges";
   }
   for (const role of HVP_LOOK_ROLES) {
     if (counts.get(role) === 0) {
@@ -320,6 +331,7 @@ export const createHvpCompactLookTerrain = (
     }
     const startIndex = cursor;
     for (const range of mesh.materialRanges) {
+      if(owned&&++visited%128===0)yield "lookRangeRole";
       if (roleBySlot.get(range.slot) !== role) {
         continue;
       }
@@ -330,6 +342,7 @@ export const createHvpCompactLookTerrain = (
         }
         orderedIndices[cursor] = sourceIndex;
         cursor += 1;
+        if(owned&&cursor%1024===0)yield "lookIndices";
       }
     }
     materialRanges.push({
@@ -347,7 +360,10 @@ export const createHvpCompactLookTerrain = (
     materialRanges: Object.freeze(materialRanges),
     materialProfiles: Object.freeze(materialProfiles)
   });
-};
+}
+
+export const createHvpCompactLookTerrain=(mesh:HvpCompactMesh,look:HvpLookProfile,options:{allowPartialRoles?:boolean}={}):HvpLookTerrain=>
+  createHvpCompactLookTerrainSteps(mesh,look,options,false).next().value as HvpLookTerrain;
 
 interface HvpLookScene {
   dispose(): void;
@@ -432,6 +448,7 @@ interface HvpProjectionCamera {
 
 /** HVP-owned projection/visibility publisher; mirrors the Surface Lab shape without importing it. */
 interface HvpPresentationBackend extends RenderBackend {
+  dispatchOwnedSteps(command:RenderCommand):Generator<string,RenderCommandResult,unknown>;
   batch<T>(action: () => T): T;
   setWaterEnabled(enabled: boolean): void;
   updateProjection(): void;
@@ -502,10 +519,7 @@ export const createHvpPresentationBackend = (
   };
   const batcher = createSynchronousBatch(publishCurrentSet);
 
-  const dispatch = (command: RenderCommand): RenderCommandResult => {
-    const started=onTiming&&command.kind==="UpsertMeshArtifact"?performance.now():0;
-    const result = backend.dispatch(command);
-    if(onTiming&&command.kind==="UpsertMeshArtifact"){onTiming("startupBackendUpsertMs",started,performance.now()-started);}
+  const recordDispatch = (command: RenderCommand,result:RenderCommandResult):RenderCommandResult => {
     if (command.kind === "UpsertMeshArtifact" && accepted(result)) {
       lastFrameId = command.artifact.frameId;
       framesByRepresentation.set(command.artifact.representationKey, command.artifact.frameId);
@@ -519,9 +533,21 @@ export const createHvpPresentationBackend = (
     }
     return result;
   };
+  const dispatch = (command:RenderCommand):RenderCommandResult => {
+    const started=onTiming&&command.kind==="UpsertMeshArtifact"?performance.now():0;
+    const result=backend.dispatch(command);
+    if(onTiming&&command.kind==="UpsertMeshArtifact"){onTiming("startupBackendUpsertMs",started,performance.now()-started);}
+    return recordDispatch(command,result);
+  };
+  function* dispatchOwnedSteps(command:RenderCommand):Generator<string,RenderCommandResult,unknown>{
+    const owned=(backend as HvpBackend).dispatchOwnedSteps;
+    if(owned===undefined)throw new Error("Owned terrain renderer step path unavailable");
+    return recordDispatch(command,yield* owned.call(backend,command));
+  }
 
   return Object.freeze({
     dispatch,
+    dispatchOwnedSteps,
     batch: batcher.run,
     updateProjection: () => { deferInitialProjection = false; batcher.request(); },
     renderFrame: () => backend.renderFrame(),
@@ -533,50 +559,6 @@ export const createHvpPresentationBackend = (
       batcher.request();
     }
   });
-};
-
-export const presentHvpFailure = (
-  documentPort: HvpDocumentPort,
-  error: unknown,
-  host: HTMLElement | undefined = documentPort.querySelector<HTMLElement>("#app") ?? undefined
-): HTMLElement => {
-  for (const key of Object.keys(documentPort.body.dataset)) {
-    if (key === "hestiaPrototype" || key.startsWith("hestiaPrototype")) delete documentPort.body.dataset[key];
-  }
-  documentPort.body.dataset.hestiaPrototype = "1";
-  documentPort.body.dataset.hestiaPrototypeState = "Error";
-  const root = documentPort.createElement("section");
-  root.id = "hvp-failure";
-  root.setAttribute("role", "alert");
-  root.setAttribute("aria-live", "assertive");
-  const heading = documentPort.createElement("h1");
-  heading.textContent = "HVP-02 UNAVAILABLE";
-  const detail = documentPort.createElement("p");
-  detail.id = "hvp-error-detail";
-  detail.textContent = `Technical initialization failure: ${error instanceof Error ? error.message : "HVP-02 initialization failed."}`;
-  const boundary = documentPort.createElement("p");
-  boundary.textContent = "NOT GAMEPLAY · no terrain readiness is being claimed";
-  root.append(heading, detail, boundary);
-  (host ?? documentPort.body).append(root);
-  return root;
-};
-
-export interface HvpModule {
-  startHvp(): Promise<HvpBootstrapHandle>;
-}
-
-export const startHvpRoute = async (
-  documentPort: HvpDocumentPort,
-  loadHvp: () => Promise<HvpModule>
-): Promise<void> => {
-  documentPort.body.dataset.hestiaPrototype = "1";
-  try {
-    const { startHvp } = await loadHvp();
-    await startHvp();
-  } catch (error) {
-    if (error instanceof Error && error.message.includes("already mounted")) return;
-    presentHvpFailure(documentPort, error);
-  }
 };
 
 export interface HvpResourceCaps {
@@ -812,6 +794,7 @@ export const startHvp = async (
   const plainTerrainLeases: Array<{nodeKey:string;lease:ThreeMaterialLease}> = [];
   let terrainCompiler: ReturnType<typeof createHvpTerrainCompiler> | undefined;
   let terrainConsumer: ReturnType<typeof createHvpTerrainConsumer> | undefined;
+  let supportPending=false;
   let structuralConsumer:ReturnType<typeof createHvpStructuralConsumer>|undefined;
   let bodyCutConsumer:ReturnType<typeof createHvpBodyCutConsumer>|undefined;
   let neighbor:ReturnType<typeof createHvpNeighborController>|undefined;
@@ -892,11 +875,12 @@ export const startHvp = async (
     const cleanup = (async () => {
       const errors:unknown[]=[];
       const attempt=async(action:()=>unknown)=>{try{await action();}catch(error){errors.push(error);}};
-      const closingInput=playerInput,closingCamera=camera,closingHud=hud,closingPhysics=physics,closingCompiler=terrainCompiler,closingBackend=backend;
+      const closingInput=playerInput,closingCamera=camera,closingHud=hud,closingPhysics=physics,closingCompiler=terrainCompiler,closingBackend=backend,closingBodyConsumer=bodyCutConsumer,closingTerrainConsumer=terrainConsumer;
       if(animationFrame!==undefined){windowPort.cancelAnimationFrame(animationFrame);animationFrame=undefined;}
       if(cutObservation!==undefined){releaseCutObservation("disposed");}
       else if(measurement.enabled&&cutObservationStatus==="not-requested"){cutObservationStatus="disposed";disableCutTrace();}
       await attempt(()=>listeners.dispose());
+      await attempt(()=>physics?.command("Pause"));
       await attempt(()=>playerInput?.dispose()); playerInput=undefined;
       await attempt(()=>plasmaTool?.dispose());plasmaTool=undefined;
       await attempt(()=>terrainConsumer?.dispose());terrainConsumer=undefined;
@@ -905,10 +889,9 @@ export const startHvp = async (
       await attempt(()=>dormancy?.dispose());dormancy=undefined;
       await attempt(()=>neighbor?.dispose());neighbor=undefined;neighborCache.clear();
       await attempt(()=>terrainCompiler?.dispose());terrainCompiler=undefined;
-      physicsAbort.abort();
-      await attempt(()=>physics?.dispose());
+      await attempt(()=>closingBodyConsumer?.whenIdle());
+      await attempt(()=>closingTerrainConsumer?.whenIdle());
       await attempt(()=>saveStore?.close());saveStore=undefined;
-      physics = undefined;
       await attempt(()=>hud?.dispose());
       hud = undefined;
       await attempt(()=>camera?.dispose());
@@ -927,10 +910,17 @@ export const startHvp = async (
       for (const pair of plainVegetationLeases.splice(0)) {
         await attempt(()=>pair.lease.release());
       }
+      let renderReleased=backend===undefined;
       if (backend !== undefined) {
         await attempt(()=>{const revision=backend!.readDiagnostics().backendRevision;
-          requireAccepted(backend!.dispatch(createRenderCommand({kind:"DisposeBackend",backendRevision:revision})),"HVP backend disposal");});
+          requireAccepted(backend!.dispatch(createRenderCommand({kind:"DisposeBackend",backendRevision:revision})),"HVP backend disposal");renderReleased=true;});
         backend = undefined;
+      }
+      if(renderReleased){await attempt(()=>closingBodyConsumer?.releaseDisposedResources());}
+      physicsAbort.abort();
+      await attempt(()=>physics?.dispose());physics=undefined;
+      if(renderReleased&&closingPhysics?.lifecycle?.().native?.bodies===0&&closingPhysics.lifecycle().native?.colliders===0){
+        await attempt(()=>closingCompiler?.releaseDisposedSupportResources());
       }
       // Shared DOM belongs to whoever holds the mount now: a superseded
       // start must not wipe a newer mount's datasets or restore its reticle.
@@ -1089,6 +1079,15 @@ export const startHvp = async (
       }
       forgetEphemeral(key);return true;
     };
+    const releaseTerrainLease=(key:string):void=>{
+      const index=plainTerrainLeases.findIndex(pair=>pair.nodeKey===key);
+      if(index>=0){
+        try{plainTerrainLeases[index]!.lease.release();}
+        catch(error){enterRenderRecoveryHold(`Terrain material lease release is unproven: ${String(error)}`);}
+        plainTerrainLeases.splice(index,1);
+      }
+      aoColoredByNode.delete(key);
+    };
     const cleanupEphemeralScope=(scope:EphemeralScope):void=>{
       const errors:unknown[]=[];
       for(const key of [...scope.keys].reverse()){
@@ -1097,14 +1096,12 @@ export const startHvp = async (
           if(binding.state==="registered"){cancelEphemeral(key,binding);}
           else if(binding.artifact!==undefined){retireEphemeral(binding.artifact,"Ephemeral staging cleanup");}
           else{enterRenderRecoveryHold("Ephemeral upload has no exact removal artifact");}
+          releaseTerrainLease(key);
         }catch(error){errors.push(error);}
       }
       if(errors.length>0){enterRenderRecoveryHold(`Ephemeral staging cleanup is unproven: ${errors.map(String).join("; ")}`);}
     };
-    const withEphemeralScope=<T>(epoch:number,action:(scope:EphemeralScope)=>T):T=>{
-      const scope=beginEphemeralScope(epoch);
-      try{return action(scope);}
-      catch(error){
+    const failEphemeralScope=(scope:EphemeralScope,error:unknown):never=>{
         try{cleanupEphemeralScope(scope);}
         catch(cleanupError){
           let message="HVP render staging failed and cleanup is unproven";
@@ -1117,8 +1114,17 @@ export const startHvp = async (
           throw new HvpRenderStageRecoveryError([error],message);
         }
         throw error;
-      }
     };
+    const withEphemeralScope=<T>(epoch:number,action:(scope:EphemeralScope)=>T):T=>{
+      const scope=beginEphemeralScope(epoch);
+      try{return action(scope);}catch(error){return failEphemeralScope(scope,error);}
+    };
+    function* withEphemeralScopeSteps<T>(epoch:number,action:(scope:EphemeralScope)=>Generator<string,T,unknown>):Generator<string,T,unknown>{
+      const scope=beginEphemeralScope(epoch);let finished=false;
+      try{const result=yield* action(scope);finished=true;return result;}
+      catch(error){finished=true;return failEphemeralScope(scope,error);}
+      finally{if(!finished){cleanupEphemeralScope(scope);}}
+    }
     const registerEphemeral=(scope:EphemeralScope,role:EphemeralRepresentationRole,native:ReturnType<HvpPhysicsClient["read"]>):RepresentationKey=>{
       if(issuedEphemeralSerial>=Number.MAX_SAFE_INTEGER-1){enterRenderRecoveryHold("Ephemeral render serial exhausted");}
       const serial=issuedEphemeralSerial+1,key=ephemeralRepresentationKey(role,scope.epoch,serial);
@@ -1214,7 +1220,7 @@ export const startHvp = async (
       // nothing, claim neither Ready nor Error.
       return Object.freeze({ dispose });
     }
-    const prepared = prepareHvpCoastSource(snapshot);
+    const prepared = prepareHvpOwnedCoastSource(snapshot);
     startupPhase("startupSourceMs");
     documentPort.body.dataset.hestiaPrototypeSourceDigest = prepared.sourceDigest;
     const terrainRoot = createHvpTerrainOwner(coldGame?.root??createHvpTerrainRoot(prepared, `hvp-session-${myEpoch}`, myEpoch));
@@ -1263,13 +1269,15 @@ export const startHvp = async (
     const spawn = coldGame?.checkpoint.world.dropSpawn??{ x: -9, y: readHvpSourceColumnWorld(-9, -9).topMeters + 2.25, z: -9 };
     const savedDrop=coldGame?.world.bodies.find(b=>b.checkpoint.family==="drop"),savedInertia=coldGame?.world.bodies.find(b=>b.checkpoint.family==="inertia");
     if(coldGame&&(!savedDrop||!savedInertia)){throw new Error("Saved prototype specimens missing");}
-    const dropMesh = savedDrop?meshHvpBodyCells(readHvpBodyCells(savedDrop.recipe.source),savedDrop.recipe.mass.centerOfMassMeters!,savedDrop.recipe.source.contentHash)
+    const dropMesh = savedDrop?meshHvpBodyCells(readHvpBodyCells(savedDrop.recipe.source),savedDrop.recipe.mass.centerOfMassMeters!,savedDrop.recipe.source.contentHash,
+      savedDrop.checkpoint.ownerId==="hvp:physics:drop"?{ao:false,algorithmVersion:"hvp-drop-cube-v1"}:undefined)
       :meshHvpOccupancy({ sizeX: 4, sizeY: 4, sizeZ: 4, cellMeters: 0.125,
       originMeters: { x: -0.25, y: -0.25, z: -0.25 }, slotAt: () => 1 }, undefined, "hvp-drop-cube-v1", "hvp-drop-cube-v1");
     const avatarMesh = createHvpAvatarMesh();
     const inertiaSlots=new Uint8Array(8*8*2);
     for(const c of HVP_INERTIA_CELLS) { inertiaSlots[c.x+c.y*8+c.z*64]=c.materialId; }
-    let inertiaMesh=savedInertia?meshHvpBodyCells(readHvpBodyCells(savedInertia.recipe.source),{x:0,y:0,z:0},savedInertia.recipe.source.contentHash)
+    let inertiaMesh=savedInertia?meshHvpBodyCells(readHvpBodyCells(savedInertia.recipe.source),{x:0,y:0,z:0},savedInertia.recipe.source.contentHash,
+      savedInertia.checkpoint.ownerId===HVP_INERTIA_KEY?{ao:false,algorithmVersion:"hvp-inertia-l-v1"}:undefined)
       :meshHvpOccupancy({sizeX:8,sizeY:8,sizeZ:2,cellMeters:.125,originMeters:{x:0,y:0,z:0},
       slotAt:(x,y,z)=>inertiaSlots[x+y*8+z*64]!},undefined,"hvp-inertia-l-v1","hvp-inertia-l-v1");
     vegetationTransforms = projectHvpVegetation(vegetation, plants.map((plant) => ({
@@ -1370,16 +1378,19 @@ export const startHvp = async (
 
      // Hidden candidates need fresh scene identities after rollback or restore;
      // canonical owners, source revisions and saved IDs do not change.
-      const makeTerrainEntry = (id: number, mesh: HvpCompactMesh, generation: number,
-       groupInput?: ReturnType<typeof createHvpCompactLookTerrain>,tag="",commandId?:string,renderKey?:RepresentationKey) => {
+      function* makeTerrainEntrySteps(id:number,mesh:HvpCompactMesh,generation:number,
+       groupInput:ReturnType<typeof createHvpCompactLookTerrain>|undefined,tag:string,commandId:string|undefined,renderKey:RepresentationKey|undefined,owned:boolean){
        const group=groupInput??measureCut(commandId,"cutLookRegroupMs",()=>createHvpCompactLookTerrain(mesh,look,{allowPartialRoles:true}));
-       const artifact=measureCut(commandId,"cutArtifactCreateMs",()=>createMeshArtifact({ representationKey: renderKey??representationKey(`hvp:terrain:s${id}:r${generation}${tag}`),
+       const input={ representationKey: renderKey??representationKey(`hvp:terrain:s${id}:r${generation}${tag}`),
          sourceRevision: sourceRevision(generation), artifactRevision: artifactRevision(generation),
          algorithmVersion: mesh.algorithmVersion, frameId: frame, positions: mesh.positions, normals: mesh.normals,
-         indices: group.indices, attributes: {color:mesh.colors!}, materialRanges:group.materialRanges,bounds:mesh.boundsMeters }));
+         indices: group.indices, attributes: {color:mesh.colors!}, materialRanges:group.materialRanges,bounds:mesh.boundsMeters };
+       const artifact=owned?yield* createMeshArtifactOwnedSteps(input):measureCut(commandId,"cutArtifactCreateMs",()=>createMeshArtifact(input));
        recordEphemeralArtifact(artifact);
        return { id, mesh, group, artifact };
-     };
+     }
+     const makeTerrainEntry=(id:number,mesh:HvpCompactMesh,generation:number,groupInput?:ReturnType<typeof createHvpCompactLookTerrain>,tag="",commandId?:string,renderKey?:RepresentationKey)=>
+       makeTerrainEntrySteps(id,mesh,generation,groupInput,tag,commandId,renderKey,false).next().value as {id:number;mesh:HvpCompactMesh;group:HvpLookTerrain;artifact:ReturnType<typeof createMeshArtifact>};
     const terrainEntries = new Map([...initialTerrain].map(([id,mesh])=>[id,makeTerrainEntry(id,mesh,terrainRoot.read().revision,terrainLooks.get(id)!)]));
     const upsertTerrain = (entry: Pick<ReturnType<typeof makeTerrainEntry>,"artifact"|"group">,commandId?:string): void => {
        measureCut(commandId,"cutBackendUpsertMs",()=>uploadArtifact(createRenderCommand({kind:"UpsertMeshArtifact",backendRevision:backendRevision(0),
@@ -1553,7 +1564,7 @@ export const startHvp = async (
      },{confirm:()=>{
        const run=()=>{void plasmaTool?.confirm();};
        if(cutObservation!==undefined){cutObservation.confirm(run);}else{run();}
-     },select:mode=>plasmaTool?.select(mode)},()=>saveBusy||saveHold||Boolean(dormancy?.read().recoveryHold));
+     },select:mode=>plasmaTool?.select(mode)},()=>saveBusy||saveHold||supportPending||Boolean(dormancy?.read().recoveryHold));
     if(!coldGame&&scenario==="east-edge"){playerInput.aimAt({x:48,y:playerSpawn.y+.75,z:-14});}
     const dropProfile = createMaterialProfile({ id: materialProfileId("hvp:drop-limestone-v1"), kind: "BasicLit",
       baseColor: { r: 0.8, g: 0.35, b: 0.12 }, opacity: 1, doubleSided: false, wireframe: false, depthWrite: true });
@@ -1609,20 +1620,25 @@ export const startHvp = async (
        managedRestoreKeys.delete(a.representationKey);activeRestoreKeys.delete(a.representationKey);
      };
      for(const entry of branchEntries){activeBranchKeys.add(entry.product.key);uploadBranch(entry);}
-     const makeFragmentEntry=(ownerId:string,mesh:HvpCompactMesh,sourceBytes:number,cellCount:number,generation:number,family:"terrain"|"branch"="terrain",
-       renderKey:RepresentationKey=representationKey(ownerId),commandId?:string)=>{
+     function* makeFragmentEntrySteps(ownerId:string,mesh:HvpCompactMesh,sourceBytes:number,cellCount:number,generation:number,family:"terrain"|"branch",
+       renderKey:RepresentationKey,commandId:string|undefined,owned:boolean){
        // Gate explicit ownership, not an ID prefix, before uploading prepared children.
        if(family==="branch"&&mesh.materialRanges.some(r=>r.slot!==1)){throw new Error("Unexpected timber material");}
-       const terrainGroup=measureCut(commandId,"cutLookRegroupMs",()=>createHvpCompactLookTerrain(mesh,look,{allowPartialRoles:true}));
+       const terrainGroup=owned?yield* createHvpCompactLookTerrainSteps(mesh,look,{allowPartialRoles:true},true)
+         :measureCut(commandId,"cutLookRegroupMs",()=>createHvpCompactLookTerrain(mesh,look,{allowPartialRoles:true}));
        const group=family==="terrain"?terrainGroup:{...terrainGroup,materialProfiles:[branchWoodProfile],
          materialRanges:terrainGroup.materialRanges.map(r=>({...r,materialProfileId:branchWoodProfile.id}))};
-       const artifact=measureCut(commandId,"cutArtifactCreateMs",()=>createMeshArtifact({representationKey:renderKey,frameId:frame,
+       const input={representationKey:renderKey,frameId:frame,
          sourceRevision:sourceRevision(generation),artifactRevision:artifactRevision(generation),algorithmVersion:mesh.algorithmVersion,
          positions:mesh.positions,normals:mesh.normals,indices:group.indices,attributes:{color:mesh.colors!},
-         materialRanges:group.materialRanges,bounds:mesh.boundsMeters}));
+         materialRanges:group.materialRanges,bounds:mesh.boundsMeters};
+       const artifact=owned?yield* createMeshArtifactOwnedSteps(input):measureCut(commandId,"cutArtifactCreateMs",()=>createMeshArtifact(input));
        recordEphemeralArtifact(artifact);managedFragmentKeys.add(renderKey);
        return {ownerId,family,sourceBytes:sourceBytes+cellCount*32,mesh,group,artifact};
-     };
+     }
+     const makeFragmentEntry=(ownerId:string,mesh:HvpCompactMesh,sourceBytes:number,cellCount:number,generation:number,family:"terrain"|"branch"="terrain",renderKey:RepresentationKey=representationKey(ownerId),commandId?:string)=>
+       makeFragmentEntrySteps(ownerId,mesh,sourceBytes,cellCount,generation,family,renderKey,commandId,false).next().value as {
+         ownerId:string;family:"terrain"|"branch";sourceBytes:number;mesh:HvpCompactMesh;group:HvpLookTerrain;artifact:ReturnType<typeof createMeshArtifact>};
     const fragmentEntries=new Map<string,ReturnType<typeof makeFragmentEntry>>();
     const readBodyCutFrame=(commandId:string,native:ReturnType<HvpPhysicsClient["read"]>,root:THREE.Group):HvpBodyCutRenderFacts=>{
       const outcome=bodyCutConsumer?.read().last,receipt=native.moving.last;
@@ -1708,9 +1724,7 @@ export const startHvp = async (
            representationKey:a.representationKey,expectedSourceRevision:a.sourceRevision,expectedArtifactRevision:a.artifactRevision,expectedContentHash:a.contentHash}));
          if(result.status!=="NotFound") { requireAccepted(result,"Terrain retirement"); }
        }
-       const index=plainTerrainLeases.findIndex(p=>p.nodeKey===a.representationKey);
-       if(index>=0) { plainTerrainLeases.splice(index,1)[0]!.lease.release(); }
-       aoColoredByNode.delete(a.representationKey);
+       releaseTerrainLease(a.representationKey);
        if(kind==="RemoveRepresentation"){
          managedFragmentKeys.delete(a.representationKey);activeFragmentKeys.delete(a.representationKey);
          managedRestoreKeys.delete(a.representationKey);activeRestoreKeys.delete(a.representationKey);
@@ -1852,17 +1866,21 @@ export const startHvp = async (
         finish(){for(const e of previous){if(!next.some(n=>n.artifact===e.artifact)){retire(e);}}for(const e of oldEdges){removeTerrainEntry(e);}project();}
       };
       });
-       const stageTerrain = (products:HvpTerrainProducts,fragments:readonly HvpPreparedTerrainBody[]=[],commandId?:string):HvpStagedTerrain =>
-       withEphemeralScope(publishedEphemeralEpoch,scope=>{
+       function* stageTerrainSteps(products:HvpTerrainProducts,fragments:readonly HvpPreparedTerrainBody[],commandId:string|undefined,owned:boolean):Generator<string,HvpStagedTerrain,unknown>{
+       return yield* withEphemeralScopeSteps(publishedEphemeralEpoch,function*(scope){
        const native=physics!.read();
-       const added=fragments.map(f=>{
+       const added:ReturnType<typeof makeFragmentEntry>[]=[];
+       for(const f of fragments){
          const key=registerEphemeral(scope,{kind:"fragment"},native);
-         const mesh=measureCut(commandId,"cutFragmentMeshMs",()=>meshHvpTerrainFragment(f));
-         return makeFragmentEntry(f.request.ownerId,mesh,f.state.sourceBytes,f.request.cells.length,products.source.revision,"terrain",key,commandId);
-       });
+         const mesh=owned?yield* meshHvpOwnedBodyCellsSteps(f.request.cells,f.state.centerOfMass,f.state.sourceDigest)
+           :measureCut(commandId,"cutFragmentMeshMs",()=>meshHvpTerrainFragment(f));
+         added.push(yield* makeFragmentEntrySteps(f.request.ownerId,mesh,f.state.sourceBytes,f.request.cells.length,products.source.revision,"terrain",key,commandId,owned));
+       }
       const allFragments=[...fragmentEntries.values(),...added];
       const sourceBytes=allFragments.reduce((n,e)=>n+e.sourceBytes,0);
-      const groups=new Map([...products.render].map(([id,mesh])=>[id,measureCut(commandId,"cutLookRegroupMs",()=>createHvpCompactLookTerrain(mesh,look,{allowPartialRoles:true}))]));
+      const groups=new Map<number,HvpLookTerrain>();
+      for(const [id,mesh] of products.render){groups.set(id,owned?yield* createHvpCompactLookTerrainSteps(mesh,look,{allowPartialRoles:true},true)
+        :measureCut(commandId,"cutLookRegroupMs",()=>createHvpCompactLookTerrain(mesh,look,{allowPartialRoles:true})));}
       const meshes=new Map([...terrainEntries].map(([id,e])=>[id,e.mesh]));
       for(const [id,mesh] of products.render) { meshes.set(id,mesh); }
       const nextLedger=sceneLedger({terrainMesh:meshes.get(0)!,terrainMeshes:[...meshes.values()],waterMesh:water,joinMesh,farMesh,
@@ -1875,10 +1893,11 @@ export const startHvp = async (
       const admitted={...publishedLedger,totalCpuBytes:estimateHvpStageCpuBytes(ledger,publishedLedger,stagedBytes,physicsPrepareBytes),
         retainedMeshBytes:Math.max(ledger.retainedMeshBytes,nextLedger.retainedMeshBytes)+stagedBytes};
       admitScene(admitted);
-        const next=[...products.render].map(([id,mesh])=>{
+        const next:ReturnType<typeof makeTerrainEntry>[]=[];
+        for(const [id,mesh] of products.render){
           const key=registerEphemeral(scope,{kind:"terrain",sector:id},native);
-          return makeTerrainEntry(id,mesh,products.source.revision,groups.get(id)!,"",commandId,key);
-        });
+          next.push(yield* makeTerrainEntrySteps(id,mesh,products.source.revision,groups.get(id)!,"",commandId,key,owned));
+        }
       const previous=next.map(e=>terrainEntries.get(e.id)!); const previousLedger=ledger;
       const previousTransforms=physicsTransforms;
       const restore=():void=>{
@@ -1889,6 +1908,23 @@ export const startHvp = async (
         ledger=previousLedger; presentation.updateProjection(); updateTerrainState();
       };
       try {
+        if(owned){
+          for(const entry of [...next,...added]){
+            const command=yield* createRenderCommandOwnedSteps({kind:"UpsertMeshArtifact",backendRevision:backendRevision(0),artifact:entry.artifact,materialProfiles:entry.group.materialProfiles});
+            const binding=ephemeralBindings.get(entry.artifact.representationKey);
+            if(binding===undefined)throw new Error("Missing owned ephemeral upload binding");
+            binding.state="uploading";binding.artifact=entry.artifact;
+            let result:RenderCommandResult;
+            try{result=yield* presentation.dispatchOwnedSteps(command);}catch(error){binding.state="uncertain";throw error;}
+            if(result.status!=="Accepted"){
+              binding.state=result.status==="BackendUnavailable"||result.status==="AlreadyApplied"?"uncertain":"registered";
+              throw new Error(`HVP owned terrain upsert failed: ${result.reasonCode??result.status}`);
+            }
+            binding.state="uploaded";
+            plainTerrainLeases.push({nodeKey:entry.artifact.representationKey,lease:materialFactory.acquire(entry.group.materialProfiles)});
+          }
+          if(!aoEnabled)setAoOnNodes(false);
+        }else{
         presentation.batch(()=>{
           for(const entry of [...next,...added]) {
             upsertTerrain(entry,commandId);
@@ -1896,6 +1932,7 @@ export const startHvp = async (
           }
           if(!aoEnabled) { setAoOnNodes(false); }
         });
+        }
       } catch(error) {
         try { presentation.batch(()=>{for(const e of [...next,...added]) { removeTerrainEntry(e); }}); }
         catch(cleanupError) {
@@ -1917,19 +1954,48 @@ export const startHvp = async (
         finish() { presentation.batch(()=>{for(const e of previous) { removeTerrainEntry(e); }});updateTerrainState(); }
       };
        });
+       }
+       const stageTerrain=(products:HvpTerrainProducts,fragments:readonly HvpPreparedTerrainBody[]=[],commandId?:string):HvpStagedTerrain=>
+         stageTerrainSteps(products,fragments,commandId,false).next().value as HvpStagedTerrain;
      terrainCompiler=createHvpTerrainCompiler();
-    terrainConsumer=createHvpTerrainConsumer(terrainRoot,plan=>{
+    terrainConsumer=createHvpTerrainConsumer(terrainRoot,(plan,support)=>{
        admitScene({...ledger,totalCpuBytes:ledger.totalCpuBytes-ledger.tempEstimateBytes+physicsPrepareBytes+plan.after.overlayBytes*2});
-      return terrainCompiler!.compile(plan);
+      const native=physics!.read(),resident=ledger.totalCpuBytes-ledger.tempEstimateBytes+native.collisionBytes*2+native.bodySourceResidentBytes+plan.after.overlayBytes*2;
+      admitScene({...ledger,totalCpuBytes:resident+physicsPrepareBytes});
+      return terrainCompiler!.compile(plan,support,resident);
       },stageTerrain,physics,plants.filter(p=>p.kind==="tree").map(p=>p.position),async plan=>{
         admitScene({...ledger,totalCpuBytes:ledger.totalCpuBytes-ledger.tempEstimateBytes+physicsPrepareBytes+plan.after.overlayBytes*2});
-        const support=await terrainCompiler!.analyze(plan);
+        const native=physics!.read(),resident=ledger.totalCpuBytes-ledger.tempEstimateBytes+native.collisionBytes*2+native.bodySourceResidentBytes+plan.after.overlayBytes*2;
+        admitScene({...ledger,totalCpuBytes:resident+physicsPrepareBytes});
+        const support=await terrainCompiler!.analyze(plan,resident,measurement.enabled?cutTraceDispatch:undefined);
         if(measurement.enabled&&support.timings!==undefined){
           try{measurement.record("cutSupportPhasesMs",performance.now(),0,Object.freeze({commandId:plan.request.commandId,
             thread:"support",timings:support.timings}));}catch{/* Observability cannot change the source result. */}
         }
         return support;
-      },cutTraceDispatch);
+      },cutTraceDispatch,async(products,fragments,credits)=>{
+        const lane=credits.beginLane(1),reserve=createHvpBodyMeshPhaseReserve(lane.bytes);
+        const pump=createHvpBodyMeshTaskPump(()=>{if(disposed||hvpMountEpoch!==myEpoch){throw new Error("Terrain graphics quote disposed");}});
+        try{
+          let retained=0,scratch=0;
+          for(const fragment of fragments){const count=await pump.run(countHvpOwnedBodyMeshSteps(fragment.cells,reserve));
+            if(count.exposedFaces>64000){throw new Error("Fragment mesh preparation BudgetExceeded");}
+            const output=320+(288+(count.exposedFaces<=16383?12:24))*count.exposedFaces;
+            retained+=output;scratch=Math.max(scratch,10560+count.slotBytes+1168*count.exposedFaces+output);
+          }
+          const terrain=[...products.render.values()].reduce((n,mesh)=>n+meshBytes(mesh),0);
+          return 65_536+3*(terrain+retained)+scratch;
+        }finally{pump.dispose();credits.endLane(lane,0);}
+      },async(products,fragments,commandId)=>{
+        const before=terrainRoot.read(),epoch=publishedEphemeralEpoch;
+        const current=()=>{if(disposed||hvpMountEpoch!==myEpoch||terrainRoot.read()!==before||publishedEphemeralEpoch!==epoch){throw new Error("Owned terrain graphics disposed or stale");}};
+        const pump=createHvpBodyMeshTaskPump(current,cutTraceDispatch===undefined?undefined:(_label,start,duration)=>{
+          if(commandId!==undefined)cutTraceDispatch({commandId,thread:"main",phase:"cutGraphicsWorkQuantumMs",origin:performance.timeOrigin,start,duration});
+        });
+        try{return await pump.run(stageTerrainSteps(products,fragments,commandId,true));}
+        catch(error){if(saveHold&&!(error instanceof HvpRenderStageRecoveryError))throw new HvpRenderStageRecoveryError([error],"Owned terrain graphics cleanup is unproven");throw error;}
+        finally{pump.dispose();}
+      });
      const syncPhysicsTransforms=()=>{
        physicsTransforms=physics!.read().bodies.map(p=>({representationKey:representationKey(p.ownerId),positionRelative:p.position,orientation:p.orientation,scale:{x:1,y:1,z:1}}));
        const aliases=physicsTransforms.flatMap(p=>{const alias=fragmentEntries.get(p.representationKey)?.artifact.representationKey
@@ -1939,10 +2005,35 @@ export const startHvp = async (
       physicsTransforms=[...physicsTransforms,{representationKey:representationKey(HVP_AVATAR_KEY),positionRelative:playerInput!.visualPosition,
         orientation:playerInput!.visualOrientation,scale:{x:1,y:1,z:1}}];
     };
-    bodyCutConsumer=createHvpBodyCutConsumer(physics,source=>{
-       admitScene({...ledger,totalCpuBytes:ledger.totalCpuBytes-ledger.tempEstimateBytes+physicsPrepareBytes});
-      return terrainCompiler!.compileBody(source);
-      },(parentId,products)=>withEphemeralScope(publishedEphemeralEpoch,scope=>{
+    const bodyMeshPhysics=physics;
+    bodyCutConsumer=createHvpBodyCutConsumer(physics,async source=>{
+      const compiler=terrainCompiler!,id=source.payload.commandId;
+      const current=()=>{if(disposed||hvpMountEpoch!==myEpoch||physics!==bodyMeshPhysics||terrainCompiler!==compiler){throw new Error("Moving mesh preparation cancelled");}};
+      current();
+      if(bodyMeshPhysics.prepareBodyMeshWork===undefined||bodyMeshPhysics.admitBodyMeshOutput===undefined||bodyMeshPhysics.releaseBodyMeshWork===undefined){
+        throw new Error("Body mesh owner bridge unavailable");
+      }
+      const native=bodyMeshPhysics.read();
+      const residentBytes=ledger.totalCpuBytes-ledger.tempEstimateBytes+native.collisionBytes*2+native.bodySourceResidentBytes;
+      if(!Number.isSafeInteger(residentBytes)||residentBytes<=0){throw new Error("Body owner resident accounting unavailable");}
+      const attached=branchEntries.filter(e=>e.product.ownerId===source.payload.ownerId&&e.product.decoration);
+      const renderFixedBytes=32768+attached.reduce((sum,e)=>sum+meshBytes(e.product.mesh)*3+e.product.mesh.tempEstimateBytes,0);
+      admitScene({...ledger,totalCpuBytes:residentBytes+physicsPrepareBytes});
+      const work=await measureHvpCutAsync(cutTraceDispatch,id,"main","cutBodyOwnerPlanMs",
+        ()=>bodyMeshPhysics.prepareBodyMeshWork!(id,residentBytes,renderFixedBytes));current();
+      const compiled=await measureHvpCutAsync(cutTraceDispatch,id,"main","cutBodyMeshWorkerMs",
+        ()=>compiler.compileBodyMesh(work.projection,work.budget,cutTraceDispatch));current();
+      const output=await measureHvpCutAsync(cutTraceDispatch,id,"main","cutBodyNativeAdmissionMs",
+        ()=>bodyMeshPhysics.admitBodyMeshOutput!(id,compiled.request,compiled.output));current();
+      const pump=createHvpBodyMeshTaskPump(current,cutTraceDispatch===undefined?undefined:(_label,start,duration)=>{
+        cutTraceDispatch({commandId:id,thread:"main",phase:"cutBodyPrepareWorkMs",origin:performance.timeOrigin,start,duration});
+      });
+      try{return await measureHvpCutAsync(cutTraceDispatch,id,"main","cutBodyMainDecodeMs",()=>
+        pump.run(decodeHvpBodyMeshOutputSteps(compiled.request,work.projection,output,
+          createHvpBodyMeshPhaseReserve(work.budget.mainBytes),work.budget.faceLimits)));}finally{pump.dispose();}
+      },(parentId,products)=>{
+       const id=cutTraceDispatch===undefined?"":bodyMeshPhysics.read().moving.pendingId!;
+       return measureHvpCut(cutTraceDispatch,id,"main","cutBodyRenderStageMs",()=>withEphemeralScope(publishedEphemeralEpoch,scope=>{
        const parent=fragmentEntries.get(parentId),branchParent=branchEntries.find(e=>!e.product.decoration&&e.product.ownerId===parentId);
        if(!parent&&!branchParent){throw new Error("Missing moving render parent");}
        const native=physics!.read(),family=branchParent?"branch":parent!.family,generation=native.moving.sequence+1;
@@ -2057,7 +2148,8 @@ export const startHvp = async (
           presentation.updateProjection();updateTerrainState();presentation.batch(()=>{for(const e of next){removeTerrainEntry(e);}for(const e of nextLeaves){retireBranch(e);}});},
         finish(){presentation.batch(()=>{if(parent){removeTerrainEntry(parent);}for(const e of removedBranchEntries){retireBranch(e);}});updateTerrainState();}
       };
-      }),cutTraceDispatch);
+      }));},cutTraceDispatch,async id=>{await measureHvpCutAsync(cutTraceDispatch,id,"main","cutBodyMeshReleaseMs",
+        ()=>bodyMeshPhysics.releaseBodyMeshWork?.(id)??Promise.resolve());});
        structuralConsumer=createHvpStructuralConsumer(physics,state=>withEphemeralScope(publishedEphemeralEpoch,scope=>{
           const native=physics!.read(),products=meshHvpBranchProducts(state);
           const next=products.map(p=>{
@@ -2092,10 +2184,11 @@ export const startHvp = async (
     updateTerrainState();
     let previewRevision=0;
     let previewArtifact:ReturnType<typeof createMeshArtifact>|undefined;
-    let supportPreviewVisible=false,supportPending=false;
+    let supportPreviewVisible=false;
     let supportCandidate:HvpSupportPlan|undefined;
     let supportView={state:"Idle",cells:0,massKg:0,fragments:0,message:""};
-    const showCutPreview=(cells:readonly HvpCell[],allowed:boolean):void=>{
+    const showCutPreview=(cells:readonly HvpCell[],allowed:boolean,ownedSupport?:HvpSupportPlan):void=>{
+      if(supportCandidate&&supportCandidate!==ownedSupport){releaseHvpOwnedSupportPlan(supportCandidate);supportCandidate=undefined;}
       supportPreviewVisible=false;
       const previous=previewArtifact;
       if(cells.length===0) { activePreviewKey="";presentation.updateProjection();return; }
@@ -2138,6 +2231,7 @@ export const startHvp = async (
       supportView={state:"Pending",cells:0,massKg:0,fragments:0,message:"Prüfung kanonischer Zellen; keine Mutation"};
       documentPort.body.dataset.hestiaPrototypeSupport=JSON.stringify(supportView);
       showCutPreview([],false);supportCandidate=undefined;
+      let preparedSupport:HvpSupportPlan|undefined;
       try{
         if(["Pending","RecoveryHold"].includes(terrainConsumer!.read().state)||structuralConsumer!.read().state!=="Ready"||bodyCutConsumer!.read().state!=="Idle"){
           throw new Error("Andere Mutation ist noch nicht abgeschlossen");
@@ -2149,24 +2243,27 @@ export const startHvp = async (
         const plan=terrainRoot.prepare({sessionId:current.sessionId,epoch:current.epoch,revision:current.revision,sourceDigest:current.sourceDigest,
           commandId:`support-preview-${previewRevision}`,toolPolicy:"hvp-plasma-v1",shape:{kind:"Box",min:[176,78,76],max:[180,82,80]}});
          admitScene({...ledger,totalCpuBytes:ledger.totalCpuBytes-ledger.tempEstimateBytes+physicsPrepareBytes+plan.after.overlayBytes*2});
-        const result=await terrainCompiler!.analyze(plan);
-        if(disposed||hvpMountEpoch!==myEpoch){return;}
+        const native=physics!.read(),resident=ledger.totalCpuBytes-ledger.tempEstimateBytes+native.collisionBytes*2+native.bodySourceResidentBytes+plan.after.overlayBytes*2;
+        admitScene({...ledger,totalCpuBytes:resident+physicsPrepareBytes});
+        const result=await terrainCompiler!.analyze(plan,resident);preparedSupport=result;
+        if(disposed||hvpMountEpoch!==myEpoch){releaseHvpOwnedSupportPlan(result);return;}
         if(terrainRoot.read()!==plan.before){throw new Error("Stale support source");}
         if(result.status==="Ready"){
-          assertHvpSupportCurrent(result,terrainRoot.read());supportCandidate=result;
+          assertHvpSupportCurrent(result,terrainRoot.read());
           // This named preview contains the bounded authored roof, not arbitrary full-region output.
           if(result.fragments.reduce((n,f)=>n+f.cells.length,0)>512){throw new Error("Support preview geometry BudgetExceeded");}
           const cells=result.fragments.flatMap(f=>f.cells.map(c=>[c.x,c.y,c.z] as HvpCell));
-          showCutPreview(cells,true);supportPreviewVisible=true;
+          showCutPreview(cells,true,result);supportCandidate=result;supportPreviewVisible=true;
         }
         supportView={state:result.status,cells:result.fragments.reduce((n,f)=>n+f.cells.length,0),massKg:result.fragments.reduce((n,f)=>n+f.massKg,0),
           fragments:result.fragments.length,message:result.reason||"Nur Vorschau; Terrain und World unverändert"};
         documentPort.body.dataset.hestiaPrototypeSupport=JSON.stringify({...supportView,generation:current.revision,sourceDigest:current.sourceDigest,
           candidateDigest:plan.after.sourceDigest,probes:result.probes,changedCells:plan.changed.length,timings:result.timings??null});
+        if(result.status!=="Ready"){releaseHvpOwnedSupportPlan(result);}
       }catch(error){
         if(!disposed&&hvpMountEpoch===myEpoch){supportView={state:"Rejected",cells:0,massKg:0,fragments:0,message:String(error)};
           documentPort.body.dataset.hestiaPrototypeSupport=JSON.stringify(supportView);}
-      }finally{supportPending=false;}
+      }finally{if(preparedSupport&&preparedSupport!==supportCandidate){releaseHvpOwnedSupportPlan(preparedSupport);}supportPending=false;}
     };
     let saveRevision:number|null=coldRevision,saveInitialized=coldGame!==undefined,restoreSequence=0;
     saveView={state:coldGame?"Loaded":"Idle",message:coldGame?"Aus Spielstand gestartet – pausiert":"Lokaler Hestia-Spielstand",revision:coldRevision};
@@ -2567,7 +2664,7 @@ export const startHvp = async (
         physics!.update();
         plasmaTool!.update();
         if(supportCandidate&&terrainRoot.read()!==supportCandidate.cut.before){
-          supportCandidate=undefined;supportView={state:"Stale",cells:0,massKg:0,fragments:0,message:"Terrainrevision geändert"};
+          releaseHvpOwnedSupportPlan(supportCandidate);supportCandidate=undefined;supportView={state:"Stale",cells:0,massKg:0,fragments:0,message:"Terrainrevision geändert"};
           documentPort.body.dataset.hestiaPrototypeSupport=JSON.stringify(supportView);
           if(supportPreviewVisible){showCutPreview([],false);}
         }

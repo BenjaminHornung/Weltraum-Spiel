@@ -1,0 +1,10 @@
+{
+  "mode": "tests",
+  "classification": "FullunchangedOwner65 currentR68 source; taskdiagnostic normalEnd workers0 thenaboutblank foreground, usertabretained; same180/defaults/order/reporters",
+  "runId": "A02-owner-background-held-r69",
+  "nativeCapSeconds": 180,
+  "binding": "A03-main-result-r68-binding-r03.json",
+  "files": [
+    "tests/unit/hvp-body-plan-owner.test.ts"
+  ]
+}

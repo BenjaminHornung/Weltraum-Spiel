@@ -1,0 +1,13 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-owned-terrain-products.test.ts (2 tests | 2 failed) 148ms
+   × keeps full typed render product bytes under the borrowed lane grant and closes cancellation 125ms
+   × keeps full typed collision product bytes under the borrowed lane grant and closes cancellation 20ms
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  21:03:00
+   Duration  3.37s (transform 1.42s, setup 0ms, import 2.89s, tests 148ms, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-derivative-r101-red/original-vitest.json

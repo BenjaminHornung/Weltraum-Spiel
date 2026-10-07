@@ -1,0 +1,8 @@
+{
+  "runId": "A03-ingest-phase-r63-type",
+  "startedUtc": "2026-10-06T00:03:29.5772353+00:00",
+  "endedUtc": "2026-10-06T00:03:31.1662512+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 1.5844567,
+  "planFile": "A03-ingest-phase-r63-type.plan.json"
+}

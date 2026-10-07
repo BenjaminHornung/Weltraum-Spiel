@@ -1,0 +1,8 @@
+{
+  "classification": "OriginalfixedidentityAO/algorithm coldrestore; dynamicdefaultAOunchanged; exactgeometry/material controls",
+  "mode": "build",
+  "nativeCapSeconds": 60,
+  "runId": "A04-fixed-cold-render-r72-build-r03",
+  "files": [],
+  "binding": "A04-fixed-cold-render-r72-binding-r03.json"
+}

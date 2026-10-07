@@ -1,8 +1,8 @@
 import { createFnv1a64State, fnv1a64StateHex, updateFnv1a64State, type Fnv1a64State } from "../../core/fnv1a64";
-import { compareCanonicalCodeUnits, fail, requireCanonicalString, requirePlainRecord } from "./validation";
+import { compareCanonicalCodeUnits, fail, requireCanonicalString, requirePlainRecord, isValidatedFrozenDenseArray } from "./validation";
 
 /**
- * PRIVATE (module export only; not in the adaptive barrel, no production caller yet): a bounded
+ * PRIVATE (module export only; not in the adaptive barrel): a bounded
  * cursor over a schema-owned, deep-frozen canonical payload whose streamed UTF-8 bytes and digest
  * equal canonicalAdaptiveJson(payload) / hashAdaptiveCanonical(payload). It visits nodes in the same
  * depth-first sorted-key order and raises the same AdaptiveAuthorityError (code, path, message) the
@@ -15,6 +15,8 @@ import { compareCanonicalCodeUnits, fail, requireCanonicalString, requirePlainRe
  * across advances, not trust), arrays with Array.prototype and a safe data length, every index an
  * own enumerable data property (one unit each, before any child, like the public dense check), and
  * records plain with at most OWNED_RECORD_MAX_KEYS keys (a record's own-key read/sort is one unit).
+ * The opt-in path reuses module-local witnesses for immutable dense array shape; each witnessed
+ * visit still yields on opening and validates every child and scalar while emitting all bytes.
  *
  * One unit is one of: a container open (record key read/sort), one array integrity/index check, one scalar,
  * one string/key chunk of at most STRING_CHUNK_UNITS code units, one record key. A unit may also
@@ -24,7 +26,9 @@ import { compareCanonicalCodeUnits, fail, requireCanonicalString, requirePlainRe
  *
  * Scratch (released on done/failure/dispose): one BUFFER_BYTES Uint8Array, one pending string of at
  * most PENDING_UNITS code units, one ancestor Set and one generator frame (path string, at most
- * OWNED_RECORD_MAX_KEYS sorted keys) per open container depth. No global state, no payload copy.
+ * OWNED_RECORD_MAX_KEYS sorted keys) per open container depth. The private trampoline additionally
+ * keeps one two-reference linked frame per active generator; no payload/key/path copy. Optional shape
+ * witnesses live in validation's module-local WeakSet and do not retain arrays after collection.
  */
 export const OWNED_RECORD_MAX_KEYS = 16;
 const BUFFER_BYTES = 4_096;
@@ -50,12 +54,16 @@ interface Emitter {
   readonly ancestors: Set<object>;
   /** Test-only byte observer; receives a borrowed view that is valid only during the call. */
   readonly sink: ((bytes: Uint8Array) => void) | undefined;
+  readonly reuseValidatedArrayShape: boolean;
   /** Set by dispose (also from inside the sink): no later encode, fold or emission happens. */
   cancelled: boolean;
   used: number;
   pending: string;
   byteLength: number;
 }
+
+type EmissionSteps = Generator<void | EmissionSteps, void, void>;
+interface EmissionFrame { readonly steps: EmissionSteps; readonly parent: EmissionFrame | undefined }
 
 const flushBytes = (emitter: Emitter): void => {
   if (emitter.cancelled || emitter.used === 0) {
@@ -96,7 +104,7 @@ const write = (emitter: Emitter, text: string): void => {
 };
 
 /** JSON.stringify escaping per chunk; chunks never split a high/low surrogate pair. */
-function* emitString(emitter: Emitter, value: string, path: string, validate: boolean): Generator<void, void, void> {
+function* emitString(emitter: Emitter, value: string, path: string, validate: boolean): EmissionSteps {
   if (value.length === 0) {
     // Still one unit, so arrays of empty strings stay bounded per advance.
     write(emitter, "\"\"");
@@ -129,52 +137,61 @@ const requireOwnedFrozen = (value: object, path: string): void => {
   }
 };
 
-function* emitArray(emitter: Emitter, value: unknown[], path: string): Generator<void, void, void> {
+function* emitArray(emitter: Emitter, value: unknown[], path: string): EmissionSteps {
   if (emitter.ancestors.has(value)) {
     fail("InvalidCanonicalValue", path, "Cycles are not canonical.");
   }
-  // The producer guarantees index-only, non-Proxy arrays. Complete the frozen flag pass before
-  // prototype/density/children, preserving native isFrozen precedence without a bulk integrity call.
-  if (Object.isExtensible(value)) {
-    fail("InvalidCanonicalValue", path, "Owned canonical containers must be frozen.");
-  }
-  const lengthDescriptor = Object.getOwnPropertyDescriptor(value, "length");
-  if (lengthDescriptor?.configurable || lengthDescriptor?.writable) {
-    fail("InvalidCanonicalValue", path, "Owned canonical containers must be frozen.");
-  }
-  const length = lengthDescriptor?.value as number;
-  yield;
-  for (let index = 0; index < length; index += 1) {
-    const descriptor = Object.getOwnPropertyDescriptor(value, String(index));
-    // A missing index is not a mutable property: sealed sparse arrays can still be frozen.
-    if (descriptor !== undefined && (descriptor.configurable || ("value" in descriptor && descriptor.writable))) {
+  let length: number;
+  const witnessed = emitter.reuseValidatedArrayShape && isValidatedFrozenDenseArray(value);
+  if (witnessed) {
+    // Complete descriptor validation already proved this exact immutable container.
+    // One open yield remains even for empty arrays; descendants and bytes are still checked.
+    length = Object.getOwnPropertyDescriptor(value, "length")!.value as number;
+    yield;
+  } else {
+    // The producer guarantees index-only, non-Proxy arrays. Complete the frozen flag pass before
+    // prototype/density/children, preserving native isFrozen precedence without a bulk integrity call.
+    if (Object.isExtensible(value)) {
       fail("InvalidCanonicalValue", path, "Owned canonical containers must be frozen.");
     }
+    const lengthDescriptor = Object.getOwnPropertyDescriptor(value, "length");
+    if (lengthDescriptor?.configurable || lengthDescriptor?.writable) {
+      fail("InvalidCanonicalValue", path, "Owned canonical containers must be frozen.");
+    }
+    length = lengthDescriptor?.value as number;
     yield;
-  }
-  if (Object.getPrototypeOf(value) !== Array.prototype) {
-    fail("InvalidCanonicalValue", path, "Owned canonical arrays must be plain arrays.");
-  }
-  if (lengthDescriptor === undefined || !("value" in lengthDescriptor) || !Number.isSafeInteger(lengthDescriptor.value)) {
-    fail("InvalidCanonicalValue", path, "Array length must be a safe data property.");
-  }
-  yield;
-  // Every entry is checked before any child, like the public dense-array check: a present
-  // non-enumerable/accessor entry anywhere wins over an earlier hole, then the first hole is reported.
-  let firstHole = -1;
-  for (let index = 0; index < length; index += 1) {
-    const descriptor = Object.getOwnPropertyDescriptor(value, String(index));
-    if (descriptor === undefined) {
-      if (firstHole < 0) {
-        firstHole = index;
+    for (let index = 0; index < length; index += 1) {
+      const descriptor = Object.getOwnPropertyDescriptor(value, String(index));
+      // A missing index is not a mutable property: sealed sparse arrays can still be frozen.
+      if (descriptor !== undefined && (descriptor.configurable || ("value" in descriptor && descriptor.writable))) {
+        fail("InvalidCanonicalValue", path, "Owned canonical containers must be frozen.");
       }
-    } else if (!descriptor.enumerable || !("value" in descriptor)) {
-      fail("InvalidCanonicalValue", `${path}/${index}`, "Array entries must be enumerable data properties.");
+      yield;
+    }
+    if (Object.getPrototypeOf(value) !== Array.prototype) {
+      fail("InvalidCanonicalValue", path, "Owned canonical arrays must be plain arrays.");
+    }
+    if (lengthDescriptor === undefined || !("value" in lengthDescriptor) || !Number.isSafeInteger(lengthDescriptor.value)) {
+      fail("InvalidCanonicalValue", path, "Array length must be a safe data property.");
     }
     yield;
-  }
-  if (firstHole >= 0) {
-    fail("InvalidCanonicalValue", `${path}/${firstHole}`, "Sparse arrays are rejected.");
+    // Every entry is checked before any child, like the public dense-array check: a present
+    // non-enumerable/accessor entry anywhere wins over an earlier hole, then the first hole is reported.
+    let firstHole = -1;
+    for (let index = 0; index < length; index += 1) {
+      const descriptor = Object.getOwnPropertyDescriptor(value, String(index));
+      if (descriptor === undefined) {
+        if (firstHole < 0) {
+          firstHole = index;
+        }
+      } else if (!descriptor.enumerable || !("value" in descriptor)) {
+        fail("InvalidCanonicalValue", `${path}/${index}`, "Array entries must be enumerable data properties.");
+      }
+      yield;
+    }
+    if (firstHole >= 0) {
+      fail("InvalidCanonicalValue", `${path}/${firstHole}`, "Sparse arrays are rejected.");
+    }
   }
   emitter.ancestors.add(value);
   write(emitter, "[");
@@ -182,14 +199,22 @@ function* emitArray(emitter: Emitter, value: unknown[], path: string): Generator
     if (index > 0) {
       write(emitter, ",");
     }
-    // Frozen and checked above: the same data descriptor.
-    yield* emitValue(emitter, Object.getOwnPropertyDescriptor(value, String(index))!.value, `${path}/${index}`);
+    const child = witnessed ? value[index] : Object.getOwnPropertyDescriptor(value, String(index))!.value;
+    if (witnessed && typeof child === "number") {
+      if (!Number.isFinite(child)) fail("InvalidCanonicalValue", `${path}/${index}`, "Non-finite numbers are not canonical.");
+      write(emitter, JSON.stringify(child));
+      yield;
+    } else if (witnessed && (child === null || typeof child === "boolean")) {
+      write(emitter, child === null ? "null" : child ? "true" : "false");
+      yield;
+    } else if (emitter.reuseValidatedArrayShape) yield emitValue(emitter, child, `${path}/${index}`);
+    else yield* emitValue(emitter, child, `${path}/${index}`);
   }
   write(emitter, "]");
   emitter.ancestors.delete(value);
 }
 
-function* emitRecord(emitter: Emitter, value: unknown, path: string): Generator<void, void, void> {
+function* emitRecord(emitter: Emitter, value: unknown, path: string): EmissionSteps {
   const record = requirePlainRecord(value, path);
   if (emitter.ancestors.has(record)) {
     fail("InvalidCanonicalValue", path, "Cycles are not canonical.");
@@ -209,23 +234,51 @@ function* emitRecord(emitter: Emitter, value: unknown, path: string): Generator<
       write(emitter, ",");
     }
     // Keys are not surrogate-validated by the public path either; JSON.stringify escapes them.
-    yield* emitString(emitter, key, path, false);
+    if (emitter.reuseValidatedArrayShape && key.length <= STRING_CHUNK_UNITS) {
+      // Keep the same writes/yield, including quote timing; avoid one nested generator per short key.
+      if (key.length === 0) { write(emitter, "\"\""); yield; }
+      else {
+        write(emitter, "\""); write(emitter, JSON.stringify(key).slice(1, -1));
+        yield;
+        write(emitter, "\"");
+      }
+    } else if (emitter.reuseValidatedArrayShape) yield emitString(emitter, key, path, false);
+    else yield* emitString(emitter, key, path, false);
     write(emitter, ":");
     yield;
-    yield* emitValue(emitter, record[key], `${path}/${key}`);
+    const child = record[key];
+    if (emitter.reuseValidatedArrayShape && typeof child === "number") {
+      if (!Number.isFinite(child)) fail("InvalidCanonicalValue", `${path}/${key}`, "Non-finite numbers are not canonical.");
+      write(emitter, JSON.stringify(child));
+      yield;
+    } else if (emitter.reuseValidatedArrayShape && (child === null || typeof child === "boolean")) {
+      write(emitter, child === null ? "null" : child ? "true" : "false");
+      yield;
+    } else if (emitter.reuseValidatedArrayShape) yield emitValue(emitter, child, `${path}/${key}`);
+    else yield* emitValue(emitter, child, `${path}/${key}`);
   }
   write(emitter, "}");
   emitter.ancestors.delete(record);
 }
 
-function* emitValue(emitter: Emitter, value: unknown, path: string): Generator<void, void, void> {
+function* emitValue(emitter: Emitter, value: unknown, path: string): EmissionSteps {
   if (value === null || typeof value === "boolean") {
     write(emitter, value === null ? "null" : value ? "true" : "false");
     yield;
     return;
   }
   if (typeof value === "string") {
-    yield* emitString(emitter, value, path, true);
+    if (emitter.reuseValidatedArrayShape && value.length <= STRING_CHUNK_UNITS) {
+      if (value.length === 0) { write(emitter, "\"\""); yield; return; }
+      write(emitter, "\"");
+      requireCanonicalString(value, path);
+      write(emitter, JSON.stringify(value).slice(1, -1));
+      yield;
+      write(emitter, "\"");
+      return;
+    }
+    if (emitter.reuseValidatedArrayShape) yield emitString(emitter, value, path, true);
+    else yield* emitString(emitter, value, path, true);
     return;
   }
   if (typeof value === "number") {
@@ -241,14 +294,29 @@ function* emitValue(emitter: Emitter, value: unknown, path: string): Generator<v
     fail("InvalidCanonicalValue", path, "Unsupported canonical value.");
   }
   if (Array.isArray(value)) {
-    yield* emitArray(emitter, value, path);
+    if (emitter.reuseValidatedArrayShape) yield emitArray(emitter, value, path);
+    else yield* emitArray(emitter, value, path);
     return;
   }
-  yield* emitRecord(emitter, value, path);
+  if (emitter.reuseValidatedArrayShape) yield emitRecord(emitter, value, path);
+  else yield* emitRecord(emitter, value, path);
 }
 
 function* hashSteps(emitter: Emitter, payload: unknown): Generator<void, OwnedCanonicalHashResult, void> {
-  yield* emitValue(emitter, payload, "");
+  if (emitter.reuseValidatedArrayShape) {
+    // Private children have no finally/catch or resume values. Enter/return are not units;
+    // only the original void yields count. Disposal remains observed after each leaf step.
+    let frame: EmissionFrame | undefined = {steps: emitValue(emitter, payload, ""), parent: undefined};
+    while (frame !== undefined) {
+      const step = frame.steps.next();
+      if (step.done) frame = frame.parent;
+      else if (step.value === undefined) yield;
+      else frame = {steps: step.value, parent: frame};
+    }
+  } else {
+    // The default emitters never yield a child instruction.
+    yield* emitValue(emitter, payload, "") as Generator<void, void, void>;
+  }
   encodePending(emitter);
   flushBytes(emitter);
   return Object.freeze({
@@ -260,7 +328,8 @@ function* hashSteps(emitter: Emitter, payload: unknown): Generator<void, OwnedCa
 /** Creates the cursor without doing any work; `sink` is a test-only bounded byte observer. */
 export const createOwnedCanonicalHashCursor = (
   payload: unknown,
-  sink?: (bytes: Uint8Array) => void
+  sink?: (bytes: Uint8Array) => void,
+  reuseValidatedArrayShape = false
 ): OwnedCanonicalHashCursor => {
   let emitter: Emitter | undefined = {
     encoder: new TextEncoder(),
@@ -268,6 +337,7 @@ export const createOwnedCanonicalHashCursor = (
     state: createFnv1a64State(),
     ancestors: new Set<object>(),
     sink,
+    reuseValidatedArrayShape,
     cancelled: false,
     used: 0,
     pending: "",

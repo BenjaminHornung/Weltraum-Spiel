@@ -1,0 +1,8 @@
+{
+  "runId": "A02-structural-clean-r02",
+  "startedUtc": "2026-10-05T10:55:39.6030499+00:00",
+  "endedUtc": "2026-10-05T10:56:47.8053120+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 68.1988176,
+  "planFile": "A02-structural-clean-r02.plan.json"
+}

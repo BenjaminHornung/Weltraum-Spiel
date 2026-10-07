@@ -1,0 +1,20 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-body-mesh-owner-integration.test.ts (10 tests) 6695ms
+   ✓ rejects projected owner-route Stage until the retained plan has admitted complete geometry  507ms
+   ✓ admits mesh-only output against the single retained native plan before Stage, commit and finalize  825ms
+   ✓ rejects altered color geometry with stable first failure and no native Stage or retry revival  704ms
+   ✓ keeps a thrown real admission yield terminal without mutating the native World  623ms
+   ✓ keeps a packet decoder failure terminal before geometry work and rejects a later good packet  639ms
+   ✓ cannot revive an admission after Rollback at a real verifier yield  635ms
+   ✓ preserves the first yielded failure when verifier cleanup also throws  609ms
+   ✓ retains one borrowed owner ledger through mesh admission and transfers results only at Finalize  1074ms
+   ✓ keeps a retired ledger until the suspended verifier actually closes  844ms
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  16:16:08
+   Duration  8.38s (transform 704ms, setup 0ms, import 1.53s, tests 6.70s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-owner-ledger-green-r01/original-vitest.json

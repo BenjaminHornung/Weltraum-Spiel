@@ -1,0 +1,27 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-owned-support-plan.test.ts > shares full support reports and every source read with the original algorithm while using one borrowed lifetime
+TypeError: owned(...) is not a function
+ ❯ tests/unit/hvp-owned-support-plan.test.ts:28:24
+     26|     expect(support.analyzeHvpSupportSnapshot(b.source,changed,budgets)…
+     27|     const ledger=createStructuralOwnerLedger(0,96*1024*1024,128);let w…
+     28|     const steps=owned()(c.source,changed,budgets,undefined,{reserve:le…
+       |                        ^
+     29|       beginFragment:()=>{windows+=1;},endFragment:()=>{closed+=1;}});
+     30|     try{for(;;){const step=steps.next();if(step.done){expect(step.valu…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/hvp-owned-support-plan.test.ts > closes borrowed fragment work on cancellation without publishing a partial report
+TypeError: owned(...) is not a function
+ ❯ tests/unit/hvp-owned-support-plan.test.ts:38:22
+     36|   const cells=[[15,3,3,4],[16,3,3,1],[17,3,3,2]] as const,c=make(cells…
+     37|   const ledger=createStructuralOwnerLedger(0,96*1024*1024,128);let act…
+     38|   const steps=owned()(c.source,[[15,2,3]],{},undefined,{reserve:ledger…
+       |                      ^
+     39|     beginFragment:()=>{active+=1;},endFragment:()=>{active-=1;}});
+     40|   try{for(let i=0;i<10000&&active===0;i+=1){expect(steps.next().done).…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+

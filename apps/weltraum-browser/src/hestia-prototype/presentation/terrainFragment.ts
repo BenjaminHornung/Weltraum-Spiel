@@ -3,7 +3,8 @@ import type {HvpPreparedTerrainBody} from "../terrain/terrainConsumer";
 import type {HvpStructuralCell} from "../terrain/structuralIngest";
 
 /** Immutable source-derived local geometry; native COM/pose remains the World owner's. */
-export const meshHvpBodyCells=(cells:readonly HvpStructuralCell[],center:Readonly<{x:number;y:number;z:number}>,sourceDigest:string)=>{
+export const meshHvpBodyCells=(cells:readonly HvpStructuralCell[],center:Readonly<{x:number;y:number;z:number}>,sourceDigest:string,
+  presentation?:Readonly<{ao?:boolean;algorithmVersion?:string}>)=>{
   const min=[256,128,256],max=[0,0,0];
   let wideMaterials=false;
   for(const c of cells){
@@ -16,7 +17,7 @@ export const meshHvpBodyCells=(cells:readonly HvpStructuralCell[],center:Readonl
   for(const c of cells){slots[c.x-min[0]!+(c.y-min[1]!)*sx+(c.z-min[2]!)*sx*sy]=c.materialId;}
   const mesh=meshHvpOccupancy({sizeX:sx,sizeY:sy,sizeZ:sz,cellMeters:.125,
     originMeters:{x:min[0]!*.125,y:min[1]!*.125,z:min[2]!*.125},slotAt:(x,y,z)=>slots[x+y*sx+z*sx*sy]!},
-    {maxVisitedCells:262_144,maxQuads:64_000,maxVertices:256_000,maxIndices:384_000},sourceDigest,"hvp-terrain-fragment-v1",{ao:true});
+    {maxVisitedCells:262_144,maxQuads:64_000,maxVertices:256_000,maxIndices:384_000},sourceDigest,presentation?.algorithmVersion??"hvp-terrain-fragment-v1",{ao:presentation?.ao??true});
   for(let i=0;i<mesh.positions.length;i+=3){mesh.positions[i]!-=center.x;mesh.positions[i+1]!-=center.y;mesh.positions[i+2]!-=center.z;}
   return Object.freeze({...mesh,tempEstimateBytes:mesh.tempEstimateBytes+slots.byteLength,
     // The upload positions have already rounded to Float32 after subtracting

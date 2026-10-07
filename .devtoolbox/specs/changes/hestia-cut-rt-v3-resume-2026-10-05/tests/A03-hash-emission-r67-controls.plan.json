@@ -1,0 +1,13 @@
+{
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-owned-hash-emission-boundary.test.ts",
+    "tests/unit/hvpOwnedCanonicalHash.test.ts",
+    "tests/unit/hvp-owned-hash-array-open.test.ts",
+    "tests/unit/hvp-borrowed-bytehash.test.ts"
+  ],
+  "nativeCapSeconds": 180,
+  "binding": "A03-hash-emission-r67-binding.json",
+  "classification": "Same complete bytes, units, prefix/cancel boundaries; primitive and shortkey generator overhead only",
+  "runId": "A03-hash-emission-r67-controls"
+}

@@ -1,0 +1,10 @@
+{
+  "binding": "A03-wire-encode-green-r01-binding.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvpBodyCutWire.test.ts"
+  ],
+  "runId": "A03-wire-encode-green-r01",
+  "classification": "Shared original wire encoder optional borrowed reserve/exactbyte copy/hash/cancel GREEN; whole original file/default limits",
+  "nativeCapSeconds": 180
+}

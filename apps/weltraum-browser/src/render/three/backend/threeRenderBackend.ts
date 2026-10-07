@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { validateRenderCommandOwnedSteps, renderCommandSignatureOwnedSteps } from "../../../presentation/renderCommands";
 import {
   backendRevision,
   compareArtifactVersions,
@@ -105,7 +106,15 @@ export class ThreeRenderBackend implements RenderBackend {
   }
 
   dispatch(command: RenderCommand): RenderCommandResult {
-    const validation = validateRenderCommand(command);
+    return this.dispatchSteps(command, false).next().value as RenderCommandResult;
+  }
+
+  *dispatchOwnedSteps(command: RenderCommand): Generator<string, RenderCommandResult, unknown> {
+    return yield* this.dispatchSteps(command, true);
+  }
+
+  private *dispatchSteps(command: RenderCommand, owned: boolean): Generator<string, RenderCommandResult, unknown> {
+    const validation = owned ? yield* validateRenderCommandOwnedSteps(command) : validateRenderCommand(command);
     if (!validation.valid) {
       if ((command as { readonly kind?: unknown }).kind === "UpsertMeshArtifact") {
         this.diagnostics.rejectedArtifacts += 1;
@@ -140,7 +149,7 @@ export class ThreeRenderBackend implements RenderBackend {
       return this.finish(renderCommandResult("RejectedStaleRevision", "RetainedByCaller", "BackendRevisionMismatch"));
     }
     switch (command.kind) {
-      case "UpsertMeshArtifact": return this.upsert(command);
+      case "UpsertMeshArtifact": return yield* this.upsertSteps(command, owned);
       case "RemoveRepresentation": return this.remove(command);
       case "EvictRepresentation": return this.evict(command);
       case "RegisterEphemeralRepresentation": {
@@ -206,7 +215,7 @@ export class ThreeRenderBackend implements RenderBackend {
     }
   }
 
-  private upsert(command: UpsertMeshArtifactCommand): RenderCommandResult {
+  private *upsertSteps(command: UpsertMeshArtifactCommand, owned: boolean): Generator<string, RenderCommandResult, unknown> {
     const admission = this.ephemeralAdmission(command.artifact.representationKey);
     if (admission !== undefined) {
       return admission;
@@ -217,7 +226,13 @@ export class ThreeRenderBackend implements RenderBackend {
       this.diagnostics.rejectedArtifacts += 1;
       return this.finish(renderCommandResult("RejectedUnsupportedCapability", "RetainedByCaller", "UnsupportedIndexWidth"));
     }
-    const signature = renderCommandSignature(command);
+    const signature = owned ? yield* renderCommandSignatureOwnedSteps(command) : renderCommandSignature(command);
+    if (owned) {
+      if (this.diagnostics.backendState !== "Available") return this.finish(renderCommandResult("BackendUnavailable", "RetainedByCaller", "BackendNotAvailable"));
+      if (command.backendRevision !== this.diagnostics.backendRevision) return this.rejectStale("BackendRevisionMismatch", "RetainedByCaller");
+      const currentAdmission = this.ephemeralAdmission(command.artifact.representationKey);
+      if (currentAdmission !== undefined) return currentAdmission;
+    }
     const ledger = this.registry.getLedger(command.artifact.representationKey);
     if (ledger !== undefined) {
       const ordering = compareArtifactVersions(command.artifact, ledger);

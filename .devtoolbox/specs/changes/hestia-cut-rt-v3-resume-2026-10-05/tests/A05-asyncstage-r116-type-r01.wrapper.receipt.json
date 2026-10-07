@@ -1,0 +1,8 @@
+{
+  "runId": "A05-asyncstage-r116-type-r01",
+  "startedUtc": "2026-10-06T22:32:39.5974425+00:00",
+  "endedUtc": "2026-10-06T22:32:44.4937114+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 4.8792008,
+  "planFile": "A05-asyncstage-r116-type-r01.plan.json"
+}

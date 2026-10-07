@@ -1,0 +1,7 @@
+{
+  "mode": "type",
+  "binding": "A03-mesh-dispatch-source-binding-r02.json",
+  "nativeCapSeconds": 60,
+  "runId": "A03-mesh-dispatch-type-r02",
+  "classification": "Full type check after native RPC controls and existing pool route registration"
+}

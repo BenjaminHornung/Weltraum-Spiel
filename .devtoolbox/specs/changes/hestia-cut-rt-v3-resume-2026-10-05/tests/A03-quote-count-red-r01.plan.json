@@ -1,0 +1,10 @@
+{
+  "classification": "Aggregate escrow source-count/exposure preflight genuine RED for dense32768, exact6144 faces, wide IDs and preallocation credit; no geometry/plan/native issuance",
+  "mode": "tests",
+  "nativeCapSeconds": 180,
+  "files": [
+    "tests/unit/hvpOwnedBodyMesh.test.ts"
+  ],
+  "runId": "A03-quote-count-red-r01",
+  "binding": "A03-quote-count-red-r01-binding.json"
+}

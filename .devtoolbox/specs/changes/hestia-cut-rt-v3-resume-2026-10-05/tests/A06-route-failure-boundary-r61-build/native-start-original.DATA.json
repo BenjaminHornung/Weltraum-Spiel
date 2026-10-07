@@ -1,0 +1,43 @@
+{
+  "startUtc": "2026-10-05T23:50:18.779568+00:00",
+  "cwd": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\apps\\weltraum-browser",
+  "argv": [
+    "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+    "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\apps\\weltraum-browser\\node_modules\\vite\\bin\\vite.js",
+    "build"
+  ],
+  "scope": [
+    {
+      "role": "caller",
+      "pid": 5688,
+      "presence": "PRESENT",
+      "creationFileTime": 134357178179751813
+    },
+    {
+      "role": "wrapper",
+      "pid": 37932,
+      "presence": "PRESENT",
+      "creationFileTime": 134357178185888041
+    },
+    {
+      "role": "native",
+      "pid": 9152,
+      "presence": "PRESENT",
+      "creationFileTime": 134357178187851808
+    }
+  ],
+  "nativeInvocations": 1,
+  "jobAdmissionCounts": {
+    "outer": {
+      "TotalProcesses": 2,
+      "ActiveProcesses": 2,
+      "TotalTerminatedProcesses": 0
+    },
+    "native": {
+      "TotalProcesses": 1,
+      "ActiveProcesses": 1,
+      "TotalTerminatedProcesses": 0
+    }
+  },
+  "job": "Outer wrapper job with kill-on-close protects startup failure; native-only nested job with kill-on-close and whole-job timeout termination"
+}

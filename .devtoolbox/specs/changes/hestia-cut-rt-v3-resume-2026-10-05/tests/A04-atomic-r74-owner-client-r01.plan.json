@@ -1,0 +1,11 @@
+{
+  "files": [
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts",
+    "tests/unit/hvp-body-mesh-client.test.ts"
+  ],
+  "runId": "A04-atomic-r74-owner-client-r01",
+  "mode": "tests",
+  "nativeCapSeconds": 900,
+  "classification": "Complete two affected owner/client populations; actual aftereffects rollback and late/duplicate success controls; original deadlines",
+  "binding": "A04-atomic-r74-binding-r01.json"
+}

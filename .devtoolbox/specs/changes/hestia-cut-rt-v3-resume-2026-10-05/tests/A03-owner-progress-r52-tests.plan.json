@@ -1,0 +1,14 @@
+{
+  "runId": "A03-owner-progress-r52-tests",
+  "binding": "A03-owner-progress-r52-binding.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-body-plan-owner.test.ts"
+  ],
+  "nativeCapSeconds": 180,
+  "classification": "Full unchanged original Owner65 population; bounded progress reporter only; default/json reporters and all deadlines unchanged",
+  "progressReporter": {
+    "file": "owner65-progress-reporter.mjs",
+    "sha256": "814787834f16d493bb393f1a81b455ce75b39fd7dc8f2dda0256ca20f15af8e0"
+  }
+}

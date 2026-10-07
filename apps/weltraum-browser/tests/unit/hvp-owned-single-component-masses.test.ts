@@ -25,6 +25,21 @@ const sha=(bytes:string)=>createHash("sha256").update(bytes).digest("hex");
 type Prepared=ReturnType<typeof deriveStructuralSingleComponentMasses>;
 type Source=ReturnType<typeof fixture>;
 
+it("reuses the fresh immutable sole-component mass only after complete classification",()=>{
+  const source=fixture(),ledger=createStructuralOwnerLedger(32*1024*1024,undefined,128);
+  const generic=deriveStructuralSingleComponentMasses(source,budgets,()=>{},()=>{});
+  expect(generic.componentMass).not.toBe(generic.objectMass);
+  const steps=structuralOwnedSingleComponentMassesSteps(source,budgets,ledger.reserve,()=>{},()=>{});
+  try{for(;;){const step=steps.next();if(step.done){
+    const value=step.value;
+    expect(value.componentMass).toBe(value.objectMass);expect(Object.isFrozen(value.objectMass)).toBe(true);
+    expect(canonicalAdaptiveJson(value)).toBe(canonicalAdaptiveJson(generic));
+    expect(value.classification.fragments[0]!.occupiedCells).toHaveLength(value.objectMass.occupiedVoxelCount);
+    break;
+  }}}finally{steps.return(undefined as never);ledger.release();}
+  expect(ledger.resources.reservedBytes).toBe(0);
+});
+
 // Complete original-kernel literal captured BEFORE any mass implementation change, including
 // decimal roundoff and the near-zero signed cross terms. Never recomputed from an owned result.
 const literalMass={schemaVersion:"structural-microvoxel-mass-properties-v1",algorithmVersion:"structural-microvoxel-mass-v1",

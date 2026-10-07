@@ -1,0 +1,8 @@
+{
+  "runId": "A05-slots-r104-build-r04",
+  "classification": "Sealed owned-base leaf candidate full90 type and ownershipReview",
+  "mode": "build",
+  "files": [],
+  "binding": "A05-slots-r104-binding-r04.json",
+  "nativeCapSeconds": 180
+}

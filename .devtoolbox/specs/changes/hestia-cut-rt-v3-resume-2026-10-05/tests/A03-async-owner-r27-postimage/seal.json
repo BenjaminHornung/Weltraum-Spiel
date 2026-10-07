@@ -1,0 +1,17 @@
+[
+  {
+    "appRelative": "src/hestia-prototype/physics/bodyCutSession.ts",
+    "bytes": 26365,
+    "sha256": "de88ce8ccf581d4623a64288addc79a38c6fae9882e875d89435eeffa431bd85"
+  },
+  {
+    "appRelative": "src/hestia-prototype/physics/session.ts",
+    "bytes": 46172,
+    "sha256": "52963f3abe0f156cc13a4761afd2a0f685a88f660bc01e94222f5ea7b46c03f8"
+  },
+  {
+    "appRelative": "tests/unit/hvp-body-mesh-owner-integration.test.ts",
+    "bytes": 19134,
+    "sha256": "373113eb48aacd35c5f107b0dbdc1c98e5d3eb7046b2bca1aed2e791b27fef3c"
+  }
+]

@@ -1,0 +1,37 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-borrowed-body-plan.test.ts (18 tests | 1 failed) 4081ms
+   ✓ keeps full canonical bytes and original default units while the owner selects an immutable bounded hash quantum 40ms
+   ✓ refuses getter or mutable hash-quantum metadata without reading a getter and retains the first parent failure 3ms
+   ✓ bounds borrowed work with a stalled clock and closes its actual nested cursor on cancellation 2ms
+   ✓ ends borrowed work at its elapsed cutoff before reaching the unit ceiling 1ms
+   ✓ keeps the original borrowed failure when cursor cleanup also fails (Error: nested first failure) 0ms
+   ✓ keeps the original borrowed failure when cursor cleanup also fails (null) 0ms
+   ✓ keeps the original borrowed failure when cursor cleanup also fails (undefined) 0ms
+   ✓ propagates cleanup failure after a successful borrowed result 0ms
+   ✓ composes the same complete Box plan, children and removed mass under one retained parent  921ms
+   ✓ composes the same complete Sphere plan, children and removed mass under one retained parent  936ms
+   ✓ reuses only this reserved preparation's freshly derived fragment binding and keeps complete mass/classification/transition bytes 137ms
+   ✓ lets the final Structural issuer build and fully validate authority retention once per owned ingest 184ms
+   ✓ checks recipe measurement lifetime once per bounded owned quantum rather than per internal scalar 139ms
+   ✓ closes mid-plan command/ingest work without releasing the shared parent 129ms
+   × cancels the actual borrowed recipe at its first outer quantum while retaining its parent credit 313ms
+   ✓ keeps the original parent failure before any final plan or retry work 144ms
+   ✓ credits a warm cell projection before borrowing it from the parent 153ms
+   ✓ yields through Sphere material comparisons while preserving first-match semantics  973ms
+stdout | tests/unit/hvp-owned-hash-array-open.test.ts > opens owned4096 arrays cooperatively without changing bytes, integrity precedence or cleanup
+OWNED_HASH_ARRAY_OPEN {"samples":[{"units":1,"advances":12297,"indexChecks":12288,"maxChecks":1,"bulkFrozenCalls":0,"prototypeAfterIntegrityIndices":4096},{"units":7,"advances":1757,"indexChecks":12288,"maxChecks":7,"bulkFrozenCalls":0,"prototypeAfterIntegrityIndices":4096},{"units":64,"advances":193,"indexChecks":12288,"maxChecks":64,"bulkFrozenCalls":0,"prototypeAfterIntegrityIndices":4096},{"units":257,"advances":48,"indexChecks":12288,"maxChecks":257,"bulkFrozenCalls":0,"prototypeAfterIntegrityIndices":4096}],"canonicalBytes":19401,"contentHash":"fnv1a64-v1:e15bf64571353054","activation":"OFF","physicalAndTimingAcceptance":"NOT_PROVEN"}
+
+ ❯ tests/unit/hvp-owned-hash-array-open.test.ts (4 tests | 1 failed) 506ms
+   × proves produced dense shape during both bounded freeze routes without witnessing holes, accessors or cancellation 10ms
+   ✓ reuses only proven immutable array shape while preserving bytes, default work, nested errors and open yields 105ms
+   ✓ checks immutable owned dense shape once without changing descriptor, credit, hole or cancellation precedence 1ms
+   ✓ opens owned4096 arrays cooperatively without changing bytes, integrity precedence or cleanup  387ms
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 20 passed (22)
+   Start at  02:16:32
+   Duration  7.83s (transform 1.27s, setup 0ms, import 2.78s, tests 4.59s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-fresh-produced-reuse-r64-controls/original-vitest.json

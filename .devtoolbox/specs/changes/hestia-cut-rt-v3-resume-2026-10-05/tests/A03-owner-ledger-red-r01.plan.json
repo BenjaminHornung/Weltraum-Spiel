@@ -1,0 +1,10 @@
+{
+  "mode": "tests",
+  "runId": "A03-owner-ledger-red-r01",
+  "binding": "A03-owner-ledger-red-r01-binding.json",
+  "nativeCapSeconds": 180,
+  "classification": "Owner ledger lifetime RED; original whole file and per-test deadlines",
+  "files": [
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts"
+  ]
+}

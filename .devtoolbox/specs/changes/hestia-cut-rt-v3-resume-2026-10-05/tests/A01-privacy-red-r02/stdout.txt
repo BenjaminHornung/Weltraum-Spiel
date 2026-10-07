@@ -1,0 +1,67 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+stdout | tests/unit/hvpCutRtReport.test.ts > P07 owning artifact and privacy boundaries > creates one exclusive safe directory and emits relative inventories with unchanged actual hashes
+RUNNER_CONTRACT_SAFE_ADDITIVE_FIXTURE C:/IFI_SourceCode/Utils/opencode-migration/tmp/opencode/hvp-runner-contract-fixture-6Zn8Jh
+
+ ❯ tests/unit/hvpCutRtReport.test.ts (53 tests | 2 failed) 60ms
+     × publishes only the GPU identity and driver fields used by reference-device admission 10ms
+     × keeps nested metadata and error canaries out of files and fallback test attachments 6ms
+   ✓ uses the runner's exact diagnostic, qualification and formal session plans without acceptance shortcuts 6ms
+   ✓ retains all fourteen populations, unstarted/preflight attempts and warmups without pooling body motion 3ms
+     ✓ uses the real input marker and terminal/render endpoints without mutating raw data 1ms
+     ✓ keeps a timed-out command's exact input but invents no terminal or render time 0ms
+     ✓ separates body/terrain namespaces and unrelated command IDs 0ms
+     ✓ does not turn NoOp into success timing 0ms
+     ✓ does not turn Rejected into success timing 0ms
+     ✓ does not turn RecoveryHold into success timing 0ms
+     ✓ rejects duplicate marker 0 rather than choosing a convenient copy 0ms
+     ✓ rejects duplicate marker 1 rather than choosing a convenient copy 0ms
+     ✓ rejects duplicate marker 2 rather than choosing a convenient copy 0ms
+     ✓ reports missing, invalid or contradictory marker evidence 0 0ms
+     ✓ reports missing, invalid or contradictory marker evidence 1 0ms
+     ✓ reports missing, invalid or contradictory marker evidence 2 0ms
+     ✓ reports missing, invalid or contradictory marker evidence 3 0ms
+     ✓ reports missing, invalid or contradictory marker evidence 4 0ms
+     ✓ reports missing, invalid or contradictory marker evidence 5 0ms
+     ✓ reports missing, invalid or contradictory marker evidence 6 0ms
+   ✓ binds a finite completed body hold only to its actual command and excludes manual or stale clocks 0ms
+   ✓ requires health published after the actual endpoint and refuses missing or failed sink data 0ms
+     ✓ uses nearest rank for all quantiles without sorting or rewriting input 1ms
+     ✓ reports the maximum as nearest-rank p95 for fifteen samples 0ms
+     ✓ keeps all eight scenario/temperature populations separate, including empty groups 0ms
+     ✓ retains incomplete Applied and Timeout attempts instead of converting missing times to zero 0ms
+     ✓ does not invent an Applied-to-render interval without both real endpoints 0ms
+     ✓ counts every terminal outcome and reports known hold durations without inventing success timings 0ms
+     ✓ reports invalid measurement {"inputMs":-1} rather than clamping or silently accepting it 2ms
+     ✓ reports invalid measurement {"inputMs":null} rather than clamping or silently accepting it 0ms
+     ✓ reports invalid measurement {"appliedMs":null} rather than clamping or silently accepting it 0ms
+     ✓ reports invalid measurement {"appliedMs":9} rather than clamping or silently accepting it 0ms
+     ✓ reports invalid measurement {"firstCommittedRenderSubmitMs":-1} rather than clamping or silently accepting it 0ms
+     ✓ reports invalid measurement {"firstCommittedRenderSubmitMs":19} rather than clamping or silently accepting it 0ms
+     ✓ reports invalid measurement {"holdMs":-1} rather than clamping or silently accepting it 0ms
+     ✓ reports invalid measurement {"holdMs":null} rather than clamping or silently accepting it 0ms
+     ✓ reports invalid measurement {"sourceGenerationBefore":-1} rather than clamping or silently accepting it 0ms
+     ✓ reports invalid measurement {"sourceGenerationAfter":1.5} rather than clamping or silently accepting it 0ms
+     ✓ reports invalid measurement {"sourceGenerationAfter":9007199254740992} rather than clamping or silently accepting it 0ms
+     ✓ reports invalid measurement {"outcome":"Rejected","appliedMs":20} rather than clamping or silently accepting it 0ms
+     ✓ reports invalid measurement {"commandId":""} rather than clamping or silently accepting it 0ms
+     ✓ reports invalid measurement {} rather than clamping or silently accepting it 0ms
+     ✓ counts unclassifiable and unknown-outcome records without assigning them to a valid population 1ms
+     ✓ does not deduplicate recurring command IDs from separately bound runtimes 0ms
+     ✓ returns empty populations as missing rather than zero-millisecond successes 0ms
+     ✓ rejects outside-source before any redirected write and attaches every planned record 2ms
+     ✓ rejects inside-app before any redirected write and attaches every planned record 1ms
+     ✓ rejects ancestor-junction before any redirected write and attaches every planned record 1ms
+     ✓ retains first operation failure, warmups and raw markers after first-write failure 1ms
+     ✓ retains first operation failure, warmups and raw markers after final-write failure 1ms
+     ✓ projects synthetic launch, page, console, nested-cut and cleanup failures without leaking text to file or attachment 1ms
+     ✓ creates one exclusive safe directory and emits relative inventories with unchanged actual hashes 15ms
+     ✓ rechecks a created directory before final persistence and falls back without redirected writes 1ms
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 51 passed (53)
+   Start at  11:04:34
+   Duration  728ms (transform 215ms, setup 0ms, import 413ms, tests 60ms, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A01-privacy-red-r02/report.json

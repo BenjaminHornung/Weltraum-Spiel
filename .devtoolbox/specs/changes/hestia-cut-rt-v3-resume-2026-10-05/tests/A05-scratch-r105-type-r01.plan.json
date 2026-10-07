@@ -1,0 +1,8 @@
+{
+  "runId": "A05-scratch-r105-type-r01",
+  "classification": "Same presentation byte format independent oracle and one scalar scratch",
+  "mode": "type",
+  "files": [],
+  "binding": "A05-scratch-r105-binding-r01.json",
+  "nativeCapSeconds": 60
+}

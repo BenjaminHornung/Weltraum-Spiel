@@ -1,0 +1,11 @@
+{
+  "files": [
+    "tests/unit/hvp-borrowed-mesh-decode.test.ts",
+    "tests/unit/hvpBodyMeshJob.test.ts"
+  ],
+  "binding": "A03-mesh-pack-green-r01-binding.json",
+  "mode": "tests",
+  "nativeCapSeconds": 180,
+  "runId": "A03-mesh-pack-green-r01",
+  "classification": "Shared original pack algorithm optional borrowed reserve/cell/hash steps GREEN plus whole original body mesh job unit; default deadlines"
+}

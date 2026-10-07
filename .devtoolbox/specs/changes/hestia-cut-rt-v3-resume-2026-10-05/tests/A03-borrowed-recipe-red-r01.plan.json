@@ -1,0 +1,10 @@
+{
+  "files": [
+    "tests/unit/hvp-borrowed-rigid-recipe.test.ts"
+  ],
+  "mode": "tests",
+  "runId": "A03-borrowed-recipe-red-r01",
+  "classification": "Missing borrowed parent full recipe composition RED; no runtime caller activation or deadline change",
+  "nativeCapSeconds": 180,
+  "binding": "A03-borrowed-recipe-red-source-binding-r01.json"
+}

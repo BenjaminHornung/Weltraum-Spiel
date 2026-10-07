@@ -1,0 +1,8 @@
+{
+  "files": [],
+  "classification": "Exact R31 shared wire encoder and final statictyped/bitpattern controls full type original60",
+  "binding": "A03-wire-encode-regressions-r01-binding.json",
+  "nativeCapSeconds": 60,
+  "mode": "type",
+  "runId": "A03-wire-encode-type-r01"
+}

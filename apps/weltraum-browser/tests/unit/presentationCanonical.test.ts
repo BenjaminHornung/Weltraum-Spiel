@@ -1,5 +1,6 @@
-import {expect,it} from "vitest";
+import {expect,it,vi} from "vitest";
 import {canonicalSignature} from "../../src/presentation/canonical";
+import * as presentationCanonical from "../../src/presentation/canonical";
 
 // Independent reference: explicit canonical byte stream and the original BigInt
 // definition of FNV-1a modulo 2^64. No production hash/encoding helpers are used.
@@ -48,4 +49,56 @@ it("preserves canonical byte order and all 64 hash bits against an independent B
   expect(canonicalSignature({b:2,a:1})).toBe(canonicalSignature({a:1,b:2}));
   expect(canonicalSignature(words)).not.toBe(canonicalSignature(words.subarray(1)));
   expect(canonicalSignature(0)).not.toBe(canonicalSignature(-0));
+});
+it("encodes short UTF8 strings into writer scratch and preserves long and surrogate boundary bytes",()=>{
+  const values=["", "a".repeat(127), "a".repeat(128), "é".repeat(128), "\ud800".repeat(128), "🌿".repeat(64),
+    "x".repeat(127)+"\ud800", "a".repeat(129), "🌿".repeat(65), "long".repeat(1024)];
+  const expected=values.map(reference),encode=vi.spyOn(TextEncoder.prototype,"encode"),into=vi.spyOn(TextEncoder.prototype,"encodeInto");
+  try{
+    values.forEach((value,i)=>expect(canonicalSignature(value)).toBe(expected[i]));
+    expect(encode).toHaveBeenCalledTimes(3);expect(into).toHaveBeenCalledTimes(values.length*2-3);
+    const alternating=["long".repeat(1024),"\u0000é🌿\ud800","", "b".repeat(128),"z",""];
+    expect(canonicalSignature(alternating)).toBe(reference(alternating));
+  }finally{encode.mockRestore();into.mockRestore();}
+});
+it("reuses one scalar scratch per writer while preserving mixed numeric length string and typed bytes",()=>{
+  const value={rows:Array.from({length:128},(_,i)=>({n:i-.5,text:`r${i}🌿`,flag:i%2===0})),words:new Uint16Array([0,65535,1]),
+    numbers:[-0,NaN,Infinity,-Infinity,Number.MIN_VALUE,Number.MAX_VALUE]};
+  const expected=reference(value),Original=globalThis.DataView;let scalarViews=0;
+  try{globalThis.DataView=new Proxy(Original,{construct(target,args,newTarget){
+    if((args[0] as ArrayBuffer).byteLength===8){scalarViews+=1;}return Reflect.construct(target,args,newTarget);
+  }});
+    expect(canonicalSignature(value)).toBe(expected);expect(scalarViews).toBe(1);
+  }finally{globalThis.DataView=Original;}
+});
+it("hashes every owned typed element and Unicode byte in bounded steps without changing the binary canonical format",()=>{
+  const stepsFor=(presentationCanonical as unknown as {canonicalSignatureOwnedSteps:(value:unknown)=>Generator<string,ReturnType<typeof canonicalSignature>,unknown>}).canonicalSignatureOwnedSteps;
+  const words=Uint32Array.from({length:65_537},(_,i)=>Math.imul(i,1664525)>>>0),floats=Float32Array.from({length:8193},(_,i)=>(i-4000)/7);
+  const values=[{words,floats,small:new Uint16Array([0,65535,1]),bounds:{min:{x:-0,y:NaN,z:-Infinity},max:{x:Infinity,y:1e-7,z:1e21}}},
+    {text:"x".repeat(127)+"🌿\ud800"+"é".repeat(4097),empty:"",list:[false,true,null,undefined,-0]}];
+  for(const value of values){const expected=reference(value),steps=stepsFor(value);let yields=0;
+    try{for(;;){const next=steps.next();if(next.done){expect(next.value).toBe(expected);expect(next.value).toBe(canonicalSignature(value));break;}
+      expect(next.value).toMatch(/^canonical/);yields+=1;}}finally{steps.return(undefined as never);}
+    expect(yields).toBeGreaterThan(64);
+  }
+  const steps=stepsFor({words});for(;;){const next=steps.next();expect(next.done).toBe(false);if(next.value==="canonicalTypedBytes")break;}
+  expect(steps.return(undefined as never)).toEqual({done:true,value:undefined});expect(steps.next()).toEqual({done:true,value:undefined});
+  for(const value of [new Int32Array([1]),1n,Symbol("unsupported")]){
+    let old:unknown;try{canonicalSignature(value);}catch(error){old=error;}
+    const own=stepsFor(value);try{expect(()=>{for(;;){if(own.next().done){break;}}}).toThrow((old as Error).message);}finally{own.return(undefined as never);}
+  }
+});
+it("bounds each native typed fold to 4096 bytes even when instance element width is shadowed",()=>{
+  const stepsFor=(presentationCanonical as unknown as {canonicalSignatureOwnedSteps:(value:unknown)=>Generator<string,string,unknown>}).canonicalSignatureOwnedSteps;
+  for(const array of [new Float32Array(4097),new Uint16Array(8193),new Uint32Array(4097)]){
+    Object.defineProperty(array,"BYTES_PER_ELEMENT",{value:8192});
+    const expected=canonicalSignature(array),steps=stepsFor(array);let bytes=0;
+    const f=vi.spyOn(DataView.prototype,"setFloat32"),u=vi.spyOn(DataView.prototype,"setUint32"),s=vi.spyOn(DataView.prototype,"setUint16");
+    try{for(;;){f.mockClear();u.mockClear();s.mockClear();const next=steps.next();
+      const count=4*(f.mock.calls.length+u.mock.calls.length)+2*s.mock.calls.length;
+      expect(count).toBeLessThanOrEqual(4096);bytes+=count;
+      if(next.done){expect(next.value).toBe(expected);break;}}
+      expect(bytes).toBe(array.byteLength);
+    }finally{steps.return(undefined as never);f.mockRestore();u.mockRestore();s.mockRestore();}
+  }
 });

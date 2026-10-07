@@ -1,4 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it,vi } from "vitest";
+import * as workerBarrel from "../../src/workers";
+import {integrateBodyMeshWorkerResultSteps} from "../../src/workers/resultGate";
 import {
   algorithmVersion,
   byteCount,
@@ -32,6 +34,40 @@ const result: WorkerJobResult = {
 };
 
 describe("worker result integration gate", () => {
+  it("hashes before freezing the one generic Accepted decision",()=>{
+    const bundle=output(),events:string[]=[],nativeFreeze=Object.freeze,nativeBytes=Uint8Array;
+    const freeze=vi.spyOn(Object,"freeze").mockImplementation(((value:unknown)=>{
+      if(typeof value==="object"&&value!==null&&(value as {kind?:string}).kind==="Accepted")events.push("AcceptedFreeze");
+      return nativeFreeze(value);
+    }) as typeof Object.freeze);
+    vi.stubGlobal("Uint8Array",new Proxy(nativeBytes,{construct(target,args,newTarget){
+      if(args[0]===bundle.buffers[0])events.push("HashView");return Reflect.construct(target,args,newTarget);
+    }}));
+    try{integrateWorkerResult(expectation,result,bundle);}
+    finally{vi.unstubAllGlobals();freeze.mockRestore();}
+    expect(events).toEqual(["HashView","AcceptedFreeze"]);
+  });
+  it("keeps private bounded integration out of the barrel and verifies every output byte before acceptance",()=>{
+    expect(Object.keys(workerBarrel)).not.toContain("integrateBodyMeshWorkerResultSteps");
+    for(const bytes of [0,4095,4096,4097,8*1024*1024]){
+      const buffers=Array.from({length:7},(_,index)=>new ArrayBuffer(index===0?bytes:0));
+      const digest=fnv1aBytes(buffers),bundle:TransferableBufferBundle={ownership:"WorkerToConsumer",revision:contentRevision(2),buffers,byteLength:byteCount(bytes),
+        contentHash:digest,views:buffers.map((value,index)=>({name:`channel-${index}`,bufferIndex:index,kind:"Uint8Array",byteOffset:0,elementCount:value.byteLength}))};
+      const expected={...expectation,maximumOutputBytes:byteCount(8*1024*1024),expectedContentHash:digest},actual={...result,outputBytes:byteCount(bytes),contentHash:digest};
+      const steps=integrateBodyMeshWorkerResultSteps(expected,actual,bundle);let yields=0;
+      try{for(;;){const step=steps.next();if(step.done){expect(step.value).toEqual(integrateWorkerResult(expected,actual,bundle));break;}
+        expect(step.value).toBe("transferHash");yields+=1;}}
+      finally{steps.return(undefined as never);}
+      expect(yields).toBe(Math.floor(bytes/4096)+7);
+      for(const [e,r,b] of [[{...expected,expectedContentHash:"bad"},actual,bundle],[expected,{...actual,contentHash:"bad"},bundle],
+        [expected,actual,{...bundle,contentHash:"bad"}],[{...expected,cancelled:true},actual,bundle],
+        [{...expected,sourceInputDigest:"different"},actual,{...bundle,views:[]}]] as const){
+        const failed=integrateBodyMeshWorkerResultSteps(e,r,b);let decision;
+        try{do{decision=failed.next();}while(!decision.done);}finally{failed.return(undefined as never);}
+        expect(decision.value).toEqual(integrateWorkerResult(e,r,b));
+      }
+    }
+  });
   it("accepts a matching validated result", () => {
     expect(integrateWorkerResult(expectation, result, output()).kind).toBe("Accepted");
   });

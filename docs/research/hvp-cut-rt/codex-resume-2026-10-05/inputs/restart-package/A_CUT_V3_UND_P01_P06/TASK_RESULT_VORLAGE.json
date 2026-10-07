@@ -1,0 +1,53 @@
+{
+  "schema": "hestia-resume-task-result-v1",
+  "isTemplate": true,
+  "taskId": null,
+  "attemptId": null,
+  "baseCommit": null,
+  "resultCommit": null,
+  "sourceTreeHash": null,
+  "readOnly": false,
+  "provider": {
+    "name": "codex",
+    "sessionId": null,
+    "goalStatus": null,
+    "lastProviderStatus": null
+  },
+  "taskStatus": "WAITING_EVIDENCE",
+  "writeSet": [],
+  "dependencyResults": [],
+  "checks": [
+    {
+      "name": null,
+      "runId": null,
+      "sourceBinding": null,
+      "exitCode": null,
+      "signal": null,
+      "watchdogTriggered": null,
+      "expectedPopulation": null,
+      "completedPopulation": null,
+      "passed": null,
+      "failed": null,
+      "skipped": null,
+      "resultFile": null,
+      "sha256": null,
+      "status": "NOT_RUN"
+    }
+  ],
+  "artifacts": [],
+  "review": {
+    "required": true,
+    "independent": null,
+    "sourceBinding": null,
+    "status": "NOT_RUN",
+    "report": null
+  },
+  "ownedProcesses": {
+    "released": null,
+    "remaining": []
+  },
+  "limitations": [],
+  "scopeVerified": false,
+  "privacyVerified": false,
+  "acceptedByParent": false
+}

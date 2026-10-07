@@ -1,0 +1,10 @@
+{
+  "runId": "A03-owner-admission-green-r01",
+  "binding": "A03-owner-admission-green-source-binding-r01.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts"
+  ],
+  "nativeCapSeconds": 180,
+  "classification": "First green of retained-owner admission Stage guard; not productive integration acceptance"
+}

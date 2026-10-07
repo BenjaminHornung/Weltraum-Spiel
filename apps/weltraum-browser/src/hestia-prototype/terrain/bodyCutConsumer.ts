@@ -8,7 +8,7 @@ import type {HvpCutTrace} from "../runtime/cutTrace";
 
 /** The local worker does not pause or own a moving parent. Only the commit does. */
 export const createHvpBodyCutConsumer=(physics:HvpPhysicsClient,compile:(source:HvpMovingCutPreparation)=>Promise<HvpBodyCutProducts>,
-  stage:(parentId:string,products:HvpBodyCutProducts)=>HvpStagedTerrain,traceInput?:HvpCutTrace)=>{
+  stage:(parentId:string,products:HvpBodyCutProducts)=>HvpStagedTerrain,traceInput?:HvpCutTrace,finishCompile?:(id:string)=>Promise<void>)=>{
   let disposed=false,busy=false,held=false;
   let trace=traceInput;
   const emit=(id:string,phase:string,start?:number):number|undefined=>{
@@ -19,6 +19,7 @@ export const createHvpBodyCutConsumer=(physics:HvpPhysicsClient,compile:(source:
   };
   let last:Readonly<{id:string;status:string;reason:string}>|null=null;
   const receipts=new Map<string,{signature:string;promise:Promise<void>;outcome?:HvpSimpleOutcome}>();
+  let active:Promise<void>|undefined,cleanupId:string|undefined;
   return {
     read:()=>Object.freeze({state:held?"RecoveryHold":busy?"Pending":"Idle",last,issued:receipts.size}),
     checkpoint(){
@@ -51,9 +52,10 @@ export const createHvpBodyCutConsumer=(physics:HvpPhysicsClient,compile:(source:
       busy=true;
       const submitted=emit(request.id,"cutBodySubmittedMs");
       const promise=(async()=>{
-        let begun=false,finished=false,render:HvpStagedTerrain|undefined;
+        let begun=false,finished=false,render:HvpStagedTerrain|undefined,terminal:NonNullable<typeof last>|undefined;
         try{
           const source=await physics.beginBodyCut(request);begun=true;
+          if(finishCompile!==undefined){cleanupId=request.id;}
           const products=await compile(source);
           if(disposed){throw new Error("Moving preparation cancelled");}
           render=stage(request.ownerId,products); // New local geometry stays hidden.
@@ -63,8 +65,8 @@ export const createHvpBodyCutConsumer=(physics:HvpPhysicsClient,compile:(source:
           if(disposed){throw new Error("Moving publication cancelled");}
           physics.publishBodyCut();render.publish();
           await physics.finalizeBodyCut(request.id);finished=true;
-          render.finish();last=Object.freeze({id:request.id,status:"Applied",reason:"Current-pose fragment replacement"});
-          if(submitted!==undefined){emit(request.id,"cutBodyTotalAppliedMs",submitted);}
+          render.finish();render=undefined;terminal=Object.freeze({id:request.id,status:"Applied",reason:"Current-pose fragment replacement"});
+          if(finishCompile===undefined){last=terminal;if(submitted!==undefined){emit(request.id,"cutBodyTotalAppliedMs",submitted);}}
         }catch(error){
           const renderRecovery=error instanceof HvpRenderStageRecoveryError;
           let restored=!finished&&!renderRecovery;
@@ -75,13 +77,31 @@ export const createHvpBodyCutConsumer=(physics:HvpPhysicsClient,compile:(source:
           }
           try{if(physics.read().moving.state==="RecoveryHold"){restored=false;}}catch{restored=false;}
           if(!restored){held=true;if(!renderRecovery){try{await physics.command("Pause");}catch{/* Never assert restoration without the World. */}}}
-          last=Object.freeze({id:request.id,status:held?"RecoveryHold":"Rejected",reason:String(error)});
-          if(submitted!==undefined){emit(request.id,held?"cutBodyTotalRecoveryHoldMs":"cutBodyTotalRejectedMs",submitted);}
-        }finally{const receipt=receipts.get(request.id);if(receipt&&last){receipt.outcome=last;}busy=false;}
+          terminal=Object.freeze({id:request.id,status:held?"RecoveryHold":"Rejected",reason:String(error)});
+          if(finishCompile===undefined){last=terminal;if(submitted!==undefined){emit(request.id,held?"cutBodyTotalRecoveryHoldMs":"cutBodyTotalRejectedMs",submitted);}}
+        }finally{
+          if(finishCompile!==undefined&&!held){
+            render=undefined;
+            try{await finishCompile(request.id);cleanupId=undefined;}
+            catch(error){held=true;terminal=Object.freeze({id:request.id,status:"RecoveryHold",reason:`Mesh ownership release unproven: ${String(error)}`});
+              try{await physics.command("Pause");}catch{/* Failed release never proves restoration. */}}
+          }
+          if(finishCompile!==undefined&&terminal!==undefined){
+            last=terminal;if(submitted!==undefined){emit(request.id,`cutBodyTotal${terminal.status}Ms`,submitted);}
+          }
+          const receipt=receipts.get(request.id);if(receipt&&last){receipt.outcome=last;}busy=false;
+        }
       })();
+      active=promise;void promise.then(()=>{if(active===promise){active=undefined;}},()=>{if(active===promise){active=undefined;}});
       receipts.set(request.id,{signature,promise,...(!busy&&last?.id===request.id?{outcome:last}:{})});return promise;
     },
     disableTrace():void {trace=undefined;},
-    dispose():void {disposed=true;trace=undefined;}
+    dispose():void {disposed=true;trace=undefined;},
+    whenIdle():Promise<void> {return active??Promise.resolve();},
+    /** Calling coordinator must first prove complete backend/render resource disposal. */
+    async releaseDisposedResources():Promise<void> {
+      if(!disposed||busy){throw new Error("Body mesh resource cleanup is not quiescent");}
+      if(cleanupId!==undefined&&finishCompile!==undefined){await finishCompile(cleanupId);cleanupId=undefined;}
+    }
   };
 };

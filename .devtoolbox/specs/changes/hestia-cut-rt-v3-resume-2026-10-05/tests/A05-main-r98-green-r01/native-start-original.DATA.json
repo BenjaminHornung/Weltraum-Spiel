@@ -1,0 +1,55 @@
+{
+  "startUtc": "2026-10-06T18:19:55.275655+00:00",
+  "cwd": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\apps\\weltraum-browser",
+  "argv": [
+    "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+    "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\apps\\weltraum-browser\\node_modules\\vitest\\vitest.mjs",
+    "run",
+    "tests/unit/hvp-support-json.test.ts",
+    "tests/unit/hvp-owned-support-plan.test.ts",
+    "tests/unit/hvp-terrain-support.test.ts",
+    "tests/unit/hvp-terrain-transfer.test.ts",
+    "tests/unit/workerPoolLifecycle.test.ts",
+    "tests/unit/hvp-terrain-products.test.ts",
+    "tests/unit/hvp-terrain-consumer.test.ts",
+    "--maxWorkers=1",
+    "--no-file-parallelism",
+    "--reporter=default",
+    "--reporter=json",
+    "--outputFile=C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\.devtoolbox\\specs\\changes\\hestia-cut-rt-v3-resume-2026-10-05\\tests\\A05-main-r98-green-r01\\original-vitest.json"
+  ],
+  "scope": [
+    {
+      "role": "caller",
+      "pid": 29360,
+      "presence": "PRESENT",
+      "creationFileTime": 134357843944289728
+    },
+    {
+      "role": "wrapper",
+      "pid": 53260,
+      "presence": "PRESENT",
+      "creationFileTime": 134357843950618154
+    },
+    {
+      "role": "native",
+      "pid": 42852,
+      "presence": "PRESENT",
+      "creationFileTime": 134357843952931840
+    }
+  ],
+  "nativeInvocations": 1,
+  "jobAdmissionCounts": {
+    "outer": {
+      "TotalProcesses": 2,
+      "ActiveProcesses": 2,
+      "TotalTerminatedProcesses": 0
+    },
+    "native": {
+      "TotalProcesses": 1,
+      "ActiveProcesses": 1,
+      "TotalTerminatedProcesses": 0
+    }
+  },
+  "job": "Outer wrapper job with kill-on-close protects startup failure; native-only nested job with kill-on-close and whole-job timeout termination"
+}

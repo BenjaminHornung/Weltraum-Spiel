@@ -1,0 +1,8 @@
+{
+  "files": [],
+  "nativeCapSeconds": 60,
+  "runId": "A03-external-hold-reviewfix-type-r34",
+  "mode": "type",
+  "classification": "Final reviewfix typecheck",
+  "binding": "A03-external-hold-reviewfix-r34-binding.json"
+}

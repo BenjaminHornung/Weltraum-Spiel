@@ -1,0 +1,10 @@
+{
+  "nativeCapSeconds": 180,
+  "runId": "A03-borrowed-command-red-r01",
+  "binding": "A03-borrowed-command-red-source-binding-r01.json",
+  "classification": "Missing nested borrowed command seam RED, shared existing command algorithm and original deadlines",
+  "files": [
+    "tests/unit/hvp-borrowed-command.test.ts"
+  ],
+  "mode": "tests"
+}

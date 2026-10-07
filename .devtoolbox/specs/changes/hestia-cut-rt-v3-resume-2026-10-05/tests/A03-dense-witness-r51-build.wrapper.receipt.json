@@ -1,0 +1,8 @@
+{
+  "runId": "A03-dense-witness-r51-build",
+  "startedUtc": "2026-10-05T21:53:19.7970137+00:00",
+  "endedUtc": "2026-10-05T21:53:24.0404575+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 4.2365778,
+  "planFile": "A03-dense-witness-r51-build.plan.json"
+}

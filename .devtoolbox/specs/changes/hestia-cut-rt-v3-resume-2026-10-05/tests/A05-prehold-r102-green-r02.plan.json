@@ -1,0 +1,14 @@
+{
+  "runId": "A05-prehold-r102-green-r02",
+  "classification": "Current native preHold local recipe and exact Stage ticket",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-terrain-native-plan.test.ts",
+    "tests/unit/hvp-terrain-fragment-world.test.ts",
+    "tests/unit/hvp-transferred-recipe.test.ts",
+    "tests/unit/hvp-physics-worker-clock.test.ts",
+    "tests/unit/hvp-terrain-consumer.test.ts"
+  ],
+  "binding": "A05-prehold-r102-binding-r02.json",
+  "nativeCapSeconds": 180
+}

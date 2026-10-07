@@ -49,7 +49,7 @@ function* validateDenseChannelSteps(value: unknown, name: string,
     exactLength: ADAPTIVE_BRICK_CELL_COUNT
   }) : yield* adaptiveDenseArraySteps(value, `brick/${name}`, "InvalidBaseField", {
     exactLength: ADAPTIVE_BRICK_CELL_COUNT
-  }, owned.reserve);
+  }, owned.reserve, true);
 }
 
 const finiteChannelValue = (value: unknown, path: string): number => {
@@ -496,11 +496,15 @@ export function* adaptiveValidateMaterializedBrickSteps(brick: MaterializedAdapt
   const validatedOccupancy: number[] = [];
   const validatedMaterial: (StableAuthorityId | null)[] = [];
   const validatedSemantic: (StableAuthorityId | null)[] = [];
+  let borrowChannels = owned !== undefined && density === record.density && occupancy === record.occupancy
+    && material === record.material && semantic === record.semantic;
   for (let index = 0; index < density.length; index += 1) {
-    validatedDensity.push(finiteChannelValue(density[index], `brick/density/${index}`));
+    const value = finiteChannelValue(density[index], `brick/density/${index}`);
+    validatedDensity.push(value);
     const occupied = finiteChannelValue(occupancy[index], `brick/occupancy/${index}`);
     if (occupied < 0 || occupied > 1) { return fail("InvalidBaseField", `brick/occupancy/${index}`, "Occupancy must be in [0, 1]."); }
     validatedOccupancy.push(occupied);
+    if (borrowChannels && (!Object.is(value, density[index]) || !Object.is(occupied, occupancy[index]))) { borrowChannels = false; }
     validatedMaterial.push(authorityChannelValue(material[index], `brick/material/${index}`));
     validatedSemantic.push(authorityChannelValue(semantic[index], `brick/semantic/${index}`));
     if (owned !== undefined) { yield; }
@@ -510,7 +514,10 @@ export function* adaptiveValidateMaterializedBrickSteps(brick: MaterializedAdapt
   owned?.reserve(16_384, true);
   const channels = owned === undefined ? {
     density: validatedDensity, occupancy: validatedOccupancy, material: validatedMaterial, semantic: validatedSemantic
-  } : Object.freeze({
+  } : borrowChannels ? Object.freeze({
+    density: density as readonly number[], occupancy: occupancy as readonly number[],
+    material: material as readonly (StableAuthorityId | null)[], semantic: semantic as readonly (StableAuthorityId | null)[]
+  }) : Object.freeze({
     density: yield* adaptiveFreezeArraySteps(validatedDensity, owned.reserve),
     occupancy: yield* adaptiveFreezeArraySteps(validatedOccupancy, owned.reserve),
     material: yield* adaptiveFreezeArraySteps(validatedMaterial, owned.reserve),

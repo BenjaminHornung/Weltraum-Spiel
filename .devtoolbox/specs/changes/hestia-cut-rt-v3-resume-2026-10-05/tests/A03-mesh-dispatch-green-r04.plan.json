@@ -1,0 +1,11 @@
+{
+  "files": [
+    "tests/unit/workerPoolLifecycle.test.ts",
+    "tests/unit/hvpBodyMeshJob.test.ts"
+  ],
+  "classification": "Complete pool and private mesh populations, all paths bound before launch; original test deadlines unchanged",
+  "binding": "A03-mesh-dispatch-source-binding-r04.json",
+  "nativeCapSeconds": 360,
+  "runId": "A03-mesh-dispatch-green-r04",
+  "mode": "tests"
+}

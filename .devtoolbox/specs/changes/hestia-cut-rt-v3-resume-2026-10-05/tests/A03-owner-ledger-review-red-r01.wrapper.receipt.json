@@ -1,0 +1,8 @@
+{
+  "runId": "A03-owner-ledger-review-red-r01",
+  "startedUtc": "2026-10-05T14:26:36.2401117+00:00",
+  "endedUtc": "2026-10-05T14:26:51.2632052+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 15.0166398,
+  "planFile": "A03-owner-ledger-review-red-r01.plan.json"
+}

@@ -1,0 +1,8 @@
+{
+  "runId": "A06-route-failure-boundary-r61-tests",
+  "startedUtc": "2026-10-05T23:49:12.6839531+00:00",
+  "endedUtc": "2026-10-05T23:49:23.3400797+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 10.6477077,
+  "planFile": "A06-route-failure-boundary-r61-tests.plan.json"
+}

@@ -1,0 +1,14 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+stdout | tests/unit/hvp-owned-hash-emission-boundary.test.ts > preserves complete bytes and sink boundaries for primitive arrays and short/long escaped keys
+R67_EMISSION_BASELINE [{"units":1,"advances":12306,"prefixDigest":"379f40bdd9b0cbf7b690263cc748cdad162745ff5651aa16579f891bca1ed14f"},{"units":64,"advances":193,"prefixDigest":"824b657c286ca34f00675f26fe37bdff6fd8af590c8671a3269ae418908be7b6"}]
+
+ ✓ tests/unit/hvp-owned-hash-emission-boundary.test.ts (1 test) 157ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  03:19:40
+   Duration  873ms (transform 251ms, setup 0ms, import 462ms, tests 157ms, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-hash-emission-r67-baseline/original-vitest.json

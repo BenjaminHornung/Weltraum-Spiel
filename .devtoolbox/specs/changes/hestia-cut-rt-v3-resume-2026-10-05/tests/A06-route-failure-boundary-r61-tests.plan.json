@@ -1,0 +1,12 @@
+{
+  "mode": "tests",
+  "nativeCapSeconds": 600,
+  "classification": "Exact existing failure/route boundary extracted into lightweight module; no static bootstrap; loader-rejection control plus whole HUD/route/moving files",
+  "binding": "A06-route-failure-boundary-r61-binding.json",
+  "files": [
+    "tests/unit/hvp-hud-hotpath.test.ts",
+    "tests/unit/hvp-route-bundle.test.ts",
+    "tests/unit/hvp-moving-consumer.test.ts"
+  ],
+  "runId": "A06-route-failure-boundary-r61-tests"
+}

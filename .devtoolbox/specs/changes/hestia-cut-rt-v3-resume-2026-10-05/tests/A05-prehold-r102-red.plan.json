@@ -1,0 +1,10 @@
+{
+  "runId": "A05-prehold-r102-red",
+  "classification": "Meaningful missing native preHold entry RED; unchanged default deadline",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-terrain-native-plan.test.ts"
+  ],
+  "binding": "A05-prehold-r102-binding-red.json",
+  "nativeCapSeconds": 60
+}

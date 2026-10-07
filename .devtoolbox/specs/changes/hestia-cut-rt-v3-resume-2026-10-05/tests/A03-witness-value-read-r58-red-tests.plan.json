@@ -1,0 +1,10 @@
+{
+  "runId": "A03-witness-value-read-r58-red-tests",
+  "binding": "A03-witness-value-read-r58-red-binding.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-owned-hash-array-open.test.ts"
+  ],
+  "nativeCapSeconds": 180,
+  "classification": "Private exactwitness hash values need no repeatedshape descriptor; fulloriginal hash-array population RED, unchanged bytes/units/defaults/deadlines"
+}

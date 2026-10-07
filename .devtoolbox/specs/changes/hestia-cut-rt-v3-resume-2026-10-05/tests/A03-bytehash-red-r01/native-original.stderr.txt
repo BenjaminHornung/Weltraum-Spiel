@@ -1,0 +1,39 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-borrowed-bytehash.test.ts > preserves the existing literal byte hash across empty and split buffers
+TypeError: fnv1aBytesSteps is not a function
+ ❯ tests/unit/hvp-borrowed-bytehash.test.ts:10:17
+      8| it("preserves the existing literal byte hash across empty and split bu…
+      9|   const buffers=[new ArrayBuffer(0),new Uint8Array([1]).buffer,new Uin…
+     10|   expect(finish(fnv1aBytesSteps(buffers)).hash).toBe("56cf37ab");
+       |                 ^
+     11|   expect(finish(fnv1aBytesSteps([])).hash).toBe("811c9dc5");
+     12|   expect(finish(fnv1aBytesSteps(buffers)).hash).toBe(fnv1aBytes(buffer…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/unit/hvp-borrowed-bytehash.test.ts > hashes the full legal 8MiB output in cooperative units without changing its bytes
+TypeError: fnv1aBytesSteps is not a function
+ ❯ tests/unit/hvp-borrowed-bytehash.test.ts:16:23
+     14| it("hashes the full legal 8MiB output in cooperative units without cha…
+     15|   const bytes=new Uint8Array(8*1024*1024);for(let i=0;i<bytes.length;i…
+     16|   const result=finish(fnv1aBytesSteps([bytes.buffer]));expect(result.h…
+       |                       ^
+     17|   expect(result.hash).toBe(fnv1aBytes([bytes.buffer]));expect(result.y…
+     18| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/unit/hvp-borrowed-bytehash.test.ts > closes a partial hash without exposing a final hash after cancellation
+TypeError: fnv1aBytesSteps is not a function
+ ❯ tests/unit/hvp-borrowed-bytehash.test.ts:20:15
+     18| });
+     19| it("closes a partial hash without exposing a final hash after cancella…
+     20|   const steps=fnv1aBytesSteps([new ArrayBuffer(32*1024)]);expect(steps…
+       |               ^
+     21|   expect(steps.return(undefined as never)).toEqual({done:true,value:un…
+     22| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+

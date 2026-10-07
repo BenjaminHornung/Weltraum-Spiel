@@ -1,0 +1,51 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+stdout | tests/unit/hvp-owned-support-plan.test.ts > compares full384 support CPU and actual task quanta on the same occupancy without changing results, pair 0
+R97_SUPPORT384_CPU_AND_QUANTA [
+  {
+    baselineCpuMs: 1362.3235000000004,
+    ownedWorkMs: 504.04989999998725,
+    ownedWallMs: 526.1650000000009,
+    maxQuantumMs: 4.864799999999377,
+    quanta: 227
+  }
+]
+
+stdout | tests/unit/hvp-owned-support-plan.test.ts > compares full384 support CPU and actual task quanta on the same occupancy without changing results, pair 1
+R97_SUPPORT384_CPU_AND_QUANTA [
+  {
+    baselineCpuMs: 1361.4853000000003,
+    ownedWorkMs: 528.1160999999793,
+    ownedWallMs: 546.7011999999995,
+    maxQuantumMs: 3.717500000000655,
+    quanta: 234
+  }
+]
+
+stdout | tests/unit/hvp-owned-support-plan.test.ts > compares full384 support CPU and actual task quanta on the same occupancy without changing results, pair 2
+R97_SUPPORT384_CPU_AND_QUANTA [
+  {
+    baselineCpuMs: 1168.3650000000016,
+    ownedWorkMs: 488.0142999999971,
+    ownedWallMs: 508.77939999999944,
+    maxQuantumMs: 5.2981999999992695,
+    quanta: 220
+  }
+]
+
+ ✓ tests/unit/hvp-owned-support-plan.test.ts (6 tests) 10335ms
+   ✓ shares full support reports and every source read with the original algorithm while using one borrowed lifetime  4118ms
+   ✓ runs the owned job through the existing real task pump and closes input/search/ingest/recipe cancellation  728ms
+   ✓ compares full384 support CPU and actual task quanta on the same occupancy without changing results, pair 0  1892ms
+   ✓ compares full384 support CPU and actual task quanta on the same occupancy without changing results, pair 1  1911ms
+   ✓ compares full384 support CPU and actual task quanta on the same occupancy without changing results, pair 2  1679ms
+ ✓ tests/unit/hvp-owned-terrain-products.test.ts (2 tests) 254ms
+ ✓ tests/unit/hvp-borrowed-bytehash.test.ts (7 tests) 78ms
+
+ Test Files  3 passed (3)
+      Tests  15 passed (15)
+   Start at  23:11:55
+   Duration  14.90s (transform 1.54s, setup 0ms, import 3.35s, tests 10.67s, environment 1ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-byteblock-r108-tests-r02/original-vitest.json

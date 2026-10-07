@@ -1,0 +1,682 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner-first child projection: reuses one finished plan before CURRENT-pose Stage
+A03_OWNER_PHASE {"phase":"START","name":"owner-first child projection: reuses one finished plan before CURRENT-pose Stage","hrtimeNs":"25358809368600","heapUsed":37176664}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner-first child projection: reuses one finished plan before CURRENT-pose Stage
+A03_OWNER_PHASE {"phase":"END","name":"owner-first child projection: reuses one finished plan before CURRENT-pose Stage","wallMs":445.4671,"cpu":{"user":391000,"system":140000},"heapUsed":55742328}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner-first child projection: rejects cancelled old work for a reused command id
+A03_OWNER_PHASE {"phase":"START","name":"owner-first child projection: rejects cancelled old work for a reused command id","hrtimeNs":"25359256051300","heapUsed":55755640}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner-first child projection: rejects cancelled old work for a reused command id
+A03_OWNER_PHASE {"phase":"END","name":"owner-first child projection: rejects cancelled old work for a reused command id","wallMs":431.2208,"cpu":{"user":328000,"system":78000},"heapUsed":41015064}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner-first child projection: retains the original plan failure on retry
+A03_OWNER_PHASE {"phase":"START","name":"owner-first child projection: retains the original plan failure on retry","hrtimeNs":"25359687697600","heapUsed":41058312}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner-first child projection: retains the original plan failure on retry
+A03_OWNER_PHASE {"phase":"END","name":"owner-first child projection: retains the original plan failure on retry","wallMs":110.0464,"cpu":{"user":78000,"system":32000},"heapUsed":54855288}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner-first child projection: uses the issued-hash factory without recut or native installation
+A03_OWNER_PHASE {"phase":"START","name":"owner-first child projection: uses the issued-hash factory without recut or native installation","hrtimeNs":"25359798164100","heapUsed":54900096}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner-first child projection: uses the issued-hash factory without recut or native installation
+A03_OWNER_PHASE {"phase":"END","name":"owner-first child projection: uses the issued-hash factory without recut or native installation","wallMs":572.6743,"cpu":{"user":375000,"system":15000},"heapUsed":49949816}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner-first child projection: permits a finished full-removal plan with no children
+A03_OWNER_PHASE {"phase":"START","name":"owner-first child projection: permits a finished full-removal plan with no children","hrtimeNs":"25360371277100","heapUsed":50002176}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner-first child projection: permits a finished full-removal plan with no children
+A03_OWNER_PHASE {"phase":"END","name":"owner-first child projection: permits a finished full-removal plan with no children","wallMs":205.3459,"cpu":{"user":156000,"system":16000},"heapUsed":58686144}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner-first child projection: rechecks cached target identity
+A03_OWNER_PHASE {"phase":"START","name":"owner-first child projection: rechecks cached target identity","hrtimeNs":"25360576999300","heapUsed":58722872}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner-first child projection: rechecks cached target identity
+A03_OWNER_PHASE {"phase":"END","name":"owner-first child projection: rechecks cached target identity","wallMs":403.9855,"cpu":{"user":282000,"system":47000},"heapUsed":52373736}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner-first child projection: rechecks cached registry identity
+A03_OWNER_PHASE {"phase":"START","name":"owner-first child projection: rechecks cached registry identity","hrtimeNs":"25360981248900","heapUsed":52410416}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner-first child projection: rechecks cached registry identity
+A03_OWNER_PHASE {"phase":"END","name":"owner-first child projection: rechecks cached registry identity","wallMs":404.6864,"cpu":{"user":390000,"system":0},"heapUsed":48300856}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner-first child projection: rechecks cached native identity
+A03_OWNER_PHASE {"phase":"START","name":"owner-first child projection: rechecks cached native identity","hrtimeNs":"25361386253600","heapUsed":48336976}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner-first child projection: rechecks cached native identity
+A03_OWNER_PHASE {"phase":"END","name":"owner-first child projection: rechecks cached native identity","wallMs":396.0887,"cpu":{"user":266000,"system":109000},"heapUsed":62813456}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > derives exactly one native plan per command across task-yielding preparation, a failed stage and its retry
+A03_OWNER_PHASE {"phase":"START","name":"derives exactly one native plan per command across task-yielding preparation, a failed stage and its retry","hrtimeNs":"25361782802000","heapUsed":62869168}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > derives exactly one native plan per command across task-yielding preparation, a failed stage and its retry
+A03_OWNER_PHASE {"phase":"END","name":"derives exactly one native plan per command across task-yielding preparation, a failed stage and its retry","wallMs":774.0456,"cpu":{"user":734000,"system":47000},"heapUsed":66724680}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > keeps the parent simulated between plan phases and stages the original hit at the current native pose
+A03_OWNER_PHASE {"phase":"START","name":"keeps the parent simulated between plan phases and stages the original hit at the current native pose","hrtimeNs":"25362557314000","heapUsed":66781872}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > keeps the parent simulated between plan phases and stages the original hit at the current native pose
+A03_OWNER_PHASE {"phase":"END","name":"keeps the parent simulated between plan phases and stages the original hit at the current native pose","wallMs":846.1675,"cpu":{"user":735000,"system":125000},"heapUsed":70245304}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > drops a cancelled or disposed preparation: no revived plan, no stage and unchanged native membership
+A03_OWNER_PHASE {"phase":"START","name":"drops a cancelled or disposed preparation: no revived plan, no stage and unchanged native membership","hrtimeNs":"25363403936300","heapUsed":70280888}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > drops a cancelled or disposed preparation: no revived plan, no stage and unchanged native membership
+A03_OWNER_PHASE {"phase":"END","name":"drops a cancelled or disposed preparation: no revived plan, no stage and unchanged native membership","wallMs":514.6811,"cpu":{"user":421000,"system":94000},"heapUsed":60091536}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > keeps a rejected task-yield adapter fatal for the command instead of resuming the steps in Stage
+A03_OWNER_PHASE {"phase":"START","name":"keeps a rejected task-yield adapter fatal for the command instead of resuming the steps in Stage","hrtimeNs":"25363918888700","heapUsed":60129776}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > keeps a rejected task-yield adapter fatal for the command instead of resuming the steps in Stage
+A03_OWNER_PHASE {"phase":"END","name":"keeps a rejected task-yield adapter fatal for the command instead of resuming the steps in Stage","wallMs":510.2936,"cpu":{"user":438000,"system":78000},"heapUsed":61229768}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > rejects a removed or replaced parent after a finished plan without touching the World
+A03_OWNER_PHASE {"phase":"START","name":"rejects a removed or replaced parent after a finished plan without touching the World","hrtimeNs":"25364429424600","heapUsed":61263984}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > rejects a removed or replaced parent after a finished plan without touching the World
+A03_OWNER_PHASE {"phase":"END","name":"rejects a removed or replaced parent after a finished plan without touching the World","wallMs":833.6273,"cpu":{"user":703000,"system":78000},"heapUsed":62995840}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > keeps the original plan error identity and never stages a protected Sphere cut
+A03_OWNER_PHASE {"phase":"START","name":"keeps the original plan error identity and never stages a protected Sphere cut","hrtimeNs":"25365263316600","heapUsed":63031800}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > keeps the original plan error identity and never stages a protected Sphere cut
+A03_OWNER_PHASE {"phase":"END","name":"keeps the original plan error identity and never stages a protected Sphere cut","wallMs":104.7929,"cpu":{"user":94000,"system":16000},"heapUsed":72452936}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > stages a Sphere that removes every cell with zero children and no invented body
+A03_OWNER_PHASE {"phase":"START","name":"stages a Sphere that removes every cell with zero children and no invented body","hrtimeNs":"25365368356200","heapUsed":72487248}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > stages a Sphere that removes every cell with zero children and no invented body
+A03_OWNER_PHASE {"phase":"END","name":"stages a Sphere that removes every cell with zero children and no invented body","wallMs":430.074,"cpu":{"user":344000,"system":125000},"heapUsed":71229016}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner-first child projection: leaves the World running and rejects actual owner disposal
+A03_OWNER_PHASE {"phase":"START","name":"owner-first child projection: leaves the World running and rejects actual owner disposal","hrtimeNs":"25365798687600","heapUsed":71263896}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner-first child projection: leaves the World running and rejects actual owner disposal
+A03_OWNER_PHASE {"phase":"END","name":"owner-first child projection: leaves the World running and rejects actual owner disposal","wallMs":2516.7728,"cpu":{"user":2468000,"system":187000},"heapUsed":91624704}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > runs session source preparation outside the World hold and preserves Running after release
+A03_OWNER_PHASE {"phase":"START","name":"runs session source preparation outside the World hold and preserves Running after release","hrtimeNs":"25368315827400","heapUsed":91661128}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > runs session source preparation outside the World hold and preserves Running after release
+hvp-body-plan-steps {"commandId":"recut","outcome":"Planned","origin":1791203702937.617,"steps":9,"truncatedSteps":0,"max":{"ordinal":5,"label":"childClassificationCells","start":14646.2746,"durationMs":117.56269999999859},"phases":[{"label":"destruction","count":1,"totalMs":62.418400000000474,"maxMs":62.418400000000474},{"label":"classification","count":1,"totalMs":24.415899999999965,"maxMs":24.415899999999965},{"label":"parentMass","count":1,"totalMs":12.84729999999945,"maxMs":12.84729999999945},{"label":"childClassificationCells","count":2,"totalMs":122.02949999999873,"maxMs":117.56269999999859},{"label":"childRecipe0","count":1,"totalMs":73.53800000000047,"maxMs":73.53800000000047},{"label":"removedMass","count":1,"totalMs":73.23890000000029,"maxMs":73.23890000000029}],"slow":[{"ordinal":0,"label":"destruction","start":14516.1916,"durationMs":62.418400000000474},{"ordinal":3,"label":"classification","start":14598.8302,"durationMs":24.415899999999965},{"ordinal":4,"label":"parentMass","start":14630.5604,"durationMs":12.84729999999945},{"ordinal":5,"label":"childClassificationCells","start":14646.2746,"durationMs":117.56269999999859,"sub":[{"phase":"partCellsMs","durationMs":9.804799999999886},{"phase":"ingestSortRunsMs","durationMs":0.15829999999914435},{"phase":"ingestJournalMs","durationMs":1.0051000000003114},{"phase":"ingestMaterializeMs","durationMs":21.22739999999976},{"phase":"ingestProofsMs","durationMs":18.840899999999237},{"phase":"ingestStructuralMs","durationMs":46.496000000001004},{"phase":"ingestTotalMs","durationMs":87.83989999999903}]},{"ordinal":7,"label":"childRecipe0","start":14786.3445,"durationMs":73.53800000000047,"sub":[{"phase":"recipeMassMs","durationMs":15.34900000000016},{"phase":"recipeClassifyMs","durationMs":11.052100000000792},{"phase":"recipeTransitionMs","durationMs":71.11479999999938},{"phase":"recipeAxesMs","durationMs":0.0684000000001106}]},{"ordinal":8,"label":"removedMass","start":14865.3347,"durationMs":73.23890000000029,"sub":[{"phase":"removedFilterMs","durationMs":0.04719999999906577},{"phase":"ingestSortRunsMs","durationMs":0.016100000000733417},{"phase":"ingestJournalMs","durationMs":0.14719999999942956},{"phase":"ingestMaterializeMs","durationMs":20.653599999999642},{"phase":"ingestProofsMs","durationMs":18.172499999998763},{"phase":"ingestStructuralMs","durationMs":33.84140000000116},{"phase":"ingestTotalMs","durationMs":72.92139999999927},{"phase":"removedMassDeriveMs","durationMs":0.21199999999953434}]}]}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > runs session source preparation outside the World hold and preserves Running after release
+A03_OWNER_PHASE {"phase":"END","name":"runs session source preparation outside the World hold and preserves Running after release","wallMs":2809.0818,"cpu":{"user":2766000,"system":266000},"heapUsed":45899984}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > runs session source preparation outside the World hold and preserves Paused after release
+A03_OWNER_PHASE {"phase":"START","name":"runs session source preparation outside the World hold and preserves Paused after release","hrtimeNs":"25371125201100","heapUsed":45939464}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > runs session source preparation outside the World hold and preserves Paused after release
+hvp-body-plan-steps {"commandId":"recut","outcome":"Planned","origin":1791203702937.617,"steps":9,"truncatedSteps":0,"max":{"ordinal":5,"label":"childClassificationCells","start":17190.3538,"durationMs":125.78199999999924},"phases":[{"label":"destruction","count":1,"totalMs":66.76690000000235,"maxMs":66.76690000000235},{"label":"classification","count":1,"totalMs":25.51730000000316,"maxMs":25.51730000000316},{"label":"parentMass","count":1,"totalMs":14.95390000000043,"maxMs":14.95390000000043},{"label":"childClassificationCells","count":2,"totalMs":130.58070000000225,"maxMs":125.78199999999924},{"label":"childRecipe0","count":1,"totalMs":75.84479999999894,"maxMs":75.84479999999894},{"label":"removedMass","count":1,"totalMs":80.2319000000025,"maxMs":80.2319000000025}],"slow":[{"ordinal":0,"label":"destruction","start":17032.297,"durationMs":66.76690000000235},{"ordinal":3,"label":"classification","start":17128.4017,"durationMs":25.51730000000316},{"ordinal":4,"label":"parentMass","start":17159.7571,"durationMs":14.95390000000043},{"ordinal":5,"label":"childClassificationCells","start":17190.3538,"durationMs":125.78199999999924,"sub":[{"phase":"partCellsMs","durationMs":10.43539999999848},{"phase":"ingestSortRunsMs","durationMs":0.20709999999962747},{"phase":"ingestJournalMs","durationMs":1.1129999999975553},{"phase":"ingestMaterializeMs","durationMs":24.907500000001164},{"phase":"ingestProofsMs","durationMs":20.240200000000186},{"phase":"ingestStructuralMs","durationMs":49.70679999999993},{"phase":"ingestTotalMs","durationMs":96.28009999999995}]},{"ordinal":7,"label":"childRecipe0","start":17347.0425,"durationMs":75.84479999999894,"sub":[{"phase":"recipeMassMs","durationMs":14.390099999996892},{"phase":"recipeClassifyMs","durationMs":11.766999999999825},{"phase":"recipeTransitionMs","durationMs":73.33360000000175},{"phase":"recipeAxesMs","durationMs":0.06799999999930151}]},{"ordinal":8,"label":"removedMass","start":17424.1331,"durationMs":80.2319000000025,"sub":[{"phase":"removedFilterMs","durationMs":0.029399999999441206},{"phase":"ingestSortRunsMs","durationMs":0.015900000002147863},{"phase":"ingestJournalMs","durationMs":0.1588000000010652},{"phase":"ingestMaterializeMs","durationMs":21.044299999997747},{"phase":"ingestProofsMs","durationMs":20.865499999999884},{"phase":"ingestStructuralMs","durationMs":37.73960000000079},{"phase":"ingestTotalMs","durationMs":79.92050000000017},{"phase":"removedMassDeriveMs","durationMs":0.2246000000013737}]}]}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > runs session source preparation outside the World hold and preserves Paused after release
+A03_OWNER_PHASE {"phase":"END","name":"runs session source preparation outside the World hold and preserves Paused after release","wallMs":2565.1517,"cpu":{"user":2453000,"system":172000},"heapUsed":45778472}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > logs slow contiguous plan steps and their existing sub-hooks only while measuring (on)
+A03_OWNER_PHASE {"phase":"START","name":"logs slow contiguous plan steps and their existing sub-hooks only while measuring (on)","hrtimeNs":"25373690687300","heapUsed":45812368}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > logs slow contiguous plan steps and their existing sub-hooks only while measuring (on)
+A03_OWNER_PHASE {"phase":"END","name":"logs slow contiguous plan steps and their existing sub-hooks only while measuring (on)","wallMs":1872.0115,"cpu":{"user":1657000,"system":203000},"heapUsed":60535584}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > logs slow contiguous plan steps and their existing sub-hooks only while measuring (off)
+A03_OWNER_PHASE {"phase":"START","name":"logs slow contiguous plan steps and their existing sub-hooks only while measuring (off)","hrtimeNs":"25375562975400","heapUsed":60468888}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > logs slow contiguous plan steps and their existing sub-hooks only while measuring (off)
+A03_OWNER_PHASE {"phase":"END","name":"logs slow contiguous plan steps and their existing sub-hooks only while measuring (off)","wallMs":1933.3503,"cpu":{"user":1640000,"system":250000},"heapUsed":68547544}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > logs slow contiguous plan steps and their existing sub-hooks only while measuring (disabledMidYield)
+A03_OWNER_PHASE {"phase":"START","name":"logs slow contiguous plan steps and their existing sub-hooks only while measuring (disabledMidYield)","hrtimeNs":"25377496550300","heapUsed":68581600}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > logs slow contiguous plan steps and their existing sub-hooks only while measuring (disabledMidYield)
+A03_OWNER_PHASE {"phase":"END","name":"logs slow contiguous plan steps and their existing sub-hooks only while measuring (disabledMidYield)","wallMs":2157.6097,"cpu":{"user":1953000,"system":125000},"heapUsed":55298984}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > rejects foreign and mixed-version Dispose without mutating the current Worker owner
+A03_OWNER_PHASE {"phase":"START","name":"rejects foreign and mixed-version Dispose without mutating the current Worker owner","hrtimeNs":"25379654685600","heapUsed":55334600}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > rejects foreign and mixed-version Dispose without mutating the current Worker owner
+A03_OWNER_PHASE {"phase":"END","name":"rejects foreign and mixed-version Dispose without mutating the current Worker owner","wallMs":902.3704,"cpu":{"user":907000,"system":15000},"heapUsed":53162416}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > serves Read, input and the fixed-step timer while the worker's source-only plan is suspended
+A03_OWNER_PHASE {"phase":"START","name":"serves Read, input and the fixed-step timer while the worker's source-only plan is suspended","hrtimeNs":"25380557408000","heapUsed":53203856}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > serves Read, input and the fixed-step timer while the worker's source-only plan is suspended
+A03_OWNER_PHASE {"phase":"END","name":"serves Read, input and the fixed-step timer while the worker's source-only plan is suspended","wallMs":2934.6129,"cpu":{"user":2828000,"system":329000},"heapUsed":52339184}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > rejects Stage during a safety SimulationHold without Applied, manual-pause label, auto-resume or native mutation
+A03_OWNER_PHASE {"phase":"START","name":"rejects Stage during a safety SimulationHold without Applied, manual-pause label, auto-resume or native mutation","hrtimeNs":"25383492270400","heapUsed":52373536}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > rejects Stage during a safety SimulationHold without Applied, manual-pause label, auto-resume or native mutation
+A03_OWNER_PHASE {"phase":"END","name":"rejects Stage during a safety SimulationHold without Applied, manual-pause label, auto-resume or native mutation","wallMs":2527.1502,"cpu":{"user":2515000,"system":281000},"heapUsed":72863328}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > stops the temporary plan trace on a dynamic measure:false Read, including an in-flight plan, without changing the native cut
+A03_OWNER_PHASE {"phase":"START","name":"stops the temporary plan trace on a dynamic measure:false Read, including an in-flight plan, without changing the native cut","hrtimeNs":"25386019609700","heapUsed":72896240}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > stops the temporary plan trace on a dynamic measure:false Read, including an in-flight plan, without changing the native cut
+A03_OWNER_PHASE {"phase":"END","name":"stops the temporary plan trace on a dynamic measure:false Read, including an in-flight plan, without changing the native cut","wallMs":6571.0815,"cpu":{"user":3344000,"system":640000},"heapUsed":49775024}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > keeps the plan trace off on the old World returned by RollbackRestore after an opt-out during a committed restore
+A03_OWNER_PHASE {"phase":"START","name":"keeps the plan trace off on the old World returned by RollbackRestore after an opt-out during a committed restore","hrtimeNs":"25392590907700","heapUsed":49809456}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > keeps the plan trace off on the old World returned by RollbackRestore after an opt-out during a committed restore
+A03_OWNER_PHASE {"phase":"END","name":"keeps the plan trace off on the old World returned by RollbackRestore after an opt-out during a committed restore","wallMs":6275.6395,"cpu":{"user":4078000,"system":407000},"heapUsed":62891648}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > serves Read, input and the timer at a yield inside the Worker child hash, then cancels it without native mutation
+A03_OWNER_PHASE {"phase":"START","name":"serves Read, input and the timer at a yield inside the Worker child hash, then cancels it without native mutation","hrtimeNs":"25398866732100","heapUsed":62926048}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > serves Read, input and the timer at a yield inside the Worker child hash, then cancels it without native mutation
+A03_OWNER_PHASE {"phase":"END","name":"serves Read, input and the timer at a yield inside the Worker child hash, then cancels it without native mutation","wallMs":1847.9677,"cpu":{"user":1813000,"system":203000},"heapUsed":59578176}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > keeps the Worker owner-hash route on a finalized Restore candidate and applies its new body cut
+A03_OWNER_PHASE {"phase":"START","name":"keeps the Worker owner-hash route on a finalized Restore candidate and applies its new body cut","hrtimeNs":"25400714949700","heapUsed":59612592}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > keeps the Worker owner-hash route on a finalized Restore candidate and applies its new body cut
+A03_OWNER_PHASE {"phase":"END","name":"keeps the Worker owner-hash route on a finalized Restore candidate and applies its new body cut","wallMs":3710.4632,"cpu":{"user":3609000,"system":437000},"heapUsed":56181528}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > issues identical children, masses, colliders and receipts on the generic and the owner-hash body session
+A03_OWNER_PHASE {"phase":"START","name":"issues identical children, masses, colliders and receipts on the generic and the owner-hash body session","hrtimeNs":"25404425595200","heapUsed":56215880}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > issues identical children, masses, colliders and receipts on the generic and the owner-hash body session
+A03_OWNER_PHASE {"phase":"END","name":"issues identical children, masses, colliders and receipts on the generic and the owner-hash body session","wallMs":1298.9661,"cpu":{"user":781000,"system":235000},"heapUsed":76664208}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > runs a partial Sphere through the owner-hash factory's re-ingest route to one Applied child with generic parity
+A03_OWNER_PHASE {"phase":"START","name":"runs a partial Sphere through the owner-hash factory's re-ingest route to one Applied child with generic parity","hrtimeNs":"25405724744000","heapUsed":76697064}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > runs a partial Sphere through the owner-hash factory's re-ingest route to one Applied child with generic parity
+A03_OWNER_PHASE {"phase":"END","name":"runs a partial Sphere through the owner-hash factory's re-ingest route to one Applied child with generic parity","wallMs":1204.6772,"cpu":{"user":953000,"system":62000},"heapUsed":74793896}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > runs an all-removing Sphere through the owner-hash factory without a child, hash cursor or native body
+A03_OWNER_PHASE {"phase":"START","name":"runs an all-removing Sphere through the owner-hash factory without a child, hash cursor or native body","hrtimeNs":"25406929599800","heapUsed":74826784}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > runs an all-removing Sphere through the owner-hash factory without a child, hash cursor or native body
+A03_OWNER_PHASE {"phase":"END","name":"runs an all-removing Sphere through the owner-hash factory without a child, hash cursor or native body","wallMs":292.8267,"cpu":{"user":235000,"system":31000},"heapUsed":71382720}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > traces the owner-hash labels and recipe subspans exactly on a measured owner session and reads no clock without one
+A03_OWNER_PHASE {"phase":"START","name":"traces the owner-hash labels and recipe subspans exactly on a measured owner session and reads no clock without one","hrtimeNs":"25407222674600","heapUsed":71414672}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > traces the owner-hash labels and recipe subspans exactly on a measured owner session and reads no clock without one
+A03_OWNER_PHASE {"phase":"END","name":"traces the owner-hash labels and recipe subspans exactly on a measured owner session and reads no clock without one","wallMs":958.3998,"cpu":{"user":484000,"system":32000},"heapUsed":78617056}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > closes the owner child hash on a cancel or dispose at its own yield without a revived plan or native mutation
+A03_OWNER_PHASE {"phase":"START","name":"closes the owner child hash on a cancel or dispose at its own yield without a revived plan or native mutation","hrtimeNs":"25408181261400","heapUsed":78649936}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > closes the owner child hash on a cancel or dispose at its own yield without a revived plan or native mutation
+A03_OWNER_PHASE {"phase":"END","name":"closes the owner child hash on a cancel or dispose at its own yield without a revived plan or native mutation","wallMs":641.9921,"cpu":{"user":281000,"system":140000},"heapUsed":85903960}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > settles a pending Worker plan before restoring the ports even when the Dispose reply fails, keeping the original error
+A03_OWNER_PHASE {"phase":"START","name":"settles a pending Worker plan before restoring the ports even when the Dispose reply fails, keeping the original error","hrtimeNs":"25408823687400","heapUsed":85939168}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > settles a pending Worker plan before restoring the ports even when the Dispose reply fails, keeping the original error
+A03_OWNER_PHASE {"phase":"END","name":"settles a pending Worker plan before restoring the ports even when the Dispose reply fails, keeping the original error","wallMs":2362.9218,"cpu":{"user":2125000,"system":438000},"heapUsed":73316320}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > projects row200 child cells in bounded owner batches with generic parity of sources, IDs, masses, colliders and receipt
+A03_OWNER_PHASE {"phase":"START","name":"projects row200 child cells in bounded owner batches with generic parity of sources, IDs, masses, colliders and receipt","hrtimeNs":"25411186951400","heapUsed":73352992}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > projects row200 child cells in bounded owner batches with generic parity of sources, IDs, masses, colliders and receipt
+A03_OWNER_PHASE {"phase":"END","name":"projects row200 child cells in bounded owner batches with generic parity of sources, IDs, masses, colliders and receipt","wallMs":17146.6168,"cpu":{"user":11688000,"system":2406000},"heapUsed":73028384}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > fails closed on a cancel or dispose between owner child-cell batches without a new Stage, hash or native mutation
+A03_OWNER_PHASE {"phase":"START","name":"fails closed on a cancel or dispose between owner child-cell batches without a new Stage, hash or native mutation","hrtimeNs":"25428333855700","heapUsed":73062640}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > fails closed on a cancel or dispose between owner child-cell batches without a new Stage, hash or native mutation
+A03_OWNER_PHASE {"phase":"END","name":"fails closed on a cancel or dispose between owner child-cell batches without a new Stage, hash or native mutation","wallMs":4971.1624,"cpu":{"user":4047000,"system":906000},"heapUsed":97009824}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > stops every optional owner clock read after an opt-out at a child-cell batch yield
+A03_OWNER_PHASE {"phase":"START","name":"stops every optional owner clock read after an opt-out at a child-cell batch yield","hrtimeNs":"25433305251000","heapUsed":96990056}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > stops every optional owner clock read after an opt-out at a child-cell batch yield
+A03_OWNER_PHASE {"phase":"END","name":"stops every optional owner clock read after an opt-out at a child-cell batch yield","wallMs":4556.7659,"cpu":{"user":2359000,"system":547000},"heapUsed":77023104}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > serves Read, input and the timer at a real Worker child-cell batch yield, then cancels without a new Stage
+A03_OWNER_PHASE {"phase":"START","name":"serves Read, input and the timer at a real Worker child-cell batch yield, then cancels without a new Stage","hrtimeNs":"25437862331800","heapUsed":77064624}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > serves Read, input and the timer at a real Worker child-cell batch yield, then cancels without a new Stage
+A03_OWNER_PHASE {"phase":"END","name":"serves Read, input and the timer at a real Worker child-cell batch yield, then cancels without a new Stage","wallMs":3672.5818,"cpu":{"user":2656000,"system":297000},"heapUsed":58571288}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > yields inside the post-destruction classification in bounded cell batches and stages the same products
+A03_OWNER_PHASE {"phase":"START","name":"yields inside the post-destruction classification in bounded cell batches and stages the same products","hrtimeNs":"25441535105600","heapUsed":58604872}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > yields inside the post-destruction classification in bounded cell batches and stages the same products
+A03_OWNER_PHASE {"phase":"END","name":"yields inside the post-destruction classification in bounded cell batches and stages the same products","wallMs":5827.2201,"cpu":{"user":4860000,"system":797000},"heapUsed":72454416}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > cancels a yielding plan at its first yield without revival or native change
+A03_OWNER_PHASE {"phase":"START","name":"cancels a yielding plan at its first yield without revival or native change","hrtimeNs":"25447362612500","heapUsed":72488744}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > cancels a yielding plan at its first yield without revival or native change
+A03_OWNER_PHASE {"phase":"END","name":"cancels a yielding plan at its first yield without revival or native change","wallMs":9184.8018,"cpu":{"user":8109000,"system":1141000},"heapUsed":74560384}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > cancels a yielding plan at its midClassification yield without revival or native change
+A03_OWNER_PHASE {"phase":"START","name":"cancels a yielding plan at its midClassification yield without revival or native change","hrtimeNs":"25456547832900","heapUsed":74596888}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > cancels a yielding plan at its midClassification yield without revival or native change
+A03_OWNER_PHASE {"phase":"END","name":"cancels a yielding plan at its midClassification yield without revival or native change","wallMs":9108.2204,"cpu":{"user":7984000,"system":1187000},"heapUsed":58410520}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > cancels a yielding plan at its midChildClassification yield without revival or native change
+A03_OWNER_PHASE {"phase":"START","name":"cancels a yielding plan at its midChildClassification yield without revival or native change","hrtimeNs":"25465656276700","heapUsed":58447048}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > cancels a yielding plan at its midChildClassification yield without revival or native change
+A03_OWNER_PHASE {"phase":"END","name":"cancels a yielding plan at its midChildClassification yield without revival or native change","wallMs":10460.8217,"cpu":{"user":8797000,"system":1547000},"heapUsed":68433088}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > cancels a yielding plan at its last yield without revival or native change
+A03_OWNER_PHASE {"phase":"START","name":"cancels a yielding plan at its last yield without revival or native change","hrtimeNs":"25476117356100","heapUsed":68469560}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > cancels a yielding plan at its last yield without revival or native change
+A03_OWNER_PHASE {"phase":"END","name":"cancels a yielding plan at its last yield without revival or native change","wallMs":10405.4498,"cpu":{"user":8563000,"system":1672000},"heapUsed":73243600}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > reads no diagnostic clock after an opt-out at a child's own classification yield and keeps the same outcome
+A03_OWNER_PHASE {"phase":"START","name":"reads no diagnostic clock after an opt-out at a child's own classification yield and keeps the same outcome","hrtimeNs":"25486523057400","heapUsed":73280104}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > reads no diagnostic clock after an opt-out at a child's own classification yield and keeps the same outcome
+A03_OWNER_PHASE {"phase":"END","name":"reads no diagnostic clock after an opt-out at a child's own classification yield and keeps the same outcome","wallMs":8351.2492,"cpu":{"user":7187000,"system":1000000},"heapUsed":73366752}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > aggregates every step and keeps the true worst step beyond the 64-step record cap
+A03_OWNER_PHASE {"phase":"START","name":"aggregates every step and keeps the true worst step beyond the 64-step record cap","hrtimeNs":"25494874795100","heapUsed":73401128}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > aggregates every step and keeps the true worst step beyond the 64-step record cap
+A03_OWNER_PHASE {"phase":"END","name":"aggregates every step and keeps the true worst step beyond the 64-step record cap","wallMs":1650.4831,"cpu":{"user":94000,"system":0},"heapUsed":63965944}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > logs truncatedSteps and the post-cap worst step through the real session logger
+A03_OWNER_PHASE {"phase":"START","name":"logs truncatedSteps and the post-cap worst step through the real session logger","hrtimeNs":"25496525541400","heapUsed":63999488}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > logs truncatedSteps and the post-cap worst step through the real session logger
+A03_OWNER_PHASE {"phase":"END","name":"logs truncatedSteps and the post-cap worst step through the real session logger","wallMs":3007.5228,"cpu":{"user":1375000,"system":62000},"heapUsed":73485392}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > serves Read, input and the fixed-step timer at a yield in the middle of the classification
+A03_OWNER_PHASE {"phase":"START","name":"serves Read, input and the fixed-step timer at a yield in the middle of the classification","hrtimeNs":"25499533570500","heapUsed":73518176}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > serves Read, input and the fixed-step timer at a yield in the middle of the classification
+A03_OWNER_PHASE {"phase":"END","name":"serves Read, input and the fixed-step timer at a yield in the middle of the classification","wallMs":2915.1885,"cpu":{"user":1984000,"system":235000},"heapUsed":61799400}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > serves Read, input and the fixed-step timer at a yield inside a NEW child's own classification
+A03_OWNER_PHASE {"phase":"START","name":"serves Read, input and the fixed-step timer at a yield inside a NEW child's own classification","hrtimeNs":"25502448955800","heapUsed":61833800}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > serves Read, input and the fixed-step timer at a yield inside a NEW child's own classification
+A03_OWNER_PHASE {"phase":"END","name":"serves Read, input and the fixed-step timer at a yield inside a NEW child's own classification","wallMs":4937.7235,"cpu":{"user":2969000,"system":406000},"heapUsed":76058736}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > keeps client Read/Input flowing during source-only body preparation and never adopts a stale Read over Stage
+A03_OWNER_PHASE {"phase":"START","name":"keeps client Read/Input flowing during source-only body preparation and never adopts a stale Read over Stage","hrtimeNs":"25507386965100","heapUsed":76093088}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > keeps client Read/Input flowing during source-only body preparation and never adopts a stale Read over Stage
+A03_OWNER_PHASE {"phase":"END","name":"keeps client Read/Input flowing during source-only body preparation and never adopts a stale Read over Stage","wallMs":118.0989,"cpu":{"user":0,"system":0},"heapUsed":60712280}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > never lets an older rejected branch snapshot prove body rollback or move publication backwards
+A03_OWNER_PHASE {"phase":"START","name":"never lets an older rejected branch snapshot prove body rollback or move publication backwards","hrtimeNs":"25507505256800","heapUsed":60744992}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > never lets an older rejected branch snapshot prove body rollback or move publication backwards
+A03_OWNER_PHASE {"phase":"END","name":"never lets an older rejected branch snapshot prove body rollback or move publication backwards","wallMs":5.419,"cpu":{"user":0,"system":0},"heapUsed":60959288}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: returns only current framed data while Read/Input/timer run and reuses one native plan
+A03_OWNER_PHASE {"phase":"START","name":"owner source bridge: returns only current framed data while Read/Input/timer run and reuses one native plan","hrtimeNs":"25507510999600","heapUsed":60994648}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: returns only current framed data while Read/Input/timer run and reuses one native plan
+A03_OWNER_PHASE {"phase":"END","name":"owner source bridge: returns only current framed data while Read/Input/timer run and reuses one native plan","wallMs":2325.4034,"cpu":{"user":2109000,"system":250000},"heapUsed":88119336}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: rejects wrong Begin request/source/target before deriving a native plan
+A03_OWNER_PHASE {"phase":"START","name":"owner source bridge: rejects wrong Begin request/source/target before deriving a native plan","hrtimeNs":"25509836695500","heapUsed":88152488}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: rejects wrong Begin request/source/target before deriving a native plan
+A03_OWNER_PHASE {"phase":"END","name":"owner source bridge: rejects wrong Begin request/source/target before deriving a native plan","wallMs":2262.3977,"cpu":{"user":2157000,"system":187000},"heapUsed":110073376}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: settles suspended work after rollback-reuse without exporting old data
+A03_OWNER_PHASE {"phase":"START","name":"owner source bridge: settles suspended work after rollback-reuse without exporting old data","hrtimeNs":"25512099349100","heapUsed":110109624}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: settles suspended work after rollback-reuse without exporting old data
+A03_OWNER_PHASE {"phase":"END","name":"owner source bridge: settles suspended work after rollback-reuse without exporting old data","wallMs":2586.5218,"cpu":{"user":2453000,"system":297000},"heapUsed":92438000}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: settles suspended work after dispose without exporting old data
+A03_OWNER_PHASE {"phase":"START","name":"owner source bridge: settles suspended work after dispose without exporting old data","hrtimeNs":"25514686084000","heapUsed":92471016}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: settles suspended work after dispose without exporting old data
+A03_OWNER_PHASE {"phase":"END","name":"owner source bridge: settles suspended work after dispose without exporting old data","wallMs":1930.4185,"cpu":{"user":1859000,"system":219000},"heapUsed":67952208}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+A03_OWNER_PHASE {"phase":"START","name":"owner source bridge: old Begin request IDs cannot project after a real finalized World Restore","hrtimeNs":"25516616747200","heapUsed":67985200}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 1] withWorker setup-through-outer-return START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 2] withWorker body entry-through-return START
+[Restore 3] old captureWorkerBegin START
+[Restore 4] worker.send Read START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 4] worker.send Read DONE { id: 3, sequence: 3, status: 'Running', moving: 'Idle', planCount: 0 }
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 5] worker.send PrepareBranch START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 5] worker.send PrepareBranch DONE { id: 4, sequence: 4, status: 'Paused', moving: 'Idle', planCount: 0 }
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 6] worker.send CommitBranch START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 6] worker.send CommitBranch DONE { id: 5, sequence: 5, status: 'Paused', moving: 'Idle', planCount: 0 }
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 7] worker.send FinalizeBranch START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 7] worker.send FinalizeBranch DONE { id: 6, sequence: 6, status: 'Running', moving: 'Idle', planCount: 0 }
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 8] worker.send Read START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 8] worker.send Read DONE { id: 7, sequence: 7, status: 'Running', moving: 'Idle', planCount: 0 }
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 9] worker.send Read START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 9] worker.send Read DONE { id: 8, sequence: 8, status: 'Running', moving: 'Idle', planCount: 0 }
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 10] worker.send BeginBodyCut START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 10] worker.send BeginBodyCut DONE {
+  id: 9,
+  sequence: 9,
+  status: 'Running',
+  moving: 'Preparing',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 3] old captureWorkerBegin DONE
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 11] worker.send RollbackBodyCut START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 11] worker.send RollbackBodyCut DONE {
+  id: 10,
+  sequence: 10,
+  status: 'Running',
+  moving: 'Idle',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 12] worker.send Pause START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 12] worker.send Pause DONE {
+  id: 11,
+  sequence: 11,
+  status: 'Paused',
+  moving: 'Idle',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 13] worker.send Checkpoint START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 13] worker.send Checkpoint DONE {
+  id: 12,
+  sequence: 12,
+  status: 'Paused',
+  moving: 'Idle',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 14] worker.send PrepareRestore START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 14] worker.send PrepareRestore DONE {
+  id: 13,
+  sequence: 13,
+  status: 'Paused',
+  moving: 'Idle',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 15] worker.send CommitRestore START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 15] worker.send CommitRestore DONE {
+  id: 14,
+  sequence: 14,
+  status: 'Paused',
+  moving: 'Idle',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 16] worker.send FinalizeRestore START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 16] worker.send FinalizeRestore DONE {
+  id: 15,
+  sequence: 15,
+  status: 'Paused',
+  moving: 'Idle',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 17] worker.send Play START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 17] worker.send Play DONE {
+  id: 16,
+  sequence: 16,
+  status: 'Running',
+  moving: 'Idle',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 18] fresh captureWorkerBegin START
+[Restore 19] worker.send Read START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 19] worker.send Read DONE {
+  id: 17,
+  sequence: 17,
+  status: 'Running',
+  moving: 'Idle',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 20] worker.send Read START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 20] worker.send Read DONE {
+  id: 18,
+  sequence: 18,
+  status: 'Running',
+  moving: 'Idle',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 21] worker.send BeginBodyCut START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 21] worker.send BeginBodyCut DONE {
+  id: 19,
+  sequence: 19,
+  status: 'Running',
+  moving: 'Preparing',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 18] fresh captureWorkerBegin DONE
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 22] worker.send PrepareBodyChildProjection START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 22] worker.send PrepareBodyChildProjection DONE {
+  id: 20,
+  sequence: 20,
+  status: undefined,
+  moving: undefined,
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 23] worker.send PrepareBodyChildProjection START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 23] worker.send PrepareBodyChildProjection DONE {
+  id: 21,
+  sequence: 21,
+  status: undefined,
+  moving: undefined,
+  planCount: 1
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 24] worker.send RollbackBodyCut START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 24] worker.send RollbackBodyCut DONE {
+  id: 22,
+  sequence: 22,
+  status: 'Running',
+  moving: 'Idle',
+  planCount: 1
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 2] withWorker body entry-through-return DONE
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 1] withWorker setup-through-outer-return DONE
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+A03_OWNER_PHASE {"phase":"END","name":"owner source bridge: old Begin request IDs cannot project after a real finalized World Restore","wallMs":4743.0561,"cpu":{"user":4344000,"system":594000},"heapUsed":88750776}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: data replies cannot own publication/held/Restore watermarks or suppress an earlier Read
+A03_OWNER_PHASE {"phase":"START","name":"owner source bridge: data replies cannot own publication/held/Restore watermarks or suppress an earlier Read","hrtimeNs":"25521359958200","heapUsed":88783392}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: data replies cannot own publication/held/Restore watermarks or suppress an earlier Read
+A03_OWNER_PHASE {"phase":"END","name":"owner source bridge: data replies cannot own publication/held/Restore watermarks or suppress an earlier Read","wallMs":28.87,"cpu":{"user":0,"system":0},"heapUsed":88963344}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: client rejects stale demands/replies after rollback-reuse
+A03_OWNER_PHASE {"phase":"START","name":"owner source bridge: client rejects stale demands/replies after rollback-reuse","hrtimeNs":"25521389088400","heapUsed":88995704}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: client rejects stale demands/replies after rollback-reuse
+A03_OWNER_PHASE {"phase":"END","name":"owner source bridge: client rejects stale demands/replies after rollback-reuse","wallMs":2.0953,"cpu":{"user":0,"system":15000},"heapUsed":89128472}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: client rejects stale demands/replies after dispose
+A03_OWNER_PHASE {"phase":"START","name":"owner source bridge: client rejects stale demands/replies after dispose","hrtimeNs":"25521391406600","heapUsed":89161984}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: client rejects stale demands/replies after dispose
+A03_OWNER_PHASE {"phase":"END","name":"owner source bridge: client rejects stale demands/replies after dispose","wallMs":0.6575,"cpu":{"user":0,"system":0},"heapUsed":89248216}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: rejects untrusted parts data without adopting state or replacing the original error
+A03_OWNER_PHASE {"phase":"START","name":"owner source bridge: rejects untrusted parts data without adopting state or replacing the original error","hrtimeNs":"25521392256800","heapUsed":89280816}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: rejects untrusted parts data without adopting state or replacing the original error
+A03_OWNER_PHASE {"phase":"END","name":"owner source bridge: rejects untrusted parts data without adopting state or replacing the original error","wallMs":1.1951,"cpu":{"user":0,"system":0},"heapUsed":89372352}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: rejects untrusted cells data without adopting state or replacing the original error
+A03_OWNER_PHASE {"phase":"START","name":"owner source bridge: rejects untrusted cells data without adopting state or replacing the original error","hrtimeNs":"25521393602200","heapUsed":89404328}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: rejects untrusted cells data without adopting state or replacing the original error
+A03_OWNER_PHASE {"phase":"END","name":"owner source bridge: rejects untrusted cells data without adopting state or replacing the original error","wallMs":0.5137,"cpu":{"user":0,"system":0},"heapUsed":89759344}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: rejects untrusted metadata data without adopting state or replacing the original error
+A03_OWNER_PHASE {"phase":"START","name":"owner source bridge: rejects untrusted metadata data without adopting state or replacing the original error","hrtimeNs":"25521394304300","heapUsed":89792320}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: rejects untrusted metadata data without adopting state or replacing the original error
+A03_OWNER_PHASE {"phase":"END","name":"owner source bridge: rejects untrusted metadata data without adopting state or replacing the original error","wallMs":0.6353,"cpu":{"user":0,"system":0},"heapUsed":89885360}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: rejects untrusted begin-id data without adopting state or replacing the original error
+A03_OWNER_PHASE {"phase":"START","name":"owner source bridge: rejects untrusted begin-id data without adopting state or replacing the original error","hrtimeNs":"25521395170600","heapUsed":89917336}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: rejects untrusted begin-id data without adopting state or replacing the original error
+A03_OWNER_PHASE {"phase":"END","name":"owner source bridge: rejects untrusted begin-id data without adopting state or replacing the original error","wallMs":0.9411,"cpu":{"user":0,"system":0},"heapUsed":90052232}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: rejects untrusted sequence data without adopting state or replacing the original error
+A03_OWNER_PHASE {"phase":"START","name":"owner source bridge: rejects untrusted sequence data without adopting state or replacing the original error","hrtimeNs":"25521396357300","heapUsed":90085368}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: rejects untrusted sequence data without adopting state or replacing the original error
+A03_OWNER_PHASE {"phase":"END","name":"owner source bridge: rejects untrusted sequence data without adopting state or replacing the original error","wallMs":0.6162,"cpu":{"user":0,"system":0},"heapUsed":90175976}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: rejects untrusted sentinel data without adopting state or replacing the original error
+A03_OWNER_PHASE {"phase":"START","name":"owner source bridge: rejects untrusted sentinel data without adopting state or replacing the original error","hrtimeNs":"25521397129900","heapUsed":90207952}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: rejects untrusted sentinel data without adopting state or replacing the original error
+A03_OWNER_PHASE {"phase":"END","name":"owner source bridge: rejects untrusted sentinel data without adopting state or replacing the original error","wallMs":0.4201,"cpu":{"user":0,"system":0},"heapUsed":90292080}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: preserves genuine occupied Uint16 material IDs and rejects Air/negative-zero/overflow data
+A03_OWNER_PHASE {"phase":"START","name":"owner source bridge: preserves genuine occupied Uint16 material IDs and rejects Air/negative-zero/overflow data","hrtimeNs":"25521397680000","heapUsed":90325544}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: preserves genuine occupied Uint16 material IDs and rejects Air/negative-zero/overflow data
+S13_HIGH_MATERIAL_SOURCE {"schemaVersion":"structural-microvoxel-object-v1","objectId":"plan-owner-source","frame":{"schemaVersion":"structural-microvoxel-frame-binding-v1","bodyId":"body.hestia","surfaceFrameId":"frame.hvp","regionId":"region.plan-owner-source","generatorVersion":"hvp-rigid-ingest-v1","objectOriginQuantum":{"x":0,"y":0,"z":0}},"source":{"schemaVersion":"structural-microvoxel-source-binding-v1","baseFieldIdentity":"base.plan-owner-source","baseFieldVersion":"hvp-rigid-ingest-v1","baseFieldDescriptorDigest":"fnv1a64-v1:5da762240edcdde4","journalDigest":"fnv1a64-v1:3a67aabaf60f6f3e","snapshotProjectionDigest":"fnv1a64-v1:2806c05c9aabbfe7","proofDigests":["fnv1a64-v1:0882015ce0fa4c08"],"sourceRevision":1,"editRevision":2,"brickRevision":0,"planningEpoch":1},"materials":[{"materialId":256,"densityKgPerCubicMeter":512,"structuralClass":"wood","destructible":true,"tags":null},{"materialId":65535,"densityKgPerCubicMeter":512,"structuralClass":"wood","destructible":true,"tags":null}],"bricks":[{"schemaVersion":"structural-microvoxel-brick-v1","key":{"schemaVersion":"adaptive-microvoxel-key-v1","bodyId":"body.hestia","surfaceFrameId":"frame.hvp","regionId":"region.plan-owner-source","generatorVersion":"hvp-rigid-ingest-v1","level":4,"originQuantum":{"x":0,"y":0,"z":0}},"cells":[{"localIndex":0,"state":{"materialId":256,"partId":null,"semanticKey":null,"damageKey":null}},{"localIndex":1,"state":{"materialId":256,"partId":null,"semanticKey":null,"damageKey":null}},{"localIndex":2,"state":{"materialId":256,"partId":null,"semanticKey":null,"damageKey":null}},{"localIndex":3,"state":{"materialId":65535,"partId":null,"semanticKey":null,"damageKey":null}},{"localIndex":4,"state":{"materialId":65535,"partId":null,"semanticKey":null,"damageKey":null}}]}],"anchors":[],"joints":[],"objectRevision":0,"editRevision":0,"contentHash":"fnv1a64-v1:fe708e5cd03e6659","commandEvidence":[],"evidenceHash":"fnv1a64-v1:09612b07b5ecb5a5"}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: preserves genuine occupied Uint16 material IDs and rejects Air/negative-zero/overflow data
+A03_OWNER_PHASE {"phase":"END","name":"owner source bridge: preserves genuine occupied Uint16 material IDs and rejects Air/negative-zero/overflow data","wallMs":350.9021,"cpu":{"user":312000,"system":0},"heapUsed":88273696}
+
+ ✓ tests/unit/hvp-body-plan-owner.test.ts (65 tests) 162974ms
+   ✓ owner-first child projection: reuses one finished plan before CURRENT-pose Stage  447ms
+   ✓ owner-first child projection: rejects cancelled old work for a reused command id  432ms
+   ✓ owner-first child projection: uses the issued-hash factory without recut or native installation  573ms
+   ✓ owner-first child projection: rechecks cached target identity  404ms
+   ✓ owner-first child projection: rechecks cached registry identity  405ms
+   ✓ owner-first child projection: rechecks cached native identity  396ms
+   ✓ derives exactly one native plan per command across task-yielding preparation, a failed stage and its retry  774ms
+   ✓ keeps the parent simulated between plan phases and stages the original hit at the current native pose  847ms
+   ✓ drops a cancelled or disposed preparation: no revived plan, no stage and unchanged native membership  515ms
+   ✓ keeps a rejected task-yield adapter fatal for the command instead of resuming the steps in Stage  511ms
+   ✓ rejects a removed or replaced parent after a finished plan without touching the World  834ms
+   ✓ stages a Sphere that removes every cell with zero children and no invented body  430ms
+   ✓ owner-first child projection: leaves the World running and rejects actual owner disposal  2517ms
+   ✓ runs session source preparation outside the World hold and preserves Running after release  2809ms
+   ✓ runs session source preparation outside the World hold and preserves Paused after release  2565ms
+   ✓ logs slow contiguous plan steps and their existing sub-hooks only while measuring (on)  1872ms
+   ✓ logs slow contiguous plan steps and their existing sub-hooks only while measuring (off)  1934ms
+   ✓ logs slow contiguous plan steps and their existing sub-hooks only while measuring (disabledMidYield)  2158ms
+   ✓ rejects foreign and mixed-version Dispose without mutating the current Worker owner  903ms
+   ✓ serves Read, input and the fixed-step timer while the worker's source-only plan is suspended  2935ms
+   ✓ rejects Stage during a safety SimulationHold without Applied, manual-pause label, auto-resume or native mutation  2527ms
+   ✓ stops the temporary plan trace on a dynamic measure:false Read, including an in-flight plan, without changing the native cut  6571ms
+   ✓ keeps the plan trace off on the old World returned by RollbackRestore after an opt-out during a committed restore  6276ms
+   ✓ serves Read, input and the timer at a yield inside the Worker child hash, then cancels it without native mutation  1848ms
+   ✓ keeps the Worker owner-hash route on a finalized Restore candidate and applies its new body cut  3711ms
+   ✓ issues identical children, masses, colliders and receipts on the generic and the owner-hash body session  1299ms
+   ✓ runs a partial Sphere through the owner-hash factory's re-ingest route to one Applied child with generic parity  1205ms
+   ✓ traces the owner-hash labels and recipe subspans exactly on a measured owner session and reads no clock without one  959ms
+   ✓ closes the owner child hash on a cancel or dispose at its own yield without a revived plan or native mutation  642ms
+   ✓ settles a pending Worker plan before restoring the ports even when the Dispose reply fails, keeping the original error  2363ms
+   ✓ projects row200 child cells in bounded owner batches with generic parity of sources, IDs, masses, colliders and receipt  17147ms
+   ✓ fails closed on a cancel or dispose between owner child-cell batches without a new Stage, hash or native mutation  4971ms
+   ✓ stops every optional owner clock read after an opt-out at a child-cell batch yield  4557ms
+   ✓ serves Read, input and the timer at a real Worker child-cell batch yield, then cancels without a new Stage  3673ms
+   ✓ yields inside the post-destruction classification in bounded cell batches and stages the same products  5827ms
+   ✓ cancels a yielding plan at its first yield without revival or native change  9185ms
+   ✓ cancels a yielding plan at its midClassification yield without revival or native change  9109ms
+   ✓ cancels a yielding plan at its midChildClassification yield without revival or native change  10461ms
+   ✓ cancels a yielding plan at its last yield without revival or native change  10406ms
+   ✓ reads no diagnostic clock after an opt-out at a child's own classification yield and keeps the same outcome  8352ms
+   ✓ aggregates every step and keeps the true worst step beyond the 64-step record cap  1651ms
+   ✓ logs truncatedSteps and the post-cap worst step through the real session logger  3008ms
+   ✓ serves Read, input and the fixed-step timer at a yield in the middle of the classification  2915ms
+   ✓ serves Read, input and the fixed-step timer at a yield inside a NEW child's own classification  4938ms
+   ✓ owner source bridge: returns only current framed data while Read/Input/timer run and reuses one native plan  2326ms
+   ✓ owner source bridge: rejects wrong Begin request/source/target before deriving a native plan  2263ms
+   ✓ owner source bridge: settles suspended work after rollback-reuse without exporting old data  2587ms
+   ✓ owner source bridge: settles suspended work after dispose without exporting old data  1931ms
+   ✓ owner source bridge: old Begin request IDs cannot project after a real finalized World Restore  4743ms
+   ✓ owner source bridge: preserves genuine occupied Uint16 material IDs and rejects Air/negative-zero/overflow data  351ms
+
+ Test Files  1 passed (1)
+      Tests  65 passed (65)
+   Start at  14:35:02
+   Duration  165.61s (transform 1.16s, setup 0ms, import 2.48s, tests 162.97s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-owner-timeout-diagnostic-r04/original-vitest.json

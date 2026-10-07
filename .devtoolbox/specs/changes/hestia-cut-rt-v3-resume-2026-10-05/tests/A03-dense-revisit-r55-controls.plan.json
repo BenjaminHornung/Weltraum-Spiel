@@ -1,0 +1,10 @@
+{
+  "runId": "A03-dense-revisit-r55-controls",
+  "binding": "A03-dense-revisit-r55-binding.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-owned-hash-array-open.test.ts"
+  ],
+  "nativeCapSeconds": 180,
+  "classification": "Reuse existing exactimmutable shape identity only for retainFrozen/owned visits; header/length/credit/yield/fullvalues/proofs/bytes unchanged; original deadlines"
+}

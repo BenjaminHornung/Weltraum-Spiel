@@ -1,0 +1,8 @@
+{
+  "mode": "type",
+  "files": [],
+  "runId": "A05-support-r96-type-r04",
+  "binding": "A05-support-r96-binding-r04.json",
+  "nativeCapSeconds": 60,
+  "classification": "Current support firstslice after exactdefault native-observation restoration"
+}

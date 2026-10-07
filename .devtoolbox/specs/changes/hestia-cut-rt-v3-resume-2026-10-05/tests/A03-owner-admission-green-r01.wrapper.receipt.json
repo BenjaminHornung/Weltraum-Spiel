@@ -1,0 +1,8 @@
+{
+  "runId": "A03-owner-admission-green-r01",
+  "startedUtc": "2026-10-05T11:25:33.6106185+00:00",
+  "endedUtc": "2026-10-05T11:25:36.2412979+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 2.6261659,
+  "planFile": "A03-owner-admission-green-r01.plan.json"
+}

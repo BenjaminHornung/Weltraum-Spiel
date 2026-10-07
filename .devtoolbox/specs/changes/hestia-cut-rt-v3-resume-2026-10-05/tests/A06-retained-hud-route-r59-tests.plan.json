@@ -1,0 +1,12 @@
+{
+  "runId": "A06-retained-hud-route-r59-tests",
+  "binding": "A06-retained-hud-route-r59-binding.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-hud-hotpath.test.ts",
+    "tests/unit/hvp-route-bundle.test.ts",
+    "tests/unit/hvp-moving-consumer.test.ts"
+  ],
+  "nativeCapSeconds": 600,
+  "classification": "Exact required retainedHUD/routefixes+bothconsciouslymerged E2Ehunks; whole original focused controls/deadlines maintained; no source commit"
+}

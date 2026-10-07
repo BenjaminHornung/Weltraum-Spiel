@@ -1,0 +1,8 @@
+{
+  "runId": "A03-owner-escrow-red-r01",
+  "startedUtc": "2026-10-05T18:37:08.0369547+00:00",
+  "endedUtc": "2026-10-05T18:37:29.6458594+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 21.6043078,
+  "planFile": "A03-owner-escrow-red-r01.plan.json"
+}

@@ -1,0 +1,8 @@
+{
+  "classification": "Native missing-index freeze TypeError retained; actual recipe cancellation fixture16 cells retains >128 units after optimization; assertions/individual deadlines unchanged",
+  "binding": "A03-fresh-produced-reuse-r64-binding-r02.json",
+  "runId": "A03-fresh-produced-reuse-r64-build-r02",
+  "mode": "build",
+  "files": [],
+  "nativeCapSeconds": 900
+}

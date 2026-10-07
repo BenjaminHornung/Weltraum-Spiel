@@ -1,0 +1,48 @@
+{
+  "startUtc": "2026-10-05T09:18:08.941730+00:00",
+  "cwd": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\apps\\weltraum-browser",
+  "argv": [
+    "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+    "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\apps\\weltraum-browser\\node_modules\\vitest\\vitest.mjs",
+    "run",
+    "tests/unit/structuralMicrovoxelContracts.test.ts",
+    "tests/unit/structuralMicrovoxelCommands.test.ts",
+    "tests/unit/structuralMicrovoxelConnectivity.test.ts",
+    "tests/unit/structuralMicrovoxelMassProperties.test.ts",
+    "tests/unit/structuralMicrovoxelPersistence.test.ts",
+    "tests/unit/hvp-parallel-p01-classification.test.ts",
+    "tests/unit/hvp-classification-contract-controls.test.ts",
+    "tests/unit/structuralOwnedReconstructionCursor.test.ts",
+    "tests/unit/structuralOwnedCommandCursor.test.ts",
+    "tests/unit/hvp-owned-ingest-journal-prefix.test.ts",
+    "tests/unit/hvp-owned-materialization.test.ts",
+    "tests/unit/hvp-owned-structural-ingest.test.ts",
+    "--maxWorkers=1",
+    "--no-file-parallelism",
+    "--reporter=default",
+    "--reporter=json",
+    "--outputFile=C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\.devtoolbox\\specs\\changes\\hestia-cut-rt-v3-resume-2026-10-05\\tests\\A02-structural-whole-r01\\original-vitest.json"
+  ],
+  "scope": [
+    {
+      "role": "caller",
+      "pid": 54676,
+      "presence": "PRESENT",
+      "creationFileTime": 134356654870791216
+    },
+    {
+      "role": "wrapper",
+      "pid": 20604,
+      "presence": "PRESENT",
+      "creationFileTime": 134356654885889397
+    },
+    {
+      "role": "native",
+      "pid": 72488,
+      "presence": "PRESENT",
+      "creationFileTime": 134356654889478620
+    }
+  ],
+  "nativeInvocations": 1,
+  "job": "Unnamed job assigned to this wrapper before launch; default inherited, no breakaway or limits"
+}

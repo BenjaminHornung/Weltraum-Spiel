@@ -1,0 +1,452 @@
+{
+  "before": {
+    "ownerId": "hvp:terrain-fragment:r1:1b4aa69d",
+    "sourceDigest": "fnv1a64-v1:70d85a5593bd44c9",
+    "revision": 0,
+    "issuedTick": 1417,
+    "cell": [
+      189,
+      84,
+      76
+    ],
+    "pose": {
+      "position": {
+        "x": 8.427063941955566,
+        "y": 0.973335862159729,
+        "z": -4.908839225769043
+      },
+      "rotation": {
+        "x": 0.03764636069536209,
+        "y": 0.6483198404312134,
+        "z": 0.01415773294866085,
+        "w": 0.7603049874305725
+      }
+    }
+  },
+  "receipt": {
+    "id": "moving-cut-1",
+    "status": "Applied",
+    "parentId": "hvp:terrain-fragment:r1:1b4aa69d",
+    "children": [
+      "hvp:terrain-fragment:r1:1b4aa69d:r1:p0"
+    ],
+    "removedCells": 32,
+    "removedMassKg": 135.9375,
+    "issuedTick": 1431,
+    "commitTick": 1455,
+    "parentPose": {
+      "position": {
+        "x": 8.427064895629883,
+        "y": 0.9733357429504395,
+        "z": -4.908839225769043
+      },
+      "rotation": {
+        "x": 0.03764725476503372,
+        "y": 0.6483209133148193,
+        "z": 0.014157362282276154,
+        "w": 0.7603040337562561
+      },
+      "velocity": {
+        "x": -0.000003905389803549042,
+        "y": 0.000052048191719222814,
+        "z": -0.00024211153504438698
+      },
+      "angularVelocity": {
+        "x": 0.00003340970215504058,
+        "y": -0.00023875670740380883,
+        "z": -0.0000722292679711245
+      }
+    },
+    "removedMomentum": {
+      "massKg": 135.9375,
+      "referencePoint": {
+        "x": 8.427064895629883,
+        "y": 0.9733357429504395,
+        "z": -4.908839225769043
+      },
+      "center": {
+        "x": 8.476599719742072,
+        "y": 1.1167841325569696,
+        "z": -5.13876274398376
+      },
+      "linear": {
+        "x": 0.00833997830370642,
+        "y": 0.00763316302968233,
+        "z": -0.030652845334774796
+      },
+      "angular": {
+        "x": -0.0025092207843182756,
+        "y": -0.0017573625736624116,
+        "z": -0.0011065138635369424
+      }
+    }
+  },
+  "tool": {
+    "id": "moving-cut-1",
+    "status": "Applied",
+    "reason": "Current-pose fragment replacement"
+  },
+  "health": {
+    "enabled": true,
+    "samples": 4284,
+    "errors": 0,
+    "dropped": 0,
+    "cutObservation": {
+      "status": "armed",
+      "drops": 0,
+      "disables": 0,
+      "inputCount": 1,
+      "pendingRender": false
+    },
+    "timingSinkFailures": 0,
+    "publishedOrigin": 1791242146877.1,
+    "publishedAt": 30504.09999999404
+  },
+  "raw": {
+    "entries": [
+      {
+        "name": "hvp.cutBodyInputMs",
+        "start": 30128,
+        "duration": 0,
+        "detail": {
+          "sampleId": "cutBodyInputMs:4212",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyInputMs",
+            "origin": 1791242146877.1,
+            "start": 30128,
+            "duration": 0
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodySubmittedMs",
+        "start": 30139.59999999404,
+        "duration": 0,
+        "detail": {
+          "sampleId": "cutBodySubmittedMs:4211",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodySubmittedMs",
+            "origin": 1791242146877.1,
+            "start": 30139.59999999404,
+            "duration": 0
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyOwnerPlanMs",
+        "start": 30173.69999999553,
+        "duration": 342.6000000014901,
+        "detail": {
+          "sampleId": "cutBodyOwnerPlanMs:4286",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyOwnerPlanMs",
+            "origin": 1791242146877.1,
+            "start": 30173.69999999553,
+            "duration": 342.6000000014901
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyPrepareWorkMs",
+        "start": 30516.59999999404,
+        "duration": 1.7000000029802322,
+        "detail": {
+          "sampleId": "cutBodyPrepareWorkMs:4287",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyPrepareWorkMs",
+            "origin": 1791242146877.1,
+            "start": 30516.59999999404,
+            "duration": 1.7000000029802322
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyMeshWorkerMs",
+        "start": 30516.39999999851,
+        "duration": 13.5,
+        "detail": {
+          "sampleId": "cutBodyMeshWorkerMs:4290",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyMeshWorkerMs",
+            "origin": 1791242146877.1,
+            "start": 30516.39999999851,
+            "duration": 13.5
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyNativeAdmissionMs",
+        "start": 30530,
+        "duration": 7.5999999940395355,
+        "detail": {
+          "sampleId": "cutBodyNativeAdmissionMs:4295",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyNativeAdmissionMs",
+            "origin": 1791242146877.1,
+            "start": 30530,
+            "duration": 7.5999999940395355
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyPrepareWorkMs",
+        "start": 30537.89999999851,
+        "duration": 1.7999999970197678,
+        "detail": {
+          "sampleId": "cutBodyPrepareWorkMs:4296",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyPrepareWorkMs",
+            "origin": 1791242146877.1,
+            "start": 30537.89999999851,
+            "duration": 1.7999999970197678
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyMainDecodeMs",
+        "start": 30537.69999999553,
+        "duration": 2.3000000044703484,
+        "detail": {
+          "sampleId": "cutBodyMainDecodeMs:4298",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyMainDecodeMs",
+            "origin": 1791242146877.1,
+            "start": 30537.69999999553,
+            "duration": 2.3000000044703484
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyPrepareWorkMs",
+        "start": 30539.79999999702,
+        "duration": 0.10000000149011612,
+        "detail": {
+          "sampleId": "cutBodyPrepareWorkMs:4297",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyPrepareWorkMs",
+            "origin": 1791242146877.1,
+            "start": 30539.79999999702,
+            "duration": 0.10000000149011612
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyRenderStageMs",
+        "start": 30540.09999999404,
+        "duration": 6.200000002980232,
+        "detail": {
+          "sampleId": "cutBodyRenderStageMs:4299",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyRenderStageMs",
+            "origin": 1791242146877.1,
+            "start": 30540.09999999404,
+            "duration": 6.200000002980232
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyInputToAppliedMs",
+        "start": 30128,
+        "duration": 443.900146484375,
+        "detail": {
+          "sampleId": "cutBodyInputToAppliedMs:4306",
+          "data": {
+            "commandId": "moving-cut-1",
+            "inputOrigin": 1791242146877.1,
+            "inputStart": 30128,
+            "terminalOrigin": 1791242146877.1,
+            "terminalStart": 30139.59999999404,
+            "terminalDuration": 432.30000000447035
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyTotalAppliedMs",
+        "start": 30139.59999999404,
+        "duration": 432.30000000447035,
+        "detail": {
+          "sampleId": "cutBodyTotalAppliedMs:4305",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyTotalAppliedMs",
+            "origin": 1791242146877.1,
+            "start": 30139.59999999404,
+            "duration": 432.30000000447035
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyMeshReleaseMs",
+        "start": 30566.39999999851,
+        "duration": 5.399999998509884,
+        "detail": {
+          "sampleId": "cutBodyMeshReleaseMs:4304",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyMeshReleaseMs",
+            "origin": 1791242146877.1,
+            "start": 30566.39999999851,
+            "duration": 5.399999998509884
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyFirstCommittedRenderSubmitMs",
+        "start": 30128,
+        "duration": 468.39990234375,
+        "detail": {
+          "sampleId": "cutBodyFirstCommittedRenderSubmitMs:4309",
+          "data": {
+            "commandId": "moving-cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~4",
+              "hvp:terrain:s7:e0~5"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false,
+            "bodySequence": 1,
+            "parentId": "hvp:terrain-fragment:r1:1b4aa69d",
+            "children": [
+              {
+                "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+                "sourceDigest": "fnv1a64-v1:c05b830d110a061f",
+                "renderKey": "hvp:fragment:e0~8"
+              }
+            ],
+            "activeBodyKeys": [
+              "hvp:fragment:e0~8",
+              "hvp:branch:parent",
+              "hvp:branch:foliage:r0"
+            ],
+            "outcomeIdentityMatches": true
+          }
+        }
+      }
+    ],
+    "dropped": 0
+  },
+  "ownerPlan": {
+    "commandId": "moving-cut-1",
+    "outcome": "Planned",
+    "origin": 1791242151789.7,
+    "steps": 2610,
+    "maxMs": 1.7000000029802322,
+    "phases": [
+      {
+        "label": "ownerCommand",
+        "count": 164,
+        "totalMs": 61.70000001043081,
+        "maxMs": 1.7000000029802322
+      },
+      {
+        "label": "destruction",
+        "count": 1,
+        "totalMs": 0.20000000298023224,
+        "maxMs": 0.20000000298023224
+      },
+      {
+        "label": "ownerClassification",
+        "count": 81,
+        "totalMs": 19.49999999254942,
+        "maxMs": 1.1999999955296516
+      },
+      {
+        "label": "classification",
+        "count": 1,
+        "totalMs": 0.29999999701976776,
+        "maxMs": 0.29999999701976776
+      },
+      {
+        "label": "ownerMass",
+        "count": 5,
+        "totalMs": 0.7999999970197678,
+        "maxMs": 0.7999999970197678
+      },
+      {
+        "label": "parentMass",
+        "count": 1,
+        "totalMs": 0,
+        "maxMs": 0
+      },
+      {
+        "label": "childCells",
+        "count": 22,
+        "totalMs": 13.600000008940697,
+        "maxMs": 1
+      },
+      {
+        "label": "ownerIngest",
+        "count": 1699,
+        "totalMs": 135.40000001341105,
+        "maxMs": 1.1000000014901161
+      },
+      {
+        "label": "ownerRecipe",
+        "count": 250,
+        "totalMs": 82.20000000298023,
+        "maxMs": 1.6000000014901161
+      },
+      {
+        "label": "childRecipe0",
+        "count": 1,
+        "totalMs": 0.10000000149011612,
+        "maxMs": 0.10000000149011612
+      },
+      {
+        "label": "ownerCells",
+        "count": 384,
+        "totalMs": 0.29999999701976776,
+        "maxMs": 0.10000000149011612
+      },
+      {
+        "label": "removedMass",
+        "count": 1,
+        "totalMs": 0.10000000149011612,
+        "maxMs": 0.10000000149011612
+      }
+    ]
+  },
+  "classification": "FUNCTIONAL_LATENCY_DIAGNOSTIC_NOT_42_ACCEPTANCE"
+}

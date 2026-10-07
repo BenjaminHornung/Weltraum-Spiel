@@ -1,0 +1,8 @@
+{
+  "runId": "A03-recipe-quantum-r54-red-tests",
+  "startedUtc": "2026-10-05T22:11:30.5316912+00:00",
+  "endedUtc": "2026-10-05T22:11:37.2536250+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 6.7128887,
+  "planFile": "A03-recipe-quantum-r54-red-tests.plan.json"
+}

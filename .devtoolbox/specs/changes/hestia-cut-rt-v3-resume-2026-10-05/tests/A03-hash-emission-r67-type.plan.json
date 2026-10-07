@@ -1,0 +1,8 @@
+{
+  "mode": "type",
+  "files": [],
+  "nativeCapSeconds": 60,
+  "binding": "A03-hash-emission-r67-binding.json",
+  "classification": "Same complete bytes, units, prefix/cancel boundaries; primitive and shortkey generator overhead only",
+  "runId": "A03-hash-emission-r67-type"
+}

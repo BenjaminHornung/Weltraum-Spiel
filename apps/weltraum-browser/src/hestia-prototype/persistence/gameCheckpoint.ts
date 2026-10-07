@@ -1,5 +1,5 @@
 import {canonicalizePersistenceValue,createPersistenceSignature,serializeCanonicalPersistenceValue} from "../../persistence";
-import {HVP_COAST_MATERIAL_REGISTRY,HVP_COAST_SOURCE_VERSION,restoreHvpCoastSource} from "../../hvp/hvpCoastSource";
+import {HVP_COAST_MATERIAL_REGISTRY,HVP_COAST_SOURCE_VERSION,restoreHvpOwnedCoastGrid} from "../../hvp/hvpCoastSource";
 import type {HvpCameraCheckpoint} from "../../hvp/hvpCamera";
 import {HVP_VEGETATION_VERSION} from "../presentation/vegetation";
 import {createHvpLookProfile} from "../presentation/look";
@@ -104,7 +104,7 @@ export const decodeHvpGame=(value:unknown)=>{
   if(signature!==createPersistenceSignature(data)){throw new Error("Hestia save signature mismatch");}
   const owned=canonicalizePersistenceValue(p) as unknown as HvpGameCheckpoint;
   const decodedBase=decodeHvpGrid(p.terrain.base);
-  const base=restoreHvpCoastSource(decodedBase.copySlots(),p.terrain.baseDigest);
+  const base=restoreHvpOwnedCoastGrid(decodedBase,p.terrain.baseDigest);
   const savedTerrain=validateHvpTerrainCheckpointHeader(p.terrain);
   const root=createHvpTerrainRoot(base,savedTerrain.sessionId,savedTerrain.epoch,undefined,savedTerrain);
   const plants=p.plants.map(plant=>decodeHvpPlant(plant,root.read()));

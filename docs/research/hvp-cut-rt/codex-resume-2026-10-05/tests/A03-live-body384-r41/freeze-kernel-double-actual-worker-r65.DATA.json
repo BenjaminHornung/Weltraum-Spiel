@@ -1,0 +1,33 @@
+{
+  "classification": "PAUSED_OWNED_WORKER_DOUBLE_FREEZE_MICROBENCH_NOT_GAME_ACCEPTANCE",
+  "rows": [
+    {
+      "length": 4096,
+      "packed": true,
+      "samples": 12,
+      "meanFreezeMs": 0,
+      "maximumFreezeMs": 0
+    },
+    {
+      "length": 4096,
+      "packed": false,
+      "samples": 12,
+      "meanFreezeMs": 0,
+      "maximumFreezeMs": 0
+    },
+    {
+      "length": 32768,
+      "packed": true,
+      "samples": 12,
+      "meanFreezeMs": 0.024999999751647312,
+      "maximumFreezeMs": 0.10000000894069672
+    },
+    {
+      "length": 32768,
+      "packed": false,
+      "samples": 12,
+      "meanFreezeMs": 0.016666666915019352,
+      "maximumFreezeMs": 0.10000000894069672
+    }
+  ]
+}

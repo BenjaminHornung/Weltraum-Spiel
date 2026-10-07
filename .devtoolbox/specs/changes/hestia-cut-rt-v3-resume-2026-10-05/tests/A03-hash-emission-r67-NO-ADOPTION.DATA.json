@@ -1,0 +1,5 @@
+{
+  "restoredSha256": "869cf49942e1f6ecba792447bfe2176521de4012b061daf7d192acc48d938455",
+  "status": "NO_ADOPTION",
+  "reason": "No stable paired kernel benefit; second9x8 mean4.833baseline vs4.982candidate, median4.424vs4.571; actual458.8ms remainsFAIL250"
+}

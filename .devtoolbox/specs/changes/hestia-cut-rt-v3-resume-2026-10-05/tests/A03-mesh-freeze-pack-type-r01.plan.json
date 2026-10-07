@@ -1,0 +1,8 @@
+{
+  "files": [],
+  "runId": "A03-mesh-freeze-pack-type-r01",
+  "nativeCapSeconds": 60,
+  "classification": "Exact R29 packing/freeze preservation full type after unused wrapper removal",
+  "mode": "type",
+  "binding": "A03-mesh-freeze-pack-final-r01-binding.json"
+}

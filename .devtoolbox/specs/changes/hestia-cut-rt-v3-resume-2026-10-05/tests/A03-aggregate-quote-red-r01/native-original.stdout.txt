@@ -1,0 +1,22 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvpOwnedBodyMesh.test.ts (11 tests | 2 failed) 2071ms
+   ✓ reuses the mesh kernel without changing mixed-material local Float32 bytes or metadata  386ms
+   ✓ rejects changed geometry against the issued local source, not changed foreign cells or matching digest  320ms
+   ✓ bounds projection batches and never publishes a partial mesh after cancellation 5ms
+   ✓ closes owned cursors at local-position and geometry-comparison yields  333ms
+   ✓ charges the borrowed parent before allocating any owned occupancy mesh  328ms
+   ✓ charges actual face/quad containers without changing mixed-material bytes  335ms
+   ✓ keeps expected-geometry verification inside the same borrowed parent budget  331ms
+   ✓ counts actual dense exposed faces for a legal large allocation quote without generating geometry 25ms
+   ✓ keeps wide occupied IDs during exposure counting and rejects grid credit before allocation 0ms
+   × quotes one shared phase maximum for a dense legal 32cubed body 5ms
+   × keeps geometry gates and rejects absent or invalid external quote allowances 1ms
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 9 passed (11)
+   Start at  20:32:58
+   Duration  3.64s (transform 651ms, setup 0ms, import 1.41s, tests 2.07s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-aggregate-quote-red-r01/original-vitest.json

@@ -1,0 +1,13 @@
+# P02 vegetation negative decision and revert
+
+Status: scoped source/revert/negative-decision ACCEPT from independent read-only reviewer; final integrated runtime/test coverage pending. No vegetation optimization adopted.
+
+Actual product file src/hestia-prototype/presentation/vegetation.ts SHA64806d7f77d6e562c8f1a36e7fb313c6353acca04d05331063af3773a519e1ae is unchanged against currentHEAD0bfd/base/originalb3c6523/restoredP02 (logicalEOL comparison stated separately). Original hvp-vegetation.test.ts SHA520241b1c12d2b22e1aa717275d5a91f2c834fe3d187c71fb75ec60cddde090b is unchanged against0bfd. Fresh product Git diff is empty.
+
+The real C1 candidate only replaces temporary origin-array construction at vegetation338 with scalar reads, preserving read order. Its exact diff/inverse/emptypostrevert diff are retained under CIFI coordination/P02-c1-no-change-closeout-20261003-01. candidate-product-raw.diff SHA9a718f53245b698b2064bf3300ce65061534f1c517fcbb684e11a4d38e568958. S50 cost-card.json at P02-evidence-c1-abba-native-20261003-01 has SHA811cec38453f3e6a221b67e7cd372ca814dc52bbd86bbc741470a3cd6c136573. Eight cold and eight warm pairs cover99owners/103products: paired candidate-minus-baseline median -3.3663ms cold/+17.86125ms warm, substantial scatter. This supportsNO_ADOPTION, not an isolated gain.
+
+Historical raw coverage reviewed: restoredparity7PASS/3deliberatelySKIP; own20STARTED/PASS/reference-dropcycles in selectedcase; complete6affectedfiles42/42 including vegetation20cyclecase; RestoreFoliage4PASS/56SKIP; restoredtype/buildexit0 with originalwarning. S47/S50 retention metadata and cwdlexicaldrift remainOPEN, not requalified. Node lifecycle does not prove browser/GPU/physicalheap/SaveColdLoad. Original P02 unit/reference artifacts exist in historical worktree and must be indexed before finalcurrentcoverage claims; no newlabvariants needed.
+
+The similarly named older docs/research/hvp-cut-rt/P02-RESULT.md concerns a different materialization package and is not evidence for this vegetation task. Full P01–P06 matrix will retain this separation, source hashes, actual original receipts and current integrated checks.
+
+R117 independent read-only historical index is now P02-HISTORICAL-INDEX-R117.json. Exactcandidate/inverse/emptyrevert/S50/S47/T07 files and originalunit/reference sources have path/bytes/SHA bindings. Preserve S47collector exit1, S50T07SKIP, separateT07no-oprenderer/nativeGPU NOT_MEASURED, and unresolvedrawindex/CWD drift. S58card reports42PASS/15296bytes/SHA43df5c7d but supplies no rawreportpath; index explicitly marks raw receipt NOT_PROVEN. This index does not requalify historical attempts or close integrated currentruntime/tests.

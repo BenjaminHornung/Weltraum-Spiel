@@ -1,0 +1,8 @@
+{
+  "binding": "A03-escrow-dispose-r37-binding.json",
+  "files": [],
+  "classification": "Final Dispose release source typecheck",
+  "nativeCapSeconds": 60,
+  "runId": "A03-escrow-dispose-type-r37",
+  "mode": "type"
+}

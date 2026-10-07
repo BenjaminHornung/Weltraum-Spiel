@@ -1,0 +1,8 @@
+{
+  "nativeCapSeconds": 60,
+  "binding": "A03-prepaid-pool-r39-r03-binding.json",
+  "files": [],
+  "runId": "A03-prepaid-pool-type-r39-r03",
+  "mode": "type",
+  "classification": "Final private metadata guard source typecheck"
+}

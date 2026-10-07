@@ -1,0 +1,8 @@
+{
+  "classification": "Product bodies identical to full15files109/109 verifiedcandidate; one stale source comment corrected; fresh type/build",
+  "runId": "A03-bounded-native-freeze-r65-build-r02",
+  "binding": "A03-bounded-native-freeze-r65-binding-r02.json",
+  "files": [],
+  "nativeCapSeconds": 900,
+  "mode": "build"
+}

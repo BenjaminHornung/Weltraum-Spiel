@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import * as commandModule from "../../src/presentation/renderCommands";
 import {
   artifactRevision,
   backendRevision,
@@ -60,6 +61,25 @@ const twoProfileArtifact = (): MeshArtifact => createMeshArtifact({
 });
 
 describe("presentation commands", () => {
+  it("keeps full command validation and signature bytes in the owned step route", () => {
+    const owned = commandModule as unknown as {
+      createRenderCommandOwnedSteps(command: import("../../src/presentation").UpsertMeshArtifactCommand): Generator<string, import("../../src/presentation").UpsertMeshArtifactCommand, unknown>;
+      validateRenderCommandOwnedSteps(command: unknown): Generator<string, ReturnType<typeof validateRenderCommand>, unknown>;
+      renderCommandSignatureOwnedSteps(command: import("../../src/presentation").RenderCommand): Generator<string, string, unknown>;
+    };
+    const finish = <T>(steps: Generator<string, T, unknown>): T => { try { for (;;) { const n = steps.next(); if (n.done) return n.value; } } finally { steps.return(undefined as never); } };
+    const command = { kind: "UpsertMeshArtifact" as const, backendRevision: backendRevision(0), artifact: twoProfileArtifact(), materialProfiles: [profile("material:b"), profile("material:a")] };
+    const prepared = finish(owned.createRenderCommandOwnedSteps(command));
+    expect(prepared).toEqual(createRenderCommand(command)); expect(prepared.artifact.positions).toBe(command.artifact.positions);
+    expect(finish(owned.renderCommandSignatureOwnedSteps(prepared))).toBe(renderCommandSignature(prepared));
+    for (const value of [null, { kind: "bad" }, { ...prepared, materialProfiles: [profile()] },
+      { ...prepared, artifact: { ...prepared.artifact, contentHash: "fnv1a64:0000000000000000" } }]) {
+      expect(finish(owned.validateRenderCommandOwnedSteps(value))).toEqual(validateRenderCommand(value));
+    }
+    prepared.artifact.positions[0] = 99;
+    expect(finish(owned.validateRenderCommandOwnedSteps(prepared))).toEqual(validateRenderCommand(prepared));
+    expect(finish(owned.renderCommandSignatureOwnedSteps(prepared))).toBe(renderCommandSignature(prepared));
+  });
   it("creates immutable upserts while preserving exact artifact buffers", () => {
     const mesh = artifact();
     const command = createRenderCommand({

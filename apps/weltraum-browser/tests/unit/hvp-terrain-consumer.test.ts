@@ -2,7 +2,9 @@ import { describe,it,expect,vi } from "vitest";
 import { createHvpTerrainRoot, restoreHvpTerrainRoot, type HvpCutRequest } from "../../src/hestia-prototype/terrain/cutPlan";
 import { createHvpTerrainConsumer, type HvpPreparedTerrainBody } from "../../src/hestia-prototype/terrain/terrainConsumer";
 import type { HvpTerrainProducts } from "../../src/hestia-prototype/terrain/terrainProducts";
-import {analyzeHvpTerrainSupport} from "../../src/hestia-prototype/terrain/supportPlan";
+import {analyzeHvpTerrainSupport,bindHvpSupportPlan,createHvpSupportPhaseCredits} from "../../src/hestia-prototype/terrain/supportPlan";
+import type {HvpPhysicsClient} from "../../src/hestia-prototype/physics/client";
+import {HvpRenderStageRecoveryError} from "../../src/hestia-prototype/presentation/renderStageRecovery";
 import type {HvpTerrainFragmentRequest} from "../../src/hestia-prototype/physics/terrainFragment";
 import type {HvpCutSpan,HvpCutTrace} from "../../src/hestia-prototype/runtime/cutTrace";
 
@@ -23,6 +25,60 @@ const setup=(fault="",trace?:HvpCutTrace,compileWait?:Promise<void>)=>{
   return {root,consumer,request,events,spans,clearFault:()=>{fault="";},stageCommandId:()=>stageCommandId,stageArity:()=>stageArity,read:()=>({visible,world,held})};
 };
 describe("HVP paired terrain consumer",()=>{
+  it.each(["ready","async-ready","async-disposed","async-recovery","preStage-reject","quote-disposed","render-recovery","ownerId","sourceDigest","centerOfMass","cellCount","massKg","colliders","sourceBytes"] as const)("stages owned graphics before NativeStage and compares exact actual Source views (%s)",async fault=>{
+    const cells=new Set<string>();for(let y=0;y<=80;y+=1){cells.add(`176:${y}:77`);}cells.add("177:80:77");cells.add("178:80:77");
+    const root=createHvpTerrainRoot({sizeX:256,sizeY:128,sizeZ:256,cellMeters:.125,originMeters:{x:-16,y:-8,z:-16},sourceDigest:"12345678",
+      readSlot:(x,y,z)=>cells.has(`${x}:${y}:${z}`)?1:0},"pregraphics",0),before=root.read(),events:string[]=[];
+    let actual:ReturnType<HvpPhysicsClient["preparedTerrainFragments"]>=[],visible=0,world=0,held=false,released=false;
+    const stage=(_products:HvpTerrainProducts,bodies?:readonly HvpPreparedTerrainBody[])=>{
+      events.push("graphics");expect(held).toBe(false);expect(bodies).toHaveLength(1);
+      if(fault==="render-recovery"){throw new HvpRenderStageRecoveryError([new Error("upload"),new Error("unproven cleanup")],"hidden owner release unproven");}
+      return {publish(){visible=1;events.push("publish");},rollback(){visible=0;events.push("graphics-rollback");},finish(){events.push("retire");}};
+    };
+    const prepare: HvpPhysicsClient["prepareTerrain"]=async(_id,_generation,_replacements,fragments,work)=>{
+      events.push("source");expect(work?.onSourcePrepared).toBeTypeOf("function");
+      const views=(fragments??[]).map(f=>({ownerId:f.ownerId,sourceDigest:"fnv1a64-v1:0000000000000001",centerOfMass:{x:0,y:1,z:0},
+        cellCount:f.cells.length,massKg:f.massKg,colliders:1,sourceBytes:131072}));
+      try{await work!.onSourcePrepared!(views);}catch(error){events.push("source-release");throw error;}
+      expect(events.indexOf("graphics")).toBeGreaterThan(events.indexOf("source"));
+      if(fault==="preStage-reject"){events.push("source-release");throw new Error("before Stage rejected");}
+      held=true;events.push("NativeStage");actual=views.map(view=>{
+        if(fault==="centerOfMass"){return {...view,centerOfMass:{...view.centerOfMass,x:1}};}
+        if(fault==="ownerId"||fault==="sourceDigest"){return {...view,[fault]:view[fault]+"different"};}
+        if(fault!=="ready"&&fault!=="async-ready"&&fault!=="async-disposed"&&fault!=="async-recovery"&&fault!=="quote-disposed"&&fault!=="render-recovery"){return {...view,[fault]:view[fault]+1};}
+        return view;
+      });
+    };
+    const consumer=createHvpTerrainConsumer(root,async plan=>({source:plan.after,render:new Map(),collision:new Map()}),stage,
+      {prepareTerrain:prepare,preparedTerrainFragments:()=>actual,async commitTerrain(){world=1;events.push("commit");},publishTerrain(){events.push("world-publish");},
+        async rollbackTerrain(){held=false;world=0;events.push("NativeRollback");},async finalizeTerrain(){held=false;events.push("finalize");},async command(){},
+        read:()=>({terrainTransaction:held?"PreparedHeld":"Idle"} as ReturnType<HvpPhysicsClient["read"]>)},[],
+      async cut=>bindHvpSupportPlan(cut,analyzeHvpTerrainSupport(cut),()=>{released=true;},createHvpSupportPhaseCredits(4096,0)),undefined,
+      async()=>{events.push("quote");if(fault==="quote-disposed"){consumer.dispose();}return 1024;},
+      fault.startsWith("async-")?async(products,bodies)=>{
+        events.push("async-start");expect(held).toBe(false);await Promise.resolve();expect(held).toBe(false);
+        if(fault==="async-recovery"){throw new HvpRenderStageRecoveryError([new Error("async cleanup")],"async release unproven");}
+        const staged=stage(products,bodies);if(fault==="async-disposed"){consumer.dispose();}return staged;
+      }:undefined);
+    const result=await consumer.submit({sessionId:before.sessionId,epoch:0,revision:0,sourceDigest:before.sourceDigest,commandId:"under",toolPolicy:"hvp-plasma-v1",
+      shape:{kind:"Box",min:[176,79,77],max:[177,80,78]}});
+    if(fault==="render-recovery"||fault==="async-recovery"){
+      expect(result.status).toBe("RecoveryHold");expect(released).toBe(false);expect(root.read()).toBe(before);
+      expect(events).toContain("source-release");expect(events).not.toContain("NativeStage");expect(events).not.toContain("commit");
+      expect(consumer.read().state).toBe("RecoveryHold");
+      expect((await consumer.submit({sessionId:before.sessionId,epoch:0,revision:0,sourceDigest:before.sourceDigest,commandId:"next",toolPolicy:"hvp-plasma-v1",
+        shape:{kind:"Box",min:[176,79,77],max:[177,80,78]}})).reason).toBe("RecoveryHold");return;
+    }
+    expect(released).toBe(true);
+    if(fault==="quote-disposed"){expect(result.status).toBe("Rejected");expect(events).toEqual(["quote"]);expect(root.read()).toBe(before);return;}
+    expect(events.indexOf("graphics")).toBeLessThan(events.indexOf("NativeStage")<0?Infinity:events.indexOf("NativeStage"));
+    if(fault==="ready"||fault==="async-ready"){expect(result.status).toBe("Applied");expect([visible,world,held]).toEqual([1,1,false]);if(fault==="async-ready")expect(events).toContain("async-start");}
+    else{expect(result.status).toBe("Rejected");expect(root.read()).toBe(before);expect([visible,world,held]).toEqual([0,0,false]);
+      expect(events).toContain("graphics-rollback");expect(events).not.toContain("commit");expect(events).not.toContain("publish");
+      if(fault==="preStage-reject"||fault==="async-disposed"){expect(events).toContain("source-release");expect(events).not.toContain("NativeRollback");}
+      else{expect(events).toContain("NativeRollback");}
+    }
+  });
   it("replays the saved exact outcome without recompiling or committing the cut again",async()=>{
     const s=setup(),request=s.request(),pending=s.consumer.submit(request);
     await expect(s.consumer.checkpoint()).rejects.toThrow(/boundary/);

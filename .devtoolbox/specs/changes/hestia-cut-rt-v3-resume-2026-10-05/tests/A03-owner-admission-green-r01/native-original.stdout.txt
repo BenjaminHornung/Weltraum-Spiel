@@ -1,0 +1,12 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-body-mesh-owner-integration.test.ts (1 test) 533ms
+   ✓ rejects projected owner-route Stage until the retained plan has admitted complete geometry  501ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  13:25:34
+   Duration  2.14s (transform 658ms, setup 0ms, import 1.47s, tests 533ms, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-owner-admission-green-r01/original-vitest.json

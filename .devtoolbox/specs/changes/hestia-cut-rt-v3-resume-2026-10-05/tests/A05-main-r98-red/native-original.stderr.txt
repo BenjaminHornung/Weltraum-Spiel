@@ -1,0 +1,13 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/workerPoolLifecycle.test.ts > holds private support result ownership until bounded decoding closes (valid)
+ FAIL  tests/unit/workerPoolLifecycle.test.ts > holds private support result ownership until bounded decoding closes (cancel)
+ FAIL  tests/unit/workerPoolLifecycle.test.ts > holds private support result ownership until bounded decoding closes (shutdown)
+ FAIL  tests/unit/workerPoolLifecycle.test.ts > holds private support result ownership until bounded decoding closes (epoch)
+TypeError: Cannot read properties of undefined (reading 'call')
+ ❯ tests/unit/workerPoolLifecycle.test.ts:274:27
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+

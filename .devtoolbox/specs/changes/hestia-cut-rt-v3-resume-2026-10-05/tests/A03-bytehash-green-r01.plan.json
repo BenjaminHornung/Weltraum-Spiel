@@ -1,0 +1,10 @@
+{
+  "mode": "tests",
+  "classification": "Same FNV32 bytes under owner-only bounded generator; unchanged default deadlines",
+  "nativeCapSeconds": 180,
+  "binding": "A03-bytehash-green-r01-binding.json",
+  "runId": "A03-bytehash-green-r01",
+  "files": [
+    "tests/unit/hvp-borrowed-bytehash.test.ts"
+  ]
+}

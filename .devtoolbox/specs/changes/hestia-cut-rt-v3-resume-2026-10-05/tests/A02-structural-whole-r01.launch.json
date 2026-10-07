@@ -1,0 +1,7 @@
+{
+  "runId": "A02-structural-whole-r01",
+  "supervisorPid": 54676,
+  "supervisorStartUtc": "2026-10-05T09:18:07.0791216Z",
+  "observedUtc": "2026-10-05T09:18:07.1672972+00:00",
+  "processOwnership": "fresh task supervisor; original native job wrapper; no other task targeted"
+}

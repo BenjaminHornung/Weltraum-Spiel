@@ -1,0 +1,55 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/workerPoolLifecycle.test.ts (34 tests | 1 failed) 9073ms
+   × dispatches mesh-only owner projections through the existing accepted-terminal pool with exclusive buffers 68ms
+   ✓ transfers source-bound neighbour projections through the real pool and rejects a foreign ticket before transfer  6330ms
+   ✓ prepares local body cuts through the pool without accepting foreign owners or forged removed mass  534ms
+   ✓ runs HVP canonical collision jobs through the real pool protocol and rejects tampered input 23ms
+   ✓ runs source-bound support analysis through the real worker protocol without adopting foreign coverage 115ms
+   ✓ cancels an HVP collision job after preparation without publishing buffers 1ms
+   ✓ support decode accepts valid reports and rejects stale or mass-bound reports 88ms
+   ✓ support decode requires truthful collider and timing counts 133ms
+   ✓ support decode rejects malformed timing values and freezes diagnostics 108ms
+   ✓ support decode keeps report and transfer aggregate budgets distinct 136ms
+     ✓ reports only ready workers as active across startup, replacement failure, and shutdown 3ms
+     ✓ completes deterministic work and detaches transferred input 9ms
+     ✓ authorizes only completed terminals produced by this pool 30ms
+     ✓ takes transferable ownership before an accepted job waits in the queue 30ms
+     ✓ cancels queued and running jobs with distinct outcomes 15ms
+     ✓ settles affected requests on worker error and replaces with a higher epoch 62ms
+     ✓ stops fail-closed when a fault replacement cannot start 1ms
+     ✓ keeps the admitted worker intact until a ready candidate swaps exactly once 1ms
+     ✓ discards a failed candidate without changing the admitted worker, work, epochs, restarts, or pool state 1ms
+     ✓ prevents candidate admission when shutdown wins during replacement startup 1ms
+     ✓ ignores late output from a terminated worker epoch after replacement 11ms
+     ✓ does not let a rejected late cancellation replace a completed outcome 15ms
+     ✓ rejects stale planning results after the planning epoch advances  996ms
+     ✓ shutdown leaves no queued or running ticket unresolved 1ms
+     ✓ replaces a ready worker that faults while another slot is still starting 62ms
+     ✓ rejects a pending pool start when shutdown terminates the starting handle 0ms
+     ✓ rejects startup when the initialize control message cannot be posted 0ms
+     ✓ finishes shutdown when the final control message cannot be posted 1ms
+     ✓ isolates throwing diagnostic observers from queue and lifecycle decisions 13ms
+     ✓ faults malformed protocol and messageerror events and replaces each worker 125ms
+     ✓ retires a worker whose completed result violates the integration contract 79ms
+     ✓ settles duplicate and full-queue rejections explicitly 14ms
+     ✓ keeps exact job-ID replay rejection after the original job settled 31ms
+     ✓ scopes completed terminals to sequential pool lifetimes 31ms
+ ✓ tests/unit/hvpBodyMeshJob.test.ts (22 tests) 4647ms
+   ✓ keeps original ordered owner cells and source identities through mesh-only packing and exact local verification  528ms
+   ✓ preserves original occupied material 8 through the complete private mesh-only roundtrip  492ms
+   ✓ preserves original occupied material 256 through the complete private mesh-only roundtrip  452ms
+   ✓ preserves original occupied material 65535 through the complete private mesh-only roundtrip  419ms
+   ✓ preserves mixed Uint16 materials at their original coordinates without aliasing or sorting owner parts  472ms
+   ✓ rejects Air, negative zero and overflow before packing without rewriting valid owner data  455ms
+   ✓ rejects wrong input and output bindings without replacing the retained source  599ms
+   ✓ rejects damaged in-bounds geometry against the retained native plan even when framing and hashes pass  560ms
+   ✓ closes the cursor once on cancellation and preserves the first error when cleanup also throws  535ms
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 55 passed (56)
+   Start at  14:15:09
+   Duration  16.41s (transform 986ms, setup 0ms, import 2.33s, tests 13.72s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-mesh-dispatch-green-r03/original-vitest.json

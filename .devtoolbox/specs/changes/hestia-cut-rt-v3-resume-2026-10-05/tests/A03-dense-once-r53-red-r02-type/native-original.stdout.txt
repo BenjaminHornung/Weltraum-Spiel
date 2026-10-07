@@ -1,0 +1,1 @@
+tests/unit/hvp-owned-hash-array-open.test.ts(59,18): error TS6133: 'bytes' is declared but its value is never read.

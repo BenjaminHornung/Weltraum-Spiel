@@ -1,0 +1,8 @@
+{
+  "runId": "A05-prehold-r102-type-r01",
+  "startedUtc": "2026-10-06T19:32:25.3335657+00:00",
+  "endedUtc": "2026-10-06T19:32:25.5733383+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 0.2283143,
+  "planFile": "A05-prehold-r102-type-r01.plan.json"
+}

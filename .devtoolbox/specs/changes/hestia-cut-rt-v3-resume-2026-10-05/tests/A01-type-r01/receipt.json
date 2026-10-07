@@ -1,0 +1,18 @@
+{
+  "runId": "A01-type-r01",
+  "sourceBinding": "A01-privacy-green-r01/receipt.json",
+  "cwd": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\apps\\weltraum-browser",
+  "executable": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+  "argv": [
+    "node_modules/typescript/bin/tsc",
+    "-p",
+    "tsconfig.json",
+    "--noEmit"
+  ],
+  "startedUtc": "2026-10-05T09:08:34.6598603+00:00",
+  "endedUtc": "2026-10-05T09:08:37.9281585+00:00",
+  "elapsedSeconds": 3.2567728,
+  "exitCode": 0,
+  "deadlineSeconds": 60,
+  "deadlinePassed": true
+}

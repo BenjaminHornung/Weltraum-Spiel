@@ -1,0 +1,352 @@
+{
+  "cases": [
+    {
+      "name": "owner-first child projection: reuses one finished plan before CURRENT-pose Stage",
+      "state": "passed",
+      "baselineMs": 349.41280000000006,
+      "currentMs": 624.1211999999996,
+      "deltaMs": 274.70839999999953,
+      "ratio": 1.7862001621005283
+    },
+    {
+      "name": "owner-first child projection: rejects cancelled old work for a reused command id",
+      "state": "passed",
+      "baselineMs": 379.71399999999994,
+      "currentMs": 389.16780000000017,
+      "deltaMs": 9.453800000000228,
+      "ratio": 1.0248971594410536
+    },
+    {
+      "name": "owner-first child projection: retains the original plan failure on retry",
+      "state": "passed",
+      "baselineMs": 99.96039999999994,
+      "currentMs": 114.32220000000052,
+      "deltaMs": 14.361800000000585,
+      "ratio": 1.1436748952585283
+    },
+    {
+      "name": "owner-first child projection: uses the issued-hash factory without recut or native installation",
+      "state": "passed",
+      "baselineMs": 456.6875,
+      "currentMs": 567.4886999999999,
+      "deltaMs": 110.80119999999988,
+      "ratio": 1.2426192965649374
+    },
+    {
+      "name": "owner-first child projection: permits a finished full-removal plan with no children",
+      "state": "passed",
+      "baselineMs": 185.24089999999978,
+      "currentMs": 225.27440000000024,
+      "deltaMs": 40.03350000000046,
+      "ratio": 1.2161158793765334
+    },
+    {
+      "name": "owner-first child projection: rechecks cached target identity",
+      "state": "passed",
+      "baselineMs": 347.03960000000006,
+      "currentMs": 402.4961000000003,
+      "deltaMs": 55.45650000000023,
+      "ratio": 1.1597987664808287
+    },
+    {
+      "name": "owner-first child projection: rechecks cached registry identity",
+      "state": "passed",
+      "baselineMs": 375.03899999999976,
+      "currentMs": 458.1997000000001,
+      "deltaMs": 83.16070000000036,
+      "ratio": 1.2217388058308614
+    },
+    {
+      "name": "owner-first child projection: rechecks cached native identity",
+      "state": "passed",
+      "baselineMs": 402.8698999999997,
+      "currentMs": 510.2366000000002,
+      "deltaMs": 107.36670000000049,
+      "ratio": 1.266504645792601
+    },
+    {
+      "name": "derives exactly one native plan per command across task-yielding preparation, a failed stage and its retry",
+      "state": "passed",
+      "baselineMs": 692.8995999999997,
+      "currentMs": 945.3033000000014,
+      "deltaMs": 252.40370000000166,
+      "ratio": 1.3642716780324333
+    },
+    {
+      "name": "keeps the parent simulated between plan phases and stages the original hit at the current native pose",
+      "state": "passed",
+      "baselineMs": 725.4002,
+      "currentMs": 983.4876999999997,
+      "deltaMs": 258.08749999999964,
+      "ratio": 1.355786364547459
+    },
+    {
+      "name": "drops a cancelled or disposed preparation: no revived plan, no stage and unchanged native membership",
+      "state": "passed",
+      "baselineMs": 358.9935999999998,
+      "currentMs": 770.6226000000006,
+      "deltaMs": 411.6290000000008,
+      "ratio": 2.146619326918366
+    },
+    {
+      "name": "keeps a rejected task-yield adapter fatal for the command instead of resuming the steps in Stage",
+      "state": "passed",
+      "baselineMs": 358.3180000000002,
+      "currentMs": 628.2363999999998,
+      "deltaMs": 269.91839999999956,
+      "ratio": 1.7532928850908953
+    },
+    {
+      "name": "rejects a removed or replaced parent after a finished plan without touching the World",
+      "state": "passed",
+      "baselineMs": 591.2046,
+      "currentMs": 1244.4081999999999,
+      "deltaMs": 653.2035999999998,
+      "ratio": 2.104868940464942
+    },
+    {
+      "name": "keeps the original plan error identity and never stages a protected Sphere cut",
+      "state": "passed",
+      "baselineMs": 78.40950000000066,
+      "currentMs": 190.61079999999856,
+      "deltaMs": 112.2012999999979,
+      "ratio": 2.4309656355415727
+    },
+    {
+      "name": "stages a Sphere that removes every cell with zero children and no invented body",
+      "state": "passed",
+      "baselineMs": 333.1079,
+      "currentMs": 613.3652000000002,
+      "deltaMs": 280.2573000000002,
+      "ratio": 1.841340898849893
+    },
+    {
+      "name": "owner-first child projection: leaves the World running and rejects actual owner disposal",
+      "state": "passed",
+      "baselineMs": 1760.185199999999,
+      "currentMs": 3109.6468000000004,
+      "deltaMs": 1349.4616000000015,
+      "ratio": 1.7666588720323306
+    },
+    {
+      "name": "runs session source preparation outside the World hold and preserves Running after release",
+      "state": "passed",
+      "baselineMs": 2168.7662,
+      "currentMs": 3754.383999999998,
+      "deltaMs": 1585.6177999999982,
+      "ratio": 1.7311151381831744
+    },
+    {
+      "name": "runs session source preparation outside the World hold and preserves Paused after release",
+      "state": "passed",
+      "baselineMs": 2196.6335,
+      "currentMs": 3950.117399999999,
+      "deltaMs": 1753.4838999999993,
+      "ratio": 1.7982596550585246
+    },
+    {
+      "name": "logs slow contiguous plan steps and their existing sub-hooks only while measuring (on)",
+      "state": "passed",
+      "baselineMs": 1797.5051999999996,
+      "currentMs": 3171.1454999999987,
+      "deltaMs": 1373.6402999999991,
+      "ratio": 1.764192671042064
+    },
+    {
+      "name": "logs slow contiguous plan steps and their existing sub-hooks only while measuring (off)",
+      "state": "passed",
+      "baselineMs": 1848.669100000001,
+      "currentMs": 3130.3772000000026,
+      "deltaMs": 1281.7081000000017,
+      "ratio": 1.6933139630018164
+    },
+    {
+      "name": "logs slow contiguous plan steps and their existing sub-hooks only while measuring (disabledMidYield)",
+      "state": "passed",
+      "baselineMs": 1729.9314000000013,
+      "currentMs": 2617.8497000000025,
+      "deltaMs": 887.9183000000012,
+      "ratio": 1.5132679249593368
+    },
+    {
+      "name": "rejects foreign and mixed-version Dispose without mutating the current Worker owner",
+      "state": "passed",
+      "baselineMs": 854.5671000000002,
+      "currentMs": 1446.9203999999954,
+      "deltaMs": 592.3532999999952,
+      "ratio": 1.6931618359751914
+    },
+    {
+      "name": "serves Read, input and the fixed-step timer while the worker's source-only plan is suspended",
+      "state": "passed",
+      "baselineMs": 2241.5963999999985,
+      "currentMs": 4601.7958,
+      "deltaMs": 2360.1994000000013,
+      "ratio": 2.0529100599911754
+    },
+    {
+      "name": "rejects Stage during a safety SimulationHold without Applied, manual-pause label, auto-resume or native mutation",
+      "state": "passed",
+      "baselineMs": 2408.430199999999,
+      "currentMs": 2788.572899999999,
+      "deltaMs": 380.14270000000033,
+      "ratio": 1.1578383712345082
+    },
+    {
+      "name": "stops the temporary plan trace on a dynamic measure:false Read, including an in-flight plan, without changing the native cut",
+      "state": "passed",
+      "baselineMs": 6745.588100000001,
+      "currentMs": 8812.1515,
+      "deltaMs": 2066.563399999999,
+      "ratio": 1.306357780724856
+    },
+    {
+      "name": "keeps the plan trace off on the old World returned by RollbackRestore after an opt-out during a committed restore",
+      "state": "passed",
+      "baselineMs": 7037.869699999999,
+      "currentMs": 9565.703100000006,
+      "deltaMs": 2527.833400000007,
+      "ratio": 1.3591759307507507
+    },
+    {
+      "name": "serves Read, input and the timer at a yield inside the Worker child hash, then cancels it without native mutation",
+      "state": "passed",
+      "baselineMs": 2243.4257,
+      "currentMs": 3140.0705000000016,
+      "deltaMs": 896.6448000000019,
+      "ratio": 1.3996766195555315
+    },
+    {
+      "name": "keeps the Worker owner-hash route on a finalized Restore candidate and applies its new body cut",
+      "state": "passed",
+      "baselineMs": 4409.880099999995,
+      "currentMs": 7381.454599999997,
+      "deltaMs": 2971.5745000000024,
+      "ratio": 1.6738447378648698
+    },
+    {
+      "name": "issues identical children, masses, colliders and receipts on the generic and the owner-hash body session",
+      "state": "passed",
+      "baselineMs": 1498.4303999999975,
+      "currentMs": 2633.724000000002,
+      "deltaMs": 1135.2936000000045,
+      "ratio": 1.7576552104121796
+    },
+    {
+      "name": "runs a partial Sphere through the owner-hash factory's re-ingest route to one Applied child with generic parity",
+      "state": "passed",
+      "baselineMs": 1349.786500000002,
+      "currentMs": 1757.466499999995,
+      "deltaMs": 407.679999999993,
+      "ratio": 1.3020329511370816
+    },
+    {
+      "name": "runs an all-removing Sphere through the owner-hash factory without a child, hash cursor or native body",
+      "state": "passed",
+      "baselineMs": 366.41399999999703,
+      "currentMs": 475.84500000000116,
+      "deltaMs": 109.43100000000413,
+      "ratio": 1.2986539815618536
+    },
+    {
+      "name": "traces the owner-hash labels and recipe subspans exactly on a measured owner session and reads no clock without one",
+      "state": "passed",
+      "baselineMs": 1002.4006999999983,
+      "currentMs": 1463.2848999999987,
+      "deltaMs": 460.8842000000004,
+      "ratio": 1.4597804051812824
+    },
+    {
+      "name": "closes the owner child hash on a cancel or dispose at its own yield without a revived plan or native mutation",
+      "state": "passed",
+      "baselineMs": 649.4842000000062,
+      "currentMs": 1040.4611000000004,
+      "deltaMs": 390.9768999999942,
+      "ratio": 1.6019806178502733
+    },
+    {
+      "name": "settles a pending Worker plan before restoring the ports even when the Dispose reply fails, keeping the original error",
+      "state": "passed",
+      "baselineMs": 2485.945099999997,
+      "currentMs": 4370.427500000005,
+      "deltaMs": 1884.482400000008,
+      "ratio": 1.7580547132758524
+    },
+    {
+      "name": "projects row200 child cells in bounded owner batches with generic parity of sources, IDs, masses, colliders and receipt",
+      "state": "passed",
+      "baselineMs": 17138.942499999997,
+      "currentMs": 23371.861699999994,
+      "deltaMs": 6232.919199999997,
+      "ratio": 1.363669998892872
+    },
+    {
+      "name": "fails closed on a cancel or dispose between owner child-cell batches without a new Stage, hash or native mutation",
+      "state": "passed",
+      "baselineMs": 4445.771099999998,
+      "currentMs": 6581.688599999994,
+      "deltaMs": 2135.917499999996,
+      "ratio": 1.4804380279497513
+    },
+    {
+      "name": "stops every optional owner clock read after an opt-out at a child-cell batch yield",
+      "state": "passed",
+      "baselineMs": 4294.765499999994,
+      "currentMs": 6210.101799999989,
+      "deltaMs": 1915.3362999999954,
+      "ratio": 1.4459699371246226
+    },
+    {
+      "name": "serves Read, input and the timer at a real Worker child-cell batch yield, then cancels without a new Stage",
+      "state": "passed",
+      "baselineMs": 4024.868000000002,
+      "currentMs": 5066.612700000012,
+      "deltaMs": 1041.7447000000102,
+      "ratio": 1.2588270472472662
+    },
+    {
+      "name": "yields inside the post-destruction classification in bounded cell batches and stages the same products",
+      "state": "passed",
+      "baselineMs": 5447.3343999999925,
+      "currentMs": 7661.6977999999945,
+      "deltaMs": 2214.363400000002,
+      "ratio": 1.4065040325044127
+    },
+    {
+      "name": "cancels a yielding plan at its first yield without revival or native change",
+      "state": "passed",
+      "baselineMs": 8786.148700000005,
+      "currentMs": 13717.929400000023,
+      "deltaMs": 4931.7807000000175,
+      "ratio": 1.5613131382581784
+    },
+    {
+      "name": "cancels a yielding plan at its midClassification yield without revival or native change",
+      "state": "passed",
+      "baselineMs": 8451.726600000009,
+      "currentMs": 12303.910000000003,
+      "deltaMs": 3852.1833999999944,
+      "ratio": 1.4557865608194176
+    },
+    {
+      "name": "cancels a yielding plan at its midChildClassification yield without revival or native change",
+      "state": "passed",
+      "baselineMs": 10101.366299999994,
+      "currentMs": 15244.694600000017,
+      "deltaMs": 5143.328300000023,
+      "ratio": 1.5091715464273407
+    }
+  ],
+  "currentSource": "A02-owner-duration-r73/native-original.stdout.txt",
+  "currentCompletedSum": 168037.23590000003,
+  "classification": "COMPLETED_CASE_DIAGNOSTIC_ONLY_NOT_A_POPULATION_PASS",
+  "baselineCompletedSum": 113220.7294,
+  "baselineSource": "A02-owner65-clean-r02/original-vitest.json",
+  "unfinishedReady": {
+    "event": "case-ready",
+    "name": "cancels a yielding plan at its last yield without revival or native change",
+    "elapsedMs": 175536.6284
+  },
+  "NativeOutcome": "UNKNOWN_NATIVE_TIMEOUT_STOP",
+  "completedDiagnosticEvents": 42
+}

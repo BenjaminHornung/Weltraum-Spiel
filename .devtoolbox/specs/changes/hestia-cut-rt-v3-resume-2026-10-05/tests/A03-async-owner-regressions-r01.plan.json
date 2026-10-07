@@ -1,0 +1,15 @@
+{
+  "nativeCapSeconds": 600,
+  "files": [
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts",
+    "tests/unit/hvp-body-mesh-worker.test.ts",
+    "tests/unit/hvp-body-mesh-protocol.test.ts",
+    "tests/unit/hvp-body-mesh-client.test.ts",
+    "tests/unit/hvp-borrowed-mesh-decode.test.ts",
+    "tests/unit/hvpBodyMeshAdmission.test.ts"
+  ],
+  "classification": "Async Native decoding six whole files including actual owned/native RPC transfer; finite aggregate command window, original per-test/default deadlines",
+  "runId": "A03-async-owner-regressions-r01",
+  "binding": "A03-async-owner-type-r02-binding.json",
+  "mode": "tests"
+}

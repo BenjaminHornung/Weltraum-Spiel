@@ -1,0 +1,10 @@
+{
+  "classification": "Unchanged complete Bootstrap population; r03 failed Vite child spawn EPERM before tests; scoped launch with normal child-process permission",
+  "mode": "tests",
+  "nativeCapSeconds": 1200,
+  "runId": "A04-fixed-cold-render-r72-bootstrap-r04",
+  "files": [
+    "tests/unit/hvp-bootstrap.test.ts"
+  ],
+  "binding": "A04-fixed-cold-render-r72-binding-r03.json"
+}

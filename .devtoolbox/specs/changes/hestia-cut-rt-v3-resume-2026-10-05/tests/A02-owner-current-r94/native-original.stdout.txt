@@ -1,0 +1,555 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+OWNER65_PROGRESS {"event":"hook-start","name":"module","hook":"beforeAll","elapsedMs":2307.194}
+OWNER65_PROGRESS {"event":"hook-end","name":"module","hook":"beforeAll","elapsedMs":2307.3376000000003}
+OWNER65_PROGRESS {"event":"case-ready","name":"owner-first child projection: reuses one finished plan before CURRENT-pose Stage","elapsedMs":2307.3834}
+OWNER65_PROGRESS {"event":"hook-start","name":"owner-first child projection: reuses one finished plan before CURRENT-pose Stage","hook":"beforeEach","elapsedMs":2307.4088}
+OWNER65_PROGRESS {"event":"hook-end","name":"owner-first child projection: reuses one finished plan before CURRENT-pose Stage","hook":"beforeEach","elapsedMs":2308.8975}
+OWNER65_PROGRESS {"event":"case-result","name":"owner-first child projection: reuses one finished plan before CURRENT-pose Stage","state":"passed","durationMs":356.45550000000003,"elapsedMs":2537.553}
+OWNER65_PROGRESS {"event":"case-ready","name":"owner-first child projection: rejects cancelled old work for a reused command id","elapsedMs":2712.7273}
+OWNER65_PROGRESS {"event":"hook-start","name":"owner-first child projection: rejects cancelled old work for a reused command id","hook":"beforeEach","elapsedMs":2712.9286}
+OWNER65_PROGRESS {"event":"hook-end","name":"owner-first child projection: rejects cancelled old work for a reused command id","hook":"beforeEach","elapsedMs":2713.1188}
+OWNER65_PROGRESS {"event":"case-result","name":"owner-first child projection: rejects cancelled old work for a reused command id","state":"passed","durationMs":309.2951000000003,"elapsedMs":2846.7812}
+OWNER65_PROGRESS {"event":"case-ready","name":"owner-first child projection: retains the original plan failure on retry","elapsedMs":2985.1288}
+OWNER65_PROGRESS {"event":"hook-start","name":"owner-first child projection: retains the original plan failure on retry","hook":"beforeEach","elapsedMs":2985.2054000000003}
+OWNER65_PROGRESS {"event":"hook-end","name":"owner-first child projection: retains the original plan failure on retry","hook":"beforeEach","elapsedMs":2985.2298}
+OWNER65_PROGRESS {"event":"case-result","name":"owner-first child projection: retains the original plan failure on retry","state":"passed","durationMs":70.0277000000001,"elapsedMs":2985.2553000000003}
+OWNER65_PROGRESS {"event":"case-ready","name":"owner-first child projection: uses the issued-hash factory without recut or native installation","elapsedMs":2985.2657}
+OWNER65_PROGRESS {"event":"hook-start","name":"owner-first child projection: uses the issued-hash factory without recut or native installation","hook":"beforeEach","elapsedMs":2985.2749}
+OWNER65_PROGRESS {"event":"hook-end","name":"owner-first child projection: uses the issued-hash factory without recut or native installation","hook":"beforeEach","elapsedMs":2985.2836}
+OWNER65_PROGRESS {"event":"case-result","name":"owner-first child projection: uses the issued-hash factory without recut or native installation","state":"passed","durationMs":529.3599999999997,"elapsedMs":3446.3802}
+OWNER65_PROGRESS {"event":"case-ready","name":"owner-first child projection: permits a finished full-removal plan with no children","elapsedMs":3557.781}
+OWNER65_PROGRESS {"event":"hook-start","name":"owner-first child projection: permits a finished full-removal plan with no children","hook":"beforeEach","elapsedMs":3557.8559}
+OWNER65_PROGRESS {"event":"hook-end","name":"owner-first child projection: permits a finished full-removal plan with no children","hook":"beforeEach","elapsedMs":3557.8718}
+OWNER65_PROGRESS {"event":"case-result","name":"owner-first child projection: permits a finished full-removal plan with no children","state":"passed","durationMs":191.55539999999974,"elapsedMs":3827.5903000000003}
+OWNER65_PROGRESS {"event":"case-ready","name":"owner-first child projection: rechecks cached target identity","elapsedMs":3827.6807000000003}
+OWNER65_PROGRESS {"event":"hook-start","name":"owner-first child projection: rechecks cached target identity","hook":"beforeEach","elapsedMs":3827.7089}
+OWNER65_PROGRESS {"event":"hook-end","name":"owner-first child projection: rechecks cached target identity","hook":"beforeEach","elapsedMs":3827.7999000000004}
+OWNER65_PROGRESS {"event":"case-result","name":"owner-first child projection: rechecks cached target identity","state":"passed","durationMs":352.43280000000004,"elapsedMs":3990.574}
+OWNER65_PROGRESS {"event":"case-ready","name":"owner-first child projection: rechecks cached registry identity","elapsedMs":4173.6141}
+OWNER65_PROGRESS {"event":"hook-start","name":"owner-first child projection: rechecks cached registry identity","hook":"beforeEach","elapsedMs":4173.6975999999995}
+OWNER65_PROGRESS {"event":"hook-end","name":"owner-first child projection: rechecks cached registry identity","hook":"beforeEach","elapsedMs":4173.714199999999}
+OWNER65_PROGRESS {"event":"case-result","name":"owner-first child projection: rechecks cached registry identity","state":"passed","durationMs":340.2271999999998,"elapsedMs":4330.8784}
+OWNER65_PROGRESS {"event":"case-ready","name":"owner-first child projection: rechecks cached native identity","elapsedMs":4516.9495}
+OWNER65_PROGRESS {"event":"hook-start","name":"owner-first child projection: rechecks cached native identity","hook":"beforeEach","elapsedMs":4517.0353}
+OWNER65_PROGRESS {"event":"hook-end","name":"owner-first child projection: rechecks cached native identity","hook":"beforeEach","elapsedMs":4517.0511}
+OWNER65_PROGRESS {"event":"case-result","name":"owner-first child projection: rechecks cached native identity","state":"passed","durationMs":346.16530000000057,"elapsedMs":4677.1623}
+OWNER65_PROGRESS {"event":"case-ready","name":"derives exactly one native plan per command across task-yielding preparation, a failed stage and its retry","elapsedMs":5057.009999999999}
+OWNER65_PROGRESS {"event":"hook-start","name":"derives exactly one native plan per command across task-yielding preparation, a failed stage and its retry","hook":"beforeEach","elapsedMs":5057.0804}
+OWNER65_PROGRESS {"event":"hook-end","name":"derives exactly one native plan per command across task-yielding preparation, a failed stage and its retry","hook":"beforeEach","elapsedMs":5057.0926}
+OWNER65_PROGRESS {"event":"case-result","name":"derives exactly one native plan per command across task-yielding preparation, a failed stage and its retry","state":"passed","durationMs":648.5989,"elapsedMs":5326.0207}
+OWNER65_PROGRESS {"event":"case-ready","name":"keeps the parent simulated between plan phases and stages the original hit at the current native pose","elapsedMs":5688.351299999999}
+OWNER65_PROGRESS {"event":"hook-start","name":"keeps the parent simulated between plan phases and stages the original hit at the current native pose","hook":"beforeEach","elapsedMs":5688.4123}
+OWNER65_PROGRESS {"event":"hook-end","name":"keeps the parent simulated between plan phases and stages the original hit at the current native pose","hook":"beforeEach","elapsedMs":5688.4211}
+OWNER65_PROGRESS {"event":"case-result","name":"keeps the parent simulated between plan phases and stages the original hit at the current native pose","state":"passed","durationMs":628.9054999999998,"elapsedMs":5954.894899999999}
+OWNER65_PROGRESS {"event":"case-ready","name":"drops a cancelled or disposed preparation: no revived plan, no stage and unchanged native membership","elapsedMs":6342.168}
+OWNER65_PROGRESS {"event":"hook-start","name":"drops a cancelled or disposed preparation: no revived plan, no stage and unchanged native membership","hook":"beforeEach","elapsedMs":6342.2878}
+OWNER65_PROGRESS {"event":"hook-end","name":"drops a cancelled or disposed preparation: no revived plan, no stage and unchanged native membership","hook":"beforeEach","elapsedMs":6342.3177}
+OWNER65_PROGRESS {"event":"case-result","name":"drops a cancelled or disposed preparation: no revived plan, no stage and unchanged native membership","state":"passed","durationMs":386.9498000000003,"elapsedMs":6342.3614}
+OWNER65_PROGRESS {"event":"case-ready","name":"keeps a rejected task-yield adapter fatal for the command instead of resuming the steps in Stage","elapsedMs":6745.7935}
+OWNER65_PROGRESS {"event":"hook-start","name":"keeps a rejected task-yield adapter fatal for the command instead of resuming the steps in Stage","hook":"beforeEach","elapsedMs":6745.9729}
+OWNER65_PROGRESS {"event":"hook-end","name":"keeps a rejected task-yield adapter fatal for the command instead of resuming the steps in Stage","hook":"beforeEach","elapsedMs":6746.0044}
+OWNER65_PROGRESS {"event":"case-result","name":"keeps a rejected task-yield adapter fatal for the command instead of resuming the steps in Stage","state":"passed","durationMs":403.53459999999995,"elapsedMs":6746.0324}
+OWNER65_PROGRESS {"event":"case-ready","name":"rejects a removed or replaced parent after a finished plan without touching the World","elapsedMs":7132.588}
+OWNER65_PROGRESS {"event":"hook-start","name":"rejects a removed or replaced parent after a finished plan without touching the World","hook":"beforeEach","elapsedMs":7132.6530999999995}
+OWNER65_PROGRESS {"event":"hook-end","name":"rejects a removed or replaced parent after a finished plan without touching the World","hook":"beforeEach","elapsedMs":7132.665999999999}
+OWNER65_PROGRESS {"event":"case-result","name":"rejects a removed or replaced parent after a finished plan without touching the World","state":"passed","durationMs":649.0133999999998,"elapsedMs":7394.9751}
+OWNER65_PROGRESS {"event":"case-ready","name":"keeps the original plan error identity and never stages a protected Sphere cut","elapsedMs":7698.8317}
+OWNER65_PROGRESS {"event":"hook-start","name":"keeps the original plan error identity and never stages a protected Sphere cut","hook":"beforeEach","elapsedMs":7698.9151999999995}
+OWNER65_PROGRESS {"event":"hook-end","name":"keeps the original plan error identity and never stages a protected Sphere cut","hook":"beforeEach","elapsedMs":7698.9329}
+OWNER65_PROGRESS {"event":"case-result","name":"keeps the original plan error identity and never stages a protected Sphere cut","state":"passed","durationMs":80.98449999999957,"elapsedMs":7698.951599999999}
+OWNER65_PROGRESS {"event":"case-ready","name":"stages a Sphere that removes every cell with zero children and no invented body","elapsedMs":7698.9626}
+OWNER65_PROGRESS {"event":"hook-start","name":"stages a Sphere that removes every cell with zero children and no invented body","hook":"beforeEach","elapsedMs":7698.9712}
+OWNER65_PROGRESS {"event":"hook-end","name":"stages a Sphere that removes every cell with zero children and no invented body","hook":"beforeEach","elapsedMs":7698.9797}
+OWNER65_PROGRESS {"event":"case-result","name":"stages a Sphere that removes every cell with zero children and no invented body","state":"passed","durationMs":329.0673000000006,"elapsedMs":7805.1026999999995}
+OWNER65_PROGRESS {"event":"case-ready","name":"owner-first child projection: leaves the World running and rejects actual owner disposal","elapsedMs":9248.7458}
+OWNER65_PROGRESS {"event":"hook-start","name":"owner-first child projection: leaves the World running and rejects actual owner disposal","hook":"beforeEach","elapsedMs":9248.810500000001}
+OWNER65_PROGRESS {"event":"hook-end","name":"owner-first child projection: leaves the World running and rejects actual owner disposal","hook":"beforeEach","elapsedMs":9248.822600000001}
+OWNER65_PROGRESS {"event":"case-result","name":"owner-first child projection: leaves the World running and rejects actual owner disposal","state":"passed","durationMs":1780.3243000000002,"elapsedMs":9585.445800000001}
+OWNER65_PROGRESS {"event":"case-ready","name":"runs session source preparation outside the World hold and preserves Running after release","elapsedMs":11414.0558}
+OWNER65_PROGRESS {"event":"hook-start","name":"runs session source preparation outside the World hold and preserves Running after release","hook":"beforeEach","elapsedMs":11414.134}
+OWNER65_PROGRESS {"event":"hook-end","name":"runs session source preparation outside the World hold and preserves Running after release","hook":"beforeEach","elapsedMs":11414.150800000001}
+stdout | tests/unit/hvp-body-plan-owner.test.ts > runs session source preparation outside the World hold and preserves Running after release
+hvp-body-plan-steps {"commandId":"recut","outcome":"Planned","origin":1791301561293.577,"steps":9,"truncatedSteps":0,"max":{"ordinal":5,"label":"childClassificationCells","start":11439.2305,"durationMs":125.86490000000049},"phases":[{"label":"destruction","count":1,"totalMs":61.590799999999945,"maxMs":61.590799999999945},{"label":"classification","count":1,"totalMs":25.472499999999854,"maxMs":25.472499999999854},{"label":"parentMass","count":1,"totalMs":12.839199999998527,"maxMs":12.839199999998527},{"label":"childClassificationCells","count":2,"totalMs":132.26850000000013,"maxMs":125.86490000000049},{"label":"childRecipe0","count":1,"totalMs":76.85199999999895,"maxMs":76.85199999999895},{"label":"removedMass","count":1,"totalMs":77.38090000000011,"maxMs":77.38090000000011}],"slow":[{"ordinal":0,"label":"destruction","start":11312.6456,"durationMs":61.590799999999945},{"ordinal":3,"label":"classification","start":11391.9041,"durationMs":25.472499999999854},{"ordinal":4,"label":"parentMass","start":11423.5143,"durationMs":12.839199999998527},{"ordinal":5,"label":"childClassificationCells","start":11439.2305,"durationMs":125.86490000000049,"sub":[{"phase":"partCellsMs","durationMs":11.168600000000879},{"phase":"ingestSortRunsMs","durationMs":0.11160000000018044},{"phase":"ingestJournalMs","durationMs":1.011000000000422},{"phase":"ingestMaterializeMs","durationMs":25.433999999999287},{"phase":"ingestProofsMs","durationMs":22.08929999999964},{"phase":"ingestStructuralMs","durationMs":46.75699999999961},{"phase":"ingestTotalMs","durationMs":95.51020000000062}]},{"ordinal":7,"label":"childRecipe0","start":11589.254,"durationMs":76.85199999999895,"sub":[{"phase":"recipeMassMs","durationMs":14.566299999998591},{"phase":"recipeClassifyMs","durationMs":13.048800000000483},{"phase":"recipeTransitionMs","durationMs":74.3760000000002},{"phase":"recipeAxesMs","durationMs":0.07399999999870488}]},{"ordinal":8,"label":"removedMass","start":11677.4053,"durationMs":77.38090000000011,"sub":[{"phase":"removedFilterMs","durationMs":0.034599999999045394},{"phase":"ingestSortRunsMs","durationMs":0.01659999999901629},{"phase":"ingestJournalMs","durationMs":0.1378999999997177},{"phase":"ingestMaterializeMs","durationMs":20.5054999999993},{"phase":"ingestProofsMs","durationMs":19.095099999998638},{"phase":"ingestStructuralMs","durationMs":37.222499999999854},{"phase":"ingestTotalMs","durationMs":77.06900000000132},{"phase":"removedMassDeriveMs","durationMs":0.2080999999998312}]}]}
+
+OWNER65_PROGRESS {"event":"case-result","name":"runs session source preparation outside the World hold and preserves Running after release","state":"passed","durationMs":2219.7855,"elapsedMs":11805.453000000001}
+OWNER65_PROGRESS {"event":"case-ready","name":"runs session source preparation outside the World hold and preserves Paused after release","elapsedMs":13710.662400000001}
+OWNER65_PROGRESS {"event":"hook-start","name":"runs session source preparation outside the World hold and preserves Paused after release","hook":"beforeEach","elapsedMs":13710.7666}
+OWNER65_PROGRESS {"event":"hook-end","name":"runs session source preparation outside the World hold and preserves Paused after release","hook":"beforeEach","elapsedMs":13710.8043}
+stdout | tests/unit/hvp-body-plan-owner.test.ts > runs session source preparation outside the World hold and preserves Paused after release
+hvp-body-plan-steps {"commandId":"recut","outcome":"Planned","origin":1791301561293.577,"steps":9,"truncatedSteps":0,"max":{"ordinal":5,"label":"childClassificationCells","start":13740.3147,"durationMs":105.83929999999964},"phases":[{"label":"destruction","count":1,"totalMs":51.78559999999925,"maxMs":51.78559999999925},{"label":"classification","count":1,"totalMs":26.45839999999953,"maxMs":26.45839999999953},{"label":"parentMass","count":1,"totalMs":13.689500000000407,"maxMs":13.689500000000407},{"label":"childClassificationCells","count":2,"totalMs":111.15920000000006,"maxMs":105.83929999999964},{"label":"childRecipe0","count":1,"totalMs":61.89079999999922,"maxMs":61.89079999999922},{"label":"removedMass","count":1,"totalMs":67.21349999999984,"maxMs":67.21349999999984}],"slow":[{"ordinal":0,"label":"destruction","start":13617.644,"durationMs":51.78559999999925},{"ordinal":3,"label":"classification","start":13694.2787,"durationMs":26.45839999999953},{"ordinal":4,"label":"parentMass","start":13726.2074,"durationMs":13.689500000000407},{"ordinal":5,"label":"childClassificationCells","start":13740.3147,"durationMs":105.83929999999964,"sub":[{"phase":"partCellsMs","durationMs":11.147000000000844},{"phase":"ingestSortRunsMs","durationMs":0.301500000001397},{"phase":"ingestJournalMs","durationMs":2.3215999999993073},{"phase":"ingestMaterializeMs","durationMs":22.595100000000457},{"phase":"ingestProofsMs","durationMs":17.818699999999808},{"phase":"ingestStructuralMs","durationMs":37.397899999999936},{"phase":"ingestTotalMs","durationMs":80.52990000000136}]},{"ordinal":7,"label":"childRecipe0","start":13868.4956,"durationMs":61.89079999999922,"sub":[{"phase":"recipeMassMs","durationMs":10.536000000000058},{"phase":"recipeClassifyMs","durationMs":10.872000000001208},{"phase":"recipeTransitionMs","durationMs":59.752700000000914},{"phase":"recipeAxesMs","durationMs":0.05459999999948195}]},{"ordinal":8,"label":"removedMass","start":13931.3498,"durationMs":67.21349999999984,"sub":[{"phase":"removedFilterMs","durationMs":0.028500000000349246},{"phase":"ingestSortRunsMs","durationMs":0.013100000000122236},{"phase":"ingestJournalMs","durationMs":0.1607000000003609},{"phase":"ingestMaterializeMs","durationMs":15.819600000000719},{"phase":"ingestProofsMs","durationMs":13.94800000000032},{"phase":"ingestStructuralMs","durationMs":36.892500000001746},{"phase":"ingestTotalMs","durationMs":66.91349999999875},{"phase":"removedMassDeriveMs","durationMs":0.2135999999991327}]}]}
+
+OWNER65_PROGRESS {"event":"case-result","name":"runs session source preparation outside the World hold and preserves Paused after release","state":"passed","durationMs":2238.344000000001,"elapsedMs":14044.0839}
+OWNER65_PROGRESS {"event":"case-ready","name":"logs slow contiguous plan steps and their existing sub-hooks only while measuring (on)","elapsedMs":15315.561800000001}
+OWNER65_PROGRESS {"event":"hook-start","name":"logs slow contiguous plan steps and their existing sub-hooks only while measuring (on)","hook":"beforeEach","elapsedMs":15315.697}
+OWNER65_PROGRESS {"event":"hook-end","name":"logs slow contiguous plan steps and their existing sub-hooks only while measuring (on)","hook":"beforeEach","elapsedMs":15315.7348}
+OWNER65_PROGRESS {"event":"case-result","name":"logs slow contiguous plan steps and their existing sub-hooks only while measuring (on)","state":"passed","durationMs":1628.8286000000007,"elapsedMs":15673.0521}
+OWNER65_PROGRESS {"event":"case-ready","name":"logs slow contiguous plan steps and their existing sub-hooks only while measuring (off)","elapsedMs":16964.056399999998}
+OWNER65_PROGRESS {"event":"hook-start","name":"logs slow contiguous plan steps and their existing sub-hooks only while measuring (off)","hook":"beforeEach","elapsedMs":16964.126099999998}
+OWNER65_PROGRESS {"event":"hook-end","name":"logs slow contiguous plan steps and their existing sub-hooks only while measuring (off)","hook":"beforeEach","elapsedMs":16964.138799999997}
+OWNER65_PROGRESS {"event":"case-result","name":"logs slow contiguous plan steps and their existing sub-hooks only while measuring (off)","state":"passed","durationMs":1645.9502999999986,"elapsedMs":17319.004999999997}
+OWNER65_PROGRESS {"event":"case-ready","name":"logs slow contiguous plan steps and their existing sub-hooks only while measuring (disabledMidYield)","elapsedMs":18622.5484}
+OWNER65_PROGRESS {"event":"hook-start","name":"logs slow contiguous plan steps and their existing sub-hooks only while measuring (disabledMidYield)","hook":"beforeEach","elapsedMs":18622.613699999998}
+OWNER65_PROGRESS {"event":"hook-end","name":"logs slow contiguous plan steps and their existing sub-hooks only while measuring (disabledMidYield)","hook":"beforeEach","elapsedMs":18622.6237}
+OWNER65_PROGRESS {"event":"case-result","name":"logs slow contiguous plan steps and their existing sub-hooks only while measuring (disabledMidYield)","state":"passed","durationMs":1672.481499999998,"elapsedMs":18991.617199999997}
+OWNER65_PROGRESS {"event":"case-ready","name":"rejects foreign and mixed-version Dispose without mutating the current Worker owner","elapsedMs":19743.0056}
+OWNER65_PROGRESS {"event":"hook-start","name":"rejects foreign and mixed-version Dispose without mutating the current Worker owner","hook":"beforeEach","elapsedMs":19743.073699999997}
+OWNER65_PROGRESS {"event":"hook-end","name":"rejects foreign and mixed-version Dispose without mutating the current Worker owner","hook":"beforeEach","elapsedMs":19743.084499999997}
+OWNER65_PROGRESS {"event":"case-result","name":"rejects foreign and mixed-version Dispose without mutating the current Worker owner","state":"passed","durationMs":751.2868999999992,"elapsedMs":19743.0988}
+OWNER65_PROGRESS {"event":"case-ready","name":"serves Read, input and the fixed-step timer while the worker's source-only plan is suspended","elapsedMs":21470.0104}
+OWNER65_PROGRESS {"event":"hook-start","name":"serves Read, input and the fixed-step timer while the worker's source-only plan is suspended","hook":"beforeEach","elapsedMs":21470.101499999997}
+OWNER65_PROGRESS {"event":"hook-end","name":"serves Read, input and the fixed-step timer while the worker's source-only plan is suspended","hook":"beforeEach","elapsedMs":21470.1155}
+OWNER65_PROGRESS {"event":"case-result","name":"serves Read, input and the fixed-step timer while the worker's source-only plan is suspended","state":"passed","durationMs":2009.1770999999972,"elapsedMs":21752.323999999997}
+OWNER65_PROGRESS {"event":"case-ready","name":"rejects Stage during a safety SimulationHold without Applied, manual-pause label, auto-resume or native mutation","elapsedMs":23622.408499999998}
+OWNER65_PROGRESS {"event":"hook-start","name":"rejects Stage during a safety SimulationHold without Applied, manual-pause label, auto-resume or native mutation","hook":"beforeEach","elapsedMs":23622.4852}
+OWNER65_PROGRESS {"event":"hook-end","name":"rejects Stage during a safety SimulationHold without Applied, manual-pause label, auto-resume or native mutation","hook":"beforeEach","elapsedMs":23622.4953}
+OWNER65_PROGRESS {"event":"case-result","name":"rejects Stage during a safety SimulationHold without Applied, manual-pause label, auto-resume or native mutation","state":"passed","durationMs":2167.356600000003,"elapsedMs":23919.7797}
+OWNER65_PROGRESS {"event":"case-ready","name":"stops the temporary plan trace on a dynamic measure:false Read, including an in-flight plan, without changing the native cut","elapsedMs":25875.7152}
+OWNER65_PROGRESS {"event":"hook-start","name":"stops the temporary plan trace on a dynamic measure:false Read, including an in-flight plan, without changing the native cut","hook":"beforeEach","elapsedMs":25875.797499999997}
+OWNER65_PROGRESS {"event":"hook-end","name":"stops the temporary plan trace on a dynamic measure:false Read, including an in-flight plan, without changing the native cut","hook":"beforeEach","elapsedMs":25875.811899999997}
+OWNER65_PROGRESS {"event":"case-result","name":"stops the temporary plan trace on a dynamic measure:false Read, including an in-flight plan, without changing the native cut","state":"passed","durationMs":6841.6734,"elapsedMs":30762.2346}
+OWNER65_PROGRESS {"event":"case-ready","name":"keeps the plan trace off on the old World returned by RollbackRestore after an opt-out during a committed restore","elapsedMs":32823.4236}
+OWNER65_PROGRESS {"event":"hook-start","name":"keeps the plan trace off on the old World returned by RollbackRestore after an opt-out during a committed restore","hook":"beforeEach","elapsedMs":32823.5389}
+OWNER65_PROGRESS {"event":"hook-end","name":"keeps the plan trace off on the old World returned by RollbackRestore after an opt-out during a committed restore","hook":"beforeEach","elapsedMs":32823.5621}
+OWNER65_PROGRESS {"event":"case-result","name":"keeps the plan trace off on the old World returned by RollbackRestore after an opt-out during a committed restore","state":"passed","durationMs":7023.615099999999,"elapsedMs":37787.2082}
+OWNER65_PROGRESS {"event":"case-ready","name":"serves Read, input and the timer at a yield inside the Worker child hash, then cancels it without native mutation","elapsedMs":39753.8674}
+OWNER65_PROGRESS {"event":"hook-start","name":"serves Read, input and the timer at a yield inside the Worker child hash, then cancels it without native mutation","hook":"beforeEach","elapsedMs":39753.9296}
+OWNER65_PROGRESS {"event":"hook-end","name":"serves Read, input and the timer at a yield inside the Worker child hash, then cancels it without native mutation","hook":"beforeEach","elapsedMs":39753.9404}
+OWNER65_PROGRESS {"event":"case-result","name":"serves Read, input and the timer at a yield inside the Worker child hash, then cancels it without native mutation","state":"passed","durationMs":2174.207300000002,"elapsedMs":39962.0336}
+OWNER65_PROGRESS {"event":"case-ready","name":"keeps the Worker owner-hash route on a finalized Restore candidate and applies its new body cut","elapsedMs":44374.2941}
+OWNER65_PROGRESS {"event":"hook-start","name":"keeps the Worker owner-hash route on a finalized Restore candidate and applies its new body cut","hook":"beforeEach","elapsedMs":44374.4165}
+OWNER65_PROGRESS {"event":"hook-end","name":"keeps the Worker owner-hash route on a finalized Restore candidate and applies its new body cut","hook":"beforeEach","elapsedMs":44374.4389}
+OWNER65_PROGRESS {"event":"case-result","name":"keeps the Worker owner-hash route on a finalized Restore candidate and applies its new body cut","state":"passed","durationMs":4755.6484000000055,"elapsedMs":44717.840800000005}
+OWNER65_PROGRESS {"event":"case-ready","name":"issues identical children, masses, colliders and receipts on the generic and the owner-hash body session","elapsedMs":45100.8808}
+OWNER65_PROGRESS {"event":"hook-start","name":"issues identical children, masses, colliders and receipts on the generic and the owner-hash body session","hook":"beforeEach","elapsedMs":45101.015400000004}
+OWNER65_PROGRESS {"event":"hook-end","name":"issues identical children, masses, colliders and receipts on the generic and the owner-hash body session","hook":"beforeEach","elapsedMs":45101.053700000004}
+OWNER65_PROGRESS {"event":"case-result","name":"issues identical children, masses, colliders and receipts on the generic and the owner-hash body session","state":"passed","durationMs":1416.483500000002,"elapsedMs":46134.37}
+OWNER65_PROGRESS {"event":"case-ready","name":"runs a partial Sphere through the owner-hash factory's re-ingest route to one Applied child with generic parity","elapsedMs":46608.1285}
+OWNER65_PROGRESS {"event":"hook-start","name":"runs a partial Sphere through the owner-hash factory's re-ingest route to one Applied child with generic parity","hook":"beforeEach","elapsedMs":46608.210100000004}
+OWNER65_PROGRESS {"event":"hook-end","name":"runs a partial Sphere through the owner-hash factory's re-ingest route to one Applied child with generic parity","hook":"beforeEach","elapsedMs":46608.2237}
+OWNER65_PROGRESS {"event":"case-result","name":"runs a partial Sphere through the owner-hash factory's re-ingest route to one Applied child with generic parity","state":"passed","durationMs":1427.4956999999995,"elapsedMs":47562.084200000005}
+OWNER65_PROGRESS {"event":"case-ready","name":"runs an all-removing Sphere through the owner-hash factory without a child, hash cursor or native body","elapsedMs":47807.564900000005}
+OWNER65_PROGRESS {"event":"hook-start","name":"runs an all-removing Sphere through the owner-hash factory without a child, hash cursor or native body","hook":"beforeEach","elapsedMs":47807.6454}
+OWNER65_PROGRESS {"event":"hook-end","name":"runs an all-removing Sphere through the owner-hash factory without a child, hash cursor or native body","hook":"beforeEach","elapsedMs":47807.659400000004}
+OWNER65_PROGRESS {"event":"case-result","name":"runs an all-removing Sphere through the owner-hash factory without a child, hash cursor or native body","state":"passed","durationMs":363.1774000000005,"elapsedMs":47925.3712}
+OWNER65_PROGRESS {"event":"case-ready","name":"traces the owner-hash labels and recipe subspans exactly on a measured owner session and reads no clock without one","elapsedMs":48037.6503}
+OWNER65_PROGRESS {"event":"hook-start","name":"traces the owner-hash labels and recipe subspans exactly on a measured owner session and reads no clock without one","hook":"beforeEach","elapsedMs":48037.7313}
+OWNER65_PROGRESS {"event":"hook-end","name":"traces the owner-hash labels and recipe subspans exactly on a measured owner session and reads no clock without one","hook":"beforeEach","elapsedMs":48037.745500000005}
+OWNER65_PROGRESS {"event":"case-result","name":"traces the owner-hash labels and recipe subspans exactly on a measured owner session and reads no clock without one","state":"passed","durationMs":1010.0342999999993,"elapsedMs":48935.5421}
+OWNER65_PROGRESS {"event":"case-ready","name":"closes the owner child hash on a cancel or dispose at its own yield without a revived plan or native mutation","elapsedMs":49044.5541}
+OWNER65_PROGRESS {"event":"hook-start","name":"closes the owner child hash on a cancel or dispose at its own yield without a revived plan or native mutation","hook":"beforeEach","elapsedMs":49044.6408}
+OWNER65_PROGRESS {"event":"hook-end","name":"closes the owner child hash on a cancel or dispose at its own yield without a revived plan or native mutation","hook":"beforeEach","elapsedMs":49044.6554}
+OWNER65_PROGRESS {"event":"case-result","name":"closes the owner child hash on a cancel or dispose at its own yield without a revived plan or native mutation","state":"passed","durationMs":740.8546999999962,"elapsedMs":49676.515400000004}
+OWNER65_PROGRESS {"event":"case-ready","name":"settles a pending Worker plan before restoring the ports even when the Dispose reply fails, keeping the original error","elapsedMs":51571.6365}
+OWNER65_PROGRESS {"event":"hook-start","name":"settles a pending Worker plan before restoring the ports even when the Dispose reply fails, keeping the original error","hook":"beforeEach","elapsedMs":51571.695}
+OWNER65_PROGRESS {"event":"hook-end","name":"settles a pending Worker plan before restoring the ports even when the Dispose reply fails, keeping the original error","hook":"beforeEach","elapsedMs":51571.7059}
+OWNER65_PROGRESS {"event":"case-result","name":"settles a pending Worker plan before restoring the ports even when the Dispose reply fails, keeping the original error","state":"passed","durationMs":2606.280899999998,"elapsedMs":52283.2517}
+OWNER65_PROGRESS {"event":"case-ready","name":"projects row200 child cells in bounded owner batches with generic parity of sources, IDs, masses, colliders and receipt","elapsedMs":56219.549900000005}
+OWNER65_PROGRESS {"event":"hook-start","name":"projects row200 child cells in bounded owner batches with generic parity of sources, IDs, masses, colliders and receipt","hook":"beforeEach","elapsedMs":56219.704900000004}
+OWNER65_PROGRESS {"event":"hook-end","name":"projects row200 child cells in bounded owner batches with generic parity of sources, IDs, masses, colliders and receipt","hook":"beforeEach","elapsedMs":56219.720700000005}
+OWNER65_PROGRESS {"event":"case-result","name":"projects row200 child cells in bounded owner batches with generic parity of sources, IDs, masses, colliders and receipt","state":"passed","durationMs":16173.178800000002,"elapsedMs":68456.8857}
+OWNER65_PROGRESS {"event":"case-ready","name":"fails closed on a cancel or dispose between owner child-cell batches without a new Stage, hash or native mutation","elapsedMs":69785.34079999999}
+OWNER65_PROGRESS {"event":"hook-start","name":"fails closed on a cancel or dispose between owner child-cell batches without a new Stage, hash or native mutation","hook":"beforeEach","elapsedMs":69785.41029999999}
+OWNER65_PROGRESS {"event":"hook-end","name":"fails closed on a cancel or dispose between owner child-cell batches without a new Stage, hash or native mutation","hook":"beforeEach","elapsedMs":69785.4236}
+OWNER65_PROGRESS {"event":"case-result","name":"fails closed on a cancel or dispose between owner child-cell batches without a new Stage, hash or native mutation","state":"passed","durationMs":4282.027100000007,"elapsedMs":72739.45259999999}
+OWNER65_PROGRESS {"event":"case-ready","name":"stops every optional owner clock read after an opt-out at a child-cell batch yield","elapsedMs":74141.8116}
+OWNER65_PROGRESS {"event":"hook-start","name":"stops every optional owner clock read after an opt-out at a child-cell batch yield","hook":"beforeEach","elapsedMs":74141.8891}
+OWNER65_PROGRESS {"event":"hook-end","name":"stops every optional owner clock read after an opt-out at a child-cell batch yield","hook":"beforeEach","elapsedMs":74141.9029}
+OWNER65_PROGRESS {"event":"case-result","name":"stops every optional owner clock read after an opt-out at a child-cell batch yield","state":"passed","durationMs":4664.549100000004,"elapsedMs":77404.0751}
+OWNER65_PROGRESS {"event":"case-ready","name":"serves Read, input and the timer at a real Worker child-cell batch yield, then cancels without a new Stage","elapsedMs":79352.4672}
+OWNER65_PROGRESS {"event":"hook-start","name":"serves Read, input and the timer at a real Worker child-cell batch yield, then cancels without a new Stage","hook":"beforeEach","elapsedMs":79352.5909}
+OWNER65_PROGRESS {"event":"hook-end","name":"serves Read, input and the timer at a real Worker child-cell batch yield, then cancels without a new Stage","hook":"beforeEach","elapsedMs":79352.61809999999}
+OWNER65_PROGRESS {"event":"case-result","name":"serves Read, input and the timer at a real Worker child-cell batch yield, then cancels without a new Stage","state":"passed","durationMs":3801.4620999999897,"elapsedMs":81205.9908}
+OWNER65_PROGRESS {"event":"case-ready","name":"yields inside the post-destruction classification in bounded cell batches and stages the same products","elapsedMs":84964.24759999999}
+OWNER65_PROGRESS {"event":"hook-start","name":"yields inside the post-destruction classification in bounded cell batches and stages the same products","hook":"beforeEach","elapsedMs":84964.3355}
+OWNER65_PROGRESS {"event":"hook-end","name":"yields inside the post-destruction classification in bounded cell batches and stages the same products","hook":"beforeEach","elapsedMs":84964.3487}
+OWNER65_PROGRESS {"event":"case-result","name":"yields inside the post-destruction classification in bounded cell batches and stages the same products","state":"passed","durationMs":5198.69249999999,"elapsedMs":86404.9415}
+OWNER65_PROGRESS {"event":"case-ready","name":"cancels a yielding plan at its first yield without revival or native change","elapsedMs":87678.79449999999}
+OWNER65_PROGRESS {"event":"hook-start","name":"cancels a yielding plan at its first yield without revival or native change","hook":"beforeEach","elapsedMs":87678.8744}
+OWNER65_PROGRESS {"event":"hook-end","name":"cancels a yielding plan at its first yield without revival or native change","hook":"beforeEach","elapsedMs":87678.8872}
+OWNER65_PROGRESS {"event":"case-result","name":"cancels a yielding plan at its first yield without revival or native change","state":"passed","durationMs":8024.148199999996,"elapsedMs":94429.27579999999}
+OWNER65_PROGRESS {"event":"case-ready","name":"cancels a yielding plan at its midClassification yield without revival or native change","elapsedMs":95612.913}
+OWNER65_PROGRESS {"event":"hook-start","name":"cancels a yielding plan at its midClassification yield without revival or native change","hook":"beforeEach","elapsedMs":95612.99699999999}
+OWNER65_PROGRESS {"event":"hook-end","name":"cancels a yielding plan at its midClassification yield without revival or native change","hook":"beforeEach","elapsedMs":95613.01539999999}
+OWNER65_PROGRESS {"event":"case-result","name":"cancels a yielding plan at its midClassification yield without revival or native change","state":"passed","durationMs":8687.728199999998,"elapsedMs":103117.04479999999}
+OWNER65_PROGRESS {"event":"case-ready","name":"cancels a yielding plan at its midChildClassification yield without revival or native change","elapsedMs":104534.3816}
+OWNER65_PROGRESS {"event":"hook-start","name":"cancels a yielding plan at its midChildClassification yield without revival or native change","hook":"beforeEach","elapsedMs":104534.4467}
+OWNER65_PROGRESS {"event":"hook-end","name":"cancels a yielding plan at its midChildClassification yield without revival or native change","hook":"beforeEach","elapsedMs":104534.45779999999}
+OWNER65_PROGRESS {"event":"case-result","name":"cancels a yielding plan at its midChildClassification yield without revival or native change","state":"passed","durationMs":9567.06760000001,"elapsedMs":112684.3433}
+OWNER65_PROGRESS {"event":"case-ready","name":"cancels a yielding plan at its last yield without revival or native change","elapsedMs":114013.1572}
+OWNER65_PROGRESS {"event":"hook-start","name":"cancels a yielding plan at its last yield without revival or native change","hook":"beforeEach","elapsedMs":114013.22039999999}
+OWNER65_PROGRESS {"event":"hook-end","name":"cancels a yielding plan at its last yield without revival or native change","hook":"beforeEach","elapsedMs":114013.23049999999}
+OWNER65_PROGRESS {"event":"case-result","name":"cancels a yielding plan at its last yield without revival or native change","state":"passed","durationMs":9390.75970000001,"elapsedMs":122075.1647}
+OWNER65_PROGRESS {"event":"case-ready","name":"reads no diagnostic clock after an opt-out at a child's own classification yield and keeps the same outcome","elapsedMs":123292.8064}
+OWNER65_PROGRESS {"event":"hook-start","name":"reads no diagnostic clock after an opt-out at a child's own classification yield and keeps the same outcome","hook":"beforeEach","elapsedMs":123292.8865}
+OWNER65_PROGRESS {"event":"hook-end","name":"reads no diagnostic clock after an opt-out at a child's own classification yield and keeps the same outcome","hook":"beforeEach","elapsedMs":123292.8997}
+OWNER65_PROGRESS {"event":"case-result","name":"reads no diagnostic clock after an opt-out at a child's own classification yield and keeps the same outcome","state":"passed","durationMs":7948.059599999993,"elapsedMs":130023.35549999999}
+OWNER65_PROGRESS {"event":"case-ready","name":"aggregates every step and keeps the true worst step beyond the 64-step record cap","elapsedMs":130125.7502}
+OWNER65_PROGRESS {"event":"hook-start","name":"aggregates every step and keeps the true worst step beyond the 64-step record cap","hook":"beforeEach","elapsedMs":130125.8177}
+OWNER65_PROGRESS {"event":"hook-end","name":"aggregates every step and keeps the true worst step beyond the 64-step record cap","hook":"beforeEach","elapsedMs":130125.83219999999}
+OWNER65_PROGRESS {"event":"case-result","name":"aggregates every step and keeps the true worst step beyond the 64-step record cap","state":"passed","durationMs":1602.6603000000032,"elapsedMs":131626.3439}
+OWNER65_PROGRESS {"event":"case-ready","name":"logs truncatedSteps and the post-cap worst step through the real session logger","elapsedMs":132897.7383}
+OWNER65_PROGRESS {"event":"hook-start","name":"logs truncatedSteps and the post-cap worst step through the real session logger","hook":"beforeEach","elapsedMs":132897.80049999998}
+OWNER65_PROGRESS {"event":"hook-end","name":"logs truncatedSteps and the post-cap worst step through the real session logger","hook":"beforeEach","elapsedMs":132897.8119}
+OWNER65_PROGRESS {"event":"case-result","name":"logs truncatedSteps and the post-cap worst step through the real session logger","state":"passed","durationMs":2759.9339000000036,"elapsedMs":134386.4922}
+OWNER65_PROGRESS {"event":"case-ready","name":"serves Read, input and the fixed-step timer at a yield in the middle of the classification","elapsedMs":136343.90039999998}
+OWNER65_PROGRESS {"event":"hook-start","name":"serves Read, input and the fixed-step timer at a yield in the middle of the classification","hook":"beforeEach","elapsedMs":136343.9755}
+OWNER65_PROGRESS {"event":"hook-end","name":"serves Read, input and the fixed-step timer at a yield in the middle of the classification","hook":"beforeEach","elapsedMs":136343.99409999998}
+OWNER65_PROGRESS {"event":"case-result","name":"serves Read, input and the fixed-step timer at a yield in the middle of the classification","state":"passed","durationMs":3038.936699999991,"elapsedMs":137425.436}
+OWNER65_PROGRESS {"event":"case-ready","name":"serves Read, input and the fixed-step timer at a yield inside a NEW child's own classification","elapsedMs":139268.5271}
+OWNER65_PROGRESS {"event":"hook-start","name":"serves Read, input and the fixed-step timer at a yield inside a NEW child's own classification","hook":"beforeEach","elapsedMs":139268.5945}
+OWNER65_PROGRESS {"event":"hook-end","name":"serves Read, input and the fixed-step timer at a yield inside a NEW child's own classification","hook":"beforeEach","elapsedMs":139268.6042}
+OWNER65_PROGRESS {"event":"case-result","name":"serves Read, input and the fixed-step timer at a yield inside a NEW child's own classification","state":"passed","durationMs":4667.064299999998,"elapsedMs":142092.5601}
+OWNER65_PROGRESS {"event":"case-ready","name":"keeps client Read/Input flowing during source-only body preparation and never adopts a stale Read over Stage","elapsedMs":142205.14789999998}
+OWNER65_PROGRESS {"event":"hook-start","name":"keeps client Read/Input flowing during source-only body preparation and never adopts a stale Read over Stage","hook":"beforeEach","elapsedMs":142205.22329999998}
+OWNER65_PROGRESS {"event":"hook-end","name":"keeps client Read/Input flowing during source-only body preparation and never adopts a stale Read over Stage","hook":"beforeEach","elapsedMs":142205.2373}
+OWNER65_PROGRESS {"event":"case-result","name":"keeps client Read/Input flowing during source-only body preparation and never adopts a stale Read over Stage","state":"passed","durationMs":96.56459999998333,"elapsedMs":142205.2519}
+OWNER65_PROGRESS {"event":"case-ready","name":"never lets an older rejected branch snapshot prove body rollback or move publication backwards","elapsedMs":142205.262}
+OWNER65_PROGRESS {"event":"hook-start","name":"never lets an older rejected branch snapshot prove body rollback or move publication backwards","hook":"beforeEach","elapsedMs":142205.2708}
+OWNER65_PROGRESS {"event":"hook-end","name":"never lets an older rejected branch snapshot prove body rollback or move publication backwards","hook":"beforeEach","elapsedMs":142205.2793}
+OWNER65_PROGRESS {"event":"case-result","name":"never lets an older rejected branch snapshot prove body rollback or move publication backwards","state":"passed","durationMs":16.371899999998277,"elapsedMs":144119.5061}
+OWNER65_PROGRESS {"event":"case-ready","name":"owner source bridge: returns only current framed data while Read/Input/timer run and reuses one native plan","elapsedMs":144119.5606}
+OWNER65_PROGRESS {"event":"hook-start","name":"owner source bridge: returns only current framed data while Read/Input/timer run and reuses one native plan","hook":"beforeEach","elapsedMs":144119.57749999998}
+OWNER65_PROGRESS {"event":"hook-end","name":"owner source bridge: returns only current framed data while Read/Input/timer run and reuses one native plan","hook":"beforeEach","elapsedMs":144119.5853}
+OWNER65_PROGRESS {"event":"case-result","name":"owner source bridge: returns only current framed data while Read/Input/timer run and reuses one native plan","state":"passed","durationMs":2220.7097000000067,"elapsedMs":144426.7452}
+OWNER65_PROGRESS {"event":"case-ready","name":"owner source bridge: rejects wrong Begin request/source/target before deriving a native plan","elapsedMs":146272.09399999998}
+OWNER65_PROGRESS {"event":"hook-start","name":"owner source bridge: rejects wrong Begin request/source/target before deriving a native plan","hook":"beforeEach","elapsedMs":146272.1807}
+OWNER65_PROGRESS {"event":"hook-end","name":"owner source bridge: rejects wrong Begin request/source/target before deriving a native plan","hook":"beforeEach","elapsedMs":146272.1937}
+OWNER65_PROGRESS {"event":"case-result","name":"owner source bridge: rejects wrong Begin request/source/target before deriving a native plan","state":"passed","durationMs":1845.1474999999919,"elapsedMs":146272.2155}
+OWNER65_PROGRESS {"event":"case-ready","name":"owner source bridge: settles suspended work after rollback-reuse without exporting old data","elapsedMs":148613.6556}
+OWNER65_PROGRESS {"event":"hook-start","name":"owner source bridge: settles suspended work after rollback-reuse without exporting old data","hook":"beforeEach","elapsedMs":148613.7186}
+OWNER65_PROGRESS {"event":"hook-end","name":"owner source bridge: settles suspended work after rollback-reuse without exporting old data","hook":"beforeEach","elapsedMs":148613.72879999998}
+OWNER65_PROGRESS {"event":"case-result","name":"owner source bridge: settles suspended work after rollback-reuse without exporting old data","state":"passed","durationMs":2344.154999999999,"elapsedMs":150594.1263}
+OWNER65_PROGRESS {"event":"case-ready","name":"owner source bridge: settles suspended work after dispose without exporting old data","elapsedMs":150594.2096}
+OWNER65_PROGRESS {"event":"hook-start","name":"owner source bridge: settles suspended work after dispose without exporting old data","hook":"beforeEach","elapsedMs":150594.2256}
+OWNER65_PROGRESS {"event":"hook-end","name":"owner source bridge: settles suspended work after dispose without exporting old data","hook":"beforeEach","elapsedMs":150594.236}
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 1] withWorker setup-through-outer-return START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 2] withWorker body entry-through-return START
+[Restore 3] old captureWorkerBegin START
+[Restore 4] worker.send Read START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 4] worker.send Read DONE { id: 3, sequence: 3, status: 'Running', moving: 'Idle', planCount: 0 }
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 5] worker.send PrepareBranch START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 5] worker.send PrepareBranch DONE { id: 4, sequence: 4, status: 'Paused', moving: 'Idle', planCount: 0 }
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 6] worker.send CommitBranch START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 6] worker.send CommitBranch DONE { id: 5, sequence: 5, status: 'Paused', moving: 'Idle', planCount: 0 }
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 7] worker.send FinalizeBranch START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 7] worker.send FinalizeBranch DONE { id: 6, sequence: 6, status: 'Running', moving: 'Idle', planCount: 0 }
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 8] worker.send Read START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 8] worker.send Read DONE { id: 7, sequence: 7, status: 'Running', moving: 'Idle', planCount: 0 }
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 9] worker.send Read START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 9] worker.send Read DONE { id: 8, sequence: 8, status: 'Running', moving: 'Idle', planCount: 0 }
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 10] worker.send BeginBodyCut START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 10] worker.send BeginBodyCut DONE {
+  id: 9,
+  sequence: 9,
+  status: 'Running',
+  moving: 'Preparing',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 3] old captureWorkerBegin DONE
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 11] worker.send RollbackBodyCut START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 11] worker.send RollbackBodyCut DONE {
+  id: 10,
+  sequence: 10,
+  status: 'Running',
+  moving: 'Idle',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 12] worker.send Pause START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 12] worker.send Pause DONE {
+  id: 11,
+  sequence: 11,
+  status: 'Paused',
+  moving: 'Idle',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 13] worker.send Checkpoint START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 13] worker.send Checkpoint DONE {
+  id: 12,
+  sequence: 12,
+  status: 'Paused',
+  moving: 'Idle',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 14] worker.send PrepareRestore START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 14] worker.send PrepareRestore DONE {
+  id: 13,
+  sequence: 13,
+  status: 'Paused',
+  moving: 'Idle',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 15] worker.send CommitRestore START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 15] worker.send CommitRestore DONE {
+  id: 14,
+  sequence: 14,
+  status: 'Paused',
+  moving: 'Idle',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 16] worker.send FinalizeRestore START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 16] worker.send FinalizeRestore DONE {
+  id: 15,
+  sequence: 15,
+  status: 'Paused',
+  moving: 'Idle',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 17] worker.send Play START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 17] worker.send Play DONE {
+  id: 16,
+  sequence: 16,
+  status: 'Running',
+  moving: 'Idle',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 18] fresh captureWorkerBegin START
+[Restore 19] worker.send Read START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 19] worker.send Read DONE {
+  id: 17,
+  sequence: 17,
+  status: 'Running',
+  moving: 'Idle',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 20] worker.send Read START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 20] worker.send Read DONE {
+  id: 18,
+  sequence: 18,
+  status: 'Running',
+  moving: 'Idle',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 21] worker.send BeginBodyCut START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 21] worker.send BeginBodyCut DONE {
+  id: 19,
+  sequence: 19,
+  status: 'Running',
+  moving: 'Preparing',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 18] fresh captureWorkerBegin DONE
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 22] worker.send PrepareBodyChildProjection START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 22] worker.send PrepareBodyChildProjection DONE {
+  id: 20,
+  sequence: 20,
+  status: undefined,
+  moving: undefined,
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 23] worker.send PrepareBodyChildProjection START
+
+OWNER65_PROGRESS {"event":"case-result","name":"owner source bridge: settles suspended work after dispose without exporting old data","state":"passed","durationMs":1978.7068999999901,"elapsedMs":154662.296}
+OWNER65_PROGRESS {"event":"case-ready","name":"owner source bridge: old Begin request IDs cannot project after a real finalized World Restore","elapsedMs":154662.3233}
+OWNER65_PROGRESS {"event":"hook-start","name":"owner source bridge: old Begin request IDs cannot project after a real finalized World Restore","hook":"beforeEach","elapsedMs":154662.33659999998}
+OWNER65_PROGRESS {"event":"hook-end","name":"owner source bridge: old Begin request IDs cannot project after a real finalized World Restore","hook":"beforeEach","elapsedMs":154662.3464}
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 23] worker.send PrepareBodyChildProjection DONE {
+  id: 21,
+  sequence: 21,
+  status: undefined,
+  moving: undefined,
+  planCount: 1
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 24] worker.send RollbackBodyCut START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 24] worker.send RollbackBodyCut DONE {
+  id: 22,
+  sequence: 22,
+  status: 'Running',
+  moving: 'Idle',
+  planCount: 1
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 2] withWorker body entry-through-return DONE
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 1] withWorker setup-through-outer-return DONE
+
+OWNER65_PROGRESS {"event":"case-result","name":"owner source bridge: old Begin request IDs cannot project after a real finalized World Restore","state":"passed","durationMs":4564.96219999998,"elapsedMs":155159.92309999999}
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: preserves genuine occupied Uint16 material IDs and rejects Air/negative-zero/overflow data
+S13_HIGH_MATERIAL_SOURCE {"schemaVersion":"structural-microvoxel-object-v1","objectId":"plan-owner-source","frame":{"schemaVersion":"structural-microvoxel-frame-binding-v1","bodyId":"body.hestia","surfaceFrameId":"frame.hvp","regionId":"region.plan-owner-source","generatorVersion":"hvp-rigid-ingest-v1","objectOriginQuantum":{"x":0,"y":0,"z":0}},"source":{"schemaVersion":"structural-microvoxel-source-binding-v1","baseFieldIdentity":"base.plan-owner-source","baseFieldVersion":"hvp-rigid-ingest-v1","baseFieldDescriptorDigest":"fnv1a64-v1:5da762240edcdde4","journalDigest":"fnv1a64-v1:3a67aabaf60f6f3e","snapshotProjectionDigest":"fnv1a64-v1:2806c05c9aabbfe7","proofDigests":["fnv1a64-v1:0882015ce0fa4c08"],"sourceRevision":1,"editRevision":2,"brickRevision":0,"planningEpoch":1},"materials":[{"materialId":256,"densityKgPerCubicMeter":512,"structuralClass":"wood","destructible":true,"tags":null},{"materialId":65535,"densityKgPerCubicMeter":512,"structuralClass":"wood","destructible":true,"tags":null}],"bricks":[{"schemaVersion":"structural-microvoxel-brick-v1","key":{"schemaVersion":"adaptive-microvoxel-key-v1","bodyId":"body.hestia","surfaceFrameId":"frame.hvp","regionId":"region.plan-owner-source","generatorVersion":"hvp-rigid-ingest-v1","level":4,"originQuantum":{"x":0,"y":0,"z":0}},"cells":[{"localIndex":0,"state":{"materialId":256,"partId":null,"semanticKey":null,"damageKey":null}},{"localIndex":1,"state":{"materialId":256,"partId":null,"semanticKey":null,"damageKey":null}},{"localIndex":2,"state":{"materialId":256,"partId":null,"semanticKey":null,"damageKey":null}},{"localIndex":3,"state":{"materialId":65535,"partId":null,"semanticKey":null,"damageKey":null}},{"localIndex":4,"state":{"materialId":65535,"partId":null,"semanticKey":null,"damageKey":null}}]}],"anchors":[],"joints":[],"objectRevision":0,"editRevision":0,"contentHash":"fnv1a64-v1:fe708e5cd03e6659","commandEvidence":[],"evidenceHash":"fnv1a64-v1:09612b07b5ecb5a5"}
+
+OWNER65_PROGRESS {"event":"case-ready","name":"owner source bridge: data replies cannot own publication/held/Restore watermarks or suppress an earlier Read","elapsedMs":155286.3682}
+OWNER65_PROGRESS {"event":"hook-start","name":"owner source bridge: data replies cannot own publication/held/Restore watermarks or suppress an earlier Read","hook":"beforeEach","elapsedMs":155286.39849999998}
+OWNER65_PROGRESS {"event":"hook-end","name":"owner source bridge: data replies cannot own publication/held/Restore watermarks or suppress an earlier Read","hook":"beforeEach","elapsedMs":155286.41019999998}
+OWNER65_PROGRESS {"event":"case-result","name":"owner source bridge: data replies cannot own publication/held/Restore watermarks or suppress an earlier Read","state":"passed","durationMs":31.11109999998007,"elapsedMs":155286.4242}
+OWNER65_PROGRESS {"event":"case-ready","name":"owner source bridge: client rejects stale demands/replies after rollback-reuse","elapsedMs":155286.4339}
+OWNER65_PROGRESS {"event":"hook-start","name":"owner source bridge: client rejects stale demands/replies after rollback-reuse","hook":"beforeEach","elapsedMs":155286.4423}
+OWNER65_PROGRESS {"event":"hook-end","name":"owner source bridge: client rejects stale demands/replies after rollback-reuse","hook":"beforeEach","elapsedMs":155286.45059999998}
+OWNER65_PROGRESS {"event":"case-result","name":"owner source bridge: client rejects stale demands/replies after rollback-reuse","state":"passed","durationMs":1.48509999999078,"elapsedMs":155286.45979999998}
+OWNER65_PROGRESS {"event":"case-ready","name":"owner source bridge: client rejects stale demands/replies after dispose","elapsedMs":155286.4761}
+OWNER65_PROGRESS {"event":"hook-start","name":"owner source bridge: client rejects stale demands/replies after dispose","hook":"beforeEach","elapsedMs":155286.48739999998}
+OWNER65_PROGRESS {"event":"hook-end","name":"owner source bridge: client rejects stale demands/replies after dispose","hook":"beforeEach","elapsedMs":155286.49599999998}
+OWNER65_PROGRESS {"event":"case-result","name":"owner source bridge: client rejects stale demands/replies after dispose","state":"passed","durationMs":0.3754999999946449,"elapsedMs":155286.5048}
+OWNER65_PROGRESS {"event":"case-ready","name":"owner source bridge: rejects untrusted parts data without adopting state or replacing the original error","elapsedMs":155286.5148}
+OWNER65_PROGRESS {"event":"hook-start","name":"owner source bridge: rejects untrusted parts data without adopting state or replacing the original error","hook":"beforeEach","elapsedMs":155286.5232}
+OWNER65_PROGRESS {"event":"hook-end","name":"owner source bridge: rejects untrusted parts data without adopting state or replacing the original error","hook":"beforeEach","elapsedMs":155286.5314}
+OWNER65_PROGRESS {"event":"case-result","name":"owner source bridge: rejects untrusted parts data without adopting state or replacing the original error","state":"passed","durationMs":0.7195999999821652,"elapsedMs":155286.5399}
+OWNER65_PROGRESS {"event":"case-ready","name":"owner source bridge: rejects untrusted cells data without adopting state or replacing the original error","elapsedMs":155286.5483}
+OWNER65_PROGRESS {"event":"hook-start","name":"owner source bridge: rejects untrusted cells data without adopting state or replacing the original error","hook":"beforeEach","elapsedMs":155286.5565}
+OWNER65_PROGRESS {"event":"hook-end","name":"owner source bridge: rejects untrusted cells data without adopting state or replacing the original error","hook":"beforeEach","elapsedMs":155286.56459999998}
+OWNER65_PROGRESS {"event":"case-result","name":"owner source bridge: rejects untrusted cells data without adopting state or replacing the original error","state":"passed","durationMs":0.4489999999932479,"elapsedMs":155286.57319999998}
+OWNER65_PROGRESS {"event":"case-ready","name":"owner source bridge: rejects untrusted metadata data without adopting state or replacing the original error","elapsedMs":155286.5815}
+OWNER65_PROGRESS {"event":"hook-start","name":"owner source bridge: rejects untrusted metadata data without adopting state or replacing the original error","hook":"beforeEach","elapsedMs":155286.5896}
+OWNER65_PROGRESS {"event":"hook-end","name":"owner source bridge: rejects untrusted metadata data without adopting state or replacing the original error","hook":"beforeEach","elapsedMs":155286.598}
+OWNER65_PROGRESS {"event":"case-result","name":"owner source bridge: rejects untrusted metadata data without adopting state or replacing the original error","state":"passed","durationMs":0.22379999997792765,"elapsedMs":155286.6066}
+OWNER65_PROGRESS {"event":"case-ready","name":"owner source bridge: rejects untrusted begin-id data without adopting state or replacing the original error","elapsedMs":155286.6278}
+OWNER65_PROGRESS {"event":"hook-start","name":"owner source bridge: rejects untrusted begin-id data without adopting state or replacing the original error","hook":"beforeEach","elapsedMs":155286.6362}
+OWNER65_PROGRESS {"event":"hook-end","name":"owner source bridge: rejects untrusted begin-id data without adopting state or replacing the original error","hook":"beforeEach","elapsedMs":155286.6495}
+OWNER65_PROGRESS {"event":"case-result","name":"owner source bridge: rejects untrusted begin-id data without adopting state or replacing the original error","state":"passed","durationMs":0.43439999999827705,"elapsedMs":155286.6582}
+OWNER65_PROGRESS {"event":"case-ready","name":"owner source bridge: rejects untrusted sequence data without adopting state or replacing the original error","elapsedMs":155286.6665}
+OWNER65_PROGRESS {"event":"hook-start","name":"owner source bridge: rejects untrusted sequence data without adopting state or replacing the original error","hook":"beforeEach","elapsedMs":155286.74}
+OWNER65_PROGRESS {"event":"hook-end","name":"owner source bridge: rejects untrusted sequence data without adopting state or replacing the original error","hook":"beforeEach","elapsedMs":155286.7523}
+OWNER65_PROGRESS {"event":"case-result","name":"owner source bridge: rejects untrusted sequence data without adopting state or replacing the original error","state":"passed","durationMs":0.2978999999759253,"elapsedMs":155286.7614}
+OWNER65_PROGRESS {"event":"case-ready","name":"owner source bridge: rejects untrusted sentinel data without adopting state or replacing the original error","elapsedMs":155286.7701}
+OWNER65_PROGRESS {"event":"hook-start","name":"owner source bridge: rejects untrusted sentinel data without adopting state or replacing the original error","hook":"beforeEach","elapsedMs":155286.77839999998}
+OWNER65_PROGRESS {"event":"hook-end","name":"owner source bridge: rejects untrusted sentinel data without adopting state or replacing the original error","hook":"beforeEach","elapsedMs":155286.7869}
+OWNER65_PROGRESS {"event":"case-result","name":"owner source bridge: rejects untrusted sentinel data without adopting state or replacing the original error","state":"passed","durationMs":0.23689999998896383,"elapsedMs":155286.9674}
+OWNER65_PROGRESS {"event":"case-ready","name":"owner source bridge: preserves genuine occupied Uint16 material IDs and rejects Air/negative-zero/overflow data","elapsedMs":155286.993}
+OWNER65_PROGRESS {"event":"hook-start","name":"owner source bridge: preserves genuine occupied Uint16 material IDs and rejects Air/negative-zero/overflow data","hook":"beforeEach","elapsedMs":155287.0043}
+OWNER65_PROGRESS {"event":"hook-end","name":"owner source bridge: preserves genuine occupied Uint16 material IDs and rejects Air/negative-zero/overflow data","hook":"beforeEach","elapsedMs":155287.014}
+OWNER65_PROGRESS {"event":"case-result","name":"owner source bridge: preserves genuine occupied Uint16 material IDs and rejects Air/negative-zero/overflow data","state":"passed","durationMs":364.7446999999811,"elapsedMs":155560.5751}
+ ✓ tests/unit/hvp-body-plan-owner.test.ts (65 tests) 153406ms
+   ✓ owner-first child projection: reuses one finished plan before CURRENT-pose Stage  356ms
+   ✓ owner-first child projection: rejects cancelled old work for a reused command id  309ms
+   ✓ owner-first child projection: uses the issued-hash factory without recut or native installation  529ms
+   ✓ owner-first child projection: rechecks cached target identity  352ms
+   ✓ owner-first child projection: rechecks cached registry identity  340ms
+   ✓ owner-first child projection: rechecks cached native identity  346ms
+   ✓ derives exactly one native plan per command across task-yielding preparation, a failed stage and its retry  649ms
+   ✓ keeps the parent simulated between plan phases and stages the original hit at the current native pose  629ms
+   ✓ drops a cancelled or disposed preparation: no revived plan, no stage and unchanged native membership  387ms
+   ✓ keeps a rejected task-yield adapter fatal for the command instead of resuming the steps in Stage  404ms
+   ✓ rejects a removed or replaced parent after a finished plan without touching the World  649ms
+   ✓ stages a Sphere that removes every cell with zero children and no invented body  329ms
+   ✓ owner-first child projection: leaves the World running and rejects actual owner disposal  1780ms
+   ✓ runs session source preparation outside the World hold and preserves Running after release  2220ms
+   ✓ runs session source preparation outside the World hold and preserves Paused after release  2238ms
+   ✓ logs slow contiguous plan steps and their existing sub-hooks only while measuring (on)  1629ms
+   ✓ logs slow contiguous plan steps and their existing sub-hooks only while measuring (off)  1646ms
+   ✓ logs slow contiguous plan steps and their existing sub-hooks only while measuring (disabledMidYield)  1672ms
+   ✓ rejects foreign and mixed-version Dispose without mutating the current Worker owner  751ms
+   ✓ serves Read, input and the fixed-step timer while the worker's source-only plan is suspended  2009ms
+   ✓ rejects Stage during a safety SimulationHold without Applied, manual-pause label, auto-resume or native mutation  2167ms
+   ✓ stops the temporary plan trace on a dynamic measure:false Read, including an in-flight plan, without changing the native cut  6842ms
+   ✓ keeps the plan trace off on the old World returned by RollbackRestore after an opt-out during a committed restore  7024ms
+   ✓ serves Read, input and the timer at a yield inside the Worker child hash, then cancels it without native mutation  2174ms
+   ✓ keeps the Worker owner-hash route on a finalized Restore candidate and applies its new body cut  4756ms
+   ✓ issues identical children, masses, colliders and receipts on the generic and the owner-hash body session  1416ms
+   ✓ runs a partial Sphere through the owner-hash factory's re-ingest route to one Applied child with generic parity  1427ms
+   ✓ runs an all-removing Sphere through the owner-hash factory without a child, hash cursor or native body  363ms
+   ✓ traces the owner-hash labels and recipe subspans exactly on a measured owner session and reads no clock without one  1010ms
+   ✓ closes the owner child hash on a cancel or dispose at its own yield without a revived plan or native mutation  741ms
+   ✓ settles a pending Worker plan before restoring the ports even when the Dispose reply fails, keeping the original error  2606ms
+   ✓ projects row200 child cells in bounded owner batches with generic parity of sources, IDs, masses, colliders and receipt  16173ms
+   ✓ fails closed on a cancel or dispose between owner child-cell batches without a new Stage, hash or native mutation  4282ms
+   ✓ stops every optional owner clock read after an opt-out at a child-cell batch yield  4665ms
+   ✓ serves Read, input and the timer at a real Worker child-cell batch yield, then cancels without a new Stage  3801ms
+   ✓ yields inside the post-destruction classification in bounded cell batches and stages the same products  5199ms
+   ✓ cancels a yielding plan at its first yield without revival or native change  8024ms
+   ✓ cancels a yielding plan at its midClassification yield without revival or native change  8688ms
+   ✓ cancels a yielding plan at its midChildClassification yield without revival or native change  9567ms
+   ✓ cancels a yielding plan at its last yield without revival or native change  9391ms
+   ✓ reads no diagnostic clock after an opt-out at a child's own classification yield and keeps the same outcome  7948ms
+   ✓ aggregates every step and keeps the true worst step beyond the 64-step record cap  1603ms
+   ✓ logs truncatedSteps and the post-cap worst step through the real session logger  2760ms
+   ✓ serves Read, input and the fixed-step timer at a yield in the middle of the classification  3039ms
+   ✓ serves Read, input and the fixed-step timer at a yield inside a NEW child's own classification  4667ms
+   ✓ owner source bridge: returns only current framed data while Read/Input/timer run and reuses one native plan  2221ms
+   ✓ owner source bridge: rejects wrong Begin request/source/target before deriving a native plan  1845ms
+   ✓ owner source bridge: settles suspended work after rollback-reuse without exporting old data  2344ms
+   ✓ owner source bridge: settles suspended work after dispose without exporting old data  1979ms
+   ✓ owner source bridge: old Begin request IDs cannot project after a real finalized World Restore  4565ms
+   ✓ owner source bridge: preserves genuine occupied Uint16 material IDs and rejects Air/negative-zero/overflow data  365ms
+
+ Test Files  1 passed (1)
+      Tests  65 passed (65)
+   Start at  17:46:01
+   Duration  155.55s (transform 1.01s, setup 0ms, import 2.00s, tests 153.41s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A02-owner-current-r94/original-vitest.json

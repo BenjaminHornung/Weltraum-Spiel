@@ -1,0 +1,10 @@
+{
+  "runId": "A03-terminal-timing-r56-tests",
+  "binding": "A03-terminal-timing-r56-binding.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-moving-consumer.test.ts"
+  ],
+  "nativeCapSeconds": 600,
+  "classification": "Existing opt-in root renderstage and meshrelease timing only; generic consumer traces unchanged/full source binding/original deadlines"
+}

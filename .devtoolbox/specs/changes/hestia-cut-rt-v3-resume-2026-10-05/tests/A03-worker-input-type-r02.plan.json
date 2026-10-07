@@ -1,0 +1,8 @@
+{
+  "files": [],
+  "binding": "A03-worker-input-regressions-r01-binding.json",
+  "nativeCapSeconds": 60,
+  "runId": "A03-worker-input-type-r02",
+  "mode": "type",
+  "classification": "Exact R32 final generic freeze/await preservation plus parent worker input/mesh/wire full type original60"
+}

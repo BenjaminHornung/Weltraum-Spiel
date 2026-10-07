@@ -1,0 +1,8 @@
+{
+  "runId": "A03-owner-ledger-type-r02",
+  "files": [],
+  "mode": "type",
+  "nativeCapSeconds": 60,
+  "classification": "Full owner lifetime type; original cap; narrow compile repair from type-r01",
+  "binding": "A03-owner-ledger-final-r02-binding.json"
+}

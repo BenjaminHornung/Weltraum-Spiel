@@ -1,0 +1,3 @@
+# Historical synthetic privacy RED output contains complete debugger URLs.
+# Retain the original locally; do not publish that payload.
+/tests/A01-privacy-red-r02/stderr.txt

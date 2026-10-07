@@ -1,0 +1,10 @@
+{
+  "files": [
+    "tests/unit/hvpBodyCutWire.test.ts"
+  ],
+  "classification": "Borrowed wire encoding real RED for exact7 bytes/hash, preallocation parent failure and cancel",
+  "binding": "A03-wire-encode-red-r01-binding.json",
+  "runId": "A03-wire-encode-red-r01",
+  "mode": "tests",
+  "nativeCapSeconds": 180
+}

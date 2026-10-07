@@ -1,0 +1,15 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-owned-slot-copy.test.ts (4 tests | 1 failed) 67511ms
+   ✓ copies exact validated cold-grid and COW bytes defensively without changing public leaf bytes or digests 235ms
+   ✓ withholds the changed-leaf capability after species-sensitive recut and transfer production 166ms
+   ✓ keeps generic reader errors and copy observations, and cancels an actual owned copy after yielding 240ms
+   × copies the complete owned base in4096-byte blocks and overlays only current COW leaves in numeric order 66867ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed (4)
+   Start at  23:42:41
+   Duration  71.12s (transform 1.70s, setup 0ms, import 3.10s, tests 67.51s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-bulkcopy-r113-tests-r01/original-vitest.json

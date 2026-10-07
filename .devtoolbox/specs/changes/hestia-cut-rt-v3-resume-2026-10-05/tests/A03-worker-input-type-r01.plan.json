@@ -1,0 +1,8 @@
+{
+  "classification": "Worker borrowed full input/mesh/wire exact source full type original60",
+  "files": [],
+  "nativeCapSeconds": 60,
+  "runId": "A03-worker-input-type-r01",
+  "binding": "A03-worker-input-green-r01-binding.json",
+  "mode": "type"
+}

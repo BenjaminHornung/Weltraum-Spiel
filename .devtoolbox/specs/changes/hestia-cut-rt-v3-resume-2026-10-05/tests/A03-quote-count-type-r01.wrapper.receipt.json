@@ -1,0 +1,8 @@
+{
+  "runId": "A03-quote-count-type-r01",
+  "startedUtc": "2026-10-05T18:04:16.2219094+00:00",
+  "endedUtc": "2026-10-05T18:04:21.1139288+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 4.8818195,
+  "planFile": "A03-quote-count-type-r01.plan.json"
+}

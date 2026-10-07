@@ -1,0 +1,10 @@
+{
+  "runId": "A05-pregraphics-r115-tests-r01",
+  "classification": "Whole paired Consumer owned preStage graphics exact NativeStage equality and rollback defaults",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-terrain-consumer.test.ts"
+  ],
+  "binding": "A05-pregraphics-r115-binding-r01.json",
+  "nativeCapSeconds": 180
+}

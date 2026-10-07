@@ -1,0 +1,8 @@
+{
+  "runId": "A05-scratch-r105-build-r02",
+  "classification": "Sealed same-format scalar-scratch microcandidate",
+  "mode": "build",
+  "files": [],
+  "binding": "A05-scratch-r105-binding-r02.json",
+  "nativeCapSeconds": 180
+}

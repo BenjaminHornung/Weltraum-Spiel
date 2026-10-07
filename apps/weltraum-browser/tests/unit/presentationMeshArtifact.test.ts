@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import * as artifactModule from "../../src/presentation/meshArtifact";
 import {
   artifactRevision,
   adoptMeshArtifactBuffers,
@@ -33,6 +34,51 @@ const meshInput = (): MeshArtifactInput => ({
 });
 
 describe("MeshArtifact", () => {
+  it("reads the public claimed hash before traversing hash content and preserves getter failures", () => {
+    const artifact = createMeshArtifact(meshInput()), events: string[] = [], sentinel = new Error("claimed hash getter");
+    let reads = 0;
+    const observed = { ...artifact, get contentHash() { events.push("hash"); if (++reads === 2) throw sentinel; return artifact.contentHash; },
+      get algorithmVersion() { events.push("algorithm"); return artifact.algorithmVersion; } };
+    expect(() => validateMeshArtifact(observed)).toThrow(sentinel);
+    expect(events).toEqual(["algorithm", "hash", "hash"]);
+  });
+  it("prepares owned snapshots and every validation hash in bounded steps with unchanged results", () => {
+    const owned = artifactModule as unknown as {
+      createMeshArtifactOwnedSteps(input: MeshArtifactInput): Generator<string, MeshArtifact, unknown>;
+      validateMeshArtifactOwnedSteps(artifact: MeshArtifact): Generator<string, ReturnType<typeof validateMeshArtifact>, unknown>;
+    };
+    const finish = <T>(steps: Generator<string, T, unknown>): T => {
+      try { for (;;) { const next = steps.next(); if (next.done) return next.value; } }
+      finally { steps.return(undefined as never); }
+    };
+    const input = meshInput(), expected = createMeshArtifact(input);
+    const actual = finish(owned.createMeshArtifactOwnedSteps(input));
+    expect(actual).toEqual(expected); expect(actual.positions).not.toBe(input.positions);
+    input.positions[0] = 42;
+    expect(actual.positions[0]).toBe(-1);
+    for (const change of [
+      { contentHash: "fnv1a64:0000000000000000" },
+      { positions: new Float32Array([NaN, 0, 0]) },
+      { indices: new Uint16Array([0, 1, 99]) },
+      { bounds: { min: { x: 0, y: 0, z: 0 }, max: { x: 0, y: 0, z: 0 } } }
+    ]) {
+      const invalid = { ...actual, ...change } as MeshArtifact;
+      expect(finish(owned.validateMeshArtifactOwnedSteps(invalid))).toEqual(validateMeshArtifact(invalid));
+    }
+    const count = 8193, large: MeshArtifactInput = { ...meshInput(),
+      positions: new Float32Array(count * 3), normals: new Float32Array(count * 3),
+      indices: Uint32Array.from({ length: count }, (_, index) => index), attributes: undefined,
+      materialRanges: [{ ...input.materialRanges[0]!, indexCount: count }],
+      bounds: { min: { x: 0, y: 0, z: 0 }, max: { x: 0, y: 0, z: 0 } } };
+    const steps = owned.createMeshArtifactOwnedSteps(large); let advances = 0;
+    try { for (;;) { const next = steps.next(); if (next.done) {
+      expect(next.value.contentHash).toBe(createMeshArtifact(large).contentHash); break;
+    } advances += 1; } } finally { steps.return(undefined as never); }
+    expect(advances).toBeGreaterThan(64);
+    const cancelled = owned.createMeshArtifactOwnedSteps(large);
+    expect(cancelled.next().done).toBe(false); cancelled.return(undefined as never);
+    expect(cancelled.next().done).toBe(true);
+  });
   it("exports the two explicit ownership semantics", () => {
     const modes: readonly MeshArtifactOwnership[] = ["SnapshotOwned", "AdoptedExclusive"];
     expect(modes).toEqual(["SnapshotOwned", "AdoptedExclusive"]);

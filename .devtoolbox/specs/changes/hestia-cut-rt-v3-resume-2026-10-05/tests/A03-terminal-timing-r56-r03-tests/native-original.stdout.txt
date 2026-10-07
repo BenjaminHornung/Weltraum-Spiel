@@ -1,0 +1,15 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvpBodyMeshAdmission.test.ts (12 tests) 6057ms
+     ✓ keeps owner expectation independent of foreign child cells paired with a fake digest  1789ms
+     ✓ accepts the real V2 complete-removal receipt with zero children  464ms
+ ✓ tests/unit/hvpCutTrace.test.ts (72 tests) 46ms
+ ✓ tests/unit/hvp-moving-consumer.test.ts (26 tests) 33ms
+
+ Test Files  3 passed (3)
+      Tests  110 passed (110)
+   Start at  00:38:23
+   Duration  10.35s (transform 1.56s, setup 0ms, import 3.44s, tests 6.14s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-terminal-timing-r56-r03-tests/original-vitest.json

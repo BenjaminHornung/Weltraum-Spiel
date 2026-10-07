@@ -1,0 +1,110 @@
+{
+  "classification": "EXISTING_ACTUAL_NATIVE_DIAGNOSTICS_NOT_FORMAL",
+  "phases": [
+    {
+      "commandId": "moving-cut-1",
+      "outcome": "Planned",
+      "origin": 1791324615328.2,
+      "steps": 2248,
+      "maxMs": 2.899999998509884,
+      "phases": [
+        {
+          "label": "ownerCommand",
+          "count": 206,
+          "totalMs": 123.59999998658895,
+          "maxMs": 2.1999999955296516
+        },
+        {
+          "label": "destruction",
+          "count": 1,
+          "totalMs": 0.3999999985098839,
+          "maxMs": 0.3999999985098839
+        },
+        {
+          "label": "ownerClassification",
+          "count": 100,
+          "totalMs": 45.600000001490116,
+          "maxMs": 1.6000000014901161
+        },
+        {
+          "label": "classification",
+          "count": 1,
+          "totalMs": 0.10000000149011612,
+          "maxMs": 0.10000000149011612
+        },
+        {
+          "label": "ownerMass",
+          "count": 5,
+          "totalMs": 1.5,
+          "maxMs": 1.3999999985098839
+        },
+        {
+          "label": "parentMass",
+          "count": 1,
+          "totalMs": 0.20000000298023224,
+          "maxMs": 0.20000000298023224
+        },
+        {
+          "label": "childCells",
+          "count": 22,
+          "totalMs": 28.00000000745058,
+          "maxMs": 2.899999998509884
+        },
+        {
+          "label": "ownerIngestPrefix",
+          "count": 49,
+          "totalMs": 9.5,
+          "maxMs": 1.1999999955296516
+        },
+        {
+          "label": "ownerIngestBricks",
+          "count": 597,
+          "totalMs": 57.30000001937151,
+          "maxMs": 1.2000000029802322
+        },
+        {
+          "label": "ownerIngestProofs",
+          "count": 74,
+          "totalMs": 17.200000002980232,
+          "maxMs": 1.1000000014901161
+        },
+        {
+          "label": "ownerIngestStructural",
+          "count": 186,
+          "totalMs": 40.70000000298023,
+          "maxMs": 1.2000000029802322
+        },
+        {
+          "label": "ownerRecipe",
+          "count": 213,
+          "totalMs": 116.99999998509884,
+          "maxMs": 2.100000001490116
+        },
+        {
+          "label": "ownerIngest",
+          "count": 407,
+          "totalMs": 50.99999999254942,
+          "maxMs": 1.2999999970197678
+        },
+        {
+          "label": "childRecipe0",
+          "count": 1,
+          "totalMs": 0.19999999552965164,
+          "maxMs": 0.19999999552965164
+        },
+        {
+          "label": "ownerCells",
+          "count": 384,
+          "totalMs": 0.5,
+          "maxMs": 0.10000000149011612
+        },
+        {
+          "label": "removedMass",
+          "count": 1,
+          "totalMs": 0.3999999985098839,
+          "maxMs": 0.3999999985098839
+        }
+      ]
+    }
+  ]
+}

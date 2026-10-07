@@ -1,0 +1,8 @@
+{
+  "runId": "A03-terminal-timing-r56-type",
+  "binding": "A03-terminal-timing-r56-binding.json",
+  "mode": "type",
+  "files": [],
+  "nativeCapSeconds": 60,
+  "classification": "Existing opt-in root renderstage and meshrelease timing only; generic consumer traces unchanged/full source binding/original deadlines"
+}

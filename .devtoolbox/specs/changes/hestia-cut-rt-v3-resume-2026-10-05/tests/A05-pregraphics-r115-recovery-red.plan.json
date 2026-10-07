@@ -1,0 +1,10 @@
+{
+  "runId": "A05-pregraphics-r115-recovery-red",
+  "classification": "Meaningful retained credits RecoveryHold after unproven renderer cleanup even with Native released",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-terrain-consumer.test.ts"
+  ],
+  "binding": "A05-pregraphics-r115-binding-recovery-red.json",
+  "nativeCapSeconds": 180
+}

@@ -26,10 +26,12 @@ import {
   materializeHvpCoastSource,
   materializeHvpCoastSourceAsync,
   prepareHvpCoastSource,
+  prepareHvpOwnedCoastSource,hvpOwnedCoastLeafCopy,restoreHvpCoastSource,restoreHvpOwnedCoastGrid,
   readHvpSourceSlot,
   type HvpCoastSourceSnapshot,
   type HvpPreparedCoastSource
 } from "../../src/hvp/hvpCoastSource";
+import {decodeHvpGrid,encodeHvpGrid} from "../../src/hestia-prototype/persistence/gridCheckpoint";
 import {
   HVP_COAST_MESH_ALGORITHM_VERSION,
   HVP_FARFIELD_MESH_ALGORITHM_VERSION,
@@ -58,6 +60,22 @@ beforeAll(async () => {
 }, 300_000);
 
 describe("HVP coast source region contract", () => {
+  it("copies the exact owned fresh source defensively without branding the public prepared copy",()=>{
+    expect(hvpOwnedCoastLeafCopy(snapshot)).toBeDefined();expect(hvpOwnedCoastLeafCopy(prepared)).toBeUndefined();
+    const privatePrepared=prepareHvpOwnedCoastSource(snapshot),copy=hvpOwnedCoastLeafCopy(privatePrepared)!;
+    expect(copy(11,4,4)).toEqual(prepared.readLeaf(11,4,4).slots);
+    const leaf=copy(11,4,4)!;leaf.fill(0);expect(copy(11,4,4)).toEqual(prepared.readLeaf(11,4,4).slots);
+  });
+  it("leaves public aliased restores and foreign prepared wrappers unbranded",()=>{
+    const aliased=snapshot.copySlots();Object.defineProperty(aliased,"slice",{value:()=>aliased});
+    const foreign=restoreHvpCoastSource(aliased,snapshot.sourceDigest);expect(hvpOwnedCoastLeafCopy(foreign)).toBeUndefined();
+    expect(hvpOwnedCoastLeafCopy(prepareHvpOwnedCoastSource({...snapshot}))).toBeUndefined();
+  });
+  it("binds the exact private cold-grid producer with the same leaf bytes and source hash",()=>{
+    const grid=decodeHvpGrid(encodeHvpGrid(snapshot)),cold=restoreHvpOwnedCoastGrid(grid,snapshot.sourceDigest);
+    expect(hvpOwnedCoastLeafCopy(cold)!(11,4,4)).toEqual(prepared.readLeaf(11,4,4).slots);expect(cold.sourceDigest).toBe(snapshot.sourceDigest);
+    expect(()=>restoreHvpOwnedCoastGrid({...grid},snapshot.sourceDigest)).toThrow("Unowned coast grid producer");
+  });
   it("binds the normative 256x128x256 slot region at 0.125 m", () => {
     expect(HVP_SOURCE_CELL_METERS).toBe(0.125);
     expect(HVP_SOURCE_SIZE_X).toBe(256);

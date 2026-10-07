@@ -1,0 +1,10 @@
+{
+  "runId": "A03-borrowed-body-plan-red-r01",
+  "nativeCapSeconds": 180,
+  "mode": "tests",
+  "binding": "A03-borrowed-body-plan-red-source-binding-r01.json",
+  "classification": "Missing full command/ingest/recipe/removed-mass composition under shared parent RED, legacy assertions/deadlines unchanged",
+  "files": [
+    "tests/unit/hvp-borrowed-body-plan.test.ts"
+  ]
+}

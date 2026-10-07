@@ -1,0 +1,652 @@
+[
+  {
+    "asset": "backend-0g590SJq.js",
+    "name": "Vr",
+    "line": 0,
+    "column": 57287,
+    "selfMs": 393.112,
+    "original": {
+      "source": "../../src/presentation/canonical.ts",
+      "line": 29,
+      "column": 6,
+      "name": null
+    }
+  },
+  {
+    "asset": "backend-0g590SJq.js",
+    "name": "Ur",
+    "line": 0,
+    "column": 57470,
+    "selfMs": 329.515,
+    "original": {
+      "source": "../../src/presentation/canonical.ts",
+      "line": 41,
+      "column": 6,
+      "name": null
+    }
+  },
+  {
+    "asset": "index-GcRUHCUA.js",
+    "name": "qO",
+    "line": 4112,
+    "column": 52116,
+    "selfMs": 158.685,
+    "original": {
+      "source": "../../src/workers/hvpBodyCutWire.ts",
+      "line": 18,
+      "column": 17,
+      "name": null
+    }
+  },
+  {
+    "asset": "index-GcRUHCUA.js",
+    "name": "qO",
+    "line": 4112,
+    "column": 52116,
+    "selfMs": 157.432,
+    "original": {
+      "source": "../../src/workers/hvpBodyCutWire.ts",
+      "line": 18,
+      "column": 17,
+      "name": null
+    }
+  },
+  {
+    "asset": "backend-0g590SJq.js",
+    "name": "Vr",
+    "line": 0,
+    "column": 57287,
+    "selfMs": 155.795,
+    "original": {
+      "source": "../../src/presentation/canonical.ts",
+      "line": 29,
+      "column": 6,
+      "name": null
+    }
+  },
+  {
+    "asset": "backend-0g590SJq.js",
+    "name": "Vr",
+    "line": 0,
+    "column": 57287,
+    "selfMs": 153.042,
+    "original": {
+      "source": "../../src/presentation/canonical.ts",
+      "line": 29,
+      "column": 6,
+      "name": null
+    }
+  },
+  {
+    "asset": "backend-0g590SJq.js",
+    "name": "Hr",
+    "line": 0,
+    "column": 57408,
+    "selfMs": 150.104,
+    "original": {
+      "source": "../../src/presentation/canonical.ts",
+      "line": 35,
+      "column": 6,
+      "name": null
+    }
+  },
+  {
+    "asset": "backend-0g590SJq.js",
+    "name": "writeByte",
+    "line": 0,
+    "column": 56963,
+    "selfMs": 91.926,
+    "original": {
+      "source": "../../src/presentation/canonical.ts",
+      "line": 9,
+      "column": 2,
+      "name": null
+    }
+  },
+  {
+    "asset": "backend-0g590SJq.js",
+    "name": "writeByte",
+    "line": 0,
+    "column": 56963,
+    "selfMs": 77.647,
+    "original": {
+      "source": "../../src/presentation/canonical.ts",
+      "line": 9,
+      "column": 2,
+      "name": null
+    }
+  },
+  {
+    "asset": "backend-0g590SJq.js",
+    "name": "Gr",
+    "line": 0,
+    "column": 58023,
+    "selfMs": 71.714,
+    "original": {
+      "source": "../../src/presentation/canonical.ts",
+      "line": 74,
+      "column": 6,
+      "name": null
+    }
+  },
+  {
+    "asset": "hvpBootstrap-DfS2tvW6.js",
+    "name": "Pr",
+    "line": 25,
+    "column": 169096,
+    "selfMs": 70.033,
+    "original": {
+      "source": "../../src/hvp/hvpBootstrap.ts",
+      "line": 2558,
+      "column": 26,
+      "name": null
+    }
+  },
+  {
+    "asset": "backend-0g590SJq.js",
+    "name": "Hr",
+    "line": 0,
+    "column": 57408,
+    "selfMs": 56.587,
+    "original": {
+      "source": "../../src/presentation/canonical.ts",
+      "line": 35,
+      "column": 6,
+      "name": null
+    }
+  },
+  {
+    "asset": "backend-0g590SJq.js",
+    "name": "writeByte",
+    "line": 0,
+    "column": 56963,
+    "selfMs": 51.805,
+    "original": {
+      "source": "../../src/presentation/canonical.ts",
+      "line": 9,
+      "column": 2,
+      "name": null
+    }
+  },
+  {
+    "asset": "index-GcRUHCUA.js",
+    "name": "p",
+    "line": 3671,
+    "column": 11477,
+    "selfMs": 49.499,
+    "original": {
+      "source": "../../node_modules/three/build/three.module.js",
+      "line": 1742,
+      "column": 10,
+      "name": null
+    }
+  },
+  {
+    "asset": "hvpBootstrap-DfS2tvW6.js",
+    "name": "Ni",
+    "line": 0,
+    "column": 55137,
+    "selfMs": 41.595,
+    "original": {
+      "source": "../../src/hestia-prototype/terrain/terrainProducts.ts",
+      "line": 114,
+      "column": 33,
+      "name": null
+    }
+  },
+  {
+    "asset": "backend-0g590SJq.js",
+    "name": "Vr",
+    "line": 0,
+    "column": 57287,
+    "selfMs": 40.276,
+    "original": {
+      "source": "../../src/presentation/canonical.ts",
+      "line": 29,
+      "column": 6,
+      "name": null
+    }
+  },
+  {
+    "asset": "backend-0g590SJq.js",
+    "name": "Vr",
+    "line": 0,
+    "column": 57287,
+    "selfMs": 32.631,
+    "original": {
+      "source": "../../src/presentation/canonical.ts",
+      "line": 29,
+      "column": 6,
+      "name": null
+    }
+  },
+  {
+    "asset": "backend-0g590SJq.js",
+    "name": "writeByte",
+    "line": 0,
+    "column": 56963,
+    "selfMs": 30.861,
+    "original": {
+      "source": "../../src/presentation/canonical.ts",
+      "line": 9,
+      "column": 2,
+      "name": null
+    }
+  },
+  {
+    "asset": "hvpBootstrap-DfS2tvW6.js",
+    "name": "S.onmessage",
+    "line": 25,
+    "column": 37952,
+    "selfMs": 30.319,
+    "original": {
+      "source": "../../src/hestia-prototype/physics/client.ts",
+      "line": 186,
+      "column": 9,
+      "name": null
+    }
+  },
+  {
+    "asset": "backend-0g590SJq.js",
+    "name": "q",
+    "line": 0,
+    "column": 53942,
+    "selfMs": 28.209,
+    "original": {
+      "source": "../../src/presentation/ids.ts",
+      "line": 40,
+      "column": 13,
+      "name": null
+    }
+  },
+  {
+    "asset": "backend-0g590SJq.js",
+    "name": "writeByte",
+    "line": 0,
+    "column": 56963,
+    "selfMs": 27.966,
+    "original": {
+      "source": "../../src/presentation/canonical.ts",
+      "line": 9,
+      "column": 2,
+      "name": null
+    }
+  },
+  {
+    "asset": "hvpBootstrap-DfS2tvW6.js",
+    "name": "",
+    "line": 0,
+    "column": 110602,
+    "selfMs": 23.945,
+    "original": {
+      "source": "../../src/hestia-prototype/presentation/shadowRevision.ts",
+      "line": 18,
+      "column": 17,
+      "name": null
+    }
+  },
+  {
+    "asset": "hvpBootstrap-DfS2tvW6.js",
+    "name": "",
+    "line": 25,
+    "column": 92943,
+    "selfMs": 23.878,
+    "original": {
+      "source": "../../src/hvp/hvpBootstrap.ts",
+      "line": 508,
+      "column": 18,
+      "name": null
+    }
+  },
+  {
+    "asset": "backend-0g590SJq.js",
+    "name": "recomputeVisibility",
+    "line": 0,
+    "column": 96640,
+    "selfMs": 23.559,
+    "original": {
+      "source": "../../src/render/three/backend/threeRenderBackend.ts",
+      "line": 569,
+      "column": 2,
+      "name": null
+    }
+  },
+  {
+    "asset": "backend-0g590SJq.js",
+    "name": "recomputeVisibility",
+    "line": 0,
+    "column": 96640,
+    "selfMs": 23.128,
+    "original": {
+      "source": "../../src/render/three/backend/threeRenderBackend.ts",
+      "line": 569,
+      "column": 2,
+      "name": null
+    }
+  },
+  {
+    "asset": "index-GcRUHCUA.js",
+    "name": "lk",
+    "line": 4112,
+    "column": 67387,
+    "selfMs": 22.927,
+    "original": {
+      "source": "../../src/hestia-prototype/terrain/ownedSlotCopy.ts",
+      "line": 2,
+      "column": 13,
+      "name": null
+    }
+  },
+  {
+    "asset": "backend-0g590SJq.js",
+    "name": "xr",
+    "line": 0,
+    "column": 53783,
+    "selfMs": 22.762,
+    "original": {
+      "source": "../../src/presentation/validation.ts",
+      "line": 38,
+      "column": 38,
+      "name": null
+    }
+  },
+  {
+    "asset": "index-GcRUHCUA.js",
+    "name": "qO",
+    "line": 4112,
+    "column": 52116,
+    "selfMs": 22.121,
+    "original": {
+      "source": "../../src/workers/hvpBodyCutWire.ts",
+      "line": 18,
+      "column": 17,
+      "name": null
+    }
+  },
+  {
+    "asset": "backend-0g590SJq.js",
+    "name": "gi",
+    "line": 0,
+    "column": 66730,
+    "selfMs": 21.517,
+    "original": {
+      "source": "../../src/presentation/visibilityPlan.ts",
+      "line": 46,
+      "column": 26,
+      "name": null
+    }
+  },
+  {
+    "asset": "hvpBootstrap-DfS2tvW6.js",
+    "name": "update",
+    "line": 25,
+    "column": 68058,
+    "selfMs": 21.498,
+    "original": {
+      "source": "../../src/hestia-prototype/player/input.ts",
+      "line": 133,
+      "column": 4,
+      "name": null
+    }
+  },
+  {
+    "asset": "backend-0g590SJq.js",
+    "name": "Ur",
+    "line": 0,
+    "column": 57470,
+    "selfMs": 21.167,
+    "original": {
+      "source": "../../src/presentation/canonical.ts",
+      "line": 41,
+      "column": 6,
+      "name": null
+    }
+  },
+  {
+    "asset": "index-GcRUHCUA.js",
+    "name": "s",
+    "line": 3671,
+    "column": 10663,
+    "selfMs": 20.573,
+    "original": {
+      "source": "../../node_modules/three/build/three.module.js",
+      "line": 1606,
+      "column": 10,
+      "name": null
+    }
+  },
+  {
+    "asset": "index-GcRUHCUA.js",
+    "name": "qO",
+    "line": 4112,
+    "column": 52116,
+    "selfMs": 20.359,
+    "original": {
+      "source": "../../src/workers/hvpBodyCutWire.ts",
+      "line": 18,
+      "column": 17,
+      "name": null
+    }
+  },
+  {
+    "asset": "backend-0g590SJq.js",
+    "name": "Hr",
+    "line": 0,
+    "column": 57408,
+    "selfMs": 19.845,
+    "original": {
+      "source": "../../src/presentation/canonical.ts",
+      "line": 35,
+      "column": 6,
+      "name": null
+    }
+  },
+  {
+    "asset": "backend-0g590SJq.js",
+    "name": "Vr",
+    "line": 0,
+    "column": 57287,
+    "selfMs": 19.728,
+    "original": {
+      "source": "../../src/presentation/canonical.ts",
+      "line": 29,
+      "column": 6,
+      "name": null
+    }
+  },
+  {
+    "asset": "hvpBootstrap-DfS2tvW6.js",
+    "name": "Ai",
+    "line": 0,
+    "column": 53171,
+    "selfMs": 18.887,
+    "original": {
+      "source": "../../src/hestia-prototype/terrain/terrainProducts.ts",
+      "line": 65,
+      "column": 10,
+      "name": null
+    }
+  },
+  {
+    "asset": "index-GcRUHCUA.js",
+    "name": "qO",
+    "line": 4112,
+    "column": 52116,
+    "selfMs": 18.815,
+    "original": {
+      "source": "../../src/workers/hvpBodyCutWire.ts",
+      "line": 18,
+      "column": 17,
+      "name": null
+    }
+  },
+  {
+    "asset": "hvpBootstrap-DfS2tvW6.js",
+    "name": "",
+    "line": 25,
+    "column": 1376,
+    "selfMs": 18.24,
+    "original": {
+      "source": "../../src/hestia-prototype/presentation/visualEffects.ts",
+      "line": 158,
+      "column": 26,
+      "name": null
+    }
+  },
+  {
+    "asset": "index-GcRUHCUA.js",
+    "name": "i",
+    "line": 4113,
+    "column": 7986,
+    "selfMs": 17.924,
+    "original": {
+      "source": "../../src/hvp/hvpCoastSource.ts",
+      "line": 740,
+      "column": 8,
+      "name": null
+    }
+  },
+  {
+    "asset": "backend-0g590SJq.js",
+    "name": "writeByte",
+    "line": 0,
+    "column": 56963,
+    "selfMs": 17.882,
+    "original": {
+      "source": "../../src/presentation/canonical.ts",
+      "line": 9,
+      "column": 2,
+      "name": null
+    }
+  },
+  {
+    "asset": "backend-0g590SJq.js",
+    "name": "q",
+    "line": 0,
+    "column": 53942,
+    "selfMs": 16.721,
+    "original": {
+      "source": "../../src/presentation/ids.ts",
+      "line": 40,
+      "column": 13,
+      "name": null
+    }
+  },
+  {
+    "asset": "backend-0g590SJq.js",
+    "name": "q",
+    "line": 0,
+    "column": 53942,
+    "selfMs": 16.662,
+    "original": {
+      "source": "../../src/presentation/ids.ts",
+      "line": 40,
+      "column": 13,
+      "name": null
+    }
+  },
+  {
+    "asset": "hvpBootstrap-DfS2tvW6.js",
+    "name": "a",
+    "line": 25,
+    "column": 241,
+    "selfMs": 16.511,
+    "original": {
+      "source": "../../src/hestia-prototype/presentation/visualEffects.ts",
+      "line": 122,
+      "column": 10,
+      "name": null
+    }
+  },
+  {
+    "asset": "backend-0g590SJq.js",
+    "name": "Gr",
+    "line": 0,
+    "column": 58023,
+    "selfMs": 14.233,
+    "original": {
+      "source": "../../src/presentation/canonical.ts",
+      "line": 74,
+      "column": 6,
+      "name": null
+    }
+  },
+  {
+    "asset": "hvpBootstrap-DfS2tvW6.js",
+    "name": "E",
+    "line": 25,
+    "column": 187,
+    "selfMs": 13.887,
+    "original": {
+      "source": "../../src/hestia-prototype/presentation/visualEffects.ts",
+      "line": 114,
+      "column": 8,
+      "name": null
+    }
+  },
+  {
+    "asset": "index-GcRUHCUA.js",
+    "name": "Aj",
+    "line": 4113,
+    "column": 36372,
+    "selfMs": 13.825,
+    "original": {
+      "source": "../../src/workers/hvpTerrainJob.ts",
+      "line": 49,
+      "column": 10,
+      "name": null
+    }
+  },
+  {
+    "asset": "index-GcRUHCUA.js",
+    "name": "jt",
+    "line": 4108,
+    "column": 40045,
+    "selfMs": 12.667,
+    "original": {
+      "source": "../../node_modules/three/build/three.module.js",
+      "line": 18328,
+      "column": 11,
+      "name": null
+    }
+  },
+  {
+    "asset": "hvpBootstrap-DfS2tvW6.js",
+    "name": "n",
+    "line": 0,
+    "column": 110460,
+    "selfMs": 12.265,
+    "original": {
+      "source": "../../src/hestia-prototype/presentation/shadowRevision.ts",
+      "line": 15,
+      "column": 8,
+      "name": null
+    }
+  },
+  {
+    "asset": "backend-0g590SJq.js",
+    "name": "J",
+    "line": 0,
+    "column": 54226,
+    "selfMs": 12.166,
+    "original": {
+      "source": "../../src/presentation/ids.ts",
+      "line": 49,
+      "column": 13,
+      "name": null
+    }
+  },
+  {
+    "asset": "backend-0g590SJq.js",
+    "name": "Mi",
+    "line": 0,
+    "column": 73666,
+    "selfMs": 12.116,
+    "original": {
+      "source": "../../src/render/three/backend/threeCameraProjection.ts",
+      "line": 6,
+      "column": 13,
+      "name": null
+    }
+  }
+]

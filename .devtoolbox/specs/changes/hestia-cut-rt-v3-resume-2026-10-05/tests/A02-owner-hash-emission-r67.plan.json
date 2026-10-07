@@ -1,0 +1,10 @@
+{
+  "mode": "tests",
+  "classification": "Fresh wholeOriginal65 after sharedcanonical generator overhead change; unchanged180 and testsource",
+  "runId": "A02-owner-hash-emission-r67",
+  "files": [
+    "tests/unit/hvp-body-plan-owner.test.ts"
+  ],
+  "binding": "A03-hash-emission-r67-binding.json",
+  "nativeCapSeconds": 180
+}

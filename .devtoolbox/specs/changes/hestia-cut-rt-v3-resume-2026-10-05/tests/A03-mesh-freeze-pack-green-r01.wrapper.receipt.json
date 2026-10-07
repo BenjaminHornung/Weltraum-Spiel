@@ -1,0 +1,8 @@
+{
+  "runId": "A03-mesh-freeze-pack-green-r01",
+  "startedUtc": "2026-10-05T16:49:12.0284813+00:00",
+  "endedUtc": "2026-10-05T16:49:29.1863828+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 17.1535573,
+  "planFile": "A03-mesh-freeze-pack-green-r01.plan.json"
+}

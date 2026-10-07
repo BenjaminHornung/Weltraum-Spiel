@@ -1,0 +1,100 @@
+{
+  "kind": "SOURCE_EXACT_NODE_ALTERNATING_DIAGNOSTIC_NOT_BROWSER_OR_FORMAL_GATE",
+  "node": "v22.23.2",
+  "originalSHA": "5e887ecc1258b31488d8f14297d6e9b94a6519e1835afdf46a9d98a19f5ce687",
+  "candidateSHA": "7da7c19b129e97c6d48f6e789c8ae58ca3bb713a268a67170c529dff5d391895",
+  "bytes": 8388608,
+  "hash": "82a97ace",
+  "pairs": [
+    {
+      "order": "original-candidate",
+      "originalMs": 8.1986,
+      "owned": {
+        "totalMs": 15.014,
+        "units": 2050,
+        "unitP95Ms": 0.0071,
+        "unitMaxMs": 0.2139
+      }
+    },
+    {
+      "order": "candidate-original",
+      "originalMs": 7.3397,
+      "owned": {
+        "totalMs": 16.8381,
+        "units": 2050,
+        "unitP95Ms": 0.0184,
+        "unitMaxMs": 0.1652
+      }
+    },
+    {
+      "order": "original-candidate",
+      "originalMs": 7.734,
+      "owned": {
+        "totalMs": 15.3573,
+        "units": 2050,
+        "unitP95Ms": 0.0077,
+        "unitMaxMs": 0.2336
+      }
+    },
+    {
+      "order": "candidate-original",
+      "originalMs": 8.6712,
+      "owned": {
+        "totalMs": 14.4953,
+        "units": 2050,
+        "unitP95Ms": 0.007,
+        "unitMaxMs": 0.0598
+      }
+    },
+    {
+      "order": "original-candidate",
+      "originalMs": 7.0257,
+      "owned": {
+        "totalMs": 14.8241,
+        "units": 2050,
+        "unitP95Ms": 0.0071,
+        "unitMaxMs": 0.2006
+      }
+    },
+    {
+      "order": "candidate-original",
+      "originalMs": 7.0697,
+      "owned": {
+        "totalMs": 14.7121,
+        "units": 2050,
+        "unitP95Ms": 0.007,
+        "unitMaxMs": 0.0623
+      }
+    },
+    {
+      "order": "original-candidate",
+      "originalMs": 7.1888,
+      "owned": {
+        "totalMs": 14.3794,
+        "units": 2050,
+        "unitP95Ms": 0.007,
+        "unitMaxMs": 0.0498
+      }
+    },
+    {
+      "order": "candidate-original",
+      "originalMs": 7.2877,
+      "owned": {
+        "totalMs": 17.1115,
+        "units": 2050,
+        "unitP95Ms": 0.0184,
+        "unitMaxMs": 0.1183
+      }
+    },
+    {
+      "order": "original-candidate",
+      "originalMs": 7.0892,
+      "owned": {
+        "totalMs": 17.2855,
+        "units": 2050,
+        "unitP95Ms": 0.0195,
+        "unitMaxMs": 0.048
+      }
+    }
+  ]
+}

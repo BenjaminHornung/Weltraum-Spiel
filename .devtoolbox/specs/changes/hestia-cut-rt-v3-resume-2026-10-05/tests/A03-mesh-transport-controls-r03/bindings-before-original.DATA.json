@@ -1,0 +1,2032 @@
+[
+  {
+    "appRelative": "package-lock.json",
+    "bytes": 59899,
+    "sha256": "df777f04bd29b891cccefcffb3b54cdd9f4dec8ae59d3de258ecdb85696c3890"
+  },
+  {
+    "appRelative": "package.json",
+    "bytes": 2503,
+    "sha256": "0ba7f05ec41d12b1be545c54fc1583df4b25f398a8917b0facdedc295a86e602"
+  },
+  {
+    "appRelative": "src/browser-storage/canonical.ts",
+    "bytes": 2814,
+    "sha256": "c056e49f697b112f1301728862e42e5343e45c88f865c43d6ccad1a158eab7f7"
+  },
+  {
+    "appRelative": "src/browser-storage/checksum.ts",
+    "bytes": 1833,
+    "sha256": "2c0207a5fb8b670d298408106d39c8e93ec23b985c470f708d9bc06f3953d438"
+  },
+  {
+    "appRelative": "src/browser-storage/codec.ts",
+    "bytes": 16299,
+    "sha256": "679582c4f268fb01e163ee4fbf8fdefed21054ee2bbe65878d9773159ea53b62"
+  },
+  {
+    "appRelative": "src/browser-storage/errors.ts",
+    "bytes": 951,
+    "sha256": "a2d300b03aa8c9f434a71d0d49deb287be26cf0150c7b3fd82e8930d37b6e0b3"
+  },
+  {
+    "appRelative": "src/browser-storage/exportImport.ts",
+    "bytes": 6273,
+    "sha256": "c1b48641c3c42ed7eca8a208a94d15d46e80cd2e0dbdb4c2752f3ed12c64c0a2"
+  },
+  {
+    "appRelative": "src/browser-storage/ids.ts",
+    "bytes": 1659,
+    "sha256": "77e120df477bbe60ddc4890cbf27bfd76869a33f5b6b3c5bffd668f516d1db95"
+  },
+  {
+    "appRelative": "src/browser-storage/index.ts",
+    "bytes": 273,
+    "sha256": "24b84265f91b08d24cdd82ca91f882bc5cf360f22610bed607d7083c9710a30c"
+  },
+  {
+    "appRelative": "src/browser-storage/indexedDbSaveRepository.ts",
+    "bytes": 30057,
+    "sha256": "f89469e23b132b099f91d263ae283d2f5f19b34007840ecaf812cac27f03cfc9"
+  },
+  {
+    "appRelative": "src/browser-storage/memorySaveRepository.ts",
+    "bytes": 8273,
+    "sha256": "3d4b7f106152a9a998d4902c6fd1514802f16b8c4f2737ca064fca1635349657"
+  },
+  {
+    "appRelative": "src/browser-storage/saveRepository.ts",
+    "bytes": 775,
+    "sha256": "53e685fb6f0d917ee1e1db8a8a8fcac3487bb3139631bba9be7bf4f18c56802e"
+  },
+  {
+    "appRelative": "src/browser-storage/saveWriteRequest.ts",
+    "bytes": 2602,
+    "sha256": "6cb4c6daabfc407cb84eccc72f67d0674254893d1d7b7bc30a93312228b0cc6d"
+  },
+  {
+    "appRelative": "src/browser-storage/types.ts",
+    "bytes": 2736,
+    "sha256": "2026a5fdf7060314cab9290c7bc5592029d02bd2fefd58ab4f160357973cf6ce"
+  },
+  {
+    "appRelative": "src/celestial/canonical.ts",
+    "bytes": 3824,
+    "sha256": "20b5d53ffab98ab87f8ab19db730d381db7ceba4028a8c26b50b61e89bd9bf4a"
+  },
+  {
+    "appRelative": "src/celestial/catalog.ts",
+    "bytes": 6861,
+    "sha256": "d06073a382dbfb57123566c95a0bd32bbcb009491cb11b29464e72fd506b184e"
+  },
+  {
+    "appRelative": "src/celestial/ephemeris.ts",
+    "bytes": 6236,
+    "sha256": "4d5e971d8f027f21dbbaaf78ca234ab7db3db325a39c226c45040f3779567143"
+  },
+  {
+    "appRelative": "src/celestial/errors.ts",
+    "bytes": 1033,
+    "sha256": "6a3af7a96d0a11a6271a9d4a088f622abb34fc69f79ea981153b2e8486ae5524"
+  },
+  {
+    "appRelative": "src/celestial/gravity.ts",
+    "bytes": 5670,
+    "sha256": "ed15d92cfda0de9929c376c8164276544798b7249acb56625ec7ec8d4280b632"
+  },
+  {
+    "appRelative": "src/celestial/ids.ts",
+    "bytes": 1210,
+    "sha256": "67d674f7ca89569a175185ae3c38ce2a1092e06d9e534e7feaa93740a327fbe9"
+  },
+  {
+    "appRelative": "src/celestial/index.ts",
+    "bytes": 275,
+    "sha256": "bded43c30782f7cebf814db7e7cca3c3ccde22fe344d3d0739eed079f13427d5"
+  },
+  {
+    "appRelative": "src/celestial/kepler.ts",
+    "bytes": 7687,
+    "sha256": "4f9176810c9bbf22b12b781b45684b09b2afdf66cdfa65919c6f5c8918f0d5dd"
+  },
+  {
+    "appRelative": "src/celestial/starterSystem.ts",
+    "bytes": 9262,
+    "sha256": "d6a1bff618e4b47ebedbff9c69aa4f283caa14e604fac182ddb8b16c99e9da43"
+  },
+  {
+    "appRelative": "src/celestial/types.ts",
+    "bytes": 8603,
+    "sha256": "a32286f52c579016c3b73e1e00b3dbc9a08a588e7c1f7ed3d6fe36a2b03a82a0"
+  },
+  {
+    "appRelative": "src/celestial/validation.ts",
+    "bytes": 12761,
+    "sha256": "19e52d974efd95c892d02cf3f24fd18711e263369af17bd26a19150a077d0bf8"
+  },
+  {
+    "appRelative": "src/combat/contracts.ts",
+    "bytes": 28976,
+    "sha256": "3345ae6f6918ac4558fa71d33e292e93812de113389010697f92e89e36fec812"
+  },
+  {
+    "appRelative": "src/combat/damage.ts",
+    "bytes": 7173,
+    "sha256": "1c2a834c2dd9e47b4f4545a0cc94c8d70d93d8b4f217542a2720baf8d5a5e0c1"
+  },
+  {
+    "appRelative": "src/combat/events.ts",
+    "bytes": 12447,
+    "sha256": "fe01029b618e905f79cc6ac5348922bc88b45808baa383c3b052cfb048cae34a"
+  },
+  {
+    "appRelative": "src/combat/fireControl.ts",
+    "bytes": 9167,
+    "sha256": "ee28a555cfde812aeaf7e221f07bcc4dc3b9e3cc71b88edd9fc27c8137362c86"
+  },
+  {
+    "appRelative": "src/combat/fixtures.ts",
+    "bytes": 3705,
+    "sha256": "f4edfba11df1195b8b325aea6a13332e08bc79e4c401605a223ed23440398fb0"
+  },
+  {
+    "appRelative": "src/combat/hitResolution.ts",
+    "bytes": 13259,
+    "sha256": "4e4610b6b6fd9e1b64f0b645c37c7c49371f5e18b54889f3d15b5be412e45155"
+  },
+  {
+    "appRelative": "src/combat/index.ts",
+    "bytes": 173,
+    "sha256": "31d275d400fb814ebf65021e80734c2dafab99897259675acacddfd9e85098a4"
+  },
+  {
+    "appRelative": "src/core/fnv1a64.ts",
+    "bytes": 1550,
+    "sha256": "27b1c99ace27f7e0fc27706a4f59bf8dfcaa7ce148872356b97da349a82aa9b4"
+  },
+  {
+    "appRelative": "src/core/hash.ts",
+    "bytes": 3099,
+    "sha256": "7514fc507d6c83404462d967ff4736790abf6425842b676cefedc4928a2febee"
+  },
+  {
+    "appRelative": "src/core/index.ts",
+    "bytes": 385,
+    "sha256": "c7d8f9b37295d7ad81ee475aaaf996d657387e98da6a44fa47410798b64a5a24"
+  },
+  {
+    "appRelative": "src/core/types.ts",
+    "bytes": 23469,
+    "sha256": "8fc3f0d509255c336c3db74813bd7fd429c7420aee0ee23f20fa643b541f8560"
+  },
+  {
+    "appRelative": "src/core/vector.ts",
+    "bytes": 1587,
+    "sha256": "bcd1ce4c43a5a79f82f4410c16e528a3b4a2794dd6526a5f7c9393c10d068ad9"
+  },
+  {
+    "appRelative": "src/diagnostics/performance/canonical.ts",
+    "bytes": 1683,
+    "sha256": "d8a044549ec4d1025707c884e7e6616fcb17d8fea822152b52d32827a9886e64"
+  },
+  {
+    "appRelative": "src/diagnostics/performance/counters.ts",
+    "bytes": 1699,
+    "sha256": "719c33d12f6cfc6f0504bc085d1c5bea254573e0d1eebd28b6b63958802544b5"
+  },
+  {
+    "appRelative": "src/diagnostics/performance/index.ts",
+    "bytes": 176,
+    "sha256": "7c54b6dd430609eab42159a6bc0c83b8c5b694c0b646b97204064148087e056e"
+  },
+  {
+    "appRelative": "src/diagnostics/performance/snapshots.ts",
+    "bytes": 8233,
+    "sha256": "05936111ea47db8c37115ecc7eca612f2a988a36ff1d6468d8615dfc015c0bf4"
+  },
+  {
+    "appRelative": "src/diagnostics/performance/streamingProjection.ts",
+    "bytes": 3358,
+    "sha256": "fbe2e03a66324d9f04acf7e933086e5da808d23fc4a7ec5a2c81851aaa750122"
+  },
+  {
+    "appRelative": "src/diagnostics/performance/timing.ts",
+    "bytes": 1234,
+    "sha256": "9ce05e7bcf72dc85446d38747473d364fdeaa73d023d4331dd6f2fd34366bbd4"
+  },
+  {
+    "appRelative": "src/diagnostics/performance/types.ts",
+    "bytes": 2939,
+    "sha256": "7e30176a00a01de7dfa1da18624a002b46669fc2adbbb727f1a57f66a5d59751"
+  },
+  {
+    "appRelative": "src/flight/executor.ts",
+    "bytes": 68305,
+    "sha256": "c12162bbe82bb2428393bb62a59575f2eeb566466ba4e6b01501f8b2590f638e"
+  },
+  {
+    "appRelative": "src/flight/flightController.ts",
+    "bytes": 21477,
+    "sha256": "a7750db322dd7223e524bc0d3c148bde458f613f13b41e95435071c6daff3a5f"
+  },
+  {
+    "appRelative": "src/flight/propulsionCapability.ts",
+    "bytes": 16183,
+    "sha256": "4f7b29a4b5445556ce4de2e6df45f3ac7634fea8c63c30c4dc8e442094cd4c5d"
+  },
+  {
+    "appRelative": "src/flight/state.ts",
+    "bytes": 12102,
+    "sha256": "77e0df10378dd2637c8c6b459a59807dca9fee17fa65145b9c0ac338bc8732fe"
+  },
+  {
+    "appRelative": "src/flight/transitPolicies.ts",
+    "bytes": 7548,
+    "sha256": "3ddc82ea840c268ec4861d58eb4b96e67d63c6c3bf6fe2f69ebc3e811ea3b086"
+  },
+  {
+    "appRelative": "src/hestia-prototype/gameplay/salvageLoop.ts",
+    "bytes": 13938,
+    "sha256": "97f9a1cab8c6c6c8476433ba685f98a303cd9a6f7faf3670ca27aa9e1fbcfc95"
+  },
+  {
+    "appRelative": "src/hestia-prototype/persistence/bodyCheckpoint.ts",
+    "bytes": 4326,
+    "sha256": "5551c4d4e3e509541248db69cb8ef23987eeb52620bc2009e83e728f1f010edf"
+  },
+  {
+    "appRelative": "src/hestia-prototype/persistence/gameCheckpoint.ts",
+    "bytes": 12672,
+    "sha256": "874cf349d65fbbe6268644e981014fcc69bb4197c751c160afaaea3861da85da"
+  },
+  {
+    "appRelative": "src/hestia-prototype/persistence/gridCheckpoint.ts",
+    "bytes": 3936,
+    "sha256": "9d301a76c351b263d40280b1cf6b3897376ac00b4a785fd8537817e9890d861c"
+  },
+  {
+    "appRelative": "src/hestia-prototype/persistence/plantCheckpoint.ts",
+    "bytes": 6683,
+    "sha256": "78df5a1d7329b0fe7ab2c3709ee4e89da1ce04695486891b00410c41b424806e"
+  },
+  {
+    "appRelative": "src/hestia-prototype/persistence/receiptCheckpoint.ts",
+    "bytes": 3532,
+    "sha256": "7f98d5b1c0bc8a339ddb9247dd4927ed6e6b750bd13f6cd2cedf67aeb25ffc43"
+  },
+  {
+    "appRelative": "src/hestia-prototype/persistence/saveStore.ts",
+    "bytes": 3273,
+    "sha256": "3bc2e7c043b21f491b53082929652f7da3940dfe64003b92182c9435806094c7"
+  },
+  {
+    "appRelative": "src/hestia-prototype/persistence/sceneReplacement.ts",
+    "bytes": 2110,
+    "sha256": "91ffd8be5c64dd090f9761f3a656681c170ce7b4d9ac7a918e05d00f0759518b"
+  },
+  {
+    "appRelative": "src/hestia-prototype/persistence/worldCheckpoint.ts",
+    "bytes": 11632,
+    "sha256": "7c066fa278c124d2080acfff6a5316ec6434c08c446f44946192bce9f58f0664"
+  },
+  {
+    "appRelative": "src/hestia-prototype/physics/bodyCut.ts",
+    "bytes": 7329,
+    "sha256": "f257280e7687ef7372c18bbb91e775840f829ffaca0f41007150f806fb9dedea"
+  },
+  {
+    "appRelative": "src/hestia-prototype/physics/bodyCutPlan.ts",
+    "bytes": 4511,
+    "sha256": "7179e3109d166f832182cfe4c15c06565909cd219bcafc5a8424a1964df9ec2b"
+  },
+  {
+    "appRelative": "src/hestia-prototype/physics/bodyCutSession.ts",
+    "bytes": 22683,
+    "sha256": "5ef16b1d3c9cf490332bcf63978c86b36dba0191ddc804ac76f2e0d423deebc3"
+  },
+  {
+    "appRelative": "src/hestia-prototype/physics/bodyResidency.ts",
+    "bytes": 5609,
+    "sha256": "4574d59829de7318027b575c5db89f7d664804c91456b7e8c0c81645a2d26748"
+  },
+  {
+    "appRelative": "src/hestia-prototype/physics/branchSession.ts",
+    "bytes": 10801,
+    "sha256": "bc63da558737f7f769b18f656d3d95e0eb2686f083ec1140f8918df3a52a3f11"
+  },
+  {
+    "appRelative": "src/hestia-prototype/physics/client.ts",
+    "bytes": 32586,
+    "sha256": "48f62faae12586466e520d1ebbd66954b6982d5a97c6219811efe64d14c4a00c"
+  },
+  {
+    "appRelative": "src/hestia-prototype/physics/neighborRegion.ts",
+    "bytes": 8282,
+    "sha256": "c7bc8adc578f6c60e9895f7a037d9420bdb849073d14432e45e7fb8acc8451cf"
+  },
+  {
+    "appRelative": "src/hestia-prototype/physics/physicsProtocol.ts",
+    "bytes": 5940,
+    "sha256": "2a25af2cae620372cfeb099bfe17ba1dd1deded1cc21ec35813261ba71b27ca2"
+  },
+  {
+    "appRelative": "src/hestia-prototype/physics/physicsWorker.ts",
+    "bytes": 24406,
+    "sha256": "6a87f81f966ac415f2e5b383941d8edb9d7ddee1194e78f5cca4e50270ec3a37"
+  },
+  {
+    "appRelative": "src/hestia-prototype/physics/principalAxes.ts",
+    "bytes": 3603,
+    "sha256": "1bb86622963aa903302f00de4c8bfc17b63a315698c18535d7f76c98c0dd4710"
+  },
+  {
+    "appRelative": "src/hestia-prototype/physics/profile.ts",
+    "bytes": 3301,
+    "sha256": "128820a0ef2554ea72fd6bd1d4d417a507d83c90f40e8e28f0a1cf8088f3fa1c"
+  },
+  {
+    "appRelative": "src/hestia-prototype/physics/rapierPort.ts",
+    "bytes": 3520,
+    "sha256": "01249a406183d783e0d1b9e97a842a8c5444af72e17121ecd17f5d64780f049e"
+  },
+  {
+    "appRelative": "src/hestia-prototype/physics/restoreBody.ts",
+    "bytes": 1717,
+    "sha256": "952c12dd32e325e0de3a7855012efae6a62db3a4c100e04079462ee5dd20e44d"
+  },
+  {
+    "appRelative": "src/hestia-prototype/physics/rigidBody.ts",
+    "bytes": 3018,
+    "sha256": "e0ee72e6f96a0175d0a88241cf2bf82db9c3c9a4bbc8abb0fc56acb810408c7e"
+  },
+  {
+    "appRelative": "src/hestia-prototype/physics/rigidRecipe.ts",
+    "bytes": 13568,
+    "sha256": "6f634a5056935dae91180dd548cb6e7e3103b315dfcd10b1b00ad5bb4a07d17a"
+  },
+  {
+    "appRelative": "src/hestia-prototype/physics/session.ts",
+    "bytes": 43785,
+    "sha256": "05394ed14146721edee174ca3803dc3eeb91fd54bd909214f93733cc3f1e2e27"
+  },
+  {
+    "appRelative": "src/hestia-prototype/physics/structuralBreak.ts",
+    "bytes": 6091,
+    "sha256": "dbe340e839929ccd84b5081a78b8e5c85b4fcaadfcfe5aae08fcd248ed689e34"
+  },
+  {
+    "appRelative": "src/hestia-prototype/physics/structuralPlan.ts",
+    "bytes": 16707,
+    "sha256": "ac01aece0ec943b1b67a19f6cc594441d0cdef5ce73e35512b565009e90f070b"
+  },
+  {
+    "appRelative": "src/hestia-prototype/physics/terrainColliders.ts",
+    "bytes": 4064,
+    "sha256": "6aca34326bb8e93002b6d8863bbb13b14679911d812660f774a79c6725252e58"
+  },
+  {
+    "appRelative": "src/hestia-prototype/physics/terrainFragment.ts",
+    "bytes": 1951,
+    "sha256": "04e64c654465c9dbf8ca1b2afc4f4dd93f5335924ed8fee184d2c0db26b5a622"
+  },
+  {
+    "appRelative": "src/hestia-prototype/physics/tick.ts",
+    "bytes": 1929,
+    "sha256": "5dfb07ec90136f55ee771d941d97837fc53caa4c17bb7c7047263cf5d55e83b2"
+  },
+  {
+    "appRelative": "src/hestia-prototype/physics/worldReplacement.ts",
+    "bytes": 3854,
+    "sha256": "fd26e2f9b840df90fb4e6b9b64005c36002879797c384039892a402ca786df15"
+  },
+  {
+    "appRelative": "src/hestia-prototype/player/input.ts",
+    "bytes": 10833,
+    "sha256": "279ca6184a84a1376eb0a0a3a610a336457a7e9374c44bd3397ca49ece651889"
+  },
+  {
+    "appRelative": "src/hestia-prototype/player/locomotion.ts",
+    "bytes": 7471,
+    "sha256": "e93ac325dec2c5c6661fd6a2a22e57807aca2b99dd6fab387ead84fb7496bd59"
+  },
+  {
+    "appRelative": "src/hestia-prototype/player/presentation.ts",
+    "bytes": 3619,
+    "sha256": "409d73e0b623e948249d0b34190ab207a661cebc762014233e2e2fc233f24952"
+  },
+  {
+    "appRelative": "src/hestia-prototype/presentation/bodyMeshAdmission.ts",
+    "bytes": 5734,
+    "sha256": "cdf98185c9963302ffa066b209f905d16eff8ef48b96251849d5cf2dbab12734"
+  },
+  {
+    "appRelative": "src/hestia-prototype/presentation/look.ts",
+    "bytes": 5180,
+    "sha256": "1c058c73d4313b6da757b341f6dad66173d73332d169d7dbe04710b96c0219ea"
+  },
+  {
+    "appRelative": "src/hestia-prototype/presentation/renderStageRecovery.ts",
+    "bytes": 337,
+    "sha256": "28009570f52830179595ce6c2b92a709c5b9c7ae339c61214d744dcedd5466e7"
+  },
+  {
+    "appRelative": "src/hestia-prototype/presentation/salvageMarker.ts",
+    "bytes": 3225,
+    "sha256": "f1a229af9cb680d30841244511dcb0a7a280f17bf95b0d608c0b0a74d725d48e"
+  },
+  {
+    "appRelative": "src/hestia-prototype/presentation/shadowRevision.ts",
+    "bytes": 916,
+    "sha256": "3dfa4691249b74360223602283828301b624f001111541bb41ef1934ee844316"
+  },
+  {
+    "appRelative": "src/hestia-prototype/presentation/structuralPart.ts",
+    "bytes": 2996,
+    "sha256": "ef4c9320c10d8415811306e777f9ee45cc7f94309318cd0b1279ab9b8242b159"
+  },
+  {
+    "appRelative": "src/hestia-prototype/presentation/synchronousBatch.ts",
+    "bytes": 1380,
+    "sha256": "5656b59685478c52ee69be7c3c2285415368d52d6345ea45267fc96f51dc6052"
+  },
+  {
+    "appRelative": "src/hestia-prototype/presentation/terrainFragment.ts",
+    "bytes": 2190,
+    "sha256": "7f1eb33c99db4e39c1054222484323a480f0bf3d4773de2e087eed98680fba21"
+  },
+  {
+    "appRelative": "src/hestia-prototype/presentation/vegetation.ts",
+    "bytes": 21351,
+    "sha256": "64806d7f77d6e562c8f1a36e7fb313c6353acca04d05331063af3773a519e1ae"
+  },
+  {
+    "appRelative": "src/hestia-prototype/presentation/visualEffects.ts",
+    "bytes": 15881,
+    "sha256": "b02f1d1a114fd143201fd7f516c6bec52dd574d3e511fdc09aa5ffd7931ba31f"
+  },
+  {
+    "appRelative": "src/hestia-prototype/runtime/cutTrace.ts",
+    "bytes": 26731,
+    "sha256": "ae2ca3a1eeabe3cb2465b2dcd02fb95ffefe4847e9865848f94084e731afc911"
+  },
+  {
+    "appRelative": "src/hestia-prototype/runtime/dormancyController.ts",
+    "bytes": 2570,
+    "sha256": "1bb4d7e2aae0b4a81fe2ce9d2d986c3c28fad705f34259007405a7270eadb936"
+  },
+  {
+    "appRelative": "src/hestia-prototype/runtime/listeners.ts",
+    "bytes": 1238,
+    "sha256": "c4c5629dc125169435a9b5b7d1d6e5790b768f9a6ce4d19d64fc13456c654234"
+  },
+  {
+    "appRelative": "src/hestia-prototype/runtime/measurements.ts",
+    "bytes": 1449,
+    "sha256": "fcb038f12bd516c90aa1b491633eb1be991203a34033020dc8358b09beba6d62"
+  },
+  {
+    "appRelative": "src/hestia-prototype/runtime/neighborController.ts",
+    "bytes": 15987,
+    "sha256": "42b04eadb7f7c05858f53290da6392097be844af98636f403efcc69ecf612402"
+  },
+  {
+    "appRelative": "src/hestia-prototype/runtime/neighborProducts.ts",
+    "bytes": 4803,
+    "sha256": "1082427a14b1e8c0baecaa563c182f010d818c6c65927ca1da4386a8dedd811b"
+  },
+  {
+    "appRelative": "src/hestia-prototype/runtime/projectionPacket.ts",
+    "bytes": 5060,
+    "sha256": "577e92ca5ced96f9add2c9f6a7e1b2eebd82ba10c480f67889845e5d721008de"
+  },
+  {
+    "appRelative": "src/hestia-prototype/runtime/regionSource.ts",
+    "bytes": 4500,
+    "sha256": "c77bb40362c522582df4db7f1b997ee66d96b75a8fc4b1000c975d8eaa3f02bc"
+  },
+  {
+    "appRelative": "src/hestia-prototype/runtime/residency.ts",
+    "bytes": 5174,
+    "sha256": "1189618a259abeb57b90aa979aa0d0694521c01d1fb1dfecc8aa8e63937f8f8e"
+  },
+  {
+    "appRelative": "src/hestia-prototype/terrain/bodyCutConsumer.ts",
+    "bytes": 5997,
+    "sha256": "ba82957e7377adffbda46fa8edb009efc2f4e3523041ae5d87a871bb30e4b4a0"
+  },
+  {
+    "appRelative": "src/hestia-prototype/terrain/cutPlan.ts",
+    "bytes": 21935,
+    "sha256": "21c20bc764a034bad485a212234b8b3172e52b37dd41332c53ecb08e8d712296"
+  },
+  {
+    "appRelative": "src/hestia-prototype/terrain/picking.ts",
+    "bytes": 2504,
+    "sha256": "5d147db11f5ad53ceab20b7865f972570389836478378062afd6d1c0f5f1ae90"
+  },
+  {
+    "appRelative": "src/hestia-prototype/terrain/plasmaTool.ts",
+    "bytes": 6587,
+    "sha256": "340ec6678da1ede6742b09a9ddc7e1e0bfe4ed06174d3150b4592494a3ef6b99"
+  },
+  {
+    "appRelative": "src/hestia-prototype/terrain/structuralConsumer.ts",
+    "bytes": 4299,
+    "sha256": "ba292e2f78960375ece5a873ce3c06b04a93036326c5138d50dcacdbae6ae87f"
+  },
+  {
+    "appRelative": "src/hestia-prototype/terrain/structuralIngest.ts",
+    "bytes": 21529,
+    "sha256": "db47a632aedcfe074e5d460b333402c5a977c50cf7808884baa4a9e54bb1c885"
+  },
+  {
+    "appRelative": "src/hestia-prototype/terrain/supportPlan.ts",
+    "bytes": 10812,
+    "sha256": "6713f4961f7253980bbec96ba9c42e442964ac8249eb3ceb41682aee19cc1055"
+  },
+  {
+    "appRelative": "src/hestia-prototype/terrain/terrainConsumer.ts",
+    "bytes": 11606,
+    "sha256": "9a59bbb24a5cbe24107da34a50e6bab2209872c93aa105e3b6cad9764c9bef5d"
+  },
+  {
+    "appRelative": "src/hestia-prototype/terrain/terrainProducts.ts",
+    "bytes": 19978,
+    "sha256": "3769fd324ae5fb770f6c21f60963428e45085da8f26f1709d4abaf6e64f2164a"
+  },
+  {
+    "appRelative": "src/hestia-prototype/terrain/terrainTransfer.ts",
+    "bytes": 1621,
+    "sha256": "cbf52a6b8a21ec4cc3ec7c847e7f32b41fdb233a712fb6c3d512a57b9b64633a"
+  },
+  {
+    "appRelative": "src/hvp/hvpBootstrap.ts",
+    "bytes": 174345,
+    "sha256": "9ebd13676667eee634fbac9e23ccaab814b3281d9e82581fd6cb7548ae93cdc7"
+  },
+  {
+    "appRelative": "src/hvp/hvpCamera.ts",
+    "bytes": 12227,
+    "sha256": "52a1a4a0694f3acfbd2ee615bf1fb54cb73c9388d8889feef44a9e531bb3be5a"
+  },
+  {
+    "appRelative": "src/hvp/hvpCoastMesher.ts",
+    "bytes": 54436,
+    "sha256": "809f2974ffd22e578f277bedb9af81502109a96f4d38fc82eaec89878a22439b"
+  },
+  {
+    "appRelative": "src/hvp/hvpCoastSource.ts",
+    "bytes": 37356,
+    "sha256": "c13e3107a542b402faf342befb479e6bf74d94730b16c4caf73d1f911fad8be4"
+  },
+  {
+    "appRelative": "src/hvp/hvpHud.ts",
+    "bytes": 22610,
+    "sha256": "2e89c73b3749ec7d539ff3656cc233cc22eb774947f4bc19ab67d0e85ef3f699"
+  },
+  {
+    "appRelative": "src/hvp/hvpQuery.ts",
+    "bytes": 364,
+    "sha256": "30f9acfa22d4cfca6e616fa3de4393dfe3033b624c88e191c75684c6877f995a"
+  },
+  {
+    "appRelative": "src/hvp/hvpTerrain.ts",
+    "bytes": 17581,
+    "sha256": "93019417d3f022ead0ee3f9bf42eefce6e249fe135fa61916424d78b19ba1a11"
+  },
+  {
+    "appRelative": "src/hvp/index.ts",
+    "bytes": 700,
+    "sha256": "fdd5866221d3c350b6936943965ccee1f1ad7a6408165edb19634dc583cbddc3"
+  },
+  {
+    "appRelative": "src/main.ts",
+    "bytes": 3276,
+    "sha256": "849ae778181b83ed650983a2a2f7aca03c2d6a584b099f0c84774e0007e01704"
+  },
+  {
+    "appRelative": "src/missions/core.ts",
+    "bytes": 41645,
+    "sha256": "5fcc6139c2385ec2c4698bbed7d9c6386718d469bb88d28ea86d89730cbb9c44"
+  },
+  {
+    "appRelative": "src/missions/fixtures.ts",
+    "bytes": 7377,
+    "sha256": "9699f57a09286cf7fc17a78a2a6da054e617038fdf8fd2d626b64932e8244408"
+  },
+  {
+    "appRelative": "src/missions/index.ts",
+    "bytes": 107,
+    "sha256": "6ce8c3045598a0a69b55114cfb714ff2f13e876b11bc5e884a7c8c7387d181d2"
+  },
+  {
+    "appRelative": "src/missions/types.ts",
+    "bytes": 9826,
+    "sha256": "041a4296980f1a1031235dac288dd0e91a3be4ef8046502fa4f192fcebe2b7fc"
+  },
+  {
+    "appRelative": "src/missions/validation.ts",
+    "bytes": 19090,
+    "sha256": "8161855ecc5c7efcf4da46aab503fe23376251d2b041614dd2d0e52a2b76d879"
+  },
+  {
+    "appRelative": "src/navigation/map/activeShip.ts",
+    "bytes": 323,
+    "sha256": "667481909f0b272129660293a89c9169736f601e24d5bd5bbc7c89bebe9d6606"
+  },
+  {
+    "appRelative": "src/navigation/map/contracts.ts",
+    "bytes": 15874,
+    "sha256": "e2733fbdbd391c501e38db4c12a84d4d25cf7bbe7628bc7d40f30194dbf75264"
+  },
+  {
+    "appRelative": "src/navigation/map/index.ts",
+    "bytes": 89,
+    "sha256": "7d47389ca34d8dbbee5f9989c320e82c3f181c2916b726704855b619ad202c1d"
+  },
+  {
+    "appRelative": "src/navigation/map/projection.ts",
+    "bytes": 3929,
+    "sha256": "242583a554a12626949bd298d0286436883f281f582a8f11f7d0a9ebd0721043"
+  },
+  {
+    "appRelative": "src/navigation/motionProfile.ts",
+    "bytes": 20302,
+    "sha256": "00641a9006d82a9a3c2d38397b6c963345d54174f695af32f05705fa0be07f4b"
+  },
+  {
+    "appRelative": "src/navigation/multiObstaclePlanner.ts",
+    "bytes": 9314,
+    "sha256": "3880f69a26c5ae6e3836792f587dab13acd0bf6b4aec5fe86fdbadcb3aca0139"
+  },
+  {
+    "appRelative": "src/navigation/planners.ts",
+    "bytes": 5304,
+    "sha256": "c7bdfb6c0d9133f5fa13e6e1eef01738d9c8044816f544b949b18b5b8d43a214"
+  },
+  {
+    "appRelative": "src/navigation/previewLock.ts",
+    "bytes": 11751,
+    "sha256": "7817184bf5d284efd621c44e48e386a1274cf958c08663c5d89210ee7c40ef7a"
+  },
+  {
+    "appRelative": "src/navigation/validation.ts",
+    "bytes": 18185,
+    "sha256": "d483e46159648d0b4dc6fec9e69b139bf8e8d9c72bd406bda611ae5d13eb9aab"
+  },
+  {
+    "appRelative": "src/persistence/canonical.ts",
+    "bytes": 5830,
+    "sha256": "e21ef6b4ecb2e60663b9d5e1e42327d1dce0e147b3eeb1edf99c2b1d70834ead"
+  },
+  {
+    "appRelative": "src/persistence/events.ts",
+    "bytes": 3064,
+    "sha256": "6a7f7bd2273e2304cf90a966ec8cc662db330bf5db68af7ee9d7d2857b350a33"
+  },
+  {
+    "appRelative": "src/persistence/fixtures.ts",
+    "bytes": 6255,
+    "sha256": "f4958f37c6a00602b6a980b18fdf0d052cecbed1b5ce354026b979d2c45429de"
+  },
+  {
+    "appRelative": "src/persistence/ids.ts",
+    "bytes": 9345,
+    "sha256": "db9acf8357ee229c9fc1afc7d38365892fab6e458bd9ed6a8df9b677ecc638e4"
+  },
+  {
+    "appRelative": "src/persistence/index.ts",
+    "bytes": 279,
+    "sha256": "0e952aeb9a5d14b5a9a08577aff6b9f6f762ccb95ef3ea71cfd969bb7b476223"
+  },
+  {
+    "appRelative": "src/persistence/migrations.ts",
+    "bytes": 9207,
+    "sha256": "a2e12e86d61116ebcb7f63ea082262ecb56e2ecc3cdd7fca6003900ce2c1d47a"
+  },
+  {
+    "appRelative": "src/persistence/saveSchema.ts",
+    "bytes": 32871,
+    "sha256": "821c3f600a7ace426a5e26a47143b7c9eac1c594990df7d12fc33ec2ee6a79f3"
+  },
+  {
+    "appRelative": "src/persistence/simulationMode.ts",
+    "bytes": 2398,
+    "sha256": "cee8dd7c34023cd532dfc209845291762dd12685030159a3baba196dc3e8c6df"
+  },
+  {
+    "appRelative": "src/persistence/time.ts",
+    "bytes": 5468,
+    "sha256": "fecf2c7512b426586a88b6bfc01c8d6fe8b0a8e020227cd75c9e41f03b6a49df"
+  },
+  {
+    "appRelative": "src/persistence/types.ts",
+    "bytes": 5643,
+    "sha256": "93575ab700e3c42e98d1915daa82fb702be649b5c16c3646189219a293241454"
+  },
+  {
+    "appRelative": "src/persistence/validation.ts",
+    "bytes": 10972,
+    "sha256": "101c0ae7b122e5ff4d468c42c9acc0caca96f627b081f2605833f87c7958f1ef"
+  },
+  {
+    "appRelative": "src/physics-space/canonical.ts",
+    "bytes": 604,
+    "sha256": "cb1f9a96334fbf93e8995ffb0f62b1eb8ad8921ff86c7ec0e27f1096579f4ca5"
+  },
+  {
+    "appRelative": "src/physics-space/errors.ts",
+    "bytes": 838,
+    "sha256": "5c2c6613e2d03f6ee2d167ee156c06e114cf30dcb633b2cf155b78c96f59fe8b"
+  },
+  {
+    "appRelative": "src/physics-space/gravityField.ts",
+    "bytes": 8311,
+    "sha256": "c6f0314a0be6581525e5f36fdbc7108608576851a3535490ee5513ebb00d4819"
+  },
+  {
+    "appRelative": "src/physics-space/handoff.ts",
+    "bytes": 16209,
+    "sha256": "0e057e895622b81e88d37e43aaececc1c95861397b753d84702c0916b729dfcb"
+  },
+  {
+    "appRelative": "src/physics-space/ids.ts",
+    "bytes": 1279,
+    "sha256": "c671fcbcffe2fbbd113cd9b33f47e75be9ed7c69f36e82a5af6f03abcf4224cb"
+  },
+  {
+    "appRelative": "src/physics-space/index.ts",
+    "bytes": 227,
+    "sha256": "f23d19c35165bb3dec2ebcfb32ee82d7c2785f2d83f18117b3a499e37db9c9e3"
+  },
+  {
+    "appRelative": "src/physics-space/integrator.ts",
+    "bytes": 6074,
+    "sha256": "8f65dc32efddf704ca25c2b02e0bc0328c18345b837654358f4f5a375d6541c3"
+  },
+  {
+    "appRelative": "src/physics-space/probeSimulation.ts",
+    "bytes": 1920,
+    "sha256": "251cd7be70fa2a1909fb662f955ad181c3aa833773820ade6344593c703c086e"
+  },
+  {
+    "appRelative": "src/physics-space/types.ts",
+    "bytes": 5833,
+    "sha256": "2f082524b02c0c55be3877045abe2cea28b2e785501539ec95830862695b92b2"
+  },
+  {
+    "appRelative": "src/presentation/backend.ts",
+    "bytes": 2020,
+    "sha256": "20885ad0c4c716bec12362c3abed1d8273fbb9b260596fdfc8906d28336a48bb"
+  },
+  {
+    "appRelative": "src/presentation/canonical.ts",
+    "bytes": 3908,
+    "sha256": "67558d89ff09e99588101618eb02c5820a042a27850e884db91b0e80188862c8"
+  },
+  {
+    "appRelative": "src/presentation/ids.ts",
+    "bytes": 8056,
+    "sha256": "50d7642fe0fbf097bf2cd80275ff5d4243b69cb62c93a7bad14612f5c2ce96a2"
+  },
+  {
+    "appRelative": "src/presentation/index.ts",
+    "bytes": 269,
+    "sha256": "d1cc7c04ed7bf95d023f8a75c8d6b6edb558bc67e0c24e16298d81f7d6321d49"
+  },
+  {
+    "appRelative": "src/presentation/materialProfile.ts",
+    "bytes": 2686,
+    "sha256": "1d871f968781bdf67c9e6b5517daad94bddccf373950b3f022e68769e7278134"
+  },
+  {
+    "appRelative": "src/presentation/meshArtifact.ts",
+    "bytes": 15677,
+    "sha256": "070a4bef18182a666a8bdd57518da057370ccca2c8d3c9047506a0a12e4ff671"
+  },
+  {
+    "appRelative": "src/presentation/renderCommands.ts",
+    "bytes": 10050,
+    "sha256": "6ff7ce5993fd856c064b68d268064c855c73405dc28a372e4d7e49fc1833c185"
+  },
+  {
+    "appRelative": "src/presentation/types.ts",
+    "bytes": 847,
+    "sha256": "ec8cc94f1b267348e17e7d5b4a42d0d1c5161d92ba39ef40efa6cd1a0df7dc4a"
+  },
+  {
+    "appRelative": "src/presentation/validation.ts",
+    "bytes": 1602,
+    "sha256": "e93eadb015c284865184a997b9542fc351ab4c0b4f67247a9adb80890bafb1ff"
+  },
+  {
+    "appRelative": "src/presentation/visibilityPlan.ts",
+    "bytes": 9407,
+    "sha256": "3af38a4987c81931127d9916a386c93864963c0e4784b73837b6c5a78ae0fe1b"
+  },
+  {
+    "appRelative": "src/provingGround/pgTragwerkPlayerSlice.ts",
+    "bytes": 22792,
+    "sha256": "2d96903bdc14fca9b682f8d462c3dcfdbf6d6259a2da555780feb5cae46c2848"
+  },
+  {
+    "appRelative": "src/render/three/backend/deterministicHarness.ts",
+    "bytes": 2451,
+    "sha256": "51c2cb1061beb234a25c46c06b221b1721ccc73c5a6797ba82a7e0c0d9b23383"
+  },
+  {
+    "appRelative": "src/render/three/backend/index.ts",
+    "bytes": 272,
+    "sha256": "0b971a8514a0675a73c35be11fadd85223a6db415af4d2eaad844c33e3505d9e"
+  },
+  {
+    "appRelative": "src/render/three/backend/threeCameraProjection.ts",
+    "bytes": 1713,
+    "sha256": "b93ace4a89df22b445ad2a16108e1bef5e8efce78c6bc3f122bf89884d7e08f3"
+  },
+  {
+    "appRelative": "src/render/three/backend/threeDiagnostics.ts",
+    "bytes": 3513,
+    "sha256": "3529794a0dacbae8fc1e760f039c4d779d639c5499635b663d87d49bf4b0d78b"
+  },
+  {
+    "appRelative": "src/render/three/backend/threeMaterialFactory.ts",
+    "bytes": 4454,
+    "sha256": "2fe4fcfb0fe7a47e84ad02a83f3d9a2746c795ba538c0e9d4272a58e3e6c09dc"
+  },
+  {
+    "appRelative": "src/render/three/backend/threeMeshFactory.ts",
+    "bytes": 2746,
+    "sha256": "cfbbe36b3d3891943cd8fc2fedff0a5d78ff435752f3760d50836b1e5387c8ea"
+  },
+  {
+    "appRelative": "src/render/three/backend/threeRenderBackend.ts",
+    "bytes": 29722,
+    "sha256": "5a7fe791d9ae9476b0708845789376e0e84826df453cc0ec5c9024742037801c"
+  },
+  {
+    "appRelative": "src/render/three/backend/threeResourceRegistry.ts",
+    "bytes": 8096,
+    "sha256": "cd21760e59c665845074e4f0fa7caada639a1f0fe293632040955a134c5bf431"
+  },
+  {
+    "appRelative": "src/render/three/debugScene.ts",
+    "bytes": 40749,
+    "sha256": "f57e949b33e8ca6140cfaabf40df61996399b97ff35ed237ea895a91c892ae36"
+  },
+  {
+    "appRelative": "src/render/three/graphicsSettingsAdapter.ts",
+    "bytes": 11985,
+    "sha256": "87658dc71a20a9221be96a431bf0e14d99427ee338bdd9a73342a08a3849f777"
+  },
+  {
+    "appRelative": "src/render/three/nozzleVfx.ts",
+    "bytes": 4416,
+    "sha256": "c07b5f336a25703795bb5f232cc7b2bc6eebcc6d2c4a07a6e8d9061930f9777f"
+  },
+  {
+    "appRelative": "src/render/three/shipVisual.ts",
+    "bytes": 51768,
+    "sha256": "e5ae6ffbe4e9e9860c2f6b8c08239ffca366b0438309fd5b1f364c51fd64c08c"
+  },
+  {
+    "appRelative": "src/render/three/worldPresentationRenderer.ts",
+    "bytes": 26862,
+    "sha256": "c84c59cc747b6765b89fab953b73b5d66910f5e1a3455bcc096a1bae5bfe25b8"
+  },
+  {
+    "appRelative": "src/resources/capacityMath.ts",
+    "bytes": 553,
+    "sha256": "aec4ff2e7c954f8f202f256c37a9d108a7f32bf1648dcc53dd7f53c52ab9ac45"
+  },
+  {
+    "appRelative": "src/resources/catalog.ts",
+    "bytes": 7216,
+    "sha256": "bbabd077440e9307a05e4278f9befd15308adbe64b9fa4ecd558e6202a6ad66b"
+  },
+  {
+    "appRelative": "src/resources/categories.ts",
+    "bytes": 1888,
+    "sha256": "fc614c30071f22a2cf16a109d01b774c69d7f68f7c334e775836958d05f58a7f"
+  },
+  {
+    "appRelative": "src/resources/containers.ts",
+    "bytes": 19672,
+    "sha256": "a11215f4bda7eca86bb8fee791fce00cc601c080a106a85face6ff4bec3dbecb"
+  },
+  {
+    "appRelative": "src/resources/fixtures.ts",
+    "bytes": 3672,
+    "sha256": "4833c6036af7486938867ff662ec69143be452c439ea88f5dd853b095e124224"
+  },
+  {
+    "appRelative": "src/resources/ids.ts",
+    "bytes": 2831,
+    "sha256": "a46157defe1ce361240b8a6f3b7f1894f4ebd8282af2ec7bc576e6f8dc6b9298"
+  },
+  {
+    "appRelative": "src/resources/index.ts",
+    "bytes": 258,
+    "sha256": "b96b725646f0d6bd2d0e973cd0fdaf131973afd868a80fdc2ee4a22507808339"
+  },
+  {
+    "appRelative": "src/resources/serialization.ts",
+    "bytes": 4186,
+    "sha256": "7d1459f7ff1b470d5f88f6046259add5f0ecaab78955fc2afc8d37adf14ff80f"
+  },
+  {
+    "appRelative": "src/resources/starterCatalog.ts",
+    "bytes": 6874,
+    "sha256": "62b194407b09ee605f9d520820388a8dc1837356121a67abaa9cea422c96f06e"
+  },
+  {
+    "appRelative": "src/resources/transfer.ts",
+    "bytes": 36261,
+    "sha256": "9f40f65694ff962c7388d509fe66229909693cdf26f1a48d7a5330bb03396cd4"
+  },
+  {
+    "appRelative": "src/resources/types.ts",
+    "bytes": 15628,
+    "sha256": "f50a6a32a34f1b2597dbeaeecfdc58d53d42971ffcb35fb22162681074b79de6"
+  },
+  {
+    "appRelative": "src/runtime/browserRuntime.ts",
+    "bytes": 32101,
+    "sha256": "9fc74cf8d10619f5d3df2a5714f81564ac3b1f746188487f51bf0ab9dea959ab"
+  },
+  {
+    "appRelative": "src/runtime/commands.ts",
+    "bytes": 2337,
+    "sha256": "dcd7c090a71ae34fa4011943612827da443d06ff23c2185f1fc2923307dd40d9"
+  },
+  {
+    "appRelative": "src/runtime/input.ts",
+    "bytes": 2563,
+    "sha256": "31f9fbd5b181d1ae80d51d57b619c43b1a08e094292a8092c45771941b5e9828"
+  },
+  {
+    "appRelative": "src/settings/capabilities.ts",
+    "bytes": 3865,
+    "sha256": "077d7d7834f7b3f011499701b9d518bd9f33ef65730531c29b197cd8cfa94eb9"
+  },
+  {
+    "appRelative": "src/settings/defaults.ts",
+    "bytes": 1351,
+    "sha256": "8f4a285894c116b510c0a032c30ffa4da7b7ba7d86a727ac4b01acc4443f63e8"
+  },
+  {
+    "appRelative": "src/settings/graphicsSettings.ts",
+    "bytes": 5318,
+    "sha256": "5fc638ee81e9f369fe26f9ec8d593276e81e3cac640aa984bd86d7d01c392720"
+  },
+  {
+    "appRelative": "src/settings/index.ts",
+    "bytes": 256,
+    "sha256": "a96b520e18b099ec00ec8988931f09500d77d5b510e994d292c97f86f880323b"
+  },
+  {
+    "appRelative": "src/settings/presets.ts",
+    "bytes": 5201,
+    "sha256": "d5b44a603f2f3ce7a28ec13f3d1298b2ddfba22bc4019008596c0e3d984a7617"
+  },
+  {
+    "appRelative": "src/settings/schema.ts",
+    "bytes": 2818,
+    "sha256": "0cb33749bb53d3763485ec87c40e6da63725b4301fd6352d1da21bbd740cb925"
+  },
+  {
+    "appRelative": "src/settings/storage.ts",
+    "bytes": 2783,
+    "sha256": "2f1a051a4a7c606420da70f6c0bb9b429bf8723856f07e0f5e0cd39910f0b2e6"
+  },
+  {
+    "appRelative": "src/settings/store.ts",
+    "bytes": 6641,
+    "sha256": "8161aea7cd6adc696fb859cd1681abad400b5e1914b5a5bce555bc09e9272805"
+  },
+  {
+    "appRelative": "src/settings/types.ts",
+    "bytes": 6096,
+    "sha256": "9b4a4ed6230ba2a25040997d0895cd1f1d46127d5c0c6174f440ae01e9cf264e"
+  },
+  {
+    "appRelative": "src/settings/validation.ts",
+    "bytes": 6284,
+    "sha256": "f23138e372775d1d3bf87e66705404d8c682de6ad6a3243a125ce7bbdac3c0c4"
+  },
+  {
+    "appRelative": "src/ship-builder/blueprint.ts",
+    "bytes": 22957,
+    "sha256": "df37775a7d172f95a21cce5b0e5a2099ce18ba20bb22e3b90a584bbea409fc93"
+  },
+  {
+    "appRelative": "src/ship-builder/blueprintValidation.ts",
+    "bytes": 18125,
+    "sha256": "e60e6b822cc001e830695ebe390b6da7793b2b3b482aef29f3351b3fdb8177d2"
+  },
+  {
+    "appRelative": "src/ship-builder/canonicalJson.ts",
+    "bytes": 2592,
+    "sha256": "435f0054cad209ba9ef2dad58c334dc0b8103ec6448513c47223c595d49cbc55"
+  },
+  {
+    "appRelative": "src/ship-builder/catalog.ts",
+    "bytes": 45111,
+    "sha256": "d46473febe82a9da14747f2de8386e9917e8e33bae74876ed5293969d41aa486"
+  },
+  {
+    "appRelative": "src/ship-builder/categories.ts",
+    "bytes": 4702,
+    "sha256": "542e0d816ee6846a49b959273b6a4ccafd6e914a4f26b04720c5b5771fcc8bad"
+  },
+  {
+    "appRelative": "src/ship-builder/compatibility.ts",
+    "bytes": 28434,
+    "sha256": "7bc053e4355747d3331b2276b60fc42cc05586c0ed0370424b045c589c773a26"
+  },
+  {
+    "appRelative": "src/ship-builder/components.ts",
+    "bytes": 5585,
+    "sha256": "15f48f3342c95944297cb48ea0687221c822d044850a9b35162095a5c2aab335"
+  },
+  {
+    "appRelative": "src/ship-builder/diagnostics.ts",
+    "bytes": 5629,
+    "sha256": "7358d36952164b89476a46a48171dcfe80e8656a35c48063f82c8c3272cf8039"
+  },
+  {
+    "appRelative": "src/ship-builder/fixtures.ts",
+    "bytes": 5611,
+    "sha256": "270f6c137d37518bd53b540b3e33c83fb9e65a24f92d19a74ca34bcdc68b508a"
+  },
+  {
+    "appRelative": "src/ship-builder/flightReadiness.ts",
+    "bytes": 4258,
+    "sha256": "9e43f96117d86ff64b4adb55ba0304ab27b6962b5b1598d0f6a8f024936e364d"
+  },
+  {
+    "appRelative": "src/ship-builder/handlingDiagnostics.ts",
+    "bytes": 31238,
+    "sha256": "1d3e050a291d1581d2ee259332313c51030b1e6fbe4d9ba1f741c585e1023c20"
+  },
+  {
+    "appRelative": "src/ship-builder/ids.ts",
+    "bytes": 6024,
+    "sha256": "6f1e05c48198ddd72c2454937f9b02a9669c5d7d5ad23f551934d5ac98b8ec37"
+  },
+  {
+    "appRelative": "src/ship-builder/index.ts",
+    "bytes": 622,
+    "sha256": "0d3d080fb5033179d05897c1b8aa6c706b1b4b560eebc35433c7261fe4dc5709"
+  },
+  {
+    "appRelative": "src/ship-builder/massProperties.ts",
+    "bytes": 13105,
+    "sha256": "c5c012b036e07e9af471d840ffe9385f8e63a0a8eb4fc25007977479831d91da"
+  },
+  {
+    "appRelative": "src/ship-builder/serialization.ts",
+    "bytes": 7369,
+    "sha256": "2e2a5e7c5a1be448985ee1e71c80f711787fa5416a09f866a15334112dfa52e3"
+  },
+  {
+    "appRelative": "src/ship-builder/shipStats.ts",
+    "bytes": 27607,
+    "sha256": "a21ebb5c4461d1eec30a7d919a8996c373f709c786a65352e9cc074861869ff0"
+  },
+  {
+    "appRelative": "src/ship-builder/sockets.ts",
+    "bytes": 8795,
+    "sha256": "2016fe04e7f4bbef2ad8d0e39e05bda7269860597f89e32429ccf9771ac99914"
+  },
+  {
+    "appRelative": "src/ship-builder/starterCatalog.ts",
+    "bytes": 28190,
+    "sha256": "36d22ca3704544a8252a4b20c052859cc9eba8682735dcdb1f6177b6d6c1cd6d"
+  },
+  {
+    "appRelative": "src/ship-builder/statCanonical.ts",
+    "bytes": 3441,
+    "sha256": "0138401b3f13ff920e91069ee9dd92bb9b287d6fabd9e782e2aa513e0f01bf87"
+  },
+  {
+    "appRelative": "src/ship-builder/types.ts",
+    "bytes": 17004,
+    "sha256": "1c605bbbacd21fbf3c1c592f70933fd08fc256e9f9180cdc6a89d992702abf80"
+  },
+  {
+    "appRelative": "src/ship-builder/validation.ts",
+    "bytes": 12076,
+    "sha256": "1bdc81d07e4416dd2372efa8ffff61826bcc8ddb022db8b8c5994ac20c9e07a2"
+  },
+  {
+    "appRelative": "src/ship-power-thermal/battery.ts",
+    "bytes": 12249,
+    "sha256": "dc065229a89920c5dc0923cef5b71b09c6014aa171ab5052b9244c1af0056c4a"
+  },
+  {
+    "appRelative": "src/ship-power-thermal/canonical.ts",
+    "bytes": 8206,
+    "sha256": "021b39ea3eedb3a3b7cf9a42543bd29396a2153949ec8ac9b7feb4ae837839b0"
+  },
+  {
+    "appRelative": "src/ship-power-thermal/events.ts",
+    "bytes": 10740,
+    "sha256": "82b920e885f526a8043c2587a51b76c16cfb308a2d92b3d44c1f3e7ead525112"
+  },
+  {
+    "appRelative": "src/ship-power-thermal/fixtures.ts",
+    "bytes": 3190,
+    "sha256": "689a084643a32f21b7a180c6018ee76ce75b6cdc43081102f46bf766484f25e0"
+  },
+  {
+    "appRelative": "src/ship-power-thermal/ids.ts",
+    "bytes": 3665,
+    "sha256": "948d6b1040939a04f045326d528e0998cb13526bfe968fa74b1d0a6859103acf"
+  },
+  {
+    "appRelative": "src/ship-power-thermal/index.ts",
+    "bytes": 304,
+    "sha256": "30edf0ae071b125ad4c2fa382f795faadf86da8380067ebdd6b314ae7a34c2b5"
+  },
+  {
+    "appRelative": "src/ship-power-thermal/powerAllocation.ts",
+    "bytes": 14826,
+    "sha256": "175c18a11c9cf342c51196a787922dd645c9da1bffa250927dd16ba2cd9ee46e"
+  },
+  {
+    "appRelative": "src/ship-power-thermal/protection.ts",
+    "bytes": 5555,
+    "sha256": "450d3306bcd76cb3b27836945ffdba7a5ba9912896fa2d459e9c30d44d783717"
+  },
+  {
+    "appRelative": "src/ship-power-thermal/step.ts",
+    "bytes": 3792,
+    "sha256": "4349c07b6a61b57da2986ccc9a85a02ff7d905b9a5e339b2fe1bb5a1b4f850d2"
+  },
+  {
+    "appRelative": "src/ship-power-thermal/thermal.ts",
+    "bytes": 13335,
+    "sha256": "ee85bdb573b48412fee51fc31ca489045b09a081c1f8a48db6b8e82e18ce165a"
+  },
+  {
+    "appRelative": "src/ship-power-thermal/types.ts",
+    "bytes": 11779,
+    "sha256": "3dbe2cb14fd90805f7e3fad134e1082d02bd5ed07520bb5f3dac43a10c12c0aa"
+  },
+  {
+    "appRelative": "src/ship-power-thermal/validation.ts",
+    "bytes": 40679,
+    "sha256": "0247c705737ccd2e09e8c4cc2e3c9b64a79f8bbc13826fd7d6b1e7f712599720"
+  },
+  {
+    "appRelative": "src/sim/simulation.ts",
+    "bytes": 5978,
+    "sha256": "d8c86e7416aae20ef761b38dcbf80964f17c489a4d1f6df237ef5a0f08a3f92a"
+  },
+  {
+    "appRelative": "src/sim/telemetry.ts",
+    "bytes": 7242,
+    "sha256": "ce6ba7fa31d75f2889c58e3045230e2c3071d0ce4d2e4f7fb66127a4b46cb5b9"
+  },
+  {
+    "appRelative": "src/simulation-scheduler/eligibility.ts",
+    "bytes": 975,
+    "sha256": "d4eea88448f4f11ba183e9c0e446f293973e0618047f3cf4fe5c50b6276fadcf"
+  },
+  {
+    "appRelative": "src/simulation-scheduler/fixtures.ts",
+    "bytes": 6015,
+    "sha256": "2b008fef1225103ffdda4d32d389d8f8fecaf3613a43f5df369e68a223bf6391"
+  },
+  {
+    "appRelative": "src/simulation-scheduler/index.ts",
+    "bytes": 135,
+    "sha256": "689eff6ee6fd377f6aed66d79cb4180d03759a04028d78142106612de71f38a5"
+  },
+  {
+    "appRelative": "src/simulation-scheduler/planner.ts",
+    "bytes": 7372,
+    "sha256": "bc39113a50edfe7bac0d556217ad5331ffb56ea15c091d2c959404e18eac51ca"
+  },
+  {
+    "appRelative": "src/simulation-scheduler/state.ts",
+    "bytes": 9914,
+    "sha256": "a43dfe6b2c1a065796a62f85e64b6e74d5eb76afddaea32dea6565d0cc416375"
+  },
+  {
+    "appRelative": "src/simulation-scheduler/types.ts",
+    "bytes": 7103,
+    "sha256": "f4d6c2328f54499060edb06cd8eff75a623a2e8f76b15f0f7d9ac71184a4d155"
+  },
+  {
+    "appRelative": "src/simulation-scheduler/validation.ts",
+    "bytes": 19628,
+    "sha256": "022fb7fa5753e762a654d006b355f7f166316f25700134deb72d6c3cc140eff3"
+  },
+  {
+    "appRelative": "src/spatial/bodyFrames.ts",
+    "bytes": 12011,
+    "sha256": "129ab6e093351465d1766b0fa63cfbae040f2f48e3ee2c5aebf17aafa7a40451"
+  },
+  {
+    "appRelative": "src/spatial/canonical.ts",
+    "bytes": 577,
+    "sha256": "4821116410203880dadc200ccb13c91fed4d6f5101e52f884462091e1baa0729"
+  },
+  {
+    "appRelative": "src/spatial/errors.ts",
+    "bytes": 815,
+    "sha256": "47f48d65467970f3db4ba5e2ab1a3059d10e77999d465af71b9fe26aaa39b146"
+  },
+  {
+    "appRelative": "src/spatial/frameGraph.ts",
+    "bytes": 5366,
+    "sha256": "8553854de09b1d069a654b89482c914b01a0ba5bb45458e7498d7f14fa068a7f"
+  },
+  {
+    "appRelative": "src/spatial/frameValidation.ts",
+    "bytes": 6672,
+    "sha256": "72b4c3a0472ecfab8d9ccf1708e711f0ec2fc807c2c4dd0e4225718a670cf2f0"
+  },
+  {
+    "appRelative": "src/spatial/ids.ts",
+    "bytes": 1066,
+    "sha256": "ab208880b05067f0ef06108cfc5d019e3f482a44485465bb863ddc516f7433b9"
+  },
+  {
+    "appRelative": "src/spatial/index.ts",
+    "bytes": 328,
+    "sha256": "da59840281dcdd1d395744ea15e70dba3abb10bd0ab970132b60acf88aafb12f"
+  },
+  {
+    "appRelative": "src/spatial/quaternion.ts",
+    "bytes": 7014,
+    "sha256": "5036273dae402fa1b9b25e1c35d8b50bee1236b2c70b57691f3f7e9c4e133c3f"
+  },
+  {
+    "appRelative": "src/spatial/surfaceLocalFrame.ts",
+    "bytes": 7923,
+    "sha256": "2c00197bba05b1b3863033d0ea9786678ad88434a4167921a004f88be0437b94"
+  },
+  {
+    "appRelative": "src/spatial/transforms.ts",
+    "bytes": 8368,
+    "sha256": "b54ed3d913fb6e9302d7b712e6c3c704958a731104db430437aad70091e6aa9c"
+  },
+  {
+    "appRelative": "src/spatial/types.ts",
+    "bytes": 2783,
+    "sha256": "f19cb96cc08e1b7922178c84a420f7efb9f83f2b15ad114c72eba53b02a622ac"
+  },
+  {
+    "appRelative": "src/spatial/universeClock.ts",
+    "bytes": 2022,
+    "sha256": "729e06cb50a01c41b9d61067483082b5c12fb091f4ef6748fcc224c90f0d1b73"
+  },
+  {
+    "appRelative": "src/streaming/asyncContentLoader.ts",
+    "bytes": 11436,
+    "sha256": "0787bb7fedd6cfe4ba9ed149a1f1e6bb11a1b22f4e8588dfbda3eca92bbef03e"
+  },
+  {
+    "appRelative": "src/streaming/budgets.ts",
+    "bytes": 1131,
+    "sha256": "23b1f9ab21e6b4737d7103125d15f54063a6b858f54cc90d6baaffb952499755"
+  },
+  {
+    "appRelative": "src/streaming/canonical.ts",
+    "bytes": 2126,
+    "sha256": "372c51f1671e842d82c9868955e06f2900d724f9883dffb3991df775ca1b640d"
+  },
+  {
+    "appRelative": "src/streaming/contentKey.ts",
+    "bytes": 3440,
+    "sha256": "4c0b847828dbb640d398e200cd2068c33d641b44f473c1134695862407babc58"
+  },
+  {
+    "appRelative": "src/streaming/contentProvider.ts",
+    "bytes": 3145,
+    "sha256": "3d25c4eff81b67323a59e31f5ff79afca9da46a63b63c649b3aacbaac16a7974"
+  },
+  {
+    "appRelative": "src/streaming/index.ts",
+    "bytes": 261,
+    "sha256": "cf516017d04b0f057ac9fa930c9989a0a17011f813fb0818af367e5d978549c7"
+  },
+  {
+    "appRelative": "src/streaming/memoryContentCache.ts",
+    "bytes": 13442,
+    "sha256": "c5e727f9dca8980cdf57512913f07e0738a47be1dda7da040ac35c5008d2f889"
+  },
+  {
+    "appRelative": "src/streaming/residency.ts",
+    "bytes": 1643,
+    "sha256": "d599efc89cd61910904f4f4256ddd7d527020bdfd692cd1f0613f8fa002cb845"
+  },
+  {
+    "appRelative": "src/streaming/voxelBrickCache.ts",
+    "bytes": 5284,
+    "sha256": "4a1e09e534edefbfdd7df6ad1c3de5e2f83d327187fb88796d00d42622d08d5d"
+  },
+  {
+    "appRelative": "src/surface-lab/index.ts",
+    "bytes": 392,
+    "sha256": "ec8226f8759198f5c629aa5e49e1777db1874e82f39499972d34286939a1cc31"
+  },
+  {
+    "appRelative": "src/surface-lab/surfaceLabBootstrap.ts",
+    "bytes": 10809,
+    "sha256": "13550373042705c1c17c9d81238dc1a3c39e1c94b77ce5ee05fbfc44be28305f"
+  },
+  {
+    "appRelative": "src/surface-lab/surfaceLabCamera.ts",
+    "bytes": 8456,
+    "sha256": "2c27d1480fbc3d429e73e3c15652434c391fac47cabc40e031de1a87812758a7"
+  },
+  {
+    "appRelative": "src/surface-lab/surfaceLabController.ts",
+    "bytes": 38037,
+    "sha256": "0e345427a17f74a02973f8992b9805f47a11bb3f7d5da956dbc9066240dbe6ef"
+  },
+  {
+    "appRelative": "src/surface-lab/surfaceLabEnvironment.ts",
+    "bytes": 13522,
+    "sha256": "f18edfe26409dd13d7ad5725bd78a290f8af346200a4f7d38d988b752b5a4d13"
+  },
+  {
+    "appRelative": "src/surface-lab/surfaceLabFailurePresenter.ts",
+    "bytes": 1832,
+    "sha256": "fa1e35e24845b2b80a529c0d8e2b8b25219ff453c34dcc7de7af1764cffa3ada"
+  },
+  {
+    "appRelative": "src/surface-lab/surfaceLabHud.ts",
+    "bytes": 21062,
+    "sha256": "9e14036ae1281a1a49c94efc2d0fe30349cfa3f5d0b9a39508663adee75b20e1"
+  },
+  {
+    "appRelative": "src/surface-lab/surfaceLabPresentationBackend.ts",
+    "bytes": 4378,
+    "sha256": "5220391991816a2dcfe0cf4d978c28444aaa51b7232279232643699f319089f4"
+  },
+  {
+    "appRelative": "src/surface-lab/surfaceLabQuery.ts",
+    "bytes": 355,
+    "sha256": "f17f09b4af33b93aa3493b2aafcce68a67d4564bc0e203b7f0ee276f9db08892"
+  },
+  {
+    "appRelative": "src/surface-lab/surfaceLabRegion.ts",
+    "bytes": 841,
+    "sha256": "cd0e0fbc444155929cf986bcf502a287d4752d7690cd54cf54f2e42d02d14ac7"
+  },
+  {
+    "appRelative": "src/surface-lab/surfaceLabTelemetry.ts",
+    "bytes": 1843,
+    "sha256": "6a76f3b6b208a4acb6dcf0e4e9abf21fd6c09d19277219ffd567ffdafc896fb6"
+  },
+  {
+    "appRelative": "src/surface-lab/surfaceLabWorkerAdoption.ts",
+    "bytes": 6102,
+    "sha256": "51cae913a6607d46222807c88b061f875b5addeff3631973c9a92dd62b4d38ab"
+  },
+  {
+    "appRelative": "src/test-harness/autopilotBangBangMetrics.ts",
+    "bytes": 48069,
+    "sha256": "2f4ee21cec1fb5c74f9731cb5c07ce12f41364412f82400349ffa7d7bac3e84d"
+  },
+  {
+    "appRelative": "src/test-harness/browserBridge.ts",
+    "bytes": 3525,
+    "sha256": "b6483358f479686e88edc996f4b9bfd71fe082e551aa09bcd4577d8265174839"
+  },
+  {
+    "appRelative": "src/test-harness/scenarioRunner.ts",
+    "bytes": 25077,
+    "sha256": "7835550814862001f4601512409e3cc020c37649ba6c840321ae1ddbea5a88b7"
+  },
+  {
+    "appRelative": "src/test-harness/scenarios.ts",
+    "bytes": 7260,
+    "sha256": "cfd1469a66c0a56219b3990d01138776b6c7e68298b45f03b90589df78df6c54"
+  },
+  {
+    "appRelative": "src/trajectory/canonical.ts",
+    "bytes": 2453,
+    "sha256": "9dddf499fe069a2f1dea9e212b16c7965e34ce865831d3d32de4fd35cd915f9b"
+  },
+  {
+    "appRelative": "src/trajectory/closestApproach.ts",
+    "bytes": 697,
+    "sha256": "638af3ef73ec9981861e235b9e7fecf51ef42721171c622a6e282d3c0821f531"
+  },
+  {
+    "appRelative": "src/trajectory/fixtures.ts",
+    "bytes": 6141,
+    "sha256": "a8546d7e6dd5326bdc507842bb93ae39e66986b4fe85e90d63f1a3a36221badf"
+  },
+  {
+    "appRelative": "src/trajectory/hazards.ts",
+    "bytes": 12402,
+    "sha256": "03a7bf192f1daad27539bbc00d2bab3d8e560757c0692f3cb30a38b0acafb255"
+  },
+  {
+    "appRelative": "src/trajectory/ids.ts",
+    "bytes": 2459,
+    "sha256": "882aa6a120f95d27957137eb3872c719a8df332ba71799140841bd311fd82c06"
+  },
+  {
+    "appRelative": "src/trajectory/index.ts",
+    "bytes": 313,
+    "sha256": "c56b788a32374820902a40070b1176799e750613e1f989fce0802bbd360e5bea"
+  },
+  {
+    "appRelative": "src/trajectory/integrators.ts",
+    "bytes": 17802,
+    "sha256": "2420392746a4cf20f723223991791440fbda7cdfe85768bc2a244cedd64edae4"
+  },
+  {
+    "appRelative": "src/trajectory/metrics.ts",
+    "bytes": 7337,
+    "sha256": "4f656c22dcbcbfbfe5da72b9cb35399c0df6565db093afc810fc77ceeba60e2a"
+  },
+  {
+    "appRelative": "src/trajectory/predictor.ts",
+    "bytes": 8496,
+    "sha256": "32cf3cd6c831de788bee0d332cfdf4d809f53d248f405dfd3188cc024bfd2920"
+  },
+  {
+    "appRelative": "src/trajectory/propagation.ts",
+    "bytes": 12399,
+    "sha256": "f5e976ccb53f7f8d98ac436fca4193d274679074e3d29d88c0e9359e017dcbdb"
+  },
+  {
+    "appRelative": "src/trajectory/segments.ts",
+    "bytes": 24119,
+    "sha256": "4d24262a5535c5e4661221faebae57eae7a38785b579fde349223ead49f38a8f"
+  },
+  {
+    "appRelative": "src/trajectory/types.ts",
+    "bytes": 10122,
+    "sha256": "135feafee9d9497aa1617407fa5b2c84263623d084fabe90ecb2c4a640b2aadb"
+  },
+  {
+    "appRelative": "src/ui/graphicsSettingsPanel.ts",
+    "bytes": 12565,
+    "sha256": "a89eeba56894eca8b24b91a123883891cfbee69c9e69607841101633474d59b3"
+  },
+  {
+    "appRelative": "src/ui/pgTragwerkPlayerPanel.ts",
+    "bytes": 3645,
+    "sha256": "56ff3d4f2d176aefb0b9c4f020e669346bcd18e106a01079be99eb311ba699aa"
+  },
+  {
+    "appRelative": "src/ui/plannerMap.ts",
+    "bytes": 22400,
+    "sha256": "24f220e93308f6e14bc1e5043d13fd1666ffaf4e30e14945853b1153d1ed3dc1"
+  },
+  {
+    "appRelative": "src/ui/statusHud.ts",
+    "bytes": 75415,
+    "sha256": "1d6f7e70cd4f50b857415ec68ef168f4af560bc0960d75fdb4a174e5cdce8bfa"
+  },
+  {
+    "appRelative": "src/vite-env.d.ts",
+    "bytes": 41,
+    "sha256": "c27f59d978c3b1e8ee3419b9514eb83197a279adb86e019498d0d284ff31d0d7"
+  },
+  {
+    "appRelative": "src/voxel/adaptive/canonical.ts",
+    "bytes": 50875,
+    "sha256": "2974212185f36de5da7b43b99c7a06bce9439c11a35fbc52d9d55a38a3d7a056"
+  },
+  {
+    "appRelative": "src/voxel/adaptive/coordinates.ts",
+    "bytes": 10676,
+    "sha256": "aa76e09491f2958b581a4551caf91e68b99838c329b4e48508f095d1cea51c9d"
+  },
+  {
+    "appRelative": "src/voxel/adaptive/edits.ts",
+    "bytes": 11451,
+    "sha256": "a379a9176e705210c061f86b350f2c3ef25b0dcb44a00597a71568c9bfc7bd85"
+  },
+  {
+    "appRelative": "src/voxel/adaptive/index.ts",
+    "bytes": 2085,
+    "sha256": "c48c83a532643384688351ce6a396901d564885056ef6e1944ba43ec58bc9f82"
+  },
+  {
+    "appRelative": "src/voxel/adaptive/materialization.ts",
+    "bytes": 27140,
+    "sha256": "a24070f206f8d52a39f3c425c0308e3507e42875bd4f77e6363b266d376aecd5"
+  },
+  {
+    "appRelative": "src/voxel/adaptive/ownedCanonicalHashSteps.ts",
+    "bytes": 13297,
+    "sha256": "e998c8204308f16f94b83db870248465171455e64c5337aa3aa6e71bed9a6a6b"
+  },
+  {
+    "appRelative": "src/voxel/adaptive/planner.ts",
+    "bytes": 17955,
+    "sha256": "9d9cb2b36d62ca4b27bd67732bedc868436b8c0ca2977c99b6a70eeab64e7325"
+  },
+  {
+    "appRelative": "src/voxel/adaptive/residency.ts",
+    "bytes": 4674,
+    "sha256": "d564c7231bf4132efbef094a6c8c6bd7c48da126b09c89be8ed0de4264cf10eb"
+  },
+  {
+    "appRelative": "src/voxel/adaptive/types.ts",
+    "bytes": 11968,
+    "sha256": "b44ccc8844222e4b1ce6ab7a6605ea68417ca41fb993be8ddc2dc4b1ee5c1d2b"
+  },
+  {
+    "appRelative": "src/voxel/adaptive/validation.ts",
+    "bytes": 15237,
+    "sha256": "faf07412130eaea9031c3b1d9681d21b71edbac4f4c4dd382f953ea085b76756"
+  },
+  {
+    "appRelative": "src/voxel/blockAmbientOcclusion.ts",
+    "bytes": 6904,
+    "sha256": "ddfb1d22eccdcb83e48f8c21d82605339936600a6afbbc452bdcdce497ca7675"
+  },
+  {
+    "appRelative": "src/voxel/brick.ts",
+    "bytes": 11095,
+    "sha256": "b0d10dfe2b1cd2b5a8c5e093fedfe186b4c825853d8e2d37c27142518157ed29"
+  },
+  {
+    "appRelative": "src/voxel/canonical.ts",
+    "bytes": 7967,
+    "sha256": "0994167495c2f9306aa209792dc9e92ec4453276a1f614e8670615ce504ad029"
+  },
+  {
+    "appRelative": "src/voxel/channels.ts",
+    "bytes": 2978,
+    "sha256": "5fb713a91915f990166e2ca61f55cfa60427a3f0407950c2c34ac17db3bb7d7f"
+  },
+  {
+    "appRelative": "src/voxel/density.ts",
+    "bytes": 1268,
+    "sha256": "c3f0b2b31d0034546a0b6db6711c36915124367eb3cc838150e1b048c9227a79"
+  },
+  {
+    "appRelative": "src/voxel/ids.ts",
+    "bytes": 5747,
+    "sha256": "14f4a73a1d61e1e0b97003f1411b15232799f7c230cd9c5cc69b4d46efb5e86b"
+  },
+  {
+    "appRelative": "src/voxel/index.ts",
+    "bytes": 217,
+    "sha256": "a8525e6a768a39996941ac1402f821bfb4c7a5de100bbc5b7310a9c7c6185b1f"
+  },
+  {
+    "appRelative": "src/voxel/materials.ts",
+    "bytes": 6836,
+    "sha256": "79c9ff04fee6965bbdb2a1a0d42f993fcdbf801fe8355e54d7ca3f7176448420"
+  },
+  {
+    "appRelative": "src/voxel/meshArtifactAdapter.ts",
+    "bytes": 3824,
+    "sha256": "f442281d42e8ecbd0cf0f48e78b630581694714c2b15b5f4b160651c6750f805"
+  },
+  {
+    "appRelative": "src/voxel/structural/canonical.ts",
+    "bytes": 15031,
+    "sha256": "4d390edaca2bb0544480b486bd5f2cc7b75f4e668507701df1b7b6d641e5614f"
+  },
+  {
+    "appRelative": "src/voxel/structural/classificationSteps.ts",
+    "bytes": 28956,
+    "sha256": "0e858f9b6558d554706cf02cfa476850d7b899c9a5fefc4ee7305d96f79e8404"
+  },
+  {
+    "appRelative": "src/voxel/structural/commands.ts",
+    "bytes": 32838,
+    "sha256": "d4bda7a1254bf63ac5cae154b7bff4ea55e359ed8f0895e3451d868dde2a5603"
+  },
+  {
+    "appRelative": "src/voxel/structural/connectivity.ts",
+    "bytes": 1333,
+    "sha256": "672771252f23439bb0529d2d78f926c6ef42575c026b04043f0e096c2afb71b1"
+  },
+  {
+    "appRelative": "src/voxel/structural/coordinates.ts",
+    "bytes": 6802,
+    "sha256": "cb2515dfe690734d77a0d167a9ec0400d5483409d9da9b715d8a4a67045a0553"
+  },
+  {
+    "appRelative": "src/voxel/structural/greedyMesher.ts",
+    "bytes": 14404,
+    "sha256": "078bfae9dc9619430c99badc00955ac8cacc502d58493a4274aa54bbf1816cbd"
+  },
+  {
+    "appRelative": "src/voxel/structural/index.ts",
+    "bytes": 2966,
+    "sha256": "7c3c1c12922e5aae1fa7543f358d59d0f353de7c7d31161757c82313804915c2"
+  },
+  {
+    "appRelative": "src/voxel/structural/massProperties.ts",
+    "bytes": 23841,
+    "sha256": "38f8b6aa61c0f0cf3ebb23611a0ed4f77677cf91ee92f43e4448825ac0378428"
+  },
+  {
+    "appRelative": "src/voxel/structural/model.ts",
+    "bytes": 40456,
+    "sha256": "4959d16d8e0b730ed1a0628e0589547474ce0383419a7dab400cefa5d75a4746"
+  },
+  {
+    "appRelative": "src/voxel/structural/occupiedEntries.ts",
+    "bytes": 10845,
+    "sha256": "87bf42071d99f5bb3ef7b49559cfd27ed7b0b4dc943c8a8acac71b5abe3e7aa8"
+  },
+  {
+    "appRelative": "src/voxel/structural/persistence.ts",
+    "bytes": 15702,
+    "sha256": "fb8090930123016f3e461c0a8f10df1d3608b39c615fb59d88ae24e65b81b4bc"
+  },
+  {
+    "appRelative": "src/voxel/structural/physicsCommit.ts",
+    "bytes": 42687,
+    "sha256": "0aff922682eba0f053cc2efc761ad33157d82b916f62acea653278ea5771ffc8"
+  },
+  {
+    "appRelative": "src/voxel/structural/physicsTransition.ts",
+    "bytes": 34954,
+    "sha256": "2feb43a719e841a47c10f1b5c433396bd72f210fd318ce571c595f31efea51c7"
+  },
+  {
+    "appRelative": "src/voxel/structural/provingGroundR5.ts",
+    "bytes": 27589,
+    "sha256": "8bb5b9488c29ccd2d0920027b9b610291ae80453e471f44f238c1a4762ce572e"
+  },
+  {
+    "appRelative": "src/voxel/structural/regionSave.ts",
+    "bytes": 18866,
+    "sha256": "384842ac264db4a408ef90da9ea883654b7e3f87a6962bdc2df95b6cc043f972"
+  },
+  {
+    "appRelative": "src/voxel/structural/types.ts",
+    "bytes": 16697,
+    "sha256": "b83e0e7db4dd57451b164280ce43edd75d814edd1f6549759d6bd0f2ea25a6ff"
+  },
+  {
+    "appRelative": "src/voxel/structural/validation.ts",
+    "bytes": 35281,
+    "sha256": "3e0a11b1c418ae3cbaf5b5e47e5f31adec983c6c3d0a65f8e42c8dc015930d56"
+  },
+  {
+    "appRelative": "src/voxel/surfaceNets.ts",
+    "bytes": 29457,
+    "sha256": "f43ceaf6bc13e0eba1cf27caa84de26a48c48335640acfec6f444f49d8dfb385"
+  },
+  {
+    "appRelative": "src/voxel/types.ts",
+    "bytes": 5373,
+    "sha256": "bd18ff7f2384d514fb6ee7b10a373a231e77d532a0fef74fca08bb469b254f85"
+  },
+  {
+    "appRelative": "src/workers/cancellation.ts",
+    "bytes": 1056,
+    "sha256": "aa0da3b134d49684b2426016065eb173dc9517993b8ae461553f117ce9925e90"
+  },
+  {
+    "appRelative": "src/workers/hvpBodyCutJob.ts",
+    "bytes": 13671,
+    "sha256": "c5125566d6e1a77351eee2b6bef152907a1cd143ffc20b00201a0bf5e06ba94b"
+  },
+  {
+    "appRelative": "src/workers/hvpBodyCutWire.ts",
+    "bytes": 13448,
+    "sha256": "77fa9abe1e13e4c8579102962cb2ecb05b15fe5c67ff618f7b26e6ab7f23ba7c"
+  },
+  {
+    "appRelative": "src/workers/hvpBodyMeshJob.ts",
+    "bytes": 27669,
+    "sha256": "8a0cc86d5a08251112166bcf049262f7c4cd72030e690e36cead69d67246e175"
+  },
+  {
+    "appRelative": "src/workers/hvpBoundedPump.ts",
+    "bytes": 1101,
+    "sha256": "f243fd0e7744a8daff9dcb25d706f57661fd746d3e14867a74753d272c4f251e"
+  },
+  {
+    "appRelative": "src/workers/hvpCollisionJob.ts",
+    "bytes": 4956,
+    "sha256": "29621aca6a82a5617a67e1a6047d73a2b3d638621288a45fb8018bae0870ae9c"
+  },
+  {
+    "appRelative": "src/workers/hvpNeighborJob.ts",
+    "bytes": 5480,
+    "sha256": "a7cc958cde848f23429d20997242d80a7a0122222c3cb225395a15c92f9bf6ec"
+  },
+  {
+    "appRelative": "src/workers/hvpSupportJob.ts",
+    "bytes": 10751,
+    "sha256": "e547822ef83c824b1819646ab16a2165e6e9a4de83ffea6575bc5c9fa657490f"
+  },
+  {
+    "appRelative": "src/workers/hvpTerrainJob.ts",
+    "bytes": 6808,
+    "sha256": "dd226eb81bff29389133da83787c4c04bdd5fb3e08aadd8b3103a4dfca0c67f7"
+  },
+  {
+    "appRelative": "src/workers/ids.ts",
+    "bytes": 2573,
+    "sha256": "61abaadf0052b15645547fd9b286a4144f5a5bd712263a523cfae1a7e6967126"
+  },
+  {
+    "appRelative": "src/workers/index.ts",
+    "bytes": 315,
+    "sha256": "5528c89f4a58dd3b9432acd33ab10adbdc34342189d4b7c3a625e357d1cc8757"
+  },
+  {
+    "appRelative": "src/workers/messages.ts",
+    "bytes": 5924,
+    "sha256": "2c3645f20852b42a54a0121b81cdf8a6808fac0871f467187fa289b802fec493"
+  },
+  {
+    "appRelative": "src/workers/protocol.ts",
+    "bytes": 31529,
+    "sha256": "adcc8222d774bf172d65c609cfd7800d33151958ccb1eb147de3decdef949bbe"
+  },
+  {
+    "appRelative": "src/workers/queue.ts",
+    "bytes": 4382,
+    "sha256": "ec2c5b2ffcbff65f31f5ba8bdb5cf3b16989a3ea0506329b05bc26234756a06c"
+  },
+  {
+    "appRelative": "src/workers/resultGate.ts",
+    "bytes": 4710,
+    "sha256": "5617eb86a607f61f7cb176f92c1aa71e8dc7747ae5f549c3ea1d3b24a25fc32b"
+  },
+  {
+    "appRelative": "src/workers/streamingWorker.ts",
+    "bytes": 15633,
+    "sha256": "b11ea7012ca4e928ad362047bb4863aca32094fb3aa4391af0cba00c1ce39e8c"
+  },
+  {
+    "appRelative": "src/workers/workerHandle.ts",
+    "bytes": 7030,
+    "sha256": "18c6b46dcfb0af785c633f54e8790d5f7c81c499a281d987c30adb425b3f5301"
+  },
+  {
+    "appRelative": "src/workers/workerPool.ts",
+    "bytes": 28235,
+    "sha256": "3c4335036c130cb08287f07fb461b186f87cb5bb775191aa6a906c2d8efe58d2"
+  },
+  {
+    "appRelative": "src/world-generation/hestia/densityGenerator.ts",
+    "bytes": 9731,
+    "sha256": "bd2b2e34859d2fbfbf79a20a0483de718d83596a0d11b29f5d9cd9755f32df74"
+  },
+  {
+    "appRelative": "src/world-generation/hestia/index.ts",
+    "bytes": 265,
+    "sha256": "e0515e10805f0e5a831f1276b9f898632b4d9986ed15a2ce388ac752172bda0f"
+  },
+  {
+    "appRelative": "src/world-generation/hestia/materialClassifier.ts",
+    "bytes": 1527,
+    "sha256": "0d462037dcf110930c15d1a7f3cac364677086e3c3d704efe7dede4d6c4bb911"
+  },
+  {
+    "appRelative": "src/world-generation/hestia/noise.ts",
+    "bytes": 4781,
+    "sha256": "98a2fc27dfda4c237f59376dcf2ce9aa218735b2f86e0cc26bd3c879032c22d9"
+  },
+  {
+    "appRelative": "src/world-generation/hestia/preset.ts",
+    "bytes": 2269,
+    "sha256": "72171abe1aebde2625ab04fc069121c4d355885e1e8a8cb532ae49f509879eee"
+  },
+  {
+    "appRelative": "src/world-generation/hestia/scatterGenerator.ts",
+    "bytes": 5062,
+    "sha256": "adde1f64ac5b67c7e0904c7b5faac1956540632cd80657b970f1e4ac690bb1bb"
+  },
+  {
+    "appRelative": "src/world-generation/hestia/seed.ts",
+    "bytes": 6774,
+    "sha256": "20ac280c0503e9c92089f30d7053f5ac084aaeddd286f7a656de9a35c44e16c0"
+  },
+  {
+    "appRelative": "src/world/autopilotProvingGroundCourses.ts",
+    "bytes": 31760,
+    "sha256": "30226264806652d520ffa1f40519129f85d5bf8dab3a0d7e7e9603c6e9ce23c0"
+  },
+  {
+    "appRelative": "src/world/chunkRegistry.ts",
+    "bytes": 15026,
+    "sha256": "7f1dc2c428bb46ebb63782f4ca8e568db6ef8abbed6e9bdd96a08693899b14c9"
+  },
+  {
+    "appRelative": "src/world/floatingOrigin.ts",
+    "bytes": 2088,
+    "sha256": "f83082ab4a697a1409129c7eaa9d6da4917b72677de193de44b8c8be5d79e1fa"
+  },
+  {
+    "appRelative": "src/world/frames.ts",
+    "bytes": 4787,
+    "sha256": "ddafb4ccf4256ea1662b1c4f86a902d9adb527cb5d7116026d808e30e9baa5c2"
+  },
+  {
+    "appRelative": "src/world/lowPolyInstances.ts",
+    "bytes": 3104,
+    "sha256": "88a4cd2a802b633cc6a56b7c4006287aa4d6957a4753844ec099dada747a57ca"
+  },
+  {
+    "appRelative": "src/world/navigationMapWorldAdapter.ts",
+    "bytes": 6941,
+    "sha256": "f278aee058524067a7ba15e47cc4c4e9b8453bb8d5d292b19d3db12b589bbfb6"
+  },
+  {
+    "appRelative": "src/world/provingGroundWorld.ts",
+    "bytes": 7624,
+    "sha256": "be9cd18cb7dcec9262fda04818460e51b727773ed066aa2ad640090ad5c767e9"
+  },
+  {
+    "appRelative": "src/world/simulationBubble.ts",
+    "bytes": 1973,
+    "sha256": "92d3dc9067ac17ff2528e07e506ab4a51fe869237a689a0555a5123dee447966"
+  },
+  {
+    "appRelative": "src/world/worldPresentation.ts",
+    "bytes": 21624,
+    "sha256": "98950902101d61e988d1629f5f3649c40c44980fb848d0fa034bb7a1745c097a"
+  },
+  {
+    "appRelative": "src/world/worldStreaming.ts",
+    "bytes": 41447,
+    "sha256": "949ad3cb661b894d04ad94cc3970c21f2c6353498ae6f83eb4fe717012b85b7a"
+  },
+  {
+    "appRelative": "src/world/worldStreamingScenario.ts",
+    "bytes": 10924,
+    "sha256": "95ad0f8f6c0dffb45783e5322e21ec64befdac662298f9078247576d5785154a"
+  },
+  {
+    "appRelative": "tests/performance/hvp-cut-rt.spec.ts",
+    "bytes": 32142,
+    "sha256": "da2d0a787621b4e6ee19dd2e21681fe4e22608f74c68ca20a55b4ec6cc3f698d"
+  },
+  {
+    "appRelative": "tests/performance/hvpCutRtReport.ts",
+    "bytes": 20120,
+    "sha256": "a2088ed149c72ec62e2761aa98592ab9131ff341b55e87403457546ed69ddc5f"
+  },
+  {
+    "appRelative": "tests/reference/hvp-parallel-p01-classification-reference.ts",
+    "bytes": 11811,
+    "sha256": "601ecc49971e989f4ea3c3d686f716599ad1a15dcda78f21fdcc7d1bbf27ca9c"
+  },
+  {
+    "appRelative": "tests/reference/hvp-parallel-p03-camera-reference.ts",
+    "bytes": 15841,
+    "sha256": "39d3de5f9145b28885ffd7c3df054ecc1e229c7f790fd162ff33a8580b5d1ef9"
+  },
+  {
+    "appRelative": "tests/reference/hvp-parallel-p05/bodyFixture.ts",
+    "bytes": 3746,
+    "sha256": "a536942f651587f1c96eda6101c17c3ab9a9dbed6c5563278abccecd7b8b5602"
+  },
+  {
+    "appRelative": "tests/reference/hvp-parallel-p05/classificationProbe.ts",
+    "bytes": 5841,
+    "sha256": "fb13149bfc24497151f4534eeb721743432405d3c3ae124b7658d661ca3b307d"
+  },
+  {
+    "appRelative": "tests/reference/tdWalkabilityReference.ts",
+    "bytes": 1448,
+    "sha256": "f4919536b1904081a0015e250e9523822b16cdd8894efb74a906e256494edbc3"
+  },
+  {
+    "appRelative": "tests/unit/hvp-body-plan-owner.test.ts",
+    "bytes": 114541,
+    "sha256": "52d9caf77db89b9c57614196b4750738759b91ceb54ce73fda85fbe423974af9"
+  },
+  {
+    "appRelative": "tests/unit/hvp-bootstrap.test.ts",
+    "bytes": 144389,
+    "sha256": "4859fa5f2812dae58a383ce68822527d4719aaccaf03f4d7241652a3a01c0039"
+  },
+  {
+    "appRelative": "tests/unit/hvp-classification-contract-controls.test.ts",
+    "bytes": 6252,
+    "sha256": "3a6d0baa2de64f920eabf5e8c70e836d204f15f9e90517b50416da291fbcf734"
+  },
+  {
+    "appRelative": "tests/unit/hvp-owned-ingest-journal-prefix.test.ts",
+    "bytes": 18273,
+    "sha256": "4fe054a61f63d127c223f92c988fc8e1743c3f3e4f52d013cf0a64adb4674e93"
+  },
+  {
+    "appRelative": "tests/unit/hvp-owned-materialization.test.ts",
+    "bytes": 22480,
+    "sha256": "6af206f70eb379f64b74bd75eca8b6c385b1e600301b2400d9aef7597ca0474c"
+  },
+  {
+    "appRelative": "tests/unit/hvp-owned-structural-ingest.test.ts",
+    "bytes": 17164,
+    "sha256": "f91696c1da4ed97e6427158f562c2855193952ba3fcbe5e3eaece56fc1955669"
+  },
+  {
+    "appRelative": "tests/unit/hvp-owned-terrain-ingest.test.ts",
+    "bytes": 14665,
+    "sha256": "758532ea974f10f06257154127ba65f5cbda7bba18b482596fd9652d3514bc77"
+  },
+  {
+    "appRelative": "tests/unit/hvp-parallel-p01-classification.test.ts",
+    "bytes": 29438,
+    "sha256": "20192531c5ce3c3272cb6e6d0f2bc62176b63f7c12a4743127ed46c086a135c7"
+  },
+  {
+    "appRelative": "tests/unit/hvp-structural-ingest-trace.test.ts",
+    "bytes": 2680,
+    "sha256": "495235cf8cd92989968e6577e057f2cd4257c74d3046d71d31963502e6f3efdf"
+  },
+  {
+    "appRelative": "tests/unit/hvpCutRtReport.test.ts",
+    "bytes": 30174,
+    "sha256": "3f8102ab1306b485fd6781022850cfe57fd94abbb6e2066f4cf611145cc3159d"
+  },
+  {
+    "appRelative": "tests/unit/structuralMicrovoxelCommands.test.ts",
+    "bytes": 23211,
+    "sha256": "111a864a153e0241c16a653dee6bb3ddb906f6e1667f2242196e24277a019cab"
+  },
+  {
+    "appRelative": "tests/unit/structuralMicrovoxelConnectivity.test.ts",
+    "bytes": 13283,
+    "sha256": "12f7af8ac3914203108c494043d70a4195ffb43e41ff32a6daa9c984c90c4c32"
+  },
+  {
+    "appRelative": "tests/unit/structuralMicrovoxelContracts.test.ts",
+    "bytes": 18228,
+    "sha256": "b16ba302ef57d1ed27d42f8f614a0745461f9f998bd296e7b2d94b8e36e494f5"
+  },
+  {
+    "appRelative": "tests/unit/structuralMicrovoxelMassProperties.test.ts",
+    "bytes": 12487,
+    "sha256": "a68e9c457a8fcfc6ce1dd3fee52d3acdf9459b16aee350535d5e45ad46546016"
+  },
+  {
+    "appRelative": "tests/unit/structuralMicrovoxelPersistence.test.ts",
+    "bytes": 13859,
+    "sha256": "3378d90454990934646d085a504c98130c030338d73bb7e37e69885da586bc1f"
+  },
+  {
+    "appRelative": "tests/unit/structuralOwnedCommandCursor.test.ts",
+    "bytes": 19478,
+    "sha256": "50e9db63da75ec0c8e06e385fd8179536651455b5f897106b8a2345b01f0ca85"
+  },
+  {
+    "appRelative": "tests/unit/structuralOwnedReconstructionCursor.test.ts",
+    "bytes": 16663,
+    "sha256": "c5df495cf576e1ab9847bcf2f8dc758552a4e6fe09a4cbf87a96f368203c2d42"
+  },
+  {
+    "appRelative": "tsconfig.json",
+    "bytes": 579,
+    "sha256": "ae9c79eed70aa8015fa6c5f83b43d9e03d3c569bcb9f98a0c8e64623f7d97fe5"
+  },
+  {
+    "appRelative": "vite.config.ts",
+    "bytes": 384,
+    "sha256": "4b013f87e40cee1e41a560b56a5fce6ac5282a8b7f8f03c9d0ec44de285c1015"
+  },
+  {
+    "appRelative": "tests/unit/hvp-deep-freeze-traversal.test.ts",
+    "bytes": 2907,
+    "sha256": "63186f41d6721c39aa54622b3c2652c3f26a25430dae3f30d0155c82725a50fa"
+  },
+  {
+    "appRelative": "tests/unit/hvp-body-mesh-owner-integration.test.ts",
+    "bytes": 8236,
+    "sha256": "d05f82a5d94d4ae8747a18ac398f081daf0b0f57fb1fc19bafc9e04505214348"
+  },
+  {
+    "appRelative": "tests/unit/hvp-body-mesh-protocol.test.ts",
+    "bytes": 1880,
+    "sha256": "c732303763e15ca428decb67f6dd46bdf124769ef6952efcbfb01003dc7cb1ce"
+  },
+  {
+    "sha256": "7ff02d8beeeaa03d6abf1ef65ccd30cb81e5f8dc69a3bf6825b91e325f93af79",
+    "appRelative": "tests/unit/hvp-body-mesh-client.test.ts",
+    "bytes": 4327
+  },
+  {
+    "appRelative": "tests/unit/hvpPhysicsReplyOrder.test.ts",
+    "bytes": 10921,
+    "sha256": "cafb3fc184fd2c894e4ffb31ef6cd6359967635ad152ab41299400f27214b99f"
+  },
+  {
+    "appRelative": "tests/unit/hvp-physics-client-diagnostics.test.ts",
+    "bytes": 6569,
+    "sha256": "c1fff34d50637ddbf4d424ba18893dd546450f55f477dad4217ea01cafed5b50"
+  },
+  {
+    "appRelative": "tests/unit/hvp-physics-worker-body-clock.test.ts",
+    "bytes": 21983,
+    "sha256": "204ae530d8d6b9e3dbcb4c656ccaefbbd570ecde0542fabb2fa83e4dc26a8549"
+  }
+]

@@ -1,0 +1,8 @@
+{
+  "runId": "A03-hash-quantum-r44-r02-type",
+  "binding": "A03-hash-quantum-r44-r02-binding.json",
+  "mode": "type",
+  "files": [],
+  "nativeCapSeconds": 60,
+  "classification": "Bounded128-unit hash ONLY complete owned ingress; standalone cursor original unit contract retained; original full regression populations and deadlines"
+}

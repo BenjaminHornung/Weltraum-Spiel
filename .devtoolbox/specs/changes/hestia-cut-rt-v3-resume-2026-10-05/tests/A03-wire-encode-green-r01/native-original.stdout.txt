@@ -1,0 +1,47 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvpBodyCutWire.test.ts (60 tests) 20001ms
+   ✓ preserves all seven original wire buffers and hash through borrowed copy steps  385ms
+   ✓ rejects wire parent credit before allocating output channels  332ms
+   ✓ closes wire copies on cancellation without publishing a partial packet or releasing parent credit  325ms
+     ✓ packs actual legacy products without global rebasing or changing input arrays  333ms
+     ✓ rejects oversized metadata and aggregate arrays before channel copies  330ms
+     ✓ keeps full owned index width at 65532 vertices (decoder-only allocation fixture)  345ms
+     ✓ keeps full owned index width at 65536 vertices (decoder-only allocation fixture)  351ms
+     ✓ preserves every actual box product, local array byte and mechanical field  338ms
+     ✓ preserves sphere selection, mixed materials and negative object coordinates  2575ms
+     ✓ keeps the original absolute mass and COM tolerances  334ms
+     ✓ rejects forged ownerId despite a fresh transport hash  328ms
+     ✓ rejects forged sourceDigest despite a fresh transport hash  322ms
+     ✓ rejects forged massKg despite a fresh transport hash  325ms
+     ✓ rejects forged center despite a fresh transport hash  319ms
+     ✓ rejects forged sourceBytes despite a fresh transport hash  320ms
+     ✓ rejects forged removedCells despite a fresh transport hash  337ms
+     ✓ rejects forged removedMassKg despite a fresh transport hash  327ms
+     ✓ rejects positionNaN with unchanged valid layout and refreshed hash  322ms
+     ✓ rejects positionInfinity with unchanged valid layout and refreshed hash  323ms
+     ✓ rejects normal with unchanged valid layout and refreshed hash  326ms
+     ✓ rejects color with unchanged valid layout and refreshed hash  317ms
+     ✓ rejects index with unchanged valid layout and refreshed hash  316ms
+     ✓ rejects duplicate with unchanged valid layout and refreshed hash  329ms
+     ✓ rejects removed with unchanged valid layout and refreshed hash  334ms
+     ✓ rejects material with unchanged valid layout and refreshed hash  324ms
+     ✓ rejects rangeSlot with unchanged valid layout and refreshed hash  321ms
+     ✓ rejects rangeStart with unchanged valid layout and refreshed hash  322ms
+     ✓ rejects rangeCount with unchanged valid layout and refreshed hash  327ms
+     ✓ rejects a JSON numeric overflow in COM, not only a JSON null  330ms
+     ✓ owns returned arrays/cells and validates later transport mutations again  329ms
+     ✓ rejects an oversized source-mesh set before retaining more parts or aggregating buffers  583ms
+     ✓ executes actual V1/V2 jobs with identical box products  576ms
+     ✓ executes actual V1/V2 jobs with identical sphere products  4629ms
+     ✓ executes actual V1/V2 jobs with identical complete products  365ms
+     ✓ leaves algorithm/hash/epoch admission at the unchanged result gate  627ms
+     ✓ transfers all seven buffers through the existing real runtime/pool protocol  641ms
+
+ Test Files  1 passed (1)
+      Tests  60 passed (60)
+   Start at  19:03:50
+   Duration  21.58s (transform 661ms, setup 0ms, import 1.44s, tests 20.00s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-wire-encode-green-r01/original-vitest.json

@@ -1,0 +1,8 @@
+{
+  "runId": "A05-native-r99-red",
+  "startedUtc": "2026-10-06T18:39:46.8443962+00:00",
+  "endedUtc": "2026-10-06T18:39:57.8497087+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 10.9937902,
+  "planFile": "A05-native-r99-red.plan.json"
+}

@@ -1,0 +1,10 @@
+{
+  "runId": "A03-borrowed-body-review-green-r01",
+  "classification": "R17 warm cache and material work GREEN; unchanged per-test deadlines",
+  "files": [
+    "tests/unit/hvp-borrowed-body-plan.test.ts"
+  ],
+  "nativeCapSeconds": 180,
+  "binding": "A03-borrowed-body-review-green-r01-binding.json",
+  "mode": "tests"
+}

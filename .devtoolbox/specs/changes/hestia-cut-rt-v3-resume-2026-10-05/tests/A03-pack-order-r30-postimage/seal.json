@@ -1,0 +1,12 @@
+[
+  {
+    "appRelative": "src/workers/hvpBodyMeshJob.ts",
+    "bytes": 33402,
+    "sha256": "9b5f035d20ede9a428594ce26e404c6258bf91e936e0353743331637caa2cb19"
+  },
+  {
+    "appRelative": "tests/unit/hvp-borrowed-mesh-decode.test.ts",
+    "bytes": 7847,
+    "sha256": "5117f1e5bfd9de27298c701cbe7a18c3e38ddf7364fb469495ac2385a447fced"
+  }
+]

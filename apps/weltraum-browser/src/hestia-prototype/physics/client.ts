@@ -1,11 +1,14 @@
 import { WorkerPool } from "../../workers/workerPool";
 import { algorithmVersion, byteCount, contentRevision, jobDeadline, planningEpoch, workerEpoch, workerJobId, workerJobKind, workerTargetKey } from "../../workers/ids";
-import { fnv1aBytes, type TransferableBufferBundle } from "../../workers/protocol";
+import { fnv1aBytes, type TransferableBufferBundle,type WorkerJobRequest } from "../../workers/protocol";
 import { HVP_COLLISION_JOB, HVP_COLLISION_ALGORITHM, HVP_COLLISION_MAX_OUTPUT, decodeHvpCollisionOutput } from "../../workers/hvpCollisionJob";
 import { collisionInputs, type HvpCollisionSector, type HvpCollisionSource } from "./terrainColliders";
 import { resolveHvpGravity } from "./profile";
 import type { HvpPhysicsRequest, HvpPhysicsReply, HvpPhysicsSnapshot, HvpPhysicsClock } from "./physicsWorker";
-import {HVP_PHYSICS_PROTOCOL,hvpBodyProjectionBinding,readHvpBodyProjectionReply,type HvpBodyProjectionRequest} from "./physicsProtocol";
+import {HVP_PHYSICS_PROTOCOL,hvpBodyProjectionBinding,readHvpBodyProjectionReply,readHvpBodyProjectionReplySteps,readHvpBodyMeshBudget,readHvpBodyMeshAdmissionReply,type HvpBodyProjectionRequest} from "./physicsProtocol";
+import {requirePlainRecord,requireExactKeys} from "../../voxel/adaptive/validation";
+import {createHvpBodyMeshPhaseReserve,HVP_BODY_RENDER_BYTES_PER_FACE,type HvpBodyMeshBudget} from "../presentation/bodyMeshAdmission";
+import {createHvpBodyMeshTaskPump} from "../../workers/hvpBoundedPump";
 import type { HvpCollisionCoverage, HvpPlayerInput } from "../player/locomotion";
 import type { HvpBranchRequest } from "./branchSession";
 import type {HvpTerrainFragmentRequest} from "./terrainFragment";
@@ -34,13 +37,18 @@ export interface HvpPhysicsClient {
   finalizeBranch(id:string):Promise<void>;
   beginBodyCut(request:HvpMovingCutRequest):Promise<HvpMovingCutPreparation>;
   /** Private source bridge; returned data is not a native/geometry admission receipt. */
-  prepareBodyChildProjection(id:string):Promise<HvpBodyChildProjection>;
+  prepareBodyChildProjection(id:string,residentBytes?:number):Promise<HvpBodyChildProjection>;
+  prepareBodyMeshWork?(id:string,residentBytes:number,renderExtraBytes:number):Promise<{projection:HvpBodyChildProjection;budget:HvpBodyMeshBudget}>;
+  releaseBodyMeshWork?(id:string):Promise<void>;
+  admitBodyMeshOutput?(id:string,request:WorkerJobRequest,output:TransferableBufferBundle):Promise<TransferableBufferBundle>;
   stageBodyCut(id:string,products:HvpBodyCutAdmission):Promise<void>;
   commitBodyCut(id:string):Promise<void>;
   publishBodyCut():void;
   rollbackBodyCut(id:string):Promise<void>;
   finalizeBodyCut(id:string):Promise<void>;
-  prepareTerrain(id: string, generation: number, replacements: readonly { index: number; mesh: HvpCollisionSector }[],fragments?:readonly HvpTerrainFragmentRequest[]): Promise<void>;
+  prepareTerrain(id: string, generation: number, replacements: readonly { index: number; mesh: HvpCollisionSector }[],fragments?:readonly HvpTerrainFragmentRequest[],
+    work?:{readonly sourceDigest:string;readonly sourceSessionId:string;readonly sourceEpoch:number;readonly nativeBytes:number;readonly copyBytes:number;
+      readonly onSourcePrepared?:(views:readonly HvpPhysicsSnapshot["preparedTerrainFragments"][number][])=>Promise<void>}): Promise<void>;
   preparedTerrainFragments():HvpPhysicsSnapshot["preparedTerrainFragments"];
   commitTerrain(id: string): Promise<void>;
   publishTerrain(): void;
@@ -157,6 +165,8 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
   let mutating = false;
   let bodyPending=false;
   let bodyProjectionTicket:{binding:HvpBodyProjectionRequest;beginSequence:number}|undefined;
+  let bodyMeshWorkTicket:typeof bodyProjectionTicket;
+  let bodyMeshWorkRelease:{ticket:NonNullable<typeof bodyProjectionTicket>;promise:Promise<void>}|undefined;
   let neighborPending:{id:string;next:HvpNeighborCheckpoint}|undefined;
   let restorePhase:string|undefined;
   let heldSnapshot: {id:number;sequence:number;value:HvpPhysicsSnapshot}|undefined;
@@ -164,7 +174,7 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
   let playerInput: HvpPlayerInput = { x: 0, z: 0, sprint: false, jump: false };
   let cameraOffset: { x: number; y: number; z: number } | undefined;
   let cutAim: {x:number;y:number;z:number}|undefined;
-  const pending = new Map<number, { resolve: () => void; reject: (e: Error) => void; timeout: ReturnType<typeof setTimeout>; publish: boolean;ownsState:boolean;onReply?:(reply:HvpPhysicsReply)=>void }>();
+  const pending = new Map<number, { resolve: () => void; reject: (e: Error) => void; timeout: ReturnType<typeof setTimeout>; publish: boolean;ownsState:boolean;ownsClock:boolean;onReply?:(reply:HvpPhysicsReply)=>void }>();
   const terminate=()=>{if(!terminated){worker.terminate();terminated=true;}worker.onmessage=null;worker.onerror=null;worker.onmessageerror=null;};
   const fail = (error: Error): void => {
     failure = error;
@@ -188,7 +198,7 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
     // A late settled-request error is not the live owner's independent fatal timer channel.
     if(data.error!==undefined){if(p!==undefined||data.id===-1){fail(new Error(data.error));}return;}
     if (p === undefined) { return; }
-    if(data.clock!==undefined&&data.sequence>lastClockSequence){clock=data.clock;lastClockSequence=data.sequence;}
+    if(p.ownsClock&&data.clock!==undefined&&data.sequence>lastClockSequence){clock=data.clock;lastClockSequence=data.sequence;}
     clearTimeout(p.timeout); pending.delete(data.id);
     if(p.publish&&data.snapshot!==undefined&&data.id>publishRequestFloor&&data.sequence>lastSnapshotSequence){
       snapshot=data.snapshot;lastSnapshotSequence=data.sequence;
@@ -209,10 +219,11 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
     if (failure !== undefined || disposed) { reject(failure ?? new Error("Physics disposed")); return; }
     if (pending.size >= 8) { reject(new Error("Physics command backpressure")); return; }
     const id = nextId++;
-    const ownsState=message.kind!=="Read"&&message.kind!=="Pause"&&message.kind!=="Inspect"&&message.kind!=="PrepareBodyChildProjection";
+    const ownsClock=message.kind!=="AdmitBodyChildMesh"&&message.kind!=="PrepareBodyMeshWork"&&message.kind!=="ReleaseBodyMeshWork"&&message.kind!=="PrepareTerrainPlan"&&message.kind!=="ReleaseTerrainPlan";
+    const ownsState=ownsClock&&message.kind!=="Read"&&message.kind!=="Pause"&&message.kind!=="Inspect"&&message.kind!=="PrepareBodyChildProjection";
     if(!publish&&ownsState){publishRequestFloor=Math.max(publishRequestFloor,id);}
     const timeout = setTimeout(() => fail(new Error("Physics worker response deadline exceeded")), 20_000);
-    pending.set(id, { resolve, reject, timeout, publish,ownsState,onReply });
+    pending.set(id, { resolve, reject, timeout, publish,ownsState,ownsClock,onReply });
     try { worker.postMessage({ ...message, id,protocol:HVP_PHYSICS_PROTOCOL,incarnation }, transfers); } catch (e) { fail(e instanceof Error ? e : new Error("Physics transfer failed")); }
   });
   const abort = (): void => fail(new Error("Physics loading cancelled"));
@@ -370,17 +381,75 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
         return preparation;
       }catch(error){bodyProjectionTicket=undefined;if(snapshot?.moving.pendingId===request.id){await send({kind:"RollbackBodyCut",transactionId:request.id});}bodyPending=false;throw error;}
     },
-    async prepareBodyChildProjection(id){
+    async prepareBodyChildProjection(id,residentBytes){
       const ticket=requireBodyProjectionTicket(bodyProjectionTicket);
       if(ticket.binding.commandId!==id){throw new Error("Stale body projection ticket");}
+      if(residentBytes!==undefined&&(!Number.isSafeInteger(residentBytes)||residentBytes<=0||residentBytes>256*1024*1024)){
+        throw new Error("Invalid body owner resident estimate");
+      }
       let projection:HvpBodyChildProjection|undefined;
-      await send({kind:"PrepareBodyChildProjection",binding:ticket.binding},[],false,reply=>{
+      await send({kind:"PrepareBodyChildProjection",binding:ticket.binding,...(residentBytes===undefined?{}:{residentBytes})},[],false,reply=>{
         requireBodyProjectionTicket(ticket);
         if(reply.sequence<=ticket.beginSequence){throw new Error("Stale body projection reply sequence");}
         projection=readHvpBodyProjectionReply(reply.bodyChildProjection,ticket.binding);
       });
       requireBodyProjectionTicket(ticket);
       return projection!;
+    },
+    async prepareBodyMeshWork(id,residentBytes,renderExtraBytes){
+      const ticket=requireBodyProjectionTicket(bodyProjectionTicket);
+      if(ticket.binding.commandId!==id){throw new Error("Stale body projection ticket");}
+      if(!Number.isSafeInteger(residentBytes)||residentBytes<=0||residentBytes>256*1024*1024
+        ||!Number.isSafeInteger(renderExtraBytes)||renderExtraBytes<=0||renderExtraBytes>96*1024*1024){throw new Error("Invalid body mesh owner budget");}
+      bodyMeshWorkTicket=ticket;
+      let packet:unknown,budget:HvpBodyMeshBudget|undefined;
+      await send({kind:"PrepareBodyMeshWork",binding:ticket.binding,residentBytes,renderExtraBytes},[],false,reply=>{
+        requireBodyProjectionTicket(ticket);
+        if(reply.sequence<=ticket.beginSequence){throw new Error("Stale body mesh work reply sequence");}
+        const work=requirePlainRecord(reply.bodyMeshWork,"body/mesh/work");
+        requireExactKeys(work,["beginRequestId","projection","budget"],"body/mesh/work");
+        if(work.beginRequestId!==ticket.binding.beginRequestId){throw new Error("Stale body mesh work reply binding");}
+        budget=readHvpBodyMeshBudget(work.budget);
+        if(budget.renderExtraBytes!==renderExtraBytes+budget.faceLimits.reduce((sum,f)=>sum+f*HVP_BODY_RENDER_BYTES_PER_FACE,0)){
+          throw new Error("Changed body mesh render allowance");
+        }
+        packet={beginRequestId:work.beginRequestId,projection:work.projection};
+      });
+      requireBodyProjectionTicket(ticket);
+      const pump=createHvpBodyMeshTaskPump(()=>{requireBodyProjectionTicket(ticket);});
+      try{
+        const projection=await pump.run(readHvpBodyProjectionReplySteps(packet,ticket.binding,createHvpBodyMeshPhaseReserve(budget!.packBytes)));
+        requireBodyProjectionTicket(ticket);
+        if(projection.parts.length!==budget!.faceLimits.length){throw new Error("Body mesh quote part count mismatch");}
+        return {projection,budget:budget!};
+      }finally{pump.dispose();}
+    },
+    async releaseBodyMeshWork(id){
+      const ticket=bodyMeshWorkTicket;
+      if(ticket===undefined){return;}
+      if(ticket.binding.commandId!==id){throw new Error("Stale body mesh resource ticket");}
+      if(bodyMeshWorkRelease?.ticket===ticket){return bodyMeshWorkRelease.promise;}
+      const promise=send({kind:"ReleaseBodyMeshWork",binding:ticket.binding},[],false,reply=>{
+        if(bodyMeshWorkTicket!==ticket||reply.sequence<=ticket.beginSequence){throw new Error("Stale body mesh resource reply");}
+        const released=requirePlainRecord(reply.bodyMeshReleased,"body/mesh/released");
+        requireExactKeys(released,["beginRequestId"],"body/mesh/released");
+        if(released.beginRequestId!==ticket.binding.beginRequestId){throw new Error("Stale body mesh resource reply binding");}
+      });
+      const release={ticket,promise};bodyMeshWorkRelease=release;
+      try{await promise;if(bodyMeshWorkTicket===ticket){bodyMeshWorkTicket=undefined;}}
+      finally{if(bodyMeshWorkRelease===release){bodyMeshWorkRelease=undefined;}}
+    },
+    async admitBodyMeshOutput(id,request,output){
+      const ticket=requireBodyProjectionTicket(bodyProjectionTicket);
+      if(ticket.binding.commandId!==id){throw new Error("Stale body projection ticket");}
+      let admitted:TransferableBufferBundle|undefined;
+      await send({kind:"AdmitBodyChildMesh",binding:ticket.binding,request,output},[...output.buffers],false,reply=>{
+        requireBodyProjectionTicket(ticket);
+        if(reply.sequence<=ticket.beginSequence){throw new Error("Stale body mesh reply sequence");}
+        admitted=readHvpBodyMeshAdmissionReply(reply.bodyMeshAdmission,ticket.binding);
+      });
+      requireBodyProjectionTicket(ticket);
+      return admitted!;
     },
     async stageBodyCut(id,products){
       if(!bodyPending||mutating){throw new Error("No pending local body work");}
@@ -422,9 +491,65 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
       if (kind === "Pause" || kind === "Inspect" || kind === "Play") { playerInput = { x: 0, z: 0, sprint: false, jump: false }; }
       await send({ kind }, [], !mutating);
     },
-    async prepareTerrain(id,generation,replacements,fragments=[]) {
+    async prepareTerrain(id,generation,replacements,fragments=[],work) {
       if(mutating||bodyPending) { throw new Error("Terrain Pending"); }
       if(fragments.length>32||fragments.reduce((n,f)=>n+f.cells.length,0)>32_768){throw new Error("Fragment transfer BudgetExceeded");}
+      if(work!==undefined){
+        bodyPending=true;
+        let prepareRequestId:number|undefined;
+        let sourceViews:readonly HvpPhysicsSnapshot["preparedTerrainFragments"][number][]|undefined;
+        const pump=createHvpBodyMeshTaskPump(()=>{if(failure){throw failure;}if(disposed||terminated){throw new Error("Physics disposed");}});
+        try{
+          const reserve=createHvpBodyMeshPhaseReserve(work.copyBytes);
+          const copies=await pump.run((function*(){
+            reserve(32_768+replacements.reduce((n,r)=>n+r.mesh.vertices.byteLength+r.mesh.indices.byteLength,0)*2
+              +fragments.reduce((n,f)=>n+f.cells.length*256+f.colliderBoxes.length*512+1024,0));
+            const copies:HvpTerrainFragmentRequest[]=[];
+            for(const f of fragments){const cells=[];
+              for(const c of f.cells){cells.push({x:c.x,y:c.y,z:c.z,materialId:c.materialId});yield "terrainNativeCopy";}
+              copies.push({ownerId:f.ownerId,massKg:f.massKg,origin:{x:f.origin.x,y:f.origin.y,z:f.origin.z},cells,
+                colliderBoxes:f.colliderBoxes.map(b=>({min:[...b.min] as [number,number,number],max:[...b.max] as [number,number,number]}))});
+            }return copies;
+          })());
+          await send({kind:"PrepareTerrainPlan",transactionId:id,generation,sourceDigest:work.sourceDigest,sourceSessionId:work.sourceSessionId,sourceEpoch:work.sourceEpoch,allowanceBytes:work.nativeBytes,replacements,fragments:copies},
+            replacements.flatMap(s=>[s.mesh.vertices.buffer as ArrayBuffer,s.mesh.indices.buffer as ArrayBuffer]),false,reply=>{
+              prepareRequestId=reply.id;
+              const ready=reply.terrainPlan;
+              if(ready===undefined||ready.prepareRequestId!==reply.id||ready.transactionId!==id||ready.generation!==generation||ready.sourceDigest!==work.sourceDigest
+                ||ready.sourceSessionId!==work.sourceSessionId||ready.sourceEpoch!==work.sourceEpoch
+                ||reply.snapshot!==undefined||!Number.isSafeInteger(ready.prepareRequestId)){throw new Error("Invalid Native terrain plan reply");}
+              if(!Array.isArray(ready.sourceViews)||ready.sourceViews.length!==copies.length){throw new Error("Invalid Native terrain source views");}
+              reserve(256+1024*copies.length);
+              sourceViews=Object.freeze(ready.sourceViews.map((value,index)=>{
+                const view=requirePlainRecord(value,"terrainPlan/sourceViews"),request=copies[index]!;
+                requireExactKeys(view,["ownerId","sourceDigest","centerOfMass","cellCount","massKg","colliders","sourceBytes"],"terrainPlan/sourceViews");
+                const center=requirePlainRecord(view.centerOfMass,"terrainPlan/sourceViews/centerOfMass");
+                requireExactKeys(center,["x","y","z"],"terrainPlan/sourceViews/centerOfMass");
+                if(view.ownerId!==request.ownerId||typeof view.sourceDigest!=="string"||!/^fnv1a64-v1:[a-f0-9]{16}$/.test(view.sourceDigest)
+                  ||![center.x,center.y,center.z].every(v=>typeof v==="number"&&Number.isFinite(v))||view.cellCount!==request.cells.length
+                  ||typeof view.massKg!=="number"||!Number.isFinite(view.massKg)||view.massKg<=0||Math.abs(view.massKg-request.massKg)>1e-8
+                  ||!Number.isSafeInteger(view.colliders)||view.colliders!==request.colliderBoxes.length
+                  ||!Number.isSafeInteger(view.sourceBytes)||(view.sourceBytes as number)<131072||(view.sourceBytes as number)>256*1024*1024){
+                  throw new Error("Invalid Native terrain source view binding");
+                }
+                return Object.freeze({ownerId:request.ownerId,sourceDigest:view.sourceDigest,centerOfMass:Object.freeze({x:center.x as number,y:center.y as number,z:center.z as number}),
+                  cellCount:request.cells.length,massKg:view.massKg,colliders:view.colliders as number,sourceBytes:view.sourceBytes as number});
+              }));
+            });
+          pump.host.assertCurrent();
+          if(work.onSourcePrepared!==undefined){await work.onSourcePrepared(sourceViews!);}
+          pump.host.assertCurrent();mutating=true;
+          await send({kind:"PrepareTerrain",transactionId:id,generation,sourceDigest:work.sourceDigest,sourceSessionId:work.sourceSessionId,sourceEpoch:work.sourceEpoch,prepareRequestId,replacements:[],fragments:[]},[],false);
+        }catch(error){if(heldSnapshot?.value.terrainTransaction==="RecoveryHold"){snapshot=heldSnapshot.value;lastSnapshotSequence=heldSnapshot.sequence;}
+          if(prepareRequestId!==undefined&&heldSnapshot?.value.terrainTransaction!=="RecoveryHold"&&failure===undefined&&!disposed){
+            try{await send({kind:"ReleaseTerrainPlan",transactionId:id,generation,sourceDigest:work.sourceDigest,sourceSessionId:work.sourceSessionId,sourceEpoch:work.sourceEpoch,prepareRequestId},[],false,reply=>{
+              if(reply.terrainPlanReleased?.prepareRequestId!==prepareRequestId||reply.snapshot!==undefined){throw new Error("Missing Native terrain release receipt");}
+            });}catch(releaseError){fail(new Error(`Native terrain release unproven: ${String(releaseError)}`));}
+          }
+          mutating=false;throw error;}
+        finally{bodyPending=false;pump.dispose();}
+        return;
+      }
       mutating=true;
       try {
         await send({kind:"PrepareTerrain",transactionId:id,generation,replacements,fragments:fragments.map(f=>({ownerId:f.ownerId,massKg:f.massKg,

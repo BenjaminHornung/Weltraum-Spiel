@@ -1,0 +1,10 @@
+{
+  "runId": "A03-witness-value-read-r58-controls",
+  "binding": "A03-witness-value-read-r58-binding.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-owned-hash-array-open.test.ts"
+  ],
+  "nativeCapSeconds": 180,
+  "classification": "Exactimmutable dense witness direct data index only; allchildren/scalars/encoding/FNV/units/generic/defaults unchanged; original deadlines"
+}

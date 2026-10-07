@@ -1,0 +1,11 @@
+{
+  "cpuProfile": true,
+  "mode": "tests",
+  "nativeCapSeconds": 180,
+  "files": [
+    "tests/unit/hvp-body-plan-owner.test.ts"
+  ],
+  "runId": "A02-owner-native-profile-r71",
+  "classification": "PERTURBED_DIAGNOSTIC_ONLY fullunchangedOwner65 original180/defaultdeadlines/reporters; taskendworkers0/foregroundblank; rawprofilesprivateexcludedfromPlanner",
+  "binding": "A03-witnessed-number-r70-binding-r02.json"
+}

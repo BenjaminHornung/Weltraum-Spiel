@@ -1,0 +1,14 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-borrowed-body-plan.test.ts (6 tests) 2928ms
+   ✓ composes the same complete Box plan, children and removed mass under one retained parent  737ms
+   ✓ composes the same complete Sphere plan, children and removed mass under one retained parent  996ms
+   ✓ yields through Sphere material comparisons while preserving first-match semantics  955ms
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  16:06:08
+   Duration  4.61s (transform 679ms, setup 0ms, import 1.52s, tests 2.93s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-borrowed-body-review-green-r01/original-vitest.json

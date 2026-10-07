@@ -1,0 +1,8 @@
+{
+  "runId": "A03-dense-once-r53-controls",
+  "startedUtc": "2026-10-05T22:06:34.8015396+00:00",
+  "endedUtc": "2026-10-05T22:06:37.0927762+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 2.2820298,
+  "planFile": "A03-dense-once-r53-controls.plan.json"
+}

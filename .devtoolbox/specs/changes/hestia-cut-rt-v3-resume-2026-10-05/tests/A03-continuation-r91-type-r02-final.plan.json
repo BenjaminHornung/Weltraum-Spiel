@@ -1,0 +1,8 @@
+{
+  "runId": "A03-continuation-r91-type-r02-final",
+  "nativeCapSeconds": 60,
+  "classification": "Bounded existing-emitter delegation candidate, whole files/default semantic controls",
+  "binding": "A03-continuation-r91-binding-r02.json",
+  "mode": "type",
+  "files": []
+}

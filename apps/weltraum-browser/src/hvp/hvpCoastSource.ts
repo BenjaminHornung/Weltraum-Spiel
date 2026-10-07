@@ -16,6 +16,8 @@
  */
 
 import { fnv1aHash } from "../core/hash";
+import {copyHvpOwnedSlotLeaf,createHvpOwnedSlotBlockCopy,type HvpOwnedLeafCopy,type HvpOwnedSlotBlockCopy} from "../hestia-prototype/terrain/ownedSlotCopy";
+import {hvpOwnedGridLeafCopy,type decodeHvpGrid} from "../hestia-prototype/persistence/gridCheckpoint";
 import type { HvpCoverageState } from "./hvpTerrain";
 
 export const HVP_COAST_SOURCE_VERSION = "hvp-authored-coast-v5";
@@ -538,9 +540,12 @@ const digestSourceSlots = (slots: Uint8Array): string => {
   return (hash >>> 0).toString(16).padStart(8, "0");
 };
 
-const wrapSnapshot = (slots: Uint8Array): HvpCoastSourceSnapshot => {
+const ownedCoastCopies=new WeakMap<object,{leaf:HvpOwnedLeafCopy;bytes:()=>Uint8Array;block:HvpOwnedSlotBlockCopy}>();
+export const hvpOwnedCoastLeafCopy=(source:object)=>ownedCoastCopies.get(source)?.leaf;
+export const hvpOwnedCoastSlotBlockCopy=(source:object)=>ownedCoastCopies.get(source)?.block;
+const wrapSnapshot = (slots: Uint8Array,owned=true): HvpCoastSourceSnapshot => {
   const sourceDigest = digestSourceSlots(slots);
-  return Object.freeze({
+  const result=Object.freeze({
     version: HVP_COAST_SOURCE_VERSION,
     seedName: HVP_COAST_SEED_NAME,
     registryDigest: HVP_COAST_REGISTRY_DIGEST,
@@ -561,6 +566,7 @@ const wrapSnapshot = (slots: Uint8Array): HvpCoastSourceSnapshot => {
     },
     copySlots: (): Uint8Array => slots.slice()
   });
+  if(owned){ownedCoastCopies.set(result,{leaf:(x,y,z)=>copyHvpOwnedSlotLeaf(slots,HVP_SOURCE_SIZE_X,HVP_SOURCE_SIZE_Y,HVP_SOURCE_SIZE_Z,x,y,z),bytes:()=>new Uint8Array(slots),block:createHvpOwnedSlotBlockCopy(slots)});}return result;
 };
 
 /** Fully materialized, validated coast pages for the named seed. */
@@ -568,9 +574,17 @@ export const materializeHvpCoastSource = (): HvpCoastSourceSnapshot => wrapSnaps
 
 /** Artifact boundary: verify saved canonical bytes without running the generator. */
 export const restoreHvpCoastSource = (slots:Uint8Array,expectedDigest:string):HvpCoastSourceSnapshot => {
+  return restoreCoastSlots(slots,expectedDigest,false);
+};
+/** Private cold-game route: the exact validated Grid producer exposes only defensive copies. */
+export const restoreHvpOwnedCoastGrid=(grid:ReturnType<typeof decodeHvpGrid>,expectedDigest:string):HvpCoastSourceSnapshot=>{
+  if(hvpOwnedGridLeafCopy(grid)===undefined){throw new Error("Unowned coast grid producer");}
+  return restoreCoastSlots(grid.copySlots(),expectedDigest,true);
+};
+const restoreCoastSlots=(slots:Uint8Array,expectedDigest:string,owned:boolean):HvpCoastSourceSnapshot=>{
   if(!(slots instanceof Uint8Array)||slots.length!==HVP_SOURCE_SLOT_COUNT||slots.some(s=>s>HVP_SLOT_MOSS)
     ||typeof expectedDigest!=="string"||!/^[0-9a-f]{8}$/.test(expectedDigest)){throw new Error("Invalid coast checkpoint");}
-  const snapshot=wrapSnapshot(slots.slice());
+  const snapshot=wrapSnapshot(owned?new Uint8Array(slots):slots.slice(),owned);
   if(snapshot.sourceDigest!==expectedDigest){throw new Error("Coast checkpoint digest mismatch");}
   return snapshot;
 };
@@ -716,8 +730,13 @@ const assertLeafAddress = (lx: number, ly: number, lz: number): void => {
  * unrelated snapshot reader closures.
  */
 export const prepareHvpCoastSource = (snapshot: HvpCoastSourceSnapshot): HvpPreparedCoastSource => {
+  return prepareCoastSource(snapshot);
+};
+/** First-party source entry; foreign/Proxy snapshots keep the complete public path. */
+export const prepareHvpOwnedCoastSource=(snapshot:HvpCoastSourceSnapshot):HvpPreparedCoastSource=>prepareCoastSource(snapshot,ownedCoastCopies.get(snapshot));
+const prepareCoastSource=(snapshot:HvpCoastSourceSnapshot,owned?:{leaf:HvpOwnedLeafCopy;bytes:()=>Uint8Array}):HvpPreparedCoastSource=>{
   assertHvpSourceComplete(snapshot);
-  const bytes = snapshot.copySlots();
+  const bytes = owned===undefined?snapshot.copySlots():owned.bytes();
   const origin = Object.freeze({ x: snapshot.originMeters.x, y: snapshot.originMeters.y, z: snapshot.originMeters.z });
   const readSlot = (ix: number, iy: number, iz: number): number => {
     if (!Number.isInteger(ix) || !Number.isInteger(iy) || !Number.isInteger(iz)) {
@@ -767,7 +786,7 @@ export const prepareHvpCoastSource = (snapshot: HvpCoastSourceSnapshot): HvpPrep
     }
   }
   const combinedLeafDigest = (combined >>> 0).toString(16).padStart(8, "0");
-  return Object.freeze({
+  const result=Object.freeze({
     version: snapshot.version,
     seedName: snapshot.seedName,
     registryDigest: snapshot.registryDigest,
@@ -783,6 +802,8 @@ export const prepareHvpCoastSource = (snapshot: HvpCoastSourceSnapshot): HvpPrep
     readLeaf,
     copyBytes: (): Uint8Array => bytes.slice()
   });
+  if(owned!==undefined){ownedCoastCopies.set(result,{leaf:(x,y,z)=>copyHvpOwnedSlotLeaf(bytes,HVP_SOURCE_SIZE_X,HVP_SOURCE_SIZE_Y,HVP_SOURCE_SIZE_Z,x,y,z),bytes:()=>new Uint8Array(bytes),block:createHvpOwnedSlotBlockCopy(bytes)});}
+  return result;
 };
 
 export interface HvpOuterWaterMask {

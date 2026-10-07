@@ -1,0 +1,17 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvpOwnedBodyMesh.test.ts (9 tests) 2153ms
+   ✓ reuses the mesh kernel without changing mixed-material local Float32 bytes or metadata  398ms
+   ✓ rejects changed geometry against the issued local source, not changed foreign cells or matching digest  354ms
+   ✓ closes owned cursors at local-position and geometry-comparison yields  335ms
+   ✓ charges the borrowed parent before allocating any owned occupancy mesh  352ms
+   ✓ charges actual face/quad containers without changing mixed-material bytes  337ms
+   ✓ keeps expected-geometry verification inside the same borrowed parent budget  344ms
+
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
+   Start at  19:57:56
+   Duration  3.97s (transform 723ms, setup 0ms, import 1.62s, tests 2.15s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-quote-count-green-r01/original-vitest.json

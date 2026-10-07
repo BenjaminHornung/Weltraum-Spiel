@@ -1,0 +1,8 @@
+{
+  "runId": "A05-pregraphics-r115-recovery-red",
+  "startedUtc": "2026-10-06T22:03:59.0074282+00:00",
+  "endedUtc": "2026-10-06T22:04:12.3750427+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 13.3587673,
+  "planFile": "A05-pregraphics-r115-recovery-red.plan.json"
+}

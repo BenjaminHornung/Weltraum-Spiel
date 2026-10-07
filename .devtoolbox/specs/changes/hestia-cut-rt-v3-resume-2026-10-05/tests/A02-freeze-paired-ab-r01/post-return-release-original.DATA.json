@@ -1,0 +1,48 @@
+{
+  "observedUtc": "2026-10-05T10:32:21.972536+00:00",
+  "scopedReleaseSeconds": 62.280193,
+  "cleanup60": "FAIL_LATE_OBSERVATION",
+  "scope": [
+    {
+      "role": "caller",
+      "pid": 49880,
+      "presence": "PRESENT",
+      "creationFileTime": 134356698785354866,
+      "observed": {
+        "presence": "ABSENT",
+        "win32Error": 87
+      }
+    },
+    {
+      "role": "wrapper",
+      "pid": 13384,
+      "presence": "PRESENT",
+      "creationFileTime": 134356698788964473,
+      "observed": {
+        "presence": "ABSENT",
+        "win32Error": 87
+      }
+    },
+    {
+      "role": "native",
+      "pid": 10880,
+      "presence": "PRESENT",
+      "creationFileTime": 134356698789859912,
+      "observed": {
+        "presence": "ABSENT",
+        "win32Error": 87
+      }
+    }
+  ],
+  "nativeJobCountsAtTerminal": {
+    "TotalProcesses": 6,
+    "ActiveProcesses": 1,
+    "TotalTerminatedProcesses": 0
+  },
+  "nativeTreeReleased": "PASS",
+  "elapsedSeconds": 63.43705,
+  "admin600": "PASS",
+  "Dwork540": "PASS",
+  "earlierTrees": "UNCHANGED",
+  "foreignProcesses": "NOT_TARGETED"
+}

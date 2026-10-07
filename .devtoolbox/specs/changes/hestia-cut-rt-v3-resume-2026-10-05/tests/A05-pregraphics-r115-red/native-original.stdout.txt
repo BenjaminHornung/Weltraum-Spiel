@@ -1,0 +1,11 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-terrain-consumer.test.ts (0 test)
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  23:55:08
+   Duration  406ms (transform 0ms, setup 0ms, import 0ms, tests 0ms, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-pregraphics-r115-red/original-vitest.json

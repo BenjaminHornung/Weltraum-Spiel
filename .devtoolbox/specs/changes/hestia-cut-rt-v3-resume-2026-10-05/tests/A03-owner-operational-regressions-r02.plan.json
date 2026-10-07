@@ -1,0 +1,17 @@
+{
+  "classification": "Same8 full regressions after exact RecoveryHold preservation; original assertions and per-test deadlines",
+  "runId": "A03-owner-operational-regressions-r02",
+  "files": [
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts",
+    "tests/unit/hvp-body-mesh-worker.test.ts",
+    "tests/unit/hvp-body-mesh-client.test.ts",
+    "tests/unit/hvp-body-mesh-protocol.test.ts",
+    "tests/unit/hvp-physics-client-diagnostics.test.ts",
+    "tests/unit/hvp-physics-worker-body-clock.test.ts",
+    "tests/unit/hvp-moving-cut.test.ts",
+    "tests/unit/hvpIssuedParentMass.test.ts"
+  ],
+  "nativeCapSeconds": 600,
+  "mode": "tests",
+  "binding": "A03-owner-operational-regressions-r02-binding.json"
+}

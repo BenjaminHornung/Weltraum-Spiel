@@ -1,0 +1,71 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvpBodyCutWire.test.ts (60 tests | 3 failed) 19331ms
+   × preserves all seven original wire buffers and hash through borrowed copy steps 6ms
+   × rejects wire parent credit before allocating output channels 1ms
+   × closes wire copies on cancellation without publishing a partial packet or releasing parent credit 0ms
+     ✓ allows exact and empty ends without arithmetic overflow 0ms
+     ✓ rejects invalid span 4/5/8 1ms
+     ✓ rejects invalid span 9007199254740991/2/8 0ms
+     ✓ rejects invalid span -1/1/8 0ms
+     ✓ rejects invalid span 0/-1/8 0ms
+     ✓ rejects invalid span 0.5/1/8 0ms
+     ✓ rejects invalid span 0/Infinity/8 0ms
+     ✓ rejects invalid span 0/1/NaN 0ms
+     ✓ reads seven full separate channels and keeps part-local index/range values 1ms
+     ✓ allows empty numeric channels for a complete-removal header 0ms
+     ✓ rejects a detached zero-length channel rather than treating it as an owned empty buffer 0ms
+     ✓ rejects overlap or gaps in cellOffset 1ms
+     ✓ rejects overlap or gaps in vertexOffset 0ms
+     ✓ rejects overlap or gaps in indexOffset 1ms
+     ✓ rejects overlap or gaps in rangeOffset 0ms
+     ✓ rejects trailing channel data not covered by any part 0ms
+     ✓ rejects unsupported wire/binding and non-closed header/part/center keys 1ms
+     ✓ rejects aliases, shared buffers, resizable buffers and shadowed resizable flags 1ms
+     ✓ rejects wrong view kinds, offsets and partial buffers 1ms
+     ✓ rejects metadata at 65537 bytes before creating numeric result arrays 2ms
+     ✓ accepts exact metadata and total-byte cap boundaries (layout-only) 15ms
+     ✓ rejects an exact 8MiB+1 packet before interpreting part data 13ms
+     ✓ packs actual legacy products without global rebasing or changing input arrays  411ms
+     ✓ encodes a real complete-removal receipt with six distinct empty numeric buffers 205ms
+     ✓ rejects oversized metadata and aggregate arrays before channel copies  348ms
+     ✓ keeps full owned index width at 65532 vertices (decoder-only allocation fixture)  363ms
+     ✓ keeps full owned index width at 65536 vertices (decoder-only allocation fixture)  364ms
+     ✓ preserves every actual box product, local array byte and mechanical field  355ms
+     ✓ preserves sphere selection, mixed materials and negative object coordinates  2647ms
+     ✓ preserves the real complete-removal receipt 193ms
+     ✓ keeps the original absolute mass and COM tolerances  337ms
+     ✓ rejects forged ownerId despite a fresh transport hash  345ms
+     ✓ rejects forged sourceDigest despite a fresh transport hash  326ms
+     ✓ rejects forged massKg despite a fresh transport hash  339ms
+     ✓ rejects forged center despite a fresh transport hash  326ms
+     ✓ rejects forged sourceBytes despite a fresh transport hash  337ms
+     ✓ rejects forged removedCells despite a fresh transport hash  321ms
+     ✓ rejects forged removedMassKg despite a fresh transport hash  328ms
+     ✓ rejects positionNaN with unchanged valid layout and refreshed hash  336ms
+     ✓ rejects positionInfinity with unchanged valid layout and refreshed hash  327ms
+     ✓ rejects normal with unchanged valid layout and refreshed hash  323ms
+     ✓ rejects color with unchanged valid layout and refreshed hash  324ms
+     ✓ rejects index with unchanged valid layout and refreshed hash  318ms
+     ✓ rejects duplicate with unchanged valid layout and refreshed hash  326ms
+     ✓ rejects removed with unchanged valid layout and refreshed hash  334ms
+     ✓ rejects material with unchanged valid layout and refreshed hash  339ms
+     ✓ rejects rangeSlot with unchanged valid layout and refreshed hash  346ms
+     ✓ rejects rangeStart with unchanged valid layout and refreshed hash  340ms
+     ✓ rejects rangeCount with unchanged valid layout and refreshed hash  340ms
+     ✓ rejects a JSON numeric overflow in COM, not only a JSON null  327ms
+     ✓ owns returned arrays/cells and validates later transport mutations again  332ms
+     ✓ rejects an oversized source-mesh set before retaining more parts or aggregating buffers  605ms
+     ✓ executes actual V1/V2 jobs with identical box products  605ms
+     ✓ executes actual V1/V2 jobs with identical sphere products  4594ms
+     ✓ executes actual V1/V2 jobs with identical complete products  322ms
+     ✓ leaves algorithm/hash/epoch admission at the unchanged result gate  623ms
+     ✓ transfers all seven buffers through the existing real runtime/pool protocol  674ms
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 57 passed (60)
+   Start at  19:02:12
+   Duration  21.00s (transform 677ms, setup 0ms, import 1.49s, tests 19.33s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-wire-encode-red-r01/original-vitest.json

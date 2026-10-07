@@ -1,0 +1,386 @@
+{
+  "before": {
+    "ownerId": "hvp:terrain-fragment:r1:1b4aa69d",
+    "sourceDigest": "fnv1a64-v1:70d85a5593bd44c9",
+    "revision": 0,
+    "issuedTick": 573,
+    "cell": [
+      189,
+      84,
+      76
+    ],
+    "pose": {
+      "position": {
+        "x": 8.427063941955566,
+        "y": 0.973335862159729,
+        "z": -4.908839225769043
+      },
+      "rotation": {
+        "x": 0.03764636069536209,
+        "y": 0.6483198404312134,
+        "z": 0.01415773294866085,
+        "w": 0.7603049874305725
+      }
+    }
+  },
+  "receipt": {
+    "id": "moving-cut-1",
+    "status": "Applied",
+    "parentId": "hvp:terrain-fragment:r1:1b4aa69d",
+    "children": [
+      "hvp:terrain-fragment:r1:1b4aa69d:r1:p0"
+    ],
+    "removedCells": 32,
+    "removedMassKg": 135.9375,
+    "issuedTick": 577,
+    "commitTick": 599,
+    "parentPose": {
+      "position": {
+        "x": 8.427064895629883,
+        "y": 0.9733358025550842,
+        "z": -4.908839225769043
+      },
+      "rotation": {
+        "x": 0.03764672577381134,
+        "y": 0.6483204364776611,
+        "z": 0.014157693833112717,
+        "w": 0.7603045105934143
+      },
+      "velocity": {
+        "x": -4.873337502431241e-7,
+        "y": 0.0000510511381435208,
+        "z": -0.00024969864170998335
+      },
+      "angularVelocity": {
+        "x": 0.000034413100365782157,
+        "y": -0.00022670038742944598,
+        "z": -0.00008213551336666569
+      }
+    },
+    "removedMomentum": {
+      "massKg": 135.9375,
+      "referencePoint": {
+        "x": 8.427064895629883,
+        "y": 0.9733358025550842,
+        "z": -4.908839225769043
+      },
+      "center": {
+        "x": 8.476599859293449,
+        "y": 1.1167841586701643,
+        "z": -5.138762750508782
+      },
+      "linear": {
+        "x": 0.008620969031235758,
+        "y": 0.007462280879978405,
+        "z": -0.03174583014288649
+      },
+      "angular": {
+        "x": -0.002702486903443359,
+        "y": -0.0017013291843770977,
+        "z": -0.0011884614706057014
+      }
+    }
+  },
+  "tool": {
+    "id": "moving-cut-1",
+    "status": "Applied",
+    "reason": "Current-pose fragment replacement"
+  },
+  "health": {
+    "enabled": true,
+    "samples": 1718,
+    "errors": 0,
+    "dropped": 0,
+    "cutObservation": {
+      "status": "armed",
+      "drops": 0,
+      "disables": 0,
+      "inputCount": 1,
+      "pendingRender": false
+    },
+    "timingSinkFailures": 0,
+    "publishedOrigin": 1791249728702.5,
+    "publishedAt": 15729.79999999702
+  },
+  "raw": {
+    "entries": [
+      {
+        "name": "hvp.cutBodyInputMs",
+        "start": 15486.09999999404,
+        "duration": 0,
+        "detail": {
+          "sampleId": "cutBodyInputMs:1672",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyInputMs",
+            "origin": 1791249728702.5,
+            "start": 15486.09999999404,
+            "duration": 0
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodySubmittedMs",
+        "start": 15490.40000000596,
+        "duration": 0,
+        "detail": {
+          "sampleId": "cutBodySubmittedMs:1671",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodySubmittedMs",
+            "origin": 1791249728702.5,
+            "start": 15490.40000000596,
+            "duration": 0
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyOwnerPlanMs",
+        "start": 15497.79999999702,
+        "duration": 320.70000000298023,
+        "detail": {
+          "sampleId": "cutBodyOwnerPlanMs:1733",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyOwnerPlanMs",
+            "origin": 1791249728702.5,
+            "start": 15497.79999999702,
+            "duration": 320.70000000298023
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyPrepareWorkMs",
+        "start": 15819,
+        "duration": 1.7999999970197678,
+        "detail": {
+          "sampleId": "cutBodyPrepareWorkMs:1734",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyPrepareWorkMs",
+            "origin": 1791249728702.5,
+            "start": 15819,
+            "duration": 1.7999999970197678
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyPrepareWorkMs",
+        "start": 15827.59999999404,
+        "duration": 0.9000000059604645,
+        "detail": {
+          "sampleId": "cutBodyPrepareWorkMs:1737",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyPrepareWorkMs",
+            "origin": 1791249728702.5,
+            "start": 15827.59999999404,
+            "duration": 0.9000000059604645
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyMeshWorkerMs",
+        "start": 15818.5,
+        "duration": 17.299999997019768,
+        "detail": {
+          "sampleId": "cutBodyMeshWorkerMs:1739",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyMeshWorkerMs",
+            "origin": 1791249728702.5,
+            "start": 15818.5,
+            "duration": 17.299999997019768
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyNativeAdmissionMs",
+        "start": 15835.90000000596,
+        "duration": 11.899999991059303,
+        "detail": {
+          "sampleId": "cutBodyNativeAdmissionMs:1744",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyNativeAdmissionMs",
+            "origin": 1791249728702.5,
+            "start": 15835.90000000596,
+            "duration": 11.899999991059303
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyPrepareWorkMs",
+        "start": 15848.09999999404,
+        "duration": 1.800000011920929,
+        "detail": {
+          "sampleId": "cutBodyPrepareWorkMs:1745",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyPrepareWorkMs",
+            "origin": 1791249728702.5,
+            "start": 15848.09999999404,
+            "duration": 1.800000011920929
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyMainDecodeMs",
+        "start": 15847.79999999702,
+        "duration": 2.9000000059604645,
+        "detail": {
+          "sampleId": "cutBodyMainDecodeMs:1747",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyMainDecodeMs",
+            "origin": 1791249728702.5,
+            "start": 15847.79999999702,
+            "duration": 2.9000000059604645
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyPrepareWorkMs",
+        "start": 15849.90000000596,
+        "duration": 0.699999988079071,
+        "detail": {
+          "sampleId": "cutBodyPrepareWorkMs:1746",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyPrepareWorkMs",
+            "origin": 1791249728702.5,
+            "start": 15849.90000000596,
+            "duration": 0.699999988079071
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyRenderStageMs",
+        "start": 15850.90000000596,
+        "duration": 6.0999999940395355,
+        "detail": {
+          "sampleId": "cutBodyRenderStageMs:1748",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyRenderStageMs",
+            "origin": 1791249728702.5,
+            "start": 15850.90000000596,
+            "duration": 6.0999999940395355
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyInputToAppliedMs",
+        "start": 15486.09999999404,
+        "duration": 425.19970703125,
+        "detail": {
+          "sampleId": "cutBodyInputToAppliedMs:1758",
+          "data": {
+            "commandId": "moving-cut-1",
+            "inputOrigin": 1791249728702.5,
+            "inputStart": 15486.09999999404,
+            "terminalOrigin": 1791249728702.5,
+            "terminalStart": 15490.40000000596,
+            "terminalDuration": 420.8999999910593
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyFirstCommittedRenderSubmitMs",
+        "start": 15486.09999999404,
+        "duration": 458.7998046875,
+        "detail": {
+          "sampleId": "cutBodyFirstCommittedRenderSubmitMs:1761",
+          "data": {
+            "commandId": "moving-cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~4",
+              "hvp:terrain:s7:e0~5"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false,
+            "bodySequence": 1,
+            "parentId": "hvp:terrain-fragment:r1:1b4aa69d",
+            "children": [
+              {
+                "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+                "sourceDigest": "fnv1a64-v1:c05b830d110a061f",
+                "renderKey": "hvp:fragment:e0~8"
+              }
+            ],
+            "activeBodyKeys": [
+              "hvp:fragment:e0~8",
+              "hvp:branch:parent",
+              "hvp:branch:foliage:r0"
+            ],
+            "outcomeIdentityMatches": true
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyTotalAppliedMs",
+        "start": 15490.40000000596,
+        "duration": 420.8999999910593,
+        "detail": {
+          "sampleId": "cutBodyTotalAppliedMs:1757",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyTotalAppliedMs",
+            "origin": 1791249728702.5,
+            "start": 15490.40000000596,
+            "duration": 420.8999999910593
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyMeshReleaseMs",
+        "start": 15897,
+        "duration": 14.299999997019768,
+        "detail": {
+          "sampleId": "cutBodyMeshReleaseMs:1756",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyMeshReleaseMs",
+            "origin": 1791249728702.5,
+            "start": 15897,
+            "duration": 14.299999997019768
+          }
+        }
+      }
+    ],
+    "dropped": 0
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "runId": "A03-immutable-channels-r50-type",
+  "startedUtc": "2026-10-05T21:22:28.0959908+00:00",
+  "endedUtc": "2026-10-05T21:22:30.7404017+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 2.63577,
+  "planFile": "A03-immutable-channels-r50-type.plan.json"
+}

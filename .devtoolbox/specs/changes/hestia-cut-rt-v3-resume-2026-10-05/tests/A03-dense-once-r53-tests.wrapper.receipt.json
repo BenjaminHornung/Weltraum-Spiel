@@ -1,0 +1,8 @@
+{
+  "runId": "A03-dense-once-r53-tests",
+  "startedUtc": "2026-10-05T22:08:30.4015741+00:00",
+  "endedUtc": "2026-10-05T22:10:06.3889024+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 95.978473,
+  "planFile": "A03-dense-once-r53-tests.plan.json"
+}

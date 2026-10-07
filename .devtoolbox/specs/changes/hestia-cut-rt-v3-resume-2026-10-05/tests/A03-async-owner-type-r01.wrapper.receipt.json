@@ -1,0 +1,8 @@
+{
+  "runId": "A03-async-owner-type-r01",
+  "startedUtc": "2026-10-05T16:20:27.4687433+00:00",
+  "endedUtc": "2026-10-05T16:20:28.7658559+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 1.292891,
+  "planFile": "A03-async-owner-type-r01.plan.json"
+}

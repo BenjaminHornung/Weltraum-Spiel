@@ -1,0 +1,8 @@
+{
+  "runId": "A06-retained-hud-route-r59-red-type",
+  "binding": "A06-retained-hud-route-r59-red-binding.json",
+  "mode": "type",
+  "files": [],
+  "nativeCapSeconds": 60,
+  "classification": "Exact recovered HUD/route controls on unchanged baseline; no individual deadlines changed"
+}

@@ -1,0 +1,12 @@
+{
+  "files": [
+    "tests/unit/hvp-owned-support-plan.test.ts",
+    "tests/unit/hvp-terrain-support.test.ts",
+    "tests/unit/hvp-terrain-transfer.test.ts"
+  ],
+  "runId": "A05-support-r96-green-r01",
+  "nativeCapSeconds": 180,
+  "mode": "tests",
+  "classification": "Whole owned support parity cancellation plus original support and wire populations",
+  "binding": "A05-support-r96-binding-r01.json"
+}

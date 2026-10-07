@@ -1,0 +1,41 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-borrowed-body-plan.test.ts > reuses only this reserved preparation's freshly derived fragment binding and keeps complete mass/classification/transition bytes
+AssertionError: expected [ …(2) ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ tests/unit/hvp-borrowed-body-plan.test.ts:106:119
+    104|     expect(JSON.stringify(actual)).toBe(JSON.stringify(expected));
+    105|     for(const schemaVersion of [STRUCTURAL_FRAGMENT_SCHEMA_VERSION,STR…
+    106|       expect(hash.mock.calls.filter(([payload])=>(payload as {schemaVe…
+       |                                                                                                                       ^
+    107|     }
+    108|     expect(ledger.resources.reservedBytes).toBeGreaterThan(0);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/hvp-owned-hash-array-open.test.ts > proves produced dense shape during both bounded freeze routes without witnessing holes, accessors or cancellation
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/hvp-owned-hash-array-open.test.ts:15:94
+     13|     for(const freeze of [adaptiveFreezeArraySteps,structuralFreezeArra…
+     14|       const values=[1,undefined,-0];expect(drain(freeze(values,ledger.…
+     15|       expect(Object.isFrozen(values)).toBe(true);expect(isValidatedFro…
+       |                                                                                              ^
+     16|       let reads=0;const accessor:number[]=[];Object.defineProperty(acc…
+     17|       const hole=[,1],cancel=[1,2,3],steps=freeze(cancel,ledger.reserv…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+

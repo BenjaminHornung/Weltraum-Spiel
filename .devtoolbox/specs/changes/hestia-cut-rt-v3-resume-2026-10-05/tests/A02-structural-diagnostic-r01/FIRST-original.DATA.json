@@ -1,0 +1,27 @@
+{
+  "firstUtc": "2026-10-05T09:56:56.121354+00:00",
+  "adminSeconds": 600,
+  "DworkSeconds": 540,
+  "finalSeconds": 60,
+  "cleanupSeconds": 60,
+  "H60Admission": true,
+  "capSecondsIncludingWrapper": 180,
+  "wholeFiles": [
+    "tests/unit/structuralMicrovoxelContracts.test.ts",
+    "tests/unit/structuralMicrovoxelCommands.test.ts",
+    "tests/unit/structuralMicrovoxelConnectivity.test.ts",
+    "tests/unit/structuralMicrovoxelMassProperties.test.ts",
+    "tests/unit/structuralMicrovoxelPersistence.test.ts",
+    "tests/unit/hvp-parallel-p01-classification.test.ts",
+    "tests/unit/hvp-classification-contract-controls.test.ts",
+    "tests/unit/structuralOwnedReconstructionCursor.test.ts",
+    "tests/unit/structuralOwnedCommandCursor.test.ts",
+    "tests/unit/hvp-owned-ingest-journal-prefix.test.ts",
+    "tests/unit/hvp-owned-materialization.test.ts",
+    "tests/unit/hvp-owned-structural-ingest.test.ts"
+  ],
+  "modeInjection": "TEST_LOCAL_A02_TRACE",
+  "selectorsBailDeadlineChange": "NONE",
+  "testTimeout": "DEFAULT5000_AND_ORIGINAL_EXPLICIT_DECLARATIONS_UNCHANGED",
+  "helperSha256": "11d936f83a2276ae924579da18c04a6ae88fba67c82296f0d86bc3f93f530b1a"
+}

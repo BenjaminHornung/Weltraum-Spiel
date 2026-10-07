@@ -1,0 +1,8 @@
+{
+  "classification": "Default and borrowed same-mesher typed terrain collision byte parity; productionprivateDerivative notactivated untilboundeddecoder",
+  "runId": "A05-derivative-r101-type-r01",
+  "files": [],
+  "mode": "type",
+  "nativeCapSeconds": 60,
+  "binding": "A05-derivative-r101-binding-r01.json"
+}

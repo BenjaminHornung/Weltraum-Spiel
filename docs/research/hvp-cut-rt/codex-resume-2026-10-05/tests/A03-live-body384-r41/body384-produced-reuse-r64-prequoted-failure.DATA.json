@@ -1,0 +1,12 @@
+{
+  "classification":"FAILED_CUT_NO_APPLIED_NO_RENDER_NOT_FORMAL_42",
+  "sourceBinding":"A03-fresh-produced-reuse-r64-binding-r02.json",
+  "tool":{"id":"moving-cut-1","status":"Rejected","reason":"Error: Body mesh prepaid allowance exhausted"},
+  "parent":{"ownerId":"hvp:terrain-fragment:r1:1b4aa69d","sourceDigest":"fnv1a64-v1:70d85a5593bd44c9","cellCount":384,"massKg":1722.65625,"colliders":1,"sourceBytes":262144},
+  "nativeGeneration":1,
+  "movingSequence":0,
+  "timing":{"ownerPlanMs":276.09999999403954,"inputToRejectedMs":303.599853515625,"totalRejectedMs":298.3999999910593,"meshReleaseMs":6},
+  "quantums":{"totalSteps":2123,"maximumMs":1.5},
+  "receipt":"Late readonly observation confirms retained original parent, Idle native transaction and zero committed moving sequence; no Save writes",
+  "diagnosticLimit":"Late unfiltered frame drain had1459drops and is excluded. Diagnostic helper now conservatively bounds retained raw records to256KiB and returns any terminal outcome without waiting30s for an impossible Applied. Product diagnostic/cap contracts unchanged."
+}

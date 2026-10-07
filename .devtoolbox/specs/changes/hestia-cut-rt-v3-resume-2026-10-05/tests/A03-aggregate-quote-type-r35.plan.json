@@ -1,0 +1,8 @@
+{
+  "nativeCapSeconds": 60,
+  "mode": "type",
+  "binding": "A03-aggregate-quote-r35-binding.json",
+  "files": [],
+  "runId": "A03-aggregate-quote-type-r35",
+  "classification": "Fresh aggregate quote typecheck"
+}

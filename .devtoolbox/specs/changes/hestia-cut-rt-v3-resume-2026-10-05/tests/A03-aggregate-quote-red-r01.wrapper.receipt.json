@@ -1,0 +1,8 @@
+{
+  "runId": "A03-aggregate-quote-red-r01",
+  "startedUtc": "2026-10-05T18:32:58.1688615+00:00",
+  "endedUtc": "2026-10-05T18:33:02.2939499+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 4.1208851,
+  "planFile": "A03-aggregate-quote-red-r01.plan.json"
+}

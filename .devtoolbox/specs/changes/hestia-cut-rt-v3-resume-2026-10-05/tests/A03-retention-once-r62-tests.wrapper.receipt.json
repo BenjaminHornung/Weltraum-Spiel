@@ -1,0 +1,8 @@
+{
+  "runId": "A03-retention-once-r62-tests",
+  "startedUtc": "2026-10-05T23:57:16.8625878+00:00",
+  "endedUtc": "2026-10-05T23:58:34.9039873+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 78.0354535,
+  "planFile": "A03-retention-once-r62-tests.plan.json"
+}

@@ -1,0 +1,8 @@
+{
+  "runId": "A03-continuation-r91-build-r01",
+  "nativeCapSeconds": 180,
+  "classification": "Bounded existing-emitter delegation candidate, whole files/default semantic controls",
+  "binding": "A03-continuation-r91-binding-r01.json",
+  "mode": "build",
+  "files": null
+}

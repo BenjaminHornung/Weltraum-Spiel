@@ -1,0 +1,8 @@
+{
+  "runId": "A02-reporter-bootstrap-current-r95",
+  "startedUtc": "2026-10-06T17:32:13.5930375+00:00",
+  "endedUtc": "2026-10-06T17:38:59.9938161+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 406.3927885,
+  "planFile": "A02-reporter-bootstrap-current-r95.plan.json"
+}

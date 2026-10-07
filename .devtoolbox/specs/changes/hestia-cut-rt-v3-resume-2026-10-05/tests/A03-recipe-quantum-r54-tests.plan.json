@@ -1,0 +1,14 @@
+{
+  "runId": "A03-recipe-quantum-r54-tests",
+  "binding": "A03-recipe-quantum-r54-binding.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-borrowed-body-plan.test.ts",
+    "tests/unit/hvp-body-plan-task-quantum.test.ts",
+    "tests/unit/hvp-owned-single-component-masses.test.ts",
+    "tests/unit/hvp-classification-contract-controls.test.ts",
+    "tests/unit/hvp-parallel-p01-classification.test.ts"
+  ],
+  "nativeCapSeconds": 600,
+  "classification": "Borrowed recipe uses existing128or1ms helper; exact generic/noreseve route/recipes/parentcredits/cancellation; original deadlines"
+}

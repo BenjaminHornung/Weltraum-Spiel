@@ -1,0 +1,8 @@
+{
+  "runId": "A02-bootstrap-diagnostic-r01",
+  "startedUtc": "2026-10-05T10:14:33.7118045+00:00",
+  "endedUtc": "2026-10-05T10:17:33.7292675+00:00",
+  "wrapperExitCode": 91,
+  "elapsedSeconds": 180.0083216,
+  "planFile": "A02-bootstrap-diagnostic-r01.plan.json"
+}

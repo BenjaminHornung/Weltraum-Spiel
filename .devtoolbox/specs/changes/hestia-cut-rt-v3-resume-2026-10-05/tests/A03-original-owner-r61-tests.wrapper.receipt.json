@@ -1,0 +1,8 @@
+{
+  "runId": "A03-original-owner-r61-tests",
+  "startedUtc": "2026-10-05T23:51:24.4392189+00:00",
+  "endedUtc": "2026-10-05T23:54:23.9184482+00:00",
+  "wrapperExitCode": 91,
+  "elapsedSeconds": 179.4717713,
+  "planFile": "A03-original-owner-r61-tests.plan.json"
+}

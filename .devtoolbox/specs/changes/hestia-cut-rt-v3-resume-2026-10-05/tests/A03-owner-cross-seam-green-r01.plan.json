@@ -1,0 +1,10 @@
+{
+  "nativeCapSeconds": 180,
+  "files": [
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts"
+  ],
+  "mode": "tests",
+  "binding": "A03-owner-cross-seam-green-r01-binding.json",
+  "classification": "Single common command failure box GREEN; unchanged whole file and deadlines",
+  "runId": "A03-owner-cross-seam-green-r01"
+}

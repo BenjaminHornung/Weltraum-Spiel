@@ -17,6 +17,7 @@ import {
   validateQuantumBounds as adaptiveValidateQuantumBounds,
   type AdaptiveAuthorityErrorCode
 } from "../adaptive";
+import {adaptiveFreezeArraySteps} from "../adaptive/validation";
 import {
   STRUCTURAL_AIR_MATERIAL_ID,
   STRUCTURAL_COMMAND_SCHEMA_VERSION,
@@ -161,7 +162,9 @@ export const structuralDenseArray = (
 );
 
 /** Module-private owner work: estimates, not physical heap. `retained` marks result storage. */
-export type StructuralOwnedReserve = (bytes: number, retained?: boolean, kind?: "hash") => void;
+export type StructuralOwnedReserve = ((bytes: number, retained?: boolean, kind?: "hash") => void) & {
+  readonly hashUnits?: 1 | 128;
+};
 
 export const drainStructuralSteps = <T>(steps: Generator<void, T, void>): T => {
   for (;;) {
@@ -170,18 +173,10 @@ export const drainStructuralSteps = <T>(steps: Generator<void, T, void>): T => {
   }
 };
 
-/** Produced plain arrays only: lock one index per unit, never freeze a whole owner array at the end. */
+/** Produced plain arrays only: reuse bounded shape proof and the measured size-limited native tail. */
 export function* structuralFreezeArraySteps<T>(values: T[], reserve?: StructuralOwnedReserve): Generator<void, readonly T[], void> {
   if (reserve === undefined) { return deepFreeze(values); }
-  reserve(512); // Bounded descriptor/path scratch before native property operations.
-  Object.preventExtensions(values);
-  yield;
-  for (let index = 0; index < values.length; index += 1) {
-    Object.defineProperty(values, String(index), { writable: false, configurable: false });
-    yield;
-  }
-  Object.defineProperty(values, "length", { writable: false });
-  return values;
+  return yield* adaptiveFreezeArraySteps(values,reserve);
 }
 
 /** Owner arrays must come from the bound issuer/first-party literals, never arbitrary proxies. */

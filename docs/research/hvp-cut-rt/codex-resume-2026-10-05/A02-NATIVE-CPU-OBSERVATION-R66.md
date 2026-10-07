@@ -1,0 +1,11 @@
+# Exact native-job CPU observation
+
+Status: independently accepted diagnostic; Owner65 and overall INCOMPLETE.
+
+Current unchanged Owner65 repeatedly reaches UNKNOWN180, with and without optional progress reporter. Earlier case-arrival timestamps and sums of original case durations are not comparable measures. Add only read-only CPU totals for the exact already-owned Native Job after Native completion/termination and before closing its existing handle. Existing API/Accounting structure supplies total user/kernel times including all terminated descendants in100ns units, divided by10000000 for seconds; see [Microsoft job accounting](https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-jobobject_basic_accounting_information).
+
+No test code, selectors, ordering, defaults5000/explicit120000, Owner180/type60, watchdog, jobs, timestamps, termination, reporter or release protocol changes. Existing run-native.ps1 unchanged. New fields are two finite numeric CPU totals; no process enumeration, paths/args/CDP metadata or secrets. Exact pre-change helper retained byte-for-byte as native_receipt-pre-cpu-r66.original.py. Fresh bound type/control run and independent diff review before using a new exact full65 attempt. CPU totals diagnose work versus wait; they do not create test PASS or identify a function by themselves.
+
+Independent complete diff/API/layout review ACCEPT. Bound type exits0/native1.3453s, scoped release1.8343s PASS. Fresh full unchanged Owner65 reaches exit91 UNKNOWN_NATIVE_TIMEOUT_STOP: native179.3084s/wrapper180.0528s; native descendants0/outer wrapper1 at terminal, exact-identity release1.911291s PASS. Exact NativeJob CPU totals:user149.40625s/kernel14.53125s (sum163.9375s, includes all job descendants). This is substantial CPU work; it neither establishes precise idle duration nor identifies a function. No authoritative completed population report or currentOwner65 PASS. Raw receipts under change/tests/A02-native-cpu-r66-owner.
+
+R69 on current accepted R68 after normal diagnostic End→workers0→foreground about:blank still UNKNOWN180 (native179.33785/wrapper180.0526), CPU152.609375user+13.203125kernel, exact release1.968374s PASS. Original user tab/save retained. Sole background-render attribution is unsupported; no relaxed deadline or population PASS. Raw change/tests/A02-owner-background-held-r69.

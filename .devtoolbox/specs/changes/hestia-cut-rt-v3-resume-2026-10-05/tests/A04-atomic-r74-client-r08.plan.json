@@ -1,0 +1,10 @@
+{
+  "binding": "A04-atomic-r74-binding-r08.json",
+  "mode": "tests",
+  "classification": "Complete affected client file; exact same disposed Error identity and nativeDisposed0/lifecycle after late callback; no product changes",
+  "runId": "A04-atomic-r74-client-r08",
+  "files": [
+    "tests/unit/hvp-body-mesh-client.test.ts"
+  ],
+  "nativeCapSeconds": 900
+}

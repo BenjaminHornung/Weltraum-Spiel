@@ -1,0 +1,24 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvpMesherHistoricalContract.test.ts > preserves the outer freeze lookup before the unreserved bounded range-array freeze
+AssertionError: expected [ 1 ] to deeply equal [ 2 ]
+
+- Expected
++ Received
+
+  [
+-   2,
++   1,
+  ]
+
+ ❯ tests/unit/hvpMesherHistoricalContract.test.ts:103:24
+    101|     try{while(!steps.next().done){/* Complete the real unreserved boun…
+    102|   }finally{Object.defineProperty(Object,"freeze",descriptor);}
+    103|   expect(rangeLookups).toEqual([2]);
+       |                        ^
+    104| });
+    105|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

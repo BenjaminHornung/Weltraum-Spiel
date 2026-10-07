@@ -1,0 +1,11 @@
+{
+  "classification": "Original whole command control and5 borrowed controls after preserving ordinary parent error",
+  "mode": "tests",
+  "binding": "A03-borrowed-command-source-binding-r04.json",
+  "runId": "A03-borrowed-command-green-r04",
+  "files": [
+    "tests/unit/hvp-borrowed-command.test.ts",
+    "tests/unit/structuralOwnedCommandCursor.test.ts"
+  ],
+  "nativeCapSeconds": 180
+}

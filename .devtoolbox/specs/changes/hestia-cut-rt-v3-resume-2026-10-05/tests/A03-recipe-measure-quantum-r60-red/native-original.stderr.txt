@@ -1,0 +1,15 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-borrowed-body-plan.test.ts > checks recipe measurement lifetime once per bounded owned quantum rather than per internal scalar
+AssertionError: expected 302 to be less than 64
+ ❯ tests/unit/hvp-borrowed-body-plan.test.ts:97:68
+     95|     const actual=finish(prepareHvpRigidBodyOwnedHashSteps(before,{},li…
+     96|     expect(JSON.stringify(actual)).toBe(JSON.stringify(expected));
+     97|     expect(live).toHaveBeenCalled();expect(live.mock.calls.length).toB…
+       |                                                                    ^
+     98|     expect(ledger.resources.reservedBytes).toBeGreaterThan(0);
+     99|   }finally{clock.mockRestore();ledger.release();}
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

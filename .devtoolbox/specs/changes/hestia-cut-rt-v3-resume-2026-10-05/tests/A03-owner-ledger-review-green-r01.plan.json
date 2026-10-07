@@ -1,0 +1,10 @@
+{
+  "binding": "A03-owner-ledger-review-green-r01-binding.json",
+  "runId": "A03-owner-ledger-review-green-r01",
+  "nativeCapSeconds": 180,
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts"
+  ],
+  "classification": "R19 sticky failure and native terminal corrections; original deadlines"
+}

@@ -1,0 +1,2 @@
+# Immutable raw receipts, bindings, helper preimages and exact failure evidence.
+tests/** -text

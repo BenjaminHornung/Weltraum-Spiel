@@ -1,0 +1,14 @@
+vite v8.1.5 building client environment for production...
+[2Ktransforming...✓ 279 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                             40.68 kB │ gzip:   7.33 kB
+dist/assets/streamingWorker-DzDzSe16.js    271.56 kB
+dist/assets/physicsWorker-BBrsANSZ.js    2,479.49 kB
+dist/assets/index-GeJ96uLU.css             170.33 kB │ gzip:  27.08 kB
+dist/assets/hvp-BRj30Oz0.js                  4.00 kB │ gzip:   1.64 kB
+dist/assets/surface-lab-B3W-tSoF.js         56.15 kB │ gzip:  18.38 kB │ map:   221.66 kB
+dist/assets/browserBridge-CgPzGhYt.js       61.66 kB │ gzip:  14.02 kB │ map:   179.80 kB
+dist/assets/index-P0EgdYg6.js            1,700.12 kB │ gzip: 459.23 kB │ map: 6,906.15 kB
+
+✓ built in 2.20s

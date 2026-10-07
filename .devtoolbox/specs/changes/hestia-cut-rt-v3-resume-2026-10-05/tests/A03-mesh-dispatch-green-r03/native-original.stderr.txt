@@ -1,0 +1,17 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/workerPoolLifecycle.test.ts > dispatches mesh-only owner projections through the existing accepted-terminal pool with exclusive buffers
+Error: Invalid body-cut output binding
+ ❯ readHvpBodyCutWire src/workers/hvpBodyCutWire.ts:84:11
+     82|     || typeof value.removedCells !== "number" || !Number.isSafeInteger…
+     83|     || typeof value.removedMassKg !== "number" || !Number.isFinite(val…
+     84|     throw new Error("Invalid body-cut output binding");
+       |           ^
+     85|   }
+     86|   for (const input of value.parts) {
+ ❯ decodeHvpBodyMeshOutput src/workers/hvpBodyMeshJob.ts:400:16
+ ❯ tests/unit/workerPoolLifecycle.test.ts:85:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

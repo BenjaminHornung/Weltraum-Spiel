@@ -1,0 +1,10 @@
+{
+  "runId": "A05-bulkcopy-r113-tests-r01",
+  "classification": "Whole complete owned block copy COW Species cancellation nested base fallback",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-owned-slot-copy.test.ts"
+  ],
+  "binding": "A05-bulkcopy-r113-binding-r01.json",
+  "nativeCapSeconds": 180
+}

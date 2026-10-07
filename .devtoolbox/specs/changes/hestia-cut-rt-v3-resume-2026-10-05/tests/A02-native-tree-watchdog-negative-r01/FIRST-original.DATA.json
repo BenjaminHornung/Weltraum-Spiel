@@ -1,0 +1,18 @@
+{
+  "firstUtc": "2026-10-05T10:51:27.727084+00:00",
+  "adminSeconds": 600,
+  "DworkSeconds": 540,
+  "finalSeconds": 60,
+  "cleanupSeconds": 60,
+  "legacyAdministrativeChecklist": "SUPERSEDED_BY_RESTART_BETRIEB_SECTION_9",
+  "capSecondsIncludingWrapper": 1,
+  "capScope": "DECLARED_COMMAND_WINDOW_NOT_TEST_DEADLINE",
+  "wholeFiles": [
+    "tests/unit/hvp-bootstrap.test.ts"
+  ],
+  "modeInjection": "NONE",
+  "cpuProfile": false,
+  "selectorsBailDeadlineChange": "NONE",
+  "testTimeout": "DEFAULT5000_AND_ORIGINAL_EXPLICIT_DECLARATIONS_UNCHANGED",
+  "helperSha256": "6b9b48eba330a16f66f7d5201bc70e897885b439a546b23b1718ef1e0415ca36"
+}

@@ -1,0 +1,41 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-game-save.test.ts (16 tests) 43965ms
+   ✓ CB01 proves one primary decode and shared Root reader ownership  1903ms
+   ✓ CB01 preserves inner validation and error precedence after rehash  8041ms
+   ✓ round-trips an edited eastern Root with exact native coverage and rejects a foreign neighbour binding  8897ms
+   ✓ preserves A or reports RecoveryHold after scene prepare failure  533ms
+   ✓ preserves A or reports RecoveryHold after scene upload failure  610ms
+   ✓ preserves A or reports RecoveryHold after scene commit failure  594ms
+   ✓ preserves A or reports RecoveryHold after scene world-publish failure  550ms
+   ✓ preserves A or reports RecoveryHold after scene render-publish failure  595ms
+   ✓ preserves A or reports RecoveryHold after scene finalize failure  656ms
+   ✓ preserves A or reports RecoveryHold after scene retire failure  641ms
+   ✓ preserves A or reports RecoveryHold after scene lost-worker failure  571ms
+   ✓ preserves A or reports RecoveryHold after scene false-rollback failure  608ms
+   ✓ loads only complete artifact data after the original World is gone, through the real repository codec  7125ms
+   ✓ leaves the old slot unchanged on quota/storage failure and on an invalid imported HVP payload  3265ms
+   ✓ rejects oversized bytes before text decode, and rejects source/profile corruption even after outer rehash  509ms
+   ✓ rejects rehashed material duplicated between Root and a body or between two moving owners  3229ms
+ ✓ tests/unit/hvp-coast-source.test.ts (35 tests) 30246ms
+     ✓ hashes the same named seed deterministically across sync and async builds  673ms
+     ✓ covers submerged columns while excluding dry and coplanar tops  1285ms
+     ✓ keeps the lagoon channel continuously submerged  2395ms
+     ✓ rejects over-budget mesh requests before allocating outputs  3206ms
+     ✓ rejects over-budget water output before materializing arrays  1818ms
+     ✓ derives staggered far landforms from the versioned macro surface  11673ms
+     ✓ meshes the join ring inside the 16 to 20 m band with bound roles  2548ms
+ ✓ tests/unit/hvp-terrain-products.test.ts (9 tests) 2851ms
+     ✓ covers sixteen 8m sectors exactly and invalidates only local content/halo products  1925ms
+     ✓ blocks rollover through accepted-terminal decoding and the compiler's post-terminal yield  348ms
+ ✓ tests/unit/td-walkability-reference.test.ts (10 tests) 602ms
+ ✓ tests/unit/hvp-owned-slot-copy.test.ts (3 tests) 245ms
+ ✓ tests/unit/hvp-terrain.test.ts (17 tests) 103ms
+
+ Test Files  6 passed (6)
+      Tests  90 passed (90)
+   Start at  22:31:27
+   Duration  87.60s (transform 3.73s, setup 0ms, import 7.70s, tests 78.01s, environment 1ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-slots-r104-tests-r04/original-vitest.json

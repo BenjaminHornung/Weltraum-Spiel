@@ -1,0 +1,84 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-body-mesh-owner-integration.test.ts > rejects Dispose after native Stage until rollback or actual World release
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ tests/unit/hvp-body-mesh-owner-integration.test.ts:135:33
+    133|   const products=await productsFor(projection);await session.admitChil…
+    134|   const reserved=session.resources()!.reservedBytes,bodyCount=world.bo…
+    135|   expect(()=>session.dispose()).toThrow("native World release");expect…
+       |                                 ^
+    136|   expect(session.holdsWorld).toBe(true);expect(session.busy).toBe(true…
+    137|   expect(()=>session.checkpoint()).toThrow("confirmed ownership");sess…
+ ❯ withOwner tests/unit/hvp-body-mesh-owner-integration.test.ts:40:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/unit/hvp-body-mesh-owner-integration.test.ts > keeps ledger-construction failure identical on retry before any plan issuance
+AssertionError: expected AssertionError: expected Error: Cannot ch… { …(4) } to be StructuralValidationError: Expected a non… { …(2) } // Object.is equality
+
+- Expected
++ Received
+
+- StructuralValidationError {
++ AssertionError {
++   "message": "expected Error: Cannot change the started body own… to be StructuralValidationError: Expected a non… { …(2) } // Object.is equality",
++   "actual": Error {
++     "message": "Cannot change the started body owner budget",
++   },
++   "expected": StructuralValidationError {
+      "message": "Expected a non-negative safe integer without negative zero.",
+      "code": "InvalidContract",
+      "path": "cursor/residentBytes",
+      "name": "StructuralValidationError",
++   },
++   "showDiff": true,
++   "operator": "strictEqual",
+  }
+
+ ❯ tests/unit/hvp-body-mesh-owner-integration.test.ts:146:19
+    144|     expect(first).toBeInstanceOf(Error);await expect(session.prepareCh…
+    145|   });}catch(error){outcome=error;}
+    146|   expect(outcome).toBe(first);expect(vi.mocked(prepareHvpBodyCutOwnedH…
+       |                   ^
+    147| });
+    148|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/unit/hvp-body-mesh-owner-integration.test.ts > keeps a failed projection reserve terminal for projection, mesh and native Stage
+AssertionError: expected AssertionError: expected Error: decoder m… { …(4) } to be Error: projection reserve failed // Object.is equality
+
+- Expected
++ Received
+
+- Error {
++ AssertionError {
++   "message": "expected Error: decoder must not run to be Error: projection reserve failed // Object.is equality",
++   "actual": Error {
++     "message": "decoder must not run",
++   },
++   "expected": Error {
+      "message": "projection reserve failed",
++   },
++   "showDiff": true,
++   "operator": "strictEqual",
+  }
+
+ ❯ tests/unit/hvp-body-mesh-owner-integration.test.ts:163:19
+    161|     expect(session.holdsWorld).toBe(false);expect(failedCalls).toBe(1);
+    162|   });}catch(error){outcome=error;}finally{vi.mocked(prepareHvpBodyCutO…
+    163|   expect(outcome).toBe(first);
+       |                   ^
+    164| });
+    165|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+

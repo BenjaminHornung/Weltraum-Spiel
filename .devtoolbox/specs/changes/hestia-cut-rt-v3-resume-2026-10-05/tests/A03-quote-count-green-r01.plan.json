@@ -1,0 +1,10 @@
+{
+  "binding": "A03-quote-count-green-r01-binding.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvpOwnedBodyMesh.test.ts"
+  ],
+  "classification": "Shared same occupancy adapter allocation-only dense32768/exposed6144/widecounts GREEN; original mesh geometry/byte controls",
+  "nativeCapSeconds": 180,
+  "runId": "A03-quote-count-green-r01"
+}

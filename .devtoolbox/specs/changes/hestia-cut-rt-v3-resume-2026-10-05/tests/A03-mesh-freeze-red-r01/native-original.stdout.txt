@@ -1,0 +1,16 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvpMesherHistoricalContract.test.ts (5 tests | 1 failed) 12ms
+   ✓ preserves independent historical mesh bytes, metadata and callback order (bounded=false) 4ms
+   ✓ preserves independent historical mesh bytes, metadata and callback order (bounded=true) 1ms
+   ✓ preserves historical budget errors and the reads before rejection (bounded=false) 1ms
+   ✓ preserves historical budget errors and the reads before rejection (bounded=true) 1ms
+   × preserves the outer freeze lookup before the unreserved bounded range-array freeze 5ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  18:47:46
+   Duration  591ms (transform 199ms, setup 0ms, import 409ms, tests 12ms, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-mesh-freeze-red-r01/original-vitest.json

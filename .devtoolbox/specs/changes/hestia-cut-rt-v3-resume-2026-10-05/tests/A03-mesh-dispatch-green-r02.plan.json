@@ -1,0 +1,11 @@
+{
+  "runId": "A03-mesh-dispatch-green-r02",
+  "files": [
+    "tests/unit/workerPoolLifecycle.test.ts",
+    "tests/unit/hvpBodyMeshJob.test.ts"
+  ],
+  "nativeCapSeconds": 360,
+  "binding": "A03-mesh-dispatch-source-binding-r02.json",
+  "classification": "Complete pool plus private mesh job populations after dispatch; original test deadlines unchanged",
+  "mode": "tests"
+}

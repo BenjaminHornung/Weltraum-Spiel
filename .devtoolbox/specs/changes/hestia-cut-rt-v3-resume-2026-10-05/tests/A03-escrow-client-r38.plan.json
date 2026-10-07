@@ -1,0 +1,10 @@
+{
+  "mode": "tests",
+  "nativeCapSeconds": 180,
+  "classification": "Final Main Client prepaid bridge, real task port cleanup and firsterror; original3 cases unchanged",
+  "runId": "A03-escrow-client-r38",
+  "files": [
+    "tests/unit/hvp-body-mesh-client.test.ts"
+  ],
+  "binding": "A03-escrow-client-r38-binding.json"
+}

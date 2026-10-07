@@ -1,0 +1,8 @@
+{
+  "runId": "A03-owner-first-error-red-r01",
+  "startedUtc": "2026-10-05T14:34:57.8389029+00:00",
+  "endedUtc": "2026-10-05T14:35:13.9058431+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 16.0623803,
+  "planFile": "A03-owner-first-error-red-r01.plan.json"
+}

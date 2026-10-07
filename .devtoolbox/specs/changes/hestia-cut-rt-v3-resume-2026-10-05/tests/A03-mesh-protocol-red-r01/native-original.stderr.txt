@@ -1,0 +1,15 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-body-mesh-protocol.test.ts > returns only same-Begin bounded mesh data; no native/source certificate is introduced
+TypeError: readHvpBodyMeshAdmissionReply is not a function
+ ❯ tests/unit/hvp-body-mesh-protocol.test.ts:14:30
+     12| };
+     13| it("returns only same-Begin bounded mesh data; no native/source certif…
+     14|   const output=packet(),read=readHvpBodyMeshAdmissionReply({beginReque…
+       |                              ^
+     15|   expect(read.buffers).toEqual(output.buffers);expect(read.byteLength)…
+     16|   expect(read).not.toHaveProperty("sourceProof");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

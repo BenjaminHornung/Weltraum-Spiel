@@ -1,0 +1,10 @@
+{
+  "runId": "A03-aggregate-quote-red-r01",
+  "files": [
+    "tests/unit/hvpOwnedBodyMesh.test.ts"
+  ],
+  "classification": "Genuine RED aggregate maximum quote dense legal and resource boundary controls",
+  "mode": "tests",
+  "binding": "A03-aggregate-quote-red-r01-binding.json",
+  "nativeCapSeconds": 180
+}

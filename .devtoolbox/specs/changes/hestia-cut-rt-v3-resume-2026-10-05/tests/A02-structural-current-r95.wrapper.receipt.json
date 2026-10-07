@@ -1,0 +1,8 @@
+{
+  "runId": "A02-structural-current-r95",
+  "startedUtc": "2026-10-06T17:29:48.9797981+00:00",
+  "endedUtc": "2026-10-06T17:30:53.2389493+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 64.2533152,
+  "planFile": "A02-structural-current-r95.plan.json"
+}

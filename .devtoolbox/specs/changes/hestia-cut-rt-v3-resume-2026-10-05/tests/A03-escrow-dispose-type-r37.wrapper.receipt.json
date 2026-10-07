@@ -1,0 +1,8 @@
+{
+  "runId": "A03-escrow-dispose-type-r37",
+  "startedUtc": "2026-10-05T18:55:01.5070268+00:00",
+  "endedUtc": "2026-10-05T18:55:02.7897548+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 1.2784625,
+  "planFile": "A03-escrow-dispose-type-r37.plan.json"
+}

@@ -1,0 +1,137 @@
+{
+  "classification": "PAUSED_OWNED_WORKER_KERNEL_MICROBENCH_NOT_GAME_ACCEPTANCE",
+  "rows": [
+    {
+      "length": 4096,
+      "kind": "number",
+      "route": "locks",
+      "samples": 12,
+      "meanCheckMs": 1.7999999995032947,
+      "meanFreezeMs": 0,
+      "maximumFreezeMs": 0,
+      "meanReadMs": 0.23333333184321722,
+      "meanTotalMs": 2.033333331346512
+    },
+    {
+      "length": 4096,
+      "kind": "number",
+      "route": "native",
+      "samples": 12,
+      "meanCheckMs": 0.49166666467984516,
+      "meanFreezeMs": 0,
+      "maximumFreezeMs": 0,
+      "meanReadMs": 0.14166666815678278,
+      "meanTotalMs": 0.633333332836628
+    },
+    {
+      "length": 4096,
+      "kind": "string",
+      "route": "locks",
+      "samples": 12,
+      "meanCheckMs": 1.1083333318432171,
+      "meanFreezeMs": 0,
+      "maximumFreezeMs": 0,
+      "meanReadMs": 0.24999999875823656,
+      "meanTotalMs": 1.3583333306014538
+    },
+    {
+      "length": 4096,
+      "kind": "string",
+      "route": "native",
+      "samples": 12,
+      "meanCheckMs": 0.2583333340783914,
+      "meanFreezeMs": 0,
+      "maximumFreezeMs": 0,
+      "meanReadMs": 0.14999999726812044,
+      "meanTotalMs": 0.40833333134651184
+    },
+    {
+      "length": 4096,
+      "kind": "record",
+      "route": "locks",
+      "samples": 12,
+      "meanCheckMs": 1.1000000014901161,
+      "meanFreezeMs": 0,
+      "maximumFreezeMs": 0,
+      "meanReadMs": 0.40833333134651184,
+      "meanTotalMs": 1.508333332836628
+    },
+    {
+      "length": 4096,
+      "kind": "record",
+      "route": "native",
+      "samples": 12,
+      "meanCheckMs": 0.23333333681027094,
+      "meanFreezeMs": 0,
+      "maximumFreezeMs": 0,
+      "meanReadMs": 0.3333333333333333,
+      "meanTotalMs": 0.5666666701436043
+    },
+    {
+      "length": 32768,
+      "kind": "number",
+      "route": "locks",
+      "samples": 12,
+      "meanCheckMs": 13.508333331594864,
+      "meanFreezeMs": 0,
+      "maximumFreezeMs": 0,
+      "meanReadMs": 1.233333336810271,
+      "meanTotalMs": 14.741666668405136
+    },
+    {
+      "length": 32768,
+      "kind": "number",
+      "route": "native",
+      "samples": 12,
+      "meanCheckMs": 2.2916666691501937,
+      "meanFreezeMs": 0.024999999751647312,
+      "maximumFreezeMs": 0.10000000894069672,
+      "meanReadMs": 0.9666666661699613,
+      "meanTotalMs": 3.283333335071802
+    },
+    {
+      "length": 32768,
+      "kind": "string",
+      "route": "locks",
+      "samples": 12,
+      "meanCheckMs": 14.125000001241764,
+      "meanFreezeMs": 0.016666666915019352,
+      "maximumFreezeMs": 0.10000000894069672,
+      "meanReadMs": 1.9749999990065892,
+      "meanTotalMs": 16.116666667163372
+    },
+    {
+      "length": 32768,
+      "kind": "string",
+      "route": "native",
+      "samples": 12,
+      "meanCheckMs": 3.9749999965230622,
+      "meanFreezeMs": 0.033333333830038704,
+      "maximumFreezeMs": 0.20000000298023224,
+      "meanReadMs": 1.4750000014901161,
+      "meanTotalMs": 5.483333331843217
+    },
+    {
+      "length": 32768,
+      "kind": "record",
+      "route": "locks",
+      "samples": 12,
+      "meanCheckMs": 14.575000002980232,
+      "meanFreezeMs": 0.008333334078391394,
+      "maximumFreezeMs": 0.10000000894069672,
+      "meanReadMs": 4.741666665921609,
+      "meanTotalMs": 19.325000002980232
+    },
+    {
+      "length": 32768,
+      "kind": "record",
+      "route": "native",
+      "samples": 12,
+      "meanCheckMs": 2.7916666666666665,
+      "meanFreezeMs": 0.016666668156782787,
+      "maximumFreezeMs": 0.10000000894069672,
+      "meanReadMs": 3.5833333333333335,
+      "meanTotalMs": 6.391666668156783
+    }
+  ]
+}

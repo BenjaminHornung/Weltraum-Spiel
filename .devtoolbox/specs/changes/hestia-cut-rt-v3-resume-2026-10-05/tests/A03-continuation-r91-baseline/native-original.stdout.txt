@@ -1,0 +1,16 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+stdout | tests/unit/hvp-owned-hash-emission-boundary.test.ts > measures complete actual owned ingest journal envelopes against the exact current preimage
+R91_RECORD_KERNEL {"classification":"DIAGNOSTIC_NOT_GAME_ACCEPTANCE","records":352,"payloads":1,"samples":{"baseline":[4.352566666666765,4.462699999999965,4.277666666666771,4.122933333333322,4.329933333333353,4.161533333333334,4.055666666666639,4.12489999999995,4.241700000000037,5.27416666666674,4.2715000000001355],"candidate":[4.159933333333281,4.723799999999983,4.236233333333378,4.067966666666583,4.3204333333333125,4.42463333333338,4.2590999999999894,5.635999999999967,4.537533333333461,4.2162666666666455,4.230566666666618],"baselineDrain":[4.3474000000000315,4.452499999999948,4.269200000000107,4.119700000000042,4.325133333333421,4.157133333333377,4.05039999999993,4.120099999999941,4.236533333333379,5.269200000000031,4.266733333333377],"candidateDrain":[4.154633333333322,4.720233333333378,4.230900000000095,4.064666666666653,4.314933333333253,4.42146666666675,4.2555999999999585,5.631299999999935,4.5307000000001,4.210133333333336,4.22579999999986]}}
+
+ ✓ tests/unit/hvp-owned-hash-emission-boundary.test.ts (4 tests) 896ms
+   ✓ preserves every default and private emission boundary for scalar records and all key chunk edges  370ms
+   ✓ measures complete actual owned ingest journal envelopes against the exact current preimage  382ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  17:08:58
+   Duration  2.27s (transform 619ms, setup 0ms, import 1.25s, tests 896ms, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-continuation-r91-baseline/original-vitest.json

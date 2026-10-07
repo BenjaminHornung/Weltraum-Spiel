@@ -1,0 +1,39 @@
+{
+  "runId": "A01-privacy-red-r02",
+  "reason": "Correct launch permissions after r01 spawn EPERM; r01 is not functional RED",
+  "sourcePins": [
+    {
+      "path": "tests/performance/hvp-cut-rt.spec.ts",
+      "sha256": "da2d0a787621b4e6ee19dd2e21681fe4e22608f74c68ca20a55b4ec6cc3f698d"
+    },
+    {
+      "path": "tests/performance/hvpCutRtReport.ts",
+      "sha256": "3617757cef1dab7dc349b809c7ababb1cf1d6860c878ddde8966dcd4d1dcbfdc"
+    },
+    {
+      "path": "tests/unit/hvpCutRtReport.test.ts",
+      "sha256": "a36b3e25392c00938385e9fa898ca1e7df8955aebe8173398147e7cd1b0278ae"
+    }
+  ],
+  "cwd": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\apps\\weltraum-browser",
+  "executable": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+  "argv": [
+    "node_modules/vitest/vitest.mjs",
+    "run",
+    "tests/unit/hvpCutRtReport.test.ts",
+    "--maxWorkers",
+    "1",
+    "--no-file-parallelism",
+    "--reporter",
+    "default",
+    "--reporter",
+    "json",
+    "--outputFile",
+    "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\.devtoolbox\\specs\\changes\\hestia-cut-rt-v3-resume-2026-10-05\\tests\\A01-privacy-red-r02/report.json"
+  ],
+  "startedUtc": "2026-10-05T09:04:34.0038760+00:00",
+  "endedUtc": "2026-10-05T09:04:35.4335656+00:00",
+  "elapsedSeconds": 1.4235929,
+  "exitCode": 1,
+  "testTimeoutMs": 5000
+}

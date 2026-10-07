@@ -1,0 +1,10 @@
+{
+  "runId": "A05-presentation-r116-red",
+  "classification": "Meaningful missing bounded owned exact presentation binary hash",
+  "mode": "tests",
+  "files": [
+    "tests/unit/presentationCanonical.test.ts"
+  ],
+  "binding": "A05-presentation-r116-binding-red.json",
+  "nativeCapSeconds": 180
+}

@@ -1,0 +1,8 @@
+{
+  "runId": "A05-slots-r104-red",
+  "startedUtc": "2026-10-06T20:14:26.7163576+00:00",
+  "endedUtc": "2026-10-06T20:14:31.5211720+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 4.790909,
+  "planFile": "A05-slots-r104-red.plan.json"
+}

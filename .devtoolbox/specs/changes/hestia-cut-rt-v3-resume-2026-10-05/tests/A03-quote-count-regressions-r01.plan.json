@@ -1,0 +1,13 @@
+{
+  "files": [
+    "tests/unit/hvpOwnedBodyMesh.test.ts",
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts",
+    "tests/unit/hvpBodyMeshJob.test.ts",
+    "tests/unit/hvpMesherHistoricalContract.test.ts"
+  ],
+  "mode": "tests",
+  "nativeCapSeconds": 600,
+  "binding": "A03-quote-count-regressions-r01-binding.json",
+  "classification": "Shared occupancy allocation-only preflight plus full4 original mesh/native/worker/historical controls; no geometric planner, original per-test deadlines",
+  "runId": "A03-quote-count-regressions-r01"
+}

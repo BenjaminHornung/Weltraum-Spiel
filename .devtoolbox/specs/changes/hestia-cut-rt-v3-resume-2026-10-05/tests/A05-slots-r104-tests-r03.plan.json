@@ -1,0 +1,15 @@
+{
+  "runId": "A05-slots-r104-tests-r03",
+  "classification": "Complete source ColdGame default Species and owned-copy populations plus actual TD",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-owned-slot-copy.test.ts",
+    "tests/unit/hvp-terrain-products.test.ts",
+    "tests/unit/hvp-terrain.test.ts",
+    "tests/unit/td-walkability-reference.test.ts",
+    "tests/unit/hvp-coast-source.test.ts",
+    "tests/unit/hvp-game-save.test.ts"
+  ],
+  "binding": "A05-slots-r104-binding-r03.json",
+  "nativeCapSeconds": 600
+}

@@ -1,0 +1,8 @@
+{
+  "runId": "A03-structural-hash-r46-tests",
+  "startedUtc": "2026-10-05T20:45:10.5439150+00:00",
+  "endedUtc": "2026-10-05T20:45:37.5712485+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 27.0152268,
+  "planFile": "A03-structural-hash-r46-tests.plan.json"
+}

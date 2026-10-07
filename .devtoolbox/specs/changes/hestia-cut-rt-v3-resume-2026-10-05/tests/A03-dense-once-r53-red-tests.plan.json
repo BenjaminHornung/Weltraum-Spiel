@@ -1,0 +1,10 @@
+{
+  "runId": "A03-dense-once-r53-red-tests",
+  "binding": "A03-dense-once-r53-red-binding.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-owned-hash-array-open.test.ts"
+  ],
+  "nativeCapSeconds": 180,
+  "classification": "Immutable owned shape single-pass RED control; whole original hash-array file and original deadlines"
+}

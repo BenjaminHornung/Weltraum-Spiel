@@ -1,0 +1,8 @@
+{
+  "runId": "A05-spans-r107-type-r01",
+  "startedUtc": "2026-10-06T21:06:55.2927988+00:00",
+  "endedUtc": "2026-10-06T21:06:58.7232878+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 3.4218215,
+  "planFile": "A05-spans-r107-type-r01.plan.json"
+}

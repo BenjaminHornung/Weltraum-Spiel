@@ -1,0 +1,8 @@
+{
+  "runId": "A03-bytehash-final-r03",
+  "startedUtc": "2026-10-05T15:17:34.6128874+00:00",
+  "endedUtc": "2026-10-05T15:17:36.9147226+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 2.2975196,
+  "planFile": "A03-bytehash-final-r03.plan.json"
+}

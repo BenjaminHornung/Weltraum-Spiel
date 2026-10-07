@@ -1,0 +1,8 @@
+{
+  "runId": "A03-mesh-decode-green-r02",
+  "startedUtc": "2026-10-05T15:35:31.7349514+00:00",
+  "endedUtc": "2026-10-05T15:35:40.3223643+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 8.5832053,
+  "planFile": "A03-mesh-decode-green-r02.plan.json"
+}

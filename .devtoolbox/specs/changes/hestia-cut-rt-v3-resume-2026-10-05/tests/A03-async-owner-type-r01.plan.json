@@ -1,0 +1,8 @@
+{
+  "nativeCapSeconds": 60,
+  "files": [],
+  "runId": "A03-async-owner-type-r01",
+  "mode": "type",
+  "classification": "Async retained owner full type original sixty-second boundary",
+  "binding": "A03-async-owner-green-r01-binding.json"
+}

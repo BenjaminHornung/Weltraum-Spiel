@@ -1,0 +1,8 @@
+{
+  "runId": "A03-terminal-timing-r56-type",
+  "startedUtc": "2026-10-05T22:34:34.1919549+00:00",
+  "endedUtc": "2026-10-05T22:34:36.1558827+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 1.9579701,
+  "planFile": "A03-terminal-timing-r56-type.plan.json"
+}

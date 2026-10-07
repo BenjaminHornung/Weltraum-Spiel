@@ -1,0 +1,10 @@
+{
+  "files": [
+    "tests/unit/hvp-body-plan-owner.test.ts"
+  ],
+  "classification": "Fresh unchanged fullOriginalOwner65 at preserved180; read-only exactjobCPU totals only; default/json reporters unchanged",
+  "mode": "tests",
+  "binding": "A03-bounded-native-freeze-r65-binding-r02.json",
+  "runId": "A02-native-cpu-r66-owner",
+  "nativeCapSeconds": 180
+}

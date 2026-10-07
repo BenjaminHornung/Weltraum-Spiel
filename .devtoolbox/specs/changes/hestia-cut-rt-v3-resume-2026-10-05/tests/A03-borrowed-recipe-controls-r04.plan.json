@@ -1,0 +1,11 @@
+{
+  "runId": "A03-borrowed-recipe-controls-r04",
+  "files": [
+    "tests/unit/hvp-borrowed-rigid-recipe.test.ts",
+    "tests/unit/v3StructuralRecipeParity.test.ts"
+  ],
+  "mode": "tests",
+  "classification": "Full extended borrowed controls plus unchanged generic observer/literal parity after R12preallocation/empty-brick fixes",
+  "binding": "A03-borrowed-recipe-source-binding-r04.json",
+  "nativeCapSeconds": 180
+}

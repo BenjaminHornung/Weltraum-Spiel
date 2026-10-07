@@ -1,0 +1,59 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-body-mesh-owner-integration.test.ts > awaits packet decoding under the same parent credit before starting geometry admission
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/hvp-body-mesh-owner-integration.test.ts:221:61
+    219|   const admission=session.admitChildMesh(id,decode as unknown as ()=>t…
+    220|   const result=admission.then(()=>{settled=true;},error=>{settled=true…
+    221|   try{await waiting;await Promise.resolve();expect(settled).toBe(false…
+       |                                                             ^
+    222|     expect(verify).not.toHaveBeenCalled();expect(session.holdsWorld).t…
+    223|     expect(verify).toHaveBeenCalledTimes(1);session.stage(id,products,…
+ ❯ withOwner tests/unit/hvp-body-mesh-owner-integration.test.ts:40:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/unit/hvp-body-mesh-owner-integration.test.ts > keeps decoding credit through Rollback and refuses the late decoded packet
+AssertionError: expected 0 to be greater than 0
+ ❯ tests/unit/hvp-body-mesh-owner-integration.test.ts:232:85
+    230|   const decode=()=>{entered();return new Promise<typeof products>(reso…
+    231|   const admission=session.admitChildMesh(id,decode as unknown as ()=>t…
+    232|   try{await waiting;session.rollback(id);expect(session.resources()?.r…
+       |                                                                                     ^
+    233|     expect(session.busy).toBe(true);resume();await expect(admission).r…
+    234|     expect(verify).not.toHaveBeenCalled();expect(session.resources()?.…
+ ❯ withOwner tests/unit/hvp-body-mesh-owner-integration.test.ts:40:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/unit/hvp-body-mesh-owner-integration.test.ts > preserves an asynchronous decoder rejection as the first cross-seam failure
+AssertionError: expected TypeError: Cannot read properties of unde… to be Error: asynchronous packet rejection // Object.is equality
+
+- Expected
++ Received
+
+- Error {
+-   "message": "asynchronous packet rejection",
++ TypeError {
++   "message": "Cannot read properties of undefined (reading 'length')",
+  }
+
+ ❯ tests/unit/hvp-body-mesh-owner-integration.test.ts:241:106
+    239| it("preserves an asynchronous decoder rejection as the first cross-sea…
+    240|   const first=new Error("asynchronous packet rejection"),rejected=Prom…
+    241|   await expect(session.admitChildMesh(id,(()=>rejected) as unknown as …
+       |                                                                                                          ^
+    242|   await expect(session.prepareChildProjection(id,host)).rejects.toBe(f…
+    243|   expect(session.holdsWorld).toBe(false);
+ ❯ withOwner tests/unit/hvp-body-mesh-owner-integration.test.ts:40:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+

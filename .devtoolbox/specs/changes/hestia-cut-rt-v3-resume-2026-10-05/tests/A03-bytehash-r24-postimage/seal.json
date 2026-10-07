@@ -1,0 +1,12 @@
+[
+  {
+    "appRelative": "src/workers/protocol.ts",
+    "bytes": 32196,
+    "sha256": "e40f382e9c3436a2839f15a817ba31b92d5750911b7c969737976b18f0667d45"
+  },
+  {
+    "appRelative": "tests/unit/hvp-borrowed-bytehash.test.ts",
+    "bytes": 1838,
+    "sha256": "67136d7351de2c2ffd008bb85eb3b0d6205a19e364f998bc0fb9f70411665040"
+  }
+]

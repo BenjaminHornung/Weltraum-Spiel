@@ -1,0 +1,16 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-owned-materialization.test.ts > preserves literal complete materialized bytes, original native namespaces and borrowed owned lifetimes
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/unit/hvp-owned-materialization.test.ts:102:1
+    100| };
+    101|
+    102| it("preserves literal complete materialized bytes, original native nam…
+       | ^
+    103|   const typeAliases:[AdaptiveCanonicalValue|null,AdaptiveValidatedRefi…
+    104|     CreateAdaptiveResidentValidationProofInput|null,CreateAdaptiveResi…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

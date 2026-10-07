@@ -2,6 +2,7 @@ import { requireExactKeys, requirePlainRecord } from "../voxel/adaptive/validati
 import { fnv1aBytes, validateTransferableBundle, type TransferableBufferBundle } from "./protocol";
 import { byteCount, contentRevision } from "./ids";
 import type { HvpBodyCutProducts } from "./hvpBodyCutJob";
+import type {StructuralOwnedReserve} from "../voxel/structural/validation";
 
 export const HVP_BODY_CUT_MAX_OUTPUT = 8 * 1024 * 1024;
 const MAX_METADATA_BYTES = 65_536;
@@ -12,6 +13,22 @@ const layout = [
 ] as const;
 const bufferLength = Object.getOwnPropertyDescriptor(ArrayBuffer.prototype, "byteLength")!.get!;
 const bufferResizable = Object.getOwnPropertyDescriptor(ArrayBuffer.prototype, "resizable")?.get;
+
+/** Internal step form of the unchanged FNV32 byte kernel; borrowed buffers stay exclusive/immutable. */
+export function* fnv1aBytesSteps(buffers:readonly ArrayBuffer[]):Generator<string,string,unknown>{
+  let hash=0x811c9dc5;
+  for(const buffer of buffers){
+    const bytes=new Uint8Array(buffer);
+    for(let index=0;index<bytes.length;){
+      const end=Math.min(index+4096,bytes.length),full=end-index===4096;
+      for(;index<end;index+=1){hash^=bytes[index];hash=Math.imul(hash,0x01000193);}
+      if(full){yield "transferHash";}
+    }
+    // Also bound empty buffers and short final spans; the wire validator limits this list to seven.
+    yield "transferHash";
+  }
+  return (hash>>>0).toString(16).padStart(8,"0");
+}
 
 export interface HvpBodyPartWireV2 {
   readonly ownerId: string;
@@ -123,7 +140,15 @@ export function readHvpBodyCutWire(output: TransferableBufferBundle, binding: re
 }
 
 export function encodeHvpBodyCutWire(products: HvpBodyCutProducts, binding: readonly unknown[], revision: number): TransferableBufferBundle {
+  const steps=bodyCutWireSteps(products,binding,revision);
+  for(;;){const step=steps.next();if(step.done){return step.value;}}
+}
+/** Private immutable first-party products/binding; no source/native authority is issued. */
+export const encodeHvpBodyCutWireSteps=(products:HvpBodyCutProducts,binding:readonly unknown[],revision:number,reserve:StructuralOwnedReserve)=>
+  bodyCutWireSteps(products,binding,revision,reserve);
+function* bodyCutWireSteps(products:HvpBodyCutProducts,binding:readonly unknown[],revision:number,reserve?:StructuralOwnedReserve):Generator<string,TransferableBufferBundle,unknown>{
   if (products.parts.length > 32) { throw new Error("Body-cut parts BudgetExceeded"); }
+  reserve?.(262_144); // Header/UTF16/UTF8 scratch under existing64KiB metadata cap; logical estimate.
   const outputRevision = contentRevision(revision);
   let cellCount = 0, vertexCount = 0, indexCount = 0, rangeCount = 0;
   const parts: HvpBodyPartWireV2[] = products.parts.map(part => {
@@ -153,6 +178,8 @@ export function encodeHvpBodyCutWire(products: HvpBodyCutProducts, binding: read
   const bytes = metadata.byteLength + cellCount * 16 + vertexCount * 36 + indexCount * 4 + rangeCount * 12;
   if (!Number.isSafeInteger(bytes) || bytes > HVP_BODY_CUT_MAX_OUTPUT) { throw new Error("Body-cut products BudgetExceeded"); }
   // All aggregate sizes are admitted before these numeric allocations/copies.
+  reserve?.(8_192+bytes,true);
+  if(reserve!==undefined){yield "wireCopy";}
   const cells = new Int32Array(cellCount * 4), positions = new Float32Array(vertexCount * 3);
   const normals = new Float32Array(vertexCount * 3), colors = new Float32Array(vertexCount * 3);
   const indices = new Uint32Array(indexCount), ranges = new Uint32Array(rangeCount * 3);
@@ -165,20 +192,33 @@ export function encodeHvpBodyCutWire(products: HvpBodyCutProducts, binding: read
       }
       cells[cellOffset++] = cell.x; cells[cellOffset++] = cell.y;
       cells[cellOffset++] = cell.z; cells[cellOffset++] = cell.materialId;
+      if(reserve!==undefined&&cellOffset%512===0){yield "wireCopy";}
     }
-    positions.set(mesh.positions, entry.vertexOffset * 3);
-    normals.set(mesh.normals, entry.vertexOffset * 3);
-    colors.set(mesh.colors!, entry.vertexOffset * 3);
-    indices.set(mesh.indices, entry.indexOffset);
+    if(reserve===undefined){
+      positions.set(mesh.positions, entry.vertexOffset * 3);
+      normals.set(mesh.normals, entry.vertexOffset * 3);
+      colors.set(mesh.colors!, entry.vertexOffset * 3);
+      indices.set(mesh.indices, entry.indexOffset);
+    }else{
+      // Same-type .set preserves Float32 bits, including NaN payloads: copy byte windows exactly.
+      for(const [target,source] of [[positions,mesh.positions],[normals,mesh.normals],[colors,mesh.colors!]] as const){
+        const from=new Uint8Array(source.buffer,source.byteOffset,source.byteLength),into=new Uint8Array(target.buffer);
+        for(let i=0;i<from.length;i+=1){into[entry.vertexOffset*12+i]=from[i]!;if((i+1)%4096===0){yield "wireCopy";}}
+        yield "wireCopy";
+      }
+      for(let i=0;i<mesh.indices.length;i+=1){indices[entry.indexOffset+i]=mesh.indices[i]!;if((i+1)%4096===0){yield "wireCopy";}}
+      yield "wireCopy";
+    }
     for (const range of mesh.materialRanges) {
       if (![range.slot, range.startIndex, range.indexCount].every(n => Number.isInteger(n) && n >= 0 && n <= 0xffffffff)) {
         throw new Error("Invalid body-cut Uint32 range");
       }
       ranges[rangeOffset++] = range.slot; ranges[rangeOffset++] = range.startIndex; ranges[rangeOffset++] = range.indexCount;
+      if(reserve!==undefined&&rangeOffset%384===0){yield "wireCopy";}
     }
   }
   const buffers = [metadata.buffer, cells.buffer, positions.buffer, normals.buffer, colors.buffer, indices.buffer, ranges.buffer];
-  return { buffers, ownership: "WorkerToConsumer", revision: outputRevision, byteLength: byteCount(bytes), contentHash: fnv1aBytes(buffers),
+  return { buffers, ownership: "WorkerToConsumer", revision: outputRevision, byteLength: byteCount(bytes), contentHash: reserve===undefined?fnv1aBytes(buffers):yield* fnv1aBytesSteps(buffers),
     views: buffers.map((buffer, index) => ({ name: layout[index]![0], kind: layout[index]![1], bufferIndex: index,
       byteOffset: 0, elementCount: buffer.byteLength / layout[index]![2] })) };
 }

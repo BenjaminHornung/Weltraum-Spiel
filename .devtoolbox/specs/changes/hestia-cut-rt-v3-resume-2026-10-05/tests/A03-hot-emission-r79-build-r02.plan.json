@@ -1,0 +1,8 @@
+{
+  "runId": "A03-hot-emission-r79-build-r02",
+  "nativeCapSeconds": 60,
+  "classification": "Full file after independent direct witnessed-array and exactUTF16-key edge controls",
+  "binding": "A03-hot-emission-r79-binding-r02.json",
+  "mode": "build",
+  "files": []
+}

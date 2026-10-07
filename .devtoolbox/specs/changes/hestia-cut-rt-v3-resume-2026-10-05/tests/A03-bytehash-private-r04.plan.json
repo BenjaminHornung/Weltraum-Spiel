@@ -1,0 +1,11 @@
+{
+  "binding": "A03-bytehash-private-r04-binding.json",
+  "runId": "A03-bytehash-private-r04",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-borrowed-bytehash.test.ts",
+    "tests/unit/workerProtocol.test.ts"
+  ],
+  "classification": "Internal wire hash only; public protocol restored; real byte-read and barrel absence controls; original default deadlines",
+  "nativeCapSeconds": 180
+}

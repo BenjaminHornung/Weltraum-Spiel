@@ -1,0 +1,8 @@
+{
+  "runId": "A03-pack-order-green-r01",
+  "startedUtc": "2026-10-05T16:58:05.5406596+00:00",
+  "endedUtc": "2026-10-05T16:58:23.9240065+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 18.3786485,
+  "planFile": "A03-pack-order-green-r01.plan.json"
+}

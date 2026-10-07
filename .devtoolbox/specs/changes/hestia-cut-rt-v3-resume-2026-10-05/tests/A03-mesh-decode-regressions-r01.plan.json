@@ -1,0 +1,15 @@
+{
+  "runId": "A03-mesh-decode-regressions-r01",
+  "classification": "Full6 directly affected private mesh/wire/geometry old controls and new borrowed decode/hash; finite aggregate window, unchanged per-test/default deadlines",
+  "nativeCapSeconds": 600,
+  "files": [
+    "tests/unit/hvp-borrowed-mesh-decode.test.ts",
+    "tests/unit/hvp-borrowed-bytehash.test.ts",
+    "tests/unit/hvpBodyMeshJob.test.ts",
+    "tests/unit/hvpBodyMeshAdmission.test.ts",
+    "tests/unit/hvpBodyCutWire.test.ts",
+    "tests/unit/hvpOwnedBodyMesh.test.ts"
+  ],
+  "binding": "A03-mesh-decode-regressions-r01-binding.json",
+  "mode": "tests"
+}

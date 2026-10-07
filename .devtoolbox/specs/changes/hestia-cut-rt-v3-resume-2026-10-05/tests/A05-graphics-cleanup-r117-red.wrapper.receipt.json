@@ -1,0 +1,8 @@
+{
+  "runId": "A05-graphics-cleanup-r117-red",
+  "startedUtc": "2026-10-07T06:05:09.1977125+00:00",
+  "endedUtc": "2026-10-07T06:12:07.4865553+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 418.2807552,
+  "planFile": "A05-graphics-cleanup-r117-red.plan.json"
+}

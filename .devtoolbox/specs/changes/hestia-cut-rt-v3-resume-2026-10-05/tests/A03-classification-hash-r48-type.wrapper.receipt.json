@@ -1,0 +1,8 @@
+{
+  "runId": "A03-classification-hash-r48-type",
+  "startedUtc": "2026-10-05T20:59:59.4281376+00:00",
+  "endedUtc": "2026-10-05T21:00:01.8266737+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 2.3910695,
+  "planFile": "A03-classification-hash-r48-type.plan.json"
+}

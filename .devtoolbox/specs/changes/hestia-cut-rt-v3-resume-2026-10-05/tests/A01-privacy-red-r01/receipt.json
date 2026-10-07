@@ -1,0 +1,40 @@
+{
+  "runId": "A01-privacy-red-r01",
+  "sourceBase": "0bfd1e67117d0dd6184e592e9a2a1b8b9f58241a",
+  "sourcePins": [
+    {
+      "path": "tests/performance/hvp-cut-rt.spec.ts",
+      "sha256": "da2d0a787621b4e6ee19dd2e21681fe4e22608f74c68ca20a55b4ec6cc3f698d"
+    },
+    {
+      "path": "tests/performance/hvpCutRtReport.ts",
+      "sha256": "3617757cef1dab7dc349b809c7ababb1cf1d6860c878ddde8966dcd4d1dcbfdc"
+    },
+    {
+      "path": "tests/unit/hvpCutRtReport.test.ts",
+      "sha256": "a36b3e25392c00938385e9fa898ca1e7df8955aebe8173398147e7cd1b0278ae"
+    }
+  ],
+  "startedUtc": "2026-10-05T09:03:14.2513353+00:00",
+  "endedUtc": "2026-10-05T09:03:15.3653239+00:00",
+  "elapsedSeconds": 1.1081481,
+  "executable": "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+  "argv": [
+    "node_modules/vitest/vitest.mjs",
+    "run",
+    "tests/unit/hvpCutRtReport.test.ts",
+    "--maxWorkers",
+    "1",
+    "--no-file-parallelism",
+    "--reporter",
+    "default",
+    "--reporter",
+    "json",
+    "--outputFile",
+    "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\.devtoolbox\\specs\\changes\\hestia-cut-rt-v3-resume-2026-10-05\\tests\\A01-privacy-red-r01/report.json"
+  ],
+  "cwd": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\apps\\weltraum-browser",
+  "exitCode": 1,
+  "defaultTestTimeoutMs": 5000,
+  "scope": "complete reporter file; synthetic privacy; no browser"
+}

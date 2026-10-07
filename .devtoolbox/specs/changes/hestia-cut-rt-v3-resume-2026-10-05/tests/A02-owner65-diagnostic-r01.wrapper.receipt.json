@@ -1,0 +1,8 @@
+{
+  "runId": "A02-owner65-diagnostic-r01",
+  "startedUtc": "2026-10-05T10:03:48.8178556+00:00",
+  "endedUtc": "2026-10-05T10:06:38.0985362+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 169.2700079,
+  "planFile": "A02-owner65-diagnostic-r01.plan.json"
+}

@@ -1,0 +1,8 @@
+{
+  "runId": "A03-mesh-reserve-regressions-r02",
+  "startedUtc": "2026-10-05T16:38:39.2911533+00:00",
+  "endedUtc": "2026-10-05T16:39:24.1419791+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 44.8457928,
+  "planFile": "A03-mesh-reserve-regressions-r02.plan.json"
+}

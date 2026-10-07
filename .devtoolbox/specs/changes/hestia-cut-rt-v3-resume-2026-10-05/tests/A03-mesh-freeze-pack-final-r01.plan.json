@@ -1,0 +1,12 @@
+{
+  "runId": "A03-mesh-freeze-pack-final-r01",
+  "mode": "tests",
+  "nativeCapSeconds": 180,
+  "classification": "Final static typed private packing controls, R28 Freeze restoration, whole affected3 files default original deadlines",
+  "binding": "A03-mesh-freeze-pack-final-r01-binding.json",
+  "files": [
+    "tests/unit/hvpMesherHistoricalContract.test.ts",
+    "tests/unit/hvp-borrowed-mesh-decode.test.ts",
+    "tests/unit/hvpBodyMeshJob.test.ts"
+  ]
+}

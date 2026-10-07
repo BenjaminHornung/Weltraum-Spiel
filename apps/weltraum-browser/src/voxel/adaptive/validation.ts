@@ -130,8 +130,23 @@ export const adaptiveDrainSteps = <T>(steps: Generator<void, T, void>): T => {
 };
 
 /** Owned inputs are first-party plain/index-only arrays held immutable by their producer. */
+let validatedFrozenDenseArrays: WeakSet<object> | undefined;
+/** Private shape witness only: neither values, provenance nor a cached digest. */
+export const isValidatedFrozenDenseArray = (value: object): boolean => validatedFrozenDenseArrays?.has(value) ?? false;
+export const validatedFrozenDenseArrayInitializationBytes = (): number => validatedFrozenDenseArrays === undefined ? 0 : 64;
+const retainValidatedFrozenDenseArray=(value:object,reserve:AdaptiveOwnedReserve):void=>{
+  if(validatedFrozenDenseArrays?.has(value)){return;}
+  reserve((validatedFrozenDenseArrays===undefined?64:0)+64,true);
+  validatedFrozenDenseArrays??=new WeakSet<object>();
+  validatedFrozenDenseArrays.add(value);
+};
+
+export function adaptiveDenseArraySteps(value: unknown, path: string, errorCode: AdaptiveAuthorityErrorCode,
+  options: DenseDataPropertyArrayOptions, reserve: AdaptiveOwnedReserve, retainFrozen: true): Generator<void, readonly unknown[], void>;
+export function adaptiveDenseArraySteps(value: unknown, path: string, errorCode: AdaptiveAuthorityErrorCode,
+  options?: DenseDataPropertyArrayOptions, reserve?: AdaptiveOwnedReserve, retainFrozen?: false): Generator<void, unknown[], void>;
 export function* adaptiveDenseArraySteps(value: unknown, path: string, errorCode: AdaptiveAuthorityErrorCode,
-  options: DenseDataPropertyArrayOptions = {}, reserve?: AdaptiveOwnedReserve): Generator<void, unknown[], void> {
+  options: DenseDataPropertyArrayOptions = {}, reserve?: AdaptiveOwnedReserve, retainFrozen = false): Generator<void, readonly unknown[], void> {
   reserve?.(1_024);
   if (!Array.isArray(value)) { return fail(errorCode, path, "Expected an array."); }
   const lengthDescriptor = Object.getOwnPropertyDescriptor(value, "length");
@@ -146,6 +161,15 @@ export function* adaptiveDenseArraySteps(value: unknown, path: string, errorCode
     return fail(errorCode, path, `Array length ${length} exceeds the finite limit ${options.maximumLength}.`);
   }
 
+  if (retainFrozen && reserve !== undefined && isValidatedFrozenDenseArray(value)) {
+    reserve(64 + length * 128);
+    yield;
+    return value;
+  }
+
+  let frozen = retainFrozen && reserve !== undefined && Object.getPrototypeOf(value) === Array.prototype
+    && !Object.isExtensible(value) && !lengthDescriptor.configurable && !lengthDescriptor.writable;
+  let firstHole = -1;
   if (reserve === undefined) {
     for (const key of Reflect.ownKeys(value)) {
       if (key === "length") { continue; }
@@ -166,25 +190,29 @@ export function* adaptiveDenseArraySteps(value: unknown, path: string, errorCode
     // descriptor-before-hole precedence without a whole own-key read over a large array.
     for (let index = 0; index < length; index += 1) {
       const descriptor = Object.getOwnPropertyDescriptor(value, String(index));
+      if (descriptor === undefined && firstHole < 0) { firstHole = index; }
       if (descriptor !== undefined && (!descriptor.enumerable || !("value" in descriptor))) {
         return fail(errorCode, `${path}/${index}`, "Array entries must be enumerable data properties.");
       }
+      if (frozen && descriptor !== undefined && (descriptor.configurable || descriptor.writable)) { frozen = false; }
       yield;
     }
   }
   reserve?.(64 + length * 128);
-  const copy = new Array<unknown>(length);
+  const copy = frozen ? undefined : new Array<unknown>(length);
   if (reserve !== undefined) { yield; }
-  for (let index = 0; index < length; index += 1) {
+  if (frozen && firstHole >= 0) { return fail(errorCode, `${path}/${firstHole}`, "Sparse arrays are rejected."); }
+  if (!frozen) { for (let index = 0; index < length; index += 1) {
     const descriptor = Object.getOwnPropertyDescriptor(value, String(index));
     if (descriptor === undefined) { return fail(errorCode, `${path}/${index}`, "Sparse arrays are rejected."); }
     if (!descriptor.enumerable || !("value" in descriptor)) {
       return fail(errorCode, `${path}/${index}`, "Array entries must be enumerable data properties.");
     }
-    copy[index] = descriptor.value;
+    if (copy !== undefined) { copy[index] = descriptor.value; }
     if (reserve !== undefined) { yield; }
-  }
-  return copy;
+  } }
+  if (frozen) { retainValidatedFrozenDenseArray(value,reserve!); }
+  return frozen ? value : copy!;
 }
 
 /** Same native generic map and sort; owner loops consume only private produced arrays. */
@@ -229,11 +257,31 @@ export function* adaptiveFreezeArraySteps<T>(values: T[], reserve?: AdaptiveOwne
   reserve(512);
   Object.preventExtensions(values);
   yield;
+  // Only the immutable opt-in canonical hash reserve uses produced-shape witnesses.
+  // Other bounded consumers (including binary mesh packing) retain their exact prequoted work.
+  const hashUnits=Object.getOwnPropertyDescriptor(reserve,"hashUnits");
+  let dense=hashUnits?.value===128&&hashUnits.writable===false&&hashUnits.configurable===false
+    &&Array.isArray(values)&&Object.getPrototypeOf(values)===Array.prototype;
+  // Measured shallow native tail, bounded to the largest private body source array.
+  // Full shape proof still yields per entry; unpublished larger/unsupported arrays keep native locks.
+  if(dense&&values.length<=32768){
+    for(let index=0;index<values.length;index+=1){
+      const entry=Object.getOwnPropertyDescriptor(values,String(index));
+      if(entry===undefined||!entry.enumerable||!("value" in entry)){dense=false;break;}
+      yield;
+    }
+    if(dense){Object.freeze(values);retainValidatedFrozenDenseArray(values,reserve);return values;}
+  }
   for (let index = 0; index < values.length; index += 1) {
+    if(dense){
+      const entry=Object.getOwnPropertyDescriptor(values,String(index));
+      dense=entry!==undefined&&entry.enumerable===true&&"value" in entry;
+    }
     Object.defineProperty(values, String(index), { writable: false, configurable: false });
     yield;
   }
   Object.defineProperty(values, "length", { writable: false });
+  if(dense){retainValidatedFrozenDenseArray(values,reserve);}
   return values;
 }
 

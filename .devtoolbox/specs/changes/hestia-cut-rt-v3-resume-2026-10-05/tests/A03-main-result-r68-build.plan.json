@@ -1,0 +1,8 @@
+{
+  "nativeCapSeconds": 60,
+  "classification": "Private4096byte boundedintegration with exactslot/lifecycle/drain ownership; genericordering/publicsurface/caps unchanged",
+  "binding": "A03-main-result-r68-binding.json",
+  "files": [],
+  "runId": "A03-main-result-r68-build",
+  "mode": "build"
+}

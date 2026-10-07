@@ -1,0 +1,13 @@
+{
+  "runId": "A05-slots-r104-tests-r01",
+  "classification": "Same-owner private leaf copying full byte generic default error cancel and actual TD",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-owned-slot-copy.test.ts",
+    "tests/unit/hvp-terrain-products.test.ts",
+    "tests/unit/hvp-terrain.test.ts",
+    "tests/unit/td-walkability-reference.test.ts"
+  ],
+  "binding": "A05-slots-r104-binding-r01.json",
+  "nativeCapSeconds": 180
+}

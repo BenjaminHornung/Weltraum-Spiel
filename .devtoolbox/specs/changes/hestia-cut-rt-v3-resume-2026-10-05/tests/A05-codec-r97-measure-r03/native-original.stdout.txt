@@ -1,0 +1,42 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+stdout | tests/unit/hvp-owned-support-plan.test.ts
+R97_SUPPORT384_CPU_AND_QUANTA [
+  {
+    baselineCpuMs: 1312.1034999999993,
+    ownedWorkMs: 571.5016000000142,
+    ownedWallMs: 596.2186999999994,
+    maxQuantumMs: 8.357100000001083,
+    quanta: 253
+  },
+  {
+    baselineCpuMs: 1360.8280999999988,
+    ownedWorkMs: 524.2057999999943,
+    ownedWallMs: 540.9742999999999,
+    maxQuantumMs: 3.362699999999677,
+    quanta: 237
+  },
+  {
+    baselineCpuMs: 1385.7668000000012,
+    ownedWorkMs: 530.7054999999873,
+    ownedWallMs: 565.2443999999996,
+    maxQuantumMs: 5.348900000000867,
+    quanta: 240
+  }
+]
+
+ ❯ tests/unit/hvp-owned-support-plan.test.ts (4 tests | 1 failed) 9803ms
+   ✓ shares full support reports and every source read with the original algorithm while using one borrowed lifetime  3793ms
+   ✓ closes borrowed fragment work on cancellation without publishing a partial report 4ms
+   ✓ runs the owned job through the existing real task pump and closes input/search/ingest/recipe cancellation  790ms
+   × compares full384 support CPU and actual task quanta on the same occupancy without changing results 5212ms
+ ✓ tests/unit/hvp-support-json.test.ts (2 tests) 1402ms
+   ✓ reads the existing JSON wire across real UTF8 and escape boundaries without a bulk parse  1397ms
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 5 passed (6)
+   Start at  20:09:19
+   Duration  15.33s (transform 1.51s, setup 0ms, import 2.77s, tests 11.20s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-codec-r97-measure-r03/original-vitest.json

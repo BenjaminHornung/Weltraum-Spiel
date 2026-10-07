@@ -1,0 +1,13 @@
+{
+  "runId": "A02-freeze-candidate-cpu-r01",
+  "binding": "A02-freeze-candidate-source-binding-r01.json",
+  "mode": "tests",
+  "files": ["tests/unit/hvp-deep-freeze-traversal.test.ts", "tests/unit/hvp-owned-materialization.test.ts"],
+  "cpuProfile": true,
+  "classification": "candidate semantic and CPU diagnosis; no formal acceptance",
+  "nativeCapSeconds": 180,
+  "originalTestDeadlines": "unchanged including explicit declarations",
+  "retry": 0,
+  "bail": false,
+  "skip": false
+}

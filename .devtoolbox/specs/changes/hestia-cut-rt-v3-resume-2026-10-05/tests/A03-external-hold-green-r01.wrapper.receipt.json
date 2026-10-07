@@ -1,0 +1,8 @@
+{
+  "runId": "A03-external-hold-green-r01",
+  "startedUtc": "2026-10-05T18:26:01.6832314+00:00",
+  "endedUtc": "2026-10-05T18:26:20.1502853+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 18.4624621,
+  "planFile": "A03-external-hold-green-r01.plan.json"
+}

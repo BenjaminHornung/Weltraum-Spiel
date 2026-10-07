@@ -1,0 +1,27 @@
+{
+  "runId": "A02-terrain-isolated-r01",
+  "scope": "isolated unchanged original failing file; diagnosis, not whole-population acceptance",
+  "sourceBase": "0bfd1e67117d0dd6184e592e9a2a1b8b9f58241a",
+  "testSha256": "758532ea974f10f06257154127ba65f5cbda7bba18b482596fd9652d3514bc77",
+  "kernelSha256": "e998c8204308f16f94b83db870248465171455e64c5337aa3aa6e71bed9a6a6b",
+  "cwd": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\apps\\weltraum-browser",
+  "argv": [
+    "node_modules/vitest/vitest.mjs",
+    "run",
+    "tests/unit/hvp-owned-terrain-ingest.test.ts",
+    "--maxWorkers",
+    "1",
+    "--no-file-parallelism",
+    "--reporter",
+    "default",
+    "--reporter",
+    "json",
+    "--outputFile",
+    "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\.devtoolbox\\specs\\changes\\hestia-cut-rt-v3-resume-2026-10-05\\tests\\A02-terrain-isolated-r01/report.json"
+  ],
+  "startedUtc": "2026-10-05T09:12:11.9314394+00:00",
+  "endedUtc": "2026-10-05T09:12:16.4656193+00:00",
+  "elapsedSeconds": 4.5311348,
+  "exitCode": 0,
+  "testTimeoutMs": 5000
+}

@@ -1,0 +1,10 @@
+{
+  "runId": "A05-artifact-r116-red",
+  "classification": "Whole owned presentation bounded controls",
+  "mode": "tests",
+  "files": [
+    "tests/unit/presentationMeshArtifact.test.ts"
+  ],
+  "binding": "A05-artifact-r116-red.binding.json",
+  "nativeCapSeconds": 180
+}

@@ -1,0 +1,8 @@
+{
+  "runId": "A03-owner-profile-r43-type",
+  "binding": "A03-owner-profile-r43-binding.json",
+  "mode": "type",
+  "files": [],
+  "nativeCapSeconds": 60,
+  "classification": "Measurement-only bounded existing owned-plan aggregates; real preview bottleneck diagnosis"
+}

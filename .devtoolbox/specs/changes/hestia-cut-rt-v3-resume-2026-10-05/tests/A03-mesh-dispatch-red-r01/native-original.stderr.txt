@@ -1,0 +1,15 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/workerPoolLifecycle.test.ts > dispatches mesh-only owner projections through the existing accepted-terminal pool with exclusive buffers
+Error: Mesh-only dispatch Failed
+ ❯ tests/unit/workerPoolLifecycle.test.ts:82:43
+     80|       sourceInputDigest:packed.sourceInputDigest,estimatedOutputBytes:…
+     81|     const terminal=await pool.enqueue(job,packed.input).result;
+     82|     if(terminal.kind!=="Completed"){throw new Error(`Mesh-only dispatc…
+       |                                           ^
+     83|     expect(pool.isAcceptedCompletedTerminal(terminal)).toBe(true);expe…
+     84|     expect(terminal.output.revision).toBe(0);expect(terminal.output.bu…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

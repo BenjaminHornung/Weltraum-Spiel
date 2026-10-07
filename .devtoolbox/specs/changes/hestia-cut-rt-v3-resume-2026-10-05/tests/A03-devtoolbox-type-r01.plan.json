@@ -1,0 +1,8 @@
+{
+  "files": [],
+  "mode": "type",
+  "binding": "A03-owner-operational-regressions-r02-binding.json",
+  "nativeCapSeconds": 60,
+  "runId": "A03-devtoolbox-type-r01",
+  "classification": "DevToolbox verify required source-bound native type; original60 cap; only partial evidence"
+}

@@ -1,0 +1,8 @@
+{
+  "runId": "A03-dense-once-r53-red-r02-type",
+  "startedUtc": "2026-10-05T22:05:23.1565640+00:00",
+  "endedUtc": "2026-10-05T22:05:24.9333187+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 1.7660473,
+  "planFile": "A03-dense-once-r53-red-r02-type.plan.json"
+}

@@ -1,0 +1,10 @@
+{
+  "files": [
+    "tests/unit/hvp-owned-terrain-products.test.ts"
+  ],
+  "classification": "Meaningful default-full typedrender/collision byte parity and boundedgrant cancellation beforeentry RED2",
+  "nativeCapSeconds": 60,
+  "runId": "A05-derivative-r101-red",
+  "mode": "tests",
+  "binding": "A05-derivative-r101-binding-red.json"
+}

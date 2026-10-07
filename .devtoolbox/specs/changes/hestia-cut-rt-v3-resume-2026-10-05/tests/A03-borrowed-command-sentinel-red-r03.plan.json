@@ -1,0 +1,10 @@
+{
+  "files": [
+    "tests/unit/hvp-borrowed-command.test.ts"
+  ],
+  "binding": "A03-borrowed-command-sentinel-red-source-binding-r03.json",
+  "runId": "A03-borrowed-command-sentinel-red-r03",
+  "nativeCapSeconds": 180,
+  "mode": "tests",
+  "classification": "R15 ordinary later parent error converted to Rejected reproduction RED"
+}

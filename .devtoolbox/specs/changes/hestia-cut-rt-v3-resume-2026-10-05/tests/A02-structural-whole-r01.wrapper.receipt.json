@@ -1,0 +1,8 @@
+{
+  "runId": "A02-structural-whole-r01",
+  "startedUtc": "2026-10-05T09:18:08.5266880+00:00",
+  "endedUtc": "2026-10-05T09:19:42.7849694+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 94.2367073,
+  "planFile": "A02-structural-whole-r01.plan.json"
+}

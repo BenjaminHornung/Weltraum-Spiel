@@ -1,0 +1,10 @@
+{
+  "runId": "A03-mesh-decode-red-r01",
+  "classification": "Shared cooperative mesh decoder RED; same wire/geometry/cancel/parent contract; original default deadlines",
+  "nativeCapSeconds": 180,
+  "files": [
+    "tests/unit/hvp-borrowed-mesh-decode.test.ts"
+  ],
+  "mode": "tests",
+  "binding": "A03-mesh-decode-red-r01-binding.json"
+}

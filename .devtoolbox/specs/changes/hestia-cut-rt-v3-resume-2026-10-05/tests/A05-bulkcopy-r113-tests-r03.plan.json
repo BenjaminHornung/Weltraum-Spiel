@@ -1,0 +1,13 @@
+{
+  "runId": "A05-bulkcopy-r113-tests-r03",
+  "classification": "Whole6 source copy cases full fresh prepared cold COW bytes invalidbounds Species actualcancel",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-owned-slot-copy.test.ts",
+    "tests/unit/hvp-coast-source.test.ts",
+    "tests/unit/hvp-cut-plan.test.ts",
+    "tests/unit/hvp-support-phase-budget.test.ts"
+  ],
+  "binding": "A05-bulkcopy-r113-binding-r03.json",
+  "nativeCapSeconds": 600
+}

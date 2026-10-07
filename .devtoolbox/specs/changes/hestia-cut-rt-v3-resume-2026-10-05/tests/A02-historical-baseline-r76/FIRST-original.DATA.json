@@ -1,0 +1,18 @@
+{
+  "firstUtc": "2026-10-06T03:58:49.163991+00:00",
+  "adminSeconds": 600,
+  "DworkSeconds": 540,
+  "finalSeconds": 60,
+  "cleanupSeconds": 60,
+  "legacyAdministrativeChecklist": "SUPERSEDED_BY_RESTART_BETRIEB_SECTION_9",
+  "capSecondsIncludingWrapper": 180,
+  "capScope": "OWNER180_PRESERVED",
+  "wholeFiles": [
+    "tests/unit/hvp-body-plan-owner.test.ts"
+  ],
+  "modeInjection": "NONE",
+  "cpuProfile": false,
+  "selectorsBailDeadlineChange": "NONE",
+  "testTimeout": "DEFAULT5000_AND_ORIGINAL_EXPLICIT_DECLARATIONS_UNCHANGED",
+  "helperSha256": "a8bb3d85749079d0d9928fd08badaa3f930b30442080791d12256c058a811623"
+}

@@ -1,0 +1,8 @@
+{
+  "binding": "A03-pack-order-green-r01-binding.json",
+  "files": [],
+  "mode": "type",
+  "runId": "A03-pack-order-type-r01",
+  "classification": "Exact R30 generic pack lookup preservation final full type",
+  "nativeCapSeconds": 60
+}

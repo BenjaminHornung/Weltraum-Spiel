@@ -1,0 +1,8 @@
+{
+  "runId": "A05-pregraphics-r115-type-r01",
+  "startedUtc": "2026-10-06T22:00:23.8734662+00:00",
+  "endedUtc": "2026-10-06T22:00:27.2727711+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 3.3895502,
+  "planFile": "A05-pregraphics-r115-type-r01.plan.json"
+}

@@ -1,0 +1,8 @@
+{
+  "runId": "A03-borrowed-recipe-controls-r04",
+  "startedUtc": "2026-10-05T13:05:26.5323950+00:00",
+  "endedUtc": "2026-10-05T13:05:35.0226100+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 8.4858208,
+  "planFile": "A03-borrowed-recipe-controls-r04.plan.json"
+}

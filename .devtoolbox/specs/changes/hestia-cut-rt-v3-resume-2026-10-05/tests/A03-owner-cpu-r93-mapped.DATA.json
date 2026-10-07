@@ -1,0 +1,1797 @@
+{
+  "projection": {
+    "classification": "SAMPLED_PERTURBED_DIAGNOSTIC_NOT_GAME_ACCEPTANCE",
+    "durationMs": 677.742,
+    "sampleCount": 462,
+    "self": [
+      {
+        "id": 2,
+        "fn": "(idle)",
+        "file": "other",
+        "line": -1,
+        "column": -1,
+        "selfMs": 423.582,
+        "inclusiveMs": 423.582
+      },
+      {
+        "id": 79,
+        "fn": "(garbage collector)",
+        "file": "other",
+        "line": -1,
+        "column": -1,
+        "selfMs": 15.5,
+        "inclusiveMs": 15.5
+      },
+      {
+        "id": 208,
+        "fn": "Og",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 28493,
+        "selfMs": 9.921,
+        "inclusiveMs": 63.986,
+        "original": {
+          "file": "hestia-prototype/physics/hvpPlanSteps.ts",
+          "line": 2,
+          "column": 18
+        }
+      },
+      {
+        "id": 3,
+        "fn": "Cx.onmessage",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 210880,
+        "selfMs": 5.989,
+        "inclusiveMs": 21.452,
+        "original": {
+          "file": "hestia-prototype/physics/physicsWorker.ts",
+          "line": 94,
+          "column": 18
+        }
+      },
+      {
+        "id": 224,
+        "fn": "now",
+        "file": "other",
+        "line": -1,
+        "column": -1,
+        "selfMs": 5.769,
+        "inclusiveMs": 5.769
+      },
+      {
+        "id": 335,
+        "fn": "jl",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2157838,
+        "selfMs": 4.797,
+        "inclusiveMs": 15.719,
+        "original": {
+          "file": "voxel/structural/classificationSteps.ts",
+          "line": 343,
+          "column": 11
+        }
+      },
+      {
+        "id": 221,
+        "fn": "Iv",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 108495,
+        "selfMs": 4.595,
+        "inclusiveMs": 17.405,
+        "original": {
+          "file": "hestia-prototype/terrain/structuralIngest.ts",
+          "line": 191,
+          "column": 11
+        }
+      },
+      {
+        "id": 324,
+        "fn": "W",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2076283,
+        "selfMs": 3.72,
+        "inclusiveMs": 3.72,
+        "original": {
+          "file": "voxel/adaptive/validation.ts",
+          "line": 331,
+          "column": 14
+        }
+      },
+      {
+        "id": 352,
+        "fn": "now",
+        "file": "other",
+        "line": -1,
+        "column": -1,
+        "selfMs": 3.371,
+        "inclusiveMs": 3.371
+      },
+      {
+        "id": 417,
+        "fn": "Bv",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 112269,
+        "selfMs": 3.269,
+        "inclusiveMs": 14.981,
+        "original": {
+          "file": "hestia-prototype/terrain/structuralIngest.ts",
+          "line": 308,
+          "column": 11
+        }
+      },
+      {
+        "id": 43,
+        "fn": "Og",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 28493,
+        "selfMs": 3.227,
+        "inclusiveMs": 38.868,
+        "original": {
+          "file": "hestia-prototype/physics/hvpPlanSteps.ts",
+          "line": 2,
+          "column": 18
+        }
+      },
+      {
+        "id": 199,
+        "fn": "pa",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2095955,
+        "selfMs": 3.192,
+        "inclusiveMs": 3.192,
+        "original": {
+          "file": "voxel/adaptive/canonical.ts",
+          "line": 91,
+          "column": 20
+        }
+      },
+      {
+        "id": 235,
+        "fn": "li",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2074474,
+        "selfMs": 3.187,
+        "inclusiveMs": 3.187,
+        "original": {
+          "file": "voxel/adaptive/validation.ts",
+          "line": 255,
+          "column": 18
+        }
+      },
+      {
+        "id": 223,
+        "fn": "aa",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2087542,
+        "selfMs": 3.18,
+        "inclusiveMs": 3.18,
+        "original": {
+          "file": "voxel/adaptive/materialization.ts",
+          "line": 253,
+          "column": 11
+        }
+      },
+      {
+        "id": 229,
+        "fn": "Is",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2129945,
+        "selfMs": 3.18,
+        "inclusiveMs": 4.839,
+        "original": {
+          "file": "voxel/adaptive/ownedCanonicalHashSteps.ts",
+          "line": 140,
+          "column": 11
+        }
+      },
+      {
+        "id": 67,
+        "fn": "Nl",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2163227,
+        "selfMs": 2.746,
+        "inclusiveMs": 15.264,
+        "original": {
+          "file": "voxel/structural/classificationSteps.ts",
+          "line": 672,
+          "column": 18
+        }
+      },
+      {
+        "id": 260,
+        "fn": "$c",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2148518,
+        "selfMs": 2.379,
+        "inclusiveMs": 13.658,
+        "original": {
+          "file": "voxel/structural/model.ts",
+          "line": 548,
+          "column": 18
+        }
+      },
+      {
+        "id": 13,
+        "fn": "wasm-function[225]",
+        "file": "0057ee2e",
+        "line": 0,
+        "column": 795386,
+        "selfMs": 2.042,
+        "inclusiveMs": 2.042
+      },
+      {
+        "id": 34,
+        "fn": "",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 131100,
+        "selfMs": 1.893,
+        "inclusiveMs": 204.397,
+        "original": {
+          "file": "hestia-prototype/physics/bodyCutSession.ts",
+          "line": 285,
+          "column": 21
+        }
+      },
+      {
+        "id": 146,
+        "fn": "Nl",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2163227,
+        "selfMs": 1.855,
+        "inclusiveMs": 17.704,
+        "original": {
+          "file": "voxel/structural/classificationSteps.ts",
+          "line": 672,
+          "column": 18
+        }
+      },
+      {
+        "id": 234,
+        "fn": "kx",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 210535,
+        "selfMs": 1.76,
+        "inclusiveMs": 1.76,
+        "original": {
+          "file": "hestia-prototype/physics/physicsWorker.ts",
+          "line": 73,
+          "column": 7
+        }
+      },
+      {
+        "id": 175,
+        "fn": "zs",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2133269,
+        "selfMs": 1.741,
+        "inclusiveMs": 6.364,
+        "original": {
+          "file": "voxel/adaptive/ownedCanonicalHashSteps.ts",
+          "line": 296,
+          "column": 11
+        }
+      },
+      {
+        "id": 155,
+        "fn": "Ti",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2078249,
+        "selfMs": 1.711,
+        "inclusiveMs": 2.008,
+        "original": {
+          "file": "voxel/adaptive/coordinates.ts",
+          "line": 100,
+          "column": 42
+        }
+      },
+      {
+        "id": 460,
+        "fn": "el",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2148606,
+        "selfMs": 1.706,
+        "inclusiveMs": 4.88,
+        "original": {
+          "file": "voxel/structural/model.ts",
+          "line": 556,
+          "column": 11
+        }
+      },
+      {
+        "id": 105,
+        "fn": "Ss",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2127834,
+        "selfMs": 1.705,
+        "inclusiveMs": 1.705,
+        "original": {
+          "file": "voxel/structural/coordinates.ts",
+          "line": 75,
+          "column": 14
+        }
+      },
+      {
+        "id": 293,
+        "fn": "pi",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2076517,
+        "selfMs": 1.703,
+        "inclusiveMs": 1.703,
+        "original": {
+          "file": "src/core/fnv1a64.ts",
+          "line": 14,
+          "column": 14
+        }
+      },
+      {
+        "id": 207,
+        "fn": "Ci",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2077202,
+        "selfMs": 1.686,
+        "inclusiveMs": 1.686,
+        "original": {
+          "file": "voxel/adaptive/coordinates.ts",
+          "line": 49,
+          "column": 7
+        }
+      },
+      {
+        "id": 99,
+        "fn": "Zr",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2071274,
+        "selfMs": 1.684,
+        "inclusiveMs": 1.684,
+        "original": {
+          "file": "voxel/adaptive/validation.ts",
+          "line": 77,
+          "column": 7
+        }
+      },
+      {
+        "id": 388,
+        "fn": "H",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2075517,
+        "selfMs": 1.682,
+        "inclusiveMs": 1.682,
+        "original": {
+          "file": "voxel/adaptive/validation.ts",
+          "line": 303,
+          "column": 14
+        }
+      },
+      {
+        "id": 447,
+        "fn": "la",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2090459,
+        "selfMs": 1.68,
+        "inclusiveMs": 3.191,
+        "original": {
+          "file": "voxel/adaptive/materialization.ts",
+          "line": 447,
+          "column": 18
+        }
+      },
+      {
+        "id": 232,
+        "fn": "encodeInto",
+        "file": "other",
+        "line": -1,
+        "column": -1,
+        "selfMs": 1.659,
+        "inclusiveMs": 1.659
+      },
+      {
+        "id": 341,
+        "fn": "W",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2076283,
+        "selfMs": 1.658,
+        "inclusiveMs": 1.658,
+        "original": {
+          "file": "voxel/adaptive/validation.ts",
+          "line": 331,
+          "column": 14
+        }
+      },
+      {
+        "id": 393,
+        "fn": "H",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2075517,
+        "selfMs": 1.657,
+        "inclusiveMs": 1.657,
+        "original": {
+          "file": "voxel/adaptive/validation.ts",
+          "line": 303,
+          "column": 14
+        }
+      },
+      {
+        "id": 100,
+        "fn": "now",
+        "file": "other",
+        "line": -1,
+        "column": -1,
+        "selfMs": 1.649,
+        "inclusiveMs": 1.649
+      },
+      {
+        "id": 514,
+        "fn": "W",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2076283,
+        "selfMs": 1.645,
+        "inclusiveMs": 1.645,
+        "original": {
+          "file": "voxel/adaptive/validation.ts",
+          "line": 331,
+          "column": 14
+        }
+      },
+      {
+        "id": 323,
+        "fn": "H",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2075517,
+        "selfMs": 1.645,
+        "inclusiveMs": 1.645,
+        "original": {
+          "file": "voxel/adaptive/validation.ts",
+          "line": 303,
+          "column": 14
+        }
+      },
+      {
+        "id": 347,
+        "fn": "pa",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2095955,
+        "selfMs": 1.642,
+        "inclusiveMs": 1.642,
+        "original": {
+          "file": "voxel/adaptive/canonical.ts",
+          "line": 91,
+          "column": 20
+        }
+      },
+      {
+        "id": 405,
+        "fn": "yi",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2076878,
+        "selfMs": 1.641,
+        "inclusiveMs": 1.641,
+        "original": {
+          "file": "voxel/adaptive/coordinates.ts",
+          "line": 29,
+          "column": 7
+        }
+      },
+      {
+        "id": 349,
+        "fn": "fa",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2095140,
+        "selfMs": 1.637,
+        "inclusiveMs": 1.637,
+        "original": {
+          "file": "voxel/adaptive/canonical.ts",
+          "line": 59,
+          "column": 7
+        }
+      },
+      {
+        "id": 89,
+        "fn": "fa",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2095140,
+        "selfMs": 1.636,
+        "inclusiveMs": 1.636,
+        "original": {
+          "file": "voxel/adaptive/canonical.ts",
+          "line": 59,
+          "column": 7
+        }
+      },
+      {
+        "id": 203,
+        "fn": "W",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2076283,
+        "selfMs": 1.636,
+        "inclusiveMs": 1.636,
+        "original": {
+          "file": "voxel/adaptive/validation.ts",
+          "line": 331,
+          "column": 14
+        }
+      },
+      {
+        "id": 379,
+        "fn": "W",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2076283,
+        "selfMs": 1.636,
+        "inclusiveMs": 1.636,
+        "original": {
+          "file": "voxel/adaptive/validation.ts",
+          "line": 331,
+          "column": 14
+        }
+      },
+      {
+        "id": 472,
+        "fn": "Is",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2129945,
+        "selfMs": 1.636,
+        "inclusiveMs": 1.636,
+        "original": {
+          "file": "voxel/adaptive/ownedCanonicalHashSteps.ts",
+          "line": 140,
+          "column": 11
+        }
+      },
+      {
+        "id": 407,
+        "fn": "fa",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2095140,
+        "selfMs": 1.633,
+        "inclusiveMs": 1.633,
+        "original": {
+          "file": "voxel/adaptive/canonical.ts",
+          "line": 59,
+          "column": 7
+        }
+      },
+      {
+        "id": 68,
+        "fn": "jl",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2157838,
+        "selfMs": 1.628,
+        "inclusiveMs": 12.518,
+        "original": {
+          "file": "voxel/structural/classificationSteps.ts",
+          "line": 343,
+          "column": 11
+        }
+      },
+      {
+        "id": 244,
+        "fn": "ma",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2096130,
+        "selfMs": 1.627,
+        "inclusiveMs": 1.627,
+        "original": {
+          "file": "voxel/adaptive/canonical.ts",
+          "line": 100,
+          "column": 39
+        }
+      },
+      {
+        "id": 49,
+        "fn": "W",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2076283,
+        "selfMs": 1.626,
+        "inclusiveMs": 1.626,
+        "original": {
+          "file": "voxel/adaptive/validation.ts",
+          "line": 331,
+          "column": 14
+        }
+      },
+      {
+        "id": 194,
+        "fn": "yi",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2076878,
+        "selfMs": 1.619,
+        "inclusiveMs": 1.619,
+        "original": {
+          "file": "voxel/adaptive/coordinates.ts",
+          "line": 29,
+          "column": 7
+        }
+      },
+      {
+        "id": 258,
+        "fn": "Ns",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2129464,
+        "selfMs": 1.619,
+        "inclusiveMs": 1.619,
+        "original": {
+          "file": "voxel/adaptive/ownedCanonicalHashSteps.ts",
+          "line": 99,
+          "column": 7
+        }
+      },
+      {
+        "id": 246,
+        "fn": "la",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2090459,
+        "selfMs": 1.614,
+        "inclusiveMs": 6.035,
+        "original": {
+          "file": "voxel/adaptive/materialization.ts",
+          "line": 447,
+          "column": 18
+        }
+      },
+      {
+        "id": 386,
+        "fn": "Ss",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2127834,
+        "selfMs": 1.614,
+        "inclusiveMs": 3.296,
+        "original": {
+          "file": "voxel/structural/coordinates.ts",
+          "line": 75,
+          "column": 14
+        }
+      },
+      {
+        "id": 170,
+        "fn": "U",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2076095,
+        "selfMs": 1.612,
+        "inclusiveMs": 1.612,
+        "original": {
+          "file": "voxel/adaptive/validation.ts",
+          "line": 323,
+          "column": 14
+        }
+      },
+      {
+        "id": 184,
+        "fn": "zg",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 30171,
+        "selfMs": 1.612,
+        "inclusiveMs": 12.141,
+        "original": {
+          "file": "hestia-prototype/physics/structuralPlan.ts",
+          "line": 125,
+          "column": 11
+        }
+      },
+      {
+        "id": 166,
+        "fn": "yi",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2076878,
+        "selfMs": 1.611,
+        "inclusiveMs": 1.611,
+        "original": {
+          "file": "voxel/adaptive/coordinates.ts",
+          "line": 29,
+          "column": 7
+        }
+      },
+      {
+        "id": 164,
+        "fn": "now",
+        "file": "other",
+        "line": -1,
+        "column": -1,
+        "selfMs": 1.611,
+        "inclusiveMs": 1.611
+      },
+      {
+        "id": 294,
+        "fn": "Xc",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2147058,
+        "selfMs": 1.611,
+        "inclusiveMs": 1.611,
+        "original": {
+          "file": "voxel/structural/model.ts",
+          "line": 479,
+          "column": 11
+        }
+      },
+      {
+        "id": 374,
+        "fn": "pi",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2076517,
+        "selfMs": 1.611,
+        "inclusiveMs": 1.611,
+        "original": {
+          "file": "src/core/fnv1a64.ts",
+          "line": 14,
+          "column": 14
+        }
+      },
+      {
+        "id": 430,
+        "fn": "now",
+        "file": "other",
+        "line": -1,
+        "column": -1,
+        "selfMs": 1.611,
+        "inclusiveMs": 1.611
+      },
+      {
+        "id": 78,
+        "fn": "W",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2076283,
+        "selfMs": 1.609,
+        "inclusiveMs": 1.609,
+        "original": {
+          "file": "voxel/adaptive/validation.ts",
+          "line": 331,
+          "column": 14
+        }
+      },
+      {
+        "id": 83,
+        "fn": "fa",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2095140,
+        "selfMs": 1.608,
+        "inclusiveMs": 1.608,
+        "original": {
+          "file": "voxel/adaptive/canonical.ts",
+          "line": 59,
+          "column": 7
+        }
+      },
+      {
+        "id": 215,
+        "fn": "Wo",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2113871,
+        "selfMs": 1.607,
+        "inclusiveMs": 1.607,
+        "original": {
+          "file": "voxel/structural/validation.ts",
+          "line": 183,
+          "column": 18
+        }
+      },
+      {
+        "id": 272,
+        "fn": "Rs",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2132638,
+        "selfMs": 1.607,
+        "inclusiveMs": 1.607,
+        "original": {
+          "file": "voxel/adaptive/ownedCanonicalHashSteps.ts",
+          "line": 264,
+          "column": 11
+        }
+      },
+      {
+        "id": 136,
+        "fn": "H",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2075517,
+        "selfMs": 1.6,
+        "inclusiveMs": 1.6,
+        "original": {
+          "file": "voxel/adaptive/validation.ts",
+          "line": 303,
+          "column": 14
+        }
+      },
+      {
+        "id": 295,
+        "fn": "(program)",
+        "file": "other",
+        "line": -1,
+        "column": -1,
+        "selfMs": 1.6,
+        "inclusiveMs": 1.6
+      }
+    ],
+    "inclusive": [
+      {
+        "id": 1,
+        "fn": "(root)",
+        "file": "other",
+        "line": -1,
+        "column": -1,
+        "selfMs": 0,
+        "inclusiveMs": 677.407
+      },
+      {
+        "id": 2,
+        "fn": "(idle)",
+        "file": "other",
+        "line": -1,
+        "column": -1,
+        "selfMs": 423.582,
+        "inclusiveMs": 423.582
+      },
+      {
+        "id": 34,
+        "fn": "",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 131100,
+        "selfMs": 1.893,
+        "inclusiveMs": 204.397,
+        "original": {
+          "file": "hestia-prototype/physics/bodyCutSession.ts",
+          "line": 285,
+          "column": 21
+        }
+      },
+      {
+        "id": 35,
+        "fn": "ee",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 130251,
+        "selfMs": 0.009,
+        "inclusiveMs": 202.504,
+        "original": {
+          "file": "hestia-prototype/physics/bodyCutSession.ts",
+          "line": 219,
+          "column": 22
+        }
+      },
+      {
+        "id": 36,
+        "fn": "iy",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 126092,
+        "selfMs": 0.028,
+        "inclusiveMs": 201.534,
+        "original": {
+          "file": "hestia-prototype/physics/bodyCut.ts",
+          "line": 56,
+          "column": 18
+        }
+      },
+      {
+        "id": 37,
+        "fn": "ay",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 126161,
+        "selfMs": 0,
+        "inclusiveMs": 201.506,
+        "original": {
+          "file": "hestia-prototype/physics/bodyCut.ts",
+          "line": 59,
+          "column": 11
+        }
+      },
+      {
+        "id": 38,
+        "fn": "Zg",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 35644,
+        "selfMs": 0.694,
+        "inclusiveMs": 201.506,
+        "original": {
+          "file": "hestia-prototype/physics/bodyCutPlan.ts",
+          "line": 42,
+          "column": 18
+        }
+      },
+      {
+        "id": 39,
+        "fn": "Qg",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 35717,
+        "selfMs": 0,
+        "inclusiveMs": 200.812,
+        "original": {
+          "file": "hestia-prototype/physics/bodyCutPlan.ts",
+          "line": 45,
+          "column": 11
+        }
+      },
+      {
+        "id": 40,
+        "fn": "Pg",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 29024,
+        "selfMs": 1.504,
+        "inclusiveMs": 182.634,
+        "original": {
+          "file": "hestia-prototype/physics/structuralPlan.ts",
+          "line": 77,
+          "column": 18
+        }
+      },
+      {
+        "id": 41,
+        "fn": "Fg",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 29081,
+        "selfMs": 0,
+        "inclusiveMs": 181.13,
+        "original": {
+          "file": "hestia-prototype/physics/structuralPlan.ts",
+          "line": 81,
+          "column": 11
+        }
+      },
+      {
+        "id": 144,
+        "fn": "Vg",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 31443,
+        "selfMs": 0,
+        "inclusiveMs": 142.262,
+        "original": {
+          "file": "hestia-prototype/physics/structuralPlan.ts",
+          "line": 181,
+          "column": 11
+        }
+      },
+      {
+        "id": 183,
+        "fn": "Bg",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 30649,
+        "selfMs": 1.085,
+        "inclusiveMs": 122.435,
+        "original": {
+          "file": "hestia-prototype/physics/structuralPlan.ts",
+          "line": 148,
+          "column": 11
+        }
+      },
+      {
+        "id": 208,
+        "fn": "Og",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 28493,
+        "selfMs": 9.921,
+        "inclusiveMs": 63.986,
+        "original": {
+          "file": "hestia-prototype/physics/hvpPlanSteps.ts",
+          "line": 2,
+          "column": 18
+        }
+      },
+      {
+        "id": 209,
+        "fn": "Hv",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 112837,
+        "selfMs": 1.06,
+        "inclusiveMs": 48.296,
+        "original": {
+          "file": "hestia-prototype/terrain/structuralIngest.ts",
+          "line": 338,
+          "column": 18
+        }
+      },
+      {
+        "id": 210,
+        "fn": "Bv",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 112269,
+        "selfMs": 1.156,
+        "inclusiveMs": 47.236,
+        "original": {
+          "file": "hestia-prototype/terrain/structuralIngest.ts",
+          "line": 308,
+          "column": 11
+        }
+      },
+      {
+        "id": 304,
+        "fn": "i_",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 37300,
+        "selfMs": 0,
+        "inclusiveMs": 45.223,
+        "original": {
+          "file": "hestia-prototype/physics/rigidRecipe.ts",
+          "line": 41,
+          "column": 18
+        }
+      },
+      {
+        "id": 305,
+        "fn": "a_",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 37447,
+        "selfMs": 0,
+        "inclusiveMs": 45.223,
+        "original": {
+          "file": "hestia-prototype/physics/rigidRecipe.ts",
+          "line": 46,
+          "column": 11
+        }
+      },
+      {
+        "id": 306,
+        "fn": "s",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 37510,
+        "selfMs": 0,
+        "inclusiveMs": 45.223,
+        "original": {
+          "file": "hestia-prototype/physics/rigidRecipe.ts",
+          "line": 51,
+          "column": 13
+        }
+      },
+      {
+        "id": 307,
+        "fn": "Og",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 28493,
+        "selfMs": 1.523,
+        "inclusiveMs": 45.223,
+        "original": {
+          "file": "hestia-prototype/physics/hvpPlanSteps.ts",
+          "line": 2,
+          "column": 18
+        }
+      },
+      {
+        "id": 308,
+        "fn": "ad",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2198253,
+        "selfMs": 0.019,
+        "inclusiveMs": 40.329,
+        "original": {
+          "file": "voxel/structural/physicsTransition.ts",
+          "line": 864,
+          "column": 18
+        }
+      },
+      {
+        "id": 309,
+        "fn": "rd",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2197609,
+        "selfMs": 0.87,
+        "inclusiveMs": 40.31,
+        "original": {
+          "file": "voxel/structural/physicsTransition.ts",
+          "line": 808,
+          "column": 11
+        }
+      },
+      {
+        "id": 42,
+        "fn": "Lg",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 29327,
+        "selfMs": 0,
+        "inclusiveMs": 38.868,
+        "original": {
+          "file": "hestia-prototype/physics/structuralPlan.ts",
+          "line": 92,
+          "column": 11
+        }
+      },
+      {
+        "id": 43,
+        "fn": "Og",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 28493,
+        "selfMs": 3.227,
+        "inclusiveMs": 38.868,
+        "original": {
+          "file": "hestia-prototype/physics/hvpPlanSteps.ts",
+          "line": 2,
+          "column": 18
+        }
+      },
+      {
+        "id": 44,
+        "fn": "Mu",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2184473,
+        "selfMs": 0.991,
+        "inclusiveMs": 33.992,
+        "original": {
+          "file": "voxel/structural/commands.ts",
+          "line": 596,
+          "column": 18
+        }
+      },
+      {
+        "id": 45,
+        "fn": "Au",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2178837,
+        "selfMs": 0,
+        "inclusiveMs": 33.001,
+        "original": {
+          "file": "voxel/structural/commands.ts",
+          "line": 385,
+          "column": 11
+        }
+      },
+      {
+        "id": 310,
+        "fn": "u",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2197667,
+        "selfMs": 0.009,
+        "inclusiveMs": 22.248,
+        "original": {
+          "file": "voxel/structural/physicsTransition.ts",
+          "line": 820,
+          "column": 13
+        }
+      },
+      {
+        "id": 311,
+        "fn": "Zl",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2171606,
+        "selfMs": 0.049,
+        "inclusiveMs": 22.239,
+        "original": {
+          "file": "voxel/structural/massProperties.ts",
+          "line": 423,
+          "column": 18
+        }
+      },
+      {
+        "id": 312,
+        "fn": "Yl",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2169983,
+        "selfMs": 0.499,
+        "inclusiveMs": 22.19,
+        "original": {
+          "file": "voxel/structural/massProperties.ts",
+          "line": 366,
+          "column": 11
+        }
+      },
+      {
+        "id": 3,
+        "fn": "Cx.onmessage",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 210880,
+        "selfMs": 5.989,
+        "inclusiveMs": 21.452,
+        "original": {
+          "file": "hestia-prototype/physics/physicsWorker.ts",
+          "line": 94,
+          "column": 18
+        }
+      },
+      {
+        "id": 145,
+        "fn": "Og",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 28493,
+        "selfMs": 0.512,
+        "inclusiveMs": 19.827,
+        "original": {
+          "file": "hestia-prototype/physics/hvpPlanSteps.ts",
+          "line": 2,
+          "column": 18
+        }
+      },
+      {
+        "id": 415,
+        "fn": "Og",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 28493,
+        "selfMs": 1.586,
+        "inclusiveMs": 18.178,
+        "original": {
+          "file": "hestia-prototype/physics/hvpPlanSteps.ts",
+          "line": 2,
+          "column": 18
+        }
+      },
+      {
+        "id": 146,
+        "fn": "Nl",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2163227,
+        "selfMs": 1.855,
+        "inclusiveMs": 17.704,
+        "original": {
+          "file": "voxel/structural/classificationSteps.ts",
+          "line": 672,
+          "column": 18
+        }
+      },
+      {
+        "id": 221,
+        "fn": "Iv",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 108495,
+        "selfMs": 4.595,
+        "inclusiveMs": 17.405,
+        "original": {
+          "file": "hestia-prototype/terrain/structuralIngest.ts",
+          "line": 191,
+          "column": 11
+        }
+      },
+      {
+        "id": 375,
+        "fn": "td",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2196575,
+        "selfMs": 1.299,
+        "inclusiveMs": 17.192,
+        "original": {
+          "file": "voxel/structural/physicsTransition.ts",
+          "line": 763,
+          "column": 11
+        }
+      },
+      {
+        "id": 147,
+        "fn": "jl",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2157838,
+        "selfMs": 0,
+        "inclusiveMs": 15.849,
+        "original": {
+          "file": "voxel/structural/classificationSteps.ts",
+          "line": 343,
+          "column": 11
+        }
+      },
+      {
+        "id": 334,
+        "fn": "Nl",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2163227,
+        "selfMs": 0,
+        "inclusiveMs": 15.719,
+        "original": {
+          "file": "voxel/structural/classificationSteps.ts",
+          "line": 672,
+          "column": 18
+        }
+      },
+      {
+        "id": 335,
+        "fn": "jl",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2157838,
+        "selfMs": 4.797,
+        "inclusiveMs": 15.719,
+        "original": {
+          "file": "voxel/structural/classificationSteps.ts",
+          "line": 343,
+          "column": 11
+        }
+      },
+      {
+        "id": 376,
+        "fn": "Yu",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2188114,
+        "selfMs": 0,
+        "inclusiveMs": 15.626,
+        "original": {
+          "file": "voxel/structural/physicsTransition.ts",
+          "line": 363,
+          "column": 11
+        }
+      },
+      {
+        "id": 79,
+        "fn": "(garbage collector)",
+        "file": "other",
+        "line": -1,
+        "column": -1,
+        "selfMs": 15.5,
+        "inclusiveMs": 15.5
+      },
+      {
+        "id": 67,
+        "fn": "Nl",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2163227,
+        "selfMs": 2.746,
+        "inclusiveMs": 15.264,
+        "original": {
+          "file": "voxel/structural/classificationSteps.ts",
+          "line": 672,
+          "column": 18
+        }
+      },
+      {
+        "id": 416,
+        "fn": "Hv",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 112837,
+        "selfMs": 0,
+        "inclusiveMs": 14.981,
+        "original": {
+          "file": "hestia-prototype/terrain/structuralIngest.ts",
+          "line": 338,
+          "column": 18
+        }
+      },
+      {
+        "id": 417,
+        "fn": "Bv",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 112269,
+        "selfMs": 3.269,
+        "inclusiveMs": 14.981,
+        "original": {
+          "file": "hestia-prototype/terrain/structuralIngest.ts",
+          "line": 308,
+          "column": 11
+        }
+      },
+      {
+        "id": 259,
+        "fn": "zv",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 111097,
+        "selfMs": 0.022,
+        "inclusiveMs": 13.68,
+        "original": {
+          "file": "hestia-prototype/terrain/structuralIngest.ts",
+          "line": 269,
+          "column": 11
+        }
+      },
+      {
+        "id": 260,
+        "fn": "$c",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2148518,
+        "selfMs": 2.379,
+        "inclusiveMs": 13.658,
+        "original": {
+          "file": "voxel/structural/model.ts",
+          "line": 548,
+          "column": 18
+        }
+      },
+      {
+        "id": 222,
+        "fn": "sa",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2087711,
+        "selfMs": 1.515,
+        "inclusiveMs": 12.81,
+        "original": {
+          "file": "voxel/adaptive/materialization.ts",
+          "line": 268,
+          "column": 18
+        }
+      },
+      {
+        "id": 68,
+        "fn": "jl",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2157838,
+        "selfMs": 1.628,
+        "inclusiveMs": 12.518,
+        "original": {
+          "file": "voxel/structural/classificationSteps.ts",
+          "line": 343,
+          "column": 11
+        }
+      },
+      {
+        "id": 184,
+        "fn": "zg",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 30171,
+        "selfMs": 1.612,
+        "inclusiveMs": 12.141,
+        "original": {
+          "file": "hestia-prototype/physics/structuralPlan.ts",
+          "line": 125,
+          "column": 11
+        }
+      },
+      {
+        "id": 261,
+        "fn": "el",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2148606,
+        "selfMs": 0,
+        "inclusiveMs": 11.279,
+        "original": {
+          "file": "voxel/structural/model.ts",
+          "line": 556,
+          "column": 11
+        }
+      },
+      {
+        "id": 185,
+        "fn": "Ag",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 28776,
+        "selfMs": 0,
+        "inclusiveMs": 10.529,
+        "original": {
+          "file": "hestia-prototype/physics/structuralPlan.ts",
+          "line": 45,
+          "column": 14
+        }
+      },
+      {
+        "id": 186,
+        "fn": "Dg",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 28292,
+        "selfMs": 0,
+        "inclusiveMs": 10.529,
+        "original": {
+          "file": "hestia-prototype/runtime/cutTrace.ts",
+          "line": 12,
+          "column": 17
+        }
+      },
+      {
+        "id": 187,
+        "fn": "",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 30564,
+        "selfMs": 0,
+        "inclusiveMs": 10.529,
+        "original": {
+          "file": "hestia-prototype/physics/structuralPlan.ts",
+          "line": 139,
+          "column": 31
+        }
+      },
+      {
+        "id": 188,
+        "fn": "Rg",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 30060,
+        "selfMs": 0,
+        "inclusiveMs": 10.529,
+        "original": {
+          "file": "hestia-prototype/physics/structuralPlan.ts",
+          "line": 109,
+          "column": 7
+        }
+      },
+      {
+        "id": 236,
+        "fn": "Lv",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 4,
+        "column": 109192,
+        "selfMs": 1.181,
+        "inclusiveMs": 9.871,
+        "original": {
+          "file": "hestia-prototype/terrain/structuralIngest.ts",
+          "line": 220,
+          "column": 11
+        }
+      },
+      {
+        "id": 237,
+        "fn": "Ka",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2111165,
+        "selfMs": 0.145,
+        "inclusiveMs": 8.69,
+        "original": {
+          "file": "voxel/adaptive/canonical.ts",
+          "line": 699,
+          "column": 18
+        }
+      },
+      {
+        "id": 148,
+        "fn": "Ol",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2156877,
+        "selfMs": 0.282,
+        "inclusiveMs": 8.668,
+        "original": {
+          "file": "voxel/structural/classificationSteps.ts",
+          "line": 265,
+          "column": 11
+        }
+      },
+      {
+        "id": 149,
+        "fn": "cl",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2152533,
+        "selfMs": 0,
+        "inclusiveMs": 8.386,
+        "original": {
+          "file": "voxel/structural/occupiedEntries.ts",
+          "line": 90,
+          "column": 18
+        }
+      },
+      {
+        "id": 150,
+        "fn": "sl",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2152240,
+        "selfMs": 0.021,
+        "inclusiveMs": 8.386,
+        "original": {
+          "file": "voxel/structural/occupiedEntries.ts",
+          "line": 65,
+          "column": 11
+        }
+      },
+      {
+        "id": 151,
+        "fn": "ul",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2152923,
+        "selfMs": 0,
+        "inclusiveMs": 8.365,
+        "original": {
+          "file": "voxel/structural/occupiedEntries.ts",
+          "line": 114,
+          "column": 7
+        }
+      },
+      {
+        "id": 336,
+        "fn": "Ol",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2156877,
+        "selfMs": 0,
+        "inclusiveMs": 8.126,
+        "original": {
+          "file": "voxel/structural/classificationSteps.ts",
+          "line": 265,
+          "column": 11
+        }
+      },
+      {
+        "id": 337,
+        "fn": "cl",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2152533,
+        "selfMs": 0,
+        "inclusiveMs": 8.126,
+        "original": {
+          "file": "voxel/structural/occupiedEntries.ts",
+          "line": 90,
+          "column": 18
+        }
+      },
+      {
+        "id": 338,
+        "fn": "sl",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2152240,
+        "selfMs": 0,
+        "inclusiveMs": 8.126,
+        "original": {
+          "file": "voxel/structural/occupiedEntries.ts",
+          "line": 65,
+          "column": 11
+        }
+      },
+      {
+        "id": 189,
+        "fn": "tl",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2151719,
+        "selfMs": 0,
+        "inclusiveMs": 7.608,
+        "original": {
+          "file": "voxel/structural/model.ts",
+          "line": 654,
+          "column": 14
+        }
+      },
+      {
+        "id": 69,
+        "fn": "Ol",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2156877,
+        "selfMs": 0,
+        "inclusiveMs": 7.334,
+        "original": {
+          "file": "voxel/structural/classificationSteps.ts",
+          "line": 265,
+          "column": 11
+        }
+      },
+      {
+        "id": 70,
+        "fn": "cl",
+        "file": "physicsWorker-tXxbXh0M.js",
+        "line": 0,
+        "column": 2152533,
+        "selfMs": 0,
+        "inclusiveMs": 7.334,
+        "original": {
+          "file": "voxel/structural/occupiedEntries.ts",
+          "line": 90,
+          "column": 18
+        }
+      }
+    ]
+  },
+  "measures": [
+    {
+      "name": "hvp.cutBodyInputMs",
+      "duration": 0
+    },
+    {
+      "name": "hvp.cutBodySubmittedMs",
+      "duration": 0
+    },
+    {
+      "name": "hvp.cutBodyOwnerPlanMs",
+      "duration": 233.29999999701977
+    },
+    {
+      "name": "hvp.cutBodyPrepareWorkMs",
+      "duration": 0.9000000022351742
+    },
+    {
+      "name": "hvp.cutBodyMeshWorkerMs",
+      "duration": 39.70000000298023
+    },
+    {
+      "name": "hvp.cutBodyNativeAdmissionMs",
+      "duration": 10.099999997764826
+    },
+    {
+      "name": "hvp.cutBodyPrepareWorkMs",
+      "duration": 1.5
+    },
+    {
+      "name": "hvp.cutBodyMainDecodeMs",
+      "duration": 1.5
+    },
+    {
+      "name": "hvp.cutBodyRenderStageMs",
+      "duration": 5.100000001490116
+    },
+    {
+      "name": "hvp.cutBodyInputToAppliedMs",
+      "duration": 323.2998046875
+    },
+    {
+      "name": "hvp.cutBodyTotalAppliedMs",
+      "duration": 319.69999999925494
+    },
+    {
+      "name": "hvp.cutBodyMeshReleaseMs",
+      "duration": 0.30000000074505806
+    },
+    {
+      "name": "hvp.cutBodyFirstCommittedRenderSubmitMs",
+      "duration": 339.300048828125
+    }
+  ],
+  "outcome": {
+    "id": "moving-cut-1",
+    "status": "Applied",
+    "reason": "Current-pose fragment replacement"
+  }
+}

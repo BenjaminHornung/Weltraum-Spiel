@@ -1,0 +1,10 @@
+{
+  "classification": "Preserve actual generic Array.from cell-record then array-freeze lookup order; new independent observation RED",
+  "files": [
+    "tests/unit/hvpBodyMeshJob.test.ts"
+  ],
+  "binding": "A03-worker-freeze-red-r01-binding.json",
+  "runId": "A03-worker-freeze-red-r01",
+  "nativeCapSeconds": 180,
+  "mode": "tests"
+}

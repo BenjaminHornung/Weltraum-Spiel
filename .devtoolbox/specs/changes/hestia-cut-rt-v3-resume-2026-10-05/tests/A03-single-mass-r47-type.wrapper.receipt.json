@@ -1,0 +1,8 @@
+{
+  "runId": "A03-single-mass-r47-type",
+  "startedUtc": "2026-10-05T20:55:11.1401983+00:00",
+  "endedUtc": "2026-10-05T20:55:13.8550061+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 2.7066293,
+  "planFile": "A03-single-mass-r47-type.plan.json"
+}

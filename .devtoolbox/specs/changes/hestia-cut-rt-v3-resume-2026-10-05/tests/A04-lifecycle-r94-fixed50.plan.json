@@ -1,0 +1,217 @@
+{
+  "schema": "hestia-actual-lifecycle-v1",
+  "runId": "A04-lifecycle-r94-fixed50",
+  "plannedCycles": 50,
+  "sourceBinding": "A03-continuation-r91-binding-r02.json",
+  "buildInventory": "A04-lifecycle-r94-build.DATA.json",
+  "driver": "A04-lifecycle-r94-fixed50-driver.js",
+  "reviewedCoreDriver": "A04-lifecycle-r94-driver-r04.js",
+  "reviewedCoreSha256": "75936ea7a96ed223f2e29a4072b8b6e445ab8f8099aa549c75372c066c16f3f2",
+  "coreDelta": "planned1 to50 and durable background promise return only; cycle body unchanged",
+  "scope": "Normal ownSave1 coldLoad/sleepingactual384/faultNativeReject/RollbackRelease/freshRetry/committedRender/normalEnd/actualDisposeACK/all0/ownPageclose",
+  "moving": "Separate actual currentR91/R92/R93; still required in all14formalpopulations",
+  "onUnexpected": "STOP_FIRST;remainingNOT_RUN;no substitution or pooledpilotcompletion",
+  "classification": "FUNCTIONAL_LIFECYCLE_NOT_42_1400_OR_PHYSICAL_PEAK",
+  "attempts": [
+    {
+      "cycle": 1,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 2,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 3,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 4,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 5,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 6,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 7,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 8,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 9,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 10,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 11,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 12,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 13,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 14,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 15,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 16,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 17,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 18,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 19,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 20,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 21,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 22,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 23,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 24,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 25,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 26,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 27,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 28,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 29,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 30,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 31,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 32,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 33,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 34,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 35,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 36,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 37,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 38,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 39,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 40,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 41,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 42,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 43,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 44,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 45,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 46,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 47,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 48,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 49,
+      "status": "PLANNED"
+    },
+    {
+      "cycle": 50,
+      "status": "PLANNED"
+    }
+  ]
+}

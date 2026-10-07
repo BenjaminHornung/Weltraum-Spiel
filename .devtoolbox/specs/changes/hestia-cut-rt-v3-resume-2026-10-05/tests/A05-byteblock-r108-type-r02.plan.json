@@ -1,0 +1,8 @@
+{
+  "runId": "A05-byteblock-r108-type-r02",
+  "mode": "type",
+  "files": [],
+  "nativeCapSeconds": 60,
+  "binding": "A05-byteblock-r108-binding-r02.json",
+  "classification": "Current full4096 block and tail control unchanged FNV admission"
+}

@@ -1,0 +1,8 @@
+{
+  "runId": "A03-plan-quantum-r45-controls-type",
+  "binding": "A03-plan-quantum-r45-controls-binding.json",
+  "mode": "type",
+  "files": [],
+  "nativeCapSeconds": 60,
+  "classification": "Direct stalled/elapsed/cancellation/Error-null-undefined/cleanup controls plus original six whole regression populations unchanged"
+}

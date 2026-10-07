@@ -1,0 +1,10 @@
+{
+  "nativeCapSeconds": 180,
+  "binding": "A03-worker-input-red-r01-binding.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvpBodyMeshJob.test.ts"
+  ],
+  "classification": "Worker borrowed whole input/mesh/wire same-parent, first input cancel/resource failure real RED; original tests unchanged",
+  "runId": "A03-worker-input-red-r01"
+}

@@ -1,0 +1,25 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-borrowed-body-plan.test.ts (14 tests | 2 failed) 3721ms
+   ✓ keeps full canonical bytes and original default units while the owner selects an immutable bounded hash quantum 27ms
+   ✓ refuses getter or mutable hash-quantum metadata without reading a getter and retains the first parent failure 2ms
+   ✓ bounds borrowed work with a stalled clock and closes its actual nested cursor on cancellation 2ms
+   ✓ ends borrowed work at its elapsed cutoff before reaching the unit ceiling 0ms
+   ✓ keeps the original borrowed failure when cursor cleanup also fails (Error: nested first failure) 0ms
+   ✓ keeps the original borrowed failure when cursor cleanup also fails (null) 0ms
+   ✓ keeps the original borrowed failure when cursor cleanup also fails (undefined) 0ms
+   ✓ propagates cleanup failure after a successful borrowed result 0ms
+   × composes the same complete Box plan, children and removed mass under one retained parent 841ms
+   × composes the same complete Sphere plan, children and removed mass under one retained parent 1093ms
+   ✓ closes mid-plan command/ingest work without releasing the shared parent 150ms
+   ✓ keeps the original parent failure before any final plan or retry work 161ms
+   ✓ credits a warm cell projection before borrowing it from the parent 124ms
+   ✓ yields through Sphere material comparisons while preserving first-match semantics  1319ms
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 12 passed (14)
+   Start at  00:11:31
+   Duration  5.88s (transform 920ms, setup 0ms, import 1.94s, tests 3.72s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-recipe-quantum-r54-red-tests/original-vitest.json

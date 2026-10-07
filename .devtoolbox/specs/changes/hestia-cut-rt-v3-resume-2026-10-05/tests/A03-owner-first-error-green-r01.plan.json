@@ -1,0 +1,10 @@
+{
+  "binding": "A03-owner-first-error-green-r01-binding.json",
+  "classification": "First-error precedence corrected; original whole-file limits",
+  "mode": "tests",
+  "runId": "A03-owner-first-error-green-r01",
+  "files": [
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts"
+  ],
+  "nativeCapSeconds": 180
+}

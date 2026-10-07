@@ -1,0 +1,8 @@
+{
+  "runId": "A03-mesh-decode-regressions-r01",
+  "startedUtc": "2026-10-05T15:41:08.8828479+00:00",
+  "endedUtc": "2026-10-05T15:41:46.5547059+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 37.6676411,
+  "planFile": "A03-mesh-decode-regressions-r01.plan.json"
+}

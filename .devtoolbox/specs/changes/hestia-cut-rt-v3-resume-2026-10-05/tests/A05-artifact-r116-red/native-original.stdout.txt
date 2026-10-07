@@ -1,0 +1,23 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/presentationMeshArtifact.test.ts (12 tests | 1 failed) 47ms
+     × prepares owned snapshots and every validation hash in bounded steps with unchanged results 13ms
+     ✓ exports the two explicit ownership semantics 2ms
+     ✓ creates a SnapshotOwned artifact with one defensive copy per caller array 7ms
+     ✓ accepts only closed HVP ephemeral representation keys without changing ordinary IDs 7ms
+     ✓ adopts exclusive worker buffers without copying 2ms
+     ✓ rejects adoption of a subview while leaving the caller buffer attached 1ms
+     ✓ rejects a non-finite position 2ms
+     ✓ rejects an index outside the vertex range 2ms
+     ✓ rejects inconsistent optional attribute lengths 2ms
+     ✓ requires bounds to contain every vertex 1ms
+     ✓ rejects gaps and non-triangle-aligned material ranges 1ms
+     ✓ accepts Uint32 indices and rejects subviews or aliased buffers 2ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 11 passed (12)
+   Start at  00:24:57
+   Duration  966ms (transform 314ms, setup 0ms, import 447ms, tests 47ms, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-artifact-r116-red/original-vitest.json

@@ -1,0 +1,12 @@
+tests/unit/hvp-owned-materialization.test.ts(106,71): error TS2345: Argument of type '{ schemaVersion: typeof root.ADAPTIVE_BRICK_SCHEMA_VERSION; materializationVersion: typeof root.ADAPTIVE_MATERIALIZATION_VERSION; key: root.AdaptiveBrickKey; originQuantum: root.QuantumPoint; ... 12 more ...; material: (" invalid " | ... 1 more ... | null)[]; }' is not assignable to parameter of type 'MaterializedAdaptiveBrick'.
+  Types of property 'material' are incompatible.
+    Type '(" invalid " | StableAuthorityId | null)[]' is not assignable to type 'readonly (StableAuthorityId | null)[]'.
+      Type '" invalid " | StableAuthorityId | null' is not assignable to type 'StableAuthorityId | null'.
+        Type 'string' is not assignable to type 'StableAuthorityId'.
+          Type 'string' is not assignable to type '{ readonly [brand]: "StableAuthorityId"; }'.
+tests/unit/hvp-owned-materialization.test.ts(106,111): error TS2345: Argument of type '{ schemaVersion: typeof root.ADAPTIVE_BRICK_SCHEMA_VERSION; materializationVersion: typeof root.ADAPTIVE_MATERIALIZATION_VERSION; key: root.AdaptiveBrickKey; originQuantum: root.QuantumPoint; ... 12 more ...; material: (" invalid " | ... 1 more ... | null)[]; }' is not assignable to parameter of type 'MaterializedAdaptiveBrick'.
+  Types of property 'material' are incompatible.
+    Type '(" invalid " | StableAuthorityId | null)[]' is not assignable to type 'readonly (StableAuthorityId | null)[]'.
+      Type '" invalid " | StableAuthorityId | null' is not assignable to type 'StableAuthorityId | null'.
+        Type 'string' is not assignable to type 'StableAuthorityId'.
+          Type 'string' is not assignable to type '{ readonly [brand]: "StableAuthorityId"; }'.

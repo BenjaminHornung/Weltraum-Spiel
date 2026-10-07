@@ -1,0 +1,293 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > runs session source preparation outside the World hold and preserves Running after release
+hvp-body-plan-steps {"commandId":"recut","outcome":"Planned","origin":1791212318563.142,"steps":9,"truncatedSteps":0,"max":{"ordinal":5,"label":"childClassificationCells","start":13170.1438,"durationMs":106.27189999999973},"phases":[{"label":"destruction","count":1,"totalMs":64.09419999999955,"maxMs":64.09419999999955},{"label":"classification","count":1,"totalMs":26.338299999999435,"maxMs":26.338299999999435},{"label":"parentMass","count":1,"totalMs":13.131100000000515,"maxMs":13.131100000000515},{"label":"childClassificationCells","count":2,"totalMs":110.27789999999914,"maxMs":106.27189999999973},{"label":"childRecipe0","count":1,"totalMs":60.27549999999974,"maxMs":60.27549999999974},{"label":"removedMass","count":1,"totalMs":63.62119999999959,"maxMs":63.62119999999959}],"slow":[{"ordinal":0,"label":"destruction","start":13040.7949,"durationMs":64.09419999999955},{"ordinal":3,"label":"classification","start":13123.8187,"durationMs":26.338299999999435},{"ordinal":4,"label":"parentMass","start":13154.532,"durationMs":13.131100000000515},{"ordinal":5,"label":"childClassificationCells","start":13170.1438,"durationMs":106.27189999999973,"sub":[{"phase":"partCellsMs","durationMs":10.131599999998798},{"phase":"ingestSortRunsMs","durationMs":0.10760000000118453},{"phase":"ingestJournalMs","durationMs":1.032600000000457},{"phase":"ingestMaterializeMs","durationMs":23.059299999998984},{"phase":"ingestProofsMs","durationMs":17.028699999998935},{"phase":"ingestStructuralMs","durationMs":39.233799999999974},{"phase":"ingestTotalMs","durationMs":80.57669999999962}]},{"ordinal":7,"label":"childRecipe0","start":13295.8963,"durationMs":60.27549999999974,"sub":[{"phase":"recipeMassMs","durationMs":11.33179999999993},{"phase":"recipeClassifyMs","durationMs":9.977000000000771},{"phase":"recipeTransitionMs","durationMs":58.11819999999898},{"phase":"recipeAxesMs","durationMs":0.06570000000101572}]},{"ordinal":8,"label":"removedMass","start":13358.8307,"durationMs":63.62119999999959,"sub":[{"phase":"removedFilterMs","durationMs":0.039099999999962165},{"phase":"ingestSortRunsMs","durationMs":0.026799999999639113},{"phase":"ingestJournalMs","durationMs":0.15649999999914144},{"phase":"ingestMaterializeMs","durationMs":16.414999999999054},{"phase":"ingestProofsMs","durationMs":16.20349999999962},{"phase":"ingestStructuralMs","durationMs":30.34740000000056},{"phase":"ingestTotalMs","durationMs":63.26400000000103},{"phase":"removedMassDeriveMs","durationMs":0.2481000000007043}]}]}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > runs session source preparation outside the World hold and preserves Paused after release
+hvp-body-plan-steps {"commandId":"recut","outcome":"Planned","origin":1791212318563.142,"steps":9,"truncatedSteps":0,"max":{"ordinal":5,"label":"childClassificationCells","start":15244.5034,"durationMs":117.45000000000073},"phases":[{"label":"destruction","count":1,"totalMs":60.274600000000646,"maxMs":60.274600000000646},{"label":"classification","count":1,"totalMs":25.615199999998367,"maxMs":25.615199999998367},{"label":"parentMass","count":1,"totalMs":13.167600000000675,"maxMs":13.167600000000675},{"label":"childClassificationCells","count":2,"totalMs":125.10330000000067,"maxMs":117.45000000000073},{"label":"childRecipe0","count":1,"totalMs":70.27779999999984,"maxMs":70.27779999999984},{"label":"removedMass","count":1,"totalMs":70.14789999999994,"maxMs":70.14789999999994}],"slow":[{"ordinal":0,"label":"destruction","start":15103.1063,"durationMs":60.274600000000646},{"ordinal":3,"label":"classification","start":15197.736,"durationMs":25.615199999998367},{"ordinal":4,"label":"parentMass","start":15223.8282,"durationMs":13.167600000000675},{"ordinal":5,"label":"childClassificationCells","start":15244.5034,"durationMs":117.45000000000073,"sub":[{"phase":"partCellsMs","durationMs":9.664999999999054},{"phase":"ingestSortRunsMs","durationMs":0.1040000000011787},{"phase":"ingestJournalMs","durationMs":1.013600000000224},{"phase":"ingestMaterializeMs","durationMs":21.530300000000352},{"phase":"ingestProofsMs","durationMs":19.29870000000119},{"phase":"ingestStructuralMs","durationMs":48.39089999999851},{"phase":"ingestTotalMs","durationMs":90.41990000000078}]},{"ordinal":7,"label":"childRecipe0","start":15386.412,"durationMs":70.27779999999984,"sub":[{"phase":"recipeMassMs","durationMs":12.844199999999546},{"phase":"recipeClassifyMs","durationMs":14.074899999999616},{"phase":"recipeTransitionMs","durationMs":68.20160000000033},{"phase":"recipeAxesMs","durationMs":0.05409999999938009}]},{"ordinal":8,"label":"removedMass","start":15462.9638,"durationMs":70.14789999999994,"sub":[{"phase":"removedFilterMs","durationMs":0.03660000000127184},{"phase":"ingestSortRunsMs","durationMs":0.02269999999953143},{"phase":"ingestJournalMs","durationMs":0.19059999999990396},{"phase":"ingestMaterializeMs","durationMs":16.40520000000106},{"phase":"ingestProofsMs","durationMs":15.291800000000876},{"phase":"ingestStructuralMs","durationMs":37.819799999999304},{"phase":"ingestTotalMs","durationMs":69.82740000000013},{"phase":"removedMassDeriveMs","durationMs":0.23810000000048603}]}]}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 1] withWorker setup-through-outer-return START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 2] withWorker body entry-through-return START
+[Restore 3] old captureWorkerBegin START
+[Restore 4] worker.send Read START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 4] worker.send Read DONE { id: 3, sequence: 3, status: 'Running', moving: 'Idle', planCount: 0 }
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 5] worker.send PrepareBranch START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 5] worker.send PrepareBranch DONE { id: 4, sequence: 4, status: 'Paused', moving: 'Idle', planCount: 0 }
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 6] worker.send CommitBranch START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 6] worker.send CommitBranch DONE { id: 5, sequence: 5, status: 'Paused', moving: 'Idle', planCount: 0 }
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 7] worker.send FinalizeBranch START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 7] worker.send FinalizeBranch DONE { id: 6, sequence: 6, status: 'Running', moving: 'Idle', planCount: 0 }
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 8] worker.send Read START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 8] worker.send Read DONE { id: 7, sequence: 7, status: 'Running', moving: 'Idle', planCount: 0 }
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 9] worker.send Read START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 9] worker.send Read DONE { id: 8, sequence: 8, status: 'Running', moving: 'Idle', planCount: 0 }
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 10] worker.send BeginBodyCut START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 10] worker.send BeginBodyCut DONE {
+  id: 9,
+  sequence: 9,
+  status: 'Running',
+  moving: 'Preparing',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 3] old captureWorkerBegin DONE
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 11] worker.send RollbackBodyCut START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 11] worker.send RollbackBodyCut DONE {
+  id: 10,
+  sequence: 10,
+  status: 'Running',
+  moving: 'Idle',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 12] worker.send Pause START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 12] worker.send Pause DONE {
+  id: 11,
+  sequence: 11,
+  status: 'Paused',
+  moving: 'Idle',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 13] worker.send Checkpoint START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 13] worker.send Checkpoint DONE {
+  id: 12,
+  sequence: 12,
+  status: 'Paused',
+  moving: 'Idle',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 14] worker.send PrepareRestore START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 14] worker.send PrepareRestore DONE {
+  id: 13,
+  sequence: 13,
+  status: 'Paused',
+  moving: 'Idle',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 15] worker.send CommitRestore START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 15] worker.send CommitRestore DONE {
+  id: 14,
+  sequence: 14,
+  status: 'Paused',
+  moving: 'Idle',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 16] worker.send FinalizeRestore START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 16] worker.send FinalizeRestore DONE {
+  id: 15,
+  sequence: 15,
+  status: 'Paused',
+  moving: 'Idle',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 17] worker.send Play START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 17] worker.send Play DONE {
+  id: 16,
+  sequence: 16,
+  status: 'Running',
+  moving: 'Idle',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 18] fresh captureWorkerBegin START
+[Restore 19] worker.send Read START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 19] worker.send Read DONE {
+  id: 17,
+  sequence: 17,
+  status: 'Running',
+  moving: 'Idle',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 20] worker.send Read START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 20] worker.send Read DONE {
+  id: 18,
+  sequence: 18,
+  status: 'Running',
+  moving: 'Idle',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 21] worker.send BeginBodyCut START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 21] worker.send BeginBodyCut DONE {
+  id: 19,
+  sequence: 19,
+  status: 'Running',
+  moving: 'Preparing',
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 18] fresh captureWorkerBegin DONE
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 22] worker.send PrepareBodyChildProjection START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 22] worker.send PrepareBodyChildProjection DONE {
+  id: 20,
+  sequence: 20,
+  status: undefined,
+  moving: undefined,
+  planCount: 0
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 23] worker.send PrepareBodyChildProjection START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 23] worker.send PrepareBodyChildProjection DONE {
+  id: 21,
+  sequence: 21,
+  status: undefined,
+  moving: undefined,
+  planCount: 1
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 24] worker.send RollbackBodyCut START
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 24] worker.send RollbackBodyCut DONE {
+  id: 22,
+  sequence: 22,
+  status: 'Running',
+  moving: 'Idle',
+  planCount: 1
+}
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 2] withWorker body entry-through-return DONE
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: old Begin request IDs cannot project after a real finalized World Restore
+[Restore 1] withWorker setup-through-outer-return DONE
+
+stdout | tests/unit/hvp-body-plan-owner.test.ts > owner source bridge: preserves genuine occupied Uint16 material IDs and rejects Air/negative-zero/overflow data
+S13_HIGH_MATERIAL_SOURCE {"schemaVersion":"structural-microvoxel-object-v1","objectId":"plan-owner-source","frame":{"schemaVersion":"structural-microvoxel-frame-binding-v1","bodyId":"body.hestia","surfaceFrameId":"frame.hvp","regionId":"region.plan-owner-source","generatorVersion":"hvp-rigid-ingest-v1","objectOriginQuantum":{"x":0,"y":0,"z":0}},"source":{"schemaVersion":"structural-microvoxel-source-binding-v1","baseFieldIdentity":"base.plan-owner-source","baseFieldVersion":"hvp-rigid-ingest-v1","baseFieldDescriptorDigest":"fnv1a64-v1:5da762240edcdde4","journalDigest":"fnv1a64-v1:3a67aabaf60f6f3e","snapshotProjectionDigest":"fnv1a64-v1:2806c05c9aabbfe7","proofDigests":["fnv1a64-v1:0882015ce0fa4c08"],"sourceRevision":1,"editRevision":2,"brickRevision":0,"planningEpoch":1},"materials":[{"materialId":256,"densityKgPerCubicMeter":512,"structuralClass":"wood","destructible":true,"tags":null},{"materialId":65535,"densityKgPerCubicMeter":512,"structuralClass":"wood","destructible":true,"tags":null}],"bricks":[{"schemaVersion":"structural-microvoxel-brick-v1","key":{"schemaVersion":"adaptive-microvoxel-key-v1","bodyId":"body.hestia","surfaceFrameId":"frame.hvp","regionId":"region.plan-owner-source","generatorVersion":"hvp-rigid-ingest-v1","level":4,"originQuantum":{"x":0,"y":0,"z":0}},"cells":[{"localIndex":0,"state":{"materialId":256,"partId":null,"semanticKey":null,"damageKey":null}},{"localIndex":1,"state":{"materialId":256,"partId":null,"semanticKey":null,"damageKey":null}},{"localIndex":2,"state":{"materialId":256,"partId":null,"semanticKey":null,"damageKey":null}},{"localIndex":3,"state":{"materialId":65535,"partId":null,"semanticKey":null,"damageKey":null}},{"localIndex":4,"state":{"materialId":65535,"partId":null,"semanticKey":null,"damageKey":null}}]}],"anchors":[],"joints":[],"objectRevision":0,"editRevision":0,"contentHash":"fnv1a64-v1:fe708e5cd03e6659","commandEvidence":[],"evidenceHash":"fnv1a64-v1:09612b07b5ecb5a5"}
+
+ ✓ tests/unit/hvp-body-plan-owner.test.ts (65 tests) 155793ms
+   ✓ owner-first child projection: reuses one finished plan before CURRENT-pose Stage  343ms
+   ✓ owner-first child projection: rejects cancelled old work for a reused command id  345ms
+   ✓ owner-first child projection: uses the issued-hash factory without recut or native installation  537ms
+   ✓ owner-first child projection: rechecks cached target identity  391ms
+   ✓ owner-first child projection: rechecks cached registry identity  385ms
+   ✓ owner-first child projection: rechecks cached native identity  366ms
+   ✓ derives exactly one native plan per command across task-yielding preparation, a failed stage and its retry  656ms
+   ✓ keeps the parent simulated between plan phases and stages the original hit at the current native pose  784ms
+   ✓ drops a cancelled or disposed preparation: no revived plan, no stage and unchanged native membership  422ms
+   ✓ keeps a rejected task-yield adapter fatal for the command instead of resuming the steps in Stage  472ms
+   ✓ rejects a removed or replaced parent after a finished plan without touching the World  710ms
+   ✓ stages a Sphere that removes every cell with zero children and no invented body  648ms
+   ✓ owner-first child projection: leaves the World running and rejects actual owner disposal  2245ms
+   ✓ runs session source preparation outside the World hold and preserves Running after release  2254ms
+   ✓ runs session source preparation outside the World hold and preserves Paused after release  2110ms
+   ✓ logs slow contiguous plan steps and their existing sub-hooks only while measuring (on)  1768ms
+   ✓ logs slow contiguous plan steps and their existing sub-hooks only while measuring (off)  1834ms
+   ✓ logs slow contiguous plan steps and their existing sub-hooks only while measuring (disabledMidYield)  1768ms
+   ✓ rejects foreign and mixed-version Dispose without mutating the current Worker owner  768ms
+   ✓ serves Read, input and the fixed-step timer while the worker's source-only plan is suspended  2182ms
+   ✓ rejects Stage during a safety SimulationHold without Applied, manual-pause label, auto-resume or native mutation  2306ms
+   ✓ stops the temporary plan trace on a dynamic measure:false Read, including an in-flight plan, without changing the native cut  6995ms
+   ✓ keeps the plan trace off on the old World returned by RollbackRestore after an opt-out during a committed restore  6917ms
+   ✓ serves Read, input and the timer at a yield inside the Worker child hash, then cancels it without native mutation  2059ms
+   ✓ keeps the Worker owner-hash route on a finalized Restore candidate and applies its new body cut  4221ms
+   ✓ issues identical children, masses, colliders and receipts on the generic and the owner-hash body session  1452ms
+   ✓ runs a partial Sphere through the owner-hash factory's re-ingest route to one Applied child with generic parity  1346ms
+   ✓ runs an all-removing Sphere through the owner-hash factory without a child, hash cursor or native body  348ms
+   ✓ traces the owner-hash labels and recipe subspans exactly on a measured owner session and reads no clock without one  989ms
+   ✓ closes the owner child hash on a cancel or dispose at its own yield without a revived plan or native mutation  613ms
+   ✓ settles a pending Worker plan before restoring the ports even when the Dispose reply fails, keeping the original error  2462ms
+   ✓ projects row200 child cells in bounded owner batches with generic parity of sources, IDs, masses, colliders and receipt  16446ms
+   ✓ fails closed on a cancel or dispose between owner child-cell batches without a new Stage, hash or native mutation  4219ms
+   ✓ stops every optional owner clock read after an opt-out at a child-cell batch yield  4198ms
+   ✓ serves Read, input and the timer at a real Worker child-cell batch yield, then cancels without a new Stage  3652ms
+   ✓ yields inside the post-destruction classification in bounded cell batches and stages the same products  5305ms
+   ✓ cancels a yielding plan at its first yield without revival or native change  8289ms
+   ✓ cancels a yielding plan at its midClassification yield without revival or native change  7981ms
+   ✓ cancels a yielding plan at its midChildClassification yield without revival or native change  9760ms
+   ✓ cancels a yielding plan at its last yield without revival or native change  9985ms
+   ✓ reads no diagnostic clock after an opt-out at a child's own classification yield and keeps the same outcome  8617ms
+   ✓ aggregates every step and keeps the true worst step beyond the 64-step record cap  1646ms
+   ✓ logs truncatedSteps and the post-cap worst step through the real session logger  2856ms
+   ✓ serves Read, input and the fixed-step timer at a yield in the middle of the classification  3052ms
+   ✓ serves Read, input and the fixed-step timer at a yield inside a NEW child's own classification  4851ms
+   ✓ owner source bridge: returns only current framed data while Read/Input/timer run and reuses one native plan  2462ms
+   ✓ owner source bridge: rejects wrong Begin request/source/target before deriving a native plan  2037ms
+   ✓ owner source bridge: settles suspended work after rollback-reuse without exporting old data  2451ms
+   ✓ owner source bridge: settles suspended work after dispose without exporting old data  1861ms
+   ✓ owner source bridge: old Begin request IDs cannot project after a real finalized World Restore  4471ms
+   ✓ owner source bridge: preserves genuine occupied Uint16 material IDs and rejects Air/negative-zero/overflow data  389ms
+
+ Test Files  1 passed (1)
+      Tests  65 passed (65)
+   Start at  16:58:38
+   Duration  158.28s (transform 1.06s, setup 0ms, import 2.33s, tests 155.79s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-owner-operational-original65-r01/original-vitest.json

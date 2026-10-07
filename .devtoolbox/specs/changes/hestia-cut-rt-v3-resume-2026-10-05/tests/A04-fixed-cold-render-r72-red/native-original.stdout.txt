@@ -1,0 +1,13 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-fixed-specimen-render.test.ts (2 tests | 2 failed) 19ms
+   × preserves original fixed drop geometry with explicit policy and retains default fragment AO 13ms
+   × preserves original fixed inertia geometry with explicit policy and retains default fragment AO 4ms
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  04:33:23
+   Duration  1.31s (transform 461ms, setup 0ms, import 1000ms, tests 19ms, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A04-fixed-cold-render-r72-red/original-vitest.json

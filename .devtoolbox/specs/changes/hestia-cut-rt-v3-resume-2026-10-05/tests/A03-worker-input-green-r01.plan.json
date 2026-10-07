@@ -1,0 +1,10 @@
+{
+  "runId": "A03-worker-input-green-r01",
+  "binding": "A03-worker-input-green-r01-binding.json",
+  "nativeCapSeconds": 180,
+  "classification": "Worker whole input/mesh/wire same parent and first input cancel/resource GREEN; original default/per-test deadlines",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvpBodyMeshJob.test.ts"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "binding": "A03-async-owner-green-r01-binding.json",
+  "mode": "tests",
+  "runId": "A03-async-owner-green-r01",
+  "nativeCapSeconds": 180,
+  "classification": "Async packet factory retained parent/current ticket GREEN, whole original file",
+  "files": [
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts"
+  ]
+}

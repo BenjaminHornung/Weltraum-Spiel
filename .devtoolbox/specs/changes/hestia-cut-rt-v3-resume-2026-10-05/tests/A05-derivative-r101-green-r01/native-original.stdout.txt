@@ -1,0 +1,15 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-owned-terrain-products.test.ts (2 tests) 298ms
+ ✓ tests/unit/hvp-terrain-products.test.ts (9 tests) 3003ms
+     ✓ covers sixteen 8m sectors exactly and invalidates only local content/halo products  1867ms
+     ✓ rolls a quiescent compiler pool only after shutdown and lazily starts the replacement with monotone job IDs  359ms
+     ✓ blocks rollover through accepted-terminal decoding and the compiler's post-terminal yield  408ms
+
+ Test Files  2 passed (2)
+      Tests  11 passed (11)
+   Start at  21:07:00
+   Duration  7.49s (transform 1.61s, setup 0ms, import 3.44s, tests 3.30s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-derivative-r101-green-r01/original-vitest.json

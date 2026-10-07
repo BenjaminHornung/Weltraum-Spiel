@@ -1,0 +1,11 @@
+{
+  "classification": "Shared decoder controls after exact parse repair; unchanged default deadlines",
+  "nativeCapSeconds": 180,
+  "mode": "tests",
+  "binding": "A03-mesh-decode-green-r02-binding.json",
+  "files": [
+    "tests/unit/hvp-borrowed-mesh-decode.test.ts",
+    "tests/unit/hvp-borrowed-bytehash.test.ts"
+  ],
+  "runId": "A03-mesh-decode-green-r02"
+}

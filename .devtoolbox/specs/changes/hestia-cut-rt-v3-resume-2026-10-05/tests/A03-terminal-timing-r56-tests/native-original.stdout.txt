@@ -1,0 +1,11 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-moving-consumer.test.ts (26 tests) 36ms
+
+ Test Files  1 passed (1)
+      Tests  26 passed (26)
+   Start at  00:34:45
+   Duration  457ms (transform 135ms, setup 0ms, import 228ms, tests 36ms, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-terminal-timing-r56-tests/original-vitest.json

@@ -1,0 +1,8 @@
+{
+  "runId": "A05-pregraphics-r115-type-r03",
+  "mode": "type",
+  "files": [],
+  "nativeCapSeconds": 60,
+  "binding": "A05-pregraphics-r115-binding-r03.json",
+  "classification": "Current Source ACK preHold graphics exact Stage recovery hold quote cancellation"
+}

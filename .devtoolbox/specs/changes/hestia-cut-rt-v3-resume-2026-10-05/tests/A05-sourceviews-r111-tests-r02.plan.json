@@ -1,0 +1,12 @@
+{
+  "runId": "A05-sourceviews-r111-tests-r02",
+  "classification": "Whole native source-only ACK and client callback release with expected unproven Dispose failure",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-terrain-native-plan.test.ts",
+    "tests/unit/hvp-terrain-native-worker.test.ts",
+    "tests/unit/hvp-body-mesh-client.test.ts"
+  ],
+  "binding": "A05-sourceviews-r111-binding-r02.json",
+  "nativeCapSeconds": 180
+}

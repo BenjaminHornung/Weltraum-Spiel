@@ -8,7 +8,8 @@ import {
   hashStructuralComponentId,
   hashStructuralFragmentContent,
   hashStructuralFragmentId,
-  serializeStructuralCellAddress
+  serializeStructuralCellAddress,
+  structuralCanonicalHashSteps
 } from "./canonical";
 import {
   StructuralConnectivityError,
@@ -318,11 +319,16 @@ function* hashIssuedPayloadSteps(payload: unknown, bounded: boolean, reserve?: S
   if (!bounded) {
     return hashAdaptiveCanonical(payload);
   }
-  reserve?.(32_768, false, "hash");
+  if(reserve!==undefined){
+    const steps=structuralCanonicalHashSteps(payload,reserve);let failed=false;
+    try{for(;;){const step=steps.next();if(step.done){return step.value;}yield OWNED_CLASSIFICATION_PHASE;}}
+    catch(error){failed=true;throw error;}
+    finally{try{steps.return(undefined as never);}catch(error){if(!failed){throw error;}}}
+  }
   const cursor = createOwnedCanonicalHashCursor(payload);
   try {
     for (;;) {
-      const result = normalizeAdaptiveAuthorityError(() => cursor.advance(reserve === undefined ? OWNED_CLASSIFICATION_UNITS_PER_YIELD : 1));
+      const result = normalizeAdaptiveAuthorityError(() => cursor.advance(OWNED_CLASSIFICATION_UNITS_PER_YIELD));
       if (result !== undefined) {
         return result.contentHash;
       }

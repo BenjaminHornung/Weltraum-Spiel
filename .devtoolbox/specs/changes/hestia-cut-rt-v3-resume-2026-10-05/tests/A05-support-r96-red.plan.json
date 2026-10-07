@@ -1,0 +1,10 @@
+{
+  "runId": "A05-support-r96-red",
+  "binding": "A05-support-r96-binding-red.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-owned-support-plan.test.ts"
+  ],
+  "nativeCapSeconds": 60,
+  "classification": "Meaningful preimplementation fullreport/read-order/cancellation controls; expectedRED because owned entry absent"
+}

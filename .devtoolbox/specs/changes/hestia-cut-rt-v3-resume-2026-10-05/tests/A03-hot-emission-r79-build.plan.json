@@ -1,0 +1,8 @@
+{
+  "files": [],
+  "runId": "A03-hot-emission-r79-build",
+  "classification": "Full unchanged affected populations after opt-in emission candidate, paired kernel diagnostic not game acceptance",
+  "mode": "build",
+  "binding": "A03-hot-emission-r79-binding-r01.json",
+  "nativeCapSeconds": 60
+}

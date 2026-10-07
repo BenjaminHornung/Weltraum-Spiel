@@ -1,0 +1,8 @@
+{
+  "runId": "A02-native-cpu-r66-type",
+  "startedUtc": "2026-10-06T01:12:15.1785661+00:00",
+  "endedUtc": "2026-10-06T01:12:16.9209172+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 1.7326099,
+  "planFile": "A02-native-cpu-r66-type.plan.json"
+}

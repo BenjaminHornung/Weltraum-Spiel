@@ -1,0 +1,11 @@
+{
+  "classification":"EXPECTED_CHUNK_FAILURE_EXERCISE_NOT_GAME_RUN",
+  "candidate":"R61 route extraction in bound R63 production build",
+  "sourceBinding":"A03-ingest-phase-r63-binding.json",
+  "surface":"task diagnostic tab1, native Playwright MCP",
+  "action":"abort deferred hvpBootstrap asset request; read failure DOM and actual page.workers(); remove interception; normal reload; wait Ready and read actual workers",
+  "failed":{"workers":0,"state":"Error","role":"alert","live":"assertive","hasErrorDetail":true,"hasReadyHud":false},
+  "restored":{"workers":1,"state":"Ready","hasHud":true,"alerts":0},
+  "initialWorkerLiteral":"First helper used a literal worker count; excluded. Counts above come from the subsequent actual page.workers() observation before and after reload.",
+  "userTabAndSave":"Tab0 and saved revision3 retained; no diagnostic Save writes"
+}

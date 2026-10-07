@@ -1,0 +1,8 @@
+{
+  "runId": "A05-spans-r107-type-r01",
+  "mode": "type",
+  "nativeCapSeconds": 60,
+  "files": [],
+  "binding": "A05-spans-r107-binding-r01.json",
+  "classification": "Existing non-authoritative trace support phase separation"
+}

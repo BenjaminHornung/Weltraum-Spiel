@@ -1,0 +1,34 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-borrowed-body-plan.test.ts > credits a warm cell projection before borrowing it from the parent
+AssertionError: expected function to throw an error, but it didn't
+ ❯ tests/unit/hvp-borrowed-body-plan.test.ts:40:66
+     38|   const before=source(),cached=readHvpBodyCells(before),first=new Erro…
+     39|   const reserve=vi.fn(()=>{throw first;});
+     40|   expect(()=>finish(readHvpOwnedBodyCellsSteps(before,reserve))).toThr…
+       |                                                                  ^
+     41|   expect(reserve).toHaveBeenCalledExactlyOnceWith(64+cached.length*256…
+     42| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/hvp-borrowed-body-plan.test.ts > yields through Sphere material comparisons while preserving first-match semantics
+AssertionError: expected +0 to be 192 // Object.is equality
+
+- Expected
++ Received
+
+- 192
++ 0
+
+ ❯ tests/unit/hvp-borrowed-body-plan.test.ts:52:25
+     50|   try{for(;;){const step=steps.next();if(step.done){expect(JSON.string…
+     51|     if(step.value==="ownerMaterial"){comparisons+=1;}}
+     52|     expect(comparisons).toBe(expected.plan.removedCells*materials.leng…
+       |                         ^
+     53|   }finally{steps.return(undefined as never);ledger.release();}
+     54| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+

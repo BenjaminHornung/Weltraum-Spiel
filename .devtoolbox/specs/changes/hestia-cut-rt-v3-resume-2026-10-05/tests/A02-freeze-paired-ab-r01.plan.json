@@ -1,0 +1,13 @@
+{
+  "runId": "A02-freeze-paired-ab-r01",
+  "binding": "A02-freeze-paired-ab-source-binding-r01.json",
+  "mode": "tests",
+  "files": ["tests/unit/hvp-deep-freeze-traversal.test.ts"],
+  "cpuProfile": true,
+  "classification": "same-process alternating A/B offline diagnosis; no product timing assertion or browser gate",
+  "nativeCapSeconds": 180,
+  "originalTestDeadlines": "unchanged",
+  "retry": 0,
+  "bail": false,
+  "skip": false
+}

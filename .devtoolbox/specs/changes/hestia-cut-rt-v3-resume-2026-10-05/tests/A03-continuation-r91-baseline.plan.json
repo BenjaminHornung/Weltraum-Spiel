@@ -1,0 +1,10 @@
+{
+  "runId": "A03-continuation-r91-baseline",
+  "nativeCapSeconds": 60,
+  "classification": "Whole strengthened pre-change semantic controls and paired creation/drain baseline",
+  "binding": "A03-continuation-r91-binding-baseline.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-owned-hash-emission-boundary.test.ts"
+  ]
+}

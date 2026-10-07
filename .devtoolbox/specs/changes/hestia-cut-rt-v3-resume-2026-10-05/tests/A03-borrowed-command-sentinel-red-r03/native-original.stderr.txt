@@ -1,0 +1,24 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-borrowed-command.test.ts > keeps an ordinary later parent failure original and prevents all further reserve/hash work
+AssertionError: expected undefined to be Error: later parent reserve sentinel // Object.is equality
+
+- Expected:
+Error {
+  "message": "later parent reserve sentinel",
+}
+
++ Received:
+undefined
+
+ ❯ tests/unit/hvp-borrowed-command.test.ts:48:17
+     46|   let error:unknown;
+     47|   try{finish(ownedStructuralCommandSteps(before,command(before),reserv…
+     48|   expect(error).toBe(first);expect(reserve).toHaveBeenCalledTimes(2);
+       |                 ^
+     49|   expect(ledger.resources.reservedBytes).toBeGreaterThan(0);ledger.rel…
+     50| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

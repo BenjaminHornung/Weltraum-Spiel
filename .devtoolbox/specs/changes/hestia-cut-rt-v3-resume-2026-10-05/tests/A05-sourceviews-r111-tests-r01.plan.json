@@ -1,0 +1,12 @@
+{
+  "runId": "A05-sourceviews-r111-tests-r01",
+  "classification": "Whole native source-only ACK actualStage views callback ordering release and late dispose",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-terrain-native-plan.test.ts",
+    "tests/unit/hvp-terrain-native-worker.test.ts",
+    "tests/unit/hvp-body-mesh-client.test.ts"
+  ],
+  "binding": "A05-sourceviews-r111-binding-r01.json",
+  "nativeCapSeconds": 180
+}

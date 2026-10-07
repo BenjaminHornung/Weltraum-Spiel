@@ -1,0 +1,11 @@
+{
+  "runId": "A03-bytehash-green-r02",
+  "files": [
+    "tests/unit/hvp-borrowed-bytehash.test.ts",
+    "tests/unit/workerProtocol.test.ts"
+  ],
+  "classification": "Final span-driven bytehash plus whole original worker protocol; unchanged default deadlines",
+  "nativeCapSeconds": 180,
+  "mode": "tests",
+  "binding": "A03-bytehash-green-r02-binding.json"
+}

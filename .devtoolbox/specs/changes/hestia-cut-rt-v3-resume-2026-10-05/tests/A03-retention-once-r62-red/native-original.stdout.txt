@@ -1,0 +1,28 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-borrowed-body-plan.test.ts (17 tests | 1 failed) 3527ms
+   ✓ keeps full canonical bytes and original default units while the owner selects an immutable bounded hash quantum 46ms
+   ✓ refuses getter or mutable hash-quantum metadata without reading a getter and retains the first parent failure 2ms
+   ✓ bounds borrowed work with a stalled clock and closes its actual nested cursor on cancellation 2ms
+   ✓ ends borrowed work at its elapsed cutoff before reaching the unit ceiling 0ms
+   ✓ keeps the original borrowed failure when cursor cleanup also fails (Error: nested first failure) 0ms
+   ✓ keeps the original borrowed failure when cursor cleanup also fails (null) 0ms
+   ✓ keeps the original borrowed failure when cursor cleanup also fails (undefined) 0ms
+   ✓ propagates cleanup failure after a successful borrowed result 0ms
+   ✓ composes the same complete Box plan, children and removed mass under one retained parent  878ms
+   ✓ composes the same complete Sphere plan, children and removed mass under one retained parent  1058ms
+   × lets the final Structural issuer build and fully validate authority retention once per owned ingest 163ms
+   ✓ checks recipe measurement lifetime once per bounded owned quantum rather than per internal scalar 95ms
+   ✓ closes mid-plan command/ingest work without releasing the shared parent 98ms
+   ✓ cancels the actual borrowed recipe at its first outer quantum while retaining its parent credit 164ms
+   ✓ keeps the original parent failure before any final plan or retry work 79ms
+   ✓ credits a warm cell projection before borrowing it from the parent 121ms
+   ✓ yields through Sphere material comparisons while preserving first-match semantics  816ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 16 passed (17)
+   Start at  01:56:04
+   Duration  6.48s (transform 1.35s, setup 0ms, import 2.75s, tests 3.53s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-retention-once-r62-red/original-vitest.json

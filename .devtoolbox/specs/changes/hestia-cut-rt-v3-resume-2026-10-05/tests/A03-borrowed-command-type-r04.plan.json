@@ -1,0 +1,7 @@
+{
+  "mode": "type",
+  "nativeCapSeconds": 60,
+  "runId": "A03-borrowed-command-type-r04",
+  "binding": "A03-borrowed-command-source-binding-r04.json",
+  "classification": "Full type after preserving original parent error via private resource carrier"
+}

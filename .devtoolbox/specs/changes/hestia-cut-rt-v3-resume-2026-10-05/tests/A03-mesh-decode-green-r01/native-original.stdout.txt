@@ -1,0 +1,12 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-borrowed-mesh-decode.test.ts (0 test)
+ ❯ tests/unit/hvp-borrowed-bytehash.test.ts (0 test)
+
+ Test Files  2 failed (2)
+      Tests  no tests
+   Start at  17:34:29
+   Duration  1.67s (transform 602ms, setup 0ms, import 0ms, tests 0ms, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-mesh-decode-green-r01/original-vitest.json

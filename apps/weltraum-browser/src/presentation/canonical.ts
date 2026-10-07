@@ -5,6 +5,9 @@ const encoder = new TextEncoder();
 class Fnv1a64Writer {
   private high = 0xcbf29ce4;
   private low = 0x84222325;
+  readonly scalarData = new DataView(new ArrayBuffer(8));
+  readonly scalarBytes = new Uint8Array(this.scalarData.buffer);
+  readonly stringBytes = new Uint8Array(512);
 
   writeByte(value: number): void {
     // FNV prime = 2^40 + 435. Two uint32 limbs preserve modulo-2^64
@@ -27,21 +30,27 @@ class Fnv1a64Writer {
 }
 
 const writeLength = (writer: Fnv1a64Writer, length: number): void => {
-  const data = new DataView(new ArrayBuffer(8));
+  const data = writer.scalarData;
   data.setBigUint64(0, BigInt(length), true);
-  writer.writeBytes(new Uint8Array(data.buffer));
+  writer.writeBytes(writer.scalarBytes);
 };
 
 const writeString = (writer: Fnv1a64Writer, value: string): void => {
+  if (value.length <= 128) {
+    const { written } = encoder.encodeInto(value, writer.stringBytes);
+    writeLength(writer, written);
+    writer.writeBytes(writer.stringBytes, written);
+    return;
+  }
   const bytes = encoder.encode(value);
   writeLength(writer, bytes.length);
   writer.writeBytes(bytes);
 };
 
 const writeNumber = (writer: Fnv1a64Writer, value: number): void => {
-  const data = new DataView(new ArrayBuffer(8));
+  const data = writer.scalarData;
   data.setFloat64(0, value, true);
-  writer.writeBytes(new Uint8Array(data.buffer));
+  writer.writeBytes(writer.scalarBytes);
 };
 
 const writeTypedArray = (writer: Fnv1a64Writer, value: ArrayBufferView): void => {
@@ -124,3 +133,87 @@ export const canonicalSignature = (value: unknown): ContentHash => {
   writeCanonical(writer, value);
   return writer.digest();
 };
+
+// Private presentation preparation uses first-party records and fixed typed
+// buffers. Keep the public traversal above, including its forEach observations.
+function* writeOwnedString(writer: Fnv1a64Writer, value: string): Generator<string, void, unknown> {
+  if (value.length <= 128) {
+    writeString(writer, value);
+    yield "canonicalString";
+    return;
+  }
+  const endOfChunk = (start: number): number => {
+    let end = Math.min(start + 128, value.length);
+    const last = value.charCodeAt(end - 1), next = value.charCodeAt(end);
+    if (last >= 0xd800 && last <= 0xdbff && next >= 0xdc00 && next <= 0xdfff) { end -= 1; }
+    return end;
+  };
+  let byteLength = 0;
+  for (let start = 0; start < value.length;) {
+    const end = endOfChunk(start);
+    byteLength += encoder.encodeInto(value.slice(start, end), writer.stringBytes).written;
+    start = end;
+    yield "canonicalStringLength";
+  }
+  writeLength(writer, byteLength);
+  for (let start = 0; start < value.length;) {
+    const end = endOfChunk(start);
+    const { written } = encoder.encodeInto(value.slice(start, end), writer.stringBytes);
+    writer.writeBytes(writer.stringBytes, written);
+    start = end;
+    yield "canonicalString";
+  }
+}
+
+function* writeOwnedCanonical(writer: Fnv1a64Writer, value: unknown): Generator<string, void, unknown> {
+  if (typeof value === "string") {
+    writer.writeByte(5);
+    yield* writeOwnedString(writer, value);
+  } else if (ArrayBuffer.isView(value)) {
+    writer.writeByte(6);
+    yield* writeOwnedString(writer, value.constructor.name);
+    writeLength(writer, value.byteLength);
+    if (!(value instanceof Float32Array || value instanceof Uint16Array || value instanceof Uint32Array)) {
+      throw new TypeError(`Unsupported canonical typed array: ${value.constructor.name}`);
+    }
+    yield "canonicalTypedHeader";
+    const width = value instanceof Uint16Array ? 2 : 4, perChunk = 4096 / width;
+    for (let start = 0; start < value.length; start += perChunk) {
+      const end = Math.min(start + perChunk, value.length);
+      for (let index = start; index < end; index += 1) {
+        if (value instanceof Float32Array) { writer.scalarData.setFloat32(0, value[index]!, true); }
+        else if (value instanceof Uint16Array) { writer.scalarData.setUint16(0, value[index]!, true); }
+        else { writer.scalarData.setUint32(0, value[index]!, true); }
+        writer.writeBytes(writer.scalarBytes, width);
+      }
+      yield "canonicalTypedBytes";
+    }
+  } else if (Array.isArray(value)) {
+    writer.writeByte(7);
+    writeLength(writer, value.length);
+    yield "canonicalArray";
+    for (let index = 0; index < value.length; index += 1) {
+      if (index in value) { yield* writeOwnedCanonical(writer, value[index]); }
+    }
+  } else if (value !== null && typeof value === "object") {
+    writer.writeByte(8);
+    const entries = Object.entries(value).filter(([, entry]) => entry !== undefined)
+      .sort(([left], [right]) => compareAscii(left, right));
+    writeLength(writer, entries.length);
+    yield "canonicalObject";
+    for (const [key, entry] of entries) {
+      yield* writeOwnedString(writer, key);
+      yield* writeOwnedCanonical(writer, entry);
+    }
+  } else {
+    writeCanonical(writer, value);
+    yield "canonicalScalar";
+  }
+}
+
+export function* canonicalSignatureOwnedSteps(value: unknown): Generator<string, ContentHash, unknown> {
+  const writer = new Fnv1a64Writer();
+  yield* writeOwnedString(writer, "weltraum-presentation-canonical-v1");
+  yield* writeOwnedCanonical(writer, value);
+  return writer.digest();
+}

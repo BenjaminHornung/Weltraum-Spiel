@@ -1,0 +1,17 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-body-mesh-owner-integration.test.ts (7 tests) 3822ms
+   ✓ rejects projected owner-route Stage until the retained plan has admitted complete geometry  553ms
+   ✓ admits mesh-only output against the single retained native plan before Stage, commit and finalize  810ms
+   ✓ rejects altered color geometry with stable first failure and no native Stage or retry revival  648ms
+   ✓ keeps a thrown real admission yield terminal without mutating the native World  546ms
+   ✓ cannot revive an admission after Rollback at a real verifier yield  560ms
+   ✓ preserves the first yielded failure when verifier cleanup also throws  516ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  13:34:58
+   Duration  5.57s (transform 724ms, setup 0ms, import 1.58s, tests 3.82s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-owner-admission-controls-r02/original-vitest.json

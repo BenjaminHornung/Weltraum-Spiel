@@ -30,3 +30,35 @@ export async function runHvpBounded<T, R>(
   if (failed) { throw firstError; }
   return results;
 }
+
+/** Private first-party body work: real task ports, 2ms quantum and bounded cursor cleanup. */
+export const createHvpBodyMeshTaskPump=(assertCurrent:()=>void,observe?:((label:string,start:number,duration:number)=>void))=>{
+  let disposed=false,channel:MessageChannel|undefined,waiting:{resolve:()=>void;reject:(error:Error)=>void}|undefined;
+  let sliceStart=performance.now(),units=0;
+  const current=()=>{if(disposed){throw new Error("Body mesh task pump disposed");}assertCurrent();};
+  const host={assertCurrent:current,continuePlan:()=>++units<4096&&performance.now()-sliceStart<2,
+    yieldTask:()=>new Promise<void>((resolve,reject)=>{
+      current();if(waiting!==undefined){reject(new Error("Concurrent body mesh task yield"));return;}
+      if(channel===undefined){channel=new MessageChannel();channel.port1.onmessage=()=>{
+        const task=waiting;waiting=undefined;sliceStart=performance.now();units=0;task?.resolve();
+      };}
+      waiting={resolve,reject};channel.port2.postMessage(0);
+    })};
+  return {host,async run<T>(steps:Generator<string,T,unknown>):Promise<T>{
+    let failed=false,recording=true,workStart=observe===undefined?0:performance.now();
+    const reportWork=()=>{
+      if(!recording){return;}recording=false;
+      if(observe!==undefined){try{observe("meshQuantum",workStart,performance.now()-workStart);}catch{observe=undefined;}}
+    };
+    try{for(;;){
+      current();const step=steps.next();
+      if(step.done){reportWork();return step.value;}
+      if(!host.continuePlan()){reportWork();await host.yieldTask();workStart=observe===undefined?0:performance.now();recording=true;}
+    }}catch(error){failed=true;reportWork();throw error;}
+    finally{try{steps.return(undefined as never);}catch(error){if(!failed){throw error;}}}
+  },dispose():void {
+    if(disposed){return;}disposed=true;
+    channel?.port1.close();channel?.port2.close();channel=undefined;
+    const task=waiting;waiting=undefined;task?.reject(new Error("Body mesh task pump disposed"));
+  }};
+};

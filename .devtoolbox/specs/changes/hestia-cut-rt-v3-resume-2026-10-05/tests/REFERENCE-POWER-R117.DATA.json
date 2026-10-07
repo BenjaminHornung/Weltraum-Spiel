@@ -1,0 +1,11 @@
+{
+  "observedUtc": "2026-10-07T06:06:34.1324665+00:00",
+  "power": {
+    "PowerOnline": true,
+    "Charging": true,
+    "Discharging": false
+  },
+  "scope": "LIVE_READ_ONLY_REFERENCE_ADMISSION",
+  "formal42": "NOT_RUN",
+  "formal1400": "NOT_RUN"
+}

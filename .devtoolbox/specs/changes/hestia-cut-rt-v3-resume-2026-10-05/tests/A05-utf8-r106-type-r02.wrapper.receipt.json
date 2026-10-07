@@ -1,0 +1,8 @@
+{
+  "runId": "A05-utf8-r106-type-r02",
+  "startedUtc": "2026-10-06T21:01:17.7901548+00:00",
+  "endedUtc": "2026-10-06T21:01:20.8483355+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 3.0444864,
+  "planFile": "A05-utf8-r106-type-r02.plan.json"
+}

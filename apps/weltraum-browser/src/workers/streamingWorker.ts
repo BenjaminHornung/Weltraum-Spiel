@@ -19,11 +19,14 @@ import {
 import { byteCount, type WorkerEpoch, type WorkerJobId } from "./ids";
 import { generateHestiaVoxelBrickInSlices } from "../world-generation/hestia";
 import { createSurfaceNetsVoxelMeshProduct, type VoxelBrick } from "../voxel";
-import { HVP_COLLISION_JOB, executeHvpCollisionJob } from "./hvpCollisionJob";
-import { HVP_TERRAIN_JOB, executeHvpTerrainJob } from "./hvpTerrainJob";
+import { HVP_COLLISION_JOB, executeHvpCollisionJob,executeHvpCollisionJobOwned } from "./hvpCollisionJob";
+import { HVP_TERRAIN_JOB, executeHvpTerrainJob,executeHvpTerrainJobOwned } from "./hvpTerrainJob";
 import {HVP_BODY_CUT_JOB,executeHvpBodyCutJob} from "./hvpBodyCutJob";
+import {HVP_BODY_MESH_JOB,executeHvpBodyMeshJob} from "./hvpBodyMeshJob";
 import {HVP_NEIGHBOR_JOB,executeHvpNeighborJob} from "./hvpNeighborJob";
-import {HVP_SUPPORT_JOB,executeHvpSupportJob} from "./hvpSupportJob";
+import {HVP_SUPPORT_JOB,executeHvpSupportJobOwned} from "./hvpSupportJob";
+import {createHvpBodyMeshTaskPump} from "./hvpBoundedPump";
+import {createHvpBodyMeshPhaseReserve} from "../hestia-prototype/presentation/bodyMeshAdmission";
 
 export type WorkerMessageEmitter = (message: WorkerToHostMessage, transfer?: readonly Transferable[]) => void;
 
@@ -74,7 +77,7 @@ export class StreamingWorkerRuntime {
         return;
       case "JobInputData":
         if (!this.requireEpoch(message.workerEpoch, message.jobId)) return;
-        void this.execute(message.jobId, message.bundle);
+        void this.execute(message.jobId, message.bundle,message.bodyMeshAllowanceBytes,message.supportPrepareAllowanceBytes,message.terrainPrepareAllowanceBytes);
         return;
       case "CancelJob":
         if (!this.requireEpoch(message.workerEpoch, message.jobId)) return;
@@ -96,7 +99,7 @@ export class StreamingWorkerRuntime {
     }
   }
 
-  private async execute(jobId: WorkerJobId, sourceBundle: TransferableBufferBundle): Promise<void> {
+  private async execute(jobId: WorkerJobId, sourceBundle: TransferableBufferBundle|undefined,bodyMeshAllowanceBytes?:number,supportPrepareAllowanceBytes?:number,terrainPrepareAllowanceBytes?:number): Promise<void> {
     const request = this.requests.get(jobId);
     if (!request || this.runningJobId !== undefined) {
       this.fail(jobId, "UnknownJob", "Input data has no matching accepted job.");
@@ -104,14 +107,37 @@ export class StreamingWorkerRuntime {
     }
     this.runningJobId = jobId;
     const token = this.cancellation.register(jobId);
+    const borrowed=bodyMeshAllowanceBytes!==undefined;
+    const ownedSupport=request.jobKind===HVP_SUPPORT_JOB;
+    const ownedTerrain=terrainPrepareAllowanceBytes!==undefined;
+    const deferred=borrowed||ownedSupport||ownedTerrain;
+    let bodyPump:ReturnType<typeof createHvpBodyMeshTaskPump>|undefined;
+    let bodyReserve:ReturnType<typeof createHvpBodyMeshPhaseReserve>|undefined;
+    let terminal:{kind:"Completed";execution:WorkerExecutionOutput}|{kind:"Cancelled"}|{kind:"Failed";message:string}|undefined;
     try {
+      if(supportPrepareAllowanceBytes!==undefined&&(request.jobKind!==HVP_SUPPORT_JOB||!Number.isSafeInteger(supportPrepareAllowanceBytes)
+        ||supportPrepareAllowanceBytes<=0||supportPrepareAllowanceBytes>96*1024*1024)){throw new Error("Invalid private support allowance");}
+      if(ownedTerrain&&((request.jobKind!==HVP_TERRAIN_JOB&&request.jobKind!==HVP_COLLISION_JOB)||!Number.isSafeInteger(terrainPrepareAllowanceBytes)
+        ||terrainPrepareAllowanceBytes!<=0||terrainPrepareAllowanceBytes!>96*1024*1024||supportPrepareAllowanceBytes!==undefined)){throw new Error("Invalid private terrain allowance");}
+      if(borrowed){
+        if(request.jobKind!==HVP_BODY_MESH_JOB){throw new Error("Private body mesh allowance on foreign job kind");}
+        bodyReserve=createHvpBodyMeshPhaseReserve(bodyMeshAllowanceBytes!);
+        bodyPump=createHvpBodyMeshTaskPump(()=>{if(token.isCancellationRequested){throw new WorkerJobCancelled();}});
+      }
+      else if(ownedSupport){bodyPump=createHvpBodyMeshTaskPump(()=>{if(token.isCancellationRequested){throw new WorkerJobCancelled();}});}
+      else if(ownedTerrain){bodyReserve=createHvpBodyMeshPhaseReserve(terrainPrepareAllowanceBytes!);
+        bodyPump=createHvpBodyMeshTaskPump(()=>{if(token.isCancellationRequested){throw new WorkerJobCancelled();}});}
       await this.checkpoint();
       if (token.isCancellationRequested) {
-        this.emit({ type: "JobCancelled", jobId, workerEpoch: request.workerEpoch, reason: "CancelledDuringExecution" });
+        if(deferred){terminal={kind:"Cancelled"};}
+        else{this.emit({ type: "JobCancelled", jobId, workerEpoch: request.workerEpoch, reason: "CancelledDuringExecution" });}
         return;
       }
-      const input = validateTransferableBundle(sourceBundle);
-      if (input.ownership !== "SenderToWorker" || input.revision !== request.inputRevision || input.byteLength !== request.estimatedInputBytes) throw new RangeError("Input ownership, revision, or byte length does not match the request.");
+      if(sourceBundle===undefined){throw new Error("Missing worker input");}
+      // The borrowed mesh entry bounds/charges channels BEFORE the same generic bundle validator.
+      // Its shared request validator also checks all ownership/revision/byte-length bindings below.
+      const input = deferred?sourceBundle:validateTransferableBundle(sourceBundle);
+      if (!borrowed&&(input.ownership !== "SenderToWorker" || input.revision !== request.inputRevision || input.byteLength !== request.estimatedInputBytes)) throw new RangeError("Input ownership, revision, or byte length does not match the request.");
       const execution = request.jobKind === "TransformBuffer"
         ? await this.executeTransform(request, input, async () => {
             await this.checkpoint();
@@ -123,28 +149,49 @@ export class StreamingWorkerRuntime {
               if (token.isCancellationRequested) throw new WorkerJobCancelled();
             })
            : request.jobKind === HVP_COLLISION_JOB
-             ? executeHvpCollisionJob(request, input)
-              : request.jobKind === HVP_TERRAIN_JOB ? executeHvpTerrainJob(request, input)
-                 : request.jobKind===HVP_SUPPORT_JOB?executeHvpSupportJob(request,input)
+             ? ownedTerrain?await executeHvpCollisionJobOwned(request,input,bodyPump!,bodyReserve!):executeHvpCollisionJob(request, input)
+              : request.jobKind === HVP_TERRAIN_JOB ? ownedTerrain?await executeHvpTerrainJobOwned(request,input,bodyPump!,bodyReserve!):executeHvpTerrainJob(request, input)
+                 : request.jobKind===HVP_SUPPORT_JOB?await executeHvpSupportJobOwned(request,input,bodyPump!,supportPrepareAllowanceBytes)
                   : request.jobKind===HVP_BODY_CUT_JOB?executeHvpBodyCutJob(request,input)
+                    : request.jobKind===HVP_BODY_MESH_JOB?await executeHvpBodyMeshJob(request,input,bodyPump?.host??{
+                      assertCurrent:()=>{if(token.isCancellationRequested){throw new WorkerJobCancelled();}},
+                      yieldTask:async()=>{await this.checkpoint();if(token.isCancellationRequested){throw new WorkerJobCancelled();}}
+                    },bodyReserve)
                     : request.jobKind===HVP_NEIGHBOR_JOB?executeHvpNeighborJob(request,input)
                : (() => { throw new RangeError(`Unsupported worker job kind: ${request.jobKind}.`); })();
       if (request.jobKind === HVP_COLLISION_JOB || request.jobKind === HVP_TERRAIN_JOB || request.jobKind===HVP_SUPPORT_JOB || request.jobKind===HVP_BODY_CUT_JOB || request.jobKind===HVP_NEIGHBOR_JOB) {
         await this.checkpoint();
         if (token.isCancellationRequested) { throw new WorkerJobCancelled(); }
       }
-      this.emit({ type: "JobOutputData", jobId, workerEpoch: request.workerEpoch, outputBytes: execution.bundle.byteLength, bundle: execution.bundle }, transferListFor(execution.bundle));
-      this.emit({ type: "JobCompleted", result: execution.result });
+      if(deferred){terminal={kind:"Completed",execution};}
+      else{
+        this.emit({ type: "JobOutputData", jobId, workerEpoch: request.workerEpoch, outputBytes: execution.bundle.byteLength, bundle: execution.bundle }, transferListFor(execution.bundle));
+        this.emit({ type: "JobCompleted", result: execution.result });
+      }
     } catch (error) {
       if (error instanceof WorkerJobCancelled) {
-        this.emit({ type: "JobCancelled", jobId, workerEpoch: request.workerEpoch, reason: "CancelledDuringExecution" });
+        if(deferred){terminal={kind:"Cancelled"};}
+        else{this.emit({ type: "JobCancelled", jobId, workerEpoch: request.workerEpoch, reason: "CancelledDuringExecution" });}
       } else {
-        this.fail(jobId, "JobExecutionFailed", error instanceof Error ? error.message : "Worker job failed.");
+        const message=error instanceof Error ? error.message : "Worker job failed.";
+        if(deferred){terminal={kind:"Failed",message};}
+        else{this.fail(jobId, "JobExecutionFailed", message);}
       }
     } finally {
       this.cancellation.release(jobId);
       this.requests.delete(jobId);
       this.runningJobId = undefined;
+      if(deferred){
+        bodyPump?.dispose();bodyPump=undefined;bodyReserve=undefined;sourceBundle=undefined;
+        // Private terminals are emitted only after cursor/ports/input/cancellation ownership closes.
+        if(terminal?.kind==="Completed"){
+          const execution=terminal.execution;
+          this.emit({type:"JobOutputData",jobId,workerEpoch:request.workerEpoch,outputBytes:execution.bundle.byteLength,bundle:execution.bundle},transferListFor(execution.bundle));
+          this.emit({type:"JobCompleted",result:execution.result});
+        }else if(terminal?.kind==="Cancelled"){
+          this.emit({type:"JobCancelled",jobId,workerEpoch:request.workerEpoch,reason:"CancelledDuringExecution"});
+        }else if(terminal?.kind==="Failed"){this.fail(jobId,"JobExecutionFailed",terminal.message);}
+      }
       if (this.stopping && this.epoch !== undefined) this.emit({ type: "WorkerStopped", workerEpoch: this.epoch });
     }
   }

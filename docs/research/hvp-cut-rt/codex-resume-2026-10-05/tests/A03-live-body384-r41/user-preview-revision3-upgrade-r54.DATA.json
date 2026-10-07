@@ -1,0 +1,63 @@
+{
+  "classification": "USER_PREVIEW_SAFE_UPGRADE_NOT_BODY384_ACCEPTANCE",
+  "savedRevision": 3,
+  "before": {
+    "fragments": [
+      {
+        "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0:r1:p0:r1:p0:r1:p0:r1:p0",
+        "digest": "fnv1a64-v1:9311baf451765050",
+        "cells": 64,
+        "mass": 300,
+        "colliders": 1
+      },
+      {
+        "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0:r1:p1:r1:p0:r1:p0",
+        "digest": "fnv1a64-v1:e17d3098fadb8f31",
+        "cells": 96,
+        "mass": 442.96875,
+        "colliders": 2
+      }
+    ],
+    "player": {
+      "x": 9.694785118103027,
+      "y": 1.5250039100646973,
+      "z": -5.89675235748291
+    },
+    "branchDigest": "fnv1a64-v1:9cb845863922efae",
+    "sequence": 7
+  },
+  "after": {
+    "fragments": [
+      {
+        "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0:r1:p0:r1:p0:r1:p0:r1:p0",
+        "digest": "fnv1a64-v1:9311baf451765050",
+        "cells": 64,
+        "mass": 300,
+        "colliders": 1
+      },
+      {
+        "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0:r1:p1:r1:p0:r1:p0",
+        "digest": "fnv1a64-v1:e17d3098fadb8f31",
+        "cells": 96,
+        "mass": 442.96875,
+        "colliders": 2
+      }
+    ],
+    "player": {
+      "x": 9.694785118103027,
+      "y": 1.5250039100646973,
+      "z": -5.89675235748291
+    },
+    "branchDigest": "fnv1a64-v1:9cb845863922efae",
+    "sequence": 7
+  },
+  "save": {
+    "state": "Loaded",
+    "message": "Aus Spielstand gestartet – pausiert",
+    "revision": 3
+  },
+  "state": "State: Ready",
+  "currentWorkerAssets": [
+    "physicsWorker-CuBoEbAM.js"
+  ]
+}

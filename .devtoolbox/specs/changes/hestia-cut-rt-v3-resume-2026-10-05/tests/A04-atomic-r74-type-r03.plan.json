@@ -1,0 +1,8 @@
+{
+  "files": [],
+  "runId": "A04-atomic-r74-type-r03",
+  "mode": "type",
+  "nativeCapSeconds": 60,
+  "classification": "Complete type after existing A04 atomic fault controls; no product changes",
+  "binding": "A04-atomic-r74-binding-r03.json"
+}

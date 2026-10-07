@@ -1,0 +1,17 @@
+[
+  {
+    "appRelative": "src/hestia-prototype/physics/bodyCutPlan.ts",
+    "bytes": 6520,
+    "sha256": "6598e273abb5ec2aa3cb2a622963bcb601c89fba387caf4e2d6572a1581454bf"
+  },
+  {
+    "appRelative": "src/hestia-prototype/physics/structuralPlan.ts",
+    "bytes": 20897,
+    "sha256": "6081460da267b8dde7d41b8f2a3d729263d217417ae2903ce5cbdf1d4a9916d3"
+  },
+  {
+    "appRelative": "tests/unit/hvp-borrowed-body-plan.test.ts",
+    "bytes": 4667,
+    "sha256": "64d09500c63441c67711c6511f00f3135d6e73497d8f3c04a9f32a24ec5ff724"
+  }
+]

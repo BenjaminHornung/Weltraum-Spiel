@@ -1,0 +1,8 @@
+{
+  "runId": "A05-prehold-r102-type-r04",
+  "classification": "Current native preHold local recipe and exact Stage ticket",
+  "mode": "type",
+  "files": [],
+  "binding": "A05-prehold-r102-binding-r02.json",
+  "nativeCapSeconds": 60
+}

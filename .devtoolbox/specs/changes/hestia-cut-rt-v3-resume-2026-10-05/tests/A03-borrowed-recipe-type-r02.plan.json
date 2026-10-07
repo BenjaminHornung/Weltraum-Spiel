@@ -1,0 +1,7 @@
+{
+  "nativeCapSeconds": 60,
+  "runId": "A03-borrowed-recipe-type-r02",
+  "classification": "Full type after common borrowed recipe/payload steps, no caller activation",
+  "binding": "A03-borrowed-recipe-source-binding-r02.json",
+  "mode": "type"
+}

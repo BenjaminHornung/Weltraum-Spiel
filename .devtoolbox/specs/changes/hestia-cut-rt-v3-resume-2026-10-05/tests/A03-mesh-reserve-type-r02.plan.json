@@ -1,0 +1,8 @@
+{
+  "nativeCapSeconds": 60,
+  "binding": "A03-mesh-reserve-regressions-r02-binding.json",
+  "runId": "A03-mesh-reserve-type-r02",
+  "mode": "type",
+  "classification": "Exact R28 six-file source with final Native high-water unit; fresh full type original limit",
+  "files": []
+}

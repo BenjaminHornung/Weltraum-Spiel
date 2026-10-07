@@ -1,0 +1,8 @@
+{
+  "runId": "A03-borrowed-body-plan-regressions-r03",
+  "startedUtc": "2026-10-05T13:54:33.0291356+00:00",
+  "endedUtc": "2026-10-05T13:56:24.6278105+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 111.5893229,
+  "planFile": "A03-borrowed-body-plan-regressions-r03.plan.json"
+}

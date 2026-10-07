@@ -1,0 +1,67 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-body-mesh-owner-integration.test.ts (26 tests) 14408ms
+   ✓ rejects projected owner-route Stage until the retained plan has admitted complete geometry  541ms
+   ✓ admits mesh-only output against the single retained native plan before Stage, commit and finalize  756ms
+   ✓ rejects altered color geometry with stable first failure and no native Stage or retry revival  656ms
+   ✓ keeps a thrown real admission yield terminal without mutating the native World  531ms
+   ✓ keeps a packet decoder failure terminal before geometry work and rejects a later good packet  545ms
+   ✓ cannot revive an admission after Rollback at a real verifier yield  515ms
+   ✓ preserves the first yielded failure when verifier cleanup also throws  562ms
+   ✓ retains one borrowed owner ledger through mesh admission and transfers results only at Finalize  861ms
+   ✓ rejects Dispose after native Stage until rollback or actual World release  936ms
+   ✓ keeps a failed projection reserve terminal for projection, mesh and native Stage  549ms
+   ✓ returns a latched post-projection owner failure before the missing-mesh guard  512ms
+   ✓ preserves non-Error mesh failure identity at Stage (null)  428ms
+   ✓ preserves non-Error mesh failure identity at Stage (undefined)  483ms
+   ✓ shares the first failure across later projection, decoder and Stage (Error: first cross-seam mesh error)  449ms
+   ✓ shares the first failure across later projection, decoder and Stage (null)  472ms
+   ✓ shares the first failure across later projection, decoder and Stage (undefined)  473ms
+   ✓ keeps a retired ledger until the suspended verifier actually closes  526ms
+   ✓ cannot switch the budget of an already derived plan (undefined)  484ms
+   ✓ cannot switch the budget of an already derived plan (33554432)  499ms
+   ✓ closes owner scratch on Dispose and retains credits until its suspended admission returns  540ms
+   ✓ awaits packet decoding under the same parent credit before starting geometry admission  904ms
+   ✓ keeps decoding credit through Rollback and refuses the late decoded packet  547ms
+   ✓ preserves an asynchronous decoder rejection as the first cross-seam failure  486ms
+   ✓ reuses one expected-mesh workspace across multiple native children without releasing parent credit  871ms
+ ✓ tests/unit/hvp-body-mesh-worker.test.ts (5 tests) 9576ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=false, tight=false)  2754ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (true, owned=false, tight=false)  1910ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=true, tight=false)  1866ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (true, owned=true, tight=false)  1856ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=true, tight=true)  1189ms
+ ✓ tests/unit/hvp-borrowed-mesh-decode.test.ts (5 tests) 7688ms
+   ✓ preserves all mixed/wide cell IDs and exact decoded mesh bytes while charging one retained parent  1718ms
+   ✓ preserves the original malformed-index rejection even when the attacker recomputes the packet hash  1480ms
+   ✓ rejects a parent reserve failure before creating decoded products  1465ms
+   ✓ closes mid-decode scratch without releasing the shared parent or publishing a partial product  1528ms
+   ✓ rejects an oversized zero-byte channel list before the generic metadata maps can allocate it  1495ms
+ ✓ tests/unit/hvpBodyMeshAdmission.test.ts (12 tests) 3721ms
+     ✓ keeps owner expectation independent of foreign child cells paired with a fake digest  1107ms
+ ✓ tests/unit/hvpBodyMeshJob.test.ts (22 tests) 3636ms
+   ✓ keeps original ordered owner cells and source identities through mesh-only packing and exact local verification  448ms
+   ✓ preserves original occupied material 8 through the complete private mesh-only roundtrip  403ms
+   ✓ preserves original occupied material 256 through the complete private mesh-only roundtrip  417ms
+   ✓ preserves original occupied material 65535 through the complete private mesh-only roundtrip  406ms
+   ✓ preserves mixed Uint16 materials at their original coordinates without aliasing or sorting owner parts  382ms
+   ✓ rejects Air, negative zero and overflow before packing without rewriting valid owner data  333ms
+   ✓ rejects wrong input and output bindings without replacing the retained source  422ms
+   ✓ rejects damaged in-bounds geometry against the retained native plan even when framing and hashes pass  406ms
+   ✓ closes the cursor once on cancellation and preserves the first error when cleanup also throws  331ms
+ ✓ tests/unit/hvpOwnedBodyMesh.test.ts (7 tests) 2074ms
+   ✓ reuses the mesh kernel without changing mixed-material local Float32 bytes or metadata  388ms
+   ✓ rejects changed geometry against the issued local source, not changed foreign cells or matching digest  351ms
+   ✓ closes owned cursors at local-position and geometry-comparison yields  331ms
+   ✓ charges the borrowed parent before allocating any owned occupancy mesh  333ms
+   ✓ charges actual face/quad containers without changing mixed-material bytes  331ms
+   ✓ keeps expected-geometry verification inside the same borrowed parent budget  331ms
+ ✓ tests/unit/hvpMesherHistoricalContract.test.ts (4 tests) 6ms
+
+ Test Files  7 passed (7)
+      Tests  81 passed (81)
+   Start at  18:38:39
+   Duration  44.36s (transform 1.08s, setup 0ms, import 2.31s, tests 41.11s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-mesh-reserve-regressions-r02/original-vitest.json

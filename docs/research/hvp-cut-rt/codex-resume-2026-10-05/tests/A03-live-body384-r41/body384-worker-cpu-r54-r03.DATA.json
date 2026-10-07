@@ -1,0 +1,209 @@
+{
+  "cut": {
+    "classification": "CUT_NOT_PROVEN",
+    "error": "page.waitForFunction: Timeout 30000ms exceeded."
+  },
+  "profile": {
+    "classification": "PERTURBED_CPU_DIAGNOSTIC_NOT_LATENCY_ACCEPTANCE",
+    "durationMs": 30146.602,
+    "samples": 19078,
+    "topSelf": [
+      {
+        "name": "(idle)",
+        "file": "<native>",
+        "line": 0,
+        "column": 0,
+        "selfMs": 29103.567
+      },
+      {
+        "name": "Ox",
+        "file": "physicsWorker-CuBoEbAM.js",
+        "line": 5,
+        "column": 218333,
+        "selfMs": 168.747
+      },
+      {
+        "name": "Sx.onmessage",
+        "file": "physicsWorker-CuBoEbAM.js",
+        "line": 5,
+        "column": 218678,
+        "selfMs": 117.557
+      },
+      {
+        "name": "We",
+        "file": "physicsWorker-CuBoEbAM.js",
+        "line": 5,
+        "column": 201435,
+        "selfMs": 78.262
+      },
+      {
+        "name": "<anonymous>",
+        "file": "physicsWorker-CuBoEbAM.js",
+        "line": 5,
+        "column": 130517,
+        "selfMs": 51.565
+      },
+      {
+        "name": "<anonymous>",
+        "file": "physicsWorker-CuBoEbAM.js",
+        "line": 5,
+        "column": 221477,
+        "selfMs": 42.497
+      },
+      {
+        "name": "<anonymous>",
+        "file": "physicsWorker-CuBoEbAM.js",
+        "line": 5,
+        "column": 130533,
+        "selfMs": 39.221
+      },
+      {
+        "name": "read",
+        "file": "physicsWorker-CuBoEbAM.js",
+        "line": 1,
+        "column": 2069937,
+        "selfMs": 32.414
+      },
+      {
+        "name": "postMessage",
+        "file": "<native>",
+        "line": 0,
+        "column": 0,
+        "selfMs": 31.263
+      },
+      {
+        "name": "<anonymous>",
+        "file": "physicsWorker-CuBoEbAM.js",
+        "line": 5,
+        "column": 161045,
+        "selfMs": 31.003
+      },
+      {
+        "name": "(program)",
+        "file": "<native>",
+        "line": 0,
+        "column": 0,
+        "selfMs": 28.622
+      },
+      {
+        "name": "<anonymous>",
+        "file": "physicsWorker-CuBoEbAM.js",
+        "line": 5,
+        "column": 197528,
+        "selfMs": 23.859
+      },
+      {
+        "name": "read",
+        "file": "physicsWorker-CuBoEbAM.js",
+        "line": 5,
+        "column": 130272,
+        "selfMs": 22.734
+      },
+      {
+        "name": "decode",
+        "file": "<native>",
+        "line": 0,
+        "column": 0,
+        "selfMs": 21.031
+      },
+      {
+        "name": "(garbage collector)",
+        "file": "<native>",
+        "line": 0,
+        "column": 0,
+        "selfMs": 19.261
+      },
+      {
+        "name": "Ue",
+        "file": "physicsWorker-CuBoEbAM.js",
+        "line": 1,
+        "column": 17954,
+        "selfMs": 16.798
+      },
+      {
+        "name": "advance",
+        "file": "physicsWorker-CuBoEbAM.js",
+        "line": 5,
+        "column": 208100,
+        "selfMs": 14.839
+      },
+      {
+        "name": "ve",
+        "file": "physicsWorker-CuBoEbAM.js",
+        "line": 5,
+        "column": 197461,
+        "selfMs": 13.137
+      },
+      {
+        "name": "u",
+        "file": "physicsWorker-CuBoEbAM.js",
+        "line": 5,
+        "column": 219575,
+        "selfMs": 11.847
+      },
+      {
+        "name": "js-to-wasm:i:i",
+        "file": "0057ee2e",
+        "line": 1,
+        "column": 1360128,
+        "selfMs": 11.831
+      },
+      {
+        "name": "wasm-function[1094]",
+        "file": "0057ee2e",
+        "line": 1,
+        "column": 1294899,
+        "selfMs": 11.212
+      },
+      {
+        "name": "now",
+        "file": "<native>",
+        "line": 0,
+        "column": 0,
+        "selfMs": 10.777
+      },
+      {
+        "name": "wasm-function[786]",
+        "file": "0057ee2e",
+        "line": 1,
+        "column": 1160355,
+        "selfMs": 10.012
+      },
+      {
+        "name": "js-to-wasm:i:",
+        "file": "0057ee2e",
+        "line": 1,
+        "column": 1360169,
+        "selfMs": 9.962
+      },
+      {
+        "name": "read",
+        "file": "physicsWorker-CuBoEbAM.js",
+        "line": 5,
+        "column": 162611,
+        "selfMs": 9.794
+      },
+      {
+        "name": "rotation",
+        "file": "physicsWorker-CuBoEbAM.js",
+        "line": 1,
+        "column": 83727,
+        "selfMs": 8.8
+      },
+      {
+        "name": "collider",
+        "file": "physicsWorker-CuBoEbAM.js",
+        "line": 1,
+        "column": 85728,
+        "selfMs": 8.231
+      },
+      {
+        "name": "linvel",
+        "file": "physicsWorker-CuBoEbAM.js",
+        "line": 1,
+        "column": 84608,
+        "selfMs": 7.958
+      }
+    ]
+  }
+}

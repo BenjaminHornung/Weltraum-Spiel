@@ -1,0 +1,8 @@
+{
+  "runId": "A02-structural-diagnostic-r01",
+  "startedUtc": "2026-10-05T09:56:56.7002337+00:00",
+  "endedUtc": "2026-10-05T09:58:23.0393478+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 86.3300864,
+  "planFile": "A02-structural-diagnostic-r01.plan.json"
+}

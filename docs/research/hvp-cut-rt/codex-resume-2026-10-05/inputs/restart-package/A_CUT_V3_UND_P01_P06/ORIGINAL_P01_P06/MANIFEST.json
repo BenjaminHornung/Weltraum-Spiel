@@ -1,0 +1,82 @@
+{
+  "artifact": "Hestia parallel plan and self-contained agent prompts",
+  "date": "2026-10-02",
+  "repository_base": "b3c6523a94cd050f5a9a22dc27f4777fcc03363e",
+  "status": "PLANNING_ONLY",
+  "generated_remote_mutations": false,
+  "agents_started": false,
+  "planner_product_execution": {
+    "unit_tests": "NOT_RUN",
+    "build": "NOT_RUN",
+    "browser": "NOT_RUN",
+    "performance": "NOT_RUN",
+    "art_acceptance": "NOT_RUN"
+  },
+  "artifact_checks": {
+    "utf8_readback": "PASS",
+    "markdown_fences": "PASS",
+    "source_checkpoint_byte_identity": "PASS",
+    "six_prompt_base_and_branch_bindings": "PASS",
+    "pairwise_production_allowlist_disjointness": "PASS",
+    "pairwise_test_and_documentation_allowlist_disjointness": "PASS",
+    "reserved_A0_production_paths_not_assigned": "PASS",
+    "no_unresolved_TODO_TBD": "PASS"
+  },
+  "files": [
+    {
+      "path": "00_ZUERST_AN_LAUFENDEN_AGENTEN.md",
+      "bytes": 5854,
+      "sha256": "9d1aa5ccd9dd3b996b3a0f4298c2465827cf733362127048128d79ae25b68182"
+    },
+    {
+      "path": "01_AGENT_P01_KLASSIFIKATION.md",
+      "bytes": 15939,
+      "sha256": "c590258fc0b4ec74d791aa472548af0d97f2f46bb2ff0b5c4145fbf734c0ea37"
+    },
+    {
+      "path": "02_AGENT_P02_VEGETATION_PERFORMANCE.md",
+      "bytes": 15263,
+      "sha256": "aa1948f91680a92554061e2cd9df10dc3c90d1579f49efd66d10e62e80bf307c"
+    },
+    {
+      "path": "03_AGENT_P03_PLAYER_KAMERA.md",
+      "bytes": 14771,
+      "sha256": "20c79cf005823fbfb929c6590319165e86572dd6f58f9015a1ddb51c0f09c261"
+    },
+    {
+      "path": "04_AGENT_P04_LOOK_KANDIDAT.md",
+      "bytes": 16365,
+      "sha256": "0fb25d31059ef6222eeef33c16b4eaeaacc2073a8239752d21ffb52e98178909"
+    },
+    {
+      "path": "05_AGENT_P05_REVIEW_UND_NEGATIVTESTS.md",
+      "bytes": 17211,
+      "sha256": "6d4f764a2bbed574bd698c6a78dc601cccbe6a962cfb21de424b0f83e7879f76"
+    },
+    {
+      "path": "06_AGENT_P06_BROWSER_EVIDENCE.md",
+      "bytes": 16760,
+      "sha256": "487edb879b9a07ced48d18a31ea39fc91629d62a13bae286c6592b5ad40a398c"
+    },
+    {
+      "path": "07_PRUEFUMFANG_UND_QUELLEN.md",
+      "bytes": 11471,
+      "sha256": "6476e521bc6ab2dac5fefc8c7cec4461010cf589cdeea402c85fb28b3d75f0b7"
+    },
+    {
+      "path": "OWNERSHIP.json",
+      "bytes": 6148,
+      "sha256": "bdb469c144e3d405c9811b5bbd691551b1229a6f6316d1a8ae44ed9a39041484"
+    },
+    {
+      "path": "QUELLE_CHECKPOINT_2026-10-02.md",
+      "bytes": 7439,
+      "sha256": "e16a2d766ce86dac7cb8826141bea979de0a7af736f8ea07b9353dec31176f84"
+    },
+    {
+      "path": "README_PARALLELPLAN.md",
+      "bytes": 26354,
+      "sha256": "e65c5b13e9a3e2fc73b067d3fecf3d74ed2fe3e2f86c2ad1e10fceb21a3bc454"
+    }
+  ]
+}

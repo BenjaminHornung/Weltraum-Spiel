@@ -1,0 +1,45 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/workerPoolLifecycle.test.ts (34 tests | 1 failed) 7350ms
+   × dispatches mesh-only owner projections through the existing accepted-terminal pool with exclusive buffers 11ms
+   ✓ transfers source-bound neighbour projections through the real pool and rejects a foreign ticket before transfer  4907ms
+   ✓ prepares local body cuts through the pool without accepting foreign owners or forged removed mass  428ms
+   ✓ runs HVP canonical collision jobs through the real pool protocol and rejects tampered input 31ms
+   ✓ runs source-bound support analysis through the real worker protocol without adopting foreign coverage 92ms
+   ✓ cancels an HVP collision job after preparation without publishing buffers 1ms
+   ✓ support decode accepts valid reports and rejects stale or mass-bound reports 81ms
+   ✓ support decode requires truthful collider and timing counts 87ms
+   ✓ support decode rejects malformed timing values and freezes diagnostics 83ms
+   ✓ support decode keeps report and transfer aggregate budgets distinct 108ms
+     ✓ reports only ready workers as active across startup, replacement failure, and shutdown 2ms
+     ✓ completes deterministic work and detaches transferred input 1ms
+     ✓ authorizes only completed terminals produced by this pool 28ms
+     ✓ takes transferable ownership before an accepted job waits in the queue 30ms
+     ✓ cancels queued and running jobs with distinct outcomes 15ms
+     ✓ settles affected requests on worker error and replaces with a higher epoch 63ms
+     ✓ stops fail-closed when a fault replacement cannot start 2ms
+     ✓ keeps the admitted worker intact until a ready candidate swaps exactly once 1ms
+     ✓ discards a failed candidate without changing the admitted worker, work, epochs, restarts, or pool state 1ms
+     ✓ prevents candidate admission when shutdown wins during replacement startup 0ms
+     ✓ ignores late output from a terminated worker epoch after replacement 12ms
+     ✓ does not let a rejected late cancellation replace a completed outcome 16ms
+     ✓ rejects stale planning results after the planning epoch advances  988ms
+     ✓ shutdown leaves no queued or running ticket unresolved 3ms
+     ✓ replaces a ready worker that faults while another slot is still starting 60ms
+     ✓ rejects a pending pool start when shutdown terminates the starting handle 0ms
+     ✓ rejects startup when the initialize control message cannot be posted 0ms
+     ✓ finishes shutdown when the final control message cannot be posted 0ms
+     ✓ isolates throwing diagnostic observers from queue and lifecycle decisions 14ms
+     ✓ faults malformed protocol and messageerror events and replaces each worker 124ms
+     ✓ retires a worker whose completed result violates the integration contract 79ms
+     ✓ settles duplicate and full-queue rejections explicitly 15ms
+     ✓ keeps exact job-ID replay rejection after the original job settled 32ms
+     ✓ scopes completed terminals to sequential pool lifetimes 31ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 33 passed (34)
+   Start at  14:09:34
+   Duration  9.44s (transform 826ms, setup 0ms, import 1.91s, tests 7.35s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-mesh-dispatch-red-r01/original-vitest.json

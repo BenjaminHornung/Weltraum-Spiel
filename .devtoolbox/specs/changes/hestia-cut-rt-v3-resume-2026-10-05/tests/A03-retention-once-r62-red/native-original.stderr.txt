@@ -1,0 +1,15 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-borrowed-body-plan.test.ts > lets the final Structural issuer build and fully validate authority retention once per owned ingest
+AssertionError: expected "adaptiveAuthorityRetentionSteps" to be called 1 times, but got 2 times
+ ❯ tests/unit/hvp-borrowed-body-plan.test.ts:100:71
+     98|     const actual=finish(prepareHvpStructuralIngestOwnedSteps("retentio…
+     99|     expect(serializeStructuralObject(actual)).toBe(serializeStructural…
+    100|     expect(isIssuedStructuralObject(actual)).toBe(true);expect(build).…
+       |                                                                       ^
+    101|     expect(ledger.resources.reservedBytes).toBeGreaterThan(0);
+    102|   }finally{build.mockRestore();ledger.release();}
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

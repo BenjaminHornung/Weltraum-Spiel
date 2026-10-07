@@ -1,0 +1,13 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-terrain-consumer.test.ts (34 tests) 7905ms
+     ✓ stages owned graphics before NativeStage and compares exact actual Source views (ready)  302ms
+     ✓ cut trace keeps canonical outcomes and publication order unchanged when tracing is absent, present, or throwing  4827ms
+
+ Test Files  1 passed (1)
+      Tests  34 passed (34)
+   Start at  00:02:20
+   Duration  11.56s (transform 1.71s, setup 0ms, import 3.33s, tests 7.90s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-pregraphics-r115-tests-r02/original-vitest.json

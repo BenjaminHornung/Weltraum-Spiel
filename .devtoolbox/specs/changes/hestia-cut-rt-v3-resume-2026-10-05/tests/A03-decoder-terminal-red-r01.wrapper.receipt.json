@@ -1,0 +1,8 @@
+{
+  "runId": "A03-decoder-terminal-red-r01",
+  "startedUtc": "2026-10-05T12:04:53.5219358+00:00",
+  "endedUtc": "2026-10-05T12:05:02.2483083+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 8.7132646,
+  "planFile": "A03-decoder-terminal-red-r01.plan.json"
+}

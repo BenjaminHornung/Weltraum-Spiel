@@ -1,0 +1,8 @@
+{
+  "runId": "A03-async-owner-regressions-r01",
+  "startedUtc": "2026-10-05T16:22:25.3066339+00:00",
+  "endedUtc": "2026-10-05T16:23:03.7342517+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 38.422957,
+  "planFile": "A03-async-owner-regressions-r01.plan.json"
+}

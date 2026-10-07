@@ -1,0 +1,14 @@
+{
+  "nativeCapSeconds": 180,
+  "mode": "tests",
+  "classification": "Integrated bounded codec default semantics and current source",
+  "runId": "A05-codec-r97-green-r02",
+  "binding": "A05-codec-r97-binding-r02.json",
+  "files": [
+    "tests/unit/hvp-support-json.test.ts",
+    "tests/unit/hvp-owned-support-plan.test.ts",
+    "tests/unit/hvp-terrain-support.test.ts",
+    "tests/unit/hvp-terrain-transfer.test.ts",
+    "tests/unit/workerPoolLifecycle.test.ts"
+  ]
+}

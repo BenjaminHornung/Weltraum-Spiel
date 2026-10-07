@@ -1,0 +1,27 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvpBodyMeshJob.test.ts > keeps generic cell-array freeze lookup after its Array.from record callbacks
+AssertionError: expected [ 'record', 'record' ] to deeply equal [ 'lookup', 'lookup' ]
+
+- Expected
++ Received
+
+  [
+-   "lookup",
+-   "lookup",
++   "record",
++   "record",
+  ]
+
+ ❯ tests/unit/hvpBodyMeshJob.test.ts:117:21
+    115|   try{await executeHvpBodyMeshJob(requestFor(packed),packed.input,task…
+    116|   finally{Object.defineProperty(Object,"freeze",descriptor);}
+    117|   expect(preceding).toEqual(["lookup","lookup"]);
+       |                     ^
+    118| }));
+    119| const verify = (plan: HvpBodyCutPlan, products: ReturnType<typeof deco…
+ ❯ withProjection tests/unit/hvpBodyMeshJob.test.ts:67:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

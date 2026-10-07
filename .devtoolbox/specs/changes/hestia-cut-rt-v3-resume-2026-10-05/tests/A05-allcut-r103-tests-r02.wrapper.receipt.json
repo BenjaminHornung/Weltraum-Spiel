@@ -1,0 +1,8 @@
+{
+  "runId": "A05-allcut-r103-tests-r02",
+  "startedUtc": "2026-10-06T19:43:07.8603196+00:00",
+  "endedUtc": "2026-10-06T20:00:41.1025378+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 1053.2273687,
+  "planFile": "A05-allcut-r103-tests-r02.plan.json"
+}

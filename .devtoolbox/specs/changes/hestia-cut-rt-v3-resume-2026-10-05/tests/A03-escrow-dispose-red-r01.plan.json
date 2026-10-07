@@ -1,0 +1,10 @@
+{
+  "mode": "tests",
+  "classification": "Genuine RED reviewer captured resource release after native World Dispose; no World access",
+  "binding": "A03-escrow-dispose-red-r01-binding.json",
+  "runId": "A03-escrow-dispose-red-r01",
+  "files": [
+    "tests/unit/hvp-body-mesh-worker.test.ts"
+  ],
+  "nativeCapSeconds": 180
+}

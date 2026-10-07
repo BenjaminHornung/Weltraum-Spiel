@@ -1,0 +1,28 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-body-mesh-owner-integration.test.ts (19 tests) 11551ms
+   ✓ rejects projected owner-route Stage until the retained plan has admitted complete geometry  528ms
+   ✓ admits mesh-only output against the single retained native plan before Stage, commit and finalize  810ms
+   ✓ rejects altered color geometry with stable first failure and no native Stage or retry revival  715ms
+   ✓ keeps a thrown real admission yield terminal without mutating the native World  606ms
+   ✓ keeps a packet decoder failure terminal before geometry work and rejects a later good packet  609ms
+   ✓ cannot revive an admission after Rollback at a real verifier yield  641ms
+   ✓ preserves the first yielded failure when verifier cleanup also throws  575ms
+   ✓ retains one borrowed owner ledger through mesh admission and transfers results only at Finalize  1023ms
+   ✓ rejects Dispose after native Stage until rollback or actual World release  988ms
+   ✓ keeps a failed projection reserve terminal for projection, mesh and native Stage  672ms
+   ✓ returns a latched post-projection owner failure before the missing-mesh guard  651ms
+   ✓ preserves non-Error mesh failure identity at Stage (null)  473ms
+   ✓ preserves non-Error mesh failure identity at Stage (undefined)  483ms
+   ✓ keeps a retired ledger until the suspended verifier actually closes  681ms
+   ✓ cannot switch the budget of an already derived plan (undefined)  509ms
+   ✓ cannot switch the budget of an already derived plan (33554432)  579ms
+   ✓ closes owner scratch on Dispose and retains credits until its suspended admission returns  706ms
+
+ Test Files  1 passed (1)
+      Tests  19 passed (19)
+   Start at  16:37:44
+   Duration  13.23s (transform 718ms, setup 0ms, import 1.54s, tests 11.55s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-owner-first-error-green-r01/original-vitest.json

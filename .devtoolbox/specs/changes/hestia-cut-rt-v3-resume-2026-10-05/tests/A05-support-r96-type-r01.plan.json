@@ -1,0 +1,8 @@
+{
+  "files": [],
+  "binding": "A05-support-r96-binding-r01.json",
+  "nativeCapSeconds": 60,
+  "runId": "A05-support-r96-type-r01",
+  "mode": "type",
+  "classification": "First owned support generator current full typecheck"
+}

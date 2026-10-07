@@ -1,0 +1,18 @@
+{
+  "firstUtc": "2026-10-05T10:20:09.046091+00:00",
+  "adminSeconds": 600,
+  "DworkSeconds": 540,
+  "finalSeconds": 60,
+  "cleanupSeconds": 60,
+  "H60Admission": true,
+  "capSecondsIncludingWrapper": 180,
+  "wholeFiles": [
+    "tests/unit/hvp-owned-materialization.test.ts",
+    "tests/unit/hvp-owned-structural-ingest.test.ts"
+  ],
+  "modeInjection": "TEST_LOCAL_A02_TRACE",
+  "cpuProfile": true,
+  "selectorsBailDeadlineChange": "NONE",
+  "testTimeout": "DEFAULT5000_AND_ORIGINAL_EXPLICIT_DECLARATIONS_UNCHANGED",
+  "helperSha256": "21505bf9dc2291e97c5fc213cca22a6addfc78fee34190008ac9eadb63e00c2c"
+}

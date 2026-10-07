@@ -1,0 +1,8 @@
+{
+  "runId": "A05-slots-r104-type-r04",
+  "classification": "Complete source ColdGame default Species and owned-copy populations plus actual TD",
+  "mode": "type",
+  "files": [],
+  "binding": "A05-slots-r104-binding-r04.json",
+  "nativeCapSeconds": 60
+}

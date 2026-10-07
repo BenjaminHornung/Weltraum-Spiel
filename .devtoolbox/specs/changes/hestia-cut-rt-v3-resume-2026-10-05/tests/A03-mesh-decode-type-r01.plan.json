@@ -1,0 +1,8 @@
+{
+  "runId": "A03-mesh-decode-type-r01",
+  "files": [],
+  "mode": "type",
+  "nativeCapSeconds": 60,
+  "classification": "Full shared borrowed decoder and private wire hash type; original60 cap",
+  "binding": "A03-mesh-decode-green-r02-binding.json"
+}

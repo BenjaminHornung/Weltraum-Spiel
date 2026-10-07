@@ -1,0 +1,10 @@
+{
+  "mode": "tests",
+  "runId": "A03-external-hold-r34",
+  "nativeCapSeconds": 180,
+  "classification": "Final static typed whole-file lifetime, once-only and first budget failure controls",
+  "binding": "A03-external-hold-r34-binding.json",
+  "files": [
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts"
+  ]
+}

@@ -1,0 +1,1 @@
+src/hestia-prototype/physics/bodyCutSession.ts(12,42): error TS2459: Module '"../../voxel/structural/model"' declares 'StructuralOwnedReserve' locally, but it is not exported.

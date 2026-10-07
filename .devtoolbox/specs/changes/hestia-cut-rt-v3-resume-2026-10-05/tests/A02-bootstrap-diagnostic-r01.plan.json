@@ -1,0 +1,15 @@
+{
+  "runId": "A02-bootstrap-diagnostic-r01",
+  "binding": "A02-diagnostic-source-binding-r01.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-bootstrap.test.ts"
+  ],
+  "diagnosticTrace": true,
+  "classification": "diagnostic-only; no clean acceptance",
+  "nativeCapSeconds": 180,
+  "originalTestDeadlines": "unchanged including explicit declarations",
+  "retry": 0,
+  "bail": false,
+  "skip": false
+}

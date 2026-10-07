@@ -1,0 +1,10 @@
+{
+  "runId": "A05-pregraphics-r115-red",
+  "classification": "Meaningful graphics before NativeStage exact seven source fields and preStage rollback",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-terrain-consumer.test.ts"
+  ],
+  "binding": "A05-pregraphics-r115-binding-red.json",
+  "nativeCapSeconds": 180
+}

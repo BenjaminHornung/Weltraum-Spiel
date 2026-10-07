@@ -1,0 +1,22 @@
+{
+  "schema": "hestia-resume-board-v1",
+  "baseCommit": "0bfd1e67117d0dd6184e592e9a2a1b8b9f58241a",
+  "branch": "feature/resume-hvp-cut-v3-2026-10-05",
+  "threadId": "01a10b34-b3c6-72f2-8b55-e72bc1011e51",
+  "executionStatus": "USER_REQUESTED_ARCHITECTURE_CHECKPOINT",
+  "overallAcceptance": "INCOMPLETE",
+  "currentNativeOwnerAcceptance": "R94_CURRENT_R91_WHOLE65_PASS_155_9433505_SECONDS_ORIGINAL180_RELEASE2_235223_PASS",
+  "verifiedPartialPaths": ["R68 bounded result integration 160 tests", "R70 complete 17 files 139 tests", "normal Body384 to352 Applied", "isolated normal Save/new-session ColdLoad", "genuine cold Recut conservation"],
+  "openPartialFinding": "User requested currentstate commit/push andexternalarchitecturediscussion beforefurtherimplementation. R117 exactmaterialleasefix sourceACCEPT, full8files170PASS/native447.7821721s/release2.356675PASS, fulltype0/build0. PriorR116whole8 remainsUNKNOWN, originalfailure/evidence retained. LatestactualgameR115 Rockarm Applied1251.7998047/render1261.3999023FAIL250/NativeHold16.6; Body384to352 Applied731.19995/render750.40015FAIL250/NativeHold13.5. R117 currentboundedALLfivehashgraphics hasNOT_RUN actualgame latency. B1acceptedtechnicalscope/R94fixed50 retained. R117ACtrue verified; formal42/1400 NOT_RUN. FullB2/B3/P01-P06/endstandruntime/finalnumeric/PlannerremainOPEN. Awaituserarchitecturedecision after checkpoint publication. No physical/overallcompletionclaim.",
+  "tasks": [
+    {"id":"A00","title":"Recovery und Quellenbindung","dependencies":[],"status":"ACCEPTED","evidence":["RECOVERY.md","inputs/restart-package/A_CUT_V3_UND_P01_P06/PACKAGE_MANIFEST.json"]},
+    {"id":"A01","title":"Unabhängiger Rebind und CDP Privacy","dependencies":["A00"],"status":"ACCEPTED","evidence":["A01-REVIEW-R03.md"]},
+    {"id":"A02","title":"Structural/Terrain/Owner/Runner ursächlich grün","dependencies":["A01"],"status":"ACCEPTED_CURRENT_WHOLE_POPULATIONS","evidence":["A02-BASELINE.md","A02-DIAGNOSIS-R02.md","A02-OWNER-DURATION-R73.md","A02-CURRENT-CLOSURE-R95.md"]},
+    {"id":"A03","title":"B1 Ownerfirst/Meshonly produktiv","dependencies":["A02"],"status":"ACCEPTED_B1_TECHNICAL_SCOPE","evidence":["A03-A04-TECHNICAL-CLOSURE-R96.md"]},
+    {"id":"A04","title":"B1 Ressourcen und echter Body384","dependencies":["A03"],"status":"ACCEPTED_B1_TECHNICAL_SCOPE","evidence":["A04-FIXED-SPECIMEN-COLD-RENDER-R72.md","A04-ATOMIC-CLOSURE-BRIEF-R74.md","A04-LIFECYCLE-R94.md","A03-A04-TECHNICAL-CLOSURE-R96.md"]},
+    {"id":"A05","title":"B2 Terrain und B3 Zellzugriff","dependencies":["A04"],"status":"RUNNING_IMPLEMENTATION","evidence":["A05-IMPLEMENTATION-R96.md","A05-UTF8-SCRATCH-R106.md","A05-BYTE-BLOCK-R108.md","A05-SHORT-VALUES-R110.md","A05-SOURCE-VIEWS-R111.md","A05-BULK-COPY-R113.md","A05-PREHOLD-GRAPHICS-R115.md","A05-BOUNDED-PRESENTATION-R116.md"]},
+    {"id":"A06","title":"P01-P06, HUD/Route, Spieler-/Visualpfade","dependencies":["A05"],"status":"PLANNED","evidence":[]},
+    {"id":"A07","title":"42 Qualification vor1400 formal","dependencies":["A06"],"status":"PLANNED","evidence":[]},
+    {"id":"A08","title":"Finalreview Plannerpaket Push","dependencies":["A07"],"status":"PLANNED","evidence":[]}
+  ]
+}

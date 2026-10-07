@@ -1,0 +1,12 @@
+{
+  "runId": "A05-scratch-r105-tests-r01",
+  "classification": "Same presentation byte format independent oracle and one scalar scratch",
+  "mode": "tests",
+  "files": [
+    "tests/unit/presentationCanonical.test.ts",
+    "tests/unit/presentationMeshArtifact.test.ts",
+    "tests/unit/presentationCommands.test.ts"
+  ],
+  "binding": "A05-scratch-r105-binding-r01.json",
+  "nativeCapSeconds": 180
+}

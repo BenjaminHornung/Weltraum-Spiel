@@ -1,0 +1,60 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-body-mesh-worker.test.ts (7 tests | 2 failed) 13130ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=false, tight=false)  2823ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (true, owned=false, tight=false)  1824ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=true, tight=false)  1849ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (true, owned=true, tight=false)  1816ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=true, tight=true)  1170ms
+   × native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=true, tight=false) 1835ms
+   × native mesh RPC transfers exclusively and keeps a malformed first packet terminal (true, owned=true, tight=false) 1812ms
+ ✓ tests/unit/hvp-body-mesh-owner-integration.test.ts (36 tests) 20554ms
+   ✓ rejects projected owner-route Stage until the retained plan has admitted complete geometry  490ms
+   ✓ admits mesh-only output against the single retained native plan before Stage, commit and finalize  798ms
+   ✓ rejects altered color geometry with stable first failure and no native Stage or retry revival  637ms
+   ✓ keeps a thrown real admission yield terminal without mutating the native World  549ms
+   ✓ keeps a packet decoder failure terminal before geometry work and rejects a later good packet  546ms
+   ✓ cannot revive an admission after Rollback at a real verifier yield  530ms
+   ✓ preserves the first yielded failure when verifier cleanup also throws  593ms
+   ✓ retains one borrowed owner ledger through mesh admission and transfers results only at Finalize  907ms
+   ✓ rejects Dispose after native Stage until rollback or actual World release  919ms
+   ✓ keeps a failed projection reserve terminal for projection, mesh and native Stage  593ms
+   ✓ returns a latched post-projection owner failure before the missing-mesh guard  531ms
+   ✓ preserves non-Error mesh failure identity at Stage (null)  456ms
+   ✓ preserves non-Error mesh failure identity at Stage (undefined)  489ms
+   ✓ shares the first failure across later projection, decoder and Stage (Error: first cross-seam mesh error)  480ms
+   ✓ shares the first failure across later projection, decoder and Stage (null)  455ms
+   ✓ shares the first failure across later projection, decoder and Stage (undefined)  481ms
+   ✓ keeps a retired ledger until the suspended verifier actually closes  513ms
+   ✓ cannot switch the budget of an already derived plan (undefined)  452ms
+   ✓ cannot switch the budget of an already derived plan (33554432)  494ms
+   ✓ closes owner scratch on Dispose and retains credits until its suspended admission returns  566ms
+   ✓ awaits packet decoding under the same parent credit before starting geometry admission  855ms
+   ✓ keeps decoding credit through Rollback and refuses the late decoded packet  594ms
+   ✓ preserves an asynchronous decoder rejection as the first cross-seam failure  513ms
+   ✓ reuses one expected-mesh workspace across multiple native children without releasing parent credit  834ms
+   ✓ keeps the single parent credit after Finalize until the external mesh operation really closes  905ms
+   ✓ keeps external producer credit through Rollback until its explicit terminal closure  498ms
+   ✓ keeps external producer credit through Dispose until its explicit terminal closure  507ms
+   ✓ reserves external mesh work once and does not release its live parent early  503ms
+   ✓ refuses external ownership without the original borrowed ledger  427ms
+   ✓ refuses early external ownership without poisoning later borrowed preparation  497ms
+   ✓ keeps an exhausted external quote as the first owner failure without partial credit  514ms
+   ✓ prepares and reserves one source-derived external quote before exporting mesh work  836ms
+   ✓ keeps a quote-preflight cancellation terminal without acquiring external work  495ms
+   ✓ excludes mesh admission while its prepaid quote is suspended and admits after closure  823ms
+ ✓ tests/unit/hvpOwnedBodyMesh.test.ts (11 tests) 2036ms
+   ✓ reuses the mesh kernel without changing mixed-material local Float32 bytes or metadata  380ms
+   ✓ rejects changed geometry against the issued local source, not changed foreign cells or matching digest  328ms
+   ✓ closes owned cursors at local-position and geometry-comparison yields  322ms
+   ✓ charges the borrowed parent before allocating any owned occupancy mesh  318ms
+   ✓ charges actual face/quad containers without changing mixed-material bytes  336ms
+   ✓ keeps expected-geometry verification inside the same borrowed parent budget  319ms
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  2 failed | 52 passed (54)
+   Start at  20:46:25
+   Duration  37.88s (transform 987ms, setup 0ms, import 1.75s, tests 35.72s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-escrow-rpc-r37-r02/original-vitest.json

@@ -1,0 +1,8 @@
+{
+  "files": [],
+  "runId": "A03-hash-emission-r67-restored-build",
+  "binding": "A03-hash-emission-r67-restored-binding.json",
+  "mode": "build",
+  "classification": "Exact restored preR67 product with useful sinkprefix control only",
+  "nativeCapSeconds": 60
+}

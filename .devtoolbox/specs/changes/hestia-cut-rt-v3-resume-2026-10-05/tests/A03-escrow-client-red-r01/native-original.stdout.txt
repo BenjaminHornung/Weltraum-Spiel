@@ -1,0 +1,17 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-body-mesh-client.test.ts (6 tests | 3 failed) 15ms
+   ✓ transfers exclusive mesh data and preserves client state (valid) 4ms
+   ✓ transfers exclusive mesh data and preserves client state (bad-begin) 1ms
+   ✓ transfers exclusive mesh data and preserves client state (late-rollback) 1ms
+   × binds prepaid projection and late resource release without publishing data replies (valid) 5ms
+   × binds prepaid projection and late resource release without publishing data replies (bad-budget) 2ms
+   × binds prepaid projection and late resource release without publishing data replies (late-rollback) 2ms
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 3 passed (6)
+   Start at  20:56:28
+   Duration  1.86s (transform 799ms, setup 0ms, import 1.69s, tests 15ms, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-escrow-client-red-r01/original-vitest.json

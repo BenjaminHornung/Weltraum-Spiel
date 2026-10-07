@@ -1,0 +1,69 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-terrain-products.test.ts (9 tests) 3691ms
+     ✓ copies immutable COW leaves in canonical order without millions of per-cell map lookups  341ms
+     ✓ covers sixteen 8m sectors exactly and invalidates only local content/halo products  2589ms
+     ✓ blocks rollover through accepted-terminal decoding and the compiler's post-terminal yield  392ms
+ ✓ tests/unit/workerPoolLifecycle.test.ts (49 tests) 18473ms
+   ✓ transfers source-bound neighbour projections through the real pool and rejects a foreign ticket before transfer  14018ms
+   ✓ prepares local body cuts through the pool without accepting foreign owners or forged removed mass  1206ms
+     ✓ rejects stale planning results after the planning epoch advances  934ms
+stdout | tests/unit/hvp-owned-support-plan.test.ts > compares full384 support CPU and actual task quanta on the same occupancy without changing results, pair 0
+R97_SUPPORT384_CPU_AND_QUANTA [
+  {
+    baselineCpuMs: 1205.9272,
+    ownedWorkMs: 447.04840000000877,
+    ownedWallMs: 465.53159999999934,
+    maxQuantumMs: 4.739599999999882,
+    quanta: 203
+  }
+]
+
+stdout | tests/unit/hvp-owned-support-plan.test.ts > compares full384 support CPU and actual task quanta on the same occupancy without changing results, pair 1
+R97_SUPPORT384_CPU_AND_QUANTA [
+  {
+    baselineCpuMs: 1265.3948,
+    ownedWorkMs: 525.061000000007,
+    ownedWallMs: 544.9382000000005,
+    maxQuantumMs: 4.653899999999339,
+    quanta: 236
+  }
+]
+
+stdout | tests/unit/hvp-owned-support-plan.test.ts > compares full384 support CPU and actual task quanta on the same occupancy without changing results, pair 2
+R97_SUPPORT384_CPU_AND_QUANTA [
+  {
+    baselineCpuMs: 1538.8841999999995,
+    ownedWorkMs: 360.6318999999985,
+    ownedWallMs: 384.6322,
+    maxQuantumMs: 4.089599999999336,
+    quanta: 163
+  }
+]
+
+ ✓ tests/unit/hvp-owned-support-plan.test.ts (6 tests) 9183ms
+   ✓ shares full support reports and every source read with the original algorithm while using one borrowed lifetime  2563ms
+   ✓ runs the owned job through the existing real task pump and closes input/search/ingest/recipe cancellation  1190ms
+   ✓ compares full384 support CPU and actual task quanta on the same occupancy without changing results, pair 0  1680ms
+   ✓ compares full384 support CPU and actual task quanta on the same occupancy without changing results, pair 1  1812ms
+   ✓ compares full384 support CPU and actual task quanta on the same occupancy without changing results, pair 2  1927ms
+stdout | tests/unit/hvp-terrain-support.test.ts > previews the actual authored rock arm without detaching or changing its canonical root
+Authored rock-arm support { sourceDigest: 'b8fde6b0', probes: 2156, massKg: 1722.65625 }
+
+ ✓ tests/unit/hvp-terrain-support.test.ts (7 tests) 4532ms
+   ✓ rejects a complete component that would require more than 64 exact collider boxes  1670ms
+   ✓ previews the actual authored rock arm without detaching or changing its canonical root  1771ms
+   ✓ records deterministic support sub-spans without changing the admitted fragments  413ms
+ ✓ tests/unit/hvp-terrain-consumer.test.ts (24 tests) 4324ms
+     ✓ cut trace keeps canonical outcomes and publication order unchanged when tracing is absent, present, or throwing  3344ms
+ ✓ tests/unit/hvp-support-json.test.ts (3 tests) 1294ms
+   ✓ reads the existing JSON wire across real UTF8 and escape boundaries without a bulk parse  1287ms
+ ✓ tests/unit/hvp-terrain-transfer.test.ts (2 tests) 335ms
+
+ Test Files  7 passed (7)
+      Tests  100 passed (100)
+   Start at  20:37:35
+   Duration  49.39s (transform 2.26s, setup 0ms, import 5.33s, tests 41.83s, environment 1ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-main-r98-green-r02/original-vitest.json

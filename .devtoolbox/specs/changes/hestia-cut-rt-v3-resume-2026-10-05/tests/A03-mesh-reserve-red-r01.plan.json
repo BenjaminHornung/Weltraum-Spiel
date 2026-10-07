@@ -1,0 +1,10 @@
+{
+  "nativeCapSeconds": 180,
+  "mode": "tests",
+  "classification": "Same-parent occupancy/face/quad/expected mesh accounting RED; full original mesh unit file, original default deadlines",
+  "binding": "A03-mesh-reserve-red-r01-binding.json",
+  "runId": "A03-mesh-reserve-red-r01",
+  "files": [
+    "tests/unit/hvpOwnedBodyMesh.test.ts"
+  ]
+}

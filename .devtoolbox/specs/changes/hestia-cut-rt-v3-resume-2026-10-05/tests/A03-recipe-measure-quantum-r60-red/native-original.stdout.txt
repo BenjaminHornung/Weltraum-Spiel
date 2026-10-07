@@ -1,0 +1,27 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-borrowed-body-plan.test.ts (16 tests | 1 failed) 3473ms
+   ✓ keeps full canonical bytes and original default units while the owner selects an immutable bounded hash quantum 45ms
+   ✓ refuses getter or mutable hash-quantum metadata without reading a getter and retains the first parent failure 2ms
+   ✓ bounds borrowed work with a stalled clock and closes its actual nested cursor on cancellation 3ms
+   ✓ ends borrowed work at its elapsed cutoff before reaching the unit ceiling 1ms
+   ✓ keeps the original borrowed failure when cursor cleanup also fails (Error: nested first failure) 1ms
+   ✓ keeps the original borrowed failure when cursor cleanup also fails (null) 0ms
+   ✓ keeps the original borrowed failure when cursor cleanup also fails (undefined) 0ms
+   ✓ propagates cleanup failure after a successful borrowed result 0ms
+   ✓ composes the same complete Box plan, children and removed mass under one retained parent  791ms
+   ✓ composes the same complete Sphere plan, children and removed mass under one retained parent  871ms
+   × checks recipe measurement lifetime once per bounded owned quantum rather than per internal scalar 131ms
+   ✓ closes mid-plan command/ingest work without releasing the shared parent 134ms
+   ✓ cancels the actual borrowed recipe at its first outer quantum while retaining its parent credit 235ms
+   ✓ keeps the original parent failure before any final plan or retry work 128ms
+   ✓ credits a warm cell projection before borrowing it from the parent 119ms
+   ✓ yields through Sphere material comparisons while preserving first-match semantics  1008ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 15 passed (16)
+   Start at  01:42:38
+   Duration  6.38s (transform 1.25s, setup 0ms, import 2.70s, tests 3.47s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-recipe-measure-quantum-r60-red/original-vitest.json

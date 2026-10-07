@@ -1,0 +1,1387 @@
+{
+  "classification": "REAL_GAME_BODY384_DIAGNOSTIC_NOT_FORMAL_42_ACCEPTANCE",
+  "binding": "A03-phase-timing-r42-binding.json",
+  "build": "A03-phase-timing-r42-build",
+  "surface": {
+    "width": 1280,
+    "height": 720,
+    "dpr": 1.0000000149011612,
+    "headful": true
+  },
+  "before": {
+    "ownerId": "hvp:terrain-fragment:r1:1b4aa69d",
+    "sourceDigest": "fnv1a64-v1:70d85a5593bd44c9",
+    "revision": 0,
+    "issuedTick": 2224,
+    "cell": [
+      189,
+      84,
+      76
+    ],
+    "pose": {
+      "position": {
+        "x": 8.427090644836426,
+        "y": 0.9733397364616394,
+        "z": -4.9088335037231445
+      },
+      "rotation": {
+        "x": 0.03768949955701828,
+        "y": 0.6483203172683716,
+        "z": 0.014122246764600277,
+        "w": 0.7603030204772949
+      }
+    }
+  },
+  "receipt": {
+    "id": "moving-cut-1",
+    "status": "Applied",
+    "parentId": "hvp:terrain-fragment:r1:1b4aa69d",
+    "children": [
+      "hvp:terrain-fragment:r1:1b4aa69d:r1:p0"
+    ],
+    "removedCells": 32,
+    "removedMassKg": 135.9375,
+    "issuedTick": 2232,
+    "commitTick": 2350,
+    "parentPose": {
+      "position": {
+        "x": 8.427064895629883,
+        "y": 0.9733360409736633,
+        "z": -4.908839225769043
+      },
+      "rotation": {
+        "x": 0.037648580968379974,
+        "y": 0.6483242511749268,
+        "z": 0.014156426303088665,
+        "w": 0.7603011727333069
+      },
+      "velocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "angularVelocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "removedMomentum": {
+      "massKg": 135.9375,
+      "referencePoint": {
+        "x": 8.427064895629883,
+        "y": 0.9733360409736633,
+        "z": -4.908839225769043
+      },
+      "center": {
+        "x": 8.476598068207164,
+        "y": 1.1167845046323537,
+        "z": -5.138763064044921
+      },
+      "linear": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "angular": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    }
+  },
+  "tool": {
+    "id": "moving-cut-1",
+    "status": "Applied",
+    "reason": "Current-pose fragment replacement"
+  },
+  "health": {
+    "enabled": true,
+    "samples": 7190,
+    "errors": 0,
+    "dropped": 0,
+    "cutObservation": {
+      "status": "armed",
+      "drops": 0,
+      "disables": 0,
+      "inputCount": 1,
+      "pendingRender": false
+    },
+    "timingSinkFailures": 0,
+    "publishedOrigin": 1791231335957.6,
+    "publishedAt": 44123.19999999553
+  },
+  "raw": {
+    "entries": [
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42149.9,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:6829"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42166.5,
+        "duration": 33.400000000001455,
+        "detail": {
+          "sampleId": "frameIntervalMs:6833"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42199.9,
+        "duration": 17,
+        "detail": {
+          "sampleId": "frameIntervalMs:6836"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42216.9,
+        "duration": 16.400000000001455,
+        "detail": {
+          "sampleId": "frameIntervalMs:6839"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42233.3,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:6842"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42249.9,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:6846"
+        }
+      },
+      {
+        "name": "hvp.cutBodyInputMs",
+        "start": 42260.19999999553,
+        "duration": 0,
+        "detail": {
+          "sampleId": "cutBodyInputMs:6845",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyInputMs",
+            "origin": 1791231335957.6,
+            "start": 42260.19999999553,
+            "duration": 0
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodySubmittedMs",
+        "start": 42266,
+        "duration": 0,
+        "detail": {
+          "sampleId": "cutBodySubmittedMs:6844",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodySubmittedMs",
+            "origin": 1791231335957.6,
+            "start": 42266,
+            "duration": 0
+          }
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42266.5,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:6850"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42283.2,
+        "duration": 16.60000000000582,
+        "detail": {
+          "sampleId": "frameIntervalMs:6852"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42299.8,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:6854"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42316.5,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:6857"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42333.2,
+        "duration": 16.80000000000291,
+        "detail": {
+          "sampleId": "frameIntervalMs:6862"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42350,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:6865"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42366.6,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:6869"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42383.2,
+        "duration": 16.700000000004366,
+        "detail": {
+          "sampleId": "frameIntervalMs:6872"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42399.9,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:6875"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42416.5,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:6878"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42433.2,
+        "duration": 16.60000000000582,
+        "detail": {
+          "sampleId": "frameIntervalMs:6881"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42449.8,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:6884"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42466.5,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:6887"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42483.2,
+        "duration": 16.60000000000582,
+        "detail": {
+          "sampleId": "frameIntervalMs:6890"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42499.8,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:6893"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42516.5,
+        "duration": 16.80000000000291,
+        "detail": {
+          "sampleId": "frameIntervalMs:6896"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42533.3,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:6899"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42549.9,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:6902"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42566.5,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:6905"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42583.2,
+        "duration": 16.700000000004366,
+        "detail": {
+          "sampleId": "frameIntervalMs:6908"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42599.9,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:6911"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42616.5,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:6915"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42633.2,
+        "duration": 16.700000000004366,
+        "detail": {
+          "sampleId": "frameIntervalMs:6919"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42649.9,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:6921"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42666.5,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:6924"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42683.2,
+        "duration": 16.700000000004366,
+        "detail": {
+          "sampleId": "frameIntervalMs:6927"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42699.9,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:6929"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42716.6,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:6932"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42733.2,
+        "duration": 16.700000000004366,
+        "detail": {
+          "sampleId": "frameIntervalMs:6936"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42749.9,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:6939"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42766.5,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:6942"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42783.2,
+        "duration": 16.60000000000582,
+        "detail": {
+          "sampleId": "frameIntervalMs:6945"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42799.8,
+        "duration": 16.799999999995634,
+        "detail": {
+          "sampleId": "frameIntervalMs:6948"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42816.6,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:6951"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42833.2,
+        "duration": 16.60000000000582,
+        "detail": {
+          "sampleId": "frameIntervalMs:6954"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42849.8,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:6957"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42866.5,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:6961"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42883.2,
+        "duration": 16.700000000004366,
+        "detail": {
+          "sampleId": "frameIntervalMs:6964"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42899.9,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:6967"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42916.5,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:6970"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42933.2,
+        "duration": 16.700000000004366,
+        "detail": {
+          "sampleId": "frameIntervalMs:6973"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42949.9,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:6976"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42966.5,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:6979"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42983.2,
+        "duration": 16.700000000004366,
+        "detail": {
+          "sampleId": "frameIntervalMs:6982"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 42999.9,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:6985"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43016.6,
+        "duration": 16.700000000004366,
+        "detail": {
+          "sampleId": "frameIntervalMs:6988"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43033.3,
+        "duration": 16.5,
+        "detail": {
+          "sampleId": "frameIntervalMs:6991"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43049.8,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:6994"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43066.5,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:6997"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43083.2,
+        "duration": 16.700000000004366,
+        "detail": {
+          "sampleId": "frameIntervalMs:6999"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43099.9,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:7002"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43116.5,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:7007"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43133.2,
+        "duration": 16.60000000000582,
+        "detail": {
+          "sampleId": "frameIntervalMs:7011"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43149.8,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:7013"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43166.5,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:7016"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43183.2,
+        "duration": 16.60000000000582,
+        "detail": {
+          "sampleId": "frameIntervalMs:7019"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43199.8,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:7022"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43216.5,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:7025"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43233.2,
+        "duration": 16.60000000000582,
+        "detail": {
+          "sampleId": "frameIntervalMs:7028"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43249.8,
+        "duration": 16.799999999995634,
+        "detail": {
+          "sampleId": "frameIntervalMs:7031"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43266.6,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:7034"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43283.2,
+        "duration": 16.700000000004366,
+        "detail": {
+          "sampleId": "frameIntervalMs:7037"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43299.9,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:7040"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43316.6,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:7043"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43333.2,
+        "duration": 16.60000000000582,
+        "detail": {
+          "sampleId": "frameIntervalMs:7046"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43349.8,
+        "duration": 16.799999999995634,
+        "detail": {
+          "sampleId": "frameIntervalMs:7049"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43366.6,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:7053"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43383.2,
+        "duration": 16.700000000004366,
+        "detail": {
+          "sampleId": "frameIntervalMs:7056"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43399.9,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:7059"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43416.5,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:7062"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43433.2,
+        "duration": 16.60000000000582,
+        "detail": {
+          "sampleId": "frameIntervalMs:7065"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43449.8,
+        "duration": 16.799999999995634,
+        "detail": {
+          "sampleId": "frameIntervalMs:7068"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43466.6,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:7071"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43483.2,
+        "duration": 16.700000000004366,
+        "detail": {
+          "sampleId": "frameIntervalMs:7073"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43499.9,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:7076"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43516.5,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:7079"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43533.2,
+        "duration": 16.60000000000582,
+        "detail": {
+          "sampleId": "frameIntervalMs:7083"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43549.8,
+        "duration": 16.799999999995634,
+        "detail": {
+          "sampleId": "frameIntervalMs:7086"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43566.6,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:7089"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43583.2,
+        "duration": 16.700000000004366,
+        "detail": {
+          "sampleId": "frameIntervalMs:7092"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43599.9,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:7095"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43616.5,
+        "duration": 16.900000000001455,
+        "detail": {
+          "sampleId": "frameIntervalMs:7099"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43633.4,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:7102"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43650,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:7105"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43666.6,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:7108"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43683.2,
+        "duration": 16.700000000004366,
+        "detail": {
+          "sampleId": "frameIntervalMs:7111"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43699.9,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:7114"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43716.6,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:7117"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43733.2,
+        "duration": 16.700000000004366,
+        "detail": {
+          "sampleId": "frameIntervalMs:7120"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43749.9,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:7123"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43766.5,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:7126"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43783.2,
+        "duration": 16.60000000000582,
+        "detail": {
+          "sampleId": "frameIntervalMs:7129"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43799.8,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:7132"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43816.5,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:7135"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43833.2,
+        "duration": 16.700000000004366,
+        "detail": {
+          "sampleId": "frameIntervalMs:7138"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43849.9,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:7141"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43866.5,
+        "duration": 16.80000000000291,
+        "detail": {
+          "sampleId": "frameIntervalMs:7145"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43883.3,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:7147"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43900,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:7150"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43916.6,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:7153"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43933.2,
+        "duration": 16.60000000000582,
+        "detail": {
+          "sampleId": "frameIntervalMs:7157"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43949.8,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:7160"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43966.5,
+        "duration": 16.80000000000291,
+        "detail": {
+          "sampleId": "frameIntervalMs:7163"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43983.3,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:7166"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 43999.9,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:7169"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 44016.5,
+        "duration": 16.80000000000291,
+        "detail": {
+          "sampleId": "frameIntervalMs:7172"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 44033.3,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:7175"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 44050,
+        "duration": 16.5,
+        "detail": {
+          "sampleId": "frameIntervalMs:7178"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 44066.5,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:7181"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 44083.2,
+        "duration": 16.700000000004366,
+        "detail": {
+          "sampleId": "frameIntervalMs:7184"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 44099.9,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:7187"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 44116.6,
+        "duration": 16.700000000004366,
+        "detail": {
+          "sampleId": "frameIntervalMs:7191"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 44133.3,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:7194"
+        }
+      },
+      {
+        "name": "hvp.cutBodyOwnerPlanMs",
+        "start": 42275.60000000149,
+        "duration": 1884.6999999955297,
+        "detail": {
+          "sampleId": "cutBodyOwnerPlanMs:7197",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyOwnerPlanMs",
+            "origin": 1791231335957.6,
+            "start": 42275.60000000149,
+            "duration": 1884.6999999955297
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyPrepareWorkMs",
+        "start": 44160.60000000149,
+        "duration": 1.8999999985098839,
+        "detail": {
+          "sampleId": "cutBodyPrepareWorkMs:7198",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyPrepareWorkMs",
+            "origin": 1791231335957.6,
+            "start": 44160.60000000149,
+            "duration": 1.8999999985098839
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyPrepareWorkMs",
+        "start": 44162.79999999702,
+        "duration": 0.10000000149011612,
+        "detail": {
+          "sampleId": "cutBodyPrepareWorkMs:7199",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyPrepareWorkMs",
+            "origin": 1791231335957.6,
+            "start": 44162.79999999702,
+            "duration": 0.10000000149011612
+          }
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 44149.9,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:7200"
+        }
+      },
+      {
+        "name": "hvp.cutBodyMeshWorkerMs",
+        "start": 44160.29999999702,
+        "duration": 26.700000002980232,
+        "detail": {
+          "sampleId": "cutBodyMeshWorkerMs:7202",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyMeshWorkerMs",
+            "origin": 1791231335957.6,
+            "start": 44160.29999999702,
+            "duration": 26.700000002980232
+          }
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 44166.6,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:7205"
+        }
+      },
+      {
+        "name": "hvp.cutBodyNativeAdmissionMs",
+        "start": 44187.10000000149,
+        "duration": 10.899999998509884,
+        "detail": {
+          "sampleId": "cutBodyNativeAdmissionMs:7208",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyNativeAdmissionMs",
+            "origin": 1791231335957.6,
+            "start": 44187.10000000149,
+            "duration": 10.899999998509884
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyPrepareWorkMs",
+        "start": 44198.29999999702,
+        "duration": 1.8999999985098839,
+        "detail": {
+          "sampleId": "cutBodyPrepareWorkMs:7209",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyPrepareWorkMs",
+            "origin": 1791231335957.6,
+            "start": 44198.29999999702,
+            "duration": 1.8999999985098839
+          }
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 44183.2,
+        "duration": 16.700000000004366,
+        "detail": {
+          "sampleId": "frameIntervalMs:7210"
+        }
+      },
+      {
+        "name": "hvp.cutBodyMainDecodeMs",
+        "start": 44198.10000000149,
+        "duration": 12.099999994039536,
+        "detail": {
+          "sampleId": "cutBodyMainDecodeMs:7213",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyMainDecodeMs",
+            "origin": 1791231335957.6,
+            "start": 44198.10000000149,
+            "duration": 12.099999994039536
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyPrepareWorkMs",
+        "start": 44208.19999999553,
+        "duration": 1.9000000059604645,
+        "detail": {
+          "sampleId": "cutBodyPrepareWorkMs:7212",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyPrepareWorkMs",
+            "origin": 1791231335957.6,
+            "start": 44208.19999999553,
+            "duration": 1.9000000059604645
+          }
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 44199.9,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:7214"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 44216.5,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:7218"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 44233.2,
+        "duration": 16.700000000004366,
+        "detail": {
+          "sampleId": "frameIntervalMs:7220"
+        }
+      },
+      {
+        "name": "hvp.cutBodyInputToAppliedMs",
+        "start": 42260.19999999553,
+        "duration": 2011.60009765625,
+        "detail": {
+          "sampleId": "cutBodyInputToAppliedMs:7223",
+          "data": {
+            "commandId": "moving-cut-1",
+            "inputOrigin": 1791231335957.6,
+            "inputStart": 42260.19999999553,
+            "terminalOrigin": 1791231335957.6,
+            "terminalStart": 42266,
+            "terminalDuration": 2005.7999999970198
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyFirstCommittedRenderSubmitMs",
+        "start": 42260.19999999553,
+        "duration": 2029.400146484375,
+        "detail": {
+          "sampleId": "cutBodyFirstCommittedRenderSubmitMs:7227",
+          "data": {
+            "commandId": "moving-cut-1",
+            "savedRevision": 1,
+            "savedDigest": "26d5308d",
+            "nativeGeneration": 1,
+            "activeTerrainKeys": [
+              "hvp:terrain:s0:r0",
+              "hvp:terrain:s1:r0",
+              "hvp:terrain:s2:r0",
+              "hvp:terrain:s3:r0",
+              "hvp:terrain:s4:r0",
+              "hvp:terrain:s5:r0",
+              "hvp:terrain:s8:r0",
+              "hvp:terrain:s9:r0",
+              "hvp:terrain:s10:r0",
+              "hvp:terrain:s11:r0",
+              "hvp:terrain:s12:r0",
+              "hvp:terrain:s13:r0",
+              "hvp:terrain:s14:r0",
+              "hvp:terrain:s15:r0",
+              "hvp:terrain:s6:e0~4",
+              "hvp:terrain:s7:e0~5"
+            ],
+            "rootIdentityMatches": true,
+            "activeKeysMatch": true,
+            "visibleKeysMatch": true,
+            "nativeGenerationMatches": true,
+            "recoveryHold": false,
+            "bodySequence": 1,
+            "parentId": "hvp:terrain-fragment:r1:1b4aa69d",
+            "children": [
+              {
+                "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+                "sourceDigest": "fnv1a64-v1:c05b830d110a061f",
+                "renderKey": "hvp:fragment:e0~8"
+              }
+            ],
+            "activeBodyKeys": [
+              "hvp:fragment:e0~8",
+              "hvp:branch:parent",
+              "hvp:branch:foliage:r0"
+            ],
+            "outcomeIdentityMatches": true
+          }
+        }
+      },
+      {
+        "name": "hvp.cutBodyTotalAppliedMs",
+        "start": 42266,
+        "duration": 2005.7999999970198,
+        "detail": {
+          "sampleId": "cutBodyTotalAppliedMs:7222",
+          "data": {
+            "commandId": "moving-cut-1",
+            "thread": "main",
+            "phase": "cutBodyTotalAppliedMs",
+            "origin": 1791231335957.6,
+            "start": 42266,
+            "duration": 2005.7999999970198
+          }
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 44249.9,
+        "duration": 16.599999999998545,
+        "detail": {
+          "sampleId": "frameIntervalMs:7225"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 44266.5,
+        "duration": 16.69999999999709,
+        "detail": {
+          "sampleId": "frameIntervalMs:7229"
+        }
+      },
+      {
+        "name": "hvp.frameIntervalMs",
+        "start": 44283.2,
+        "duration": 33.400000000001455,
+        "detail": {
+          "sampleId": "frameIntervalMs:7231"
+        }
+      }
+    ],
+    "dropped": 0
+  }
+}

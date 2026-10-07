@@ -1,0 +1,23 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/workerPoolLifecycle.test.ts (45 tests) 8122ms
+   ✓ transfers source-bound neighbour projections through the real pool and rejects a foreign ticket before transfer  5511ms
+   ✓ prepares local body cuts through the pool without accepting foreign owners or forged removed mass  442ms
+     ✓ rejects stale planning results after the planning epoch advances  751ms
+stdout | tests/unit/hvp-terrain-support.test.ts > previews the actual authored rock arm without detaching or changing its canonical root
+Authored rock-arm support { sourceDigest: 'b8fde6b0', probes: 2156, massKg: 1722.65625 }
+
+ ✓ tests/unit/hvp-terrain-support.test.ts (7 tests) 1807ms
+   ✓ rejects a complete component that would require more than 64 exact collider boxes  785ms
+   ✓ previews the actual authored rock arm without detaching or changing its canonical root  597ms
+ ✓ tests/unit/hvp-owned-support-plan.test.ts (3 tests) 1412ms
+   ✓ shares full support reports and every source read with the original algorithm while using one borrowed lifetime  1196ms
+ ✓ tests/unit/hvp-terrain-transfer.test.ts (2 tests) 163ms
+
+ Test Files  4 passed (4)
+      Tests  57 passed (57)
+   Start at  19:57:42
+   Duration  13.76s (transform 805ms, setup 0ms, import 1.73s, tests 11.50s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-support-r96-green-r04/original-vitest.json

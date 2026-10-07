@@ -1,0 +1,44 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-terrain-consumer.test.ts (33 tests | 9 failed) 7692ms
+     × stages owned graphics before NativeStage and compares exact actual Source views (ready) 276ms
+     × stages owned graphics before NativeStage and compares exact actual Source views (preStage-reject) 216ms
+     × stages owned graphics before NativeStage and compares exact actual Source views (ownerId) 166ms
+     × stages owned graphics before NativeStage and compares exact actual Source views (sourceDigest) 155ms
+     × stages owned graphics before NativeStage and compares exact actual Source views (centerOfMass) 160ms
+     × stages owned graphics before NativeStage and compares exact actual Source views (cellCount) 168ms
+     × stages owned graphics before NativeStage and compares exact actual Source views (massKg) 189ms
+     × stages owned graphics before NativeStage and compares exact actual Source views (colliders) 196ms
+     × stages owned graphics before NativeStage and compares exact actual Source views (sourceBytes) 281ms
+     ✓ replays the saved exact outcome without recompiling or committing the cut again 171ms
+     ✓ adopts removed and transferred cells together and restores both on upload failure=false trace=false  344ms
+     ✓ adopts removed and transferred cells together and restores both on upload failure=true trace=false 214ms
+     ✓ adopts removed and transferred cells together and restores both on upload failure=false trace=true 188ms
+     ✓ adopts removed and transferred cells together and restores both on upload failure=true trace=true 239ms
+     ✓ publishes the paired generation once, snapshots input and remembers exact outcomes 8ms
+     ✓ keeps a queued cut bound to the submitted shape after caller mutation 3ms
+     ✓ restores the previous generation after compile failure 1ms
+     ✓ restores the previous generation after stage failure 1ms
+     ✓ restores the previous generation after prepare failure 1ms
+     ✓ restores the previous generation after commit failure 1ms
+     ✓ restores the previous generation after publish failure 1ms
+     ✓ restores the previous generation after world-publish failure 1ms
+     ✓ restores the previous generation after finalize failure 1ms
+     ✓ retries a proved rolled-back cut only under a fresh command ID 8ms
+     ✓ reports RecoveryHold instead of rolling back an already finalized cleanup 2ms
+     ✓ bounds queued commands and rejects stale compiler identity without publication 2ms
+     ✓ cut trace keeps canonical outcomes and publication order unchanged when tracing is absent, present, or throwing  4388ms
+     ✓ cut trace records one real command interval, ordered phases, and the traced stage command ID 4ms
+     ✓ cut trace keeps idempotency conflicts out of the active command interval 2ms
+     ✓ cut trace records a NoOp without compile or native phases 1ms
+     ✓ disables later trace phases mid-flight without changing the cached outcome or gameplay 291ms
+     ✓ cut trace rejects overflow with a terminal rejected span and no native work 2ms
+     ✓ cut trace measures controlled queue wait once without summing nested durations 4ms
+
+ Test Files  1 failed (1)
+      Tests  9 failed | 24 passed (33)
+   Start at  23:56:41
+   Duration  11.56s (transform 1.82s, setup 0ms, import 3.47s, tests 7.69s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-pregraphics-r115-red-r02/original-vitest.json

@@ -1,0 +1,10 @@
+{
+  "runId": "A03-owner-ledger-review-red-r01",
+  "nativeCapSeconds": 180,
+  "binding": "A03-owner-ledger-review-red-r01-binding.json",
+  "files": [
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts"
+  ],
+  "mode": "tests",
+  "classification": "R19 fault and native-held Dispose RED; original whole file deadlines"
+}

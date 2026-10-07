@@ -1,0 +1,8 @@
+{
+  "runId": "A05-shortvalue-r110-type-r01",
+  "mode": "type",
+  "files": [],
+  "nativeCapSeconds": 60,
+  "binding": "A05-shortvalue-r110-binding-r01.json",
+  "classification": "Exact R91 complete short-value byte and observation preimage current source kernels"
+}

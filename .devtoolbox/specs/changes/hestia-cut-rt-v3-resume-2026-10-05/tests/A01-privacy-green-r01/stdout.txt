@@ -1,0 +1,14 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+stdout | tests/unit/hvpCutRtReport.test.ts > P07 owning artifact and privacy boundaries > creates one exclusive safe directory and emits relative inventories with unchanged actual hashes
+RUNNER_CONTRACT_SAFE_ADDITIVE_FIXTURE C:/IFI_SourceCode/Utils/opencode-migration/tmp/opencode/hvp-runner-contract-fixture-HISiAr
+
+ ✓ tests/unit/hvpCutRtReport.test.ts (54 tests) 126ms
+
+ Test Files  1 passed (1)
+      Tests  54 passed (54)
+   Start at  11:07:01
+   Duration  1.68s (transform 520ms, setup 0ms, import 966ms, tests 126ms, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A01-privacy-green-r01/report.json

@@ -1,0 +1,62 @@
+{
+  "kind": "SOURCE_EXACT_NODE_EQUAL_TOTAL_CLOCKS_AND_SEPARATE_UNIT_PROBE_NOT_BROWSER_OR_FORMAL_GATE",
+  "node": "v22.23.2",
+  "originalSHA": "5e887ecc1258b31488d8f14297d6e9b94a6519e1835afdf46a9d98a19f5ce687",
+  "candidateSHA": "b5d9d307b7bc2b310853751f0da91c4d7cf7c37a0a58bb2ee4377a6d7fdb240d",
+  "bytes": 8388608,
+  "hash": "82a97ace",
+  "pairs": [
+    {
+      "order": "original-candidate",
+      "originalMs": 7.4981,
+      "candidateMs": 17.8299
+    },
+    {
+      "order": "candidate-original",
+      "originalMs": 7.25,
+      "candidateMs": 10.035
+    },
+    {
+      "order": "original-candidate",
+      "originalMs": 7.1539,
+      "candidateMs": 14.1413
+    },
+    {
+      "order": "candidate-original",
+      "originalMs": 8.9416,
+      "candidateMs": 15.739
+    },
+    {
+      "order": "original-candidate",
+      "originalMs": 8.0852,
+      "candidateMs": 14.2837
+    },
+    {
+      "order": "candidate-original",
+      "originalMs": 7.0285,
+      "candidateMs": 14.1293
+    },
+    {
+      "order": "original-candidate",
+      "originalMs": 7.1583,
+      "candidateMs": 16.4174
+    },
+    {
+      "order": "candidate-original",
+      "originalMs": 7.0905,
+      "candidateMs": 16.2453
+    },
+    {
+      "order": "original-candidate",
+      "originalMs": 7.1316,
+      "candidateMs": 14.2767
+    }
+  ],
+  "medianOriginalMs": 7.1583,
+  "medianCandidateMs": 14.2837,
+  "separateUnitProbe": {
+    "samples": 6150,
+    "p95Ms": 0.0097,
+    "maxMs": 0.2496
+  }
+}

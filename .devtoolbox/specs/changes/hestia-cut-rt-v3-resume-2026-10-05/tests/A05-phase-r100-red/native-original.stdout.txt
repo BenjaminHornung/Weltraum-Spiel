@@ -1,0 +1,13 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-support-phase-budget.test.ts (2 tests | 2 failed) 16ms
+   × adds concurrent lane grants and retained products under the same original Prepare96/CPU256 envelope 11ms
+   × rejects foreign or overspent grants and invalid scene/copy credits before allocation 3ms
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  20:54:07
+   Duration  3.47s (transform 1.58s, setup 0ms, import 3.08s, tests 16ms, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-phase-r100-red/original-vitest.json

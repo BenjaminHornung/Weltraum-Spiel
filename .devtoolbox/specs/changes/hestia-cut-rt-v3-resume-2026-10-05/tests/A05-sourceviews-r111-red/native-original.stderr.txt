@@ -1,0 +1,28 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-terrain-native-plan.test.ts > prepares full native recipes while real solver ticks continue, then stages the exact local ticket
+TypeError: session.terrainPlanSourceViews is not a function
+ ❯ tests/unit/hvp-terrain-native-plan.test.ts:24:25
+     22|     expect(session.read()).toMatchObject({terrainTransaction:"Idle",bo…
+     23|     expect(session.terrainPrepareSpans()).toBeUndefined();
+     24|     const views=session.terrainPlanSourceViews(ticket);
+       |                         ^
+     25|     expect(views).toHaveLength(1);expect(views[0]).toMatchObject({owne…
+     26|     expect(Object.isFrozen(views)).toBe(true);expect(Object.isFrozen(v…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/hvp-terrain-native-worker.test.ts > binds actual source-only ACK and Stage, releases a rejected preStage ticket, and admits a fresh retry
+AssertionError: Target cannot be null or undefined.
+ ❯ tests/unit/hvp-terrain-native-worker.test.ts:27:42
+     25|   const request=prepare(),ready=await send(request);expect(ready.error…
+     26|   expect(ready.snapshot).toBeUndefined();expect(ready.terrainPlan).toM…
+     27|   expect(ready.terrainPlan?.sourceViews).toHaveLength(1);
+       |                                          ^
+     28|   expect(ready.terrainPlan?.sourceViews[0]).toMatchObject({ownerId:fra…
+     29|   const stage={kind:"PrepareTerrain" as const,transactionId:"owned",ge…
+ ❯ withWorker tests/unit/hvp-terrain-native-worker.test.ts:18:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+

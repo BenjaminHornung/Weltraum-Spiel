@@ -1,0 +1,10 @@
+{
+  "classification": "Fresh full unchanged original Owner65 at original180 native cap; default and JSON reporters only; no progress hook and no deadline or population change",
+  "runId": "A03-original-owner-r61-tests",
+  "binding": "A06-route-failure-boundary-r61-binding.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-body-plan-owner.test.ts"
+  ],
+  "nativeCapSeconds": 180
+}

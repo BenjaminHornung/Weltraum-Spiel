@@ -1,4 +1,7 @@
-import { meshCollisionInput, type HvpCollisionInput, type HvpCollisionSector } from "../hestia-prototype/physics/terrainColliders";
+import { meshCollisionInput,meshCollisionInputOwnedSteps, type HvpCollisionInput, type HvpCollisionSector } from "../hestia-prototype/physics/terrainColliders";
+import type {StructuralOwnedReserve} from "../voxel/structural/validation";
+import {fnv1aBytesSteps} from "./hvpBodyCutWire";
+import type {createHvpBodyMeshTaskPump} from "./hvpBoundedPump";
 import { byteCount, contentRevision, type ContentRevision } from "./ids";
 import { fnv1aBytes, validateTransferableBundle, type TransferableBufferBundle, type WorkerJobRequest, type WorkerJobResult } from "./protocol";
 
@@ -19,19 +22,34 @@ export const validateHvpCollisionPayload = (value: unknown): HvpCollisionPayload
 };
 
 export const validateHvpCollisionRequest = (request: WorkerJobRequest, bundle: TransferableBufferBundle): HvpCollisionPayload => {
+  const steps=collisionRequestSteps(request,bundle);for(;;){const step=steps.next();if(step.done){return step.value;}}
+};
+export const validateHvpCollisionRequestSteps=(request:WorkerJobRequest,bundle:TransferableBufferBundle)=>collisionRequestSteps(request,bundle,true);
+function* collisionRequestSteps(request:WorkerJobRequest,bundle:TransferableBufferBundle,owned=false):Generator<string,HvpCollisionPayload,unknown>{
   const p = validateHvpCollisionPayload(request.payload);
   const bytes = (p.sizeX + 2) * (p.sizeY + 2) * (p.sizeZ + 2);
   if (request.algorithmVersion !== HVP_COLLISION_ALGORITHM || request.inputRevision !== p.outputRevision
     || request.estimatedOutputBytes !== HVP_COLLISION_MAX_OUTPUT || bundle.byteLength !== bytes || bundle.buffers.length !== 1
     || bundle.views.length !== 1 || bundle.views[0]!.kind !== "Uint8Array" || bundle.views[0]!.name !== "slots"
     || bundle.views[0]!.bufferIndex !== 0 || bundle.views[0]!.byteOffset !== 0 || bundle.views[0]!.elementCount !== bytes
-    || request.sourceInputDigest !== fnv1aBytes(bundle.buffers)) {
+    || request.sourceInputDigest !== (owned?yield* fnv1aBytesSteps(bundle.buffers):fnv1aBytes(bundle.buffers))) {
     throw new RangeError("HVP collision input binding mismatch");
   }
   return p;
-};
+}
 
 export const decodeHvpCollisionOutput = (source: TransferableBufferBundle, p: HvpCollisionPayload): HvpCollisionSector => {
+  const steps=collisionOutputSteps(source,p);for(;;){const step=steps.next();if(step.done){return step.value;}}
+};
+export const decodeHvpCollisionOutputSteps=(source:TransferableBufferBundle,p:HvpCollisionPayload,reserve:StructuralOwnedReserve)=>collisionOutputSteps(source,p,reserve);
+function* invalidCollisionChannel(values:Float32Array|Uint32Array,invalid:(v:number,index:number)=>boolean,owned:boolean):Generator<string,boolean,unknown>{
+  if(!owned){return values.some(invalid);}
+  for(let i=0;i<values.length;i+=1){if(invalid(values[i]!,i)){return true;}if((i+1)%4096===0){yield "collisionDecode";}}return false;
+}
+function* collisionOutputSteps(source:TransferableBufferBundle,p:HvpCollisionPayload,reserve?:StructuralOwnedReserve):Generator<string,HvpCollisionSector,unknown>{
+  if(reserve&&(!Array.isArray(source.buffers)||source.buffers.length!==2||!Array.isArray(source.views)||source.views.length!==2
+    ||!Number.isSafeInteger(source.byteLength)||source.byteLength<0||source.byteLength>HVP_COLLISION_MAX_OUTPUT)){throw new RangeError("Invalid HVP collision output");}
+  reserve?.(16_384);
   const b = validateTransferableBundle(source);
   if (b.byteLength > HVP_COLLISION_MAX_OUTPUT || b.buffers.length !== 2 || b.views.length !== 2
     || b.ownership !== "WorkerToConsumer" || b.revision !== p.outputRevision) {
@@ -48,29 +66,38 @@ export const decodeHvpCollisionOutput = (source: TransferableBufferBundle, p: Hv
   const min = [p.originMeters.x, p.originMeters.y, p.originMeters.z];
   const max = [p.sizeX, p.sizeY, p.sizeZ].map((n, i) => min[i]! + n * 0.125);
   if (vertices.length % 3 !== 0 || indices.length % 3 !== 0
-    || vertices.some((v, i) => !Number.isFinite(v) || !Number.isInteger(v * 8) || v < min[i % 3]! || v > max[i % 3]!)
-    || indices.some(i => i >= vertices.length / 3)) {
+    || (yield* invalidCollisionChannel(vertices,(v,i)=>!Number.isFinite(v)||!Number.isInteger(v*8)||v<min[i%3]!||v>max[i%3]!,reserve!==undefined))
+    || (yield* invalidCollisionChannel(indices,i=>i>=vertices.length/3,reserve!==undefined))) {
     throw new RangeError("Invalid HVP collision output geometry");
   }
   return { vertices, indices };
-};
+}
 
 export const executeHvpCollisionJob = (request: WorkerJobRequest, source: TransferableBufferBundle) => {
+  const steps=collisionJobSteps(request,source);for(;;){const step=steps.next();if(step.done){return step.value;}}
+};
+export const executeHvpCollisionJobOwned=(request:WorkerJobRequest,source:TransferableBufferBundle,
+  pump:ReturnType<typeof createHvpBodyMeshTaskPump>,reserve:StructuralOwnedReserve)=>pump.run(collisionJobSteps(request,source,reserve));
+function* collisionJobSteps(request:WorkerJobRequest,source:TransferableBufferBundle,reserve?:StructuralOwnedReserve):Generator<string,{result:WorkerJobResult;bundle:TransferableBufferBundle},unknown>{
+  if(reserve&&(!Array.isArray(source.buffers)||source.buffers.length!==1||!Array.isArray(source.views)||source.views.length!==1
+    ||!Number.isSafeInteger(source.byteLength)||source.byteLength<0||source.byteLength>34*258*34)){throw new RangeError("HVP collision input binding mismatch");}
+  reserve?.(16_384+source.byteLength);
   const input = validateTransferableBundle(source);
-  const payload = validateHvpCollisionRequest(request, input);
+  const payload = yield* collisionRequestSteps(request,input,reserve!==undefined);
   const slots = new Uint8Array(input.buffers[0]!);
-  if (slots.some(v => v > 1)) { throw new RangeError("Collision occupancy must be binary"); }
-  const mesh = meshCollisionInput({ ...payload, slots });
+  if(reserve){for(let i=0;i<slots.length;i+=1){if(slots[i]!>1){throw new RangeError("Collision occupancy must be binary");}if((i+1)%4096===0){yield "collisionInput";}}}
+  else if (slots.some(v => v > 1)) { throw new RangeError("Collision occupancy must be binary"); }
+  const mesh=reserve===undefined?meshCollisionInput({...payload,slots}):yield* meshCollisionInputOwnedSteps({...payload,slots},reserve);
   const buffers = [mesh.vertices.buffer as ArrayBuffer, mesh.indices.buffer as ArrayBuffer];
   const output: TransferableBufferBundle = { ownership: "WorkerToConsumer", revision: contentRevision(payload.outputRevision), buffers,
-    byteLength: byteCount(buffers.reduce((sum, b) => sum + b.byteLength, 0)), contentHash: fnv1aBytes(buffers), views: [
+    byteLength: byteCount(buffers.reduce((sum, b) => sum + b.byteLength, 0)), contentHash:reserve===undefined?fnv1aBytes(buffers):yield* fnv1aBytesSteps(buffers), views: [
       { name: "vertices", bufferIndex: 0, kind: "Float32Array", byteOffset: 0, elementCount: mesh.vertices.length },
       { name: "indices", bufferIndex: 1, kind: "Uint32Array", byteOffset: 0, elementCount: mesh.indices.length }
     ] };
-  decodeHvpCollisionOutput(output, payload);
+  if(reserve){yield* decodeHvpCollisionOutputSteps(output,payload,reserve);}else{decodeHvpCollisionOutput(output,payload);}
   const result: WorkerJobResult = { jobId: request.jobId, targetKey: request.targetKey, planningEpoch: request.planningEpoch,
     workerEpoch: request.workerEpoch, inputRevision: request.inputRevision, sourceInputDigest: request.sourceInputDigest,
     outputRevision: contentRevision(payload.outputRevision), algorithmVersion: request.algorithmVersion,
     outputBytes: output.byteLength, contentHash: output.contentHash };
   return { result, bundle: output };
-};
+}

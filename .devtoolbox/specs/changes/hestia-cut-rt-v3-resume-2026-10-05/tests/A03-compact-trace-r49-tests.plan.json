@@ -1,0 +1,10 @@
+{
+  "runId": "A03-compact-trace-r49-tests",
+  "binding": "A03-compact-trace-r49-binding.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-body-plan-owner.test.ts"
+  ],
+  "nativeCapSeconds": 180,
+  "classification": "Compact borrowed step diagnostics only; full original Owner65population plus existing additions, same180cap/5000defaults/generictraces unchanged"
+}

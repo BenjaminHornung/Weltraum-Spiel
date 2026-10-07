@@ -1,0 +1,16 @@
+{
+  "binding": "A03-retention-once-r62-binding.json",
+  "runId": "A03-retention-once-r62-tests",
+  "classification": "Remove only duplicate owned adapter retention construction; original final issuer/validators/proofs/full hashes remain; whole seven files",
+  "nativeCapSeconds": 600,
+  "files": [
+    "tests/unit/hvp-borrowed-body-plan.test.ts",
+    "tests/unit/hvp-owned-structural-ingest.test.ts",
+    "tests/unit/hvp-owned-ingest-journal-prefix.test.ts",
+    "tests/unit/hvp-structural-ingest-trace.test.ts",
+    "tests/unit/hvp-owned-single-component-masses.test.ts",
+    "tests/unit/hvp-classification-contract-controls.test.ts",
+    "tests/unit/hvp-parallel-p01-classification.test.ts"
+  ],
+  "mode": "tests"
+}

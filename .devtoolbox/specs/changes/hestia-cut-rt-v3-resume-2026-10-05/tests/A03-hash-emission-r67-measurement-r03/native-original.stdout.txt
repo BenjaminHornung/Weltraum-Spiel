@@ -1,0 +1,15 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+stdout | tests/unit/hvp-owned-hash-r67-measurement.test.ts > compares alternating exact preimage/current kernels on the complete384-cell structural payload
+R67_KERNEL_MEASUREMENT {"classification":"DIAGNOSTIC_NOT_GAME_ACCEPTANCE","batchSize":8,"samples":{"baseline":[3.2472750000000588,4.221637499999986,4.42369999999994,5.115749999999991,8.862000000000023,4.216587499999832,4.483250000000055,4.383612500000027,4.543025000000057],"candidate":[4.3266250000000355,3.1207125000000815,6.646200000000135,4.737237499999992,6.901825000000031,7.000949999999932,4.123237499999959,4.571187499999951,3.410699999999906]}}
+
+ ✓ tests/unit/hvp-owned-hash-r67-measurement.test.ts (1 test) 1088ms
+   ✓ compares alternating exact preimage/current kernels on the complete384-cell structural payload  1087ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  03:26:46
+   Duration  3.62s (transform 1.08s, setup 0ms, import 2.25s, tests 1.09s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-hash-emission-r67-measurement-r03/original-vitest.json

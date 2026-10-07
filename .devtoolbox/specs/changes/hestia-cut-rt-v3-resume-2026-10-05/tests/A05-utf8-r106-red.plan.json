@@ -1,0 +1,10 @@
+{
+  "runId": "A05-utf8-r106-red",
+  "classification": "Meaningful RED native UTF8 scratch allocation with independent byte hash oracle",
+  "mode": "tests",
+  "files": [
+    "tests/unit/presentationCanonical.test.ts"
+  ],
+  "binding": "A05-utf8-r106-binding-red.json",
+  "nativeCapSeconds": 180
+}

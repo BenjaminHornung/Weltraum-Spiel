@@ -1,0 +1,32 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-transferred-recipe.test.ts (11 tests) 6904ms
+   ✓ keeps full transferred recipe admission and exact rejection messages on the bounded owned path  560ms
+   ✓ closes bounded transferred admission before cancellation can publish a recipe  471ms
+   ✓ admits a transferred recipe with byte-identical mechanics to the recomputed one  588ms
+   ✓ rejects tampered mass, overlapping or gapped coverage and foreign cells  1490ms
+   ✓ rejects malformed boxes, empty claims and split components  1305ms
+   ✓ rejects canonical transferred boxes in a different order  511ms
+   ✓ rejects anchored, joint-bearing and nonzero-origin sources  558ms
+   ✓ freezes the transferred collider array and preserves canonical content  380ms
+   ✓ preserves canonical mechanics through a native save round trip  537ms
+ ✓ tests/unit/hvp-terrain-native-plan.test.ts (3 tests) 772ms
+   ✓ prepares full native recipes while real solver ticks continue, then stages the exact local ticket  419ms
+   ✓ rejects forged native claims and foreign ticket references before a hold or World mutation  347ms
+ ✓ tests/unit/hvp-terrain-consumer.test.ts (24 tests) 4964ms
+     ✓ cut trace keeps canonical outcomes and publication order unchanged when tracing is absent, present, or throwing  3854ms
+     ✓ disables later trace phases mid-flight without changing the cached outcome or gameplay  302ms
+ ✓ tests/unit/hvp-terrain-fragment-world.test.ts (4 tests) 3767ms
+   ✓ bounds the actual Float32 render vertices after mixed-density native COM recentering  2700ms
+   ✓ restores native membership on rollback and rejects forged mass before publication  364ms
+   ✓ cleans actual post-create faults, and freezes rather than claiming rollback when cleanup fails  418ms
+ ✓ tests/unit/hvp-physics-worker-clock.test.ts (1 test) 1704ms
+   ✓ terrain timing projects one coherent transaction through the real worker handler  1701ms
+
+ Test Files  5 passed (5)
+      Tests  43 passed (43)
+   Start at  21:36:48
+   Duration  28.53s (transform 4.20s, setup 0ms, import 8.90s, tests 18.11s, environment 1ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-prehold-r102-green-r04/original-vitest.json

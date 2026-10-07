@@ -1,0 +1,16 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-owned-slot-copy.test.ts > copies the complete owned base in4096-byte blocks and overlays only current COW leaves in numeric order
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ tests/unit/hvp-owned-slot-copy.test.ts:47:1
+     45|   await expect(copyHvpTerrainSlots(source,()=>false,host)).rejects.toT…
+     46| });
+     47| it("copies the complete owned base in4096-byte blocks and overlays onl…
+       | ^
+     48|   const root=terrain.restoreHvpTerrainRoot(terrain.createHvpTerrainRoo…
+     49|   for(const [i,x] of [33,17].entries()){
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

@@ -1,0 +1,8 @@
+{
+  "runId": "A03-mesh-pack-red-r01",
+  "startedUtc": "2026-10-05T16:42:34.0632613+00:00",
+  "endedUtc": "2026-10-05T16:42:43.9846211+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 9.9160883,
+  "planFile": "A03-mesh-pack-red-r01.plan.json"
+}

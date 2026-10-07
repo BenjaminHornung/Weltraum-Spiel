@@ -1,0 +1,40 @@
+{
+  "startUtc": "2026-10-05T10:20:09.496766+00:00",
+  "cwd": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\apps\\weltraum-browser",
+  "argv": [
+    "C:/IFI_SourceCode/Utils/npm-tmp/opencode/node-v22.23.2-win-x64/node.exe",
+    "--cpu-prof",
+    "--cpu-prof-dir=C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\.devtoolbox\\specs\\changes\\hestia-cut-rt-v3-resume-2026-10-05\\tests\\A02-shared-cpu-profile-r01",
+    "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\apps\\weltraum-browser\\node_modules\\vitest\\vitest.mjs",
+    "run",
+    "tests/unit/hvp-owned-materialization.test.ts",
+    "tests/unit/hvp-owned-structural-ingest.test.ts",
+    "--maxWorkers=1",
+    "--no-file-parallelism",
+    "--reporter=default",
+    "--reporter=json",
+    "--outputFile=C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\.devtoolbox\\specs\\changes\\hestia-cut-rt-v3-resume-2026-10-05\\tests\\A02-shared-cpu-profile-r01\\original-vitest.json"
+  ],
+  "scope": [
+    {
+      "role": "caller",
+      "pid": 41524,
+      "presence": "PRESENT",
+      "creationFileTime": 134356692090460915
+    },
+    {
+      "role": "wrapper",
+      "pid": 37056,
+      "presence": "PRESENT",
+      "creationFileTime": 134356692094102692
+    },
+    {
+      "role": "native",
+      "pid": 40968,
+      "presence": "PRESENT",
+      "creationFileTime": 134356692095098129
+    }
+  ],
+  "nativeInvocations": 1,
+  "job": "Unnamed job assigned to this wrapper before launch; default inherited, no breakaway or limits"
+}

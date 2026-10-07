@@ -1,0 +1,8 @@
+{
+  "runId": "A03-owner-operational-type-r01",
+  "mode": "type",
+  "classification": "Full native opt-in transport/common failure type; original cap",
+  "files": [],
+  "binding": "A03-owner-cross-seam-green-r01-binding.json",
+  "nativeCapSeconds": 60
+}

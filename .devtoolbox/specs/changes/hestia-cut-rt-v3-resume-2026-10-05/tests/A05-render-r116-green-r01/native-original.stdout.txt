@@ -1,0 +1,16 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/renderBackendRevision.test.ts (9 tests) 45ms
+ ✓ tests/unit/presentationCommands.test.ts (8 tests) 25ms
+ ✓ tests/unit/presentationCanonical.test.ts (5 tests) 280ms
+ ✓ tests/unit/renderBackendLifecycle.test.ts (24 tests) 88ms
+ ✓ tests/unit/presentationMeshArtifact.test.ts (12 tests) 73ms
+ ✓ tests/unit/renderBackendBoundary.test.ts (3 tests) 23ms
+
+ Test Files  6 passed (6)
+      Tests  61 passed (61)
+   Start at  00:28:01
+   Duration  3.60s (transform 471ms, setup 0ms, import 1.16s, tests 533ms, environment 2ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-render-r116-green-r01/original-vitest.json

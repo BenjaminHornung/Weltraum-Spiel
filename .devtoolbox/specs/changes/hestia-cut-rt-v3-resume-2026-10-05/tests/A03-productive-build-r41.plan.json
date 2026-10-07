@@ -1,0 +1,8 @@
+{
+  "files": [],
+  "mode": "build",
+  "nativeCapSeconds": 180,
+  "binding": "A03-productive-owner-r40-binding.json",
+  "runId": "A03-productive-build-r41",
+  "classification": "Pinned Vite production build after exact436bound fulltype PASS; same Windows job ownership/release capsule, no test deadlines changed"
+}

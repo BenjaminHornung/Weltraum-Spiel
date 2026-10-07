@@ -1,0 +1,15 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/presentationCanonical.test.ts (4 tests | 1 failed) 225ms
+   ✓ preserves canonical byte order and all 64 hash bits against an independent BigInt oracle 145ms
+   ✓ encodes short UTF8 strings into writer scratch and preserves long and surrogate boundary bytes 6ms
+   ✓ reuses one scalar scratch per writer while preserving mixed numeric length string and typed bytes 4ms
+   × hashes every owned typed element and Unicode byte in bounded steps without changing the binary canonical format 68ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed (4)
+   Start at  00:18:47
+   Duration  735ms (transform 108ms, setup 0ms, import 175ms, tests 225ms, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-presentation-r116-red/original-vitest.json

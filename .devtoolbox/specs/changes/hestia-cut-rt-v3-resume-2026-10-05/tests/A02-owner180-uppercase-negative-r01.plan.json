@@ -1,0 +1,9 @@
+{
+  "runId": "A02-owner180-uppercase-negative-r01",
+  "binding": "A02-clean-source-binding-r02.json",
+  "mode": "tests",
+  "files": ["tests/unit/HVP-BODY-PLAN-OWNER.test.ts"],
+  "nativeCapSeconds": 1200,
+  "classification": "negative guard control; must reject before native launch or run-directory creation",
+  "expected": "OWNER180 assertion rejects uppercase Windows selection"
+}

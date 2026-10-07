@@ -1,0 +1,14 @@
+{
+  "runId": "A06-p03-p05-integrated-r90-r03",
+  "nativeCapSeconds": 180,
+  "classification": "Fresh whole camera/player/look/P05 admission files; no browser ART or P06 acceptance claim",
+  "binding": "A06-p03-p05-r90-binding-r03.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-parallel-p03-camera.test.ts",
+    "tests/unit/hvp-camera.test.ts",
+    "tests/unit/hvp-player-presentation.test.ts",
+    "tests/unit/hvp-look.test.ts",
+    "tests/unit/hvp-parallel-p05-admission.test.ts"
+  ]
+}

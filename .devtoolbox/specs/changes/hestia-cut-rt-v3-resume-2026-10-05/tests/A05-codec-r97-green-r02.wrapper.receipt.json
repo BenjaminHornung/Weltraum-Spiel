@@ -1,0 +1,8 @@
+{
+  "runId": "A05-codec-r97-green-r02",
+  "startedUtc": "2026-10-06T18:06:40.3485740+00:00",
+  "endedUtc": "2026-10-06T18:07:16.5674063+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 36.2064089,
+  "planFile": "A05-codec-r97-green-r02.plan.json"
+}

@@ -1,0 +1,60 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/workerPoolLifecycle.test.ts (49 tests | 4 failed) 18185ms
+   ✓ dispatches mesh-only owner projections through the existing accepted-terminal pool with exclusive buffers 74ms
+   ✓ keeps private result ownership and ticket until bounded hash closes (enqueue) 70ms
+   ✓ keeps private result ownership and ticket until bounded hash closes (cancel) 61ms
+   ✓ keeps private result ownership and ticket until bounded hash closes (epoch) 63ms
+   ✓ keeps private result ownership and ticket until bounded hash closes (shutdown) 64ms
+   ✓ keeps private result ownership and ticket until bounded hash closes (replace) 64ms
+   ✓ keeps private result ownership and ticket until bounded hash closes (fault) 64ms
+   ✓ keeps private result ownership and ticket until bounded hash closes (host-error) 55ms
+   ✓ debits private mesh work on owned input and reports terminal after actual scratch closure (valid) 19ms
+   ✓ debits private mesh work on owned input and reports terminal after actual scratch closure (cancel-preflight) 3ms
+   ✓ debits private mesh work on owned input and reports terminal after actual scratch closure (exhausted-worker) 2ms
+   ✓ debits private mesh work on owned input and reports terminal after actual scratch closure (oversized-metadata) 3ms
+   ✓ transfers source-bound neighbour projections through the real pool and rejects a foreign ticket before transfer  14454ms
+   ✓ prepares local body cuts through the pool without accepting foreign owners or forged removed mass  1126ms
+   ✓ runs HVP canonical collision jobs through the real pool protocol and rejects tampered input 36ms
+   × holds private support result ownership until bounded decoding closes (valid) 14ms
+   × holds private support result ownership until bounded decoding closes (cancel) 1ms
+   × holds private support result ownership until bounded decoding closes (shutdown) 1ms
+   × holds private support result ownership until bounded decoding closes (epoch) 1ms
+   ✓ runs source-bound support analysis through the real worker protocol without adopting foreign coverage 131ms
+   ✓ cancels an HVP collision job after preparation without publishing buffers 2ms
+   ✓ support decode accepts valid reports and rejects stale or mass-bound reports 100ms
+   ✓ support decode requires truthful collider and timing counts 96ms
+   ✓ support decode rejects malformed timing values and freezes diagnostics 78ms
+   ✓ support decode keeps report and transfer aggregate budgets distinct 214ms
+     ✓ reports only ready workers as active across startup, replacement failure, and shutdown 6ms
+     ✓ completes deterministic work and detaches transferred input 4ms
+     ✓ authorizes only completed terminals produced by this pool 4ms
+     ✓ takes transferable ownership before an accepted job waits in the queue 17ms
+     ✓ cancels queued and running jobs with distinct outcomes 5ms
+     ✓ settles affected requests on worker error and replaces with a higher epoch 61ms
+     ✓ stops fail-closed when a fault replacement cannot start 3ms
+     ✓ keeps the admitted worker intact until a ready candidate swaps exactly once 1ms
+     ✓ discards a failed candidate without changing the admitted worker, work, epochs, restarts, or pool state 1ms
+     ✓ prevents candidate admission when shutdown wins during replacement startup 1ms
+     ✓ ignores late output from a terminated worker epoch after replacement 4ms
+     ✓ does not let a rejected late cancellation replace a completed outcome 7ms
+     ✓ rejects stale planning results after the planning epoch advances  942ms
+     ✓ shutdown leaves no queued or running ticket unresolved 7ms
+     ✓ replaces a ready worker that faults while another slot is still starting 67ms
+     ✓ rejects a pending pool start when shutdown terminates the starting handle 1ms
+     ✓ rejects startup when the initialize control message cannot be posted 1ms
+     ✓ finishes shutdown when the final control message cannot be posted 1ms
+     ✓ isolates throwing diagnostic observers from queue and lifecycle decisions 12ms
+     ✓ faults malformed protocol and messageerror events and replaces each worker 127ms
+     ✓ retires a worker whose completed result violates the integration contract 56ms
+     ✓ settles duplicate and full-queue rejections explicitly 2ms
+     ✓ keeps exact job-ID replay rejection after the original job settled 30ms
+     ✓ scopes completed terminals to sequential pool lifetimes 20ms
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 45 passed (49)
+   Start at  20:13:24
+   Duration  21.73s (transform 1.88s, setup 0ms, import 3.21s, tests 18.19s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-main-r98-red/original-vitest.json

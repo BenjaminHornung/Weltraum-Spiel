@@ -1,0 +1,22 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-owned-hash-array-open.test.ts > reuses only proven immutable array shape while preserving bytes, default work, nested errors and open yields
+AssertionError: expected 4096 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 4096
+
+ ❯ tests/unit/hvp-owned-hash-array-open.test.ts:34:19
+     32|     let owned:ReturnType<typeof count>;
+     33|     try{owned=count(array,true);}finally{Object.getOwnPropertyDescript…
+     34|     expect(reads).toBe(0);
+       |                   ^
+     35|     expect(owned.bytes).toEqual(generic.bytes);expect(owned.result).to…
+     36|     expect(owned.result.contentHash).toBe(hashAdaptiveCanonical(array)…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

@@ -1,0 +1,22 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-body-mesh-owner-integration.test.ts > rejects projected owner-route Stage until the retained plan has admitted complete geometry
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ tests/unit/hvp-body-mesh-owner-integration.test.ts:30:57
+     28|     const projection=await session.prepareChildProjection(request.id,h…
+     29|     expect(vi.mocked(prepareHvpBodyCutOwnedHashSteps)).toHaveBeenCalle…
+     30|     expect(()=>session!.stage(request.id,projection,8)).toThrow("Body …
+       |                                                         ^
+     31|     expect(world.bodies.len()).toBe(1);expect(world.colliders.len()).t…
+     32|     expect(vi.mocked(prepareHvpBodyCutOwnedHashSteps)).toHaveBeenCalle…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

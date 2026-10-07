@@ -1,0 +1,15 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/presentationCanonical.test.ts > encodes short UTF8 strings into writer scratch and preserves long and surrogate boundary bytes
+AssertionError: expected "encode" to be called 3 times, but got 18 times
+ ❯ tests/unit/presentationCanonical.test.ts:58:20
+     56|   try{
+     57|     values.forEach((value,i)=>expect(canonicalSignature(value)).toBe(e…
+     58|     expect(encode).toHaveBeenCalledTimes(3);expect(into).toHaveBeenCal…
+       |                    ^
+     59|   }finally{encode.mockRestore();into.mockRestore();}
+     60| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

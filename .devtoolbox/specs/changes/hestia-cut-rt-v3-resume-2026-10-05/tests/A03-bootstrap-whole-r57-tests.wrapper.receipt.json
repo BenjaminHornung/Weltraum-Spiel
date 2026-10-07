@@ -1,0 +1,8 @@
+{
+  "runId": "A03-bootstrap-whole-r57-tests",
+  "startedUtc": "2026-10-05T22:46:03.7126614+00:00",
+  "endedUtc": "2026-10-05T22:54:55.4195233+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 531.6993141,
+  "planFile": "A03-bootstrap-whole-r57-tests.plan.json"
+}

@@ -1,0 +1,8 @@
+{
+  "runId": "A03-bounded-native-freeze-r65-type",
+  "startedUtc": "2026-10-06T00:45:13.9715356+00:00",
+  "endedUtc": "2026-10-06T00:45:15.7612764+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 1.7832241,
+  "planFile": "A03-bounded-native-freeze-r65-type.plan.json"
+}

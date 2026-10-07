@@ -1,0 +1,7 @@
+tests/unit/hvp-body-mesh-worker.test.ts(32,28): error TS2352: Conversion of type '() => ReturnType<typeof setInterval>' to type '{ (handler: TimerHandler, timeout?: number | undefined, ...arguments: any[]): number; <TArgs extends any[]>(callback: (...args: TArgs) => void, delay?: number | undefined, ...args: MakeVoidParameterOptional<...>): Timeout; }' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type 'Timeout' is not comparable to type 'number'.
+tests/unit/hvp-body-mesh-worker.test.ts(37,51): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Type 'string | Transferable[] | WindowPostMessageOptions' is not assignable to type 'Transferable[] | undefined'.
+      Type 'string' is not assignable to type 'Transferable[]'.
+tests/unit/hvp-body-mesh-worker.test.ts(38,40): error TS7006: Parameter 'buffer' implicitly has an 'any' type.

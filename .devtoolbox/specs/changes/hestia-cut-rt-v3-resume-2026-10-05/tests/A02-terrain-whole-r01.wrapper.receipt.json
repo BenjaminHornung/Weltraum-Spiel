@@ -1,0 +1,8 @@
+{
+  "runId": "A02-terrain-whole-r01",
+  "startedUtc": "2026-10-05T09:27:02.1197611+00:00",
+  "endedUtc": "2026-10-05T09:27:08.7535964+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 6.6287989,
+  "planFile": "A02-terrain-whole-r01.plan.json"
+}

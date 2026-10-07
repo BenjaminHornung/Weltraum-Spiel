@@ -1,0 +1,8 @@
+{
+  "classification": "A02_EXTRA_NON_OWNER_TESTS_ABSENT_FROM_HISTORICAL_ANCHOR_NOT_SELECTED",
+  "allA02ProductSourceRowsPresent": true,
+  "originalOwner65Sha256": "52d9caf77db89b9c57614196b4750738759b91ceb54ce73fda85fbe423974af9",
+  "absentExtraFiles": [
+    "tests/unit/hvp-deep-freeze-traversal.test.ts"
+  ]
+}

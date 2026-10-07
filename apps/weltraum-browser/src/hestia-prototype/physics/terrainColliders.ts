@@ -1,4 +1,5 @@
-import { meshHvpOccupancy } from "../../hvp/hvpCoastMesher";
+import { meshHvpOccupancy,meshHvpOccupancySteps } from "../../hvp/hvpCoastMesher";
+import type {StructuralOwnedReserve} from "../../voxel/structural/validation";
 
 export interface HvpCollisionSource {
   readonly sizeX: number;
@@ -61,6 +62,10 @@ export function* collisionInputs(source: HvpCollisionSource): Generator<HvpColli
 
 /** Pure bounded worker kernel: no Three.js mesh input and no heightfield. */
 export const meshCollisionInput = (input: HvpCollisionInput): HvpCollisionSector => {
+  const steps=collisionMeshSteps(input);for(;;){const step=steps.next();if(step.done){return step.value;}}
+};
+export const meshCollisionInputOwnedSteps=(input:HvpCollisionInput,reserve:StructuralOwnedReserve)=>collisionMeshSteps(input,reserve);
+function* collisionMeshSteps(input:HvpCollisionInput,reserve?:StructuralOwnedReserve):Generator<string,HvpCollisionSector,unknown>{
   const { sizeX: sx, sizeY: sy, sizeZ: sz, slots } = input;
   if (![sx, sy, sz].every(v => Number.isSafeInteger(v) && v > 0) || sx > 32 || sz > 32 || sy > 256
     || slots.length !== (sx + 2) * (sy + 2) * (sz + 2)
@@ -68,12 +73,16 @@ export const meshCollisionInput = (input: HvpCollisionInput): HvpCollisionSector
     throw new RangeError("Invalid bounded collision sector/halo");
   }
   const slotAt = (x: number, y: number, z: number): number => slots[x + 1 + (y + 1) * (sx + 2) + (z + 1) * (sx + 2) * (sy + 2)]!;
-  const mesh = meshHvpOccupancy({ sizeX: sx, sizeY: sy, sizeZ: sz, cellMeters: 0.125,
-    originMeters: input.originMeters, slotAt, ghostSlotAt: slotAt },
-  { maxVisitedCells: 262144, maxQuads: 50000, maxVertices: 200000, maxIndices: 300000 },
-  "canonical-sector", "hvp-collision-greedy-v1");
-  return { vertices: mesh.positions, indices: new Uint32Array(mesh.indices) };
-};
+  const occupancy={sizeX:sx,sizeY:sy,sizeZ:sz,cellMeters:.125,originMeters:input.originMeters,slotAt,ghostSlotAt:slotAt},
+    budgets={maxVisitedCells:262144,maxQuads:50000,maxVertices:200000,maxIndices:300000};
+  const mesh=reserve===undefined?meshHvpOccupancy(occupancy,budgets,"canonical-sector","hvp-collision-greedy-v1")
+    :yield* meshHvpOccupancySteps(occupancy,budgets,"canonical-sector","hvp-collision-greedy-v1",{},reserve);
+  reserve?.(8192+mesh.indices.length*4,true);
+  let indices:Uint32Array;
+  if(reserve){indices=new Uint32Array(mesh.indices.length);for(let i=0;i<indices.length;i+=1){indices[i]=mesh.indices[i]!;if((i+1)%4096===0){yield "collisionPackIndices";}}}
+  else{indices=new Uint32Array(mesh.indices);}
+  return {vertices:mesh.positions,indices};
+}
 
 /** Direct use for solver oracles; the browser submits these inputs to WorkerPool. */
 export function* collisionSectors(source: HvpCollisionSource): Generator<HvpCollisionSector> {

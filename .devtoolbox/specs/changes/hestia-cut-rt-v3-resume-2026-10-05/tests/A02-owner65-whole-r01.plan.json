@@ -1,0 +1,16 @@
+{
+  "runId": "A02-owner65-whole-r01",
+  "binding": "A02-current-source-binding-r01.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-body-plan-owner.test.ts"
+  ],
+  "originalNativeStart": "C:\\IFI_SourceCode\\Utils\\opencode-migration\\tmp\\opencode\\hestia-parallel-coordination-20261002\\A0-evidence-owned-hash-array-open-fix-20261004-r01\\verification-originals\\owned-hash-array-open-owner65-r01\\native-start-original.DATA.json",
+  "expectedOriginalTests": 65,
+  "privacyAddedTests": 0,
+  "nativeCapSeconds": 180,
+  "testTimeoutMs": 5000,
+  "retry": 0,
+  "bail": false,
+  "skip": false
+}

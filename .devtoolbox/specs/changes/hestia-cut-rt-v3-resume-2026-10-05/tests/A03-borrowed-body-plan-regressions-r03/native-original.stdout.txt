@@ -1,0 +1,70 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-physics-worker-body-clock.test.ts (5 tests) 42081ms
+   ✓ measures native body World-Hold without simulating the timer gap  7693ms
+   ✓ corrects a restored native body-stage hold once in both measurement modes  6757ms
+   ✓ keeps unrecoverable native body restoration held and disposes safely  6654ms
+   ✓ retains body clock diagnostics after restoring the worker world  6329ms
+   ✓ disables optional timing during a prepared restore without changing the native cut  14645ms
+ ✓ tests/unit/hvp-moving-cut.test.ts (12 tests) 10010ms
+   ✓ cuts a sleeping fallen body with the same cell-centred spherical footprint as terrain  2250ms
+   ✓ stages only the originally issued hit after the camera points away  659ms
+   ✓ rejects a new native body under the same owner and source after the original hit  594ms
+   ✓ uses current parent pose and motion after local work, not its issued-hit pose  567ms
+   ✓ recuts a real child through the same native-hit and current-source path  834ms
+   ✓ accounts for removed linear and angular momentum using an independent per-cube oracle  442ms
+   ✓ balances real 'falling' body cuts with 'Box' source and native geometry  911ms
+   ✓ balances real 'falling' body cuts with 'Sphere' source and native geometry  1104ms
+   ✓ balances real 'sleeping' body cuts with 'Box' source and native geometry  987ms
+   ✓ balances real 'sleeping' body cuts with 'Sphere' source and native geometry  1152ms
+ ✓ tests/unit/v3StructuralRecipeParity.test.ts (8 tests) 8071ms
+   ✓ freezes independent pre-change elbow and real authored 384-cell rock-arm results  2841ms
+   ✓ V3-02 preserves the full transition for a mixed-density multi-brick source with parent motion  321ms
+   ✓ keeps original single-component rejection before generic transition and accepts frozen source lookalikes  441ms
+   ✓ B1 owner hash route issues the exact child352 transition, recipe and labels of the generic route  3872ms
+ ✓ tests/unit/hvp-structural-break.test.ts (10 tests) 4620ms
+     ✓ uses the real six-cell command partition: three anchored, two falling, one removed  445ms
+     ✓ rolls back a typed failure after a real child collider was created  380ms
+     ✓ rolls back a plain failure after a real child collider was created  538ms
+     ✓ reports unproven cleanup honestly instead of claiming restored counts  595ms
+     ✓ checks actual parent membership when Remove throws afterEffect=false  569ms
+     ✓ checks actual parent membership when Remove throws afterEffect=true  535ms
+     ✓ rejects reentrant and fabricated partition plans before a second mutation  486ms
+     ✓ keeps the native parent until publication and can restore a committed held stage  477ms
+ ✓ tests/unit/hvp-world-save.test.ts (7 tests) 21164ms
+   ✓ recreates every current native owner and the paused player from artifact-only data  2924ms
+   ✓ rejects running checkpoints and foreign collision/profile or incomplete owner membership  1544ms
+   ✓ restores current recut timber and terrain fragments with 'none' (measure=false)  4099ms
+   ✓ restores current recut timber and terrain fragments with 'none' (measure=true)  3809ms
+   ✓ restores current recut timber and terrain fragments with 'Pause' (measure=true)  4879ms
+   ✓ restores current recut timber and terrain fragments with 'Inspect' (measure=true)  3906ms
+ ✓ tests/unit/hvpBoundedPump.test.ts (25 tests) 2982ms
+     ✓ packs at most two active inputs, refills before the held sibling, and returns work-list order  300ms
+     ✓ preserves serial restore order and the empty restore path  372ms
+     ✓ requests algorithm two through the real compiler/pool and preserves legacy semantic products  621ms
+     ✓ does not retry a corrupted binary result as legacy JSON  399ms
+ ✓ tests/unit/hvpBodyMeshAdmission.test.ts (12 tests) 4527ms
+     ✓ keeps owner expectation independent of foreign child cells paired with a fake digest  1581ms
+     ✓ accepts the real V2 complete-removal receipt with zero children  444ms
+ ✓ tests/unit/hvpIssuedParentMass.test.ts (4 tests) 3524ms
+   ✓ reuses the issued parent mass through the hit-owned Box route  1255ms
+   ✓ reuses the issued parent mass through the hit-owned Sphere route  1648ms
+   ✓ rejects cloned recipes, foreign recipes and recipes for unissued source clones  346ms
+ ✓ tests/unit/hvpOwnedCanonicalHash.test.ts (28 tests) 2197ms
+     ✓ streams the real Installed child352 transition exactly in 1-unit advances  1511ms
+ ✓ tests/unit/hvp-borrowed-body-plan.test.ts (4 tests) 1860ms
+   ✓ composes the same complete Box plan, children and removed mass under one retained parent  794ms
+   ✓ composes the same complete Sphere plan, children and removed mass under one retained parent  923ms
+ ✓ tests/unit/hvpOwnedBodyMesh.test.ts (4 tests) 1068ms
+   ✓ reuses the mesh kernel without changing mixed-material local Float32 bytes or metadata  396ms
+   ✓ rejects changed geometry against the issued local source, not changed foreign cells or matching digest  334ms
+   ✓ closes owned cursors at local-position and geometry-comparison yields  331ms
+ ✓ tests/unit/hvp-parallel-p05-admission.test.ts (13 tests | 2 skipped) 695ms
+
+ Test Files  12 passed (12)
+      Tests  130 passed | 2 skipped (132)
+   Start at  15:54:33
+   Duration  110.67s (transform 1.62s, setup 0ms, import 5.59s, tests 102.80s, environment 1ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-borrowed-body-plan-regressions-r03/original-vitest.json

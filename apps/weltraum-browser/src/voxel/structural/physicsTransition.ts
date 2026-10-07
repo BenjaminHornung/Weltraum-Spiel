@@ -12,10 +12,11 @@ import { globalQuantumForStructuralCell } from "./coordinates";
 import {
   hashStructuralFragmentContent,
   hashStructuralFragmentId,
-  serializeStructuralCellAddress
+  serializeStructuralCellAddress,
+  structuralCanonicalHashSteps
 } from "./canonical";
 import { deriveStructuralComponentMassProperties, deriveStructuralObjectMassProperties,
-  deriveStructuralSingleComponentMassesSteps } from "./massProperties";
+  deriveStructuralSingleComponentMassesSteps,structuralOwnedSingleComponentMassesSteps } from "./massProperties";
 import { structuralAddressForBrickCell } from "./model";
 import type {
   StructuralComponent,
@@ -28,8 +29,9 @@ import type {
   StructuralMassProperties,
   StructuralObject
 } from "./types";
+import {STRUCTURAL_FRAGMENT_SCHEMA_VERSION,STRUCTURAL_FRAGMENT_ID_VERSION} from "./types";
 import { drainStructuralSteps, normalizeAdaptiveAuthorityError, normalizeAdaptiveAuthorityFunction,
-  structuralFail, structuralFreezeArraySteps, structuralPositiveBudget, structuralSortSteps,
+  structuralFail, structuralFreezeArraySteps, structuralPositiveBudget, structuralSortSteps,freezeStructuralProduced,
   type StructuralOwnedReserve } from "./validation";
 // Private owned-payload cursor (module export only, not in the adaptive barrel).
 import { createOwnedCanonicalHashCursor } from "../adaptive/ownedCanonicalHashSteps";
@@ -357,8 +359,8 @@ type StructuralTransitionPayload =
   | Omit<StructuralInstalledPhysicsTransition, "contentHash">
   | Omit<StructuralFallbackPhysicsTransition, "contentHash">;
 
-/** The deep-frozen Installed or Fallback payload exactly as before; the caller adds its contentHash. */
-const deriveTransitionPayload = (
+/** One payload algorithm; generic observers keep their native operations, owned work borrows one reserve. */
+function* deriveTransitionPayloadSteps(
   object: StructuralObject,
   classification: StructuralComponentClassification,
   parentMotion: StructuralBodyMotion,
@@ -366,11 +368,13 @@ const deriveTransitionPayload = (
   massBudgets: StructuralComponentMassBudgets,
   parentMotionSource: StructuralParentMotionSource,
   objectMass: StructuralMassProperties,
-  issuedComponentMass?: StructuralMassProperties
-): StructuralTransitionPayload => {
+  issuedComponentMass?: StructuralMassProperties,
+  reserve?:StructuralOwnedReserve,
+  freshClassification?:StructuralComponentClassification
+): Generator<void,StructuralTransitionPayload,void> {
   const parentCenter = objectMass.centerOfMassMeters as MeterPoint;
 
-  const works: FragmentWork[] = classification.fragments.map((fragment, index) => {
+  function* fragmentWorkSteps(fragment:StructuralFragment,index:number):Generator<void,FragmentWork,void>{
     const path = `fragments/${index}`;
     const component = classification.detachedComponents.find((entry) => entry.componentId === fragment.componentId);
     if (component === undefined) {
@@ -391,52 +395,94 @@ const deriveTransitionPayload = (
     ) {
       fail("InvalidStructuralState", path, "Fragment and component must bind the same object version and content hash.");
     }
-    // P1: exakte Zellmengenbindung Fragment <-> Component (keine verschobenen Zellen).
-    const fragmentCellKeys = fragment.occupiedCells.map((address) => serializeStructuralCellAddress(address)).sort();
-    const componentCellKeys = boundComponent.occupiedCells.map((address) => serializeStructuralCellAddress(address)).sort();
-    if (
-      fragmentCellKeys.length !== componentCellKeys.length ||
-      fragmentCellKeys.some((key, keyIndex) => key !== componentCellKeys[keyIndex])
-    ) {
-      fail("InvalidStructuralState", path, "Fragment cells must exactly match the bound component cells.");
-    }
-    // P1: Fragment-Hashes an Component und Objektversion binden.
-    const recomputedFragmentContent = hashStructuralFragmentContent({
-      componentId: fragment.componentId,
-      sourceContentHash: object.contentHash,
-      sourceAdaptiveAuthorityDigest: boundComponent.sourceAdaptiveAuthorityDigest,
-      componentContentHash: boundComponent.componentContentHash,
-      occupiedCellKeys: boundComponent.occupiedCells.map((address) => serializeStructuralCellAddress(address))
-    });
-    if (recomputedFragmentContent !== fragment.fragmentContentHash) {
-      fail("InvalidStructuralState", path, "Fragment content hash must match the bound component and object version.");
-    }
-    const recomputedFragmentId = hashStructuralFragmentId({
-      objectId: object.objectId,
-      objectRevision: object.objectRevision,
-      componentId: fragment.componentId,
-      fragmentContentHash: fragment.fragmentContentHash
-    });
-    if (recomputedFragmentId !== fragment.fragmentId) {
-      fail("InvalidStructuralState", path, "Fragment id must match the bound object version and content.");
+    // Reuse only this private preparation's complete, immutable classifier result.
+    if(reserve===undefined||freshClassification!==classification||fragment.occupiedCells!==boundComponent.occupiedCells){
+      // P1: exakte Zellmengenbindung Fragment <-> Component (keine verschobenen Zellen).
+      function* cellKeys(addresses:StructuralComponent["occupiedCells"]):Generator<void,string[],void>{
+        if(reserve===undefined){return addresses.map(address=>serializeStructuralCellAddress(address));}
+        reserve(64+addresses.length*256);
+        const result:string[]=[];
+        for(let cell=0;cell<addresses.length;cell+=1){result.push(serializeStructuralCellAddress(addresses[cell]!));yield;}
+        return result;
+      }
+      const fragmentCellKeys=yield* cellKeys(fragment.occupiedCells);
+      let componentKeyOrder:string[]|undefined;
+      let componentCellKeys:string[];
+      if(reserve===undefined){fragmentCellKeys.sort();componentCellKeys=boundComponent.occupiedCells.map(address=>serializeStructuralCellAddress(address)).sort();}
+      else{
+        yield* structuralSortSteps(fragmentCellKeys,(a,b)=>a<b?-1:a>b?1:0,reserve);
+        componentKeyOrder=yield* cellKeys(boundComponent.occupiedCells);
+        reserve(64+componentKeyOrder.length*8);componentCellKeys=[];
+        for(let cell=0;cell<componentKeyOrder.length;cell+=1){componentCellKeys.push(componentKeyOrder[cell]!);yield;}
+        yield* structuralSortSteps(componentCellKeys,(a,b)=>a<b?-1:a>b?1:0,reserve);
+      }
+      let equal=fragmentCellKeys.length===componentCellKeys.length;
+      if(equal){
+        if(reserve===undefined){equal=!fragmentCellKeys.some((key,keyIndex)=>key!==componentCellKeys[keyIndex]);}
+        else{for(let cell=0;cell<fragmentCellKeys.length;cell+=1){if(fragmentCellKeys[cell]!==componentCellKeys[cell]){equal=false;break;}yield;}}
+      }
+      if (!equal) {
+        fail("InvalidStructuralState", path, "Fragment cells must exactly match the bound component cells.");
+      }
+      // P1: Fragment-Hashes an Component und Objektversion binden.
+      reserve?.(2_048);
+      const fragmentContent={
+        componentId: fragment.componentId,
+        sourceContentHash: object.contentHash,
+        sourceAdaptiveAuthorityDigest: boundComponent.sourceAdaptiveAuthorityDigest,
+        componentContentHash: boundComponent.componentContentHash,
+        occupiedCellKeys: reserve===undefined?boundComponent.occupiedCells.map((address) => serializeStructuralCellAddress(address))
+          :yield* structuralFreezeArraySteps(componentKeyOrder!,reserve)
+      };
+      const recomputedFragmentContent=reserve===undefined?hashStructuralFragmentContent(fragmentContent)
+        :yield* structuralCanonicalHashSteps(Object.freeze({schemaVersion:STRUCTURAL_FRAGMENT_SCHEMA_VERSION,...fragmentContent}),reserve);
+      if (recomputedFragmentContent !== fragment.fragmentContentHash) {
+        fail("InvalidStructuralState", path, "Fragment content hash must match the bound component and object version.");
+      }
+      reserve?.(1_024);
+      const fragmentIdentity={
+        objectId: object.objectId,
+        objectRevision: object.objectRevision,
+        componentId: fragment.componentId,
+        fragmentContentHash: fragment.fragmentContentHash
+      };
+      const recomputedFragmentId=reserve===undefined?hashStructuralFragmentId(fragmentIdentity)
+        :yield* structuralCanonicalHashSteps(Object.freeze({schemaVersion:STRUCTURAL_FRAGMENT_ID_VERSION,...fragmentIdentity}),reserve);
+      if (recomputedFragmentId !== fragment.fragmentId) {
+        fail("InvalidStructuralState", path, "Fragment id must match the bound object version and content.");
+      }
     }
     const mass = issuedComponentMass ?? deriveStructuralComponentMassProperties(object, boundComponent, massBudgets);
     if (mass.centerOfMassMeters === null) {
       fail("InvalidStructuralState", path, "Fragment mass derivation requires finite center of mass.");
     }
     const center = mass.centerOfMassMeters as MeterPoint;
-    const cells = (fragment.occupiedCells ?? []).map((address) => globalQuantumForStructuralCell(address));
+    let cells:ReturnType<typeof globalQuantumForStructuralCell>[];
+    if(reserve===undefined){cells=(fragment.occupiedCells??[]).map(address=>globalQuantumForStructuralCell(address));}
+    else{
+      reserve(64+fragment.occupiedCells.length*128);cells=[];
+      for(let cell=0;cell<fragment.occupiedCells.length;cell+=1){cells.push(globalQuantumForStructuralCell(fragment.occupiedCells[cell]!));yield;}
+    }
     if (cells.length === 0) {
       fail("InvalidStructuralState", path, "Fragment must contain at least one occupied cell.");
     }
-    const voxelColliders = deepFreeze(
-      cells.map((cell) => toMetersBox(deepFreeze({
+    const toVoxelCollider=(cell:ReturnType<typeof globalQuantumForStructuralCell>)=>toMetersBox(deepFreeze({
         min: deepFreeze({ x: cell.x, y: cell.y, z: cell.z }),
         max: deepFreeze({ x: cell.x + 1, y: cell.y + 1, z: cell.z + 1 })
-      })))
-    );
-    const greedyColliders = deepFreeze(mergeGreedyQuantumBoxes(cells, path).map(toMetersBox));
-    return deepFreeze({
+      }));
+    let voxelColliders:readonly StructuralColliderBoxMeters[],greedyColliders:readonly StructuralColliderBoxMeters[];
+    if(reserve===undefined){voxelColliders=deepFreeze(cells.map(toVoxelCollider));greedyColliders=deepFreeze(mergeGreedyQuantumBoxes(cells,path).map(toMetersBox));}
+    else{
+      reserve(64+cells.length*512,true);const voxel:StructuralColliderBoxMeters[]=[];
+      for(const cell of cells){voxel.push(toVoxelCollider(cell));yield;}
+      voxelColliders=yield* structuralFreezeArraySteps(voxel,reserve);
+      const boxes=yield* mergeGreedyQuantumBoxesOwnedSteps(cells,path,reserve);
+      reserve(64+boxes.length*512,true);const greedy:StructuralColliderBoxMeters[]=[];
+      for(const box of boxes){greedy.push(toMetersBox(box));yield;}
+      greedyColliders=yield* structuralFreezeArraySteps(greedy,reserve);
+    }
+    reserve?.(2_048,true);
+    return freezeStructuralProduced({
       fragment,
       component: boundComponent,
       massKg: mass.totalMassKg,
@@ -446,20 +492,30 @@ const deriveTransitionPayload = (
       voxelColliders,
       greedyColliders,
       voxelCount: cells.length
-    });
-  });
+    },reserve);
+  }
+  reserve?.(64+classification.fragments.length*8);
+  const works:FragmentWork[]=reserve===undefined?classification.fragments.map((fragment,index)=>drainStructuralSteps(fragmentWorkSteps(fragment,index))):[];
+  if(reserve!==undefined){for(let index=0;index<classification.fragments.length;index+=1){works.push(yield* fragmentWorkSteps(classification.fragments[index]!,index));yield;}}
 
   // P1: exakte Partition — Union(verankert + alle Fragmente) == kanonische
   // Occupancy, keine Doppelbelegung (auch nicht fragmentintern oder zwischen
   // Fragmenten), keine Phantomzellen (verschoben/veraltet/leer). Gezaehlt wird
   // jede behauptete Zelle einzeln; Sets wuerden Duplikate still schlucken.
-  const totalOccupied = object.bricks.reduce((sum, brick) => sum + brick.cells.length, 0);
+  let totalOccupied:number;
+  if(reserve===undefined){totalOccupied=object.bricks.reduce((sum,brick)=>sum+brick.cells.length,0);}
+  else{totalOccupied=0;for(const brick of object.bricks){totalOccupied+=brick.cells.length;yield;}}
+  reserve?.(1_024);
   const canonicalKeys = new Set<string>();
   for (const brick of object.bricks) {
     for (const cell of brick.cells) {
+      reserve?.(256);
       canonicalKeys.add(serializeStructuralCellAddress(structuralAddressForBrickCell(brick, cell.localIndex)));
+      if(reserve!==undefined){yield;}
     }
+    if(reserve!==undefined){yield;}
   }
+  reserve?.(1_024);
   const claimedBy = new Map<string, string>();
   const claimCell = (key: string, path: string): void => {
     if (!canonicalKeys.has(key)) {
@@ -469,10 +525,10 @@ const deriveTransitionPayload = (
     if (firstClaim !== undefined) {
       fail("InvalidStructuralState", path, `Cell is claimed twice (first claim at ${firstClaim}).`);
     }
-    claimedBy.set(key, path);
+    reserve?.(256);claimedBy.set(key, path);
   };
   let anchoredVoxels = 0;
-  classification.anchoredComponents.forEach((component, componentIndex) => {
+  function* anchoredClaims(component:StructuralComponent,componentIndex:number):Generator<void,void,void>{
     const path = `anchored/${componentIndex}`;
     if (
       component.objectId !== object.objectId ||
@@ -484,16 +540,22 @@ const deriveTransitionPayload = (
     for (const address of component.occupiedCells) {
       claimCell(serializeStructuralCellAddress(address), path);
       anchoredVoxels += 1;
+      if(reserve!==undefined){yield;}
     }
-  });
+  }
+  if(reserve===undefined){classification.anchoredComponents.forEach((component,index)=>drainStructuralSteps(anchoredClaims(component,index)));}
+  else{for(let index=0;index<classification.anchoredComponents.length;index+=1){yield* anchoredClaims(classification.anchoredComponents[index]!,index);}}
   let fragmentVoxels = 0;
-  works.forEach((work, workIndex) => {
+  function* fragmentClaims(work:FragmentWork,workIndex:number):Generator<void,void,void>{
     const path = `fragments/${workIndex}`;
     for (const address of work.fragment.occupiedCells) {
       claimCell(serializeStructuralCellAddress(address), path);
       fragmentVoxels += 1;
+      if(reserve!==undefined){yield;}
     }
-  });
+  }
+  if(reserve===undefined){works.forEach((work,index)=>drainStructuralSteps(fragmentClaims(work,index)));}
+  else{for(let index=0;index<works.length;index+=1){yield* fragmentClaims(works[index]!,index);}}
   if (claimedBy.size !== canonicalKeys.size || canonicalKeys.size !== totalOccupied) {
     fail(
       "InvalidStructuralState",
@@ -501,15 +563,20 @@ const deriveTransitionPayload = (
       "Atomic install requires a disjoint, complete partition: anchored plus fragment cells must equal all occupied cells."
     );
   }
-  const occupancyProof = deepFreeze({
+  reserve?.(1_024,true);
+  const occupancyProof = freezeStructuralProduced({
     totalOccupiedVoxels: totalOccupied,
     anchoredVoxels,
     fragmentVoxels,
     disjoint: true as const,
     complete: true as const
-  });
+  },reserve);
 
-  const sorted = [...works].sort((a, b) => (a.fragment.fragmentId < b.fragment.fragmentId ? -1 : 1));
+  const compareWork=(a:FragmentWork,b:FragmentWork)=>a.fragment.fragmentId<b.fragment.fragmentId?-1:1;
+  reserve?.(64+works.length*8);
+  const sorted=reserve===undefined?[...works].sort(compareWork):[] as FragmentWork[];
+  if(reserve!==undefined){for(const work of works){sorted.push(work);yield;}yield* structuralSortSteps(sorted,compareWork,reserve);}
+  reserve?.(128+sorted.length*8);
   const dynamicWorks: FragmentWork[] = [];
   const overflowWorks: FragmentWork[] = [];
   for (const work of sorted) {
@@ -518,9 +585,10 @@ const deriveTransitionPayload = (
       work.greedyColliders.length <= budgets.maxCollidersPerFragment;
     if (dynamicWorks.length < budgets.maxFragments && withinFragmentBudget) dynamicWorks.push(work);
     else overflowWorks.push(work);
+    if(reserve!==undefined){yield;}
   }
 
-  const toBodyPlan = (work: FragmentWork): StructuralFragmentBodyPlan => deepFreeze({
+  const toBodyPlan = (work: FragmentWork): StructuralFragmentBodyPlan => freezeStructuralProduced({
     fragmentId: work.fragment.fragmentId,
     componentId: work.fragment.componentId,
     occupiedVoxelCount: work.voxelCount,
@@ -530,9 +598,16 @@ const deriveTransitionPayload = (
     initialVelocityMetersPerSecond: work.velocity,
     voxelColliders: work.voxelColliders,
     greedyColliders: work.greedyColliders
-  });
-  const dynamicBodies = deepFreeze(dynamicWorks.map(toBodyPlan));
-  const dynamicFragmentIds = deepFreeze(dynamicWorks.map((work) => work.fragment.fragmentId));
+  },reserve);
+  function* mapWorks<T>(values:readonly FragmentWork[],create:(work:FragmentWork)=>T):Generator<void,readonly T[],void>{
+    if(reserve===undefined){return deepFreeze(values.map(create));}
+    reserve(64+values.length*2_048,true);const result:T[]=[];
+    for(const work of values){result.push(create(work));yield;}
+    return yield* structuralFreezeArraySteps(result,reserve);
+  }
+  const dynamicBodies=yield* mapWorks(dynamicWorks,toBodyPlan);
+  const dynamicFragmentIds=yield* mapWorks(dynamicWorks,work=>work.fragment.fragmentId);
+  reserve?.(2_048,true);
   const base = {
     schemaVersion: STRUCTURAL_PHYSICS_TRANSITION_SCHEMA_VERSION,
     objectId: object.objectId,
@@ -546,7 +621,7 @@ const deriveTransitionPayload = (
   };
 
   if (overflowWorks.length === 0) {
-    return deepFreeze({ ...base, status: "Installed" as const });
+    reserve?.(2_048,true);return freezeStructuralProduced({ ...base, status: "Installed" as const },reserve);
   }
 
   // Semantischer Fallback: kein stilles Loeschen. Ueberzaehlige Fragmente werden
@@ -560,6 +635,7 @@ const deriveTransitionPayload = (
   let weightedVy = 0;
   let weightedVz = 0;
   let debrisVoxels = 0;
+  reserve?.(192+overflowWorks.length*8);
   const debrisVoxelColliders: StructuralColliderBoxMeters[] = [];
   const debrisGreedyColliders: StructuralColliderBoxMeters[] = [];
   const debrisMembers: FragmentWork[] = [];
@@ -572,9 +648,14 @@ const deriveTransitionPayload = (
     weightedVy = requireFinite(weightedVy + work.massKg * work.velocity.y, "debris/velocityY");
     weightedVz = requireFinite(weightedVz + work.massKg * work.velocity.z, "debris/velocityZ");
     debrisVoxels += work.voxelCount;
-    debrisVoxelColliders.push(...work.voxelColliders);
-    debrisGreedyColliders.push(...work.greedyColliders);
+    if(reserve===undefined){debrisVoxelColliders.push(...work.voxelColliders);debrisGreedyColliders.push(...work.greedyColliders);}
+    else{
+      reserve((work.voxelColliders.length+work.greedyColliders.length)*8,true);
+      for(const box of work.voxelColliders){debrisVoxelColliders.push(box);yield;}
+      for(const box of work.greedyColliders){debrisGreedyColliders.push(box);yield;}
+    }
     debrisMembers.push(work);
+    if(reserve!==undefined){yield;}
   }
   if (!(debrisMass > 0)) {
     fail("InvalidStructuralState", "debris", "Debris fallback requires positive merged mass.");
@@ -584,7 +665,7 @@ const deriveTransitionPayload = (
     y: requireFinite(weightedY / debrisMass, "debris/centerY"),
     z: requireFinite(weightedZ / debrisMass, "debris/centerZ")
   });
-  const mergedDebrisFragmentIds = deepFreeze(overflowWorks.map((work) => work.fragment.fragmentId));
+  const mergedDebrisFragmentIds=yield* mapWorks(overflowWorks,work=>work.fragment.fragmentId);
   // Debris-Traegheit per Satz von Steiner um den Debris-Schwerpunkt:
   // I = Summe(I_eigen + m * (|d|^2 * E - d * d^T)) mit d = c_fragment - c_debris.
   let debrisXx = 0;
@@ -603,8 +684,10 @@ const deriveTransitionPayload = (
     debrisXy = requireFinite(debrisXy + work.tensor.xy - work.massKg * dx * dy, "debris/inertiaXy");
     debrisXz = requireFinite(debrisXz + work.tensor.xz - work.massKg * dx * dz, "debris/inertiaXz");
     debrisYz = requireFinite(debrisYz + work.tensor.yz - work.massKg * dy * dz, "debris/inertiaYz");
+    if(reserve!==undefined){yield;}
   }
-  const debris = deepFreeze({
+  reserve?.(4_096,true);
+  const debris = freezeStructuralProduced({
     debrisBodyId: `debris.${object.objectId}.r${object.objectRevision}.overflow`,
     mergedFragmentIds: mergedDebrisFragmentIds,
     occupiedVoxelCount: debrisVoxels,
@@ -623,18 +706,21 @@ const deriveTransitionPayload = (
       y: requireFinite(weightedVy / debrisMass, "debris/velocityY"),
       z: requireFinite(weightedVz / debrisMass, "debris/velocityZ")
     }),
-    voxelColliders: deepFreeze(debrisVoxelColliders.slice()),
-    greedyColliders: deepFreeze(debrisGreedyColliders.slice()),
+    voxelColliders: reserve===undefined?deepFreeze(debrisVoxelColliders.slice()):yield* structuralFreezeArraySteps(debrisVoxelColliders,reserve),
+    greedyColliders: reserve===undefined?deepFreeze(debrisGreedyColliders.slice()):yield* structuralFreezeArraySteps(debrisGreedyColliders,reserve),
     exceedsColliderBudget: debrisGreedyColliders.length > budgets.maxCollidersPerFragment
-  });
-  return deepFreeze({
+  },reserve);
+  reserve?.(2_048,true);return freezeStructuralProduced({
     ...base,
     status: "Fallback" as const,
     fallbackKind: STRUCTURAL_PHYSICS_TRANSITION_FALLBACK_KIND,
     debris,
     mergedDebrisFragmentIds
-  });
-};
+  },reserve);
+}
+
+const deriveTransitionPayload=(...args:Parameters<typeof deriveTransitionPayloadSteps>):StructuralTransitionPayload=>
+  drainStructuralSteps(deriveTransitionPayloadSteps(...args));
 
 type TransitionCoreArgs = Parameters<typeof deriveTransitionPayload>;
 
@@ -647,6 +733,7 @@ const deriveTransitionCore = (...args: TransitionCoreArgs): StructuralPhysicsTra
 /** TEMPORARY diagnostic identities of the owner-internal final-hash seam's yields (module exports only). */
 export const STRUCTURAL_TRANSITION_PAYLOAD_PHASE = "transitionPayload";
 export const STRUCTURAL_TRANSITION_HASH_PHASE = "transitionHash";
+export const STRUCTURAL_TRANSITION_PREPARE_PHASE = "transitionPrepare";
 // ponytail: Node-measured start value (64 units max ~1.1 ms); calibrate in the real Worker.
 const STRUCTURAL_OWNED_HASH_UNITS_PER_STEP = 64;
 
@@ -674,11 +761,24 @@ function* ownedTransitionHashSteps(payload: StructuralTransitionPayload): Genera
 }
 
 function* deriveTransitionCoreOwnedHashSteps(...args: TransitionCoreArgs): Generator<string, StructuralPhysicsTransitionResult, unknown> {
-  const payload = deriveTransitionPayload(...args);
+  const reserve=args[8],steps=deriveTransitionPayloadSteps(...args);
+  let payload:StructuralTransitionPayload;
+  let payloadFailed=false;
+  try{for(;;){const step=steps.next();if(step.done){payload=step.value;break;}yield STRUCTURAL_TRANSITION_PREPARE_PHASE;}}
+  catch(error){payloadFailed=true;throw error;}
+  finally{try{steps.return(undefined as never);}catch(error){if(!payloadFailed){throw error;}}}
   // The payload build (and its deepFreeze) ends its own step, before the first hash batch.
   yield STRUCTURAL_TRANSITION_PAYLOAD_PHASE;
-  const contentHash = yield* ownedTransitionHashSteps(payload);
-  return deepFreeze({ ...payload, contentHash });
+  let contentHash:string;
+  if(reserve===undefined){contentHash=yield* ownedTransitionHashSteps(payload);}
+  else{
+    const hash=structuralCanonicalHashSteps(payload,reserve);
+    let hashFailed=false;
+    try{for(;;){const step=hash.next();if(step.done){contentHash=step.value;break;}yield STRUCTURAL_TRANSITION_HASH_PHASE;}}
+    catch(error){hashFailed=true;throw error;}
+    finally{try{hash.return(undefined as never);}catch(error){if(!hashFailed){throw error;}}}
+  }
+  reserve?.(2_048,true);return freezeStructuralProduced({ ...payload, contentHash },reserve);
 }
 
 export const deriveStructuralPhysicsTransition = (
@@ -712,13 +812,27 @@ function* singleComponentPhysicsPreparationSteps(
   budgetValue: StructuralPhysicsTransitionBudgets,
   massBudgets: StructuralComponentMassBudgets,
   afterObjectMass: (mass: StructuralMassProperties) => void,
-  afterClassification: (classification: StructuralComponentClassification) => void
+  afterClassification: (classification: StructuralComponentClassification) => void,
+  reserve?:StructuralOwnedReserve
 ) {
+  reserve?.(8_192);
   const budgets=validateBudgets(budgetValue),motion=validateMotion(parentMotionValue);
-  const prepared=yield* deriveStructuralSingleComponentMassesSteps(object,massBudgets,afterObjectMass,afterClassification);
+  function* massSteps(){
+    if(reserve===undefined){return yield* deriveStructuralSingleComponentMassesSteps(object,massBudgets,afterObjectMass,afterClassification);}
+    const steps=structuralOwnedSingleComponentMassesSteps(object,massBudgets,reserve,afterObjectMass,afterClassification);
+    let failed=false;
+    try{for(;;){const step=steps.next();if(step.done){return step.value;}
+      yield typeof step.value==="string"?step.value:STRUCTURAL_TRANSITION_PREPARE_PHASE;}}
+    catch(error){failed=true;throw error;}
+    finally{try{steps.return(undefined as never);}catch(error){if(!failed){throw error;}}}
+  }
+  const prepared=yield* massSteps();
+  reserve?.(128);
   const core:TransitionCoreArgs=[object,prepared.classification,motion,budgets,prepared.budgets,
-    "explicit",prepared.objectMass,prepared.componentMass];
+    "explicit",prepared.objectMass,prepared.componentMass,reserve,
+    ownedHash&&reserve!==undefined?prepared.classification:undefined];
   const transition=ownedHash?(yield* deriveTransitionCoreOwnedHashSteps(...core)):deriveTransitionCore(...core);
+  reserve?.(1_024,true);
   const result:Readonly<{objectMass:StructuralMassProperties;classification:StructuralComponentClassification;
     transition:StructuralPhysicsTransitionResult}>=Object.freeze({objectMass:prepared.objectMass,classification:prepared.classification,
     transition});
@@ -753,9 +867,10 @@ export function* deriveStructuralSingleComponentPhysicsPreparationOwnedHashSteps
   budgetValue: StructuralPhysicsTransitionBudgets,
   massBudgets: StructuralComponentMassBudgets,
   afterObjectMass: (mass: StructuralMassProperties) => void,
-  afterClassification: (classification: StructuralComponentClassification) => void
+  afterClassification: (classification: StructuralComponentClassification) => void,
+  reserve?:StructuralOwnedReserve
 ) {
-  return yield* singleComponentPhysicsPreparationSteps(true,object,parentMotionValue,budgetValue,massBudgets,afterObjectMass,afterClassification);
+  return yield* singleComponentPhysicsPreparationSteps(true,object,parentMotionValue,budgetValue,massBudgets,afterObjectMass,afterClassification,reserve);
 }
 
 /** Fresh issued-source derivation; no caller-provided mass or classification is admitted. */

@@ -1,0 +1,10 @@
+{
+  "runId": "A04-contact-r90-tests-r03",
+  "nativeCapSeconds": 180,
+  "classification": "Genuine Rapier contact reproduction, whole new file",
+  "binding": "A04-contact-r90-binding-r02.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-body-contact.test.ts"
+  ]
+}

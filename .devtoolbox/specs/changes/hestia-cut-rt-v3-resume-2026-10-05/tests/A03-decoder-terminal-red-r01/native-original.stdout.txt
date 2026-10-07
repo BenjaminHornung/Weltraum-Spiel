@@ -1,0 +1,21 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-body-mesh-client.test.ts (3 tests) 8ms
+ ❯ tests/unit/hvp-body-mesh-owner-integration.test.ts (8 tests | 1 failed) 4616ms
+   ✓ rejects projected owner-route Stage until the retained plan has admitted complete geometry  505ms
+   ✓ admits mesh-only output against the single retained native plan before Stage, commit and finalize  807ms
+   ✓ rejects altered color geometry with stable first failure and no native Stage or retry revival  635ms
+   ✓ keeps a thrown real admission yield terminal without mutating the native World  566ms
+   × keeps a packet decoder failure terminal before geometry work and rejects a later good packet 546ms
+   ✓ cannot revive an admission after Rollback at a real verifier yield  648ms
+   ✓ preserves the first yielded failure when verifier cleanup also throws  641ms
+   ✓ admits an empty child set after complete legal removal without a first-part assumption 239ms
+ ✓ tests/unit/hvp-body-mesh-protocol.test.ts (2 tests) 4ms
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  1 failed | 12 passed (13)
+   Start at  14:04:54
+   Duration  7.63s (transform 947ms, setup 0ms, import 2.46s, tests 4.63s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-decoder-terminal-red-r01/original-vitest.json

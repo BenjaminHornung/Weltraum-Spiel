@@ -1,0 +1,56 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-physics-worker-body-clock.test.ts (5 tests) 29526ms
+   ✓ measures native body World-Hold without simulating the timer gap  5581ms
+   ✓ corrects a restored native body-stage hold once in both measurement modes  5003ms
+   ✓ keeps unrecoverable native body restoration held and disposes safely  5226ms
+   ✓ retains body clock diagnostics after restoring the worker world  4338ms
+   ✓ disables optional timing during a prepared restore without changing the native cut  9375ms
+ ✓ tests/unit/hvp-body-mesh-owner-integration.test.ts (22 tests) 12950ms
+   ✓ rejects projected owner-route Stage until the retained plan has admitted complete geometry  496ms
+   ✓ admits mesh-only output against the single retained native plan before Stage, commit and finalize  795ms
+   ✓ rejects altered color geometry with stable first failure and no native Stage or retry revival  589ms
+   ✓ keeps a thrown real admission yield terminal without mutating the native World  543ms
+   ✓ keeps a packet decoder failure terminal before geometry work and rejects a later good packet  576ms
+   ✓ cannot revive an admission after Rollback at a real verifier yield  668ms
+   ✓ preserves the first yielded failure when verifier cleanup also throws  594ms
+   ✓ retains one borrowed owner ledger through mesh admission and transfers results only at Finalize  943ms
+   ✓ rejects Dispose after native Stage until rollback or actual World release  1001ms
+   ✓ keeps a failed projection reserve terminal for projection, mesh and native Stage  674ms
+   ✓ returns a latched post-projection owner failure before the missing-mesh guard  613ms
+   ✓ preserves non-Error mesh failure identity at Stage (null)  516ms
+   ✓ preserves non-Error mesh failure identity at Stage (undefined)  537ms
+   ✓ shares the first failure across later projection, decoder and Stage (Error: first cross-seam mesh error)  498ms
+   ✓ shares the first failure across later projection, decoder and Stage (null)  517ms
+   ✓ shares the first failure across later projection, decoder and Stage (undefined)  462ms
+   ✓ keeps a retired ledger until the suspended verifier actually closes  683ms
+   ✓ cannot switch the budget of an already derived plan (undefined)  525ms
+   ✓ cannot switch the budget of an already derived plan (33554432)  674ms
+   ✓ closes owner scratch on Dispose and retains credits until its suspended admission returns  758ms
+ ✓ tests/unit/hvp-body-mesh-worker.test.ts (5 tests) 9952ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=false, tight=false)  2225ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (true, owned=false, tight=false)  2033ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=true, tight=false)  2196ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (true, owned=true, tight=false)  2133ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=true, tight=true)  1363ms
+ ✓ tests/unit/hvp-moving-cut.test.ts (12 tests) 4467ms
+   ✓ cuts a sleeping fallen body with the same cell-centred spherical footprint as terrain  1006ms
+   ✓ recuts a real child through the same native-hit and current-source path  400ms
+   ✓ balances real 'falling' body cuts with 'Box' source and native geometry  411ms
+   ✓ balances real 'falling' body cuts with 'Sphere' source and native geometry  491ms
+   ✓ balances real 'sleeping' body cuts with 'Box' source and native geometry  431ms
+   ✓ balances real 'sleeping' body cuts with 'Sphere' source and native geometry  490ms
+ ✓ tests/unit/hvpIssuedParentMass.test.ts (4 tests) 2832ms
+   ✓ reuses the issued parent mass through the hit-owned Box route  946ms
+   ✓ reuses the issued parent mass through the hit-owned Sphere route  1383ms
+ ✓ tests/unit/hvp-physics-client-diagnostics.test.ts (3 tests) 34ms
+ ✓ tests/unit/hvp-body-mesh-client.test.ts (3 tests) 7ms
+ ✓ tests/unit/hvp-body-mesh-protocol.test.ts (2 tests) 4ms
+
+ Test Files  8 passed (8)
+      Tests  56 passed (56)
+   Start at  16:51:23
+   Duration  63.35s (transform 1.13s, setup 0ms, import 2.49s, tests 59.77s, environment 1ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-owner-operational-regressions-r02/original-vitest.json

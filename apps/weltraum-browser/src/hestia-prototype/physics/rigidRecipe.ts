@@ -1,13 +1,17 @@
 import {deriveStructuralComponentClassification,deriveStructuralObjectMassProperties,deriveStructuralPhysicsTransition,
   mergeGreedyQuantumBoxes,type StructuralObject} from "../../voxel/structural";
 import {isIssuedStructuralObject} from "../../voxel/structural/model";
+import type {StructuralOwnedReserve} from "../../voxel/structural/validation";
 // Owner-internal step forms (module exports, deliberately not in the structural barrel).
 import {deriveStructuralSingleComponentPhysicsPreparationOwnedHashSteps,deriveStructuralSingleComponentPhysicsPreparationSteps,
-  STRUCTURAL_TRANSITION_HASH_PHASE,STRUCTURAL_TRANSITION_PAYLOAD_PHASE} from "../../voxel/structural/physicsTransition";
+  STRUCTURAL_TRANSITION_HASH_PHASE,STRUCTURAL_TRANSITION_PAYLOAD_PHASE,STRUCTURAL_TRANSITION_PREPARE_PHASE} from "../../voxel/structural/physicsTransition";
 import {structuralComponentClassificationSteps} from "../../voxel/structural/classificationSteps";
 import {MICROVOXEL_BASE_QUANTUM_METERS} from "../../voxel/structural";
 import {hvpPrincipalAxes} from "./principalAxes";
-import {readHvpBodyCells} from "./bodyCutPlan";
+import {readHvpBodyCells,readHvpOwnedBodyCellsSteps} from "./bodyCutPlan";
+import {borrowedHvpPlanSteps} from "./hvpPlanSteps";
+import {structuralOwnedObjectMassSteps} from "../../voxel/structural/massProperties";
+import {mergeGreedyQuantumBoxesOwnedSteps} from "../../voxel/structural/physicsTransition";
 
 const issued=new WeakSet<object>();
 const zero=Object.freeze({x:0,y:0,z:0});
@@ -20,6 +24,7 @@ export const HVP_CHILD_CLASSIFICATION_CELLS_PHASE="childClassificationCells";
 /** Owner-hash route only: the step ending with the child transition payload, then one per hash batch. */
 export const HVP_CHILD_TRANSITION_PAYLOAD_PHASE="childTransitionPayload";
 export const HVP_CHILD_HASH_PHASE="childHash";
+export const HVP_CHILD_PREPARE_PHASE="childSourcePrepare";
 
 /**
  * Step form of prepareHvpRigidBody for the body owner's source-only plan. Only the source's own
@@ -35,24 +40,28 @@ export function* prepareHvpRigidBodySteps(source:StructuralObject,spans?:HvpRigi
  * issued source's transition hash runs through the bounded owned-payload cursor. A non-issued source
  * keeps the generic route.
  */
-export function* prepareHvpRigidBodyOwnedHashSteps(source:StructuralObject,spans?:HvpRigidRecipeSpans,live?:()=>boolean){
-  return yield* rigidBodySteps(true,source,spans,live);
+export function* prepareHvpRigidBodyOwnedHashSteps(source:StructuralObject,spans?:HvpRigidRecipeSpans,live?:()=>boolean,reserve?:StructuralOwnedReserve){
+  if(reserve!==undefined&&!isIssuedStructuralObject(source)){throw new Error("Owned rigid preparation requires an issued source");}
+  reserve?.(16_384);
+  return yield* rigidBodySteps(true,source,spans,live,reserve);
 }
-function* rigidBodySteps(ownedHash:boolean,source:StructuralObject,spans?:HvpRigidRecipeSpans,live?:()=>boolean){
+function* rigidBodySteps(ownedHash:boolean,source:StructuralObject,spans?:HvpRigidRecipeSpans,live?:()=>boolean,reserve?:StructuralOwnedReserve){
   // ponytail: wall-clock only; sub-ms phases may read 0.
   let measuring=spans!==undefined;
   let t=measuring?performance.now():0;
   /** Re-labels inner yields and always closes the inner steps (their `finally` disposes the cell cursor). */
-  function* relabeled<T>(steps:Generator<string,T,unknown>){
+  function* relabeled<T>(steps:Generator<string|void,T,unknown>){
+    const inner=reserve===undefined?steps:borrowedHvpPlanSteps(steps,"ownerRecipe");
     try{
       for(;;){
-        const step=steps.next();
+        const step=inner.next();
         if(step.done){
           return step.value;
         }
         const suspended=measuring?performance.now():0;
-        yield step.value===STRUCTURAL_TRANSITION_HASH_PHASE?HVP_CHILD_HASH_PHASE
-          :step.value===STRUCTURAL_TRANSITION_PAYLOAD_PHASE?HVP_CHILD_TRANSITION_PAYLOAD_PHASE:HVP_CHILD_CLASSIFICATION_CELLS_PHASE;
+        yield step.value==="ownerRecipe"?step.value:step.value===STRUCTURAL_TRANSITION_HASH_PHASE?HVP_CHILD_HASH_PHASE
+          :step.value===STRUCTURAL_TRANSITION_PAYLOAD_PHASE?HVP_CHILD_TRANSITION_PAYLOAD_PHASE
+          :step.value===undefined||step.value===STRUCTURAL_TRANSITION_PREPARE_PHASE?HVP_CHILD_PREPARE_PHASE:HVP_CHILD_CLASSIFICATION_CELLS_PHASE;
         // A measurement opt-out while suspended stops this recipe's timing before any further clock read.
         if(measuring&&live!==undefined&&!live()){
           measuring=false;
@@ -62,8 +71,7 @@ function* rigidBodySteps(ownedHash:boolean,source:StructuralObject,spans?:HvpRig
         }
       }
     }finally{
-      const inner:Generator<unknown,unknown,unknown>=steps;
-      inner.return(undefined);
+      inner.return(undefined as never);
     }
   }
   const afterMass=(mass:ReturnType<typeof deriveStructuralObjectMassProperties>)=>{
@@ -77,8 +85,9 @@ function* rigidBodySteps(ownedHash:boolean,source:StructuralObject,spans?:HvpRig
   const motion={velocityMetersPerSecond:zero,angularVelocityRadPerSecond:zero},limits={maxFragments:1,maxCollidersPerFragment:64,maxVoxelsPerFragment:32_768};
   let mass:ReturnType<typeof deriveStructuralObjectMassProperties>,plan:ReturnType<typeof deriveStructuralPhysicsTransition>;
   if(isIssuedStructuralObject(source)){
-    const prepare=ownedHash?deriveStructuralSingleComponentPhysicsPreparationOwnedHashSteps:deriveStructuralSingleComponentPhysicsPreparationSteps;
-    const prepared=yield* relabeled(prepare(source,motion,limits,budgets,afterMass,afterClassification));
+    const prepared=yield* relabeled(ownedHash
+      ?deriveStructuralSingleComponentPhysicsPreparationOwnedHashSteps(source,motion,limits,budgets,afterMass,afterClassification,reserve)
+      :deriveStructuralSingleComponentPhysicsPreparationSteps(source,motion,limits,budgets,afterMass,afterClassification));
     mass=prepared.objectMass;plan=prepared.transition;
   }else{
     mass=deriveStructuralObjectMassProperties(source,{maxVisitedCells:32_768});afterMass(mass);
@@ -91,10 +100,12 @@ function* rigidBodySteps(ownedHash:boolean,source:StructuralObject,spans?:HvpRig
   if(plan.status!=="Installed"||plan.dynamicBodies.length!==1||plan.dynamicBodies[0]!.greedyColliders.length>64){
     throw new Error("HVP rigid BudgetExceeded: exact collision exceeds 64 cuboids; no hull fallback");
   }
+  reserve?.(4_096);
   const axes=hvpPrincipalAxes(mass.inertiaTensorKgMetersSquared);
   if(measuring&&spans){spans.axesMs=(spans.axesMs??0)+performance.now()-t;}
   if(![mass.totalMassKg,axes.principalInertia.x,axes.principalInertia.y,axes.principalInertia.z]
     .every(v=>Number.isFinite(Math.fround(v))&&Math.fround(v)>0)){throw new Error("Mass/inertia exceeds pinned solver precision");}
+  reserve?.(2_048,true);
   const recipe=Object.freeze({source,mass,axes,colliders:plan.dynamicBodies[0]!.greedyColliders});
   issued.add(recipe);
   return recipe;
@@ -137,6 +148,18 @@ export const hvpRigidColliderBoxes=(recipe:HvpRigidRecipe):readonly HvpTransferr
  */
 export const admitHvpTransferredRigidBody=(source:StructuralObject,
   claimed:{massKg:number;colliderBoxes:readonly HvpTransferredColliderBox[]},spans?:HvpRigidRecipeSpans)=>{
+  const steps=transferredRigidSteps(source,claimed,spans);
+  for(;;){const step=steps.next();if(step.done){return step.value;}}
+};
+/** Same full Native admission, borrowing one parent's Source/claim lifetime; no worker authority. */
+export function* admitHvpTransferredRigidBodyOwnedSteps(source:StructuralObject,
+  claimed:{massKg:number;colliderBoxes:readonly HvpTransferredColliderBox[]},spans:HvpRigidRecipeSpans|undefined,reserve:StructuralOwnedReserve){
+  if(!isIssuedStructuralObject(source)){throw new Error("Owned transferred admission requires an issued source");}
+  return yield* transferredRigidSteps(source,claimed,spans,reserve);
+}
+function* transferredRigidSteps(source:StructuralObject,claimed:{massKg:number;colliderBoxes:readonly HvpTransferredColliderBox[]},
+  spans?:HvpRigidRecipeSpans,reserve?:StructuralOwnedReserve):Generator<string,HvpRigidRecipe,unknown>{
+  reserve?.(16_384);
   if(!claimed||typeof claimed.massKg!=="number"||!Number.isFinite(claimed.massKg)||claimed.massKg<=0
     ||!Array.isArray(claimed.colliderBoxes)||claimed.colliderBoxes.length<1||claimed.colliderBoxes.length>64){
     throw new Error("Invalid transferred rigid claim");
@@ -153,17 +176,19 @@ export const admitHvpTransferredRigidBody=(source:StructuralObject,
   const origin=source.frame.objectOriginQuantum;
   if(origin.x!==0||origin.y!==0||origin.z!==0){throw new Error("Transferred rigid admission requires a zero-origin source");}
   let t=spans?performance.now():0;
-  const mass=deriveStructuralObjectMassProperties(source,{maxVisitedCells:32_768});
+  const mass=reserve===undefined?deriveStructuralObjectMassProperties(source,{maxVisitedCells:32_768})
+    :yield* borrowedHvpPlanSteps(structuralOwnedObjectMassSteps(source,{maxVisitedCells:32_768},reserve),"terrainNativeMass");
   if(spans){const now=performance.now();spans.massMs=(spans.massMs??0)+now-t;t=now;}
   if(mass.totalMassKg<=0||mass.centerOfMassMeters===null){throw new Error("Empty rigid source");}
   if(Math.abs(mass.totalMassKg-claimed.massKg)>Math.max(1,claimed.massKg)*1e-10){
     throw new Error("Transferred rigid mass mismatch");
   }
-  const cells=readHvpBodyCells(source);
+  const cells=reserve===undefined?readHvpBodyCells(source):yield* readHvpOwnedBodyCellsSteps(source,reserve);
   if(cells.length===0||cells.length>32_768||mass.occupiedVoxelCount!==cells.length){
     throw new Error("Transferred rigid cell count mismatch");
   }
   const tVerify=spans?performance.now():0;
+  reserve?.(8192+cells.length*1024);
   const members=new Set<string>();
   for(const c of cells){
     if(![c.x,c.y,c.z].every(Number.isSafeInteger)||!Number.isInteger(c.materialId)){
@@ -172,6 +197,7 @@ export const admitHvpTransferredRigidBody=(source:StructuralObject,
     const id=`${c.x},${c.y},${c.z}`;
     if(members.has(id)){throw new Error("Duplicate transferred rigid cell");}
     members.add(id);
+    if(reserve){yield "terrainNativeMembers";}
   }
   // Single unanchored connected component over the actual cells.
   const seed=cells[0]!,queue:[number,number,number][]=[[seed.x,seed.y,seed.z]],seen=new Set<string>([`${seed.x},${seed.y},${seed.z}`]);
@@ -180,6 +206,7 @@ export const admitHvpTransferredRigidBody=(source:StructuralObject,
     for(const [dx,dy,dz] of [[-1,0,0],[1,0,0],[0,-1,0],[0,1,0],[0,0,-1],[0,0,1]] as const){
       const id=`${x+dx},${y+dy},${z+dz}`;
       if(members.has(id)&&!seen.has(id)){seen.add(id);queue.push([x+dx,y+dy,z+dz]);}
+      if(reserve){yield "terrainNativeConnectivity";}
     }
   }
   if(seen.size!==members.size){throw new Error("Transferred rigid source requires one connected component");}
@@ -195,10 +222,12 @@ export const admitHvpTransferredRigidBody=(source:StructuralObject,
       const id=`${x},${y},${z}`;
       if(!members.has(id)||covered.has(id)){throw new Error("Transferred collider coverage mismatch");}
       covered.add(id);
+      if(reserve){yield "terrainNativeCoverage";}
     }}}
   }
   if(covered.size!==members.size){throw new Error("Transferred collider coverage mismatch");}
-  const canonical=mergeGreedyQuantumBoxes(cells,"transferred/canonical");
+  const canonical=reserve===undefined?mergeGreedyQuantumBoxes(cells,"transferred/canonical")
+    :yield* borrowedHvpPlanSteps(mergeGreedyQuantumBoxesOwnedSteps(cells,"transferred/canonical",reserve),"terrainNativePartition");
   if(canonical.length!==claimed.colliderBoxes.length){throw new Error("Transferred rigid collider partition mismatch");}
   for(let i=0;i<canonical.length;i+=1){
     const expected=canonical[i]!,actual=claimed.colliderBoxes[i]!;
@@ -213,9 +242,10 @@ export const admitHvpTransferredRigidBody=(source:StructuralObject,
   if(![mass.totalMassKg,axes.principalInertia.x,axes.principalInertia.y,axes.principalInertia.z]
     .every(v=>Number.isFinite(Math.fround(v))&&Math.fround(v)>0)){throw new Error("Mass/inertia exceeds pinned solver precision");}
   const toMeters=(q:number)=>q*MICROVOXEL_BASE_QUANTUM_METERS;
+  reserve?.(4096+claimed.colliderBoxes.length*512,true);
   const colliders=Object.freeze(claimed.colliderBoxes.map(box=>Object.freeze({
     minMeters:Object.freeze({x:toMeters(box.min[0]!),y:toMeters(box.min[1]!),z:toMeters(box.min[2]!)}),
     maxMeters:Object.freeze({x:toMeters(box.max[0]!),y:toMeters(box.max[1]!),z:toMeters(box.max[2]!)})})));
   const recipe=Object.freeze({source,mass,axes,colliders});
   issued.add(recipe);return recipe;
-};
+}

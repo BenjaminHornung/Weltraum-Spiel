@@ -1,0 +1,16 @@
+{
+  "nativeCapSeconds": 600,
+  "binding": "A03-mesh-reserve-regressions-r01-binding.json",
+  "files": [
+    "tests/unit/hvpOwnedBodyMesh.test.ts",
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts",
+    "tests/unit/hvp-body-mesh-worker.test.ts",
+    "tests/unit/hvpMesherHistoricalContract.test.ts",
+    "tests/unit/hvpBodyMeshJob.test.ts",
+    "tests/unit/hvpBodyMeshAdmission.test.ts",
+    "tests/unit/hvp-borrowed-mesh-decode.test.ts"
+  ],
+  "runId": "A03-mesh-reserve-regressions-r01",
+  "mode": "tests",
+  "classification": "Seven whole directly affected mesher/Native/decode files; historical callback/typedbyte oracles, parent expected workspace max; default and original per-test deadlines unchanged"
+}

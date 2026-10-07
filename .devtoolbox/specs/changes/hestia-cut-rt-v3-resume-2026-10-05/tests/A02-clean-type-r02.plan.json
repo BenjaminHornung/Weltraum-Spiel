@@ -1,0 +1,8 @@
+{
+  "runId": "A02-clean-type-r02",
+  "binding": "A02-clean-source-binding-r02.json",
+  "mode": "type",
+  "files": [],
+  "nativeCapSeconds": 60,
+  "classification": "fresh complete TypeScript noEmit after restoring all diagnostic hooks and rejecting the core candidate"
+}

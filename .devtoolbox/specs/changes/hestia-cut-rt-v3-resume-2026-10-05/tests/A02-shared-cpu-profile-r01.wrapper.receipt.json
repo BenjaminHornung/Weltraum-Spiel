@@ -1,0 +1,8 @@
+{
+  "runId": "A02-shared-cpu-profile-r01",
+  "startedUtc": "2026-10-05T10:20:09.3951203+00:00",
+  "endedUtc": "2026-10-05T10:20:17.9512214+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 8.5506714,
+  "planFile": "A02-shared-cpu-profile-r01.plan.json"
+}

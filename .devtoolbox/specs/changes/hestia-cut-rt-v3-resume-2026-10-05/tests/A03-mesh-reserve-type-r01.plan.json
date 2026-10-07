@@ -1,0 +1,8 @@
+{
+  "mode": "type",
+  "nativeCapSeconds": 60,
+  "files": [],
+  "classification": "Shared mesher dynamic parent estimates and single expected-mesh workspace; full type original limit",
+  "runId": "A03-mesh-reserve-type-r01",
+  "binding": "A03-mesh-reserve-type-r01-binding.json"
+}

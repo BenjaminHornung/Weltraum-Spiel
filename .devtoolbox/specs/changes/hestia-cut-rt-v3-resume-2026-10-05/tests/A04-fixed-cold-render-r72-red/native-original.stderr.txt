@@ -1,0 +1,114 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-fixed-specimen-render.test.ts > preserves original fixed drop geometry with explicit policy and retains default fragment AO
+AssertionError: expected Float32Array[ 1, 1, 1, 1, 1, 1, …(72) ] to be null // Object.is equality
+
+- Expected:
+null
+
++ Received:
+Float32Array [
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+  1,
+]
+
+ ❯ tests/unit/hvp-fixed-specimen-render.test.ts:20:27
+     18|     expect(restored[key].every((value,index)=>Object.is(value,original…
+     19|   }
+     20|   expect(restored.colors).toBe(original.colors);expect(restored.materi…
+       |                           ^
+     21|   expect(restored.boundsMeters).toEqual(original.boundsMeters);expect(…
+     22|   const generic=meshHvpBodyCells(cells,center,"fnv1a64-v1:000000000000…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/hvp-fixed-specimen-render.test.ts > preserves original fixed inertia geometry with explicit policy and retains default fragment AO
+AssertionError: expected 168 to be 120 // Object.is equality
+
+- Expected
++ Received
+
+- 120
++ 168
+
+ ❯ tests/unit/hvp-fixed-specimen-render.test.ts:17:100
+     15|   const restored=call(cells,center,"fnv1a64-v1:0000000000000000",{ao:f…
+     16|   for(const key of ["positions","normals","indices"] as const){
+     17|     expect(restored[key].constructor).toBe(original[key].constructor);…
+       |                                                                                                    ^
+     18|     expect(restored[key].every((value,index)=>Object.is(value,original…
+     19|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+

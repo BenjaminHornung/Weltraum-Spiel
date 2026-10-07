@@ -23,6 +23,11 @@ export interface JobInputDataMessage {
   readonly jobId: WorkerJobId;
   readonly workerEpoch: WorkerEpoch;
   readonly bundle: TransferableBufferBundle;
+  /** Private mesh phase debit ceiling, outside all Source/request payload contracts. */
+  readonly bodyMeshAllowanceBytes?:number;
+  /** Separate support debit from the same owning cut's Prepare envelope. */
+  readonly supportPrepareAllowanceBytes?:number;
+  readonly terrainPrepareAllowanceBytes?:number;
 }
 
 export interface JobOutputDataMessage {

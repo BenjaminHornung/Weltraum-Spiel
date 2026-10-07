@@ -1,0 +1,8 @@
+{
+  "runId": "A02-owner180-uppercase-negative-r01",
+  "startedUtc": "2026-10-05T10:50:39.3554520+00:00",
+  "endedUtc": "2026-10-05T10:50:39.4975197+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 0.1379585,
+  "planFile": "A02-owner180-uppercase-negative-r01.plan.json"
+}

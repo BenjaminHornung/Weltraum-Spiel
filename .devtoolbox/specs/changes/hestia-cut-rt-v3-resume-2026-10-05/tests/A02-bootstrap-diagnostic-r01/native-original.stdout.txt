@@ -1,0 +1,210 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > records measured cold Ready only after the first submitted scene frame
+A02_BOOTSTRAP_TEST_START {"name":"records measured cold Ready only after the first submitted scene frame","hrtimeNs":"16931324033100"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > records measured cold Ready only after the first submitted scene frame
+A02_BOOTSTRAP_TEST_END {"name":"records measured cold Ready only after the first submitted scene frame","state":"pass","wallMs":5223.6846,"userMs":5672,"systemMs":656}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > binds the rendered daylight look scene instead of only publishing dataset claims
+A02_BOOTSTRAP_TEST_START {"name":"binds the rendered daylight look scene instead of only publishing dataset claims","hrtimeNs":"16936548190400"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > binds the rendered daylight look scene instead of only publishing dataset claims
+A02_BOOTSTRAP_TEST_END {"name":"binds the rendered daylight look scene instead of only publishing dataset claims","state":"pass","wallMs":5640.3713,"userMs":5156,"systemMs":687}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > fails closed when the backend cannot provide a rendered scene
+A02_BOOTSTRAP_TEST_START {"name":"fails closed when the backend cannot provide a rendered scene","hrtimeNs":"16942188933200"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > fails closed when the backend cannot provide a rendered scene
+A02_BOOTSTRAP_TEST_END {"name":"fails closed when the backend cannot provide a rendered scene","state":"pass","wallMs":1.7822,"userMs":0,"systemMs":0}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > proves the far field arrives bound through the pipeline as render-only data
+A02_BOOTSTRAP_TEST_START {"name":"proves the far field arrives bound through the pipeline as render-only data","hrtimeNs":"16942190974800"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > proves the far field arrives bound through the pipeline as render-only data
+A02_BOOTSTRAP_TEST_END {"name":"proves the far field arrives bound through the pipeline as render-only data","state":"pass","wallMs":5629.6118,"userMs":4812,"systemMs":547}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > keeps source-derived terrain geometry intact while grouping readable material ranges
+A02_BOOTSTRAP_TEST_START {"name":"keeps source-derived terrain geometry intact while grouping readable material ra","hrtimeNs":"16947820939100"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > keeps source-derived terrain geometry intact while grouping readable material ranges
+A02_BOOTSTRAP_TEST_END {"name":"keeps source-derived terrain geometry intact while grouping readable material ra","state":"pass","wallMs":5539.9408,"userMs":5172,"systemMs":453}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > fails closed when a look role is empty or its profile diverges from the role
+A02_BOOTSTRAP_TEST_START {"name":"fails closed when a look role is empty or its profile diverges from the role","hrtimeNs":"16953361326700"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > fails closed when a look role is empty or its profile diverges from the role
+A02_BOOTSTRAP_TEST_END {"name":"fails closed when a look role is empty or its profile diverges from the role","state":"pass","wallMs":25.1524,"userMs":32,"systemMs":0}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > reaches Ready with exactly one tick loop and disposes start/dispose exactly once
+A02_BOOTSTRAP_TEST_START {"name":"reaches Ready with exactly one tick loop and disposes start/dispose exactly once","hrtimeNs":"16953386845000"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > reaches Ready with exactly one tick loop and disposes start/dispose exactly once
+A02_BOOTSTRAP_TEST_END {"name":"reaches Ready with exactly one tick loop and disposes start/dispose exactly once","state":"pass","wallMs":5594.2303,"userMs":5359,"systemMs":219}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > fails a double mount closed with no duplicate HUD and no second backend
+A02_BOOTSTRAP_TEST_START {"name":"fails a double mount closed with no duplicate HUD and no second backend","hrtimeNs":"16958981625700"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > fails a double mount closed with no duplicate HUD and no second backend
+A02_BOOTSTRAP_TEST_END {"name":"fails a double mount closed with no duplicate HUD and no second backend","state":"pass","wallMs":11113.266,"userMs":10578,"systemMs":641}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > fails a restart closed while dispose is pending and recovers after settle
+A02_BOOTSTRAP_TEST_START {"name":"fails a restart closed while dispose is pending and recovers after settle","hrtimeNs":"16970095643200"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > fails a restart closed while dispose is pending and recovers after settle
+A02_BOOTSTRAP_TEST_END {"name":"fails a restart closed while dispose is pending and recovers after settle","state":"pass","wallMs":10851.1015,"userMs":10031,"systemMs":656}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > keeps the live session clean when the route entry fires twice
+A02_BOOTSTRAP_TEST_START {"name":"keeps the live session clean when the route entry fires twice","hrtimeNs":"16980947304800"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > keeps the live session clean when the route entry fires twice
+A02_BOOTSTRAP_TEST_END {"name":"keeps the live session clean when the route entry fires twice","state":"pass","wallMs":5819.8947,"userMs":5297,"systemMs":422}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > never installs failure UI into a torn-down or newer mount
+A02_BOOTSTRAP_TEST_START {"name":"never installs failure UI into a torn-down or newer mount","hrtimeNs":"16986767534600"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > never installs failure UI into a torn-down or newer mount
+A02_BOOTSTRAP_TEST_END {"name":"never installs failure UI into a torn-down or newer mount","state":"pass","wallMs":5396.3076,"userMs":4687,"systemMs":515}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > cancels a deferred source on pagehide without publishing products
+A02_BOOTSTRAP_TEST_START {"name":"cancels a deferred source on pagehide without publishing products","hrtimeNs":"16992164064300"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > cancels a deferred source on pagehide without publishing products
+A02_BOOTSTRAP_TEST_END {"name":"cancels a deferred source on pagehide without publishing products","state":"pass","wallMs":5746.8303,"userMs":5094,"systemMs":532}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > does not let a late failure teardown wipe a newer mount
+A02_BOOTSTRAP_TEST_START {"name":"does not let a late failure teardown wipe a newer mount","hrtimeNs":"16997911142300"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > does not let a late failure teardown wipe a newer mount
+A02_BOOTSTRAP_TEST_END {"name":"does not let a late failure teardown wipe a newer mount","state":"pass","wallMs":5632.9942,"userMs":4938,"systemMs":422}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > rejects over-cap scenes before attaching products or reaching Ready
+A02_BOOTSTRAP_TEST_START {"name":"rejects over-cap scenes before attaching products or reaching Ready","hrtimeNs":"17003544348000"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > rejects over-cap scenes before attaching products or reaching Ready
+A02_BOOTSTRAP_TEST_END {"name":"rejects over-cap scenes before attaching products or reaching Ready","state":"pass","wallMs":10770.2388,"userMs":9703,"systemMs":937}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > rejects malformed look ranges instead of falling back to vertex zero
+A02_BOOTSTRAP_TEST_START {"name":"rejects malformed look ranges instead of falling back to vertex zero","hrtimeNs":"17014314873100"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > rejects malformed look ranges instead of falling back to vertex zero
+A02_BOOTSTRAP_TEST_END {"name":"rejects malformed look ranges instead of falling back to vertex zero","state":"pass","wallMs":1.9877,"userMs":0,"systemMs":0}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > groups partial proxy roles in order while strict mode still rejects them
+A02_BOOTSTRAP_TEST_START {"name":"groups partial proxy roles in order while strict mode still rejects them","hrtimeNs":"17014317023900"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > groups partial proxy roles in order while strict mode still rejects them
+A02_BOOTSTRAP_TEST_END {"name":"groups partial proxy roles in order while strict mode still rejects them","state":"pass","wallMs":0.4921,"userMs":0,"systemMs":0}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > exposes a real Inspect-only AO toggle defaulting to on
+A02_BOOTSTRAP_TEST_START {"name":"exposes a real Inspect-only AO toggle defaulting to on","hrtimeNs":"17014317811300"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > exposes a real Inspect-only AO toggle defaulting to on
+A02_BOOTSTRAP_TEST_END {"name":"exposes a real Inspect-only AO toggle defaulting to on","state":"pass","wallMs":5744.4495,"userMs":5187,"systemMs":469}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > swaps whole material arrays on toggle without mutating cached instances
+A02_BOOTSTRAP_TEST_START {"name":"swaps whole material arrays on toggle without mutating cached instances","hrtimeNs":"17020062604200"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > swaps whole material arrays on toggle without mutating cached instances
+A02_BOOTSTRAP_TEST_END {"name":"swaps whole material arrays on toggle without mutating cached instances","state":"pass","wallMs":5501.9078,"userMs":5110,"systemMs":500}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > separates retired initial-build scratch from live replacement working memory without raising caps
+A02_BOOTSTRAP_TEST_START {"name":"separates retired initial-build scratch from live replacement working memory wit","hrtimeNs":"17025564708300"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > separates retired initial-build scratch from live replacement working memory without raising caps
+A02_BOOTSTRAP_TEST_END {"name":"separates retired initial-build scratch from live replacement working memory wit","state":"pass","wallMs":0.6449,"userMs":0,"systemMs":0}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > cold checkpoint source accounting excludes the shared primary grid without a neighbor
+A02_BOOTSTRAP_TEST_START {"name":"cold checkpoint source accounting excludes the shared primary grid without a nei","hrtimeNs":"17025565464400"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > cold checkpoint source accounting excludes the shared primary grid without a neighbor
+A02_BOOTSTRAP_TEST_END {"name":"cold checkpoint source accounting excludes the shared primary grid without a nei","state":"pass","wallMs":0.1218,"userMs":0,"systemMs":0}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > cold checkpoint source accounting retains the neighbor primary grid
+A02_BOOTSTRAP_TEST_START {"name":"cold checkpoint source accounting retains the neighbor primary grid","hrtimeNs":"17025565663800"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > cold checkpoint source accounting retains the neighbor primary grid
+A02_BOOTSTRAP_TEST_END {"name":"cold checkpoint source accounting retains the neighbor primary grid","state":"pass","wallMs":0.0904,"userMs":0,"systemMs":0}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > cold checkpoint source accounting has no extra bytes at zero inputs
+A02_BOOTSTRAP_TEST_START {"name":"cold checkpoint source accounting has no extra bytes at zero inputs","hrtimeNs":"17025565822600"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > cold checkpoint source accounting has no extra bytes at zero inputs
+A02_BOOTSTRAP_TEST_END {"name":"cold checkpoint source accounting has no extra bytes at zero inputs","state":"pass","wallMs":0.0793,"userMs":0,"systemMs":0}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > cold checkpoint ledger delta matches retained source ownership
+A02_BOOTSTRAP_TEST_START {"name":"cold checkpoint ledger delta matches retained source ownership","hrtimeNs":"17025565964900"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > cold checkpoint ledger delta matches retained source ownership
+A02_BOOTSTRAP_TEST_END {"name":"cold checkpoint ledger delta matches retained source ownership","state":"pass","wallMs":0.5141,"userMs":0,"systemMs":0}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > accounts exact ledger bytes from known inputs and rejects just below total
+A02_BOOTSTRAP_TEST_START {"name":"accounts exact ledger bytes from known inputs and rejects just below total","hrtimeNs":"17025566611000"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > accounts exact ledger bytes from known inputs and rejects just below total
+A02_BOOTSTRAP_TEST_END {"name":"accounts exact ledger bytes from known inputs and rejects just below total","state":"pass","wallMs":0.5038,"userMs":0,"systemMs":0}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > rejects a World missing the planned inertia specimen before publishing meshes
+A02_BOOTSTRAP_TEST_START {"name":"rejects a World missing the planned inertia specimen before publishing meshes","hrtimeNs":"17025567219200"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > rejects a World missing the planned inertia specimen before publishing meshes
+A02_BOOTSTRAP_TEST_END {"name":"rejects a World missing the planned inertia specimen before publishing meshes","state":"pass","wallMs":4738.7198,"userMs":4109,"systemMs":515}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > never reaches Ready on an invalid source and stays fail-closed
+A02_BOOTSTRAP_TEST_START {"name":"never reaches Ready on an invalid source and stays fail-closed","hrtimeNs":"17030306113300"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > never reaches Ready on an invalid source and stays fail-closed
+A02_BOOTSTRAP_TEST_END {"name":"never reaches Ready on an invalid source and stays fail-closed","state":"pass","wallMs":5757.0999,"userMs":5422,"systemMs":329}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > hides the leftover flight reticle on entry and restores it on dispose
+A02_BOOTSTRAP_TEST_START {"name":"hides the leftover flight reticle on entry and restores it on dispose","hrtimeNs":"17036063383700"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > hides the leftover flight reticle on entry and restores it on dispose
+A02_BOOTSTRAP_TEST_END {"name":"hides the leftover flight reticle on entry and restores it on dispose","state":"pass","wallMs":5364.1876,"userMs":4890,"systemMs":312}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > restores the flight reticle when the HVP start fails closed
+A02_BOOTSTRAP_TEST_START {"name":"restores the flight reticle when the HVP start fails closed","hrtimeNs":"17041427744800"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > restores the flight reticle when the HVP start fails closed
+A02_BOOTSTRAP_TEST_END {"name":"restores the flight reticle when the HVP start fails closed","state":"pass","wallMs":0.7122,"userMs":0,"systemMs":0}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > exposes an accessible HUD hide control and a labeled camera inspection mode
+A02_BOOTSTRAP_TEST_START {"name":"exposes an accessible HUD hide control and a labeled camera inspection mode","hrtimeNs":"17041428631100"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > exposes an accessible HUD hide control and a labeled camera inspection mode
+A02_BOOTSTRAP_TEST_END {"name":"exposes an accessible HUD hide control and a labeled camera inspection mode","state":"pass","wallMs":5539.127,"userMs":5219,"systemMs":313}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > keeps HUD inspection state tied to the real camera across presets reset Play and restored modes
+A02_BOOTSTRAP_TEST_START {"name":"keeps HUD inspection state tied to the real camera across presets reset Play and","hrtimeNs":"17046968001700"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > keeps HUD inspection state tied to the real camera across presets reset Play and restored modes
+A02_BOOTSTRAP_TEST_END {"name":"keeps HUD inspection state tied to the real camera across presets reset Play and","state":"pass","wallMs":5685.5476,"userMs":5485,"systemMs":296}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > publishes save busy and rejection immediately without waiting for a render frame
+A02_BOOTSTRAP_TEST_START {"name":"publishes save busy and rejection immediately without waiting for a render frame","hrtimeNs":"17052653751700"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > publishes save busy and rejection immediately without waiting for a render frame
+A02_BOOTSTRAP_TEST_END {"name":"publishes save busy and rejection immediately without waiting for a render frame","state":"pass","wallMs":5567.7395,"userMs":4843,"systemMs":407}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > C2B wires the real confirm, terrain trace, and accepted render callbacks
+A02_BOOTSTRAP_TEST_START {"name":"C2B wires the real confirm, terrain trace, and accepted render callbacks","hrtimeNs":"17058221683500"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > C2B wires the real confirm, terrain trace, and accepted render callbacks
+A02_BOOTSTRAP_TEST_END {"name":"C2B wires the real confirm, terrain trace, and accepted render callbacks","state":"pass","wallMs":5692.1745,"userMs":5297,"systemMs":375}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > C2B reports the controlled observation reservation separately from gameplay bytes
+A02_BOOTSTRAP_TEST_START {"name":"C2B reports the controlled observation reservation separately from gameplay byte","hrtimeNs":"17063914367100"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > C2B reports the controlled observation reservation separately from gameplay bytes
+A02_BOOTSTRAP_TEST_END {"name":"C2B reports the controlled observation reservation separately from gameplay byte","state":"pass","wallMs":7181.3683,"userMs":5391,"systemMs":406}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > C2B remains inert by default and preserves the original resource ledger
+A02_BOOTSTRAP_TEST_START {"name":"C2B remains inert by default and preserves the original resource ledger","hrtimeNs":"17071095998700"}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > C2B remains inert by default and preserves the original resource ledger
+A02_BOOTSTRAP_TEST_END {"name":"C2B remains inert by default and preserves the original resource ledger","state":"pass","wallMs":10985.7454,"userMs":9969,"systemMs":344}
+
+stdout | tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > C2B does not allocate the observer when startup leaves less than its reserve
+A02_BOOTSTRAP_TEST_START {"name":"C2B does not allocate the observer when startup leaves less than its reserve","hrtimeNs":"17082083211300"}
+

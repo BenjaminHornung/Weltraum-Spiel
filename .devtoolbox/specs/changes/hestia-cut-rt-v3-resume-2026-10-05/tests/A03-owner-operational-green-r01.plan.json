@@ -1,0 +1,10 @@
+{
+  "nativeCapSeconds": 360,
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-body-mesh-worker.test.ts"
+  ],
+  "binding": "A03-owner-operational-green-r01-binding.json",
+  "classification": "Full real RPC operational and legacy controls; unchanged per-test120",
+  "runId": "A03-owner-operational-green-r01"
+}

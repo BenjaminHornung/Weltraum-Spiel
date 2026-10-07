@@ -1,0 +1,8 @@
+{
+  "nativeCapSeconds": 60,
+  "binding": "A03-owner-escrow-green-r01-binding.json",
+  "files": [],
+  "classification": "Fresh owner escrow source typecheck",
+  "mode": "type",
+  "runId": "A03-owner-escrow-type-r01"
+}

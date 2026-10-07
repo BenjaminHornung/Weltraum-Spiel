@@ -1,0 +1,14 @@
+{
+  "runId": "A02-materialization-cpu-profile-r02",
+  "binding": "A02-diagnostic-source-binding-r02.json",
+  "mode": "tests",
+  "files": ["tests/unit/hvp-owned-materialization.test.ts"],
+  "diagnosticTrace": false,
+  "cpuProfile": true,
+  "classification": "worker CPU diagnosis only; not clean acceptance or formal measurement",
+  "nativeCapSeconds": 180,
+  "originalTestDeadlines": "unchanged including explicit declarations",
+  "retry": 0,
+  "bail": false,
+  "skip": false
+}

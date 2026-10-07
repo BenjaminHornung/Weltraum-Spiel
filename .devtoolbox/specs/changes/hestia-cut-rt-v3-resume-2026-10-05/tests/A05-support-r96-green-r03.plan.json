@@ -1,0 +1,13 @@
+{
+  "runId": "A05-support-r96-green-r03",
+  "classification": "Whole support transfer WorkerPool plus real task pump phase cancellation",
+  "files": [
+    "tests/unit/hvp-owned-support-plan.test.ts",
+    "tests/unit/hvp-terrain-support.test.ts",
+    "tests/unit/hvp-terrain-transfer.test.ts",
+    "tests/unit/workerPoolLifecycle.test.ts"
+  ],
+  "mode": "tests",
+  "nativeCapSeconds": 180,
+  "binding": "A05-support-r96-binding-r03.json"
+}

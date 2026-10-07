@@ -1,0 +1,13 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-support-json.test.ts (2 tests | 2 failed) 17ms
+   × reads the existing JSON wire across real UTF8 and escape boundaries without a bulk parse 11ms
+   × rejects malformed syntax and UTF8, and cancellation never returns a partial graph 4ms
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  20:02:01
+   Duration  445ms (transform 51ms, setup 0ms, import 94ms, tests 17ms, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-codec-r97-red/original-vitest.json

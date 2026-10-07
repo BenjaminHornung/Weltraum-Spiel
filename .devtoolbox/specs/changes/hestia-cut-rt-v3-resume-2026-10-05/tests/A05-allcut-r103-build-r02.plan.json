@@ -1,0 +1,8 @@
+{
+  "runId": "A05-allcut-r103-build-r02",
+  "classification": "Current sealed production build after full176/type/independentNative",
+  "mode": "build",
+  "files": [],
+  "binding": "A05-allcut-r103-binding-r02.json",
+  "nativeCapSeconds": 180
+}

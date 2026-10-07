@@ -1,0 +1,10 @@
+{
+  "binding": "A03-mesh-pack-red-r01-binding.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-borrowed-mesh-decode.test.ts"
+  ],
+  "runId": "A03-mesh-pack-red-r01",
+  "classification": "Borrowed bounded projection pack original digest/typedbyte and pre-allocation parent failure genuine RED",
+  "nativeCapSeconds": 180
+}

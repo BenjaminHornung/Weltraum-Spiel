@@ -1,0 +1,8 @@
+{
+  "runId": "A03-external-hold-type-r34",
+  "startedUtc": "2026-10-05T18:27:56.0574603+00:00",
+  "endedUtc": "2026-10-05T18:27:57.4109742+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 1.3497063,
+  "planFile": "A03-external-hold-type-r34.plan.json"
+}

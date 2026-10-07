@@ -1,0 +1,13 @@
+{
+  "runId": "A05-shortvalue-r110-tests-r01",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-owned-hash-emission-boundary.test.ts",
+    "tests/unit/hvp-owned-hash-array-open.test.ts",
+    "tests/unit/hvp-owned-structural-ingest.test.ts",
+    "tests/unit/hvp-owned-support-plan.test.ts"
+  ],
+  "nativeCapSeconds": 600,
+  "binding": "A05-shortvalue-r110-binding-r01.json",
+  "classification": "Exact R91 complete short-value byte and observation preimage current source kernels"
+}

@@ -1,0 +1,11 @@
+# A03 retained-owner mesh admission slice
+
+A00–A02 technical evidence and completion preflights are accepted; B1 remains OPEN_IMPLEMENTATION. Root is sole writer. The already tracked/private4 code matches the recovered snapshots; reuse it without recopy.
+
+First write set: `src/hestia-prototype/physics/bodyCutSession.ts` and new `tests/unit/hvp-body-mesh-owner-integration.test.ts`. Establish genuine RED for a projected owner-hash route reaching Stage without geometry admission; implement admission against its retained plan using existing `verifyHvpBodyMeshPartsSteps`, same task host and sticky first failure. Generic factory's original metadata-only projection→Stage control stays unchanged. Capture one plan computation, no World hold/mutation during admission, corrupted geometry rejection, cancellation and zero children.
+
+Subsequent bounded integration write sets (each sealed/reviewed): existing session/client/physicsWorker/physicsProtocol transport; existing terrainProducts/workerPool/streamingWorker mesh-only dispatch; bootstrap callback only after authority/resource prerequisites. Request and return raw output buffers through the existing transferable send/reply seams before hidden staging, so staged arrays cannot be detached. Admission is native-owner-local, current Begin/incarnation/ticket bound, not a returned source/recipe certificate. Data replies do not own client snapshot/clock/restore watermarks. Stage requires admitted geometry only on the new projected owner route; legacy generic APIs remain.
+
+Original owner65 tests contain a generic projection→metadata Stage case. Independent compatibility exploration found no worker-owned projection→Stage assertion; worker Stage controls prepare the plan without projecting. Keep all original tests/assertions. No schema/save/hash/caps/dependency changes, second planner/World, automatic safety-hold resume or material-ID rewriting.
+
+Resource/lifetime proof must account raw packet, decoded copies, one expected child and all old/new source/render/physics data before allocation. Existing synchronous packing/decoding paths are not automatically bounded; measure/extend existing private steps when required. A03 authority tests do not prove physical peaks, normal Body384, browser timing, B2/B3 or final acceptance. Those gates stay open.

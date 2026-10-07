@@ -1,0 +1,8 @@
+src/hestia-prototype/physics/physicsWorker.ts(271,17): error TS2322: Type '{ owner: { read: (includeBranchCells?: boolean) => Readonly<{ ticks: number; backlogSeconds: number; discardedSeconds: number; status: "CoverageHold" | "RecoveryHold" | HvpSimulationStatus; ... 29 more ...; bodies: Readonly<...>[]; }>; ... 45 more ...; dispose(): void; }; ... 5 more ...; work: Promise<...>; }' is not assignable to type 'never'.
+src/hestia-prototype/physics/physicsWorker.ts(273,18): error TS2339: Property 'work' does not exist on type 'never'.
+src/hestia-prototype/physics/physicsWorker.ts(273,41): error TS2339: Property 'plan' does not exist on type 'never'.
+src/hestia-prototype/physics/physicsWorker.ts(274,28): error TS2339: Property 'work' does not exist on type 'never'.
+src/hestia-prototype/physics/physicsWorker.ts(274,98): error TS2339: Property 'requestId' does not exist on type 'never'.
+src/hestia-prototype/physics/physicsWorker.ts(274,129): error TS2339: Property 'id' does not exist on type 'never'.
+src/hestia-prototype/physics/physicsWorker.ts(274,150): error TS2339: Property 'generation' does not exist on type 'never'.
+src/hestia-prototype/physics/physicsWorker.ts(274,181): error TS2339: Property 'sourceDigest' does not exist on type 'never'.

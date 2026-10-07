@@ -1,0 +1,11 @@
+{
+  "nativeCapSeconds": 180,
+  "runId": "A03-fresh-produced-reuse-r64-red",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-borrowed-body-plan.test.ts",
+    "tests/unit/hvp-owned-hash-array-open.test.ts"
+  ],
+  "binding": "A03-fresh-produced-reuse-r64-red-binding.json",
+  "classification": "Whole actual recipe/hash controls plus produced shape/fresh local fragment repetition controls; RED expected"
+}

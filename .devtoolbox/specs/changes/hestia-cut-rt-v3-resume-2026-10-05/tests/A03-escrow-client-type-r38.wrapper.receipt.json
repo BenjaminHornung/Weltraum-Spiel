@@ -1,0 +1,8 @@
+{
+  "runId": "A03-escrow-client-type-r38",
+  "startedUtc": "2026-10-05T19:00:20.4040863+00:00",
+  "endedUtc": "2026-10-05T19:00:22.4474203+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 2.0383525,
+  "planFile": "A03-escrow-client-type-r38.plan.json"
+}

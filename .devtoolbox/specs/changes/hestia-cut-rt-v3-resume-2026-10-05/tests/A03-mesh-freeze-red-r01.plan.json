@@ -1,0 +1,10 @@
+{
+  "runId": "A03-mesh-freeze-red-r01",
+  "binding": "A03-mesh-freeze-red-r01-binding.json",
+  "classification": "R28 accessor Object.freeze lookup observation regression genuine RED; original historical fixture controls retained",
+  "files": [
+    "tests/unit/hvpMesherHistoricalContract.test.ts"
+  ],
+  "nativeCapSeconds": 180,
+  "mode": "tests"
+}

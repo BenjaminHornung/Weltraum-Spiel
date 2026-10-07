@@ -1,0 +1,38 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-terrain-consumer.test.ts > HVP paired terrain consumer > stages owned graphics before NativeStage and compares exact actual Source views (ready)
+AssertionError: expected 'Rejected' to be 'Applied' // Object.is equality
+
+Expected: "Applied"
+Received: "Rejected"
+
+ ❯ tests/unit/hvp-terrain-consumer.test.ts:56:47
+     54|       shape:{kind:"Box",min:[176,79,77],max:[177,80,78]}});
+     55|     expect(released).toBe(true);expect(events.indexOf("graphics")).toB…
+     56|     if(fault==="ready"){expect(result.status).toBe("Applied");expect([…
+       |                                               ^
+     57|     else{expect(result.status).toBe("Rejected");expect(root.read()).to…
+     58|       expect(events).toContain("graphics-rollback");expect(events).not…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  tests/unit/hvp-terrain-consumer.test.ts > HVP paired terrain consumer > stages owned graphics before NativeStage and compares exact actual Source views (preStage-reject)
+ FAIL  tests/unit/hvp-terrain-consumer.test.ts > HVP paired terrain consumer > stages owned graphics before NativeStage and compares exact actual Source views (ownerId)
+ FAIL  tests/unit/hvp-terrain-consumer.test.ts > HVP paired terrain consumer > stages owned graphics before NativeStage and compares exact actual Source views (sourceDigest)
+ FAIL  tests/unit/hvp-terrain-consumer.test.ts > HVP paired terrain consumer > stages owned graphics before NativeStage and compares exact actual Source views (centerOfMass)
+ FAIL  tests/unit/hvp-terrain-consumer.test.ts > HVP paired terrain consumer > stages owned graphics before NativeStage and compares exact actual Source views (cellCount)
+ FAIL  tests/unit/hvp-terrain-consumer.test.ts > HVP paired terrain consumer > stages owned graphics before NativeStage and compares exact actual Source views (massKg)
+ FAIL  tests/unit/hvp-terrain-consumer.test.ts > HVP paired terrain consumer > stages owned graphics before NativeStage and compares exact actual Source views (colliders)
+ FAIL  tests/unit/hvp-terrain-consumer.test.ts > HVP paired terrain consumer > stages owned graphics before NativeStage and compares exact actual Source views (sourceBytes)
+AssertionError: expected [ 'source' ] to include 'graphics-rollback'
+ ❯ tests/unit/hvp-terrain-consumer.test.ts:58:22
+     56|     if(fault==="ready"){expect(result.status).toBe("Applied");expect([…
+     57|     else{expect(result.status).toBe("Rejected");expect(root.read()).to…
+     58|       expect(events).toContain("graphics-rollback");expect(events).not…
+       |                      ^
+     59|       if(fault==="preStage-reject"){expect(events).toContain("source-r…
+     60|       else{expect(events).toContain("NativeRollback");}
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+

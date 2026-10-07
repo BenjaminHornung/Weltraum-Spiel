@@ -1,0 +1,24 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-coast-source.test.ts (35 tests) 30426ms
+     ✓ binds the exact private cold-grid producer with the same leaf bytes and source hash  305ms
+     ✓ hashes the same named seed deterministically across sync and async builds  742ms
+     ✓ covers submerged columns while excluding dry and coplanar tops  1292ms
+     ✓ keeps the lagoon channel continuously submerged  2321ms
+     ✓ rejects over-budget mesh requests before allocating outputs  3515ms
+     ✓ rejects over-budget water output before materializing arrays  1792ms
+     ✓ derives staggered far landforms from the versioned macro surface  11954ms
+     ✓ meshes the join ring inside the 16 to 20 m band with bound roles  1855ms
+ ✓ tests/unit/hvp-owned-slot-copy.test.ts (6 tests) 2649ms
+   ✓ copies the complete owned base in4096-byte blocks and overlays only current COW leaves in numeric order  787ms
+   ✓ registers fresh and prepared coast blocks only for exact owned producer identities  1147ms
+ ✓ tests/unit/hvp-cut-plan.test.ts (8 tests) 314ms
+ ✓ tests/unit/hvp-support-phase-budget.test.ts (2 tests) 8ms
+
+ Test Files  4 passed (4)
+      Tests  51 passed (51)
+   Start at  23:50:44
+   Duration  39.00s (transform 2.09s, setup 0ms, import 4.27s, tests 33.40s, environment 1ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-bulkcopy-r113-tests-r03/original-vitest.json

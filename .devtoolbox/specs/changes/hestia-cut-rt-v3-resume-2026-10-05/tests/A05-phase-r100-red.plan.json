@@ -1,0 +1,10 @@
+{
+  "binding": "A05-phase-r100-binding-red.json",
+  "runId": "A05-phase-r100-red",
+  "nativeCapSeconds": 60,
+  "classification": "Meaningful exactsame Prepare96 CPU256 concurrentgrant retainedcredit foreigntoken RED beforephase record",
+  "files": [
+    "tests/unit/hvp-support-phase-budget.test.ts"
+  ],
+  "mode": "tests"
+}

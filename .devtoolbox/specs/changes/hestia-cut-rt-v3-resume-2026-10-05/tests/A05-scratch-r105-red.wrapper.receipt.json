@@ -1,0 +1,8 @@
+{
+  "runId": "A05-scratch-r105-red",
+  "startedUtc": "2026-10-06T20:43:25.3403261+00:00",
+  "endedUtc": "2026-10-06T20:43:27.1908685+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 1.8373001,
+  "planFile": "A05-scratch-r105-red.plan.json"
+}

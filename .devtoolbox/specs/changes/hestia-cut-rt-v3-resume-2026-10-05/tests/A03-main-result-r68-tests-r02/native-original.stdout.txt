@@ -1,0 +1,68 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/workerResultGate.test.ts (10 tests) 150ms
+ ✓ tests/unit/hvp-body-mesh-worker.test.ts (8 tests) 24999ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=false, tight=false)  4258ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (true, owned=false, tight=false)  3223ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=true, tight=false)  2585ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (true, owned=true, tight=false)  2555ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=true, tight=true)  2442ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=true, tight=false)  3898ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (true, owned=true, tight=false)  3593ms
+   ✓ native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=true, tight=false)  2442ms
+ ✓ tests/unit/voxelWorkerProtocol.test.ts (15 tests) 23796ms
+     ✓ shares deterministic generation between synchronous and cooperative sliced APIs  4427ms
+     ✓ routes the real Hestia job through the existing WorkerPool and result gate  3871ms
+     ✓ binds cached-mode output to the requested canonical brick hash  1246ms
+     ✓ caches only canonical density/material channels and replays them through the same worker job  4085ms
+     ✓ rejects a host-side cancellation racing a held completion without consumer or cache admission  4011ms
+     ✓ rejects a stale pool result before Hestia cache admission  3912ms
+     ✓ publishes and validates an empty mesh through the five-buffer worker protocol  941ms
+ ✓ tests/unit/hvp-body-mesh-owner-integration.test.ts (36 tests) 22077ms
+   ✓ rejects projected owner-route Stage until the retained plan has admitted complete geometry  595ms
+   ✓ admits mesh-only output against the single retained native plan before Stage, commit and finalize  951ms
+   ✓ rejects altered color geometry with stable first failure and no native Stage or retry revival  807ms
+   ✓ keeps a thrown real admission yield terminal without mutating the native World  827ms
+   ✓ keeps a packet decoder failure terminal before geometry work and rejects a later good packet  855ms
+   ✓ cannot revive an admission after Rollback at a real verifier yield  752ms
+   ✓ preserves the first yielded failure when verifier cleanup also throws  795ms
+   ✓ retains one borrowed owner ledger through mesh admission and transfers results only at Finalize  668ms
+   ✓ rejects Dispose after native Stage until rollback or actual World release  654ms
+   ✓ keeps a failed projection reserve terminal for projection, mesh and native Stage  630ms
+   ✓ returns a latched post-projection owner failure before the missing-mesh guard  307ms
+   ✓ preserves non-Error mesh failure identity at Stage (null)  852ms
+   ✓ preserves non-Error mesh failure identity at Stage (undefined)  848ms
+   ✓ shares the first failure across later projection, decoder and Stage (Error: first cross-seam mesh error)  792ms
+   ✓ shares the first failure across later projection, decoder and Stage (null)  759ms
+   ✓ shares the first failure across later projection, decoder and Stage (undefined)  859ms
+   ✓ keeps a retired ledger until the suspended verifier actually closes  374ms
+   ✓ cannot switch the budget of an already derived plan (undefined)  1274ms
+   ✓ cannot switch the budget of an already derived plan (33554432)  413ms
+   ✓ closes owner scratch on Dispose and retains credits until its suspended admission returns  409ms
+   ✓ awaits packet decoding under the same parent credit before starting geometry admission  710ms
+   ✓ keeps decoding credit through Rollback and refuses the late decoded packet  394ms
+   ✓ preserves an asynchronous decoder rejection as the first cross-seam failure  621ms
+   ✓ reuses one expected-mesh workspace across multiple native children without releasing parent credit  779ms
+   ✓ keeps the single parent credit after Finalize until the external mesh operation really closes  688ms
+   ✓ keeps external producer credit through Rollback until its explicit terminal closure  327ms
+   ✓ keeps external producer credit through Dispose until its explicit terminal closure  307ms
+   ✓ refuses external ownership without the original borrowed ledger  789ms
+   ✓ keeps an exhausted external quote as the first owner failure without partial credit  436ms
+   ✓ prepares and reserves one source-derived external quote before exporting mesh work  672ms
+   ✓ excludes mesh admission while its prepaid quote is suspended and admits after closure  654ms
+ ✓ tests/unit/workerPoolLifecycle.test.ts (45 tests) 12474ms
+   ✓ transfers source-bound neighbour projections through the real pool and rejects a foreign ticket before transfer  8798ms
+   ✓ prepares local body cuts through the pool without accepting foreign owners or forged removed mass  750ms
+     ✓ rejects stale planning results after the planning epoch advances  974ms
+ ✓ tests/unit/workerProtocol.test.ts (11 tests) 134ms
+ ✓ tests/unit/hvp-body-mesh-client.test.ts (11 tests) 46ms
+ ✓ tests/unit/surfaceLabWorkerAdoption.test.ts (22 tests) 7ms
+ ✓ tests/unit/hvp-body-mesh-protocol.test.ts (2 tests) 4ms
+
+ Test Files  9 passed (9)
+      Tests  160 passed (160)
+   Start at  03:42:01
+   Duration  89.78s (transform 1.93s, setup 0ms, import 4.19s, tests 83.69s, environment 1ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-main-result-r68-tests-r02/original-vitest.json

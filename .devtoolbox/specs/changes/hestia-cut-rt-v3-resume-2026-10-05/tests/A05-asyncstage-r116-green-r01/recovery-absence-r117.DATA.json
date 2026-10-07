@@ -1,0 +1,33 @@
+{
+  "observedUtc": "2026-10-07T06:04:18.2170134+00:00",
+  "classification": "UNKNOWN_INTERRUPTED_WITHOUT_NATIVE_TERMINAL",
+  "scope": [
+    {
+      "role": "caller",
+      "pid": 59120,
+      "present": false,
+      "creationFileTime": null,
+      "expectedCreation": 134357996048087120
+    },
+    {
+      "role": "wrapper",
+      "pid": 64984,
+      "present": false,
+      "creationFileTime": null,
+      "expectedCreation": 134357996055513922
+    },
+    {
+      "role": "native",
+      "pid": 61304,
+      "present": false,
+      "creationFileTime": null,
+      "expectedCreation": 134357996058018514
+    }
+  ],
+  "nativeExit": "UNKNOWN",
+  "nativeJobFinalCounts": "NOT_PROVEN",
+  "cleanupWithin60Seconds": "NOT_PROVEN",
+  "existingStdout": "38 Consumer PASS only; Bootstrap and remaining population incomplete",
+  "timedOutOrPowerEventCause": "UNKNOWN",
+  "foreignProcesses": "NOT_TARGETED"
+}

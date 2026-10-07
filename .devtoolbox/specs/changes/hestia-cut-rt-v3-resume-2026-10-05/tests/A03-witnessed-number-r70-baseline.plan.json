@@ -1,0 +1,10 @@
+{
+  "files": [
+    "tests/unit/hvp-owned-materialization.test.ts"
+  ],
+  "mode": "tests",
+  "runId": "A03-witnessed-number-r70-baseline",
+  "binding": "A03-witnessed-number-r70-baseline-binding.json",
+  "nativeCapSeconds": 900,
+  "classification": "Wholematerialization with actualcomplete4096channel pairedmeasurement before numericchange"
+}

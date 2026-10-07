@@ -1,0 +1,16 @@
+{
+  "nativeCapSeconds": 180,
+  "runId": "A05-main-r98-green-r01",
+  "mode": "tests",
+  "classification": "Current boundedcodec privateMain support and originalTerrain products consumer population",
+  "files": [
+    "tests/unit/hvp-support-json.test.ts",
+    "tests/unit/hvp-owned-support-plan.test.ts",
+    "tests/unit/hvp-terrain-support.test.ts",
+    "tests/unit/hvp-terrain-transfer.test.ts",
+    "tests/unit/workerPoolLifecycle.test.ts",
+    "tests/unit/hvp-terrain-products.test.ts",
+    "tests/unit/hvp-terrain-consumer.test.ts"
+  ],
+  "binding": "A05-main-r98-binding-r01.json"
+}

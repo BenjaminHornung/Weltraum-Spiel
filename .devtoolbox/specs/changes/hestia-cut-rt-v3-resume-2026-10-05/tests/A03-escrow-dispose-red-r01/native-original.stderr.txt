@@ -1,0 +1,19 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-body-mesh-worker.test.ts > native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=true, tight=false)
+AssertionError: expected 'Physics is not ready' to contain 'binding'
+
+Expected: "binding"
+Received: "Physics is not ready"
+
+ ❯ tests/unit/hvp-body-mesh-worker.test.ts:65:144
+     63|     if(disposeLease){
+     64|       const disposed=await send({kind:"Dispose"});expect(disposed.snap…
+     65|       const stale=await send({kind:"ReleaseBodyMeshWork",binding:{...b…
+       |                                                                                                                                                ^
+     66|       for(let repeat=0;repeat<2;repeat+=1){const released=await send({…
+     67|         expect(released.rejected).toBeUndefined();expect(released.body…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

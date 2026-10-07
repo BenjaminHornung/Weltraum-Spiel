@@ -1,0 +1,8 @@
+{
+  "runId": "A05-phase-r100-green-r01",
+  "startedUtc": "2026-10-06T19:01:17.8243730+00:00",
+  "endedUtc": "2026-10-06T19:01:21.9266872+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 4.0893811,
+  "planFile": "A05-phase-r100-green-r01.plan.json"
+}

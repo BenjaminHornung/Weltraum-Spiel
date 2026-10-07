@@ -1,0 +1,8 @@
+{
+  "runId": "A04-atomic-r74-type-r01",
+  "startedUtc": "2026-10-06T03:18:10.2857478+00:00",
+  "endedUtc": "2026-10-06T03:18:12.1862893+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 1.8947572,
+  "planFile": "A04-atomic-r74-type-r01.plan.json"
+}

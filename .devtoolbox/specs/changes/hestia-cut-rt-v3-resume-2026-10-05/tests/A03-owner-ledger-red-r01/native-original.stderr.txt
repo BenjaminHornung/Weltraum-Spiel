@@ -1,0 +1,34 @@
+stderr | tests/unit/hvp-body-mesh-owner-integration.test.ts > keeps a retired ledger until the suspended verifier actually closes
+Promise returned by `expect(actual).rejects.toThrow(expected)` was not awaited. Vitest currently auto-awaits hanging assertions at the end of the test, but this will cause the test to fail in the next Vitest major. Please remember to await the assertion.
+    at C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser/tests/unit/hvp-body-mesh-owner-integration.test.ts:133:35
+    at withOwner(C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser/tests/unit/hvp-body-mesh-owner-integration.test.ts:37:5)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-body-mesh-owner-integration.test.ts > retains one borrowed owner ledger through mesh admission and transfers results only at Finalize
+TypeError: session.resources is not a function
+ ❯ tests/unit/hvp-body-mesh-owner-integration.test.ts:120:26
+    118|
+    119| it("retains one borrowed owner ledger through mesh admission and trans…
+    120|   const prepared=session.resources();expect(prepared?.residentBytes).t…
+       |                          ^
+    121|   expect(prepared?.reservedBytes).toBeGreaterThan(0);expect(prepared?.…
+    122|   const products=await productsFor(projection);await session.admitChil…
+ ❯ withOwner tests/unit/hvp-body-mesh-owner-integration.test.ts:37:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/hvp-body-mesh-owner-integration.test.ts > keeps a retired ledger until the suspended verifier actually closes
+TypeError: session.resources is not a function
+ ❯ tests/unit/hvp-body-mesh-owner-integration.test.ts:134:81
+    132|   const admission=session.admitChildMesh(id,products,{...host,yieldTas…
+    133|   const rejected=expect(admission).rejects.toThrow("Stale body prepara…
+    134|   session.rollback(id);expect(session.read().state).toBe("Idle");expec…
+       |                                                                                 ^
+    135|   resume();await rejected;expect(session.resources()?.reservedBytes).t…
+    136|   expect(session.resources()?.transferredResultEstimateBytes).toBe(0);
+ ❯ withOwner tests/unit/hvp-body-mesh-owner-integration.test.ts:37:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+

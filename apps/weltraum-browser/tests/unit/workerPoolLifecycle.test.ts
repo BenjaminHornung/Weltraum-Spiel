@@ -1,4 +1,5 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it,vi } from "vitest";
+import * as workerProtocol from "../../src/workers/protocol";
 import { fnv1aHash } from "../../src/core/hash";
 import { PerformanceTelemetry, createWorkerPoolTelemetryObserver } from "../../src/diagnostics/performance";
 import { collisionInputs } from "../../src/hestia-prototype/physics/terrainColliders";
@@ -10,6 +11,12 @@ import {encodeHvpProjectionPacket} from "../../src/hestia-prototype/runtime/proj
 import {meshHvpWaterPatch} from "../../src/hvp/hvpCoastMesher";
 import {ingestHvpStructuralCells} from "../../src/hestia-prototype/terrain/structuralIngest";
 import {HVP_BODY_CUT_JOB,HVP_BODY_CUT_MAX_OUTPUT,hvpBodyCutInputDigest,decodeHvpBodyCutOutput,type HvpBodyCutPayload} from "../../src/workers/hvpBodyCutJob";
+import {buildHvpBodyMeshInput,decodeHvpBodyMeshOutput,HVP_BODY_MESH_JOB,HVP_BODY_MESH_MAX_OUTPUT} from "../../src/workers/hvpBodyMeshJob";
+import type {HvpBodyChildProjection} from "../../src/hestia-prototype/physics/bodyCutSession";
+import {quoteHvpBodyMeshWork,createHvpBodyMeshPhaseReserve} from "../../src/hestia-prototype/presentation/bodyMeshAdmission";
+import {createHvpBodyMeshTaskPump} from "../../src/workers/hvpBoundedPump";
+import {createStructuralOwnerLedger} from "../../src/voxel/structural/model";
+import {HVP_TERRAIN_JOB,HVP_TERRAIN_MAX_OUTPUT,hvpTerrainInputDigest,decodeHvpTerrainOutput,type HvpTerrainPayload} from "../../src/workers/hvpTerrainJob";
 import {
   StreamingWorkerRuntime,
   WorkerPool,
@@ -42,7 +49,10 @@ class RuntimeTransport implements WorkerTransport {
   public onmessageerror: ((event: MessageEvent<unknown>) => void) | null = null;
   public terminated = false;
   public corruptNextOutputOwnership = false;
+  public statusAtCompletion:string|undefined;
   readonly #runtime = new StreamingWorkerRuntime((message, transfer = []) => {
+    if(message.type==="JobCompleted"){this.#runtime.handleMessage({type:"ReadStatus",workerEpoch:message.result.workerEpoch});}
+    if(message.type==="WorkerStatus"){this.statusAtCompletion=message.state;}
     const cloned = structuredClone(message, { transfer: [...transfer] }) as WorkerToHostMessage;
     const delivered: WorkerToHostMessage = this.corruptNextOutputOwnership && cloned.type === "JobOutputData"
       ? { ...cloned, bundle: { ...cloned.bundle, ownership: "SenderToWorker" } }
@@ -64,6 +74,105 @@ class RuntimeTransport implements WorkerTransport {
     this.retiredMessageHandler?.({ data: message } as MessageEvent<unknown>);
   }
 }
+
+it("dispatches mesh-only owner projections through the existing accepted-terminal pool with exclusive buffers",async()=>{
+  const projection:HvpBodyChildProjection={sessionId:"pool-mesh",epoch:0,commandId:"pool-cut",ownerId:"pool-parent",sourceId:"pool-source",
+    sourceDigest:"fnv1a64-v1:0000000000000000",revision:0,issuedTick:7,removedCells:1,removedMassKg:1,
+    parts:[{ownerId:"pool-source:r1:p0",sourceDigest:"fnv1a64-v1:1111111111111111",center:{x:.125,y:.0625,z:.0625},
+      massKg:2,sourceBytes:131072,cells:[{x:0,y:0,z:0,materialId:1},{x:1,y:0,z:0,materialId:1}]}]};
+  const packed=buildHvpBodyMeshInput(projection),pool=new WorkerPool({workerCount:1,queueCapacity:32,transportFactory:()=>new RuntimeTransport()});
+  await pool.start();
+  try{
+    const job:WorkerJobRequest={...request("mesh-only",packed.input.byteLength,0),inputRevision:contentRevision(0),
+      targetKey:workerTargetKey(projection.ownerId),jobKind:workerJobKind(HVP_BODY_MESH_JOB),algorithmVersion:algorithmVersion(1),
+      sourceInputDigest:packed.sourceInputDigest,estimatedOutputBytes:byteCount(HVP_BODY_MESH_MAX_OUTPUT),payload:packed.payload};
+    const terminal=await pool.enqueue(job,packed.input).result;
+    if(terminal.kind!=="Completed"){throw new Error(`Mesh-only dispatch ${terminal.kind}`);}
+    expect(pool.isAcceptedCompletedTerminal(terminal)).toBe(true);expect(packed.input.buffers[0]!.byteLength).toBe(0);
+    expect(terminal.output.revision).toBe(0);expect(terminal.output.buffers).toHaveLength(7);
+    const products=decodeHvpBodyMeshOutput({...job,workerEpoch:terminal.result.workerEpoch},projection,terminal.output);
+    expect(products.parts).toHaveLength(1);expect(products.parts[0]!.cells).toEqual(projection.parts[0]!.cells);
+    const bad=buildHvpBodyMeshInput(projection);
+    expect(()=>pool.enqueue({...job,jobId:workerJobId("mesh-foreign"),sourceInputDigest:"foreign"},bad.input)).toThrow(/binding/);
+    expect(bad.input.buffers[0]!.byteLength).toBe(32);
+  }finally{await pool.shutdown();}
+});
+
+it.each(["enqueue","cancel","epoch","shutdown","replace","fault","host-error"] as const)("keeps private result ownership and ticket until bounded hash closes (%s)",async mode=>{
+  const projection:HvpBodyChildProjection={sessionId:"pool-result",epoch:0,commandId:"result-cut",ownerId:"result-parent",sourceId:"result-source",
+    sourceDigest:"fnv1a64-v1:0000000000000000",revision:0,issuedTick:7,removedCells:1,removedMassKg:1,
+    parts:[{ownerId:"result-source:r1:p0",sourceDigest:"fnv1a64-v1:1111111111111111",center:{x:.125,y:.0625,z:.0625},massKg:2,sourceBytes:131072,
+      cells:[{x:0,y:0,z:0,materialId:1},{x:1,y:0,z:0,materialId:1}]}]};
+  let transferred=false,blocked=false,release:(()=>void)|undefined,settled=false;
+  const transports:RuntimeTransport[]=[],events:string[]=[];
+  const host={assertCurrent:()=>{},continuePlan:()=>!transferred,yieldTask:async()=>{
+    if(transferred&&!blocked){blocked=true;await new Promise<void>(resolve=>{release=resolve;});
+      if(mode==="host-error")throw new Error("result host failed");}
+  }};
+  const pool=new WorkerPool({workerCount:1,queueCapacity:32,transportFactory:()=>{const transport=new RuntimeTransport();transports.push(transport);return transport;},
+    observe:event=>{events.push(event.type);if(event.type==="OutputTransferred")transferred=true;}});
+  const packed=buildHvpBodyMeshInput(projection),quote=quoteHvpBodyMeshWork([{cells:2,gridCells:2,exposedFaces:10,slotBytes:2}],3,16384,32768);
+  await pool.start();
+  try{
+    const job:WorkerJobRequest={...request("mesh-result-hold",packed.input.byteLength,0),inputRevision:contentRevision(0),targetKey:workerTargetKey(projection.ownerId),
+      jobKind:workerJobKind(HVP_BODY_MESH_JOB),algorithmVersion:algorithmVersion(1),sourceInputDigest:packed.sourceInputDigest,
+      estimatedOutputBytes:byteCount(HVP_BODY_MESH_MAX_OUTPUT),payload:packed.payload};
+    const ticket=await pool.enqueueBodyMesh(job,packed.input,quote.workerBytes,host,createHvpBodyMeshPhaseReserve(quote.packBytes));
+    void ticket.result.then(()=>{settled=true;});
+    await vi.waitFor(()=>expect(release).toBeTypeOf("function"),{timeout:1000});
+    expect(settled).toBe(false);expect(pool.snapshot().runningJobs).toBe(1);
+    const next=pool.enqueue(request("after-result",4,0),input(4));
+    const dispatches=events.filter(type=>type==="Dispatched").length;
+    let shutdown:Promise<void>|undefined;
+    if(mode==="cancel")expect(ticket.cancel()).toBe(true);
+    if(mode==="epoch")pool.setPlanningEpoch(planningEpoch(1));
+    if(mode==="shutdown")shutdown=pool.shutdown();
+    if(mode==="replace")await pool.replaceWorker(0);
+    if(mode==="fault")transports[0]!.fail("result worker fault");
+    await Promise.resolve();expect(settled).toBe(false);
+    expect(events.filter(type=>type==="Dispatched")).toHaveLength(dispatches);
+    if(mode==="shutdown")expect(pool.snapshot().state).toBe("ShuttingDown");
+    release!();const terminal=await ticket.result;
+    expect(terminal.kind).toBe(mode==="enqueue"?"Completed":mode==="cancel"?"Cancelled":"Failed");
+    if(terminal.kind==="Completed")expect(pool.isAcceptedCompletedTerminal(terminal)).toBe(true);
+    if(mode==="host-error"&&terminal.kind==="Failed")expect(terminal.failure.message).toBe("result host failed");
+    if(shutdown)await shutdown;
+    await pool.shutdown();await next.result;expect(pool.snapshot().state).toBe("Stopped");
+  }finally{release?.();await pool.shutdown();}
+});
+
+it.each(["valid","cancel-preflight","exhausted-worker","oversized-metadata"] as const)("debits private mesh work on owned input and reports terminal after actual scratch closure (%s)",async mode=>{
+  const projection:HvpBodyChildProjection={sessionId:"pool-prepaid",epoch:0,commandId:"prepaid-cut",ownerId:"prepaid-parent",sourceId:"prepaid-source",
+    sourceDigest:"fnv1a64-v1:0000000000000000",revision:0,issuedTick:7,removedCells:1,removedMassKg:1,
+    parts:[{ownerId:"prepaid-source:r1:p0",sourceDigest:"fnv1a64-v1:1111111111111111",center:{x:.125,y:.0625,z:.0625},massKg:2,sourceBytes:131072,
+      cells:[{x:0,y:0,z:0,materialId:1},{x:1,y:0,z:0,materialId:65535}]}]};
+  const packed=buildHvpBodyMeshInput(projection),transport=new RuntimeTransport(),pool=new WorkerPool({workerCount:1,queueCapacity:32,transportFactory:()=>transport});
+  const quote=quoteHvpBodyMeshWork([{cells:2,gridCells:2,exposedFaces:10,slotBytes:4}],3,16384,32768);
+  const pump=createHvpBodyMeshTaskPump(()=>{});await pool.start();
+  try{
+    const job:WorkerJobRequest={...request("mesh-prepaid",packed.input.byteLength,0),inputRevision:contentRevision(0),targetKey:workerTargetKey(projection.ownerId),
+      jobKind:workerJobKind(HVP_BODY_MESH_JOB),algorithmVersion:algorithmVersion(1),sourceInputDigest:packed.sourceInputDigest,
+      estimatedOutputBytes:byteCount(HVP_BODY_MESH_MAX_OUTPUT),payload:packed.payload};
+    const first=new Error("owned preflight cancelled"),host=mode==="cancel-preflight"?{...pump.host,continuePlan:()=>false,yieldTask:async()=>{throw first;}}:pump.host;
+    if(mode==="oversized-metadata"){
+      const buffers=Array.from({length:33},()=>new ArrayBuffer(0)),input:TransferableBufferBundle={...packed.input,buffers,byteLength:byteCount(0),
+        views:buffers.map((_,i)=>({name:`empty-${i}`,kind:"Uint8Array",bufferIndex:i,byteOffset:0,elementCount:0}))};
+      const validate=vi.spyOn(workerProtocol,"validateTransferableBundle");
+      try{await expect(pool.enqueueBodyMesh(job,input,quote.workerBytes,host,createHvpBodyMeshPhaseReserve(quote.packBytes))).rejects.toThrow("input budget");
+        expect(validate).not.toHaveBeenCalled();expect(packed.input.buffers[0]!.byteLength).toBe(32);
+      }finally{validate.mockRestore();}return;
+    }
+    const pending=pool.enqueueBodyMesh(job,packed.input,mode==="exhausted-worker"?8192:quote.workerBytes,host,createHvpBodyMeshPhaseReserve(quote.packBytes));
+    expect(packed.input.buffers[0]!.byteLength).toBe(0);
+    if(mode==="cancel-preflight"){await expect(pending).rejects.toBe(first);expect(pool.snapshot().runningJobs).toBe(0);return;}
+    const terminal=await (await pending).result;
+    if(mode==="exhausted-worker"){expect(terminal.kind).toBe("Failed");if(terminal.kind==="Failed"){expect(terminal.failure.message).toContain("prepaid allowance");}return;}
+    if(terminal.kind!=="Completed"){throw new Error(`Private mesh ${terminal.kind}`);}
+    expect(pool.isAcceptedCompletedTerminal(terminal)).toBe(true);expect(transport.statusAtCompletion).toBe("Ready");
+    const products=decodeHvpBodyMeshOutput({...job,workerEpoch:terminal.result.workerEpoch},projection,terminal.output);
+    expect(products.parts[0]!.cells.map(c=>c.materialId)).toEqual([1,65535]);
+  }finally{pump.dispose();await pool.shutdown();}
+});
 
 it("transfers source-bound neighbour projections through the real pool and rejects a foreign ticket before transfer",async()=>{
   const pool=new WorkerPool({workerCount:1,queueCapacity:32,transportFactory:()=>new RuntimeTransport()});await pool.start();
@@ -145,6 +254,56 @@ it("runs HVP canonical collision jobs through the real pool protocol and rejects
     mesh.indices[0] = 999999;
     expect(() => decodeHvpCollisionOutput(terminal.output, payload)).toThrow(/geometry/);
   } finally { await pool.shutdown(); }
+});
+
+it.each(["valid","cancel","shutdown","epoch"] as const)("holds private support result ownership until bounded decoding closes (%s)",async mode=>{
+  let transferred=false,decoding=false,blocked=false,release:(()=>void)|undefined,settled=false;
+  const host={assertCurrent:()=>{},continuePlan:()=>!decoding,yieldTask:async()=>{
+    if(decoding&&!blocked){blocked=true;await new Promise<void>(resolve=>{release=resolve;});}
+  }};
+  const pool=new WorkerPool({workerCount:1,queueCapacity:32,transportFactory:()=>new RuntimeTransport(),
+    observe:e=>{if(e.type==="OutputTransferred"){transferred=true;}}}),ledger=createStructuralOwnerLedger(0,96*1024*1024,128);
+  await pool.start();
+  try{
+    const slots=new Uint8Array(32*4*4);for(const x of [17,18]){slots[x+2*32+128]=1;}
+    const payload:HvpSupportPayload={sessionId:"support-private",epoch:2,generation:1,sourceDigest:"12345678",size:[32,4,4],changed:[[16,2,1]]};
+    const bundle:TransferableBufferBundle={ownership:"SenderToWorker",revision:contentRevision(1),buffers:[slots.buffer],byteLength:byteCount(slots.byteLength),
+      views:[{name:"slots",kind:"Uint8Array",bufferIndex:0,byteOffset:0,elementCount:slots.length}]};
+    const job:WorkerJobRequest={...request("support-private",slots.byteLength,0),jobKind:workerJobKind(HVP_SUPPORT_JOB),
+      sourceInputDigest:hvpSupportInputDigest(payload,bundle.buffers),estimatedOutputBytes:byteCount(HVP_SUPPORT_MAX_OUTPUT),payload};
+    const enqueue=(pool as unknown as {enqueueSupport:(job:WorkerJobRequest,bundle:TransferableBufferBundle,context:typeof host,reserve:typeof ledger.reserve)=>Promise<import("../../src/workers/workerPool").WorkerJobTicket>}).enqueueSupport;
+    const reserve:typeof ledger.reserve=(bytes,retained,kind)=>{if(transferred&&bytes===256&&retained){decoding=true;}ledger.reserve(bytes,retained,kind);};
+    const pending=enqueue.call(pool,job,bundle,host,reserve);expect(slots.byteLength).toBe(0);
+    const ticket=await pending;void ticket.result.then(()=>{settled=true;});
+    await vi.waitFor(()=>expect(release).toBeTypeOf("function"),{timeout:1000});expect(decoding).toBe(true);expect(settled).toBe(false);
+    let shutdown:Promise<void>|undefined;
+    if(mode==="cancel"){expect(ticket.cancel()).toBe(true);}if(mode==="shutdown"){shutdown=pool.shutdown();}
+    if(mode==="epoch"){pool.setPlanningEpoch(planningEpoch(1));}await Promise.resolve();expect(settled).toBe(false);
+    release!();const terminal=await ticket.result;expect(terminal.kind).toBe(mode==="valid"?"Completed":mode==="cancel"?"Cancelled":"Failed");
+    if(terminal.kind==="Completed"){expect(pool.isAcceptedCompletedTerminal(terminal)).toBe(true);expect(decodeHvpSupportOutput(terminal.output,payload).fragments[0]!.cells).toHaveLength(2);}
+    if(shutdown){await shutdown;}
+  }finally{release?.();await pool.shutdown();ledger.release();}
+});
+
+it.each(["render","collision"] as const)("dispatches the private %s derivative through the real bounded worker and accepted result drain",async kind=>{
+  const edge=kind==="render"?64:32,halo=edge+2,slots=new Uint8Array(halo*130*halo);
+  for(let z=1;z<=edge;z+=1)for(let x=1;x<=edge;x+=1){slots[x+halo+z*halo*130]=1;}
+  const payload=kind==="render"?{sessionId:"private-derivative",epoch:0,sector:0,generation:1,sourceDigest:"12345678"}
+    :{sizeX:32,sizeY:128,sizeZ:32,originMeters:{x:-16,y:-8,z:-16},outputRevision:contentRevision(1)};
+  const bundle:TransferableBufferBundle={buffers:[slots.buffer],ownership:"SenderToWorker",revision:contentRevision(1),byteLength:byteCount(slots.byteLength),
+    views:[{name:"slots",kind:"Uint8Array",bufferIndex:0,byteOffset:0,elementCount:slots.length}]};
+  const job:WorkerJobRequest={...request("private-derivative",slots.byteLength,0),jobKind:workerJobKind(kind==="render"?HVP_TERRAIN_JOB:HVP_COLLISION_JOB),
+    sourceInputDigest:kind==="render"?hvpTerrainInputDigest(payload as HvpTerrainPayload,bundle.buffers):fnv1aBytes(bundle.buffers),
+    estimatedOutputBytes:byteCount(kind==="render"?HVP_TERRAIN_MAX_OUTPUT:HVP_COLLISION_MAX_OUTPUT),payload};
+  const transport=new RuntimeTransport(),pool=new WorkerPool({workerCount:1,queueCapacity:32,transportFactory:()=>transport}),pump=createHvpBodyMeshTaskPump(()=>{});
+  await pool.start();
+  try{const pending=pool.enqueueTerrainDerivative(job,bundle,38*1024*1024,pump.host,createHvpBodyMeshPhaseReserve(2*1024*1024),createHvpBodyMeshPhaseReserve(38*1024*1024));
+    expect(slots.byteLength).toBe(0);const terminal=await(await pending).result;
+    if(terminal.kind!=="Completed"){throw new Error(`Private derivative ${terminal.kind}`);}
+    expect(pool.isAcceptedCompletedTerminal(terminal)).toBe(true);expect(transport.statusAtCompletion).toBe("Ready");
+    const product=kind==="render"?decodeHvpTerrainOutput(terminal.output,payload as HvpTerrainPayload):decodeHvpCollisionOutput(terminal.output,payload as Parameters<typeof decodeHvpCollisionOutput>[1]);
+    expect(product.indices.length).toBeGreaterThan(0);expect(terminal.output.buffers).toHaveLength(kind==="render"?6:2);
+  }finally{pump.dispose();await pool.shutdown();}
 });
 
 it("runs source-bound support analysis through the real worker protocol without adopting foreign coverage",async()=>{

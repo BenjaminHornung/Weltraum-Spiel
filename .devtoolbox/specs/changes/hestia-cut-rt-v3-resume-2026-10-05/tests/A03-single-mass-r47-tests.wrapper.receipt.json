@@ -1,0 +1,8 @@
+{
+  "runId": "A03-single-mass-r47-tests",
+  "startedUtc": "2026-10-05T20:56:17.4331428+00:00",
+  "endedUtc": "2026-10-05T20:56:48.2290587+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 30.7904752,
+  "planFile": "A03-single-mass-r47-tests.plan.json"
+}

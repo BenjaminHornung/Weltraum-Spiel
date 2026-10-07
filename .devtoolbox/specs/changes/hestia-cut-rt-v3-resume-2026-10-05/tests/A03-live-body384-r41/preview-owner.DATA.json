@@ -1,0 +1,13 @@
+{
+  "role": "TASK_OWNED_PRODUCTION_PREVIEW",
+  "app": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05\\apps\\weltraum-browser",
+  "port": 5198,
+  "buildRun": "A03-productive-build-r41",
+  "pid": 29656,
+  "host": "127.0.0.1",
+  "foreignProcesses": "NOT_TARGETED",
+  "bundleBinding": "A03-productive-owner-r40-binding.json",
+  "binary": "C:\\IFI_SourceCode\\Utils\\npm-tmp\\opencode\\node-v22.23.2-win-x64\\node.exe",
+  "root": "C:\\IFI_SourceCode\\Temp\\WeltraumSpiel\\.worktrees\\Hestia-CutV3-Resume-2026-10-05",
+  "creationUtc": "2026-10-05T19:35:45.5524341Z"
+}

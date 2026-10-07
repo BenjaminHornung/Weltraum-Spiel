@@ -1,0 +1,12 @@
+{
+  "classification": "Whole support parity cancellation and original support transfer; r01 NOT_RUN missing test binding corrected",
+  "nativeCapSeconds": 180,
+  "runId": "A05-support-r96-green-r02",
+  "files": [
+    "tests/unit/hvp-owned-support-plan.test.ts",
+    "tests/unit/hvp-terrain-support.test.ts",
+    "tests/unit/hvp-terrain-transfer.test.ts"
+  ],
+  "binding": "A05-support-r96-binding-r02.json",
+  "mode": "tests"
+}

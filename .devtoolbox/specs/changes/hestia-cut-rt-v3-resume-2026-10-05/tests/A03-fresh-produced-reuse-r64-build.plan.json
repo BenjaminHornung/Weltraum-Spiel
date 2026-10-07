@@ -1,0 +1,8 @@
+{
+  "classification": "Exact private freshfragment reuses plus existing shape witness established during bounded freeze; generic/unreserved unchanged; full original controls/deadlines",
+  "binding": "A03-fresh-produced-reuse-r64-binding.json",
+  "runId": "A03-fresh-produced-reuse-r64-build",
+  "mode": "build",
+  "files": [],
+  "nativeCapSeconds": 900
+}

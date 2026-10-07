@@ -1,0 +1,10 @@
+{
+  "files": [
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts"
+  ],
+  "nativeCapSeconds": 180,
+  "runId": "A03-external-hold-reviewfix-r34",
+  "mode": "tests",
+  "classification": "Final R34 reviewer early-precondition fix, wholefile original defaults",
+  "binding": "A03-external-hold-reviewfix-r34-binding.json"
+}

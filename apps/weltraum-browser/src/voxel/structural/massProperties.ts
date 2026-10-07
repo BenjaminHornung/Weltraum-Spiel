@@ -395,8 +395,15 @@ function* singleComponentMassesSteps(
   if(classification.components.length!==1||classification.detachedComponents.length!==1||classification.fragments.length!==1){
     throw new StructuralMassError("InvalidStructuralState", "component", "Single-component source requires one unanchored fragment.");
   }
+  if(reserve!==undefined&&(classification.components[0]!.occupiedCells.length!==objectMass.occupiedVoxelCount
+    ||classification.detachedComponents[0]!.occupiedCells.length!==objectMass.occupiedVoxelCount
+    ||classification.fragments[0]!.occupiedCells.length!==objectMass.occupiedVoxelCount)){
+    throw new StructuralMassError("InvalidStructuralState", "component", "Single-component mass requires complete occupied-cell coverage.");
+  }
+  // The fresh sole component covers the same issued brick/local-index order.
+  // Its mass payload has no component identity, so reuse the exact immutable result.
   const componentMass=reserve===undefined?derive(object,fixed,classification.detachedComponents[0]!.occupiedCells)
-    :yield* deriveMassSteps(object,fixed,classification.detachedComponents[0]!.occupiedCells,reserve);
+    :objectMass;
   reserve?.(1_024, true);
   const prepared: SingleComponentMasses =
     Object.freeze({objectMass,classification,componentMass,budgets:fixed});

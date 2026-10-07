@@ -1,0 +1,489 @@
+{
+  "classification": "ACTUAL_SAME_NORMAL_SAVE1_COLD_RESTORE_R72_NOT_FINAL_ACCEPTANCE",
+  "binding": "A04-fixed-cold-render-r72-binding-r03.json",
+  "checks": {
+    "tick": true,
+    "bodyCount": true,
+    "colliderCount": true,
+    "player": true,
+    "bodies": true,
+    "fragments": true,
+    "moving": true,
+    "trianglesRestored": true,
+    "meshBytesRestored": true,
+    "cpuWithinCap": true
+  },
+  "before": {
+    "physicsStatus": "Paused",
+    "tick": 2952,
+    "bodyCount": 5,
+    "colliderCount": 91,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": 7,
+        "y": 1.035041093826294,
+        "z": -6.25
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "bodies": [
+      {
+        "ownerId": "hvp:physics:drop",
+        "position": {
+          "x": -9.624567985534668,
+          "y": 0.6241464614868164,
+          "z": -7.507255554199219
+        },
+        "orientation": {
+          "x": -0.6501973867416382,
+          "y": -0.2731212377548218,
+          "z": 0.27541404962539673,
+          "w": -0.6532956957817078
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "sleeping": true,
+        "massKg": 300
+      },
+      {
+        "ownerId": "hvp:physics:inertia",
+        "position": {
+          "x": -8.716800689697266,
+          "y": 1.5458214282989502,
+          "z": -13.151344299316406
+        },
+        "orientation": {
+          "x": -0.0002377739001531154,
+          "y": 0.3575611114501953,
+          "z": 0.00005180474545340985,
+          "w": 0.9338896870613098
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "sleeping": true,
+        "massKg": 35.15625
+      },
+      {
+        "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+        "position": {
+          "x": 8.422767639160156,
+          "y": 0.9611992239952087,
+          "z": -4.8892927169799805
+        },
+        "orientation": {
+          "x": 0.03730105236172676,
+          "y": 0.6483308672904968,
+          "z": 0.014030668884515762,
+          "w": 0.76031494140625
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "sleeping": true,
+        "massKg": 1586.71875
+      },
+      {
+        "ownerId": "hvp:branch:parent",
+        "position": {
+          "x": -11.25,
+          "y": 2.75,
+          "z": -13.25
+        },
+        "orientation": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "w": 1
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "sleeping": false,
+        "massKg": 450
+      }
+    ],
+    "fragments": [
+      {
+        "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+        "sourceDigest": "fnv1a64-v1:c05b830d110a061f",
+        "centerOfMass": {
+          "x": 23.484675036927623,
+          "y": 10.480705317577549,
+          "z": 9.754985228951256
+        },
+        "cellCount": 352,
+        "massKg": 1586.71875,
+        "colliders": 3,
+        "sourceBytes": 262144
+      }
+    ],
+    "moving": {
+      "sequence": 1,
+      "pendingId": null,
+      "state": "Idle",
+      "preview": null,
+      "last": {
+        "id": "moving-cut-1",
+        "status": "Applied",
+        "parentId": "hvp:terrain-fragment:r1:1b4aa69d",
+        "children": [
+          "hvp:terrain-fragment:r1:1b4aa69d:r1:p0"
+        ],
+        "removedCells": 32,
+        "removedMassKg": 135.9375,
+        "issuedTick": 613,
+        "commitTick": 636,
+        "parentPose": {
+          "position": {
+            "x": 8.427064895629883,
+            "y": 0.9733359217643738,
+            "z": -4.908839225769043
+          },
+          "rotation": {
+            "x": 0.037647005170583725,
+            "y": 0.6483205556869507,
+            "z": 0.014157482422888279,
+            "w": 0.76030433177948
+          },
+          "velocity": {
+            "x": -0.00004484649980440736,
+            "y": 0.000042238938476657495,
+            "z": -0.00025770883075892925
+          },
+          "angularVelocity": {
+            "x": 0.000022189909941516817,
+            "y": -0.0002279624022776261,
+            "z": -0.000037081423215568066
+          }
+        },
+        "removedMomentum": {
+          "massKg": 135.9375,
+          "referencePoint": {
+            "x": 8.427064895629883,
+            "y": 0.9733359217643738,
+            "z": -4.908839225769043
+          },
+          "center": {
+            "x": 8.476599874825876,
+            "y": 1.1167842799940113,
+            "z": -5.138762724818323
+          },
+          "linear": {
+            "x": 0.0017517834240986024,
+            "y": 0.006185712599565449,
+            "z": -0.03306456909784531
+          },
+          "angular": {
+            "x": -0.003228301349650187,
+            "y": -0.00005658430149858146,
+            "z": -0.00010782408989346877
+          }
+        }
+      }
+    },
+    "resources": {
+      "ledger": {
+        "slotBytes": 8388608,
+        "preparedCopyBytes": 8388608,
+        "maskBytes": 1089536,
+        "meshBytes": 28104744,
+        "groupedIndexBytes": 2448480,
+        "artifactCopyBytes": 28104744,
+        "retainedMeshBytes": 28118312,
+        "tempEstimateBytes": 157075816,
+        "vegetationSourceBytes": 7158400,
+        "checkpointSourceBytes": 0,
+        "totalCpuBytes": 248821528,
+        "gpuBytes": "unsupported",
+        "triangles": 374660,
+        "drawCalls": 171,
+        "dormantCheckpointBytes": 0,
+        "neighborSourceBytes": 0,
+        "neighborCacheBytes": 0,
+        "neighborCheckpointBytes": 0,
+        "neighborBaseProxyBytes": 0,
+        "physicsPayloadBytes": 4980528,
+        "physicsPrepareBytes": 100663296,
+        "dynamicFragmentSourceBytes": 273408
+      },
+      "gameplayCpuBytes": 248821528,
+      "diagnosticReservedBytes": 524288,
+      "totalCpuBytes": 249345816,
+      "diagnosticRuntimeOverhead": "not-measured",
+      "cutObservation": {
+        "status": "armed",
+        "drops": 0,
+        "disables": 0,
+        "inputCount": 1,
+        "pendingRender": false
+      },
+      "caps": {
+        "maxCpuBytes": 268435456,
+        "maxMeshBytes": 134217728,
+        "maxTriangles": 500000,
+        "maxDrawCalls": 300
+      }
+    },
+    "save": {
+      "state": "Idle",
+      "message": "Lokaler Hestia-Spielstand",
+      "revision": null
+    },
+    "render": {
+      "geometries": 129,
+      "materials": 19,
+      "representations": 129,
+      "ownedCpuBytes": 28105392,
+      "previewCount": 1
+    }
+  },
+  "after": {
+    "state": "State: Ready",
+    "physicsStatus": "Paused",
+    "tick": 2952,
+    "bodyCount": 5,
+    "colliderCount": 91,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": 7,
+        "y": 1.035041093826294,
+        "z": -6.25
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "bodies": [
+      {
+        "ownerId": "hvp:physics:drop",
+        "position": {
+          "x": -9.624567985534668,
+          "y": 0.6241464614868164,
+          "z": -7.507255554199219
+        },
+        "orientation": {
+          "x": -0.6501973867416382,
+          "y": -0.2731212377548218,
+          "z": 0.27541404962539673,
+          "w": -0.6532956957817078
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "sleeping": true,
+        "massKg": 300
+      },
+      {
+        "ownerId": "hvp:physics:inertia",
+        "position": {
+          "x": -8.716800689697266,
+          "y": 1.5458214282989502,
+          "z": -13.151344299316406
+        },
+        "orientation": {
+          "x": -0.0002377739001531154,
+          "y": 0.3575611114501953,
+          "z": 0.00005180474545340985,
+          "w": 0.9338896870613098
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "sleeping": true,
+        "massKg": 35.15625
+      },
+      {
+        "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+        "position": {
+          "x": 8.422767639160156,
+          "y": 0.9611992239952087,
+          "z": -4.8892927169799805
+        },
+        "orientation": {
+          "x": 0.03730105236172676,
+          "y": 0.6483308672904968,
+          "z": 0.014030668884515762,
+          "w": 0.76031494140625
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "sleeping": true,
+        "massKg": 1586.71875
+      },
+      {
+        "ownerId": "hvp:branch:parent",
+        "position": {
+          "x": -11.25,
+          "y": 2.75,
+          "z": -13.25
+        },
+        "orientation": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "w": 1
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "sleeping": false,
+        "massKg": 450
+      }
+    ],
+    "fragments": [
+      {
+        "ownerId": "hvp:terrain-fragment:r1:1b4aa69d:r1:p0",
+        "sourceDigest": "fnv1a64-v1:c05b830d110a061f",
+        "centerOfMass": {
+          "x": 23.484675036927623,
+          "y": 10.480705317577549,
+          "z": 9.754985228951256
+        },
+        "cellCount": 352,
+        "massKg": 1586.71875,
+        "colliders": 3,
+        "sourceBytes": 262144
+      }
+    ],
+    "moving": {
+      "sequence": 1,
+      "pendingId": null,
+      "state": "Idle",
+      "preview": null,
+      "last": {
+        "children": [
+          "hvp:terrain-fragment:r1:1b4aa69d:r1:p0"
+        ],
+        "commitTick": 636,
+        "id": "moving-cut-1",
+        "issuedTick": 613,
+        "parentId": "hvp:terrain-fragment:r1:1b4aa69d",
+        "parentPose": {
+          "angularVelocity": {
+            "x": 0.000022189909941516817,
+            "y": -0.0002279624022776261,
+            "z": -0.000037081423215568066
+          },
+          "position": {
+            "x": 8.427064895629883,
+            "y": 0.9733359217643738,
+            "z": -4.908839225769043
+          },
+          "rotation": {
+            "w": 0.76030433177948,
+            "x": 0.037647005170583725,
+            "y": 0.6483205556869507,
+            "z": 0.014157482422888279
+          },
+          "velocity": {
+            "x": -0.00004484649980440736,
+            "y": 0.000042238938476657495,
+            "z": -0.00025770883075892925
+          }
+        },
+        "removedCells": 32,
+        "removedMassKg": 135.9375,
+        "removedMomentum": {
+          "angular": {
+            "x": -0.003228301349650187,
+            "y": -0.00005658430149858146,
+            "z": -0.00010782408989346877
+          },
+          "center": {
+            "x": 8.476599874825876,
+            "y": 1.1167842799940113,
+            "z": -5.138762724818323
+          },
+          "linear": {
+            "x": 0.0017517834240986024,
+            "y": 0.006185712599565449,
+            "z": -0.03306456909784531
+          },
+          "massKg": 135.9375,
+          "referencePoint": {
+            "x": 8.427064895629883,
+            "y": 0.9733359217643738,
+            "z": -4.908839225769043
+          }
+        },
+        "status": "Applied"
+      }
+    },
+    "resources": {
+      "ledger": {
+        "slotBytes": 8388608,
+        "preparedCopyBytes": 8388608,
+        "maskBytes": 1089536,
+        "meshBytes": 28104744,
+        "groupedIndexBytes": 2448480,
+        "artifactCopyBytes": 28104744,
+        "retainedMeshBytes": 28118312,
+        "tempEstimateBytes": 157076008,
+        "vegetationSourceBytes": 7158400,
+        "checkpointSourceBytes": 3234768,
+        "totalCpuBytes": 251758504,
+        "gpuBytes": "unsupported",
+        "triangles": 374660,
+        "drawCalls": 171,
+        "dormantCheckpointBytes": 0,
+        "neighborSourceBytes": 0,
+        "neighborCacheBytes": 0,
+        "neighborCheckpointBytes": 0,
+        "neighborBaseProxyBytes": 0,
+        "physicsPayloadBytes": 4980528,
+        "physicsPrepareBytes": 100663296,
+        "dynamicFragmentSourceBytes": 273408
+      },
+      "gameplayCpuBytes": 251758504,
+      "diagnosticReservedBytes": 524288,
+      "totalCpuBytes": 252282792,
+      "diagnosticRuntimeOverhead": "not-measured",
+      "cutObservation": {
+        "status": "armed",
+        "drops": 0,
+        "disables": 0,
+        "inputCount": 0,
+        "pendingRender": false
+      },
+      "caps": {
+        "maxCpuBytes": 268435456,
+        "maxMeshBytes": 134217728,
+        "maxTriangles": 500000,
+        "maxDrawCalls": 300
+      }
+    },
+    "save": {
+      "state": "Loaded",
+      "message": "Aus Spielstand gestartet – pausiert",
+      "revision": 1
+    },
+    "render": null
+  }
+}

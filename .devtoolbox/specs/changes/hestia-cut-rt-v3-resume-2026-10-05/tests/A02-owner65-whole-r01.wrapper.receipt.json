@@ -1,0 +1,8 @@
+{
+  "runId": "A02-owner65-whole-r01",
+  "startedUtc": "2026-10-05T09:30:14.0768575+00:00",
+  "endedUtc": "2026-10-05T09:33:13.2498317+00:00",
+  "wrapperExitCode": 91,
+  "elapsedSeconds": 179.1623276,
+  "planFile": "A02-owner65-whole-r01.plan.json"
+}

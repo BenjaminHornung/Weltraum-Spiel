@@ -1,0 +1,8 @@
+{
+  "mode": "type",
+  "runId": "A03-external-hold-type-r34",
+  "nativeCapSeconds": 60,
+  "classification": "Final external mesh hold typecheck",
+  "binding": "A03-external-hold-r34-binding.json",
+  "files": []
+}

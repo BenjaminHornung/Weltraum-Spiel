@@ -1,0 +1,36 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-body-mesh-owner-integration.test.ts (25 tests | 3 failed) 13260ms
+   ✓ rejects projected owner-route Stage until the retained plan has admitted complete geometry  539ms
+   ✓ admits mesh-only output against the single retained native plan before Stage, commit and finalize  787ms
+   ✓ rejects altered color geometry with stable first failure and no native Stage or retry revival  608ms
+   ✓ keeps a thrown real admission yield terminal without mutating the native World  560ms
+   ✓ keeps a packet decoder failure terminal before geometry work and rejects a later good packet  561ms
+   ✓ cannot revive an admission after Rollback at a real verifier yield  574ms
+   ✓ preserves the first yielded failure when verifier cleanup also throws  563ms
+   ✓ admits an empty child set after complete legal removal without a first-part assumption 177ms
+   ✓ retains one borrowed owner ledger through mesh admission and transfers results only at Finalize  833ms
+   ✓ rejects Dispose after native Stage until rollback or actual World release  875ms
+   ✓ keeps ledger-construction failure identical on retry before any plan issuance 72ms
+   ✓ keeps a failed projection reserve terminal for projection, mesh and native Stage  557ms
+   ✓ returns a latched post-projection owner failure before the missing-mesh guard  503ms
+   ✓ preserves non-Error mesh failure identity at Stage (null)  426ms
+   ✓ preserves non-Error mesh failure identity at Stage (undefined)  474ms
+   ✓ shares the first failure across later projection, decoder and Stage (Error: first cross-seam mesh error)  495ms
+   ✓ shares the first failure across later projection, decoder and Stage (null)  455ms
+   ✓ shares the first failure across later projection, decoder and Stage (undefined)  455ms
+   ✓ keeps a retired ledger until the suspended verifier actually closes  528ms
+   ✓ cannot switch the budget of an already derived plan (undefined)  465ms
+   ✓ cannot switch the budget of an already derived plan (33554432)  504ms
+   ✓ closes owner scratch on Dispose and retains credits until its suspended admission returns  573ms
+   × awaits packet decoding under the same parent credit before starting geometry admission 575ms
+   × keeps decoding credit through Rollback and refuses the late decoded packet 579ms
+   × preserves an asynchronous decoder rejection as the first cross-seam failure 496ms
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 22 passed (25)
+   Start at  18:18:00
+   Duration  15.05s (transform 753ms, setup 0ms, import 1.62s, tests 13.26s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-async-owner-red-r01/original-vitest.json

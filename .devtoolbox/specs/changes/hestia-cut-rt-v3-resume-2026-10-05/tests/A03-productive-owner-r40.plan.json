@@ -1,0 +1,13 @@
+{
+  "classification": "Finite aggregate full consumer/compiler/Client/NativeOwner populations after productive route activation; original per-test deadlines",
+  "files": [
+    "tests/unit/hvp-moving-consumer.test.ts",
+    "tests/unit/hvp-terrain-products.test.ts",
+    "tests/unit/hvp-body-mesh-client.test.ts",
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts"
+  ],
+  "binding": "A03-productive-owner-r40-binding.json",
+  "nativeCapSeconds": 600,
+  "mode": "tests",
+  "runId": "A03-productive-owner-r40"
+}

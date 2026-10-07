@@ -1,0 +1,37 @@
+[
+  {
+    "appRelative": "src/hestia-prototype/physics/bodyCut.ts",
+    "bytes": 7533,
+    "sha256": "fd5a685b5ecab8aa49c2a15b5597f65a1e5b269a6d874dc4b69f4053908fdc6c"
+  },
+  {
+    "appRelative": "src/hestia-prototype/physics/bodyCutSession.ts",
+    "bytes": 25877,
+    "sha256": "1eb8e07e58c0d66a0ed0c5bd8b6dfd8faed6a35504b0cdd791b14429d34fc976"
+  },
+  {
+    "appRelative": "src/hestia-prototype/physics/session.ts",
+    "bytes": 45237,
+    "sha256": "b41dd6b3d084c7d80e4da8a928c655586eaa55e0776e2d532aebc2d512535c0f"
+  },
+  {
+    "appRelative": "src/hestia-prototype/physics/client.ts",
+    "bytes": 32869,
+    "sha256": "67d1d0533f6b5fc197b65edf173cf1de3146d7d460f1e41ca49f6bc7d596b3fe"
+  },
+  {
+    "appRelative": "src/hestia-prototype/physics/physicsWorker.ts",
+    "bytes": 24456,
+    "sha256": "cd7613f5751feaf9cee9429e0446474b813ae933d62f7ab823eee62001c84164"
+  },
+  {
+    "appRelative": "tests/unit/hvp-body-mesh-owner-integration.test.ts",
+    "bytes": 16490,
+    "sha256": "234df13b0a010da877e622beb1d39ac9b9171ec29a2621053a5d0759fe2b74a0"
+  },
+  {
+    "appRelative": "tests/unit/hvp-body-mesh-worker.test.ts",
+    "bytes": 8645,
+    "sha256": "4aeee948479385a974ad1604d7bd60fa3b589738f361fadb1ac571ad13085fd4"
+  }
+]

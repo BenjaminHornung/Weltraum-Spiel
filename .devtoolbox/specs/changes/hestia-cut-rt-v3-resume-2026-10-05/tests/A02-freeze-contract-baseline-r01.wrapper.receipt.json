@@ -1,0 +1,8 @@
+{
+  "runId": "A02-freeze-contract-baseline-r01",
+  "startedUtc": "2026-10-05T10:27:16.7638185+00:00",
+  "endedUtc": "2026-10-05T10:27:17.5261575+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 0.7561729,
+  "planFile": "A02-freeze-contract-baseline-r01.plan.json"
+}

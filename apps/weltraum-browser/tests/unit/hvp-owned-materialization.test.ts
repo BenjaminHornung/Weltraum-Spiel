@@ -1,4 +1,5 @@
 import {expect,it} from "vitest";
+import {createOwnedCanonicalHashCursor as numericPreimage} from "../reference/hvp-r70-ownedCanonicalHashSteps";
 import * as root from "../../src/voxel/adaptive";
 import * as canonical from "../../src/voxel/adaptive/canonical";
 import * as materialization from "../../src/voxel/adaptive/materialization";
@@ -8,7 +9,7 @@ import {createOwnedCanonicalHashCursor,OWNED_RECORD_MAX_KEYS} from "../../src/vo
 import {createStructuralOwnerLedger,isIssuedStructuralObject} from "../../src/voxel/structural/model";
 import {structuralPositiveBudget} from "../../src/voxel/structural/validation";
 import type {AdaptiveCanonicalValue,AdaptiveValidatedRefinementRequest,ValidateAdaptivePlannerSnapshotSemanticsOptions,
-  CreateAdaptiveResidentValidationProofInput,CreateAdaptiveResidentValidationProofsInput,MaterializeAdaptiveBrickInput} from "../../src/voxel/adaptive";
+  CreateAdaptiveResidentValidationProofInput,CreateAdaptiveResidentValidationProofsInput,MaterializeAdaptiveBrickInput,MaterializedAdaptiveBrick} from "../../src/voxel/adaptive";
 
 const {deepFreeze,hashAdaptiveCanonical,canonicalAdaptiveJson}=root;
 const resident=32*1024*1024; // Conservative retained inputs/oracles/old/new/results, NOT physical/GC proof.
@@ -75,6 +76,63 @@ const hashOptions=(ledger:ReturnType<typeof createStructuralOwnerLedger>)=>{
     }});
   return {options,get started(){return started;},get closed(){return closed;},get maxKeys(){return maxKeys;}};
 };
+it("measures exact witnessed numeric kernels on the actual complete materialization content envelope",()=>{
+  const ledger=createStructuralOwnerLedger(resident,96*1024*1024,128);let envelope:unknown;
+  const options:edits.AdaptiveOwnedJournalOptions={reserve:ledger.reserve,hash:function*(payload:unknown):Generator<void,string,void>{
+    if((payload as {schemaVersion?:string}).schemaVersion==="adaptive-microvoxel-content-hash-input-v1")envelope=payload;
+    ledger.reserve(32768,false,"hash");const cursor=createOwnedCanonicalHashCursor(payload,undefined,true);
+    try{for(;;){const result=cursor.advance(128);if(result!==undefined)return result.contentHash;yield;}}
+    finally{cursor.dispose();}
+  }};
+  try{
+    const brick=drain(materialization.adaptiveMaterializeBrickSteps(input,options));
+    expect(canonicalAdaptiveJson(brick)).toBe(expectedBytes);
+    for(const channel of ["density","occupancy","material","semantic"] as const)expect(validation.isValidatedFrozenDenseArray(brick[channel])).toBe(true);
+    expect(envelope).toBeDefined();const bytes=canonicalAdaptiveJson(envelope),digest=hashAdaptiveCanonical(envelope),samples={baseline:[] as number[],candidate:[] as number[]};
+    const run=(factory:typeof numericPreimage)=>{
+      const cursor=factory(envelope,undefined,true),start=performance.now();let result;
+      try{do{result=cursor.advance(128);}while(result===undefined);}finally{cursor.dispose();}
+      const duration=performance.now()-start;expect(result.contentHash).toBe(digest);return duration;
+    };
+    for(let warm=0;warm<4;warm+=1){run(numericPreimage);run(createOwnedCanonicalHashCursor);}
+    for(let pair=0;pair<9;pair+=1)for(const kind of pair%2===0?["baseline","candidate"] as const:["candidate","baseline"] as const){
+      let total=0;for(let repeat=0;repeat<4;repeat+=1)total+=run(kind==="baseline"?numericPreimage:createOwnedCanonicalHashCursor);samples[kind].push(total/4);
+    }
+    expect(canonicalAdaptiveJson(envelope)).toBe(bytes);
+    console.info("R70_NUMERIC_KERNEL",JSON.stringify({classification:"DIAGNOSTIC_NOT_GAME_ACCEPTANCE",batchSize:4,samples}));
+  }finally{ledger.release();}
+});
+it("retains only completely validated immutable plain channels and preserves numeric normalization and copy fallbacks",()=>{
+  const original=root.materializeAdaptiveBrick(input);
+  const validate=(brick:MaterializedAdaptiveBrick)=>{
+    const ledger=createStructuralOwnerLedger(resident),hashes=hashOptions(ledger);
+    try{return drain(materialization.adaptiveValidateMaterializedBrickSteps(brick,hashes.options));}
+    finally{ledger.release();}
+  };
+  const retained=validate(original);
+  for(const channel of ["density","occupancy","material","semantic"] as const){expect(retained[channel]).toBe(original[channel]);}
+  expect(retained).not.toBe(original);expect(retained.provenance).not.toBe(original.provenance);
+  expect(canonicalAdaptiveJson(retained)).toBe(canonicalAdaptiveJson(root.validateMaterializedAdaptiveBrick(original)));
+  const mutable={...original,density:[...original.density]};
+  const copied=validate(mutable);expect(copied.density).not.toBe(mutable.density);expect(Object.isFrozen(copied.density)).toBe(true);
+  expect(canonicalAdaptiveJson(copied)).toBe(canonicalAdaptiveJson(root.validateMaterializedAdaptiveBrick(mutable)));
+  class Derived extends Array<number>{}
+  const subclassed={...original,density:Object.freeze(Derived.from(original.density))};
+  expect(validate(subclassed).density).not.toBe(subclassed.density);
+  const zero=root.materializeAdaptiveBrick({key,baseField:root.createAdaptiveBaseFieldDescriptor({kind:"constant-v1",
+    identity:root.stableAuthorityId("base.zero-normalization"),version:root.stableAuthorityId("hvp-rigid-ingest-v1"),
+    sourceRevision:root.authorityRevision(1),sample:{density:0,occupancy:0,materialId:null,semanticId:null}}),
+    editJournal:root.createAdaptiveEditJournal([])});
+  const density=[...zero.density];density[5]=-0;
+  const signed=deepFreeze({...zero,density}),normalized=validate(signed);
+  expect(Object.is(signed.density[5],-0)).toBe(true);expect(Object.is(normalized.density[5],0)).toBe(true);
+  expect(normalized.density).not.toBe(signed.density);expect(normalized.contentHash).toBe(signed.contentHash);
+  expect(numericBytes(normalized.density)).toEqual(numericBytes(root.validateMaterializedAdaptiveBrick(signed).density));
+  const invalid=deepFreeze({...original,occupancy:original.occupancy.map((value,index)=>index===0?2:value),
+    material:original.material.map((value,index)=>index===0?" invalid ":value)}) as unknown as MaterializedAdaptiveBrick;
+  const expected=failureOf(()=>root.validateMaterializedAdaptiveBrick(invalid)),actual=failureOf(()=>validate(invalid));
+  expect(actual).toMatchObject({code:(expected as validation.AdaptiveAuthorityError).code,path:"brick/occupancy/0"});
+});
 // This higher fixture owns the WHOLE parent job (including cancellation). Borrowed source steps
 // never release it. One tiny driver, no production scheduler/factory or second ledger.
 const job=(value:MaterializeAdaptiveBrickInput=input,prepareLimit=96*1024*1024)=>{

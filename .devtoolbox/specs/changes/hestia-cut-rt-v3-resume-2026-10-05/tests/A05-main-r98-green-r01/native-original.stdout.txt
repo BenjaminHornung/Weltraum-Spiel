@@ -1,0 +1,76 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/workerPoolLifecycle.test.ts (49 tests) 18303ms
+   ✓ transfers source-bound neighbour projections through the real pool and rejects a foreign ticket before transfer  13871ms
+   ✓ prepares local body cuts through the pool without accepting foreign owners or forged removed mass  1134ms
+   ✓ support decode keeps report and transfer aggregate budgets distinct  360ms
+     ✓ rejects stale planning results after the planning epoch advances  896ms
+stdout | tests/unit/hvp-owned-support-plan.test.ts > compares full384 support CPU and actual task quanta on the same occupancy without changing results, pair 0
+R97_SUPPORT384_CPU_AND_QUANTA [
+  {
+    baselineCpuMs: 1343.2289999999998,
+    ownedWorkMs: 421.6606000000029,
+    ownedWallMs: 438.5527999999995,
+    maxQuantumMs: 3.718800000000556,
+    quanta: 193
+  }
+]
+
+stdout | tests/unit/hvp-owned-support-plan.test.ts > compares full384 support CPU and actual task quanta on the same occupancy without changing results, pair 1
+R97_SUPPORT384_CPU_AND_QUANTA [
+  {
+    baselineCpuMs: 1353.1192,
+    ownedWorkMs: 433.4680000000171,
+    ownedWallMs: 451.1248999999998,
+    maxQuantumMs: 3.6995999999999185,
+    quanta: 197
+  }
+]
+
+stdout | tests/unit/hvp-owned-support-plan.test.ts > compares full384 support CPU and actual task quanta on the same occupancy without changing results, pair 2
+R97_SUPPORT384_CPU_AND_QUANTA [
+  {
+    baselineCpuMs: 1118.2987999999996,
+    ownedWorkMs: 466.688799999989,
+    ownedWallMs: 489.0493000000006,
+    maxQuantumMs: 4.276300000001356,
+    quanta: 212
+  }
+]
+
+ ✓ tests/unit/hvp-owned-support-plan.test.ts (6 tests) 8257ms
+   ✓ shares full support reports and every source read with the original algorithm while using one borrowed lifetime  2445ms
+   ✓ runs the owned job through the existing real task pump and closes input/search/ingest/recipe cancellation  602ms
+   ✓ compares full384 support CPU and actual task quanta on the same occupancy without changing results, pair 0  1786ms
+   ✓ compares full384 support CPU and actual task quanta on the same occupancy without changing results, pair 1  1806ms
+   ✓ compares full384 support CPU and actual task quanta on the same occupancy without changing results, pair 2  1609ms
+stdout | tests/unit/hvp-terrain-support.test.ts > previews the actual authored rock arm without detaching or changing its canonical root
+Authored rock-arm support { sourceDigest: 'b8fde6b0', probes: 2156, massKg: 1722.65625 }
+
+ ✓ tests/unit/hvp-terrain-support.test.ts (7 tests) 4271ms
+   ✓ rejects a complete component that would require more than 64 exact collider boxes  1591ms
+   ✓ previews the actual authored rock arm without detaching or changing its canonical root  1651ms
+   ✓ records deterministic support sub-spans without changing the admitted fragments  406ms
+ ✓ tests/unit/hvp-terrain-consumer.test.ts (24 tests) 4183ms
+     ✓ cut trace keeps canonical outcomes and publication order unchanged when tracing is absent, present, or throwing  3268ms
+ ✓ tests/unit/hvp-support-json.test.ts (3 tests) 1324ms
+   ✓ reads the existing JSON wire across real UTF8 and escape boundaries without a bulk parse  1317ms
+ ❯ tests/unit/hvp-terrain-products.test.ts (9 tests | 1 failed) 2690ms
+     ✓ copies immutable COW leaves in canonical order without millions of per-cell map lookups 272ms
+     ✓ covers sixteen 8m sectors exactly and invalidates only local content/halo products  1817ms
+     ✓ binds source, session, epoch, generation and sector before accepting actual typed worker output 22ms
+     ✓ rolls a quiescent compiler pool only after shutdown and lazily starts the replacement with monotone job IDs 202ms
+     × blocks rollover while compiler source copying is still before worker enqueue 58ms
+     ✓ does not replace the pool when its Load owner is lost while shutdown is pending 4ms
+     ✓ blocks rollover through accepted-terminal decoding and the compiler's post-terminal yield  308ms
+     ✓ fails closed when pool retirement itself rejects 3ms
+     ✓ does not accept a replacement after disposal while retirement is pending 2ms
+ ✓ tests/unit/hvp-terrain-transfer.test.ts (2 tests) 383ms
+
+ Test Files  1 failed | 6 passed (7)
+      Tests  1 failed | 99 passed (100)
+   Start at  20:19:56
+   Duration  46.70s (transform 2.19s, setup 0ms, import 5.11s, tests 39.41s, environment 1ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-main-r98-green-r01/original-vitest.json

@@ -1,0 +1,8 @@
+{
+  "runId": "A05-bulkcopy-r113-tests-r01",
+  "startedUtc": "2026-10-06T21:42:40.6694345+00:00",
+  "endedUtc": "2026-10-06T21:43:53.4258345+00:00",
+  "wrapperExitCode": 1,
+  "elapsedSeconds": 72.74573,
+  "planFile": "A05-bulkcopy-r113-tests-r01.plan.json"
+}

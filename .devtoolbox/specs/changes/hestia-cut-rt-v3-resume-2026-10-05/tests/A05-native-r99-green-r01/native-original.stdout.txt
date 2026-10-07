@@ -1,0 +1,25 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-transferred-recipe.test.ts (11 tests) 7612ms
+   ✓ keeps full transferred recipe admission and exact rejection messages on the bounded owned path  543ms
+   ✓ closes bounded transferred admission before cancellation can publish a recipe  464ms
+   ✓ uses exactly the independent Native terrain source and full admission on the owned fragment path  333ms
+   ✓ admits a transferred recipe with byte-identical mechanics to the recomputed one  640ms
+   ✓ rejects tampered mass, overlapping or gapped coverage and foreign cells  1544ms
+   ✓ rejects malformed boxes, empty claims and split components  1497ms
+   ✓ rejects canonical transferred boxes in a different order  644ms
+   ✓ rejects anchored, joint-bearing and nonzero-origin sources  670ms
+   ✓ freezes the transferred collider array and preserves canonical content  444ms
+   ✓ preserves canonical mechanics through a native save round trip  529ms
+ ✓ tests/unit/hvp-terrain-fragment-world.test.ts (4 tests) 3986ms
+   ✓ bounds the actual Float32 render vertices after mixed-density native COM recentering  2851ms
+   ✓ restores native membership on rollback and rejects forged mass before publication  405ms
+   ✓ cleans actual post-create faults, and freezes rather than claiming rollback when cleanup fails  430ms
+
+ Test Files  2 passed (2)
+      Tests  15 passed (15)
+   Start at  20:45:14
+   Duration  20.56s (transform 3.86s, setup 0ms, import 8.34s, tests 11.60s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-native-r99-green-r01/original-vitest.json

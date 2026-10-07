@@ -1,0 +1,28 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-body-mesh-client.test.ts (17 tests | 3 failed) 3416ms
+   × awaits native Source-only views before Stage and proves exact preStage release (ready) 1120ms
+   × awaits native Source-only views before Stage and proves exact preStage release (callback-fails) 1061ms
+   × awaits native Source-only views before Stage and proves exact preStage release (release-fails) 1077ms
+   ✓ R74 ignores a duplicate successful Begin reply with a higher sequence without moving owner watermarks 5ms
+   ✓ R74 retires deferred StageBodyCut success across Dispose and remount 68ms
+   ✓ R74 retires deferred CommitBodyCut success across Dispose and remount 2ms
+   ✓ transfers exclusive mesh data and preserves client state (valid) 4ms
+   ✓ transfers exclusive mesh data and preserves client state (bad-begin) 1ms
+   ✓ transfers exclusive mesh data and preserves client state (late-rollback) 2ms
+   ✓ binds prepaid projection and late resource release without publishing data replies (valid) 8ms
+   ✓ binds prepaid projection and late resource release without publishing data replies (bad-budget) 1ms
+   ✓ binds prepaid projection and late resource release without publishing data replies (late-rollback) 1ms
+   ✓ binds prepaid projection and late resource release without publishing data replies (concurrent-release) 1ms
+   ✓ uses actual task ports and closes suspended scratch on pump disposal 50ms
+   ✓ keeps the first pump error when cursor cleanup also throws 1ms
+   ✓ exhausts a prepaid phase before another allocation and keeps its first failure 1ms
+   ✓ reports actual contiguous work quanta instead of allocating a diagnostic entry per cell step 7ms
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 14 passed (17)
+   Start at  23:28:05
+   Duration  7.74s (transform 2.08s, setup 0ms, import 3.99s, tests 3.42s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-sourceviews-r111-client-red/original-vitest.json

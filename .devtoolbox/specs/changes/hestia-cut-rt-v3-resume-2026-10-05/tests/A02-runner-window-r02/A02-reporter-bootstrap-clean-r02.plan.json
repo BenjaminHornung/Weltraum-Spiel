@@ -1,0 +1,15 @@
+{
+  "runId": "A02-reporter-bootstrap-clean-r02",
+  "binding": "A02-clean-source-binding-r02.json",
+  "mode": "tests",
+  "files": ["tests/unit/hvpCutRtReport.test.ts", "tests/unit/hvp-bootstrap.test.ts"],
+  "classification": "complete original Reporter/Bootstrap population, restored original test sources plus privacy regressions",
+  "nativeCapSeconds": 1200,
+  "capBasis": "BETRIEB9 new finite command window; Owner180 and original individual test declarations remain unchanged",
+  "diagnosticTrace": false,
+  "cpuProfile": false,
+  "originalTestDeadlines": "unchanged including explicit declarations",
+  "retry": 0,
+  "bail": false,
+  "skip": false
+}

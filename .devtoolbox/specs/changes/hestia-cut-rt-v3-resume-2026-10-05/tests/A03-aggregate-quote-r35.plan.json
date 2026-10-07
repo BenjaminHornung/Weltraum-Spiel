@@ -1,0 +1,10 @@
+{
+  "nativeCapSeconds": 180,
+  "mode": "tests",
+  "binding": "A03-aggregate-quote-r35-binding.json",
+  "files": [
+    "tests/unit/hvpOwnedBodyMesh.test.ts"
+  ],
+  "runId": "A03-aggregate-quote-r35",
+  "classification": "Final static aggregate quote dense legal source and unchanged geometry gates"
+}

@@ -1,0 +1,7 @@
+{
+  "mode": "type",
+  "classification": "Full type after preserving public string labels and fixes to standalone RPC test types",
+  "nativeCapSeconds": 60,
+  "binding": "A03-borrowed-recipe-source-binding-r03.json",
+  "runId": "A03-borrowed-recipe-type-r03"
+}

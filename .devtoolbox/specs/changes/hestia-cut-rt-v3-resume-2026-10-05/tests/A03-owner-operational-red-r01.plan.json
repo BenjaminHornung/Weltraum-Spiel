@@ -1,0 +1,10 @@
+{
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-body-mesh-worker.test.ts"
+  ],
+  "binding": "A03-owner-operational-red-r01-binding.json",
+  "classification": "Actual RPC resident budget binding RED; unchanged120 per-test and whole file",
+  "runId": "A03-owner-operational-red-r01",
+  "nativeCapSeconds": 360
+}

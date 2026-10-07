@@ -1,0 +1,12 @@
+{
+  "binding": "A03-escrow-rpc-r37-r02-binding.json",
+  "files": [
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts",
+    "tests/unit/hvpOwnedBodyMesh.test.ts",
+    "tests/unit/hvp-body-mesh-worker.test.ts"
+  ],
+  "runId": "A03-escrow-rpc-r37-r02",
+  "classification": "Final shared escrow Native RPC, old5 plus2 escrow cases, owner quote/admission race",
+  "nativeCapSeconds": 180,
+  "mode": "tests"
+}

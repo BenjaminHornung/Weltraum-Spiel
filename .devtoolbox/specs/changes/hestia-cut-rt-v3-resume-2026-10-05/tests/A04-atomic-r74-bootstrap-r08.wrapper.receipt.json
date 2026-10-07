@@ -1,0 +1,8 @@
+{
+  "runId": "A04-atomic-r74-bootstrap-r08",
+  "startedUtc": "2026-10-06T03:42:55.7000909+00:00",
+  "endedUtc": "2026-10-06T03:53:11.4193339+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 615.7126917,
+  "planFile": "A04-atomic-r74-bootstrap-r08.plan.json"
+}

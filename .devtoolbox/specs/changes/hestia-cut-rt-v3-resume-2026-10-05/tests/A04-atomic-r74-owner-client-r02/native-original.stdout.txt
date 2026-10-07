@@ -1,0 +1,52 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/hvp-body-mesh-owner-integration.test.ts (38 tests) 19262ms
+   ✓ rejects projected owner-route Stage until the retained plan has admitted complete geometry  552ms
+   ✓ admits mesh-only output against the single retained native plan before Stage, commit and finalize  993ms
+   ✓ R74 rolls back a borrowed owner Commit after real child-enable effects  385ms
+   ✓ R74 rolls back a borrowed owner Commit after real query effects  371ms
+   ✓ rejects altered color geometry with stable first failure and no native Stage or retry revival  964ms
+   ✓ keeps a thrown real admission yield terminal without mutating the native World  835ms
+   ✓ keeps a packet decoder failure terminal before geometry work and rejects a later good packet  733ms
+   ✓ cannot revive an admission after Rollback at a real verifier yield  940ms
+   ✓ preserves the first yielded failure when verifier cleanup also throws  784ms
+   ✓ admits an empty child set after complete legal removal without a first-part assumption  352ms
+   ✓ retains one borrowed owner ledger through mesh admission and transfers results only at Finalize  614ms
+   ✓ rejects Dispose after native Stage until rollback or actual World release  642ms
+   ✓ keeps a failed projection reserve terminal for projection, mesh and native Stage  450ms
+   ✓ preserves non-Error mesh failure identity at Stage (null)  579ms
+   ✓ preserves non-Error mesh failure identity at Stage (undefined)  670ms
+   ✓ shares the first failure across later projection, decoder and Stage (Error: first cross-seam mesh error)  802ms
+   ✓ shares the first failure across later projection, decoder and Stage (null)  746ms
+   ✓ shares the first failure across later projection, decoder and Stage (undefined)  791ms
+   ✓ cannot switch the budget of an already derived plan (undefined)  607ms
+   ✓ awaits packet decoding under the same parent credit before starting geometry admission  585ms
+   ✓ reuses one expected-mesh workspace across multiple native children without releasing parent credit  611ms
+   ✓ keeps the single parent credit after Finalize until the external mesh operation really closes  577ms
+   ✓ refuses external ownership without the original borrowed ledger  714ms
+   ✓ refuses early external ownership without poisoning later borrowed preparation  312ms
+   ✓ prepares and reserves one source-derived external quote before exporting mesh work  524ms
+   ✓ excludes mesh admission while its prepaid quote is suspended and admits after closure  579ms
+ ❯ tests/unit/hvp-body-mesh-client.test.ts (14 tests | 2 failed) 149ms
+   ✓ R74 ignores a duplicate successful Begin reply with a higher sequence without moving owner watermarks 7ms
+   × R74 retires deferred StageBodyCut success across Dispose and remount 76ms
+   × R74 retires deferred CommitBodyCut success across Dispose and remount 3ms
+   ✓ transfers exclusive mesh data and preserves client state (valid) 4ms
+   ✓ transfers exclusive mesh data and preserves client state (bad-begin) 2ms
+   ✓ transfers exclusive mesh data and preserves client state (late-rollback) 1ms
+   ✓ binds prepaid projection and late resource release without publishing data replies (valid) 40ms
+   ✓ binds prepaid projection and late resource release without publishing data replies (bad-budget) 2ms
+   ✓ binds prepaid projection and late resource release without publishing data replies (late-rollback) 2ms
+   ✓ binds prepaid projection and late resource release without publishing data replies (concurrent-release) 1ms
+   ✓ uses actual task ports and closes suspended scratch on pump disposal 6ms
+   ✓ keeps the first pump error when cursor cleanup also throws 0ms
+   ✓ exhausts a prepaid phase before another allocation and keeps its first failure 0ms
+   ✓ reports actual contiguous work quanta instead of allocating a diagnostic entry per cell step 5ms
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  2 failed | 50 passed (52)
+   Start at  05:19:12
+   Duration  22.62s (transform 1.33s, setup 0ms, import 2.86s, tests 19.41s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A04-atomic-r74-owner-client-r02/original-vitest.json

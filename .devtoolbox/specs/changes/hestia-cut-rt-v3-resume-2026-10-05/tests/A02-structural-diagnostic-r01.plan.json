@@ -1,0 +1,26 @@
+{
+  "runId": "A02-structural-diagnostic-r01",
+  "binding": "A02-diagnostic-source-binding-r01.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/structuralMicrovoxelContracts.test.ts",
+    "tests/unit/structuralMicrovoxelCommands.test.ts",
+    "tests/unit/structuralMicrovoxelConnectivity.test.ts",
+    "tests/unit/structuralMicrovoxelMassProperties.test.ts",
+    "tests/unit/structuralMicrovoxelPersistence.test.ts",
+    "tests/unit/hvp-parallel-p01-classification.test.ts",
+    "tests/unit/hvp-classification-contract-controls.test.ts",
+    "tests/unit/structuralOwnedReconstructionCursor.test.ts",
+    "tests/unit/structuralOwnedCommandCursor.test.ts",
+    "tests/unit/hvp-owned-ingest-journal-prefix.test.ts",
+    "tests/unit/hvp-owned-materialization.test.ts",
+    "tests/unit/hvp-owned-structural-ingest.test.ts"
+  ],
+  "diagnosticTrace": true,
+  "classification": "diagnostic-only; no clean acceptance",
+  "nativeCapSeconds": 180,
+  "originalTestDeadlines": "unchanged including explicit declarations",
+  "retry": 0,
+  "bail": false,
+  "skip": false
+}

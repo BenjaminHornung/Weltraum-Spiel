@@ -1,0 +1,10 @@
+{
+  "runId": "A03-owner-ledger-green-r02",
+  "nativeCapSeconds": 180,
+  "mode": "tests",
+  "binding": "A03-owner-ledger-final-r02-binding.json",
+  "classification": "Full 13 source/native owner controls; unchanged default deadlines",
+  "files": [
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts"
+  ]
+}

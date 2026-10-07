@@ -1,0 +1,8 @@
+{
+  "runId": "A03-compact-trace-r49-type",
+  "startedUtc": "2026-10-05T21:09:29.5010638+00:00",
+  "endedUtc": "2026-10-05T21:09:31.9132158+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 2.4044522,
+  "planFile": "A03-compact-trace-r49-type.plan.json"
+}

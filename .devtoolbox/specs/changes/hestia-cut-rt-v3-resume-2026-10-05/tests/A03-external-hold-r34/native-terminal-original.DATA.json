@@ -1,0 +1,41 @@
+{
+  "firstUtc": "2026-10-05T18:27:19.376181+00:00",
+  "terminalUtc": "2026-10-05T18:27:39.663238+00:00",
+  "nativeExitCode": 0,
+  "NativeOutcome": "KNOWN",
+  "nativeSeconds": 19.85794700000406,
+  "wrapperThroughShortSeconds": 20.287057,
+  "nativeCapIncludingWrapper": "PASS",
+  "scope": [
+    {
+      "role": "caller",
+      "pid": 48236,
+      "presence": "PRESENT",
+      "creationFileTime": 134356984393761812
+    },
+    {
+      "role": "wrapper",
+      "pid": 70352,
+      "presence": "PRESENT",
+      "creationFileTime": 134356984397212610
+    },
+    {
+      "role": "native",
+      "pid": 31764,
+      "presence": "PRESENT",
+      "creationFileTime": 134356984398181238
+    }
+  ],
+  "jobCountsAfter": {
+    "TotalProcesses": 6,
+    "ActiveProcesses": 1,
+    "TotalTerminatedProcesses": 0
+  },
+  "nativeJobCountsAfter": {
+    "TotalProcesses": 5,
+    "ActiveProcesses": 0,
+    "TotalTerminatedProcesses": 0
+  },
+  "stdoutBytes": 3424,
+  "stderrBytes": 0
+}

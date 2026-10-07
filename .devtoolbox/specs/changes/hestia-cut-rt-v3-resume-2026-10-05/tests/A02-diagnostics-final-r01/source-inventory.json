@@ -1,0 +1,27 @@
+[
+  {
+    "appRelative": "tests/unit/hvp-owned-materialization.test.ts",
+    "bytes": 23513,
+    "sha256": "7b992b8986d79f5704fd2659c311364e63b25c3979b7daa2b1d41cadc7ce2731"
+  },
+  {
+    "appRelative": "tests/unit/hvp-owned-structural-ingest.test.ts",
+    "bytes": 17944,
+    "sha256": "e0759295c8d03d3753005b36c7d0426af03d4e247813972b61fe463e902ca816"
+  },
+  {
+    "appRelative": "tests/unit/hvp-body-plan-owner.test.ts",
+    "bytes": 115293,
+    "sha256": "f50adc55495d1c4e00d01f5b62d4cd653654477e348a6d4d9723cce034a37697"
+  },
+  {
+    "appRelative": "tests/unit/hvp-bootstrap.test.ts",
+    "bytes": 145138,
+    "sha256": "aa9af5a179364719e7da6fe0e9b1235c0ce0233114ee9ce1abb533d39683da9e"
+  },
+  {
+    "appRelative": "tests/unit/hvp-deep-freeze-traversal.test.ts",
+    "bytes": 4348,
+    "sha256": "3118e274e34a806eec0478b864ee04027da07ba85df300bd02726f699fa333bd"
+  }
+]

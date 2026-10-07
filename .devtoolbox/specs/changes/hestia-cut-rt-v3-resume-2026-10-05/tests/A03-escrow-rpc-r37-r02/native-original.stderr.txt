@@ -1,0 +1,20 @@
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-body-mesh-worker.test.ts > native mesh RPC transfers exclusively and keeps a malformed first packet terminal (false, owned=true, tight=false)
+ FAIL  tests/unit/hvp-body-mesh-worker.test.ts > native mesh RPC transfers exclusively and keeps a malformed first packet terminal (true, owned=true, tight=false)
+AssertionError: expected 'World checkpoint requires a confirmed…' to contain 'confirmed ownership'
+
+Expected: "confirmed ownership"
+Received: "World checkpoint requires a confirmed paused generation"
+
+ ❯ tests/unit/hvp-body-mesh-worker.test.ts:90:72
+     88|     }
+     89|     if(escrow){
+     90|       const held=await send({kind:"Checkpoint"});expect(held.rejected)…
+       |                                                                        ^
+     91|       const stale=await send({kind:"ReleaseBodyMeshWork",binding:{...b…
+     92|       expect(stale.rejected).toContain("binding");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+

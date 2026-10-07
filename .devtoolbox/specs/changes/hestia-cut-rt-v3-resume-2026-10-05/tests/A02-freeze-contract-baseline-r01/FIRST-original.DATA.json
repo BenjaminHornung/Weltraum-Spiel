@@ -1,0 +1,17 @@
+{
+  "firstUtc": "2026-10-05T10:27:16.382940+00:00",
+  "adminSeconds": 600,
+  "DworkSeconds": 540,
+  "finalSeconds": 60,
+  "cleanupSeconds": 60,
+  "H60Admission": true,
+  "capSecondsIncludingWrapper": 180,
+  "wholeFiles": [
+    "tests/unit/hvp-deep-freeze-traversal.test.ts"
+  ],
+  "modeInjection": "NONE",
+  "cpuProfile": false,
+  "selectorsBailDeadlineChange": "NONE",
+  "testTimeout": "DEFAULT5000_AND_ORIGINAL_EXPLICIT_DECLARATIONS_UNCHANGED",
+  "helperSha256": "6cc573e36a8b1cdb7077482546fc9014291d0955f6a2f142ea1097062e91026b"
+}

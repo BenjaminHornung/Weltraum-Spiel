@@ -1,0 +1,6 @@
+{
+  "observedUtc": "2026-10-06T15:16:20.4580128+00:00",
+  "secondsSinceTerminal": 156.5841822,
+  "status": "ABSENT_LATE_OBSERVATION_NOT_60PASS",
+  "correction": "prior PowerShell date coercion number invalid; absolute timestamps preserved"
+}

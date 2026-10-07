@@ -30,6 +30,7 @@ export class WorkerHandle {
   private readyReject: ((error: Error) => void) | undefined;
   private output: JobOutputDataMessage | undefined;
   private activeJobId: WorkerJobId | undefined;
+  private privateChannels:1|2|6|undefined;
   public state: WorkerHandleState = "Stopped";
 
   public constructor(
@@ -61,13 +62,17 @@ export class WorkerHandle {
     return ready;
   }
 
-  public assign(request: WorkerJobRequest, input: TransferableBufferBundle): void {
+  public assign(request: WorkerJobRequest, input: TransferableBufferBundle,bodyMeshAllowanceBytes?:number,supportPrepareAllowanceBytes?:number,terrainPrepareAllowanceBytes?:number): void {
     if (this.state !== "Ready") throw new Error("WorkerHandle is not ready.");
     this.state = "Busy";
     this.activeJobId = request.jobId;
+    this.privateChannels=supportPrepareAllowanceBytes!==undefined?1:terrainPrepareAllowanceBytes===undefined?undefined:request.jobKind==="BuildHvpTerrainSector"?6:2;
     this.output = undefined;
     this.post({ type: "EnqueueJob", request });
-    this.post({ type: "JobInputData", jobId: request.jobId, workerEpoch: this.workerEpoch, bundle: input }, transferListFor(input));
+    this.post({ type: "JobInputData", jobId: request.jobId, workerEpoch: this.workerEpoch, bundle: input,
+      ...(bodyMeshAllowanceBytes===undefined?{}:{bodyMeshAllowanceBytes}),
+      ...(supportPrepareAllowanceBytes===undefined?{}:{supportPrepareAllowanceBytes}),
+      ...(terrainPrepareAllowanceBytes===undefined?{}:{terrainPrepareAllowanceBytes}) }, transferListFor(input));
   }
 
   public cancel(jobId: WorkerJobId): boolean {
@@ -92,6 +97,7 @@ export class WorkerHandle {
     }
     this.transport = undefined;
     this.activeJobId = undefined;
+    this.privateChannels=undefined;
     this.output = undefined;
     this.state = "Stopped";
     rejectPendingStart?.(new Error("Worker terminated before becoming ready."));
@@ -104,6 +110,13 @@ export class WorkerHandle {
   }
 
   private receive(value: unknown): void {
+    if(this.privateChannels!==undefined&&typeof value==="object"&&value!==null&&(value as {type?:unknown}).type==="JobCompleted"
+      &&(value as {result?:{details?:unknown}}).result?.details!==undefined){return this.fault("Unexpected private terrain result details.");}
+    if(this.privateChannels!==undefined&&typeof value==="object"&&value!==null&&(value as {type?:unknown}).type==="JobOutputData"){
+      const bundle=(value as {bundle?:TransferableBufferBundle}).bundle;
+      if(!bundle||!Array.isArray(bundle.buffers)||bundle.buffers.length!==this.privateChannels||!Array.isArray(bundle.views)||bundle.views.length!==this.privateChannels
+        ||!Number.isSafeInteger(bundle.byteLength)||bundle.byteLength<0||bundle.byteLength>8*1024*1024){return this.fault("Invalid private support output channels or budget.");}
+    }
     if (!isWorkerToHostMessage(value)) return this.fault("Worker emitted an invalid protocol message.");
     const message: WorkerToHostMessage = value;
     const epoch = message.type === "JobCompleted" ? message.result.workerEpoch : message.type === "JobFailed" ? message.failure.workerEpoch : message.workerEpoch;
@@ -135,7 +148,7 @@ export class WorkerHandle {
     }
   }
 
-  private finishActive(): void { this.activeJobId = undefined; this.output = undefined; this.state = "Ready"; }
+  private finishActive(): void { this.activeJobId = undefined;this.privateChannels=undefined; this.output = undefined; this.state = "Ready"; }
 
   private fault(reason: string): void {
     if (this.state === "Failed" || this.state === "Stopped") return;

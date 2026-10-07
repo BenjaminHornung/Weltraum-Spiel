@@ -1,0 +1,12 @@
+{
+  "runId": "A03-continuation-r91-tests-r01",
+  "nativeCapSeconds": 180,
+  "classification": "Bounded existing-emitter delegation candidate, whole files/default semantic controls",
+  "binding": "A03-continuation-r91-binding-r01.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvpOwnedCanonicalHash.test.ts",
+    "tests/unit/hvp-owned-hash-emission-boundary.test.ts",
+    "tests/unit/hvp-owned-hash-array-open.test.ts"
+  ]
+}

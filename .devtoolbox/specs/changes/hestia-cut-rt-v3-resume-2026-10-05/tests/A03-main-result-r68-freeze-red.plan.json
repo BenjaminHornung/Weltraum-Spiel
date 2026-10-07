@@ -1,0 +1,10 @@
+{
+  "classification": "Reproduce reviewfound generic Accepted freeze beforebytehash; wholegatefile",
+  "runId": "A03-main-result-r68-freeze-red",
+  "mode": "tests",
+  "nativeCapSeconds": 180,
+  "binding": "A03-main-result-r68-freeze-red-binding.json",
+  "files": [
+    "tests/unit/workerResultGate.test.ts"
+  ]
+}

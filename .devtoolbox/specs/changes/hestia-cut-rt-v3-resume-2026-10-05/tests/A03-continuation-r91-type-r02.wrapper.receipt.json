@@ -1,0 +1,8 @@
+{
+  "runId": "A03-continuation-r91-type-r02",
+  "startedUtc": "2026-10-06T15:10:32.5839984+00:00",
+  "endedUtc": "2026-10-06T15:10:33.8859931+00:00",
+  "wrapperExitCode": 0,
+  "elapsedSeconds": 1.2979984,
+  "planFile": "A03-continuation-r91-type-r02.plan.json"
+}

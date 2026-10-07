@@ -1,0 +1,28 @@
+{
+  "runId": "A02-structural-clean-r02",
+  "binding": "A02-clean-source-binding-r02.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/structuralMicrovoxelContracts.test.ts",
+    "tests/unit/structuralMicrovoxelCommands.test.ts",
+    "tests/unit/structuralMicrovoxelConnectivity.test.ts",
+    "tests/unit/structuralMicrovoxelMassProperties.test.ts",
+    "tests/unit/structuralMicrovoxelPersistence.test.ts",
+    "tests/unit/hvp-parallel-p01-classification.test.ts",
+    "tests/unit/hvp-classification-contract-controls.test.ts",
+    "tests/unit/structuralOwnedReconstructionCursor.test.ts",
+    "tests/unit/structuralOwnedCommandCursor.test.ts",
+    "tests/unit/hvp-owned-ingest-journal-prefix.test.ts",
+    "tests/unit/hvp-owned-materialization.test.ts",
+    "tests/unit/hvp-owned-structural-ingest.test.ts"
+  ],
+  "originalNativeStart": "C:\\IFI_SourceCode\\Utils\\opencode-migration\\tmp\\opencode\\hestia-parallel-coordination-20261002\\A0-evidence-owned-hash-array-open-fix-20261004-r01\\verification-originals\\owned-hash-array-open-structural54-r01\\native-start-original.DATA.json",
+  "expectedOriginalTests": 54,
+  "privacyAddedTests": 0,
+  "nativeCapSeconds": 180,
+  "testTimeoutMs": 5000,
+  "retry": 0,
+  "bail": false,
+  "skip": false,
+  "classification": "Complete original54 after restoring test sources and correcting runner; no diagnostic injection, no test deadline or oracle change"
+}

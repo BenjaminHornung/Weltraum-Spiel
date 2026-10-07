@@ -1,0 +1,10 @@
+{
+  "classification": "OriginalfixedidentityAO/algorithm coldrestore; dynamicdefaultAOunchanged; exactgeometry/material controls",
+  "mode": "tests",
+  "nativeCapSeconds": 180,
+  "runId": "A04-fixed-cold-render-r72-controls-r02",
+  "files": [
+    "tests/unit/hvp-fixed-specimen-render.test.ts"
+  ],
+  "binding": "A04-fixed-cold-render-r72-binding-r02.json"
+}

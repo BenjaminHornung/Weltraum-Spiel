@@ -1,0 +1,8 @@
+{
+  "files": [],
+  "classification": "Exact existingnativecapsule plus read-only native-job CPU totals; unchanged type60/release/jobs/protocol",
+  "mode": "type",
+  "binding": "A03-bounded-native-freeze-r65-binding-r02.json",
+  "runId": "A02-native-cpu-r66-type",
+  "nativeCapSeconds": 60
+}

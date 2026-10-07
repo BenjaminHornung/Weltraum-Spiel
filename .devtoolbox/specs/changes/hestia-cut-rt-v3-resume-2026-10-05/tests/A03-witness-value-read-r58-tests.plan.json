@@ -1,0 +1,19 @@
+{
+  "runId": "A03-witness-value-read-r58-tests",
+  "binding": "A03-witness-value-read-r58-binding.json",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-owned-ingest-journal-prefix.test.ts",
+    "tests/unit/hvp-owned-materialization.test.ts",
+    "tests/unit/hvp-owned-resident-source.test.ts",
+    "tests/unit/hvp-owned-structural-ingest.test.ts",
+    "tests/unit/hvp-borrowed-body-plan.test.ts",
+    "tests/unit/hvp-body-plan-task-quantum.test.ts",
+    "tests/unit/hvp-owned-single-component-masses.test.ts",
+    "tests/unit/hvp-classification-contract-controls.test.ts",
+    "tests/unit/hvp-parallel-p01-classification.test.ts",
+    "tests/unit/hvp-owned-hash-array-open.test.ts"
+  ],
+  "nativeCapSeconds": 900,
+  "classification": "Exactimmutable dense witness direct data index only; allchildren/scalars/encoding/FNV/units/generic/defaults unchanged; original deadlines"
+}

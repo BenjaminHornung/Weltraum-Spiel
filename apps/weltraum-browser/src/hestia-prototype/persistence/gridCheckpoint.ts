@@ -1,4 +1,8 @@
 import type {HvpCellReader} from "../terrain/picking";
+import {copyHvpOwnedSlotLeaf,createHvpOwnedSlotBlockCopy,type HvpOwnedLeafCopy,type HvpOwnedSlotBlockCopy} from "../terrain/ownedSlotCopy";
+const ownedGridCopies=new WeakMap<object,{leaf:HvpOwnedLeafCopy;block:HvpOwnedSlotBlockCopy}>();
+export const hvpOwnedGridLeafCopy=(source:object):HvpOwnedLeafCopy|undefined=>ownedGridCopies.get(source)?.leaf;
+export const hvpOwnedGridSlotBlockCopy=(source:object):HvpOwnedSlotBlockCopy|undefined=>ownedGridCopies.get(source)?.block;
 
 /** Complete X-fastest checkpoint. Runs describe material truth, not a generator seed. */
 export interface HvpGridCheckpoint {
@@ -56,9 +60,10 @@ export const decodeHvpGrid=(value:unknown)=>{
   const slots=new Uint8Array(count);let offset=0;
   for(let i=0;i<grid.runs.length;i+=2){const end=offset+grid.runs[i+1]!;slots.fill(grid.runs[i]!,offset,end);offset=end;}
   const [sizeX,sizeY,sizeZ]=grid.size;
-  return Object.freeze({sizeX,sizeY,sizeZ,cellMeters:.125,originMeters:Object.freeze({...grid.origin}),byteLength:slots.byteLength,
+  const result=Object.freeze({sizeX,sizeY,sizeZ,cellMeters:.125,originMeters:Object.freeze({...grid.origin}),byteLength:slots.byteLength,
     readSlot(x:number,y:number,z:number):number|undefined{
       if(!Number.isSafeInteger(x)||!Number.isSafeInteger(y)||!Number.isSafeInteger(z)){throw new Error("Integer checkpoint cell required");}
       return x<0||y<0||z<0||x>=sizeX||y>=sizeY||z>=sizeZ?undefined:slots[x+y*sizeX+z*sizeX*sizeY];
     },copySlots:()=>new Uint8Array(slots)});
+  ownedGridCopies.set(result,{leaf:(x,y,z)=>copyHvpOwnedSlotLeaf(slots,sizeX,sizeY,sizeZ,x,y,z),block:createHvpOwnedSlotBlockCopy(slots)});return result;
 };

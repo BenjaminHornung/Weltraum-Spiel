@@ -1,0 +1,32 @@
+{
+  "scope": [
+    {
+      "role": "caller",
+      "pid": 2600,
+      "presence": "PRESENT",
+      "creationFileTime": 134357248450730474
+    },
+    {
+      "role": "wrapper",
+      "pid": 66944,
+      "presence": "PRESENT",
+      "creationFileTime": 134357248456407505
+    },
+    {
+      "role": "native",
+      "pid": 20032,
+      "presence": "PRESENT",
+      "creationFileTime": 134357248457918346
+    }
+  ],
+  "nativeJobCounts": {
+    "TotalProcesses": 5,
+    "ActiveProcesses": 2,
+    "TotalTerminatedProcesses": 0
+  },
+  "outerJobCounts": {
+    "TotalProcesses": 6,
+    "ActiveProcesses": 3,
+    "TotalTerminatedProcesses": 0
+  }
+}

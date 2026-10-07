@@ -1,0 +1,8 @@
+{
+  "runId": "A03-single-mass-r47-type",
+  "binding": "A03-single-mass-r47-binding.json",
+  "mode": "type",
+  "files": [],
+  "nativeCapSeconds": 60,
+  "classification": "Fresh solecomponent object mass reuse only after fullclassification/cellcoverage; genericderivation unchanged; full literal/negative/quantum/body ingress seven populations original deadlines"
+}

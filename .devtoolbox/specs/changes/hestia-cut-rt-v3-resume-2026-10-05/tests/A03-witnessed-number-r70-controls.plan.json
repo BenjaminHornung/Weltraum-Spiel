@@ -1,0 +1,13 @@
+{
+  "classification": "Witnessedprivate numericemission only; samefullbytes/unit/error/default/sink/cancel; actualcompletecontentenvelope kernelmeasurement",
+  "binding": "A03-witnessed-number-r70-binding.json",
+  "files": [
+    "tests/unit/hvp-owned-materialization.test.ts",
+    "tests/unit/hvpOwnedCanonicalHash.test.ts",
+    "tests/unit/hvp-owned-hash-array-open.test.ts",
+    "tests/unit/hvp-owned-hash-emission-boundary.test.ts"
+  ],
+  "runId": "A03-witnessed-number-r70-controls",
+  "nativeCapSeconds": 900,
+  "mode": "tests"
+}

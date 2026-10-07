@@ -1,0 +1,10 @@
+{
+  "classification": "Real RPC with exact returned lengths/hash and owner-side reverse detachment, original65 file exact",
+  "files": [
+    "tests/unit/hvp-body-mesh-worker.test.ts"
+  ],
+  "runId": "A03-native-rpc-isolated-r03",
+  "nativeCapSeconds": 180,
+  "mode": "tests",
+  "binding": "A03-native-rpc-isolated-source-binding-r03.json"
+}

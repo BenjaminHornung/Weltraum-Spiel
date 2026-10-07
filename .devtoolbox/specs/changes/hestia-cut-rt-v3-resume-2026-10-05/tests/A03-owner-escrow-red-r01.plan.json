@@ -1,0 +1,10 @@
+{
+  "mode": "tests",
+  "binding": "A03-owner-escrow-red-r01-binding.json",
+  "nativeCapSeconds": 180,
+  "runId": "A03-owner-escrow-red-r01",
+  "classification": "Genuine RED one parent escrow preflight and no double-charge controls",
+  "files": [
+    "tests/unit/hvp-body-mesh-owner-integration.test.ts"
+  ]
+}

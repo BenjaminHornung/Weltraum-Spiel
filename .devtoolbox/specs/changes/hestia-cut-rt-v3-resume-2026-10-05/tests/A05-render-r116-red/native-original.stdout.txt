@@ -1,0 +1,30 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/presentationCanonical.test.ts (5 tests) 324ms
+ ❯ tests/unit/renderBackendRevision.test.ts (9 tests | 1 failed) 57ms
+     × checks full owned upserts and live revision after suspension before allocating 15ms
+     ✓ treats a separate AdoptedExclusive artifact with equal content as AlreadyApplied 12ms
+     ✓ treats equal revision and content as idempotent without taking duplicate buffers 3ms
+     ✓ rejects equal revision with different content and lower revisions fail-closed 4ms
+     ✓ accepts a higher revision atomically and rejects a stale remove 5ms
+     ✓ rejects an invalid remove revision before touching the resident artifact 3ms
+     ✓ evicts an unpinned record and rehydrates the exact high-watermark with fresh buffers 6ms
+     ✓ rejects commands from an earlier backend generation after reset 3ms
+     ✓ preserves ordinary replay semantics for a native-looking stage key 4ms
+ ❯ tests/unit/presentationCommands.test.ts (8 tests | 1 failed) 25ms
+     × keeps full command validation and signature bytes in the owned step route 11ms
+     ✓ creates immutable upserts while preserving exact artifact buffers 4ms
+     ✓ requires exactly the material profiles referenced by the artifact 2ms
+     ✓ produces input-order-independent signatures for set-like profile and transform inputs 3ms
+     ✓ rejects an invalid frame revision and invalid reset generation 1ms
+     ✓ fails closed for unknown command kinds and malformed command payloads 1ms
+     ✓ validates ephemeral registration, cancellation, and epoch commands against the key 1ms
+     ✓ rejects projection values outside the finite Float32 range 0ms
+
+ Test Files  2 failed | 1 passed (3)
+      Tests  2 failed | 20 passed (22)
+   Start at  00:27:16
+   Duration  2.45s (transform 415ms, setup 0ms, import 779ms, tests 407ms, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A05-render-r116-red/original-vitest.json

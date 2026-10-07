@@ -1,0 +1,10 @@
+{
+  "runId": "A05-pregraphics-r115-tests-r02",
+  "mode": "tests",
+  "files": [
+    "tests/unit/hvp-terrain-consumer.test.ts"
+  ],
+  "nativeCapSeconds": 180,
+  "binding": "A05-pregraphics-r115-binding-r02.json",
+  "classification": "Current preHold graphic Source comparison quote-cancel before Native current readonly tests"
+}

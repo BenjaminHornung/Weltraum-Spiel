@@ -1,0 +1,16 @@
+
+ RUN  v4.1.11 C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/apps/weltraum-browser
+
+ ✓ tests/unit/v3StructuralRecipeParity.test.ts (8 tests) 4165ms
+   ✓ freezes independent pre-change elbow and real authored 384-cell rock-arm results  1474ms
+   ✓ B1 owner hash route issues the exact child352 transition, recipe and labels of the generic route  2019ms
+ ✓ tests/unit/hvp-borrowed-rigid-recipe.test.ts (7 tests) 1727ms
+   ✓ preserves the entire multibrick negative-seam mixed-material recipe  364ms
+   ✓ keeps the exact no-hull fallback rejection for a connected comb exceeding 64 colliders  979ms
+
+ Test Files  2 passed (2)
+      Tests  15 passed (15)
+   Start at  15:05:27
+   Duration  7.83s (transform 676ms, setup 0ms, import 1.63s, tests 5.89s, environment 0ms)
+
+JSON report written to C:/IFI_SourceCode/Temp/WeltraumSpiel/.worktrees/Hestia-CutV3-Resume-2026-10-05/.devtoolbox/specs/changes/hestia-cut-rt-v3-resume-2026-10-05/tests/A03-borrowed-recipe-controls-r04/original-vitest.json
