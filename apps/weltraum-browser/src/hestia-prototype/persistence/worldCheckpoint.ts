@@ -9,7 +9,8 @@ import type {HvpBranchCheckpoint} from "../physics/branchSession";
 import type {HvpMovingCheckpoint} from "../physics/bodyCutSession";
 import type {HvpCollisionCoverage,HvpPlayerCheckpoint} from "../player/locomotion";
 import type {HvpCollisionSector} from "../physics/terrainColliders";
-import {decodeHvpBody,type HvpBodyCheckpoint} from "./bodyCheckpoint";
+import {decodeHvpBody,decodeHvpColdBody,type HvpBodyCheckpoint} from "./bodyCheckpoint";
+import type {StructuralOwnedReserve} from "../../voxel/structural/validation";
 import {validateHvpNeighborCheckpoint,type HvpNeighborCheckpoint} from "../runtime/residency";
 
 type Vec=Readonly<{x:number;y:number;z:number}>;
@@ -110,12 +111,17 @@ const inspectHvpWorld=(value:unknown)=>{
   if(b?.source!==null&&b?.source!==undefined){countBricks(b.source,false);}
   const owners=new Set<string>();
   for(const body of c.bodies){if(!validId(body.ownerId)||owners.has(body.ownerId)){throw new Error("Duplicate or invalid body owner");}owners.add(body.ownerId);}
-  return {checkpoint:c,sourceBytes};
+  return {checkpoint:c,sourceBytes,textBytes};
 };
 export const hvpWorldCheckpointBytes=(value:unknown):number=>inspectHvpWorld(value).sourceBytes;
-export const decodeHvpWorld=(value:unknown)=>{
+/** Worker-only logical coexistence allowance; UTF-8 size is not a physical string-heap measurement. */
+export const hvpColdWorldAllocationBytes=(value:unknown)=>{
+  const {checkpoint,sourceBytes,textBytes}=inspectHvpWorld(value);
+  return {sourceBytes,checkpointBytes:textBytes*4+checkpoint.bodies.length*65_536+65_536};
+};
+const decodeWorld=(value:unknown,decodeBody:typeof decodeHvpBody)=>{
   const {checkpoint:c,sourceBytes}=inspectHvpWorld(value),b=c.branch;
-  const decoded=c.bodies.map(decodeHvpBody),drop=decoded.filter(d=>d.checkpoint.family==="drop"),inertia=decoded.filter(d=>d.checkpoint.family==="inertia");
+  const decoded=c.bodies.map(decodeBody),drop=decoded.filter(d=>d.checkpoint.family==="drop"),inertia=decoded.filter(d=>d.checkpoint.family==="inertia");
   const parked=new Set(c.parked??[]);
   for(const id of parked){const owner=decoded.find(d=>d.checkpoint.ownerId===id);
     if(!owner||owner.checkpoint.family!=="terrain"||!owner.checkpoint.dynamic||!owner.checkpoint.sleeping){throw new Error("Invalid dormant material owner");}}
@@ -130,5 +136,20 @@ export const decodeHvpWorld=(value:unknown)=>{
   if(branchSource&&(JSON.stringify(readHvpBodyCells(branchSource))!==JSON.stringify(readHvpBodyCells(fixed[0]!.recipe.source))
     ||JSON.stringify(branchSource.materials)!==JSON.stringify(fixed[0]!.recipe.source.materials))){throw new Error("Branch source/body mismatch");}
   return Object.freeze({checkpoint:structuredClone(c),bodies:Object.freeze(decoded),branchSource,sourceBytes});
+};
+export const decodeHvpWorld=(value:unknown)=>decodeWorld(value,decodeHvpBody);
+export const decodeHvpColdWorld=(value:unknown,reserve:StructuralOwnedReserve,
+  onRetainedRecipe?:(recipe:ReturnType<typeof decodeHvpBody>["recipe"],bytes:number)=>void)=>{
+  if(onRetainedRecipe===undefined){return decodeWorld(value,body=>decodeHvpColdBody(body,reserve));}
+  const retained:{recipe:ReturnType<typeof decodeHvpBody>["recipe"];bytes:number}[]=[];
+  const decoded=decodeWorld(value,body=>{
+    let bytes=0;
+    const counted:StructuralOwnedReserve=(amount,keep,kind)=>{reserve(amount,keep,kind);if(keep){bytes+=amount;}};
+    if(reserve.hashUnits!==undefined){Object.defineProperty(counted,"hashUnits",{value:reserve.hashUnits});}
+    const result=decodeHvpColdBody(body,counted);
+    reserve(128);retained.push({recipe:result.recipe,bytes});return result;
+  });
+  for(const entry of retained){onRetainedRecipe(entry.recipe,entry.bytes);}
+  return decoded;
 };
 export type HvpDecodedWorld=ReturnType<typeof decodeHvpWorld>;

@@ -21,6 +21,7 @@ import { generateHestiaVoxelBrickInSlices } from "../world-generation/hestia";
 import { createSurfaceNetsVoxelMeshProduct, type VoxelBrick } from "../voxel";
 import { HVP_COLLISION_JOB, executeHvpCollisionJob,executeHvpCollisionJobOwned } from "./hvpCollisionJob";
 import { HVP_TERRAIN_JOB, executeHvpTerrainJob,executeHvpTerrainJobOwned } from "./hvpTerrainJob";
+import {HVP_CHUNK_JOB,executeHvpChunkJob,executeHvpChunkJobOwned} from "./hvpChunkJob";
 import {HVP_BODY_CUT_JOB,executeHvpBodyCutJob} from "./hvpBodyCutJob";
 import {HVP_BODY_MESH_JOB,executeHvpBodyMeshJob} from "./hvpBodyMeshJob";
 import {HVP_NEIGHBOR_JOB,executeHvpNeighborJob} from "./hvpNeighborJob";
@@ -117,7 +118,7 @@ export class StreamingWorkerRuntime {
     try {
       if(supportPrepareAllowanceBytes!==undefined&&(request.jobKind!==HVP_SUPPORT_JOB||!Number.isSafeInteger(supportPrepareAllowanceBytes)
         ||supportPrepareAllowanceBytes<=0||supportPrepareAllowanceBytes>96*1024*1024)){throw new Error("Invalid private support allowance");}
-      if(ownedTerrain&&((request.jobKind!==HVP_TERRAIN_JOB&&request.jobKind!==HVP_COLLISION_JOB)||!Number.isSafeInteger(terrainPrepareAllowanceBytes)
+      if(ownedTerrain&&((request.jobKind!==HVP_TERRAIN_JOB&&request.jobKind!==HVP_COLLISION_JOB&&request.jobKind!==HVP_CHUNK_JOB)||!Number.isSafeInteger(terrainPrepareAllowanceBytes)
         ||terrainPrepareAllowanceBytes!<=0||terrainPrepareAllowanceBytes!>96*1024*1024||supportPrepareAllowanceBytes!==undefined)){throw new Error("Invalid private terrain allowance");}
       if(borrowed){
         if(request.jobKind!==HVP_BODY_MESH_JOB){throw new Error("Private body mesh allowance on foreign job kind");}
@@ -148,6 +149,7 @@ export class StreamingWorkerRuntime {
               await this.checkpoint();
               if (token.isCancellationRequested) throw new WorkerJobCancelled();
             })
+           : request.jobKind === HVP_CHUNK_JOB?ownedTerrain?await executeHvpChunkJobOwned(request,input,bodyPump!,bodyReserve!):executeHvpChunkJob(request,input)
            : request.jobKind === HVP_COLLISION_JOB
              ? ownedTerrain?await executeHvpCollisionJobOwned(request,input,bodyPump!,bodyReserve!):executeHvpCollisionJob(request, input)
               : request.jobKind === HVP_TERRAIN_JOB ? ownedTerrain?await executeHvpTerrainJobOwned(request,input,bodyPump!,bodyReserve!):executeHvpTerrainJob(request, input)
@@ -159,7 +161,7 @@ export class StreamingWorkerRuntime {
                     },bodyReserve)
                     : request.jobKind===HVP_NEIGHBOR_JOB?executeHvpNeighborJob(request,input)
                : (() => { throw new RangeError(`Unsupported worker job kind: ${request.jobKind}.`); })();
-      if (request.jobKind === HVP_COLLISION_JOB || request.jobKind === HVP_TERRAIN_JOB || request.jobKind===HVP_SUPPORT_JOB || request.jobKind===HVP_BODY_CUT_JOB || request.jobKind===HVP_NEIGHBOR_JOB) {
+      if (request.jobKind === HVP_CHUNK_JOB || request.jobKind === HVP_COLLISION_JOB || request.jobKind === HVP_TERRAIN_JOB || request.jobKind===HVP_SUPPORT_JOB || request.jobKind===HVP_BODY_CUT_JOB || request.jobKind===HVP_NEIGHBOR_JOB) {
         await this.checkpoint();
         if (token.isCancellationRequested) { throw new WorkerJobCancelled(); }
       }

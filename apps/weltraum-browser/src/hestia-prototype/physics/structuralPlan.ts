@@ -4,12 +4,13 @@ import {applyStructuralDestructionCommand,deriveStructuralComponentClassificatio
 import {selectHvpCutCells,type HvpCutShape} from "../terrain/cutPlan";
 import {fnv1aHash} from "../../core/hash";
 import {ingestHvpStructuralCells,prepareHvpStructuralIngestOwnedSteps} from "../terrain/structuralIngest";
-import {assertHvpRigidRecipe,prepareHvpRigidBodyOwnedHashSteps,prepareHvpRigidBodySteps,type HvpRigidRecipe,type HvpRigidRecipeSpans} from "./rigidRecipe";
+import {assertHvpRigidRecipe,prepareHvpRigidBodyOwnedHashSteps,prepareHvpRigidBodySteps,prepareRecipeFromFacts,type HvpRigidRecipe,type HvpRigidRecipeSpans} from "./rigidRecipe";
 import {measureHvpCut,type HvpCutSpan,type HvpCutTrace} from "../runtime/cutTrace";
 // Private core module (not in the structural barrel): the step form of the public classification.
-import {structuralComponentClassificationSteps,structuralIssuedComponentClassificationSteps,structuralOwnedComponentClassificationSteps} from "../../voxel/structural/classificationSteps";
-import {isIssuedStructuralObject} from "../../voxel/structural/model";
-import {createOwnedStructuralCommandCursor,ownedStructuralCommandSteps} from "../../voxel/structural/commands";
+import {structuralComponentClassificationSteps,structuralIssuedComponentClassificationSteps,structuralOwnedComponentClassificationSteps,
+  prepareStructuralComponentFacts,transferPreparedComponentFactsSteps,type PreparedComponentFacts} from "../../voxel/structural/classificationSteps";
+import {isIssuedStructuralObject,createOwnedStructuralCellIndexSteps,readOwnedStructuralCellIndex,type OwnedStructuralCellIndex} from "../../voxel/structural/model";
+import {createOwnedStructuralCommandCursor,ownedStructuralCommandSteps,ownedStructuralPlanCommandSteps} from "../../voxel/structural/commands";
 import type {StructuralDestructionCommand} from "../../voxel/structural/types";
 import {structuralFreezeArraySteps,type StructuralOwnedReserve} from "../../voxel/structural/validation";
 import {structuralOwnedObjectMassSteps} from "../../voxel/structural/massProperties";
@@ -83,14 +84,18 @@ function* structuralBreakSteps(ownedHash:boolean,before:StructuralObject,
   bounds:Readonly<{min:{x:number;y:number;z:number};max:{x:number;y:number;z:number}}>,commandId:string,probe?:HvpPlanProbe,parentRecipe?:HvpRigidRecipe,reserve?:StructuralOwnedReserve){
   reserve?.(65_536);
   selectHvpCutCells({kind:"Box",min:[bounds.min.x,bounds.min.y,bounds.min.z],max:[bounds.max.x,bounds.max.y,bounds.max.z]});
-  const result=yield* subtractBoxSteps(before,bounds,commandId,reserve);
+  let prepared:{source:StructuralObject;classification:ReturnType<typeof deriveStructuralComponentClassification>}|undefined;
+  const result=yield* subtractBoxSteps(before,bounds,commandId,reserve,ownedHash&&reserve!==undefined
+    ?(source,classification)=>{prepared={source,classification};}:undefined);
   yield "destruction";
-  return yield* finishPlanSteps(ownedHash,before,result.object,commandId,result.changedVoxelCount,probe,parentRecipe,reserve);
+  return yield* finishPlanSteps(ownedHash,before,result.object,commandId,result.changedVoxelCount,probe,parentRecipe,reserve,
+    prepared?.source===result.object?prepared.classification:undefined);
 }
 export const prepareHvpStructuralBreak=(before:StructuralObject,
   bounds:Readonly<{min:{x:number;y:number;z:number};max:{x:number;y:number;z:number}}>,commandId:string)=>
   drainHvpPlanSteps(prepareHvpStructuralBreakSteps(before,bounds,commandId));
-function* subtractBoxSteps(before:StructuralObject,bounds:Readonly<{min:{x:number;y:number;z:number};max:{x:number;y:number;z:number}}>,commandId:string,reserve?:StructuralOwnedReserve){
+function* subtractBoxSteps(before:StructuralObject,bounds:Readonly<{min:{x:number;y:number;z:number};max:{x:number;y:number;z:number}}>,commandId:string,reserve?:StructuralOwnedReserve,
+  onPrepared?:(source:StructuralObject,classification:ReturnType<typeof deriveStructuralComponentClassification>)=>void){
   reserve?.(8_192,true);
   const command={
     schemaVersion:STRUCTURAL_COMMAND_SCHEMA_VERSION,commandId,targetObjectId:before.objectId,
@@ -101,7 +106,8 @@ function* subtractBoxSteps(before:StructuralObject,bounds:Readonly<{min:{x:numbe
       maxConnectivityCells:32_768,maxConnectivityFacts:262_144,maxComponents:32,maxMassCells:32_768}
   };
   const result=reserve===undefined?applyStructuralDestructionCommand(before,command)
-    :yield* borrowedHvpPlanSteps(ownedStructuralCommandSteps(before,command,reserve),"ownerCommand");
+    :yield* borrowedHvpPlanSteps(onPrepared===undefined?ownedStructuralCommandSteps(before,command,reserve)
+      :ownedStructuralPlanCommandSteps(before,command,reserve,onPrepared),"ownerCommand");
   if(result.status!=="Applied"){throw new Error(`Structural cut ${result.status}${result.status==="Rejected"?`: ${result.code}`:""}`);}
   return result;
 }
@@ -123,7 +129,7 @@ const HVP_OWNED_CHILD_CELLS_PER_STEP=16;
  * derived locally from it, whose occupiedCells is a deep-frozen local `map` result (dense, plain Array).
  * The fail-closed shape checks below only protect that invariant; they admit nothing.
  */
-function* ownedPartCellsSteps(after:StructuralObject,component:HvpStructuralComponent,probe?:HvpPlanProbe,reserve?:StructuralOwnedReserve){
+function* ownedPartCellsSteps(after:StructuralObject,component:HvpStructuralComponent,probe?:HvpPlanProbe,reserve?:StructuralOwnedReserve,index?:OwnedStructuralCellIndex){
   if(!isIssuedStructuralObject(after)){
     throw new Error("Owner child cells require an issued structural source");
   }
@@ -134,22 +140,24 @@ function* ownedPartCellsSteps(after:StructuralObject,component:HvpStructuralComp
   const length=occupied.length;
   reserve?.(64+length*256,true);
   const cells:ReturnType<typeof projectPartCell>[]=[];
+  const numericCell=reserve===undefined?undefined:index===undefined
+    ?yield* borrowedHvpPlanSteps(createOwnedStructuralCellIndexSteps(after,reserve),"ownerCells"):readOwnedStructuralCellIndex(after,index);
   for(let start=0;start<length;start+=HVP_OWNED_CHILD_CELLS_PER_STEP){
     const end=Math.min(start+HVP_OWNED_CHILD_CELLS_PER_STEP,length);
     // Optional per-batch subspan; the probe getter is re-read, so an opt-out stops the clock reads.
     measureHvpPlanPhase(probe,"childCellsBatchMs",()=>{
       for(let index=start;index<end;index+=1){
-        cells.push(projectPartCell(after,occupied[index]!));
+        cells.push(numericCell===undefined?projectPartCell(after,occupied[index]!):numericCell(occupied[index]!));
       }
     });
     yield HVP_CHILD_CELLS_PHASE;
   }
   return cells;
 }
-function* preparePartSteps(ownedHash:boolean,before:StructuralObject,after:StructuralObject,component:HvpStructuralComponent,index:number,probe?:HvpPlanProbe,reserve?:StructuralOwnedReserve){
+function* preparePartSteps(ownedHash:boolean,before:StructuralObject,after:StructuralObject,component:HvpStructuralComponent,index:number,probe?:HvpPlanProbe,reserve?:StructuralOwnedReserve,facts?:PreparedComponentFacts,numericIndex?:OwnedStructuralCellIndex){
   reserve?.(8_192);
   const cells=ownedHash
-    ?(yield* ownedPartCellsSteps(after,component,probe,reserve))
+    ?(yield* ownedPartCellsSteps(after,component,probe,reserve,numericIndex))
     :measureHvpPlanPhase(probe,"partCellsMs",()=>component.occupiedCells.map(address=>projectPartCell(after,address)));
   const ingest=probe?.ingest;
   const sourceId=`${before.objectId}:r${before.objectRevision+1}:p${index}`;
@@ -169,7 +177,10 @@ function* preparePartSteps(ownedHash:boolean,before:StructuralObject,after:Struc
   // state (clock-free getter) is re-checked at every child yield, so an opt-out stops the timing.
   const spans:HvpRigidRecipeSpans|undefined=ingest===undefined?undefined:{};
   const live=()=>probe?.ingest!==undefined;
-  const recipeSteps=ownedHash?prepareHvpRigidBodyOwnedHashSteps(source,spans,live,reserve):prepareHvpRigidBodySteps(source,spans,live);
+  const childFacts=reserve===undefined||facts===undefined?undefined
+    :yield* borrowedHvpPlanSteps(transferPreparedComponentFactsSteps(facts,after,source,reserve,numericIndex),"ownerPartition");
+  const recipeSteps=childFacts!==undefined&&reserve!==undefined?prepareRecipeFromFacts(childFacts,spans,live,reserve)
+    :ownedHash?prepareHvpRigidBodyOwnedHashSteps(source,spans,live,reserve):prepareHvpRigidBodySteps(source,spans,live);
   const recipe=yield* recipeSteps;
   // Recipe spans are aggregate per child (they may span the child's yields; not a per-step value).
   if(spans!==undefined&&live()){
@@ -180,7 +191,7 @@ function* preparePartSteps(ownedHash:boolean,before:StructuralObject,after:Struc
   return Object.freeze({ownerId:`${before.objectId}:r${before.objectRevision+1}:p${index}`,componentId:component.componentId,
     anchored:component.anchored,cells:frozenCells,recipe});
 }
-function* finishPlanSteps(ownedHash:boolean,before:StructuralObject,after:StructuralObject,commandId:string,changedVoxelCount:number,probe?:HvpPlanProbe,parentRecipe?:HvpRigidRecipe,reserve?:StructuralOwnedReserve){
+function* finishPlanSteps(ownedHash:boolean,before:StructuralObject,after:StructuralObject,commandId:string,changedVoxelCount:number,probe?:HvpPlanProbe,parentRecipe?:HvpRigidRecipe,reserve?:StructuralOwnedReserve,preparedClassification?:ReturnType<typeof deriveStructuralComponentClassification>){
   // `after` is held across yields. Both producers (applyStructuralDestructionCommand's published
   // object and ingestHvpStructuralCells) return reconstructStructuralObjectInternal's fresh deepFreeze
   // result, created in this generator and reachable by no other code; this O(1) guard only protects
@@ -191,8 +202,8 @@ function* finishPlanSteps(ownedHash:boolean,before:StructuralObject,after:Struct
   // The single public classification algorithm; only its occupied-cell extraction yields (bounded batches).
   reserve?.(4_096);
   const classificationBudgets={maxVisitedCells:32_768,maxComponents:32,maxIndexedFacts:262_144};
-  const classification=reserve===undefined?yield* (ownedHash?structuralIssuedComponentClassificationSteps:structuralComponentClassificationSteps)(after,classificationBudgets)
-    :yield* borrowedHvpPlanSteps(structuralOwnedComponentClassificationSteps(after,classificationBudgets,reserve),"ownerClassification");
+  const classification=preparedClassification??(reserve===undefined?yield* (ownedHash?structuralIssuedComponentClassificationSteps:structuralComponentClassificationSteps)(after,classificationBudgets)
+    :yield* borrowedHvpPlanSteps(structuralOwnedComponentClassificationSteps(after,classificationBudgets,reserve),"ownerClassification"));
   yield "classification";
   let oldMass:ReturnType<typeof deriveStructuralObjectMassProperties>;
   if(parentRecipe===undefined){
@@ -217,10 +228,13 @@ function* finishPlanSteps(ownedHash:boolean,before:StructuralObject,after:Struct
   type PreparedPart=HvpPlanStepsResult<ReturnType<typeof preparePartSteps>>;
   reserve?.(64+classification.components.length*8,true);
   const parts:PreparedPart[]=[];
+  const numericIndex=ownedHash&&reserve!==undefined&&classification.components.length>0
+    ?yield* borrowedHvpPlanSteps(createOwnedStructuralCellIndexSteps(after,reserve),"ownerCells"):undefined;
   for(const [index,component] of classification.components.entries()){
     // A child recipe yields only inside its own classification cell extraction; the rest stays whole.
     yield hvpPlanPartBoundaryPhase(index);
-    parts.push(yield* preparePartSteps(ownedHash,before,after,component,index,probe,reserve));
+    const facts=ownedHash&&reserve!==undefined?prepareStructuralComponentFacts(after,classification,component):undefined;
+    parts.push(yield* preparePartSteps(ownedHash,before,after,component,index,probe,reserve,facts,numericIndex));
   }
   let occupiedBefore:number;
   if(reserve===undefined){occupiedBefore=before.bricks.reduce((n,brick)=>n+brick.cells.length,0);}

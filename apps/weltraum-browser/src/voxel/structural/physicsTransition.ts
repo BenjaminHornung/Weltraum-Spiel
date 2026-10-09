@@ -35,6 +35,7 @@ import { drainStructuralSteps, normalizeAdaptiveAuthorityError, normalizeAdaptiv
   type StructuralOwnedReserve } from "./validation";
 // Private owned-payload cursor (module export only, not in the adaptive barrel).
 import { createOwnedCanonicalHashCursor } from "../adaptive/ownedCanonicalHashSteps";
+import {readPreparedRigidComponentFacts,type PreparedComponentFacts} from "./classificationSteps";
 
 const canonicalAdaptiveJson = normalizeAdaptiveAuthorityFunction(adaptiveCanonicalJson);
 const hashAdaptiveCanonical = normalizeAdaptiveAuthorityFunction(adaptiveHashCanonical);
@@ -342,6 +343,24 @@ const toMetersBox = (box: QuantumBox): StructuralColliderBoxMeters => {
   }
   return deepFreeze({ minMeters, maxMeters });
 };
+
+/** Private Recipe consumer: exact canonical Greedy order, no unused perVoxel or Transition payload. */
+export function* prepareStructuralGreedyRecipeFromFactsSteps(source:StructuralObject,facts:PreparedComponentFacts,
+  occupiedVoxelCount:number,reserve:StructuralOwnedReserve):Generator<void,readonly StructuralColliderBoxMeters[],void>{
+  const component=readPreparedRigidComponentFacts(facts,source);
+  if(component.anchored||component.occupiedCells.length!==occupiedVoxelCount||occupiedVoxelCount===0){
+    throw new Error("Rigid source requires one unanchored connected component");
+  }
+  reserve(64+occupiedVoxelCount*128);
+  const cells:ReturnType<typeof globalQuantumForStructuralCell>[]=[];
+  for(const address of facts.componentCells){cells.push(globalQuantumForStructuralCell(address));yield;}
+  const boxes=yield* mergeGreedyQuantumBoxesOwnedSteps(cells,"fragments/0",reserve);
+  if(boxes.length>64){throw new Error("HVP rigid BudgetExceeded: exact collision exceeds 64 cuboids; no hull fallback");}
+  reserve(64+boxes.length*512,true);
+  const colliders:StructuralColliderBoxMeters[]=[];
+  for(const box of boxes){colliders.push(toMetersBox(box));yield;}
+  return yield* structuralFreezeArraySteps(colliders,reserve);
+}
 
 interface FragmentWork {
   readonly fragment: StructuralFragment;

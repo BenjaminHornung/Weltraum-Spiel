@@ -18,7 +18,8 @@ export interface HvpTerrainFragment {
 export interface HvpSupportTimings {
   readonly seedsMs:number;readonly supportMs:number;readonly ingestMs:number;readonly recipeMs:number;
   readonly fragmentCount:number;readonly fragmentCells:number;readonly totalMs:number;
-  readonly recipeBreakdown?:{readonly massMs:number;readonly classifyMs:number;readonly transitionMs:number;readonly axesMs:number};
+  readonly recipeBreakdown?:{readonly massMs:number;readonly classifyMs:number;readonly transitionMs:number;readonly axesMs:number;
+    readonly transitionPerVoxelMs?:number;readonly transitionGreedyMs?:number;readonly transitionHashMs?:number;readonly preparedFactsReused?:number};
 }
 export interface HvpSupportTimingsCollector {
   mark:(phase:"seeds"|"support"|"ingest"|"recipe")=>void;
@@ -28,7 +29,8 @@ export interface HvpSupportTimingsCollector {
 /** Accumulates named wall-clock spans; nested/overlapping marks are not supported. */
 export const createHvpSupportTimingsCollector=(now:()=>number=()=>performance.now()):HvpSupportTimingsCollector=>{
   const marks:{seeds?:number;support?:number;ingest?:number;recipe?:number}={};
-  const breakdown={massMs:0,classifyMs:0,transitionMs:0,axesMs:0};let recipes=0;
+  const breakdown:{-readonly [K in keyof NonNullable<HvpSupportTimings["recipeBreakdown"]>]:NonNullable<HvpSupportTimings["recipeBreakdown"]>[K]}
+    ={massMs:0,classifyMs:0,transitionMs:0,axesMs:0};let recipes=0;
   let open:("seeds"|"support"|"ingest"|"recipe")|undefined,start=0;
   return {
     mark:(phase)=>{
@@ -40,6 +42,9 @@ export const createHvpSupportTimingsCollector=(now:()=>number=()=>performance.no
       recipes+=1;
       breakdown.massMs+=spans.massMs??0;breakdown.classifyMs+=spans.classifyMs??0;
       breakdown.transitionMs+=spans.transitionMs??0;breakdown.axesMs+=spans.axesMs??0;
+      for(const key of ["transitionPerVoxelMs","transitionGreedyMs","transitionHashMs","preparedFactsReused"] as const){
+        if(spans[key]!==undefined){breakdown[key]=(breakdown[key]??0)+spans[key]!;}
+      }
     },
     done:(fragmentCount,fragmentCells)=>{
       const end=now();

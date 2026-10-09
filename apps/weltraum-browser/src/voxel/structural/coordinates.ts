@@ -86,6 +86,10 @@ export const validateStructuralCellAddress = (value: unknown, path = "cell"): St
 
 export const globalQuantumForStructuralCell = (addressValue: unknown): QuantumPoint => {
   const address = validateStructuralCellAddress(addressValue);
+  return globalQuantumForValidatedStructuralCell(address);
+};
+/** Owner-internal projection of an address just admitted by the same source traversal; checks stay in axis order. */
+export const globalQuantumForValidatedStructuralCell=(address:StructuralCellAddress):QuantumPoint=>{
   return deepFreeze({
     x: globalQuantumCoordinate(safeTranslate(address.brickKey.originQuantum.x, address.local.x, "globalCell/x"), "globalCell/x"),
     y: globalQuantumCoordinate(safeTranslate(address.brickKey.originQuantum.y, address.local.y, "globalCell/y"), "globalCell/y"),

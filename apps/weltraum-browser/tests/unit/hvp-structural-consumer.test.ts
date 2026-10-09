@@ -1,8 +1,30 @@
 import {expect,it,vi} from "vitest";
 import {createHvpStructuralConsumer} from "../../src/hestia-prototype/terrain/structuralConsumer";
 import type {HvpPhysicsClient} from "../../src/hestia-prototype/physics/client";
+import {HvpRenderStageRecoveryError} from "../../src/hestia-prototype/presentation/renderStageRecovery";
 
 const request={id:"branch-1",generation:0,sourceDigest:"source",direction:{x:0,y:0,z:1}};
+
+it("awaits structural graphics before Native commit and rolls back disposed staging",async()=>{
+  let finish!:(value:{publish():void;rollback():void;finish():void})=>void;
+  const graphics=new Promise<{publish():void;rollback():void;finish():void}>(resolve=>{finish=resolve;});
+  const commit=vi.fn(async()=>{}),rollback=vi.fn(async()=>{}),renderRollback=vi.fn();
+  const physics={prepareBranch:async()=>({}),commitBranch:commit,rollbackBranch:rollback,read:()=>({structural:{state:"Idle"}})} as unknown as HvpPhysicsClient;
+  const consumer=createHvpStructuralConsumer(physics,()=>graphics),operation=consumer.submit(request);
+  await Promise.resolve();expect(commit).not.toHaveBeenCalled();consumer.dispose();let idle=false;
+  const drain=consumer.whenIdle().then(()=>{idle=true;});await Promise.resolve();expect(idle).toBe(false);
+  finish({publish(){},rollback:renderRollback,finish(){}});
+  await operation;expect(commit).not.toHaveBeenCalled();expect(rollback).toHaveBeenCalledOnce();expect(renderRollback).toHaveBeenCalledOnce();
+  await drain;expect(idle).toBe(true);
+  expect(consumer.read()).toMatchObject({state:"Ready",last:{status:"Rejected"}});
+});
+it("retains typed unknown material cleanup as structural RecoveryHold",async()=>{
+  const causes=[new Error("material acquire"),new Error("release unproven")],pause=vi.fn(async()=>{}),rollback=vi.fn(async()=>{}),commit=vi.fn(async()=>{});
+  const physics={prepareBranch:async()=>({}),commitBranch:commit,rollbackBranch:rollback,command:pause,read:()=>({structural:{state:"Idle"}})} as unknown as HvpPhysicsClient;
+  const consumer=createHvpStructuralConsumer(physics,async()=>{throw new HvpRenderStageRecoveryError(causes,"unknown graphics release");});
+  await consumer.submit(request);expect(commit).not.toHaveBeenCalled();expect(rollback).toHaveBeenCalledOnce();expect(pause).toHaveBeenCalledWith("Pause");
+  expect(consumer.read()).toMatchObject({state:"RecoveryHold",last:{status:"RecoveryHold"}});expect(()=>consumer.checkpoint()).toThrow(/save boundary/);consumer.dispose();
+});
 const harness=(fault="")=>{
   let world=0,visible=0,published=0,paused=false;
   const fail=(phase:string)=>{if(phase===fault){throw new Error(`injected ${phase}`);}};

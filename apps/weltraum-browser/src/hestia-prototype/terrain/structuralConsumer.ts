@@ -2,11 +2,13 @@ import type {HvpPhysicsClient} from "../physics/client";
 import type {HvpBranchRequest} from "../physics/branchSession";
 import type {HvpBranchSnapshot} from "../presentation/structuralPart";
 import {decodeHvpReceipts,type HvpSimpleOutcome} from "../persistence/receiptCheckpoint";
+import {HvpRenderStageRecoveryError} from "../presentation/renderStageRecovery";
 
 export interface HvpStagedBranch {publish():void;rollback():void;finish():void}
 /** Same-tick visual publication while the actual single World remains held. */
-export const createHvpStructuralConsumer=(physics:HvpPhysicsClient,stageRender:(state:HvpBranchSnapshot)=>HvpStagedBranch)=>{
+export const createHvpStructuralConsumer=(physics:HvpPhysicsClient,stageRender:(state:HvpBranchSnapshot)=>HvpStagedBranch|Promise<HvpStagedBranch>)=>{
   let pending=false,hold=false,disposed=false;
+  let active:Promise<void>|undefined;
   let last:Readonly<{status:string;reason:string;id:string}>|null=null;
   const receipts=new Map<string,{signature:string;promise:Promise<void>;outcome?:HvpSimpleOutcome}>();
   return {
@@ -35,13 +37,17 @@ export const createHvpStructuralConsumer=(physics:HvpPhysicsClient,stageRender:(
         try {
           const products=await physics.prepareBranch(request);prepared=true;
           if(disposed){throw new Error("Structural consumer disposed");}
-          render=stageRender(products);await physics.commitBranch(request.id);
+          render=await stageRender(products);
+          if(disposed){throw new Error("Structural consumer disposed after graphics staging");}
+          await physics.commitBranch(request.id);
           if(disposed){throw new Error("Structural consumer disposed");}
           physics.publishBranch();render.publish();
           await physics.finalizeBranch(request.id);finished=true;render.finish();
           last=Object.freeze({id:request.id,status:"Applied",reason:"Canonical split and actual World published"});
         }catch(error){
-          let restored=!finished;
+          const renderRecovery=error instanceof HvpRenderStageRecoveryError;
+          let restored=!finished&&!renderRecovery;
+          if(renderRecovery){try{await physics.command("Pause");}catch{/* Unknown graphics release remains held. */}}
           if(!finished){
             try{render?.rollback();}catch{restored=false;}
             // Restore graphics before the worker can resume the old World.
@@ -52,9 +58,11 @@ export const createHvpStructuralConsumer=(physics:HvpPhysicsClient,stageRender:(
           last=Object.freeze({id:request.id,status:hold?"RecoveryHold":"Rejected",reason:error instanceof Error?error.message:String(error)});
         }finally{const receipt=receipts.get(request.id);if(receipt&&last){receipt.outcome=last;}pending=false;}
       })();
+      active=promise;void promise.then(()=>{if(active===promise){active=undefined;}},()=>{if(active===promise){active=undefined;}});
       receipts.set(request.id,{signature,promise,...(!pending&&last?.id===request.id?{outcome:last}:{})});return promise;
     },
     read:()=>Object.freeze({state:hold?"RecoveryHold":pending?"Pending":"Ready",issued:receipts.size,last}),
-    dispose():void{disposed=true;}
+    dispose():void{disposed=true;},
+    whenIdle():Promise<void>{return active??Promise.resolve();}
   };
 };

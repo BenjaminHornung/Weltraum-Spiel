@@ -1417,6 +1417,8 @@ it("aggregates every step and keeps the true worst step beyond the 64-step recor
     await session.preparePlan(f.request.id,taskHost());
     const trace=traces[0]!;
     expect(trace).toMatchObject({outcome:"Planned",totalSteps:104});
+    expect(trace).toMatchObject({stepsOver4Ms:1,stepsOver8Ms:1});
+    expect(trace).toMatchObject({taskWork:{count:104,maxMs:50,over4Ms:1,over8Ms:1}});
     expect(trace.steps).toHaveLength(64);
     expect(trace.steps.map(step=>step.ordinal)).toEqual(Array.from({length:64},(_,i)=>i));
     expect(trace.max).toMatchObject({ordinal:81,label:"classificationCells",duration:50});

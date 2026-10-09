@@ -122,3 +122,36 @@ it.each([false,true])("frees a saturated reply slot before a reentrant failing s
     expect(callbackErrors).toEqual([]);
   }finally{controller.abort();vi.unstubAllGlobals();}
 });
+
+it("transfers only the complete Restore catalogue and rejects mixed replacement ownership before detaching",async()=>{
+  const controller=new AbortController();let sent:HvpPhysicsMessage|undefined,transfers:Transferable[]=[];
+  class WorkerStub {
+    onmessage:((event:MessageEvent<HvpPhysicsReply>)=>void)|null=null;
+    onerror:((event:ErrorEvent)=>void)|null=null;onmessageerror:((event:MessageEvent)=>void)|null=null;
+    sequence=0;
+    postMessage(message:HvpPhysicsMessage,buffers:Transferable[]=[]):void{
+      const received=structuredClone(message,{transfer:buffers});
+      if(message.kind==="PrepareRestore"){sent=received;transfers=buffers;}
+      queueMicrotask(()=>this.onmessage?.({data:{id:message.id,protocol:message.protocol,incarnation:message.incarnation,sequence:++this.sequence,
+        snapshot:{status:message.kind==="Dispose"?"Disposed":"Paused",bodyCount:message.kind==="Dispose"?0:1,colliderCount:0,collisionBytes:0} as HvpPhysicsSnapshot,
+        clock:{timers:message.kind==="Dispose"?0:1,maxTimerGapMs:0,maxAdvanceMs:0,maxHandlerMs:0,lastCommand:message.kind,lastHandlerMs:0,delayedCallbacks:[]},
+        ...(message.kind==="PrepareRestore"?{restoreState:"Prepared"}:message.kind==="RollbackRestore"?{restoreState:"RolledBack"}:{})}} as unknown as MessageEvent<HvpPhysicsReply>));
+    }
+    terminate():void{}
+  }
+  vi.stubGlobal("Worker",WorkerStub);
+  let client:Awaited<ReturnType<typeof createHvpPhysicsClient>>|undefined;
+  try{
+    client=await createHvpPhysicsClient([],{x:0,y:1,z:0},controller.signal);
+    const mesh={vertices:new Float32Array([0,0,0,1,0,0,0,0,1]),indices:new Uint32Array([0,1,2])},complete={sectors:[mesh],layout:null};
+    const saved={} as Parameters<typeof client.prepareRestore>[1];
+    await expect(client.prepareRestore("mixed",saved,[{index:0,mesh}],complete)).rejects.toThrow(/Mixed complete/);
+    expect(mesh.vertices.byteLength).toBe(36);expect(sent).toBeUndefined();
+    await client.prepareRestore("full",saved,[],complete);
+    expect(transfers).toHaveLength(2);expect(mesh.vertices.byteLength).toBe(0);expect(mesh.indices.byteLength).toBe(0);
+    expect(sent?.kind).toBe("PrepareRestore");
+    if(sent?.kind!=="PrepareRestore"){throw new Error("Missing complete transfer");}
+    expect(sent.replacements).toEqual([]);expect(sent.completeCollision?.sectors[0]?.vertices).toEqual(new Float32Array([0,0,0,1,0,0,0,0,1]));
+    await client.rollbackRestore("full");expect(client.lifecycle?.().pendingJobs).toBe(0);await client.dispose();
+  }finally{controller.abort();vi.unstubAllGlobals();}
+});

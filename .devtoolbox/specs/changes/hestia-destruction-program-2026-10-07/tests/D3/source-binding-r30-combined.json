@@ -1,0 +1,2784 @@
+{
+  "classification": "PRODUCT_SOURCE_BUILD_BINDING_NOT_GAME_QUALIFICATION",
+  "source": [
+    {
+      "path": "apps/weltraum-browser/package-lock.json",
+      "bytes": 59899,
+      "sha256": "df777f04bd29b891cccefcffb3b54cdd9f4dec8ae59d3de258ecdb85696c3890"
+    },
+    {
+      "path": "apps/weltraum-browser/package.json",
+      "bytes": 2503,
+      "sha256": "0ba7f05ec41d12b1be545c54fc1583df4b25f398a8917b0facdedc295a86e602"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/combat-asteroid-contact-clean.png",
+      "bytes": 1883578,
+      "sha256": "baada59bb18eff149644ca39355d9523b73da691726972d5ba919d93e2bce755"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/combat-compass-overlay.png",
+      "bytes": 4374,
+      "sha256": "abf39c566d85989a2a472694f17c24af2b5b719feccd76d5a07476063f165adf"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/combat-compass-reference.png",
+      "bytes": 31981,
+      "sha256": "8ff8dc3ddda81cf097def3b9234626afe586d24227fbceec5e6b92272d395d25"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/combat-contact-marker-overlay.png",
+      "bytes": 4923,
+      "sha256": "50e4f9ea6fab985e2336dca0d680354e62a315a6e99bad227f560db5145590e8"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/combat-contact-marker-reference.png",
+      "bytes": 58044,
+      "sha256": "eb8e9db397fe64a8cf6c3505d5dd6c01a432d68ed3f560fd3468d86a65d90512"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/combat-reticle-overlay.png",
+      "bytes": 5562,
+      "sha256": "1a92d53cbae192d694c08a8afc9df346c54f72c695b909a257e555284a10298e"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/combat-reticle-reference.png",
+      "bytes": 79272,
+      "sha256": "c2fab7ccd3335a5bcce8adbe4b02d6455bb8d26051a1907dbf564ae81664fffa"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/combat-scene-reference-clean.png",
+      "bytes": 1705277,
+      "sha256": "37f2dd8df449a5559e9d2fc444158a2b2028c91f751d71a7ca7be956b332710b"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/combat-scene-reference-composite.png",
+      "bytes": 2263806,
+      "sha256": "695b76d84db830a85ff868116608835a2e3b2447397dcb6540000717639cf69f"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/combat-target-wireframe.png",
+      "bytes": 19362,
+      "sha256": "40936daf57380ebc312bfe80f6c15732ffa51b3c840076a8a7be7a9560320db3"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/flight-asteroid-belt-clean.png",
+      "bytes": 1801256,
+      "sha256": "2cd08773ba51bfc1b41b7ef8c32c1f9d52dc4ea16ef08d0a600d92df054a5805"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/flight-scene-reference-clean.png",
+      "bytes": 1498339,
+      "sha256": "2148b766d76990d0aab32a84ef6c8672f2d77e5df87acfa4941dbdfbc1d91f94"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/flight-scene-reference-composite.png",
+      "bytes": 2108073,
+      "sha256": "65b3a0688742ff9f2788cdcf60a6137bd0ea3d126877e12d1a89100de8f64d07"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/icon-combat-active-weapon.png",
+      "bytes": 1062,
+      "sha256": "aea52542f7ba42d4ec678d48caed0e62eaa50014d60925f26b66667c36038248"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/icon-combat-cannon.png",
+      "bytes": 1104,
+      "sha256": "8ae768b25821bf317120ef8b5a0251e6c9af2d63ce7f0cbed9c43d9d062a0ea8"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/icon-combat-hull.png",
+      "bytes": 1417,
+      "sha256": "67614e47509b438f9c209e13661fe5d285edc34715ab5c3912492fc887cb3a00"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/icon-combat-laser.png",
+      "bytes": 1184,
+      "sha256": "ec3424f68e94474d70106cb553a272426ae3d44069e5beec70a2969ee23b499c"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/icon-combat-radar-contact.png",
+      "bytes": 1548,
+      "sha256": "fd3cb58e014048bc677a49bcac2fa552b083b770f8047e6bb4781f48ace77fa6"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/icon-combat-radar-target.png",
+      "bytes": 2048,
+      "sha256": "6388db385169ebf4d642e8b81653fa2535edef0055f132ec319c5c976c7ce1a2"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/icon-combat-radar-threat.png",
+      "bytes": 1800,
+      "sha256": "17e8b0988670044d006b1afb9ca3e16b8c4873a766103240e9a753dcaf8c856d"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/icon-combat-rockets.png",
+      "bytes": 1195,
+      "sha256": "c86a77812eaa9dd827ed618152e41a1ea4df981702f1de88f0b34c9658f9fb07"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/icon-combat-shield.png",
+      "bytes": 1212,
+      "sha256": "ad3578b99da38130aab4f7329a25a33d460160e16f91e944002a530c45ff8b12"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/icon-combat-target.png",
+      "bytes": 1579,
+      "sha256": "2f09c3c7cd04cb27030c7d75ec132c3105e15df33523424ad7fbce8327f8f524"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/icon-combat-thruster.png",
+      "bytes": 1314,
+      "sha256": "7e997e7acc8a784c2506aeb38df48e117ca8852ced1f6caeeb96a6e9cb77cd5d"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/icon-flight-autopilot.png",
+      "bytes": 2055,
+      "sha256": "bd78d37dab86f79df0c5ddd9b0e3ccfa3acb4bc45c514d63d5e05ab0be22e68d"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/icon-flight-course.png",
+      "bytes": 1279,
+      "sha256": "7755e21781ac143339450ee35589da8665d87c8c96401d913976d109dbb80e4d"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/icon-flight-distance.png",
+      "bytes": 1347,
+      "sha256": "a863fe93e906525ac03bd04ff34cf9bb8f1946a71d2e8b8b4acd4e2d1081f25c"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/icon-flight-engage.png",
+      "bytes": 1133,
+      "sha256": "395bfbd1f3bb80758c70a2ee3002a2deee60b3d7b5f98367457ceddbebc47966"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/icon-flight-eta.png",
+      "bytes": 972,
+      "sha256": "fdaeaf8270dcfe687d456e064b8715b611f4b624e391a1541a843b0622218e00"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/icon-flight-fuel.png",
+      "bytes": 1902,
+      "sha256": "bf5aabfeaeb7b15d92d674c71ea94fb2646aeab1ec41bc76d24497d73892bfb6"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/icon-flight-navigation.png",
+      "bytes": 1060,
+      "sha256": "f159b3126bda01c27cc25b3fe7c8c06cd1af4e1001ae5f3a59bc1d3c3799c403"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/icon-flight-rcs.png",
+      "bytes": 1804,
+      "sha256": "dfebef6485fa49eff392afcaafb45528289ef25b235ec2c668052e646eb4b6c6"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/icon-flight-speed.png",
+      "bytes": 1665,
+      "sha256": "e990dd969ae12bc6f8b90898d662ea2bb948ef1c6ba96f25a6d4c531077bac2b"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/icon-flight-target-action.png",
+      "bytes": 2888,
+      "sha256": "96895c275e788eaff7e943b5945de5f8bbe4fe8484a0d729e2b768eb42e09020"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/icon-flight-target.png",
+      "bytes": 1179,
+      "sha256": "a09768a2b002e5fd16130fc4571c540d45f9382aa646ccec069ce838114cd2e6"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/icon-flight-thrust.png",
+      "bytes": 2126,
+      "sha256": "4e429c17d6c744cace37da3ea1d7e2c68cbf7d7a551034b7796bff2d1cfa7756"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/icon-flight-warning-fuel.png",
+      "bytes": 1237,
+      "sha256": "5d3d3aa390b13c10d45824361cb90715bc6af0b5f651823ae3e9097ef2df4b83"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/icon-flight-warning-target.png",
+      "bytes": 1245,
+      "sha256": "648ca2299895bc23aca9079ba5c0df4637dcbb4d5f23ede64e099e388e89f1c8"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/panel-border-cyan.png",
+      "bytes": 439,
+      "sha256": "8b84e2b74eb48d1521a77a6997adbf97de0727b5f9b9473b2d91f056596a8537"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/panel-border-orange.png",
+      "bytes": 432,
+      "sha256": "dbc2c6c990f4818726c97b8169e3f165dcfd22f0a8f7e352c6db24d0b82670b4"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/panel-border-red.png",
+      "bytes": 420,
+      "sha256": "ec4f6f332edf51793f280d158e421d4e972a669d0cb7c7821cd46f48dbfa79ae"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-brand-lockup.png",
+      "bytes": 45035,
+      "sha256": "fd065d5ef6c1aae0d59752b146015d9703c42cbf9ab27586d961265f81b9303e"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-icon-action-engage.png",
+      "bytes": 3607,
+      "sha256": "2cb303c3053a7eec12b47fd2033ee99888c10aadd637c423095965a7f85efc30"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-icon-action-preview.png",
+      "bytes": 2887,
+      "sha256": "b723bd1777ef5040e848c4475b193bcb8711e64236287a67fd104d66fd086d74"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-icon-action-replan.png",
+      "bytes": 3151,
+      "sha256": "5c325b51595105252a4f34acb83d8443b555a0c0e7141f356cee56405eb25047"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-icon-align.png",
+      "bytes": 3418,
+      "sha256": "a925f2cb802031a7a7ec3ee070fc7e8d20f511b25bdddb1d9936a761d4e90046"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-icon-brake.png",
+      "bytes": 3337,
+      "sha256": "8340eba00ba407d935cf1bb459f760d2dd01731e83feefcd308c88c8c6df8211"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-icon-burn.png",
+      "bytes": 3191,
+      "sha256": "380c1166eb1f02a9f56713c582daa4fd831972ee309321002c4f08c2c7192d78"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-icon-flip.png",
+      "bytes": 3163,
+      "sha256": "5b68b7e965b57d8e494da8eb4a2e7a43f7c440481e486bb626c7bbcbffc15a2a"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-icon-footer-credits.png",
+      "bytes": 2156,
+      "sha256": "dcfbe3f1e8817701e43185ccb06090da156816ce27035f961d43263bb36dfa5f"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-icon-footer-ruf.png",
+      "bytes": 2016,
+      "sha256": "35553582588785dc1f4f1bee509d20659b284c9060b031c8eac8843bd0489f79"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-icon-header-brake.png",
+      "bytes": 3269,
+      "sha256": "6461d4a23d74b58d0acfee53b90a6d8e77514b6afc051de3b43a7750800cf405"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-icon-header-eta.png",
+      "bytes": 3592,
+      "sha256": "f98711e8b1f8da12aa86a59510446c284e96342a2d3b374e1c50cafd7eb88c2d"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-icon-header-fuel.png",
+      "bytes": 3335,
+      "sha256": "9cf18db9563f6f48fae0c8c4c0542cc9545514c9434839c88dbec71ebfaa22de"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-icon-header-target.png",
+      "bytes": 3592,
+      "sha256": "18add940bb4612a5e718f592a8bdbe8ba8db54a9da639411397cac0cd728b4cb"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-icon-hold.png",
+      "bytes": 3488,
+      "sha256": "f58308318a415cf4b12a9b5c91a282809bdff73dcf8a9e0ed8b27e6057ef18b9"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-icon-legend-avoidance.png",
+      "bytes": 2256,
+      "sha256": "01d6d20a47ac0c6a722fb3fd7389b647757a1950f9a27dd7790fceb7f3efe4d3"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-icon-legend-hazard.png",
+      "bytes": 3042,
+      "sha256": "0f757dd62faefa2e25c911fa0bfe5f430b74ea36e842ff9c3fa7fbc3270e8990"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-icon-legend-maneuver.png",
+      "bytes": 2959,
+      "sha256": "4c87c00302ffed6179bc638e88658c2ce0db7fc369a115b845374570b20d6957"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-icon-legend-route.png",
+      "bytes": 2329,
+      "sha256": "8f85cbbdb4e2e4f2d35dadb611defb271021e72ada6d287b288134da4a454be3"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-icon-legend-waypoint.png",
+      "bytes": 2836,
+      "sha256": "24fc0851b6aa93bab1dfa29994311c4132242323830b7707ef3f0096441e2590"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-icon-map-focus.png",
+      "bytes": 3023,
+      "sha256": "d76539fb8c290c1876379db7e71b1c63b1aaa07fe57241e76133491fa32adce6"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-icon-map-orbit.png",
+      "bytes": 3043,
+      "sha256": "de97ea4f936f147f044a2019f63ce8fb359324abf3c76a36f632a45dc60a909f"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-icon-map-zoom.png",
+      "bytes": 2933,
+      "sha256": "86aa7f16e6b2f48147c590090d3865f2c159dd52cbab2fc0451fe4d0941e5333"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-icon-profile-balanced.png",
+      "bytes": 3780,
+      "sha256": "87918b33d7075eeeab900a281358efe758e8be7d3711d148ff9d7e175e468999"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-icon-profile-fast.png",
+      "bytes": 3175,
+      "sha256": "28ad64de326f107ac45c4e89227dc46f1eda6e4fbdb00527e3ad3cd46fe71cc7"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-icon-profile-safe.png",
+      "bytes": 3397,
+      "sha256": "3d4e35aae43f14509ff8cbecf8b03a3afc856caae4620f712fd2f5fe5ec0f06e"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-rail-reference.png",
+      "bytes": 107195,
+      "sha256": "9881832facb2de0f801ecc5d7192dc16b486c935ba8aa04d0c6624a01e7bb673"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-ship-marker.png",
+      "bytes": 34025,
+      "sha256": "046d3841cacaa22e28b74124b12aeeda321f6e7f1b3b81f8c78aa727bce977b3"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-station-marker.png",
+      "bytes": 28455,
+      "sha256": "fb05e8ff0a1efe3109a6e1f0680f15ec050b9bec5d80dbfbfb3297271c3544d3"
+    },
+    {
+      "path": "apps/weltraum-browser/public/concept/planner-system-map-clean.png",
+      "bytes": 1652097,
+      "sha256": "9ebe0fb09e92b438c9b03b16835cec8c5617830561d6fde78b460f8c8114e087"
+    },
+    {
+      "path": "apps/weltraum-browser/public/favicon.png",
+      "bytes": 67353,
+      "sha256": "a6c6a565367915e6d2a51617d691a4bb1249760f7d262af07e66f71ce65f4f53"
+    },
+    {
+      "path": "apps/weltraum-browser/public/fonts/rajdhani/OFL.txt",
+      "bytes": 4465,
+      "sha256": "6390ee7459abec970abc294644b54e59ecad808158af03ab4ae53fef00472a53"
+    },
+    {
+      "path": "apps/weltraum-browser/public/fonts/rajdhani/Rajdhani-Medium.ttf",
+      "bytes": 384348,
+      "sha256": "12ff7dcfe4c206e3875ac53b1762eab57de6a2fa7f5a86c26b97b88d6591eac2"
+    },
+    {
+      "path": "apps/weltraum-browser/public/fonts/rajdhani/Rajdhani-Regular.ttf",
+      "bytes": 377860,
+      "sha256": "6e1fc228a8318251a6e569502ec57bac1e4656c582f92f59ccecc4688e039b98"
+    },
+    {
+      "path": "apps/weltraum-browser/public/fonts/rajdhani/Rajdhani-SemiBold.ttf",
+      "bytes": 390340,
+      "sha256": "94bbd25a18ca665999feb05a537de9fd2b860dcfb78bbe9ca00270825bf235da"
+    },
+    {
+      "path": "apps/weltraum-browser/public/ships/demo_scout_mk1.glb",
+      "bytes": 127108,
+      "sha256": "d89533e7ab1409b698c066e382ce2cc46963e3c9b2feb75f1e51ab28e7dcb7d0"
+    },
+    {
+      "path": "apps/weltraum-browser/src/browser-storage/canonical.ts",
+      "bytes": 2814,
+      "sha256": "c056e49f697b112f1301728862e42e5343e45c88f865c43d6ccad1a158eab7f7"
+    },
+    {
+      "path": "apps/weltraum-browser/src/browser-storage/checksum.ts",
+      "bytes": 1833,
+      "sha256": "2c0207a5fb8b670d298408106d39c8e93ec23b985c470f708d9bc06f3953d438"
+    },
+    {
+      "path": "apps/weltraum-browser/src/browser-storage/codec.ts",
+      "bytes": 16299,
+      "sha256": "679582c4f268fb01e163ee4fbf8fdefed21054ee2bbe65878d9773159ea53b62"
+    },
+    {
+      "path": "apps/weltraum-browser/src/browser-storage/errors.ts",
+      "bytes": 951,
+      "sha256": "a2d300b03aa8c9f434a71d0d49deb287be26cf0150c7b3fd82e8930d37b6e0b3"
+    },
+    {
+      "path": "apps/weltraum-browser/src/browser-storage/exportImport.ts",
+      "bytes": 6273,
+      "sha256": "c1b48641c3c42ed7eca8a208a94d15d46e80cd2e0dbdb4c2752f3ed12c64c0a2"
+    },
+    {
+      "path": "apps/weltraum-browser/src/browser-storage/ids.ts",
+      "bytes": 1659,
+      "sha256": "77e120df477bbe60ddc4890cbf27bfd76869a33f5b6b3c5bffd668f516d1db95"
+    },
+    {
+      "path": "apps/weltraum-browser/src/browser-storage/index.ts",
+      "bytes": 273,
+      "sha256": "24b84265f91b08d24cdd82ca91f882bc5cf360f22610bed607d7083c9710a30c"
+    },
+    {
+      "path": "apps/weltraum-browser/src/browser-storage/indexedDbSaveRepository.ts",
+      "bytes": 30057,
+      "sha256": "f89469e23b132b099f91d263ae283d2f5f19b34007840ecaf812cac27f03cfc9"
+    },
+    {
+      "path": "apps/weltraum-browser/src/browser-storage/memorySaveRepository.ts",
+      "bytes": 8273,
+      "sha256": "3d4b7f106152a9a998d4902c6fd1514802f16b8c4f2737ca064fca1635349657"
+    },
+    {
+      "path": "apps/weltraum-browser/src/browser-storage/saveRepository.ts",
+      "bytes": 775,
+      "sha256": "53e685fb6f0d917ee1e1db8a8a8fcac3487bb3139631bba9be7bf4f18c56802e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/browser-storage/saveWriteRequest.ts",
+      "bytes": 2602,
+      "sha256": "6cb4c6daabfc407cb84eccc72f67d0674254893d1d7b7bc30a93312228b0cc6d"
+    },
+    {
+      "path": "apps/weltraum-browser/src/browser-storage/types.ts",
+      "bytes": 2736,
+      "sha256": "2026a5fdf7060314cab9290c7bc5592029d02bd2fefd58ab4f160357973cf6ce"
+    },
+    {
+      "path": "apps/weltraum-browser/src/celestial/canonical.ts",
+      "bytes": 3824,
+      "sha256": "20b5d53ffab98ab87f8ab19db730d381db7ceba4028a8c26b50b61e89bd9bf4a"
+    },
+    {
+      "path": "apps/weltraum-browser/src/celestial/catalog.ts",
+      "bytes": 6861,
+      "sha256": "d06073a382dbfb57123566c95a0bd32bbcb009491cb11b29464e72fd506b184e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/celestial/ephemeris.ts",
+      "bytes": 6236,
+      "sha256": "4d5e971d8f027f21dbbaaf78ca234ab7db3db325a39c226c45040f3779567143"
+    },
+    {
+      "path": "apps/weltraum-browser/src/celestial/errors.ts",
+      "bytes": 1033,
+      "sha256": "6a3af7a96d0a11a6271a9d4a088f622abb34fc69f79ea981153b2e8486ae5524"
+    },
+    {
+      "path": "apps/weltraum-browser/src/celestial/gravity.ts",
+      "bytes": 5670,
+      "sha256": "ed15d92cfda0de9929c376c8164276544798b7249acb56625ec7ec8d4280b632"
+    },
+    {
+      "path": "apps/weltraum-browser/src/celestial/ids.ts",
+      "bytes": 1210,
+      "sha256": "67d674f7ca89569a175185ae3c38ce2a1092e06d9e534e7feaa93740a327fbe9"
+    },
+    {
+      "path": "apps/weltraum-browser/src/celestial/index.ts",
+      "bytes": 275,
+      "sha256": "bded43c30782f7cebf814db7e7cca3c3ccde22fe344d3d0739eed079f13427d5"
+    },
+    {
+      "path": "apps/weltraum-browser/src/celestial/kepler.ts",
+      "bytes": 7687,
+      "sha256": "4f9176810c9bbf22b12b781b45684b09b2afdf66cdfa65919c6f5c8918f0d5dd"
+    },
+    {
+      "path": "apps/weltraum-browser/src/celestial/starterSystem.ts",
+      "bytes": 9262,
+      "sha256": "d6a1bff618e4b47ebedbff9c69aa4f283caa14e604fac182ddb8b16c99e9da43"
+    },
+    {
+      "path": "apps/weltraum-browser/src/celestial/types.ts",
+      "bytes": 8603,
+      "sha256": "a32286f52c579016c3b73e1e00b3dbc9a08a588e7c1f7ed3d6fe36a2b03a82a0"
+    },
+    {
+      "path": "apps/weltraum-browser/src/celestial/validation.ts",
+      "bytes": 12761,
+      "sha256": "19e52d974efd95c892d02cf3f24fd18711e263369af17bd26a19150a077d0bf8"
+    },
+    {
+      "path": "apps/weltraum-browser/src/combat/contracts.ts",
+      "bytes": 28976,
+      "sha256": "3345ae6f6918ac4558fa71d33e292e93812de113389010697f92e89e36fec812"
+    },
+    {
+      "path": "apps/weltraum-browser/src/combat/damage.ts",
+      "bytes": 7173,
+      "sha256": "1c2a834c2dd9e47b4f4545a0cc94c8d70d93d8b4f217542a2720baf8d5a5e0c1"
+    },
+    {
+      "path": "apps/weltraum-browser/src/combat/events.ts",
+      "bytes": 12447,
+      "sha256": "fe01029b618e905f79cc6ac5348922bc88b45808baa383c3b052cfb048cae34a"
+    },
+    {
+      "path": "apps/weltraum-browser/src/combat/fireControl.ts",
+      "bytes": 9167,
+      "sha256": "ee28a555cfde812aeaf7e221f07bcc4dc3b9e3cc71b88edd9fc27c8137362c86"
+    },
+    {
+      "path": "apps/weltraum-browser/src/combat/fixtures.ts",
+      "bytes": 3705,
+      "sha256": "f4edfba11df1195b8b325aea6a13332e08bc79e4c401605a223ed23440398fb0"
+    },
+    {
+      "path": "apps/weltraum-browser/src/combat/hitResolution.ts",
+      "bytes": 13259,
+      "sha256": "4e4610b6b6fd9e1b64f0b645c37c7c49371f5e18b54889f3d15b5be412e45155"
+    },
+    {
+      "path": "apps/weltraum-browser/src/combat/index.ts",
+      "bytes": 173,
+      "sha256": "31d275d400fb814ebf65021e80734c2dafab99897259675acacddfd9e85098a4"
+    },
+    {
+      "path": "apps/weltraum-browser/src/core/fnv1a64.ts",
+      "bytes": 1550,
+      "sha256": "27b1c99ace27f7e0fc27706a4f59bf8dfcaa7ce148872356b97da349a82aa9b4"
+    },
+    {
+      "path": "apps/weltraum-browser/src/core/hash.ts",
+      "bytes": 3099,
+      "sha256": "7514fc507d6c83404462d967ff4736790abf6425842b676cefedc4928a2febee"
+    },
+    {
+      "path": "apps/weltraum-browser/src/core/index.ts",
+      "bytes": 385,
+      "sha256": "c7d8f9b37295d7ad81ee475aaaf996d657387e98da6a44fa47410798b64a5a24"
+    },
+    {
+      "path": "apps/weltraum-browser/src/core/types.ts",
+      "bytes": 23469,
+      "sha256": "8fc3f0d509255c336c3db74813bd7fd429c7420aee0ee23f20fa643b541f8560"
+    },
+    {
+      "path": "apps/weltraum-browser/src/core/vector.ts",
+      "bytes": 1587,
+      "sha256": "bcd1ce4c43a5a79f82f4410c16e528a3b4a2794dd6526a5f7c9393c10d068ad9"
+    },
+    {
+      "path": "apps/weltraum-browser/src/diagnostics/performance/canonical.ts",
+      "bytes": 1683,
+      "sha256": "d8a044549ec4d1025707c884e7e6616fcb17d8fea822152b52d32827a9886e64"
+    },
+    {
+      "path": "apps/weltraum-browser/src/diagnostics/performance/counters.ts",
+      "bytes": 1699,
+      "sha256": "719c33d12f6cfc6f0504bc085d1c5bea254573e0d1eebd28b6b63958802544b5"
+    },
+    {
+      "path": "apps/weltraum-browser/src/diagnostics/performance/index.ts",
+      "bytes": 176,
+      "sha256": "7c54b6dd430609eab42159a6bc0c83b8c5b694c0b646b97204064148087e056e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/diagnostics/performance/snapshots.ts",
+      "bytes": 8233,
+      "sha256": "05936111ea47db8c37115ecc7eca612f2a988a36ff1d6468d8615dfc015c0bf4"
+    },
+    {
+      "path": "apps/weltraum-browser/src/diagnostics/performance/streamingProjection.ts",
+      "bytes": 3358,
+      "sha256": "fbe2e03a66324d9f04acf7e933086e5da808d23fc4a7ec5a2c81851aaa750122"
+    },
+    {
+      "path": "apps/weltraum-browser/src/diagnostics/performance/timing.ts",
+      "bytes": 1234,
+      "sha256": "9ce05e7bcf72dc85446d38747473d364fdeaa73d023d4331dd6f2fd34366bbd4"
+    },
+    {
+      "path": "apps/weltraum-browser/src/diagnostics/performance/types.ts",
+      "bytes": 2939,
+      "sha256": "7e30176a00a01de7dfa1da18624a002b46669fc2adbbb727f1a57f66a5d59751"
+    },
+    {
+      "path": "apps/weltraum-browser/src/flight/executor.ts",
+      "bytes": 68305,
+      "sha256": "c12162bbe82bb2428393bb62a59575f2eeb566466ba4e6b01501f8b2590f638e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/flight/flightController.ts",
+      "bytes": 21477,
+      "sha256": "a7750db322dd7223e524bc0d3c148bde458f613f13b41e95435071c6daff3a5f"
+    },
+    {
+      "path": "apps/weltraum-browser/src/flight/propulsionCapability.ts",
+      "bytes": 16183,
+      "sha256": "4f7b29a4b5445556ce4de2e6df45f3ac7634fea8c63c30c4dc8e442094cd4c5d"
+    },
+    {
+      "path": "apps/weltraum-browser/src/flight/state.ts",
+      "bytes": 12102,
+      "sha256": "77e0df10378dd2637c8c6b459a59807dca9fee17fa65145b9c0ac338bc8732fe"
+    },
+    {
+      "path": "apps/weltraum-browser/src/flight/transitPolicies.ts",
+      "bytes": 7548,
+      "sha256": "3ddc82ea840c268ec4861d58eb4b96e67d63c6c3bf6fe2f69ebc3e811ea3b086"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/experiments/cutKernelProbe.ts",
+      "bytes": 10056,
+      "sha256": "7fca0ff19127ebc45244490c00141964ca420a2cb389d850c4e8c7090860b04c"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/gameplay/salvageLoop.ts",
+      "bytes": 13938,
+      "sha256": "97f9a1cab8c6c6c8476433ba685f98a303cd9a6f7faf3670ca27aa9e1fbcfc95"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/persistence/bodyCheckpoint.ts",
+      "bytes": 7058,
+      "sha256": "4cf37d85daa1b25a242bafa6b4911c9162f5d24ce3a5041618f449f33e321eab"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/persistence/gameCheckpoint.ts",
+      "bytes": 13782,
+      "sha256": "e5c2975e1c1e0236225ff17251630afd3b15e6f8b95b0d1efc1b2dd9681024c0"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/persistence/gridCheckpoint.ts",
+      "bytes": 5144,
+      "sha256": "feb3281e2e4b0f1357b3f3b71c2af542d1663c569c7e2aa789fb79723195aa98"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/persistence/plantCheckpoint.ts",
+      "bytes": 6683,
+      "sha256": "78df5a1d7329b0fe7ab2c3709ee4e89da1ce04695486891b00410c41b424806e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/persistence/receiptCheckpoint.ts",
+      "bytes": 3532,
+      "sha256": "7f98d5b1c0bc8a339ddb9247dd4927ed6e6b750bd13f6cd2cedf67aeb25ffc43"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/persistence/saveStore.ts",
+      "bytes": 3774,
+      "sha256": "e3ebc40abecb614d494a53ebb55c306d3e078ddfb05d8c629c9ecfd526dadfa6"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/persistence/sceneReplacement.ts",
+      "bytes": 2449,
+      "sha256": "3cf8ba29a974da0c73abe1e2c26ed7c0d30ca9cc61978da761c020c051d644ae"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/persistence/worldCheckpoint.ts",
+      "bytes": 13037,
+      "sha256": "fef0a7138fef96ea7295095585da39e8e7bfcb9855174ee8ac6560b4e32c49c7"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/bodyCut.ts",
+      "bytes": 7533,
+      "sha256": "fd5a685b5ecab8aa49c2a15b5597f65a1e5b269a6d874dc4b69f4053908fdc6c"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/bodyCutPlan.ts",
+      "bytes": 6883,
+      "sha256": "cca34d7b10b79b263ca33e6c8bf307fee4736c8f5680a09d8feb2315e63a50e0"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/bodyCutSession.ts",
+      "bytes": 35432,
+      "sha256": "5f90c38bb1ef3940701e6edc069a0ae81b81b350a892932ee516da320fc78fd8"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/bodyResidency.ts",
+      "bytes": 7848,
+      "sha256": "2f886c1f6a5dd0742d549f7ec8ad35bf8b332aaf62c2a1b0ca477b59a5a11a20"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/branchSession.ts",
+      "bytes": 11086,
+      "sha256": "0c7190a4cf101169742c565bfe881b2e4584254be671f8797c314f85cca6ddc6"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+      "bytes": 49963,
+      "sha256": "c2ef074b4f831114bd55a54775b91ce93236c2a733b657b148b830af5ba9df57"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/hvpPlanSteps.ts",
+      "bytes": 628,
+      "sha256": "a1f9adfd403caed530877e29b6675fcae226898cdd81fd88d92f00f58781bc88"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/neighborRegion.ts",
+      "bytes": 8749,
+      "sha256": "d59715bb3280ffe338beb69d270d9a206f45e236bb77e9cb98560c613379e39a"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/physicsProtocol.ts",
+      "bytes": 8066,
+      "sha256": "8da034f4f2a2cd9f4547ceb0a76440392a91c0495892ed6548a111088e65fdad"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+      "bytes": 36101,
+      "sha256": "331479882affa414aaa30bfeee3b9ccd4b8bc5efd52e42e54fff83bdf061b04b"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/principalAxes.ts",
+      "bytes": 3603,
+      "sha256": "1bb86622963aa903302f00de4c8bfc17b63a315698c18535d7f76c98c0dd4710"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/profile.ts",
+      "bytes": 3301,
+      "sha256": "128820a0ef2554ea72fd6bd1d4d417a507d83c90f40e8e28f0a1cf8088f3fa1c"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/rapierPort.ts",
+      "bytes": 3520,
+      "sha256": "01249a406183d783e0d1b9e97a842a8c5444af72e17121ecd17f5d64780f049e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/restoreBody.ts",
+      "bytes": 1717,
+      "sha256": "952c12dd32e325e0de3a7855012efae6a62db3a4c100e04079462ee5dd20e44d"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/rigidBody.ts",
+      "bytes": 3018,
+      "sha256": "e0ee72e6f96a0175d0a88241cf2bf82db9c3c9a4bbc8abb0fc56acb810408c7e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/rigidRecipe.ts",
+      "bytes": 18063,
+      "sha256": "39d18e0e8449cd60a799bdbf4a7e01ff942fc167a1981cd80525b117bb3c507d"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+      "bytes": 60508,
+      "sha256": "e88c5039e0ad517024d2a2d1032f8c09d3a848b9fc311189da553285a06190ae"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/staticTerrainLayout.ts",
+      "bytes": 1930,
+      "sha256": "2eb9ef23a8834f0dd081b13ddd9f3a2286d19a4c9d9871587a887ee1119ccdfd"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/structuralBreak.ts",
+      "bytes": 6091,
+      "sha256": "dbe340e839929ccd84b5081a78b8e5c85b4fcaadfcfe5aae08fcd248ed689e34"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/structuralPlan.ts",
+      "bytes": 22832,
+      "sha256": "bb673a2a8f71a381025e74339ba7289229533674e3d623f7cfac6f9794197257"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/terrainColliders.ts",
+      "bytes": 4942,
+      "sha256": "bef91789d7b5a2131796df707ff403f93882db7d854acff2eecab3bc156d6a63"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/terrainFragment.ts",
+      "bytes": 13933,
+      "sha256": "1228f2565ccee4876c7a2daaf43aba6dcf24ff6395c6c724b9ec07f8b56a736b"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/tick.ts",
+      "bytes": 1929,
+      "sha256": "5dfb07ec90136f55ee771d941d97837fc53caa4c17bb7c7047263cf5d55e83b2"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/worldReplacement.ts",
+      "bytes": 5488,
+      "sha256": "1a2b2f842a1ae0bee4cbaa72214ccc32f853cbcbefcc1c62f81bfb995c6bd942"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/player/input.ts",
+      "bytes": 10833,
+      "sha256": "279ca6184a84a1376eb0a0a3a610a336457a7e9374c44bd3397ca49ece651889"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts",
+      "bytes": 7471,
+      "sha256": "e93ac325dec2c5c6661fd6a2a22e57807aca2b99dd6fab387ead84fb7496bd59"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/player/presentation.ts",
+      "bytes": 3619,
+      "sha256": "409d73e0b623e948249d0b34190ab207a661cebc762014233e2e2fc233f24952"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/presentation/bodyMeshAdmission.ts",
+      "bytes": 10704,
+      "sha256": "0e01e78b19ef22cc359f6021961d34ec7e00cd09334eb82fe55156b613759e34"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/presentation/look.ts",
+      "bytes": 5180,
+      "sha256": "1c058c73d4313b6da757b341f6dad66173d73332d169d7dbe04710b96c0219ea"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/presentation/renderStageRecovery.ts",
+      "bytes": 337,
+      "sha256": "28009570f52830179595ce6c2b92a709c5b9c7ae339c61214d744dcedd5466e7"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/presentation/salvageMarker.ts",
+      "bytes": 3225,
+      "sha256": "f1a229af9cb680d30841244511dcb0a7a280f17bf95b0d608c0b0a74d725d48e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/presentation/shadowRevision.ts",
+      "bytes": 916,
+      "sha256": "3dfa4691249b74360223602283828301b624f001111541bb41ef1934ee844316"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/presentation/structuralPart.ts",
+      "bytes": 2996,
+      "sha256": "ef4c9320c10d8415811306e777f9ee45cc7f94309318cd0b1279ab9b8242b159"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/presentation/synchronousBatch.ts",
+      "bytes": 1380,
+      "sha256": "5656b59685478c52ee69be7c3c2285415368d52d6345ea45267fc96f51dc6052"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/presentation/terrainFragment.ts",
+      "bytes": 2306,
+      "sha256": "13130cde48958da0e0d6cf27b4b7283208de4c67a2eaa99929ce1fa88fbd348d"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/presentation/vegetation.ts",
+      "bytes": 21351,
+      "sha256": "64806d7f77d6e562c8f1a36e7fb313c6353acca04d05331063af3773a519e1ae"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/presentation/visualEffects.ts",
+      "bytes": 15917,
+      "sha256": "a2e02243c1ee237e7313708743912829dd24759871594954be783ffaa64c944d"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/runtime/cutTrace.ts",
+      "bytes": 26731,
+      "sha256": "ae2ca3a1eeabe3cb2465b2dcd02fb95ffefe4847e9865848f94084e731afc911"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/runtime/dormancyController.ts",
+      "bytes": 2829,
+      "sha256": "9fd8c3bb573eaaeee65434bac67b6859029c54cbfd526febf407f84e45cf92b8"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/runtime/listeners.ts",
+      "bytes": 1238,
+      "sha256": "c4c5629dc125169435a9b5b7d1d6e5790b768f9a6ce4d19d64fc13456c654234"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/runtime/measurements.ts",
+      "bytes": 1797,
+      "sha256": "6c51bf800ef9ff2667e689a157342b4129c106e0363416bd27436e2970b7e4d6"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/runtime/neighborController.ts",
+      "bytes": 17393,
+      "sha256": "9ad518322836a8a76b292e5333a41cef5e1b4d1be1bb82a6b279126cf9ff6d4c"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/runtime/neighborProducts.ts",
+      "bytes": 4749,
+      "sha256": "2b07e409bc8de88f5ded2ae07bd013a169083255c0530f71d4d2c4a4340e58fb"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/runtime/projectionPacket.ts",
+      "bytes": 5060,
+      "sha256": "577e92ca5ced96f9add2c9f6a7e1b2eebd82ba10c480f67889845e5d721008de"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/runtime/regionSource.ts",
+      "bytes": 4500,
+      "sha256": "c77bb40362c522582df4db7f1b997ee66d96b75a8fc4b1000c975d8eaa3f02bc"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/runtime/residency.ts",
+      "bytes": 5174,
+      "sha256": "1189618a259abeb57b90aa979aa0d0694521c01d1fb1dfecc8aa8e63937f8f8e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/terrain/bodyCutConsumer.ts",
+      "bytes": 7620,
+      "sha256": "afd6ceb84d9ea32bbbe1f416cae6b65b63a95c6674b75b27fbef580ee43b056f"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/terrain/cutPlan.ts",
+      "bytes": 28881,
+      "sha256": "d35b37dfce3d3ba29ace56c9c63769054fd211bca012ad598d855e5783aca3cb"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/terrain/ownedSlotCopy.ts",
+      "bytes": 3085,
+      "sha256": "24884343c6f5718f02d996b290e287fc6095814b12dd9721c1d992e7f21abb40"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/terrain/picking.ts",
+      "bytes": 2504,
+      "sha256": "5d147db11f5ad53ceab20b7865f972570389836478378062afd6d1c0f5f1ae90"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/terrain/plasmaTool.ts",
+      "bytes": 6587,
+      "sha256": "340ec6678da1ede6742b09a9ddc7e1e0bfe4ed06174d3150b4592494a3ef6b99"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/terrain/structuralConsumer.ts",
+      "bytes": 4966,
+      "sha256": "c315c7325c866ef069757369d95124ce7f31d9b98582e30de355cc61dd96cc8f"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/terrain/structuralIngest.ts",
+      "bytes": 21973,
+      "sha256": "170a75de8e173ef023d91b8726f08d1af91db37f9179b37a41a24743de5da54d"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/terrain/supportPlan.ts",
+      "bytes": 18406,
+      "sha256": "6720e6f9589fe91e5c4ef45315a195912394118283dc6de1ded09fafb05999f3"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/terrain/terrainChunkComposition.ts",
+      "bytes": 4690,
+      "sha256": "6d6ef9a711bb9f8865f1b74695d80c9c7f3dd031733f158fb13c244809e7a997"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/terrain/terrainChunkInput.ts",
+      "bytes": 6876,
+      "sha256": "c0f7860bdec1da6c54416c51d5a3b3fcec4763bc8043a309b5d455fff4d9fe43"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/terrain/terrainConsumer.ts",
+      "bytes": 16279,
+      "sha256": "dae332118a000ddd31cc8907a49f93674f0b877d5c8bd5ba302128e083970de9"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/terrain/terrainProducts.ts",
+      "bytes": 66563,
+      "sha256": "9b126325112bace977cb9e08d3a5fab0337cf94d3a5c558c7a72b08693ed6145"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/terrain/terrainTransfer.ts",
+      "bytes": 1671,
+      "sha256": "6d416b978b9faedd0401164775108524a26e3cd2d12b9a28e67f67ecccf5c912"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+      "bytes": 226017,
+      "sha256": "d8f21e3920e6ecc49115f94a1fc36635565c730d3f8317102901aebb46faafe5"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpCamera.ts",
+      "bytes": 12227,
+      "sha256": "52a1a4a0694f3acfbd2ee615bf1fb54cb73c9388d8889feef44a9e531bb3be5a"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpCoastMesher.ts",
+      "bytes": 55719,
+      "sha256": "d0bd08b38db2a9b7a4a9cf8d7aae9f5e5dadf0d18f7bf56db9760a507a795f57"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+      "bytes": 40601,
+      "sha256": "b34aaf2e8f6e967a3364d9d88c695e824d5182fa313b65cfbdd696d00cbe2820"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpHud.ts",
+      "bytes": 24116,
+      "sha256": "10c2d9c008171006ba1f4956165ff6afec6bfe9b4aa4f04eaa3d573f07607cd5"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpQuery.ts",
+      "bytes": 364,
+      "sha256": "30f9acfa22d4cfca6e616fa3de4393dfe3033b624c88e191c75684c6877f995a"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpRoute.ts",
+      "bytes": 1827,
+      "sha256": "381e475b219766018468939901a4f7b6f1be5cbc1eb432c87d20af64f3632f97"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpTerrain.ts",
+      "bytes": 17581,
+      "sha256": "93019417d3f022ead0ee3f9bf42eefce6e249fe135fa61916424d78b19ba1a11"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/index.ts",
+      "bytes": 700,
+      "sha256": "fdd5866221d3c350b6936943965ccee1f1ad7a6408165edb19634dc583cbddc3"
+    },
+    {
+      "path": "apps/weltraum-browser/src/main.ts",
+      "bytes": 3285,
+      "sha256": "a73a55fb391d9f34547a8b213d942170e52c90b544fa39abe278e635e9feb010"
+    },
+    {
+      "path": "apps/weltraum-browser/src/missions/core.ts",
+      "bytes": 41645,
+      "sha256": "5fcc6139c2385ec2c4698bbed7d9c6386718d469bb88d28ea86d89730cbb9c44"
+    },
+    {
+      "path": "apps/weltraum-browser/src/missions/fixtures.ts",
+      "bytes": 7377,
+      "sha256": "9699f57a09286cf7fc17a78a2a6da054e617038fdf8fd2d626b64932e8244408"
+    },
+    {
+      "path": "apps/weltraum-browser/src/missions/index.ts",
+      "bytes": 107,
+      "sha256": "6ce8c3045598a0a69b55114cfb714ff2f13e876b11bc5e884a7c8c7387d181d2"
+    },
+    {
+      "path": "apps/weltraum-browser/src/missions/types.ts",
+      "bytes": 9826,
+      "sha256": "041a4296980f1a1031235dac288dd0e91a3be4ef8046502fa4f192fcebe2b7fc"
+    },
+    {
+      "path": "apps/weltraum-browser/src/missions/validation.ts",
+      "bytes": 19090,
+      "sha256": "8161855ecc5c7efcf4da46aab503fe23376251d2b041614dd2d0e52a2b76d879"
+    },
+    {
+      "path": "apps/weltraum-browser/src/navigation/map/activeShip.ts",
+      "bytes": 323,
+      "sha256": "667481909f0b272129660293a89c9169736f601e24d5bd5bbc7c89bebe9d6606"
+    },
+    {
+      "path": "apps/weltraum-browser/src/navigation/map/contracts.ts",
+      "bytes": 15874,
+      "sha256": "e2733fbdbd391c501e38db4c12a84d4d25cf7bbe7628bc7d40f30194dbf75264"
+    },
+    {
+      "path": "apps/weltraum-browser/src/navigation/map/index.ts",
+      "bytes": 89,
+      "sha256": "7d47389ca34d8dbbee5f9989c320e82c3f181c2916b726704855b619ad202c1d"
+    },
+    {
+      "path": "apps/weltraum-browser/src/navigation/map/projection.ts",
+      "bytes": 3929,
+      "sha256": "242583a554a12626949bd298d0286436883f281f582a8f11f7d0a9ebd0721043"
+    },
+    {
+      "path": "apps/weltraum-browser/src/navigation/motionProfile.ts",
+      "bytes": 20302,
+      "sha256": "00641a9006d82a9a3c2d38397b6c963345d54174f695af32f05705fa0be07f4b"
+    },
+    {
+      "path": "apps/weltraum-browser/src/navigation/multiObstaclePlanner.ts",
+      "bytes": 9314,
+      "sha256": "3880f69a26c5ae6e3836792f587dab13acd0bf6b4aec5fe86fdbadcb3aca0139"
+    },
+    {
+      "path": "apps/weltraum-browser/src/navigation/planners.ts",
+      "bytes": 5304,
+      "sha256": "c7bdfb6c0d9133f5fa13e6e1eef01738d9c8044816f544b949b18b5b8d43a214"
+    },
+    {
+      "path": "apps/weltraum-browser/src/navigation/previewLock.ts",
+      "bytes": 11751,
+      "sha256": "7817184bf5d284efd621c44e48e386a1274cf958c08663c5d89210ee7c40ef7a"
+    },
+    {
+      "path": "apps/weltraum-browser/src/navigation/validation.ts",
+      "bytes": 18185,
+      "sha256": "d483e46159648d0b4dc6fec9e69b139bf8e8d9c72bd406bda611ae5d13eb9aab"
+    },
+    {
+      "path": "apps/weltraum-browser/src/persistence/canonical.ts",
+      "bytes": 5830,
+      "sha256": "e21ef6b4ecb2e60663b9d5e1e42327d1dce0e147b3eeb1edf99c2b1d70834ead"
+    },
+    {
+      "path": "apps/weltraum-browser/src/persistence/events.ts",
+      "bytes": 3064,
+      "sha256": "6a7f7bd2273e2304cf90a966ec8cc662db330bf5db68af7ee9d7d2857b350a33"
+    },
+    {
+      "path": "apps/weltraum-browser/src/persistence/fixtures.ts",
+      "bytes": 6255,
+      "sha256": "f4958f37c6a00602b6a980b18fdf0d052cecbed1b5ce354026b979d2c45429de"
+    },
+    {
+      "path": "apps/weltraum-browser/src/persistence/ids.ts",
+      "bytes": 9345,
+      "sha256": "db9acf8357ee229c9fc1afc7d38365892fab6e458bd9ed6a8df9b677ecc638e4"
+    },
+    {
+      "path": "apps/weltraum-browser/src/persistence/index.ts",
+      "bytes": 279,
+      "sha256": "0e952aeb9a5d14b5a9a08577aff6b9f6f762ccb95ef3ea71cfd969bb7b476223"
+    },
+    {
+      "path": "apps/weltraum-browser/src/persistence/migrations.ts",
+      "bytes": 9207,
+      "sha256": "a2e12e86d61116ebcb7f63ea082262ecb56e2ecc3cdd7fca6003900ce2c1d47a"
+    },
+    {
+      "path": "apps/weltraum-browser/src/persistence/saveSchema.ts",
+      "bytes": 32871,
+      "sha256": "821c3f600a7ace426a5e26a47143b7c9eac1c594990df7d12fc33ec2ee6a79f3"
+    },
+    {
+      "path": "apps/weltraum-browser/src/persistence/simulationMode.ts",
+      "bytes": 2398,
+      "sha256": "cee8dd7c34023cd532dfc209845291762dd12685030159a3baba196dc3e8c6df"
+    },
+    {
+      "path": "apps/weltraum-browser/src/persistence/time.ts",
+      "bytes": 5468,
+      "sha256": "fecf2c7512b426586a88b6bfc01c8d6fe8b0a8e020227cd75c9e41f03b6a49df"
+    },
+    {
+      "path": "apps/weltraum-browser/src/persistence/types.ts",
+      "bytes": 5643,
+      "sha256": "93575ab700e3c42e98d1915daa82fb702be649b5c16c3646189219a293241454"
+    },
+    {
+      "path": "apps/weltraum-browser/src/persistence/validation.ts",
+      "bytes": 10972,
+      "sha256": "101c0ae7b122e5ff4d468c42c9acc0caca96f627b081f2605833f87c7958f1ef"
+    },
+    {
+      "path": "apps/weltraum-browser/src/physics-space/canonical.ts",
+      "bytes": 604,
+      "sha256": "cb1f9a96334fbf93e8995ffb0f62b1eb8ad8921ff86c7ec0e27f1096579f4ca5"
+    },
+    {
+      "path": "apps/weltraum-browser/src/physics-space/errors.ts",
+      "bytes": 838,
+      "sha256": "5c2c6613e2d03f6ee2d167ee156c06e114cf30dcb633b2cf155b78c96f59fe8b"
+    },
+    {
+      "path": "apps/weltraum-browser/src/physics-space/gravityField.ts",
+      "bytes": 8311,
+      "sha256": "c6f0314a0be6581525e5f36fdbc7108608576851a3535490ee5513ebb00d4819"
+    },
+    {
+      "path": "apps/weltraum-browser/src/physics-space/handoff.ts",
+      "bytes": 16209,
+      "sha256": "0e057e895622b81e88d37e43aaececc1c95861397b753d84702c0916b729dfcb"
+    },
+    {
+      "path": "apps/weltraum-browser/src/physics-space/ids.ts",
+      "bytes": 1279,
+      "sha256": "c671fcbcffe2fbbd113cd9b33f47e75be9ed7c69f36e82a5af6f03abcf4224cb"
+    },
+    {
+      "path": "apps/weltraum-browser/src/physics-space/index.ts",
+      "bytes": 227,
+      "sha256": "f23d19c35165bb3dec2ebcfb32ee82d7c2785f2d83f18117b3a499e37db9c9e3"
+    },
+    {
+      "path": "apps/weltraum-browser/src/physics-space/integrator.ts",
+      "bytes": 6074,
+      "sha256": "8f65dc32efddf704ca25c2b02e0bc0328c18345b837654358f4f5a375d6541c3"
+    },
+    {
+      "path": "apps/weltraum-browser/src/physics-space/probeSimulation.ts",
+      "bytes": 1920,
+      "sha256": "251cd7be70fa2a1909fb662f955ad181c3aa833773820ade6344593c703c086e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/physics-space/types.ts",
+      "bytes": 5833,
+      "sha256": "2f082524b02c0c55be3877045abe2cea28b2e785501539ec95830862695b92b2"
+    },
+    {
+      "path": "apps/weltraum-browser/src/presentation/backend.ts",
+      "bytes": 2020,
+      "sha256": "20885ad0c4c716bec12362c3abed1d8273fbb9b260596fdfc8906d28336a48bb"
+    },
+    {
+      "path": "apps/weltraum-browser/src/presentation/canonical.ts",
+      "bytes": 10950,
+      "sha256": "0929c555ff23198ad6dc36dc6fcedca752f5e43f0973dc695c202b4a4309127e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/presentation/ids.ts",
+      "bytes": 8056,
+      "sha256": "50d7642fe0fbf097bf2cd80275ff5d4243b69cb62c93a7bad14612f5c2ce96a2"
+    },
+    {
+      "path": "apps/weltraum-browser/src/presentation/index.ts",
+      "bytes": 269,
+      "sha256": "d1cc7c04ed7bf95d023f8a75c8d6b6edb558bc67e0c24e16298d81f7d6321d49"
+    },
+    {
+      "path": "apps/weltraum-browser/src/presentation/materialProfile.ts",
+      "bytes": 2686,
+      "sha256": "1d871f968781bdf67c9e6b5517daad94bddccf373950b3f022e68769e7278134"
+    },
+    {
+      "path": "apps/weltraum-browser/src/presentation/meshArtifact.ts",
+      "bytes": 26255,
+      "sha256": "01fcc9bf4ed57c95fb1c74d006ac08bc6d4011edef4c32db0e401106c3600fb9"
+    },
+    {
+      "path": "apps/weltraum-browser/src/presentation/renderCommands.ts",
+      "bytes": 11149,
+      "sha256": "00ecac809381ea520c1197b877207e1d6ee124aeb46b27f25bdbb7644f3cc7f2"
+    },
+    {
+      "path": "apps/weltraum-browser/src/presentation/types.ts",
+      "bytes": 847,
+      "sha256": "ec8cc94f1b267348e17e7d5b4a42d0d1c5161d92ba39ef40efa6cd1a0df7dc4a"
+    },
+    {
+      "path": "apps/weltraum-browser/src/presentation/validation.ts",
+      "bytes": 1602,
+      "sha256": "e93eadb015c284865184a997b9542fc351ab4c0b4f67247a9adb80890bafb1ff"
+    },
+    {
+      "path": "apps/weltraum-browser/src/presentation/visibilityPlan.ts",
+      "bytes": 12958,
+      "sha256": "8840bb7f9aaf2223492bfaed164cc9e294f09e684caf03c8a7758ef51620d04d"
+    },
+    {
+      "path": "apps/weltraum-browser/src/provingGround/pgTragwerkPlayerSlice.ts",
+      "bytes": 22792,
+      "sha256": "2d96903bdc14fca9b682f8d462c3dcfdbf6d6259a2da555780feb5cae46c2848"
+    },
+    {
+      "path": "apps/weltraum-browser/src/render/three/backend/deterministicHarness.ts",
+      "bytes": 2451,
+      "sha256": "51c2cb1061beb234a25c46c06b221b1721ccc73c5a6797ba82a7e0c0d9b23383"
+    },
+    {
+      "path": "apps/weltraum-browser/src/render/three/backend/index.ts",
+      "bytes": 272,
+      "sha256": "0b971a8514a0675a73c35be11fadd85223a6db415af4d2eaad844c33e3505d9e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/render/three/backend/threeCameraProjection.ts",
+      "bytes": 1713,
+      "sha256": "b93ace4a89df22b445ad2a16108e1bef5e8efce78c6bc3f122bf89884d7e08f3"
+    },
+    {
+      "path": "apps/weltraum-browser/src/render/three/backend/threeDiagnostics.ts",
+      "bytes": 3513,
+      "sha256": "3529794a0dacbae8fc1e760f039c4d779d639c5499635b663d87d49bf4b0d78b"
+    },
+    {
+      "path": "apps/weltraum-browser/src/render/three/backend/threeMaterialFactory.ts",
+      "bytes": 5114,
+      "sha256": "9b259862c6534691773e2a7f7df7ed5c4696491243535844f69af84240fb1a6d"
+    },
+    {
+      "path": "apps/weltraum-browser/src/render/three/backend/threeMeshFactory.ts",
+      "bytes": 2746,
+      "sha256": "cfbbe36b3d3891943cd8fc2fedff0a5d78ff435752f3760d50836b1e5387c8ea"
+    },
+    {
+      "path": "apps/weltraum-browser/src/render/three/backend/threeRenderBackend.ts",
+      "bytes": 51369,
+      "sha256": "c1c32b35c10f1e0732b917e7cef9c4e65350cfabe412a1ef983365c29b0436c8"
+    },
+    {
+      "path": "apps/weltraum-browser/src/render/three/backend/threeResourceRegistry.ts",
+      "bytes": 8096,
+      "sha256": "cd21760e59c665845074e4f0fa7caada639a1f0fe293632040955a134c5bf431"
+    },
+    {
+      "path": "apps/weltraum-browser/src/render/three/debugScene.ts",
+      "bytes": 40749,
+      "sha256": "f57e949b33e8ca6140cfaabf40df61996399b97ff35ed237ea895a91c892ae36"
+    },
+    {
+      "path": "apps/weltraum-browser/src/render/three/graphicsSettingsAdapter.ts",
+      "bytes": 11985,
+      "sha256": "87658dc71a20a9221be96a431bf0e14d99427ee338bdd9a73342a08a3849f777"
+    },
+    {
+      "path": "apps/weltraum-browser/src/render/three/nozzleVfx.ts",
+      "bytes": 4416,
+      "sha256": "c07b5f336a25703795bb5f232cc7b2bc6eebcc6d2c4a07a6e8d9061930f9777f"
+    },
+    {
+      "path": "apps/weltraum-browser/src/render/three/shipVisual.ts",
+      "bytes": 51768,
+      "sha256": "e5ae6ffbe4e9e9860c2f6b8c08239ffca366b0438309fd5b1f364c51fd64c08c"
+    },
+    {
+      "path": "apps/weltraum-browser/src/render/three/worldPresentationRenderer.ts",
+      "bytes": 26862,
+      "sha256": "c84c59cc747b6765b89fab953b73b5d66910f5e1a3455bcc096a1bae5bfe25b8"
+    },
+    {
+      "path": "apps/weltraum-browser/src/resources/capacityMath.ts",
+      "bytes": 553,
+      "sha256": "aec4ff2e7c954f8f202f256c37a9d108a7f32bf1648dcc53dd7f53c52ab9ac45"
+    },
+    {
+      "path": "apps/weltraum-browser/src/resources/catalog.ts",
+      "bytes": 7216,
+      "sha256": "bbabd077440e9307a05e4278f9befd15308adbe64b9fa4ecd558e6202a6ad66b"
+    },
+    {
+      "path": "apps/weltraum-browser/src/resources/categories.ts",
+      "bytes": 1888,
+      "sha256": "fc614c30071f22a2cf16a109d01b774c69d7f68f7c334e775836958d05f58a7f"
+    },
+    {
+      "path": "apps/weltraum-browser/src/resources/containers.ts",
+      "bytes": 19672,
+      "sha256": "a11215f4bda7eca86bb8fee791fce00cc601c080a106a85face6ff4bec3dbecb"
+    },
+    {
+      "path": "apps/weltraum-browser/src/resources/fixtures.ts",
+      "bytes": 3672,
+      "sha256": "4833c6036af7486938867ff662ec69143be452c439ea88f5dd853b095e124224"
+    },
+    {
+      "path": "apps/weltraum-browser/src/resources/ids.ts",
+      "bytes": 2831,
+      "sha256": "a46157defe1ce361240b8a6f3b7f1894f4ebd8282af2ec7bc576e6f8dc6b9298"
+    },
+    {
+      "path": "apps/weltraum-browser/src/resources/index.ts",
+      "bytes": 258,
+      "sha256": "b96b725646f0d6bd2d0e973cd0fdaf131973afd868a80fdc2ee4a22507808339"
+    },
+    {
+      "path": "apps/weltraum-browser/src/resources/serialization.ts",
+      "bytes": 4186,
+      "sha256": "7d1459f7ff1b470d5f88f6046259add5f0ecaab78955fc2afc8d37adf14ff80f"
+    },
+    {
+      "path": "apps/weltraum-browser/src/resources/starterCatalog.ts",
+      "bytes": 6874,
+      "sha256": "62b194407b09ee605f9d520820388a8dc1837356121a67abaa9cea422c96f06e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/resources/transfer.ts",
+      "bytes": 36261,
+      "sha256": "9f40f65694ff962c7388d509fe66229909693cdf26f1a48d7a5330bb03396cd4"
+    },
+    {
+      "path": "apps/weltraum-browser/src/resources/types.ts",
+      "bytes": 15628,
+      "sha256": "f50a6a32a34f1b2597dbeaeecfdc58d53d42971ffcb35fb22162681074b79de6"
+    },
+    {
+      "path": "apps/weltraum-browser/src/runtime/browserRuntime.ts",
+      "bytes": 32101,
+      "sha256": "9fc74cf8d10619f5d3df2a5714f81564ac3b1f746188487f51bf0ab9dea959ab"
+    },
+    {
+      "path": "apps/weltraum-browser/src/runtime/commands.ts",
+      "bytes": 2337,
+      "sha256": "dcd7c090a71ae34fa4011943612827da443d06ff23c2185f1fc2923307dd40d9"
+    },
+    {
+      "path": "apps/weltraum-browser/src/runtime/input.ts",
+      "bytes": 2563,
+      "sha256": "31f9fbd5b181d1ae80d51d57b619c43b1a08e094292a8092c45771941b5e9828"
+    },
+    {
+      "path": "apps/weltraum-browser/src/settings/capabilities.ts",
+      "bytes": 3865,
+      "sha256": "077d7d7834f7b3f011499701b9d518bd9f33ef65730531c29b197cd8cfa94eb9"
+    },
+    {
+      "path": "apps/weltraum-browser/src/settings/defaults.ts",
+      "bytes": 1351,
+      "sha256": "8f4a285894c116b510c0a032c30ffa4da7b7ba7d86a727ac4b01acc4443f63e8"
+    },
+    {
+      "path": "apps/weltraum-browser/src/settings/graphicsSettings.ts",
+      "bytes": 5318,
+      "sha256": "5fc638ee81e9f369fe26f9ec8d593276e81e3cac640aa984bd86d7d01c392720"
+    },
+    {
+      "path": "apps/weltraum-browser/src/settings/index.ts",
+      "bytes": 256,
+      "sha256": "a96b520e18b099ec00ec8988931f09500d77d5b510e994d292c97f86f880323b"
+    },
+    {
+      "path": "apps/weltraum-browser/src/settings/presets.ts",
+      "bytes": 5201,
+      "sha256": "d5b44a603f2f3ce7a28ec13f3d1298b2ddfba22bc4019008596c0e3d984a7617"
+    },
+    {
+      "path": "apps/weltraum-browser/src/settings/schema.ts",
+      "bytes": 2818,
+      "sha256": "0cb33749bb53d3763485ec87c40e6da63725b4301fd6352d1da21bbd740cb925"
+    },
+    {
+      "path": "apps/weltraum-browser/src/settings/storage.ts",
+      "bytes": 2783,
+      "sha256": "2f1a051a4a7c606420da70f6c0bb9b429bf8723856f07e0f5e0cd39910f0b2e6"
+    },
+    {
+      "path": "apps/weltraum-browser/src/settings/store.ts",
+      "bytes": 6641,
+      "sha256": "8161aea7cd6adc696fb859cd1681abad400b5e1914b5a5bce555bc09e9272805"
+    },
+    {
+      "path": "apps/weltraum-browser/src/settings/types.ts",
+      "bytes": 6096,
+      "sha256": "9b4a4ed6230ba2a25040997d0895cd1f1d46127d5c0c6174f440ae01e9cf264e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/settings/validation.ts",
+      "bytes": 6284,
+      "sha256": "f23138e372775d1d3bf87e66705404d8c682de6ad6a3243a125ce7bbdac3c0c4"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-builder/blueprint.ts",
+      "bytes": 22957,
+      "sha256": "df37775a7d172f95a21cce5b0e5a2099ce18ba20bb22e3b90a584bbea409fc93"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-builder/blueprintValidation.ts",
+      "bytes": 18125,
+      "sha256": "e60e6b822cc001e830695ebe390b6da7793b2b3b482aef29f3351b3fdb8177d2"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-builder/canonicalJson.ts",
+      "bytes": 2592,
+      "sha256": "435f0054cad209ba9ef2dad58c334dc0b8103ec6448513c47223c595d49cbc55"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-builder/catalog.ts",
+      "bytes": 45111,
+      "sha256": "d46473febe82a9da14747f2de8386e9917e8e33bae74876ed5293969d41aa486"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-builder/categories.ts",
+      "bytes": 4702,
+      "sha256": "542e0d816ee6846a49b959273b6a4ccafd6e914a4f26b04720c5b5771fcc8bad"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-builder/compatibility.ts",
+      "bytes": 28434,
+      "sha256": "7bc053e4355747d3331b2276b60fc42cc05586c0ed0370424b045c589c773a26"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-builder/components.ts",
+      "bytes": 5585,
+      "sha256": "15f48f3342c95944297cb48ea0687221c822d044850a9b35162095a5c2aab335"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-builder/diagnostics.ts",
+      "bytes": 5629,
+      "sha256": "7358d36952164b89476a46a48171dcfe80e8656a35c48063f82c8c3272cf8039"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-builder/fixtures.ts",
+      "bytes": 5611,
+      "sha256": "270f6c137d37518bd53b540b3e33c83fb9e65a24f92d19a74ca34bcdc68b508a"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-builder/flightReadiness.ts",
+      "bytes": 4258,
+      "sha256": "9e43f96117d86ff64b4adb55ba0304ab27b6962b5b1598d0f6a8f024936e364d"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-builder/handlingDiagnostics.ts",
+      "bytes": 31238,
+      "sha256": "1d3e050a291d1581d2ee259332313c51030b1e6fbe4d9ba1f741c585e1023c20"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-builder/ids.ts",
+      "bytes": 6024,
+      "sha256": "6f1e05c48198ddd72c2454937f9b02a9669c5d7d5ad23f551934d5ac98b8ec37"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-builder/index.ts",
+      "bytes": 622,
+      "sha256": "0d3d080fb5033179d05897c1b8aa6c706b1b4b560eebc35433c7261fe4dc5709"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-builder/massProperties.ts",
+      "bytes": 13105,
+      "sha256": "c5c012b036e07e9af471d840ffe9385f8e63a0a8eb4fc25007977479831d91da"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-builder/serialization.ts",
+      "bytes": 7369,
+      "sha256": "2e2a5e7c5a1be448985ee1e71c80f711787fa5416a09f866a15334112dfa52e3"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-builder/shipStats.ts",
+      "bytes": 27607,
+      "sha256": "a21ebb5c4461d1eec30a7d919a8996c373f709c786a65352e9cc074861869ff0"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-builder/sockets.ts",
+      "bytes": 8795,
+      "sha256": "2016fe04e7f4bbef2ad8d0e39e05bda7269860597f89e32429ccf9771ac99914"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-builder/starterCatalog.ts",
+      "bytes": 28190,
+      "sha256": "36d22ca3704544a8252a4b20c052859cc9eba8682735dcdb1f6177b6d6c1cd6d"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-builder/statCanonical.ts",
+      "bytes": 3441,
+      "sha256": "0138401b3f13ff920e91069ee9dd92bb9b287d6fabd9e782e2aa513e0f01bf87"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-builder/types.ts",
+      "bytes": 17004,
+      "sha256": "1c605bbbacd21fbf3c1c592f70933fd08fc256e9f9180cdc6a89d992702abf80"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-builder/validation.ts",
+      "bytes": 12076,
+      "sha256": "1bdc81d07e4416dd2372efa8ffff61826bcc8ddb022db8b8c5994ac20c9e07a2"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-power-thermal/battery.ts",
+      "bytes": 12249,
+      "sha256": "dc065229a89920c5dc0923cef5b71b09c6014aa171ab5052b9244c1af0056c4a"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-power-thermal/canonical.ts",
+      "bytes": 8206,
+      "sha256": "021b39ea3eedb3a3b7cf9a42543bd29396a2153949ec8ac9b7feb4ae837839b0"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-power-thermal/events.ts",
+      "bytes": 10740,
+      "sha256": "82b920e885f526a8043c2587a51b76c16cfb308a2d92b3d44c1f3e7ead525112"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-power-thermal/fixtures.ts",
+      "bytes": 3190,
+      "sha256": "689a084643a32f21b7a180c6018ee76ce75b6cdc43081102f46bf766484f25e0"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-power-thermal/ids.ts",
+      "bytes": 3665,
+      "sha256": "948d6b1040939a04f045326d528e0998cb13526bfe968fa74b1d0a6859103acf"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-power-thermal/index.ts",
+      "bytes": 304,
+      "sha256": "30edf0ae071b125ad4c2fa382f795faadf86da8380067ebdd6b314ae7a34c2b5"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-power-thermal/powerAllocation.ts",
+      "bytes": 14826,
+      "sha256": "175c18a11c9cf342c51196a787922dd645c9da1bffa250927dd16ba2cd9ee46e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-power-thermal/protection.ts",
+      "bytes": 5555,
+      "sha256": "450d3306bcd76cb3b27836945ffdba7a5ba9912896fa2d459e9c30d44d783717"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-power-thermal/step.ts",
+      "bytes": 3792,
+      "sha256": "4349c07b6a61b57da2986ccc9a85a02ff7d905b9a5e339b2fe1bb5a1b4f850d2"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-power-thermal/thermal.ts",
+      "bytes": 13335,
+      "sha256": "ee85bdb573b48412fee51fc31ca489045b09a081c1f8a48db6b8e82e18ce165a"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-power-thermal/types.ts",
+      "bytes": 11779,
+      "sha256": "3dbe2cb14fd90805f7e3fad134e1082d02bd5ed07520bb5f3dac43a10c12c0aa"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ship-power-thermal/validation.ts",
+      "bytes": 40679,
+      "sha256": "0247c705737ccd2e09e8c4cc2e3c9b64a79f8bbc13826fd7d6b1e7f712599720"
+    },
+    {
+      "path": "apps/weltraum-browser/src/sim/simulation.ts",
+      "bytes": 5978,
+      "sha256": "d8c86e7416aae20ef761b38dcbf80964f17c489a4d1f6df237ef5a0f08a3f92a"
+    },
+    {
+      "path": "apps/weltraum-browser/src/sim/telemetry.ts",
+      "bytes": 7242,
+      "sha256": "ce6ba7fa31d75f2889c58e3045230e2c3071d0ce4d2e4f7fb66127a4b46cb5b9"
+    },
+    {
+      "path": "apps/weltraum-browser/src/simulation-scheduler/eligibility.ts",
+      "bytes": 975,
+      "sha256": "d4eea88448f4f11ba183e9c0e446f293973e0618047f3cf4fe5c50b6276fadcf"
+    },
+    {
+      "path": "apps/weltraum-browser/src/simulation-scheduler/fixtures.ts",
+      "bytes": 6015,
+      "sha256": "2b008fef1225103ffdda4d32d389d8f8fecaf3613a43f5df369e68a223bf6391"
+    },
+    {
+      "path": "apps/weltraum-browser/src/simulation-scheduler/index.ts",
+      "bytes": 135,
+      "sha256": "689eff6ee6fd377f6aed66d79cb4180d03759a04028d78142106612de71f38a5"
+    },
+    {
+      "path": "apps/weltraum-browser/src/simulation-scheduler/planner.ts",
+      "bytes": 7372,
+      "sha256": "bc39113a50edfe7bac0d556217ad5331ffb56ea15c091d2c959404e18eac51ca"
+    },
+    {
+      "path": "apps/weltraum-browser/src/simulation-scheduler/state.ts",
+      "bytes": 9914,
+      "sha256": "a43dfe6b2c1a065796a62f85e64b6e74d5eb76afddaea32dea6565d0cc416375"
+    },
+    {
+      "path": "apps/weltraum-browser/src/simulation-scheduler/types.ts",
+      "bytes": 7103,
+      "sha256": "f4d6c2328f54499060edb06cd8eff75a623a2e8f76b15f0f7d9ac71184a4d155"
+    },
+    {
+      "path": "apps/weltraum-browser/src/simulation-scheduler/validation.ts",
+      "bytes": 19628,
+      "sha256": "022fb7fa5753e762a654d006b355f7f166316f25700134deb72d6c3cc140eff3"
+    },
+    {
+      "path": "apps/weltraum-browser/src/spatial/bodyFrames.ts",
+      "bytes": 12011,
+      "sha256": "129ab6e093351465d1766b0fa63cfbae040f2f48e3ee2c5aebf17aafa7a40451"
+    },
+    {
+      "path": "apps/weltraum-browser/src/spatial/canonical.ts",
+      "bytes": 577,
+      "sha256": "4821116410203880dadc200ccb13c91fed4d6f5101e52f884462091e1baa0729"
+    },
+    {
+      "path": "apps/weltraum-browser/src/spatial/errors.ts",
+      "bytes": 815,
+      "sha256": "47f48d65467970f3db4ba5e2ab1a3059d10e77999d465af71b9fe26aaa39b146"
+    },
+    {
+      "path": "apps/weltraum-browser/src/spatial/frameGraph.ts",
+      "bytes": 5366,
+      "sha256": "8553854de09b1d069a654b89482c914b01a0ba5bb45458e7498d7f14fa068a7f"
+    },
+    {
+      "path": "apps/weltraum-browser/src/spatial/frameValidation.ts",
+      "bytes": 6672,
+      "sha256": "72b4c3a0472ecfab8d9ccf1708e711f0ec2fc807c2c4dd0e4225718a670cf2f0"
+    },
+    {
+      "path": "apps/weltraum-browser/src/spatial/ids.ts",
+      "bytes": 1066,
+      "sha256": "ab208880b05067f0ef06108cfc5d019e3f482a44485465bb863ddc516f7433b9"
+    },
+    {
+      "path": "apps/weltraum-browser/src/spatial/index.ts",
+      "bytes": 328,
+      "sha256": "da59840281dcdd1d395744ea15e70dba3abb10bd0ab970132b60acf88aafb12f"
+    },
+    {
+      "path": "apps/weltraum-browser/src/spatial/quaternion.ts",
+      "bytes": 7014,
+      "sha256": "5036273dae402fa1b9b25e1c35d8b50bee1236b2c70b57691f3f7e9c4e133c3f"
+    },
+    {
+      "path": "apps/weltraum-browser/src/spatial/surfaceLocalFrame.ts",
+      "bytes": 7923,
+      "sha256": "2c00197bba05b1b3863033d0ea9786678ad88434a4167921a004f88be0437b94"
+    },
+    {
+      "path": "apps/weltraum-browser/src/spatial/transforms.ts",
+      "bytes": 8368,
+      "sha256": "b54ed3d913fb6e9302d7b712e6c3c704958a731104db430437aad70091e6aa9c"
+    },
+    {
+      "path": "apps/weltraum-browser/src/spatial/types.ts",
+      "bytes": 2783,
+      "sha256": "f19cb96cc08e1b7922178c84a420f7efb9f83f2b15ad114c72eba53b02a622ac"
+    },
+    {
+      "path": "apps/weltraum-browser/src/spatial/universeClock.ts",
+      "bytes": 2022,
+      "sha256": "729e06cb50a01c41b9d61067483082b5c12fb091f4ef6748fcc224c90f0d1b73"
+    },
+    {
+      "path": "apps/weltraum-browser/src/streaming/asyncContentLoader.ts",
+      "bytes": 11436,
+      "sha256": "0787bb7fedd6cfe4ba9ed149a1f1e6bb11a1b22f4e8588dfbda3eca92bbef03e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/streaming/budgets.ts",
+      "bytes": 1131,
+      "sha256": "23b1f9ab21e6b4737d7103125d15f54063a6b858f54cc90d6baaffb952499755"
+    },
+    {
+      "path": "apps/weltraum-browser/src/streaming/canonical.ts",
+      "bytes": 2126,
+      "sha256": "372c51f1671e842d82c9868955e06f2900d724f9883dffb3991df775ca1b640d"
+    },
+    {
+      "path": "apps/weltraum-browser/src/streaming/contentKey.ts",
+      "bytes": 3440,
+      "sha256": "4c0b847828dbb640d398e200cd2068c33d641b44f473c1134695862407babc58"
+    },
+    {
+      "path": "apps/weltraum-browser/src/streaming/contentProvider.ts",
+      "bytes": 3145,
+      "sha256": "3d25c4eff81b67323a59e31f5ff79afca9da46a63b63c649b3aacbaac16a7974"
+    },
+    {
+      "path": "apps/weltraum-browser/src/streaming/index.ts",
+      "bytes": 261,
+      "sha256": "cf516017d04b0f057ac9fa930c9989a0a17011f813fb0818af367e5d978549c7"
+    },
+    {
+      "path": "apps/weltraum-browser/src/streaming/memoryContentCache.ts",
+      "bytes": 13442,
+      "sha256": "c5e727f9dca8980cdf57512913f07e0738a47be1dda7da040ac35c5008d2f889"
+    },
+    {
+      "path": "apps/weltraum-browser/src/streaming/residency.ts",
+      "bytes": 1643,
+      "sha256": "d599efc89cd61910904f4f4256ddd7d527020bdfd692cd1f0613f8fa002cb845"
+    },
+    {
+      "path": "apps/weltraum-browser/src/streaming/voxelBrickCache.ts",
+      "bytes": 5284,
+      "sha256": "4a1e09e534edefbfdd7df6ad1c3de5e2f83d327187fb88796d00d42622d08d5d"
+    },
+    {
+      "path": "apps/weltraum-browser/src/style.css",
+      "bytes": 215770,
+      "sha256": "83100be985d20246fcd618c8f0f47cd0cdb74e726a63d0bf4ff32b2119c2b420"
+    },
+    {
+      "path": "apps/weltraum-browser/src/surface-lab/index.ts",
+      "bytes": 392,
+      "sha256": "ec8226f8759198f5c629aa5e49e1777db1874e82f39499972d34286939a1cc31"
+    },
+    {
+      "path": "apps/weltraum-browser/src/surface-lab/surfaceLabBootstrap.ts",
+      "bytes": 10809,
+      "sha256": "13550373042705c1c17c9d81238dc1a3c39e1c94b77ce5ee05fbfc44be28305f"
+    },
+    {
+      "path": "apps/weltraum-browser/src/surface-lab/surfaceLabCamera.ts",
+      "bytes": 8456,
+      "sha256": "2c27d1480fbc3d429e73e3c15652434c391fac47cabc40e031de1a87812758a7"
+    },
+    {
+      "path": "apps/weltraum-browser/src/surface-lab/surfaceLabController.ts",
+      "bytes": 38037,
+      "sha256": "0e345427a17f74a02973f8992b9805f47a11bb3f7d5da956dbc9066240dbe6ef"
+    },
+    {
+      "path": "apps/weltraum-browser/src/surface-lab/surfaceLabEnvironment.ts",
+      "bytes": 13522,
+      "sha256": "f18edfe26409dd13d7ad5725bd78a290f8af346200a4f7d38d988b752b5a4d13"
+    },
+    {
+      "path": "apps/weltraum-browser/src/surface-lab/surfaceLabFailurePresenter.ts",
+      "bytes": 1832,
+      "sha256": "fa1e35e24845b2b80a529c0d8e2b8b25219ff453c34dcc7de7af1764cffa3ada"
+    },
+    {
+      "path": "apps/weltraum-browser/src/surface-lab/surfaceLabHud.ts",
+      "bytes": 21062,
+      "sha256": "9e14036ae1281a1a49c94efc2d0fe30349cfa3f5d0b9a39508663adee75b20e1"
+    },
+    {
+      "path": "apps/weltraum-browser/src/surface-lab/surfaceLabPresentationBackend.ts",
+      "bytes": 4378,
+      "sha256": "5220391991816a2dcfe0cf4d978c28444aaa51b7232279232643699f319089f4"
+    },
+    {
+      "path": "apps/weltraum-browser/src/surface-lab/surfaceLabQuery.ts",
+      "bytes": 355,
+      "sha256": "f17f09b4af33b93aa3493b2aafcce68a67d4564bc0e203b7f0ee276f9db08892"
+    },
+    {
+      "path": "apps/weltraum-browser/src/surface-lab/surfaceLabRegion.ts",
+      "bytes": 841,
+      "sha256": "cd0e0fbc444155929cf986bcf502a287d4752d7690cd54cf54f2e42d02d14ac7"
+    },
+    {
+      "path": "apps/weltraum-browser/src/surface-lab/surfaceLabTelemetry.ts",
+      "bytes": 1843,
+      "sha256": "6a76f3b6b208a4acb6dcf0e4e9abf21fd6c09d19277219ffd567ffdafc896fb6"
+    },
+    {
+      "path": "apps/weltraum-browser/src/surface-lab/surfaceLabWorkerAdoption.ts",
+      "bytes": 6102,
+      "sha256": "51cae913a6607d46222807c88b061f875b5addeff3631973c9a92dd62b4d38ab"
+    },
+    {
+      "path": "apps/weltraum-browser/src/test-harness/autopilotBangBangMetrics.ts",
+      "bytes": 48069,
+      "sha256": "2f4ee21cec1fb5c74f9731cb5c07ce12f41364412f82400349ffa7d7bac3e84d"
+    },
+    {
+      "path": "apps/weltraum-browser/src/test-harness/browserBridge.ts",
+      "bytes": 3525,
+      "sha256": "b6483358f479686e88edc996f4b9bfd71fe082e551aa09bcd4577d8265174839"
+    },
+    {
+      "path": "apps/weltraum-browser/src/test-harness/scenarioRunner.ts",
+      "bytes": 25077,
+      "sha256": "7835550814862001f4601512409e3cc020c37649ba6c840321ae1ddbea5a88b7"
+    },
+    {
+      "path": "apps/weltraum-browser/src/test-harness/scenarios.ts",
+      "bytes": 7260,
+      "sha256": "cfd1469a66c0a56219b3990d01138776b6c7e68298b45f03b90589df78df6c54"
+    },
+    {
+      "path": "apps/weltraum-browser/src/trajectory/canonical.ts",
+      "bytes": 2453,
+      "sha256": "9dddf499fe069a2f1dea9e212b16c7965e34ce865831d3d32de4fd35cd915f9b"
+    },
+    {
+      "path": "apps/weltraum-browser/src/trajectory/closestApproach.ts",
+      "bytes": 697,
+      "sha256": "638af3ef73ec9981861e235b9e7fecf51ef42721171c622a6e282d3c0821f531"
+    },
+    {
+      "path": "apps/weltraum-browser/src/trajectory/fixtures.ts",
+      "bytes": 6141,
+      "sha256": "a8546d7e6dd5326bdc507842bb93ae39e66986b4fe85e90d63f1a3a36221badf"
+    },
+    {
+      "path": "apps/weltraum-browser/src/trajectory/hazards.ts",
+      "bytes": 12402,
+      "sha256": "03a7bf192f1daad27539bbc00d2bab3d8e560757c0692f3cb30a38b0acafb255"
+    },
+    {
+      "path": "apps/weltraum-browser/src/trajectory/ids.ts",
+      "bytes": 2459,
+      "sha256": "882aa6a120f95d27957137eb3872c719a8df332ba71799140841bd311fd82c06"
+    },
+    {
+      "path": "apps/weltraum-browser/src/trajectory/index.ts",
+      "bytes": 313,
+      "sha256": "c56b788a32374820902a40070b1176799e750613e1f989fce0802bbd360e5bea"
+    },
+    {
+      "path": "apps/weltraum-browser/src/trajectory/integrators.ts",
+      "bytes": 17802,
+      "sha256": "2420392746a4cf20f723223991791440fbda7cdfe85768bc2a244cedd64edae4"
+    },
+    {
+      "path": "apps/weltraum-browser/src/trajectory/metrics.ts",
+      "bytes": 7337,
+      "sha256": "4f656c22dcbcbfbfe5da72b9cb35399c0df6565db093afc810fc77ceeba60e2a"
+    },
+    {
+      "path": "apps/weltraum-browser/src/trajectory/predictor.ts",
+      "bytes": 8496,
+      "sha256": "32cf3cd6c831de788bee0d332cfdf4d809f53d248f405dfd3188cc024bfd2920"
+    },
+    {
+      "path": "apps/weltraum-browser/src/trajectory/propagation.ts",
+      "bytes": 12399,
+      "sha256": "f5e976ccb53f7f8d98ac436fca4193d274679074e3d29d88c0e9359e017dcbdb"
+    },
+    {
+      "path": "apps/weltraum-browser/src/trajectory/segments.ts",
+      "bytes": 24119,
+      "sha256": "4d24262a5535c5e4661221faebae57eae7a38785b579fde349223ead49f38a8f"
+    },
+    {
+      "path": "apps/weltraum-browser/src/trajectory/types.ts",
+      "bytes": 10122,
+      "sha256": "135feafee9d9497aa1617407fa5b2c84263623d084fabe90ecb2c4a640b2aadb"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ui/graphicsSettingsPanel.ts",
+      "bytes": 12565,
+      "sha256": "a89eeba56894eca8b24b91a123883891cfbee69c9e69607841101633474d59b3"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ui/pgTragwerkPlayerPanel.ts",
+      "bytes": 3645,
+      "sha256": "56ff3d4f2d176aefb0b9c4f020e669346bcd18e106a01079be99eb311ba699aa"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ui/plannerMap.ts",
+      "bytes": 22400,
+      "sha256": "24f220e93308f6e14bc1e5043d13fd1666ffaf4e30e14945853b1153d1ed3dc1"
+    },
+    {
+      "path": "apps/weltraum-browser/src/ui/statusHud.ts",
+      "bytes": 75415,
+      "sha256": "1d6f7e70cd4f50b857415ec68ef168f4af560bc0960d75fdb4a174e5cdce8bfa"
+    },
+    {
+      "path": "apps/weltraum-browser/src/vite-env.d.ts",
+      "bytes": 41,
+      "sha256": "c27f59d978c3b1e8ee3419b9514eb83197a279adb86e019498d0d284ff31d0d7"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/adaptive/canonical.ts",
+      "bytes": 50875,
+      "sha256": "2974212185f36de5da7b43b99c7a06bce9439c11a35fbc52d9d55a38a3d7a056"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/adaptive/coordinates.ts",
+      "bytes": 10676,
+      "sha256": "aa76e09491f2958b581a4551caf91e68b99838c329b4e48508f095d1cea51c9d"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/adaptive/edits.ts",
+      "bytes": 11451,
+      "sha256": "a379a9176e705210c061f86b350f2c3ef25b0dcb44a00597a71568c9bfc7bd85"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/adaptive/index.ts",
+      "bytes": 2085,
+      "sha256": "c48c83a532643384688351ce6a396901d564885056ef6e1944ba43ec58bc9f82"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/adaptive/materialization.ts",
+      "bytes": 29881,
+      "sha256": "a03173ac54937e07259dd5ccb6d4a9d9055eb7ec8d1e7d390c16b533bba541d6"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/adaptive/ownedCanonicalHashSteps.ts",
+      "bytes": 17257,
+      "sha256": "a8bc1b31df2f23f2ec91da3f45e467e4259f83277638d4267ec4ff457da0bc32"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/adaptive/planner.ts",
+      "bytes": 17955,
+      "sha256": "9d9cb2b36d62ca4b27bd67732bedc868436b8c0ca2977c99b6a70eeab64e7325"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/adaptive/residency.ts",
+      "bytes": 4674,
+      "sha256": "d564c7231bf4132efbef094a6c8c6bd7c48da126b09c89be8ed0de4264cf10eb"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/adaptive/types.ts",
+      "bytes": 11968,
+      "sha256": "b44ccc8844222e4b1ce6ab7a6605ea68417ca41fb993be8ddc2dc4b1ee5c1d2b"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/adaptive/validation.ts",
+      "bytes": 20611,
+      "sha256": "41d73a7834d3775ffd791f10d2b4d5911cc4f18fa73ac4829f20d4253af26ffd"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/blockAmbientOcclusion.ts",
+      "bytes": 6904,
+      "sha256": "ddfb1d22eccdcb83e48f8c21d82605339936600a6afbbc452bdcdce497ca7675"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/brick.ts",
+      "bytes": 11095,
+      "sha256": "b0d10dfe2b1cd2b5a8c5e093fedfe186b4c825853d8e2d37c27142518157ed29"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/canonical.ts",
+      "bytes": 7967,
+      "sha256": "0994167495c2f9306aa209792dc9e92ec4453276a1f614e8670615ce504ad029"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/channels.ts",
+      "bytes": 2978,
+      "sha256": "5fb713a91915f990166e2ca61f55cfa60427a3f0407950c2c34ac17db3bb7d7f"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/density.ts",
+      "bytes": 1268,
+      "sha256": "c3f0b2b31d0034546a0b6db6711c36915124367eb3cc838150e1b048c9227a79"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/ids.ts",
+      "bytes": 5747,
+      "sha256": "14f4a73a1d61e1e0b97003f1411b15232799f7c230cd9c5cc69b4d46efb5e86b"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/index.ts",
+      "bytes": 217,
+      "sha256": "a8525e6a768a39996941ac1402f821bfb4c7a5de100bbc5b7310a9c7c6185b1f"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/materials.ts",
+      "bytes": 6836,
+      "sha256": "79c9ff04fee6965bbdb2a1a0d42f993fcdbf801fe8355e54d7ca3f7176448420"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/meshArtifactAdapter.ts",
+      "bytes": 3824,
+      "sha256": "f442281d42e8ecbd0cf0f48e78b630581694714c2b15b5f4b160651c6750f805"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/structural/canonical.ts",
+      "bytes": 15500,
+      "sha256": "2897c5887e5ac299dbadfe5de43fcc6be1955ed3c39c5892f296031d5e489979"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/structural/classificationSteps.ts",
+      "bytes": 39398,
+      "sha256": "fd1f3daa2b359b55471f0a30a385c93179c0883d8e7d0648513cf5b394405ed0"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/structural/commands.ts",
+      "bytes": 36548,
+      "sha256": "8b2c715d62c001942bfc59d5e4f38cd5adeea952465d8412fd983069eb4d400b"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/structural/connectivity.ts",
+      "bytes": 1333,
+      "sha256": "672771252f23439bb0529d2d78f926c6ef42575c026b04043f0e096c2afb71b1"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/structural/coordinates.ts",
+      "bytes": 7083,
+      "sha256": "bdea75d16a35e3125ad23bf23ee0a72623c41726caebbb518adf3d10e869313f"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/structural/greedyMesher.ts",
+      "bytes": 14404,
+      "sha256": "078bfae9dc9619430c99badc00955ac8cacc502d58493a4274aa54bbf1816cbd"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/structural/index.ts",
+      "bytes": 2966,
+      "sha256": "7c3c1c12922e5aae1fa7543f358d59d0f353de7c7d31161757c82313804915c2"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/structural/massProperties.ts",
+      "bytes": 25191,
+      "sha256": "9fec4de5e19f85b2b760ccb05ad4c741b3769c0df51eb1ab9490fe8360739c45"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/structural/model.ts",
+      "bytes": 50602,
+      "sha256": "ee975aaf1ef4cfd21ce458e8f6e1acb51348109360bff6f874bb2b6fa3322041"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/structural/occupiedEntries.ts",
+      "bytes": 12273,
+      "sha256": "3cfa60499e8513af73be244c380016b78ed7fb433781a78ba8e66fdcbf633bb0"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/structural/persistence.ts",
+      "bytes": 15702,
+      "sha256": "fb8090930123016f3e461c0a8f10df1d3608b39c615fb59d88ae24e65b81b4bc"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/structural/physicsCommit.ts",
+      "bytes": 42687,
+      "sha256": "0aff922682eba0f053cc2efc761ad33157d82b916f62acea653278ea5771ffc8"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/structural/physicsTransition.ts",
+      "bytes": 44328,
+      "sha256": "f579c6dff577bae4b1e29beb3d1dcb96fc56ab3f6d170b3e6d91b85ca24c41af"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/structural/provingGroundR5.ts",
+      "bytes": 27589,
+      "sha256": "8bb5b9488c29ccd2d0920027b9b610291ae80453e471f44f238c1a4762ce572e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/structural/regionSave.ts",
+      "bytes": 18866,
+      "sha256": "384842ac264db4a408ef90da9ea883654b7e3f87a6962bdc2df95b6cc043f972"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/structural/types.ts",
+      "bytes": 16697,
+      "sha256": "b83e0e7db4dd57451b164280ce43edd75d814edd1f6549759d6bd0f2ea25a6ff"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/structural/validation.ts",
+      "bytes": 35065,
+      "sha256": "89d7633e087f3556d1fa49cc937fc167cb4f7d1a768185a5ecfc5f2be136f4ae"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/surfaceNets.ts",
+      "bytes": 29457,
+      "sha256": "f43ceaf6bc13e0eba1cf27caa84de26a48c48335640acfec6f444f49d8dfb385"
+    },
+    {
+      "path": "apps/weltraum-browser/src/voxel/types.ts",
+      "bytes": 5373,
+      "sha256": "bd18ff7f2384d514fb6ee7b10a373a231e77d532a0fef74fca08bb469b254f85"
+    },
+    {
+      "path": "apps/weltraum-browser/src/workers/cancellation.ts",
+      "bytes": 1056,
+      "sha256": "aa0da3b134d49684b2426016065eb173dc9517993b8ae461553f117ce9925e90"
+    },
+    {
+      "path": "apps/weltraum-browser/src/workers/hvpBodyCutJob.ts",
+      "bytes": 13671,
+      "sha256": "c5125566d6e1a77351eee2b6bef152907a1cd143ffc20b00201a0bf5e06ba94b"
+    },
+    {
+      "path": "apps/weltraum-browser/src/workers/hvpBodyCutWire.ts",
+      "bytes": 15927,
+      "sha256": "dc027a544283eeb5a12a1e48c8f659491e7106081742a3e329202e97e825dae0"
+    },
+    {
+      "path": "apps/weltraum-browser/src/workers/hvpBodyMeshJob.ts",
+      "bytes": 36930,
+      "sha256": "7dfbbe8c1ca9e9fd4bd8d589a7bc67278025f33841b58fcc48ac18d389d0ac41"
+    },
+    {
+      "path": "apps/weltraum-browser/src/workers/hvpBoundedPump.ts",
+      "bytes": 3361,
+      "sha256": "81b95f0e1741b505dd661c1a8fccc100a957cb0e269e5d367afa719818ecafc0"
+    },
+    {
+      "path": "apps/weltraum-browser/src/workers/hvpChunkJob.ts",
+      "bytes": 11970,
+      "sha256": "52c718c8517fee2b369faac5e66443dd91c51d705364c4b280623dddad6ccd76"
+    },
+    {
+      "path": "apps/weltraum-browser/src/workers/hvpCollisionJob.ts",
+      "bytes": 8106,
+      "sha256": "6cc590a2fb806cf63c017723683a3a8d40f9471c6adc26129cdfe2b73d1edb91"
+    },
+    {
+      "path": "apps/weltraum-browser/src/workers/hvpNeighborJob.ts",
+      "bytes": 5480,
+      "sha256": "a7cc958cde848f23429d20997242d80a7a0122222c3cb225395a15c92f9bf6ec"
+    },
+    {
+      "path": "apps/weltraum-browser/src/workers/hvpSupportJob.ts",
+      "bytes": 18290,
+      "sha256": "55028eddb82eb9a147e6a8187c1eafe34b1c151defef04e55f100a3179f66237"
+    },
+    {
+      "path": "apps/weltraum-browser/src/workers/hvpSupportJson.ts",
+      "bytes": 5289,
+      "sha256": "3e3a423d5dcb39ae8ffccb75b7aeabd0123c6e673c0fef7475d61a451f6d2af3"
+    },
+    {
+      "path": "apps/weltraum-browser/src/workers/hvpTerrainJob.ts",
+      "bytes": 11760,
+      "sha256": "53f1c7e121334a2ab10073e349b8bcbd85efc7140f46c35c8665e42accc43a9d"
+    },
+    {
+      "path": "apps/weltraum-browser/src/workers/ids.ts",
+      "bytes": 2573,
+      "sha256": "61abaadf0052b15645547fd9b286a4144f5a5bd712263a523cfae1a7e6967126"
+    },
+    {
+      "path": "apps/weltraum-browser/src/workers/index.ts",
+      "bytes": 403,
+      "sha256": "25a5f8db2a3bf8aa87987b4b2d71845a59b48b87a754f5ac5f5a02c463951c76"
+    },
+    {
+      "path": "apps/weltraum-browser/src/workers/messages.ts",
+      "bytes": 6231,
+      "sha256": "6a5e16da33b201cf52bb55f6f5d6dce4d1cc18c68a1638a2c81a2133ca2f041c"
+    },
+    {
+      "path": "apps/weltraum-browser/src/workers/protocol.ts",
+      "bytes": 31529,
+      "sha256": "adcc8222d774bf172d65c609cfd7800d33151958ccb1eb147de3decdef949bbe"
+    },
+    {
+      "path": "apps/weltraum-browser/src/workers/queue.ts",
+      "bytes": 4382,
+      "sha256": "ec2c5b2ffcbff65f31f5ba8bdb5cf3b16989a3ea0506329b05bc26234756a06c"
+    },
+    {
+      "path": "apps/weltraum-browser/src/workers/resultGate.ts",
+      "bytes": 7566,
+      "sha256": "9051378aeb2bd58967b2a73c819d91d3fe54982e75d1a3fbba083b3387ecc8a0"
+    },
+    {
+      "path": "apps/weltraum-browser/src/workers/streamingWorker.ts",
+      "bytes": 20339,
+      "sha256": "9451dc11337da0adef046fc1472ca0d86d18a3c82a73c78c3262b345931b67e2"
+    },
+    {
+      "path": "apps/weltraum-browser/src/workers/workerHandle.ts",
+      "bytes": 8542,
+      "sha256": "4c782de003573f82283c3d59cc55b1cdaa87ac421f61f3ba35ecf3e150cfbf15"
+    },
+    {
+      "path": "apps/weltraum-browser/src/workers/workerPool.ts",
+      "bytes": 45320,
+      "sha256": "3c47a82f0220696937b56d5ba9602b26952fbf804c174e2be2bb2189b67c8533"
+    },
+    {
+      "path": "apps/weltraum-browser/src/world/autopilotProvingGroundCourses.ts",
+      "bytes": 31760,
+      "sha256": "30226264806652d520ffa1f40519129f85d5bf8dab3a0d7e7e9603c6e9ce23c0"
+    },
+    {
+      "path": "apps/weltraum-browser/src/world/chunkRegistry.ts",
+      "bytes": 15026,
+      "sha256": "7f1dc2c428bb46ebb63782f4ca8e568db6ef8abbed6e9bdd96a08693899b14c9"
+    },
+    {
+      "path": "apps/weltraum-browser/src/world/floatingOrigin.ts",
+      "bytes": 2088,
+      "sha256": "f83082ab4a697a1409129c7eaa9d6da4917b72677de193de44b8c8be5d79e1fa"
+    },
+    {
+      "path": "apps/weltraum-browser/src/world/frames.ts",
+      "bytes": 4787,
+      "sha256": "ddafb4ccf4256ea1662b1c4f86a902d9adb527cb5d7116026d808e30e9baa5c2"
+    },
+    {
+      "path": "apps/weltraum-browser/src/world/lowPolyInstances.ts",
+      "bytes": 3104,
+      "sha256": "88a4cd2a802b633cc6a56b7c4006287aa4d6957a4753844ec099dada747a57ca"
+    },
+    {
+      "path": "apps/weltraum-browser/src/world/navigationMapWorldAdapter.ts",
+      "bytes": 6941,
+      "sha256": "f278aee058524067a7ba15e47cc4c4e9b8453bb8d5d292b19d3db12b589bbfb6"
+    },
+    {
+      "path": "apps/weltraum-browser/src/world/provingGroundWorld.ts",
+      "bytes": 7624,
+      "sha256": "be9cd18cb7dcec9262fda04818460e51b727773ed066aa2ad640090ad5c767e9"
+    },
+    {
+      "path": "apps/weltraum-browser/src/world/simulationBubble.ts",
+      "bytes": 1973,
+      "sha256": "92d3dc9067ac17ff2528e07e506ab4a51fe869237a689a0555a5123dee447966"
+    },
+    {
+      "path": "apps/weltraum-browser/src/world/worldPresentation.ts",
+      "bytes": 21624,
+      "sha256": "98950902101d61e988d1629f5f3649c40c44980fb848d0fa034bb7a1745c097a"
+    },
+    {
+      "path": "apps/weltraum-browser/src/world/worldStreaming.ts",
+      "bytes": 41447,
+      "sha256": "949ad3cb661b894d04ad94cc3970c21f2c6353498ae6f83eb4fe717012b85b7a"
+    },
+    {
+      "path": "apps/weltraum-browser/src/world/worldStreamingScenario.ts",
+      "bytes": 10924,
+      "sha256": "95ad0f8f6c0dffb45783e5322e21ec64befdac662298f9078247576d5785154a"
+    },
+    {
+      "path": "apps/weltraum-browser/src/world-generation/hestia/densityGenerator.ts",
+      "bytes": 9731,
+      "sha256": "bd2b2e34859d2fbfbf79a20a0483de718d83596a0d11b29f5d9cd9755f32df74"
+    },
+    {
+      "path": "apps/weltraum-browser/src/world-generation/hestia/index.ts",
+      "bytes": 265,
+      "sha256": "e0515e10805f0e5a831f1276b9f898632b4d9986ed15a2ce388ac752172bda0f"
+    },
+    {
+      "path": "apps/weltraum-browser/src/world-generation/hestia/materialClassifier.ts",
+      "bytes": 1527,
+      "sha256": "0d462037dcf110930c15d1a7f3cac364677086e3c3d704efe7dede4d6c4bb911"
+    },
+    {
+      "path": "apps/weltraum-browser/src/world-generation/hestia/noise.ts",
+      "bytes": 4781,
+      "sha256": "98a2fc27dfda4c237f59376dcf2ce9aa218735b2f86e0cc26bd3c879032c22d9"
+    },
+    {
+      "path": "apps/weltraum-browser/src/world-generation/hestia/preset.ts",
+      "bytes": 2269,
+      "sha256": "72171abe1aebde2625ab04fc069121c4d355885e1e8a8cb532ae49f509879eee"
+    },
+    {
+      "path": "apps/weltraum-browser/src/world-generation/hestia/scatterGenerator.ts",
+      "bytes": 5062,
+      "sha256": "adde1f64ac5b67c7e0904c7b5faac1956540632cd80657b970f1e4ac690bb1bb"
+    },
+    {
+      "path": "apps/weltraum-browser/src/world-generation/hestia/seed.ts",
+      "bytes": 6774,
+      "sha256": "20ac280c0503e9c92089f30d7053f5ac084aaeddd286f7a656de9a35c44e16c0"
+    },
+    {
+      "path": "apps/weltraum-browser/tsconfig.json",
+      "bytes": 579,
+      "sha256": "ae9c79eed70aa8015fa6c5f83b43d9e03d3c569bcb9f98a0c8e64623f7d97fe5"
+    },
+    {
+      "path": "apps/weltraum-browser/vite.config.ts",
+      "bytes": 384,
+      "sha256": "4b013f87e40cee1e41a560b56a5fce6ac5282a8b7f8f03c9d0ec44de285c1015"
+    }
+  ],
+  "built": [
+    {
+      "path": "assets/backend-CEBUTrje.js",
+      "bytes": 122061,
+      "sha256": "7957c8235b326121d01ae866ea99406b0814c209806c100e246007f2a712fb00"
+    },
+    {
+      "path": "assets/backend-CEBUTrje.js.map",
+      "bytes": 441595,
+      "sha256": "62f5e7cfbca54290bc67dcce8a673728b9cd554a5c10e115ba4d0ccc40ccc80d"
+    },
+    {
+      "path": "assets/browserBridge-nmGPS10v.js",
+      "bytes": 61660,
+      "sha256": "84cc806cc17fb9b131b4cc96ef23fd2f2eb92cd643e33d75967ba40f0b47d2e3"
+    },
+    {
+      "path": "assets/browserBridge-nmGPS10v.js.map",
+      "bytes": 179823,
+      "sha256": "9f6db9a2b9a5b8f2ea48309670e9f3c90d0a0e7d3be4a05e49fd5d326704c88b"
+    },
+    {
+      "path": "assets/hvpBootstrap-CZblcO44.js",
+      "bytes": 339879,
+      "sha256": "396a114d10945d3d2d0afb5282ec77926ff576c229ae34e673e59fd37a563608"
+    },
+    {
+      "path": "assets/hvpBootstrap-CZblcO44.js.map",
+      "bytes": 1156442,
+      "sha256": "80b18fcd40534b8ab01883f16dc0b1a3e0a79d48d419f3df8b9d25b303d3ddca"
+    },
+    {
+      "path": "assets/index-GeJ96uLU.css",
+      "bytes": 170333,
+      "sha256": "252d286768f545feda6b7a69f8242535aaa7fbe6645ab93e2fb1500e3941e188"
+    },
+    {
+      "path": "assets/index-PH1mamUl.js",
+      "bytes": 1370073,
+      "sha256": "d39435a46a7a2d3e9f43493117132c26184d83439d48e1c2a989f67101503233"
+    },
+    {
+      "path": "assets/index-PH1mamUl.js.map",
+      "bytes": 5791367,
+      "sha256": "38e6faa400aa5c7169ffe289468683df6ef56a719367bba3140fa9b05bff4b00"
+    },
+    {
+      "path": "assets/physicsWorker-DM3ezeFt.js",
+      "bytes": 2539370,
+      "sha256": "0086044dfa0a7f442f5a335c8dc14e1cea83c816b29b61e90543b2c2b53a2b99"
+    },
+    {
+      "path": "assets/physicsWorker-DM3ezeFt.js.map",
+      "bytes": 4337870,
+      "sha256": "134ff4526832ac3ea0fbeb2818cfda54ffd83808f310ac728bf49ae1d2870cce"
+    },
+    {
+      "path": "assets/streamingWorker-DC28UUnR.js",
+      "bytes": 306940,
+      "sha256": "347c325818418a33861f3035ad858285a7cc20b19aec2075b4dd34bd74712971"
+    },
+    {
+      "path": "assets/streamingWorker-DC28UUnR.js.map",
+      "bytes": 1555851,
+      "sha256": "18ab4997d8792374fc54ce06c7b306f1c10c50d9acb5ab9539631e166979b847"
+    },
+    {
+      "path": "assets/surface-lab-DAr_4O4_.js",
+      "bytes": 56168,
+      "sha256": "cbb55568152e176f05acc76871e2cc9d4e8860897489703870f8e307631784dd"
+    },
+    {
+      "path": "assets/surface-lab-DAr_4O4_.js.map",
+      "bytes": 221723,
+      "sha256": "4ad957aa785f59ceee27007a2b6eb166051ad33d59575c3c55757806009cd88d"
+    },
+    {
+      "path": "concept/combat-asteroid-contact-clean.png",
+      "bytes": 1883578,
+      "sha256": "baada59bb18eff149644ca39355d9523b73da691726972d5ba919d93e2bce755"
+    },
+    {
+      "path": "concept/combat-compass-overlay.png",
+      "bytes": 4374,
+      "sha256": "abf39c566d85989a2a472694f17c24af2b5b719feccd76d5a07476063f165adf"
+    },
+    {
+      "path": "concept/combat-compass-reference.png",
+      "bytes": 31981,
+      "sha256": "8ff8dc3ddda81cf097def3b9234626afe586d24227fbceec5e6b92272d395d25"
+    },
+    {
+      "path": "concept/combat-contact-marker-overlay.png",
+      "bytes": 4923,
+      "sha256": "50e4f9ea6fab985e2336dca0d680354e62a315a6e99bad227f560db5145590e8"
+    },
+    {
+      "path": "concept/combat-contact-marker-reference.png",
+      "bytes": 58044,
+      "sha256": "eb8e9db397fe64a8cf6c3505d5dd6c01a432d68ed3f560fd3468d86a65d90512"
+    },
+    {
+      "path": "concept/combat-reticle-overlay.png",
+      "bytes": 5562,
+      "sha256": "1a92d53cbae192d694c08a8afc9df346c54f72c695b909a257e555284a10298e"
+    },
+    {
+      "path": "concept/combat-reticle-reference.png",
+      "bytes": 79272,
+      "sha256": "c2fab7ccd3335a5bcce8adbe4b02d6455bb8d26051a1907dbf564ae81664fffa"
+    },
+    {
+      "path": "concept/combat-scene-reference-clean.png",
+      "bytes": 1705277,
+      "sha256": "37f2dd8df449a5559e9d2fc444158a2b2028c91f751d71a7ca7be956b332710b"
+    },
+    {
+      "path": "concept/combat-scene-reference-composite.png",
+      "bytes": 2263806,
+      "sha256": "695b76d84db830a85ff868116608835a2e3b2447397dcb6540000717639cf69f"
+    },
+    {
+      "path": "concept/combat-target-wireframe.png",
+      "bytes": 19362,
+      "sha256": "40936daf57380ebc312bfe80f6c15732ffa51b3c840076a8a7be7a9560320db3"
+    },
+    {
+      "path": "concept/flight-asteroid-belt-clean.png",
+      "bytes": 1801256,
+      "sha256": "2cd08773ba51bfc1b41b7ef8c32c1f9d52dc4ea16ef08d0a600d92df054a5805"
+    },
+    {
+      "path": "concept/flight-scene-reference-clean.png",
+      "bytes": 1498339,
+      "sha256": "2148b766d76990d0aab32a84ef6c8672f2d77e5df87acfa4941dbdfbc1d91f94"
+    },
+    {
+      "path": "concept/flight-scene-reference-composite.png",
+      "bytes": 2108073,
+      "sha256": "65b3a0688742ff9f2788cdcf60a6137bd0ea3d126877e12d1a89100de8f64d07"
+    },
+    {
+      "path": "concept/icon-combat-active-weapon.png",
+      "bytes": 1062,
+      "sha256": "aea52542f7ba42d4ec678d48caed0e62eaa50014d60925f26b66667c36038248"
+    },
+    {
+      "path": "concept/icon-combat-cannon.png",
+      "bytes": 1104,
+      "sha256": "8ae768b25821bf317120ef8b5a0251e6c9af2d63ce7f0cbed9c43d9d062a0ea8"
+    },
+    {
+      "path": "concept/icon-combat-hull.png",
+      "bytes": 1417,
+      "sha256": "67614e47509b438f9c209e13661fe5d285edc34715ab5c3912492fc887cb3a00"
+    },
+    {
+      "path": "concept/icon-combat-laser.png",
+      "bytes": 1184,
+      "sha256": "ec3424f68e94474d70106cb553a272426ae3d44069e5beec70a2969ee23b499c"
+    },
+    {
+      "path": "concept/icon-combat-radar-contact.png",
+      "bytes": 1548,
+      "sha256": "fd3cb58e014048bc677a49bcac2fa552b083b770f8047e6bb4781f48ace77fa6"
+    },
+    {
+      "path": "concept/icon-combat-radar-target.png",
+      "bytes": 2048,
+      "sha256": "6388db385169ebf4d642e8b81653fa2535edef0055f132ec319c5c976c7ce1a2"
+    },
+    {
+      "path": "concept/icon-combat-radar-threat.png",
+      "bytes": 1800,
+      "sha256": "17e8b0988670044d006b1afb9ca3e16b8c4873a766103240e9a753dcaf8c856d"
+    },
+    {
+      "path": "concept/icon-combat-rockets.png",
+      "bytes": 1195,
+      "sha256": "c86a77812eaa9dd827ed618152e41a1ea4df981702f1de88f0b34c9658f9fb07"
+    },
+    {
+      "path": "concept/icon-combat-shield.png",
+      "bytes": 1212,
+      "sha256": "ad3578b99da38130aab4f7329a25a33d460160e16f91e944002a530c45ff8b12"
+    },
+    {
+      "path": "concept/icon-combat-target.png",
+      "bytes": 1579,
+      "sha256": "2f09c3c7cd04cb27030c7d75ec132c3105e15df33523424ad7fbce8327f8f524"
+    },
+    {
+      "path": "concept/icon-combat-thruster.png",
+      "bytes": 1314,
+      "sha256": "7e997e7acc8a784c2506aeb38df48e117ca8852ced1f6caeeb96a6e9cb77cd5d"
+    },
+    {
+      "path": "concept/icon-flight-autopilot.png",
+      "bytes": 2055,
+      "sha256": "bd78d37dab86f79df0c5ddd9b0e3ccfa3acb4bc45c514d63d5e05ab0be22e68d"
+    },
+    {
+      "path": "concept/icon-flight-course.png",
+      "bytes": 1279,
+      "sha256": "7755e21781ac143339450ee35589da8665d87c8c96401d913976d109dbb80e4d"
+    },
+    {
+      "path": "concept/icon-flight-distance.png",
+      "bytes": 1347,
+      "sha256": "a863fe93e906525ac03bd04ff34cf9bb8f1946a71d2e8b8b4acd4e2d1081f25c"
+    },
+    {
+      "path": "concept/icon-flight-engage.png",
+      "bytes": 1133,
+      "sha256": "395bfbd1f3bb80758c70a2ee3002a2deee60b3d7b5f98367457ceddbebc47966"
+    },
+    {
+      "path": "concept/icon-flight-eta.png",
+      "bytes": 972,
+      "sha256": "fdaeaf8270dcfe687d456e064b8715b611f4b624e391a1541a843b0622218e00"
+    },
+    {
+      "path": "concept/icon-flight-fuel.png",
+      "bytes": 1902,
+      "sha256": "bf5aabfeaeb7b15d92d674c71ea94fb2646aeab1ec41bc76d24497d73892bfb6"
+    },
+    {
+      "path": "concept/icon-flight-navigation.png",
+      "bytes": 1060,
+      "sha256": "f159b3126bda01c27cc25b3fe7c8c06cd1af4e1001ae5f3a59bc1d3c3799c403"
+    },
+    {
+      "path": "concept/icon-flight-rcs.png",
+      "bytes": 1804,
+      "sha256": "dfebef6485fa49eff392afcaafb45528289ef25b235ec2c668052e646eb4b6c6"
+    },
+    {
+      "path": "concept/icon-flight-speed.png",
+      "bytes": 1665,
+      "sha256": "e990dd969ae12bc6f8b90898d662ea2bb948ef1c6ba96f25a6d4c531077bac2b"
+    },
+    {
+      "path": "concept/icon-flight-target-action.png",
+      "bytes": 2888,
+      "sha256": "96895c275e788eaff7e943b5945de5f8bbe4fe8484a0d729e2b768eb42e09020"
+    },
+    {
+      "path": "concept/icon-flight-target.png",
+      "bytes": 1179,
+      "sha256": "a09768a2b002e5fd16130fc4571c540d45f9382aa646ccec069ce838114cd2e6"
+    },
+    {
+      "path": "concept/icon-flight-thrust.png",
+      "bytes": 2126,
+      "sha256": "4e429c17d6c744cace37da3ea1d7e2c68cbf7d7a551034b7796bff2d1cfa7756"
+    },
+    {
+      "path": "concept/icon-flight-warning-fuel.png",
+      "bytes": 1237,
+      "sha256": "5d3d3aa390b13c10d45824361cb90715bc6af0b5f651823ae3e9097ef2df4b83"
+    },
+    {
+      "path": "concept/icon-flight-warning-target.png",
+      "bytes": 1245,
+      "sha256": "648ca2299895bc23aca9079ba5c0df4637dcbb4d5f23ede64e099e388e89f1c8"
+    },
+    {
+      "path": "concept/panel-border-cyan.png",
+      "bytes": 439,
+      "sha256": "8b84e2b74eb48d1521a77a6997adbf97de0727b5f9b9473b2d91f056596a8537"
+    },
+    {
+      "path": "concept/panel-border-orange.png",
+      "bytes": 432,
+      "sha256": "dbc2c6c990f4818726c97b8169e3f165dcfd22f0a8f7e352c6db24d0b82670b4"
+    },
+    {
+      "path": "concept/panel-border-red.png",
+      "bytes": 420,
+      "sha256": "ec4f6f332edf51793f280d158e421d4e972a669d0cb7c7821cd46f48dbfa79ae"
+    },
+    {
+      "path": "concept/planner-brand-lockup.png",
+      "bytes": 45035,
+      "sha256": "fd065d5ef6c1aae0d59752b146015d9703c42cbf9ab27586d961265f81b9303e"
+    },
+    {
+      "path": "concept/planner-icon-action-engage.png",
+      "bytes": 3607,
+      "sha256": "2cb303c3053a7eec12b47fd2033ee99888c10aadd637c423095965a7f85efc30"
+    },
+    {
+      "path": "concept/planner-icon-action-preview.png",
+      "bytes": 2887,
+      "sha256": "b723bd1777ef5040e848c4475b193bcb8711e64236287a67fd104d66fd086d74"
+    },
+    {
+      "path": "concept/planner-icon-action-replan.png",
+      "bytes": 3151,
+      "sha256": "5c325b51595105252a4f34acb83d8443b555a0c0e7141f356cee56405eb25047"
+    },
+    {
+      "path": "concept/planner-icon-align.png",
+      "bytes": 3418,
+      "sha256": "a925f2cb802031a7a7ec3ee070fc7e8d20f511b25bdddb1d9936a761d4e90046"
+    },
+    {
+      "path": "concept/planner-icon-brake.png",
+      "bytes": 3337,
+      "sha256": "8340eba00ba407d935cf1bb459f760d2dd01731e83feefcd308c88c8c6df8211"
+    },
+    {
+      "path": "concept/planner-icon-burn.png",
+      "bytes": 3191,
+      "sha256": "380c1166eb1f02a9f56713c582daa4fd831972ee309321002c4f08c2c7192d78"
+    },
+    {
+      "path": "concept/planner-icon-flip.png",
+      "bytes": 3163,
+      "sha256": "5b68b7e965b57d8e494da8eb4a2e7a43f7c440481e486bb626c7bbcbffc15a2a"
+    },
+    {
+      "path": "concept/planner-icon-footer-credits.png",
+      "bytes": 2156,
+      "sha256": "dcfbe3f1e8817701e43185ccb06090da156816ce27035f961d43263bb36dfa5f"
+    },
+    {
+      "path": "concept/planner-icon-footer-ruf.png",
+      "bytes": 2016,
+      "sha256": "35553582588785dc1f4f1bee509d20659b284c9060b031c8eac8843bd0489f79"
+    },
+    {
+      "path": "concept/planner-icon-header-brake.png",
+      "bytes": 3269,
+      "sha256": "6461d4a23d74b58d0acfee53b90a6d8e77514b6afc051de3b43a7750800cf405"
+    },
+    {
+      "path": "concept/planner-icon-header-eta.png",
+      "bytes": 3592,
+      "sha256": "f98711e8b1f8da12aa86a59510446c284e96342a2d3b374e1c50cafd7eb88c2d"
+    },
+    {
+      "path": "concept/planner-icon-header-fuel.png",
+      "bytes": 3335,
+      "sha256": "9cf18db9563f6f48fae0c8c4c0542cc9545514c9434839c88dbec71ebfaa22de"
+    },
+    {
+      "path": "concept/planner-icon-header-target.png",
+      "bytes": 3592,
+      "sha256": "18add940bb4612a5e718f592a8bdbe8ba8db54a9da639411397cac0cd728b4cb"
+    },
+    {
+      "path": "concept/planner-icon-hold.png",
+      "bytes": 3488,
+      "sha256": "f58308318a415cf4b12a9b5c91a282809bdff73dcf8a9e0ed8b27e6057ef18b9"
+    },
+    {
+      "path": "concept/planner-icon-legend-avoidance.png",
+      "bytes": 2256,
+      "sha256": "01d6d20a47ac0c6a722fb3fd7389b647757a1950f9a27dd7790fceb7f3efe4d3"
+    },
+    {
+      "path": "concept/planner-icon-legend-hazard.png",
+      "bytes": 3042,
+      "sha256": "0f757dd62faefa2e25c911fa0bfe5f430b74ea36e842ff9c3fa7fbc3270e8990"
+    },
+    {
+      "path": "concept/planner-icon-legend-maneuver.png",
+      "bytes": 2959,
+      "sha256": "4c87c00302ffed6179bc638e88658c2ce0db7fc369a115b845374570b20d6957"
+    },
+    {
+      "path": "concept/planner-icon-legend-route.png",
+      "bytes": 2329,
+      "sha256": "8f85cbbdb4e2e4f2d35dadb611defb271021e72ada6d287b288134da4a454be3"
+    },
+    {
+      "path": "concept/planner-icon-legend-waypoint.png",
+      "bytes": 2836,
+      "sha256": "24fc0851b6aa93bab1dfa29994311c4132242323830b7707ef3f0096441e2590"
+    },
+    {
+      "path": "concept/planner-icon-map-focus.png",
+      "bytes": 3023,
+      "sha256": "d76539fb8c290c1876379db7e71b1c63b1aaa07fe57241e76133491fa32adce6"
+    },
+    {
+      "path": "concept/planner-icon-map-orbit.png",
+      "bytes": 3043,
+      "sha256": "de97ea4f936f147f044a2019f63ce8fb359324abf3c76a36f632a45dc60a909f"
+    },
+    {
+      "path": "concept/planner-icon-map-zoom.png",
+      "bytes": 2933,
+      "sha256": "86aa7f16e6b2f48147c590090d3865f2c159dd52cbab2fc0451fe4d0941e5333"
+    },
+    {
+      "path": "concept/planner-icon-profile-balanced.png",
+      "bytes": 3780,
+      "sha256": "87918b33d7075eeeab900a281358efe758e8be7d3711d148ff9d7e175e468999"
+    },
+    {
+      "path": "concept/planner-icon-profile-fast.png",
+      "bytes": 3175,
+      "sha256": "28ad64de326f107ac45c4e89227dc46f1eda6e4fbdb00527e3ad3cd46fe71cc7"
+    },
+    {
+      "path": "concept/planner-icon-profile-safe.png",
+      "bytes": 3397,
+      "sha256": "3d4e35aae43f14509ff8cbecf8b03a3afc856caae4620f712fd2f5fe5ec0f06e"
+    },
+    {
+      "path": "concept/planner-rail-reference.png",
+      "bytes": 107195,
+      "sha256": "9881832facb2de0f801ecc5d7192dc16b486c935ba8aa04d0c6624a01e7bb673"
+    },
+    {
+      "path": "concept/planner-ship-marker.png",
+      "bytes": 34025,
+      "sha256": "046d3841cacaa22e28b74124b12aeeda321f6e7f1b3b81f8c78aa727bce977b3"
+    },
+    {
+      "path": "concept/planner-station-marker.png",
+      "bytes": 28455,
+      "sha256": "fb05e8ff0a1efe3109a6e1f0680f15ec050b9bec5d80dbfbfb3297271c3544d3"
+    },
+    {
+      "path": "concept/planner-system-map-clean.png",
+      "bytes": 1652097,
+      "sha256": "9ebe0fb09e92b438c9b03b16835cec8c5617830561d6fde78b460f8c8114e087"
+    },
+    {
+      "path": "favicon.png",
+      "bytes": 67353,
+      "sha256": "a6c6a565367915e6d2a51617d691a4bb1249760f7d262af07e66f71ce65f4f53"
+    },
+    {
+      "path": "fonts/rajdhani/OFL.txt",
+      "bytes": 4465,
+      "sha256": "6390ee7459abec970abc294644b54e59ecad808158af03ab4ae53fef00472a53"
+    },
+    {
+      "path": "fonts/rajdhani/Rajdhani-Medium.ttf",
+      "bytes": 384348,
+      "sha256": "12ff7dcfe4c206e3875ac53b1762eab57de6a2fa7f5a86c26b97b88d6591eac2"
+    },
+    {
+      "path": "fonts/rajdhani/Rajdhani-Regular.ttf",
+      "bytes": 377860,
+      "sha256": "6e1fc228a8318251a6e569502ec57bac1e4656c582f92f59ccecc4688e039b98"
+    },
+    {
+      "path": "fonts/rajdhani/Rajdhani-SemiBold.ttf",
+      "bytes": 390340,
+      "sha256": "94bbd25a18ca665999feb05a537de9fd2b860dcfb78bbe9ca00270825bf235da"
+    },
+    {
+      "path": "index.html",
+      "bytes": 40682,
+      "sha256": "64fbca2f61541eacb77388e08fc1d6dd27fc8fa7a43ce2f6559ddd002ecf0006"
+    },
+    {
+      "path": "ships/demo_scout_mk1.glb",
+      "bytes": 127108,
+      "sha256": "d89533e7ab1409b698c066e382ce2cc46963e3c9b2feb75f1e51ab28e7dcb7d0"
+    }
+  ],
+  "sourceManifestHash": "361994fe5fe4d94a7230f3aa38d5d89577c13fdc058d3af17d8fb609e0192bc1",
+  "buildManifestHash": "e1fa28293e0267fb832e7468c459cd4e5d50e193f21c437c3ee22913889b4ea1"
+}

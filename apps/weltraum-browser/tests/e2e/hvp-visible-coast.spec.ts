@@ -252,9 +252,35 @@ test("HVP-14 the real end-session action releases owned resources before another
   test.setTimeout(120_000);
   const errors:string[]=[];page.on("pageerror",error=>errors.push(error.message));
   await page.goto("/?hestiaPrototype=1");
+  await expect.poll(()=>page.locator("#debug-scene").evaluate((element:HTMLCanvasElement)=>element.width)).toBe(1920);
+  expect(await page.locator("#hvp-state").filter({hasText:"State: Ready"}).count()).toBe(0);
+  await page.setViewportSize({width:1280,height:720});
   const receipts:unknown[]=[];
   for(let cycle=0;cycle<2;cycle+=1){
     await expect(page.locator("#hvp-state")).toContainText("State: Ready",{timeout:30_000});
+    if(cycle===0){
+      await expect.poll(()=>page.locator("#debug-scene").evaluate((element:HTMLCanvasElement)=>({
+        width:element.width,height:element.height,cssWidth:element.clientWidth,cssHeight:element.clientHeight
+      }))).toEqual({width:1280,height:720,cssWidth:1280,cssHeight:720});
+      await page.setViewportSize({width:1920,height:1080});
+      await page.locator("#hvp-physics-pause").click();
+      await expect.poll(()=>page.evaluate(()=>JSON.parse(document.body.dataset.hestiaPrototypePhysics!).status)).toBe("Paused");
+      const readResize=()=>page.evaluate(()=>{
+        const p=JSON.parse(document.body.dataset.hestiaPrototypePhysics!),o=JSON.parse(document.body.dataset.hestiaPrototypeOwnedRender??"{}");
+        return {bodyCount:p.bodyCount,colliderCount:p.colliderCount,ticks:p.ticks,bodies:p.bodies,terrainGeneration:p.terrainGeneration,
+          terrainFragments:p.terrainFragments,structural:p.structural,owned:{geometries:o.geometries,materials:o.materials,representations:o.representations,ownedCpuBytes:o.ownedCpuBytes}};
+      });
+      await expect.poll(async()=>Object.values((await readResize()).owned).every(value=>typeof value==="number")).toBe(true);
+      const before=await readResize();
+      for(const viewport of [{width:1280,height:720},{width:1920,height:1080}]){
+        await page.setViewportSize(viewport);
+        await expect.poll(()=>page.locator("#debug-scene").evaluate((element:HTMLCanvasElement)=>({
+          width:element.width,height:element.height,cssWidth:element.clientWidth,cssHeight:element.clientHeight
+        }))).toEqual({width:viewport.width,height:viewport.height,cssWidth:viewport.width,cssHeight:viewport.height});
+        await page.evaluate(()=>new Promise<void>(resolve=>{let frames=0;const next=()=>{if(++frames===61){resolve();}else{requestAnimationFrame(next);}};requestAnimationFrame(next);}));
+        expect(await readResize()).toEqual(before);
+      }
+    }
     if(cycle===0){page.once("dialog",dialog=>dialog.dismiss());await page.getByRole("button",{name:"Sitzung beenden",exact:true}).click();
       await expect(page.locator("#hvp-state")).toContainText("State: Ready");}
     page.once("dialog",dialog=>dialog.accept());
@@ -1172,6 +1198,22 @@ test("HVP-01 camera presets switch through real buttons", async ({ page }) => {
   await page.getByRole("button", { name: "C04-WIDE" }).click();
   await expect(page.locator("#hvp-mode")).toContainText("C04-WIDE");
   await expect(page.locator("body")).toHaveAttribute("data-hestia-prototype-camera", "C04-WIDE");
+  await page.locator("#hvp-physics-pause").click();
+  await expect.poll(()=>page.evaluate(()=>JSON.parse(document.body.dataset.hestiaPrototypePhysics!).status)).toBe("Paused");
+  const before=await page.evaluate(()=>JSON.parse(document.body.dataset.hestiaPrototypePhysics!));
+  await page.getByRole("button",{name:"C01-EYE",exact:true}).click();
+  await page.locator("#hvp-camera-inspect").click();
+  await expect(page.locator("#hvp-mode")).toContainText("(Fly)");
+  await page.getByRole("button",{name:"Reset view",exact:true}).click();
+  await expect(page.locator("body")).toHaveAttribute("data-hestia-prototype-camera","C04-WIDE");
+  await expect(page.locator("#hvp-mode")).toContainText("(Orbit)");
+  await expect(page.locator("#hvp-camera-inspect")).toHaveAttribute("aria-pressed","false");
+  expect(await page.evaluate(()=>document.pointerLockElement)).toBeNull();
+  await expect.poll(()=>page.evaluate(()=>JSON.parse(document.body.dataset.hestiaPrototypeInput??"{}").pressedKeys)).toEqual([]);
+  const after=await page.evaluate(()=>JSON.parse(document.body.dataset.hestiaPrototypePhysics!));
+  expect({ticks:after.ticks,bodies:after.bodies,terrainFragments:after.terrainFragments,structural:after.structural})
+    .toEqual({ticks:before.ticks,bodies:before.bodies,terrainFragments:before.terrainFragments,structural:before.structural});
+  expect(await page.evaluate(()=>"TestBridge" in window)).toBe(false);
 });
 
 test("HVP-07 the normal push input moves a source-bound asymmetric rigid body",async({page},testInfo)=>{

@@ -16,10 +16,12 @@ import {
 import {
   globalBoundsForObjectLocal,
   globalQuantumForObjectLocal,
-  globalQuantumForStructuralCell
+  globalQuantumForStructuralCell,
+  globalQuantumForValidatedStructuralCell
 } from "./coordinates";
 import {
   hashStructuralObjectContent,
+  structuralCanonicalHashSteps,
   structuralCommandHashSteps,
   structuralResultHashSteps
 } from "./canonical";
@@ -28,7 +30,7 @@ import { reconstructStructuralObjectInternal, structuralAddressForBrickCell, isI
   createStructuralOwnerLedger, ownedStructuralDerivationCandidateSteps, releaseOwnedStructuralDerivationCandidate,
   ownedStructuralReconstructionSteps } from "./model";
 import { deriveStructuralObjectMassProperties, structuralOwnedObjectMassSteps, StructuralMassError } from "./massProperties";
-import { structuralOwnedComponentClassificationSteps } from "./classificationSteps";
+import { structuralOwnedComponentClassificationSteps,bindOwnedPublishedClassification } from "./classificationSteps";
 import type { StructuralCursorStep } from "./occupiedEntries";
 import {
   STRUCTURAL_BRICK_SCHEMA_VERSION,
@@ -36,6 +38,7 @@ import {
   STRUCTURAL_RESULT_SCHEMA_VERSION,
   STRUCTURAL_MAX_COMMAND_EVIDENCE,
   type StructuralAcceptedCommandResult,
+  type StructuralComponentClassification,
   type StructuralBrick,
   type StructuralCommandEvidence,
   type StructuralCommandResult,
@@ -382,11 +385,15 @@ function* rejectionFromErrorSteps(object: StructuralObject, commandId: StableAut
   return yield* rejectedSteps(object, commandId, "InvalidContract", path, reserve);
 }
 
+type StructuralPreparedPlanCommandResult=Omit<StructuralAcceptedCommandResult,"resultHash">|StructuralRejectedCommandResult;
+type PreparedCommandSink=(source:StructuralObject,classification:StructuralComponentClassification)=>void;
+function structuralCommandSteps(object:StructuralObject,command:unknown,reserve?:StructuralOwnedReserve,onPrepared?:PreparedCommandSink):Generator<void|string,StructuralCommandResult,void>;
+function structuralCommandSteps(object:StructuralObject,command:unknown,reserve:StructuralOwnedReserve,onPrepared:PreparedCommandSink,privateResult:true):Generator<void|string,StructuralPreparedPlanCommandResult,void>;
 function* structuralCommandSteps(
   object: StructuralObject,
   commandValue: unknown,
-  reserve?: StructuralOwnedReserve
-): Generator<void | string, StructuralCommandResult, void> {
+  reserve?: StructuralOwnedReserve,onPrepared?:PreparedCommandSink,privateResult=false
+): Generator<void | string, StructuralCommandResult|StructuralPreparedPlanCommandResult, void> {
   const fallbackCommandId = commandIdFromUnknown(commandValue);
   try {
     const command = yield* structuralDestructionCommandValidationSteps(commandValue, "command", reserve);
@@ -463,7 +470,7 @@ function* structuralCommandSteps(
         if (visitedVoxelCount > command.budgets.maxVisitedCells) throw new StructuralCommandError("BudgetExceeded", "command/budgets/maxVisitedCells", "Sparse cell traversal exceeded the explicit visited-cell budget.");
         reserve?.(2_048);
         const address = structuralAddressForBrickCell(brick, cell.localIndex);
-        if (!selectedByShape(selection, globalQuantumForStructuralCell(address))) {
+        if (!selectedByShape(selection, privateResult?globalQuantumForValidatedStructuralCell(address):globalQuantumForStructuralCell(address))) {
           if (reserve !== undefined) { yield; }
           continue;
         }
@@ -522,7 +529,7 @@ function* structuralCommandSteps(
     const evidence: StructuralCommandEvidence = freezeStructuralProduced({
       schemaVersion: STRUCTURAL_COMMAND_EVIDENCE_SCHEMA_VERSION,
       commandId: command.commandId,
-      commandHash: yield* structuralCommandHashSteps(command, reserve),
+      commandHash: yield* (privateResult?structuralCanonicalHashSteps(command,reserve):structuralCommandHashSteps(command,reserve)),
       status,
       previousObjectRevision: object.objectRevision,
       resultingObjectRevision: command.resultingObjectRevision,
@@ -548,7 +555,9 @@ function* structuralCommandSteps(
         bricks: candidateBricks, anchors: object.anchors, joints: object.joints,
         objectRevision: command.resultingObjectRevision, editRevision: resultingEditRevision,
         commandEvidence: yield* structuralFreezeArraySteps(history, reserve)
-      }, reserve);
+      }, reserve,preliminary,onPrepared===undefined?undefined:witness=>{
+        onPrepared(witness.sourceIdentity,bindOwnedPublishedClassification(witness));
+      });
     }
     reserve?.(2_048, true);
     let invalidations: StructuralAcceptedCommandResult["invalidations"];
@@ -567,7 +576,7 @@ function* structuralCommandSteps(
       }
       invalidations = yield* structuralFreezeArraySteps(values, reserve);
     }
-    const partial: StructuralAcceptedCommandResult = freezeStructuralProduced({
+    const payload:Omit<StructuralAcceptedCommandResult,"resultHash"> = {
       schemaVersion: STRUCTURAL_RESULT_SCHEMA_VERSION,
       status,
       commandId: command.commandId,
@@ -575,9 +584,10 @@ function* structuralCommandSteps(
       changedBrickKeys,
       selectedVoxelCount,
       changedVoxelCount,
-      invalidations,
-      resultHash: ""
-    }, reserve);
+      invalidations
+    };
+    if(privateResult){return freezeStructuralProduced(payload,reserve);}
+    const partial:StructuralAcceptedCommandResult=freezeStructuralProduced({...payload,resultHash:""},reserve);
     return freezeStructuralProduced({ ...partial, resultHash: yield* structuralResultHashSteps(partial, reserve) }, reserve);
     } finally { if (reserve !== undefined) { releaseOwnedStructuralDerivationCandidate(preliminary); } }
   } catch (error) {
@@ -593,7 +603,10 @@ export const applyStructuralDestructionCommand = (object: StructuralObject, comm
 };
 
 /** Nested first-party work: parent owns all live inputs/results and releases its reserve at command terminal. */
-export function* ownedStructuralCommandSteps(source:StructuralObject,commandValue:unknown,reserve:StructuralOwnedReserve){
+function ownedCommandSteps(source:StructuralObject,command:unknown,reserve:StructuralOwnedReserve,privateResult:false,onPrepared?:PreparedCommandSink):Generator<void|string,StructuralCommandResult,void>;
+function ownedCommandSteps(source:StructuralObject,command:unknown,reserve:StructuralOwnedReserve,privateResult:true,onPrepared:PreparedCommandSink):Generator<void|string,StructuralPreparedPlanCommandResult,void>;
+function* ownedCommandSteps(source:StructuralObject,commandValue:unknown,reserve:StructuralOwnedReserve,
+  privateResult:boolean,onPrepared?:PreparedCommandSink){
   if(!isIssuedStructuralObject(source)){return structuralFail("InvalidContract","cursor/source","Owned commands require a first-party issued source.");}
   reserve(16_384);
   let failure:{readonly error:unknown}|undefined;
@@ -607,8 +620,17 @@ export function* ownedStructuralCommandSteps(source:StructuralObject,commandValu
   };
   const quantum=Object.getOwnPropertyDescriptor(reserve,"hashUnits");
   if(quantum!==undefined){Object.defineProperty(charge,"hashUnits",quantum);}
-  try{return yield* structuralCommandSteps(source,commandValue,charge);}
+  try{return yield* (privateResult?structuralCommandSteps(source,commandValue,charge,onPrepared!,true)
+    :structuralCommandSteps(source,commandValue,charge,onPrepared));}
   catch(error){throw failure===undefined?error:failure.error;}
+}
+/** Full owner/public receipt remains unchanged, including its canonical Result hash. */
+export function* ownedStructuralCommandSteps(source:StructuralObject,command:unknown,reserve:StructuralOwnedReserve,onPrepared?:PreparedCommandSink){
+  return yield* ownedCommandSteps(source,command,reserve,false,onPrepared);
+}
+/** Private plan result is never persistable as a StructuralCommandResult; complete Source/evidence is unchanged. */
+export function* ownedStructuralPlanCommandSteps(source:StructuralObject,command:unknown,reserve:StructuralOwnedReserve,onPrepared:PreparedCommandSink){
+  return yield* ownedCommandSteps(source,command,reserve,true,onPrepared);
 }
 
 /** INACTIVE first-party module route. The caller retains issued source, command and other live
@@ -619,7 +641,7 @@ export const createOwnedStructuralCommandCursor = (source: StructuralObject, com
   if (!isIssuedStructuralObject(source)) { return structuralFail("InvalidContract", "cursor/source", "Owned commands require a first-party issued source."); }
   const ledger = createStructuralOwnerLedger(residentBytesValue, prepareLimitBytes);
   ledger.reserve(16_384);
-  let steps: ReturnType<typeof structuralCommandSteps> | undefined;
+  let steps: Generator<void|string,StructuralCommandResult,void> | undefined;
   let state: "open" | "done" | "failed" | "disposed" = "open", failure: unknown;
   let consumedUnits = 0;
   const stop = (): void => { try { steps?.return(undefined as never); } catch { /* original failure wins */ } steps = undefined; };

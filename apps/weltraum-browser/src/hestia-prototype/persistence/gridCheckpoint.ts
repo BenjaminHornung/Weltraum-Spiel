@@ -1,6 +1,8 @@
 import type {HvpCellReader} from "../terrain/picking";
-import {copyHvpOwnedSlotLeaf,createHvpOwnedSlotBlockCopy,type HvpOwnedLeafCopy,type HvpOwnedSlotBlockCopy} from "../terrain/ownedSlotCopy";
+import {allocateHvpOwnedSlots,fillHvpOwnedSlots,copyHvpOwnedSlots,copyHvpOwnedSlotLeaf,createHvpOwnedSlotBlockCopy,type HvpOwnedLeafCopy,type HvpOwnedSlotBlockCopy} from "../terrain/ownedSlotCopy";
 const ownedGridCopies=new WeakMap<object,{leaf:HvpOwnedLeafCopy;block:HvpOwnedSlotBlockCopy}>();
+const exclusiveGridSources=new WeakSet<object>();
+export const isHvpExclusiveGridSource=(source:object):boolean=>exclusiveGridSources.has(source);
 export const hvpOwnedGridLeafCopy=(source:object):HvpOwnedLeafCopy|undefined=>ownedGridCopies.get(source)?.leaf;
 export const hvpOwnedGridSlotBlockCopy=(source:object):HvpOwnedSlotBlockCopy|undefined=>ownedGridCopies.get(source)?.block;
 
@@ -54,16 +56,20 @@ export const hvpGridCheckpointBytes=(value:unknown):number=>{
   if(total!==count){throw new Error("Incomplete grid checkpoint");}
   return count;
 };
-export const decodeHvpGrid=(value:unknown)=>{
+const decodeGrid=(value:unknown,exclusive:boolean)=>{
   const count=hvpGridCheckpointBytes(value),grid=value as HvpGridCheckpoint;
   // All transport counts and material codes are checked before the first buffer.
-  const slots=new Uint8Array(count);let offset=0;
-  for(let i=0;i<grid.runs.length;i+=2){const end=offset+grid.runs[i+1]!;slots.fill(grid.runs[i]!,offset,end);offset=end;}
+  const slots=exclusive?allocateHvpOwnedSlots(count):new Uint8Array(count);let offset=0;
+  for(let i=0;i<grid.runs.length;i+=2){const end=offset+grid.runs[i+1]!;
+    if(exclusive){fillHvpOwnedSlots(slots,grid.runs[i]!,offset,end);}else{slots.fill(grid.runs[i]!,offset,end);}offset=end;}
   const [sizeX,sizeY,sizeZ]=grid.size;
-  const result=Object.freeze({sizeX,sizeY,sizeZ,cellMeters:.125,originMeters:Object.freeze({...grid.origin}),byteLength:slots.byteLength,
+  const result=Object.freeze({sizeX,sizeY,sizeZ,cellMeters:.125,originMeters:Object.freeze({...grid.origin}),byteLength:exclusive?count:slots.byteLength,
     readSlot(x:number,y:number,z:number):number|undefined{
       if(!Number.isSafeInteger(x)||!Number.isSafeInteger(y)||!Number.isSafeInteger(z)){throw new Error("Integer checkpoint cell required");}
       return x<0||y<0||z<0||x>=sizeX||y>=sizeY||z>=sizeZ?undefined:slots[x+y*sizeX+z*sizeX*sizeY];
-    },copySlots:()=>new Uint8Array(slots)});
-  ownedGridCopies.set(result,{leaf:(x,y,z)=>copyHvpOwnedSlotLeaf(slots,sizeX,sizeY,sizeZ,x,y,z),block:createHvpOwnedSlotBlockCopy(slots)});return result;
+    },copySlots:()=>exclusive?copyHvpOwnedSlots(slots):new Uint8Array(slots)});
+  ownedGridCopies.set(result,{leaf:(x,y,z)=>copyHvpOwnedSlotLeaf(slots,sizeX,sizeY,sizeZ,x,y,z),block:createHvpOwnedSlotBlockCopy(slots)});
+  if(exclusive){exclusiveGridSources.add(result);}return result;
 };
+export const decodeHvpGrid=(value:unknown)=>decodeGrid(value,false);
+export const decodeHvpPrivateGrid=(value:unknown)=>decodeGrid(value,true);

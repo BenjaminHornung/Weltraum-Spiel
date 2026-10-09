@@ -144,6 +144,7 @@ const runBodyCut = async (
       expect(disabled.snapshot?.status).toBe("Paused");
     }
     const preparedRestore = await preparingRestore;
+    expect(preparedRestore.rejected??preparedRestore.error).toBeUndefined();
     expect(preparedRestore.restoreState).toBe("Prepared");
       const committedRestore = await send({ id: ++messageId, kind: "CommitRestore", transactionId: "body-clock-restore" });
       expect(committedRestore.restoreState).toBe("Committed");

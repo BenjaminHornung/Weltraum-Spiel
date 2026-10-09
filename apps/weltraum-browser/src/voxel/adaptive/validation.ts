@@ -141,6 +141,39 @@ const retainValidatedFrozenDenseArray=(value:object,reserve:AdaptiveOwnedReserve
   validatedFrozenDenseArrays.add(value);
 };
 
+const ownedChannelFrom=Array.from.bind(Array),ownedChannelSeal=Object.seal.bind(Object);
+const ownedChannelFreeze=Object.freeze.bind(Object),ownedChannelDefine=Object.defineProperty.bind(Object);
+/** Only this factory's four fresh fixed channels can receive its shape-only native freeze. */
+export const createOwnedAdaptiveChannelFactory=(reserve:AdaptiveOwnedReserve)=>{
+  reserve(1_024,true);
+  // Own fixed slots avoid passing still-mutable channels to ambient collection methods.
+  const pending:Array<unknown[]|undefined>=[undefined,undefined,undefined,undefined];let active=true,size=0;
+  const slotOf=(array:unknown[]):number=>{if(array===undefined){return -1;}for(let i=0;i<4;i++){if(pending[i]===array){return i;}}return -1;};
+  return ownedChannelFreeze({
+    *fill<T>(value:T):Generator<void,T[],void>{
+      if(!active||size>=4){throw new Error("Owned channel factory expired or full");}
+      reserve(64+4096*128,true);reserve(256);
+      yield;
+      if(!active||size>=4){throw new Error("Owned channel factory expired or full");}
+      const items={__proto__:null,length:4096},array=ownedChannelFrom(items,()=>value) as T[];
+      ownedChannelSeal(array);ownedChannelDefine(array,"length",{writable:false});
+      let slot=0;while(pending[slot]!==undefined){slot+=1;}pending[slot]=array;size+=1;let returned=false;
+      try{yield;if(!active){throw new Error("Owned channel factory expired");}returned=true;return array;}
+      finally{if(!returned&&pending[slot]===array){pending[slot]=undefined;size-=1;}}
+    },
+    *freeze<T>(array:T[]):Generator<void,readonly T[],void>{
+      const slot=slotOf(array);
+      if(!active||slot<0||array.length!==4096){throw new Error("Foreign or expired owned channel");}
+      reserve(512);
+      yield;
+      if(!active||pending[slot]!==array||array.length!==4096){throw new Error("Foreign or expired owned channel");}
+      ownedChannelFreeze(array);retainValidatedFrozenDenseArray(array,reserve);pending[slot]=undefined;size-=1;
+      return array;
+    },
+    dispose():void{active=false;for(let i=0;i<4;i++){pending[i]=undefined;}size=0;}
+  });
+};
+
 export function adaptiveDenseArraySteps(value: unknown, path: string, errorCode: AdaptiveAuthorityErrorCode,
   options: DenseDataPropertyArrayOptions, reserve: AdaptiveOwnedReserve, retainFrozen: true): Generator<void, readonly unknown[], void>;
 export function adaptiveDenseArraySteps(value: unknown, path: string, errorCode: AdaptiveAuthorityErrorCode,

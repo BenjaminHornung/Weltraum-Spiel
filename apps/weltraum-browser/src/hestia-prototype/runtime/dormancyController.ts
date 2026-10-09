@@ -1,9 +1,10 @@
 import type {HvpPhysicsClient} from "../physics/client";
 import type {HvpStagedTerrain} from "../terrain/terrainConsumer";
+import {HvpRenderStageRecoveryError} from "../presentation/renderStageRecovery";
 
 /** Native checkpoint before eviction; graphics and World change at a held tick. */
 export const createHvpDormancyController=(options:{physics:Pick<HvpPhysicsClient,"read"|"prepareBodyResidency"|"commitBodyResidency"|"publishBodyResidency"|"finalizeBodyResidency"|"rollbackBodyResidency"|"command">;
-  blocked:()=>boolean;current:()=>boolean;admit:()=>void;stage:(snapshot:ReturnType<HvpPhysicsClient["read"]>)=>HvpStagedTerrain})=>{
+  blocked:()=>boolean;current:()=>boolean;admit:()=>void;stage:(snapshot:ReturnType<HvpPhysicsClient["read"]>)=>HvpStagedTerrain|Promise<HvpStagedTerrain>})=>{
   let pending:Promise<void>|undefined,disposed=false,hold=false,error="",sequence=0,changes=0;
   const valid=()=>!disposed&&options.current();
   const run=async()=>{
@@ -11,12 +12,14 @@ export const createHvpDormancyController=(options:{physics:Pick<HvpPhysicsClient
     try{
       options.admit();const candidate=await options.physics.prepareBodyResidency(id);prepared=true;
       if(!valid()){throw new Error("Residency owner disposed");}
-      render=options.stage(candidate);await options.physics.commitBodyResidency(id);
+      render=await options.stage(candidate);
+      if(!valid()){throw new Error("Residency owner disposed after graphics staging");}
+      await options.physics.commitBodyResidency(id);
       if(!valid()){throw new Error("Residency owner disposed before publication");}
       options.physics.publishBodyResidency(id);render.publish();
       await options.physics.finalizeBodyResidency(id);finalized=true;render.finish();changes+=1;
     }catch(failure){
-      let restored=!finalized;
+      let restored=!finalized&&!(failure instanceof HvpRenderStageRecoveryError);
       if(!finalized){try{render?.rollback();}catch{restored=false;}
         if(prepared){try{await options.physics.rollbackBodyResidency(id);}catch{restored=false;}}}
       hold=!restored||String(failure).includes("RecoveryHold");error=String(failure);

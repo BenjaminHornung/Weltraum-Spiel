@@ -47,8 +47,8 @@ it("closes borrowed fragment work on cancellation without publishing a partial r
 });
 it("runs the owned job through the existing real task pump and closes input/search/ingest/recipe cancellation",async()=>{
   const slots=new Uint8Array(32*8*8);
-  for(const x of [15,16,17]){slots[x+3*32+3*256]=x===15?4:1;}
-  const payload:HvpSupportPayload={sessionId:"support-owned",epoch:1,generation:1,sourceDigest:"12345678",size:[32,8,8],changed:[[15,2,3]]};
+  for(let z=2;z<6;z++)for(let y=3;y<7;y++)for(let x=8;x<31;x++){slots[x+y*32+z*256]=y===6?4:1;}
+  const payload:HvpSupportPayload={sessionId:"support-owned",epoch:1,generation:1,sourceDigest:"12345678",size:[32,8,8],changed:[[8,2,3]]};
   const input:TransferableBufferBundle={ownership:"SenderToWorker",revision:contentRevision(1),buffers:[slots.buffer],byteLength:byteCount(slots.byteLength),
     views:[{name:"slots",kind:"Uint8Array",bufferIndex:0,byteOffset:0,elementCount:slots.length}]};
   const request:WorkerJobRequest={jobId:workerJobId("support-owned"),jobKind:workerJobKind(HVP_SUPPORT_JOB),targetKey:workerTargetKey("support-owned"),
@@ -67,7 +67,7 @@ it("runs the owned job through the existing real task pump and closes input/sear
       if(stop===undefined){const result=await executeHvpSupportJobOwned(request,input,{run});
         const actual=decodeHvpSupportOutput(result.bundle,payload);const {timings:_a,...a}=actual,{timings:_b,...b}=expected;
         expect(a).toEqual(b);expect(result.bundle.contentHash).toBe(fnv1aBytes(result.bundle.buffers));}
-      else{await expect(executeHvpSupportJobOwned(request,input,{run})).rejects.toBe(sentinel);expect(seen).toBe(true);}
+      else{await expect(executeHvpSupportJobOwned(request,input,{run}),`Missing cancellation yield: ${stop}`).rejects.toBe(sentinel);expect(seen,stop).toBe(true);}
     }finally{pump.dispose();}
     expect(closed).toBe(true);
   }

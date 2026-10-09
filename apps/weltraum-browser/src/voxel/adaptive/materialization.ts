@@ -12,6 +12,7 @@ import {
   validateAdaptiveBrickKey
 } from "./coordinates";
 import { validateAdaptiveEditJournal, adaptiveValidateEditJournalSteps, type AdaptiveOwnedJournalOptions } from "./edits";
+import {createOwnedCanonicalHashCursor} from "./ownedCanonicalHashSteps";
 import {
   ADAPTIVE_BRICK_CELL_COUNT,
   ADAPTIVE_BRICK_CELLS_PER_AXIS,
@@ -32,6 +33,7 @@ import {
   adaptiveDrainSteps,
   adaptiveDenseArraySteps,
   adaptiveFreezeArraySteps,
+  createOwnedAdaptiveChannelFactory,
   deepFreeze,
   fail,
   requireDenseDataPropertyArray,
@@ -42,6 +44,32 @@ import {
 } from "./validation";
 
 const hashPattern = /^fnv1a64-v1:[0-9a-f]{16}$/;
+
+type OwnedBrickScope={active:boolean;options:AdaptiveOwnedJournalOptions;validated:Map<MaterializedAdaptiveBrick,MaterializedAdaptiveBrick|undefined>};
+const ownedBrickScopes=new WeakMap<AdaptiveOwnedJournalOptions,OwnedBrickScope>();
+const ownedBrickProducers=new WeakMap<MaterializedAdaptiveBrick,OwnedBrickScope>();
+/** Private HVP ingest lifetime: fixed canonical hasher, one parent ledger, no public admission. */
+export const createOwnedAdaptiveBrickScope=(reserve:AdaptiveOwnedJournalOptions["reserve"])=>{
+  reserve(1_024,true);
+  const options:AdaptiveOwnedJournalOptions=Object.freeze({reserve,hash:function*(payload:unknown):Generator<void,string,void>{
+    reserve(32_768,false,"hash");
+    const cursor=createOwnedCanonicalHashCursor(payload,undefined,true);
+    try{for(;;){const result=cursor.advance(128);if(result!==undefined){return result.contentHash;}yield;}}
+    finally{cursor.dispose();}
+  }});
+  const scope:OwnedBrickScope={active:true,options,validated:new Map()};
+  ownedBrickScopes.set(options,scope);
+  return Object.freeze({options,dispose():void{
+    if(!scope.active){return;}scope.active=false;ownedBrickScopes.delete(options);
+    for(const brick of scope.validated.keys()){ownedBrickProducers.delete(brick);}
+    scope.validated.clear();
+  }});
+};
+/** Only the exact fully validated result inside its producing active ingest can be reused. */
+export const readOwnedValidatedAdaptiveBrick=(brick:MaterializedAdaptiveBrick,reserve:AdaptiveOwnedJournalOptions["reserve"]):MaterializedAdaptiveBrick|undefined=>{
+  const scope=ownedBrickProducers.get(brick);
+  return scope?.active&&scope.options.reserve===reserve?scope.validated.get(brick):undefined;
+};
 
 function* validateDenseChannelSteps(value: unknown, name: string,
   owned?: AdaptiveOwnedJournalOptions): Generator<void, readonly unknown[], void> {
@@ -250,13 +278,10 @@ export interface MaterializeAdaptiveBrickInput {
   readonly editJournal: AdaptiveEditJournal;
 }
 
-function* filledChannelSteps<T>(value: T, owned?: AdaptiveOwnedJournalOptions): Generator<void, T[], void> {
+function* filledChannelSteps<T>(value: T, owned?: AdaptiveOwnedJournalOptions,
+  factory?:ReturnType<typeof createOwnedAdaptiveChannelFactory>): Generator<void, T[], void> {
   if (owned === undefined) { return new Array(ADAPTIVE_BRICK_CELL_COUNT).fill(value) as T[]; }
-  owned.reserve(64 + ADAPTIVE_BRICK_CELL_COUNT * 128, true);
-  const channel = new Array<T>(ADAPTIVE_BRICK_CELL_COUNT);
-  yield;
-  for (let index = 0; index < channel.length; index += 1) { channel[index] = value; yield; }
-  return channel;
+  return yield* factory!.fill(value);
 }
 
 export const materializeAdaptiveBrick = (input: MaterializeAdaptiveBrickInput): MaterializedAdaptiveBrick =>
@@ -302,10 +327,12 @@ export function* adaptiveMaterializeBrickSteps(input: MaterializeAdaptiveBrickIn
     }
     overlappingEdits = filtered;
   }
-  const density = yield* filledChannelSteps(baseSample.density, owned);
-  const occupancy = yield* filledChannelSteps(baseSample.occupancy, owned);
-  const material = yield* filledChannelSteps(baseSample.materialId, owned);
-  const semantic = yield* filledChannelSteps(baseSample.semanticId ?? null, owned);
+  const channelFactory=owned===undefined?undefined:createOwnedAdaptiveChannelFactory(owned.reserve);
+  try{
+  const density = yield* filledChannelSteps(baseSample.density, owned,channelFactory);
+  const occupancy = yield* filledChannelSteps(baseSample.occupancy, owned,channelFactory);
+  const material = yield* filledChannelSteps(baseSample.materialId, owned,channelFactory);
+  const semantic = yield* filledChannelSteps(baseSample.semanticId ?? null, owned,channelFactory);
   // Private scratch only: predicates synchronously read it, never retain it.
   // Public inputs and the complete output still receive their original validation/freeze.
   // One serial non-escaping predicate/scalar scratch lease; original safe-integer limbs have
@@ -387,10 +414,10 @@ export function* adaptiveMaterializeBrickSteps(input: MaterializeAdaptiveBrickIn
     material: deepFreeze(material),
     semantic: deepFreeze(semantic)
   }) : Object.freeze({
-    density: yield* adaptiveFreezeArraySteps(density, owned.reserve),
-    occupancy: yield* adaptiveFreezeArraySteps(occupancy, owned.reserve),
-    material: yield* adaptiveFreezeArraySteps(material, owned.reserve),
-    semantic: yield* adaptiveFreezeArraySteps(semantic, owned.reserve)
+    density: yield* channelFactory!.freeze(density),
+    occupancy: yield* channelFactory!.freeze(occupancy),
+    material: yield* channelFactory!.freeze(material),
+    semantic: yield* channelFactory!.freeze(semantic)
   });
   const hierarchyKeyHash = yield* materializationHashSteps(key, owned);
   owned?.reserve(8_192, true);
@@ -436,7 +463,11 @@ export function* adaptiveMaterializeBrickSteps(input: MaterializeAdaptiveBrickIn
     contentHash,
     provenance
   };
-  return owned === undefined ? deepFreeze(result) : Object.freeze(result);
+  if(owned===undefined){return deepFreeze(result);}
+  const frozen=Object.freeze(result),scope=ownedBrickScopes.get(owned);
+  if(scope?.active){owned.reserve(256,true);scope.validated.set(frozen,undefined);ownedBrickProducers.set(frozen,scope);}
+  return frozen;
+  }finally{channelFactory?.dispose();}
 }
 
 export const validateMaterializedAdaptiveBrick = (brick: MaterializedAdaptiveBrick): MaterializedAdaptiveBrick =>
@@ -616,5 +647,8 @@ export function* adaptiveValidateMaterializedBrickSteps(brick: MaterializedAdapt
     contentHash: record.contentHash,
     provenance: owned === undefined ? { ...provenancePayload, provenanceHash } : Object.freeze({ ...provenancePayload, provenanceHash })
   };
-  return owned === undefined ? deepFreeze(result) : Object.freeze(result);
+  if(owned===undefined){return deepFreeze(result);}
+  const frozen=Object.freeze(result),scope=ownedBrickScopes.get(owned);
+  if(scope?.active&&ownedBrickProducers.get(brick)===scope){scope.validated.set(brick,frozen);}
+  return frozen;
 }

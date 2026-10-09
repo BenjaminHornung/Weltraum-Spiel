@@ -4,11 +4,18 @@ import path from "node:path";
 import {fileURLToPath} from "node:url";
 import {isHvpCutHealthFresh, planHvpCutRtSeries, readHvpBodyHoldForCommand, readHvpCutMarkers, summarizeHvpCuts,
   summarizeHvpCutRtSessions, createHvpCutRtEvidenceDirectory, describeHvpCutRtFailure, inventoryHvpCutRtFiles,
-  persistHvpCutRtReport, projectHvpCutRtGpuInfo, type HvpCutRtFailureStage, type HvpCutRtAttemptRecord, type HvpCutSample, type HvpCutRawEntry} from "../performance/hvpCutRtReport";
+  persistHvpCutRtReport, projectHvpCutRtGpuInfo, projectHvpCutRtOperationFailure, type HvpCutRtFailureStage, type HvpCutRtAttemptRecord, type HvpCutSample, type HvpCutRawEntry} from "../performance/hvpCutRtReport";
 
 vi.mock("node:fs/promises", async importOriginal => ({...await importOriginal<typeof fs>()}));
 
 describe("CDP metadata publication privacy", () => {
+  it("retains the controlled failing UI operation without publishing arbitrary error or operation text",()=>{
+    const canary="SYNTH_PRIVATE_FAILURE_CANARY",error=Object.assign(new Error(canary),{code:"ETIMEDOUT"});
+    const known=projectHvpCutRtOperationFailure("prepare-preview",error);
+    expect(known).toEqual({operation:"prepare-preview",problem:"cut: Error [ETIMEDOUT]"});
+    expect(projectHvpCutRtOperationFailure(canary,error)).toEqual({operation:"UnknownOperation",problem:"cut: Error [ETIMEDOUT]"});
+    expect(JSON.stringify(known)).not.toContain(canary);
+  });
   const canaries = ["SYNTH_COMMANDLINE_CANARY", "SYNTH_PROFILE_PATH_CANARY", "SYNTH_URL_TOKEN_CANARY", "SYNTH_ERROR_TEXT_CANARY"];
   const device = {vendorId: 32902, deviceId: 1, vendorString: "Intel", deviceString: "Intel Arc Pro 140T",
     driverVendor: "Intel", driverVersion: "32.0.101.8360"};

@@ -16,7 +16,7 @@
  */
 
 import { fnv1aHash } from "../core/hash";
-import {copyHvpOwnedSlotLeaf,createHvpOwnedSlotBlockCopy,type HvpOwnedLeafCopy,type HvpOwnedSlotBlockCopy} from "../hestia-prototype/terrain/ownedSlotCopy";
+import {allocateHvpOwnedSlots,hasHvpOwnedSlotShape,hashHvpOwnedSlots,copyHvpOwnedSlots,copyHvpOwnedSlotLeaf,createHvpOwnedSlotBlockCopy,type HvpOwnedLeafCopy,type HvpOwnedSlotBlockCopy} from "../hestia-prototype/terrain/ownedSlotCopy";
 import {hvpOwnedGridLeafCopy,type decodeHvpGrid} from "../hestia-prototype/persistence/gridCheckpoint";
 import type { HvpCoverageState } from "./hvpTerrain";
 
@@ -512,9 +512,9 @@ const materializeSlots = (progress?: (doneSlabs: number, totalSlabs: number) => 
  * the fold binds the ordered leaf digests, so the digest proves the page
  * structure that leaf readers observe.
  */
-const digestSourceSlots = (slots: Uint8Array): string => {
+const digestSourceSlots = (slots: Uint8Array,exclusive=false): string => {
   let hash = headerDigestSeed();
-  const leaf = new Uint8Array(
+  const leaf = (exclusive?allocateHvpOwnedSlots:(n:number)=>new Uint8Array(n))(
     HVP_SOURCE_LEAF_EDGE_SLOTS * HVP_SOURCE_LEAF_EDGE_SLOTS * HVP_SOURCE_LEAF_EDGE_SLOTS
   );
   for (let lz = 0; lz < HVP_SOURCE_LEAF_COUNT_Z; lz += 1) {
@@ -531,7 +531,7 @@ const digestSourceSlots = (slots: Uint8Array): string => {
             }
           }
         }
-        const leafDigest = fnv1aBytes(leaf, headerDigestSeed());
+        const leafDigest = exclusive?Number.parseInt(hashHvpOwnedSlots(leaf,headerDigestSeed()),16):fnv1aBytes(leaf, headerDigestSeed());
         hash ^= leafDigest;
         hash = Math.imul(hash, 0x01000193);
       }
@@ -541,10 +541,12 @@ const digestSourceSlots = (slots: Uint8Array): string => {
 };
 
 const ownedCoastCopies=new WeakMap<object,{leaf:HvpOwnedLeafCopy;bytes:()=>Uint8Array;block:HvpOwnedSlotBlockCopy}>();
+const exclusiveCoastSources=new WeakSet<object>();
+export const isHvpExclusiveCoastSource=(source:object):boolean=>exclusiveCoastSources.has(source);
 export const hvpOwnedCoastLeafCopy=(source:object)=>ownedCoastCopies.get(source)?.leaf;
 export const hvpOwnedCoastSlotBlockCopy=(source:object)=>ownedCoastCopies.get(source)?.block;
-const wrapSnapshot = (slots: Uint8Array,owned=true): HvpCoastSourceSnapshot => {
-  const sourceDigest = digestSourceSlots(slots);
+const wrapSnapshot = (slots: Uint8Array,owned=true,exclusive=false): HvpCoastSourceSnapshot => {
+  const sourceDigest = digestSourceSlots(slots,exclusive);
   const result=Object.freeze({
     version: HVP_COAST_SOURCE_VERSION,
     seedName: HVP_COAST_SEED_NAME,
@@ -564,9 +566,13 @@ const wrapSnapshot = (slots: Uint8Array,owned=true): HvpCoastSourceSnapshot => {
       }
       return slots[snapshotIndex(ix, iy, iz)];
     },
-    copySlots: (): Uint8Array => slots.slice()
+    copySlots: (): Uint8Array => (exclusive?copyHvpOwnedSlots(slots):slots).slice()
   });
-  if(owned){ownedCoastCopies.set(result,{leaf:(x,y,z)=>copyHvpOwnedSlotLeaf(slots,HVP_SOURCE_SIZE_X,HVP_SOURCE_SIZE_Y,HVP_SOURCE_SIZE_Z,x,y,z),bytes:()=>new Uint8Array(slots),block:createHvpOwnedSlotBlockCopy(slots)});}return result;
+  if(owned){ownedCoastCopies.set(result,{leaf:(x,y,z)=>copyHvpOwnedSlotLeaf(slots,HVP_SOURCE_SIZE_X,HVP_SOURCE_SIZE_Y,HVP_SOURCE_SIZE_Z,x,y,z),bytes:()=>{
+    if(!hasHvpOwnedSlotShape(slots,HVP_SOURCE_SLOT_COUNT)){throw new Error("HVP coast source incomplete: slot pages");}
+    return copyHvpOwnedSlots(slots);
+  },block:createHvpOwnedSlotBlockCopy(slots)});}
+  if(exclusive){exclusiveCoastSources.add(result);}return result;
 };
 
 /** Fully materialized, validated coast pages for the named seed. */
@@ -584,7 +590,7 @@ export const restoreHvpOwnedCoastGrid=(grid:ReturnType<typeof decodeHvpGrid>,exp
 const restoreCoastSlots=(slots:Uint8Array,expectedDigest:string,owned:boolean):HvpCoastSourceSnapshot=>{
   if(!(slots instanceof Uint8Array)||slots.length!==HVP_SOURCE_SLOT_COUNT||slots.some(s=>s>HVP_SLOT_MOSS)
     ||typeof expectedDigest!=="string"||!/^[0-9a-f]{8}$/.test(expectedDigest)){throw new Error("Invalid coast checkpoint");}
-  const snapshot=wrapSnapshot(owned?new Uint8Array(slots):slots.slice(),owned);
+  const snapshot=wrapSnapshot(owned?copyHvpOwnedSlots(slots):slots.slice(),owned,owned);
   if(snapshot.sourceDigest!==expectedDigest){throw new Error("Coast checkpoint digest mismatch");}
   return snapshot;
 };
@@ -735,8 +741,15 @@ export const prepareHvpCoastSource = (snapshot: HvpCoastSourceSnapshot): HvpPrep
 /** First-party source entry; foreign/Proxy snapshots keep the complete public path. */
 export const prepareHvpOwnedCoastSource=(snapshot:HvpCoastSourceSnapshot):HvpPreparedCoastSource=>prepareCoastSource(snapshot,ownedCoastCopies.get(snapshot));
 const prepareCoastSource=(snapshot:HvpCoastSourceSnapshot,owned?:{leaf:HvpOwnedLeafCopy;bytes:()=>Uint8Array}):HvpPreparedCoastSource=>{
-  assertHvpSourceComplete(snapshot);
-  const bytes = owned===undefined?snapshot.copySlots():owned.bytes();
+  let bytes:Uint8Array;
+  if(owned!==undefined&&typeof snapshot.copySlots==="function"){
+    // Exact frozen producer metadata; validate its intrinsic copy even if a public reader exposed the original.
+    bytes=owned.bytes();
+    if(digestSourceSlots(bytes,true)!==snapshot.sourceDigest){throw new Error("HVP coast source incomplete: source digest");}
+  }else{
+    assertHvpSourceComplete(snapshot);
+    bytes=snapshot.copySlots();
+  }
   const origin = Object.freeze({ x: snapshot.originMeters.x, y: snapshot.originMeters.y, z: snapshot.originMeters.z });
   const readSlot = (ix: number, iy: number, iz: number): number => {
     if (!Number.isInteger(ix) || !Number.isInteger(iy) || !Number.isInteger(iz)) {
@@ -775,17 +788,20 @@ const prepareCoastSource=(snapshot:HvpCoastSourceSnapshot,owned?:{leaf:HvpOwnedL
     const digest = fnv1aBytes(slots, headerDigestSeed()).toString(16).padStart(8, "0");
     return Object.freeze({ lx, ly, lz, slots, digest });
   };
-  let combined = headerDigestSeed();
-  for (let lz = 0; lz < HVP_SOURCE_LEAF_COUNT_Z; lz += 1) {
-    for (let ly = 0; ly < HVP_SOURCE_LEAF_COUNT_Y; ly += 1) {
-      for (let lx = 0; lx < HVP_SOURCE_LEAF_COUNT_X; lx += 1) {
-        const leafDigest = Number.parseInt(readLeaf(lx, ly, lz).digest, 16) >>> 0;
-        combined ^= leafDigest;
-        combined = Math.imul(combined, 0x01000193) >>> 0;
+  let combinedLeafDigest=snapshot.sourceDigest;
+  if(owned===undefined){
+    let combined = headerDigestSeed();
+    for (let lz = 0; lz < HVP_SOURCE_LEAF_COUNT_Z; lz += 1) {
+      for (let ly = 0; ly < HVP_SOURCE_LEAF_COUNT_Y; ly += 1) {
+        for (let lx = 0; lx < HVP_SOURCE_LEAF_COUNT_X; lx += 1) {
+          const leafDigest = Number.parseInt(readLeaf(lx, ly, lz).digest, 16) >>> 0;
+          combined ^= leafDigest;
+          combined = Math.imul(combined, 0x01000193) >>> 0;
+        }
       }
     }
+    combinedLeafDigest=(combined >>> 0).toString(16).padStart(8, "0");
   }
-  const combinedLeafDigest = (combined >>> 0).toString(16).padStart(8, "0");
   const result=Object.freeze({
     version: snapshot.version,
     seedName: snapshot.seedName,
@@ -800,9 +816,9 @@ const prepareCoastSource=(snapshot:HvpCoastSourceSnapshot,owned?:{leaf:HvpOwnedL
     readSlot,
     readCoverage,
     readLeaf,
-    copyBytes: (): Uint8Array => bytes.slice()
+    copyBytes: (): Uint8Array => (owned===undefined?bytes:copyHvpOwnedSlots(bytes)).slice()
   });
-  if(owned!==undefined){ownedCoastCopies.set(result,{leaf:(x,y,z)=>copyHvpOwnedSlotLeaf(bytes,HVP_SOURCE_SIZE_X,HVP_SOURCE_SIZE_Y,HVP_SOURCE_SIZE_Z,x,y,z),bytes:()=>new Uint8Array(bytes),block:createHvpOwnedSlotBlockCopy(bytes)});}
+  if(owned!==undefined){ownedCoastCopies.set(result,{leaf:(x,y,z)=>copyHvpOwnedSlotLeaf(bytes,HVP_SOURCE_SIZE_X,HVP_SOURCE_SIZE_Y,HVP_SOURCE_SIZE_Z,x,y,z),bytes:()=>copyHvpOwnedSlots(bytes),block:createHvpOwnedSlotBlockCopy(bytes)});exclusiveCoastSources.add(result);}
   return result;
 };
 

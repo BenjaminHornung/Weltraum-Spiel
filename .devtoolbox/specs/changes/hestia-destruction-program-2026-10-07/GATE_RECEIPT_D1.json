@@ -1,0 +1,20 @@
+{
+  "gate":"D1","status":"QUALIFIED","scope":"D1 readiness/private Source mechanism only, not Phase1 Cut acceptance",
+  "sourceManifestHash":"9d741b5b965016647ebd48e9e0324c26b24d35547a1c4951ddc99e9cc67b163e",
+  "buildManifestHash":"3a119143ede484e818a6103cd2c2925aca19f58ca6cd47edb6e3c6ce27e49ba8",
+  "build":"apps/weltraum-browser/evidence/hestia-d1-product-r06",
+  "nativeSeries":"tests/D1/normal-ghost-fixed-paired-r13","nativeExit":0,"pairs":10,"validCuts":60,
+  "coldSceneReadyMedianMs":4690.600000008941,"coldSceneReadyP95NearestRankMs":4840.79999999702,"coldSceneReadyAtMost5000":10,
+  "inputAppliedMedianMs":{"control":481.25,"candidate":388},"inputRenderMedianMs":{"control":491.7498779296875,"candidate":402.300048828125},
+  "firstInputProof":"tests/D1/normal-final-preready-r14/NATIVE_EXIT.json",
+  "genericInitCutWindow":"All Source/pool/Physics startup ends before original input; private Support has no dense Source copy; new detached fragment canonical Source/ancestors/admission remains command work",
+  "targetCutPrecomputed":false,"fullSourceSavesParity":true,"ordinaryNativeBackendZeroDisposals":40,
+  "resourceMaxima":{"cpuBytes":252571464,"retainedMeshBytes":28118312,"triangles":374660,"drawCalls":173,"heavyJobs":2,"queue":0},
+  "capsUnchanged":true,"prepareMiB":96,
+  "regressions":["Source196PASS","rawguard32PASS","Native49PASS","Bootstrap/products/private/consumer/transfer135PASS","finalproducts/private23PASS with real transport debits","full appTypeScript+Spec2PASS"],
+  "review":"Independent identity/quote and completion audits found no remaining concrete D1 blocker",
+  "completionPreflight":"D1_COMPLETION_PREFLIGHT.json",
+  "failedAttemptsRetained":["normal-source-pilot-r06","normal-ghost-pilot-r10","normal-ghost-start-error-r11"],
+  "missingFailedCleanupNotInvented":true,"commitApproval":"UNCOMMITTED D1; old G0 approval covers only584b945",
+  "formal42":false,"formal1400":false,"phase1Complete":false,"overallComplete":false,"nextGate":"D2"
+}

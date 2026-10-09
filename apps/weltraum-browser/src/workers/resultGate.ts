@@ -42,7 +42,7 @@ const validateWorkerResultHeader = (
   expectation: WorkerResultExpectation | undefined,
   result: WorkerJobResult,
   bundle: TransferableBufferBundle,
-  privateChannels?:1|2|6|7,
+  privateChannels?:1|2|6|7|8,
 ): WorkerResultIntegrationDecision => {
   if (!expectation || expectation.jobId !== result.jobId) return Object.freeze({ kind: "RejectedUnknownJob" });
   if (expectation.cancelled) return Object.freeze({ kind: "RejectedCancelled" });
@@ -111,7 +111,7 @@ export function* integrateHvpSupportWorkerResultSteps(
   return finishWorkerResult(expectation!,result,header.bundle,yield* fnv1aBytesSteps(header.bundle.buffers));
 }
 export function* integrateHvpDerivativeWorkerResultSteps(expectation:WorkerResultExpectation|undefined,result:WorkerJobResult,
-  bundle:TransferableBufferBundle,channels:2|6):Generator<string,WorkerResultIntegrationDecision,unknown>{
+  bundle:TransferableBufferBundle,channels:2|6|8):Generator<string,WorkerResultIntegrationDecision,unknown>{
   const header=validateWorkerResultHeader(expectation,result,bundle,channels);if(header.kind!=="Accepted"){return header;}
   if(header.bundle.byteLength>HVP_BODY_CUT_MAX_OUTPUT){return Object.freeze({kind:"RejectedOverBudget"});}
   return finishWorkerResult(expectation!,result,header.bundle,yield* fnv1aBytesSteps(header.bundle.buffers));

@@ -1,0 +1,11 @@
+{
+  "exitCode": 1,
+  "sessionId": 30175,
+  "test": "D3+D4 paired384 normal Source Ready Save ColdLoad and recut",
+  "actualDuration": "3.1m",
+  "classification": "WHOLE_PAIR_INVALID_BOTH_ATTEMPTS_FAILED",
+  "qualified": false,
+  "causalGainClaim": false,
+  "formal42": false,
+  "formal1400": false
+}

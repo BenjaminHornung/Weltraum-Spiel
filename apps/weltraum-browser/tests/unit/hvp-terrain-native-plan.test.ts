@@ -1,4 +1,4 @@
-import {expect,it} from "vitest";
+import {expect,it,vi} from "vitest";
 import {createHvpWorkerPhysicsSession} from "../../src/hestia-prototype/physics/session";
 import {collisionSectors} from "../../src/hestia-prototype/physics/terrainColliders";
 import {createHvpBodyMeshTaskPump} from "../../src/workers/hvpBoundedPump";
@@ -8,8 +8,31 @@ const floor={sizeX:4,sizeY:16,sizeZ:4,cellMeters:.125,originMeters:{x:0,y:0,z:0}
 const cells=Array.from({length:128},(_,i)=>({x:128+i%16,y:76,z:128+Math.floor(i/16),materialId:1}));
 const fragment={ownerId:"hvp:terrain-fragment:r1:12345678",origin:{x:-16,y:-8,z:-16},massKg:128*2400*.125**3,
   cells,colliderBoxes:[{min:[128,76,128] as const,max:[144,77,136] as const}]};
-const open=async()=>({session:await createHvpWorkerPhysicsSession([...collisionSectors(floor)],{x:.4,y:2,z:.4}),
+const open=async(measure=false)=>({session:await createHvpWorkerPhysicsSession([...collisionSectors(floor)],{x:.4,y:2,z:.4},undefined,undefined,undefined,undefined,"hvp-world",undefined,"branch",measure),
   replacements:[{index:0,mesh:[...collisionSectors(floor)][0]!}]});
+
+it.each([false,true])("separates contiguous work from long yield waits and honors opt-out mid-yield (%s)",async disable=>{
+  const {session,replacements}=await open(true);let now=10,yields=0,readsAtOptOut=0;
+  const clock=vi.spyOn(performance,"now").mockImplementation(()=>now);
+  const host={assertCurrent(){},continuePlan:()=>false,yieldTask:async()=>{yields++;now+=100;if(disable&&yields===1){session.disableBodyPlanTrace();readsAtOptOut=clock.mock.calls.length;}}};
+  try{
+    const ticket=await session.prepareTerrainPlan("timed",0,replacements,[fragment],createHvpBodyMeshPhaseReserve(48*1024*1024),host);
+    expect(session.terrainPlanSourceViews(ticket)[0]).toMatchObject({cellCount:128,massKg:600});
+    if(disable){expect(ticket.sourceTiming).toBeUndefined();expect(ticket.spans).toBeUndefined();
+      const afterOptOut=clock.mock.calls.length-readsAtOptOut;
+      const control=await open(false);let firstControlYield=true,controlReads=0;
+      try{const unmeasured=await control.session.prepareTerrainPlan("untimed",0,control.replacements,[fragment],createHvpBodyMeshPhaseReserve(48*1024*1024),
+        {assertCurrent(){},continuePlan:()=>false,yieldTask:async()=>{now+=100;if(firstControlYield){firstControlYield=false;controlReads=clock.mock.calls.length;}}});
+        expect(unmeasured.spans).toBeUndefined();expect(clock.mock.calls.length-controlReads).toBe(afterOptOut);
+      }finally{control.session.dispose();}
+    }
+    else{
+      expect(ticket.sourceTiming).toMatchObject({workElapsedMs:0,yieldWaitMs:yields*100,workSteps:yields+1,taskYields:yields,maxWork:{duration:0},maxYield:{duration:100}});
+      expect(ticket.sourceTiming!.maxYield.start).toBeGreaterThanOrEqual(10);expect(JSON.stringify(ticket.sourceTiming).length).toBeLessThanOrEqual(1536);
+      expect(Object.isFrozen(ticket.sourceTiming)).toBe(true);
+    }
+  }finally{clock.mockRestore();session.dispose();}
+});
 
 it("prepares full native recipes while real solver ticks continue, then stages the exact local ticket",async()=>{
   const {session,replacements}=await open();let yields=0;

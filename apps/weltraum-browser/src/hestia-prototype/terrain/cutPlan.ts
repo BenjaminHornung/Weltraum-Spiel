@@ -1,9 +1,9 @@
 import { fnv1aHash } from "../../core/hash";
 import { fnv1aBytes } from "../../workers/protocol";
 import type { HvpCell, HvpCellReader } from "./picking";
-import {encodeHvpGridChunks,decodeHvpGrid,hvpOwnedGridLeafCopy,hvpOwnedGridSlotBlockCopy,type HvpGridCheckpoint} from "../persistence/gridCheckpoint";
-import {hvpOwnedCoastLeafCopy,hvpOwnedCoastSlotBlockCopy} from "../../hvp/hvpCoastSource";
-import type {HvpOwnedLeafCopy,HvpOwnedSlotBlockCopy} from "./ownedSlotCopy";
+import {encodeHvpGridChunks,decodeHvpGrid,decodeHvpPrivateGrid,isHvpExclusiveGridSource,hvpOwnedGridLeafCopy,hvpOwnedGridSlotBlockCopy,type HvpGridCheckpoint} from "../persistence/gridCheckpoint";
+import {hvpOwnedCoastLeafCopy,hvpOwnedCoastSlotBlockCopy,isHvpExclusiveCoastSource} from "../../hvp/hvpCoastSource";
+import {allocateHvpOwnedSlots,copyHvpOwnedSlots,hashHvpOwnedSlots,type HvpOwnedLeafCopy,type HvpOwnedSlotBlockCopy} from "./ownedSlotCopy";
 
 export interface HvpTerrainCheckpoint {
   readonly version:"hvp-terrain-checkpoint-v1";
@@ -15,7 +15,18 @@ const terrainOwners=new WeakSet<object>();
 const terrainSnapshots=new WeakSet<object>();
 const ownedLeafCopies=new WeakMap<object,HvpOwnedLeafCopy>();
 const decodedBaseBlocks=new WeakMap<object,HvpOwnedSlotBlockCopy>();
+const exclusiveDecodedBases=new WeakSet<object>();
 const ownedSlotSteps=new WeakMap<object,(target:Uint8Array)=>Generator<string,void,unknown>>();
+const privateCutSources=new WeakMap<HvpPreparedCut,{readonly source:HvpTerrainSnapshot;readonly assertCurrent:()=>void}>();
+const privateOperations=new WeakMap<object,{prepare:(request:HvpCutRequest)=>HvpPreparedCut;transfer:(cut:HvpPreparedCut,cells:TransferCells)=>HvpPreparedCut;
+  ownsSnapshot:(source:HvpTerrainSnapshot)=>boolean}>();
+type TransferCells=readonly Readonly<{x:number;y:number;z:number;materialId:number}>[];
+export const readHvpPrivateCutSource=(cut:HvpPreparedCut)=>privateCutSources.get(cut);
+export const isHvpPrivateTerrainSource=(owner:object,source:HvpTerrainSnapshot):boolean=>privateOperations.get(owner)?.ownsSnapshot(source)===true;
+export const prepareHvpPrivateTerrainCut=(owner:ReturnType<typeof createHvpTerrainRoot>,request:HvpCutRequest)=>
+  privateOperations.get(owner)?.prepare(request)??owner.prepare(request);
+export const prepareHvpPrivateTerrainTransfer=(owner:ReturnType<typeof createHvpTerrainRoot>,cut:HvpPreparedCut,cells:TransferCells)=>
+  privateOperations.get(owner)?.transfer(cut,cells)??owner.prepareTransfer(cut,cells);
 export const copyHvpOwnedTerrainSlotsSteps=(snapshot:HvpTerrainSnapshot,target:Uint8Array)=>ownedSlotSteps.get(snapshot)?.(target);
 /** Exact local owner identities only; Proxy/spread/foreign readers keep the public path. */
 export const copyHvpOwnedTerrainLeaf=(snapshot:HvpTerrainSnapshot,x:number,y:number,z:number):Uint8Array|undefined=>ownedLeafCopies.get(snapshot)?.(x,y,z);
@@ -90,9 +101,9 @@ export const snapshotHvpCutRequest = (request: HvpCutRequest): HvpCutRequest => 
 };
 
 /** Sparse immutable COW leaf generations over the validated authored base. */
-export const createHvpTerrainRoot = (base: HvpCellReader & { sourceDigest: string }, sessionId: string, epoch: number,
+const createTerrainRoot = (base: HvpCellReader & { sourceDigest: string }, sessionId: string, epoch: number,
   protectedCell: (x: number, y: number, z: number) => boolean = (_x, y) => y === 0,
-  checkpoint?:HvpTerrainCheckpoint) => {
+  checkpoint?:HvpTerrainCheckpoint,privateLane=false) => {
   if (!/^[A-Za-z0-9:._-]{1,128}$/.test(sessionId) || !Number.isSafeInteger(epoch) || epoch < 0 || base.cellMeters !== 0.125
     || ![base.sizeX,base.sizeY,base.sizeZ].every(n => Number.isSafeInteger(n) && n > 0 && n <= 256)) {
     throw new Error("Invalid terrain root boundary");
@@ -100,14 +111,17 @@ export const createHvpTerrainRoot = (base: HvpCellReader & { sourceDigest: strin
   type Leaf = { slots: Uint8Array; revision: number; digest: string };
   const maps = new WeakMap<HvpTerrainSnapshot, ReadonlyMap<string, Leaf>>();
   const issued = new WeakSet<HvpPreparedCut>();
+  const privateSnapshots=new WeakSet<HvpTerrainSnapshot>();
   const ownedBaseCopy=ownedLeafCopies.get(base)??hvpOwnedCoastLeafCopy(base)??hvpOwnedGridLeafCopy(base);
   // Deliberately no terrain-snapshot inheritance: its older COW overlays are not the raw base.
   const ownedBaseBlock=decodedBaseBlocks.get(base)??hvpOwnedCoastSlotBlockCopy(base)??hvpOwnedGridSlotBlockCopy(base);
+  const exclusiveBase=privateLane&&[base.sizeX,base.sizeY,base.sizeZ].every(size=>size%16===0)
+    &&(isHvpExclusiveCoastSource(base)||exclusiveDecodedBases.has(base)||isHvpExclusiveGridSource(base));
   const inside = (x: number, y: number, z: number): boolean => x >= 0 && x < base.sizeX && y >= 0 && y < base.sizeY && z >= 0 && z < base.sizeZ;
-  const make = (leaves: ReadonlyMap<string, Leaf>, revision: number): HvpTerrainSnapshot => {
+  const make = (leaves: ReadonlyMap<string, Leaf>, revision: number,exclusive=false): HvpTerrainSnapshot => {
     const leafCountX=Math.ceil(base.sizeX/16),leafCountY=Math.ceil(base.sizeY/16);
     const changedLeaves=leaves.size===0?null:(()=>{
-      const present=new Uint8Array(leafCountX*leafCountY*Math.ceil(base.sizeZ/16));
+      const length=leafCountX*leafCountY*Math.ceil(base.sizeZ/16),present=exclusive?allocateHvpOwnedSlots(length):new Uint8Array(length);
       for(const key of leaves.keys()){
         const separator1=key.indexOf(":"),separator2=key.indexOf(":",separator1+1);
         const lx=Number(key.slice(0,separator1)),ly=Number(key.slice(separator1+1,separator2)),lz=Number(key.slice(separator2+1));
@@ -135,7 +149,7 @@ export const createHvpTerrainRoot = (base: HvpCellReader & { sourceDigest: strin
       copyLeaf(x: number, y: number, z: number): Uint8Array {
         if (![x,y,z].every(Number.isSafeInteger)) { throw new RangeError("Integer leaf required"); }
         const changed=leaves.get(`${x}:${y}:${z}`);
-        if(changed){return changed.slots.slice();}
+        if(changed){return (exclusive?copyHvpOwnedSlots(changed.slots):changed.slots).slice();}
         const data = new Uint8Array(4096);
         for (let z1=0;z1<16;z1+=1) { for (let y1=0;y1<16;y1+=1) { for (let x1=0;x1<16;x1+=1) {
           const gx=x*16+x1, gy=y*16+y1, gz=z*16+z1;
@@ -148,6 +162,7 @@ export const createHvpTerrainRoot = (base: HvpCellReader & { sourceDigest: strin
     });
     maps.set(snapshot, leaves);
     terrainSnapshots.add(snapshot);
+    if(exclusive){privateSnapshots.add(snapshot);}
     if(ownedBaseCopy!==undefined){ownedLeafCopies.set(snapshot,(x,y,z)=>{
       if(![x,y,z].every(Number.isSafeInteger)){return undefined;}
       // Public COW production keeps its Species observations; it supplies no exclusive-copy capability.
@@ -178,7 +193,7 @@ export const createHvpTerrainRoot = (base: HvpCellReader & { sourceDigest: strin
         ||!Number.isSafeInteger(leaf.revision)||leaf.revision<1||leaf.revision>checkpoint.revision){throw new Error("Invalid checkpoint leaf revision/address");}
       const [lx,ly,lz]=leaf.key,key=leaf.key.join(":");
       if(restored.has(key)||JSON.stringify(leaf.grid.size)!=="[16,16,16]"){throw new Error("Duplicate or malformed checkpoint leaf");}
-      const grid=decodeHvpGrid(leaf.grid);
+      const grid=exclusiveBase?decodeHvpPrivateGrid(leaf.grid):decodeHvpGrid(leaf.grid);
       if(grid.originMeters.x!==base.originMeters.x+lx*2||grid.originMeters.y!==base.originMeters.y+ly*2||grid.originMeters.z!==base.originMeters.z+lz*2){throw new Error("Checkpoint leaf frame mismatch");}
       const slots=grid.copySlots();let differences=0;
       for(let z=0;z<16;z+=1){for(let y=0;y<16;y+=1){for(let x=0;x<16;x+=1){
@@ -188,11 +203,11 @@ export const createHvpTerrainRoot = (base: HvpCellReader & { sourceDigest: strin
         if(slot!==old){differences+=1;}
       }}}
       if(differences===0){throw new Error("Checkpoint leaf revision without content change");}
-      restored.set(key,{slots,revision:leaf.revision,digest:fnv1aBytes([slots.buffer as ArrayBuffer])});
+      restored.set(key,{slots,revision:leaf.revision,digest:exclusiveBase?hashHvpOwnedSlots(slots):fnv1aBytes([slots.buffer as ArrayBuffer])});
     }
     if((checkpoint.revision===0)!==(restored.size===0)){throw new Error("Checkpoint revision mismatch");}
   }
-  let current = make(restored, checkpoint?.revision??0);
+  let current = make(restored, checkpoint?.revision??0,exclusiveBase);
   if(checkpoint&&current.sourceDigest!==checkpoint.sourceDigest){throw new Error("Checkpoint source digest mismatch");}
   let lastCommit: HvpPreparedCut | undefined;
   function* checkpointChunks():Generator<void,HvpTerrainCheckpoint>{
@@ -209,17 +224,20 @@ export const createHvpTerrainRoot = (base: HvpCellReader & { sourceDigest: strin
     return Object.freeze({version:"hvp-terrain-checkpoint-v1",sessionId,epoch,revision:captured.revision,
       baseDigest:base.sourceDigest,sourceDigest:captured.sourceDigest,base:grid,leaves:Object.freeze(leaves)});
   }
-  const owner={
-    read: () => current,
-    checkpoint():HvpTerrainCheckpoint {
-      const chunks=checkpointChunks();for(;;){const next=chunks.next();if(next.done){return next.value;}}
-    },
-    async checkpointAsync(signal?:AbortSignal):Promise<HvpTerrainCheckpoint>{
-      const chunks=checkpointChunks();
-      for(;;){signal?.throwIfAborted();const next=chunks.next();if(next.done){return next.value;}
-        await new Promise<void>(resolve=>setTimeout(resolve,0));}
-    },
-    prepare(request: HvpCutRequest): HvpPreparedCut {
+  const copyPrivateLeaf=(snapshot:HvpTerrainSnapshot,x:number,y:number,z:number):Uint8Array=>{
+    const leaf=maps.get(snapshot)!.get(`${x}:${y}:${z}`);
+    const slots=leaf?copyHvpOwnedSlots(leaf.slots):ownedBaseCopy?.(x,y,z);
+    if(slots===undefined){throw new Error("Private terrain leaf coverage");}return slots;
+  };
+  const bindPrivate=(plan:HvpPreparedCut):void=>{
+    if(privateSnapshots.has(plan.before)&&privateSnapshots.has(plan.after)){
+      privateCutSources.set(plan,Object.freeze({source:plan.after,assertCurrent:()=>{
+        if(!issued.has(plan)||current!==plan.before){throw new Error("Stale private terrain cut");}
+      }}));
+    }
+  };
+  const prepare=(request:HvpCutRequest,privateRequested=false):HvpPreparedCut=>{
+      const exclusive=privateRequested&&privateSnapshots.has(current);
       if (request.sessionId !== sessionId || request.epoch !== epoch || request.revision !== current.revision || request.sourceDigest !== current.sourceDigest) {
         throw new Error("StaleRevision or foreign session");
       }
@@ -241,28 +259,25 @@ export const createHvpTerrainRoot = (base: HvpCellReader & { sourceDigest: strin
       const leaves = new Map(maps.get(current)!);
       for (const key of content) {
         const [x,y,z] = key.split(":").map(Number);
-        const slots = current.copyLeaf(x!,y!,z!);
+        const slots = exclusive?copyPrivateLeaf(current,x!,y!,z!):current.copyLeaf(x!,y!,z!);
         for (const delta of changed) { if (leafKey(...delta.cell) === key) { slots[leafIndex(...delta.cell)] = 0; } }
-        leaves.set(key, { slots, revision: (leaves.get(key)?.revision ?? 0) + 1, digest: fnv1aBytes([slots.buffer as ArrayBuffer]) });
+        leaves.set(key, { slots, revision: (leaves.get(key)?.revision ?? 0) + 1, digest: exclusive?hashHvpOwnedSlots(slots):fnv1aBytes([slots.buffer as ArrayBuffer]) });
       }
       const shape: HvpCutShape = request.shape.kind === "Box"
         ? Object.freeze({ kind: "Box", min: Object.freeze([...request.shape.min]) as HvpCell, max: Object.freeze([...request.shape.max]) as HvpCell })
         : Object.freeze({ kind: "Sphere", center2: Object.freeze([...request.shape.center2]) as HvpCell, radius2: request.shape.radius2 });
       const boundRequest = Object.freeze({ sessionId, epoch, revision: request.revision, sourceDigest: request.sourceDigest,
         commandId: request.commandId, toolPolicy: request.toolPolicy, shape });
-      const plan: HvpPreparedCut = Object.freeze({ before: current, after: changed.length === 0 ? current : make(leaves, current.revision + 1),
+      const plan: HvpPreparedCut = Object.freeze({ before: current, after: changed.length === 0 ? current : make(leaves, current.revision + 1,exclusive),
         request: boundRequest, signature: JSON.stringify(boundRequest), changed: Object.freeze(changed),
         contentLeaves: Object.freeze([...content].sort()), dependencyLeaves: Object.freeze([...dependencies].sort()) });
       issued.add(plan);
+      if(exclusive){bindPrivate(plan);}
       return plan;
-    },
-    commit(plan: HvpPreparedCut): void {
-      if (!issued.has(plan) || plan.before !== current) { throw new Error("Stale cut plan"); }
-      issued.delete(plan); lastCommit = plan; current = plan.after;
-    },
-    /** Clear cells transferred to a body without counting them as deleted material. */
-    prepareTransfer(cut:HvpPreparedCut,cells:readonly Readonly<{x:number;y:number;z:number;materialId:number}>[]):HvpPreparedCut {
+  };
+  const prepareTransfer=(cut:HvpPreparedCut,cells:TransferCells,privateRequested=false):HvpPreparedCut=>{
       if(!issued.has(cut)||cut.before!==current||cut.after===current){throw new Error("Stale transfer cut");}
+      const exclusive=privateRequested&&privateCutSources.has(cut)&&privateSnapshots.has(cut.after);
       if(cells.length<1||cells.length>32_768){throw new Error("Transfer BudgetExceeded");}
       const changed=[...cut.changed],content=new Set(cut.contentLeaves),dependencies=new Set(cut.dependencyLeaves);
       const seen=new Set<string>();
@@ -279,29 +294,53 @@ export const createHvpTerrainRoot = (base: HvpCellReader & { sourceDigest: strin
       }
       const leaves=new Map(maps.get(cut.after)!);
       for(const key of content){
-        const [x,y,z]=key.split(":").map(Number),slots=cut.after.copyLeaf(x!,y!,z!);
+        const [x,y,z]=key.split(":").map(Number),slots=exclusive?copyPrivateLeaf(cut.after,x!,y!,z!):cut.after.copyLeaf(x!,y!,z!);
         for(const c of cells){if(leafKey(c.x,c.y,c.z)===key){slots[leafIndex(c.x,c.y,c.z)]=0;}}
-        leaves.set(key,{slots,revision:(maps.get(current)!.get(key)?.revision??0)+1,digest:fnv1aBytes([slots.buffer as ArrayBuffer])});
+        leaves.set(key,{slots,revision:(maps.get(current)!.get(key)?.revision??0)+1,digest:exclusive?hashHvpOwnedSlots(slots):fnv1aBytes([slots.buffer as ArrayBuffer])});
       }
       changed.sort((a,b)=>a.cell[2]-b.cell[2]||a.cell[1]-b.cell[1]||a.cell[0]-b.cell[0]);
-      const result:HvpPreparedCut=Object.freeze({before:current,after:make(leaves,current.revision+1),request:cut.request,
+      const result:HvpPreparedCut=Object.freeze({before:current,after:make(leaves,current.revision+1,exclusive),request:cut.request,
         signature:JSON.stringify([cut.signature,cells.map(c=>[c.x,c.y,c.z,c.materialId])]),changed:Object.freeze(changed),
         contentLeaves:Object.freeze([...content].sort()),dependencyLeaves:Object.freeze([...dependencies].sort())});
-      issued.add(result);return result;
+      issued.add(result);if(exclusive){bindPrivate(result);}return result;
+  };
+  const owner={
+    read: () => current,
+    checkpoint():HvpTerrainCheckpoint {
+      const chunks=checkpointChunks();for(;;){const next=chunks.next();if(next.done){return next.value;}}
+    },
+    async checkpointAsync(signal?:AbortSignal):Promise<HvpTerrainCheckpoint>{
+      const chunks=checkpointChunks();
+      for(;;){signal?.throwIfAborted();const next=chunks.next();if(next.done){return next.value;}
+        await new Promise<void>(resolve=>setTimeout(resolve,0));}
+    },
+    prepare:(request:HvpCutRequest)=>prepare(request),
+    /** Clear cells transferred to a body without counting them as deleted material. */
+    prepareTransfer:(cut:HvpPreparedCut,cells:TransferCells)=>prepareTransfer(cut,cells),
+    commit(plan: HvpPreparedCut): void {
+      if (!issued.has(plan) || plan.before !== current) { throw new Error("Stale cut plan"); }
+      issued.delete(plan); lastCommit = plan; current = plan.after;
     },
     rollback(plan: HvpPreparedCut): void {
       if (lastCommit !== plan || current !== plan.after) { throw new Error("RecoveryHold: rollback generation mismatch"); }
       current = plan.before; lastCommit = undefined;
     }
   };
+  if(exclusiveBase){privateOperations.set(owner,{prepare:request=>prepare(request,true),transfer:(cut,cells)=>prepareTransfer(cut,cells,true),
+    ownsSnapshot:source=>current===source&&privateSnapshots.has(source)});}
   terrainOwners.add(owner);return owner;
 };
+type TerrainRootInput=[base:HvpCellReader&{sourceDigest:string},sessionId:string,epoch:number,protectedCell?:((x:number,y:number,z:number)=>boolean),checkpoint?:HvpTerrainCheckpoint];
+export const createHvpTerrainRoot=(...args:TerrainRootInput)=>createTerrainRoot(...args);
+/** Same complete P plans; eligibility comes from exact exclusive producer identity. */
+export const createHvpPrivateTerrainRoot=(...[base,sessionId,epoch,protectedCell,checkpoint]:TerrainRootInput)=>
+  createTerrainRoot(base,sessionId,epoch,protectedCell,checkpoint,true);
 
 /** Stable command port; a validated restore swaps the root, not its consumers. */
 export const createHvpTerrainOwner=(initial:ReturnType<typeof createHvpTerrainRoot>)=>{
   let current=initial;
   if(!terrainOwners.has(initial)){throw new Error("Unvalidated initial terrain owner");}
-  return {
+  const owner={
     read:()=>current.read(),checkpoint:()=>current.checkpoint(),checkpointAsync:(signal?:AbortSignal)=>current.checkpointAsync(signal),
     prepare:(request:HvpCutRequest)=>current.prepare(request),
     prepareTransfer:(cut:HvpPreparedCut,cells:Parameters<typeof initial.prepareTransfer>[1])=>current.prepareTransfer(cut,cells),
@@ -311,6 +350,9 @@ export const createHvpTerrainOwner=(initial:ReturnType<typeof createHvpTerrainRo
       const old=current;current=next;return old;
     }
   };
+  privateOperations.set(owner,{prepare:request=>prepareHvpPrivateTerrainCut(current,request),transfer:(cut,cells)=>prepareHvpPrivateTerrainTransfer(current,cut,cells),
+    ownsSnapshot:source=>isHvpPrivateTerrainSource(current,source)});
+  return owner;
 };
 
 export const validateHvpTerrainCheckpointHeader=(value:unknown):HvpTerrainCheckpoint=>{
@@ -322,14 +364,17 @@ export const validateHvpTerrainCheckpointHeader=(value:unknown):HvpTerrainCheckp
   }
   return saved;
 };
-export const restoreHvpTerrainRoot=(value:unknown)=>{
+const restoreTerrainRoot=(value:unknown,privateLane:boolean)=>{
   const saved=validateHvpTerrainCheckpointHeader(value);
-  const base=decodeHvpGrid(saved.base);
+  const base=privateLane?decodeHvpPrivateGrid(saved.base):decodeHvpGrid(saved.base);
   const local={...base,sourceDigest:saved.baseDigest},copy=hvpOwnedGridLeafCopy(base);
   if(copy!==undefined){ownedLeafCopies.set(local,copy);}
   const block=hvpOwnedGridSlotBlockCopy(base);if(block!==undefined){decodedBaseBlocks.set(local,block);}
-  return createHvpTerrainRoot(local,saved.sessionId,saved.epoch,undefined,saved);
+  if(privateLane){exclusiveDecodedBases.add(local);}
+  return createTerrainRoot(local,saved.sessionId,saved.epoch,undefined,saved,privateLane);
 };
+export const restoreHvpTerrainRoot=(value:unknown)=>restoreTerrainRoot(value,false);
+export const restoreHvpPrivateTerrainRoot=(value:unknown)=>restoreTerrainRoot(value,true);
 
 /** Initial top-only quarry contract. Other support/detachment awaits HVP-09B. */
 export const assertHvpSafeQuarry = (plan: HvpPreparedCut, supports: readonly Readonly<{ x: number; z: number }>[] = []): void => {

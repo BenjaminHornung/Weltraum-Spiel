@@ -10,10 +10,12 @@ import {
 import {
   compareStructuralCellAddresses,
   globalQuantumForStructuralCell,
+  globalQuantumForValidatedStructuralCell,
   validateStructuralCellAddress
 } from "./coordinates";
 import { serializeStructuralCellAddress, structuralCanonicalHashSteps } from "./canonical";
-import { structuralIssuedComponentClassificationSteps, structuralOwnedComponentClassificationSteps } from "./classificationSteps";
+import { structuralIssuedComponentClassificationSteps, structuralOwnedComponentClassificationSteps,readOwnedClassifiedMassEntries } from "./classificationSteps";
+import type {OccupiedEntry} from "./occupiedEntries";
 import { deriveStructuralComponentClassification } from "./connectivity";
 import { getStructuralVoxel, isIssuedStructuralObject, isOwnedStructuralDerivationCandidate, structuralAddressForBrickCell } from "./model";
 import {
@@ -193,14 +195,19 @@ function* deriveMassSteps(
   object: StructuralObject,
   budgetValue: StructuralMassBudgets,
   addressValues: readonly StructuralCellAddress[] | null,
-  reserve?: StructuralOwnedReserve
+  reserve?: StructuralOwnedReserve,
+  classifiedEntries?:readonly OccupiedEntry[]
 ): Generator<void, StructuralMassProperties, void> {
   const maxVisitedCells = structuralPositiveBudget(budgetValue.maxVisitedCells, "massBudgets/maxVisitedCells");
   reserve?.(512);
+  if(classifiedEntries!==undefined&&classifiedEntries.length>maxVisitedCells){
+    throw new StructuralMassError("BudgetExceeded", "massBudgets/maxVisitedCells", "Occupied-cell traversal exceeded the explicit mass budget.");
+  }
   // Null-address object traversal is already canonical. Keep a parallel private state array instead
   // of repeating getStructuralVoxel's brick/cell search for every address; no generic observer changes.
-  const ownedStates = reserve === undefined || addressValues !== null ? undefined : [] as StructuralVoxelState[];
-  const addresses = yield* canonicalAddressSteps(object, addressValues, maxVisitedCells, reserve, ownedStates);
+  const ownedStates = classifiedEntries!==undefined || reserve === undefined || addressValues !== null ? undefined : [] as StructuralVoxelState[];
+  const reuseCoordinates=ownedStates!==undefined&&isIssuedStructuralObject(object);
+  const addresses = classifiedEntries===undefined?yield* canonicalAddressSteps(object, addressValues, maxVisitedCells, reserve, ownedStates):undefined;
   let materials: Map<number, StructuralObject["materials"][number]>;
   if (reserve === undefined) { materials = new Map(object.materials.map((material) => [material.materialId, material])); }
   else {
@@ -225,9 +232,9 @@ function* deriveMassSteps(
   let maxY = Number.NEGATIVE_INFINITY;
   let maxZ = Number.NEGATIVE_INFINITY;
 
-  for (let index = 0; index < addresses.length; index += 1) {
-    const address = addresses[index];
-    const state = ownedStates === undefined ? getStructuralVoxel(object, address) : ownedStates[index];
+  for (let index = 0; index < (classifiedEntries?.length??addresses!.length); index += 1) {
+    const address = classifiedEntries===undefined?addresses![index]:classifiedEntries[index].address;
+    const state = classifiedEntries!==undefined?classifiedEntries[index].state:ownedStates === undefined ? getStructuralVoxel(object, address) : ownedStates[index];
     if (state === undefined || state === null) {
       throw new StructuralMassError("InvalidStructuralState", `occupiedCells/${index}`, "Mass derivation requires currently occupied cells in present bricks.");
     }
@@ -238,7 +245,7 @@ function* deriveMassSteps(
     const massKg = finite(material.densityKgPerCubicMeter * cellVolume, `mass/${index}`);
     if (massKg <= 0) throw new StructuralMassError("InvalidStructuralState", `mass/${index}`, "Occupied cell mass must be positive and finite.");
     reserve?.(2_048);
-    const global = globalQuantumForStructuralCell(address);
+    const global = reuseCoordinates?globalQuantumForValidatedStructuralCell(address):globalQuantumForStructuralCell(address);
     const min = deepFreeze({ x: global.x * side, y: global.y * side, z: global.z * side });
     const max = deepFreeze({ x: (global.x + 1) * side, y: (global.y + 1) * side, z: (global.z + 1) * side });
     const center = deepFreeze({ x: (global.x + 0.5) * side, y: (global.y + 0.5) * side, z: (global.z + 0.5) * side });
@@ -345,7 +352,7 @@ export function* structuralOwnedObjectMassSteps(object: StructuralObject, budget
   if (!isIssuedStructuralObject(object) && !isOwnedStructuralDerivationCandidate(object)) {
     return structuralFail("InvalidContract", "mass/source", "Owned mass requires an issued source or live command-local derivation capability.");
   }
-  return yield* deriveMassSteps(object, budgets, null, reserve);
+  return yield* deriveMassSteps(object, budgets, null, reserve,readOwnedClassifiedMassEntries(object,reserve));
 }
 
 export const deriveStructuralObjectMassProperties = (

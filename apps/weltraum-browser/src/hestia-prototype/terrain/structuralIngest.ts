@@ -12,7 +12,7 @@ import {structuralMaterialTableSteps,createStructuralOwnerLedger,ownedStructural
 import {structuralNonNegativeSafeInteger,structuralPositiveBudget,structuralFail,type StructuralOwnedReserve} from "../../voxel/structural/validation";
 import type {StructuralCursorStep} from "../../voxel/structural/occupiedEntries";
 import {createOwnedCanonicalHashCursor} from "../../voxel/adaptive/ownedCanonicalHashSteps";
-import {adaptiveMaterializeBrickSteps} from "../../voxel/adaptive/materialization";
+import {adaptiveMaterializeBrickSteps,createOwnedAdaptiveBrickScope} from "../../voxel/adaptive/materialization";
 import {adaptiveResidentValidationProofsSteps} from "../../voxel/adaptive/canonical";
 
 export interface HvpStructuralCell { readonly x:number;readonly y:number;readonly z:number;readonly materialId:number }
@@ -338,6 +338,7 @@ export const ingestHvpStructuralCells = (id:string, input:readonly HvpStructural
 export function* prepareHvpStructuralIngestOwnedSteps(id:string,input:readonly HvpStructuralCell[],materialInput:readonly unknown[],
   anchorInput:readonly IngestAnchor[],reserve:StructuralOwnedReserve,onPhase?:(phase:string)=>void){
   reserve(16_384);
-  const owned:AdaptiveOwnedJournalOptions=Object.freeze({reserve,hash:(payload:unknown)=>hvpIngestJournalHashSteps(payload,reserve,128)});
-  return yield* ingestHvpStructuralSteps(id,input,materialInput,anchorInput,owned,noMeasure,onPhase);
+  const scope=createOwnedAdaptiveBrickScope(reserve);
+  try{return yield* ingestHvpStructuralSteps(id,input,materialInput,anchorInput,scope.options,noMeasure,onPhase);}
+  finally{scope.dispose();}
 }

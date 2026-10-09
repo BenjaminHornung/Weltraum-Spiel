@@ -1,4 +1,5 @@
 import { resolveHvpGravity, HVP_INERTIA_CELLS, HVP_INERTIA_KEY, HVP_PLAYER_PROFILE } from "./profile";
+import {validateHvpChunkStaticLayout,validateHvpChunkCollisionSteps,type HvpChunkStaticLayout} from "./staticTerrainLayout";
 export { resolveHvpGravity } from "./profile";
 import { R, initializeHvpRapier, isHvpSolidCollider } from "./rapierPort";
 import { createHvpTick, HVP_PHYSICS_DT } from "./tick";
@@ -16,20 +17,25 @@ import {ADAPTIVE_BRICK_ESTIMATED_BYTES} from "../../voxel/adaptive";
 import {validatedFrozenDenseArrayInitializationBytes} from "../../voxel/adaptive/validation";
 import {createHvpBodyCutSession,createHvpOwnedHashBodyCutSession,type HvpMovingCutRequest,type HvpBodyCutAdmission,type HvpBodyPlanTrace,type HvpBodyChildProjection} from "./bodyCutSession";
 import type {HvpCuttableBody} from "./bodyCut";
-import {decodeHvpWorld,hvpCollisionDigest,type HvpWorldCheckpoint} from "../persistence/worldCheckpoint";
+import {decodeHvpWorld,decodeHvpColdWorld,hvpColdWorldAllocationBytes,hvpCollisionDigest,type HvpWorldCheckpoint} from "../persistence/worldCheckpoint";
+import {createStructuralOwnerLedger} from "../../voxel/structural/model";
 import {encodeHvpBody} from "../persistence/bodyCheckpoint";
 import {restoreHvpBody} from "./restoreBody";
 import {createHvpNeighborCollision} from "./neighborRegion";
-import {createHvpBodyResidency} from "./bodyResidency";
+import {createHvpBodyResidency,createHvpWorkerBodyResidency} from "./bodyResidency";
 import type {HvpNeighborCheckpoint} from "../runtime/residency";
 import type {WorkerJobRequest,TransferableBufferBundle} from "../../workers/protocol";
 import {decodeHvpBodyMeshOutput,decodeHvpBodyMeshOutputSteps} from "../../workers/hvpBodyMeshJob";
 import type {HvpBodyMeshBudget} from "../presentation/bodyMeshAdmission";
+import type {HvpCutSpan} from "../runtime/cutTrace";
 
 export type HvpPhysicsSession = Awaited<ReturnType<typeof createHvpPhysicsSession>>;
 type TerrainReplacement=Readonly<{index:number;mesh:HvpCollisionSector}>;
+export interface HvpTerrainSourceTiming {readonly origin:number;readonly workElapsedMs:number;readonly yieldWaitMs:number;readonly workSteps:number;readonly taskYields:number;
+  readonly maxWork:Readonly<{label:string;start:number;duration:number}>;readonly maxYield:Readonly<{label:string;start:number;duration:number}>}
 type TerrainPlan={readonly id:string;readonly expected:number;readonly replacements:readonly TerrainReplacement[];
-  readonly fragments:readonly HvpTerrainFragmentRequest[];readonly recipes:readonly ReturnType<typeof prepareHvpTerrainFragment>[];readonly recipeMs:number};
+  readonly fragments:readonly HvpTerrainFragmentRequest[];readonly recipes:readonly ReturnType<typeof prepareHvpTerrainFragment>[];readonly recipeMs:number;
+  readonly spans?:readonly HvpCutSpan[];readonly sourceTiming?:HvpTerrainSourceTiming};
 /** Ephemeral native contact information, never persisted or used as a command authorization. */
 export interface HvpImpulseTarget {
   readonly kind:"NotPlaying"|"Busy"|"InvalidAim"|"NoContact"|"Fixed"|"Dynamic"|"Cooldown"|"SpeedLimit";
@@ -63,7 +69,7 @@ const logSlowHvpBodyPlan=(trace:HvpBodyPlanTrace):void=>{
         ...(step.sub===undefined?{}:{sub:step.sub})}))})}`);
 };
 /** `workerOwned` is fixed per factory (never a caller input); only it selects the owned-payload body hash. */
-const physicsSessionFor = (workerOwned: boolean) => async (
+const physicsSessionFor = (workerOwned: boolean,staticLayout?:HvpChunkStaticLayout) => async (
   sectors: readonly HvpCollisionSector[],
   spawn: Readonly<{ x: number; y: number; z: number }>,
   gravity = resolveHvpGravity(),
@@ -84,14 +90,32 @@ const physicsSessionFor = (workerOwned: boolean) => async (
     if(!header||header.gravity!==gravity||header.sessionId!==sessionId){throw new Error("Saved World gravity/session profile mismatch");}
     if(header.collisionDigest!==collisionDigest){throw new Error("Saved collision does not match candidate sources");}
   }
-  const restored=checkpoint===undefined?undefined:decodeHvpWorld(checkpoint),saved=restored?.checkpoint;
+  let coldRecipes:WeakSet<object>|undefined;
+  let coldResidentBytes=0;
+  let restored=checkpoint===undefined?undefined:workerOwned?(()=>{
+    const allocation=hvpColdWorldAllocationBytes(checkpoint);
+    const ledger=createStructuralOwnerLedger(allocation.sourceBytes+allocation.checkpointBytes
+      +sectors.reduce((bytes,sector)=>bytes+sector.vertices.byteLength+sector.indices.byteLength,0)+4096,undefined,128);
+    try{
+      coldRecipes=new WeakSet<object>();
+      const decoded=decodeHvpColdWorld(checkpoint,ledger.reserve,recipe=>coldRecipes!.add(recipe));
+      coldResidentBytes=ledger.resources.retainedEstimateBytes+allocation.checkpointBytes+4096
+        +(decoded.branchSource?.bricks.length??0)*ADAPTIVE_BRICK_ESTIMATED_BYTES;
+      return decoded;
+    }finally{ledger.release();}
+  })():decodeHvpWorld(checkpoint);
+  let saved=restored?.checkpoint;
   const parkedIds=new Set(saved?.parked??[]);
   const baseSectorCount=saved?.neighbor?.baseSectorCount??sectors.length;
-  if(sectors.length!==baseSectorCount+(saved?.neighbor?.resident?64:0)){throw new Error("Saved neighbour collision membership mismatch");}
+  const primaryTerrainCount=staticLayout?.primaryTerrainCount??64,neighborTerrainCount=staticLayout?.neighborTerrainCount??64;
+  if((staticLayout&&baseSectorCount<primaryTerrainCount)||sectors.length!==baseSectorCount+(saved?.neighbor?.resident?neighborTerrainCount:0)){throw new Error("Saved neighbour collision membership mismatch");}
+  if(staticLayout){const pump=createHvpBodyMeshTaskPump(()=>{});
+    try{await pump.run((function*(){for(let i=0;i<256;i+=1){if(!Object.hasOwn(sectors,i)){throw new Error("Incomplete primary chunk coverage");}
+      yield* validateHvpChunkCollisionSteps(sectors[i]!,i);}})());}finally{pump.dispose();}}
   if(saved){spawn=saved.dropSpawn;player=saved.player===null?undefined:{spawn:saved.player.position,coverage:saved.coverage};}
   await initializeHvpRapier();
   if(inertiaSpawn!==undefined&&![inertiaSpawn.x,inertiaSpawn.y,inertiaSpawn.z].every(Number.isFinite)) { throw new Error("Invalid inertia spawn"); }
-  const inertiaRecipe=restored?restored.bodies.find(b=>b.checkpoint.family==="inertia")?.recipe??null:
+  let inertiaRecipe=restored?restored.bodies.find(b=>b.checkpoint.family==="inertia")?.recipe??null:
     inertiaSpawn!==undefined?prepareHvpRigidBody(ingestHvpStructuralCells("hvp-inertia-l",HVP_INERTIA_CELLS,
     [{materialId:1,densityKgPerCubicMeter:600,structuralClass:"wood",destructible:true,tags:null}])):null;
   const bodyColliderCount=restored?restored.bodies.filter(b=>!parkedIds.has(b.checkpoint.ownerId)).reduce((n,b)=>n+b.recipe.colliders.length,0):1+(inertiaRecipe?.colliders.length??0)+(branchSpawn?2:0);
@@ -130,8 +154,27 @@ const physicsSessionFor = (workerOwned: boolean) => async (
       translationMeters:inertiaSpawn!,rotation:{x:0,y:Math.sin(Math.PI/8),z:0,w:Math.cos(Math.PI/8)}});
     if(inertiaBody) { bodies.set(HVP_INERTIA_KEY,inertiaBody); }
     let residency:ReturnType<typeof createHvpBodyResidency>|undefined;
+    const bodySourceResidentBytes=()=>{
+      if(!workerOwned){return coldResidentBytes+[...movingBodies.values()].reduce((bytes,target)=>bytes
+        +target.recipe.source.bricks.length*ADAPTIVE_BRICK_ESTIMATED_BYTES+4096+target.recipe.colliders.length*256,0)
+        +Math.max(64,validatedFrozenDenseArrayInitializationBytes())+(probeTerrainSource?.residentBytes()??0);}
+      const recipes=new Set([...movingBodies.values()].map(target=>target.recipe));
+      for(const recipe of residency?.retainedRecipes()??[]){recipes.add(recipe);}
+      if(inertiaRecipe){recipes.add(inertiaRecipe);}
+      for(const recipe of branch?.retainedRecipes()??[]){recipes.add(recipe);}
+      let bytes=coldResidentBytes+Math.max(64,validatedFrozenDenseArrayInitializationBytes())+(probeTerrainSource?.residentBytes()??0);
+      for(const recipe of recipes){
+        if(!coldRecipes?.has(recipe)){bytes+=residency?.recipeBytes(recipe)
+          ??recipe.source.bricks.length*ADAPTIVE_BRICK_ESTIMATED_BYTES+4096+recipe.colliders.length*256;}
+      }
+      const recipeSources=new Set([...recipes].map(recipe=>recipe.source));
+      for(const source of new Set(branch?.retainedSources()??[])){
+        if(!recipeSources.has(source)&&source!==restored?.branchSource){bytes+=source.bricks.length*ADAPTIVE_BRICK_ESTIMATED_BYTES;}
+      }
+      return bytes;
+    };
     const residentExtras=()=>residency?.count??parkedIds.size;
-    const branch=restored?(saved!.branch===null?undefined:createHvpBranchSession(world,saved!.branch.origin,movingBodies,bodies,
+    let branch=restored?(saved!.branch===null?undefined:createHvpBranchSession(world,saved!.branch.origin,movingBodies,bodies,
       {checkpoint:saved!.branch,source:restored.branchSource,fixed:restoredFixed},branchKind,residentExtras)):
       branchSpawn===undefined?undefined:createHvpBranchSession(world,branchSpawn,movingBodies,bodies,undefined,branchKind,residentExtras);
     if(world.colliders.len()>4096) {throw new Error("Physics collider BudgetExceeded");}
@@ -161,6 +204,8 @@ const physicsSessionFor = (workerOwned: boolean) => async (
         if(workerOwned&&moving.resources()?.reservedBytes){
           console.debug(`hvp-owned-body-plan-budget ${JSON.stringify({commandId:trace.commandId,outcome:trace.outcome,
             origin:performance.timeOrigin,steps:trace.totalSteps,maxMs:trace.max?.duration,
+            stepsOver4Ms:trace.stepsOver4Ms,stepsOver8Ms:trace.stepsOver8Ms,
+            taskWork:trace.taskWork,
             timing:trace.timing,
             phases:trace.phases.map(phase=>({label:phase.label,count:phase.count,totalMs:phase.totalMs,maxMs:phase.maxMs}))})}`);
         }
@@ -173,16 +218,18 @@ const physicsSessionFor = (workerOwned: boolean) => async (
       old: Map<number, { mesh: HvpCollisionSector; collider?: R.Collider }>;
       next: Map<number, { mesh: HvpCollisionSector; collider?: R.Collider }>;
       fragments:Fragment[];bodiesBefore:Map<number,R.RigidBody>;collidersBefore:Map<number,R.Collider> } | undefined;
-    const neighbor=baseSectorCount<64?undefined:createHvpNeighborCollision(world,baseSectorCount,
+    let neighbor=baseSectorCount<64?undefined:createHvpNeighborCollision(world,baseSectorCount,
       ()=>!disposed&&!terrainHeld&&!staged&&!branch?.busy&&!moving.busy&&!residency?.held&&!bodyResidencyWork&&tick.read().status==="Paused",
-      saved?.neighbor?{checkpoint:saved.neighbor,meshes:sectors.slice(baseSectorCount)}:undefined,collision);
-    residency=createHvpBodyResidency(world,movingBodies,bodies,
-      ()=>!disposed&&!terrainHeld&&!staged&&!branch?.busy&&!moving.busy&&!neighbor?.busy&&tick.read().status==="Paused",
-      restored?.bodies.filter(b=>parkedIds.has(b.checkpoint.ownerId))??[]);
+      saved?.neighbor?{checkpoint:saved.neighbor,meshes:sectors.slice(baseSectorCount)}:undefined,collision,primaryTerrainCount);
+    const residencySafe=()=>!disposed&&!terrainHeld&&!staged&&!branch?.busy&&!moving.busy&&!neighbor?.busy&&tick.read().status==="Paused";
+    const restoredDormant=restored?.bodies.filter(b=>parkedIds.has(b.checkpoint.ownerId))??[];
+    residency=workerOwned?createHvpWorkerBodyResidency(world,movingBodies,bodies,residencySafe,restoredDormant,
+      ()=>bodySourceResidentBytes()+retainedCollisionBytes()+residency!.bytes):createHvpBodyResidency(world,movingBodies,bodies,residencySafe,restoredDormant);
     let neighborWasRunning=false,coverageHeld=false,coverageWasRunning=false;
     const neighborMeshes=()=>neighbor?.meshes()??[];
     const allCollision=()=>[...[...collision.values()].map(c=>c.mesh),...neighborMeshes()];
     const collisionBytes = () => allCollision().reduce((n,s)=>n+s.vertices.byteLength+s.indices.byteLength,0);
+    const retainedCollisionBytes=()=>[...new Set([...sectors,...allCollision()])].reduce((n,s)=>n+s.vertices.byteLength+s.indices.byteLength,0);
     const extraHeld=()=>neighbor?.busy||residency!.held||coverageHeld||bodyResidencyWork!==undefined;
     // Same live-owner task adapter for legacy preparation and the unwired child projection.
     let bodyPlanSliceStart=0,bodyPlanSliceSteps=0;
@@ -297,9 +344,7 @@ const physicsSessionFor = (workerOwned: boolean) => async (
          parked:disposed?[]:residency!.read(),neighbor:disposed?null:neighbor?.read().checkpoint??null,
          dormantCheckpointBytes:disposed?0:residency!.bytes,
          // Logical source/recipe allowance; native allocator bytes remain unsupported above.
-         bodySourceResidentBytes:disposed?0:[...movingBodies.values()].reduce((sum,target)=>sum
-           +target.recipe.source.bricks.length*ADAPTIVE_BRICK_ESTIMATED_BYTES+4096+target.recipe.colliders.length*256,0)
-           +validatedFrozenDenseArrayInitializationBytes()+(probeTerrainSource?.residentBytes()??0),
+         bodySourceResidentBytes:disposed?0:bodySourceResidentBytes(),
          bodyResidencyId:disposed?null:bodyResidencyWork?.id??null,
          bodyResidencyTransaction:disposed?"Idle":bodyResidencyWork?.hold?"RecoveryHold":bodyResidencyWork?(bodyResidencyWork.committed?"CommittedHeld":"PreparedHeld"):"Idle",
         neighborTransaction:disposed?"Idle":residency!.held?"RecoveryHold":neighbor?.read().state??"Idle",
@@ -321,11 +366,13 @@ const physicsSessionFor = (workerOwned: boolean) => async (
     const playerEye=()=>{const avatar=character?.read();if(avatar?.status!=="Walking"){throw new Error("Player is not walking");}
       return {x:avatar.position.x,y:avatar.position.y+HVP_PLAYER_PROFILE.eyeHeight-HVP_PLAYER_PROFILE.height/2,z:avatar.position.z};};
     return {
+      staticTerrainLayout:()=>staticLayout??null,
       read,
+      readTickClock:tick.read,
       terrainPrepareSpans:()=>terrainSpans,
       bodyPrepareSpans:()=>bodySpans,
       /** Follows the worker's dynamic measurement opt-out for the TEMPORARY plan trace. */
-      disableBodyPlanTrace:():void=>{moving.disablePlanObservation();},
+      disableBodyPlanTrace:():void=>{measureBodyHold=false;moving.disablePlanObservation();},
       takeBodyReleasedHold:(id:string):number|undefined=>{
         const released=bodyReleasedHold;bodyReleasedHold=undefined;
         return released?.id===id?released.ms:undefined;
@@ -565,14 +612,20 @@ const physicsSessionFor = (workerOwned: boolean) => async (
           ||!Array.isArray(fragments)||fragments.length>32||fragments.reduce((n,f)=>n+f.cells.length,0)>32768
           ||new Set(fragments.map(f=>f.ownerId)).size!==fragments.length
           ||fragments.some(f=>movingBodies.has(f.ownerId)||residency!.read().some(p=>p.ownerId===f.ownerId))){throw new Error("Stale or invalid terrain transaction");}
+        const spans:HvpCutSpan[]|undefined=measureBodyHold?[]:undefined;
+        const observe=spans===undefined?undefined:(phase:string,start:number,duration:number)=>{
+          if(measureBodyHold&&spans.length<97){spans.push(Object.freeze({commandId:id,thread:"physics",phase,origin:performance.timeOrigin,start,duration}));}
+        };
         const steps=(function*(){
+          const collisionStart=observe===undefined||!measureBodyHold?0:performance.now();
           const seen=new Set<number>();let bytes=collisionBytes();
           for(const {index,mesh} of replacements){
             const previous=collision.get(index);
-            if(!Number.isSafeInteger(index)||index<0||index>=64||previous===undefined||seen.has(index)
+            if(!Number.isSafeInteger(index)||index<0||index>=primaryTerrainCount||previous===undefined||seen.has(index)
               ||!(mesh.vertices instanceof Float32Array)||!(mesh.indices instanceof Uint32Array)
               ||mesh.vertices.length%3!==0||mesh.indices.length%3!==0){throw new Error("Invalid terrain collision replacement");}
             seen.add(index);
+            if(staticLayout){yield* validateHvpChunkCollisionSteps(mesh,index);}
             for(let i=0;i<mesh.vertices.length;i+=1){if(!Number.isFinite(mesh.vertices[i])){throw new Error("Invalid terrain collision replacement");}
               if((i+1)%4096===0){yield "terrainNativeCollision";}}
             for(let i=0;i<mesh.indices.length;i+=1){if(mesh.indices[i]!>=mesh.vertices.length/3){throw new Error("Invalid terrain collision replacement");}
@@ -581,14 +634,29 @@ const physicsSessionFor = (workerOwned: boolean) => async (
             yield "terrainNativeCollision";
           }
           if(bytes>8*1024*1024){throw new Error("Terrain collision BudgetExceeded");}
+          if(measureBodyHold){observe?.("cutNativeCollisionValidationMs",collisionStart,performance.now()-collisionStart);}
           const recipes:ReturnType<typeof prepareHvpTerrainFragment>[]=[],start=performance.now();
           for(const fragment of fragments){recipes.push(yield* (probeTerrainSource?probeTerrainSource.prepareSteps(fragment,expected+1,reserve)
-            :(workerOwned&&isProbeKernelEnabled()?prepareHvpProbeTerrainFragmentOwnedSteps:prepareHvpTerrainFragmentOwnedSteps)(fragment,expected+1,reserve)));yield "terrainNativeRecipe";}
-          return {recipes,recipeMs:performance.now()-start};
+            :workerOwned&&isProbeKernelEnabled()?prepareHvpProbeTerrainFragmentOwnedSteps(fragment,expected+1,reserve)
+              :prepareHvpTerrainFragmentOwnedSteps(fragment,expected+1,reserve,observe,()=>measureBodyHold)));yield "terrainNativeRecipe";}
+          return {recipes,recipeMs:performance.now()-start,...(spans===undefined||!measureBodyHold?{}:{spans:Object.freeze(spans)})};
         })();
         let failed=false;
-        try{for(;;){current();const step=steps.next();if(step.done){current();const ticket=Object.freeze({id,expected,replacements,fragments,...step.value});
-            terrainPlans.add(ticket);return ticket;}if(host.continuePlan?.()!==true){await host.yieldTask();}}}
+        let sourceTiming=measureBodyHold?{origin:performance.timeOrigin,workElapsedMs:0,yieldWaitMs:0,workSteps:0,taskYields:0,
+          maxWork:{label:"terrainNativePrepare",start:0,duration:0},maxYield:{label:"terrainNativePrepare",start:0,duration:0}}:undefined;
+        try{for(;;){current();if(!measureBodyHold){sourceTiming=undefined;}
+          const workStart=sourceTiming===undefined?0:performance.now(),step=steps.next();
+          if(!measureBodyHold){sourceTiming=undefined;}
+          if(sourceTiming!==undefined){const duration=performance.now()-workStart,label=step.done?"terrainNativeReady":step.value;
+            if(label.length>32){sourceTiming=undefined;}
+            else{sourceTiming.workElapsedMs+=duration;sourceTiming.workSteps++;if(duration>=sourceTiming.maxWork.duration){sourceTiming.maxWork={label,start:workStart,duration};}}}
+          if(step.done){current();const ticket=Object.freeze({id,expected,replacements,fragments,...step.value,...(sourceTiming===undefined?{}:{sourceTiming:Object.freeze({...sourceTiming,maxWork:Object.freeze({...sourceTiming.maxWork}),maxYield:Object.freeze({...sourceTiming.maxYield})})})});
+            terrainPlans.add(ticket);return ticket;}
+          if(host.continuePlan?.()!==true){const yieldStart=sourceTiming===undefined?0:performance.now();await host.yieldTask();
+            if(!measureBodyHold){sourceTiming=undefined;}
+            if(sourceTiming!==undefined){const duration=performance.now()-yieldStart;sourceTiming.yieldWaitMs+=duration;sourceTiming.taskYields++;
+              if(duration>=sourceTiming.maxYield.duration){sourceTiming.maxYield={label:step.value,start:yieldStart,duration};}}}
+        }}
         catch(error){failed=true;throw error;}
         finally{try{steps.return(undefined as never);}catch(error){if(!failed){throw error;}}}
       },
@@ -605,12 +673,13 @@ const physicsSessionFor = (workerOwned: boolean) => async (
         let bytes = collisionBytes();
         for (const { index, mesh } of replacements) {
           const previous = collision.get(index);
-          if (!Number.isSafeInteger(index) || index < 0 || index >= 64 || previous === undefined || old.has(index)
+          if (!Number.isSafeInteger(index) || index < 0 || index >= primaryTerrainCount || previous === undefined || old.has(index)
             || !(mesh.vertices instanceof Float32Array) || !(mesh.indices instanceof Uint32Array)
             || mesh.vertices.length % 3 !== 0 || mesh.indices.length % 3 !== 0
             || (ready===undefined&&(mesh.vertices.some(v=>!Number.isFinite(v)) || mesh.indices.some(v=>v>=mesh.vertices.length/3)))) {
             throw new Error("Invalid terrain collision replacement");
           }
+          if(staticLayout&&ready===undefined){const bounds=validateHvpChunkCollisionSteps(mesh,index);for(;;){if(bounds.next().done){break;}}}
           old.set(index, previous);
           bytes += mesh.vertices.byteLength + mesh.indices.byteLength - previous.mesh.vertices.byteLength - previous.mesh.indices.byteLength;
         }
@@ -684,7 +753,9 @@ const physicsSessionFor = (workerOwned: boolean) => async (
          disposed = true;probeTerrainSource?.dispose();tick.dispose(); character?.dispose();
          bodyChannel?.port1.close();bodyChannel?.port2.close();bodyChannel=undefined;
          const waiting=bodyYield;bodyYield=undefined;waiting?.reject(new Error("Moving preparation disposed"));
-         bodies.clear();movingBodies.clear();world.free();moving.dispose();
+         bodies.clear();movingBodies.clear();residency!.dispose();world.free();moving.dispose();collision.clear();
+         restored=undefined;saved=undefined;checkpoint=undefined;inertiaRecipe=null;branch=undefined;neighbor=undefined;sectors=[];
+         coldRecipes=undefined;coldResidentBytes=0;
       }
     };
   } catch (error) {probeTerrainSource?.dispose();world.free();throw error;}
@@ -695,3 +766,6 @@ export const createHvpPhysicsSession = physicsSessionFor(false);
  * candidates). Same session; only its body owner hashes child transitions through the owned-payload cursor.
  */
 export const createHvpWorkerPhysicsSession = physicsSessionFor(true);
+/** Owner-internal complete chunk catalogue. Public/legacy factories keep their original arguments. */
+export const createHvpChunkWorkerPhysicsSession=async(layout:HvpChunkStaticLayout,...args:Parameters<typeof createHvpWorkerPhysicsSession>)=>
+  physicsSessionFor(true,validateHvpChunkStaticLayout(layout))(...args);

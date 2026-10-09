@@ -1,13 +1,78 @@
 import { describe, expect, it, vi } from "vitest";
-import { createHvpTerrainRoot } from "../../src/hestia-prototype/terrain/cutPlan";
-import { createHvpTerrainCompiler, meshInitialHvpTerrain, hvpDirtySectors, copyHvpTerrainSlots } from "../../src/hestia-prototype/terrain/terrainProducts";
+import { createHvpTerrainRoot,restoreHvpPrivateTerrainRoot } from "../../src/hestia-prototype/terrain/cutPlan";
+import * as coastSource from "../../src/hvp/hvpCoastSource";
+import { createHvpTerrainCompiler, meshInitialHvpTerrain, hvpDirtySectors, copyHvpTerrainSlots,hvpTerrainProductPhaseCredits,releaseHvpOwnedTerrainProducts } from "../../src/hestia-prototype/terrain/terrainProducts";
 import { executeHvpTerrainJob, hvpTerrainInputDigest, HVP_TERRAIN_JOB, HVP_TERRAIN_MAX_OUTPUT, decodeHvpTerrainOutput } from "../../src/workers/hvpTerrainJob";
 import { executeHvpCollisionJob } from "../../src/workers/hvpCollisionJob";
 import { algorithmVersion, byteCount, contentRevision, jobDeadline, planningEpoch, workerEpoch, workerJobId, workerJobKind, workerTargetKey } from "../../src/workers/ids";
 import type { TransferableBufferBundle, WorkerJobRequest } from "../../src/workers/protocol";
 import { WorkerPool, type WorkerJobTerminal } from "../../src/workers/workerPool";
+import {encodeHvpProjectionPacket} from "../../src/hestia-prototype/runtime/projectionPacket";
+import {hvpNeighborInputDigest,hvpNeighborProjectionDigest,type HvpNeighborPayload} from "../../src/workers/hvpNeighborJob";
+import {fnv1aBytes} from "../../src/workers/protocol";
+import {meshHvpTestCells} from "../../src/hvp/hvpCoastMesher";
 
 describe("HVP local terrain derivation", () => {
+  it.each(["disabled","enabled","throwing"] as const)("keeps neighbor projection bytes independent of phase diagnostics (%s)",async mode=>{
+    const primary=createHvpTerrainRoot({sizeX:256,sizeY:128,sizeZ:256,cellMeters:.125,originMeters:{x:-16,y:-8,z:-16},sourceDigest:"12345678",readSlot:()=>0},"projection-primary",0);
+    const east=createHvpTerrainRoot({...primary.read(),originMeters:{x:16,y:-8,z:-16}},"projection-east",0);
+    const mesh=meshHvpTestCells([{x:0,y:0,z:0,slot:1}],.125,{ao:true});
+    const phases:Array<{phase:string;start:number;duration:number}>=[],start=vi.spyOn(WorkerPool.prototype,"start").mockResolvedValue(undefined);
+    let expectedBuffer:ArrayBuffer|undefined;
+    const enqueue=vi.spyOn(WorkerPool.prototype,"enqueue").mockImplementation((request,input)=>{
+      const p=request.payload as HvpNeighborPayload;
+      expect(request.sourceInputDigest).toBe(hvpNeighborInputDigest(p,input.buffers));
+      const buffer=expectedBuffer=encodeHvpProjectionPacket(Array.from({length:6},()=>({...mesh,sourceDigest:hvpNeighborProjectionDigest(p)})));
+      const output:TransferableBufferBundle={ownership:"WorkerToConsumer",revision:contentRevision(0),buffers:[buffer],byteLength:byteCount(buffer.byteLength),
+        contentHash:fnv1aBytes([buffer]),views:[{name:"projections",kind:"Uint8Array",bufferIndex:0,byteOffset:0,elementCount:buffer.byteLength}]};
+      return {jobId:request.jobId,workerEpoch:workerEpoch(0),result:Promise.resolve({kind:"Completed",output} as WorkerJobTerminal),cancel:()=>false};
+    });
+    const accepted=vi.spyOn(WorkerPool.prototype,"isAcceptedCompletedTerminal").mockReturnValue(true);
+    const compiler=createHvpTerrainCompiler(undefined,mode==="disabled"?undefined:(phase,at,duration)=>{
+      phases.push({phase,start:at,duration});if(mode==="throwing"){throw new Error("Ignored neighbor diagnostic sink");}
+    });
+    const clock=vi.spyOn(performance,"now");
+    try{
+      const result=await compiler.neighborProjection(primary.read(),east.read(),.125,1,"projection-observer-fixture",{join:mesh,far:mesh,water:mesh});
+      expect(result.buffer).toBe(expectedBuffer);expect(result.products.region).toHaveLength(2);
+      expect(result.products.digest).toBe(hvpNeighborProjectionDigest(result.payload));
+      expect(phases.map(value=>value.phase)).toEqual(mode==="disabled"?[]:["primaryCopy","eastCopy","inputDigest","workerWait","decode"]);
+      expect(phases.every(value=>Number.isFinite(value.start)&&value.start>=0&&Number.isFinite(value.duration)&&value.duration>=0)).toBe(true);
+      if(mode==="disabled"){expect(clock).not.toHaveBeenCalled();}
+    }finally{clock.mockRestore();await compiler.dispose();accepted.mockRestore();enqueue.mockRestore();start.mockRestore();}
+  },120000);
+  it("prepares all16 initial meshes through the existing credited kernel with exact restored East halos",async()=>{
+    const base={sizeX:256,sizeY:128,sizeZ:256,cellMeters:.125,originMeters:{x:-16,y:-8,z:-16},sourceDigest:"initial-main",readSlot:(_x:number,y:number)=>y<80?1:0};
+    const root=restoreHvpPrivateTerrainRoot(createHvpTerrainRoot({...base,sourceDigest:"12345678"},"initial-main",0).checkpoint());
+    const source=root.read(),eastRoot=createHvpTerrainRoot({...base,originMeters:{x:16,y:-8,z:-16},sourceDigest:"initial-east"},"initial-east",0);
+    const before=eastRoot.read(),cut=eastRoot.prepare({sessionId:before.sessionId,epoch:before.epoch,revision:before.revision,sourceDigest:before.sourceDigest,
+      commandId:"east-restore",toolPolicy:"hvp-plasma-v1",shape:{kind:"Box",min:[0,79,63],max:[1,80,64]}});eastRoot.commit(cut);
+    const expected=meshInitialHvpTerrain(source,eastRoot.read());
+    const start=vi.spyOn(WorkerPool.prototype,"start").mockResolvedValue(undefined);
+    const enqueue=vi.spyOn(WorkerPool.prototype,"enqueueTerrainDerivative").mockImplementation(async(request,bundle,_workerBytes,_host,reserve)=>{
+      // Keep the real admission's metadata and owned transport-copy debit in this Node transport stub.
+      reserve(16_384);reserve(8192+bundle.byteLength);
+      expect(request.jobKind).toBe(HVP_TERRAIN_JOB);const output=executeHvpTerrainJob(request,bundle);
+      return {jobId:request.jobId,workerEpoch:workerEpoch(0),result:Promise.resolve({kind:"Completed",result:output.result,output:output.bundle} as WorkerJobTerminal),cancel:()=>false};
+    });
+    const accepted=vi.spyOn(WorkerPool.prototype,"isAcceptedCompletedTerminal").mockReturnValue(true),compiler=createHvpTerrainCompiler();
+    let products:Awaited<ReturnType<typeof compiler.initial>>|undefined;
+    const inputs:Array<[number,number]>=[];
+    const top=vi.spyOn(coastSource,"hvpSourceColumnTopMeters");
+    try{
+      await compiler.prepare(()=>true,root);products=await compiler.initial(source,eastRoot.read(),16*1024*1024,(start,duration)=>{inputs.push([start,duration]);throw new Error("ignored input diagnostic sink");});
+      expect(top.mock.calls.length).toBeGreaterThan(0);expect(top.mock.calls.length).toBeLessThanOrEqual(16*131);
+      expect(inputs).toHaveLength(16);expect(inputs.every(([start,duration])=>Number.isFinite(start)&&start>=0&&Number.isFinite(duration)&&duration>=0)).toBe(true);
+      expect(products.source).toBe(source);expect(products.collision.size).toBe(0);expect(products.render).toEqual(expected);
+      expect(enqueue).toHaveBeenCalledTimes(16);const credits=hvpTerrainProductPhaseCredits(products)!;expect(credits).toBeDefined();
+      releaseHvpOwnedTerrainProducts(products);expect(()=>credits.remainingBytes).toThrow(/released/);
+      const foreign={read:vi.fn(()=>source)};await compiler.prepare(()=>true,foreign);expect(foreign.read).toHaveBeenCalledTimes(2);top.mockClear();
+      products=await compiler.initial(source,eastRoot.read(),16*1024*1024);
+      expect(foreign.read).toHaveBeenCalledTimes(2);expect(top).not.toHaveBeenCalled();expect(products.render).toEqual(expected);
+      releaseHvpOwnedTerrainProducts(products);
+      await expect(compiler.initial(source,{...eastRoot.read(),originMeters:{x:0,y:-8,z:-16}},16*1024*1024)).rejects.toThrow("Invalid initial neighbour coverage");
+    }finally{top.mockRestore();if(products){releaseHvpOwnedTerrainProducts(products);}await compiler.dispose();accepted.mockRestore();enqueue.mockRestore();start.mockRestore();}
+  },120_000);
   it("copies immutable COW leaves in canonical order without millions of per-cell map lookups", async () => {
     const root=createHvpTerrainRoot({sizeX:256,sizeY:128,sizeZ:256,cellMeters:.125,originMeters:{x:-16,y:-8,z:-16},
       sourceDigest:"flat",readSlot:()=>1},"copy-test",0);
@@ -65,7 +130,7 @@ describe("HVP local terrain derivation", () => {
     expect(()=>decodeHvpTerrainOutput(result.bundle,payload)).toThrow();
   });
 
-  it("rolls a quiescent compiler pool only after shutdown and lazily starts the replacement with monotone job IDs",async()=>{
+  it("warms each safely retired Load replacement before returning, with monotone job IDs",async()=>{
     const root=createHvpTerrainRoot({sizeX:256,sizeY:128,sizeZ:256,cellMeters:.125,originMeters:{x:-16,y:-8,z:-16},
       sourceDigest:"rollover",readSlot:()=>1},"rollover-test",0);
     const plan=root.prepare({sessionId:"rollover-test",epoch:0,revision:0,sourceDigest:"rollover",commandId:"rollover-cut",toolPolicy:"hvp-plasma-v1",
@@ -90,7 +155,7 @@ describe("HVP local terrain derivation", () => {
 
       await compiler.rolloverAfterLoad(()=>true);
 
-      expect(shutdownPools).toEqual([firstPool]);expect(startedPools).toHaveLength(1);
+      expect(shutdownPools).toEqual([firstPool]);expect(startedPools).toHaveLength(2);
       await expect(compiler.compile(plan)).rejects.toThrow(/Terrain prepare Failed/);
       expect(startedPools).toHaveLength(2);expect(startedPools[1]).not.toBe(firstPool);
       expect(enqueuedPools.slice(0,firstJobCount).every(pool=>pool===firstPool)).toBe(true);
@@ -101,7 +166,7 @@ describe("HVP local terrain derivation", () => {
 
       await compiler.rolloverAfterLoad(()=>true);
 
-      expect(shutdownPools).toEqual([firstPool,secondPool]);expect(startedPools).toHaveLength(2);
+      expect(shutdownPools).toEqual([firstPool,secondPool]);expect(startedPools).toHaveLength(3);
       await expect(compiler.compile(plan)).rejects.toThrow(/Terrain prepare Failed/);
       expect(startedPools).toHaveLength(3);expect(startedPools[2]).not.toBe(secondPool);
       expect(enqueuedPools.slice(firstJobCount+secondJobCount).every(pool=>pool===startedPools[2])).toBe(true);
@@ -109,6 +174,33 @@ describe("HVP local terrain derivation", () => {
     }finally{
       await compiler.dispose();start.mockRestore();shutdown.mockRestore();enqueue.mockRestore();
     }
+  });
+
+  it("shares one acknowledged pool start for concurrent generic preparation callers",async()=>{
+    let release!:()=>void;const gate=new Promise<void>(resolve=>{release=resolve;});
+    const start=vi.spyOn(WorkerPool.prototype,"start").mockReturnValue(gate),compiler=createHvpTerrainCompiler();
+    try{const first=compiler.prepare(),second=compiler.prepare();expect(start).toHaveBeenCalledTimes(1);
+      release();await Promise.all([first,second]);await compiler.prepare();expect(start).toHaveBeenCalledTimes(1);
+    }finally{release();await compiler.dispose();start.mockRestore();}
+  });
+
+  it("rejects lost preparation ownership before start and after a late start acknowledgement",async()=>{
+    let release!:()=>void;const gate=new Promise<void>(resolve=>{release=resolve;});
+    const start=vi.spyOn(WorkerPool.prototype,"start").mockReturnValue(gate),compiler=createHvpTerrainCompiler();let live=true;
+    try{
+      await expect(compiler.prepare(()=>false)).rejects.toThrow(/owner changed before/);expect(start).not.toHaveBeenCalled();
+      const pending=compiler.prepare(()=>live);live=false;release();await expect(pending).rejects.toThrow(/owner changed during/);
+      expect(start).toHaveBeenCalledTimes(1);
+    }finally{release();await compiler.dispose();start.mockRestore();}
+  });
+
+  it("never revives preparation after Dispose, and drains its late acknowledgement",async()=>{
+    let release!:()=>void;const gate=new Promise<void>(resolve=>{release=resolve;});
+    const start=vi.spyOn(WorkerPool.prototype,"start").mockReturnValue(gate),compiler=createHvpTerrainCompiler();
+    const pending=compiler.prepare();const rejected=expect(pending).rejects.toThrow(/owner changed during/);
+    try{const disposed=compiler.dispose();release();await rejected;await disposed;
+      await expect(compiler.prepare()).rejects.toThrow(/disposed/);
+    }finally{release();await compiler.dispose();start.mockRestore();}
   });
 
   it("blocks rollover while compiler source copying is still before worker enqueue",async()=>{

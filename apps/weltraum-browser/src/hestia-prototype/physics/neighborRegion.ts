@@ -6,7 +6,8 @@ const within=(x:number,z:number,r=0)=>x+r>=16&&x-r<48&&z+r>=-16&&z-r<16;
 type CollisionEntry={mesh:HvpCollisionSector;collider?:R.Collider};
 /** Owns only the eastern region's static colliders; never removes a body owner. */
 export const createHvpNeighborCollision=(world:R.World,baseSectorCount:number,safeTick:()=>boolean,
-  restored?:{checkpoint:HvpNeighborCheckpoint;meshes:readonly HvpCollisionSector[]},primary?:Map<number,CollisionEntry>)=>{
+  restored?:{checkpoint:HvpNeighborCheckpoint;meshes:readonly HvpCollisionSector[]},primary?:Map<number,CollisionEntry>,primaryTerrainCount:64|256=64)=>{
+  if(primaryTerrainCount!==64&&primaryTerrainCount!==256){throw new Error("Invalid native terrain segmentation");}
   let current:HvpNeighborCheckpoint|null=null,meshes:readonly HvpCollisionSector[]=[],colliders:R.Collider[]=[];
   let held=false;
   type Stage={id:string;next:HvpNeighborCheckpoint;meshes:readonly HvpCollisionSector[];colliders:R.Collider[];
@@ -14,13 +15,14 @@ export const createHvpNeighborCollision=(world:R.World,baseSectorCount:number,sa
     oldEdge:Map<number,CollisionEntry>;newEdge:Map<number,CollisionEntry>};
   let staged:Stage|undefined;
   const validate=(value:readonly HvpCollisionSector[],resident:boolean)=>{
-    if(!Array.isArray(value)||value.length!==(resident?64:0)){throw new Error("Incomplete neighbour collision coverage");}
+    if(!Array.isArray(value)||value.length!==(resident?primaryTerrainCount:0)){throw new Error("Incomplete neighbour collision coverage");}
     let bytes=0;
     for(const [i,m]of value.entries()){
-      const x=16+(i%8)*4,z=-16+Math.floor(i/8)*4;
+      const x=16+(i%8)*4,z=-16+Math.floor(i/(primaryTerrainCount===256?32:8))*4,
+        y=primaryTerrainCount===256?-8+Math.floor(i/8)%4*4:-8,top=primaryTerrainCount===256?y+4:8;
       if(!(m.vertices instanceof Float32Array)||!(m.indices instanceof Uint32Array)||m.vertices.length%3||m.indices.length%3
         ||m.indices.some((n:number)=>n>=m.vertices.length/3)
-        ||m.vertices.some((n:number,k:number)=>!Number.isFinite(n)||!Number.isInteger(n*8)||n<([x,-8,z][k%3]!)||n>([x+4,8,z+4][k%3]!))){throw new Error("Invalid neighbour collision geometry");}
+        ||m.vertices.some((n:number,k:number)=>!Number.isFinite(n)||!Number.isInteger(n*8)||n<([x,y,z][k%3]!)||n>([x+4,top,z+4][k%3]!))){throw new Error("Invalid neighbour collision geometry");}
       bytes+=m.vertices.byteLength+m.indices.byteLength;
     }
     if(bytes>8*1024*1024){throw new Error("Neighbour collision payload budget");}
@@ -67,12 +69,13 @@ export const createHvpNeighborCollision=(world:R.World,baseSectorCount:number,sa
       if(!next.resident&&pinned(player)){throw new Error("Neighbour pinned by a live player/body");}
       validate(value,next.resident);
       const oldEdge=new Map<number,CollisionEntry>();
-      if(edge.length!==(primary?8:0)){throw new Error("Missing primary seam collision");}
+      if(edge.length!==(primary?primaryTerrainCount/8:0)){throw new Error("Missing primary seam collision");}
       for(const {index,mesh:m}of edge){
-        const z=-16+Math.floor(index/8)*4;
-        if(!Number.isSafeInteger(index)||index<0||index>=64||index%8!==7||oldEdge.has(index)||!primary?.has(index)
+        const z=-16+Math.floor(index/(primaryTerrainCount===256?32:8))*4,
+          y=primaryTerrainCount===256?-8+Math.floor(index/8)%4*4:-8,top=primaryTerrainCount===256?y+4:8;
+        if(!Number.isSafeInteger(index)||index<0||index>=primaryTerrainCount||index%8!==7||oldEdge.has(index)||!primary?.has(index)
           ||!(m.vertices instanceof Float32Array)||!(m.indices instanceof Uint32Array)||m.vertices.length%3||m.indices.length%3
-          ||m.indices.some(n=>n>=m.vertices.length/3)||m.vertices.some((n,k)=>!Number.isFinite(n)||!Number.isInteger(n*8)||n<([12,-8,z][k%3]!)||n>([16,8,z+4][k%3]!))){throw new Error("Invalid primary seam collision");}
+          ||m.indices.some(n=>n>=m.vertices.length/3)||m.vertices.some((n,k)=>!Number.isFinite(n)||!Number.isInteger(n*8)||n<([12,y,z][k%3]!)||n>([16,top,z+4][k%3]!))){throw new Error("Invalid primary seam collision");}
         oldEdge.set(index,primary.get(index)!);
       }
       if(world.colliders.len()+value.filter(m=>m.indices.length>0).length+edge.filter(e=>e.mesh.indices.length>0).length>4096){throw new Error("Global collider budget");}

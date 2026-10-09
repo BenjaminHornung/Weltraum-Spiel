@@ -52,6 +52,12 @@ function* invalidTerrainChannel(values:Float32Array|Uint32Array|Float64Array,inv
   return false;
 }
 function* terrainOutputSteps(output:TransferableBufferBundle,p:HvpTerrainPayload,reserve?:StructuralOwnedReserve):Generator<string,HvpCompactMesh,unknown>{
+  return yield* decodeHvpTerrainMeshSteps(output,{get generation(){return p.generation;},get sourceDigest(){return p.sourceDigest;},
+    get boundsMeters(){const min={x:-16+(p.sector%4)*8,y:-8,z:-16+Math.floor(p.sector/4)*8};return {min,max:{x:min.x+8,y:8,z:min.z+8}};},
+    algorithmVersion:"hvp-terrain-sector-v1"},reserve);
+}
+export function* decodeHvpTerrainMeshSteps(output:TransferableBufferBundle,p:{generation:number;sourceDigest:string;
+  boundsMeters:HvpCompactMesh["boundsMeters"];algorithmVersion:string},reserve?:StructuralOwnedReserve):Generator<string,HvpCompactMesh,unknown>{
   if(reserve&&(!Array.isArray(output.buffers)||output.buffers.length!==6||!Array.isArray(output.views)||output.views.length!==6
     ||!Number.isSafeInteger(output.byteLength)||output.byteLength<0||output.byteLength>HVP_TERRAIN_MAX_OUTPUT)){throw new Error("Invalid HVP terrain output binding");}
   reserve?.(16_384);
@@ -65,7 +71,7 @@ function* terrainOutputSteps(output:TransferableBufferBundle,p:HvpTerrainPayload
   }
   const positions=new Float32Array(b.buffers[0]!), normals=new Float32Array(b.buffers[1]!), colors=new Float32Array(b.buffers[2]!);
   const indices=new Uint32Array(b.buffers[3]!), ranges=new Uint32Array(b.buffers[4]!), metrics=new Float64Array(b.buffers[5]!);
-  const min=[-16+(p.sector%4)*8,-8,-16+Math.floor(p.sector/4)*8], max=[min[0]!+8,8,min[2]!+8];
+  const bounds=p.boundsMeters,min=[bounds.min.x,bounds.min.y,bounds.min.z],max=[bounds.max.x,bounds.max.y,bounds.max.z];
   if (positions.length%12!==0 || indices.length%6!==0 || normals.length!==positions.length || colors.length!==positions.length
     || (yield* invalidTerrainChannel(positions,(v,i)=>!Number.isFinite(v)||!Number.isInteger(v*8)||v<min[i%3]!||v>max[i%3]!,reserve!==undefined))
     || (yield* invalidTerrainChannel(normals,v=>v!==0&&v!==1&&v!==-1,reserve!==undefined))
@@ -83,7 +89,7 @@ function* terrainOutputSteps(output:TransferableBufferBundle,p:HvpTerrainPayload
   }
   if(cursor!==indices.length) { throw new Error("Incomplete terrain material ranges"); }
   return { positions,normals,colors,indices,materialRanges,faceCount:metrics[0]!,unitFaceCount:metrics[1]!,outerFaceCount:metrics[2]!,
-    cavityFaceCount:metrics[3]!,tempEstimateBytes:metrics[4]!,sourceDigest:p.sourceDigest,algorithmVersion:"hvp-terrain-sector-v1",
+    cavityFaceCount:metrics[3]!,tempEstimateBytes:metrics[4]!,sourceDigest:p.sourceDigest,algorithmVersion:p.algorithmVersion,
     boundsMeters:{min:{x:min[0]!,y:min[1]!,z:min[2]!},max:{x:max[0]!,y:max[1]!,z:max[2]!}} };
 }
 export const executeHvpTerrainJob = (request: WorkerJobRequest, bundle: TransferableBufferBundle) => {
@@ -105,6 +111,14 @@ function* terrainJobSteps(request:WorkerJobRequest,bundle:TransferableBufferBund
     budgets={maxVisitedCells:524288,maxQuads:100000,maxVertices:400000,maxIndices:600000};
   const mesh=reserve===undefined?meshHvpOccupancy(occupancy,budgets,p.sourceDigest,"hvp-terrain-sector-v1",{ao:true})
     :yield* meshHvpOccupancySteps(occupancy,budgets,p.sourceDigest,"hvp-terrain-sector-v1",{ao:true},reserve);
+  const output=yield* packHvpTerrainMeshSteps(mesh,()=>p.generation,reserve);
+  if(reserve){yield* decodeHvpTerrainOutputSteps(output,p,reserve);}else{decodeHvpTerrainOutput(output,p);}
+  const result:WorkerJobResult={jobId:request.jobId,targetKey:request.targetKey,workerEpoch:request.workerEpoch,planningEpoch:request.planningEpoch,
+    inputRevision:request.inputRevision,sourceInputDigest:request.sourceInputDigest,outputRevision:contentRevision(p.generation),
+    algorithmVersion:request.algorithmVersion,outputBytes:output.byteLength,contentHash:output.contentHash};
+  return {result,bundle:output};
+}
+export function* packHvpTerrainMeshSteps(mesh:HvpCompactMesh,generation:number|(()=>number),reserve?:StructuralOwnedReserve):Generator<string,TransferableBufferBundle,unknown>{
   reserve?.(8192+mesh.materialRanges.length*12+mesh.indices.length*4,true);
   let ranges:Uint32Array;
   if(reserve){ranges=new Uint32Array(mesh.materialRanges.length*3);for(let i=0;i<mesh.materialRanges.length;i+=1){const r=mesh.materialRanges[i]!;
@@ -117,11 +131,7 @@ function* terrainJobSteps(request:WorkerJobRequest,bundle:TransferableBufferBund
   const arrays=[mesh.positions,mesh.normals,mesh.colors!,indices,ranges,metrics];
   const buffers=arrays.map(a=>a.buffer as ArrayBuffer), bytes=buffers.reduce((n,b)=>n+b.byteLength,0);
   if(bytes>HVP_TERRAIN_MAX_OUTPUT) { throw new Error("Terrain output BudgetExceeded"); }
-  const output:TransferableBufferBundle={buffers,ownership:"WorkerToConsumer",revision:contentRevision(p.generation),byteLength:byteCount(bytes),
+  const output:TransferableBufferBundle={buffers,ownership:"WorkerToConsumer",revision:contentRevision(typeof generation==="function"?generation():generation),byteLength:byteCount(bytes),
     contentHash:reserve===undefined?fnv1aBytes(buffers):yield* fnv1aBytesSteps(buffers),views:arrays.map((a,i)=>({name:names[i]!,kind:kinds[i]!,bufferIndex:i,byteOffset:0,elementCount:a.length}))};
-  if(reserve){yield* decodeHvpTerrainOutputSteps(output,p,reserve);}else{decodeHvpTerrainOutput(output,p);}
-  const result:WorkerJobResult={jobId:request.jobId,targetKey:request.targetKey,workerEpoch:request.workerEpoch,planningEpoch:request.planningEpoch,
-    inputRevision:request.inputRevision,sourceInputDigest:request.sourceInputDigest,outputRevision:contentRevision(p.generation),
-    algorithmVersion:request.algorithmVersion,outputBytes:output.byteLength,contentHash:output.contentHash};
-  return {result,bundle:output};
+  return output;
 }

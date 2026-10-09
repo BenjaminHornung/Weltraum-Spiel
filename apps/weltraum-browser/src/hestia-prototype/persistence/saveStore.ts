@@ -1,7 +1,7 @@
 import {IndexedDbSaveRepository,createSaveCodec,type SaveRepository,type SaveImportPolicy} from "../../browser-storage";
 import {prepareSaveImport} from "../../browser-storage/exportImport";
 import {createUniverseClock,validateSaveGameEnvelopeV1,type SaveGameEnvelopeV1} from "../../persistence";
-import {decodeHvpGame,type HvpDecodedGame} from "./gameCheckpoint";
+import {decodeHvpGame,decodeHvpColdGame,type HvpDecodedGame} from "./gameCheckpoint";
 
 export const HVP_SAVE_DATABASE="weltraum-hestia-prototype-v1";
 export const HVP_SAVE_SLOT="hvp-primary";
@@ -10,14 +10,14 @@ const slot=(id:string):string=>{
   if(!/^hvp-[a-z0-9-]{1,96}$/.test(id)){throw new Error("Hestia saves require their own slot namespace");}
   return id;
 };
-const readEnvelope=(envelope:SaveGameEnvelopeV1):HvpDecodedGame=>{
+const readEnvelope=(envelope:SaveGameEnvelopeV1,decodeGame:typeof decodeHvpGame=decodeHvpGame):HvpDecodedGame=>{
   if(envelope.gameVersion!==gameVersion||envelope.player.playerId!=="player:hvp"||envelope.player.activeShipId!==null
     ||envelope.player.activeMissionRef!==null||Object.keys(envelope.player.data).join(",")!=="hestia"
     ||[envelope.ships,envelope.drones,envelope.stations,envelope.bases,envelope.missions,envelope.encounters,envelope.discoveries,
       envelope.definitionsVersionRefs,envelope.worldEvents.events].some(a=>a.length!==0)){
     throw new Error("Not a standalone Hestia save");
   }
-  const game=decodeHvpGame(envelope.player.data.hestia);
+  const game=decodeGame(envelope.player.data.hestia);
   if(envelope.universeTime.tick!==game.checkpoint.world.tick.ticks*2
     ||envelope.universeTime.epochSeconds!==game.checkpoint.world.tick.ticks/60){throw new Error("Hestia/Universe tick mismatch");}
   return game;
@@ -40,6 +40,13 @@ export const createHvpSaveStore=(repository:SaveRepository=new IndexedDbSaveRepo
     async load(id=HVP_SAVE_SLOT){
       const saved=await repository.readSlot(slot(id));
       return Object.freeze({game:readEnvelope(saved.envelope),metadata:saved.metadata});
+    },
+    async loadCold(admitPrepare:(workingBytes:number)=>void,id=HVP_SAVE_SLOT){
+      const saved=await repository.readSlot(slot(id));let recipeRetainedBytes=0;
+      const game=readEnvelope(saved.envelope,value=>{
+        const decoded=decodeHvpColdGame(value,admitPrepare);recipeRetainedBytes=decoded.recipeRetainedBytes;return decoded.game;
+      });
+      return Object.freeze({game,metadata:saved.metadata,recipeRetainedBytes});
     },
     export:(id=HVP_SAVE_SLOT)=>repository.exportSlot(slot(id)),
     async import(bundle:unknown,policy:SaveImportPolicy){

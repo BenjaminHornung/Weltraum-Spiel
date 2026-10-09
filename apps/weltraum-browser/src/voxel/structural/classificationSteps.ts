@@ -36,9 +36,109 @@ import {
   type StructuralObject
 } from "./types";
 import { normalizeAdaptiveAuthorityError, normalizeAdaptiveAuthorityFunction, structuralPositiveBudget, structuralFreezeArraySteps, type StructuralOwnedReserve } from "./validation";
+import {isIssuedStructuralObject,isOwnedStructuralDerivationCandidate,hasOwnedStructuralDerivationAncestor,readOwnedPublishedCandidate,createOwnedStructuralCellIndexSteps,structuralAddressForBrickCell,
+  readOwnedStructuralCellIndex,type OwnedStructuralCellIndex,type OwnedPublishedWitness} from "./model";
 
 // Private owning module of the classification algorithm; deliberately NOT re-exported by the structural barrel.
 const hashAdaptiveCanonical = normalizeAdaptiveAuthorityFunction(adaptiveHashCanonical);
+
+/** Private, command-local proof; never exported by the public structural barrel. */
+export interface PreparedComponentFacts {
+  readonly sourceIdentity:StructuralObject;
+  readonly revision:number;
+  /** The existing full content digest includes all materials, anchors and joints. */
+  readonly materialAnchorJointDigest:string;
+  readonly componentCells:StructuralComponent["occupiedCells"];
+  readonly algorithmVersion:"structural-component-facts-v1";
+}
+const preparedClassifications=new WeakMap<StructuralComponentClassification,StructuralObject>();
+const ownedClassifications=new WeakMap<StructuralObject,{classification:StructuralComponentClassification;budgets:StructuralConnectivityBudgets;entries:readonly OccupiedEntry[]|undefined;reserve:StructuralOwnedReserve}>();
+/** Command-local, complete canonical rows; never exported by the structural barrel. */
+export const readOwnedClassifiedMassEntries=(object:StructuralObject,reserve:StructuralOwnedReserve)=>{
+  const prepared=hasOwnedStructuralDerivationAncestor(object)?ownedClassifications.get(object):undefined;
+  return prepared!==undefined&&prepared.reserve===reserve?prepared.entries:undefined;
+};
+export const bindOwnedPublishedClassification=(witness:OwnedPublishedWitness):StructuralComponentClassification=>{
+  const candidate=readOwnedPublishedCandidate(witness),prepared=ownedClassifications.get(candidate);
+  if(prepared===undefined){throw new Error("Missing exact owned preliminary classification");}
+  ownedClassifications.delete(candidate);preparedClassifications.set(prepared.classification,witness.sourceIdentity);
+  return prepared.classification;
+};
+type PreparedComponentView=Pick<StructuralComponent,"occupiedCells"|"anchored"|"activeJoints">;
+const preparedFacts=new WeakMap<PreparedComponentFacts,{component:PreparedComponentView;sourceCellCount:number}>();
+export const prepareStructuralComponentFacts=(source:StructuralObject,classification:StructuralComponentClassification,
+  component:StructuralComponent):PreparedComponentFacts=>{
+  if(!isIssuedStructuralObject(source)||preparedClassifications.get(classification)!==source
+    ||!classification.components.includes(component)){
+    throw new Error("Prepared component facts require the exact private source classification");
+  }
+  const facts:PreparedComponentFacts=Object.freeze({sourceIdentity:source,revision:source.objectRevision,
+    materialAnchorJointDigest:source.contentHash,componentCells:component.occupiedCells,algorithmVersion:"structural-component-facts-v1"});
+  preparedFacts.set(facts,{component,sourceCellCount:classification.components.reduce((n,c)=>n+c.occupiedCells.length,0)});return facts;
+};
+export const readPreparedComponentFacts=(facts:PreparedComponentFacts,source:StructuralObject):PreparedComponentView=>{
+  const component=preparedFacts.get(facts)?.component;
+  if(component===undefined||facts.sourceIdentity!==source||!isIssuedStructuralObject(source)
+    ||facts.revision!==source.objectRevision||facts.materialAnchorJointDigest!==source.contentHash
+    ||facts.componentCells!==component.occupiedCells||facts.algorithmVersion!=="structural-component-facts-v1"){
+    throw new Error("Invalid prepared component facts binding");
+  }
+  return component;
+};
+export const readPreparedRigidComponentFacts=(facts:PreparedComponentFacts,source:StructuralObject):PreparedComponentView=>{
+  const component=readPreparedComponentFacts(facts,source);
+  if(component.anchored||component.occupiedCells.length!==preparedFacts.get(facts)!.sourceCellCount){
+    throw new Error("Rigid source requires one unanchored connected component");
+  }
+  return component;
+};
+
+/** Exact child projection proof. This emits no canonical Component or Fragment identity. */
+export function* transferPreparedComponentFactsSteps(facts:PreparedComponentFacts,parent:StructuralObject,child:StructuralObject,
+  reserve:StructuralOwnedReserve,index?:OwnedStructuralCellIndex):Generator<void,PreparedComponentFacts|undefined,void>{
+  const component=readPreparedComponentFacts(facts,parent);
+  if(!isIssuedStructuralObject(child)){throw new Error("Invalid child partition source identity");}
+  // Keep metadata-bearing children on the unchanged fresh-classifier path.
+  if(component.activeJoints.length!==0||child.anchors.length!==0||child.joints.length!==0){return undefined;}
+  const materialError=()=>{throw new Error("Invalid child partition material binding");};
+  function* sameString(left:string,right:string):Generator<void,void,void>{
+    if(left.length!==right.length){materialError();}
+    for(let i=0;i<left.length;i++){if(left.charCodeAt(i)!==right.charCodeAt(i)){materialError();}yield;}
+  }
+  if(parent.materials.length!==child.materials.length){materialError();}
+  for(let m=0;m<parent.materials.length;m++){
+    const a=parent.materials[m]!,b=child.materials[m]!;
+    if(a.materialId!==b.materialId||a.densityKgPerCubicMeter!==b.densityKgPerCubicMeter||a.destructible!==b.destructible){materialError();}
+    yield* sameString(a.structuralClass,b.structuralClass);
+    if(a.tags===null||b.tags===null){if(a.tags!==b.tags){materialError();}}
+    else{if(a.tags.length!==b.tags.length){materialError();}for(let t=0;t<a.tags.length;t++){yield* sameString(a.tags[t]!,b.tags[t]!);yield;}}
+    yield;
+  }
+  const project=index===undefined?yield* createOwnedStructuralCellIndexSteps(parent,reserve):readOwnedStructuralCellIndex(parent,index);
+  reserve(512+component.occupiedCells.length*256);
+  const selected=new Map<string,number>();
+  for(const address of component.occupiedCells){const cell=project(address);selected.set(`${cell.x}:${cell.y}:${cell.z}`,cell.materialId);yield;}
+  reserve(64+component.occupiedCells.length*512,true);
+  const cells:StructuralCellAddress[]=[];
+  for(const brick of child.bricks){
+    for(const cell of brick.cells){
+      const i=cell.localIndex,q=brick.key.originQuantum,o=child.frame.objectOriginQuantum;
+      const x=q.x+i%16-o.x,y=q.y+Math.floor(i/16)%16-o.y,z=q.z+Math.floor(i/256)-o.z;
+      if(![x,y,z].every(v=>Number.isSafeInteger(v)&&!Object.is(v,-0))){throw new Error("Invalid child partition coordinates");}
+      const key=`${x}:${y}:${z}`;
+      if(selected.get(key)!==cell.state.materialId){throw new Error("Invalid child partition cell/material binding");}
+      selected.delete(key);cells.push(structuralAddressForBrickCell(brick,i));yield;
+    }
+    yield;
+  }
+  if(selected.size!==0||cells.length!==component.occupiedCells.length){throw new Error("Incomplete child partition coverage");}
+  const occupiedCells=yield* structuralFreezeArraySteps(cells,reserve);
+  reserve(1024,true);
+  const transferred:PreparedComponentFacts=Object.freeze({sourceIdentity:child,revision:child.objectRevision,
+    materialAnchorJointDigest:child.contentHash,componentCells:occupiedCells,algorithmVersion:"structural-component-facts-v1"});
+  preparedFacts.set(transferred,{component:Object.freeze({occupiedCells,anchored:false,activeJoints:Object.freeze([])}),sourceCellCount:cells.length});
+  return transferred;
+}
 
 interface IndexedFacts {
   readonly anchorsByCell: ReadonlyMap<string, readonly StructuralActiveAnchorFact[]>;
@@ -340,12 +440,15 @@ function* hashIssuedPayloadSteps(payload: unknown, bounded: boolean, reserve?: S
 }
 
 /** One classification kernel; exact issued sources select incremental owner-only finalizers. */
+function classifySteps(object:StructuralObject,budgets:StructuralConnectivityBudgets,issued:boolean,reserve?:StructuralOwnedReserve):Generator<string,StructuralComponentClassification,unknown>;
+function classifySteps(object:StructuralObject,budgets:StructuralConnectivityBudgets,issued:true,reserve:StructuralOwnedReserve,privateFacts:true):Generator<string,PreparedComponentFacts,unknown>;
 function* classifySteps(
   object: StructuralObject,
   budgetValue: StructuralConnectivityBudgets,
   issued: boolean,
-  reserve?: StructuralOwnedReserve
-): Generator<string, StructuralComponentClassification, unknown> {
+  reserve?: StructuralOwnedReserve,
+  privateFacts=false
+): Generator<string, StructuralComponentClassification|PreparedComponentFacts, unknown> {
   reserve?.(8_192);
   const unitsPerYield = reserve === undefined ? OWNED_CLASSIFICATION_UNITS_PER_YIELD : 1;
   const budgets = validateBudgets(budgetValue);
@@ -383,9 +486,10 @@ function* classifySteps(
   const visited = new Set<string>();
   const components: ClassifiedComponent[] = [];
   const genericComponents: StructuralComponent[] = [];
+  const rigidParts:PreparedComponentView[]|undefined=privateFacts?[]:undefined;
   const neighborOffsets = [[-1, 0, 0], [1, 0, 0], [0, -1, 0], [0, 1, 0], [0, 0, -1], [0, 0, 1]] as const;
   let sourceAdaptiveAuthorityDigest: string;
-  if (issued) {
+  if(privateFacts){sourceAdaptiveAuthorityDigest="";}else if (issued) {
     sourceAdaptiveAuthorityDigest = yield* hashIssuedPayloadSteps(object.source, bounded, reserve);
   } else {
     sourceAdaptiveAuthorityDigest = hashStructuralAdaptiveAuthorityBinding(object.source);
@@ -400,7 +504,7 @@ function* classifySteps(
       }
       continue;
     }
-    if ((issued ? components.length : genericComponents.length) >= budgets.maxComponents) {
+    if ((privateFacts?rigidParts!.length:issued ? components.length : genericComponents.length) >= budgets.maxComponents) {
       throw new StructuralConnectivityError("connectivityBudgets/maxComponents", "Component derivation exceeded the explicit component budget.");
     }
     reserve?.(256);
@@ -447,6 +551,17 @@ function* classifySteps(
       yield* sortIssuedValuesSteps(members, compareOccupiedEntries, bounded, reserve);
     } else {
       members.sort(compareOccupiedEntries);
+    }
+
+    if(privateFacts){
+      const facts=yield* issuedFactsForMembersSteps(issuedFacts!,members as IssuedOccupiedEntry[],true,reserve);
+      reserve!(128+members.length*8+facts.joints.length*8,true);
+      const cells:StructuralCellAddress[]=[],joints:StructuralActiveJointFact[]=[];
+      for(const member of members){cells.push(member.address);yield OWNED_CLASSIFICATION_PHASE;}
+      for(const entry of facts.joints){joints.push(entry.fact);yield OWNED_CLASSIFICATION_PHASE;}
+      rigidParts!.push(Object.freeze({occupiedCells:yield* freezeIssuedValuesSteps(cells,reserve),anchored:facts.anchors.length>0,
+        activeJoints:yield* freezeIssuedValuesSteps(joints,reserve)}));
+      continue;
     }
 
     let occupiedCells: readonly StructuralCellAddress[];
@@ -558,6 +673,13 @@ function* classifySteps(
     }
   }
 
+  if(privateFacts){
+    if(rigidParts!.length!==1||rigidParts![0]!.anchored){throw new Error("Rigid source requires one unanchored connected component");}
+    const component=rigidParts![0]!;reserve!(512,true);
+    const facts:PreparedComponentFacts=Object.freeze({sourceIdentity:object,revision:object.objectRevision,
+      materialAnchorJointDigest:object.contentHash,componentCells:component.occupiedCells,algorithmVersion:"structural-component-facts-v1"});
+    preparedFacts.set(facts,{component,sourceCellCount:entries.length});return facts;
+  }
   if (!issued) {
     // Native Species/getter observers must see the historical frozen component arrays, not private wrappers.
     genericComponents.sort((left, right) => compareStrings(left.componentId, right.componentId));
@@ -657,7 +779,12 @@ function* classifySteps(
   const frozenFragments = yield* freezeIssuedValuesSteps(fragments, reserve);
   reserve?.(1_024);
   const classificationValue = { components: frozenComponents, anchoredComponents, detachedComponents, fragments: frozenFragments };
-  return Object.freeze(classificationValue);
+  const classification=Object.freeze(classificationValue);
+  if(reserve!==undefined&&isOwnedStructuralDerivationCandidate(object)){
+    reserve(256);
+    ownedClassifications.set(object,{classification,budgets:Object.freeze({...budgetValue}),entries:hasOwnedStructuralDerivationAncestor(object)?entries:undefined,reserve});
+  }
+  return classification;
 }
 
 /** First-party Physics owner route. Its entry cursor rejects every non-issued object identity. */
@@ -671,5 +798,14 @@ export function* structuralIssuedComponentClassificationSteps(
 /** INACTIVE command-only route, not a public/final issuance capability or a change to old owner observers. */
 export function* structuralOwnedComponentClassificationSteps(object: StructuralObject, budgets: StructuralConnectivityBudgets,
   reserve: StructuralOwnedReserve): Generator<string, StructuralComponentClassification, unknown> {
-  return yield* classifySteps(object, budgets, true, reserve);
+  const classification=yield* classifySteps(object, budgets, true, reserve);
+  // Preliminary command capabilities are not final issued source identities.
+  if(isIssuedStructuralObject(object)){preparedClassifications.set(classification,object);}
+  return classification;
+}
+
+/** Private Recipe-only facts; the same complete connectivity/anchor/joint kernel, without unused public hashes. */
+export function* prepareOwnedRigidComponentFactsSteps(source:StructuralObject,budgets:StructuralConnectivityBudgets,reserve:StructuralOwnedReserve){
+  if(!isIssuedStructuralObject(source)){throw new Error("Owned rigid facts require an issued source");}
+  return yield* classifySteps(source,budgets,true,reserve,true);
 }

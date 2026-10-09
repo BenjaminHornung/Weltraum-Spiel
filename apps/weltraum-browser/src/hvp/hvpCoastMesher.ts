@@ -651,6 +651,11 @@ export function* meshHvpOccupancySteps(
   return yield* meshHvpOccupancyCore(occupancy, budgets, sourceDigest, algorithmVersion, options, true,reserve);
 }
 
+/** Owner-only empty products after complete occupancy validation; shares the normal quad output path. */
+export function* materializeHvpKnownEmptyMeshSteps(occupancy:Pick<HvpMeshOccupancy,"cellMeters"|"originMeters">,budgets:HvpMeshBudgets,
+  sourceDigest:string,algorithmVersion:string,aoEnabled:boolean,reserve?:StructuralOwnedReserve):Generator<string,HvpCompactMesh,unknown>{
+  return yield* materializeHvpQuadsSteps([],occupancy,budgets,0,sourceDigest,algorithmVersion,aoEnabled,{bounded:true,work:0,reserve});
+}
 /** Shared winding, AO diagonals, material ranges and output budget gates. */
 function* materializeHvpQuadsSteps(
   quads: readonly HvpQuad[],

@@ -8,7 +8,7 @@ import type {HvpCutTrace} from "../runtime/cutTrace";
 
 /** The local worker does not pause or own a moving parent. Only the commit does. */
 export const createHvpBodyCutConsumer=(physics:HvpPhysicsClient,compile:(source:HvpMovingCutPreparation)=>Promise<HvpBodyCutProducts>,
-  stage:(parentId:string,products:HvpBodyCutProducts)=>HvpStagedTerrain,traceInput?:HvpCutTrace,finishCompile?:(id:string)=>Promise<void>)=>{
+  stage:(parentId:string,products:HvpBodyCutProducts)=>HvpStagedTerrain|Promise<HvpStagedTerrain>,traceInput?:HvpCutTrace,finishCompile?:(id:string)=>Promise<void>)=>{
   let disposed=false,busy=false,held=false;
   let trace=traceInput;
   const emit=(id:string,phase:string,start?:number):number|undefined=>{
@@ -58,7 +58,8 @@ export const createHvpBodyCutConsumer=(physics:HvpPhysicsClient,compile:(source:
           if(finishCompile!==undefined){cleanupId=request.id;}
           const products=await compile(source);
           if(disposed){throw new Error("Moving preparation cancelled");}
-          render=stage(request.ownerId,products); // New local geometry stays hidden.
+          render=await stage(request.ownerId,products); // New local geometry stays hidden.
+          if(disposed){throw new Error("Moving render staging cancelled");}
           await physics.stageBodyCut(request.id,products); // Now hold CURRENT pose/motion.
           if(disposed){throw new Error("Moving commit cancelled");}
           await physics.commitBodyCut(request.id);

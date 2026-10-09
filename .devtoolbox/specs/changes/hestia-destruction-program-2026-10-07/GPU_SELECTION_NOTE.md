@@ -1,0 +1,15 @@
+# GPU preference requested by the user
+
+2026-10-08: prefer the dedicated/performance GPU when available, verify the adapter actually used, and retain a future settings requirement for multi-GPU selection. This extends the current task's device configuration preference; it does not approve an unmeasured fastest-GPU claim or a renderer migration.
+
+Fresh read-only Windows inventory: NVIDIA RTX PRO 500 Blackwell Generation Laptop GPU (driver32.0.15.9658) and Intel Arc Pro 140T GPU (16GB, driver32.0.101.8517). Win32 AdapterRAM values are not reliable proof of available GPU memory and are not used as resource caps. Earlier bound product runs actually used Arc Pro 140T. Current HVP visual renderer inherits Three's default power preference.
+
+Implemented after the Source-frozen regression completed: `powerPreference: high-performance` only in the existing HVP-owned visual renderer. The targeted RED reproduced the missing parameter; GREEN passed. Verify actual WebGL renderer plus Chromium SystemInfo/driver for every new run. Three/WebGL describes this as a hint, not a guaranteed arbitrary adapter selector: https://threejs.org/docs/pages/WebGLRenderer.html and https://registry.khronos.org/webgl/specs/latest/1.0/.
+
+The combined diagnostic driver accepts only exact `WELTRAUM_HVP_FORCE_HIGH_PERFORMANCE_GPU=1`, only with gate D3+D4. It applies Chromium's existing `--force-high-performance-gpu` to each owned test browser, binds those arguments, requires the observed NVIDIA RTX PRO 500 renderer and identical complete selected adapter/driver records across both modes. The existing Arc reference assertion remains the default. Chromium primary evidence: https://chromium.googlesource.com/chromium/src/+/main/chrome/browser/about_flags.cc and https://chromium.googlesource.com/chromium/src/+/ee5ebc41593422851f75926bbf0e700e5c28f0ed/gpu/ipc/service/gpu_init.cc . Installed binary behavior remains unverified until the pilot; no global Windows/browser preference was changed.
+
+If an owned Chromium launch needs its existing high-performance GPU switch, bind the exact arguments and actual adapter in the evidence. Both baseline and candidate must use the same actual GPU/driver; a mismatch is invalid. NVIDIA measurements are supplemental diagnostics to the existing Arc reference contract until a compatible acceptance profile is explicitly established. Never compare a changed GPU to the earlier Arc samples as an isolated code gain.
+
+Future settings requirement: expose requested preference and the observed adapter; an explicit physical adapter selector requires a supported renderer/platform mechanism. Do not present an ineffective WebGL dropdown as an actual device switch. Preference changes require a fresh graphics context/session and compatible resource admission. No settings UI, WebGPU migration or S3 work is pulled forward here.
+
+The user explicitly requested memory retention; a new small note was saved under the allowed memory extensions/ad_hoc/notes path. Existing memory files were not edited.

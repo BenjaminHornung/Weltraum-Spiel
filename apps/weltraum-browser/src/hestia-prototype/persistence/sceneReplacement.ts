@@ -1,13 +1,15 @@
 import type {HvpPhysicsClient} from "../physics/client";
 import type {HvpStagedTerrain} from "../terrain/terrainConsumer";
 import type {HvpCollisionSector} from "../physics/terrainColliders";
+import type {HvpCompleteStaticCollision} from "../physics/worldReplacement";
 import {assertHvpDecodedGame,type HvpDecodedGame} from "./gameCheckpoint";
+import {HvpRenderStageRecoveryError} from "../presentation/renderStageRecovery";
 
 /** Both generations stay owned until Root, input, World and render B are published. */
 export const replaceHvpScene=async(game:HvpDecodedGame,id:string,physics:HvpPhysicsClient,
   replacements:readonly {index:number;mesh:HvpCollisionSector}[],
   stage:(snapshot:ReturnType<HvpPhysicsClient["read"]>)=>HvpStagedTerrain|Promise<HvpStagedTerrain>,
-  current:()=>boolean)=>{
+  current:()=>boolean,completeCollision?:HvpCompleteStaticCollision)=>{
   assertHvpDecodedGame(game);
   if(!current()){throw new Error("Stale scene restore");}
   const facts=()=>{const s=physics.read();return JSON.stringify({status:s.status,ticks:s.ticks,terrainGeneration:s.terrainGeneration,
@@ -16,16 +18,17 @@ export const replaceHvpScene=async(game:HvpDecodedGame,id:string,physics:HvpPhys
   let prepared=false,finalized=false,render:HvpStagedTerrain|undefined;
   try{
     if(!current()){throw new Error("Stale scene restore");}
-    const candidate=await physics.prepareRestore(id,game.checkpoint.world,replacements);prepared=true;
+    const candidate=await physics.prepareRestore(id,game.checkpoint.world,replacements,completeCollision);prepared=true;
     if(!current()){throw new Error("Stale prepared scene");}
     render=await stage(candidate);
+    if(!current()){throw new Error("Stale graphics-staged scene");}
     await physics.commitRestore(id);
     if(!current()){throw new Error("Stale scene before publication");}
     physics.publishRestore();render.publish();
     await physics.finalizeRestore(id);finalized=true;
     render.finish();
   }catch(error){
-    let restored=!finalized&&!(error instanceof Error&&error.message.includes("RecoveryHold"));
+    let restored=!finalized&&!(error instanceof HvpRenderStageRecoveryError)&&!(error instanceof Error&&error.message.includes("RecoveryHold"));
     if(!finalized){
       try{render?.rollback();}catch{restored=false;}
       if(prepared){try{await physics.rollbackRestore(id);}catch{restored=false;}}

@@ -5,20 +5,21 @@ import type {StructuralOwnedReserve} from "../../voxel/structural/validation";
 // Owner-internal step forms (module exports, deliberately not in the structural barrel).
 import {deriveStructuralSingleComponentPhysicsPreparationOwnedHashSteps,deriveStructuralSingleComponentPhysicsPreparationSteps,
   STRUCTURAL_TRANSITION_HASH_PHASE,STRUCTURAL_TRANSITION_PAYLOAD_PHASE,STRUCTURAL_TRANSITION_PREPARE_PHASE} from "../../voxel/structural/physicsTransition";
-import {structuralComponentClassificationSteps} from "../../voxel/structural/classificationSteps";
+import {structuralComponentClassificationSteps,prepareOwnedRigidComponentFactsSteps,readPreparedRigidComponentFacts,type PreparedComponentFacts} from "../../voxel/structural/classificationSteps";
 import {MICROVOXEL_BASE_QUANTUM_METERS} from "../../voxel/structural";
 import {hvpPrincipalAxes} from "./principalAxes";
 import {readHvpBodyCells,readHvpOwnedBodyCellsSteps} from "./bodyCutPlan";
 import {borrowedHvpPlanSteps} from "./hvpPlanSteps";
 import {structuralOwnedObjectMassSteps} from "../../voxel/structural/massProperties";
-import {mergeGreedyQuantumBoxesOwnedSteps} from "../../voxel/structural/physicsTransition";
+import {mergeGreedyQuantumBoxesOwnedSteps,prepareStructuralGreedyRecipeFromFactsSteps,type StructuralColliderBoxMeters} from "../../voxel/structural/physicsTransition";
 
 const issued=new WeakSet<object>();
 const zero=Object.freeze({x:0,y:0,z:0});
 const budgets={maxVisitedCells:32_768,maxConnectivityCells:32_768,maxComponents:32,maxConnectivityFacts:262_144};
 
 /** Optional wall-clock sub-spans for the recipe derivation; behaviour is unchanged. */
-export interface HvpRigidRecipeSpans {massMs?:number;classifyMs?:number;transitionMs?:number;axesMs?:number;verifyMs?:number}
+export interface HvpRigidRecipeSpans {massMs?:number;classifyMs?:number;transitionMs?:number;axesMs?:number;verifyMs?:number;
+  transitionPerVoxelMs?:number;transitionGreedyMs?:number;transitionHashMs?:number;preparedFactsReused?:number;componentPartitionReused?:number}
 /** Label of a yield inside a child source's own classification cell extraction (TEMPORARY diagnostic identity). */
 export const HVP_CHILD_CLASSIFICATION_CELLS_PHASE="childClassificationCells";
 /** Owner-hash route only: the step ending with the child transition payload, then one per hash batch. */
@@ -45,7 +46,12 @@ export function* prepareHvpRigidBodyOwnedHashSteps(source:StructuralObject,spans
   reserve?.(16_384);
   return yield* rigidBodySteps(true,source,spans,live,reserve);
 }
-function* rigidBodySteps(ownedHash:boolean,source:StructuralObject,spans?:HvpRigidRecipeSpans,live?:()=>boolean,reserve?:StructuralOwnedReserve){
+export function* prepareRecipeFromFacts(facts:PreparedComponentFacts,spans:HvpRigidRecipeSpans|undefined,live:(()=>boolean)|undefined,reserve:StructuralOwnedReserve){
+  readPreparedRigidComponentFacts(facts,facts.sourceIdentity);
+  reserve(16_384);
+  return yield* rigidBodySteps(true,facts.sourceIdentity,spans,live,reserve,facts);
+}
+function* rigidBodySteps(ownedHash:boolean,source:StructuralObject,spans?:HvpRigidRecipeSpans,live?:()=>boolean,reserve?:StructuralOwnedReserve,preparedFacts?:PreparedComponentFacts){
   // ponytail: wall-clock only; sub-ms phases may read 0.
   let measuring=spans!==undefined;
   let t=measuring?performance.now():0;
@@ -83,8 +89,24 @@ function* rigidBodySteps(ownedHash:boolean,source:StructuralObject,spans?:HvpRig
     if(components.fragments.length!==1||components.components.length!==1){throw new Error("Rigid source requires one unanchored connected component");}
   };
   const motion={velocityMetersPerSecond:zero,angularVelocityRadPerSecond:zero},limits={maxFragments:1,maxCollidersPerFragment:64,maxVoxelsPerFragment:32_768};
-  let mass:ReturnType<typeof deriveStructuralObjectMassProperties>,plan:ReturnType<typeof deriveStructuralPhysicsTransition>;
-  if(isIssuedStructuralObject(source)){
+  let mass:ReturnType<typeof deriveStructuralObjectMassProperties>,plan:ReturnType<typeof deriveStructuralPhysicsTransition>|undefined;
+  let colliders:readonly StructuralColliderBoxMeters[];
+  if(ownedHash&&reserve!==undefined){
+    let facts:PreparedComponentFacts;
+    if(preparedFacts===undefined){
+      mass=yield* relabeled(structuralOwnedObjectMassSteps(source,budgets,reserve));afterMass(mass);
+      facts=yield* relabeled(prepareOwnedRigidComponentFactsSteps(source,{maxVisitedCells:budgets.maxConnectivityCells,
+        maxComponents:budgets.maxComponents,maxIndexedFacts:budgets.maxConnectivityFacts},reserve));
+      if(measuring&&spans){const now=performance.now();spans.classifyMs=(spans.classifyMs??0)+now-t;t=now;}
+    }else{
+      facts=preparedFacts;readPreparedRigidComponentFacts(facts,source);
+      mass=yield* relabeled(structuralOwnedObjectMassSteps(source,budgets,reserve));afterMass(mass);
+      if(measuring&&spans){spans.classifyMs=(spans.classifyMs??0);spans.componentPartitionReused=(spans.componentPartitionReused??0)+1;}
+    }
+    colliders=yield* relabeled(prepareStructuralGreedyRecipeFromFactsSteps(source,facts,mass.occupiedVoxelCount,reserve));
+    if(measuring&&spans){spans.transitionPerVoxelMs=0;spans.transitionHashMs=0;
+      spans.transitionGreedyMs=(spans.transitionGreedyMs??0)+performance.now()-t;spans.preparedFactsReused=(spans.preparedFactsReused??0)+1;}
+  }else if(isIssuedStructuralObject(source)){
     const prepared=yield* relabeled(ownedHash
       ?deriveStructuralSingleComponentPhysicsPreparationOwnedHashSteps(source,motion,limits,budgets,afterMass,afterClassification,reserve)
       :deriveStructuralSingleComponentPhysicsPreparationSteps(source,motion,limits,budgets,afterMass,afterClassification));
@@ -97,8 +119,11 @@ function* rigidBodySteps(ownedHash:boolean,source:StructuralObject,spans?:HvpRig
     plan=deriveStructuralPhysicsTransition(source,components,motion,limits,budgets);
   }
   if(measuring&&spans){const now=performance.now();spans.transitionMs=(spans.transitionMs??0)+now-t;t=now;}
-  if(plan.status!=="Installed"||plan.dynamicBodies.length!==1||plan.dynamicBodies[0]!.greedyColliders.length>64){
-    throw new Error("HVP rigid BudgetExceeded: exact collision exceeds 64 cuboids; no hull fallback");
+  if(plan!==undefined){
+    if(plan.status!=="Installed"||plan.dynamicBodies.length!==1||plan.dynamicBodies[0]!.greedyColliders.length>64){
+      throw new Error("HVP rigid BudgetExceeded: exact collision exceeds 64 cuboids; no hull fallback");
+    }
+    colliders=plan.dynamicBodies[0]!.greedyColliders;
   }
   reserve?.(4_096);
   const axes=hvpPrincipalAxes(mass.inertiaTensorKgMetersSquared);
@@ -106,7 +131,7 @@ function* rigidBodySteps(ownedHash:boolean,source:StructuralObject,spans?:HvpRig
   if(![mass.totalMassKg,axes.principalInertia.x,axes.principalInertia.y,axes.principalInertia.z]
     .every(v=>Number.isFinite(Math.fround(v))&&Math.fround(v)>0)){throw new Error("Mass/inertia exceeds pinned solver precision");}
   reserve?.(2_048,true);
-  const recipe=Object.freeze({source,mass,axes,colliders:plan.dynamicBodies[0]!.greedyColliders});
+  const recipe=Object.freeze({source,mass,axes,colliders:colliders!});
   issued.add(recipe);
   return recipe;
 }

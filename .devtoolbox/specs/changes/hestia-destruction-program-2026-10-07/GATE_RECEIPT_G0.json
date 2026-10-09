@@ -1,0 +1,57 @@
+{
+  "schema": "hestia.gate-receipt.v1",
+  "gate": "G0",
+  "status": "QUALIFIED_CHECKPOINT_NOT_CUT_QUALIFICATION",
+  "source": {
+    "gitCommit": "584b945ede46f4099c28ebb2411714d346c485ac",
+    "gitTree": "db609aced10e3e4fcaad27303b2a8c13bda1ab54",
+    "sourceManifestHash": "cdce5dc042b8366a5835d81f3d106d22127a436f468d805c9abc0fe111c0df4b",
+    "experimentBuildManifestHash": "015095319ac9b0e1c4d4a0a7a9b58e94987d1c993eba729956282077286f50eb",
+    "normalProductBuildManifestHash": "783bb8bc4dadb1d2f8750a86ea5614499f5e99b095bb4ed735bf7c75ca225329",
+    "dirtyStatePreserved": true
+  },
+  "contract": {
+    "sourceCodecVersion": "LEGACY_P_UNCHANGED; E_IDENTITY_ISOLATED",
+    "measurementPolicy": "LEGACY_SOURCE_GATES; HEADLESS_R02_DIAGNOSTIC",
+    "referenceProfile": "HVP-PLAY-720-v1 verified CPU/GPU/AC/Balanced/DPR1"
+  },
+  "counts": {
+    "appTestsPassed": 104,
+    "sharedSummarizerTestsPassed": 6,
+    "nativePlanned": 8,
+    "nativeCompleted": 6,
+    "nativePassed": 5,
+    "nativeInvalidBeforeCut": 1,
+    "nativeNotRun": 2
+  },
+  "nativeExitObserved": true,
+  "completeOutputObserved": true,
+  "review": {
+    "independent": true,
+    "result": "P-compatible ingest/normalization; E ancestry excluded; no new identity decision for compatible paths",
+    "sourceBinding": "cdce5dc042b8366a5835d81f3d106d22127a436f468d805c9abc0fe111c0df4b"
+  },
+  "ownerApprovals": {
+    "exactDiff": {
+      "sha256": "57513d485eca37b676bb7bde2fa9e510c764af9104f3375fe679e927b25e42e3",
+      "result": "Code review completed — no changes requested.",
+      "exitCode": 0
+    },
+    "playtest": null,
+    "defaultVariant": null,
+    "publish": null
+  },
+  "cleanup": {
+    "completedHeadlessSequences": "4/4 actual ordinary/replay handles zero and Native Disposed receipts",
+    "failedHeadfulAttempt": "No native release receipt in raw record; remains unproven",
+    "ownPreviewPorts": "5278 and5289 free; own product preview explicitly ended"
+  },
+  "decision": "KEEP_E_CHECKPOINT_AND_P_COMPATIBLE_REUSE; NO_PRODUCT_MIGRATION",
+  "remainingFindings": [
+    "No D optimization or Ready-v2 implemented yet",
+    "No full P browser ColdLoad commit claimed by unit planning proof",
+    "No formal42/1400 or ART approval"
+  ],
+  "nextGate": "D1",
+  "resumeStep": "Read current D1 code seam, write meaningful readiness RED and implement normal-route generic preparation"
+}

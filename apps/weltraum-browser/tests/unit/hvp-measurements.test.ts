@@ -21,3 +21,11 @@ it("reports invalid or unsupported measurement output without breaking gameplay"
   expect(()=>{m.record("frameIntervalMs",0,16);m.record("bad",NaN,0);m.worker({origin:NaN,steps:[],dropped:0});}).not.toThrow();
   expect(m.read()).toMatchObject({samples:0,errors:3});
 });
+it("relays bounded actual Physics timer gaps with their original cross-realm start and duration",()=>{
+  const clock={now:()=>0,timeOrigin:1000,measure:vi.fn(),clearMeasures:vi.fn()},m=createHvpMeasurements(true,clock as never);
+  m.worker({origin:1100,steps:[],timers:[[20,16.8],[36.8,41]],dropped:0} as never);
+  expect(clock.measure.mock.calls.map(c=>[c[0],c[1].start,c[1].duration])).toEqual([
+    ["hvp.physicsTimerGapMs",120,16.8],["hvp.physicsTimerGapMs",136.8,41]]);
+  m.worker({origin:1100,steps:[],timers:new Array(1025),dropped:0} as never);
+  expect(m.read()).toMatchObject({samples:2,errors:1,dropped:0});
+});

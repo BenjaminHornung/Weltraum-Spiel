@@ -1,26 +1,29 @@
 import {R} from "./rapierPort";
 import type {HvpCuttableBody} from "./bodyCut";
-import {encodeHvpBody,decodeHvpBody,assertHvpDecodedBody,type HvpBodyCheckpoint,type HvpDecodedBody} from "../persistence/bodyCheckpoint";
+import {encodeHvpBody,decodeHvpBody,decodeHvpColdBody,reserveHvpBodyCapture,captureHvpOwnedBody,assertHvpDecodedBody,type HvpBodyCheckpoint,type HvpDecodedBody} from "../persistence/bodyCheckpoint";
 import {restoreHvpBody} from "./restoreBody";
 import {ADAPTIVE_BRICK_ESTIMATED_BYTES} from "../../voxel/adaptive";
 import {serializeCanonicalPersistenceValue} from "../../persistence";
+import {isOwnedStructuralGraph,createStructuralOwnerLedger} from "../../voxel/structural/model";
 
 /** Sleeping terrain owners may leave the solver, never their canonical checkpoint. */
-export const createHvpBodyResidency=(world:R.World,targets:Map<string,HvpCuttableBody>,bodies:Map<string,R.RigidBody>,safeTick:()=>boolean,restored:readonly HvpDecodedBody[]=[])=>{
+const bodyResidencyFor=(workerOwned:boolean,residentBytes:()=>number=()=>0)=>(world:R.World,targets:Map<string,HvpCuttableBody>,bodies:Map<string,R.RigidBody>,safeTick:()=>boolean,restored:readonly HvpDecodedBody[]=[])=>{
+  const preparedBytes=workerOwned?new WeakMap<object,number>():undefined;
   const describe=(ownerId:string,recipe:HvpCuttableBody["recipe"])=>Object.freeze({ownerId,sourceDigest:recipe.source.contentHash,
     centerOfMass:recipe.mass.centerOfMassMeters!,cellCount:recipe.mass.occupiedVoxelCount,massKg:recipe.mass.totalMassKg,
     colliders:recipe.colliders.length,sourceBytes:recipe.source.bricks.length*ADAPTIVE_BRICK_ESTIMATED_BYTES});
-  const parked=new Map<string,{checkpoint:HvpBodyCheckpoint;position:Readonly<{x:number;y:number;z:number}>;source:ReturnType<typeof describe>;bytes:number}>();
+  const parked=new Map<string,{checkpoint:HvpBodyCheckpoint;position:Readonly<{x:number;y:number;z:number}>;source:ReturnType<typeof describe>;bytes:number;decoded?:HvpDecodedBody}>();
   const checkpointBytes=(checkpoint:HvpBodyCheckpoint)=>new TextEncoder().encode(serializeCanonicalPersistenceValue(checkpoint)).byteLength*2;
   const storedBytes=()=>[...parked.values()].reduce((n,p)=>n+p.bytes,0);
   if(restored.length>64){throw new Error("Dormant owner budget");}
   for(const data of restored){assertHvpDecodedBody(data);const c=data.checkpoint;
+    if(workerOwned&&!isOwnedStructuralGraph(data.recipe.source)){throw new Error("Worker dormant restore requires its prepared owned Source");}
     if(c.family!=="terrain"||!c.dynamic||!c.sleeping||targets.has(c.ownerId)||bodies.has(c.ownerId)||parked.has(c.ownerId)){throw new Error("Invalid dormant owner restore");}
     const bytes=checkpointBytes(c);if(storedBytes()+bytes>16*1024*1024){throw new Error("Dormant checkpoint byte budget");}
-    parked.set(c.ownerId,{checkpoint:c,position:data.motion.translationMeters,source:describe(c.ownerId,data.recipe),bytes});
+    parked.set(c.ownerId,{checkpoint:c,position:data.motion.translationMeters,source:describe(c.ownerId,data.recipe),bytes,...(workerOwned?{decoded:data}:{})});
   }
-  let hold=false;
-  const admit=()=>{if(hold||!safeTick()){throw new Error(hold?"RecoveryHold: body residency":"Residency requires a safe held tick");}};
+  let hold=false,disposed=false;
+  const admit=()=>{if(disposed){throw new Error("Body residency disposed");}if(hold||!safeTick()){throw new Error(hold?"RecoveryHold: body residency":"Residency requires a safe held tick");}};
   const distance=(a:Readonly<{x:number;y:number;z:number}>,b:Readonly<{x:number;y:number;z:number}>)=>Math.hypot(a.x-b.x,a.z-b.z);
   return {
     get held(){return hold;},
@@ -29,32 +32,50 @@ export const createHvpBodyResidency=(world:R.World,targets:Map<string,HvpCuttabl
     sources:()=>Object.freeze([...parked.values()].map(p=>p.source)),
     read:()=>Object.freeze([...parked].sort(([a],[b])=>a<b?-1:a>b?1:0).map(([ownerId,p])=>Object.freeze({ownerId,position:p.position,residency:"Checkpointed"}))),
     checkpoint:()=>Object.freeze([...parked.values()].map(p=>p.checkpoint)),
+    retainedRecipes:()=>[...parked.values()].flatMap(p=>p.decoded?[p.decoded.recipe]:[]),
+    recipeBytes:(recipe:HvpDecodedBody["recipe"])=>preparedBytes?.get(recipe),
+    dispose:()=>{disposed=true;parked.clear();},
     park(ownerId:string,player:Readonly<{x:number;y:number;z:number}>):boolean{
       admit();const target=targets.get(ownerId);
       if(![player.x,player.y,player.z].every(Number.isFinite)){throw new Error("Invalid residency observer");}
       if(!target||target.family!=="terrain"||!target.body.isSleeping()||distance(target.body.translation(),player)<=18){return false;}
       const beforeBodies=world.bodies.len(),beforeColliders=world.colliders.len(),colliders=target.body.numColliders();
-      const checkpoint=encodeHvpBody(ownerId,"terrain",target.recipe,target.body),position=Object.freeze({...target.body.translation()});
       // Durable owner data exists before the native removal can have any effect.
       if(parked.size>=64){throw new Error("Dormant owner budget");}
-      const bytes=checkpointBytes(checkpoint);if(storedBytes()+bytes>16*1024*1024){throw new Error("Dormant checkpoint byte budget");}
-      parked.set(ownerId,{checkpoint,position,source:describe(ownerId,target.recipe),bytes});
+      const ledger=workerOwned?createStructuralOwnerLedger(residentBytes(),undefined,128):undefined;
       try{
-        world.removeRigidBody(target.body);
-        if(world.getRigidBody(target.body.handle)!==null||world.bodies.len()!==beforeBodies-1||world.colliders.len()!==beforeColliders-colliders){
-          throw new Error("Native dematerialization was not proven");
+        let decoded:HvpDecodedBody|undefined;
+        if(ledger){
+          reserveHvpBodyCapture(target.recipe,ledger.reserve);
+          if(isOwnedStructuralGraph(target.recipe.source)){decoded=captureHvpOwnedBody(ownerId,"terrain",target.recipe,target.body);}
+          else{
+            decoded=decodeHvpColdBody(encodeHvpBody(ownerId,"terrain",target.recipe,target.body),ledger.reserve);
+            preparedBytes!.set(decoded.recipe,ledger.resources.retainedEstimateBytes);
+          }
         }
-        targets.delete(ownerId);bodies.delete(ownerId);return true;
-      }catch(error){
-        if(world.getRigidBody(target.body.handle)===target.body&&world.bodies.len()===beforeBodies&&world.colliders.len()===beforeColliders){parked.delete(ownerId);throw error;}
-        if(world.getRigidBody(target.body.handle)!==target.body){targets.delete(ownerId);bodies.delete(ownerId);}
-        hold=true;throw new Error(`RecoveryHold: parked material retained after uncertain native removal: ${String(error)}`);
-      }
+        const checkpoint=decoded?.checkpoint??encodeHvpBody(ownerId,"terrain",target.recipe,target.body);
+        const position=decoded?.motion.translationMeters??Object.freeze({...target.body.translation()});
+        const bytes=checkpointBytes(checkpoint);if(storedBytes()+bytes>16*1024*1024){throw new Error("Dormant checkpoint byte budget");}
+        admit();if(targets.get(ownerId)!==target||bodies.get(ownerId)!==target.body){throw new Error("Stale residency owner");}
+        parked.set(ownerId,{checkpoint,position,source:describe(ownerId,decoded?.recipe??target.recipe),bytes,...(decoded?{decoded}:{})});
+        try{
+          world.removeRigidBody(target.body);
+          if(world.getRigidBody(target.body.handle)!==null||world.bodies.len()!==beforeBodies-1||world.colliders.len()!==beforeColliders-colliders){
+            throw new Error("Native dematerialization was not proven");
+          }
+          targets.delete(ownerId);bodies.delete(ownerId);return true;
+        }catch(error){
+          if(world.getRigidBody(target.body.handle)===target.body&&world.bodies.len()===beforeBodies&&world.colliders.len()===beforeColliders){parked.delete(ownerId);throw error;}
+          if(world.getRigidBody(target.body.handle)!==target.body){targets.delete(ownerId);bodies.delete(ownerId);}
+          hold=true;throw new Error(`RecoveryHold: parked material retained after uncertain native removal: ${String(error)}`);
+        }
+      }finally{ledger?.release();}
     },
     restore(ownerId:string):boolean{
       admit();const p=parked.get(ownerId);if(!p){return false;}
       if(targets.has(ownerId)||bodies.has(ownerId)){throw new Error("Duplicate resident owner");}
-      const decoded=decodeHvpBody(p.checkpoint);let dynamic=0;world.bodies.forEach(b=>{if(b.isDynamic()){dynamic+=1;}});
+      if(workerOwned&&!p.decoded){throw new Error("Missing prepared dormant owner");}
+      const decoded=p.decoded??decodeHvpBody(p.checkpoint);let dynamic=0;world.bodies.forEach(b=>{if(b.isDynamic()){dynamic+=1;}});
       if(dynamic>=32||world.colliders.len()+decoded.recipe.colliders.length>4096){throw new Error("Body residency BudgetExceeded");}
       try{
         const body=restoreHvpBody(world,decoded);
@@ -70,3 +91,7 @@ export const createHvpBodyResidency=(world:R.World,targets:Map<string,HvpCuttabl
     }
   };
 };
+export const createHvpBodyResidency=bodyResidencyFor(false);
+/** Fixed first-party Worker route; dormant owners retain their already validated owned recipes. */
+export const createHvpWorkerBodyResidency=(world:R.World,targets:Map<string,HvpCuttableBody>,bodies:Map<string,R.RigidBody>,safeTick:()=>boolean,
+  restored:readonly HvpDecodedBody[]=[],residentBytes:()=>number=()=>0)=>bodyResidencyFor(true,residentBytes)(world,targets,bodies,safeTick,restored);

@@ -63,8 +63,9 @@ const artifact = (revision: number, offset = 0): MeshArtifact => createMeshArtif
 class FakeRenderer implements ThreeRendererPort {
   renders = 0;
   disposals = 0;
+  sizes:readonly number[][]=[];
   setPixelRatio(): void {}
-  setSize(): void {}
+  setSize(width:number,height:number): void {this.sizes=[...this.sizes,[width,height]];}
   render(): void { this.renders += 1; }
   dispose(): void { this.disposals += 1; }
 }
@@ -167,6 +168,28 @@ const projectAndShowFallback = (backend: ThreeRenderBackend): void => {
 };
 
 describe("ThreeRenderBackend resource lifecycle", () => {
+  it("resizes only the live renderer without replacing resources and preserves viewport across reset",()=>{
+    const {backend,renderers}=setup();
+    const viewport=backend as ThreeRenderBackend&{resizeViewport:(width:number,height:number)=>{status:string}};
+    const before=backend.readDiagnostics();
+    expect(viewport.resizeViewport(1280,720).status).toBe("Accepted");
+    expect(renderers[0]!.sizes.at(-1)).toEqual([1280,720]);
+    expect(viewport.resizeViewport(1280,720).status).toBe("Accepted");
+    expect(renderers[0]!.sizes).toHaveLength(2);
+    const after=backend.readDiagnostics();
+    for(const name of ["geometryAllocations","geometryDisposals","materialAllocations","materialDisposals","activeRepresentations","ownedCpuBytes"] as const){
+      expect(after[name]).toBe(before[name]);
+    }
+    for(const dimensions of [[0,720],[1280,NaN],[1.5,720]]){
+      expect(viewport.resizeViewport(dimensions[0]!,dimensions[1]!).status).toBe("RejectedInvalidArtifact");
+    }
+    expect(renderers[0]!.sizes).toHaveLength(2);
+    expect(backend.dispatch({kind:"ResetBackend",backendRevision:backendRevision(0),nextBackendRevision:backendRevision(1)}).status).toBe("Accepted");
+    expect(renderers[1]!.sizes).toEqual([[1280,720]]);
+    expect(backend.dispatch({kind:"DisposeBackend",backendRevision:backendRevision(1)}).status).toBe("Accepted");
+    expect(viewport.resizeViewport(640,360).status).toBe("BackendUnavailable");
+    expect(renderers[1]!.sizes).toHaveLength(1);
+  });
   it("references SnapshotOwned arrays without a second backend copy", () => {
     const { backend } = setup();
     const input = artifactInput(1);

@@ -30,7 +30,7 @@ export class WorkerHandle {
   private readyReject: ((error: Error) => void) | undefined;
   private output: JobOutputDataMessage | undefined;
   private activeJobId: WorkerJobId | undefined;
-  private privateChannels:1|2|6|undefined;
+  private privateChannels:1|2|6|8|undefined;
   public state: WorkerHandleState = "Stopped";
 
   public constructor(
@@ -66,7 +66,8 @@ export class WorkerHandle {
     if (this.state !== "Ready") throw new Error("WorkerHandle is not ready.");
     this.state = "Busy";
     this.activeJobId = request.jobId;
-    this.privateChannels=supportPrepareAllowanceBytes!==undefined?1:terrainPrepareAllowanceBytes===undefined?undefined:request.jobKind==="BuildHvpTerrainSector"?6:2;
+    this.privateChannels=supportPrepareAllowanceBytes!==undefined?1:terrainPrepareAllowanceBytes===undefined?undefined:
+      request.jobKind==="BuildHvpTerrainChunk"?8:request.jobKind==="BuildHvpTerrainSector"?6:2;
     this.output = undefined;
     this.post({ type: "EnqueueJob", request });
     this.post({ type: "JobInputData", jobId: request.jobId, workerEpoch: this.workerEpoch, bundle: input,

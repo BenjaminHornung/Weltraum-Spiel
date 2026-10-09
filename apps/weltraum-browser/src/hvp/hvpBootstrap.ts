@@ -7,10 +7,10 @@ import {createHvpDormancyController} from "../hestia-prototype/runtime/dormancyC
 import {MemoryContentCache} from "../streaming/memoryContentCache";
 import {createHvpSalvageLoop,type HvpSalvageCheckpoint} from "../hestia-prototype/gameplay/salvageLoop";
 import {createHvpSalvageMarker,createHvpSalvageLink,HVP_SALVAGE_MARKER_KEY,HVP_SALVAGE_LINK_KEY} from "../hestia-prototype/presentation/salvageMarker";
-import { createHvpTerrainRoot,createHvpTerrainOwner,assertHvpTerrainSnapshot,type HvpTerrainSnapshot } from "../hestia-prototype/terrain/cutPlan";
+import { createHvpTerrainRoot,createHvpPrivateTerrainRoot,createHvpTerrainOwner,assertHvpTerrainSnapshot,type HvpTerrainSnapshot } from "../hestia-prototype/terrain/cutPlan";
 import {assertHvpSupportCurrent,releaseHvpOwnedSupportPlan,type HvpSupportPlan} from "../hestia-prototype/terrain/supportPlan";
 import type {HvpCell} from "../hestia-prototype/terrain/picking";
-import { createHvpTerrainCompiler, meshInitialHvpTerrain, type HvpTerrainProducts } from "../hestia-prototype/terrain/terrainProducts";
+import { createHvpTerrainCompiler, meshInitialHvpTerrain, releaseHvpOwnedTerrainProducts, discardHvpOwnedTerrainProducts,bindHvpChunkPhysicsInput, type HvpTerrainProducts } from "../hestia-prototype/terrain/terrainProducts";
 import { createHvpTerrainConsumer, type HvpStagedTerrain,type HvpPreparedTerrainBody } from "../hestia-prototype/terrain/terrainConsumer";
 import {meshHvpTerrainFragment,meshHvpBodyCells} from "../hestia-prototype/presentation/terrainFragment";
 import {readHvpBodyCells} from "../hestia-prototype/physics/bodyCutPlan";
@@ -23,7 +23,8 @@ import {ADAPTIVE_BRICK_ESTIMATED_BYTES} from "../voxel/adaptive";
 import { createHvpPlasmaTool } from "../hestia-prototype/terrain/plasmaTool";
 import { createHvpVisualRenderer, HVP_EFFECT_COST, HVP_EFFECT_VERSION } from "../hestia-prototype/presentation/visualEffects";
 import { createSynchronousBatch } from "../hestia-prototype/presentation/synchronousBatch";
-import { createHvpPhysicsClient, type HvpPhysicsClient } from "../hestia-prototype/physics/client";
+import { createHvpPhysicsClient,prepareHvpStaticCollision, type HvpPhysicsClient } from "../hestia-prototype/physics/client";
+import type {HvpCompleteStaticCollision} from "../hestia-prototype/physics/worldReplacement";
 import {createHvpMeasurements} from "../hestia-prototype/runtime/measurements";
 import {createHvpCutObservation,HVP_CUT_TRACE_RESERVE_BYTES,measureHvpCut,measureHvpCutAsync,type HvpBodyCutRenderFacts,type HvpBodyRenderBinding,type HvpCutRenderFacts,type HvpCutTrace} from "../hestia-prototype/runtime/cutTrace";
 import { HVP_INERTIA_CELLS, HVP_INERTIA_KEY } from "../hestia-prototype/physics/profile";
@@ -33,7 +34,7 @@ import {createHvpBodyCutConsumer} from "../hestia-prototype/terrain/bodyCutConsu
 import {decodeHvpBodyMeshOutputSteps} from "../workers/hvpBodyMeshJob";
 import {createHvpBodyMeshTaskPump} from "../workers/hvpBoundedPump";
 import {createHvpBodyMeshPhaseReserve,countHvpOwnedBodyMeshSteps,meshHvpOwnedBodyCellsSteps} from "../hestia-prototype/presentation/bodyMeshAdmission";
-import {createMeshArtifactOwnedSteps} from "../presentation/meshArtifact";
+import {createMeshArtifactOwnedSteps,meshArtifactIntakeBytes,type MeshArtifact} from "../presentation/meshArtifact";
 import {createRenderCommandOwnedSteps} from "../presentation/renderCommands";
 import {HvpRenderStageRecoveryError} from "../hestia-prototype/presentation/renderStageRecovery";
 import { createHvpPlayerInput } from "../hestia-prototype/player/input";
@@ -41,7 +42,9 @@ import { createHvpAvatarMesh, HVP_AVATAR_KEY } from "../hestia-prototype/player/
 import type { HvpCollisionSource } from "../hestia-prototype/physics/terrainColliders";
 import { fnv1aHash } from "../core/hash";
 import { ThreeRenderBackend } from "../render/three/backend";
-import { ThreeMaterialFactory, type ThreeMaterialLease } from "../render/three/backend/threeMaterialFactory";
+import type {ThreePrivateMeshHandle,ThreePrivateMeshBinding} from "../render/three/backend/threeRenderBackend";
+import type {MeshArtifactInput} from "../presentation/meshArtifact";
+import { ThreeMaterialFactory,MaterialAcquireReleaseUncertainError, type ThreeMaterialLease } from "../render/three/backend/threeMaterialFactory";
 import {
   artifactRevision,
   backendRevision,
@@ -119,6 +122,8 @@ import {
 let activeHvpMount = false;
 /** Mount generation: late teardown of a superseded start must not touch the live mount. */
 let hvpMountEpoch = 0;
+const ProjectionFloat32Array=Float32Array;
+const ProjectionUint16Array=Uint16Array,ProjectionUint32Array=Uint32Array;
 
 type HvpDocumentPort = Pick<Document, "body" | "querySelector" | "createElement"> & Partial<Pick<Document, "addEventListener" | "removeEventListener" | "hidden">>;
 type HvpWindowPort = Pick<Window,
@@ -131,11 +136,17 @@ type HvpWindowPort = Pick<Window,
   | "removeEventListener"
 > & Partial<Pick<Window,"location"|"confirm">>;
 type HvpBackend = RenderBackend & {
+  resizeViewport?:ThreeRenderBackend["resizeViewport"];
   dispatchOwnedSteps?:(command:RenderCommand)=>Generator<string,RenderCommandResult,unknown>;
+  admitPrivateMeshSteps?:ThreeRenderBackend["admitPrivateMeshSteps"];
+  upsertPrivateMeshSteps?:ThreeRenderBackend["upsertPrivateMeshSteps"];
+  releasePrivateMesh?:ThreeRenderBackend["releasePrivateMesh"];
+  readPrivateMeshBytes?:ThreeRenderBackend["readPrivateMeshBytes"];
   readonly camera: THREE.PerspectiveCamera;
   readonly scene?: THREE.Scene;
   readonly representationRoot?: THREE.Group;
 };
+type HvpRenderArtifact=MeshArtifact|ThreePrivateMeshHandle["receipt"];
 
 export interface HvpBootstrapHandle {
   dispose(): Promise<void>;
@@ -449,6 +460,9 @@ interface HvpProjectionCamera {
 /** HVP-owned projection/visibility publisher; mirrors the Surface Lab shape without importing it. */
 interface HvpPresentationBackend extends RenderBackend {
   dispatchOwnedSteps(command:RenderCommand):Generator<string,RenderCommandResult,unknown>;
+  admitPrivateMeshSteps(input:MeshArtifactInput,profiles:readonly import("../presentation").MaterialProfile[],binding:ThreePrivateMeshBinding):Generator<string,ThreePrivateMeshHandle,unknown>;
+  upsertPrivateMeshSteps(handle:ThreePrivateMeshHandle,profiles:readonly import("../presentation").MaterialProfile[],binding:ThreePrivateMeshBinding):Generator<string,RenderCommandResult,unknown>;
+  releasePrivateMesh(handle:ThreePrivateMeshHandle,binding:ThreePrivateMeshBinding):RenderCommandResult;
   batch<T>(action: () => T): T;
   setWaterEnabled(enabled: boolean): void;
   updateProjection(): void;
@@ -468,21 +482,25 @@ export const createHvpPresentationBackend = (
   let projectionRevision = 0;
   let waterEnabled = true;
 
-  const publishCurrentSet = (): void => {
-    if (deferInitialProjection) { return; }
+  const sharedProjectionFrame = ():FrameId|undefined => {
     const current = framesByRepresentation.values().next().value ?? lastFrameId;
-    if (current === undefined) return;
-    const started=onTiming?performance.now():0;
     for (const candidate of framesByRepresentation.values()) {
       if (candidate !== current) throw new Error("HVP representations must share one projection frame.");
     }
+    return current;
+  };
+  const publishCurrentSet = (): void => {
+    if (deferInitialProjection) { return; }
+    const started=onTiming?performance.now():0;
+    const current=sharedProjectionFrame();if(current===undefined){return;}
+    const projectionStarted=onTiming?performance.now():0;
     projectionRevision += 1;
     const camera = readCamera();
     const keys = [...framesByRepresentation.keys()];
     const isVisible = (key: RepresentationKey): boolean => (waterEnabled || (key !== waterRepresentationKey && !key.startsWith(`${waterRepresentationKey}:`))) && isRepresentationVisible(key);
     const objectTransforms = new Map(readObjectTransforms().map((transform) => [transform.representationKey, transform]));
     const revision = backend.readDiagnostics().backendRevision;
-    requireAccepted(backend.dispatch(createRenderCommand({
+    requireAccepted(backend.dispatch(Object.freeze({
       kind: "ApplyFrameProjection",
       backendRevision: revision,
       snapshot: createFrameProjectionSnapshot({
@@ -505,17 +523,26 @@ export const createHvpPresentationBackend = (
         }))
       })
     })), "HVP frame projection");
+    const projectionEnded=onTiming?performance.now():0;
+    const visibilityBuildStarted=onTiming?performance.now():0;
+    const plan=createVisibilityPlan({
+      planRevision: visibilityPlanRevision(projectionRevision),
+      visibleRepresentationKeys: keys.filter(isVisible),
+      fallbackRepresentationKeys: [],
+      hiddenRepresentationKeys: keys.filter(key => !isVisible(key))
+    });
+    const visibilityBuildEnded=onTiming?performance.now():0;
+    const visibilityDispatchStarted=onTiming?performance.now():0;
     requireAccepted(backend.dispatch(createRenderCommand({
       kind: "ApplyVisibilityPlan",
       backendRevision: revision,
-      plan: createVisibilityPlan({
-        planRevision: visibilityPlanRevision(projectionRevision),
-        visibleRepresentationKeys: keys.filter(isVisible),
-        fallbackRepresentationKeys: [],
-        hiddenRepresentationKeys: keys.filter(key => !isVisible(key))
-      })
+      plan
     })), "HVP visibility plan");
-    onTiming?.("startupProjectionMs",started,performance.now()-started);
+    const visibilityDispatchEnded=onTiming?performance.now():0;
+    onTiming?.("startupProjectionSnapshotCpuMs",projectionStarted,projectionEnded-projectionStarted);
+    onTiming?.("startupVisibilityPlanBuildCpuMs",visibilityBuildStarted,visibilityBuildEnded-visibilityBuildStarted);
+    onTiming?.("startupVisibilityPlanDispatchCpuMs",visibilityDispatchStarted,visibilityDispatchEnded-visibilityDispatchStarted);
+    onTiming?.("startupProjectionMs",started,visibilityDispatchEnded-started);
   };
   const batcher = createSynchronousBatch(publishCurrentSet);
 
@@ -526,7 +553,7 @@ export const createHvpPresentationBackend = (
       batcher.request();
     } else if ((command.kind === "RemoveRepresentation" || command.kind === "EvictRepresentation") && accepted(result)) {
       framesByRepresentation.delete(command.representationKey);
-      batcher.request();
+      if(command.kind==="EvictRepresentation"||isRepresentationVisible(command.representationKey)){batcher.request();}
     } else if (command.kind === "ResetBackend" || command.kind === "DisposeBackend") {
       framesByRepresentation.clear();
       lastFrameId = undefined;
@@ -544,10 +571,31 @@ export const createHvpPresentationBackend = (
     if(owned===undefined)throw new Error("Owned terrain renderer step path unavailable");
     return recordDispatch(command,yield* owned.call(backend,command));
   }
+  function* admitPrivateMeshSteps(input:MeshArtifactInput,profiles:readonly import("../presentation").MaterialProfile[],binding:ThreePrivateMeshBinding):Generator<string,ThreePrivateMeshHandle,unknown>{
+    const intake=(backend as HvpBackend).admitPrivateMeshSteps;if(intake===undefined){throw new Error("Private mesh intake unavailable");}
+    return yield* intake.call(backend,input,profiles,binding);
+  }
+  function* upsertPrivateMeshSteps(handle:ThreePrivateMeshHandle,profiles:readonly import("../presentation").MaterialProfile[],binding:ThreePrivateMeshBinding):Generator<string,RenderCommandResult,unknown>{
+    const upload=(backend as HvpBackend).upsertPrivateMeshSteps;if(upload===undefined){throw new Error("Private mesh upload unavailable");}
+    const result=yield* upload.call(backend,handle,profiles,binding);
+    if(accepted(result)){
+      lastFrameId=handle.receipt.frameId;framesByRepresentation.set(handle.receipt.representationKey,handle.receipt.frameId);
+      if(isRepresentationVisible(handle.receipt.representationKey)){batcher.request();}
+      else if(!deferInitialProjection){sharedProjectionFrame();}
+    }return result;
+  }
+  const releasePrivateMesh=(handle:ThreePrivateMeshHandle,binding:ThreePrivateMeshBinding):RenderCommandResult=>{
+    const release=(backend as HvpBackend).releasePrivateMesh;if(release===undefined){throw new Error("Private mesh release unavailable");}
+    const result=release.call(backend,handle,binding);
+    if(accepted(result)){framesByRepresentation.delete(handle.receipt.representationKey);if(isRepresentationVisible(handle.receipt.representationKey)){batcher.request();}}return result;
+  };
 
   return Object.freeze({
     dispatch,
     dispatchOwnedSteps,
+    admitPrivateMeshSteps,
+    upsertPrivateMeshSteps,
+    releasePrivateMesh,
     batch: batcher.run,
     updateProjection: () => { deferInitialProjection = false; batcher.request(); },
     renderFrame: () => backend.renderFrame(),
@@ -723,9 +771,15 @@ export const assertHvpProductsBound = (products: HvpBoundProducts): void => {
   if (products.terrainMesh.algorithmVersion !== HVP_COAST_MESH_ALGORITHM_VERSION && products.terrainMeshes === undefined) {
     problems.push("terrain algorithm");
   }
-  if (products.terrainMeshes !== undefined && (products.terrainMeshes.length !== 16 || products.terrainMeshes.some(mesh =>
-    mesh.algorithmVersion !== "hvp-terrain-sector-v1" || mesh.sourceDigest !== terrainDigest))) {
-    problems.push("terrain sector binding");
+  if(products.terrainMeshes!==undefined){
+    const meshes=products.terrainMeshes,algorithm=meshes[0]?.algorithmVersion,source=products.terrainSource;
+    const columns=algorithm==="hvp-terrain-column-v1"&&source!==undefined&&source.sizeX===256&&source.sizeY===128&&source.sizeZ===256&&source.cellMeters===.125;
+    if(meshes.length!==16||(!columns&&algorithm!=="hvp-terrain-sector-v1")||meshes.some((mesh,id)=>{
+      if(mesh.algorithmVersion!==algorithm||mesh.sourceDigest!==terrainDigest){return true;}
+      if(!columns){return false;}
+      const x=source!.originMeters.x+id%4*8,y=source!.originMeters.y,z=source!.originMeters.z+Math.floor(id/4)*8,b=mesh.boundsMeters;
+      return b?.min?.x!==x||b?.min?.y!==y||b?.min?.z!==z||b?.max?.x!==x+8||b?.max?.y!==y+16||b?.max?.z!==z+8;
+    })){problems.push("terrain sector binding");}
   }
   if (products.waterMask.sourceDigest !== products.prepared.sourceDigest) {
     problems.push("water mask source");
@@ -780,14 +834,23 @@ export const startHvp = async (
   let experimentalDrawSubmits=0;
   const measurement=createHvpMeasurements(new URLSearchParams(windowPort.location?.search??"").get("hvpMeasure")==="1");
   const measurementStarted=performance.now();
+  const privateCutSource=!(measurement.enabled&&new URLSearchParams(windowPort.location?.search??"").get("hvpCutSource")==="control");
+  let cutReady=false;
+  let firstSceneReadyV2=false;
+  let loadReadyFrame:{start:number;source:HvpTerrainSnapshot}|undefined;
+  const preparingNotice=documentPort.createElement("p");preparingNotice.id="hvp-tool-preparing";
+  preparingNotice.setAttribute("role","status");preparingNotice.textContent="Werkzeug wird vorbereitet";documentPort.body.append(preparingNotice);
   let startupPhaseStarted=measurementStarted;
   let startupMeasuring=true;
+  let mainCpuFrameStart:number|undefined;
+  let lastMainCpuFrameStart:number|undefined;
   const startupPhase=(name:string):void=>{
     if(!measurement.enabled){return;}
     const now=performance.now();measurement.record(name,startupPhaseStarted,now-startupPhaseStarted);startupPhaseStarted=now;
   };
   documentPort.body.dataset.hestiaPrototype = "1";
   documentPort.body.dataset.hestiaPrototypeState = "Loading" satisfies HvpLifecycleState;
+  documentPort.body.dataset.hestiaPrototypeCutReadiness=JSON.stringify({policy:"hvp-ready-prewarm-v2",sourceMode:privateCutSource?"private-cow":"control",state:"Preparing"});
 
   let backend: HvpBackend | undefined;
   let camera: ReturnType<typeof createHvpCamera> | undefined;
@@ -800,6 +863,7 @@ export const startHvp = async (
   const visibilityChanged = (): void => { if (documentPort.hidden) { pausePhysics(); } };
   let lookScene: HvpLookScene | undefined;
   const plainTerrainLeases: Array<{nodeKey:string;lease:ThreeMaterialLease}> = [];
+  let plainMaterialFactory:ThreeMaterialFactory|undefined;
   let terrainCompiler: ReturnType<typeof createHvpTerrainCompiler> | undefined;
   let terrainConsumer: ReturnType<typeof createHvpTerrainConsumer> | undefined;
   let supportPending=false;
@@ -845,6 +909,7 @@ export const startHvp = async (
   const listeners=createHvpListeners();
   let visualDisposal:Readonly<{geometries:number;textures:number}>|undefined;
   let disposalReceipt:Record<string,unknown>|undefined;
+  let coldRecipeRetainedBytes=0;
   let readFinalTerrainRoot:(()=>unknown)|undefined;
   // The post-session launcher must not retain the inner scene/cell closures.
   const launcherListeners=createHvpListeners();
@@ -879,12 +944,13 @@ export const startHvp = async (
   const dispose = (): Promise<void> => {
     if (disposePromise !== undefined) return disposePromise;
     disposed = true;
+    cutReady=false;loadReadyFrame=undefined;preparingNotice.remove();
     // The mount stays held until the async cleanup settles, so a restart
     // racing a pending dispose still sees the live mount and fails closed.
     const cleanup = (async () => {
       const errors:unknown[]=[];
       const attempt=async(action:()=>unknown)=>{try{await action();}catch(error){errors.push(error);}};
-      const closingInput=playerInput,closingCamera=camera,closingHud=hud,closingPhysics=physics,closingCompiler=terrainCompiler,closingBackend=backend,closingBodyConsumer=bodyCutConsumer,closingTerrainConsumer=terrainConsumer;
+      const closingInput=playerInput,closingCamera=camera,closingHud=hud,closingPhysics=physics,closingCompiler=terrainCompiler,closingBackend=backend,closingBodyConsumer=bodyCutConsumer,closingTerrainConsumer=terrainConsumer,closingStructuralConsumer=structuralConsumer;
       if(animationFrame!==undefined){windowPort.cancelAnimationFrame(animationFrame);animationFrame=undefined;}
       if(cutObservation!==undefined){releaseCutObservation("disposed");}
       else if(measurement.enabled&&cutObservationStatus==="not-requested"){cutObservationStatus="disposed";disableCutTrace();}
@@ -900,6 +966,7 @@ export const startHvp = async (
       await attempt(()=>terrainCompiler?.dispose());terrainCompiler=undefined;
       await attempt(()=>closingBodyConsumer?.whenIdle());
       await attempt(()=>closingTerrainConsumer?.whenIdle());
+      await attempt(()=>closingStructuralConsumer?.whenIdle());
       await attempt(()=>saveStore?.close());saveStore=undefined;
       await attempt(()=>hud?.dispose());
       hud = undefined;
@@ -919,16 +986,19 @@ export const startHvp = async (
       for (const pair of plainVegetationLeases.splice(0)) {
         await attempt(()=>pair.lease.release());
       }
-      let renderReleased=backend===undefined;
+      await attempt(()=>plainMaterialFactory?.disposeAll());
+      const plainMaterialBalance=plainMaterialFactory===undefined?0:plainMaterialFactory.allocations-plainMaterialFactory.disposals;
+      if(plainMaterialBalance===0){plainMaterialFactory=undefined;}
+      let renderReleased=backend===undefined&&plainMaterialBalance===0;
       if (backend !== undefined) {
         await attempt(()=>{const revision=backend!.readDiagnostics().backendRevision;
-          requireAccepted(backend!.dispatch(createRenderCommand({kind:"DisposeBackend",backendRevision:revision})),"HVP backend disposal");renderReleased=true;});
+          requireAccepted(backend!.dispatch(createRenderCommand({kind:"DisposeBackend",backendRevision:revision})),"HVP backend disposal");renderReleased=plainMaterialBalance===0;});
         backend = undefined;
       }
       if(renderReleased){await attempt(()=>closingBodyConsumer?.releaseDisposedResources());}
       physicsAbort.abort();
       await attempt(()=>physics?.dispose());physics=undefined;
-      if(renderReleased&&closingPhysics?.lifecycle?.().native?.bodies===0&&closingPhysics.lifecycle().native?.colliders===0){
+      if(renderReleased&&(closingPhysics===undefined||(closingPhysics.lifecycle?.().native?.bodies===0&&closingPhysics.lifecycle().native?.colliders===0))){
         await attempt(()=>closingCompiler?.releaseDisposedSupportResources());
       }
       // Shared DOM belongs to whoever holds the mount now: a superseded
@@ -943,15 +1013,16 @@ export const startHvp = async (
       const native=closingPhysics?.lifecycle?.(),jobs=closingCompiler?.diagnostics(),render=closingBackend?.readDiagnostics();
       let finalTerrainRoot:unknown=null;
       await attempt(()=>{finalTerrainRoot=readFinalTerrainRoot?.()??null;});readFinalTerrainRoot=undefined;
+      if(errors.length===0&&renderReleased&&(closingPhysics===undefined||(native?.native?.bodies===0&&native.native.colliders===0))){coldRecipeRetainedBytes=0;}
       disposalReceipt={state:errors.length?"Failed":"Disposed",errors:errors.map(String),finalTerrainRoot,
         scope:"HVP-owned registrations, worker timers, backend/cache objects; not process or GPU byte usage",
         disposed:{geometries:render?render.geometryAllocations-render.geometryDisposals:null,
-          materials:render?render.materialAllocations-render.materialDisposals:null,textures:visualDisposal?.textures??null,
+          materials:render?render.materialAllocations-render.materialDisposals+plainMaterialBalance:null,textures:visualDisposal?.textures??null,
           workers:native===undefined?null:native.workers+(jobs?.workers??0),
           listeners:listeners.size+(closingInput?.listenerCount??0)+(closingCamera?.listenerCount??0)+(closingHud?.listenerCount??0)+(native?.listeners??0),
           timers:native?.timers??null,pendingJobs:(jobs?.runningJobs??0)+(jobs?.queue??0)+(native?.pendingJobs??0),
           bodies:native?.native?.bodies??null,colliders:native?.native?.colliders??null,ownedBytes:render?.ownedCpuBytes??null},
-        cacheBytes:neighborCache.totalBytes,visual:visualDisposal??null,native:native?.native??null,
+        cacheBytes:neighborCache.totalBytes,coldRecipeRetainedBytes,visual:visualDisposal??null,native:native?.native??null,
          measurementHealth:{...measurement.read(),cutObservation:cutObservationReport(),timingSinkFailures:native?.timingSinkFailures??null}};
       overrides.onDisposed?.(disposalReceipt);
       if(errors.length){throw errors[0];}
@@ -982,6 +1053,10 @@ export const startHvp = async (
       antialias: true,
       backgroundColor: 0x0a141c,
       lightingMode: "None",
+      onTiming:measurement.enabled?(phase,start,duration,key)=>{
+        measurement.record(`${startupMeasuring?"startup":"runtime"}${phase[0]!.toUpperCase()}${phase.slice(1)}`,start,duration,
+          {representationKey:key,frameBucketStart:lastMainCpuFrameStart??null,insideAnimationFrame:mainCpuFrameStart!==undefined});
+      }:undefined,
        rendererFactory: (canvas,parameters)=>createHvpVisualRenderer(canvas,parameters,overrides.drawEnabled===undefined?undefined:options=>{
          const renderer=new THREE.WebGLRenderer(options),draw=renderer.render.bind(renderer);
          renderer.render=(scene,camera)=>{if(submitDraw){draw(scene,camera);documentPort.body.dataset.hestiaExperimentDrawSubmits=String(++experimentalDrawSubmits);}};
@@ -1021,10 +1096,23 @@ export const startHvp = async (
     let branchProducts:readonly HvpBranchProduct[]=[];
     let activePreviewKey="";
     type EphemeralState="registered"|"uploading"|"uploaded"|"uncertain";
-    type EphemeralBinding={readonly serial:number;state:EphemeralState;artifact?:ReturnType<typeof createMeshArtifact>};
+    type EphemeralBinding={readonly serial:number;state:EphemeralState;artifact?:HvpRenderArtifact};
     type EphemeralScope={readonly epoch:number;readonly keys:RepresentationKey[]};
     let issuedEphemeralSerial=0,publishedEphemeralEpoch=0;
     const ephemeralBindings=new Map<RepresentationKey,EphemeralBinding>();
+    const privateRenderHandles=new Map<RepresentationKey,{handle:ThreePrivateMeshHandle;binding:ThreePrivateMeshBinding}>();
+    let privateProjectionInputBytes=0;
+    const acquirePlainMaterials=(profiles:readonly import("../presentation").MaterialProfile[]):ThreeMaterialLease=>{
+      const started=measurement.enabled?performance.now():0;
+      try{return materialFactory.acquire(profiles);}catch(error){
+        if(error instanceof MaterialAcquireReleaseUncertainError){
+          saveHold=true;saveView={state:"RecoveryHold",message:error.message,revision:saveView.revision};hud?.updateSave();
+          void physics?.command("Pause").catch(()=>{});
+          throw new HvpRenderStageRecoveryError(error.errors,error.message);
+        }throw error;
+      }finally{if(measurement.enabled){measurement.record(`${startupMeasuring?"startup":"runtime"}PlainMaterialAcquireCpuMs`,started,performance.now()-started,
+        {frameBucketStart:lastMainCpuFrameStart??null,insideAnimationFrame:mainCpuFrameStart!==undefined});}}
+    };
     const presentation = createHvpPresentationBackend(backend, () => ({
       position: backend!.camera.position,
       orientation: backend!.camera.quaternion,
@@ -1047,7 +1135,14 @@ export const startHvp = async (
       && (!managedNeighborKeys.has(key)||activeNeighborKeys.has(key))
        && (!(key.startsWith("hvp:branch:")||key.startsWith("hvp-branch:"))||activeBranchKeys.has(key)||activeFragmentKeys.has(key))
        && (!key.startsWith("hvp:tool:preview:") || key===activePreviewKey),
-       measurement.enabled?(name,start,duration)=>{if(startupMeasuring){measurement.record(name,start,duration);}}:undefined,true);
+       measurement.enabled?(name,start,duration)=>{
+         if(startupMeasuring){measurement.record(name,start,duration);}
+         else if(measurement.enabled&&(name==="startupProjectionMs"||name==="startupProjectionSnapshotCpuMs"
+           ||name==="startupVisibilityPlanBuildCpuMs"||name==="startupVisibilityPlanDispatchCpuMs")){
+           measurement.record(name==="startupProjectionMs"?"runtimePresentationPublishCpuMs":name.replace("startup","runtime"),start,duration,{mainFrameStart:mainCpuFrameStart,
+             frameBucketStart:lastMainCpuFrameStart??null,insideAnimationFrame:mainCpuFrameStart!==undefined});
+         }
+       }:undefined,true);
 
     const renderKeyOccupied=(key:string,native:ReturnType<HvpPhysicsClient["read"]>)=>
       fragmentEntries.has(key)||managedFragmentKeys.has(key)||managedRestoreKeys.has(key)
@@ -1060,11 +1155,14 @@ export const startHvp = async (
       return publishedEphemeralEpoch+1;
     };
     const forgetEphemeral=(key:RepresentationKey):void=>{
+      privateRenderHandles.delete(key);
       ephemeralBindings.delete(key);managedFragmentKeys.delete(key);activeFragmentKeys.delete(key);
       managedRestoreKeys.delete(key);activeRestoreKeys.delete(key);managedNeighborKeys.delete(key);activeNeighborKeys.delete(key);
       activeBranchKeys.delete(key);if(activePreviewKey===key){activePreviewKey="";}
     };
     const cancelEphemeral=(key:RepresentationKey,binding:EphemeralBinding):void=>{
+      const privateEntry=privateRenderHandles.get(key);
+      if(privateEntry!==undefined){requireAccepted(presentation.releasePrivateMesh(privateEntry.handle,privateEntry.binding),"Cancel private mesh custody");}
       let result:RenderCommandResult;
       try{
         result=presentation.dispatch(createRenderCommand({kind:"CancelEphemeralRepresentation",backendRevision:backendRevision(0),
@@ -1075,14 +1173,19 @@ export const startHvp = async (
       }
       forgetEphemeral(key);
     };
-    const retireEphemeral=(artifact:ReturnType<typeof createMeshArtifact>,operation:string):boolean=>{
+    const retireEphemeral=(artifact:HvpRenderArtifact,operation:string):boolean=>{
       const key=artifact.representationKey,binding=ephemeralBindings.get(key);
       if(binding===undefined){return false;}
       let result:RenderCommandResult;
       try{
-        result=presentation.dispatch(createRenderCommand({kind:"RemoveRepresentation",backendRevision:backendRevision(0),representationKey:key,
-          expectedSourceRevision:artifact.sourceRevision,expectedArtifactRevision:artifact.artifactRevision,expectedContentHash:artifact.contentHash}));
+        const privateEntry=privateRenderHandles.get(key);
+        result=privateEntry===undefined?presentation.dispatch(createRenderCommand({kind:"RemoveRepresentation",backendRevision:backendRevision(0),representationKey:key,
+          expectedSourceRevision:artifact.sourceRevision,expectedArtifactRevision:artifact.artifactRevision,expectedContentHash:artifact.contentHash}))
+          :presentation.releasePrivateMesh(privateEntry.handle,privateEntry.binding);
       }catch(error){binding.state="uncertain";enterRenderRecoveryHold(`${operation} outcome unknown: ${String(error)}`);}
+      if(result!.status==="Accepted"&&result!.reasonCode==="PrivateMeshCustodyOnlyReleased"){
+        privateRenderHandles.delete(key);cancelEphemeral(key,binding);return true;
+      }
       if(result!.status==="NotFound"){
         if(binding.state==="uploaded"){
           enterRenderRecoveryHold(`${operation} lost an uploaded ephemeral representation`);
@@ -1171,7 +1274,7 @@ export const startHvp = async (
       binding.state=result.status==="BackendUnavailable"||result.status==="AlreadyApplied"?"uncertain":"registered";
       throw new Error(`${operation} failed: ${result.reasonCode??result.status}`);
     };
-    const recordEphemeralArtifact=(artifact:ReturnType<typeof createMeshArtifact>):void=>{
+    const recordEphemeralArtifact=(artifact:HvpRenderArtifact):void=>{
       const binding=ephemeralBindings.get(artifact.representationKey);if(binding!==undefined){binding.artifact=artifact;}
     };
 
@@ -1204,13 +1307,37 @@ export const startHvp = async (
     };
     const extraCpu=()=>{
       const bytes=overrides.extraCpuBytes?.()??0;
-      if(!Number.isSafeInteger(bytes)||bytes<0||bytes>caps.maxCpuBytes){throw new Error("Invalid experimental CPU reservation");}return bytes;
+      if(!Number.isSafeInteger(bytes)||bytes<0||bytes>caps.maxCpuBytes){throw new Error("Invalid experimental CPU reservation");}
+      // Pending products remain debited inside Prepare96; the persistent cache is outside that phase.
+      const privateBytes=backend?.readPrivateMeshBytes?.();
+      return bytes+coldRecipeRetainedBytes+privateProjectionInputBytes+(terrainCompiler?.diagnostics().chunkCacheBytes??0)+(privateBytes?.custody??0)+(privateBytes?.pending??0);
     };
     const reportResources=(candidate:Parameters<typeof resourceReport>[0],limits:HvpResourceCaps)=>resourceReport({...candidate,totalCpuBytes:candidate.totalCpuBytes+extraCpu()},limits);
+    const recordAdmission=(metric:"SceneAdmissionFailure"|"CutObservationBudgetDisabled",error:unknown,
+      candidate:Parameters<typeof admitHvpResources>[0],extras:number,bytes:number):void=>{
+      if(!measurement.enabled){return;}
+      try{
+        const controlled=candidate as Partial<HvpResourceLedger>&{neighborPhysicsBytes?:number},privateBytes=backend?.readPrivateMeshBytes?.(),native=physics?.read();
+        measurement.record(`${startupMeasuring?"startup":"runtime"}${metric}`,performance.now(),0,{
+          totalCpuBytes:bytes,candidateCpuBytes:candidate.totalCpuBytes,extraCpuBytes:extras,admittedGameplayPeak,
+          maxCpuBytes:caps.maxCpuBytes,diagnosticReserveBytes:HVP_CUT_TRACE_RESERVE_BYTES,
+          tempEstimateBytes:controlled.tempEstimateBytes??null,checkpointSourceBytes:controlled.checkpointSourceBytes??null,
+          meshBytes:controlled.meshBytes??null,artifactCopyBytes:controlled.artifactCopyBytes??null,
+          neighborPhysicsBytes:controlled.neighborPhysicsBytes??null,liveCollisionBytes:physics?.collisionBytes??null,bodySourceResidentBytes:native?.bodySourceResidentBytes??null,
+          privateProjectionInputBytes,chunkCacheBytes:terrainCompiler?.diagnostics().chunkCacheBytes??0,
+          custodyBytes:privateBytes?.custody??0,pendingBytes:privateBytes?.pending??0,
+          stack:error instanceof Error?error.stack?.slice(0,512)??null:metric==="CutObservationBudgetDisabled"?new Error("Cut observation reserve exceeded").stack?.slice(0,512)??null:null});
+      }catch{/* Diagnostic failure cannot change admission or observation policy. */}
+    };
     const admitScene=(candidate:Parameters<typeof admitHvpResources>[0]):void=>{
-      const bytes=candidate.totalCpuBytes+extraCpu();admitHvpResources({...candidate,totalCpuBytes:bytes},caps);
+      const extras=extraCpu(),bytes=candidate.totalCpuBytes+extras;
+      try{admitHvpResources({...candidate,totalCpuBytes:bytes},caps);}catch(error){
+        recordAdmission("SceneAdmissionFailure",error,candidate,extras,bytes);
+        throw error;
+      }
       admittedGameplayPeak=Math.max(admittedGameplayPeak,bytes);
       if(cutObservation!==undefined&&admittedGameplayPeak+HVP_CUT_TRACE_RESERVE_BYTES>caps.maxCpuBytes){
+        recordAdmission("CutObservationBudgetDisabled",undefined,candidate,extras,bytes);
         releaseCutObservation("budget-disabled");
       }
     };
@@ -1226,9 +1353,20 @@ export const startHvp = async (
     const loadQuery=new URLSearchParams(windowPort.location?.search??"").get("hvpLoad");
     if(loadQuery!==null&&loadQuery!=="primary"){throw new Error("Unknown Hestia restore slot");}
     let coldGame:HvpDecodedGame|undefined,coldRevision:number|null=null,checkpointSourceBytes=0;
+    let coldNeighborSourceTransferred=false;
     if(loadQuery==="primary"){
       admitScene({totalCpuBytes:80*1024*1024,retainedMeshBytes:0,triangles:0,drawCalls:0});
-      saveStore=createHvpSaveStore();await saveStore.initialize();const record=await saveStore.load();
+      saveStore=createHvpSaveStore();await saveStore.initialize();
+      let record:Awaited<ReturnType<ReturnType<typeof createHvpSaveStore>["load"]>>;
+      if(privateCutSource){
+        const loaded=await saveStore.loadCold(()=>{
+          if(disposed||hvpMountEpoch!==myEpoch){throw new Error("Hestia Cold restore cancelled");}
+          admitScene({totalCpuBytes:(80+96)*1024*1024,retainedMeshBytes:0,triangles:0,drawCalls:0});
+          if(disposed||hvpMountEpoch!==myEpoch){throw new Error("Hestia Cold restore cancelled");}
+        });
+        if(disposed||hvpMountEpoch!==myEpoch){return Object.freeze({dispose});}
+        coldRecipeRetainedBytes=loaded.recipeRetainedBytes;record=loaded;
+      }else{record=await saveStore.load();}
       coldGame=record.game;coldRevision=record.metadata.recordRevision;
         // The decoded game shares its validated immutable primary with Root;
         // the cold estimator adds decoded body sources, raw record peak and
@@ -1244,12 +1382,43 @@ export const startHvp = async (
     const prepared = prepareHvpOwnedCoastSource(snapshot);
     startupPhase("startupSourceMs");
     documentPort.body.dataset.hestiaPrototypeSourceDigest = prepared.sourceDigest;
-    const terrainRoot = createHvpTerrainOwner(coldGame?.root??createHvpTerrainRoot(prepared, `hvp-session-${myEpoch}`, myEpoch));
+    const terrainRoot = createHvpTerrainOwner(coldGame?.root??(privateCutSource?createHvpPrivateTerrainRoot:createHvpTerrainRoot)(prepared, `hvp-session-${myEpoch}`, myEpoch));
+    const terrainCommandRoot=privateCutSource?terrainRoot:{...terrainRoot};
     if(overrides.onDisposed){readFinalTerrainRoot=()=>{const value=terrainRoot.read();return {
       sourceSessionId:value.sessionId,epoch:value.epoch,revision:value.revision,sourceDigest:value.sourceDigest};};}
     documentPort.body.dataset.hestiaPrototypeRestoreSource=coldGame?"artifact":"authored-start";
     const coldEast=coldGame?.checkpoint.world.neighbor?.resident?coldGame.neighborRoot?.read():undefined;
-    const initialTerrain = meshInitialHvpTerrain(terrainRoot.read(),coldEast);
+    const initialSource=terrainRoot.read();
+    const initialResident=2*HVP_SOURCE_SLOT_COUNT+checkpointSourceBytes+initialSource.overlayBytes*2
+      +(coldEast?HVP_SOURCE_SLOT_COUNT+coldEast.overlayBytes*2:0)+HVP_EFFECT_COST.cpuBytes;
+    if(initialResident+96*1024*1024+extraCpu()>caps.maxCpuBytes){throw new Error("HVP resource cap: CPU bytes exceed initial terrain preparation");}
+    admittedGameplayPeak=Math.max(admittedGameplayPeak,initialResident+96*1024*1024+extraCpu());
+    terrainCompiler=overrides.createTerrainCompiler?overrides.createTerrainCompiler():createHvpTerrainCompiler(undefined,measurement.enabled?(phase,start,duration)=>{
+      const metric={primaryCopy:"NeighborPrimaryCopyMs",eastCopy:"NeighborEastCopyMs",inputDigest:"NeighborInputDigestMs",workerWait:"NeighborWorkerWaitMs",decode:"NeighborDecodeMs"}[phase];
+      measurement.record(`${startupMeasuring?"startup":"runtime"}${metric}`,start,duration);
+    }:undefined);
+    const preparingCompiler=terrainCompiler,poolPreparationStart=measurement.enabled?performance.now():0;
+    await preparingCompiler.prepare(()=>!disposed&&hvpMountEpoch===myEpoch&&terrainCompiler===preparingCompiler&&terrainRoot.read()===initialSource,privateCutSource?terrainRoot:undefined);
+    if(measurement.enabled){measurement.record("startupCutPoolPrepareMs",poolPreparationStart,performance.now()-poolPreparationStart);}
+    const chunkStartup=privateCutSource&&overrides.createTerrainCompiler===undefined&&overrides.createPhysics===undefined;
+    const initialWorldId=coldGame?.checkpoint.world.sessionId??crypto.randomUUID();
+    let renderWorldId=initialWorldId;
+    function* admitPrivateRenderSteps(input:MeshArtifactInput,profiles:readonly import("../presentation").MaterialProfile[],source:HvpTerrainSnapshot,renderEpoch:number,worldId=renderWorldId):Generator<string,ThreePrivateMeshHandle["receipt"],unknown>{
+      if(source===undefined){throw new Error("Missing private render Source binding");}
+      const bytes=meshArtifactIntakeBytes(input);
+      admitScene({...ledger,totalCpuBytes:ledger.totalCpuBytes-ledger.tempEstimateBytes+physicsPrepareBytes+2*bytes});
+      const binding=Object.freeze({worldId,sessionId:source.sessionId,sourceEpoch:source.epoch,sourceRevision:source.revision,sourceDigest:source.sourceDigest,renderEpoch,backendRevision:backend!.readDiagnostics().backendRevision});
+      const handle=yield* presentation.admitPrivateMeshSteps(input,profiles,binding);
+      privateRenderHandles.set(handle.receipt.representationKey,{handle,binding});return handle.receipt;
+    }
+    const observeInitial=measurement.enabled?(start:number,duration:number)=>measurement.record("startupTerrainInputMs",start,duration):undefined;
+    const initialProducts=privateCutSource?await (chunkStartup
+      ?preparingCompiler.initialChunks(initialSource,coldEast,initialResident,initialWorldId,observeInitial,
+        measurement.enabled?population=>measurement.record("startupChunkPopulation",performance.now(),0,population):undefined,
+        measurement.enabled?summary=>measurement.record("startupTerrainPoolSummary",performance.now(),0,summary):undefined)
+      :preparingCompiler.initial(initialSource,coldEast,initialResident,observeInitial)):undefined;
+    if(disposed||hvpMountEpoch!==myEpoch||terrainCompiler!==preparingCompiler||terrainRoot.read()!==initialSource){throw new Error("Scene disposed during initial terrain preparation");}
+    const initialTerrain = initialProducts?.render??meshInitialHvpTerrain(initialSource,coldEast);
     const terrainMesh = initialTerrain.get(0)!;
     if (terrainMesh.faceCount === 0) throw new Error("HVP coast mesher produced no terrain faces.");
     const mask = deriveHvpWaterMask(prepared);
@@ -1322,7 +1491,7 @@ export const startHvp = async (
       // The live composite's raw typed views alias the cache packet. Artifact
       // snapshots and regrouped indices are separate allocations; count those.
       return {...result,totalCpuBytes:result.totalCpuBytes+n.sourceBytes+n.cacheBytes+n.checkpointBytes+n.baseProxyBytes-n.sharedBytes+n.physicsBytes+dormantCheckpointBytes,dormantCheckpointBytes,
-        neighborSourceBytes:n.sourceBytes,neighborCacheBytes:n.cacheBytes,neighborCheckpointBytes:n.checkpointBytes,neighborBaseProxyBytes:n.baseProxyBytes};
+        neighborSourceBytes:n.sourceBytes,neighborCacheBytes:n.cacheBytes,neighborCheckpointBytes:n.checkpointBytes,neighborBaseProxyBytes:n.baseProxyBytes,neighborPhysicsBytes:n.physicsBytes};
     };
     let ledger = sceneLedger({
       terrainMesh,
@@ -1355,7 +1524,9 @@ export const startHvp = async (
     const inertiaSpawn={x:-9,y:Math.max(...[-9,-8].flatMap(x=>[-13.75,-12.5].map(z=>readHvpSourceColumnWorld(x,z).topMeters)))+1.25,z:-13};
     const branchSpawn={x:-12,y:Math.max(...[-12,-11.5].flatMap(x=>[-13.5,-13].map(z=>readHvpSourceColumnWorld(x,z).topMeters))),z:-13.5};
     startupPhase("startupAdmissionMs");
-    physics = await (overrides.createPhysics ?? createHvpPhysicsClient)(collisionSources, spawn, physicsAbort.signal, playerSpawn, inertiaSpawn,branchSpawn,coldGame?.checkpoint.world,salvageScenario?"salvage":"branch",measurement.enabled?measurement.worker:undefined);
+    const chunkInput=chunkStartup?bindHvpChunkPhysicsInput(terrainRoot,initialProducts!,collisionSources):undefined;
+    physics = await (overrides.createPhysics ?? createHvpPhysicsClient)(collisionSources, spawn, physicsAbort.signal, playerSpawn, inertiaSpawn,branchSpawn,coldGame?.checkpoint.world,salvageScenario?"salvage":"branch",measurement.enabled?measurement.worker:undefined,undefined,chunkInput);
+    if(initialProducts){if(chunkStartup&&physics.staticTerrainLayout?.()===null){discardHvpOwnedTerrainProducts(initialProducts);}else{releaseHvpOwnedTerrainProducts(initialProducts);}}
     startupPhase("startupPhysicsMs");
     if (disposed || hvpMountEpoch !== myEpoch) { await physics.dispose(); physics = undefined; return Object.freeze({ dispose }); }
     const branch=physics.read().structural;
@@ -1402,25 +1573,43 @@ export const startHvp = async (
      // Hidden candidates need fresh scene identities after rollback or restore;
      // canonical owners, source revisions and saved IDs do not change.
       function* makeTerrainEntrySteps(id:number,mesh:HvpCompactMesh,generation:number,
-       groupInput:ReturnType<typeof createHvpCompactLookTerrain>|undefined,tag:string,commandId:string|undefined,renderKey:RepresentationKey|undefined,owned:boolean){
-       const group=groupInput??measureCut(commandId,"cutLookRegroupMs",()=>createHvpCompactLookTerrain(mesh,look,{allowPartialRoles:true}));
+       groupInput:ReturnType<typeof createHvpCompactLookTerrain>|undefined,tag:string,commandId:string|undefined,renderKey:RepresentationKey|undefined,owned:boolean,source?:HvpTerrainSnapshot,context?:Pick<ThreePrivateMeshBinding,"worldId"|"renderEpoch">){
+       const group=groupInput??(owned?yield* createHvpCompactLookTerrainSteps(mesh,look,{allowPartialRoles:true},true):measureCut(commandId,"cutLookRegroupMs",()=>createHvpCompactLookTerrain(mesh,look,{allowPartialRoles:true})));
        const input={ representationKey: renderKey??representationKey(`hvp:terrain:s${id}:r${generation}${tag}`),
          sourceRevision: sourceRevision(generation), artifactRevision: artifactRevision(generation),
          algorithmVersion: mesh.algorithmVersion, frameId: frame, positions: mesh.positions, normals: mesh.normals,
          indices: group.indices, attributes: {color:mesh.colors!}, materialRanges:group.materialRanges,bounds:mesh.boundsMeters };
-       const artifact=owned?yield* createMeshArtifactOwnedSteps(input):measureCut(commandId,"cutArtifactCreateMs",()=>createMeshArtifact(input));
+       const artifact:HvpRenderArtifact=owned&&privateCutSource&&backend!.admitPrivateMeshSteps!==undefined
+         ?yield* admitPrivateRenderSteps(input,group.materialProfiles,source!,context?.renderEpoch??publishedEphemeralEpoch,context?.worldId):owned?yield* createMeshArtifactOwnedSteps(input):measureCut(commandId,"cutArtifactCreateMs",()=>createMeshArtifact(input));
        recordEphemeralArtifact(artifact);
        return { id, mesh, group, artifact };
      }
      const makeTerrainEntry=(id:number,mesh:HvpCompactMesh,generation:number,groupInput?:ReturnType<typeof createHvpCompactLookTerrain>,tag="",commandId?:string,renderKey?:RepresentationKey)=>
-       makeTerrainEntrySteps(id,mesh,generation,groupInput,tag,commandId,renderKey,false).next().value as {id:number;mesh:HvpCompactMesh;group:HvpLookTerrain;artifact:ReturnType<typeof createMeshArtifact>};
-    const terrainEntries = new Map([...initialTerrain].map(([id,mesh])=>[id,makeTerrainEntry(id,mesh,terrainRoot.read().revision,terrainLooks.get(id)!)]));
+       makeTerrainEntrySteps(id,mesh,generation,groupInput,tag,commandId,renderKey,false).next().value as {id:number;mesh:HvpCompactMesh;group:HvpLookTerrain;artifact:HvpRenderArtifact};
+    const terrainEntries = new Map<number,ReturnType<typeof makeTerrainEntry>>();
     const upsertTerrain = (entry: Pick<ReturnType<typeof makeTerrainEntry>,"artifact"|"group">,commandId?:string): void => {
+       const privateEntry=privateRenderHandles.get(entry.artifact.representationKey);
+       if(privateEntry!==undefined){const steps=presentation.upsertPrivateMeshSteps(privateEntry.handle,entry.group.materialProfiles,privateEntry.binding);
+         for(;;){const step=steps.next();if(step.done){requireAccepted(step.value,"Private mesh wake upsert");return;}}}
+       if(!("positions" in entry.artifact)){throw new Error("Missing private render handle");}
+       const artifact=entry.artifact;
        measureCut(commandId,"cutBackendUpsertMs",()=>uploadArtifact(createRenderCommand({kind:"UpsertMeshArtifact",backendRevision:backendRevision(0),
-         artifact:entry.artifact,materialProfiles:entry.group.materialProfiles}),"HVP terrain sector upsert"));
+         artifact,materialProfiles:entry.group.materialProfiles}),"HVP terrain sector upsert"));
     };
-    for(const entry of terrainEntries.values()) {
-      activeTerrainKeys.add(entry.artifact.representationKey); upsertTerrain(entry);
+    const privateStartup=privateCutSource&&backend!.admitPrivateMeshSteps!==undefined;
+    if(privateStartup){
+      const pump=createHvpBodyMeshTaskPump(()=>{if(disposed||hvpMountEpoch!==myEpoch||terrainRoot.read()!==initialSource){throw new Error("Stale initial render preparation");}});
+      try{
+        for(const [id,mesh] of initialTerrain){const entry=await pump.run(makeTerrainEntrySteps(id,mesh,initialSource.revision,terrainLooks.get(id)!,"",undefined,undefined,true,initialSource));terrainEntries.set(id,entry);}
+        for(const entry of terrainEntries.values()){
+          const owned=privateRenderHandles.get(entry.artifact.representationKey);if(owned===undefined){throw new Error("Missing initial private mesh binding");}
+          requireAccepted(await pump.run(presentation.upsertPrivateMeshSteps(owned.handle,entry.group.materialProfiles,owned.binding)),"Initial private terrain upsert");
+          activeTerrainKeys.add(entry.artifact.representationKey);
+        }
+      }finally{pump.dispose();}
+    }else{
+      for(const [id,mesh] of initialTerrain){const entry=makeTerrainEntry(id,mesh,initialSource.revision,terrainLooks.get(id)!);terrainEntries.set(id,entry);}
+      for(const entry of terrainEntries.values()){activeTerrainKeys.add(entry.artifact.representationKey);upsertTerrain(entry);}
     }
     if(salvageMarker){
       const profile=createMaterialProfile({id:materialProfileId("hvp:salvage-zone-material"),kind:"BasicLit",baseColor:{r:.02,g:.7,b:1},opacity:1,doubleSided:false,wireframe:false,depthWrite:true});
@@ -1528,14 +1717,14 @@ export const startHvp = async (
     // Plain-variant leases from a mount-owned factory: the backend keeps its
     // colored leases, so toggling swaps whole material arrays and never
     // mutates a cached instance behind another holder's back.
-    const materialFactory = new ThreeMaterialFactory();
+    const materialFactory = plainMaterialFactory = new ThreeMaterialFactory();
     for(const entry of terrainEntries.values()) {
-      plainTerrainLeases.push({nodeKey:entry.artifact.representationKey,lease:materialFactory.acquire(entry.group.materialProfiles)});
+      plainTerrainLeases.push({nodeKey:entry.artifact.representationKey,lease:acquirePlainMaterials(entry.group.materialProfiles)});
     }
-    plainJoinLease = materialFactory.acquire(joinLook.materialProfiles);
+    plainJoinLease = acquirePlainMaterials(joinLook.materialProfiles);
     for (const product of vegetation) {
       if (product.artifact.representationKey.endsWith(":wood")) {
-        plainVegetationLeases.push({ nodeKey: product.artifact.representationKey, lease: materialFactory.acquire(product.profiles) });
+        plainVegetationLeases.push({ nodeKey: product.artifact.representationKey, lease: acquirePlainMaterials(product.profiles) });
       }
     }
     const aoColoredByNode = new Map<string, readonly THREE.Material[]>();
@@ -1582,12 +1771,19 @@ export const startHvp = async (
 
     camera = createHvpCamera({ camera: backend.camera, canvas, windowPort: windowPort as Window,
       isInputBlocked: () => playerInput?.active ?? false });
+    const resizeViewport=()=>{
+      if(disposed||myEpoch!==hvpMountEpoch||backend===undefined){return;}
+      const result=backend.resizeViewport?.(Math.max(1,windowPort.innerWidth),Math.max(1,windowPort.innerHeight));
+      if(result!==undefined){requireAccepted(result,"HVP viewport resize");}
+    };
+    listeners.add(windowPort,"resize",resizeViewport);
+    resizeViewport();
     playerInput = createHvpPlayerInput(canvas, backend.camera, physics, documentPort as Document, windowPort as Window, () => {
       camera!.reset(); hud!.update("Ready", camera!.readPose(), stats);
      },{confirm:()=>{
        const run=()=>{void plasmaTool?.confirm();};
        if(cutObservation!==undefined){cutObservation.confirm(run);}else{run();}
-     },select:mode=>plasmaTool?.select(mode)},()=>saveBusy||saveHold||supportPending||Boolean(dormancy?.read().recoveryHold));
+     },select:mode=>plasmaTool?.select(mode)},()=>!cutReady||saveBusy||saveHold||supportPending||Boolean(dormancy?.read().recoveryHold));
     if(!coldGame&&scenario==="east-edge"){playerInput.aimAt({x:48,y:playerSpawn.y+.75,z:-14});}
     const dropProfile = createMaterialProfile({ id: materialProfileId("hvp:drop-limestone-v1"), kind: "BasicLit",
       baseColor: { r: 0.8, g: 0.35, b: 0.12 }, opacity: 1, doubleSided: false, wireframe: false, depthWrite: true });
@@ -1622,17 +1818,29 @@ export const startHvp = async (
       baseColor:{r:.43,g:.25,b:.11},opacity:1,doubleSided:false,wireframe:false,depthWrite:true});
     const branchLeafProfile=createMaterialProfile({id:materialProfileId("hvp:branch:leaf-v1"),kind:"BasicLit",
       baseColor:{r:.22,g:.46,b:.12},opacity:1,doubleSided:false,wireframe:false,depthWrite:true});
-     const makeBranchEntry=(product:HvpBranchProduct,generation:number,renderKey?:RepresentationKey)=>{
+     function* makeBranchEntrySteps(product:HvpBranchProduct,generation:number,renderKey:RepresentationKey|undefined,owned:boolean,source?:HvpTerrainSnapshot,context?:Pick<ThreePrivateMeshBinding,"worldId"|"renderEpoch">){
        const profile=product.decoration?branchLeafProfile:branchWoodProfile;
-       const artifact=createMeshArtifact({representationKey:renderKey??representationKey(product.key),frameId:frame,
+       const input={representationKey:renderKey??representationKey(product.key),frameId:frame,
          sourceRevision:sourceRevision(generation),artifactRevision:artifactRevision(generation),algorithmVersion:product.mesh.algorithmVersion,
          positions:product.mesh.positions,normals:product.mesh.normals,indices:product.mesh.indices,bounds:product.mesh.boundsMeters,
-         materialRanges:[{materialProfileId:profile.id,startIndex:0,indexCount:product.mesh.indices.length}]});
+         materialRanges:[{materialProfileId:profile.id,startIndex:0,indexCount:product.mesh.indices.length}]};
+       const artifact:HvpRenderArtifact=owned?yield* admitPrivateRenderSteps(input,[profile],source!,context?.renderEpoch??publishedEphemeralEpoch,context?.worldId):createMeshArtifact(input);
        recordEphemeralArtifact(artifact);return {product,profile,artifact};
-     };
-     let branchEntries=branchProducts.map(p=>makeBranchEntry(p,0));
-     const uploadBranch=(entry:ReturnType<typeof makeBranchEntry>)=>uploadArtifact(createRenderCommand({kind:"UpsertMeshArtifact",
-       backendRevision:backendRevision(0),artifact:entry.artifact,materialProfiles:[entry.profile]}),"Branch mesh upsert");
+     }
+     const makeBranchEntry=(product:HvpBranchProduct,generation:number,renderKey?:RepresentationKey)=>makeBranchEntrySteps(product,generation,renderKey,false).next().value as {product:HvpBranchProduct;profile:ReturnType<typeof createMaterialProfile>;artifact:HvpRenderArtifact};
+     let branchEntries:ReturnType<typeof makeBranchEntry>[]=[];
+     function* uploadBranchSteps(entry:ReturnType<typeof makeBranchEntry>):Generator<string,void,unknown>{
+       const owned=privateRenderHandles.get(entry.artifact.representationKey),binding=ephemeralBindings.get(entry.artifact.representationKey);
+       if(owned!==undefined){
+         if(binding){binding.state="uploading";}let result:RenderCommandResult;
+         try{result=yield* presentation.upsertPrivateMeshSteps(owned.handle,[entry.profile],owned.binding);}catch(error){if(binding){binding.state="uncertain";}throw error;}
+         if(result.status!=="Accepted"){if(binding){binding.state=result.status==="BackendUnavailable"||result.status==="AlreadyApplied"?"uncertain":"registered";}requireAccepted(result,"Private branch mesh upsert");}
+         if(binding){binding.state="uploaded";}return;
+       }
+       if(!("positions" in entry.artifact)){throw new Error("Missing private branch handle");}
+       uploadArtifact(createRenderCommand({kind:"UpsertMeshArtifact",backendRevision:backendRevision(0),artifact:entry.artifact,materialProfiles:[entry.profile]}),"Branch mesh upsert");
+     }
+     const uploadBranch=(entry:ReturnType<typeof makeBranchEntry>)=>{const steps=uploadBranchSteps(entry);for(;;){if(steps.next().done){return;}}};
      const retireBranch=(entry:ReturnType<typeof makeBranchEntry>)=>{
        const a=entry.artifact;
        if(!retireEphemeral(a,"Branch retirement")){
@@ -1642,9 +1850,13 @@ export const startHvp = async (
        }
        managedRestoreKeys.delete(a.representationKey);activeRestoreKeys.delete(a.representationKey);
      };
-     for(const entry of branchEntries){activeBranchKeys.add(entry.product.key);uploadBranch(entry);}
+     const branchStartupPump=privateStartup?createHvpBodyMeshTaskPump(()=>{if(disposed||hvpMountEpoch!==myEpoch||terrainRoot.read()!==initialSource){throw new Error("Stale initial branch rendering");}}):undefined;
+     try{
+       for(const product of branchProducts){branchEntries.push(branchStartupPump?await branchStartupPump.run(makeBranchEntrySteps(product,0,undefined,true,initialSource)):makeBranchEntry(product,0));}
+       for(const entry of branchEntries){if(branchStartupPump){await branchStartupPump.run(uploadBranchSteps(entry));}else{uploadBranch(entry);}activeBranchKeys.add(entry.product.key);}
+     }finally{branchStartupPump?.dispose();}
      function* makeFragmentEntrySteps(ownerId:string,mesh:HvpCompactMesh,sourceBytes:number,cellCount:number,generation:number,family:"terrain"|"branch",
-       renderKey:RepresentationKey,commandId:string|undefined,owned:boolean){
+       renderKey:RepresentationKey,commandId:string|undefined,owned:boolean,source?:HvpTerrainSnapshot,context?:Pick<ThreePrivateMeshBinding,"worldId"|"renderEpoch">){
        // Gate explicit ownership, not an ID prefix, before uploading prepared children.
        if(family==="branch"&&mesh.materialRanges.some(r=>r.slot!==1)){throw new Error("Unexpected timber material");}
        const terrainGroup=owned?yield* createHvpCompactLookTerrainSteps(mesh,look,{allowPartialRoles:true},true)
@@ -1655,13 +1867,14 @@ export const startHvp = async (
          sourceRevision:sourceRevision(generation),artifactRevision:artifactRevision(generation),algorithmVersion:mesh.algorithmVersion,
          positions:mesh.positions,normals:mesh.normals,indices:group.indices,attributes:{color:mesh.colors!},
          materialRanges:group.materialRanges,bounds:mesh.boundsMeters};
-       const artifact=owned?yield* createMeshArtifactOwnedSteps(input):measureCut(commandId,"cutArtifactCreateMs",()=>createMeshArtifact(input));
+       const artifact:HvpRenderArtifact=owned&&privateCutSource&&backend!.admitPrivateMeshSteps!==undefined
+         ?yield* admitPrivateRenderSteps(input,group.materialProfiles,source!,context?.renderEpoch??publishedEphemeralEpoch,context?.worldId):owned?yield* createMeshArtifactOwnedSteps(input):measureCut(commandId,"cutArtifactCreateMs",()=>createMeshArtifact(input));
        recordEphemeralArtifact(artifact);managedFragmentKeys.add(renderKey);
        return {ownerId,family,sourceBytes:sourceBytes+cellCount*32,mesh,group,artifact};
      }
      const makeFragmentEntry=(ownerId:string,mesh:HvpCompactMesh,sourceBytes:number,cellCount:number,generation:number,family:"terrain"|"branch"="terrain",renderKey:RepresentationKey=representationKey(ownerId),commandId?:string)=>
        makeFragmentEntrySteps(ownerId,mesh,sourceBytes,cellCount,generation,family,renderKey,commandId,false).next().value as {
-         ownerId:string;family:"terrain"|"branch";sourceBytes:number;mesh:HvpCompactMesh;group:HvpLookTerrain;artifact:ReturnType<typeof createMeshArtifact>};
+         ownerId:string;family:"terrain"|"branch";sourceBytes:number;mesh:HvpCompactMesh;group:HvpLookTerrain;artifact:HvpRenderArtifact};
     const fragmentEntries=new Map<string,ReturnType<typeof makeFragmentEntry>>();
     const readBodyCutFrame=(commandId:string,native:ReturnType<HvpPhysicsClient["read"]>,root:THREE.Group):HvpBodyCutRenderFacts=>{
       const outcome=bodyCutConsumer?.read().last,receipt=native.moving.last;
@@ -1691,8 +1904,8 @@ export const startHvp = async (
           throw new Error("HVP body observation source or generation mismatch");
         }
         const node=root.children.find(child=>child.name===`${HVP_CUT_REPRESENTATION_PREFIX}${entry.artifact.representationKey}`);
-        if(!(node instanceof THREE.Mesh)||!node.visible||node.geometry.getAttribute("position")?.count!==entry.artifact.positions.length/3
-          ||node.geometry.index?.count!==entry.artifact.indices.length
+        if(!(node instanceof THREE.Mesh)||!node.visible||node.geometry.getAttribute("position")?.count!==("positions" in entry.artifact?entry.artifact.positions.length/3:entry.artifact.vertexCount)
+          ||node.geometry.index?.count!==("indices" in entry.artifact?entry.artifact.indices.length:entry.artifact.indexCount)
           ||(["x","y","z"] as const).some(axis=>node.position[axis]!==Math.fround(pose.position[axis])||node.scale[axis]!==1)
           ||(["x","y","z","w"] as const).some(axis=>node.quaternion[axis]!==Math.fround(pose.orientation[axis]))){
           throw new Error("HVP body observation projection mismatch");
@@ -1702,11 +1915,16 @@ export const startHvp = async (
       return {outcome,nativeState:native.moving.state,nativeSequence:native.moving.sequence,receipt,children,activeKeys,visibleKeys};
     };
     const parkedRenderOwners=new Set(physics.read().parked?.map(p=>p.ownerId)??[]);
-    for(const p of coldFragments){
-      const entry=makeFragmentEntry(p.ownerId,p.mesh,p.sourceBytes,p.cells,terrainRoot.read().revision,p.family);
+    const coldRenderPump=privateStartup?createHvpBodyMeshTaskPump(()=>{if(disposed||hvpMountEpoch!==myEpoch||terrainRoot.read()!==initialSource){throw new Error("Stale cold body render preparation");}}):undefined;
+    try{for(const p of coldFragments){
+      const entry=coldRenderPump?await coldRenderPump.run(makeFragmentEntrySteps(p.ownerId,p.mesh,p.sourceBytes,p.cells,initialSource.revision,p.family,representationKey(p.ownerId),undefined,true,initialSource))
+        :makeFragmentEntry(p.ownerId,p.mesh,p.sourceBytes,p.cells,initialSource.revision,p.family);
       fragmentEntries.set(p.ownerId,entry);if(parkedRenderOwners.has(p.ownerId)){continue;}activeFragmentKeys.add(entry.artifact.representationKey);
-      upsertTerrain(entry);plainTerrainLeases.push({nodeKey:entry.artifact.representationKey,lease:materialFactory.acquire(entry.group.materialProfiles)});
-    }
+      const owned=privateRenderHandles.get(entry.artifact.representationKey);
+      if(coldRenderPump&&owned!==undefined){requireAccepted(await coldRenderPump.run(presentation.upsertPrivateMeshSteps(owned.handle,entry.group.materialProfiles,owned.binding)),"Initial private body upsert");}
+      else{upsertTerrain(entry);}
+      plainTerrainLeases.push({nodeKey:entry.artifact.representationKey,lease:acquirePlainMaterials(entry.group.materialProfiles)});
+    }}finally{coldRenderPump?.dispose();}
     const fragmentSourceBytes=()=>[...fragmentEntries.values()].reduce((n,e)=>n+e.sourceBytes,0);
     const stats = {
       faces: [...terrainEntries.values()].reduce((n,e)=>n+e.mesh.faceCount,0) + water.faceCount,
@@ -1753,7 +1971,9 @@ export const startHvp = async (
          managedRestoreKeys.delete(a.representationKey);activeRestoreKeys.delete(a.representationKey);
        }
      };
-    const stageDormancy=(candidate:ReturnType<HvpPhysicsClient["read"]>):HvpStagedTerrain=>{
+    const stageDormancy=(candidate:ReturnType<HvpPhysicsClient["read"]>):HvpStagedTerrain|Promise<HvpStagedTerrain>=>{
+      const source=terrainRoot.read(),epoch=publishedEphemeralEpoch,worldId=renderWorldId;
+      const prepare=function*():Generator<string,HvpStagedTerrain,unknown>{
       const before=new Set(parkedRenderOwners),next=new Set(candidate.parked.map(p=>p.ownerId));
       const wake=[...before].filter(id=>!next.has(id)).map(id=>{
         const entry=fragmentEntries.get(id),source=candidate.terrainFragments.find(p=>p.ownerId===id);
@@ -1765,9 +1985,18 @@ export const startHvp = async (
       const previousLedger=ledger,previousTransforms=physicsTransforms;
       const nextLedger={...ledger,totalCpuBytes:ledger.totalCpuBytes+candidate.dormantCheckpointBytes-ledger.dormantCheckpointBytes,
         dormantCheckpointBytes:candidate.dormantCheckpointBytes};admitScene(nextLedger);
-      try{for(const entry of wake){upsertTerrain(entry);plainTerrainLeases.push({nodeKey:entry.artifact.representationKey,lease:materialFactory.acquire(entry.group.materialProfiles)});}
+      let handedOff=false;
+      try{for(const entry of wake){const owned=privateRenderHandles.get(entry.artifact.representationKey);
+          if(owned!==undefined){
+            const binding=ephemeralBindings.get(entry.artifact.representationKey);if(binding!==undefined){binding.state="uploading";}
+            let result:RenderCommandResult;
+            try{result=yield* presentation.upsertPrivateMeshSteps(owned.handle,entry.group.materialProfiles,owned.binding);}catch(error){if(binding){binding.state="uncertain";}throw error;}
+            if(result.status!=="Accepted"){if(binding){binding.state=result.status==="BackendUnavailable"||result.status==="AlreadyApplied"?"uncertain":"registered";}requireAccepted(result,"Private dormant wake upload");}
+            if(binding!==undefined){binding.state="uploaded";}
+          }
+          else{upsertTerrain(entry);}
+          plainTerrainLeases.push({nodeKey:entry.artifact.representationKey,lease:acquirePlainMaterials(entry.group.materialProfiles)});}
         if(!aoEnabled){setAoOnNodes(false);}
-      }catch(error){for(const entry of wake){removeTerrainEntry(entry,"EvictRepresentation");}throw error;}
       const visible=(parked:ReadonlySet<string>)=>{
         parkedRenderOwners.clear();for(const id of parked){parkedRenderOwners.add(id);}
         for(const entry of fragmentEntries.values()){
@@ -1775,16 +2004,24 @@ export const startHvp = async (
           else{activeFragmentKeys.add(entry.artifact.representationKey);if(managedRestoreKeys.has(entry.artifact.representationKey)){activeRestoreKeys.add(entry.artifact.representationKey);}}
         }
       };
-      return {
+      const staged:HvpStagedTerrain={
         publish(){visible(next);ledger=nextLedger;syncPhysicsTransforms();presentation.updateProjection();updateTerrainState();},
         rollback(){visible(before);ledger=previousLedger;physicsTransforms=previousTransforms;presentation.updateProjection();for(const entry of wake){removeTerrainEntry(entry,"EvictRepresentation");}},
         // Dormancy is reversible residency, not permanent source removal.
         finish(){for(const entry of park){removeTerrainEntry(entry,"EvictRepresentation");}}
       };
+      handedOff=true;return staged;
+      }finally{if(!handedOff){const errors:unknown[]=[];for(const entry of wake){try{removeTerrainEntry(entry,"EvictRepresentation");}catch(error){errors.push(error);}}
+        if(errors.length){saveHold=true;throw new HvpRenderStageRecoveryError(errors,"Dormant wake cleanup is unproven");}}}
+      };
+      const steps=prepare();
+      if(!privateCutSource||backend!.admitPrivateMeshSteps===undefined){return steps.next().value as HvpStagedTerrain;}
+      const pump=createHvpBodyMeshTaskPump(()=>{if(disposed||hvpMountEpoch!==myEpoch||terrainRoot.read()!==source||publishedEphemeralEpoch!==epoch||renderWorldId!==worldId||saveBusy){throw new Error("Stale dormant render staging");}});
+      return pump.run(steps).finally(()=>pump.dispose());
     };
     const waterGroup=(mesh:HvpCompactMesh)=>({indices:mesh.indices,materialProfiles:[look.water.materialProfile],
       materialRanges:[{materialProfileId:look.water.materialProfile.id,startIndex:0,indexCount:mesh.indices.length}]});
-    type NeighborEntry={mesh:HvpCompactMesh;group:ReturnType<typeof createHvpCompactLookTerrain>;artifact:ReturnType<typeof createMeshArtifact>};
+    type NeighborEntry={mesh:HvpCompactMesh;group:ReturnType<typeof createHvpCompactLookTerrain>;artifact:HvpRenderArtifact};
     let neighborEntries:NeighborEntry[]=originalProxyArtifacts.map((artifact,i)=>({artifact,mesh:[water,joinMesh,farMesh][i]!,group:[waterGroup(water),joinLook,farLook][i]!}));
     originalProxyArtifacts.length=0;
     for(const e of neighborEntries){managedNeighborKeys.add(e.artifact.representationKey);activeNeighborKeys.add(e.artifact.representationKey);}
@@ -1795,13 +2032,23 @@ export const startHvp = async (
        tiles:ReadonlyMap<number,ReturnType<typeof makeTerrainEntry>>;
        ledger:(meshes:readonly HvpCompactMesh[],groups:readonly NeighborEntry["group"][],costs:NeighborCosts)=>ReturnType<typeof sceneLedger>;
        sourceBytes:number;overlayBytes:number;stagingBytes:number;stagedMeshBytes:number;
-     }):HvpStagedTerrain=>withEphemeralScope(restore?.ephemeralEpoch??publishedEphemeralEpoch,scope=>{
+       source:HvpTerrainSnapshot;worldId:string;current:()=>boolean;
+     }):HvpStagedTerrain|Promise<HvpStagedTerrain>=>{
+       const primary=restore?.source??terrainRoot.read(),before=terrainRoot.read(),worldId=restore?.worldId??renderWorldId,epoch=restore?.ephemeralEpoch??publishedEphemeralEpoch;
+       const privateStage=privateCutSource&&backend!.admitPrivateMeshSteps!==undefined,context={worldId,renderEpoch:epoch};
+       const stages=withEphemeralScopeSteps(epoch,function*(scope){
        const p=value.products;
+      const coldSourceCredit=!restore&&!coldNeighborSourceTransferred&&value.source!==null&&coldGame?.neighborRoot?.read()===value.source?HVP_SOURCE_SLOT_COUNT:0;
       const meshes=p?[p.water,p.join,p.far,...p.region,p.waterPatch]:[originalProxies.water,originalProxies.join,originalProxies.far];
       const stagedCollisionBytes=value.seams?[...value.seams.primary.collision.values(),...value.seams.east].reduce((n,m)=>n+m.vertices.byteLength+m.indices.byteLength,0):0;
       const nativeCoexistence=physics!.collisionBytes*2+stagedCollisionBytes*2;
-      const reuseProxies=(p!==null&&neighborCosts.meshes.length>0)
+      const reusable=(p!==null&&neighborCosts.meshes.length>0)
         ||(p===null&&water===originalProxies.water&&joinMesh===originalProxies.join&&farMesh===originalProxies.far);
+      const reuseProxies=reusable&&(!privateStage||neighborEntries.slice(0,3).every(entry=>{
+        const binding=privateRenderHandles.get(entry.artifact.representationKey)?.binding;
+        return binding!==undefined&&binding.worldId===worldId&&binding.sessionId===primary.sessionId&&binding.sourceEpoch===primary.epoch&&binding.sourceRevision===primary.revision&&binding.sourceDigest===primary.sourceDigest
+          &&binding.renderEpoch===epoch&&binding.backendRevision===backend!.readDiagnostics().backendRevision;
+      }));
       const plannedBytes=meshes.slice(reuseProxies?3:0).reduce((n,m)=>n+meshBytes(m),0)
         +(restore?0:[...(value.seams?.primary.render.values()??[])].reduce((n,m)=>n+meshBytes(m),0));
       const extraState=Math.max(0,(value.source?8_388_608+value.source.overlayBytes*2:0)+value.cacheBytes+value.checkpointBytes+(p?baseProxyBytes:0)
@@ -1811,42 +2058,66 @@ export const startHvp = async (
         retainedCpu:ledger.totalCpuBytes-ledger.tempEstimateBytes,nativeCoexistence});
       // Both compiler jobs have completed. Only their retained output and
       // disabled native replacement colliders coexist with graphics staging.
-       admitScene({...ledger,totalCpuBytes:estimateHvpStageCpuBytes(ledger,ledger,plannedBytes,nativeCoexistence)+extraState+(restore?.stagingBytes??0),
-         retainedMeshBytes:ledger.retainedMeshBytes+plannedBytes+(restore?.stagedMeshBytes??0)});
+       const stageAdmission={...ledger,totalCpuBytes:estimateHvpStageCpuBytes(ledger,ledger,plannedBytes,nativeCoexistence)+extraState+(restore?.stagingBytes??0),
+         retainedMeshBytes:ledger.retainedMeshBytes+plannedBytes+(restore?.stagedMeshBytes??0)};
+       admitScene(stageAdmission);
       const groups=meshes.map((m,i)=>i===0||(p!==null&&i===meshes.length-1)?waterGroup(m):createHvpCompactLookTerrain(m,look,{allowPartialRoles:true}));
       const previous=neighborEntries,previousCosts=neighborCosts,previousLedger=ledger;
+      const previousCheckpointSourceBytes=checkpointSourceBytes,previousColdNeighborSourceTransferred=coldNeighborSourceTransferred;
       const previousProxies={water,joinMesh,farMesh,joinLook,farLook};
       const previousWaterDigest=documentPort.body.dataset.hestiaPrototypeWaterDigest;
        // Clipping the immutable originals by the fixed collar is independent of
        // B's LOD: retain those three GPU artifacts while changing local geometry.
        const native=physics!.read();
-       const next:NeighborEntry[]=meshes.map((mesh,i)=>{
-         if(reuseProxies&&i<3){return {...previous[i]!,mesh};}
+       const next:NeighborEntry[]=[];
+       for(const [i,mesh] of meshes.entries()){
+         if(reuseProxies&&i<3){next.push({...previous[i]!,mesh});continue;}
          const role:EphemeralRepresentationRole=p===null
            ?i===0?{kind:"neighbor",part:"water"}:{kind:"neighbor",part:"proxy"}
            :i===0||i===meshes.length-1?{kind:"neighbor",part:"water"}
              :i===1?{kind:"neighbor",part:"join"}:i===2?{kind:"neighbor",part:"far"}:{kind:"neighbor",part:"region"};
          const key=registerEphemeral(scope,role,native);
          managedNeighborKeys.add(key);
-         const artifact=createMeshArtifact({representationKey:key,sourceRevision:sourceRevision(value.epoch),artifactRevision:artifactRevision(value.epoch),
+         const input={representationKey:key,sourceRevision:sourceRevision(value.epoch),artifactRevision:artifactRevision(value.epoch),
            algorithmVersion:mesh.algorithmVersion,frameId:frame,positions:mesh.positions,normals:mesh.normals,indices:groups[i]!.indices,
-           attributes:mesh.colors===null?undefined:{color:mesh.colors},materialRanges:groups[i]!.materialRanges,bounds:mesh.boundsMeters});
-         recordEphemeralArtifact(artifact);return {mesh,group:groups[i]!,artifact};
-       });
+           attributes:mesh.colors===null?undefined:{color:mesh.colors},materialRanges:groups[i]!.materialRanges,bounds:mesh.boundsMeters};
+         let artifact:HvpRenderArtifact;
+         if(privateStage&&p!==null){
+           // Cache packet views share a buffer; only temporary vertex copies enter private intake.
+           const channels=[mesh.positions,mesh.normals,...(mesh.colors===null?[]:[mesh.colors])];
+           let indices=groups[i]!.indices;
+           const copyIndices=indices.byteOffset!==0||indices.byteLength!==indices.buffer.byteLength;
+           const copyBytes=channels.reduce((sum,array)=>sum+array.byteLength,copyIndices?indices.byteLength:0);
+           admitScene({...stageAdmission,totalCpuBytes:stageAdmission.totalCpuBytes+copyBytes});privateProjectionInputBytes+=copyBytes;
+           try{
+             const copies:Float32Array[]=[];
+             for(const channel of channels){const copy=new ProjectionFloat32Array(channel.length);copies.push(copy);
+               for(let offset=0;offset<channel.length;offset+=1024){for(let j=offset;j<Math.min(offset+1024,channel.length);j++){copy[j]=channel[j]!;}yield "neighborProjectionCopy";}
+             }
+             if(copyIndices){const copy=indices instanceof ProjectionUint16Array?new ProjectionUint16Array(indices.length):new ProjectionUint32Array(indices.length);
+               for(let offset=0;offset<indices.length;offset+=1024){for(let j=offset;j<Math.min(offset+1024,indices.length);j++){copy[j]=indices[j]!;}yield "neighborProjectionCopy";}indices=copy;
+             }
+             artifact=yield* admitPrivateRenderSteps({...input,positions:copies[0]!,normals:copies[1]!,indices,attributes:mesh.colors===null?undefined:{color:copies[2]!}},
+               groups[i]!.materialProfiles,primary,epoch,worldId);
+           }finally{privateProjectionInputBytes-=copyBytes;}
+         }else{artifact=privateStage?yield* admitPrivateRenderSteps(input,groups[i]!.materialProfiles,primary,epoch,worldId):createMeshArtifact(input);}
+         recordEphemeralArtifact(artifact);next.push({mesh,group:groups[i]!,artifact});
+       }
       const costs:NeighborCosts={meshes:meshes.slice(3),groupedBytes:next.slice(3,-1).reduce((n,e)=>n+e.group.indices.byteLength,0),
         draws:next.slice(3).reduce((n,e)=>n+e.group.materialRanges.length,0),sourceBytes:value.source?8_388_608+value.source.overlayBytes*2:0,
         cacheBytes:value.cacheBytes,checkpointBytes:value.checkpointBytes,baseProxyBytes:p?baseProxyBytes:0,
         sharedBytes:p?meshes.reduce((n,m)=>n+meshBytes(m),0):0,physicsBytes:nativeCoexistence};
-       const replacements=restore?[]:[...(value.seams?.primary.render??[])].map(([id,mesh])=>{
+       const replacements:ReturnType<typeof makeTerrainEntry>[]=[];
+       if(!restore){for(const [id,mesh] of value.seams?.primary.render??[]){
          const key=registerEphemeral(scope,{kind:"terrain",sector:id},native);
-         return makeTerrainEntry(id,mesh,terrainRoot.read().revision,undefined,"",undefined,key);
-       });
+         replacements.push(yield* makeTerrainEntrySteps(id,mesh,primary.revision,undefined,"",undefined,key,privateStage,primary,context));
+       }}
       const oldEdges=replacements.map(e=>terrainEntries.get(e.id)!);
       const allTerrain=new Map(restore?.tiles??terrainEntries);for(const e of replacements){allTerrain.set(e.id,e);}
       const nextLedger=restore?.ledger(meshes,groups,costs)??sceneLedger({terrainMesh:allTerrain.get(0)!.mesh,terrainMeshes:[...allTerrain.values()].map(e=>e.mesh),
         waterMesh:meshes[0]!,joinMesh:meshes[1]!,farMesh:meshes[2]!,neighbor:costs,
         additionalMeshes:[...vegetation.map(v=>v.mesh),dropMesh,avatarMesh,inertiaMesh,...branchProducts.map(b=>b.mesh),...[...fragmentEntries.values()].map(e=>e.mesh)],
-        vegetationSourceBytes,checkpointSourceBytes,visualEffects:true,
+        vegetationSourceBytes,checkpointSourceBytes:checkpointSourceBytes-coldSourceCredit,visualEffects:true,
         groupedIndexBytes:[...allTerrain.values()].reduce((n,e)=>n+e.group.indices.byteLength,next[1]!.group.indices.byteLength+next[2]!.group.indices.byteLength+[...fragmentEntries.values()].reduce((n,e)=>n+e.group.indices.byteLength,0)),
         drawCalls:[...allTerrain.values()].reduce((n,e)=>n+e.group.materialRanges.length,4+next[1]!.group.materialRanges.length+next[2]!.group.materialRanges.length+vegetation.reduce((n,v)=>n+v.profiles.length,0)+branchProducts.length+[...fragmentEntries.values()].reduce((n,e)=>n+e.group.materialRanges.length,0))});
       const retained=nextLedger.totalCpuBytes-nextLedger.tempEstimateBytes+(restore?.sourceBytes??fragmentSourceBytes())+(restore?.overlayBytes??terrainRoot.read().overlayBytes)*2;
@@ -1861,8 +2132,15 @@ export const startHvp = async (
          retainedMeshBytes:Math.max(ledger.retainedMeshBytes,published.retainedMeshBytes)+newBytes+(restore?.stagedMeshBytes??0)});
       const retire=(e:NeighborEntry)=>{removeTerrainEntry(e);managedNeighborKeys.delete(e.artifact.representationKey);activeNeighborKeys.delete(e.artifact.representationKey);};
       try{
-        for(const e of [...newEntries,...replacements]){upsertTerrain(e);
-          if(e.mesh.colors!==null){plainTerrainLeases.push({nodeKey:e.artifact.representationKey,lease:materialFactory.acquire(e.group.materialProfiles)});}
+        for(const e of [...newEntries,...replacements]){
+          const owned=privateRenderHandles.get(e.artifact.representationKey),binding=ephemeralBindings.get(e.artifact.representationKey);
+          if(owned!==undefined&&binding!==undefined){
+            binding.state="uploading";let result:RenderCommandResult;
+            try{result=yield* presentation.upsertPrivateMeshSteps(owned.handle,e.group.materialProfiles,owned.binding);}catch(error){binding.state="uncertain";throw error;}
+            if(result.status!=="Accepted"){binding.state=result.status==="BackendUnavailable"||result.status==="AlreadyApplied"?"uncertain":"registered";requireAccepted(result,"Private neighbor upsert");}
+            binding.state="uploaded";
+          }else{upsertTerrain(e);}
+          if(e.mesh.colors!==null){plainTerrainLeases.push({nodeKey:e.artifact.representationKey,lease:acquirePlainMaterials(e.group.materialProfiles)});}
           if(e.artifact.representationKey.startsWith("hvp:water:")){const node=backend!.representationRoot?.getObjectByName(`representation:${e.artifact.representationKey}`);
             if(node){node.renderOrder=look.water.renderOrder;node.frustumCulled=false;}}
         }
@@ -1875,6 +2153,8 @@ export const startHvp = async (
           for(const e of oldEdges){activeTerrainKeys.delete(e.artifact.representationKey);}
           for(const e of replacements){terrainEntries.set(e.id,e);activeTerrainKeys.add(e.artifact.representationKey);}
           neighborEntries=next;neighborCosts=costs;water=meshes[0]!;joinMesh=meshes[1]!;farMesh=meshes[2]!;joinLook=next[1]!.group;farLook=next[2]!.group;ledger=published;
+          // The identical decoded East grid moves from checkpoint to neighbor ownership.
+          if(coldSourceCredit){checkpointSourceBytes-=coldSourceCredit;coldNeighborSourceTransferred=true;}
           documentPort.body.dataset.hestiaPrototypeWaterDigest=p?fnv1aHash(JSON.stringify([mask.digest,p.region[0]!.sourceDigest])):mask.digest;project();
         },
         rollback(){
@@ -1882,6 +2162,7 @@ export const startHvp = async (
           for(const e of replacements){activeTerrainKeys.delete(e.artifact.representationKey);}
           for(const e of oldEdges){terrainEntries.set(e.id,e);activeTerrainKeys.add(e.artifact.representationKey);}
           neighborEntries=previous;neighborCosts=previousCosts;ledger=previousLedger;
+          checkpointSourceBytes=previousCheckpointSourceBytes;coldNeighborSourceTransferred=previousColdNeighborSourceTransferred;
           ({water,joinMesh,farMesh,joinLook,farLook}=previousProxies);
           documentPort.body.dataset.hestiaPrototypeWaterDigest=previousWaterDigest??mask.digest;project();
           for(const e of newEntries){retire(e);}for(const e of replacements){removeTerrainEntry(e);}
@@ -1889,6 +2170,12 @@ export const startHvp = async (
         finish(){for(const e of previous){if(!next.some(n=>n.artifact===e.artifact)){retire(e);}}for(const e of oldEdges){removeTerrainEntry(e);}project();}
       };
       });
+       if(!privateStage){return stages.next().value as HvpStagedTerrain;}
+       const pump=createHvpBodyMeshTaskPump(()=>{
+         if(disposed||hvpMountEpoch!==myEpoch||terrainRoot.read()!==before||(restore?!restore.current():renderWorldId!==worldId||publishedEphemeralEpoch!==epoch)){throw new Error("Stale neighbor render staging");}
+       });
+       return pump.run(stages).finally(()=>pump.dispose());
+     };
        function* stageTerrainSteps(products:HvpTerrainProducts,fragments:readonly HvpPreparedTerrainBody[],commandId:string|undefined,owned:boolean):Generator<string,HvpStagedTerrain,unknown>{
        return yield* withEphemeralScopeSteps(publishedEphemeralEpoch,function*(scope){
        const native=physics!.read();
@@ -1897,7 +2184,7 @@ export const startHvp = async (
          const key=registerEphemeral(scope,{kind:"fragment"},native);
          const mesh=owned?yield* meshHvpOwnedBodyCellsSteps(f.request.cells,f.state.centerOfMass,f.state.sourceDigest)
            :measureCut(commandId,"cutFragmentMeshMs",()=>meshHvpTerrainFragment(f));
-         added.push(yield* makeFragmentEntrySteps(f.request.ownerId,mesh,f.state.sourceBytes,f.request.cells.length,products.source.revision,"terrain",key,commandId,owned));
+         added.push(yield* makeFragmentEntrySteps(f.request.ownerId,mesh,f.state.sourceBytes,f.request.cells.length,products.source.revision,"terrain",key,commandId,owned,products.source));
        }
       const allFragments=[...fragmentEntries.values(),...added];
       const sourceBytes=allFragments.reduce((n,e)=>n+e.sourceBytes,0);
@@ -1910,7 +2197,7 @@ export const startHvp = async (
         additionalMeshes:[...vegetation.map(p=>p.mesh),dropMesh,avatarMesh,inertiaMesh,...branchProducts.map(p=>p.mesh),...allFragments.map(e=>e.mesh)],vegetationSourceBytes,checkpointSourceBytes,visualEffects:true,
         groupedIndexBytes:[...meshes.keys()].reduce((n,id)=>n+(groups.get(id)??terrainEntries.get(id)!.group).indices.byteLength,joinLook.indices.byteLength+farLook.indices.byteLength+allFragments.reduce((n,e)=>n+e.group.indices.byteLength,0)),
         drawCalls:[...meshes.keys()].reduce((n,id)=>n+(groups.get(id)??terrainEntries.get(id)!.group).materialRanges.length,4+joinLook.materialRanges.length+farLook.materialRanges.length+vegetation.reduce((n,p)=>n+p.profiles.length,0)+branchProducts.length+allFragments.reduce((n,e)=>n+e.group.materialRanges.length,0))});
-      const publishedLedger={...nextLedger,totalCpuBytes:Math.max(nextLedger.totalCpuBytes,nextLedger.totalCpuBytes-nextLedger.tempEstimateBytes+physicsPrepareBytes)+sourceBytes+products.source.overlayBytes*2};
+      const publishedLedger={...nextLedger,tempEstimateBytes:Math.max(nextLedger.tempEstimateBytes,physicsPrepareBytes),totalCpuBytes:Math.max(nextLedger.totalCpuBytes,nextLedger.totalCpuBytes-nextLedger.tempEstimateBytes+physicsPrepareBytes)+sourceBytes+products.source.overlayBytes*2};
       const stagedBytes=[...products.render.values(),...added.map(e=>e.mesh)].reduce((n,m)=>n+m.positions.byteLength+m.normals.byteLength+m.indices.byteLength+(m.colors?.byteLength??0),0);
       // Count coexistence, not only the eventual visible generation.
       const admitted={...publishedLedger,totalCpuBytes:estimateHvpStageCpuBytes(ledger,publishedLedger,stagedBytes,physicsPrepareBytes),
@@ -1919,7 +2206,7 @@ export const startHvp = async (
         const next:ReturnType<typeof makeTerrainEntry>[]=[];
         for(const [id,mesh] of products.render){
           const key=registerEphemeral(scope,{kind:"terrain",sector:id},native);
-          next.push(yield* makeTerrainEntrySteps(id,mesh,products.source.revision,groups.get(id)!,"",commandId,key,owned));
+          next.push(yield* makeTerrainEntrySteps(id,mesh,products.source.revision,groups.get(id)!,"",commandId,key,owned,products.source));
         }
       const previous=next.map(e=>terrainEntries.get(e.id)!); const previousLedger=ledger;
       const previousTransforms=physicsTransforms;
@@ -1933,25 +2220,26 @@ export const startHvp = async (
       try {
         if(owned){
           for(const entry of [...next,...added]){
-            const command=yield* createRenderCommandOwnedSteps({kind:"UpsertMeshArtifact",backendRevision:backendRevision(0),artifact:entry.artifact,materialProfiles:entry.group.materialProfiles});
+            const privateEntry=privateRenderHandles.get(entry.artifact.representationKey);
+            const command="positions" in entry.artifact?yield* createRenderCommandOwnedSteps({kind:"UpsertMeshArtifact",backendRevision:backendRevision(0),artifact:entry.artifact,materialProfiles:entry.group.materialProfiles}):undefined;
             const binding=ephemeralBindings.get(entry.artifact.representationKey);
             if(binding===undefined)throw new Error("Missing owned ephemeral upload binding");
             binding.state="uploading";binding.artifact=entry.artifact;
             let result:RenderCommandResult;
-            try{result=yield* presentation.dispatchOwnedSteps(command);}catch(error){binding.state="uncertain";throw error;}
+            try{result=privateEntry===undefined?yield* presentation.dispatchOwnedSteps(command!):yield* presentation.upsertPrivateMeshSteps(privateEntry.handle,entry.group.materialProfiles,privateEntry.binding);}catch(error){binding.state="uncertain";throw error;}
             if(result.status!=="Accepted"){
               binding.state=result.status==="BackendUnavailable"||result.status==="AlreadyApplied"?"uncertain":"registered";
               throw new Error(`HVP owned terrain upsert failed: ${result.reasonCode??result.status}`);
             }
             binding.state="uploaded";
-            plainTerrainLeases.push({nodeKey:entry.artifact.representationKey,lease:materialFactory.acquire(entry.group.materialProfiles)});
+            plainTerrainLeases.push({nodeKey:entry.artifact.representationKey,lease:acquirePlainMaterials(entry.group.materialProfiles)});
           }
           if(!aoEnabled)setAoOnNodes(false);
         }else{
         presentation.batch(()=>{
           for(const entry of [...next,...added]) {
             upsertTerrain(entry,commandId);
-            plainTerrainLeases.push({nodeKey:entry.artifact.representationKey,lease:materialFactory.acquire(entry.group.materialProfiles)});
+            plainTerrainLeases.push({nodeKey:entry.artifact.representationKey,lease:acquirePlainMaterials(entry.group.materialProfiles)});
           }
           if(!aoEnabled) { setAoOnNodes(false); }
         });
@@ -1980,8 +2268,7 @@ export const startHvp = async (
        }
        const stageTerrain=(products:HvpTerrainProducts,fragments:readonly HvpPreparedTerrainBody[]=[],commandId?:string):HvpStagedTerrain=>
          stageTerrainSteps(products,fragments,commandId,false).next().value as HvpStagedTerrain;
-    terrainCompiler=(overrides.createTerrainCompiler??createHvpTerrainCompiler)();
-    terrainConsumer=createHvpTerrainConsumer(terrainRoot,(plan,support)=>{
+    terrainConsumer=createHvpTerrainConsumer(terrainCommandRoot,(plan,support)=>{
        admitScene({...ledger,totalCpuBytes:ledger.totalCpuBytes-ledger.tempEstimateBytes+physicsPrepareBytes+plan.after.overlayBytes*2});
       const native=physics!.read(),resident=ledger.totalCpuBytes-ledger.tempEstimateBytes+native.collisionBytes*2+native.bodySourceResidentBytes+plan.after.overlayBytes*2;
       admitScene({...ledger,totalCpuBytes:resident+physicsPrepareBytes});
@@ -2037,7 +2324,7 @@ export const startHvp = async (
         throw new Error("Body mesh owner bridge unavailable");
       }
       const native=bodyMeshPhysics.read();
-      const residentBytes=ledger.totalCpuBytes-ledger.tempEstimateBytes+native.collisionBytes*2+native.bodySourceResidentBytes;
+      const residentBytes=ledger.totalCpuBytes-ledger.tempEstimateBytes+Math.max(0,native.collisionBytes*2-neighborCosts.physicsBytes)+native.bodySourceResidentBytes;
       if(!Number.isSafeInteger(residentBytes)||residentBytes<=0){throw new Error("Body owner resident accounting unavailable");}
       const attached=branchEntries.filter(e=>e.product.ownerId===source.payload.ownerId&&e.product.decoration);
       const renderFixedBytes=32768+attached.reduce((sum,e)=>sum+meshBytes(e.product.mesh)*3+e.product.mesh.tempEstimateBytes,0);
@@ -2056,7 +2343,9 @@ export const startHvp = async (
           createHvpBodyMeshPhaseReserve(work.budget.mainBytes),work.budget.faceLimits)));}finally{pump.dispose();}
       },(parentId,products)=>{
        const id=cutTraceDispatch===undefined?"":bodyMeshPhysics.read().moving.pendingId!;
-       return measureHvpCut(cutTraceDispatch,id,"main","cutBodyRenderStageMs",()=>withEphemeralScope(publishedEphemeralEpoch,scope=>{
+       const renderSource=terrainRoot.read(),renderEpoch=publishedEphemeralEpoch,worldId=renderWorldId;
+       const privateStage=privateCutSource&&backend!.admitPrivateMeshSteps!==undefined;
+       const stages=withEphemeralScopeSteps(renderEpoch,function*(scope){
        const parent=fragmentEntries.get(parentId),branchParent=branchEntries.find(e=>!e.product.decoration&&e.product.ownerId===parentId);
        if(!parent&&!branchParent){throw new Error("Missing moving render parent");}
        const native=physics!.read(),family=branchParent?"branch":parent!.family,generation=native.moving.sequence+1;
@@ -2119,34 +2408,47 @@ export const startHvp = async (
        // only as a candidate; the live ledger changes at publication below.
        admitScene({...ledger,totalCpuBytes:estimateHvpStageCpuBytes(ledger,ledger,stagedMeshBytes,physicsPrepareBytes)+incomingSourceBytes,
          retainedMeshBytes:retainedPeak,triangles:projectedTriangles,drawCalls:projectedDrawCalls});
-         const next=products.parts.map(p=>{
+         const next:ReturnType<typeof makeFragmentEntry>[]=[];
+         for(const p of products.parts){
           const key=registerEphemeral(scope,{kind:"fragment"},native);
-          return makeFragmentEntry(p.ownerId,p.mesh,p.sourceBytes,p.cells.length,generation,family,key);
-        });
+          next.push(yield* makeFragmentEntrySteps(p.ownerId,p.mesh,p.sourceBytes,p.cells.length,generation,family,key,undefined,privateStage,renderSource));
+         }
         const remaining=[...fragmentEntries.values()].filter(e=>e!==parent),all=[...remaining,...next],previousLedger=ledger,previousTransforms=physicsTransforms;
         const previousBranchEntries=branchEntries,previousBranchProducts=branchProducts;
-       const nextLeaves=nextSupport?attached.map(()=>{
+       const nextLeaves:ReturnType<typeof makeBranchEntry>[]=[];
+       if(nextSupport){for(const _entry of attached){
          const key=registerEphemeral(scope,{kind:"branch",part:"foliage"},native);
          const product=meshHvpBranchFoliage(nextSupport.ownerId,nextSupport.center,nextSupport.sourceDigest,key);
-         return makeBranchEntry(product,generation,key);
-       }):[];
+         nextLeaves.push(yield* makeBranchEntrySteps(product,generation,key,privateStage,renderSource));
+       }}
       const nextBranchEntries=[...branchEntries.filter(e=>!removedBranchEntries.includes(e)),...nextLeaves];
       const nextBranchProducts=nextBranchEntries.map(e=>e.product);
       const nextLedger=sceneLedger({terrainMesh:terrainEntries.get(0)!.mesh,terrainMeshes:[...terrainEntries.values()].map(e=>e.mesh),waterMesh:water,joinMesh,farMesh,
         additionalMeshes:[...vegetation.map(p=>p.mesh),dropMesh,avatarMesh,inertiaMesh,...nextBranchProducts.map(p=>p.mesh),...all.map(e=>e.mesh)],vegetationSourceBytes,checkpointSourceBytes,visualEffects:true,
         groupedIndexBytes:[...terrainEntries.values()].reduce((n,e)=>n+e.group.indices.byteLength,joinLook.indices.byteLength+farLook.indices.byteLength+all.reduce((n,e)=>n+e.group.indices.byteLength,0)),
         drawCalls:[...terrainEntries.values()].reduce((n,e)=>n+e.group.materialRanges.length,4+joinLook.materialRanges.length+farLook.materialRanges.length+vegetation.reduce((n,p)=>n+p.profiles.length,0)+nextBranchProducts.length+all.reduce((n,e)=>n+e.group.materialRanges.length,0))});
-      const publishedLedger={...nextLedger,totalCpuBytes:Math.max(nextLedger.totalCpuBytes,nextLedger.totalCpuBytes-nextLedger.tempEstimateBytes+physicsPrepareBytes)
+      const publishedLedger={...nextLedger,tempEstimateBytes:Math.max(nextLedger.tempEstimateBytes,physicsPrepareBytes),totalCpuBytes:Math.max(nextLedger.totalCpuBytes,nextLedger.totalCpuBytes-nextLedger.tempEstimateBytes+physicsPrepareBytes)
         +terrainRoot.read().overlayBytes*2+all.reduce((n,e)=>n+e.sourceBytes,0)};
       const stagedBytes=[...next.map(e=>e.mesh),...nextLeaves.map(e=>e.product.mesh)].reduce((n,m)=>n+m.positions.byteLength+m.normals.byteLength+m.indices.byteLength+(m.colors?.byteLength??0),0);
         admitScene({...publishedLedger,totalCpuBytes:estimateHvpStageCpuBytes(ledger,publishedLedger,stagedBytes,physicsPrepareBytes),
          retainedMeshBytes:Math.max(ledger.retainedMeshBytes,publishedLedger.retainedMeshBytes)+stagedBytes});
       try{
+        if(privateStage){
+          for(const e of next){const privateEntry=privateRenderHandles.get(e.artifact.representationKey),binding=ephemeralBindings.get(e.artifact.representationKey);
+            if(privateEntry===undefined||binding===undefined){throw new Error("Missing moving private render binding");}
+            binding.state="uploading";let result:RenderCommandResult;
+            try{result=yield* presentation.upsertPrivateMeshSteps(privateEntry.handle,e.group.materialProfiles,privateEntry.binding);}catch(error){binding.state="uncertain";throw error;}
+            if(result.status!=="Accepted"){binding.state=result.status==="BackendUnavailable"||result.status==="AlreadyApplied"?"uncertain":"registered";throw new Error(`Private moving upload failed: ${result.reasonCode??result.status}`);}
+            binding.state="uploaded";plainTerrainLeases.push({nodeKey:e.artifact.representationKey,lease:acquirePlainMaterials(e.group.materialProfiles)});
+          }
+          for(const e of nextLeaves){yield* uploadBranchSteps(e);}if(!aoEnabled){setAoOnNodes(false);}
+        }else{
         presentation.batch(()=>{
-          for(const e of next){upsertTerrain(e);plainTerrainLeases.push({nodeKey:e.artifact.representationKey,lease:materialFactory.acquire(e.group.materialProfiles)});}
+          for(const e of next){upsertTerrain(e);plainTerrainLeases.push({nodeKey:e.artifact.representationKey,lease:acquirePlainMaterials(e.group.materialProfiles)});}
           for(const e of nextLeaves){uploadBranch(e);}
           if(!aoEnabled){setAoOnNodes(false);}
         });
+        }
       }catch(error){
         try{presentation.batch(()=>{for(const e of next){removeTerrainEntry(e);}for(const e of nextLeaves){retireBranch(e);}});}
         catch(cleanupError){
@@ -2171,14 +2473,24 @@ export const startHvp = async (
           presentation.updateProjection();updateTerrainState();presentation.batch(()=>{for(const e of next){removeTerrainEntry(e);}for(const e of nextLeaves){retireBranch(e);}});},
         finish(){presentation.batch(()=>{if(parent){removeTerrainEntry(parent);}for(const e of removedBranchEntries){retireBranch(e);}});updateTerrainState();}
       };
-      }));},cutTraceDispatch,async id=>{await measureHvpCutAsync(cutTraceDispatch,id,"main","cutBodyMeshReleaseMs",
+      });
+       if(!privateStage){return measureHvpCut(cutTraceDispatch,id,"main","cutBodyRenderStageMs",()=>stages.next().value as HvpStagedTerrain);}
+       const current=()=>{if(disposed||hvpMountEpoch!==myEpoch||terrainRoot.read()!==renderSource||publishedEphemeralEpoch!==renderEpoch||renderWorldId!==worldId||saveBusy){throw new Error("Stale moving render staging");}};
+       const pump=createHvpBodyMeshTaskPump(current,cutTraceDispatch===undefined?undefined:(_label,start,duration)=>{
+         cutTraceDispatch({commandId:id,thread:"main",phase:"cutBodyGraphicsWorkQuantumMs",origin:performance.timeOrigin,start,duration});
+       });
+       return measureHvpCutAsync(cutTraceDispatch,id,"main","cutBodyRenderStageMs",()=>pump.run(stages)).finally(()=>pump.dispose());
+      },cutTraceDispatch,async id=>{await measureHvpCutAsync(cutTraceDispatch,id,"main","cutBodyMeshReleaseMs",
         ()=>bodyMeshPhysics.releaseBodyMeshWork?.(id)??Promise.resolve());});
-       structuralConsumer=createHvpStructuralConsumer(physics,state=>withEphemeralScope(publishedEphemeralEpoch,scope=>{
+       structuralConsumer=createHvpStructuralConsumer(physics,state=>{
+          const source=terrainRoot.read(),epoch=publishedEphemeralEpoch,worldId=renderWorldId,privateStage=privateCutSource&&backend!.admitPrivateMeshSteps!==undefined;
+          const stages=withEphemeralScopeSteps(epoch,function*(scope){
           const native=physics!.read(),products=meshHvpBranchProducts(state);
-          const next=products.map(p=>{
+          const next:ReturnType<typeof makeBranchEntry>[]=[];
+          for(const p of products){
             const key=registerEphemeral(scope,{kind:"branch",part:p.decoration?"foliage":"branch"},native);
-            return makeBranchEntry({...p,key},state.generation+1,key);
-          });
+            next.push(yield* makeBranchEntrySteps({...p,key},state.generation+1,key,privateStage,source));
+          }
           const nextProducts=next.map(entry=>entry.product);
       const previous=branchEntries,previousProducts=branchProducts,previousLedger=ledger;
       const previousTransforms=physicsTransforms;
@@ -2186,11 +2498,11 @@ export const startHvp = async (
         additionalMeshes:[...vegetation.map(p=>p.mesh),dropMesh,avatarMesh,inertiaMesh,...nextProducts.map(p=>p.mesh),...[...fragmentEntries.values()].map(e=>e.mesh)],vegetationSourceBytes,checkpointSourceBytes,visualEffects:true,
         groupedIndexBytes:[...terrainEntries.values()].reduce((n,e)=>n+e.group.indices.byteLength,joinLook.indices.byteLength+farLook.indices.byteLength+[...fragmentEntries.values()].reduce((n,e)=>n+e.group.indices.byteLength,0)),
         drawCalls:[...terrainEntries.values()].reduce((n,e)=>n+e.group.materialRanges.length,4+joinLook.materialRanges.length+farLook.materialRanges.length+vegetation.reduce((n,p)=>n+p.profiles.length,0)+nextProducts.length+[...fragmentEntries.values()].reduce((n,e)=>n+e.group.materialRanges.length,0))});
-      const publishedLedger={...nextLedger,totalCpuBytes:Math.max(nextLedger.totalCpuBytes,nextLedger.totalCpuBytes-nextLedger.tempEstimateBytes+physicsPrepareBytes)+terrainRoot.read().overlayBytes*2+fragmentSourceBytes()};
+      const publishedLedger={...nextLedger,tempEstimateBytes:Math.max(nextLedger.tempEstimateBytes,physicsPrepareBytes),totalCpuBytes:Math.max(nextLedger.totalCpuBytes,nextLedger.totalCpuBytes-nextLedger.tempEstimateBytes+physicsPrepareBytes)+terrainRoot.read().overlayBytes*2+fragmentSourceBytes()};
       const stagedBytes=nextProducts.reduce((n,p)=>n+p.mesh.positions.byteLength+p.mesh.normals.byteLength+p.mesh.indices.byteLength,0);
         admitScene({...publishedLedger,totalCpuBytes:estimateHvpStageCpuBytes(ledger,publishedLedger,stagedBytes,physicsPrepareBytes),
          retainedMeshBytes:Math.max(ledger.retainedMeshBytes,nextLedger.retainedMeshBytes)+stagedBytes});
-      try{for(const entry of next){uploadBranch(entry);}}catch(error){for(const entry of next){retireBranch(entry);}throw error;}
+      try{for(const entry of next){yield* uploadBranchSteps(entry);}}catch(error){for(const entry of next){retireBranch(entry);}throw error;}
       const setEntries=(entries:typeof branchEntries,products:readonly HvpBranchProduct[],restore=false)=>{
         activeBranchKeys.clear();for(const entry of entries){activeBranchKeys.add(entry.product.key);}
         branchEntries=entries;branchProducts=products;
@@ -2203,7 +2515,11 @@ export const startHvp = async (
         rollback(){ledger=previousLedger;setEntries(previous,previousProducts,true);for(const entry of next){retireBranch(entry);}},
         finish(){for(const entry of previous){retireBranch(entry);}}
        };return staged;
-     }));
+     });
+          if(!privateStage){return stages.next().value as HvpStagedBranch;}
+          const pump=createHvpBodyMeshTaskPump(()=>{if(disposed||hvpMountEpoch!==myEpoch||terrainRoot.read()!==source||publishedEphemeralEpoch!==epoch||renderWorldId!==worldId||saveBusy){throw new Error("Stale structural render staging");}});
+          return pump.run(stages).finally(()=>pump.dispose());
+       });
     updateTerrainState();
     let previewRevision=0;
     let previewArtifact:ReturnType<typeof createMeshArtifact>|undefined;
@@ -2216,6 +2532,7 @@ export const startHvp = async (
       const previous=previewArtifact;
       if(cells.length===0) { activePreviewKey="";presentation.updateProjection();return; }
        withEphemeralScope(publishedEphemeralEpoch,scope=>{
+       presentation.batch(()=>{
        const min=[0,1,2].map(a=>Math.min(...cells.map(c=>c[a]!)));
       const max=[0,1,2].map(a=>Math.max(...cells.map(c=>c[a]!))+1);
       const selected=new Set(cells.map(c=>c.join(":")));
@@ -2243,6 +2560,7 @@ export const startHvp = async (
            expectedContentHash:previous.contentHash}));
          if(result.status!=="NotFound"){requireAccepted(result,"Retire cut preview");}
        }
+       });
        });
      };
     plasmaTool=createHvpPlasmaTool(terrainRoot,terrainConsumer,()=>neighbor?.read().busy||neighbor?.read().recoveryHold||dormancy?.read().busy||dormancy?.read().recoveryHold?undefined:playerInput!.readAim(),showCutPreview,
@@ -2321,6 +2639,7 @@ export const startHvp = async (
     neighbor=createHvpNeighborController({primary:()=>terrainRoot.read(),physics,compiler:terrainCompiler!,proxies:originalProxies,cache:neighborCache,
       baseSectorCount:physics.read().neighbor?.baseSectorCount??physics.preparation.jobs,current:()=>!disposed&&hvpMountEpoch===myEpoch,
       blocked:()=>saveBusy||saveHold||supportPending||Boolean(dormancy?.read().busy||dormancy?.read().recoveryHold)||["Pending","RecoveryHold"].includes(terrainConsumer!.read().state)||structuralConsumer!.read().state!=="Ready"||bodyCutConsumer!.read().state!=="Idle",
+      residentBytes:()=>ledger.totalCpuBytes-ledger.tempEstimateBytes+physics!.collisionBytes*2+physics!.read().bodySourceResidentBytes,
       admit:admitNeighbor,stage:stageNeighbor});
     const captureGame=async()=>{
       if(!confirmed()){throw new Error("Save requires all commands to be confirmed");}
@@ -2351,41 +2670,69 @@ export const startHvp = async (
       const loadEpoch=nextEphemeralEpoch();
       // A stays resident. Restore batches use one worker, not the normal two:
       // 40 MiB worker scratch + 8 MiB accepted results + 8 MiB solver copy.
-      const restorePrepareBytes=56*1024*1024,retainedDecodedBytes=game.decodedBytes+8_388_608;
+      const restorePrepareBytes=(chunkStartup?96:56)*1024*1024,retainedDecodedBytes=game.decodedBytes+8_388_608;
       for(const entry of neighborCache.snapshot().entries){if(entry.leaseCount===0&&entry.pinCount===0){neighborCache.delete(entry.key);}}
       updateTerrainState();
        admitScene({...ledger,totalCpuBytes:ledger.totalCpuBytes-ledger.tempEstimateBytes+retainedDecodedBytes+restorePrepareBytes+physics!.collisionBytes*2});
-      const raw=await terrainCompiler!.restore(old,game.root.read(),true);
+      let ownedRestore:HvpTerrainProducts|undefined,completeCollision:HvpCompleteStaticCollision|undefined;
+      try{
+      const resident=ledger.totalCpuBytes-ledger.tempEstimateBytes+retainedDecodedBytes+physics!.collisionBytes*2;
+      const physicalEast=game.checkpoint.world.neighbor?.resident?game.neighborRoot!.read():undefined;
+      const raw=chunkStartup?await terrainCompiler!.restoreChunks(old,game.root,physicalEast,resident,game.checkpoint.world.sessionId,game.neighborRoot?.read())
+        :await terrainCompiler!.restore(old,game.root.read(),true);
+      if(chunkStartup){
+        ownedRestore=raw;
+        const extras=collisionSources.slice(1,collisionSources.length-(coldEast?1:0));
+        const sources:HvpCollisionSource[]=[{...game.root.read(),readHaloSlot:physicalEast?(x,y,z)=>x>=256?physicalEast.readSlot(x-256,y,z):undefined:undefined},...extras,
+          ...(physicalEast?[{...physicalEast,readHaloSlot:(x:number,y:number,z:number)=>x<0?game.root.read().readSlot(x+256,y,z):undefined}]:[])];
+        const preparedCollision=await prepareHvpStaticCollision(sources,physicsAbort.signal,game.checkpoint.world,bindHvpChunkPhysicsInput(game.root,raw,sources));
+        preparedCollision.assertCurrent();completeCollision={sectors:preparedCollision.sectors,layout:preparedCollision.staticLayout};
+      }
       const render=new Map(raw.render),collision=new Map(raw.collision);
-      const regionalRestore=Boolean(originalWorld.neighbor||game.checkpoint.world.neighbor||neighbor!.checkpoint()||game.neighborRoot);
-      if(originalWorld.neighbor?.resident||game.checkpoint.world.neighbor?.resident){
+      const regionalRestore=Boolean(completeCollision||originalWorld.neighbor||game.checkpoint.world.neighbor||neighbor!.checkpoint()||game.neighborRoot);
+      if(!chunkStartup&&(originalWorld.neighbor?.resident||game.checkpoint.world.neighbor?.resident)){
         const seams=await terrainCompiler!.neighborSeams(game.root.read(),game.checkpoint.world.neighbor?.resident?game.neighborRoot!.read():undefined,undefined,true);
         for(const [id,mesh] of seams.primary.render){render.set(id,mesh);}
         for(const [id,mesh] of seams.primary.collision){collision.set(id,mesh);}
         const base=game.checkpoint.world.neighbor?.baseSectorCount;
         if(game.checkpoint.world.neighbor?.resident){for(const [i,mesh] of seams.east.entries()){collision.set(base!+i,mesh);}}
       }
+      if(!chunkStartup&&!game.checkpoint.world.neighbor?.resident&&game.neighborRoot&&game.neighborRoot.read().revision>0){
+        // The dormant edited East changes B's visible seam, while physical coverage stays closed.
+        const projected=await terrainCompiler!.neighborSeams(game.root.read(),game.neighborRoot.read(),undefined,true,true,resident);
+        try{for(const [id,mesh] of projected.primary.render){render.set(id,mesh);}}finally{projected.discard?.();}
+      }
       const products={source:raw.source,render,collision};
       if(!current()){throw new Error("Stale scene preparation");}
       const oldReceipts={terrain:await terrainConsumer!.checkpoint(),structural:structuralConsumer!.checkpoint(),moving:bodyCutConsumer!.checkpoint()},oldView=currentView();
        const restoreId=++restoreSequence;
-       await replaceHvpScene(game,`restore-${restoreId}`,physics!,[...products.collision].map(([index,mesh])=>({index,mesh})),async candidate=>{
+       await replaceHvpScene(game,`restore-${restoreId}`,physics!,completeCollision?[]:[...products.collision].map(([index,mesh])=>({index,mesh})),async candidate=>{
          const scope=beginEphemeralScope(loadEpoch);
+         const privateLoad=privateCutSource&&backend!.admitPrivateMeshSteps!==undefined;
+         const renderPump=privateLoad?createHvpBodyMeshTaskPump(()=>{if(!current()){throw new Error("Stale Load render staging");}}):undefined;
          try{
          if(!candidate.structural||!candidate.inertia){throw new Error("Missing restored prototype owners");}
-         const root=game.root.read(),nextTiles=[...products.render].map(([id,mesh])=>{
+         const root=game.root.read(),renderContext={worldId:game.checkpoint.world.sessionId,renderEpoch:loadEpoch},nextTiles:ReturnType<typeof makeTerrainEntry>[]=[];
+         for(const [id,mesh] of products.render){
            const key=registerEphemeral(scope,{kind:"terrain",sector:id},candidate);
-           return makeTerrainEntry(id,mesh,root.revision,undefined,"",undefined,key);
-         });
-         const nextFragments=game.world.bodies.filter(b=>b.checkpoint.family==="terrain"||(b.checkpoint.family==="branch"&&b.checkpoint.dynamic))
-           .map(b=>{const owner=b.checkpoint.ownerId,key=registerEphemeral(scope,{kind:"fragment"},candidate),cells=readHvpBodyCells(b.recipe.source);
-             return makeFragmentEntry(owner,meshHvpBodyCells(cells,b.recipe.mass.centerOfMassMeters!,b.recipe.source.contentHash),
-               b.recipe.source.bricks.length*ADAPTIVE_BRICK_ESTIMATED_BYTES,cells.length,root.revision,b.checkpoint.family as "terrain"|"branch",key);});
+           nextTiles.push(renderPump?await renderPump.run(makeTerrainEntrySteps(id,mesh,root.revision,undefined,"",undefined,key,true,root,renderContext)):makeTerrainEntry(id,mesh,root.revision,undefined,"",undefined,key));
+         }
+         const nextFragments:ReturnType<typeof makeFragmentEntry>[]=[];
+         for(const b of game.world.bodies.filter(b=>b.checkpoint.family==="terrain"||(b.checkpoint.family==="branch"&&b.checkpoint.dynamic))){
+           const owner=b.checkpoint.ownerId,key=registerEphemeral(scope,{kind:"fragment"},candidate),cells=readHvpBodyCells(b.recipe.source);
+           const mesh=renderPump?await renderPump.run(meshHvpOwnedBodyCellsSteps(cells,b.recipe.mass.centerOfMassMeters!,b.recipe.source.contentHash))
+             :meshHvpBodyCells(cells,b.recipe.mass.centerOfMassMeters!,b.recipe.source.contentHash);
+           const sourceBytes=b.recipe.source.bricks.length*ADAPTIVE_BRICK_ESTIMATED_BYTES;
+           nextFragments.push(renderPump?await renderPump.run(makeFragmentEntrySteps(owner,mesh,sourceBytes,cells.length,root.revision,b.checkpoint.family as "terrain"|"branch",key,undefined,true,root,renderContext))
+             :makeFragmentEntry(owner,mesh,sourceBytes,cells.length,root.revision,b.checkpoint.family as "terrain"|"branch",key));
+         }
          const nextParked=new Set(candidate.parked.map(p=>p.ownerId));
          const fixed=new Set(candidate.structural.parts.filter(p=>p.anchored).map(p=>p.ownerId));
-         const nextBranch=meshHvpBranchProducts(candidate.structural).filter(p=>p.decoration||fixed.has(p.ownerId))
-           .map(p=>{const key=registerEphemeral(scope,{kind:"branch",part:p.decoration?"foliage":"branch"},candidate);
-             return makeBranchEntry({...p,key},root.revision,key);});
+         const nextBranch:ReturnType<typeof makeBranchEntry>[]=[];
+         for(const product of meshHvpBranchProducts(candidate.structural).filter(p=>p.decoration||fixed.has(p.ownerId))){
+           const key=registerEphemeral(scope,{kind:"branch",part:product.decoration?"foliage":"branch"},candidate);
+           nextBranch.push(renderPump?await renderPump.run(makeBranchEntrySteps({...product,key},root.revision,key,true,root,renderContext)):makeBranchEntry({...product,key},root.revision,key));
+         }
         const nextMap=new Map(terrainEntries);for(const e of nextTiles){nextMap.set(e.id,e);}
         const replacementLedger=(proxyMeshes:readonly HvpCompactMesh[],proxyGroups:readonly NeighborEntry["group"][],costs:NeighborCosts)=>sceneLedger({terrainMesh:nextMap.get(0)!.mesh,terrainMeshes:[...nextMap.values()].map(e=>e.mesh),waterMesh:proxyMeshes[0]!,joinMesh:proxyMeshes[1]!,farMesh:proxyMeshes[2]!,neighbor:costs,dormantCheckpointBytes:candidate.dormantCheckpointBytes,
           additionalMeshes:[...vegetation.map(p=>p.mesh),dropMesh,avatarMesh,inertiaMesh,...nextBranch.map(e=>e.product.mesh),...nextFragments.map(e=>e.mesh)],vegetationSourceBytes,checkpointSourceBytes,visualEffects:true,
@@ -2393,45 +2740,59 @@ export const startHvp = async (
           drawCalls:[...nextMap.values()].reduce((n,e)=>n+e.group.materialRanges.length,4+proxyGroups[1]!.materialRanges.length+proxyGroups[2]!.materialRanges.length+vegetation.reduce((n,p)=>n+p.profiles.length,0)+nextBranch.length+nextFragments.reduce((n,e)=>n+e.group.materialRanges.length,0))});
         const nextLedger=replacementLedger([water,joinMesh,farMesh],[waterGroup(water),joinLook,farLook],neighborCosts);
         const sourceBytes=nextFragments.reduce((n,e)=>n+e.sourceBytes,0);
-        const publishedLedger={...nextLedger,totalCpuBytes:Math.max(nextLedger.totalCpuBytes,nextLedger.totalCpuBytes-nextLedger.tempEstimateBytes+physicsPrepareBytes)+sourceBytes+root.overlayBytes*2};
+        const publishedLedger={...nextLedger,tempEstimateBytes:Math.max(nextLedger.tempEstimateBytes,physicsPrepareBytes),totalCpuBytes:Math.max(nextLedger.totalCpuBytes,nextLedger.totalCpuBytes-nextLedger.tempEstimateBytes+physicsPrepareBytes)+sourceBytes+root.overlayBytes*2};
         const bytes=[...nextTiles.map(e=>e.mesh),...nextFragments.map(e=>e.mesh),...nextBranch.map(e=>e.product.mesh)]
           .reduce((n,m)=>n+m.positions.byteLength+m.normals.byteLength+m.indices.byteLength+(m.colors?.byteLength??0),0);
-          admitScene({...publishedLedger,totalCpuBytes:ledger.totalCpuBytes-ledger.tempEstimateBytes+retainedDecodedBytes+physics!.collisionBytes*2+bytes*3,
+          admitScene({...publishedLedger,totalCpuBytes:ledger.totalCpuBytes-ledger.tempEstimateBytes+retainedDecodedBytes+physics!.collisionBytes*2+bytes*3+(chunkStartup?restorePrepareBytes:0),
            retainedMeshBytes:ledger.retainedMeshBytes+bytes});
         const newKeys=[...nextTiles,...nextFragments,...nextBranch].map(e=>e.artifact.representationKey);
         for(const key of newKeys){managedRestoreKeys.add(key);}
         const previousNeighbor=neighbor!;
         let nextNeighbor:ReturnType<typeof createHvpNeighborController>|undefined,neighborStage:HvpStagedTerrain|undefined,neighborPublished=false;
         try{
-          for(const e of [...nextTiles,...nextFragments.filter(e=>!nextParked.has(e.ownerId))]){upsertTerrain(e);plainTerrainLeases.push({nodeKey:e.artifact.representationKey,lease:materialFactory.acquire(e.group.materialProfiles)});}
-          for(const e of nextBranch){uploadBranch(e);}if(!aoEnabled){setAoOnNodes(false);}
+          for(const e of [...nextTiles,...nextFragments.filter(e=>!nextParked.has(e.ownerId))]){
+            const owned=privateRenderHandles.get(e.artifact.representationKey),binding=ephemeralBindings.get(e.artifact.representationKey);
+            if(renderPump&&owned!==undefined&&binding!==undefined){
+              binding.state="uploading";let result:RenderCommandResult;
+              try{result=await renderPump.run(presentation.upsertPrivateMeshSteps(owned.handle,e.group.materialProfiles,owned.binding));}catch(error){binding.state="uncertain";throw error;}
+              if(result.status!=="Accepted"){binding.state=result.status==="BackendUnavailable"||result.status==="AlreadyApplied"?"uncertain":"registered";throw new Error(`Private Load upload failed: ${result.reasonCode??result.status}`);}
+              binding.state="uploaded";
+            }else{upsertTerrain(e);}
+            plainTerrainLeases.push({nodeKey:e.artifact.representationKey,lease:acquirePlainMaterials(e.group.materialProfiles)});
+          }
+          for(const e of nextBranch){if(renderPump){await renderPump.run(uploadBranchSteps(e));}else{uploadBranch(e);}}if(!aoEnabled){setAoOnNodes(false);}
           if(regionalRestore){
             // Candidate B is a real paused World. Its controller may prepare a
             // cache lease, but cannot issue native mutations before publication.
             const livePhysics=()=>{if(!neighborPublished){throw new Error("Unpublished neighbour cannot mutate World A");}return physics!;};
              const stage=(value:HvpNeighborStage)=>stageNeighbor(value,{ephemeralEpoch:loadEpoch,tiles:nextMap,ledger:replacementLedger,sourceBytes,
-              overlayBytes:root.overlayBytes,stagingBytes:retainedDecodedBytes+bytes*3,stagedMeshBytes:bytes});
+              overlayBytes:root.overlayBytes,stagingBytes:retainedDecodedBytes+bytes*3,stagedMeshBytes:bytes,source:root,worldId:game.checkpoint.world.sessionId,current});
             nextNeighbor=createHvpNeighborController({primary:()=>neighborPublished?terrainRoot.read():root,
               physics:{read:()=>neighborPublished?physics!.read():candidate,
                 prepareNeighbor:(...args)=>livePhysics().prepareNeighbor(...args),commitNeighbor:id=>livePhysics().commitNeighbor(id),
                 publishNeighbor:()=>livePhysics().publishNeighbor(),rollbackNeighbor:id=>livePhysics().rollbackNeighbor(id),
                 finalizeNeighbor:id=>livePhysics().finalizeNeighbor(id),command:kind=>livePhysics().command(kind)},
-              compiler:terrainCompiler!,proxies:originalProxies,cache:neighborCache,
-              baseSectorCount:candidate.neighbor?.baseSectorCount??originalWorld.neighbor?.baseSectorCount??physics!.preparation.jobs,
+              compiler:completeCollision?{...terrainCompiler!,neighborSeams:async(...args)=>{
+                if(!neighborPublished&&args[4]===true&&args[0]===root){return {primary:{source:root,render:new Map(),collision:new Map()},east:[]};}
+                return terrainCompiler!.neighborSeams(...args);
+              }}:terrainCompiler!,proxies:originalProxies,cache:neighborCache,
+              residentBytes:()=>ledger.totalCpuBytes-ledger.tempEstimateBytes+physics!.collisionBytes*2+physics!.read().bodySourceResidentBytes,
+              baseSectorCount:completeCollision?completeCollision.sectors.length-(candidate.neighbor?.resident?(completeCollision.layout?.neighborTerrainCount??64):0)
+                :candidate.neighbor?.baseSectorCount??originalWorld.neighbor?.baseSectorCount??physics!.preparation.jobs,
               current:()=>!disposed&&hvpMountEpoch===myEpoch&&(neighborPublished||current()),
               blocked:()=>!neighborPublished||saveBusy||saveHold||supportPending||Boolean(dormancy?.read().busy||dormancy?.read().recoveryHold)||["Pending","RecoveryHold"].includes(terrainConsumer!.read().state)
                 ||structuralConsumer!.read().state!=="Ready"||bodyCutConsumer!.read().state!=="Idle",
                 admit:cost=>neighborPublished?admitNeighbor(cost):admitScene({...ledger,totalCpuBytes:ledger.totalCpuBytes-ledger.tempEstimateBytes+retainedDecodedBytes
                  +Math.max(0,cost.cache-neighborCosts.cacheBytes)+cost.source+cost.checkpoint+(cost.preparing?restorePrepareBytes:0)}),
-              stage:value=>{
+              stage:async value=>{
                 if(neighborPublished){return stageNeighbor(value);}
                 if(neighborStage){throw new Error("Duplicate staged neighbour generation");}
-                neighborStage=stage(value);
+                neighborStage=await stage(value);
                 // Defer all visible changes and retirement to the outer scene CAS.
                 return {publish(){},rollback(){},finish(){}};
               }});
             if(game.neighborRoot){await nextNeighbor.initialize(game.neighborRoot,game.checkpoint.neighbor!.lod);}
-             if(!neighborStage){neighborStage=stage({products:null,seams:null,epoch:candidate.neighbor?.epoch??restoreId,source:null,
+             if(!neighborStage){neighborStage=await stage({products:null,seams:null,epoch:candidate.neighbor?.epoch??restoreId,source:null,
               cacheBytes:neighborCache.totalBytes,checkpointBytes:nextNeighbor.read().checkpointBytes});}
           }
         }catch(error){
@@ -2453,6 +2814,7 @@ export const startHvp = async (
         return {
           publish(){
             previousRoot=terrainRoot.replace(old,game.root);
+            renderWorldId=game.checkpoint.world.sessionId;
             salvage=game.checkpoint.progress?createHvpSalvageLoop(game.root.read().sessionId,game.checkpoint.progress):undefined;
             terrainConsumer!.restoreReceipts(game.receipts.terrain);structuralConsumer!.restoreReceipts(game.receipts.structural);bodyCutConsumer!.restoreReceipts(game.receipts.moving);
             for(const key of newKeys){activeRestoreKeys.add(key);}
@@ -2462,6 +2824,7 @@ export const startHvp = async (
           },
           rollback(){
             if(previousRoot){terrainRoot.replace(root,previousRoot);}
+            renderWorldId=originalWorld.sessionId;
             salvage=previousSalvage;
             terrainConsumer!.restoreReceipts(oldReceipts.terrain);structuralConsumer!.restoreReceipts(oldReceipts.structural);bodyCutConsumer!.restoreReceipts(oldReceipts.moving);
             for(const key of newKeys){activeRestoreKeys.delete(key);}
@@ -2480,8 +2843,8 @@ export const startHvp = async (
            try{cleanupEphemeralScope(scope);}
            catch(cleanupError){throw new AggregateError([error,cleanupError],`HVP Load staging failed and cleanup is unproven: ${String(error)}; ${String(cleanupError)}`);}
            throw error;
-         }
-       },current);
+         }finally{renderPump?.dispose();}
+       },current,completeCollision);
        if(disposed||hvpMountEpoch!==myEpoch||terrainRoot.read()!==game.root.read()){
          enterRenderRecoveryHold("Finalized HVP Load does not own the live mount and B Root");
        }
@@ -2493,17 +2856,22 @@ export const startHvp = async (
           enterRenderRecoveryHold(`Finalized HVP Load epoch publication rejected: ${advanced!.reasonCode??advanced!.status}`);
         }
         publishedEphemeralEpoch=loadEpoch;
+        if(ownedRestore){if(completeCollision?.layout===null){discardHvpOwnedTerrainProducts(ownedRestore);}else{releaseHvpOwnedTerrainProducts(ownedRestore);}ownedRestore=undefined;}
         const loadStillOwnsB=()=>saveBusy&&!saveHold&&!disposed&&hvpMountEpoch===myEpoch&&terrainRoot.read()===game.root.read();
-        try{await terrainCompiler!.rolloverAfterLoad(loadStillOwnsB);}
+        try{await terrainCompiler!.rolloverAfterLoad(loadStillOwnsB,completeCollision?.layout!==null);}
         catch(error){
           if(disposed||hvpMountEpoch!==myEpoch){throw error;}
           enterRenderRecoveryHold(`Finalized HVP Load compiler rollover failed: ${String(error)}`);
         }
         if(disposed||hvpMountEpoch!==myEpoch){throw new Error("RecoveryHold: HVP mount disposed during compiler rollover");}
         if(!loadStillOwnsB()){enterRenderRecoveryHold("Finalized HVP Load lost the live B Root during compiler rollover");}
+      }finally{if(ownedRestore){discardHvpOwnedTerrainProducts(ownedRestore);}}
       };
     const saveAction=async(kind:"Save"|"Load")=>{
       if(saveBusy||saveHold||disposed||dormancy?.read().busy||dormancy?.read().recoveryHold){return;}
+      const loadStart=performance.now();
+      if(kind==="Load"){cutReady=false;loadReadyFrame=undefined;hud?.update("Loading",camera!.readPose(),stats,"Werkzeug wird vorbereitet");
+        documentPort.body.dataset.hestiaPrototypeCutReadiness=JSON.stringify({policy:"hvp-ready-prewarm-v2",sourceMode:privateCutSource?"private-cow":"control",state:"Preparing"});}
       saveBusy=true;saveView={state:kind==="Save"?"Saving":"Loading",message:"Bestätigte Generation vorbereiten",revision:saveRevision};
       hud?.updateSave();
       try{
@@ -2519,10 +2887,15 @@ export const startHvp = async (
         }else{
           const record=await store.load();if(!confirmed()){throw new Error("Scene disposed during load");}
           await loadGame(record.game);saveRevision=record.metadata.recordRevision;
+          loadReadyFrame={start:loadStart,source:terrainRoot.read()};
           saveView={state:"Loaded",message:"Spielstand geladen – pausiert, Spielen setzt ausdrücklich fort",revision:saveRevision};
         }
       }catch(error){saveHold=String(error).includes("RecoveryHold");saveView={state:saveHold?"RecoveryHold":"Rejected",message:String(error),revision:saveRevision};}
-      finally{saveBusy=false;if(!disposed&&hvpMountEpoch===myEpoch){hud?.updateSave();if(!saveHold){syncPhysicsTransforms();observeSalvage();updateTerrainState();}}}
+      finally{saveBusy=false;if(!disposed&&hvpMountEpoch===myEpoch){hud?.updateSave();if(!saveHold){syncPhysicsTransforms();observeSalvage();updateTerrainState();
+        if(kind==="Load"){cutReady=true;hud?.update("Ready",camera!.readPose(),stats);
+          documentPort.body.dataset.hestiaPrototypeCutReadiness=JSON.stringify({policy:"hvp-ready-prewarm-v2",sourceMode:privateCutSource?"private-cow":"control",state:"Ready"});
+          if(loadReadyFrame){measurement.record("loadToolReadyV2Ms",loadStart,performance.now()-loadStart,{policy:"hvp-ready-prewarm-v2"});}}
+      }}}
     };
     if(coldGame){
       terrainConsumer!.restoreReceipts(coldGame.receipts.terrain);structuralConsumer!.restoreReceipts(coldGame.receipts.structural);bodyCutConsumer!.restoreReceipts(coldGame.receipts.moving);
@@ -2530,11 +2903,13 @@ export const startHvp = async (
         await neighbor!.initialize(coldGame.neighborRoot,coldGame.checkpoint.neighbor!.lod);
         // The decoded B grid is handed to the controller (or released when
         // dormant); it is no longer an additional checkpoint-owned copy.
-        checkpointSourceBytes-=HVP_SOURCE_SLOT_COUNT;
-        ledger={...ledger,checkpointSourceBytes,totalCpuBytes:ledger.totalCpuBytes-HVP_SOURCE_SLOT_COUNT};
+        if(!coldNeighborSourceTransferred){
+          checkpointSourceBytes-=HVP_SOURCE_SLOT_COUNT;
+          ledger={...ledger,checkpointSourceBytes,totalCpuBytes:ledger.totalCpuBytes-HVP_SOURCE_SLOT_COUNT};
+        }
       }
       restoreView(coldGame.view);syncPhysicsTransforms();presentation.updateProjection();updateTerrainState();
-      coldGame=undefined;
+      coldGame=undefined;coldNeighborSourceTransferred=false;
     }
     dormancy=createHvpDormancyController({physics,stage:stageDormancy,current:()=>!disposed&&hvpMountEpoch===myEpoch,
       blocked:()=>saveBusy||saveHold||supportPending||Boolean(neighbor?.read().busy||neighbor?.read().recoveryHold)
@@ -2649,7 +3024,11 @@ export const startHvp = async (
      // Upload all startup objects while Loading, then publish their complete set
      // before Ready or the first draw. Subsequent mutations publish immediately.
      presentation.updateProjection();
+     if(disposed||hvpMountEpoch!==myEpoch){throw new Error("Scene disposed before tool Ready");}
+     cutReady=true;preparingNotice.remove();
      hud.update("Ready", camera.readPose(), stats);
+     documentPort.body.dataset.hestiaPrototypeCutReadiness=JSON.stringify({policy:"hvp-ready-prewarm-v2",sourceMode:privateCutSource?"private-cow":"control",state:"Ready"});
+     measurement.record("toolReadyV2Ms",measurementStarted,performance.now()-measurementStarted,{policy:"hvp-ready-prewarm-v2"});
      if(measurement.enabled){
        if(admittedGameplayPeak+HVP_CUT_TRACE_RESERVE_BYTES<=caps.maxCpuBytes){
          cutObservation=createHvpCutObservation(measurement,readCutFrame);
@@ -2669,10 +3048,21 @@ export const startHvp = async (
      let residencyDiagnosticFrames=0;
      let physicsTick = -1;
      const submitRenderFrame=():RenderCommandResult=>backend!.renderFrame();
+     const failFrame=(error:unknown)=>{
+       const show=(cause:unknown)=>{
+         if(hvpMountEpoch!==myEpoch){return;}
+         failureRoot=presentHvpFailure(documentPort,cause);
+         documentPort.body.dataset.hestiaPrototypeDisposal=JSON.stringify({...disposalReceipt,frameError:String(error)});
+       };
+       void dispose().then(()=>show(error),cleanup=>show(new AggregateError([error,cleanup],"HVP frame failed and cleanup is unproven")));
+     };
      const renderFrame = (timestamp: number): void => {
       const frameStarted=measurement.enabled?performance.now():0;
       if(measurement.enabled&&previousFrameTime!==undefined){measurement.record("frameIntervalMs",previousFrameTime,timestamp-previousFrameTime);}
       if (disposed) return;
+      mainCpuFrameStart=measurement.enabled?frameStarted:undefined;
+      lastMainCpuFrameStart=mainCpuFrameStart;
+      try {
       const deltaSeconds = previousFrameTime === undefined ? 0 : (timestamp - previousFrameTime) / 1_000;
       previousFrameTime = timestamp;
       if(++residencyDiagnosticFrames%60===0){
@@ -2683,6 +3073,7 @@ export const startHvp = async (
           previewCount:d.residentRepresentationKeys.filter(key=>key.startsWith("hvp:tool:preview:")).length});
       }
       try {
+        presentation.batch(()=>{
         playerInput!.update();
         physics!.update();
         plasmaTool!.update();
@@ -2710,16 +3101,27 @@ export const startHvp = async (
         }
         hud!.updatePhysics();
         if(!saveBusy){observeSalvage();}
+        camera!.update(deltaSeconds);
+        });
       } catch (error) {
-        void dispose().finally(() => { failureRoot = presentHvpFailure(documentPort, error); });
+        mainCpuFrameStart=undefined;
+        failFrame(error);
         return;
       }
-      camera!.update(deltaSeconds);
-      if (disposed) return;
+      if (disposed) {mainCpuFrameStart=undefined;return;}
       if(measurement.enabled){measurement.record("mainFrameCpuMs",frameStarted,performance.now()-frameStarted);}
+      mainCpuFrameStart=undefined;
        submitDraw=overrides.drawEnabled?.()!==false;
        if(overrides.drawEnabled!==undefined){documentPort.body.dataset.hestiaExperimentDrawSuppressed=String(!submitDraw);}
-       if(cutObservation!==undefined&&submitDraw){cutObservation.render(submitRenderFrame);}else{submitRenderFrame();}
+       let rendered:RenderCommandResult;
+       try{rendered=cutObservation!==undefined&&submitDraw?cutObservation.render(submitRenderFrame):submitRenderFrame();}
+       catch(error){failFrame(error);return;}
+      if(rendered.status==="Accepted"&&submitDraw&&!firstSceneReadyV2){
+        firstSceneReadyV2=true;const now=performance.now();measurement.record("coldSceneReadyV2Ms",0,now,{policy:"hvp-ready-prewarm-v2",toolReady:cutReady});
+      }
+      if(rendered.status==="Accepted"&&submitDraw&&loadReadyFrame&&!saveBusy&&terrainRoot.read()===loadReadyFrame.source){
+        const now=performance.now();measurement.record("loadSceneReadyV2Ms",loadReadyFrame.start,now-loadReadyFrame.start,{policy:"hvp-ready-prewarm-v2"});loadReadyFrame=undefined;
+      }
       if(measurement.enabled){
         if(!firstReadyFrame){
           firstReadyFrame=true;const now=performance.now();
@@ -2741,6 +3143,7 @@ export const startHvp = async (
         }
       }
       if (!disposed) animationFrame = windowPort.requestAnimationFrame(renderFrame);
+      }finally{mainCpuFrameStart=undefined;}
     };
     animationFrame = windowPort.requestAnimationFrame(renderFrame);
     return Object.freeze({ dispose });
@@ -2755,6 +3158,7 @@ export const startHvp = async (
       return Object.freeze({ dispose });
     }
     failureRoot = presentHvpFailure(documentPort, error);
+    if(disposalReceipt){documentPort.body.dataset.hestiaPrototypeDisposal=JSON.stringify(disposalReceipt);}
     let failureDisposed = false;
     const disposeFailure = async (): Promise<void> => {
       if (failureDisposed) return;

@@ -1,3 +1,5 @@
+import {HvpRenderStageRecoveryError} from "../hestia-prototype/presentation/renderStageRecovery";
+
 /** HVP-only mapper: refill at most two lanes, but drain every started callback on failure. */
 export async function runHvpBounded<T, R>(
   items: readonly T[],
@@ -45,7 +47,7 @@ export const createHvpBodyMeshTaskPump=(assertCurrent:()=>void,observe?:((label:
       waiting={resolve,reject};channel.port2.postMessage(0);
     })};
   return {host,async run<T>(steps:Generator<string,T,unknown>):Promise<T>{
-    let failed=false,recording=true,workStart=observe===undefined?0:performance.now();
+    let failed=false,failure:unknown,recording=true,workStart=observe===undefined?0:performance.now();
     const reportWork=()=>{
       if(!recording){return;}recording=false;
       if(observe!==undefined){try{observe("meshQuantum",workStart,performance.now()-workStart);}catch{observe=undefined;}}
@@ -54,8 +56,9 @@ export const createHvpBodyMeshTaskPump=(assertCurrent:()=>void,observe?:((label:
       current();const step=steps.next();
       if(step.done){reportWork();return step.value;}
       if(!host.continuePlan()){reportWork();await host.yieldTask();workStart=observe===undefined?0:performance.now();recording=true;}
-    }}catch(error){failed=true;reportWork();throw error;}
-    finally{try{steps.return(undefined as never);}catch(error){if(!failed){throw error;}}}
+    }}catch(error){failed=true;failure=error;reportWork();throw error;}
+    finally{try{steps.return(undefined as never);}catch(error){if(!failed){throw error;}
+      throw new HvpRenderStageRecoveryError([failure,error],"RecoveryHold: task failed and cursor cleanup is unproven");}}
   },dispose():void {
     if(disposed){return;}disposed=true;
     channel?.port1.close();channel?.port2.close();channel=undefined;

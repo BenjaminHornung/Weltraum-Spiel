@@ -17,6 +17,8 @@ import {quoteHvpBodyMeshWork,createHvpBodyMeshPhaseReserve} from "../../src/hest
 import {createHvpBodyMeshTaskPump} from "../../src/workers/hvpBoundedPump";
 import {createStructuralOwnerLedger} from "../../src/voxel/structural/model";
 import {HVP_TERRAIN_JOB,HVP_TERRAIN_MAX_OUTPUT,hvpTerrainInputDigest,decodeHvpTerrainOutput,type HvpTerrainPayload} from "../../src/workers/hvpTerrainJob";
+import {HVP_CHUNK_JOB,HVP_CHUNK_MAX_OUTPUT,hvpChunkInputDigest,decodeHvpChunkOutput} from "../../src/workers/hvpChunkJob";
+import {buildHvpChunkInput} from "../../src/hestia-prototype/terrain/terrainChunkInput";
 import {
   StreamingWorkerRuntime,
   WorkerPool,
@@ -74,6 +76,36 @@ class RuntimeTransport implements WorkerTransport {
     this.retiredMessageHandler?.({ data: message } as MessageEvent<unknown>);
   }
 }
+
+it("dispatches one combined chunk through the private eight-channel accepted-terminal drain",async()=>{
+  const {slots,payload}=buildHvpChunkInput({sizeX:256,sizeY:128,sizeZ:256,cellMeters:.125,originMeters:{x:-16,y:-8,z:-16},
+    sessionId:"pool-chunk",epoch:0,revision:1,sourceDigest:"12345678",baseDigest:"87654321",overlayBytes:0,
+    readSlot:(x,y,z)=>x===1&&y===1&&z===1?1:0,copyLeaf:()=>new Uint8Array(4096),leafRevision:()=>0},0,()=>0);
+  const input:TransferableBufferBundle={buffers:[slots.buffer as ArrayBuffer],ownership:"SenderToWorker",revision:contentRevision(1),
+    byteLength:byteCount(slots.byteLength),views:[{name:"slots",kind:"Uint8Array",bufferIndex:0,byteOffset:0,elementCount:slots.length}]};
+  const request:WorkerJobRequest={jobId:workerJobId("pool-chunk"),targetKey:workerTargetKey("chunk-0"),jobKind:workerJobKind(HVP_CHUNK_JOB),
+    workerEpoch:workerEpoch(0),planningEpoch:planningEpoch(0),inputRevision:contentRevision(1),sourceInputDigest:hvpChunkInputDigest(payload,input.buffers),
+    algorithmVersion:algorithmVersion(1),priority:"Urgent",deadline:jobDeadline(0),estimatedInputBytes:input.byteLength,
+    estimatedOutputBytes:byteCount(HVP_CHUNK_MAX_OUTPUT),payload};
+  const pool=new WorkerPool({workerCount:1,queueCapacity:32,transportFactory:()=>new RuntimeTransport()}),pump=createHvpBodyMeshTaskPump(()=>{});
+  try{
+    await pool.start();
+    const Resizable=ArrayBuffer as unknown as new(length:number,options:{maxByteLength:number})=>ArrayBuffer;
+    const badBuffer=new Resizable(slots.byteLength,{maxByteLength:slots.byteLength*2});new Uint8Array(badBuffer).set(slots);
+    await expect(pool.enqueueTerrainDerivative({...request,jobId:workerJobId("pool-chunk-rab")},{...input,buffers:[badBuffer]},
+      38*1024*1024,pump.host,createHvpBodyMeshPhaseReserve(2*1024*1024),createHvpBodyMeshPhaseReserve(38*1024*1024))).rejects.toThrow(/fixed/i);
+    expect(badBuffer.byteLength).toBe(34**3);expect(pool.snapshot().runningJobs).toBe(0);
+    const ticket=await pool.enqueueTerrainDerivative(request,input,38*1024*1024,pump.host,
+      createHvpBodyMeshPhaseReserve(2*1024*1024),createHvpBodyMeshPhaseReserve(38*1024*1024));
+    expect(input.buffers[0]!.byteLength).toBe(0);
+    const terminal=await ticket.result;if(terminal.kind!=="Completed"){throw new Error(`Chunk worker ${terminal.kind}`);}
+    expect(pool.isAcceptedCompletedTerminal(terminal)).toBe(true);expect(terminal.output.buffers).toHaveLength(8);
+    const products=decodeHvpChunkOutput(terminal.output,payload);
+    expect(products.render.unitFaceCount).toBe(6);expect(products.collision.indices).toHaveLength(36);
+    expect(pool.snapshot().runningJobs).toBe(0);
+  }finally{pump.dispose();await pool.shutdown();}
+  expect(pool.snapshot().activeWorkers).toBe(0);
+});
 
 it("dispatches mesh-only owner projections through the existing accepted-terminal pool with exclusive buffers",async()=>{
   const projection:HvpBodyChildProjection={sessionId:"pool-mesh",epoch:0,commandId:"pool-cut",ownerId:"pool-parent",sourceId:"pool-source",

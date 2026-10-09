@@ -27,6 +27,10 @@ export class MaterialProfileConflictError extends Error {
   }
 }
 
+export class MaterialAcquireReleaseUncertainError extends AggregateError {
+  constructor(acquireError:unknown,releaseError:unknown){super([acquireError,releaseError],"Material acquisition rollback release is unproven");this.name="MaterialAcquireReleaseUncertainError";}
+}
+
 export interface ThreeMaterialLease {
   readonly materials: readonly THREE.Material[];
   release(): number;
@@ -37,6 +41,8 @@ export class ThreeMaterialFactory {
   private readonly definitions = new Map<MaterialProfileId, string>();
   private allocationCount = 0;
   private disposalCount = 0;
+  private releaseUncertain=false;
+  private releaseFailure:unknown;
 
   get allocations(): number {
     return this.allocationCount;
@@ -75,7 +81,7 @@ export class ThreeMaterialFactory {
         acquired.push(entry);
       }
     } catch (error) {
-      this.releaseEntries(acquired);
+      try{this.releaseEntries(acquired);}catch(releaseError){throw new MaterialAcquireReleaseUncertainError(error,releaseError);}
       newDefinitionIds.forEach((id) => this.definitions.delete(id));
       throw error;
     }
@@ -92,9 +98,10 @@ export class ThreeMaterialFactory {
   }
 
   disposeAll(): number {
+    if(this.releaseUncertain){throw this.releaseFailure;}
     let disposed = 0;
     for (const entry of this.cache.values()) {
-      entry.material.dispose();
+      try{entry.material.dispose();}catch(error){this.releaseUncertain=true;this.releaseFailure=error;throw error;}
       disposed += 1;
     }
     this.cache.clear();
@@ -123,7 +130,7 @@ export class ThreeMaterialFactory {
     for (const entry of entries) {
       entry.references -= 1;
       if (entry.references !== 0) continue;
-      entry.material.dispose();
+      try{entry.material.dispose();}catch(error){this.releaseUncertain=true;this.releaseFailure=error;throw error;}
       for (const [id, candidate] of this.cache) {
         if (candidate === entry) {
           this.cache.delete(id);

@@ -51,7 +51,7 @@ it("terrain timing projects one coherent transaction through the real worker han
     host.postMessage = reply => { replies.push(reply); };
     await import("../../src/hestia-prototype/physics/physicsWorker");
     workerLoaded = true;
-    const initializedReply = await send({ id: 1, kind: "Initialize", sectors: [...collisionSectors(floor)], spawn: { x: 0, y: 2, z: 0 }, gravity: 9.81, sessionId: "worker-timing" });
+    const initializedReply = await send({ id: 1, kind: "Initialize", sectors: [...collisionSectors(floor)], spawn: { x: 0, y: 2, z: 0 }, gravity: 9.81, sessionId: "worker-timing",measure:true });
     expect(initializedReply.error).toBeUndefined();
     expect(intervalCallbacks).toHaveLength(1);
 
@@ -148,11 +148,28 @@ it("terrain timing projects one coherent transaction through the real worker han
     await send({ id: 15, kind: "Pause" });
     const checkpointReply = await send({ id: 16, kind: "Checkpoint" });
     expect(checkpointReply.checkpoint).toBeDefined();
-    await send({ id: 17, kind: "PrepareRestore", transactionId: "restore", checkpoint: checkpointReply.checkpoint!, replacements: [{ index: 0, mesh: mesh(4) }] });
+    const preparedRestore=await send({ id: 17, kind: "PrepareRestore", transactionId: "restore", checkpoint: checkpointReply.checkpoint!, replacements: [{ index: 0, mesh: mesh(4) }] });
+    expect(preparedRestore.error??preparedRestore.rejected).toBeUndefined();expect(preparedRestore.restoreState).toBe("Prepared");
     const committedRestore = await send({ id: 18, kind: "CommitRestore", transactionId: "restore" });
+    expect(committedRestore.error??committedRestore.rejected).toBeUndefined();expect(committedRestore.restoreState).toBe("Committed");
     expectNoTerrainClock(committedRestore);
     const finalizedRestore = await send({ id: 19, kind: "FinalizeRestore", transactionId: "restore" });
+    expect(finalizedRestore.error??finalizedRestore.rejected).toBeUndefined();expect(finalizedRestore.restoreState).toBe("Finalized");
     expectNoTerrainClock(finalizedRestore);
+
+    let lastHold:HvpPhysicsReply|undefined;
+    for(let i=0;i<6;i++){
+      const resumedHold=await send({id:30+i*2,kind:"Resume"});expect(resumedHold.error).toBeUndefined();expect(resumedHold.rejected).toBeUndefined();now+=100;intervalCallbacks[0]!();
+      lastHold=await send({id:31+i*2,kind:"Read"});expect(lastHold.snapshot?.status).toBe("SimulationHold");
+    }
+    expect(lastHold!.clock?.holdTransitions).toHaveLength(4);expect(lastHold!.clock?.droppedHoldTransitions).toBe(2);
+    const firstHold=lastHold!.clock!.simulationHold;
+    now+=100;intervalCallbacks[0]!();const stillHeld=await send({id:50,kind:"Read"});
+    expect(stillHeld.clock?.holdTransitions).toHaveLength(4);expect(stillHeld.clock?.droppedHoldTransitions).toBe(2);expect(stillHeld.clock?.simulationHold).toEqual(firstHold);
+    Reflect.set(lastHold!.clock!.holdTransitions![0]!,"ticks",-1);
+    expect((await send({id:51,kind:"Read"})).clock?.holdTransitions?.[0]?.ticks).toBeGreaterThanOrEqual(0);
+    const disabled=await send({id:52,kind:"Read",measure:false});expect(disabled.clock?.holdTransitions).toBeUndefined();expect(disabled.clock?.droppedHoldTransitions).toBeUndefined();
+    await send({id:53,kind:"Resume"});now+=100;intervalCallbacks[0]!();expect((await send({id:54,kind:"Read"})).clock?.holdTransitions).toBeUndefined();
 
     const invalidMessage = await send(1 as unknown as HvpPhysicsMessage);
     expect(invalidMessage.error).toBe("Invalid physics message id");

@@ -1,5 +1,5 @@
 import {fnv1aHash} from "../../core/hash";
-import {hvpFarColumnTopMeters,readHvpSourceColumnWorld} from "../../hvp/hvpCoastSource";
+import {readHvpSourceColumnWorld} from "../../hvp/hvpCoastSource";
 import {clipHvpProjection,meshHvpOccupancy,meshHvpWaterPatch,type HvpCompactMesh,type HvpMeshOccupancy} from "../../hvp/hvpCoastMesher";
 import {projectHvpRegionOccupancy,type HvpRegionSource} from "./regionSource";
 
@@ -30,7 +30,7 @@ export const buildHvpNeighborProducts=(primary:HvpRegionSource,east:HvpRegionSou
     }
     const fine=Math.max(Math.abs(x),Math.abs(z))<20;
     const column=readHvpSourceColumnWorld(fine?x:Math.floor(x)+.5,fine?z:Math.floor(z)+.5);
-    const top=fine?column.topMeters:hvpFarColumnTopMeters(x,z);
+    const top=column.topMeters;
     if(y>=top){return 0;}
     const material=!fine&&(column.slot===3||column.slot===4)?1:column.slot;
     return y>=top-(top<0?.25:.125)?material:1;

@@ -116,9 +116,15 @@ const materials=HVP_COAST_MATERIAL_REGISTRY.map(m=>({materialId:m.slot,densityKg
 export const prepareHvpTerrainFragment=(request:HvpTerrainFragmentRequest,generation:number)=>{
   const steps=terrainFragmentSteps(request,generation);for(;;){const step=steps.next();if(step.done){return step.value;}}
 };
-export const prepareHvpTerrainFragmentOwnedSteps=(request:HvpTerrainFragmentRequest,generation:number,reserve:StructuralOwnedReserve)=>terrainFragmentSteps(request,generation,reserve);
+export const prepareHvpTerrainFragmentOwnedSteps=(request:HvpTerrainFragmentRequest,generation:number,reserve:StructuralOwnedReserve,
+  observe?:(phase:string,start:number,duration:number)=>void,isMeasured?:()=>boolean)=>terrainFragmentSteps(request,generation,reserve,false,undefined,observe,isMeasured);
 export const prepareHvpProbeTerrainFragmentOwnedSteps=(request:HvpTerrainFragmentRequest,generation:number,reserve:StructuralOwnedReserve)=>terrainFragmentSteps(request,generation,reserve,true);
-function* terrainFragmentSteps(request:HvpTerrainFragmentRequest,generation:number,reserve?:StructuralOwnedReserve,probe=false,ownedSource?:StructuralObject){
+function* terrainFragmentSteps(request:HvpTerrainFragmentRequest,generation:number,reserve?:StructuralOwnedReserve,probe=false,ownedSource?:StructuralObject,
+  observe?:(phase:string,start:number,duration:number)=>void,isMeasured?:()=>boolean){
+  if(isMeasured?.()===false){observe=undefined;}
+  let started=observe===undefined?0:performance.now();
+  const report=(phase:string)=>{if(isMeasured?.()===false){observe=undefined;}if(observe===undefined){return;}const now=performance.now();
+    try{observe(phase,started,now-started);}catch{observe=undefined;}started=now;};
   const invalid=(c:HvpStructuralCell)=>![c.x,c.y,c.z,c.materialId].every(Number.isSafeInteger)
     ||c.x<0||c.x>=256||c.y<1||c.y>=128||c.z<0||c.z>=256||c.materialId<1||c.materialId>4;
   function* invalidOwnedCells(){for(const c of request.cells){if(invalid(c)){return true;}yield "terrainNativeInput";}return false;}
@@ -130,6 +136,7 @@ function* terrainFragmentSteps(request:HvpTerrainFragmentRequest,generation:numb
     ||(reserve===undefined?request.cells.some(invalid):yield* invalidOwnedCells())){
     throw new Error("Invalid terrain fragment admission");
   }
+  report("cutNativeCellValidationMs");
   let source:ReturnType<typeof ingestHvpStructuralCells>;
   if(probe){
     if(ownedSource){source=ownedSource;reserve?.(request.cells.length*512,true);}
@@ -147,6 +154,8 @@ function* terrainFragmentSteps(request:HvpTerrainFragmentRequest,generation:numb
     markProbeSource(source);
   }else{source=reserve===undefined?ingestHvpStructuralCells(request.ownerId,request.cells,materials)
     :yield* borrowedHvpPlanSteps(prepareHvpStructuralIngestOwnedSteps(request.ownerId,request.cells,materials,[],reserve),"terrainNativeIngest");}
+  report("cutNativeFragmentSourceMs");
   const claim={massKg:request.massKg,colliderBoxes:request.colliderBoxes};
-  return reserve===undefined?admitHvpTransferredRigidBody(source,claim):yield* admitHvpTransferredRigidBodyOwnedSteps(source,claim,undefined,reserve);
+  const recipe=reserve===undefined?admitHvpTransferredRigidBody(source,claim):yield* admitHvpTransferredRigidBodyOwnedSteps(source,claim,undefined,reserve);
+  report("cutNativeFragmentAdmissionMs");return recipe;
 }

@@ -76,7 +76,7 @@ const harness = () => {
     save: { state: "Idle", message: "Bereit", revision: null },
     salvage: createHvpSalvageLoop("hud-test").read(),
     neighbor: { state: "Ready", epoch: 1, wanted: true, pinned: false, lod: .125, collisionReady: true, transitions: 3,
-      busy: false, recoveryHold: false, error: "", key: "east", renderLod: .125, proxyOnly: false, sourceDigest: "12345678",
+      busy: false, recoveryHold: false, error: "", key: "east", loadOperation:"Idle", renderLod: .125, proxyOnly: false, sourceDigest: "12345678",
       sourceBytes: 0, checkpointBytes: 0, cacheBytes: 0, cacheEntries: 0, cacheHits: 0, cacheMisses: 0, adoptions: 0, stale: 0 },
     dormancy: { busy: false, recoveryHold: false, error: "", changes: 0 },
     support: { state: "Ready", cells: 384, massKg: 1722.65625, fragments: 1, message: "Stütze bestätigt" },

@@ -6,6 +6,18 @@ import type {HvpCutSpan,HvpCutTrace} from "../../src/hestia-prototype/runtime/cu
 import {HvpRenderStageRecoveryError} from "../../src/hestia-prototype/presentation/renderStageRecovery";
 
 const request={id:"recut-1",ownerId:"hvp:terrain-fragment:r1:12345678",sourceDigest:"source",edge:1,direction:{x:0,y:0,z:1}};
+
+it("awaits hidden render staging before native hold and rolls back cancellation after admission",async()=>{
+  let finishStage!:(value:{publish():void;rollback():void;finish():void})=>void;
+  const staged=new Promise<{publish():void;rollback():void;finish():void}>(resolve=>{finishStage=resolve;});
+  const rollback=vi.fn(),nativeStage=vi.fn(async()=>{}),nativeRollback=vi.fn(async()=>{});
+  const physics={beginBodyCut:async()=>({}),stageBodyCut:nativeStage,rollbackBodyCut:nativeRollback,read:()=>({moving:{state:"Idle"}})} as unknown as HvpPhysicsClient;
+  const consumer=createHvpBodyCutConsumer(physics,async()=>({parts:[],removedCells:1,removedMassKg:1}) as HvpBodyCutProducts,()=>staged);
+  const pending=consumer.submit(request);await Promise.resolve();await Promise.resolve();
+  expect(nativeStage).not.toHaveBeenCalled();consumer.dispose();finishStage({publish(){},rollback,finish(){}});
+  await pending;expect(nativeStage).not.toHaveBeenCalled();expect(rollback).toHaveBeenCalledOnce();expect(nativeRollback).toHaveBeenCalledOnce();
+  expect(consumer.read().last?.status).toBe("Rejected");
+});
 const harness=(fault="",trace?:HvpCutTrace)=>{
   let native=0,visible=0,published=0,paused=false;
   const fail=(phase:string)=>{if(fault===phase){throw new Error(`injected ${phase}`);}};

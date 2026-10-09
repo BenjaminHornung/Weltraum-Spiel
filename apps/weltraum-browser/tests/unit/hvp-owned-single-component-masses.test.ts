@@ -1,4 +1,4 @@
-import {expect,it} from "vitest";
+import {expect,it,vi} from "vitest";
 import {createHash} from "node:crypto";
 import {canonicalAdaptiveJson,deepFreeze,isDeepFrozen} from "../../src/voxel/adaptive";
 import * as structural from "../../src/voxel/structural";
@@ -8,6 +8,8 @@ import {deriveStructuralSingleComponentMasses,structuralOwnedSingleComponentMass
 import {createStructuralOwnerLedger,isIssuedStructuralObject} from "../../src/voxel/structural/model";
 import {drainStructuralSteps,structuralDenseArray,structuralMapSteps,structuralPositiveBudget} from "../../src/voxel/structural/validation";
 import {validateStructuralCellAddress} from "../../src/voxel/structural/coordinates";
+import * as coordinates from "../../src/voxel/structural/coordinates";
+import {structuralOwnedObjectMassSteps} from "../../src/voxel/structural/massProperties";
 import {ingestHvpStructuralCells,type HvpStructuralCell} from "../../src/hestia-prototype/terrain/structuralIngest";
 
 const budgets=Object.freeze({maxVisitedCells:32768,maxConnectivityCells:32768,maxComponents:32,maxConnectivityFacts:262144});
@@ -21,6 +23,16 @@ const fixture=()=>{
   }}}
   return ingestHvpStructuralCells("mass.child.literal",deepFreeze(cells),materials);
 };
+it("D2 reuses already validated issued addresses at the original mass coordinate-check point",()=>{
+  const source=fixture(),expected=deriveStructuralObjectMassProperties(source,{maxVisitedCells:32768});
+  const ledger=createStructuralOwnerLedger(32*1024*1024),project=vi.spyOn(coordinates,"globalQuantumForStructuralCell");
+  try{
+    const actual=drainStructuralSteps(structuralOwnedObjectMassSteps(source,{maxVisitedCells:32768},ledger.reserve));
+    expect(canonicalAdaptiveJson(actual)).toBe(canonicalAdaptiveJson(expected));
+    expect(project).not.toHaveBeenCalled();
+    expect(actual.inertiaTensorKgMetersSquared).toEqual(expected.inertiaTensorKgMetersSquared);
+  }finally{project.mockRestore();ledger.release();}
+});
 const sha=(bytes:string)=>createHash("sha256").update(bytes).digest("hex");
 type Prepared=ReturnType<typeof deriveStructuralSingleComponentMasses>;
 type Source=ReturnType<typeof fixture>;

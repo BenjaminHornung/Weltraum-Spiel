@@ -1,7 +1,7 @@
 import { deepFreeze, serializeAdaptiveKey as adaptiveSerializeKey } from "../adaptive";
-import { serializeStructuralCellAddress } from "./canonical";
+import { serializeStructuralCellAddress,canonicalStructuralJson } from "./canonical";
 import { globalQuantumForStructuralCell, localCellIndexFromOffset } from "./coordinates";
-import { isIssuedStructuralObject, isOwnedStructuralDerivationCandidate, structuralAddressForBrickCell } from "./model";
+import { isIssuedStructuralObject, isOwnedStructuralDerivationCandidate, isOwnedStructuralGraph,structuralAddressForBrickCell } from "./model";
 import type { StructuralCellAddress, StructuralObject, StructuralVoxelState } from "./types";
 import { normalizeAdaptiveAuthorityFunction, structuralFail, structuralPositiveBudget, structuralFreezeArraySteps, type StructuralOwnedReserve } from "./validation";
 
@@ -93,7 +93,19 @@ export function* sortedOwnedStructuralOccupiedEntrySteps(object: StructuralObjec
     return structuralFail("InvalidContract", "connectivity/source", "Owned extraction requires an issued source or live command-local derivation capability.");
   }
   const maxVisitedCells = structuralPositiveBudget(maxVisitedCellsValue, "connectivityBudgets/maxVisitedCells");
-  const entries = yield* occupiedEntrySteps(object, maxVisitedCells, issuedOccupiedEntry, reserve);
+  const ownedGraph=isOwnedStructuralGraph(object);if(ownedGraph){reserve(256);}
+  const keyCache=ownedGraph?new WeakMap<StructuralObject["bricks"][number],string>():undefined;
+  const factory:OccupiedEntryFactory<IssuedOccupiedEntry>=!ownedGraph
+    ?(brick,cell,address)=>issuedOccupiedEntry(brick,cell,address,true):(brick,cell,address)=>{
+    let brickOrderKey=keyCache!.get(brick);
+    // Lazy after the existing first-cell address validation; empty bricks preserve their old work/order.
+    if(brickOrderKey===undefined){reserve(128);brickOrderKey=serializeAdaptiveKey(address.brickKey);keyCache!.set(brick,brickOrderKey);}
+    const q=address.brickKey.originQuantum,l=address.local,globalX=q.x+l.x,globalY=q.y+l.y,globalZ=q.z+l.z;
+    return Object.freeze({address,globalKey:globalKey(globalX,globalY,globalZ),state:cell.state,brickOrderKey,
+      localOrderIndex:cell.localIndex,globalX,globalY,globalZ,
+      cellKey:canonicalStructuralJson({brickKey:brickOrderKey,localIndex:cell.localIndex})});
+  };
+  const entries = yield* occupiedEntrySteps(object, maxVisitedCells, factory, reserve);
   // Both permitted producers retain canonical brick/local-index order; these new arrays are plain,
   // index-only literals, never published until every index and length have been locked.
   return yield* structuralFreezeArraySteps(entries, reserve);
@@ -111,21 +123,25 @@ const genericOccupiedEntry: OccupiedEntryFactory<OccupiedEntry> = (_brick, cell,
   });
 };
 
-const issuedOccupiedEntry: OccupiedEntryFactory<IssuedOccupiedEntry> = (_brick, cell, address) => {
+const issuedOccupiedEntry = (_brick:StructuralObject["bricks"][number],cell:StructuralObject["bricks"][number]["cells"][number],
+  address:StructuralCellAddress,reuseValidatedKey=false):IssuedOccupiedEntry => {
   // The issuer validated this brick key/address; its level-4 cell quantum is exactly origin + local.
   const globalX = address.brickKey.originQuantum.x + address.local.x;
   const globalY = address.brickKey.originQuantum.y + address.local.y;
   const globalZ = address.brickKey.originQuantum.z + address.local.z;
+  let brickOrderKey:string;
   return Object.freeze({
     address,
     globalKey: globalKey(globalX, globalY, globalZ),
     state: cell.state,
-    brickOrderKey: serializeAdaptiveKey(address.brickKey),
+    brickOrderKey: brickOrderKey=serializeAdaptiveKey(address.brickKey),
     localOrderIndex: cell.localIndex,
     globalX,
     globalY,
     globalZ,
-    cellKey: serializeStructuralCellAddress(address)
+    // Only the private reserve generator reuses this same fresh validated address/key.
+    cellKey: reuseValidatedKey?canonicalStructuralJson({brickKey:brickOrderKey,
+      localIndex:address.local.x+16*(address.local.y+16*address.local.z)}):serializeStructuralCellAddress(address)
   });
 };
 

@@ -1,0 +1,18 @@
+[
+  {
+    "sha256": "37801df370d9045122d23b0ab79c6a4fd35f5d4c16dc18e46d62581e5b981896",
+    "path": "tests/performance/hvp-cut-rt.spec.ts"
+  },
+  {
+    "sha256": "449e4f793122e3f2174faa4ca6ec82a3bfd0c9ade8855e6de5b639c7edefb0d5",
+    "path": "tests/performance/hvpCutRtReport.ts"
+  },
+  {
+    "sha256": "f3a879cfddad25b25d4a88280b7930b08ea14db07251d021f7f2a52dcba5e4b7",
+    "path": "tests/performance/hvpPrivateUploadCpu.ts"
+  },
+  {
+    "sha256": "f51d7326506256322e9cdde74d6211c2879c10aacbc70532bfbbadf2d0e56396",
+    "path": "playwright.d2.config.ts"
+  }
+]

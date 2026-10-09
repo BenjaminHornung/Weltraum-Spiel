@@ -13,14 +13,19 @@ export const createHvpMeasurements=(enabled:boolean,clock:Pick<Performance,"now"
   };
   return {
     enabled,record,
-    worker(batch:{origin:number;steps:readonly (readonly[number,number])[];dropped:number}):void{
+    worker(batch:{origin:number;steps:readonly (readonly[number,number])[];timers?:readonly (readonly[number,number])[];dropped:number}):void{
       if(!enabled){return;}
       if(!batch||!Number.isFinite(batch.origin)||!Number.isSafeInteger(batch.dropped)||batch.dropped<0
-        ||!Array.isArray(batch.steps)||batch.steps.length>1024){errors+=1;return;}
+        ||!Array.isArray(batch.steps)||batch.steps.length>1024
+        ||batch.timers!==undefined&&(!Array.isArray(batch.timers)||batch.timers.length>1024)){errors+=1;return;}
       dropped+=batch.dropped;
       for(const step of batch.steps){
         if(!Array.isArray(step)||step.length!==2){errors+=1;continue;}
         record("solverStepCpuMs",batch.origin-clock.timeOrigin+step[0],step[1]);
+      }
+      for(const timer of batch.timers??[]){
+        if(!Array.isArray(timer)||timer.length!==2){errors+=1;continue;}
+        record("physicsTimerGapMs",batch.origin-clock.timeOrigin+timer[0],timer[1]);
       }
     },
     read:()=>Object.freeze({enabled,samples,errors,dropped})

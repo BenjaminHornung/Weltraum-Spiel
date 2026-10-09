@@ -1,7 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
 import { runHvpBounded } from "../../src/workers/hvpBoundedPump";
-import { createHvpTerrainRoot } from "../../src/hestia-prototype/terrain/cutPlan";
-import { createHvpTerrainCompiler } from "../../src/hestia-prototype/terrain/terrainProducts";
+import { createHvpTerrainRoot,createHvpPrivateTerrainRoot,createHvpTerrainOwner,prepareHvpPrivateTerrainCut } from "../../src/hestia-prototype/terrain/cutPlan";
+import { createHvpTerrainCompiler,releaseHvpOwnedTerrainProducts } from "../../src/hestia-prototype/terrain/terrainProducts";
+import {materializeHvpCoastSource,prepareHvpOwnedCoastSource} from "../../src/hvp/hvpCoastSource";
+import {createHvpEastRegion} from "../../src/hestia-prototype/runtime/regionSource";
+import {prepareHvpTerrainTransfer} from "../../src/hestia-prototype/terrain/terrainTransfer";
+import {releaseHvpOwnedSupportPlan,type HvpSupportPlan} from "../../src/hestia-prototype/terrain/supportPlan";
 import { ingestHvpStructuralCells } from "../../src/hestia-prototype/terrain/structuralIngest";
 import { readHvpBodyCells } from "../../src/hestia-prototype/physics/bodyCutPlan";
 import type { HvpMovingCutPreparation } from "../../src/hestia-prototype/physics/bodyCutSession";
@@ -123,6 +127,7 @@ const compilerFixture = () => {
   const detachedInputs: boolean[] = [], outputLayouts: string[][] = [];
   const holds = new Set<number>(), held = new Map<number, () => void>(), active = new Set<string>();
   const transports: RuntimeTransport[] = [];
+  const failures:Array<Extract<WorkerToHostMessage,{type:"JobFailed"}>["failure"]>=[];
   const controls = { corruptOutput: -1, throwCancel: -1, maximum: 0 };
   class RuntimeTransport implements WorkerTransport {
     onmessage: ((event: MessageEvent<unknown>) => void) | null = null;
@@ -133,6 +138,7 @@ const compilerFixture = () => {
     constructor() { transports.push(this); }
     private readonly runtime = new StreamingWorkerRuntime((message, transfer = []) => {
       const cloned = structuredClone(message, { transfer: [...transfer] }) as WorkerToHostMessage;
+      if(cloned.type==="JobFailed"){failures.push(cloned.failure);}
       if (cloned.type === "JobOutputData") {
         outputLayouts.push(cloned.bundle.views.map(view => view.name));
         if (requests.findIndex(request => request.jobId === cloned.jobId) === controls.corruptOutput) {
@@ -171,7 +177,7 @@ const compilerFixture = () => {
   vi.stubGlobal("Worker", RuntimeTransport);
   const compiler = createHvpTerrainCompiler();
   const release = (index: number) => { holds.delete(index); const deliver = held.get(index); held.delete(index); deliver?.(); };
-  return { root, plan, compiler, requests, cancelled, inputBytes, detachedInputs, outputLayouts, holds, held, controls,
+  return { root, plan, compiler, requests, cancelled, inputBytes, detachedInputs, outputLayouts, holds, held, controls,failures,
     reads: () => reads, failReads: (error?: Error) => { readFailure = error; }, release,
     async dispose() {
       readFailure = undefined; holds.clear(); for (const index of [...held.keys()]) { release(index); }
@@ -182,6 +188,26 @@ const compilerFixture = () => {
 };
 
 describe("P05 actual compiler transport", () => {
+  it("loads actual Coast East seams through the real pool runtime and result gate",async()=>{
+    const f=compilerFixture(),root=createHvpTerrainOwner(createHvpPrivateTerrainRoot(prepareHvpOwnedCoastSource(materializeHvpCoastSource()),"real-coast",0));
+    let support:HvpSupportPlan|undefined,seams:Awaited<ReturnType<typeof f.compiler.neighborSeams>>|undefined;
+    try{
+      await f.compiler.prepare(()=>true,root);
+      const initial=await f.compiler.initialChunks(root.read(),undefined,16*1024*1024,"real-coast-world");releaseHvpOwnedTerrainProducts(initial);
+      const before=root.read(),cut=prepareHvpPrivateTerrainCut(root,{sessionId:before.sessionId,epoch:before.epoch,revision:before.revision,sourceDigest:before.sourceDigest,
+        commandId:"actual-rockarm-cut",toolPolicy:"hvp-plasma-v1",shape:{kind:"Box",min:[176,78,76],max:[180,82,80]}});
+      support=await f.compiler.analyze(cut,16*1024*1024);expect(support.fragments[0]!.cells).toHaveLength(384);
+      const transfer=prepareHvpTerrainTransfer(root,support),products=await f.compiler.compile(transfer.plan,support,16*1024*1024);
+      root.commit(transfer.plan);releaseHvpOwnedTerrainProducts(products);releaseHvpOwnedSupportPlan(support);support=undefined;
+      expect(root.read().sourceDigest).toBe("26d5308d");
+      const east=createHvpTerrainRoot(await createHvpEastRegion(),"real-coast:east",0);
+      seams=await f.compiler.neighborSeams(root.read(),east.read(),undefined,false,false,16*1024*1024);
+      expect(seams.primary.collision.size).toBe(32);expect(seams.east).toHaveLength(256);seams.finish!();seams=undefined;
+      expect(f.failures).toEqual([]);
+    }catch(error){expect(f.failures,"Actual worker terminal before compiler flattens its message").toEqual([]);throw error;}
+    finally{seams?.discard?.();if(support){releaseHvpOwnedSupportPlan(support);}await f.dispose();f.compiler.releaseDisposedSupportResources();}
+  },120_000);
+
   it("packs at most two active inputs, refills before the held sibling, and returns work-list order", async () => {
     const f = compilerFixture(); f.holds.add(0); f.holds.add(1);
     const result = f.compiler.compile(f.plan); void result.catch(() => {});

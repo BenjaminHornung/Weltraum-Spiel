@@ -25,3 +25,14 @@ it.each(["rollback","retire"])("holds on uncertain %s rather than reporting a re
   const h=harness(fault);h.controller.update();await settled(h.controller);expect(h.controller.read().recoveryHold).toBe(true);expect(h.state().running).toBe(false);
   for(let i=0;i<200;i+=1){h.controller.update();}expect(h.state().prepared).toBe(1);await h.controller.dispose();
 });
+
+it("awaits wake graphics and rolls it back when disposed before native publication",async()=>{
+  let finish!:(value:{publish():void;rollback():void;finish():void})=>void,commits=0,rollbacks=0,renderRollbacks=0;
+  const graphics=new Promise<{publish():void;rollback():void;finish():void}>(resolve=>{finish=resolve;});
+  const physics={read:()=>({status:"Running",player:{status:"Walking",position:{x:20,y:0,z:0}},bodyResidencyTransaction:"Idle",parked:[],terrainFragments:[{ownerId:"rock"}],bodies:[{ownerId:"rock",sleeping:true,position:{x:0,y:0,z:0}}]}),
+    prepareBodyResidency:async()=>({}),commitBodyResidency:async()=>{commits++;},rollbackBodyResidency:async()=>{rollbacks++;},command:async()=>{}} as unknown as HvpPhysicsClient;
+  const controller=createHvpDormancyController({physics,blocked:()=>false,current:()=>true,admit(){},stage:()=>graphics});
+  controller.update();await Promise.resolve();const disposal=controller.dispose();expect(commits).toBe(0);
+  finish({publish(){},rollback(){renderRollbacks++;},finish(){}});await disposal;
+  expect(commits).toBe(0);expect(rollbacks).toBe(1);expect(renderRollbacks).toBe(1);expect(controller.read().recoveryHold).toBe(false);
+});

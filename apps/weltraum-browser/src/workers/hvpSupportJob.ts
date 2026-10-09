@@ -142,9 +142,15 @@ function* supportOutputSteps(output:TransferableBufferBundle,p:HvpSupportPayload
       ||typeof tm.fragmentCells!=="number"||!Number.isSafeInteger(tm.fragmentCells)||tm.fragmentCells<0||tm.fragmentCells!==seen.size
       ||spanKeys.some(k=>typeof tm[k]!=="number"||!Number.isFinite(tm[k]!)||tm[k]!<0||tm[k]!>262_144)
       ||(bd!==undefined&&(typeof bd!=="object"||bd===null
-        ||(["massMs","classifyMs","transitionMs","axesMs"] as const).some(k=>typeof bd[k]!=="number"||!Number.isFinite(bd[k])||bd[k]<0||bd[k]>262_144)))
+        ||(["massMs","classifyMs","transitionMs","axesMs"] as const).some(k=>typeof bd[k]!=="number"||!Number.isFinite(bd[k])||bd[k]<0||bd[k]>262_144)
+        ||(["transitionPerVoxelMs","transitionGreedyMs","transitionHashMs","preparedFactsReused"] as const)
+          .some(k=>bd[k]!==undefined&&(typeof bd[k]!=="number"||!Number.isFinite(bd[k])||bd[k]!<0||bd[k]!>262_144))))
       ||tm.fragmentCount!==r.fragments.length){throw new Error("Invalid support timings");}
-    const recipeBreakdown=bd===undefined?undefined:Object.freeze({massMs:bd.massMs,classifyMs:bd.classifyMs,transitionMs:bd.transitionMs,axesMs:bd.axesMs});
+    const extra:Pick<NonNullable<HvpSupportTimings["recipeBreakdown"]>,"transitionPerVoxelMs"|"transitionGreedyMs"|"transitionHashMs"|"preparedFactsReused">={};
+    if(bd!==undefined){for(const key of ["transitionPerVoxelMs","transitionGreedyMs","transitionHashMs","preparedFactsReused"] as const){
+      if(bd[key]!==undefined){Object.defineProperty(extra,key,{enumerable:true,value:bd[key]});}
+    }}
+    const recipeBreakdown=bd===undefined?undefined:Object.freeze({massMs:bd.massMs,classifyMs:bd.classifyMs,transitionMs:bd.transitionMs,axesMs:bd.axesMs,...extra});
     ownedTimings=Object.freeze({seedsMs:tm.seedsMs,supportMs:tm.supportMs,ingestMs:tm.ingestMs,recipeMs:tm.recipeMs,
       fragmentCount:tm.fragmentCount,fragmentCells:tm.fragmentCells,totalMs:tm.totalMs,
       ...(recipeBreakdown===undefined?{}:{recipeBreakdown})});

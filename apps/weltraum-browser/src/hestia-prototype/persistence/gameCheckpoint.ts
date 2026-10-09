@@ -6,11 +6,12 @@ import {createHvpLookProfile} from "../presentation/look";
 import {HVP_EFFECT_VERSION} from "../presentation/visualEffects";
 import {HVP_BRANCH_CELLS,HVP_SALVAGE_CELLS,HVP_PLAYER_PROFILE_DIGEST,resolveHvpGravity} from "../physics/profile";
 import {readHvpBodyCells} from "../physics/bodyCutPlan";
-import {createHvpTerrainRoot,validateHvpTerrainCheckpointHeader,type HvpTerrainCheckpoint} from "../terrain/cutPlan";
+import {createHvpPrivateTerrainRoot,validateHvpTerrainCheckpointHeader,type HvpTerrainCheckpoint} from "../terrain/cutPlan";
 import type {HvpCutOutcome} from "../terrain/terrainConsumer";
 import {hvpGridCheckpointBytes,decodeHvpGrid} from "./gridCheckpoint";
 import {hvpPlantCheckpointBytes,decodeHvpPlant,type HvpPlantCheckpoint} from "./plantCheckpoint";
-import {hvpWorldCheckpointBytes,decodeHvpWorld,type HvpWorldCheckpoint} from "./worldCheckpoint";
+import {hvpWorldCheckpointBytes,decodeHvpWorld,decodeHvpColdWorld,type HvpWorldCheckpoint} from "./worldCheckpoint";
+import {createStructuralOwnerLedger} from "../../voxel/structural/model";
 import {decodeHvpReceipts,type HvpReceiptCheckpoint,type HvpSimpleOutcome} from "./receiptCheckpoint";
 import {validateHvpSalvageCheckpoint,savedHvpSalvageObservation,type HvpSalvageCheckpoint} from "../gameplay/salvageLoop";
 import {restoreHvpEastRegion} from "../runtime/regionSource";
@@ -54,7 +55,7 @@ export const validateHvpViewCheckpoint=(value:unknown):HvpViewCheckpoint=>{
 };
 
 /** Decode bounded data only. No generator, native World, GPU, URL or file loader. */
-export const decodeHvpGame=(value:unknown)=>{
+const decodeGame=(value:unknown,cold?:{admitPrepare:(workingBytes:number)=>void;recipeRetainedBytes:number})=>{
   const p=value as HvpGameCheckpoint|null;
   if(!p||Object.keys(p).filter(k=>k!=="neighbor").sort().join(",")!=="plants,profiles,progress,receipts,signature,terrain,version,view,world"
     ||p.version!=="hvp-game-checkpoint-v1"||createPersistenceSignature(p.profiles)!==createPersistenceSignature(HVP_SAVE_PROFILES)){
@@ -103,21 +104,28 @@ export const decodeHvpGame=(value:unknown)=>{
   const {signature,...data}=p;
   if(signature!==createPersistenceSignature(data)){throw new Error("Hestia save signature mismatch");}
   const owned=canonicalizePersistenceValue(p) as unknown as HvpGameCheckpoint;
-  const decodedBase=decodeHvpGrid(p.terrain.base);
-  const base=restoreHvpOwnedCoastGrid(decodedBase,p.terrain.baseDigest);
-  const savedTerrain=validateHvpTerrainCheckpointHeader(p.terrain);
-  const root=createHvpTerrainRoot(base,savedTerrain.sessionId,savedTerrain.epoch,undefined,savedTerrain);
-  const plants=p.plants.map(plant=>decodeHvpPlant(plant,root.read()));
-  const world=decodeHvpWorld(p.world);
-  const neighborRoot=p.neighbor?restoreHvpEastRegion(p.neighbor.terrain):undefined;
-  if(p.progress!==null){
-    if(p.progress.sessionId!==p.terrain.sessionId){throw new Error("Foreign objective session");}
-    validateHvpSalvageCheckpoint(p.progress,savedHvpSalvageObservation(world),createPersistenceSignature(p.world));
-  }else if(p.world.branch?.kind==="salvage"){throw new Error("Missing salvage objective state");}
+  // The Cold admission callback must not change data after signature validation.
+  const snapshot=cold?owned:p;
+  const decodedBase=decodeHvpGrid(snapshot.terrain.base);
+  const base=restoreHvpOwnedCoastGrid(decodedBase,snapshot.terrain.baseDigest);
+  const savedTerrain=validateHvpTerrainCheckpointHeader(snapshot.terrain);
+  const root=createHvpPrivateTerrainRoot(base,savedTerrain.sessionId,savedTerrain.epoch,undefined,savedTerrain);
+  const plants=snapshot.plants.map(plant=>decodeHvpPlant(plant,root.read()));
+  let world:ReturnType<typeof decodeHvpWorld>;
+  if(cold){
+    cold.admitPrepare(decodeWorkingBytes);const ledger=createStructuralOwnerLedger(decodeWorkingBytes);
+    try{world=decodeHvpColdWorld(snapshot.world,ledger.reserve);}
+    finally{cold.recipeRetainedBytes=ledger.resources.retainedEstimateBytes;ledger.release();}
+  }else{world=decodeHvpWorld(snapshot.world);}
+  const neighborRoot=snapshot.neighbor?restoreHvpEastRegion(snapshot.neighbor.terrain):undefined;
+  if(snapshot.progress!==null){
+    if(snapshot.progress.sessionId!==snapshot.terrain.sessionId){throw new Error("Foreign objective session");}
+    validateHvpSalvageCheckpoint(snapshot.progress,savedHvpSalvageObservation(world),createPersistenceSignature(snapshot.world));
+  }else if(snapshot.world.branch?.kind==="salvage"){throw new Error("Missing salvage objective state");}
   // A save must not recreate material simultaneously in static terrain and a
   // moving owner, nor copy the same authored cell into two fragment owners.
   const terrainOwners=new Uint8Array(ownershipBytes),branchOwners=new Set<string>();
-  const branchCells=new Set((p.world.branch?.kind==="salvage"?HVP_SALVAGE_CELLS:HVP_BRANCH_CELLS).map(c=>`${c.x}:${c.y}:${c.z}`));
+  const branchCells=new Set((snapshot.world.branch?.kind==="salvage"?HVP_SALVAGE_CELLS:HVP_BRANCH_CELLS).map(c=>`${c.x}:${c.y}:${c.z}`));
   for(const body of world.bodies){
     const family=body.checkpoint.family;
     if(family!=="terrain"&&family!=="branch"){continue;}
@@ -147,6 +155,12 @@ export const decodeHvpGame=(value:unknown)=>{
   const result=Object.freeze({checkpoint:owned,base,root,plants:Object.freeze(plants),world,neighborRoot,
     receipts:Object.freeze(receipts),view:owned.view,decodedBytes,decodeWorkingBytes});
   issued.add(result);return result;
+};
+export const decodeHvpGame=(value:unknown)=>decodeGame(value);
+/** Internal fresh-ColdStart wrapper; released scratch does not release published Recipes. */
+export const decodeHvpColdGame=(value:unknown,admitPrepare:(workingBytes:number)=>void)=>{
+  const cold={admitPrepare,recipeRetainedBytes:0},game=decodeGame(value,cold);
+  return Object.freeze({game,recipeRetainedBytes:cold.recipeRetainedBytes});
 };
 export type HvpDecodedGame=ReturnType<typeof decodeHvpGame>;
 export const assertHvpDecodedGame=(value:HvpDecodedGame):void=>{if(!issued.has(value)){throw new Error("Unvalidated Hestia restore candidate");}};

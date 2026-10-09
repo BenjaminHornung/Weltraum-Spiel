@@ -24,6 +24,8 @@ import {
 } from "../../src/hvp/hvpCoastSource";
 import { admitHvpResources, assertHvpProductsBound, buildHvpResourceLedger, createHvpCompactLookTerrain } from "../../src/hvp/hvpBootstrap";
 import { createHvpLookProfile } from "../../src/hestia-prototype/presentation/look";
+import {createHvpTerrainRoot} from "../../src/hestia-prototype/terrain/cutPlan";
+import {meshInitialHvpTerrain} from "../../src/hestia-prototype/terrain/terrainProducts";
 import {
   meshHvpFarField,
   meshHvpCoastSource,
@@ -1048,6 +1050,16 @@ describe("HVP R2 ambient occlusion in the greedy core", () => {
 });
 
 describe("HVP R2 product binding negatives", () => {
+  it("accepts exact sixteen column publication bindings and rejects mixed or displaced coverage",()=>{
+    const source=createHvpTerrainRoot(prepared,"column-publication",0).read();
+    const columns=[...meshInitialHvpTerrain(source).values()].map(mesh=>({...mesh,algorithmVersion:"hvp-terrain-column-v1"}));
+    const mask=deriveHvpWaterMask(prepared),bound={prepared,terrainSource:source,terrainMesh:columns[0]!,terrainMeshes:columns,
+      waterMask:mask,waterMesh:meshHvpWaterMask(mask),joinMesh:meshHvpJoinRing(prepared),farMesh:meshHvpFarField(prepared)};
+    expect(()=>assertHvpProductsBound(bound)).not.toThrow();
+    expect(()=>assertHvpProductsBound({...bound,terrainMeshes:columns.map((m,i)=>i===1?{...m,algorithmVersion:"hvp-terrain-sector-v1"}:m)})).toThrow(/binding/);
+    expect(()=>assertHvpProductsBound({...bound,terrainMeshes:columns.map((m,i)=>i===1?{...m,boundsMeters:{...m.boundsMeters,min:{...m.boundsMeters.min,x:m.boundsMeters.min.x+1}}}:m)})).toThrow(/binding/);
+    expect(()=>assertHvpProductsBound({...bound,terrainMeshes:columns.map((m,i)=>i===1?{...m,sourceDigest:"00000000"}:m)})).toThrow(/binding/);
+  },120_000);
   it("rejects mismatched terrain and water products before publication", () => {
     const terrain = meshHvpCoastSource(prepared);
     const mask = deriveHvpWaterMask(prepared);

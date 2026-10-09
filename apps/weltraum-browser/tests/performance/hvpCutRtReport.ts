@@ -32,6 +32,13 @@ export const describeHvpCutRtFailure = (stage: HvpCutRtFailureStage, error: unkn
   return `${stage}: ${type}${code ? ` [${code}]` : ""}`;
 };
 
+/** Controlled action names retain the failing step without publishing arbitrary exception text. */
+export const projectHvpCutRtOperationFailure=(operation:unknown,error:unknown)=>({
+  operation:typeof operation==="string"&&["precondition","prepare-aim","prepare-play","prepare-tool","prepare-grounded",
+    "prepare-body-aim","prepare-body-motion","prepare-preview","input","await-terminal","verify","await-health"].includes(operation)?operation:"UnknownOperation",
+  problem:describeHvpCutRtFailure("cut",error)
+});
+
 const within = (root: string, file: string) => {
   const relative = path.relative(root, file);
   return relative !== ".." && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative);
@@ -77,6 +84,72 @@ export const inventoryHvpCutRtFiles = async (root: string, app: string): Promise
     else if (entry.isFile()) { files.push({path: path.relative(app, file).replaceAll("\\", "/"), sha256: createHash("sha256").update(await readFile(file)).digest("hex")}); }
   }
   return files.sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0);
+};
+
+type BoundFile={path:string;bytes:number;sha256:string};
+const boundRows=(value:unknown):BoundFile[]=>{
+  if(!Array.isArray(value)||value.length===0||value.length>4096){throw new Error("Invalid product binding rows");}
+  const seen=new Set<string>();
+  for(const row of value){if(!row||typeof row.path!=="string"||row.path.length>512||row.path.includes("\\")||path.isAbsolute(row.path)
+    ||row.path.split("/").some((part:string)=>part===".."||part==="."||part==="")||seen.has(row.path)
+    ||!Number.isSafeInteger(row.bytes)||row.bytes<0||row.bytes>256*1024*1024||typeof row.sha256!=="string"||! /^[a-f0-9]{64}$/.test(row.sha256)){
+    throw new Error("Invalid product binding row");}seen.add(row.path);}
+  return value as BoundFile[];
+};
+// Matches the existing Python binder's json.dumps(rows, sort_keys=True) byte grammar.
+const boundRowsHash=(rows:readonly BoundFile[])=>{
+  const quoted=(value:string)=>JSON.stringify(value).replace(/[\u007f-\uffff]/g,c=>`\\u${c.charCodeAt(0).toString(16).padStart(4,"0")}`);
+  return createHash("sha256").update(`[${rows.map(r=>`{"bytes": ${r.bytes}, "path": ${quoted(r.path)}, "sha256": ${quoted(r.sha256)}}`).join(", ")}]`).digest("hex");
+};
+
+/** Fresh actual HTTP bytes; historic baseline Source provenance stays explicitly historic. */
+export const verifyHvpCutProductBinding=async(options:{app:string;buildRoot:string;servedReceiptPath:string;baseUrl:string;currentSource:boolean})=>{
+  const wt=path.resolve(options.app,"../.."),url=new URL(options.baseUrl);
+  if(url.protocol!=="http:"||!["127.0.0.1","localhost"].includes(url.hostname)||url.username||url.password||url.search||url.hash||url.pathname!=="/"){
+    throw new Error("Product binding requires an explicit local preview root");}
+  const ordinaryFile=async(file:string)=>{
+    if(!within(wt,file)||!within(path.resolve("C:/IFI_SourceCode"),file)){throw new Error("Product binding path escapes workspace");}
+    const entry=await lstat(file);
+    if(entry.isSymbolicLink()||!entry.isFile()||(await realpath(file)).toLowerCase()!==path.resolve(file).toLowerCase()){
+      throw new Error("Product binding requires ordinary local files");}
+    return readFile(file);
+  };
+  const receiptBytes=await ordinaryFile(options.servedReceiptPath);
+  if(receiptBytes.length>4*1024*1024){throw new Error("Product binding metadata too large");}
+  const receipt=JSON.parse(receiptBytes.toString("utf8"));
+  if(receipt.classification!=="NORMAL_PRODUCT_SERVED_BYTE_PROOF_NOT_GAME_QUALIFICATION"||receipt.normalProduct!==true||typeof receipt.sourceBinding!=="string"){
+    throw new Error("Missing normal product served binding");}
+  const sourcePath=path.resolve(wt,receipt.sourceBinding),sourceBytes=await ordinaryFile(sourcePath);
+  if(sourceBytes.length>4*1024*1024){throw new Error("Source binding metadata too large");}
+  const source=JSON.parse(sourceBytes.toString("utf8")),sourceRows=boundRows(source.source),builtRows=boundRows(receipt.built);
+  const appPrefix=path.relative(wt,options.app).replaceAll("\\","/");
+  if(sourceRows.some(row=>!row.path.startsWith(`${appPrefix}/src/`)&&!row.path.startsWith(`${appPrefix}/public/`)
+    &&!["package.json","package-lock.json","tsconfig.json","vite.config.ts"].some(name=>row.path===`${appPrefix}/${name}`))){
+    throw new Error("Source binding contains non-product paths");}
+  if(boundRowsHash(sourceRows)!==source.sourceManifestHash||source.sourceManifestHash!==receipt.sourceManifestHash
+    ||boundRowsHash(builtRows)!==receipt.buildManifestHash||sourceRows.length!==receipt.sourceFiles||builtRows.length!==receipt.servedFiles){
+    throw new Error("Product binding manifest drift");}
+  if(options.currentSource){
+    const all=[...await inventoryHvpCutRtFiles(path.join(options.app,"src"),options.app),...await inventoryHvpCutRtFiles(path.join(options.app,"public"),options.app)];
+    const expectedPaths=[...all.map(row=>`${appPrefix}/${row.path}`),...["package.json","package-lock.json","tsconfig.json","vite.config.ts"].map(name=>`${appPrefix}/${name}`)].sort();
+    if(JSON.stringify(sourceRows.map(row=>row.path).sort())!==JSON.stringify(expectedPaths)){throw new Error("Current Source binding is incomplete");}
+    for(const row of sourceRows){const bytes=await ordinaryFile(path.resolve(wt,row.path));
+      if(bytes.length!==row.bytes||createHash("sha256").update(bytes).digest("hex")!==row.sha256){throw new Error("Current Source differs from bound product");}}
+  }
+  const inventory=await inventoryHvpCutRtFiles(options.buildRoot,options.app);
+  const expected=builtRows.map(r=>({path:path.relative(options.app,path.resolve(options.buildRoot,r.path)).replaceAll("\\","/"),sha256:r.sha256}))
+    .sort((a,b)=>a.path<b.path?-1:a.path>b.path?1:0);
+  if(JSON.stringify(inventory)!==JSON.stringify(expected)){throw new Error("Frozen build inventory drift");}
+  for(const row of builtRows){const local=await ordinaryFile(path.resolve(options.buildRoot,row.path));
+    const response=await fetch(new URL(row.path.split("/").map(encodeURIComponent).join("/"),url),{signal:AbortSignal.timeout(20_000),redirect:"error"});
+    if(response.status!==200){throw new Error("Preview did not serve bound product file");}
+    const bytes=new Uint8Array(await response.arrayBuffer());
+    if(local.length!==row.bytes||bytes.length!==row.bytes||createHash("sha256").update(local).digest("hex")!==row.sha256
+      ||createHash("sha256").update(bytes).digest("hex")!==row.sha256){throw new Error("Preview bytes differ from frozen build");}
+  }
+  return {sourceManifestHash:source.sourceManifestHash as string,buildManifestHash:receipt.buildManifestHash as string,
+    sourceProvenance:options.currentSource?"CURRENT_SOURCE_BYTES_VERIFIED":"HISTORICAL_SOURCE_BINDING",servedFiles:builtRows.length,
+    servedReceiptSha256:createHash("sha256").update(receiptBytes).digest("hex"),sourceBindingSha256:createHash("sha256").update(sourceBytes).digest("hex")};
 };
 
 export const persistHvpCutRtReport = async (directory: string | undefined, app: string, report: {artifactFailures: string[]},

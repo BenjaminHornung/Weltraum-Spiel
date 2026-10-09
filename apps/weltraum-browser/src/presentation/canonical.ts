@@ -1,13 +1,23 @@
 import { compareAscii, contentHash, type ContentHash } from "./ids";
 
 const encoder = new TextEncoder();
+const PrivateArrayBuffer=ArrayBuffer,PrivateDataView=DataView,PrivateUint8Array=Uint8Array;
+const privateIsView=ArrayBuffer.isView,privateIsArray=Array.isArray,privateEntries=Object.entries,privateSort=Array.prototype.sort;
+const typedPrototype=Object.getPrototypeOf(Float32Array.prototype),privateTypedTag=Object.getOwnPropertyDescriptor(typedPrototype,Symbol.toStringTag)!.get!;
+const privateTypedBytes=Object.getOwnPropertyDescriptor(typedPrototype,"byteLength")!.get!,privateTypedLength=Object.getOwnPropertyDescriptor(typedPrototype,"length")!.get!;
+const privateEncode=TextEncoder.prototype.encode,privateEncodeInto=TextEncoder.prototype.encodeInto;
+const privateSet64=DataView.prototype.setFloat64,privateSetBig=DataView.prototype.setBigUint64,privateSet32=DataView.prototype.setFloat32,
+  privateSetU16=DataView.prototype.setUint16,privateSetU32=DataView.prototype.setUint32;
 
 class Fnv1a64Writer {
   private high = 0xcbf29ce4;
   private low = 0x84222325;
-  readonly scalarData = new DataView(new ArrayBuffer(8));
-  readonly scalarBytes = new Uint8Array(this.scalarData.buffer);
-  readonly stringBytes = new Uint8Array(512);
+  readonly scalarData:DataView;readonly scalarBytes:Uint8Array;readonly stringBytes:Uint8Array;
+  constructor(readonly sealed=false){
+    this.scalarData=sealed?new PrivateDataView(new PrivateArrayBuffer(8)):new DataView(new ArrayBuffer(8));
+    this.scalarBytes=sealed?new PrivateUint8Array(this.scalarData.buffer):new Uint8Array(this.scalarData.buffer);
+    this.stringBytes=sealed?new PrivateUint8Array(512):new Uint8Array(512);
+  }
 
   writeByte(value: number): void {
     // FNV prime = 2^40 + 435. Two uint32 limbs preserve modulo-2^64
@@ -31,25 +41,25 @@ class Fnv1a64Writer {
 
 const writeLength = (writer: Fnv1a64Writer, length: number): void => {
   const data = writer.scalarData;
-  data.setBigUint64(0, BigInt(length), true);
+  if(writer.sealed){privateSetBig.call(data,0,BigInt(length),true);}else{data.setBigUint64(0, BigInt(length), true);}
   writer.writeBytes(writer.scalarBytes);
 };
 
 const writeString = (writer: Fnv1a64Writer, value: string): void => {
   if (value.length <= 128) {
-    const { written } = encoder.encodeInto(value, writer.stringBytes);
+    const { written } = writer.sealed?privateEncodeInto.call(encoder,value,writer.stringBytes):encoder.encodeInto(value, writer.stringBytes);
     writeLength(writer, written);
     writer.writeBytes(writer.stringBytes, written);
     return;
   }
-  const bytes = encoder.encode(value);
+  const bytes = writer.sealed?privateEncode.call(encoder,value):encoder.encode(value);
   writeLength(writer, bytes.length);
   writer.writeBytes(bytes);
 };
 
 const writeNumber = (writer: Fnv1a64Writer, value: number): void => {
   const data = writer.scalarData;
-  data.setFloat64(0, value, true);
+  if(writer.sealed){privateSet64.call(data,0,value,true);}else{data.setFloat64(0, value, true);}
   writer.writeBytes(writer.scalarBytes);
 };
 
@@ -151,14 +161,14 @@ function* writeOwnedString(writer: Fnv1a64Writer, value: string): Generator<stri
   let byteLength = 0;
   for (let start = 0; start < value.length;) {
     const end = endOfChunk(start);
-    byteLength += encoder.encodeInto(value.slice(start, end), writer.stringBytes).written;
+    byteLength += (writer.sealed?privateEncodeInto.call(encoder,value.slice(start,end),writer.stringBytes):encoder.encodeInto(value.slice(start, end), writer.stringBytes)).written;
     start = end;
     yield "canonicalStringLength";
   }
   writeLength(writer, byteLength);
   for (let start = 0; start < value.length;) {
     const end = endOfChunk(start);
-    const { written } = encoder.encodeInto(value.slice(start, end), writer.stringBytes);
+    const { written } = writer.sealed?privateEncodeInto.call(encoder,value.slice(start,end),writer.stringBytes):encoder.encodeInto(value.slice(start, end), writer.stringBytes);
     writer.writeBytes(writer.stringBytes, written);
     start = end;
     yield "canonicalString";
@@ -169,26 +179,33 @@ function* writeOwnedCanonical(writer: Fnv1a64Writer, value: unknown): Generator<
   if (typeof value === "string") {
     writer.writeByte(5);
     yield* writeOwnedString(writer, value);
-  } else if (ArrayBuffer.isView(value)) {
+  } else if ((writer.sealed?privateIsView:ArrayBuffer.isView)(value)) {
     writer.writeByte(6);
-    yield* writeOwnedString(writer, value.constructor.name);
-    writeLength(writer, value.byteLength);
-    if (!(value instanceof Float32Array || value instanceof Uint16Array || value instanceof Uint32Array)) {
-      throw new TypeError(`Unsupported canonical typed array: ${value.constructor.name}`);
+    const tag=writer.sealed?privateTypedTag.call(value):value.constructor.name;
+    yield* writeOwnedString(writer, tag);
+    writeLength(writer,writer.sealed?privateTypedBytes.call(value):value.byteLength);
+    if (writer.sealed?(tag!=="Float32Array"&&tag!=="Uint16Array"&&tag!=="Uint32Array"):!(value instanceof Float32Array || value instanceof Uint16Array || value instanceof Uint32Array)) {
+      throw new TypeError(`Unsupported canonical typed array: ${tag}`);
     }
     yield "canonicalTypedHeader";
-    const width = value instanceof Uint16Array ? 2 : 4, perChunk = 4096 / width;
-    for (let start = 0; start < value.length; start += perChunk) {
-      const end = Math.min(start + perChunk, value.length);
+    const width = (writer.sealed?tag==="Uint16Array":value instanceof Uint16Array) ? 2 : 4, perChunk = 4096 / width;
+    const length=writer.sealed?privateTypedLength.call(value):(value as Float32Array|Uint16Array|Uint32Array).length;
+    for (let start = 0; start < length; start += perChunk) {
+      const end = Math.min(start + perChunk, length);
       for (let index = start; index < end; index += 1) {
-        if (value instanceof Float32Array) { writer.scalarData.setFloat32(0, value[index]!, true); }
+        if(writer.sealed){
+          const array=value as Float32Array|Uint16Array|Uint32Array;
+          if(tag==="Float32Array"){privateSet32.call(writer.scalarData,0,array[index]!,true);}
+          else if(tag==="Uint16Array"){privateSetU16.call(writer.scalarData,0,array[index]!,true);}
+          else{privateSetU32.call(writer.scalarData,0,array[index]!,true);}
+        }else if (value instanceof Float32Array) { writer.scalarData.setFloat32(0, value[index]!, true); }
         else if (value instanceof Uint16Array) { writer.scalarData.setUint16(0, value[index]!, true); }
-        else { writer.scalarData.setUint32(0, value[index]!, true); }
+        else { writer.scalarData.setUint32(0, (value as Uint32Array)[index]!, true); }
         writer.writeBytes(writer.scalarBytes, width);
       }
       yield "canonicalTypedBytes";
     }
-  } else if (Array.isArray(value)) {
+  } else if ((writer.sealed?privateIsArray:Array.isArray)(value)) {
     writer.writeByte(7);
     writeLength(writer, value.length);
     yield "canonicalArray";
@@ -197,14 +214,16 @@ function* writeOwnedCanonical(writer: Fnv1a64Writer, value: unknown): Generator<
     }
   } else if (value !== null && typeof value === "object") {
     writer.writeByte(8);
-    const entries = Object.entries(value).filter(([, entry]) => entry !== undefined)
+    const entries = writer.sealed?privateEntries(value):Object.entries(value).filter(([, entry]) => entry !== undefined)
       .sort(([left], [right]) => compareAscii(left, right));
+    if(writer.sealed){
+      let kept=0;for(let i=0;i<entries.length;i+=1){if(entries[i]![1]!==undefined){entries[kept++]=entries[i]!;}}entries.length=kept;
+      privateSort.call(entries,(a:[string,unknown],b:[string,unknown])=>compareAscii(a[0],b[0]));
+    }
     writeLength(writer, entries.length);
     yield "canonicalObject";
-    for (const [key, entry] of entries) {
-      yield* writeOwnedString(writer, key);
-      yield* writeOwnedCanonical(writer, entry);
-    }
+    if(writer.sealed){for(let i=0;i<entries.length;i+=1){const pair=entries[i]!;yield* writeOwnedString(writer,pair[0]);yield* writeOwnedCanonical(writer,pair[1]);}}
+    else{for(const [key,entry]of entries){yield* writeOwnedString(writer,key);yield* writeOwnedCanonical(writer,entry);}}
   } else {
     writeCanonical(writer, value);
     yield "canonicalScalar";
@@ -216,4 +235,9 @@ export function* canonicalSignatureOwnedSteps(value: unknown): Generator<string,
   yield* writeOwnedString(writer, "weltraum-presentation-canonical-v1");
   yield* writeOwnedCanonical(writer, value);
   return writer.digest();
+}
+/** Backend-private custody uses captured traversal; the public hash grammar stays v1. */
+export function* canonicalSignaturePrivateSteps(value:unknown):Generator<string,ContentHash,unknown>{
+  const writer=new Fnv1a64Writer(true);yield* writeOwnedString(writer,"weltraum-presentation-canonical-v1");
+  yield* writeOwnedCanonical(writer,value);return writer.digest();
 }

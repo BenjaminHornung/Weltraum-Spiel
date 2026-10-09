@@ -1,6 +1,8 @@
 import * as THREE from "three";
 import { describe, expect, it, vi } from "vitest";
 import {MemorySaveRepository} from "../../src/browser-storage";
+import {createHvpTerrainCompiler,meshInitialHvpTerrain} from "../../src/hestia-prototype/terrain/terrainProducts";
+import {WorkerPool} from "../../src/workers/workerPool";
 import {HVP_BRANCH_CELLS,HVP_BRANCH_KEY} from "../../src/hestia-prototype/physics/profile";
 import { artifactRevision, backendRevision, createMaterialProfile, createMeshArtifact, createRenderCommand, frameId,
   materialProfileId, representationKey, renderCommandResult, sourceRevision, type RenderCommand, type RepresentationKey } from "../../src/presentation";
@@ -18,6 +20,7 @@ import {
   HVP_SLOT_LIMESTONE_WET,
   HVP_SLOT_MOSS,
   HVP_SLOT_SOIL,
+  HVP_SOURCE_SLOT_COUNT,
   materializeHvpCoastSource,
   prepareHvpCoastSource,
   type HvpCoastSourceSnapshot
@@ -46,6 +49,11 @@ import * as terrainProductsModule from "../../src/hestia-prototype/terrain/terra
 import * as neighborControllerModule from "../../src/hestia-prototype/runtime/neighborController";
 import type {HvpNeighborStage} from "../../src/hestia-prototype/runtime/neighborController";
 import {createHvpTerrainRoot} from "../../src/hestia-prototype/terrain/cutPlan";
+import {createHvpEastRegion} from "../../src/hestia-prototype/runtime/regionSource";
+import {encodeHvpProjectionPacket} from "../../src/hestia-prototype/runtime/projectionPacket";
+import {decodeHvpNeighborOutput,type HvpNeighborPayload} from "../../src/workers/hvpNeighborJob";
+import {byteCount,contentRevision} from "../../src/workers/ids";
+import {fnv1aBytes} from "../../src/workers/protocol";
 import {buildHvpPlant,planHvpVegetation} from "../../src/hestia-prototype/presentation/vegetation";
 import {encodeHvpPlant} from "../../src/hestia-prototype/persistence/plantCheckpoint";
 import {collisionSectors} from "../../src/hestia-prototype/physics/terrainColliders";
@@ -210,6 +218,8 @@ const harness = () => {
   const overrides = (extra: Record<string, unknown> = {}) => ({
     documentPort: documentPort as unknown as Document,
     windowPort: windowPort as unknown as Window,
+    createTerrainCompiler:()=>({...createHvpTerrainCompiler(),prepare:async()=>{},
+      initial:async(source:Parameters<typeof meshInitialHvpTerrain>[0],east:Parameters<typeof meshInitialHvpTerrain>[1])=>({source,render:meshInitialHvpTerrain(source,east),collision:new Map()})}),
     // Bootstrap lifecycle tests isolate transport; real Rapier/worker kernels
     // are verified separately, without allocating a second World per UI test.
      createPhysics: async (_sources: unknown, spawn: { x: number; y: number; z: number }) => ({
@@ -317,7 +327,97 @@ it("restores original fixed specimen geometry and materials on a real decoded co
   }finally{await second?.dispose();await first.dispose();}
 },120000);
 
+it.each([true,false])("keeps Cold Recipe bytes debited after adoption and releases only proven owners (nativeKnown=%s)",async nativeKnown=>{
+  const checkpoint=await createK34LoadCheckpoint();let retained=0;
+  const totals:number[]=[],receipts:Record<string,unknown>[]=[];let handle:HvpBootstrapHandle|undefined;
+  for(const control of [true,false]){
+    const store=saveStoreModule.createHvpSaveStore(new MemorySaveRepository([]));await store.initialize();await store.save(checkpoint,null);
+    const loadCold=store.loadCold.bind(store),load=vi.spyOn(store,"loadCold").mockImplementation(async(...args)=>{const value=await loadCold(...args);retained=value.recipeRetainedBytes;return value;});
+    const factory=vi.spyOn(saveStoreModule,"createHvpSaveStore").mockReturnValue(store);
+    try{
+      const source=harness();Reflect.set(source.windowPort,"location",{search:`?hestiaPrototype=1&hvpLoad=primary&hvpMeasure=1${control?"&hvpCutSource=control":""}`});
+      const fixture=source.overrides();const createPhysics=fixture!.createPhysics!;let closed=false;
+      handle=await startHvp(source.overrides({onDisposed:(receipt:Record<string,unknown>)=>receipts.push(receipt),
+        createPhysics:async(...args:Parameters<typeof createPhysics>)=>{
+          const physics=await createPhysics(...args);
+          return {...physics,dispose:async()=>{await physics.dispose();closed=true;},
+            lifecycle:()=>({native:nativeKnown?{bodies:closed?0:3,colliders:closed?0:5}:null,workers:closed?0:1,listeners:0,timers:0,pendingJobs:0})};
+        }}));
+      const failure=descendants(source.body).find(element=>element.id==="hvp-failure");
+      expect(failure,failure?descendants(failure).map(element=>element.textContent).join(" | "):"").toBeUndefined();
+      totals.push(JSON.parse(source.body.dataset.hestiaPrototypeResources!).gameplayCpuBytes as number);
+      await handle.dispose();handle=undefined;
+    }finally{await handle?.dispose();handle=undefined;load.mockRestore();factory.mockRestore();await store.close();}
+  }
+  expect(retained).toBeGreaterThan(0);expect(totals[1]!-totals[0]!).toBe(retained);
+  expect(receipts).toHaveLength(2);expect(receipts[0]!.coldRecipeRetainedBytes).toBe(0);
+  expect(receipts[1]!.coldRecipeRetainedBytes).toBe(nativeKnown?0:retained);
+},120000);
+
+it.each(["admission","result"] as const)("does not adopt a deferred private Cold restore after disposal (%s)",async mode=>{
+  const checkpoint=await createK34LoadCheckpoint(),source=harness();
+  Reflect.set(source.windowPort,"location",{search:"?hestiaPrototype=1&hvpLoad=primary"});
+  const store=saveStoreModule.createHvpSaveStore(new MemorySaveRepository([]));await store.initialize();await store.save(checkpoint,null);
+  const saved=await store.load();let enter!:()=>void,release!:()=>void,disposed!:()=>void;
+  const entered=new Promise<void>(resolve=>{enter=resolve;}),gate=new Promise<void>(resolve=>{release=resolve;}),closed=new Promise<void>(resolve=>{disposed=resolve;});
+  let privateWork=0,retainedReads=0;const receipts:Record<string,unknown>[]=[];
+  const load=vi.spyOn(store,"loadCold").mockImplementation(async admit=>{
+    if(mode==="result"){admit(saved.game.decodeWorkingBytes);privateWork+=1;}
+    enter();await gate;
+    if(mode==="admission"){admit(saved.game.decodeWorkingBytes);privateWork+=1;}
+    return Object.freeze({game:saved.game,metadata:saved.metadata,get recipeRetainedBytes(){retainedReads+=1;return 27120;}});
+  });
+  const factory=vi.spyOn(saveStoreModule,"createHvpSaveStore").mockReturnValue(store);
+  const pending=startHvp(source.overrides({onDisposed:(receipt:Record<string,unknown>)=>{receipts.push(receipt);disposed();}}));
+  let handle:HvpBootstrapHandle|undefined;
+  try{
+    await entered;source.windowPort.dispatchEvent(new Event("pagehide"));await closed;
+    expect(receipts).toHaveLength(1);expect(receipts[0]).toMatchObject({state:"Disposed",coldRecipeRetainedBytes:0});
+    release();handle=await pending;expect(privateWork).toBe(mode==="result"?1:0);expect(retainedReads).toBe(0);
+    expect(source.body.dataset.hestiaPrototypeState).toBeUndefined();expect(source.body.dataset.hestiaPrototypeCutReadiness).toBeUndefined();
+    expect(descendants(source.body).some(element=>element.id==="hvp-failure")).toBe(false);
+    await handle.dispose();expect(receipts).toHaveLength(1);
+  }finally{release();await handle?.dispose();load.mockRestore();factory.mockRestore();}
+},120000);
+
 /** Emulates the browser firing a pending frame: the fired callback leaves the queue. */
+it.each(["resident","dormant"] as const)("transfers the shared cold neighbor Source debit exactly once (%s)",async mode=>{
+  const base=await createK34LoadCheckpoint(),east=createHvpTerrainRoot(await createHvpEastRegion(),`${base.terrain.sessionId}:east`,base.terrain.epoch);
+  const checkpoint=encodeHvpGame({terrain:base.terrain,plants:base.plants,world:{...base.world,neighbor:{version:"hvp-neighbor-world-v1",epoch:1,resident:false,
+    sourceDigest:east.read().sourceDigest,baseSectorCount:64}},progress:base.progress,receipts:base.receipts,view:base.view,
+    neighbor:{version:"hvp-neighbor-scene-v1",terrain:east.checkpoint(),lod:.125}});
+  const source=harness();Reflect.set(source.windowPort,"location",{search:"?hestiaPrototype=1&hvpLoad=primary"});
+  const store=saveStoreModule.createHvpSaveStore(new MemorySaveRepository([]));await store.initialize();await store.save(checkpoint,null);
+  const saved=await store.load(),expected=estimateHvpColdCheckpointSourceBytes(saved.game.world.sourceBytes,saved.metadata.payloadBytes,true),slot=HVP_SOURCE_SLOT_COUNT;
+  const storeSpy=vi.spyOn(saveStoreModule,"createHvpSaveStore").mockReturnValue(store),original=neighborControllerModule.createHvpNeighborController;
+  const ledger=()=>JSON.parse(source.body.dataset.hestiaPrototypeResources!).ledger as {checkpointSourceBytes:number;neighborSourceBytes:number};
+  const checkpoints:number[]=[];let handle:HvpBootstrapHandle|undefined;
+  const factory=vi.spyOn(neighborControllerModule,"createHvpNeighborController").mockImplementation(options=>({...original(options),
+    async initialize(root){
+      const mesh=meshHvpTestCells([{x:0,y:0,z:0,slot:HVP_SLOT_LIMESTONE_DRY}],.125,{ao:true});
+      const products={digest:"cold-source-fixture",lod:.125,region:[mesh],waterPatch:mesh,water:mesh,join:mesh,far:mesh,sourceBytes:0,projectionBytes:0} as unknown as NonNullable<HvpNeighborStage["products"]>;
+      checkpoints.push(ledger().checkpointSourceBytes);
+      if(mode==="resident"){
+        const distinct=await options.stage({products,seams:null,epoch:1,source:Object.freeze({...root.read()}),cacheBytes:0,checkpointBytes:0});
+        distinct.publish();expect(ledger().checkpointSourceBytes).toBe(expected);distinct.rollback();
+        const rolledBack=await options.stage({products,seams:null,epoch:2,source:root.read(),cacheBytes:0,checkpointBytes:0});
+        rolledBack.publish();expect(ledger().checkpointSourceBytes).toBe(expected-slot);expect(ledger().neighborSourceBytes).toBe(slot);
+        rolledBack.rollback();expect(ledger().checkpointSourceBytes).toBe(expected);
+        const accepted=await options.stage({products,seams:null,epoch:3,source:root.read(),cacheBytes:0,checkpointBytes:0});
+        accepted.publish();accepted.finish();expect(ledger().checkpointSourceBytes).toBe(expected-slot);
+      }else{
+        const projection=await options.stage({products:null,seams:null,epoch:1,source:null,cacheBytes:0,checkpointBytes:0});
+        projection.publish();projection.finish();expect(ledger().checkpointSourceBytes).toBe(expected);
+      }
+    }
+  }));
+  try{
+    handle=await startHvp(source.overrides());expect(descendants(source.body).some(element=>element.id==="hvp-failure")).toBe(false);
+    expect(checkpoints).toEqual([expected]);expect(ledger().checkpointSourceBytes).toBe(expected-slot);
+    expect(ledger().neighborSourceBytes).toBe(mode==="resident"?slot:0);expect(HVP_RESOURCE_CAPS_DEFAULT.maxCpuBytes).toBe(256*1024*1024);
+  }finally{try{await handle?.dispose();}finally{factory.mockRestore();storeSpy.mockRestore();}}
+},120000);
+
 const stepFrame = (windowPort: FakeWindow, timestamp: number): void => {
   expect(windowPort.animationFrames.size).toBe(1);
   const [id, callback] = [...windowPort.animationFrames.entries()][0]!;
@@ -329,6 +429,45 @@ describe("HVP T08 bootstrap lifecycle", () => {
   // Full starts materialize and mesh the region; allow generous time per test
   // instead of the 5 s default so slow environments report real failures.
   vi.setConfig({ testTimeout: 120_000 });
+  it("waits for acknowledged generic pool preparation before publishing initial Ready",async()=>{
+    const source=harness();let enter!:()=>void,release!:()=>void;
+    const entered=new Promise<void>(resolve=>{enter=resolve;}),gate=new Promise<void>(resolve=>{release=resolve;});
+    const inputFactory=vi.spyOn(playerInputModule,"createHvpPlayerInput");
+    const prepare=vi.fn(async()=>{enter();await gate;});
+    const fixture=source.overrides();if(!fixture?.createTerrainCompiler){throw new Error("Missing fixture compiler");}
+    const controlledCompiler=fixture.createTerrainCompiler();
+    const pending=startHvp(source.overrides({createTerrainCompiler:()=>({...controlledCompiler,prepare})}));
+    let handle:Awaited<typeof pending>|undefined;
+    try{
+      const first=await Promise.race([pending.then(value=>{handle=value;return "Ready";}),entered.then(()=>"Preparing")]);
+      expect(first).toBe("Preparing");expect(source.body.dataset.hestiaPrototypeState).toBe("Loading");
+      expect(inputFactory).not.toHaveBeenCalled();expect(descendants(source.body).find(element=>element.id==="hvp-tool-preparing")?.textContent).toBe("Werkzeug wird vorbereitet");
+      expect(prepare).toHaveBeenCalledTimes(1);release();handle=await pending;
+      expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
+      const blocked=inputFactory.mock.calls[0]![7]!;
+      expect(blocked()).toBe(false);expect(descendants(source.body).find(element=>element.id==="hvp-tool-preparing")).toBeUndefined();
+      await handle.dispose();expect(blocked()).toBe(true);expect(source.body.dataset.hestiaPrototypeCutReadiness).toBeUndefined();
+    }finally{release();handle??=await pending;await handle.dispose();inputFactory.mockRestore();}
+  });
+  it.each([false,true])("keeps scene CPU admission authoritative with a failing diagnostic sink (measure=%s)",async measured=>{
+    const source=harness();Object.defineProperty(source.windowPort,"location",{value:{search:measured?"?hvpMeasure=1":""}});
+    const measure=vi.spyOn(performance,"measure").mockImplementation(()=>{throw new Error("Diagnostic sink failed");});
+    try{
+      const handle=await startHvp(source.overrides({resourceCaps:{maxCpuBytes:1}}));
+      expect(descendants(source.body).find(element=>element.id==="hvp-error-detail")?.textContent).toMatch(/HVP scene BudgetExceeded:.*CPU bytes exceed 1/);
+      const receipt=JSON.parse(source.body.dataset.hestiaPrototypeDisposal!);
+      expect(receipt.state).toBe("Disposed");expect(receipt.errors).toEqual([]);
+      expect(receipt.disposed.ownedBytes).toBe(0);expect(receipt.disposed.bodies).toBeNull();
+      await handle.dispose();
+      const failures=measure.mock.calls.filter(([name])=>name==="hvp.startupSceneAdmissionFailure");
+      expect(failures).toHaveLength(measured?1:0);
+      if(measured){
+        const data=(failures[0]![1] as PerformanceMeasureOptions).detail.data;
+        expect(data.totalCpuBytes).toBeGreaterThan(1);expect(data.extraCpuBytes).toBe(0);expect(data.stack.length).toBeLessThanOrEqual(512);
+      }
+    }finally{measure.mockRestore();}
+  });
+
   it("records measured cold Ready only after the first submitted scene frame",async()=>{
     const source=harness();Object.defineProperty(source.windowPort,"location",{value:{search:"?hvpMeasure=1"}});
     const measure=vi.spyOn(performance,"measure");let handle:Awaited<ReturnType<typeof startHvp>>|undefined;
@@ -338,15 +477,83 @@ describe("HVP T08 bootstrap lifecycle", () => {
       expect(startupProjection).toHaveLength(1);
       expect(startupProjection[0]!.snapshot.representationTransforms).toHaveLength(source.commands.filter(c=>c.kind==="UpsertMeshArtifact").length);
       expect(measure.mock.calls.filter(c=>c[0]==="hvp.coldReadyMs")).toHaveLength(0);
+      expect(measure.mock.calls.filter(c=>c[0]==="hvp.toolReadyV2Ms")).toHaveLength(1);
+      expect(measure.mock.calls.filter(c=>c[0]==="hvp.coldSceneReadyV2Ms")).toHaveLength(0);
       expect(measure.mock.calls.filter(c=>c[0]==="hvp.startupBackendUpsertMs")).toHaveLength(source.commands.filter(c=>c.kind==="UpsertMeshArtifact").length);
       expect(measure.mock.calls.filter(c=>c[0]==="hvp.startupProjectionMs")).toHaveLength(source.commands.filter(c=>c.kind==="ApplyFrameProjection").length);
       stepFrame(source.windowPort,performance.now());expect(source.counts().renders).toBe(1);
       expect(source.commands.filter(c=>c.kind==="ApplyFrameProjection").length).toBeGreaterThan(startupProjection.length);
       expect(measure.mock.calls.filter(c=>c[0]==="hvp.coldReadyMs")).toHaveLength(1);
+      expect(measure.mock.calls.filter(c=>c[0]==="hvp.coldSceneReadyV2Ms")).toHaveLength(1);
       stepFrame(source.windowPort,performance.now()+17);
       expect(measure.mock.calls.filter(c=>c[0]==="hvp.coldReadyMs")).toHaveLength(1);
     }finally{await handle?.dispose();measure.mockRestore();}
   });
+  it("publishes preview replacement and physics transforms once within the same frame",async()=>{
+    const source=harness(),original=plasmaToolModule.createHvpPlasmaTool;
+    const factory=vi.spyOn(plasmaToolModule,"createHvpPlasmaTool").mockImplementation((...args)=>{
+      const tool=original(...args);return {...tool,update:()=>{args[3]([[50,64,50]],true);args[3]([[51,64,50]],true);}};
+    });
+    let handle:HvpBootstrapHandle|undefined;
+    try{
+      handle=await startHvp(source.overrides());const before=source.commands.length;
+      stepFrame(source.windowPort,performance.now());
+      const commands=source.commands.slice(before),uploads=commands.filter(c=>c.kind==="UpsertMeshArtifact");expect(uploads).toHaveLength(2);
+      const projections=commands.filter(c=>c.kind==="ApplyFrameProjection"),visibility=commands.filter(c=>c.kind==="ApplyVisibilityPlan");
+      expect(projections).toHaveLength(1);expect(visibility).toHaveLength(1);
+      const keys=projections[0]!.snapshot.representationTransforms.map(value=>value.representationKey);
+      expect(keys).toContain(uploads[1]!.artifact.representationKey);expect(keys).not.toContain(uploads[0]!.artifact.representationKey);
+      expect(visibility[0]!.plan.visibleRepresentationKeys).toContain(uploads[1]!.artifact.representationKey);
+      expect(source.counts().renders).toBe(1);
+    }finally{await handle?.dispose();factory.mockRestore();}
+  });
+  it("disposes the frame and retains both action and publication errors after a batched preview",async()=>{
+    const source=harness(),original=plasmaToolModule.createHvpPlasmaTool,actionError=new Error("frame preview action failed"),publishError=new Error("frame projection failed");
+    const factory=vi.spyOn(plasmaToolModule,"createHvpPlasmaTool").mockImplementation((...args)=>{
+      const tool=original(...args);return {...tool,update:()=>{args[3]([[50,64,50]],true);throw actionError;}};
+    });
+    let handle:HvpBootstrapHandle|undefined,armed=false;const dispatch=source.backend.dispatch.bind(source.backend);
+    const fault=vi.spyOn(source.backend,"dispatch").mockImplementation(command=>{if(armed&&command.kind==="ApplyFrameProjection"){armed=false;throw publishError;}return dispatch(command);});
+    try{
+      handle=await startHvp(source.overrides());armed=true;expect(()=>stepFrame(source.windowPort,performance.now())).not.toThrow();
+      await vi.waitFor(()=>expect(descendants(source.body).some(node=>node.id==="hvp-failure")).toBe(true));
+      const receipt=JSON.parse(source.body.dataset.hestiaPrototypeDisposal!);expect(receipt).toMatchObject({state:"Disposed",errors:[]});
+      expect(receipt.frameError).toContain(actionError.message);expect(receipt.frameError).toContain(publishError.message);
+      expect(source.windowPort.animationFrames.size).toBe(0);expect(source.counts()).toMatchObject({renders:0,backendDisposals:1});
+    }finally{armed=false;try{await handle?.dispose();}finally{fault.mockRestore();factory.mockRestore();}}
+  });
+  it.each([false,true])("disposes actual private Three resources when a submitted draw throws (cleanup fails %s)",async failCleanup=>{
+    const source=harness(),overrides=source.overrides();if(!overrides?.createPhysics){throw new Error("Missing fixture physics factory");}
+    let backend!:ThreeRenderBackend,handle:HvpBootstrapHandle|undefined,physicsDisposals=0,draws=0;
+    const error=new Error("Injected submitted draw failure"),originalPhysics=overrides.createPhysics;
+    let release:ReturnType<typeof vi.spyOn>|undefined;
+    try{
+      handle=await startHvp(source.overrides({
+        createPhysics:async(...args:Parameters<typeof originalPhysics>)=>{const physics=await originalPhysics(...args),dispose=physics.dispose;
+          return {...physics,dispose:async()=>{physicsDisposals++;await dispose();}};},
+        createBackend:(options:ConstructorParameters<typeof ThreeRenderBackend>[0])=>{
+          backend=new ThreeRenderBackend({...options,rendererFactory:()=>({setPixelRatio(){},setSize(){},render(){draws++;throw error;},dispose(){}})});return backend;
+        }
+      }));
+      expect(backend.readDiagnostics().geometryAllocations).toBeGreaterThan(0);expect(backend.readPrivateMeshBytes().custody).toBeGreaterThan(0);
+      if(failCleanup){let geometry:THREE.BufferGeometry|undefined;backend.representationRoot.traverse(node=>{geometry??=(node as THREE.Mesh).geometry;});
+        expect(geometry).toBeDefined();release=vi.spyOn(geometry!,"dispose").mockImplementation(()=>{throw new Error("Injected geometry release failure");});}
+      expect(()=>stepFrame(source.windowPort,performance.now())).not.toThrow();
+      await vi.waitFor(()=>expect(descendants(source.body).some(node=>node.id==="hvp-failure")).toBe(true));
+      expect(draws).toBe(1);expect(physicsDisposals).toBe(1);expect(source.windowPort.animationFrames.size).toBe(0);
+      const diagnostic=backend.readDiagnostics();expect(diagnostic.backendState).toBe("Disposed");
+      const receipt=JSON.parse(source.body.dataset.hestiaPrototypeDisposal!);expect(receipt.frameError).toBe(String(error));
+      if(failCleanup){expect(receipt.state).toBe("Failed");expect(receipt.errors.length).toBeGreaterThan(0);expect(release).toHaveBeenCalledTimes(1);
+        expect(diagnostic.ownedCpuBytes).toBeGreaterThan(0);expect(backend.readPrivateMeshBytes().custody).toBeGreaterThan(0);
+        expect(diagnostic.geometryDisposals).toBeLessThan(diagnostic.geometryAllocations);await expect(handle.dispose()).rejects.toThrow();expect(release).toHaveBeenCalledTimes(1);
+      }else{expect(receipt.state).toBe("Disposed");expect(receipt.errors).toEqual([]);
+        expect(diagnostic).toMatchObject({residentRepresentationKeys:[],ownedCpuBytes:0});
+        expect(diagnostic.geometryDisposals).toBe(diagnostic.geometryAllocations);expect(diagnostic.materialDisposals).toBe(diagnostic.materialAllocations);
+        expect(backend.readPrivateMeshBytes()).toEqual({custody:0,pending:0});await handle.dispose();}
+      expect(physicsDisposals).toBe(1);
+    }finally{try{if(failCleanup){await handle?.dispose().catch(()=>{});}else{await handle?.dispose();}}finally{release?.mockRestore();}}
+  });
+
   it("binds the rendered daylight look scene instead of only publishing dataset claims", async () => {
     const source = harness();
     const handle = await startHvp(source.overrides());
@@ -1379,6 +1586,11 @@ describe("HVP T08 bootstrap lifecycle", () => {
   });
 
   it("C2B admits an exact-cap preview, releases diagnostics, and stays disabled after rollback", async () => {
+    const realMeasure=performance.measure.bind(performance);
+    const measure=vi.spyOn(performance,"measure").mockImplementation((name,options,end)=>{
+      if(name==="hvp.runtimeCutObservationBudgetDisabled"){throw new Error("Ignored budget diagnostic sink");}
+      return realMeasure(name,options,end);
+    });
     // Synthetic preview cells exercise the real resource admission, not a native cut.
     const cells = Array.from({ length: 512 }, (_, index) =>
       [2 * (index % 16), 64 + 2 * Math.floor(index / 16), 128] as const);
@@ -1443,6 +1655,12 @@ describe("HVP T08 bootstrap lifecycle", () => {
         expect(release).toHaveBeenCalledOnce();
         expect(disable).toHaveBeenCalledOnce();
         expect(disableBody).toHaveBeenCalledOnce();
+        const diagnostic=measure.mock.calls.filter(([name])=>name==="hvp.runtimeCutObservationBudgetDisabled");
+        expect(diagnostic).toHaveLength(1);
+        const data=(diagnostic[0]![1] as PerformanceMeasureOptions).detail.data;
+        expect(data.totalCpuBytes).toBeLessThanOrEqual(maxCpuBytes);
+        expect(data.admittedGameplayPeak+data.diagnosticReserveBytes).toBeGreaterThan(maxCpuBytes);
+        expect(data.stack.length).toBeLessThanOrEqual(512);
         expect(observer.read()).toMatchObject({ disposed: true, inputCount: 0, pendingRender: false, dropped: 1 });
         expect(root.read()).toBe(before);
 
@@ -1492,6 +1710,7 @@ describe("HVP T08 bootstrap lifecycle", () => {
       consumerFactory.mockRestore();
       bodyFactory.mockRestore();
       observerFactory.mockRestore();
+      measure.mockRestore();
     }
   });
 
@@ -1528,12 +1747,16 @@ describe("HVP T08 bootstrap lifecycle", () => {
       const originalRoot=terrainFactory.mock.calls[0]![0].read();
       const tile=meshHvpTestCells([{x:0,y:0,z:0,slot:HVP_SLOT_LIMESTONE_DRY}],.125,{ao:true});
       const tileProducts={source:{...originalRoot,revision:originalRoot.revision+1},render:new Map([[0,tile]]),collision:new Map()};
-      terrainStage(tileProducts).rollback();
+      const terrainCandidate=terrainStage(tileProducts);
+      try{terrainCandidate.publish();expect(JSON.parse(source.body.dataset.hestiaPrototypeResources!).ledger.tempEstimateBytes).toBeGreaterThanOrEqual(96*1024*1024);}
+      finally{terrainCandidate.rollback();}
       expect(()=>terrainStage(tileProducts).rollback()).not.toThrow();
       const branchStage=structuralFactory.mock.calls[0]![1];
       const branchState={...native.structural!,attachment:{...native.structural!.attachment,ownerId:null}};
-      branchStage(branchState).rollback();
-      expect(()=>branchStage(branchState).rollback()).not.toThrow();
+      const branchCandidate=await branchStage(branchState);
+      try{branchCandidate.publish();expect(JSON.parse(source.body.dataset.hestiaPrototypeResources!).ledger.tempEstimateBytes).toBeGreaterThanOrEqual(96*1024*1024);}
+      finally{branchCandidate.rollback();}
+      (await branchStage(branchState)).rollback();
       expect(backend.readDiagnostics().residentRepresentationKeys).toEqual(oldResidents);
       expect(backend.readDiagnostics().visibleRepresentationKeys).toEqual(oldVisible);
       expect(JSON.parse(source.body.dataset.hestiaPrototypeResources!).ledger).toEqual(oldLedger);
@@ -1547,14 +1770,14 @@ describe("HVP T08 bootstrap lifecycle", () => {
       const existingBodies=native.bodies,collidingOwner="hvp:fragment:stage5:p0";
       Reflect.set(native,"bodies",[...existingBodies,{...existingBodies[0]!,ownerId:collidingOwner}]);
       try{
-        const first=stage(HVP_BRANCH_KEY,products);
+        const first=await stage(HVP_BRANCH_KEY,products);
         expect(backend.readDiagnostics().residentRepresentationKeys).not.toContain(collidingOwner);
         first.rollback();
       }finally{Reflect.set(native,"bodies",existingBodies);}
       expect(backend.readDiagnostics().residentRepresentationKeys).toEqual(oldResidents);
       expect(backend.readDiagnostics().visibleRepresentationKeys).toEqual(oldVisible);
       expect(JSON.parse(source.body.dataset.hestiaPrototypeResources!).ledger).toEqual(oldLedger);
-      const pending=stage(HVP_BRANCH_KEY,products);
+      const pending=await stage(HVP_BRANCH_KEY,products);
       const receipt={id,status:"Applied",parentId:HVP_BRANCH_KEY,children:[ownerId]};
       const pose={ownerId,position:{x:1.1,y:2.2,z:3.3},orientation:{x:0,y:0,z:0,w:1},velocity:{x:0,y:0,z:0},sleeping:true,massKg:1};
       const childSource={ownerId,sourceDigest:digest};
@@ -1563,6 +1786,7 @@ describe("HVP T08 bootstrap lifecycle", () => {
       Reflect.set(native,"terrainFragments",[childSource]);
       Reflect.set(native,"structural",{...native.structural,parts:[],attachment:{...native.structural!.attachment,ownerId:null}});
       pending.publish();pending.finish();
+      expect(JSON.parse(source.body.dataset.hestiaPrototypeResources!).ledger.tempEstimateBytes).toBeGreaterThanOrEqual(96*1024*1024);
       const outcome=Object.freeze({id,status:"Applied" as const,reason:"fixture finalized"}),read=consumer.read.bind(consumer);
       const consumerRead=vi.spyOn(consumer,"read").mockImplementation(()=>({...read(),last:outcome}));
       try{
@@ -1682,7 +1906,7 @@ describe("HVP T08 bootstrap lifecycle", () => {
         return backend;
       }}));
       const residentMesh=meshHvpTestCells([{x:0,y:0,z:0,slot:HVP_SLOT_LIMESTONE_DRY}],.125,{ao:true});
-       let residentKey:string,stageCandidate!:()=>{rollback():void},expectedStageCount:number;
+       let residentKey:string,stageCandidate!:()=>{rollback():void}|Promise<{rollback():void}>,expectedStageCount:number;
       let bodyStage:Parameters<typeof bodyConsumerModule.createHvpBodyCutConsumer>[2]|undefined;
       if(scenario.startsWith("body-foliage")){
         residentKey="hvp:branch:foliage:body-r1-0:stage1";
@@ -1745,8 +1969,8 @@ describe("HVP T08 bootstrap lifecycle", () => {
         expect(JSON.parse(source.body.dataset.hestiaPrototypeResources!).ledger).toEqual(beforeLedger);
         expect({bodies:native.bodies.map(body=>body.ownerId),parked:native.parked?.map(body=>body.ownerId)}).toEqual(nativeBefore);
       };
-       const stageAndRollback=()=>{
-         const candidate=stageCandidate();
+       const stageAndRollback=async()=>{
+         const candidate=await stageCandidate();
          try{
            assertResident();
            const residents=backend.readDiagnostics().residentRepresentationKeys;
@@ -1758,17 +1982,17 @@ describe("HVP T08 bootstrap lifecycle", () => {
          }finally{candidate.rollback();}
          assertRestored();
        };
-       stageAndRollback();
-       stageAndRollback();
+       await stageAndRollback();
+       await stageAndRollback();
        if(scenario==="structural-branch"){
-         for(let attempt=0;attempt<7;attempt+=1){stageAndRollback();}
+         for(let attempt=0;attempt<7;attempt+=1){await stageAndRollback();}
        }
       if(scenario.startsWith("body-foliage")){
         const structure=native.structural;
         if(!structure||!bodyStage){throw new Error("Missing no-foliage fixture state");}
         Reflect.set(native,"structural",{...structure,attachment:{...structure.attachment,ownerId:null,supportCell:null}});
         const empty={removedCells:1,removedMassKg:1,parts:[]};
-        const completeRemoval=bodyStage(HVP_BRANCH_KEY,empty);
+        const completeRemoval=await bodyStage(HVP_BRANCH_KEY,empty);
         try{
           expect(backend.readDiagnostics().residentRepresentationKeys).toEqual(before.residentRepresentationKeys);
         }finally{completeRemoval.rollback();Reflect.set(native,"structural",structure);}
@@ -1830,19 +2054,65 @@ describe("HVP T08 bootstrap lifecycle", () => {
     }finally{await handle?.dispose();bodyFactory.mockRestore();}
   });
 
-  it.each(["Rejected","ThrowAfterAcceptance","PageHide","SuccessfulLoad","RolloverFailure","PageHideDuringRollover"] as const)("K34 uses an issued save and atomic replacement before %s epoch outcome",async advanceFailure=>{
+  it.each(["absent","covered","increased"] as const)("counts only uncharged live collision bytes in the moving owner preflight (%s)",async mode=>{
+    // Real ledger/stage/owner-preflight callbacks; Native counters are controlled, no cut-success claim.
+    const source=harness(),overrides=source.overrides(),originalPhysics=overrides?.createPhysics;
+    if(!originalPhysics){throw new Error("Missing fixture physics factory");}
+    let collisionBytes=10,received:number|undefined;
+    const stop=new Error("Captured owner preflight"),neighborFactory=vi.spyOn(neighborControllerModule,"createHvpNeighborController"),
+      bodyFactory=vi.spyOn(bodyConsumerModule,"createHvpBodyCutConsumer");
+    let handle:HvpBootstrapHandle|undefined;
+    try{
+      handle=await startHvp(source.overrides({createPhysics:async(...args:Parameters<typeof originalPhysics>)=>{
+        const physics=await originalPhysics(...args),native=physics.read();
+        Reflect.set(native,"collisionBytes",collisionBytes);Reflect.set(native,"bodySourceResidentBytes",512);
+        return {...physics,get collisionBytes(){return collisionBytes;},read:()=>({...native,collisionBytes}),
+          prepareBodyMeshWork:async(_id:string,resident:number)=>{received=resident;throw stop;},admitBodyMeshOutput:async()=>{},releaseBodyMeshWork:async()=>{}};
+      }}));
+      if(mode!=="absent"){
+        const stage=neighborFactory.mock.calls[0]![0].stage;
+        const candidate=await stage({products:null,seams:null,epoch:1,source:null,cacheBytes:0,checkpointBytes:0});candidate.publish();candidate.finish();
+      }
+      if(mode==="increased"){collisionBytes=15;}
+      const ledger=JSON.parse(source.body.dataset.hestiaPrototypeResources!).ledger;
+      expect(ledger.neighborPhysicsBytes).toBe(mode==="absent"?0:20);
+      const prepare=bodyFactory.mock.calls[0]?.[1];if(!prepare){throw new Error("Missing real owner prepare callback");}
+      const input={payload:{commandId:"owner-resident-probe",ownerId:HVP_BRANCH_KEY}} as Parameters<typeof prepare>[0];
+      await expect(prepare(input)).rejects.toBe(stop);
+      const uncharged=mode==="absent"?20:mode==="covered"?0:10;
+      expect(received).toBe(ledger.totalCpuBytes-ledger.tempEstimateBytes+uncharged+512);
+      expect(HVP_RESOURCE_CAPS_DEFAULT.maxCpuBytes).toBe(256*1024*1024);
+    }finally{await handle?.dispose();bodyFactory.mockRestore();neighborFactory.mockRestore();}
+  });
+
+  it.each(["Rejected","ThrowAfterAcceptance","PageHide","SuccessfulLoad","DormantEast","RolloverFailure","PageHideDuringRollover"] as const)("K34 uses an issued save and atomic replacement before %s epoch outcome",async advanceFailure=>{
     // The checkpoint and coordinator are real; Native A/B and lifecycle counters are controlled fixtures, not a cold restore.
+    // This Node fixture has no native Workers; acknowledged pool startup is exercised in terrain-products/native tests.
+    vi.spyOn(WorkerPool.prototype,"start").mockResolvedValue(undefined);
     const source=harness(),snapshot=materializeHvpCoastSource(),createSourceSnapshot=()=>snapshot;
-    const checkpoint=await createK34LoadCheckpoint();let currentGame=decodeHvpGame(checkpoint);
+    let checkpoint=await createK34LoadCheckpoint();
+    if(advanceFailure==="DormantEast"){
+      const east=createHvpTerrainRoot(await createHvpEastRegion(),"k34-edited-east",0);let y=127;
+      while(east.read().readSlot(8,y,24)===0){y--;}
+      east.commit(east.prepare({sessionId:east.read().sessionId,epoch:0,revision:0,sourceDigest:east.read().sourceDigest,commandId:"east-cut",toolPolicy:"hvp-plasma-v1",
+        shape:{kind:"Box",min:[8,y,24],max:[9,y+1,25]}}));
+      const {version:_version,profiles:_profiles,signature:_signature,...data}=checkpoint;
+      checkpoint=encodeHvpGame({...data,neighbor:{version:"hvp-neighbor-scene-v1",terrain:east.checkpoint(),lod:.5},
+        world:{...data.world,neighbor:{version:"hvp-neighbor-world-v1",epoch:2,resident:false,sourceDigest:east.read().sourceDigest,baseSectorCount:64}}});
+    }
+    let currentGame=decodeHvpGame(checkpoint);
     const overrides=source.overrides();
     if(!overrides?.createPhysics){throw new Error("Missing fixture physics factory");}
     const originalPhysics=overrides.createPhysics;
     let native!:ReturnType<HvpPhysicsClient["read"]>,restoreA!:ReturnType<HvpPhysicsClient["read"]>,restoreB!:ReturnType<HvpPhysicsClient["read"]>;
     let rootOwner!:ReturnType<typeof createHvpTerrainRoot>,backend!:ThreeRenderBackend;
-    let beforeLoad:{root:unknown;native:ReturnType<HvpPhysicsClient["read"]>;resident:string[];visible:string[];owned:number}|undefined;
+    let beforeLoad:{root:unknown;native:ReturnType<HvpPhysicsClient["read"]>;resident:string[];visible:string[];owned:number;privateBytes:ReturnType<ThreeRenderBackend["readPrivateMeshBytes"]>}|undefined;
     let stagedKeys:string[]=[],failFinalizeNext=false,deferFinalizeNext=false,deferredFinalizePending=false,restoreFinalized=false,restorePublished=false,physicsDisposals=0,rollbackCount=0;
     let failRolloverNext=false,deferRolloverNext=false;
     const events:string[]=[];
+    const admissions:Array<{key:string;binding:Parameters<ThreeRenderBackend["admitPrivateMeshSteps"]>[2]}>=[];
+    const privateReleases:Array<{key:string;result:ReturnType<ThreeRenderBackend["releasePrivateMesh"]>}>=[];
+    const seamCalls:Array<Parameters<ReturnType<typeof createHvpTerrainCompiler>["neighborSeams"]>>=[];
     let releaseDeferredFinalize!:()=>void,signalDeferredFinalize!:()=>void,finalizeReturned=false;
     const deferredFinalize=new Promise<void>(resolve=>{releaseDeferredFinalize=resolve;});
     const deferredFinalizeEntered=new Promise<void>(resolve=>{signalDeferredFinalize=resolve;});
@@ -1861,7 +2131,7 @@ describe("HVP T08 bootstrap lifecycle", () => {
           restoreA=native;
           const bodies=currentGame.world.bodies.map(({checkpoint:body,motion,recipe})=>({ownerId:body.ownerId,position:motion.translationMeters,
             orientation:motion.rotation,velocity:motion.linvelMetersPerSecond,sleeping:body.sleeping,massKg:recipe.mass.totalMassKg}));
-          restoreB={...restoreA,terrainGeneration:world.terrainGeneration,bodies,bodyCount:bodies.length};
+          restoreB={...restoreA,terrainGeneration:world.terrainGeneration,bodies,bodyCount:bodies.length,neighbor:world.neighbor??null};
           restoreFinalized=false;restorePublished=false;finalizeReturned=false;stagedKeys=[];
           return restoreB;
         },
@@ -1907,6 +2177,19 @@ describe("HVP T08 bootstrap lifecycle", () => {
       compiler=originalCompilerFactory();
       vi.spyOn(compiler,"restore").mockImplementation(async(_old,target)=>({source:target,
         render:new Map(Array.from({length:renderCount},(_,id)=>[id,tile] as const)),collision:new Map()}));
+      if(advanceFailure==="DormantEast"){
+        vi.spyOn(compiler,"neighborSeams").mockImplementation(async(...args)=>{
+          seamCalls.push(args);expect(args[0]).toBe(currentGame.root.read());expect(args[1]).toBe(currentGame.neighborRoot!.read());expect(args[4]).toBe(true);
+          return {primary:{source:args[0],render:new Map([3,7,11,15].map(id=>[id,tile])),collision:new Map()},east:[]};
+        });
+        vi.spyOn(compiler,"neighborProjection").mockImplementation(async(a,b,lod,epoch,key)=>{
+          const buffer=encodeHvpProjectionPacket(Array.from({length:lod===.125?6:7},()=>tile));
+          const payload:HvpNeighborPayload={epoch,primaryRevision:a.revision,eastRevision:b.revision,primaryDigest:a.sourceDigest,eastDigest:b.sourceDigest,lod,key};
+          const output={ownership:"WorkerToConsumer" as const,buffers:[buffer],revision:contentRevision(b.revision),byteLength:byteCount(buffer.byteLength),contentHash:fnv1aBytes([buffer]),
+            views:[{name:"projections",kind:"Uint8Array" as const,bufferIndex:0,byteOffset:0,elementCount:buffer.byteLength}]};
+          return {buffer,payload,products:decodeHvpNeighborOutput(output,payload)};
+        });
+      }
       const rollover=compiler.rolloverAfterLoad;
       vi.spyOn(compiler,"rolloverAfterLoad").mockImplementation(async ownerStillLive=>{
         events.push("rollover-started");
@@ -1930,6 +2213,18 @@ describe("HVP T08 bootstrap lifecycle", () => {
     try{
       handle=await startHvp(source.overrides({createSourceSnapshot,createPhysics,createBackend:(options:ConstructorParameters<typeof ThreeRenderBackend>[0])=>{
         backend=new ThreeRenderBackend({...options,rendererFactory:()=>({setPixelRatio:()=>{},setSize:()=>{},render:()=>{},dispose:()=>{}})});
+        const admit=backend.admitPrivateMeshSteps.bind(backend);
+        vi.spyOn(backend,"admitPrivateMeshSteps").mockImplementation(function*(input,profiles,binding){
+          admissions.push({key:input.representationKey,binding:{...binding}});
+          if(failSecondConstructor&&input.representationKey.includes("~")){
+            constructionCount++;if(constructionCount===2){throw new Error("Injected second Load artifact constructor");}
+          }
+          return yield* admit(input,profiles,binding);
+        });
+        const release=backend.releasePrivateMesh.bind(backend);
+        vi.spyOn(backend,"releasePrivateMesh").mockImplementation((handle,binding)=>{
+          const result=release(handle,binding);privateReleases.push({key:handle.receipt.representationKey,result});return result;
+        });
         const dispatch=backend.dispatch.bind(backend);
         vi.spyOn(backend,"dispatch").mockImplementation(command=>{
           commands.push(command);
@@ -1978,8 +2273,8 @@ describe("HVP T08 bootstrap lifecycle", () => {
       const captureBeforeLoad=()=>{
         const diagnostics=backend.readDiagnostics();
         beforeLoad={root:rootOwner.read(),native,resident:[...diagnostics.residentRepresentationKeys],
-          visible:[...diagnostics.visibleRepresentationKeys],owned:diagnostics.ownedCpuBytes};
-        events.length=0;
+          visible:[...diagnostics.visibleRepresentationKeys],owned:diagnostics.ownedCpuBytes,privateBytes:backend.readPrivateMeshBytes()};
+        events.length=0;admissions.length=0;seamCalls.length=0;
       };
       const failLoad=async(mode:"constructor"|"rollback"|"admission")=>{
         failSecondConstructor=mode==="constructor";constructionCount=0;failFinalizeNext=mode==="rollback";
@@ -1993,22 +2288,28 @@ describe("HVP T08 bootstrap lifecycle", () => {
         expect(backend.readDiagnostics().residentRepresentationKeys).toEqual(beforeLoad!.resident);
         expect(backend.readDiagnostics().visibleRepresentationKeys).toEqual(beforeLoad!.visible);
         expect(backend.readDiagnostics().ownedCpuBytes).toBe(beforeLoad!.owned);
+        expect(backend.readPrivateMeshBytes()).toEqual(beforeLoad!.privateBytes);
         const newRegistrations=commands.filter(command=>command.kind==="RegisterEphemeralRepresentation").slice(registrationsBefore);
         if(mode==="rollback"){
           expect(newRegistrations.length).toBeGreaterThan(0);
           for(const registration of newRegistrations){
-            expect(commands.some(command=>command.kind==="RemoveRepresentation"&&command.representationKey===registration.representationKey)).toBe(true);
+            expect(privateReleases.some(release=>release.key===registration.representationKey&&release.result.status==="Accepted"
+              &&release.result.ownership==="ReleasedByBackend"&&release.result.reasonCode!=="PrivateMeshCustodyOnlyReleased")
+              ||commands.some(command=>command.kind==="RemoveRepresentation"&&command.representationKey===registration.representationKey)).toBe(true);
           }
         }else{
           expect(commands.filter(command=>command.kind==="CancelEphemeralRepresentation").slice(cancellationsBefore).length).toBe(newRegistrations.length);
         }
         failSecondConstructor=false;renderCount=2;
       };
-      await failLoad("constructor");await failLoad("rollback");await failLoad("admission");
-      expect(replacementSpy).toHaveBeenCalledTimes(3);
+      if(advanceFailure!=="DormantEast"){await failLoad("constructor");await failLoad("rollback");await failLoad("admission");}
+      expect(replacementSpy).toHaveBeenCalledTimes(advanceFailure==="DormantEast"?0:3);
       expect(compiler.rolloverAfterLoad).toHaveBeenCalledTimes(0);
 
-      captureBeforeLoad();loadButton.dispatchEvent(new Event("click"));await vi.waitFor(()=>expect(saveState()).toBe("Loaded"));
+      captureBeforeLoad();loadButton.dispatchEvent(new Event("click"));
+      await vi.waitFor(()=>expect(["Loaded","Rejected","RecoveryHold"]).toContain(saveState()),{timeout:30_000,interval:10});
+      expect(saveState(),source.body.dataset.hestiaPrototypeSave).toBe("Loaded");
+      expect(JSON.parse(source.body.dataset.hestiaPrototypeResources!).ledger.tempEstimateBytes).toBeGreaterThanOrEqual(96*1024*1024);
       expect(events).toEqual(["finalized","advance-accepted","rollover-started","rollover-complete"]);
       expect(compiler.rolloverAfterLoad).toHaveBeenCalledTimes(1);
       const successfulAdvance=commands.filter(command=>command.kind==="AdvanceEphemeralEpoch").at(-1);
@@ -2020,7 +2321,18 @@ describe("HVP T08 bootstrap lifecycle", () => {
       expect(currentKeys.some(key=>/^hvp:branch(?::foliage)?:e1~[1-9][0-9]*$/.test(key))).toBe(true);
       expect(currentDiagnostics.visibleRepresentationKeys).toEqual(expect.arrayContaining(stagedKeys.filter(key=>key.startsWith("hvp:terrain:s"))));
       expect(currentKeys).not.toContain(retainedKey!);
-      expect(replacementSpy).toHaveBeenCalledTimes(4);
+      expect(replacementSpy).toHaveBeenCalledTimes(advanceFailure==="DormantEast"?1:4);
+      if(advanceFailure==="DormantEast"){
+        expect(seamCalls).toHaveLength(2);expect(currentGame.neighborRoot!.read().revision).toBe(1);
+        expect(native.neighbor).toMatchObject({resident:false,sourceDigest:currentGame.neighborRoot!.read().sourceDigest});
+        expect(native.colliderCount).toBe(beforeLoad!.native.colliderCount);
+        for(const id of [3,7,11,15]){
+          expect(currentDiagnostics.visibleRepresentationKeys.some(key=>key.startsWith(`hvp:terrain:s${id}:e1~`))).toBe(true);
+          const entry=admissions.find(value=>value.key.startsWith(`hvp:terrain:s${id}:e1~`));expect(entry).toBeDefined();
+          const b=currentGame.root.read();expect(entry!.binding).toEqual({worldId:currentGame.checkpoint.world.sessionId,sessionId:b.sessionId,sourceEpoch:b.epoch,
+            sourceRevision:b.revision,sourceDigest:b.sourceDigest,renderEpoch:1,backendRevision:backend.readDiagnostics().backendRevision});
+        }
+      }
 
       currentGame=decodeHvpGame(checkpoint);
       const rollbacksAfterCommittedLoad=rollbackCount;
@@ -2058,7 +2370,7 @@ describe("HVP T08 bootstrap lifecycle", () => {
         expect(rollbackCount).toBe(rollbacksAfterCommittedLoad);expect(compiler.rolloverAfterLoad).toHaveBeenCalledTimes(2);
         expect(physicsDisposals).toBe(1);expect(source.windowPort.listenerTotals.get("pagehide")).toBe(0);
         expect(backend.readDiagnostics()).toMatchObject({backendState:"Disposed",residentRepresentationKeys:[],ownedCpuBytes:0});
-      }else if(advanceFailure==="SuccessfulLoad"){
+      }else if(advanceFailure==="SuccessfulLoad"||advanceFailure==="DormantEast"){
         const firstEpochKeys=backend.readDiagnostics().residentRepresentationKeys.filter(key=>/e1~[1-9][0-9]*$/.test(key));
         captureBeforeLoad();loadButton.dispatchEvent(new Event("click"));await vi.waitFor(()=>expect(saveState()).toBe("Loaded"));
         expect(events).toEqual(["finalized","advance-accepted","rollover-started","rollover-complete"]);
@@ -2116,20 +2428,20 @@ describe("HVP T08 bootstrap lifecycle", () => {
         sourceDigest:"fnv1a64-v1:0123456789abcdef"};
       const products={digest:"neighbor-fixture",lod:.125,region:[mesh],waterPatch:mesh,water:mesh,join:mesh,far:mesh,sourceBytes:0,projectionBytes:0} as unknown as NonNullable<HvpNeighborStage["products"]>;
       const before=commands.filter(command=>command.kind==="RegisterEphemeralRepresentation").length;
-      const next=stage({products,seams:null,epoch:1,source:null,cacheBytes:0,checkpointBytes:0});next.publish();next.finish();
+      const next=await stage({products,seams:null,epoch:1,source:null,cacheBytes:0,checkpointBytes:0});next.publish();next.finish();
       const activeKeys=backend.readDiagnostics().residentRepresentationKeys.filter(key=>key.includes("~"));
       expect(activeKeys).toHaveLength(5);
       expect(activeKeys.filter(key=>key.startsWith("hvp:water:")).length).toBe(2);
       expect(activeKeys.some(key=>/^hvp:neighbor:join:e0~[1-9][0-9]*$/.test(key))).toBe(true);
       expect(activeKeys.some(key=>/^hvp:neighbor:far:e0~[1-9][0-9]*$/.test(key))).toBe(true);
       expect(activeKeys.some(key=>/^hvp:neighbor:region:e0~[1-9][0-9]*$/.test(key))).toBe(true);
-      const proxies=stage({products:null,seams:null,epoch:2,source:null,cacheBytes:0,checkpointBytes:0});proxies.publish();proxies.finish();
+      const proxies=await stage({products:null,seams:null,epoch:2,source:null,cacheBytes:0,checkpointBytes:0});proxies.publish();proxies.finish();
       const proxyKeys=backend.readDiagnostics().residentRepresentationKeys.filter(key=>key.includes("~"));
       expect(proxyKeys).toHaveLength(3);
       expect(proxyKeys.filter(key=>key.startsWith("hvp:neighbor:proxy:")).length).toBe(2);
       expect(proxyKeys.some(key=>key.startsWith("hvp:water:"))).toBe(true);
       const beforeReuse=commands.filter(command=>command.kind==="RegisterEphemeralRepresentation").length;
-      const reused=stage({products:null,seams:null,epoch:3,source:null,cacheBytes:0,checkpointBytes:0});reused.publish();reused.finish();
+      const reused=await stage({products:null,seams:null,epoch:3,source:null,cacheBytes:0,checkpointBytes:0});reused.publish();reused.finish();
       expect(commands.filter(command=>command.kind==="RegisterEphemeralRepresentation")).toHaveLength(beforeReuse);
       expect(backend.readDiagnostics().residentRepresentationKeys.filter(key=>key.includes("~"))).toEqual(proxyKeys);
       expect(commands.filter(command=>command.kind==="RegisterEphemeralRepresentation").length-before).toBe(8);
@@ -2137,7 +2449,46 @@ describe("HVP T08 bootstrap lifecycle", () => {
     }finally{await handle?.dispose();neighborFactory.mockRestore();}
   });
 
-  it("K34 keeps a parked ephemeral fragment registered across Evict and wake",async()=>{
+  it.each([1,5])("K34 cancels packet copies and private prefixes when Source changes at copy %s",async cancelAt=>{
+    const source=harness(),neighborFactory=vi.spyOn(neighborControllerModule,"createHvpNeighborController"),terrainFactory=vi.spyOn(terrainConsumerModule,"createHvpTerrainConsumer");
+    const originalPump=boundedPumpModule.createHvpBodyMeshTaskPump;
+    let root!:ReturnType<typeof createHvpTerrainRoot>,backend!:ThreeRenderBackend,handle:HvpBootstrapHandle|undefined,inject=false,copies=0;
+    const commands:RenderCommand[]=[];
+    const factory=vi.spyOn(boundedPumpModule,"createHvpBodyMeshTaskPump").mockImplementation((...args)=>{
+      const pump=originalPump(...args),run=pump.run;
+      pump.run=<T>(steps:Generator<string,T,unknown>)=>run((function*():Generator<string,T,unknown>{
+        try{for(;;){const next=steps.next();if(next.done){return next.value;}
+          if(inject&&next.value==="neighborProjectionCopy"&&++copies===cancelAt){
+            const before=root.read();let y=127;while(before.readSlot(8,y,24)===0){y--;}
+            root.commit(root.prepare({sessionId:before.sessionId,epoch:before.epoch,revision:before.revision,sourceDigest:before.sourceDigest,
+              commandId:"changed-during-copy",toolPolicy:"hvp-plasma-v1",shape:{kind:"Box",min:[8,y,24],max:[9,y+1,25]}}));
+          }yield next.value;
+        }}finally{steps.return(undefined as never);}
+      })());return pump;
+    });
+    try{
+      handle=await startHvp(source.overrides({createBackend:(options:ConstructorParameters<typeof ThreeRenderBackend>[0])=>{
+        backend=new ThreeRenderBackend({...options,rendererFactory:()=>({setPixelRatio:()=>{},setSize:()=>{},render:()=>{},dispose:()=>{}})});
+        const dispatch=backend.dispatch.bind(backend);vi.spyOn(backend,"dispatch").mockImplementation(command=>{commands.push(command);return dispatch(command);});return backend;
+      }}));root=terrainFactory.mock.calls[0]![0];
+      const stage=neighborFactory.mock.calls[0]![0].stage,mesh=meshHvpTestCells([{x:0,y:0,z:0,slot:HVP_SLOT_LIMESTONE_DRY}],.125,{ao:true});
+      const buffer=encodeHvpProjectionPacket(Array.from({length:6},()=>mesh)),p:HvpNeighborPayload={epoch:1,primaryRevision:root.read().revision,eastRevision:0,
+        primaryDigest:root.read().sourceDigest,eastDigest:"12345678",lod:.125,key:"packet-cancel-fixture"};
+      const products=decodeHvpNeighborOutput({ownership:"WorkerToConsumer",buffers:[buffer],revision:contentRevision(0),byteLength:byteCount(buffer.byteLength),contentHash:fnv1aBytes([buffer]),
+        views:[{name:"projections",kind:"Uint8Array",bufferIndex:0,byteOffset:0,elementCount:buffer.byteLength}]},p);
+      const before=backend.readDiagnostics(),privateBefore=backend.readPrivateMeshBytes(),registrations=commands.filter(command=>command.kind==="RegisterEphemeralRepresentation").length;
+      inject=true;await expect(stage({products,seams:null,epoch:1,source:null,cacheBytes:buffer.byteLength,checkpointBytes:0})).rejects.toThrow("Stale neighbor render staging");inject=false;
+      expect(copies).toBe(cancelAt);expect(backend.readPrivateMeshBytes()).toEqual(privateBefore);
+      expect(backend.readDiagnostics().residentRepresentationKeys).toEqual(before.residentRepresentationKeys);
+      expect(backend.readDiagnostics().visibleRepresentationKeys).toEqual(before.visibleRepresentationKeys);
+      const registered=commands.filter(command=>command.kind==="RegisterEphemeralRepresentation").slice(registrations);
+      expect(registered).toHaveLength(cancelAt===1?1:2);
+      for(const command of registered){expect(commands.some(cancel=>cancel.kind==="CancelEphemeralRepresentation"&&cancel.representationKey===command.representationKey)).toBe(true);}
+    }finally{inject=false;try{await handle?.dispose();if(backend){expect(backend.readPrivateMeshBytes()).toEqual({custody:0,pending:0});}}
+      finally{factory.mockRestore();neighborFactory.mockRestore();terrainFactory.mockRestore();}}
+  });
+
+  it.each(["wake","cancel"] as const)("K34 keeps a parked ephemeral fragment registered across Evict and wake (%s)",async scenario=>{
     // Fake Native residency facts; Three owns the actual Evict/rehydrate lifecycle.
     const source=harness(),terrainFactory=vi.spyOn(terrainConsumerModule,"createHvpTerrainConsumer"),
       dormancyFactory=vi.spyOn(dormancyControllerModule,"createHvpDormancyController");
@@ -2152,29 +2503,57 @@ describe("HVP T08 bootstrap lifecycle", () => {
     try{
       handle=await startHvp(source.overrides({createPhysics,createBackend:(options:ConstructorParameters<typeof ThreeRenderBackend>[0])=>{
         backend=new ThreeRenderBackend({...options,rendererFactory:()=>({setPixelRatio:()=>{},setSize:()=>{},render:()=>{},dispose:()=>{}})});
+        vi.spyOn(backend,"admitPrivateMeshSteps");vi.spyOn(backend,"upsertPrivateMeshSteps");
         const dispatch=backend.dispatch.bind(backend);vi.spyOn(backend,"dispatch").mockImplementation(command=>{
           backendCommands.push(command);return dispatch(command);
         });return backend;
       }}));
-      const stage=terrainFactory.mock.calls[0]?.[2],stageDormancy=dormancyFactory.mock.calls[0]?.[0].stage;
+      const stage=terrainFactory.mock.calls[0]?.[8],stageDormancy=dormancyFactory.mock.calls[0]?.[0].stage;
       if(!stage||!stageDormancy){throw new Error("Missing HVP fragment/residency stage callbacks");}
       const root=terrainFactory.mock.calls[0]![0].read(),ownerId="hvp:terrain-fragment:parked-fixture",digest="fnv1a64-v1:0123456789abcdef";
-      const fragment={request:{ownerId,origin:{x:0,y:0,z:0},massKg:1,cells:[{x:0,y:0,z:0,materialId:1}],
+      const fragment={request:{ownerId,origin:{x:0,y:0,z:0},massKg:1,cells:Object.freeze([Object.freeze({x:0,y:0,z:0,materialId:1})]),
         colliderBoxes:[{min:[0,0,0] as const,max:[1,1,1] as const}]},
-        state:{ownerId,sourceDigest:digest,centerOfMass:{x:0,y:0,z:0},cellCount:1,massKg:1,colliders:1,sourceBytes:4096}};
-      const installed=stage({source:{...root,revision:root.revision+1},render:new Map(),collision:new Map()},[fragment]);
+        state:{ownerId,sourceDigest:digest,centerOfMass:Object.freeze({x:0,y:0,z:0}),cellCount:1,massKg:1,colliders:1,sourceBytes:4096}};
+      const installed=await stage({source:{...root,revision:root.revision+1},render:new Map(),collision:new Map()},[fragment]);
       installed.publish();installed.finish();
       const key=backend.readDiagnostics().residentRepresentationKeys.find(value=>/^hvp:fragment:e0~[1-9][0-9]*$/.test(value));
       if(!key){throw new Error("Missing issued fragment render alias");}
       const registrations=backendCommands.filter(command=>command.kind==="RegisterEphemeralRepresentation").length;
-      const parked=stageDormancy({...native,parked:[{ownerId,position:native.bodies[0]!.position,residency:"Checkpointed"}],dormantCheckpointBytes:0});
+      const custody=backend.readPrivateMeshBytes().custody,installedBytes=backend.readDiagnostics().ownedCpuBytes;
+      expect(custody).toBeGreaterThan(0);
+      const intake=vi.mocked(backend.admitPrivateMeshSteps).mock.calls.find(([input])=>input.representationKey===key)!;
+      expect(intake).toBeDefined();expect(Object.keys(intake[2]).sort()).toEqual(["worldId","sessionId","sourceEpoch","sourceRevision","sourceDigest","renderEpoch","backendRevision"].sort());
+      expect(intake[2]).toMatchObject({sessionId:root.sessionId,sourceEpoch:root.epoch,sourceRevision:root.revision+1,sourceDigest:root.sourceDigest,
+        backendRevision:backend.readDiagnostics().backendRevision});expect(intake[2].worldId).toBeTruthy();
+      const uploads=()=>vi.mocked(backend.upsertPrivateMeshSteps).mock.calls.filter(([handle])=>handle.receipt.representationKey===key);
+      expect(uploads()).toHaveLength(1);const exactHandle=uploads()[0]![0];expect(uploads()[0]![2]).toEqual(intake[2]);
+      const parked=await stageDormancy({...native,parked:[{ownerId,position:native.bodies[0]!.position,residency:"Checkpointed"}],dormantCheckpointBytes:0});
       parked.publish();parked.finish();
       expect(backend.readDiagnostics().residentRepresentationKeys).not.toContain(key);
+      expect(backend.readPrivateMeshBytes().custody).toBe(custody);expect(backend.readDiagnostics().ownedCpuBytes).toBeLessThan(installedBytes);
       expect(backendCommands.filter(command=>command.kind==="RegisterEphemeralRepresentation")).toHaveLength(registrations);
-      const awake=stageDormancy({...native,parked:[],terrainFragments:[fragment.state],dormantCheckpointBytes:0});
+      if(scenario==="cancel"){
+        const owner=terrainFactory.mock.calls[0]![0],before=backend.readDiagnostics().ownedCpuBytes;
+        let restoreRead:(()=>void)|undefined;
+        vi.mocked(backend.upsertPrivateMeshSteps).mockImplementation(function*(...args){
+          const steps=ThreeRenderBackend.prototype.upsertPrivateMeshSteps.call(backend,...args);
+          try{const first=steps.next();expect(first.done).toBe(false);
+            const readSpy=vi.spyOn(owner,"read").mockReturnValue({...owner.read()});restoreRead=()=>readSpy.mockRestore();
+            yield first.value as string;return yield* steps;
+          }finally{steps.return(undefined as never);}
+        });
+        try{await expect(stageDormancy({...native,parked:[],terrainFragments:[fragment.state],dormantCheckpointBytes:0})).rejects.toThrow("Stale dormant render staging");}
+        finally{restoreRead?.();}
+        expect(backend.readPrivateMeshBytes()).toMatchObject({custody,pending:0});
+        expect(backend.readDiagnostics().ownedCpuBytes).toBe(before);expect(backend.readDiagnostics().residentRepresentationKeys).not.toContain(key);
+        expect(backendCommands.filter(command=>command.kind==="RegisterEphemeralRepresentation")).toHaveLength(registrations);return;
+      }
+      const awake=await stageDormancy({...native,parked:[],terrainFragments:[fragment.state],dormantCheckpointBytes:0});
       awake.publish();awake.finish();
       expect(backend.readDiagnostics().residentRepresentationKeys).toContain(key);
+      expect(backend.readPrivateMeshBytes().custody).toBe(custody);expect(backend.readDiagnostics().ownedCpuBytes).toBe(installedBytes);
       expect(backendCommands.filter(command=>command.kind==="RegisterEphemeralRepresentation")).toHaveLength(registrations);
+      expect(uploads()).toHaveLength(2);expect(uploads()[1]![0]).toBe(exactHandle);expect(uploads()[1]![2]).toEqual(intake[2]);
     }finally{await handle?.dispose();terrainFactory.mockRestore();dormancyFactory.mockRestore();}
   });
 
@@ -2194,14 +2573,14 @@ describe("HVP T08 bootstrap lifecycle", () => {
     try{
       handle=await startHvp(source.overrides({createPhysics,createBackend:(options:ConstructorParameters<typeof ThreeRenderBackend>[0])=>{
         backend=new ThreeRenderBackend({...options,rendererFactory:()=>({setPixelRatio:()=>{},setSize:()=>{},render:()=>{},dispose:()=>{}})});
-        const dispatch=backend.dispatch.bind(backend);
-        vi.spyOn(backend,"dispatch").mockImplementation(command=>{
-          if(failCleanup&&command.kind==="RemoveRepresentation"&&command.representationKey.includes("~")){throw cleanupFailure;}
-          const result=dispatch(command);
-          if(failUpload&&command.kind==="UpsertMeshArtifact"&&command.artifact.representationKey.includes("~")){
-            failUpload=false;throw uploadFailure;
-          }
+        const upload=backend.upsertPrivateMeshSteps.bind(backend),release=backend.releasePrivateMesh.bind(backend);
+        vi.spyOn(backend,"upsertPrivateMeshSteps").mockImplementation(function*(...args){
+          const result=yield* upload(...args);
+          if(failUpload&&args[0].receipt.representationKey.includes("~")&&result.status==="Accepted"){failUpload=false;throw uploadFailure;}
           return result;
+        });
+        vi.spyOn(backend,"releasePrivateMesh").mockImplementation((...args)=>{
+          if(failCleanup&&args[0].receipt.representationKey.includes("~")){throw cleanupFailure;}return release(...args);
         });return backend;
       }}));
       const stage=bodyFactory.mock.calls[0]?.[2];if(!stage){throw new Error("Missing moving render stage");}
@@ -2209,18 +2588,22 @@ describe("HVP T08 bootstrap lifecycle", () => {
       const mesh={...meshHvpTestCells([{x:0,y:0,z:0,slot:HVP_SLOT_LIMESTONE_DRY}],.125,{ao:true}),sourceDigest:digest};
       const products={removedCells:1,removedMassKg:1,parts:[{ownerId:"hvp:r01-child",sourceDigest:digest,sourceBytes:4096,
         center:{x:0,y:0,z:0},massKg:1,cells:[{x:10,y:11,z:2,materialId:1}],mesh}]};
-      const before=backend.readDiagnostics();failUpload=true;failCleanup=unproven;
+      const before=backend.readDiagnostics(),privateBefore=backend.readPrivateMeshBytes();failUpload=true;failCleanup=unproven;
       let caught:unknown;
-      try{stage(HVP_BRANCH_KEY,products);}catch(error){caught=error;}
+      try{await stage(HVP_BRANCH_KEY,products);}catch(error){caught=error;}
       if(unproven){
         expect(caught).toBeInstanceOf(HvpRenderStageRecoveryError);
+        const causes:unknown[]=[caught];for(let i=0;i<causes.length;i++){const cause=causes[i];if(cause instanceof AggregateError){causes.push(...cause.errors);}}
+        expect(causes).toContain(uploadFailure);expect(causes.some(cause=>String(cause).includes(cleanupFailure.message))).toBe(true);
         expect(source.body.dataset.hestiaPrototypeSave).toContain("RecoveryHold");
         // Failed release is not counted as reclaimed GPU/native memory.
         expect(backend.readDiagnostics().residentRepresentationKeys).not.toEqual(before.residentRepresentationKeys);
+        expect(backend.readPrivateMeshBytes().custody).toBeGreaterThan(privateBefore.custody);
       }else{
         expect(caught).toBe(uploadFailure);
         expect(backend.readDiagnostics().residentRepresentationKeys).toEqual(before.residentRepresentationKeys);
         expect(backend.readDiagnostics().ownedCpuBytes).toBe(before.ownedCpuBytes);
+        expect(backend.readDiagnostics().visibleRepresentationKeys).toEqual(before.visibleRepresentationKeys);expect(backend.readPrivateMeshBytes()).toEqual(privateBefore);
         expect(source.body.dataset.hestiaPrototypeSave).not.toContain("RecoveryHold");
       }
     }finally{failUpload=false;failCleanup=false;await handle?.dispose();bodyFactory.mockRestore();}
@@ -2259,8 +2642,11 @@ describe("HVP T08 bootstrap lifecycle", () => {
       handle=await startHvp(source.overrides({createPhysics,createBackend:(options:ConstructorParameters<typeof ThreeRenderBackend>[0])=>{
         backend=new ThreeRenderBackend({...options,rendererFactory:()=>({setPixelRatio:()=>{},setSize:()=>{},render:()=>{},dispose:()=>{}})});
         const dispatch=backend.dispatch.bind(backend);
+        const release=backend.releasePrivateMesh.bind(backend);
+        vi.spyOn(backend,"releasePrivateMesh").mockImplementation((...args)=>{
+          if(mode==="renderer-unproven"&&visibilityFailed&&failCleanup&&args[0].receipt.representationKey.includes("~")){throw cleanupFailure;}return release(...args);
+        });
         vi.spyOn(backend,"dispatch").mockImplementation(command=>{
-          if(mode==="renderer-unproven"&&visibilityFailed&&failCleanup&&command.kind==="RemoveRepresentation"&&command.representationKey.includes("~"))throw cleanupFailure;
           const result=dispatch(command);
           if(failVisibility&&committed&&published&&command.kind==="ApplyVisibilityPlan"){
             expect(committed&&published).toBe(true);expect(result.status).toBe("Accepted");
@@ -2269,7 +2655,7 @@ describe("HVP T08 bootstrap lifecycle", () => {
           return result;
         });return backend;
       }}));
-      const before=backend.readDiagnostics(),ledger=JSON.parse(source.body.dataset.hestiaPrototypeResources!).ledger;
+      const before=backend.readDiagnostics(),privateBefore=backend.readPrivateMeshBytes(),ledger=JSON.parse(source.body.dataset.hestiaPrototypeResources!).ledger;
       const consumer=factory.mock.results[0]!.value!;failVisibility=true;
       const task=consumer.submit({id:"r74-publish",ownerId:HVP_BRANCH_KEY,sourceDigest:digest,edge:1,direction:{x:0,y:0,z:1}});
       await task;expect(visibilityFailed,JSON.stringify(consumer.read())).toBe(true);expect(rollback).toHaveBeenCalledOnce();expect(finalize).not.toHaveBeenCalled();
@@ -2284,21 +2670,34 @@ describe("HVP T08 bootstrap lifecycle", () => {
         expect(consumer.read()).toMatchObject({state:"RecoveryHold",last:{status:"RecoveryHold"}});
         expect(()=>consumer.checkpoint()).toThrow(/save boundary/);
         await expect(consumer.submit({id:"r74-other",ownerId:HVP_BRANCH_KEY,sourceDigest:digest,edge:1,direction:{x:0,y:0,z:1}})).rejects.toThrow("RecoveryHold");
-        if(mode==="renderer-unproven")expect(after.residentRepresentationKeys).not.toEqual(before.residentRepresentationKeys);
+        if(mode==="renderer-unproven"){
+          expect(after.residentRepresentationKeys).not.toEqual(before.residentRepresentationKeys);expect(backend.readPrivateMeshBytes().custody).toBeGreaterThan(privateBefore.custody);
+          expect(native).toBe(oldNative);expect(committed||published).toBe(false);expect(source.body.dataset.hestiaPrototypeSave).toContain("RecoveryHold");
+          expect(source.body.dataset.hestiaPrototypeSave).toContain(cleanupFailure.message);
+        }
         else expect(committed&&published).toBe(true);
       }
     }finally{failVisibility=false;failCleanup=false;await handle?.dispose();factory.mockRestore();}
   },120_000);
 
-  it.each(["clean","renderer","lease"] as const)("R116 cancels after a real hidden upload and releases every material lease (%s)",async mode=>{
-    const unproven=mode!=="clean";
+  it.each(["clean","copy","renderer","lease","acquire"] as const)("R116 cancels after a real hidden upload and releases every material lease (%s)",async mode=>{
+    const unproven=mode==="renderer"||mode==="lease"||mode==="acquire";
     const source=harness(),terrainFactory=vi.spyOn(terrainConsumerModule,"createHvpTerrainConsumer");
     const realPump=boundedPumpModule.createHvpBodyMeshTaskPump,realAcquire=ThreeMaterialFactory.prototype.acquire;
     const live=new Set<ThreeMaterialLease>();let uploaded:RepresentationKey|undefined,inject=false,failCleanup=false,handle:HvpBootstrapHandle|undefined;
-    const cancel=new Error("owned graphics current cancellation"),cleanup=new Error("owned graphics release uncertain");let backend!:ThreeRenderBackend;
+    const cancel=new Error("owned graphics current cancellation"),cleanup=new Error("owned graphics release uncertain"),acquireError=new Error("second plain material creation");let backend!:ThreeRenderBackend;
+    let acquireReleaseCalls=0;
     const leases=vi.spyOn(ThreeMaterialFactory.prototype,"acquire").mockImplementation(function(this:ThreeMaterialFactory,profiles,options){
-      const lease=realAcquire.call(this,profiles,options);let wrapper:ThreeMaterialLease;
       const newPlain=inject&&uploaded!==undefined&&options?.vertexColors!==true;
+      if(newPlain&&mode==="acquire"){
+        const access=this as unknown as {create(profile:typeof profiles[number],colored:boolean):THREE.Material},create=access.create.bind(this);
+        const spy=vi.spyOn(access,"create").mockImplementation((profile,colored)=>{
+          if(profile.id==="hvp:r116:acquire-b"){throw acquireError;}const material=create(profile,colored);material.dispose=()=>{acquireReleaseCalls++;throw cleanup;};return material;
+        });
+        try{return realAcquire.call(this,[createMaterialProfile({...profiles[0]!,id:materialProfileId("hvp:r116:acquire-a")}),createMaterialProfile({...profiles[0]!,id:materialProfileId("hvp:r116:acquire-b")})],options);}
+        finally{spy.mockRestore();}
+      }
+      const lease=realAcquire.call(this,profiles,options);let wrapper:ThreeMaterialLease;
       wrapper={materials:lease.materials,release(){if(inject&&mode==="lease"&&newPlain)throw cleanup;
         const result=lease.release();live.delete(wrapper);return result;}};live.add(wrapper);return wrapper;
     });
@@ -2308,7 +2707,7 @@ describe("HVP T08 bootstrap lifecycle", () => {
     try{
       handle=await startHvp(source.overrides({createBackend:(options:ConstructorParameters<typeof ThreeRenderBackend>[0])=>{
         backend=new ThreeRenderBackend({...options,rendererFactory:()=>({setPixelRatio:()=>{},setSize:()=>{},render:()=>{},dispose:()=>{}})});
-        const dispatch=backend.dispatch.bind(backend),owned=backend.dispatchOwnedSteps.bind(backend);
+        const dispatch=backend.dispatch.bind(backend),owned=backend.dispatchOwnedSteps.bind(backend),privateUpsert=backend.upsertPrivateMeshSteps.bind(backend),privateRelease=backend.releasePrivateMesh.bind(backend);
         vi.spyOn(backend,"dispatch").mockImplementation(command=>{
           if(failCleanup&&command.kind==="RemoveRepresentation"&&command.representationKey===uploaded)throw cleanup;
           return dispatch(command);
@@ -2317,6 +2716,18 @@ describe("HVP T08 bootstrap lifecycle", () => {
           const result=yield* owned(command);
           if(inject&&command.kind==="UpsertMeshArtifact"&&result.status==="Accepted")uploaded=command.artifact.representationKey;
           return result;
+        });
+        vi.spyOn(backend,"upsertPrivateMeshSteps").mockImplementation(function*(handle,profiles,binding){
+          if(inject&&mode==="copy"){
+            const steps=privateUpsert(handle,profiles,binding);
+            try{const first=steps.next();expect(first.done).toBe(false);uploaded=handle.receipt.representationKey;yield first.value as string;return yield* steps;}
+            finally{steps.return(undefined as never);}
+          }
+          const result=yield* privateUpsert(handle,profiles,binding);
+          if(inject&&result.status==="Accepted"){uploaded=handle.receipt.representationKey;}return result;
+        });
+        vi.spyOn(backend,"releasePrivateMesh").mockImplementation((handle,binding)=>{
+          if(failCleanup&&handle.receipt.representationKey===uploaded){throw cleanup;}return privateRelease(handle,binding);
         });return backend;
       }}));
       const stage=terrainFactory.mock.calls[0]?.[8];if(stage===undefined)throw new Error("Missing owned terrain stage");
@@ -2324,15 +2735,22 @@ describe("HVP T08 bootstrap lifecycle", () => {
       const before=backend.readDiagnostics(),leaseCount=live.size;inject=true;failCleanup=mode==="renderer";
       let caught:unknown;try{await stage({source:{...root,revision:root.revision+1},render:new Map([[0,mesh],[1,mesh]]),collision:new Map()},[]);}catch(error){caught=error;}
       expect(uploaded).toBeDefined();
-      if(unproven){expect(caught).toBeInstanceOf(HvpRenderStageRecoveryError);expect((caught as AggregateError).errors).toContain(cancel);
-        expect(source.body.dataset.hestiaPrototypeSave).toContain("RecoveryHold");expect(live.size).toBeGreaterThan(leaseCount);
+      if(unproven){expect(caught).toBeInstanceOf(HvpRenderStageRecoveryError);expect((caught as AggregateError).errors).toContain(mode==="acquire"?acquireError:cancel);
+        expect(source.body.dataset.hestiaPrototypeSave).toContain("RecoveryHold");if(mode!=="acquire"){expect(live.size).toBeGreaterThan(leaseCount);}else{expect((caught as AggregateError).errors).toContain(cleanup);expect(acquireReleaseCalls).toBe(1);}
         if(mode==="lease")expect(backend.readDiagnostics().residentRepresentationKeys).toEqual(before.residentRepresentationKeys);
       }else{expect(caught).toBe(cancel);expect(live.size).toBe(leaseCount);
         expect(backend.readDiagnostics().residentRepresentationKeys).toEqual(before.residentRepresentationKeys);
         expect(backend.readDiagnostics().ownedCpuBytes).toBe(before.ownedCpuBytes);
         expect(source.body.dataset.hestiaPrototypeSave).not.toContain("RecoveryHold");}
       expect(backend.readDiagnostics().visibleRepresentationKeys).toEqual(before.visibleRepresentationKeys);
-    }finally{inject=false;failCleanup=false;try{await handle?.dispose();}finally{pump.mockRestore();leases.mockRestore();terrainFactory.mockRestore();}}
+      if(mode==="copy"){
+        const profile=createMaterialProfile({id:materialProfileId("hvp:cancel-copy-proof"),kind:"Unlit",baseColor:{r:.5,g:.5,b:.5},opacity:1,doubleSided:true,wireframe:false,depthWrite:true});
+        const input={representationKey:uploaded!,sourceRevision:sourceRevision(1),artifactRevision:artifactRevision(1),frameId:frameId("hvp:cancel-copy"),algorithmVersion:"cancel-copy-v1",
+          positions:new Float32Array([0,0,0,1,0,0,0,1,0]),normals:new Float32Array([0,0,1,0,0,1,0,0,1]),indices:new Uint16Array([0,1,2]),materialRanges:[{materialProfileId:profile.id,startIndex:0,indexCount:3}],bounds:{min:{x:0,y:0,z:0},max:{x:1,y:1,z:0}}};
+        const steps=backend.admitPrivateMeshSteps(input,[profile],{worldId:"cancel-copy-world",sessionId:root.sessionId,sourceEpoch:root.epoch,sourceRevision:root.revision,sourceDigest:root.sourceDigest,renderEpoch:0,backendRevision:backendRevision(0)});
+        expect(()=>steps.next()).toThrow("ExpiredEpoch");
+      }
+    }finally{inject=false;failCleanup=false;try{if(mode==="acquire"){await expect(handle!.dispose()).rejects.toBe(cleanup);expect(acquireReleaseCalls).toBe(1);}else{await handle?.dispose();}}finally{pump.mockRestore();leases.mockRestore();terrainFactory.mockRestore();}}
   });
 
   it("K34 removes an accepted terrain Upsert after visibility publication throws",async()=>{
@@ -2511,9 +2929,12 @@ describe("HVP T08 bootstrap lifecycle", () => {
         expect(render.mock.results[0]!.value).toBe(unavailable);
         const original = new Error("C2B render failure");
         backendRender.mockImplementation(() => { throw original; });
-        expect(() => stepFrame(source.windowPort, performance.now())).toThrow(original);
+        expect(() => stepFrame(source.windowPort, performance.now())).not.toThrow();
         expect(backendRender).toHaveBeenCalledTimes(2);
         expect(render.mock.results[1]!.value).toBe(original);
+        await vi.waitFor(()=>expect(descendants(source.body).some(node=>node.id==="hvp-failure")).toBe(true));
+        expect(source.windowPort.animationFrames.size).toBe(0);expect(source.counts().backendDisposals).toBe(1);
+        expect(JSON.parse(source.body.dataset.hestiaPrototypeDisposal!)).toMatchObject({state:"Disposed",errors:[],frameError:String(original)});
       } finally {
         render.mockRestore();
       }

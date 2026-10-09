@@ -55,6 +55,10 @@ export interface HvpBodyPlanTrace {
   /** First recorded steps only (cap); `totalSteps - steps.length` were aggregated but not listed. */
   readonly steps:readonly HvpBodyPlanStepTiming[];
   readonly totalSteps:number;
+  /** Exact gate threshold counts over all steps, including steps beyond the retained detail cap. */
+  readonly stepsOver4Ms:number;
+  readonly stepsOver8Ms:number;
+  readonly taskWork:Readonly<{count:number;totalMs:number;maxMs:number;over4Ms:number;over8Ms:number}>;
   readonly max:HvpBodyPlanStepTiming|undefined;
   readonly phases:readonly HvpBodyPlanPhaseAggregate[];
   readonly timing:Readonly<{elapsedMs:number;workMs:number;taskWaitMs:number;taskWaitCount:number;maxTaskWaitMs:number}>;
@@ -87,7 +91,8 @@ interface HvpBodyPlanWork {
   failure?:{readonly error:unknown};
   running?:Promise<void>;
   trace?:{readonly commandId:string;readonly steps:HvpBodyPlanStepTiming[];current?:HvpBodyPlanSubspan[];
-    totalSteps:number;max?:HvpBodyPlanStepTiming;readonly phases:Map<string,{count:number;totalMs:number;maxMs:number}>;
+    totalSteps:number;stepsOver4Ms:number;stepsOver8Ms:number;max?:HvpBodyPlanStepTiming;readonly phases:Map<string,{count:number;totalMs:number;maxMs:number}>;
+    taskStartedAt?:number;readonly taskWork:{count:number;totalMs:number;maxMs:number;over4Ms:number;over8Ms:number};
     startedAt?:number;workMs:number;taskWaitMs:number;taskWaitCount:number;maxTaskWaitMs:number};
 }
 
@@ -138,7 +143,8 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
       const work:HvpBodyPlanWork={};
       ticket.work=work;
       if(observer!==undefined){
-        work.trace={commandId:ticket.request.id,steps:[],totalSteps:0,phases:new Map(),workMs:0,taskWaitMs:0,taskWaitCount:0,maxTaskWaitMs:0};
+        work.trace={commandId:ticket.request.id,steps:[],totalSteps:0,stepsOver4Ms:0,stepsOver8Ms:0,
+          taskWork:{count:0,totalMs:0,maxMs:0,over4Ms:0,over8Ms:0},phases:new Map(),workMs:0,taskWaitMs:0,taskWaitCount:0,maxTaskWaitMs:0};
       }
       try{
         if(residentBytes!==undefined){
@@ -174,7 +180,11 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
       },
       recipe(spans:HvpRigidRecipeSpans):void {
         const named:readonly (readonly [string,number|undefined])[]=[
-          ["recipeMassMs",spans.massMs],["recipeClassifyMs",spans.classifyMs],["recipeTransitionMs",spans.transitionMs],["recipeAxesMs",spans.axesMs]];
+          ["recipeMassMs",spans.massMs],["recipeClassifyMs",spans.classifyMs],["recipeTransitionMs",spans.transitionMs],["recipeAxesMs",spans.axesMs],
+          ["transitionPerVoxel",spans.transitionPerVoxelMs],["transitionGreedy",spans.transitionGreedyMs],["transitionHash",spans.transitionHashMs],
+          // Marker presence represents reuse; a count is never elapsed milliseconds.
+          ["preparedFactsReused",spans.preparedFactsReused===undefined?undefined:0],
+          ["componentPartitionReused",spans.componentPartitionReused===undefined?undefined:0]];
         for(const [phase,value] of named){
           if(value!==undefined){
             collect(phase,value);
@@ -184,6 +194,12 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
     };
   };
   /** Emits the finished timing once; an observer failure only disables observation. */
+  const closeTaskWork=(trace:NonNullable<HvpBodyPlanWork["trace"]>,end:number):void=>{
+    if(trace.taskStartedAt===undefined){return;}
+    const duration=end-trace.taskStartedAt;trace.taskStartedAt=undefined;
+    const task=trace.taskWork;task.count+=1;task.totalMs+=duration;task.maxMs=Math.max(task.maxMs,duration);
+    if(duration>4){task.over4Ms+=1;}if(duration>8){task.over8Ms+=1;}
+  };
   const emitTrace=(work:HvpBodyPlanWork,outcome:HvpBodyPlanTrace["outcome"]):void=>{
     const trace=work.trace;
     work.trace=undefined;
@@ -191,8 +207,11 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
       return;
     }
     try{
+      const emittedAt=performance.now();closeTaskWork(trace,emittedAt);
       observer(Object.freeze({commandId:trace.commandId,outcome,steps:Object.freeze(trace.steps),totalSteps:trace.totalSteps,max:trace.max,
-        timing:Object.freeze({elapsedMs:trace.startedAt===undefined?0:performance.now()-trace.startedAt,workMs:trace.workMs,
+        stepsOver4Ms:trace.stepsOver4Ms,stepsOver8Ms:trace.stepsOver8Ms,
+        taskWork:Object.freeze({...trace.taskWork}),
+        timing:Object.freeze({elapsedMs:trace.startedAt===undefined?0:emittedAt-trace.startedAt,workMs:trace.workMs,
           taskWaitMs:trace.taskWaitMs,taskWaitCount:trace.taskWaitCount,maxTaskWaitMs:trace.maxTaskWaitMs}),
         phases:Object.freeze([...trace.phases].map(([label,value])=>Object.freeze({label,...value})))}));
     }catch{
@@ -212,6 +231,8 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
       if(worst){trace.max=timing;}
     }
     trace.totalSteps+=1;
+    if(duration>4){trace.stepsOver4Ms+=1;}
+    if(duration>8){trace.stepsOver8Ms+=1;}
     trace.workMs+=duration;
     const phase=trace.phases.get(label);
     if(phase!==undefined){
@@ -226,7 +247,7 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
       return true;
     }
     const trace=work.trace,start=trace===undefined?0:performance.now();
-    if(trace!==undefined){trace.startedAt??=start;}
+    if(trace!==undefined){trace.startedAt??=start;trace.taskStartedAt??=start;}
     if(trace!==undefined){
       trace.current=work.ledger===undefined?[]:undefined;
     }
@@ -298,8 +319,10 @@ const bodyCutSessionFor=(ownedHash:boolean)=>(world:R.World,targets:Map<string,H
             previousPhase=work.phase;
             if(!continuation){
               const timing=work.trace,waitStart=timing===undefined?0:performance.now();
-              try{await host.yieldTask();}finally{if(timing!==undefined){
-                const duration=performance.now()-waitStart;timing.taskWaitMs+=duration;timing.taskWaitCount++;timing.maxTaskWaitMs=Math.max(timing.maxTaskWaitMs,duration);
+              if(timing!==undefined){closeTaskWork(timing,waitStart);}
+              try{await host.yieldTask();}finally{if(timing!==undefined&&work.trace===timing){
+                const resumedAt=performance.now(),duration=resumedAt-waitStart;timing.taskWaitMs+=duration;timing.taskWaitCount++;timing.maxTaskWaitMs=Math.max(timing.maxTaskWaitMs,duration);
+                timing.taskStartedAt=resumedAt;
               }}
             }
             if(pending!==ticket||held){

@@ -1,0 +1,745 @@
+{
+  "classification": "DIAGNOSTIC_PILOT_NOT_QUALIFICATION",
+  "pairs": 1,
+  "variants": {
+    "control": {
+      "coldTerrain": {
+        "planned": 1,
+        "valid": 0,
+        "invalid": 1,
+        "missing": 0,
+        "samples": [
+          {
+            "status": "INVALID",
+            "reason": "Failed browser attempt retained"
+          }
+        ],
+        "inputToAppliedMs": null,
+        "inputToRenderMs": null,
+        "overlappingWallPhasesDoNotSum": {
+          "cutSupportAnalyzeMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutCompileMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativePrepareMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutGraphicsStageMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyOwnerPlanMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyMeshWorkerMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyNativeAdmissionMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyMainDecodeMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyRenderStageMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeInputCopyMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeCollisionValidationMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeCellValidationMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeFragmentSourceMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeFragmentAdmissionMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          }
+        }
+      },
+      "moving": {
+        "planned": 1,
+        "valid": 0,
+        "invalid": 1,
+        "missing": 0,
+        "samples": [
+          {
+            "status": "INVALID",
+            "reason": "Failed browser attempt retained"
+          }
+        ],
+        "inputToAppliedMs": null,
+        "inputToRenderMs": null,
+        "overlappingWallPhasesDoNotSum": {
+          "cutSupportAnalyzeMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutCompileMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativePrepareMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutGraphicsStageMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyOwnerPlanMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyMeshWorkerMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyNativeAdmissionMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyMainDecodeMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyRenderStageMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeInputCopyMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeCollisionValidationMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeCellValidationMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeFragmentSourceMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeFragmentAdmissionMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          }
+        }
+      },
+      "coldRecut": {
+        "planned": 1,
+        "valid": 0,
+        "invalid": 1,
+        "missing": 0,
+        "samples": [
+          {
+            "status": "INVALID",
+            "reason": "Failed browser attempt retained"
+          }
+        ],
+        "inputToAppliedMs": null,
+        "inputToRenderMs": null,
+        "overlappingWallPhasesDoNotSum": {
+          "cutSupportAnalyzeMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutCompileMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativePrepareMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutGraphicsStageMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyOwnerPlanMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyMeshWorkerMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyNativeAdmissionMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyMainDecodeMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyRenderStageMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeInputCopyMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeCollisionValidationMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeCellValidationMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeFragmentSourceMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeFragmentAdmissionMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          }
+        }
+      }
+    },
+    "candidate": {
+      "coldTerrain": {
+        "planned": 1,
+        "valid": 0,
+        "invalid": 1,
+        "missing": 0,
+        "samples": [
+          {
+            "status": "INVALID",
+            "reason": "Failed browser attempt retained"
+          }
+        ],
+        "inputToAppliedMs": null,
+        "inputToRenderMs": null,
+        "overlappingWallPhasesDoNotSum": {
+          "cutSupportAnalyzeMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutCompileMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativePrepareMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutGraphicsStageMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyOwnerPlanMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyMeshWorkerMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyNativeAdmissionMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyMainDecodeMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyRenderStageMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeInputCopyMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeCollisionValidationMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeCellValidationMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeFragmentSourceMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeFragmentAdmissionMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          }
+        }
+      },
+      "moving": {
+        "planned": 1,
+        "valid": 0,
+        "invalid": 1,
+        "missing": 0,
+        "samples": [
+          {
+            "status": "INVALID",
+            "reason": "Failed browser attempt retained"
+          }
+        ],
+        "inputToAppliedMs": null,
+        "inputToRenderMs": null,
+        "overlappingWallPhasesDoNotSum": {
+          "cutSupportAnalyzeMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutCompileMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativePrepareMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutGraphicsStageMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyOwnerPlanMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyMeshWorkerMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyNativeAdmissionMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyMainDecodeMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyRenderStageMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeInputCopyMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeCollisionValidationMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeCellValidationMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeFragmentSourceMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeFragmentAdmissionMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          }
+        }
+      },
+      "coldRecut": {
+        "planned": 1,
+        "valid": 0,
+        "invalid": 1,
+        "missing": 0,
+        "samples": [
+          {
+            "status": "INVALID",
+            "reason": "Failed browser attempt retained"
+          }
+        ],
+        "inputToAppliedMs": null,
+        "inputToRenderMs": null,
+        "overlappingWallPhasesDoNotSum": {
+          "cutSupportAnalyzeMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutCompileMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativePrepareMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutGraphicsStageMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyOwnerPlanMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyMeshWorkerMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyNativeAdmissionMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyMainDecodeMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutBodyRenderStageMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeInputCopyMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeCollisionValidationMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeCellValidationMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeFragmentSourceMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          },
+          "cutNativeFragmentAdmissionMs": {
+            "status": "MISSING",
+            "missing": 0,
+            "stats": null
+          }
+        }
+      }
+    }
+  },
+  "nativeComplete": false,
+  "readiness": {
+    "control": {
+      "coldSceneReadyV2Ms": {
+        "n": 1,
+        "median": 5730.799999999814,
+        "min": 5730.799999999814,
+        "max": 5730.799999999814,
+        "p95NearestRank": 5730.799999999814,
+        "atMostTarget": 0,
+        "targetMs": 5000,
+        "values": [
+          5730.799999999814
+        ]
+      },
+      "toolReadyV2Ms": {
+        "n": 1,
+        "median": 5302.800000000745,
+        "min": 5302.800000000745,
+        "max": 5302.800000000745,
+        "p95NearestRank": 5302.800000000745,
+        "atMostTarget": 0,
+        "targetMs": 5000,
+        "values": [
+          5302.800000000745
+        ]
+      },
+      "startupSourceMs": {
+        "n": 1,
+        "median": 237.70000000018626,
+        "min": 237.70000000018626,
+        "max": 237.70000000018626,
+        "p95NearestRank": 237.70000000018626,
+        "atMostTarget": 1,
+        "targetMs": 5000,
+        "values": [
+          237.70000000018626
+        ]
+      },
+      "startupCoastMeshMs": {
+        "n": 1,
+        "median": 2082.5999999996275,
+        "min": 2082.5999999996275,
+        "max": 2082.5999999996275,
+        "p95NearestRank": 2082.5999999996275,
+        "atMostTarget": 1,
+        "targetMs": 5000,
+        "values": [
+          2082.5999999996275
+        ]
+      },
+      "startupCutPoolPrepareMs": {
+        "n": 1,
+        "median": 29,
+        "min": 29,
+        "max": 29,
+        "p95NearestRank": 29,
+        "atMostTarget": 1,
+        "targetMs": 5000,
+        "values": [
+          29
+        ]
+      }
+    },
+    "candidate": {
+      "coldSceneReadyV2Ms": {
+        "n": 1,
+        "median": 12621.799999999814,
+        "min": 12621.799999999814,
+        "max": 12621.799999999814,
+        "p95NearestRank": 12621.799999999814,
+        "atMostTarget": 0,
+        "targetMs": 5000,
+        "values": [
+          12621.799999999814
+        ]
+      },
+      "toolReadyV2Ms": {
+        "n": 1,
+        "median": 11965,
+        "min": 11965,
+        "max": 11965,
+        "p95NearestRank": 11965,
+        "atMostTarget": 0,
+        "targetMs": 5000,
+        "values": [
+          11965
+        ]
+      },
+      "startupSourceMs": {
+        "n": 1,
+        "median": 504,
+        "min": 504,
+        "max": 504,
+        "p95NearestRank": 504,
+        "atMostTarget": 1,
+        "targetMs": 5000,
+        "values": [
+          504
+        ]
+      },
+      "startupCoastMeshMs": {
+        "n": 1,
+        "median": 6613.0999999996275,
+        "min": 6613.0999999996275,
+        "max": 6613.0999999996275,
+        "p95NearestRank": 6613.0999999996275,
+        "atMostTarget": 0,
+        "targetMs": 5000,
+        "values": [
+          6613.0999999996275
+        ]
+      },
+      "startupCutPoolPrepareMs": {
+        "n": 1,
+        "median": 62.700000000186265,
+        "min": 62.700000000186265,
+        "max": 62.700000000186265,
+        "p95NearestRank": 62.700000000186265,
+        "atMostTarget": 1,
+        "targetMs": 5000,
+        "values": [
+          62.700000000186265
+        ]
+      }
+    }
+  },
+  "navigationReadiness": {
+    "control": {
+      "ready": {
+        "n": 1,
+        "median": 5730.799999999814,
+        "min": 5730.799999999814,
+        "max": 5730.799999999814,
+        "p95NearestRank": 5730.799999999814,
+        "atMostTarget": 0,
+        "targetMs": 5000,
+        "values": [
+          5730.799999999814
+        ]
+      },
+      "loadReady": {
+        "n": 1,
+        "median": 3076.2000000001863,
+        "min": 3076.2000000001863,
+        "max": 3076.2000000001863,
+        "p95NearestRank": 3076.2000000001863,
+        "atMostTarget": 1,
+        "targetMs": 5000,
+        "values": [
+          3076.2000000001863
+        ]
+      },
+      "coldLoadReady": {
+        "n": 1,
+        "median": 6802.700000000186,
+        "min": 6802.700000000186,
+        "max": 6802.700000000186,
+        "p95NearestRank": 6802.700000000186,
+        "atMostTarget": 0,
+        "targetMs": 5000,
+        "values": [
+          6802.700000000186
+        ]
+      }
+    },
+    "candidate": {
+      "ready": {
+        "n": 1,
+        "median": 12621.799999999814,
+        "min": 12621.799999999814,
+        "max": 12621.799999999814,
+        "p95NearestRank": 12621.799999999814,
+        "atMostTarget": 0,
+        "targetMs": 5000,
+        "values": [
+          12621.799999999814
+        ]
+      },
+      "loadReady": {
+        "n": 1,
+        "median": 8037.299999999814,
+        "min": 8037.299999999814,
+        "max": 8037.299999999814,
+        "p95NearestRank": 8037.299999999814,
+        "atMostTarget": 0,
+        "targetMs": 5000,
+        "values": [
+          8037.299999999814
+        ]
+      },
+      "coldLoadReady": {
+        "n": 1,
+        "median": 20847.199999999255,
+        "min": 20847.199999999255,
+        "max": 20847.199999999255,
+        "p95NearestRank": 20847.199999999255,
+        "atMostTarget": 0,
+        "targetMs": 5000,
+        "values": [
+          20847.199999999255
+        ]
+      }
+    }
+  },
+  "pairedCandidateControlRatio": {
+    "coldTerrain": [
+      null
+    ],
+    "moving": [
+      null
+    ],
+    "coldRecut": [
+      null
+    ]
+  },
+  "formal42": false,
+  "formal1400": false,
+  "note": "Missing phases stay Missing; timings are overlapping wall spans, not CPU or GPU duration."
+}

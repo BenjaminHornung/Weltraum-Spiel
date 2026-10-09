@@ -1,0 +1,395 @@
+{
+  "schema": "hestia.three-phase-taskboard.v1",
+  "date": "2026-10-07",
+  "goal": "ALLE_18_GATES",
+  "referenceCheckpoint": "aa2eabd918e03c475a489b412cd18e05f781a0f9",
+  "actualBaseline": "P aa2eabd918e03c475a489b412cd18e05f781a0f9; E source cdce5dc042b8366a5835d81f3d106d22127a436f468d805c9abc0fe111c0df4b byte-verified",
+  "integrator": "/root",
+  "policy": "one-writer-no-grandchildren",
+  "phase3ExternalPrerequisites": [
+    "OWNER_PLAYTEST_PASSED_FOR_BOUND_BUILD"
+  ],
+  "completionStates": [
+    "PLANNED",
+    "IN_PROGRESS",
+    "READY_FOR_REVIEW",
+    "PILOT_PASS",
+    "QUALIFIED",
+    "RESEARCH_DECIDED",
+    "BLOCKED",
+    "WAITING_OWNER"
+  ],
+  "gates": [
+    {
+      "id": "G0",
+      "phase": 1,
+      "title": "Checkpoint, Identitäten, Tools und reproduzierbare Kontrollmessung",
+      "dependsOn": [],
+      "status": "QUALIFIED",
+      "plan": "Arbeitsauftraege/Phase_1_G0_D5.md",
+      "requiredExternalPrerequisites": [],
+      "sourceBinding": "cdce5dc042b8366a5835d81f3d106d22127a436f468d805c9abc0fe111c0df4b",
+      "evidence": [
+        "../hestia-cut-phase1-cold-path-2026-10-07/tests/G0/source-native-save-r01.json",
+        "../hestia-cut-phase1-cold-path-2026-10-07/tests/G0/e-contracts-r01.json",
+        "../hestia-cut-phase1-cold-path-2026-10-07/tests/G0/identity-r02.json",
+        "artifacts/hestia-cut-phase1-20261007/g0-r01/CHECKPOINT.json"
+      ],
+      "nextAction": "G0 checkpoint/preflight only; formal42/1400 false; see GATE_RECEIPT_G0.json",
+      "canCloseWithNoAdoption": false
+    },
+    {
+      "id": "D1",
+      "phase": 1,
+      "title": "Init und Ready-Lifecycle",
+      "dependsOn": [
+        "G0"
+      ],
+      "status": "QUALIFIED",
+      "plan": "Arbeitsauftraege/Phase_1_G0_D5.md",
+      "requiredExternalPrerequisites": [],
+      "sourceBinding": "9d741b5b965016647ebd48e9e0324c26b24d35547a1c4951ddc99e9cc67b163e",
+      "evidence": [
+        "tests/D1/source-init-green-r01.json",
+        "tests/D1/source-pages-green-r01.json",
+        "tests/D1/native-phases-green-r02.json",
+        "tests/D1/served-build-binding-r03.json",
+        "tests/D1/normal-readiness-r05/NATIVE_EXIT.json",
+        "tests/D1/normal-source-pilot-r06/NATIVE_EXIT.json",
+        "tests/D1/normal-source-pilot-r07/NATIVE_EXIT.json",
+        "tests/D1/normal-source-paired-r08/declared-plan.json",
+        "GATE_RECEIPT_D1.json",
+        "D1_COMPLETION_PREFLIGHT.json",
+        "tests/D1/normal-ghost-fixed-paired-r13/NATIVE_EXIT.json",
+        "tests/D1/normal-ghost-fixed-paired-r13/SUMMARY.json",
+        "tests/D1/normal-final-preready-r14/NATIVE_EXIT.json",
+        "tests/D1/served-build-binding-r06.json"
+      ],
+      "nextAction": "D1 mechanism passed only; beginD2 bound private facts/greedy-only recipe. No phase1 or42/1400 completion, exactdiffapproval before any newcommit",
+      "canCloseWithNoAdoption": false
+    },
+    {
+      "id": "D2",
+      "phase": 1,
+      "title": "gebundene Ableitungen und privates Recipe",
+      "dependsOn": [
+        "G0"
+      ],
+      "status": "IN_PROGRESS",
+      "plan": "Arbeitsauftraege/Phase_1_G0_D5.md",
+      "requiredExternalPrerequisites": [],
+      "sourceBinding": "361994fe5fe4d94a7230f3aa38d5d89577c13fdc058d3af17d8fb609e0192bc1",
+      "evidence": [
+        "tests/D2/cold-wake-native-regression-r02.json",
+        "tests/D2/cold-wake-capture-quote-green-r01.json",
+        "tests/D3/normal-pilot-r36/FUNCTIONAL_RECEIPT.json",
+        "tests/D3/source-binding-r30-combined.json",
+        "tests/D2/served-build-binding-r04.json",
+        "tests/D2/normal-paired-r05/NATIVE_EXIT.json",
+        "tests/D2/normal-paired-r05/SUMMARY.json",
+        "tests/D2/normal-paired-r05/FOCUS_GATE_r01.json",
+        "tests/D2/brick-validation-red-r01.json",
+        "tests/D2/brick-validation-scope-green-r01.json",
+        "tests/D2/brick-validation-full-regression-r02.json",
+        "tests/D2/source-validation-reuse-plan.md",
+        "tests/D2/MAIN_CPU_BOUNDARY.md",
+        "tests/D2/served-build-binding-r08.json",
+        "tests/D2/normal-pilot-r09/NATIVE_EXIT.json",
+        "tests/D2/normal-pilot-r09/SUMMARY.json",
+        "tests/D2/normal-pilot-r09/FOCUS_OBSERVED.json",
+        "tests/D2/normal-paired-r10/declared-plan.json",
+        "tests/D2/normal-paired-r10/NATIVE_EXIT.json",
+        "tests/D2/normal-paired-r10/SUMMARY.json",
+        "tests/D2/normal-paired-r10/FOCUS_GATE_r01.json",
+        "tests/D2/COLD_RECIPE_REUSE_PLAN.md",
+        "tests/D2/cold-recipe-reuse-contract-r02.json",
+        "tests/D2/cold-recipe-public-regression-r01.json",
+        "tests/D2/cold-recipe-bootstrap-regression-r01.json",
+        "tests/D3/normal-pilot-r30/FUNCTIONAL_RECEIPT.json",
+        "tests/D3/normal-pilot-r31/FUNCTIONAL_RECEIPT.json",
+        "tests/D2/owner-command-attribution-r01.json",
+        "tests/D2/OWNER_COMMAND_ATTRIBUTION.md",
+        "tests/D2/CLASSIFIED_MASS_REUSE_PLAN.md",
+        "tests/D2/classified-mass-species-red-r02.json",
+        "tests/D2/classified-mass-ancestor-matrix-r02.json",
+        "tests/D2/classified-mass-full-regression-r02.json",
+        "tests/D2/owner-command-attribution-r05.json",
+        "tests/D2/owner-command-attribution-r06.json",
+        "tests/D3/normal-pilot-r33/FUNCTIONAL_RECEIPT.json",
+        "tests/D1/p03-current-r01/FUNCTIONAL_RECEIPT.json"
+      ],
+      "nextAction": "PrivateCold ancestor plus initial/live exactownedWake/capture/fallback/identityunion/caps/rootDispose implemented; final9suites95PASS0skip incl40NativeSaveWorker, realWakeAppliedrecutSaveEnd and64brick/metadatatrust. product-r30 Source361994fe/Build e1fa2829 all93HTTPbeforeafter/r36driversunchanged. r36 actual1 wholeINVALID: main3candidatecuts complete but later authoredReady30s beforeHUD, newprivateWake fullgame supplementnotreached. Noqualification/gain. Repair nullsafepreparingcleanup and continue independentcombinedchunkoptimization; D2/later/formal42/1400/Plannerfinal/newcommitapprovalopen.",
+      "canCloseWithNoAdoption": false
+    },
+    {
+      "id": "D3",
+      "phase": 1,
+      "title": "Chunkcompile und gebündelte Darstellung",
+      "dependsOn": [
+        "D1"
+      ],
+      "status": "IN_PROGRESS",
+      "plan": "Arbeitsauftraege/Phase_1_G0_D5.md",
+      "requiredExternalPrerequisites": [],
+      "sourceBinding": null,
+      "evidence": [
+        "tests/D3/chunk-coverage-red-r01.json",
+        "tests/D3/chunk-coverage-green-r01.json",
+        "tests/D3/chunk-products-red-r01.json",
+        "tests/D3/chunk-products-green-r01.json",
+        "tests/D3/chunk-worker-red-r01.json",
+        "tests/D3/chunk-boundaries-red-r01.json",
+        "tests/D3/chunk-fixed-buffer-red-r01.json",
+        "tests/D3/chunk-native-full-regression-r01.json",
+        "tests/D3/chunk-worker-wiring-green-r01.json",
+        "tests/D3/chunk-source-publication-red-r01.json",
+        "tests/D3/chunk-source-publication-green-r01.json",
+        "tests/D3/chunk-initial-halo-restore-r03.json",
+        "tests/D3/chunk-neighbor-cache-client-r01.json",
+        "tests/D3/source-diagnostic-storage-r07.json",
+        "tests/D3/source-live-optout-green-r02.json",
+        "tests/D3/normal-pilot-r29/FUNCTIONAL_RECEIPT.json",
+        "tests/D3/normal-pilot-r30/FUNCTIONAL_RECEIPT.json",
+        "tests/D3/EAST_COLLISION_ONLY_DECISION.md",
+        "tests/D3/LOGICAL_CHUNK_RESOURCES.md",
+        "tests/D3/normal-pilot-r31/FUNCTIONAL_RECEIPT.json",
+        "tests/D3/normal-pilot-r33/FUNCTIONAL_RECEIPT.json",
+        "tests/D1/p03-current-r01/FUNCTIONAL_RECEIPT.json"
+      ],
+      "nextAction": "r36 actual1 wholeINVALID: control15sNeighborReady and candidateauthoredReady30s timeout; Source361994fe/Build e1fa2829 all93HTTPboth unchanged. Candidatefailedstartup full256jobs/CoastMesh26173ms beforePhysics; no Sourceorforeignloadcauseproved. Existingsealed512adapter has137allAirhalos; measure same originalinput before safe combinedallAir shortcut, preserving all validation/8buffers/fullpacketSHA. D3unusedEastcollision-onlyexceptionstillawaitsexplicitanswer. Ready5s/reference/formal42/1400/Planner/later remainopen.",
+      "canCloseWithNoAdoption": false
+    },
+    {
+      "id": "D4",
+      "phase": 1,
+      "title": "private Render-Admission",
+      "dependsOn": [
+        "G0"
+      ],
+      "status": "IN_PROGRESS",
+      "plan": "Arbeitsauftraege/Phase_1_G0_D5.md",
+      "requiredExternalPrerequisites": [],
+      "sourceBinding": null,
+      "evidence": ["tests/D4/private-canonical-golden-r01.json", "tests/D4/private-admission-red-r01.json", "tests/D4/private-admission-green-r01.json", "tests/D4/private-lifecycle-red-r01.json", "tests/D4/private-lifecycle-green-r01.json", "tests/D4/private-dormant-east-load-r03.json", "tests/D4/private-load-rollback-prefix-r02.json", "tests/D4/private-projection-copy-cancel-r01.json", "tests/D4/paired-driver-contracts-r03.json", "tests/D4/private-submitted-draw-cleanup-green-r02.json", "tests/D4/private-wake-binding-r01.json", "tests/D4/private-wake-cancel-r02.json"],
+      "nextAction": "r36 wholeINVALID on boundproduct-r30: candidate mainRender707.1/705.8/462.6ms individuallycomplete,2truezeroEnds/coldRecipe0; controlfinalcleanupPROVEN/native0/cache0/health0, candidatepreHUDfinalcleanupUNPROVEN. Nullsafepreparingtestcleanuprepairnewunfrozendriverdoesnotchangeproduct/measurement30sReady15sNeighbor/caps. Historicalproduct-r29 P03realReset/preparingResize5PASS. AllD4budgets/fullfunctionalWake/qualification/later/formal42/1400/Planner/newcommitapprovalopen.",
+      "canCloseWithNoAdoption": false
+    },
+    {
+      "id": "D5",
+      "phase": 1,
+      "title": "kombinierter normaler Produktpfad und Phase-1-Qualifikation",
+      "dependsOn": [
+        "D1",
+        "D2",
+        "D3",
+        "D4"
+      ],
+      "status": "PLANNED",
+      "plan": "Arbeitsauftraege/Phase_1_G0_D5.md",
+      "requiredExternalPrerequisites": [],
+      "sourceBinding": null,
+      "evidence": [],
+      "nextAction": "verify-actual-preconditions",
+      "canCloseWithNoAdoption": false
+    },
+    {
+      "id": "S1",
+      "phase": 2,
+      "title": "generischer Voxel-Owner und vollständiges Commit/Recovery",
+      "dependsOn": [
+        "D5"
+      ],
+      "status": "PLANNED",
+      "plan": "Arbeitsauftraege/Phase_2_S1_S4.md",
+      "requiredExternalPrerequisites": [],
+      "sourceBinding": null,
+      "evidence": [],
+      "nextAction": "verify-actual-preconditions",
+      "canCloseWithNoAdoption": false
+    },
+    {
+      "id": "S2",
+      "phase": 2,
+      "title": "kompakter Kern, Source-v2-Migration und TS/WASM-Vergleich",
+      "dependsOn": [
+        "S1"
+      ],
+      "status": "PLANNED",
+      "plan": "Arbeitsauftraege/Phase_2_S1_S4.md",
+      "requiredExternalPrerequisites": [],
+      "sourceBinding": null,
+      "evidence": [],
+      "nextAction": "verify-actual-preconditions",
+      "canCloseWithNoAdoption": false
+    },
+    {
+      "id": "S3",
+      "phase": 2,
+      "title": "Geräteprofile und Ressourcenadmission",
+      "dependsOn": [
+        "S2"
+      ],
+      "status": "PLANNED",
+      "plan": "Arbeitsauftraege/Phase_2_S1_S4.md",
+      "requiredExternalPrerequisites": [],
+      "sourceBinding": null,
+      "evidence": [],
+      "nextAction": "verify-actual-preconditions",
+      "canCloseWithNoAdoption": false
+    },
+    {
+      "id": "S4",
+      "phase": 2,
+      "title": "LOD und Phase-2-Endqualifikation",
+      "dependsOn": [
+        "S3"
+      ],
+      "status": "PLANNED",
+      "plan": "Arbeitsauftraege/Phase_2_S1_S4.md",
+      "requiredExternalPrerequisites": [],
+      "sourceBinding": null,
+      "evidence": [],
+      "nextAction": "verify-actual-preconditions",
+      "canCloseWithNoAdoption": false
+    },
+    {
+      "id": "M4",
+      "phase": 3,
+      "title": "Landschafts-/Command-/Ledgerpersistenz",
+      "dependsOn": [
+        "S4"
+      ],
+      "status": "PLANNED",
+      "plan": "Arbeitsauftraege/Phase_3_M1_M8.md",
+      "requiredExternalPrerequisites": [
+        "OWNER_PLAYTEST_PASSED_FOR_BOUND_BUILD"
+      ],
+      "sourceBinding": null,
+      "evidence": [],
+      "nextAction": "verify-actual-preconditions",
+      "canCloseWithNoAdoption": false
+    },
+    {
+      "id": "M1",
+      "phase": 3,
+      "title": "blast, mine, brush und add",
+      "dependsOn": [
+        "M4"
+      ],
+      "status": "PLANNED",
+      "plan": "Arbeitsauftraege/Phase_3_M1_M8.md",
+      "requiredExternalPrerequisites": [
+        "OWNER_PLAYTEST_PASSED_FOR_BOUND_BUILD"
+      ],
+      "sourceBinding": null,
+      "evidence": [],
+      "nextAction": "verify-actual-preconditions",
+      "canCloseWithNoAdoption": false
+    },
+    {
+      "id": "M3",
+      "phase": 3,
+      "title": "Trümmeraufnahme und materielle Lebensdauer",
+      "dependsOn": [
+        "M1"
+      ],
+      "status": "PLANNED",
+      "plan": "Arbeitsauftraege/Phase_3_M1_M8.md",
+      "requiredExternalPrerequisites": [
+        "OWNER_PLAYTEST_PASSED_FOR_BOUND_BUILD"
+      ],
+      "sourceBinding": null,
+      "evidence": [],
+      "nextAction": "verify-actual-preconditions",
+      "canCloseWithNoAdoption": false
+    },
+    {
+      "id": "M2",
+      "phase": 3,
+      "title": "versionierte Batches und L10/L50/LBRUSH",
+      "dependsOn": [
+        "M1",
+        "M3"
+      ],
+      "status": "PLANNED",
+      "plan": "Arbeitsauftraege/Phase_3_M1_M8.md",
+      "requiredExternalPrerequisites": [
+        "OWNER_PLAYTEST_PASSED_FOR_BOUND_BUILD"
+      ],
+      "sourceBinding": null,
+      "evidence": [],
+      "nextAction": "verify-actual-preconditions",
+      "canCloseWithNoAdoption": false
+    },
+    {
+      "id": "M7",
+      "phase": 3,
+      "title": "Multi-Region und Streaminggrenzen",
+      "dependsOn": [
+        "M2",
+        "M4"
+      ],
+      "status": "PLANNED",
+      "plan": "Arbeitsauftraege/Phase_3_M1_M8.md",
+      "requiredExternalPrerequisites": [
+        "OWNER_PLAYTEST_PASSED_FOR_BOUND_BUILD"
+      ],
+      "sourceBinding": null,
+      "evidence": [],
+      "nextAction": "verify-actual-preconditions",
+      "canCloseWithNoAdoption": false
+    },
+    {
+      "id": "M8",
+      "phase": 3,
+      "title": "zwei feste Weltauflösungen",
+      "dependsOn": [
+        "M4",
+        "M7"
+      ],
+      "status": "PLANNED",
+      "plan": "Arbeitsauftraege/Phase_3_M1_M8.md",
+      "requiredExternalPrerequisites": [
+        "OWNER_PLAYTEST_PASSED_FOR_BOUND_BUILD"
+      ],
+      "sourceBinding": null,
+      "evidence": [],
+      "nextAction": "verify-actual-preconditions",
+      "canCloseWithNoAdoption": false
+    },
+    {
+      "id": "M5",
+      "phase": 3,
+      "title": "isolierter Collider-/Rapiervergleich",
+      "dependsOn": [
+        "M2"
+      ],
+      "status": "PLANNED",
+      "plan": "Arbeitsauftraege/Phase_3_M1_M8.md",
+      "requiredExternalPrerequisites": [
+        "OWNER_PLAYTEST_PASSED_FOR_BOUND_BUILD"
+      ],
+      "sourceBinding": null,
+      "evidence": [],
+      "nextAction": "verify-actual-preconditions",
+      "canCloseWithNoAdoption": true
+    },
+    {
+      "id": "M6",
+      "phase": 3,
+      "title": "gleichwertiger Voxelrenderer-/Meshvergleich unter Last",
+      "dependsOn": [
+        "M2"
+      ],
+      "status": "PLANNED",
+      "plan": "Arbeitsauftraege/Phase_3_M1_M8.md",
+      "requiredExternalPrerequisites": [
+        "OWNER_PLAYTEST_PASSED_FOR_BOUND_BUILD"
+      ],
+      "sourceBinding": null,
+      "evidence": [],
+      "nextAction": "verify-actual-preconditions",
+      "canCloseWithNoAdoption": true
+    }
+  ]
+}

@@ -15,12 +15,13 @@ import {
   validateMaterializedAdaptiveBrick as adaptiveValidateMaterializedBrick,
   type AdaptivePlannerSnapshot,
   type MaterializedAdaptiveBrick,
-  type StableAuthorityId
+  type StableAuthorityId,
+  type QuantumPoint
 } from "../adaptive";
 import { structuralCanonicalHashSteps, structuralEvidenceHashSteps, structuralObjectContentHashSteps } from "./canonical";
 import { adaptiveAuthorityRetentionSteps } from "../adaptive/residency";
 import { adaptivePlannerSnapshotSemanticsSteps, adaptiveBaseFieldDescriptorHashSteps } from "../adaptive/canonical";
-import { adaptiveValidateMaterializedBrickSteps } from "../adaptive/materialization";
+import { adaptiveValidateMaterializedBrickSteps,readOwnedValidatedAdaptiveBrick } from "../adaptive/materialization";
 import type { AdaptiveOwnedJournalOptions } from "../adaptive/edits";
 import type { StructuralCursorStep } from "./occupiedEntries";
 import {
@@ -47,6 +48,7 @@ import {
   type StructuralAnchor,
   type StructuralBrick,
   type StructuralBrickCell,
+  type StructuralCellAddress,
   type StructuralFrameBinding,
   type StructuralJoint,
   type StructuralJointEndpoint,
@@ -223,8 +225,20 @@ export interface InternalStructuralObjectReconstructionInput {
 const issuedObjects=new WeakSet<object>();
 // General public map/Species observations are not an owned-graph capability.
 const ownedGraphs=new WeakSet<object>(),ownedAdmissions=new WeakMap<StructuralObject,StructuralObject>();
+/** Read-only issuer capability; a public issued Source alone never grants owned graph assumptions. */
+export const isOwnedStructuralGraph=(source:StructuralObject):boolean=>ownedGraphs.has(source);
 // A command-local derivation capability is NOT final Structural/evidence/World issuance.
 const preliminarySources = new WeakMap<object, StructuralObject>();
+/** Internal command ancestor proof; a public issued graph does not grant owned container assumptions. */
+export const hasOwnedStructuralDerivationAncestor=(value:StructuralObject):boolean=>{
+  const source=preliminarySources.get(value);return source!==undefined&&ownedGraphs.has(source);
+};
+export interface OwnedPublishedWitness {readonly sourceIdentity:StructuralObject}
+const ownedPublishedCandidates=new WeakMap<OwnedPublishedWitness,StructuralObject>();
+export const readOwnedPublishedCandidate=(witness:OwnedPublishedWitness):StructuralObject=>{
+  const candidate=ownedPublishedCandidates.get(witness);
+  if(candidate===undefined){throw new Error("Expired or invalid owned publication witness");}return candidate;
+};
 export const isIssuedStructuralObject=(value:unknown):value is StructuralObject=>
   value!==null&&typeof value==="object"&&issuedObjects.has(value);
 
@@ -248,11 +262,28 @@ export function* ownedStructuralDerivationCandidateSteps(source: StructuralObjec
 
 /** Nested reconstruction BORROWS its caller's aggregate ledger; it never releases that ledger. */
 export function* ownedStructuralReconstructionSteps(source: StructuralObject, value: InternalStructuralObjectReconstructionInput,
-  reserve: StructuralOwnedReserve): Generator<void, StructuralObject, void> {
+  reserve: StructuralOwnedReserve,candidate?:StructuralObject,onPublished?:(witness:OwnedPublishedWitness)=>void): Generator<void, StructuralObject, void> {
   if (!isIssuedStructuralObject(source) || value.frame !== source.frame || value.source !== source.source || value.materials !== source.materials) {
     return structuralFail("InvalidContract", "cursor/source", "Owned reconstruction requires an issued source and its exact borrowed metadata.");
   }
-  return yield* structuralReconstructionSteps(value, reserve);
+  if(candidate!==undefined&&(preliminarySources.get(candidate)!==source||value.objectId!==candidate.objectId
+    ||value.frame!==candidate.frame||value.source!==candidate.source||value.materials!==candidate.materials
+    ||value.bricks!==candidate.bricks||value.anchors!==candidate.anchors||value.joints!==candidate.joints
+    ||value.objectRevision!==candidate.objectRevision||value.editRevision!==candidate.editRevision)){
+    throw new Error("Owned publication requires its exact live derivation candidate");
+  }
+  const result=yield* structuralReconstructionSteps(value,reserve);
+  if(candidate!==undefined){
+    if(result.contentHash!==candidate.contentHash||result.objectRevision!==candidate.objectRevision||result.editRevision!==candidate.editRevision){
+      throw new Error("Owned publication changed the complete derivation content");
+    }
+    // Issuer receipt: every content input above is the same locked value; reconstruction validates it.
+    if(onPublished!==undefined){
+      const witness=Object.freeze({sourceIdentity:result});ownedPublishedCandidates.set(witness,candidate);
+      try{onPublished(witness);}finally{ownedPublishedCandidates.delete(witness);}
+    }
+  }
+  return result;
 }
 
 /** Cold admission once for a general issued Source. No borrowed public container enters ownedGraphs. */
@@ -653,7 +684,8 @@ function* structuralAdaptiveIngestSteps(value: unknown,
   const adaptiveBricks = yield* structuralMapSteps(input.bricks, "ingest/bricks", STRUCTURAL_MAX_BRICKS,
     function* (brick): Generator<void, MaterializedAdaptiveBrick, void> {
       return owned === undefined ? validateMaterializedAdaptiveBrick(brick as MaterializedAdaptiveBrick)
-        : yield* adaptiveBoundarySteps(adaptiveValidateMaterializedBrickSteps(brick as MaterializedAdaptiveBrick, owned));
+        : readOwnedValidatedAdaptiveBrick(brick as MaterializedAdaptiveBrick,owned.reserve)
+          ?? (yield* adaptiveBoundarySteps(adaptiveValidateMaterializedBrickSteps(brick as MaterializedAdaptiveBrick, owned)));
     }, reserve);
   reserve?.(64, true);
   const proofDigests: string[] = [];
@@ -738,3 +770,36 @@ export const getStructuralVoxel = (object: StructuralObject, addressValue: unkno
 
 export const structuralAddressForBrickCell = (brick: StructuralBrick, localIndex: number) =>
   createStructuralCellAddress(brick.key, localCellOffsetFromIndex(localIndex));
+
+/** Owner-local numeric lookup. The source and its admitted cells are immutable. */
+const NativeOwnedUint16Array=Uint16Array;
+export type OwnedStructuralCellIndex=(address:StructuralCellAddress)=>Readonly<QuantumPoint&{materialId:number}>;
+const ownedCellIndexes=new WeakMap<OwnedStructuralCellIndex,StructuralObject>();
+export const readOwnedStructuralCellIndex=(source:StructuralObject,index:OwnedStructuralCellIndex):OwnedStructuralCellIndex=>{
+  if(ownedCellIndexes.get(index)!==source){throw new Error("Invalid owned cell index source binding");}return index;
+};
+export function* createOwnedStructuralCellIndexSteps(source:StructuralObject,reserve:StructuralOwnedReserve){
+  if(!isIssuedStructuralObject(source)){throw new Error("Owned cell index requires an issued source");}
+  reserve(512);
+  const bricks=new Map<string,Uint16Array>();
+  for(const brick of source.bricks){
+    reserve(128+ADAPTIVE_BRICK_CELL_COUNT*2);
+    const slots=new NativeOwnedUint16Array(ADAPTIVE_BRICK_CELL_COUNT);
+    bricks.set(serializeAdaptiveKey(brick.key),slots);
+    for(const cell of brick.cells){slots[cell.localIndex]=cell.state.materialId;yield;}
+    yield; // Empty bricks must also end a bounded step.
+  }
+  const project:OwnedStructuralCellIndex=(address:StructuralCellAddress)=>{
+    const local=address.local,i=local.x+16*(local.y+16*local.z);
+    if(![local.x,local.y,local.z].every(v=>Number.isSafeInteger(v)&&!Object.is(v,-0)&&v>=0&&v<16)){
+      throw new Error("Invalid owned numeric cell index");
+    }
+    const materialId=bricks.get(serializeAdaptiveKey(address.brickKey))?.[i];
+    if(materialId===undefined||materialId===0){throw new Error("Owned component cell is absent from its source");}
+    const q=address.brickKey.originQuantum,o=source.frame.objectOriginQuantum;
+    const x=q.x+local.x-o.x,y=q.y+local.y-o.y,z=q.z+local.z-o.z;
+    if(![x,y,z].every(v=>Number.isSafeInteger(v)&&!Object.is(v,-0))){throw new Error("Owned child cell translation overflow");}
+    return Object.freeze({x:x as QuantumPoint["x"],y:y as QuantumPoint["y"],z:z as QuantumPoint["z"],materialId:Number(materialId)});
+  };
+  ownedCellIndexes.set(project,source);return project;
+}

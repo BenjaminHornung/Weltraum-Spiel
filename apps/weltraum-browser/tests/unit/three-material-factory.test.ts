@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it,vi } from "vitest";
 import {
   createMaterialProfile,
   frameId,
@@ -11,7 +11,7 @@ import {
   type MeshArtifact
 } from "../../src/presentation";
 import { prepareThreeMesh } from "../../src/render/three/backend/threeMeshFactory";
-import { ThreeMaterialFactory } from "../../src/render/three/backend/threeMaterialFactory";
+import { ThreeMaterialFactory,MaterialAcquireReleaseUncertainError } from "../../src/render/three/backend/threeMaterialFactory";
 
 const testProfile = (id: string) =>
   createMaterialProfile({
@@ -23,6 +23,19 @@ const testProfile = (id: string) =>
     wireframe: false,
     depthWrite: true
   });
+
+it("preserves both acquire and rollback-release failures without retrying an uncertain material",()=>{
+  const factory=new ThreeMaterialFactory(),acquireError=new Error("second material creation"),releaseError=new Error("first material disposal");let calls=0;
+  const access=factory as unknown as {create(profile:ReturnType<typeof testProfile>,vertexColors:boolean):import("three").Material},create=access.create.bind(factory);
+  const spy=vi.spyOn(access,"create").mockImplementation((profile,colored)=>{
+    if(profile.id==="test:second"){throw acquireError;}const material=create(profile,colored);material.dispose=()=>{calls++;throw releaseError;};return material;
+  });
+  try{
+    let caught:unknown;try{factory.acquire([testProfile("test:first"),testProfile("test:second")]);}catch(error){caught=error;}
+    expect(caught).toBeInstanceOf(MaterialAcquireReleaseUncertainError);expect((caught as AggregateError).errors).toEqual([acquireError,releaseError]);
+    expect(()=>factory.disposeAll()).toThrow(releaseError);expect(calls).toBe(1);expect(factory.disposals).toBe(0);
+  }finally{spy.mockRestore();}
+});
 
 const quadArtifact = (withColor: boolean): MeshArtifact =>
   createMeshArtifact({

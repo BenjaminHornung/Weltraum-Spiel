@@ -43,6 +43,16 @@ const harness=(fault="",gate?:()=>Promise<void>,cache?:MemoryContentCache,source
 };
 const settled=async(c:ReturnType<typeof harness>["controller"])=>{await vi.waitFor(()=>expect(c.read().busy).toBe(false),{timeout:10_000,interval:5});};
 
+it.each(["Projection","Seams","Publication"] as const)("retains the exact failed load operation without changing recovery (%s)",async operation=>{
+  const h=harness(operation==="Projection"?"worker":operation==="Publication"?"publish":"");
+  if(operation==="Seams"){h.compiler.neighborSeams.mockRejectedValueOnce(new Error("Injected seam failure"));}
+  try{
+    h.controller.update(12,false);await settled(h.controller);
+    expect(h.controller.read()).toMatchObject({busy:false,collisionReady:false,recoveryHold:false,loadOperation:operation});
+    expect(h.controller.read().error).toContain("Injected");expect(h.live()).toBeNull();expect(h.shown()).toBe(false);
+  }finally{await h.controller.dispose();}
+});
+
 it("uses actual cache leases, keeps collision through LOD, checkpoints before eviction and reuses content on return",async()=>{
   const checkpoint=vi.fn((signal?:AbortSignal)=>east.checkpointAsync(signal));
   const h=harness("",undefined,undefined,{...east,checkpointAsync:checkpoint});try{

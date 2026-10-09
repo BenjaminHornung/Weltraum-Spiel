@@ -24,9 +24,21 @@ describe("HVP cut trace", () => {
       +3*children*(2*key+2*key+27*2+3*32+128+16)
       +inputs*((key+8)*2+32+128+32)+96*1024; // "terrain:"/"body:" scope on each ID
     const additional=2*512+pendingReplies*3*(key*2+32+3*8+128)+32*1024;
+    // Four numeric-ID Holds, both timing objects, and two incremental clock JSON strings.
+    // Trusted ASCII tokens <=32 chars, command ID <=128 chars, finite JSON numbers <=25 chars.
+    // Logical allowance; neither exact VM heap size nor observed physical copy count.
+    const preparationDiagnostics=pendingReplies*3*(4*320+2560)+2*5120;
+    // Closed neighbor phase label plus read-record field and two overlapping JSON field copies.
+    const neighborOperationDiagnostics=192;
+    // Four startup chunk counters, source reference and one frozen summary; no per-job log.
+    const chunkPopulationDiagnostics=512;
+    const backendProjectionDiagnosticLocals=128; // Six timestamps and a real-key reference, no retained records.
+    const sceneAdmissionFailureDiagnostics=1536; // One shared failure/first-disable record plus at most512 stack characters.
+    const neighborProjectionTimingLocals=128; // Bounded timestamps/callback, no retained history.
+    const startupPoolTimingDiagnostics=512; // Two borrowed IDs/clocks and one fixed elapsed summary, no history.
     expect(main).toBeLessThanOrEqual(384*1024);
     expect(additional).toBeLessThanOrEqual(128*1024);
-    expect(main+additional).toBeLessThanOrEqual(HVP_CUT_TRACE_RESERVE_BYTES);
+    expect(main+additional+preparationDiagnostics+neighborOperationDiagnostics+chunkPopulationDiagnostics+backendProjectionDiagnosticLocals+sceneAdmissionFailureDiagnostics+neighborProjectionTimingLocals+startupPoolTimingDiagnostics).toBeLessThanOrEqual(HVP_CUT_TRACE_RESERVE_BYTES);
   });
   it("returns disabled sync values and errors without reading the clock", () => {
     const now = vi.spyOn(performance, "now");

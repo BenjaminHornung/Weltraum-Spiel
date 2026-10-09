@@ -12,7 +12,7 @@ import {borrowedHvpPlanSteps} from "../../src/hestia-prototype/physics/structura
 import {deepFreeze,hashAdaptiveCanonical} from "../../src/voxel/adaptive";
 import type {StructuralOwnedReserve} from "../../src/voxel/structural/validation";
 
-const source=()=>ingestHvpStructuralCells("borrowed-body",Array.from({length:5},(_,x)=>({x,y:0,z:0,materialId:1})),
+const source=(length=5)=>ingestHvpStructuralCells("borrowed-body",Array.from({length},(_,x)=>({x,y:0,z:0,materialId:1})),
   [{materialId:1,densityKgPerCubicMeter:512,structuralClass:"wood",destructible:true,tags:null}]);
 const finish=<T>(steps:Generator<unknown,T,unknown>):T=>{
   let failed=false;
@@ -86,7 +86,8 @@ it.each(["Box","Sphere"] as const)("composes the same complete %s plan, children
   const actual=finish((function*(){try{for(;;){const step=steps.next();if(step.done){return step.value;}
     if(["ownerRecipe","childSourcePrepare","childClassificationCells","childHash"].includes(step.value)){recipeSteps+=1;}
     yield step.value;}}finally{steps.return(undefined as never);}})());
-  expect(recipeSteps).toBeGreaterThan(0);expect(recipeSteps).toBeLessThan(1024);
+  // Tiny D2 Recipes may complete inside one bounded step after full partition reuse.
+  expect(recipeSteps).toBeLessThan(1024);
   expect(JSON.stringify(actual)).toBe(JSON.stringify(expected));expect(serializeStructuralObject(before)).toBe(original);
   expect(isIssuedStructuralObject(actual.plan.after)).toBe(true);
   for(const part of actual.plan.parts){assertHvpRigidRecipe(part.recipe);expect(isIssuedStructuralObject(part.recipe.source)).toBe(true);}
@@ -123,7 +124,7 @@ it("lets the final Structural issuer build and fully validate authority retentio
   }finally{build.mockRestore();ledger.release();}
 });
 it("checks recipe measurement lifetime once per bounded owned quantum rather than per internal scalar",()=>{
-  const before=source(),expected=prepareHvpRigidBody(before),ledger=createStructuralOwnerLedger(32*1024*1024,undefined,128);
+  const before=source(64),expected=prepareHvpRigidBody(before),ledger=createStructuralOwnerLedger(32*1024*1024,undefined,128);
   const clock=vi.spyOn(performance,"now").mockReturnValue(0),live=vi.fn(()=>true);
   try{
     const actual=finish(prepareHvpRigidBodyOwnedHashSteps(before,{},live,ledger.reserve));

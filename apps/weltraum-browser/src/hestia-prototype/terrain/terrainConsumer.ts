@@ -1,5 +1,5 @@
 import type { HvpPhysicsClient } from "../physics/client";
-import { assertHvpSafeQuarry, snapshotHvpCutRequest, type HvpCutRequest, type HvpPreparedCut, createHvpTerrainRoot } from "./cutPlan";
+import { assertHvpSafeQuarry, snapshotHvpCutRequest, prepareHvpPrivateTerrainCut, type HvpCutRequest, type HvpPreparedCut, createHvpTerrainRoot } from "./cutPlan";
 import type { HvpTerrainProducts } from "./terrainProducts";
 import {hvpTerrainProductPhaseCredits,releaseHvpOwnedTerrainProducts} from "./terrainProducts";
 import type {HvpTerrainFragmentRequest} from "../physics/terrainFragment";
@@ -105,7 +105,7 @@ export const createHvpTerrainConsumer = (
         const measureAsync=<T>(phase:string,runPhase:()=>Promise<T>):Promise<T>=>measureHvpCutAsync(trace,bound.commandId,"main",phase,runPhase);
         try {
           if(disposed||held) { throw new Error(disposed?"Disposed":"RecoveryHold"); }
-          const rootPlan=measure("cutRootPrepareMs",()=>root.prepare(bound));
+          const rootPlan=measure("cutRootPrepareMs",()=>prepareHvpPrivateTerrainCut(root,bound));
           plan=rootPlan;
           let activePlan=rootPlan;
           if(isHvpRockArmCut(rootPlan)&&analyze){
@@ -131,6 +131,7 @@ export const createHvpTerrainConsumer = (
           if(preGraphics&&(disposed||root.read()!==currentPlan.before||compiled.source!==currentPlan.after)){throw new Error("Stale terrain after graphics quote");}
           if(preGraphics&&(!Number.isSafeInteger(graphicsBytes)||graphicsBytes<=0)){throw new Error("Invalid terrain graphics allowance");}
           const nativeWork=phaseCredits===undefined?undefined:{sourceDigest:currentPlan.after.sourceDigest,sourceSessionId:currentPlan.after.sessionId,sourceEpoch:currentPlan.after.epoch,
+            ...(trace===undefined?{}:{trace}),
             copyBytes,nativeBytes:phaseCredits.nativeGrant(copyBytes+graphicsBytes),
             ...(preGraphics?{onSourcePrepared:async(views:readonly HvpPhysicsSnapshot["preparedTerrainFragments"][number][])=>{
               if(disposed||root.read()!==currentPlan.before){throw new Error("Stale terrain before graphics");}

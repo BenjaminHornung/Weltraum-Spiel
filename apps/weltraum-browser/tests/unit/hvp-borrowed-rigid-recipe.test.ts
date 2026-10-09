@@ -4,7 +4,7 @@ import {prepareHvpRigidBody,prepareHvpRigidBodyOwnedHashSteps,assertHvpRigidReci
 import {createStructuralOwnerLedger,isIssuedStructuralObject} from "../../src/voxel/structural/model";
 import {deepFreeze} from "../../src/voxel/adaptive";
 
-const source=()=>ingestHvpStructuralCells("borrowed-recipe",Array.from({length:5},(_,x)=>({x,y:0,z:0,materialId:1})),
+const source=(length=5)=>ingestHvpStructuralCells("borrowed-recipe",Array.from({length},(_,x)=>({x,y:0,z:0,materialId:1})),
   [{materialId:1,densityKgPerCubicMeter:512,structuralClass:"wood",destructible:true,tags:null}]);
 const finish=(steps:Generator<string,HvpRigidRecipe,unknown>)=>{
   let units=0;
@@ -16,8 +16,9 @@ it("derives the identical issued rigid recipe while retaining all nested charges
   const result=finish(prepareHvpRigidBodyOwnedHashSteps(input,undefined,undefined,ledger.reserve));
   expect(JSON.stringify(result.recipe)).toBe(JSON.stringify(expected));assertHvpRigidRecipe(result.recipe);
   expect(result.recipe.source).toBe(input);expect(isIssuedStructuralObject(input)).toBe(true);
-  expect(ledger.resources.reservedBytes).toBeGreaterThan(0);expect(ledger.resources.hashReservations).toBeGreaterThan(1);
-  expect(result.units).toBeGreaterThan(100);ledger.release(true);expect(ledger.resources.reservedBytes).toBe(0);
+  expect(ledger.resources.reservedBytes).toBeGreaterThan(0);expect(ledger.resources.hashReservations).toBe(1);
+  // D2 omits the unused full Transition hash; cancellation still has real nested yields.
+  expect(result.units).toBeLessThan(1024);ledger.release(true);expect(ledger.resources.reservedBytes).toBe(0);
 });
 it("propagates the first parent reserve failure before issuing any recipe",()=>{
   const first=new Error("borrowed parent allocation failure"),reserve=vi.fn(()=>{throw first;});
@@ -25,7 +26,7 @@ it("propagates the first parent reserve failure before issuing any recipe",()=>{
   expect(()=>finish(steps)).toThrow(first);expect(reserve).toHaveBeenCalledTimes(1);
 });
 it("cancellation closes nested work without releasing the parent or creating a final recipe",()=>{
-  const ledger=createStructuralOwnerLedger(32*1024*1024),steps=prepareHvpRigidBodyOwnedHashSteps(source(),undefined,undefined,ledger.reserve);
+  const ledger=createStructuralOwnerLedger(32*1024*1024),steps=prepareHvpRigidBodyOwnedHashSteps(source(64),undefined,undefined,ledger.reserve);
   expect(steps.next().done).toBe(false);expect(ledger.resources.reservedBytes).toBeGreaterThan(0);
   expect(steps.return(undefined as never)).toEqual({done:true,value:undefined});
   expect(ledger.resources.reservedBytes).toBeGreaterThan(0);ledger.release();expect(ledger.resources.reservedBytes).toBe(0);
@@ -48,12 +49,12 @@ it("preserves the entire multibrick negative-seam mixed-material recipe",()=>{
 });
 
 it("retains the parent and original error for a later allocation failure and mid-work cancellation",()=>{
-  const input=source(),ledger=createStructuralOwnerLedger(32*1024*1024),first=new Error("later borrowed allocation failure");let calls=0;
+  const input=source(64),ledger=createStructuralOwnerLedger(32*1024*1024),first=new Error("later borrowed allocation failure");let calls=0;
   const reserve:typeof ledger.reserve=(...args)=>{calls+=1;if(calls===20){throw first;}ledger.reserve(...args);};
   expect(()=>finish(prepareHvpRigidBodyOwnedHashSteps(input,undefined,undefined,reserve))).toThrow(first);
   expect(calls).toBe(20);expect(ledger.resources.reservedBytes).toBeGreaterThan(0);ledger.release();
   const steps=prepareHvpRigidBodyOwnedHashSteps(input,undefined,undefined,ledger.reserve);
-  for(let unit=0;unit<100;unit+=1){expect(steps.next().done).toBe(false);}
+  expect(steps.next().done).toBe(false);
   steps.return(undefined as never);expect(ledger.resources.reservedBytes).toBeGreaterThan(0);ledger.release();
 });
 

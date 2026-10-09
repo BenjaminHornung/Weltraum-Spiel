@@ -67,6 +67,8 @@ export const createHvpBranchSession=(world:R.World,origin:Vec,targets=new Map<st
       return Object.freeze({origin:Object.freeze({...origin}),generation,source:generation===0?encodeStructuralObject(source!):null,last,kind});
     },
     fixedOwners:()=>parts.map(p=>({ownerId:p.ownerId,body:p.body,recipe:p.recipe,family:"branch" as const})),
+    retainedRecipes:()=>[...(recipe?[recipe]:[]),...parts.map(p=>p.recipe),...previousParts.map(p=>p.recipe),...(plan?.parts.map(p=>p.recipe)??[])],
+    retainedSources:()=>[source,previousSource,plan?.after].filter((value):value is StructuralObject=>value!==null&&value!==undefined),
     preview(eye:Vec|undefined,direction:Vec|undefined):void {preview=eye&&direction?hitCell(eye,direction):null;},
     prepare(request:HvpBranchRequest,eye:Vec):void {
       if(!/^[A-Za-z0-9:._-]{1,128}$/.test(request.id)) {throw new Error("Invalid branch command");}

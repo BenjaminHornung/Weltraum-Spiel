@@ -13,6 +13,54 @@ import {
 import type { QuaternionSnapshot, RepresentationTransformSnapshot, Vector3Snapshot } from "./types";
 import { invalidResult, isFiniteFloat32, issue, type ValidationIssue, type ValidationResult, validResult, throwIfInvalid } from "./validation";
 
+const ProjectionWeakSet=WeakSet,projectionAdd=WeakSet.prototype.add,projectionHas=WeakSet.prototype.has;
+const projectionFreeze=Object.freeze,projectionIsFrozen=Object.isFrozen,projectionOwnKeys=Reflect.ownKeys,
+  projectionDescriptor=Object.getOwnPropertyDescriptor,projectionOwn=Object.prototype.hasOwnProperty,projectionIsArray=Array.isArray,
+  projectionFinite=Number.isFinite,projectionSafeInteger=Number.isSafeInteger;
+const immutableFactoryProjections=new ProjectionWeakSet<object>();
+const projectionFields=projectionFreeze(["frameId","frameRevision","cameraPositionRelative","cameraOrientation","projectionParameters","representationTransforms"]);
+const parameterFields=projectionFreeze(["kind","verticalFovDegrees","aspect","near","far"]);
+const transformFields=projectionFreeze(["representationKey","positionRelative","orientation","scale"]);
+const vectorFields=projectionFreeze(["x","y","z"]),quaternionFields=projectionFreeze(["x","y","z","w"]);
+const frozenDataRecord=(value:object,fields:readonly string[]):boolean=>{
+  if(!projectionIsFrozen(value)||projectionOwnKeys(value).length!==fields.length){return false;}
+  for(let i=0;i<fields.length;i++){
+    const d=projectionDescriptor(value,fields[i]!);
+    if(d===undefined||!projectionOwn.call(d,"value")||d.writable!==false||d.enumerable!==true){return false;}
+  }
+  return true;
+};
+const frozenNumbers=(value:object,fields:readonly string[]):boolean=>{
+  if(!projectionIsFrozen(value)||projectionOwnKeys(value).length!==fields.length){return false;}
+  for(let i=0;i<fields.length;i++){
+    const d=projectionDescriptor(value,fields[i]!);
+    if(d===undefined||!projectionOwn.call(d,"value")||d.writable!==false||d.enumerable!==true
+      ||typeof d.value!=="number"||!projectionFinite(d.value)){return false;}
+  }
+  return true;
+};
+const immutableProjectionShape=(snapshot:FrameProjectionSnapshot):boolean=>{
+  try{
+    if(!frozenDataRecord(snapshot,projectionFields)||typeof snapshot.frameId!=="string"||!projectionSafeInteger(snapshot.frameRevision)||snapshot.frameRevision<0
+      ||!frozenNumbers(snapshot.cameraPositionRelative,vectorFields)||!frozenNumbers(snapshot.cameraOrientation,quaternionFields)){return false;}
+    const p=snapshot.projectionParameters;
+    if(!frozenDataRecord(p,parameterFields)||typeof p.kind!=="string"||!projectionFinite(p.verticalFovDegrees)
+      ||!projectionFinite(p.aspect)||!projectionFinite(p.near)||!projectionFinite(p.far)){return false;}
+    const transforms=snapshot.representationTransforms;
+    if(!projectionIsArray(transforms)||!projectionIsFrozen(transforms)||projectionOwnKeys(transforms).length!==transforms.length+1){return false;}
+    for(let i=0;i<transforms.length;i++){
+      const d=projectionDescriptor(transforms,`${i}`);
+      if(d===undefined||!projectionOwn.call(d,"value")||d.writable!==false||d.enumerable!==true){return false;}
+      const t=d.value as RepresentationTransformSnapshot;
+      if(!frozenDataRecord(t,transformFields)||typeof t.representationKey!=="string"
+        ||!frozenNumbers(t.positionRelative,vectorFields)||!frozenNumbers(t.orientation,quaternionFields)||!frozenNumbers(t.scale,vectorFields)){return false;}
+    }
+    return true;
+  }catch{return false;}
+};
+/** Only this module's validated factory can grant immutable hash provenance. */
+export const isFactoryOwnedFrameProjectionSnapshot=(snapshot:FrameProjectionSnapshot):boolean=>projectionHas.call(immutableFactoryProjections,snapshot);
+
 export interface VisibilityPlan {
   readonly planRevision: VisibilityPlanRevision;
   readonly visibleRepresentationKeys: readonly RepresentationKey[];
@@ -165,6 +213,7 @@ export const createFrameProjectionSnapshot = (input: FrameProjectionSnapshot): F
     representationTransforms: transforms
   });
   throwIfInvalid("FrameProjectionSnapshot", validateFrameProjectionSnapshot(snapshot));
+  if(immutableProjectionShape(snapshot)){projectionAdd.call(immutableFactoryProjections,snapshot);}
   return snapshot;
 };
 

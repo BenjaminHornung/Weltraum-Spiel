@@ -21,6 +21,7 @@ import { integrateWorkerResult,integrateBodyMeshWorkerResultSteps,integrateHvpSu
 import { WorkerHandle, createBrowserWorkerTransport, type WorkerHandleCallbacks, type WorkerTransportFactory } from "./workerHandle";
 import { HVP_COLLISION_JOB, validateHvpCollisionPayload, validateHvpCollisionRequest,validateHvpCollisionRequestSteps, decodeHvpCollisionOutput,decodeHvpCollisionOutputSteps } from "./hvpCollisionJob";
 import { HVP_TERRAIN_JOB, validateHvpTerrainPayload, validateHvpTerrainRequest,validateHvpTerrainRequestSteps, decodeHvpTerrainOutput,decodeHvpTerrainOutputSteps } from "./hvpTerrainJob";
+import {HVP_CHUNK_JOB,validateHvpChunkPayload,validateHvpChunkBuffers,validateHvpChunkRequest,validateHvpChunkRequestSteps,decodeHvpChunkOutput,decodeHvpChunkOutputSteps} from "./hvpChunkJob";
 import {HVP_SUPPORT_JOB,validateHvpSupportPayload,validateHvpSupportRequest,validateHvpSupportRequestSteps,decodeHvpSupportOutput,decodeHvpSupportOutputSteps} from "./hvpSupportJob";
 import {HVP_BODY_CUT_JOB,validateHvpBodyCutPayload,validateHvpBodyCutRequest,decodeHvpBodyCutOutput} from "./hvpBodyCutJob";
 import {HVP_BODY_MESH_JOB,validateHvpBodyMeshPayload,validateHvpBodyMeshRequest,validateHvpBodyMeshRequestSteps} from "./hvpBodyMeshJob";
@@ -198,16 +199,19 @@ export class WorkerPool {
 
   public async enqueueTerrainDerivative(source:WorkerJobRequest,sourceInput:TransferableBufferBundle,workerAllowanceBytes:number,
     host:HvpBodyPlanHost,reserve:StructuralOwnedReserve,resultReserve:StructuralOwnedReserve):Promise<WorkerJobTicket>{
-    if(this.lifecycle!=="Running"||(source.jobKind!==HVP_TERRAIN_JOB&&source.jobKind!==HVP_COLLISION_JOB)
+    if(this.lifecycle!=="Running"||(source.jobKind!==HVP_TERRAIN_JOB&&source.jobKind!==HVP_COLLISION_JOB&&source.jobKind!==HVP_CHUNK_JOB)
       ||!Number.isSafeInteger(workerAllowanceBytes)||workerAllowanceBytes<=0||workerAllowanceBytes>96*1024*1024){throw new Error("Invalid private terrain derivative admission");}
     host.assertCurrent();reserve(16_384);
-    if(source.jobKind===HVP_TERRAIN_JOB){validateHvpTerrainPayload(source.payload);}else{validateHvpCollisionPayload(source.payload);}
+    if(source.jobKind===HVP_CHUNK_JOB){validateHvpChunkPayload(source.payload);}
+    else if(source.jobKind===HVP_TERRAIN_JOB){validateHvpTerrainPayload(source.payload);}else{validateHvpCollisionPayload(source.payload);}
     const request=snapshotWorkerJobRequest(source);
     if(!Array.isArray(sourceInput.buffers)||sourceInput.buffers.length!==1||!Array.isArray(sourceInput.views)||sourceInput.views.length!==1
       ||!Number.isSafeInteger(sourceInput.byteLength)||sourceInput.byteLength<0||sourceInput.byteLength>66*130*66){throw new Error("Invalid private terrain input budget");}
+    if(source.jobKind===HVP_CHUNK_JOB){validateHvpChunkBuffers(sourceInput.buffers);}
     const input=validateTransferableBundle(sourceInput);reserve(8192+input.byteLength);
     const owned=validateTransferableBundle(structuredClone(input,{transfer:transferListFor(input)}));
-    const steps=request.jobKind===HVP_TERRAIN_JOB?validateHvpTerrainRequestSteps(request,owned):validateHvpCollisionRequestSteps(request,owned);let failed=false;
+    const steps=request.jobKind===HVP_CHUNK_JOB?validateHvpChunkRequestSteps(request,owned):
+      request.jobKind===HVP_TERRAIN_JOB?validateHvpTerrainRequestSteps(request,owned):validateHvpCollisionRequestSteps(request,owned);let failed=false;
     try{for(;;){host.assertCurrent();const step=steps.next();if(step.done){break;}if(host.continuePlan?.()!==true){await host.yieldTask();}}}
     catch(error){failed=true;throw error;}
     finally{try{steps.return(undefined as never);}catch(error){if(!failed){throw error;}}}
@@ -241,6 +245,7 @@ export class WorkerPool {
     if (hestiaPayload !== undefined) validateHestiaVoxelInputBundle(hestiaPayload, input);
     if (request.jobKind === HVP_COLLISION_JOB&&bodyMesh===undefined) { validateHvpCollisionRequest(request, input); }
     if (request.jobKind === HVP_TERRAIN_JOB&&bodyMesh===undefined) { validateHvpTerrainRequest(request, input); }
+    if (request.jobKind === HVP_CHUNK_JOB&&bodyMesh===undefined) { validateHvpChunkRequest(request, input); }
     if (request.jobKind === HVP_BODY_CUT_JOB) { validateHvpBodyCutRequest(request, input); }
     if (request.jobKind === HVP_BODY_MESH_JOB&&bodyMesh===undefined) { validateHvpBodyMeshRequest(request, input); }
     if (request.jobKind === HVP_NEIGHBOR_JOB) { validateHvpNeighborRequest(request, input); }
@@ -487,13 +492,15 @@ export class WorkerPool {
     const derivative=record.terrainPrepareAllowanceBytes!==undefined;let derivativeValidated=false;
     try{
       if(this.bodyMeshCurrent(handle,record)){
+        if(record.request.jobKind===HVP_CHUNK_JOB){validateHvpChunkBuffers(output.bundle.buffers);}
         record.bodyMeshReserve!(8192);
         const expectation=Object.freeze({jobId:record.request.jobId,cancelled:record.cancelRequested,
           planningEpoch:this.plan,workerEpoch:handle.workerEpoch,targetKey:record.request.targetKey,inputRevision:record.request.inputRevision,
           sourceInputDigest:record.request.sourceInputDigest,outputRevision:contentRevision(support?validateHvpSupportPayload(record.request.payload).generation
-            :derivative?record.request.jobKind===HVP_TERRAIN_JOB?validateHvpTerrainPayload(record.request.payload).generation:validateHvpCollisionPayload(record.request.payload).outputRevision
+            :derivative?record.request.jobKind===HVP_CHUNK_JOB?validateHvpChunkPayload(record.request.payload).generation:
+              record.request.jobKind===HVP_TERRAIN_JOB?validateHvpTerrainPayload(record.request.payload).generation:validateHvpCollisionPayload(record.request.payload).outputRevision
             :validateHvpBodyMeshPayload(record.request.payload).revision),algorithmVersion:record.request.algorithmVersion,maximumOutputBytes:record.request.estimatedOutputBytes});
-        steps=derivative?integrateHvpDerivativeWorkerResultSteps(expectation,result,output.bundle,record.request.jobKind===HVP_TERRAIN_JOB?6:2)
+        steps=derivative?integrateHvpDerivativeWorkerResultSteps(expectation,result,output.bundle,record.request.jobKind===HVP_CHUNK_JOB?8:record.request.jobKind===HVP_TERRAIN_JOB?6:2)
           :(support?integrateHvpSupportWorkerResultSteps:integrateBodyMeshWorkerResultSteps)(expectation,result,output.bundle);
         for(;;){
           if(!this.bodyMeshCurrent(handle,record))break;
@@ -511,7 +518,8 @@ export class WorkerPool {
         }
         if(derivative&&decision?.kind==="Accepted"&&this.bodyMeshCurrent(handle,record)){
           record.bodyMeshReserve!(16_384+decision.bundle.byteLength);
-          const decode=record.request.jobKind===HVP_TERRAIN_JOB?decodeHvpTerrainOutputSteps(decision.bundle,validateHvpTerrainPayload(record.request.payload),record.bodyMeshReserve!)
+          const decode=record.request.jobKind===HVP_CHUNK_JOB?decodeHvpChunkOutputSteps(decision.bundle,validateHvpChunkPayload(record.request.payload),record.bodyMeshReserve!):
+            record.request.jobKind===HVP_TERRAIN_JOB?decodeHvpTerrainOutputSteps(decision.bundle,validateHvpTerrainPayload(record.request.payload),record.bodyMeshReserve!)
             :decodeHvpCollisionOutputSteps(decision.bundle,validateHvpCollisionPayload(record.request.payload),record.bodyMeshReserve!);let failed=false;
           try{for(;;){if(!this.bodyMeshCurrent(handle,record)){break;}const step=decode.next();
             if(step.done){derivativeValidated=this.bodyMeshCurrent(handle,record);break;}if(record.bodyMeshHost!.continuePlan?.()!==true){await record.bodyMeshHost!.yieldTask();}
@@ -544,11 +552,14 @@ export class WorkerPool {
       : undefined;
     const collisionPayload = record.request.jobKind === HVP_COLLISION_JOB ? validateHvpCollisionPayload(record.request.payload) : undefined;
     const terrainPayload = record.request.jobKind === HVP_TERRAIN_JOB ? validateHvpTerrainPayload(record.request.payload) : undefined;
+    const chunkPayload = record.request.jobKind===HVP_CHUNK_JOB?validateHvpChunkPayload(record.request.payload):undefined;
+    if(chunkPayload!==undefined){validateHvpChunkBuffers(output.bundle.buffers);}
     const supportPayload=record.request.jobKind===HVP_SUPPORT_JOB?validateHvpSupportPayload(record.request.payload):undefined;
     const bodyPayload=record.request.jobKind===HVP_BODY_CUT_JOB?validateHvpBodyCutPayload(record.request.payload):undefined;
     const bodyMeshPayload=record.request.jobKind===HVP_BODY_MESH_JOB?validateHvpBodyMeshPayload(record.request.payload):undefined;
     const neighborPayload=record.request.jobKind===HVP_NEIGHBOR_JOB?validateHvpNeighborPayload(record.request.payload):undefined;
     const outputRevision = hestiaPayload?.outputRevision ?? collisionPayload?.outputRevision
+      ?? (chunkPayload===undefined?undefined:contentRevision(chunkPayload.generation))
       ?? (supportPayload===undefined?undefined:contentRevision(supportPayload.generation))
       ?? (bodyPayload===undefined?undefined:contentRevision(bodyPayload.revision+1))
       ?? (bodyMeshPayload===undefined?undefined:contentRevision(bodyMeshPayload.revision))
@@ -568,6 +579,12 @@ export class WorkerPool {
       ...(hestiaPayload === undefined ? {} : { expectedHestiaPayload: hestiaPayload }),
     }), result, output.bundle);
     if (decision.kind === "Accepted") {
+      if(chunkPayload!==undefined&&!derivativeValidated){
+        try{decodeHvpChunkOutput(decision.bundle,chunkPayload);}catch(error){
+          this.fail(record,"ProtocolFault",error instanceof Error?error.message:"Invalid chunk output",handle.workerEpoch);
+          this.dispatch();return;
+        }
+      }
       if(neighborPayload!==undefined){
         try{decodeHvpNeighborOutput(decision.bundle,neighborPayload);}catch(error){
           this.fail(record,"ProtocolFault",error instanceof Error?error.message:"Invalid neighbour output",handle.workerEpoch);

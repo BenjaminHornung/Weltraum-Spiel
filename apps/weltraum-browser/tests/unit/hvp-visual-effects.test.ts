@@ -11,16 +11,21 @@ const diagnosticsFixture = (diagnostics?: boolean) => {
     info:{render:{calls:1,triangles:12},memory:{geometries:0,textures:0}} } as unknown as THREE.WebGLRenderer;
   const dataset: Record<string,string> = {};
   const canvas = { ownerDocument:{body:{dataset}} } as unknown as HTMLCanvasElement;
-  const port = createHvpVisualRenderer(canvas,{},()=>renderer,undefined,diagnostics);
+  const factory=vi.fn(()=>renderer),port = createHvpVisualRenderer(canvas,{},factory,undefined,diagnostics);
   const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(), light = new THREE.DirectionalLight();
   light.castShadow = true;
   scene.add(light,light.target);
-  return { dataset,dispose,port,render,scene,shadowMap,shadowUpdates,camera,
+  return { dataset,dispose,port,render,scene,shadowMap,shadowUpdates,camera,factory,canvas,
     draw:()=>port.render(scene,camera),
     release:()=>{port.dispose();scene.clear();} };
 };
 
 describe("HVP visual effects", () => {
+  it("requests the performance GPU for the HVP-owned WebGL context",()=>{
+    const fixture=diagnosticsFixture();
+    try{expect(fixture.factory).toHaveBeenCalledWith({canvas:fixture.canvas,powerPreference:"high-performance"});}
+    finally{fixture.release();}
+  });
   it("patches the installed water shader without moving source geometry or changing opacity", () => {
     const material = new THREE.MeshLambertMaterial({ opacity:0.55, transparent:true, depthWrite:false });
     shadeHvpSurface(material,true);

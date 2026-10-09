@@ -6,6 +6,7 @@ import {byteCount,contentRevision} from "../../src/workers/ids";
 import {fnv1aBytes,type TransferableBufferBundle,type WorkerJobRequest} from "../../src/workers/protocol";
 import {quoteHvpBodyMeshWork,createHvpBodyMeshPhaseReserve} from "../../src/hestia-prototype/presentation/bodyMeshAdmission";
 import {createHvpBodyMeshTaskPump} from "../../src/workers/hvpBoundedPump";
+import {HvpRenderStageRecoveryError} from "../../src/hestia-prototype/presentation/renderStageRecovery";
 import type {HvpBodyChildProjection} from "../../src/hestia-prototype/physics/bodyCutSession";
 
 vi.mock("../../src/workers/workerPool",()=>({WorkerPool:class {async start(){} async shutdown(){}}}));
@@ -40,18 +41,20 @@ class OwnerPort {
   }
   terminate(){this.terminated=true;}
 }
-it.each(["ready","callback-fails","release-fails","disposed","bad-view"] as const)("awaits native Source-only views before Stage and proves exact preStage release (%s)",async mode=>{
+it.each(["ready","no-yield","trace-throws","callback-fails","release-fails","disposed","bad-view"] as const)("awaits native Source-only views before Stage and proves exact preStage release (%s)",async mode=>{
   const abort=new AbortController();vi.stubGlobal("Worker",OwnerPort);let client:Awaited<ReturnType<typeof createHvpPhysicsClient>>|undefined;
   const sourceView={ownerId:"hvp:terrain-fragment:r1:12345678",sourceDigest:"fnv1a64-v1:0000000000000001",
     centerOfMass:{x:0,y:1,z:0},cellCount:1,massKg:4.6875,colliders:1,sourceBytes:131072};
   const fragment={ownerId:sourceView.ownerId,origin:{x:-16,y:-8,z:-16},massKg:sourceView.massKg,
     cells:[{x:128,y:72,z:128,materialId:1}],colliderBoxes:[{min:[128,72,128] as const,max:[129,73,129] as const}]};
   let continueCallback:()=>void=()=>{},calls=0,settled=false;const callbackGate=new Promise<void>(resolve=>{continueCallback=resolve;}),sentinel=new Error("hidden graphics failed");
+  const traces:Array<{thread:string;phase:string;start:number;duration:number}>=[];
   try{
     client=await createHvpPhysicsClient([],{x:0,y:1,z:0},abort.signal);const port=OwnerPort.current;
     port.holdKinds.add("PrepareTerrainPlan");port.holdKinds.add("ReleaseTerrainPlan");const before=client.read(),clock=client.clock;
     const waiting=client.prepareTerrain("owned",0,[{index:0,mesh:{vertices:new Float32Array(),indices:new Uint32Array()}}],[fragment],
       {sourceDigest:"26d5308d",sourceSessionId:"root-source",sourceEpoch:3,copyBytes:65536,nativeBytes:32*1024*1024,
+        trace:span=>{traces.push(span);if(mode==="trace-throws"){throw new Error("diagnostic sink failed");}},
         onSourcePrepared:async views=>{calls+=1;expect(views).toEqual([sourceView]);expect(Object.isFrozen(views)).toBe(true);
           expect(Object.isFrozen(views[0]!.centerOfMass)).toBe(true);expect(client!.read()).toBe(before);expect(client!.clock).toBe(clock);
           await callbackGate;if(mode==="callback-fails"||mode==="release-fails"){throw sentinel;}}});
@@ -60,7 +63,16 @@ it.each(["ready","callback-fails","release-fails","disposed","bad-view"] as cons
     if(prepared.kind!=="PrepareTerrainPlan"){throw new Error("Expected actual preparation request");}
     port.deliver(prepared,{terrainPlan:{prepareRequestId:prepared.id,transactionId:prepared.transactionId,generation:prepared.generation,
       sourceDigest:prepared.sourceDigest,sourceSessionId:prepared.sourceSessionId,sourceEpoch:prepared.sourceEpoch,
+      spans:["cutNativeCollisionValidationMs","cutNativeCellValidationMs","cutNativeFragmentSourceMs","cutNativeFragmentAdmissionMs"].map(phase=>
+        ({phase,commandId:"owned",thread:"physics" as const,origin:1000,start:10,duration:1})),
+      sourceTiming:{origin:1000,workElapsedMs:3,yieldWaitMs:mode==="no-yield"?0:100,workSteps:3,taskYields:mode==="no-yield"?0:1,
+        maxWork:{label:"fragment",start:12,duration:2},maxYield:{label:"fragment",start:14,duration:100}},
       sourceViews:[mode==="bad-view"?{...sourceView,cellCount:2}:sourceView]}});
+    const workerTraces=traces.filter(span=>span.thread==="physics");expect(workerTraces.map(span=>span.phase)).toEqual([
+      "cutNativeCollisionValidationMs","cutNativeCellValidationMs","cutNativeFragmentSourceMs","cutNativeFragmentAdmissionMs",
+      "cutNativePrepareWorkElapsedMs",...(mode==="no-yield"?[]:["cutNativePrepareYieldWaitMs"])]);expect(workerTraces.slice(4)).toEqual([
+      {commandId:"owned",thread:"physics",phase:"cutNativePrepareWorkElapsedMs",origin:1000,start:12,duration:2},
+      ...(mode==="no-yield"?[]:[{commandId:"owned",thread:"physics",phase:"cutNativePrepareYieldWaitMs",origin:1000,start:14,duration:100}])]);
     if(mode==="bad-view"){
       await vi.waitFor(()=>expect(port.last?.kind).toBe("ReleaseTerrainPlan"));expect(calls).toBe(0);expect(settled).toBe(false);
       const release=port.last!;if(release.kind!=="ReleaseTerrainPlan"){throw new Error("Expected forged-view release");}
@@ -75,7 +87,7 @@ it.each(["ready","callback-fails","release-fails","disposed","bad-view"] as cons
       expect(port.last?.kind).toBe("Dispose");expect(port.terminated).toBe(true);expect(client.lifecycle?.().pendingJobs).toBe(0);return;
     }
     continueCallback();
-    if(mode==="ready"){expect(await result).toEqual({accepted:true});expect(port.last?.kind).toBe("PrepareTerrain");}
+    if(mode==="ready"||mode==="no-yield"||mode==="trace-throws"){expect(await result).toEqual({accepted:true});expect(port.last?.kind).toBe("PrepareTerrain");}
     else{
       await vi.waitFor(()=>expect(port.last?.kind).toBe("ReleaseTerrainPlan"));expect(settled).toBe(false);const release=port.last!;
       if(release.kind!=="ReleaseTerrainPlan"){throw new Error("Expected exact release request");}expect(release.prepareRequestId).toBe(prepared.id);
@@ -203,11 +215,13 @@ it("uses actual task ports and closes suspended scratch on pump disposal",async(
   pump.dispose();await expect(pending).rejects.toThrow("task pump disposed");expect(closed).toBe(true);pump.dispose();
   const successful=createHvpBodyMeshTaskPump(()=>{});try{await successful.host.yieldTask();successful.host.assertCurrent();}finally{successful.dispose();}
 });
-it("keeps the first pump error when cursor cleanup also throws",async()=>{
+it("preserves both pump and cleanup errors as a RecoveryHold",async()=>{
   const first=new Error("owner cancelled"),cleanup=new Error("cursor close failed");let calls=0,closed=false;
   const pump=createHvpBodyMeshTaskPump(()=>{calls+=1;if(calls===2){throw first;}});
   function* steps(){try{yield "meshWork";yield "meshWork";}finally{closed=true;throw cleanup;}}
-  try{await expect(pump.run(steps())).rejects.toBe(first);expect(closed).toBe(true);}finally{pump.dispose();}
+  try{const error=await pump.run(steps()).catch(value=>value);
+    expect(error).toBeInstanceOf(HvpRenderStageRecoveryError);expect(error.errors).toEqual([first,cleanup]);expect(closed).toBe(true);
+  }finally{pump.dispose();}
 });
 it("exhausts a prepaid phase before another allocation and keeps its first failure",()=>{
   const reserve=createHvpBodyMeshPhaseReserve(8192);reserve(8192);let first:unknown;

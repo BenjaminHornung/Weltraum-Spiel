@@ -1,0 +1,30 @@
+{
+  "classification": "INDIVIDUAL_OBSERVATIONS_IN_WHOLE_INVALID_PAIR",
+  "actualNativeExitCode": 1,
+  "sourceBuildAndFourDriversAfterUnchanged": true,
+  "both93HTTPFilesBeforeAfterVerified": true,
+  "candidateSource": "361994fe5fe4d94a7230f3aa38d5d89577c13fdc058d3af17d8fb609e0192bc1",
+  "candidateBuild": "e1fa28293e0267fb832e7468c459cd4e5d50e193f21c437c3ee22913889b4ea1",
+  "bothThreeMainCutAttemptsCompleteWithEmptyProblems": true,
+  "candidateIndividualMainRenderMs": [707.1, 705.8, 462.6],
+  "candidateTwoSavedSessionEndsNativeDisposedTenOwnedZeroCacheZeroColdRecipeZero": true,
+  "controlFinalCleanup": "PROVEN_NATIVE_DISPOSED_TEN_ZERO_CACHE_ZERO_HEALTH_ZERO",
+  "candidateFinalCleanup": "UNPROVEN_PRE_HUD_INSPECTION_READ_FAILED",
+  "controlFailure": "ORIGINAL_15S_NATIVE_WAKE_NEIGHBOR_READY",
+  "candidateFailure": "AUTHORED_WAKE_SEED_NAVIGATION_30S_READY_BEFORE_HUD",
+  "candidateFailedStartupProgressMs": {
+    "source": 835.3,
+    "coastMesh": 26173,
+    "coastMeshCompleteAt": 27758.8,
+    "vegetation": 1821.3,
+    "admissionCompleteAt": 29584.6,
+    "failureSnapshotAt": 30685.4,
+    "physicsCompletion": null
+  },
+  "candidateColdBodyDecoderOrPrivateWakeWasInFailedStartupPath": false,
+  "nativeNewPrivateWakeCompleteGameProof": false,
+  "causalGainClaim": false,
+  "qualification": false,
+  "formal42": false,
+  "formal1400": false
+}

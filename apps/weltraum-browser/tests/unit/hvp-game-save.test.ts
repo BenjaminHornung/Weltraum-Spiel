@@ -43,7 +43,7 @@ beforeAll(async()=>{
 
 it("CB01 proves one primary decode and shared Root reader ownership",()=>{
   const oracle=cutPlan.restoreHvpTerrainRoot(artifact.terrain),input=structuredClone(artifact);
-  const decodeSpy=vi.spyOn(gridCheckpoint,"decodeHvpGrid"),rootSpy=vi.spyOn(cutPlan,"createHvpTerrainRoot");
+  const decodeSpy=vi.spyOn(gridCheckpoint,"decodeHvpGrid"),rootSpy=vi.spyOn(cutPlan,"createHvpPrivateTerrainRoot");
   try{
     const decoded=decodeHvpGame(input);
     const primary=decodeSpy.mock.calls.map((call,index)=>({input:call[0],result:decodeSpy.mock.results[index]?.value})).filter(call=>call.input===input.terrain.base);

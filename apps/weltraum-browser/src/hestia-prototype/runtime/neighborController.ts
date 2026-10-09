@@ -9,6 +9,7 @@ import type {HvpPhysicsClient} from "../physics/client";
 import {createHvpTerrainRoot,type HvpTerrainCheckpoint,type HvpTerrainSnapshot} from "../terrain/cutPlan";
 import type {createHvpTerrainCompiler} from "../terrain/terrainProducts";
 import type {HvpStagedTerrain} from "../terrain/terrainConsumer";
+import {HvpRenderStageRecoveryError} from "../presentation/renderStageRecovery";
 import {createHvpEastRegion,restoreHvpEastRegion} from "./regionSource";
 import {createHvpRegionResidency,hvpRegionContentKey,type HvpNeighborCheckpoint} from "./residency";
 import type {HvpNeighborProxies} from "./neighborProducts";
@@ -28,7 +29,8 @@ export const createHvpNeighborController=(options:{
   primary:()=>HvpTerrainSnapshot;physics:Pick<HvpPhysicsClient,"read"|"prepareNeighbor"|"commitNeighbor"|"publishNeighbor"|"rollbackNeighbor"|"finalizeNeighbor"|"command">;
   compiler:Compiler;proxies:HvpNeighborProxies;baseSectorCount:number;current:()=>boolean;blocked:()=>boolean;
   admit:(bytes:Readonly<{source:number;cache:number;checkpoint:number;preparing:boolean}>)=>void;
-  stage:(value:HvpNeighborStage)=>HvpStagedTerrain;
+  residentBytes?:()=>number;
+  stage:(value:HvpNeighborStage)=>HvpStagedTerrain|Promise<HvpStagedTerrain>;
   cache?:MemoryContentCache;
   load?: (signal:AbortSignal)=>Promise<ReturnType<typeof createHvpTerrainRoot>>;
 })=>{
@@ -39,6 +41,7 @@ export const createHvpNeighborController=(options:{
   let activeLease:ContentLease|undefined,activePrimaryDigest:string|undefined,activeLod:.125|.5|undefined;
   let activeProducts:Products|undefined;
   let pending:Promise<void>|undefined,abort:AbortController|undefined,disposed=false,hold=false,failure="",retryBlocked=false,publishing=false;
+  let loadOperation:"Idle"|"Source"|"Projection"|"Decode"|"Seams"|"Graphics"|"Native"|"Publication"|"Finish"="Idle";
   let cacheHits=0,cacheMisses=0,adoptions=0,stale=0,lastKey="";
   const valid=()=>!disposed&&options.current();
   const admit=(preparing:boolean,extraCache=0,extraCheckpoint=0)=>options.admit({source:east?8_388_608+east.read().overlayBytes*2:8_388_608,
@@ -51,8 +54,10 @@ export const createHvpNeighborController=(options:{
   const load=async(projectionOnly=false)=>{
     const signal=abort!.signal;
     let ticket:ReturnType<typeof policy.begin>|undefined,lease:ContentLease|undefined,render:HvpStagedTerrain|undefined;
+    let seams:Seams|null|undefined;
     let prepared=false,finalized=false,transactionId="";
     try{
+      loadOperation="Source";
       admit(true);
       if(!east){east=saved?restoreHvpEastRegion(saved):await(options.load?.(signal)??createHvpEastRegion(signal).then(source=>createHvpTerrainRoot(source,`${options.primary().sessionId}:east`,options.primary().epoch)));
         if(saved&&east){checkpointSource=east.read();}}
@@ -73,6 +78,7 @@ export const createHvpNeighborController=(options:{
         primaryDigest:primary.sourceDigest,eastDigest:source.sourceDigest,lod,key:canonical};
       lease=cache.get(key);
       if(lease){cacheHits+=1;}else{
+        loadOperation="Projection";
         cacheMisses+=1;const built=await options.compiler.neighborProjection(primary,source,lod,ticket.epoch,canonical,options.proxies,signal);
         if(!isCurrent()){stale+=1;throw new Error("Cancelled stale neighbour output before cache");}
         // put owns a copy; both the accepted worker buffer and cache copy coexist.
@@ -83,45 +89,56 @@ export const createHvpNeighborController=(options:{
         lease=cache.get(key)!;
       }
       if(!isCurrent()){stale+=1;throw new Error("Cancelled neighbour cache adoption");}
+      loadOperation="Decode";
       const products=decode(lease,payload),native=options.physics.read().neighbor;
       const collisionChanged=!projectionOnly&&(!native?.resident||activePrimaryDigest!==primary.sourceDigest||native.sourceDigest!==source.sourceDigest);
       if(collisionChanged||projectionOnly){admit(true);}
-      const seams=collisionChanged||projectionOnly?await options.compiler.neighborSeams(primary,source,signal,projectionOnly,projectionOnly):null;
+      loadOperation="Seams";
+      seams=collisionChanged||projectionOnly?await options.compiler.neighborSeams(primary,source,signal,projectionOnly,projectionOnly,options.residentBytes?.()??0):null;
       if(!isCurrent()){stale+=1;throw new Error("Cancelled neighbour seam adoption");}
-      render=options.stage({products,seams,epoch:ticket.epoch,source:projectionOnly?null:source,cacheBytes:cache.totalBytes,checkpointBytes:checkpointBytes(saved)});
+      loadOperation="Graphics";
+      render=await options.stage({products,seams,epoch:ticket.epoch,source:projectionOnly?null:source,cacheBytes:cache.totalBytes,checkpointBytes:checkpointBytes(saved)});
+      if(!isCurrent()){throw new Error("Cancelled graphics-staged neighbour");}
       publishing=true;
       if(collisionChanged){
         const checkpoint:HvpNeighborCheckpoint={version:"hvp-neighbor-world-v1",epoch:Math.max(ticket.epoch,(native?.epoch??0)+1),resident:true,
           sourceDigest:source.sourceDigest,baseSectorCount:native?.baseSectorCount??options.baseSectorCount};
         // The normal source catalog is observed by the caller's real World.
+        loadOperation="Native";
         await options.physics.prepareNeighbor(transactionId,checkpoint,seams!.east,[...seams!.primary.collision].map(([index,mesh])=>({index,mesh})));prepared=true;
         if(!isCurrent()){throw new Error("Cancelled prepared neighbour");}
         await options.physics.commitNeighbor(transactionId);
         if(!isCurrent()){throw new Error("Cancelled neighbour before publication");}
         options.physics.publishNeighbor();
       }
+      loadOperation="Publication";
       render.publish();
       if(prepared){await options.physics.finalizeNeighbor(transactionId);}finalized=true;
+      loadOperation="Finish";
       render.finish();
+      seams?.finish?.();
       const accepted=projectionOnly?policy.acceptProjection(ticket,{source:canonical,render:canonical}):policy.accept(ticket,{source:canonical,render:canonical,collision:canonical});
       if(!accepted){throw new Error("Neighbour ticket lost before publication");}
       activeLease?.release();activeLease=lease;lease=undefined;
       activePrimaryDigest=primary.sourceDigest;activeLod=lod;activeProducts=products;lastKey=canonical;adoptions+=1;failure="";
+      loadOperation="Idle";
       if(projectionOnly){east=undefined;checkpointSource=undefined;}
     }catch(error){
-      let restored=!finalized;
+      const renderRecovery=error instanceof HvpRenderStageRecoveryError;
+      let restored=!finalized&&!renderRecovery;
+      if(renderRecovery){try{await options.physics.command("Pause");}catch{/* Unknown graphics release remains held. */}}
       if(!finalized){try{render?.rollback();}catch{restored=false;}
         if(prepared){try{await options.physics.rollbackNeighbor(transactionId);}catch{restored=false;}}}
       if(ticket){policy.reject(ticket,signal.aborted||!valid()||String(error).includes("Cancelled"));}
       lease?.release();
       if(!restored||String(error).includes("RecoveryHold")){hold=true;try{await options.physics.command("Pause");}catch{/* Never claim restoration. */}}
       if(!signal.aborted&&valid()&&!String(error).includes("Cancelled")){failure=String(error);retryBlocked=true;}
-    }
+    }finally{seams?.discard?.();}
   };
   const unload=async()=>{
     const primary=options.primary(),native=options.physics.read().neighbor;
     if(!east||!native?.resident){return;}
-    let render:HvpStagedTerrain|undefined,prepared=false,finalized=false;
+    let render:HvpStagedTerrain|undefined,prepared=false,finalized=false,seams:Seams|undefined;
     const id=`neighbor-evict-${native.epoch+1}`;
     try{
       const source=east.read();
@@ -134,28 +151,32 @@ export const createHvpNeighborController=(options:{
         saved=checkpoint;checkpointSource=source;
       }
       admit(true);
-      const seams=await options.compiler.neighborSeams(primary,undefined,abort!.signal);
+      seams=await options.compiler.neighborSeams(primary,undefined,abort!.signal,false,false,options.residentBytes?.()??0);
       if(!valid()||abort!.signal.aborted||policy.read().wanted||options.primary()!==primary||!saved){throw new Error("Cancelled neighbour eviction");}
       // Preserve the accepted edited projection instead of restoring a seed proxy.
       const keepProjection=saved.revision>0&&activeProducts!==undefined;
-      render=options.stage({products:keepProjection?activeProducts!:null,
+      render=await options.stage({products:keepProjection?activeProducts!:null,
         seams:keepProjection?{...seams,primary:{...seams.primary,render:new Map()}}:seams,
         epoch:native.epoch+1,source:null,cacheBytes:cache.totalBytes,checkpointBytes:checkpointBytes(saved)});
+      if(!valid()||policy.read().wanted||abort!.signal.aborted){throw new Error("Cancelled graphics-staged eviction");}
       publishing=true;
       const checkpoint={...native,epoch:native.epoch+1,resident:false};
       await options.physics.prepareNeighbor(id,checkpoint,[],[...seams.primary.collision].map(([index,mesh])=>({index,mesh})));prepared=true;
       if(!valid()||policy.read().wanted||abort!.signal.aborted){throw new Error("Cancelled prepared eviction");}
       await options.physics.commitNeighbor(id);options.physics.publishNeighbor();render.publish();
       await options.physics.finalizeNeighbor(id);finalized=true;render.finish();
+      seams.finish?.();
       policy.evict(true);
       if(!keepProjection){activeLease?.release();activeLease=undefined;activeProducts=undefined;activePrimaryDigest=undefined;activeLod=undefined;}
       east=undefined;checkpointSource=undefined;adoptions+=1;
     }catch(error){
-      let restored=!finalized;
+      const renderRecovery=error instanceof HvpRenderStageRecoveryError;
+      let restored=!finalized&&!renderRecovery;
+      if(renderRecovery){try{await options.physics.command("Pause");}catch{/* Unknown graphics release remains held. */}}
       if(!finalized){try{render?.rollback();}catch{restored=false;}if(prepared){try{await options.physics.rollbackNeighbor(id);}catch{restored=false;}}}
       if(!restored||String(error).includes("RecoveryHold")){hold=true;try{await options.physics.command("Pause");}catch{/* Held until explicit recovery. */}}
       if(valid()&&!abort!.signal.aborted&&!String(error).includes("Cancelled")&&!String(error).includes("Pinned")){failure=String(error);retryBlocked=true;}
-    }
+    }finally{seams?.discard?.();}
   };
   const release=()=>{activeLease?.release();activeLease=undefined;activeProducts=undefined;activePrimaryDigest=undefined;if(!options.cache){cache.clear();}east=undefined;saved=undefined;checkpointSource=undefined;};
   return {
@@ -188,7 +209,7 @@ export const createHvpNeighborController=(options:{
       }
     },
     retry(){if(!hold&&!pending){failure="";retryBlocked=false;}},
-    read:()=>Object.freeze({...policy.read(),busy:pending!==undefined,recoveryHold:hold,error:failure,key:lastKey,
+    read:()=>Object.freeze({...policy.read(),busy:pending!==undefined,recoveryHold:hold,error:failure,key:lastKey,loadOperation,
       renderLod:activeLod??null,proxyOnly:activeProducts!==undefined&&!policy.read().collisionReady,
       sourceDigest:east?.read().sourceDigest??saved?.sourceDigest??null,sourceBytes:east?8_388_608+east.read().overlayBytes*2:0,
       checkpointBytes:checkpointBytes(saved),cacheBytes:cache.totalBytes,cacheEntries:cache.size,cacheHits,cacheMisses,adoptions,stale}),
