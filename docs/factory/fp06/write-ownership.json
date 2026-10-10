@@ -1,0 +1,745 @@
+{
+  "schema": "hestia.fp06.write-ownership.v1",
+  "createdAt": "2026-10-10T20:46:08.453050+00:00",
+  "baseSha": "e40592c113b72a8dc93725187f92cf948e07f44d",
+  "sourceLockSha256": "2a484ade6208dd5a89ddb0b783f9e9953ddd3d840a8c4e120dba7ac7176c31e7",
+  "orchestrator": {
+    "agentId": "/root",
+    "actualTask": "W00",
+    "branch": "integration/hestia-fp06-v2-2026-10-10",
+    "worktree": "/workspace/scratch/6df2a2bc9dc2/worktrees/fp06-w00",
+    "grantedWriteSet": [
+      "docs/factory/fp06/source-lock.json",
+      "docs/factory/fp06/write-ownership.json",
+      "docs/factory/fp06/decisions.md",
+      "docs/factory/fp06/baseline.md"
+    ]
+  },
+  "activeImplementationWriters": [],
+  "writerSlots": [
+    {
+      "slot": "A",
+      "role": "Integrator",
+      "status": "BLOCKED_NOT_STARTED",
+      "agentId": null,
+      "packages": [
+        "W01",
+        "W03",
+        "W04",
+        "W06",
+        "W07",
+        "W09",
+        "W10"
+      ]
+    },
+    {
+      "slot": "B",
+      "role": "Domain/Asset",
+      "status": "BLOCKED_NOT_STARTED",
+      "agentId": null,
+      "packages": [
+        "W02",
+        "W05",
+        "W08"
+      ]
+    }
+  ],
+  "readOnlyAuditors": [
+    "/root/w00_source_gate_audit",
+    "/root/w00_repository_lock_audit"
+  ],
+  "packages": [
+    {
+      "packageId": "W00",
+      "title": "Basis, Scope-Locks und erste Freigaben",
+      "status": "BLOCKED",
+      "actuallyStarted": true,
+      "dependencies": [],
+      "requiredGates": [],
+      "exitGates": [],
+      "role": "Orchestrator",
+      "agentId": "/root",
+      "branch": "integration/hestia-fp06-v2-2026-10-10",
+      "worktree": "/workspace/scratch/6df2a2bc9dc2/worktrees/fp06-w00",
+      "plannedBranch": "integration/hestia-fp06-v2-2026-10-10",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "FP06 package card W00",
+        "FP01 §1; FP02 §1; FP03 §1; FP04 §1; FP05 §1; Repository-Regeln."
+      ],
+      "proposedWriteSet": [
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "docs/factory/fp06/baseline.md"
+      ],
+      "scopeRestrictions": [],
+      "grantedWriteSet": [
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "docs/factory/fp06/baseline.md"
+      ],
+      "testIds": [
+        "FP06-T001",
+        "FP06-T002",
+        "FP06-T003",
+        "FP06-T004"
+      ],
+      "verificationCommands": [
+        "git status --short; git rev-parse HEAD; git rev-parse origin/main; git worktree list --porcelain",
+        "# Danach im Browserpaket: npm run build; npm run test -- tests/unit/hvp-bootstrap.test.ts"
+      ],
+      "candidateSha": null,
+      "ownerApprovalEvidence": "Current user instruction to begin W00"
+    },
+    {
+      "packageId": "W01",
+      "title": "Kleiner Katalog, Maße und numerische Fixturen",
+      "status": "BLOCKED",
+      "actuallyStarted": false,
+      "dependencies": [
+        "W00"
+      ],
+      "requiredGates": [
+        "D01",
+        "FP02_CATALOG_QUANTITY_FREEZE"
+      ],
+      "exitGates": [],
+      "role": "Integrator A",
+      "agentId": null,
+      "branch": null,
+      "worktree": null,
+      "plannedBranch": "fp06/w01-2026-10-10",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "FP06 package card W01",
+        "FP02 §§4–6, 9–10; FP03 §1.2; FP04 §1.2.",
+        "accepted predecessor receipts and locked outputs: W00",
+        "apps/weltraum-browser/src/resources/**",
+        "apps/weltraum-browser/src/hvp/hvpCoastSource.ts"
+      ],
+      "proposedWriteSet": [
+        "apps/weltraum-browser/src/factory/contracts.ts",
+        "apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts",
+        "apps/weltraum-browser/src/factory/catalog/sourceLock.ts",
+        "apps/weltraum-browser/tests/fixtures/factory/fp02Fixtures.ts",
+        "apps/weltraum-browser/tests/unit/factory/catalog.test.ts"
+      ],
+      "scopeRestrictions": [],
+      "grantedWriteSet": [],
+      "testIds": [
+        "FP06-T005",
+        "FP06-T006",
+        "FP06-T007",
+        "FP06-T008"
+      ],
+      "verificationCommands": [
+        "npm run test -- tests/unit/factory/catalog.test.ts",
+        "npm run build"
+      ],
+      "candidateSha": null,
+      "ownerApprovalEvidence": null
+    },
+    {
+      "packageId": "W02",
+      "title": "Exakte Materialübergänge, Reservierungen und WIP",
+      "status": "BLOCKED",
+      "actuallyStarted": false,
+      "dependencies": [
+        "W01"
+      ],
+      "requiredGates": [
+        "D02"
+      ],
+      "exitGates": [],
+      "role": "Domain/Asset B",
+      "agentId": null,
+      "branch": null,
+      "worktree": null,
+      "plannedBranch": "fp06/w02-2026-10-10",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "FP06 package card W02",
+        "FP02 §§4–6, 12; FP03 §13; Cargo-Core.",
+        "accepted predecessor receipts and locked outputs: W01",
+        "apps/weltraum-browser/src/resources/**"
+      ],
+      "proposedWriteSet": [
+        "apps/weltraum-browser/src/factory/material/quantity.ts",
+        "apps/weltraum-browser/src/factory/material/resourcesAdapter.ts",
+        "apps/weltraum-browser/src/factory/material/reservations.ts",
+        "apps/weltraum-browser/tests/unit/factory/material.test.ts"
+      ],
+      "scopeRestrictions": [],
+      "grantedWriteSet": [],
+      "testIds": [
+        "FP06-T009",
+        "FP06-T010",
+        "FP06-T011",
+        "FP06-T012"
+      ],
+      "verificationCommands": [
+        "npm run test -- tests/unit/factory/material.test.ts",
+        "npm run test:e2e -- tests/e2e/resource-cargo-core.spec.ts"
+      ],
+      "candidateSha": null,
+      "ownerApprovalEvidence": null
+    },
+    {
+      "packageId": "W03",
+      "title": "FP01-konforme elektrische Allokation",
+      "status": "BLOCKED",
+      "actuallyStarted": false,
+      "dependencies": [
+        "W01"
+      ],
+      "requiredGates": [
+        "D03"
+      ],
+      "exitGates": [],
+      "role": "Integrator A",
+      "agentId": null,
+      "branch": null,
+      "worktree": null,
+      "plannedBranch": "fp06/w03-2026-10-10",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "FP06 package card W03",
+        "FP01 §§6–7, 13; FP02 §1.1; Power/Thermal-Core.",
+        "accepted predecessor receipts and locked outputs: W01",
+        "docs/browser-mainline/ship-power-thermal-core-v1.md",
+        "apps/weltraum-browser/src/ship-power-thermal/**"
+      ],
+      "proposedWriteSet": [
+        "apps/weltraum-browser/src/factory/power/factoryPower.ts",
+        "apps/weltraum-browser/src/factory/power/sourceAdapter.ts",
+        "apps/weltraum-browser/src/factory/power/powerReadView.ts",
+        "apps/weltraum-browser/tests/unit/factory/power.test.ts"
+      ],
+      "scopeRestrictions": [],
+      "grantedWriteSet": [],
+      "testIds": [
+        "FP06-T013",
+        "FP06-T014",
+        "FP06-T015",
+        "FP06-T016"
+      ],
+      "verificationCommands": [
+        "npm run test -- tests/unit/factory/power.test.ts",
+        "npm run test:e2e -- tests/e2e/ship-power-thermal-core.spec.ts"
+      ],
+      "candidateSha": null,
+      "ownerApprovalEvidence": null
+    },
+    {
+      "packageId": "W04",
+      "title": "Produktionsschritt mit atomarem Batchabschluss",
+      "status": "BLOCKED",
+      "actuallyStarted": false,
+      "dependencies": [
+        "W02",
+        "W03"
+      ],
+      "requiredGates": [
+        "D05"
+      ],
+      "exitGates": [],
+      "role": "Integrator A",
+      "agentId": null,
+      "branch": null,
+      "worktree": null,
+      "plannedBranch": "fp06/w04-2026-10-10",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "FP06 package card W04",
+        "FP02 §§5, 7, 12; FP01 §6.",
+        "accepted predecessor receipts and locked outputs: W02,W03"
+      ],
+      "proposedWriteSet": [
+        "apps/weltraum-browser/src/factory/production/productionStep.ts",
+        "apps/weltraum-browser/src/factory/production/recipeAdmission.ts",
+        "apps/weltraum-browser/tests/unit/factory/production.test.ts"
+      ],
+      "scopeRestrictions": [],
+      "grantedWriteSet": [],
+      "testIds": [
+        "FP06-T017",
+        "FP06-T018",
+        "FP06-T019",
+        "FP06-T020"
+      ],
+      "verificationCommands": [
+        "npm run test -- tests/unit/factory/production.test.ts",
+        "npm run build"
+      ],
+      "candidateSha": null,
+      "ownerApprovalEvidence": null
+    },
+    {
+      "packageId": "W05",
+      "title": "Maßhaltige Voxelobjekte und Zustandsanimation",
+      "status": "BLOCKED",
+      "actuallyStarted": false,
+      "dependencies": [
+        "W01"
+      ],
+      "requiredGates": [
+        "ASSET_SOURCE_AND_WRITE_SCOPE"
+      ],
+      "exitGates": [
+        "SEPARATE_VISUAL_OWNER_ACCEPTANCE"
+      ],
+      "role": "Domain/Asset B",
+      "agentId": null,
+      "branch": null,
+      "worktree": null,
+      "plannedBranch": "fp06/w05-2026-10-10",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "FP06 package card W05",
+        "FP01 §§3, 8, 14; FP02 §§3, 7; FP03 §3.",
+        "accepted predecessor receipts and locked outputs: W01"
+      ],
+      "proposedWriteSet": [
+        "art/factory/fp02/cutter/",
+        "art/factory/fp02/former/",
+        "art/factory/fp01/power-kit/",
+        "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+        "apps/weltraum-browser/src/factory/presentation/machinePose.ts",
+        "apps/weltraum-browser/tests/unit/factory/presentation.test.ts"
+      ],
+      "scopeRestrictions": [],
+      "grantedWriteSet": [],
+      "testIds": [
+        "FP06-T021",
+        "FP06-T022",
+        "FP06-T023",
+        "FP06-T024"
+      ],
+      "verificationCommands": [
+        "npm run test -- tests/unit/factory/presentation.test.ts",
+        "# Visuelle Captures über die spätere W06-Probe; kein Art-PASS aus Unit-Tests."
+      ],
+      "candidateSha": null,
+      "ownerApprovalEvidence": null
+    },
+    {
+      "packageId": "W06",
+      "title": "Schmale HVP-Hostgrenze und isolierter Prototypentry",
+      "status": "BLOCKED",
+      "actuallyStarted": false,
+      "dependencies": [
+        "W01"
+      ],
+      "requiredGates": [
+        "D05",
+        "D07",
+        "HVP_HOST_WRITE_LEASE"
+      ],
+      "exitGates": [],
+      "role": "Integrator A",
+      "agentId": null,
+      "branch": null,
+      "worktree": null,
+      "plannedBranch": "fp06/w06-2026-10-10",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "FP06 package card W06",
+        "FP01 §13; FP03 §§13–15; main.ts; hvpBootstrap.ts.",
+        "accepted predecessor receipts and locked outputs: W01",
+        "apps/weltraum-browser/src/hvp/**",
+        "apps/weltraum-browser/src/hestia-prototype/physics/**",
+        "apps/weltraum-browser/src/hestia-prototype/persistence/**"
+      ],
+      "proposedWriteSet": [
+        "apps/weltraum-browser/factory.html",
+        "apps/weltraum-browser/src/factory/factoryEntry.ts",
+        "apps/weltraum-browser/src/factory/session/hostPort.ts",
+        "apps/weltraum-browser/src/factory/session/factorySession.ts",
+        "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+        "apps/weltraum-browser/tests/e2e/factory-host.spec.ts",
+        "tools/factory/verify-evidence.mjs",
+        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+        "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/vite.config.ts",
+        ".github/workflows/browser-mainline-ci.yml"
+      ],
+      "scopeRestrictions": [
+        "Änderung nur Integrator: src/hvp/hvpBootstrap.ts und tests/unit/hvp-bootstrap.test.ts",
+        "Integrator-only: package.json (nur neue E2E-Gruppenpfade), vorhandene Vite-Buildkonfiguration nach W00-Pfadinventur, .github/workflows/browser-mainline-ci.yml (nur Factory-Evidence-Erfassung)"
+      ],
+      "grantedWriteSet": [],
+      "testIds": [
+        "FP06-T025",
+        "FP06-T026",
+        "FP06-T027",
+        "FP06-T028"
+      ],
+      "verificationCommands": [
+        "npm run test -- tests/unit/factory/hostLifecycle.test.ts tests/unit/hvp-bootstrap.test.ts",
+        "npm run test:e2e -- tests/e2e/factory-host.spec.ts",
+        "npm run build"
+      ],
+      "candidateSha": null,
+      "ownerApprovalEvidence": null
+    },
+    {
+      "packageId": "W07",
+      "title": "Kostenpflichtige Maschinenplatzierung und Support",
+      "status": "BLOCKED",
+      "actuallyStarted": false,
+      "dependencies": [
+        "W02",
+        "W05",
+        "W06"
+      ],
+      "requiredGates": [
+        "D01",
+        "D11",
+        "PHYSICS_FACILITY_WRITE_LEASE"
+      ],
+      "exitGates": [],
+      "role": "Integrator A",
+      "agentId": null,
+      "branch": null,
+      "worktree": null,
+      "plannedBranch": "fp06/w07-2026-10-10",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "FP06 package card W07",
+        "FP02 §§6–10; FP03 §§4–6, 13.",
+        "accepted predecessor receipts and locked outputs: W02,W05,W06",
+        "apps/weltraum-browser/src/hvp/**",
+        "apps/weltraum-browser/src/hestia-prototype/physics/**",
+        "apps/weltraum-browser/src/hestia-prototype/persistence/**"
+      ],
+      "proposedWriteSet": [
+        "apps/weltraum-browser/src/factory/construction/placement.ts",
+        "apps/weltraum-browser/src/factory/construction/buildStep.ts",
+        "apps/weltraum-browser/src/factory/ui/buildTool.ts",
+        "apps/weltraum-browser/tests/unit/factory/placement.test.ts",
+        "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts"
+      ],
+      "scopeRestrictions": [
+        "Integrator-only: src/hestia-prototype/physics/client.ts und src/hestia-prototype/physics/physicsWorker.ts (nur neue Factory-Facility-Nachrichten)"
+      ],
+      "grantedWriteSet": [],
+      "testIds": [
+        "FP06-T029",
+        "FP06-T030",
+        "FP06-T031",
+        "FP06-T032"
+      ],
+      "verificationCommands": [
+        "npm run test -- tests/unit/factory/placement.test.ts",
+        "npm run test:e2e -- tests/e2e/factory-placement.spec.ts"
+      ],
+      "candidateSha": null,
+      "ownerApprovalEvidence": null
+    },
+    {
+      "packageId": "W08",
+      "title": "Einfache konservierende Förderbandreferenz",
+      "status": "BLOCKED",
+      "actuallyStarted": false,
+      "dependencies": [
+        "W02"
+      ],
+      "requiredGates": [
+        "D06"
+      ],
+      "exitGates": [],
+      "role": "Domain/Asset B",
+      "agentId": null,
+      "branch": null,
+      "worktree": null,
+      "plannedBranch": "fp06/w08-2026-10-10",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "FP06 package card W08",
+        "FP02 §§8–10; FP03 §7.",
+        "accepted predecessor receipts and locked outputs: W02"
+      ],
+      "proposedWriteSet": [
+        "apps/weltraum-browser/src/factory/conveyor/beltReference.ts",
+        "apps/weltraum-browser/src/factory/conveyor/beltPorts.ts",
+        "apps/weltraum-browser/tests/unit/factory/conveyor.test.ts"
+      ],
+      "scopeRestrictions": [],
+      "grantedWriteSet": [],
+      "testIds": [
+        "FP06-T033",
+        "FP06-T034",
+        "FP06-T035",
+        "FP06-T036"
+      ],
+      "verificationCommands": [
+        "npm run test -- tests/unit/factory/conveyor.test.ts",
+        "npm run build"
+      ],
+      "candidateSha": null,
+      "ownerApprovalEvidence": null
+    },
+    {
+      "packageId": "W09",
+      "title": "Erster bedienbarer trockener Fabrikkreislauf",
+      "status": "BLOCKED",
+      "actuallyStarted": false,
+      "dependencies": [
+        "W04",
+        "W07",
+        "W08"
+      ],
+      "requiredGates": [
+        "EXCLUSIVE_COMPOSITION_WINDOW"
+      ],
+      "exitGates": [],
+      "role": "Integrator A",
+      "agentId": null,
+      "branch": null,
+      "worktree": null,
+      "plannedBranch": "fp06/w09-2026-10-10",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "FP06 package card W09",
+        "FP01 §§9–12; FP02 §§2, 9–13; FP03 §14.",
+        "accepted predecessor receipts and locked outputs: W04,W07,W08",
+        "apps/weltraum-browser/src/hvp/**",
+        "apps/weltraum-browser/src/hestia-prototype/physics/**",
+        "apps/weltraum-browser/src/hestia-prototype/persistence/**"
+      ],
+      "proposedWriteSet": [
+        "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+        "apps/weltraum-browser/src/factory/ui/machinePanel.ts",
+        "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+        "apps/weltraum-browser/src/factory/ui/powerPanel.ts",
+        "apps/weltraum-browser/src/factory/ui/technologyView.ts",
+        "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts"
+      ],
+      "scopeRestrictions": [],
+      "grantedWriteSet": [],
+      "testIds": [
+        "FP06-T037",
+        "FP06-T038",
+        "FP06-T039",
+        "FP06-T040"
+      ],
+      "verificationCommands": [
+        "npm run test:e2e -- tests/e2e/factory-dry-flow.spec.ts",
+        "npm run test -- tests/unit/factory",
+        "npm run build"
+      ],
+      "candidateSha": null,
+      "ownerApprovalEvidence": null
+    },
+    {
+      "packageId": "W10",
+      "title": "Kombinierter Save, Ladebarriere und Recovery",
+      "status": "BLOCKED",
+      "actuallyStarted": false,
+      "dependencies": [
+        "W09"
+      ],
+      "requiredGates": [
+        "D04",
+        "D11",
+        "EXCLUSIVE_SAVE_PHYSICS_WINDOW"
+      ],
+      "exitGates": [],
+      "role": "Integrator A",
+      "agentId": null,
+      "branch": null,
+      "worktree": null,
+      "plannedBranch": "fp06/w10-2026-10-10",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "FP06 package card W10",
+        "FP01 §13; FP02 §12; FP03 §13; HVP-Checkpoint/SaveStore.",
+        "accepted predecessor receipts and locked outputs: W09",
+        "apps/weltraum-browser/src/hvp/**",
+        "apps/weltraum-browser/src/hestia-prototype/physics/**",
+        "apps/weltraum-browser/src/hestia-prototype/persistence/**"
+      ],
+      "proposedWriteSet": [
+        "apps/weltraum-browser/src/factory/persistence/factoryCheckpoint.ts",
+        "apps/weltraum-browser/src/factory/persistence/factorySaveStore.ts",
+        "apps/weltraum-browser/src/factory/persistence/restoreFactorySession.ts",
+        "apps/weltraum-browser/tests/unit/factory/persistence.test.ts",
+        "apps/weltraum-browser/tests/e2e/factory-save.spec.ts",
+        "apps/weltraum-browser/src/hestia-prototype/persistence/factoryWorldParts.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts"
+      ],
+      "scopeRestrictions": [
+        "Integrator-only: enger Checkpoint-/Restore-Anschluss in physics/client.ts und physics/physicsWorker.ts"
+      ],
+      "grantedWriteSet": [],
+      "testIds": [
+        "FP06-T041",
+        "FP06-T042",
+        "FP06-T043",
+        "FP06-T044"
+      ],
+      "verificationCommands": [
+        "npm run test -- tests/unit/factory/persistence.test.ts",
+        "npm run test:e2e -- tests/e2e/factory-save.spec.ts tests/e2e/browser-storage-save-repository.spec.ts"
+      ],
+      "candidateSha": null,
+      "ownerApprovalEvidence": null
+    },
+    {
+      "packageId": "W11",
+      "title": "Erste Spielerabnahme und gezielte Regression",
+      "status": "BLOCKED",
+      "actuallyStarted": false,
+      "dependencies": [
+        "W10"
+      ],
+      "requiredGates": [
+        "D10",
+        "PERFORMANCE_PROFILE_AND_TARGETS"
+      ],
+      "exitGates": [
+        "OWNER_GAMEPLAY_VISUAL_REVIEW",
+        "SEPARATE_FUNCTIONAL_UI_SAVE_VISUAL_GAMEPLAY_PERFORMANCE_RECEIPT"
+      ],
+      "role": "Testwriter after W10",
+      "agentId": null,
+      "branch": null,
+      "worktree": null,
+      "plannedBranch": "fp06/w11-2026-10-10",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "FP06 package card W11",
+        "FP01 §15; FP02 §14; FP03 §16; G17-Testtrennung.",
+        "accepted predecessor receipts and locked outputs: W10"
+      ],
+      "proposedWriteSet": [
+        "apps/weltraum-browser/tests/e2e/factory-acceptance.spec.ts",
+        "apps/weltraum-browser/tests/fixtures/factory/checkpoint-fixtures/",
+        "apps/weltraum-browser/evidence/factory/w11/",
+        "docs/factory/fp06/dry-slice-acceptance.md"
+      ],
+      "scopeRestrictions": [],
+      "grantedWriteSet": [],
+      "testIds": [
+        "FP06-T045",
+        "FP06-T046",
+        "FP06-T047",
+        "FP06-T048"
+      ],
+      "verificationCommands": [
+        "npm run test -- tests/unit/factory",
+        "npm run build",
+        "npm run test:e2e:core",
+        "npm run test:e2e:live",
+        "npm run test:e2e:ui"
+      ],
+      "candidateSha": null,
+      "ownerApprovalEvidence": null
+    }
+  ],
+  "sharedExclusivePaths": [
+    "apps/weltraum-browser/src/factory/contracts.ts",
+    "apps/weltraum-browser/src/factory/session/",
+    "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+    "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+    "apps/weltraum-browser/src/factory/persistence/",
+    "apps/weltraum-browser/package.json",
+    "apps/weltraum-browser/vite.config.ts",
+    ".github/workflows/browser-mainline-ci.yml"
+  ],
+  "prohibitedWrites": [
+    "main branch",
+    "apps/weltraum-browser/src/main.ts",
+    "unregistered source/voxel/cut/renderer/save/physics refactors",
+    "any W12-W29 package"
+  ],
+  "remoteBranchCount": 117,
+  "openPullRequests": [
+    {
+      "number": 72,
+      "title": "#WELTRAUM-000 deps: Bump three from 0.185.1 to 0.186.1 in /apps/weltraum-browser",
+      "headSha": "7c639eff8b738a5fc4bff3679a76dd5a046aaf79"
+    },
+    {
+      "number": 71,
+      "title": "#WELTRAUM-000 deps: Bump @dimforge/rapier3d-compat from 0.12.0 to 0.20.0 in /apps/weltraum-browser",
+      "headSha": "8961ef605fc76bc798d863ca89d87638c8a525e5"
+    },
+    {
+      "number": 70,
+      "title": "#WELTRAUM-000 deps: Bump three and @types/three in /apps/weltraum-browser",
+      "headSha": "123988fa2a0b594235366723eaaee066e89c19db"
+    },
+    {
+      "number": 69,
+      "title": "#WELTRAUM-000 deps: Bump the browser-development-dependencies group across 1 directory with 3 updates",
+      "headSha": "09703db772abe807125ad125f919839ba969af0b"
+    },
+    {
+      "number": 59,
+      "title": "#WELTRAUM-000 deps: Bump vitest from 4.1.11 to 5.0.0 in /apps/weltraum-browser",
+      "headSha": "35c1881bb219f6142daa85a3d7a1aac8a4e50d86"
+    }
+  ],
+  "localRegistry": {
+    "runningOwnedRuns": 0,
+    "liveReservations": 0,
+    "staleState": 0,
+    "defaultStateDirectoryPresent": false,
+    "notAnExternalWriterFreeProof": true
+  },
+  "sourceConflictPolicy": "Historical branch diffs require reconciliation, not inferred active-writer claims. HVP/physics/save write leases remain ungranted. No automatic rebase or cherry-pick.",
+  "safeScheduleWhenApproved": [
+    [
+      "W00"
+    ],
+    [
+      "W01"
+    ],
+    [
+      "W03",
+      "W05"
+    ],
+    [
+      "W02",
+      "W06"
+    ],
+    [
+      "W04",
+      "W08"
+    ],
+    [
+      "W07"
+    ],
+    [
+      "W09"
+    ],
+    [
+      "W10"
+    ],
+    [
+      "W11"
+    ]
+  ]
+}
