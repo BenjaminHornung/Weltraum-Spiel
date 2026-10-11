@@ -85,9 +85,9 @@ Bei unklarer Quelle, Zuständigkeit oder relevantem Ownergate nur betroffene Pro
 - [x] Isolierten W00-Branch/Worktree angelegt; vier Dokumente und frische Audit-/Baseline-Evidence erstellt.
 - [x] Build und 95 fokussierte Basistests PASS.
 - [x] Unabhängiges W00-Dokument-/Vertragsreview nach R1/R2-Fix: Spec/Qualität PASS.
-- [ ] Finaler W00-Commit; vollständiger SHA wird nach Commit im nächsten Paketreceipt festgehalten.
+- [x] W00-Commit `656c52458eff15133025bb21dc3e5b7b708cfbf7`; Worktree danach sauber.
 - [x] Nutzerantwort übernommen: W01-Freeze und D05/D06/D07/D11 ausdrücklich freigegeben am 2026-10-11 09:23:32 UTC.
-- [ ] Nach W00-Review Produktwriter mit exaktem Scope starten.
+- [x] W01-Integrator mit exakt fünf Produktzielen, eigener Branch/Worktree und geprüftem W00-Vorgänger gestartet.
 - [ ] W01–W11 je Paket RED/GREEN/Regression/Review/Evidence/Commit-Gate.
 
 ## Definition of Done

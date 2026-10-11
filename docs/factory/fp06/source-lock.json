@@ -10,7 +10,7 @@
   "branch": "codex/hestia-fp06-w00-2026-10-11",
   "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11",
   "evidenceRun": "2026-10-11T090924Z",
-  "status": "W00_PASS; W01_READY_AFTER_W00_COMMIT",
+  "status": "W00_PASS; W01_IN_PROGRESS",
   "integrator": "/root/fp06_integrator",
   "tranche": {
     "authorized": [
@@ -472,6 +472,13 @@
         "exactDecisionQuestion": "D05: 6 confirmed 60-Hz ticks =100ms/no offline; D06: powered 1kg/s initial0 max10kg persistent burstcredit; D07: /factory.html existing app; D11: <=16 fixed native facility owners, native install transaction, complete combined checkpoint under unchanged overall budgets",
         "exactFreezeQuestion": "Unchanged FP02 C01-C28/REC-01-REC-07/BOM/dimensions/ports; bulk exactly1mg; packaged volume integer mm3; components integer count; SALVAGE-01 separate; reject inadmissible quantity."
       }
+    },
+    "D03_RESTART_POLICY": {
+      "status": "PROPOSED_OWNER_REVIEW_REQUIRED",
+      "proposal": "Stable ID priority order; restart after WAIT_POWER only after2 confirmed simulation seconds with required power+500W headroom; initial startup needs required power only; reserve checked jointly, no fairnesscursor.",
+      "blockedPackages": [
+        "W03"
+      ]
     }
   },
   "packageScopes": {
@@ -511,7 +518,7 @@
       "branch": "codex/hestia-fp06-w00-2026-10-11",
       "plannedBranch": "codex/hestia-fp06-w00-2026-10-11",
       "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11",
-      "commitSha": null,
+      "commitSha": "656c52458eff15133025bb21dc3e5b7b708cfbf7",
       "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
       "restrictions": [
         "Only exact granted paths; planned paths are not grants",
@@ -550,24 +557,31 @@
         "apps/weltraum-browser/tests/fixtures/factory/fp02Fixtures.ts",
         "apps/weltraum-browser/tests/unit/factory/catalog.test.ts"
       ],
-      "grantedWriteSet": [],
+      "grantedWriteSet": [
+        "apps/weltraum-browser/src/factory/contracts.ts",
+        "apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts",
+        "apps/weltraum-browser/src/factory/catalog/sourceLock.ts",
+        "apps/weltraum-browser/tests/fixtures/factory/fp02Fixtures.ts",
+        "apps/weltraum-browser/tests/unit/factory/catalog.test.ts"
+      ],
       "evidenceWriteSet": [
         "apps/weltraum-browser/evidence/factory/w01/<actual-run-id>/**"
       ],
-      "evidenceGrant": false,
-      "status": "READY_AFTER_W00_COMMIT",
+      "evidenceGrant": true,
+      "status": "IN_PROGRESS",
       "owner": "/root/fp06_integrator",
       "plannedRole": "integrator",
-      "branch": null,
+      "branch": "codex/hestia-fp06-integrator-2026-10-11",
       "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
-      "worktree": null,
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
       "commitSha": null,
       "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
       "restrictions": [
         "Only exact granted paths; planned paths are not grants",
         "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
         "No main merge/push/publication; no W12-W29"
-      ]
+      ],
+      "baseCommitSha": "656c52458eff15133025bb21dc3e5b7b708cfbf7"
     },
     "W02": {
       "dependencies": [
@@ -624,7 +638,8 @@
       ],
       "decisionGates": [
         "D03",
-        "W01_SOURCE_QUANTITY_FREEZE"
+        "W01_SOURCE_QUANTITY_FREEZE",
+        "D03_RESTART_POLICY"
       ],
       "sourceReadSections": "FP01 §§6–7, 13; FP02 §1.1; Power/Thermal-Core.",
       "readSet": [
@@ -649,7 +664,7 @@
         "apps/weltraum-browser/evidence/factory/w03/<actual-run-id>/**"
       ],
       "evidenceGrant": false,
-      "status": "BLOCKED_DEPENDENCY",
+      "status": "BLOCKED: W01 and D03_RESTART_POLICY",
       "owner": "/root/fp06_integrator",
       "plannedRole": "integrator",
       "branch": null,
