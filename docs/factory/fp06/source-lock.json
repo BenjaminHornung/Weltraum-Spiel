@@ -1246,7 +1246,7 @@
         "apps/weltraum-browser/evidence/factory/w08/<actual-run-id>/**"
       ],
       "evidenceGrant": true,
-      "status": "IN_PROGRESS",
+      "status": "IN_REVIEW",
       "owner": "/root/fp06_domain",
       "plannedRole": "domain-or-assets-writer",
       "branch": "codex/hestia-fp06-domain-2026-10-11",
@@ -1260,7 +1260,7 @@
         "No main merge/push/publication; no W12-W29"
       ],
       "baseCommitSha": "26d5e892c2b401b9011234dabf86955af7462fb8",
-      "implementationWriteHold": false,
+      "implementationWriteHold": true,
       "authorizedAtUtc": "2026-10-11T11:46:55.477266+00:00",
       "completedAtUtc": null,
       "sourceInterpretationNote": "Root authorizes a conservative versioned technical reference: at most one real Resources packet per entire straight line, with credit debited exactly once jointly at successful source-to-line Materialreceipt adoption. Source 0.75m is usable width, not invented longitudinal gap. No Qty cache authority/0m powered belt or unreviewed climate/live/save claim. Initial D06credit0 means injection wait plus54steps4mtravel; one slot bounds downstream burst. Exact phase/clock/revision/whole-CAS behavior must pass actual tests and independent review.",
@@ -1282,7 +1282,50 @@
           "scope": "Same three existing W08 paths only: optional exact positive SourceLot quantityUnits native transfer admission, ≤10kg and available source, default full bounded packet unchanged. Genuine8kg-from20kg/Cutter8kg RED, focused GREEN/build and new seal + independent followup required. No ledger/source/catalog/World authority change.",
           "reason": "W09 source-bound Cutter8kg admission needs explicit packet quantity instead automatic10kg from large lot."
         }
-      ]
+      ],
+      "latestTestStatus": "New intake collected2AssertionFAIL before minimal fix; final14FactoryPASS+TypeScript/VitePASS. Exact wrapper/log durations bind in forthcoming new seal/manifest; no Browser.",
+      "candidateProductSeal": {
+        "package": "W08",
+        "status": "WRITE_HOLD_FOR_FOLLOWUP_INDEPENDENT_REVIEW",
+        "baseCommitSha": "26d5e892c2b401b9011234dabf86955af7462fb8",
+        "branch": "codex/hestia-fp06-domain-2026-10-11",
+        "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11",
+        "sealedAtUtc": "2026-10-11T12:25:33.377917+00:00",
+        "patchSha256": "1ddcf341c9233fb06b3fabde98ba7f2aa9eb919343a126247fe710d4ad3cfecb",
+        "productFiles": {
+          "apps/weltraum-browser/src/factory/conveyor/beltReference.ts": "45fb7e4d0bb618a07d215ab923db4521c1bd46203428b49760e5140f402be211",
+          "apps/weltraum-browser/src/factory/conveyor/beltPorts.ts": "54c2bdd48838f869db887d72b19f4169487070ba194e301340b12179f6a7cfa9",
+          "apps/weltraum-browser/tests/unit/factory/conveyor.test.ts": "31c9212810bea211f56b9145efa6aef7b926272022e843124afe2bf35b5f7682"
+        },
+        "evidenceRun": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z",
+        "previousSeal": "product-before-batch-seal.json",
+        "previousPatch": "product.diff",
+        "testResults": {
+          "initialBusinessRED": "4FAIL/4 collected,Exit1",
+          "selfReviewRED": "2FAIL/8 skipped,Exit1",
+          "portFamilyRecipeRED": "2FAIL/10 skipped,Exit1",
+          "batchIntakeRED": "2FAIL/12 skipped,Exit1; actual8kg-at80ticks Assertion before behavior",
+          "focusedFinal": {
+            "tests": "14PASS",
+            "exitCode": 0,
+            "vitestDurationSeconds": 15.02,
+            "actualWrapperDurationSeconds": 15.406
+          },
+          "affectedRegression": "61PASS,Exit0,2.66s; unchanged W02/W01/Resources since",
+          "buildFinal": {
+            "tests": "TypeScript/VitePASS",
+            "exitCode": 0,
+            "actualWrapperDurationSeconds": 4.694
+          },
+          "Browser": "NOT_RUN: pure W08 reference; no requirement",
+          "W09Gameplay": "NOT_RUN",
+          "W10CombinedSave": "NOT_RUN"
+        }
+      },
+      "specReview": "PASS",
+      "qualityReview": "PASS",
+      "reviewReport": "docs/factory/fp06/reviews/w08-intake-followup.md",
+      "finalCommitGate": "PENDING_ACTUAL_COMMIT_GIT_LFS_BINDING"
     },
     "W09": {
       "dependencies": [
@@ -1316,7 +1359,8 @@
         "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
         "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
         "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
-        "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts"
+        "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts",
+        "apps/weltraum-browser/src/factory/construction/installationProfile.ts"
       ],
       "grantedWriteSet": [],
       "evidenceWriteSet": [
@@ -1343,7 +1387,11 @@
         }
       ],
       "normalFlowPreflight": "docs/factory/fp06/reviews/w09-normal-flow-preflight.md",
-      "integrationScopeNote": "PLANNED ONLY, no grant before package gates. Actual Entry/Clock/Host/Bootstrap seams bound in W09 preflight; one host clock+sole material/power/work/belt authority, normal panels read published facts/send finite intents. Pending native/CAS publication blocks, an ordinary running or WAIT_POWER job must not permanently make isQuiescent false and suppress its own confirmed tick supply. W10 additionally couples Entry Save/Load intents and DrySlice complete validated checkpoint adoption; legacy closed codecs/repositories unchanged. Usable brace needs sourcebound paid native placement/profile evidence, no full building-statics claim."
+      "integrationScopeNote": "PLANNED ONLY, no grant before package gates. Actual Entry/Clock/Host/Bootstrap seams bound in W09 preflight; one host clock+sole material/power/work/belt authority, normal panels read published facts/send finite intents. Pending native/CAS publication blocks, an ordinary running or WAIT_POWER job must not permanently make isQuiescent false and suppress its own confirmed tick supply. W10 additionally couples Entry Save/Load intents and DrySlice complete validated checkpoint adoption; legacy closed codecs/repositories unchanged. Usable brace needs sourcebound paid native placement/profile evidence, no full building-statics claim.",
+      "scopeAdmissionNotes": [
+        "REC05 output must be truly portable/placeable (FP02:1019/639). Bind one produced5.8kg serialized piece into paid sameWorldfixedFacility with actual support/collision. W09 installationProfile planned only; S0 brace dimensions in reviews/w09-brace-use-preflight.md are technical proposal, not frozen source or Owneracceptance. Other narrowly conditional paths in report require actual sealedW07 API before grant. No W12statics/platform/newTerrain masks/duplicate material."
+      ],
+      "braceUsePreflight": "docs/factory/fp06/reviews/w09-brace-use-preflight.md"
     },
     "W10": {
       "dependencies": [
