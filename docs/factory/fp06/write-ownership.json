@@ -456,7 +456,7 @@
       "branch": "codex/hestia-fp06-domain-2026-10-11",
       "plannedBranch": "codex/hestia-fp06-domain-2026-10-11",
       "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11",
-      "commitSha": null,
+      "commitSha": "6929bf2447b72c9f3f8fa3bcae0a59c0691966c0",
       "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
       "restrictions": [
         "Only exact granted paths; planned paths are not grants",
@@ -575,6 +575,11 @@
         "exactPathCount": 44,
         "scope": "Exact actualOwnChangedFiles in precommit writer report:3unchangedproducts+41unchangedownRunfiles",
         "excluded": "No Runtime/manifest/history/test/build changes; no push/mainmerge/publication"
+      },
+      "writerCommitProof": {
+        "report": "docs/factory/fp06/reviews/w04-writer-commit-proof.json",
+        "sha256": "dfd6f0e44c7636639d915daaebd539c6059828043086bf7a6616d3e49765545e",
+        "status": "WRITER_REPORTED_44PATHS40REFS14LFS_COMMIT_PASS; independent final HEAD-only review pending"
       }
     },
     "W05": {
