@@ -684,13 +684,13 @@
         "apps/weltraum-browser/evidence/factory/w02/<actual-run-id>/**"
       ],
       "evidenceGrant": true,
-      "status": "IN_PROGRESS",
+      "status": "PASS",
       "owner": "/root/fp06_domain",
       "plannedRole": "domain-or-assets-writer",
       "branch": "codex/hestia-fp06-domain-2026-10-11",
       "plannedBranch": "codex/hestia-fp06-w02-2026-10-11",
       "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11",
-      "commitSha": null,
+      "commitSha": "10e1e3026610065206d8ac4b361d3f1686114dd8",
       "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
       "restrictions": [
         "Only exact granted paths; planned paths are not grants",
@@ -698,9 +698,34 @@
         "No main merge/push/publication; no W12-W29"
       ],
       "baseCommitSha": "a30630dd7963c165c673df7ea1b46d52735752ef",
-      "implementationWriteHold": false,
+      "implementationWriteHold": true,
       "authorizedAtUtc": "2026-10-11T10:07:10.936195+00:00",
-      "completedAtUtc": null
+      "completedAtUtc": "2026-10-11T10:38:45.364288+00:00",
+      "reviewReport": "docs/factory/fp06/reviews/w02-followup.md",
+      "acceptedGateCommitSha": "10e1e3026610065206d8ac4b361d3f1686114dd8",
+      "implementationReport": "docs/factory/fp06/reviews/w02-package-report.md",
+      "technicalGate": "PASS",
+      "processCompliance": {
+        "initialT009ThroughT012BusinessRedBeforeImplementation": "NOT_RUN",
+        "historicalInitialTddCompliance": "FAIL",
+        "laterWipAndQualityBusinessReds": "PASS for their actually executed pre-fix cases only",
+        "ownerWaiver": "NONE; not invented"
+      },
+      "actualProductFiles": [
+        "apps/weltraum-browser/src/factory/material/quantity.ts",
+        "apps/weltraum-browser/src/factory/material/resourcesAdapter.ts",
+        "apps/weltraum-browser/src/factory/material/reservations.ts",
+        "apps/weltraum-browser/tests/unit/factory/material.test.ts"
+      ],
+      "evidenceRun": "apps/weltraum-browser/evidence/factory/w02/run-20261011T101118Z",
+      "verification": {
+        "focusedAndAffectedUnits": "PASS:5files61tests",
+        "build": "PASS",
+        "existingCargoBrowserRegression": "PASS:1Chromium6.3s",
+        "completeCommitHashesAndScope": "PASS:4products39ownEvidence",
+        "fullCommitDiffCheck": "PASS",
+        "independentTechnicalSpecAndCode": "PASS"
+      }
     },
     "W03": {
       "dependencies": [
@@ -817,24 +842,35 @@
         "apps/weltraum-browser/src/factory/presentation/machinePose.ts",
         "apps/weltraum-browser/tests/unit/factory/presentation.test.ts"
       ],
-      "grantedWriteSet": [],
+      "grantedWriteSet": [
+        "art/factory/fp02/cutter/",
+        "art/factory/fp02/former/",
+        "art/factory/fp01/power-kit/",
+        "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+        "apps/weltraum-browser/src/factory/presentation/machinePose.ts",
+        "apps/weltraum-browser/tests/unit/factory/presentation.test.ts"
+      ],
       "evidenceWriteSet": [
         "apps/weltraum-browser/evidence/factory/w05/<actual-run-id>/**"
       ],
-      "evidenceGrant": false,
-      "status": "BLOCKED_DEPENDENCY",
-      "owner": null,
+      "evidenceGrant": true,
+      "status": "IN_PROGRESS",
+      "owner": "/root/fp06_domain",
       "plannedRole": "domain-or-assets-writer",
-      "branch": null,
+      "branch": "codex/hestia-fp06-domain-2026-10-11",
       "plannedBranch": "codex/hestia-fp06-w05-2026-10-11",
-      "worktree": null,
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11",
       "commitSha": null,
       "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
       "restrictions": [
         "Only exact granted paths; planned paths are not grants",
         "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
         "No main merge/push/publication; no W12-W29"
-      ]
+      ],
+      "baseCommitSha": "10e1e3026610065206d8ac4b361d3f1686114dd8",
+      "implementationWriteHold": false,
+      "authorizedAtUtc": "2026-10-11T10:38:45.416452+00:00",
+      "completedAtUtc": null
     },
     "W06": {
       "dependencies": [

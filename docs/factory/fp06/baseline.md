@@ -18,7 +18,7 @@ W12–W29, Enginewechsel, Dependency-Upgrades, main-Merge, Force-Push und Veröf
 
 ## Architecture decision
 
-Three.js/HVP/Voxel/Physics/Save bleiben erhalten. Resources ist alleinige Warenautorität; UI liest Snapshots und sendet Commands. Genau ein Integrator `/root/fp06_integrator` besitzt gemeinsame Contracts-, Host-, Physics- und Savegrenzen. Höchstens ein weiterer isolierter Domain-/Assetwriter darf parallel arbeiten. Aktuell gibt es den Dokumentationswriter `/root` sowie genau zwei isolierte Produktwriter: `/root/fp06_integrator` auf `codex/hestia-fp06-integrator-2026-10-11` für W06 und `/root/fp06_domain` auf `codex/hestia-fp06-domain-2026-10-11` für W02. Die tatsächlich delegierten Audit-/Review-/Preflightagenten arbeiten read-only. W01 hat nach der konkreten Portkorrektur sein unabhängiges Gate bestanden; Die Nutzerantworten „D03-Policy freigeben“ und „Startplatz-Fixture freigeben“ lösen seit 10:34:17 UTC die beiden zusätzlichen konkreten Ownergates; noch offene Paketgates bleiben davon getrennt.
+Three.js/HVP/Voxel/Physics/Save bleiben erhalten. Resources ist alleinige Warenautorität; UI liest Snapshots und sendet Commands. Genau ein Integrator `/root/fp06_integrator` besitzt gemeinsame Contracts-, Host-, Physics- und Savegrenzen. Höchstens ein weiterer isolierter Domain-/Assetwriter darf parallel arbeiten. Aktuell gibt es den Dokumentationswriter `/root` sowie genau zwei isolierte Produktwriter: `/root/fp06_integrator` auf `codex/hestia-fp06-integrator-2026-10-11` für W06 und `/root/fp06_domain` auf `codex/hestia-fp06-domain-2026-10-11` für W05. Die tatsächlich delegierten Audit-/Review-/Preflightagenten arbeiten read-only. W01 hat nach der konkreten Portkorrektur sein unabhängiges Gate bestanden; Die Nutzerantworten „D03-Policy freigeben“ und „Startplatz-Fixture freigeben“ lösen seit 10:34:17 UTC die beiden zusätzlichen konkreten Ownergates; noch offene Paketgates bleiben davon getrennt.
 
 ## Implementation phases
 
@@ -26,10 +26,10 @@ Three.js/HVP/Voxel/Physics/Save bleiben erhalten. Resources ist alleinige Warena
 |---|---|---|---|
 | W00 | keine | /root Dokumentation | PASS: Baseline und unabhängiges Review |
 | W01 | W00 | /root/fp06_integrator | PASS: a30630dd7963c165c673df7ea1b46d52735752ef, 46 Tests/Build/Review |
-| W02 | W01 | /root/fp06_domain, eigener Worktree | IN_PROGRESS: 61 Tests/Build grün; Cargo-E2E und unabhängiges Review laufen; initiale TDD-Abweichung dokumentiert |
+| W02 | W01 | /root/fp06_domain, eigener Worktree | PASS technisch: 10e1e3026610065206d8ac4b361d3f1686114dd8, 61 Tests/Build/Cargo1/Review; initiale TDD-Abweichung FAIL/NOT_RUN bleibt |
 | W03 | W01 | /root/fp06_integrator | NOT_RUN: Ownerpolicy freigegeben; nach frei gewordenem Integratorslot |
 | W04 | W02/W03 | /root/fp06_integrator | BLOCKED: Vorgänger; D05 freigegeben |
-| W05 | W01 | /root/fp06_domain, eigener Worktree | NOT_RUN: nach freiem Domainwriter-Slot |
+| W05 | W01 | /root/fp06_domain, eigener Worktree | IN_PROGRESS: echter neuer Grant auf sauberem Domainbranch, Fachtests zuerst |
 | W06 | W01 | /root/fp06_integrator | IN_PROGRESS: echter Host-/Browser-RED, fokussiertes GREEN; vollständiger Paketgate offen |
 | W07 | W02/W05/W06 | /root/fp06_integrator | BLOCKED: Vorgänger; D11 freigegeben |
 | W08 | W02 | Domainwriter | BLOCKED: Vorgänger; D06 freigegeben |
@@ -91,10 +91,11 @@ Bei unklarer Quelle, Zuständigkeit oder relevantem Ownergate nur betroffene Pro
 - [x] W01 tatsächliches RED/GREEN, Quelle CASS-OFFCUT nach Review korrigiert, 46 Tests/Build/Diff und unabhängige Spec-/Qualitätsnachprüfung PASS bei a30630dd7963c165c673df7ea1b46d52735752ef. [Reviews](reviews/w01-followup.md).
 - [x] Zweiten Writer tatsächlich auf eigener Domainbranch/worktree eingerichtet; 82 benötigte LFS-Payloadhashes bestätigt, unveränderte gepinnte Dependencies verfügbar. Genau zwei disjunkte W02-/W06-Grants.
 - [x] D03-Restart und konkretes initiales StartSiteprofil zunächst als offene Ownerfragen dokumentiert, anschließend beide ausdrücklichen Nutzerfreigaben am 2026-10-11 um 10:34:17 UTC übernommen; Paketgates bleiben erforderlich.
-- [ ] W02: genuine WIP-Lock-RED/GREEN, Resourcesregressions und Build bestehen; anfänglicher T009–12 Business-RED vor Implementation NOT_RUN wegen Modulimport-Setupfehler. Browser/Commit/Review noch offen.
-- [ ] W06: echte Host-/Kadenz-/Browser-REDs und erster fokussierter GREEN; vollständige Regression/Build/Browser/Commit/Review noch offen.
+- [x] W02 technisches Paketgate: 61 Tests/Build/Cargo1 und unabhängige Spec-/Codeprüfung PASS bei 10e1e3026610065206d8ac4b361d3f1686114dd8. Anfänglicher T009–12 Business-RED vor Implementation NOT_RUN wegen Modulimport-Setupfehler; historische TDD-Konformität FAIL bleibt ausdrücklich sichtbar, kein erfundener Ownerwaiver. [Vollbericht](reviews/w02-package-report.md), [Nachprüfung](reviews/w02-followup.md).
+- [ ] W06: echte Host-/Kadenz-/Browser-REDs; vollständige frische Unitsuite 197 Dateien/1835 Tests PASS, 10 Session-/Evidencefälle PASS, Build/Typecheck PASS. Browser 3/6 PASS, übrige Fälle erschöpfen 30-s-Gesamtbudgets; tatsächliche Traces gesichert, fortlaufender normaler Sessionflow wird ohne Limitänderung geprüft. Host-Codeprüfung läuft, Endgate/Commit offen.
 - [x] Browserprüfungen erhalten eine ausdrückliche serielle Lease für Port 5174; unveränderte 30-s-/5-s-/20-s-Defaults aus der vorhandenen Playwright-Konfiguration. Externe Umgebungsconfigs ändern ausschließlich Port und eigene Evidence-Ausgabepfade, keine Produktkonfiguration. W06s noch fehlgeschlagener kombinierter Browserfall wird in fokussierte reale Bedienfälle zerlegt und nach Unitabschluss seriell geprüft; kein neuer Timeout angenommen.
-- [ ] W03–W05/W07–W11 je Paket RED/GREEN/Regression/Review/Evidence/Commit-Gate.
+- [ ] W05: Fachtestcode und Sourceprüfung zuerst; CPUjobs erst nach ausdrücklicher Lease, keine Runtimeimplementation vor BusinessRED.
+- [ ] W03/W04/W07–W11 je Paket RED/GREEN/Regression/Review/Evidence/Commit-Gate.
 
 ## Definition of Done
 
