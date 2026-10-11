@@ -1,0 +1,14 @@
+
+> weltraum-browser@0.1.0 test:e2e
+> playwright test --config=/workspace/.cloud-setup/fp06-w02.playwright.config.mts tests/e2e/resource-cargo-core.spec.ts
+
+[WebServer] (node:19450) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:19477) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/resource-cargo-core.spec.ts:164:1 › normal page dynamically imports the resource cargo core and records deterministic evidence (4.8s)
+
+  1 passed (6.3s)

@@ -1,0 +1,29 @@
+{
+  "test": "resource-cargo-core.spec.ts",
+  "status": "PASS",
+  "passed": 1,
+  "durationSeconds": 6.3,
+  "completedAtUtc": "2026-10-11T10:33:59.829183+00:00",
+  "reports": [
+    {
+      "path": "apps/weltraum-browser/evidence/browser-resource-cargo-inventory-core-v1-summary.json",
+      "freshGeneratedCopy": "browser-core-generated/browser-resource-cargo-inventory-core-v1-summary.json",
+      "generatedSha256": "e495e56f6dcd348bd3bd6e78090e7a4512c65f17ae74f5485d5767a15f7159eb",
+      "generatedMtimeNs": 1791714696876923019,
+      "baselineSha256": "e495e56f6dcd348bd3bd6e78090e7a4512c65f17ae74f5485d5767a15f7159eb",
+      "restoredSha256": "e495e56f6dcd348bd3bd6e78090e7a4512c65f17ae74f5485d5767a15f7159eb",
+      "byteIdenticalToHistoricalBaseline": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/browser-resource-cargo-inventory-core-v1.md",
+      "freshGeneratedCopy": "browser-core-generated/browser-resource-cargo-inventory-core-v1.md",
+      "generatedSha256": "7b197732de6db1b693c87c7c91ac091c0978329d54fe81515d7fc41e1d0df288",
+      "generatedMtimeNs": 1791714696880923058,
+      "baselineSha256": "7b197732de6db1b693c87c7c91ac091c0978329d54fe81515d7fc41e1d0df288",
+      "restoredSha256": "7b197732de6db1b693c87c7c91ac091c0978329d54fe81515d7fc41e1d0df288",
+      "byteIdenticalToHistoricalBaseline": true
+    }
+  ],
+  "historicalRestoration": "PASS",
+  "port5174": "FREE"
+}

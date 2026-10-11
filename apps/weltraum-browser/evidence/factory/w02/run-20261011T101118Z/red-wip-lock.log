@@ -1,0 +1,40 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/material.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/material.test.ts (13 tests | 1 failed) 1228ms
+     × locks recipe WIP against ordinary transfers even by its owner, retaining the material for authorized completion 112ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/material.test.ts > FP06 exact material transactions over Resources snapshots > locks recipe WIP against ordinary transfers even by its owner, retaining the material for authorized completion
+AssertionError: expected { status: 'Prepared', …(4) } to match object { status: 'Rejected', …(1) }
+(14 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "reason": "RecipeWipLocked",
+-   "status": "Rejected",
++   "status": "Prepared",
+  }
+
+ ❯ tests/unit/factory/material.test.ts:194:63
+    192|     const request: MaterialIntent = { kind: "transfer", transactionId:…
+    193|       targetContainerId: "product", targetStackId: "pretend_pristine",…
+    194|     expect(prepareFactoryMaterialStep(started.view, request)).toMatchO…
+       |                                                               ^
+    195|     expect(contents(started.view, "wip_a")[0].quantity).toBe(8_000_000…
+    196|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 12 passed (13)
+   Start at  10:19:35
+   Duration  1.75s (transform 280ms, setup 0ms, import 359ms, tests 1.23s, environment 0ms)

@@ -1,0 +1,23 @@
+
+> weltraum-browser@0.1.0 build
+> tsc -p tsconfig.json && vite build
+
+vite v8.1.5 building client environment for production...
+transforming...✓ 266 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                             40.68 kB │ gzip:   7.33 kB
+dist/assets/streamingWorker-CZ5H7ot8.js    200.14 kB
+dist/assets/physicsWorker-Dwd9toAh.js    2,372.92 kB
+dist/assets/index-GeJ96uLU.css             170.33 kB │ gzip:  27.08 kB
+dist/assets/hvp-B4j3SQgv.js                  3.95 kB │ gzip:   1.61 kB
+dist/assets/surface-lab-BisP3_On.js         56.15 kB │ gzip:  18.34 kB │ map:   221.66 kB
+dist/assets/browserBridge-B0rvIaDh.js       61.66 kB │ gzip:  14.07 kB │ map:   179.80 kB
+dist/assets/index-Y7KGTBkJ.js            1,568.09 kB │ gzip: 421.81 kB │ map: 6,348.65 kB
+
+✓ built in 1.98s
+[plugin builtin:vite-reporter]
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.

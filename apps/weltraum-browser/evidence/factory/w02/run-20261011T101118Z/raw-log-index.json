@@ -1,0 +1,67 @@
+[
+  {
+    "normalized": "build-after-quality-fix.log",
+    "rawArchive": "build-after-quality-fix.raw.log.gz",
+    "rawSha256": "34f8c544c4187ab3c6f817ad36716e0722fcba389b193430f328dbd950da1f6b"
+  },
+  {
+    "normalized": "build-attempt-1.log",
+    "rawArchive": "build-attempt-1.raw.log.gz",
+    "rawSha256": "599afa4b2976f52f8df1b59ba0f87b675353acea5862a2bc57f0a488bafafbc2"
+  },
+  {
+    "normalized": "build-attempt-2.log",
+    "rawArchive": "build-attempt-2.raw.log.gz",
+    "rawSha256": "bfc8f1ffc3b32facd363ced44396e3288679bc41a986c949df310466aaeddcb1"
+  },
+  {
+    "normalized": "build-final.log",
+    "rawArchive": "build-final.raw.log.gz",
+    "rawSha256": "a42dc19f4088424d2b28d3a49a5b0f412921824fb2f03583a25b7f3a24f82f4b"
+  },
+  {
+    "normalized": "green-attempt-1.log",
+    "rawArchive": "green-attempt-1.raw.log.gz",
+    "rawSha256": "fdf052b64146c6ec8317b5e136fe0b491ec1c8464f2c5a059175db02d948a16f"
+  },
+  {
+    "normalized": "green-attempt-2.log",
+    "rawArchive": "green-attempt-2.raw.log.gz",
+    "rawSha256": "39ef49f0ab92e93bce989de67a1162899fecb228c7415daa0cdbed050391d8f2"
+  },
+  {
+    "normalized": "green-final-regressions.log",
+    "rawArchive": "green-final-regressions.raw.log.gz",
+    "rawSha256": "08a73a8c8b7aabe5e7a289a10c56c6bda884bc67a61d870e2b5a474abf3a7f26"
+  },
+  {
+    "normalized": "green-regressions.log",
+    "rawArchive": "green-regressions.raw.log.gz",
+    "rawSha256": "328da0f66539a7beb7fa3162109a5ec853794c9dceb3335f16cc520b71c21622"
+  },
+  {
+    "normalized": "red-condition-preservation.log",
+    "rawArchive": "red-condition-preservation.raw.log.gz",
+    "rawSha256": "0468e47309f54caf022d710de4c2925d76b49a1711f3b1bbcb7e99acb6120922"
+  },
+  {
+    "normalized": "red-material-quality.log",
+    "rawArchive": "red-material-quality.raw.log.gz",
+    "rawSha256": "4873e12462a34da00f1951f2264c16e1ee6334b4882a0ebbb5f21262fcc071a2"
+  },
+  {
+    "normalized": "red-wip-lock.log",
+    "rawArchive": "red-wip-lock.raw.log.gz",
+    "rawSha256": "b42ff1fd23d7ba347dad18b25b9e0ec61ef7154200eba629ef865a39e2e8e485"
+  },
+  {
+    "normalized": "initial-setup-failure.log",
+    "rawArchive": "initial-setup-failure.raw.log.gz",
+    "rawSha256": "445246b7b49e150fb112a886138c2f6c718cf221eb9fb38c134e2550257140a9"
+  },
+  {
+    "normalized": "browser-core.log",
+    "rawArchive": "browser-core.raw.log.gz",
+    "rawSha256": "e2ca39e654246cdc3e4989568345a39c7af8ea453d5230d44d9b738996ba3e55"
+  }
+]

@@ -1,0 +1,39 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/material.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/material.test.ts (14 tests | 1 failed) 1199ms
+     × preserves declared source grade and condition instead of silently upgrading the finished material 180ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/material.test.ts > FP06 exact material transactions over Resources snapshots > preserves declared source grade and condition instead of silently upgrading the finished material
+AssertionError: expected { stackId: 'cut_semi', …(6) } to match object { grade: 'declared_grade', …(1) }
+(7 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "condition": 0.4,
+    "grade": "declared_grade",
+  }
+
+ ❯ tests/unit/factory/material.test.ts:235:51
+    233|     const started = commit(initial, startCut(initial));
+    234|     const finished = commit(started.view, { kind: "finish-recipe", tra…
+    235|     expect(contents(finished.view, "product")[0]).toMatchObject({ grad…
+       |                                                   ^
+    236|     expect(contents(finished.view, "offcut")[0]).toMatchObject({ grade…
+    237|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 13 passed (14)
+   Start at  10:21:47
+   Duration  1.60s (transform 206ms, setup 0ms, import 291ms, tests 1.20s, environment 0ms)

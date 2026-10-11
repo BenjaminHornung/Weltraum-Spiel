@@ -1,0 +1,15 @@
+{
+  "reports": [
+    {
+      "path": "apps/weltraum-browser/evidence/browser-resource-cargo-inventory-core-v1-summary.json",
+      "sha256": "e495e56f6dcd348bd3bd6e78090e7a4512c65f17ae74f5485d5767a15f7159eb",
+      "backupPath": "/workspace/.cloud-setup/w02-e2e-report-backups/browser-resource-cargo-inventory-core-v1-summary.json"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/browser-resource-cargo-inventory-core-v1.md",
+      "sha256": "7b197732de6db1b693c87c7c91ac091c0978329d54fe81515d7fc41e1d0df288",
+      "backupPath": "/workspace/.cloud-setup/w02-e2e-report-backups/browser-resource-cargo-inventory-core-v1.md"
+    }
+  ],
+  "purpose": "Exact rollback of only two pre-existing generated reports; these baseline reports are not new W02 evidence."
+}

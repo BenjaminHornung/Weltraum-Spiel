@@ -1,0 +1,28 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/material.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/material.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/material.test.ts [ tests/unit/factory/material.test.ts ]
+Error: Cannot find module '../../../src/factory/material/quantity' imported from /workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser/tests/unit/factory/material.test.ts
+ ❯ tests/unit/factory/material.test.ts:4:1
+      2| import { createFp02Fixture } from "../../../src/factory/catalog/fp02Ca…
+      3| import type { FactoryCatalog, FactoryItem } from "../../../src/factory…
+      4| import { validateFactoryAmount } from "../../../src/factory/material/q…
+       | ^
+      5| import { readMaterialMassMg } from "../../../src/factory/material/reso…
+      6| import { commitFactoryMaterialStep, createFactoryMaterialView, prepare…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  10:11:19
+   Duration  308ms (transform 161ms, setup 0ms, import 0ms, tests 0ms, environment 0ms)

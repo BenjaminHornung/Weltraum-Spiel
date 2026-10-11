@@ -1,0 +1,12 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/material.test.ts tests/unit/factory/catalog.test.ts tests/unit/resourceCatalog.test.ts tests/unit/resourceContainers.test.ts tests/unit/resourceTransfer.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser
+
+
+ Test Files  5 passed (5)
+      Tests  59 passed (59)
+   Start at  10:20:12
+   Duration  4.98s (transform 746ms, setup 0ms, import 1.09s, tests 2.92s, environment 0ms)

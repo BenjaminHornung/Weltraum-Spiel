@@ -1,0 +1,58 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/material.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/material.test.ts (15 tests | 2 failed) 1380ms
+     × preserves declared source grade and condition instead of silently upgrading the finished material 172ms
+     × rejects a recipe combining incompatible declared grades before withdrawing any inputs 71ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/material.test.ts > FP06 exact material transactions over Resources snapshots > preserves declared source grade and condition instead of silently upgrading the finished material
+AssertionError: expected { stackId: 'cut_semi', …(6) } to match object { grade: 'declared_grade', …(1) }
+(7 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "condition": 0.4,
+    "grade": "declared_grade",
+  }
+
+ ❯ tests/unit/factory/material.test.ts:235:51
+    233|     const started = commit(initial, startCut(initial));
+    234|     const finished = commit(started.view, { kind: "finish-recipe", tra…
+    235|     expect(contents(finished.view, "product")[0]).toMatchObject({ grad…
+       |                                                   ^
+    236|     expect(contents(finished.view, "offcut")[0]).toMatchObject({ grade…
+    237|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/factory/material.test.ts > FP06 exact material transactions over Resources snapshots > rejects a recipe combining incompatible declared grades before withdrawing any inputs
+AssertionError: expected { status: 'Prepared', …(4) } to match object { status: 'Rejected', …(1) }
+(18 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "reason": "MixedMaterialQuality",
+-   "status": "Rejected",
++   "status": "Prepared",
+  }
+
+ ❯ tests/unit/factory/material.test.ts:249:58
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 13 passed (15)
+   Start at  10:22:24
+   Duration  1.75s (transform 206ms, setup 0ms, import 268ms, tests 1.38s, environment 0ms)
