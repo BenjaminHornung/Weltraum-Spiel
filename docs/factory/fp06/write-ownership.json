@@ -1709,6 +1709,26 @@
           "Factory-only native input incorrectly accepted on Legacy"
         ],
         "nativeHoldEntry": "No pose/tick/velocity change proved"
+      },
+      "factoryInputCapCounterexample": {
+        "log": 71,
+        "status": "RECONSTRUCTED_UNSAFE_REPORT_ONLY_VARIANT_AFTER_INITIAL_SOURCE_FIX",
+        "result": "1_FAIL_20_SKIPPED_3_ASSERTIONS",
+        "rawSha256": "22141f2028d5ec94d2c12747e0bade43e6584c1262738323725784929cb0cdb2",
+        "rawBytes": 3500,
+        "endedAtUtc": "2026-10-11T16:43:55.854677+00:00",
+        "provenance": "Root source read16:39 already showed catch(fail). Writer confirms temporary reconstruction of report-only rejection after initial runtime edit, restored fail(); not an unchanged preimplementation RED. Genuine69/70 remain before runtime fix. Variant patch/receipt pending writer seal."
+      },
+      "factoryInputFocusedGreen": {
+        "log": 72,
+        "result": "21_PASS",
+        "exitCode": 0,
+        "wrapperSeconds": 1.8447015450001345,
+        "endedAtUtc": "2026-10-11T16:44:23.763772+00:00",
+        "rawSha256": "958dc6be05bd2d847933b7cb3e3df057acde904d46caf7f3f4d8aa356bf9d025",
+        "rawBytes": 353,
+        "rootRawVerification": "Decompressed gzip bytes/SHA exact receipt",
+        "scope": "Focused input suite only; affected regression/build/source sealed review/browser/commit pending"
       }
     },
     "W08": {
