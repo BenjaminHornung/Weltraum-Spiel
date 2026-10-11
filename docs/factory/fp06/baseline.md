@@ -18,26 +18,26 @@ W12–W29, Enginewechsel, Dependency-Upgrades, main-Merge, Force-Push und Veröf
 
 ## Architecture decision
 
-Three.js/HVP/Voxel/Physics/Save bleiben erhalten. Resources ist alleinige Warenautorität; UI liest Snapshots und sendet Commands. Genau ein Integrator `/root/fp06_integrator` besitzt gemeinsame Contracts-, Host-, Physics- und Savegrenzen. Höchstens ein weiterer isolierter Domain-/Assetwriter darf parallel arbeiten. Aktuell gibt es einen Dokumentationswriter und null Produktwriter. Die Audit-/Reviewagenten `w00_repo_audit` und `w00_architecture` arbeiten read-only. Der tatsächlich gestartete künftige Integrator `fp06_integrator` bereitet W01 read-only vor; Produktwrite vor W00-PASS bleibt untersagt. Ein zweiter Implementierungswriter ist noch nicht dispatcht.
+Three.js/HVP/Voxel/Physics/Save bleiben erhalten. Resources ist alleinige Warenautorität; UI liest Snapshots und sendet Commands. Genau ein Integrator `/root/fp06_integrator` besitzt gemeinsame Contracts-, Host-, Physics- und Savegrenzen. Höchstens ein weiterer isolierter Domain-/Assetwriter darf parallel arbeiten. Aktuell gibt es den Dokumentationswriter `/root` sowie genau zwei isolierte Produktwriter: `/root/fp06_integrator` auf `codex/hestia-fp06-integrator-2026-10-11` für W06 und `/root/fp06_domain` auf `codex/hestia-fp06-domain-2026-10-11` für W02. Die tatsächlich delegierten Audit-/Review-/Preflightagenten arbeiten read-only. W01 hat nach der konkreten Portkorrektur sein unabhängiges Gate bestanden; Sourceprofil- und Restart-Ownergates bleiben ehrlich offen.
 
 ## Implementation phases
 
 | Paket | Abhängigkeiten | Geplante Rolle | Jetzt |
 |---|---|---|---|
 | W00 | keine | /root Dokumentation | PASS: Baseline und unabhängiges Review |
-| W01 | W00 | /root/fp06_integrator | READY_AFTER_W00_GATE: Nutzerfreeze liegt vor |
-| W02 | W01 | Domainwriter, eigener Worktree | BLOCKED: Vorgänger |
-| W03 | W01 | /root/fp06_integrator | BLOCKED: Vorgänger |
+| W01 | W00 | /root/fp06_integrator | PASS: a30630dd7963c165c673df7ea1b46d52735752ef, 46 Tests/Build/Review |
+| W02 | W01 | /root/fp06_domain, eigener Worktree | IN_PROGRESS: 59 Tests/Build grün; E2E/Review offen; initiale TDD-Abweichung dokumentiert |
+| W03 | W01 | /root/fp06_integrator | BLOCKED: D03_RESTART_POLICY offen, W01 bestanden |
 | W04 | W02/W03 | /root/fp06_integrator | BLOCKED: Vorgänger; D05 freigegeben |
-| W05 | W01 | Assetwriter, eigener Worktree | BLOCKED: Vorgänger |
-| W06 | W01 | /root/fp06_integrator | BLOCKED: Vorgänger; D05/D07 freigegeben |
+| W05 | W01 | /root/fp06_domain, eigener Worktree | NOT_RUN: nach freiem Domainwriter-Slot |
+| W06 | W01 | /root/fp06_integrator | IN_PROGRESS: echter Host-/Browser-RED, fokussiertes GREEN; vollständiger Paketgate offen |
 | W07 | W02/W05/W06 | /root/fp06_integrator | BLOCKED: Vorgänger; D11 freigegeben |
 | W08 | W02 | Domainwriter | BLOCKED: Vorgänger; D06 freigegeben |
 | W09 | W04/W07/W08 | /root/fp06_integrator | BLOCKED: Vorgänger |
 | W10 | W09 | /root/fp06_integrator | BLOCKED: Vorgänger; D11 freigegeben |
 | W11 | W10 | Integrator, unabhängige Reviews | BLOCKED: Vorgänger |
 
-Die Abhängigkeiten sind keine Schreibfreigaben. Nach W01-PASS kann etwa W02 mit W03 und später W05 mit Integrationsvorbereitung parallel laufen; immer maximal zwei tatsächliche Writer. Exakte paketbezogene Zielpfade, geplante Branches, Read-Sets und noch leere Produktwrite-Grants stehen in [write-ownership.json](write-ownership.json). Jeder Writer startet von einem vollständigen reviewed predecessor SHA in eigenem Branch/Worktree. Unabhängiger Reviewer prüft Fachvertrag und Codequalität vor Freigabe abhängiger Arbeit.
+Die Abhängigkeiten sind keine Schreibfreigaben. Nach W01-PASS kann etwa W02 mit W03 und später W05 mit Integrationsvorbereitung parallel laufen; immer maximal zwei tatsächliche Writer. Exakte paketbezogene Zielpfade, aktuelle/geplante Branches, Read-Sets und tatsächliche Produktwrite-Grants stehen in [write-ownership.json](write-ownership.json). Jeder Writer startet von einem vollständigen reviewed predecessor SHA in eigenem Branch/Worktree. Unabhängiger Reviewer prüft Fachvertrag und Codequalität vor Freigabe abhängiger Arbeit.
 
 ## Tests and evidence
 
@@ -62,7 +62,7 @@ Evidence: [Run-Manifest](../../../apps/weltraum-browser/evidence/factory/w00/202
 | Fall | Tatsächlich beobachteter Zustand | Ergebnis |
 |---|---|---|
 | T001 Auditpinabweichung | Auditpin, Remote und lokale Basis identisch. | Positiver Basisabgleich PASS; künstlicher Driftfall NOT_RUN. Regel: auf Drift betroffene Writes halten, keine automatische Rebase. |
-| T002 Fremdclaim am HVP-Host | Lokal kein fremder Produktwriter; überlappende Remote-Branches vorhanden, deren Aktivität unbekannt. | Lokale Claim-Erhebung PASS; tatsächlicher konkurrierender Claim-Fall NOT_RUN. Hostgrant bleibt leer und wird unmittelbar vor W06 erneut geprüft. |
+| T002 Fremdclaim am HVP-Host | Lokal kein fremder Produktwriter; überlappende Remote-Branches vorhanden, deren Aktivität unbekannt. | Lokale Claim-Erhebung PASS; tatsächlicher konkurrierender Claim-Fall NOT_RUN. W00-Hostgrant war leer. Vor W06 wurden Main und lokale Worktrees erneut geprüft und der eng begrenzte Integratorgrant erteilt; keine aktive fremde lokale Hostschreibclaim beobachtet. Externe uncommitted Claims bleiben nicht sichtbar. |
 | T003 Bereits roter Alttest | Frischer Build und 95 Basistests grün. | Basis PASS; Baseline-Failure-Beispiel NOT_RUN, keine Assertion gelockert. |
 | T004 Veränderte Quelle bei gleichem Namen | Alle 33 Dateihashes/-größen stimmen. | Integrität PASS; künstliche Manipulation NOT_RUN. Hashdrift blockiert betroffene Fixtureübernahme. |
 
@@ -76,7 +76,7 @@ ID-Mapping, exakte Mengen/Volumen, native Facility-Installation und vollständig
 
 ## Rollback / safe stop
 
-Bei unklarer Quelle, Zuständigkeit oder relevantem Ownergate nur betroffene Produktwrites stoppen. W00 liegt isoliert; ursprünglicher Checkout, main und sämtliche Remote-Branches bleiben erhalten. Keine Rebase/Merge/Push-Aktion. Produktfehler vor Commit behalten alten Zustand; bei unsicherem Rollback RecoveryHold. Git-Revert interpretiert veröffentlichte Saves nicht still um.
+Bei unklarer Quelle, Zuständigkeit oder relevantem Ownergate nur betroffene Produktwrites stoppen. W00 liegt isoliert; ursprünglicher Checkout, main und sämtliche Remote-Branches bleiben erhalten. Kein Main-Merge, Force-Push, Überschreiben fremder Änderungen oder Veröffentlichen. Reviewte Commitübernahme erfolgt nur auf isolierten Implementierungsbranches. Produktfehler vor Commit behalten alten Zustand; bei unsicherem Rollback RecoveryHold. Git-Revert interpretiert veröffentlichte Saves nicht still um.
 
 ## Progress log
 
@@ -88,7 +88,12 @@ Bei unklarer Quelle, Zuständigkeit oder relevantem Ownergate nur betroffene Pro
 - [x] W00-Commit `656c52458eff15133025bb21dc3e5b7b708cfbf7`; Worktree danach sauber.
 - [x] Nutzerantwort übernommen: W01-Freeze und D05/D06/D07/D11 ausdrücklich freigegeben am 2026-10-11 09:23:32 UTC.
 - [x] W01-Integrator mit exakt fünf Produktzielen, eigener Branch/Worktree und geprüftem W00-Vorgänger gestartet.
-- [ ] W01–W11 je Paket RED/GREEN/Regression/Review/Evidence/Commit-Gate.
+- [x] W01 tatsächliches RED/GREEN, Quelle CASS-OFFCUT nach Review korrigiert, 46 Tests/Build/Diff und unabhängige Spec-/Qualitätsnachprüfung PASS bei a30630dd7963c165c673df7ea1b46d52735752ef. [Reviews](reviews/w01-followup.md).
+- [x] Zweiten Writer tatsächlich auf eigener Domainbranch/worktree eingerichtet; 82 benötigte LFS-Payloadhashes bestätigt, unveränderte gepinnte Dependencies verfügbar. Genau zwei disjunkte W02-/W06-Grants.
+- [x] D03-Restart und konkretes initiales StartSiteprofil als offene Ownerfragen dokumentiert; nur abhängige Policy-/Sourceanteile halten.
+- [ ] W02: genuine WIP-Lock-RED/GREEN, Resourcesregressions und Build bestehen; anfänglicher T009–12 Business-RED vor Implementation NOT_RUN wegen Modulimport-Setupfehler. Browser/Commit/Review noch offen.
+- [ ] W06: echte Host-/Kadenz-/Browser-REDs und erster fokussierter GREEN; vollständige Regression/Build/Browser/Commit/Review noch offen.
+- [ ] W03–W05/W07–W11 je Paket RED/GREEN/Regression/Review/Evidence/Commit-Gate.
 
 ## Definition of Done
 
