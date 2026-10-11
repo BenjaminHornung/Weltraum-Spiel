@@ -1,0 +1,563 @@
+{
+  "capturedAtUtc": "2026-10-11T20:58:07.110005+00:00",
+  "head": "43a61c0f5be5df69e4f8bb42db89da3d7a3a4b2b",
+  "status": " M apps/weltraum-browser/src/factory/construction/buildStep.ts\n M apps/weltraum-browser/src/factory/presentation/factoryAssets.ts\n M apps/weltraum-browser/src/factory/session/factorySession.ts\n M apps/weltraum-browser/src/factory/session/hostPort.ts\n M apps/weltraum-browser/src/hestia-prototype/physics/client.ts\n M apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts\n M apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts\n M apps/weltraum-browser/src/hestia-prototype/physics/session.ts\n M apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts\n M apps/weltraum-browser/src/hvp/hvpBootstrap.ts\n M apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts\n M apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts\n M apps/weltraum-browser/tests/unit/hvp-locomotion.test.ts\n M apps/weltraum-browser/tests/unit/hvp-player-input.test.ts\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/01-cargo-custody-business-red.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/01-cargo-custody-business-red.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/02-cargo-custody-green.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/02-cargo-custody-green.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/03-native-carrier-business-red.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/03-native-carrier-business-red.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/04-native-carrier-first-green.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/04-native-carrier-first-green.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/05-native-carrier-custody-green.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/05-native-carrier-custody-green.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/06-interface-native-original-build.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/06-interface-native-original-build.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/07-cargo-complete-foot-identity-request-red.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/07-cargo-complete-foot-identity-request-red.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/08-cargo-foot-identity-request-green.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/08-cargo-foot-identity-request-green.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/09-paired-native-carrier-movement-red.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/09-paired-native-carrier-movement-red.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/10-paired-native-carrier-first-green.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/10-paired-native-carrier-first-green.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/11-shared-authority-complete-command-replay-red.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/11-shared-authority-complete-command-replay-red.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/12-shared-authority-history-green.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/12-shared-authority-history-green.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/13-native-local-depot-red.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/13-native-local-depot-red.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/14-native-local-depot-collected-business-red.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/14-native-local-depot-collected-business-red.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/15-native-local-depot-first-green.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/15-native-local-depot-first-green.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/16-native-local-source-business-red.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/16-native-local-source-business-red.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/17-native-local-source-green.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/17-native-local-source-green.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/18-native-carrier-client-publication-red.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/18-native-carrier-client-publication-red.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/19-native-carrier-client-publication-green.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/19-native-carrier-client-publication-green.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/20-shared-construction-authority-red.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/20-shared-construction-authority-red.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/21-shared-authority-carrier-affected-green.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/21-shared-authority-carrier-affected-green.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/22-dry-joint-clock-power-red.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/22-dry-joint-clock-power-red.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/23-dry-confirmed-step-first-green.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/23-dry-confirmed-step-first-green.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/24-carrier-authority-dry-build.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/24-carrier-authority-dry-build.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/25-carrier-type-narrow-build.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/25-carrier-type-narrow-build.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/26-dry-replay-fresh-facts-red.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/26-dry-replay-fresh-facts-red.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/27-native-full-slot-release-red.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/27-native-full-slot-release-red.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/28-dry-facts-and-full-release-green.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/28-dry-facts-and-full-release-green.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/29-native-paired-jump-autostep-regression.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/29-native-paired-jump-autostep-regression.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/30-native-uuid-binding-red.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/30-native-uuid-binding-red.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/31-native-uuid-binding-green.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/31-native-uuid-binding-green.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/32-carrier-release-transport-red.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/32-carrier-release-transport-red.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/33-carrier-release-transport-green.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/33-carrier-release-transport-green.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/34-host-native-custody-red.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/34-host-native-custody-red.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/35-host-native-support-red.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/35-host-native-support-red.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/36-host-native-custody-green.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/36-host-native-custody-green.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/37-host-custody-integration-build.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/37-host-custody-integration-build.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/38-host-custody-integration-build-green.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/38-host-custody-integration-build-green.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/39-native-uuid-power-red.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/39-native-uuid-power-red.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/40-native-uuid-full-domain-green.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/40-native-uuid-full-domain-green.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/41-native-depot-read-and-partial-custody-red.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/41-native-depot-read-and-partial-custody-red.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/42-native-depot-read-and-partial-custody-green.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/42-native-depot-read-and-partial-custody-green.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/43-host-complete-custody-and-history-integration.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/43-host-complete-custody-and-history-integration.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/44-local-factory-products-profile-red.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/44-local-factory-products-profile-red.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/45-local-factory-products-profile-red.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/45-local-factory-products-profile-red.raw.log.gz\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/46-local-factory-products-profile-green.command.json\n?? apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/46-local-factory-products-profile-green.raw.log.gz\n?? apps/weltraum-browser/src/factory/construction/cargoHandlingProfile.ts\n?? apps/weltraum-browser/src/factory/session/cargoHandling.ts\n?? apps/weltraum-browser/src/factory/session/dryFactorySlice.ts\n?? apps/weltraum-browser/tests/unit/factory/cargoHandling.test.ts\n?? apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts\n",
+  "files": [
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/buildStep.ts",
+      "bytes": 6382,
+      "sha256": "f8a620467585df72df30181cadecae0b6c70bdd9e917c4276348e79184b1f8d6"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+      "bytes": 10981,
+      "sha256": "484337d6d30008b4a38738b0668a8c0cbaf6cabc4976bf2d9b6af4a7ca8c0edc"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/factorySession.ts",
+      "bytes": 13935,
+      "sha256": "98cdb8d21de71c17fcf61c3431fd19b8258ee8e16f60a1f7c76e601dab01e4f2"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+      "bytes": 9550,
+      "sha256": "e84d17ea0b2f07db1d6e1427b4d7009ffde8f4588daa414b5a0bf206cdf5393a"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+      "bytes": 40784,
+      "sha256": "d27eab2d45683ec7155261578204343d014f7d33a1fd2dc6384777900d5a574a"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+      "bytes": 41850,
+      "sha256": "169c93d151cb726ac2529b5bfc6230a0a717083fd9f051c6e4953685bdb89014"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+      "bytes": 17473,
+      "sha256": "4516a3978ac10b0996fa9c48f6a5a0bf3d3cb297a34cf414c05408cf1bb2d4c4"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+      "bytes": 39185,
+      "sha256": "5d5fa4b98d1a5f05d5d4bf562c0b88397e0c9cb7ead4eaeacab19e03e2019f0c"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts",
+      "bytes": 8069,
+      "sha256": "46920ca84d41dac5ea82c7bf88a4650646ff62756f7479dfa3e408129d18a4ad"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+      "bytes": 167019,
+      "sha256": "551d969dbfbbcab869169fea6440ff62107a0a3622e56fa5104229c6bb88fefd"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+      "bytes": 20962,
+      "sha256": "de746a926ed245789744e58a6888e20994d0edef78bb85bde7dfe5c77f723f5c"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+      "bytes": 17380,
+      "sha256": "8e8fcfe235fb37e8c2e66eb172a8d3d9af1d46b55dbddec7688c585dca7c8359"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-locomotion.test.ts",
+      "bytes": 14935,
+      "sha256": "ed2b303a82cb9a75a178e40f74e48a3c7c0539b4f0000ef7ffc0d8d08157eae2"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
+      "bytes": 30906,
+      "sha256": "702c3abd2090d9e7fb5a63c9bb5f91c284118b441e8dba43ed2e9e7d2de61707"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/01-cargo-custody-business-red.command.json",
+      "bytes": 585,
+      "sha256": "922d7aeb1abd15ce4d0f6ab30da715e432cae42f3bcaac8f63ee3eefd90ef4d0"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/01-cargo-custody-business-red.raw.log.gz",
+      "bytes": 1228,
+      "sha256": "3271986fd60d0356825a5dc761b80e8f758ff37aaeed8ea2d8560037502d5540"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/02-cargo-custody-green.command.json",
+      "bytes": 477,
+      "sha256": "a57e2191e0a09f930bf861013ce95ba64d69ea42ad90395c073178260330174c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/02-cargo-custody-green.raw.log.gz",
+      "bytes": 263,
+      "sha256": "a8c7c53f6df743e065d4c23dc2c4c519cfbc2facb3402534a6b5b6406a16dbd8"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/03-native-carrier-business-red.command.json",
+      "bytes": 589,
+      "sha256": "4fca0d437ee77bca102ca9f9d804a07a37fb44477447a481f14065818e00eaf2"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/03-native-carrier-business-red.raw.log.gz",
+      "bytes": 1049,
+      "sha256": "c653a3a39ff56c3532d46a0133a7f6921abf4892fd78f32340a1829d593b89e5"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/04-native-carrier-first-green.command.json",
+      "bytes": 506,
+      "sha256": "497b39641a3b0bdf1ff4cd2639455441d002f86dda991edce61210fd2e2b3333"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/04-native-carrier-first-green.raw.log.gz",
+      "bytes": 796,
+      "sha256": "e1905f11701802cb4e47de4dd32f0392eb529f03f9a35cda67bf0600a598cd49"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/05-native-carrier-custody-green.command.json",
+      "bytes": 664,
+      "sha256": "a7f830263f992f02c5475b211b3c9edc82d82a0cba3670675bc58be457375ce2"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/05-native-carrier-custody-green.raw.log.gz",
+      "bytes": 280,
+      "sha256": "4431f44a60c91fe6736528dcda2ce821b6aa118549222a218141e035e98db912"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/06-interface-native-original-build.command.json",
+      "bytes": 419,
+      "sha256": "5338c115b9d0b2552c374f196013cfa4934d4edc521a7e42fe3f96016c4c20b4"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/06-interface-native-original-build.raw.log.gz",
+      "bytes": 866,
+      "sha256": "67ce1126af769a6739fd3dba8f4b66c32a317d6ddf3ba4e2c0c3bc014de91d5c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/07-cargo-complete-foot-identity-request-red.command.json",
+      "bytes": 594,
+      "sha256": "0f459d5cabf577813624b8cb2f6d6ce67d21c21916fb33b54260a59568ec8b50"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/07-cargo-complete-foot-identity-request-red.raw.log.gz",
+      "bytes": 1020,
+      "sha256": "eb52ab9bb50c487a3c61d288309798964c0fd327784d11899bd5541512004123"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/08-cargo-foot-identity-request-green.command.json",
+      "bytes": 526,
+      "sha256": "3c052f263aad6a9deaef261a3bf41e3db5eda2e24ffe01cd78b46a8bbed7feca"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/08-cargo-foot-identity-request-green.raw.log.gz",
+      "bytes": 277,
+      "sha256": "e8f29d2920636317006039afa2da4267f61ee7517f7e8a768c58a201e07c3382"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/09-paired-native-carrier-movement-red.command.json",
+      "bytes": 633,
+      "sha256": "7c9aff67e10ef4220cb4d68a75933c62d7d424ed7f24827c95617382e62fd59b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/09-paired-native-carrier-movement-red.raw.log.gz",
+      "bytes": 983,
+      "sha256": "e6c95466cebe12e27c6553a9ffde5dede858b80f2a567131efc4a7dcc0a27ea6"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/10-paired-native-carrier-first-green.command.json",
+      "bytes": 567,
+      "sha256": "12f5a1ff25c32031e7f680467a2510e6c91a709602a7861dd38a5fe7dfc3266e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/10-paired-native-carrier-first-green.raw.log.gz",
+      "bytes": 292,
+      "sha256": "1a105a0bd8975b1fe21cc804d655f8eb6fa240d3bb065042d785236b3a612b62"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/11-shared-authority-complete-command-replay-red.command.json",
+      "bytes": 480,
+      "sha256": "bcc7ee729d936f8290879c72cf85abca2a47e28c215be51a1efdb42e4f08ee70"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/11-shared-authority-complete-command-replay-red.raw.log.gz",
+      "bytes": 1490,
+      "sha256": "cc347c984c138fe9df9f214edc54b689ef3b0f9c99d16a0ce876f1998573a68e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/12-shared-authority-history-green.command.json",
+      "bytes": 479,
+      "sha256": "402ed235c3ecf4851a8b87d3fe34a9d36768b69aa9236a53aa9d34db18127909"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/12-shared-authority-history-green.raw.log.gz",
+      "bytes": 263,
+      "sha256": "56fc7b5b092ee41e1152c341861883dd3c8799ca62e5936b085edbe2c1272265"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/13-native-local-depot-red.command.json",
+      "bytes": 528,
+      "sha256": "e1379d68d2a8bfdad1e1b32828a58d57512b1f0461c2051fcf4eb5138e2c3db1"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/13-native-local-depot-red.raw.log.gz",
+      "bytes": 541,
+      "sha256": "4afd31a9b2f25fa5e779b3463b7818b3ed446e49d766c0380b20a6bf9ce49dce"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/14-native-local-depot-collected-business-red.command.json",
+      "bytes": 528,
+      "sha256": "16c47345107352472afac13349fb2ed0119bf765f43bb69c6c7b16404e90db3f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/14-native-local-depot-collected-business-red.raw.log.gz",
+      "bytes": 543,
+      "sha256": "da5955ca8aa7b25773d4459f2ed5a483f1e9b3da0152f58797c38c215d9d90c1"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/15-native-local-depot-first-green.command.json",
+      "bytes": 527,
+      "sha256": "c92a57ca33136c1ff61131965d28b029b3696d8ed2620b849e7c83c4d9ec38fe"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/15-native-local-depot-first-green.raw.log.gz",
+      "bytes": 291,
+      "sha256": "9bde09a280b71b99416365cd696e5a82de735a3f6111cd263118753dcbe2c702"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/16-native-local-source-business-red.command.json",
+      "bytes": 522,
+      "sha256": "3e48185ab49cbcee4be559c374c02212949253f740e98dbe5accb752d275e812"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/16-native-local-source-business-red.raw.log.gz",
+      "bytes": 752,
+      "sha256": "e34985363c63992c019884ee2c1c222177fc18641b4774e23c0acf2ca7302d1e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/17-native-local-source-green.command.json",
+      "bytes": 553,
+      "sha256": "38ba206a5c8cbdaf020def4df50cc5838dd2ee46349ae5341f2941c394346b97"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/17-native-local-source-green.raw.log.gz",
+      "bytes": 309,
+      "sha256": "15c53f0259937d517d4c0a532d285292d0cb3f3ae889d932944cef1423e1e247"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/18-native-carrier-client-publication-red.command.json",
+      "bytes": 523,
+      "sha256": "e0e152495f2a8e08da5b4c192050eecda8a28275a2939580dbe5ecc2476b4e29"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/18-native-carrier-client-publication-red.raw.log.gz",
+      "bytes": 687,
+      "sha256": "2b704565b91e1f17640b0da49fc89d7a674ca313affa1c0bd8218211ae6cb42c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/19-native-carrier-client-publication-green.command.json",
+      "bytes": 523,
+      "sha256": "9bc1b92ab085b78fc899ea08f5fd97a885cfecad949c1072b7f9416706890f22"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/19-native-carrier-client-publication-green.raw.log.gz",
+      "bytes": 289,
+      "sha256": "c41d9849ecd15881edcfd4e6aaae1782b3523c385adbbb467b1e350aed819de6"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/20-shared-construction-authority-red.command.json",
+      "bytes": 537,
+      "sha256": "8981d47ae8a91c6a5845444788fb27bd79152e4a4e2f78373fba77f5492b3acb"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/20-shared-construction-authority-red.raw.log.gz",
+      "bytes": 15395,
+      "sha256": "0f812cee0863b4c83ceb3f00b4d401b40d16a71c4ff27faafa3153cac9a76067"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/21-shared-authority-carrier-affected-green.command.json",
+      "bytes": 661,
+      "sha256": "a060cd5f02865a02c386d64fc85668edc2ac637536f0b99e3dc1e1633bfcef1a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/21-shared-authority-carrier-affected-green.raw.log.gz",
+      "bytes": 316,
+      "sha256": "9a1ed16137280d7a3376b8da0c3614e5ad6a4b2b135ce493d6b619f9d46c0960"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/22-dry-joint-clock-power-red.command.json",
+      "bytes": 520,
+      "sha256": "f346250a55aa65c933aa1cba8e52b3170f0580d8d4f46f721d7f77f846ef4f06"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/22-dry-joint-clock-power-red.raw.log.gz",
+      "bytes": 545,
+      "sha256": "fc4aa5312775b6e77586163dc5127e230c1c0f70247df6a6776607e4c7651e9a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/23-dry-confirmed-step-first-green.command.json",
+      "bytes": 478,
+      "sha256": "7cfd2c52fd0d943a553504f1aecdafdd25c03b6b3a9a40f222cdf9c8a9f3ac9c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/23-dry-confirmed-step-first-green.raw.log.gz",
+      "bytes": 263,
+      "sha256": "aaebfa8778b9174d63bc530a499f17174fb8c2c33e43ed7f5b2be7acecb80a66"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/24-carrier-authority-dry-build.command.json",
+      "bytes": 420,
+      "sha256": "4a752ef553aa1fd55d83e194a126eab91a8c24bc808449386aec47c0e3f12b57"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/24-carrier-authority-dry-build.raw.log.gz",
+      "bytes": 184,
+      "sha256": "63724a70f461727356e6e1e3742cfc2e22a1d9675af2cb61431c0ff016788c17"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/25-carrier-type-narrow-build.command.json",
+      "bytes": 421,
+      "sha256": "ac82dd412eca0141726d092d2924f02ef075d17066be8ba3c1adc98166e860cc"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/25-carrier-type-narrow-build.raw.log.gz",
+      "bytes": 864,
+      "sha256": "3782914d773d45b643790003d0df1109a6eae9a2a85b7cde1b2172d28115d4d0"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/26-dry-replay-fresh-facts-red.command.json",
+      "bytes": 520,
+      "sha256": "3dd916fec6c320e1723955c71e14005c4e3bfc97771d8afc0242fd9bd5704499"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/26-dry-replay-fresh-facts-red.raw.log.gz",
+      "bytes": 729,
+      "sha256": "29d05f812f414f9758ec5a3b8c7a3f459b084398a017b21bd7a7d25b10bfb823"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/27-native-full-slot-release-red.command.json",
+      "bytes": 522,
+      "sha256": "489d9f7989dc22d01c9e4a9943dee606f4bd9634315328f2ae4b00fe66302c96"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/27-native-full-slot-release-red.raw.log.gz",
+      "bytes": 720,
+      "sha256": "29e77d61c64d3c0e6a967dc70cbc5e9ee631cca7344e3d69f488d395de06b940"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/28-dry-facts-and-full-release-green.command.json",
+      "bytes": 626,
+      "sha256": "436790420fd0eb629b6147e8334236b5e9dcf4319c7987001a4c0e002702e63b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/28-dry-facts-and-full-release-green.raw.log.gz",
+      "bytes": 335,
+      "sha256": "0bd6a87c71c4683c89fdad1486d9740c9f97f65c9054fb78b6f2f14ac1f03459"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/29-native-paired-jump-autostep-regression.command.json",
+      "bytes": 541,
+      "sha256": "a675c28b4e83bb31e7965db113f8a302b97b3a46f3d0653cbf48fb7dbb785b3a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/29-native-paired-jump-autostep-regression.raw.log.gz",
+      "bytes": 301,
+      "sha256": "34e3f67093e77f94ffc6dda785ca3301c91a1d311bde0bef9bd7d67442459413"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/30-native-uuid-binding-red.command.json",
+      "bytes": 516,
+      "sha256": "54dab3ede5e4263b9494b59cdef0b2439143c57199dcdc2e350b68403d3a3c92"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/30-native-uuid-binding-red.raw.log.gz",
+      "bytes": 561,
+      "sha256": "2f68ddb9d644c6dd0bc0baa8fb885dbcb1688881690cc536fc1274762302c6dd"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/31-native-uuid-binding-green.command.json",
+      "bytes": 515,
+      "sha256": "4693cff4f85afc844300f9b5e195536d45b1a0ee3bccb2161ccbba36b63a9146"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/31-native-uuid-binding-green.raw.log.gz",
+      "bytes": 281,
+      "sha256": "9378481a32247a1566a358bb509be804283be97a7a35cf8c6cf2987e7c515e6c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/32-carrier-release-transport-red.command.json",
+      "bytes": 520,
+      "sha256": "5662e11a86a32d06b660496671a6b7b3d07905d1c5d42447f2094ea31f241f89"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/32-carrier-release-transport-red.raw.log.gz",
+      "bytes": 910,
+      "sha256": "9ee7ba58f3b36c8c8f7a34c4721b8182d958ec2c0d488fc69eabbb9bf573fe1d"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/33-carrier-release-transport-green.command.json",
+      "bytes": 519,
+      "sha256": "c62e64f2be51546e0ae2690614c818016b2c9606f43436db6381e2ccb158773f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/33-carrier-release-transport-green.raw.log.gz",
+      "bytes": 286,
+      "sha256": "97aeca36cf0c1c4841dae17fe92ddf4e472c4546e23f5092d3b31188b58c013c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/34-host-native-custody-red.command.json",
+      "bytes": 528,
+      "sha256": "87ae771960f832d9efaa7dd954f2ae9e3f4ffd0042f3ffd42e03d0ce1ceb6361"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/34-host-native-custody-red.raw.log.gz",
+      "bytes": 833,
+      "sha256": "213ccc005cc2c0ef3b3a37409353132ceff118a974f061e9bf04f582941ecb05"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/35-host-native-support-red.command.json",
+      "bytes": 516,
+      "sha256": "14adc01efd1e2ee78c982b014cdc44f0d5b669f9dda1dfcf413b8285f6ab2c2a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/35-host-native-support-red.raw.log.gz",
+      "bytes": 666,
+      "sha256": "d6fb71244003e574f8db9b99962d81788fa4a64443e8403949b89b3328ff089a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/36-host-native-custody-green.command.json",
+      "bytes": 527,
+      "sha256": "7a86af98d9e278027e351f3556ddaa3378de78e3cbfd6422c391dbe8f8b404e0"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/36-host-native-custody-green.raw.log.gz",
+      "bytes": 295,
+      "sha256": "eda43cd429ca820dba3eeac9ddeaf0b7197dfcd565b47d198afbdafa5622c8c9"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/37-host-custody-integration-build.command.json",
+      "bytes": 420,
+      "sha256": "f63807655e1f7510c0cd0b176d22d8f23b7e7ee1a86b50ac0cc0a78f4bd04554"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/37-host-custody-integration-build.raw.log.gz",
+      "bytes": 966,
+      "sha256": "4e47f9db8d7409524c1240035b1217a9585f00a98bf5db80aeff31b3c94f0490"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/38-host-custody-integration-build-green.command.json",
+      "bytes": 421,
+      "sha256": "5568c5fdd5df4a6022da516be26615eba4bc8adea600681ffec7810387c397a2"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/38-host-custody-integration-build-green.raw.log.gz",
+      "bytes": 868,
+      "sha256": "f056e7134d86130a47fab08d434be74ac28d6a21ccf6ea5727259833f010a845"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/39-native-uuid-power-red.command.json",
+      "bytes": 521,
+      "sha256": "0ab2ed14e8f632bc5d683fffcc3e03f63089db4b432febbc02f8503204b30140"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/39-native-uuid-power-red.raw.log.gz",
+      "bytes": 546,
+      "sha256": "4ba7dbb23ef67cda4a5b66fa23b609eac7185ca3df16295fa80d9d85ba105a34"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/40-native-uuid-full-domain-green.command.json",
+      "bytes": 539,
+      "sha256": "47ba1c6d0e42860477cfad597a235c52fa8b1a8d9ee7d90e7ef705a6864f7d17"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/40-native-uuid-full-domain-green.raw.log.gz",
+      "bytes": 300,
+      "sha256": "9b53d811e2cf121174a52f64de7cd71e213250e01323556aa165498b5255d234"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/41-native-depot-read-and-partial-custody-red.command.json",
+      "bytes": 577,
+      "sha256": "62241a1a4d0624c13e1a6dfedc7ad2554900c0c00d47f7ec845db6bf44462ff4"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/41-native-depot-read-and-partial-custody-red.raw.log.gz",
+      "bytes": 953,
+      "sha256": "03918e2cff0f085d4bfc97ee2db667b4f0881b6c88f9607f77945d2edc7f2c1d"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/42-native-depot-read-and-partial-custody-green.command.json",
+      "bytes": 579,
+      "sha256": "29c421b1b4fd8e8d6ce1c0aca5aeb1f020ce058d93c894c660fc0150159fcce9"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/42-native-depot-read-and-partial-custody-green.raw.log.gz",
+      "bytes": 310,
+      "sha256": "780c384afc972193748b56864c913c695e6a7d09428eeabdb246a969e673e1f4"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/43-host-complete-custody-and-history-integration.command.json",
+      "bytes": 513,
+      "sha256": "9e5e4fc1d75be0f0e11c0fb9223b2d7f2e93b21463096ebd7a40e77fb95fffb4"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/43-host-complete-custody-and-history-integration.raw.log.gz",
+      "bytes": 287,
+      "sha256": "102daed79dce96d27130a57b156af1901966ca2167d9d57f6e8a0b78ac4fe7ed"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/44-local-factory-products-profile-red.command.json",
+      "bytes": 519,
+      "sha256": "254371e82de41588d10539d2d0d29ec0a0a832670a039ba29ed95da035ea8b61"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/44-local-factory-products-profile-red.raw.log.gz",
+      "bytes": 752,
+      "sha256": "8c71ae19af8f0e3c503a8ea17cd274b182350d9ac56eb54f570872f9c1d46a57"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/45-local-factory-products-profile-red.command.json",
+      "bytes": 519,
+      "sha256": "0255cfe94bf36b0120f703c7d273ffa3de20a1e20f9b36cd9634640a59866b41"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/45-local-factory-products-profile-red.raw.log.gz",
+      "bytes": 750,
+      "sha256": "65f859a2c9b7ff4c72014a311673285b490b3d5cacd6e1adea7d8ec213be5206"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/46-local-factory-products-profile-green.command.json",
+      "bytes": 517,
+      "sha256": "940514e82166b8b957221e06c42dc33b819a6b25fd3216aa15889db0ea1c89fd"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/46-local-factory-products-profile-green.raw.log.gz",
+      "bytes": 287,
+      "sha256": "d9a89a04e91fe20dc4981e4b029b16ab772bd65716e778a08d5f895e93b1b5f0"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/cargoHandlingProfile.ts",
+      "bytes": 4029,
+      "sha256": "6faa1b01b5410474805f54a79f7033265ea01a5c899547b6575e3e33331354f0"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/cargoHandling.ts",
+      "bytes": 13892,
+      "sha256": "b5c4e663c2c0796d65b86e2af9c2bc4d403a710fd37d180f9403be10cb293018"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+      "bytes": 12313,
+      "sha256": "4b374d95ab02967fe930f5c411e74e17249a6a66ddc12ad2c30bc282916a7f46"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/cargoHandling.test.ts",
+      "bytes": 8942,
+      "sha256": "20ee45bb8074d47d376d0a0b198a5636e041bee5175b33824f7cb5193845b5f0"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts",
+      "bytes": 8453,
+      "sha256": "d3f53c5f85b9be2bf2481f7cffa5e0c31fe3f9d595f61c7335f6310c4efee480"
+    }
+  ],
+  "admittedSourceCommit": "24c274e2302452c5fa305e5ca37d6935bbff55ba"
+}

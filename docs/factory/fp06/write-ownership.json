@@ -3332,6 +3332,19 @@
         ],
         "actualPhases": "26–31 and39–42 independently read/hash verified; jump/autostep actual29; UUID39 RED→40twoPASS; depot/partial41twoRED→42twoPASS",
         "remaining": "Actual paid machine/belt whole loop, native approved source route, public browser controls/usable product, complete Save and full package gate remain pending."
+      },
+      "uiIntegratorCopy": {
+        "status": "BYTE_GIT_LFS_PASS_NOT_W09_GATE",
+        "sourceCommitSha": "24c274e2302452c5fa305e5ca37d6935bbff55ba",
+        "newCommitSha": "aeb6680044eb455a10d0bba6e67979c153fd248f",
+        "parentCommitSha": "43a61c0f5be5df69e4f8bb42db89da3d7a3a4b2b",
+        "changedPaths": 42,
+        "ordinaryGitPayloads": 31,
+        "lfsPayloads": 11,
+        "ownWipFilesPreserved": 111,
+        "rootActualHeadAnd42GitBlobsVerifiedAtUtc": "2026-10-11T20:59:12.633877+00:00",
+        "receipt": "docs/factory/fp06/reviews/w09-ui-copy-receipt.json",
+        "beforeReceipt": "docs/factory/fp06/reviews/w09-ui-copy-before.json"
       }
     },
     "W10": {
