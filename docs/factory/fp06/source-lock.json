@@ -958,13 +958,30 @@
             "R4 P2 Factory end restart loses Factory profile"
           ],
           "disposition": "Narrow genuine business RED/fix/GREEN granted only within existing W06 product paths; end gate remains open"
+        },
+        {
+          "spec": "FAIL",
+          "quality": "FAIL",
+          "reviewReport": "docs/factory/fp06/reviews/w06-followup-drop-open.md",
+          "snapshot": "2026-10-11T11:02:41.090831+00:00",
+          "patchSha256": "ba1f0f813ffb16dc318831a423222e1b82cc636ebbb040eb53f4021cf09e1592",
+          "closedFindings": [
+            "R1 actual hold views and quiescence",
+            "R3 local evidence reference/hash binding",
+            "R4 factory restart route"
+          ],
+          "openFindings": [
+            "R2 P1 actual HUD Drop bypasses uniform native confirmation guard",
+            "Budget test assertions need specific failure cause"
+          ],
+          "disposition": "Narrow Drop hold RED/guard and budget assertion fixes within existing W06 scope; end gate remains open"
         }
       ],
       "verificationAtLastReview": {
         "fullFreshUnits": "PASS:197files1835tests646.37s before review fixes",
-        "focusedSessionEvidence": "PASS:10 before review fixes",
-        "browser": "FAIL:3pass3fail before final serial harness",
-        "finalSerialHarness": "NOT_RUN at review",
+        "afterR1toR4FixAffected": "PASS:50tests2files214.34s before newly found Drop guard fix",
+        "afterR1toR4FixBuild": "PASS:tsc+Vite before newly found Drop guard fix",
+        "browser": "RUNNING; partial cases are not final gate PASS",
         "performance": "NOT_RUN; no comparable baseline"
       }
     },
