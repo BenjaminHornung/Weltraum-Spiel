@@ -1,0 +1,111 @@
+--- reviewed93-render-wall
++++ timeline-diagnostic
+@@ -3,9 +3,53 @@
+ import path from "node:path";
+ 
+ // Temporary passive diagnostic only. Exact normal source is archived/restored.
+-test.describe.serial("W07 DIAGNOSTIC_ONLY transparent render wall observation",()=>{
++test.describe.serial("W07 DIAGNOSTIC_ONLY renderer timeline and wall observation",()=>{
+   let context:BrowserContext,page:Page,keyboard:CDPSession;
+   const productErrors:string[]=[];
++  let traceStartIssued=false,traceStream:string|undefined,traceFinish:Promise<unknown[]>|undefined,traceCleanupReported=false;
++  let completeResolve:(event:unknown)=>void;
++  const traceComplete=new Promise<unknown>(resolve=>{completeResolve=resolve;});
++  const traceMetadata:Record<string,unknown>={kind:"DIAGNOSTIC_ONLY_RENDERER_TIMELINE_NOT_GAMEPLAY_GATE",categories:"devtools.timeline,disabled-by-default-devtools.timeline,blink",transferMode:"ReturnAsStream",v8Sampling:false,complete:false,outputLimitBytes:33554432};
++  const tracePath=(name:string)=>{
++    const run=process.env.WELTRAUM_FACTORY_EVIDENCE_RUN;
++    if(!run||!/^[A-Za-z0-9._-]{1,100}$/.test(run))throw new Error("Diagnostic requires actual own run");
++    return path.resolve("evidence/factory/w07",run,"diagnostic-timeline-95-"+name+".json");
++  };
++  const finishTrace=()=>traceFinish??=(async()=>{
++    const failures:unknown[]=[],chunks:Buffer[]=[];
++    try{
++      if(traceStartIssued){
++        let endAcknowledged=false;traceMetadata.endIssuedMs=performance.now();
++        try{await keyboard.send("Tracing.end");endAcknowledged=true;traceMetadata.endAckMs=performance.now();}catch(error){failures.push(error);}
++        if(endAcknowledged){
++          const completion=await traceComplete;traceMetadata.completion=completion;
++          if(!traceStream)throw new Error("Tracing completed without an IO stream");
++          let bytes=0,eof=false;
++          while(!eof){
++            const chunk=await keyboard.send("IO.read",{handle:traceStream,size:262144});
++            const buffer=Buffer.from(chunk.data,chunk.base64Encoded?"base64":"utf8");bytes+=buffer.byteLength;
++            if(bytes>33554432)throw new Error("Diagnostic trace exceeds bounded32MiB output; incomplete");
++            chunks.push(buffer);eof=chunk.eof;
++          }
++          const raw=Buffer.concat(chunks);await writeFile(tracePath("trace"),raw);
++          traceMetadata.rawBytes=raw.byteLength;
++          const decoded=JSON.parse(raw.toString("utf8"));
++          if(!Array.isArray(decoded.traceEvents))throw new Error("Trace has no traceEvents array");
++          const metadata=decoded.traceEvents.filter((event:{ph?:string;name?:string})=>event.ph==="M"&&(event.name==="process_name"||event.name==="thread_name"));
++          traceMetadata.processThreadMetadata=metadata;traceMetadata.traceEventCount=decoded.traceEvents.length;
++          traceMetadata.rendererMainThreads=metadata.filter((event:{name?:string;args?:{name?:string}})=>event.name==="thread_name"&&/RendererMain/i.test(event.args?.name??""));
++          traceMetadata.attributionStatus=(traceMetadata.rendererMainThreads as unknown[]).length?"RENDERER_MAIN_THREAD_METADATA_PRESENT":"UNSUPPORTED_NO_RENDERER_MAIN_THREAD_METADATA";
++          traceMetadata.complete=true;
++        }
++      }else traceMetadata.attributionStatus="NOT_STARTED_EARLIER_CASE_FAILED";
++    }catch(error){failures.push(error);}
++    finally{
++      if(traceStream){try{await keyboard.send("IO.close",{handle:traceStream});traceMetadata.ioClosed=true;}catch(error){failures.push(error);}}
++      traceMetadata.cleanupErrors=failures.map(error=>error instanceof Error?{name:error.name,message:error.message,stack:error.stack}:{reason:String(error)});
++      try{await writeFile(tracePath("metadata"),JSON.stringify(traceMetadata,null,2)+"\n");}catch(error){failures.push(error);}
++    }
++    return failures;
++  })();
+   const runMetadata:Record<string,unknown>={kind:"DIAGNOSTIC_ONLY_RENDER_WALL_NOT_GAMEPLAY_GATE",scope:"Synchronous wall duration includes CPU/native/wait; no GPU hardware attribution",nodeVersion:process.version};
+   const readNative=()=>page.evaluate(()=>JSON.parse(document.body.dataset.hestiaPrototypePhysics!));
+   const exportObservation=async(label:string,gesture?:unknown)=>{
+@@ -13,13 +57,14 @@
+     if(!run||!/^[A-Za-z0-9._-]{1,100}$/.test(run))throw new Error("Diagnostic requires actual own run");
+     const {observation,frameDiagnostics}=await page.evaluate(()=>({observation:Reflect.get(window,"__w07InputTickObservation"),frameDiagnostics:document.body.dataset.hestiaPrototypeFrameDiagnostics??null}));
+     const completeObservation=observation.observerErrors===0&&observation.dropped===0&&observation.idMapDropped===0;
+-    await writeFile(path.resolve("evidence/factory/w07",run,"diagnostic-render-wall-93-"+label+".json"),JSON.stringify({kind:"DIAGNOSTIC_ONLY_NOT_GAMEPLAY_GATE",measurementOptIn:false,solverCpu:"NOT_OBSERVED",mainFrameCpu:"NOT_OBSERVED",completeObservation,gesture,observation,frameDiagnostics:{raw:frameDiagnostics,freshness:frameDiagnostics===null?"MISSING":"NOT_OBSERVED_NO_TIMESTAMP_EVERY60FRAMES"},productErrors},null,2)+"\n");
++    await writeFile(path.resolve("evidence/factory/w07",run,"diagnostic-render-wall-95-"+label+".json"),JSON.stringify({kind:"DIAGNOSTIC_ONLY_NOT_GAMEPLAY_GATE",measurementOptIn:false,solverCpu:"NOT_OBSERVED",mainFrameCpu:"NOT_OBSERVED",completeObservation,gesture,observation,frameDiagnostics:{raw:frameDiagnostics,freshness:frameDiagnostics===null?"MISSING":"NOT_OBSERVED_NO_TIMESTAMP_EVERY60FRAMES"},productErrors},null,2)+"\n");
+     expect(completeObservation).toBe(true);
+     expect(productErrors).toEqual([]);
+   };
+   test.beforeAll(async({browser},info)=>{
+     runMetadata.chromiumVersion=browser.version();runMetadata.projectName=info.project.name;runMetadata.projectUse=info.project.use;
+     context=await browser.newContext({baseURL:info.project.use.baseURL});page=await context.newPage();keyboard=await context.newCDPSession(page);
++    keyboard.on("Tracing.tracingComplete",event=>{traceStream=event.stream;completeResolve(event);});
+     page.on("pageerror",error=>productErrors.push(error.message));
+     await page.addInitScript(()=>{
+       const state={timeOrigin:performance.timeOrigin,records:[] as Record<string,unknown>[],dropped:0,idMapDropped:0,observerErrors:0,longtaskSupported:PerformanceObserver.supportedEntryTypes.includes("longtask"),measurementOptIn:false};
+@@ -79,7 +124,7 @@
+     });
+   });
+   test.afterAll(async()=>{
+-    const failures:unknown[]=[];
++    const traceFailures=await finishTrace();const failures:unknown[]=traceCleanupReported?[]:[...traceFailures];
+     if(page&&!page.isClosed()){
+       try{runMetadata.restoration=await page.evaluate(()=>{
+         const failures:unknown[]=[],restored:Record<string,unknown>={};
+@@ -90,7 +135,7 @@
+       });}catch(error){failures.push(error);}
+     }else runMetadata.restoration="PAGE_REALM_ALREADY_CLOSED";
+     const run=process.env.WELTRAUM_FACTORY_EVIDENCE_RUN;
+-    try{if(!run||!/^[A-Za-z0-9._-]{1,100}$/.test(run))throw new Error("Diagnostic requires actual own run");await writeFile(path.resolve("evidence/factory/w07",run,"diagnostic-render-wall-93-metadata.json"),JSON.stringify(runMetadata,null,2)+"\n");}catch(error){failures.push(error);}
++    try{if(!run||!/^[A-Za-z0-9._-]{1,100}$/.test(run))throw new Error("Diagnostic requires actual own run");await writeFile(path.resolve("evidence/factory/w07",run,"diagnostic-render-wall-95-metadata.json"),JSON.stringify(runMetadata,null,2)+"\n");}catch(error){failures.push(error);}
+     if(context){try{await context.close();}catch(error){failures.push(error);}}
+     if(failures.length===1)throw failures[0];if(failures.length>1)throw new AggregateError(failures,"Diagnostic teardown failed");
+   });
+@@ -141,10 +186,17 @@
+     await exportObservation(String(holdMs),{key,holdMs,before,after,releasedReads,driverTimes});
+   };
+   test("diagnostic neutral five-second existing renderer wall observation",async()=>{
+-    runMetadata.neutralBefore=await readNative();runMetadata.neutralWaitStartMs=performance.now();await new Promise<void>(resolve=>setTimeout(resolve,5000));runMetadata.neutralWaitEndMs=performance.now();runMetadata.neutralAfter=await readNative();
++    runMetadata.neutralBefore=await readNative();
++    traceStartIssued=true;traceMetadata.startIssuedMs=performance.now();await keyboard.send("Tracing.start",{categories:"devtools.timeline,disabled-by-default-devtools.timeline,blink",transferMode:"ReturnAsStream"});traceMetadata.startAckMs=performance.now();
++    runMetadata.neutralWaitStartMs=performance.now();await new Promise<void>(resolve=>setTimeout(resolve,5000));runMetadata.neutralWaitEndMs=performance.now();runMetadata.neutralAfter=await readNative();
+     await exportObservation("neutral");
+     const renderCalls=await page.evaluate(()=>Reflect.get(window,"__w07InputTickObservation").records.filter((record:{event:string;method?:string})=>record.event==="backendWall"&&record.method==="renderFrame").length);
+     expect(renderCalls).toBeGreaterThan(0);runMetadata.observedRenderCallsProveAppEsmIdentity=renderCalls;
+   });
+-  test("diagnostic finite125ms released trusted S gesture",async()=>{await gesture(125);});
++  test("diagnostic finite125ms released trusted S gesture and timeline cleanup",async()=>{
++    const failures:unknown[]=[];
++    try{await gesture(125);}catch(error){failures.push(error);}
++    finally{failures.push(...await finishTrace());traceCleanupReported=true;}
++    if(failures.length===1)throw failures[0];if(failures.length>1)throw new AggregateError(failures,"Diagnostic gesture or trace cleanup failed");
++  });
+ });

@@ -242,3 +242,13 @@ describe("HVP-03 authored vegetation", () => {
     }
   }, 240_000);
 });
+
+
+it("W07 Factory vegetation retains every original owner except the exact two approved wood owners and uses coherent ground",()=>{
+  const original=planHvpVegetation();
+  const profile={version:"hvp-factory-vegetation-v1" as const,readColumn:(x:number,z:number)=>({topMeters:(x>=-10.75&&x< -1.75&&z>=-6.5&&z<12.5)?1.5:readHvpSourceColumnWorld(x,z).topMeters,slot:1})};
+  const changed=planHvpVegetation(undefined,profile);
+  expect(changed.map(p=>p.id)).toEqual(original.filter(p=>!p.id.endsWith("west-frame")&&!p.id.endsWith("north-young")).map(p=>p.id));
+  expect(planHvpVegetation()).toEqual(original);
+  for(const plant of changed)expect(plant.position.y).toBe(profile.readColumn(plant.position.x+.0625,plant.position.z+.0625).topMeters);
+});

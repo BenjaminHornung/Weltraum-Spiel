@@ -1,0 +1,20 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/hvp-bootstrap.test.ts",
+    "tests/unit/factory/placement.test.ts",
+    "tests/unit/factory/facilitySession.test.ts",
+    "-t",
+    "W07 actual Host Ghost|initial Cargo owner cannot|Cargo dispose then checkpoint|aliases the actual initial Cargo owner"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startUtc": "2026-10-11T13:52:16.171178+00:00",
+  "endUtc": "2026-10-11T13:52:26.446949+00:00",
+  "durationSeconds": 10.274964976000774,
+  "exitCode": 1,
+  "rawBytes": 4601,
+  "rawSha256": "b4119c8bcb5a32230a0636df7cb5160844fbf04d3410c5c2ef326645f189ec08"
+}

@@ -1,0 +1,19 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/hvp-bootstrap.test.ts",
+    "-t",
+    "actual Host Ghost"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startUtc": "2026-10-11T15:47:21.238347+00:00",
+  "endUtc": "2026-10-11T15:47:31.355618+00:00",
+  "durationSeconds": 10.117277813998953,
+  "exitCode": 0,
+  "rawBytes": 383,
+  "rawSha256": "2a8baf8a56c204332b1133f43f96ac2d3a832b9212df85473e64276c28ad1ef7",
+  "phase": "Minimal Bootstrap bounded derived ghost slot; same-definition transforms preserve resident keys/geometry/material leases; actual receiver lifecycle"
+}

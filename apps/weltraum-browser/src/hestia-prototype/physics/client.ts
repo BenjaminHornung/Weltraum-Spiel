@@ -9,6 +9,9 @@ import type { HvpCollisionCoverage, HvpPlayerInput } from "../player/locomotion"
 import type { HvpBranchRequest } from "./branchSession";
 import type {HvpTerrainFragmentRequest} from "./terrainFragment";
 import type {HvpMovingCutRequest,HvpMovingCutPreparation,HvpBodyCutAdmission} from "./bodyCutSession";
+import type { FactoryCargoSite } from "../../factory/fixtures/cargoSite";
+import type { FactoryFacilityRequest, FactoryFacilityRead,FactoryCargoOpenIntent } from "./factoryFacilitySession";
+import { canonicalJson } from "../../resources/serialization";
 import type {HvpWorldCheckpoint} from "../persistence/worldCheckpoint";
 import {validateHvpNeighborCheckpoint,type HvpNeighborCheckpoint} from "../runtime/residency";
 
@@ -22,7 +25,7 @@ export interface HvpPhysicsClient {
   update(): void;
   command(kind: "Pause" | "Resume" | "Drop" | "Play" | "Inspect"): Promise<void>;
   impulse(direction:Readonly<{x:number;y:number;z:number}>):Promise<void>;
-  setPlayerInput(value: HvpPlayerInput): void;
+  setPlayerInput(value: HvpPlayerInput, cancelPendingJump?: boolean): void;
   setCameraOffset(value?: Readonly<{ x: number; y: number; z: number }>): void;
   setCutAim(value?: Readonly<{x:number;y:number;z:number}>):void;
   prepareBranch(request:HvpBranchRequest):Promise<NonNullable<HvpPhysicsSnapshot["structural"]>>;
@@ -59,6 +62,12 @@ export interface HvpPhysicsClient {
   publishBodyResidency(id:string):void;
   finalizeBodyResidency(id:string):Promise<void>;
   rollbackBodyResidency(id:string):Promise<void>;
+  openFactoryCargo?(intent:FactoryCargoOpenIntent):Promise<FactoryFacilityRead>;
+  prepareFactoryFacility?(request:FactoryFacilityRequest):Promise<FactoryFacilityRead>;
+  commitFactoryFacility?(id:string):Promise<void>;
+  publishFactoryFacility?(id:string):void;
+  rollbackFactoryFacility?(id:string):Promise<void>;
+  finalizeFactoryFacility?(id:string):Promise<void>;
   dispose(): Promise<void>;
 }
 
@@ -72,7 +81,7 @@ export const chooseHvpParallelism = (current: number, available: number, recentM
 /** Existing bounded pool prepares exact sectors. Never more than two heavy jobs. */
 export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSource[], spawn: { x: number; y: number; z: number }, signal: AbortSignal,
   playerSpawn?: { x: number; y: number; z: number }, inertiaSpawn?:{x:number;y:number;z:number},branchSpawn?:{x:number;y:number;z:number},checkpoint?:HvpWorldCheckpoint,branchKind:"branch"|"salvage"="branch",
-  onTimings?:(batch:NonNullable<HvpPhysicsReply["timings"]>)=>void): Promise<HvpPhysicsClient> => {
+  onTimings?:(batch:NonNullable<HvpPhysicsReply["timings"]>)=>void,factoryEnabled=false,initialFactoryCargo?:FactoryCargoSite): Promise<HvpPhysicsClient> => {
   const hinted = globalThis.navigator?.hardwareConcurrency ?? 2;
   const workerCount = Math.max(1, Math.min(2, Number.isSafeInteger(hinted) ? hinted - 1 : 1));
   const pool = new WorkerPool({ workerCount, queueCapacity: 32 });
@@ -146,8 +155,10 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
   let disposed = false;
   let terminated=false;
   let busy = false;
+  let factoryInputClosing=false,factoryCommandDepth=0;
   let mutating = false;
   let bodyPending=false;
+  let factoryPending:{request:FactoryFacilityRequest;before:HvpPhysicsSnapshot;promoted:boolean}|undefined;
   let neighborPending:{id:string;next:HvpNeighborCheckpoint}|undefined;
   let restorePhase:string|undefined;
   let heldSnapshot: {id:number;value:HvpPhysicsSnapshot}|undefined;
@@ -155,7 +166,7 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
   let playerInput: HvpPlayerInput = { x: 0, z: 0, sprint: false, jump: false };
   let cameraOffset: { x: number; y: number; z: number } | undefined;
   let cutAim: {x:number;y:number;z:number}|undefined;
-  const pending = new Map<number, { resolve: () => void; reject: (e: Error) => void; timeout: ReturnType<typeof setTimeout>; publish: boolean;onReply?:(reply:HvpPhysicsReply)=>void }>();
+  const pending = new Map<number, { resolve: () => void; reject: (e: Error) => void; timeout: ReturnType<typeof setTimeout>; publish: boolean;kind:HvpPhysicsMessage["kind"];onReply?:(reply:HvpPhysicsReply)=>void }>();
   const terminate=()=>{if(!terminated){worker.terminate();terminated=true;}worker.onmessage=null;worker.onerror=null;worker.onmessageerror=null;};
   const fail = (error: Error): void => {
     failure = error;
@@ -168,11 +179,18 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
     if (data.error !== undefined) { fail(new Error(data.error)); return; }
     const p = pending.get(data.id);
     if (p === undefined) { return; }
+    if(p.kind==="FactoryInput"){
+      clearTimeout(p.timeout);pending.delete(data.id);
+      if(data.rejected!==undefined){const error=new Error(data.rejected);p.reject(error);fail(error);return;}
+      // A small input ACK has no authority over any public or held read view.
+      p.resolve();return;
+    }
     if(data.clock!==undefined){clock=data.clock;}
     if(data.timings!==undefined){onTimings?.(data.timings);}
     clearTimeout(p.timeout); pending.delete(data.id);
-    if (p.publish && data.snapshot !== undefined && data.id > lastId) { snapshot = data.snapshot; lastId = data.id; }
-    if (!p.publish && data.snapshot !== undefined) { heldSnapshot={id:data.id,value:data.snapshot}; }
+    const withheldFactoryRead=factoryEnabled&&p.kind==="Read"&&(mutating||bodyPending||factoryInputClosing);
+    if (!withheldFactoryRead && p.publish && data.snapshot !== undefined && data.id > lastId) { snapshot = data.snapshot; lastId = data.id; }
+    if (!withheldFactoryRead && !p.publish && data.snapshot !== undefined) { heldSnapshot={id:data.id,value:data.snapshot}; }
     if(data.restoreState!==undefined){restorePhase=data.restoreState;}
     if(data.rejected !== undefined) { p.reject(new Error(data.rejected)); return; }
     try{p.onReply?.(data);}catch(error){p.reject(error instanceof Error?error:new Error(String(error)));return;}
@@ -184,14 +202,30 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
     if (pending.size >= 8) { reject(new Error("Physics command backpressure")); return; }
     const id = nextId++;
     const timeout = setTimeout(() => fail(new Error("Physics worker response deadline exceeded")), 20_000);
-    pending.set(id, { resolve, reject, timeout, publish,onReply });
+    pending.set(id, { resolve, reject, timeout, publish,kind:message.kind,onReply });
     try { worker.postMessage({ ...message, id }, transfers); } catch (e) { fail(e instanceof Error ? e : new Error("Physics transfer failed")); }
   });
+  const clearFactoryInput=()=>{playerInput={x:0,z:0,sprint:false,jump:false};};
+  const sendFactoryInput=(input:HvpPlayerInput,cancelPendingJump=false)=>{
+    void send({kind:"FactoryInput",input,cancelPendingJump},[],false).catch(fail);
+  };
+  const canDispatchFactoryInput=()=>!disposed&&!failure&&!factoryInputClosing&&factoryCommandDepth===0&&!mutating&&!bodyPending&&snapshot?.status==="Running"
+    &&snapshot.terrainTransaction==="Idle"&&snapshot.neighborTransaction==="Idle"&&snapshot.bodyResidencyTransaction==="Idle"
+    &&(!snapshot.structural||snapshot.structural.state==="Idle")&&!["PreparedHeld","CommittedHeld","RecoveryHold"].includes(snapshot.moving.state)
+    &&snapshot.factoryFacilities?.state==="Idle";
+  const readInput=()=>{
+    if(disposed||failure||mutating||busy||(factoryEnabled&&(bodyPending||factoryInputClosing)))return;
+    busy=true;
+    const input={...playerInput};playerInput={...playerInput,jump:false};
+    void send({kind:"Read",...(factoryEnabled?{}:{input}),cameraOffset,cutAim}).catch(error=>{failure=error;}).finally(()=>{
+      busy=false;
+    });
+  };
   const abort = (): void => fail(new Error("Physics loading cancelled"));
   signal.addEventListener("abort", abort, { once: true });
   try {
     await send({ kind: "Initialize", sectors, spawn, gravity: resolveHvpGravity(), inertiaSpawn,branchSpawn,checkpoint,branchKind,measure:onTimings!==undefined,
-      sessionId:checkpoint?.sessionId??crypto.randomUUID(), player: playerSpawn === undefined ? undefined : { spawn: playerSpawn, coverage } },
+      factoryEnabled,initialFactoryCargo,sessionId:checkpoint?.sessionId??crypto.randomUUID(), player: playerSpawn === undefined ? undefined : { spawn: playerSpawn, coverage } },
       sectors.flatMap(s => [s.vertices.buffer as ArrayBuffer, s.indices.buffer as ArrayBuffer]));
     if (signal.aborted || snapshot === undefined) { throw new Error("Physics initialization did not publish a snapshot"); }
   } catch (e) { worker.terminate(); throw e; }
@@ -200,6 +234,48 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
     get collisionBytes() { return snapshot?.collisionBytes ?? collisionBytes; }, workerCount, preparation: Object.freeze({ jobs: job, peakParallelJobs, mainPrepareMaxMs }),
     read() { if (failure !== undefined) { throw failure; } return snapshot!; },
     get clock(){return clock;},
+    async openFactoryCargo(intent){if(mutating||bodyPending||!snapshot?.factoryFacilities||snapshot.factoryFacilities.state!=="Idle"||!["Running","Paused"].includes(snapshot.status))throw new Error("Factory Cargo Host unavailable");await send({kind:"OpenFactoryCargo",intent});const cargo=snapshot!.factoryFacilities!;if(!cargo.cargo?.opened||cargo.cargo.ownerId!==intent.ownerId||cargo.cargo.profileDigest!==intent.profileDigest)throw new Error("RecoveryHold: Cargo open receipt mismatch");return cargo;},
+    async prepareFactoryFacility(request){
+      if(mutating||bodyPending||snapshot?.status!=="Paused"||snapshot.factoryFacilities?.state!=="Idle")throw new Error("Factory requires an idle paused World");
+      mutating=true;heldSnapshot=undefined;factoryPending={request,before:snapshot,promoted:false};
+      try{await send({kind:"PrepareFactoryFacility",request},[],false);
+        const held=readHeldSnapshot()?.value.factoryFacilities;
+        if(held?.transactionId!==request.transactionId||held.state!=="PreparedHeld"||held.revision!==request.expectedRevision||held.prepared?.instanceId!==request.instanceId||held.prepared.definitionRef.digest!==request.definitionRef.digest)throw new Error("Missing bound prepared Facility receipt");
+        return held;
+      }catch(error){
+        const held=readHeldSnapshot()?.value.factoryFacilities;
+        if(failure!==undefined||held?.state==="RecoveryHold")throw new Error(`RecoveryHold: Facility prepare uncertain: ${String(error)}`);
+        if(held?.transactionId===request.transactionId&&held.state!=="Idle"){
+          await send({kind:"RollbackFactoryFacility",transactionId:request.transactionId});
+          if(snapshot?.factoryFacilities?.state!=="Idle"||snapshot.factoryFacilities.revision!==request.expectedRevision)throw new Error("RecoveryHold: Facility prepare cleanup not proven");
+        }
+        heldSnapshot=undefined;factoryPending=undefined;mutating=false;throw error;
+      }
+    },
+    async commitFactoryFacility(id){
+      if(factoryPending?.request.transactionId!==id)throw new Error("Factory transaction mismatch");
+      await send({kind:"CommitFactoryFacility",transactionId:id},[],false);
+      const held=readHeldSnapshot()?.value,receipt=held?.factoryFacilities,request=factoryPending.request;
+      if(!held||receipt?.state!=="PublishedHeld"||receipt.transactionId!==id||receipt.revision!==request.expectedRevision+1||receipt.owners.at(-1)?.instanceId!==request.instanceId||held.ticks!==factoryPending.before.ticks)throw new Error("RecoveryHold: Missing committed Facility receipt");
+    },
+    publishFactoryFacility(id){
+      const held=readHeldSnapshot(),request=factoryPending?.request;
+      if(!mutating||!request||request.transactionId!==id||factoryPending!.promoted||held?.value.factoryFacilities?.state!=="PublishedHeld"||held.value.factoryFacilities.transactionId!==id||held.value.factoryFacilities.revision!==request.expectedRevision+1)throw new Error("Missing exact held Facility publish receipt");
+      snapshot=held.value;lastId=held.id;heldSnapshot=undefined;factoryPending!.promoted=true;
+    },
+    async rollbackFactoryFacility(id){
+      if(factoryPending?.request.transactionId!==id)throw new Error("Factory rollback identity mismatch");
+      const before=factoryPending.before;await send({kind:"RollbackFactoryFacility",transactionId:id});
+      const after=snapshot!;
+      if(after.factoryFacilities?.state!=="Idle"||after.factoryFacilities.revision!==before.factoryFacilities?.revision||canonicalJson(after.factoryFacilities.owners)!==canonicalJson(before.factoryFacilities.owners)||after.bodyCount!==before.bodyCount||after.colliderCount!==before.colliderCount||after.ticks!==before.ticks)throw new Error("RecoveryHold: Facility rollback receipt incomplete");
+      factoryPending=undefined;heldSnapshot=undefined;mutating=false;
+    },
+    async finalizeFactoryFacility(id){
+      if(factoryPending?.request.transactionId!==id||!factoryPending.promoted)throw new Error("Factory finalize requires publication");
+      const expected=snapshot!.factoryFacilities!;await send({kind:"FinalizeFactoryFacility",transactionId:id});
+      if(snapshot!.factoryFacilities?.state!=="Idle"||snapshot!.factoryFacilities.revision!==expected.revision||canonicalJson(snapshot!.factoryFacilities.owners)!==canonicalJson(expected.owners))throw new Error("RecoveryHold: Facility finalize receipt incomplete");
+      factoryPending=undefined;heldSnapshot=undefined;mutating=false;
+    },
     async prepareBodyResidency(id){
       if(mutating||bodyPending||!snapshot||snapshot.bodyResidencyTransaction!=="Idle"){throw new Error("Body residency Pending");}
       mutating=true;heldSnapshot=undefined;
@@ -298,7 +374,18 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
       if(mutating||bodyPending){throw new Error("World Pending");}mutating=true;
       try{await send({kind});}finally{if(snapshot?.neighborTransaction!=="RecoveryHold"){mutating=false;}}
     },
-    setPlayerInput(value) { playerInput = { ...value, jump: playerInput.jump || value.jump }; },
+    setPlayerInput(value,cancelPendingJump=false) {
+      if(factoryEnabled&&cancelPendingJump){
+        clearFactoryInput();
+        if(!disposed&&!failure&&!factoryInputClosing&&factoryCommandDepth===0)sendFactoryInput({...playerInput},true);
+        return;
+      }
+      if(factoryEnabled&&!canDispatchFactoryInput()){clearFactoryInput();return;}
+      const nextInput={...value,jump:factoryEnabled?value.jump:(!cancelPendingJump&&playerInput.jump)||value.jump};
+      if(factoryEnabled&&nextInput.x===playerInput.x&&nextInput.z===playerInput.z&&nextInput.sprint===playerInput.sprint&&nextInput.jump===playerInput.jump)return;
+      playerInput=nextInput;
+      if(factoryEnabled){sendFactoryInput({...nextInput});playerInput={...nextInput,jump:false};}
+    },
     setCameraOffset(value) { cameraOffset = value === undefined ? undefined : { ...value }; },
     setCutAim(value){cutAim=value===undefined?undefined:{x:value.x,y:value.y,z:value.z};},
     async prepareBranch(request){
@@ -348,16 +435,14 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
       await send({kind:"Impulse",direction:{x:direction.x,y:direction.y,z:direction.z}});
     },
     update() {
-      if (disposed || mutating) { return; }
-      if (busy) { return; }
-      busy = true;
-      void send({ kind: "Read", input: playerInput, cameraOffset,cutAim }).catch(error => { failure = error; }).finally(() => { busy = false; });
-      playerInput = { ...playerInput, jump: false };
+      if(factoryEnabled&&!canDispatchFactoryInput())clearFactoryInput();
+      readInput();
     },
     async command(kind) {
       if((mutating||bodyPending) && kind !== "Pause" && kind !== "Inspect") { throw new Error("Terrain Pending"); }
-      if (kind === "Pause" || kind === "Inspect" || kind === "Play") { playerInput = { x: 0, z: 0, sprint: false, jump: false }; }
-      await send({ kind }, [], !mutating);
+      if(factoryEnabled){factoryCommandDepth++;clearFactoryInput();sendFactoryInput({...playerInput},true);}
+      else if (kind === "Pause" || kind === "Inspect" || kind === "Play") { playerInput = { x: 0, z: 0, sprint: false, jump: false }; }
+      try{await send({ kind }, [], !mutating);}finally{if(factoryEnabled)factoryCommandDepth--;}
     },
     async prepareTerrain(id,generation,replacements,fragments=[]) {
       if(mutating||bodyPending) { throw new Error("Terrain Pending"); }
@@ -386,6 +471,7 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
       native:snapshot?Object.freeze({status:snapshot.status,bodies:snapshot.bodyCount,colliders:snapshot.colliderCount}):null}),
     async dispose() {
       if (disposed) { return; }
+      if(factoryEnabled){factoryInputClosing=true;clearFactoryInput();}
       try {
         if(failure!==undefined){throw failure;}
         await send({ kind: "Dispose" });

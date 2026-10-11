@@ -1,0 +1,15 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "build"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startUtc": "2026-10-11T17:50:44.410391+00:00",
+  "endUtc": "2026-10-11T17:50:46.959517+00:00",
+  "durationSeconds": 2.5491084749992297,
+  "exitCode": 1,
+  "rawBytes": 861,
+  "rawSha256": "8a6de0911d941ca1958389908f61e5e30e9db3dab9a26ef1944f379d20ffed5f",
+  "stage": "ONEFILE E2E samePage public trustedCDPSession Input.dispatchKeyEvent source-bound WASD payload; trace/caps/closure preserved;29otherproductsheld; noBrowser/newNativeRED"
+}

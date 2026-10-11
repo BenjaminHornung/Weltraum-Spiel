@@ -1,0 +1,7 @@
+W07 normal E2E99 self-review
+
+Actual98 collected thirteen passes, one case14 failure and three unrun cases. The trace returns Ready/revision1/ghost:null after all seven early ArrowLeft events, then records the selected ghost at the unchanged default center with FACILITY_OVERLAP. factoryEntry.choose awaits the native pause before selecting; onBuildKey ignores input while tool.read is null. This is a test synchronization failure. No product lifecycle failure or native mutation is inferred.
+
+Only cases14/15 changed. The first waits for the real default ghost center and quarter turn, accepting its truthful overlap status. Each of the fourteen ordinary ArrowLeft events then requires the corresponding 250-mm ghost center through the original five-second expect budget. Null produces a retryable absent value. The final supported disjoint center, quarter turn, specific BOM_MISSING, complete material/native equality, finite C26 and disposal oracles remain unchanged. No hooks, world authority calls, forced poses/ticks, retries of input or changed budgets were introduced.
+
+Original TypeScript/Vite build99 passed. The thirty-file candidate binds exactly one E2E delta; all twenty-nine other paths match baseline201394. Twenty-eight paths differ from the W07 base. Browser execution is NOT_RUN and all product writes are held pending independent source review. Previous030fc bytes and actual98 raw/artifacts remain immutable.

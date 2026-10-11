@@ -1,0 +1,46 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/hvp-player-input.test.ts -t body-cut Preparing entry
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-player-input.test.ts (24 tests | 2 failed | 22 skipped) 682ms
+     × neutralizes admitted input at a real Native body-cut Preparing entry while native ticks continue 405ms
+     × neutralizes admitted input at a real Client body-cut Preparing entry while native ticks continue 242ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-player-input.test.ts > W07 actual Native Factory input safety boundaries > neutralizes admitted input at a real Native body-cut Preparing entry while native ticks continue
+Error: Stale or missing moving contact within 4 m
+ ❯ Object.begin src/hestia-prototype/physics/bodyCutSession.ts:42:103
+     40|       if(request.brush!==undefined&&request.brush!=="Box"&&request.bru…
+     41|       const hit=captureHvpBodyHit(world,targets,eye,request.direction,…
+     42|       if(!hit||!target||hit.ownerId!==request.ownerId||hit.sourceDiges…
+       |                                                                                                       ^
+     43|       const cells=readHvpBodyCells(target.recipe.source);
+     44|       const payload:HvpBodyCutPayload=Object.freeze({sessionId,epoch:0…
+ ❯ Object.beginBodyCut src/hestia-prototype/physics/session.ts:355:23
+ ❯ tests/unit/hvp-player-input.test.ts:194:93
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/hvp-player-input.test.ts > W07 actual Native Factory input safety boundaries > neutralizes admitted input at a real Client body-cut Preparing entry while native ticks continue
+Error: Error: Stale or missing moving contact within 4 m
+ ❯ NativeTransport.worker.onmessage src/hestia-prototype/physics/client.ts:195:48
+    193|     if (!withheldFactoryRead && !p.publish && data.snapshot !== undefi…
+    194|     if(data.restoreState!==undefined){restorePhase=data.restoreState;}
+    195|     if(data.rejected !== undefined) { p.reject(new Error(data.rejected…
+       |                                                ^
+    196|     try{p.onReply?.(data);}catch(error){p.reject(error instanceof Erro…
+    197|     p.resolve();
+ ❯ tests/unit/hvp-player-input.test.ts:106:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 22 skipped (24)
+   Start at  16:58:24
+   Duration  1.83s (transform 872ms, setup 0ms, import 1.05s, tests 682ms, environment 0ms)
+

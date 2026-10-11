@@ -1,0 +1,18 @@
+{
+  "phase": "TEMPORARY_TIMELINE_DIAGNOSTIC_SOURCE_F1_F2_FIX_BUILD_NOT_GAMEPLAY_GATE",
+  "argv": [
+    "npm",
+    "run",
+    "build"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startUtc": "2026-10-11T19:00:54.544959+00:00",
+  "endUtc": "2026-10-11T19:00:59.031723+00:00",
+  "wrapperSeconds": 4.486773081000138,
+  "exitCode": 0,
+  "rawBytes": 1904,
+  "rawSha256": "8f913cbd1d518865a514e8eecc19278e166dac4b2d9151522e1151fc8999c235",
+  "sourceSha256": "0faa193c0fbfd56c0700aa7164f7a7cb31321425cee7c409a4618563205c480f",
+  "sourceBytes": 19391,
+  "browser": "NOT_RUN_HOLD"
+}

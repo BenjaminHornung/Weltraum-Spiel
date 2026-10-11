@@ -1,0 +1,35 @@
+{
+  "copiedOriginalBytesWithoutNormalization": true,
+  "artifacts": [
+    {
+      "path": "final-independent-runtime-source-review.md",
+      "sha256": "1f549a99b66362246ca84602649a9276a9d0103c5e18b5b6dee7f398314362da",
+      "bytes": 4251,
+      "originalSourcePath": "/workspace/.cloud-setup/fp06-w07-final-runtime-source-review.md"
+    },
+    {
+      "path": "final-independent-native-ghost-spec-review.md",
+      "sha256": "c3af5c7e26b4a83914afac25c4150efa804c4fcdbd3741f12db955ba98889e83",
+      "bytes": 5255,
+      "originalSourcePath": "/workspace/.cloud-setup/fp06-w07-ghost-final-spec-review.md"
+    },
+    {
+      "path": "final-independent-native-ghost-quality-review.md",
+      "sha256": "76f684cff6c2d34d9832e89f7ca72c6f94d729b6d6915b7ea2ca16436cd78433",
+      "bytes": 7130,
+      "originalSourcePath": "/workspace/.cloud-setup/fp06-w07-ghost-final-quality-review.md"
+    },
+    {
+      "path": "99-independent-root-source-review.md",
+      "sha256": "ee61a95dd2bdc2cfbf489721f15b92de7310e6ae33327b060781b3089e7f16e7",
+      "bytes": 1157,
+      "originalSourcePath": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/reviews/w07-second-ghost99-root-source-review.md"
+    },
+    {
+      "path": "98-independent-root-mesa-wrapper-source-review.md",
+      "sha256": "e2085aa34c2df75bb96743b00facbd9489d9b3ca95c6e3dfc787a0ae38a39b8b",
+      "bytes": 1520,
+      "originalSourcePath": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/reviews/w07-mesa-wrapper-root-source-review.md"
+    }
+  ]
+}

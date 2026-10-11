@@ -1,0 +1,144 @@
+{
+  "phase": 83,
+  "actualFreshFixedOutputs": [
+    "browser-native-walk-taps.json"
+  ],
+  "restoredExactOriginalFixedOutputs": true,
+  "artifacts": [
+    {
+      "path": "browser-adaptive-normal-subset-83/browser-native-walk-taps.json",
+      "bytes": 448536,
+      "sha256": "f4ae71821d6072e374e89d270b17ba59913e1903e907c0d88ea35eed175ceedb"
+    },
+    {
+      "path": "browser-adaptive-normal-subset-83/playwright-output/.last-run.json",
+      "bytes": 96,
+      "sha256": "410980d1c7257ac8f0fe92cc7031a55ca003c9376ebb4cce9cd5d9663b9cc4fa"
+    },
+    {
+      "path": "browser-adaptive-normal-subset-83/playwright-output/factory-placement-W07-real-19e1d-source-checked-Cutter-stand-chromium/error-context.md",
+      "bytes": 18686,
+      "sha256": "786d8b7e90245fb90cd4a7bc272d73ba83df17460831431769eec3319e500706"
+    },
+    {
+      "path": "browser-adaptive-normal-subset-83/playwright-output/factory-placement-W07-real-19e1d-source-checked-Cutter-stand-chromium/test-failed-1.png",
+      "bytes": 327646,
+      "sha256": "baabe965c71bbef88c264659586a4ec50a67bcf9d77aef967381b4fb44007bc2"
+    },
+    {
+      "path": "browser-adaptive-normal-subset-83/playwright-output/factory-placement-W07-real-19e1d-source-checked-Cutter-stand-chromium/trace.zip",
+      "bytes": 4769514,
+      "sha256": "e7ef0aeb099d6f0f2372fad9838a29cf897b31efe8544fa165e8e7bc7ad41a97"
+    },
+    {
+      "path": "browser-adaptive-normal-subset-83/playwright-report/data/161a4a451519acb03082e5b12a71e32b9e1dbefb.md",
+      "bytes": 18686,
+      "sha256": "786d8b7e90245fb90cd4a7bc272d73ba83df17460831431769eec3319e500706"
+    },
+    {
+      "path": "browser-adaptive-normal-subset-83/playwright-report/data/75303bcc8e0a0d07427cd57cba3428b1123b915e.zip",
+      "bytes": 4769514,
+      "sha256": "e7ef0aeb099d6f0f2372fad9838a29cf897b31efe8544fa165e8e7bc7ad41a97"
+    },
+    {
+      "path": "browser-adaptive-normal-subset-83/playwright-report/data/faeaac6b14853315182ca612ba4a511398544049.png",
+      "bytes": 327646,
+      "sha256": "baabe965c71bbef88c264659586a4ec50a67bcf9d77aef967381b4fb44007bc2"
+    },
+    {
+      "path": "browser-adaptive-normal-subset-83/playwright-report/index.html",
+      "bytes": 539550,
+      "sha256": "a06837109954c07e01cb423fe1aa8ae8ee817487fd199438b760a279d896295a"
+    },
+    {
+      "path": "browser-adaptive-normal-subset-83/playwright-report/trace/assets/codeMirrorModule-LEHpjmcn.js",
+      "bytes": 313054,
+      "sha256": "e3d682edfb4dd1fa17882466dd15058120278b27ff1101785a57b6df4db7ada5"
+    },
+    {
+      "path": "browser-adaptive-normal-subset-83/playwright-report/trace/assets/defaultSettingsView-BNmKHKpQ.js",
+      "bytes": 658064,
+      "sha256": "f21839cd274944763d12ad24529345b9f8ebf339409f51f4dbe52f9d9baeb09c"
+    },
+    {
+      "path": "browser-adaptive-normal-subset-83/playwright-report/trace/assets/urlMatch-BYQrIQwR.js",
+      "bytes": 819,
+      "sha256": "168c4dee4815ea8d3c131a504033cd23d4b15aefa0209dd10ad3f643e8f1d8a7"
+    },
+    {
+      "path": "browser-adaptive-normal-subset-83/playwright-report/trace/codeMirrorModule.DYBRYzYX.css",
+      "bytes": 6421,
+      "sha256": "70bf421a13e87857ca684bfa2cc55f06d7c5a50f71253a3ff1d74769b14a957e"
+    },
+    {
+      "path": "browser-adaptive-normal-subset-83/playwright-report/trace/codicon.DCmgc-ay.ttf",
+      "bytes": 80340,
+      "sha256": "0f1d5219934e96e83b8db162d60b4d8c09b5de1e7d38031cbafe4a3c0f2889c9"
+    },
+    {
+      "path": "browser-adaptive-normal-subset-83/playwright-report/trace/defaultSettingsView.CjdS-WJx.css",
+      "bytes": 112258,
+      "sha256": "de9c068d0e8043820fe42f30558e972eb7e2a8a45a34f65c7c8f73fa2dbc9fd0"
+    },
+    {
+      "path": "browser-adaptive-normal-subset-83/playwright-report/trace/index.CzXZzn5A.css",
+      "bytes": 2111,
+      "sha256": "4ec2a3d49db259ce9025cb4fa48d73b1afd58215e567eef3b4a4cbf76c1674d9"
+    },
+    {
+      "path": "browser-adaptive-normal-subset-83/playwright-report/trace/index.DMMX1gXU.js",
+      "bytes": 6547,
+      "sha256": "f33ceae71f13fde446a244c113548fec5ef890bf7b93ded7b861bebcebaa3e23"
+    },
+    {
+      "path": "browser-adaptive-normal-subset-83/playwright-report/trace/index.html",
+      "bytes": 2363,
+      "sha256": "5ced36d3feb5bbbc0e8350330be0a293a1b4784ddecb6e58e1851323a93640cc"
+    },
+    {
+      "path": "browser-adaptive-normal-subset-83/playwright-report/trace/manifest.webmanifest",
+      "bytes": 429,
+      "sha256": "d8540500603a32a39fe7e5a0375dc0f9ebafd11118e06a846db7efc608223ab9"
+    },
+    {
+      "path": "browser-adaptive-normal-subset-83/playwright-report/trace/playwright-logo.svg",
+      "bytes": 5033,
+      "sha256": "6b0a4367bdeab10995bc239278f04c68c10e48adbec15e799e01909a0d66dcb9"
+    },
+    {
+      "path": "browser-adaptive-normal-subset-83/playwright-report/trace/snapshot.html",
+      "bytes": 389,
+      "sha256": "11c80efe4f4424fa59004bcc71fed77a420d2da5f199790e355c30a5b965d0cd"
+    },
+    {
+      "path": "browser-adaptive-normal-subset-83/playwright-report/trace/snapshot.v8KI4P3m.js",
+      "bytes": 660,
+      "sha256": "97a3cd6d67aaac66efc838d7d743ac51bbf7d272e1287981c11758fca21a0657"
+    },
+    {
+      "path": "browser-adaptive-normal-subset-83/playwright-report/trace/sw.bundle.js",
+      "bytes": 95855,
+      "sha256": "5237c6c68ba1f3591caf8cf951be4873192342a72fbcc31e5a667f7a7904c624"
+    },
+    {
+      "path": "browser-adaptive-normal-subset-83/playwright-report/trace/uiMode.BZQ54Kgt.css",
+      "bytes": 60311,
+      "sha256": "a548cd88f2041433da2d60fd3a33ef23af2fb8ddf2557b7bef79806364498e57"
+    },
+    {
+      "path": "browser-adaptive-normal-subset-83/playwright-report/trace/uiMode.Ut8wwJNp.js",
+      "bytes": 38514,
+      "sha256": "0ab1e917250833c3f6b3ed3ae3f359158bf68cd2d9951163ee6edff9b8ed1e5b"
+    },
+    {
+      "path": "browser-adaptive-normal-subset-83/playwright-report/trace/uiMode.html",
+      "bytes": 727,
+      "sha256": "95bf648d76d380b779770aae1c560b58ee456096b2b3b02922e629af29e3d492"
+    },
+    {
+      "path": "browser-adaptive-normal-subset-83/playwright-report/trace/xtermModule.DYP7pi_n.css",
+      "bytes": 4150,
+      "sha256": "7c5a01f382f76539fc9b4db6b18e18a7035741845fd14968c5cdc0a7e373d817"
+    }
+  ]
+}

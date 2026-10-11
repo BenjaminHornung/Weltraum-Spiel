@@ -1,0 +1,59 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/facilitySession.test.ts -t source-Cargo Native disposal|full old native member
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/facilitySession.test.ts (7 tests | 3 failed | 4 skipped) 483ms
+   × W07 source-Cargo Native disposal read never touches a freed World 427ms
+   × W07 full old native member proof detects shape mutation instead of claiming rollback 11ms
+   × W07 full old native member proof detects friction mutation instead of claiming rollback 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/facilitySession.test.ts > W07 source-Cargo Native disposal read never touches a freed World
+AssertionError: expected [Function] to not throw an error but 'Error: null pointer passed to rust' was thrown
+
+- Expected:
+undefined
+
++ Received:
+"Error: null pointer passed to rust"
+
+ ❯ tests/unit/factory/facilitySession.test.ts:75:51
+     73|  const site=createFactoryCargoSite(materializeFactoryStartSite());cons…
+     74|  const session=await createHvpPhysicsSession([ground],{x:10,y:4,z:10},…
+     75|  session.dispose();expect(()=>session.read()).not.toThrow();expect(ses…
+       |                                                   ^
+     76| });
+     77| it.each(["shape","friction"])("W07 full old native member proof detect…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/unit/factory/facilitySession.test.ts > W07 full old native member proof detects shape mutation instead of claiming rollback
+ FAIL  tests/unit/factory/facilitySession.test.ts > W07 full old native member proof detects friction mutation instead of claiming rollback
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ tests/unit/factory/facilitySession.test.ts:81:58
+     79|   const old=world.createRigidBody(R.RigidBodyDesc.fixed()),collider=wo…
+     80|   facilities.prepare(request);if(kind==="shape")collider.setShape(new …
+     81|   expect(()=>facilities.rollback(request.transactionId)).toThrow(/Reco…
+       |                                                          ^
+     82|  }finally{world.free();}
+     83| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 4 skipped (7)
+   Start at  13:34:54
+   Duration  1.69s (transform 824ms, setup 0ms, import 1.09s, tests 483ms, environment 0ms)
+

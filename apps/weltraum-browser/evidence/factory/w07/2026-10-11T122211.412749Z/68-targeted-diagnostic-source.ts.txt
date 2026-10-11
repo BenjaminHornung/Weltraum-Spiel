@@ -1,0 +1,52 @@
+import { expect, test, type BrowserContext, type Page } from "@playwright/test";
+import { writeFile } from "node:fs/promises";
+import path from "node:path";
+
+// TARGETED_DIAGNOSTIC_ONLY: passive trusted key timestamps and actual Native facts.
+test.describe.serial("W07 targeted adaptive fine pulse diagnostic only",()=>{
+  let context:BrowserContext,page:Page,pulseMs=125;
+  const samples:unknown[]=[];
+  const native=()=>page.evaluate(()=>JSON.parse(document.body.dataset.hestiaPrototypePhysics!));
+  test.beforeAll(async({browser},info)=>{
+    context=await browser.newContext({baseURL:info.project.use.baseURL});page=await context.newPage();
+    await page.addInitScript(()=>{
+      const records:unknown[]=[];
+      Object.defineProperty(window,"__w07TrustedKeyTimes",{value:records});
+      for(const type of ["keydown","keyup"])document.addEventListener(type,event=>{
+        const key=event as KeyboardEvent;if(!["a","d"].includes(key.key.toLowerCase()))return;
+        if(records.length>=64)records.shift();records.push({type,key:key.key,code:key.code,trusted:key.isTrusted,eventTime:key.timeStamp,observedAt:performance.now()});
+      },{capture:true,passive:true});
+    });
+  });
+  test.afterAll(async()=>{await context?.close();});
+  const pulse=async()=>{
+    for(let correction=0;correction<4&&samples.length<8;correction++){
+      const before=await native(),x=before.player.position.x;if(x>=-6.4&&x<=-6.1)break;
+      const key=x>-6.25?"d":"a",usedMs=pulseMs;
+      await page.keyboard.press(key,{delay:usedMs});
+      let after=await native();const released=[after];
+      for(let read=0;read<3;read++){
+        const next=await native();released.push(next);
+        const stable=next.ticks>after.ticks&&Math.abs(next.player.position.x-after.player.position.x)<0.000001&&Math.abs(next.player.position.z-after.player.position.z)<0.000001;
+        after=next;if(stable)break;
+      }
+      const crossed=(x+6.25)*(after.player.position.x+6.25)<0;if(crossed)pulseMs=Math.max(50,Math.round(pulseMs/2));
+      const keys=await page.evaluate(()=>(window as unknown as {__w07TrustedKeyTimes:unknown[]}).__w07TrustedKeyTimes);
+      samples.push({correction:samples.length+1,key,usedMs,nextPulseMs:pulseMs,crossedTarget:crossed,deltaX:after.player.position.x-x,zeroMove:after.player.position.x===x,before,after,released,keys});
+    }
+  };
+  test("normal Factory route and actual source reach Ready",async()=>{
+    await page.goto("/factory.html");await expect(page.locator("#factory-status")).toContainText("Werkstatt bereit",{timeout:20_000});await expect(page.locator("canvas")).toHaveCount(1);
+    expect(await page.evaluate(()=>"TestBridge" in window)).toBe(false);
+  });
+  test("normal Play plus at most four released adaptive corrections",async()=>{
+    await page.getByRole("button",{name:"Spielen · WASD / Maus / Space",exact:true}).click();await expect.poll(()=>page.evaluate(()=>document.pointerLockElement?.id)).toBe("debug-scene");await expect.poll(async()=>(await native()).player.status).toBe("Walking");await pulse();
+  });
+  test("at most four additional released fine corrections in the same session",async()=>{await pulse();});
+  test("capture actual trusted pulses and final source-window result",async()=>{
+    const final=await native(),keys=await page.evaluate(()=>(window as unknown as {__w07TrustedKeyTimes:unknown[]}).__w07TrustedKeyTimes),input=await page.evaluate(()=>JSON.parse(document.body.dataset.hestiaPrototypeInput!));
+    const result={diagnosticOnly:true,normalGameplayGate:false,initialPulseMs:125,minimumPulseMs:50,maxCorrections:8,samples,final,keys,input,sourceXRegion:[-6.4,-6.1],enteredSourceXRegion:final.player.position.x>=-6.4&&final.player.position.x<=-6.1};
+    await writeFile(path.resolve("evidence/factory/w07",process.env.WELTRAUM_FACTORY_EVIDENCE_RUN!,"68-diagnostic-adaptive-pulses.json"),JSON.stringify(result,null,2)+"\n");
+    expect(final.player.grounded).toBe(true);expect(result.enteredSourceXRegion).toBe(true);expect(samples.length).toBeLessThanOrEqual(8);
+  });
+});

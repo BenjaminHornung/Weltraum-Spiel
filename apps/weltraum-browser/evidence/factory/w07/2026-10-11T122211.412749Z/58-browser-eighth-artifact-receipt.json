@@ -1,0 +1,161 @@
+{
+  "phase": "58-real-browser-eighth",
+  "exitCode": 1,
+  "artifacts": [
+    {
+      "path": "browser-eighth/browser-cargo-open-native-walk.json",
+      "bytes": 315480,
+      "sha256": "49b2bafd3f793d0314ef20db2c943fe61f87caba90feba2fc02ad85a9af076b4"
+    },
+    {
+      "path": "browser-eighth/browser-ghost-cancel.json",
+      "bytes": 103684,
+      "sha256": "636cdebcc871934b5a4491221cf7890482f4021dd4ec992f52d42b15f6ca0d65"
+    },
+    {
+      "path": "browser-eighth/browser-native-walk-taps.json",
+      "bytes": 182799,
+      "sha256": "cc94b31a57fcf82a1bcd507658acf7dbda0d75b2c2286a6db411cd79a5f87957"
+    },
+    {
+      "path": "browser-eighth/browser-paid-cutter.json",
+      "bytes": 250811,
+      "sha256": "6efa3cee91a9f33abd7b92f4f8326dd34fa58372d74abb5c0af1331092b87aad"
+    },
+    {
+      "path": "browser-eighth/paid-native-cutter.png",
+      "bytes": 689247,
+      "sha256": "adc80b0e70db0258ccc8ac1bfc18e0fa7b600e345e69e1fee7af455ff9a0908d"
+    },
+    {
+      "path": "browser-eighth/playwright-output/.last-run.json",
+      "bytes": 96,
+      "sha256": "b31ab0ea1688edf5ef010c9bad46a170f41aa3974f788a49df2a798e9c2e391d"
+    },
+    {
+      "path": "browser-eighth/playwright-output/factory-placement-W07-real-7c73e-xactly-one-paid208kg-Cutter-chromium/error-context.md",
+      "bytes": 20549,
+      "sha256": "fbeb2e2a135bb24384779cc029efbbcac3cc6fe6dca5a12668c0bffd38076f22"
+    },
+    {
+      "path": "browser-eighth/playwright-output/factory-placement-W07-real-7c73e-xactly-one-paid208kg-Cutter-chromium/test-failed-1.png",
+      "bytes": 689247,
+      "sha256": "adc80b0e70db0258ccc8ac1bfc18e0fa7b600e345e69e1fee7af455ff9a0908d"
+    },
+    {
+      "path": "browser-eighth/playwright-output/factory-placement-W07-real-7c73e-xactly-one-paid208kg-Cutter-chromium/trace.zip",
+      "bytes": 8139522,
+      "sha256": "26d4befc5ca5595eeb8b4b97bc23522f981ac5691d5391bdae2a1e5b81c2fdcf"
+    },
+    {
+      "path": "browser-eighth/playwright-report/data/3e317f40dc969861640f8982ab75079dfb18d227.zip",
+      "bytes": 8139522,
+      "sha256": "26d4befc5ca5595eeb8b4b97bc23522f981ac5691d5391bdae2a1e5b81c2fdcf"
+    },
+    {
+      "path": "browser-eighth/playwright-report/data/4a3bdfacd4347df2b21d70c049c98df3afdf0f02.png",
+      "bytes": 689247,
+      "sha256": "adc80b0e70db0258ccc8ac1bfc18e0fa7b600e345e69e1fee7af455ff9a0908d"
+    },
+    {
+      "path": "browser-eighth/playwright-report/data/84e683307f97b035c77bf14f23baf43f68f90ccb.md",
+      "bytes": 20549,
+      "sha256": "fbeb2e2a135bb24384779cc029efbbcac3cc6fe6dca5a12668c0bffd38076f22"
+    },
+    {
+      "path": "browser-eighth/playwright-report/index.html",
+      "bytes": 544266,
+      "sha256": "395aad8688229b1634a1f44cd66adcfba3bd5beb566a4711a17d16189b06d95a"
+    },
+    {
+      "path": "browser-eighth/playwright-report/trace/assets/codeMirrorModule-LEHpjmcn.js",
+      "bytes": 313054,
+      "sha256": "e3d682edfb4dd1fa17882466dd15058120278b27ff1101785a57b6df4db7ada5"
+    },
+    {
+      "path": "browser-eighth/playwright-report/trace/assets/defaultSettingsView-BNmKHKpQ.js",
+      "bytes": 658064,
+      "sha256": "f21839cd274944763d12ad24529345b9f8ebf339409f51f4dbe52f9d9baeb09c"
+    },
+    {
+      "path": "browser-eighth/playwright-report/trace/assets/urlMatch-BYQrIQwR.js",
+      "bytes": 819,
+      "sha256": "168c4dee4815ea8d3c131a504033cd23d4b15aefa0209dd10ad3f643e8f1d8a7"
+    },
+    {
+      "path": "browser-eighth/playwright-report/trace/codeMirrorModule.DYBRYzYX.css",
+      "bytes": 6421,
+      "sha256": "70bf421a13e87857ca684bfa2cc55f06d7c5a50f71253a3ff1d74769b14a957e"
+    },
+    {
+      "path": "browser-eighth/playwright-report/trace/codicon.DCmgc-ay.ttf",
+      "bytes": 80340,
+      "sha256": "0f1d5219934e96e83b8db162d60b4d8c09b5de1e7d38031cbafe4a3c0f2889c9"
+    },
+    {
+      "path": "browser-eighth/playwright-report/trace/defaultSettingsView.CjdS-WJx.css",
+      "bytes": 112258,
+      "sha256": "de9c068d0e8043820fe42f30558e972eb7e2a8a45a34f65c7c8f73fa2dbc9fd0"
+    },
+    {
+      "path": "browser-eighth/playwright-report/trace/index.CzXZzn5A.css",
+      "bytes": 2111,
+      "sha256": "4ec2a3d49db259ce9025cb4fa48d73b1afd58215e567eef3b4a4cbf76c1674d9"
+    },
+    {
+      "path": "browser-eighth/playwright-report/trace/index.DMMX1gXU.js",
+      "bytes": 6547,
+      "sha256": "f33ceae71f13fde446a244c113548fec5ef890bf7b93ded7b861bebcebaa3e23"
+    },
+    {
+      "path": "browser-eighth/playwright-report/trace/index.html",
+      "bytes": 2363,
+      "sha256": "5ced36d3feb5bbbc0e8350330be0a293a1b4784ddecb6e58e1851323a93640cc"
+    },
+    {
+      "path": "browser-eighth/playwright-report/trace/manifest.webmanifest",
+      "bytes": 429,
+      "sha256": "d8540500603a32a39fe7e5a0375dc0f9ebafd11118e06a846db7efc608223ab9"
+    },
+    {
+      "path": "browser-eighth/playwright-report/trace/playwright-logo.svg",
+      "bytes": 5033,
+      "sha256": "6b0a4367bdeab10995bc239278f04c68c10e48adbec15e799e01909a0d66dcb9"
+    },
+    {
+      "path": "browser-eighth/playwright-report/trace/snapshot.html",
+      "bytes": 389,
+      "sha256": "11c80efe4f4424fa59004bcc71fed77a420d2da5f199790e355c30a5b965d0cd"
+    },
+    {
+      "path": "browser-eighth/playwright-report/trace/snapshot.v8KI4P3m.js",
+      "bytes": 660,
+      "sha256": "97a3cd6d67aaac66efc838d7d743ac51bbf7d272e1287981c11758fca21a0657"
+    },
+    {
+      "path": "browser-eighth/playwright-report/trace/sw.bundle.js",
+      "bytes": 95855,
+      "sha256": "5237c6c68ba1f3591caf8cf951be4873192342a72fbcc31e5a667f7a7904c624"
+    },
+    {
+      "path": "browser-eighth/playwright-report/trace/uiMode.BZQ54Kgt.css",
+      "bytes": 60311,
+      "sha256": "a548cd88f2041433da2d60fd3a33ef23af2fb8ddf2557b7bef79806364498e57"
+    },
+    {
+      "path": "browser-eighth/playwright-report/trace/uiMode.Ut8wwJNp.js",
+      "bytes": 38514,
+      "sha256": "0ab1e917250833c3f6b3ed3ae3f359158bf68cd2d9951163ee6edff9b8ed1e5b"
+    },
+    {
+      "path": "browser-eighth/playwright-report/trace/uiMode.html",
+      "bytes": 727,
+      "sha256": "95bf648d76d380b779770aae1c560b58ee456096b2b3b02922e629af29e3d492"
+    },
+    {
+      "path": "browser-eighth/playwright-report/trace/xtermModule.DYP7pi_n.css",
+      "bytes": 4150,
+      "sha256": "7c5a01f382f76539fc9b4db6b18e18a7035741845fd14968c5cdc0a7e373d817"
+    }
+  ]
+}

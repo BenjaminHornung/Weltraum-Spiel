@@ -1,0 +1,146 @@
+import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { PerspectiveCamera } from "three";
+import { createHvpPlayerInput } from "../../src/hestia-prototype/player/input";
+import { createHvpPhysicsClient, type HvpPhysicsClient } from "../../src/hestia-prototype/physics/client";
+import { createHvpPhysicsSession, type HvpPhysicsSession } from "../../src/hestia-prototype/physics/session";
+import { initializeHvpRapier } from "../../src/hestia-prototype/physics/rapierPort";
+import type { HvpPlayerInput } from "../../src/hestia-prototype/player/locomotion";
+import type { HvpPhysicsMessage, HvpPhysicsReply } from "../../src/hestia-prototype/physics/physicsWorker";
+import { createFp02Fixture } from "../../src/factory/catalog/fp02Catalog";
+
+// Explicit transport harness only: empty sources need no collision jobs. Native
+// snapshots below come from real Rapier sessions; no simulated axis pose or tick.
+vi.mock("../../src/workers/workerPool", () => ({ WorkerPool: class {
+  async start() {} async shutdown() {}
+} }));
+beforeAll(initializeHvpRapier);
+const cleanup: (() => void | Promise<void>)[] = [];
+afterEach(async () => { for (const close of cleanup.splice(0).reverse()) await close(); vi.unstubAllGlobals(); });
+const turn = async () => { await Promise.resolve(); await Promise.resolve(); await Promise.resolve(); };
+const zero = { x: 0, z: 0, sprint: false, jump: false };
+class Element extends EventTarget {
+  id = ""; open = false; textContent = ""; dataset: Record<string, string> = {};
+  setAttribute() {} append() {} remove() {} focus() {} showModal() { this.open = true; } close() { this.open = false; }
+}
+const inputHarness = async (factory = true) => {
+  const native = await createHvpPhysicsSession([], { x: 10, y: 4, z: 10 }, undefined,
+    { spawn: { x: 0, y: 2, z: 0 }, coverage: [{ minX: -16, minZ: -16, maxX: 16, maxZ: 16 }] });
+  const doc = Object.assign(new EventTarget(), { body: new Element(), hidden: false, pointerLockElement: null as Element | null,
+    createElement: () => new Element(), exitPointerLock: () => { doc.pointerLockElement = null; doc.dispatchEvent(new Event("pointerlockchange")); } });
+  const canvas = Object.assign(new Element(), { requestPointerLock: async () => { doc.pointerLockElement = canvas; doc.dispatchEvent(new Event("pointerlockchange")); } });
+  const win = new EventTarget(); const intents: HvpPlayerInput[] = []; let blocked = false;
+  const physics = { read: () => native.read(), setPlayerInput: (value: HvpPlayerInput) => { intents.push({ ...value }); native.input(value); },
+    setCameraOffset: () => {}, command: async (kind: string) => { if (kind === "Play") native.play(); if (kind === "Pause") native.pause(); } } as unknown as HvpPhysicsClient;
+  // The ninth opt-in is deliberately ignored by the old implementation, making
+  // the initial RED a collected business assertion rather than an import failure.
+  const create = createHvpPlayerInput as unknown as (...args: unknown[]) => ReturnType<typeof createHvpPlayerInput>;
+  const input = create(canvas, new PerspectiveCamera(), physics, doc, win, () => {}, { confirm() {}, select() {} }, () => blocked, factory);
+  cleanup.push(() => { input.dispose(); native.dispose(); });
+  input.start(); await turn();
+  const key = (type: string, code: string, repeat = false) => win.dispatchEvent(Object.assign(new Event(type, { cancelable: true }), { code, repeat }));
+  return { input, native, intents, key, win, block: () => { blocked = true; } };
+};
+
+describe("W07 Factory event intent without render authority", () => {
+  it("delivers normal Factory KeyD without any RAF and releases it before a frame", async () => {
+    const h = await inputHarness(); const ticks = h.native.read().ticks;
+    h.key("keydown", "KeyD"); expect(h.intents).toHaveLength(1); expect(h.intents[0]!.x).toBeCloseTo(-1);
+    h.key("keyup", "KeyD"); expect(h.intents.at(-1)).toMatchObject(zero); expect(h.native.read().ticks).toBe(ticks);
+  });
+  it("stages one Space edge, preserves it through ordinary release, and never stages it again on RAF", async () => {
+    const h = await inputHarness(); h.key("keydown", "Space"); expect(h.intents.at(-1)?.jump).toBe(true);
+    h.key("keydown", "Space", true); h.key("keyup", "Space"); h.input.update();
+    expect(h.intents.filter(value => value.jump)).toHaveLength(1);
+  });
+  it.each(["Escape", "blur", "hold"])("neutralizes staged movement and jump at %s without another RAF", async kind => {
+    const h = await inputHarness(); h.key("keydown", "KeyD"); h.key("keydown", "Space"); expect(h.intents.at(-1)?.jump).toBe(true);
+    if (kind === "Escape") h.key("keydown", "Escape"); else if (kind === "blur") h.win.dispatchEvent(new Event("blur")); else { h.block(); h.key("keyup", "KeyD"); }
+    expect(h.intents.at(-1)).toMatchObject(zero); expect(h.input.active).toBe(false);
+  });
+  it("keeps the unextended Legacy input deferred to the existing RAF path", async () => {
+    const h = await inputHarness(false); h.key("keydown", "KeyD"); expect(h.intents).toEqual([]); h.input.update(); expect(h.intents.at(-1)!.x).toBeCloseTo(-1);
+  });
+});
+
+class NativeTransport {
+  static current: NativeTransport;
+  onmessage: ((event: MessageEvent<HvpPhysicsReply>) => void) | null = null;
+  onerror = null; onmessageerror = null; terminated = false;
+  messages: HvpPhysicsMessage[] = []; reads: HvpPhysicsMessage[] = []; session!: HvpPhysicsSession;
+  constructor() { NativeTransport.current = this; }
+  postMessage(message: HvpPhysicsMessage) {
+    this.messages.push(structuredClone(message));
+    void (async () => {
+      if (message.kind === "Initialize") this.session = await createHvpPhysicsSession(message.sectors, message.spawn, message.gravity, message.player,
+        message.inertiaSpawn, message.branchSpawn, message.sessionId, undefined, message.branchKind, message.factoryEnabled);
+      else if (message.kind === "Read") { if (message.input) this.session.input(message.input); this.reads.push(message); return; }
+      else if (message.kind === "Pause") this.session.pause();
+      else if (message.kind === "Play") this.session.play();
+      else if (message.kind === "PrepareFactoryFacility") this.session.prepareFactoryFacility(message.request);
+      else if (message.kind === "CommitFactoryFacility") this.session.commitFactoryFacility(message.transactionId);
+      else if (message.kind === "RollbackFactoryFacility") this.session.rollbackFactoryFacility(message.transactionId);
+      else if (message.kind === "Dispose") this.session.dispose();
+      this.reply(message.id);
+    })().catch(error => { this.onmessage?.({ data: { id: message.id, rejected: String(error) } } as MessageEvent<HvpPhysicsReply>); });
+  }
+  reply(id: number) { this.onmessage?.(new MessageEvent<HvpPhysicsReply>("message", { data: { id, snapshot: this.session.read(), clock: { timers: 0, maxTimerGapMs: 0, maxAdvanceMs: 0,
+    maxHandlerMs: 0, lastCommand: "explicit-native-transport-fixture", lastHandlerMs: 0, delayedCallbacks: [] } } })); }
+  release() { const message = this.reads.shift(); if (!message) throw new Error("Missing held test Read"); this.reply(message.id); }
+  terminate() { this.terminated = true; this.session?.dispose(); }
+}
+const clientHarness = async (factory = true) => {
+  vi.stubGlobal("Worker", NativeTransport);
+  const client = await createHvpPhysicsClient([], { x: 10, y: 4, z: 10 }, new AbortController().signal,
+    { x: 0, y: 2, z: 0 }, undefined, undefined, undefined, "branch", undefined, factory);
+  const worker = NativeTransport.current; cleanup.push(() => client.dispose()); return { client, worker };
+};
+
+describe("W07 existing bounded Read(input) transport", () => {
+  it.each([zero,{...zero,x:1}])("does not drain unchanged already-sent level intent into an extra EventRead: %j", async value => {
+    const { client, worker } = await clientHarness();
+    if(value.x===0)client.update();else client.setPlayerInput(value);
+    expect(worker.reads).toHaveLength(1);
+    for(let frame=0;frame<4;frame++)client.setPlayerInput({...value});
+    worker.release();await turn();expect(worker.reads).toHaveLength(0);
+    // Snapshot polling remains owned by the existing explicit update path.
+    client.update();expect(worker.reads).toHaveLength(1);worker.release();await turn();
+  });
+  it("sends a Factory level intent without any client RAF and coalesces latest release behind one Read", async () => {
+    const { client, worker } = await clientHarness(); client.setPlayerInput({ ...zero, x: 1 });
+    expect(worker.reads).toHaveLength(1); const ticks = worker.session.read().ticks;
+    for (let count = 0; count < 20; count++) client.setPlayerInput({ ...zero, x: count % 2 ? 1 : -1 });
+    client.setPlayerInput(zero); expect(worker.reads).toHaveLength(1); worker.release(); await turn();
+    expect(worker.reads).toHaveLength(1); expect(worker.reads[0]).toMatchObject({ input: zero }); expect(worker.session.read().ticks).toBe(ticks);
+    worker.release(); await turn(); expect(worker.reads).toHaveLength(0);
+  });
+  it("preserves one unsent jump through ordinary key release while Read is busy", async () => {
+    const { client, worker } = await clientHarness(); client.update(); client.setPlayerInput({ ...zero, jump: true }); client.setPlayerInput(zero);
+    worker.release(); await turn(); expect(worker.reads[0]).toMatchObject({ input: { ...zero, jump: true } }); worker.release(); await turn();
+    client.setPlayerInput(zero);expect(worker.reads).toHaveLength(0);
+    client.update();expect(worker.reads[0]).toMatchObject({ input: zero });worker.release();await turn();
+  });
+  it("Pause cancels a queued jump and held intent instead of replaying it after Play", async () => {
+    const { client, worker } = await clientHarness(); client.update(); client.setPlayerInput({ ...zero, x: 1, jump: true }); await client.command("Pause");
+    worker.release(); await turn(); expect(worker.reads).toHaveLength(0); await client.command("Play"); client.setPlayerInput(zero);
+    expect(worker.reads).toHaveLength(0);client.update();
+    expect(worker.reads[0]).toMatchObject({ input: zero }); worker.release(); await turn();
+  });
+  it("keeps ordinary Legacy setPlayerInput buffered and sends it only on update", async () => {
+    const { client, worker } = await clientHarness(false); client.setPlayerInput({ ...zero, x: 1 }); expect(worker.reads).toHaveLength(0);
+    client.update(); expect(worker.reads[0]).toMatchObject({ input: { ...zero, x: 1 } }); worker.release(); await turn();
+  });
+  it("a late event Read cannot publish held native staging or overwrite its exact Prepare receipt", async () => {
+    const { client, worker } = await clientHarness(); await client.command("Pause"); client.update(); const before = client.read();
+    const definition = createFp02Fixture("cargo").catalog.devices.find(value => value.sourceId === "B06")!;
+    const request = { transactionId: "event_overlap", ownerId: "event_cutter", instanceId: "event_cutter", definitionRef: { sourceId: "B06", version: definition.version, digest: definition.digest },
+      expectedRevision: 0, expectedTerrainRevision: 0, materialBinding: "explicit-transport-unit-BOM", centerMm: [-6250, 1500, 5000], quarterTurns: 1 };
+    await client.prepareFactoryFacility!(request); client.setPlayerInput({ ...zero, x: 1 }); expect(worker.reads).toHaveLength(1);
+    worker.release(); await turn(); expect(client.read()).toEqual(before);
+    await client.commitFactoryFacility!(request.transactionId); client.publishFactoryFacility!(request.transactionId);
+    expect(client.read().factoryFacilities?.owners).toHaveLength(1); await client.rollbackFactoryFacility!(request.transactionId);
+  });
+  it("disposed Factory input cannot send, retain an unsent edge, or allocate a new transport request", async () => {
+    const { client, worker } = await clientHarness(); client.setPlayerInput({ ...zero, x: 1 }); expect(worker.reads).toHaveLength(1); await client.dispose();
+    const count = worker.messages.length; client.setPlayerInput({ ...zero, jump: true }); client.update(); await turn(); expect(worker.messages).toHaveLength(count);
+  });
+});

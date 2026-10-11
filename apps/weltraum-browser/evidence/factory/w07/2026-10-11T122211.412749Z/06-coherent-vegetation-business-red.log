@@ -1,0 +1,45 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/hvp-vegetation.test.ts -t W07 Factory vegetation
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-vegetation.test.ts (13 tests | 1 failed | 12 skipped) 22ms
+   × W07 Factory vegetation retains every original owner except the exact two approved wood owners and uses coherent ground 20ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 12 skipped (13)
+   Start at  12:43:31
+   Duration  1.39s (transform 982ms, setup 0ms, import 1.25s, tests 22ms, environment 0ms)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-vegetation.test.ts > W07 Factory vegetation retains every original owner except the exact two approved wood owners and uses coherent ground
+AssertionError: expected [ 'hvp:flora:hero', …(98) ] to deeply equal [ 'hvp:flora:hero', …(96) ]
+
+- Expected
++ Received
+
+@@ -1,8 +1,10 @@
+  [
+    "hvp:flora:hero",
++   "hvp:flora:west-frame",
+    "hvp:flora:east-young",
++   "hvp:flora:north-young",
+    "hvp:flora:bed-136-16",
+    "hvp:flora:bed-148-16",
+    "hvp:flora:bed-160-16",
+    "hvp:flora:bed-172-16",
+    "hvp:flora:bed-184-16",
+
+ ❯ tests/unit/hvp-vegetation.test.ts:251:32
+    249|   const profile={version:"hvp-factory-vegetation-v1" as const,readColu…
+    250|   const changed=planHvpVegetation(undefined,profile);
+    251|   expect(changed.map(p=>p.id)).toEqual(original.filter(p=>!p.id.endsWi…
+       |                                ^
+    252|   expect(planHvpVegetation()).toEqual(original);
+    253|   for(const plant of changed)expect(plant.position.y).toBe(profile.rea…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯

@@ -1,0 +1,33 @@
+diff --git a/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/82-normal-e2e-before-adaptive-harness.ts.txt b/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/tests/e2e/factory-placement.spec.ts
+index e1a533b8..d2e1cba7 100644
+--- a/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/82-normal-e2e-before-adaptive-harness.ts.txt
++++ b/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/tests/e2e/factory-placement.spec.ts
+@@ -34,6 +34,7 @@ test.describe.serial("W07 real player construction in one confirmed Factory sess
+     const first=await readNative(page);await page.getByRole("button",{name:"Wrackfracht öffnen",exact:true}).click();await expect(page.locator("#factory-build-status")).toContainText("Wrackfracht geöffnet");expect((await readNative(page)).factoryFacilities.revision).toBe(first.factoryFacilities.revision);
+   });
+   const nativeWalkTaps:unknown[]=[];
++  const walkPulseCaps={x:125,z:125};
+   // Read-only source preflight bb709f… proves these complete flat hull windows;
+   // actual native ground, Cargo LOS/reach and normal previews remain required.
+   const sourceStandDepth=(x:number):readonly[number,number]=>x<=-6.35?[8.75,9.15]:x<=-6.225?[8.725,9.075]:[8.7,9];
+@@ -44,7 +45,8 @@ test.describe.serial("W07 real player construction in one confirmed Factory sess
+       if(value>=window[0]&&value<=window[1])break;
+       target=(window[0]+window[1])/2;
+       const key=value>target?negativeKey:positiveKey;
+-      const holdMs=Math.min(350,Math.max(250,Math.round(Math.abs(value-target)/3*1000)));
++      const capBeforeMs=walkPulseCaps[axis];
++      const holdMs=Math.max(25,Math.min(capBeforeMs,Math.round(Math.abs(value-target)/3*1000)));
+       // A real trusted short press releases BEFORE the native projection read; no held key during CDP polling.
+       await page.keyboard.press(key,{delay:holdMs});
+       let after=await readNative(page);const releasedReads=[after];
+@@ -56,7 +58,9 @@ test.describe.serial("W07 real player construction in one confirmed Factory sess
+           &&Math.abs(next.player.position.z-after.player.position.z)<0.000001;
+         after=next;if(stable)break;
+       }
+-      nativeWalkTaps.push({axis,target,sourceStandWindow:window,key,holdMs,beforePlayer:before.player,afterPlayer:after.player,beforeTicks:before.ticks,afterTicks:after.ticks,releasedReads});
++      const overshotTarget=(value-target)*(after.player.position[axis]-target)<0;
++      if(overshotTarget)walkPulseCaps[axis]=Math.max(25,Math.round(capBeforeMs/2));
++      nativeWalkTaps.push({axis,target,sourceStandWindow:window,key,holdMs,capBeforeMs,capAfterMs:walkPulseCaps[axis],overshotTarget,beforePlayer:before.player,afterPlayer:after.player,beforeTicks:before.ticks,afterTicks:after.ticks,releasedReads});
+       await writeFile(path.join(runDirectory(),"browser-native-walk-taps.json"),JSON.stringify(nativeWalkTaps,null,2)+"\n");
+     }
+   };

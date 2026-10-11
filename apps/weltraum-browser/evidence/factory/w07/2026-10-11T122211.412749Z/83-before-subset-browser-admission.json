@@ -1,0 +1,41 @@
+{
+  "timestampUtc": "2026-10-11T17:22:08.293436+00:00",
+  "verifiedPrior67And68And81": [
+    {
+      "receipt": "67-browser-ninth-artifact-receipt.json",
+      "receiptSha256": "1c7ae260438e7fc41112b77118acf109e397f57aa9fb967f068412456e4d28ae",
+      "artifactCount": 27,
+      "allHashByteMatch": true
+    },
+    {
+      "receipt": "68-diagnostic-artifact-receipt.json",
+      "receiptSha256": "183c65566c00b6e05fb73d04b16352f0fc6b4d7777df8adf4fca4704f8ba482a",
+      "artifactCount": 26,
+      "allHashByteMatch": true
+    },
+    {
+      "receipt": "81-subset-browser-artifact-receipt.json",
+      "receiptSha256": "b3c7b9b36a4b9b9fdce469d44dd6f4ed094667116045e545fdde6bcba62b6474",
+      "artifactCount": 27,
+      "allHashByteMatch": true
+    }
+  ],
+  "exactFixedOutputBackups": [
+    {
+      "path": "83-fixed-output-originals/browser-native-walk-taps.json",
+      "sha256": "433c0caace6ce019d47be224b3accfe3db85ea77de55fc4615d064520301a972",
+      "bytes": 162329
+    },
+    {
+      "path": "83-fixed-output-originals/browser-cargo-open-native-walk.json",
+      "sha256": "49b2bafd3f793d0314ef20db2c943fe61f87caba90feba2fc02ad85a9af076b4",
+      "bytes": 315480
+    }
+  ],
+  "all30ProductHashesMatch": true,
+  "sealSha256": "f36718d5fb01a28b3bbb0654269bc7b022aeb2a90300363700bf4ed7fd4f2e1d",
+  "normalAdaptiveE2eSha256": "a194175366d0ab8c553bfe1c325f4c0437e332ab98e5b5586db4816aed74dd9d",
+  "selectedNormalCases": 11,
+  "notPackageGate": true,
+  "portBefore": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess\n"
+}

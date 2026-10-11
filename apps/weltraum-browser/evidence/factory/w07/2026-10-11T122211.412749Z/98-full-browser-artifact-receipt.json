@@ -1,0 +1,166 @@
+{
+  "kind": "ACTUAL_NORMAL_FULL17_GAMEPLAY_ARTIFACTS",
+  "actualFreshFixedOutputs": [
+    "browser-native-walk-taps.json",
+    "browser-cargo-open-native-walk.json",
+    "paid-native-cutter.png",
+    "browser-paid-cutter.json"
+  ],
+  "artifacts": [
+    {
+      "path": "browser-mesa-normal-full-98/browser-cargo-open-native-walk.json",
+      "sha256": "5d7c6c099381edbf920e4bcbc9c2ac6959e715d92d1fb079c2c632d4a43f53b7",
+      "bytes": 538547
+    },
+    {
+      "path": "browser-mesa-normal-full-98/browser-native-walk-taps.json",
+      "sha256": "65a5840af5edf46d6b3d81a7f03793c53203a4c4e2e44f1c2fdb0e210680c02f",
+      "bytes": 391766
+    },
+    {
+      "path": "browser-mesa-normal-full-98/browser-paid-cutter.json",
+      "sha256": "f5d814fe56e1d546274b253afac6b1989f084b0ad337c9ebf4718fcf2746f317",
+      "bytes": 250655
+    },
+    {
+      "path": "browser-mesa-normal-full-98/paid-native-cutter.png",
+      "sha256": "1b5f4959c54e889393aa05222d914cbe14d9ef5497a61eba2ae758d54558b1a6",
+      "bytes": 662112
+    },
+    {
+      "path": "browser-mesa-normal-full-98/playwright-output/.last-run.json",
+      "sha256": "59d597b9aa756a08dfbc372f7b277fea1f2fbf251b9daf214512fe8ad3abc52c",
+      "bytes": 96
+    },
+    {
+      "path": "browser-mesa-normal-full-98/playwright-output/factory-placement-W07-real-545ff-pendent-source-checked-site-chromium/error-context.md",
+      "sha256": "94a1eb955d453784e34893f1c7c78919200a3b5c4603cb7adbfe0f232815ae16",
+      "bytes": 19384
+    },
+    {
+      "path": "browser-mesa-normal-full-98/playwright-output/factory-placement-W07-real-545ff-pendent-source-checked-site-chromium/test-failed-1.png",
+      "sha256": "f64437954c26198a485b127a4fcd08e3edd05effa6f2498279f2d39d15e1a626",
+      "bytes": 663013
+    },
+    {
+      "path": "browser-mesa-normal-full-98/playwright-output/factory-placement-W07-real-545ff-pendent-source-checked-site-chromium/trace.zip",
+      "sha256": "053b40eac860cc2ab8c4f7e741ad6efdc2035b820ad58023fb1892f457ed56d7",
+      "bytes": 1654070
+    },
+    {
+      "path": "browser-mesa-normal-full-98/playwright-report/data/1a2110a5611c22b2275c3e9dd6fdb391ec238e95.png",
+      "sha256": "f64437954c26198a485b127a4fcd08e3edd05effa6f2498279f2d39d15e1a626",
+      "bytes": 663013
+    },
+    {
+      "path": "browser-mesa-normal-full-98/playwright-report/data/cf7b0634af440add88d9c688694865c7b3523605.md",
+      "sha256": "94a1eb955d453784e34893f1c7c78919200a3b5c4603cb7adbfe0f232815ae16",
+      "bytes": 19384
+    },
+    {
+      "path": "browser-mesa-normal-full-98/playwright-report/data/e0d072f341f4b9ae664c3d782e869f5cb0860b69.png",
+      "sha256": "1b5f4959c54e889393aa05222d914cbe14d9ef5497a61eba2ae758d54558b1a6",
+      "bytes": 662112
+    },
+    {
+      "path": "browser-mesa-normal-full-98/playwright-report/data/e7590ce030bbcedfea8e9d8ad2cecac9abc487b2.zip",
+      "sha256": "053b40eac860cc2ab8c4f7e741ad6efdc2035b820ad58023fb1892f457ed56d7",
+      "bytes": 1654070
+    },
+    {
+      "path": "browser-mesa-normal-full-98/playwright-report/index.html",
+      "sha256": "5db4d63dea4143cdfb084ee93acf2caa3eaf364ba2f0f90901571d39a5f9b93a",
+      "bytes": 544318
+    },
+    {
+      "path": "browser-mesa-normal-full-98/playwright-report/trace/assets/codeMirrorModule-LEHpjmcn.js",
+      "sha256": "e3d682edfb4dd1fa17882466dd15058120278b27ff1101785a57b6df4db7ada5",
+      "bytes": 313054
+    },
+    {
+      "path": "browser-mesa-normal-full-98/playwright-report/trace/assets/defaultSettingsView-BNmKHKpQ.js",
+      "sha256": "f21839cd274944763d12ad24529345b9f8ebf339409f51f4dbe52f9d9baeb09c",
+      "bytes": 658064
+    },
+    {
+      "path": "browser-mesa-normal-full-98/playwright-report/trace/assets/urlMatch-BYQrIQwR.js",
+      "sha256": "168c4dee4815ea8d3c131a504033cd23d4b15aefa0209dd10ad3f643e8f1d8a7",
+      "bytes": 819
+    },
+    {
+      "path": "browser-mesa-normal-full-98/playwright-report/trace/codeMirrorModule.DYBRYzYX.css",
+      "sha256": "70bf421a13e87857ca684bfa2cc55f06d7c5a50f71253a3ff1d74769b14a957e",
+      "bytes": 6421
+    },
+    {
+      "path": "browser-mesa-normal-full-98/playwright-report/trace/codicon.DCmgc-ay.ttf",
+      "sha256": "0f1d5219934e96e83b8db162d60b4d8c09b5de1e7d38031cbafe4a3c0f2889c9",
+      "bytes": 80340
+    },
+    {
+      "path": "browser-mesa-normal-full-98/playwright-report/trace/defaultSettingsView.CjdS-WJx.css",
+      "sha256": "de9c068d0e8043820fe42f30558e972eb7e2a8a45a34f65c7c8f73fa2dbc9fd0",
+      "bytes": 112258
+    },
+    {
+      "path": "browser-mesa-normal-full-98/playwright-report/trace/index.CzXZzn5A.css",
+      "sha256": "4ec2a3d49db259ce9025cb4fa48d73b1afd58215e567eef3b4a4cbf76c1674d9",
+      "bytes": 2111
+    },
+    {
+      "path": "browser-mesa-normal-full-98/playwright-report/trace/index.DMMX1gXU.js",
+      "sha256": "f33ceae71f13fde446a244c113548fec5ef890bf7b93ded7b861bebcebaa3e23",
+      "bytes": 6547
+    },
+    {
+      "path": "browser-mesa-normal-full-98/playwright-report/trace/index.html",
+      "sha256": "5ced36d3feb5bbbc0e8350330be0a293a1b4784ddecb6e58e1851323a93640cc",
+      "bytes": 2363
+    },
+    {
+      "path": "browser-mesa-normal-full-98/playwright-report/trace/manifest.webmanifest",
+      "sha256": "d8540500603a32a39fe7e5a0375dc0f9ebafd11118e06a846db7efc608223ab9",
+      "bytes": 429
+    },
+    {
+      "path": "browser-mesa-normal-full-98/playwright-report/trace/playwright-logo.svg",
+      "sha256": "6b0a4367bdeab10995bc239278f04c68c10e48adbec15e799e01909a0d66dcb9",
+      "bytes": 5033
+    },
+    {
+      "path": "browser-mesa-normal-full-98/playwright-report/trace/snapshot.html",
+      "sha256": "11c80efe4f4424fa59004bcc71fed77a420d2da5f199790e355c30a5b965d0cd",
+      "bytes": 389
+    },
+    {
+      "path": "browser-mesa-normal-full-98/playwright-report/trace/snapshot.v8KI4P3m.js",
+      "sha256": "97a3cd6d67aaac66efc838d7d743ac51bbf7d272e1287981c11758fca21a0657",
+      "bytes": 660
+    },
+    {
+      "path": "browser-mesa-normal-full-98/playwright-report/trace/sw.bundle.js",
+      "sha256": "5237c6c68ba1f3591caf8cf951be4873192342a72fbcc31e5a667f7a7904c624",
+      "bytes": 95855
+    },
+    {
+      "path": "browser-mesa-normal-full-98/playwright-report/trace/uiMode.BZQ54Kgt.css",
+      "sha256": "a548cd88f2041433da2d60fd3a33ef23af2fb8ddf2557b7bef79806364498e57",
+      "bytes": 60311
+    },
+    {
+      "path": "browser-mesa-normal-full-98/playwright-report/trace/uiMode.Ut8wwJNp.js",
+      "sha256": "0ab1e917250833c3f6b3ed3ae3f359158bf68cd2d9951163ee6edff9b8ed1e5b",
+      "bytes": 38514
+    },
+    {
+      "path": "browser-mesa-normal-full-98/playwright-report/trace/uiMode.html",
+      "sha256": "95bf648d76d380b779770aae1c560b58ee456096b2b3b02922e629af29e3d492",
+      "bytes": 727
+    },
+    {
+      "path": "browser-mesa-normal-full-98/playwright-report/trace/xtermModule.DYP7pi_n.css",
+      "sha256": "7c5a01f382f76539fc9b4db6b18e18a7035741845fd14968c5cdc0a7e373d817",
+      "bytes": 4150
+    }
+  ]
+}

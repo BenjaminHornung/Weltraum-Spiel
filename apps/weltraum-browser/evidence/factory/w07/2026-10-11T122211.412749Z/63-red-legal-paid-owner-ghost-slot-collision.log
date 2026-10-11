@@ -1,0 +1,42 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/hvp-bootstrap.test.ts -t legal paid owner
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-bootstrap.test.ts (36 tests | 1 failed | 35 skipped) 7923ms
+     × W07 actual receiver keeps Ghost separate from legal paid owner ghost_slot_0 7921ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W07 actual receiver keeps Ghost separate from legal paid owner ghost_slot_0
+AssertionError: expected { status: 'Rejected', …(2) } to match object { status: 'Committed', …(1) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "reason": "INSTALLED",
+-   "status": "Committed",
++   "reason": "Factory hidden mesh stage failed: RevisionContentConflict",
++   "status": "Rejected",
+  }
+
+ ❯ tests/unit/hvp-bootstrap.test.ts:634:55
+    632|       port.construction!.projectGhost(request);
+    633|       expect(session.construction!.read().material).toBe(before);expec…
+    634|       await expect(session.construction!.commit(plan)).resolves.toMatc…
+       |                                                       ^
+    635|       expect(prepare).toHaveBeenCalledTimes(1);expect(session.construc…
+    636|       const artifacts=dispatch.mock.calls.flatMap(([command])=>command…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 35 skipped (36)
+   Start at  15:53:02
+   Duration  9.49s (transform 1.17s, setup 0ms, import 1.46s, tests 7.92s, environment 0ms)
+

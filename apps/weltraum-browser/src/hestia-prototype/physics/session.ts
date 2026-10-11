@@ -16,6 +16,8 @@ import {encodeHvpBody} from "../persistence/bodyCheckpoint";
 import {restoreHvpBody} from "./restoreBody";
 import {createHvpNeighborCollision} from "./neighborRegion";
 import {createHvpBodyResidency} from "./bodyResidency";
+import type { FactoryCargoSite } from "../../factory/fixtures/cargoSite";
+import type { createFactoryFacilitySession, FactoryFacilityRequest,FactoryCargoOpenIntent } from "./factoryFacilitySession";
 import type {HvpNeighborCheckpoint} from "../runtime/residency";
 
 export type HvpPhysicsSession = Awaited<ReturnType<typeof createHvpPhysicsSession>>;
@@ -35,7 +37,9 @@ export const createHvpPhysicsSession = async (
   branchSpawn?:Readonly<{x:number;y:number;z:number}>,
    sessionId="hvp-world",
     checkpoint?:unknown,
-    branchKind:"branch"|"salvage"="branch"
+    branchKind:"branch"|"salvage"="branch",
+    factoryEnabled=false,
+    initialFactoryCargo?:FactoryCargoSite
 ) => {
   if (!Number.isFinite(gravity) || gravity <= 0 || ![spawn.x, spawn.y, spawn.z].every(Number.isFinite) || sectors.length > 4094) {
     throw new RangeError("Invalid HVP physics admission");
@@ -113,6 +117,8 @@ export const createHvpPhysicsSession = async (
       const end=performance.now();stepCpuMs = end - start;
       stepTimings?.push([solverStart,end-solverStart]);
     },saved?.tick);
+    const neutralizeFactoryInput=()=>{if(factoryEnabled&&!disposed)character?.setInput({x:0,z:0,sprint:false,jump:false},true);};
+    const holdTick=()=>{neutralizeFactoryInput();tick.pause();};
     let terrainGeneration = saved?.terrainGeneration??0;
     type Fragment=HvpCuttableBody;
     const moving=createHvpBodyCutSession(world,movingBodies,bodies,sessionId,saved?.moving,residentExtras);
@@ -123,17 +129,19 @@ export const createHvpPhysicsSession = async (
       old: Map<number, { mesh: HvpCollisionSector; collider?: R.Collider }>;
       next: Map<number, { mesh: HvpCollisionSector; collider?: R.Collider }>;
       fragments:Fragment[];bodiesBefore:Map<number,R.RigidBody>;collidersBefore:Map<number,R.Collider> } | undefined;
+    let facilities: ReturnType<typeof createFactoryFacilitySession> | undefined;
     const neighbor=baseSectorCount<64?undefined:createHvpNeighborCollision(world,baseSectorCount,
-      ()=>!disposed&&!terrainHeld&&!staged&&!branch?.busy&&!moving.busy&&!residency?.held&&!bodyResidencyWork&&tick.read().status==="Paused",
+      ()=>!disposed&&!terrainHeld&&!staged&&!branch?.busy&&!moving.busy&&!facilities?.busy&&!residency?.held&&!bodyResidencyWork&&tick.read().status==="Paused",
       saved?.neighbor?{checkpoint:saved.neighbor,meshes:sectors.slice(baseSectorCount)}:undefined,collision);
     residency=createHvpBodyResidency(world,movingBodies,bodies,
-      ()=>!disposed&&!terrainHeld&&!staged&&!branch?.busy&&!moving.busy&&!neighbor?.busy&&tick.read().status==="Paused",
+      ()=>!disposed&&!terrainHeld&&!staged&&!branch?.busy&&!moving.busy&&!facilities?.busy&&!neighbor?.busy&&tick.read().status==="Paused",
       restored?.bodies.filter(b=>parkedIds.has(b.checkpoint.ownerId))??[]);
     let neighborWasRunning=false,coverageHeld=false,coverageWasRunning=false;
     const neighborMeshes=()=>neighbor?.meshes()??[];
     const allCollision=()=>[...[...collision.values()].map(c=>c.mesh),...neighborMeshes()];
     const collisionBytes = () => allCollision().reduce((n,s)=>n+s.vertices.byteLength+s.indices.byteLength,0);
-    const extraHeld=()=>neighbor?.busy||residency!.held||coverageHeld||bodyResidencyWork!==undefined;
+    if(factoryEnabled){const module=await import("./factoryFacilitySession");facilities=module.createFactoryFacilitySession(world,()=>!disposed&&!terrainHeld&&!staged&&!branch?.busy&&!moving.busy&&!neighbor?.busy&&!residency!.held&&!coverageHeld&&!bodyResidencyWork&&tick.read().status==="Paused",residentExtras,()=>terrainGeneration,initialFactoryCargo,()=>character?.read().position);}
+    const extraHeld=()=>facilities?.busy||neighbor?.busy||residency!.held||coverageHeld||bodyResidencyWork!==undefined;
     let impulseTarget:HvpImpulseTarget=noImpulseTarget;
     const queryImpulse=(direction?:Readonly<{x:number;y:number;z:number}>):{
       preview:HvpImpulseTarget;reason:string;body?:R.RigidBody;magnitude?:number
@@ -190,8 +198,9 @@ export const createHvpPhysicsSession = async (
     const read = (includeBranchCells=false) => {const structural=disposed?null:branch?.read(includeBranchCells)??null;
       let activeDynamic=0,residentDynamic=disposed?0:residency!.count;
       if(!disposed){world.bodies.forEach(b=>{if(b.isDynamic()){residentDynamic+=1;if(!b.isSleeping()){activeDynamic+=1;}}});}
-      return Object.freeze({ ...tick.read(), status:bodyResidencyWork?.hold?"RecoveryHold" as const:coverageHeld?"CoverageHold" as const:tick.read().status,gravity, gravityProfile: "local-tangent-gravity-v1",activeDynamic,residentDynamic,
+      return Object.freeze({ ...tick.read(), status:!disposed&&facilities?.read().state==="RecoveryHold"?"RecoveryHold" as const:bodyResidencyWork?.hold?"RecoveryHold" as const:coverageHeld?"CoverageHold" as const:tick.read().status,gravity, gravityProfile: "local-tangent-gravity-v1",activeDynamic,residentDynamic,
       solver: `rapier-${R.version()}`, stepCpuMs, bodyCount: disposed ? 0 : world.bodies.len(),
+      ...(!disposed&&facilities?{factoryFacilities:facilities.read()}:{}),
       colliderCount: disposed ? 0 : world.colliders.len(), nativeBytes: "unsupported", terrainGeneration,
        collisionBytes: disposed ? 0 : collisionBytes(), terrainTransaction: terrainHeld?"RecoveryHold":staged === undefined ? "Idle" : staged.committed ? "CommittedHeld" : "PreparedHeld",
          terrainFragments:disposed?[]:[...[...movingBodies.values()].filter(f=>f.family!=="branch").map(fragmentView),...residency!.sources()],
@@ -219,8 +228,15 @@ export const createHvpPhysicsSession = async (
       return {x:avatar.position.x,y:avatar.position.y+HVP_PLAYER_PROFILE.eyeHeight-HVP_PLAYER_PROFILE.height/2,z:avatar.position.z};};
     return {
       read,
+      openFactoryCargo(intent:FactoryCargoOpenIntent){if(disposed||extraHeld()||staged||terrainHeld||branch?.busy||moving.busy||!["Running","Paused"].includes(tick.read().status))throw new Error("FactoryFacilityRejected:CargoHostUnavailable");return facilities!.openCargo(intent);},
+      prepareFactoryFacility(request:FactoryFacilityRequest){return facilities!.prepare(request);},
+      commitFactoryFacility(id:string){facilities!.commit(id);return facilities!.publish(id);},
+      rollbackFactoryFacility(id:string){facilities!.rollback(id);},
+      finalizeFactoryFacility(id:string){return facilities!.finalize(id);},
       checkpoint():HvpWorldCheckpoint {
-        if(disposed||terrainHeld||staged||branch?.busy||moving.busy||extraHeld()||tick.read().status!=="Paused"){
+        if(disposed){throw new Error("World checkpoint requires a confirmed paused generation");}
+        if((facilities?.read().owners.length??0)>0||facilities?.read().cargo!==undefined){throw new Error("Installed Factory facilities require a combined checkpoint");}
+        if(terrainHeld||staged||branch?.busy||moving.busy||extraHeld()||tick.read().status!=="Paused"){
           throw new Error("World checkpoint requires a confirmed paused generation");
         }
         const dropRecipe=restored?.bodies.find(b=>b.checkpoint.family==="drop")?.recipe??prepareHvpRigidBody(ingestHvpStructuralCells("hvp-drop",
@@ -249,7 +265,7 @@ export const createHvpPhysicsSession = async (
           bytes+=e.mesh.vertices.byteLength+e.mesh.indices.byteLength-previous.mesh.vertices.byteLength-previous.mesh.indices.byteLength;}
         bytes+=meshes.reduce((n,m)=>n+m.vertices.byteLength+m.indices.byteLength,0);
         if(bytes>8*1024*1024){throw new Error("Global collision payload BudgetExceeded");}
-        neighborWasRunning=coverageHeld?coverageWasRunning:tick.read().status==="Running";tick.pause();
+        neighborWasRunning=coverageHeld?coverageWasRunning:tick.read().status==="Running";holdTick();
         try{neighbor.prepare(id,next,meshes,character?.read().position,edge);}catch(error){if(!neighbor.busy&&!coverageHeld&&neighborWasRunning){tick.resume();}throw error;}
       },
       commitNeighbor(id:string):void{if(!neighbor){throw new Error("No neighbour");}neighbor.commit(id);updateCoverage();},
@@ -259,7 +275,7 @@ export const createHvpPhysicsSession = async (
         if(!/^[A-Za-z0-9:_-]{1,128}$/.test(id)||disposed||terrainHeld||staged||branch?.busy||moving.busy||extraHeld()
           ||!["Running","Paused"].includes(tick.read().status)){throw new Error("Body residency requires a safe generation");}
         const position=character?.read().position;if(!position){throw new Error("Body residency requires a player");}
-        const before=residencyMembership(),running=tick.read().status==="Running";tick.pause();
+        const before=residencyMembership(),running=tick.read().status==="Running";holdTick();
         const transaction={id,running,committed:false,changed:false,hold:false};bodyResidencyWork=transaction;
         try{
           // All actions use the actual paused observer and native sleeping state.
@@ -285,7 +301,7 @@ export const createHvpPhysicsSession = async (
       parkDistantBodies():void{
         if(disposed||terrainHeld||staged||branch?.busy||moving.busy||extraHeld()){throw new Error("Body residency requires a safe generation");}
         const position=character?.read().position;if(!position){throw new Error("Body residency requires a player");}
-        const running=tick.read().status==="Running";tick.pause();
+        const running=tick.read().status==="Running";holdTick();
         try{
           for(const owner of residency!.near(position)){residency!.restore(owner);}
           for(const target of [...movingBodies.values()]){
@@ -297,13 +313,13 @@ export const createHvpPhysicsSession = async (
       restoreNearBodies():void{
         if(disposed||terrainHeld||staged||branch?.busy||moving.busy||extraHeld()){throw new Error("Body residency requires a safe generation");}
         const position=character?.read().position;if(!position){throw new Error("Body residency requires a player");}
-        const running=tick.read().status==="Running";tick.pause();
+        const running=tick.read().status==="Running";holdTick();
         try{for(const owner of residency!.near(position)){residency!.restore(owner);}}
         finally{if(!residency!.held&&running){tick.resume();}}
       },
         advance(seconds: number,measure=false):readonly (readonly[number,number])[]|undefined {
          if(neighbor&&!neighbor.read().checkpoint?.resident&&tick.read().status==="Running"&&!staged&&!branch?.busy&&!moving.busy&&neighbor.pinned()){
-           coverageHeld=true;coverageWasRunning=true;tick.pause();
+           coverageHeld=true;coverageWasRunning=true;holdTick();
          }
          stepTimings=measure?[]:undefined;
          try{if(!terrainHeld&&staged === undefined&&!branch?.busy&&!moving.holdsWorld&&!extraHeld()) { tick.advance(seconds); }return stepTimings;}
@@ -318,6 +334,16 @@ export const createHvpPhysicsSession = async (
       },
       inspect(): void { character?.setEnabled(false);impulseTarget=noImpulseTarget; },
       input(value: HvpPlayerInput): void { character?.setInput(value); },
+      factoryInput(value:HvpPlayerInput,cancelPendingJump=false):boolean {
+        if(typeof cancelPendingJump!=="boolean")throw new Error("Invalid Factory cancellation flag");
+        if(disposed||!factoryEnabled||!character)return false;
+        if(cancelPendingJump){
+          if(value.x!==0||value.z!==0||value.sprint!==false||value.jump!==false)throw new Error("Factory cancellation must be neutral");
+          neutralizeFactoryInput();return true;
+        }
+        if(tick.read().status!=="Running"||character.read().status!=="Walking"||terrainHeld||staged||branch?.busy||moving.busy||extraHeld())return false;
+        character.setInput(value);return true;
+      },
       camera(offset?: Readonly<{ x: number; y: number; z: number }>): void { character?.setCameraOffset(offset); },
       aimBranch(direction?:Readonly<{x:number;y:number;z:number}>):void {
         impulseTarget=queryImpulse(direction).preview;
@@ -326,11 +352,12 @@ export const createHvpPhysicsSession = async (
       },
       beginBodyCut(request:HvpMovingCutRequest){
         if(disposed||terrainHeld||staged||branch?.busy||moving.busy||extraHeld()||tick.read().status!=="Running"){throw new Error("Moving cut unavailable");}
-        return moving.begin(request,playerEye(),tick.read().ticks);
+        const preparation=moving.begin(request,playerEye(),tick.read().ticks);
+        neutralizeFactoryInput();return preparation;
       },
       stageBodyCut(id:string,products:HvpBodyCutAdmission):void {
         if(terrainHeld||staged||branch?.busy||extraHeld()){throw new Error("World transaction pending");}
-        movingWasRunning=tick.read().status==="Running";tick.pause();
+        movingWasRunning=tick.read().status==="Running";holdTick();
         try{moving.stage(id,products,tick.read().ticks);}catch(error){if(!moving.holdsWorld&&movingWasRunning){tick.resume();}throw error;}
       },
       commitBodyCut(id:string):void {moving.commit(id);},
@@ -338,7 +365,7 @@ export const createHvpPhysicsSession = async (
       finalizeBodyCut(id:string):void {try{moving.finalize(id);}finally{if(!moving.holdsWorld&&movingWasRunning){tick.resume();}}},
       prepareBranch(request:HvpBranchRequest):void {
         if(!branch||staged||branch.busy||moving.busy||extraHeld()||tick.read().status!=="Running") {throw new Error("Branch not available");}
-        const eye=playerEye();branchWasRunning=true;tick.pause();
+        const eye=playerEye();branchWasRunning=true;holdTick();
         try {branch.prepare(request,eye);}catch(error){if(!branch.busy&&branchWasRunning){tick.resume();}throw error;}
       },
       commitBranch(id:string):void {if(!branch){throw new Error("No branch");}branch.commit(id);},
@@ -380,7 +407,7 @@ export const createHvpPhysicsSession = async (
         if (bytes > 8*1024*1024) { throw new Error("Terrain collision BudgetExceeded"); }
          const next = new Map<number, { mesh: HvpCollisionSector; collider?: R.Collider }>();
          const running = tick.read().status === "Running";
-         tick.pause();
+         holdTick();
          const bodiesBefore=new Map<number,R.RigidBody>(),collidersBefore=new Map<number,R.Collider>();
          world.bodies.forEach(b=>bodiesBefore.set(b.handle,b));world.colliders.forEach(c=>collidersBefore.set(c.handle,c));
          const transaction={id,expected,running,committed:false,old,next,fragments:[] as Fragment[],bodiesBefore,collidersBefore};

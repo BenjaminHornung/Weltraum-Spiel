@@ -1,0 +1,19 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/hvp-bootstrap.test.ts",
+    "-t",
+    "legal paid owner"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startUtc": "2026-10-11T15:53:01.797092+00:00",
+  "endUtc": "2026-10-11T15:53:11.681597+00:00",
+  "durationSeconds": 9.884510843003227,
+  "exitCode": 1,
+  "rawBytes": 1678,
+  "rawSha256": "878e0bb6f50785e41f0da4fa9289afde32b910ba582617031219e1d0f55d7a54",
+  "phase": "Test-only actual Host/finite Resources/ThreeReceiver with legal paid ghost_slot_0; runtime unchanged from phase61/62"
+}

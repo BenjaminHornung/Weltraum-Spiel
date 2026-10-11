@@ -1,0 +1,298 @@
+import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { PerspectiveCamera } from "three";
+import { createHvpPlayerInput } from "../../src/hestia-prototype/player/input";
+import { createHvpPhysicsClient, type HvpPhysicsClient } from "../../src/hestia-prototype/physics/client";
+import { createHvpPhysicsSession, type HvpPhysicsSession } from "../../src/hestia-prototype/physics/session";
+import { initializeHvpRapier } from "../../src/hestia-prototype/physics/rapierPort";
+import type { HvpPlayerInput } from "../../src/hestia-prototype/player/locomotion";
+import type { HvpPhysicsMessage, HvpPhysicsReply } from "../../src/hestia-prototype/physics/physicsWorker";
+import { createFp02Fixture } from "../../src/factory/catalog/fp02Catalog";
+
+// Explicit transport harness only: empty sources need no collision jobs. Native
+// snapshots below come from real Rapier sessions; no simulated axis pose or tick.
+vi.mock("../../src/workers/workerPool", () => ({ WorkerPool: class {
+  async start() {} async shutdown() {}
+} }));
+beforeAll(initializeHvpRapier);
+const cleanup: (() => void | Promise<void>)[] = [];
+afterEach(async () => { for (const close of cleanup.splice(0).reverse()) await close(); vi.unstubAllGlobals(); });
+const turn = async () => { await Promise.resolve(); await Promise.resolve(); await Promise.resolve(); };
+const zero = { x: 0, z: 0, sprint: false, jump: false };
+const supportedGround = () => ({ vertices: new Float32Array([-4, 0, -4, -4, 0, 4, 4, 0, 4, 4, 0, -4]),
+  indices: new Uint32Array([0, 1, 2, 0, 2, 3]) });
+// Before the dedicated Factory boundary exists, use the actual old Native
+// input setter. That yields collected behavioral assertions, not missing-API
+// errors. Afterwards the exact new Native authority method is exercised.
+const nativeFactoryIntent = (session: HvpPhysicsSession, value: HvpPlayerInput, cancel = false): boolean => {
+  const port = session as HvpPhysicsSession & { factoryInput?: (input: HvpPlayerInput, cancel: boolean) => boolean };
+  if (port.factoryInput) return port.factoryInput(value, cancel);
+  session.input(value); return true;
+};
+class Element extends EventTarget {
+  id = ""; open = false; textContent = ""; dataset: Record<string, string> = {};
+  setAttribute() {} append() {} remove() {} focus() {} showModal() { this.open = true; } close() { this.open = false; }
+}
+const inputHarness = async (factory = true) => {
+  const native = await createHvpPhysicsSession([], { x: 10, y: 4, z: 10 }, undefined,
+    { spawn: { x: 0, y: 2, z: 0 }, coverage: [{ minX: -16, minZ: -16, maxX: 16, maxZ: 16 }] });
+  const doc = Object.assign(new EventTarget(), { body: new Element(), hidden: false, pointerLockElement: null as Element | null,
+    createElement: () => new Element(), exitPointerLock: () => { doc.pointerLockElement = null; doc.dispatchEvent(new Event("pointerlockchange")); } });
+  const canvas = Object.assign(new Element(), { requestPointerLock: async () => { doc.pointerLockElement = canvas; doc.dispatchEvent(new Event("pointerlockchange")); } });
+  const win = new EventTarget(); const intents: HvpPlayerInput[] = []; let blocked = false;
+  const physics = { read: () => native.read(), setPlayerInput: (value: HvpPlayerInput) => { intents.push({ ...value }); native.input(value); },
+    setCameraOffset: () => {}, command: async (kind: string) => { if (kind === "Play") native.play(); if (kind === "Pause") native.pause(); } } as unknown as HvpPhysicsClient;
+  // The ninth opt-in is deliberately ignored by the old implementation, making
+  // the initial RED a collected business assertion rather than an import failure.
+  const create = createHvpPlayerInput as unknown as (...args: unknown[]) => ReturnType<typeof createHvpPlayerInput>;
+  const input = create(canvas, new PerspectiveCamera(), physics, doc, win, () => {}, { confirm() {}, select() {} }, () => blocked, factory);
+  cleanup.push(() => { input.dispose(); native.dispose(); });
+  input.start(); await turn();
+  const key = (type: string, code: string, repeat = false) => win.dispatchEvent(Object.assign(new Event(type, { cancelable: true }), { code, repeat }));
+  return { input, native, intents, key, win, block: () => { blocked = true; } };
+};
+
+describe("W07 Factory event intent without render authority", () => {
+  it("delivers normal Factory KeyD without any RAF and releases it before a frame", async () => {
+    const h = await inputHarness(); const ticks = h.native.read().ticks;
+    h.key("keydown", "KeyD"); expect(h.intents).toHaveLength(1); expect(h.intents[0]!.x).toBeCloseTo(-1);
+    h.key("keyup", "KeyD"); expect(h.intents.at(-1)).toMatchObject(zero); expect(h.native.read().ticks).toBe(ticks);
+  });
+  it("stages one Space edge, preserves it through ordinary release, and never stages it again on RAF", async () => {
+    const h = await inputHarness(); h.key("keydown", "Space"); expect(h.intents.at(-1)?.jump).toBe(true);
+    h.key("keydown", "Space", true); h.key("keyup", "Space"); h.input.update();
+    expect(h.intents.filter(value => value.jump)).toHaveLength(1);
+  });
+  it.each(["Escape", "blur", "hold"])("neutralizes staged movement and jump at %s without another RAF", async kind => {
+    const h = await inputHarness(); h.key("keydown", "KeyD"); h.key("keydown", "Space"); expect(h.intents.at(-1)?.jump).toBe(true);
+    if (kind === "Escape") h.key("keydown", "Escape"); else if (kind === "blur") h.win.dispatchEvent(new Event("blur")); else { h.block(); h.key("keyup", "KeyD"); }
+    expect(h.intents.at(-1)).toMatchObject(zero); expect(h.input.active).toBe(false);
+  });
+  it("keeps the unextended Legacy input deferred to the existing RAF path", async () => {
+    const h = await inputHarness(false); h.key("keydown", "KeyD"); expect(h.intents).toEqual([]); h.input.update(); expect(h.intents.at(-1)!.x).toBeCloseTo(-1);
+  });
+});
+
+class NativeTransport {
+  static current: NativeTransport;
+  onmessage: ((event: MessageEvent<HvpPhysicsReply>) => void) | null = null;
+  onerror = null; onmessageerror = null; terminated = false;
+  messages: HvpPhysicsMessage[] = []; reads: HvpPhysicsMessage[] = []; session!: HvpPhysicsSession;
+  supportedFixture = false;
+  holdInputAcks=false;inputAcks:number[]=[];
+  constructor() { NativeTransport.current = this; }
+  postMessage(message: HvpPhysicsMessage) {
+    this.messages.push(structuredClone(message));
+    void (async () => {
+      if (message.kind === "Initialize") this.session = await createHvpPhysicsSession(this.supportedFixture ? [supportedGround()]
+        : message.sectors, message.spawn, message.gravity, this.supportedFixture ? {
+        spawn: { x: 0, y: 0.92, z: 0 }, coverage: [{ minX: -4, minZ: -4, maxX: 4, maxZ: 4 }]
+      } : message.player, message.inertiaSpawn, message.branchSpawn, message.sessionId, undefined, message.branchKind, message.factoryEnabled);
+      else if (message.kind === "Read") { if (message.input) this.session.input(message.input); this.reads.push(message); return; }
+      else if(message.kind==="FactoryInput"){
+        this.session.factoryInput(message.input,message.cancelPendingJump);
+        if(this.holdInputAcks)this.inputAcks.push(message.id);else this.onmessage?.(new MessageEvent("message",{data:{id:message.id}}));
+        return;
+      }
+      else if (message.kind === "Pause") this.session.pause();
+      else if (message.kind === "Play") this.session.play();
+      else if (message.kind === "PrepareFactoryFacility") this.session.prepareFactoryFacility(message.request);
+      else if (message.kind === "CommitFactoryFacility") this.session.commitFactoryFacility(message.transactionId);
+      else if (message.kind === "RollbackFactoryFacility") this.session.rollbackFactoryFacility(message.transactionId);
+      else if (message.kind === "Dispose") this.session.dispose();
+      this.reply(message.id);
+    })().catch(error => { this.onmessage?.({ data: { id: message.id, rejected: String(error) } } as MessageEvent<HvpPhysicsReply>); });
+  }
+  reply(id: number) { this.onmessage?.(new MessageEvent<HvpPhysicsReply>("message", { data: { id, snapshot: this.session.read(), clock: { timers: 0, maxTimerGapMs: 0, maxAdvanceMs: 0,
+    maxHandlerMs: 0, lastCommand: "explicit-native-transport-fixture", lastHandlerMs: 0, delayedCallbacks: [] } } })); }
+  release() { const message = this.reads.shift(); if (!message) throw new Error("Missing held test Read"); this.reply(message.id); }
+  terminate() { this.terminated = true; this.session?.dispose(); }
+}
+const clientHarness = async (factory = true, supported = false, onTimings?:(batch:NonNullable<HvpPhysicsReply["timings"]>)=>void) => {
+  vi.stubGlobal("Worker", supported ? class extends NativeTransport { supportedFixture = true; } : NativeTransport);
+  const client = await createHvpPhysicsClient([], { x: 10, y: 4, z: 10 }, new AbortController().signal,
+    { x: 0, y: 2, z: 0 }, undefined, undefined, undefined, "branch", onTimings, factory);
+  const worker = NativeTransport.current; cleanup.push(() => client.dispose()); return { client, worker };
+};
+
+// Explicit physical test fixture, not a claim about source/Factory site support.
+// The floor is a real Native static trimesh and its complete coverage contains
+// the capsule. Only the existing Native advance API may move/settle this owner.
+const supportedClientHarness = async () => {
+  const h = await clientHarness(true, true);
+  await h.client.command("Play");
+  for (let step = 0; step < 10; step++) h.worker.session.advance(1 / 60);
+  h.client.update(); h.worker.release(); await turn();
+  expect(h.worker.session.read()).toMatchObject({ status: "Running", terrainTransaction: "Idle", neighborTransaction: "Idle",
+    bodyResidencyTransaction: "Idle", factoryFacilities: { state: "Idle" }, moving: { state: "Idle" },
+    player: { grounded: true, status: "Walking" } });
+  expect(h.worker.session.read().player!.position.y).toBeCloseTo(0.91, 1);
+  return h;
+};
+
+describe("W07 supported Factory input before snapshot ACK", () => {
+  it("delivers Down and Up while a neutral snapshot ACK stays busy, without input-owned ticks or pose", async () => {
+    const { client, worker } = await supportedClientHarness();
+    client.update(); expect(worker.reads).toHaveLength(1);
+    expect(worker.reads[0]).toMatchObject({ kind: "Read" }); expect(worker.reads[0]).not.toHaveProperty("input");
+    const before = worker.session.read();
+    client.setPlayerInput({ ...zero, x: 1 });
+    expect(worker.session.read().ticks).toBe(before.ticks);
+    expect(worker.session.read().player!.position).toEqual(before.player!.position);
+    for (let step = 0; step < 6; step++) worker.session.advance(1 / 60);
+    const moved = worker.session.read();
+    expect(moved.ticks).toBe(before.ticks + 6);
+    expect(moved.player).toMatchObject({ grounded: true, status: "Walking" });
+    expect.soft(moved.player!.position.x - before.player!.position.x).toBeCloseTo(0.3, 4);
+    client.setPlayerInput(zero);
+    expect(worker.session.read().ticks).toBe(moved.ticks);
+    expect(worker.session.read().player!.position).toEqual(moved.player!.position);
+    for (let step = 0; step < 6; step++) worker.session.advance(1 / 60);
+    expect(worker.session.read().player!.position.x).toBeCloseTo(moved.player!.position.x, 6);
+    expect(worker.session.read().ticks).toBe(before.ticks + 12);
+    expect(worker.reads).toHaveLength(1); // The original ACK was never released.
+    expect(client.read().player!.position).toEqual(before.player!.position);
+  });
+
+  it("releases a genuinely moving Native owner before its outstanding snapshot ACK", async () => {
+    const { client, worker } = await supportedClientHarness();
+    client.update();client.setPlayerInput({ ...zero, x: 1 }); expect(worker.reads).toHaveLength(1);
+    const before = worker.session.read();
+    for (let step = 0; step < 6; step++) worker.session.advance(1 / 60);
+    const moved = worker.session.read();
+    expect(moved.player!.position.x - before.player!.position.x).toBeCloseTo(0.3, 4);
+    expect(moved.player).toMatchObject({ grounded: true, status: "Walking" });
+    client.setPlayerInput(zero);
+    expect(worker.session.read().ticks).toBe(moved.ticks);
+    expect(worker.session.read().player!.position).toEqual(moved.player!.position);
+    for (let step = 0; step < 6; step++) worker.session.advance(1 / 60);
+    expect(worker.session.read().player!.position.x).toBeCloseTo(moved.player!.position.x, 6);
+    expect(worker.session.read().ticks).toBe(before.ticks + 12);
+  });
+});
+
+describe("W07 actual Native Factory input safety boundaries", () => {
+  it("neutralizes a previously admitted level and pending jump on Native hold entry, without changing pose ticks or velocity", async () => {
+    const { worker } = await supportedClientHarness(); const native = worker.session;
+    native.input({ ...zero, x: 1, jump: true }); const before = native.read();
+    native.prepareTerrain("factory_input_hold", 0, [{ index: 0, mesh: supportedGround() }]);
+    const held = native.read();
+    expect(held).toMatchObject({ status: "Paused", terrainTransaction: "PreparedHeld" });
+    expect(held.ticks).toBe(before.ticks); expect(held.player!.position).toEqual(before.player!.position);
+    expect(held.player!.velocityY).toBe(before.player!.velocityY);
+    native.commitTerrain("factory_input_hold"); native.finalizeTerrain("factory_input_hold");
+    expect(native.read().status).toBe("Running");
+    for (let step = 0; step < 6; step++) native.advance(1 / 60);
+    expect.soft(native.read().player!.position.x).toBeCloseTo(before.player!.position.x, 6);
+    expect(native.read().player!.jumpCount).toBe(before.player!.jumpCount);
+    expect(native.read().ticks).toBe(before.ticks + 6);
+  });
+
+  it("rejects new movement and jump during an actual prepared Native hold without replay after finalize", async () => {
+    const { worker } = await supportedClientHarness(); const native = worker.session; const before = native.read();
+    native.prepareTerrain("factory_rejected_input", 0, [{ index: 0, mesh: supportedGround() }]);
+    expect.soft(nativeFactoryIntent(native, { ...zero, x: 1, jump: true })).toBe(false);
+    native.commitTerrain("factory_rejected_input"); native.finalizeTerrain("factory_rejected_input");
+    for (let step = 0; step < 6; step++) native.advance(1 / 60);
+    expect.soft(native.read().player!.position.x).toBeCloseTo(before.player!.position.x, 6);
+    expect(native.read().player!.jumpCount).toBe(before.player!.jumpCount);
+  });
+
+  it("ordinary release preserves one native jump but explicit cancellation clears it before the Native step", async () => {
+    const first = await supportedClientHarness();
+    nativeFactoryIntent(first.worker.session, { ...zero, jump: true }); nativeFactoryIntent(first.worker.session, zero);
+    first.worker.session.advance(1 / 60); expect(first.worker.session.read().player!.jumpCount).toBe(1);
+    const second = await supportedClientHarness(); const before = second.worker.session.read();
+    nativeFactoryIntent(second.worker.session, { ...zero, jump: true }); nativeFactoryIntent(second.worker.session, zero, true);
+    expect(second.worker.session.read().ticks).toBe(before.ticks);
+    expect(second.worker.session.read().player!.position).toEqual(before.player!.position);
+    second.worker.session.advance(1 / 60); expect(second.worker.session.read().player!.jumpCount).toBe(0);
+  });
+
+  it("rejects a Factory-only intent on a real ordinary Legacy Native session", async () => {
+    const { client, worker } = await clientHarness(false, true); await client.command("Play");
+    for (let step = 0; step < 10; step++) worker.session.advance(1 / 60);
+    const before = worker.session.read(); expect(before.player!.grounded).toBe(true);
+    expect.soft(nativeFactoryIntent(worker.session, { ...zero, x: 1 })).toBe(false);
+    for (let step = 0; step < 6; step++) worker.session.advance(1 / 60);
+    expect(worker.session.read().player!.position.x).toBeCloseTo(before.player!.position.x, 6);
+  });
+});
+
+describe("W07 bounded Factory intent and independent Read transport", () => {
+  it.each([zero,{...zero,x:1}])("does not post unchanged already-sent Factory level or an extra Read: %j", async value => {
+    const { client, worker } = await clientHarness();
+    client.setPlayerInput(value); const count=worker.messages.filter(message=>message.kind==="FactoryInput").length;
+    client.update(); expect(worker.reads).toHaveLength(1);
+    for(let frame=0;frame<4;frame++)client.setPlayerInput({...value});
+    expect(worker.messages.filter(message=>message.kind==="FactoryInput")).toHaveLength(count);
+    worker.release();await turn();expect(worker.reads).toHaveLength(0);
+    client.update();expect(worker.reads).toHaveLength(1);worker.release();await turn();
+  });
+  it("sends changed Factory levels and release before a busy Read ACK without any client RAF", async () => {
+    const { client, worker } = await clientHarness();client.update();client.setPlayerInput({ ...zero, x: 1 });
+    expect(worker.reads).toHaveLength(1); const ticks = worker.session.read().ticks;
+    for(let count=0;count<20;count++)client.setPlayerInput({...zero,x:count%2?1:-1});
+    client.setPlayerInput(zero);expect(worker.messages.at(-1)).toMatchObject({kind:"FactoryInput",input:zero});
+    expect(worker.reads).toHaveLength(1);expect(worker.session.read().ticks).toBe(ticks);
+    worker.release();await turn();expect(worker.reads).toHaveLength(0);
+  });
+  it("delivers one jump immediately and never replays it through Read polling or ordinary release", async () => {
+    const { client, worker } = await clientHarness();client.update();client.setPlayerInput({...zero,jump:true});client.setPlayerInput(zero);
+    expect(worker.messages.filter(message=>message.kind==="FactoryInput"&&message.input.jump)).toHaveLength(1);
+    worker.release();await turn();expect(worker.reads).toHaveLength(0);
+    client.setPlayerInput(zero);expect(worker.reads).toHaveLength(0);
+    client.update();expect(worker.reads[0]).not.toHaveProperty("input");worker.release();await turn();
+  });
+  it("Pause cancels admitted movement and jump instead of replaying them after Play", async () => {
+    const { client, worker } = await clientHarness();client.update();client.setPlayerInput({...zero,x:1,jump:true});await client.command("Pause");
+    worker.release();await turn();expect(worker.reads).toHaveLength(0);await client.command("Play");client.setPlayerInput(zero);
+    expect(worker.reads).toHaveLength(0);client.update();expect(worker.reads[0]).not.toHaveProperty("input");worker.release();await turn();
+    expect(worker.messages.filter(message=>message.kind==="FactoryInput"&&message.input.jump)).toHaveLength(1);
+  });
+  it("keeps ordinary Legacy setPlayerInput buffered and sends it only on update", async () => {
+    const { client, worker } = await clientHarness(false);client.setPlayerInput({...zero,x:1});expect(worker.reads).toHaveLength(0);
+    client.update();expect(worker.reads[0]).toMatchObject({input:{...zero,x:1}});worker.release();await turn();
+    expect(worker.messages.some(message=>message.kind==="FactoryInput")).toBe(false);
+  });
+  it("a late Read cannot publish held native staging or overwrite its exact Prepare receipt", async () => {
+    const { client, worker } = await clientHarness();await client.command("Pause");client.update();const before=client.read();
+    const definition=createFp02Fixture("cargo").catalog.devices.find(value=>value.sourceId==="B06")!;
+    const request={transactionId:"event_overlap",ownerId:"event_cutter",instanceId:"event_cutter",definitionRef:{sourceId:"B06",version:definition.version,digest:definition.digest},
+      expectedRevision:0,expectedTerrainRevision:0,materialBinding:"explicit-transport-unit-BOM",centerMm:[-6250,1500,5000],quarterTurns:1};
+    await client.prepareFactoryFacility!(request);client.setPlayerInput({...zero,x:1});expect(worker.reads).toHaveLength(1);
+    worker.release();await turn();expect(client.read()).toEqual(before);
+    await client.commitFactoryFacility!(request.transactionId);client.publishFactoryFacility!(request.transactionId);
+    expect(client.read().factoryFacilities?.owners).toHaveLength(1);await client.rollbackFactoryFacility!(request.transactionId);
+  });
+  it("a late input ACK has no authority over clock timing restore public or held Native views", async () => {
+    const timings:unknown[]=[];const {client,worker}=await clientHarness(true,false,batch=>timings.push(batch));await client.command("Play");worker.holdInputAcks=true;
+    client.setPlayerInput({...zero,x:1});const oldInputId=worker.inputAcks[0]!;
+    await client.command("Pause");const before=client.read();
+    const definition=createFp02Fixture("cargo").catalog.devices.find(value=>value.sourceId==="B06")!;
+    const request={transactionId:"input_ack_overlap",ownerId:"input_ack_cutter",instanceId:"input_ack_cutter",definitionRef:{sourceId:"B06",version:definition.version,digest:definition.digest},
+      expectedRevision:0,expectedTerrainRevision:0,materialBinding:"explicit-transport-unit-BOM",centerMm:[-6250,1500,5000],quarterTurns:1};
+    await client.prepareFactoryFacility!(request);
+    const clock=client.clock!;
+    // This is the SAME real Native prepared snapshot on the wrong reply kind,
+    // not an injected native pose or a substitute for World authority.
+    worker.onmessage?.(new MessageEvent("message",{data:{id:oldInputId,snapshot:worker.session.read(),restoreState:"Committed",
+      clock:{...clock,lastCommand:"forbidden-input-ack-clock"},timings:{origin:123,steps:[],dropped:0}}}));
+    expect(client.read()).toBe(before);expect(client.clock).toBe(clock);expect(timings).toEqual([]);
+    await client.commitFactoryFacility!(request.transactionId);client.publishFactoryFacility!(request.transactionId);
+    expect(client.read().factoryFacilities?.owners).toHaveLength(1);await client.rollbackFactoryFacility!(request.transactionId);
+  });
+  it("disposed Factory input cannot send or allocate another transport request", async () => {
+    const { client, worker } = await clientHarness();client.update();client.setPlayerInput({...zero,x:1});await client.dispose();
+    const count=worker.messages.length;client.setPlayerInput({...zero,jump:true});client.setPlayerInput(zero,true);client.update();await turn();expect(worker.messages).toHaveLength(count);
+  });
+  it("fails closed at the original eight pending requests instead of retaining a lost release", async () => {
+    const { client, worker } = await supportedClientHarness();worker.holdInputAcks=true;client.update();
+    for(let change=0;change<8;change++)client.setPlayerInput({...zero,x:change%2?1:-1});
+    client.setPlayerInput(zero);await turn();
+    expect.soft(worker.terminated).toBe(true);expect.soft(client.lifecycle!()).toMatchObject({workers:0,pendingJobs:0,listeners:0});
+    expect.soft(worker.session.read().status).toBe("Disposed");
+    const count=worker.messages.length;client.setPlayerInput({...zero,x:1});client.update();await turn();expect(worker.messages).toHaveLength(count);
+    // The native Worker is already terminated; no Disposed ACK can exist.
+    await expect(client.dispose()).rejects.toThrow(/backpressure/);
+  });
+});

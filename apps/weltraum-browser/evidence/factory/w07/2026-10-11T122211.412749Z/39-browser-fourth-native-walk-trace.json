@@ -1,0 +1,645 @@
+{
+  "phase": "actual fourth-browser failed S-walk reachableCargo assertion; original reads/actual keyboard times extracted without altering trace",
+  "tracePath": "browser-fourth/playwright-output/factory-placement-W07-real-c7a2e-aterial-and-Cargo-unchanged-chromium/trace.zip",
+  "traceSha256": "d7087a54603424c0a601dcc02b0c359764222ea8e9caa810cb258ec3bbcdc684",
+  "nativeReads": [
+    {
+      "callId": "call@89",
+      "endTime": 66510.262,
+      "ticks": 1491,
+      "status": "Running",
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.443466186523438,
+          "y": 2.400038957595825,
+          "z": 11.875015258789062
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "factoryFacilities": {
+        "cargo": {
+          "ownerId": "fp02_wreck_owner",
+          "containerId": "fp02_wreck_cargo",
+          "sourceDigest": "e62aea8a",
+          "profileDigest": "da3d7be8",
+          "opened": true,
+          "positionMm": [
+            -5500,
+            2000,
+            13125
+          ],
+          "accessBoundsMm": {
+            "min": [
+              -6250,
+              1500,
+              11625
+            ],
+            "max": [
+              -4750,
+              3500,
+              12625
+            ]
+          },
+          "bodyHandle": 2e-323,
+          "colliderHandles": [
+            3.95e-322
+          ],
+          "site": {
+            "version": "fp06-initial-cargo-s0-v1",
+            "ownerId": "fp02_wreck_owner",
+            "containerId": "fp02_wreck_cargo",
+            "sourceDigest": "e62aea8a",
+            "sourceRefs": [
+              "FP01:5.5:source-access",
+              "FP01:E00:permanently-grounded-cargo",
+              "FP02:6.4:finite-reachable-depot",
+              "FP02:9.1:cargo-outside-machine-zone"
+            ],
+            "centerMm": [
+              -5500,
+              2000,
+              13125
+            ],
+            "sizeMm": [
+              1500,
+              1500,
+              1000
+            ],
+            "boundsMm": {
+              "min": [
+                -6250,
+                1250,
+                12625
+              ],
+              "max": [
+                -4750,
+                2750,
+                13625
+              ]
+            },
+            "accessPointMm": [
+              -5500,
+              2250,
+              12625
+            ],
+            "accessBoundsMm": {
+              "min": [
+                -6250,
+                1500,
+                11625
+              ],
+              "max": [
+                -4750,
+                3500,
+                12625
+              ]
+            },
+            "spawnMm": [
+              -5500,
+              2420,
+              11875
+            ],
+            "geometryPolicy": "Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.",
+            "canonicalJson": "{\"accessBoundsMm\":{\"max\":[-4750,3500,12625],\"min\":[-6250,1500,11625]},\"accessPointMm\":[-5500,2250,12625],\"boundsMm\":{\"max\":[-4750,2750,13625],\"min\":[-6250,1250,12625]},\"centerMm\":[-5500,2000,13125],\"containerId\":\"fp02_wreck_cargo\",\"geometryPolicy\":\"Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.\",\"ownerId\":\"fp02_wreck_owner\",\"sizeMm\":[1500,1500,1000],\"sourceDigest\":\"e62aea8a\",\"sourceRefs\":[\"FP01:5.5:source-access\",\"FP01:E00:permanently-grounded-cargo\",\"FP02:6.4:finite-reachable-depot\",\"FP02:9.1:cargo-outside-machine-zone\"],\"spawnMm\":[-5500,2420,11875],\"version\":\"fp06-initial-cargo-s0-v1\"}",
+            "profileDigest": "da3d7be8"
+          },
+          "accessible": true,
+          "openReceipt": {
+            "ownerId": "fp02_wreck_owner",
+            "profileDigest": "da3d7be8",
+            "expectedTerrainRevision": 0,
+            "expectedRevision": 0
+          }
+        },
+        "revision": 1,
+        "state": "Idle",
+        "transactionId": null,
+        "owners": [],
+        "prepared": null
+      }
+    },
+    {
+      "callId": "call@91",
+      "endTime": 67209.313,
+      "ticks": 1524,
+      "status": "Running",
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.443459510803223,
+          "y": 2.400038480758667,
+          "z": 10.225028991699219
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "factoryFacilities": {
+        "cargo": {
+          "ownerId": "fp02_wreck_owner",
+          "containerId": "fp02_wreck_cargo",
+          "sourceDigest": "e62aea8a",
+          "profileDigest": "da3d7be8",
+          "opened": true,
+          "positionMm": [
+            -5500,
+            2000,
+            13125
+          ],
+          "accessBoundsMm": {
+            "min": [
+              -6250,
+              1500,
+              11625
+            ],
+            "max": [
+              -4750,
+              3500,
+              12625
+            ]
+          },
+          "bodyHandle": 2e-323,
+          "colliderHandles": [
+            3.95e-322
+          ],
+          "site": {
+            "version": "fp06-initial-cargo-s0-v1",
+            "ownerId": "fp02_wreck_owner",
+            "containerId": "fp02_wreck_cargo",
+            "sourceDigest": "e62aea8a",
+            "sourceRefs": [
+              "FP01:5.5:source-access",
+              "FP01:E00:permanently-grounded-cargo",
+              "FP02:6.4:finite-reachable-depot",
+              "FP02:9.1:cargo-outside-machine-zone"
+            ],
+            "centerMm": [
+              -5500,
+              2000,
+              13125
+            ],
+            "sizeMm": [
+              1500,
+              1500,
+              1000
+            ],
+            "boundsMm": {
+              "min": [
+                -6250,
+                1250,
+                12625
+              ],
+              "max": [
+                -4750,
+                2750,
+                13625
+              ]
+            },
+            "accessPointMm": [
+              -5500,
+              2250,
+              12625
+            ],
+            "accessBoundsMm": {
+              "min": [
+                -6250,
+                1500,
+                11625
+              ],
+              "max": [
+                -4750,
+                3500,
+                12625
+              ]
+            },
+            "spawnMm": [
+              -5500,
+              2420,
+              11875
+            ],
+            "geometryPolicy": "Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.",
+            "canonicalJson": "{\"accessBoundsMm\":{\"max\":[-4750,3500,12625],\"min\":[-6250,1500,11625]},\"accessPointMm\":[-5500,2250,12625],\"boundsMm\":{\"max\":[-4750,2750,13625],\"min\":[-6250,1250,12625]},\"centerMm\":[-5500,2000,13125],\"containerId\":\"fp02_wreck_cargo\",\"geometryPolicy\":\"Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.\",\"ownerId\":\"fp02_wreck_owner\",\"sizeMm\":[1500,1500,1000],\"sourceDigest\":\"e62aea8a\",\"sourceRefs\":[\"FP01:5.5:source-access\",\"FP01:E00:permanently-grounded-cargo\",\"FP02:6.4:finite-reachable-depot\",\"FP02:9.1:cargo-outside-machine-zone\"],\"spawnMm\":[-5500,2420,11875],\"version\":\"fp06-initial-cargo-s0-v1\"}",
+            "profileDigest": "da3d7be8"
+          },
+          "accessible": true,
+          "openReceipt": {
+            "ownerId": "fp02_wreck_owner",
+            "profileDigest": "da3d7be8",
+            "expectedTerrainRevision": 0,
+            "expectedRevision": 0
+          }
+        },
+        "revision": 1,
+        "state": "Idle",
+        "transactionId": null,
+        "owners": [],
+        "prepared": null
+      }
+    },
+    {
+      "callId": "call@93",
+      "endTime": 68154.266,
+      "ticks": 1572,
+      "status": "Running",
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.443459510803223,
+          "y": 2.4000306129455566,
+          "z": 7.825019836425781
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "factoryFacilities": {
+        "cargo": {
+          "ownerId": "fp02_wreck_owner",
+          "containerId": "fp02_wreck_cargo",
+          "sourceDigest": "e62aea8a",
+          "profileDigest": "da3d7be8",
+          "opened": true,
+          "positionMm": [
+            -5500,
+            2000,
+            13125
+          ],
+          "accessBoundsMm": {
+            "min": [
+              -6250,
+              1500,
+              11625
+            ],
+            "max": [
+              -4750,
+              3500,
+              12625
+            ]
+          },
+          "bodyHandle": 2e-323,
+          "colliderHandles": [
+            3.95e-322
+          ],
+          "site": {
+            "version": "fp06-initial-cargo-s0-v1",
+            "ownerId": "fp02_wreck_owner",
+            "containerId": "fp02_wreck_cargo",
+            "sourceDigest": "e62aea8a",
+            "sourceRefs": [
+              "FP01:5.5:source-access",
+              "FP01:E00:permanently-grounded-cargo",
+              "FP02:6.4:finite-reachable-depot",
+              "FP02:9.1:cargo-outside-machine-zone"
+            ],
+            "centerMm": [
+              -5500,
+              2000,
+              13125
+            ],
+            "sizeMm": [
+              1500,
+              1500,
+              1000
+            ],
+            "boundsMm": {
+              "min": [
+                -6250,
+                1250,
+                12625
+              ],
+              "max": [
+                -4750,
+                2750,
+                13625
+              ]
+            },
+            "accessPointMm": [
+              -5500,
+              2250,
+              12625
+            ],
+            "accessBoundsMm": {
+              "min": [
+                -6250,
+                1500,
+                11625
+              ],
+              "max": [
+                -4750,
+                3500,
+                12625
+              ]
+            },
+            "spawnMm": [
+              -5500,
+              2420,
+              11875
+            ],
+            "geometryPolicy": "Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.",
+            "canonicalJson": "{\"accessBoundsMm\":{\"max\":[-4750,3500,12625],\"min\":[-6250,1500,11625]},\"accessPointMm\":[-5500,2250,12625],\"boundsMm\":{\"max\":[-4750,2750,13625],\"min\":[-6250,1250,12625]},\"centerMm\":[-5500,2000,13125],\"containerId\":\"fp02_wreck_cargo\",\"geometryPolicy\":\"Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.\",\"ownerId\":\"fp02_wreck_owner\",\"sizeMm\":[1500,1500,1000],\"sourceDigest\":\"e62aea8a\",\"sourceRefs\":[\"FP01:5.5:source-access\",\"FP01:E00:permanently-grounded-cargo\",\"FP02:6.4:finite-reachable-depot\",\"FP02:9.1:cargo-outside-machine-zone\"],\"spawnMm\":[-5500,2420,11875],\"version\":\"fp06-initial-cargo-s0-v1\"}",
+            "profileDigest": "da3d7be8"
+          },
+          "accessible": false,
+          "openReceipt": {
+            "ownerId": "fp02_wreck_owner",
+            "profileDigest": "da3d7be8",
+            "expectedTerrainRevision": 0,
+            "expectedRevision": 0
+          }
+        },
+        "revision": 1,
+        "state": "Idle",
+        "transactionId": null,
+        "owners": [],
+        "prepared": null
+      }
+    },
+    {
+      "callId": "call@99",
+      "endTime": 70993.606,
+      "ticks": 1720,
+      "status": "Paused",
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.443459510803223,
+          "y": 2.400029420852661,
+          "z": 2.2250070571899414
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Inspection"
+      },
+      "factoryFacilities": {
+        "cargo": {
+          "ownerId": "fp02_wreck_owner",
+          "containerId": "fp02_wreck_cargo",
+          "sourceDigest": "e62aea8a",
+          "profileDigest": "da3d7be8",
+          "opened": true,
+          "positionMm": [
+            -5500,
+            2000,
+            13125
+          ],
+          "accessBoundsMm": {
+            "min": [
+              -6250,
+              1500,
+              11625
+            ],
+            "max": [
+              -4750,
+              3500,
+              12625
+            ]
+          },
+          "bodyHandle": 2e-323,
+          "colliderHandles": [
+            3.95e-322
+          ],
+          "site": {
+            "version": "fp06-initial-cargo-s0-v1",
+            "ownerId": "fp02_wreck_owner",
+            "containerId": "fp02_wreck_cargo",
+            "sourceDigest": "e62aea8a",
+            "sourceRefs": [
+              "FP01:5.5:source-access",
+              "FP01:E00:permanently-grounded-cargo",
+              "FP02:6.4:finite-reachable-depot",
+              "FP02:9.1:cargo-outside-machine-zone"
+            ],
+            "centerMm": [
+              -5500,
+              2000,
+              13125
+            ],
+            "sizeMm": [
+              1500,
+              1500,
+              1000
+            ],
+            "boundsMm": {
+              "min": [
+                -6250,
+                1250,
+                12625
+              ],
+              "max": [
+                -4750,
+                2750,
+                13625
+              ]
+            },
+            "accessPointMm": [
+              -5500,
+              2250,
+              12625
+            ],
+            "accessBoundsMm": {
+              "min": [
+                -6250,
+                1500,
+                11625
+              ],
+              "max": [
+                -4750,
+                3500,
+                12625
+              ]
+            },
+            "spawnMm": [
+              -5500,
+              2420,
+              11875
+            ],
+            "geometryPolicy": "Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.",
+            "canonicalJson": "{\"accessBoundsMm\":{\"max\":[-4750,3500,12625],\"min\":[-6250,1500,11625]},\"accessPointMm\":[-5500,2250,12625],\"boundsMm\":{\"max\":[-4750,2750,13625],\"min\":[-6250,1250,12625]},\"centerMm\":[-5500,2000,13125],\"containerId\":\"fp02_wreck_cargo\",\"geometryPolicy\":\"Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.\",\"ownerId\":\"fp02_wreck_owner\",\"sizeMm\":[1500,1500,1000],\"sourceDigest\":\"e62aea8a\",\"sourceRefs\":[\"FP01:5.5:source-access\",\"FP01:E00:permanently-grounded-cargo\",\"FP02:6.4:finite-reachable-depot\",\"FP02:9.1:cargo-outside-machine-zone\"],\"spawnMm\":[-5500,2420,11875],\"version\":\"fp06-initial-cargo-s0-v1\"}",
+            "profileDigest": "da3d7be8"
+          },
+          "accessible": false,
+          "openReceipt": {
+            "ownerId": "fp02_wreck_owner",
+            "profileDigest": "da3d7be8",
+            "expectedTerrainRevision": 0,
+            "expectedRevision": 0
+          }
+        },
+        "revision": 1,
+        "state": "Idle",
+        "transactionId": null,
+        "owners": [],
+        "prepared": null
+      }
+    },
+    {
+      "callId": "call@105",
+      "endTime": 76986.305,
+      "ticks": 1720,
+      "status": "Paused",
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -8.443459510803223,
+          "y": 2.400029420852661,
+          "z": 2.2250070571899414
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Inspection"
+      },
+      "factoryFacilities": {
+        "cargo": {
+          "ownerId": "fp02_wreck_owner",
+          "containerId": "fp02_wreck_cargo",
+          "sourceDigest": "e62aea8a",
+          "profileDigest": "da3d7be8",
+          "opened": true,
+          "positionMm": [
+            -5500,
+            2000,
+            13125
+          ],
+          "accessBoundsMm": {
+            "min": [
+              -6250,
+              1500,
+              11625
+            ],
+            "max": [
+              -4750,
+              3500,
+              12625
+            ]
+          },
+          "bodyHandle": 2e-323,
+          "colliderHandles": [
+            3.95e-322
+          ],
+          "site": {
+            "version": "fp06-initial-cargo-s0-v1",
+            "ownerId": "fp02_wreck_owner",
+            "containerId": "fp02_wreck_cargo",
+            "sourceDigest": "e62aea8a",
+            "sourceRefs": [
+              "FP01:5.5:source-access",
+              "FP01:E00:permanently-grounded-cargo",
+              "FP02:6.4:finite-reachable-depot",
+              "FP02:9.1:cargo-outside-machine-zone"
+            ],
+            "centerMm": [
+              -5500,
+              2000,
+              13125
+            ],
+            "sizeMm": [
+              1500,
+              1500,
+              1000
+            ],
+            "boundsMm": {
+              "min": [
+                -6250,
+                1250,
+                12625
+              ],
+              "max": [
+                -4750,
+                2750,
+                13625
+              ]
+            },
+            "accessPointMm": [
+              -5500,
+              2250,
+              12625
+            ],
+            "accessBoundsMm": {
+              "min": [
+                -6250,
+                1500,
+                11625
+              ],
+              "max": [
+                -4750,
+                3500,
+                12625
+              ]
+            },
+            "spawnMm": [
+              -5500,
+              2420,
+              11875
+            ],
+            "geometryPolicy": "Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.",
+            "canonicalJson": "{\"accessBoundsMm\":{\"max\":[-4750,3500,12625],\"min\":[-6250,1500,11625]},\"accessPointMm\":[-5500,2250,12625],\"boundsMm\":{\"max\":[-4750,2750,13625],\"min\":[-6250,1250,12625]},\"centerMm\":[-5500,2000,13125],\"containerId\":\"fp02_wreck_cargo\",\"geometryPolicy\":\"Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.\",\"ownerId\":\"fp02_wreck_owner\",\"sizeMm\":[1500,1500,1000],\"sourceDigest\":\"e62aea8a\",\"sourceRefs\":[\"FP01:5.5:source-access\",\"FP01:E00:permanently-grounded-cargo\",\"FP02:6.4:finite-reachable-depot\",\"FP02:9.1:cargo-outside-machine-zone\"],\"spawnMm\":[-5500,2420,11875],\"version\":\"fp06-initial-cargo-s0-v1\"}",
+            "profileDigest": "da3d7be8"
+          },
+          "accessible": false,
+          "openReceipt": {
+            "ownerId": "fp02_wreck_owner",
+            "profileDigest": "da3d7be8",
+            "expectedTerrainRevision": 0,
+            "expectedRevision": 0
+          }
+        },
+        "revision": 1,
+        "state": "Idle",
+        "transactionId": null,
+        "owners": [],
+        "prepared": null
+      }
+    }
+  ],
+  "keyboardBeforeEvents": [
+    {
+      "type": "before",
+      "callId": "call@87",
+      "startTime": 65591.337,
+      "class": "Page",
+      "method": "keyboardDown",
+      "params": {
+        "key": "s"
+      },
+      "stepId": "pw:api@21",
+      "pageId": "page@9ca8e23f59af9455f25297f0f7e32058"
+    },
+    {
+      "type": "before",
+      "callId": "call@95",
+      "startTime": 68477.786,
+      "class": "Page",
+      "method": "keyboardUp",
+      "params": {
+        "key": "s"
+      },
+      "stepId": "pw:api@29",
+      "pageId": "page@9ca8e23f59af9455f25297f0f7e32058"
+    },
+    {
+      "type": "before",
+      "callId": "call@97",
+      "startTime": 69376.656,
+      "class": "Page",
+      "method": "keyboardPress",
+      "params": {
+        "key": "Escape"
+      },
+      "stepId": "pw:api@30",
+      "pageId": "page@9ca8e23f59af9455f25297f0f7e32058"
+    }
+  ]
+}

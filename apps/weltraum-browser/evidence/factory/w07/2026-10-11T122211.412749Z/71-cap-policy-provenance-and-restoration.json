@@ -1,0 +1,10 @@
+{
+  "phase": "71",
+  "provenance": "Reconstructed historical report-only rejection policy AFTER initial immediate-channel source implementation; NOT untouched preimplementation runtime. Initial new catch(fail) observed by Root16:39, isolated report-only catch executed in71, catch(fail) restored before72.",
+  "archiveProvenance": "Reconstructed retrospectively from exact documented one-line edit; not a contemporaneous full-source capture. Original71 command/raw receipt is unchanged.",
+  "reconstructedClientSha256": "acf97bdde73c481d733c558db30eddcefda72730ee1d7d747f6158fbfd9c2d7c",
+  "restoredClientSha256": "4b8bfe5766be527c9c71a5312cc80068cb6ac5b157012e24f4349993c71cc0e6",
+  "policyPatchSha256": "b82da21361af1e90503ca8a44818f0e9846d705bc5dcde5361e4de2a3725bde8",
+  "actual71RawSha256": "22141f2028d5ec94d2c12747e0bade43e6584c1262738323725784929cb0cdb2",
+  "priorBusinessRED": "69 and70 are the actual pre-runtime-businessREDs; 71 is a separate reconstructed-policy counterexample."
+}

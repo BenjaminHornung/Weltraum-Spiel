@@ -1,0 +1,39 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/hvp-player-input.test.ts -t unchanged already-sent
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-player-input.test.ts (14 tests | 2 failed | 12 skipped) 156ms
+     × does not drain unchanged already-sent level intent into an extra EventRead: {"x":0,"z":0,"sprint":false,"jump":false} 120ms
+     × does not drain unchanged already-sent level intent into an extra EventRead: {"x":1,"z":0,"sprint":false,"jump":false} 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-player-input.test.ts > W07 existing bounded Read(input) transport > does not drain unchanged already-sent level intent into an extra EventRead: {"x":0,"z":0,"sprint":false,"jump":false}
+ FAIL  tests/unit/hvp-player-input.test.ts > W07 existing bounded Read(input) transport > does not drain unchanged already-sent level intent into an extra EventRead: {"x":1,"z":0,"sprint":false,"jump":false}
+AssertionError: expected [ { kind: 'Read', …(4) } ] to have a length of +0 but got 1
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/unit/hvp-player-input.test.ts:104:56
+    102|     expect(worker.reads).toHaveLength(1);
+    103|     for(let frame=0;frame<4;frame++)client.setPlayerInput({...value});
+    104|     worker.release();await turn();expect(worker.reads).toHaveLength(0);
+       |                                                        ^
+    105|     // Snapshot polling remains owned by the existing explicit update …
+    106|     client.update();expect(worker.reads).toHaveLength(1);worker.releas…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 12 skipped (14)
+   Start at  15:11:08
+   Duration  1.36s (transform 920ms, setup 0ms, import 1.10s, tests 156ms, environment 0ms)
+

@@ -1,0 +1,96 @@
+Actual installed coreBundle.js lines20457–20469:
+      }
+      async apiDown(progress2, key) {
+        await progress2.race(this._page.instrumentation.onBeforeInputAction(this._page, progress2.metadata));
+        await this.down(progress2, key);
+      }
+      async down(progress2, key) {
+        const description = this._keyDescriptionForString(key);
+        const autoRepeat = this._pressedKeys.has(description.code);
+        this._pressedKeys.add(description.code);
+        if (kModifiers.includes(description.key))
+          this._pressedModifiers.add(description.key);
+        await this._raw.keydown(progress2, this._pressedModifiers, key, description, autoRepeat);
+      }
+
+Actual installed coreBundle.js lines20479–20488:
+        return description;
+      }
+      async apiUp(progress2, key) {
+        await progress2.race(this._page.instrumentation.onBeforeInputAction(this._page, progress2.metadata));
+        await this.up(progress2, key);
+      }
+      async up(progress2, key) {
+        const description = this._keyDescriptionForString(key);
+        if (kModifiers.includes(description.key))
+          this._pressedModifiers.delete(description.key);
+
+Actual installed coreBundle.js lines20539–20547:
+        if (options.delay)
+          await progress2.wait(options.delay);
+        await this.up(progress2, key);
+        for (let i = tokens.length - 2; i >= 0; --i)
+          await this.up(progress2, tokens[i]);
+      }
+      async ensureModifiers(progress2, mm) {
+        const modifiers = mm.map(resolveSmartModifier);
+        for (const modifier of modifiers) {
+
+Actual installed coreBundle.js lines35369–35402:
+        return commands2.map((c) => c.substring(0, c.length - 1));
+      }
+      async keydown(progress2, modifiers, keyName, description, autoRepeat) {
+        const { code, key, location: location2, text: text2 } = description;
+        if (code === "Escape" && await progress2.race(this._dragManger.cancelDrag()))
+          return;
+        const commands2 = this._commandsForCode(code, modifiers);
+        await progress2.race(this._client.send("Input.dispatchKeyEvent", {
+          type: text2 ? "keyDown" : "rawKeyDown",
+          modifiers: toModifiersMask(modifiers),
+          windowsVirtualKeyCode: description.keyCodeWithoutLocation,
+          code,
+          commands: commands2,
+          key,
+          text: text2,
+          unmodifiedText: text2,
+          autoRepeat,
+          location: location2,
+          isKeypad: location2 === keypadLocation2
+        }));
+      }
+      async keyup(progress2, modifiers, keyName, description) {
+        const { code, key, location: location2 } = description;
+        await progress2.race(this._client.send("Input.dispatchKeyEvent", {
+          type: "keyUp",
+          modifiers: toModifiersMask(modifiers),
+          key,
+          windowsVirtualKeyCode: description.keyCodeWithoutLocation,
+          code,
+          location: location2
+        }));
+      }
+      async sendText(progress2, text2) {
+        await progress2.race(this._client.send("Input.insertText", { text: text2 }));
+
+Actual installed coreBundle.js lines59494–59514:
+    Keyboard2 = class {
+      constructor(page) {
+        this._page = page;
+      }
+      async down(key) {
+        await this._page._channel.keyboardDown({ key });
+      }
+      async up(key) {
+        await this._page._channel.keyboardUp({ key });
+      }
+      async insertText(text2) {
+        await this._page._channel.keyboardInsertText({ text: text2 });
+      }
+      async type(text2, options = {}) {
+        await this._page._channel.keyboardType({ text: text2, ...options });
+      }
+      async press(key, options = {}) {
+        await this._page._channel.keyboardPress({ key, ...options });
+      }
+    };
+    Mouse2 = class {

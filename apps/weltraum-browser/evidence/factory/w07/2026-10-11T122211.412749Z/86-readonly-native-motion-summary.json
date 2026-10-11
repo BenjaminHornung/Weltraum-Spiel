@@ -1,0 +1,617 @@
+{
+  "phase": 86,
+  "kind": "READ_ONLY_ACTUAL_NORMAL_NATIVE_MOTION",
+  "normalResult": {
+    "passed": 5,
+    "failed": 1,
+    "notRun": 11,
+    "assertion": "X >= -6.4",
+    "actual": -6.400003433227539
+  },
+  "actualTaps": 8,
+  "zeroMoves": 7,
+  "runnerTimesAreNotDomOrNativeEdges": true,
+  "newRuntimeCauseOrFix": "NOT_ASSERTED",
+  "taps": [
+    {
+      "axis": "x",
+      "key": "d",
+      "holdMs": 125,
+      "capBeforeMs": 125,
+      "capAfterMs": 125,
+      "overshotTarget": false,
+      "beforePosition": {
+        "x": -5.5,
+        "y": 2.4100027084350586,
+        "z": 11.875
+      },
+      "afterPosition": {
+        "x": -5.5,
+        "y": 2.4100027084350586,
+        "z": 11.875
+      },
+      "deltaX": 0.0,
+      "deltaZ": 0.0,
+      "ticks": [
+        1351,
+        1466
+      ],
+      "status": "Walking",
+      "grounded": true,
+      "runnerIssuedDownUpMs": 126.65672900000209,
+      "driverTimes": {
+        "downIssuedMs": 62980.622328,
+        "upIssuedMs": 63107.279057,
+        "downAckMs": 63442.260436,
+        "upAckMs": 63442.810047,
+        "finalUpIssuedMs": 63442.826372,
+        "finalUpAckMs": 63939.280205
+      },
+      "releasedReadTicksAndPositions": [
+        {
+          "ticks": 1437,
+          "status": "Running",
+          "player": {
+            "ownerId": "hvp:player",
+            "position": {
+              "x": -5.5,
+              "y": 2.4100027084350586,
+              "z": 11.875
+            },
+            "grounded": true,
+            "velocityY": 0,
+            "jumpCount": 0,
+            "cameraFraction": 1,
+            "status": "Walking"
+          },
+          "transaction": null,
+          "factoryCargoAccessible": true
+        },
+        {
+          "ticks": 1466,
+          "status": "Running",
+          "player": {
+            "ownerId": "hvp:player",
+            "position": {
+              "x": -5.5,
+              "y": 2.4100027084350586,
+              "z": 11.875
+            },
+            "grounded": true,
+            "velocityY": 0,
+            "jumpCount": 0,
+            "cameraFraction": 1,
+            "status": "Walking"
+          },
+          "transaction": null,
+          "factoryCargoAccessible": true
+        }
+      ]
+    },
+    {
+      "axis": "x",
+      "key": "d",
+      "holdMs": 125,
+      "capBeforeMs": 125,
+      "capAfterMs": 125,
+      "overshotTarget": false,
+      "beforePosition": {
+        "x": -5.5,
+        "y": 2.4100027084350586,
+        "z": 11.875
+      },
+      "afterPosition": {
+        "x": -5.5,
+        "y": 2.4100027084350586,
+        "z": 11.875
+      },
+      "deltaX": 0.0,
+      "deltaZ": 0.0,
+      "ticks": [
+        1498,
+        1624
+      ],
+      "status": "Walking",
+      "grounded": true,
+      "runnerIssuedDownUpMs": 126.44990500000131,
+      "driverTimes": {
+        "downIssuedMs": 65554.442862,
+        "upIssuedMs": 65680.892767,
+        "downAckMs": 66108.918204,
+        "upAckMs": 66109.126555,
+        "finalUpIssuedMs": 66109.136089,
+        "finalUpAckMs": 66574.162056
+      },
+      "releasedReadTicksAndPositions": [
+        {
+          "ticks": 1595,
+          "status": "Running",
+          "player": {
+            "ownerId": "hvp:player",
+            "position": {
+              "x": -5.5,
+              "y": 2.4100027084350586,
+              "z": 11.875
+            },
+            "grounded": true,
+            "velocityY": 0,
+            "jumpCount": 0,
+            "cameraFraction": 1,
+            "status": "Walking"
+          },
+          "transaction": null,
+          "factoryCargoAccessible": true
+        },
+        {
+          "ticks": 1624,
+          "status": "Running",
+          "player": {
+            "ownerId": "hvp:player",
+            "position": {
+              "x": -5.5,
+              "y": 2.4100027084350586,
+              "z": 11.875
+            },
+            "grounded": true,
+            "velocityY": 0,
+            "jumpCount": 0,
+            "cameraFraction": 1,
+            "status": "Walking"
+          },
+          "transaction": null,
+          "factoryCargoAccessible": true
+        }
+      ]
+    },
+    {
+      "axis": "x",
+      "key": "d",
+      "holdMs": 125,
+      "capBeforeMs": 125,
+      "capAfterMs": 125,
+      "overshotTarget": false,
+      "beforePosition": {
+        "x": -5.5,
+        "y": 2.4100027084350586,
+        "z": 11.875
+      },
+      "afterPosition": {
+        "x": -5.5,
+        "y": 2.4100027084350586,
+        "z": 11.875
+      },
+      "deltaX": 0.0,
+      "deltaZ": 0.0,
+      "ticks": [
+        1657,
+        1773
+      ],
+      "status": "Walking",
+      "grounded": true,
+      "runnerIssuedDownUpMs": 126.52292400000442,
+      "driverTimes": {
+        "downIssuedMs": 68132.232087,
+        "upIssuedMs": 68258.755011,
+        "downAckMs": 68584.878371,
+        "upAckMs": 68585.360653,
+        "finalUpIssuedMs": 68585.371429,
+        "finalUpAckMs": 69068.691575
+      },
+      "releasedReadTicksAndPositions": [
+        {
+          "ticks": 1745,
+          "status": "Running",
+          "player": {
+            "ownerId": "hvp:player",
+            "position": {
+              "x": -5.5,
+              "y": 2.4100027084350586,
+              "z": 11.875
+            },
+            "grounded": true,
+            "velocityY": 0,
+            "jumpCount": 0,
+            "cameraFraction": 1,
+            "status": "Walking"
+          },
+          "transaction": null,
+          "factoryCargoAccessible": true
+        },
+        {
+          "ticks": 1773,
+          "status": "Running",
+          "player": {
+            "ownerId": "hvp:player",
+            "position": {
+              "x": -5.5,
+              "y": 2.4100027084350586,
+              "z": 11.875
+            },
+            "grounded": true,
+            "velocityY": 0,
+            "jumpCount": 0,
+            "cameraFraction": 1,
+            "status": "Walking"
+          },
+          "transaction": null,
+          "factoryCargoAccessible": true
+        }
+      ]
+    },
+    {
+      "axis": "x",
+      "key": "d",
+      "holdMs": 125,
+      "capBeforeMs": 125,
+      "capAfterMs": 63,
+      "overshotTarget": true,
+      "beforePosition": {
+        "x": -5.5,
+        "y": 2.4100027084350586,
+        "z": 11.875
+      },
+      "afterPosition": {
+        "x": -6.400003433227539,
+        "y": 2.400040864944458,
+        "z": 11.875
+      },
+      "deltaX": -0.9000034332275391,
+      "deltaZ": 0.0,
+      "ticks": [
+        1802,
+        1925
+      ],
+      "status": "Walking",
+      "grounded": true,
+      "runnerIssuedDownUpMs": 126.84029500000179,
+      "driverTimes": {
+        "downIssuedMs": 70451.185638,
+        "upIssuedMs": 70578.025933,
+        "downAckMs": 70855.853546,
+        "upAckMs": 71178.986725,
+        "finalUpIssuedMs": 71179.000405,
+        "finalUpAckMs": 71685.368987
+      },
+      "releasedReadTicksAndPositions": [
+        {
+          "ticks": 1880,
+          "status": "Running",
+          "player": {
+            "ownerId": "hvp:player",
+            "position": {
+              "x": -6.400003433227539,
+              "y": 2.400040864944458,
+              "z": 11.875
+            },
+            "grounded": true,
+            "velocityY": 0,
+            "jumpCount": 0,
+            "cameraFraction": 1,
+            "status": "Walking"
+          },
+          "transaction": null,
+          "factoryCargoAccessible": true
+        },
+        {
+          "ticks": 1925,
+          "status": "Running",
+          "player": {
+            "ownerId": "hvp:player",
+            "position": {
+              "x": -6.400003433227539,
+              "y": 2.400040864944458,
+              "z": 11.875
+            },
+            "grounded": true,
+            "velocityY": 0,
+            "jumpCount": 0,
+            "cameraFraction": 1,
+            "status": "Walking"
+          },
+          "transaction": null,
+          "factoryCargoAccessible": true
+        }
+      ]
+    },
+    {
+      "axis": "x",
+      "key": "a",
+      "holdMs": 50,
+      "capBeforeMs": 63,
+      "capAfterMs": 63,
+      "overshotTarget": false,
+      "beforePosition": {
+        "x": -6.400003433227539,
+        "y": 2.400040864944458,
+        "z": 11.875
+      },
+      "afterPosition": {
+        "x": -6.400003433227539,
+        "y": 2.400040864944458,
+        "z": 11.875
+      },
+      "deltaX": 0.0,
+      "deltaZ": 0.0,
+      "ticks": [
+        1969,
+        2081
+      ],
+      "status": "Walking",
+      "grounded": true,
+      "runnerIssuedDownUpMs": 50.31018899999617,
+      "driverTimes": {
+        "downIssuedMs": 73274.706671,
+        "upIssuedMs": 73325.01686,
+        "downAckMs": 73737.034628,
+        "upAckMs": 73737.058884,
+        "finalUpIssuedMs": 73737.071283,
+        "finalUpAckMs": 74177.927903
+      },
+      "releasedReadTicksAndPositions": [
+        {
+          "ticks": 2051,
+          "status": "Running",
+          "player": {
+            "ownerId": "hvp:player",
+            "position": {
+              "x": -6.400003433227539,
+              "y": 2.400040864944458,
+              "z": 11.875
+            },
+            "grounded": true,
+            "velocityY": 0,
+            "jumpCount": 0,
+            "cameraFraction": 1,
+            "status": "Walking"
+          },
+          "transaction": null,
+          "factoryCargoAccessible": true
+        },
+        {
+          "ticks": 2081,
+          "status": "Running",
+          "player": {
+            "ownerId": "hvp:player",
+            "position": {
+              "x": -6.400003433227539,
+              "y": 2.400040864944458,
+              "z": 11.875
+            },
+            "grounded": true,
+            "velocityY": 0,
+            "jumpCount": 0,
+            "cameraFraction": 1,
+            "status": "Walking"
+          },
+          "transaction": null,
+          "factoryCargoAccessible": true
+        }
+      ]
+    },
+    {
+      "axis": "x",
+      "key": "a",
+      "holdMs": 50,
+      "capBeforeMs": 63,
+      "capAfterMs": 63,
+      "overshotTarget": false,
+      "beforePosition": {
+        "x": -6.400003433227539,
+        "y": 2.400040864944458,
+        "z": 11.875
+      },
+      "afterPosition": {
+        "x": -6.400003433227539,
+        "y": 2.400040864944458,
+        "z": 11.875
+      },
+      "deltaX": 0.0,
+      "deltaZ": 0.0,
+      "ticks": [
+        2113,
+        2240
+      ],
+      "status": "Walking",
+      "grounded": true,
+      "runnerIssuedDownUpMs": 51.27295299999241,
+      "driverTimes": {
+        "downIssuedMs": 75756.930496,
+        "upIssuedMs": 75808.203449,
+        "downAckMs": 76276.926114,
+        "upAckMs": 76277.190239,
+        "finalUpIssuedMs": 76277.197409,
+        "finalUpAckMs": 76827.198793
+      },
+      "releasedReadTicksAndPositions": [
+        {
+          "ticks": 2210,
+          "status": "Running",
+          "player": {
+            "ownerId": "hvp:player",
+            "position": {
+              "x": -6.400003433227539,
+              "y": 2.400040864944458,
+              "z": 11.875
+            },
+            "grounded": true,
+            "velocityY": 0,
+            "jumpCount": 0,
+            "cameraFraction": 1,
+            "status": "Walking"
+          },
+          "transaction": null,
+          "factoryCargoAccessible": true
+        },
+        {
+          "ticks": 2240,
+          "status": "Running",
+          "player": {
+            "ownerId": "hvp:player",
+            "position": {
+              "x": -6.400003433227539,
+              "y": 2.400040864944458,
+              "z": 11.875
+            },
+            "grounded": true,
+            "velocityY": 0,
+            "jumpCount": 0,
+            "cameraFraction": 1,
+            "status": "Walking"
+          },
+          "transaction": null,
+          "factoryCargoAccessible": true
+        }
+      ]
+    },
+    {
+      "axis": "x",
+      "key": "a",
+      "holdMs": 50,
+      "capBeforeMs": 63,
+      "capAfterMs": 63,
+      "overshotTarget": false,
+      "beforePosition": {
+        "x": -6.400003433227539,
+        "y": 2.400040864944458,
+        "z": 11.875
+      },
+      "afterPosition": {
+        "x": -6.400003433227539,
+        "y": 2.400040864944458,
+        "z": 11.875
+      },
+      "deltaX": 0.0,
+      "deltaZ": 0.0,
+      "ticks": [
+        2271,
+        2386
+      ],
+      "status": "Walking",
+      "grounded": true,
+      "runnerIssuedDownUpMs": 50.44733399999677,
+      "driverTimes": {
+        "downIssuedMs": 78313.495288,
+        "upIssuedMs": 78363.942622,
+        "downAckMs": 78800.453123,
+        "upAckMs": 78800.880823,
+        "finalUpIssuedMs": 78800.888604,
+        "finalUpAckMs": 79260.395171
+      },
+      "releasedReadTicksAndPositions": [
+        {
+          "ticks": 2356,
+          "status": "Running",
+          "player": {
+            "ownerId": "hvp:player",
+            "position": {
+              "x": -6.400003433227539,
+              "y": 2.400040864944458,
+              "z": 11.875
+            },
+            "grounded": true,
+            "velocityY": 0,
+            "jumpCount": 0,
+            "cameraFraction": 1,
+            "status": "Walking"
+          },
+          "transaction": null,
+          "factoryCargoAccessible": true
+        },
+        {
+          "ticks": 2386,
+          "status": "Running",
+          "player": {
+            "ownerId": "hvp:player",
+            "position": {
+              "x": -6.400003433227539,
+              "y": 2.400040864944458,
+              "z": 11.875
+            },
+            "grounded": true,
+            "velocityY": 0,
+            "jumpCount": 0,
+            "cameraFraction": 1,
+            "status": "Walking"
+          },
+          "transaction": null,
+          "factoryCargoAccessible": true
+        }
+      ]
+    },
+    {
+      "axis": "x",
+      "key": "a",
+      "holdMs": 50,
+      "capBeforeMs": 63,
+      "capAfterMs": 63,
+      "overshotTarget": false,
+      "beforePosition": {
+        "x": -6.400003433227539,
+        "y": 2.400040864944458,
+        "z": 11.875
+      },
+      "afterPosition": {
+        "x": -6.400003433227539,
+        "y": 2.400040864944458,
+        "z": 11.875
+      },
+      "deltaX": 0.0,
+      "deltaZ": 0.0,
+      "ticks": [
+        2419,
+        2544
+      ],
+      "status": "Walking",
+      "grounded": true,
+      "runnerIssuedDownUpMs": 52.25031000000308,
+      "driverTimes": {
+        "downIssuedMs": 80758.155172,
+        "upIssuedMs": 80810.405482,
+        "downAckMs": 81263.530777,
+        "upAckMs": 81263.737516,
+        "finalUpIssuedMs": 81263.744396,
+        "finalUpAckMs": 81765.044025
+      },
+      "releasedReadTicksAndPositions": [
+        {
+          "ticks": 2506,
+          "status": "Running",
+          "player": {
+            "ownerId": "hvp:player",
+            "position": {
+              "x": -6.400003433227539,
+              "y": 2.400040864944458,
+              "z": 11.875
+            },
+            "grounded": true,
+            "velocityY": 0,
+            "jumpCount": 0,
+            "cameraFraction": 1,
+            "status": "Walking"
+          },
+          "transaction": null,
+          "factoryCargoAccessible": true
+        },
+        {
+          "ticks": 2544,
+          "status": "Running",
+          "player": {
+            "ownerId": "hvp:player",
+            "position": {
+              "x": -6.400003433227539,
+              "y": 2.400040864944458,
+              "z": 11.875
+            },
+            "grounded": true,
+            "velocityY": 0,
+            "jumpCount": 0,
+            "cameraFraction": 1,
+            "status": "Walking"
+          },
+          "transaction": null,
+          "factoryCargoAccessible": true
+        }
+      ]
+    }
+  ]
+}

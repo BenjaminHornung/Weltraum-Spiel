@@ -1,0 +1,54 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/placement.test.ts -t W07 reserves|W07 refuses same-owner
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/placement.test.ts (9 tests | 2 failed | 7 skipped) 408ms
+   × W07 reserves the actual normative1m service corridor immediately at the Cutter edge, including the old S0-authoring gap 219ms
+   × W07 refuses same-owner BOM in a remote unadmitted source and preserves its actual finite serialized C26 188ms
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 7 skipped (9)
+   Start at  12:52:38
+   Duration  869ms (transform 257ms, setup 0ms, import 347ms, tests 408ms, environment 0ms)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/placement.test.ts > W07 reserves the actual normative1m service corridor immediately at the Cutter edge, including the old S0-authoring gap
+AssertionError: expected { status: 'Prepared', …(5) } to match object { status: 'Rejected', …(1) }
+(38 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "reason": "FACILITY_OVERLAP",
+-   "status": "Rejected",
++   "status": "Prepared",
+  }
+
+ ❯ tests/unit/factory/placement.test.ts:95:82
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/factory/placement.test.ts > W07 refuses same-owner BOM in a remote unadmitted source and preserves its actual finite serialized C26
+AssertionError: expected { status: 'Prepared', …(5) } to match object { status: 'Rejected', …(1) }
+(38 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "reason": "BOM_MISSING",
+-   "status": "Rejected",
++   "status": "Prepared",
+  }
+
+ ❯ tests/unit/factory/placement.test.ts:102:53
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯

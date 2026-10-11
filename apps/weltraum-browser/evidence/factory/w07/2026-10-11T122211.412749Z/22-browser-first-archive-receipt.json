@@ -1,0 +1,158 @@
+[
+  {
+    "originalPath": "playwright-output/.last-run.json",
+    "archivedPath": "browser-first/playwright-output/.last-run.json",
+    "sha256": "512a9d667c01f5cad2c4cf86cfd9746273bd2247e048e96210fe18baedeff5d5",
+    "bytes": 96
+  },
+  {
+    "originalPath": "playwright-output/factory-placement-W07-real-efee5-source-access-to-the-Cutter-chromium/test-failed-1.png",
+    "archivedPath": "browser-first/playwright-output/factory-placement-W07-real-efee5-source-access-to-the-Cutter-chromium/test-failed-1.png",
+    "sha256": "0894855ed127c112809eed3d4905944b3796029688a9cc50dfada26343bc0c5a",
+    "bytes": 688651
+  },
+  {
+    "originalPath": "playwright-output/factory-placement-W07-real-efee5-source-access-to-the-Cutter-chromium/error-context.md",
+    "archivedPath": "browser-first/playwright-output/factory-placement-W07-real-efee5-source-access-to-the-Cutter-chromium/error-context.md",
+    "sha256": "66ba3881b7599692d9b892728241c24b1afc2ed37dac3e220e74fa0d21e586a6",
+    "bytes": 11255
+  },
+  {
+    "originalPath": "playwright-output/factory-placement-W07-real-efee5-source-access-to-the-Cutter-chromium/trace.zip",
+    "archivedPath": "browser-first/playwright-output/factory-placement-W07-real-efee5-source-access-to-the-Cutter-chromium/trace.zip",
+    "sha256": "279350f27d043392d1aff72e33c4ff14bcd20e629296a73801da78a416815ba1",
+    "bytes": 5127702
+  },
+  {
+    "originalPath": "playwright-report/index.html",
+    "archivedPath": "browser-first/playwright-report/index.html",
+    "sha256": "0d39c0d42be55cb48376f320ecb8516ce3f3c11b5447895c31099ce2eadac4da",
+    "bytes": 533058
+  },
+  {
+    "originalPath": "playwright-report/data/f6abb1d8a9f82e4049acdbb38714fdfe4393d549.md",
+    "archivedPath": "browser-first/playwright-report/data/f6abb1d8a9f82e4049acdbb38714fdfe4393d549.md",
+    "sha256": "66ba3881b7599692d9b892728241c24b1afc2ed37dac3e220e74fa0d21e586a6",
+    "bytes": 11255
+  },
+  {
+    "originalPath": "playwright-report/data/a928ff07b11f5c4302829c8e9c6a86ea86990463.zip",
+    "archivedPath": "browser-first/playwright-report/data/a928ff07b11f5c4302829c8e9c6a86ea86990463.zip",
+    "sha256": "279350f27d043392d1aff72e33c4ff14bcd20e629296a73801da78a416815ba1",
+    "bytes": 5127702
+  },
+  {
+    "originalPath": "playwright-report/data/8470451d1ce0a11dffcdecc4f08ed22d9e3ad012.png",
+    "archivedPath": "browser-first/playwright-report/data/8470451d1ce0a11dffcdecc4f08ed22d9e3ad012.png",
+    "sha256": "0894855ed127c112809eed3d4905944b3796029688a9cc50dfada26343bc0c5a",
+    "bytes": 688651
+  },
+  {
+    "originalPath": "playwright-report/trace/index.CzXZzn5A.css",
+    "archivedPath": "browser-first/playwright-report/trace/index.CzXZzn5A.css",
+    "sha256": "4ec2a3d49db259ce9025cb4fa48d73b1afd58215e567eef3b4a4cbf76c1674d9",
+    "bytes": 2111
+  },
+  {
+    "originalPath": "playwright-report/trace/snapshot.v8KI4P3m.js",
+    "archivedPath": "browser-first/playwright-report/trace/snapshot.v8KI4P3m.js",
+    "sha256": "97a3cd6d67aaac66efc838d7d743ac51bbf7d272e1287981c11758fca21a0657",
+    "bytes": 660
+  },
+  {
+    "originalPath": "playwright-report/trace/sw.bundle.js",
+    "archivedPath": "browser-first/playwright-report/trace/sw.bundle.js",
+    "sha256": "5237c6c68ba1f3591caf8cf951be4873192342a72fbcc31e5a667f7a7904c624",
+    "bytes": 95855
+  },
+  {
+    "originalPath": "playwright-report/trace/xtermModule.DYP7pi_n.css",
+    "archivedPath": "browser-first/playwright-report/trace/xtermModule.DYP7pi_n.css",
+    "sha256": "7c5a01f382f76539fc9b4db6b18e18a7035741845fd14968c5cdc0a7e373d817",
+    "bytes": 4150
+  },
+  {
+    "originalPath": "playwright-report/trace/uiMode.Ut8wwJNp.js",
+    "archivedPath": "browser-first/playwright-report/trace/uiMode.Ut8wwJNp.js",
+    "sha256": "0ab1e917250833c3f6b3ed3ae3f359158bf68cd2d9951163ee6edff9b8ed1e5b",
+    "bytes": 38514
+  },
+  {
+    "originalPath": "playwright-report/trace/index.DMMX1gXU.js",
+    "archivedPath": "browser-first/playwright-report/trace/index.DMMX1gXU.js",
+    "sha256": "f33ceae71f13fde446a244c113548fec5ef890bf7b93ded7b861bebcebaa3e23",
+    "bytes": 6547
+  },
+  {
+    "originalPath": "playwright-report/trace/index.html",
+    "archivedPath": "browser-first/playwright-report/trace/index.html",
+    "sha256": "5ced36d3feb5bbbc0e8350330be0a293a1b4784ddecb6e58e1851323a93640cc",
+    "bytes": 2363
+  },
+  {
+    "originalPath": "playwright-report/trace/uiMode.BZQ54Kgt.css",
+    "archivedPath": "browser-first/playwright-report/trace/uiMode.BZQ54Kgt.css",
+    "sha256": "a548cd88f2041433da2d60fd3a33ef23af2fb8ddf2557b7bef79806364498e57",
+    "bytes": 60311
+  },
+  {
+    "originalPath": "playwright-report/trace/manifest.webmanifest",
+    "archivedPath": "browser-first/playwright-report/trace/manifest.webmanifest",
+    "sha256": "d8540500603a32a39fe7e5a0375dc0f9ebafd11118e06a846db7efc608223ab9",
+    "bytes": 429
+  },
+  {
+    "originalPath": "playwright-report/trace/uiMode.html",
+    "archivedPath": "browser-first/playwright-report/trace/uiMode.html",
+    "sha256": "95bf648d76d380b779770aae1c560b58ee456096b2b3b02922e629af29e3d492",
+    "bytes": 727
+  },
+  {
+    "originalPath": "playwright-report/trace/defaultSettingsView.CjdS-WJx.css",
+    "archivedPath": "browser-first/playwright-report/trace/defaultSettingsView.CjdS-WJx.css",
+    "sha256": "de9c068d0e8043820fe42f30558e972eb7e2a8a45a34f65c7c8f73fa2dbc9fd0",
+    "bytes": 112258
+  },
+  {
+    "originalPath": "playwright-report/trace/codeMirrorModule.DYBRYzYX.css",
+    "archivedPath": "browser-first/playwright-report/trace/codeMirrorModule.DYBRYzYX.css",
+    "sha256": "70bf421a13e87857ca684bfa2cc55f06d7c5a50f71253a3ff1d74769b14a957e",
+    "bytes": 6421
+  },
+  {
+    "originalPath": "playwright-report/trace/codicon.DCmgc-ay.ttf",
+    "archivedPath": "browser-first/playwright-report/trace/codicon.DCmgc-ay.ttf",
+    "sha256": "0f1d5219934e96e83b8db162d60b4d8c09b5de1e7d38031cbafe4a3c0f2889c9",
+    "bytes": 80340
+  },
+  {
+    "originalPath": "playwright-report/trace/snapshot.html",
+    "archivedPath": "browser-first/playwright-report/trace/snapshot.html",
+    "sha256": "11c80efe4f4424fa59004bcc71fed77a420d2da5f199790e355c30a5b965d0cd",
+    "bytes": 389
+  },
+  {
+    "originalPath": "playwright-report/trace/playwright-logo.svg",
+    "archivedPath": "browser-first/playwright-report/trace/playwright-logo.svg",
+    "sha256": "6b0a4367bdeab10995bc239278f04c68c10e48adbec15e799e01909a0d66dcb9",
+    "bytes": 5033
+  },
+  {
+    "originalPath": "playwright-report/trace/assets/codeMirrorModule-LEHpjmcn.js",
+    "archivedPath": "browser-first/playwright-report/trace/assets/codeMirrorModule-LEHpjmcn.js",
+    "sha256": "e3d682edfb4dd1fa17882466dd15058120278b27ff1101785a57b6df4db7ada5",
+    "bytes": 313054
+  },
+  {
+    "originalPath": "playwright-report/trace/assets/defaultSettingsView-BNmKHKpQ.js",
+    "archivedPath": "browser-first/playwright-report/trace/assets/defaultSettingsView-BNmKHKpQ.js",
+    "sha256": "f21839cd274944763d12ad24529345b9f8ebf339409f51f4dbe52f9d9baeb09c",
+    "bytes": 658064
+  },
+  {
+    "originalPath": "playwright-report/trace/assets/urlMatch-BYQrIQwR.js",
+    "archivedPath": "browser-first/playwright-report/trace/assets/urlMatch-BYQrIQwR.js",
+    "sha256": "168c4dee4815ea8d3c131a504033cd23d4b15aefa0209dd10ad3f643e8f1d8a7",
+    "bytes": 819
+  }
+]

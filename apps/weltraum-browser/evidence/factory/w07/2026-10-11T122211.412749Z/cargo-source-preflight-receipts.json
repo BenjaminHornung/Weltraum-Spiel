@@ -1,0 +1,20 @@
+[
+  {
+    "path": "fp06-w09-cargo-s0-site-preflight.md.gz",
+    "originalPath": "/workspace/.cloud-setup/fp06-w09-cargo-s0-site-preflight.md",
+    "originalSha256": "a1f082d5eab6bf09e6def047c3c4eae0ee7765688c3cf6c9ebd3990314da020e",
+    "originalBytes": 11705
+  },
+  {
+    "path": "fp06-cargo-s0-bounded-path-query.json.gz",
+    "originalPath": "/workspace/.cloud-setup/fp06-cargo-s0-bounded-path-query.json",
+    "originalSha256": "408b475005230c907d811932d4fe9ab1d7f412936a0b623d4767accc2d662592",
+    "originalBytes": 27060
+  },
+  {
+    "path": "fp06-cargo-s0-bounded-path-query.mjs.gz",
+    "originalPath": "/workspace/.cloud-setup/fp06-cargo-s0-bounded-path-query.mjs",
+    "originalSha256": "e64c81185fabcd4b39b339d043976d733250d860d3b000ca36c1f992ef81cd28",
+    "originalBytes": 6800
+  }
+]

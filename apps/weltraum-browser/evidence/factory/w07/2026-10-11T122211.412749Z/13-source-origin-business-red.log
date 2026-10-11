@@ -1,0 +1,36 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/startSite.test.ts -t W07 Source frame
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/startSite.test.ts (3 tests | 1 failed | 2 skipped) 435ms
+   × W07 Source frame admission rejects changed World origins without opening legacy restore 434ms
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 skipped (3)
+   Start at  13:05:07
+   Duration  656ms (transform 86ms, setup 0ms, import 103ms, tests 435ms, environment 0ms)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/startSite.test.ts > W07 Source frame admission rejects changed World origins without opening legacy restore
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ tests/unit/factory/startSite.test.ts:32:82
+     30| it("W07 Source frame admission rejects changed World origins without o…
+     31|   const source=materializeFactoryStartSite();
+     32|   expect(()=>assertHvpSourceComplete({...source,originMeters:{x:0,y:-8…
+       |                                                                                  ^
+     33|   expect(()=>restoreHvpCoastSource(source.copySlots(),source.sourceDig…
+     34| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯

@@ -1,0 +1,35 @@
+{
+  "diagnosis": "Missing normal test acknowledgement of async choose/select, not product ghost lifecycle failure",
+  "trace": {
+    "path": "browser-mesa-normal-full-98/playwright-output/factory-placement-W07-real-545ff-pendent-source-checked-site-chromium/trace.zip",
+    "sha256": "053b40eac860cc2ab8c4f7e741ad6efdc2035b820ad58023fb1892f457ed56d7",
+    "bytes": 1654070
+  },
+  "observed": {
+    "clickEndMs": 24399.455,
+    "sevenArrowLeftStartMs": 24401.475,
+    "sevenArrowLeftEndMs": 24471.195,
+    "readBuildEndMs": 24529.028,
+    "readBuild": {
+      "state": "Ready",
+      "revision": 1,
+      "ghost": null
+    },
+    "laterAfterSnapshotMs": 25156.947,
+    "laterGhost": {
+      "centerMm": [
+        -6250,
+        1500,
+        5000
+      ],
+      "quarterTurns": 1,
+      "status": "Rejected",
+      "reason": "FACILITY_OVERLAP"
+    }
+  },
+  "sourceBinding": {
+    "choose": "await host.pause(); then tool.select(); projectGhost()",
+    "keyGuard": "if(!tool?.read()||construction?.busy)return"
+  },
+  "limits": "Original5s expect/30s case/7+7ArrowLeft, final disjoint center/q1 and BOM_MISSING plus full material/native equality unchanged; no source/native/runtime changes"
+}

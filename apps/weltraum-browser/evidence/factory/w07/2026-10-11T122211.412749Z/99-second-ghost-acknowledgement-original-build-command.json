@@ -1,0 +1,18 @@
+{
+  "phase": "NORMAL_E2E_SECOND_GHOST_ACKNOWLEDGEMENT_ONLY_AFTER_ACTUAL98_NULL_GHOST_FAILURE",
+  "argv": [
+    "npm",
+    "run",
+    "build"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startUtc": "2026-10-11T19:31:30.525631+00:00",
+  "endUtc": "2026-10-11T19:31:34.446430+00:00",
+  "wrapperSeconds": 3.9208025939951767,
+  "exitCode": 0,
+  "rawBytes": 1904,
+  "rawSha256": "15a63f72960068bd26644edc6f9e0dc71c398f71b14af0c34c7d568c9e4f8d02",
+  "sourceSha256": "8f3148798f82f37cdcabe7d811e30b19467db52ac7ffc639b26e8425d6856dfa",
+  "sourceBytes": 17340,
+  "browser": "NOT_RUN_HOLD"
+}

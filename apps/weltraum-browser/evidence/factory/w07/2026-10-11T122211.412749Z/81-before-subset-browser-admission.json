@@ -1,0 +1,34 @@
+{
+  "timestampUtc": "2026-10-11T17:07:07.906228+00:00",
+  "verifiedPrior67And68": [
+    {
+      "receipt": "67-browser-ninth-artifact-receipt.json",
+      "receiptSha256": "1c7ae260438e7fc41112b77118acf109e397f57aa9fb967f068412456e4d28ae",
+      "artifactCount": 27,
+      "allHashByteMatch": true
+    },
+    {
+      "receipt": "68-diagnostic-artifact-receipt.json",
+      "receiptSha256": "183c65566c00b6e05fb73d04b16352f0fc6b4d7777df8adf4fca4704f8ba482a",
+      "artifactCount": 26,
+      "allHashByteMatch": true
+    }
+  ],
+  "exactFixedOutputBackups": [
+    {
+      "path": "81-fixed-output-originals/browser-native-walk-taps.json",
+      "sha256": "433c0caace6ce019d47be224b3accfe3db85ea77de55fc4615d064520301a972",
+      "bytes": 162329
+    },
+    {
+      "path": "81-fixed-output-originals/browser-cargo-open-native-walk.json",
+      "sha256": "49b2bafd3f793d0314ef20db2c943fe61f87caba90feba2fc02ad85a9af076b4",
+      "bytes": 315480
+    }
+  ],
+  "all30ProductHashesMatch": true,
+  "sealSha256": "b516b07c5502fe559ea89d530d912c76e3d2d69b0a840e5a466fe06cbab850b2",
+  "normalUnmodifiedE2eSha256": "de72edeed738627db91e46236337719e05008809dfa5ff9c8e723da0c16cb326",
+  "selectedNormalCases": 11,
+  "notPackageGate": true
+}

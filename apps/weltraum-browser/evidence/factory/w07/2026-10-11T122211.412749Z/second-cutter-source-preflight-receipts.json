@@ -1,0 +1,58 @@
+[
+  {
+    "source": "/workspace/.cloud-setup/fp06-w07-second-cutter-site-preflight.md",
+    "archivePath": "fp06-w07-second-cutter-site-preflight.md.gz",
+    "originalBytes": 10235,
+    "originalSha256": "bfd82113829ba58f1421a88b3fa35cb7a67753e4338087fd7f7f59864c695366",
+    "scope": "Read-only source preflight; Native Walk/LOS/placement NOT_RUN at capture"
+  },
+  {
+    "source": "/workspace/.cloud-setup/fp06-w07-second-cutter-site-query.mjs",
+    "archivePath": "fp06-w07-second-cutter-site-query.mjs.gz",
+    "originalBytes": 7693,
+    "originalSha256": "a69c38671d128a5535a504f22e6fc860cfbc833df56fc3fbd4da2e1dc9503c50",
+    "scope": "Read-only source preflight; Native Walk/LOS/placement NOT_RUN at capture"
+  },
+  {
+    "source": "/workspace/.cloud-setup/fp06-w07-second-cutter-site-query.json",
+    "archivePath": "fp06-w07-second-cutter-site-query.json.gz",
+    "originalBytes": 5327,
+    "originalSha256": "da7c08214f35e97d6ce5c341e3716323da5a7cd81f5dfcc07db1d1bfe8ed1a8c",
+    "scope": "Read-only source preflight; Native Walk/LOS/placement NOT_RUN at capture"
+  },
+  {
+    "source": "/workspace/.cloud-setup/fp06-w07-second-cutter-site-query-v2.mjs",
+    "archivePath": "fp06-w07-second-cutter-site-query-v2.mjs.gz",
+    "originalBytes": 7864,
+    "originalSha256": "a709016ade44c9f604d1eceda1dbda9df8f4bbafdeb4c6f533d2cf40ce1460da",
+    "scope": "Read-only source preflight; Native Walk/LOS/placement NOT_RUN at capture"
+  },
+  {
+    "source": "/workspace/.cloud-setup/fp06-w07-second-cutter-site-query-v2.json",
+    "archivePath": "fp06-w07-second-cutter-site-query-v2.json.gz",
+    "originalBytes": 55515,
+    "originalSha256": "ff223e8427b726a0b212311db80afa61f28b1d237fd6852058710ff038b2096f",
+    "scope": "Read-only source preflight; Native Walk/LOS/placement NOT_RUN at capture"
+  },
+  {
+    "source": "/workspace/.cloud-setup/fp06-w07-second-cutter-site-query-v2.stdout.json",
+    "archivePath": "fp06-w07-second-cutter-site-query-v2.stdout.json.gz",
+    "originalBytes": 45858,
+    "originalSha256": "8e78b4d72dd05d81581fbacc630fd03fd4e4482b58c2122fa7df4e8a2ec28660",
+    "scope": "Read-only source preflight; Native Walk/LOS/placement NOT_RUN at capture"
+  },
+  {
+    "source": "/workspace/.cloud-setup/fp06-w07-second-cutter-actor-query.mjs",
+    "archivePath": "fp06-w07-second-cutter-actor-query.mjs.gz",
+    "originalBytes": 5927,
+    "originalSha256": "2ff898df7a06b12510ccc88736b863cf9f323cab10237c0a2ed243fc3fb2570d",
+    "scope": "Read-only source preflight; Native Walk/LOS/placement NOT_RUN at capture"
+  },
+  {
+    "source": "/workspace/.cloud-setup/fp06-w07-second-cutter-actor-query.json",
+    "archivePath": "fp06-w07-second-cutter-actor-query.json.gz",
+    "originalBytes": 6756,
+    "originalSha256": "216dbad7aefbf1e5713f2d91efd0c29c4962c4e6dd9cd161bff914e717b5c6ea",
+    "scope": "Read-only source preflight; Native Walk/LOS/placement NOT_RUN at capture"
+  }
+]

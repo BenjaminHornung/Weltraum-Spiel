@@ -1,0 +1,42 @@
+{
+  "phase": 90,
+  "kind": "DIAGNOSTIC_ONLY_NOT_NORMAL_GATE",
+  "actualFreshFixedOutputs": [
+    "diagnostic-input-tick-89-ready.json",
+    "diagnostic-input-tick-89-125.json",
+    "diagnostic-input-tick-89-250.json",
+    "diagnostic-input-tick-89-600.json"
+  ],
+  "artifacts": [
+    {
+      "path": "browser-input-tick-passive-diagnostic-90/diagnostic-input-tick-89-125.json",
+      "bytes": 108483,
+      "sha256": "734950ffc81d972ce0b4effe6fe9c08f36721578d55f34a1ec08a56d352cdb8f"
+    },
+    {
+      "path": "browser-input-tick-passive-diagnostic-90/diagnostic-input-tick-89-250.json",
+      "bytes": 139572,
+      "sha256": "9dd4b5a8a56641f54e7dccf590b9237f11f1688b3155db242d38f8655a534b7b"
+    },
+    {
+      "path": "browser-input-tick-passive-diagnostic-90/diagnostic-input-tick-89-600.json",
+      "bytes": 176872,
+      "sha256": "1dd37e14debe03aa36929d4d976ec2a8bc1fcc4b83ff1e60159b48d6e2dd681e"
+    },
+    {
+      "path": "browser-input-tick-passive-diagnostic-90/diagnostic-input-tick-89-ready.json",
+      "bytes": 53207,
+      "sha256": "c187af3eee8ef2c1c70be185e8f815a33ff766cc78e9f7cc6c8bef90618f82a1"
+    },
+    {
+      "path": "browser-input-tick-passive-diagnostic-90/playwright-output/.last-run.json",
+      "bytes": 45,
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903"
+    },
+    {
+      "path": "browser-input-tick-passive-diagnostic-90/playwright-report/index.html",
+      "bytes": 529374,
+      "sha256": "5a837eea08c3603c9a46821422bc9d4f91cd6f8cdfd06df1dea86c333348de8c"
+    }
+  ]
+}

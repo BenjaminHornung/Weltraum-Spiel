@@ -1,0 +1,895 @@
+{
+  "phase": "67 normal ninth actual coordinate correction witness; read-only existing trace, no newly executed test or Worker payload capture",
+  "sourceTapSha256": "433c0caace6ce019d47be224b3accfe3db85ea77de55fc4615d064520301a972",
+  "sourceTapBytes": 162329,
+  "tapCount": 8,
+  "taps": [
+    {
+      "tap": 1,
+      "key": "d",
+      "holdMs": 250,
+      "beforeX": -5.5,
+      "afterX": -6.500003814697266,
+      "deltaX": -1.0000038146972656,
+      "ticks": 115,
+      "releasedReads": [
+        {
+          "tick": 1402,
+          "x": -6.500003814697266,
+          "y": 2.400040864944458,
+          "z": 11.875,
+          "grounded": true,
+          "nativeStatus": "Running",
+          "playerStatus": "Walking"
+        },
+        {
+          "tick": 1434,
+          "x": -6.500003814697266,
+          "y": 2.400040864944458,
+          "z": 11.875,
+          "grounded": true,
+          "nativeStatus": "Running",
+          "playerStatus": "Walking"
+        }
+      ]
+    },
+    {
+      "tap": 2,
+      "key": "a",
+      "holdMs": 250,
+      "beforeX": -6.500003814697266,
+      "afterX": -5.34999942779541,
+      "deltaX": 1.1500043869018555,
+      "ticks": 121,
+      "releasedReads": [
+        {
+          "tick": 1553,
+          "x": -5.34999942779541,
+          "y": 2.4000368118286133,
+          "z": 11.875,
+          "grounded": true,
+          "nativeStatus": "Running",
+          "playerStatus": "Walking"
+        },
+        {
+          "tick": 1589,
+          "x": -5.34999942779541,
+          "y": 2.4000368118286133,
+          "z": 11.875,
+          "grounded": true,
+          "nativeStatus": "Running",
+          "playerStatus": "Walking"
+        }
+      ]
+    },
+    {
+      "tap": 3,
+      "key": "d",
+      "holdMs": 300,
+      "beforeX": -5.34999942779541,
+      "afterX": -6.400003433227539,
+      "deltaX": -1.050004005432129,
+      "ticks": 115,
+      "releasedReads": [
+        {
+          "tick": 1704,
+          "x": -6.400003433227539,
+          "y": 2.4000368118286133,
+          "z": 11.875,
+          "grounded": true,
+          "nativeStatus": "Running",
+          "playerStatus": "Walking"
+        },
+        {
+          "tick": 1737,
+          "x": -6.400003433227539,
+          "y": 2.4000368118286133,
+          "z": 11.875,
+          "grounded": true,
+          "nativeStatus": "Running",
+          "playerStatus": "Walking"
+        }
+      ]
+    },
+    {
+      "tap": 4,
+      "key": "a",
+      "holdMs": 250,
+      "beforeX": -6.400003433227539,
+      "afterX": -5.449999809265137,
+      "deltaX": 0.9500036239624023,
+      "ticks": 114,
+      "releasedReads": [
+        {
+          "tick": 1852,
+          "x": -5.449999809265137,
+          "y": 2.4000368118286133,
+          "z": 11.875,
+          "grounded": true,
+          "nativeStatus": "Running",
+          "playerStatus": "Walking"
+        },
+        {
+          "tick": 1886,
+          "x": -5.449999809265137,
+          "y": 2.4000368118286133,
+          "z": 11.875,
+          "grounded": true,
+          "nativeStatus": "Running",
+          "playerStatus": "Walking"
+        }
+      ]
+    },
+    {
+      "tap": 5,
+      "key": "d",
+      "holdMs": 267,
+      "beforeX": -5.449999809265137,
+      "afterX": -6.500003814697266,
+      "deltaX": -1.050004005432129,
+      "ticks": 111,
+      "releasedReads": [
+        {
+          "tick": 2013,
+          "x": -6.500003814697266,
+          "y": 2.4000017642974854,
+          "z": 11.875,
+          "grounded": true,
+          "nativeStatus": "Running",
+          "playerStatus": "Walking"
+        },
+        {
+          "tick": 2044,
+          "x": -6.500003814697266,
+          "y": 2.4000017642974854,
+          "z": 11.875,
+          "grounded": true,
+          "nativeStatus": "Running",
+          "playerStatus": "Walking"
+        }
+      ]
+    },
+    {
+      "tap": 6,
+      "key": "a",
+      "holdMs": 250,
+      "beforeX": -6.500003814697266,
+      "afterX": -5.649990558624268,
+      "deltaX": 0.850013256072998,
+      "ticks": 112,
+      "releasedReads": [
+        {
+          "tick": 2159,
+          "x": -5.649990558624268,
+          "y": 2.4000017642974854,
+          "z": 11.87500286102295,
+          "grounded": true,
+          "nativeStatus": "Running",
+          "playerStatus": "Walking"
+        },
+        {
+          "tick": 2191,
+          "x": -5.649990558624268,
+          "y": 2.4000017642974854,
+          "z": 11.87500286102295,
+          "grounded": true,
+          "nativeStatus": "Running",
+          "playerStatus": "Walking"
+        }
+      ]
+    },
+    {
+      "tap": 7,
+      "key": "d",
+      "holdMs": 250,
+      "beforeX": -5.649990558624268,
+      "afterX": -6.59999418258667,
+      "deltaX": -0.9500036239624023,
+      "ticks": 110,
+      "releasedReads": [
+        {
+          "tick": 2303,
+          "x": -6.59999418258667,
+          "y": 2.400042772293091,
+          "z": 11.87500286102295,
+          "grounded": true,
+          "nativeStatus": "Running",
+          "playerStatus": "Walking"
+        },
+        {
+          "tick": 2335,
+          "x": -6.59999418258667,
+          "y": 2.400042772293091,
+          "z": 11.87500286102295,
+          "grounded": true,
+          "nativeStatus": "Running",
+          "playerStatus": "Walking"
+        }
+      ]
+    },
+    {
+      "tap": 8,
+      "key": "a",
+      "holdMs": 250,
+      "beforeX": -6.59999418258667,
+      "afterX": -5.699980735778809,
+      "deltaX": 0.9000134468078613,
+      "ticks": 107,
+      "releasedReads": [
+        {
+          "tick": 2445,
+          "x": -5.699980735778809,
+          "y": 2.4000372886657715,
+          "z": 11.875004768371582,
+          "grounded": true,
+          "nativeStatus": "Running",
+          "playerStatus": "Walking"
+        },
+        {
+          "tick": 2476,
+          "x": -5.699980735778809,
+          "y": 2.4000372886657715,
+          "z": 11.875004768371582,
+          "grounded": true,
+          "nativeStatus": "Running",
+          "playerStatus": "Walking"
+        }
+      ]
+    }
+  ],
+  "keyboardApiTimings": [
+    {
+      "params": {
+        "key": "d",
+        "delay": 267
+      },
+      "startMs": 73639.339,
+      "endMs": 74302.818,
+      "durationMs": 663.4789999999921
+    },
+    {
+      "params": {
+        "key": "a",
+        "delay": 250
+      },
+      "startMs": 76105.728,
+      "endMs": 76780.429,
+      "durationMs": 674.7010000000009
+    },
+    {
+      "params": {
+        "key": "d",
+        "delay": 250
+      },
+      "startMs": 78531.95,
+      "endMs": 79137.395,
+      "durationMs": 605.445000000007
+    },
+    {
+      "params": {
+        "key": "a",
+        "delay": 250
+      },
+      "startMs": 80899.382,
+      "endMs": 81510.385,
+      "durationMs": 611.002999999997
+    }
+  ],
+  "causeLimit": "Actual Native movement/overshoot/nonuniform tap durations recorded; outgoing Read input timing was not captured in normalgate, so no transport root cause or Nativebug asserted.",
+  "traceInputRecords": [
+    {
+      "type": "input",
+      "callId": "call@118",
+      "inputSnapshot": "input@call@118"
+    },
+    {
+      "type": "input",
+      "callId": "call@126",
+      "inputSnapshot": "input@call@126"
+    },
+    {
+      "type": "input",
+      "callId": "call@134",
+      "inputSnapshot": "input@call@134"
+    },
+    {
+      "type": "input",
+      "callId": "call@142",
+      "inputSnapshot": "input@call@142"
+    }
+  ],
+  "actualSnapshotInputModes": [
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 73339.263,
+      "snapshotName": "before@call@116",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 1921,
+      "nativeX": -5.449999809265137,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 73636.656,
+      "snapshotName": "after@call@116",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 1945,
+      "nativeX": -5.449999809265137,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 73794.51,
+      "snapshotName": "input@call@118",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 1955,
+      "nativeX": -5.449999809265137,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 74467.531,
+      "snapshotName": "after@call@118",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 1973,
+      "nativeX": -5.449999809265137,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 74612.548,
+      "snapshotName": "before@call@120",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 1992,
+      "nativeX": -5.449999809265137,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 74997.332,
+      "snapshotName": "after@call@120",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 2022,
+      "nativeX": -6.500003814697266,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 75168.76,
+      "snapshotName": "before@call@122",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 2033,
+      "nativeX": -6.500003814697266,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 75561.633,
+      "snapshotName": "after@call@122",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 2055,
+      "nativeX": -6.500003814697266,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 75727.237,
+      "snapshotName": "before@call@124",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 2067,
+      "nativeX": -6.500003814697266,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 76103.712,
+      "snapshotName": "after@call@124",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 2088,
+      "nativeX": -6.500003814697266,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 76268.523,
+      "snapshotName": "input@call@126",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 2100,
+      "nativeX": -6.500003814697266,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 76913.857,
+      "snapshotName": "after@call@126",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 2121,
+      "nativeX": -6.500003814697266,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 77076.629,
+      "snapshotName": "before@call@128",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 2142,
+      "nativeX": -6.500003814697266,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 77432.935,
+      "snapshotName": "after@call@128",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 2170,
+      "nativeX": -5.649990558624268,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 77619.027,
+      "snapshotName": "before@call@130",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 2181,
+      "nativeX": -5.649990558624268,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 77999.663,
+      "snapshotName": "after@call@130",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 2202,
+      "nativeX": -5.649990558624268,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 78206.89,
+      "snapshotName": "before@call@132",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 2213,
+      "nativeX": -5.649990558624268,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 78529.761,
+      "snapshotName": "after@call@132",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 2237,
+      "nativeX": -5.649990558624268,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 78687.21,
+      "snapshotName": "input@call@134",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 2248,
+      "nativeX": -5.649990558624268,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 79312.558,
+      "snapshotName": "after@call@134",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 2266,
+      "nativeX": -5.649990558624268,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 79486.601,
+      "snapshotName": "before@call@136",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 2284,
+      "nativeX": -5.649990558624268,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 79827.156,
+      "snapshotName": "after@call@136",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 2314,
+      "nativeX": -6.59999418258667,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 80018.455,
+      "snapshotName": "before@call@138",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 2325,
+      "nativeX": -6.59999418258667,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 80396.935,
+      "snapshotName": "after@call@138",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 2346,
+      "nativeX": -6.59999418258667,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 80588.444,
+      "snapshotName": "before@call@140",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 2358,
+      "nativeX": -6.59999418258667,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 80896.957,
+      "snapshotName": "after@call@140",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 2380,
+      "nativeX": -6.59999418258667,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 81071.594,
+      "snapshotName": "input@call@142",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 2390,
+      "nativeX": -6.59999418258667,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 81676.018,
+      "snapshotName": "after@call@142",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 2409,
+      "nativeX": -6.59999418258667,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 81821.08,
+      "snapshotName": "before@call@144",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 2427,
+      "nativeX": -6.59999418258667,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 82180.186,
+      "snapshotName": "after@call@144",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 2454,
+      "nativeX": -5.699980735778809,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 82364.747,
+      "snapshotName": "before@call@146",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 2465,
+      "nativeX": -5.699980735778809,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 82744.619,
+      "snapshotName": "after@call@146",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 2487,
+      "nativeX": -5.699980735778809,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 82927.604,
+      "snapshotName": "before@call@148",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 2497,
+      "nativeX": -5.699980735778809,
+      "nativeStatus": "Running"
+    },
+    {
+      "trace": "0-trace.trace",
+      "timestamp": 83264.45,
+      "snapshotName": "after@call@148",
+      "input": {
+        "owner": "Player",
+        "locked": true,
+        "jumpEdges": 0,
+        "neutralizations": 1,
+        "pressedKeys": []
+      },
+      "nativeTick": 2520,
+      "nativeX": -5.699980735778809,
+      "nativeStatus": "Running"
+    }
+  ],
+  "transactionStatesFromEveryReleasedRead": [
+    {
+      "tap": 1,
+      "tick": 1434,
+      "terrainTransaction": "Idle",
+      "neighborTransaction": "Idle",
+      "bodyResidencyTransaction": "Idle",
+      "factory": "Idle",
+      "structural": "Idle",
+      "moving": "Idle"
+    },
+    {
+      "tap": 2,
+      "tick": 1589,
+      "terrainTransaction": "Idle",
+      "neighborTransaction": "Idle",
+      "bodyResidencyTransaction": "Idle",
+      "factory": "Idle",
+      "structural": "Idle",
+      "moving": "Idle"
+    },
+    {
+      "tap": 3,
+      "tick": 1737,
+      "terrainTransaction": "Idle",
+      "neighborTransaction": "Idle",
+      "bodyResidencyTransaction": "Idle",
+      "factory": "Idle",
+      "structural": "Idle",
+      "moving": "Idle"
+    },
+    {
+      "tap": 4,
+      "tick": 1886,
+      "terrainTransaction": "Idle",
+      "neighborTransaction": "Idle",
+      "bodyResidencyTransaction": "Idle",
+      "factory": "Idle",
+      "structural": "Idle",
+      "moving": "Idle"
+    },
+    {
+      "tap": 5,
+      "tick": 2044,
+      "terrainTransaction": "Idle",
+      "neighborTransaction": "Idle",
+      "bodyResidencyTransaction": "Idle",
+      "factory": "Idle",
+      "structural": "Idle",
+      "moving": "Idle"
+    },
+    {
+      "tap": 6,
+      "tick": 2191,
+      "terrainTransaction": "Idle",
+      "neighborTransaction": "Idle",
+      "bodyResidencyTransaction": "Idle",
+      "factory": "Idle",
+      "structural": "Idle",
+      "moving": "Idle"
+    },
+    {
+      "tap": 7,
+      "tick": 2335,
+      "terrainTransaction": "Idle",
+      "neighborTransaction": "Idle",
+      "bodyResidencyTransaction": "Idle",
+      "factory": "Idle",
+      "structural": "Idle",
+      "moving": "Idle"
+    },
+    {
+      "tap": 8,
+      "tick": 2476,
+      "terrainTransaction": "Idle",
+      "neighborTransaction": "Idle",
+      "bodyResidencyTransaction": "Idle",
+      "factory": "Idle",
+      "structural": "Idle",
+      "moving": "Idle"
+    }
+  ]
+}

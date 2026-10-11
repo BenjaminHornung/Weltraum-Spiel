@@ -1,0 +1,6 @@
+
+> weltraum-browser@0.1.0 build
+> tsc -p tsconfig.json && vite build
+
+tests/unit/hvp-player-input.test.ts(86,40): error TS2352: Conversion of type '{ data: { id: number; snapshot: Readonly<{ ticks: number; backlogSeconds: number; discardedSeconds: number; status: "CoverageHold" | "RecoveryHold" | HvpSimulationStatus; ... 29 more ...; bodies: Readonly<...>[]; }>; clock: { ...; }; }; }' to type 'MessageEvent<HvpPhysicsReply>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type '{ data: { id: number; snapshot: Readonly<{ ticks: number; backlogSeconds: number; discardedSeconds: number; status: "CoverageHold" | "RecoveryHold" | HvpSimulationStatus; ... 29 more ...; bodies: Readonly<...>[]; }>; clock: { ...; }; }; }' is missing the following properties from type 'MessageEvent<HvpPhysicsReply>': lastEventId, origin, ports, source, and 23 more.

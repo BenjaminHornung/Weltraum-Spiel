@@ -1,0 +1,152 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/hvp-player-input.test.ts -t actual Native Factory input safety boundaries
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-player-input.test.ts (20 tests | 4 failed | 16 skipped) 196ms
+     × neutralizes a previously admitted level and pending jump on Native hold entry, without changing pose ticks or velocity 140ms
+     × rejects new movement and jump during an actual prepared Native hold without replay after finalize 4ms
+     × ordinary release preserves one native jump but explicit cancellation clears it before the Native step 5ms
+     × rejects a Factory-only intent on a real ordinary Legacy Native session 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-player-input.test.ts > W07 actual Native Factory input safety boundaries > neutralizes a previously admitted level and pending jump on Native hold entry, without changing pose ticks or velocity
+AssertionError: expected 0.30000001192092896 to be close to +0, received difference is 0.30000001192092896, but expected 5e-7
+ ❯ tests/unit/hvp-player-input.test.ts:179:51
+    177|     expect(native.read().status).toBe("Running");
+    178|     for (let step = 0; step < 6; step++) native.advance(1 / 60);
+    179|     expect.soft(native.read().player!.position.x).toBeCloseTo(before.p…
+       |                                                   ^
+    180|     expect(native.read().player!.jumpCount).toBe(before.player!.jumpCo…
+    181|     expect(native.read().ticks).toBe(before.ticks + 6);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  tests/unit/hvp-player-input.test.ts > W07 actual Native Factory input safety boundaries > neutralizes a previously admitted level and pending jump on Native hold entry, without changing pose ticks or velocity
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/unit/hvp-player-input.test.ts:180:45
+    178|     for (let step = 0; step < 6; step++) native.advance(1 / 60);
+    179|     expect.soft(native.read().player!.position.x).toBeCloseTo(before.p…
+    180|     expect(native.read().player!.jumpCount).toBe(before.player!.jumpCo…
+       |                                             ^
+    181|     expect(native.read().ticks).toBe(before.ticks + 6);
+    182|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  tests/unit/hvp-player-input.test.ts > W07 actual Native Factory input safety boundaries > rejects new movement and jump during an actual prepared Native hold without replay after finalize
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/hvp-player-input.test.ts:187:77
+    185|     const { worker } = await supportedClientHarness(); const native = …
+    186|     native.prepareTerrain("factory_rejected_input", 0, [{ index: 0, me…
+    187|     expect.soft(nativeFactoryIntent(native, { ...zero, x: 1, jump: tru…
+       |                                                                             ^
+    188|     native.commitTerrain("factory_rejected_input"); native.finalizeTer…
+    189|     for (let step = 0; step < 6; step++) native.advance(1 / 60);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  tests/unit/hvp-player-input.test.ts > W07 actual Native Factory input safety boundaries > rejects new movement and jump during an actual prepared Native hold without replay after finalize
+AssertionError: expected 0.30000001192092896 to be close to +0, received difference is 0.30000001192092896, but expected 5e-7
+ ❯ tests/unit/hvp-player-input.test.ts:190:51
+    188|     native.commitTerrain("factory_rejected_input"); native.finalizeTer…
+    189|     for (let step = 0; step < 6; step++) native.advance(1 / 60);
+    190|     expect.soft(native.read().player!.position.x).toBeCloseTo(before.p…
+       |                                                   ^
+    191|     expect(native.read().player!.jumpCount).toBe(before.player!.jumpCo…
+    192|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  tests/unit/hvp-player-input.test.ts > W07 actual Native Factory input safety boundaries > rejects new movement and jump during an actual prepared Native hold without replay after finalize
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/unit/hvp-player-input.test.ts:191:45
+    189|     for (let step = 0; step < 6; step++) native.advance(1 / 60);
+    190|     expect.soft(native.read().player!.position.x).toBeCloseTo(before.p…
+    191|     expect(native.read().player!.jumpCount).toBe(before.player!.jumpCo…
+       |                                             ^
+    192|   });
+    193|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  tests/unit/hvp-player-input.test.ts > W07 actual Native Factory input safety boundaries > ordinary release preserves one native jump but explicit cancellation clears it before the Native step
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/unit/hvp-player-input.test.ts:202:99
+    200|     expect(second.worker.session.read().ticks).toBe(before.ticks);
+    201|     expect(second.worker.session.read().player!.position).toEqual(befo…
+    202|     second.worker.session.advance(1 / 60); expect(second.worker.sessio…
+       |                                                                                                   ^
+    203|   });
+    204|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+ FAIL  tests/unit/hvp-player-input.test.ts > W07 actual Native Factory input safety boundaries > rejects a Factory-only intent on a real ordinary Legacy Native session
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/hvp-player-input.test.ts:209:73
+    207|     for (let step = 0; step < 10; step++) worker.session.advance(1 / 6…
+    208|     const before = worker.session.read(); expect(before.player!.ground…
+    209|     expect.soft(nativeFactoryIntent(worker.session, { ...zero, x: 1 })…
+       |                                                                         ^
+    210|     for (let step = 0; step < 6; step++) worker.session.advance(1 / 60…
+    211|     expect(worker.session.read().player!.position.x).toBeCloseTo(befor…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/8]⎯
+
+ FAIL  tests/unit/hvp-player-input.test.ts > W07 actual Native Factory input safety boundaries > rejects a Factory-only intent on a real ordinary Legacy Native session
+AssertionError: expected 0.3000100255012512 to be close to +0, received difference is 0.3000100255012512, but expected 5e-7
+ ❯ tests/unit/hvp-player-input.test.ts:211:54
+    209|     expect.soft(nativeFactoryIntent(worker.session, { ...zero, x: 1 })…
+    210|     for (let step = 0; step < 6; step++) worker.session.advance(1 / 60…
+    211|     expect(worker.session.read().player!.position.x).toBeCloseTo(befor…
+       |                                                      ^
+    212|   });
+    213| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/8]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 16 skipped (20)
+   Start at  16:35:46
+   Duration  1.34s (transform 852ms, setup 0ms, import 1.03s, tests 196ms, environment 0ms)
+

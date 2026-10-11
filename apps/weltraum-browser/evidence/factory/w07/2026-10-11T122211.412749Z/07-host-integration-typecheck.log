@@ -1,0 +1,35 @@
+apps/weltraum-browser/src/factory/construction/placement.ts(6,44): error TS6133: 'transformFactoryPoint' is declared but its value is never read.
+apps/weltraum-browser/src/factory/construction/placement.ts(88,114): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts(60,37): error TS18048: 'candidate' is possibly 'undefined'.
+apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts(63,32): error TS18048: 'candidate' is possibly 'undefined'.
+apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts(63,90): error TS18048: 'candidate' is possibly 'undefined'.
+apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts(63,136): error TS18048: 'candidate' is possibly 'undefined'.
+apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts(64,14): error TS18048: 'candidate' is possibly 'undefined'.
+apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts(64,51): error TS18048: 'candidate' is possibly 'undefined'.
+apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts(105,49): error TS18048: 'candidate' is possibly 'undefined'.
+apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts(106,28): error TS2345: Argument of type '{ owner: FactoryFacilityOwner; state: "CommittedHeld" | "PreparedHeld" | "PublishedHeld"; before: { bodies: Map<number, { object: RigidBody; bytes: string; }>; colliders: Map<...>; }; previousOwners: readonly FactoryFacilityOwner[]; previousRevision: number; } | undefined' is not assignable to parameter of type '{ owner: FactoryFacilityOwner; state: "CommittedHeld" | "PreparedHeld" | "PublishedHeld"; before: { bodies: Map<number, { object: RigidBody; bytes: string; }>; colliders: Map<...>; }; previousOwners: readonly FactoryFacilityOwner[]; previousRevision: number; }'.
+  Type 'undefined' is not assignable to type '{ owner: FactoryFacilityOwner; state: "CommittedHeld" | "PreparedHeld" | "PublishedHeld"; before: { bodies: Map<number, { object: RigidBody; bytes: string; }>; colliders: Map<...>; }; previousOwners: readonly FactoryFacilityOwner[]; previousRevision: number; }'.
+apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts(107,26): error TS18048: 'candidate' is possibly 'undefined'.
+apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts(108,28): error TS18048: 'candidate' is possibly 'undefined'.
+apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts(109,18): error TS18048: 'candidate' is possibly 'undefined'.
+apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts(112,49): error TS18048: 'candidate' is possibly 'undefined'.
+apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts(113,28): error TS2345: Argument of type '{ owner: FactoryFacilityOwner; state: "CommittedHeld" | "PreparedHeld" | "PublishedHeld"; before: { bodies: Map<number, { object: RigidBody; bytes: string; }>; colliders: Map<...>; }; previousOwners: readonly FactoryFacilityOwner[]; previousRevision: number; } | undefined' is not assignable to parameter of type '{ owner: FactoryFacilityOwner; state: "CommittedHeld" | "PreparedHeld" | "PublishedHeld"; before: { bodies: Map<number, { object: RigidBody; bytes: string; }>; colliders: Map<...>; }; previousOwners: readonly FactoryFacilityOwner[]; previousRevision: number; }'.
+  Type 'undefined' is not assignable to type '{ owner: FactoryFacilityOwner; state: "CommittedHeld" | "PreparedHeld" | "PublishedHeld"; before: { bodies: Map<number, { object: RigidBody; bytes: string; }>; colliders: Map<...>; }; previousOwners: readonly FactoryFacilityOwner[]; previousRevision: number; }'.
+apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts(114,34): error TS18048: 'candidate' is possibly 'undefined'.
+apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts(114,59): error TS18048: 'candidate' is possibly 'undefined'.
+apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts(114,89): error TS18048: 'candidate' is possibly 'undefined'.
+apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts(114,119): error TS18048: 'candidate' is possibly 'undefined'.
+apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts(119,49): error TS18048: 'candidate' is possibly 'undefined'.
+apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts(120,28): error TS2345: Argument of type '{ owner: FactoryFacilityOwner; state: "CommittedHeld" | "PreparedHeld" | "PublishedHeld"; before: { bodies: Map<number, { object: RigidBody; bytes: string; }>; colliders: Map<...>; }; previousOwners: readonly FactoryFacilityOwner[]; previousRevision: number; } | undefined' is not assignable to parameter of type '{ owner: FactoryFacilityOwner; state: "CommittedHeld" | "PreparedHeld" | "PublishedHeld"; before: { bodies: Map<number, { object: RigidBody; bytes: string; }>; colliders: Map<...>; }; previousOwners: readonly FactoryFacilityOwner[]; previousRevision: number; }'.
+  Type 'undefined' is not assignable to type '{ owner: FactoryFacilityOwner; state: "CommittedHeld" | "PreparedHeld" | "PublishedHeld"; before: { bodies: Map<number, { object: RigidBody; bytes: string; }>; colliders: Map<...>; }; previousOwners: readonly FactoryFacilityOwner[]; previousRevision: number; }'.
+apps/weltraum-browser/src/hvp/hvpBootstrap.ts(2188,170): error TS2345: Argument of type '{ kind: "RemoveRepresentation"; backendRevision: BackendRevision; representationKey: RepresentationKey; }' is not assignable to parameter of type 'RenderCommand'.
+  Type '{ kind: "RemoveRepresentation"; backendRevision: BackendRevision; representationKey: RepresentationKey; }' is missing the following properties from type 'RemoveRepresentationCommand': expectedSourceRevision, expectedArtifactRevision, expectedContentHash
+apps/weltraum-browser/src/hvp/hvpBootstrap.ts(2207,217): error TS7006: Parameter 'x' implicitly has an 'any' type.
+apps/weltraum-browser/src/hvp/hvpBootstrap.ts(2207,219): error TS7006: Parameter 'y' implicitly has an 'any' type.
+apps/weltraum-browser/src/hvp/hvpBootstrap.ts(2207,221): error TS7006: Parameter 'z' implicitly has an 'any' type.
+apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts(19,69): error TS18047: 'prepared.prepared' is possibly 'null'.
+apps/weltraum-browser/tests/unit/factory/placement.test.ts(39,12): error TS2532: Object is possibly 'undefined'.
+apps/weltraum-browser/tests/unit/factory/placement.test.ts(41,23): error TS2532: Object is possibly 'undefined'.
+apps/weltraum-browser/tests/unit/factory/placement.test.ts(42,12): error TS2532: Object is possibly 'undefined'.
+apps/weltraum-browser/tests/unit/factory/placement.test.ts(43,12): error TS2532: Object is possibly 'undefined'.

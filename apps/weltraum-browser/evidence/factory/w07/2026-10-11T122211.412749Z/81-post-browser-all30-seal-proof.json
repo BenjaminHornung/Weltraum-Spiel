@@ -1,0 +1,7 @@
+{
+  "all30ProductHashesMatch": true,
+  "noProductWrites": true,
+  "fixedOutputsRestoredExact": true,
+  "endUtc": "2026-10-11T17:08:32.435849+00:00",
+  "portAfterCli": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess\n"
+}

@@ -1,0 +1,24 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test:e2e",
+    "--",
+    "--config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts",
+    "tests/e2e/factory-placement.spec.ts"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startUtc": "2026-10-11T17:42:47.239913+00:00",
+  "endUtc": "2026-10-11T17:44:14.335819+00:00",
+  "durationSeconds": 87.09588902500036,
+  "exitCode": 1,
+  "rawBytes": 8192,
+  "rawSha256": "8a7e6a8e220e3b19beb8b4dcdb85563628c42bfdfddb00b66f29a18e84c22caf",
+  "environment": {
+    "FP06_E2E_RUN_DIR": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/browser-trusted-normal-full-86",
+    "WELTRAUM_FACTORY_EVIDENCE_RUN": "2026-10-11T122211.412749Z",
+    "WELTRAUM_PLAYWRIGHT_EXECUTABLE_PATH": "/usr/bin/chromium"
+  },
+  "configSha256": "53a55a48da97d43a02e317fb8edc844d57a9b5687f356a7ebf4f5b470efcf900",
+  "stage": "ONE_FULL_NORMAL17 actual samePage/World trustedpublickeys+UI; all30productbytesheld; no hooks/wrappers/authorityeval/faketicks/source/timeouts/caps"
+}

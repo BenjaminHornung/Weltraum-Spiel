@@ -1,3 +1,6 @@
+import type { FactoryPlacementPlan, FactoryPlacementRequest } from "../factory/construction/placement";
+import type { FactoryFacilityRequest } from "../hestia-prototype/physics/factoryFacilitySession";
+import type { FactorySourceProfile, FactoryNativeConstructionPort } from "../factory/session/hostPort";
 import type { FactoryHostExtension, FactoryHostExtensionHandle, FactoryHostPort, FactoryHostView } from "../factory/session/hostPort";
 import * as THREE from "three";
 import {createHvpListeners} from "../hestia-prototype/runtime/listeners";
@@ -50,6 +53,7 @@ import {
   type FrameId,
   type MaterialProfile,
   type MaterialRange,
+  type MeshArtifact,
   type RenderBackend,
   type RenderCommand,
   type RenderCommandResult,
@@ -751,6 +755,7 @@ export const startHvp = async (
     readonly resourceCaps?: Partial<HvpResourceCaps>;
     readonly createPhysics?: typeof createHvpPhysicsClient;
     readonly factoryExtension?: FactoryHostExtension;
+    readonly factorySourceProfile?: FactorySourceProfile;
   } = {}
 ): Promise<HvpBootstrapHandle> => {
   const documentPort = overrides.documentPort ?? document;
@@ -961,6 +966,11 @@ export const startHvp = async (
     const managedRestoreKeys=new Set<string>(),activeRestoreKeys=new Set<string>();
     const managedNeighborKeys=new Set<string>(),activeNeighborKeys=new Set<string>();
     const activeBranchKeys=new Set<string>();
+    const managedFactoryKeys=new Set<string>(),activeFactoryKeys=new Set<string>();
+    let factoryTransforms:readonly RepresentationTransformSnapshot[]=[];
+    type FactoryCost={cpu:number;mesh:number;triangles:number;draws:number};
+    const factoryCosts=new Map<string,FactoryCost>();
+    const factoryTotals=()=>[...factoryCosts.values()].reduce((a,b)=>({cpu:a.cpu+b.cpu,mesh:a.mesh+b.mesh,triangles:a.triangles+b.triangles,draws:a.draws+b.draws}),{cpu:0,mesh:0,triangles:0,draws:0});
     let branchProducts:readonly HvpBranchProduct[]=[];
     let activePreviewKey="";
     const presentation = createHvpPresentationBackend(backend, () => ({
@@ -970,7 +980,7 @@ export const startHvp = async (
       aspect: backend!.camera.aspect,
       near: backend!.camera.near,
       far: backend!.camera.far
-    }), representationKey(HVP_WATER_REPRESENTATION_KEY), () => [...vegetationTransforms, ...physicsTransforms,
+    }), representationKey(HVP_WATER_REPRESENTATION_KEY), () => [...vegetationTransforms, ...physicsTransforms,...factoryTransforms,
       ...physicsTransforms.filter(t=>t.representationKey==="hvp:branch:parent").map(t=>({...t,representationKey:representationKey(HVP_SALVAGE_LINK_KEY)})),
       ...branchProducts.filter(p=>p.decoration).flatMap(p=>{
         const owner=physicsTransforms.find(t=>t.representationKey===p.ownerId);
@@ -982,6 +992,7 @@ export const startHvp = async (
       && (!managedFragmentKeys.has(key)||activeFragmentKeys.has(key))
       && (!managedRestoreKeys.has(key)||activeRestoreKeys.has(key))
       && (!managedNeighborKeys.has(key)||activeNeighborKeys.has(key))
+      && (!managedFactoryKeys.has(key)||activeFactoryKeys.has(key))
       && (!(key.startsWith("hvp:branch:")||key.startsWith("hvp-branch:"))||activeBranchKeys.has(key)||activeFragmentKeys.has(key))
       && (!key.startsWith("hvp:tool:preview:") || key===activePreviewKey),
       measurement.enabled?(name,start,duration)=>{if(startupMeasuring){measurement.record(name,start,duration);}}:undefined,true);
@@ -1014,6 +1025,12 @@ export const startHvp = async (
       // nothing, claim neither Ready nor Error.
       return Object.freeze({ dispose });
     }
+    if(overrides.factorySourceProfile && (!overrides.factoryExtension||overrides.factorySourceProfile.version!=="hvp-factory-startsite-v1"||snapshot.version!==overrides.factorySourceProfile.version))throw new Error("Factory source/profile binding mismatch");
+    if(snapshot.version==="hvp-factory-startsite-v1"&&!overrides.factorySourceProfile)throw new Error("Factory source requires its explicitly bound profile");
+    const initialFactoryCargo=overrides.factorySourceProfile?(await import("../factory/fixtures/cargoSite")).createFactoryCargoSite(snapshot):undefined;
+    if(initialFactoryCargo)factoryCosts.set(initialFactoryCargo.ownerId,{cpu:initialFactoryCargo.canonicalJson.length*16+1944,mesh:1296,triangles:12,draws:1});
+    const sourceColumn=overrides.factorySourceProfile?.readColumn??readHvpSourceColumnWorld;
+    const vegetationProfile=overrides.factorySourceProfile?{version:"hvp-factory-vegetation-v1" as const,readColumn:sourceColumn}:undefined;
     const prepared = prepareHvpCoastSource(snapshot);
     startupPhase("startupSourceMs");
     documentPort.body.dataset.hestiaPrototypeSourceDigest = prepared.sourceDigest;
@@ -1042,12 +1059,12 @@ export const startHvp = async (
     const terrainLooks = new Map([...initialTerrain].map(([id, mesh]) => [id, createHvpCompactLookTerrain(mesh, look, {allowPartialRoles:true})]));
     let joinLook = createHvpCompactLookTerrain(joinMesh, look);
     let farLook = createHvpCompactLookTerrain(farMesh, look, { allowPartialRoles: true });
-    const plants = coldGame?coldGame.plants.map(p=>p.instance):planHvpVegetation();
+    const plants = coldGame?coldGame.plants.map(p=>p.instance):planHvpVegetation(undefined,vegetationProfile);
     const vegetationSourceBytes = estimateHvpVegetationSourceBytes(plants);
     if (vegetationSourceBytes > 16 * 1024 * 1024) { throw new Error("Vegetation source BudgetExceeded before allocation"); }
     const collisionSources: HvpCollisionSource[] = [{...terrainRoot.read(),
       readHaloSlot:coldEast?(x,y,z)=>x>=256?coldEast.readSlot(x-256,y,z):undefined:undefined}];
-    const plantSources=coldGame?.plants??plants.map(buildHvpPlant);
+    const plantSources=coldGame?.plants??plants.map(plant=>buildHvpPlant(plant,vegetationProfile));
     const vegetation = plantSources.flatMap((source) => {
       const plant=source.instance;
       if (source.wood !== null) {
@@ -1060,7 +1077,7 @@ export const startHvp = async (
     });
     startupPhase("startupVegetationMs");
     if(coldEast){collisionSources.push({...coldEast,readHaloSlot:(x,y,z)=>x<0?terrainRoot.read().readSlot(x+256,y,z):undefined});}
-    const spawn = coldGame?.checkpoint.world.dropSpawn??{ x: -9, y: readHvpSourceColumnWorld(-9, -9).topMeters + 2.25, z: -9 };
+    const spawn = coldGame?.checkpoint.world.dropSpawn??{ x: -9, y: sourceColumn(-9, -9).topMeters + 2.25, z: -9 };
     const savedDrop=coldGame?.world.bodies.find(b=>b.checkpoint.family==="drop"),savedInertia=coldGame?.world.bodies.find(b=>b.checkpoint.family==="inertia");
     if(coldGame&&(!savedDrop||!savedInertia)){throw new Error("Saved prototype specimens missing");}
     const dropMesh = savedDrop?meshHvpBodyCells(readHvpBodyCells(savedDrop.recipe.source),savedDrop.recipe.mass.centerOfMassMeters!,savedDrop.recipe.source.contentHash)
@@ -1078,19 +1095,20 @@ export const startHvp = async (
     const scenario=new URLSearchParams(windowPort.location?.search??"").get("hvpScenario")??"coast";
     if(!["coast","rock-arm","salvage","east-edge"].includes(scenario)){throw new Error("Unknown Hestia scenario");}
     const salvageScenario=coldGame?coldGame.checkpoint.world.branch?.kind==="salvage":scenario==="salvage";
-    const salvageMarker=salvageScenario?createHvpSalvageMarker(readHvpSourceColumnWorld(-11.5,-12.625).topMeters):undefined;
+    const salvageMarker=salvageScenario?createHvpSalvageMarker(sourceColumn(-11.5,-12.625).topMeters):undefined;
     const salvageLink=salvageScenario?createHvpSalvageLink():undefined;
     type NeighborCosts={meshes:readonly HvpCompactMesh[];groupedBytes:number;draws:number;sourceBytes:number;cacheBytes:number;checkpointBytes:number;baseProxyBytes:number;sharedBytes:number;physicsBytes:number};
     let neighborCosts:NeighborCosts={meshes:[],groupedBytes:0,draws:0,sourceBytes:0,cacheBytes:0,checkpointBytes:0,baseProxyBytes:0,sharedBytes:0,physicsBytes:0};
     const sceneLedger=(input:Parameters<typeof buildHvpResourceLedger>[0]&{neighbor?:NeighborCosts;dormantCheckpointBytes?:number})=>{
       const n=input.neighbor??neighborCosts;
       const dormantCheckpointBytes=input.dormantCheckpointBytes??physics?.read().dormantCheckpointBytes??0;
+      const cost=factoryTotals();
       const result=buildHvpResourceLedger({...input,
         additionalMeshes:[...(input.additionalMeshes??[]),...n.meshes,...(salvageMarker&&salvageLink?[salvageMarker,salvageLink]:[])],
         groupedIndexBytes:input.groupedIndexBytes+n.groupedBytes,drawCalls:input.drawCalls+(salvageMarker?2:0)+n.draws});
       // The live composite's raw typed views alias the cache packet. Artifact
       // snapshots and regrouped indices are separate allocations; count those.
-      return {...result,totalCpuBytes:result.totalCpuBytes+n.sourceBytes+n.cacheBytes+n.checkpointBytes+n.baseProxyBytes-n.sharedBytes+n.physicsBytes+dormantCheckpointBytes,dormantCheckpointBytes,
+      return {...result,factoryCpuBytes:cost.cpu,factoryMeshBytes:cost.mesh,factoryTriangles:cost.triangles,factoryDraws:cost.draws,retainedMeshBytes:result.retainedMeshBytes+cost.mesh,triangles:result.triangles+cost.triangles,drawCalls:result.drawCalls+cost.draws,totalCpuBytes:result.totalCpuBytes+cost.cpu+n.sourceBytes+n.cacheBytes+n.checkpointBytes+n.baseProxyBytes-n.sharedBytes+n.physicsBytes+dormantCheckpointBytes,dormantCheckpointBytes,
         neighborSourceBytes:n.sourceBytes,neighborCacheBytes:n.cacheBytes,neighborCheckpointBytes:n.checkpointBytes,neighborBaseProxyBytes:n.baseProxyBytes};
     };
     let ledger = sceneLedger({
@@ -1117,14 +1135,14 @@ export const startHvp = async (
     }, caps);
     const rockScenario=scenario==="rock-arm";
     // Explicit new-session scenario, never a camera-driven teleport of a live avatar.
-    const playerSpawn = coldGame?.checkpoint.world.player?.position??(scenario==="east-edge"?{x:7,y:readHvpSourceColumnWorld(7,-14).topMeters+.92,z:-14}:rockScenario?{x:7,y:.125+.92,z:-6.25}:salvageScenario?
-      {x:-11.8125,y:readHvpSourceColumnWorld(-11.8125,-15.25).topMeters+.92,z:-15.25}:{ x: -9, y: readHvpSourceColumnWorld(-9, -11).topMeters + 0.92, z: -11 });
+    const playerSpawn = coldGame?.checkpoint.world.player?.position??(initialFactoryCargo?{x:initialFactoryCargo.spawnMm[0]/1000,y:initialFactoryCargo.spawnMm[1]/1000,z:initialFactoryCargo.spawnMm[2]/1000}:scenario==="east-edge"?{x:7,y:sourceColumn(7,-14).topMeters+.92,z:-14}:rockScenario?{x:7,y:.125+.92,z:-6.25}:salvageScenario?
+      {x:-11.8125,y:sourceColumn(-11.8125,-15.25).topMeters+.92,z:-15.25}:{ x: -9, y: sourceColumn(-9, -11).topMeters + 0.92, z: -11 });
     documentPort.body.dataset.hestiaPrototypeScenario=coldGame?"saved":scenario;
     // Authored dry impulse area behind the start, not the sloping channel bank.
-    const inertiaSpawn={x:-9,y:Math.max(...[-9,-8].flatMap(x=>[-13.75,-12.5].map(z=>readHvpSourceColumnWorld(x,z).topMeters)))+1.25,z:-13};
-    const branchSpawn={x:-12,y:Math.max(...[-12,-11.5].flatMap(x=>[-13.5,-13].map(z=>readHvpSourceColumnWorld(x,z).topMeters))),z:-13.5};
+    const inertiaSpawn={x:-9,y:Math.max(...[-9,-8].flatMap(x=>[-13.75,-12.5].map(z=>sourceColumn(x,z).topMeters)))+1.25,z:-13};
+    const branchSpawn={x:-12,y:Math.max(...[-12,-11.5].flatMap(x=>[-13.5,-13].map(z=>sourceColumn(x,z).topMeters))),z:-13.5};
     startupPhase("startupAdmissionMs");
-    physics = await (overrides.createPhysics ?? createHvpPhysicsClient)(collisionSources, spawn, physicsAbort.signal, playerSpawn, inertiaSpawn,branchSpawn,coldGame?.checkpoint.world,salvageScenario?"salvage":"branch",measurement.enabled?measurement.worker:undefined);
+    physics = await (overrides.createPhysics ?? createHvpPhysicsClient)(collisionSources, spawn, physicsAbort.signal, playerSpawn, inertiaSpawn,branchSpawn,coldGame?.checkpoint.world,salvageScenario?"salvage":"branch",measurement.enabled?measurement.worker:undefined,overrides.factorySourceProfile!==undefined,initialFactoryCargo);
     startupPhase("startupPhysicsMs");
     if (disposed || hvpMountEpoch !== myEpoch) { await physics.dispose(); physics = undefined; return Object.freeze({ dispose }); }
     const branch=physics.read().structural;
@@ -1344,7 +1362,7 @@ export const startHvp = async (
       isInputBlocked: () => playerInput?.active ?? false });
     playerInput = createHvpPlayerInput(canvas, backend.camera, physics, documentPort as Document, windowPort as Window, () => {
       camera!.reset(); hud!.update("Ready", camera!.readPose(), stats);
-    },{confirm:()=>{if (!factoryBlocked()) void plasmaTool?.confirm();},select:mode=>plasmaTool?.select(mode)},()=>saveBusy||saveHold||factoryBlocked()||Boolean(dormancy?.read().recoveryHold)||Boolean(overrides.factoryExtension&&!factoryCanResume()));
+    },{confirm:()=>{if (!factoryBlocked()) void plasmaTool?.confirm();},select:mode=>plasmaTool?.select(mode)},()=>saveBusy||saveHold||factoryBlocked()||Boolean(dormancy?.read().recoveryHold)||Boolean(overrides.factoryExtension&&!factoryCanResume()),overrides.factorySourceProfile!==undefined);
     if(!coldGame&&scenario==="east-edge"){playerInput.aimAt({x:48,y:playerSpawn.y+.75,z:-14});}
     const dropProfile = createMaterialProfile({ id: materialProfileId("hvp:drop-limestone-v1"), kind: "BasicLit",
       baseColor: { r: 0.8, g: 0.35, b: 0.12 }, opacity: 1, doubleSided: false, wireframe: false, depthWrite: true });
@@ -1813,7 +1831,7 @@ export const startHvp = async (
       if(!saveInitialized){await saveStore.initialize();const list=await saveStore.list();saveRevision=list.slots.find(s=>s.slotId===HVP_SAVE_SLOT)?.recordRevision??null;saveInitialized=true;}
       return saveStore;
     };
-    const confirmed=()=>!disposed&&hvpMountEpoch===myEpoch&&!factoryBlocked()&&!supportPending&&!neighbor?.read().busy&&!neighbor?.read().recoveryHold&&!dormancy?.read().busy&&!dormancy?.read().recoveryHold
+    const confirmed=(ignoreFactory=false)=>!disposed&&hvpMountEpoch===myEpoch&&(ignoreFactory||!factoryBlocked())&&!supportPending&&!neighbor?.read().busy&&!neighbor?.read().recoveryHold&&!dormancy?.read().busy&&!dormancy?.read().recoveryHold
       &&!["Pending","RecoveryHold"].includes(terrainConsumer!.read().state)
       &&structuralConsumer!.read().state==="Ready"&&bodyCutConsumer!.read().state==="Idle";
     const admitNeighbor=(bytes:Readonly<{source:number;cache:number;checkpoint:number;preparing:boolean}>)=>{
@@ -2148,7 +2166,7 @@ export const startHvp = async (
         if (!current()) throw new Error("Factory host disposed or superseded");
         const root = terrainRoot.read(), native = physics!.read();
         return Object.freeze({ sessionId: root.sessionId, epoch: myEpoch, nativeTick: native.ticks,
-          physicsStatus: native.status, confirmed: confirmed() && !saveBusy && !saveHold && ["Running", "Paused"].includes(native.status),
+          physicsStatus: native.status, confirmed: confirmed() && !saveBusy && !saveHold && (!native.factoryFacilities||native.factoryFacilities.state==="Idle") && ["Running", "Paused"].includes(native.status),
           terrain: Object.freeze({ epoch: root.epoch, revision: root.revision, sourceDigest: root.sourceDigest,
             baseDigest: root.baseDigest, cellMeters: root.cellMeters, originMeters: root.originMeters,
             sizeX: root.sizeX, sizeY: root.sizeY, sizeZ: root.sizeZ }) });
@@ -2159,7 +2177,79 @@ export const startHvp = async (
         return view;
       };
       readFactoryView = read;
-      const hostPort: FactoryHostPort = Object.freeze({ current, read,
+      const factoryAssets=await import("../factory/presentation/factoryAssets");
+      const installationProfiles=await import("../factory/construction/installationProfile");
+      type FactoryScene={id:string;keys:readonly RepresentationKey[];artifacts:MeshArtifact[];transforms:readonly RepresentationTransformSnapshot[];published:boolean};
+      const factoryScenes=new Map<string,FactoryScene>();
+      const factoryStages=new Map<string,{request:FactoryFacilityRequest;scene?:FactoryScene}>();
+      let ghost:FactoryScene|undefined;
+      let ghostDefinition:string|undefined;
+      // Closed S0 definitions share bounded presentation slots; paid Native instance IDs stay separate.
+      const ghostSlots=new Map(["B06","B07","fp02.device.battery_4kwh","fp02.device.distribution_40kw","fp02.device.pv_pack_2kwp","fp02.device.wind_pack_6kw"].map((definition,index)=>[definition,{id:`ghost:slot_${index}`,revision:0}]));
+      const factoryPose=(keys:readonly RepresentationKey[],request:FactoryPlacementRequest):readonly RepresentationTransformSnapshot[]=>{
+        if(request.centerMm.length!==3||!request.centerMm.every(Number.isFinite)||!Number.isInteger(request.quarterTurns)||request.quarterTurns<0||request.quarterTurns>3)throw new Error("Invalid Factory projection pose");
+        return keys.map(key=>({representationKey:key,positionRelative:{x:request.centerMm[0]!/1000,y:request.centerMm[1]!/1000,z:request.centerMm[2]!/1000},orientation:{x:0,y:Math.sin(request.quarterTurns*Math.PI/4),z:0,w:Math.cos(request.quarterTurns*Math.PI/4)},scale:{x:1,y:1,z:1}}));
+      };
+      const costFor=(sourceId:string,materialBytes=0):FactoryCost=>{const profile=installationProfiles.createFactoryInstallationProfile(sourceId),boxes=profile.colliders.length;
+        return {cpu:boxes*648*3+profile.canonicalJson.length*2+materialBytes*2,mesh:boxes*648*2,triangles:boxes*12,draws:boxes};};
+      const admitFactory=()=>{const cost=factoryTotals();admitHvpResources({...ledger,totalCpuBytes:ledger.totalCpuBytes-ledger.factoryCpuBytes+cost.cpu,retainedMeshBytes:ledger.retainedMeshBytes-ledger.factoryMeshBytes+cost.mesh,triangles:ledger.triangles-ledger.factoryTriangles+cost.triangles,drawCalls:ledger.drawCalls-ledger.factoryDraws+cost.draws},caps);};
+      const refreshFactoryProjection=()=>{factoryTransforms=Object.freeze([...factoryScenes.values(),...(ghost?[ghost]:[])].filter(scene=>scene.published).flatMap(scene=>scene.transforms));presentation.updateProjection();};
+      const dropFactoryScene=(scene:FactoryScene)=>{for(const artifact of scene.artifacts){const key=artifact.representationKey;activeFactoryKeys.delete(key);requireAccepted(presentation.dispatch(createRenderCommand({kind:"RemoveRepresentation",backendRevision:backendRevision(0),representationKey:key,expectedSourceRevision:artifact.sourceRevision,expectedArtifactRevision:artifact.artifactRevision,expectedContentHash:artifact.contentHash})),"Factory retire");
+        const index=plainTerrainLeases.findIndex(value=>value.nodeKey===key);if(index>=0)plainTerrainLeases.splice(index,1)[0]!.lease.release();}for(const key of scene.keys)managedFactoryKeys.delete(key);factoryCosts.delete(scene.id);};
+      const stageFactoryScene=(request:FactoryPlacementRequest,id:string,isGhost:boolean,derivedRevision=1):FactoryScene=>{
+        const profile=installationProfiles.createFactoryInstallationProfile(request.definitionSourceId);
+        const projection=factoryAssets.createFactoryAssetProjection({...profile.definitionRef,instanceId:id},profile.source);
+        const keys=projection.parts.map(part=>part.artifact.representationKey);
+        // Hide ALL keys before the first Upsert can publish the projection set.
+        for(const key of keys)managedFactoryKeys.add(key);
+        const scene:FactoryScene={id,keys,artifacts:[],transforms:factoryPose(keys,request),published:false};
+        try{for(const part of projection.parts){const profiles=isGhost?part.materialProfiles.map(value=>createMaterialProfile({...value,id:materialProfileId(`ghost_${value.id}`),baseColor:{r:.05,g:.65,b:.75},opacity:.45,wireframe:true,depthWrite:false})):part.materialProfiles;
+          // Source vertices remain local; the admitted +Y transform binds them to this existing Host frame.
+          const artifact=createMeshArtifact({...part.artifact,frameId:frame,...(isGhost?{artifactRevision:artifactRevision(derivedRevision),materialRanges:part.artifact.materialRanges.map(range=>({...range,materialProfileId:materialProfileId(`ghost_${range.materialProfileId}`)}))}:{})});
+          requireAccepted(presentation.dispatch(createRenderCommand({kind:"UpsertMeshArtifact",backendRevision:backendRevision(0),artifact,materialProfiles:profiles})),"Factory hidden mesh stage");scene.artifacts.push(artifact);plainTerrainLeases.push({nodeKey:artifact.representationKey,lease:materialFactory.acquire(profiles)});}}
+        catch(error){dropFactoryScene(scene);throw error;}return scene;
+      };
+      if(initialFactoryCargo){
+        const nativeCargo=physics!.read().factoryFacilities?.cargo;
+        if(!nativeCargo||nativeCargo.profileDigest!==initialFactoryCargo.profileDigest)throw new Error("Factory Cargo native profile receipt missing");
+        admitFactory();const geometry=new THREE.BoxGeometry(1.5,1.5,1),key=representationKey("factory:fp02_wreck_owner:source_access"),profile=createMaterialProfile({id:materialProfileId("factory_cargo_wreck_shell"),kind:"BasicLit",baseColor:{r:.22,g:.25,b:.27},opacity:1,doubleSided:false,wireframe:false,depthWrite:true});
+        try{const artifact=createMeshArtifact({representationKey:key,sourceRevision:sourceRevision(1),artifactRevision:artifactRevision(1),algorithmVersion:"fp06_cargo_s0_access_v1",frameId:frame,
+          positions:new Float32Array(geometry.getAttribute("position").array),normals:new Float32Array(geometry.getAttribute("normal").array),indices:new Uint16Array(geometry.index!.array),materialRanges:[{materialProfileId:profile.id,startIndex:0,indexCount:geometry.index!.count}],bounds:{min:{x:-.75,y:-.75,z:-.5},max:{x:.75,y:.75,z:.5}}});
+          managedFactoryKeys.add(key);requireAccepted(presentation.dispatch(createRenderCommand({kind:"UpsertMeshArtifact",backendRevision:backendRevision(0),artifact,materialProfiles:[profile]})),"Initial Cargo source projection");plainTerrainLeases.push({nodeKey:key,lease:materialFactory.acquire([profile])});activeFactoryKeys.add(key);
+          factoryScenes.set(initialFactoryCargo.ownerId,{id:initialFactoryCargo.ownerId,keys:[key],artifacts:[artifact],transforms:[{representationKey:key,positionRelative:{x:-5.5,y:2,z:13.125},orientation:{x:0,y:0,z:0,w:1},scale:{x:1,y:1,z:1}}],published:true});refreshFactoryProjection();
+        }finally{geometry.dispose();}
+      }
+      const construction:FactoryNativeConstructionPort=Object.freeze({
+        openCargo:async()=>{const native=physics!.read(),cargo=native.factoryFacilities?.cargo;if(!cargo||!physics!.openFactoryCargo||!read().confirmed)throw new Error("Factory Cargo host unavailable");await physics!.openFactoryCargo({ownerId:cargo.ownerId,profileDigest:cargo.profileDigest,expectedTerrainRevision:native.terrainGeneration,expectedRevision:native.factoryFacilities!.revision});publishFactoryView!();},
+        readFacts:()=>{const native=physics!.read(),view=read(),position=native.player?.position;
+          if(!position)throw new Error("Factory requires the actual native player");
+          return {binding:{sessionId:view.sessionId,epoch:view.epoch,terrainRevision:view.terrain.revision,sourceDigest:view.terrain.sourceDigest,baseDigest:view.terrain.baseDigest,facilityRevision:native.factoryFacilities?.revision??0},
+            cargoAccess:native.factoryFacilities?.cargo,
+            actor:{actorId:"hvp_player",ownerId:"fp02_wreck_owner",positionMm:[position.x*1000,position.y*1000,position.z*1000],canBuild:confirmed(true)&&["Running","Paused"].includes(native.status)},
+            terrain:{cellMm:125,originMm:[view.terrain.originMeters.x*1000,view.terrain.originMeters.y*1000,view.terrain.originMeters.z*1000],size:[view.terrain.sizeX,view.terrain.sizeY,view.terrain.sizeZ],readSlot:(x:number,y:number,z:number)=>hostPort.readTerrainSlot(x,y,z)}};},
+        prepareNative:async(request:FactoryFacilityRequest)=>{if(!physics!.prepareFactoryFacility)throw new Error("Native Factory capability missing");const estimate=costFor(request.definitionRef.sourceId,request.materialBinding.length),native=physics!.read();factoryCosts.set(request.instanceId,{...estimate,cpu:estimate.cpu+native.collisionBytes*2+(native.colliderCount+native.bodyCount)*2048});
+          try{admitFactory();const receipt=await physics!.prepareFactoryFacility(request);factoryStages.set(request.transactionId,{request});return receipt;}catch(error){factoryCosts.delete(request.instanceId);throw error;}},
+        commitNative:async(id:string)=>{if(!physics!.commitFactoryFacility)throw new Error("Native Factory capability missing");await physics!.commitFactoryFacility(id);},
+        publishNative:(id:string)=>{if(!physics!.publishFactoryFacility)throw new Error("Native Factory capability missing");physics!.publishFactoryFacility(id);},
+        rollbackNative:async(id:string)=>{if(!physics!.rollbackFactoryFacility)throw new Error("Native Factory capability missing");await physics!.rollbackFactoryFacility(id);},
+        finalizeNative:async(id:string)=>{if(!physics!.finalizeFactoryFacility)throw new Error("Native Factory capability missing");await physics!.finalizeFactoryFacility(id);},
+        stageProjection:async(plan:FactoryPlacementPlan)=>{const stage=factoryStages.get(plan.request.transactionId);if(!stage||stage.request.instanceId!==plan.installation.instanceId||stage.request.profileDigest!==plan.profile.profileDigest)throw new Error("Factory staged identity mismatch");
+          stage.scene=stageFactoryScene(plan.request,plan.installation.instanceId,false);},
+        publishProjection:(plan:FactoryPlacementPlan)=>{const stage=factoryStages.get(plan.request.transactionId),scene=stage?.scene;if(!scene)throw new Error("Factory projection not prepared");
+          scene.published=true;for(const key of scene.keys)activeFactoryKeys.add(key);factoryScenes.set(scene.id,scene);refreshFactoryProjection();},
+        rollbackProjection:(id:string)=>{const stage=factoryStages.get(id);if(!stage)throw new Error("Factory rollback stage missing");if(stage.scene){factoryScenes.delete(stage.scene.id);dropFactoryScene(stage.scene);}else factoryCosts.delete(stage.request.instanceId);factoryStages.delete(id);refreshFactoryProjection();},
+        finalizeProjection:(id:string)=>{if(!factoryStages.get(id)?.scene?.published)throw new Error("Factory finalize scene missing");factoryStages.delete(id);},
+        projectGhost:(request:FactoryPlacementRequest|null)=>{
+          if(request&&ghost&&ghostDefinition===request.definitionSourceId){ghost.transforms=factoryPose(ghost.keys,request);refreshFactoryProjection();return;}
+          const slot=request?ghostSlots.get(request.definitionSourceId):undefined;
+          if(request&&(!slot||!Number.isSafeInteger(slot.revision+1)))throw new Error("Factory ghost slot unavailable or revision exhausted");
+          if(request)factoryPose([],request);
+          if(ghost){dropFactoryScene(ghost);ghost=undefined;ghostDefinition=undefined;refreshFactoryProjection();}if(!request)return;
+          const id=slot!.id;factoryCosts.set(id,costFor(request.definitionSourceId));try{admitFactory();slot!.revision++;ghost=stageFactoryScene(request,id,true,slot!.revision);ghostDefinition=request.definitionSourceId;ghost.published=true;for(const key of ghost.keys)activeFactoryKeys.add(key);refreshFactoryProjection();}catch(error){factoryCosts.delete(id);throw error;}},
+        dispose:()=>{for(const stage of factoryStages.values())if(stage.scene&&!factoryScenes.has(stage.scene.id))dropFactoryScene(stage.scene);for(const scene of factoryScenes.values())dropFactoryScene(scene);if(ghost)dropFactoryScene(ghost);
+          ghost=undefined;ghostDefinition=undefined;factoryScenes.clear();factoryStages.clear();factoryCosts.clear();factoryTransforms=[];presentation.updateProjection();}
+      });
+      const hostPort: FactoryHostPort = Object.freeze({ current, read,construction,
         readTerrainSlot: (x: number, y: number, z: number) => {
           if (!current()) throw new Error("Factory host disposed or superseded");
           const root = terrainRoot.read();

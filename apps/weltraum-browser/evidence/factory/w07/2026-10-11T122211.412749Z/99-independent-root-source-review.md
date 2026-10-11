@@ -1,0 +1,5 @@
+# W07 zweite Bauvorschau: unabhängige Prüfung99
+
+SOURCE-SCOPE PASS. Root hat die vollständige030fc→8f3148 Differenz gelesen und alle30 aktuellen Produktbytes selbst gegen den neuen Seal5138bdc7 geprüft: exakt ein E2E-Pfad geändert, alle29 übrigen Baseline201394-Pfade identisch. Nur Fälle14/15 warten jetzt auf tatsächliche Auswahl am ursprünglichen Zentrum und danach auf jeden der14 normalen Pfeiltastenschritte. Null bleibt eine wiederholbare Abwesenheit innerhalb der ursprünglichen5-s-Erwartung. Endzentrum, Vierteldrehung, spezifisches BOM_MISSING, vollständige Material-/Nativegleichheit, C26-Endlichkeit und Disposal bleiben unverändert. Keine Zustandsmutation, Instrumentierung oder größere Budgets.
+
+Originalbuild99 Exit0; Root hat gzip verlustlos entpackt und1904Bytes/SHA15a63f72960068bd26644edc6f9e0dc71c398f71b14af0c34c7d568c9e4f8d02 mit dem Commandreceipt verglichen. Der tatsächliche98-Trace zeigt frühe Pfeile bei ghost:null und danach die unveränderte Initialvorschau. Die Änderung synchronisiert den Test; kein Laufzeitfehler wird daraus behauptet. Neuer17-Fälle-Browserlauf ausstehend; Paket-/Git-/Commitgate offen.

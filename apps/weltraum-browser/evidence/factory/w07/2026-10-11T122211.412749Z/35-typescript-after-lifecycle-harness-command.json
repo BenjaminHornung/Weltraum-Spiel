@@ -1,0 +1,17 @@
+{
+  "command": [
+    "npm",
+    "exec",
+    "--",
+    "tsc",
+    "-p",
+    "tsconfig.json"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startUtc": "2026-10-11T14:06:23.349633+00:00",
+  "endUtc": "2026-10-11T14:06:25.979083+00:00",
+  "durationSeconds": 2.6294649410010607,
+  "exitCode": 1,
+  "rawBytes": 832,
+  "rawSha256": "fdadd621c1b8f431cd8a9e3b6a5c6ccbf0361e571030aef7f714a92dd54db087"
+}

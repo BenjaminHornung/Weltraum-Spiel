@@ -1,0 +1,20 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/hvp-player-input.test.ts",
+    "-t",
+    "body-cut Preparing entry"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startUtc": "2026-10-11T16:59:16.404715+00:00",
+  "endUtc": "2026-10-11T16:59:18.769575+00:00",
+  "durationSeconds": 2.365454509999836,
+  "exitCode": 1,
+  "rawBytes": 2898,
+  "rawSha256": "2146587e1b601fc41d400048b20bfe03a2a9cb7277e7009cc38d6615fe5698f5",
+  "preTestUnitSha256": "fbc9380f96223d9c6345fae2df1c11a5f278c9bc6a6704e2f948162594cbd931",
+  "stage": "TEST_ONLY; corrected real eye-height sourcecell contact; runtime held"
+}

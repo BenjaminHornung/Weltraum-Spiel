@@ -1,0 +1,304 @@
+{
+  "version": "fp06-w07-reachable-stand-region-query-v1",
+  "timestamp": "2026-10-11T15:05:32.194Z",
+  "interpreter": "/workspace/.cloud-setup/toolchain/node_modules/node/bin/node",
+  "nodeVersion": "v22.23.3",
+  "cwd": "/workspace",
+  "elapsedMs": 77.07715999999999,
+  "stableSourceBytes": true,
+  "priorReport": {
+    "path": "/workspace/.cloud-setup/fp06-w07-second-cutter-site-preflight.md",
+    "sha256": "bfd82113829ba58f1421a88b3fa35cb7a67753e4338087fd7f7f59864c695366"
+  },
+  "firstService": {
+    "min": [
+      -5.25,
+      1.5,
+      3.5
+    ],
+    "max": [
+      -4.25,
+      3.5,
+      6.5
+    ]
+  },
+  "secondService": {
+    "min": [
+      -8.75,
+      1.5,
+      3.5
+    ],
+    "max": [
+      -7.75,
+      3.5,
+      6.5
+    ]
+  },
+  "cargoPoint": [
+    -5.5,
+    2.25,
+    12.625
+  ],
+  "cargoAccessBounds": {
+    "min": [
+      -6.25,
+      1.5,
+      11.625
+    ],
+    "max": [
+      -4.75,
+      3.5,
+      12.625
+    ]
+  },
+  "scan": {
+    "boundsXZ": [
+      -7,
+      -5.75,
+      8.5,
+      9.5
+    ],
+    "spacingMeters": 0.025,
+    "actorY": 2.41,
+    "scanned": 2091,
+    "accepted": 206,
+    "groundOnlyRejected": 398,
+    "uniqueSourceColumns": 214
+  },
+  "byX": [
+    {
+      "x": -6.4,
+      "minZ": 8.75,
+      "maxZ": 9.175,
+      "count": 18
+    },
+    {
+      "x": -6.375,
+      "minZ": 8.75,
+      "maxZ": 9.15,
+      "count": 17
+    },
+    {
+      "x": -6.35,
+      "minZ": 8.725,
+      "maxZ": 9.15,
+      "count": 18
+    },
+    {
+      "x": -6.325,
+      "minZ": 8.725,
+      "maxZ": 9.125,
+      "count": 17
+    },
+    {
+      "x": -6.3,
+      "minZ": 8.725,
+      "maxZ": 9.125,
+      "count": 17
+    },
+    {
+      "x": -6.275,
+      "minZ": 8.725,
+      "maxZ": 9.1,
+      "count": 16
+    },
+    {
+      "x": -6.25,
+      "minZ": 8.7,
+      "maxZ": 9.075,
+      "count": 16
+    },
+    {
+      "x": -6.225,
+      "minZ": 8.7,
+      "maxZ": 9.075,
+      "count": 16
+    },
+    {
+      "x": -6.2,
+      "minZ": 8.7,
+      "maxZ": 9.05,
+      "count": 15
+    },
+    {
+      "x": -6.175,
+      "minZ": 8.7,
+      "maxZ": 9.05,
+      "count": 15
+    },
+    {
+      "x": -6.15,
+      "minZ": 8.7,
+      "maxZ": 9.025,
+      "count": 14
+    },
+    {
+      "x": -6.125,
+      "minZ": 8.7,
+      "maxZ": 9,
+      "count": 13
+    },
+    {
+      "x": -6.1,
+      "minZ": 8.675,
+      "maxZ": 9,
+      "count": 14
+    }
+  ],
+  "boxes": [
+    {
+      "name": "wide horizontal band",
+      "minX": -6.85,
+      "maxX": -6.125,
+      "minZ": 8.875,
+      "maxZ": 9,
+      "yRange": [
+        2.38,
+        2.44
+      ],
+      "width": 0.7249999999999996,
+      "depth": 0.125,
+      "worstCargoPoint": 3.9901253113154227,
+      "worstFirstService": 2.9681644159311658,
+      "worstSecondService": 2.981715110469141,
+      "fullHullEnvelope": {
+        "columns": 84,
+        "covered": true,
+        "heights": [
+          1.5,
+          2.5,
+          3,
+          3.5
+        ],
+        "slots": [
+          1,
+          3
+        ],
+        "maskColumns": 56,
+        "maxTop": 3.5
+      },
+      "allCornerSourceLinesClear": false,
+      "minimumCornerSourceLineAirGap": -0.6296296296296298,
+      "valid": false
+    },
+    {
+      "name": "central depth band",
+      "minX": -6.6,
+      "maxX": -6.35,
+      "minZ": 8.8,
+      "maxZ": 9.15,
+      "yRange": [
+        2.38,
+        2.44
+      ],
+      "width": 0.25,
+      "depth": 0.34999999999999964,
+      "worstCargoPoint": 3.9845608289998524,
+      "worstFirstService": 2.9740544715926105,
+      "worstSecondService": 2.9970819141291423,
+      "fullHullEnvelope": {
+        "columns": 72,
+        "covered": true,
+        "heights": [
+          1.5,
+          2.5,
+          3
+        ],
+        "slots": [
+          1
+        ],
+        "maskColumns": 54,
+        "maxTop": 3
+      },
+      "allCornerSourceLinesClear": true,
+      "minimumCornerSourceLineAirGap": 0.7542483660130719,
+      "valid": false
+    },
+    {
+      "name": "balanced central band",
+      "minX": -6.65,
+      "maxX": -6.225,
+      "minZ": 8.875,
+      "maxZ": 9.05,
+      "yRange": [
+        2.38,
+        2.44
+      ],
+      "width": 0.4250000000000007,
+      "depth": 0.1750000000000007,
+      "worstCargoPoint": 3.926970842774364,
+      "worstFirstService": 2.9090376415577714,
+      "worstSecondService": 2.9712160810011787,
+      "fullHullEnvelope": {
+        "columns": 72,
+        "covered": true,
+        "heights": [
+          1.5,
+          2.5,
+          3
+        ],
+        "slots": [
+          1
+        ],
+        "maskColumns": 56,
+        "maxTop": 3
+      },
+      "allCornerSourceLinesClear": true,
+      "minimumCornerSourceLineAirGap": 0.7543333333333333,
+      "valid": false
+    },
+    {
+      "name": "maximum near-z8.95 horizontal band",
+      "minX": -6.95,
+      "maxX": -6.05,
+      "minZ": 8.925,
+      "maxZ": 8.975,
+      "yRange": [
+        2.38,
+        2.44
+      ],
+      "width": 0.9000000000000004,
+      "depth": 0.049999999999998934,
+      "worstCargoPoint": 3.978517311763265,
+      "worstFirstService": 3.002603037366078,
+      "worstSecondService": 3.002603037366078,
+      "fullHullEnvelope": {
+        "columns": 98,
+        "covered": true,
+        "heights": [
+          1.25,
+          1.5,
+          2.5,
+          3,
+          3.5
+        ],
+        "slots": [
+          1,
+          3
+        ],
+        "maskColumns": 56,
+        "maxTop": 3.5
+      },
+      "allCornerSourceLinesClear": false,
+      "minimumCornerSourceLineAirGap": -0.6379310344827589,
+      "valid": false
+    }
+  ],
+  "geometry": {
+    "constraintDescription": "intersection of two radius3m distances to service AABBs and Native radius4m distance to immutable actual Cargo access point; planner Cargo bounds additionally checked",
+    "maximumReachOnlyZ": {
+      "x": -6.5,
+      "z": 9.227178028658928
+    },
+    "centralCargoMinimumZ": {
+      "x": -6.5,
+      "z": 8.755323010896129
+    },
+    "limitations": [
+      "Pure source preflight; actual Native actor/Cargo accessible, support, LOS and normal walk remain authoritative",
+      "No product, E2E, reach, source, terrain, masks, resources or input implementation edits",
+      "AABB distances are continuous convex functions: box corner maximum bounds all interior points; source ground checks entire box plus player horizontal hull, not only corners",
+      "Exact source line traversal used for each accepted scan point and box corner; full-box interior LOS clearance additionally follows from checked bounding strip below"
+    ]
+  }
+}

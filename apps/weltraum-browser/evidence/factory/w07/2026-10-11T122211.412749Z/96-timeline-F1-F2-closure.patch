@@ -1,0 +1,34 @@
+--- candidate95-F1-F2
++++ candidate96-F1-F2-closed
+@@ -9,7 +9,7 @@
+   let traceStartIssued=false,traceStream:string|undefined,traceFinish:Promise<unknown[]>|undefined,traceCleanupReported=false;
+   let completeResolve:(event:unknown)=>void;
+   const traceComplete=new Promise<unknown>(resolve=>{completeResolve=resolve;});
+-  const traceMetadata:Record<string,unknown>={kind:"DIAGNOSTIC_ONLY_RENDERER_TIMELINE_NOT_GAMEPLAY_GATE",categories:"devtools.timeline,disabled-by-default-devtools.timeline,blink",transferMode:"ReturnAsStream",v8Sampling:false,complete:false,outputLimitBytes:33554432};
++  const traceMetadata:Record<string,unknown>={kind:"DIAGNOSTIC_ONLY_RENDERER_TIMELINE_NOT_GAMEPLAY_GATE",categories:"devtools.timeline,disabled-by-default-devtools.timeline,blink",transferMode:"ReturnAsStream",v8Sampling:false,complete:false,completionWaitTimeoutMs:5000,outputLimitBytes:33554432};
+   const tracePath=(name:string)=>{
+     const run=process.env.WELTRAUM_FACTORY_EVIDENCE_RUN;
+     if(!run||!/^[A-Za-z0-9._-]{1,100}$/.test(run))throw new Error("Diagnostic requires actual own run");
+@@ -22,7 +22,12 @@
+         let endAcknowledged=false;traceMetadata.endIssuedMs=performance.now();
+         try{await keyboard.send("Tracing.end");endAcknowledged=true;traceMetadata.endAckMs=performance.now();}catch(error){failures.push(error);}
+         if(endAcknowledged){
+-          const completion=await traceComplete;traceMetadata.completion=completion;
++          let completionTimer:ReturnType<typeof setTimeout>|undefined;
++          let completion:unknown;
++          try{completion=await Promise.race([traceComplete,new Promise<never>((_,reject)=>{completionTimer=setTimeout(()=>reject(new Error("Diagnostic tracingComplete timed out after5000ms; incomplete")),5000);})]);}
++          finally{if(completionTimer!==undefined)clearTimeout(completionTimer);}
++          traceMetadata.completion=completion;const dataLossOccurred=(completion as {dataLossOccurred?:boolean}).dataLossOccurred===true;
++          traceMetadata.dataLossOccurred=dataLossOccurred;
+           if(!traceStream)throw new Error("Tracing completed without an IO stream");
+           let bytes=0,eof=false;
+           while(!eof){
+@@ -39,7 +44,7 @@
+           traceMetadata.processThreadMetadata=metadata;traceMetadata.traceEventCount=decoded.traceEvents.length;
+           traceMetadata.rendererMainThreads=metadata.filter((event:{name?:string;args?:{name?:string}})=>event.name==="thread_name"&&/RendererMain/i.test(event.args?.name??""));
+           traceMetadata.attributionStatus=(traceMetadata.rendererMainThreads as unknown[]).length?"RENDERER_MAIN_THREAD_METADATA_PRESENT":"UNSUPPORTED_NO_RENDERER_MAIN_THREAD_METADATA";
+-          traceMetadata.complete=true;
++          traceMetadata.complete=!dataLossOccurred;if(dataLossOccurred)throw new Error("Tracing reports dataLossOccurred; diagnostic incomplete");
+         }
+       }else traceMetadata.attributionStatus="NOT_STARTED_EARLIER_CASE_FAILED";
+     }catch(error){failures.push(error);}

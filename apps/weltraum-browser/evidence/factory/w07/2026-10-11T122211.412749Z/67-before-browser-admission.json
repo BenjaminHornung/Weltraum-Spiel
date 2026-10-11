@@ -1,0 +1,11 @@
+{
+  "checkedAtUtc": "2026-10-11T16:03:48.664296+00:00",
+  "all29ProductHashesMatch": true,
+  "sealReceiptSha256": "5f0588a7a969d185424780bd298fc16c45260874311ef9415cc4da49aa580c12",
+  "eighthBoundArtifactsVerified": 31,
+  "eighthArtifactReceiptSha256": "ab38347d257a874ca78f763bb872766f3b31861db893afede213a137bbac6371",
+  "configSha256": "53a55a48da97d43a02e317fb8edc844d57a9b5687f356a7ebf4f5b470efcf900",
+  "port5174Before": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess\n",
+  "normalGameplay": true,
+  "noProductWrites": true
+}

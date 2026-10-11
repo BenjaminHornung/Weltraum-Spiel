@@ -1,0 +1,21 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/hvp-bootstrap.test.ts",
+    "tests/unit/factory/hostLifecycle.test.ts",
+    "tests/unit/hvp-player-input.test.ts",
+    "tests/unit/factory/placement.test.ts",
+    "tests/unit/factory/facilitySession.test.ts"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startUtc": "2026-10-11T15:48:02.820265+00:00",
+  "endUtc": "2026-10-11T15:52:03.028069+00:00",
+  "durationSeconds": 240.20781203500155,
+  "exitCode": 0,
+  "rawBytes": 511,
+  "rawSha256": "386a4002e32b35c8608037b37c3f8c2cc9a5f96551f4ba354bf97d0a2af58a42",
+  "phase": "Post actualReceiver ghost fix and ES2022-compatible test query; final runtime bytes, serial affected checks"
+}

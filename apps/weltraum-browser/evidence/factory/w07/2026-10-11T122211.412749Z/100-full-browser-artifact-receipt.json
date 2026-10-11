@@ -1,0 +1,58 @@
+{
+  "kind": "ACTUAL_NORMAL_FULL17_GAMEPLAY_ARTIFACTS",
+  "actualFreshFixedOutputs": [
+    "browser-native-walk-taps.json",
+    "browser-cargo-open-native-walk.json",
+    "paid-native-cutter.png",
+    "browser-paid-cutter.json",
+    "browser-second-cutter-depletion.json",
+    "browser-native-disposal.json"
+  ],
+  "artifacts": [
+    {
+      "path": "browser-mesa-normal-full-100/browser-cargo-open-native-walk.json",
+      "sha256": "bba34b93b609af98e25ff2d01c88f9ce0a54b3b17ea12142c17ac7ad1d6d512f",
+      "bytes": 677421
+    },
+    {
+      "path": "browser-mesa-normal-full-100/browser-native-disposal.json",
+      "sha256": "f55ac145a3406d7faf3c2f312e14280db3556ecaa2673955f4f7f7b4bf5e9094",
+      "bytes": 467
+    },
+    {
+      "path": "browser-mesa-normal-full-100/browser-native-walk-taps.json",
+      "sha256": "eb232835148dee534258899c0bdc399a278fb5db073697d022f3de5268e7d751",
+      "bytes": 521910
+    },
+    {
+      "path": "browser-mesa-normal-full-100/browser-paid-cutter.json",
+      "sha256": "f896b800535e0f1b9bb6a20a17fc77f6908dda8a609b55df5d807bb405eb0612",
+      "bytes": 250659
+    },
+    {
+      "path": "browser-mesa-normal-full-100/browser-second-cutter-depletion.json",
+      "sha256": "74eeaf00173ba05a7fba7f31387d0ef39bdc666307759df999285f4ba8361a45",
+      "bytes": 380978
+    },
+    {
+      "path": "browser-mesa-normal-full-100/paid-native-cutter.png",
+      "sha256": "6f83bd96c2a3360f05930e927344df01aeaba331ae53d4eac44eef827619aae6",
+      "bytes": 662106
+    },
+    {
+      "path": "browser-mesa-normal-full-100/playwright-output/.last-run.json",
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903",
+      "bytes": 45
+    },
+    {
+      "path": "browser-mesa-normal-full-100/playwright-report/data/220ae70272e88926f47ce2396c223c574d875e48.png",
+      "sha256": "6f83bd96c2a3360f05930e927344df01aeaba331ae53d4eac44eef827619aae6",
+      "bytes": 662106
+    },
+    {
+      "path": "browser-mesa-normal-full-100/playwright-report/index.html",
+      "sha256": "f905126ca0f887e522d9d7eea2378fe8849107b190c4f0ddf768db30716b1311",
+      "bytes": 542214
+    }
+  ]
+}

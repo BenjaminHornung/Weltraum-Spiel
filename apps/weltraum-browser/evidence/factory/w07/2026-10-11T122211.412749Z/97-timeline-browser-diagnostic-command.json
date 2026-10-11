@@ -1,0 +1,26 @@
+{
+  "kind": "DIAGNOSTIC_ONLY_TIMELINE_NOT_GAMEPLAY_GATE",
+  "argv": [
+    "npm",
+    "run",
+    "test:e2e",
+    "--",
+    "--config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts",
+    "tests/e2e/factory-placement.spec.ts"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "env": {
+    "FP06_E2E_RUN_DIR": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/browser-timeline-diagnostic-97",
+    "WELTRAUM_FACTORY_EVIDENCE_RUN": "2026-10-11T122211.412749Z",
+    "WELTRAUM_PLAYWRIGHT_EXECUTABLE_PATH": "/usr/bin/chromium"
+  },
+  "startUtc": "2026-10-11T19:04:34.641990+00:00",
+  "endUtc": "2026-10-11T19:05:17.375531+00:00",
+  "wrapperSeconds": 42.73355006000202,
+  "exitCode": 0,
+  "rawBytes": 1169,
+  "rawSha256": "af0c5c46d7e8fac534acdff36a684087fc45e2e057e73a02bc3d09c47f4d2728",
+  "configSha256": "53a55a48da97d43a02e317fb8edc844d57a9b5687f356a7ebf4f5b470efcf900",
+  "overlaySealSha256": "1074e7ac4fd9be9f2cc67da262931e205f0771fba93e652d6fbfa6b7afa12fa5",
+  "timelineScope": "Original Chrome devtools.timeline with same wall/DOM/passive observation; no hardware attribution"
+}

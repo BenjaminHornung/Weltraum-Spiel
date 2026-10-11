@@ -1,0 +1,5 @@
+apps/weltraum-browser/src/hestia-prototype/physics/session.ts(235,12): error TS2365: Operator '>' cannot be applied to types 'number | FactoryNativeCargoRead' and 'number'.
+apps/weltraum-browser/tests/unit/factory/placement.test.ts(115,33): error TS2345: Argument of type '{ binding: { sessionId: string; epoch: number; terrainRevision: number; sourceDigest: string; baseDigest: string; facilityRevision: number; }; material: MaterialView; installations: never[]; actor: { actorId: string; ownerId: string | undefined; positionMm: number[]; cargoPositionMm: number[]; canBuild: boolean; }; ...' is not assignable to parameter of type 'FactoryPlacementView'.
+  The types of 'cargoAccess.accessBoundsMm.min' are incompatible between these types.
+    Type 'number[]' is not assignable to type 'FactoryVector'.
+      Target requires 3 element(s) but source may have fewer.

@@ -1,0 +1,277 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/hvp-player-input.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-player-input.test.ts (12 tests | 10 failed) 229ms
+     × delivers normal Factory KeyD without any RAF and releases it before a frame 15ms
+     × stages one Space edge, preserves it through ordinary release, and never stages it again on RAF 2ms
+     × neutralizes staged movement and jump at Escape without another RAF 1ms
+     × neutralizes staged movement and jump at blur without another RAF 1ms
+     × neutralizes staged movement and jump at hold without another RAF 1ms
+     × sends a Factory level intent without any client RAF and coalesces latest release behind one Read 133ms
+     × preserves one unsent jump through ordinary key release while Read is busy 3ms
+     × Pause cancels a queued jump and held intent instead of replaying it after Play 3ms
+     × a late event Read cannot publish held native staging or overwrite its exact Prepare receipt 28ms
+     × disposed Factory input cannot send, retain an unsent edge, or allocate a new transport request 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-player-input.test.ts > W07 Factory event intent without render authority > delivers normal Factory KeyD without any RAF and releases it before a frame
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/hvp-player-input.test.ts:47:49
+     45|   it("delivers normal Factory KeyD without any RAF and releases it bef…
+     46|     const h = await inputHarness(); const ticks = h.native.read().tick…
+     47|     h.key("keydown", "KeyD"); expect(h.intents).toHaveLength(1); expec…
+       |                                                 ^
+     48|     h.key("keyup", "KeyD"); expect(h.intents.at(-1)).toMatchObject(zer…
+     49|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯
+
+ FAIL  tests/unit/hvp-player-input.test.ts > W07 Factory event intent without render authority > stages one Space edge, preserves it through ordinary release, and never stages it again on RAF
+AssertionError: expected undefined to be true // Object.is equality
+
+- Expected:
+true
+
++ Received:
+undefined
+
+ ❯ tests/unit/hvp-player-input.test.ts:51:95
+     49|   });
+     50|   it("stages one Space edge, preserves it through ordinary release, an…
+     51|     const h = await inputHarness(); h.key("keydown", "Space"); expect(…
+       |                                                                                               ^
+     52|     h.key("keydown", "Space", true); h.key("keyup", "Space"); h.input.…
+     53|     expect(h.intents.filter(value => value.jump)).toHaveLength(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/10]⎯
+
+ FAIL  tests/unit/hvp-player-input.test.ts > W07 Factory event intent without render authority > neutralizes staged movement and jump at Escape without another RAF
+ FAIL  tests/unit/hvp-player-input.test.ts > W07 Factory event intent without render authority > neutralizes staged movement and jump at blur without another RAF
+ FAIL  tests/unit/hvp-player-input.test.ts > W07 Factory event intent without render authority > neutralizes staged movement and jump at hold without another RAF
+AssertionError: expected undefined to be true // Object.is equality
+
+- Expected:
+true
+
++ Received:
+undefined
+
+ ❯ tests/unit/hvp-player-input.test.ts:56:121
+     54|   });
+     55|   it.each(["Escape", "blur", "hold"])("neutralizes staged movement and…
+     56|     const h = await inputHarness(); h.key("keydown", "KeyD"); h.key("k…
+       |                                                                                                                         ^
+     57|     if (kind === "Escape") h.key("keydown", "Escape"); else if (kind =…
+     58|     expect(h.intents.at(-1)).toMatchObject(zero); expect(h.input.activ…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/10]⎯
+
+ FAIL  tests/unit/hvp-player-input.test.ts > W07 existing bounded Read(input) transport > sends a Factory level intent without any client RAF and coalesces latest release behind one Read
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/hvp-player-input.test.ts:101:26
+     99|   it("sends a Factory level intent without any client RAF and coalesce…
+    100|     const { client, worker } = await clientHarness(); client.setPlayer…
+    101|     expect(worker.reads).toHaveLength(1); const ticks = worker.session…
+       |                          ^
+    102|     for (let count = 0; count < 20; count++) client.setPlayerInput({ .…
+    103|     client.setPlayerInput(zero); expect(worker.reads).toHaveLength(1);…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/10]⎯
+
+ FAIL  tests/unit/hvp-player-input.test.ts > W07 existing bounded Read(input) transport > preserves one unsent jump through ordinary key release while Read is busy
+AssertionError: expected undefined to match object { input: { x: +0, z: +0, …(2) } }
+
+- Expected:
+{
+  "input": {
+    "jump": true,
+    "sprint": false,
+    "x": 0,
+    "z": 0,
+  },
+}
+
++ Received:
+undefined
+
+ ❯ tests/unit/hvp-player-input.test.ts:109:61
+    107|   it("preserves one unsent jump through ordinary key release while Rea…
+    108|     const { client, worker } = await clientHarness(); client.update();…
+    109|     worker.release(); await turn(); expect(worker.reads[0]).toMatchObj…
+       |                                                             ^
+    110|     client.setPlayerInput(zero); expect(worker.reads[0]).toMatchObject…
+    111|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/10]⎯
+
+ FAIL  tests/unit/hvp-player-input.test.ts > W07 existing bounded Read(input) transport > Pause cancels a queued jump and held intent instead of replaying it after Play
+AssertionError: expected undefined to match object { input: { x: +0, z: +0, …(2) } }
+
+- Expected:
+{
+  "input": {
+    "jump": false,
+    "sprint": false,
+    "x": 0,
+    "z": 0,
+  },
+}
+
++ Received:
+undefined
+
+ ❯ tests/unit/hvp-player-input.test.ts:115:29
+    113|     const { client, worker } = await clientHarness(); client.update();…
+    114|     worker.release(); await turn(); expect(worker.reads).toHaveLength(…
+    115|     expect(worker.reads[0]).toMatchObject({ input: zero }); worker.rel…
+       |                             ^
+    116|   });
+    117|   it("keeps ordinary Legacy setPlayerInput buffered and sends it only …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/10]⎯
+
+ FAIL  tests/unit/hvp-player-input.test.ts > W07 existing bounded Read(input) transport > a late event Read cannot publish held native staging or overwrite its exact Prepare receipt
+AssertionError: expected { Object (ticks, backlogSeconds, ...) } to deeply equal { Object (ticks, backlogSeconds, ...) }
+
+- Expected
++ Received
+
+@@ -22,23 +22,78 @@
+          "y": 0,
+          "z": 0,
+        },
+      },
+    ],
+-   "bodyCount": 2,
++   "bodyCount": 3,
+    "bodyResidencyId": null,
+    "bodyResidencyTransaction": "Idle",
+-   "colliderCount": 2,
++   "colliderCount": 35,
+    "collisionBytes": 0,
+    "discardedSeconds": 0,
+    "dormantCheckpointBytes": 0,
+    "factoryFacilities": {
+      "owners": [],
+-     "prepared": null,
++     "prepared": {
++       "bodyHandle": 1e-323,
++       "centerMm": [
++         -6250,
++         1500,
++         5000,
++       ],
++       "colliderHandles": [
++         1e-323,
++         1.5e-323,
++         2e-323,
++         2.5e-323,
++         3e-323,
++         3.5e-323,
++         4e-323,
++         4.4e-323,
++         5e-323,
++         5.4e-323,
++         6e-323,
++         6.4e-323,
++         7e-323,
++         7.4e-323,
++         8e-323,
++         8.4e-323,
++         9e-323,
++         9.4e-323,
++         1e-322,
++         1.04e-322,
++         1.1e-322,
++         1.14e-322,
++         1.2e-322,
++         1.24e-322,
++         1.3e-322,
++         1.33e-322,
++         1.4e-322,
++         1.43e-322,
++         1.5e-322,
++         1.53e-322,
++         1.6e-322,
++         1.63e-322,
++         1.7e-322,
++       ],
++       "definitionRef": {
++         "digest": "fnv1a:9f35228b",
++         "sourceId": "B06",
++         "version": 1,
++       },
++       "instanceId": "event_cutter",
++       "massMg": 208000000,
++       "materialBinding": "explicit-transport-unit-BOM",
++       "ownerId": "event_cutter",
++       "profileDigest": "288390f5",
++       "quarterTurns": 1,
++       "sourceDigest": "fa99c5df",
++       "transactionId": "event_overlap",
++     },
+      "revision": 0,
+-     "state": "Idle",
+-     "transactionId": null,
++     "state": "PreparedHeld",
++     "transactionId": "event_overlap",
+    },
+    "gravity": 11.794460201817357,
+    "gravityProfile": "local-tangent-gravity-v1",
+    "impulseTarget": {
+      "distanceMeters": null,
+
+ ❯ tests/unit/hvp-player-input.test.ts:127:59
+    125|       expectedRevision: 0, expectedTerrainRevision: 0, materialBinding…
+    126|     await client.prepareFactoryFacility!(request); client.setPlayerInp…
+    127|     worker.release(); await turn(); expect(client.read()).toEqual(befo…
+       |                                                           ^
+    128|     await client.commitFactoryFacility!(request.transactionId); client…
+    129|     expect(client.read().factoryFacilities?.owners).toHaveLength(1); a…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/10]⎯
+
+ FAIL  tests/unit/hvp-player-input.test.ts > W07 existing bounded Read(input) transport > disposed Factory input cannot send, retain an unsent edge, or allocate a new transport request
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/hvp-player-input.test.ts:132:118
+    130|   });
+    131|   it("disposed Factory input cannot send, retain an unsent edge, or al…
+    132|     const { client, worker } = await clientHarness(); client.setPlayer…
+       |                                                                                                                      ^
+    133|     const count = worker.messages.length; client.setPlayerInput({ ...z…
+    134|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/10]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  10 failed | 2 passed (12)
+   Start at  14:43:49
+   Duration  1.44s (transform 921ms, setup 0ms, import 1.10s, tests 229ms, environment 0ms)
+

@@ -1,0 +1,43 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/hvp-player-input.test.ts -t supported Factory input before snapshot ACK
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-player-input.test.ts (16 tests | 2 failed | 14 skipped) 190ms
+     × delivers Down and Up while a neutral snapshot ACK stays busy, without input-owned ticks or pose 143ms
+     × releases a genuinely moving Native owner before its outstanding snapshot ACK 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-player-input.test.ts > W07 supported Factory input before snapshot ACK > delivers Down and Up while a neutral snapshot ACK stays busy, without input-owned ticks or pose
+AssertionError: expected +0 to be close to 0.3, received difference is 0.3, but expected 0.000049999999999999996
+ ❯ tests/unit/hvp-player-input.test.ts:131:71
+    129|     expect(moved.ticks).toBe(before.ticks + 6);
+    130|     expect(moved.player).toMatchObject({ grounded: true, status: "Walk…
+    131|     expect.soft(moved.player!.position.x - before.player!.position.x).…
+       |                                                                       ^
+    132|     client.setPlayerInput(zero);
+    133|     expect(worker.session.read().ticks).toBe(moved.ticks);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/hvp-player-input.test.ts > W07 supported Factory input before snapshot ACK > releases a genuinely moving Native owner before its outstanding snapshot ACK
+AssertionError: expected 0.600010097026825 to be close to 0.3000100255012512, received difference is 0.30000007152557373, but expected 5e-7
+ ❯ tests/unit/hvp-player-input.test.ts:154:54
+    152|     expect(worker.session.read().player!.position).toEqual(moved.playe…
+    153|     for (let step = 0; step < 6; step++) worker.session.advance(1 / 60…
+    154|     expect(worker.session.read().player!.position.x).toBeCloseTo(moved…
+       |                                                      ^
+    155|     expect(worker.session.read().ticks).toBe(before.ticks + 12);
+    156|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 14 skipped (16)
+   Start at  16:31:49
+   Duration  1.37s (transform 877ms, setup 0ms, import 1.05s, tests 190ms, environment 0ms)
+

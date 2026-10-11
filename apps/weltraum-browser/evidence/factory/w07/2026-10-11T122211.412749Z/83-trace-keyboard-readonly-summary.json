@@ -1,0 +1,50 @@
+{
+  "tracePath": "browser-adaptive-normal-subset-83/playwright-output/factory-placement-W07-real-19e1d-source-checked-Cutter-stand-chromium/trace.zip",
+  "observability": "Actual keyboardPressAPI roundtrip timing in failedcase10 only; DOMeventDownUp and outgoingNativeIntentedge timing NOT instrumented, no inferred native latency attribution",
+  "calls": [
+    {
+      "traceEntry": "0-trace.trace",
+      "params": {
+        "key": "w",
+        "delay": 25
+      },
+      "startTime": 112494.075,
+      "endTime": 113079.105,
+      "durationMs": 585.0299999999988,
+      "error": null
+    },
+    {
+      "traceEntry": "0-trace.trace",
+      "params": {
+        "key": "s",
+        "delay": 25
+      },
+      "startTime": 115235.255,
+      "endTime": 115858.477,
+      "durationMs": 623.2219999999943,
+      "error": null
+    },
+    {
+      "traceEntry": "0-trace.trace",
+      "params": {
+        "key": "w",
+        "delay": 25
+      },
+      "startTime": 118138.495,
+      "endTime": 118737.375,
+      "durationMs": 598.8800000000047,
+      "error": null
+    },
+    {
+      "traceEntry": "0-trace.trace",
+      "params": {
+        "key": "s",
+        "delay": 25
+      },
+      "startTime": 120937.858,
+      "endTime": 121523.886,
+      "durationMs": 586.0280000000057,
+      "error": null
+    }
+  ]
+}

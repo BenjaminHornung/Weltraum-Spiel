@@ -1,0 +1,1190 @@
+[
+  {
+    "tap": 1,
+    "axis": "x",
+    "key": "d",
+    "holdMs": 125,
+    "capBeforeMs": 125,
+    "capAfterMs": 125,
+    "crossedTarget": false,
+    "target": -6.25,
+    "sourceStandWindow": [
+      -6.4,
+      -6.1
+    ],
+    "before": [
+      -5.5,
+      2.4100027084350586,
+      11.875
+    ],
+    "after": [
+      -5.900001525878906,
+      2.4000418186187744,
+      11.875
+    ],
+    "axisDelta": -0.40000152587890625,
+    "tickDelta": 106,
+    "grounded": true,
+    "walking": "Walking",
+    "releasedReads": [
+      {
+        "ticks": 1416,
+        "pose": {
+          "x": -5.900001525878906,
+          "y": 2.4000418186187744,
+          "z": 11.875
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      },
+      {
+        "ticks": 1452,
+        "pose": {
+          "x": -5.900001525878906,
+          "y": 2.4000418186187744,
+          "z": 11.875
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      }
+    ]
+  },
+  {
+    "tap": 2,
+    "axis": "x",
+    "key": "d",
+    "holdMs": 117,
+    "capBeforeMs": 125,
+    "capAfterMs": 63,
+    "crossedTarget": true,
+    "target": -6.25,
+    "sourceStandWindow": [
+      -6.4,
+      -6.1
+    ],
+    "before": [
+      -5.900001525878906,
+      2.4000418186187744,
+      11.875
+    ],
+    "after": [
+      -6.450003623962402,
+      2.400040864944458,
+      11.875
+    ],
+    "axisDelta": -0.5500020980834961,
+    "tickDelta": 102,
+    "grounded": true,
+    "walking": "Walking",
+    "releasedReads": [
+      {
+        "ticks": 1556,
+        "pose": {
+          "x": -6.450003623962402,
+          "y": 2.400040864944458,
+          "z": 11.875
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      },
+      {
+        "ticks": 1589,
+        "pose": {
+          "x": -6.450003623962402,
+          "y": 2.400040864944458,
+          "z": 11.875
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      }
+    ]
+  },
+  {
+    "tap": 3,
+    "axis": "x",
+    "key": "a",
+    "holdMs": 63,
+    "capBeforeMs": 63,
+    "capAfterMs": 32,
+    "crossedTarget": true,
+    "target": -6.25,
+    "sourceStandWindow": [
+      -6.4,
+      -6.1
+    ],
+    "before": [
+      -6.450003623962402,
+      2.400040864944458,
+      11.875
+    ],
+    "after": [
+      -5.900001525878906,
+      2.4000368118286133,
+      11.875
+    ],
+    "axisDelta": 0.5500020980834961,
+    "tickDelta": 103,
+    "grounded": true,
+    "walking": "Walking",
+    "releasedReads": [
+      {
+        "ticks": 1691,
+        "pose": {
+          "x": -5.900001525878906,
+          "y": 2.4000368118286133,
+          "z": 11.875
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      },
+      {
+        "ticks": 1724,
+        "pose": {
+          "x": -5.900001525878906,
+          "y": 2.4000368118286133,
+          "z": 11.875
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      }
+    ]
+  },
+  {
+    "tap": 4,
+    "axis": "x",
+    "key": "d",
+    "holdMs": 32,
+    "capBeforeMs": 32,
+    "capAfterMs": 25,
+    "crossedTarget": true,
+    "target": -6.25,
+    "sourceStandWindow": [
+      -6.4,
+      -6.1
+    ],
+    "before": [
+      -5.900001525878906,
+      2.4000368118286133,
+      11.875
+    ],
+    "after": [
+      -6.400003433227539,
+      2.4000368118286133,
+      11.875
+    ],
+    "axisDelta": -0.5000019073486328,
+    "tickDelta": 108,
+    "grounded": true,
+    "walking": "Walking",
+    "releasedReads": [
+      {
+        "ticks": 1829,
+        "pose": {
+          "x": -6.400003433227539,
+          "y": 2.4000368118286133,
+          "z": 11.875
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      },
+      {
+        "ticks": 1865,
+        "pose": {
+          "x": -6.400003433227539,
+          "y": 2.4000368118286133,
+          "z": 11.875
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      }
+    ]
+  },
+  {
+    "tap": 5,
+    "axis": "x",
+    "key": "a",
+    "holdMs": 25,
+    "capBeforeMs": 25,
+    "capAfterMs": 25,
+    "crossedTarget": true,
+    "target": -6.25,
+    "sourceStandWindow": [
+      -6.4,
+      -6.1
+    ],
+    "before": [
+      -6.400003433227539,
+      2.4000368118286133,
+      11.875
+    ],
+    "after": [
+      -5.850001335144043,
+      2.4000368118286133,
+      11.875
+    ],
+    "axisDelta": 0.5500020980834961,
+    "tickDelta": 106,
+    "grounded": true,
+    "walking": "Walking",
+    "releasedReads": [
+      {
+        "ticks": 1977,
+        "pose": {
+          "x": -5.850001335144043,
+          "y": 2.4000368118286133,
+          "z": 11.875
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      },
+      {
+        "ticks": 2013,
+        "pose": {
+          "x": -5.850001335144043,
+          "y": 2.4000368118286133,
+          "z": 11.875
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      }
+    ]
+  },
+  {
+    "tap": 6,
+    "axis": "x",
+    "key": "d",
+    "holdMs": 25,
+    "capBeforeMs": 25,
+    "capAfterMs": 25,
+    "crossedTarget": true,
+    "target": -6.25,
+    "sourceStandWindow": [
+      -6.4,
+      -6.1
+    ],
+    "before": [
+      -5.850001335144043,
+      2.4000368118286133,
+      11.875
+    ],
+    "after": [
+      -6.3000030517578125,
+      2.4000368118286133,
+      11.875
+    ],
+    "axisDelta": -0.45000171661376953,
+    "tickDelta": 112,
+    "grounded": true,
+    "walking": "Walking",
+    "releasedReads": [
+      {
+        "ticks": 2130,
+        "pose": {
+          "x": -6.3000030517578125,
+          "y": 2.4000368118286133,
+          "z": 11.875
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      },
+      {
+        "ticks": 2166,
+        "pose": {
+          "x": -6.3000030517578125,
+          "y": 2.4000368118286133,
+          "z": 11.875
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      }
+    ]
+  },
+  {
+    "tap": 7,
+    "axis": "z",
+    "key": "s",
+    "holdMs": 125,
+    "capBeforeMs": 125,
+    "capAfterMs": 125,
+    "crossedTarget": false,
+    "target": 8.899999999999999,
+    "sourceStandWindow": [
+      8.725,
+      9.075
+    ],
+    "before": [
+      -6.3000030517578125,
+      2.4000368118286133,
+      11.875
+    ],
+    "after": [
+      -6.300007343292236,
+      2.400017499923706,
+      11.374988555908203
+    ],
+    "axisDelta": -0.5000114440917969,
+    "tickDelta": 96,
+    "grounded": true,
+    "walking": "Walking",
+    "releasedReads": [
+      {
+        "ticks": 2337,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400017499923706,
+          "z": 11.374988555908203
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      },
+      {
+        "ticks": 2366,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400017499923706,
+          "z": 11.374988555908203
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      }
+    ]
+  },
+  {
+    "tap": 8,
+    "axis": "z",
+    "key": "s",
+    "holdMs": 125,
+    "capBeforeMs": 125,
+    "capAfterMs": 125,
+    "crossedTarget": false,
+    "target": 8.899999999999999,
+    "sourceStandWindow": [
+      8.725,
+      9.075
+    ],
+    "before": [
+      -6.300007343292236,
+      2.400017499923706,
+      11.374988555908203
+    ],
+    "after": [
+      -6.300007343292236,
+      2.400040864944458,
+      10.774986267089844
+    ],
+    "axisDelta": -0.6000022888183594,
+    "tickDelta": 108,
+    "grounded": true,
+    "walking": "Walking",
+    "releasedReads": [
+      {
+        "ticks": 2478,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400040864944458,
+          "z": 10.774986267089844
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      },
+      {
+        "ticks": 2508,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400040864944458,
+          "z": 10.774986267089844
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      }
+    ]
+  },
+  {
+    "tap": 9,
+    "axis": "z",
+    "key": "s",
+    "holdMs": 125,
+    "capBeforeMs": 125,
+    "capAfterMs": 125,
+    "crossedTarget": false,
+    "target": 8.899999999999999,
+    "sourceStandWindow": [
+      8.725,
+      9.075
+    ],
+    "before": [
+      -6.300007343292236,
+      2.400040864944458,
+      10.774986267089844
+    ],
+    "after": [
+      -6.300007343292236,
+      2.400040864944458,
+      10.274984359741211
+    ],
+    "axisDelta": -0.5000019073486328,
+    "tickDelta": 105,
+    "grounded": true,
+    "walking": "Walking",
+    "releasedReads": [
+      {
+        "ticks": 2612,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400040864944458,
+          "z": 10.274984359741211
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      },
+      {
+        "ticks": 2648,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400040864944458,
+          "z": 10.274984359741211
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      }
+    ]
+  },
+  {
+    "tap": 10,
+    "axis": "z",
+    "key": "s",
+    "holdMs": 125,
+    "capBeforeMs": 125,
+    "capAfterMs": 125,
+    "crossedTarget": false,
+    "target": 8.899999999999999,
+    "sourceStandWindow": [
+      8.725,
+      9.075
+    ],
+    "before": [
+      -6.300007343292236,
+      2.400040864944458,
+      10.274984359741211
+    ],
+    "after": [
+      -6.300007343292236,
+      2.4001078605651855,
+      9.774982452392578
+    ],
+    "axisDelta": -0.5000019073486328,
+    "tickDelta": 114,
+    "grounded": true,
+    "walking": "Walking",
+    "releasedReads": [
+      {
+        "ticks": 2761,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.4001078605651855,
+          "z": 9.774982452392578
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      },
+      {
+        "ticks": 2797,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.4001078605651855,
+          "z": 9.774982452392578
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      }
+    ]
+  },
+  {
+    "tap": 11,
+    "axis": "z",
+    "key": "s",
+    "holdMs": 125,
+    "capBeforeMs": 125,
+    "capAfterMs": 125,
+    "crossedTarget": false,
+    "target": 8.899999999999999,
+    "sourceStandWindow": [
+      8.725,
+      9.075
+    ],
+    "before": [
+      -6.300007343292236,
+      2.4001078605651855,
+      9.774982452392578
+    ],
+    "after": [
+      -6.300007343292236,
+      2.400012493133545,
+      9.124979972839355
+    ],
+    "axisDelta": -0.6500024795532227,
+    "tickDelta": 120,
+    "grounded": false,
+    "walking": "Walking",
+    "releasedReads": [
+      {
+        "ticks": 2924,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400012493133545,
+          "z": 9.124979972839355
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      },
+      {
+        "ticks": 2964,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400012493133545,
+          "z": 9.124979972839355
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      }
+    ]
+  },
+  {
+    "tap": 12,
+    "axis": "z",
+    "key": "s",
+    "holdMs": 75,
+    "capBeforeMs": 125,
+    "capAfterMs": 63,
+    "crossedTarget": true,
+    "target": 8.899999999999999,
+    "sourceStandWindow": [
+      8.725,
+      9.075
+    ],
+    "before": [
+      -6.300007343292236,
+      2.400012493133545,
+      9.124979972839355
+    ],
+    "after": [
+      -6.300007343292236,
+      2.400012493133545,
+      8.674978256225586
+    ],
+    "axisDelta": -0.45000171661376953,
+    "tickDelta": 127,
+    "grounded": true,
+    "walking": "Walking",
+    "releasedReads": [
+      {
+        "ticks": 3092,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400012493133545,
+          "z": 8.674978256225586
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      },
+      {
+        "ticks": 3133,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400012493133545,
+          "z": 8.674978256225586
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      }
+    ]
+  },
+  {
+    "tap": 13,
+    "axis": "z",
+    "key": "w",
+    "holdMs": 63,
+    "capBeforeMs": 63,
+    "capAfterMs": 32,
+    "crossedTarget": true,
+    "target": 8.899999999999999,
+    "sourceStandWindow": [
+      8.725,
+      9.075
+    ],
+    "before": [
+      -6.300007343292236,
+      2.400012493133545,
+      8.674978256225586
+    ],
+    "after": [
+      -6.300007343292236,
+      2.400012493133545,
+      9.324980735778809
+    ],
+    "axisDelta": 0.6500024795532227,
+    "tickDelta": 135,
+    "grounded": true,
+    "walking": "Walking",
+    "releasedReads": [
+      {
+        "ticks": 3271,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400012493133545,
+          "z": 9.324980735778809
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      },
+      {
+        "ticks": 3312,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400012493133545,
+          "z": 9.324980735778809
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      }
+    ]
+  },
+  {
+    "tap": 14,
+    "axis": "z",
+    "key": "s",
+    "holdMs": 32,
+    "capBeforeMs": 32,
+    "capAfterMs": 25,
+    "crossedTarget": true,
+    "target": 8.899999999999999,
+    "sourceStandWindow": [
+      8.725,
+      9.075
+    ],
+    "before": [
+      -6.300007343292236,
+      2.400012493133545,
+      9.324980735778809
+    ],
+    "after": [
+      -6.300007343292236,
+      2.400012493133545,
+      8.674978256225586
+    ],
+    "axisDelta": -0.6500024795532227,
+    "tickDelta": 124,
+    "grounded": true,
+    "walking": "Walking",
+    "releasedReads": [
+      {
+        "ticks": 3439,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400012493133545,
+          "z": 8.674978256225586
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      },
+      {
+        "ticks": 3475,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400012493133545,
+          "z": 8.674978256225586
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      }
+    ]
+  },
+  {
+    "tap": 15,
+    "axis": "z",
+    "key": "w",
+    "holdMs": 25,
+    "capBeforeMs": 25,
+    "capAfterMs": 25,
+    "crossedTarget": true,
+    "target": 8.899999999999999,
+    "sourceStandWindow": [
+      8.725,
+      9.075
+    ],
+    "before": [
+      -6.300007343292236,
+      2.400012493133545,
+      8.674978256225586
+    ],
+    "after": [
+      -6.300007343292236,
+      2.400012493133545,
+      9.224980354309082
+    ],
+    "axisDelta": 0.5500020980834961,
+    "tickDelta": 121,
+    "grounded": true,
+    "walking": "Walking",
+    "releasedReads": [
+      {
+        "ticks": 3614,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400012493133545,
+          "z": 9.224980354309082
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      },
+      {
+        "ticks": 3649,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400012493133545,
+          "z": 9.224980354309082
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      }
+    ]
+  },
+  {
+    "tap": 16,
+    "axis": "z",
+    "key": "s",
+    "holdMs": 25,
+    "capBeforeMs": 25,
+    "capAfterMs": 25,
+    "crossedTarget": true,
+    "target": 8.899999999999999,
+    "sourceStandWindow": [
+      8.725,
+      9.075
+    ],
+    "before": [
+      -6.300007343292236,
+      2.400012493133545,
+      9.224980354309082
+    ],
+    "after": [
+      -6.300007343292236,
+      2.400012493133545,
+      8.674978256225586
+    ],
+    "axisDelta": -0.5500020980834961,
+    "tickDelta": 120,
+    "grounded": true,
+    "walking": "Walking",
+    "releasedReads": [
+      {
+        "ticks": 3762,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400012493133545,
+          "z": 8.674978256225586
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      },
+      {
+        "ticks": 3803,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400012493133545,
+          "z": 8.674978256225586
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      }
+    ]
+  },
+  {
+    "tap": 17,
+    "axis": "z",
+    "key": "w",
+    "holdMs": 25,
+    "capBeforeMs": 25,
+    "capAfterMs": 25,
+    "crossedTarget": true,
+    "target": 8.899999999999999,
+    "sourceStandWindow": [
+      8.725,
+      9.075
+    ],
+    "before": [
+      -6.300007343292236,
+      2.400012493133545,
+      8.674978256225586
+    ],
+    "after": [
+      -6.300007343292236,
+      2.400012493133545,
+      9.274980545043945
+    ],
+    "axisDelta": 0.6000022888183594,
+    "tickDelta": 132,
+    "grounded": true,
+    "walking": "Walking",
+    "releasedReads": [
+      {
+        "ticks": 3936,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400012493133545,
+          "z": 9.274980545043945
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      },
+      {
+        "ticks": 3977,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400012493133545,
+          "z": 9.274980545043945
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      }
+    ]
+  },
+  {
+    "tap": 18,
+    "axis": "z",
+    "key": "s",
+    "holdMs": 25,
+    "capBeforeMs": 25,
+    "capAfterMs": 25,
+    "crossedTarget": true,
+    "target": 8.899999999999999,
+    "sourceStandWindow": [
+      8.725,
+      9.075
+    ],
+    "before": [
+      -6.300007343292236,
+      2.400012493133545,
+      9.274980545043945
+    ],
+    "after": [
+      -6.300007343292236,
+      2.400012493133545,
+      8.624978065490723
+    ],
+    "axisDelta": -0.6500024795532227,
+    "tickDelta": 129,
+    "grounded": true,
+    "walking": "Walking",
+    "releasedReads": [
+      {
+        "ticks": 4103,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400012493133545,
+          "z": 8.624978065490723
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      },
+      {
+        "ticks": 4145,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400012493133545,
+          "z": 8.624978065490723
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      }
+    ]
+  },
+  {
+    "tap": 19,
+    "axis": "z",
+    "key": "w",
+    "holdMs": 25,
+    "capBeforeMs": 25,
+    "capAfterMs": 25,
+    "crossedTarget": true,
+    "target": 8.899999999999999,
+    "sourceStandWindow": [
+      8.725,
+      9.075
+    ],
+    "before": [
+      -6.300007343292236,
+      2.400012493133545,
+      8.624978065490723
+    ],
+    "after": [
+      -6.300007343292236,
+      2.400012493133545,
+      9.224980354309082
+    ],
+    "axisDelta": 0.6000022888183594,
+    "tickDelta": 124,
+    "grounded": true,
+    "walking": "Walking",
+    "releasedReads": [
+      {
+        "ticks": 4291,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400012493133545,
+          "z": 9.224980354309082
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      },
+      {
+        "ticks": 4329,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400012493133545,
+          "z": 9.224980354309082
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      }
+    ]
+  },
+  {
+    "tap": 20,
+    "axis": "z",
+    "key": "s",
+    "holdMs": 25,
+    "capBeforeMs": 25,
+    "capAfterMs": 25,
+    "crossedTarget": true,
+    "target": 8.899999999999999,
+    "sourceStandWindow": [
+      8.725,
+      9.075
+    ],
+    "before": [
+      -6.300007343292236,
+      2.400012493133545,
+      9.224980354309082
+    ],
+    "after": [
+      -6.300007343292236,
+      2.400012493133545,
+      8.57497787475586
+    ],
+    "axisDelta": -0.6500024795532227,
+    "tickDelta": 130,
+    "grounded": true,
+    "walking": "Walking",
+    "releasedReads": [
+      {
+        "ticks": 4457,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400012493133545,
+          "z": 8.57497787475586
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      },
+      {
+        "ticks": 4500,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400012493133545,
+          "z": 8.57497787475586
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      }
+    ]
+  },
+  {
+    "tap": 21,
+    "axis": "z",
+    "key": "w",
+    "holdMs": 25,
+    "capBeforeMs": 25,
+    "capAfterMs": 25,
+    "crossedTarget": true,
+    "target": 8.899999999999999,
+    "sourceStandWindow": [
+      8.725,
+      9.075
+    ],
+    "before": [
+      -6.300007343292236,
+      2.400012493133545,
+      8.57497787475586
+    ],
+    "after": [
+      -6.300007343292236,
+      2.400012493133545,
+      9.174980163574219
+    ],
+    "axisDelta": 0.6000022888183594,
+    "tickDelta": 124,
+    "grounded": true,
+    "walking": "Walking",
+    "releasedReads": [
+      {
+        "ticks": 4631,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400012493133545,
+          "z": 9.174980163574219
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      },
+      {
+        "ticks": 4669,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400012493133545,
+          "z": 9.174980163574219
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      }
+    ]
+  },
+  {
+    "tap": 22,
+    "axis": "z",
+    "key": "s",
+    "holdMs": 25,
+    "capBeforeMs": 25,
+    "capAfterMs": 25,
+    "crossedTarget": true,
+    "target": 8.899999999999999,
+    "sourceStandWindow": [
+      8.725,
+      9.075
+    ],
+    "before": [
+      -6.300007343292236,
+      2.400012493133545,
+      9.174980163574219
+    ],
+    "after": [
+      -6.300007343292236,
+      2.400012493133545,
+      8.57497787475586
+    ],
+    "axisDelta": -0.6000022888183594,
+    "tickDelta": 127,
+    "grounded": true,
+    "walking": "Walking",
+    "releasedReads": [
+      {
+        "ticks": 4799,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400012493133545,
+          "z": 8.57497787475586
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      },
+      {
+        "ticks": 4838,
+        "pose": {
+          "x": -6.300007343292236,
+          "y": 2.400012493133545,
+          "z": 8.57497787475586
+        },
+        "status": "Running",
+        "moving": "Idle",
+        "terrain": "Idle",
+        "facility": "Idle"
+      }
+    ]
+  }
+]

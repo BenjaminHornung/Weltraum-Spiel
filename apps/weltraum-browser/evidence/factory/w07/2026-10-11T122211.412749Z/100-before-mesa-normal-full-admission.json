@@ -1,0 +1,77 @@
+{
+  "baselineAll30Match": true,
+  "baselineSealSha256": "5138bdc77c13a971158c93deb430c8648a5a79d6701d910aaefd10fa8ed7cb16",
+  "priorArtifactCounts": {
+    "98-full-browser-artifact-receipt.json": 31,
+    "97-timeline-artifact-receipt.json": 8,
+    "94-render-wall-artifact-receipt.json": 6,
+    "92-main-cpu-profile-artifact-receipt.json": 7,
+    "90-passive-diagnostic-artifact-receipt.json": 6,
+    "88-full-browser-artifact-receipt.json": 27
+  },
+  "wrapper": {
+    "path": "/workspace/.cloud-setup/bin/chromium-hestia-mesa",
+    "sha256": "47b081898a76e3f36d43ce06697990adb093ebe2eaeed8ef1b484fa8bffd5ab9",
+    "bytes": 222,
+    "declaredExecPrefix": [
+      "/usr/bin/chromium",
+      "--ozone-platform=headless",
+      "--use-gl=angle",
+      "--use-angle=gl-egl",
+      "--ignore-gpu-blocklist"
+    ],
+    "explicitEnvOverrides": {
+      "LIBGL_ALWAYS_SOFTWARE": "1",
+      "EGL_PLATFORM": "surfaceless"
+    },
+    "playwrightArgs": "Original unchanged launch args passed through by exact quoted $@",
+    "runtimeFullChromiumArgv": "NOT_OBSERVED_NO_PRODUCT_HOOK",
+    "hardwarePerformanceClaim": false
+  },
+  "candidateArchiveSha256": "8f3148798f82f37cdcabe7d811e30b19467db52ac7ffc639b26e8425d6856dfa",
+  "original030fcArchiveSha256": "030fc301147af6a45da6412847368e6c7d5243b70811018e53883b83210ef605",
+  "fixedWriterOrigins": [
+    {
+      "path": "browser-native-walk-taps.json",
+      "existed": true,
+      "sha256": "433c0caace6ce019d47be224b3accfe3db85ea77de55fc4615d064520301a972",
+      "bytes": 162329
+    },
+    {
+      "path": "browser-cargo-open-native-walk.json",
+      "existed": true,
+      "sha256": "49b2bafd3f793d0314ef20db2c943fe61f87caba90feba2fc02ad85a9af076b4",
+      "bytes": 315480
+    },
+    {
+      "path": "browser-ghost-cancel.json",
+      "existed": true,
+      "sha256": "636cdebcc871934b5a4491221cf7890482f4021dd4ec992f52d42b15f6ca0d65",
+      "bytes": 103684
+    },
+    {
+      "path": "paid-native-cutter.png",
+      "existed": true,
+      "sha256": "adc80b0e70db0258ccc8ac1bfc18e0fa7b600e345e69e1fee7af455ff9a0908d",
+      "bytes": 689247
+    },
+    {
+      "path": "browser-paid-cutter.json",
+      "existed": true,
+      "sha256": "6efa3cee91a9f33abd7b92f4f8326dd34fa58372d74abb5c0af1331092b87aad",
+      "bytes": 250811
+    },
+    {
+      "path": "browser-second-cutter-depletion.json",
+      "existed": false,
+      "sha256": null,
+      "bytes": null
+    },
+    {
+      "path": "browser-native-disposal.json",
+      "existed": false,
+      "sha256": null,
+      "bytes": null
+    }
+  ]
+}

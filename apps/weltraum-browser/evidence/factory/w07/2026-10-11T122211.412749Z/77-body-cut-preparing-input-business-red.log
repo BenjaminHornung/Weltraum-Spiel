@@ -1,0 +1,52 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/hvp-player-input.test.ts -t body-cut Preparing entry
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-player-input.test.ts (24 tests | 2 failed | 22 skipped) 661ms
+     × neutralizes admitted input at a real Native body-cut Preparing entry while native ticks continue 399ms
+     × neutralizes admitted input at a real Client body-cut Preparing entry while native ticks continue 227ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-player-input.test.ts > W07 actual Native Factory input safety boundaries > neutralizes admitted input at a real Native body-cut Preparing entry while native ticks continue
+ FAIL  tests/unit/hvp-player-input.test.ts > W07 actual Native Factory input safety boundaries > neutralizes admitted input at a real Client body-cut Preparing entry while native ticks continue
+AssertionError: expected 0.30000001192092896 to be close to +0, received difference is 0.30000001192092896, but expected 5e-7
+ ❯ tests/unit/hvp-player-input.test.ts:205:51
+    203|     for (let step = 0; step < 6; step++) native.advance(1 / 60);
+    204|     expect(native.read().ticks).toBe(before.ticks + 6);
+    205|     expect.soft(native.read().player!.position.x).toBeCloseTo(before.p…
+       |                                                   ^
+    206|     expect.soft(native.read().player!.jumpCount).toBe(before.player!.j…
+    207|     if (boundary === "Client") await client.rollbackBodyCut(request.id…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/hvp-player-input.test.ts > W07 actual Native Factory input safety boundaries > neutralizes admitted input at a real Native body-cut Preparing entry while native ticks continue
+ FAIL  tests/unit/hvp-player-input.test.ts > W07 actual Native Factory input safety boundaries > neutralizes admitted input at a real Client body-cut Preparing entry while native ticks continue
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/unit/hvp-player-input.test.ts:206:50
+    204|     expect(native.read().ticks).toBe(before.ticks + 6);
+    205|     expect.soft(native.read().player!.position.x).toBeCloseTo(before.p…
+    206|     expect.soft(native.read().player!.jumpCount).toBe(before.player!.j…
+       |                                                  ^
+    207|     if (boundary === "Client") await client.rollbackBodyCut(request.id…
+    208|     expect(native.read().moving.state).toBe("Idle");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 22 skipped (24)
+   Start at  16:59:16
+   Duration  1.94s (transform 978ms, setup 0ms, import 1.17s, tests 661ms, environment 0ms)
+

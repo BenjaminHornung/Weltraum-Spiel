@@ -1,0 +1,7 @@
+{
+  "operation": "Restore only exact own E2E file from pre-diagnostic normal17 bytes; observational experiment retained as own evidence source",
+  "atUtc": "2026-10-11T15:02:26.254546+00:00",
+  "diagnosticSha256": "744e30b5a5f56be125448d738fb7805a1c3af78b160cbb70dabdae217cdcd1e4",
+  "normalRestoredSha256": "488439fa85e682a90e28a9781581d4d419d3c691bd37d3ed675c53fcad36bc9e",
+  "runtimeBytes": "Other28granted paths unchanged throughout; pre-seventh ce0007 seal restored"
+}

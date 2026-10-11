@@ -1,0 +1,15 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "build"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startUtc": "2026-10-11T17:37:46.967706+00:00",
+  "endUtc": "2026-10-11T17:37:51.204371+00:00",
+  "durationSeconds": 4.236651071001688,
+  "exitCode": 0,
+  "rawBytes": 1904,
+  "rawSha256": "5f30c4de8bc2968473b5da7ffefbb2f821f5e38bdbf40105de9b94cb72561993",
+  "stage": "ONEFILE E2E Source review F1/P2 error provenance closure only; preserve all original rejection reason objects plus fresh-release/context-close failures;29otherproductsheld; noBrowser/newNativeRED"
+}

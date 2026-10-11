@@ -1,0 +1,1641 @@
+{
+  "kind": "DIAGNOSTIC_ONLY_ORIGINAL_RENDER_WALL_ATTRIBUTION",
+  "metadata": {
+    "kind": "DIAGNOSTIC_ONLY_RENDER_WALL_NOT_GAMEPLAY_GATE",
+    "scope": "Synchronous wall duration includes CPU/native/wait; no GPU hardware attribution",
+    "nodeVersion": "v22.23.3",
+    "chromiumVersion": "154.0.8037.57",
+    "projectName": "chromium",
+    "projectUse": {
+      "baseURL": "http://127.0.0.1:5174",
+      "trace": "retain-on-failure",
+      "screenshot": "only-on-failure",
+      "launchOptions": {
+        "executablePath": "/usr/bin/chromium"
+      },
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+      "viewport": {
+        "width": 1280,
+        "height": 720
+      },
+      "screen": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "isMobile": false,
+      "hasTouch": false,
+      "defaultBrowserType": "chromium"
+    },
+    "scene": {
+      "url": "http://127.0.0.1:5174/factory.html",
+      "seed": "hestia-hvp-lagoon-001",
+      "sourceRevision": "hvp-authored-coast-v5",
+      "sourceDigest": "e62aea8a",
+      "camera": "{\"position\":[-5.5,3.1600027101897217,11.875],\"orientation\":[0,1,0,6.123233995736766e-17],\"visualBody\":[-5.5,2.4100027101897217,11.875],\"heightMeters\":1.8,\"view\":\"FirstPerson\"}",
+      "resources": "{\"ledger\":{\"slotBytes\":8388608,\"preparedCopyBytes\":8388608,\"maskBytes\":1089536,\"meshBytes\":25456116,\"groupedIndexBytes\":2373984,\"artifactCopyBytes\":25456116,\"retainedMeshBytes\":25470980,\"tempEstimateBytes\":150262360,\"vegetationSourceBytes\":5251200,\"checkpointSourceBytes\":0,\"totalCpuBytes\":232013160,\"gpuBytes\":\"unsupported\",\"triangles\":341190,\"drawCalls\":166,\"factoryCpuBytes\":13512,\"factoryMeshBytes\":1296,\"factoryTriangles\":12,\"factoryDraws\":1,\"dormantCheckpointBytes\":0,\"neighborSourceBytes\":0,\"neighborCacheBytes\":0,\"neighborCheckpointBytes\":0,\"neighborBaseProxyBytes\":0,\"physicsPayloadBytes\":4201776,\"physicsPrepareBytes\":100663296,\"dynamicFragmentSourceBytes\":0},\"caps\":{\"maxCpuBytes\":268435456,\"maxMeshBytes\":134217728,\"maxTriangles\":500000,\"maxDrawCalls\":300}}"
+    },
+    "neutralBefore": {
+      "ticks": 1337,
+      "backlogSeconds": 0.002500000000000089,
+      "discardedSeconds": 0.005766666668157151,
+      "status": "Running",
+      "gravity": 11.794460201817357,
+      "gravityProfile": "local-tangent-gravity-v1",
+      "activeDynamic": 0,
+      "residentDynamic": 2,
+      "solver": "rapier-0.12.0",
+      "stepCpuMs": 0.10000000149011612,
+      "bodyCount": 5,
+      "factoryFacilities": {
+        "cargo": {
+          "ownerId": "fp02_wreck_owner",
+          "containerId": "fp02_wreck_cargo",
+          "sourceDigest": "e62aea8a",
+          "profileDigest": "da3d7be8",
+          "opened": true,
+          "positionMm": [
+            -5500,
+            2000,
+            13125
+          ],
+          "accessBoundsMm": {
+            "min": [
+              -6250,
+              1500,
+              11625
+            ],
+            "max": [
+              -4750,
+              3500,
+              12625
+            ]
+          },
+          "bodyHandle": 2e-323,
+          "colliderHandles": [
+            3.95e-322
+          ],
+          "site": {
+            "version": "fp06-initial-cargo-s0-v1",
+            "ownerId": "fp02_wreck_owner",
+            "containerId": "fp02_wreck_cargo",
+            "sourceDigest": "e62aea8a",
+            "sourceRefs": [
+              "FP01:5.5:source-access",
+              "FP01:E00:permanently-grounded-cargo",
+              "FP02:6.4:finite-reachable-depot",
+              "FP02:9.1:cargo-outside-machine-zone"
+            ],
+            "centerMm": [
+              -5500,
+              2000,
+              13125
+            ],
+            "sizeMm": [
+              1500,
+              1500,
+              1000
+            ],
+            "boundsMm": {
+              "min": [
+                -6250,
+                1250,
+                12625
+              ],
+              "max": [
+                -4750,
+                2750,
+                13625
+              ]
+            },
+            "accessPointMm": [
+              -5500,
+              2250,
+              12625
+            ],
+            "accessBoundsMm": {
+              "min": [
+                -6250,
+                1500,
+                11625
+              ],
+              "max": [
+                -4750,
+                3500,
+                12625
+              ]
+            },
+            "spawnMm": [
+              -5500,
+              2420,
+              11875
+            ],
+            "geometryPolicy": "Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.",
+            "canonicalJson": "{\"accessBoundsMm\":{\"max\":[-4750,3500,12625],\"min\":[-6250,1500,11625]},\"accessPointMm\":[-5500,2250,12625],\"boundsMm\":{\"max\":[-4750,2750,13625],\"min\":[-6250,1250,12625]},\"centerMm\":[-5500,2000,13125],\"containerId\":\"fp02_wreck_cargo\",\"geometryPolicy\":\"Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.\",\"ownerId\":\"fp02_wreck_owner\",\"sizeMm\":[1500,1500,1000],\"sourceDigest\":\"e62aea8a\",\"sourceRefs\":[\"FP01:5.5:source-access\",\"FP01:E00:permanently-grounded-cargo\",\"FP02:6.4:finite-reachable-depot\",\"FP02:9.1:cargo-outside-machine-zone\"],\"spawnMm\":[-5500,2420,11875],\"version\":\"fp06-initial-cargo-s0-v1\"}",
+            "profileDigest": "da3d7be8"
+          },
+          "accessible": true,
+          "openReceipt": {
+            "ownerId": "fp02_wreck_owner",
+            "profileDigest": "da3d7be8",
+            "expectedTerrainRevision": 0,
+            "expectedRevision": 0
+          }
+        },
+        "revision": 1,
+        "state": "Idle",
+        "transactionId": null,
+        "owners": [],
+        "prepared": null
+      },
+      "colliderCount": 81,
+      "nativeBytes": "unsupported",
+      "terrainGeneration": 0,
+      "collisionBytes": 2100888,
+      "terrainTransaction": "Idle",
+      "terrainFragments": [],
+      "parked": [],
+      "neighbor": null,
+      "dormantCheckpointBytes": 0,
+      "bodyResidencyId": null,
+      "bodyResidencyTransaction": "Idle",
+      "neighborTransaction": "Idle",
+      "neighborPinned": false,
+      "preparedTerrainFragments": [],
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.4100027084350586,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "structural": {
+        "kind": "branch",
+        "origin": {
+          "x": -12,
+          "y": 1.75,
+          "z": -13.5
+        },
+        "cutEdge": 4,
+        "generation": 0,
+        "sourceDigest": "fnv1a64-v1:9cb845863922efae",
+        "state": "Idle",
+        "last": null,
+        "preview": null,
+        "aimPoint": {
+          "x": -11.25,
+          "y": 3,
+          "z": -13.25
+        },
+        "attachment": {
+          "id": "hvp:branch:foliage",
+          "ownerId": "hvp:branch:parent",
+          "supportCell": {
+            "x": 10,
+            "y": 11,
+            "z": 2
+          }
+        },
+        "parts": [
+          {
+            "ownerId": "hvp:branch:parent",
+            "sourceDigest": "fnv1a64-v1:f86be8fb3a37f1cb",
+            "anchored": true,
+            "cellCount": 384,
+            "center": {
+              "x": 0.75,
+              "y": 1,
+              "z": 0.25
+            },
+            "position": {
+              "x": -11.25,
+              "y": 2.75,
+              "z": -13.25
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "massKg": 450,
+            "sleeping": false
+          }
+        ]
+      },
+      "moving": {
+        "sequence": 0,
+        "pendingId": null,
+        "state": "Idle",
+        "preview": null,
+        "last": null
+      },
+      "lastImpulse": null,
+      "impulseTarget": {
+        "kind": "NoContact",
+        "target": null,
+        "distanceMeters": null,
+        "massKg": null,
+        "point": null
+      },
+      "lastImpulseTick": null,
+      "inertia": {
+        "ownerId": "hvp:physics:inertia",
+        "sourceDigest": "fnv1a64-v1:15f3bb58342acf4c",
+        "centerOfMass": {
+          "x": 0.29583333333333334,
+          "y": 0.29583333333333334,
+          "z": 0.125
+        },
+        "tensor": {
+          "xx": 3.441772460937501,
+          "yy": 3.4417724609374996,
+          "zz": 6.517333984375002,
+          "xy": 1.9140625000000004,
+          "xz": 0,
+          "yz": 1.3877787807814457e-17
+        },
+        "principal": {
+          "principalInertia": {
+            "x": 1.5277099609374998,
+            "y": 5.355834960937501,
+            "z": 6.517333984375002
+          },
+          "frame": {
+            "x": 0.3826834323650899,
+            "y": 0.9238795325112867,
+            "z": 0,
+            "w": 0
+          },
+          "residual": 1.1102230246251565e-16
+        },
+        "colliders": 2,
+        "impulses": 0,
+        "aimPoint": {
+          "x": -8.564777374267578,
+          "y": 1.312473177909851,
+          "z": -13.287601470947266
+        },
+        "angularVelocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      },
+      "bodies": [
+        {
+          "ownerId": "hvp:physics:drop",
+          "position": {
+            "x": -9.626763343811035,
+            "y": 0.6239127516746521,
+            "z": -7.506459712982178
+          },
+          "orientation": {
+            "x": -0.6540415287017822,
+            "y": -0.26832863688468933,
+            "z": 0.2684771716594696,
+            "w": -0.6543312072753906
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": true,
+          "massKg": 300
+        },
+        {
+          "ownerId": "hvp:physics:inertia",
+          "position": {
+            "x": -8.716800689697266,
+            "y": 1.5458214282989502,
+            "z": -13.151344299316406
+          },
+          "orientation": {
+            "x": -0.0002377739001531154,
+            "y": 0.3575611114501953,
+            "z": 5.180474545340985e-05,
+            "w": 0.9338896870613098
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": true,
+          "massKg": 35.15625
+        },
+        {
+          "ownerId": "hvp:branch:parent",
+          "position": {
+            "x": -11.25,
+            "y": 2.75,
+            "z": -13.25
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "w": 1
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": false,
+          "massKg": 450
+        }
+      ]
+    },
+    "neutralWaitStartMs": 31532.037301,
+    "neutralWaitEndMs": 36532.392811,
+    "neutralAfter": {
+      "ticks": 1666,
+      "backlogSeconds": 0.006366666669647168,
+      "discardedSeconds": 0.005766666668157151,
+      "status": "Running",
+      "gravity": 11.794460201817357,
+      "gravityProfile": "local-tangent-gravity-v1",
+      "activeDynamic": 0,
+      "residentDynamic": 2,
+      "solver": "rapier-0.12.0",
+      "stepCpuMs": 0.19999999552965164,
+      "bodyCount": 5,
+      "factoryFacilities": {
+        "cargo": {
+          "ownerId": "fp02_wreck_owner",
+          "containerId": "fp02_wreck_cargo",
+          "sourceDigest": "e62aea8a",
+          "profileDigest": "da3d7be8",
+          "opened": true,
+          "positionMm": [
+            -5500,
+            2000,
+            13125
+          ],
+          "accessBoundsMm": {
+            "min": [
+              -6250,
+              1500,
+              11625
+            ],
+            "max": [
+              -4750,
+              3500,
+              12625
+            ]
+          },
+          "bodyHandle": 2e-323,
+          "colliderHandles": [
+            3.95e-322
+          ],
+          "site": {
+            "version": "fp06-initial-cargo-s0-v1",
+            "ownerId": "fp02_wreck_owner",
+            "containerId": "fp02_wreck_cargo",
+            "sourceDigest": "e62aea8a",
+            "sourceRefs": [
+              "FP01:5.5:source-access",
+              "FP01:E00:permanently-grounded-cargo",
+              "FP02:6.4:finite-reachable-depot",
+              "FP02:9.1:cargo-outside-machine-zone"
+            ],
+            "centerMm": [
+              -5500,
+              2000,
+              13125
+            ],
+            "sizeMm": [
+              1500,
+              1500,
+              1000
+            ],
+            "boundsMm": {
+              "min": [
+                -6250,
+                1250,
+                12625
+              ],
+              "max": [
+                -4750,
+                2750,
+                13625
+              ]
+            },
+            "accessPointMm": [
+              -5500,
+              2250,
+              12625
+            ],
+            "accessBoundsMm": {
+              "min": [
+                -6250,
+                1500,
+                11625
+              ],
+              "max": [
+                -4750,
+                3500,
+                12625
+              ]
+            },
+            "spawnMm": [
+              -5500,
+              2420,
+              11875
+            ],
+            "geometryPolicy": "Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.",
+            "canonicalJson": "{\"accessBoundsMm\":{\"max\":[-4750,3500,12625],\"min\":[-6250,1500,11625]},\"accessPointMm\":[-5500,2250,12625],\"boundsMm\":{\"max\":[-4750,2750,13625],\"min\":[-6250,1250,12625]},\"centerMm\":[-5500,2000,13125],\"containerId\":\"fp02_wreck_cargo\",\"geometryPolicy\":\"Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.\",\"ownerId\":\"fp02_wreck_owner\",\"sizeMm\":[1500,1500,1000],\"sourceDigest\":\"e62aea8a\",\"sourceRefs\":[\"FP01:5.5:source-access\",\"FP01:E00:permanently-grounded-cargo\",\"FP02:6.4:finite-reachable-depot\",\"FP02:9.1:cargo-outside-machine-zone\"],\"spawnMm\":[-5500,2420,11875],\"version\":\"fp06-initial-cargo-s0-v1\"}",
+            "profileDigest": "da3d7be8"
+          },
+          "accessible": true,
+          "openReceipt": {
+            "ownerId": "fp02_wreck_owner",
+            "profileDigest": "da3d7be8",
+            "expectedTerrainRevision": 0,
+            "expectedRevision": 0
+          }
+        },
+        "revision": 1,
+        "state": "Idle",
+        "transactionId": null,
+        "owners": [],
+        "prepared": null
+      },
+      "colliderCount": 81,
+      "nativeBytes": "unsupported",
+      "terrainGeneration": 0,
+      "collisionBytes": 2100888,
+      "terrainTransaction": "Idle",
+      "terrainFragments": [],
+      "parked": [],
+      "neighbor": null,
+      "dormantCheckpointBytes": 0,
+      "bodyResidencyId": null,
+      "bodyResidencyTransaction": "Idle",
+      "neighborTransaction": "Idle",
+      "neighborPinned": false,
+      "preparedTerrainFragments": [],
+      "player": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.4100027084350586,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "structural": {
+        "kind": "branch",
+        "origin": {
+          "x": -12,
+          "y": 1.75,
+          "z": -13.5
+        },
+        "cutEdge": 4,
+        "generation": 0,
+        "sourceDigest": "fnv1a64-v1:9cb845863922efae",
+        "state": "Idle",
+        "last": null,
+        "preview": null,
+        "aimPoint": {
+          "x": -11.25,
+          "y": 3,
+          "z": -13.25
+        },
+        "attachment": {
+          "id": "hvp:branch:foliage",
+          "ownerId": "hvp:branch:parent",
+          "supportCell": {
+            "x": 10,
+            "y": 11,
+            "z": 2
+          }
+        },
+        "parts": [
+          {
+            "ownerId": "hvp:branch:parent",
+            "sourceDigest": "fnv1a64-v1:f86be8fb3a37f1cb",
+            "anchored": true,
+            "cellCount": 384,
+            "center": {
+              "x": 0.75,
+              "y": 1,
+              "z": 0.25
+            },
+            "position": {
+              "x": -11.25,
+              "y": 2.75,
+              "z": -13.25
+            },
+            "orientation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "velocity": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "massKg": 450,
+            "sleeping": false
+          }
+        ]
+      },
+      "moving": {
+        "sequence": 0,
+        "pendingId": null,
+        "state": "Idle",
+        "preview": null,
+        "last": null
+      },
+      "lastImpulse": null,
+      "impulseTarget": {
+        "kind": "NoContact",
+        "target": null,
+        "distanceMeters": null,
+        "massKg": null,
+        "point": null
+      },
+      "lastImpulseTick": null,
+      "inertia": {
+        "ownerId": "hvp:physics:inertia",
+        "sourceDigest": "fnv1a64-v1:15f3bb58342acf4c",
+        "centerOfMass": {
+          "x": 0.29583333333333334,
+          "y": 0.29583333333333334,
+          "z": 0.125
+        },
+        "tensor": {
+          "xx": 3.441772460937501,
+          "yy": 3.4417724609374996,
+          "zz": 6.517333984375002,
+          "xy": 1.9140625000000004,
+          "xz": 0,
+          "yz": 1.3877787807814457e-17
+        },
+        "principal": {
+          "principalInertia": {
+            "x": 1.5277099609374998,
+            "y": 5.355834960937501,
+            "z": 6.517333984375002
+          },
+          "frame": {
+            "x": 0.3826834323650899,
+            "y": 0.9238795325112867,
+            "z": 0,
+            "w": 0
+          },
+          "residual": 1.1102230246251565e-16
+        },
+        "colliders": 2,
+        "impulses": 0,
+        "aimPoint": {
+          "x": -8.564777374267578,
+          "y": 1.312473177909851,
+          "z": -13.287601470947266
+        },
+        "angularVelocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      },
+      "bodies": [
+        {
+          "ownerId": "hvp:physics:drop",
+          "position": {
+            "x": -9.626763343811035,
+            "y": 0.6239127516746521,
+            "z": -7.506459712982178
+          },
+          "orientation": {
+            "x": -0.6540415287017822,
+            "y": -0.26832863688468933,
+            "z": 0.2684771716594696,
+            "w": -0.6543312072753906
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": true,
+          "massKg": 300
+        },
+        {
+          "ownerId": "hvp:physics:inertia",
+          "position": {
+            "x": -8.716800689697266,
+            "y": 1.5458214282989502,
+            "z": -13.151344299316406
+          },
+          "orientation": {
+            "x": -0.0002377739001531154,
+            "y": 0.3575611114501953,
+            "z": 5.180474545340985e-05,
+            "w": 0.9338896870613098
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": true,
+          "massKg": 35.15625
+        },
+        {
+          "ownerId": "hvp:branch:parent",
+          "position": {
+            "x": -11.25,
+            "y": 2.75,
+            "z": -13.25
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "w": 1
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "sleeping": false,
+          "massKg": 450
+        }
+      ]
+    },
+    "observedRenderCallsProveAppEsmIdentity": 45,
+    "restoration": {
+      "canvas": true,
+      "backend": {
+        "renderFrame": true,
+        "dispatch": true
+      }
+    }
+  },
+  "completeness": {
+    "dropped": 0,
+    "idMapDropped": 0,
+    "observerErrors": 0
+  },
+  "webgl": [
+    {
+      "atMs": 29211.39999999851,
+      "event": "backendWallInstalled",
+      "moduleSpecifier": "/src/render/three/backend/threeRenderBackend.ts",
+      "webgl": {
+        "status": "APP_CREATED_CONTEXT_OBSERVED",
+        "vendor": "WebKit",
+        "renderer": "WebKit WebGL",
+        "debugRendererInfo": {
+          "vendor": "Google Inc. (Google)",
+          "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+        }
+      }
+    }
+  ],
+  "methodMetrics": {
+    "renderFrame": {
+      "allObserved": {
+        "count": 60,
+        "minMs": 0.3999999985098839,
+        "meanMs": 1.1099999994039536,
+        "p50NearestRankMs": 0.6000000014901161,
+        "p95NearestRankMs": 1.1999999955296516,
+        "maxMs": 28.799999997019768,
+        "sumMs": 66.59999996423721,
+        "threw": 0,
+        "medianMs": 0.6000000014901161
+      },
+      "betweenReadyAndNeutralObservations": {
+        "count": 39,
+        "minMs": 0.3999999985098839,
+        "meanMs": 1.3641025637968993,
+        "p50NearestRankMs": 0.6000000014901161,
+        "p95NearestRankMs": 1.3000000044703484,
+        "maxMs": 28.799999997019768,
+        "sumMs": 53.19999998807907,
+        "threw": 0,
+        "medianMs": 0.6000000014901161
+      }
+    },
+    "dispatch": {
+      "allObserved": {
+        "count": 120,
+        "minMs": 0.29999999701976776,
+        "meanMs": 3.626666667126119,
+        "p50NearestRankMs": 0.7999999970197678,
+        "p95NearestRankMs": 8.200000002980232,
+        "maxMs": 22.30000000447035,
+        "sumMs": 435.2000000551343,
+        "threw": 0,
+        "medianMs": 2.349999997764826
+      },
+      "betweenReadyAndNeutralObservations": {
+        "count": 78,
+        "minMs": 0.29999999701976776,
+        "meanMs": 3.389743590202087,
+        "p50NearestRankMs": 0.7999999970197678,
+        "p95NearestRankMs": 7.399999998509884,
+        "maxMs": 19.200000002980232,
+        "sumMs": 264.4000000357628,
+        "threw": 0,
+        "medianMs": 2.349999997764826
+      }
+    }
+  },
+  "longtaskRenderOverlap": [
+    {
+      "longtaskStartMs": 29360.29999999702,
+      "longtaskDurationMs": 193,
+      "renderOverlaps": [
+        {
+          "startMs": 29370.20000000298,
+          "endMs": 29370.79999999702,
+          "durationMs": 0.5999999940395355,
+          "overlapMs": 0.5999999940395355
+        }
+      ],
+      "totalRenderOverlapMs": 0.5999999940395355
+    },
+    {
+      "longtaskStartMs": 29556.20000000298,
+      "longtaskDurationMs": 178,
+      "renderOverlaps": [
+        {
+          "startMs": 29566.60000000149,
+          "endMs": 29567.20000000298,
+          "durationMs": 0.6000000014901161,
+          "overlapMs": 0.6000000014901161
+        }
+      ],
+      "totalRenderOverlapMs": 0.6000000014901161
+    },
+    {
+      "longtaskStartMs": 29742.60000000149,
+      "longtaskDurationMs": 165,
+      "renderOverlaps": [
+        {
+          "startMs": 29749,
+          "endMs": 29749.89999999851,
+          "durationMs": 0.8999999985098839,
+          "overlapMs": 0.8999999985098839
+        }
+      ],
+      "totalRenderOverlapMs": 0.8999999985098839
+    },
+    {
+      "longtaskStartMs": 29909.89999999851,
+      "longtaskDurationMs": 164,
+      "renderOverlaps": [
+        {
+          "startMs": 29915.89999999851,
+          "endMs": 29916.29999999702,
+          "durationMs": 0.3999999985098839,
+          "overlapMs": 0.3999999985098839
+        }
+      ],
+      "totalRenderOverlapMs": 0.3999999985098839
+    },
+    {
+      "longtaskStartMs": 30075.5,
+      "longtaskDurationMs": 191,
+      "renderOverlaps": [
+        {
+          "startMs": 30081.5,
+          "endMs": 30082.10000000149,
+          "durationMs": 0.6000000014901161,
+          "overlapMs": 0.6000000014901161
+        }
+      ],
+      "totalRenderOverlapMs": 0.6000000014901161
+    },
+    {
+      "longtaskStartMs": 30270.89999999851,
+      "longtaskDurationMs": 171,
+      "renderOverlaps": [
+        {
+          "startMs": 30279,
+          "endMs": 30279.79999999702,
+          "durationMs": 0.7999999970197678,
+          "overlapMs": 0.7999999970197678
+        }
+      ],
+      "totalRenderOverlapMs": 0.7999999970197678
+    },
+    {
+      "longtaskStartMs": 30443.79999999702,
+      "longtaskDurationMs": 176,
+      "renderOverlaps": [
+        {
+          "startMs": 30449.5,
+          "endMs": 30450.10000000149,
+          "durationMs": 0.6000000014901161,
+          "overlapMs": 0.6000000014901161
+        }
+      ],
+      "totalRenderOverlapMs": 0.6000000014901161
+    },
+    {
+      "longtaskStartMs": 30622,
+      "longtaskDurationMs": 186,
+      "renderOverlaps": [
+        {
+          "startMs": 30630.20000000298,
+          "endMs": 30630.89999999851,
+          "durationMs": 0.6999999955296516,
+          "overlapMs": 0.6999999955296516
+        }
+      ],
+      "totalRenderOverlapMs": 0.6999999955296516
+    },
+    {
+      "longtaskStartMs": 30808.89999999851,
+      "longtaskDurationMs": 154,
+      "renderOverlaps": [
+        {
+          "startMs": 30818,
+          "endMs": 30818.39999999851,
+          "durationMs": 0.3999999985098839,
+          "overlapMs": 0.3999999985098839
+        }
+      ],
+      "totalRenderOverlapMs": 0.3999999985098839
+    },
+    {
+      "longtaskStartMs": 30963.29999999702,
+      "longtaskDurationMs": 185,
+      "renderOverlaps": [
+        {
+          "startMs": 30993.10000000149,
+          "endMs": 30993.60000000149,
+          "durationMs": 0.5,
+          "overlapMs": 0.5
+        }
+      ],
+      "totalRenderOverlapMs": 0.5
+    },
+    {
+      "longtaskStartMs": 31149.60000000149,
+      "longtaskDurationMs": 172,
+      "renderOverlaps": [
+        {
+          "startMs": 31157.5,
+          "endMs": 31158.20000000298,
+          "durationMs": 0.7000000029802322,
+          "overlapMs": 0.7000000029802322
+        }
+      ],
+      "totalRenderOverlapMs": 0.7000000029802322
+    },
+    {
+      "longtaskStartMs": 31322.29999999702,
+      "longtaskDurationMs": 157,
+      "renderOverlaps": [
+        {
+          "startMs": 31329.5,
+          "endMs": 31330.10000000149,
+          "durationMs": 0.6000000014901161,
+          "overlapMs": 0.6000000014901161
+        }
+      ],
+      "totalRenderOverlapMs": 0.6000000014901161
+    },
+    {
+      "longtaskStartMs": 31479.79999999702,
+      "longtaskDurationMs": 236,
+      "renderOverlaps": [
+        {
+          "startMs": 31500.20000000298,
+          "endMs": 31500.79999999702,
+          "durationMs": 0.5999999940395355,
+          "overlapMs": 0.5999999940395355
+        }
+      ],
+      "totalRenderOverlapMs": 0.5999999940395355
+    },
+    {
+      "longtaskStartMs": 31716.39999999851,
+      "longtaskDurationMs": 143,
+      "renderOverlaps": [
+        {
+          "startMs": 31722.60000000149,
+          "endMs": 31723.10000000149,
+          "durationMs": 0.5,
+          "overlapMs": 0.5
+        }
+      ],
+      "totalRenderOverlapMs": 0.5
+    },
+    {
+      "longtaskStartMs": 31860,
+      "longtaskDurationMs": 207,
+      "renderOverlaps": [
+        {
+          "startMs": 31868,
+          "endMs": 31868.5,
+          "durationMs": 0.5,
+          "overlapMs": 0.5
+        }
+      ],
+      "totalRenderOverlapMs": 0.5
+    },
+    {
+      "longtaskStartMs": 32067.89999999851,
+      "longtaskDurationMs": 164,
+      "renderOverlaps": [
+        {
+          "startMs": 32076,
+          "endMs": 32076.5,
+          "durationMs": 0.5,
+          "overlapMs": 0.5
+        }
+      ],
+      "totalRenderOverlapMs": 0.5
+    },
+    {
+      "longtaskStartMs": 32232.79999999702,
+      "longtaskDurationMs": 149,
+      "renderOverlaps": [
+        {
+          "startMs": 32241.20000000298,
+          "endMs": 32242,
+          "durationMs": 0.7999999970197678,
+          "overlapMs": 0.7999999970197678
+        }
+      ],
+      "totalRenderOverlapMs": 0.7999999970197678
+    },
+    {
+      "longtaskStartMs": 32383.29999999702,
+      "longtaskDurationMs": 167,
+      "renderOverlaps": [
+        {
+          "startMs": 32404.20000000298,
+          "endMs": 32404.70000000298,
+          "durationMs": 0.5,
+          "overlapMs": 0.5
+        }
+      ],
+      "totalRenderOverlapMs": 0.5
+    },
+    {
+      "longtaskStartMs": 32550.89999999851,
+      "longtaskDurationMs": 160,
+      "renderOverlaps": [
+        {
+          "startMs": 32558.79999999702,
+          "endMs": 32559.79999999702,
+          "durationMs": 1,
+          "overlapMs": 1.0
+        }
+      ],
+      "totalRenderOverlapMs": 1.0
+    },
+    {
+      "longtaskStartMs": 32711.29999999702,
+      "longtaskDurationMs": 142,
+      "renderOverlaps": [
+        {
+          "startMs": 32718.39999999851,
+          "endMs": 32719,
+          "durationMs": 0.6000000014901161,
+          "overlapMs": 0.6000000014901161
+        }
+      ],
+      "totalRenderOverlapMs": 0.6000000014901161
+    },
+    {
+      "longtaskStartMs": 32854.60000000149,
+      "longtaskDurationMs": 178,
+      "renderOverlaps": [
+        {
+          "startMs": 32861.89999999851,
+          "endMs": 32862.39999999851,
+          "durationMs": 0.5,
+          "overlapMs": 0.5
+        }
+      ],
+      "totalRenderOverlapMs": 0.5
+    },
+    {
+      "longtaskStartMs": 33033.10000000149,
+      "longtaskDurationMs": 172,
+      "renderOverlaps": [
+        {
+          "startMs": 33038.89999999851,
+          "endMs": 33039.39999999851,
+          "durationMs": 0.5,
+          "overlapMs": 0.5
+        }
+      ],
+      "totalRenderOverlapMs": 0.5
+    },
+    {
+      "longtaskStartMs": 33205.70000000298,
+      "longtaskDurationMs": 158,
+      "renderOverlaps": [
+        {
+          "startMs": 33213.89999999851,
+          "endMs": 33214.89999999851,
+          "durationMs": 1,
+          "overlapMs": 1.0
+        }
+      ],
+      "totalRenderOverlapMs": 1.0
+    },
+    {
+      "longtaskStartMs": 33364.5,
+      "longtaskDurationMs": 168,
+      "renderOverlaps": [
+        {
+          "startMs": 33370.5,
+          "endMs": 33370.89999999851,
+          "durationMs": 0.3999999985098839,
+          "overlapMs": 0.3999999985098839
+        }
+      ],
+      "totalRenderOverlapMs": 0.3999999985098839
+    },
+    {
+      "longtaskStartMs": 33532.89999999851,
+      "longtaskDurationMs": 172,
+      "renderOverlaps": [
+        {
+          "startMs": 33541.29999999702,
+          "endMs": 33542.20000000298,
+          "durationMs": 0.9000000059604645,
+          "overlapMs": 0.9000000059604645
+        }
+      ],
+      "totalRenderOverlapMs": 0.9000000059604645
+    },
+    {
+      "longtaskStartMs": 33706,
+      "longtaskDurationMs": 142,
+      "renderOverlaps": [
+        {
+          "startMs": 33711.60000000149,
+          "endMs": 33712.20000000298,
+          "durationMs": 0.6000000014901161,
+          "overlapMs": 0.6000000014901161
+        }
+      ],
+      "totalRenderOverlapMs": 0.6000000014901161
+    },
+    {
+      "longtaskStartMs": 33849,
+      "longtaskDurationMs": 155,
+      "renderOverlaps": [
+        {
+          "startMs": 33854.70000000298,
+          "endMs": 33855.39999999851,
+          "durationMs": 0.6999999955296516,
+          "overlapMs": 0.6999999955296516
+        }
+      ],
+      "totalRenderOverlapMs": 0.6999999955296516
+    },
+    {
+      "longtaskStartMs": 34005.29999999702,
+      "longtaskDurationMs": 158,
+      "renderOverlaps": [
+        {
+          "startMs": 34011.79999999702,
+          "endMs": 34012.29999999702,
+          "durationMs": 0.5,
+          "overlapMs": 0.5
+        }
+      ],
+      "totalRenderOverlapMs": 0.5
+    },
+    {
+      "longtaskStartMs": 34163.89999999851,
+      "longtaskDurationMs": 202,
+      "renderOverlaps": [
+        {
+          "startMs": 34171,
+          "endMs": 34199.79999999702,
+          "durationMs": 28.799999997019768,
+          "overlapMs": 28.799999997019768
+        }
+      ],
+      "totalRenderOverlapMs": 28.799999997019768
+    },
+    {
+      "longtaskStartMs": 34366.60000000149,
+      "longtaskDurationMs": 183,
+      "renderOverlaps": [
+        {
+          "startMs": 34372.79999999702,
+          "endMs": 34373.29999999702,
+          "durationMs": 0.5,
+          "overlapMs": 0.5
+        }
+      ],
+      "totalRenderOverlapMs": 0.5
+    },
+    {
+      "longtaskStartMs": 34551.20000000298,
+      "longtaskDurationMs": 179,
+      "renderOverlaps": [
+        {
+          "startMs": 34557.60000000149,
+          "endMs": 34558.29999999702,
+          "durationMs": 0.6999999955296516,
+          "overlapMs": 0.6999999955296516
+        }
+      ],
+      "totalRenderOverlapMs": 0.6999999955296516
+    },
+    {
+      "longtaskStartMs": 34731.39999999851,
+      "longtaskDurationMs": 149,
+      "renderOverlaps": [
+        {
+          "startMs": 34738,
+          "endMs": 34738.79999999702,
+          "durationMs": 0.7999999970197678,
+          "overlapMs": 0.7999999970197678
+        }
+      ],
+      "totalRenderOverlapMs": 0.7999999970197678
+    },
+    {
+      "longtaskStartMs": 34881.39999999851,
+      "longtaskDurationMs": 165,
+      "renderOverlaps": [
+        {
+          "startMs": 34903,
+          "endMs": 34903.60000000149,
+          "durationMs": 0.6000000014901161,
+          "overlapMs": 0.6000000014901161
+        }
+      ],
+      "totalRenderOverlapMs": 0.6000000014901161
+    },
+    {
+      "longtaskStartMs": 35046.70000000298,
+      "longtaskDurationMs": 180,
+      "renderOverlaps": [
+        {
+          "startMs": 35052.79999999702,
+          "endMs": 35053.39999999851,
+          "durationMs": 0.6000000014901161,
+          "overlapMs": 0.6000000014901161
+        }
+      ],
+      "totalRenderOverlapMs": 0.6000000014901161
+    },
+    {
+      "longtaskStartMs": 35227.29999999702,
+      "longtaskDurationMs": 150,
+      "renderOverlaps": [
+        {
+          "startMs": 35236.70000000298,
+          "endMs": 35237.5,
+          "durationMs": 0.7999999970197678,
+          "overlapMs": 0.7999999970197678
+        }
+      ],
+      "totalRenderOverlapMs": 0.7999999970197678
+    },
+    {
+      "longtaskStartMs": 35378.29999999702,
+      "longtaskDurationMs": 179,
+      "renderOverlaps": [
+        {
+          "startMs": 35386.89999999851,
+          "endMs": 35387.39999999851,
+          "durationMs": 0.5,
+          "overlapMs": 0.5
+        }
+      ],
+      "totalRenderOverlapMs": 0.5
+    },
+    {
+      "longtaskStartMs": 35558.10000000149,
+      "longtaskDurationMs": 184,
+      "renderOverlaps": [
+        {
+          "startMs": 35566,
+          "endMs": 35566.39999999851,
+          "durationMs": 0.3999999985098839,
+          "overlapMs": 0.3999999985098839
+        }
+      ],
+      "totalRenderOverlapMs": 0.3999999985098839
+    },
+    {
+      "longtaskStartMs": 35745.20000000298,
+      "longtaskDurationMs": 136,
+      "renderOverlaps": [
+        {
+          "startMs": 35753.5,
+          "endMs": 35754,
+          "durationMs": 0.5,
+          "overlapMs": 0.5
+        }
+      ],
+      "totalRenderOverlapMs": 0.5
+    },
+    {
+      "longtaskStartMs": 35883.60000000149,
+      "longtaskDurationMs": 184,
+      "renderOverlaps": [
+        {
+          "startMs": 35903.89999999851,
+          "endMs": 35905.20000000298,
+          "durationMs": 1.3000000044703484,
+          "overlapMs": 1.3000000044703484
+        }
+      ],
+      "totalRenderOverlapMs": 1.3000000044703484
+    },
+    {
+      "longtaskStartMs": 36069.60000000149,
+      "longtaskDurationMs": 164,
+      "renderOverlaps": [
+        {
+          "startMs": 36078.5,
+          "endMs": 36079.20000000298,
+          "durationMs": 0.7000000029802322,
+          "overlapMs": 0.7000000029802322
+        }
+      ],
+      "totalRenderOverlapMs": 0.7000000029802322
+    },
+    {
+      "longtaskStartMs": 36235.5,
+      "longtaskDurationMs": 170,
+      "renderOverlaps": [
+        {
+          "startMs": 36243.89999999851,
+          "endMs": 36244.60000000149,
+          "durationMs": 0.7000000029802322,
+          "overlapMs": 0.7000000029802322
+        }
+      ],
+      "totalRenderOverlapMs": 0.7000000029802322
+    },
+    {
+      "longtaskStartMs": 36426.5,
+      "longtaskDurationMs": 153,
+      "renderOverlaps": [
+        {
+          "startMs": 36436.89999999851,
+          "endMs": 36437.5,
+          "durationMs": 0.6000000014901161,
+          "overlapMs": 0.6000000014901161
+        }
+      ],
+      "totalRenderOverlapMs": 0.6000000014901161
+    },
+    {
+      "longtaskStartMs": 36582.10000000149,
+      "longtaskDurationMs": 166,
+      "renderOverlaps": [
+        {
+          "startMs": 36593.39999999851,
+          "endMs": 36593.79999999702,
+          "durationMs": 0.3999999985098839,
+          "overlapMs": 0.3999999985098839
+        }
+      ],
+      "totalRenderOverlapMs": 0.3999999985098839
+    },
+    {
+      "longtaskStartMs": 36750.29999999702,
+      "longtaskDurationMs": 188,
+      "renderOverlaps": [
+        {
+          "startMs": 36757.5,
+          "endMs": 36758.10000000149,
+          "durationMs": 0.6000000014901161,
+          "overlapMs": 0.6000000014901161
+        }
+      ],
+      "totalRenderOverlapMs": 0.6000000014901161
+    },
+    {
+      "longtaskStartMs": 36939.79999999702,
+      "longtaskDurationMs": 167,
+      "renderOverlaps": [
+        {
+          "startMs": 36946.20000000298,
+          "endMs": 36946.60000000149,
+          "durationMs": 0.3999999985098839,
+          "overlapMs": 0.3999999985098839
+        }
+      ],
+      "totalRenderOverlapMs": 0.3999999985098839
+    },
+    {
+      "longtaskStartMs": 37109.5,
+      "longtaskDurationMs": 158,
+      "renderOverlaps": [
+        {
+          "startMs": 37116.29999999702,
+          "endMs": 37116.89999999851,
+          "durationMs": 0.6000000014901161,
+          "overlapMs": 0.6000000014901161
+        }
+      ],
+      "totalRenderOverlapMs": 0.6000000014901161
+    },
+    {
+      "longtaskStartMs": 37268.5,
+      "longtaskDurationMs": 184,
+      "renderOverlaps": [
+        {
+          "startMs": 37299,
+          "endMs": 37300.79999999702,
+          "durationMs": 1.7999999970197678,
+          "overlapMs": 1.7999999970197678
+        }
+      ],
+      "totalRenderOverlapMs": 1.7999999970197678
+    },
+    {
+      "longtaskStartMs": 37456.10000000149,
+      "longtaskDurationMs": 170,
+      "renderOverlaps": [
+        {
+          "startMs": 37464.10000000149,
+          "endMs": 37464.79999999702,
+          "durationMs": 0.6999999955296516,
+          "overlapMs": 0.6999999955296516
+        }
+      ],
+      "totalRenderOverlapMs": 0.6999999955296516
+    },
+    {
+      "longtaskStartMs": 37628.79999999702,
+      "longtaskDurationMs": 152,
+      "renderOverlaps": [
+        {
+          "startMs": 37639.20000000298,
+          "endMs": 37639.70000000298,
+          "durationMs": 0.5,
+          "overlapMs": 0.5
+        }
+      ],
+      "totalRenderOverlapMs": 0.5
+    },
+    {
+      "longtaskStartMs": 37783.60000000149,
+      "longtaskDurationMs": 171,
+      "renderOverlaps": [
+        {
+          "startMs": 37805.39999999851,
+          "endMs": 37805.89999999851,
+          "durationMs": 0.5,
+          "overlapMs": 0.5
+        }
+      ],
+      "totalRenderOverlapMs": 0.5
+    },
+    {
+      "longtaskStartMs": 37956.29999999702,
+      "longtaskDurationMs": 160,
+      "renderOverlaps": [
+        {
+          "startMs": 37964.20000000298,
+          "endMs": 37964.70000000298,
+          "durationMs": 0.5,
+          "overlapMs": 0.5
+        }
+      ],
+      "totalRenderOverlapMs": 0.5
+    },
+    {
+      "longtaskStartMs": 38117.29999999702,
+      "longtaskDurationMs": 155,
+      "renderOverlaps": [
+        {
+          "startMs": 38126.20000000298,
+          "endMs": 38126.79999999702,
+          "durationMs": 0.5999999940395355,
+          "overlapMs": 0.5999999940395355
+        }
+      ],
+      "totalRenderOverlapMs": 0.5999999940395355
+    },
+    {
+      "longtaskStartMs": 38275.79999999702,
+      "longtaskDurationMs": 159,
+      "renderOverlaps": [
+        {
+          "startMs": 38284.70000000298,
+          "endMs": 38285.39999999851,
+          "durationMs": 0.6999999955296516,
+          "overlapMs": 0.6999999955296516
+        }
+      ],
+      "totalRenderOverlapMs": 0.6999999955296516
+    },
+    {
+      "longtaskStartMs": 38437.70000000298,
+      "longtaskDurationMs": 141,
+      "renderOverlaps": [
+        {
+          "startMs": 38445.60000000149,
+          "endMs": 38446.10000000149,
+          "durationMs": 0.5,
+          "overlapMs": 0.5
+        }
+      ],
+      "totalRenderOverlapMs": 0.5
+    },
+    {
+      "longtaskStartMs": 38581,
+      "longtaskDurationMs": 158,
+      "renderOverlaps": [
+        {
+          "startMs": 38605.5,
+          "endMs": 38606,
+          "durationMs": 0.5,
+          "overlapMs": 0.5
+        }
+      ],
+      "totalRenderOverlapMs": 0.5
+    },
+    {
+      "longtaskStartMs": 38741.10000000149,
+      "longtaskDurationMs": 163,
+      "renderOverlaps": [
+        {
+          "startMs": 38749.60000000149,
+          "endMs": 38750.79999999702,
+          "durationMs": 1.1999999955296516,
+          "overlapMs": 1.1999999955296516
+        }
+      ],
+      "totalRenderOverlapMs": 1.1999999955296516
+    },
+    {
+      "longtaskStartMs": 38906.20000000298,
+      "longtaskDurationMs": 148,
+      "renderOverlaps": [
+        {
+          "startMs": 38913.39999999851,
+          "endMs": 38913.79999999702,
+          "durationMs": 0.3999999985098839,
+          "overlapMs": 0.3999999985098839
+        }
+      ],
+      "totalRenderOverlapMs": 0.3999999985098839
+    },
+    {
+      "longtaskStartMs": 39057,
+      "longtaskDurationMs": 172,
+      "renderOverlaps": [
+        {
+          "startMs": 39064.20000000298,
+          "endMs": 39064.70000000298,
+          "durationMs": 0.5,
+          "overlapMs": 0.5
+        }
+      ],
+      "totalRenderOverlapMs": 0.5
+    },
+    {
+      "longtaskStartMs": 39231.39999999851,
+      "longtaskDurationMs": 146,
+      "renderOverlaps": [
+        {
+          "startMs": 39238.39999999851,
+          "endMs": 39239,
+          "durationMs": 0.6000000014901161,
+          "overlapMs": 0.6000000014901161
+        }
+      ],
+      "totalRenderOverlapMs": 0.6000000014901161
+    }
+  ],
+  "input": {
+    "domEdges": [
+      {
+        "atMs": 37955.39999999851,
+        "event": "dom",
+        "type": "keydown",
+        "timeStamp": 37787.89999999851,
+        "code": "KeyS",
+        "key": "s",
+        "repeat": false,
+        "isTrusted": true,
+        "pointerLock": "debug-scene",
+        "hidden": false
+      },
+      {
+        "atMs": 37956.10000000149,
+        "event": "dom",
+        "type": "keyup",
+        "timeStamp": 37914.89999999851,
+        "code": "KeyS",
+        "key": "s",
+        "repeat": false,
+        "isTrusted": true,
+        "pointerLock": "debug-scene",
+        "hidden": false
+      },
+      {
+        "atMs": 38117,
+        "event": "dom",
+        "type": "keyup",
+        "timeStamp": 37958,
+        "code": "KeyS",
+        "key": "s",
+        "repeat": false,
+        "isTrusted": true,
+        "pointerLock": "debug-scene",
+        "hidden": false
+      }
+    ],
+    "factoryPosts": [
+      {
+        "atMs": 37955.89999999851,
+        "event": "workerPost",
+        "id": 101,
+        "kind": "FactoryInput",
+        "input": {
+          "x": 1.2246467991473532e-16,
+          "z": -1,
+          "sprint": false,
+          "jump": false
+        },
+        "cancelPendingJump": false
+      },
+      {
+        "atMs": 37956.20000000298,
+        "event": "workerPost",
+        "id": 102,
+        "kind": "FactoryInput",
+        "input": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "cancelPendingJump": false
+      }
+    ],
+    "nativeDelta": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+    },
+    "nativeTickDelta": 78
+  },
+  "frameDiagnosticsSnapshots": {
+    "ready": {
+      "raw": null,
+      "freshness": "MISSING"
+    },
+    "neutral": {
+      "raw": "{\"renderSubmitMs\":0.6000000014901161,\"calls\":24,\"triangles\":148692,\"geometries\":125,\"textures\":3,\"shadowUpdated\":false,\"shadowMapSize\":1024,\"fullscreenTargets\":0}",
+      "freshness": "NOT_OBSERVED_NO_TIMESTAMP_EVERY60FRAMES"
+    },
+    "released125": {
+      "raw": "{\"renderSubmitMs\":0.6000000014901161,\"calls\":24,\"triangles\":148692,\"geometries\":125,\"textures\":3,\"shadowUpdated\":false,\"shadowMapSize\":1024,\"fullscreenTargets\":0}",
+      "freshness": "NOT_OBSERVED_NO_TIMESTAMP_EVERY60FRAMES"
+    }
+  },
+  "limits": [
+    "Wall duration mixes JS/native/driver wait; no hardware GPU cost conclusion",
+    "No before/after comparison; temporary wrapping/passive observation changes workload",
+    "Inclusive overlaps cannot be summed with method duration as independent CPU costs",
+    "App WebGL string is recorded metadata, not physical GPU benchmark",
+    "FactoryInput tinyACK not acceptance/handler timing"
+  ],
+  "longtaskSummary": {
+    "count": 59,
+    "minMs": 136,
+    "medianMs": 166,
+    "maxMs": 236,
+    "durationSumMs": 9899,
+    "renderOverlapSumMs": 65.9999999627471,
+    "scope": "Longtasks with startTime at/after first observed renderFrame start; inclusive longtask durations, no machine CPU attribution"
+  }
+}

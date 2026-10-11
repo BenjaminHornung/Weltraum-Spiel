@@ -1,0 +1,58 @@
+{
+  "tracePath": "browser-input-normal-subset-81/playwright-output/factory-placement-W07-real-e4094-l-source-checked-west-stand-chromium/trace.zip",
+  "observability": "Playwright trusted keyboardPress API call timing in failed case6; browser DOM handler/down-up and outgoing Worker intent timestamps were NOT instrumented; prior case5 keyAPI times are not retained in this failed-case trace",
+  "calls": [
+    {
+      "traceEntry": "0-trace.trace",
+      "class": "Page",
+      "method": "keyboardPress",
+      "params": {
+        "key": "d",
+        "delay": 250
+      },
+      "startTime": 71762.066,
+      "endTime": 72420.209,
+      "durationMs": 658.1429999999964,
+      "error": null
+    },
+    {
+      "traceEntry": "0-trace.trace",
+      "class": "Page",
+      "method": "keyboardPress",
+      "params": {
+        "key": "a",
+        "delay": 250
+      },
+      "startTime": 74255.179,
+      "endTime": 74915.497,
+      "durationMs": 660.3179999999993,
+      "error": null
+    },
+    {
+      "traceEntry": "0-trace.trace",
+      "class": "Page",
+      "method": "keyboardPress",
+      "params": {
+        "key": "d",
+        "delay": 250
+      },
+      "startTime": 76825.674,
+      "endTime": 77523.225,
+      "durationMs": 697.5510000000068,
+      "error": null
+    },
+    {
+      "traceEntry": "0-trace.trace",
+      "class": "Page",
+      "method": "keyboardPress",
+      "params": {
+        "key": "a",
+        "delay": 250
+      },
+      "startTime": 79448.343,
+      "endTime": 80076.645,
+      "durationMs": 628.3020000000106,
+      "error": null
+    }
+  ]
+}

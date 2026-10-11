@@ -1,0 +1,36 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/hostLifecycle.test.ts -t W07 failed initial
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts (19 tests | 2 failed | 17 skipped) 28ms
+     × W07 failed initial catalog binding permits a valid retry on the SAME Host without a leaked mount 16ms
+     × W07 failed initial material binding permits a valid retry on the SAME Host without a leaked mount 10ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > FP06 W06 confirmed host lifecycle > W07 failed initial catalog binding permits a valid retry on the SAME Host without a leaked mount
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > FP06 W06 confirmed host lifecycle > W07 failed initial material binding permits a valid retry on the SAME Host without a leaked mount
+AssertionError: promise rejected "Error: Factory already mounted on this ho…" instead of resolving
+ ❯ tests/unit/factory/hostLifecycle.test.ts:44:70
+     42|     await expect(mountFactorySession(host,invalid)).rejects.toThrow();
+     43|     expect(f.listeners.size).toBe(0);expect(nativeCommands).toBe(0);ex…
+     44|     const retry=mountFactorySession(host,catalog);await expect(retry).…
+       |                                                                      ^
+     45|     const session=await retry;try{expect(session.read()).toMatchObject…
+     46|     finally{await session.dispose();}expect(f.listeners.size).toBe(0);…
+
+Caused by: Error: Factory already mounted on this host
+ ❯ mountFactorySession src/factory/session/factorySession.ts:23:37
+ ❯ tests/unit/factory/hostLifecycle.test.ts:44:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 17 skipped (19)
+   Start at  14:05:36
+   Duration  511ms (transform 283ms, setup 0ms, import 373ms, tests 28ms, environment 0ms)
+

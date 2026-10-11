@@ -1,0 +1,20 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/hostLifecycle.test.ts",
+    "tests/unit/hvp-player-input.test.ts",
+    "tests/unit/factory/placement.test.ts",
+    "tests/unit/factory/facilitySession.test.ts"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startUtc": "2026-10-11T15:54:28.849169+00:00",
+  "endUtc": "2026-10-11T15:54:34.620387+00:00",
+  "durationSeconds": 5.771231348000583,
+  "exitCode": 0,
+  "rawBytes": 474,
+  "rawSha256": "66792fc133e2651ca80a382c5f0eed28b149afa2f33db78e92c7510c2a94e577",
+  "phase": "After genuine legal-paid ghost_slot_0 RED63: derived ghost:slot_N namespace disjoint from unchanged NativeSaveID; no other runtime changes"
+}

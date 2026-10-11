@@ -1,0 +1,740 @@
+{
+  "kind": "DIAGNOSTIC_ONLY_SAMPLED_MAIN_V8_ATTRIBUTION",
+  "profileSha256": "42a5d758572a7bf1fd420b4ac8f2e2d01ae21f0c343dafa595cd456c5679abbb",
+  "profileBytes": 93231,
+  "typedProfile": {
+    "nodes": 220,
+    "samples": 6752,
+    "timeDeltas": 6752,
+    "startTimeUs": 35235919667,
+    "endTimeUs": 35244900091,
+    "profileDurationUs": 8980424,
+    "sumSampleDeltasUs": 8978045,
+    "negativeDeltas": 0
+  },
+  "method": "Each sample timeDelta weighted to leaf for self, to unique same-script/function-position ancestors for inclusive; inclusive rows overlap and do not sum to total. Original V8 zero-based source positions retained. No Worker/GPU/solver/whole-machine/hardware timing inferred.",
+  "topSelf": [
+    {
+      "frame": {
+        "functionName": "(program)",
+        "scriptId": "0",
+        "url": "",
+        "lineNumber": -1,
+        "columnNumber": -1
+      },
+      "sampledUs": 8320192,
+      "sampledMs": 8320.192,
+      "percentOfDeltas": 92.6726475530029
+    },
+    {
+      "frame": {
+        "functionName": "encode",
+        "scriptId": "0",
+        "url": "",
+        "lineNumber": -1,
+        "columnNumber": -1
+      },
+      "sampledUs": 111567,
+      "sampledMs": 111.567,
+      "percentOfDeltas": 1.2426647449416883
+    },
+    {
+      "frame": {
+        "functionName": "writeLength",
+        "scriptId": "132",
+        "url": "http://127.0.0.1:5174/src/presentation/canonical.ts",
+        "lineNumber": 22,
+        "columnNumber": 20
+      },
+      "sampledUs": 103094,
+      "sampledMs": 103.094,
+      "percentOfDeltas": 1.1482900787420869
+    },
+    {
+      "frame": {
+        "functionName": "(garbage collector)",
+        "scriptId": "0",
+        "url": "",
+        "lineNumber": -1,
+        "columnNumber": -1
+      },
+      "sampledUs": 78034,
+      "sampledMs": 78.034,
+      "percentOfDeltas": 0.8691647235004948
+    },
+    {
+      "frame": {
+        "functionName": "writeCanonical",
+        "scriptId": "132",
+        "url": "http://127.0.0.1:5174/src/presentation/canonical.ts",
+        "lineNumber": 63,
+        "columnNumber": 23
+      },
+      "sampledUs": 73458,
+      "sampledMs": 73.458,
+      "percentOfDeltas": 0.8181959435489575
+    },
+    {
+      "frame": {
+        "functionName": "writeString",
+        "scriptId": "132",
+        "url": "http://127.0.0.1:5174/src/presentation/canonical.ts",
+        "lineNumber": 27,
+        "columnNumber": 20
+      },
+      "sampledUs": 32979,
+      "sampledMs": 32.979,
+      "percentOfDeltas": 0.3673294130292285
+    },
+    {
+      "frame": {
+        "functionName": "",
+        "scriptId": "0",
+        "url": "",
+        "lineNumber": -1,
+        "columnNumber": -1
+      },
+      "sampledUs": 29145,
+      "sampledMs": 29.145,
+      "percentOfDeltas": 0.3246252385680847
+    },
+    {
+      "frame": {
+        "functionName": "writeByte",
+        "scriptId": "132",
+        "url": "http://127.0.0.1:5174/src/presentation/canonical.ts",
+        "lineNumber": 5,
+        "columnNumber": 10
+      },
+      "sampledUs": 21744,
+      "sampledMs": 21.744,
+      "percentOfDeltas": 0.24219081102845888
+    },
+    {
+      "frame": {
+        "functionName": "project",
+        "scriptId": "15",
+        "url": "http://127.0.0.1:5174/src/factory/factoryEntry.ts",
+        "lineNumber": 168,
+        "columnNumber": 17
+      },
+      "sampledUs": 14243,
+      "sampledMs": 14.243,
+      "percentOfDeltas": 0.15864255525562637
+    },
+    {
+      "frame": {
+        "functionName": "(idle)",
+        "scriptId": "0",
+        "url": "",
+        "lineNumber": -1,
+        "columnNumber": -1
+      },
+      "sampledUs": 11964,
+      "sampledMs": 11.964,
+      "percentOfDeltas": 0.1332584098208463
+    },
+    {
+      "frame": {
+        "functionName": "visitNode",
+        "scriptId": "3",
+        "url": "",
+        "lineNumber": 273,
+        "columnNumber": 24
+      },
+      "sampledUs": 11385,
+      "sampledMs": 11.385,
+      "percentOfDeltas": 0.12680934435057967
+    },
+    {
+      "frame": {
+        "functionName": "updatePhysics",
+        "scriptId": "70",
+        "url": "http://127.0.0.1:5174/src/hvp/hvpHud.ts",
+        "lineNumber": 216,
+        "columnNumber": 23
+      },
+      "sampledUs": 9668,
+      "sampledMs": 9.668,
+      "percentOfDeltas": 0.1076849135864211
+    },
+    {
+      "frame": {
+        "functionName": "renderFrame",
+        "scriptId": "25",
+        "url": "http://127.0.0.1:5174/src/hvp/hvpBootstrap.ts",
+        "lineNumber": 3995,
+        "columnNumber": 22
+      },
+      "sampledUs": 9012,
+      "sampledMs": 9.012,
+      "percentOfDeltas": 0.10037820037658532
+    },
+    {
+      "frame": {
+        "functionName": "compareAscii",
+        "scriptId": "133",
+        "url": "http://127.0.0.1:5174/src/presentation/ids.ts",
+        "lineNumber": 1,
+        "columnNumber": 28
+      },
+      "sampledUs": 6540,
+      "sampledMs": 6.54,
+      "percentOfDeltas": 0.07284436645171638
+    },
+    {
+      "frame": {
+        "functionName": "clearTimeout",
+        "scriptId": "0",
+        "url": "",
+        "lineNumber": -1,
+        "columnNumber": -1
+      },
+      "sampledUs": 6309,
+      "sampledMs": 6.309,
+      "percentOfDeltas": 0.07027142323300897
+    },
+    {
+      "frame": {
+        "functionName": "bindVertexArray",
+        "scriptId": "0",
+        "url": "",
+        "lineNumber": -1,
+        "columnNumber": -1
+      },
+      "sampledUs": 5815,
+      "sampledMs": 5.815,
+      "percentOfDeltas": 0.064769111760968
+    },
+    {
+      "frame": {
+        "functionName": "",
+        "scriptId": "139",
+        "url": "http://127.0.0.1:5174/src/presentation/visibilityPlan.ts",
+        "lineNumber": 27,
+        "columnNumber": 15
+      },
+      "sampledUs": 5389,
+      "sampledMs": 5.389,
+      "percentOfDeltas": 0.06002420348750758
+    },
+    {
+      "frame": {
+        "functionName": "",
+        "scriptId": "139",
+        "url": "http://127.0.0.1:5174/src/presentation/visibilityPlan.ts",
+        "lineNumber": 106,
+        "columnNumber": 43
+      },
+      "sampledUs": 5099,
+      "sampledMs": 5.099,
+      "percentOfDeltas": 0.05679410161120823
+    },
+    {
+      "frame": {
+        "functionName": "recomputeVisibility",
+        "scriptId": "129",
+        "url": "http://127.0.0.1:5174/src/render/three/backend/threeRenderBackend.ts",
+        "lineNumber": 304,
+        "columnNumber": 20
+      },
+      "sampledUs": 5099,
+      "sampledMs": 5.099,
+      "percentOfDeltas": 0.05679410161120823
+    },
+    {
+      "frame": {
+        "functionName": "",
+        "scriptId": "139",
+        "url": "http://127.0.0.1:5174/src/presentation/visibilityPlan.ts",
+        "lineNumber": 125,
+        "columnNumber": 10
+      },
+      "sampledUs": 4469,
+      "sampledMs": 4.469,
+      "percentOfDeltas": 0.049776983742006196
+    },
+    {
+      "frame": {
+        "functionName": "update",
+        "scriptId": "64",
+        "url": "http://127.0.0.1:5174/src/hestia-prototype/player/input.ts",
+        "lineNumber": 298,
+        "columnNumber": 8
+      },
+      "sampledUs": 4358,
+      "sampledMs": 4.358,
+      "percentOfDeltas": 0.048540634403146786
+    },
+    {
+      "frame": {
+        "functionName": "",
+        "scriptId": "25",
+        "url": "http://127.0.0.1:5174/src/hvp/hvpBootstrap.ts",
+        "lineNumber": 338,
+        "columnNumber": 42
+      },
+      "sampledUs": 4314,
+      "sampledMs": 4.314,
+      "percentOfDeltas": 0.04805054998053585
+    },
+    {
+      "frame": {
+        "functionName": "WebGLRenderer.renderBufferDirect",
+        "scriptId": "77",
+        "url": "http://127.0.0.1:5174/node_modules/.vite/deps/three.module-rt1CQ8ae.js?v=cc795870",
+        "lineNumber": 51229,
+        "columnNumber": 36
+      },
+      "sampledUs": 4152,
+      "sampledMs": 4.152,
+      "percentOfDeltas": 0.04624614824274104
+    },
+    {
+      "frame": {
+        "functionName": "isTypedArray",
+        "scriptId": "4",
+        "url": "",
+        "lineNumber": 62,
+        "columnNumber": 21
+      },
+      "sampledUs": 4135,
+      "sampledMs": 4.135,
+      "percentOfDeltas": 0.04605679744309591
+    },
+    {
+      "frame": {
+        "functionName": "ObservedWorker.postMessage",
+        "scriptId": "14",
+        "url": "",
+        "lineNumber": 124,
+        "columnNumber": 38
+      },
+      "sampledUs": 3798,
+      "sampledMs": 3.798,
+      "percentOfDeltas": 0.04230319629718942
+    },
+    {
+      "frame": {
+        "functionName": "updateMatrixWorld",
+        "scriptId": "77",
+        "url": "http://127.0.0.1:5174/node_modules/.vite/deps/three.module-rt1CQ8ae.js?v=cc795870",
+        "lineNumber": 9898,
+        "columnNumber": 18
+      },
+      "sampledUs": 3590,
+      "sampledMs": 3.59,
+      "percentOfDeltas": 0.03998643357211954
+    },
+    {
+      "frame": {
+        "functionName": "observe",
+        "scriptId": "14",
+        "url": "",
+        "lineNumber": 12,
+        "columnNumber": 22
+      },
+      "sampledUs": 3372,
+      "sampledMs": 3.372,
+      "percentOfDeltas": 0.037558288023729
+    },
+    {
+      "frame": {
+        "functionName": "copy",
+        "scriptId": "77",
+        "url": "http://127.0.0.1:5174/node_modules/.vite/deps/three.module-rt1CQ8ae.js?v=cc795870",
+        "lineNumber": 13373,
+        "columnNumber": 5
+      },
+      "sampledUs": 3335,
+      "sampledMs": 3.335,
+      "percentOfDeltas": 0.03714617157744253
+    },
+    {
+      "frame": {
+        "functionName": "",
+        "scriptId": "57",
+        "url": "http://127.0.0.1:5174/src/hestia-prototype/presentation/visualEffects.ts",
+        "lineNumber": 125,
+        "columnNumber": 18
+      },
+      "sampledUs": 3321,
+      "sampledMs": 3.321,
+      "percentOfDeltas": 0.036990235624793595
+    },
+    {
+      "frame": {
+        "functionName": "requestAnimationFrame",
+        "scriptId": "0",
+        "url": "",
+        "lineNumber": -1,
+        "columnNumber": -1
+      },
+      "sampledUs": 3278,
+      "sampledMs": 3.278,
+      "percentOfDeltas": 0.03651128948451472
+    }
+  ],
+  "topInclusive": [
+    {
+      "frame": {
+        "functionName": "(root)",
+        "scriptId": "0",
+        "url": "",
+        "lineNumber": -1,
+        "columnNumber": -1
+      },
+      "sampledUs": 8978045,
+      "sampledMs": 8978.045,
+      "percentOfDeltas": 100.0
+    },
+    {
+      "frame": {
+        "functionName": "(program)",
+        "scriptId": "0",
+        "url": "",
+        "lineNumber": -1,
+        "columnNumber": -1
+      },
+      "sampledUs": 8320192,
+      "sampledMs": 8320.192,
+      "percentOfDeltas": 92.6726475530029
+    },
+    {
+      "frame": {
+        "functionName": "renderFrame",
+        "scriptId": "25",
+        "url": "http://127.0.0.1:5174/src/hvp/hvpBootstrap.ts",
+        "lineNumber": 3995,
+        "columnNumber": 22
+      },
+      "sampledUs": 494944,
+      "sampledMs": 494.944,
+      "percentOfDeltas": 5.512826010562433
+    },
+    {
+      "frame": {
+        "functionName": "publishCurrentSet",
+        "scriptId": "25",
+        "url": "http://127.0.0.1:5174/src/hvp/hvpBootstrap.ts",
+        "lineNumber": 279,
+        "columnNumber": 27
+      },
+      "sampledUs": 396758,
+      "sampledMs": 396.758,
+      "percentOfDeltas": 4.4192026215061295
+    },
+    {
+      "frame": {
+        "functionName": "updateProjection",
+        "scriptId": "25",
+        "url": "http://127.0.0.1:5174/src/hvp/hvpBootstrap.ts",
+        "lineNumber": 364,
+        "columnNumber": 20
+      },
+      "sampledUs": 396758,
+      "sampledMs": 396.758,
+      "percentOfDeltas": 4.4192026215061295
+    },
+    {
+      "frame": {
+        "functionName": "dispatch",
+        "scriptId": "129",
+        "url": "http://127.0.0.1:5174/src/render/three/backend/threeRenderBackend.ts",
+        "lineNumber": 50,
+        "columnNumber": 9
+      },
+      "sampledUs": 367381,
+      "sampledMs": 367.381,
+      "percentOfDeltas": 4.091993301437006
+    },
+    {
+      "frame": {
+        "functionName": "applyProjection",
+        "scriptId": "129",
+        "url": "http://127.0.0.1:5174/src/render/three/backend/threeRenderBackend.ts",
+        "lineNumber": 232,
+        "columnNumber": 16
+      },
+      "sampledUs": 345598,
+      "sampledMs": 345.598,
+      "percentOfDeltas": 3.849368097397596
+    },
+    {
+      "frame": {
+        "functionName": "canonicalSignature",
+        "scriptId": "132",
+        "url": "http://127.0.0.1:5174/src/presentation/canonical.ts",
+        "lineNumber": 109,
+        "columnNumber": 34
+      },
+      "sampledUs": 343919,
+      "sampledMs": 343.919,
+      "percentOfDeltas": 3.830666921362056
+    },
+    {
+      "frame": {
+        "functionName": "writeCanonical",
+        "scriptId": "132",
+        "url": "http://127.0.0.1:5174/src/presentation/canonical.ts",
+        "lineNumber": 63,
+        "columnNumber": 23
+      },
+      "sampledUs": 335767,
+      "sampledMs": 335.767,
+      "percentOfDeltas": 3.739867643791048
+    },
+    {
+      "frame": {
+        "functionName": "",
+        "scriptId": "132",
+        "url": "http://127.0.0.1:5174/src/presentation/canonical.ts",
+        "lineNumber": 94,
+        "columnNumber": 16
+      },
+      "sampledUs": 329137,
+      "sampledMs": 329.137,
+      "percentOfDeltas": 3.666020831929446
+    },
+    {
+      "frame": {
+        "functionName": "frameProjectionSignature",
+        "scriptId": "139",
+        "url": "http://127.0.0.1:5174/src/presentation/visibilityPlan.ts",
+        "lineNumber": 137,
+        "columnNumber": 40
+      },
+      "sampledUs": 326456,
+      "sampledMs": 326.456,
+      "percentOfDeltas": 3.636159096997175
+    },
+    {
+      "frame": {
+        "functionName": "writeString",
+        "scriptId": "132",
+        "url": "http://127.0.0.1:5174/src/presentation/canonical.ts",
+        "lineNumber": 27,
+        "columnNumber": 20
+      },
+      "sampledUs": 248185,
+      "sampledMs": 248.185,
+      "percentOfDeltas": 2.7643546005839803
+    },
+    {
+      "frame": {
+        "functionName": "writeLength",
+        "scriptId": "132",
+        "url": "http://127.0.0.1:5174/src/presentation/canonical.ts",
+        "lineNumber": 22,
+        "columnNumber": 20
+      },
+      "sampledUs": 113883,
+      "sampledMs": 113.883,
+      "percentOfDeltas": 1.2684610068227549
+    },
+    {
+      "frame": {
+        "functionName": "encode",
+        "scriptId": "0",
+        "url": "",
+        "lineNumber": -1,
+        "columnNumber": -1
+      },
+      "sampledUs": 111567,
+      "sampledMs": 111.567,
+      "percentOfDeltas": 1.2426647449416883
+    },
+    {
+      "frame": {
+        "functionName": "(garbage collector)",
+        "scriptId": "0",
+        "url": "",
+        "lineNumber": -1,
+        "columnNumber": -1
+      },
+      "sampledUs": 78034,
+      "sampledMs": 78.034,
+      "percentOfDeltas": 0.8691647235004948
+    },
+    {
+      "frame": {
+        "functionName": "renderFrame",
+        "scriptId": "129",
+        "url": "http://127.0.0.1:5174/src/render/three/backend/threeRenderBackend.ts",
+        "lineNumber": 86,
+        "columnNumber": 12
+      },
+      "sampledUs": 44805,
+      "sampledMs": 44.805,
+      "percentOfDeltas": 0.4990507398882496
+    },
+    {
+      "frame": {
+        "functionName": "render",
+        "scriptId": "57",
+        "url": "http://127.0.0.1:5174/src/hestia-prototype/presentation/visualEffects.ts",
+        "lineNumber": 112,
+        "columnNumber": 10
+      },
+      "sampledUs": 43708,
+      "sampledMs": 43.708,
+      "percentOfDeltas": 0.4868320441699724
+    },
+    {
+      "frame": {
+        "functionName": "WebGLRenderer.render",
+        "scriptId": "77",
+        "url": "http://127.0.0.1:5174/node_modules/.vite/deps/three.module-rt1CQ8ae.js?v=cc795870",
+        "lineNumber": 51425,
+        "columnNumber": 24
+      },
+      "sampledUs": 33510,
+      "sampledMs": 33.51,
+      "percentOfDeltas": 0.37324384094755597
+    },
+    {
+      "frame": {
+        "functionName": "",
+        "scriptId": "0",
+        "url": "",
+        "lineNumber": -1,
+        "columnNumber": -1
+      },
+      "sampledUs": 29145,
+      "sampledMs": 29.145,
+      "percentOfDeltas": 0.3246252385680847
+    },
+    {
+      "frame": {
+        "functionName": "writeBytes",
+        "scriptId": "132",
+        "url": "http://127.0.0.1:5174/src/presentation/canonical.ts",
+        "lineNumber": 13,
+        "columnNumber": 11
+      },
+      "sampledUs": 22821,
+      "sampledMs": 22.821,
+      "percentOfDeltas": 0.2541867411000947
+    },
+    {
+      "frame": {
+        "functionName": "WebGLRenderer.renderBufferDirect",
+        "scriptId": "77",
+        "url": "http://127.0.0.1:5174/node_modules/.vite/deps/three.module-rt1CQ8ae.js?v=cc795870",
+        "lineNumber": 51229,
+        "columnNumber": 36
+      },
+      "sampledUs": 22461,
+      "sampledMs": 22.461,
+      "percentOfDeltas": 0.2501769594605507
+    },
+    {
+      "frame": {
+        "functionName": "renderObject",
+        "scriptId": "77",
+        "url": "http://127.0.0.1:5174/node_modules/.vite/deps/three.module-rt1CQ8ae.js?v=cc795870",
+        "lineNumber": 51636,
+        "columnNumber": 23
+      },
+      "sampledUs": 22461,
+      "sampledMs": 22.461,
+      "percentOfDeltas": 0.2501769594605507
+    },
+    {
+      "frame": {
+        "functionName": "renderObjects",
+        "scriptId": "77",
+        "url": "http://127.0.0.1:5174/node_modules/.vite/deps/three.module-rt1CQ8ae.js?v=cc795870",
+        "lineNumber": 51626,
+        "columnNumber": 24
+      },
+      "sampledUs": 22461,
+      "sampledMs": 22.461,
+      "percentOfDeltas": 0.2501769594605507
+    },
+    {
+      "frame": {
+        "functionName": "renderScene",
+        "scriptId": "77",
+        "url": "http://127.0.0.1:5174/node_modules/.vite/deps/three.module-rt1CQ8ae.js?v=cc795870",
+        "lineNumber": 51553,
+        "columnNumber": 22
+      },
+      "sampledUs": 22461,
+      "sampledMs": 22.461,
+      "percentOfDeltas": 0.2501769594605507
+    },
+    {
+      "frame": {
+        "functionName": "writeByte",
+        "scriptId": "132",
+        "url": "http://127.0.0.1:5174/src/presentation/canonical.ts",
+        "lineNumber": 5,
+        "columnNumber": 10
+      },
+      "sampledUs": 21744,
+      "sampledMs": 21.744,
+      "percentOfDeltas": 0.24219081102845888
+    },
+    {
+      "frame": {
+        "functionName": "applyVisibilityPlan",
+        "scriptId": "129",
+        "url": "http://127.0.0.1:5174/src/render/three/backend/threeRenderBackend.ts",
+        "lineNumber": 219,
+        "columnNumber": 20
+      },
+      "sampledUs": 18562,
+      "sampledMs": 18.562,
+      "percentOfDeltas": 0.20674879664782256
+    },
+    {
+      "frame": {
+        "functionName": "visibilityPlanSignature",
+        "scriptId": "139",
+        "url": "http://127.0.0.1:5174/src/presentation/visibilityPlan.ts",
+        "lineNumber": 53,
+        "columnNumber": 39
+      },
+      "sampledUs": 17463,
+      "sampledMs": 17.463,
+      "percentOfDeltas": 0.19450782436488123
+    },
+    {
+      "frame": {
+        "functionName": "project",
+        "scriptId": "15",
+        "url": "http://127.0.0.1:5174/src/factory/factoryEntry.ts",
+        "lineNumber": 168,
+        "columnNumber": 17
+      },
+      "sampledUs": 14243,
+      "sampledMs": 14.243,
+      "percentOfDeltas": 0.15864255525562637
+    },
+    {
+      "frame": {
+        "functionName": "publish",
+        "scriptId": "19",
+        "url": "http://127.0.0.1:5174/src/factory/session/factorySession.ts",
+        "lineNumber": 50,
+        "columnNumber": 17
+      },
+      "sampledUs": 14243,
+      "sampledMs": 14.243,
+      "percentOfDeltas": 0.15864255525562637
+    },
+    {
+      "frame": {
+        "functionName": "observe",
+        "scriptId": "19",
+        "url": "http://127.0.0.1:5174/src/factory/session/factorySession.ts",
+        "lineNumber": 54,
+        "columnNumber": 17
+      },
+      "sampledUs": 14243,
+      "sampledMs": 14.243,
+      "percentOfDeltas": 0.15864255525562637
+    }
+  ]
+}

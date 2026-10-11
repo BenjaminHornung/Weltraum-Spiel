@@ -1,0 +1,721 @@
+{
+  "version": "fp06-w07-reachable-stand-region-query-v1",
+  "timestamp": "2026-10-11T15:05:32.194Z",
+  "interpreter": "/workspace/.cloud-setup/toolchain/node_modules/node/bin/node",
+  "nodeVersion": "v22.23.3",
+  "cwd": "/workspace",
+  "elapsedMs": 77.07715999999999,
+  "sourceBindings": [
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+      "bytes": 2121,
+      "sha256": "53725bbf06af6be92ac1b3b3e250ee6548e37bb6abf8500b4cd50e09b1ec1a29"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+      "bytes": 38423,
+      "sha256": "13128d7ad3151da644ae909af0dbb0e2df0e91066c01f55ee566f7eedc1fdaca"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/core/hash.ts",
+      "bytes": 3099,
+      "sha256": "7514fc507d6c83404462d967ff4736790abf6425842b676cefedc4928a2febee"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/art/factory/fp02/cutter/source.scene.json",
+      "bytes": 19222,
+      "sha256": "abd1ce25fd19ad61a9cb65de9f5ba10c303aa5c1a1aa16260de9dce9534fa5fd"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/construction/installationProfile.ts",
+      "bytes": 5733,
+      "sha256": "64df3962d652649301e1a7f411516829e6e7fd915d5fa48f566f18090c32832f"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/construction/placement.ts",
+      "bytes": 11255,
+      "sha256": "89194437192f2788e4ea7458af06f760583f8250ccce494a89e0cc225debd09e"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+      "bytes": 4071,
+      "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/factoryEntry.ts",
+      "bytes": 9253,
+      "sha256": "ad7f1bb598f26db5ba873abe762fc39a1798c8bf18a65f971409efd7b3f87202"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/hestia-prototype/presentation/vegetation.ts",
+      "bytes": 22422,
+      "sha256": "a6c6996706591f5fd77f31ea9a445fa421f6e1e02ee7162904a58834b5008dd3"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+      "bytes": 18339,
+      "sha256": "620a60b3d7d1e5edfef558fe07fac9af78cd9fc13385f9c45ad5fde1279d2eee"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+      "bytes": 164229,
+      "sha256": "e744746124298f359f18efed2b6eeaa83e434177fe8dd509bf2519669d6174e3"
+    }
+  ],
+  "stableSourceBytes": true,
+  "priorReport": {
+    "path": "/workspace/.cloud-setup/fp06-w07-second-cutter-site-preflight.md",
+    "sha256": "bfd82113829ba58f1421a88b3fa35cb7a67753e4338087fd7f7f59864c695366"
+  },
+  "firstService": {
+    "min": [
+      -5.25,
+      1.5,
+      3.5
+    ],
+    "max": [
+      -4.25,
+      3.5,
+      6.5
+    ]
+  },
+  "secondService": {
+    "min": [
+      -8.75,
+      1.5,
+      3.5
+    ],
+    "max": [
+      -7.75,
+      3.5,
+      6.5
+    ]
+  },
+  "cargoPoint": [
+    -5.5,
+    2.25,
+    12.625
+  ],
+  "cargoAccessBounds": {
+    "min": [
+      -6.25,
+      1.5,
+      11.625
+    ],
+    "max": [
+      -4.75,
+      3.5,
+      12.625
+    ]
+  },
+  "scan": {
+    "boundsXZ": [
+      -7,
+      -5.75,
+      8.5,
+      9.5
+    ],
+    "spacingMeters": 0.025,
+    "actorY": 2.41,
+    "scanned": 2091,
+    "accepted": 206,
+    "groundOnlyRejected": 398,
+    "uniqueSourceColumns": 214
+  },
+  "byX": [
+    {
+      "x": -6.4,
+      "minZ": 8.75,
+      "maxZ": 9.175,
+      "count": 18
+    },
+    {
+      "x": -6.375,
+      "minZ": 8.75,
+      "maxZ": 9.15,
+      "count": 17
+    },
+    {
+      "x": -6.35,
+      "minZ": 8.725,
+      "maxZ": 9.15,
+      "count": 18
+    },
+    {
+      "x": -6.325,
+      "minZ": 8.725,
+      "maxZ": 9.125,
+      "count": 17
+    },
+    {
+      "x": -6.3,
+      "minZ": 8.725,
+      "maxZ": 9.125,
+      "count": 17
+    },
+    {
+      "x": -6.275,
+      "minZ": 8.725,
+      "maxZ": 9.1,
+      "count": 16
+    },
+    {
+      "x": -6.25,
+      "minZ": 8.7,
+      "maxZ": 9.075,
+      "count": 16
+    },
+    {
+      "x": -6.225,
+      "minZ": 8.7,
+      "maxZ": 9.075,
+      "count": 16
+    },
+    {
+      "x": -6.2,
+      "minZ": 8.7,
+      "maxZ": 9.05,
+      "count": 15
+    },
+    {
+      "x": -6.175,
+      "minZ": 8.7,
+      "maxZ": 9.05,
+      "count": 15
+    },
+    {
+      "x": -6.15,
+      "minZ": 8.7,
+      "maxZ": 9.025,
+      "count": 14
+    },
+    {
+      "x": -6.125,
+      "minZ": 8.7,
+      "maxZ": 9,
+      "count": 13
+    },
+    {
+      "x": -6.1,
+      "minZ": 8.675,
+      "maxZ": 9,
+      "count": 14
+    }
+  ],
+  "boxes": [
+    {
+      "name": "wide horizontal band",
+      "minX": -6.85,
+      "maxX": -6.125,
+      "minZ": 8.875,
+      "maxZ": 9,
+      "yRange": [
+        2.38,
+        2.44
+      ],
+      "width": 0.7249999999999996,
+      "depth": 0.125,
+      "corners": [
+        {
+          "point": [
+            -6.85,
+            2.38,
+            8.875
+          ],
+          "dCargoPoint": 3.987718646043123,
+          "dCargoBounds": 2.814693589007514,
+          "dFirst": 2.8636733403096097,
+          "dSecond": 2.539808063614257
+        },
+        {
+          "point": [
+            -6.85,
+            2.44,
+            8.875
+          ],
+          "dCargoPoint": 3.9901253113154227,
+          "dCargoBounds": 2.814693589007514,
+          "dFirst": 2.8636733403096097,
+          "dSecond": 2.539808063614257
+        },
+        {
+          "point": [
+            -6.85,
+            2.38,
+            9
+          ],
+          "dCargoPoint": 3.870403725711311,
+          "dCargoBounds": 2.6926984606524362,
+          "dFirst": 2.9681644159311658,
+          "dSecond": 2.6570660511172846
+        },
+        {
+          "point": [
+            -6.85,
+            2.44,
+            9
+          ],
+          "dCargoPoint": 3.872883292845267,
+          "dCargoBounds": 2.6926984606524362,
+          "dFirst": 2.9681644159311658,
+          "dSecond": 2.6570660511172846
+        },
+        {
+          "point": [
+            -6.125,
+            2.38,
+            8.875
+          ],
+          "dCargoPoint": 3.803948606382584,
+          "dCargoBounds": 2.75,
+          "dFirst": 2.5310570914145734,
+          "dSecond": 2.8777161083053344
+        },
+        {
+          "point": [
+            -6.125,
+            2.44,
+            8.875
+          ],
+          "dCargoPoint": 3.8064714631795153,
+          "dCargoBounds": 2.75,
+          "dFirst": 2.5310570914145734,
+          "dSecond": 2.8777161083053344
+        },
+        {
+          "point": [
+            -6.125,
+            2.38,
+            9
+          ],
+          "dCargoPoint": 3.6807811670893993,
+          "dCargoBounds": 2.625,
+          "dFirst": 2.6487025125521364,
+          "dSecond": 2.981715110469141
+        },
+        {
+          "point": [
+            -6.125,
+            2.44,
+            9
+          ],
+          "dCargoPoint": 3.683388385712264,
+          "dCargoBounds": 2.625,
+          "dFirst": 2.6487025125521364,
+          "dSecond": 2.981715110469141
+        }
+      ],
+      "worstCargoPoint": 3.9901253113154227,
+      "worstFirstService": 2.9681644159311658,
+      "worstSecondService": 2.981715110469141,
+      "fullHullEnvelope": {
+        "columns": 84,
+        "covered": true,
+        "heights": [
+          1.5,
+          2.5,
+          3,
+          3.5
+        ],
+        "slots": [
+          1,
+          3
+        ],
+        "maskColumns": 56,
+        "maxTop": 3.5
+      },
+      "allCornerSourceLinesClear": false,
+      "minimumCornerSourceLineAirGap": -0.6296296296296298,
+      "valid": false
+    },
+    {
+      "name": "central depth band",
+      "minX": -6.6,
+      "maxX": -6.35,
+      "minZ": 8.8,
+      "maxZ": 9.15,
+      "yRange": [
+        2.38,
+        2.44
+      ],
+      "width": 0.25,
+      "depth": 0.34999999999999964,
+      "corners": [
+        {
+          "point": [
+            -6.6,
+            2.38,
+            8.8
+          ],
+          "dCargoPoint": 3.9821508007608144,
+          "dCargoBounds": 2.846598847747957,
+          "dFirst": 2.6669270706189177,
+          "dSecond": 2.571478174124759
+        },
+        {
+          "point": [
+            -6.6,
+            2.44,
+            8.8
+          ],
+          "dCargoPoint": 3.9845608289998524,
+          "dCargoBounds": 2.846598847747957,
+          "dFirst": 2.6669270706189177,
+          "dSecond": 2.571478174124759
+        },
+        {
+          "point": [
+            -6.6,
+            2.38,
+            9.15
+          ],
+          "dCargoPoint": 3.6472626721967805,
+          "dCargoBounds": 2.49962497187078,
+          "dFirst": 2.9740544715926105,
+          "dSecond": 2.8887713651308586
+        },
+        {
+          "point": [
+            -6.6,
+            2.44,
+            9.15
+          ],
+          "dCargoPoint": 3.6498938340724374,
+          "dCargoBounds": 2.49962497187078,
+          "dFirst": 2.9740544715926105,
+          "dSecond": 2.8887713651308586
+        },
+        {
+          "point": [
+            -6.35,
+            2.38,
+            8.8
+          ],
+          "dCargoPoint": 3.920462345183282,
+          "dCargoBounds": 2.8267693574113886,
+          "dFirst": 2.549509756796393,
+          "dSecond": 2.6925824035672528
+        },
+        {
+          "point": [
+            -6.35,
+            2.44,
+            8.8
+          ],
+          "dCargoPoint": 3.9229102717242967,
+          "dCargoBounds": 2.8267693574113886,
+          "dFirst": 2.549509756796393,
+          "dSecond": 2.6925824035672528
+        },
+        {
+          "point": [
+            -6.35,
+            2.38,
+            9.15
+          ],
+          "dCargoPoint": 3.5798079557428775,
+          "dCargoBounds": 2.4770193782043766,
+          "dFirst": 2.8692333470807148,
+          "dSecond": 2.9970819141291423
+        },
+        {
+          "point": [
+            -6.35,
+            2.44,
+            9.15
+          ],
+          "dCargoPoint": 3.5824886601355765,
+          "dCargoBounds": 2.4770193782043766,
+          "dFirst": 2.8692333470807148,
+          "dSecond": 2.9970819141291423
+        }
+      ],
+      "worstCargoPoint": 3.9845608289998524,
+      "worstFirstService": 2.9740544715926105,
+      "worstSecondService": 2.9970819141291423,
+      "fullHullEnvelope": {
+        "columns": 72,
+        "covered": true,
+        "heights": [
+          1.5,
+          2.5,
+          3
+        ],
+        "slots": [
+          1
+        ],
+        "maskColumns": 54,
+        "maxTop": 3
+      },
+      "allCornerSourceLinesClear": true,
+      "minimumCornerSourceLineAirGap": 0.7542483660130719,
+      "valid": false
+    },
+    {
+      "name": "balanced central band",
+      "minX": -6.65,
+      "maxX": -6.225,
+      "minZ": 8.875,
+      "maxZ": 9.05,
+      "yRange": [
+        2.38,
+        2.44
+      ],
+      "width": 0.4250000000000007,
+      "depth": 0.1750000000000007,
+      "corners": [
+        {
+          "point": [
+            -6.65,
+            2.38,
+            8.875
+          ],
+          "dCargoPoint": 3.9245254490192827,
+          "dCargoBounds": 2.7789386463180508,
+          "dFirst": 2.756923103751717,
+          "dSecond": 2.617369863049546
+        },
+        {
+          "point": [
+            -6.65,
+            2.44,
+            8.875
+          ],
+          "dCargoPoint": 3.926970842774364,
+          "dCargoBounds": 2.7789386463180508,
+          "dFirst": 2.756923103751717,
+          "dSecond": 2.617369863049546
+        },
+        {
+          "point": [
+            -6.65,
+            2.38,
+            9.05
+          ],
+          "dCargoPoint": 3.75766217214906,
+          "dCargoBounds": 2.6058827678926764,
+          "dFirst": 2.9090376415577714,
+          "dSecond": 2.7771388153997636
+        },
+        {
+          "point": [
+            -6.65,
+            2.44,
+            9.05
+          ],
+          "dCargoPoint": 3.7602160842164367,
+          "dCargoBounds": 2.6058827678926764,
+          "dFirst": 2.9090376415577714,
+          "dSecond": 2.7771388153997636
+        },
+        {
+          "point": [
+            -6.225,
+            2.38,
+            8.875
+          ],
+          "dCargoPoint": 3.8216521296423616,
+          "dCargoBounds": 2.75,
+          "dFirst": 2.5673429844880484,
+          "dSecond": 2.8224546054808393
+        },
+        {
+          "point": [
+            -6.225,
+            2.44,
+            8.875
+          ],
+          "dCargoPoint": 3.8241633071823697,
+          "dCargoBounds": 2.75,
+          "dFirst": 2.5673429844880484,
+          "dSecond": 2.8224546054808393
+        },
+        {
+          "point": [
+            -6.225,
+            2.38,
+            9.05
+          ],
+          "dCargoPoint": 3.650089040009845,
+          "dCargoBounds": 2.5749999999999993,
+          "dFirst": 2.7300412084801953,
+          "dSecond": 2.9712160810011787
+        },
+        {
+          "point": [
+            -6.225,
+            2.44,
+            9.05
+          ],
+          "dCargoPoint": 3.652718165969008,
+          "dCargoBounds": 2.5749999999999993,
+          "dFirst": 2.7300412084801953,
+          "dSecond": 2.9712160810011787
+        }
+      ],
+      "worstCargoPoint": 3.926970842774364,
+      "worstFirstService": 2.9090376415577714,
+      "worstSecondService": 2.9712160810011787,
+      "fullHullEnvelope": {
+        "columns": 72,
+        "covered": true,
+        "heights": [
+          1.5,
+          2.5,
+          3
+        ],
+        "slots": [
+          1
+        ],
+        "maskColumns": 56,
+        "maxTop": 3
+      },
+      "allCornerSourceLinesClear": true,
+      "minimumCornerSourceLineAirGap": 0.7543333333333333,
+      "valid": false
+    },
+    {
+      "name": "maximum near-z8.95 horizontal band",
+      "minX": -6.95,
+      "maxX": -6.05,
+      "minZ": 8.925,
+      "maxZ": 8.975,
+      "yRange": [
+        2.38,
+        2.44
+      ],
+      "width": 0.9000000000000004,
+      "depth": 0.049999999999998934,
+      "corners": [
+        {
+          "point": [
+            -6.95,
+            2.38,
+            8.925
+          ],
+          "dCargoPoint": 3.976103620380132,
+          "dCargoBounds": 2.7892651361962697,
+          "dFirst": 2.9615241008642834,
+          "dSecond": 2.5535514484732835
+        },
+        {
+          "point": [
+            -6.95,
+            2.44,
+            8.925
+          ],
+          "dCargoPoint": 3.978517311763265,
+          "dCargoBounds": 2.7892651361962697,
+          "dFirst": 2.9615241008642834,
+          "dSecond": 2.5535514484732835
+        },
+        {
+          "point": [
+            -6.95,
+            2.38,
+            8.975
+          ],
+          "dCargoPoint": 3.9296183020746436,
+          "dCargoBounds": 2.7408940147331493,
+          "dFirst": 3.002603037366078,
+          "dSecond": 2.601081505835601
+        },
+        {
+          "point": [
+            -6.95,
+            2.44,
+            8.975
+          ],
+          "dCargoPoint": 3.9320605285269967,
+          "dCargoBounds": 2.7408940147331493,
+          "dFirst": 3.002603037366078,
+          "dSecond": 2.601081505835601
+        },
+        {
+          "point": [
+            -6.05,
+            2.38,
+            8.925
+          ],
+          "dCargoPoint": 3.7429133038316555,
+          "dCargoBounds": 2.6999999999999993,
+          "dFirst": 2.5535514484732835,
+          "dSecond": 2.9615241008642834
+        },
+        {
+          "point": [
+            -6.05,
+            2.44,
+            8.925
+          ],
+          "dCargoPoint": 3.7454772726583183,
+          "dCargoBounds": 2.6999999999999993,
+          "dFirst": 2.5535514484732835,
+          "dSecond": 2.9615241008642834
+        },
+        {
+          "point": [
+            -6.05,
+            2.38,
+            8.975
+          ],
+          "dCargoPoint": 3.6934942804883293,
+          "dCargoBounds": 2.6500000000000004,
+          "dFirst": 2.601081505835601,
+          "dSecond": 3.002603037366078
+        },
+        {
+          "point": [
+            -6.05,
+            2.44,
+            8.975
+          ],
+          "dCargoPoint": 3.6960925313092474,
+          "dCargoBounds": 2.6500000000000004,
+          "dFirst": 2.601081505835601,
+          "dSecond": 3.002603037366078
+        }
+      ],
+      "worstCargoPoint": 3.978517311763265,
+      "worstFirstService": 3.002603037366078,
+      "worstSecondService": 3.002603037366078,
+      "fullHullEnvelope": {
+        "columns": 98,
+        "covered": true,
+        "heights": [
+          1.25,
+          1.5,
+          2.5,
+          3,
+          3.5
+        ],
+        "slots": [
+          1,
+          3
+        ],
+        "maskColumns": 56,
+        "maxTop": 3.5
+      },
+      "allCornerSourceLinesClear": false,
+      "minimumCornerSourceLineAirGap": -0.6379310344827589,
+      "valid": false
+    }
+  ],
+  "geometry": {
+    "constraintDescription": "intersection of two radius3m distances to service AABBs and Native radius4m distance to immutable actual Cargo access point; planner Cargo bounds additionally checked",
+    "maximumReachOnlyZ": {
+      "x": -6.5,
+      "z": 9.227178028658928
+    },
+    "centralCargoMinimumZ": {
+      "x": -6.5,
+      "z": 8.755323010896129
+    },
+    "limitations": [
+      "Pure source preflight; actual Native actor/Cargo accessible, support, LOS and normal walk remain authoritative",
+      "No product, E2E, reach, source, terrain, masks, resources or input implementation edits",
+      "AABB distances are continuous convex functions: box corner maximum bounds all interior points; source ground checks entire box plus player horizontal hull, not only corners",
+      "Exact source line traversal used for each accepted scan point and box corner; full-box interior LOS clearance additionally follows from checked bounding strip below"
+    ]
+  }
+}

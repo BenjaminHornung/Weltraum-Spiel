@@ -1,0 +1,20 @@
+[
+  {
+    "source": "/workspace/.cloud-setup/fp06-task-briefs/w07-grant.json",
+    "artifact": "source-08-w07-grant.json.gz",
+    "sourceSha256": "41c9cf6b19e71edee1d25a1fc91bfa28e70a638184a52b648f2c5950664dea29",
+    "sourceBytes": 2357
+  },
+  {
+    "source": "/workspace/.cloud-setup/fp06-w09-cargo-reach-preflight.md",
+    "artifact": "source-09-fp06-w09-cargo-reach-preflight.md.gz",
+    "sourceSha256": "9b6a0f65a3d81052f26a39da383f158fcd618b7dbb585b488fbaef5326bafbb7",
+    "sourceBytes": 14166
+  },
+  {
+    "source": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/reviews/w07-service-zone-admission.md",
+    "artifact": "source-10-w07-service-zone-admission.md.gz",
+    "sourceSha256": "c0a585504b408500071fad4c41184846390225ff1dbf8f4df93039d1b3f23154",
+    "sourceBytes": 2590
+  }
+]

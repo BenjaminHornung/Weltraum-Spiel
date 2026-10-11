@@ -1,0 +1,36 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/placement.test.ts tests/unit/factory/facilitySession.test.ts -t W07 actual accepted|W07 Native rejects
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/facilitySession.test.ts (4 tests | 1 failed | 3 skipped) 47ms
+   × W07 Native rejects a current real collider in a Cutter foot BEFORE allocating any new member 13ms
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 1 passed | 9 skipped (11)
+   Start at  12:51:28
+   Duration  1.90s (transform 807ms, setup 0ms, import 1.11s, tests 588ms, environment 0ms)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/facilitySession.test.ts > W07 Native rejects a current real collider in a Cutter foot BEFORE allocating any new member
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ tests/unit/factory/facilitySession.test.ts:64:45
+     62|     const old=world.createRigidBody(R.RigidBodyDesc.fixed().setTransla…
+     63|     const facilities=createFactoryFacilitySession(world,()=>true,()=>0…
+     64|     expect(()=>facilities.prepare(request)).toThrow(/NativeOverlap/);
+       |                                             ^
+     65|     expect(world.bodies.len()).toBe(1);expect(world.colliders.len()).t…
+     66|   }finally{world.free();}
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯

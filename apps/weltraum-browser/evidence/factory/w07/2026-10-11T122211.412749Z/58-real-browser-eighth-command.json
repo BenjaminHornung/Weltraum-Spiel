@@ -1,0 +1,24 @@
+{
+  "normalGameplay": true,
+  "command": [
+    "npm",
+    "run",
+    "test:e2e",
+    "--",
+    "--config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts",
+    "tests/e2e/factory-placement.spec.ts"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "env": {
+    "FP06_E2E_RUN_DIR": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/browser-eighth",
+    "WELTRAUM_FACTORY_EVIDENCE_RUN": "2026-10-11T122211.412749Z",
+    "WELTRAUM_PLAYWRIGHT_EXECUTABLE_PATH": "/usr/bin/chromium"
+  },
+  "configSha256": "53a55a48da97d43a02e317fb8edc844d57a9b5687f356a7ebf4f5b470efcf900",
+  "startUtc": "2026-10-11T15:14:08.616281+00:00",
+  "endUtc": "2026-10-11T15:16:42.812569+00:00",
+  "durationSeconds": 154.1970143230028,
+  "exitCode": 1,
+  "rawBytes": 10638,
+  "rawSha256": "65f8c804021a4f75f0087eb2041df8825e98771a62befc97f2b680b52325d090"
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "source": "/workspace/.cloud-setup/fp06-w07-spec-review-prebrowser.md",
+    "path": "independent-spec-first.md",
+    "sha256": "9309bc8917ad4855e56b1e2f9174a539298ae0db8eb6153f9f37c8e064d36b0f",
+    "bytes": 22017,
+    "capturedUtc": "2026-10-11T14:25:42.168470+00:00",
+    "phase": "historical pre-second-browser23changedPaths/full27seal bc0986, independentFAIL; subsequentfixes notadmitted"
+  },
+  {
+    "source": "/workspace/.cloud-setup/fp06-w07-native-review-third-seal.md",
+    "path": "independent-native-third-seal.md",
+    "sha256": "266f07dc333bab4c2f6ec30637e034e090c87c8322690e40c959b6ece4ea8947",
+    "bytes": 10392,
+    "capturedUtc": "2026-10-11T14:25:42.168586+00:00",
+    "phase": "historicalpre-third-browser27seal d1e463 nativeSpec/Quality scopedPASS; laterMountRecovery/E2E notadmitted"
+  }
+]

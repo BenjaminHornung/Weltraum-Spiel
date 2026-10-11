@@ -7,7 +7,7 @@ import { createHvpPlayerVisualPose } from "./presentation";
 /** Input owns intent, never avatar position. Camera consumes solver readback only. */
 export const createHvpPlayerInput = (canvas: HTMLCanvasElement, camera: PerspectiveCamera, physics: HvpPhysicsClient,
   doc: Document = document, win: Pick<Window, "addEventListener" | "removeEventListener"> = window,
-  onInspect: () => void = () => {}, tool: {confirm():void;select(mode:number):void} = {confirm:()=>{},select:()=>{}},isBlocked:()=>boolean=()=>false) => {
+  onInspect: () => void = () => {}, tool: {confirm():void;select(mode:number):void} = {confirm:()=>{},select:()=>{}},isBlocked:()=>boolean=()=>false, factoryEventIntent=false) => {
   const listeners=createHvpListeners();
   const keys = new Set<string>();
   const movementKeys = new Set(["KeyW", "KeyA", "KeyS", "KeyD", "ShiftLeft", "ShiftRight", "Space"]);
@@ -42,21 +42,41 @@ export const createHvpPlayerInput = (canvas: HTMLCanvasElement, camera: Perspect
   const stop = (): void => {
     const wasActive = active;
     active = false; activating = false; keys.clear(); jump = false; neutralizations += 1;
-    physics.setPlayerInput({ x: 0, z: 0, sprint: false, jump: false });
+    physics.setPlayerInput({ x: 0, z: 0, sprint: false, jump: false },factoryEventIntent);
     if (doc.pointerLockElement === canvas) { doc.exitPointerLock(); }
     if (wasActive && !disposed) {
       void physics.command("Pause").catch(error);
       if (!dialog.open) { dialog.showModal(); }
     }
   };
+  const levelIntent = () => {
+    const x=Number(keys.has("KeyD"))-Number(keys.has("KeyA"));
+    const z=Number(keys.has("KeyS"))-Number(keys.has("KeyW"));
+    const norm=Math.max(1,Math.hypot(x,z));
+    const worldX=(x*Math.cos(yaw)+z*Math.sin(yaw))/norm;
+    const worldZ=(z*Math.cos(yaw)-x*Math.sin(yaw))/norm;
+    return {x:factoryEventIntent?(worldX||0):worldX,z:factoryEventIntent?(worldZ||0):worldZ,
+      sprint:keys.has("ShiftLeft")||keys.has("ShiftRight"),jump};
+  };
+  const publishEventIntent = (): void => {
+    if(!factoryEventIntent||!active||activating||disposed)return;
+    if(isBlocked()||doc.pointerLockElement!==canvas){stop();return;}
+    const state=physics.read();
+    if(state.status!=="Running"||state.terrainTransaction!=="Idle"||state.neighborTransaction!=="Idle"||state.bodyResidencyTransaction!=="Idle"
+      ||(state.structural&&state.structural.state!=="Idle")||["PreparedHeld","CommittedHeld","RecoveryHold"].includes(state.moving.state)){stop();return;}
+    physics.setPlayerInput(levelIntent());
+    // Client retains an unsent edge, while this producer cannot replay it on RAF.
+    jump=false;
+  };
   const locked = (): void => {
     if (disposed) { return; }
     if (doc.pointerLockElement !== canvas||isBlocked()) { stop(); return; }
     active = true; activating = true; keys.clear(); jump = false;
     canvas.focus({ preventScroll: true });
-    void physics.command("Play").then(() => { activating = false; }).catch(value => { error(value); stop(); });
+    void physics.command("Play").then(() => { activating = false; if(keys.size||jump)publishEventIntent(); }).catch(value => { error(value); stop(); });
   };
   const keyDown = (event: KeyboardEvent): void => {
+    if(factoryEventIntent&&active&&isBlocked()){stop();return;}
     if (!active || isBlocked() || doc.pointerLockElement !== canvas) { return; }
     if (event.code === "Escape") { event.preventDefault(); stop(); return; }
     if (/^Digit[123]$/.test(event.code)) { event.preventDefault(); if(!event.repeat) { tool.select(Number(event.code.slice(-1))); } return; }
@@ -70,12 +90,14 @@ export const createHvpPlayerInput = (canvas: HTMLCanvasElement, camera: Perspect
     event.preventDefault();
     if (event.code === "Space" && !event.repeat && !keys.has(event.code)) { jump = true; jumpEdges += 1; }
     keys.add(event.code);
+    publishEventIntent();
   };
-  const keyUp = (event: KeyboardEvent): void => { keys.delete(event.code); };
+  const keyUp = (event: KeyboardEvent): void => { keys.delete(event.code); publishEventIntent(); };
   const mouseMove = (event: MouseEvent): void => {
     if (!active || isBlocked() || doc.pointerLockElement !== canvas) { return; }
     yaw -= event.movementX * 0.002;
     pitch = Math.max(-1.4, Math.min(1.4, pitch - event.movementY * 0.002));
+    publishEventIntent();
   };
   const visibility = (): void => { if (doc.hidden) { stop(); } };
   const pointerError = (): void => { error("Pointer Lock nicht verfügbar – bitte erneut auf Spielen klicken."); stop(); };
@@ -147,12 +169,7 @@ export const createHvpPlayerInput = (canvas: HTMLCanvasElement, camera: Perspect
         ||(state.moving&&["PreparedHeld","CommittedHeld","RecoveryHold"].includes(state.moving.state))) { return; }
       if (state.status !== "Running") { stop(); return; }
       if (p === null) { return; }
-      const x = Number(keys.has("KeyD")) - Number(keys.has("KeyA"));
-      const z = Number(keys.has("KeyS")) - Number(keys.has("KeyW"));
-      const norm = Math.max(1, Math.hypot(x, z));
-      physics.setPlayerInput({ x: (x * Math.cos(yaw) + z * Math.sin(yaw)) / norm,
-        z: (z * Math.cos(yaw) - x * Math.sin(yaw)) / norm,
-        sprint: keys.has("ShiftLeft") || keys.has("ShiftRight"), jump });
+      physics.setPlayerInput(levelIntent());
       jump = false;
       rotation.set(pitch, yaw, 0); camera.quaternion.setFromEuler(rotation);
       if (thirdPerson) {

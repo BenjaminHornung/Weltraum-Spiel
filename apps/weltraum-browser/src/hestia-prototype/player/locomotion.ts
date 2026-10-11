@@ -46,9 +46,10 @@ export const createHvpLocomotion = (world: R.World, spawn: Readonly<{ x: number;
       if(disposed||enabled){throw new Error("Player checkpoint requires a paused live owner");}
       return Object.freeze({version:"hvp-player-checkpoint-v1",profileDigest,gravity,position:Object.freeze({...body.translation()}),grounded,velocityY,jumpCount,coverageHold});
     },
-    setInput(value: HvpPlayerInput): void {
+    setInput(value: HvpPlayerInput, cancelPendingJump = false): void {
       if (![value.x, value.z].every(Number.isFinite) || Math.abs(value.x) > 1 || Math.abs(value.z) > 1
         || typeof value.sprint !== "boolean" || typeof value.jump !== "boolean") { throw new RangeError("Invalid player input"); }
+      if (cancelPendingJump) { neutralize(); }
       if (!enabled || disposed) { return; }
       input = { ...value }; jumpPending ||= value.jump;
     },

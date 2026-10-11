@@ -1,0 +1,37 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/hvp-bootstrap.test.ts -t actual Host Ghost
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-bootstrap.test.ts (35 tests | 1 failed | 34 skipped) 7582ms
+     × W07 actual Host Ghost move/rotate/cancel keeps one HVP frame, Cargo Open and disposal intact 7580ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W07 actual Host Ghost move/rotate/cancel keeps one HVP frame, Cargo Open and disposal intact
+AssertionError: expected [Function] to not throw an error but 'Error: Factory hidden mesh stage fail…' was thrown
+
+- Expected:
+undefined
+
++ Received:
+"Error: Factory hidden mesh stage failed: RepresentationRemovedAtRevision"
+
+ ❯ tests/unit/hvp-bootstrap.test.ts:568:111
+    566|       const request={transactionId:"frame_cycle_1",instanceId:"frame_c…
+    567|       expect(()=>port.construction!.projectGhost(request)).not.toThrow…
+    568|       expect(()=>port.construction!.projectGhost({...request,centerMm:…
+       |                                                                                                               ^
+    569|       expect(()=>port.construction!.projectGhost(null)).not.toThrow();
+    570|       expect(()=>port.construction!.projectGhost(request)).not.toThrow…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 34 skipped (35)
+   Start at  15:21:36
+   Duration  9.32s (transform 1.29s, setup 0ms, import 1.62s, tests 7.58s, environment 0ms)
+

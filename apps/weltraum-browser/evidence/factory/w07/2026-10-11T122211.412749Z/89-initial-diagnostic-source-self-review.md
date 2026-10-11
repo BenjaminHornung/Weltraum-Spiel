@@ -1,0 +1,13 @@
+# W07 passive input/tick diagnostic source review — no execution
+
+The independent plan review5544f323… was read fully and copied unchanged. The temporary overlay changes only the existing E2E; all29 other201394… product hashes match. Normal030fc… bytes are archived exactly, all27 actual88 artifact references checked, and seven historical fixed-writer origins/absent states backed up. This overlay is not normal gameplay evidence.
+
+Navigation remains plain /factory.html, original configuration/trace/budgets unchanged. Four serial cases share one real Page/NativeWorld: normal Ready/Open/Play and125/250/600ms ordinary released trusted S gestures. Combined entry uses the original30s limit; its actual boot/open/play fit is NOT_RUN. Gesture motion is observed without asserting a positive displacement.
+
+Passive capture listeners record trusted DOM edges, pointer lock/visibility and browser time only. Only the existing named simulation-owner Worker receives observation. Constructor args stay exact; postMessage logging is isolated in its own catch and the original call is outside it, forwarding the identical argument list/transferables via Reflect.apply and preserving its return/throw. The listener leaves onmessage/onerror/data unchanged. Only primitive message/snapshot projections are copied; no transferred buffers or authoritative references are retained. Non-owner transport is untouched. Log4096/idmap512 limits affect observations only; drops/errors are counted, invalidate completeness and never block forwarding.
+
+Reply timestamps are main reception. FactoryInput id-only ACK is not admission or native-handler execution proof; its clock is not invented. There is no Advance IPC. Native ticks come only from ordinary reply/read projections. Optional supported longtasks are actual main tasks, not entire CPU; solver/mainFrameCpu are explicitly NOT_OBSERVED with measurement disabled. Observer overhead means this is not a performance comparison.
+
+Exact CDP payload and immediately-bound allSettled/fresh-finalUp/all-reason/context-abort closure remain. No test read occurs while its gesture is held; original app reads continue unmodified and are observed. No Worker/Native API, payload/pose/tick mutation, RAF/render wrapper, focus intervention, latch/catch-up or Source/cap/queue/deadline change occurs. Observer state is a diagnostic data buffer only. Contextclose tears down the page/worker and listeners. A later authorized runner must archive output and restore030fc… plus verify all30 baseline hashes in finally, including timeout/failure.
+
+No build, typecheck or browser was run. Runtime/source authority is unchanged; there is no cause or package PASS. Overlay is held for independent Source review before any execution.

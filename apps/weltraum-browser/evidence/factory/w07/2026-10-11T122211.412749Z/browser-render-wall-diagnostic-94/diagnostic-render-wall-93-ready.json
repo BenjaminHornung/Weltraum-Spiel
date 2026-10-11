@@ -1,0 +1,2500 @@
+{
+  "kind": "DIAGNOSTIC_ONLY_NOT_GAMEPLAY_GATE",
+  "measurementOptIn": false,
+  "solverCpu": "NOT_OBSERVED",
+  "mainFrameCpu": "NOT_OBSERVED",
+  "completeObservation": true,
+  "observation": {
+    "timeOrigin": 1791744839707.3,
+    "records": [
+      {
+        "atMs": 1115.6000000014901,
+        "event": "longtask",
+        "startTime": 572.2000000029802,
+        "duration": 521
+      },
+      {
+        "atMs": 5137.29999999702,
+        "event": "longtask",
+        "startTime": 1119.5,
+        "duration": 4015
+      },
+      {
+        "atMs": 6196.89999999851,
+        "event": "ownerWorkerCreated",
+        "name": "hvp-simulation-owner",
+        "url": "http://127.0.0.1:5174/src/hestia-prototype/physics/physicsWorker.ts?worker_file&type=module"
+      },
+      {
+        "atMs": 6197.5,
+        "event": "workerPost",
+        "id": 0,
+        "kind": "Initialize"
+      },
+      {
+        "atMs": 7767.20000000298,
+        "event": "workerReply",
+        "id": 0,
+        "requestKind": "Initialize",
+        "snapshot": {
+          "ticks": 0,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Initialize",
+          "lastHandlerMs": 1289.2000000029802,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 0,
+          "maxTimerGapMs": 0,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 9371.39999999851,
+        "event": "longtask",
+        "startTime": 7766.39999999851,
+        "duration": 1585
+      },
+      {
+        "atMs": 9433.89999999851,
+        "event": "workerPost",
+        "id": 1,
+        "kind": "Read"
+      },
+      {
+        "atMs": 10245.29999999702,
+        "event": "longtask",
+        "startTime": 9372.20000000298,
+        "duration": 60
+      },
+      {
+        "atMs": 10245.5,
+        "event": "longtask",
+        "startTime": 9433.29999999702,
+        "duration": 811
+      },
+      {
+        "atMs": 10246.20000000298,
+        "event": "workerReply",
+        "id": 1,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 99,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 1.2000000029802322,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 19,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 10250.20000000298,
+        "event": "workerPost",
+        "id": 2,
+        "kind": "Read"
+      },
+      {
+        "atMs": 10777.89999999851,
+        "event": "workerReply",
+        "id": 2,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 148,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.5,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 28.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 10780.60000000149,
+        "event": "workerPost",
+        "id": 3,
+        "kind": "Read"
+      },
+      {
+        "atMs": 11341.70000000298,
+        "event": "longtask",
+        "startTime": 10250,
+        "duration": 527
+      },
+      {
+        "atMs": 11341.70000000298,
+        "event": "longtask",
+        "startTime": 10780.39999999851,
+        "duration": 560
+      },
+      {
+        "atMs": 11342.29999999702,
+        "event": "workerReply",
+        "id": 3,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 180,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.5,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 31.69999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 11344.39999999851,
+        "event": "workerPost",
+        "id": 4,
+        "kind": "Read"
+      },
+      {
+        "atMs": 11845.10000000149,
+        "event": "workerReply",
+        "id": 4,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 214,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.6000000014901161,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 35.899999998509884,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 11848.79999999702,
+        "event": "workerPost",
+        "id": 5,
+        "kind": "Read"
+      },
+      {
+        "atMs": 12354.20000000298,
+        "event": "longtask",
+        "startTime": 11344.10000000149,
+        "duration": 500
+      },
+      {
+        "atMs": 12354.20000000298,
+        "event": "longtask",
+        "startTime": 11848.5,
+        "duration": 505
+      },
+      {
+        "atMs": 12354.60000000149,
+        "event": "workerReply",
+        "id": 5,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 244,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.3999999985098839,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 35.899999998509884,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 12355.39999999851,
+        "event": "workerPost",
+        "id": 6,
+        "kind": "Read"
+      },
+      {
+        "atMs": 12864.39999999851,
+        "event": "workerReply",
+        "id": 6,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 274,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.6000000014901161,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.100000001490116,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 12865.89999999851,
+        "event": "workerPost",
+        "id": 7,
+        "kind": "Read"
+      },
+      {
+        "atMs": 13408.5,
+        "event": "longtask",
+        "startTime": 12355.20000000298,
+        "duration": 508
+      },
+      {
+        "atMs": 13408.5,
+        "event": "longtask",
+        "startTime": 12865.60000000149,
+        "duration": 542
+      },
+      {
+        "atMs": 13408.70000000298,
+        "event": "workerReply",
+        "id": 7,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 305,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.5,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.100000001490116,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 13410.60000000149,
+        "event": "workerPost",
+        "id": 8,
+        "kind": "Read"
+      },
+      {
+        "atMs": 13937.39999999851,
+        "event": "workerReply",
+        "id": 8,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 338,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.5,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.100000001490116,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 13937.60000000149,
+        "event": "workerPost",
+        "id": 9,
+        "kind": "Read"
+      },
+      {
+        "atMs": 14443.60000000149,
+        "event": "longtask",
+        "startTime": 13410.39999999851,
+        "duration": 526
+      },
+      {
+        "atMs": 14443.60000000149,
+        "event": "longtask",
+        "startTime": 13937.39999999851,
+        "duration": 506
+      },
+      {
+        "atMs": 14443.89999999851,
+        "event": "workerReply",
+        "id": 9,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 369,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.4000000059604645,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.100000001490116,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 14444.29999999702,
+        "event": "workerPost",
+        "id": 10,
+        "kind": "Read"
+      },
+      {
+        "atMs": 15012.29999999702,
+        "event": "workerReply",
+        "id": 10,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 400,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.5,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.100000001490116,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 15013.20000000298,
+        "event": "workerPost",
+        "id": 11,
+        "kind": "Read"
+      },
+      {
+        "atMs": 15542.89999999851,
+        "event": "longtask",
+        "startTime": 14444.10000000149,
+        "duration": 568
+      },
+      {
+        "atMs": 15542.89999999851,
+        "event": "longtask",
+        "startTime": 15013.10000000149,
+        "duration": 529
+      },
+      {
+        "atMs": 15544.5,
+        "event": "workerReply",
+        "id": 11,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 434,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.3999999985098839,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.100000001490116,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 15544.79999999702,
+        "event": "workerPost",
+        "id": 12,
+        "kind": "Read"
+      },
+      {
+        "atMs": 16044.29999999702,
+        "event": "workerReply",
+        "id": 12,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 466,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.29999999701976776,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.100000001490116,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 16044.5,
+        "event": "workerPost",
+        "id": 13,
+        "kind": "Read"
+      },
+      {
+        "atMs": 16517.70000000298,
+        "event": "workerPost",
+        "id": 14,
+        "kind": "OpenFactoryCargo"
+      },
+      {
+        "atMs": 16978.70000000298,
+        "event": "longtask",
+        "startTime": 15544.60000000149,
+        "duration": 498
+      },
+      {
+        "atMs": 16978.70000000298,
+        "event": "longtask",
+        "startTime": 16044.39999999851,
+        "duration": 470
+      },
+      {
+        "atMs": 16978.70000000298,
+        "event": "longtask",
+        "startTime": 16518,
+        "duration": 460
+      },
+      {
+        "atMs": 16978.89999999851,
+        "event": "workerReply",
+        "id": 13,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 496,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.29999999701976776,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.100000001490116,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 16979,
+        "event": "workerReply",
+        "id": 14,
+        "requestKind": "OpenFactoryCargo",
+        "snapshot": {
+          "ticks": 525,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "OpenFactoryCargo",
+          "lastHandlerMs": 0.5,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.100000001490116,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 16980.89999999851,
+        "event": "workerPost",
+        "id": 15,
+        "kind": "Read"
+      },
+      {
+        "atMs": 17465.60000000149,
+        "event": "workerReply",
+        "id": 15,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 552,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.29999999701976776,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.100000001490116,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 17466.29999999702,
+        "event": "workerPost",
+        "id": 16,
+        "kind": "Read"
+      },
+      {
+        "atMs": 17974.89999999851,
+        "event": "longtask",
+        "startTime": 16980.29999999702,
+        "duration": 485
+      },
+      {
+        "atMs": 17974.89999999851,
+        "event": "longtask",
+        "startTime": 17466,
+        "duration": 508
+      },
+      {
+        "atMs": 17975.10000000149,
+        "event": "workerReply",
+        "id": 16,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 581,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.30000000447034836,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.100000001490116,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 17977.39999999851,
+        "event": "workerPost",
+        "id": 17,
+        "kind": "Read"
+      },
+      {
+        "atMs": 18446.29999999702,
+        "event": "workerReply",
+        "id": 17,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 612,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.20000000298023224,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.100000001490116,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 18447.89999999851,
+        "event": "longtask",
+        "startTime": 17977,
+        "duration": 468
+      },
+      {
+        "atMs": 18448.10000000149,
+        "event": "workerPost",
+        "id": 18,
+        "kind": "Read"
+      },
+      {
+        "atMs": 18981,
+        "event": "workerReply",
+        "id": 18,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 640,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.4000000059604645,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.100000001490116,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 18981.79999999702,
+        "event": "workerPost",
+        "id": 19,
+        "kind": "Read"
+      },
+      {
+        "atMs": 19509.89999999851,
+        "event": "longtask",
+        "startTime": 18447.89999999851,
+        "duration": 532
+      },
+      {
+        "atMs": 19509.89999999851,
+        "event": "longtask",
+        "startTime": 18981.39999999851,
+        "duration": 528
+      },
+      {
+        "atMs": 19510.20000000298,
+        "event": "workerReply",
+        "id": 19,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 672,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.29999999701976776,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 19511.20000000298,
+        "event": "workerPost",
+        "id": 20,
+        "kind": "Read"
+      },
+      {
+        "atMs": 20042.79999999702,
+        "event": "workerReply",
+        "id": 20,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 704,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.3999999985098839,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 20047.5,
+        "event": "workerPost",
+        "id": 21,
+        "kind": "Read"
+      },
+      {
+        "atMs": 20605.60000000149,
+        "event": "longtask",
+        "startTime": 19511,
+        "duration": 531
+      },
+      {
+        "atMs": 20605.60000000149,
+        "event": "longtask",
+        "startTime": 20047.20000000298,
+        "duration": 558
+      },
+      {
+        "atMs": 20605.79999999702,
+        "event": "workerReply",
+        "id": 21,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 736,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.5,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 20607.70000000298,
+        "event": "workerPost",
+        "id": 22,
+        "kind": "Read"
+      },
+      {
+        "atMs": 21101.79999999702,
+        "event": "workerReply",
+        "id": 22,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 769,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.3999999985098839,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 21104.5,
+        "event": "workerPost",
+        "id": 23,
+        "kind": "Read"
+      },
+      {
+        "atMs": 21570.60000000149,
+        "event": "longtask",
+        "startTime": 20607.39999999851,
+        "duration": 494
+      },
+      {
+        "atMs": 21570.60000000149,
+        "event": "longtask",
+        "startTime": 21104.20000000298,
+        "duration": 466
+      },
+      {
+        "atMs": 21570.79999999702,
+        "event": "workerReply",
+        "id": 23,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 800,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.3999999985098839,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 21571.5,
+        "event": "workerPost",
+        "id": 24,
+        "kind": "Read"
+      },
+      {
+        "atMs": 22027.20000000298,
+        "event": "workerReply",
+        "id": 24,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 827,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 3.7999999970197678,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 22027.5,
+        "event": "workerPost",
+        "id": 25,
+        "kind": "Read"
+      },
+      {
+        "atMs": 22454.79999999702,
+        "event": "longtask",
+        "startTime": 21571.10000000149,
+        "duration": 455
+      },
+      {
+        "atMs": 22454.79999999702,
+        "event": "longtask",
+        "startTime": 22027.29999999702,
+        "duration": 427
+      },
+      {
+        "atMs": 22454.89999999851,
+        "event": "workerReply",
+        "id": 25,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 855,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.3999999985098839,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 22455.79999999702,
+        "event": "workerPost",
+        "id": 26,
+        "kind": "Read"
+      },
+      {
+        "atMs": 22903.70000000298,
+        "event": "workerReply",
+        "id": 26,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 881,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.3999999985098839,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 22904.10000000149,
+        "event": "workerPost",
+        "id": 27,
+        "kind": "Read"
+      },
+      {
+        "atMs": 23332.60000000149,
+        "event": "longtask",
+        "startTime": 22455.5,
+        "duration": 447
+      },
+      {
+        "atMs": 23332.60000000149,
+        "event": "longtask",
+        "startTime": 22903.70000000298,
+        "duration": 428
+      },
+      {
+        "atMs": 23332.79999999702,
+        "event": "workerReply",
+        "id": 27,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 908,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.30000000447034836,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 23333.20000000298,
+        "event": "workerPost",
+        "id": 28,
+        "kind": "Read"
+      },
+      {
+        "atMs": 23818,
+        "event": "workerReply",
+        "id": 28,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 934,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.20000000298023224,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 23819.10000000149,
+        "event": "workerPost",
+        "id": 29,
+        "kind": "Read"
+      },
+      {
+        "atMs": 24249.39999999851,
+        "event": "longtask",
+        "startTime": 23332.89999999851,
+        "duration": 484
+      },
+      {
+        "atMs": 24249.39999999851,
+        "event": "longtask",
+        "startTime": 23818.39999999851,
+        "duration": 430
+      },
+      {
+        "atMs": 24249.60000000149,
+        "event": "workerReply",
+        "id": 29,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 962,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.4000000059604645,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 24252.60000000149,
+        "event": "workerPost",
+        "id": 30,
+        "kind": "Read"
+      },
+      {
+        "atMs": 24728.39999999851,
+        "event": "workerReply",
+        "id": 30,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 988,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.3999999985098839,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 24729.39999999851,
+        "event": "workerPost",
+        "id": 31,
+        "kind": "Read"
+      },
+      {
+        "atMs": 25174.5,
+        "event": "dom",
+        "type": "blur",
+        "timeStamp": 25174.39999999851,
+        "isTrusted": true
+      },
+      {
+        "atMs": 25641.39999999851,
+        "event": "longtask",
+        "startTime": 24252,
+        "duration": 476
+      },
+      {
+        "atMs": 25641.39999999851,
+        "event": "longtask",
+        "startTime": 24729.20000000298,
+        "duration": 444
+      },
+      {
+        "atMs": 25641.39999999851,
+        "event": "longtask",
+        "startTime": 25175.29999999702,
+        "duration": 466
+      },
+      {
+        "atMs": 25641.5,
+        "event": "workerReply",
+        "id": 31,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 1017,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.20000000298023224,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 25642.10000000149,
+        "event": "workerPost",
+        "id": 32,
+        "kind": "Read"
+      },
+      {
+        "atMs": 26115.10000000149,
+        "event": "dom",
+        "type": "pointerlockchange",
+        "timeStamp": 25641.60000000149,
+        "isTrusted": true,
+        "pointerLock": "debug-scene",
+        "hidden": false
+      },
+      {
+        "atMs": 26115.39999999851,
+        "event": "dom",
+        "type": "blur",
+        "timeStamp": 26115.29999999702,
+        "isTrusted": true
+      },
+      {
+        "atMs": 26115.79999999702,
+        "event": "workerPost",
+        "id": 33,
+        "kind": "FactoryInput",
+        "input": {
+          "x": 0,
+          "z": 0,
+          "sprint": false,
+          "jump": false
+        },
+        "cancelPendingJump": true
+      },
+      {
+        "atMs": 26115.89999999851,
+        "event": "workerPost",
+        "id": 34,
+        "kind": "Play"
+      },
+      {
+        "atMs": 26116,
+        "event": "workerReply",
+        "id": 32,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 1072,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Inspection",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.29999999701976776,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 26116.39999999851,
+        "event": "workerPost",
+        "id": 35,
+        "kind": "Read"
+      },
+      {
+        "atMs": 26672,
+        "event": "longtask",
+        "startTime": 25641.89999999851,
+        "duration": 472
+      },
+      {
+        "atMs": 26672,
+        "event": "longtask",
+        "startTime": 26116.20000000298,
+        "duration": 555
+      },
+      {
+        "atMs": 26672.10000000149,
+        "event": "workerReply",
+        "id": 33,
+        "requestKind": "FactoryInput",
+        "hasTimings": false
+      },
+      {
+        "atMs": 26672.29999999702,
+        "event": "workerReply",
+        "id": 34,
+        "requestKind": "Play",
+        "snapshot": {
+          "ticks": 1100,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Walking",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Play",
+          "lastHandlerMs": 0.3999999985098839,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 26672.39999999851,
+        "event": "workerReply",
+        "id": 35,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 1100,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Walking",
+            "grounded": false,
+            "position": {
+              "x": -5.5,
+              "y": 2.4200000762939453,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 1.2000000029802322,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 26674.39999999851,
+        "event": "workerPost",
+        "id": 36,
+        "kind": "Read"
+      },
+      {
+        "atMs": 26852.79999999702,
+        "event": "workerReply",
+        "id": 36,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 1132,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Walking",
+            "grounded": true,
+            "position": {
+              "x": -5.5,
+              "y": 2.4100027084350586,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.29999999701976776,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 26854.5,
+        "event": "workerPost",
+        "id": 37,
+        "kind": "Read"
+      },
+      {
+        "atMs": 27055.20000000298,
+        "event": "longtask",
+        "startTime": 26673.60000000149,
+        "duration": 178
+      },
+      {
+        "atMs": 27055.20000000298,
+        "event": "longtask",
+        "startTime": 26854.20000000298,
+        "duration": 200
+      },
+      {
+        "atMs": 27055.29999999702,
+        "event": "workerReply",
+        "id": 37,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 1144,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Walking",
+            "grounded": true,
+            "position": {
+              "x": -5.5,
+              "y": 2.4100027084350586,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.7999999970197678,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 27056.39999999851,
+        "event": "workerPost",
+        "id": 38,
+        "kind": "Read"
+      },
+      {
+        "atMs": 27269.79999999702,
+        "event": "workerReply",
+        "id": 38,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 1155,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Walking",
+            "grounded": true,
+            "position": {
+              "x": -5.5,
+              "y": 2.4100027084350586,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.6000000014901161,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 27271.70000000298,
+        "event": "workerPost",
+        "id": 39,
+        "kind": "Read"
+      },
+      {
+        "atMs": 27446.29999999702,
+        "event": "longtask",
+        "startTime": 27055.89999999851,
+        "duration": 213
+      },
+      {
+        "atMs": 27446.29999999702,
+        "event": "longtask",
+        "startTime": 27271.29999999702,
+        "duration": 174
+      },
+      {
+        "atMs": 27446.39999999851,
+        "event": "workerReply",
+        "id": 39,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 1169,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Walking",
+            "grounded": true,
+            "position": {
+              "x": -5.5,
+              "y": 2.4100027084350586,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.5999999940395355,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 27448.20000000298,
+        "event": "workerPost",
+        "id": 40,
+        "kind": "Read"
+      },
+      {
+        "atMs": 27651.70000000298,
+        "event": "workerReply",
+        "id": 40,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 1179,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Walking",
+            "grounded": true,
+            "position": {
+              "x": -5.5,
+              "y": 2.4100027084350586,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 2.7000000029802322,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 27651.79999999702,
+        "event": "longtask",
+        "startTime": 27447.89999999851,
+        "duration": 201
+      },
+      {
+        "atMs": 27652.10000000149,
+        "event": "workerPost",
+        "id": 41,
+        "kind": "Read"
+      },
+      {
+        "atMs": 27844.79999999702,
+        "event": "workerReply",
+        "id": 41,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 1192,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Walking",
+            "grounded": true,
+            "position": {
+              "x": -5.5,
+              "y": 2.4100027084350586,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.3999999985098839,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 27875.29999999702,
+        "event": "workerPost",
+        "id": 42,
+        "kind": "Read"
+      },
+      {
+        "atMs": 28059.5,
+        "event": "longtask",
+        "startTime": 27651.79999999702,
+        "duration": 192
+      },
+      {
+        "atMs": 28059.5,
+        "event": "longtask",
+        "startTime": 27874.89999999851,
+        "duration": 184
+      },
+      {
+        "atMs": 28059.70000000298,
+        "event": "workerReply",
+        "id": 42,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 1204,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Walking",
+            "grounded": true,
+            "position": {
+              "x": -5.5,
+              "y": 2.4100027084350586,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.7999999970197678,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 28061.20000000298,
+        "event": "workerPost",
+        "id": 43,
+        "kind": "Read"
+      },
+      {
+        "atMs": 28228.39999999851,
+        "event": "workerReply",
+        "id": 43,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 1216,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Walking",
+            "grounded": true,
+            "position": {
+              "x": -5.5,
+              "y": 2.4100027084350586,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.5,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 28229.39999999851,
+        "event": "workerPost",
+        "id": 44,
+        "kind": "Read"
+      },
+      {
+        "atMs": 28376.60000000149,
+        "event": "longtask",
+        "startTime": 28061,
+        "duration": 167
+      },
+      {
+        "atMs": 28376.60000000149,
+        "event": "longtask",
+        "startTime": 28229.10000000149,
+        "duration": 147
+      },
+      {
+        "atMs": 28376.79999999702,
+        "event": "workerReply",
+        "id": 44,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 1226,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Walking",
+            "grounded": true,
+            "position": {
+              "x": -5.5,
+              "y": 2.4100027084350586,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.6000000014901161,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 28378.60000000149,
+        "event": "workerPost",
+        "id": 45,
+        "kind": "Read"
+      },
+      {
+        "atMs": 28553.10000000149,
+        "event": "workerReply",
+        "id": 45,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 1235,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Walking",
+            "grounded": true,
+            "position": {
+              "x": -5.5,
+              "y": 2.4100027084350586,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.5,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 28554.79999999702,
+        "event": "workerPost",
+        "id": 46,
+        "kind": "Read"
+      },
+      {
+        "atMs": 28734.29999999702,
+        "event": "longtask",
+        "startTime": 28378.20000000298,
+        "duration": 174
+      },
+      {
+        "atMs": 28734.29999999702,
+        "event": "longtask",
+        "startTime": 28554.5,
+        "duration": 179
+      },
+      {
+        "atMs": 28734.5,
+        "event": "workerReply",
+        "id": 46,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 1245,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Walking",
+            "grounded": true,
+            "position": {
+              "x": -5.5,
+              "y": 2.4100027084350586,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.6000000014901161,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 28735.39999999851,
+        "event": "workerPost",
+        "id": 47,
+        "kind": "Read"
+      },
+      {
+        "atMs": 28874.39999999851,
+        "event": "workerReply",
+        "id": 47,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 1256,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Walking",
+            "grounded": true,
+            "position": {
+              "x": -5.5,
+              "y": 2.4100027084350586,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.3999999985098839,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 28874.79999999702,
+        "event": "workerPost",
+        "id": 48,
+        "kind": "Read"
+      },
+      {
+        "atMs": 29043.10000000149,
+        "event": "longtask",
+        "startTime": 28735.20000000298,
+        "duration": 138
+      },
+      {
+        "atMs": 29043.10000000149,
+        "event": "longtask",
+        "startTime": 28874.39999999851,
+        "duration": 168
+      },
+      {
+        "atMs": 29043.29999999702,
+        "event": "workerReply",
+        "id": 48,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 1265,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Walking",
+            "grounded": true,
+            "position": {
+              "x": -5.5,
+              "y": 2.4100027084350586,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.30000000447034836,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 29043.60000000149,
+        "event": "workerPost",
+        "id": 49,
+        "kind": "Read"
+      },
+      {
+        "atMs": 29211.39999999851,
+        "event": "backendWallInstalled",
+        "moduleSpecifier": "/src/render/three/backend/threeRenderBackend.ts",
+        "webgl": {
+          "status": "APP_CREATED_CONTEXT_OBSERVED",
+          "vendor": "WebKit",
+          "renderer": "WebKit WebGL",
+          "debugRendererInfo": {
+            "vendor": "Google Inc. (Google)",
+            "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+          }
+        }
+      },
+      {
+        "atMs": 29211.70000000298,
+        "event": "workerReply",
+        "id": 49,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 1274,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Walking",
+            "grounded": true,
+            "position": {
+              "x": -5.5,
+              "y": 2.4100027084350586,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.4000000059604645,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 29212,
+        "event": "workerPost",
+        "id": 50,
+        "kind": "Read"
+      },
+      {
+        "atMs": 29218.39999999851,
+        "event": "backendWall",
+        "method": "dispatch",
+        "startMs": 29212.89999999851,
+        "endMs": 29218.39999999851,
+        "durationMs": 5.5,
+        "status": "Returned",
+        "resultStatus": "Accepted"
+      },
+      {
+        "atMs": 29219.20000000298,
+        "event": "backendWall",
+        "method": "dispatch",
+        "startMs": 29218.60000000149,
+        "endMs": 29219.20000000298,
+        "durationMs": 0.6000000014901161,
+        "status": "Returned",
+        "resultStatus": "Accepted"
+      },
+      {
+        "atMs": 29219.89999999851,
+        "event": "backendWall",
+        "method": "renderFrame",
+        "startMs": 29219.29999999702,
+        "endMs": 29219.89999999851,
+        "durationMs": 0.6000000014901161,
+        "status": "Returned",
+        "resultStatus": "Accepted"
+      },
+      {
+        "atMs": 29358.39999999851,
+        "event": "longtask",
+        "startTime": 29043.29999999702,
+        "duration": 163
+      },
+      {
+        "atMs": 29358.39999999851,
+        "event": "longtask",
+        "startTime": 29211.70000000298,
+        "duration": 146
+      },
+      {
+        "atMs": 29358.79999999702,
+        "event": "workerReply",
+        "id": 50,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 1285,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Walking",
+            "grounded": true,
+            "position": {
+              "x": -5.5,
+              "y": 2.4100027084350586,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.3999999985098839,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 29360.5,
+        "event": "workerPost",
+        "id": 51,
+        "kind": "Read"
+      },
+      {
+        "atMs": 29369.20000000298,
+        "event": "backendWall",
+        "method": "dispatch",
+        "startMs": 29361.5,
+        "endMs": 29369.20000000298,
+        "durationMs": 7.700000002980232,
+        "status": "Returned",
+        "resultStatus": "Accepted"
+      },
+      {
+        "atMs": 29370,
+        "event": "backendWall",
+        "method": "dispatch",
+        "startMs": 29369.60000000149,
+        "endMs": 29370,
+        "durationMs": 0.3999999985098839,
+        "status": "Returned",
+        "resultStatus": "Accepted"
+      },
+      {
+        "atMs": 29370.79999999702,
+        "event": "backendWall",
+        "method": "renderFrame",
+        "startMs": 29370.20000000298,
+        "endMs": 29370.79999999702,
+        "durationMs": 0.5999999940395355,
+        "status": "Returned",
+        "resultStatus": "Accepted"
+      },
+      {
+        "atMs": 29554.29999999702,
+        "event": "workerReply",
+        "id": 51,
+        "requestKind": "Read",
+        "snapshot": {
+          "ticks": 1293,
+          "status": "Running",
+          "terrainTransaction": "Idle",
+          "neighborTransaction": "Idle",
+          "bodyResidencyTransaction": "Idle",
+          "movingState": "Idle",
+          "factoryState": "Idle",
+          "player": {
+            "status": "Walking",
+            "grounded": true,
+            "position": {
+              "x": -5.5,
+              "y": 2.4100027084350586,
+              "z": 11.875
+            }
+          }
+        },
+        "clock": {
+          "lastCommand": "Read",
+          "lastHandlerMs": 0.3999999985098839,
+          "maxHandlerMs": 1289.2000000029802,
+          "maxAdvanceMs": 16.899999998509884,
+          "maxTimerGapMs": 36.19999999552965,
+          "timers": 1
+        },
+        "hasTimings": false
+      },
+      {
+        "atMs": 29556.5,
+        "event": "workerPost",
+        "id": 52,
+        "kind": "Read"
+      },
+      {
+        "atMs": 29565.70000000298,
+        "event": "backendWall",
+        "method": "dispatch",
+        "startMs": 29557.39999999851,
+        "endMs": 29565.60000000149,
+        "durationMs": 8.200000002980232,
+        "status": "Returned",
+        "resultStatus": "Accepted"
+      },
+      {
+        "atMs": 29566.29999999702,
+        "event": "backendWall",
+        "method": "dispatch",
+        "startMs": 29565.89999999851,
+        "endMs": 29566.29999999702,
+        "durationMs": 0.3999999985098839,
+        "status": "Returned",
+        "resultStatus": "Accepted"
+      },
+      {
+        "atMs": 29567.20000000298,
+        "event": "backendWall",
+        "method": "renderFrame",
+        "startMs": 29566.60000000149,
+        "endMs": 29567.20000000298,
+        "durationMs": 0.6000000014901161,
+        "status": "Returned",
+        "resultStatus": "Accepted"
+      },
+      {
+        "atMs": 29734.39999999851,
+        "event": "longtask",
+        "startTime": 29360.29999999702,
+        "duration": 193
+      },
+      {
+        "atMs": 29734.39999999851,
+        "event": "longtask",
+        "startTime": 29556.20000000298,
+        "duration": 178
+      }
+    ],
+    "dropped": 0,
+    "idMapDropped": 0,
+    "observerErrors": 0,
+    "longtaskSupported": true,
+    "measurementOptIn": false
+  },
+  "frameDiagnostics": {
+    "raw": null,
+    "freshness": "MISSING"
+  },
+  "productErrors": []
+}

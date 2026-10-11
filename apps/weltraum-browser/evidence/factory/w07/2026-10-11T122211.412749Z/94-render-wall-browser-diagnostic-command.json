@@ -1,0 +1,26 @@
+{
+  "kind": "DIAGNOSTIC_ONLY_RENDER_WALL_NOT_GAMEPLAY_GATE",
+  "argv": [
+    "npm",
+    "run",
+    "test:e2e",
+    "--",
+    "--config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts",
+    "tests/e2e/factory-placement.spec.ts"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "env": {
+    "FP06_E2E_RUN_DIR": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/browser-render-wall-diagnostic-94",
+    "WELTRAUM_FACTORY_EVIDENCE_RUN": "2026-10-11T122211.412749Z",
+    "WELTRAUM_PLAYWRIGHT_EXECUTABLE_PATH": "/usr/bin/chromium"
+  },
+  "startUtc": "2026-10-11T18:53:57.444280+00:00",
+  "endUtc": "2026-10-11T18:54:41.297938+00:00",
+  "wrapperSeconds": 43.853671473996656,
+  "exitCode": 0,
+  "rawBytes": 1138,
+  "rawSha256": "b507159c5e2072b3e802295e3706f90256597b0085e9b03af92365df6f40e339",
+  "configSha256": "53a55a48da97d43a02e317fb8edc844d57a9b5687f356a7ebf4f5b470efcf900",
+  "overlaySealSha256": "d1de24ea3e4328b28d4ed686085964f57189c105bfce174499ddcf9e048db3dd",
+  "renderWallScope": "Original ThreeRenderBackend synchronous wall timing; CPU/native/wait mixed, no hardware attribution"
+}

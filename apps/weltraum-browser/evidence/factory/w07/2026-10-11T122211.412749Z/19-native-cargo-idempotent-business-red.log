@@ -1,0 +1,32 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/cargoSite.test.ts -t exact repeated Open
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/cargoSite.test.ts (4 tests | 1 failed | 3 skipped) 413ms
+   × W07 native Cargo exact repeated Open is idempotent, remote actors never claim access 379ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/cargoSite.test.ts > W07 native Cargo exact repeated Open is idempotent, remote actors never claim access
+AssertionError: expected [Function] to not throw an error but 'Error: FactoryFacilityRejected:CargoB…' was thrown
+
+- Expected:
+undefined
+
++ Received:
+"Error: FactoryFacilityRejected:CargoBindingMismatch"
+
+ ❯ tests/unit/factory/cargoSite.test.ts:18:47
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 skipped (4)
+   Start at  13:27:22
+   Duration  874ms (transform 241ms, setup 0ms, import 355ms, tests 413ms, environment 0ms)
+

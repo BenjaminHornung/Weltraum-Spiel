@@ -1,0 +1,96 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/hvp-bootstrap.test.ts tests/unit/factory/placement.test.ts tests/unit/factory/facilitySession.test.ts -t W07 actual Host Ghost|initial Cargo owner cannot|Cargo dispose then checkpoint|aliases the actual initial Cargo owner
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-bootstrap.test.ts (35 tests | 1 failed | 34 skipped) 6457ms
+     × W07 actual Host Ghost move/rotate/cancel keeps one HVP frame, Cargo Open and disposal intact 6455ms
+ ❯ tests/unit/factory/placement.test.ts (12 tests | 1 failed | 11 skipped) 217ms
+   × W07 refuses a new Facility identity that aliases the actual initial Cargo owner 215ms
+ ❯ tests/unit/factory/facilitySession.test.ts (11 tests | 2 failed | 9 skipped) 862ms
+   × W07 initial Cargo owner cannot be reused as a paid native Facility owner 428ms
+   × W07 direct Cargo dispose then checkpoint rejects before any freed-World read 397ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W07 actual Host Ghost move/rotate/cancel keeps one HVP frame, Cargo Open and disposal intact
+Error: HVP representations must share one projection frame.
+ ❯ publishCurrentSet src/hvp/hvpBootstrap.ts:440:40
+    438|     const started=onTiming?performance.now():0;
+    439|     for (const candidate of framesByRepresentation.values()) {
+    440|       if (candidate !== current) throw new Error("HVP representations …
+       |                                        ^
+    441|     }
+    442|     projectionRevision += 1;
+ ❯ Object.dispatch src/hvp/hvpBootstrap.ts:494:7
+ ❯ dropFactoryScene src/hvp/hvpBootstrap.ts:2190:188
+ ❯ Object.dispose src/hvp/hvpBootstrap.ts:2236:187
+ ❯ Object.dispose tests/unit/hvp-bootstrap.test.ts:556:85
+ ❯ src/hvp/hvpBootstrap.ts:852:80
+ ❯ attempt src/hvp/hvpBootstrap.ts:847:53
+ ❯ src/hvp/hvpBootstrap.ts:852:7
+ ❯ tests/unit/hvp-bootstrap.test.ts:569:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/factory/facilitySession.test.ts > W07 initial Cargo owner cannot be reused as a paid native Facility owner
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ tests/unit/factory/facilitySession.test.ts:94:93
+     92|   const site=createFactoryCargoSite(materializeFactoryStartSite());wor…
+     93|   const facilities=createFactoryFacilitySession(world,()=>true,()=>0,(…
+     94|   expect(()=>facilities.prepare({...request,ownerId:site.ownerId,insta…
+       |                                                                                             ^
+     95|   expect([world.bodies.len(),world.colliders.len()]).toEqual(before);e…
+     96|  }finally{world.free();}
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/factory/facilitySession.test.ts > W07 direct Cargo dispose then checkpoint rejects before any freed-World read
+AssertionError: expected [Function] to throw error including 'World checkpoint requires a confirmed…' but got 'null pointer passed to rust'
+
+Expected: "World checkpoint requires a confirmed paused generation"
+Received: "null pointer passed to rust"
+
+ ❯ tests/unit/factory/facilitySession.test.ts:101:53
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/unit/factory/placement.test.ts > W07 refuses a new Facility identity that aliases the actual initial Cargo owner
+AssertionError: expected { status: 'Prepared', …(5) } to match object { status: 'Rejected', …(1) }
+(40 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "reason": "DUPLICATE_OR_CAPACITY",
+-   "status": "Rejected",
++   "status": "Prepared",
+  }
+
+ ❯ tests/unit/factory/placement.test.ts:115:95
+    113| it("W07 refuses a new Facility identity that aliases the actual initia…
+    114|  const initial=view(),before=materialBytes(initial.material);
+    115|  expect(prepareFactoryPlacement(initial,{...request,instanceId:initial…
+       |                                                                                               ^
+    116|  expect(materialBytes(initial.material)).toBe(before);
+    117| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  3 failed (3)
+      Tests  4 failed | 54 skipped (58)
+   Start at  13:52:16
+   Duration  9.85s (transform 1.38s, setup 0ms, import 1.98s, tests 7.54s, environment 0ms)
+

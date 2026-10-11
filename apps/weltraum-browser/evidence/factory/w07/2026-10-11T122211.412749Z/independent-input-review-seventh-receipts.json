@@ -1,0 +1,16 @@
+[
+  {
+    "source": "/workspace/.cloud-setup/fp06-w07-input-final-spec-review.md",
+    "artifact": "independent-input-spec-seventh.md",
+    "bytes": 20331,
+    "sha256": "fc8a6f3c3ad3a4c47500aab3e3fa88689a4e2b005a4965363043ee79fad6a1a1",
+    "phase": "Runtimecode PASS at seventh ce0007 seal; browser51FAIL, laterE2Eonlybytes excluded"
+  },
+  {
+    "source": "/workspace/.cloud-setup/fp06-w07-input-native-final-review.md",
+    "artifact": "independent-input-native-seventh.md",
+    "bytes": 12085,
+    "sha256": "c82166de56421b720eef55a08e72e4f8c9b8317b5e739032eccc2d041291269f",
+    "phase": "Runtimecode PASS at seventh ce0007 seal; browser51FAIL, laterE2Eonlybytes excluded"
+  }
+]

@@ -1,0 +1,29 @@
+{
+  "result": "NORMAL11subset9PASS/1actualZregionFAIL/1NOT_RUN; no full17orW07PASS",
+  "counts": {
+    "xTaps": 6,
+    "zTaps": 16,
+    "zeroMoves": 0
+  },
+  "finalNativePosition": [
+    -6.300007343292236,
+    2.400012493133545,
+    8.57497787475586
+  ],
+  "finalSourceWindow": [
+    8.725,
+    9.075
+  ],
+  "allDirectionsMatchTrustedKeys": true,
+  "25msActualZMoveRangeM": [
+    0.5500020980834961,
+    0.6500024795532227
+  ],
+  "releasedReadsStable": true,
+  "notes": [
+    "One intermediate Ztap11 reads groundedfalse, next and final read groundedtrue; WorldRunning/Idle, no observedCoverage/Recovery/SimulationHold.",
+    "Nominial gesture shrink125\u219263\u219232\u219225 did not make fineZstep;25msactual0.55\u20130.65m, actualNative finalZ8.574978 below8.725.",
+    "Trace retained failedcase10 keyboardPressAPI585\u2013623ms; DOMDown/Up and outgoingWorkerIntent timestamps unknown.",
+    "InstalledPlaywrightpress awaitsDownACK before delay/up; independent ordinary trustedDown+scheduledUp sourceproposal only, no sourcewrite/browser orpositiveMovementguarantee."
+  ]
+}

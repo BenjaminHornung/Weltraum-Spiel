@@ -1,0 +1,4 @@
+tests/unit/factory/hostLifecycle.test.ts(42,43): error TS2345: Argument of type '{ version: "fp02-factory-catalog-v1"; sources: readonly FactorySourceRef[]; items: readonly FactoryItem[]; recipes: readonly FactoryRecipe[]; devices: readonly FactoryDevice[]; ... 7 more ...; canonicalJson: string; } | { ...; }' is not assignable to parameter of type 'FactoryCatalog'.
+  Type '{ version: "fp02-factory-catalog-v1"; sources: readonly FactorySourceRef[]; items: readonly FactoryItem[]; recipes: readonly FactoryRecipe[]; devices: readonly FactoryDevice[]; ... 7 more ...; resources: never[]; }' is not assignable to type 'FactoryCatalog'.
+    Types of property 'resources' are incompatible.
+      Type 'never[]' is missing the following properties from type 'ResourceCatalog': catalogId, categories, resources, extensions, and 2 more.

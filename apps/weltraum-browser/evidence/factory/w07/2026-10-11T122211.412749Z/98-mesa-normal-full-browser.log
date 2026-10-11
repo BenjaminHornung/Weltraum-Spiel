@@ -1,0 +1,64 @@
+
+> weltraum-browser@0.1.0 test:e2e
+> playwright test --config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts tests/e2e/factory-placement.spec.ts
+
+[WebServer] (node:100231) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 17 tests using 1 worker
+
+(node:100255) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/factory-placement.spec.ts:19:3 › W07 real player construction in one confirmed Factory session › accepted source reaches Ready with one renderer and finite uninstalled Cargo (10.3s)
+  ✓   2 [chromium] › tests/e2e/factory-placement.spec.ts:27:3 › W07 real player construction in one confirmed Factory session › closed Cargo refuses an actual build preview and Escape retires that ghost (1.4s)
+  ✓   3 [chromium] › tests/e2e/factory-placement.spec.ts:32:3 › W07 real player construction in one confirmed Factory session › normal Cargo Open is idempotent in this same actual native session (988ms)
+  ✓   4 [chromium] › tests/e2e/factory-placement.spec.ts:87:3 › W07 real player construction in one confirmed Factory session › normal Play acquires the same actual native Walking session (789ms)
+  ✓   5 [chromium] › tests/e2e/factory-placement.spec.ts:90:3 › W07 real player construction in one confirmed Factory session › at most four actual released D/A taps approach the source-checked west stand (463ms)
+  ✓   6 [chromium] › tests/e2e/factory-placement.spec.ts:91:3 › W07 real player construction in one confirmed Factory session › at most four more released D/A taps confirm the actual source-checked west stand (51ms)
+  ✓   7 [chromium] › tests/e2e/factory-placement.spec.ts:92:3 › W07 real player construction in one confirmed Factory session › at most four actual released S/W taps approach the source-checked Cutter stand (1.1s)
+  ✓   8 [chromium] › tests/e2e/factory-placement.spec.ts:93:3 › W07 real player construction in one confirmed Factory session › at most four further released S/W taps continue the same native walk (973ms)
+  ✓   9 [chromium] › tests/e2e/factory-placement.spec.ts:94:3 › W07 real player construction in one confirmed Factory session › at most four further released S/W taps approach the actual Cutter stand (22ms)
+  ✓  10 [chromium] › tests/e2e/factory-placement.spec.ts:95:3 › W07 real player construction in one confirmed Factory session › at most four final released S/W taps confirm the actual source-checked Cutter stand (39ms)
+  ✓  11 [chromium] › tests/e2e/factory-placement.spec.ts:99:3 › W07 real player construction in one confirmed Factory session › Escape pauses the same walked session and native readback proves material and Cargo unchanged (447ms)
+  ✓  12 [chromium] › tests/e2e/factory-placement.spec.ts:104:3 › W07 real player construction in one confirmed Factory session › T030 real move, quarter-turn and Escape retire the ghost with no native or material mutation (1.8s)
+  ✓  13 [chromium] › tests/e2e/factory-placement.spec.ts:114:3 › W07 real player construction in one confirmed Factory session › T029 a real confirmed build publishes exactly one paid208kg Cutter (3.4s)
+  ✘  14 [chromium] › tests/e2e/factory-placement.spec.ts:126:3 › W07 real player construction in one confirmed Factory session › normal second-Cutter ghost moves seven quarter-grid steps toward the independent source-checked site (1.9s)
+  -  15 [chromium] › tests/e2e/factory-placement.spec.ts:132:3 › W07 real player construction in one confirmed Factory session › seven more actual ghost moves reach the disjoint supported site and specifically prove BOM_MISSING
+  -  16 [chromium] › tests/e2e/factory-placement.spec.ts:137:3 › W07 real player construction in one confirmed Factory session › finite C26 failed confirmation preserves the complete first installation and all actual native members
+  -  17 [chromium] › tests/e2e/factory-placement.spec.ts:144:3 › W07 real player construction in one confirmed Factory session › Legacy persistence stays closed and actual disposal retires paid Facility projection and native World
+
+
+  1) [chromium] › tests/e2e/factory-placement.spec.ts:126:3 › W07 real player construction in one confirmed Factory session › normal second-Cutter ghost moves seven quarter-grid steps toward the independent source-checked site 
+
+    TypeError: Cannot read properties of null (reading 'request')
+
+      128 |     await page.getByRole("button",{name:"Zuschnitt vorschauen",exact:true}).click();
+      129 |     for(let step=0;step<7;step++)await page.keyboard.press("ArrowLeft");
+    > 130 |     await expect.poll(async()=>(await readBuild(page)).ghost.request.centerMm[0]).toBe(-8000);
+          |                                                              ^
+      131 |   });
+      132 |   test("seven more actual ghost moves reach the disjoint supported site and specifically prove BOM_MISSING",async()=>{
+      133 |     for(let step=0;step<7;step++)await page.keyboard.press("ArrowLeft");
+        at /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/tests/e2e/factory-placement.spec.ts:130:62
+        at /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/tests/e2e/factory-placement.spec.ts:130:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    evidence/factory/w07/2026-10-11T122211.412749Z/browser-mesa-normal-full-98/playwright-output/factory-placement-W07-real-545ff-pendent-source-checked-site-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: evidence/factory/w07/2026-10-11T122211.412749Z/browser-mesa-normal-full-98/playwright-output/factory-placement-W07-real-545ff-pendent-source-checked-site-chromium/error-context.md
+
+    Error Context: evidence/factory/w07/2026-10-11T122211.412749Z/browser-mesa-normal-full-98/playwright-output/factory-placement-W07-real-545ff-pendent-source-checked-site-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    evidence/factory/w07/2026-10-11T122211.412749Z/browser-mesa-normal-full-98/playwright-output/factory-placement-W07-real-545ff-pendent-source-checked-site-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace evidence/factory/w07/2026-10-11T122211.412749Z/browser-mesa-normal-full-98/playwright-output/factory-placement-W07-real-545ff-pendent-source-checked-site-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/e2e/factory-placement.spec.ts:126:3 › W07 real player construction in one confirmed Factory session › normal second-Cutter ghost moves seven quarter-grid steps toward the independent source-checked site 
+  3 did not run
+  13 passed (26.5s)

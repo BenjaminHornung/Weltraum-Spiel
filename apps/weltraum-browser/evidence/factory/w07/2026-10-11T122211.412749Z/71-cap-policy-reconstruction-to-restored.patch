@@ -1,0 +1,11 @@
+--- reconstructed-report-only/client.ts
++++ restored-fail-closed/client.ts
+@@ -207,7 +207,7 @@
+   });
+   const clearFactoryInput=()=>{playerInput={x:0,z:0,sprint:false,jump:false};};
+   const sendFactoryInput=(input:HvpPlayerInput,cancelPendingJump=false)=>{
+-    void send({kind:"FactoryInput",input,cancelPendingJump},[],false).catch(error=>{failure=error;});
++    void send({kind:"FactoryInput",input,cancelPendingJump},[],false).catch(fail);
+   };
+   const canDispatchFactoryInput=()=>!disposed&&!failure&&!factoryInputClosing&&factoryCommandDepth===0&&!mutating&&!bodyPending&&snapshot?.status==="Running"
+     &&snapshot.terrainTransaction==="Idle"&&snapshot.neighborTransaction==="Idle"&&snapshot.bodyResidencyTransaction==="Idle"

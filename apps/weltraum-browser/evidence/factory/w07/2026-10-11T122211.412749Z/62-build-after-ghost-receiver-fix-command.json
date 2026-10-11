@@ -1,0 +1,15 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "build"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startUtc": "2026-10-11T15:52:03.028262+00:00",
+  "endUtc": "2026-10-11T15:52:07.333962+00:00",
+  "durationSeconds": 4.305713843001286,
+  "exitCode": 0,
+  "rawBytes": 1904,
+  "rawSha256": "fb1271c75315621ee2a0b045a897c539bd3f3a84d60857b4fc9e56a50529d4aa",
+  "phase": "Post actualReceiver ghost fix and ES2022-compatible test query; final runtime bytes, serial affected checks"
+}

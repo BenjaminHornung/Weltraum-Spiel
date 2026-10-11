@@ -1,0 +1,47 @@
+{
+  "kind": "DIAGNOSTIC_ONLY",
+  "actualFreshFixedOutputs": [
+    "diagnostic-input-tick-91-ready.json",
+    "diagnostic-input-tick-91-neutral.json",
+    "diagnostic-input-tick-91-125.json",
+    "diagnostic-main-cpu-91-profile.json",
+    "diagnostic-main-cpu-91-metadata.json"
+  ],
+  "artifacts": [
+    {
+      "path": "browser-main-cpu-profile-diagnostic-92/diagnostic-input-tick-91-125.json",
+      "sha256": "220554e15f5413fcddc4b7673f76c859630299dadd4068f23e5c838ed0752fe2",
+      "bytes": 163164
+    },
+    {
+      "path": "browser-main-cpu-profile-diagnostic-92/diagnostic-input-tick-91-neutral.json",
+      "sha256": "e6885233fea1cc9302f0eb256e737b69439476f8c9c3b963095985b5b9fd3774",
+      "bytes": 107725
+    },
+    {
+      "path": "browser-main-cpu-profile-diagnostic-92/diagnostic-input-tick-91-ready.json",
+      "sha256": "f8f8b5ac05e02b730aa983951558eae0f86567cea4aa818d27d78dc7c4130beb",
+      "bytes": 53490
+    },
+    {
+      "path": "browser-main-cpu-profile-diagnostic-92/diagnostic-main-cpu-91-metadata.json",
+      "sha256": "a9dee4080770e1b1901e2509705b8bd24b11e59eec4457ab1e9cdb385eece3e1",
+      "bytes": 19333
+    },
+    {
+      "path": "browser-main-cpu-profile-diagnostic-92/diagnostic-main-cpu-91-profile.json",
+      "sha256": "42a5d758572a7bf1fd420b4ac8f2e2d01ae21f0c343dafa595cd456c5679abbb",
+      "bytes": 93231
+    },
+    {
+      "path": "browser-main-cpu-profile-diagnostic-92/playwright-output/.last-run.json",
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903",
+      "bytes": 45
+    },
+    {
+      "path": "browser-main-cpu-profile-diagnostic-92/playwright-report/index.html",
+      "sha256": "f60ca5ff0d5d07ddc689d81c7ec6aeabc1d1915deecb12c1ba163727ba398f0a",
+      "bytes": 529622
+    }
+  ]
+}

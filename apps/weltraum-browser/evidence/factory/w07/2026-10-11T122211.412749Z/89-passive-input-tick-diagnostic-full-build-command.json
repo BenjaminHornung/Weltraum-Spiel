@@ -1,0 +1,16 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "build"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startUtc": "2026-10-11T18:17:47.846795+00:00",
+  "endUtc": "2026-10-11T18:17:50.617326+00:00",
+  "durationSeconds": 2.7705147029992077,
+  "exitCode": 1,
+  "rawBytes": 160,
+  "rawSha256": "359a4824f206f81a5b430060b890a2ab89defa96748eced0fffc6943f237b572",
+  "overlaySealSha256": "c807d6523411bc36f9fe5a5489a4687c7733e3e507a0f27a54f6d352a08c46ab",
+  "stage": "SOURCE-FROZEN_DIAGNOSTIC_OVERLAY_BUILD_ONLY;29othersbaseline201; noBrowser/sourceedit"
+}

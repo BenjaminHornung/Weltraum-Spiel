@@ -1,0 +1,45 @@
+{
+  "kind": "NORMAL_FULL17_ON_REVIEWED_MESA_BROWSER_ENVIRONMENT",
+  "argv": [
+    "npm",
+    "run",
+    "test:e2e",
+    "--",
+    "--config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts",
+    "tests/e2e/factory-placement.spec.ts"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "env": {
+    "FP06_E2E_RUN_DIR": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/browser-mesa-normal-full-100",
+    "WELTRAUM_FACTORY_EVIDENCE_RUN": "2026-10-11T122211.412749Z",
+    "WELTRAUM_PLAYWRIGHT_EXECUTABLE_PATH": "/workspace/.cloud-setup/bin/chromium-hestia-mesa"
+  },
+  "startUtc": "2026-10-11T19:34:12.486564+00:00",
+  "endUtc": "2026-10-11T19:34:40.851664+00:00",
+  "wrapperSeconds": 28.365107459001592,
+  "exitCode": 0,
+  "rawBytes": 4410,
+  "rawSha256": "2ac12a2cf7778a00feb198453239e597c471606c94ac83a2c8219ff14616fc87",
+  "configSha256": "53a55a48da97d43a02e317fb8edc844d57a9b5687f356a7ebf4f5b470efcf900",
+  "baselineSealSha256": "5138bdc77c13a971158c93deb430c8648a5a79d6701d910aaefd10fa8ed7cb16",
+  "wrapper": {
+    "path": "/workspace/.cloud-setup/bin/chromium-hestia-mesa",
+    "sha256": "47b081898a76e3f36d43ce06697990adb093ebe2eaeed8ef1b484fa8bffd5ab9",
+    "bytes": 222,
+    "declaredExecPrefix": [
+      "/usr/bin/chromium",
+      "--ozone-platform=headless",
+      "--use-gl=angle",
+      "--use-angle=gl-egl",
+      "--ignore-gpu-blocklist"
+    ],
+    "explicitEnvOverrides": {
+      "LIBGL_ALWAYS_SOFTWARE": "1",
+      "EGL_PLATFORM": "surfaceless"
+    },
+    "playwrightArgs": "Original unchanged launch args passed through by exact quoted $@",
+    "runtimeFullChromiumArgv": "NOT_OBSERVED_NO_PRODUCT_HOOK",
+    "hardwarePerformanceClaim": false
+  },
+  "runScope": "Full normal17 factory-placement game flow with reviewed cases14/15 real ghost acknowledgement; no diagnostic wrappers or authority hooks; environment differs only reviewed executable wrapper"
+}

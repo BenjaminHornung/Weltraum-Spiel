@@ -389,8 +389,8 @@ const fnv1aBytes = (data: Uint8Array, initial: number): number => {
   return hash >>> 0;
 };
 
-const headerDigestSeed = (): number => {
-  const header = `${HVP_COAST_SOURCE_VERSION}\n${HVP_COAST_SEED_NAME}\n${HVP_COAST_REGISTRY_DIGEST}\n${HVP_SOURCE_SIZE_X}x${HVP_SOURCE_SIZE_Y}x${HVP_SOURCE_SIZE_Z}@${HVP_SOURCE_CELL_METERS}`;
+const headerDigestSeed = (version = HVP_COAST_SOURCE_VERSION, seedName = HVP_COAST_SEED_NAME): number => {
+  const header = `${version}\n${seedName}\n${HVP_COAST_REGISTRY_DIGEST}\n${HVP_SOURCE_SIZE_X}x${HVP_SOURCE_SIZE_Y}x${HVP_SOURCE_SIZE_Z}@${HVP_SOURCE_CELL_METERS}`;
   const headerHash = fnv1aHash(header);
   return Number.parseInt(headerHash, 16) >>> 0;
 };
@@ -510,8 +510,8 @@ const materializeSlots = (progress?: (doneSlabs: number, totalSlabs: number) => 
  * the fold binds the ordered leaf digests, so the digest proves the page
  * structure that leaf readers observe.
  */
-const digestSourceSlots = (slots: Uint8Array): string => {
-  let hash = headerDigestSeed();
+const digestSourceSlots = (slots: Uint8Array, version = HVP_COAST_SOURCE_VERSION, seedName = HVP_COAST_SEED_NAME): string => {
+  let hash = headerDigestSeed(version, seedName);
   const leaf = new Uint8Array(
     HVP_SOURCE_LEAF_EDGE_SLOTS * HVP_SOURCE_LEAF_EDGE_SLOTS * HVP_SOURCE_LEAF_EDGE_SLOTS
   );
@@ -529,7 +529,7 @@ const digestSourceSlots = (slots: Uint8Array): string => {
             }
           }
         }
-        const leafDigest = fnv1aBytes(leaf, headerDigestSeed());
+        const leafDigest = fnv1aBytes(leaf, headerDigestSeed(version, seedName));
         hash ^= leafDigest;
         hash = Math.imul(hash, 0x01000193);
       }
@@ -538,11 +538,11 @@ const digestSourceSlots = (slots: Uint8Array): string => {
   return (hash >>> 0).toString(16).padStart(8, "0");
 };
 
-const wrapSnapshot = (slots: Uint8Array): HvpCoastSourceSnapshot => {
-  const sourceDigest = digestSourceSlots(slots);
+const wrapSnapshot = (slots: Uint8Array, version = HVP_COAST_SOURCE_VERSION, seedName = HVP_COAST_SEED_NAME): HvpCoastSourceSnapshot => {
+  const sourceDigest = digestSourceSlots(slots, version, seedName);
   return Object.freeze({
-    version: HVP_COAST_SOURCE_VERSION,
-    seedName: HVP_COAST_SEED_NAME,
+    version,
+    seedName,
     registryDigest: HVP_COAST_REGISTRY_DIGEST,
     sourceDigest,
     sizeX: HVP_SOURCE_SIZE_X,
@@ -565,6 +565,12 @@ const wrapSnapshot = (slots: Uint8Array): HvpCoastSourceSnapshot => {
 
 /** Fully materialized, validated coast pages for the named seed. */
 export const materializeHvpCoastSource = (): HvpCoastSourceSnapshot => wrapSnapshot(materializeSlots());
+
+/** Closed Factory initialization profile. Legacy checkpoint admission remains V5-only. */
+export const createHvpFactorySourceSnapshot = (slots: Uint8Array): HvpCoastSourceSnapshot => {
+  if (!(slots instanceof Uint8Array) || slots.length !== HVP_SOURCE_SLOT_COUNT || slots.some(value => value > HVP_SLOT_MOSS)) throw new Error("Invalid Factory source pages");
+  return wrapSnapshot(slots.slice(), "hvp-factory-startsite-v1", "hestia-factory-layout-a-001");
+};
 
 /** Artifact boundary: verify saved canonical bytes without running the generator. */
 export const restoreHvpCoastSource = (slots:Uint8Array,expectedDigest:string):HvpCoastSourceSnapshot => {
@@ -618,10 +624,11 @@ export const assertHvpSourceComplete = (snapshot: HvpCoastSourceSnapshot): void 
     throw new Error("HVP coast source is missing: materialize the named seed before claiming readiness.");
   }
   const problems: string[] = [];
-  if (snapshot.version !== HVP_COAST_SOURCE_VERSION) {
+  const factoryProfile = snapshot.version === "hvp-factory-startsite-v1" && snapshot.seedName === "hestia-factory-layout-a-001";
+  if (snapshot.version !== HVP_COAST_SOURCE_VERSION && !factoryProfile) {
     problems.push(`version ${String(snapshot.version)}`);
   }
-  if (snapshot.seedName !== HVP_COAST_SEED_NAME) {
+  if (snapshot.seedName !== HVP_COAST_SEED_NAME && !factoryProfile) {
     problems.push(`seed ${String(snapshot.seedName)}`);
   }
   if (snapshot.registryDigest !== HVP_COAST_REGISTRY_DIGEST) {
@@ -629,6 +636,11 @@ export const assertHvpSourceComplete = (snapshot: HvpCoastSourceSnapshot): void 
   }
   if (typeof snapshot.sourceDigest !== "string" || !/^[0-9a-f]{8}$/.test(snapshot.sourceDigest)) {
     problems.push("source digest");
+  }
+  if (snapshot.originMeters?.x !== HVP_SOURCE_MIN_METERS.x
+    || snapshot.originMeters?.y !== HVP_SOURCE_MIN_METERS.y
+    || snapshot.originMeters?.z !== HVP_SOURCE_MIN_METERS.z) {
+    problems.push("origin/frame");
   }
   if (
     snapshot.sizeX !== HVP_SOURCE_SIZE_X
@@ -645,7 +657,7 @@ export const assertHvpSourceComplete = (snapshot: HvpCoastSourceSnapshot): void 
     if (!(slots instanceof Uint8Array) || slots.length !== HVP_SOURCE_SLOT_COUNT) {
       problems.push("slot pages");
     } else {
-      const recomputed = digestSourceSlots(slots);
+      const recomputed = digestSourceSlots(slots, snapshot.version, snapshot.seedName);
       if (recomputed !== snapshot.sourceDigest) {
         problems.push("source digest");
       }

@@ -1,0 +1,11 @@
+--- a/apps/weltraum-browser/tests/e2e/factory-placement.spec.ts
++++ b/apps/weltraum-browser/tests/e2e/factory-placement.spec.ts
+@@ -36,7 +36,7 @@
+           super(...args);
+           if(args[1]?.name!=="hvp-simulation-owner")return;
+           const ids=new Map<number,string>();
+-          guard(()=>observe({event:"ownerWorkerCreated",name:args[1].name,url:String(args[0])}));
++          guard(()=>observe({event:"ownerWorkerCreated",name:args[1]?.name,url:String(args[0])}));
+           this.addEventListener("message",event=>guard(()=>{
+             const data=event.data,kind=ids.get(data.id);ids.delete(data.id);
+             const snapshot=data.snapshot,player=snapshot?.player;

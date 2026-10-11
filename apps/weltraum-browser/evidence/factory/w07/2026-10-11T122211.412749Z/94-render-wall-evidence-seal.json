@@ -1,0 +1,30 @@
+{
+  "kind": "ACTUAL_RENDER_WALL_DIAGNOSTIC_NOT_GAMEPLAY_GATE",
+  "files": [
+    {
+      "path": "94-render-wall-attribution.json",
+      "sha256": "5871b3fea5f01c8e291dddb098b8f9567cea433ce48ebb02f15aadbcab08ab35",
+      "bytes": 45707
+    },
+    {
+      "path": "94-render-wall-attribution-report.md",
+      "sha256": "c9c4edc1377a13e793d1d6d331531685f7a250779890aaa2cb93f5fe2054ad01",
+      "bytes": 2249
+    },
+    {
+      "path": "94-render-wall-browser-diagnostic-command.json",
+      "sha256": "8fa4cdad6d47682511789963fd9d24ba3cd61794a72406b458414d34c4117e8d",
+      "bytes": 1236
+    },
+    {
+      "path": "94-render-wall-artifact-receipt.json",
+      "sha256": "666078a207a4ac9d56a159703ca56565965107dc955f37e72d7e790cf6e5ed84",
+      "bytes": 1494
+    },
+    {
+      "path": "94-after-main-cpu-diagnostic-full-restore-port-receipt.json",
+      "sha256": "45149c0ca6b91acc0c0c389541f1670140f7fa836f29646eb8238a1e65aaf237",
+      "bytes": 7245
+    }
+  ]
+}

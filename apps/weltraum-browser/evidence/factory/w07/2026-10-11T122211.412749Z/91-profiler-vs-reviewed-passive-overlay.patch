@@ -1,0 +1,80 @@
+--- reviewed-89b-passive-overlay
++++ main-cpu-profile-overlay
+@@ -3,7 +3,7 @@
+ import path from "node:path";
+ 
+ // Temporary passive diagnostic only. Exact normal source is archived/restored.
+-test.describe.serial("W07 DIAGNOSTIC_ONLY trusted DOM to native tick observation",()=>{
++test.describe.serial("W07 DIAGNOSTIC_ONLY main V8 profile and trusted input observation",()=>{
+   let context:BrowserContext,page:Page,keyboard:CDPSession;
+   const productErrors:string[]=[];
+   const readNative=()=>page.evaluate(()=>JSON.parse(document.body.dataset.hestiaPrototypePhysics!));
+@@ -12,11 +12,32 @@
+     if(!run||!/^[A-Za-z0-9._-]{1,100}$/.test(run))throw new Error("Diagnostic requires actual own run");
+     const observation=await page.evaluate(()=>Reflect.get(window,"__w07InputTickObservation"));
+     const completeObservation=observation.observerErrors===0&&observation.dropped===0&&observation.idMapDropped===0;
+-    await writeFile(path.resolve("evidence/factory/w07",run,"diagnostic-input-tick-89-"+label+".json"),JSON.stringify({kind:"DIAGNOSTIC_ONLY_NOT_GAMEPLAY_GATE",measurementOptIn:false,solverCpu:"NOT_OBSERVED",mainFrameCpu:"NOT_OBSERVED",completeObservation,gesture,observation,productErrors},null,2)+"\n");
++    await writeFile(path.resolve("evidence/factory/w07",run,"diagnostic-input-tick-91-"+label+".json"),JSON.stringify({kind:"DIAGNOSTIC_ONLY_NOT_GAMEPLAY_GATE",measurementOptIn:false,solverCpu:"NOT_OBSERVED",mainFrameCpu:"NOT_OBSERVED",completeObservation,gesture,observation,productErrors},null,2)+"\n");
+     expect(completeObservation).toBe(true);
+     expect(productErrors).toEqual([]);
+   };
++  let profilerEnabled=false,profilerStartIssued=false,profileCleanupReported=false;
++  let profileFinish:Promise<unknown[]>|undefined;
++  const profileMetadata:Record<string,unknown>={kind:"DIAGNOSTIC_ONLY_MAIN_V8_ATTRIBUTION_NOT_GAMEPLAY_GATE",scope:"Existing Page main V8 isolate; Worker/GPU/solver not profiled",measurementOptIn:false,samplingIntervalUs:1000,nodeVersion:process.version,driverTimeOrigin:performance.timeOrigin,profilePresent:false};
++  const outputPath=(name:string)=>{
++    const run=process.env.WELTRAUM_FACTORY_EVIDENCE_RUN;
++    if(!run||!/^[A-Za-z0-9._-]{1,100}$/.test(run))throw new Error("Diagnostic requires actual own run");
++    return path.resolve("evidence/factory/w07",run,"diagnostic-main-cpu-91-"+name+".json");
++  };
++  const throwFailures=(failures:unknown[])=>{if(failures.length===1)throw failures[0];if(failures.length>1)throw new AggregateError(failures,"Main CPU diagnostic or cleanup failed");};
++  const finishProfile=()=>profileFinish??=(async()=>{
++    const failures:unknown[]=[];
++    if(profilerStartIssued){
++      try{profileMetadata.stopIssuedMs=performance.now();const result=await keyboard.send("Profiler.stop");profileMetadata.stopAckMs=performance.now();profileMetadata.profilePresent=true;await writeFile(outputPath("profile"),JSON.stringify(result.profile)+"\n");}
++      catch(error){failures.push(error);}
++    }
++    if(profilerEnabled){try{await keyboard.send("Profiler.disable");profileMetadata.disableAckMs=performance.now();}catch(error){failures.push(error);}}
++    profileMetadata.cleanupErrors=failures.map(error=>error instanceof Error?{name:error.name,message:error.message,stack:error.stack}:{reason:String(error)});
++    try{await writeFile(outputPath("metadata"),JSON.stringify(profileMetadata,null,2)+"\n");}catch(error){failures.push(error);}
++    return failures;
++  })();
+   test.beforeAll(async({browser},info)=>{
++    profileMetadata.chromiumVersion=browser.version();profileMetadata.projectName=info.project.name;profileMetadata.projectUse=info.project.use;
+     context=await browser.newContext({baseURL:info.project.use.baseURL});page=await context.newPage();keyboard=await context.newCDPSession(page);
+     page.on("pageerror",error=>productErrors.push(error.message));
+     await page.addInitScript(()=>{
+@@ -62,7 +83,11 @@
+       });}
+     });
+   });
+-  test.afterAll(async()=>{if(context)await context.close();});
++  test.afterAll(async()=>{
++    const failures=await finishProfile();const unreported=profileCleanupReported?[]:[...failures];
++    if(context){try{await context.close();}catch(error){unreported.push(error);}}
++    throwFailures(unreported);
++  });
+   test("diagnostic Ready, normal Cargo Open and normal Play",async()=>{
+     await page.goto("/factory.html");await expect(page.locator("#factory-status")).toContainText("Werkstatt bereit",{timeout:20_000});
+     await page.getByRole("button",{name:"Wrackfracht öffnen",exact:true}).click();await expect.poll(async()=>JSON.parse(await page.evaluate(()=>document.body.dataset.hestiaFactoryConstruction!)).cargo.opened).toBe(true);
+@@ -88,7 +113,18 @@
+     }
+     await exportObservation(String(holdMs),{key,holdMs,before,after,releasedReads,driverTimes});
+   };
+-  test("diagnostic finite125ms released trusted S gesture",async()=>{await gesture(125);});
+-  test("diagnostic finite250ms released trusted S gesture",async()=>{await gesture(250);});
+-  test("diagnostic finite600ms released trusted S gesture",async()=>{await gesture(600);});
++  test("diagnostic neutral five-second main V8 profile",async()=>{
++    profileMetadata.scene=await page.evaluate(()=>({url:location.href,seed:document.body.dataset.hestiaPrototypeSeed,sourceRevision:document.body.dataset.hestiaPrototypeSourceRevision,sourceDigest:document.body.dataset.hestiaPrototypeSourceDigest,camera:document.body.dataset.hestiaPrototypePlayerCamera,resources:document.body.dataset.hestiaPrototypeResources}));
++    profileMetadata.neutralBefore=await readNative();
++    profilerEnabled=true;await keyboard.send("Profiler.enable");await keyboard.send("Profiler.setSamplingInterval",{interval:1000});
++    profilerStartIssued=true;profileMetadata.startIssuedMs=performance.now();await keyboard.send("Profiler.start");profileMetadata.startAckMs=performance.now();
++    profileMetadata.neutralWaitStartMs=performance.now();await new Promise<void>(resolve=>setTimeout(resolve,5000));profileMetadata.neutralWaitEndMs=performance.now();
++    profileMetadata.neutralAfter=await readNative();await exportObservation("neutral");
++  });
++  test("diagnostic finite125ms released trusted S gesture and profile cleanup",async()=>{
++    const failures:unknown[]=[];
++    try{await gesture(125);}catch(error){failures.push(error);}
++    finally{failures.push(...await finishProfile());profileCleanupReported=true;}
++    throwFailures(failures);
++  });
+ });

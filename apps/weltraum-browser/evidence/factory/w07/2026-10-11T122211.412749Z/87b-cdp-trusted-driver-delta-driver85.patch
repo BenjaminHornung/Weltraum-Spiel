@@ -1,0 +1,46 @@
+--- a/apps/weltraum-browser/tests/e2e/factory-placement.spec.ts
++++ b/apps/weltraum-browser/tests/e2e/factory-placement.spec.ts
+@@ -1,4 +1,4 @@
+-import { expect, test, type BrowserContext, type Page } from "@playwright/test";
++import { expect, test, type BrowserContext, type CDPSession, type Page } from "@playwright/test";
+ import { mkdir, writeFile } from "node:fs/promises";
+ import path from "node:path";
+ 
+@@ -11,10 +11,10 @@
+ const readBuild=(page:Page)=>page.evaluate(()=>JSON.parse(document.body.dataset.hestiaFactoryConstruction!));
+ 
+ test.describe.serial("W07 real player construction in one confirmed Factory session",()=>{
+-  let context:BrowserContext,page:Page;const errors:string[]=[];
++  let context:BrowserContext,page:Page,keyboard:CDPSession;const errors:string[]=[];
+   let beforeCargo:Awaited<ReturnType<typeof readBuild>>,nativeBeforeCargo:Awaited<ReturnType<typeof readNative>>;
+   let beforeSecond:Awaited<ReturnType<typeof readBuild>>,nativeBeforeSecond:Awaited<ReturnType<typeof readNative>>;
+-  test.beforeAll(async({browser},info)=>{context=await browser.newContext({baseURL:info.project.use.baseURL});page=await context.newPage();page.on("pageerror",error=>errors.push(error.message));});
++  test.beforeAll(async({browser},info)=>{context=await browser.newContext({baseURL:info.project.use.baseURL});page=await context.newPage();keyboard=await context.newCDPSession(page);page.on("pageerror",error=>errors.push(error.message));});
+   test.afterAll(async()=>{if(context)await context.close();});
+   test("accepted source reaches Ready with one renderer and finite uninstalled Cargo",async()=>{
+     await page.goto("/factory.html");await expect(page.locator("#factory-status")).toContainText("Werkstatt bereit",{timeout:20_000});
+@@ -47,17 +47,21 @@
+       const key=value>target?negativeKey:positiveKey;
+       const capBeforeMs=walkPulseCaps[axis];
+       const holdMs=Math.max(25,Math.min(capBeforeMs,Math.round(Math.abs(value-target)/3*1000)));
++      const keyCode=({a:65,d:68,s:83,w:87} as Record<string,number>)[key];if(keyCode===undefined)throw new Error("Unsupported walking key");
++      const code="Key"+key.toUpperCase();
++      const upEvent={type:"keyUp" as const,modifiers:0,key,windowsVirtualKeyCode:keyCode,code,location:0};
++      // Source-bound Chromium RawKeyboard payload, same Page target and trace.
+       // Driver times measure this test runner, never DOM/native event time.
+       const driverTimes:Record<string,number>={downIssuedMs:performance.now()};
+-      const down=page.keyboard.down(key).then(()=>{driverTimes.downAckMs=performance.now();});
++      const down=keyboard.send("Input.dispatchKeyEvent",{type:"keyDown",modifiers:0,windowsVirtualKeyCode:keyCode,code,commands:[],key,text:key,unmodifiedText:key,autoRepeat:false,location:0,isKeypad:false}).then(()=>{driverTimes.downAckMs=performance.now();});
+       const up=new Promise<void>(resolve=>setTimeout(resolve,holdMs)).then(async()=>{
+-        driverTimes.upIssuedMs=performance.now();await page.keyboard.up(key);driverTimes.upAckMs=performance.now();
++        driverTimes.upIssuedMs=performance.now();await keyboard.send("Input.dispatchKeyEvent",upEvent);driverTimes.upAckMs=performance.now();
+       });
+       const failures:unknown[]=[];
+       try{for(const result of await Promise.allSettled([down,up]))if(result.status==="rejected")failures.push(result.reason);}
+       finally{
+         // Fresh release after both requests settles any protocol-hook reordering.
+-        try{driverTimes.finalUpIssuedMs=performance.now();await page.keyboard.up(key);driverTimes.finalUpAckMs=performance.now();}
++        try{driverTimes.finalUpIssuedMs=performance.now();await keyboard.send("Input.dispatchKeyEvent",upEvent);driverTimes.finalUpAckMs=performance.now();}
+         catch(releaseError){
+           failures.push(releaseError);
+           try{await context.close();}catch(closeError){failures.push(closeError);}

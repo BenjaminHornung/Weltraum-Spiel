@@ -1,0 +1,16 @@
+{
+  "phase": "98_SOURCE_ONLY_NORMAL_FULL17_RUNNER_PREPARATION",
+  "preparedAtUtc": "2026-10-11T19:20:09.018421+00:00",
+  "runnerPath": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/98-mesa-normal-full-browser-runner.py",
+  "runnerSha256": "187c2726af08d07d7525090ee841277ab203f75efa6a18f348b5da1573851141",
+  "runnerBytes": 6843,
+  "planSha256": "ec0020cfb04578542c86fd08360dc500e644eebb037f37a0b98439444e59b884",
+  "execution": "NOT_RUN_WAIT_ROOT_FINAL_WRAPPER_REVIEW_AND_AUTH",
+  "productWrites": 0,
+  "builds": 0,
+  "syntaxReadOnlyAst": "PASS_NO_RUNNER_EXECUTION",
+  "baselineAll30": "MATCH201394",
+  "normalE2e": "030fc16961",
+  "observedWrapperSourceSha256": "47b081898a76e3f36d43ce06697990adb093ebe2eaeed8ef1b484fa8bffd5ab9",
+  "wrapperSourceBytes": 222
+}

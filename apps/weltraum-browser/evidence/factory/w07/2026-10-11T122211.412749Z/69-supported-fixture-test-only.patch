@@ -1,0 +1,93 @@
+--- ninth-seal/tests/unit/hvp-player-input.test.ts
++++ supported-red/tests/unit/hvp-player-input.test.ts
+@@ -67,12 +67,17 @@
+   onmessage: ((event: MessageEvent<HvpPhysicsReply>) => void) | null = null;
+   onerror = null; onmessageerror = null; terminated = false;
+   messages: HvpPhysicsMessage[] = []; reads: HvpPhysicsMessage[] = []; session!: HvpPhysicsSession;
++  supportedFixture = false;
+   constructor() { NativeTransport.current = this; }
+   postMessage(message: HvpPhysicsMessage) {
+     this.messages.push(structuredClone(message));
+     void (async () => {
+-      if (message.kind === "Initialize") this.session = await createHvpPhysicsSession(message.sectors, message.spawn, message.gravity, message.player,
+-        message.inertiaSpawn, message.branchSpawn, message.sessionId, undefined, message.branchKind, message.factoryEnabled);
++      if (message.kind === "Initialize") this.session = await createHvpPhysicsSession(this.supportedFixture ? [{
++        vertices: new Float32Array([-4, 0, -4, -4, 0, 4, 4, 0, 4, 4, 0, -4]),
++        indices: new Uint32Array([0, 1, 2, 0, 2, 3])
++      }] : message.sectors, message.spawn, message.gravity, this.supportedFixture ? {
++        spawn: { x: 0, y: 0.92, z: 0 }, coverage: [{ minX: -4, minZ: -4, maxX: 4, maxZ: 4 }]
++      } : message.player, message.inertiaSpawn, message.branchSpawn, message.sessionId, undefined, message.branchKind, message.factoryEnabled);
+       else if (message.kind === "Read") { if (message.input) this.session.input(message.input); this.reads.push(message); return; }
+       else if (message.kind === "Pause") this.session.pause();
+       else if (message.kind === "Play") this.session.play();
+@@ -88,12 +93,68 @@
+   release() { const message = this.reads.shift(); if (!message) throw new Error("Missing held test Read"); this.reply(message.id); }
+   terminate() { this.terminated = true; this.session?.dispose(); }
+ }
+-const clientHarness = async (factory = true) => {
+-  vi.stubGlobal("Worker", NativeTransport);
++const clientHarness = async (factory = true, supported = false) => {
++  vi.stubGlobal("Worker", supported ? class extends NativeTransport { supportedFixture = true; } : NativeTransport);
+   const client = await createHvpPhysicsClient([], { x: 10, y: 4, z: 10 }, new AbortController().signal,
+     { x: 0, y: 2, z: 0 }, undefined, undefined, undefined, "branch", undefined, factory);
+   const worker = NativeTransport.current; cleanup.push(() => client.dispose()); return { client, worker };
+ };
++
++// Explicit physical test fixture, not a claim about source/Factory site support.
++// The floor is a real Native static trimesh and its complete coverage contains
++// the capsule. Only the existing Native advance API may move/settle this owner.
++const supportedClientHarness = async () => {
++  const h = await clientHarness(true, true);
++  await h.client.command("Play");
++  for (let step = 0; step < 10; step++) h.worker.session.advance(1 / 60);
++  h.client.update(); h.worker.release(); await turn();
++  expect(h.worker.session.read()).toMatchObject({ status: "Running", terrainTransaction: "Idle", neighborTransaction: "Idle",
++    bodyResidencyTransaction: "Idle", factoryFacilities: { state: "Idle" }, moving: { state: "Idle" },
++    player: { grounded: true, status: "Walking" } });
++  expect(h.worker.session.read().player!.position.y).toBeCloseTo(0.91, 1);
++  return h;
++};
++
++describe("W07 supported Factory input before snapshot ACK", () => {
++  it("delivers Down and Up while a neutral snapshot ACK stays busy, without input-owned ticks or pose", async () => {
++    const { client, worker } = await supportedClientHarness();
++    client.update(); expect(worker.reads).toHaveLength(1);
++    expect(worker.reads[0]).toMatchObject({ kind: "Read", input: zero });
++    const before = worker.session.read();
++    client.setPlayerInput({ ...zero, x: 1 });
++    expect(worker.session.read().ticks).toBe(before.ticks);
++    expect(worker.session.read().player!.position).toEqual(before.player!.position);
++    for (let step = 0; step < 6; step++) worker.session.advance(1 / 60);
++    const moved = worker.session.read();
++    expect(moved.ticks).toBe(before.ticks + 6);
++    expect(moved.player).toMatchObject({ grounded: true, status: "Walking" });
++    expect.soft(moved.player!.position.x - before.player!.position.x).toBeCloseTo(0.3, 4);
++    client.setPlayerInput(zero);
++    expect(worker.session.read().ticks).toBe(moved.ticks);
++    expect(worker.session.read().player!.position).toEqual(moved.player!.position);
++    for (let step = 0; step < 6; step++) worker.session.advance(1 / 60);
++    expect(worker.session.read().player!.position.x).toBeCloseTo(moved.player!.position.x, 6);
++    expect(worker.session.read().ticks).toBe(before.ticks + 12);
++    expect(worker.reads).toHaveLength(1); // The original ACK was never released.
++    expect(client.read().player!.position).toEqual(before.player!.position);
++  });
++
++  it("releases a genuinely moving Native owner before its outstanding snapshot ACK", async () => {
++    const { client, worker } = await supportedClientHarness();
++    client.setPlayerInput({ ...zero, x: 1 }); expect(worker.reads).toHaveLength(1);
++    const before = worker.session.read();
++    for (let step = 0; step < 6; step++) worker.session.advance(1 / 60);
++    const moved = worker.session.read();
++    expect(moved.player!.position.x - before.player!.position.x).toBeCloseTo(0.3, 4);
++    expect(moved.player).toMatchObject({ grounded: true, status: "Walking" });
++    client.setPlayerInput(zero);
++    expect(worker.session.read().ticks).toBe(moved.ticks);
++    expect(worker.session.read().player!.position).toEqual(moved.player!.position);
++    for (let step = 0; step < 6; step++) worker.session.advance(1 / 60);
++    expect(worker.session.read().player!.position.x).toBeCloseTo(moved.player!.position.x, 6);
++    expect(worker.session.read().ticks).toBe(before.ticks + 12);
++  });
++});
+ 
+ describe("W07 existing bounded Read(input) transport", () => {
+   it.each([zero,{...zero,x:1}])("does not drain unchanged already-sent level intent into an extra EventRead: %j", async value => {

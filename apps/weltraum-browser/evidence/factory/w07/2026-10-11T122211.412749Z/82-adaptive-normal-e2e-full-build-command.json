@@ -1,0 +1,15 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "build"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startUtc": "2026-10-11T17:12:43.942805+00:00",
+  "endUtc": "2026-10-11T17:12:48.264687+00:00",
+  "durationSeconds": 4.322571226999571,
+  "exitCode": 0,
+  "rawBytes": 1904,
+  "rawSha256": "0c7bf7fea149454a6532d866b517afc138bf5f52e95e2d64fc93d0e64356ef1a",
+  "stage": "E2E-only adaptive trusted gesture change after actual normal HarnessFAIL81; all29otherfinalPreparingcandidatefilesheld"
+}

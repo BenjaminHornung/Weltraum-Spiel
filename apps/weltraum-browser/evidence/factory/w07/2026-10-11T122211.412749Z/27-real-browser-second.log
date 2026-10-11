@@ -1,0 +1,75 @@
+
+> weltraum-browser@0.1.0 test:e2e
+> playwright test --config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts tests/e2e/factory-placement.spec.ts
+
+[WebServer] (node:57283) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 6 tests using 1 worker
+
+(node:57307) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/factory-placement.spec.ts:17:3 › W07 real player construction in one confirmed Factory session › accepted source reaches Ready with one renderer and finite uninstalled Cargo (19.3s)
+[WebServer] 1:41:33 PM [vite] (client) [Unhandled rejection] Error: HVP representations must share one projection frame.
+[WebServer]  > publishCurrentSet src/hvp/hvpBootstrap.ts:440:39
+[WebServer]     438 |      const started=onTiming?performance.now():0;
+[WebServer]     439 |      for (const candidate of framesByRepresentation.values()) {
+[WebServer]     440 |        if (candidate !== current) throw new Error("HVP representations must share one projection frame.");
+[WebServer]         |                                         ^
+[WebServer]     441 |      }
+[WebServer]     442 |      projectionRevision += 1;
+[WebServer]  > Object.dispatch src/hvp/hvpBootstrap.ts:494:6
+[WebServer]  > dropFactoryScene src/hvp/hvpBootstrap.ts:2190:187
+[WebServer]  > Object.dispose src/hvp/hvpBootstrap.ts:2236:186
+[WebServer]  > Object.dispose src/factory/session/factorySession.ts:79:41
+[WebServer]  > Object.dispose src/factory/factoryEntry.ts:71:18
+[WebServer]  > src/hvp/hvpBootstrap.ts:852:79
+[WebServer]  > attempt src/hvp/hvpBootstrap.ts:847:52
+[WebServer]  > src/hvp/hvpBootstrap.ts:852:6
+[WebServer]
+  ✘  2 [chromium] › tests/e2e/factory-placement.spec.ts:25:3 › W07 real player construction in one confirmed Factory session › normal Cargo Open is idempotent and actual WASD walks the admitted actor from source access to the Cutter (12.7s)
+  -  3 [chromium] › tests/e2e/factory-placement.spec.ts:37:3 › W07 real player construction in one confirmed Factory session › T030 real move, quarter-turn and Escape retire the ghost with no native or material mutation
+  -  4 [chromium] › tests/e2e/factory-placement.spec.ts:47:3 › W07 real player construction in one confirmed Factory session › T029 a real confirmed build publishes exactly one paid208kg Cutter
+  -  5 [chromium] › tests/e2e/factory-placement.spec.ts:58:3 › W07 real player construction in one confirmed Factory session › finite C26 cannot install a second Cutter; failed confirmation preserves the complete first installation
+  -  6 [chromium] › tests/e2e/factory-placement.spec.ts:64:3 › W07 real player construction in one confirmed Factory session › Legacy persistence stays closed and actual disposal retires paid Facility projection and native World
+
+
+  1) [chromium] › tests/e2e/factory-placement.spec.ts:25:3 › W07 real player construction in one confirmed Factory session › normal Cargo Open is idempotent and actual WASD walks the admitted actor from source access to the Cutter
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 5000ms exceeded while waiting on the predicate
+
+      26 |     const before=await readBuild(page),nativeBefore=await readNative(page);
+      27 |     await page.getByRole("button",{name:"Zuschnitt vorschauen",exact:true}).click();await expect(page.locator("#factory-build-status")).toContainText("CARGO_CLOSED");await page.keyboard.press("Escape");
+    > 28 |     await page.getByRole("button",{name:"Wrackfracht öffnen",exact:true}).click();await expect.poll(async()=>(await readBuild(page)).cargo.opened).toBe(true);
+         |                                                                                                                                                    ^
+      29 |     const first=await readNative(page);await page.getByRole("button",{name:"Wrackfracht öffnen",exact:true}).click();await expect(page.locator("#factory-build-status")).toContainText("Wrackfracht geöffnet");expect((await readNative(page)).factoryFacilities.revision).toBe(first.factoryFacilities.revision);
+      30 |     await page.getByRole("button",{name:"Spielen · WASD / Maus / Space",exact:true}).click();await expect.poll(()=>page.evaluate(()=>document.pointerLockElement?.id)).toBe("debug-scene");await expect.poll(async()=>(await readNative(page)).player.status).toBe("Walking");
+      31 |     await page.keyboard.down("d");await expect.poll(async()=>(await readNative(page)).player.position.x,{intervals:[20,40,60]}).toBeLessThan(-6.15);await page.keyboard.up("d");
+        at /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/tests/e2e/factory-placement.spec.ts:28:148
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    evidence/factory/w07/2026-10-11T122211.412749Z/browser-second/playwright-output/factory-placement-W07-real-efee5-source-access-to-the-Cutter-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: evidence/factory/w07/2026-10-11T122211.412749Z/browser-second/playwright-output/factory-placement-W07-real-efee5-source-access-to-the-Cutter-chromium/error-context.md
+
+    Error Context: evidence/factory/w07/2026-10-11T122211.412749Z/browser-second/playwright-output/factory-placement-W07-real-efee5-source-access-to-the-Cutter-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    evidence/factory/w07/2026-10-11T122211.412749Z/browser-second/playwright-output/factory-placement-W07-real-efee5-source-access-to-the-Cutter-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace evidence/factory/w07/2026-10-11T122211.412749Z/browser-second/playwright-output/factory-placement-W07-real-efee5-source-access-to-the-Cutter-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/e2e/factory-placement.spec.ts:25:3 › W07 real player construction in one confirmed Factory session › normal Cargo Open is idempotent and actual WASD walks the admitted actor from source access to the Cutter
+  4 did not run
+  1 passed (34.2s)

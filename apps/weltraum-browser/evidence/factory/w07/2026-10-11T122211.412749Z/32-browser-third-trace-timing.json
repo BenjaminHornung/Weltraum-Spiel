@@ -1,0 +1,209 @@
+{
+  "phase": "actual third Browser FAIL at unchanged30s case budget; not a demonstrated disabled Playbutton",
+  "capturedUtc": "2026-10-11T13:59:00.724339+00:00",
+  "tracePath": "browser-third/playwright-output/factory-placement-W07-real-efee5-source-access-to-the-Cutter-chromium/trace.zip",
+  "traceSha256": "e2c1b8f4e162ce95c7bab3ca155d2508549e374c2327b7d45b108b1f5fef5a6a",
+  "counts": {
+    "PASS": 1,
+    "FAIL": 1,
+    "NOT_RUN": 4
+  },
+  "npmExitCode": 1,
+  "actualDurationSeconds": 55.9,
+  "calls": [
+    {
+      "callId": "call@34",
+      "method": "evaluateExpression",
+      "startTimeMs": 21117.939,
+      "params": {
+        "expression": "() => JSON.parse(document.body.dataset.hestiaFactoryConstruction)",
+        "isFunction": true,
+        "arg": {
+          "value": {
+            "v": "undefined"
+          },
+          "handles": []
+        }
+      },
+      "endTimeMs": 22104.836,
+      "error": null
+    },
+    {
+      "callId": "call@36",
+      "method": "evaluateExpression",
+      "startTimeMs": 22607.152,
+      "params": {
+        "expression": "() => JSON.parse(document.body.dataset.hestiaPrototypePhysics)",
+        "isFunction": true,
+        "arg": {
+          "value": {
+            "v": "undefined"
+          },
+          "handles": []
+        }
+      },
+      "endTimeMs": 23645.844,
+      "error": null
+    },
+    {
+      "callId": "call@38",
+      "method": "click",
+      "startTimeMs": 24118.666,
+      "params": {
+        "selector": "internal:role=button[name=\"Zuschnitt vorschauen\"s]",
+        "strict": true,
+        "timeout": 0
+      },
+      "endTimeMs": 30495.279,
+      "error": null
+    },
+    {
+      "callId": "call@40",
+      "method": "expect",
+      "startTimeMs": 31002.027,
+      "params": {
+        "selector": "#factory-build-status",
+        "expression": "to.have.text",
+        "expectedText": [
+          {
+            "string": "CARGO_CLOSED",
+            "matchSubstring": true,
+            "normalizeWhiteSpace": true
+          }
+        ],
+        "expectedValue": {
+          "value": {
+            "v": "undefined"
+          },
+          "handles": []
+        },
+        "isNot": false,
+        "timeout": 5000
+      },
+      "endTimeMs": 31907.582,
+      "error": null
+    },
+    {
+      "callId": "call@42",
+      "method": "keyboardPress",
+      "startTimeMs": 32366.131,
+      "params": {
+        "key": "Escape"
+      },
+      "endTimeMs": 33876.357,
+      "error": null
+    },
+    {
+      "callId": "call@44",
+      "method": "click",
+      "startTimeMs": 34322.076,
+      "params": {
+        "selector": "internal:role=button[name=\"Wrackfracht \u00f6ffnen\"s]",
+        "strict": true,
+        "timeout": 0
+      },
+      "endTimeMs": 40451.262,
+      "error": null
+    },
+    {
+      "callId": "call@46",
+      "method": "evaluateExpression",
+      "startTimeMs": 40895.267,
+      "params": {
+        "expression": "() => JSON.parse(document.body.dataset.hestiaFactoryConstruction)",
+        "isFunction": true,
+        "arg": {
+          "value": {
+            "v": "undefined"
+          },
+          "handles": []
+        }
+      },
+      "endTimeMs": 41893.311,
+      "error": null
+    },
+    {
+      "callId": "call@48",
+      "method": "evaluateExpression",
+      "startTimeMs": 42367.903,
+      "params": {
+        "expression": "() => JSON.parse(document.body.dataset.hestiaPrototypePhysics)",
+        "isFunction": true,
+        "arg": {
+          "value": {
+            "v": "undefined"
+          },
+          "handles": []
+        }
+      },
+      "endTimeMs": 43199.244,
+      "error": null
+    },
+    {
+      "callId": "call@50",
+      "method": "click",
+      "startTimeMs": 43611.399,
+      "params": {
+        "selector": "internal:role=button[name=\"Wrackfracht \u00f6ffnen\"s]",
+        "strict": true,
+        "timeout": 0
+      },
+      "endTimeMs": 49468.77,
+      "error": null
+    },
+    {
+      "callId": "call@52",
+      "method": "expect",
+      "startTimeMs": 49916.642,
+      "params": {
+        "selector": "#factory-build-status",
+        "expression": "to.have.text",
+        "expectedText": [
+          {
+            "string": "Wrackfracht ge\u00f6ffnet",
+            "matchSubstring": true,
+            "normalizeWhiteSpace": true
+          }
+        ],
+        "expectedValue": {
+          "value": {
+            "v": "undefined"
+          },
+          "handles": []
+        },
+        "isNot": false,
+        "timeout": 5000
+      },
+      "endTimeMs": 50807.873,
+      "error": null
+    },
+    {
+      "callId": "call@55",
+      "method": "evaluateExpression",
+      "startTimeMs": 51282.581,
+      "params": {
+        "expression": "() => JSON.parse(document.body.dataset.hestiaPrototypePhysics)",
+        "isFunction": true,
+        "arg": {
+          "value": {
+            "v": "undefined"
+          },
+          "handles": []
+        }
+      },
+      "endTimeMs": 52303.66,
+      "error": null
+    },
+    {
+      "callId": "call@57",
+      "method": "click",
+      "startTimeMs": 52801.259,
+      "params": {
+        "selector": "internal:role=button[name=\"Spielen \u00b7 WASD / Maus / Space\"s]",
+        "strict": true,
+        "timeout": 0
+      }
+    }
+  ],
+  "remainingClaims": "Native Walk/paid build/native Browser dispose NOT_RUN; Runtime remains sealed; harness sequential split proposed only."
+}

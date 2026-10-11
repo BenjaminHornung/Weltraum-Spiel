@@ -6,6 +6,8 @@ import type {HvpTerrainFragmentRequest} from "./terrainFragment";
 import type {HvpMovingCutRequest,HvpMovingCutPreparation,HvpBodyCutAdmission} from "./bodyCutSession";
 import {prepareHvpWorldReplacement,type HvpWorldReplacement} from "./worldReplacement";
 import type {HvpWorldCheckpoint} from "../persistence/worldCheckpoint";
+import type { FactoryCargoSite } from "../../factory/fixtures/cargoSite";
+import type { FactoryFacilityRequest,FactoryCargoOpenIntent } from "./factoryFacilitySession";
 import type {HvpNeighborCheckpoint} from "../runtime/residency";
 
 export type HvpPhysicsSnapshot = ReturnType<HvpPhysicsSession["read"]>;
@@ -18,8 +20,9 @@ export interface HvpPhysicsClock {
 }
 export type HvpPhysicsMessage = { readonly id: number } & (
   | { readonly kind: "Initialize"; readonly sectors: readonly HvpCollisionSector[]; readonly spawn: { x: number; y: number; z: number }; readonly gravity: number;
-      readonly player?: { spawn: { x: number; y: number; z: number }; coverage: readonly HvpCollisionCoverage[] }; readonly inertiaSpawn?: {x:number;y:number;z:number}; readonly branchSpawn?:{x:number;y:number;z:number};readonly sessionId:string;readonly checkpoint?:HvpWorldCheckpoint;readonly branchKind?:"branch"|"salvage";readonly measure?:boolean }
+      readonly player?: { spawn: { x: number; y: number; z: number }; coverage: readonly HvpCollisionCoverage[] }; readonly inertiaSpawn?: {x:number;y:number;z:number}; readonly branchSpawn?:{x:number;y:number;z:number};readonly sessionId:string;readonly checkpoint?:HvpWorldCheckpoint;readonly branchKind?:"branch"|"salvage";readonly measure?:boolean;readonly factoryEnabled?:boolean;readonly initialFactoryCargo?:FactoryCargoSite }
   | { readonly kind: "Read"; readonly input?: HvpPlayerInput; readonly cameraOffset?: { x: number; y: number; z: number };readonly cutAim?:{x:number;y:number;z:number} }
+  | { readonly kind: "FactoryInput"; readonly input: HvpPlayerInput; readonly cancelPendingJump: boolean }
   | { readonly kind: "Pause" | "Resume" | "Drop" | "Play" | "Inspect" | "Dispose" }
   | { readonly kind: "Impulse"; readonly direction: {x:number;y:number;z:number} }
   | { readonly kind: "PrepareTerrain"; readonly transactionId: string; readonly generation: number;
@@ -36,6 +39,9 @@ export type HvpPhysicsMessage = { readonly id: number } & (
   | {readonly kind:"PrepareNeighbor";readonly transactionId:string;readonly checkpoint:HvpNeighborCheckpoint;
       readonly meshes:readonly HvpCollisionSector[];readonly edge:readonly {index:number;mesh:HvpCollisionSector}[]}
   | {readonly kind:"CommitNeighbor"|"RollbackNeighbor"|"FinalizeNeighbor";readonly transactionId:string}
+  | {readonly kind:"OpenFactoryCargo";readonly intent:FactoryCargoOpenIntent}
+  | {readonly kind:"PrepareFactoryFacility";readonly request:FactoryFacilityRequest}
+  | {readonly kind:"CommitFactoryFacility"|"RollbackFactoryFacility"|"FinalizeFactoryFacility";readonly transactionId:string}
   | {readonly kind:"ParkDistantBodies"|"RestoreNearBodies"}
   | {readonly kind:"PrepareBodyResidency"|"CommitBodyResidency"|"FinalizeBodyResidency"|"RollbackBodyResidency";readonly transactionId:string}
 );
@@ -47,6 +53,7 @@ const port = globalThis as unknown as { onmessage: (event: MessageEvent<HvpPhysi
 let session: HvpPhysicsSession | undefined;
 let initializing = false;
 let disposed = false;
+let factoryEnabled=false;
 let timer: ReturnType<typeof setInterval> | undefined;
 let previous=performance.now();
 let measure=false,droppedTimings=0;
@@ -68,13 +75,24 @@ port.onmessage = async ({ data }) => {
   let bodyPreparation:HvpMovingCutPreparation|undefined;
   let releasingHeld=false;
   try {
+    if(data.kind==="FactoryInput"){
+      // Intent ACKs never read/publish a World, clock, timing or restore state.
+      // The same sender port orders them before Pause/Dispose/Replacement.
+      try{
+        if(!Number.isSafeInteger(data.id)||data.id<0)throw new Error("Invalid physics message id");
+        if(session&&!disposed&&!restore)session.factoryInput(data.input,data.cancelPendingJump);
+      }
+      catch(error){port.postMessage({id:data.id,rejected:error instanceof Error?error.message:"Factory input rejected"});return;}
+      port.postMessage({id:data.id});return;
+    }
     if (!Number.isSafeInteger(data.id) || data.id < 0) { throw new Error("Invalid physics message id"); }
     if (data.kind === "Dispose") { disposed = true; clearInterval(timer);timer=undefined; restore?.transaction?.dispose();session?.dispose(); }
     else if (data.kind === "Initialize") {
       if (initializing || session !== undefined || disposed) { throw new Error("Physics already initialized/disposed"); }
       initializing = true;
+      factoryEnabled=data.factoryEnabled===true;
       measure=data.measure===true;
-      session = await createHvpPhysicsSession(data.sectors, data.spawn, data.gravity, data.player, data.inertiaSpawn,data.branchSpawn,data.sessionId,data.checkpoint,data.branchKind);
+      session = await createHvpPhysicsSession(data.sectors, data.spawn, data.gravity, data.player, data.inertiaSpawn,data.branchSpawn,data.sessionId,data.checkpoint,data.branchKind,data.factoryEnabled,data.initialFactoryCargo);
       if (disposed) { session.dispose(); }
       else {
         previous = performance.now();
@@ -131,10 +149,15 @@ port.onmessage = async ({ data }) => {
         const before=session.read();
         releasingHeld=before.status!=="Running"||before.terrainTransaction!=="Idle"
           ||(before.structural!==null&&before.structural.state!=="Idle")
-          ||["PreparedHeld","CommittedHeld","RecoveryHold"].includes(before.moving.state)||before.neighborTransaction!=="Idle"||before.bodyResidencyTransaction!=="Idle";
+          ||["PreparedHeld","CommittedHeld","RecoveryHold"].includes(before.moving.state)||before.neighborTransaction!=="Idle"||before.bodyResidencyTransaction!=="Idle"||(before.factoryFacilities!==undefined&&before.factoryFacilities.state!=="Idle");
       }
       switch (data.kind) {
-        case "Read": if (data.input !== undefined) { session.input(data.input); } session.camera(data.cameraOffset);session.aimBranch(data.cutAim); break;
+        case "OpenFactoryCargo":session.openFactoryCargo(data.intent);break;
+        case "PrepareFactoryFacility":session.prepareFactoryFacility(data.request);break;
+        case "CommitFactoryFacility":session.commitFactoryFacility(data.transactionId);break;
+        case "RollbackFactoryFacility":session.rollbackFactoryFacility(data.transactionId);break;
+        case "FinalizeFactoryFacility":session.finalizeFactoryFacility(data.transactionId);break;
+        case "Read": if (!factoryEnabled&&data.input !== undefined) { session.input(data.input); } session.camera(data.cameraOffset);session.aimBranch(data.cutAim); break;
         case "Pause": session.pause(); break;
         case "Resume": session.resume(); break;
         case "Drop": session.drop(); break;
@@ -178,7 +201,8 @@ port.onmessage = async ({ data }) => {
       ||data.kind==="Checkpoint"||data.kind==="PrepareRestore"||data.kind==="CommitRestore"||data.kind==="RollbackRestore"||data.kind==="FinalizeRestore"
       ||data.kind==="PrepareNeighbor"||data.kind==="CommitNeighbor"||data.kind==="RollbackNeighbor"||data.kind==="FinalizeNeighbor"
       ||data.kind==="ParkDistantBodies"||data.kind==="RestoreNearBodies"||data.kind==="PrepareBodyResidency"||data.kind==="CommitBodyResidency"
-      ||data.kind==="FinalizeBodyResidency"||data.kind==="RollbackBodyResidency"||restore!==undefined) {
+      ||data.kind==="FinalizeBodyResidency"||data.kind==="RollbackBodyResidency"
+      ||data.kind==="OpenFactoryCargo"||data.kind==="PrepareFactoryFacility"||data.kind==="CommitFactoryFacility"||data.kind==="RollbackFactoryFacility"||data.kind==="FinalizeFactoryFacility"||restore!==undefined) {
       reply({id:data.id,rejected:error instanceof Error?error.message:"Transaction rejected",snapshot:session?.read(),
         restoreState:restore?.recoveryHold?"RecoveryHold":restore?.transaction?.state});
       return;

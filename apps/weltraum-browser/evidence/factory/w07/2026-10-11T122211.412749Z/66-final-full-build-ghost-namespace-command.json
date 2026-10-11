@@ -1,0 +1,15 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "build"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startUtc": "2026-10-11T15:54:34.620540+00:00",
+  "endUtc": "2026-10-11T15:54:38.773724+00:00",
+  "durationSeconds": 4.153197670999361,
+  "exitCode": 0,
+  "rawBytes": 1904,
+  "rawSha256": "a387975781c34795dcfdbb9f3b05ec836eb07e57d670fee4f34562fe31b69dd3",
+  "phase": "After genuine legal-paid ghost_slot_0 RED63: derived ghost:slot_N namespace disjoint from unchanged NativeSaveID; no other runtime changes"
+}

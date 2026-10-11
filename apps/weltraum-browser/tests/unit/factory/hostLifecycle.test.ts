@@ -6,6 +6,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { createFp02Fixture } from "../../../src/factory/catalog/fp02Catalog";
+import { createResourceCatalog } from "../../../src/resources/catalog";
 import { mountFactorySession } from "../../../src/factory/session/factorySession";
 import type { FactoryHostPort, FactoryHostView } from "../../../src/factory/session/hostPort";
 
@@ -32,6 +33,19 @@ const hostFixture = (initialTick = 37) => {
 };
 
 describe("FP06 W06 confirmed host lifecycle", () => {
+  it.each(["catalog","material"])("W07 failed initial %s binding permits a valid retry on the SAME Host without a leaked mount",async(kind)=>{
+    const f=hostFixture(),initial=f.host.read();let nativeCommands=0,nativeDisposals=0;
+    const command=async()=>{nativeCommands++;};
+    const host:FactoryHostPort={...f.host,construction:{openCargo:command,
+      readFacts:()=>({binding:{sessionId:initial.sessionId,epoch:initial.epoch,terrainRevision:0,sourceDigest:"source",baseDigest:"base",facilityRevision:0},actor:{actorId:"test_actor",ownerId:"fp02_wreck_owner",positionMm:[0,0,0],canBuild:true},terrain:{cellMm:125,originMm:[0,0,0],size:[16,16,16],readSlot:()=>0}}),
+      prepareNative:command,commitNative:command,publishNative:()=>{nativeCommands++;},rollbackNative:command,finalizeNative:command,stageProjection:command,publishProjection:()=>{nativeCommands++;},rollbackProjection:()=>{nativeCommands++;},finalizeProjection:()=>{nativeCommands++;},projectGhost:()=>{nativeCommands++;},dispose:()=>{nativeDisposals++;}}};
+    const invalid=kind==="catalog"?{...catalog,canonicalJson:catalog.canonicalJson+" "}:{...catalog,resources:createResourceCatalog({...catalog.resources,resources:[]})};
+    await expect(mountFactorySession(host,invalid)).rejects.toThrow();
+    expect(f.listeners.size).toBe(0);expect(nativeCommands).toBe(0);expect(nativeDisposals).toBe(0);
+    const retry=mountFactorySession(host,catalog);await expect(retry).resolves.toMatchObject({read:expect.any(Function)});
+    const session=await retry;try{expect(session.read()).toMatchObject({state:"Ready",nativeTick:37});expect(f.listeners.size).toBe(1);expect(nativeCommands).toBe(0);}
+    finally{await session.dispose();}expect(f.listeners.size).toBe(0);expect(nativeDisposals).toBe(1);
+  });
   it("T028 binds baseline and remainder to six NEW native ticks, never duplicate render observations", async () => {
     const f = hostFixture(); const session = await mountFactorySession(f.host, catalog);
     try {

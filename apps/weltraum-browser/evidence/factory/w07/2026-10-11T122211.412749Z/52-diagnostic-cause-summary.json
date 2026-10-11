@@ -1,0 +1,379 @@
+{
+  "diagnosticOnly": true,
+  "gameplayGate": "NOT_RUN",
+  "finding": "100ms trusted Down/Up both replaced the same pending latest level while Read30 busy;600ms interval survives Read42 and sends real native movement; no duration/tick/pose mutation",
+  "experiments": [
+    {
+      "requestedHoldMs": 100,
+      "sourceArtifact": "diagnostic-input-100ms.json",
+      "sha256": "5667d5eb2d3bc841d06bf3695e78a5c72cdae8538dc24ac18049d0001844a12e",
+      "actualTrustedKeyIntervalMs": 202.60000000149012,
+      "trustedKeyEvents": [
+        {
+          "kind": "keydown",
+          "at": 20403.800000000745,
+          "eventTimestamp": 20200.199999999255,
+          "code": "KeyD",
+          "key": "d",
+          "trusted": true,
+          "repeat": false
+        },
+        {
+          "kind": "keyup",
+          "at": 20606.400000002235,
+          "eventTimestamp": 20507.699999999255,
+          "code": "KeyD",
+          "key": "d",
+          "trusted": true,
+          "repeat": false
+        }
+      ],
+      "nonzeroReadCountInKeyWindow": 0,
+      "nativeBefore": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.4100027084350586,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "nativeAfter": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.4100027084350586,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "nativeDeltaX": 0.0,
+      "nativeTickDelta": 80,
+      "droppedObservationEvents": 0,
+      "relatedEvents": [
+        {
+          "kind": "keydown",
+          "at": 20403.800000000745,
+          "eventTimestamp": 20200.199999999255,
+          "code": "KeyD",
+          "key": "d",
+          "trusted": true,
+          "repeat": false
+        },
+        {
+          "kind": "keyup",
+          "at": 20606.400000002235,
+          "eventTimestamp": 20507.699999999255,
+          "code": "KeyD",
+          "key": "d",
+          "trusted": true,
+          "repeat": false
+        },
+        {
+          "kind": "reply",
+          "requestKind": "Read",
+          "id": 30,
+          "at": 20784.400000002235,
+          "pendingReads": 0,
+          "ticks": 741,
+          "status": "Running",
+          "player": {
+            "ownerId": "hvp:player",
+            "position": {
+              "x": -5.5,
+              "y": 2.4100027084350586,
+              "z": 11.875
+            },
+            "grounded": true,
+            "velocityY": 0,
+            "jumpCount": 0,
+            "cameraFraction": 1,
+            "status": "Walking"
+          },
+          "clock": {
+            "maxTimerGapMs": 34.900000002235174,
+            "maxAdvanceMs": 13,
+            "maxHandlerMs": 1202.5,
+            "lastCommand": "Read",
+            "lastHandlerMs": 0.5,
+            "delayedCallbacks": [],
+            "timers": 1
+          }
+        },
+        {
+          "kind": "send",
+          "requestKind": "Read",
+          "id": 31,
+          "at": 20784.5,
+          "input": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "pendingReads": 1
+        }
+      ]
+    },
+    {
+      "requestedHoldMs": 600,
+      "sourceArtifact": "diagnostic-input-600ms.json",
+      "sha256": "0767cf6449cd045de9383d5bb4afd8463dfc4c8d10b12383b91f53f156817bd3",
+      "actualTrustedKeyIntervalMs": 697.0,
+      "trustedKeyEvents": [
+        {
+          "kind": "keydown",
+          "at": 22819.300000000745,
+          "eventTimestamp": 22684.60000000149,
+          "code": "KeyD",
+          "key": "d",
+          "trusted": true,
+          "repeat": false
+        },
+        {
+          "kind": "keyup",
+          "at": 23516.300000000745,
+          "eventTimestamp": 23420.400000002235,
+          "code": "KeyD",
+          "key": "d",
+          "trusted": true,
+          "repeat": false
+        }
+      ],
+      "nonzeroReadCountInKeyWindow": 3,
+      "nativeBefore": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.4100027084350586,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "nativeAfter": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -7.750008583068848,
+          "y": 2.40000581741333,
+          "z": 11.875
+        },
+        "grounded": true,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Walking"
+      },
+      "nativeDeltaX": -2.2500085830688477,
+      "nativeTickDelta": 105,
+      "droppedObservationEvents": 0,
+      "relatedEvents": [
+        {
+          "kind": "keydown",
+          "at": 22819.300000000745,
+          "eventTimestamp": 22684.60000000149,
+          "code": "KeyD",
+          "key": "d",
+          "trusted": true,
+          "repeat": false
+        },
+        {
+          "kind": "reply",
+          "requestKind": "Read",
+          "id": 42,
+          "at": 22982.699999999255,
+          "pendingReads": 0,
+          "ticks": 890,
+          "status": "Running",
+          "player": {
+            "ownerId": "hvp:player",
+            "position": {
+              "x": -5.5,
+              "y": 2.4100027084350586,
+              "z": 11.875
+            },
+            "grounded": true,
+            "velocityY": 0,
+            "jumpCount": 0,
+            "cameraFraction": 1,
+            "status": "Walking"
+          },
+          "clock": {
+            "maxTimerGapMs": 34.900000002235174,
+            "maxAdvanceMs": 13,
+            "maxHandlerMs": 1202.5,
+            "lastCommand": "Read",
+            "lastHandlerMs": 0.29999999701976776,
+            "delayedCallbacks": [],
+            "timers": 1
+          }
+        },
+        {
+          "kind": "send",
+          "requestKind": "Read",
+          "id": 43,
+          "at": 22982.800000000745,
+          "input": {
+            "x": -1,
+            "z": -1.2246467991473532e-16,
+            "sprint": false,
+            "jump": false
+          },
+          "pendingReads": 1
+        },
+        {
+          "kind": "reply",
+          "requestKind": "Read",
+          "id": 43,
+          "at": 23137.60000000149,
+          "pendingReads": 0,
+          "ticks": 908,
+          "status": "Running",
+          "player": {
+            "ownerId": "hvp:player",
+            "position": {
+              "x": -5.5,
+              "y": 2.4100027084350586,
+              "z": 11.875
+            },
+            "grounded": true,
+            "velocityY": 0,
+            "jumpCount": 0,
+            "cameraFraction": 1,
+            "status": "Walking"
+          },
+          "clock": {
+            "maxTimerGapMs": 34.900000002235174,
+            "maxAdvanceMs": 13,
+            "maxHandlerMs": 1202.5,
+            "lastCommand": "Read",
+            "lastHandlerMs": 0.3999999985098839,
+            "delayedCallbacks": [],
+            "timers": 1
+          }
+        },
+        {
+          "kind": "send",
+          "requestKind": "Read",
+          "id": 44,
+          "at": 23137.60000000149,
+          "input": {
+            "x": -1,
+            "z": -1.2246467991473532e-16,
+            "sprint": false,
+            "jump": false
+          },
+          "pendingReads": 1
+        },
+        {
+          "kind": "reply",
+          "requestKind": "Read",
+          "id": 44,
+          "at": 23303.5,
+          "pendingReads": 0,
+          "ticks": 917,
+          "status": "Running",
+          "player": {
+            "ownerId": "hvp:player",
+            "position": {
+              "x": -5.9500017166137695,
+              "y": 2.4000418186187744,
+              "z": 11.875
+            },
+            "grounded": true,
+            "velocityY": 0,
+            "jumpCount": 0,
+            "cameraFraction": 1,
+            "status": "Walking"
+          },
+          "clock": {
+            "maxTimerGapMs": 34.900000002235174,
+            "maxAdvanceMs": 13,
+            "maxHandlerMs": 1202.5,
+            "lastCommand": "Read",
+            "lastHandlerMs": 0.4000000022351742,
+            "delayedCallbacks": [],
+            "timers": 1
+          }
+        },
+        {
+          "kind": "send",
+          "requestKind": "Read",
+          "id": 45,
+          "at": 23303.60000000149,
+          "input": {
+            "x": -1,
+            "z": -1.2246467991473532e-16,
+            "sprint": false,
+            "jump": false
+          },
+          "pendingReads": 1
+        },
+        {
+          "kind": "keyup",
+          "at": 23516.300000000745,
+          "eventTimestamp": 23420.400000002235,
+          "code": "KeyD",
+          "key": "d",
+          "trusted": true,
+          "repeat": false
+        },
+        {
+          "kind": "reply",
+          "requestKind": "Read",
+          "id": 45,
+          "at": 23730.800000000745,
+          "pendingReads": 0,
+          "ticks": 928,
+          "status": "Running",
+          "player": {
+            "ownerId": "hvp:player",
+            "position": {
+              "x": -6.500003814697266,
+              "y": 2.400040864944458,
+              "z": 11.875
+            },
+            "grounded": true,
+            "velocityY": 0,
+            "jumpCount": 0,
+            "cameraFraction": 1,
+            "status": "Walking"
+          },
+          "clock": {
+            "maxTimerGapMs": 34.900000002235174,
+            "maxAdvanceMs": 13,
+            "maxHandlerMs": 1202.5,
+            "lastCommand": "Read",
+            "lastHandlerMs": 0.19999999925494194,
+            "delayedCallbacks": [],
+            "timers": 1
+          }
+        },
+        {
+          "kind": "send",
+          "requestKind": "Read",
+          "id": 46,
+          "at": 23731,
+          "input": {
+            "x": 0,
+            "z": 0,
+            "sprint": false,
+            "jump": false
+          },
+          "pendingReads": 1
+        }
+      ]
+    }
+  ]
+}

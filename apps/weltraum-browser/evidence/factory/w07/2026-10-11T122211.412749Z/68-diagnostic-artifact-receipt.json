@@ -1,0 +1,138 @@
+{
+  "phase": 68,
+  "diagnosticOnly": true,
+  "normalGameplayGate": false,
+  "result": "3 PASS / 1 assertion FAIL; eight nominal125ms pulses all deltaX0; conditional63/50ms NOT_RUN",
+  "artifacts": [
+    {
+      "path": "browser-diagnostic-fine-pulse/playwright-output/.last-run.json",
+      "sha256": "c9fbbe14bd1ef9c9ae15bbd7b5a9254d9c7a679b9d41ce034ab8263fa8b8701d",
+      "bytes": 96
+    },
+    {
+      "path": "browser-diagnostic-fine-pulse/playwright-output/factory-placement-W07-targ-bd2b6--final-source-window-result-chromium/error-context.md",
+      "sha256": "a660f07ce7fc0fcded16cafd784fe125d1f4af145b13cd488a7702b2af621515",
+      "bytes": 6502
+    },
+    {
+      "path": "browser-diagnostic-fine-pulse/playwright-output/factory-placement-W07-targ-bd2b6--final-source-window-result-chromium/test-failed-1.png",
+      "sha256": "281ce9a70b5e870b70f0cd309640415ff53513a9f6feba31203dc2a18e8a6ea8",
+      "bytes": 292306
+    },
+    {
+      "path": "browser-diagnostic-fine-pulse/playwright-output/factory-placement-W07-targ-bd2b6--final-source-window-result-chromium/trace.zip",
+      "sha256": "bc538b7a5344a73e975884815a3ee641480e604cd6c5f529a042f02d2adc6590",
+      "bytes": 1471215
+    },
+    {
+      "path": "browser-diagnostic-fine-pulse/playwright-report/data/2056fb0461ed877c104afa5899a3742624f1e886.zip",
+      "sha256": "bc538b7a5344a73e975884815a3ee641480e604cd6c5f529a042f02d2adc6590",
+      "bytes": 1471215
+    },
+    {
+      "path": "browser-diagnostic-fine-pulse/playwright-report/data/8718a563c075a0785f3bcbbf711fb3a775646769.png",
+      "sha256": "281ce9a70b5e870b70f0cd309640415ff53513a9f6feba31203dc2a18e8a6ea8",
+      "bytes": 292306
+    },
+    {
+      "path": "browser-diagnostic-fine-pulse/playwright-report/data/e00df4731c69ba4ab26d9b2d9fe0a3867740386d.md",
+      "sha256": "a660f07ce7fc0fcded16cafd784fe125d1f4af145b13cd488a7702b2af621515",
+      "bytes": 6502
+    },
+    {
+      "path": "browser-diagnostic-fine-pulse/playwright-report/index.html",
+      "sha256": "173d148d160c16a8b4c9ad2ca7f603e708ffc69db7167a62f49478cad7f93c19",
+      "bytes": 532338
+    },
+    {
+      "path": "browser-diagnostic-fine-pulse/playwright-report/trace/assets/codeMirrorModule-LEHpjmcn.js",
+      "sha256": "e3d682edfb4dd1fa17882466dd15058120278b27ff1101785a57b6df4db7ada5",
+      "bytes": 313054
+    },
+    {
+      "path": "browser-diagnostic-fine-pulse/playwright-report/trace/assets/defaultSettingsView-BNmKHKpQ.js",
+      "sha256": "f21839cd274944763d12ad24529345b9f8ebf339409f51f4dbe52f9d9baeb09c",
+      "bytes": 658064
+    },
+    {
+      "path": "browser-diagnostic-fine-pulse/playwright-report/trace/assets/urlMatch-BYQrIQwR.js",
+      "sha256": "168c4dee4815ea8d3c131a504033cd23d4b15aefa0209dd10ad3f643e8f1d8a7",
+      "bytes": 819
+    },
+    {
+      "path": "browser-diagnostic-fine-pulse/playwright-report/trace/codeMirrorModule.DYBRYzYX.css",
+      "sha256": "70bf421a13e87857ca684bfa2cc55f06d7c5a50f71253a3ff1d74769b14a957e",
+      "bytes": 6421
+    },
+    {
+      "path": "browser-diagnostic-fine-pulse/playwright-report/trace/codicon.DCmgc-ay.ttf",
+      "sha256": "0f1d5219934e96e83b8db162d60b4d8c09b5de1e7d38031cbafe4a3c0f2889c9",
+      "bytes": 80340
+    },
+    {
+      "path": "browser-diagnostic-fine-pulse/playwright-report/trace/defaultSettingsView.CjdS-WJx.css",
+      "sha256": "de9c068d0e8043820fe42f30558e972eb7e2a8a45a34f65c7c8f73fa2dbc9fd0",
+      "bytes": 112258
+    },
+    {
+      "path": "browser-diagnostic-fine-pulse/playwright-report/trace/index.CzXZzn5A.css",
+      "sha256": "4ec2a3d49db259ce9025cb4fa48d73b1afd58215e567eef3b4a4cbf76c1674d9",
+      "bytes": 2111
+    },
+    {
+      "path": "browser-diagnostic-fine-pulse/playwright-report/trace/index.DMMX1gXU.js",
+      "sha256": "f33ceae71f13fde446a244c113548fec5ef890bf7b93ded7b861bebcebaa3e23",
+      "bytes": 6547
+    },
+    {
+      "path": "browser-diagnostic-fine-pulse/playwright-report/trace/index.html",
+      "sha256": "5ced36d3feb5bbbc0e8350330be0a293a1b4784ddecb6e58e1851323a93640cc",
+      "bytes": 2363
+    },
+    {
+      "path": "browser-diagnostic-fine-pulse/playwright-report/trace/manifest.webmanifest",
+      "sha256": "d8540500603a32a39fe7e5a0375dc0f9ebafd11118e06a846db7efc608223ab9",
+      "bytes": 429
+    },
+    {
+      "path": "browser-diagnostic-fine-pulse/playwright-report/trace/playwright-logo.svg",
+      "sha256": "6b0a4367bdeab10995bc239278f04c68c10e48adbec15e799e01909a0d66dcb9",
+      "bytes": 5033
+    },
+    {
+      "path": "browser-diagnostic-fine-pulse/playwright-report/trace/snapshot.html",
+      "sha256": "11c80efe4f4424fa59004bcc71fed77a420d2da5f199790e355c30a5b965d0cd",
+      "bytes": 389
+    },
+    {
+      "path": "browser-diagnostic-fine-pulse/playwright-report/trace/snapshot.v8KI4P3m.js",
+      "sha256": "97a3cd6d67aaac66efc838d7d743ac51bbf7d272e1287981c11758fca21a0657",
+      "bytes": 660
+    },
+    {
+      "path": "browser-diagnostic-fine-pulse/playwright-report/trace/sw.bundle.js",
+      "sha256": "5237c6c68ba1f3591caf8cf951be4873192342a72fbcc31e5a667f7a7904c624",
+      "bytes": 95855
+    },
+    {
+      "path": "browser-diagnostic-fine-pulse/playwright-report/trace/uiMode.BZQ54Kgt.css",
+      "sha256": "a548cd88f2041433da2d60fd3a33ef23af2fb8ddf2557b7bef79806364498e57",
+      "bytes": 60311
+    },
+    {
+      "path": "browser-diagnostic-fine-pulse/playwright-report/trace/uiMode.Ut8wwJNp.js",
+      "sha256": "0ab1e917250833c3f6b3ed3ae3f359158bf68cd2d9951163ee6edff9b8ed1e5b",
+      "bytes": 38514
+    },
+    {
+      "path": "browser-diagnostic-fine-pulse/playwright-report/trace/uiMode.html",
+      "sha256": "95bf648d76d380b779770aae1c560b58ee456096b2b3b02922e629af29e3d492",
+      "bytes": 727
+    },
+    {
+      "path": "browser-diagnostic-fine-pulse/playwright-report/trace/xtermModule.DYP7pi_n.css",
+      "sha256": "7c5a01f382f76539fc9b4db6b18e18a7035741845fd14968c5cdc0a7e373d817",
+      "bytes": 4150
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/hvp-player-input.test.ts",
+    "-t",
+    "body-cut Preparing entry"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startUtc": "2026-10-11T17:00:18.805469+00:00",
+  "endUtc": "2026-10-11T17:00:21.102806+00:00",
+  "durationSeconds": 2.2982409770011145,
+  "exitCode": 0,
+  "rawBytes": 393,
+  "rawSha256": "3fba925097f403e9a45041939e8ee90bc55c6f59949d468e2a7b4d3d596a8e7a"
+}

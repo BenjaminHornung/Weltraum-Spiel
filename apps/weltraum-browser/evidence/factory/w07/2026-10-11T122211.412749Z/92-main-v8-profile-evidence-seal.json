@@ -1,0 +1,41 @@
+{
+  "phase": 92,
+  "kind": "SEALED_ACTUAL_MAIN_V8_DIAGNOSTIC_NOT_PRODUCT_PERFORMANCE_GATE",
+  "files": [
+    {
+      "path": "browser-main-cpu-profile-diagnostic-92/diagnostic-main-cpu-91-profile.json",
+      "sha256": "42a5d758572a7bf1fd420b4ac8f2e2d01ae21f0c343dafa595cd456c5679abbb",
+      "bytes": 93231
+    },
+    {
+      "path": "browser-main-cpu-profile-diagnostic-92/diagnostic-main-cpu-91-metadata.json",
+      "sha256": "a9dee4080770e1b1901e2509705b8bd24b11e59eec4457ab1e9cdb385eece3e1",
+      "bytes": 19333
+    },
+    {
+      "path": "92-main-v8-profile-attribution.json",
+      "sha256": "940d981a7ceea9d69fcb869a2e1c815c669b1ee3d67c528362f0ba57bedba2ba",
+      "bytes": 19749
+    },
+    {
+      "path": "92-main-v8-profile-summary.json",
+      "sha256": "66948eb4f21a03d4009b6aa7a162fe833836fac7a0b7cb2788375074820d202e",
+      "bytes": 2739
+    },
+    {
+      "path": "92-main-v8-profile-attribution-report.md",
+      "sha256": "d334810a15ed7e0e82c91a120694ca91e356d351c12ac74e6137a5a6c08cc5e4",
+      "bytes": 2381
+    },
+    {
+      "path": "92-main-cpu-profile-artifact-receipt.json",
+      "sha256": "4db6b86f2da6f2071611737d050422fc700c29f426fa9dca640a2237fae6251e",
+      "bytes": 1765
+    },
+    {
+      "path": "92-after-main-cpu-diagnostic-full-restore-port-receipt.json",
+      "sha256": "83073b54b131c9198c07fc6f1393d3e94c014e7972e99bff0b3f84e4326f6632",
+      "bytes": 7245
+    }
+  ]
+}

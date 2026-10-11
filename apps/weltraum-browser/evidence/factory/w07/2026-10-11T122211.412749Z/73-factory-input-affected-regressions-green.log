@@ -1,0 +1,39 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/hvp-player-input.test.ts tests/unit/hvp-locomotion.test.ts tests/unit/hvp-physics.test.ts tests/unit/factory/facilitySession.test.ts tests/unit/factory/hostLifecycle.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-player-input.test.ts (22 tests | 1 failed) 243ms
+     × a late input ACK has no authority over clock timing restore public or held Native views 31ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-player-input.test.ts > W07 bounded Factory intent and independent Read transport > a late input ACK has no authority over clock timing restore public or held Native views
+AssertionError: expected { timers: +0, maxTimerGapMs: +0, …(5) } to be { timers: +0, maxTimerGapMs: +0, …(5) } // Object.is equality
+
+If it should pass with deep equality, replace "toBe" with "toStrictEqual"
+
+Expected: { timers: +0, maxTimerGapMs: +0, …(5) }
+Received: serializes to the same string
+
+
+Compared values have no visual difference.
+
+ ❯ tests/unit/hvp-player-input.test.ts:279:61
+    277|     worker.onmessage?.(new MessageEvent("message",{data:{id:oldInputId…
+    278|       clock:{...clock,lastCommand:"forbidden-input-ack-clock"},timings…
+    279|     expect(client.read()).toBe(before);expect(client.clock).toBe(clock…
+       |                                                             ^
+    280|     await client.commitFactoryFacility!(request.transactionId);client.…
+    281|     expect(client.read().factoryFacilities?.owners).toHaveLength(1);aw…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 4 passed (5)
+      Tests  1 failed | 82 passed (83)
+   Start at  16:47:03
+   Duration  5.06s (transform 1.12s, setup 0ms, import 1.98s, tests 2.53s, environment 0ms)
+

@@ -1,0 +1,13 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/hvp-bootstrap.test.ts -t actual Host Ghost|legal paid owner
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+
+ Test Files  1 passed (1)
+      Tests  2 passed | 34 skipped (36)
+   Start at  15:54:10
+   Duration  17.85s (transform 1.13s, setup 0ms, import 1.40s, tests 16.35s, environment 0ms)
+

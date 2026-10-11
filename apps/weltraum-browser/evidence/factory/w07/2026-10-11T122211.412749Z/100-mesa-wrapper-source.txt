@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -eu
+export LIBGL_ALWAYS_SOFTWARE=1
+export EGL_PLATFORM=surfaceless
+exec /usr/bin/chromium \
+  --ozone-platform=headless \
+  --use-gl=angle \
+  --use-angle=gl-egl \
+  --ignore-gpu-blocklist \
+  "$@"

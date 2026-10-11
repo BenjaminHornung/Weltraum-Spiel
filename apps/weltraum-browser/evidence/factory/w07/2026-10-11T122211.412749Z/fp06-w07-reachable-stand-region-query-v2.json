@@ -1,0 +1,730 @@
+{
+  "version": "fp06-w07-reachable-stand-region-query-v2",
+  "timestamp": "2026-10-11T15:06:53.584Z",
+  "interpreter": "/workspace/.cloud-setup/toolchain/node_modules/node/bin/node",
+  "nodeVersion": "v22.23.3",
+  "cwd": "/workspace",
+  "elapsedMs": 67.091559,
+  "sourceBindings": [
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+      "bytes": 2121,
+      "sha256": "53725bbf06af6be92ac1b3b3e250ee6548e37bb6abf8500b4cd50e09b1ec1a29"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+      "bytes": 38423,
+      "sha256": "13128d7ad3151da644ae909af0dbb0e2df0e91066c01f55ee566f7eedc1fdaca"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/core/hash.ts",
+      "bytes": 3099,
+      "sha256": "7514fc507d6c83404462d967ff4736790abf6425842b676cefedc4928a2febee"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/art/factory/fp02/cutter/source.scene.json",
+      "bytes": 19222,
+      "sha256": "abd1ce25fd19ad61a9cb65de9f5ba10c303aa5c1a1aa16260de9dce9534fa5fd"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/construction/installationProfile.ts",
+      "bytes": 5733,
+      "sha256": "64df3962d652649301e1a7f411516829e6e7fd915d5fa48f566f18090c32832f"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/construction/placement.ts",
+      "bytes": 11255,
+      "sha256": "89194437192f2788e4ea7458af06f760583f8250ccce494a89e0cc225debd09e"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+      "bytes": 4071,
+      "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/factory/factoryEntry.ts",
+      "bytes": 9253,
+      "sha256": "ad7f1bb598f26db5ba873abe762fc39a1798c8bf18a65f971409efd7b3f87202"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/hestia-prototype/presentation/vegetation.ts",
+      "bytes": 22422,
+      "sha256": "a6c6996706591f5fd77f31ea9a445fa421f6e1e02ee7162904a58834b5008dd3"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+      "bytes": 18339,
+      "sha256": "620a60b3d7d1e5edfef558fe07fac9af78cd9fc13385f9c45ad5fde1279d2eee"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+      "bytes": 164229,
+      "sha256": "e744746124298f359f18efed2b6eeaa83e434177fe8dd509bf2519669d6174e3"
+    }
+  ],
+  "stableSourceBytes": true,
+  "priorReport": {
+    "path": "/workspace/.cloud-setup/fp06-w07-second-cutter-site-preflight.md",
+    "sha256": "bfd82113829ba58f1421a88b3fa35cb7a67753e4338087fd7f7f59864c695366"
+  },
+  "firstService": {
+    "min": [
+      -5.25,
+      1.5,
+      3.5
+    ],
+    "max": [
+      -4.25,
+      3.5,
+      6.5
+    ]
+  },
+  "secondService": {
+    "min": [
+      -8.75,
+      1.5,
+      3.5
+    ],
+    "max": [
+      -7.75,
+      3.5,
+      6.5
+    ]
+  },
+  "cargoPoint": [
+    -5.5,
+    2.25,
+    12.625
+  ],
+  "cargoAccessBounds": {
+    "min": [
+      -6.25,
+      1.5,
+      11.625
+    ],
+    "max": [
+      -4.75,
+      3.5,
+      12.625
+    ]
+  },
+  "scan": {
+    "boundsXZ": [
+      -7,
+      -5.75,
+      8.5,
+      9.5
+    ],
+    "spacingMeters": 0.025,
+    "actorY": 2.41,
+    "scanned": 2091,
+    "accepted": 206,
+    "groundOnlyRejected": 398,
+    "uniqueSourceColumns": 214
+  },
+  "byX": [
+    {
+      "x": -6.4,
+      "minZ": 8.75,
+      "maxZ": 9.175,
+      "count": 18
+    },
+    {
+      "x": -6.375,
+      "minZ": 8.75,
+      "maxZ": 9.15,
+      "count": 17
+    },
+    {
+      "x": -6.35,
+      "minZ": 8.725,
+      "maxZ": 9.15,
+      "count": 18
+    },
+    {
+      "x": -6.325,
+      "minZ": 8.725,
+      "maxZ": 9.125,
+      "count": 17
+    },
+    {
+      "x": -6.3,
+      "minZ": 8.725,
+      "maxZ": 9.125,
+      "count": 17
+    },
+    {
+      "x": -6.275,
+      "minZ": 8.725,
+      "maxZ": 9.1,
+      "count": 16
+    },
+    {
+      "x": -6.25,
+      "minZ": 8.7,
+      "maxZ": 9.075,
+      "count": 16
+    },
+    {
+      "x": -6.225,
+      "minZ": 8.7,
+      "maxZ": 9.075,
+      "count": 16
+    },
+    {
+      "x": -6.2,
+      "minZ": 8.7,
+      "maxZ": 9.05,
+      "count": 15
+    },
+    {
+      "x": -6.175,
+      "minZ": 8.7,
+      "maxZ": 9.05,
+      "count": 15
+    },
+    {
+      "x": -6.15,
+      "minZ": 8.7,
+      "maxZ": 9.025,
+      "count": 14
+    },
+    {
+      "x": -6.125,
+      "minZ": 8.7,
+      "maxZ": 9,
+      "count": 13
+    },
+    {
+      "x": -6.1,
+      "minZ": 8.675,
+      "maxZ": 9,
+      "count": 14
+    }
+  ],
+  "boxes": [
+    {
+      "name": "west depth window",
+      "minX": -6.4,
+      "maxX": -6.35,
+      "minZ": 8.75,
+      "maxZ": 9.15,
+      "yRange": [
+        2.38,
+        2.44
+      ],
+      "width": 0.05000000000000071,
+      "depth": 0.40000000000000036,
+      "corners": [
+        {
+          "point": [
+            -6.4,
+            2.38,
+            8.75
+          ],
+          "dCargoPoint": 3.980266950846388,
+          "dCargoBounds": 2.8789103841557835,
+          "dFirst": 2.526855753698656,
+          "dSecond": 2.6239283526803847
+        },
+        {
+          "point": [
+            -6.4,
+            2.44,
+            8.75
+          ],
+          "dCargoPoint": 3.982678119055066,
+          "dCargoBounds": 2.8789103841557835,
+          "dFirst": 2.526855753698656,
+          "dSecond": 2.6239283526803847
+        },
+        {
+          "point": [
+            -6.4,
+            2.38,
+            9.15
+          ],
+          "dCargoPoint": 3.5920084910812777,
+          "dCargoBounds": 2.4795412882224803,
+          "dFirst": 2.8887713651308586,
+          "dSecond": 2.9740544715926105
+        },
+        {
+          "point": [
+            -6.4,
+            2.44,
+            9.15
+          ],
+          "dCargoPoint": 3.5946800970322794,
+          "dCargoBounds": 2.4795412882224803,
+          "dFirst": 2.8887713651308586,
+          "dSecond": 2.9740544715926105
+        },
+        {
+          "point": [
+            -6.35,
+            2.38,
+            8.75
+          ],
+          "dCargoPoint": 3.969260006600726,
+          "dCargoBounds": 2.8767386047397494,
+          "dFirst": 2.5044959572736385,
+          "dSecond": 2.65
+        },
+        {
+          "point": [
+            -6.35,
+            2.44,
+            8.75
+          ],
+          "dCargoPoint": 3.971677857027178,
+          "dCargoBounds": 2.8767386047397494,
+          "dFirst": 2.5044959572736385,
+          "dSecond": 2.65
+        },
+        {
+          "point": [
+            -6.35,
+            2.38,
+            9.15
+          ],
+          "dCargoPoint": 3.5798079557428775,
+          "dCargoBounds": 2.4770193782043766,
+          "dFirst": 2.8692333470807148,
+          "dSecond": 2.9970819141291423
+        },
+        {
+          "point": [
+            -6.35,
+            2.44,
+            9.15
+          ],
+          "dCargoPoint": 3.5824886601355765,
+          "dCargoBounds": 2.4770193782043766,
+          "dFirst": 2.8692333470807148,
+          "dSecond": 2.9970819141291423
+        }
+      ],
+      "worstCargoPoint": 3.982678119055066,
+      "worstFirstService": 2.8887713651308586,
+      "worstSecondService": 2.9970819141291423,
+      "fullHullEnvelope": {
+        "columns": 54,
+        "covered": true,
+        "heights": [
+          1.5
+        ],
+        "slots": [
+          1
+        ],
+        "maskColumns": 54,
+        "maxTop": 1.5
+      },
+      "allCornerSourceLinesClear": true,
+      "minimumCornerSourceLineAirGap": 0.754193548387097,
+      "valid": true
+    },
+    {
+      "name": "middle depth window",
+      "minX": -6.35,
+      "maxX": -6.225,
+      "minZ": 8.725,
+      "maxZ": 9.075,
+      "yRange": [
+        2.38,
+        2.44
+      ],
+      "width": 0.125,
+      "depth": 0.34999999999999964,
+      "corners": [
+        {
+          "point": [
+            -6.35,
+            2.38,
+            8.725
+          ],
+          "dCargoPoint": 3.99366999137385,
+          "dCargoBounds": 2.901723625709382,
+          "dFirst": 2.4820606358427257,
+          "dSecond": 2.6288067635336
+        },
+        {
+          "point": [
+            -6.35,
+            2.44,
+            8.725
+          ],
+          "dCargoPoint": 3.996073072404958,
+          "dCargoBounds": 2.901723625709382,
+          "dFirst": 2.4820606358427257,
+          "dSecond": 2.6288067635336
+        },
+        {
+          "point": [
+            -6.35,
+            2.38,
+            9.075
+          ],
+          "dCargoPoint": 3.6526565674861913,
+          "dCargoBounds": 2.55196003103497,
+          "dFirst": 2.8001116049186314,
+          "dSecond": 2.930976799635234
+        },
+        {
+          "point": [
+            -6.35,
+            2.44,
+            9.075
+          ],
+          "dCargoPoint": 3.655283846707394,
+          "dCargoBounds": 2.55196003103497,
+          "dFirst": 2.8001116049186314,
+          "dSecond": 2.930976799635234
+        },
+        {
+          "point": [
+            -6.225,
+            2.38,
+            8.725
+          ],
+          "dCargoPoint": 3.968945073945973,
+          "dCargoBounds": 2.9000000000000004,
+          "dFirst": 2.4292488550990403,
+          "dSecond": 2.6974525018987823
+        },
+        {
+          "point": [
+            -6.225,
+            2.44,
+            8.725
+          ],
+          "dCargoPoint": 3.9713631161101346,
+          "dCargoBounds": 2.9000000000000004,
+          "dFirst": 2.4292488550990403,
+          "dSecond": 2.6974525018987823
+        },
+        {
+          "point": [
+            -6.225,
+            2.38,
+            9.075
+          ],
+          "dCargoPoint": 3.6256068457569968,
+          "dCargoBounds": 2.5500000000000007,
+          "dFirst": 2.7534069804516723,
+          "dSecond": 2.9926994503290834
+        },
+        {
+          "point": [
+            -6.225,
+            2.44,
+            9.075
+          ],
+          "dCargoPoint": 3.628253712187173,
+          "dCargoBounds": 2.5500000000000007,
+          "dFirst": 2.7534069804516723,
+          "dSecond": 2.9926994503290834
+        }
+      ],
+      "worstCargoPoint": 3.996073072404958,
+      "worstFirstService": 2.8001116049186314,
+      "worstSecondService": 2.9926994503290834,
+      "fullHullEnvelope": {
+        "columns": 63,
+        "covered": true,
+        "heights": [
+          1.5
+        ],
+        "slots": [
+          1
+        ],
+        "maskColumns": 63,
+        "maxTop": 1.5
+      },
+      "allCornerSourceLinesClear": true,
+      "minimumCornerSourceLineAirGap": 0.7541666666666664,
+      "valid": true
+    },
+    {
+      "name": "east depth window",
+      "minX": -6.225,
+      "maxX": -6.1,
+      "minZ": 8.7,
+      "maxZ": 9,
+      "yRange": [
+        2.38,
+        2.44
+      ],
+      "width": 0.125,
+      "depth": 0.3000000000000007,
+      "corners": [
+        {
+          "point": [
+            -6.225,
+            2.38,
+            8.7
+          ],
+          "dCargoPoint": 3.993513490649556,
+          "dCargoBounds": 2.9250000000000007,
+          "dFirst": 2.4063717501666275,
+          "dSecond": 2.676868506296116
+        },
+        {
+          "point": [
+            -6.225,
+            2.44,
+            8.7
+          ],
+          "dCargoPoint": 3.9959166657977248,
+          "dCargoBounds": 2.9250000000000007,
+          "dFirst": 2.4063717501666275,
+          "dSecond": 2.676868506296116
+        },
+        {
+          "point": [
+            -6.225,
+            2.38,
+            9
+          ],
+          "dCargoPoint": 3.6990742085013655,
+          "dCargoBounds": 2.625,
+          "dFirst": 2.6833980323463007,
+          "dSecond": 2.928416807764906
+        },
+        {
+          "point": [
+            -6.225,
+            2.44,
+            9
+          ],
+          "dCargoPoint": 3.701668542698009,
+          "dCargoBounds": 2.625,
+          "dFirst": 2.6833980323463007,
+          "dSecond": 2.928416807764906
+        },
+        {
+          "point": [
+            -6.1,
+            2.38,
+            8.7
+          ],
+          "dCargoPoint": 3.9727226180542745,
+          "dCargoBounds": 2.9250000000000007,
+          "dFirst": 2.35849528301415,
+          "dSecond": 2.7499999999999996
+        },
+        {
+          "point": [
+            -6.1,
+            2.44,
+            8.7
+          ],
+          "dCargoPoint": 3.9751383623718066,
+          "dCargoBounds": 2.9250000000000007,
+          "dFirst": 2.35849528301415,
+          "dSecond": 2.7499999999999996
+        },
+        {
+          "point": [
+            -6.1,
+            2.38,
+            9
+          ],
+          "dCargoPoint": 3.6766186911345597,
+          "dCargoBounds": 2.625,
+          "dFirst": 2.6405491853021785,
+          "dSecond": 2.995413160150032
+        },
+        {
+          "point": [
+            -6.1,
+            2.44,
+            9
+          ],
+          "dCargoPoint": 3.6792288594214955,
+          "dCargoBounds": 2.625,
+          "dFirst": 2.6405491853021785,
+          "dSecond": 2.995413160150032
+        }
+      ],
+      "worstCargoPoint": 3.9959166657977248,
+      "worstFirstService": 2.6833980323463007,
+      "worstSecondService": 2.995413160150032,
+      "fullHullEnvelope": {
+        "columns": 63,
+        "covered": true,
+        "heights": [
+          1.5
+        ],
+        "slots": [
+          1
+        ],
+        "maskColumns": 63,
+        "maxTop": 1.5
+      },
+      "allCornerSourceLinesClear": true,
+      "minimumCornerSourceLineAirGap": 0.7541401273885349,
+      "valid": true
+    },
+    {
+      "name": "full-flat width window",
+      "minX": -6.4,
+      "maxX": -6.1,
+      "minZ": 8.75,
+      "maxZ": 9,
+      "yRange": [
+        2.38,
+        2.44
+      ],
+      "width": 0.3000000000000007,
+      "depth": 0.25,
+      "corners": [
+        {
+          "point": [
+            -6.4,
+            2.38,
+            8.75
+          ],
+          "dCargoPoint": 3.980266950846388,
+          "dCargoBounds": 2.8789103841557835,
+          "dFirst": 2.526855753698656,
+          "dSecond": 2.6239283526803847
+        },
+        {
+          "point": [
+            -6.4,
+            2.44,
+            8.75
+          ],
+          "dCargoPoint": 3.982678119055066,
+          "dCargoBounds": 2.8789103841557835,
+          "dFirst": 2.526855753698656,
+          "dSecond": 2.6239283526803847
+        },
+        {
+          "point": [
+            -6.4,
+            2.38,
+            9
+          ],
+          "dCargoPoint": 3.7373152128232374,
+          "dCargoBounds": 2.6292822214437157,
+          "dFirst": 2.7518175811634027,
+          "dSecond": 2.8412145290350743
+        },
+        {
+          "point": [
+            -6.4,
+            2.44,
+            9
+          ],
+          "dCargoPoint": 3.7398830195609065,
+          "dCargoBounds": 2.6292822214437157,
+          "dFirst": 2.7518175811634027,
+          "dSecond": 2.8412145290350743
+        },
+        {
+          "point": [
+            -6.1,
+            2.38,
+            8.75
+          ],
+          "dCargoPoint": 3.9233308552810073,
+          "dCargoBounds": 2.875,
+          "dFirst": 2.405202694161139,
+          "dSecond": 2.7901612856607416
+        },
+        {
+          "point": [
+            -6.1,
+            2.44,
+            8.75
+          ],
+          "dCargoPoint": 3.9257769931568958,
+          "dCargoBounds": 2.875,
+          "dFirst": 2.405202694161139,
+          "dSecond": 2.7901612856607416
+        },
+        {
+          "point": [
+            -6.1,
+            2.38,
+            9
+          ],
+          "dCargoPoint": 3.6766186911345597,
+          "dCargoBounds": 2.625,
+          "dFirst": 2.6405491853021785,
+          "dSecond": 2.995413160150032
+        },
+        {
+          "point": [
+            -6.1,
+            2.44,
+            9
+          ],
+          "dCargoPoint": 3.6792288594214955,
+          "dCargoBounds": 2.625,
+          "dFirst": 2.6405491853021785,
+          "dSecond": 2.995413160150032
+        }
+      ],
+      "worstCargoPoint": 3.982678119055066,
+      "worstFirstService": 2.7518175811634027,
+      "worstSecondService": 2.995413160150032,
+      "fullHullEnvelope": {
+        "columns": 64,
+        "covered": true,
+        "heights": [
+          1.5
+        ],
+        "slots": [
+          1
+        ],
+        "maskColumns": 64,
+        "maxTop": 1.5
+      },
+      "allCornerSourceLinesClear": true,
+      "minimumCornerSourceLineAirGap": 0.754193548387097,
+      "valid": true
+    }
+  ],
+  "geometry": {
+    "constraintDescription": "intersection of two radius3m distances to service AABBs and Native radius4m distance to immutable actual Cargo access point; planner Cargo bounds additionally checked",
+    "maximumReachOnlyZ": {
+      "x": -6.5,
+      "z": 9.227178028658928
+    },
+    "centralCargoMinimumZ": {
+      "x": -6.5,
+      "z": 8.755323010896129
+    },
+    "limitations": [
+      "Pure source preflight; actual Native actor/Cargo accessible, support, LOS and normal walk remain authoritative",
+      "No product, E2E, reach, source, terrain, masks, resources or input implementation edits",
+      "AABB distances are continuous convex functions: box corner maximum bounds all interior points; source ground checks entire box plus player horizontal hull, not only corners",
+      "Exact source line traversal used for each accepted scan point and box corner; full-box interior LOS clearance additionally follows from checked bounding strip below"
+    ]
+  },
+  "fullBoxToCargoSourceStrip": {
+    "boundsXZ": [
+      -6.4,
+      -5.5,
+      8.7,
+      12.625
+    ],
+    "columns": 256,
+    "covered": true,
+    "heights": [
+      1,
+      1.25,
+      1.5
+    ],
+    "slots": [
+      1,
+      3
+    ],
+    "maskColumns": 218,
+    "maxTop": 1.5,
+    "minimumLineY": 2.25
+  }
+}

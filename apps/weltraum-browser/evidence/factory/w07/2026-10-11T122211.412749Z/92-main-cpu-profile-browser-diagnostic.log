@@ -1,0 +1,16 @@
+
+> weltraum-browser@0.1.0 test:e2e
+> playwright test --config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts tests/e2e/factory-placement.spec.ts
+
+[WebServer] (node:95601) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 1 worker
+
+(node:95625) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/factory-placement.spec.ts:91:3 › W07 DIAGNOSTIC_ONLY main V8 profile and trusted input observation › diagnostic Ready, normal Cargo Open and normal Play (27.6s)
+  ✓  2 [chromium] › tests/e2e/factory-placement.spec.ts:116:3 › W07 DIAGNOSTIC_ONLY main V8 profile and trusted input observation › diagnostic neutral five-second main V8 profile (7.6s)
+  ✓  3 [chromium] › tests/e2e/factory-placement.spec.ts:124:3 › W07 DIAGNOSTIC_ONLY main V8 profile and trusted input observation › diagnostic finite125ms released trusted S gesture and profile cleanup (2.9s)
+
+  3 passed (41.3s)

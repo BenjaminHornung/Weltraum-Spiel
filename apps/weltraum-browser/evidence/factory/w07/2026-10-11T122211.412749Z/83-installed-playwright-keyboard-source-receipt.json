@@ -1,0 +1,9 @@
+{
+  "installedSource": "/workspace/Weltraum-Spiel/apps/weltraum-browser/node_modules/playwright-core/lib/coreBundle.js",
+  "packageVersion": "1.61.1",
+  "fullSourceBytes": 3352341,
+  "fullSourceSha256": "6be5c2ea035554e9b184b1dbc7aa5e7f1fb428dd1b5c202022858dcfae9bee27",
+  "extractPath": "83-installed-playwright-keyboard-source-extract.txt",
+  "extractSha256": "d3533532aca561e9895fac20b0b606f2a4ac98380a30c10ddffff8194c2935e4",
+  "readOnlySourceNotRuntimeExecution": true
+}

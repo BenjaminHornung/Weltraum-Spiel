@@ -1,0 +1,25 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test:e2e",
+    "--",
+    "--config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts",
+    "tests/e2e/factory-placement.spec.ts"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startUtc": "2026-10-11T18:25:00.746550+00:00",
+  "endUtc": "2026-10-11T18:25:42.147519+00:00",
+  "durationSeconds": 41.400954145996366,
+  "exitCode": 0,
+  "rawBytes": 1318,
+  "rawSha256": "c6feaf807346a8add1be3a690c744095246228735a2281b30ef7686d8d090369",
+  "environment": {
+    "FP06_E2E_RUN_DIR": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/browser-input-tick-passive-diagnostic-90",
+    "WELTRAUM_FACTORY_EVIDENCE_RUN": "2026-10-11T122211.412749Z",
+    "WELTRAUM_PLAYWRIGHT_EXECUTABLE_PATH": "/usr/bin/chromium"
+  },
+  "configSha256": "53a55a48da97d43a02e317fb8edc844d57a9b5687f356a7ebf4f5b470efcf900",
+  "overlaySealSha256": "7d45044e874c0e039e8a165e877f29799d12a6dfa489c1d9f7fe9fdf4a76ad9d",
+  "stage": "ONE_PASSIVE4CASE_DIAGNOSTIC_ONLY_NOT_W07_GATE;plainfactoryNOmeasure/originaltrace/30s/native60/pending8deadline20s; noAuthoritymutation"
+}

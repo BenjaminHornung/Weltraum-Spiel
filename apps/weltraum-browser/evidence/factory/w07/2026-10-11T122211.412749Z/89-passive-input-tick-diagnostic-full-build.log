@@ -1,0 +1,5 @@
+
+> weltraum-browser@0.1.0 build
+> tsc -p tsconfig.json && vite build
+
+tests/e2e/factory-placement.spec.ts(39,62): error TS2532: Object is possibly 'undefined'.

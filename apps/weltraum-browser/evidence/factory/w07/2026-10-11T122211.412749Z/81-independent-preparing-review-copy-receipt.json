@@ -1,0 +1,16 @@
+[
+  {
+    "externalSource": "/workspace/.cloud-setup/fp06-w07-input-preparing-final-spec-review.md",
+    "ownPath": "input-delivery-preparing-independent-final-spec-review.md",
+    "bytes": 4062,
+    "sha256": "03d8d00228e4f5ce57f5b227a734a65a94de7d1d6afcab235ce9887f7fbac32b",
+    "claim": "Independent Source/Quality PreparingPASS only, not normalbrowser/W07/GitgatePASS"
+  },
+  {
+    "externalSource": "/workspace/.cloud-setup/fp06-w07-input-preparing-final-quality-review.md",
+    "ownPath": "input-delivery-preparing-independent-final-quality-review.md",
+    "bytes": 4241,
+    "sha256": "64449c20dc3cfdf94ea9622a7e87cc3dfe304389d565ab4a373e6d204a1c2078",
+    "claim": "Independent Source/Quality PreparingPASS only, not normalbrowser/W07/GitgatePASS"
+  }
+]

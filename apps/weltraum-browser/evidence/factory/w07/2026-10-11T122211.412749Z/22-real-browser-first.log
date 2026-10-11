@@ -1,0 +1,64 @@
+
+> weltraum-browser@0.1.0 test:e2e
+> playwright test --config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts tests/e2e/factory-placement.spec.ts
+
+[WebServer] (node:55861) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 6 tests using 1 worker
+
+(node:55885) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/factory-placement.spec.ts:17:3 › W07 real player construction in one confirmed Factory session › accepted source reaches Ready with one renderer and finite uninstalled Cargo (21.0s)
+  ✘  2 [chromium] › tests/e2e/factory-placement.spec.ts:25:3 › W07 real player construction in one confirmed Factory session › normal Cargo Open is idempotent and actual WASD walks the admitted actor from source access to the Cutter (17.8s)
+  -  3 [chromium] › tests/e2e/factory-placement.spec.ts:37:3 › W07 real player construction in one confirmed Factory session › T030 real move, quarter-turn and Escape retire the ghost with no native or material mutation
+  -  4 [chromium] › tests/e2e/factory-placement.spec.ts:47:3 › W07 real player construction in one confirmed Factory session › T029 a real confirmed build publishes exactly one paid208kg Cutter
+  -  5 [chromium] › tests/e2e/factory-placement.spec.ts:58:3 › W07 real player construction in one confirmed Factory session › finite C26 cannot install a second Cutter; failed confirmation preserves the complete first installation
+  -  6 [chromium] › tests/e2e/factory-placement.spec.ts:64:3 › W07 real player construction in one confirmed Factory session › Legacy persistence stays closed and actual disposal retires paid Facility projection and native World
+
+
+  1) [chromium] › tests/e2e/factory-placement.spec.ts:25:3 › W07 real player construction in one confirmed Factory session › normal Cargo Open is idempotent and actual WASD walks the admitted actor from source access to the Cutter
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('#factory-build-status')
+    Expected substring: "CARGO_CLOSED"
+    Received string:    "Bau nicht möglich · INVALID_BUILD_FRAME"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" with timeout 5000ms
+      - waiting for locator('#factory-build-status')
+        7 × locator resolved to <p role="status" id="factory-build-status">Bau nicht möglich · INVALID_BUILD_FRAME</p>
+          - unexpected value "Bau nicht möglich · INVALID_BUILD_FRAME"
+
+
+      25 |   test("normal Cargo Open is idempotent and actual WASD walks the admitted actor from source access to the Cutter",async()=>{
+      26 |     const before=await readBuild(page),nativeBefore=await readNative(page);
+    > 27 |     await page.getByRole("button",{name:"Zuschnitt vorschauen",exact:true}).click();await expect(page.locator("#factory-build-status")).toContainText("CARGO_CLOSED");await page.keyboard.press("Escape");
+         |                                                                                                                                         ^
+      28 |     await page.getByRole("button",{name:"Wrackfracht öffnen",exact:true}).click();await expect.poll(async()=>(await readBuild(page)).cargo.opened).toBe(true);
+      29 |     const first=await readNative(page);await page.getByRole("button",{name:"Wrackfracht öffnen",exact:true}).click();await expect(page.locator("#factory-build-status")).toContainText("Wrackfracht geöffnet");expect((await readNative(page)).factoryFacilities.revision).toBe(first.factoryFacilities.revision);
+      30 |     await page.getByRole("button",{name:"Spielen · WASD / Maus / Space",exact:true}).click();await expect.poll(()=>page.evaluate(()=>document.pointerLockElement?.id)).toBe("debug-scene");await expect.poll(async()=>(await readNative(page)).player.status).toBe("Walking");
+        at /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/tests/e2e/factory-placement.spec.ts:27:137
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    evidence/factory/w07/2026-10-11T122211.412749Z/playwright-output/factory-placement-W07-real-efee5-source-access-to-the-Cutter-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: evidence/factory/w07/2026-10-11T122211.412749Z/playwright-output/factory-placement-W07-real-efee5-source-access-to-the-Cutter-chromium/error-context.md
+
+    Error Context: evidence/factory/w07/2026-10-11T122211.412749Z/playwright-output/factory-placement-W07-real-efee5-source-access-to-the-Cutter-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    evidence/factory/w07/2026-10-11T122211.412749Z/playwright-output/factory-placement-W07-real-efee5-source-access-to-the-Cutter-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace evidence/factory/w07/2026-10-11T122211.412749Z/playwright-output/factory-placement-W07-real-efee5-source-access-to-the-Cutter-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/e2e/factory-placement.spec.ts:25:3 › W07 real player construction in one confirmed Factory session › normal Cargo Open is idempotent and actual WASD walks the admitted actor from source access to the Cutter
+  4 did not run
+  1 passed (42.3s)

@@ -1,0 +1,41 @@
+{
+  "kind": "DIAGNOSTIC_ONLY",
+  "actualFreshFixedOutputs": [
+    "diagnostic-render-wall-93-ready.json",
+    "diagnostic-render-wall-93-neutral.json",
+    "diagnostic-render-wall-93-125.json",
+    "diagnostic-render-wall-93-metadata.json"
+  ],
+  "artifacts": [
+    {
+      "path": "browser-render-wall-diagnostic-94/diagnostic-render-wall-93-125.json",
+      "sha256": "71ce4659ebe5eb38c8b628b62770b40324e1115693e545dc6a8c5b25cf044455",
+      "bytes": 223025
+    },
+    {
+      "path": "browser-render-wall-diagnostic-94/diagnostic-render-wall-93-metadata.json",
+      "sha256": "574c1d71347ac9569dcd2449075265bd86f41efc14bed5d102738e01be55af56",
+      "bytes": 19203
+    },
+    {
+      "path": "browser-render-wall-diagnostic-94/diagnostic-render-wall-93-neutral.json",
+      "sha256": "d9101ac9a319ada058d9002179389899063f0b985c4114a7db572efa593bae4f",
+      "bytes": 148211
+    },
+    {
+      "path": "browser-render-wall-diagnostic-94/diagnostic-render-wall-93-ready.json",
+      "sha256": "81477e7278576fde271a95d3b50296ac79fc566960f9f080fc97b6881bd7523c",
+      "bytes": 66886
+    },
+    {
+      "path": "browser-render-wall-diagnostic-94/playwright-output/.last-run.json",
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903",
+      "bytes": 45
+    },
+    {
+      "path": "browser-render-wall-diagnostic-94/playwright-report/index.html",
+      "sha256": "b3bb8acf7d992d9d7b5da92eb917242b003622a81ebcd41725a1e99dda0554f4",
+      "bytes": 530378
+    }
+  ]
+}

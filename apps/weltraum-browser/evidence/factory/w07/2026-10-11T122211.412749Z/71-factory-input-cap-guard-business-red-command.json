@@ -1,0 +1,19 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/hvp-player-input.test.ts",
+    "-t",
+    "fails closed at the original eight pending requests"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startUtc": "2026-10-11T16:43:54.058305+00:00",
+  "endUtc": "2026-10-11T16:43:55.854677+00:00",
+  "durationSeconds": 1.7970646079993458,
+  "exitCode": 1,
+  "rawBytes": 3500,
+  "rawSha256": "22141f2028d5ec94d2c12747e0bade43e6584c1262738323725784929cb0cdb2",
+  "stage": "Immediate Factory channel exists; original report-only rejection policy intentionally retained before dedicated fail-closed cap guard"
+}

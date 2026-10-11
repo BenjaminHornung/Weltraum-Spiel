@@ -1,0 +1,19 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/hvp-bootstrap.test.ts",
+    "-t",
+    "actual Host Ghost"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startUtc": "2026-10-11T15:21:36.419771+00:00",
+  "endUtc": "2026-10-11T15:21:46.158708+00:00",
+  "durationSeconds": 9.739484830999572,
+  "exitCode": 1,
+  "rawBytes": 1687,
+  "rawSha256": "909ba35099060387672bc8318c484fc897cb9de5cf468d6178ed546809c85b95",
+  "phase": "ActualThreeRenderBackend command ledger; only GPUdriver stubbed, no runtimefix before collectedRED"
+}

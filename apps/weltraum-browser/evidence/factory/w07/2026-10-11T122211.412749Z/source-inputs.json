@@ -1,0 +1,50 @@
+[
+  {
+    "sourcePath": "/workspace/.cloud-setup/fp06-task-briefs/w07-grant.json",
+    "artifact": "inputs/00-w07-grant.json.raw.gz",
+    "sha256": "8e7de22b3affdc3e90f701ebc12a3d0eb0fbb76dd86ccc0134673662f8cc2a17",
+    "bytes": 2228
+  },
+  {
+    "sourcePath": "/workspace/.cloud-setup/fp06-task-briefs/w07-brief.md",
+    "artifact": "inputs/01-w07-brief.md.raw.gz",
+    "sha256": "8b70e51e4b49c2ba311199395e6776257816f077de8fe8cb3a66e81f2bff577a",
+    "bytes": 7006
+  },
+  {
+    "sourcePath": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/source-lock.json",
+    "artifact": "inputs/02-source-lock.json.raw.gz",
+    "sha256": "63c617b9b5e5051a56b9659e1e2d9871a6b2d4e5a61c070cb69dc8120daf69f6",
+    "bytes": 82305
+  },
+  {
+    "sourcePath": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/write-ownership.json",
+    "artifact": "inputs/03-write-ownership.json.raw.gz",
+    "sha256": "d6c718dcebe2b2b389ac458f7f27c9c6e3b07e2681740ee452d548b010b6f94c",
+    "bytes": 66733
+  },
+  {
+    "sourcePath": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/decisions.md",
+    "artifact": "inputs/04-decisions.md.raw.gz",
+    "sha256": "640240315dcfb69cd5d57a3f098a5f622dbe70be7a64595b6256b95b8424ff75",
+    "bytes": 10911
+  },
+  {
+    "sourcePath": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/reviews/w07-integration-map.md",
+    "artifact": "inputs/05-w07-integration-map.md.raw.gz",
+    "sha256": "48cc4d059b3ac8e15062ffd526d75ac38589cf86e1a28160873c28a3348189bf",
+    "bytes": 27070
+  },
+  {
+    "sourcePath": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/proposals/start-site-v1.md",
+    "artifact": "inputs/06-start-site-v1.md.raw.gz",
+    "sha256": "21a6b5a2e87036639f91c795458b1cb14b7160cef8679fc5df96341beddd47bb",
+    "bytes": 4507
+  },
+  {
+    "sourcePath": "/workspace/.cloud-setup/fp06-w07-reviewed-integration-receipt.json",
+    "artifact": "inputs/07-fp06-w07-reviewed-integration-receipt.json.raw.gz",
+    "sha256": "c934e2eda78567c76d365d8d8f85b1a5fae5cbe9492a9105649a74e399139b20",
+    "bytes": 29745
+  }
+]

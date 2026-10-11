@@ -1,0 +1,1399 @@
+{
+  "scope": "ActualW07verification01\u201384, all historical byte/results preserved; normalGateFAIL",
+  "commands": [
+    {
+      "phase": "01",
+      "log": "01-initial-business-red.log",
+      "command": "npm run test -- tests/unit/factory/placement.test.ts tests/unit/factory/startSite.test.ts tests/unit/factory/facilitySession.test.ts",
+      "commandProvenance": "actual npm echoed Vitest invocation; -t multiword patterns were one CLI argument, no timestamps inferred",
+      "exitCode": 1,
+      "actualSummary": [
+        "Test Files  3 failed (3)",
+        "Tests  8 failed (8)",
+        "Duration  1.02s (transform 220ms, setup 0ms, import 376ms, tests 312ms, environment 0ms)"
+      ],
+      "actualClassification": "FAIL: three CanonicalSerialization fixture/setup errors plus five explicit NotImplemented stub errors. Not eight business assertions."
+    },
+    {
+      "phase": "02",
+      "log": "02-corrected-collected-business-red.log",
+      "command": "npm run test -- tests/unit/factory/placement.test.ts tests/unit/factory/startSite.test.ts tests/unit/factory/facilitySession.test.ts",
+      "commandProvenance": "actual npm echoed Vitest invocation; -t multiword patterns were one CLI argument, no timestamps inferred",
+      "exitCode": 1,
+      "actualSummary": [
+        "Test Files  3 failed (3)",
+        "Tests  8 failed (8)",
+        "Duration  975ms (transform 187ms, setup 0ms, import 329ms, tests 308ms, environment 0ms)"
+      ],
+      "actualClassification": "FAIL: three collected business assertions plus five explicit NotImplemented stub errors."
+    },
+    {
+      "phase": "03",
+      "log": "03-initial-minimal-green.log",
+      "command": "npm run test -- tests/unit/factory/placement.test.ts tests/unit/factory/startSite.test.ts tests/unit/factory/facilitySession.test.ts",
+      "commandProvenance": "actual npm echoed Vitest invocation; -t multiword patterns were one CLI argument, no timestamps inferred",
+      "exitCode": 1,
+      "actualSummary": [
+        "Test Files  1 failed | 2 passed (3)",
+        "Tests  2 failed | 6 passed (8)",
+        "Duration  2.21s (transform 279ms, setup 0ms, import 477ms, tests 1.36s, environment 0ms)"
+      ],
+      "actualClassification": "FAIL: two CanonicalSerialization errors and six PASS; historical filename minimal-green does not mean GREEN."
+    },
+    {
+      "phase": "04",
+      "log": "04-native-hold-business-red.log",
+      "command": "npm run test -- tests/unit/factory/placement.test.ts tests/unit/factory/facilitySession.test.ts",
+      "commandProvenance": "actual npm echoed Vitest invocation; -t multiword patterns were one CLI argument, no timestamps inferred",
+      "exitCode": 1,
+      "actualSummary": [
+        "Test Files  1 failed | 1 passed (2)",
+        "Tests  1 failed | 8 passed (9)",
+        "Duration  2.41s (transform 852ms, setup 0ms, import 1.18s, tests 1.02s, environment 0ms)"
+      ],
+      "actualClassification": "FAIL: TypeError missing prepareFactoryFacility API; not a collected business assertion."
+    },
+    {
+      "phase": "05",
+      "log": "05-native-session-initial-green.log",
+      "command": "npm run test -- tests/unit/factory/placement.test.ts tests/unit/factory/startSite.test.ts tests/unit/factory/facilitySession.test.ts",
+      "commandProvenance": "actual npm echoed Vitest invocation; -t multiword patterns were one CLI argument, no timestamps inferred",
+      "exitCode": 0,
+      "actualSummary": [
+        "Test Files  3 passed (3)",
+        "Tests  11 passed (11)",
+        "Duration  3.47s (transform 867ms, setup 0ms, import 1.21s, tests 1.97s, environment 0ms)"
+      ]
+    },
+    {
+      "phase": "06",
+      "log": "06-coherent-vegetation-business-red.log",
+      "command": "npm run test -- tests/unit/hvp-vegetation.test.ts -t W07 Factory vegetation",
+      "commandProvenance": "actual npm echoed Vitest invocation; -t multiword patterns were one CLI argument, no timestamps inferred",
+      "exitCode": 1,
+      "actualSummary": [
+        "Test Files  1 failed (1)",
+        "Tests  1 failed | 12 skipped (13)",
+        "Duration  1.39s (transform 982ms, setup 0ms, import 1.25s, tests 22ms, environment 0ms)"
+      ]
+    },
+    {
+      "phase": "07",
+      "log": "07-host-integration-typecheck.log",
+      "command": [
+        "npm",
+        "exec",
+        "--",
+        "tsc",
+        "-p",
+        "tsconfig.json"
+      ],
+      "commandProvenance": "recorded package TypeScript invocation; early phase lacks contemporaneous command metadata",
+      "exitCode": 1,
+      "actualSummary": []
+    },
+    {
+      "phase": "08",
+      "log": "08-actual-site-and-native-overlap-red.log",
+      "command": "npm run test -- tests/unit/factory/placement.test.ts tests/unit/factory/facilitySession.test.ts -t W07 actual accepted|W07 Native rejects",
+      "commandProvenance": "actual npm echoed Vitest invocation; -t multiword patterns were one CLI argument, no timestamps inferred",
+      "exitCode": 1,
+      "actualSummary": [
+        "Test Files  1 failed | 1 passed (2)",
+        "Tests  1 failed | 1 passed | 9 skipped (11)",
+        "Duration  1.90s (transform 807ms, setup 0ms, import 1.11s, tests 588ms, environment 0ms)"
+      ]
+    },
+    {
+      "phase": "09",
+      "log": "09-service-gap-and-source-reach-red.log",
+      "command": "npm run test -- tests/unit/factory/placement.test.ts -t W07 reserves|W07 refuses same-owner",
+      "commandProvenance": "actual npm echoed Vitest invocation; -t multiword patterns were one CLI argument, no timestamps inferred",
+      "exitCode": 1,
+      "actualSummary": [
+        "Test Files  1 failed (1)",
+        "Tests  2 failed | 7 skipped (9)",
+        "Duration  869ms (transform 257ms, setup 0ms, import 347ms, tests 408ms, environment 0ms)"
+      ]
+    },
+    {
+      "phase": "10",
+      "log": "10-site-native-source-guards-green.log",
+      "command": "npm run test -- tests/unit/factory/placement.test.ts tests/unit/factory/startSite.test.ts tests/unit/factory/facilitySession.test.ts tests/unit/hvp-vegetation.test.ts -t W07|FP06",
+      "commandProvenance": "actual npm echoed Vitest invocation; -t multiword patterns were one CLI argument, no timestamps inferred",
+      "exitCode": 0,
+      "actualSummary": [
+        "Test Files  4 passed (4)",
+        "Tests  16 passed | 12 skipped (28)",
+        "Duration  4.88s (transform 1.34s, setup 0ms, import 1.95s, tests 2.50s, environment 0ms)"
+      ]
+    },
+    {
+      "phase": "11",
+      "log": "11-host-integration-typecheck.log",
+      "command": [
+        "npm",
+        "exec",
+        "--",
+        "tsc",
+        "-p",
+        "tsconfig.json"
+      ],
+      "commandProvenance": "recorded package TypeScript invocation; early phase lacks contemporaneous command metadata",
+      "exitCode": 0,
+      "actualSummary": []
+    },
+    {
+      "phase": "12",
+      "log": "12-first-focused-affected-regressions.log",
+      "command": "npm run test -- tests/unit/factory/placement.test.ts tests/unit/factory/startSite.test.ts tests/unit/factory/facilitySession.test.ts tests/unit/factory/hostLifecycle.test.ts tests/unit/hvp-physics.test.ts tests/unit/hvp-coast-source.test.ts tests/unit/hvp-bootstrap.test.ts tests/unit/hvp-vegetation.test.ts",
+      "commandProvenance": "actual npm echoed Vitest invocation; -t multiword patterns were one CLI argument, no timestamps inferred",
+      "exitCode": 0,
+      "actualSummary": [
+        "Test Files  8 passed (8)",
+        "Tests  125 passed (125)",
+        "Duration  329.58s (transform 1.40s, setup 0ms, import 2.49s, tests 326.27s, environment 1ms)"
+      ]
+    },
+    {
+      "phase": "13",
+      "log": "13-source-origin-business-red.log",
+      "command": "npm run test -- tests/unit/factory/startSite.test.ts -t W07 Source frame",
+      "commandProvenance": "actual npm echoed Vitest invocation; -t multiword patterns were one CLI argument, no timestamps inferred",
+      "exitCode": 1,
+      "actualSummary": [
+        "Test Files  1 failed (1)",
+        "Tests  1 failed | 2 skipped (3)",
+        "Duration  656ms (transform 86ms, setup 0ms, import 103ms, tests 435ms, environment 0ms)"
+      ]
+    },
+    {
+      "phase": "14",
+      "log": "14-source-origin-green.log",
+      "command": "npm run test -- tests/unit/factory/startSite.test.ts -t W07 Source frame",
+      "commandProvenance": "actual npm echoed Vitest invocation; -t multiword patterns were one CLI argument, no timestamps inferred",
+      "exitCode": 0,
+      "actualSummary": [
+        "Test Files  1 passed (1)",
+        "Tests  1 passed | 2 skipped (3)",
+        "Duration  694ms (transform 83ms, setup 0ms, import 100ms, tests 486ms, environment 0ms)"
+      ]
+    },
+    {
+      "phase": "15",
+      "log": "15-integration-build.log",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "commandProvenance": "actual npm echoed build invocation",
+      "exitCode": 0,
+      "actualSummary": []
+    },
+    {
+      "phase": "16",
+      "log": "16-initial-cargo-business-red.log",
+      "command": "npm run test -- tests/unit/factory/cargoSite.test.ts tests/unit/factory/placement.test.ts -t W07 initial Cargo|W07 Cargo source",
+      "commandProvenance": "actual npm echoed Vitest invocation; -t multiword patterns were one CLI argument, no timestamps inferred",
+      "exitCode": 1,
+      "actualSummary": [
+        "Test Files  2 failed (2)",
+        "Tests  3 failed | 9 skipped (12)",
+        "Duration  1.51s (transform 298ms, setup 0ms, import 416ms, tests 835ms, environment 0ms)"
+      ]
+    },
+    {
+      "phase": "17",
+      "log": "17-initial-cargo-minimal-green.log",
+      "command": "npm run test -- tests/unit/factory/cargoSite.test.ts tests/unit/factory/placement.test.ts",
+      "commandProvenance": "actual npm echoed Vitest invocation; -t multiword patterns were one CLI argument, no timestamps inferred",
+      "exitCode": 0,
+      "actualSummary": [
+        "Test Files  2 passed (2)",
+        "Tests  12 passed (12)",
+        "Duration  2.53s (transform 308ms, setup 0ms, import 410ms, tests 1.89s, environment 0ms)"
+      ]
+    },
+    {
+      "phase": "18",
+      "log": "18-cargo-host-typecheck.log",
+      "command": [
+        "npm",
+        "exec",
+        "--",
+        "tsc",
+        "-p",
+        "tsconfig.json"
+      ],
+      "commandProvenance": "recorded package TypeScript invocation; early phase lacks contemporaneous command metadata",
+      "exitCode": 1,
+      "actualSummary": []
+    },
+    {
+      "phase": "19",
+      "log": "19-native-cargo-idempotent-business-red.log",
+      "command": "npm run test -- tests/unit/factory/cargoSite.test.ts -t exact repeated Open",
+      "commandProvenance": "actual npm echoed Vitest invocation; -t multiword patterns were one CLI argument, no timestamps inferred",
+      "exitCode": 1,
+      "actualSummary": [
+        "Test Files  1 failed (1)",
+        "Tests  1 failed | 3 skipped (4)",
+        "Duration  874ms (transform 241ms, setup 0ms, import 355ms, tests 413ms, environment 0ms)"
+      ]
+    },
+    {
+      "phase": "20",
+      "log": "20-native-cargo-and-placement-green.log",
+      "command": "npm run test -- tests/unit/factory/cargoSite.test.ts tests/unit/factory/placement.test.ts tests/unit/factory/facilitySession.test.ts",
+      "commandProvenance": "actual npm echoed Vitest invocation; -t multiword patterns were one CLI argument, no timestamps inferred",
+      "exitCode": 0,
+      "actualSummary": [
+        "Test Files  3 passed (3)",
+        "Tests  19 passed (19)",
+        "Duration  5.05s (transform 866ms, setup 0ms, import 1.31s, tests 3.38s, environment 0ms)"
+      ]
+    },
+    {
+      "phase": "21",
+      "log": "21-cargo-integration-build.log",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "commandProvenance": "actual npm echoed build invocation",
+      "exitCode": 0,
+      "actualSummary": []
+    },
+    {
+      "phase": "22",
+      "log": "22-real-browser-first.log",
+      "command": [
+        "npm",
+        "run",
+        "test:e2e",
+        "--",
+        "--config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts",
+        "tests/e2e/factory-placement.spec.ts"
+      ],
+      "commandProvenance": "contemporaneous actual browser receipt",
+      "exitCode": 1,
+      "actualSummary": []
+    },
+    {
+      "phase": "23",
+      "log": "23-native-source-disposal-member-business-red.log",
+      "command": "npm run test -- tests/unit/factory/facilitySession.test.ts -t source-Cargo Native disposal|full old native member",
+      "commandProvenance": "actual npm echoed Vitest invocation; -t multiword patterns were one CLI argument, no timestamps inferred",
+      "exitCode": 1,
+      "actualSummary": [
+        "Test Files  1 failed (1)",
+        "Tests  3 failed | 4 skipped (7)",
+        "Duration  1.69s (transform 824ms, setup 0ms, import 1.09s, tests 483ms, environment 0ms)"
+      ]
+    },
+    {
+      "phase": "24",
+      "log": "24-native-extent-candidate-business-red.log",
+      "command": "npm run test -- tests/unit/factory/facilitySession.test.ts -t detects extent|candidate pose",
+      "commandProvenance": "actual npm echoed Vitest invocation; -t multiword patterns were one CLI argument, no timestamps inferred",
+      "exitCode": 1,
+      "actualSummary": [
+        "Test Files  1 failed (1)",
+        "Tests  2 failed | 7 skipped (9)",
+        "Duration  1.21s (transform 784ms, setup 0ms, import 1.04s, tests 60ms, environment 0ms)"
+      ]
+    },
+    {
+      "phase": "25",
+      "log": "25-native-source-member-focused-green.log",
+      "command": "npm run test -- tests/unit/factory/cargoSite.test.ts tests/unit/factory/facilitySession.test.ts tests/unit/factory/placement.test.ts",
+      "commandProvenance": "actual npm echoed Vitest invocation; -t multiword patterns were one CLI argument, no timestamps inferred",
+      "exitCode": 0,
+      "actualSummary": [
+        "Test Files  3 passed (3)",
+        "Tests  24 passed (24)",
+        "Duration  5.44s (transform 965ms, setup 0ms, import 1.42s, tests 3.67s, environment 0ms)"
+      ]
+    },
+    {
+      "phase": "26",
+      "log": "26-integrity-build.log",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "commandProvenance": "actual npm echoed build invocation",
+      "exitCode": 0,
+      "actualSummary": []
+    },
+    {
+      "phase": "27",
+      "log": "27-real-browser-second.log",
+      "command": [
+        "npm",
+        "run",
+        "test:e2e",
+        "--",
+        "--config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts",
+        "tests/e2e/factory-placement.spec.ts"
+      ],
+      "commandProvenance": "contemporaneous actual browser receipt",
+      "exitCode": 1,
+      "actualSummary": []
+    },
+    {
+      "phase": "28",
+      "log": "28-red-frame-cargo-owner-dispose-checkpoint.log",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/hvp-bootstrap.test.ts",
+        "tests/unit/factory/placement.test.ts",
+        "tests/unit/factory/facilitySession.test.ts",
+        "-t",
+        "W07 actual Host Ghost|initial Cargo owner cannot|Cargo dispose then checkpoint|aliases the actual initial Cargo owner"
+      ],
+      "commandProvenance": "contemporaneous actual command receipt",
+      "exitCode": 1,
+      "actualSummary": [
+        "Test Files  3 failed (3)",
+        "Tests  4 failed | 54 skipped (58)",
+        "Duration  9.85s (transform 1.38s, setup 0ms, import 1.98s, tests 7.54s, environment 0ms)"
+      ]
+    },
+    {
+      "phase": "29",
+      "log": "29-green-native-placement-cargo.log",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/factory/placement.test.ts",
+        "tests/unit/factory/facilitySession.test.ts",
+        "tests/unit/factory/cargoSite.test.ts",
+        "tests/unit/factory/startSite.test.ts"
+      ],
+      "commandProvenance": "contemporaneous actual command receipt",
+      "exitCode": 0,
+      "actualSummary": [
+        "Test Files  4 passed (4)",
+        "Tests  30 passed (30)",
+        "Duration  7.54s (transform 864ms, setup 0ms, import 1.35s, tests 5.78s, environment 2ms)"
+      ]
+    },
+    {
+      "phase": "30",
+      "log": "30-green-actual-host-frame-cycle.log",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/hvp-bootstrap.test.ts",
+        "-t",
+        "W07 actual Host Ghost"
+      ],
+      "commandProvenance": "contemporaneous actual command receipt",
+      "exitCode": 0,
+      "actualSummary": [
+        "Test Files  1 passed (1)",
+        "Tests  1 passed | 34 skipped (35)",
+        "Duration  7.99s (transform 1.22s, setup 0ms, import 1.53s, tests 6.36s, environment 0ms)"
+      ]
+    },
+    {
+      "phase": "31",
+      "log": "31-build-after-frame-owner-checkpoint.log",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "commandProvenance": "contemporaneous actual command receipt",
+      "exitCode": 0,
+      "actualSummary": []
+    },
+    {
+      "phase": "32",
+      "log": "32-real-browser-third.log",
+      "command": [
+        "npm",
+        "run",
+        "test:e2e",
+        "--",
+        "--config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts",
+        "tests/e2e/factory-placement.spec.ts"
+      ],
+      "commandProvenance": "contemporaneous actual command receipt",
+      "exitCode": 1,
+      "actualSummary": []
+    },
+    {
+      "phase": "33",
+      "log": "33-red-failed-initial-binding-retry.log",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/factory/hostLifecycle.test.ts",
+        "-t",
+        "W07 failed initial"
+      ],
+      "commandProvenance": "contemporaneous actual command receipt",
+      "exitCode": 1,
+      "actualSummary": [
+        "Test Files  1 failed (1)",
+        "Tests  2 failed | 17 skipped (19)",
+        "Duration  511ms (transform 283ms, setup 0ms, import 373ms, tests 28ms, environment 0ms)"
+      ]
+    },
+    {
+      "phase": "34",
+      "log": "34-green-host-lifecycle.log",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/factory/hostLifecycle.test.ts"
+      ],
+      "commandProvenance": "contemporaneous actual command receipt",
+      "exitCode": 0,
+      "actualSummary": [
+        "Test Files  1 passed (1)",
+        "Tests  19 passed (19)",
+        "Duration  1.12s (transform 274ms, setup 0ms, import 376ms, tests 631ms, environment 0ms)"
+      ]
+    },
+    {
+      "phase": "35",
+      "log": "35-typescript-after-lifecycle-harness.log",
+      "command": [
+        "npm",
+        "exec",
+        "--",
+        "tsc",
+        "-p",
+        "tsconfig.json"
+      ],
+      "commandProvenance": "contemporaneous actual command receipt",
+      "exitCode": 1,
+      "actualSummary": []
+    },
+    {
+      "phase": "36",
+      "log": "36-green-typed-initial-bindings.log",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/factory/hostLifecycle.test.ts",
+        "-t",
+        "W07 failed initial"
+      ],
+      "commandProvenance": "contemporaneous actual command receipt",
+      "exitCode": 0,
+      "actualSummary": [
+        "Test Files  1 passed (1)",
+        "Tests  2 passed | 17 skipped (19)",
+        "Duration  514ms (transform 251ms, setup 0ms, import 340ms, tests 72ms, environment 0ms)"
+      ]
+    },
+    {
+      "phase": "37",
+      "log": "37-typescript-final-lifecycle-harness.log",
+      "command": [
+        "npm",
+        "exec",
+        "--",
+        "tsc",
+        "-p",
+        "tsconfig.json"
+      ],
+      "commandProvenance": "contemporaneous actual command receipt",
+      "exitCode": 0,
+      "actualSummary": []
+    },
+    {
+      "phase": "38",
+      "log": "38-typescript-final-eleven-browser-cases.log",
+      "command": [
+        "npm",
+        "exec",
+        "--",
+        "tsc",
+        "-p",
+        "tsconfig.json"
+      ],
+      "commandProvenance": "contemporaneous actual command receipt",
+      "exitCode": 0,
+      "actualSummary": []
+    },
+    {
+      "phase": "39",
+      "log": "39-real-browser-fourth.log",
+      "command": [
+        "npm",
+        "run",
+        "test:e2e",
+        "--",
+        "--config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts",
+        "tests/e2e/factory-placement.spec.ts"
+      ],
+      "commandProvenance": "contemporaneous actual command receipt",
+      "exitCode": 1,
+      "actualSummary": []
+    },
+    {
+      "phase": "40",
+      "log": "40-typescript-real-keyboard-tap-harness.log",
+      "command": [
+        "npm",
+        "exec",
+        "--",
+        "tsc",
+        "-p",
+        "tsconfig.json"
+      ],
+      "commandProvenance": "contemporaneous actual command receipt",
+      "exitCode": 0,
+      "actualSummary": []
+    },
+    {
+      "phase": "41",
+      "log": "41-real-browser-fifth.log",
+      "command": [
+        "npm",
+        "run",
+        "test:e2e",
+        "--",
+        "--config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts",
+        "tests/e2e/factory-placement.spec.ts"
+      ],
+      "commandProvenance": "contemporaneous actual command receipt",
+      "exitCode": 1,
+      "actualSummary": []
+    },
+    {
+      "phase": "42",
+      "log": "42-typescript-bounded-short-held-presses.log",
+      "command": [
+        "npm",
+        "exec",
+        "--",
+        "tsc",
+        "-p",
+        "tsconfig.json"
+      ],
+      "commandProvenance": "contemporaneous actual command receipt",
+      "exitCode": 0,
+      "actualSummary": []
+    },
+    {
+      "phase": "43",
+      "log": "43-real-browser-sixth.log",
+      "command": [
+        "npm",
+        "run",
+        "test:e2e",
+        "--",
+        "--config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts",
+        "tests/e2e/factory-placement.spec.ts"
+      ],
+      "commandProvenance": "contemporaneous actual command receipt",
+      "exitCode": 1,
+      "actualSummary": []
+    },
+    {
+      "phase": "44",
+      "log": "44-red-no-raf-event-intent-and-native-transport.log",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/hvp-player-input.test.ts"
+      ],
+      "commandProvenance": "Contemporaneous exact argv, UTC times, raw SHA256 and inner exit code in 44-red-no-raf-event-intent-and-native-transport-command.json",
+      "exitCode": 1,
+      "actualSummary": [
+        "\u23af\u23af\u23af\u23af\u23af\u23af Failed Tests 10 \u23af\u23af\u23af\u23af\u23af\u23af\u23af",
+        "Test Files  1 failed (1)",
+        "Tests  10 failed | 2 passed (12)",
+        "Duration  1.44s (transform 921ms, setup 0ms, import 1.10s, tests 229ms, environment 0ms)"
+      ]
+    },
+    {
+      "phase": "45",
+      "log": "45-green-event-input-and-native-read-coalescing.log",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/hvp-player-input.test.ts"
+      ],
+      "commandProvenance": "Contemporaneous exact argv, UTC times, raw SHA256 and inner exit code in 45-green-event-input-and-native-read-coalescing-command.json",
+      "exitCode": 1,
+      "actualSummary": [
+        "\u23af\u23af\u23af\u23af\u23af\u23af\u23af Failed Tests 1 \u23af\u23af\u23af\u23af\u23af\u23af\u23af",
+        "Test Files  1 failed (1)",
+        "Tests  1 failed | 11 passed (12)",
+        "Duration  1.40s (transform 868ms, setup 0ms, import 1.05s, tests 227ms, environment 0ms)"
+      ],
+      "actualClassification": "FAIL: eleven PASS and one signed-zero assertion FAIL; historical filename green is not PASS."
+    },
+    {
+      "phase": "46",
+      "log": "46-green-factory-neutral-input-and-host-frame.log",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/hvp-player-input.test.ts",
+        "tests/unit/hvp-bootstrap.test.ts",
+        "-t",
+        "Factory|Legacy|actual Host Ghost"
+      ],
+      "commandProvenance": "Contemporaneous exact argv, UTC times, raw SHA256 and inner exit code in 46-green-factory-neutral-input-and-host-frame-command.json",
+      "exitCode": 0,
+      "actualSummary": [
+        "Test Files  2 passed (2)",
+        "Tests  12 passed | 35 skipped (47)",
+        "Duration  23.56s (transform 1.38s, setup 0ms, import 1.88s, tests 21.45s, environment 0ms)"
+      ]
+    },
+    {
+      "phase": "47",
+      "log": "47-green-all-input-contracts.log",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/hvp-player-input.test.ts"
+      ],
+      "commandProvenance": "Contemporaneous exact argv, UTC times, raw SHA256 and inner exit code in 47-green-all-input-contracts-command.json",
+      "exitCode": 0,
+      "actualSummary": [
+        "Test Files  1 passed (1)",
+        "Tests  12 passed (12)",
+        "Duration  1.30s (transform 823ms, setup 0ms, import 1.00s, tests 206ms, environment 0ms)"
+      ]
+    },
+    {
+      "phase": "48",
+      "log": "48-final-full-build-after-mount-and-input.log",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "commandProvenance": "Contemporaneous exact argv, UTC times, raw SHA256 and inner exit code in 48-final-full-build-after-mount-and-input-command.json",
+      "exitCode": 1,
+      "actualSummary": [
+        "tests/unit/hvp-player-input.test.ts(86,40): error TS2352: Conversion of type '{ data: { id: number; snapshot: Readonly<{ ticks: number; backlogSeconds: number; discardedSeconds: number; status: \"CoverageHold\" | \"RecoveryHold\" | HvpSimulationStatus; ... 29 more ...; bodies: Readonly<...>[]; }>; clock: { ...; }; }; }' to type 'MessageEvent<HvpPhysicsReply>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."
+      ],
+      "actualClassification": "FAIL: TypeScript TS2352 only in test MessageEvent cast; not runtime acceptance."
+    },
+    {
+      "phase": "49",
+      "log": "49-green-typed-native-event-message.log",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/hvp-player-input.test.ts"
+      ],
+      "commandProvenance": "Contemporaneous exact argv, UTC times, raw SHA256 and inner exit code in 49-green-typed-native-event-message-command.json",
+      "exitCode": 0,
+      "actualSummary": [
+        "Test Files  1 passed (1)",
+        "Tests  12 passed (12)",
+        "Duration  1.40s (transform 905ms, setup 0ms, import 1.09s, tests 193ms, environment 0ms)"
+      ]
+    },
+    {
+      "phase": "50",
+      "log": "50-final-full-build-typed-input.log",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "commandProvenance": "Contemporaneous exact argv, UTC times, raw SHA256 and inner exit code in 50-final-full-build-typed-input-command.json",
+      "exitCode": 0,
+      "actualSummary": [
+        "\u2713 built in 1.48s"
+      ]
+    },
+    {
+      "phase": "51",
+      "log": "51-real-browser-seventh.log",
+      "command": [
+        "npm",
+        "run",
+        "test:e2e",
+        "--",
+        "--config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts",
+        "tests/e2e/factory-placement.spec.ts"
+      ],
+      "commandProvenance": "Contemporaneous exact argv, UTC times, raw SHA256 and inner exit code in 51-real-browser-seventh-command.json",
+      "exitCode": 1,
+      "diagnosticOnly": false,
+      "actualSummary": [
+        "1 failed",
+        "11 did not run",
+        "5 passed (1.3m)"
+      ]
+    },
+    {
+      "phase": "52",
+      "log": "52-diagnostic-only-input-worker-observation.log",
+      "command": [
+        "npm",
+        "run",
+        "test:e2e",
+        "--",
+        "--config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts",
+        "tests/e2e/factory-placement.spec.ts",
+        "-g",
+        "DIAGNOSTIC_ONLY"
+      ],
+      "commandProvenance": "Contemporaneous exact argv, UTC times, raw SHA256 and inner exit code in 52-diagnostic-only-input-worker-observation-command.json",
+      "exitCode": 0,
+      "diagnosticOnly": true,
+      "actualSummary": [
+        "4 passed (28.2s)"
+      ]
+    },
+    {
+      "phase": "53",
+      "log": "53-typescript-normal-released-250-350ms-harness.log",
+      "command": [
+        "npm",
+        "exec",
+        "--",
+        "tsc",
+        "-p",
+        "tsconfig.json"
+      ],
+      "commandProvenance": "Contemporaneous exact argv, UTC times, raw SHA256 and inner exit code in 53-typescript-normal-released-250-350ms-harness-command.json",
+      "exitCode": 0,
+      "diagnosticOnly": false,
+      "actualSummary": []
+    },
+    {
+      "phase": "54",
+      "log": "54-typescript-source-bound-stand-window.log",
+      "command": [
+        "npm",
+        "exec",
+        "--",
+        "tsc",
+        "-p",
+        "tsconfig.json"
+      ],
+      "commandProvenance": "Contemporaneous exact argv, UTC times, raw SHA256 and inner exit code in 54-typescript-source-bound-stand-window-command.json",
+      "exitCode": 0,
+      "diagnosticOnly": false,
+      "actualSummary": []
+    },
+    {
+      "phase": "55",
+      "log": "55-red-unchanged-already-sent-level-extra-read.log",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/hvp-player-input.test.ts",
+        "-t",
+        "unchanged already-sent"
+      ],
+      "commandProvenance": "Contemporaneous exact argv, UTC times, raw SHA256 and inner exit code in 55-red-unchanged-already-sent-level-extra-read-command.json",
+      "exitCode": 1,
+      "diagnosticOnly": false,
+      "actualSummary": [
+        "\u23af\u23af\u23af\u23af\u23af\u23af\u23af Failed Tests 2 \u23af\u23af\u23af\u23af\u23af\u23af\u23af",
+        "Test Files  1 failed (1)",
+        "Tests  2 failed | 12 skipped (14)",
+        "Duration  1.36s (transform 920ms, setup 0ms, import 1.10s, tests 156ms, environment 0ms)"
+      ]
+    },
+    {
+      "phase": "56",
+      "log": "56-green-fourteen-input-and-noop-contracts.log",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/hvp-player-input.test.ts"
+      ],
+      "commandProvenance": "Contemporaneous exact argv, UTC times, raw SHA256 and inner exit code in 56-green-fourteen-input-and-noop-contracts-command.json",
+      "exitCode": 0,
+      "diagnosticOnly": false,
+      "actualSummary": [
+        "Test Files  1 passed (1)",
+        "Tests  14 passed (14)",
+        "Duration  1.40s (transform 919ms, setup 0ms, import 1.10s, tests 203ms, environment 0ms)"
+      ]
+    },
+    {
+      "phase": "57",
+      "log": "57-final-full-build-factory-input-noop.log",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "commandProvenance": "Contemporaneous exact argv, UTC times, raw SHA256 and inner exit code in 57-final-full-build-factory-input-noop-command.json",
+      "exitCode": 0,
+      "diagnosticOnly": false,
+      "actualSummary": [
+        "\u2713 built in 1.60s"
+      ]
+    },
+    {
+      "phase": "58",
+      "log": "58-real-browser-eighth.log",
+      "command": [
+        "npm",
+        "run",
+        "test:e2e",
+        "--",
+        "--config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts",
+        "tests/e2e/factory-placement.spec.ts"
+      ],
+      "commandProvenance": "Contemporaneous exact argv, UTC times, raw SHA256 and inner exit code in 58-real-browser-eighth-command.json",
+      "exitCode": 1,
+      "diagnosticOnly": false,
+      "actualSummary": [
+        "-  16 [chromium] \u203a tests/e2e/factory-placement.spec.ts:113:3 \u203a W07 real player construction in one confirmed Factory session \u203a finite C26 failed confirmation preserves the complete first installation and all actual native members",
+        "1 failed",
+        "12 passed (2.6m)"
+      ]
+    },
+    {
+      "phase": "59",
+      "log": "59-red-actual-render-receiver-ghost-lifecycle.log",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/hvp-bootstrap.test.ts",
+        "-t",
+        "actual Host Ghost"
+      ],
+      "commandProvenance": "Contemporaneous exact argv, UTC times, raw SHA256 and inner exit code in 59-red-actual-render-receiver-ghost-lifecycle-command.json",
+      "exitCode": 1,
+      "diagnosticOnly": false,
+      "actualSummary": [
+        "\u276f tests/unit/hvp-bootstrap.test.ts (35 tests | 1 failed | 34 skipped) 7582ms",
+        "\u23af\u23af\u23af\u23af\u23af\u23af\u23af Failed Tests 1 \u23af\u23af\u23af\u23af\u23af\u23af\u23af",
+        "Test Files  1 failed (1)",
+        "Tests  1 failed | 34 skipped (35)"
+      ]
+    },
+    {
+      "phase": "60",
+      "log": "60-green-actual-render-receiver-ghost-lifecycle.log",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/hvp-bootstrap.test.ts",
+        "-t",
+        "actual Host Ghost"
+      ],
+      "commandProvenance": "Contemporaneous exact argv, UTC times, raw SHA256 and inner exit code in 60-green-actual-render-receiver-ghost-lifecycle-command.json",
+      "exitCode": 0,
+      "diagnosticOnly": false,
+      "actualSummary": [
+        "Test Files  1 passed (1)",
+        "Tests  1 passed | 34 skipped (35)"
+      ]
+    },
+    {
+      "phase": "61",
+      "log": "61-green-ghost-affected-regressions.log",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/hvp-bootstrap.test.ts",
+        "tests/unit/factory/hostLifecycle.test.ts",
+        "tests/unit/hvp-player-input.test.ts",
+        "tests/unit/factory/placement.test.ts",
+        "tests/unit/factory/facilitySession.test.ts"
+      ],
+      "commandProvenance": "Contemporaneous exact argv, UTC times, raw SHA256 and inner exit code in 61-green-ghost-affected-regressions-command.json",
+      "exitCode": 0,
+      "diagnosticOnly": false,
+      "actualSummary": [
+        "Test Files  5 passed (5)",
+        "Tests  91 passed (91)"
+      ]
+    },
+    {
+      "phase": "62",
+      "log": "62-build-after-ghost-receiver-fix.log",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "commandProvenance": "Contemporaneous exact argv, UTC times, raw SHA256 and inner exit code in 62-build-after-ghost-receiver-fix-command.json",
+      "exitCode": 0,
+      "diagnosticOnly": false,
+      "actualSummary": [
+        "\u2713 built in 1.50s"
+      ]
+    },
+    {
+      "phase": "63",
+      "log": "63-red-legal-paid-owner-ghost-slot-collision.log",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/hvp-bootstrap.test.ts",
+        "-t",
+        "legal paid owner"
+      ],
+      "commandProvenance": "Contemporaneous exact argv, UTC times, raw SHA256 and inner exit code in 63-red-legal-paid-owner-ghost-slot-collision-command.json",
+      "exitCode": 1,
+      "diagnosticOnly": false,
+      "actualSummary": [
+        "\u276f tests/unit/hvp-bootstrap.test.ts (36 tests | 1 failed | 35 skipped) 7923ms",
+        "\u23af\u23af\u23af\u23af\u23af\u23af\u23af Failed Tests 1 \u23af\u23af\u23af\u23af\u23af\u23af\u23af",
+        "Test Files  1 failed (1)",
+        "Tests  1 failed | 35 skipped (36)"
+      ]
+    },
+    {
+      "phase": "64",
+      "log": "64-green-ghost-receiver-lifecycle-and-paid-namespace.log",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/hvp-bootstrap.test.ts",
+        "-t",
+        "actual Host Ghost|legal paid owner"
+      ],
+      "commandProvenance": "Contemporaneous exact argv, UTC times, raw SHA256 and inner exit code in 64-green-ghost-receiver-lifecycle-and-paid-namespace-command.json",
+      "exitCode": 0,
+      "diagnosticOnly": false,
+      "actualSummary": [
+        "Test Files  1 passed (1)",
+        "Tests  2 passed | 34 skipped (36)"
+      ]
+    },
+    {
+      "phase": "65",
+      "log": "65-green-after-disjoint-ghost-namespace-guards.log",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/factory/hostLifecycle.test.ts",
+        "tests/unit/hvp-player-input.test.ts",
+        "tests/unit/factory/placement.test.ts",
+        "tests/unit/factory/facilitySession.test.ts"
+      ],
+      "commandProvenance": "Contemporaneous exact argv, UTC times, raw SHA256 and inner exit code in 65-green-after-disjoint-ghost-namespace-guards-command.json",
+      "exitCode": 0,
+      "diagnosticOnly": false,
+      "actualSummary": [
+        "Test Files  4 passed (4)",
+        "Tests  56 passed (56)"
+      ]
+    },
+    {
+      "phase": "66",
+      "log": "66-final-full-build-ghost-namespace.log",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "commandProvenance": "Contemporaneous exact argv, UTC times, raw SHA256 and inner exit code in 66-final-full-build-ghost-namespace-command.json",
+      "exitCode": 0,
+      "diagnosticOnly": false,
+      "actualSummary": [
+        "\u2713 built in 1.53s"
+      ]
+    },
+    {
+      "phase": "67",
+      "log": "67-real-browser-ninth.log",
+      "command": [
+        "npm",
+        "run",
+        "test:e2e",
+        "--",
+        "--config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts",
+        "tests/e2e/factory-placement.spec.ts"
+      ],
+      "commandProvenance": "Contemporaneous exact argv/env/configSHA/UTC/rawSHA/innerExit receipt67-real-browser-ninth-command.json",
+      "exitCode": 1,
+      "diagnosticOnly": false,
+      "actualSummary": [
+        "5 PASS / 1 assertion FAIL / 11 NOT_RUN; actual released D/A correction ends NativeX=-5.699980735778809 outside sourcechecked[-6.4,-6.1]"
+      ],
+      "normalGameplay": true
+    },
+    {
+      "phase": "68",
+      "log": "68-targeted-diagnostic-adaptive-fine-pulse.log",
+      "command": [
+        "npm",
+        "run",
+        "test:e2e",
+        "--",
+        "--config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts",
+        "tests/e2e/factory-placement.spec.ts"
+      ],
+      "commandProvenance": "Contemporaneous exact argv/env/configSHA/UTC/rawSHA/innerExit in 68-targeted-diagnostic-adaptive-fine-pulse-command.json; temporary exact diagnostic source archived and normal/all29 restoration bound separately",
+      "exitCode": 1,
+      "diagnosticOnly": true,
+      "normalGameplay": false,
+      "actualSummary": [
+        "3 PASS / 1 assertion FAIL; all8 nominal125ms trusted key pulses cause deltaX0 despite advancing NativeTicks; conditional63/50ms NOT_RUN; Native outgoing input not observed."
+      ]
+    },
+    {
+      "phase": "69",
+      "log": "69-supported-factory-input-business-red.log",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/hvp-player-input.test.ts",
+        "-t",
+        "supported Factory input before snapshot ACK"
+      ],
+      "commandProvenance": "Exact original contemporaneous UTC/argv/rawSHA/innerExit receipt 69-supported-factory-input-business-red-command.json",
+      "exitCode": 1,
+      "diagnosticOnly": false,
+      "normalGameplay": false,
+      "actualSummary": [
+        "Actual supported pre-runtime RED:2 business tests FAIL/14skip; Down0m vs0.3m and Up continued0.3m before ACK; no setup/import failures."
+      ]
+    },
+    {
+      "phase": "70",
+      "log": "70-native-factory-input-guards-business-red.log",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/hvp-player-input.test.ts",
+        "-t",
+        "actual Native Factory input safety boundaries"
+      ],
+      "commandProvenance": "Exact original contemporaneous UTC/argv/rawSHA/innerExit receipt 70-native-factory-input-guards-business-red-command.json",
+      "exitCode": 1,
+      "diagnosticOnly": false,
+      "normalGameplay": false,
+      "actualSummary": [
+        "Actual Native guard pre-runtime RED:4 tests FAIL/16skip;8 assertions fail; hold replay, held incoming replay, explicit jump cancellation and default exclusion."
+      ]
+    },
+    {
+      "phase": "71",
+      "log": "71-factory-input-cap-guard-business-red.log",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/hvp-player-input.test.ts",
+        "-t",
+        "fails closed at the original eight pending requests"
+      ],
+      "commandProvenance": "Exact original contemporaneous UTC/argv/rawSHA/innerExit receipt 71-factory-input-cap-guard-business-red-command.json",
+      "exitCode": 1,
+      "diagnosticOnly": false,
+      "normalGameplay": false,
+      "actualSummary": [
+        "Reconstructed historical report-only policy AFTER initial source implementation:1 test FAIL/20skip,3 business assertions; NOT unchanged preimplementation RED. Original71 raw/argv receipt unchanged."
+      ]
+    },
+    {
+      "phase": "72",
+      "log": "72-factory-input-focused-green-attempt.log",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/hvp-player-input.test.ts"
+      ],
+      "commandProvenance": "Exact original contemporaneous UTC/argv/rawSHA/innerExit receipt 72-factory-input-focused-green-attempt-command.json",
+      "exitCode": 0,
+      "diagnosticOnly": false,
+      "normalGameplay": false,
+      "actualSummary": [
+        "First focused21/21 PASS on that byte phase."
+      ]
+    },
+    {
+      "phase": "73",
+      "log": "73-factory-input-affected-regressions-green.log",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/hvp-player-input.test.ts",
+        "tests/unit/hvp-locomotion.test.ts",
+        "tests/unit/hvp-physics.test.ts",
+        "tests/unit/factory/facilitySession.test.ts",
+        "tests/unit/factory/hostLifecycle.test.ts"
+      ],
+      "commandProvenance": "Exact original contemporaneous UTC/argv/rawSHA/innerExit receipt 73-factory-input-affected-regressions-green-command.json",
+      "exitCode": 1,
+      "diagnosticOnly": false,
+      "normalGameplay": false,
+      "actualSummary": [
+        "82 PASS/1 test-oracle FAIL: Clock captured before legitimate Prepare changed it; no runtime failure inferred."
+      ]
+    },
+    {
+      "phase": "74",
+      "log": "74-factory-input-affected-regressions-green.log",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/hvp-player-input.test.ts",
+        "tests/unit/hvp-locomotion.test.ts",
+        "tests/unit/hvp-physics.test.ts",
+        "tests/unit/factory/facilitySession.test.ts",
+        "tests/unit/factory/hostLifecycle.test.ts"
+      ],
+      "commandProvenance": "Exact original contemporaneous UTC/argv/rawSHA/innerExit receipt 74-factory-input-affected-regressions-green-command.json",
+      "exitCode": 0,
+      "diagnosticOnly": false,
+      "normalGameplay": false,
+      "actualSummary": [
+        "Final affected83/83 PASS across five files; corrected lateACK baseline and all22 Input cases pass."
+      ]
+    },
+    {
+      "phase": "75",
+      "log": "75-factory-input-full-build.log",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "commandProvenance": "Exact original contemporaneous UTC/argv/rawSHA/innerExit receipt 75-factory-input-full-build-command.json",
+      "exitCode": 0,
+      "diagnosticOnly": false,
+      "normalGameplay": false,
+      "actualSummary": [
+        "Original full TypeScript AND Vite build PASS; no new limits."
+      ]
+    },
+    {
+      "phase": "76",
+      "log": "76-body-cut-preparing-input-business-red.log",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/hvp-player-input.test.ts",
+        "-t",
+        "body-cut Preparing entry"
+      ],
+      "commandProvenance": "Exact original contemporaneous UTC/argv/rawSHA/innerExit receipt 76-body-cut-preparing-input-business-red-command.json",
+      "exitCode": 1,
+      "diagnosticOnly": false,
+      "normalGameplay": false,
+      "actualSummary": [
+        "2 contact-fixture/setup failures; moving contact missing because first fixed cell was below actual1.65m eye; NOT a Preparing business RED."
+      ]
+    },
+    {
+      "phase": "77",
+      "log": "77-body-cut-preparing-input-business-red.log",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/hvp-player-input.test.ts",
+        "-t",
+        "body-cut Preparing entry"
+      ],
+      "commandProvenance": "Exact original contemporaneous UTC/argv/rawSHA/innerExit receipt 77-body-cut-preparing-input-business-red-command.json",
+      "exitCode": 1,
+      "diagnosticOnly": false,
+      "normalGameplay": false,
+      "actualSummary": [
+        "2 genuine business assertion FAIL/22skip,4failed assertions; actual Native and actual Client Preparing each retain old horizontallevel0.3000000119m and execute pendingjump1x in6 legitimateNativeSteps."
+      ]
+    },
+    {
+      "phase": "78",
+      "log": "78-body-cut-preparing-input-focused-green.log",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/hvp-player-input.test.ts",
+        "-t",
+        "body-cut Preparing entry"
+      ],
+      "commandProvenance": "Exact original contemporaneous UTC/argv/rawSHA/innerExit receipt 78-body-cut-preparing-input-focused-green-command.json",
+      "exitCode": 0,
+      "diagnosticOnly": false,
+      "normalGameplay": false,
+      "actualSummary": [
+        "2 focused Preparing casesPASS/22skip after minimal successful Native begin neutralization; noWorldpause."
+      ]
+    },
+    {
+      "phase": "79",
+      "log": "79-body-cut-preparing-affected-regressions-green.log",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/hvp-player-input.test.ts",
+        "tests/unit/hvp-locomotion.test.ts",
+        "tests/unit/hvp-physics.test.ts",
+        "tests/unit/factory/facilitySession.test.ts",
+        "tests/unit/factory/hostLifecycle.test.ts",
+        "tests/unit/hvp-moving-session.test.ts"
+      ],
+      "commandProvenance": "Exact original contemporaneous UTC/argv/rawSHA/innerExit receipt 79-body-cut-preparing-affected-regressions-green-command.json",
+      "exitCode": 0,
+      "diagnosticOnly": false,
+      "normalGameplay": false,
+      "actualSummary": [
+        "89/89 PASS across6 affected files including24 Input and original4 MovingSession cases; original limits unchanged."
+      ]
+    },
+    {
+      "phase": "80",
+      "log": "80-body-cut-preparing-full-build.log",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "commandProvenance": "Exact original contemporaneous UTC/argv/rawSHA/innerExit receipt 80-body-cut-preparing-full-build-command.json",
+      "exitCode": 0,
+      "diagnosticOnly": false,
+      "normalGameplay": false,
+      "actualSummary": [
+        "Original full TypeScript AND Vite buildPASS on final runtime/test bytes; no limits changed."
+      ]
+    },
+    {
+      "phase": "81",
+      "log": "81-targeted-normal-input-subset-browser.log",
+      "command": [
+        "npm",
+        "run",
+        "test:e2e",
+        "--",
+        "--config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts",
+        "tests/e2e/factory-placement.spec.ts",
+        "--grep",
+        "accepted source|closed Cargo|normal Cargo|normal Play|at most four|Escape pauses"
+      ],
+      "commandProvenance": "Exact original contemporaneous UTC/env/argv/rawSHA/innerExit receipt81-targeted-normal-input-subset-browser-command.json",
+      "exitCode": 1,
+      "diagnosticOnly": false,
+      "normalGameplay": true,
+      "actualSummary": [
+        "Unmodified selected11normalcases:5PASS/1actualX-regionassertionFAIL/5NOT_RUN; all8real250msXcorrections0.90\u20131.15m and releasedNativeposesstable; runtime unchanged30hashmatch, no fullpackagePASS."
+      ]
+    },
+    {
+      "phase": "82",
+      "log": "82-adaptive-normal-e2e-full-build.log",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "commandProvenance": "Exact original contemporaneousUTC/argv/rawSHA/innerExit receipt 82-adaptive-normal-e2e-full-build-command.json",
+      "exitCode": 0,
+      "diagnosticOnly": false,
+      "normalGameplay": false,
+      "actualSummary": [
+        "E2E-only perAxis gesture cap125\u219263\u219232\u219225 after actual NORMALHarnessFAIL81; originalfull TypeScriptANDVite BuildPASS. No Browserrun/gatePASS inferred."
+      ]
+    },
+    {
+      "phase": "83",
+      "log": "83-targeted-adaptive-normal-input-subset-browser.log",
+      "command": [
+        "npm",
+        "run",
+        "test:e2e",
+        "--",
+        "--config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts",
+        "tests/e2e/factory-placement.spec.ts",
+        "--grep",
+        "accepted source|closed Cargo|normal Cargo|normal Play|at most four|Escape pauses"
+      ],
+      "commandProvenance": "Exact actualUTC/env/argv/rawSHA/innerExit receipt 83-targeted-adaptive-normal-input-subset-browser-command.json",
+      "exitCode": 1,
+      "diagnosticOnly": false,
+      "normalGameplay": true,
+      "actualSummary": [
+        "NORMAL11subset9PASS/1ZregionassertionFAIL/1NOT_RUN;6XTapsreachXregion,16ZTapsend8.574978<8.725;25msZactual0.55\u20130.65m;noNativebugclaim, nofull17/W07PASS."
+      ]
+    },
+    {
+      "phase": "84",
+      "log": "84-independent-trusted-key-driver-full-build.log",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "commandProvenance": "Exact original contemporaneousUTC/argv/rawSHA/innerExit receipt 84-independent-trusted-key-driver-full-build-command.json",
+      "exitCode": 0,
+      "diagnosticOnly": false,
+      "normalGameplay": false,
+      "actualSummary": [
+        "E2E-only ordinarytrusted independentDown/timedUp/allSettled/freshFinalUp after actual83HarnessFAIL; originalfull TypeScriptANDVitePASS. Sourceonlyerror-closure not executed protocol-failure/nativeRED; noBrowserPASS."
+      ]
+    }
+  ],
+  "earlyEvidenceLimitations": {
+    "01-02": "Original readable logs and exit files exist; original raw gzip is absent. Later gzip/rawSHA/UTC evidence cannot be reconstructed as contemporaneous data.",
+    "03-27": "Evidence completeness varies; only stored fields and actual logs are reported. No retrospective timestamps, raw hashes or execution receipts are invented."
+  }
+}

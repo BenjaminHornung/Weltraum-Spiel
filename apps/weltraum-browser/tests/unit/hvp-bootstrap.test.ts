@@ -34,6 +34,8 @@ import { createHvpLookProfile } from "../../src/hestia-prototype/presentation/lo
 import { createFp02Fixture } from "../../src/factory/catalog/fp02Catalog";
 import { mountFactorySession, type FactorySessionHandle } from "../../src/factory/session/factorySession";
 import type { FactoryHostPort, FactoryHostView } from "../../src/factory/session/hostPort";
+import { ThreeRenderBackend } from "../../src/render/three/backend";
+import type { FactoryFacilityRequest } from "../../src/hestia-prototype/physics/factoryFacilitySession";
 
 class FakeElement extends EventTarget {
   id = "";
@@ -537,6 +539,110 @@ describe("HVP T08 bootstrap lifecycle", () => {
       await Promise.resolve(); expect(confirm).not.toHaveBeenCalled();
       expect(source.counts().backendDisposals).toBe(0);
     } finally { await handle.dispose(); }
+  });
+
+  it("W07 actual Host Ghost move/rotate/cancel keeps one HVP frame, Cargo Open and disposal intact", async () => {
+    const source=harness(),original=source.overrides()!;
+    const fixture=await import("../../src/factory/fixtures/startSite");
+    let port!:FactoryHostPort,opened=false,revision=0;
+    const open=vi.fn(async()=>{opened=true;revision++;});
+    let rendererDisposals=0;const nativeCommands=vi.fn(async()=>{});
+    // Actual command receiver and ledger; only the WebGL driver is stubbed.
+    const backend=new ThreeRenderBackend({canvas:source.canvas as unknown as HTMLCanvasElement,rendererFactory:()=>({setPixelRatio(){},setSize(){},render(){},dispose(){rendererDisposals++;}})});
+    const dispatch=vi.spyOn(backend,"dispatch");
+    const handle=await startHvp(source.overrides({
+      createBackend:()=>backend,
+      createSourceSnapshot:fixture.materializeFactoryStartSite,
+      factorySourceProfile:{version:"hvp-factory-startsite-v1",readColumn:fixture.readFactorySourceColumnWorld},
+      createPhysics:async(...args:Parameters<NonNullable<typeof original.createPhysics>>)=>{
+        const native=await original.createPhysics!(...args),read=native.read,site=args[10]!;
+        // Transport fixture only: actual World/LOS/player/Cargo admission is independently exercised in Native and Browser tests.
+        return {...native,command:nativeCommands,openFactoryCargo:open,read:()=>({...read(),factoryFacilities:{revision,state:"Idle",transactionId:null,owners:[],prepared:null,
+          cargo:{site,ownerId:site.ownerId,containerId:site.containerId,sourceDigest:site.sourceDigest,profileDigest:site.profileDigest,opened,positionMm:site.centerMm,accessBoundsMm:site.accessBoundsMm,bodyHandle:4,colliderHandles:[5],accessible:true,openReceipt:null}}})};
+      },factoryExtension:async(host:FactoryHostPort)=>{
+        port=host;return {isQuiescent:()=>true,dispose:async()=>{host.construction!.dispose();}};
+      }
+    }));
+    try{
+      const request={transactionId:"frame_cycle_1",instanceId:"frame_cut_1",definitionSourceId:"B06",centerMm:[-6250,1500,5000],quarterTurns:1};
+      const initialDiagnostics=backend.readDiagnostics();
+      expect(()=>port.construction!.projectGhost(request)).not.toThrow();
+      const firstCommands=dispatch.mock.calls.map(([command])=>command);
+      const firstGhostUploads=firstCommands.filter((command):command is Extract<RenderCommand,{kind:"UpsertMeshArtifact"}>=>command.kind==="UpsertMeshArtifact"&&command.artifact.representationKey.startsWith("factory:ghost:slot_"));
+      const firstDiagnostics=backend.readDiagnostics(),poseStart=dispatch.mock.calls.length;
+      expect(()=>port.construction!.projectGhost({...request,centerMm:[-6000,1500,5000],quarterTurns:2})).not.toThrow();
+      const poseCommands=dispatch.mock.calls.slice(poseStart).map(([command])=>command);
+      expect(poseCommands.some(command=>command.kind==="UpsertMeshArtifact"||command.kind==="RemoveRepresentation")).toBe(false);
+      const movedProjection=poseCommands.filter((command):command is Extract<RenderCommand,{kind:"ApplyFrameProjection"}>=>command.kind==="ApplyFrameProjection").at(-1)!;
+      const movedTransforms=movedProjection.snapshot.representationTransforms.filter(value=>value.representationKey.startsWith("factory:ghost:slot_"));
+      expect(movedTransforms).toHaveLength(firstGhostUploads.length);
+      for(const transform of movedTransforms){expect(transform.positionRelative).toEqual({x:-6,y:1.5,z:5});expect(transform.orientation.y).toBe(1);expect(transform.orientation.w).toBeCloseTo(0);}
+      expect(backend.readDiagnostics()).toMatchObject({geometryAllocations:firstDiagnostics.geometryAllocations,geometryDisposals:firstDiagnostics.geometryDisposals,materialAllocations:firstDiagnostics.materialAllocations,materialDisposals:firstDiagnostics.materialDisposals});
+      expect(()=>port.construction!.projectGhost(null)).not.toThrow();
+      expect(()=>port.construction!.projectGhost(request)).not.toThrow();
+      expect(()=>port.construction!.projectGhost({...request,quarterTurns:3})).not.toThrow();
+      expect(()=>port.construction!.projectGhost(null)).not.toThrow();
+      for(let index=0;index<3;index++){
+        expect(()=>port.construction!.projectGhost({...request,instanceId:`new_paid_identity_${index}`})).not.toThrow();
+        expect(()=>port.construction!.projectGhost(null)).not.toThrow();
+      }
+      const commands=dispatch.mock.calls.map(([command])=>command);
+      const uploads=commands.filter((command):command is Extract<RenderCommand,{kind:"UpsertMeshArtifact"}>=>command.kind==="UpsertMeshArtifact"),frame=uploads[0]!.artifact.frameId;
+      const factoryUploads=uploads.filter(command=>command.artifact.representationKey.startsWith("factory:"));
+      expect(factoryUploads.length).toBeGreaterThan(1);expect(factoryUploads.every(command=>command.artifact.frameId===frame)).toBe(true);
+      const ghostUploads=factoryUploads.filter(command=>command.artifact.representationKey.startsWith("factory:ghost:slot_"));
+      expect(new Set(ghostUploads.map(command=>command.artifact.representationKey)).size).toBe(firstGhostUploads.length);
+      for(const first of firstGhostUploads){const lifecycle=ghostUploads.filter(command=>command.artifact.representationKey===first.artifact.representationKey);
+        expect(lifecycle.map(command=>command.artifact.artifactRevision)).toEqual([1,2,3,4,5]);
+        expect(lifecycle.every(command=>command.artifact.sourceRevision===first.artifact.sourceRevision&&command.artifact.contentHash===first.artifact.contentHash)).toBe(true);
+      }
+      expect(nativeCommands).not.toHaveBeenCalled();expect(open).not.toHaveBeenCalled();
+      expect(backend.readDiagnostics().visibleRepresentationKeys.some(key=>key.startsWith("factory:ghost:slot_"))).toBe(false);
+      expect(backend.readDiagnostics()).toMatchObject({activeRepresentations:initialDiagnostics.activeRepresentations,rejectedArtifacts:0,staleRejectCount:0});
+      await expect(port.construction!.openCargo()).resolves.toBeUndefined();expect(open).toHaveBeenCalledTimes(1);expect(port.read().confirmed).toBe(true);
+      stepFrame(source.windowPort,16);expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
+    }finally{await handle.dispose();}
+    expect(rendererDisposals).toBe(1);expect(backend.readDiagnostics().backendState).toBe("Disposed");expect(source.windowPort.animationFrames.size).toBe(0);
+  });
+
+  it("W07 actual receiver keeps Ghost separate from legal paid owner ghost_slot_0", async () => {
+    const source=harness(),original=source.overrides()!,fixture=await import("../../src/factory/fixtures/startSite");
+    const {isSaveSafeResourceId}=await import("../../src/resources/ids");
+    let port!:FactoryHostPort,session!:FactorySessionHandle,opened=false;
+    const backend=new ThreeRenderBackend({canvas:source.canvas as unknown as HTMLCanvasElement,rendererFactory:()=>({setPixelRatio(){},setSize(){},render(){},dispose(){}})});
+    const dispatch=vi.spyOn(backend,"dispatch"),prepare=vi.fn();
+    const handle=await startHvp(source.overrides({
+      createBackend:()=>backend,createSourceSnapshot:fixture.materializeFactoryStartSite,
+      factorySourceProfile:{version:"hvp-factory-startsite-v1",readColumn:fixture.readFactorySourceColumnWorld},
+      createPhysics:async(...args:Parameters<NonNullable<typeof original.createPhysics>>)=>{
+        const native=await original.createPhysics!(...args),read=native.read,site=args[10]!;
+        const facilities=()=>({revision:0,state:"Idle" as const,transactionId:null,owners:[],prepared:null,
+          cargo:{site,ownerId:site.ownerId,containerId:site.containerId,sourceDigest:site.sourceDigest,profileDigest:site.profileDigest,opened,positionMm:site.centerMm,accessBoundsMm:site.accessBoundsMm,bodyHandle:4,colliderHandles:[5],accessible:true,openReceipt:null}});
+        // This transport fixture tests Host/Resources/actual receiver admission, not a second Native install proof.
+        return {...native,command:async()=>{},openFactoryCargo:async()=>{opened=true;return facilities();},
+          prepareFactoryFacility:async(request:FactoryFacilityRequest)=>{prepare(request);return facilities();},commitFactoryFacility:async()=>{},publishFactoryFacility:()=>{},rollbackFactoryFacility:async()=>{},finalizeFactoryFacility:async()=>{},
+          read:()=>({...read(),player:{...read().player!,position:{x:-6.35,y:2.4,z:9.075}},factoryFacilities:facilities()})};
+      },factoryExtension:async(host:FactoryHostPort)=>{port=host;session=await mountFactorySession(host,createFp02Fixture("cargo").catalog);return session;}
+    }));
+    try{
+      await port.construction!.openCargo();
+      const request={transactionId:"legal_slot_paid_1",instanceId:"ghost_slot_0",definitionSourceId:"B06",centerMm:[-6250,1500,5000],quarterTurns:1};
+      expect(isSaveSafeResourceId(request.instanceId)).toBe(true);
+      const before=session.construction!.read().material;
+      const plan=session.construction!.preview(request);expect(plan.status).toBe("Prepared");if(plan.status!=="Prepared")throw new Error(plan.reason);
+      port.construction!.projectGhost(request);
+      expect(session.construction!.read().material).toBe(before);expect(prepare).not.toHaveBeenCalled();
+      await expect(session.construction!.commit(plan)).resolves.toMatchObject({status:"Committed",reason:"INSTALLED"});
+      expect(prepare).toHaveBeenCalledTimes(1);expect(session.construction!.read().installations[0]!.instanceId).toBe(request.instanceId);
+      const artifacts=dispatch.mock.calls.flatMap(([command])=>command.kind==="UpsertMeshArtifact"?[command.artifact]:[]);
+      const paid=artifacts.filter(value=>value.representationKey.startsWith("factory:ghost_slot_0:"));
+      const ghosts=artifacts.filter(value=>value.representationKey.startsWith("factory:ghost:slot_"));
+      expect(paid.length).toBeGreaterThan(0);expect(ghosts.length).toBe(paid.length);
+      expect(paid.every(value=>!ghosts.some(ghost=>ghost.representationKey===value.representationKey))).toBe(true);
+      port.construction!.projectGhost(null);
+      expect(backend.readDiagnostics().residentRepresentationKeys.filter(key=>key.startsWith("factory:ghost_slot_0:"))).toHaveLength(paid.length);
+      expect(backend.readDiagnostics()).toMatchObject({rejectedArtifacts:0,staleRejectCount:0});
+    }finally{await handle.dispose();}
   });
 
   it("W06 R1 publishes actual unconfirmed native holds without work and permits transient recovery", async () => {

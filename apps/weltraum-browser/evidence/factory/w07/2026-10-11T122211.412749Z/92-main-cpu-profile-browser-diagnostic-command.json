@@ -1,0 +1,26 @@
+{
+  "kind": "DIAGNOSTIC_ONLY_MAIN_V8_ATTRIBUTION_NOT_GAMEPLAY_GATE",
+  "argv": [
+    "npm",
+    "run",
+    "test:e2e",
+    "--",
+    "--config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts",
+    "tests/e2e/factory-placement.spec.ts"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "env": {
+    "FP06_E2E_RUN_DIR": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/browser-main-cpu-profile-diagnostic-92",
+    "WELTRAUM_FACTORY_EVIDENCE_RUN": "2026-10-11T122211.412749Z",
+    "WELTRAUM_PLAYWRIGHT_EXECUTABLE_PATH": "/usr/bin/chromium"
+  },
+  "startUtc": "2026-10-11T18:39:46.601045+00:00",
+  "endUtc": "2026-10-11T18:40:28.531075+00:00",
+  "wrapperSeconds": 41.93004112299968,
+  "exitCode": 0,
+  "rawBytes": 1169,
+  "rawSha256": "c6ca04133f11ed7d2ebc3d7ea8e0fcfa368500509c39796d30aa7cf8dc50cff1",
+  "configSha256": "53a55a48da97d43a02e317fb8edc844d57a9b5687f356a7ebf4f5b470efcf900",
+  "overlaySealSha256": "938cf6b2bad98bea168d0ba06bd29fdc6bbf27b1242ea0aa9306a65bee0be2bc",
+  "mainProfilerScope": "Existing Page main V8 isolate only; Worker/GPU/solver not profiled"
+}

@@ -1,0 +1,53 @@
+{
+  "kind": "DIAGNOSTIC_ONLY",
+  "actualFreshFixedOutputs": [
+    "diagnostic-render-wall-95-ready.json",
+    "diagnostic-render-wall-95-neutral.json",
+    "diagnostic-render-wall-95-125.json",
+    "diagnostic-render-wall-95-metadata.json",
+    "diagnostic-timeline-95-trace.json",
+    "diagnostic-timeline-95-metadata.json"
+  ],
+  "artifacts": [
+    {
+      "path": "browser-timeline-diagnostic-97/diagnostic-render-wall-95-125.json",
+      "sha256": "f4d4f5578480b0904a1d3e4ce0b509f53d43baccc017f0640a4301f3d0e301e6",
+      "bytes": 224520
+    },
+    {
+      "path": "browser-timeline-diagnostic-97/diagnostic-render-wall-95-metadata.json",
+      "sha256": "2bcce7af6be84597d897e5748b14507707331552bf0316fa18d42dd51a944868",
+      "bytes": 19203
+    },
+    {
+      "path": "browser-timeline-diagnostic-97/diagnostic-render-wall-95-neutral.json",
+      "sha256": "dc4d82318521a2b2b06eff3c4658b34ba7c47cea0b1f500d1ffeb1eafb5e7ed6",
+      "bytes": 150030
+    },
+    {
+      "path": "browser-timeline-diagnostic-97/diagnostic-render-wall-95-ready.json",
+      "sha256": "1f8cf85dd72b534418b911e1047cca8d64ae1a510a9a7783d8825a57ede5858c",
+      "bytes": 66583
+    },
+    {
+      "path": "browser-timeline-diagnostic-97/diagnostic-timeline-95-metadata.json",
+      "sha256": "704dcfffc1558c82d0e31682945abaf0329d0b07e58fc14bffc27bd22e46fc99",
+      "bytes": 5607
+    },
+    {
+      "path": "browser-timeline-diagnostic-97/diagnostic-timeline-95-trace.json",
+      "sha256": "f07c6b284b9c841885e5411169cd0f807c3c8a19ef896085047974778a8fd88c",
+      "bytes": 4023557
+    },
+    {
+      "path": "browser-timeline-diagnostic-97/playwright-output/.last-run.json",
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903",
+      "bytes": 45
+    },
+    {
+      "path": "browser-timeline-diagnostic-97/playwright-report/index.html",
+      "sha256": "deea50793d9b436f6e9d74295e8d41a77ecf8f6ba2dc661f493ad2019a8ee0b3",
+      "bytes": 530522
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "method": "Byte-exact current authorized control receipts, each timestamp/hash bound; not rewritten or reinterpreted as an immutable future package decision",
+  "inputs": [
+    {
+      "path": "closure-root-source-lock.json",
+      "sha256": "a4298ad5ace47a53992c0721e0e7d55242bb6c0d825a8bf82f1b2624cf2ae20e",
+      "bytes": 222158,
+      "originalSourcePath": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/source-lock.json",
+      "capturedAtUtc": "2026-10-11T19:39:37.322163+00:00"
+    },
+    {
+      "path": "closure-root-write-ownership.json",
+      "sha256": "3ac663c9ad8cb7d29d4c03edc869a8a5c2f290aa4b89a98557d85fe627389a74",
+      "bytes": 200781,
+      "originalSourcePath": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/write-ownership.json",
+      "capturedAtUtc": "2026-10-11T19:39:37.322552+00:00"
+    },
+    {
+      "path": "closure-exact-w07-grant.json",
+      "sha256": "59c71121353058decb3c9da4954ebb36afa6b50e0e286cabfc9eba522c9007f3",
+      "bytes": 57377,
+      "originalSourcePath": "/workspace/.cloud-setup/fp06-task-briefs/w07-grant.json",
+      "capturedAtUtc": "2026-10-11T19:39:37.322706+00:00"
+    },
+    {
+      "path": "closure-reviewed-predecessor-integration-receipt.json",
+      "sha256": "c934e2eda78567c76d365d8d8f85b1a5fae5cbe9492a9105649a74e399139b20",
+      "bytes": 29745,
+      "originalSourcePath": "/workspace/.cloud-setup/fp06-w07-reviewed-integration-receipt.json",
+      "capturedAtUtc": "2026-10-11T19:39:37.322801+00:00"
+    }
+  ]
+}

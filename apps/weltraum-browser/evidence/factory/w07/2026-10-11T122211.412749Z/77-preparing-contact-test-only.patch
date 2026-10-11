@@ -1,0 +1,75 @@
+diff --git a/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/input-delivery-source-binding/candidate/tests/unit/hvp-player-input.test.ts.txt b/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/tests/unit/hvp-player-input.test.ts
+index e0f00408..00de43e8 100644
+--- a/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/input-delivery-source-binding/candidate/tests/unit/hvp-player-input.test.ts.txt
++++ b/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/tests/unit/hvp-player-input.test.ts
+@@ -4,9 +4,10 @@ import { createHvpPlayerInput } from "../../src/hestia-prototype/player/input";
+ import { createHvpPhysicsClient, type HvpPhysicsClient } from "../../src/hestia-prototype/physics/client";
+ import { createHvpPhysicsSession, type HvpPhysicsSession } from "../../src/hestia-prototype/physics/session";
+ import { initializeHvpRapier } from "../../src/hestia-prototype/physics/rapierPort";
+-import type { HvpPlayerInput } from "../../src/hestia-prototype/player/locomotion";
++import { HVP_PLAYER_PROFILE, type HvpPlayerInput } from "../../src/hestia-prototype/player/locomotion";
+ import type { HvpPhysicsMessage, HvpPhysicsReply } from "../../src/hestia-prototype/physics/physicsWorker";
+ import { createFp02Fixture } from "../../src/factory/catalog/fp02Catalog";
++import { HVP_SOURCE_MIN_METERS } from "../../src/hvp/hvpCoastSource";
+ 
+ // Explicit transport harness only: empty sources need no collision jobs. Native
+ // snapshots below come from real Rapier sessions; no simulated axis pose or tick.
+@@ -95,6 +96,8 @@ class NativeTransport {
+       }
+       else if (message.kind === "Pause") this.session.pause();
+       else if (message.kind === "Play") this.session.play();
++      else if (message.kind === "BeginBodyCut") { this.reply(message.id, this.session.beginBodyCut(message.request)); return; }
++      else if (message.kind === "RollbackBodyCut") this.session.rollbackBodyCut(message.transactionId);
+       else if (message.kind === "PrepareFactoryFacility") this.session.prepareFactoryFacility(message.request);
+       else if (message.kind === "CommitFactoryFacility") this.session.commitFactoryFacility(message.transactionId);
+       else if (message.kind === "RollbackFactoryFacility") this.session.rollbackFactoryFacility(message.transactionId);
+@@ -102,7 +105,7 @@ class NativeTransport {
+       this.reply(message.id);
+     })().catch(error => { this.onmessage?.({ data: { id: message.id, rejected: String(error) } } as MessageEvent<HvpPhysicsReply>); });
+   }
+-  reply(id: number) { this.onmessage?.(new MessageEvent<HvpPhysicsReply>("message", { data: { id, snapshot: this.session.read(), clock: { timers: 0, maxTimerGapMs: 0, maxAdvanceMs: 0,
++  reply(id: number, bodyPreparation?: HvpPhysicsReply["bodyPreparation"]) { this.onmessage?.(new MessageEvent<HvpPhysicsReply>("message", { data: { id, ...(bodyPreparation ? { bodyPreparation } : {}), snapshot: this.session.read(), clock: { timers: 0, maxTimerGapMs: 0, maxAdvanceMs: 0,
+     maxHandlerMs: 0, lastCommand: "explicit-native-transport-fixture", lastHandlerMs: 0, delayedCallbacks: [] } } })); }
+   release() { const message = this.reads.shift(); if (!message) throw new Error("Missing held test Read"); this.reply(message.id); }
+   terminate() { this.terminated = true; this.session?.dispose(); }
+@@ -171,6 +174,40 @@ describe("W07 supported Factory input before snapshot ACK", () => {
+ });
+ 
+ describe("W07 actual Native Factory input safety boundaries", () => {
++  it.each(["Native", "Client"])("neutralizes admitted input at a real %s body-cut Preparing entry while native ticks continue", async boundary => {
++    const { client, worker } = await supportedClientHarness(); const native = worker.session;
++    // Synthetic mechanical fixture: real source-grid stone cells admitted by
++    // the existing Native transaction. No renderer, pose or clock injection.
++    const ownerId = "hvp:terrain-fragment:r1:1234abcd";
++    const eyeY = native.read().player!.position.y + HVP_PLAYER_PROFILE.eyeHeight - HVP_PLAYER_PROFILE.height / 2;
++    const contactY = Math.floor((eyeY - HVP_SOURCE_MIN_METERS.y) / 0.125);
++    native.prepareTerrain("input_cut_contact", 0, [{ index: 0, mesh: supportedGround() }], [{ ownerId,
++      cells: [127, 128, 129].map(x => ({ x, y: contactY, z: 144, materialId: 1 })),
++      origin: HVP_SOURCE_MIN_METERS, massKg: 3 * 2400 * 0.125 ** 3 }]);
++    native.commitTerrain("input_cut_contact"); native.finalizeTerrain("input_cut_contact");
++    client.update(); worker.release(); await turn();
++    const fragment = native.read().terrainFragments.find(part => part.ownerId === ownerId)!;
++    expect(fragment).toBeDefined(); expect(native.read().player!.grounded).toBe(true);
++    const request = { id: `input_cut_${boundary.toLowerCase()}`, ownerId, sourceDigest: fragment.sourceDigest,
++      edge: 1, direction: { x: 0, y: 0, z: 1 } };
++    const before = native.read();
++    if (boundary === "Client") client.setPlayerInput({ ...zero, x: 1, jump: true });
++    else expect(native.factoryInput({ ...zero, x: 1, jump: true })).toBe(true);
++    const preparation = boundary === "Client" ? await client.beginBodyCut(request) : native.beginBodyCut(request);
++    expect(preparation.payload).toMatchObject({ ownerId, sourceDigest: fragment.sourceDigest, commandId: request.id });
++    expect(native.read()).toMatchObject({ status: "Running", moving: { state: "Preparing", pendingId: request.id } });
++    expect(native.read().ticks).toBe(before.ticks); expect(native.read().player!.position).toEqual(before.player!.position);
++    if (boundary === "Client") client.setPlayerInput(zero);
++    else expect(native.factoryInput(zero)).toBe(false);
++    expect(native.read().ticks).toBe(before.ticks); expect(native.read().player!.position).toEqual(before.player!.position);
++    for (let step = 0; step < 6; step++) native.advance(1 / 60);
++    expect(native.read().ticks).toBe(before.ticks + 6);
++    expect.soft(native.read().player!.position.x).toBeCloseTo(before.player!.position.x, 6);
++    expect.soft(native.read().player!.jumpCount).toBe(before.player!.jumpCount);
++    if (boundary === "Client") await client.rollbackBodyCut(request.id); else native.rollbackBodyCut(request.id);
++    expect(native.read().moving.state).toBe("Idle");
++  });
++
+   it("neutralizes a previously admitted level and pending jump on Native hold entry, without changing pose ticks or velocity", async () => {
+     const { worker } = await supportedClientHarness(); const native = worker.session;
+     native.input({ ...zero, x: 1, jump: true }); const before = native.read();

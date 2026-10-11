@@ -1,0 +1,694 @@
+{
+  "kind": "DIAGNOSTIC_ONLY_RENDER_WALL_NOT_GAMEPLAY_GATE",
+  "scope": "Synchronous wall duration includes CPU/native/wait; no GPU hardware attribution",
+  "nodeVersion": "v22.23.3",
+  "chromiumVersion": "154.0.8037.57",
+  "projectName": "chromium",
+  "projectUse": {
+    "baseURL": "http://127.0.0.1:5174",
+    "trace": "retain-on-failure",
+    "screenshot": "only-on-failure",
+    "launchOptions": {
+      "executablePath": "/usr/bin/chromium"
+    },
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.7827.55 Safari/537.36",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "screen": {
+      "width": 1920,
+      "height": 1080
+    },
+    "deviceScaleFactor": 1,
+    "isMobile": false,
+    "hasTouch": false,
+    "defaultBrowserType": "chromium"
+  },
+  "scene": {
+    "url": "http://127.0.0.1:5174/factory.html",
+    "seed": "hestia-hvp-lagoon-001",
+    "sourceRevision": "hvp-authored-coast-v5",
+    "sourceDigest": "e62aea8a",
+    "camera": "{\"position\":[-5.5,3.1600027101897217,11.875],\"orientation\":[0,1,0,6.123233995736766e-17],\"visualBody\":[-5.5,2.4100027101897217,11.875],\"heightMeters\":1.8,\"view\":\"FirstPerson\"}",
+    "resources": "{\"ledger\":{\"slotBytes\":8388608,\"preparedCopyBytes\":8388608,\"maskBytes\":1089536,\"meshBytes\":25456116,\"groupedIndexBytes\":2373984,\"artifactCopyBytes\":25456116,\"retainedMeshBytes\":25470980,\"tempEstimateBytes\":150262360,\"vegetationSourceBytes\":5251200,\"checkpointSourceBytes\":0,\"totalCpuBytes\":232013160,\"gpuBytes\":\"unsupported\",\"triangles\":341190,\"drawCalls\":166,\"factoryCpuBytes\":13512,\"factoryMeshBytes\":1296,\"factoryTriangles\":12,\"factoryDraws\":1,\"dormantCheckpointBytes\":0,\"neighborSourceBytes\":0,\"neighborCacheBytes\":0,\"neighborCheckpointBytes\":0,\"neighborBaseProxyBytes\":0,\"physicsPayloadBytes\":4201776,\"physicsPrepareBytes\":100663296,\"dynamicFragmentSourceBytes\":0},\"caps\":{\"maxCpuBytes\":268435456,\"maxMeshBytes\":134217728,\"maxTriangles\":500000,\"maxDrawCalls\":300}}"
+  },
+  "neutralBefore": {
+    "ticks": 1337,
+    "backlogSeconds": 0.002500000000000089,
+    "discardedSeconds": 0.005766666668157151,
+    "status": "Running",
+    "gravity": 11.794460201817357,
+    "gravityProfile": "local-tangent-gravity-v1",
+    "activeDynamic": 0,
+    "residentDynamic": 2,
+    "solver": "rapier-0.12.0",
+    "stepCpuMs": 0.10000000149011612,
+    "bodyCount": 5,
+    "factoryFacilities": {
+      "cargo": {
+        "ownerId": "fp02_wreck_owner",
+        "containerId": "fp02_wreck_cargo",
+        "sourceDigest": "e62aea8a",
+        "profileDigest": "da3d7be8",
+        "opened": true,
+        "positionMm": [
+          -5500,
+          2000,
+          13125
+        ],
+        "accessBoundsMm": {
+          "min": [
+            -6250,
+            1500,
+            11625
+          ],
+          "max": [
+            -4750,
+            3500,
+            12625
+          ]
+        },
+        "bodyHandle": 2e-323,
+        "colliderHandles": [
+          3.95e-322
+        ],
+        "site": {
+          "version": "fp06-initial-cargo-s0-v1",
+          "ownerId": "fp02_wreck_owner",
+          "containerId": "fp02_wreck_cargo",
+          "sourceDigest": "e62aea8a",
+          "sourceRefs": [
+            "FP01:5.5:source-access",
+            "FP01:E00:permanently-grounded-cargo",
+            "FP02:6.4:finite-reachable-depot",
+            "FP02:9.1:cargo-outside-machine-zone"
+          ],
+          "centerMm": [
+            -5500,
+            2000,
+            13125
+          ],
+          "sizeMm": [
+            1500,
+            1500,
+            1000
+          ],
+          "boundsMm": {
+            "min": [
+              -6250,
+              1250,
+              12625
+            ],
+            "max": [
+              -4750,
+              2750,
+              13625
+            ]
+          },
+          "accessPointMm": [
+            -5500,
+            2250,
+            12625
+          ],
+          "accessBoundsMm": {
+            "min": [
+              -6250,
+              1500,
+              11625
+            ],
+            "max": [
+              -4750,
+              3500,
+              12625
+            ]
+          },
+          "spawnMm": [
+            -5500,
+            2420,
+            11875
+          ],
+          "geometryPolicy": "Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.",
+          "canonicalJson": "{\"accessBoundsMm\":{\"max\":[-4750,3500,12625],\"min\":[-6250,1500,11625]},\"accessPointMm\":[-5500,2250,12625],\"boundsMm\":{\"max\":[-4750,2750,13625],\"min\":[-6250,1250,12625]},\"centerMm\":[-5500,2000,13125],\"containerId\":\"fp02_wreck_cargo\",\"geometryPolicy\":\"Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.\",\"ownerId\":\"fp02_wreck_owner\",\"sizeMm\":[1500,1500,1000],\"sourceDigest\":\"e62aea8a\",\"sourceRefs\":[\"FP01:5.5:source-access\",\"FP01:E00:permanently-grounded-cargo\",\"FP02:6.4:finite-reachable-depot\",\"FP02:9.1:cargo-outside-machine-zone\"],\"spawnMm\":[-5500,2420,11875],\"version\":\"fp06-initial-cargo-s0-v1\"}",
+          "profileDigest": "da3d7be8"
+        },
+        "accessible": true,
+        "openReceipt": {
+          "ownerId": "fp02_wreck_owner",
+          "profileDigest": "da3d7be8",
+          "expectedTerrainRevision": 0,
+          "expectedRevision": 0
+        }
+      },
+      "revision": 1,
+      "state": "Idle",
+      "transactionId": null,
+      "owners": [],
+      "prepared": null
+    },
+    "colliderCount": 81,
+    "nativeBytes": "unsupported",
+    "terrainGeneration": 0,
+    "collisionBytes": 2100888,
+    "terrainTransaction": "Idle",
+    "terrainFragments": [],
+    "parked": [],
+    "neighbor": null,
+    "dormantCheckpointBytes": 0,
+    "bodyResidencyId": null,
+    "bodyResidencyTransaction": "Idle",
+    "neighborTransaction": "Idle",
+    "neighborPinned": false,
+    "preparedTerrainFragments": [],
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4100027084350586,
+        "z": 11.875
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Walking"
+    },
+    "structural": {
+      "kind": "branch",
+      "origin": {
+        "x": -12,
+        "y": 1.75,
+        "z": -13.5
+      },
+      "cutEdge": 4,
+      "generation": 0,
+      "sourceDigest": "fnv1a64-v1:9cb845863922efae",
+      "state": "Idle",
+      "last": null,
+      "preview": null,
+      "aimPoint": {
+        "x": -11.25,
+        "y": 3,
+        "z": -13.25
+      },
+      "attachment": {
+        "id": "hvp:branch:foliage",
+        "ownerId": "hvp:branch:parent",
+        "supportCell": {
+          "x": 10,
+          "y": 11,
+          "z": 2
+        }
+      },
+      "parts": [
+        {
+          "ownerId": "hvp:branch:parent",
+          "sourceDigest": "fnv1a64-v1:f86be8fb3a37f1cb",
+          "anchored": true,
+          "cellCount": 384,
+          "center": {
+            "x": 0.75,
+            "y": 1,
+            "z": 0.25
+          },
+          "position": {
+            "x": -11.25,
+            "y": 2.75,
+            "z": -13.25
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "w": 1
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "massKg": 450,
+          "sleeping": false
+        }
+      ]
+    },
+    "moving": {
+      "sequence": 0,
+      "pendingId": null,
+      "state": "Idle",
+      "preview": null,
+      "last": null
+    },
+    "lastImpulse": null,
+    "impulseTarget": {
+      "kind": "NoContact",
+      "target": null,
+      "distanceMeters": null,
+      "massKg": null,
+      "point": null
+    },
+    "lastImpulseTick": null,
+    "inertia": {
+      "ownerId": "hvp:physics:inertia",
+      "sourceDigest": "fnv1a64-v1:15f3bb58342acf4c",
+      "centerOfMass": {
+        "x": 0.29583333333333334,
+        "y": 0.29583333333333334,
+        "z": 0.125
+      },
+      "tensor": {
+        "xx": 3.441772460937501,
+        "yy": 3.4417724609374996,
+        "zz": 6.517333984375002,
+        "xy": 1.9140625000000004,
+        "xz": 0,
+        "yz": 1.3877787807814457e-17
+      },
+      "principal": {
+        "principalInertia": {
+          "x": 1.5277099609374998,
+          "y": 5.355834960937501,
+          "z": 6.517333984375002
+        },
+        "frame": {
+          "x": 0.3826834323650899,
+          "y": 0.9238795325112867,
+          "z": 0,
+          "w": 0
+        },
+        "residual": 1.1102230246251565e-16
+      },
+      "colliders": 2,
+      "impulses": 0,
+      "aimPoint": {
+        "x": -8.564777374267578,
+        "y": 1.312473177909851,
+        "z": -13.287601470947266
+      },
+      "angularVelocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "bodies": [
+      {
+        "ownerId": "hvp:physics:drop",
+        "position": {
+          "x": -9.626763343811035,
+          "y": 0.6239127516746521,
+          "z": -7.506459712982178
+        },
+        "orientation": {
+          "x": -0.6540415287017822,
+          "y": -0.26832863688468933,
+          "z": 0.2684771716594696,
+          "w": -0.6543312072753906
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "sleeping": true,
+        "massKg": 300
+      },
+      {
+        "ownerId": "hvp:physics:inertia",
+        "position": {
+          "x": -8.716800689697266,
+          "y": 1.5458214282989502,
+          "z": -13.151344299316406
+        },
+        "orientation": {
+          "x": -0.0002377739001531154,
+          "y": 0.3575611114501953,
+          "z": 0.00005180474545340985,
+          "w": 0.9338896870613098
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "sleeping": true,
+        "massKg": 35.15625
+      },
+      {
+        "ownerId": "hvp:branch:parent",
+        "position": {
+          "x": -11.25,
+          "y": 2.75,
+          "z": -13.25
+        },
+        "orientation": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "w": 1
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "sleeping": false,
+        "massKg": 450
+      }
+    ]
+  },
+  "neutralWaitStartMs": 31532.037301,
+  "neutralWaitEndMs": 36532.392811,
+  "neutralAfter": {
+    "ticks": 1666,
+    "backlogSeconds": 0.006366666669647168,
+    "discardedSeconds": 0.005766666668157151,
+    "status": "Running",
+    "gravity": 11.794460201817357,
+    "gravityProfile": "local-tangent-gravity-v1",
+    "activeDynamic": 0,
+    "residentDynamic": 2,
+    "solver": "rapier-0.12.0",
+    "stepCpuMs": 0.19999999552965164,
+    "bodyCount": 5,
+    "factoryFacilities": {
+      "cargo": {
+        "ownerId": "fp02_wreck_owner",
+        "containerId": "fp02_wreck_cargo",
+        "sourceDigest": "e62aea8a",
+        "profileDigest": "da3d7be8",
+        "opened": true,
+        "positionMm": [
+          -5500,
+          2000,
+          13125
+        ],
+        "accessBoundsMm": {
+          "min": [
+            -6250,
+            1500,
+            11625
+          ],
+          "max": [
+            -4750,
+            3500,
+            12625
+          ]
+        },
+        "bodyHandle": 2e-323,
+        "colliderHandles": [
+          3.95e-322
+        ],
+        "site": {
+          "version": "fp06-initial-cargo-s0-v1",
+          "ownerId": "fp02_wreck_owner",
+          "containerId": "fp02_wreck_cargo",
+          "sourceDigest": "e62aea8a",
+          "sourceRefs": [
+            "FP01:5.5:source-access",
+            "FP01:E00:permanently-grounded-cargo",
+            "FP02:6.4:finite-reachable-depot",
+            "FP02:9.1:cargo-outside-machine-zone"
+          ],
+          "centerMm": [
+            -5500,
+            2000,
+            13125
+          ],
+          "sizeMm": [
+            1500,
+            1500,
+            1000
+          ],
+          "boundsMm": {
+            "min": [
+              -6250,
+              1250,
+              12625
+            ],
+            "max": [
+              -4750,
+              2750,
+              13625
+            ]
+          },
+          "accessPointMm": [
+            -5500,
+            2250,
+            12625
+          ],
+          "accessBoundsMm": {
+            "min": [
+              -6250,
+              1500,
+              11625
+            ],
+            "max": [
+              -4750,
+              3500,
+              12625
+            ]
+          },
+          "spawnMm": [
+            -5500,
+            2420,
+            11875
+          ],
+          "geometryPolicy": "Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.",
+          "canonicalJson": "{\"accessBoundsMm\":{\"max\":[-4750,3500,12625],\"min\":[-6250,1500,11625]},\"accessPointMm\":[-5500,2250,12625],\"boundsMm\":{\"max\":[-4750,2750,13625],\"min\":[-6250,1250,12625]},\"centerMm\":[-5500,2000,13125],\"containerId\":\"fp02_wreck_cargo\",\"geometryPolicy\":\"Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.\",\"ownerId\":\"fp02_wreck_owner\",\"sizeMm\":[1500,1500,1000],\"sourceDigest\":\"e62aea8a\",\"sourceRefs\":[\"FP01:5.5:source-access\",\"FP01:E00:permanently-grounded-cargo\",\"FP02:6.4:finite-reachable-depot\",\"FP02:9.1:cargo-outside-machine-zone\"],\"spawnMm\":[-5500,2420,11875],\"version\":\"fp06-initial-cargo-s0-v1\"}",
+          "profileDigest": "da3d7be8"
+        },
+        "accessible": true,
+        "openReceipt": {
+          "ownerId": "fp02_wreck_owner",
+          "profileDigest": "da3d7be8",
+          "expectedTerrainRevision": 0,
+          "expectedRevision": 0
+        }
+      },
+      "revision": 1,
+      "state": "Idle",
+      "transactionId": null,
+      "owners": [],
+      "prepared": null
+    },
+    "colliderCount": 81,
+    "nativeBytes": "unsupported",
+    "terrainGeneration": 0,
+    "collisionBytes": 2100888,
+    "terrainTransaction": "Idle",
+    "terrainFragments": [],
+    "parked": [],
+    "neighbor": null,
+    "dormantCheckpointBytes": 0,
+    "bodyResidencyId": null,
+    "bodyResidencyTransaction": "Idle",
+    "neighborTransaction": "Idle",
+    "neighborPinned": false,
+    "preparedTerrainFragments": [],
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4100027084350586,
+        "z": 11.875
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Walking"
+    },
+    "structural": {
+      "kind": "branch",
+      "origin": {
+        "x": -12,
+        "y": 1.75,
+        "z": -13.5
+      },
+      "cutEdge": 4,
+      "generation": 0,
+      "sourceDigest": "fnv1a64-v1:9cb845863922efae",
+      "state": "Idle",
+      "last": null,
+      "preview": null,
+      "aimPoint": {
+        "x": -11.25,
+        "y": 3,
+        "z": -13.25
+      },
+      "attachment": {
+        "id": "hvp:branch:foliage",
+        "ownerId": "hvp:branch:parent",
+        "supportCell": {
+          "x": 10,
+          "y": 11,
+          "z": 2
+        }
+      },
+      "parts": [
+        {
+          "ownerId": "hvp:branch:parent",
+          "sourceDigest": "fnv1a64-v1:f86be8fb3a37f1cb",
+          "anchored": true,
+          "cellCount": 384,
+          "center": {
+            "x": 0.75,
+            "y": 1,
+            "z": 0.25
+          },
+          "position": {
+            "x": -11.25,
+            "y": 2.75,
+            "z": -13.25
+          },
+          "orientation": {
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "w": 1
+          },
+          "velocity": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "massKg": 450,
+          "sleeping": false
+        }
+      ]
+    },
+    "moving": {
+      "sequence": 0,
+      "pendingId": null,
+      "state": "Idle",
+      "preview": null,
+      "last": null
+    },
+    "lastImpulse": null,
+    "impulseTarget": {
+      "kind": "NoContact",
+      "target": null,
+      "distanceMeters": null,
+      "massKg": null,
+      "point": null
+    },
+    "lastImpulseTick": null,
+    "inertia": {
+      "ownerId": "hvp:physics:inertia",
+      "sourceDigest": "fnv1a64-v1:15f3bb58342acf4c",
+      "centerOfMass": {
+        "x": 0.29583333333333334,
+        "y": 0.29583333333333334,
+        "z": 0.125
+      },
+      "tensor": {
+        "xx": 3.441772460937501,
+        "yy": 3.4417724609374996,
+        "zz": 6.517333984375002,
+        "xy": 1.9140625000000004,
+        "xz": 0,
+        "yz": 1.3877787807814457e-17
+      },
+      "principal": {
+        "principalInertia": {
+          "x": 1.5277099609374998,
+          "y": 5.355834960937501,
+          "z": 6.517333984375002
+        },
+        "frame": {
+          "x": 0.3826834323650899,
+          "y": 0.9238795325112867,
+          "z": 0,
+          "w": 0
+        },
+        "residual": 1.1102230246251565e-16
+      },
+      "colliders": 2,
+      "impulses": 0,
+      "aimPoint": {
+        "x": -8.564777374267578,
+        "y": 1.312473177909851,
+        "z": -13.287601470947266
+      },
+      "angularVelocity": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "bodies": [
+      {
+        "ownerId": "hvp:physics:drop",
+        "position": {
+          "x": -9.626763343811035,
+          "y": 0.6239127516746521,
+          "z": -7.506459712982178
+        },
+        "orientation": {
+          "x": -0.6540415287017822,
+          "y": -0.26832863688468933,
+          "z": 0.2684771716594696,
+          "w": -0.6543312072753906
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "sleeping": true,
+        "massKg": 300
+      },
+      {
+        "ownerId": "hvp:physics:inertia",
+        "position": {
+          "x": -8.716800689697266,
+          "y": 1.5458214282989502,
+          "z": -13.151344299316406
+        },
+        "orientation": {
+          "x": -0.0002377739001531154,
+          "y": 0.3575611114501953,
+          "z": 0.00005180474545340985,
+          "w": 0.9338896870613098
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "sleeping": true,
+        "massKg": 35.15625
+      },
+      {
+        "ownerId": "hvp:branch:parent",
+        "position": {
+          "x": -11.25,
+          "y": 2.75,
+          "z": -13.25
+        },
+        "orientation": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "w": 1
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "sleeping": false,
+        "massKg": 450
+      }
+    ]
+  },
+  "observedRenderCallsProveAppEsmIdentity": 45,
+  "restoration": {
+    "canvas": true,
+    "backend": {
+      "renderFrame": true,
+      "dispatch": true
+    }
+  }
+}

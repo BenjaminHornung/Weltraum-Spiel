@@ -1,0 +1,2908 @@
+{
+  "before": {
+    "cargo": {
+      "ownerId": "fp02_wreck_owner",
+      "containerId": "fp02_wreck_cargo",
+      "sourceDigest": "e62aea8a",
+      "profileDigest": "da3d7be8",
+      "opened": true,
+      "positionMm": [
+        -5500,
+        2000,
+        13125
+      ],
+      "accessBoundsMm": {
+        "min": [
+          -6250,
+          1500,
+          11625
+        ],
+        "max": [
+          -4750,
+          3500,
+          12625
+        ]
+      },
+      "bodyHandle": 2e-323,
+      "colliderHandles": [
+        3.95e-322
+      ],
+      "site": {
+        "version": "fp06-initial-cargo-s0-v1",
+        "ownerId": "fp02_wreck_owner",
+        "containerId": "fp02_wreck_cargo",
+        "sourceDigest": "e62aea8a",
+        "sourceRefs": [
+          "FP01:5.5:source-access",
+          "FP01:E00:permanently-grounded-cargo",
+          "FP02:6.4:finite-reachable-depot",
+          "FP02:9.1:cargo-outside-machine-zone"
+        ],
+        "centerMm": [
+          -5500,
+          2000,
+          13125
+        ],
+        "sizeMm": [
+          1500,
+          1500,
+          1000
+        ],
+        "boundsMm": {
+          "min": [
+            -6250,
+            1250,
+            12625
+          ],
+          "max": [
+            -4750,
+            2750,
+            13625
+          ]
+        },
+        "accessPointMm": [
+          -5500,
+          2250,
+          12625
+        ],
+        "accessBoundsMm": {
+          "min": [
+            -6250,
+            1500,
+            11625
+          ],
+          "max": [
+            -4750,
+            3500,
+            12625
+          ]
+        },
+        "spawnMm": [
+          -5500,
+          2420,
+          11875
+        ],
+        "geometryPolicy": "Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.",
+        "canonicalJson": "{\"accessBoundsMm\":{\"max\":[-4750,3500,12625],\"min\":[-6250,1500,11625]},\"accessPointMm\":[-5500,2250,12625],\"boundsMm\":{\"max\":[-4750,2750,13625],\"min\":[-6250,1250,12625]},\"centerMm\":[-5500,2000,13125],\"containerId\":\"fp02_wreck_cargo\",\"geometryPolicy\":\"Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.\",\"ownerId\":\"fp02_wreck_owner\",\"sizeMm\":[1500,1500,1000],\"sourceDigest\":\"e62aea8a\",\"sourceRefs\":[\"FP01:5.5:source-access\",\"FP01:E00:permanently-grounded-cargo\",\"FP02:6.4:finite-reachable-depot\",\"FP02:9.1:cargo-outside-machine-zone\"],\"spawnMm\":[-5500,2420,11875],\"version\":\"fp06-initial-cargo-s0-v1\"}",
+        "profileDigest": "da3d7be8"
+      },
+      "accessible": true,
+      "openReceipt": {
+        "ownerId": "fp02_wreck_owner",
+        "profileDigest": "da3d7be8",
+        "expectedTerrainRevision": 0,
+        "expectedRevision": 0
+      }
+    },
+    "state": "Ready",
+    "installations": [],
+    "revision": 0,
+    "massMg": 2984400000,
+    "containers": [
+      {
+        "containerId": "fp02_wreck_cargo",
+        "massKg": 2984.3999999999996,
+        "contents": [
+          {
+            "stackId": "fp02_cargo_c01_unit_1",
+            "resourceId": "fp02_device_wind_pack_6kw",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C01",
+                "definitionDigest": "fnv1a:f343dc84",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c01_unit_1",
+                "itemId": "fp02.device.wind_pack_6kw",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c01_unit_2",
+            "resourceId": "fp02_device_wind_pack_6kw",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C01",
+                "definitionDigest": "fnv1a:f343dc84",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c01_unit_2",
+                "itemId": "fp02.device.wind_pack_6kw",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c02_unit_1",
+            "resourceId": "fp02_device_pv_pack_2kwp",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C02",
+                "definitionDigest": "fnv1a:0dc8fe24",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c02_unit_1",
+                "itemId": "fp02.device.pv_pack_2kwp",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c02_unit_2",
+            "resourceId": "fp02_device_pv_pack_2kwp",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C02",
+                "definitionDigest": "fnv1a:0dc8fe24",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c02_unit_2",
+                "itemId": "fp02.device.pv_pack_2kwp",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c02_unit_3",
+            "resourceId": "fp02_device_pv_pack_2kwp",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C02",
+                "definitionDigest": "fnv1a:0dc8fe24",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c02_unit_3",
+                "itemId": "fp02.device.pv_pack_2kwp",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c02_unit_4",
+            "resourceId": "fp02_device_pv_pack_2kwp",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C02",
+                "definitionDigest": "fnv1a:0dc8fe24",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c02_unit_4",
+                "itemId": "fp02.device.pv_pack_2kwp",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c03_unit_1",
+            "resourceId": "fp02_device_battery_4kwh",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C03",
+                "definitionDigest": "fnv1a:58bffb41",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c03_unit_1",
+                "itemId": "fp02.device.battery_4kwh",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c04_unit_1",
+            "resourceId": "fp02_device_distribution_40kw",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C04",
+                "definitionDigest": "fnv1a:006549f4",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c04_unit_1",
+                "itemId": "fp02.device.distribution_40kw",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c05_unit_1",
+            "resourceId": "fp02_device_field_workbench",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C05",
+                "definitionDigest": "fnv1a:d93cb131",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c05_unit_1",
+                "itemId": "fp02.device.field_workbench",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c06_unit_1",
+            "resourceId": "fp02_device_thermal_generator_core",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C06",
+                "definitionDigest": "fnv1a:bb76b461",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c06_unit_1",
+                "itemId": "fp02.device.thermal_generator_core",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c07_lot_1",
+            "resourceId": "fp02_comp_field_cable",
+            "quantity": 40000,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C07",
+                "definitionDigest": "fnv1a:f02fd7a7",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c07_lot_1",
+                "itemId": "fp02.comp.field_cable",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c08_unit_1",
+            "resourceId": "fp02_device_material_container",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C08",
+                "definitionDigest": "fnv1a:924d78dc",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c08_unit_1",
+                "itemId": "fp02.device.material_container",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c08_unit_2",
+            "resourceId": "fp02_device_material_container",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C08",
+                "definitionDigest": "fnv1a:924d78dc",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c08_unit_2",
+                "itemId": "fp02.device.material_container",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c08_unit_3",
+            "resourceId": "fp02_device_material_container",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C08",
+                "definitionDigest": "fnv1a:924d78dc",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c08_unit_3",
+                "itemId": "fp02.device.material_container",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c09_unit_1",
+            "resourceId": "fp02_comp_foundation_foot",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C09",
+                "definitionDigest": "fnv1a:b26fb65c",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c09_unit_1",
+                "itemId": "fp02.comp.foundation_foot",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c09_unit_2",
+            "resourceId": "fp02_comp_foundation_foot",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C09",
+                "definitionDigest": "fnv1a:b26fb65c",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c09_unit_2",
+                "itemId": "fp02.comp.foundation_foot",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c09_unit_3",
+            "resourceId": "fp02_comp_foundation_foot",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C09",
+                "definitionDigest": "fnv1a:b26fb65c",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c09_unit_3",
+                "itemId": "fp02.comp.foundation_foot",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c09_unit_4",
+            "resourceId": "fp02_comp_foundation_foot",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C09",
+                "definitionDigest": "fnv1a:b26fb65c",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c09_unit_4",
+                "itemId": "fp02.comp.foundation_foot",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c09_unit_5",
+            "resourceId": "fp02_comp_foundation_foot",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C09",
+                "definitionDigest": "fnv1a:b26fb65c",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c09_unit_5",
+                "itemId": "fp02.comp.foundation_foot",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c09_unit_6",
+            "resourceId": "fp02_comp_foundation_foot",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C09",
+                "definitionDigest": "fnv1a:b26fb65c",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c09_unit_6",
+                "itemId": "fp02.comp.foundation_foot",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c10_lot_1",
+            "resourceId": "fp02_bulk_steel_known",
+            "quantity": 96000000,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C10",
+                "definitionDigest": "fnv1a:e6cd3ae3",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c10_lot_1",
+                "itemId": "fp02.bulk.steel_known",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c11_lot_1",
+            "resourceId": "fp02_bulk_steel_profile",
+            "quantity": 80000000,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C11",
+                "definitionDigest": "fnv1a:c76030aa",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c11_lot_1",
+                "itemId": "fp02.bulk.steel_profile",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c12_lot_1",
+            "resourceId": "fp02_bulk_steel_sheet",
+            "quantity": 60000000,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C12",
+                "definitionDigest": "fnv1a:7d581c64",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c12_lot_1",
+                "itemId": "fp02.bulk.steel_sheet",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c13_lot_1",
+            "resourceId": "fp02_bulk_elastomer_reclaimed",
+            "quantity": 16000000,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C13",
+                "definitionDigest": "fnv1a:6138d7c0",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c13_lot_1",
+                "itemId": "fp02.bulk.elastomer_reclaimed",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_1",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_1",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_10",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_10",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_11",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_11",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_12",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_12",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_13",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_13",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_14",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_14",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_15",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_15",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_16",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_16",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_17",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_17",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_18",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_18",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_19",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_19",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_2",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_2",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_20",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_20",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_21",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_21",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_22",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_22",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_23",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_23",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_24",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_24",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_3",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_3",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_4",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_4",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_5",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_5",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_6",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_6",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_7",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_7",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_8",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_8",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_9",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_9",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c15_unit_1",
+            "resourceId": "fp02_comp_machine_drive",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C15",
+                "definitionDigest": "fnv1a:0f3cb9ca",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c15_unit_1",
+                "itemId": "fp02.comp.machine_drive",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c15_unit_2",
+            "resourceId": "fp02_comp_machine_drive",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C15",
+                "definitionDigest": "fnv1a:0f3cb9ca",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c15_unit_2",
+                "itemId": "fp02.comp.machine_drive",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c15_unit_3",
+            "resourceId": "fp02_comp_machine_drive",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C15",
+                "definitionDigest": "fnv1a:0f3cb9ca",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c15_unit_3",
+                "itemId": "fp02.comp.machine_drive",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c15_unit_4",
+            "resourceId": "fp02_comp_machine_drive",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C15",
+                "definitionDigest": "fnv1a:0f3cb9ca",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c15_unit_4",
+                "itemId": "fp02.comp.machine_drive",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c16_unit_1",
+            "resourceId": "fp02_comp_machine_controller",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C16",
+                "definitionDigest": "fnv1a:c083d64f",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c16_unit_1",
+                "itemId": "fp02.comp.machine_controller",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c16_unit_2",
+            "resourceId": "fp02_comp_machine_controller",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C16",
+                "definitionDigest": "fnv1a:c083d64f",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c16_unit_2",
+                "itemId": "fp02.comp.machine_controller",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c16_unit_3",
+            "resourceId": "fp02_comp_machine_controller",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C16",
+                "definitionDigest": "fnv1a:c083d64f",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c16_unit_3",
+                "itemId": "fp02.comp.machine_controller",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c16_unit_4",
+            "resourceId": "fp02_comp_machine_controller",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C16",
+                "definitionDigest": "fnv1a:c083d64f",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c16_unit_4",
+                "itemId": "fp02.comp.machine_controller",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c16_unit_5",
+            "resourceId": "fp02_comp_machine_controller",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C16",
+                "definitionDigest": "fnv1a:c083d64f",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c16_unit_5",
+                "itemId": "fp02.comp.machine_controller",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c17_unit_1",
+            "resourceId": "fp02_comp_wiring_harness",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C17",
+                "definitionDigest": "fnv1a:5ad8b2d8",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c17_unit_1",
+                "itemId": "fp02.comp.wiring_harness",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c17_unit_2",
+            "resourceId": "fp02_comp_wiring_harness",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C17",
+                "definitionDigest": "fnv1a:5ad8b2d8",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c17_unit_2",
+                "itemId": "fp02.comp.wiring_harness",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c17_unit_3",
+            "resourceId": "fp02_comp_wiring_harness",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C17",
+                "definitionDigest": "fnv1a:5ad8b2d8",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c17_unit_3",
+                "itemId": "fp02.comp.wiring_harness",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c17_unit_4",
+            "resourceId": "fp02_comp_wiring_harness",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C17",
+                "definitionDigest": "fnv1a:5ad8b2d8",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c17_unit_4",
+                "itemId": "fp02.comp.wiring_harness",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c17_unit_5",
+            "resourceId": "fp02_comp_wiring_harness",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C17",
+                "definitionDigest": "fnv1a:5ad8b2d8",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c17_unit_5",
+                "itemId": "fp02.comp.wiring_harness",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c17_unit_6",
+            "resourceId": "fp02_comp_wiring_harness",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C17",
+                "definitionDigest": "fnv1a:5ad8b2d8",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c17_unit_6",
+                "itemId": "fp02.comp.wiring_harness",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c17_unit_7",
+            "resourceId": "fp02_comp_wiring_harness",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C17",
+                "definitionDigest": "fnv1a:5ad8b2d8",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c17_unit_7",
+                "itemId": "fp02.comp.wiring_harness",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c17_unit_8",
+            "resourceId": "fp02_comp_wiring_harness",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C17",
+                "definitionDigest": "fnv1a:5ad8b2d8",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c17_unit_8",
+                "itemId": "fp02.comp.wiring_harness",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c18_unit_1",
+            "resourceId": "fp02_tool_cutter_head",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C18",
+                "definitionDigest": "fnv1a:ef4fdde1",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c18_unit_1",
+                "itemId": "fp02.tool.cutter_head",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c19_unit_1",
+            "resourceId": "fp02_tool_forming_die",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C19",
+                "definitionDigest": "fnv1a:e41c7ec9",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c19_unit_1",
+                "itemId": "fp02.tool.forming_die",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c20_unit_1",
+            "resourceId": "fp02_tool_crusher_jaw",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C20",
+                "definitionDigest": "fnv1a:e67a5c56",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c20_unit_1",
+                "itemId": "fp02.tool.crusher_jaw",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c21_unit_1",
+            "resourceId": "fp02_tool_assembly_fixture",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C21",
+                "definitionDigest": "fnv1a:e76a582c",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c21_unit_1",
+                "itemId": "fp02.tool.assembly_fixture",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c22_unit_1",
+            "resourceId": "fp02_tool_pit_head",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C22",
+                "definitionDigest": "fnv1a:9b50a867",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c22_unit_1",
+                "itemId": "fp02.tool.pit_head",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c23_unit_1",
+            "resourceId": "fp02_comp_belt_drive",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C23",
+                "definitionDigest": "fnv1a:b284a9e2",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c23_unit_1",
+                "itemId": "fp02.comp.belt_drive",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c23_unit_2",
+            "resourceId": "fp02_comp_belt_drive",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C23",
+                "definitionDigest": "fnv1a:b284a9e2",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c23_unit_2",
+                "itemId": "fp02.comp.belt_drive",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c23_unit_3",
+            "resourceId": "fp02_comp_belt_drive",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C23",
+                "definitionDigest": "fnv1a:b284a9e2",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c23_unit_3",
+                "itemId": "fp02.comp.belt_drive",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c23_unit_4",
+            "resourceId": "fp02_comp_belt_drive",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C23",
+                "definitionDigest": "fnv1a:b284a9e2",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c23_unit_4",
+                "itemId": "fp02.comp.belt_drive",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c24_unit_1",
+            "resourceId": "fp02_comp_field_generator_core",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C24",
+                "definitionDigest": "fnv1a:14f5c3e8",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c24_unit_1",
+                "itemId": "fp02.comp.field_generator_core",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c25_unit_1",
+            "resourceId": "fp02_comp_rotor_hub_kit",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C25",
+                "definitionDigest": "fnv1a:a4652fa0",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c25_unit_1",
+                "itemId": "fp02.comp.rotor_hub_kit",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c26_unit_1",
+            "resourceId": "fp02_chassis_cutter",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C26",
+                "definitionDigest": "fnv1a:92e666eb",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c26_unit_1",
+                "itemId": "fp02.chassis.cutter",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c27_unit_1",
+            "resourceId": "fp02_chassis_former",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C27",
+                "definitionDigest": "fnv1a:864b3a1d",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c27_unit_1",
+                "itemId": "fp02.chassis.former",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c28_unit_1",
+            "resourceId": "fp02_chassis_crusher",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C28",
+                "definitionDigest": "fnv1a:f12324e0",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c28_unit_1",
+                "itemId": "fp02.chassis.crusher",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "reservations": 0,
+    "ghost": null
+  },
+  "after": {
+    "cargo": {
+      "ownerId": "fp02_wreck_owner",
+      "containerId": "fp02_wreck_cargo",
+      "sourceDigest": "e62aea8a",
+      "profileDigest": "da3d7be8",
+      "opened": true,
+      "positionMm": [
+        -5500,
+        2000,
+        13125
+      ],
+      "accessBoundsMm": {
+        "min": [
+          -6250,
+          1500,
+          11625
+        ],
+        "max": [
+          -4750,
+          3500,
+          12625
+        ]
+      },
+      "bodyHandle": 2e-323,
+      "colliderHandles": [
+        3.95e-322
+      ],
+      "site": {
+        "version": "fp06-initial-cargo-s0-v1",
+        "ownerId": "fp02_wreck_owner",
+        "containerId": "fp02_wreck_cargo",
+        "sourceDigest": "e62aea8a",
+        "sourceRefs": [
+          "FP01:5.5:source-access",
+          "FP01:E00:permanently-grounded-cargo",
+          "FP02:6.4:finite-reachable-depot",
+          "FP02:9.1:cargo-outside-machine-zone"
+        ],
+        "centerMm": [
+          -5500,
+          2000,
+          13125
+        ],
+        "sizeMm": [
+          1500,
+          1500,
+          1000
+        ],
+        "boundsMm": {
+          "min": [
+            -6250,
+            1250,
+            12625
+          ],
+          "max": [
+            -4750,
+            2750,
+            13625
+          ]
+        },
+        "accessPointMm": [
+          -5500,
+          2250,
+          12625
+        ],
+        "accessBoundsMm": {
+          "min": [
+            -6250,
+            1500,
+            11625
+          ],
+          "max": [
+            -4750,
+            3500,
+            12625
+          ]
+        },
+        "spawnMm": [
+          -5500,
+          2420,
+          11875
+        ],
+        "geometryPolicy": "Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.",
+        "canonicalJson": "{\"accessBoundsMm\":{\"max\":[-4750,3500,12625],\"min\":[-6250,1500,11625]},\"accessPointMm\":[-5500,2250,12625],\"boundsMm\":{\"max\":[-4750,2750,13625],\"min\":[-6250,1250,12625]},\"centerMm\":[-5500,2000,13125],\"containerId\":\"fp02_wreck_cargo\",\"geometryPolicy\":\"Immutable technical S0 access-segment witness for the original finite Cargo; dimensions are not packed-volume geometry, hull has no salvage/material/platform/flight admission.\",\"ownerId\":\"fp02_wreck_owner\",\"sizeMm\":[1500,1500,1000],\"sourceDigest\":\"e62aea8a\",\"sourceRefs\":[\"FP01:5.5:source-access\",\"FP01:E00:permanently-grounded-cargo\",\"FP02:6.4:finite-reachable-depot\",\"FP02:9.1:cargo-outside-machine-zone\"],\"spawnMm\":[-5500,2420,11875],\"version\":\"fp06-initial-cargo-s0-v1\"}",
+        "profileDigest": "da3d7be8"
+      },
+      "accessible": true,
+      "openReceipt": {
+        "ownerId": "fp02_wreck_owner",
+        "profileDigest": "da3d7be8",
+        "expectedTerrainRevision": 0,
+        "expectedRevision": 0
+      }
+    },
+    "state": "Ready",
+    "installations": [],
+    "revision": 0,
+    "massMg": 2984400000,
+    "containers": [
+      {
+        "containerId": "fp02_wreck_cargo",
+        "massKg": 2984.3999999999996,
+        "contents": [
+          {
+            "stackId": "fp02_cargo_c01_unit_1",
+            "resourceId": "fp02_device_wind_pack_6kw",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C01",
+                "definitionDigest": "fnv1a:f343dc84",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c01_unit_1",
+                "itemId": "fp02.device.wind_pack_6kw",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c01_unit_2",
+            "resourceId": "fp02_device_wind_pack_6kw",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C01",
+                "definitionDigest": "fnv1a:f343dc84",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c01_unit_2",
+                "itemId": "fp02.device.wind_pack_6kw",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c02_unit_1",
+            "resourceId": "fp02_device_pv_pack_2kwp",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C02",
+                "definitionDigest": "fnv1a:0dc8fe24",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c02_unit_1",
+                "itemId": "fp02.device.pv_pack_2kwp",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c02_unit_2",
+            "resourceId": "fp02_device_pv_pack_2kwp",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C02",
+                "definitionDigest": "fnv1a:0dc8fe24",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c02_unit_2",
+                "itemId": "fp02.device.pv_pack_2kwp",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c02_unit_3",
+            "resourceId": "fp02_device_pv_pack_2kwp",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C02",
+                "definitionDigest": "fnv1a:0dc8fe24",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c02_unit_3",
+                "itemId": "fp02.device.pv_pack_2kwp",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c02_unit_4",
+            "resourceId": "fp02_device_pv_pack_2kwp",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C02",
+                "definitionDigest": "fnv1a:0dc8fe24",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c02_unit_4",
+                "itemId": "fp02.device.pv_pack_2kwp",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c03_unit_1",
+            "resourceId": "fp02_device_battery_4kwh",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C03",
+                "definitionDigest": "fnv1a:58bffb41",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c03_unit_1",
+                "itemId": "fp02.device.battery_4kwh",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c04_unit_1",
+            "resourceId": "fp02_device_distribution_40kw",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C04",
+                "definitionDigest": "fnv1a:006549f4",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c04_unit_1",
+                "itemId": "fp02.device.distribution_40kw",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c05_unit_1",
+            "resourceId": "fp02_device_field_workbench",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C05",
+                "definitionDigest": "fnv1a:d93cb131",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c05_unit_1",
+                "itemId": "fp02.device.field_workbench",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c06_unit_1",
+            "resourceId": "fp02_device_thermal_generator_core",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C06",
+                "definitionDigest": "fnv1a:bb76b461",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c06_unit_1",
+                "itemId": "fp02.device.thermal_generator_core",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c07_lot_1",
+            "resourceId": "fp02_comp_field_cable",
+            "quantity": 40000,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C07",
+                "definitionDigest": "fnv1a:f02fd7a7",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c07_lot_1",
+                "itemId": "fp02.comp.field_cable",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c08_unit_1",
+            "resourceId": "fp02_device_material_container",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C08",
+                "definitionDigest": "fnv1a:924d78dc",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c08_unit_1",
+                "itemId": "fp02.device.material_container",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c08_unit_2",
+            "resourceId": "fp02_device_material_container",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C08",
+                "definitionDigest": "fnv1a:924d78dc",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c08_unit_2",
+                "itemId": "fp02.device.material_container",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c08_unit_3",
+            "resourceId": "fp02_device_material_container",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C08",
+                "definitionDigest": "fnv1a:924d78dc",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c08_unit_3",
+                "itemId": "fp02.device.material_container",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c09_unit_1",
+            "resourceId": "fp02_comp_foundation_foot",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C09",
+                "definitionDigest": "fnv1a:b26fb65c",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c09_unit_1",
+                "itemId": "fp02.comp.foundation_foot",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c09_unit_2",
+            "resourceId": "fp02_comp_foundation_foot",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C09",
+                "definitionDigest": "fnv1a:b26fb65c",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c09_unit_2",
+                "itemId": "fp02.comp.foundation_foot",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c09_unit_3",
+            "resourceId": "fp02_comp_foundation_foot",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C09",
+                "definitionDigest": "fnv1a:b26fb65c",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c09_unit_3",
+                "itemId": "fp02.comp.foundation_foot",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c09_unit_4",
+            "resourceId": "fp02_comp_foundation_foot",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C09",
+                "definitionDigest": "fnv1a:b26fb65c",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c09_unit_4",
+                "itemId": "fp02.comp.foundation_foot",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c09_unit_5",
+            "resourceId": "fp02_comp_foundation_foot",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C09",
+                "definitionDigest": "fnv1a:b26fb65c",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c09_unit_5",
+                "itemId": "fp02.comp.foundation_foot",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c09_unit_6",
+            "resourceId": "fp02_comp_foundation_foot",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C09",
+                "definitionDigest": "fnv1a:b26fb65c",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c09_unit_6",
+                "itemId": "fp02.comp.foundation_foot",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c10_lot_1",
+            "resourceId": "fp02_bulk_steel_known",
+            "quantity": 96000000,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C10",
+                "definitionDigest": "fnv1a:e6cd3ae3",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c10_lot_1",
+                "itemId": "fp02.bulk.steel_known",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c11_lot_1",
+            "resourceId": "fp02_bulk_steel_profile",
+            "quantity": 80000000,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C11",
+                "definitionDigest": "fnv1a:c76030aa",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c11_lot_1",
+                "itemId": "fp02.bulk.steel_profile",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c12_lot_1",
+            "resourceId": "fp02_bulk_steel_sheet",
+            "quantity": 60000000,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C12",
+                "definitionDigest": "fnv1a:7d581c64",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c12_lot_1",
+                "itemId": "fp02.bulk.steel_sheet",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c13_lot_1",
+            "resourceId": "fp02_bulk_elastomer_reclaimed",
+            "quantity": 16000000,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C13",
+                "definitionDigest": "fnv1a:6138d7c0",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c13_lot_1",
+                "itemId": "fp02.bulk.elastomer_reclaimed",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_1",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_1",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_10",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_10",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_11",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_11",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_12",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_12",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_13",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_13",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_14",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_14",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_15",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_15",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_16",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_16",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_17",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_17",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_18",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_18",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_19",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_19",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_2",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_2",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_20",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_20",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_21",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_21",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_22",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_22",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_23",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_23",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_24",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_24",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_3",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_3",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_4",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_4",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_5",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_5",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_6",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_6",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_7",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_7",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_8",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_8",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c14_unit_9",
+            "resourceId": "fp02_comp_belt_module",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C14",
+                "definitionDigest": "fnv1a:c6c66667",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c14_unit_9",
+                "itemId": "fp02.comp.belt_module",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c15_unit_1",
+            "resourceId": "fp02_comp_machine_drive",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C15",
+                "definitionDigest": "fnv1a:0f3cb9ca",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c15_unit_1",
+                "itemId": "fp02.comp.machine_drive",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c15_unit_2",
+            "resourceId": "fp02_comp_machine_drive",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C15",
+                "definitionDigest": "fnv1a:0f3cb9ca",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c15_unit_2",
+                "itemId": "fp02.comp.machine_drive",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c15_unit_3",
+            "resourceId": "fp02_comp_machine_drive",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C15",
+                "definitionDigest": "fnv1a:0f3cb9ca",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c15_unit_3",
+                "itemId": "fp02.comp.machine_drive",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c15_unit_4",
+            "resourceId": "fp02_comp_machine_drive",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C15",
+                "definitionDigest": "fnv1a:0f3cb9ca",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c15_unit_4",
+                "itemId": "fp02.comp.machine_drive",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c16_unit_1",
+            "resourceId": "fp02_comp_machine_controller",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C16",
+                "definitionDigest": "fnv1a:c083d64f",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c16_unit_1",
+                "itemId": "fp02.comp.machine_controller",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c16_unit_2",
+            "resourceId": "fp02_comp_machine_controller",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C16",
+                "definitionDigest": "fnv1a:c083d64f",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c16_unit_2",
+                "itemId": "fp02.comp.machine_controller",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c16_unit_3",
+            "resourceId": "fp02_comp_machine_controller",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C16",
+                "definitionDigest": "fnv1a:c083d64f",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c16_unit_3",
+                "itemId": "fp02.comp.machine_controller",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c16_unit_4",
+            "resourceId": "fp02_comp_machine_controller",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C16",
+                "definitionDigest": "fnv1a:c083d64f",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c16_unit_4",
+                "itemId": "fp02.comp.machine_controller",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c16_unit_5",
+            "resourceId": "fp02_comp_machine_controller",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C16",
+                "definitionDigest": "fnv1a:c083d64f",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c16_unit_5",
+                "itemId": "fp02.comp.machine_controller",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c17_unit_1",
+            "resourceId": "fp02_comp_wiring_harness",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C17",
+                "definitionDigest": "fnv1a:5ad8b2d8",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c17_unit_1",
+                "itemId": "fp02.comp.wiring_harness",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c17_unit_2",
+            "resourceId": "fp02_comp_wiring_harness",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C17",
+                "definitionDigest": "fnv1a:5ad8b2d8",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c17_unit_2",
+                "itemId": "fp02.comp.wiring_harness",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c17_unit_3",
+            "resourceId": "fp02_comp_wiring_harness",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C17",
+                "definitionDigest": "fnv1a:5ad8b2d8",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c17_unit_3",
+                "itemId": "fp02.comp.wiring_harness",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c17_unit_4",
+            "resourceId": "fp02_comp_wiring_harness",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C17",
+                "definitionDigest": "fnv1a:5ad8b2d8",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c17_unit_4",
+                "itemId": "fp02.comp.wiring_harness",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c17_unit_5",
+            "resourceId": "fp02_comp_wiring_harness",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C17",
+                "definitionDigest": "fnv1a:5ad8b2d8",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c17_unit_5",
+                "itemId": "fp02.comp.wiring_harness",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c17_unit_6",
+            "resourceId": "fp02_comp_wiring_harness",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C17",
+                "definitionDigest": "fnv1a:5ad8b2d8",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c17_unit_6",
+                "itemId": "fp02.comp.wiring_harness",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c17_unit_7",
+            "resourceId": "fp02_comp_wiring_harness",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C17",
+                "definitionDigest": "fnv1a:5ad8b2d8",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c17_unit_7",
+                "itemId": "fp02.comp.wiring_harness",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c17_unit_8",
+            "resourceId": "fp02_comp_wiring_harness",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C17",
+                "definitionDigest": "fnv1a:5ad8b2d8",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c17_unit_8",
+                "itemId": "fp02.comp.wiring_harness",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c18_unit_1",
+            "resourceId": "fp02_tool_cutter_head",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C18",
+                "definitionDigest": "fnv1a:ef4fdde1",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c18_unit_1",
+                "itemId": "fp02.tool.cutter_head",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c19_unit_1",
+            "resourceId": "fp02_tool_forming_die",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C19",
+                "definitionDigest": "fnv1a:e41c7ec9",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c19_unit_1",
+                "itemId": "fp02.tool.forming_die",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c20_unit_1",
+            "resourceId": "fp02_tool_crusher_jaw",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C20",
+                "definitionDigest": "fnv1a:e67a5c56",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c20_unit_1",
+                "itemId": "fp02.tool.crusher_jaw",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c21_unit_1",
+            "resourceId": "fp02_tool_assembly_fixture",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C21",
+                "definitionDigest": "fnv1a:e76a582c",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c21_unit_1",
+                "itemId": "fp02.tool.assembly_fixture",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c22_unit_1",
+            "resourceId": "fp02_tool_pit_head",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C22",
+                "definitionDigest": "fnv1a:9b50a867",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c22_unit_1",
+                "itemId": "fp02.tool.pit_head",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c23_unit_1",
+            "resourceId": "fp02_comp_belt_drive",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C23",
+                "definitionDigest": "fnv1a:b284a9e2",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c23_unit_1",
+                "itemId": "fp02.comp.belt_drive",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c23_unit_2",
+            "resourceId": "fp02_comp_belt_drive",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C23",
+                "definitionDigest": "fnv1a:b284a9e2",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c23_unit_2",
+                "itemId": "fp02.comp.belt_drive",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c23_unit_3",
+            "resourceId": "fp02_comp_belt_drive",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C23",
+                "definitionDigest": "fnv1a:b284a9e2",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c23_unit_3",
+                "itemId": "fp02.comp.belt_drive",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c23_unit_4",
+            "resourceId": "fp02_comp_belt_drive",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C23",
+                "definitionDigest": "fnv1a:b284a9e2",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c23_unit_4",
+                "itemId": "fp02.comp.belt_drive",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c24_unit_1",
+            "resourceId": "fp02_comp_field_generator_core",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C24",
+                "definitionDigest": "fnv1a:14f5c3e8",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c24_unit_1",
+                "itemId": "fp02.comp.field_generator_core",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c25_unit_1",
+            "resourceId": "fp02_comp_rotor_hub_kit",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C25",
+                "definitionDigest": "fnv1a:a4652fa0",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c25_unit_1",
+                "itemId": "fp02.comp.rotor_hub_kit",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c26_unit_1",
+            "resourceId": "fp02_chassis_cutter",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C26",
+                "definitionDigest": "fnv1a:92e666eb",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c26_unit_1",
+                "itemId": "fp02.chassis.cutter",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c27_unit_1",
+            "resourceId": "fp02_chassis_former",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C27",
+                "definitionDigest": "fnv1a:864b3a1d",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c27_unit_1",
+                "itemId": "fp02.chassis.former",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          },
+          {
+            "stackId": "fp02_cargo_c28_unit_1",
+            "resourceId": "fp02_chassis_crusher",
+            "quantity": 1,
+            "ownerId": "fp02_wreck_owner",
+            "sealed": false,
+            "extensions": {
+              "factory.source": {
+                "cargoId": "C28",
+                "definitionDigest": "fnv1a:f12324e0",
+                "definitionVersion": 1,
+                "instanceId": "fp02_cargo_c28_unit_1",
+                "itemId": "fp02.chassis.crusher",
+                "sourceEventId": "fp02_crash_a_cargo_origin"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "reservations": 0,
+    "ghost": null
+  }
+}

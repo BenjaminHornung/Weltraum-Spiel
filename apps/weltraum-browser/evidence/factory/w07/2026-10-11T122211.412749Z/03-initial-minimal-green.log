@@ -1,0 +1,40 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/placement.test.ts tests/unit/factory/startSite.test.ts tests/unit/factory/facilitySession.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/facilitySession.test.ts (2 tests | 2 failed) 48ms
+     × stages disabled colliders in the SAME actualWorld, then commits/publishes/finalizes exact owner+members 11ms
+     × proves original member/handle identity after a committed candidate rollback 4ms
+
+ Test Files  1 failed | 2 passed (3)
+      Tests  2 failed | 6 passed (8)
+   Start at  12:39:28
+   Duration  2.21s (transform 279ms, setup 0ms, import 477ms, tests 1.36s, environment 0ms)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/facilitySession.test.ts > W07 actual native fixed Facility family > stages disabled colliders in the SAME actualWorld, then commits/publishes/finalizes exact owner+members
+ FAIL  tests/unit/factory/facilitySession.test.ts > W07 actual native fixed Facility family > proves original member/handle identity after a committed candidate rollback
+CanonicalSerializationError: Canonical JSON only accepts JSON-compatible plain objects and arrays
+ ❯ fail src/resources/serialization.ts:30:9
+     28|
+     29| const fail = (message: string): never => {
+     30|   throw new CanonicalSerializationError(message);
+       |         ^
+     31| };
+     32|
+ ❯ canonicalize src/resources/serialization.ts:85:12
+ ❯ canonicalize src/resources/serialization.ts:95:42
+ ❯ canonicalizeJsonValue src/resources/serialization.ts:102:78
+ ❯ canonicalJson src/resources/serialization.ts:124:81
+ ❯ src/hestia-prototype/physics/factoryFacilitySession.ts:28:81
+ ❯ f ../../../../apps/weltraum-browser/node_modules/@dimforge/gen3d/gen3d/coarena.ts:51:29
+ ❯ forEach ../../../../apps/weltraum-browser/node_modules/@dimforge/gen3d/gen3d/dynamics/rigid_body_set.ts:203:17
+ ❯ forEach ../../../../apps/weltraum-browser/node_modules/@dimforge/gen3d/gen3d/pipeline/world.ts:644:20
+ ❯ members src/hestia-prototype/physics/factoryFacilitySession.ts:28:9
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯

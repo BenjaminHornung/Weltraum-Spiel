@@ -1,0 +1,19 @@
+{
+  "result": "normal11subset5PASS/1assertionFAIL/5NOT_RUN; no W07 packagePASS",
+  "nativeTapCount": 8,
+  "allEightActualMoved": true,
+  "absoluteMoveRangeM": [
+    0.9000129699707031,
+    1.1500043869018555
+  ],
+  "allEightReleasedStableReads": true,
+  "sourceXRegion": [
+    -6.4,
+    -6.1
+  ],
+  "lastActualX": -5.849971771240234,
+  "causeSupportedByThisRun": "250ms lower bound makes0.90\u20131.15m real corrections against0.30m source-region width, so bounded D/A selection overshoots; no zeroMove/lost-intent or ongoing-after-release replay is observed in8 recorded corrections",
+  "limits": "Browser actual Down/Up handler/native outgoingIntent timing not instrumented; keyboardAPI duration628\u2013698ms known only for failedcase6. No conclusion about all possible Worker scheduling. Z/reach/pause/build/secondstock/dispose NOT_RUN here.",
+  "nextProposedOnly": "E2E-only adaptive trusted shorter125\u219263\u219250ms released corrections, unchangedRuntime/source/reach/timeouts; requires explicit Root grant, success not assumed",
+  "runtimeWriteHold": true
+}

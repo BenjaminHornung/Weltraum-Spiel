@@ -1,0 +1,8 @@
+{
+  "capturedUtc": "2026-10-11T13:56:35.780072+00:00",
+  "source": "/workspace/.cloud-setup/fp06-w07-native-review-prebrowser.md",
+  "artifact": "independent-native-first.md",
+  "sha256": "10fb606a86a7eb2ddeb68623c95a173aa9fc5b7ec2ee3a3bb731727b31734730",
+  "bytes": 10503,
+  "phase": "independent Native review of pre-second27 seal; FAILR1/R2 before bounded fixes, no final admission"
+}

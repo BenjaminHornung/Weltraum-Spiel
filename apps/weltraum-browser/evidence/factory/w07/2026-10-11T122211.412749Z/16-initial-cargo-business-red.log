@@ -1,0 +1,74 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/cargoSite.test.ts tests/unit/factory/placement.test.ts -t W07 initial Cargo|W07 Cargo source
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/placement.test.ts (11 tests | 2 failed | 9 skipped) 429ms
+   × W07 Cargo source requires a real opened Native owner, not only a material container and free pose 237ms
+   × W07 Cargo source rejects a closed access owner before any paid candidate 191ms
+ ❯ tests/unit/factory/cargoSite.test.ts (1 test | 1 failed) 405ms
+   × W07 initial Cargo binds one actual source-owner outside the machine zone, not a player-relative point 404ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/cargoSite.test.ts > W07 initial Cargo binds one actual source-owner outside the machine zone, not a player-relative point
+AssertionError: expected undefined to be defined
+ ❯ tests/unit/factory/cargoSite.test.ts:6:41
+      4| it("W07 initial Cargo binds one actual source-owner outside the machin…
+      5|  const source=materializeFactoryStartSite();
+      6|  expect(createFactoryCargoSite(source)).toBeDefined();
+       |                                         ^
+      7| });
+      8|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/unit/factory/placement.test.ts > W07 Cargo source requires a real opened Native owner, not only a material container and free pose
+AssertionError: expected { status: 'Prepared', …(5) } to match object { status: 'Rejected', …(1) }
+(40 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "reason": "CARGO_UNAVAILABLE",
+-   "status": "Rejected",
++   "status": "Prepared",
+  }
+
+ ❯ tests/unit/factory/placement.test.ts:108:51
+    106| it("W07 Cargo source requires a real opened Native owner, not only a m…
+    107|  const initial=view(),before=materialBytes(initial.material);
+    108|  expect(prepareFactoryPlacement(initial,request)).toMatchObject({statu…
+       |                                                   ^
+    109|  expect(materialBytes(initial.material)).toBe(before);
+    110| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/unit/factory/placement.test.ts > W07 Cargo source rejects a closed access owner before any paid candidate
+AssertionError: expected { status: 'Prepared', …(5) } to match object { status: 'Rejected', …(1) }
+(40 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "reason": "CARGO_CLOSED",
+-   "status": "Rejected",
++   "status": "Prepared",
+  }
+
+ ❯ tests/unit/factory/placement.test.ts:114:50
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  3 failed | 9 skipped (12)
+   Start at  13:19:23
+   Duration  1.51s (transform 298ms, setup 0ms, import 416ms, tests 835ms, environment 0ms)
+

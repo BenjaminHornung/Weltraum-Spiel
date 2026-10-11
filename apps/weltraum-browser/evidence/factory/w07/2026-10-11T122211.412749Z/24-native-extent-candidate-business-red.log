@@ -1,0 +1,52 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/facilitySession.test.ts -t detects extent|candidate pose
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/facilitySession.test.ts (9 tests | 2 failed | 7 skipped) 60ms
+   × W07 full old native member proof detects extent mutation instead of claiming rollback 18ms
+   × W07 native candidate pose cannot silently change between disabled prepare and commit 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/facilitySession.test.ts > W07 full old native member proof detects extent mutation instead of claiming rollback
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ tests/unit/factory/facilitySession.test.ts:81:58
+     79|   const old=world.createRigidBody(R.RigidBodyDesc.fixed()),collider=wo…
+     80|   facilities.prepare(request);if(kind==="shape")collider.setShape(new …
+     81|   expect(()=>facilities.rollback(request.transactionId)).toThrow(/Reco…
+       |                                                          ^
+     82|  }finally{world.free();}
+     83| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/factory/facilitySession.test.ts > W07 native candidate pose cannot silently change between disabled prepare and commit
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ tests/unit/factory/facilitySession.test.ts:87:55
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 7 skipped (9)
+   Start at  13:36:38
+   Duration  1.21s (transform 784ms, setup 0ms, import 1.04s, tests 60ms, environment 0ms)
+

@@ -1,0 +1,64 @@
+
+> weltraum-browser@0.1.0 test:e2e
+> playwright test --config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts tests/e2e/factory-placement.spec.ts
+
+[WebServer] (node:64088) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 15 tests using 1 worker
+
+(node:64112) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/factory-placement.spec.ts:19:3 › W07 real player construction in one confirmed Factory session › accepted source reaches Ready with one renderer and finite uninstalled Cargo (18.9s)
+  ✓   2 [chromium] › tests/e2e/factory-placement.spec.ts:27:3 › W07 real player construction in one confirmed Factory session › closed Cargo refuses an actual build preview and Escape retires that ghost (14.5s)
+  ✓   3 [chromium] › tests/e2e/factory-placement.spec.ts:32:3 › W07 real player construction in one confirmed Factory session › normal Cargo Open is idempotent in this same actual native session (18.1s)
+  ✓   4 [chromium] › tests/e2e/factory-placement.spec.ts:49:3 › W07 real player construction in one confirmed Factory session › normal Play acquires the same actual native Walking session (7.3s)
+  ✓   5 [chromium] › tests/e2e/factory-placement.spec.ts:52:3 › W07 real player construction in one confirmed Factory session › at most four actual released D/A taps approach the source-checked west stand (6.9s)
+  ✘   6 [chromium] › tests/e2e/factory-placement.spec.ts:53:3 › W07 real player construction in one confirmed Factory session › at most four more released D/A taps confirm the actual source-checked west stand (8.0s)
+  -   7 [chromium] › tests/e2e/factory-placement.spec.ts:54:3 › W07 real player construction in one confirmed Factory session › at most four actual released S/W taps approach the source-checked Cutter stand
+  -   8 [chromium] › tests/e2e/factory-placement.spec.ts:55:3 › W07 real player construction in one confirmed Factory session › at most four more released S/W taps confirm the actual source-checked Cutter stand
+  -   9 [chromium] › tests/e2e/factory-placement.spec.ts:56:3 › W07 real player construction in one confirmed Factory session › Escape pauses the same walked session and native readback proves material and Cargo unchanged
+  -  10 [chromium] › tests/e2e/factory-placement.spec.ts:61:3 › W07 real player construction in one confirmed Factory session › T030 real move, quarter-turn and Escape retire the ghost with no native or material mutation
+  -  11 [chromium] › tests/e2e/factory-placement.spec.ts:71:3 › W07 real player construction in one confirmed Factory session › T029 a real confirmed build publishes exactly one paid208kg Cutter
+  -  12 [chromium] › tests/e2e/factory-placement.spec.ts:83:3 › W07 real player construction in one confirmed Factory session › normal second-Cutter ghost moves seven quarter-grid steps toward the independent source-checked site
+  -  13 [chromium] › tests/e2e/factory-placement.spec.ts:89:3 › W07 real player construction in one confirmed Factory session › seven more actual ghost moves reach the disjoint supported site and specifically prove BOM_MISSING
+  -  14 [chromium] › tests/e2e/factory-placement.spec.ts:94:3 › W07 real player construction in one confirmed Factory session › finite C26 failed confirmation preserves the complete first installation and all actual native members
+  -  15 [chromium] › tests/e2e/factory-placement.spec.ts:101:3 › W07 real player construction in one confirmed Factory session › Legacy persistence stays closed and actual disposal retires paid Facility projection and native World
+
+
+  1) [chromium] › tests/e2e/factory-placement.spec.ts:53:3 › W07 real player construction in one confirmed Factory session › at most four more released D/A taps confirm the actual source-checked west stand
+
+    Error: expect(received).toBeLessThanOrEqual(expected)
+
+    Expected: <= -6.125
+    Received:    -5.5
+
+      51 |   });
+      52 |   test("at most four actual released D/A taps approach the source-checked west stand",async()=>{await tapToward("x",-6.25,"d","a");});
+    > 53 |   test("at most four more released D/A taps confirm the actual source-checked west stand",async()=>{await tapToward("x",-6.25,"d","a");const native=await readNative(page);expect(native.player.position.x).toBeGreaterThanOrEqual(-6.4);expect(native.player.position.x).toBeLessThanOrEqual(-6.125);expect(native.player.grounded).toBe(true);});
+         |                                                                                                                                                                                                                                                                           ^
+      54 |   test("at most four actual released S/W taps approach the source-checked Cutter stand",async()=>{await tapToward("z",8.875,"s","w");});
+      55 |   test("at most four more released S/W taps confirm the actual source-checked Cutter stand",async()=>{await tapToward("z",8.875,"s","w");const native=await readNative(page);expect(native.player.position.z).toBeGreaterThanOrEqual(8.75);expect(native.player.position.z).toBeLessThanOrEqual(9);expect(native.player.grounded).toBe(true);expect(native.factoryFacilities.cargo.accessible).toBe(true);});
+      56 |   test("Escape pauses the same walked session and native readback proves material and Cargo unchanged",async()=>{
+        at /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/tests/e2e/factory-placement.spec.ts:53:267
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    evidence/factory/w07/2026-10-11T122211.412749Z/browser-fifth/playwright-output/factory-placement-W07-real-e4094-l-source-checked-west-stand-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: evidence/factory/w07/2026-10-11T122211.412749Z/browser-fifth/playwright-output/factory-placement-W07-real-e4094-l-source-checked-west-stand-chromium/error-context.md
+
+    Error Context: evidence/factory/w07/2026-10-11T122211.412749Z/browser-fifth/playwright-output/factory-placement-W07-real-e4094-l-source-checked-west-stand-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    evidence/factory/w07/2026-10-11T122211.412749Z/browser-fifth/playwright-output/factory-placement-W07-real-e4094-l-source-checked-west-stand-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace evidence/factory/w07/2026-10-11T122211.412749Z/browser-fifth/playwright-output/factory-placement-W07-real-e4094-l-source-checked-west-stand-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/e2e/factory-placement.spec.ts:53:3 › W07 real player construction in one confirmed Factory session › at most four more released D/A taps confirm the actual source-checked west stand
+  9 did not run
+  5 passed (1.3m)

@@ -1,0 +1,137 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/placement.test.ts tests/unit/factory/startSite.test.ts tests/unit/factory/facilitySession.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/startSite.test.ts (2 tests | 2 failed) 210ms
+     × binds its own actual header and the unchanged 125mm bounded authority 3ms
+     × changes exactly4480 approved columns, without levelling the whole boundingbox or crediting inventory 206ms
+ ❯ tests/unit/factory/placement.test.ts (4 tests | 4 failed) 56ms
+     × freezes source geometry separately and transforms East+X/North+Z into accepted site World-Z/+X 4ms
+     × FP06-T029 prepares one paid208kg Cutter while retaining all actual finite BOM original identities 20ms
+     × FP06-T030 selecting/moving then Escape cancels a ghost without material mutation or reservations 14ms
+     × FP06-T032 rejects actual unknown support before reserving materials 16ms
+ ❯ tests/unit/factory/facilitySession.test.ts (2 tests | 2 failed) 42ms
+     × stages disabled colliders in the SAME actualWorld, then commits/publishes/finalizes exact owner+members 5ms
+     × proves original member/handle identity after a committed candidate rollback 1ms
+
+ Test Files  3 failed (3)
+      Tests  8 failed (8)
+   Start at  12:28:57
+   Duration  975ms (transform 187ms, setup 0ms, import 329ms, tests 308ms, environment 0ms)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/facilitySession.test.ts > W07 actual native fixed Facility family > stages disabled colliders in the SAME actualWorld, then commits/publishes/finalizes exact owner+members
+Error: FactoryFacilityNotImplemented
+ ❯ Object.prepare src/hestia-prototype/physics/factoryFacilitySession.ts:3:39
+      1| /** Importable W07 RED scaffold; accepts no body/collider write. */
+      2| export const createFactoryFacilitySession = (_world: any, _safe: () =>…
+      3|   prepare: (_request: any) => { throw new Error("FactoryFacilityNotImp…
+       |                                       ^
+      4|   commit: (_id: string) => { throw new Error("FactoryFacilityNotImplem…
+      5|   publish: (_id: string) => { throw new Error("FactoryFacilityNotImple…
+ ❯ tests/unit/factory/facilitySession.test.ts:15:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/8]⎯
+
+ FAIL  tests/unit/factory/facilitySession.test.ts > W07 actual native fixed Facility family > proves original member/handle identity after a committed candidate rollback
+Error: FactoryFacilityNotImplemented
+ ❯ Object.prepare src/hestia-prototype/physics/factoryFacilitySession.ts:3:39
+      1| /** Importable W07 RED scaffold; accepts no body/collider write. */
+      2| export const createFactoryFacilitySession = (_world: any, _safe: () =>…
+      3|   prepare: (_request: any) => { throw new Error("FactoryFacilityNotImp…
+       |                                       ^
+      4|   commit: (_id: string) => { throw new Error("FactoryFacilityNotImplem…
+      5|   publish: (_id: string) => { throw new Error("FactoryFacilityNotImple…
+ ❯ tests/unit/factory/facilitySession.test.ts:32:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/8]⎯
+
+ FAIL  tests/unit/factory/placement.test.ts > W07 source-bound paid placement > freezes source geometry separately and transforms East+X/North+Z into accepted site World-Z/+X
+Error: FactoryInstallationNotImplemented
+ ❯ createFactoryInstallationProfile src/factory/construction/installationProfile.ts:2:85
+      1| /** Importable W07 RED scaffold; no installation or geometry authority…
+      2| export const createFactoryInstallationProfile = (_sourceId: string): a…
+       |                                                                                     ^
+      3| export const transformFactoryPoint = (_point: readonly number[], _cent…
+      4|
+ ❯ tests/unit/factory/placement.test.ts:25:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/8]⎯
+
+ FAIL  tests/unit/factory/placement.test.ts > W07 source-bound paid placement > FP06-T029 prepares one paid208kg Cutter while retaining all actual finite BOM original identities
+AssertionError: expected 'Rejected' to be 'Prepared' // Object.is equality
+
+Expected: "Prepared"
+Received: "Rejected"
+
+ ❯ tests/unit/factory/placement.test.ts:36:25
+     34|     const initial = view(), before = materialBytes(initial.material);
+     35|     const plan = prepareFactoryPlacement(initial, request);
+     36|     expect(plan.status).toBe("Prepared");
+       |                         ^
+     37|     expect(plan.installation.massMg).toBe(208_000_000);
+     38|     expect(plan.materialCandidate.containers.find((s: any) => s.state.…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/8]⎯
+
+ FAIL  tests/unit/factory/placement.test.ts > W07 source-bound paid placement > FP06-T030 selecting/moving then Escape cancels a ghost without material mutation or reservations
+AssertionError: expected null not to be null
+ ❯ tests/unit/factory/placement.test.ts:50:29
+     48|     const construction = createFactoryConstruction({ readPlacementView…
+     49|     const tool = createFactoryBuildTool(construction); tool.select(req…
+     50|     expect(tool.read()).not.toBeNull();
+       |                             ^
+     51|     tool.cancel(); expect(tool.read()).toBeNull();
+     52|     expect(materialBytes(construction.read().material)).toBe(before);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/8]⎯
+
+ FAIL  tests/unit/factory/placement.test.ts > W07 source-bound paid placement > FP06-T032 rejects actual unknown support before reserving materials
+AssertionError: expected { status: 'Rejected', …(1) } to match object { status: 'Rejected', …(1) }
+
+- Expected
++ Received
+
+  {
+-   "reason": "TERRAIN_UNKNOWN",
++   "reason": "FactoryPlacementNotImplemented",
+    "status": "Rejected",
+  }
+
+ ❯ tests/unit/factory/placement.test.ts:59:55
+     57|     const initial = view(); const before = materialBytes(initial.mater…
+     58|     const unknown = { ...initial, terrain: { ...initial.terrain, readS…
+     59|     expect(prepareFactoryPlacement(unknown, request)).toMatchObject({ …
+       |                                                       ^
+     60|     expect(materialBytes(unknown.material)).toBe(before);
+     61|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/8]⎯
+
+ FAIL  tests/unit/factory/startSite.test.ts > W07 approved Factory initial source > binds its own actual header and the unchanged 125mm bounded authority
+Error: FactoryStartSiteNotImplemented
+ ❯ materializeFactoryStartSite src/factory/fixtures/startSite.ts:2:63
+      1| /** Importable W07 RED scaffold; accepted profile is not yet materiali…
+      2| export const materializeFactoryStartSite = (): any => { throw new Erro…
+       |                                                               ^
+      3|
+ ❯ tests/unit/factory/startSite.test.ts:7:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/8]⎯
+
+ FAIL  tests/unit/factory/startSite.test.ts > W07 approved Factory initial source > changes exactly4480 approved columns, without levelling the whole boundingbox or crediting inventory
+Error: FactoryStartSiteNotImplemented
+ ❯ materializeFactoryStartSite src/factory/fixtures/startSite.ts:2:63
+      1| /** Importable W07 RED scaffold; accepted profile is not yet materiali…
+      2| export const materializeFactoryStartSite = (): any => { throw new Erro…
+       |                                                               ^
+      3|
+ ❯ tests/unit/factory/startSite.test.ts:13:56
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/8]⎯
+

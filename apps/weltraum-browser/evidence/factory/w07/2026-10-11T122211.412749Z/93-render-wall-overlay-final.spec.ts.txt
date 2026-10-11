@@ -1,0 +1,150 @@
+import { expect, test, type BrowserContext, type CDPSession, type Page } from "@playwright/test";
+import { writeFile } from "node:fs/promises";
+import path from "node:path";
+
+// Temporary passive diagnostic only. Exact normal source is archived/restored.
+test.describe.serial("W07 DIAGNOSTIC_ONLY transparent render wall observation",()=>{
+  let context:BrowserContext,page:Page,keyboard:CDPSession;
+  const productErrors:string[]=[];
+  const runMetadata:Record<string,unknown>={kind:"DIAGNOSTIC_ONLY_RENDER_WALL_NOT_GAMEPLAY_GATE",scope:"Synchronous wall duration includes CPU/native/wait; no GPU hardware attribution",nodeVersion:process.version};
+  const readNative=()=>page.evaluate(()=>JSON.parse(document.body.dataset.hestiaPrototypePhysics!));
+  const exportObservation=async(label:string,gesture?:unknown)=>{
+    const run=process.env.WELTRAUM_FACTORY_EVIDENCE_RUN;
+    if(!run||!/^[A-Za-z0-9._-]{1,100}$/.test(run))throw new Error("Diagnostic requires actual own run");
+    const {observation,frameDiagnostics}=await page.evaluate(()=>({observation:Reflect.get(window,"__w07InputTickObservation"),frameDiagnostics:document.body.dataset.hestiaPrototypeFrameDiagnostics??null}));
+    const completeObservation=observation.observerErrors===0&&observation.dropped===0&&observation.idMapDropped===0;
+    await writeFile(path.resolve("evidence/factory/w07",run,"diagnostic-render-wall-93-"+label+".json"),JSON.stringify({kind:"DIAGNOSTIC_ONLY_NOT_GAMEPLAY_GATE",measurementOptIn:false,solverCpu:"NOT_OBSERVED",mainFrameCpu:"NOT_OBSERVED",completeObservation,gesture,observation,frameDiagnostics:{raw:frameDiagnostics,freshness:frameDiagnostics===null?"MISSING":"NOT_OBSERVED_NO_TIMESTAMP_EVERY60FRAMES"},productErrors},null,2)+"\n");
+    expect(completeObservation).toBe(true);
+    expect(productErrors).toEqual([]);
+  };
+  test.beforeAll(async({browser},info)=>{
+    runMetadata.chromiumVersion=browser.version();runMetadata.projectName=info.project.name;runMetadata.projectUse=info.project.use;
+    context=await browser.newContext({baseURL:info.project.use.baseURL});page=await context.newPage();keyboard=await context.newCDPSession(page);
+    page.on("pageerror",error=>productErrors.push(error.message));
+    await page.addInitScript(()=>{
+      const state={timeOrigin:performance.timeOrigin,records:[] as Record<string,unknown>[],dropped:0,idMapDropped:0,observerErrors:0,longtaskSupported:PerformanceObserver.supportedEntryTypes.includes("longtask"),measurementOptIn:false};
+      Reflect.set(window,"__w07InputTickObservation",state);
+      const observe=(event:Record<string,unknown>)=>{if(state.records.length>=4096){state.dropped++;return;}state.records.push({atMs:performance.now(),...event});};
+      const guard=(callback:()=>void)=>{try{callback();}catch{state.observerErrors++;}};
+      for(const type of ["keydown","keyup"]){window.addEventListener(type,event=>guard(()=>{
+        const key=event as KeyboardEvent;
+        observe({event:"dom",type,timeStamp:key.timeStamp,code:key.code,key:key.key,repeat:key.repeat,isTrusted:key.isTrusted,pointerLock:document.pointerLockElement?.id??null,hidden:document.hidden});
+      }),true);}
+      window.addEventListener("blur",event=>guard(()=>observe({event:"dom",type:"blur",timeStamp:event.timeStamp,isTrusted:event.isTrusted})),true);
+      for(const type of ["pointerlockchange","visibilitychange"]){document.addEventListener(type,event=>guard(()=>observe({event:"dom",type,timeStamp:event.timeStamp,isTrusted:event.isTrusted,pointerLock:document.pointerLockElement?.id??null,hidden:document.hidden})),true);}
+      const originalGetContext=HTMLCanvasElement.prototype.getContext;
+      let existingContext:WebGLRenderingContext|WebGL2RenderingContext|undefined;
+      const captureContext=function(this:HTMLCanvasElement,...args:unknown[]){
+        const result=Reflect.apply(originalGetContext,this,args);
+        guard(()=>{if(this.id==="debug-scene"&&(result instanceof WebGLRenderingContext||result instanceof WebGL2RenderingContext))existingContext=result;});
+        return result;
+      };
+      HTMLCanvasElement.prototype.getContext=captureContext as typeof originalGetContext;
+      Reflect.set(window,"__w07ExistingWebGLInfo",()=>{
+        if(!existingContext)return {status:"UNSUPPORTED_NO_APP_CREATED_CONTEXT_OBSERVED"};
+        const extension=existingContext.getExtension("WEBGL_debug_renderer_info");
+        return {status:"APP_CREATED_CONTEXT_OBSERVED",vendor:existingContext.getParameter(existingContext.VENDOR),renderer:existingContext.getParameter(existingContext.RENDERER),debugRendererInfo:extension?{vendor:existingContext.getParameter(extension.UNMASKED_VENDOR_WEBGL),renderer:existingContext.getParameter(extension.UNMASKED_RENDERER_WEBGL)}:"UNSUPPORTED"};
+      });
+      Reflect.set(window,"__w07RestoreCanvasObserver",()=>{HTMLCanvasElement.prototype.getContext=originalGetContext;existingContext=undefined;return HTMLCanvasElement.prototype.getContext===originalGetContext;});
+      const OriginalWorker=window.Worker,originalPostMessage=OriginalWorker.prototype.postMessage;
+      class ObservedWorker extends OriginalWorker{
+        constructor(...args:ConstructorParameters<typeof OriginalWorker>){
+          super(...args);
+          if(args[1]?.name!=="hvp-simulation-owner")return;
+          const ids=new Map<number,string>();
+          guard(()=>observe({event:"ownerWorkerCreated",name:args[1]?.name,url:String(args[0])}));
+          this.addEventListener("message",event=>guard(()=>{
+            const data=event.data,kind=ids.get(data.id);ids.delete(data.id);
+            const snapshot=data.snapshot,player=snapshot?.player;
+            observe({event:"workerReply",id:data.id,requestKind:kind??"UNOBSERVED",error:data.error,rejected:data.rejected,restoreState:data.restoreState,
+              snapshot:snapshot?{ticks:snapshot.ticks,status:snapshot.status,terrainTransaction:snapshot.terrainTransaction,neighborTransaction:snapshot.neighborTransaction,bodyResidencyTransaction:snapshot.bodyResidencyTransaction,movingState:snapshot.moving?.state,factoryState:snapshot.factoryFacilities?.state,player:player?{status:player.status,grounded:player.grounded,position:{x:player.position.x,y:player.position.y,z:player.position.z}}:undefined}:undefined,
+              clock:data.clock?{lastCommand:data.clock.lastCommand,lastHandlerMs:data.clock.lastHandlerMs,maxHandlerMs:data.clock.maxHandlerMs,maxAdvanceMs:data.clock.maxAdvanceMs,maxTimerGapMs:data.clock.maxTimerGapMs,timers:data.clock.timers}:undefined,
+              hasTimings:data.timings!==undefined});
+          }));
+          this.postMessage=function(this:Worker,...args:unknown[]){
+            guard(()=>{
+              const data=args[0] as {id:number;kind:string;input?:{x:number;z:number;sprint:boolean;jump:boolean};cancelPendingJump?:boolean};
+              if(ids.size<512)ids.set(data.id,data.kind);else state.idMapDropped++;
+              observe({event:"workerPost",id:data.id,kind:data.kind,input:data.kind==="FactoryInput"?{x:data.input?.x,z:data.input?.z,sprint:data.input?.sprint,jump:data.input?.jump}:undefined,cancelPendingJump:data.kind==="FactoryInput"?data.cancelPendingJump:undefined});
+            });
+            return Reflect.apply(originalPostMessage,this,args);
+          };
+        }
+      }
+      window.Worker=ObservedWorker;
+      if(state.longtaskSupported){guard(()=>{
+        const observer=new PerformanceObserver(list=>guard(()=>{for(const entry of list.getEntries())observe({event:"longtask",startTime:entry.startTime,duration:entry.duration});}));
+        observer.observe({entryTypes:["longtask"]});
+      });}
+    });
+  });
+  test.afterAll(async()=>{
+    const failures:unknown[]=[];
+    if(page&&!page.isClosed()){
+      try{runMetadata.restoration=await page.evaluate(()=>{
+        const failures:unknown[]=[],restored:Record<string,unknown>={};
+        for(const [name,key] of [["canvas","__w07RestoreCanvasObserver"],["backend","__w07RestoreBackendObserver"]]){
+          try{const restore=Reflect.get(window,key!);restored[name!]=typeof restore==="function"?restore():"NOT_INSTALLED";}catch(error){failures.push(error);}
+        }
+        if(failures.length===1)throw failures[0];if(failures.length>1)throw new AggregateError(failures,"Observer restoration failed");return restored;
+      });}catch(error){failures.push(error);}
+    }else runMetadata.restoration="PAGE_REALM_ALREADY_CLOSED";
+    const run=process.env.WELTRAUM_FACTORY_EVIDENCE_RUN;
+    try{if(!run||!/^[A-Za-z0-9._-]{1,100}$/.test(run))throw new Error("Diagnostic requires actual own run");await writeFile(path.resolve("evidence/factory/w07",run,"diagnostic-render-wall-93-metadata.json"),JSON.stringify(runMetadata,null,2)+"\n");}catch(error){failures.push(error);}
+    if(context){try{await context.close();}catch(error){failures.push(error);}}
+    if(failures.length===1)throw failures[0];if(failures.length>1)throw new AggregateError(failures,"Diagnostic teardown failed");
+  });
+  test("diagnostic Ready, normal Cargo Open and normal Play",async()=>{
+    await page.goto("/factory.html");await expect(page.locator("#factory-status")).toContainText("Werkstatt bereit",{timeout:20_000});
+    await page.getByRole("button",{name:"Wrackfracht öffnen",exact:true}).click();await expect.poll(async()=>JSON.parse(await page.evaluate(()=>document.body.dataset.hestiaFactoryConstruction!)).cargo.opened).toBe(true);
+    await page.getByRole("button",{name:"Spielen · WASD / Maus / Space",exact:true}).click();await expect.poll(()=>page.evaluate(()=>document.pointerLockElement?.id)).toBe("debug-scene");await expect.poll(async()=>(await readNative()).player.status).toBe("Walking");
+    runMetadata.scene=await page.evaluate(()=>({url:location.href,seed:document.body.dataset.hestiaPrototypeSeed,sourceRevision:document.body.dataset.hestiaPrototypeSourceRevision,sourceDigest:document.body.dataset.hestiaPrototypeSourceDigest,camera:document.body.dataset.hestiaPrototypePlayerCamera,resources:document.body.dataset.hestiaPrototypeResources}));
+    await page.evaluate(async()=>{
+      const specifier="/src/render/three/backend/threeRenderBackend.ts";
+      const module=await import(specifier),prototype=module.ThreeRenderBackend.prototype;
+      const state=Reflect.get(window,"__w07InputTickObservation");
+      const guard=(callback:()=>void)=>{try{callback();}catch{state.observerErrors++;}};
+      const observe=(record:Record<string,unknown>)=>{if(state.records.length>=4096){state.dropped++;return;}state.records.push({atMs:performance.now(),...record});};
+      const originals=new Map<string,unknown>();
+      for(const method of ["renderFrame","dispatch"]){
+        const original=prototype[method];originals.set(method,original);
+        prototype[method]=function(this:unknown,...args:unknown[]){
+          let startMs:number|undefined,result:unknown,status="Threw";guard(()=>{startMs=performance.now();});
+          try{result=Reflect.apply(original,this,args);status="Returned";return result;}
+          finally{guard(()=>{const endMs=performance.now();observe({event:"backendWall",method,startMs,endMs,durationMs:startMs===undefined?undefined:endMs-startMs,status,resultStatus:(result as {status?:unknown}|undefined)?.status});});}
+        };
+      }
+      Reflect.set(window,"__w07RestoreBackendObserver",()=>{
+        const restored:Record<string,boolean>={},failures:unknown[]=[];for(const [method,original]of originals){try{prototype[method]=original;restored[method]=prototype[method]===original;}catch(error){failures.push(error);}}if(failures.length===1)throw failures[0];if(failures.length>1)throw new AggregateError(failures,"Backend method restoration failed");return restored;
+      });
+      guard(()=>observe({event:"backendWallInstalled",moduleSpecifier:specifier,webgl:Reflect.get(window,"__w07ExistingWebGLInfo")()}));
+    });
+    await exportObservation("ready");
+  });
+  const gesture=async(holdMs:number)=>{
+    const before=await readNative(),key="s",code="KeyS",keyCode=83;
+    const upEvent={type:"keyUp" as const,modifiers:0,key,windowsVirtualKeyCode:keyCode,code,location:0};
+    const driverTimes:Record<string,number>={timeOrigin:performance.timeOrigin,downIssuedMs:performance.now()};
+    const down=keyboard.send("Input.dispatchKeyEvent",{type:"keyDown",modifiers:0,windowsVirtualKeyCode:keyCode,code,commands:[],key,text:key,unmodifiedText:key,autoRepeat:false,location:0,isKeypad:false}).then(()=>{driverTimes.downAckMs=performance.now();});
+    const up=new Promise<void>(resolve=>setTimeout(resolve,holdMs)).then(async()=>{driverTimes.upIssuedMs=performance.now();await keyboard.send("Input.dispatchKeyEvent",upEvent);driverTimes.upAckMs=performance.now();});
+    const failures:unknown[]=[];
+    try{for(const result of await Promise.allSettled([down,up]))if(result.status==="rejected")failures.push(result.reason);}
+    finally{
+      try{driverTimes.finalUpIssuedMs=performance.now();await keyboard.send("Input.dispatchKeyEvent",upEvent);driverTimes.finalUpAckMs=performance.now();}
+      catch(releaseError){failures.push(releaseError);try{await context.close();}catch(closeError){failures.push(closeError);}}
+    }
+    if(failures.length===1)throw failures[0];if(failures.length>1)throw new AggregateError(failures,"Diagnostic trusted keyboard gesture or final release failed");
+    let after=await readNative();const releasedReads=[after];
+    for(let read=0;read<3;read++){
+      const next=await readNative();releasedReads.push(next);const stable=next.ticks>after.ticks&&Math.abs(next.player.position.x-after.player.position.x)<0.000001&&Math.abs(next.player.position.z-after.player.position.z)<0.000001;after=next;if(stable)break;
+    }
+    await exportObservation(String(holdMs),{key,holdMs,before,after,releasedReads,driverTimes});
+  };
+  test("diagnostic neutral five-second existing renderer wall observation",async()=>{
+    runMetadata.neutralBefore=await readNative();runMetadata.neutralWaitStartMs=performance.now();await new Promise<void>(resolve=>setTimeout(resolve,5000));runMetadata.neutralWaitEndMs=performance.now();runMetadata.neutralAfter=await readNative();
+    await exportObservation("neutral");
+    const renderCalls=await page.evaluate(()=>Reflect.get(window,"__w07InputTickObservation").records.filter((record:{event:string;method?:string})=>record.event==="backendWall"&&record.method==="renderFrame").length);
+    expect(renderCalls).toBeGreaterThan(0);runMetadata.observedRenderCallsProveAppEsmIdentity=renderCalls;
+  });
+  test("diagnostic finite125ms released trusted S gesture",async()=>{await gesture(125);});
+});

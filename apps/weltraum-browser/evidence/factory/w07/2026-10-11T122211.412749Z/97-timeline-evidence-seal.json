@@ -1,0 +1,30 @@
+{
+  "kind": "ACTUAL_RENDERER_TIMELINE_DIAGNOSTIC_NOT_GAMEPLAY_GATE",
+  "files": [
+    {
+      "path": "97-renderer-timeline-attribution.json",
+      "sha256": "fab1357a8fc465b3512ba0e249c0715435377a0732723748caed6d59631b62d4",
+      "bytes": 207077
+    },
+    {
+      "path": "97-renderer-timeline-attribution-report.md",
+      "sha256": "473e5c15b0cab2e549fa6f41a6e05c24cd0e3c31e84bf015bd79a9d14b91cdf7",
+      "bytes": 2721
+    },
+    {
+      "path": "97-timeline-browser-diagnostic-command.json",
+      "sha256": "abff60fcc1003fd0bf687c0f618cfe79cee91f2d7fff8a358dbfa75c089f05d7",
+      "bytes": 1225
+    },
+    {
+      "path": "97-timeline-artifact-receipt.json",
+      "sha256": "81dec2e2f5daec9f62ce68e19350491d8cc8f7aa1384840bf5529add626e2af3",
+      "bytes": 1965
+    },
+    {
+      "path": "97-after-main-cpu-diagnostic-full-restore-port-receipt.json",
+      "sha256": "3c2f9cdb8eff9302af50df1f48c4ab569be6385c53325f98627f2ba8b1f35a10",
+      "bytes": 7245
+    }
+  ]
+}

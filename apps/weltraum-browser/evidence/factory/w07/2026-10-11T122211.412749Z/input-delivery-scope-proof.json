@@ -1,0 +1,43 @@
+{
+  "timestampUtc": "2026-10-11T16:52:48.910708+00:00",
+  "baseSha": "d5502ae7fd5431d58eda51bea062c54691ebe3c2",
+  "grantedPaths": 30,
+  "actualChangedProductPaths": 28,
+  "unknownProductOrForeignWrites": [],
+  "trackedChangedProducts": [
+    "apps/weltraum-browser/package.json",
+    "apps/weltraum-browser/src/factory/factoryEntry.ts",
+    "apps/weltraum-browser/src/factory/session/factorySession.ts",
+    "apps/weltraum-browser/src/factory/session/hostPort.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+    "apps/weltraum-browser/src/hestia-prototype/player/input.ts",
+    "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts",
+    "apps/weltraum-browser/src/hestia-prototype/presentation/vegetation.ts",
+    "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+    "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+    "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-vegetation.test.ts"
+  ],
+  "untrackedProducts": [
+    "apps/weltraum-browser/src/factory/construction/buildStep.ts",
+    "apps/weltraum-browser/src/factory/construction/installationProfile.ts",
+    "apps/weltraum-browser/src/factory/construction/placement.ts",
+    "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+    "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+    "apps/weltraum-browser/src/factory/ui/buildTool.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+    "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts",
+    "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/placement.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts"
+  ],
+  "ownRunUntrackedFileCount": 329,
+  "all25OtherNinthProductsUnchanged": true,
+  "productWriteHold": true,
+  "browserLeaseReleased": true
+}

@@ -1,0 +1,98 @@
+
+> weltraum-browser@0.1.0 test:e2e
+> playwright test --config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts tests/e2e/factory-placement.spec.ts
+
+[WebServer] (node:70937) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 17 tests using 1 worker
+
+(node:70961) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/factory-placement.spec.ts:19:3 › W07 real player construction in one confirmed Factory session › accepted source reaches Ready with one renderer and finite uninstalled Cargo (19.4s)
+  ✓   2 [chromium] › tests/e2e/factory-placement.spec.ts:27:3 › W07 real player construction in one confirmed Factory session › closed Cargo refuses an actual build preview and Escape retires that ghost (14.3s)
+  ✓   3 [chromium] › tests/e2e/factory-placement.spec.ts:32:3 › W07 real player construction in one confirmed Factory session › normal Cargo Open is idempotent in this same actual native session (18.7s)
+  ✓   4 [chromium] › tests/e2e/factory-placement.spec.ts:63:3 › W07 real player construction in one confirmed Factory session › normal Play acquires the same actual native Walking session (7.4s)
+  ✓   5 [chromium] › tests/e2e/factory-placement.spec.ts:66:3 › W07 real player construction in one confirmed Factory session › at most four actual released D/A taps approach the source-checked west stand (9.8s)
+  ✓   6 [chromium] › tests/e2e/factory-placement.spec.ts:67:3 › W07 real player construction in one confirmed Factory session › at most four more released D/A taps confirm the actual source-checked west stand (3.5s)
+  ✓   7 [chromium] › tests/e2e/factory-placement.spec.ts:68:3 › W07 real player construction in one confirmed Factory session › at most four actual released S/W taps approach the source-checked Cutter stand (11.4s)
+  ✓   8 [chromium] › tests/e2e/factory-placement.spec.ts:69:3 › W07 real player construction in one confirmed Factory session › at most four further released S/W taps continue the same native walk (629ms)
+  ✓   9 [chromium] › tests/e2e/factory-placement.spec.ts:70:3 › W07 real player construction in one confirmed Factory session › at most four further released S/W taps approach the actual Cutter stand (592ms)
+  ✓  10 [chromium] › tests/e2e/factory-placement.spec.ts:71:3 › W07 real player construction in one confirmed Factory session › at most four final released S/W taps confirm the actual source-checked Cutter stand (1.3s)
+  ✓  11 [chromium] › tests/e2e/factory-placement.spec.ts:75:3 › W07 real player construction in one confirmed Factory session › Escape pauses the same walked session and native readback proves material and Cargo unchanged (7.7s)
+[WebServer] 3:16:00 PM [vite] (client) [Unhandled error] Error: Factory hidden mesh stage failed: RepresentationRemovedAtRevision
+[WebServer]  > requireAccepted src/hvp/hvpBootstrap.ts:143:31
+[WebServer]     141 |
+[WebServer]     142 |  const requireAccepted = (result: RenderCommandResult, operation: string): void => {
+[WebServer]     143 |    if (!accepted(result)) throw new Error(`${operation} failed: ${result.reasonCode ?? result.status}`);
+[WebServer]         |                                 ^
+[WebServer]     144 |  };
+[WebServer]     145 |
+[WebServer]  > stageFactoryScene src/hvp/hvpBootstrap.ts:2202:10
+[WebServer]  > Object.projectGhost src/hvp/hvpBootstrap.ts:2236:131
+[WebServer]  > projectGhost src/factory/factoryEntry.ts:34:45
+[WebServer]  > HTMLDocument.onBuildKey src/factory/factoryEntry.ts:43:461
+[WebServer]
+[WebServer] 3:16:03 PM [vite] (client) [Unhandled error] Error: Factory hidden mesh stage failed: RepresentationRemovedAtRevision
+[WebServer]  > requireAccepted src/hvp/hvpBootstrap.ts:143:31
+[WebServer]     141 |
+[WebServer]     142 |  const requireAccepted = (result: RenderCommandResult, operation: string): void => {
+[WebServer]     143 |    if (!accepted(result)) throw new Error(`${operation} failed: ${result.reasonCode ?? result.status}`);
+[WebServer]         |                                 ^
+[WebServer]     144 |  };
+[WebServer]     145 |
+[WebServer]  > stageFactoryScene src/hvp/hvpBootstrap.ts:2202:10
+[WebServer]  > Object.projectGhost src/hvp/hvpBootstrap.ts:2236:131
+[WebServer]  > projectGhost src/factory/factoryEntry.ts:34:45
+[WebServer]  > HTMLDocument.onBuildKey src/factory/factoryEntry.ts:43:461
+[WebServer]
+  ✓  12 [chromium] › tests/e2e/factory-placement.spec.ts:80:3 › W07 real player construction in one confirmed Factory session › T030 real move, quarter-turn and Escape retire the ghost with no native or material mutation (22.1s)
+  ✘  13 [chromium] › tests/e2e/factory-placement.spec.ts:90:3 › W07 real player construction in one confirmed Factory session › T029 a real confirmed build publishes exactly one paid208kg Cutter (29.3s)
+  -  14 [chromium] › tests/e2e/factory-placement.spec.ts:102:3 › W07 real player construction in one confirmed Factory session › normal second-Cutter ghost moves seven quarter-grid steps toward the independent source-checked site
+  -  15 [chromium] › tests/e2e/factory-placement.spec.ts:108:3 › W07 real player construction in one confirmed Factory session › seven more actual ghost moves reach the disjoint supported site and specifically prove BOM_MISSING
+  -  16 [chromium] › tests/e2e/factory-placement.spec.ts:113:3 › W07 real player construction in one confirmed Factory session › finite C26 failed confirmation preserves the complete first installation and all actual native members
+  -  17 [chromium] › tests/e2e/factory-placement.spec.ts:120:3 › W07 real player construction in one confirmed Factory session › Legacy persistence stays closed and actual disposal retires paid Facility projection and native World
+
+
+  1) [chromium] › tests/e2e/factory-placement.spec.ts:90:3 › W07 real player construction in one confirmed Factory session › T029 a real confirmed build publishes exactly one paid208kg Cutter
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 4
+
+    - Array []
+    + Array [
+    +   "Factory hidden mesh stage failed: RepresentationRemovedAtRevision",
+    +   "Factory hidden mesh stage failed: RepresentationRemovedAtRevision",
+    + ]
+
+       98 |     const installed=state.containers.find((c:any)=>c.containerId===state.installations[0].materialContainerId);expect(installed.massKg).toBe(208);expect(installed.contents.find((s:any)=>s.resourceId==="fp02_chassis_cutter").extensions["factory.source"].cargoId).toBe("C26");
+       99 |     const nativeAfter=await readNative(page);expect(nativeAfter.factoryFacilities.owners).toHaveLength(1);expect(nativeAfter.factoryFacilities.owners[0].instanceId).toBe(state.installations[0].instanceId);expect(nativeAfter.bodyCount).toBe(nativeBefore.bodyCount+1);expect(nativeAfter.factoryFacilities.owners[0].colliderHandles.length).toBeGreaterThan(0);expect(nativeAfter.factoryFacilities.cargo.bodyHandle).toBe(nativeBefore.factoryFacilities.cargo.bodyHandle);
+    > 100 |     const directory=runDirectory(),capture=await page.screenshot();await info.attach("paid-native-cutter",{body:capture,contentType:"image/png"});await writeFile(path.join(directory,"paid-native-cutter.png"),capture);await writeFile(path.join(directory,"browser-paid-cutter.json"),JSON.stringify({before,state,nativeBefore,nativeAfter,errors},null,2)+"\n");expect(errors).toEqual([]);
+          |                                                                                                                                                                                                                                                                                                                                                                                     ^
+      101 |   });
+      102 |   test("normal second-Cutter ghost moves seven quarter-grid steps toward the independent source-checked site",async()=>{
+      103 |     beforeSecond=await readBuild(page);nativeBeforeSecond=await readNative(page);
+        at /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/tests/e2e/factory-placement.spec.ts:100:373
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    evidence/factory/w07/2026-10-11T122211.412749Z/browser-eighth/playwright-output/factory-placement-W07-real-7c73e-xactly-one-paid208kg-Cutter-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: evidence/factory/w07/2026-10-11T122211.412749Z/browser-eighth/playwright-output/factory-placement-W07-real-7c73e-xactly-one-paid208kg-Cutter-chromium/error-context.md
+
+    Error Context: evidence/factory/w07/2026-10-11T122211.412749Z/browser-eighth/playwright-output/factory-placement-W07-real-7c73e-xactly-one-paid208kg-Cutter-chromium/error-context.md
+
+    attachment #5: trace (application/zip) ─────────────────────────────────────────────────────────
+    evidence/factory/w07/2026-10-11T122211.412749Z/browser-eighth/playwright-output/factory-placement-W07-real-7c73e-xactly-one-paid208kg-Cutter-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace evidence/factory/w07/2026-10-11T122211.412749Z/browser-eighth/playwright-output/factory-placement-W07-real-7c73e-xactly-one-paid208kg-Cutter-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/e2e/factory-placement.spec.ts:90:3 › W07 real player construction in one confirmed Factory session › T029 a real confirmed build publishes exactly one paid208kg Cutter
+  4 did not run
+  12 passed (2.6m)

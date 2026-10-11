@@ -1,0 +1,30 @@
+
+> weltraum-browser@0.1.0 test:e2e
+> playwright test --config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts tests/e2e/factory-placement.spec.ts
+
+[WebServer] (node:102161) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 17 tests using 1 worker
+
+(node:102185) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/e2e/factory-placement.spec.ts:19:3 › W07 real player construction in one confirmed Factory session › accepted source reaches Ready with one renderer and finite uninstalled Cargo (10.3s)
+  ✓   2 [chromium] › tests/e2e/factory-placement.spec.ts:27:3 › W07 real player construction in one confirmed Factory session › closed Cargo refuses an actual build preview and Escape retires that ghost (1.3s)
+  ✓   3 [chromium] › tests/e2e/factory-placement.spec.ts:32:3 › W07 real player construction in one confirmed Factory session › normal Cargo Open is idempotent in this same actual native session (988ms)
+  ✓   4 [chromium] › tests/e2e/factory-placement.spec.ts:87:3 › W07 real player construction in one confirmed Factory session › normal Play acquires the same actual native Walking session (791ms)
+  ✓   5 [chromium] › tests/e2e/factory-placement.spec.ts:90:3 › W07 real player construction in one confirmed Factory session › at most four actual released D/A taps approach the source-checked west stand (781ms)
+  ✓   6 [chromium] › tests/e2e/factory-placement.spec.ts:91:3 › W07 real player construction in one confirmed Factory session › at most four more released D/A taps confirm the actual source-checked west stand (203ms)
+  ✓   7 [chromium] › tests/e2e/factory-placement.spec.ts:92:3 › W07 real player construction in one confirmed Factory session › at most four actual released S/W taps approach the source-checked Cutter stand (890ms)
+  ✓   8 [chromium] › tests/e2e/factory-placement.spec.ts:93:3 › W07 real player construction in one confirmed Factory session › at most four further released S/W taps continue the same native walk (962ms)
+  ✓   9 [chromium] › tests/e2e/factory-placement.spec.ts:94:3 › W07 real player construction in one confirmed Factory session › at most four further released S/W taps approach the actual Cutter stand (25ms)
+  ✓  10 [chromium] › tests/e2e/factory-placement.spec.ts:95:3 › W07 real player construction in one confirmed Factory session › at most four final released S/W taps confirm the actual source-checked Cutter stand (23ms)
+  ✓  11 [chromium] › tests/e2e/factory-placement.spec.ts:99:3 › W07 real player construction in one confirmed Factory session › Escape pauses the same walked session and native readback proves material and Cargo unchanged (399ms)
+  ✓  12 [chromium] › tests/e2e/factory-placement.spec.ts:104:3 › W07 real player construction in one confirmed Factory session › T030 real move, quarter-turn and Escape retire the ghost with no native or material mutation (1.6s)
+  ✓  13 [chromium] › tests/e2e/factory-placement.spec.ts:114:3 › W07 real player construction in one confirmed Factory session › T029 a real confirmed build publishes exactly one paid208kg Cutter (3.1s)
+  ✓  14 [chromium] › tests/e2e/factory-placement.spec.ts:126:3 › W07 real player construction in one confirmed Factory session › normal second-Cutter ghost moves seven quarter-grid steps toward the independent source-checked site (1.7s)
+  ✓  15 [chromium] › tests/e2e/factory-placement.spec.ts:135:3 › W07 real player construction in one confirmed Factory session › seven more actual ghost moves reach the disjoint supported site and specifically prove BOM_MISSING (540ms)
+  ✓  16 [chromium] › tests/e2e/factory-placement.spec.ts:143:3 › W07 real player construction in one confirmed Factory session › finite C26 failed confirmation preserves the complete first installation and all actual native members (805ms)
+  ✓  17 [chromium] › tests/e2e/factory-placement.spec.ts:150:3 › W07 real player construction in one confirmed Factory session › Legacy persistence stays closed and actual disposal retires paid Facility projection and native World (1.1s)
+
+  17 passed (27.8s)

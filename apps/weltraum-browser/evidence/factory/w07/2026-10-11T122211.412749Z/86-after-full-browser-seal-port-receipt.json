@@ -1,0 +1,15 @@
+{
+  "timestampUtc": "2026-10-11T17:44:14.366957+00:00",
+  "all30ProductHashesMatch": true,
+  "sealSha256": "b1ae0d339edefdcc06d387eb9581b85bb8530cac7980e99e3a43549b87303a89",
+  "portCommand": [
+    "ss",
+    "-ltnp",
+    "sport = :5174"
+  ],
+  "portExitCode": 0,
+  "portOutput": "State Recv-Q Send-Q Local Address:Port Peer Address:PortProcess\n",
+  "cpuGpuPortLease": "RELEASED_AFTER_ACTUAL_CLI",
+  "artifactCount": 27,
+  "artifactBytes": 13388379
+}

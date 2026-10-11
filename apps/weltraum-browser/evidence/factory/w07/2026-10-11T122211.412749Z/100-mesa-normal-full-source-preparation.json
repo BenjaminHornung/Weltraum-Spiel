@@ -1,0 +1,16 @@
+{
+  "phase": "SOURCE_PREPARATION_ONLY_RUNNER100_BROWSER_NOT_RUN_HOLD",
+  "timestampUtc": "2026-10-11T19:33:10.942459+00:00",
+  "runner": {
+    "path": "100-mesa-normal-full-browser-runner.py",
+    "sha256": "bc1cfe43bcb23706bf778d59f1cdf57844c00e5f353ef1bf491c3ee55bb6c55e",
+    "bytes": 7158
+  },
+  "candidateSealSha256": "5138bdc77c13a971158c93deb430c8648a5a79d6701d910aaefd10fa8ed7cb16",
+  "candidateE2eSha256": "8f3148798f82f37cdcabe7d811e30b19467db52ac7ffc639b26e8425d6856dfa",
+  "original030fcArchivePreserved": true,
+  "admission": "All30 candidate hashes;98/97/94/92/90/88 artifact SHA+bytes; known7 current originals/absences; config53a55; wrapper47b081 exact declared prefix/env only",
+  "execution": "NOT_RUN_PENDING_SEPARATE_ROOT_AUTHORIZATION",
+  "sourceValidation": "Python AST parse only; no browser or build executed",
+  "restoration": "No product mutation; assert all30 unchanged candidate and exact candidate E2E; restore only seven known own output original/absent states; record actual ss5174/CPU release"
+}

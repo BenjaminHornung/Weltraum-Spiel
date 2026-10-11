@@ -1,0 +1,13 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/hvp-player-input.test.ts tests/unit/hvp-locomotion.test.ts tests/unit/hvp-physics.test.ts tests/unit/factory/facilitySession.test.ts tests/unit/factory/hostLifecycle.test.ts tests/unit/hvp-moving-session.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+
+ Test Files  6 passed (6)
+      Tests  89 passed (89)
+   Start at  17:00:34
+   Duration  18.68s (transform 1.01s, setup 0ms, import 1.93s, tests 16.13s, environment 1ms)
+

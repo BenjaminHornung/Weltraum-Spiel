@@ -1,5 +1,5 @@
 import { fnv1aHash } from "../../core/hash";
-import { HVP_COAST_SEED_NAME, HVP_SOURCE_CELL_METERS, readHvpSourceColumnWorld } from "../../hvp/hvpCoastSource";
+import { HVP_COAST_SEED_NAME, HVP_SOURCE_CELL_METERS, readHvpSourceColumnWorld, type HvpSourceColumn } from "../../hvp/hvpCoastSource";
 import { meshHvpOccupancy, type HvpCompactMesh, type HvpMeshOccupancy } from "../../hvp/hvpCoastMesher";
 import {
   artifactRevision, createMaterialProfile, createMeshArtifact, frameId, materialProfileId,
@@ -57,24 +57,31 @@ export const estimateHvpVegetationSourceBytes = (plants: readonly HvpPlantInstan
     ? 2 * (TREE_HALF[plant.variant]! * 2) ** 2 * TREE_HEIGHT[plant.variant]!
     : BED_SIZE[0] * BED_SIZE[1] * BED_SIZE[2]), 0);
 
-const groundAt = (x: number, z: number): number => readHvpSourceColumnWorld(x + cell / 2, z + cell / 2).topMeters;
+export interface HvpVegetationSourceProfile { readonly version: "hvp-factory-vegetation-v1"; readColumn(x:number,z:number):HvpSourceColumn }
+const sourceProfile=(profile?:HvpVegetationSourceProfile|number):HvpVegetationSourceProfile|undefined=>{
+  if(typeof profile==="number"||profile===undefined)return undefined;
+  if(profile.version!=="hvp-factory-vegetation-v1"||typeof profile.readColumn!=="function")throw new Error("Unknown vegetation source profile");return profile;
+};
+const groundAt = (x: number, z: number, profile?:HvpVegetationSourceProfile): number => (profile?.readColumn??readHvpSourceColumnWorld)(x + cell / 2, z + cell / 2).topMeters;
 const hash = (key: string): number => Number.parseInt(fnv1aHash(`${HVP_COAST_SEED_NAME}:${key}`), 16) >>> 0;
 const clearing = (x: number, z: number): boolean => Math.hypot(x + 9, z + 9) <= 3.25;
 
 /** Authored habitat boundary; a valid grid address alone does not permit planting. */
-export const isHvpPlantHabitat = (kind: HvpPlantKind, x: number, z: number): boolean => {
+export const isHvpPlantHabitat = (kind: HvpPlantKind, x: number, z: number, profile?:HvpVegetationSourceProfile): boolean => {
   if (!Number.isFinite(x) || !Number.isFinite(z) || Math.abs(x) >= 16 || Math.abs(z) >= 16 || clearing(x, z)) {
     return false;
   }
-  const y = groundAt(x, z);
+  const y = groundAt(x, z, profile);
   if (kind === "tree") { return y > 0; }
-  const slope = Math.max(...[[-0.5,0],[0.5,0],[0,-0.5],[0,0.5]].map(([dx,dz]) => Math.abs(groundAt(x+dx!,z+dz!) - y)));
+  const slope = Math.max(...[[-0.5,0],[0.5,0],[0,-0.5],[0,0.5]].map(([dx,dz]) => Math.abs(groundAt(x+dx!,z+dz!,profile) - y)));
   if (slope > 0.5) { return false; }
   return kind === "reed" ? y >= -0.5 && y <= 0.25 : y > 0.25 && y <= 3;
 };
 
 /** Stateless authored features plus habitat-filtered clusters; never frame-time RNG. */
-export const planHvpVegetation = (leaf?: readonly [number, number]): readonly HvpPlantInstance[] => {
+export const planHvpVegetation = (leaf?: readonly [number, number], profile?:HvpVegetationSourceProfile): readonly HvpPlantInstance[] => {
+  if(sourceProfile(profile))return Object.freeze(planHvpVegetation(leaf).filter(plant=>plant.id!=="hvp:flora:west-frame"&&plant.id!=="hvp:flora:north-young")
+    .map(plant=>Object.freeze({...plant,position:Object.freeze({...plant.position,y:groundAt(plant.position.x,plant.position.z,profile)})})));
   if (leaf !== undefined && !leaf.every(Number.isSafeInteger)) { throw new TypeError("Vegetation leaf coordinates must be integers"); }
   const result: HvpPlantInstance[] = [];
   const add = (id: string, kind: HvpPlantKind, variant: number, x: number, z: number): void => {
@@ -143,15 +150,16 @@ const volumeBuilder = (origin: Q, size: Q) => {
   return {volume,put,line,exclude,toCell:(q:Q):Q=>Object.freeze([q[0]-origin[0],q[1]-origin[1],q[2]-origin[2]])};
 };
 
-export const buildHvpPlant = (instance: HvpPlantInstance): HvpPlantSource => {
+export const buildHvpPlant = (instance: HvpPlantInstance, optionalProfile?:HvpVegetationSourceProfile|number): HvpPlantSource => {
+  const profile=sourceProfile(optionalProfile);
   representationKey(instance.id);
   if (!Number.isInteger(instance.variant) || instance.variant < 0 || instance.variant > 3
     || ![instance.position.x,instance.position.y,instance.position.z].every((v)=>Number.isFinite(v)&&Number.isSafeInteger(v*8))) {
     throw new TypeError("Vegetation requires a finite quantized authored pose and supported variant");
   }
   if (!["tree", "reed", "broadleaf", "violet", "amber"].includes(instance.kind)
-    || !isHvpPlantHabitat(instance.kind, instance.position.x, instance.position.z)
-    || instance.position.y !== groundAt(instance.position.x, instance.position.z)) {
+    || !isHvpPlantHabitat(instance.kind, instance.position.x, instance.position.z, profile)
+    || instance.position.y !== groundAt(instance.position.x, instance.position.z, profile)) {
     throw new Error("Vegetation source requires its valid terrain-bound habitat");
   }
   const tree = instance.kind === "tree";
