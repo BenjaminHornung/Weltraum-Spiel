@@ -1,0 +1,166 @@
+{
+  "schema": "hestia.fp06.w01-evidence/v1",
+  "runId": "2026-10-11T093328.263557Z",
+  "createdAtUtc": "2026-10-11T09:47:53.641060+00:00",
+  "actor": "/root/fp06_integrator",
+  "branch": "codex/hestia-fp06-integrator-2026-10-11",
+  "reviewedBaseSha": "656c52458eff15133025bb21dc3e5b7b708cfbf7",
+  "status": "IMPLEMENTED_VERIFIED_PENDING_INDEPENDENT_GATE",
+  "commitBinding": "Full result SHA is recorded in the external w01-report.md after this evidence commit; self-referential SHA is not embedded.",
+  "grant": "/workspace/.cloud-setup/fp06-task-briefs/w01-grant.json",
+  "productFiles": [
+    {
+      "path": "apps/weltraum-browser/src/factory/contracts.ts",
+      "sha256": "6cf50991a61acb0ff6453e7507f000f51cd3d8be8094f2a978735094c6ea1527"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts",
+      "sha256": "852f3b5d2620f2e20c8b23112a308b77c1a64d04e0290f41e296649a31eba81d"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/catalog/sourceLock.ts",
+      "sha256": "a91d9a8ccacc03dde29de4992ba81404aed5c342f8c326986eb026f81658600a"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/fixtures/factory/fp02Fixtures.ts",
+      "sha256": "1f2b67dbaa39044f2854abc9445908b384bfbdb2980ca50940222da33c34a647"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/catalog.test.ts",
+      "sha256": "af9532d5120df56690dd6322c567a2fd97d07dd1ae2ebc990273d5ec3fcbe2b7"
+    }
+  ],
+  "verification": [
+    {
+      "phase": "RED",
+      "command": "npm --prefix apps/weltraum-browser run test -- tests/unit/factory/catalog.test.ts",
+      "exitCode": 1,
+      "result": "7failed/7runtime bodytests; imports resolved",
+      "log": "red.txt"
+    },
+    {
+      "phase": "RED_SOURCE_BINDING",
+      "command": "npm --prefix apps/weltraum-browser run test -- tests/unit/factory/catalog.test.ts",
+      "exitCode": 1,
+      "result": "5passed/2failed; unknown recipeversion and authorityextension not rejected",
+      "log": "red-source-binding.txt"
+    },
+    {
+      "phase": "FINAL_GREEN",
+      "command": "npm --prefix apps/weltraum-browser run test -- tests/unit/factory/catalog.test.ts tests/unit/resourceCatalog.test.ts tests/unit/resourceContainers.test.ts tests/unit/resourceTransfer.test.ts",
+      "exitCode": 0,
+      "result": "4files/45tests passed (11 W01+34Resource regressions)",
+      "log": "verified-green-resource-regressions.txt"
+    },
+    {
+      "phase": "BUILD",
+      "command": "npm --prefix apps/weltraum-browser run build",
+      "exitCode": 0,
+      "result": "TypeScript and Vite passed; baseline bundlewarning unchanged",
+      "log": "verified-build.txt"
+    },
+    {
+      "phase": "DIFF_CHECK",
+      "command": "git diff --check",
+      "exitCode": 0,
+      "result": "PASS"
+    }
+  ],
+  "uiEvidence": "NOT_RUN: pure catalog/contract scope only",
+  "independentReview": "PENDING",
+  "openBindings": [
+    "Source device interior capacity/POWER and internal geometry deliberately unspecified for later physicalbinding",
+    "Rock/Gravel unknownvolume remains inadmissible for real Resource transfers"
+  ],
+  "artifacts": [
+    {
+      "path": "build-after-type-fix.txt",
+      "sha256": "2462c8a9598b9c96774123593bc6a8f64e51c0bf33a8d14b8687f3a9b739915f"
+    },
+    {
+      "path": "build-after-type-fix.txt.raw.gz",
+      "sha256": "34f513f3461b8ba1f856cade70dc81179eb5b43c5a37b1ab01d1f408519f209c"
+    },
+    {
+      "path": "build.txt",
+      "sha256": "1c4ce679959625d105e3a8e61fee994c817777d8dc700c9186d7bfc9aae39ad2"
+    },
+    {
+      "path": "build.txt.raw.gz",
+      "sha256": "50823070496908fea3569a3dfcbc13ba0908b4aa37347693b4e291286f8d7d6e"
+    },
+    {
+      "path": "cargo-state.json",
+      "sha256": "ac3f4e5d885ca378143cfd6f41a007e6e80ad400dd28cce90ca5efb9e7d7ea0e"
+    },
+    {
+      "path": "catalog-oracles.json",
+      "sha256": "9afb2018e11cbed251c3cb6bba9cad3265bd96d28aec95c21ecdee30be80bf73"
+    },
+    {
+      "path": "final-build.txt",
+      "sha256": "102d32bb6a988d371a614e34774cba5f609b5affd416e15ad9674db427e582a7"
+    },
+    {
+      "path": "final-build.txt.raw.gz",
+      "sha256": "0f193b6e47e34c9d0ad948b3b5768da130e1a616657caf88236e7fbd8d4af38c"
+    },
+    {
+      "path": "final-green-resource-regressions.txt",
+      "sha256": "ca5285672ad41eef4a956ca76cc79ec2cb5a7e8d0835096055f8e90d58b24176"
+    },
+    {
+      "path": "final-green-resource-regressions.txt.raw.gz",
+      "sha256": "f518074c6b6f373728a043ea25139076cdbd1768df98ef0261ae62e64deeaa16"
+    },
+    {
+      "path": "green-resource-regressions.txt",
+      "sha256": "81fe6f29449e58eb1324764056cddb19f4de98a20f39f913be617995d82367f1"
+    },
+    {
+      "path": "green-resource-regressions.txt.raw.gz",
+      "sha256": "3174774dd18f092f97cad61be6dced0add7960c72e4280eb5357ab565faf4b57"
+    },
+    {
+      "path": "product-diff.patch",
+      "sha256": "c4892d01fd8e41a35cf261cc5bf340a8499f63ff0394923a180a78f2e6721252"
+    },
+    {
+      "path": "red-source-binding.txt",
+      "sha256": "82ba6150af2e45f08f0845956d73fef1358003abedc74902d9a8d075ca1af0a8"
+    },
+    {
+      "path": "red-source-binding.txt.raw.gz",
+      "sha256": "11663ab222e0fa36cfa32e0897cc504d2fcbf3aaf8cb7309c631b24f329c7f31"
+    },
+    {
+      "path": "red.txt",
+      "sha256": "01ad43062217a2f663144709822e2e6f723715a89bf3a2e0dcd0a555ec0b8a24"
+    },
+    {
+      "path": "red.txt.raw.gz",
+      "sha256": "97206bf478c31d02a0411b315e360e8bc4db9c4e92c8ade62202bc300cb66b7f"
+    },
+    {
+      "path": "review.md",
+      "sha256": "13ec9585b1dd7c127da4dfca9ac41b98436650ab07b5e8115876d7f4689a81c8"
+    },
+    {
+      "path": "verified-build.txt",
+      "sha256": "2d63cf00e33096699deb21206855e534ad30a8e09b8494e16b8e60b1149489e3"
+    },
+    {
+      "path": "verified-build.txt.raw.gz",
+      "sha256": "212f60423a721c7bc473fe725308f98d9ca083504f36cbc077bc80bf3af22139"
+    },
+    {
+      "path": "verified-green-resource-regressions.txt",
+      "sha256": "b0f98a98a205670c39aad6708edcb3692ac7647d952e72891913f0fcadc3390c"
+    },
+    {
+      "path": "verified-green-resource-regressions.txt.raw.gz",
+      "sha256": "79cb7d164f9d4ef82b51fe35416b9376af6b57cac3af8b8be189754a9fd14078"
+    }
+  ],
+  "artifactNormalization": "Human-readable txt strips trailing whitespace only; matching txt.raw.gz preserves actual tool stdout/stderr bytes with reproducible gzip mtime0."
+}

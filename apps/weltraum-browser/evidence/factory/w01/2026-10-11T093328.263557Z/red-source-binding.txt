@@ -1,0 +1,56 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/catalog.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/catalog.test.ts (7 tests | 2 failed) 161ms
+     × FP06-T008 rejects unknown recipe versions and same-ID changed normative bytes 22ms
+     × retains an explicit bijection and immutable canonical references 12ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/catalog.test.ts > source-locked FP02 factory catalog > FP06-T008 rejects unknown recipe versions and same-ID changed normative bytes
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ tests/unit/factory/catalog.test.ts:54:47
+     52|     const changed = structuredClone(createFp02CatalogInput());
+     53|     changed.recipes[0].version = 2;
+     54|     expect(() => loadFactoryCatalog(changed)).toThrow(/source lock/);
+       |                                               ^
+     55|     const altered = structuredClone(createFp02CatalogInput());
+     56|     altered.recipes[0].outputs[0].quantityUnits = 7_600_000;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/factory/catalog.test.ts > source-locked FP02 factory catalog > retains an explicit bijection and immutable canonical references
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ tests/unit/factory/catalog.test.ts:103:98
+    101|     input.items[0].massMgPerUnit = 1;
+    102|     expect(catalog.items[0].massMgPerUnit).toBe(350_000_000);
+    103|     expect(() => loadFactoryCatalog({ ...createFp02CatalogInput(), une…
+       |                                                                                                  ^
+    104|   });
+    105| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 5 passed (7)
+   Start at  09:40:44
+   Duration  572ms (transform 193ms, setup 0ms, import 248ms, tests 161ms, environment 0ms)

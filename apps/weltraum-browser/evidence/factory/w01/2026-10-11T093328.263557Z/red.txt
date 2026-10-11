@@ -1,0 +1,102 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/catalog.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/catalog.test.ts (7 tests | 7 failed) 10ms
+     × FP06-T005 admits exactly the finite 28 cargo positions without salvage or equipment 4ms
+     × FP06-T006 binds the full cutter/former BOM including one finite chassis each 1ms
+     × FP06-T007 keeps placement and real HVP terrain scale/source provenance distinct 1ms
+     × FP06-T008 rejects unknown recipe versions and same-ID changed normative bytes 1ms
+     × keeps seven mass-conserving recipes and manual work separate from electrical work 1ms
+     × uses exact sourcebound pack ratios and conservative envelopes without admitting unknown rock volume 0ms
+     × retains an explicit bijection and immutable canonical references 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/catalog.test.ts > source-locked FP02 factory catalog > FP06-T005 admits exactly the finite 28 cargo positions without salvage or equipment
+Error: W01 fixture not implemented
+ ❯ createFp02Fixture src/factory/catalog/fp02Catalog.ts:3:88
+      1| export const createFp02CatalogInput = (): unknown => { throw new Error…
+      2| export const loadFactoryCatalog = (_input: unknown) => { throw new Err…
+      3| export const createFp02Fixture = (_name: "cargo" | "layout-a" | "layou…
+       |                                                                                        ^
+      4|
+ ❯ tests/unit/factory/catalog.test.ts:8:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  tests/unit/factory/catalog.test.ts > source-locked FP02 factory catalog > FP06-T006 binds the full cutter/former BOM including one finite chassis each
+Error: W01 catalog not implemented
+ ❯ createFp02CatalogInput src/factory/catalog/fp02Catalog.ts:1:62
+      1| export const createFp02CatalogInput = (): unknown => { throw new Error…
+       |                                                              ^
+      2| export const loadFactoryCatalog = (_input: unknown) => { throw new Err…
+      3| export const createFp02Fixture = (_name: "cargo" | "layout-a" | "layou…
+ ❯ tests/unit/factory/catalog.test.ts:21:40
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  tests/unit/factory/catalog.test.ts > source-locked FP02 factory catalog > FP06-T007 keeps placement and real HVP terrain scale/source provenance distinct
+Error: W01 catalog not implemented
+ ❯ createFp02CatalogInput src/factory/catalog/fp02Catalog.ts:1:62
+      1| export const createFp02CatalogInput = (): unknown => { throw new Error…
+       |                                                              ^
+      2| export const loadFactoryCatalog = (_input: unknown) => { throw new Err…
+      3| export const createFp02Fixture = (_name: "cargo" | "layout-a" | "layou…
+ ❯ tests/unit/factory/catalog.test.ts:38:40
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  tests/unit/factory/catalog.test.ts > source-locked FP02 factory catalog > FP06-T008 rejects unknown recipe versions and same-ID changed normative bytes
+Error: W01 fixture not implemented
+ ❯ createFp02Fixture src/factory/catalog/fp02Catalog.ts:3:88
+      1| export const createFp02CatalogInput = (): unknown => { throw new Error…
+      2| export const loadFactoryCatalog = (_input: unknown) => { throw new Err…
+      3| export const createFp02Fixture = (_name: "cargo" | "layout-a" | "layou…
+       |                                                                                        ^
+      4|
+ ❯ tests/unit/factory/catalog.test.ts:51:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  tests/unit/factory/catalog.test.ts > source-locked FP02 factory catalog > keeps seven mass-conserving recipes and manual work separate from electrical work
+Error: W01 catalog not implemented
+ ❯ createFp02CatalogInput src/factory/catalog/fp02Catalog.ts:1:62
+      1| export const createFp02CatalogInput = (): unknown => { throw new Error…
+       |                                                              ^
+      2| export const loadFactoryCatalog = (_input: unknown) => { throw new Err…
+      3| export const createFp02Fixture = (_name: "cargo" | "layout-a" | "layou…
+ ❯ tests/unit/factory/catalog.test.ts:65:40
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  tests/unit/factory/catalog.test.ts > source-locked FP02 factory catalog > uses exact sourcebound pack ratios and conservative envelopes without admitting unknown rock volume
+Error: W01 catalog not implemented
+ ❯ createFp02CatalogInput src/factory/catalog/fp02Catalog.ts:1:62
+      1| export const createFp02CatalogInput = (): unknown => { throw new Error…
+       |                                                              ^
+      2| export const loadFactoryCatalog = (_input: unknown) => { throw new Err…
+      3| export const createFp02Fixture = (_name: "cargo" | "layout-a" | "layou…
+ ❯ tests/unit/factory/catalog.test.ts:76:40
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  tests/unit/factory/catalog.test.ts > source-locked FP02 factory catalog > retains an explicit bijection and immutable canonical references
+Error: W01 catalog not implemented
+ ❯ createFp02CatalogInput src/factory/catalog/fp02Catalog.ts:1:62
+      1| export const createFp02CatalogInput = (): unknown => { throw new Error…
+       |                                                              ^
+      2| export const loadFactoryCatalog = (_input: unknown) => { throw new Err…
+      3| export const createFp02Fixture = (_name: "cargo" | "layout-a" | "layou…
+ ❯ tests/unit/factory/catalog.test.ts:93:35
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 failed (7)
+   Start at  09:33:29
+   Duration  361ms (transform 167ms, setup 0ms, import 211ms, tests 10ms, environment 0ms)

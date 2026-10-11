@@ -1,0 +1,349 @@
+{
+  "version": "fp06-w01-oracle-v1",
+  "cargoCount": 28,
+  "totalMassMg": 2984400000,
+  "totalPackedVolumeMm3": 12450000000,
+  "stackCount": 79,
+  "catalogDigest": "fnv1a:9f8fe524",
+  "sourceHashes": [
+    {
+      "fileName": "HESTIA_FP01_EINSTIEG_ENERGIE_DETAILPLAN_2026-10-10.md",
+      "sha256": "ec3e605de2c6a4877c2ff0afae244b3215e7bf8bb267feef4c466b546477080c",
+      "sourceId": "FP01",
+      "status": "source-fixture"
+    },
+    {
+      "fileName": "HESTIA_FP02_PRODUKTIONSKETTEN_GEBAEUDE_LAYOUTS_DETAILPLAN_2026-10-10.md",
+      "sha256": "5c4f068edba3d0c89e77b0d3a40734d4ee1a672c39f3885cbfef31430d942f39",
+      "sourceId": "FP02",
+      "status": "source-fixture"
+    },
+    {
+      "fileName": "HESTIA_FP03_BAUEN_BLUEPRINTS_BAUAUTOMATION_DETAILPLAN_2026-10-10.md",
+      "sha256": "7d43e358ae7ead52da3996e85bc52906cb2584a42e0802fc4d1e959df1289cb1",
+      "sourceId": "FP03",
+      "status": "source-fixture"
+    },
+    {
+      "fileName": "HESTIA_FP04_AUTOMATION_ENERGIESELBSTSTAENDIGKEIT_DETAILPLAN_2026-10-10.md",
+      "sha256": "a04f8074afc4e1d5cd8d8eb948bb93f42cdc5a5cc73b3f2a077cb13e67e48570",
+      "sourceId": "FP04",
+      "status": "source-fixture"
+    },
+    {
+      "fileName": "HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md",
+      "sha256": "501bf5d80ee6dec9627e48ea27c271b3f964d21cde61ce9410be7eb77fa182ea",
+      "sourceId": "FP06",
+      "status": "source-fixture"
+    }
+  ],
+  "deviceMasses": [
+    {
+      "sourceId": "B05",
+      "massMg": 40000000
+    },
+    {
+      "sourceId": "B06",
+      "massMg": 208000000
+    },
+    {
+      "sourceId": "B07",
+      "massMg": 341000000
+    },
+    {
+      "sourceId": "B08",
+      "massMg": 499000000
+    },
+    {
+      "sourceId": "B09",
+      "massMg": 60000000
+    }
+  ],
+  "recipeRefs": [
+    {
+      "sourceId": "REC-01-CUT",
+      "version": 1,
+      "digest": "fnv1a:cc0cefe6"
+    },
+    {
+      "sourceId": "REC-02-PROFILE",
+      "version": 1,
+      "digest": "fnv1a:a3dc3ad4"
+    },
+    {
+      "sourceId": "REC-03-SHEET",
+      "version": 1,
+      "digest": "fnv1a:03dfab3f"
+    },
+    {
+      "sourceId": "REC-04-CRUSH",
+      "version": 1,
+      "digest": "fnv1a:4feb34f8"
+    },
+    {
+      "sourceId": "REC-05-BRACE",
+      "version": 1,
+      "digest": "fnv1a:3531c19d"
+    },
+    {
+      "sourceId": "REC-06-DRIVE",
+      "version": 1,
+      "digest": "fnv1a:17f4ac83"
+    },
+    {
+      "sourceId": "REC-07-BELT",
+      "version": 1,
+      "digest": "fnv1a:4e0ea579"
+    }
+  ],
+  "terrain": {
+    "cellSizeMm": 125,
+    "densityProvenance": "prototype-tuning-unapproved",
+    "limestoneDensityKgPerM3": 2400,
+    "profileVersion": "hvp-authored-coast-v5",
+    "registryDigest": "c1be281a",
+    "sourceRef": "src/hvp/hvpCoastSource.ts"
+  },
+  "frame": {
+    "placementGridMm": 250,
+    "runtimeAxes": {
+      "east": "x",
+      "height": "y",
+      "north": "z"
+    },
+    "sourceRefs": [
+      "FP02:8.2",
+      "src/hvp/hvpCoastSource.ts:northern-shelf-positive-z",
+      "src/hestia-prototype/presentation/vegetation.ts:north-young"
+    ],
+    "version": "fp02-east-north-height-to-hvp-xyz-v1"
+  },
+  "layoutA": {
+    "sourceId": "FP02-LAYOUT-A",
+    "sizeMm": [
+      22000,
+      12000
+    ],
+    "placements": [
+      {
+        "instanceId": "fp02_c08_a",
+        "deviceId": "B09",
+        "centerMm": [
+          1000,
+          6000,
+          0
+        ],
+        "quarterTurns": 0
+      },
+      {
+        "instanceId": "fp02_cutter_a",
+        "deviceId": "B06",
+        "centerMm": [
+          7500,
+          6000,
+          0
+        ],
+        "quarterTurns": 0
+      },
+      {
+        "instanceId": "fp02_former_a",
+        "deviceId": "B07",
+        "centerMm": [
+          15000,
+          6000,
+          0
+        ],
+        "quarterTurns": 0
+      },
+      {
+        "instanceId": "fp02_c08_b",
+        "deviceId": "B09",
+        "centerMm": [
+          18000,
+          6000,
+          0
+        ],
+        "quarterTurns": 0
+      },
+      {
+        "instanceId": "fp02_workbench_a",
+        "deviceId": "B05",
+        "centerMm": [
+          7000,
+          2000,
+          0
+        ],
+        "quarterTurns": 0
+      }
+    ],
+    "beltLines": [
+      {
+        "instanceId": "fp02_belt_a1",
+        "startMm": [
+          2000,
+          6000,
+          1000
+        ],
+        "endMm": [
+          6000,
+          6000,
+          1000
+        ],
+        "lengthMm": 4000,
+        "moduleCount": 4,
+        "driveCount": 1
+      },
+      {
+        "instanceId": "fp02_belt_a2",
+        "startMm": [
+          9000,
+          6000,
+          1000
+        ],
+        "endMm": [
+          13000,
+          6000,
+          1000
+        ],
+        "lengthMm": 4000,
+        "moduleCount": 4,
+        "driveCount": 1
+      }
+    ],
+    "totalLoadWatts": 3500,
+    "extraCableLengthMm": 13000,
+    "installed": false
+  },
+  "layoutB": {
+    "sourceId": "FP02-LAYOUT-B",
+    "sizeMm": [
+      22000,
+      20000
+    ],
+    "placements": [
+      {
+        "instanceId": "fp02_c08_a",
+        "deviceId": "B09",
+        "centerMm": [
+          1000,
+          6000,
+          0
+        ],
+        "quarterTurns": 0
+      },
+      {
+        "instanceId": "fp02_cutter_a",
+        "deviceId": "B06",
+        "centerMm": [
+          7500,
+          6000,
+          0
+        ],
+        "quarterTurns": 0
+      },
+      {
+        "instanceId": "fp02_former_a",
+        "deviceId": "B07",
+        "centerMm": [
+          15000,
+          6000,
+          0
+        ],
+        "quarterTurns": 0
+      },
+      {
+        "instanceId": "fp02_c08_b",
+        "deviceId": "B09",
+        "centerMm": [
+          18000,
+          6000,
+          0
+        ],
+        "quarterTurns": 0
+      },
+      {
+        "instanceId": "fp02_workbench_a",
+        "deviceId": "B05",
+        "centerMm": [
+          7000,
+          2000,
+          0
+        ],
+        "quarterTurns": 0
+      },
+      {
+        "instanceId": "fp02_crusher_b",
+        "deviceId": "B08",
+        "centerMm": [
+          7500,
+          13000,
+          0
+        ],
+        "quarterTurns": 0
+      },
+      {
+        "instanceId": "fp02_c08_c",
+        "deviceId": "B09",
+        "centerMm": [
+          14000,
+          13000,
+          0
+        ],
+        "quarterTurns": 0
+      }
+    ],
+    "beltLines": [
+      {
+        "instanceId": "fp02_belt_a1",
+        "startMm": [
+          2000,
+          6000,
+          1000
+        ],
+        "endMm": [
+          6000,
+          6000,
+          1000
+        ],
+        "lengthMm": 4000,
+        "moduleCount": 4,
+        "driveCount": 1
+      },
+      {
+        "instanceId": "fp02_belt_a2",
+        "startMm": [
+          9000,
+          6000,
+          1000
+        ],
+        "endMm": [
+          13000,
+          6000,
+          1000
+        ],
+        "lengthMm": 4000,
+        "moduleCount": 4,
+        "driveCount": 1
+      },
+      {
+        "instanceId": "fp02_belt_b3",
+        "startMm": [
+          9000,
+          13000,
+          1000
+        ],
+        "endMm": [
+          13000,
+          13000,
+          1000
+        ],
+        "lengthMm": 4000,
+        "moduleCount": 4,
+        "driveCount": 1
+      }
+    ],
+    "totalLoadWatts": 6600,
+    "extraCableLengthMm": 17000,
+    "installed": false
+  }
+}
