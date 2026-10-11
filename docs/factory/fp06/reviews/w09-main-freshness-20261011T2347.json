@@ -1,0 +1,28 @@
+{
+  "observedAtUtc": "2026-10-11T23:47:58Z",
+  "repository": "BenjaminHornung/Weltraum-Spiel",
+  "cwd": "/workspace/Weltraum-Spiel",
+  "command": [
+    "git",
+    "ls-remote",
+    "origin",
+    "refs/heads/main"
+  ],
+  "exitCode": 0,
+  "actualOutput": "e40592c113b72a8dc93725187f92cf948e07f44d\trefs/heads/main\n",
+  "verifiedRemoteMainSha": "e40592c113b72a8dc93725187f92cf948e07f44d",
+  "originalWorktreeStatus": {
+    "command": [
+      "git",
+      "status",
+      "--porcelain=v1"
+    ],
+    "exitCode": 0,
+    "actualOutput": "",
+    "clean": true
+  },
+  "limits": [
+    "Read-only remote HEAD lookup; no fetch or branch mutation",
+    "External pull-request and uncommitted remote writer visibility remains incomplete"
+  ]
+}
