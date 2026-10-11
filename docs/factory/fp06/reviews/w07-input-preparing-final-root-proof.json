@@ -1,0 +1,51 @@
+{
+  "verifiedAtUtc": "2026-10-11T17:05:44.117611+00:00",
+  "all30CurrentBytes": "MATCH",
+  "exactTwoCandidateDelta": [
+    "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+    "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts"
+  ],
+  "all28PriorCandidateHeld": "MATCH",
+  "actualProducts": 28,
+  "copies": [
+    {
+      "path": "docs/factory/fp06/reviews/w07-input-delivery-preparing-final-product.patch",
+      "bytes": 241228,
+      "sha256": "2bf5e1f0dcf225085c1f6d41b05760b4c643eab87a87e9a9faa42b3fe4964a4b"
+    },
+    {
+      "path": "docs/factory/fp06/reviews/w07-input-delivery-preparing-final-product-files.json",
+      "bytes": 9097,
+      "sha256": "b516b07c5502fe559ea89d530d912c76e3d2d69b0a840e5a466fe06cbab850b2"
+    },
+    {
+      "path": "docs/factory/fp06/reviews/w07-input-delivery-preparing-delta-candidate.patch",
+      "bytes": 8217,
+      "sha256": "602b8ac9d50f57afe485127f21efaf6591fd88030c0259d66ba7021c49e9ace4"
+    }
+  ],
+  "reviews": [
+    {
+      "report": "docs/factory/fp06/reviews/w07-input-preparing-final-spec-review.md",
+      "originalSha256": "03d8d00228e4f5ce57f5b227a734a65a94de7d1d6afcab235ce9887f7fbac32b",
+      "originalBytes": 4062,
+      "copiedSha256": "66c7595590edd74ea577a4308919ee34b49b427b9dd431775e279db353d097db",
+      "spec": "PASS",
+      "quality": "PASS",
+      "Preparing": "CLOSED",
+      "package": "NOT_PASS"
+    },
+    {
+      "report": "docs/factory/fp06/reviews/w07-input-preparing-final-quality-review.md",
+      "originalSha256": "64449c20dc3cfdf94ea9622a7e87cc3dfe304389d565ab4a373e6d204a1c2078",
+      "originalBytes": 4241,
+      "copiedSha256": "64449c20dc3cfdf94ea9622a7e87cc3dfe304389d565ab4a373e6d204a1c2078",
+      "spec": "PASS",
+      "quality": "PASS",
+      "Preparing": "CLOSED",
+      "package": "NOT_PASS"
+    }
+  ],
+  "browser": "NOT_RUN_AT_SEAL",
+  "commit": "PENDING"
+}

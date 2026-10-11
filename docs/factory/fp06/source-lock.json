@@ -1313,7 +1313,7 @@
         "apps/weltraum-browser/evidence/factory/w07/<actual-run-id>/**"
       ],
       "evidenceGrant": true,
-      "status": "IN_PROGRESS",
+      "status": "IN_REVIEW",
       "owner": "/root/fp06_integrator",
       "plannedRole": "integrator",
       "branch": "codex/hestia-fp06-integrator-2026-10-11",
@@ -1380,7 +1380,7 @@
         "Cargo provenance alone is not physical reach: initial source must be bound to a real Cargo-S0 world owner, native pose and access outside the 22 x 12 m machine zone. W07 handles initial witness/open and a truly reachable paid player build; W09 handles finite pickup, confirmed native movement and local deposit for remote construction/production. No new terrain masks, cargo, UI source-pose writes or automatic transport. New exact paths require a separate recorded scope extension; existing grants remain unchanged."
       ],
       "baseCommitSha": "d5502ae7fd5431d58eda51bea062c54691ebe3c2",
-      "implementationWriteHold": false,
+      "implementationWriteHold": true,
       "authorizedAtUtc": "2026-10-11T13:11:16.765614+00:00",
       "completedAtUtc": null,
       "tddInitialStatus": {
@@ -1716,27 +1716,25 @@
         }
       ],
       "currentProductSeal": {
-        "sealedAtUtc": "2026-10-11T16:50:12.656879+00:00",
-        "patch": "docs/factory/fp06/reviews/w07-input-delivery-candidate-product.patch",
-        "patchSha256": "d347852c0651fbd55ba8c509c2717bbefdcde49787911b8566fc62718a6be385",
-        "patchBytes": 237566,
-        "fileHashes": "docs/factory/fp06/reviews/w07-input-delivery-candidate-product-files.json",
-        "fileHashesSha256": "0f9272a18f2f968a8b68fd6735a4c59300b84c07babdad0fa702af6912aa09b7",
+        "sealedAtUtc": "2026-10-11T17:02:33.072722+00:00",
+        "patch": "docs/factory/fp06/reviews/w07-input-delivery-preparing-final-product.patch",
+        "patchSha256": "2bf5e1f0dcf225085c1f6d41b05760b4c643eab87a87e9a9faa42b3fe4964a4b",
+        "patchBytes": 241228,
+        "fileHashes": "docs/factory/fp06/reviews/w07-input-delivery-preparing-final-product-files.json",
+        "fileHashesSha256": "b516b07c5502fe559ea89d530d912c76e3d2d69b0a840e5a466fe06cbab850b2",
         "grantedPaths": 30,
         "actualChangedProductPaths": 28,
-        "exactNinthDeltaPaths": [
-          "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
-          "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+        "exactCandidateDeltaPaths": [
           "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
-          "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
-          "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts"
+          "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts"
         ],
-        "all25NinthHeldMatch": true,
-        "phase": "InputDeliveryCandidate_PRE_BROWSER",
+        "all28CandidateHeldMatch": true,
+        "phase": "InputDeliveryPreparingFinal_PRE_BROWSER",
         "packageCommitSha": null,
-        "rootProof": "docs/factory/fp06/reviews/w07-input-delivery-seal-root-proof.json"
+        "rootProof": "docs/factory/fp06/reviews/w07-input-preparing-final-root-proof.json"
       },
       "currentNarrowWriteSet": [
+        "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
         "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts"
       ],
       "currentNarrowScope": "One E2E-only bounded adaptive fine-key diagnostic; all other28 product paths held at Ninth seal",
@@ -2200,7 +2198,8 @@
         "counterexample": "Native moving.begin sets busy while holdsWorld false; existing Down remains, Up rejected during bodyPending/MovingPreparing, Nativeadvance continues untilStage.",
         "requirements": "Actual valid moving contact/source/member/Rapier preparation; actual Native steps only, no pose/tick fake. Sourcecounterexample not executedRED yet.",
         "runtime": "ALL_FOUR_RUNTIME_PATHS_HOLD",
-        "browser": "NOT_GRANTED"
+        "browser": "NOT_GRANTED",
+        "status": "EXECUTED77_REAL_ASSERTION_RED_AFTER76_FIXTURE_FAILURE"
       },
       "factoryBodyPreparingReview": {
         "report": "docs/factory/fp06/reviews/w07-input-preparing-quality-supplement.md",
@@ -2211,7 +2210,8 @@
         "finding": "P1 direct Native/client API retains movement during Preparing until Stage; Up barred while native advance continues",
         "actualUiNuance": "Normal moving.submit busy synchronously blocks Bootstrapconfirmed, Producer stop on KeyUp/RAF sends explicitCancel across pending and neutralizes; no observed normalUIunreleasedmovement claimed",
         "red": "NOT_RUN",
-        "all29HeldPaths": "MATCH; Unit reopened alone"
+        "all29HeldPaths": "MATCH; Unit reopened alone",
+        "findingStatusAfterFinalSeal": "CLOSED_REVIEWED89_PASS_BUILD"
       },
       "factoryInputDeliveryCandidateSpecReview": {
         "report": "docs/factory/fp06/reviews/w07-input-delivery-candidate-spec-review.md",
@@ -2223,6 +2223,106 @@
         "openFinding": "F1 direct BodyPreparing release retains old movement untilStage; new genuine businessOracle required",
         "all30CandidateBytesAtReview": "MATCH16:55:31UTC",
         "originalInputGuards": "CLOSED"
+      },
+      "factoryBodyPreparingRed": [
+        {
+          "log": 76,
+          "result": "2_CONTACT_FIXTURE_FAILURES_NOT_BUSINESS_RED",
+          "endedAtUtc": "2026-10-11T16:58:26.132282+00:00",
+          "wrapperSeconds": 2.2263807989984343,
+          "rawBytes": 2668,
+          "rawSha256": "5dc7c79dab3e03c2d5e8db0b3cdc8f6ad43fa4aa45a796ea5fa36f49a27812fd",
+          "rootRawVerification": "Gzip-decompressed SHA/bytes exact receipt"
+        },
+        {
+          "log": 77,
+          "result": "2_BUSINESS_ASSERTION_FAIL_22_SKIPPED_4_ASSERTIONS",
+          "endedAtUtc": "2026-10-11T16:59:18.769575+00:00",
+          "wrapperSeconds": 2.365454509999836,
+          "rawBytes": 2898,
+          "rawSha256": "2146587e1b601fc41d400048b20bfe03a2a9cb7277e7009cc38d6615fe5698f5",
+          "rootRawVerification": "Gzip-decompressed SHA/bytes exact receipt"
+        }
+      ],
+      "factoryBodyPreparingRuntimeAuthorization": {
+        "authorizedAtUtc": "2026-10-11T17:00:31.287656+00:00",
+        "actor": "/root/fp06_integrator",
+        "writeSet": [
+          "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+          "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts"
+        ],
+        "justification": "Genuine77 Native and Client BodyPreparing first-hit admitted, begin/up do not change pose/ticks, six real NativeSteps continue old Down0.3m+Jump1",
+        "implementation": "After successful moving.begin reuse existingFactory-only neutralizeFactoryInput then return real preparation. No clientextra, worldpause, velocity/clock/enabled/member change; Legacy unchanged.",
+        "execution": "CPU_EXCLUSIVE_FOCUSED_PREPARING_THEN_AFFECTED6FILE_REGRESSION_ORIGINAL_BUILD",
+        "browser": "NOT_GRANTED",
+        "finalGate": "New30seal exactly2deltaCandidate/all28othersmatch+independentSpecQualityReview",
+        "status": "EXECUTED78_GREEN79_89_PASS80_BUILD_PRODUCT_HOLD"
+      },
+      "factoryBodyPreparingVerification": [
+        {
+          "log": 78,
+          "result": "2_PREPARING_PASS_22_SKIPPED",
+          "endedAtUtc": "2026-10-11T17:00:21.102806+00:00",
+          "wrapperSeconds": 2.2982409770011145,
+          "rawBytes": 393,
+          "rawSha256": "3fba925097f403e9a45041939e8ee90bc55c6f59949d468e2a7b4d3d596a8e7a",
+          "rootRawVerification": "Gzip bytes/SHA exact receipt"
+        },
+        {
+          "log": 79,
+          "result": "89_PASS_6_FILES_INPUT24_ORIGINAL_MOVING4",
+          "endedAtUtc": "2026-10-11T17:00:53.140791+00:00",
+          "wrapperSeconds": 19.06837434100089,
+          "rawBytes": 542,
+          "rawSha256": "d9a1d187d7ac186502a1409ad34f556d38df463bbc3a2e914babfe49342a6b97",
+          "rootRawVerification": "Gzip bytes/SHA exact receipt"
+        },
+        {
+          "log": 80,
+          "result": "TYPESCRIPT_VITE_FULL_BUILD_PASS",
+          "endedAtUtc": "2026-10-11T17:00:57.426392+00:00",
+          "wrapperSeconds": 4.285460756997054,
+          "rawBytes": 1904,
+          "rawSha256": "b513948a07670fe8498c06d767cf17629ca351150897baf9d183be1fe55c6a0f",
+          "rootRawVerification": "Gzip bytes/SHA exact receipt"
+        }
+      ],
+      "factoryBodyPreparingFinalReviews": [
+        {
+          "report": "docs/factory/fp06/reviews/w07-input-preparing-final-spec-review.md",
+          "originalSha256": "03d8d00228e4f5ce57f5b227a734a65a94de7d1d6afcab235ce9887f7fbac32b",
+          "originalBytes": 4062,
+          "copiedSha256": "66c7595590edd74ea577a4308919ee34b49b427b9dd431775e279db353d097db",
+          "spec": "PASS",
+          "quality": "PASS",
+          "Preparing": "CLOSED",
+          "package": "NOT_PASS"
+        },
+        {
+          "report": "docs/factory/fp06/reviews/w07-input-preparing-final-quality-review.md",
+          "originalSha256": "64449c20dc3cfdf94ea9622a7e87cc3dfe304389d565ab4a373e6d204a1c2078",
+          "originalBytes": 4241,
+          "copiedSha256": "64449c20dc3cfdf94ea9622a7e87cc3dfe304389d565ab4a373e6d204a1c2078",
+          "spec": "PASS",
+          "quality": "PASS",
+          "Preparing": "CLOSED",
+          "package": "NOT_PASS"
+        }
+      ],
+      "normalInputVerificationAuthorization": {
+        "authorizedAtUtc": "2026-10-11T17:05:44.117723+00:00",
+        "actor": "/root/fp06_integrator",
+        "kind": "ONE_TARGETED_NORMAL_UNCHANGED_SOURCE_11_CASES",
+        "grep": "accepted source|closed Cargo|normal Cargo|normal Play|at most four|Escape pauses",
+        "cpuGpuPortLease": "EXCLUSIVE_5174",
+        "productWriteHold": true,
+        "fileSealSha256": "b516b07c5502fe559ea89d530d912c76e3d2d69b0a840e5a466fe06cbab850b2",
+        "normalE2eSha256": "de72edeed738627db91e46236337719e05008809dfa5ff9c8e723da0c16cb326",
+        "configSha256": "53a55a48da97d43a02e317fb8edc844d57a9b5687f356a7ebf4f5b470efcf900",
+        "artifactRule": "Preserve all previous exact Browser67/68 output receipts, two fixed walkJSONwriters archive and bind before overwrite, only ownRun new subset/artifactcopies.",
+        "constraints": "Ordinary trusted UI/keys, same actual Page/World, no wrapper/hook/diagnostic eval authority/faketick/Source Runtime E2E mutation/timeout cap changes.",
+        "gate": "11 cases are targeted normal input evidence, not full17 W07/PASS. Actual result decides next action.",
+        "status": "AUTHORIZED_NOT_RUN"
       }
     },
     "W08": {

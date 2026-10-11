@@ -1,0 +1,16 @@
+{
+  "verifiedAtUtc": "2026-10-11T17:06:53.997048+00:00",
+  "wholeCheckExit": 2,
+  "wholeCheckOutputBytes": 2096,
+  "wholeCheckOutputSha256": "d03b51c7659598ccbb0fe8e77dfe0934948a1135c78fe6a75e40bee68aabd777",
+  "scopedCheckExit": 0,
+  "exactExceptions": [
+    "docs/factory/fp06/reviews/w07-input-delivery-preparing-final-product.patch",
+    "docs/factory/fp06/reviews/w07-input-delivery-preparing-delta-candidate.patch"
+  ],
+  "reason": "Raw immutable patches preserve intentional context blank whitespace; no product/config exception",
+  "mirroredPackageScopes": "PASS",
+  "activeProductWriters": 0,
+  "allProductsHold": true,
+  "browserLease": "TARGETED11_NORMAL_ONLY"
+}
