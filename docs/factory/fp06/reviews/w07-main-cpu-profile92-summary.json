@@ -1,0 +1,75 @@
+{
+  "phase": 92,
+  "kind": "DIAGNOSTIC_ONLY_MAIN_V8_NOT_GAMEPLAY_GATE",
+  "cases": {
+    "pass": 3,
+    "fail": 0
+  },
+  "command": {
+    "kind": "DIAGNOSTIC_ONLY_MAIN_V8_ATTRIBUTION_NOT_GAMEPLAY_GATE",
+    "argv": [
+      "npm",
+      "run",
+      "test:e2e",
+      "--",
+      "--config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts",
+      "tests/e2e/factory-placement.spec.ts"
+    ],
+    "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+    "env": {
+      "FP06_E2E_RUN_DIR": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/browser-main-cpu-profile-diagnostic-92",
+      "WELTRAUM_FACTORY_EVIDENCE_RUN": "2026-10-11T122211.412749Z",
+      "WELTRAUM_PLAYWRIGHT_EXECUTABLE_PATH": "/usr/bin/chromium"
+    },
+    "startUtc": "2026-10-11T18:39:46.601045+00:00",
+    "endUtc": "2026-10-11T18:40:28.531075+00:00",
+    "wrapperSeconds": 41.93004112299968,
+    "exitCode": 0,
+    "rawBytes": 1169,
+    "rawSha256": "c6ca04133f11ed7d2ebc3d7ea8e0fcfa368500509c39796d30aa7cf8dc50cff1",
+    "configSha256": "53a55a48da97d43a02e317fb8edc844d57a9b5687f356a7ebf4f5b470efcf900",
+    "overlaySealSha256": "938cf6b2bad98bea168d0ba06bd29fdc6bbf27b1242ea0aa9306a65bee0be2bc",
+    "mainProfilerScope": "Existing Page main V8 isolate only; Worker/GPU/solver not profiled"
+  },
+  "profile": {
+    "nodes": 220,
+    "samples": 6752,
+    "timeDeltas": 6752,
+    "startTimeUs": 35235919667,
+    "endTimeUs": 35244900091,
+    "profileDurationUs": 8980424,
+    "sumSampleDeltasUs": 8978045,
+    "negativeDeltas": 0
+  },
+  "profileSha256": "42a5d758572a7bf1fd420b4ac8f2e2d01ae21f0c343dafa595cd456c5679abbb",
+  "profileBytes": 93231,
+  "mainProgramUnattributedPercent": 92.6726475530029,
+  "observerCompleteness": {
+    "dropped": 0,
+    "idMapDropped": 0,
+    "observerErrors": 0
+  },
+  "primaryS": {
+    "holdRequestedMs": 125,
+    "domEventStampGapMs": 126.30000000447035,
+    "domObservedHandlerGapMs": 0.6999999955296516,
+    "factoryPostGapMs": 0.29999999701976776,
+    "nativeDelta": {
+      "ticks": 89,
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+    },
+    "tinyAckAcceptedBoolean": "NOT_OBSERVED",
+    "workerHandlerExecutionTimes": "NOT_OBSERVED"
+  },
+  "neutralNodeWaitMs": 4999.929860999997,
+  "nodeTimesNotV8Clock": true,
+  "scope": "Main Page V8 only; no whole-machine/Worker/GPU/solver attribution",
+  "profilingDifference": "Profiler sampling enabled; normal gameplay profile comparison NOT_RUN",
+  "artifactCount": 7,
+  "artifactBytes": 966610,
+  "sourceFullRestore": true,
+  "normalE2eRestoredSha256": "030fc301147af6a45da6412847368e6c7d5243b70811018e53883b83210ef605",
+  "cpuGpuPortReleased": true
+}
