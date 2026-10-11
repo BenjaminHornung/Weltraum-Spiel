@@ -1,0 +1,50 @@
+{
+  "observedAtUtc": "2026-10-11T23:33:14.186952+00:00",
+  "status": "EXACT26_GRANTED_PATH_MIRRORS_MATCH_ZERO_OUTSIDE_SCOPE_PENDING_SITE5_UNMODIFIED",
+  "actualHead": "aa2e5d7c335453fc555a98ccd35e9f564c596e93",
+  "implementationWriters": 1,
+  "integrator": "/root/fp06_integrator",
+  "allowedProductPaths": 26,
+  "modifiedProductPaths": 26,
+  "unignoredEvidencePaths": 403,
+  "outsideScope": [],
+  "pendingSite5Unmodified": [
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+      "sha256": "53725bbf06af6be92ac1b3b3e250ee6548e37bb6abf8500b4cd50e09b1ec1a29",
+      "matchesHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+      "sha256": "13128d7ad3151da644ae909af0dbb0e2df0e91066c01f55ee566f7eedc1fdaca",
+      "matchesHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+      "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+      "matchesHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+      "sha256": "6cc02b9d07b7f3180ce515cc39f093a0d89d8c2487ddfe4bdccd68c99d097b9f",
+      "matchesHead": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+      "sha256": "abe6b53b1e5927b4756823b133e2b704a417a533bb520d94eb1c4a5df5fab86f",
+      "matchesHead": true
+    }
+  ],
+  "currentOwnRun": {
+    "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z",
+    "regularFileCount": 683,
+    "regularBytes": 57670191,
+    "budgetBytes": 268435456,
+    "limits": "Metadata census only, not sealed manifest/schema/World/test/Git-LFS gate."
+  },
+  "unresolved": [
+    "W09package/fullNormalHeavyRoute/freshLoopNOT_RUN",
+    "SiteV2Ownerpending",
+    "Originalpaid-band5355ms performanceFAIL"
+  ]
+}

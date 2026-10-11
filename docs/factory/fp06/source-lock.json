@@ -4177,6 +4177,14 @@
         "path": "docs/factory/fp06/reviews/w09-whole-local-delivery-ui-witness.json",
         "sha256": "75ee7d70aa4c6527a87ed9f8edc769851394b29bf74574e96fcb1ae66857c260",
         "status": "ROOT_VERIFIED_FIVE_COMMAND_RAW_RECEIPTS"
+      },
+      "currentExactScopeCensus": {
+        "status": "EXACT26_GRANTED_MIRRORS_1WRITER_ZERO_OUTSIDE_PENDING_SITE5_UNMODIFIED",
+        "path": "docs/factory/fp06/reviews/w09-current-exact-scope-census.json",
+        "sha256": "36f38a3e3baa571981c078696ab0ac452d6ee2ecdf8161c11a4eec460a6ec21c",
+        "regularOwnRunBytes": 57670191,
+        "regularOwnRunFiles": 683,
+        "limits": "Metadata only, no sealedmanifest/LFS/schema/fullSource/test/Packagegate"
       }
     },
     "W10": {
