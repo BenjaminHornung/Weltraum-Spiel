@@ -2928,6 +2928,141 @@
         ],
         "scope": "ExactF1/F2 correction+ONEfreshOriginalbuild96; preserve95source/raw; diagnosticcompletion5000ms withclearedtimer/independentrestoration andlostTraceFLAGFAIL, noWorld/Native/testdeadline/budgets changes",
         "execution": "BROWSER_HOLD"
+      },
+      "timeline96FinalReview": {
+        "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/reviews/w07-timeline96-final-independent-review.md",
+        "sha256": "6c881477fd7e73fbb3a55261bfbd5fb1d68683355c3481dd4bfc95fdfd90421d",
+        "reviewer": "/root_NOT_E2E_AUTHOR",
+        "status": "SOURCE_SPEC_AND_QUALITY_PASS_F1_F2_CLOSED"
+      },
+      "timelineDiagnosticExecutionAuthorization": {
+        "authorizedAtUtc": "2026-10-11T19:03:54.358597+00:00",
+        "actor": "/root/fp06_integrator",
+        "kind": "ONE_BROWSER_TIMELINE_DIAGNOSTIC3_NOT_GAMEPLAY_GATE",
+        "overlaySealSha256": "1074e7ac4fd9be9f2cc67da262931e205f0771fba93e652d6fbfa6b7afa12fa5",
+        "overlayE2eSha256": "0faa193c0fbfd56c0700aa7164f7a7cb31321425cee7c409a4618563205c480f",
+        "configSha256": "53a55a48da97d43a02e317fb8edc844d57a9b5687f356a7ebf4f5b470efcf900",
+        "sourceReview": {
+          "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/reviews/w07-timeline96-final-independent-review.md",
+          "sha256": "6c881477fd7e73fbb3a55261bfbd5fb1d68683355c3481dd4bfc95fdfd90421d",
+          "reviewer": "/root_NOT_E2E_AUTHOR",
+          "status": "SOURCE_SPEC_AND_QUALITY_PASS_F1_F2_CLOSED"
+        },
+        "build96": {
+          "phase": "TEMPORARY_TIMELINE_DIAGNOSTIC_SOURCE_F1_F2_FIX_BUILD_NOT_GAMEPLAY_GATE",
+          "argv": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+          "startUtc": "2026-10-11T19:00:54.544959+00:00",
+          "endUtc": "2026-10-11T19:00:59.031723+00:00",
+          "wrapperSeconds": 4.486773081000138,
+          "exitCode": 0,
+          "rawBytes": 1904,
+          "rawSha256": "8f913cbd1d518865a514e8eecc19278e166dac4b2d9151522e1151fc8999c235",
+          "sourceSha256": "0faa193c0fbfd56c0700aa7164f7a7cb31321425cee7c409a4618563205c480f",
+          "sourceBytes": 19391,
+          "browser": "NOT_RUN_HOLD"
+        },
+        "cpuGpuPortLease": "RELEASED",
+        "constraints": "Exact30overlay/3original30s/plainfactory/normalTrace/noV8/noWorld/runtime/flags/viewport/input/clock/source/caps/queue/timeouts changes; ownReturnAsStreamStartneutral5s+trusted125S/complete+dataloss/PIDthread/wallnotGPUproof; alloriginalerrors andoriginalmethodrestore",
+        "restoreAuthorization": "AfterONECLI archiveallactualTraceJSON+metadata+Observer/raw/artifacts; restoreexactnormal030fc16961/all30baseline201/fixedorigins+absences andportrelease",
+        "status": "EXECUTED97_DIAGNOSTIC3PASS_ONLY_CPU_RELEASED_NORMAL88FAIL"
+      },
+      "timelineDiagnosticActual": {
+        "log": 97,
+        "kind": "NATIVE_BROWSER_TIMELINE_DIAGNOSTIC_ONLY",
+        "status": "PASS_3_DIAGNOSTIC_CASES_ONLY",
+        "command": {
+          "kind": "DIAGNOSTIC_ONLY_TIMELINE_NOT_GAMEPLAY_GATE",
+          "argv": [
+            "npm",
+            "run",
+            "test:e2e",
+            "--",
+            "--config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts",
+            "tests/e2e/factory-placement.spec.ts"
+          ],
+          "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+          "env": {
+            "FP06_E2E_RUN_DIR": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/browser-timeline-diagnostic-97",
+            "WELTRAUM_FACTORY_EVIDENCE_RUN": "2026-10-11T122211.412749Z",
+            "WELTRAUM_PLAYWRIGHT_EXECUTABLE_PATH": "/usr/bin/chromium"
+          },
+          "startUtc": "2026-10-11T19:04:34.641990+00:00",
+          "endUtc": "2026-10-11T19:05:17.375531+00:00",
+          "wrapperSeconds": 42.73355006000202,
+          "exitCode": 0,
+          "rawBytes": 1169,
+          "rawSha256": "af0c5c46d7e8fac534acdff36a684087fc45e2e057e73a02bc3d09c47f4d2728",
+          "configSha256": "53a55a48da97d43a02e317fb8edc844d57a9b5687f356a7ebf4f5b470efcf900",
+          "overlaySealSha256": "1074e7ac4fd9be9f2cc67da262931e205f0771fba93e652d6fbfa6b7afa12fa5",
+          "timelineScope": "Original Chrome devtools.timeline with same wall/DOM/passive observation; no hardware attribution"
+        },
+        "actualArtifactCount": 8,
+        "actualArtifactBytes": 5020067,
+        "traceSha256": "f07c6b284b9c841885e5411169cd0f807c3c8a19ef896085047974778a8fd88c",
+        "traceBytes": 4023557,
+        "traceEvents": 24069,
+        "rendererPidTid": [
+          98409,
+          98409
+        ],
+        "mainRunTaskWallMs": 8880.15,
+        "commitSlices": 52,
+        "commitWallMs": 8384.424,
+        "commitTraceThreadCpuMs": 65.443,
+        "commitMedianWallMs": 161.5055,
+        "attribution": "Main wall predominantly browser Commit waiting; no concrete GPUhardware cause or hardwareperformance proof. FunctionCall533.328ms/Layout9.454ms inclusive; do not sum nested times.",
+        "directTraceInputGapUs": 1269,
+        "observedInput": "DOM140.7msstamps->0.8mshandlers/0.4msposts; zeroXYZ/+86nativeTicks",
+        "traceDataLossOccurred": false,
+        "traceIoClosed": true,
+        "normalAll30Restored": true,
+        "cpuGpuPortLease": "RELEASED",
+        "rootIndependentRawArtifactHashesCheckedAtUtc": "2026-10-11T19:10:33.997375+00:00",
+        "attributionReport": {
+          "path": "docs/factory/fp06/reviews/w07-timeline97-attribution-report.md",
+          "sha256": "473e5c15b0cab2e549fa6f41a6e05c24cd0e3c31e84bf015bd79a9d14b91cdf7"
+        },
+        "W07GameplayEndGate": "FAIL88_UNCHANGED",
+        "independentObservationReview": {
+          "path": "docs/factory/fp06/reviews/w07-timeline97-independent-observation-review.md",
+          "sha256": "14846d7a02eaa50005381f3cefb4b2037ad65bd88dc4466a58bc053421a6e147",
+          "reviewer": "/root/w11_evidence",
+          "status": "ACTUAL_ARTIFACT_ARITHMETIC_LIMITATIONS_PASS_NO_GAMEPLAY_GATE"
+        }
+      },
+      "renderingEnvironmentAvailabilityAuthorization": {
+        "authorizedAtUtc": "2026-10-11T19:11:44.550962+00:00",
+        "actor": "/root/cloud_environment_copy",
+        "kind": "ONE_SHORT_ISOLATED_WEBGL_AVAILABILITY_PROBE_NOT_GAMEPLAY_OR_PERFORMANCE",
+        "writeSet": [
+          "/workspace/.cloud-setup/fp06-w07-render-env-probe/**"
+        ],
+        "maxEnvironmentCandidates": 2,
+        "currentCandidate": 1,
+        "headless": true,
+        "args": [
+          "--ozone-platform=headless",
+          "--use-gl=angle",
+          "--use-angle=gl-egl"
+        ],
+        "env": {
+          "LIBGL_ALWAYS_SOFTWARE": "1",
+          "EGL_PLATFORM": "surfaceless"
+        },
+        "viewport": [
+          1280,
+          720
+        ],
+        "deviceScaleFactor": 1,
+        "diagnosticDeadlineMs": 20000,
+        "constraints": "ExistingChromium154/Node22/PW; ownblankpageWebGL2contextactualvendor/renderer/extensions/argv proof. NoGame/World/server/display/install/build/dependency/RepoApp/30source/globalsettings/viewport/budgetmutation. Alwayscloseownedbrowser. Actualfallback/unsupported explicit; nohardwareperformanceclaim. Candidate2 needsNEWconditionalgrant.",
+        "cpuGpuPortLease": "EXCLUSIVE_ONE_SETUP_AVAILABILITY_PROBE",
+        "status": "AUTHORIZED_NOT_RUN"
       }
     },
     "W08": {
@@ -3161,6 +3296,17 @@
         ],
         "authorization": "NOT_GRANTED; exact complete W09scope afterW07PASS and immutableW04/W08integration",
         "gates": "Closed finite jobprofile geometry; native combined capsule/payload sweeps before both commits; soleResources jointCAS; trueOwner endpoints/localdeposit; <=16FixedCargoIncluded/unchangedglobalbudgets; SourcePayloadmassNativeRapierTest; CombinedSave wholecustodyOwnerMembership withoutLegacyweakening"
+      },
+      "closedHandlingProfilePreflight": {
+        "path": "docs/factory/fp06/reviews/w09-native-cargo-handling-closed-profile-preflight.md",
+        "sha256": "1b981a9f49cc852f430935e10df9334a8e3c1048c30c52698208205b150f1e8d",
+        "status": "READONLY_TECHNICAL_PROPOSAL_NATIVE_GATES_NOT_RUN",
+        "sourceReview": {
+          "path": "docs/factory/fp06/reviews/w09-closed-handling-profile-independent-review.md",
+          "sha256": "cf6c0d2c60e0aee0f4514ce36fd863f283ff705231b36e8cf3b921b2f6942b1a",
+          "reviewer": "/root/w00_architecture",
+          "status": "SOURCE_PROPOSAL_PASS_NO_IMPLEMENTATION_OR_PRODUCT_FREEZE"
+        }
       }
     },
     "W10": {
