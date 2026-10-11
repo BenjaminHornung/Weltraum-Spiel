@@ -43,3 +43,7 @@ Die vier späteren Varianten D05/D06/D07/D11 wurden in einer gemeinsamen Frage v
 ## Technische Kapazitätsbindung W01
 
 Als konservative, explizit versionierte Kapazitätsenvelope (keine Feststoffdichte) verwenden Halbzeug, Verschnitt und Stütze das Maximum der sourcegebundenen C10/C11/C12-Verpackungsquotienten: 9/4 mm³ pro mg. Das Antriebsmodul verwendet seine vollständige rationale Input-Packenvelope. Bekannte Cxx-Packvolumina bleiben unverändert; tatsächliche Belegung wird exakt rational gegen ganze mm³-Grenzen verglichen. Rock/Gravel haben ohne zugelassenes Profil keine echten Kapazitätstransfers; ein explizites synthetisches Testprofil ist kein Mining-Grant. Diese konservative Ableitung kann mehr Platz reservieren als reale Packung; sie verhindert eine freie Kapazitätsgutschrift durch unbekannte Dichte.
+
+## Enger technischer Integrationsscope W07/W10
+
+Die tatsächliche Rapier-World ist eine private Closure in `src/hestia-prototype/physics/session.ts`. Neuer Facilityadapter und Worker-Nachrichten allein können dort keine fixed Facilities installieren. Daher wird genau diese Datei zusätzlich ausschließlich dem Integrator für Facility-Transaktion/Lifecycle und vollständigen kombinierten Checkpoint freigegeben, sobald W07 bzw. W10 ihre Gates erreichen. Dies setzt D11 in derselben vorhandenen World um; keine generische World-/CreateBody-API, keine erhöhten Gesamtbudgets und keine Lockerung des geschlossenen Legacyformats.

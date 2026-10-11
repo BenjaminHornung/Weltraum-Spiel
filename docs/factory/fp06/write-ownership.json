@@ -17,25 +17,11 @@
     "apps/weltraum-browser/package.json",
     "apps/weltraum-browser/vite.config.ts",
     ".github/workflows/browser-mainline-ci.yml",
-    "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts"
+    "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/session.ts"
   ],
   "sharedPathGrant": "NONE_YET; package-specific grant after source/decision gates and fresh conflict check",
-  "activeImplementationWriters": [
-    {
-      "agent": "/root/fp06_integrator",
-      "package": "W01",
-      "branch": "codex/hestia-fp06-integrator-2026-10-11",
-      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
-      "baseCommitSha": "656c52458eff15133025bb21dc3e5b7b708cfbf7",
-      "writeSet": [
-        "apps/weltraum-browser/src/factory/contracts.ts",
-        "apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts",
-        "apps/weltraum-browser/src/factory/catalog/sourceLock.ts",
-        "apps/weltraum-browser/tests/fixtures/factory/fp02Fixtures.ts",
-        "apps/weltraum-browser/tests/unit/factory/catalog.test.ts"
-      ]
-    }
-  ],
+  "activeImplementationWriters": [],
   "activeDocumentationWriter": {
     "agent": "/root",
     "branch": "codex/hestia-fp06-w00-2026-10-11",
@@ -51,12 +37,12 @@
   "readOnlyAgents": [
     {
       "agent": "/root/w00_repo_audit",
-      "task": "fresh repository/branches/PR audit",
+      "task": "independent W01 specification and quality review",
       "productWriteGrant": false
     },
     {
       "agent": "/root/w00_architecture",
-      "task": "architecture and W01 source/contract preflight",
+      "task": "W06/W07 native Host and topology preflight",
       "productWriteGrant": false
     }
   ],
@@ -75,12 +61,12 @@
         "W10",
         "W11"
       ],
-      "status": "W01_STARTED"
+      "status": "W01_IN_REVIEW_WRITE_HOLD"
     },
     {
       "slot": 2,
       "role": "domain-or-assets-writer",
-      "agent": null,
+      "agent": "/root/fp06_domain",
       "packages": [
         "W02",
         "W05",
@@ -176,20 +162,22 @@
         "apps/weltraum-browser/evidence/factory/w01/<actual-run-id>/**"
       ],
       "evidenceGrant": true,
-      "status": "IN_PROGRESS",
+      "status": "IN_REVIEW",
       "owner": "/root/fp06_integrator",
       "plannedRole": "integrator",
       "branch": "codex/hestia-fp06-integrator-2026-10-11",
       "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
       "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
-      "commitSha": null,
+      "commitSha": "b8edd17bfdeb2bc724afc76c148d8aeacacde7b1",
       "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
       "restrictions": [
         "Only exact granted paths; planned paths are not grants",
         "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
         "No main merge/push/publication; no W12-W29"
       ],
-      "baseCommitSha": "656c52458eff15133025bb21dc3e5b7b708cfbf7"
+      "baseCommitSha": "656c52458eff15133025bb21dc3e5b7b708cfbf7",
+      "implementationWriteHold": true,
+      "reviewReport": "/workspace/.cloud-setup/fp06-w01-independent-review.md"
     },
     "W02": {
       "dependencies": [
@@ -465,7 +453,8 @@
         "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts",
         "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
         "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
-        "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts"
+        "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/session.ts"
       ],
       "grantedWriteSet": [],
       "evidenceWriteSet": [
@@ -484,6 +473,14 @@
         "Only exact granted paths; planned paths are not grants",
         "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
         "No main merge/push/publication; no W12-W29"
+      ],
+      "scopeExtensions": [
+        {
+          "path": "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+          "owner": "/root/fp06_integrator",
+          "reason": "Actual Rapier World is private closure in physics/session.ts; native fixed Facility transaction/lifecycle and complete combined checkpoint require narrow integration inside that same world.",
+          "authorization": "Technical implementation of explicitly user-approved D11; no generic UI/native World access, no larger global budgets, no silent legacy codec changes."
+        }
       ]
     },
     "W08": {
@@ -605,7 +602,8 @@
         "apps/weltraum-browser/tests/e2e/factory-save.spec.ts",
         "apps/weltraum-browser/src/hestia-prototype/persistence/factoryWorldParts.ts",
         "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
-        "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts"
+        "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/session.ts"
       ],
       "grantedWriteSet": [],
       "evidenceWriteSet": [
@@ -624,6 +622,14 @@
         "Only exact granted paths; planned paths are not grants",
         "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
         "No main merge/push/publication; no W12-W29"
+      ],
+      "scopeExtensions": [
+        {
+          "path": "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+          "owner": "/root/fp06_integrator",
+          "reason": "Actual Rapier World is private closure in physics/session.ts; native fixed Facility transaction/lifecycle and complete combined checkpoint require narrow integration inside that same world.",
+          "authorization": "Technical implementation of explicitly user-approved D11; no generic UI/native World access, no larger global budgets, no silent legacy codec changes."
+        }
       ]
     },
     "W11": {
@@ -825,7 +831,8 @@
     "apps/weltraum-browser/package.json",
     "apps/weltraum-browser/vite.config.ts",
     ".github/workflows/browser-mainline-ci.yml",
-    "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts"
+    "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/session.ts"
   ],
   "sharedPathsPlannedNew": [
     "apps/weltraum-browser/src/factory/contracts.ts",
