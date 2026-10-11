@@ -508,8 +508,7 @@
       ],
       "decisionGates": [
         "D01",
-        "D11",
-        "D07_START_SITE_PROFILE"
+        "D11"
       ],
       "sourceReadSections": "FP02 §§6–10; FP03 §§4–6, 13.",
       "readSet": [
@@ -567,6 +566,14 @@
         {
           "path": "apps/weltraum-browser/package.json",
           "reason": "Actual CI parser requires explicit existing spec paths assigned exactly once; register only this package new E2E spec when it exists. No future placeholder specs, parser relaxation, dependency/lockfile changes or unrelated script edits. Integrator only."
+        }
+      ],
+      "conditionalWriteGates": [
+        {
+          "decision": "D07_START_SITE_PROFILE",
+          "scope": "New factory-only initial source/vegetation/profile bindings",
+          "status": "PROPOSED_OWNER_REVIEW_REQUIRED",
+          "unaffected": "Existing-v5 cutter placement and fixed Facility transaction with actual support proof"
         }
       ]
     },
