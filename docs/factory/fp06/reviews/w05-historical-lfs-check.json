@@ -1,0 +1,17 @@
+{
+  "command": "git lfs fsck --objects HEAD",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11",
+  "commitSha": "26d5e892c2b401b9011234dabf86955af7462fb8",
+  "exitCode": 1,
+  "scope": "Unnecessarily broad entire HEAD, unrelated historical baseline LFS refs absent from local cache",
+  "stdoutComplete": false,
+  "stdoutLimitation": "Command was not redirected. Tool response truncated combined commit+fsck console output at4500 requested output tokens; no exact full raw stdout was captured. No rerun performed.",
+  "visibleConsoleExcerpts": [
+    "objects: openError: docs/UI-Screenshots/48-minoa-listening-post-langstreckenscan.png (d6ea7e68727255c62e4784ea2bf77aaa0cdf2f9e0336783370630266909dc574) could not be checked: no such file or directory",
+    "objects: repair: moving corrupt objects to /workspace/Weltraum-Spiel/.git/lfs/bad"
+  ],
+  "quarantineFiles": [],
+  "ownCommittedRefs": "PASS90 references/74 unique objects,175 file bytes matchHEAD; w05-file-hashes.json",
+  "remoteRepair": "NOT_RUN: no fetch,push,config/history repair",
+  "recordedUtc": "2026-10-11T11:40:00.352273+00:00"
+}

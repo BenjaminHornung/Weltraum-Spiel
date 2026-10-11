@@ -780,7 +780,9 @@
       "baseCommitSha": "5b596f932dc769052e17603965d0179a4937d948",
       "implementationWriteHold": false,
       "authorizedAtUtc": "2026-10-11T11:20:13.473677+00:00",
-      "completedAtUtc": null
+      "completedAtUtc": null,
+      "actualImplementationParentSha": "2c044e02f1f31a2db3de3a0df9156bd71a431a7a",
+      "baseProvenanceNote": "Write grant was issued against reviewed W06 code5b596f932dc769052e17603965d0179a4937d948. Before W03 product changes, the same integrator finalized evidence-only W06 packaging2c044e02f1f31a2db3de3a0df9156bd71a431a7a. Product bytes unchanged in that parent follow-up; final W03 product/commit diff must bind actual parent2c044. Original grant remains immutable."
     },
     "W04": {
       "dependencies": [
@@ -864,13 +866,13 @@
         "apps/weltraum-browser/evidence/factory/w05/<actual-run-id>/**"
       ],
       "evidenceGrant": true,
-      "status": "IN_PROGRESS",
+      "status": "PASS",
       "owner": "/root/fp06_domain",
       "plannedRole": "domain-or-assets-writer",
       "branch": "codex/hestia-fp06-domain-2026-10-11",
       "plannedBranch": "codex/hestia-fp06-w05-2026-10-11",
       "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11",
-      "commitSha": null,
+      "commitSha": "26d5e892c2b401b9011234dabf86955af7462fb8",
       "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
       "restrictions": [
         "Only exact granted paths; planned paths are not grants",
@@ -878,9 +880,9 @@
         "No main merge/push/publication; no W12-W29"
       ],
       "baseCommitSha": "10e1e3026610065206d8ac4b361d3f1686114dd8",
-      "implementationWriteHold": false,
+      "implementationWriteHold": true,
       "authorizedAtUtc": "2026-10-11T10:38:45.416452+00:00",
-      "completedAtUtc": null,
+      "completedAtUtc": "2026-10-11T11:46:55.443394+00:00",
       "reviewHistory": [
         {
           "spec": "FAIL",
@@ -901,7 +903,22 @@
           "patchSha256": "40cb5b0a0608073c9ad5822dc2224819f55d409ab6ad577a0ef6266fdbf865bd",
           "disposition": "Narrow exposed paid source socket RED/fix and minor panel de-overlap within existing W05 roots; technical quality only."
         }
-      ]
+      ],
+      "reviewReport": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/reviews/w05-final-commit.md",
+      "specStatus": "PASS",
+      "qualityStatus": "PASS",
+      "technicalReview": "docs/factory/fp06/reviews/w05-final.md",
+      "packageReport": "docs/factory/fp06/reviews/w05-package-report.md",
+      "actualChangedPaths": 175,
+      "actualProductPaths": 18,
+      "actualEvidencePaths": 157,
+      "manifestReferencesVerified": 174,
+      "committedLfsReferencesVerified": 90,
+      "uniqueLfsObjectsVerified": 74,
+      "rawGzipArchivesVerified": 16,
+      "ownerArtAcceptance": "NOT_RUN",
+      "performanceGate": "NOT_RUN",
+      "broadHistoricalLfsCheck": "FAIL_EXIT_1: unrelated historical cache; stdout incomplete. Own 90 pointers/74 objects independently PASS."
     },
     "W06": {
       "dependencies": [
@@ -1164,24 +1181,32 @@
         "apps/weltraum-browser/src/factory/conveyor/beltPorts.ts",
         "apps/weltraum-browser/tests/unit/factory/conveyor.test.ts"
       ],
-      "grantedWriteSet": [],
+      "grantedWriteSet": [
+        "apps/weltraum-browser/src/factory/conveyor/beltReference.ts",
+        "apps/weltraum-browser/src/factory/conveyor/beltPorts.ts",
+        "apps/weltraum-browser/tests/unit/factory/conveyor.test.ts"
+      ],
       "evidenceWriteSet": [
         "apps/weltraum-browser/evidence/factory/w08/<actual-run-id>/**"
       ],
-      "evidenceGrant": false,
-      "status": "NOT_RUN: W02 PASS; waiting for Domainwriter after W05",
-      "owner": null,
+      "evidenceGrant": true,
+      "status": "IN_PROGRESS",
+      "owner": "/root/fp06_domain",
       "plannedRole": "domain-or-assets-writer",
-      "branch": null,
+      "branch": "codex/hestia-fp06-domain-2026-10-11",
       "plannedBranch": "codex/hestia-fp06-w08-2026-10-11",
-      "worktree": null,
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11",
       "commitSha": null,
       "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
       "restrictions": [
         "Only exact granted paths; planned paths are not grants",
         "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
         "No main merge/push/publication; no W12-W29"
-      ]
+      ],
+      "baseCommitSha": "26d5e892c2b401b9011234dabf86955af7462fb8",
+      "implementationWriteHold": false,
+      "authorizedAtUtc": "2026-10-11T11:46:55.477266+00:00",
+      "completedAtUtc": null
     },
     "W09": {
       "dependencies": [

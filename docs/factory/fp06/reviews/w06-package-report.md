@@ -1,6 +1,8 @@
 # W06 implementation report
 
-Status: implementation/targeted verification PASS; final independent SPEC/QUALITY gate NOT_RUN (Root receipt pending). No W03 or later package writes are started.
+Root closure: W06 technical package PASS at `2c044e02f1f31a2db3de3a0df9156bd71a431a7a`; independent final SPEC/QUALITY and committed artifact binding are recorded in [final review](w06-final.md) and [Git/LFS receipt](w06-final-commit.md). W03 later received its own four-file grant. The writer report below records its historical capture status; those pending fields do not supersede this closure.
+
+Writer snapshot status: implementation/targeted verification PASS; independent receipt pending when the original report was captured.
 
 Agent: `/root/fp06_integrator` — sole shared Host/Physics/Save/Contract integrator.
 Branch: `codex/hestia-fp06-integrator-2026-10-11`.
