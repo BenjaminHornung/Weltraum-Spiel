@@ -3270,7 +3270,25 @@
           "sha256": "07b7a3e6ecf4b94fed367585dc4c094cb906d5688985e23177362867a3dc945c",
           "scope": "Concrete exported UI protocol only; actual command runtime adoption and W09 gate remain pending."
         },
-        "constraints": "NEW isolated branch/worktree; only four panels+meaningful UI business tests; no Host/Physics/Save/Contract/Entry or other writer paths; readonly snapshot and finite intent commands only; unsupported actions honestly disabled. Coordinate every test/build CPU lease directly with Integrator; no competing jobs."
+        "constraints": "NEW isolated branch/worktree; only four panels+meaningful UI business tests; no Host/Physics/Save/Contract/Entry or other writer paths; readonly snapshot and finite intent commands only; unsupported actions honestly disabled. Coordinate every test/build CPU lease directly with Integrator; no competing jobs.",
+        "reviewFixAuthorization": {
+          "schema": "hestia.fp06.w09.ui-reviewfix-grant/v1",
+          "authorizedAtUtc": "2026-10-11T20:43:54.639480+00:00",
+          "actor": "/root/fp06_domain",
+          "branch": "codex/hestia-fp06-ui-w09-2026-10-11",
+          "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11",
+          "sourceCommitSha": "43a61c0f5be5df69e4f8bb42db89da3d7a3a4b2b",
+          "sealedBaselineSha256": "3ed3df962f5fd51dacf9b0c38c72c2f2cb7291159b3b7805d0ac58f055d28317",
+          "writeSet": [
+            "apps/weltraum-browser/src/factory/ui/technologyView.ts",
+            "apps/weltraum-browser/tests/unit/factory/panels.test.ts"
+          ],
+          "evidenceWriteSet": [
+            "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/**"
+          ],
+          "reason": "Independent actual DOM-lifetime finding: technology publication and its own click handler replace focused buttons. Stable controls keyed by technology ID needed.",
+          "constraints": "Archive exact original seal/patch/manifest/report before overwrite; meaningful nodeidentity/keyboard publication RED first; narrow stable controls fix; focused UI tests and affected original build, then reseal/HOLD independentreview. Other three products remain exact sealed bytes. No Host/Entry/Physics/Save/Contract/newdependencies/browser or competingCPU jobs."
+        }
       },
       "predecessorCopies": {
         "status": "BYTE_GIT_LFS_PASS",
@@ -3300,6 +3318,11 @@
         "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
         "sha256": "07b7a3e6ecf4b94fed367585dc4c094cb906d5688985e23177362867a3dc945c",
         "scope": "Concrete exported UI protocol only; actual command runtime adoption and W09 gate remain pending."
+      },
+      "acceptedHandlingSlotInterpretation": {
+        "report": "docs/factory/fp06/reviews/w09-native-handling-slot-interpretation.md",
+        "sha256": "f50c088710eb852750561bbcd4d2c0a0e7fe0b48054d096123dd8655d1aa2135",
+        "scope": "Interpretation of already accepted one reusable slot; no occupied depot accumulation/new carrier, no lifetime Rapierhandle requirement; runtime gates open."
       }
     },
     "W10": {
