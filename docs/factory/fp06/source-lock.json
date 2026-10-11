@@ -474,20 +474,52 @@
       }
     },
     "D03_RESTART_POLICY": {
-      "status": "PROPOSED_OWNER_REVIEW_REQUIRED",
+      "status": "ACCEPTED_BY_USER",
       "proposal": "Stable ID priority order; restart after WAIT_POWER only after2 confirmed simulation seconds with required power+500W headroom; initial startup needs required power only; reserve checked jointly, no fairnesscursor.",
-      "blockedPackages": [
-        "W03"
-      ]
+      "blockedPackages": [],
+      "previousStatus": "PROPOSED_OWNER_REVIEW_REQUIRED",
+      "approvalReceipt": {
+        "receivedAtUtc": "2026-10-11T10:34:17Z",
+        "source": "direct user async question reply",
+        "scope": "W00-W11 only",
+        "replies": [
+          {
+            "decision": "D03_RESTART_POLICY",
+            "question": "Für W03 ist die Wiederanlaufregel im FP01-Text noch nicht eindeutig. Ich schlage für diesen Prototypen vor: Verbraucher innerhalb einer Priorität nach stabiler ID ordnen; nach WAIT_POWER erst neu starten, wenn die benötigte Leistung plus 500 W Reserve während 2 bestätigter Simulationssekunden verfügbar war. Beim ersten Start gilt nur die benötigte Leistung. Die Reserve wird bei der gemeinsamen Allokation geprüft; kein zusätzlicher Fairnesscursor. So bleibt die 6,6-kW-Fixture bei 6,8 kW regulär betreibbar. Soll diese konkrete D03-Policy gelten? W01, Material, Assets und Hostarbeit laufen unabhängig weiter.",
+            "answer": "D03-Policy freigeben"
+          },
+          {
+            "decision": "D07_START_SITE_PROFILE",
+            "question": "Für W07 ist der echte Bodensupport des Fabrikkreislaufs noch unbewiesen: Im vorhandenen trockenen Gelände liegen unter dem Former bis zu 2,75 m Höhenunterschied, ohne freigegebene Fußverstellung. Soll die konkret dokumentierte Startplatz-Fixture gelten: nur /factory.html erhält 70 m² ebene Kalksteinflächen auf 1,5 m Höhe für Körper, Bänder und Zugang sowie ein eigenes anfängliches Vegetationsmanifest ohne die zwei kollidierenden Holzowner? Die 125-mm-HVP-Zellen, native World und Budgets bleiben erhalten; Cargo bleibt unverändert, Terrain-/Holzunterschiede erzeugen kein Inventar, und der gemeinsame Save bindet das separate Profil. Details: docs/factory/fp06/proposals/start-site-v1.md im W00-Worktree. Unabhängige Pakete laufen weiter.",
+            "answer": "Startplatz-Fixture freigeben"
+          }
+        ]
+      }
     },
     "D07_START_SITE_PROFILE": {
-      "status": "PROPOSED_OWNER_REVIEW_REQUIRED",
+      "status": "ACCEPTED_BY_USER",
       "proposal": "Factory-only versioned initial startsite: explicit15 LayoutA body/belt/service/access masks, union70m2 at dry limestone top1.5m; coverage/cell125mm/nativeauthority/budgets unchanged; no west-frame/north-young initial woodowners in corridor; no mined/material credit. Normal coastv5 unchanged and combinedsave binds distinctsourcebaseline.",
-      "blockedPackages": [
-        "W09_IF_FULL_EXISTING_SUPPORT_IS_UNPROVEN"
-      ],
+      "blockedPackages": [],
       "artifact": "docs/factory/fp06/proposals/start-site-v1.md",
-      "blockedWrites": "Only new initial terrain/vegetation/profile bindings. W07 native transaction/cutter placement may proceed on actually proven existing v5 support; no full-layout support PASS inferred."
+      "blockedWrites": "None after explicit user acceptance; implementation only with exact package write grant and passed predecessor gates.",
+      "previousStatus": "PROPOSED_OWNER_REVIEW_REQUIRED",
+      "approvalReceipt": {
+        "receivedAtUtc": "2026-10-11T10:34:17Z",
+        "source": "direct user async question reply",
+        "scope": "W00-W11 only",
+        "replies": [
+          {
+            "decision": "D03_RESTART_POLICY",
+            "question": "Für W03 ist die Wiederanlaufregel im FP01-Text noch nicht eindeutig. Ich schlage für diesen Prototypen vor: Verbraucher innerhalb einer Priorität nach stabiler ID ordnen; nach WAIT_POWER erst neu starten, wenn die benötigte Leistung plus 500 W Reserve während 2 bestätigter Simulationssekunden verfügbar war. Beim ersten Start gilt nur die benötigte Leistung. Die Reserve wird bei der gemeinsamen Allokation geprüft; kein zusätzlicher Fairnesscursor. So bleibt die 6,6-kW-Fixture bei 6,8 kW regulär betreibbar. Soll diese konkrete D03-Policy gelten? W01, Material, Assets und Hostarbeit laufen unabhängig weiter.",
+            "answer": "D03-Policy freigeben"
+          },
+          {
+            "decision": "D07_START_SITE_PROFILE",
+            "question": "Für W07 ist der echte Bodensupport des Fabrikkreislaufs noch unbewiesen: Im vorhandenen trockenen Gelände liegen unter dem Former bis zu 2,75 m Höhenunterschied, ohne freigegebene Fußverstellung. Soll die konkret dokumentierte Startplatz-Fixture gelten: nur /factory.html erhält 70 m² ebene Kalksteinflächen auf 1,5 m Höhe für Körper, Bänder und Zugang sowie ein eigenes anfängliches Vegetationsmanifest ohne die zwei kollidierenden Holzowner? Die 125-mm-HVP-Zellen, native World und Budgets bleiben erhalten; Cargo bleibt unverändert, Terrain-/Holzunterschiede erzeugen kein Inventar, und der gemeinsame Save bindet das separate Profil. Details: docs/factory/fp06/proposals/start-site-v1.md im W00-Worktree. Unabhängige Pakete laufen weiter.",
+            "answer": "Startplatz-Fixture freigeben"
+          }
+        ]
+      }
     }
   },
   "packageScopes": {
@@ -702,7 +734,7 @@
         "apps/weltraum-browser/evidence/factory/w03/<actual-run-id>/**"
       ],
       "evidenceGrant": false,
-      "status": "BLOCKED: D03_RESTART_POLICY only; W01 PASS",
+      "status": "NOT_RUN: ownerpolicy accepted; integrator completing W06",
       "owner": "/root/fp06_integrator",
       "plannedRole": "integrator",
       "branch": null,
@@ -950,8 +982,9 @@
         {
           "decision": "D07_START_SITE_PROFILE",
           "scope": "New factory-only initial source/vegetation/profile bindings",
-          "status": "PROPOSED_OWNER_REVIEW_REQUIRED",
-          "unaffected": "Existing-v5 cutter placement and fixed Facility transaction with actual support proof"
+          "status": "ACCEPTED_BY_USER",
+          "unaffected": "Existing-v5 cutter placement and fixed Facility transaction with actual support proof",
+          "approvalReceiptIndex": 1
         }
       ]
     },
@@ -1184,6 +1217,23 @@
       "scope": "W00-W11 only",
       "exactDecisionQuestion": "D05: 6 confirmed 60-Hz ticks =100ms/no offline; D06: powered 1kg/s initial0 max10kg persistent burstcredit; D07: /factory.html existing app; D11: <=16 fixed native facility owners, native install transaction, complete combined checkpoint under unchanged overall budgets",
       "exactFreezeQuestion": "Unchanged FP02 C01-C28/REC-01-REC-07/BOM/dimensions/ports; bulk exactly1mg; packaged volume integer mm3; components integer count; SALVAGE-01 separate; reject inadmissible quantity."
+    },
+    {
+      "receivedAtUtc": "2026-10-11T10:34:17Z",
+      "source": "direct user async question reply",
+      "scope": "W00-W11 only",
+      "replies": [
+        {
+          "decision": "D03_RESTART_POLICY",
+          "question": "Für W03 ist die Wiederanlaufregel im FP01-Text noch nicht eindeutig. Ich schlage für diesen Prototypen vor: Verbraucher innerhalb einer Priorität nach stabiler ID ordnen; nach WAIT_POWER erst neu starten, wenn die benötigte Leistung plus 500 W Reserve während 2 bestätigter Simulationssekunden verfügbar war. Beim ersten Start gilt nur die benötigte Leistung. Die Reserve wird bei der gemeinsamen Allokation geprüft; kein zusätzlicher Fairnesscursor. So bleibt die 6,6-kW-Fixture bei 6,8 kW regulär betreibbar. Soll diese konkrete D03-Policy gelten? W01, Material, Assets und Hostarbeit laufen unabhängig weiter.",
+          "answer": "D03-Policy freigeben"
+        },
+        {
+          "decision": "D07_START_SITE_PROFILE",
+          "question": "Für W07 ist der echte Bodensupport des Fabrikkreislaufs noch unbewiesen: Im vorhandenen trockenen Gelände liegen unter dem Former bis zu 2,75 m Höhenunterschied, ohne freigegebene Fußverstellung. Soll die konkret dokumentierte Startplatz-Fixture gelten: nur /factory.html erhält 70 m² ebene Kalksteinflächen auf 1,5 m Höhe für Körper, Bänder und Zugang sowie ein eigenes anfängliches Vegetationsmanifest ohne die zwei kollidierenden Holzowner? Die 125-mm-HVP-Zellen, native World und Budgets bleiben erhalten; Cargo bleibt unverändert, Terrain-/Holzunterschiede erzeugen kein Inventar, und der gemeinsame Save bindet das separate Profil. Details: docs/factory/fp06/proposals/start-site-v1.md im W00-Worktree. Unabhängige Pakete laufen weiter.",
+          "answer": "Startplatz-Fixture freigeben"
+        }
+      ]
     }
   ],
   "handoffExtractionRootAtAudit": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",

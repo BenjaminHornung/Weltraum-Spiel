@@ -324,7 +324,7 @@
         "apps/weltraum-browser/evidence/factory/w03/<actual-run-id>/**"
       ],
       "evidenceGrant": false,
-      "status": "BLOCKED: D03_RESTART_POLICY only; W01 PASS",
+      "status": "NOT_RUN: ownerpolicy accepted; integrator completing W06",
       "owner": "/root/fp06_integrator",
       "plannedRole": "integrator",
       "branch": null,
@@ -572,8 +572,9 @@
         {
           "decision": "D07_START_SITE_PROFILE",
           "scope": "New factory-only initial source/vegetation/profile bindings",
-          "status": "PROPOSED_OWNER_REVIEW_REQUIRED",
-          "unaffected": "Existing-v5 cutter placement and fixed Facility transaction with actual support proof"
+          "status": "ACCEPTED_BY_USER",
+          "unaffected": "Existing-v5 cutter placement and fixed Facility transaction with actual support proof",
+          "approvalReceiptIndex": 1
         }
       ]
     },

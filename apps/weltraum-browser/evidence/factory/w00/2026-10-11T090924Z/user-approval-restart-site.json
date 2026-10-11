@@ -1,0 +1,17 @@
+{
+  "receivedAtUtc": "2026-10-11T10:34:17Z",
+  "source": "direct user async question reply",
+  "scope": "W00-W11 only",
+  "replies": [
+    {
+      "decision": "D03_RESTART_POLICY",
+      "question": "Für W03 ist die Wiederanlaufregel im FP01-Text noch nicht eindeutig. Ich schlage für diesen Prototypen vor: Verbraucher innerhalb einer Priorität nach stabiler ID ordnen; nach WAIT_POWER erst neu starten, wenn die benötigte Leistung plus 500 W Reserve während 2 bestätigter Simulationssekunden verfügbar war. Beim ersten Start gilt nur die benötigte Leistung. Die Reserve wird bei der gemeinsamen Allokation geprüft; kein zusätzlicher Fairnesscursor. So bleibt die 6,6-kW-Fixture bei 6,8 kW regulär betreibbar. Soll diese konkrete D03-Policy gelten? W01, Material, Assets und Hostarbeit laufen unabhängig weiter.",
+      "answer": "D03-Policy freigeben"
+    },
+    {
+      "decision": "D07_START_SITE_PROFILE",
+      "question": "Für W07 ist der echte Bodensupport des Fabrikkreislaufs noch unbewiesen: Im vorhandenen trockenen Gelände liegen unter dem Former bis zu 2,75 m Höhenunterschied, ohne freigegebene Fußverstellung. Soll die konkret dokumentierte Startplatz-Fixture gelten: nur /factory.html erhält 70 m² ebene Kalksteinflächen auf 1,5 m Höhe für Körper, Bänder und Zugang sowie ein eigenes anfängliches Vegetationsmanifest ohne die zwei kollidierenden Holzowner? Die 125-mm-HVP-Zellen, native World und Budgets bleiben erhalten; Cargo bleibt unverändert, Terrain-/Holzunterschiede erzeugen kein Inventar, und der gemeinsame Save bindet das separate Profil. Details: docs/factory/fp06/proposals/start-site-v1.md im W00-Worktree. Unabhängige Pakete laufen weiter.",
+      "answer": "Startplatz-Fixture freigeben"
+    }
+  ]
+}

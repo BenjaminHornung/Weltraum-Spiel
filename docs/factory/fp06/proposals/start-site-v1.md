@@ -1,6 +1,6 @@
-# Factory-Startplatz v1 – offene Ownerentscheidung
+# Factory-Startplatz v1 – angenommene Ownerentscheidung
 
-Status: **PROPOSED / nicht angenommen / nicht implementiert**. Gate D07_START_SITE_PROFILE betrifft ausschließlich neue Startplatz-/Vegetations-/Profilanteile. W07-Nativetransaktion und einzelne Cutterplatzierung dürfen auf tatsächlich geprüftem bestehendem v5-Support weiterlaufen; W01/Material/Assets/Host sind unabhängig. Ein vollständiger W09-Kreislauf braucht weiterhin tatsächlichen Gesamt-Support.
+Status: **ACCEPTED_BY_USER / noch nicht implementiert**. Tatsächliche Antwort „Startplatz-Fixture freigeben“, dokumentiert am 2026-10-11 um 10:34:17 UTC; vollständige Frage/Antwort im Source-Lock. W07 benötigt weiterhin bestandene W02/W05/W06-Gates und einen exakten Integratorgrant. Gate D07_START_SITE_PROFILE betrifft ausschließlich neue Startplatz-/Vegetations-/Profilanteile. W07-Nativetransaktion und einzelne Cutterplatzierung dürfen auf tatsächlich geprüftem bestehendem v5-Support weiterlaufen; W01/Material/Assets/Host sind unabhängig. Ein vollständiger W09-Kreislauf braucht weiterhin tatsächlichen Gesamt-Support.
 
 Die aktuelle Coast-v5-Quelle bietet trockene rotierte Teilflächen. Der konkret untersuchte Formerfootprint hat dennoch 2,75 m Relief; ein vollständiger gemeinsamer Port-/Fußsupport ist unbewiesen. FP03 fordert echte Bodenkontakte und unterscheidet leichte Nivellierung von bezahlten Stützen/Erdarbeiten. Die vorhandenen Quellen legen keine zulässige Fußverstellung für dieses Relief fest. Trockenheit allein ist kein Build-PASS.
 
