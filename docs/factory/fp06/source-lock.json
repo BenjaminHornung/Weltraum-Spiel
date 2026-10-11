@@ -1311,7 +1311,7 @@
         "apps/weltraum-browser/evidence/factory/w07/<actual-run-id>/**"
       ],
       "evidenceGrant": true,
-      "status": "IN_PROGRESS",
+      "status": "IN_REVIEW",
       "owner": "/root/fp06_integrator",
       "plannedRole": "integrator",
       "branch": "codex/hestia-fp06-integrator-2026-10-11",
@@ -1371,7 +1371,7 @@
         "Cargo provenance alone is not physical reach: initial source must be bound to a real Cargo-S0 world owner, native pose and access outside the 22 x 12 m machine zone. W07 handles initial witness/open and a truly reachable paid player build; W09 handles finite pickup, confirmed native movement and local deposit for remote construction/production. No new terrain masks, cargo, UI source-pose writes or automatic transport. New exact paths require a separate recorded scope extension; existing grants remain unchanged."
       ],
       "baseCommitSha": "d5502ae7fd5431d58eda51bea062c54691ebe3c2",
-      "implementationWriteHold": false,
+      "implementationWriteHold": true,
       "authorizedAtUtc": "2026-10-11T13:11:16.765614+00:00",
       "completedAtUtc": null,
       "tddInitialStatus": {
@@ -1707,15 +1707,15 @@
         }
       ],
       "currentProductSeal": {
-        "sealedAtUtc": "2026-10-11T15:13:37.175340+00:00",
-        "patch": "docs/factory/fp06/reviews/w07-before-eighth-browser-product.patch",
-        "patchSha256": "1bd3173f72efe4b531e49579164cb62ead4534720c86696f1fa36eeeaf012636",
-        "patchBytes": 205179,
-        "fileHashes": "docs/factory/fp06/reviews/w07-before-eighth-browser-product-files.json",
-        "fileHashesSha256": "eb7a99c17be2a828823fd2d8646b18bfb65994449d13d75e109e708bf69b1fa2",
+        "sealedAtUtc": "2026-10-11T15:55:12.557402+00:00",
+        "patch": "docs/factory/fp06/reviews/w07-before-ninth-browser-product.patch",
+        "patchSha256": "d7040eba7f26090783c69372b7ae64f077338de060f0abaaaa2387d510bd9184",
+        "patchBytes": 214847,
+        "fileHashes": "docs/factory/fp06/reviews/w07-before-ninth-browser-product-files.json",
+        "fileHashesSha256": "5f0588a7a969d185424780bd298fc16c45260874311ef9415cc4da49aa580c12",
         "grantedPaths": 29,
         "actualChangedProductPaths": 27,
-        "browserPhase": "eighth",
+        "browserPhase": "ninth",
         "packageCommitSha": null
       },
       "currentNarrowWriteSet": [
@@ -1757,7 +1757,7 @@
       },
       "ghostReceiverFollowup": {
         "authorizedAtUtc": "2026-10-11T15:20:02.754075+00:00",
-        "status": "GENUINE_RED_MINIMAL_FIX_IN_PROGRESS",
+        "status": "FINAL_CLI_PASS_PENDING_DELTA_REVIEW",
         "writeSet": [
           "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
           "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
@@ -1781,6 +1781,107 @@
           ],
           "allowed": "Same definition ghost move/rotation onlyupdatesresidentscene.transforms+refresh; preservegeometry/keys/leases. Cancel/repreview boundedreusableghostslot percloseddefinition andstrictlyhigherderivedartifactRevision withunchanged sourceRevision. Validate exhaustion/cap before allocation; rejectrealerrors, nofilter. OriginalpaidID/nativeMaterial/Renderercontractunchanged.",
           "verification": "Focused actualReceiver lifecycle+affectedguards/material-input regression, fullbuild, new29seal+indepdeltareview, actualnormal9th17caseBrowser"
+        },
+        "preliminarySpecReview": {
+          "report": "docs/factory/fp06/reviews/w07-ghost-preliminary-spec-review.md",
+          "source": "/workspace/.cloud-setup/fp06-w07-ghost-final-spec-review.md",
+          "originalSha256": "f8393f75b27cb3cb9ab10fb36e7a8c83c8322efe7e517061dd216868444151ce",
+          "originalBytes": 5039,
+          "copiedSha256": "f8393f75b27cb3cb9ab10fb36e7a8c83c8322efe7e517061dd216868444151ce",
+          "status": "PRELIMINARY_POSE_LIFECYCLE_PASS_NAMESPACE_OPEN",
+          "openFinding": "G1 legal paid ID ghost_slot_0 collides with ghost render keys and factoryCosts map; actual receiver collision RED pending",
+          "packageGate": "FAIL_BROWSER_EIGHTH"
+        },
+        "namespaceCounterexampleAuthorization": {
+          "authorizedAtUtc": "2026-10-11T15:52:25.291147+00:00",
+          "testOnlyWriteSet": [
+            "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts"
+          ],
+          "condition": "After frozen Regression61 and Build62; execute actual receiver counterexample for valid paid instanceId ghost_slot_0 before runtime correction",
+          "minimalConditionalFix": "Only if actual collected receiver failure: Bootstrap-derived ghost render/cost slot identity with an internal colon segment, disjoint from native SaveSafeID regex; preserve paid IDs, Native requests, source revisions, W05 sources and Receiver contracts",
+          "remaining26Paths": "HELD_AT_EIGHTH_SEAL",
+          "conditionFulfilledBy": "Actual collected assertion RED63"
+        },
+        "preNamespaceGreen": {
+          "focusLog": 60,
+          "focusPass": 1,
+          "focusSkip": 34,
+          "focusWrapperSeconds": 10.117277813998953,
+          "regressionLog": 61,
+          "regressionPass": 91,
+          "regressionFiles": 5,
+          "regressionWrapperSeconds": 240.20781203500155,
+          "regressionRawSha256": "386a4002e32b35c8608037b37c3f8c2cc9a5f96551f4ba354bf97d0a2af58a42",
+          "fullBuildLog": 62,
+          "fullBuildStatus": "PASS",
+          "fullBuildWrapperSeconds": 4.305713843001286,
+          "fullBuildRawSha256": "fb1271c75315621ee2a0b045a897c539bd3f3a84d60857b4fc9e56a50529d4aa",
+          "phaseLimit": "Before namespace counterexample/fix; no final-byte coverage claim"
+        },
+        "namespaceBusinessRed": {
+          "log": 63,
+          "status": "FAIL",
+          "collectedAssertionFailures": 1,
+          "skip": 35,
+          "wrapperSeconds": 9.884510843003227,
+          "rawSha256": "878e0bb6f50785e41f0da4fa9289afde32b910ba582617031219e1d0f55d7a54",
+          "actual": "Host finite-Resources build for legal paid ghost_slot_0 returned Rejected RevisionContentConflict instead of Committed INSTALLED",
+          "setupFailure": false,
+          "runtimeBeforeFix": "Phase61/62 unchanged"
+        },
+        "postNamespaceCommands": [
+          {
+            "log": 64,
+            "receipt": "apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/64-green-ghost-receiver-lifecycle-and-paid-namespace-command.json",
+            "wrapperSeconds": 18.211612131999573,
+            "rawBytes": 402,
+            "rawSha256": "6f9178dbdcdc1af0e9cf1bdc8a62ea963e06261cfadd8533138fc3cb6fdd6f69",
+            "exitCode": 0
+          },
+          {
+            "log": 65,
+            "receipt": "apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/65-green-after-disjoint-ghost-namespace-guards-command.json",
+            "wrapperSeconds": 5.771231348000583,
+            "rawBytes": 474,
+            "rawSha256": "66792fc133e2651ca80a382c5f0eed28b149afa2f33db78e92c7510c2a94e577",
+            "exitCode": 0
+          },
+          {
+            "log": 66,
+            "receipt": "apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/66-final-full-build-ghost-namespace-command.json",
+            "wrapperSeconds": 4.153197670999361,
+            "rawBytes": 1904,
+            "rawSha256": "a387975781c34795dcfdbb9f3b05ec836eb07e57d670fee4f34562fe31b69dd3",
+            "exitCode": 0
+          }
+        ],
+        "postNamespacePass": {
+          "receiverCases": 2,
+          "receiverSkip": 34,
+          "guards": 56,
+          "fullBuild": "PASS"
+        },
+        "ninthScopeProof": "docs/factory/fp06/reviews/w07-ninth-seal-scope-proof.json",
+        "preliminaryQualityReview": {
+          "report": "docs/factory/fp06/reviews/w07-ghost-preliminary-quality-review.md",
+          "originalSha256": "6da21a74c7d4c8d875b50bf8fe59d27ca4c87e9edb8d8739d39947568ab4db95",
+          "status": "HISTORICAL_P1_FAIL_BEFORE_NAMESPACE_FIX",
+          "source": "/workspace/.cloud-setup/fp06-w07-ghost-final-quality-review.md",
+          "originalBytes": 6999,
+          "copiedSha256": "4b89200784455362b33dd2a2b19055ada0da6424a6b3c906d3d9deab0468153e",
+          "copyRule": "Only Markdown trailing spaces and EOF normalized; original hash/byte size recorded"
+        },
+        "finalSpecReview": {
+          "report": "docs/factory/fp06/reviews/w07-ghost-final-spec-review.md",
+          "source": "/workspace/.cloud-setup/fp06-w07-ghost-final-spec-review.md",
+          "originalSha256": "c3af5c7e26b4a83914afac25c4150efa804c4fcdbd3741f12db955ba98889e83",
+          "originalBytes": 5255,
+          "copiedSha256": "c3af5c7e26b4a83914afac25c4150efa804c4fcdbd3741f12db955ba98889e83",
+          "copyRule": "Markdown trailing spaces/EOF only",
+          "spec": "PASS",
+          "quality": "PASS",
+          "G1": "CLOSED",
+          "scope": "Ninth29FileSeal; no Browser/Evidence/Git/package PASS"
         }
       },
       "eighthPaidVisualReview": {

@@ -1,0 +1,51 @@
+{
+  "verifiedAtUtc": "2026-10-11T15:56:46.039759+00:00",
+  "sealSha256": "5f0588a7a969d185424780bd298fc16c45260874311ef9415cc4da49aa580c12",
+  "patchSha256": "d7040eba7f26090783c69372b7ae64f077338de060f0abaaaa2387d510bd9184",
+  "grantedPaths": 29,
+  "actuallyChangedProductPaths": 27,
+  "byteMatches": 29,
+  "deltaFromEighth": [
+    "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+    "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts"
+  ],
+  "other27PathsUnchanged": true,
+  "normalE2eUnchanged": true,
+  "commandsRawBound": [
+    {
+      "log": 64,
+      "receipt": "apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/64-green-ghost-receiver-lifecycle-and-paid-namespace-command.json",
+      "wrapperSeconds": 18.211612131999573,
+      "rawBytes": 402,
+      "rawSha256": "6f9178dbdcdc1af0e9cf1bdc8a62ea963e06261cfadd8533138fc3cb6fdd6f69",
+      "exitCode": 0
+    },
+    {
+      "log": 65,
+      "receipt": "apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/65-green-after-disjoint-ghost-namespace-guards-command.json",
+      "wrapperSeconds": 5.771231348000583,
+      "rawBytes": 474,
+      "rawSha256": "66792fc133e2651ca80a382c5f0eed28b149afa2f33db78e92c7510c2a94e577",
+      "exitCode": 0
+    },
+    {
+      "log": 66,
+      "receipt": "apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/66-final-full-build-ghost-namespace-command.json",
+      "wrapperSeconds": 4.153197670999361,
+      "rawBytes": 1904,
+      "rawSha256": "a387975781c34795dcfdbb9f3b05ec836eb07e57d670fee4f34562fe31b69dd3",
+      "exitCode": 0
+    }
+  ],
+  "packageCommitSha": null,
+  "browserNinth": "NOT_RUN",
+  "rootDocumentationWhitespaceCheck": {
+    "wholeStagedExitCode": 2,
+    "wholeOutputBytes": 1706,
+    "wholeOutputSha256": "9a0a449a92078a3fc1984ca9329015c4072cb75dcf5fd945e737b1dc189a217d",
+    "scopedExitCode": 0,
+    "exactExcludedPath": "docs/factory/fp06/reviews/w07-before-ninth-browser-product.patch",
+    "reason": "Exact raw patch retains intentional context-line spaces; no normalization or global whitespace policy change",
+    "productWhitespace": "Writer original product-path checks had no whitespace output; separate from raw evidence patch"
+  }
+}
