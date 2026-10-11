@@ -1,0 +1,71 @@
+{
+  "atUtc": "2026-10-11T22:27:26.091785+00:00",
+  "head": "aa2e5d7c335453fc555a98ccd35e9f564c596e93",
+  "sourceFiles": [
+    {
+      "path": "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+      "bytes": 25069,
+      "sha256": "032bd49493588d9336970ddb3310fca6d356f4c1eb7ad5de39958aba2495fb7d"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/factorySession.ts",
+      "bytes": 34812,
+      "sha256": "dde4c5db13d67f207783e923743bc46f26c91a1f9e734c60869b7c17fc633826"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+      "bytes": 9550,
+      "sha256": "e84d17ea0b2f07db1d6e1427b4d7009ffde8f4588daa414b5a0bf206cdf5393a"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/installationProfile.ts",
+      "bytes": 5568,
+      "sha256": "4e5d3f027da5aef0ba68243b911c55d7558eab86477e2ebd3e134a26f82d8b8b"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/cargoHandlingProfile.ts",
+      "bytes": 4029,
+      "sha256": "6faa1b01b5410474805f54a79f7033265ea01a5c899547b6575e3e33331354f0"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+      "bytes": 14061,
+      "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/conveyor/beltPorts.ts",
+      "bytes": 7259,
+      "sha256": "54c2bdd48838f869db887d72b19f4169487070ba194e301340b12179f6a7cfa9"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/conveyor/beltReference.ts",
+      "bytes": 20546,
+      "sha256": "45fb7e4d0bb618a07d215ab923db4521c1bd46203428b49760e5140f402be211"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts",
+      "bytes": 23335,
+      "sha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+      "bytes": 52116,
+      "sha256": "1d2222586f92dd7c71530cf8a26c171348ba5edeaf4427cbe8a68ff168ca81ba"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/power/factoryPower.ts",
+      "bytes": 19844,
+      "sha256": "70ddfe44c9a81c6355262bed928ee4d72b410b4b0db2a6c6bf08a36ec71b2825"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/power/sourceAdapter.ts",
+      "bytes": 8655,
+      "sha256": "3c4886c67b79475783f287e93edcb8412db5a26f1156624c70283416fbeb5d9b"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/factoryEntry.ts",
+      "bytes": 10993,
+      "sha256": "d110bbe6877d5796660cde4630ace45f04bef4457feebe149c00749d8bf6db8a"
+    }
+  ]
+}
