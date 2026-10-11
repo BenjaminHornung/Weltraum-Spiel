@@ -1565,6 +1565,54 @@
           "cliSeconds": 1.84,
           "setupFailure": false,
           "nativeReadPrepareWitness": "Real Rapier session snapshots in held transport fixture; premature public bodyCount3/colliders35 before Publish. No axis/nativeTick mock."
+        },
+        "currentStatus": "DIAGNOSTIC_E2E_ONLY_AUTHORIZED; current runtime sealed, unit/build PASS remain byte-scoped; actual browser FAIL",
+        "phaseResults": [
+          {
+            "log": 45,
+            "status": "FAIL",
+            "pass": 11,
+            "fail": 1,
+            "reason": "Signed zero neutral assertion; original preserved"
+          },
+          {
+            "log": 46,
+            "status": "PASS",
+            "selected": 12,
+            "skip": 35
+          },
+          {
+            "log": 47,
+            "status": "PASS",
+            "selected": 12
+          },
+          {
+            "log": 48,
+            "status": "FAIL",
+            "reason": "TS2352 test MessageEvent cast; source runtime not cause"
+          },
+          {
+            "log": 49,
+            "status": "PASS",
+            "selected": 12,
+            "cliSeconds": 1.8186
+          },
+          {
+            "log": 50,
+            "status": "PASS",
+            "command": "npm run build",
+            "cliSeconds": 4.0475
+          }
+        ],
+        "diagnosticAuthorization": {
+          "authorizedAtUtc": "2026-10-11T15:00:02.876798+00:00",
+          "writeSet": [
+            "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
+          ],
+          "kind": "DIAGNOSTIC_ONLY",
+          "globalBrowserLease": "/root/fp06_integrator",
+          "allowed": "Passively record actual trusted keyevents/outgoing existing NativeWorker Read(input) and replies/tick/pose, forward unchanged if observing transport, bounded true250–700ms ordinary holds then release before RPCread; unchanged existing30s/20s/trace. One targeted diagnostic, not blind fullrun.",
+          "forbidden": "No production source writes, fake input/tick/pose, new Native IPC/message, authority bridge, new product/public API, tempo/reach/terrain/budget/queue/timeout change. Any diagnostic instrumentation never qualifies normal no-TestBridge gameplay gate."
         }
       },
       "historicalRuntimeReviewBeforeInput": [
@@ -1582,7 +1630,34 @@
           "originalBytes": 22071,
           "purpose": "Historischer Runtime-PASS vor dem neuen Inputdelta; kein W07-Paketgate und kein Browser-PASS."
         }
-      ]
+      ],
+      "currentProductSeal": {
+        "sealedAtUtc": "2026-10-11T14:54:51.459915+00:00",
+        "patch": "docs/factory/fp06/reviews/w07-before-seventh-browser-product.patch",
+        "patchSha256": "ce0007d04fc4833953acef94d78d1091b2848b410112028026179ad1b58eece4",
+        "patchBytes": 202766,
+        "fileHashes": "docs/factory/fp06/reviews/w07-before-seventh-browser-product-files.json",
+        "fileHashesSha256": "4ea869a05fd9f2d9fd941a00b289c375cd18ef2e27e88c74a2bea1bc4f3053d1",
+        "grantedPaths": 29,
+        "actualChangedProductPaths": 27,
+        "browserPhase": "seventh",
+        "packageCommitSha": null
+      },
+      "currentNarrowWriteSet": [
+        "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
+      ],
+      "currentNarrowScope": "E2E-only targeted diagnostic; all28 other granted productpaths remain byte-held at seventh seal. No normal-gate admission.",
+      "browserSeventhActual": {
+        "log": 51,
+        "endedAtUtc": "2026-10-11T14:55:26.833Z",
+        "exitCode": 1,
+        "pass": 5,
+        "fail": 1,
+        "notRun": 11,
+        "cliSeconds": 80.1268,
+        "observedFailure": "Actual native player x=-5.5 after8trusted100ms D taps; paid build NOT_RUN",
+        "traceDiagnosis": "All native transactions Idle and Walking/grounded; InputPlayer/locked=true/neutralizations1; last4press APIs496.9–544.5ms. Busy/latest-coalescing cause not yet directly witnessed."
+      }
     },
     "W08": {
       "dependencies": [
@@ -2005,6 +2080,16 @@
       "stdout": "e40592c113b72a8dc93725187f92cf948e07f44d\trefs/heads/main\n",
       "verifiedRemoteMainSha": "e40592c113b72a8dc93725187f92cf948e07f44d",
       "timestampNote": "Recorded shortly after actual command returned at2026-10-11T14:02:22Z; not an invented exact process-start timestamp"
+    },
+    {
+      "command": "git ls-remote origin refs/heads/main",
+      "cwd": "/workspace/Weltraum-Spiel",
+      "observedAtUtc": "2026-10-11T14:51:51Z",
+      "recordedAtUtc": "2026-10-11T14:52:03.141427+00:00",
+      "exitCode": 0,
+      "mainSha": "e40592c113b72a8dc93725187f92cf948e07f44d",
+      "changedFromW00": false,
+      "visibility": "remote main only; API/foreign uncommitted writers not inferred"
     }
   ],
   "integrationTransfers": [

@@ -1,0 +1,254 @@
+{
+  "checkedAtUtc": "2026-10-11T14:55:52.211729+00:00",
+  "reviewer": "/root",
+  "kind": "READ_ONLY_SEAL_AND_SCOPE_VERIFICATION",
+  "status": "PASS",
+  "grantedCount": 29,
+  "sealHashRows": 29,
+  "actualChangedCount": 27,
+  "packageGate": "NOT_RUN",
+  "browserSeventh": "RUNNING_NOT_YET_ADMITTED",
+  "commitSha": null,
+  "priorRootCheck": "First checker asserted 27 hash rows and failed; seal correctly contains all29 granted hash rows including2 unchanged. No byte mismatch, no product write, no commit occurred. Corrected checker distinguishes actualChangedProductPaths from productFiles.",
+  "files": [
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/placement.ts",
+      "inGrant": true,
+      "actuallyChanged": true,
+      "bytes": 11255,
+      "sha256": "89194437192f2788e4ea7458af06f760583f8250ccce494a89e0cc225debd09e",
+      "matchesSeal": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/buildStep.ts",
+      "inGrant": true,
+      "actuallyChanged": true,
+      "bytes": 5734,
+      "sha256": "4e5db5b1bb70921a8ee4cfbd91da48c66f4e5686b2228805b5b0ab6ae2f8ea17",
+      "matchesSeal": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/buildTool.ts",
+      "inGrant": true,
+      "actuallyChanged": true,
+      "bytes": 1630,
+      "sha256": "6e5e3250a3211b45f10521f750ccf2239d536e3d4fa4ca1e1cadd22af0860f75",
+      "matchesSeal": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/placement.test.ts",
+      "inGrant": true,
+      "actuallyChanged": true,
+      "bytes": 11200,
+      "sha256": "9fe9bde4a0cd6cd0385caaf1e63b15856ec46ca324242c782a3779a720b78909",
+      "matchesSeal": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts",
+      "inGrant": true,
+      "actuallyChanged": true,
+      "bytes": 13482,
+      "sha256": "488439fa85e682a90e28a9781581d4d419d3c691bd37d3ed675c53fcad36bc9e",
+      "matchesSeal": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+      "inGrant": true,
+      "actuallyChanged": true,
+      "bytes": 18339,
+      "sha256": "620a60b3d7d1e5edfef558fe07fac9af78cd9fc13385f9c45ad5fde1279d2eee",
+      "matchesSeal": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+      "inGrant": true,
+      "actuallyChanged": true,
+      "bytes": 33865,
+      "sha256": "234fe15a6b2f6f2b9c6a68bec60816536c96e4c26439bf6321ba84fb05948b42",
+      "matchesSeal": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+      "inGrant": true,
+      "actuallyChanged": true,
+      "bytes": 15865,
+      "sha256": "1809dc32d0107d96bdb55a13e09bd386a58094c45c350c3a10bef7b42ab4f5fa",
+      "matchesSeal": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+      "inGrant": true,
+      "actuallyChanged": true,
+      "bytes": 37128,
+      "sha256": "e21fd44869c96350212f62ad33c11066029de646760fd74caa1ad2752b6797fd",
+      "matchesSeal": true
+    },
+    {
+      "path": "apps/weltraum-browser/package.json",
+      "inGrant": true,
+      "actuallyChanged": true,
+      "bytes": 2570,
+      "sha256": "f3193e4ab6e1eeef81304adeb75812f8933b2d73863317d1a1632c453cc37b89",
+      "matchesSeal": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+      "inGrant": true,
+      "actuallyChanged": true,
+      "bytes": 164229,
+      "sha256": "e744746124298f359f18efed2b6eeaa83e434177fe8dd509bf2519669d6174e3",
+      "matchesSeal": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+      "inGrant": true,
+      "actuallyChanged": true,
+      "bytes": 2518,
+      "sha256": "8db32270b8a9fdadf70a6a838838bedfe02a09b1451516fb41a25fe75cd25118",
+      "matchesSeal": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/factorySession.ts",
+      "inGrant": true,
+      "actuallyChanged": true,
+      "bytes": 5378,
+      "sha256": "7f1e342aecac3525bcc1b0a0f6ea579a1db2172af6f98d00d7289b7087a3a00f",
+      "matchesSeal": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/factoryEntry.ts",
+      "inGrant": true,
+      "actuallyChanged": true,
+      "bytes": 9253,
+      "sha256": "ad7f1bb598f26db5ba873abe762fc39a1798c8bf18a65f971409efd7b3f87202",
+      "matchesSeal": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+      "inGrant": true,
+      "actuallyChanged": true,
+      "bytes": 38423,
+      "sha256": "13128d7ad3151da644ae909af0dbb0e2df0e91066c01f55ee566f7eedc1fdaca",
+      "matchesSeal": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+      "inGrant": true,
+      "actuallyChanged": true,
+      "bytes": 2121,
+      "sha256": "53725bbf06af6be92ac1b3b3e250ee6548e37bb6abf8500b4cd50e09b1ec1a29",
+      "matchesSeal": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/installationProfile.ts",
+      "inGrant": true,
+      "actuallyChanged": true,
+      "bytes": 5733,
+      "sha256": "64df3962d652649301e1a7f411516829e6e7fd915d5fa48f566f18090c32832f",
+      "matchesSeal": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/presentation/vegetation.ts",
+      "inGrant": true,
+      "actuallyChanged": true,
+      "bytes": 22422,
+      "sha256": "a6c6996706591f5fd77f31ea9a445fa421f6e1e02ee7162904a58834b5008dd3",
+      "matchesSeal": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+      "inGrant": true,
+      "actuallyChanged": true,
+      "bytes": 63087,
+      "sha256": "1ec2800737b0b6aeeefce7bab4ce39a89c054938eb5944260176bd5f236b0b5a",
+      "matchesSeal": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-physics.test.ts",
+      "inGrant": true,
+      "actuallyChanged": false,
+      "bytes": 9736,
+      "sha256": "cbab1e3815dd4483c517c3ab1520d3b8d832cd36d1095f38d0ba3e8377aa2004",
+      "matchesSeal": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+      "inGrant": true,
+      "actuallyChanged": true,
+      "bytes": 14119,
+      "sha256": "fd55eb45af1166c49b8302d925cb9bf14bc189665f2dbd11f3a661f0330018b5",
+      "matchesSeal": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-coast-source.test.ts",
+      "inGrant": true,
+      "actuallyChanged": false,
+      "bytes": 25321,
+      "sha256": "ee3a980d39a5b13fe17547c8b12fc51f066a76ea003576ee6cfc2f63ba739909",
+      "matchesSeal": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-vegetation.test.ts",
+      "inGrant": true,
+      "actuallyChanged": true,
+      "bytes": 15971,
+      "sha256": "05dd0282c751167c03490d71a83e4f04d1859ef8c8ac11528f662a3a8ceeffb8",
+      "matchesSeal": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+      "inGrant": true,
+      "actuallyChanged": true,
+      "bytes": 2143,
+      "sha256": "6cc02b9d07b7f3180ce515cc39f093a0d89d8c2487ddfe4bdccd68c99d097b9f",
+      "matchesSeal": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+      "inGrant": true,
+      "actuallyChanged": true,
+      "bytes": 8284,
+      "sha256": "8efd8c5bc62184ff1fb1ea77dbc141a1ab9e665e8af787627c77cf9d10a282a8",
+      "matchesSeal": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+      "inGrant": true,
+      "actuallyChanged": true,
+      "bytes": 4071,
+      "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+      "matchesSeal": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+      "inGrant": true,
+      "actuallyChanged": true,
+      "bytes": 2746,
+      "sha256": "abe6b53b1e5927b4756823b133e2b704a417a533bb520d94eb1c4a5df5fab86f",
+      "matchesSeal": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/player/input.ts",
+      "inGrant": true,
+      "actuallyChanged": true,
+      "bytes": 11833,
+      "sha256": "322821a12db4b59fd5c448c578f0adafce86222b674d25a850b976b6de3c63b9",
+      "matchesSeal": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
+      "inGrant": true,
+      "actuallyChanged": true,
+      "bytes": 11383,
+      "sha256": "8186eb1a3aa560d8de2782e4a733849fd73caed82987d4712b4762910f2bc427",
+      "matchesSeal": true
+    }
+  ],
+  "rawPatchWhitespaceCheck": {
+    "wholeCachedDiffExit": 2,
+    "reason": "Exact rawpatch contains intentional single-space blank context lines; raw artifact bytes preserved unchanged",
+    "boundedDocumentationCheck": "git diff --cached --check -- . :!docs/factory/fp06/reviews/w07-before-seventh-browser-product.patch",
+    "boundedDocumentationExit": 0,
+    "scope": "This exact rawpayload only; no global whitespace rule/config/formatter relaxed."
+  }
+}
