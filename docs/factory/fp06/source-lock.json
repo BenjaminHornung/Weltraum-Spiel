@@ -1732,8 +1732,10 @@
         "packageCommitSha": null,
         "rootProof": "docs/factory/fp06/reviews/w07-cdp-trusted-driver-root-proof.json"
       },
-      "currentNarrowWriteSet": [],
-      "currentNarrowScope": "One E2E-only bounded adaptive fine-key diagnostic; all other28 product paths held at Ninth seal",
+      "currentNarrowWriteSet": [
+        "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
+      ],
+      "currentNarrowScope": "Temporary passive diagnostic overlay only; all29 other product paths HOLD201394; execution HOLD",
       "browserSeventhActual": {
         "log": 51,
         "endedAtUtc": "2026-10-11T14:55:26.833Z",
@@ -2383,7 +2385,7 @@
         "gate": "Targeted11 only; full17 and package remain NOT_RUN/FAIL until actual results",
         "status": "EXECUTED83_FAIL_CPU_GPU_PORT_RELEASED"
       },
-      "cpuGpuPortLease": "EXCLUSIVE_5174",
+      "cpuGpuPortLease": "RELEASED_AFTER_88",
       "adaptiveNormalVerificationActual": {
         "log": 83,
         "selected": 11,
@@ -2603,7 +2605,59 @@
         "normalE2eSha256": "030fc301147af6a45da6412847368e6c7d5243b70811018e53883b83210ef605",
         "configSha256": "53a55a48da97d43a02e317fb8edc844d57a9b5687f356a7ebf4f5b470efcf900",
         "constraints": "All30productHOLD; originalTrace/samePageactualWorld/trustedpublicCDPkeycontrols+normalbuttons; nohook/Authorityeval/Source/runtime/E2E mutation/faketicks/timeout/cap/queuechanges. Prior86+81+83 allraw/artifacts/fixedwriterorigins exact preserved; freshownRun browser-cdp-trusted-normal-full-88. Actualresultsdecide; no inferredsuccess.",
-        "status": "AUTHORIZED_NOT_RUN"
+        "status": "EXECUTED88_FAIL_CPU_GPU_PORT_RELEASED"
+      },
+      "cdpNormalFullGateActual": {
+        "log": 88,
+        "selected": 17,
+        "pass": 5,
+        "fail": 1,
+        "notRun": 11,
+        "exitCode": 1,
+        "startUtc": "2026-10-11T17:56:48.501272+00:00",
+        "endUtc": "2026-10-11T17:58:13.035407+00:00",
+        "wrapperSeconds": 84.53412076499808,
+        "rawBytes": 8255,
+        "rawSha256": "afdbf70d8aa92f7522fcc335948b9f33611f866fa2f5cc80389be4c066af05e2",
+        "rootRawVerification": "Gzip-decompressed exact receipt SHA and bytes; all27 fresh artifact hashes independently verified",
+        "artifactCount": 27,
+        "artifactBytes": 10722017,
+        "actual": "Eight genuine CDP D125ms gestures all zero movement; final nativeX -5.5; all released native snapshots Running/Walking/grounded, ticks advance",
+        "causalLimit": "Actual DOM and Worker receive edges NOT_OBSERVED; request ACK timestamps do not establish cause",
+        "all30FinalBytesRestored": "MATCH",
+        "port": "RELEASED",
+        "scope": "WalkX assertionFAIL; 11 dependent cases NOT_RUN; whole W07 remains FAIL"
+      },
+      "inputTickDiagnosticSourceAuthorization": {
+        "authorizedAtUtc": "2026-10-11T18:10:44.806940+00:00",
+        "actor": "/root/fp06_integrator",
+        "kind": "TEMPORARY_PASSIVE_SOURCE_PREPARATION_ONLY_NOT_GAMEPLAY_GATE",
+        "writeSet": [
+          "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
+        ],
+        "sourceSealSha256": "201394fb8346e8b12c93b0bb5d52c34d180d966a80c884697813b9d224c511d4",
+        "normalE2eSha256": "030fc301147af6a45da6412847368e6c7d5243b70811018e53883b83210ef605",
+        "proposal": {
+          "path": "docs/factory/fp06/reviews/w07-input-tick-diagnostic-proposal.md",
+          "sha256": "2974eff1e16d66fdc03fd632ebd58f52aa62b59eaa2c9717a436470608851277",
+          "bytes": 3982
+        },
+        "independentSourceReview": {
+          "path": "docs/factory/fp06/reviews/w07-input-tick-diagnostic-proposal-independent-review.md",
+          "sha256": "5544f32361271e51b6cb9a5630138b96aafff7a9773c9af20c79ff67eec03ad5",
+          "bytes": 4017,
+          "status": "SOURCE_ONLY_PASS_PLAIN_ROUTE_WITH_EXPLICIT_OBSERVATION_LIMITS"
+        },
+        "route": "/factory.html; no hvpMeasure toggle",
+        "notObserved": [
+          "FactoryInput accepted boolean",
+          "FactoryInput worker handler timestamps",
+          "solverStep/mainFrameCpu without measurement opt-in"
+        ],
+        "contract": "Passive trustedDOMtimestamps and transparent ownerWorker primitive logs; exact forwarding args/return/throw; observer-only bounds/drop/error; existing Native60Hz/8pending20s/30s/config/trace unchanged",
+        "execution": "HOLD until exact overlay independent source review and separate ONE diagnostic authorization",
+        "restore": "Exact original E2E before/after; verify all30 201394 product hashes; preserve88 and fixed original/absent output states",
+        "status": "AUTHORIZED_SOURCE_PREPARATION_ONLY"
       }
     },
     "W08": {

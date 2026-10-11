@@ -1,6 +1,6 @@
 # FP06 Implementierungsstatus
 
-Stand: 2026-10-11 17:57 UTC. `PASS` bezeichnet ein abgeschlossenes Paketgate. `FAIL` benennt eine tatsächlich fehlgeschlagene erforderliche Prüfung; laufende Korrekturen ändern diesen Befund erst nach Verifikation. `NOT_RUN` gilt für noch nicht ausgeführte Prüfungen. Tatsächlich ausgeführte Teilprüfungen stehen im jeweiligen Bericht. Die maßgeblichen Gates und Branch-/Worktree-/Schreibgrenzen sind in `source-lock.json` und `write-ownership.json` gebunden.
+Stand: 2026-10-11 18:10 UTC. `PASS` bezeichnet ein abgeschlossenes Paketgate. `FAIL` benennt eine tatsächlich fehlgeschlagene erforderliche Prüfung; laufende Korrekturen ändern diesen Befund erst nach Verifikation. `NOT_RUN` gilt für noch nicht ausgeführte Prüfungen. Tatsächlich ausgeführte Teilprüfungen stehen im jeweiligen Bericht. Die maßgeblichen Gates und Branch-/Worktree-/Schreibgrenzen sind in `source-lock.json` und `write-ownership.json` gebunden.
 
 Aktuell geprüftes `origin/main`: `e40592c113b72a8dc93725187f92cf948e07f44d` (erneutes tatsächliches `git ls-remote` zwischen 17:22:00 und 17:22:34 UTC). Kein Mainmerge, Push oder Veröffentlichung.
 
@@ -13,7 +13,7 @@ Aktuell geprüftes `origin/main`: `e40592c113b72a8dc93725187f92cf948e07f44d` (er
 | W04 | PASS | `/root/fp06_domain` | `6929bf2447b72c9f3f8fa3bcae0a59c0691966c0` | [W04 Paketbericht](w04-package-report.md) |
 | W05 | PASS | `/root/fp06_domain` | `26d5e892c2b401b9011234dabf86955af7462fb8` | [W05 Paketbericht](w05-package-report.md) |
 | W06 | PASS | `/root/fp06_integrator` | `2c044e02f1f31a2db3de3a0df9156bd71a431a7a` | [W06 Paketbericht](w06-package-report.md) |
-| W07 | FAIL | `/root/fp06_integrator` | `—` | Letzter vollständiger Normalbrowser86: 5 PASS/1 FAIL/11 NOT_RUN; 7 von 8 Gesten bewegen nicht, eine bewegt um 0,9 m. Native-Eingabe-/Preparing-Fixes: 89 betroffene Regressionstests79 und Build80 PASS, unabhängige Reviews PASS. Nur der externe Tastentreiber ist jetzt auf öffentliche Chromium-CDP-WASD-Ereignisse umgestellt: Source-Spec/Quality PASS, Build87b PASS nach erhaltenem TS2345-FAIL87. Alle 30 Dateien des Seals201394 geprüft, 29 übrige Dateien unverändert. Vollständiger normaler 17-Fälle-Lauf88 läuft; Browserresultat, Manifest-/Git-/Commitgate offen. [CDP-Review](w07-cdp-trusted-driver-final-review.md), [Native-Review](w07-input-preparing-final-spec-review.md). |
+| W07 | FAIL | `/root/fp06_integrator` | `—` | Vollständiger Normalbrowser88: 5 PASS/1 FAIL/11 NOT_RUN, alle acht echten CDP-Gesten ohne native Bewegung; Rohlog und 27 Artefakte unabhängig verifiziert. Eingabe-/Preparing-Regression79: 89 PASS, Build80/87b PASS; diese gelten nur für ihre jeweiligen Bytes. Alle 30 Produktdateien nach Browser88 exakt201394, 5174 frei. Temporäre passive DOM-/Worker-Diagnose wird vorbereitet und unabhängig geprüft; keine Runtimeänderung, kein diagnostischer Gameplay-PASS. Manifest-/Git-/Commitgate offen. [Diagnosevorschlag](w07-input-tick-diagnostic-proposal.md), [CDP-Review](w07-cdp-trusted-driver-final-review.md). |
 | W08 | PASS | `/root/fp06_domain` | `8d22fc9907d84bf2ff6b257299ff47fb23b112ff` | [W08 Paketbericht](w08-package-report.md) |
 | W09 | BLOCKED | `/root/fp06_integrator` | `—` | Vorgänger: W04, W07, W08 |
 | W10 | BLOCKED | `/root/fp06_integrator` | `—` | Vorgänger: W09 |
