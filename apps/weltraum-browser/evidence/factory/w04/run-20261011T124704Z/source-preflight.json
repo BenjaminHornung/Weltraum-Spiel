@@ -1,0 +1,24 @@
+{
+  "package": "W04",
+  "baseCommitSha": "1f2c568ec9db7b6b2895eb2a3b4f37797030dac8",
+  "sectionsRead": [
+    "FP02§5:287–359",
+    "FP02§7:502–685",
+    "FP02§12:1068–1227",
+    "FP01§6:421–654",
+    "full W04 brief/manual admission"
+  ],
+  "sourceFiles": {
+    "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11/01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP02_PRODUKTIONSKETTEN_GEBAEUDE_LAYOUTS_DETAILPLAN_2026-10-10.md": "5c4f068edba3d0c89e77b0d3a40734d4ee1a672c39f3885cbfef31430d942f39",
+    "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11/01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP01_EINSTIEG_ENERGIE_DETAILPLAN_2026-10-10.md": "ec3e605de2c6a4877c2ff0afae244b3215e7bf8bb267feef4c466b546477080c"
+  },
+  "controlHashesAtRead": {
+    "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/source-lock.json": "f3a683f1dba78bf56dc712e2cb0f4cd7e475fb06d476c877cd86209c05946240",
+    "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/write-ownership.json": "824de4bc4089af696cde3d6ee1de5f262e86cccd2089794c42c0b16c2643ec20"
+  },
+  "taskGrantSha256": "fa2b30079ed8379a0282d1885630ca019f1e65d7d47c631d2305ca3f089d816e",
+  "manualAdmissionSha256": "b00499fa3ae4062be0df9b23553a87ce224181978de533d76151b8d919831ff8",
+  "headCleanBeforeScaffold": true,
+  "nativePowerFixture": "explicit synthetic unit net, actual adopted W03 pure allocator receipt; no W07/native admission claim",
+  "manualNativeFacts": "explicit synthetic confirmed Host facts for isolated unit tests, not renderer or actual browser evidence"
+}

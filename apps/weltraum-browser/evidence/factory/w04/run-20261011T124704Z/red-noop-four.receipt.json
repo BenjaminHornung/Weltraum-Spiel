@@ -1,0 +1,20 @@
+{
+  "command": "npm run test -- tests/unit/factory/production.test.ts -t 'forged adopted'",
+  "argv": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/production.test.ts",
+    "-t",
+    "forged adopted"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T13:23:32.039303+00:00",
+  "exitCode": 1,
+  "durationSeconds": 2.699,
+  "rawBytes": 2089,
+  "rawSha256": "e960e769797818c25276c24cd81225cd14a49924cb5df0c0f6eac8beee40c632",
+  "gzipBytes": 747,
+  "gzipSha256": "6c51a01d01fc7433102e9ffc8dd87595db22666ef3c7a3ab748f52d56f2c449c"
+}

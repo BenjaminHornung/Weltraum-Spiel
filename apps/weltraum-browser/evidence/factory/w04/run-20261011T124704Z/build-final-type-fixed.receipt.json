@@ -1,0 +1,30 @@
+{
+  "command": "npm run build",
+  "argv": [
+    "npm",
+    "run",
+    "build"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T13:51:20.420646+00:00",
+  "productSnapshot": {
+    "src/factory/production/productionStep.ts": {
+      "sha256": "f74397051a7b2da13d6d183ccf573cb633cb932e915e1ebaf6bf6a50da29c449",
+      "bytes": 29154
+    },
+    "src/factory/production/recipeAdmission.ts": {
+      "sha256": "c77eeaa220cbb491c51356533bdd8f1e6d221f67e9406b458d4a6c06ebac4102",
+      "bytes": 12898
+    },
+    "tests/unit/factory/production.test.ts": {
+      "sha256": "7c31bf5f375af31c3ed0057cda4ce2a87951fff7412506fcab057c0d517769b6",
+      "bytes": 23542
+    }
+  },
+  "exitCode": 0,
+  "durationSeconds": 4.338,
+  "rawBytes": 1207,
+  "rawSha256": "cfe97538d24cb2241010395ae8cbcb43a549f7e57926c1349624e179b521535c",
+  "gzipBytes": 659,
+  "gzipSha256": "f8a2cc54c482ba105930a94aee771ed87e0a4df4b904c38e34947ee1a97adc0b"
+}

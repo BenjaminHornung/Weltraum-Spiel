@@ -1,0 +1,825 @@
+diff --git a/apps/weltraum-browser/src/factory/production/productionStep.ts b/apps/weltraum-browser/src/factory/production/productionStep.ts
+new file mode 100644
+index 00000000..b9358aab
+--- /dev/null
++++ b/apps/weltraum-browser/src/factory/production/productionStep.ts
+@@ -0,0 +1,381 @@
++import type { MaterialPlan, MaterialRecipeRef, MaterialView } from "../material/reservations";
++import type { FactoryPowerBinding, FactoryPowerRequest, FactoryPowerSuccess } from "../power/factoryPower";
++import type { ProductionHostFacts, ProductionStart } from "./recipeAdmission";
++import { admitFactoryRecipe, isImmutableProductionData, productionContainer, productionId, productionMaterialCanonicalJson, productionOutputs, productionRevision } from "./recipeAdmission";
++import { commitFactoryMaterialStep, prepareFactoryMaterialStep } from "../material/reservations";
++import { canonicalJson, canonicalSignature } from "../../resources/serialization";
++
++export type ProductionCommand = ProductionStart | Readonly<{
++  kind: "manual-work" | "manual-finish"; commandId: string; jobId: string; actorId: string;
++}>;
++export type ProductionStatus = "IDLE" | "RUNNING" | "WAIT_INPUT" | "WAIT_POWER" | "WAIT_OUTPUT" | "WAIT_WASTE" | "FAULT" | "COMPLETED" | "LAID_OUT" | "ASSEMBLED";
++export interface ProductionJob {
++  readonly start: ProductionStart;
++  readonly recipeRef: MaterialRecipeRef;
++  readonly recipeCanonicalJson: string;
++  readonly processCanonicalJson: string;
++  readonly installationCanonicalJson: string;
++  readonly reservationId: string;
++  readonly beginReceiptCanonicalJson: string;
++  readonly workMilliJoule: string;
++  readonly phase: "RUNNING" | "LAID_OUT" | "ASSEMBLED" | "COMPLETED";
++  readonly manualWorkReceiptId: string | null;
++  readonly completionReceiptId: string | null;
++}
++export interface ProductionCommandReceipt {
++  readonly commandId: string; readonly jobId: string; readonly commandCanonicalJson: string;
++  readonly tickEndUs: string; readonly kind: ProductionCommand["kind"] | "electric-finish";
++  readonly materialTransactionId: string | null;
++}
++export interface ProductionInputBinding {
++  readonly authorityCanonicalJson: string;
++  readonly materialCanonicalJson: string;
++}
++export interface ProductionAdoptedPayload {
++  readonly proposalCanonicalJson: string;
++  readonly inputBinding: ProductionInputBinding;
++  readonly nextStateCoreCanonicalJson: string;
++  readonly materialCanonicalJson: string;
++  readonly materialPlansCanonicalJson: string;
++}
++export interface ProductionReplayReceipt {
++  readonly inputBinding: ProductionInputBinding;
++  readonly resultCoreCanonicalJson: string;
++  readonly adoptedPayload: ProductionAdoptedPayload;
++}
++export interface ProductionState {
++  readonly version: "fp06-production-state-v1";
++  readonly machineInstanceId: string;
++  readonly binding: FactoryPowerBinding;
++  readonly revision: number;
++  readonly tickEndUs: string;
++  readonly status: ProductionStatus;
++  readonly job: ProductionJob | null;
++  readonly commandReceipts: readonly ProductionCommandReceipt[];
++  readonly lastStep: ProductionReplayReceipt | null;
++}
++export interface ProductionStepInput {
++  readonly confirmed: boolean; readonly binding: FactoryPowerBinding;
++  readonly tickStartUs: string; readonly tickEndUs: string;
++  readonly material: MaterialView; readonly facts: ProductionHostFacts;
++  readonly power: FactoryPowerSuccess | null;
++  readonly command?: ProductionCommand;
++}
++export type ProductionProposal = Readonly<{
++  status: "Prepared"; baseStateCanonicalJson: string; inputBinding: ProductionInputBinding;
++  nextState: ProductionState; material: MaterialView; materialPlans: readonly MaterialPlan[];
++  workMilliJoule: string;
++}> | Readonly<{ status: "Rejected"; reason: string }>;
++export type ProductionCommit = Readonly<{
++  status: "Committed" | "NoOp"; state: ProductionState; material: MaterialView;
++}> | Readonly<{ status: "Rejected"; reason: string; state: ProductionState; material: MaterialView }>;
++
++export const FACTORY_PRODUCTION_POLICY = Object.freeze({ version: "fp06-constant-cold-process-v1", intervalUs: "100000",
++  manualSequence: "manual-brace-sequence-v1", receiptRepresentation: "closed-canonical-segments-v1",
++  sourceRefs: ["FP02:5", "FP02:7:B05", "FP02:7:B06", "FP02:7:B07", "FP02:12", "FP01:6"] });
++const integer = (value: string): bigint => {
++  if (typeof value !== "string" || !/^(0|[1-9][0-9]{0,18})$/.test(value) || BigInt(value) > 9_223_372_036_854_775_807n) throw Error("InvalidProductionInteger");
++  return BigInt(value);
++};
++const freeze = <T>(value: T): T => {
++  if (value && typeof value === "object" && !Object.isFrozen(value)) { Object.values(value).forEach(freeze); Object.freeze(value); } return value;
++};
++const checkedInputBindings = new WeakSet<ProductionInputBinding>();
++const checkedPayloads = new WeakSet<ProductionAdoptedPayload>();
++const exactKeys = (value: object, expected: readonly string[]): void => {
++  const keys = Reflect.ownKeys(value);
++  if (keys.length !== expected.length || keys.some(k => typeof k !== "string" || !expected.includes(k))) throw Error("ProductionReceiptKeysMismatch");
++};
++const validateCanonicalBytes = (bytes: string): void => {
++  if (typeof bytes !== "string" || canonicalJson(JSON.parse(bytes)) !== bytes) throw Error("ProductionReceiptBytesMismatch");
++};
++const validateInputBinding = (binding: ProductionInputBinding): void => {
++  if (checkedInputBindings.has(binding)) return;
++  exactKeys(binding, ["authorityCanonicalJson", "materialCanonicalJson"]);
++  validateCanonicalBytes(binding.authorityCanonicalJson); validateCanonicalBytes(binding.materialCanonicalJson);
++  if (isImmutableProductionData(binding)) checkedInputBindings.add(binding);
++};
++const inputBytes = (input: ProductionStepInput): ProductionInputBinding => {
++  const { material, ...current } = input;
++  const binding = freeze({ authorityCanonicalJson: canonicalJson(current), materialCanonicalJson: productionMaterialCanonicalJson(material) });
++  // These two complete strings just came from the canonical serializer and
++  // validated native snapshots. Re-parsing our own immutable output adds no
++  // admission evidence. External records take validateInputBinding instead.
++  if (isImmutableProductionData(binding)) checkedInputBindings.add(binding); return binding;
++};
++const sameInputBinding = (a: ProductionInputBinding, b: ProductionInputBinding): boolean => {
++  validateInputBinding(a); validateInputBinding(b);
++  return a.authorityCanonicalJson === b.authorityCanonicalJson && a.materialCanonicalJson === b.materialCanonicalJson;
++};
++const validatePayload = (payload: ProductionAdoptedPayload): void => {
++  if (checkedPayloads.has(payload)) return;
++  exactKeys(payload, ["proposalCanonicalJson", "inputBinding", "nextStateCoreCanonicalJson", "materialCanonicalJson", "materialPlansCanonicalJson"]);
++  validateInputBinding(payload.inputBinding);
++  for (const bytes of [payload.proposalCanonicalJson, payload.nextStateCoreCanonicalJson, payload.materialCanonicalJson, payload.materialPlansCanonicalJson]) validateCanonicalBytes(bytes);
++  if (isImmutableProductionData(payload)) checkedPayloads.add(payload);
++};
++const samePayload = (a: ProductionAdoptedPayload, b: ProductionAdoptedPayload): boolean => {
++  validatePayload(a); validatePayload(b);
++  return a.proposalCanonicalJson === b.proposalCanonicalJson && sameInputBinding(a.inputBinding, b.inputBinding)
++    && a.nextStateCoreCanonicalJson === b.nextStateCoreCanonicalJson && a.materialCanonicalJson === b.materialCanonicalJson
++    && a.materialPlansCanonicalJson === b.materialPlansCanonicalJson;
++};
++const sameReplay = (a: ProductionReplayReceipt | null, b: ProductionReplayReceipt | null): boolean => {
++  if (!a || !b) return a === b;
++  exactKeys(a, ["inputBinding", "resultCoreCanonicalJson", "adoptedPayload"]); exactKeys(b, ["inputBinding", "resultCoreCanonicalJson", "adoptedPayload"]);
++  return a.resultCoreCanonicalJson === b.resultCoreCanonicalJson && sameInputBinding(a.inputBinding, b.inputBinding) && samePayload(a.adoptedPayload, b.adoptedPayload);
++};
++const stateCore = (state: ProductionState) => { const { lastStep: _lastStep, ...core } = state; return canonicalJson(core); };
++const bindingCore = (binding: FactoryPowerBinding) => canonicalJson({ sessionId: binding.sessionId, epoch: binding.epoch,
++  catalogDigest: binding.catalogDigest, sourceProfileDigest: binding.sourceProfileDigest });
++const reason = (error: unknown) => error instanceof Error ? error.message : "ProductionRejected";
++const waiting = (value: string): value is "WAIT_INPUT" | "WAIT_OUTPUT" | "WAIT_WASTE" => ["WAIT_INPUT", "WAIT_OUTPUT", "WAIT_WASTE"].includes(value);
++const commandReceipt = (input: ProductionStepInput, command: ProductionCommand, materialTransactionId: string | null): ProductionCommandReceipt => ({
++  commandId: command.commandId, jobId: command.jobId, commandCanonicalJson: canonicalJson(command), tickEndUs: input.tickEndUs, kind: command.kind, materialTransactionId
++});
++const checkedStates = new WeakSet<ProductionState>();
++const validateState = (state: ProductionState): void => {
++  if (checkedStates.has(state)) return;
++  if (state.version !== "fp06-production-state-v1") throw Error("ProductionStateVersionMismatch");
++  if (!["IDLE", "RUNNING", "WAIT_INPUT", "WAIT_POWER", "WAIT_OUTPUT", "WAIT_WASTE", "FAULT", "COMPLETED", "LAID_OUT", "ASSEMBLED"].includes(state.status)) throw Error("ProductionStatusMismatch");
++  productionId(state.machineInstanceId); productionRevision(state.revision);
++  if (integer(state.tickEndUs) % 100_000n !== 0n) throw Error("ProductionClockMismatch");
++  productionId(state.binding.sessionId); productionRevision(state.binding.epoch); productionRevision(state.binding.netRevision);
++  const ids = new Set<string>();
++  for (const receipt of state.commandReceipts) {
++    productionId(receipt.commandId); productionId(receipt.jobId);
++    const command = JSON.parse(receipt.commandCanonicalJson);
++    if (ids.has(receipt.commandId) || canonicalJson(JSON.parse(receipt.commandCanonicalJson)) !== receipt.commandCanonicalJson
++      || integer(receipt.tickEndUs) > integer(state.tickEndUs) || integer(receipt.tickEndUs) % 100_000n !== 0n
++      || command.jobId !== receipt.jobId || command.kind !== receipt.kind
++      || (receipt.kind !== "electric-finish" && command.commandId !== receipt.commandId)) throw Error("ProductionReceiptMismatch");
++    ids.add(receipt.commandId);
++  }
++  if (state.job) {
++    integer(state.job.workMilliJoule); productionId(state.job.reservationId);
++    if (!["RUNNING", "LAID_OUT", "ASSEMBLED", "COMPLETED"].includes(state.job.phase)
++      || (state.job.start.processKind === "manual" && (state.job.workMilliJoule !== "0" || state.job.phase === "RUNNING"))
++      || (state.job.start.processKind === "electric" && (state.job.phase === "LAID_OUT" || state.job.phase === "ASSEMBLED" || state.job.manualWorkReceiptId !== null))) throw Error("ProductionPhaseMismatch");
++    if (canonicalJson(state.job.recipeRef) !== canonicalJson(state.job.start.recipeRef)
++      || !state.commandReceipts.some(r => r.commandId === state.job!.start.commandId && r.commandCanonicalJson === canonicalJson(state.job!.start))) throw Error("ProductionJobBindingMismatch");
++    if (state.job.phase === "ASSEMBLED" && !state.commandReceipts.some(r => r.kind === "manual-work" && r.commandId === state.job!.manualWorkReceiptId && r.jobId === state.job!.start.jobId)) throw Error("ProductionManualReceiptMissing");
++    if (state.job.phase === "COMPLETED" && !state.commandReceipts.some(r => r.commandId === state.job!.completionReceiptId && r.jobId === state.job!.start.jobId)) throw Error("ProductionCompletionReceiptMissing");
++  }
++  if (state.lastStep) {
++    exactKeys(state.lastStep, ["inputBinding", "resultCoreCanonicalJson", "adoptedPayload"]);
++    const payload = state.lastStep.adoptedPayload, core = stateCore(state); validatePayload(payload);
++    if (state.lastStep.resultCoreCanonicalJson !== core || payload.nextStateCoreCanonicalJson !== core
++      || !sameInputBinding(payload.inputBinding, state.lastStep.inputBinding)) throw Error("ProductionReplayReceiptMismatch");
++  }
++  if (isImmutableProductionData(state)) checkedStates.add(state);
++};
++const validateInterval = (state: ProductionState, input: Omit<ProductionStepInput, "power">): void => {
++  validateState(state);
++  if (input.confirmed !== true || input.facts.confirmed !== true || bindingCore(input.binding) !== bindingCore(state.binding)
++    || input.binding.netRevision < state.binding.netRevision || canonicalJson(input.facts.binding) !== canonicalJson(input.binding)
++    || input.facts.installation.instanceId !== state.machineInstanceId || input.facts.tickEndUs !== input.tickEndUs
++    || input.binding.catalogDigest !== input.material.catalog.catalogDigest) throw Error("ProductionHostBindingMismatch");
++  productionRevision(input.binding.netRevision);
++  const start = integer(input.tickStartUs), end = integer(input.tickEndUs);
++  if (start !== integer(state.tickEndUs) || end - start !== 100_000n) throw Error("ProductionClockMismatch");
++};
++const validateJobMaterial = (job: ProductionJob, input: ProductionStepInput): void => {
++  const view = input.material, machine = input.facts.installation;
++  const reservation = view.reservations.find(r => r.reservationId === job.reservationId);
++  const recipe = view.catalog.recipes.find(r => r.sourceId === job.recipeRef.sourceId)!;
++  if (!reservation || reservation.ownerId !== job.start.ownerId || reservation.wipContainerId !== machine.wipContainerId
++    || canonicalJson(reservation.recipeRef) !== canonicalJson(job.recipeRef) || reservation.recipeCanonicalJson !== job.recipeCanonicalJson
++    || canonicalJson(reservation.outputs) !== canonicalJson(productionOutputs(input.facts, job.start, recipe))
++    || !view.receipts.some(r => canonicalJson(r) === job.beginReceiptCanonicalJson)) throw Error("ProductionWipBindingMismatch");
++  const wip = productionContainer(view, machine.wipContainerId);
++  const actual = wip.state.contents.map(s => ({ itemId: view.catalog.items.find(i => i.resourceId === s.resourceId)!.sourceId, quantityUnits: s.quantity }));
++  const sorted = (terms: typeof actual) => canonicalJson([...terms].sort((a, b) => a.itemId < b.itemId ? -1 : 1));
++  if (sorted(actual) !== sorted([...recipe.inputs]) || wip.state.contents.some((s, i) => s.stackId !== `${job.start.jobId}_input_${i}`)) throw Error("ProductionWipBindingMismatch");
++};
++const selectedStart = (state: ProductionState, input: Omit<ProductionStepInput, "power">): ProductionStart | null => {
++  if (input.command?.kind === "start") {
++    const receipt = state.commandReceipts.find(r => r.commandId === input.command!.commandId);
++    if (receipt) { if (receipt.commandCanonicalJson !== canonicalJson(input.command)) throw Error("ProductionIdempotencyConflict"); return null; }
++    if (state.job && state.job.phase !== "COMPLETED") throw Error("ProductionJobOccupied");
++    if (state.commandReceipts.some(r => r.jobId === input.command!.jobId)) throw Error("ProductionJobIdReused");
++    if (state.job && input.command.batchOrdinal !== state.job.start.batchOrdinal + 1) throw Error("ProductionBatchOrdinalMismatch");
++    return input.command;
++  }
++  return state.job?.phase !== "COMPLETED" ? state.job?.start ?? null : null;
++};
++/** Host calls this before W03 so blocked machines request zero power. Admission
++ * does not reserve material, produce work, or mutate the electrical authority. */
++export const readFactoryProductionRequest = (state: ProductionState, input: Omit<ProductionStepInput, "power">): FactoryPowerRequest => {
++  let watts = 0, enabled = false;
++  try {
++    validateInterval(state, input);
++    const start = selectedStart(state, input);
++    if (start) {
++      const admission = admitFactoryRecipe(input.material, input.facts, start, state.job?.phase !== "COMPLETED" && !!state.job);
++      if (admission.ok && admission.process.kind === "electric") {
++        watts = admission.process.powerWatts;
++        enabled = !state.job || state.job.phase === "COMPLETED" || integer(state.job.workMilliJoule) < BigInt(admission.process.workJ) * 1_000n;
++      }
++    }
++  } catch { /* Host request is disabled; the production evaluator supplies the rejection. */ }
++  return { consumerId: input.facts.installation.powerConsumerId, deviceInstanceId: state.machineInstanceId,
++    jobId: input.command?.jobId ?? state.job?.start.jobId ?? "idle_job", portId: input.facts.installation.powerPortId,
++    priority: "P2", requiredMilliWatt: String(watts * 1_000), enabled };
++};
++const allocatedWork = (state: ProductionState, input: ProductionStepInput): bigint => {
++  const demand = readFactoryProductionRequest(state, input), power = input.power;
++  if (!power) { if (demand.enabled) throw Error("ProductionPowerReceiptMissing"); return 0n; }
++  const { canonicalJson: bytes, digest, ...body } = power;
++  if (canonicalJson(body) !== bytes || canonicalSignature(body) !== digest || canonicalJson(power.binding) !== canonicalJson(input.binding)
++    || power.tickStartUs !== input.tickStartUs || power.tickEndUs !== input.tickEndUs || power.nextState.tickEndUs !== input.tickEndUs
++    || canonicalJson(power.nextState.binding) !== canonicalJson(input.binding)) throw Error("ProductionPowerReceiptMismatch");
++  const grants = power.grants.filter(g => g.consumerId === demand.consumerId);
++  // A manual bench has no electrical In-port. The shared allocator may omit
++  // any disabled consumer; its complete current receipt still binds this step.
++  if (grants.length === 0 && !demand.enabled) return 0n;
++  if (grants.length !== 1) throw Error("ProductionPowerGrantMissing");
++  const grant = grants[0]!;
++  if (grant.deviceInstanceId !== state.machineInstanceId || grant.jobId !== demand.jobId || grant.portId !== demand.portId
++    || grant.requiredMilliWatt !== (demand.enabled ? demand.requiredMilliWatt : "0")) throw Error("ProductionPowerGrantMismatch");
++  const allocated = integer(grant.allocatedMilliWatt), n = integer(grant.work.n), d = integer(grant.work.d);
++  if (d === 0n || n * 1_000_000n !== allocated * 100_000n * d || (allocated !== 0n && (!demand.enabled || grant.status !== "Powered" || allocated !== integer(demand.requiredMilliWatt)))
++    || (allocated === 0n && grant.status === "Powered") || n % d !== 0n) throw Error("ProductionPowerWorkMismatch");
++  return n / d;
++};
++export const createFactoryProductionState = (machineInstanceId: string, binding: FactoryPowerBinding, tickEndUs = "0"): ProductionState => {
++  const state: ProductionState = { version: "fp06-production-state-v1", machineInstanceId, binding, revision: 0, tickEndUs,
++    status: "IDLE", job: null, commandReceipts: [], lastStep: null };
++  validateState(state); return freeze(state);
++};
++/** Pure proposed pair. Only the common Host may atomically adopt Material,
++ * Production and the actual W03 interval receipt at its World CAS boundary. */
++export const stepFactoryProduction = (state: ProductionState, input: ProductionStepInput): ProductionProposal => {
++  try {
++    validateInterval(state, input);
++    // lastStep is a derived replay record, excluded from the complete authority
++    // core so adopting the next record does not recursively embed all history.
++    const initialInputBytes = inputBytes(input), baseStateCanonicalJson = stateCore(state);
++    const selected = selectedStart(state, input);
++    let command = input.command;
++    if (command && command.kind !== "start") {
++      productionId(command.commandId);
++      const commandId = command.commandId;
++      const old = state.commandReceipts.find(r => r.commandId === commandId);
++      if (old && old.commandCanonicalJson !== canonicalJson(command)) throw Error("ProductionIdempotencyConflict");
++      if (old) command = undefined;
++      else if (!state.job || command.jobId !== state.job.start.jobId || command.actorId !== state.job.start.actorId || state.job.start.processKind !== "manual") throw Error("ProductionManualCommandMismatch");
++    }
++    let material = input.material, job = state.job, status = state.status;
++    let commandReceipts = [...state.commandReceipts], work = 0n;
++    const materialPlans: MaterialPlan[] = [];
++    const adoptMaterial = (plan: MaterialPlan): void => {
++      const committed = commitFactoryMaterialStep(material, plan);
++      if (committed.status !== "Committed") throw Error(committed.status === "Rejected" ? committed.reason : "ProductionHistoricalMaterialReceipt");
++      materialPlans.push(plan); material = committed.view;
++    };
++    const passiveManual = !!job && job.start.processKind === "manual" && job.phase !== "COMPLETED" && !command;
++    let admission = selected && !passiveManual ? admitFactoryRecipe(material, input.facts, selected, !!job && job.phase !== "COMPLETED") : null;
++    if (admission && !admission.ok && !waiting(admission.reason)) throw Error(admission.reason);
++    const actualWork = allocatedWork(state, input);
++    // Walking away is not a failed world clock and cannot perform montage.
++    // Existing native WIP/recipe bindings remain checked; fresh interaction,
++    // service and tool admission is required on each active manual command.
++    if (passiveManual) { validateJobMaterial(job!, input); if (actualWork !== 0n) throw Error("ProductionManualPowerMismatch"); }
++    if (admission && !admission.ok) status = admission.reason as ProductionStatus;
++    else if (selected && admission?.ok) {
++      if (job && job.phase !== "COMPLETED") {
++        if (job.installationCanonicalJson !== canonicalJson(input.facts.installation) || job.recipeCanonicalJson !== canonicalJson(admission.recipe)
++          || job.processCanonicalJson !== canonicalJson(admission.process)) throw Error("ProductionActiveBindingMismatch");
++        validateJobMaterial(job, input);
++      } else if (admission.process.kind === "electric" && actualWork === 0n) status = "WAIT_POWER";
++      else {
++        const reserveId = `${selected.jobId}_reserve`, outputs = productionOutputs(input.facts, selected, admission.recipe);
++        const plan = prepareFactoryMaterialStep(material, { kind: "reserve", transactionId: reserveId, ownerId: selected.ownerId, actorId: selected.actorId,
++          ...(selected.missionId === undefined ? {} : { missionId: selected.missionId }), reservationId: `${selected.jobId}_reservation`, wipContainerId: input.facts.installation.wipContainerId,
++          recipeRef: selected.recipeRef, moves: admission.recipe.inputs.map((term, i) => {
++            const source = selected.sourceLots.find(s => s.itemId === term.itemId)!;
++            return { ...term, sourceContainerId: source.containerId, sourceStackId: source.stackId, targetContainerId: input.facts.installation.wipContainerId, targetStackId: `${selected.jobId}_input_${i}` };
++          }), outputs });
++        if (plan.status !== "Prepared") throw Error(plan.reason);
++        adoptMaterial(plan);
++        job = { start: selected, recipeRef: selected.recipeRef, recipeCanonicalJson: canonicalJson(admission.recipe), processCanonicalJson: canonicalJson(admission.process),
++          installationCanonicalJson: canonicalJson(input.facts.installation), reservationId: `${selected.jobId}_reservation`, beginReceiptCanonicalJson: canonicalJson(material.receipts.at(-1)),
++          workMilliJoule: "0", phase: admission.process.kind === "manual" ? "LAID_OUT" : "RUNNING", manualWorkReceiptId: null, completionReceiptId: null };
++        commandReceipts.push(commandReceipt(input, selected, reserveId));
++      }
++      if (job && job.phase !== "COMPLETED") {
++        if (admission.process.kind === "electric") {
++          const target = BigInt(admission.process.workJ) * 1_000n;
++          const before = integer(job.workMilliJoule);
++          if (before > target || before + actualWork > target) throw Error("ProductionWorkOversupply");
++          work = actualWork; job = { ...job, workMilliJoule: String(before + work) }; status = work > 0n ? "RUNNING" : "WAIT_POWER";
++        } else {
++          const old = command && commandReceipts.find(r => r.commandId === command.commandId);
++          if (command?.kind === "manual-work" && !old) {
++            if (job.phase !== "LAID_OUT") throw Error("ProductionManualPhaseMismatch");
++            job = { ...job, phase: "ASSEMBLED", manualWorkReceiptId: command.commandId };
++            commandReceipts.push(commandReceipt(input, command, null));
++          }
++          if (command?.kind === "manual-finish" && !old && job.phase !== "ASSEMBLED") throw Error("ProductionManualPhaseMismatch");
++          status = job.phase === "ASSEMBLED" ? "ASSEMBLED" : "LAID_OUT";
++        }
++        const complete = admission.process.kind === "electric" ? integer(job.workMilliJoule) === BigInt(admission.process.workJ) * 1_000n
++          : command?.kind === "manual-finish" && job.phase === "ASSEMBLED";
++        if (complete) {
++          const finishId = `${job.start.jobId}_finish`;
++          const plan = prepareFactoryMaterialStep(material, { kind: "finish-recipe", transactionId: finishId, ownerId: job.start.ownerId, actorId: job.start.actorId,
++            ...(job.start.missionId === undefined ? {} : { missionId: job.start.missionId }), reservationId: job.reservationId });
++          if (plan.status !== "Prepared") { status = "WAIT_OUTPUT"; }
++          else {
++            adoptMaterial(plan);
++            const completionId = admission.process.kind === "manual" ? command!.commandId : finishId;
++            const completion: ProductionCommandReceipt = admission.process.kind === "manual" ? commandReceipt(input, command!, finishId)
++              : { commandId: completionId, jobId: job.start.jobId, commandCanonicalJson: canonicalJson({ kind: "electric-finish", jobId: job.start.jobId, recipeRef: job.recipeRef,
++                reservationId: job.reservationId, workMilliJoule: job.workMilliJoule }), tickEndUs: input.tickEndUs, kind: "electric-finish", materialTransactionId: finishId };
++            commandReceipts.push(completion); job = { ...job, phase: "COMPLETED", completionReceiptId: completionId }; status = "COMPLETED";
++          }
++        }
++      }
++    }
++    const core: ProductionState = { ...state, binding: input.binding, revision: state.revision + 1, tickEndUs: input.tickEndUs, status, job, commandReceipts, lastStep: null };
++    productionRevision(core.revision);
++    const prepared = { status: "Prepared" as const, baseStateCanonicalJson, inputBinding: initialInputBytes, nextState: core, material, materialPlans, workMilliJoule: String(work) };
++    const payload = proposalBytes(prepared);
++    const nextState = freeze({ ...core, lastStep: { inputBinding: initialInputBytes, resultCoreCanonicalJson: stateCore(core), adoptedPayload: payload } });
++    validateState(nextState);
++    const result = freeze({ ...prepared, nextState });
++    if (isImmutableProductionData(result)) checkedProposals.set(result, payload);
++    return result;
++  } catch (error) { return { status: "Rejected", reason: reason(error) }; }
++};
++const checkedProposals = new WeakMap<Extract<ProductionProposal, { status: "Prepared" }>, ProductionAdoptedPayload>();
++const proposalBytes = (proposal: Extract<ProductionProposal, { status: "Prepared" }>): ProductionAdoptedPayload => {
++  const cached = checkedProposals.get(proposal); if (cached) return cached;
++  const { inputBinding, nextState, material, materialPlans, ...current } = proposal;
++  validateInputBinding(inputBinding);
++  const payload = freeze({ proposalCanonicalJson: canonicalJson(current), inputBinding, nextStateCoreCanonicalJson: stateCore(nextState),
++    materialCanonicalJson: productionMaterialCanonicalJson(material),
++    materialPlansCanonicalJson: canonicalJson(materialPlans.map(plan => { const { candidate, ...planData } = plan;
++      return { ...planData, candidateCanonicalJson: productionMaterialCanonicalJson(candidate) }; })) });
++  if (isImmutableProductionData(payload)) checkedPayloads.add(payload); return payload;
++};
++export const commitFactoryProductionStep = (state: ProductionState, input: ProductionStepInput, proposal: ProductionProposal): ProductionCommit => {
++  try {
++    if (proposal.status !== "Prepared") throw Error(proposal.reason);
++    validateState(state);
++    if (state.lastStep && sameInputBinding(state.lastStep.inputBinding, proposal.inputBinding)
++      && stateCore(state) === stateCore(proposal.nextState) && sameReplay(state.lastStep, proposal.nextState.lastStep)) {
++      const original = JSON.parse(state.lastStep.inputBinding.authorityCanonicalJson);
++      const { material: _currentMaterial, ...current } = input;
++      if (canonicalJson(original) !== canonicalJson(current) || !samePayload(proposalBytes(proposal), state.lastStep.adoptedPayload)) throw Error("ProductionReplayMismatch");
++      if (productionMaterialCanonicalJson(input.material) !== productionMaterialCanonicalJson(proposal.material)) throw Error("ProductionReplayMaterialMismatch");
++      return { status: "NoOp", state, material: input.material };
++    }
++    if (stateCore(state) !== proposal.baseStateCanonicalJson || !sameInputBinding(inputBytes(input), proposal.inputBinding)) throw Error("StaleProductionProposal");
++    const verified = stepFactoryProduction(state, input);
++    if (verified.status !== "Prepared") throw Error(verified.reason);
++    if (!samePayload(proposalBytes(verified), proposalBytes(proposal))
++      || !sameReplay(verified.nextState.lastStep, proposal.nextState.lastStep)) throw Error("ForgedProductionProposal");
++    return { status: "Committed", state: verified.nextState, material: verified.material };
++  } catch (error) { return { status: "Rejected", state, material: input.material, reason: reason(error) }; }
++};
+diff --git a/apps/weltraum-browser/src/factory/production/recipeAdmission.ts b/apps/weltraum-browser/src/factory/production/recipeAdmission.ts
+new file mode 100644
+index 00000000..ac80a56d
+--- /dev/null
++++ b/apps/weltraum-browser/src/factory/production/recipeAdmission.ts
+@@ -0,0 +1,188 @@
++import type { FactoryCatalog, FactoryProcess, FactoryRecipe } from "../contracts";
++import type { MaterialRecipeRef, MaterialView } from "../material/reservations";
++import type { FactoryPowerBinding } from "../power/factoryPower";
++import { assertMaterialSnapshots, assertExactContainerCapacity } from "../material/resourcesAdapter";
++import { loadFactoryCatalog } from "../catalog/fp02Catalog";
++import { canonicalJson } from "../../resources/serialization";
++import { isSaveSafeResourceId } from "../../resources/ids";
++import { exactScaledLimit } from "../material/quantity";
++
++export interface ProductionInstallation {
++  readonly instanceId: string;
++  readonly definitionRef: MaterialRecipeRef;
++  readonly installationRevision: number;
++  readonly confirmed: boolean;
++  readonly supported: boolean;
++  readonly serviceClear: boolean;
++  readonly installedContainerId: string;
++  readonly inputContainerId: string;
++  readonly outputContainerId: string;
++  readonly offcutContainerId: string;
++  readonly wipContainerId: string;
++  readonly powerConsumerId: string;
++  readonly powerPortId: string;
++  readonly tool: Readonly<{ partId: string; sourceItemId: string; revision: number; condition: "OK" | "damaged" }>;
++}
++/** Facts originate in the confirmed native Host, never the camera or UI. */
++export interface ProductionHostFacts {
++  readonly version: "fp06-production-host-facts-v1";
++  readonly binding: FactoryPowerBinding;
++  readonly confirmed: boolean;
++  readonly tickEndUs: string;
++  readonly installation: ProductionInstallation;
++  readonly interaction: Readonly<{
++    actorId: string;
++    actorRevision: number;
++    confirmed: boolean;
++    serviceReachable: boolean;
++    accessibleContainers: readonly Readonly<{ containerId: string; revision: number }>[];
++  }> | null;
++}
++export interface ProductionStart {
++  readonly kind: "start";
++  readonly commandId: string;
++  readonly jobId: string;
++  readonly batchOrdinal: number;
++  readonly ownerId: string;
++  readonly actorId: string;
++  readonly missionId?: string;
++  readonly recipeRef: MaterialRecipeRef;
++  readonly processKind: "electric" | "manual";
++  readonly sourceLots: readonly Readonly<{ itemId: string; containerId: string; stackId: string }>[];
++}
++export type ProductionRecipeAdmission = Readonly<{ ok: true; recipe: FactoryRecipe; process: FactoryProcess }>
++  | Readonly<{ ok: false; reason: string }>;
++
++export const productionId = (id: string): void => { if (!isSaveSafeResourceId(id)) throw Error("InvalidProductionId"); };
++export const productionRevision = (value: number): void => {
++  if (!Number.isSafeInteger(value) || value < 0) throw Error("InvalidProductionRevision");
++};
++export const productionContainer = (view: MaterialView, id: string) => {
++  productionId(id); const found = view.containers.find(c => c.state.containerId === id);
++  if (!found) throw Error("ProductionContainerMissing"); return found;
++};
++export const productionOutputs = (facts: ProductionHostFacts, start: ProductionStart, recipe: FactoryRecipe) => recipe.outputs.map((term, i) => ({
++  ...term, targetContainerId: term.itemId === "fp02.bulk.steel_offcut" ? facts.installation.offcutContainerId : facts.installation.outputContainerId,
++  stackId: `${start.jobId}_output_${i}`
++}));
++// Derived validation caches retain no quantities or authoritative state. Only
++// recursively immutable source objects qualify; mutable caller data is rechecked.
++const immutable = new WeakSet<object>();
++export const isImmutableProductionData = (value: unknown): boolean => {
++  if (!value || typeof value !== "object") return true;
++  if (immutable.has(value)) return true;
++  if (!Object.isFrozen(value)) return false;
++  const prototype = Object.getPrototypeOf(value);
++  if (Array.isArray(value) ? prototype !== Array.prototype : prototype !== Object.prototype && prototype !== null) return false;
++  // Frozen accessors may still read mutable external data. Cache data-only
++  // records/arrays, never a getter's current observation.
++  const descriptors = Object.getOwnPropertyDescriptors(value);
++  if (Reflect.ownKeys(descriptors).some(k => typeof k !== "string")
++    || !Object.values(descriptors).every(d => "value" in d && isImmutableProductionData(d.value))) return false;
++  immutable.add(value); return true;
++};
++const checkedCatalogs = new WeakMap<FactoryCatalog, FactoryCatalog>();
++const checkedMaterials = new WeakSet<MaterialView>();
++const validateMaterial = (material: MaterialView): FactoryCatalog => {
++  const catalog = material.catalog;
++  let checked = checkedCatalogs.get(catalog);
++  if (!checked) {
++    checked = loadFactoryCatalog(JSON.parse(catalog.canonicalJson));
++    const { resources: _resources, canonicalJson: _json, catalogDigest: _digest, ...data } = catalog;
++    if (canonicalJson(data) !== catalog.canonicalJson || catalog.catalogDigest !== checked.catalogDigest
++      || canonicalJson(catalog.resources) !== canonicalJson(checked.resources)) throw Error("ProductionCatalogMismatch");
++    if (isImmutableProductionData(catalog)) checkedCatalogs.set(catalog, checked);
++  }
++  if (!checkedMaterials.has(material)) {
++    assertMaterialSnapshots(catalog, material.containers);
++    if (isImmutableProductionData(material)) checkedMaterials.add(material);
++  }
++  return checked;
++};
++const materialBytes = new WeakMap<MaterialView, string>();
++/** Complete native quantities, source and receipt bytes, not a digest or a
++ * second inventory. A WeakMap reuses only a recursively immutable, validated
++ * snapshot; mutable caller data always runs validation and serialization. */
++export const productionMaterialCanonicalJson = (material: MaterialView): string => {
++  validateMaterial(material);
++  const cached = materialBytes.get(material);
++  if (cached !== undefined) return cached;
++  const bytes = canonicalJson({ ...material, containers: material.containers.map(c => ({ definition: c.definition, state: c.state })) });
++  if (isImmutableProductionData(material)) materialBytes.set(material, bytes);
++  return bytes;
++};
++
++/** Validate current native material and source-bound machine facts. These are
++ * admission calculations only. The Host owns provenance of the native facts. */
++export const admitFactoryRecipe = (material: MaterialView, facts: ProductionHostFacts, start: ProductionStart, active = false): ProductionRecipeAdmission => {
++  try {
++    const catalog = material.catalog, machine = facts.installation;
++    const checked = validateMaterial(material);
++    if (facts.binding.catalogDigest !== catalog.catalogDigest) throw Error("ProductionCatalogMismatch");
++    productionRevision(material.revision);
++    productionId(start.commandId); productionId(start.jobId); productionId(start.ownerId); productionId(start.actorId);
++    if (start.missionId !== undefined) productionId(start.missionId);
++    productionRevision(start.batchOrdinal); productionRevision(machine.installationRevision); productionRevision(machine.tool.revision);
++    productionId(machine.instanceId); productionId(machine.tool.partId); productionId(machine.powerConsumerId); productionId(machine.powerPortId);
++    if (facts.version !== "fp06-production-host-facts-v1" || facts.confirmed !== true || machine.confirmed !== true
++      || machine.supported !== true || machine.serviceClear !== true || machine.installationRevision < 1 || machine.tool.condition !== "OK") throw Error("ProductionMachineUnavailable");
++    const recipe = checked.recipes.find(r => r.sourceId === start.recipeRef.sourceId);
++    const device = checked.devices.find(d => d.sourceId === machine.definitionRef.sourceId);
++    if (!recipe || recipe.version !== start.recipeRef.version || recipe.digest !== start.recipeRef.digest) throw Error("ProductionRecipeMismatch");
++    if (!device || device.version !== machine.definitionRef.version || device.digest !== machine.definitionRef.digest) throw Error("ProductionDeviceMismatch");
++    const process = recipe.processes.find(p => p.kind === start.processKind && p.availability === "first-dry-loop" && device.capabilities.includes(p.capability));
++    if (!process || (process.kind === "electric" && !["REC-01-CUT", "REC-02-PROFILE", "REC-03-SHEET"].includes(recipe.sourceId))
++      || (process.kind === "manual" && (recipe.sourceId !== "REC-05-BRACE" || device.sourceId !== "B05"))) throw Error("ProductionProcessUnavailable");
++    const requiredTool = device.sourceId === "B06" ? "fp02.tool.cutter_head" : device.sourceId === "B07" ? "fp02.tool.forming_die" : "fp02.device.field_workbench";
++    if (machine.tool.sourceItemId !== requiredTool) throw Error("ProductionToolMismatch");
++    if (process.kind === "electric") {
++      if (!Number.isSafeInteger(process.durationMs) || process.durationMs! <= 0 || process.durationMs! % 100 !== 0
++        || !Number.isSafeInteger(process.powerWatts) || process.powerWatts <= 0 || !Number.isSafeInteger(process.workJ)
++        || BigInt(process.durationMs!) * BigInt(process.powerWatts) !== BigInt(process.workJ) * 1_000n) throw Error("ProductionProcessArithmetic");
++    } else if (process.durationMs !== null || process.powerWatts !== 0 || process.workJ !== 0) throw Error("ProductionManualProfileMismatch");
++    const ids = [machine.installedContainerId, machine.inputContainerId, machine.outputContainerId, machine.offcutContainerId, machine.wipContainerId];
++    if (new Set(ids).size !== ids.length) throw Error("ProductionContainerRoleMismatch");
++    for (const id of ids) productionContainer(material, id);
++    const paid = productionContainer(material, machine.installedContainerId);
++    const paidTerms = new Map<string, number>();
++    for (const stack of paid.state.contents) {
++      if (stack.condition !== undefined && stack.condition !== 1) throw Error("ProductionInstalledPartDamaged");
++      const item = catalog.items.find(i => i.resourceId === stack.resourceId)!;
++      const total = (paidTerms.get(item.sourceId) ?? 0) + stack.quantity;
++      if (!Number.isSafeInteger(total)) throw Error("ProductionInstalledQuantityOverflow");
++      paidTerms.set(item.sourceId, total);
++    }
++    const sorted = (entries: readonly (readonly [string, number])[]) => canonicalJson([...entries].sort(([a], [b]) => a < b ? -1 : 1));
++    if (sorted([...paidTerms.entries()]) !== sorted(device.bom.map(t => [t.itemId, t.quantityUnits] as const))) throw Error("ProductionPaidInstallationMismatch");
++    for (const [role, containerId] of [["input", machine.inputContainerId], ["output", machine.outputContainerId], ["offcut", machine.offcutContainerId]] as const) {
++      const limit = device.buffers.find(b => b.role === role);
++      if (limit && exactScaledLimit(productionContainer(material, containerId).definition.maxMassKg, 6, "ProductionBufferCapacity") > limit.massMg) throw Error("ProductionBufferExceedsSource");
++    }
++    if (!Array.isArray(start.sourceLots) || start.sourceLots.length !== recipe.inputs.length || new Set(start.sourceLots.map(s => s.itemId)).size !== recipe.inputs.length) throw Error("ProductionInputBindingMismatch");
++    for (const term of recipe.inputs) {
++      const source = start.sourceLots.find(s => s.itemId === term.itemId);
++      if (!source) throw Error("ProductionInputBindingMismatch");
++      productionId(source.stackId);
++      if (process.kind === "electric" && source.containerId !== machine.inputContainerId) throw Error("ProductionInputPortMismatch");
++      const container = productionContainer(material, source.containerId);
++      const lot = container.state.contents.find(s => s.stackId === source.stackId);
++      if (!active && (!lot || lot.resourceId !== catalog.items.find(i => i.sourceId === term.itemId)!.resourceId || lot.quantity < term.quantityUnits)) throw Error("WAIT_INPUT");
++    }
++    if (process.kind === "manual") {
++      const actor = facts.interaction;
++      if (!actor || actor.confirmed !== true || actor.actorId !== start.actorId || actor.serviceReachable !== true) throw Error("ProductionInteractionUnavailable");
++      productionRevision(actor.actorRevision);
++      for (const id of [...start.sourceLots.map(s => s.containerId), machine.outputContainerId, machine.offcutContainerId]) {
++        const c = productionContainer(material, id);
++        if (!actor.accessibleContainers.some(a => a.containerId === id && a.revision === c.state.revision)) throw Error("ProductionContainerUnreachable");
++      }
++    }
++    for (const id of [machine.outputContainerId, machine.offcutContainerId]) {
++      const claims = material.reservations.flatMap(r => r.outputs.filter(o => o.targetContainerId === id));
++      const own = active ? [] : productionOutputs(facts, start, recipe).filter(o => o.targetContainerId === id);
++      try { assertExactContainerCapacity(productionContainer(material, id), catalog, [...claims, ...own]); }
++      catch { throw Error(id === machine.offcutContainerId ? "WAIT_WASTE" : "WAIT_OUTPUT"); }
++    }
++    return { ok: true, recipe, process };
++  } catch (error) { return { ok: false, reason: error instanceof Error ? error.message : "ProductionAdmissionRejected" }; }
++};
+diff --git a/apps/weltraum-browser/tests/unit/factory/production.test.ts b/apps/weltraum-browser/tests/unit/factory/production.test.ts
+new file mode 100644
+index 00000000..8f90636f
+--- /dev/null
++++ b/apps/weltraum-browser/tests/unit/factory/production.test.ts
+@@ -0,0 +1,238 @@
++import { describe, expect, it } from "vitest";
++import { createFp02Fixture } from "../../../src/factory/catalog/fp02Catalog";
++import { createFactoryMaterialView, prepareFactoryMaterialStep, commitFactoryMaterialStep,
++  type MaterialIntent, type MaterialView } from "../../../src/factory/material/reservations";
++import { readMaterialMassMg } from "../../../src/factory/material/resourcesAdapter";
++import { createResourceContainerDefinition, createResourceContainerSnapshot, createResourceContainerState } from "../../../src/resources/containers";
++import { canonicalJson, canonicalSignature } from "../../../src/resources/serialization";
++import { stepFactoryPower, type FactoryPowerBinding, type FactoryPowerState, type FactoryPowerSupply } from "../../../src/factory/power/factoryPower";
++import { createFactoryProductionState, stepFactoryProduction, commitFactoryProductionStep, readFactoryProductionRequest,
++  type ProductionCommand, type ProductionProposal, type ProductionStepInput } from "../../../src/factory/production/productionStep";
++import type { ProductionHostFacts, ProductionStart } from "../../../src/factory/production/recipeAdmission";
++
++const fixture = createFp02Fixture("cargo"), catalog = fixture.catalog;
++const binding: FactoryPowerBinding = { sessionId: "production_test_session", epoch: 1, netRevision: 1,
++  catalogDigest: catalog.catalogDigest, sourceProfileDigest: "fp01-fixed-net-observation-v1" };
++const contents = (v: MaterialView, id: string) => v.containers.find(c => c.state.containerId === id)!.state.contents;
++const bin = (id: string, lots: readonly unknown[] = [], maxMassKg = 4_000, maxVolumeM3 = 30) =>
++  createResourceContainerSnapshot(createResourceContainerDefinition({ containerId: id, kind: "OutpostStorage", maxMassKg, maxVolumeM3, maxStackCount: 200 }),
++    createResourceContainerState({ containerId: id, ownerId: "pilot", contents: lots }, catalog.resources), catalog.resources);
++const commitMaterial = (material: MaterialView, intent: MaterialIntent): MaterialView => {
++  const p = prepareFactoryMaterialStep(material, intent); if (p.status !== "Prepared") throw Error(p.reason);
++  const r = commitFactoryMaterialStep(material, p); if (r.status === "Rejected") throw Error(r.reason); return r.view;
++};
++const cargoMove = (v: MaterialView, itemId: string, quantityUnits: number, targetContainerId: string, targetStackId: string) => ({
++  itemId, quantityUnits, sourceContainerId: fixture.resourceState.containerId,
++  sourceStackId: contents(v, fixture.resourceState.containerId).find(s => s.resourceId === catalog.items.find(i => i.sourceId === itemId)!.resourceId)!.stackId,
++  targetContainerId, targetStackId
++});
++
++/** Full finite cargo is retained. Pure-unit native admission and power net are
++ * explicitly synthetic host facts, not a W07/W09 browser or native claim. */
++const initial = (deviceId = "B06", withInput = true, outputMassKg = deviceId === "B07" ? 21 : 22.5, offcutMassKg = 6) => {
++  const definition = catalog.devices.find(d => d.sourceId === deviceId)!;
++  const cargo = createResourceContainerSnapshot(createResourceContainerDefinition({ containerId: fixture.resourceState.containerId,
++    kind: "ShipCargo", maxMassKg: 4_000, maxVolumeM3: 30, maxStackCount: 200 }), fixture.resourceState, catalog.resources);
++  let material = createFactoryMaterialView(catalog, [cargo, bin("installed"), bin("input", [], definition.buffers.find(b => b.role === "input")?.massMg ? definition.buffers.find(b => b.role === "input")!.massMg / 1_000_000 : 8), bin("wip", [], 8, .03),
++    bin("product", [], outputMassKg, .1), bin("offcut", [], offcutMassKg, .1), bin("fixture_wip")]);
++  material = commitMaterial(material, { kind: "transfer", transactionId: "paid_install_fixture", ownerId: "pilot", actorId: "pilot",
++    moves: definition.bom.map((term, i) => cargoMove(material, term.itemId, term.quantityUnits, "installed", `installed_part_${i}`)) });
++  if (withInput && deviceId === "B06") material = commitMaterial(material, { kind: "transfer", transactionId: "feed_cut_fixture", ownerId: "pilot", actorId: "pilot",
++    moves: [cargoMove(material, "fp02.bulk.steel_known", 8_000_000, "input", "raw_input")] });
++  if (withInput && deviceId === "B07") {
++    // Source-conserving pre-existing processed lot fixture through the reviewed
++    // W02 material seam; no claim of a preceding native work/power execution.
++    material = commitMaterial(material, { kind: "reserve", transactionId: "preexisting_cut_start", ownerId: "fixture_job", actorId: "pilot",
++      reservationId: "fixture_cut_reservation", wipContainerId: "fixture_wip", recipeRef: { sourceId: "REC-01-CUT", version: 1, digest: catalog.recipes[0]!.digest },
++      moves: [cargoMove(material, "fp02.bulk.steel_known", 8_000_000, "fixture_wip", "fixture_raw")],
++      outputs: [{ itemId: "fp02.bulk.steel_semi", quantityUnits: 7_500_000, targetContainerId: "input", stackId: "semi_input" },
++        { itemId: "fp02.bulk.steel_offcut", quantityUnits: 500_000, targetContainerId: fixture.resourceState.containerId, stackId: "fixture_cut_offcut" }] });
++    material = commitMaterial(material, { kind: "finish-recipe", transactionId: "preexisting_cut_finish", ownerId: "fixture_job", actorId: "pilot", reservationId: "fixture_cut_reservation" });
++  }
++  const toolId = deviceId === "B06" ? "fp02.tool.cutter_head" : deviceId === "B07" ? "fp02.tool.forming_die" : "fp02.device.field_workbench";
++  const facts: ProductionHostFacts = { version: "fp06-production-host-facts-v1", binding, confirmed: true, tickEndUs: "0",
++    installation: { instanceId: "machine", definitionRef: { sourceId: deviceId, version: definition.version, digest: definition.digest }, installationRevision: 1,
++      confirmed: true, supported: true, serviceClear: true, installedContainerId: "installed", inputContainerId: "input", outputContainerId: "product",
++      offcutContainerId: "offcut", wipContainerId: "wip", powerConsumerId: "machine_work", powerPortId: "machine_power",
++      tool: { partId: "surviving_tool", sourceItemId: toolId, revision: 1, condition: "OK" } },
++    interaction: { actorId: "pilot", actorRevision: 1, confirmed: true, serviceReachable: true,
++      accessibleContainers: material.containers.map(c => ({ containerId: c.state.containerId, revision: c.state.revision })) } };
++  const recipeId = deviceId === "B06" ? "REC-01-CUT" : deviceId === "B07" ? "REC-02-PROFILE" : "REC-05-BRACE";
++  const recipe = catalog.recipes.find(r => r.sourceId === recipeId)!;
++  const command: ProductionStart = { kind: "start", commandId: "begin_job", jobId: "job", batchOrdinal: 0, ownerId: "job_owner", actorId: "pilot",
++    recipeRef: { sourceId: recipe.sourceId, version: recipe.version, digest: recipe.digest }, processKind: deviceId === "B05" ? "manual" : "electric",
++    sourceLots: recipe.inputs.map(term => ({ itemId: term.itemId, containerId: deviceId === "B05" ? fixture.resourceState.containerId : "input",
++      stackId: (deviceId === "B05" ? contents(material, fixture.resourceState.containerId) : contents(material, "input")).find(s => s.resourceId === catalog.items.find(i => i.sourceId === term.itemId)!.resourceId)?.stackId ?? "missing_input" })) };
++  const powerState: FactoryPowerState = { version: "fp06-factory-power-v1", binding, tickEndUs: "0", revision: 0, battery: null, consumers: [] };
++  return { material, state: createFactoryProductionState("machine", binding), facts, command, powerState,
++    lastInput: null as ProductionStepInput | null, lastProposal: null as ProductionProposal | null };
++};
++type Pair = ReturnType<typeof initial>;
++const input = (pair: Pair, powered = true, command?: ProductionCommand, includeRequest = true): ProductionStepInput => {
++  const tickStartUs = pair.state.tickEndUs, tickEndUs = String(BigInt(tickStartUs) + 100_000n);
++  const facts = { ...pair.facts, tickEndUs, interaction: pair.facts.interaction ? { ...pair.facts.interaction,
++    accessibleContainers: pair.material.containers.map(c => ({ containerId: c.state.containerId, revision: c.state.revision })) } : null };
++  const base = { confirmed: true, binding, tickStartUs, tickEndUs, material: pair.material, facts, ...(command ? { command } : {}) };
++  const request = readFactoryProductionRequest(pair.state, base);
++  const data = { version: "fp06-power-supply-v1" as const, binding, tickStartUs, tickEndUs,
++    offers: [{ instanceId: "fp02_cargo_c01_unit_1", portId: "source", availableMilliWatt: powered ? "6000000" : "0", nameplateMilliWatt: "6000000", quality: "confirmed" as const }],
++    ports: [{ portId: "source", assetId: "fp02_cargo_c01_unit_1", direction: "out" as const, active: true, maxMilliWatt: "6000000" },
++      { portId: "machine_power", assetId: "machine", direction: "in" as const, active: true, maxMilliWatt: "6000000" }],
++    links: [{ linkId: "actual_fixture_cable", fromPortId: "source", toPortId: "machine_power", active: true, maxMilliWatt: "6000000" }],
++    battery: null, authorityBytes: canonicalJson({ kind: "synthetic-production-unit-net-v1" }) };
++  const supply: FactoryPowerSupply = { ...data, canonicalJson: canonicalJson(data), digest: canonicalSignature(data) };
++  const power = stepFactoryPower(pair.powerState, { binding, tickStartUs, tickEndUs, confirmed: true, supply, requests: includeRequest ? [request] : [] });
++  if (!power.ok) throw Error(power.reason);
++  return { ...base, power };
++};
++const advance = (pair: Pair, powered = true, command?: ProductionCommand, includeRequest = true): Pair => {
++  const request = input(pair, powered, command, includeRequest); const proposal = stepFactoryProduction(pair.state, request);
++  expect(proposal.status).toBe("Prepared");
++  const result = commitFactoryProductionStep(pair.state, request, proposal); expect(result.status).toBe("Committed");
++  return { ...pair, state: result.state, material: result.material, powerState: request.power!.nextState, lastInput: request, lastProposal: proposal };
++};
++const ticks = (pair: Pair, count: number, powered = true) => { for (let i = 0; i < count; i++) pair = advance(pair, powered); return pair; };
++
++describe("FP06 W04 exact paid process steps over native Resources", () => {
++  it("FP06-T017 has no CUT product at299 paid steps and atomically yields7.5+.5kg at300/36000J", () => {
++    let pair = initial(); const mass = readMaterialMassMg(pair.material);
++    pair = advance(pair, true, pair.command); pair = ticks(pair, 298);
++    expect(pair.state.job?.workMilliJoule).toBe("35880000"); expect(contents(pair.material, "product")).toEqual([]);
++    expect(contents(pair.material, "wip")[0]!.quantity).toBe(8_000_000);
++    pair = advance(pair);
++    expect(pair.state.status).toBe("COMPLETED"); expect(pair.state.job?.workMilliJoule).toBe("36000000");
++    expect(contents(pair.material, "product")).toMatchObject([{ resourceId: "fp02_bulk_steel_semi", quantity: 7_500_000 }]);
++    expect(contents(pair.material, "offcut")).toMatchObject([{ resourceId: "fp02_bulk_steel_offcut", quantity: 500_000 }]);
++    expect(contents(pair.material, "wip")).toEqual([]); expect(readMaterialMassMg(pair.material)).toBe(mass);
++  });
++  it("FP06-T018 permits empty product space, freezes full sinks/inputabsence and finishes Former at400/80000J", () => {
++    let pair = initial("B07"); pair = advance(pair, true, pair.command); pair = ticks(pair, 398);
++    expect(pair.state.job?.workMilliJoule).toBe("79800000"); expect(contents(pair.material, "product")).toEqual([]);
++    pair = advance(pair); expect(pair.state.job?.workMilliJoule).toBe("80000000");
++    expect(contents(pair.material, "product")[0]!.quantity).toBe(7_000_000); expect(contents(pair.material, "offcut")[0]!.quantity).toBe(500_000);
++    for (const [frozen, status] of [[initial("B07", false), "WAIT_INPUT"], [initial("B07", true, 0), "WAIT_OUTPUT"], [initial("B06", true, 22.5, .25), "WAIT_WASTE"]] as const) {
++      const r = advance(frozen, true, frozen.command); expect(r.state.status).toBe(status); expect(r.state.job).toBeNull();
++      expect(contents(r.material, "wip")).toEqual([]); expect(r.material).toEqual(frozen.material); expect(r.lastInput!.power!.grants[0]!.work.n).toBe("0");
++    }
++  });
++  it("FP06-T019 retains18kJ and WIP through power loss and actual W03 restart headroom delay", () => {
++    let pair = initial(); pair = advance(pair, true, pair.command); pair = ticks(pair, 149);
++    const wip = contents(pair.material, "wip"); pair = ticks(pair, 20, false);
++    expect(pair.state.status).toBe("WAIT_POWER"); expect(pair.state.job?.workMilliJoule).toBe("18000000"); expect(contents(pair.material, "wip")).toEqual(wip);
++    pair = ticks(pair, 20, true); expect(pair.state.job?.workMilliJoule).toBe("18000000");
++    pair = ticks(pair, 150, true); expect(pair.state.status).toBe("COMPLETED"); expect(pair.state.job?.workMilliJoule).toBe("36000000");
++    expect(contents(pair.material, "product")).toHaveLength(1);
++  });
++  it("FP06-T020 replays adopted completion/work once and rejects a changed command identity", () => {
++    let pair = initial(); pair = advance(pair, true, pair.command); const one = pair;
++    const once = commitFactoryProductionStep(one.state, { ...one.lastInput!, material: one.material }, one.lastProposal!);
++    expect(once.status).toBe("NoOp"); expect(once.state.job?.workMilliJoule).toBe("120000");
++    pair = ticks(pair, 299); const material = pair.material;
++    const replay = commitFactoryProductionStep(pair.state, { ...pair.lastInput!, material }, pair.lastProposal!);
++    expect(replay.status).toBe("NoOp"); expect(replay.material).toBe(material); expect(contents(replay.material, "product")).toHaveLength(1);
++    const conflict = input(pair, true, { ...pair.command, recipeRef: { ...pair.command.recipeRef, digest: "forged" } });
++    expect(stepFactoryProduction(pair.state, conflict).status).toBe("Rejected");
++  });
++  it("holds stale or forged paired proposals without publishing partial product or unearned work", () => {
++    const pair = initial(); const request = input(pair, true, pair.command), proposal = stepFactoryProduction(pair.state, request);
++    expect(proposal.status).toBe("Prepared"); if (proposal.status !== "Prepared") return;
++    const stale = { ...pair.material, containers: pair.material.containers.map(c => c.state.containerId === "product" ? bin("product", [], 0, .1) : c) };
++    const result = commitFactoryProductionStep(pair.state, { ...request, material: stale }, proposal);
++    expect(result.status).toBe("Rejected"); expect(result.material).toBe(stale); expect(result.state).toBe(pair.state);
++    const forged = { ...proposal, nextState: { ...proposal.nextState, job: { ...proposal.nextState.job!, workMilliJoule: "36000000" } } };
++    expect(commitFactoryProductionStep(pair.state, request, forged).status).toBe("Rejected");
++  });
++  it.each(["base", "material", "plans", "work"] as const)("rejects forged adopted NoOp proposal %s independently", field => {
++    const pair = initial(), adopted = advance(pair, true, pair.command), proposal = adopted.lastProposal!;
++    expect(proposal.status).toBe("Prepared"); if (proposal.status !== "Prepared") return;
++    const replayInput = { ...adopted.lastInput!, material: adopted.material };
++    const forged = field === "base" ? { ...proposal, baseStateCanonicalJson: canonicalJson({ forged: true }) }
++      : field === "material" ? { ...proposal, material: { ...proposal.material, receipts: [] } }
++      : field === "plans" ? { ...proposal, materialPlans: [] } : { ...proposal, workMilliJoule: "0" };
++    const result = commitFactoryProductionStep(adopted.state, replayInput, forged);
++    expect(result.status).toBe("Rejected"); expect(result.state).toBe(adopted.state); expect(result.material).toBe(adopted.material);
++  });
++  it("closed replay byte-binding rejects a joined-key alias with inherited data", () => {
++    const pair = initial(), adopted = advance(pair, true, pair.command), proposal = adopted.lastProposal!;
++    expect(proposal.status).toBe("Prepared"); if (proposal.status !== "Prepared") return;
++    const alias = Object.freeze(Object.create(proposal.inputBinding, {
++      "authorityCanonicalJson|materialCanonicalJson": { value: 0, enumerable: true }
++    }));
++    const result = commitFactoryProductionStep(adopted.state, { ...adopted.lastInput!, material: adopted.material }, { ...proposal, inputBinding: alias });
++    expect(result.status).toBe("Rejected"); expect(result.state).toBe(adopted.state); expect(result.material).toBe(adopted.material);
++  });
++  it("omitted disabled/manual power requests need no invented electric In-port, enabled work still needs a grant", () => {
++    let pair = initial("B05"); pair = advance(pair, false, pair.command, false);
++    expect(pair.lastInput!.power!.grants).toEqual([]); expect(pair.state.status).toBe("LAID_OUT");
++    pair = advance(pair, false, { kind: "manual-work", commandId: "no_electric_montage", jobId: "job", actorId: "pilot" }, false);
++    pair = advance(pair, false, { kind: "manual-finish", commandId: "no_electric_output", jobId: "job", actorId: "pilot" }, false);
++    expect(pair.state.status).toBe("COMPLETED"); expect(pair.lastInput!.power!.balance.work.n).toBe("0");
++    const blocked = initial("B06", true, 0);
++    expect(advance(blocked, true, blocked.command, false).state.status).toBe("WAIT_OUTPUT");
++    const enabled = initial(); expect(stepFactoryProduction(enabled.state, input(enabled, true, enabled.command, false)).status).toBe("Rejected");
++  });
++  it("historical manual command replay preserves its receipt and leaves a later laid-out job untouched", () => {
++    let pair = initial("B05"); pair = advance(pair, false, pair.command);
++    const montage: ProductionCommand = { kind: "manual-work", commandId: "montage_a", jobId: "job", actorId: "pilot" };
++    const finish: ProductionCommand = { kind: "manual-finish", commandId: "finish_a", jobId: "job", actorId: "pilot" };
++    pair = advance(pair, false, montage); pair = advance(pair, false, finish);
++    const oldReceipts = pair.state.commandReceipts;
++    pair = advance(pair, false, { ...pair.command, commandId: "begin_b", jobId: "job_b", batchOrdinal: 1 });
++    const wip = contents(pair.material, "wip"), material = pair.material, receipts = pair.state.commandReceipts;
++    for (const old of [montage, finish]) {
++      pair = advance(pair, false, old);
++      expect(pair.state.status).toBe("LAID_OUT"); expect(pair.state.job?.start.jobId).toBe("job_b");
++      expect(pair.state.job?.manualWorkReceiptId).toBeNull(); expect(pair.state.commandReceipts).toEqual(receipts);
++      expect(pair.material).toBe(material); expect(contents(pair.material, "wip")).toEqual(wip);
++      expect(pair.state.commandReceipts.find(r => r.commandId === old.commandId)).toEqual(oldReceipts.find(r => r.commandId === old.commandId));
++    }
++  });
++  it("passive manual clock accepts walking away and returning without advancing montage or losing WIP", () => {
++    let pair = initial("B05"); pair = advance(pair, false, pair.command);
++    const reachable = pair.facts, material = pair.material, receipts = pair.state.commandReceipts;
++    pair = { ...pair, facts: { ...pair.facts, interaction: null } }; pair = ticks(pair, 5, false);
++    expect(pair.state.tickEndUs).toBe("600000"); expect(pair.state.status).toBe("LAID_OUT");
++    expect(pair.material).toBe(material); expect(pair.state.commandReceipts).toEqual(receipts); expect(contents(pair.material, "product")).toEqual([]);
++    const unreachable = input(pair, false, { kind: "manual-work", commandId: "away_montage", jobId: "job", actorId: "pilot" });
++    expect(stepFactoryProduction(pair.state, unreachable).status).toBe("Rejected");
++    pair = { ...pair, facts: reachable };
++    pair = advance(pair, false, { kind: "manual-work", commandId: "return_montage", jobId: "job", actorId: "pilot" });
++    pair = { ...pair, facts: { ...pair.facts, interaction: { ...pair.facts.interaction!, serviceReachable: false } } }; pair = ticks(pair, 5, false);
++    expect(pair.state.status).toBe("ASSEMBLED"); expect(contents(pair.material, "product")).toEqual([]);
++    pair = { ...pair, facts: reachable }; pair = advance(pair, false, { kind: "manual-finish", commandId: "return_output", jobId: "job", actorId: "pilot" });
++    expect(pair.state.status).toBe("COMPLETED"); expect(contents(pair.material, "product")).toHaveLength(1);
++  });
++  it("source native resource data mutation cannot reuse previously validated catalog bytes", () => {
++    const pair = initial(); const request = input(pair, true, pair.command);
++    expect(stepFactoryProduction(pair.state, request).status).toBe("Prepared");
++    const mutated = { ...pair.material, catalog: { ...catalog, resources: { ...catalog.resources,
++      resources: catalog.resources.resources.map((r, i) => i === 0 ? { ...r, displayName: "changed outside frozen source" } : r) } } };
++    expect(stepFactoryProduction(pair.state, { ...request, material: mutated }).status).toBe("Rejected");
++  });
++  it("manual REC05 needs laid-out→active montage→check/output and never produces from clock or zero-J", () => {
++    let pair = initial("B05"); const mass = readMaterialMassMg(pair.material);
++    pair = advance(pair, false, pair.command); expect(pair.state.status).toBe("LAID_OUT"); expect(contents(pair.material, "wip")).toHaveLength(2);
++    pair = ticks(pair, 25, false); expect(pair.state.status).toBe("LAID_OUT"); expect(contents(pair.material, "product")).toEqual([]);
++    const tooSoon = input(pair, false, { kind: "manual-finish", commandId: "premature", jobId: "job", actorId: "pilot" });
++    expect(stepFactoryProduction(pair.state, tooSoon).status).toBe("Rejected");
++    pair = advance(pair, false, { kind: "manual-work", commandId: "montage", jobId: "job", actorId: "pilot" });
++    expect(pair.state.status).toBe("ASSEMBLED"); expect(pair.state.job?.manualWorkReceiptId).toBe("montage");
++    const restored = JSON.parse(JSON.stringify(pair.state)); expect(restored.job.phase).toBe("ASSEMBLED");
++    pair = { ...pair, state: restored }; pair = ticks(pair, 5, false); expect(contents(pair.material, "product")).toEqual([]);
++    pair = advance(pair, false, { kind: "manual-finish", commandId: "take_product", jobId: "job", actorId: "pilot" });
++    expect(pair.state.status).toBe("COMPLETED"); expect(pair.state.job?.workMilliJoule).toBe("0");
++    expect(contents(pair.material, "product")).toMatchObject([{ resourceId: "fp02_comp_small_brace", quantity: 1 }]);
++    expect(contents(pair.material, "offcut")).toMatchObject([{ resourceId: "fp02_bulk_steel_offcut", quantity: 200_000 }]); expect(readMaterialMassMg(pair.material)).toBe(mass);
++    expect(pair.lastInput!.power!.balance.work.n).toBe("0");
++  });
++  it("manual actor/bench/tool/reach rejects preserve already laid-out inputs and ordered receipt", () => {
++    let pair = initial("B05"); pair = advance(pair, false, pair.command);
++    const command: ProductionCommand = { kind: "manual-work", commandId: "montage", jobId: "job", actorId: "pilot" };
++    for (const facts of [{ ...pair.facts, interaction: null }, { ...pair.facts, interaction: { ...pair.facts.interaction!, serviceReachable: false } },
++      { ...pair.facts, installation: { ...pair.facts.installation, tool: { ...pair.facts.installation.tool, condition: "damaged" as const } } }]) {
++      const request = input({ ...pair, facts }, false, command); expect(stepFactoryProduction(pair.state, request).status).toBe("Rejected");
++      expect(contents(pair.material, "wip")).toHaveLength(2); expect(pair.state.job?.manualWorkReceiptId).toBeNull();
++    }
++    const wrongActor = input(pair, false, { ...command, actorId: "remote_actor" }); expect(stepFactoryProduction(pair.state, wrongActor).status).toBe("Rejected");
++  });
++});

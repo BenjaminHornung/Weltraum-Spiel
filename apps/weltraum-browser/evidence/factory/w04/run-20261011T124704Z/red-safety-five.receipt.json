@@ -1,0 +1,20 @@
+{
+  "command": "npm run test -- tests/unit/factory/production.test.ts -t 'forged adopted|omitted disabled|historical manual|passive manual clock|source native resource'",
+  "argv": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/production.test.ts",
+    "-t",
+    "forged adopted|omitted disabled|historical manual|passive manual clock|source native resource"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T13:21:00.980210+00:00",
+  "exitCode": 1,
+  "durationSeconds": 3.0,
+  "rawBytes": 5581,
+  "rawSha256": "d0ea84f87a63f1678cd4386b240f2dda5a049e15721e092c911a9fca008f385e",
+  "gzipBytes": 1318,
+  "gzipSha256": "2a0e9f2f7238587aa19bf2b4dba4b6f99837ec0da6c22f2589ada663b231788a"
+}

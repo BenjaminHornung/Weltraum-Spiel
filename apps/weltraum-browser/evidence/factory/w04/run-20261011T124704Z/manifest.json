@@ -1,0 +1,806 @@
+{
+  "schema": "fp06-package-evidence-v1",
+  "package": "W04",
+  "actor": "/root/fp06_domain",
+  "branch": "codex/hestia-fp06-domain-2026-10-11",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11",
+  "baseCommitSha": "1f2c568ec9db7b6b2895eb2a3b4f37797030dac8",
+  "commitSha": null,
+  "status": "READY_FOR_INDEPENDENT_REVIEW",
+  "runId": "run-20261011T124704Z",
+  "sealedAtUtc": "2026-10-11T13:56:33.402235+00:00",
+  "productPatchSha256": "2cd262226ac36464316b18f6cdf4f70c18ff78c5d92fdcde9cdd8a57059b47ed",
+  "productFiles": {
+    "apps/weltraum-browser/src/factory/production/productionStep.ts": "f74397051a7b2da13d6d183ccf573cb633cb932e915e1ebaf6bf6a50da29c449",
+    "apps/weltraum-browser/src/factory/production/recipeAdmission.ts": "c77eeaa220cbb491c51356533bdd8f1e6d221f67e9406b458d4a6c06ebac4102",
+    "apps/weltraum-browser/tests/unit/factory/production.test.ts": "7c31bf5f375af31c3ed0057cda4ce2a87951fff7412506fcab057c0d517769b6"
+  },
+  "productBytes": {
+    "apps/weltraum-browser/src/factory/production/productionStep.ts": 29154,
+    "apps/weltraum-browser/src/factory/production/recipeAdmission.ts": 12898,
+    "apps/weltraum-browser/tests/unit/factory/production.test.ts": 23542
+  },
+  "artifacts": [
+    {
+      "path": "authority-contract.md",
+      "bytes": 6462,
+      "sha256": "dc8a59003f593e01f519088e7add1b2c9639f6ba0be98eefd4b5f59bc5aeddf0"
+    },
+    {
+      "path": "build-final-type-fixed.log.raw.gz",
+      "bytes": 659,
+      "sha256": "f8a2cc54c482ba105930a94aee771ed87e0a4df4b904c38e34947ee1a97adc0b"
+    },
+    {
+      "path": "build-final-type-fixed.receipt.json",
+      "bytes": 995,
+      "sha256": "e95daa0bda39d6dfe010b92e94ca055b83ed695c25404e725b3ce86d8931168b"
+    },
+    {
+      "path": "build-final.log.raw.gz",
+      "bytes": 160,
+      "sha256": "c32507afd4ea65c445c9cef4145f753ae5e2e0c955cb3e964e5c47e5a8ff838f"
+    },
+    {
+      "path": "build-final.receipt.json",
+      "bytes": 994,
+      "sha256": "92b38fcfb8e2baa6b62f5897f616944c2d1a2369978c949be0196a2ffa9323b6"
+    },
+    {
+      "path": "green-attempt-1.log.raw.gz",
+      "bytes": 1157,
+      "sha256": "791786c51fef4fb130fd8f5bd9dac4e0f981cc89c91f49c22c8b42db50c6a9c6"
+    },
+    {
+      "path": "green-attempt-1.receipt.json",
+      "bytes": 624,
+      "sha256": "fa8a59b4a7af365a875342f91a44b18a9fc7379ebc75b61418a0493964eb4e35"
+    },
+    {
+      "path": "green-authority-core-fifteen.log.raw.gz",
+      "bytes": 1157,
+      "sha256": "93fa137e12f96843c46a4f5e8a7c04b091dad11f33953343b74e0e96cc41db3a"
+    },
+    {
+      "path": "green-authority-core-fifteen.receipt.json",
+      "bytes": 580,
+      "sha256": "55b4f5f5016b4df2bf0cd87e33396e481db0bc7a5f002213f5926559bd6fa180"
+    },
+    {
+      "path": "green-byte-cache-original-seven.log.raw.gz",
+      "bytes": 1188,
+      "sha256": "7d0bf15a069630a2d44b2b79dd9d969cd608a3bd564ebf369daa8d470dc7b3c9"
+    },
+    {
+      "path": "green-byte-cache-original-seven.receipt.json",
+      "bytes": 694,
+      "sha256": "cb0c6793d36f23a4e5d285083f8192033c6ad89e36eaf9ba42f9829051222ea3"
+    },
+    {
+      "path": "green-canonical-segments-fifteen.log.raw.gz",
+      "bytes": 259,
+      "sha256": "f61751d480679abd99321bbe33a2ba3bccbb254067ea493036c35fb6bdbb62ad"
+    },
+    {
+      "path": "green-canonical-segments-fifteen.receipt.json",
+      "bytes": 1142,
+      "sha256": "8ea7eb157bec42d8d4e459a5b36ffb6b0c9a6ba3065aaec88f3bae9cddfadcbd"
+    },
+    {
+      "path": "green-final-affected.log.raw.gz",
+      "bytes": 369,
+      "sha256": "3ef09c945020850a89b8ade3ef6f724bce9a1dba6f7ab6d9988f3f609ec836a6"
+    },
+    {
+      "path": "green-final-affected.receipt.json",
+      "bytes": 2085,
+      "sha256": "c68373b0c1e217cbd2b85457805493f6a3f5f2e6a62c9e4ef11fad214f1f52a0"
+    },
+    {
+      "path": "green-type-narrowing.log.raw.gz",
+      "bytes": 303,
+      "sha256": "d0edaacbebd4285bdca3b28ef658cd3e306cbc0a8a6c25c9221e7792f0925be0"
+    },
+    {
+      "path": "green-type-narrowing.receipt.json",
+      "bytes": 1240,
+      "sha256": "d495fe5ddd580c7a71788f53b6afc86b2f46b155f4269dcf2de70d0ae45e0703"
+    },
+    {
+      "path": "plan.md",
+      "bytes": 605,
+      "sha256": "8bd9cf1fe20c209c8ba9e4bb47a309161f00c9c1f30622eb2478f6727604cf59"
+    },
+    {
+      "path": "product-diff.patch",
+      "bytes": 67259,
+      "sha256": "2cd262226ac36464316b18f6cdf4f70c18ff78c5d92fdcde9cdd8a57059b47ed"
+    },
+    {
+      "path": "profile-analysis.json",
+      "bytes": 7637,
+      "sha256": "e042118f76c1657facb873888fae05d2456da658ba392083325a26d764733ec1"
+    },
+    {
+      "path": "profile-authority-core/CPU.20261011.133307.56267.0.001.cpuprofile",
+      "bytes": 273247,
+      "sha256": "e5cf972d657bca3c02f51fe1ed1b3e283e7666597d7d96a43efc96a073277991"
+    },
+    {
+      "path": "profile-authority-core/CPU.20261011.133308.56292.0.001.cpuprofile",
+      "bytes": 914618,
+      "sha256": "3d4d3bd02fd1f3b2f228709820049025901427a59537e490f8620477198e3c55"
+    },
+    {
+      "path": "profile-authority-core-analysis.json",
+      "bytes": 8315,
+      "sha256": "695ecd677c6f5c5b9102e424bfc1e2f1bb64ccc8d51526b18f1f581aac215fdb"
+    },
+    {
+      "path": "profile-authority-core.log.raw.gz",
+      "bytes": 663,
+      "sha256": "6580eb796eadcea38f1e4477b32ec155f614ebbb80d425d11fd0ad33bfeb7046"
+    },
+    {
+      "path": "profile-authority-core.receipt.json",
+      "bytes": 2012,
+      "sha256": "91ca1bd95434b1a212689a1f3100110d5f2a77287bbd4dcecf390c4862ad8465"
+    },
+    {
+      "path": "profile-before-byte-cache/CPU.20261011.131111.53669.0.001.cpuprofile",
+      "bytes": 293738,
+      "sha256": "2b190bdcc026d32620e3260bc29a539c6a883ba3254f44cf5b85b0ea3d918929"
+    },
+    {
+      "path": "profile-before-byte-cache/CPU.20261011.131111.53694.0.001.cpuprofile",
+      "bytes": 915150,
+      "sha256": "877bcad25134a7b156579cb54f3581dc2cb433ac810c75b591224efa9ac9514b"
+    },
+    {
+      "path": "profile-before-byte-cache.log.raw.gz",
+      "bytes": 662,
+      "sha256": "494948c17f9adc6b82e77518ec24777762eab759656906beb59b96fc4148c4e5"
+    },
+    {
+      "path": "profile-before-byte-cache.receipt.json",
+      "bytes": 1460,
+      "sha256": "1490a9ee691220e018875299c560ae88a9344dca7f74ae7ac9f24534ef479f21"
+    },
+    {
+      "path": "red-closed-keys.log.raw.gz",
+      "bytes": 673,
+      "sha256": "51d8bea0dcf9f9c4f54e0465804c2ba63f3c8a2b837fa7de68a481d5053d7b0c"
+    },
+    {
+      "path": "red-closed-keys.receipt.json",
+      "bytes": 654,
+      "sha256": "6dfb60a7f3555a8abdca55b50d76378fd68935c67900966ca7cc2bb34dad382e"
+    },
+    {
+      "path": "red-initial.log.raw.gz",
+      "bytes": 1288,
+      "sha256": "09085ad17576670de43e980c943f9eab79ec799e097e2981729ccaa6452dc8a3"
+    },
+    {
+      "path": "red-initial.receipt.json",
+      "bytes": 718,
+      "sha256": "d34b1f043ff0f4cb0478575a53ea8fdade8ef0758377621749e55a198850f300"
+    },
+    {
+      "path": "red-noop-four.log.raw.gz",
+      "bytes": 747,
+      "sha256": "6c51a01d01fc7433102e9ffc8dd87595db22666ef3c7a3ab748f52d56f2c449c"
+    },
+    {
+      "path": "red-noop-four.receipt.json",
+      "bytes": 630,
+      "sha256": "1d19c415fb577924a4084fd5c37e05e2e42692e719086984059beae2275339d6"
+    },
+    {
+      "path": "red-safety-five.log.raw.gz",
+      "bytes": 1318,
+      "sha256": "2a0e9f2f7238587aa19bf2b4dba4b6f99837ec0da6c22f2589ada663b231788a"
+    },
+    {
+      "path": "red-safety-five.receipt.json",
+      "bytes": 787,
+      "sha256": "6d896dad89e52fa4866e44f19a2a0631ca66690510113b995b06ef8c78e2e4e5"
+    },
+    {
+      "path": "review.md",
+      "bytes": 6277,
+      "sha256": "594791e4d46bf193ca9ad84c3669cc0483e3d93e0b8c388775adb3ee6af589b6"
+    },
+    {
+      "path": "scope-check.json",
+      "bytes": 5607,
+      "sha256": "cccd83c06d80fcb35e5fbc3be0f4ff33bdd57838bb495a90568724095f0a9a4f"
+    },
+    {
+      "path": "source-preflight.json",
+      "bytes": 1591,
+      "sha256": "c2aa7d00f86c7836a2e1f24469151cbeb55e38e3934750df906f2d9bd6ca9641"
+    }
+  ],
+  "actualCommandReceipts": [
+    {
+      "receipt": "red-initial.receipt.json",
+      "log": "red-initial.log.raw.gz",
+      "command": "npm run test -- tests/unit/factory/production.test.ts",
+      "argv": [
+        "bash",
+        "-lc",
+        "source /workspace/.cloud-setup/activate.sh\nexec npm run test -- tests/unit/factory/production.test.ts"
+      ],
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T12:47:04.052208+00:00",
+      "exitCode": 1,
+      "durationSeconds": 2.538,
+      "rawBytes": 7699,
+      "rawSha256": "a6412b4150991b94be23519e20b70ecd8bb7133dca9e649c6625bb0aba122a73",
+      "gzipBytes": 1288,
+      "gzipSha256": "09085ad17576670de43e980c943f9eab79ec799e097e2981729ccaa6452dc8a3",
+      "classification": "collected business RED only when assertions execute; inspect actual CLI",
+      "vitestSummary": "7 failed (7)"
+    },
+    {
+      "receipt": "green-attempt-1.receipt.json",
+      "log": "green-attempt-1.log.raw.gz",
+      "command": "npm run test -- tests/unit/factory/production.test.ts",
+      "argv": [
+        "bash",
+        "-lc",
+        "source /workspace/.cloud-setup/activate.sh\nexec npm run test -- tests/unit/factory/production.test.ts"
+      ],
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T13:03:13.482653+00:00",
+      "exitCode": 1,
+      "durationSeconds": 51.617,
+      "rawBytes": 4199,
+      "rawSha256": "5bbcdfe813d4cc3bcdc7fd893328e0120cd7a1c0d94c995a039d9207e9a64236",
+      "gzipBytes": 1157,
+      "gzipSha256": "791786c51fef4fb130fd8f5bd9dac4e0f981cc89c91f49c22c8b42db50c6a9c6",
+      "vitestSummary": "4 failed | 3 passed (7)"
+    },
+    {
+      "receipt": "profile-before-byte-cache.receipt.json",
+      "log": "profile-before-byte-cache.log.raw.gz",
+      "command": "node --cpu-prof --cpu-prof-dir=/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-before-byte-cache node_modules/vitest/vitest.mjs run tests/unit/factory/production.test.ts -t FP06-T017",
+      "argv": [
+        "node",
+        "--cpu-prof",
+        "--cpu-prof-dir=/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-before-byte-cache",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "tests/unit/factory/production.test.ts",
+        "-t",
+        "FP06-T017"
+      ],
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T13:11:11.193732+00:00",
+      "exitCode": 1,
+      "durationSeconds": 11.547,
+      "rawBytes": 1358,
+      "rawSha256": "d73efc8f24676458294102f904f57d37fd4a8e5da672b47741d87608bf4536a8",
+      "gzipBytes": 662,
+      "gzipSha256": "494948c17f9adc6b82e77518ec24777762eab759656906beb59b96fc4148c4e5",
+      "profileFiles": [
+        {
+          "path": "profile-before-byte-cache/CPU.20261011.131111.53669.0.001.cpuprofile",
+          "bytes": 293738,
+          "sha256": "2b190bdcc026d32620e3260bc29a539c6a883ba3254f44cf5b85b0ea3d918929"
+        },
+        {
+          "path": "profile-before-byte-cache/CPU.20261011.131111.53694.0.001.cpuprofile",
+          "bytes": 915150,
+          "sha256": "877bcad25134a7b156579cb54f3581dc2cb433ac810c75b591224efa9ac9514b"
+        }
+      ],
+      "vitestSummary": "1 failed | 6 skipped (7)"
+    },
+    {
+      "receipt": "green-byte-cache-original-seven.receipt.json",
+      "log": "green-byte-cache-original-seven.log.raw.gz",
+      "command": "npm run test -- tests/unit/factory/production.test.ts -t 'FP06-T0|holds stale|manual REC05|manual actor'",
+      "argv": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/factory/production.test.ts",
+        "-t",
+        "FP06-T0|holds stale|manual REC05|manual actor"
+      ],
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T13:20:09.271427+00:00",
+      "exitCode": 1,
+      "durationSeconds": 34.292,
+      "rawBytes": 4270,
+      "rawSha256": "4ad1b1015519eba3740d316fd259e1cd9d43d9d879207a74676074ed8b8ed8f5",
+      "gzipBytes": 1188,
+      "gzipSha256": "7d0bf15a069630a2d44b2b79dd9d969cd608a3bd564ebf369daa8d470dc7b3c9",
+      "vitestSummary": "4 failed | 3 passed | 5 skipped (12)"
+    },
+    {
+      "receipt": "red-safety-five.receipt.json",
+      "log": "red-safety-five.log.raw.gz",
+      "command": "npm run test -- tests/unit/factory/production.test.ts -t 'forged adopted|omitted disabled|historical manual|passive manual clock|source native resource'",
+      "argv": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/factory/production.test.ts",
+        "-t",
+        "forged adopted|omitted disabled|historical manual|passive manual clock|source native resource"
+      ],
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T13:21:00.980210+00:00",
+      "exitCode": 1,
+      "durationSeconds": 3.0,
+      "rawBytes": 5581,
+      "rawSha256": "d0ea84f87a63f1678cd4386b240f2dda5a049e15721e092c911a9fca008f385e",
+      "gzipBytes": 1318,
+      "gzipSha256": "2a0e9f2f7238587aa19bf2b4dba4b6f99837ec0da6c22f2589ada663b231788a",
+      "vitestSummary": "5 failed | 7 skipped (12)"
+    },
+    {
+      "receipt": "red-noop-four.receipt.json",
+      "log": "red-noop-four.log.raw.gz",
+      "command": "npm run test -- tests/unit/factory/production.test.ts -t 'forged adopted'",
+      "argv": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/factory/production.test.ts",
+        "-t",
+        "forged adopted"
+      ],
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T13:23:32.039303+00:00",
+      "exitCode": 1,
+      "durationSeconds": 2.699,
+      "rawBytes": 2089,
+      "rawSha256": "e960e769797818c25276c24cd81225cd14a49924cb5df0c0f6eac8beee40c632",
+      "gzipBytes": 747,
+      "gzipSha256": "6c51a01d01fc7433102e9ffc8dd87595db22666ef3c7a3ab748f52d56f2c449c",
+      "vitestSummary": "4 failed | 11 skipped (15)"
+    },
+    {
+      "receipt": "green-authority-core-fifteen.receipt.json",
+      "log": "green-authority-core-fifteen.log.raw.gz",
+      "command": "npm run test -- tests/unit/factory/production.test.ts",
+      "argv": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/factory/production.test.ts"
+      ],
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T13:28:42.654664+00:00",
+      "exitCode": 1,
+      "durationSeconds": 51.694,
+      "rawBytes": 4201,
+      "rawSha256": "7720689beb7b9bc03ccd6b2483284e5e67dc09c1b67d8a84729f8ec44145222a",
+      "gzipBytes": 1157,
+      "gzipSha256": "93fa137e12f96843c46a4f5e8a7c04b091dad11f33953343b74e0e96cc41db3a",
+      "vitestSummary": "4 failed | 11 passed (15)"
+    },
+    {
+      "receipt": "profile-authority-core.receipt.json",
+      "log": "profile-authority-core.log.raw.gz",
+      "command": "node --cpu-prof --cpu-prof-dir=/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-authority-core node_modules/vitest/vitest.mjs run tests/unit/factory/production.test.ts -t FP06-T017",
+      "argv": [
+        "node",
+        "--cpu-prof",
+        "--cpu-prof-dir=/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-authority-core",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "tests/unit/factory/production.test.ts",
+        "-t",
+        "FP06-T017"
+      ],
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T13:33:07.826151+00:00",
+      "exitCode": 1,
+      "durationSeconds": 10.843,
+      "rawBytes": 1362,
+      "rawSha256": "111430f27427645f4398f70374eead8e75c3e042f8d11e43bae95c88cf57b896",
+      "gzipBytes": 663,
+      "gzipSha256": "6580eb796eadcea38f1e4477b32ec155f614ebbb80d425d11fd0ad33bfeb7046",
+      "productHashesBeforeCommand": [
+        {
+          "path": "src/factory/production/productionStep.ts",
+          "sha256": "76e6049a83e9530ecb1f96fe59b9b12a3087d1b0e5a5ddfbccb722d108d42b0b",
+          "bytes": 24810
+        },
+        {
+          "path": "src/factory/production/recipeAdmission.ts",
+          "sha256": "accb936c1059c0e77472ce594ea132f6cf3df6f968ca955e315dc76da6557f4f",
+          "bytes": 12650
+        },
+        {
+          "path": "tests/unit/factory/production.test.ts",
+          "sha256": "c0ded978af8f156dd93959bc19e9ae2f1685c0e0b95618282f18eca06e657b00",
+          "bytes": 22794
+        }
+      ],
+      "profileFiles": [
+        {
+          "path": "profile-authority-core/CPU.20261011.133307.56267.0.001.cpuprofile",
+          "bytes": 273247,
+          "sha256": "e5cf972d657bca3c02f51fe1ed1b3e283e7666597d7d96a43efc96a073277991"
+        },
+        {
+          "path": "profile-authority-core/CPU.20261011.133308.56292.0.001.cpuprofile",
+          "bytes": 914618,
+          "sha256": "3d4d3bd02fd1f3b2f228709820049025901427a59537e490f8620477198e3c55"
+        }
+      ],
+      "vitestSummary": "1 failed | 14 skipped (15)"
+    },
+    {
+      "receipt": "green-canonical-segments-fifteen.receipt.json",
+      "log": "green-canonical-segments-fifteen.log.raw.gz",
+      "command": "npm run test -- tests/unit/factory/production.test.ts",
+      "argv": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/factory/production.test.ts"
+      ],
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T13:39:47.742145+00:00",
+      "exitCode": 0,
+      "durationSeconds": 12.484,
+      "rawBytes": 353,
+      "rawSha256": "e375cb5f7a4abd551227c9fa8a7ee7083e0747a9fd45fe394dd7a1e7c4e7c1bf",
+      "gzipBytes": 259,
+      "gzipSha256": "f61751d480679abd99321bbe33a2ba3bccbb254067ea493036c35fb6bdbb62ad",
+      "productHashesBeforeCommand": [
+        {
+          "path": "src/factory/production/productionStep.ts",
+          "sha256": "3edb42c0bb5b151203cc1e0eea46d2cb00e20e053ec2da4dc7d8a0977c279ab3",
+          "bytes": 29124
+        },
+        {
+          "path": "src/factory/production/recipeAdmission.ts",
+          "sha256": "accb936c1059c0e77472ce594ea132f6cf3df6f968ca955e315dc76da6557f4f",
+          "bytes": 12650
+        },
+        {
+          "path": "tests/unit/factory/production.test.ts",
+          "sha256": "c0ded978af8f156dd93959bc19e9ae2f1685c0e0b95618282f18eca06e657b00",
+          "bytes": 22794
+        }
+      ],
+      "vitestSummary": "15 passed (15)"
+    },
+    {
+      "receipt": "red-closed-keys.receipt.json",
+      "log": "red-closed-keys.log.raw.gz",
+      "command": "npm run test -- tests/unit/factory/production.test.ts -t 'closed replay byte-binding'",
+      "argv": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/factory/production.test.ts",
+        "-t",
+        "closed replay byte-binding"
+      ],
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T13:45:28.678960+00:00",
+      "exitCode": 1,
+      "durationSeconds": 1.238,
+      "rawBytes": 1368,
+      "rawSha256": "39f1d813f9ec0869148aeb1b7162571e2e4d622db942a52c19da848cff8158ee",
+      "gzipBytes": 673,
+      "gzipSha256": "51d8bea0dcf9f9c4f54e0465804c2ba63f3c8a2b837fa7de68a481d5053d7b0c",
+      "vitestSummary": "1 failed | 15 skipped (16)"
+    },
+    {
+      "receipt": "green-final-affected.receipt.json",
+      "log": "green-final-affected.log.raw.gz",
+      "command": "npm run test -- tests/unit/factory/production.test.ts tests/unit/factory/material.test.ts tests/unit/factory/catalog.test.ts tests/unit/factory/power.test.ts tests/unit/factory/conveyor.test.ts tests/unit/resourceContainers.test.ts tests/unit/resourceCatalog.test.ts tests/unit/resourceTransfer.test.ts tests/unit/shipPowerAllocation.test.ts tests/unit/shipPowerThermalEvents.test.ts tests/unit/shipPowerThermalDeterminism.test.ts tests/unit/shipPowerThermalStep.test.ts tests/unit/shipPowerValidation.test.ts",
+      "argv": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/factory/production.test.ts",
+        "tests/unit/factory/material.test.ts",
+        "tests/unit/factory/catalog.test.ts",
+        "tests/unit/factory/power.test.ts",
+        "tests/unit/factory/conveyor.test.ts",
+        "tests/unit/resourceContainers.test.ts",
+        "tests/unit/resourceCatalog.test.ts",
+        "tests/unit/resourceTransfer.test.ts",
+        "tests/unit/shipPowerAllocation.test.ts",
+        "tests/unit/shipPowerThermalEvents.test.ts",
+        "tests/unit/shipPowerThermalDeterminism.test.ts",
+        "tests/unit/shipPowerThermalStep.test.ts",
+        "tests/unit/shipPowerValidation.test.ts"
+      ],
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T13:49:40.225323+00:00",
+      "productSnapshot": {
+        "src/factory/production/productionStep.ts": {
+          "sha256": "4fb7d6388ec2c6312beb4f0a31142184de29aefb6a44d39fc416de4493598ecb",
+          "bytes": 29119
+        },
+        "src/factory/production/recipeAdmission.ts": {
+          "sha256": "c77eeaa220cbb491c51356533bdd8f1e6d221f67e9406b458d4a6c06ebac4102",
+          "bytes": 12898
+        },
+        "tests/unit/factory/production.test.ts": {
+          "sha256": "7c31bf5f375af31c3ed0057cda4ce2a87951fff7412506fcab057c0d517769b6",
+          "bytes": 23542
+        }
+      },
+      "exitCode": 0,
+      "durationSeconds": 35.127,
+      "rawBytes": 813,
+      "rawSha256": "a42f1f75bde3239c8726e0ae256a7097d6fd34504df45b49634494209038ad37",
+      "gzipBytes": 369,
+      "gzipSha256": "3ef09c945020850a89b8ade3ef6f724bce9a1dba6f7ab6d9988f3f609ec836a6",
+      "vitestSummary": "175 passed (175)"
+    },
+    {
+      "receipt": "build-final.receipt.json",
+      "log": "build-final.log.raw.gz",
+      "command": "npm run build",
+      "argv": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T13:50:33.810275+00:00",
+      "productSnapshot": {
+        "src/factory/production/productionStep.ts": {
+          "sha256": "4fb7d6388ec2c6312beb4f0a31142184de29aefb6a44d39fc416de4493598ecb",
+          "bytes": 29119
+        },
+        "src/factory/production/recipeAdmission.ts": {
+          "sha256": "c77eeaa220cbb491c51356533bdd8f1e6d221f67e9406b458d4a6c06ebac4102",
+          "bytes": 12898
+        },
+        "tests/unit/factory/production.test.ts": {
+          "sha256": "7c31bf5f375af31c3ed0057cda4ce2a87951fff7412506fcab057c0d517769b6",
+          "bytes": 23542
+        }
+      },
+      "exitCode": 1,
+      "durationSeconds": 2.779,
+      "rawBytes": 170,
+      "rawSha256": "94b4e91ea8c9ff577457f6c20a5a1541f401771cfc3cfba180fe160a373f7e90",
+      "gzipBytes": 160,
+      "gzipSha256": "c32507afd4ea65c445c9cef4145f753ae5e2e0c955cb3e964e5c47e5a8ff838f",
+      "vitestSummary": null
+    },
+    {
+      "receipt": "green-type-narrowing.receipt.json",
+      "log": "green-type-narrowing.log.raw.gz",
+      "command": "npm run test -- tests/unit/factory/production.test.ts -t 'historical manual|manual REC05|manual actor|passive manual clock'",
+      "argv": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/factory/production.test.ts",
+        "-t",
+        "historical manual|manual REC05|manual actor|passive manual clock"
+      ],
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T13:51:17.089097+00:00",
+      "productSnapshot": {
+        "src/factory/production/productionStep.ts": {
+          "sha256": "f74397051a7b2da13d6d183ccf573cb633cb932e915e1ebaf6bf6a50da29c449",
+          "bytes": 29154
+        },
+        "src/factory/production/recipeAdmission.ts": {
+          "sha256": "c77eeaa220cbb491c51356533bdd8f1e6d221f67e9406b458d4a6c06ebac4102",
+          "bytes": 12898
+        },
+        "tests/unit/factory/production.test.ts": {
+          "sha256": "7c31bf5f375af31c3ed0057cda4ce2a87951fff7412506fcab057c0d517769b6",
+          "bytes": 23542
+        }
+      },
+      "exitCode": 0,
+      "durationSeconds": 3.331,
+      "rawBytes": 431,
+      "rawSha256": "5dd30b48b4e733daa26e7c4709927078880d7b1de0c4d47b31d75fcf88450d8e",
+      "gzipBytes": 303,
+      "gzipSha256": "d0edaacbebd4285bdca3b28ef658cd3e306cbc0a8a6c25c9221e7792f0925be0",
+      "vitestSummary": "4 passed | 12 skipped (16)"
+    },
+    {
+      "receipt": "build-final-type-fixed.receipt.json",
+      "log": "build-final-type-fixed.log.raw.gz",
+      "command": "npm run build",
+      "argv": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T13:51:20.420646+00:00",
+      "productSnapshot": {
+        "src/factory/production/productionStep.ts": {
+          "sha256": "f74397051a7b2da13d6d183ccf573cb633cb932e915e1ebaf6bf6a50da29c449",
+          "bytes": 29154
+        },
+        "src/factory/production/recipeAdmission.ts": {
+          "sha256": "c77eeaa220cbb491c51356533bdd8f1e6d221f67e9406b458d4a6c06ebac4102",
+          "bytes": 12898
+        },
+        "tests/unit/factory/production.test.ts": {
+          "sha256": "7c31bf5f375af31c3ed0057cda4ce2a87951fff7412506fcab057c0d517769b6",
+          "bytes": 23542
+        }
+      },
+      "exitCode": 0,
+      "durationSeconds": 4.338,
+      "rawBytes": 1207,
+      "rawSha256": "cfe97538d24cb2241010395ae8cbcb43a549f7e57926c1349624e179b521535c",
+      "gzipBytes": 659,
+      "gzipSha256": "f8a2cc54c482ba105930a94aee771ed87e0a4df4b904c38e34947ee1a97adc0b",
+      "vitestSummary": null
+    }
+  ],
+  "gzipRawIntegrityChecks": [
+    {
+      "path": "profile-authority-core.log.raw.gz",
+      "rawBytes": 1362,
+      "rawSha256": "111430f27427645f4398f70374eead8e75c3e042f8d11e43bae95c88cf57b896",
+      "gzipSha256": "6580eb796eadcea38f1e4477b32ec155f614ebbb80d425d11fd0ad33bfeb7046",
+      "contemporaneousRawReceipt": "profile-authority-core.receipt.json",
+      "result": "PASS"
+    },
+    {
+      "path": "green-byte-cache-original-seven.log.raw.gz",
+      "rawBytes": 4270,
+      "rawSha256": "4ad1b1015519eba3740d316fd259e1cd9d43d9d879207a74676074ed8b8ed8f5",
+      "gzipSha256": "7d0bf15a069630a2d44b2b79dd9d969cd608a3bd564ebf369daa8d470dc7b3c9",
+      "contemporaneousRawReceipt": "green-byte-cache-original-seven.receipt.json",
+      "result": "PASS"
+    },
+    {
+      "path": "red-noop-four.log.raw.gz",
+      "rawBytes": 2089,
+      "rawSha256": "e960e769797818c25276c24cd81225cd14a49924cb5df0c0f6eac8beee40c632",
+      "gzipSha256": "6c51a01d01fc7433102e9ffc8dd87595db22666ef3c7a3ab748f52d56f2c449c",
+      "contemporaneousRawReceipt": "red-noop-four.receipt.json",
+      "result": "PASS"
+    },
+    {
+      "path": "green-authority-core-fifteen.log.raw.gz",
+      "rawBytes": 4201,
+      "rawSha256": "7720689beb7b9bc03ccd6b2483284e5e67dc09c1b67d8a84729f8ec44145222a",
+      "gzipSha256": "93fa137e12f96843c46a4f5e8a7c04b091dad11f33953343b74e0e96cc41db3a",
+      "contemporaneousRawReceipt": "green-authority-core-fifteen.receipt.json",
+      "result": "PASS"
+    },
+    {
+      "path": "green-attempt-1.log.raw.gz",
+      "rawBytes": 4199,
+      "rawSha256": "5bbcdfe813d4cc3bcdc7fd893328e0120cd7a1c0d94c995a039d9207e9a64236",
+      "gzipSha256": "791786c51fef4fb130fd8f5bd9dac4e0f981cc89c91f49c22c8b42db50c6a9c6",
+      "contemporaneousRawReceipt": "green-attempt-1.receipt.json",
+      "result": "PASS"
+    },
+    {
+      "path": "red-safety-five.log.raw.gz",
+      "rawBytes": 5581,
+      "rawSha256": "d0ea84f87a63f1678cd4386b240f2dda5a049e15721e092c911a9fca008f385e",
+      "gzipSha256": "2a0e9f2f7238587aa19bf2b4dba4b6f99837ec0da6c22f2589ada663b231788a",
+      "contemporaneousRawReceipt": "red-safety-five.receipt.json",
+      "result": "PASS"
+    },
+    {
+      "path": "build-final-type-fixed.log.raw.gz",
+      "rawBytes": 1207,
+      "rawSha256": "cfe97538d24cb2241010395ae8cbcb43a549f7e57926c1349624e179b521535c",
+      "gzipSha256": "f8a2cc54c482ba105930a94aee771ed87e0a4df4b904c38e34947ee1a97adc0b",
+      "contemporaneousRawReceipt": "build-final-type-fixed.receipt.json",
+      "result": "PASS"
+    },
+    {
+      "path": "profile-before-byte-cache.log.raw.gz",
+      "rawBytes": 1358,
+      "rawSha256": "d73efc8f24676458294102f904f57d37fd4a8e5da672b47741d87608bf4536a8",
+      "gzipSha256": "494948c17f9adc6b82e77518ec24777762eab759656906beb59b96fc4148c4e5",
+      "contemporaneousRawReceipt": "profile-before-byte-cache.receipt.json",
+      "result": "PASS"
+    },
+    {
+      "path": "green-canonical-segments-fifteen.log.raw.gz",
+      "rawBytes": 353,
+      "rawSha256": "e375cb5f7a4abd551227c9fa8a7ee7083e0747a9fd45fe394dd7a1e7c4e7c1bf",
+      "gzipSha256": "f61751d480679abd99321bbe33a2ba3bccbb254067ea493036c35fb6bdbb62ad",
+      "contemporaneousRawReceipt": "green-canonical-segments-fifteen.receipt.json",
+      "result": "PASS"
+    },
+    {
+      "path": "red-initial.log.raw.gz",
+      "rawBytes": 7699,
+      "rawSha256": "a6412b4150991b94be23519e20b70ecd8bb7133dca9e649c6625bb0aba122a73",
+      "gzipSha256": "09085ad17576670de43e980c943f9eab79ec799e097e2981729ccaa6452dc8a3",
+      "contemporaneousRawReceipt": "red-initial.receipt.json",
+      "result": "PASS"
+    },
+    {
+      "path": "green-type-narrowing.log.raw.gz",
+      "rawBytes": 431,
+      "rawSha256": "5dd30b48b4e733daa26e7c4709927078880d7b1de0c4d47b31d75fcf88450d8e",
+      "gzipSha256": "d0edaacbebd4285bdca3b28ef658cd3e306cbc0a8a6c25c9221e7792f0925be0",
+      "contemporaneousRawReceipt": "green-type-narrowing.receipt.json",
+      "result": "PASS"
+    },
+    {
+      "path": "red-closed-keys.log.raw.gz",
+      "rawBytes": 1368,
+      "rawSha256": "39f1d813f9ec0869148aeb1b7162571e2e4d622db942a52c19da848cff8158ee",
+      "gzipSha256": "51d8bea0dcf9f9c4f54e0465804c2ba63f3c8a2b837fa7de68a481d5053d7b0c",
+      "contemporaneousRawReceipt": "red-closed-keys.receipt.json",
+      "result": "PASS"
+    },
+    {
+      "path": "green-final-affected.log.raw.gz",
+      "rawBytes": 813,
+      "rawSha256": "a42f1f75bde3239c8726e0ae256a7097d6fd34504df45b49634494209038ad37",
+      "gzipSha256": "3ef09c945020850a89b8ade3ef6f724bce9a1dba6f7ab6d9988f3f609ec836a6",
+      "contemporaneousRawReceipt": "green-final-affected.receipt.json",
+      "result": "PASS"
+    },
+    {
+      "path": "build-final.log.raw.gz",
+      "rawBytes": 170,
+      "rawSha256": "94b4e91ea8c9ff577457f6c20a5a1541f401771cfc3cfba180fe160a373f7e90",
+      "gzipSha256": "c32507afd4ea65c445c9cef4145f753ae5e2e0c955cb3e964e5c47e5a8ff838f",
+      "contemporaneousRawReceipt": "build-final.receipt.json",
+      "result": "PASS"
+    }
+  ],
+  "latestResults": {
+    "productionCases": {
+      "status": "PASS",
+      "count": 16,
+      "receipt": "green-final-affected.receipt.json"
+    },
+    "affectedRegressions": {
+      "status": "PASS",
+      "count": 159,
+      "totalFiles": 13,
+      "receipt": "green-final-affected.receipt.json"
+    },
+    "postTypeNarrowingCases": {
+      "status": "PASS",
+      "passed": 4,
+      "skipped": 12,
+      "receipt": "green-type-narrowing.receipt.json"
+    },
+    "build": {
+      "status": "PASS",
+      "receipt": "build-final-type-fixed.receipt.json"
+    },
+    "independentSpecReview": "NOT_RUN",
+    "independentQualityReview": "NOT_RUN",
+    "commitGitLfsAdmission": "NOT_RUN",
+    "nativeBrowserIntegration": "NOT_RUN",
+    "combinedWorldSaveRecovery": "NOT_RUN"
+  },
+  "bindingNotes": [
+    "Final175test suite Step hash4fb7d6388ec2c6312beb4f0a31142184de29aefb6a44d39fc416de4493598ecb precedes only local const commandId type narrowing; final4 affected cases and full build bind all final product hashes.",
+    "Child npm exits are actual results; evidence wrappers return0 after successfully capturing both PASS and FAIL.",
+    "Initial genuine7assertionRED first failed Prepared admission in each test; downstream recipe assertions were not reached before implementation.",
+    "All prior timeouts and safety failures remain historical FAIL; no limit/recipe steps/queue changes.",
+    "14rawgzip original log receipts include contemporaneous precompression raw SHA and bytes. Complete current gzip CRC and lossless raw SHA recheck passes.",
+    "No native World/Power atomic adoption, browser or W10 save admission is claimed from pure synthetic Host fixtures."
+  ]
+}

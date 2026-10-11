@@ -1,0 +1,44 @@
+{
+  "command": "npm run test -- tests/unit/factory/production.test.ts tests/unit/factory/material.test.ts tests/unit/factory/catalog.test.ts tests/unit/factory/power.test.ts tests/unit/factory/conveyor.test.ts tests/unit/resourceContainers.test.ts tests/unit/resourceCatalog.test.ts tests/unit/resourceTransfer.test.ts tests/unit/shipPowerAllocation.test.ts tests/unit/shipPowerThermalEvents.test.ts tests/unit/shipPowerThermalDeterminism.test.ts tests/unit/shipPowerThermalStep.test.ts tests/unit/shipPowerValidation.test.ts",
+  "argv": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/production.test.ts",
+    "tests/unit/factory/material.test.ts",
+    "tests/unit/factory/catalog.test.ts",
+    "tests/unit/factory/power.test.ts",
+    "tests/unit/factory/conveyor.test.ts",
+    "tests/unit/resourceContainers.test.ts",
+    "tests/unit/resourceCatalog.test.ts",
+    "tests/unit/resourceTransfer.test.ts",
+    "tests/unit/shipPowerAllocation.test.ts",
+    "tests/unit/shipPowerThermalEvents.test.ts",
+    "tests/unit/shipPowerThermalDeterminism.test.ts",
+    "tests/unit/shipPowerThermalStep.test.ts",
+    "tests/unit/shipPowerValidation.test.ts"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T13:49:40.225323+00:00",
+  "productSnapshot": {
+    "src/factory/production/productionStep.ts": {
+      "sha256": "4fb7d6388ec2c6312beb4f0a31142184de29aefb6a44d39fc416de4493598ecb",
+      "bytes": 29119
+    },
+    "src/factory/production/recipeAdmission.ts": {
+      "sha256": "c77eeaa220cbb491c51356533bdd8f1e6d221f67e9406b458d4a6c06ebac4102",
+      "bytes": 12898
+    },
+    "tests/unit/factory/production.test.ts": {
+      "sha256": "7c31bf5f375af31c3ed0057cda4ce2a87951fff7412506fcab057c0d517769b6",
+      "bytes": 23542
+    }
+  },
+  "exitCode": 0,
+  "durationSeconds": 35.127,
+  "rawBytes": 813,
+  "rawSha256": "a42f1f75bde3239c8726e0ae256a7097d6fd34504df45b49634494209038ad37",
+  "gzipBytes": 369,
+  "gzipSha256": "3ef09c945020850a89b8ade3ef6f724bce9a1dba6f7ab6d9988f3f609ec836a6"
+}

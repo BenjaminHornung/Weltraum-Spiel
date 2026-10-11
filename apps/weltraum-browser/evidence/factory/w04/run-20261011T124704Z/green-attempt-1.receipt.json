@@ -1,0 +1,16 @@
+{
+  "command": "npm run test -- tests/unit/factory/production.test.ts",
+  "argv": [
+    "bash",
+    "-lc",
+    "source /workspace/.cloud-setup/activate.sh\nexec npm run test -- tests/unit/factory/production.test.ts"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T13:03:13.482653+00:00",
+  "exitCode": 1,
+  "durationSeconds": 51.617,
+  "rawBytes": 4199,
+  "rawSha256": "5bbcdfe813d4cc3bcdc7fd893328e0120cd7a1c0d94c995a039d9207e9a64236",
+  "gzipBytes": 1157,
+  "gzipSha256": "791786c51fef4fb130fd8f5bd9dac4e0f981cc89c91f49c22c8b42db50c6a9c6"
+}

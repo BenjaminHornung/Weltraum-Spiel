@@ -1,0 +1,20 @@
+{
+  "command": "npm run test -- tests/unit/factory/production.test.ts -t 'closed replay byte-binding'",
+  "argv": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/production.test.ts",
+    "-t",
+    "closed replay byte-binding"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T13:45:28.678960+00:00",
+  "exitCode": 1,
+  "durationSeconds": 1.238,
+  "rawBytes": 1368,
+  "rawSha256": "39f1d813f9ec0869148aeb1b7162571e2e4d622db942a52c19da848cff8158ee",
+  "gzipBytes": 673,
+  "gzipSha256": "51d8bea0dcf9f9c4f54e0465804c2ba63f3c8a2b837fa7de68a481d5053d7b0c"
+}

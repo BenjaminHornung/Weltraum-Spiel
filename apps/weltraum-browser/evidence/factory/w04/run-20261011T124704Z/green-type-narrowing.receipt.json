@@ -1,0 +1,34 @@
+{
+  "command": "npm run test -- tests/unit/factory/production.test.ts -t 'historical manual|manual REC05|manual actor|passive manual clock'",
+  "argv": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/production.test.ts",
+    "-t",
+    "historical manual|manual REC05|manual actor|passive manual clock"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T13:51:17.089097+00:00",
+  "productSnapshot": {
+    "src/factory/production/productionStep.ts": {
+      "sha256": "f74397051a7b2da13d6d183ccf573cb633cb932e915e1ebaf6bf6a50da29c449",
+      "bytes": 29154
+    },
+    "src/factory/production/recipeAdmission.ts": {
+      "sha256": "c77eeaa220cbb491c51356533bdd8f1e6d221f67e9406b458d4a6c06ebac4102",
+      "bytes": 12898
+    },
+    "tests/unit/factory/production.test.ts": {
+      "sha256": "7c31bf5f375af31c3ed0057cda4ce2a87951fff7412506fcab057c0d517769b6",
+      "bytes": 23542
+    }
+  },
+  "exitCode": 0,
+  "durationSeconds": 3.331,
+  "rawBytes": 431,
+  "rawSha256": "5dd30b48b4e733daa26e7c4709927078880d7b1de0c4d47b31d75fcf88450d8e",
+  "gzipBytes": 303,
+  "gzipSha256": "d0edaacbebd4285bdca3b28ef658cd3e306cbc0a8a6c25c9221e7792f0925be0"
+}

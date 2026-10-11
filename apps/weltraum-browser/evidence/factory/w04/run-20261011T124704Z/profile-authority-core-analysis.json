@@ -1,0 +1,237 @@
+{
+  "method": "V8 samples weighted by contemporaneous timeDeltas; categories include samples having a named matching ancestor; categories overlap, percentages must not be added; no instrumentation/limits altered",
+  "profiles": [
+    {
+      "profile": "profile-authority-core/CPU.20261011.133307.56267.0.001.cpuprofile",
+      "sha256": "e5cf972d657bca3c02f51fe1ed1b3e283e7666597d7d96a43efc96a073277991",
+      "sampledMicroseconds": 10805364,
+      "inclusiveStackCategories": [],
+      "topSelfSamples": [
+        {
+          "function": "(idle)",
+          "url": "",
+          "microseconds": 10242643,
+          "percent": 94.79
+        },
+        {
+          "function": "(garbage collector)",
+          "url": "",
+          "microseconds": 71578,
+          "percent": 0.66
+        },
+        {
+          "function": "compileSourceTextModule",
+          "url": "node:internal/modules/esm/utils",
+          "microseconds": 69723,
+          "percent": 0.65
+        },
+        {
+          "function": "",
+          "url": "file:///workspace/Weltraum-Spiel/apps/weltraum-browser/node_modules/vite/dist/node/chunks/node.js",
+          "microseconds": 29127,
+          "percent": 0.27
+        },
+        {
+          "function": "(program)",
+          "url": "",
+          "microseconds": 19263,
+          "percent": 0.18
+        },
+        {
+          "function": "encode$1",
+          "url": "file:///workspace/Weltraum-Spiel/apps/weltraum-browser/node_modules/vite/dist/node/chunks/node.js",
+          "microseconds": 16156,
+          "percent": 0.15
+        },
+        {
+          "function": "jsonParseAst",
+          "url": "file:///workspace/Weltraum-Spiel/apps/weltraum-browser/node_modules/rolldown/dist/shared/parse-D4dtlfWy.mjs",
+          "microseconds": 13931,
+          "percent": 0.13
+        },
+        {
+          "function": "",
+          "url": "file:///workspace/Weltraum-Spiel/apps/weltraum-browser/node_modules/rolldown/dist/shared/rolldown-build-CtPvmZgJ.mjs",
+          "microseconds": 11892,
+          "percent": 0.11
+        },
+        {
+          "function": "writeBuffer",
+          "url": "",
+          "microseconds": 11697,
+          "percent": 0.11
+        },
+        {
+          "function": "addUneditedChunk",
+          "url": "file:///workspace/Weltraum-Spiel/apps/weltraum-browser/node_modules/vite/dist/node/chunks/node.js",
+          "microseconds": 11050,
+          "percent": 0.1
+        },
+        {
+          "function": "transformSync",
+          "url": "file:///workspace/Weltraum-Spiel/apps/weltraum-browser/node_modules/rolldown/dist/shared/resolve-tsconfig-DxqIJB3x.mjs",
+          "microseconds": 9820,
+          "percent": 0.09
+        },
+        {
+          "function": "compileForInternalLoader",
+          "url": "node:internal/bootstrap/realm",
+          "microseconds": 9810,
+          "percent": 0.09
+        },
+        {
+          "function": "enter",
+          "url": "file:///workspace/Weltraum-Spiel/apps/weltraum-browser/node_modules/vite/dist/node/chunks/node.js",
+          "microseconds": 7800,
+          "percent": 0.07
+        },
+        {
+          "function": "__require",
+          "url": "node:internal/deps/undici/undici",
+          "microseconds": 6744,
+          "percent": 0.06
+        },
+        {
+          "function": "visit",
+          "url": "file:///workspace/Weltraum-Spiel/apps/weltraum-browser/node_modules/vite/dist/node/chunks/node.js",
+          "microseconds": 6603,
+          "percent": 0.06
+        }
+      ]
+    },
+    {
+      "profile": "profile-authority-core/CPU.20261011.133308.56292.0.001.cpuprofile",
+      "sha256": "3d4d3bd02fd1f3b2f228709820049025901427a59537e490f8620477198e3c55",
+      "sampledMicroseconds": 10471098,
+      "inclusiveStackCategories": [
+        {
+          "category": "canonicalSerialization",
+          "microseconds": 7556503,
+          "percent": 72.17
+        },
+        {
+          "category": "commitFactoryProductionStep",
+          "microseconds": 6405186,
+          "percent": 61.17
+        },
+        {
+          "category": "stepFactoryProduction",
+          "microseconds": 4854211,
+          "percent": 46.36
+        },
+        {
+          "category": "proposalBytes",
+          "microseconds": 2596210,
+          "percent": 24.79
+        },
+        {
+          "category": "validateState",
+          "microseconds": 2274862,
+          "percent": 21.73
+        },
+        {
+          "category": "inputBytes",
+          "microseconds": 935116,
+          "percent": 8.93
+        },
+        {
+          "category": "stateCore",
+          "microseconds": 160478,
+          "percent": 1.53
+        }
+      ],
+      "topSelfSamples": [
+        {
+          "function": "serializeCanonicalJson",
+          "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser/src/resources/serialization.ts",
+          "microseconds": 6847890,
+          "percent": 65.4
+        },
+        {
+          "function": "validateState",
+          "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser/src/factory/production/productionStep.ts",
+          "microseconds": 1006686,
+          "percent": 9.61
+        },
+        {
+          "function": "(garbage collector)",
+          "url": "",
+          "microseconds": 665149,
+          "percent": 6.35
+        },
+        {
+          "function": "commitFactoryProductionStep",
+          "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser/src/factory/production/productionStep.ts",
+          "microseconds": 437947,
+          "percent": 4.18
+        },
+        {
+          "function": "canonicalize",
+          "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser/src/resources/serialization.ts",
+          "microseconds": 266522,
+          "percent": 2.55
+        },
+        {
+          "function": "(idle)",
+          "url": "",
+          "microseconds": 246953,
+          "percent": 2.36
+        },
+        {
+          "function": "defineCanonicalProperty",
+          "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser/src/resources/serialization.ts",
+          "microseconds": 224496,
+          "percent": 2.14
+        },
+        {
+          "function": "",
+          "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser/src/resources/serialization.ts",
+          "microseconds": 142324,
+          "percent": 1.36
+        },
+        {
+          "function": "admitFactoryRecipe",
+          "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser/src/factory/production/recipeAdmission.ts",
+          "microseconds": 44598,
+          "percent": 0.43
+        },
+        {
+          "function": "fnv1aHash",
+          "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser/src/core/hash.ts",
+          "microseconds": 40130,
+          "percent": 0.38
+        },
+        {
+          "function": "compileSourceTextModule",
+          "url": "node:internal/modules/esm/utils",
+          "microseconds": 21628,
+          "percent": 0.21
+        },
+        {
+          "function": "isImmutableProductionData",
+          "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser/src/factory/production/recipeAdmission.ts",
+          "microseconds": 21288,
+          "percent": 0.2
+        },
+        {
+          "function": "stepFactoryProduction",
+          "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser/src/factory/production/productionStep.ts",
+          "microseconds": 17096,
+          "percent": 0.16
+        },
+        {
+          "function": "stepFactoryPower",
+          "url": "file:///workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser/src/factory/power/factoryPower.ts",
+          "microseconds": 17032,
+          "percent": 0.16
+        },
+        {
+          "function": "setState",
+          "url": "file:///workspace/Weltraum-Spiel/apps/weltraum-browser/node_modules/@vitest/expect/dist/index.js",
+          "microseconds": 16425,
+          "percent": 0.16
+        }
+      ]
+    }
+  ]
+}

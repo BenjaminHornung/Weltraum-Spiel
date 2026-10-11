@@ -1,0 +1,33 @@
+{
+  "command": "node --cpu-prof --cpu-prof-dir=/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-before-byte-cache node_modules/vitest/vitest.mjs run tests/unit/factory/production.test.ts -t FP06-T017",
+  "argv": [
+    "node",
+    "--cpu-prof",
+    "--cpu-prof-dir=/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-before-byte-cache",
+    "node_modules/vitest/vitest.mjs",
+    "run",
+    "tests/unit/factory/production.test.ts",
+    "-t",
+    "FP06-T017"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T13:11:11.193732+00:00",
+  "exitCode": 1,
+  "durationSeconds": 11.547,
+  "rawBytes": 1358,
+  "rawSha256": "d73efc8f24676458294102f904f57d37fd4a8e5da672b47741d87608bf4536a8",
+  "gzipBytes": 662,
+  "gzipSha256": "494948c17f9adc6b82e77518ec24777762eab759656906beb59b96fc4148c4e5",
+  "profileFiles": [
+    {
+      "path": "profile-before-byte-cache/CPU.20261011.131111.53669.0.001.cpuprofile",
+      "bytes": 293738,
+      "sha256": "2b190bdcc026d32620e3260bc29a539c6a883ba3254f44cf5b85b0ea3d918929"
+    },
+    {
+      "path": "profile-before-byte-cache/CPU.20261011.131111.53694.0.001.cpuprofile",
+      "bytes": 915150,
+      "sha256": "877bcad25134a7b156579cb54f3581dc2cb433ac810c75b591224efa9ac9514b"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "command": "node --cpu-prof --cpu-prof-dir=/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-authority-core node_modules/vitest/vitest.mjs run tests/unit/factory/production.test.ts -t FP06-T017",
+  "argv": [
+    "node",
+    "--cpu-prof",
+    "--cpu-prof-dir=/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-authority-core",
+    "node_modules/vitest/vitest.mjs",
+    "run",
+    "tests/unit/factory/production.test.ts",
+    "-t",
+    "FP06-T017"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T13:33:07.826151+00:00",
+  "exitCode": 1,
+  "durationSeconds": 10.843,
+  "rawBytes": 1362,
+  "rawSha256": "111430f27427645f4398f70374eead8e75c3e042f8d11e43bae95c88cf57b896",
+  "gzipBytes": 663,
+  "gzipSha256": "6580eb796eadcea38f1e4477b32ec155f614ebbb80d425d11fd0ad33bfeb7046",
+  "productHashesBeforeCommand": [
+    {
+      "path": "src/factory/production/productionStep.ts",
+      "sha256": "76e6049a83e9530ecb1f96fe59b9b12a3087d1b0e5a5ddfbccb722d108d42b0b",
+      "bytes": 24810
+    },
+    {
+      "path": "src/factory/production/recipeAdmission.ts",
+      "sha256": "accb936c1059c0e77472ce594ea132f6cf3df6f968ca955e315dc76da6557f4f",
+      "bytes": 12650
+    },
+    {
+      "path": "tests/unit/factory/production.test.ts",
+      "sha256": "c0ded978af8f156dd93959bc19e9ae2f1685c0e0b95618282f18eca06e657b00",
+      "bytes": 22794
+    }
+  ],
+  "profileFiles": [
+    {
+      "path": "profile-authority-core/CPU.20261011.133307.56267.0.001.cpuprofile",
+      "bytes": 273247,
+      "sha256": "e5cf972d657bca3c02f51fe1ed1b3e283e7666597d7d96a43efc96a073277991"
+    },
+    {
+      "path": "profile-authority-core/CPU.20261011.133308.56292.0.001.cpuprofile",
+      "bytes": 914618,
+      "sha256": "3d4d3bd02fd1f3b2f228709820049025901427a59537e490f8620477198e3c55"
+    }
+  ]
+}

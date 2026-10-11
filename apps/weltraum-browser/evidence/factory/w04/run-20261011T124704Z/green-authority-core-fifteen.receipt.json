@@ -1,0 +1,18 @@
+{
+  "command": "npm run test -- tests/unit/factory/production.test.ts",
+  "argv": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/production.test.ts"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T13:28:42.654664+00:00",
+  "exitCode": 1,
+  "durationSeconds": 51.694,
+  "rawBytes": 4201,
+  "rawSha256": "7720689beb7b9bc03ccd6b2483284e5e67dc09c1b67d8a84729f8ec44145222a",
+  "gzipBytes": 1157,
+  "gzipSha256": "93fa137e12f96843c46a4f5e8a7c04b091dad11f33953343b74e0e96cc41db3a"
+}

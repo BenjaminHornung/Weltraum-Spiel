@@ -1,0 +1,20 @@
+{
+  "command": "npm run test -- tests/unit/factory/production.test.ts -t 'FP06-T0|holds stale|manual REC05|manual actor'",
+  "argv": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/production.test.ts",
+    "-t",
+    "FP06-T0|holds stale|manual REC05|manual actor"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T13:20:09.271427+00:00",
+  "exitCode": 1,
+  "durationSeconds": 34.292,
+  "rawBytes": 4270,
+  "rawSha256": "4ad1b1015519eba3740d316fd259e1cd9d43d9d879207a74676074ed8b8ed8f5",
+  "gzipBytes": 1188,
+  "gzipSha256": "7d0bf15a069630a2d44b2b79dd9d969cd608a3bd564ebf369daa8d470dc7b3c9"
+}

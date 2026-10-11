@@ -1,0 +1,3 @@
+# W04 source-bound production
+
+Seven collected business cases first: T017–20, stale/forged paired commit, manual ordered work and manual authority rejection. Then minimum CUT/Former/manual implementation, focused tests, affected Material/Power/Conveyor regressions and build. Exact three product paths only. No browser/native/save completion claim. Current own basis1f2c568ec9db7b6b2895eb2a3b4f37797030dac8; W02/W03/W05/W08 reviewed. MaterialOutput targetContainerId supports separate product and actual offcut cassette. Manual REC05 retains null duration and explicit Host commands, no automatic work.
