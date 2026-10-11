@@ -1,0 +1,26 @@
+--- a/apps/weltraum-browser/tests/e2e/factory-placement.spec.ts
++++ b/apps/weltraum-browser/tests/e2e/factory-placement.spec.ts
+@@ -53,17 +53,18 @@
+       const up=new Promise<void>(resolve=>setTimeout(resolve,holdMs)).then(async()=>{
+         driverTimes.upIssuedMs=performance.now();await page.keyboard.up(key);driverTimes.upAckMs=performance.now();
+       });
+-      let results:PromiseSettledResult<void>[];
+-      try{results=await Promise.allSettled([down,up]);}
++      const failures:unknown[]=[];
++      try{for(const result of await Promise.allSettled([down,up]))if(result.status==="rejected")failures.push(result.reason);}
+       finally{
+         // Fresh release after both requests settles any protocol-hook reordering.
+         try{driverTimes.finalUpIssuedMs=performance.now();await page.keyboard.up(key);driverTimes.finalUpAckMs=performance.now();}
+         catch(releaseError){
+-          try{await context.close();}catch(closeError){throw new AggregateError([releaseError,closeError],"Trusted keyboard final release and context close failed");}
+-          throw releaseError;
++          failures.push(releaseError);
++          try{await context.close();}catch(closeError){failures.push(closeError);}
+         }
+       }
+-      const failed=results.find(result=>result.status==="rejected");if(failed?.status==="rejected")throw failed.reason;
++      if(failures.length===1)throw failures[0];
++      if(failures.length>1)throw new AggregateError(failures,"Trusted keyboard gesture or final release failed");
+       let after=await readNative(page);const releasedReads=[after];
+       // Every key is already released. Observe bounded real tick/pose readbacks;
+       // delayed neutral delivery must settle before the next corrective press.

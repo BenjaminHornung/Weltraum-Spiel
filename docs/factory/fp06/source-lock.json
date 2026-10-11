@@ -1380,7 +1380,7 @@
         "Cargo provenance alone is not physical reach: initial source must be bound to a real Cargo-S0 world owner, native pose and access outside the 22 x 12 m machine zone. W07 handles initial witness/open and a truly reachable paid player build; W09 handles finite pickup, confirmed native movement and local deposit for remote construction/production. No new terrain masks, cargo, UI source-pose writes or automatic transport. New exact paths require a separate recorded scope extension; existing grants remain unchanged."
       ],
       "baseCommitSha": "d5502ae7fd5431d58eda51bea062c54691ebe3c2",
-      "implementationWriteHold": false,
+      "implementationWriteHold": true,
       "authorizedAtUtc": "2026-10-11T13:11:16.765614+00:00",
       "completedAtUtc": null,
       "tddInitialStatus": {
@@ -1716,25 +1716,23 @@
         }
       ],
       "currentProductSeal": {
-        "sealedAtUtc": "2026-10-11T17:13:55.109085+00:00",
-        "patch": "docs/factory/fp06/reviews/w07-adaptive-normal-input-product.patch",
-        "patchSha256": "d0ffea608460855527057e6bdc057a0ded1b82e27ba909fd29dde933a4780f88",
-        "patchBytes": 241545,
-        "fileHashes": "docs/factory/fp06/reviews/w07-adaptive-normal-input-product-files.json",
-        "fileHashesSha256": "f36718d5fb01a28b3bbb0654269bc7b022aeb2a90300363700bf4ed7fd4f2e1d",
+        "sealedAtUtc": "2026-10-11T17:38:58.776983+00:00",
+        "patch": "docs/factory/fp06/reviews/w07-trusted-key-errors-final-product.patch",
+        "patchSha256": "7a2a35cebc06ca99ef7f143a1c52066a3402507e5462d41baf26cba1f6cef563",
+        "patchBytes": 242594,
+        "fileHashes": "docs/factory/fp06/reviews/w07-trusted-key-errors-final-product-files.json",
+        "fileHashesSha256": "b1ae0d339edefdcc06d387eb9581b85bb8530cac7980e99e3a43549b87303a89",
         "grantedPaths": 30,
         "actualChangedProductPaths": 28,
-        "exactPriorPreparingDeltaPaths": [
+        "exactPriorDriver84DeltaPaths": [
           "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
         ],
         "allOther29HeldMatch": true,
-        "phase": "E2E_ONLY_FINE_NORMAL_GESTURE_PRE_BROWSER",
+        "phase": "E2E_TRUSTED_KEYBOARD_ERROR_PROVENANCE_FINAL_PRE_BROWSER",
         "packageCommitSha": null,
-        "rootProof": "docs/factory/fp06/reviews/w07-adaptive-normal-root-proof.json"
+        "rootProof": "docs/factory/fp06/reviews/w07-trusted-key-errors-final-root-proof.json"
       },
-      "currentNarrowWriteSet": [
-        "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
-      ],
+      "currentNarrowWriteSet": [],
       "currentNarrowScope": "One E2E-only bounded adaptive fine-key diagnostic; all other28 product paths held at Ninth seal",
       "browserSeventhActual": {
         "log": 51,
@@ -2385,7 +2383,7 @@
         "gate": "Targeted11 only; full17 and package remain NOT_RUN/FAIL until actual results",
         "status": "EXECUTED83_FAIL_CPU_GPU_PORT_RELEASED"
       },
-      "cpuGpuPortLease": "EXCLUSIVE_BUILD_ONLY",
+      "cpuGpuPortLease": "EXCLUSIVE_5174",
       "adaptiveNormalVerificationActual": {
         "log": 83,
         "selected": 11,
@@ -2416,7 +2414,7 @@
         "unchanged": "All29othersHOLD, samePage/World/trustedkeys, original30s/max8X16Z/max4Readbacks/standFloatReach/material/Native60Hz/pending8deadline20s; noAuthorityeval/hooks/inputlatch/terrain/tick/queue/dependency changes",
         "execution": "CPU_EXCLUSIVE_ORIGINAL_BUILD_ONLY_THEN_NEW30SEAL_INDEPENDENT_REVIEW",
         "browser": "NOT_GRANTED_AFTER_SOURCE_CHANGE",
-        "status": "AUTHORIZED_NOT_RUN"
+        "status": "EXECUTED_E2E_ONLY_BUILD84_PASS_PRODUCT_HOLD_SEAL_PENDING"
       },
       "trustedKeyboardDriverPreflight": [
         {
@@ -2437,7 +2435,93 @@
           "normalization": "Final newline only",
           "scope": "READONLY_SOURCE_OR_EXISTING_EVIDENCE_NOT_RUNTIME_ACCEPTANCE"
         }
-      ]
+      ],
+      "trustedKeyboardDriverBuild": {
+        "log": 84,
+        "receipt": "apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/84-independent-trusted-key-driver-full-build-command.json",
+        "result": "ORIGINAL_FULL_TYPESCRIPT_VITE_PASS",
+        "endUtc": "2026-10-11T17:31:43.305245+00:00",
+        "wrapperSeconds": 4.294090726001741,
+        "rawBytes": 1904,
+        "rawSha256": "815293b8137b1d391ec753c17bea067a1fe43906c18b6f955410abbf82e4d1b6",
+        "rootRawVerification": "Gzip-decompressed exact receipt bytes/SHA"
+      },
+      "trustedKeyboardErrorProvenanceAuthorization": {
+        "authorizedAtUtc": "2026-10-11T17:36:21.165583+00:00",
+        "actor": "/root/fp06_integrator",
+        "writeSet": [
+          "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
+        ],
+        "kind": "E2E_ONLY_CAPTURED_ERROR_PROVENANCE_CORRECTION",
+        "basis": "Independent concrete candidateF1/P2: results.find dropssecondoriginal rejection; finalrelease catch replaces originalreasons. ScopeSPEC/QUALITYFAIL, noNative/material/releaseauthoritybug",
+        "implementation": "Collect all original allSettled rejection reasons; alwaysfreshUpafterbothsettle, appendclosingUp/Closefailures, noRead/nextTapbeforeclosure, then throwunchangedsoleReason or AggregateError including ALL captured original reasonobjects. ClosingUpfailure closesContext; nevercontinueafterfailure.",
+        "unchanged": "29heldbytes; allnormal trustedSourcekeys,25..125caps/8X16Z/4reads/30s/StandFloatReach/Native60/pending8deadline20s; noNative/runtime/world/Authority/timerqueuechanges",
+        "execution": "ONE_ORIGINAL_FULL_BUILD_THEN_NEW30SEAL_REVIEW",
+        "browser": "NOT_GRANTED",
+        "status": "EXECUTED85_BUILD_SEAL_SOURCE_REVIEW_PASS"
+      },
+      "trustedKeyboardDriverCandidateReview": {
+        "report": "docs/factory/fp06/reviews/w07-trusted-key-driver-candidate-review.md",
+        "originalSha256": "9ae2cf4b5d054172f4d81a890436c848b725248379fbd963156ee3db82ca9716",
+        "originalBytes": 3652,
+        "copiedSha256": "9ae2cf4b5d054172f4d81a890436c848b725248379fbd963156ee3db82ca9716",
+        "spec": "FAIL",
+        "quality": "FAIL",
+        "finding": "F1/P2 capturedinputerror provenance lost; noNative/Material/releaseauthoritybug",
+        "sealSha256": "dbb1aa27af7f05a262a3f56f9e1eba7e8c6e0723d7b935b0905ba5b836fd3ec0",
+        "historicalCandidatePayloads": [
+          {
+            "path": "docs/factory/fp06/reviews/w07-trusted-key-driver-candidate-product-files.json",
+            "sha256": "dbb1aa27af7f05a262a3f56f9e1eba7e8c6e0723d7b935b0905ba5b836fd3ec0",
+            "bytes": 8638
+          },
+          {
+            "path": "docs/factory/fp06/reviews/w07-trusted-key-driver-candidate-product.patch",
+            "sha256": "50a4eb00d32163146a79dcaf0f8505c5d1024cee4a15f8b4c3b51ce10a594274",
+            "bytes": 242568
+          },
+          {
+            "path": "docs/factory/fp06/reviews/w07-trusted-key-driver-candidate-delta-adaptive.patch",
+            "sha256": "4851a8171e9d5b56e3c38cece4dce266e91aa1e72573c1fddc2b1017ba54c03b",
+            "bytes": 3473
+          }
+        ],
+        "phase": "84_BUILD_PASS_SOURCE_FAIL_BEFORE_NARROW_PROVENANCE_CORRECTION",
+        "browser": "NOT_RUN_ON_CANDIDATE"
+      },
+      "trustedKeyboardErrorProvenanceBuild": {
+        "log": 85,
+        "result": "ORIGINAL_FULL_TYPESCRIPT_VITE_PASS",
+        "endUtc": "2026-10-11T17:37:51.204371+00:00",
+        "wrapperSeconds": 4.236651071001688,
+        "rawBytes": 1904,
+        "rawSha256": "5f30c4de8bc2968473b5da7ffefbb2f821f5e38bdbf40105de9b94cb72561993",
+        "rootRawVerification": "Gzip-decompressed exact receipt bytes/SHA"
+      },
+      "trustedKeyboardErrorsFinalReview": {
+        "report": "docs/factory/fp06/reviews/w07-trusted-key-errors-final-review.md",
+        "originalSha256": "8e4f319a3dc408e04572c417fdf9f1e1b74e0255cb4c6b076042765e57b5f54d",
+        "originalBytes": 3164,
+        "copiedSha256": "8e4f319a3dc408e04572c417fdf9f1e1b74e0255cb4c6b076042765e57b5f54d",
+        "spec": "PASS",
+        "quality": "PASS",
+        "F1": "CLOSED",
+        "scope": "SOURCE_ONLY_NOT_BROWSER_PACKAGE_GIT_PASS"
+      },
+      "trustedNormalFullGateAuthorization": {
+        "authorizedAtUtc": "2026-10-11T17:41:29.904648+00:00",
+        "actor": "/root/fp06_integrator",
+        "kind": "ONE_FULL_NORMAL17_SAME_NATIVE_SESSION",
+        "commandCases": "Entire tests/e2e/factory-placement.spec.ts, no grep filter",
+        "cpuGpuPortLease": "EXCLUSIVE_5174",
+        "productWriteHold": true,
+        "fileSealSha256": "b1ae0d339edefdcc06d387eb9581b85bb8530cac7980e99e3a43549b87303a89",
+        "normalE2eSha256": "561beee4c9c444deca9e3ccf49cf907dc55f9a3f3676790d61b507151e5cd33e",
+        "configSha256": "53a55a48da97d43a02e317fb8edc844d57a9b5687f356a7ebf4f5b470efcf900",
+        "constraints": "All30productHOLD; ordinary public trusted keyboard/UI samePageactualWorld; nohooks/Authorityeval/Source/native/runtime/mutation/queue/timeout/cap changes. Preserveprior81/83 allraw+artifacts and fixedWalkJSONexact beforeoverwriting; fresh ownRun browser-trusted-normal-full-86",
+        "rationale": "Full17 includes same11 input/walk/reach/pausecases plus6stillunresolved construction/conservation/ghost/C26/disposal gates; avoids repeating11 in another freshWorld. No dependent package starts until actual17+Evidence/Git closure.",
+        "status": "AUTHORIZED_NOT_RUN"
+      }
     },
     "W08": {
       "dependencies": [

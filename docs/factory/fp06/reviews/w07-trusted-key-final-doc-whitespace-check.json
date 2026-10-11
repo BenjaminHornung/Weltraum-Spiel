@@ -1,0 +1,13 @@
+{
+  "wholeExit": 2,
+  "wholeOutputBytes": 3630,
+  "wholeOutputSha256": "c683f25985d6a6dc10ed749487131db4ad670d95de69534eb7999f6d6a24faa5",
+  "scopedExit": 0,
+  "exactRawEvidencePatchExclusions": [
+    "docs/factory/fp06/reviews/w07-trusted-key-driver-candidate-delta-adaptive.patch",
+    "docs/factory/fp06/reviews/w07-trusted-key-driver-candidate-product.patch",
+    "docs/factory/fp06/reviews/w07-trusted-key-errors-final-delta-driver84.patch",
+    "docs/factory/fp06/reviews/w07-trusted-key-errors-final-product.patch"
+  ],
+  "reason": "Literal git diff context lines require single spaces; no source or product exception."
+}

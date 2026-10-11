@@ -1,0 +1,39 @@
+diff --git a/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/84-normal-e2e-before-independent-key-driver.ts.txt b/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/tests/e2e/factory-placement.spec.ts
+index d2e1cba7..97458b19 100644
+--- a/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/84-normal-e2e-before-independent-key-driver.ts.txt
++++ b/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/tests/e2e/factory-placement.spec.ts
+@@ -47,8 +47,23 @@ test.describe.serial("W07 real player construction in one confirmed Factory sess
+       const key=value>target?negativeKey:positiveKey;
+       const capBeforeMs=walkPulseCaps[axis];
+       const holdMs=Math.max(25,Math.min(capBeforeMs,Math.round(Math.abs(value-target)/3*1000)));
+-      // A real trusted short press releases BEFORE the native projection read; no held key during CDP polling.
+-      await page.keyboard.press(key,{delay:holdMs});
++      // Driver times measure this test runner, never DOM/native event time.
++      const driverTimes:Record<string,number>={downIssuedMs:performance.now()};
++      const down=page.keyboard.down(key).then(()=>{driverTimes.downAckMs=performance.now();});
++      const up=new Promise<void>(resolve=>setTimeout(resolve,holdMs)).then(async()=>{
++        driverTimes.upIssuedMs=performance.now();await page.keyboard.up(key);driverTimes.upAckMs=performance.now();
++      });
++      let results:PromiseSettledResult<void>[];
++      try{results=await Promise.allSettled([down,up]);}
++      finally{
++        // Fresh release after both requests settles any protocol-hook reordering.
++        try{driverTimes.finalUpIssuedMs=performance.now();await page.keyboard.up(key);driverTimes.finalUpAckMs=performance.now();}
++        catch(releaseError){
++          try{await context.close();}catch(closeError){throw new AggregateError([releaseError,closeError],"Trusted keyboard final release and context close failed");}
++          throw releaseError;
++        }
++      }
++      const failed=results.find(result=>result.status==="rejected");if(failed?.status==="rejected")throw failed.reason;
+       let after=await readNative(page);const releasedReads=[after];
+       // Every key is already released. Observe bounded real tick/pose readbacks;
+       // delayed neutral delivery must settle before the next corrective press.
+@@ -60,7 +75,7 @@ test.describe.serial("W07 real player construction in one confirmed Factory sess
+       }
+       const overshotTarget=(value-target)*(after.player.position[axis]-target)<0;
+       if(overshotTarget)walkPulseCaps[axis]=Math.max(25,Math.round(capBeforeMs/2));
+-      nativeWalkTaps.push({axis,target,sourceStandWindow:window,key,holdMs,capBeforeMs,capAfterMs:walkPulseCaps[axis],overshotTarget,beforePlayer:before.player,afterPlayer:after.player,beforeTicks:before.ticks,afterTicks:after.ticks,releasedReads});
++      nativeWalkTaps.push({axis,target,sourceStandWindow:window,key,holdMs,capBeforeMs,capAfterMs:walkPulseCaps[axis],overshotTarget,driverTimes,beforePlayer:before.player,afterPlayer:after.player,beforeTicks:before.ticks,afterTicks:after.ticks,releasedReads});
+       await writeFile(path.join(runDirectory(),"browser-native-walk-taps.json"),JSON.stringify(nativeWalkTaps,null,2)+"\n");
+     }
+   };

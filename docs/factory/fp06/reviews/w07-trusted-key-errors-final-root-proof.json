@@ -1,0 +1,149 @@
+{
+  "verifiedAtUtc": "2026-10-11T17:39:42.182338+00:00",
+  "fileSealSha256": "b1ae0d339edefdcc06d387eb9581b85bb8530cac7980e99e3a43549b87303a89",
+  "all30CurrentFiles": [
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/placement.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/buildStep.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/buildTool.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/placement.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/package.json",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/factorySession.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/factoryEntry.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/installationProfile.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/presentation/vegetation.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-physics.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-coast-source.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-vegetation.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/player/input.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts",
+      "result": "MATCH"
+    }
+  ],
+  "exactPriorDriver84Delta": [
+    "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
+  ],
+  "allOther29HeldMatch": true,
+  "actualChangedProductCount": 28,
+  "rootCopiedPayloads": [
+    {
+      "path": "docs/factory/fp06/reviews/w07-trusted-key-errors-final-product-files.json",
+      "sha256": "b1ae0d339edefdcc06d387eb9581b85bb8530cac7980e99e3a43549b87303a89",
+      "bytes": 8632
+    },
+    {
+      "path": "docs/factory/fp06/reviews/w07-trusted-key-errors-final-product.patch",
+      "sha256": "7a2a35cebc06ca99ef7f143a1c52066a3402507e5462d41baf26cba1f6cef563",
+      "bytes": 242594
+    },
+    {
+      "path": "docs/factory/fp06/reviews/w07-trusted-key-errors-final-delta-driver84.patch",
+      "sha256": "b13d3d8888ceb9772f3855e4e90f234997765d89e75d522e7013cf7be877e428",
+      "bytes": 1756
+    }
+  ],
+  "scope": "Sourcebytes only; finalReview/browser86/Git/Pkg gates pending"
+}
