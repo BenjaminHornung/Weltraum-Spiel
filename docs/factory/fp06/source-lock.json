@@ -1437,13 +1437,14 @@
       },
       "runtimeWriteHold": true,
       "currentNarrowWriteGrant": {
-        "authorizedAtUtc": "2026-10-11T14:00:57.063155+00:00",
+        "authorizedAtUtc": "2026-10-11T14:23:53.728822+00:00",
         "productPaths": [
           "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
         ],
         "evidence": "own W07 run only",
-        "purpose": "Split existing same-page/context/world normal browser sequence across serial cases retaining original <=30s limits and all real interactions; prove second-cutter C26 failure at valid disjoint supported place",
-        "excluded": "Runtime paths held; no timeout/queue/simulation acceleration or new terrain mask"
+        "purpose": "Genuine short keyboard.press taps; release keys before read-only Native/CDP polls; bounded closed-loop actual player coordinates; continue same Page/Context/World/session across original <=30s serial cases",
+        "excluded": "No runtime, terrain, reach, tick, tempo, timeout, queue, DOMdispatch, testbridge, teleport changes",
+        "basis": "Actual overshoot trace in fourth-browser run; Root explicit instruction before test-only writes"
       },
       "reviewedHistoricalPhase": {
         "patchSha256": "bc0986f9b508751644e6f392073caa8da293919b3d689dd96fe8df50c47909c1",
@@ -1491,6 +1492,15 @@
         "source": "PASS bounded feet/body/service/sweeps/reach facts",
         "nativeActorWalkLosAndBrowser": "NOT_RUN",
         "oracle": "specific actual BOM_MISSING and unchanged first208kg installation/material/nativeownership; noOverlapstockclaim"
+      },
+      "preFourthBrowserPhase": {
+        "patchSha256": "56c900dae3f1a4c5db34d97f1b0e8e1f06c8a6097c167509b2e8d9f249d38e89",
+        "patchBytes": 175137,
+        "pathCount": 27,
+        "runtimeHold": true,
+        "mountRegression": "2 actual assertion RED;19 whole lifecycle GREEN before testfixture ResourceCatalog typefix;2 targeted GREEN +fullTypeScript after",
+        "browser": "FAIL:4 PASS /1 FAIL /6 NOT_RUN;82.15s Exit1. Actual Paused/grounded player x=-8.4434595 z=2.2250071 overshot intended target while keys held during slow CDP reads; cargo.accessible=false correctly. No timeout/frame/reach runtime error.",
+        "originalTraceSha256": "d7087a54603424c0a601dcc02b0c359764222ea8e9caa810cb258ec3bbcdc684"
       }
     },
     "W08": {
