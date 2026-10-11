@@ -3628,7 +3628,7 @@
         "scope": "Only exact immutable W08 thenW04 cherry-picks on own cleanIntegratorbranch; verify sourceCommitpaths/SHA/bytes/GitLFSrefs unchanged and actualnewfullSHAs/cleanstatus. Stop/reportactualconflict; noRuntime/App/Source/Evidenceamend/newtests/Main/push/rebase. Aftercopy hold fornewW09grant; mobileHandlingOwnergate remainsOPEN."
       },
       "pendingSecondWriterUIRole": {
-        "status": "GRANTED",
+        "status": "LOCAL_COMMIT_ADMITTED_AFTER_SCOPED_SOURCE_EVIDENCE_PASS",
         "agent": "/root/fp06_domain",
         "role": "W09-panels-only-second-writer",
         "branch": "codex/hestia-fp06-ui-w09-2026-10-11",
@@ -3669,6 +3669,14 @@
           ],
           "reason": "Independent actual DOM-lifetime finding: technology publication and its own click handler replace focused buttons. Stable controls keyed by technology ID needed.",
           "constraints": "Archive exact original seal/patch/manifest/report before overwrite; meaningful nodeidentity/keyboard publication RED first; narrow stable controls fix; focused UI tests and affected original build, then reseal/HOLD independentreview. Other three products remain exact sealed bytes. No Host/Entry/Physics/Save/Contract/newdependencies/browser or competingCPU jobs."
+        },
+        "implementationWriteHold": true,
+        "commitAdmission": {
+          "path": "docs/factory/fp06/reviews/w09-ui-commit-admission.json",
+          "authorizedAtUtc": "2026-10-11T20:54:27.190450+00:00",
+          "sealSha256": "521ed40282b6de2fb8a78e74d3d40bf6d19d69f25797b66c95e03e473eabb065",
+          "reviewSha256": "278a1a11360ac664e77ae5457a1c648967352b38e659d3084afb906040bc3c84",
+          "exactPathCount": 42
         }
       },
       "predecessorCopies": {
