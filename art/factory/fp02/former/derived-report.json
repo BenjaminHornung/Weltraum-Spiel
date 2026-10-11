@@ -1,0 +1,438 @@
+{
+  "kind": "S0-proxy",
+  "nativeSourceSha256": "4e27abd922e46516d1db0307b8dfb5edaf1b8c6807e80006781344b9dfcf535d",
+  "authoringSemanticSha256": "31500d6c38d06be22226940222c8abcba5d2e9e48483e36293910da71575c34b",
+  "catalogDigest": "fnv1a:f3a8c642",
+  "assets": [
+    {
+      "assetId": "fp02_former_s0_v1",
+      "definitionId": "B07",
+      "declaredDimensionsM": [
+        4,
+        3,
+        3
+      ],
+      "actualStaticMeshBoundsM": {
+        "min": {
+          "x": -2,
+          "y": 0,
+          "z": -1.5
+        },
+        "max": {
+          "x": 2,
+          "y": 3,
+          "z": 1.5
+        }
+      },
+      "assetSourceDigest": "fnv1a64:5aeec6fcc5fef3f0",
+      "partCount": 13,
+      "boxCount": 34,
+      "supportPatchesM": [
+        {
+          "partId": "former_feet",
+          "centerM": [
+            -1.75,
+            0.0,
+            -1.25
+          ],
+          "sizeM": [
+            0.5,
+            0.5
+          ],
+          "normal": [
+            0,
+            -1,
+            0
+          ]
+        },
+        {
+          "partId": "former_feet",
+          "centerM": [
+            -1.75,
+            0.0,
+            1.25
+          ],
+          "sizeM": [
+            0.5,
+            0.5
+          ],
+          "normal": [
+            0,
+            -1,
+            0
+          ]
+        },
+        {
+          "partId": "former_feet",
+          "centerM": [
+            1.75,
+            0.0,
+            -1.25
+          ],
+          "sizeM": [
+            0.5,
+            0.5
+          ],
+          "normal": [
+            0,
+            -1,
+            0
+          ]
+        },
+        {
+          "partId": "former_feet",
+          "centerM": [
+            1.75,
+            0.0,
+            1.25
+          ],
+          "sizeM": [
+            0.5,
+            0.5
+          ],
+          "normal": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "joints": [
+        {
+          "partId": "former_tool",
+          "pivotM": [
+            -0.5,
+            2,
+            0
+          ],
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "limitsM": [
+            -0.5,
+            0
+          ],
+          "sweepBoundsM": {
+            "min": [
+              -0.75,
+              1.25,
+              -0.625
+            ],
+            "max": [
+              0.75,
+              2.75,
+              0.625
+            ]
+          }
+        },
+        {
+          "partId": "former_infeed_carriage",
+          "pivotM": [
+            -1.25,
+            1.125,
+            0
+          ],
+          "axis": [
+            1,
+            0,
+            0
+          ],
+          "limitsM": [
+            0,
+            0.5
+          ],
+          "sweepBoundsM": {
+            "min": [
+              -1.375,
+              1.0,
+              -0.25
+            ],
+            "max": [
+              -0.625,
+              1.25,
+              0.25
+            ]
+          }
+        },
+        {
+          "partId": "former_clamp",
+          "pivotM": [
+            -0.875,
+            1.625,
+            0
+          ],
+          "axis": [
+            0,
+            1,
+            0
+          ],
+          "limitsM": [
+            -0.25,
+            0
+          ],
+          "sweepBoundsM": {
+            "min": [
+              -1.0,
+              1.25,
+              -0.25
+            ],
+            "max": [
+              1.0,
+              1.75,
+              0.25
+            ]
+          }
+        },
+        {
+          "partId": "former_outfeed_carriage",
+          "pivotM": [
+            1.125,
+            1.125,
+            0
+          ],
+          "axis": [
+            1,
+            0,
+            0
+          ],
+          "limitsM": [
+            0,
+            0.5
+          ],
+          "sweepBoundsM": {
+            "min": [
+              1.0,
+              1.0,
+              -0.25
+            ],
+            "max": [
+              1.75,
+              1.25,
+              0.25
+            ]
+          }
+        }
+      ],
+      "ports": [
+        {
+          "sourceId": "B07:IN-SEMI",
+          "role": "SolidBatchIn",
+          "centerM": [
+            -2.0,
+            1,
+            0
+          ],
+          "normal": [
+            -1,
+            0,
+            0
+          ],
+          "sizeM": [
+            0.75,
+            0.75
+          ],
+          "binding": "source-solid"
+        },
+        {
+          "sourceId": "B07:OUT-PROFILE-OR-SHEET",
+          "role": "SolidBatchOut",
+          "centerM": [
+            2.0,
+            1,
+            0
+          ],
+          "normal": [
+            1,
+            0,
+            0
+          ],
+          "sizeM": [
+            0.75,
+            0.75
+          ],
+          "binding": "source-solid"
+        },
+        {
+          "sourceId": "B07:POWER-IN",
+          "role": "PowerConsumer",
+          "centerM": [
+            -0.75,
+            1.125,
+            1.375
+          ],
+          "normal": [
+            0,
+            0,
+            1
+          ],
+          "sizeM": [
+            0.25,
+            0.25
+          ],
+          "binding": "authoring-only"
+        }
+      ],
+      "phaseMotionProfile": {
+        "version": 1,
+        "phaseEndsMs": [
+          6000,
+          10000,
+          30000,
+          35000,
+          40000
+        ],
+        "toolCycles": 2,
+        "channels": [
+          {
+            "partId": "former_infeed_carriage",
+            "axis": [
+              1,
+              0,
+              0
+            ],
+            "segments": [
+              {
+                "startMs": 0,
+                "endMs": 6000,
+                "fromM": 0,
+                "toM": 0.5
+              },
+              {
+                "startMs": 6000,
+                "endMs": 35000,
+                "fromM": 0.5,
+                "toM": 0.5
+              },
+              {
+                "startMs": 35000,
+                "endMs": 40000,
+                "fromM": 0.5,
+                "toM": 0
+              }
+            ]
+          },
+          {
+            "partId": "former_clamp",
+            "axis": [
+              0,
+              1,
+              0
+            ],
+            "segments": [
+              {
+                "startMs": 6000,
+                "endMs": 10000,
+                "fromM": 0,
+                "toM": -0.25
+              },
+              {
+                "startMs": 10000,
+                "endMs": 30000,
+                "fromM": -0.25,
+                "toM": -0.25
+              },
+              {
+                "startMs": 30000,
+                "endMs": 35000,
+                "fromM": -0.25,
+                "toM": 0
+              }
+            ]
+          },
+          {
+            "partId": "former_outfeed_carriage",
+            "axis": [
+              1,
+              0,
+              0
+            ],
+            "segments": [
+              {
+                "startMs": 35000,
+                "endMs": 37500.0,
+                "fromM": 0,
+                "toM": 0.5
+              },
+              {
+                "startMs": 37500.0,
+                "endMs": 40000,
+                "fromM": 0.5,
+                "toM": 0
+              }
+            ]
+          }
+        ]
+      },
+      "gpuDiagnosticsAtMount": {
+        "acceptedArtifacts": 13,
+        "rejectedArtifacts": 0,
+        "activeRepresentations": 13,
+        "activeFallbacks": 0,
+        "geometryAllocations": 13,
+        "geometryDisposals": 0,
+        "materialAllocations": 4,
+        "materialDisposals": 0,
+        "estimatedGpuBytes": 22032,
+        "ownedCpuBytes": 22032,
+        "replacementCount": 0,
+        "removeCount": 0,
+        "staleRejectCount": 0,
+        "resetCount": 0,
+        "evictionCount": 0,
+        "evictionRejectCount": 0,
+        "rehydrationCount": 0,
+        "renderTargetAllocations": 0,
+        "renderTargetDisposals": 0,
+        "activeRenderTargets": 0,
+        "backendRevision": 0,
+        "backendState": "Available",
+        "residentRepresentationKeys": [
+          "factory:synthetic_probe_fp02_former_s0_v1:former_actuators",
+          "factory:synthetic_probe_fp02_former_s0_v1:former_bed",
+          "factory:synthetic_probe_fp02_former_s0_v1:former_clamp",
+          "factory:synthetic_probe_fp02_former_s0_v1:former_feet",
+          "factory:synthetic_probe_fp02_former_s0_v1:former_frame",
+          "factory:synthetic_probe_fp02_former_s0_v1:former_infeed",
+          "factory:synthetic_probe_fp02_former_s0_v1:former_infeed_carriage",
+          "factory:synthetic_probe_fp02_former_s0_v1:former_offcut",
+          "factory:synthetic_probe_fp02_former_s0_v1:former_outfeed",
+          "factory:synthetic_probe_fp02_former_s0_v1:former_outfeed_carriage",
+          "factory:synthetic_probe_fp02_former_s0_v1:former_power",
+          "factory:synthetic_probe_fp02_former_s0_v1:former_service",
+          "factory:synthetic_probe_fp02_former_s0_v1:former_tool"
+        ],
+        "visibleRepresentationKeys": [
+          "factory:synthetic_probe_fp02_former_s0_v1:former_actuators",
+          "factory:synthetic_probe_fp02_former_s0_v1:former_bed",
+          "factory:synthetic_probe_fp02_former_s0_v1:former_clamp",
+          "factory:synthetic_probe_fp02_former_s0_v1:former_feet",
+          "factory:synthetic_probe_fp02_former_s0_v1:former_frame",
+          "factory:synthetic_probe_fp02_former_s0_v1:former_infeed",
+          "factory:synthetic_probe_fp02_former_s0_v1:former_infeed_carriage",
+          "factory:synthetic_probe_fp02_former_s0_v1:former_offcut",
+          "factory:synthetic_probe_fp02_former_s0_v1:former_outfeed",
+          "factory:synthetic_probe_fp02_former_s0_v1:former_outfeed_carriage",
+          "factory:synthetic_probe_fp02_former_s0_v1:former_power",
+          "factory:synthetic_probe_fp02_former_s0_v1:former_service",
+          "factory:synthetic_probe_fp02_former_s0_v1:former_tool"
+        ],
+        "pinnedFallbackRepresentationKeys": [],
+        "lastCommandStatus": "Accepted",
+        "lastOwnershipOutcome": "NotApplicable"
+      },
+      "rotorSweepBoundsM": null
+    }
+  ],
+  "staticMetadataChecks": "PASS:16 focused cases including contacts, phase/source binding and exposed electrical face/access",
+  "runtimeMeshBounds": "PASS:actual MeshArtifact unit assertions and real GPU probe metadata",
+  "GPUImport": "PASS:1 Chromium/8.4s test;26 final captures including exposed sockets and100 owned cleanup cycles",
+  "evidence": "apps/weltraum-browser/evidence/factory/w05/run-20261011T104359Z/final-sockets/browser-probe-result.json",
+  "windGeometryNote": "6m rotor/13m vertical dimensions are conservative nominal sweep envelope; actual static posed blade mesh bounds are separately reported. Wind motion/energy is NOT_RUN.",
+  "HVOXCompiler": "NOT_RUN",
+  "Blender": "NOT_RUN",
+  "OwnerArtAcceptance": "NOT_RUN",
+  "license": "LicenseRef-Hestia-Project-Original",
+  "authority": "render-derived-only; sockets authoring-only until W07"
+}

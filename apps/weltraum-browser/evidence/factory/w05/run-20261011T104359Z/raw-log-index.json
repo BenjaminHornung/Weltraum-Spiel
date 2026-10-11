@@ -1,0 +1,130 @@
+[
+  {
+    "logPath": "browser-probe.log",
+    "rawArchive": "browser-probe.raw.log.gz",
+    "rawSha256": "d1f30909d71ded1c9a3753dd4d56f095dca76a200b3c66bb5e4a8d5c7de6b346",
+    "rawBytes": 702,
+    "gzipSha256": "12c7c3869b1972ef3cadabaf1c8ebc0dc7aafc597534199491d24578479ea709",
+    "normalization": "ANSI/CR/trailing whitespace removed; exact original retained in gzip"
+  },
+  {
+    "logPath": "build-postreview.log",
+    "rawArchive": "build-postreview.raw.log.gz",
+    "rawSha256": "d7bbba7a9fe15e90f0486d0773d9e8734fb827706cafbed8972d71a4a6dc4f11",
+    "rawBytes": 1207,
+    "gzipSha256": "c2cd75b0ccf267121081d3742c15b5d504ad8cfabcf5284ed5030beba6476c56",
+    "normalization": "ANSI/CR/trailing whitespace removed; exact original retained in gzip"
+  },
+  {
+    "logPath": "build.log",
+    "rawArchive": "build.raw.log.gz",
+    "rawSha256": "f3e9324a50204c4e3539ca5f079932abda75cdd6e70dbd7ca7d6bd600901a386",
+    "rawBytes": 1207,
+    "gzipSha256": "3082517ef7e15f88030d6a17a2945fb7f8527b70770b7294163ef09eaeeaf45a",
+    "normalization": "ANSI/CR/trailing whitespace removed; exact original retained in gzip"
+  },
+  {
+    "logPath": "green-focused.log",
+    "rawArchive": "green-focused.raw.log.gz",
+    "rawSha256": "8e312260eea440a47ebeb139c0b0646a9c9957a21a3cce1f2a558dad5ba5da40",
+    "rawBytes": 351,
+    "gzipSha256": "0b5664be1cc39ae800e0b6dfcb192e0450e84a9bf1b5690240e8ec8be0d06e5c",
+    "normalization": "ANSI/CR/trailing whitespace removed; exact original retained in gzip"
+  },
+  {
+    "logPath": "green-regressions.log",
+    "rawArchive": "green-regressions.raw.log.gz",
+    "rawSha256": "7c496f1c7e3998fc88fc5be0ff1f4265a6f898a198b8ec975c3b313686ff4b00",
+    "rawBytes": 628,
+    "gzipSha256": "2aec86da7e938364091306b998bed6d0fc793c54a6ef5a1bd57ac972969f7022",
+    "normalization": "ANSI/CR/trailing whitespace removed; exact original retained in gzip"
+  },
+  {
+    "logPath": "green-review-bounds.log",
+    "rawArchive": "green-review-bounds.raw.log.gz",
+    "rawSha256": "8564ba9d419bce5a98a9af619521acd5d5cab14a519539fa14ee9ecd49602545",
+    "rawBytes": 353,
+    "gzipSha256": "1bda2f3e1fd326297de73d15ff1458960f02f7119388b6c8ec61babd1f6f58e2",
+    "normalization": "ANSI/CR/trailing whitespace removed; exact original retained in gzip"
+  },
+  {
+    "logPath": "green-review-fixed.log",
+    "rawArchive": "green-review-fixed.raw.log.gz",
+    "rawSha256": "3a2d12a5f9e5ff682f77d6f8fd62c83da0e660bdb337609869b9233634752f92",
+    "rawBytes": 353,
+    "gzipSha256": "20403ce732db2cdd3e2c4e63e5c0a81102dfdcc76a72cdcfe180c674d890124f",
+    "normalization": "ANSI/CR/trailing whitespace removed; exact original retained in gzip"
+  },
+  {
+    "logPath": "post-review/browser-probe.log",
+    "rawArchive": "post-review/browser-probe.raw.log.gz",
+    "rawSha256": "50a2272d70a1041112c56290c8e97b01d232bfc6dca616894b3575628b214524",
+    "rawBytes": 714,
+    "gzipSha256": "399ebfdf06afcc5c750ac6ee69092d526463a2f45218677136d5949e4386b41c",
+    "normalization": "ANSI/CR/trailing whitespace removed; exact original retained in gzip"
+  },
+  {
+    "logPath": "red-initial.log",
+    "rawArchive": "red-initial.raw.log.gz",
+    "rawSha256": "21d30833e27b1147efdf3d632b955dc793d5e7da891c286d8beea770ed2242d9",
+    "rawBytes": 3723,
+    "gzipSha256": "1c84ac526dc00bc47dcaba1c1c56ab1c74cae60210cc4a964fadfcd155cda948",
+    "normalization": "ANSI/CR/trailing whitespace removed; exact original retained in gzip"
+  },
+  {
+    "logPath": "red-review-former-forcepath.log",
+    "rawArchive": "red-review-former-forcepath.raw.log.gz",
+    "rawSha256": "0806d44b59dcd97d07ca13cb22ae41500e644f8974b12eb4afbc54d82ff6f445",
+    "rawBytes": 4191,
+    "gzipSha256": "c811a76b543777b8e1828a2330e894180c31a4e23ae952a744ad1741cfdb6b15",
+    "normalization": "ANSI/CR/trailing whitespace removed; exact original retained in gzip"
+  },
+  {
+    "logPath": "red-review-r1-r2.log",
+    "rawArchive": "red-review-r1-r2.raw.log.gz",
+    "rawSha256": "076b21bbb0cbea227a9835c64e1dd0a26c8c1cac04e7890a5ca7af55b368b436",
+    "rawBytes": 2695,
+    "gzipSha256": "83c9dbf3c228d183a464e36ba47289b420686207768289f8bba017f5a276edfc",
+    "normalization": "ANSI/CR/trailing whitespace removed; exact original retained in gzip"
+  },
+  {
+    "logPath": "red-review-r3-markers.log",
+    "rawArchive": "red-review-r3-markers.raw.log.gz",
+    "rawSha256": "a56ab5ea0f6b3d231e9c2561e492e0f62fd5788efbce391ed82f3415fca10d48",
+    "rawBytes": 5127,
+    "gzipSha256": "7f9a593305d6f3a422801fa9dbf2cf6f732b7d6218b4c5bbe86a5b2f8f689174",
+    "normalization": "ANSI/CR/trailing whitespace removed; exact original retained in gzip"
+  },
+  {
+    "logPath": "build-final-sockets.log",
+    "rawArchive": "build-final-sockets.raw.log.gz",
+    "rawSha256": "d0952e12b0ebb0d009b981d3f8f871cf2f24b7675f6075c87e884b0eefb71308",
+    "rawBytes": 1207,
+    "gzipSha256": "8d1fd26165f01dc04e3c65c0f2fc4422d3a7b506fd61b05a0a20ab6935f55656",
+    "normalization": "ANSI/CR/trailing whitespace removed; exact original retained in gzip"
+  },
+  {
+    "logPath": "final-sockets/browser-probe.log",
+    "rawArchive": "final-sockets/browser-probe.raw.log.gz",
+    "rawSha256": "cbb8a8c0e9627e0cf90949ca8c6c2b6a07672b5bdd32fc9351efc32cadb625c9",
+    "rawBytes": 716,
+    "gzipSha256": "db52359a852a9c413e971b24fe5a41f4197c268c34798140449d1226fb66ab07",
+    "normalization": "ANSI/CR/trailing whitespace removed; exact original retained in gzip"
+  },
+  {
+    "logPath": "green-final-sockets.log",
+    "rawArchive": "green-final-sockets.raw.log.gz",
+    "rawSha256": "35da7fd2dfa072498c04ff29381a0e710eeb2e3400969d931eeab3fcb38e3dea",
+    "rawBytes": 353,
+    "gzipSha256": "bed18e9bf26b791a5b537b004cd2adf4cad39703e3dcfbc738eb18f4db230b10",
+    "normalization": "ANSI/CR/trailing whitespace removed; exact original retained in gzip"
+  },
+  {
+    "logPath": "red-review-exposed-socket.log",
+    "rawArchive": "red-review-exposed-socket.raw.log.gz",
+    "rawSha256": "faa71940b1c3a598fba58a4443f6553d00c85a224287145fcaa90053b4a55a32",
+    "rawBytes": 3235,
+    "gzipSha256": "82499756df4e0a2c300e9e2c0e56b9dd31fea8c3fe8306fd9a226fbb225edbf8",
+    "normalization": "ANSI/CR/trailing whitespace removed; exact original retained in gzip"
+  }
+]

@@ -1,0 +1,44 @@
+{
+  "status": "PASS",
+  "baseCommit": "10e1e3026610065206d8ac4b361d3f1686114dd8",
+  "sources": [
+    {
+      "path": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11/01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP01_EINSTIEG_ENERGIE_DETAILPLAN_2026-10-10.md",
+      "sha256": "ec3e605de2c6a4877c2ff0afae244b3215e7bf8bb267feef4c466b546477080c",
+      "readSections": [
+        3,
+        8,
+        14
+      ]
+    },
+    {
+      "path": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11/01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP02_PRODUKTIONSKETTEN_GEBAEUDE_LAYOUTS_DETAILPLAN_2026-10-10.md",
+      "sha256": "5c4f068edba3d0c89e77b0d3a40734d4ee1a672c39f3885cbfef31430d942f39",
+      "readSections": [
+        3,
+        7
+      ]
+    },
+    {
+      "path": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11/01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP03_BAUEN_BLUEPRINTS_BAUAUTOMATION_DETAILPLAN_2026-10-10.md",
+      "sha256": "7d43e358ae7ead52da3996e85bc52906cb2584a42e0802fc4d1e959df1289cb1",
+      "readSections": [
+        3
+      ]
+    }
+  ],
+  "kind": "S0-proxy",
+  "gameDevCLI": "NOT_AVAILABLE",
+  "paidProvider": "NOT_RUN",
+  "blender": "NOT_RUN",
+  "hvoxCompilation": "NOT_RUN",
+  "artOwnerAcceptance": "NOT_RUN",
+  "cpuLease": "HOLD until root grants again",
+  "browserPortLease": "NOT_GRANTED",
+  "playwrightHelper": {
+    "path": "/workspace/.cloud-setup/fp06-w05.playwright.config.mts",
+    "sha256": "43374702e5b684f7b34de0b52d18c765391fedb2fb347ebd66bd4c691421e788",
+    "changes": "Absolute scoped testDir/output/report/app cwd and port5174 only; all original timeouts/retries/workers/browser/project/launch settings retained",
+    "status": "NOT_RUN, explicit port lease pending"
+  }
+}

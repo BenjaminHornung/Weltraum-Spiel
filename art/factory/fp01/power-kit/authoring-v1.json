@@ -1,0 +1,294 @@
+{
+  "schema": "hestia.asset-authoring.v1",
+  "asset": {
+    "assetId": "fp01_power_kit_s0_v1",
+    "assetRevision": 1,
+    "representation": "StructuralAssembly",
+    "metersPerUnit": 1,
+    "coordinateFrame": {
+      "upAxis": "+Y",
+      "forwardAxis": "+Z",
+      "handedness": "RIGHT"
+    },
+    "tags": [
+      "technical_s0_proxy"
+    ]
+  },
+  "parts": [
+    {
+      "partId": "battery_feet",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "battery_frame",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "battery_shell",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "battery_panel",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "distribution_feet",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "distribution_frame",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "distribution_shell",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "distribution_panel",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "solar_feet",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "solar_frame",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "solar_panels",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "solar_hinge",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "solar_power_socket",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "wind_feet",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "wind_mast",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "wind_hub",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "wind_blade_1",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "wind_blade_2",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "wind_blade_3",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "wind_power_socket",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    }
+  ],
+  "joints": [],
+  "markers": [
+    {
+      "markerId": "fp01_battery_s0_v1_port_0",
+      "markerType": "Snap",
+      "partId": "battery_panel"
+    },
+    {
+      "markerId": "fp01_distribution_s0_v1_port_0",
+      "markerType": "Snap",
+      "partId": "distribution_panel"
+    },
+    {
+      "markerId": "fp01_solar_s0_v1_port_0",
+      "markerType": "Snap",
+      "partId": "solar_power_socket"
+    },
+    {
+      "markerId": "fp01_wind_s0_v1_port_0",
+      "markerType": "Snap",
+      "partId": "wind_power_socket"
+    }
+  ],
+  "materials": [
+    {
+      "renderMaterialId": "ex_struct",
+      "tags": [
+        "render_only"
+      ]
+    },
+    {
+      "renderMaterialId": "ex_shell",
+      "tags": [
+        "render_only"
+      ]
+    },
+    {
+      "renderMaterialId": "ex_function",
+      "tags": [
+        "render_only"
+      ]
+    },
+    {
+      "renderMaterialId": "ex_hazard",
+      "tags": [
+        "render_only"
+      ]
+    },
+    {
+      "renderMaterialId": "ex_pv",
+      "tags": [
+        "render_only"
+      ]
+    }
+  ]
+}

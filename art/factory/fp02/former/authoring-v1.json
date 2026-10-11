@@ -1,0 +1,241 @@
+{
+  "schema": "hestia.asset-authoring.v1",
+  "asset": {
+    "assetId": "fp02_former_s0_v1",
+    "assetRevision": 1,
+    "representation": "StructuralAssembly",
+    "metersPerUnit": 1,
+    "coordinateFrame": {
+      "upAxis": "+Y",
+      "forwardAxis": "+Z",
+      "handedness": "RIGHT"
+    },
+    "tags": [
+      "technical_s0_proxy"
+    ]
+  },
+  "parts": [
+    {
+      "partId": "former_feet",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "former_frame",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "former_infeed",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "former_bed",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "former_tool",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "former_actuators",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "former_outfeed",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "former_service",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "former_power",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "former_offcut",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "former_clamp",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "former_infeed_carriage",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    },
+    {
+      "partId": "former_outfeed_carriage",
+      "representation": "ModularPart",
+      "destructible": true,
+      "collisionPolicy": "Compound",
+      "navigationPolicy": "Obstacle",
+      "thinFeature": {
+        "policy": "Reject",
+        "declaredMinimumThicknessMeters": 0.25
+      }
+    }
+  ],
+  "joints": [
+    {
+      "jointId": "former_tool_joint",
+      "parentPartId": "former_frame",
+      "childPartId": "former_tool",
+      "jointType": "Slider",
+      "breakPolicy": "Scripted"
+    },
+    {
+      "jointId": "former_infeed_carriage_joint",
+      "parentPartId": "former_frame",
+      "childPartId": "former_infeed_carriage",
+      "jointType": "Slider",
+      "breakPolicy": "Scripted"
+    },
+    {
+      "jointId": "former_clamp_joint",
+      "parentPartId": "former_frame",
+      "childPartId": "former_clamp",
+      "jointType": "Slider",
+      "breakPolicy": "Scripted"
+    },
+    {
+      "jointId": "former_outfeed_carriage_joint",
+      "parentPartId": "former_frame",
+      "childPartId": "former_outfeed_carriage",
+      "jointType": "Slider",
+      "breakPolicy": "Scripted"
+    }
+  ],
+  "markers": [
+    {
+      "markerId": "fp02_former_s0_v1_port_0",
+      "markerType": "Cargo",
+      "partId": "former_feet"
+    },
+    {
+      "markerId": "fp02_former_s0_v1_port_1",
+      "markerType": "Cargo",
+      "partId": "former_feet"
+    },
+    {
+      "markerId": "fp02_former_s0_v1_port_2",
+      "markerType": "Snap",
+      "partId": "former_feet"
+    }
+  ],
+  "materials": [
+    {
+      "renderMaterialId": "ex_struct",
+      "tags": [
+        "render_only"
+      ]
+    },
+    {
+      "renderMaterialId": "ex_shell",
+      "tags": [
+        "render_only"
+      ]
+    },
+    {
+      "renderMaterialId": "ex_function",
+      "tags": [
+        "render_only"
+      ]
+    },
+    {
+      "renderMaterialId": "ex_hazard",
+      "tags": [
+        "render_only"
+      ]
+    },
+    {
+      "renderMaterialId": "ex_pv",
+      "tags": [
+        "render_only"
+      ]
+    }
+  ]
+}

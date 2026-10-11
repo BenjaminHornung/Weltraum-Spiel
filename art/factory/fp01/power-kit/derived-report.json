@@ -1,0 +1,665 @@
+{
+  "kind": "S0-proxy",
+  "nativeSourceSha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c",
+  "authoringSemanticSha256": "ebab668ca024e995b8742021f4440886c10b51ba58a5c7520de37a6bc87c7dd8",
+  "catalogDigest": "fnv1a:f3a8c642",
+  "assets": [
+    {
+      "assetId": "fp01_battery_s0_v1",
+      "definitionId": "fp02.device.battery_4kwh",
+      "declaredDimensionsM": [
+        2,
+        1,
+        1.5
+      ],
+      "actualStaticMeshBoundsM": {
+        "min": {
+          "x": -1,
+          "y": 0,
+          "z": -0.5
+        },
+        "max": {
+          "x": 1,
+          "y": 1.5,
+          "z": 0.5
+        }
+      },
+      "assetSourceDigest": "fnv1a64:a685737e8d528fca",
+      "partCount": 4,
+      "boxCount": 7,
+      "supportPatchesM": [
+        {
+          "partId": "battery_feet",
+          "centerM": [
+            -0.75,
+            0.0,
+            -0.375
+          ],
+          "sizeM": [
+            0.5,
+            0.25
+          ],
+          "normal": [
+            0,
+            -1,
+            0
+          ]
+        },
+        {
+          "partId": "battery_feet",
+          "centerM": [
+            -0.75,
+            0.0,
+            0.375
+          ],
+          "sizeM": [
+            0.5,
+            0.25
+          ],
+          "normal": [
+            0,
+            -1,
+            0
+          ]
+        },
+        {
+          "partId": "battery_feet",
+          "centerM": [
+            0.75,
+            0.0,
+            -0.375
+          ],
+          "sizeM": [
+            0.5,
+            0.25
+          ],
+          "normal": [
+            0,
+            -1,
+            0
+          ]
+        },
+        {
+          "partId": "battery_feet",
+          "centerM": [
+            0.75,
+            0.0,
+            0.375
+          ],
+          "sizeM": [
+            0.5,
+            0.25
+          ],
+          "normal": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "joints": [],
+      "ports": [
+        {
+          "sourceId": "fp02.device.battery_4kwh:POWER",
+          "role": "PowerBidirectional",
+          "centerM": [
+            0,
+            1,
+            0.5
+          ],
+          "normal": [
+            0,
+            0,
+            1
+          ],
+          "sizeM": [
+            0.25,
+            0.25
+          ],
+          "binding": "authoring-only"
+        }
+      ],
+      "phaseMotionProfile": null,
+      "gpuDiagnosticsAtMount": {
+        "acceptedArtifacts": 4,
+        "rejectedArtifacts": 0,
+        "activeRepresentations": 4,
+        "activeFallbacks": 0,
+        "geometryAllocations": 4,
+        "geometryDisposals": 0,
+        "materialAllocations": 3,
+        "materialDisposals": 0,
+        "estimatedGpuBytes": 4536,
+        "ownedCpuBytes": 4536,
+        "replacementCount": 0,
+        "removeCount": 0,
+        "staleRejectCount": 0,
+        "resetCount": 0,
+        "evictionCount": 0,
+        "evictionRejectCount": 0,
+        "rehydrationCount": 0,
+        "renderTargetAllocations": 0,
+        "renderTargetDisposals": 0,
+        "activeRenderTargets": 0,
+        "backendRevision": 0,
+        "backendState": "Available",
+        "residentRepresentationKeys": [
+          "factory:synthetic_probe_fp01_battery_s0_v1:battery_feet",
+          "factory:synthetic_probe_fp01_battery_s0_v1:battery_frame",
+          "factory:synthetic_probe_fp01_battery_s0_v1:battery_panel",
+          "factory:synthetic_probe_fp01_battery_s0_v1:battery_shell"
+        ],
+        "visibleRepresentationKeys": [
+          "factory:synthetic_probe_fp01_battery_s0_v1:battery_feet",
+          "factory:synthetic_probe_fp01_battery_s0_v1:battery_frame",
+          "factory:synthetic_probe_fp01_battery_s0_v1:battery_panel",
+          "factory:synthetic_probe_fp01_battery_s0_v1:battery_shell"
+        ],
+        "pinnedFallbackRepresentationKeys": [],
+        "lastCommandStatus": "Accepted",
+        "lastOwnershipOutcome": "NotApplicable"
+      },
+      "rotorSweepBoundsM": null
+    },
+    {
+      "assetId": "fp01_distribution_s0_v1",
+      "definitionId": "fp02.device.distribution_40kw",
+      "declaredDimensionsM": [
+        2,
+        1,
+        2
+      ],
+      "actualStaticMeshBoundsM": {
+        "min": {
+          "x": -1,
+          "y": 0,
+          "z": -0.5
+        },
+        "max": {
+          "x": 1,
+          "y": 2,
+          "z": 0.5
+        }
+      },
+      "assetSourceDigest": "fnv1a64:5596d9affe8cd15c",
+      "partCount": 4,
+      "boxCount": 7,
+      "supportPatchesM": [
+        {
+          "partId": "distribution_feet",
+          "centerM": [
+            -0.75,
+            0.0,
+            -0.375
+          ],
+          "sizeM": [
+            0.5,
+            0.25
+          ],
+          "normal": [
+            0,
+            -1,
+            0
+          ]
+        },
+        {
+          "partId": "distribution_feet",
+          "centerM": [
+            -0.75,
+            0.0,
+            0.375
+          ],
+          "sizeM": [
+            0.5,
+            0.25
+          ],
+          "normal": [
+            0,
+            -1,
+            0
+          ]
+        },
+        {
+          "partId": "distribution_feet",
+          "centerM": [
+            0.75,
+            0.0,
+            -0.375
+          ],
+          "sizeM": [
+            0.5,
+            0.25
+          ],
+          "normal": [
+            0,
+            -1,
+            0
+          ]
+        },
+        {
+          "partId": "distribution_feet",
+          "centerM": [
+            0.75,
+            0.0,
+            0.375
+          ],
+          "sizeM": [
+            0.5,
+            0.25
+          ],
+          "normal": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "joints": [],
+      "ports": [
+        {
+          "sourceId": "fp02.device.distribution_40kw:POWER",
+          "role": "PowerBidirectional",
+          "centerM": [
+            0,
+            1,
+            0.5
+          ],
+          "normal": [
+            0,
+            0,
+            1
+          ],
+          "sizeM": [
+            0.25,
+            0.25
+          ],
+          "binding": "authoring-only"
+        }
+      ],
+      "phaseMotionProfile": null,
+      "gpuDiagnosticsAtMount": {
+        "acceptedArtifacts": 4,
+        "rejectedArtifacts": 0,
+        "activeRepresentations": 4,
+        "activeFallbacks": 0,
+        "geometryAllocations": 4,
+        "geometryDisposals": 0,
+        "materialAllocations": 3,
+        "materialDisposals": 0,
+        "estimatedGpuBytes": 4536,
+        "ownedCpuBytes": 4536,
+        "replacementCount": 0,
+        "removeCount": 0,
+        "staleRejectCount": 0,
+        "resetCount": 0,
+        "evictionCount": 0,
+        "evictionRejectCount": 0,
+        "rehydrationCount": 0,
+        "renderTargetAllocations": 0,
+        "renderTargetDisposals": 0,
+        "activeRenderTargets": 0,
+        "backendRevision": 0,
+        "backendState": "Available",
+        "residentRepresentationKeys": [
+          "factory:synthetic_probe_fp01_distribution_s0_v1:distribution_feet",
+          "factory:synthetic_probe_fp01_distribution_s0_v1:distribution_frame",
+          "factory:synthetic_probe_fp01_distribution_s0_v1:distribution_panel",
+          "factory:synthetic_probe_fp01_distribution_s0_v1:distribution_shell"
+        ],
+        "visibleRepresentationKeys": [
+          "factory:synthetic_probe_fp01_distribution_s0_v1:distribution_feet",
+          "factory:synthetic_probe_fp01_distribution_s0_v1:distribution_frame",
+          "factory:synthetic_probe_fp01_distribution_s0_v1:distribution_panel",
+          "factory:synthetic_probe_fp01_distribution_s0_v1:distribution_shell"
+        ],
+        "pinnedFallbackRepresentationKeys": [],
+        "lastCommandStatus": "Accepted",
+        "lastOwnershipOutcome": "NotApplicable"
+      },
+      "rotorSweepBoundsM": null
+    },
+    {
+      "assetId": "fp01_solar_s0_v1",
+      "definitionId": "fp02.device.pv_pack_2kwp",
+      "declaredDimensionsM": [
+        4,
+        1.25,
+        3
+      ],
+      "actualStaticMeshBoundsM": {
+        "min": {
+          "x": -2,
+          "y": 0,
+          "z": -1.5
+        },
+        "max": {
+          "x": 2,
+          "y": 1.25,
+          "z": 1.5
+        }
+      },
+      "assetSourceDigest": "fnv1a64:9081433c8114af98",
+      "partCount": 5,
+      "boxCount": 11,
+      "supportPatchesM": [
+        {
+          "partId": "solar_feet",
+          "centerM": [
+            -1.875,
+            0.0,
+            -1.375
+          ],
+          "sizeM": [
+            0.25,
+            0.25
+          ],
+          "normal": [
+            0,
+            -1,
+            0
+          ]
+        },
+        {
+          "partId": "solar_feet",
+          "centerM": [
+            -1.875,
+            0.0,
+            1.375
+          ],
+          "sizeM": [
+            0.25,
+            0.25
+          ],
+          "normal": [
+            0,
+            -1,
+            0
+          ]
+        },
+        {
+          "partId": "solar_feet",
+          "centerM": [
+            1.875,
+            0.0,
+            -1.375
+          ],
+          "sizeM": [
+            0.25,
+            0.25
+          ],
+          "normal": [
+            0,
+            -1,
+            0
+          ]
+        },
+        {
+          "partId": "solar_feet",
+          "centerM": [
+            1.875,
+            0.0,
+            1.375
+          ],
+          "sizeM": [
+            0.25,
+            0.25
+          ],
+          "normal": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "joints": [],
+      "ports": [
+        {
+          "sourceId": "fp02.device.pv_pack_2kwp:POWER-OUT",
+          "role": "PowerProducer",
+          "centerM": [
+            0,
+            0.875,
+            1.5
+          ],
+          "normal": [
+            0,
+            0,
+            1
+          ],
+          "sizeM": [
+            0.25,
+            0.25
+          ],
+          "binding": "authoring-only"
+        }
+      ],
+      "phaseMotionProfile": null,
+      "gpuDiagnosticsAtMount": {
+        "acceptedArtifacts": 5,
+        "rejectedArtifacts": 0,
+        "activeRepresentations": 5,
+        "activeFallbacks": 0,
+        "geometryAllocations": 5,
+        "geometryDisposals": 0,
+        "materialAllocations": 3,
+        "materialDisposals": 0,
+        "estimatedGpuBytes": 7128,
+        "ownedCpuBytes": 7128,
+        "replacementCount": 0,
+        "removeCount": 0,
+        "staleRejectCount": 0,
+        "resetCount": 0,
+        "evictionCount": 0,
+        "evictionRejectCount": 0,
+        "rehydrationCount": 0,
+        "renderTargetAllocations": 0,
+        "renderTargetDisposals": 0,
+        "activeRenderTargets": 0,
+        "backendRevision": 0,
+        "backendState": "Available",
+        "residentRepresentationKeys": [
+          "factory:synthetic_probe_fp01_solar_s0_v1:solar_feet",
+          "factory:synthetic_probe_fp01_solar_s0_v1:solar_frame",
+          "factory:synthetic_probe_fp01_solar_s0_v1:solar_hinge",
+          "factory:synthetic_probe_fp01_solar_s0_v1:solar_panels",
+          "factory:synthetic_probe_fp01_solar_s0_v1:solar_power_socket"
+        ],
+        "visibleRepresentationKeys": [
+          "factory:synthetic_probe_fp01_solar_s0_v1:solar_feet",
+          "factory:synthetic_probe_fp01_solar_s0_v1:solar_frame",
+          "factory:synthetic_probe_fp01_solar_s0_v1:solar_hinge",
+          "factory:synthetic_probe_fp01_solar_s0_v1:solar_panels",
+          "factory:synthetic_probe_fp01_solar_s0_v1:solar_power_socket"
+        ],
+        "pinnedFallbackRepresentationKeys": [],
+        "lastCommandStatus": "Accepted",
+        "lastOwnershipOutcome": "NotApplicable"
+      },
+      "rotorSweepBoundsM": null
+    },
+    {
+      "assetId": "fp01_wind_s0_v1",
+      "definitionId": "fp02.device.wind_pack_6kw",
+      "declaredDimensionsM": [
+        6,
+        13,
+        3
+      ],
+      "actualStaticMeshBoundsM": {
+        "min": {
+          "x": -2.5065698623657227,
+          "y": 0,
+          "z": -1.5
+        },
+        "max": {
+          "x": 2.5065698623657227,
+          "y": 12.75,
+          "z": 1.5
+        }
+      },
+      "assetSourceDigest": "fnv1a64:1e5f2b323124ccce",
+      "partCount": 7,
+      "boxCount": 14,
+      "supportPatchesM": [
+        {
+          "partId": "wind_feet",
+          "centerM": [
+            -1.25,
+            0.0,
+            -1.25
+          ],
+          "sizeM": [
+            0.5,
+            0.5
+          ],
+          "normal": [
+            0,
+            -1,
+            0
+          ]
+        },
+        {
+          "partId": "wind_feet",
+          "centerM": [
+            -1.25,
+            0.0,
+            1.25
+          ],
+          "sizeM": [
+            0.5,
+            0.5
+          ],
+          "normal": [
+            0,
+            -1,
+            0
+          ]
+        },
+        {
+          "partId": "wind_feet",
+          "centerM": [
+            1.25,
+            0.0,
+            -1.25
+          ],
+          "sizeM": [
+            0.5,
+            0.5
+          ],
+          "normal": [
+            0,
+            -1,
+            0
+          ]
+        },
+        {
+          "partId": "wind_feet",
+          "centerM": [
+            1.25,
+            0.0,
+            1.25
+          ],
+          "sizeM": [
+            0.5,
+            0.5
+          ],
+          "normal": [
+            0,
+            -1,
+            0
+          ]
+        }
+      ],
+      "joints": [],
+      "ports": [
+        {
+          "sourceId": "fp02.device.wind_pack_6kw:POWER-OUT",
+          "role": "PowerProducer",
+          "centerM": [
+            0.375,
+            0.625,
+            1.5
+          ],
+          "normal": [
+            0,
+            0,
+            1
+          ],
+          "sizeM": [
+            0.25,
+            0.25
+          ],
+          "binding": "authoring-only"
+        }
+      ],
+      "phaseMotionProfile": null,
+      "gpuDiagnosticsAtMount": {
+        "acceptedArtifacts": 7,
+        "rejectedArtifacts": 0,
+        "activeRepresentations": 7,
+        "activeFallbacks": 0,
+        "geometryAllocations": 7,
+        "geometryDisposals": 0,
+        "materialAllocations": 3,
+        "materialDisposals": 0,
+        "estimatedGpuBytes": 9072,
+        "ownedCpuBytes": 9072,
+        "replacementCount": 0,
+        "removeCount": 0,
+        "staleRejectCount": 0,
+        "resetCount": 0,
+        "evictionCount": 0,
+        "evictionRejectCount": 0,
+        "rehydrationCount": 0,
+        "renderTargetAllocations": 0,
+        "renderTargetDisposals": 0,
+        "activeRenderTargets": 0,
+        "backendRevision": 0,
+        "backendState": "Available",
+        "residentRepresentationKeys": [
+          "factory:synthetic_probe_fp01_wind_s0_v1:wind_blade_1",
+          "factory:synthetic_probe_fp01_wind_s0_v1:wind_blade_2",
+          "factory:synthetic_probe_fp01_wind_s0_v1:wind_blade_3",
+          "factory:synthetic_probe_fp01_wind_s0_v1:wind_feet",
+          "factory:synthetic_probe_fp01_wind_s0_v1:wind_hub",
+          "factory:synthetic_probe_fp01_wind_s0_v1:wind_mast",
+          "factory:synthetic_probe_fp01_wind_s0_v1:wind_power_socket"
+        ],
+        "visibleRepresentationKeys": [
+          "factory:synthetic_probe_fp01_wind_s0_v1:wind_blade_1",
+          "factory:synthetic_probe_fp01_wind_s0_v1:wind_blade_2",
+          "factory:synthetic_probe_fp01_wind_s0_v1:wind_blade_3",
+          "factory:synthetic_probe_fp01_wind_s0_v1:wind_feet",
+          "factory:synthetic_probe_fp01_wind_s0_v1:wind_hub",
+          "factory:synthetic_probe_fp01_wind_s0_v1:wind_mast",
+          "factory:synthetic_probe_fp01_wind_s0_v1:wind_power_socket"
+        ],
+        "pinnedFallbackRepresentationKeys": [],
+        "lastCommandStatus": "Accepted",
+        "lastOwnershipOutcome": "NotApplicable"
+      },
+      "rotorSweepBoundsM": {
+        "min": [
+          -3,
+          7,
+          -1.5
+        ],
+        "max": [
+          3,
+          13,
+          1.5
+        ]
+      }
+    }
+  ],
+  "staticMetadataChecks": "PASS:16 focused cases including contacts, phase/source binding and exposed electrical face/access",
+  "runtimeMeshBounds": "PASS:actual MeshArtifact unit assertions and real GPU probe metadata",
+  "GPUImport": "PASS:1 Chromium/8.4s test;26 final captures including exposed sockets and100 owned cleanup cycles",
+  "evidence": "apps/weltraum-browser/evidence/factory/w05/run-20261011T104359Z/final-sockets/browser-probe-result.json",
+  "windGeometryNote": "6m rotor/13m vertical dimensions are conservative nominal sweep envelope; actual static posed blade mesh bounds are separately reported. Wind motion/energy is NOT_RUN.",
+  "HVOXCompiler": "NOT_RUN",
+  "Blender": "NOT_RUN",
+  "OwnerArtAcceptance": "NOT_RUN",
+  "license": "LicenseRef-Hestia-Project-Original",
+  "authority": "render-derived-only; sockets authoring-only until W07"
+}

@@ -1,0 +1,106 @@
+{
+  "package": "W05",
+  "writer": "/root/fp06_domain",
+  "baseCommitSha": "10e1e3026610065206d8ac4b361d3f1686114dd8",
+  "sealedUtc": "2026-10-11T11:21:31.422712+00:00",
+  "productWriteHold": true,
+  "green": "PASS:15/15",
+  "affectedOriginalRegressions": "PASS:46/46; unchangedbackend",
+  "build": "PASS:postreview",
+  "gpu": "PASS:postreview1Chromium/8.3s/100cycles",
+  "independentReview": "NOT_RUN:followup",
+  "files": [
+    {
+      "path": "art/factory/fp02/cutter/LICENSE.txt",
+      "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+      "bytes": 326
+    },
+    {
+      "path": "art/factory/fp02/cutter/README.md",
+      "sha256": "89a63ec1ca27ef8e958d5cd52271e5c7065ae472a39337f0e77b069bc643fe3e",
+      "bytes": 888
+    },
+    {
+      "path": "art/factory/fp02/cutter/authoring-v1.json",
+      "sha256": "0cdb071fb15c5b7c5ee57fa5f10685b8919b741adbe0d10c5e7f47f93cca1a61",
+      "bytes": 5596
+    },
+    {
+      "path": "art/factory/fp02/cutter/derived-report.json",
+      "sha256": "136f40563dff7df59f92ba46cd1075083ef20f403e476bd1608378dd4e614c40",
+      "bytes": 10748
+    },
+    {
+      "path": "art/factory/fp02/cutter/source.scene.json",
+      "sha256": "78e55f9086defb6ecf670ad92fd7d357b2ae0501b148908a8d8579e6154f084d",
+      "bytes": 19068
+    },
+    {
+      "path": "art/factory/fp02/former/LICENSE.txt",
+      "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+      "bytes": 326
+    },
+    {
+      "path": "art/factory/fp02/former/README.md",
+      "sha256": "89a63ec1ca27ef8e958d5cd52271e5c7065ae472a39337f0e77b069bc643fe3e",
+      "bytes": 888
+    },
+    {
+      "path": "art/factory/fp02/former/authoring-v1.json",
+      "sha256": "31500d6c38d06be22226940222c8abcba5d2e9e48483e36293910da71575c34b",
+      "bytes": 5889
+    },
+    {
+      "path": "art/factory/fp02/former/derived-report.json",
+      "sha256": "6852e26132e169f24ff2f16a6aa3f1ae3ceac7039bfd788d9bdf46deb6077b4e",
+      "bytes": 10879
+    },
+    {
+      "path": "art/factory/fp02/former/source.scene.json",
+      "sha256": "4e27abd922e46516d1db0307b8dfb5edaf1b8c6807e80006781344b9dfcf535d",
+      "bytes": 19487
+    },
+    {
+      "path": "art/factory/fp01/power-kit/LICENSE.txt",
+      "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+      "bytes": 326
+    },
+    {
+      "path": "art/factory/fp01/power-kit/README.md",
+      "sha256": "89a63ec1ca27ef8e958d5cd52271e5c7065ae472a39337f0e77b069bc643fe3e",
+      "bytes": 888
+    },
+    {
+      "path": "art/factory/fp01/power-kit/authoring-v1.json",
+      "sha256": "ebab668ca024e995b8742021f4440886c10b51ba58a5c7520de37a6bc87c7dd8",
+      "bytes": 7286
+    },
+    {
+      "path": "art/factory/fp01/power-kit/derived-report.json",
+      "sha256": "1db8c2c7b26ffa62a11f087cb09f32413dec5c0421b803fc35f03110c9d19d5a",
+      "bytes": 16769
+    },
+    {
+      "path": "art/factory/fp01/power-kit/source.scene.json",
+      "sha256": "18b7591dcebbeed0aa11d7ec52aef3798bd79234dc472b067b4e579d7ad6ee9b",
+      "bytes": 26808
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+      "sha256": "5b014f69d2e5240cfacf8fe5d5fe749c1e6494ddf317d29ef9106460585357bb",
+      "bytes": 8998
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/presentation/machinePose.ts",
+      "sha256": "c426f01ae087004a1eacde662de0c5da7c22f18410d5900d2ca20e840cae111b",
+      "bytes": 3309
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/presentation.test.ts",
+      "sha256": "cf836497f22f0ff93df1ab175a09b4169b1672ea9f193d3c69b9e26516ac355c",
+      "bytes": 14969
+    }
+  ],
+  "patchPath": "/workspace/.cloud-setup/fp06-w05-product-working.patch",
+  "patchSha256": "40cb5b0a0608073c9ad5822dc2224819f55d409ab6ad577a0ef6266fdbf865bd"
+}

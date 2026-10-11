@@ -1,0 +1,81 @@
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/presentation.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/presentation.test.ts (4 tests | 4 failed) 34ms
+     × T021 loads real mesh bounds in meters and source-bound 1m ports 6ms
+     × T022 WAIT_POWER holds confirmed work and leaves real input/products unchanged 12ms
+     × T023 removed tool stays absent across subsequent damage samples 0ms
+     × T024 100 real Three backend mounts/disposals return owned resources to baseline 15ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/presentation.test.ts > FP06 W05 source-bound factory presentation > T021 loads real mesh bounds in meters and source-bound 1m ports
+AssertionError: expected +0 to be 3 // Object.is equality
+
+- Expected
++ Received
+
+- 3
++ 0
+
+ ❯ tests/unit/factory/presentation.test.ts:16:55
+     14|     for (const [id, width, depth, height] of [["B06", 3, 2, 2.5], ["B0…
+     15|       const asset = projection(id);
+     16|       expect(asset.bounds.max.x - asset.bounds.min.x).toBe(width);
+       |                                                       ^
+     17|       expect(asset.bounds.max.z - asset.bounds.min.z).toBe(depth);
+     18|       expect(asset.bounds.max.y - asset.bounds.min.y).toBe(height);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/factory/presentation.test.ts > FP06 W05 source-bound factory presentation > T022 WAIT_POWER holds confirmed work and leaves real input/products unchanged
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/factory/presentation.test.ts:35:90
+     33|       presentPartIds: asset.parts.map(part => part.partId), damageRevi…
+     34|     const running = sampleMachinePose(read, 1);
+     35|     expect(running.partPoses.some(part => part.translationM.some(value…
+       |                                                                                          ^
+     36|     const stopped = { ...read, status: "WAIT_POWER" };
+     37|     const first = sampleMachinePose(stopped, 1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/factory/presentation.test.ts > FP06 W05 source-bound factory presentation > T023 removed tool stays absent across subsequent damage samples
+AssertionError: expected 0 to be greater than 0
+ ❯ tests/unit/factory/presentation.test.ts:47:30
+     45|     const asset = projection();
+     46|     const remaining = asset.parts.filter(part => part.role !== "tool")…
+     47|     expect(remaining.length).toBeGreaterThan(0);
+       |                              ^
+     48|     const read = { projection: asset, status: "FAULT", confirmedWorkMs…
+     49|     for (const time of [1, 2, 1_000]) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/unit/factory/presentation.test.ts > FP06 W05 source-bound factory presentation > T024 100 real Three backend mounts/disposals return owned resources to baseline
+AssertionError: expected 0 to be greater than 0
+ ❯ tests/unit/factory/presentation.test.ts:76:23
+     74|       expect(listeners.size).toBe(0);
+     75|     }
+     76|     expect(allocated).toBeGreaterThan(0);
+       |                       ^
+     77|     listeners.dispose();
+     78|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed (4)
+   Start at  10:43:59
+   Duration  445ms (transform 213ms, setup 0ms, import 303ms, tests 34ms, environment 0ms)

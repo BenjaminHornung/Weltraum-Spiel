@@ -1,0 +1,104 @@
+{
+  "package": "W05",
+  "writer": "/root/fp06_domain",
+  "baseCommitSha": "10e1e3026610065206d8ac4b361d3f1686114dd8",
+  "sealedUtc": "2026-10-11T11:09:30Z",
+  "productWriteHold": true,
+  "green": "NOT_RUN",
+  "build": "NOT_RUN",
+  "gpu": "NOT_RUN",
+  "files": [
+    {
+      "path": "art/factory/fp02/cutter/LICENSE.txt",
+      "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+      "bytes": 326
+    },
+    {
+      "path": "art/factory/fp02/cutter/README.md",
+      "sha256": "89a63ec1ca27ef8e958d5cd52271e5c7065ae472a39337f0e77b069bc643fe3e",
+      "bytes": 888
+    },
+    {
+      "path": "art/factory/fp02/cutter/authoring-v1.json",
+      "sha256": "25cebeca919f3d27402e2e8638d1e803c0c1d0d92272cab8c1eac21922e98a98",
+      "bytes": 4383
+    },
+    {
+      "path": "art/factory/fp02/cutter/derived-report.json",
+      "sha256": "b3f47e5a6c9887072afc662234907dd04b14cf2c6f3f0cf2e12299f698624b82",
+      "bytes": 2679
+    },
+    {
+      "path": "art/factory/fp02/cutter/source.scene.json",
+      "sha256": "4e00792864f880c510130fe1381c850cea5334600b6832c7ba7e4b6cf5e4405b",
+      "bytes": 12606
+    },
+    {
+      "path": "art/factory/fp02/former/LICENSE.txt",
+      "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+      "bytes": 326
+    },
+    {
+      "path": "art/factory/fp02/former/README.md",
+      "sha256": "89a63ec1ca27ef8e958d5cd52271e5c7065ae472a39337f0e77b069bc643fe3e",
+      "bytes": 888
+    },
+    {
+      "path": "art/factory/fp02/former/authoring-v1.json",
+      "sha256": "d858d4021cf2eda251fd514b7afc57d5e5735d16be5fd2d1eecb69664094dcb2",
+      "bytes": 4383
+    },
+    {
+      "path": "art/factory/fp02/former/derived-report.json",
+      "sha256": "81653b2db4754694eff099dcc8b679f268e38a503e6e5a3b0eaa0b6aeb383bec",
+      "bytes": 2682
+    },
+    {
+      "path": "art/factory/fp02/former/source.scene.json",
+      "sha256": "6bba6978607d74d820c1caba9bc915af6331d31d63ac30820c963682949e72fe",
+      "bytes": 12356
+    },
+    {
+      "path": "art/factory/fp01/power-kit/LICENSE.txt",
+      "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+      "bytes": 326
+    },
+    {
+      "path": "art/factory/fp01/power-kit/README.md",
+      "sha256": "89a63ec1ca27ef8e958d5cd52271e5c7065ae472a39337f0e77b069bc643fe3e",
+      "bytes": 888
+    },
+    {
+      "path": "art/factory/fp01/power-kit/authoring-v1.json",
+      "sha256": "003af4157113216d3558add8521fd5af37d8949afa55400f274e731f213b6587",
+      "bytes": 6443
+    },
+    {
+      "path": "art/factory/fp01/power-kit/derived-report.json",
+      "sha256": "c05c503f0c63b4eed579dc034844a84db7163d57fc36719c43891e495e158c67",
+      "bytes": 3534
+    },
+    {
+      "path": "art/factory/fp01/power-kit/source.scene.json",
+      "sha256": "d37a5d435de8c29f6ba84709aa87a750eb56e37b838b78ea80b1aa30bd21335d",
+      "bytes": 24099
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+      "sha256": "aa509cedffab42c4c402051bb58b741ba193e548bb6070b00138cfe1f3fb98a4",
+      "bytes": 8707
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/presentation/machinePose.ts",
+      "sha256": "bd4ab0a48bf84cbe40e68f48a5095d7e5414085f832c1f305d55ca16cc9e18ab",
+      "bytes": 2797
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/presentation.test.ts",
+      "sha256": "faba4caf2539eabd0274d8e19117350daa10f07ca685dfecf259613980595a03",
+      "bytes": 8851
+    }
+  ],
+  "patchPath": "/workspace/.cloud-setup/fp06-w05-product-working.patch",
+  "patchSha256": "c91d6d3805857b2a30c34e0f7513f5800460c4b509f77a834c28e342d3c462f9"
+}

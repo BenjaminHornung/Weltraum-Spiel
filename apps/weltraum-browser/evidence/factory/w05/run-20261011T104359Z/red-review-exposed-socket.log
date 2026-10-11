@@ -1,0 +1,82 @@
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/presentation.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/presentation.test.ts (16 tests | 1 failed) 437ms
+     × R3 electrical markers bind an exposed socket face with clear outward access 10ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/presentation.test.ts > FP06 W05 source-bound factory presentation > R3 electrical markers bind an exposed socket face with clear outward access
+AssertionError: expected [ 0.375, 0.375, 1.375 ] to deeply equal [ 0.375, 0.375, 1.5 ]
+
+- Expected
++ Received
+
+  [
+    0.375,
+    0.375,
+-   1.5,
++   1.375,
+  ]
+
+ ❯ tests/unit/factory/presentation.test.ts:235:33
+    233|       const socket = source.parts.find(part => part.role === "power-ma…
+    234|       expect(port.normal).toEqual([0, 0, 1]);
+    235|       expect.soft(port.centerM).toEqual([socket.centerM[0], socket.cen…
+       |                                 ^
+    236|       const outward = port.centerM.map((value, axis) => value + port.n…
+    237|       const embedded = source.parts.filter(part => part.role !== "powe…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/factory/presentation.test.ts > FP06 W05 source-bound factory presentation > R3 electrical markers bind an exposed socket face with clear outward access
+ FAIL  tests/unit/factory/presentation.test.ts > FP06 W05 source-bound factory presentation > R3 electrical markers bind an exposed socket face with clear outward access
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/factory/presentation.test.ts:239:29
+    237|       const embedded = source.parts.filter(part => part.role !== "powe…
+    238|         outward.every((value, axis) => value >= box.centerM[axis]! - b…
+    239|       expect.soft(embedded).toBe(false);
+       |                             ^
+    240|     }
+    241|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/factory/presentation.test.ts > FP06 W05 source-bound factory presentation > R3 electrical markers bind an exposed socket face with clear outward access
+AssertionError: expected [ +0, 0.625, 1.375 ] to deeply equal [ +0, 0.625, 1.5 ]
+
+- Expected
++ Received
+
+  [
+    0,
+    0.625,
+-   1.5,
++   1.375,
+  ]
+
+ ❯ tests/unit/factory/presentation.test.ts:235:33
+    233|       const socket = source.parts.find(part => part.role === "power-ma…
+    234|       expect(port.normal).toEqual([0, 0, 1]);
+    235|       expect.soft(port.centerM).toEqual([socket.centerM[0], socket.cen…
+       |                                 ^
+    236|       const outward = port.centerM.map((value, axis) => value + port.n…
+    237|       const embedded = source.parts.filter(part => part.role !== "powe…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 15 passed (16)
+   Start at  11:30:47
+   Duration  924ms (transform 242ms, setup 0ms, import 359ms, tests 437ms, environment 0ms)

@@ -1,0 +1,117 @@
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/presentation.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/presentation.test.ts (15 tests | 6 failed) 327ms
+     × R1 B06 connects every paid ground shoe to a raised structural load path 6ms
+     × R1 fp02.device.wind_pack_6kw connects every paid ground shoe to a raised structural load path 1ms
+     × R2 infeed, clamp and outfeed have bounded confirmed-work motion and frozen WAIT_POWER poses 2ms
+     × R1 Former bed has a continuous contact path to its raised corner posts 1ms
+     × R1 Former tool keeps a positive-area actuator contact throughout its half-meter stroke 3ms
+     × R3 Wind and PV expose source-required visible authoring-only power-out sockets 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/presentation.test.ts > FP06 W05 source-bound factory presentation > R1 B06 connects every paid ground shoe to a raised structural load path
+ FAIL  tests/unit/factory/presentation.test.ts > FP06 W05 source-bound factory presentation > R1 fp02.device.wind_pack_6kw connects every paid ground shoe to a raised structural load path
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/factory/presentation.test.ts:157:118
+    155|         for (const node of nodes) if (!seen.has(node) && connected(cur…
+    156|       }
+    157|       expect([...seen].some(node => node.role === "structure" && node.…
+       |                                                                                                                      ^
+    158|     }
+    159|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/unit/factory/presentation.test.ts > FP06 W05 source-bound factory presentation > R2 infeed, clamp and outfeed have bounded confirmed-work motion and frozen WAIT_POWER poses
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/factory/presentation.test.ts:170:151
+    168|         const phaseParts = asset.parts.filter(part => part.role === ro…
+    169|         expect(phaseParts.length).toBeGreaterThan(0);
+    170|         expect(pose.partPoses.some(part => phaseParts.some(source => s…
+       |                                                                                                                                                       ^
+    171|         const held = { ...phaseRead, status: "WAIT_POWER" };
+    172|         expect(sampleMachinePose(held, 100_000)).toEqual(sampleMachine…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/unit/factory/presentation.test.ts > FP06 W05 source-bound factory presentation > R1 Former bed has a continuous contact path to its raised corner posts
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/factory/presentation.test.ts:190:93
+    188|       }
+    189|     }
+    190|     expect([...seen].some(node => node.role === "structure" && node.bo…
+       |                                                                                             ^
+    191|   });
+    192|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/unit/factory/presentation.test.ts > FP06 W05 source-bound factory presentation > R1 Former tool keeps a positive-area actuator contact throughout its half-meter stroke
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/factory/presentation.test.ts:207:11
+    205|           - Math.max(value - tool.sizeM[axis]! / 2, actuator.centerM[a…
+    206|         return overlaps.every(value => value >= 0) && overlaps.filter(…
+    207|       })).toBe(true);
+       |           ^
+    208|     }
+    209|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/unit/factory/presentation.test.ts > FP06 W05 source-bound factory presentation > R3 Wind and PV expose source-required visible authoring-only power-out sockets
+AssertionError: expected [] to have a length of 1 but got +0
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/factory/presentation.test.ts:214:111
+    212|     for (const id of ["fp02.device.wind_pack_6kw", "fp02.device.pv_pac…
+    213|       const source = getFactoryAssetSource(id);
+    214|       expect(source.ports.filter(port => port.role === "PowerProducer"…
+       |                                                                                                               ^
+    215|       expect(source.parts.some(part => part.role === "power-marker" &&…
+    216|     }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 9 passed (15)
+   Start at  11:16:38
+   Duration  836ms (transform 258ms, setup 0ms, import 385ms, tests 327ms, environment 0ms)

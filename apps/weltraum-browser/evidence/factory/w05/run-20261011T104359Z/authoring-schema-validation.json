@@ -1,0 +1,31 @@
+{
+  "status": "PASS",
+  "method": "existing unchanged Draft202012 asset authoring schema; preinstalled Python jsonschema",
+  "schema": "schemas/hestia-asset-authoring-v1.schema.json",
+  "schemaSha256": "981d883c1147673211b155af72d4f080012b76acd0c13864035644e8e5ca6c36",
+  "files": [
+    {
+      "path": "art/factory/fp02/cutter/authoring-v1.json",
+      "sha256": "25cebeca919f3d27402e2e8638d1e803c0c1d0d92272cab8c1eac21922e98a98",
+      "status": "PASS",
+      "assetId": "fp02_cutter_s0_v1",
+      "parts": 10
+    },
+    {
+      "path": "art/factory/fp02/former/authoring-v1.json",
+      "sha256": "d858d4021cf2eda251fd514b7afc57d5e5735d16be5fd2d1eecb69664094dcb2",
+      "status": "PASS",
+      "assetId": "fp02_former_s0_v1",
+      "parts": 10
+    },
+    {
+      "path": "art/factory/fp01/power-kit/authoring-v1.json",
+      "sha256": "003af4157113216d3558add8521fd5af37d8949afa55400f274e731f213b6587",
+      "status": "PASS",
+      "assetId": "fp01_power_kit_s0_v1",
+      "parts": 18
+    }
+  ],
+  "blenderExecution": "NOT_RUN",
+  "hvoxCompilation": "NOT_RUN"
+}

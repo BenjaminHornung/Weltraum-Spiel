@@ -1,0 +1,11 @@
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/presentationMeshArtifact.test.ts tests/unit/voxelMeshArtifactAdapter.test.ts tests/unit/three-material-factory.test.ts tests/unit/renderBackendLifecycle.test.ts tests/unit/renderBackendRevision.test.ts tests/unit/renderBackendBoundary.test.ts tests/unit/hvp-look.test.ts tests/unit/hvp-listeners.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser
+
+
+ Test Files  8 passed (8)
+      Tests  46 passed (46)
+   Start at  11:09:21
+   Duration  1.46s (transform 264ms, setup 0ms, import 506ms, tests 113ms, environment 1ms)

@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "executedUtc": "2026-10-11T11:19:48.881874+00:00",
+  "validator": "preinstalled Python jsonschema.Draft202012Validator",
+  "schemaPath": "schemas/hestia-asset-authoring-v1.schema.json",
+  "schemaSha256": "981d883c1147673211b155af72d4f080012b76acd0c13864035644e8e5ca6c36",
+  "results": [
+    {
+      "path": "art/factory/fp02/cutter/authoring-v1.json",
+      "sha256": "0cdb071fb15c5b7c5ee57fa5f10685b8919b741adbe0d10c5e7f47f93cca1a61",
+      "status": "PASS"
+    },
+    {
+      "path": "art/factory/fp02/former/authoring-v1.json",
+      "sha256": "31500d6c38d06be22226940222c8abcba5d2e9e48483e36293910da71575c34b",
+      "status": "PASS"
+    },
+    {
+      "path": "art/factory/fp01/power-kit/authoring-v1.json",
+      "sha256": "ebab668ca024e995b8742021f4440886c10b51ba58a5c7520de37a6bc87c7dd8",
+      "status": "PASS"
+    }
+  ],
+  "hvoxCompilation": "NOT_RUN",
+  "Blender": "NOT_RUN",
+  "OwnerArtAcceptance": "NOT_RUN"
+}

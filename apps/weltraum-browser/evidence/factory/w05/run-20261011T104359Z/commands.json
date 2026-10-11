@@ -1,0 +1,117 @@
+{
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11",
+  "commands": [
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm --prefix apps/weltraum-browser run test -- tests/unit/factory/presentation.test.ts",
+      "phase": "Before feature body",
+      "log": "red-initial.log",
+      "result": "4 collected assertion failures; original T021-T024 scaffold",
+      "exitCode": 1
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm --prefix apps/weltraum-browser run test -- tests/unit/factory/presentation.test.ts",
+      "phase": "Pre-review implementation",
+      "log": "green-focused.log",
+      "result": "9/9 PASS",
+      "exitCode": 0
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm --prefix apps/weltraum-browser run test -- tests/unit/factory/presentation.test.ts",
+      "phase": "Before review fixes",
+      "log": "red-review-r1-r2.log",
+      "result": "3 assertion failures/9 PASS:ground paths and phase motion",
+      "exitCode": 1
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm --prefix apps/weltraum-browser run test -- tests/unit/factory/presentation.test.ts",
+      "phase": "Before review fixes",
+      "log": "red-review-former-forcepath.log",
+      "result": "5 assertion failures/9 PASS:+Former bed and full-stroke actuator contact",
+      "exitCode": 1
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm --prefix apps/weltraum-browser run test -- tests/unit/factory/presentation.test.ts",
+      "phase": "Before review fixes",
+      "log": "red-review-r3-markers.log",
+      "result": "6 assertion failures/9 PASS:+missing Wind/PV PowerOut",
+      "exitCode": 1
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm --prefix apps/weltraum-browser run test -- tests/unit/factory/presentation.test.ts",
+      "phase": "After minimal review fixes",
+      "log": "green-review-fixed.log",
+      "result": "15/15 PASS",
+      "exitCode": 0
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm --prefix apps/weltraum-browser run test -- tests/unit/factory/presentation.test.ts",
+      "phase": "After stronger full-cycle bounds assertions",
+      "log": "green-review-bounds.log",
+      "result": "15/15 PASS",
+      "exitCode": 0
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm --prefix apps/weltraum-browser run test -- tests/unit/presentationMeshArtifact.test.ts tests/unit/voxelMeshArtifactAdapter.test.ts tests/unit/three-material-factory.test.ts tests/unit/renderBackendLifecycle.test.ts tests/unit/renderBackendRevision.test.ts tests/unit/renderBackendBoundary.test.ts tests/unit/hvp-look.test.ts tests/unit/hvp-listeners.test.ts",
+      "log": "green-regressions.log",
+      "result": "8 files/46 PASS; unchanged backend, not repeated after geometry/pose fixes",
+      "exitCode": 0
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm --prefix apps/weltraum-browser run build",
+      "log": "build.log",
+      "result": "tsc+Vite PASS; existing chunk-size warning retained",
+      "exitCode": 0
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm --prefix apps/weltraum-browser run build",
+      "log": "build-postreview.log",
+      "result": "tsc+Vite PASS; existing chunk-size warning retained",
+      "exitCode": 0
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nFP06_E2E_RUN_DIR=/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser/evidence/factory/w05/run-20261011T104359Z npm --prefix apps/weltraum-browser run test:e2e -- --config=/workspace/.cloud-setup/fp06-w05.playwright.config.mts probe.spec.mts",
+      "log": "browser-probe.log",
+      "result": "1 Chromium PASS,7.2s test/8.4s run; pre-review source",
+      "exitCode": 0
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nFP06_E2E_RUN_DIR=/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser/evidence/factory/w05/run-20261011T104359Z/post-review npm --prefix apps/weltraum-browser run test:e2e -- --config=/workspace/.cloud-setup/fp06-w05.playwright.config.mts probe.spec.mts",
+      "log": "post-review/browser-probe.log",
+      "result": "1 Chromium PASS,8.3s test/9.6s run; post-review source",
+      "exitCode": 0
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm --prefix apps/weltraum-browser run test -- tests/unit/factory/presentation.test.ts",
+      "phase": "Before final exposed-socket source correction",
+      "log": "red-review-exposed-socket.log",
+      "result": "1 assertion case failed/15 PASS; four real socket face/access assertion failures",
+      "exitCode": 1
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm --prefix apps/weltraum-browser run test -- tests/unit/factory/presentation.test.ts",
+      "phase": "Final socket source correction",
+      "log": "green-final-sockets.log",
+      "result": "16/16 PASS",
+      "exitCode": 0
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm --prefix apps/weltraum-browser run build",
+      "log": "build-final-sockets.log",
+      "result": "tsc+Vite PASS; existing chunk-size warning retained",
+      "exitCode": 0
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nFP06_E2E_RUN_DIR=/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser/evidence/factory/w05/run-20261011T104359Z/final-sockets npm --prefix apps/weltraum-browser run test:e2e -- --config=/workspace/.cloud-setup/fp06-w05.playwright.config.mts probe.spec.mts",
+      "log": "final-sockets/browser-probe.log",
+      "result": "1 Chromium PASS,8.4s test/9.7s run;26 captures incl. source-bound exposed sockets and100 owned cycles",
+      "exitCode": 0
+    }
+  ],
+  "schemaChecks": [
+    "authoring-schema-validation.json",
+    "authoring-schema-validation-postreview.json",
+    "Authoring semantic hashes unchanged by final native socket correction, verified against authoring-schema-validation-postreview.json"
+  ],
+  "timeouts": "original30s test/5s expect/20s startup; retries/workers/Chromium/launch options unchanged",
+  "lease": "exclusive serial jobs; released after actual ss5174-free check"
+}

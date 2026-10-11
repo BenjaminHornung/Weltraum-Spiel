@@ -1,0 +1,5949 @@
+diff --git a/art/factory/fp02/cutter/LICENSE.txt b/art/factory/fp02/cutter/LICENSE.txt
+new file mode 100644
+index 00000000..353d88c0
+--- /dev/null
++++ b/art/factory/fp02/cutter/LICENSE.txt
+@@ -0,0 +1,6 @@
++LicenseRef-Hestia-Project-Original
++
++Original procedural technical S0 geometry authored for BenjaminHornung/Weltraum-Spiel.
++No third-party asset, texture, provider or external license is incorporated.
++These sources remain subject to the repository owner's rights and distribution terms;
++this file grants no new public license.
+diff --git a/art/factory/fp02/cutter/README.md b/art/factory/fp02/cutter/README.md
+new file mode 100644
+index 00000000..d81ca52f
+--- /dev/null
++++ b/art/factory/fp02/cutter/README.md
+@@ -0,0 +1,7 @@
++# Native technical S0 source
++
++`source.scene.json` is the native procedural geometry/marker source in meters; `authoring-v1.json` uses the existing Hestia authoring semantic contract. Runtime MeshArtifacts are derived by the W05 adapter, never material or structural world authority.
++
++Ground-center frame: east +X, north +Z, height +Y. Structural authoring grid 0.25 m is separate from HVP terrain 0.125 m. Part boxes, semantic roles, support contacts, pivots, sweeps and source references are explicit. Power markers remain authoring-only. Machines consume only their previously paid BOM, not additional C09 feet.
++
++No Blender, GLB, HVOX compiler, provider generation or package CLI execution is claimed. These are original S0 technical proxies, not visual Owner acceptance. Art review needs real later captures. Presentation geometry adds no inventory, power, collider or gameplay event.
+diff --git a/art/factory/fp02/cutter/authoring-v1.json b/art/factory/fp02/cutter/authoring-v1.json
+new file mode 100644
+index 00000000..8f15c47e
+--- /dev/null
++++ b/art/factory/fp02/cutter/authoring-v1.json
+@@ -0,0 +1,230 @@
++{
++  "schema": "hestia.asset-authoring.v1",
++  "asset": {
++    "assetId": "fp02_cutter_s0_v1",
++    "assetRevision": 1,
++    "representation": "StructuralAssembly",
++    "metersPerUnit": 1,
++    "coordinateFrame": {
++      "upAxis": "+Y",
++      "forwardAxis": "+Z",
++      "handedness": "RIGHT"
++    },
++    "tags": [
++      "technical_s0_proxy"
++    ]
++  },
++  "parts": [
++    {
++      "partId": "cutter_feet",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "cutter_frame",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "cutter_infeed",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "cutter_chamber",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "cutter_clamp",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "cutter_tool",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "cutter_outfeed",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "cutter_service",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "cutter_power",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "cutter_offcut",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "cutter_infeed_carriage",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "cutter_outfeed_carriage",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    }
++  ],
++  "joints": [
++    {
++      "jointId": "cutter_tool_joint",
++      "parentPartId": "cutter_frame",
++      "childPartId": "cutter_tool",
++      "jointType": "Slider",
++      "breakPolicy": "Scripted"
++    },
++    {
++      "jointId": "cutter_infeed_carriage_joint",
++      "parentPartId": "cutter_frame",
++      "childPartId": "cutter_infeed_carriage",
++      "jointType": "Slider",
++      "breakPolicy": "Scripted"
++    },
++    {
++      "jointId": "cutter_clamp_joint",
++      "parentPartId": "cutter_frame",
++      "childPartId": "cutter_clamp",
++      "jointType": "Slider",
++      "breakPolicy": "Scripted"
++    },
++    {
++      "jointId": "cutter_outfeed_carriage_joint",
++      "parentPartId": "cutter_frame",
++      "childPartId": "cutter_outfeed_carriage",
++      "jointType": "Slider",
++      "breakPolicy": "Scripted"
++    }
++  ],
++  "markers": [
++    {
++      "markerId": "fp02_cutter_s0_v1_port_0",
++      "markerType": "Cargo",
++      "partId": "cutter_feet"
++    },
++    {
++      "markerId": "fp02_cutter_s0_v1_port_1",
++      "markerType": "Cargo",
++      "partId": "cutter_feet"
++    },
++    {
++      "markerId": "fp02_cutter_s0_v1_port_2",
++      "markerType": "Snap",
++      "partId": "cutter_feet"
++    }
++  ],
++  "materials": [
++    {
++      "renderMaterialId": "ex_struct",
++      "tags": [
++        "render_only"
++      ]
++    },
++    {
++      "renderMaterialId": "ex_shell",
++      "tags": [
++        "render_only"
++      ]
++    },
++    {
++      "renderMaterialId": "ex_function",
++      "tags": [
++        "render_only"
++      ]
++    },
++    {
++      "renderMaterialId": "ex_hazard",
++      "tags": [
++        "render_only"
++      ]
++    },
++    {
++      "renderMaterialId": "ex_pv",
++      "tags": [
++        "render_only"
++      ]
++    }
++  ]
++}
+diff --git a/art/factory/fp02/cutter/derived-report.json b/art/factory/fp02/cutter/derived-report.json
+new file mode 100644
+index 00000000..eb898dad
+--- /dev/null
++++ b/art/factory/fp02/cutter/derived-report.json
+@@ -0,0 +1,436 @@
++{
++  "kind": "S0-proxy",
++  "nativeSourceSha256": "78e55f9086defb6ecf670ad92fd7d357b2ae0501b148908a8d8579e6154f084d",
++  "authoringSemanticSha256": "0cdb071fb15c5b7c5ee57fa5f10685b8919b741adbe0d10c5e7f47f93cca1a61",
++  "catalogDigest": "fnv1a:f3a8c642",
++  "assets": [
++    {
++      "assetId": "fp02_cutter_s0_v1",
++      "definitionId": "B06",
++      "declaredDimensionsM": [
++        3,
++        2,
++        2.5
++      ],
++      "actualStaticMeshBoundsM": {
++        "min": {
++          "x": -1.5,
++          "y": 0,
++          "z": -1
++        },
++        "max": {
++          "x": 1.5,
++          "y": 2.5,
++          "z": 1
++        }
++      },
++      "assetSourceDigest": "fnv1a64:6d9970ecebec5cd6",
++      "partCount": 12,
++      "boxCount": 33,
++      "supportPatchesM": [
++        {
++          "partId": "cutter_feet",
++          "centerM": [
++            -1.25,
++            0.0,
++            -0.75
++          ],
++          "sizeM": [
++            0.5,
++            0.5
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "cutter_feet",
++          "centerM": [
++            -1.25,
++            0.0,
++            0.75
++          ],
++          "sizeM": [
++            0.5,
++            0.5
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "cutter_feet",
++          "centerM": [
++            1.25,
++            0.0,
++            -0.75
++          ],
++          "sizeM": [
++            0.5,
++            0.5
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "cutter_feet",
++          "centerM": [
++            1.25,
++            0.0,
++            0.75
++          ],
++          "sizeM": [
++            0.5,
++            0.5
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        }
++      ],
++      "joints": [
++        {
++          "partId": "cutter_tool",
++          "pivotM": [
++            0,
++            1.5,
++            0
++          ],
++          "axis": [
++            0,
++            0,
++            1
++          ],
++          "limitsM": [
++            -0.25,
++            0.25
++          ],
++          "sweepBoundsM": {
++            "min": [
++              -0.125,
++              1.375,
++              -0.5
++            ],
++            "max": [
++              0.125,
++              1.625,
++              0.5
++            ]
++          }
++        },
++        {
++          "partId": "cutter_infeed_carriage",
++          "pivotM": [
++            -0.75,
++            1.125,
++            0
++          ],
++          "axis": [
++            1,
++            0,
++            0
++          ],
++          "limitsM": [
++            0,
++            0.25
++          ],
++          "sweepBoundsM": {
++            "min": [
++              -0.875,
++              1.0,
++              -0.25
++            ],
++            "max": [
++              -0.375,
++              1.25,
++              0.25
++            ]
++          }
++        },
++        {
++          "partId": "cutter_clamp",
++          "pivotM": [
++            -0.5,
++            1.375,
++            0
++          ],
++          "axis": [
++            0,
++            1,
++            0
++          ],
++          "limitsM": [
++            -0.25,
++            0
++          ],
++          "sweepBoundsM": {
++            "min": [
++              -0.625,
++              1.0,
++              -0.375
++            ],
++            "max": [
++              -0.375,
++              1.5,
++              0.375
++            ]
++          }
++        },
++        {
++          "partId": "cutter_outfeed_carriage",
++          "pivotM": [
++            0.875,
++            1.125,
++            0
++          ],
++          "axis": [
++            1,
++            0,
++            0
++          ],
++          "limitsM": [
++            0,
++            0.25
++          ],
++          "sweepBoundsM": {
++            "min": [
++              0.75,
++              1.0,
++              -0.25
++            ],
++            "max": [
++              1.25,
++              1.25,
++              0.25
++            ]
++          }
++        }
++      ],
++      "ports": [
++        {
++          "sourceId": "B06:IN-STEEL",
++          "role": "SolidBatchIn",
++          "centerM": [
++            -1.5,
++            1,
++            0
++          ],
++          "normal": [
++            -1,
++            0,
++            0
++          ],
++          "sizeM": [
++            0.75,
++            0.75
++          ],
++          "binding": "source-solid"
++        },
++        {
++          "sourceId": "B06:OUT-SEMI",
++          "role": "SolidBatchOut",
++          "centerM": [
++            1.5,
++            1,
++            0
++          ],
++          "normal": [
++            1,
++            0,
++            0
++          ],
++          "sizeM": [
++            0.75,
++            0.75
++          ],
++          "binding": "source-solid"
++        },
++        {
++          "sourceId": "B06:POWER-IN",
++          "role": "PowerConsumer",
++          "centerM": [
++            -0.75,
++            1.125,
++            0.875
++          ],
++          "normal": [
++            0,
++            0,
++            1
++          ],
++          "sizeM": [
++            0.25,
++            0.25
++          ],
++          "binding": "authoring-only"
++        }
++      ],
++      "phaseMotionProfile": {
++        "version": 1,
++        "phaseEndsMs": [
++          5000,
++          7000,
++          24000,
++          27000,
++          30000
++        ],
++        "toolCycles": 1,
++        "channels": [
++          {
++            "partId": "cutter_infeed_carriage",
++            "axis": [
++              1,
++              0,
++              0
++            ],
++            "segments": [
++              {
++                "startMs": 0,
++                "endMs": 5000,
++                "fromM": 0,
++                "toM": 0.25
++              },
++              {
++                "startMs": 5000,
++                "endMs": 27000,
++                "fromM": 0.25,
++                "toM": 0.25
++              },
++              {
++                "startMs": 27000,
++                "endMs": 30000,
++                "fromM": 0.25,
++                "toM": 0
++              }
++            ]
++          },
++          {
++            "partId": "cutter_clamp",
++            "axis": [
++              0,
++              1,
++              0
++            ],
++            "segments": [
++              {
++                "startMs": 5000,
++                "endMs": 7000,
++                "fromM": 0,
++                "toM": -0.25
++              },
++              {
++                "startMs": 7000,
++                "endMs": 24000,
++                "fromM": -0.25,
++                "toM": -0.25
++              },
++              {
++                "startMs": 24000,
++                "endMs": 27000,
++                "fromM": -0.25,
++                "toM": 0
++              }
++            ]
++          },
++          {
++            "partId": "cutter_outfeed_carriage",
++            "axis": [
++              1,
++              0,
++              0
++            ],
++            "segments": [
++              {
++                "startMs": 27000,
++                "endMs": 28500.0,
++                "fromM": 0,
++                "toM": 0.25
++              },
++              {
++                "startMs": 28500.0,
++                "endMs": 30000,
++                "fromM": 0.25,
++                "toM": 0
++              }
++            ]
++          }
++        ]
++      },
++      "gpuDiagnosticsAtMount": {
++        "acceptedArtifacts": 12,
++        "rejectedArtifacts": 0,
++        "activeRepresentations": 12,
++        "activeFallbacks": 0,
++        "geometryAllocations": 12,
++        "geometryDisposals": 0,
++        "materialAllocations": 4,
++        "materialDisposals": 0,
++        "estimatedGpuBytes": 21384,
++        "ownedCpuBytes": 21384,
++        "replacementCount": 0,
++        "removeCount": 0,
++        "staleRejectCount": 0,
++        "resetCount": 0,
++        "evictionCount": 0,
++        "evictionRejectCount": 0,
++        "rehydrationCount": 0,
++        "renderTargetAllocations": 0,
++        "renderTargetDisposals": 0,
++        "activeRenderTargets": 0,
++        "backendRevision": 0,
++        "backendState": "Available",
++        "residentRepresentationKeys": [
++          "factory:synthetic_probe_fp02_cutter_s0_v1:cutter_chamber",
++          "factory:synthetic_probe_fp02_cutter_s0_v1:cutter_clamp",
++          "factory:synthetic_probe_fp02_cutter_s0_v1:cutter_feet",
++          "factory:synthetic_probe_fp02_cutter_s0_v1:cutter_frame",
++          "factory:synthetic_probe_fp02_cutter_s0_v1:cutter_infeed",
++          "factory:synthetic_probe_fp02_cutter_s0_v1:cutter_infeed_carriage",
++          "factory:synthetic_probe_fp02_cutter_s0_v1:cutter_offcut",
++          "factory:synthetic_probe_fp02_cutter_s0_v1:cutter_outfeed",
++          "factory:synthetic_probe_fp02_cutter_s0_v1:cutter_outfeed_carriage",
++          "factory:synthetic_probe_fp02_cutter_s0_v1:cutter_power",
++          "factory:synthetic_probe_fp02_cutter_s0_v1:cutter_service",
++          "factory:synthetic_probe_fp02_cutter_s0_v1:cutter_tool"
++        ],
++        "visibleRepresentationKeys": [
++          "factory:synthetic_probe_fp02_cutter_s0_v1:cutter_chamber",
++          "factory:synthetic_probe_fp02_cutter_s0_v1:cutter_clamp",
++          "factory:synthetic_probe_fp02_cutter_s0_v1:cutter_feet",
++          "factory:synthetic_probe_fp02_cutter_s0_v1:cutter_frame",
++          "factory:synthetic_probe_fp02_cutter_s0_v1:cutter_infeed",
++          "factory:synthetic_probe_fp02_cutter_s0_v1:cutter_infeed_carriage",
++          "factory:synthetic_probe_fp02_cutter_s0_v1:cutter_offcut",
++          "factory:synthetic_probe_fp02_cutter_s0_v1:cutter_outfeed",
++          "factory:synthetic_probe_fp02_cutter_s0_v1:cutter_outfeed_carriage",
++          "factory:synthetic_probe_fp02_cutter_s0_v1:cutter_power",
++          "factory:synthetic_probe_fp02_cutter_s0_v1:cutter_service",
++          "factory:synthetic_probe_fp02_cutter_s0_v1:cutter_tool"
++        ],
++        "pinnedFallbackRepresentationKeys": [],
++        "lastCommandStatus": "Accepted",
++        "lastOwnershipOutcome": "NotApplicable"
++      },
++      "rotorSweepBoundsM": null
++    }
++  ],
++  "staticMetadataChecks": "PASS:15 focused cases including contact/phase/source bindings",
++  "runtimeMeshBounds": "PASS:actual MeshArtifact unit assertions and real GPU probe metadata",
++  "GPUImport": "PASS:1 Chromium test;24 captures and100 owned cleanup cycles",
++  "evidence": "apps/weltraum-browser/evidence/factory/w05/run-20261011T104359Z/post-review/browser-probe-result.json",
++  "windGeometryNote": "6m rotor/13m vertical dimensions are conservative nominal sweep envelope; actual static posed blade mesh bounds are separately reported. Wind motion/energy is NOT_RUN.",
++  "HVOXCompiler": "NOT_RUN",
++  "Blender": "NOT_RUN",
++  "OwnerArtAcceptance": "NOT_RUN",
++  "license": "LicenseRef-Hestia-Project-Original",
++  "authority": "render-derived-only; sockets authoring-only until W07"
++}
+diff --git a/art/factory/fp02/cutter/source.scene.json b/art/factory/fp02/cutter/source.scene.json
+new file mode 100644
+index 00000000..a266932f
+--- /dev/null
++++ b/art/factory/fp02/cutter/source.scene.json
+@@ -0,0 +1,910 @@
++{
++  "schema": "hestia.factory-s0-source.v1",
++  "assets": [
++    {
++      "assetId": "fp02_cutter_s0_v1",
++      "definitionId": "B06",
++      "revision": 1,
++      "kind": "S0-proxy",
++      "frameId": "fp02_east_north_height_xyz_v1",
++      "origin": "ground-center",
++      "metersPerUnit": 1,
++      "authoringGridM": 0.25,
++      "terrainCellM": 0.125,
++      "dimensionsM": [
++        3,
++        2,
++        2.5
++      ],
++      "parts": [
++        {
++          "partId": "cutter_feet",
++          "role": "support",
++          "boxes": [
++            {
++              "centerM": [
++                -1.25,
++                0.125,
++                -0.75
++              ],
++              "sizeM": [
++                0.5,
++                0.25,
++                0.5
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                -1.25,
++                0.125,
++                0.75
++              ],
++              "sizeM": [
++                0.5,
++                0.25,
++                0.5
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                1.25,
++                0.125,
++                -0.75
++              ],
++              "sizeM": [
++                0.5,
++                0.25,
++                0.5
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                1.25,
++                0.125,
++                0.75
++              ],
++              "sizeM": [
++                0.5,
++                0.25,
++                0.5
++              ],
++              "material": "EX-STRUCT"
++            }
++          ]
++        },
++        {
++          "partId": "cutter_frame",
++          "role": "structure",
++          "boxes": [
++            {
++              "centerM": [
++                0,
++                0.625,
++                -0.625
++              ],
++              "sizeM": [
++                3,
++                0.25,
++                0.25
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                0,
++                0.625,
++                0.625
++              ],
++              "sizeM": [
++                3,
++                0.25,
++                0.25
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                -0.75,
++                1.5,
++                -0.75
++              ],
++              "sizeM": [
++                0.25,
++                2,
++                0.25
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                -0.75,
++                1.5,
++                0.75
++              ],
++              "sizeM": [
++                0.25,
++                2,
++                0.25
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                0.75,
++                1.5,
++                -0.75
++              ],
++              "sizeM": [
++                0.25,
++                2,
++                0.25
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                0.75,
++                1.5,
++                0.75
++              ],
++              "sizeM": [
++                0.25,
++                2,
++                0.25
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                -1.25,
++                0.375,
++                -0.75
++              ],
++              "sizeM": [
++                0.5,
++                0.25,
++                0.5
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                -1.25,
++                0.375,
++                0.75
++              ],
++              "sizeM": [
++                0.5,
++                0.25,
++                0.5
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                1.25,
++                0.375,
++                -0.75
++              ],
++              "sizeM": [
++                0.5,
++                0.25,
++                0.5
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                1.25,
++                0.375,
++                0.75
++              ],
++              "sizeM": [
++                0.5,
++                0.25,
++                0.5
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                -1,
++                0.625,
++                0
++              ],
++              "sizeM": [
++                1,
++                0.25,
++                1.5
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                1,
++                0.625,
++                0
++              ],
++              "sizeM": [
++                1,
++                0.25,
++                1.5
++              ],
++              "material": "EX-STRUCT"
++            }
++          ]
++        },
++        {
++          "partId": "cutter_infeed",
++          "role": "infeed-housing",
++          "boxes": [
++            {
++              "centerM": [
++                -1,
++                0.875,
++                0
++              ],
++              "sizeM": [
++                1,
++                0.25,
++                0.75
++              ],
++              "material": "EX-FUNCTION"
++            },
++            {
++              "centerM": [
++                -1,
++                1.75,
++                0
++              ],
++              "sizeM": [
++                1,
++                0.25,
++                1.25
++              ],
++              "material": "EX-SHELL"
++            },
++            {
++              "centerM": [
++                -1.25,
++                1.5,
++                0
++              ],
++              "sizeM": [
++                0.5,
++                0.25,
++                1
++              ],
++              "material": "EX-SHELL"
++            }
++          ]
++        },
++        {
++          "partId": "cutter_chamber",
++          "role": "guard",
++          "boxes": [
++            {
++              "centerM": [
++                0,
++                2.375,
++                0
++              ],
++              "sizeM": [
++                1.5,
++                0.25,
++                1.75
++              ],
++              "material": "EX-SHELL"
++            },
++            {
++              "centerM": [
++                0,
++                1.875,
++                -0.75
++              ],
++              "sizeM": [
++                1.5,
++                1,
++                0.25
++              ],
++              "material": "EX-SHELL"
++            },
++            {
++              "centerM": [
++                0,
++                2.125,
++                0.75
++              ],
++              "sizeM": [
++                1.5,
++                0.5,
++                0.25
++              ],
++              "material": "EX-SHELL"
++            },
++            {
++              "centerM": [
++                0,
++                1.5,
++                0.75
++              ],
++              "sizeM": [
++                1.5,
++                0.25,
++                0.25
++              ],
++              "material": "EX-SHELL"
++            }
++          ]
++        },
++        {
++          "partId": "cutter_clamp",
++          "role": "clamp",
++          "boxes": [
++            {
++              "centerM": [
++                -0.5,
++                1.375,
++                0
++              ],
++              "sizeM": [
++                0.25,
++                0.25,
++                0.75
++              ],
++              "material": "EX-HAZARD"
++            }
++          ]
++        },
++        {
++          "partId": "cutter_tool",
++          "role": "tool",
++          "boxes": [
++            {
++              "centerM": [
++                0,
++                1.5,
++                0
++              ],
++              "sizeM": [
++                0.25,
++                0.25,
++                0.5
++              ],
++              "material": "EX-HAZARD"
++            }
++          ]
++        },
++        {
++          "partId": "cutter_outfeed",
++          "role": "outfeed-housing",
++          "boxes": [
++            {
++              "centerM": [
++                1,
++                0.875,
++                0
++              ],
++              "sizeM": [
++                1,
++                0.25,
++                0.75
++              ],
++              "material": "EX-FUNCTION"
++            },
++            {
++              "centerM": [
++                1,
++                1,
++                -0.625
++              ],
++              "sizeM": [
++                1,
++                0.5,
++                0.25
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                1,
++                1,
++                0.625
++              ],
++              "sizeM": [
++                1,
++                0.5,
++                0.25
++              ],
++              "material": "EX-STRUCT"
++            }
++          ]
++        },
++        {
++          "partId": "cutter_service",
++          "role": "service",
++          "boxes": [
++            {
++              "centerM": [
++                -0.25,
++                0.875,
++                0.875
++              ],
++              "sizeM": [
++                1,
++                0.75,
++                0.25
++              ],
++              "material": "EX-FUNCTION"
++            }
++          ]
++        },
++        {
++          "partId": "cutter_power",
++          "role": "power-marker",
++          "boxes": [
++            {
++              "centerM": [
++                -0.75,
++                1.125,
++                0.875
++              ],
++              "sizeM": [
++                0.25,
++                0.25,
++                0.25
++              ],
++              "material": "EX-HAZARD"
++            }
++          ]
++        },
++        {
++          "partId": "cutter_offcut",
++          "role": "waste",
++          "boxes": [
++            {
++              "centerM": [
++                0.75,
++                0.5,
++                0.875
++              ],
++              "sizeM": [
++                0.5,
++                0.5,
++                0.25
++              ],
++              "material": "EX-SHELL"
++            }
++          ]
++        },
++        {
++          "partId": "cutter_infeed_carriage",
++          "role": "infeed",
++          "boxes": [
++            {
++              "centerM": [
++                -0.75,
++                1.125,
++                0
++              ],
++              "sizeM": [
++                0.25,
++                0.25,
++                0.5
++              ],
++              "material": "EX-FUNCTION"
++            }
++          ]
++        },
++        {
++          "partId": "cutter_outfeed_carriage",
++          "role": "outfeed",
++          "boxes": [
++            {
++              "centerM": [
++                0.875,
++                1.125,
++                0
++              ],
++              "sizeM": [
++                0.25,
++                0.25,
++                0.5
++              ],
++              "material": "EX-FUNCTION"
++            }
++          ]
++        }
++      ],
++      "ports": [
++        {
++          "sourceId": "B06:IN-STEEL",
++          "role": "SolidBatchIn",
++          "centerM": [
++            -1.5,
++            1,
++            0
++          ],
++          "normal": [
++            -1,
++            0,
++            0
++          ],
++          "sizeM": [
++            0.75,
++            0.75
++          ],
++          "binding": "source-solid"
++        },
++        {
++          "sourceId": "B06:OUT-SEMI",
++          "role": "SolidBatchOut",
++          "centerM": [
++            1.5,
++            1,
++            0
++          ],
++          "normal": [
++            1,
++            0,
++            0
++          ],
++          "sizeM": [
++            0.75,
++            0.75
++          ],
++          "binding": "source-solid"
++        },
++        {
++          "sourceId": "B06:POWER-IN",
++          "role": "PowerConsumer",
++          "centerM": [
++            -0.75,
++            1.125,
++            0.875
++          ],
++          "normal": [
++            0,
++            0,
++            1
++          ],
++          "sizeM": [
++            0.25,
++            0.25
++          ],
++          "binding": "authoring-only"
++        }
++      ],
++      "supportsM": [
++        [
++          -1.25,
++          0,
++          -0.75
++        ],
++        [
++          -1.25,
++          0,
++          0.75
++        ],
++        [
++          1.25,
++          0,
++          -0.75
++        ],
++        [
++          1.25,
++          0,
++          0.75
++        ]
++      ],
++      "joints": [
++        {
++          "partId": "cutter_tool",
++          "pivotM": [
++            0,
++            1.5,
++            0
++          ],
++          "axis": [
++            0,
++            0,
++            1
++          ],
++          "limitsM": [
++            -0.25,
++            0.25
++          ],
++          "sweepBoundsM": {
++            "min": [
++              -0.125,
++              1.375,
++              -0.5
++            ],
++            "max": [
++              0.125,
++              1.625,
++              0.5
++            ]
++          }
++        },
++        {
++          "partId": "cutter_infeed_carriage",
++          "pivotM": [
++            -0.75,
++            1.125,
++            0
++          ],
++          "axis": [
++            1,
++            0,
++            0
++          ],
++          "limitsM": [
++            0,
++            0.25
++          ],
++          "sweepBoundsM": {
++            "min": [
++              -0.875,
++              1.0,
++              -0.25
++            ],
++            "max": [
++              -0.375,
++              1.25,
++              0.25
++            ]
++          }
++        },
++        {
++          "partId": "cutter_clamp",
++          "pivotM": [
++            -0.5,
++            1.375,
++            0
++          ],
++          "axis": [
++            0,
++            1,
++            0
++          ],
++          "limitsM": [
++            -0.25,
++            0
++          ],
++          "sweepBoundsM": {
++            "min": [
++              -0.625,
++              1.0,
++              -0.375
++            ],
++            "max": [
++              -0.375,
++              1.5,
++              0.375
++            ]
++          }
++        },
++        {
++          "partId": "cutter_outfeed_carriage",
++          "pivotM": [
++            0.875,
++            1.125,
++            0
++          ],
++          "axis": [
++            1,
++            0,
++            0
++          ],
++          "limitsM": [
++            0,
++            0.25
++          ],
++          "sweepBoundsM": {
++            "min": [
++              0.75,
++              1.0,
++              -0.25
++            ],
++            "max": [
++              1.25,
++              1.25,
++              0.25
++            ]
++          }
++        }
++      ],
++      "serviceClearanceM": 1,
++      "sourceRefs": [
++        "FP01:sha256:ec3e605de2c6a4877c2ff0afae244b3215e7bf8bb267feef4c466b546477080c",
++        "FP02:sha256:5c4f068edba3d0c89e77b0d3a40734d4ee1a672c39f3885cbfef31430d942f39",
++        "FP03:sha256:7d43e358ae7ead52da3996e85bc52906cb2584a42e0802fc4d1e959df1289cb1"
++      ],
++      "authoringChoices": [
++        "Technical S0 proxies; no HVOX compilation or physical material reconstruction.",
++        "Feet belong to paid device BOM; no extra C09 material.",
++        "Power/waste marker poses are authoring-only until explicit installation binding.",
++        "Versioned technical phase profile v1 uses only confirmed work; carriages and clamp are paid machine mechanisms, not visual product lots.",
++        "Continuous paid frame/support paths and overlapping telescopic press rods are render proxies, not structural or collider authority."
++      ],
++      "license": "LicenseRef-Hestia-Project-Original",
++      "supportPatchesM": [
++        {
++          "partId": "cutter_feet",
++          "centerM": [
++            -1.25,
++            0.0,
++            -0.75
++          ],
++          "sizeM": [
++            0.5,
++            0.5
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "cutter_feet",
++          "centerM": [
++            -1.25,
++            0.0,
++            0.75
++          ],
++          "sizeM": [
++            0.5,
++            0.5
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "cutter_feet",
++          "centerM": [
++            1.25,
++            0.0,
++            -0.75
++          ],
++          "sizeM": [
++            0.5,
++            0.5
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "cutter_feet",
++          "centerM": [
++            1.25,
++            0.0,
++            0.75
++          ],
++          "sizeM": [
++            0.5,
++            0.5
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        }
++      ],
++      "serviceBoundsM": {
++        "min": [
++          -1.5,
++          0,
++          1.25
++        ],
++        "max": [
++          1.5,
++          2,
++          2.25
++        ]
++      },
++      "phaseMotionProfile": {
++        "version": 1,
++        "phaseEndsMs": [
++          5000,
++          7000,
++          24000,
++          27000,
++          30000
++        ],
++        "toolCycles": 1,
++        "channels": [
++          {
++            "partId": "cutter_infeed_carriage",
++            "axis": [
++              1,
++              0,
++              0
++            ],
++            "segments": [
++              {
++                "startMs": 0,
++                "endMs": 5000,
++                "fromM": 0,
++                "toM": 0.25
++              },
++              {
++                "startMs": 5000,
++                "endMs": 27000,
++                "fromM": 0.25,
++                "toM": 0.25
++              },
++              {
++                "startMs": 27000,
++                "endMs": 30000,
++                "fromM": 0.25,
++                "toM": 0
++              }
++            ]
++          },
++          {
++            "partId": "cutter_clamp",
++            "axis": [
++              0,
++              1,
++              0
++            ],
++            "segments": [
++              {
++                "startMs": 5000,
++                "endMs": 7000,
++                "fromM": 0,
++                "toM": -0.25
++              },
++              {
++                "startMs": 7000,
++                "endMs": 24000,
++                "fromM": -0.25,
++                "toM": -0.25
++              },
++              {
++                "startMs": 24000,
++                "endMs": 27000,
++                "fromM": -0.25,
++                "toM": 0
++              }
++            ]
++          },
++          {
++            "partId": "cutter_outfeed_carriage",
++            "axis": [
++              1,
++              0,
++              0
++            ],
++            "segments": [
++              {
++                "startMs": 27000,
++                "endMs": 28500.0,
++                "fromM": 0,
++                "toM": 0.25
++              },
++              {
++                "startMs": 28500.0,
++                "endMs": 30000,
++                "fromM": 0.25,
++                "toM": 0
++              }
++            ]
++          }
++        ]
++      }
++    }
++  ]
++}
+diff --git a/art/factory/fp02/former/LICENSE.txt b/art/factory/fp02/former/LICENSE.txt
+new file mode 100644
+index 00000000..353d88c0
+--- /dev/null
++++ b/art/factory/fp02/former/LICENSE.txt
+@@ -0,0 +1,6 @@
++LicenseRef-Hestia-Project-Original
++
++Original procedural technical S0 geometry authored for BenjaminHornung/Weltraum-Spiel.
++No third-party asset, texture, provider or external license is incorporated.
++These sources remain subject to the repository owner's rights and distribution terms;
++this file grants no new public license.
+diff --git a/art/factory/fp02/former/README.md b/art/factory/fp02/former/README.md
+new file mode 100644
+index 00000000..d81ca52f
+--- /dev/null
++++ b/art/factory/fp02/former/README.md
+@@ -0,0 +1,7 @@
++# Native technical S0 source
++
++`source.scene.json` is the native procedural geometry/marker source in meters; `authoring-v1.json` uses the existing Hestia authoring semantic contract. Runtime MeshArtifacts are derived by the W05 adapter, never material or structural world authority.
++
++Ground-center frame: east +X, north +Z, height +Y. Structural authoring grid 0.25 m is separate from HVP terrain 0.125 m. Part boxes, semantic roles, support contacts, pivots, sweeps and source references are explicit. Power markers remain authoring-only. Machines consume only their previously paid BOM, not additional C09 feet.
++
++No Blender, GLB, HVOX compiler, provider generation or package CLI execution is claimed. These are original S0 technical proxies, not visual Owner acceptance. Art review needs real later captures. Presentation geometry adds no inventory, power, collider or gameplay event.
+diff --git a/art/factory/fp02/former/authoring-v1.json b/art/factory/fp02/former/authoring-v1.json
+new file mode 100644
+index 00000000..535f17fc
+--- /dev/null
++++ b/art/factory/fp02/former/authoring-v1.json
+@@ -0,0 +1,241 @@
++{
++  "schema": "hestia.asset-authoring.v1",
++  "asset": {
++    "assetId": "fp02_former_s0_v1",
++    "assetRevision": 1,
++    "representation": "StructuralAssembly",
++    "metersPerUnit": 1,
++    "coordinateFrame": {
++      "upAxis": "+Y",
++      "forwardAxis": "+Z",
++      "handedness": "RIGHT"
++    },
++    "tags": [
++      "technical_s0_proxy"
++    ]
++  },
++  "parts": [
++    {
++      "partId": "former_feet",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "former_frame",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "former_infeed",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "former_bed",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "former_tool",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "former_actuators",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "former_outfeed",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "former_service",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "former_power",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "former_offcut",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "former_clamp",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "former_infeed_carriage",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "former_outfeed_carriage",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    }
++  ],
++  "joints": [
++    {
++      "jointId": "former_tool_joint",
++      "parentPartId": "former_frame",
++      "childPartId": "former_tool",
++      "jointType": "Slider",
++      "breakPolicy": "Scripted"
++    },
++    {
++      "jointId": "former_infeed_carriage_joint",
++      "parentPartId": "former_frame",
++      "childPartId": "former_infeed_carriage",
++      "jointType": "Slider",
++      "breakPolicy": "Scripted"
++    },
++    {
++      "jointId": "former_clamp_joint",
++      "parentPartId": "former_frame",
++      "childPartId": "former_clamp",
++      "jointType": "Slider",
++      "breakPolicy": "Scripted"
++    },
++    {
++      "jointId": "former_outfeed_carriage_joint",
++      "parentPartId": "former_frame",
++      "childPartId": "former_outfeed_carriage",
++      "jointType": "Slider",
++      "breakPolicy": "Scripted"
++    }
++  ],
++  "markers": [
++    {
++      "markerId": "fp02_former_s0_v1_port_0",
++      "markerType": "Cargo",
++      "partId": "former_feet"
++    },
++    {
++      "markerId": "fp02_former_s0_v1_port_1",
++      "markerType": "Cargo",
++      "partId": "former_feet"
++    },
++    {
++      "markerId": "fp02_former_s0_v1_port_2",
++      "markerType": "Snap",
++      "partId": "former_feet"
++    }
++  ],
++  "materials": [
++    {
++      "renderMaterialId": "ex_struct",
++      "tags": [
++        "render_only"
++      ]
++    },
++    {
++      "renderMaterialId": "ex_shell",
++      "tags": [
++        "render_only"
++      ]
++    },
++    {
++      "renderMaterialId": "ex_function",
++      "tags": [
++        "render_only"
++      ]
++    },
++    {
++      "renderMaterialId": "ex_hazard",
++      "tags": [
++        "render_only"
++      ]
++    },
++    {
++      "renderMaterialId": "ex_pv",
++      "tags": [
++        "render_only"
++      ]
++    }
++  ]
++}
+diff --git a/art/factory/fp02/former/derived-report.json b/art/factory/fp02/former/derived-report.json
+new file mode 100644
+index 00000000..06066410
+--- /dev/null
++++ b/art/factory/fp02/former/derived-report.json
+@@ -0,0 +1,438 @@
++{
++  "kind": "S0-proxy",
++  "nativeSourceSha256": "4e27abd922e46516d1db0307b8dfb5edaf1b8c6807e80006781344b9dfcf535d",
++  "authoringSemanticSha256": "31500d6c38d06be22226940222c8abcba5d2e9e48483e36293910da71575c34b",
++  "catalogDigest": "fnv1a:f3a8c642",
++  "assets": [
++    {
++      "assetId": "fp02_former_s0_v1",
++      "definitionId": "B07",
++      "declaredDimensionsM": [
++        4,
++        3,
++        3
++      ],
++      "actualStaticMeshBoundsM": {
++        "min": {
++          "x": -2,
++          "y": 0,
++          "z": -1.5
++        },
++        "max": {
++          "x": 2,
++          "y": 3,
++          "z": 1.5
++        }
++      },
++      "assetSourceDigest": "fnv1a64:5aeec6fcc5fef3f0",
++      "partCount": 13,
++      "boxCount": 34,
++      "supportPatchesM": [
++        {
++          "partId": "former_feet",
++          "centerM": [
++            -1.75,
++            0.0,
++            -1.25
++          ],
++          "sizeM": [
++            0.5,
++            0.5
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "former_feet",
++          "centerM": [
++            -1.75,
++            0.0,
++            1.25
++          ],
++          "sizeM": [
++            0.5,
++            0.5
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "former_feet",
++          "centerM": [
++            1.75,
++            0.0,
++            -1.25
++          ],
++          "sizeM": [
++            0.5,
++            0.5
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "former_feet",
++          "centerM": [
++            1.75,
++            0.0,
++            1.25
++          ],
++          "sizeM": [
++            0.5,
++            0.5
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        }
++      ],
++      "joints": [
++        {
++          "partId": "former_tool",
++          "pivotM": [
++            -0.5,
++            2,
++            0
++          ],
++          "axis": [
++            0,
++            1,
++            0
++          ],
++          "limitsM": [
++            -0.5,
++            0
++          ],
++          "sweepBoundsM": {
++            "min": [
++              -0.75,
++              1.25,
++              -0.625
++            ],
++            "max": [
++              0.75,
++              2.75,
++              0.625
++            ]
++          }
++        },
++        {
++          "partId": "former_infeed_carriage",
++          "pivotM": [
++            -1.25,
++            1.125,
++            0
++          ],
++          "axis": [
++            1,
++            0,
++            0
++          ],
++          "limitsM": [
++            0,
++            0.5
++          ],
++          "sweepBoundsM": {
++            "min": [
++              -1.375,
++              1.0,
++              -0.25
++            ],
++            "max": [
++              -0.625,
++              1.25,
++              0.25
++            ]
++          }
++        },
++        {
++          "partId": "former_clamp",
++          "pivotM": [
++            -0.875,
++            1.625,
++            0
++          ],
++          "axis": [
++            0,
++            1,
++            0
++          ],
++          "limitsM": [
++            -0.25,
++            0
++          ],
++          "sweepBoundsM": {
++            "min": [
++              -1.0,
++              1.25,
++              -0.25
++            ],
++            "max": [
++              1.0,
++              1.75,
++              0.25
++            ]
++          }
++        },
++        {
++          "partId": "former_outfeed_carriage",
++          "pivotM": [
++            1.125,
++            1.125,
++            0
++          ],
++          "axis": [
++            1,
++            0,
++            0
++          ],
++          "limitsM": [
++            0,
++            0.5
++          ],
++          "sweepBoundsM": {
++            "min": [
++              1.0,
++              1.0,
++              -0.25
++            ],
++            "max": [
++              1.75,
++              1.25,
++              0.25
++            ]
++          }
++        }
++      ],
++      "ports": [
++        {
++          "sourceId": "B07:IN-SEMI",
++          "role": "SolidBatchIn",
++          "centerM": [
++            -2.0,
++            1,
++            0
++          ],
++          "normal": [
++            -1,
++            0,
++            0
++          ],
++          "sizeM": [
++            0.75,
++            0.75
++          ],
++          "binding": "source-solid"
++        },
++        {
++          "sourceId": "B07:OUT-PROFILE-OR-SHEET",
++          "role": "SolidBatchOut",
++          "centerM": [
++            2.0,
++            1,
++            0
++          ],
++          "normal": [
++            1,
++            0,
++            0
++          ],
++          "sizeM": [
++            0.75,
++            0.75
++          ],
++          "binding": "source-solid"
++        },
++        {
++          "sourceId": "B07:POWER-IN",
++          "role": "PowerConsumer",
++          "centerM": [
++            -0.75,
++            1.125,
++            1.375
++          ],
++          "normal": [
++            0,
++            0,
++            1
++          ],
++          "sizeM": [
++            0.25,
++            0.25
++          ],
++          "binding": "authoring-only"
++        }
++      ],
++      "phaseMotionProfile": {
++        "version": 1,
++        "phaseEndsMs": [
++          6000,
++          10000,
++          30000,
++          35000,
++          40000
++        ],
++        "toolCycles": 2,
++        "channels": [
++          {
++            "partId": "former_infeed_carriage",
++            "axis": [
++              1,
++              0,
++              0
++            ],
++            "segments": [
++              {
++                "startMs": 0,
++                "endMs": 6000,
++                "fromM": 0,
++                "toM": 0.5
++              },
++              {
++                "startMs": 6000,
++                "endMs": 35000,
++                "fromM": 0.5,
++                "toM": 0.5
++              },
++              {
++                "startMs": 35000,
++                "endMs": 40000,
++                "fromM": 0.5,
++                "toM": 0
++              }
++            ]
++          },
++          {
++            "partId": "former_clamp",
++            "axis": [
++              0,
++              1,
++              0
++            ],
++            "segments": [
++              {
++                "startMs": 6000,
++                "endMs": 10000,
++                "fromM": 0,
++                "toM": -0.25
++              },
++              {
++                "startMs": 10000,
++                "endMs": 30000,
++                "fromM": -0.25,
++                "toM": -0.25
++              },
++              {
++                "startMs": 30000,
++                "endMs": 35000,
++                "fromM": -0.25,
++                "toM": 0
++              }
++            ]
++          },
++          {
++            "partId": "former_outfeed_carriage",
++            "axis": [
++              1,
++              0,
++              0
++            ],
++            "segments": [
++              {
++                "startMs": 35000,
++                "endMs": 37500.0,
++                "fromM": 0,
++                "toM": 0.5
++              },
++              {
++                "startMs": 37500.0,
++                "endMs": 40000,
++                "fromM": 0.5,
++                "toM": 0
++              }
++            ]
++          }
++        ]
++      },
++      "gpuDiagnosticsAtMount": {
++        "acceptedArtifacts": 13,
++        "rejectedArtifacts": 0,
++        "activeRepresentations": 13,
++        "activeFallbacks": 0,
++        "geometryAllocations": 13,
++        "geometryDisposals": 0,
++        "materialAllocations": 4,
++        "materialDisposals": 0,
++        "estimatedGpuBytes": 22032,
++        "ownedCpuBytes": 22032,
++        "replacementCount": 0,
++        "removeCount": 0,
++        "staleRejectCount": 0,
++        "resetCount": 0,
++        "evictionCount": 0,
++        "evictionRejectCount": 0,
++        "rehydrationCount": 0,
++        "renderTargetAllocations": 0,
++        "renderTargetDisposals": 0,
++        "activeRenderTargets": 0,
++        "backendRevision": 0,
++        "backendState": "Available",
++        "residentRepresentationKeys": [
++          "factory:synthetic_probe_fp02_former_s0_v1:former_actuators",
++          "factory:synthetic_probe_fp02_former_s0_v1:former_bed",
++          "factory:synthetic_probe_fp02_former_s0_v1:former_clamp",
++          "factory:synthetic_probe_fp02_former_s0_v1:former_feet",
++          "factory:synthetic_probe_fp02_former_s0_v1:former_frame",
++          "factory:synthetic_probe_fp02_former_s0_v1:former_infeed",
++          "factory:synthetic_probe_fp02_former_s0_v1:former_infeed_carriage",
++          "factory:synthetic_probe_fp02_former_s0_v1:former_offcut",
++          "factory:synthetic_probe_fp02_former_s0_v1:former_outfeed",
++          "factory:synthetic_probe_fp02_former_s0_v1:former_outfeed_carriage",
++          "factory:synthetic_probe_fp02_former_s0_v1:former_power",
++          "factory:synthetic_probe_fp02_former_s0_v1:former_service",
++          "factory:synthetic_probe_fp02_former_s0_v1:former_tool"
++        ],
++        "visibleRepresentationKeys": [
++          "factory:synthetic_probe_fp02_former_s0_v1:former_actuators",
++          "factory:synthetic_probe_fp02_former_s0_v1:former_bed",
++          "factory:synthetic_probe_fp02_former_s0_v1:former_clamp",
++          "factory:synthetic_probe_fp02_former_s0_v1:former_feet",
++          "factory:synthetic_probe_fp02_former_s0_v1:former_frame",
++          "factory:synthetic_probe_fp02_former_s0_v1:former_infeed",
++          "factory:synthetic_probe_fp02_former_s0_v1:former_infeed_carriage",
++          "factory:synthetic_probe_fp02_former_s0_v1:former_offcut",
++          "factory:synthetic_probe_fp02_former_s0_v1:former_outfeed",
++          "factory:synthetic_probe_fp02_former_s0_v1:former_outfeed_carriage",
++          "factory:synthetic_probe_fp02_former_s0_v1:former_power",
++          "factory:synthetic_probe_fp02_former_s0_v1:former_service",
++          "factory:synthetic_probe_fp02_former_s0_v1:former_tool"
++        ],
++        "pinnedFallbackRepresentationKeys": [],
++        "lastCommandStatus": "Accepted",
++        "lastOwnershipOutcome": "NotApplicable"
++      },
++      "rotorSweepBoundsM": null
++    }
++  ],
++  "staticMetadataChecks": "PASS:15 focused cases including contact/phase/source bindings",
++  "runtimeMeshBounds": "PASS:actual MeshArtifact unit assertions and real GPU probe metadata",
++  "GPUImport": "PASS:1 Chromium test;24 captures and100 owned cleanup cycles",
++  "evidence": "apps/weltraum-browser/evidence/factory/w05/run-20261011T104359Z/post-review/browser-probe-result.json",
++  "windGeometryNote": "6m rotor/13m vertical dimensions are conservative nominal sweep envelope; actual static posed blade mesh bounds are separately reported. Wind motion/energy is NOT_RUN.",
++  "HVOXCompiler": "NOT_RUN",
++  "Blender": "NOT_RUN",
++  "OwnerArtAcceptance": "NOT_RUN",
++  "license": "LicenseRef-Hestia-Project-Original",
++  "authority": "render-derived-only; sockets authoring-only until W07"
++}
+diff --git a/art/factory/fp02/former/source.scene.json b/art/factory/fp02/former/source.scene.json
+new file mode 100644
+index 00000000..4dfbafa1
+--- /dev/null
++++ b/art/factory/fp02/former/source.scene.json
+@@ -0,0 +1,929 @@
++{
++  "schema": "hestia.factory-s0-source.v1",
++  "assets": [
++    {
++      "assetId": "fp02_former_s0_v1",
++      "definitionId": "B07",
++      "revision": 1,
++      "kind": "S0-proxy",
++      "frameId": "fp02_east_north_height_xyz_v1",
++      "origin": "ground-center",
++      "metersPerUnit": 1,
++      "authoringGridM": 0.25,
++      "terrainCellM": 0.125,
++      "dimensionsM": [
++        4,
++        3,
++        3
++      ],
++      "parts": [
++        {
++          "partId": "former_feet",
++          "role": "support",
++          "boxes": [
++            {
++              "centerM": [
++                -1.75,
++                0.125,
++                -1.25
++              ],
++              "sizeM": [
++                0.5,
++                0.25,
++                0.5
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                -1.75,
++                0.125,
++                1.25
++              ],
++              "sizeM": [
++                0.5,
++                0.25,
++                0.5
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                1.75,
++                0.125,
++                -1.25
++              ],
++              "sizeM": [
++                0.5,
++                0.25,
++                0.5
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                1.75,
++                0.125,
++                1.25
++              ],
++              "sizeM": [
++                0.5,
++                0.25,
++                0.5
++              ],
++              "material": "EX-STRUCT"
++            }
++          ]
++        },
++        {
++          "partId": "former_frame",
++          "role": "structure",
++          "boxes": [
++            {
++              "centerM": [
++                -1.5,
++                1.625,
++                -1.25
++              ],
++              "sizeM": [
++                0.5,
++                2.75,
++                0.5
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                -1.5,
++                1.625,
++                1.25
++              ],
++              "sizeM": [
++                0.5,
++                2.75,
++                0.5
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                1.5,
++                1.625,
++                -1.25
++              ],
++              "sizeM": [
++                0.5,
++                2.75,
++                0.5
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                1.5,
++                1.625,
++                1.25
++              ],
++              "sizeM": [
++                0.5,
++                2.75,
++                0.5
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                0,
++                2.75,
++                0
++              ],
++              "sizeM": [
++                4,
++                0.5,
++                3
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                -1.5,
++                0.375,
++                0
++              ],
++              "sizeM": [
++                0.5,
++                0.25,
++                3
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                1.5,
++                0.375,
++                0
++              ],
++              "sizeM": [
++                0.5,
++                0.25,
++                3
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                0,
++                0.375,
++                -0.625
++              ],
++              "sizeM": [
++                3.5,
++                0.25,
++                0.5
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                0,
++                0.375,
++                0.625
++              ],
++              "sizeM": [
++                3.5,
++                0.25,
++                0.5
++              ],
++              "material": "EX-STRUCT"
++            }
++          ]
++        },
++        {
++          "partId": "former_infeed",
++          "role": "infeed-housing",
++          "boxes": [
++            {
++              "centerM": [
++                -1.5,
++                0.875,
++                0
++              ],
++              "sizeM": [
++                1,
++                0.25,
++                0.75
++              ],
++              "material": "EX-FUNCTION"
++            },
++            {
++              "centerM": [
++                -1.5,
++                1.125,
++                -0.625
++              ],
++              "sizeM": [
++                1,
++                0.25,
++                0.25
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                -1.5,
++                1.125,
++                0.625
++              ],
++              "sizeM": [
++                1,
++                0.25,
++                0.25
++              ],
++              "material": "EX-STRUCT"
++            }
++          ]
++        },
++        {
++          "partId": "former_bed",
++          "role": "work-bed",
++          "boxes": [
++            {
++              "centerM": [
++                0,
++                0.75,
++                0
++              ],
++              "sizeM": [
++                2,
++                0.5,
++                1.25
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                0,
++                1.125,
++                0
++              ],
++              "sizeM": [
++                2,
++                0.25,
++                0.5
++              ],
++              "material": "EX-FUNCTION"
++            }
++          ]
++        },
++        {
++          "partId": "former_tool",
++          "role": "tool",
++          "boxes": [
++            {
++              "centerM": [
++                -0.5,
++                2,
++                0
++              ],
++              "sizeM": [
++                0.5,
++                0.5,
++                1.25
++              ],
++              "material": "EX-HAZARD"
++            },
++            {
++              "centerM": [
++                0.5,
++                2,
++                0
++              ],
++              "sizeM": [
++                0.5,
++                0.5,
++                1.25
++              ],
++              "material": "EX-HAZARD"
++            },
++            {
++              "centerM": [
++                -0.5,
++                2.375,
++                0
++              ],
++              "sizeM": [
++                0.25,
++                0.75,
++                0.5
++              ],
++              "material": "EX-FUNCTION"
++            },
++            {
++              "centerM": [
++                0.5,
++                2.375,
++                0
++              ],
++              "sizeM": [
++                0.25,
++                0.75,
++                0.5
++              ],
++              "material": "EX-FUNCTION"
++            }
++          ]
++        },
++        {
++          "partId": "former_actuators",
++          "role": "actuator",
++          "boxes": [
++            {
++              "centerM": [
++                -0.5,
++                2.375,
++                0
++              ],
++              "sizeM": [
++                0.25,
++                0.25,
++                0.75
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                0.5,
++                2.375,
++                0
++              ],
++              "sizeM": [
++                0.25,
++                0.25,
++                0.75
++              ],
++              "material": "EX-STRUCT"
++            }
++          ]
++        },
++        {
++          "partId": "former_outfeed",
++          "role": "outfeed-housing",
++          "boxes": [
++            {
++              "centerM": [
++                1.5,
++                0.875,
++                0
++              ],
++              "sizeM": [
++                1,
++                0.25,
++                0.75
++              ],
++              "material": "EX-FUNCTION"
++            },
++            {
++              "centerM": [
++                1.5,
++                1.125,
++                -0.625
++              ],
++              "sizeM": [
++                1,
++                0.25,
++                0.25
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                1.5,
++                1.125,
++                0.625
++              ],
++              "sizeM": [
++                1,
++                0.25,
++                0.25
++              ],
++              "material": "EX-STRUCT"
++            }
++          ]
++        },
++        {
++          "partId": "former_service",
++          "role": "service",
++          "boxes": [
++            {
++              "centerM": [
++                0,
++                1.375,
++                1.375
++              ],
++              "sizeM": [
++                1.5,
++                1.25,
++                0.25
++              ],
++              "material": "EX-SHELL"
++            }
++          ]
++        },
++        {
++          "partId": "former_power",
++          "role": "power-marker",
++          "boxes": [
++            {
++              "centerM": [
++                -0.75,
++                1.125,
++                1.375
++              ],
++              "sizeM": [
++                0.25,
++                0.25,
++                0.25
++              ],
++              "material": "EX-HAZARD"
++            }
++          ]
++        },
++        {
++          "partId": "former_offcut",
++          "role": "waste",
++          "boxes": [
++            {
++              "centerM": [
++                0.75,
++                0.5,
++                1.375
++              ],
++              "sizeM": [
++                0.5,
++                0.5,
++                0.25
++              ],
++              "material": "EX-SHELL"
++            }
++          ]
++        },
++        {
++          "partId": "former_clamp",
++          "role": "clamp",
++          "boxes": [
++            {
++              "centerM": [
++                -0.875,
++                1.625,
++                0
++              ],
++              "sizeM": [
++                0.25,
++                0.25,
++                0.5
++              ],
++              "material": "EX-HAZARD"
++            },
++            {
++              "centerM": [
++                0.875,
++                1.625,
++                0
++              ],
++              "sizeM": [
++                0.25,
++                0.25,
++                0.5
++              ],
++              "material": "EX-HAZARD"
++            }
++          ]
++        },
++        {
++          "partId": "former_infeed_carriage",
++          "role": "infeed",
++          "boxes": [
++            {
++              "centerM": [
++                -1.25,
++                1.125,
++                0
++              ],
++              "sizeM": [
++                0.25,
++                0.25,
++                0.5
++              ],
++              "material": "EX-FUNCTION"
++            }
++          ]
++        },
++        {
++          "partId": "former_outfeed_carriage",
++          "role": "outfeed",
++          "boxes": [
++            {
++              "centerM": [
++                1.125,
++                1.125,
++                0
++              ],
++              "sizeM": [
++                0.25,
++                0.25,
++                0.5
++              ],
++              "material": "EX-FUNCTION"
++            }
++          ]
++        }
++      ],
++      "ports": [
++        {
++          "sourceId": "B07:IN-SEMI",
++          "role": "SolidBatchIn",
++          "centerM": [
++            -2.0,
++            1,
++            0
++          ],
++          "normal": [
++            -1,
++            0,
++            0
++          ],
++          "sizeM": [
++            0.75,
++            0.75
++          ],
++          "binding": "source-solid"
++        },
++        {
++          "sourceId": "B07:OUT-PROFILE-OR-SHEET",
++          "role": "SolidBatchOut",
++          "centerM": [
++            2.0,
++            1,
++            0
++          ],
++          "normal": [
++            1,
++            0,
++            0
++          ],
++          "sizeM": [
++            0.75,
++            0.75
++          ],
++          "binding": "source-solid"
++        },
++        {
++          "sourceId": "B07:POWER-IN",
++          "role": "PowerConsumer",
++          "centerM": [
++            -0.75,
++            1.125,
++            1.375
++          ],
++          "normal": [
++            0,
++            0,
++            1
++          ],
++          "sizeM": [
++            0.25,
++            0.25
++          ],
++          "binding": "authoring-only"
++        }
++      ],
++      "supportsM": [
++        [
++          -1.75,
++          0,
++          -1.25
++        ],
++        [
++          -1.75,
++          0,
++          1.25
++        ],
++        [
++          1.75,
++          0,
++          -1.25
++        ],
++        [
++          1.75,
++          0,
++          1.25
++        ]
++      ],
++      "joints": [
++        {
++          "partId": "former_tool",
++          "pivotM": [
++            -0.5,
++            2,
++            0
++          ],
++          "axis": [
++            0,
++            1,
++            0
++          ],
++          "limitsM": [
++            -0.5,
++            0
++          ],
++          "sweepBoundsM": {
++            "min": [
++              -0.75,
++              1.25,
++              -0.625
++            ],
++            "max": [
++              0.75,
++              2.75,
++              0.625
++            ]
++          }
++        },
++        {
++          "partId": "former_infeed_carriage",
++          "pivotM": [
++            -1.25,
++            1.125,
++            0
++          ],
++          "axis": [
++            1,
++            0,
++            0
++          ],
++          "limitsM": [
++            0,
++            0.5
++          ],
++          "sweepBoundsM": {
++            "min": [
++              -1.375,
++              1.0,
++              -0.25
++            ],
++            "max": [
++              -0.625,
++              1.25,
++              0.25
++            ]
++          }
++        },
++        {
++          "partId": "former_clamp",
++          "pivotM": [
++            -0.875,
++            1.625,
++            0
++          ],
++          "axis": [
++            0,
++            1,
++            0
++          ],
++          "limitsM": [
++            -0.25,
++            0
++          ],
++          "sweepBoundsM": {
++            "min": [
++              -1.0,
++              1.25,
++              -0.25
++            ],
++            "max": [
++              1.0,
++              1.75,
++              0.25
++            ]
++          }
++        },
++        {
++          "partId": "former_outfeed_carriage",
++          "pivotM": [
++            1.125,
++            1.125,
++            0
++          ],
++          "axis": [
++            1,
++            0,
++            0
++          ],
++          "limitsM": [
++            0,
++            0.5
++          ],
++          "sweepBoundsM": {
++            "min": [
++              1.0,
++              1.0,
++              -0.25
++            ],
++            "max": [
++              1.75,
++              1.25,
++              0.25
++            ]
++          }
++        }
++      ],
++      "serviceClearanceM": 1,
++      "sourceRefs": [
++        "FP01:sha256:ec3e605de2c6a4877c2ff0afae244b3215e7bf8bb267feef4c466b546477080c",
++        "FP02:sha256:5c4f068edba3d0c89e77b0d3a40734d4ee1a672c39f3885cbfef31430d942f39",
++        "FP03:sha256:7d43e358ae7ead52da3996e85bc52906cb2584a42e0802fc4d1e959df1289cb1"
++      ],
++      "authoringChoices": [
++        "Technical S0 proxies; no HVOX compilation or physical material reconstruction.",
++        "Feet belong to paid device BOM; no extra C09 material.",
++        "Power/waste marker poses are authoring-only until explicit installation binding.",
++        "Versioned technical phase profile v1 uses only confirmed work; carriages and clamp are paid machine mechanisms, not visual product lots.",
++        "Continuous paid frame/support paths and overlapping telescopic press rods are render proxies, not structural or collider authority."
++      ],
++      "license": "LicenseRef-Hestia-Project-Original",
++      "supportPatchesM": [
++        {
++          "partId": "former_feet",
++          "centerM": [
++            -1.75,
++            0.0,
++            -1.25
++          ],
++          "sizeM": [
++            0.5,
++            0.5
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "former_feet",
++          "centerM": [
++            -1.75,
++            0.0,
++            1.25
++          ],
++          "sizeM": [
++            0.5,
++            0.5
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "former_feet",
++          "centerM": [
++            1.75,
++            0.0,
++            -1.25
++          ],
++          "sizeM": [
++            0.5,
++            0.5
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "former_feet",
++          "centerM": [
++            1.75,
++            0.0,
++            1.25
++          ],
++          "sizeM": [
++            0.5,
++            0.5
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        }
++      ],
++      "serviceBoundsM": {
++        "min": [
++          -2.0,
++          0,
++          1.5
++        ],
++        "max": [
++          2.0,
++          3,
++          2.5
++        ]
++      },
++      "phaseMotionProfile": {
++        "version": 1,
++        "phaseEndsMs": [
++          6000,
++          10000,
++          30000,
++          35000,
++          40000
++        ],
++        "toolCycles": 2,
++        "channels": [
++          {
++            "partId": "former_infeed_carriage",
++            "axis": [
++              1,
++              0,
++              0
++            ],
++            "segments": [
++              {
++                "startMs": 0,
++                "endMs": 6000,
++                "fromM": 0,
++                "toM": 0.5
++              },
++              {
++                "startMs": 6000,
++                "endMs": 35000,
++                "fromM": 0.5,
++                "toM": 0.5
++              },
++              {
++                "startMs": 35000,
++                "endMs": 40000,
++                "fromM": 0.5,
++                "toM": 0
++              }
++            ]
++          },
++          {
++            "partId": "former_clamp",
++            "axis": [
++              0,
++              1,
++              0
++            ],
++            "segments": [
++              {
++                "startMs": 6000,
++                "endMs": 10000,
++                "fromM": 0,
++                "toM": -0.25
++              },
++              {
++                "startMs": 10000,
++                "endMs": 30000,
++                "fromM": -0.25,
++                "toM": -0.25
++              },
++              {
++                "startMs": 30000,
++                "endMs": 35000,
++                "fromM": -0.25,
++                "toM": 0
++              }
++            ]
++          },
++          {
++            "partId": "former_outfeed_carriage",
++            "axis": [
++              1,
++              0,
++              0
++            ],
++            "segments": [
++              {
++                "startMs": 35000,
++                "endMs": 37500.0,
++                "fromM": 0,
++                "toM": 0.5
++              },
++              {
++                "startMs": 37500.0,
++                "endMs": 40000,
++                "fromM": 0.5,
++                "toM": 0
++              }
++            ]
++          }
++        ]
++      }
++    }
++  ]
++}
+diff --git a/art/factory/fp01/power-kit/LICENSE.txt b/art/factory/fp01/power-kit/LICENSE.txt
+new file mode 100644
+index 00000000..353d88c0
+--- /dev/null
++++ b/art/factory/fp01/power-kit/LICENSE.txt
+@@ -0,0 +1,6 @@
++LicenseRef-Hestia-Project-Original
++
++Original procedural technical S0 geometry authored for BenjaminHornung/Weltraum-Spiel.
++No third-party asset, texture, provider or external license is incorporated.
++These sources remain subject to the repository owner's rights and distribution terms;
++this file grants no new public license.
+diff --git a/art/factory/fp01/power-kit/README.md b/art/factory/fp01/power-kit/README.md
+new file mode 100644
+index 00000000..d81ca52f
+--- /dev/null
++++ b/art/factory/fp01/power-kit/README.md
+@@ -0,0 +1,7 @@
++# Native technical S0 source
++
++`source.scene.json` is the native procedural geometry/marker source in meters; `authoring-v1.json` uses the existing Hestia authoring semantic contract. Runtime MeshArtifacts are derived by the W05 adapter, never material or structural world authority.
++
++Ground-center frame: east +X, north +Z, height +Y. Structural authoring grid 0.25 m is separate from HVP terrain 0.125 m. Part boxes, semantic roles, support contacts, pivots, sweeps and source references are explicit. Power markers remain authoring-only. Machines consume only their previously paid BOM, not additional C09 feet.
++
++No Blender, GLB, HVOX compiler, provider generation or package CLI execution is claimed. These are original S0 technical proxies, not visual Owner acceptance. Art review needs real later captures. Presentation geometry adds no inventory, power, collider or gameplay event.
+diff --git a/art/factory/fp01/power-kit/authoring-v1.json b/art/factory/fp01/power-kit/authoring-v1.json
+new file mode 100644
+index 00000000..ee57a387
+--- /dev/null
++++ b/art/factory/fp01/power-kit/authoring-v1.json
+@@ -0,0 +1,294 @@
++{
++  "schema": "hestia.asset-authoring.v1",
++  "asset": {
++    "assetId": "fp01_power_kit_s0_v1",
++    "assetRevision": 1,
++    "representation": "StructuralAssembly",
++    "metersPerUnit": 1,
++    "coordinateFrame": {
++      "upAxis": "+Y",
++      "forwardAxis": "+Z",
++      "handedness": "RIGHT"
++    },
++    "tags": [
++      "technical_s0_proxy"
++    ]
++  },
++  "parts": [
++    {
++      "partId": "battery_feet",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "battery_frame",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "battery_shell",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "battery_panel",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "distribution_feet",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "distribution_frame",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "distribution_shell",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "distribution_panel",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "solar_feet",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "solar_frame",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "solar_panels",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "solar_hinge",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "solar_power_socket",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "wind_feet",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "wind_mast",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "wind_hub",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "wind_blade_1",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "wind_blade_2",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "wind_blade_3",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    },
++    {
++      "partId": "wind_power_socket",
++      "representation": "ModularPart",
++      "destructible": true,
++      "collisionPolicy": "Compound",
++      "navigationPolicy": "Obstacle",
++      "thinFeature": {
++        "policy": "Reject",
++        "declaredMinimumThicknessMeters": 0.25
++      }
++    }
++  ],
++  "joints": [],
++  "markers": [
++    {
++      "markerId": "fp01_battery_s0_v1_port_0",
++      "markerType": "Snap",
++      "partId": "battery_panel"
++    },
++    {
++      "markerId": "fp01_distribution_s0_v1_port_0",
++      "markerType": "Snap",
++      "partId": "distribution_panel"
++    },
++    {
++      "markerId": "fp01_solar_s0_v1_port_0",
++      "markerType": "Snap",
++      "partId": "solar_power_socket"
++    },
++    {
++      "markerId": "fp01_wind_s0_v1_port_0",
++      "markerType": "Snap",
++      "partId": "wind_power_socket"
++    }
++  ],
++  "materials": [
++    {
++      "renderMaterialId": "ex_struct",
++      "tags": [
++        "render_only"
++      ]
++    },
++    {
++      "renderMaterialId": "ex_shell",
++      "tags": [
++        "render_only"
++      ]
++    },
++    {
++      "renderMaterialId": "ex_function",
++      "tags": [
++        "render_only"
++      ]
++    },
++    {
++      "renderMaterialId": "ex_hazard",
++      "tags": [
++        "render_only"
++      ]
++    },
++    {
++      "renderMaterialId": "ex_pv",
++      "tags": [
++        "render_only"
++      ]
++    }
++  ]
++}
+diff --git a/art/factory/fp01/power-kit/derived-report.json b/art/factory/fp01/power-kit/derived-report.json
+new file mode 100644
+index 00000000..17830b7e
+--- /dev/null
++++ b/art/factory/fp01/power-kit/derived-report.json
+@@ -0,0 +1,665 @@
++{
++  "kind": "S0-proxy",
++  "nativeSourceSha256": "18b7591dcebbeed0aa11d7ec52aef3798bd79234dc472b067b4e579d7ad6ee9b",
++  "authoringSemanticSha256": "ebab668ca024e995b8742021f4440886c10b51ba58a5c7520de37a6bc87c7dd8",
++  "catalogDigest": "fnv1a:f3a8c642",
++  "assets": [
++    {
++      "assetId": "fp01_battery_s0_v1",
++      "definitionId": "fp02.device.battery_4kwh",
++      "declaredDimensionsM": [
++        2,
++        1,
++        1.5
++      ],
++      "actualStaticMeshBoundsM": {
++        "min": {
++          "x": -1,
++          "y": 0,
++          "z": -0.5
++        },
++        "max": {
++          "x": 1,
++          "y": 1.5,
++          "z": 0.5
++        }
++      },
++      "assetSourceDigest": "fnv1a64:a685737e8d528fca",
++      "partCount": 4,
++      "boxCount": 7,
++      "supportPatchesM": [
++        {
++          "partId": "battery_feet",
++          "centerM": [
++            -0.75,
++            0.0,
++            -0.375
++          ],
++          "sizeM": [
++            0.5,
++            0.25
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "battery_feet",
++          "centerM": [
++            -0.75,
++            0.0,
++            0.375
++          ],
++          "sizeM": [
++            0.5,
++            0.25
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "battery_feet",
++          "centerM": [
++            0.75,
++            0.0,
++            -0.375
++          ],
++          "sizeM": [
++            0.5,
++            0.25
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "battery_feet",
++          "centerM": [
++            0.75,
++            0.0,
++            0.375
++          ],
++          "sizeM": [
++            0.5,
++            0.25
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        }
++      ],
++      "joints": [],
++      "ports": [
++        {
++          "sourceId": "fp02.device.battery_4kwh:POWER",
++          "role": "PowerBidirectional",
++          "centerM": [
++            0,
++            1,
++            0.5
++          ],
++          "normal": [
++            0,
++            0,
++            1
++          ],
++          "sizeM": [
++            0.25,
++            0.25
++          ],
++          "binding": "authoring-only"
++        }
++      ],
++      "phaseMotionProfile": null,
++      "gpuDiagnosticsAtMount": {
++        "acceptedArtifacts": 4,
++        "rejectedArtifacts": 0,
++        "activeRepresentations": 4,
++        "activeFallbacks": 0,
++        "geometryAllocations": 4,
++        "geometryDisposals": 0,
++        "materialAllocations": 3,
++        "materialDisposals": 0,
++        "estimatedGpuBytes": 4536,
++        "ownedCpuBytes": 4536,
++        "replacementCount": 0,
++        "removeCount": 0,
++        "staleRejectCount": 0,
++        "resetCount": 0,
++        "evictionCount": 0,
++        "evictionRejectCount": 0,
++        "rehydrationCount": 0,
++        "renderTargetAllocations": 0,
++        "renderTargetDisposals": 0,
++        "activeRenderTargets": 0,
++        "backendRevision": 0,
++        "backendState": "Available",
++        "residentRepresentationKeys": [
++          "factory:synthetic_probe_fp01_battery_s0_v1:battery_feet",
++          "factory:synthetic_probe_fp01_battery_s0_v1:battery_frame",
++          "factory:synthetic_probe_fp01_battery_s0_v1:battery_panel",
++          "factory:synthetic_probe_fp01_battery_s0_v1:battery_shell"
++        ],
++        "visibleRepresentationKeys": [
++          "factory:synthetic_probe_fp01_battery_s0_v1:battery_feet",
++          "factory:synthetic_probe_fp01_battery_s0_v1:battery_frame",
++          "factory:synthetic_probe_fp01_battery_s0_v1:battery_panel",
++          "factory:synthetic_probe_fp01_battery_s0_v1:battery_shell"
++        ],
++        "pinnedFallbackRepresentationKeys": [],
++        "lastCommandStatus": "Accepted",
++        "lastOwnershipOutcome": "NotApplicable"
++      },
++      "rotorSweepBoundsM": null
++    },
++    {
++      "assetId": "fp01_distribution_s0_v1",
++      "definitionId": "fp02.device.distribution_40kw",
++      "declaredDimensionsM": [
++        2,
++        1,
++        2
++      ],
++      "actualStaticMeshBoundsM": {
++        "min": {
++          "x": -1,
++          "y": 0,
++          "z": -0.5
++        },
++        "max": {
++          "x": 1,
++          "y": 2,
++          "z": 0.5
++        }
++      },
++      "assetSourceDigest": "fnv1a64:5596d9affe8cd15c",
++      "partCount": 4,
++      "boxCount": 7,
++      "supportPatchesM": [
++        {
++          "partId": "distribution_feet",
++          "centerM": [
++            -0.75,
++            0.0,
++            -0.375
++          ],
++          "sizeM": [
++            0.5,
++            0.25
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "distribution_feet",
++          "centerM": [
++            -0.75,
++            0.0,
++            0.375
++          ],
++          "sizeM": [
++            0.5,
++            0.25
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "distribution_feet",
++          "centerM": [
++            0.75,
++            0.0,
++            -0.375
++          ],
++          "sizeM": [
++            0.5,
++            0.25
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "distribution_feet",
++          "centerM": [
++            0.75,
++            0.0,
++            0.375
++          ],
++          "sizeM": [
++            0.5,
++            0.25
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        }
++      ],
++      "joints": [],
++      "ports": [
++        {
++          "sourceId": "fp02.device.distribution_40kw:POWER",
++          "role": "PowerBidirectional",
++          "centerM": [
++            0,
++            1,
++            0.5
++          ],
++          "normal": [
++            0,
++            0,
++            1
++          ],
++          "sizeM": [
++            0.25,
++            0.25
++          ],
++          "binding": "authoring-only"
++        }
++      ],
++      "phaseMotionProfile": null,
++      "gpuDiagnosticsAtMount": {
++        "acceptedArtifacts": 4,
++        "rejectedArtifacts": 0,
++        "activeRepresentations": 4,
++        "activeFallbacks": 0,
++        "geometryAllocations": 4,
++        "geometryDisposals": 0,
++        "materialAllocations": 3,
++        "materialDisposals": 0,
++        "estimatedGpuBytes": 4536,
++        "ownedCpuBytes": 4536,
++        "replacementCount": 0,
++        "removeCount": 0,
++        "staleRejectCount": 0,
++        "resetCount": 0,
++        "evictionCount": 0,
++        "evictionRejectCount": 0,
++        "rehydrationCount": 0,
++        "renderTargetAllocations": 0,
++        "renderTargetDisposals": 0,
++        "activeRenderTargets": 0,
++        "backendRevision": 0,
++        "backendState": "Available",
++        "residentRepresentationKeys": [
++          "factory:synthetic_probe_fp01_distribution_s0_v1:distribution_feet",
++          "factory:synthetic_probe_fp01_distribution_s0_v1:distribution_frame",
++          "factory:synthetic_probe_fp01_distribution_s0_v1:distribution_panel",
++          "factory:synthetic_probe_fp01_distribution_s0_v1:distribution_shell"
++        ],
++        "visibleRepresentationKeys": [
++          "factory:synthetic_probe_fp01_distribution_s0_v1:distribution_feet",
++          "factory:synthetic_probe_fp01_distribution_s0_v1:distribution_frame",
++          "factory:synthetic_probe_fp01_distribution_s0_v1:distribution_panel",
++          "factory:synthetic_probe_fp01_distribution_s0_v1:distribution_shell"
++        ],
++        "pinnedFallbackRepresentationKeys": [],
++        "lastCommandStatus": "Accepted",
++        "lastOwnershipOutcome": "NotApplicable"
++      },
++      "rotorSweepBoundsM": null
++    },
++    {
++      "assetId": "fp01_solar_s0_v1",
++      "definitionId": "fp02.device.pv_pack_2kwp",
++      "declaredDimensionsM": [
++        4,
++        1.25,
++        3
++      ],
++      "actualStaticMeshBoundsM": {
++        "min": {
++          "x": -2,
++          "y": 0,
++          "z": -1.5
++        },
++        "max": {
++          "x": 2,
++          "y": 1.25,
++          "z": 1.5
++        }
++      },
++      "assetSourceDigest": "fnv1a64:ee94bec5a64b5268",
++      "partCount": 5,
++      "boxCount": 11,
++      "supportPatchesM": [
++        {
++          "partId": "solar_feet",
++          "centerM": [
++            -1.875,
++            0.0,
++            -1.375
++          ],
++          "sizeM": [
++            0.25,
++            0.25
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "solar_feet",
++          "centerM": [
++            -1.875,
++            0.0,
++            1.375
++          ],
++          "sizeM": [
++            0.25,
++            0.25
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "solar_feet",
++          "centerM": [
++            1.875,
++            0.0,
++            -1.375
++          ],
++          "sizeM": [
++            0.25,
++            0.25
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "solar_feet",
++          "centerM": [
++            1.875,
++            0.0,
++            1.375
++          ],
++          "sizeM": [
++            0.25,
++            0.25
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        }
++      ],
++      "joints": [],
++      "ports": [
++        {
++          "sourceId": "fp02.device.pv_pack_2kwp:POWER-OUT",
++          "role": "PowerProducer",
++          "centerM": [
++            0,
++            0.625,
++            1.375
++          ],
++          "normal": [
++            0,
++            0,
++            1
++          ],
++          "sizeM": [
++            0.25,
++            0.25
++          ],
++          "binding": "authoring-only"
++        }
++      ],
++      "phaseMotionProfile": null,
++      "gpuDiagnosticsAtMount": {
++        "acceptedArtifacts": 5,
++        "rejectedArtifacts": 0,
++        "activeRepresentations": 5,
++        "activeFallbacks": 0,
++        "geometryAllocations": 5,
++        "geometryDisposals": 0,
++        "materialAllocations": 3,
++        "materialDisposals": 0,
++        "estimatedGpuBytes": 7128,
++        "ownedCpuBytes": 7128,
++        "replacementCount": 0,
++        "removeCount": 0,
++        "staleRejectCount": 0,
++        "resetCount": 0,
++        "evictionCount": 0,
++        "evictionRejectCount": 0,
++        "rehydrationCount": 0,
++        "renderTargetAllocations": 0,
++        "renderTargetDisposals": 0,
++        "activeRenderTargets": 0,
++        "backendRevision": 0,
++        "backendState": "Available",
++        "residentRepresentationKeys": [
++          "factory:synthetic_probe_fp01_solar_s0_v1:solar_feet",
++          "factory:synthetic_probe_fp01_solar_s0_v1:solar_frame",
++          "factory:synthetic_probe_fp01_solar_s0_v1:solar_hinge",
++          "factory:synthetic_probe_fp01_solar_s0_v1:solar_panels",
++          "factory:synthetic_probe_fp01_solar_s0_v1:solar_power_socket"
++        ],
++        "visibleRepresentationKeys": [
++          "factory:synthetic_probe_fp01_solar_s0_v1:solar_feet",
++          "factory:synthetic_probe_fp01_solar_s0_v1:solar_frame",
++          "factory:synthetic_probe_fp01_solar_s0_v1:solar_hinge",
++          "factory:synthetic_probe_fp01_solar_s0_v1:solar_panels",
++          "factory:synthetic_probe_fp01_solar_s0_v1:solar_power_socket"
++        ],
++        "pinnedFallbackRepresentationKeys": [],
++        "lastCommandStatus": "Accepted",
++        "lastOwnershipOutcome": "NotApplicable"
++      },
++      "rotorSweepBoundsM": null
++    },
++    {
++      "assetId": "fp01_wind_s0_v1",
++      "definitionId": "fp02.device.wind_pack_6kw",
++      "declaredDimensionsM": [
++        6,
++        13,
++        3
++      ],
++      "actualStaticMeshBoundsM": {
++        "min": {
++          "x": -2.5065698623657227,
++          "y": 0,
++          "z": -1.5
++        },
++        "max": {
++          "x": 2.5065698623657227,
++          "y": 12.75,
++          "z": 1.5
++        }
++      },
++      "assetSourceDigest": "fnv1a64:bc29d74dc6d19556",
++      "partCount": 7,
++      "boxCount": 14,
++      "supportPatchesM": [
++        {
++          "partId": "wind_feet",
++          "centerM": [
++            -1.25,
++            0.0,
++            -1.25
++          ],
++          "sizeM": [
++            0.5,
++            0.5
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "wind_feet",
++          "centerM": [
++            -1.25,
++            0.0,
++            1.25
++          ],
++          "sizeM": [
++            0.5,
++            0.5
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "wind_feet",
++          "centerM": [
++            1.25,
++            0.0,
++            -1.25
++          ],
++          "sizeM": [
++            0.5,
++            0.5
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "wind_feet",
++          "centerM": [
++            1.25,
++            0.0,
++            1.25
++          ],
++          "sizeM": [
++            0.5,
++            0.5
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        }
++      ],
++      "joints": [],
++      "ports": [
++        {
++          "sourceId": "fp02.device.wind_pack_6kw:POWER-OUT",
++          "role": "PowerProducer",
++          "centerM": [
++            0.375,
++            0.375,
++            1.375
++          ],
++          "normal": [
++            0,
++            0,
++            1
++          ],
++          "sizeM": [
++            0.25,
++            0.25
++          ],
++          "binding": "authoring-only"
++        }
++      ],
++      "phaseMotionProfile": null,
++      "gpuDiagnosticsAtMount": {
++        "acceptedArtifacts": 7,
++        "rejectedArtifacts": 0,
++        "activeRepresentations": 7,
++        "activeFallbacks": 0,
++        "geometryAllocations": 7,
++        "geometryDisposals": 0,
++        "materialAllocations": 3,
++        "materialDisposals": 0,
++        "estimatedGpuBytes": 9072,
++        "ownedCpuBytes": 9072,
++        "replacementCount": 0,
++        "removeCount": 0,
++        "staleRejectCount": 0,
++        "resetCount": 0,
++        "evictionCount": 0,
++        "evictionRejectCount": 0,
++        "rehydrationCount": 0,
++        "renderTargetAllocations": 0,
++        "renderTargetDisposals": 0,
++        "activeRenderTargets": 0,
++        "backendRevision": 0,
++        "backendState": "Available",
++        "residentRepresentationKeys": [
++          "factory:synthetic_probe_fp01_wind_s0_v1:wind_blade_1",
++          "factory:synthetic_probe_fp01_wind_s0_v1:wind_blade_2",
++          "factory:synthetic_probe_fp01_wind_s0_v1:wind_blade_3",
++          "factory:synthetic_probe_fp01_wind_s0_v1:wind_feet",
++          "factory:synthetic_probe_fp01_wind_s0_v1:wind_hub",
++          "factory:synthetic_probe_fp01_wind_s0_v1:wind_mast",
++          "factory:synthetic_probe_fp01_wind_s0_v1:wind_power_socket"
++        ],
++        "visibleRepresentationKeys": [
++          "factory:synthetic_probe_fp01_wind_s0_v1:wind_blade_1",
++          "factory:synthetic_probe_fp01_wind_s0_v1:wind_blade_2",
++          "factory:synthetic_probe_fp01_wind_s0_v1:wind_blade_3",
++          "factory:synthetic_probe_fp01_wind_s0_v1:wind_feet",
++          "factory:synthetic_probe_fp01_wind_s0_v1:wind_hub",
++          "factory:synthetic_probe_fp01_wind_s0_v1:wind_mast",
++          "factory:synthetic_probe_fp01_wind_s0_v1:wind_power_socket"
++        ],
++        "pinnedFallbackRepresentationKeys": [],
++        "lastCommandStatus": "Accepted",
++        "lastOwnershipOutcome": "NotApplicable"
++      },
++      "rotorSweepBoundsM": {
++        "min": [
++          -3,
++          7,
++          -1.5
++        ],
++        "max": [
++          3,
++          13,
++          1.5
++        ]
++      }
++    }
++  ],
++  "staticMetadataChecks": "PASS:15 focused cases including contact/phase/source bindings",
++  "runtimeMeshBounds": "PASS:actual MeshArtifact unit assertions and real GPU probe metadata",
++  "GPUImport": "PASS:1 Chromium test;24 captures and100 owned cleanup cycles",
++  "evidence": "apps/weltraum-browser/evidence/factory/w05/run-20261011T104359Z/post-review/browser-probe-result.json",
++  "windGeometryNote": "6m rotor/13m vertical dimensions are conservative nominal sweep envelope; actual static posed blade mesh bounds are separately reported. Wind motion/energy is NOT_RUN.",
++  "HVOXCompiler": "NOT_RUN",
++  "Blender": "NOT_RUN",
++  "OwnerArtAcceptance": "NOT_RUN",
++  "license": "LicenseRef-Hestia-Project-Original",
++  "authority": "render-derived-only; sockets authoring-only until W07"
++}
+diff --git a/art/factory/fp01/power-kit/source.scene.json b/art/factory/fp01/power-kit/source.scene.json
+new file mode 100644
+index 00000000..ad7a2345
+--- /dev/null
++++ b/art/factory/fp01/power-kit/source.scene.json
+@@ -0,0 +1,1275 @@
++{
++  "schema": "hestia.factory-s0-source.v1",
++  "assets": [
++    {
++      "assetId": "fp01_battery_s0_v1",
++      "definitionId": "fp02.device.battery_4kwh",
++      "revision": 1,
++      "kind": "S0-proxy",
++      "frameId": "fp02_east_north_height_xyz_v1",
++      "origin": "ground-center",
++      "metersPerUnit": 1,
++      "authoringGridM": 0.25,
++      "terrainCellM": 0.125,
++      "dimensionsM": [
++        2,
++        1,
++        1.5
++      ],
++      "parts": [
++        {
++          "partId": "battery_feet",
++          "role": "support",
++          "boxes": [
++            {
++              "centerM": [
++                -0.75,
++                0.125,
++                -0.375
++              ],
++              "sizeM": [
++                0.5,
++                0.25,
++                0.25
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                -0.75,
++                0.125,
++                0.375
++              ],
++              "sizeM": [
++                0.5,
++                0.25,
++                0.25
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                0.75,
++                0.125,
++                -0.375
++              ],
++              "sizeM": [
++                0.5,
++                0.25,
++                0.25
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                0.75,
++                0.125,
++                0.375
++              ],
++              "sizeM": [
++                0.5,
++                0.25,
++                0.25
++              ],
++              "material": "EX-STRUCT"
++            }
++          ]
++        },
++        {
++          "partId": "battery_frame",
++          "role": "structure",
++          "boxes": [
++            {
++              "centerM": [
++                0,
++                0.375,
++                0
++              ],
++              "sizeM": [
++                2,
++                0.25,
++                1
++              ],
++              "material": "EX-STRUCT"
++            }
++          ]
++        },
++        {
++          "partId": "battery_shell",
++          "role": "service",
++          "boxes": [
++            {
++              "centerM": [
++                0,
++                1.0,
++                0
++              ],
++              "sizeM": [
++                2,
++                1.0,
++                1
++              ],
++              "material": "EX-SHELL"
++            }
++          ]
++        },
++        {
++          "partId": "battery_panel",
++          "role": "status-marker",
++          "boxes": [
++            {
++              "centerM": [
++                0,
++                1,
++                0.375
++              ],
++              "sizeM": [
++                1,
++                0.5,
++                0.25
++              ],
++              "material": "EX-FUNCTION"
++            }
++          ]
++        }
++      ],
++      "ports": [
++        {
++          "sourceId": "fp02.device.battery_4kwh:POWER",
++          "role": "PowerBidirectional",
++          "centerM": [
++            0,
++            1,
++            0.5
++          ],
++          "normal": [
++            0,
++            0,
++            1
++          ],
++          "sizeM": [
++            0.25,
++            0.25
++          ],
++          "binding": "authoring-only"
++        }
++      ],
++      "supportsM": [
++        [
++          -0.75,
++          0,
++          -0.375
++        ],
++        [
++          -0.75,
++          0,
++          0.375
++        ],
++        [
++          0.75,
++          0,
++          -0.375
++        ],
++        [
++          0.75,
++          0,
++          0.375
++        ]
++      ],
++      "joints": [],
++      "serviceClearanceM": 1,
++      "sourceRefs": [
++        "FP01:sha256:ec3e605de2c6a4877c2ff0afae244b3215e7bf8bb267feef4c466b546477080c",
++        "FP02:sha256:5c4f068edba3d0c89e77b0d3a40734d4ee1a672c39f3885cbfef31430d942f39",
++        "FP03:sha256:7d43e358ae7ead52da3996e85bc52906cb2584a42e0802fc4d1e959df1289cb1"
++      ],
++      "authoringChoices": [
++        "Technical S0 proxies; no HVOX compilation or physical material reconstruction.",
++        "Feet belong to paid device BOM; no extra C09 material.",
++        "Power/waste marker poses are authoring-only until explicit installation binding."
++      ],
++      "license": "LicenseRef-Hestia-Project-Original",
++      "supportPatchesM": [
++        {
++          "partId": "battery_feet",
++          "centerM": [
++            -0.75,
++            0.0,
++            -0.375
++          ],
++          "sizeM": [
++            0.5,
++            0.25
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "battery_feet",
++          "centerM": [
++            -0.75,
++            0.0,
++            0.375
++          ],
++          "sizeM": [
++            0.5,
++            0.25
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "battery_feet",
++          "centerM": [
++            0.75,
++            0.0,
++            -0.375
++          ],
++          "sizeM": [
++            0.5,
++            0.25
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "battery_feet",
++          "centerM": [
++            0.75,
++            0.0,
++            0.375
++          ],
++          "sizeM": [
++            0.5,
++            0.25
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        }
++      ],
++      "serviceBoundsM": {
++        "min": [
++          -1.0,
++          0,
++          0.75
++        ],
++        "max": [
++          1.0,
++          1,
++          1.75
++        ]
++      }
++    },
++    {
++      "assetId": "fp01_distribution_s0_v1",
++      "definitionId": "fp02.device.distribution_40kw",
++      "revision": 1,
++      "kind": "S0-proxy",
++      "frameId": "fp02_east_north_height_xyz_v1",
++      "origin": "ground-center",
++      "metersPerUnit": 1,
++      "authoringGridM": 0.25,
++      "terrainCellM": 0.125,
++      "dimensionsM": [
++        2,
++        1,
++        2
++      ],
++      "parts": [
++        {
++          "partId": "distribution_feet",
++          "role": "support",
++          "boxes": [
++            {
++              "centerM": [
++                -0.75,
++                0.125,
++                -0.375
++              ],
++              "sizeM": [
++                0.5,
++                0.25,
++                0.25
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                -0.75,
++                0.125,
++                0.375
++              ],
++              "sizeM": [
++                0.5,
++                0.25,
++                0.25
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                0.75,
++                0.125,
++                -0.375
++              ],
++              "sizeM": [
++                0.5,
++                0.25,
++                0.25
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                0.75,
++                0.125,
++                0.375
++              ],
++              "sizeM": [
++                0.5,
++                0.25,
++                0.25
++              ],
++              "material": "EX-STRUCT"
++            }
++          ]
++        },
++        {
++          "partId": "distribution_frame",
++          "role": "structure",
++          "boxes": [
++            {
++              "centerM": [
++                0,
++                0.375,
++                0
++              ],
++              "sizeM": [
++                2,
++                0.25,
++                1
++              ],
++              "material": "EX-STRUCT"
++            }
++          ]
++        },
++        {
++          "partId": "distribution_shell",
++          "role": "service",
++          "boxes": [
++            {
++              "centerM": [
++                0,
++                1.25,
++                0
++              ],
++              "sizeM": [
++                2,
++                1.5,
++                1
++              ],
++              "material": "EX-SHELL"
++            }
++          ]
++        },
++        {
++          "partId": "distribution_panel",
++          "role": "status-marker",
++          "boxes": [
++            {
++              "centerM": [
++                0,
++                1,
++                0.375
++              ],
++              "sizeM": [
++                1,
++                0.5,
++                0.25
++              ],
++              "material": "EX-FUNCTION"
++            }
++          ]
++        }
++      ],
++      "ports": [
++        {
++          "sourceId": "fp02.device.distribution_40kw:POWER",
++          "role": "PowerBidirectional",
++          "centerM": [
++            0,
++            1,
++            0.5
++          ],
++          "normal": [
++            0,
++            0,
++            1
++          ],
++          "sizeM": [
++            0.25,
++            0.25
++          ],
++          "binding": "authoring-only"
++        }
++      ],
++      "supportsM": [
++        [
++          -0.75,
++          0,
++          -0.375
++        ],
++        [
++          -0.75,
++          0,
++          0.375
++        ],
++        [
++          0.75,
++          0,
++          -0.375
++        ],
++        [
++          0.75,
++          0,
++          0.375
++        ]
++      ],
++      "joints": [],
++      "serviceClearanceM": 1,
++      "sourceRefs": [
++        "FP01:sha256:ec3e605de2c6a4877c2ff0afae244b3215e7bf8bb267feef4c466b546477080c",
++        "FP02:sha256:5c4f068edba3d0c89e77b0d3a40734d4ee1a672c39f3885cbfef31430d942f39",
++        "FP03:sha256:7d43e358ae7ead52da3996e85bc52906cb2584a42e0802fc4d1e959df1289cb1"
++      ],
++      "authoringChoices": [
++        "Technical S0 proxies; no HVOX compilation or physical material reconstruction.",
++        "Feet belong to paid device BOM; no extra C09 material.",
++        "Power/waste marker poses are authoring-only until explicit installation binding."
++      ],
++      "license": "LicenseRef-Hestia-Project-Original",
++      "supportPatchesM": [
++        {
++          "partId": "distribution_feet",
++          "centerM": [
++            -0.75,
++            0.0,
++            -0.375
++          ],
++          "sizeM": [
++            0.5,
++            0.25
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "distribution_feet",
++          "centerM": [
++            -0.75,
++            0.0,
++            0.375
++          ],
++          "sizeM": [
++            0.5,
++            0.25
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "distribution_feet",
++          "centerM": [
++            0.75,
++            0.0,
++            -0.375
++          ],
++          "sizeM": [
++            0.5,
++            0.25
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "distribution_feet",
++          "centerM": [
++            0.75,
++            0.0,
++            0.375
++          ],
++          "sizeM": [
++            0.5,
++            0.25
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        }
++      ],
++      "serviceBoundsM": {
++        "min": [
++          -1.0,
++          0,
++          1.0
++        ],
++        "max": [
++          1.0,
++          1,
++          2.0
++        ]
++      }
++    },
++    {
++      "assetId": "fp01_solar_s0_v1",
++      "definitionId": "fp02.device.pv_pack_2kwp",
++      "revision": 1,
++      "kind": "S0-proxy",
++      "frameId": "fp02_east_north_height_xyz_v1",
++      "origin": "ground-center",
++      "metersPerUnit": 1,
++      "authoringGridM": 0.25,
++      "terrainCellM": 0.125,
++      "dimensionsM": [
++        4,
++        1.25,
++        3
++      ],
++      "parts": [
++        {
++          "partId": "solar_feet",
++          "role": "support",
++          "boxes": [
++            {
++              "centerM": [
++                -1.875,
++                0.25,
++                -1.375
++              ],
++              "sizeM": [
++                0.25,
++                0.5,
++                0.25
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                -1.875,
++                0.25,
++                1.375
++              ],
++              "sizeM": [
++                0.25,
++                0.5,
++                0.25
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                1.875,
++                0.25,
++                -1.375
++              ],
++              "sizeM": [
++                0.25,
++                0.5,
++                0.25
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                1.875,
++                0.25,
++                1.375
++              ],
++              "sizeM": [
++                0.25,
++                0.5,
++                0.25
++              ],
++              "material": "EX-STRUCT"
++            }
++          ]
++        },
++        {
++          "partId": "solar_frame",
++          "role": "structure",
++          "boxes": [
++            {
++              "centerM": [
++                0,
++                0.625,
++                0
++              ],
++              "sizeM": [
++                4,
++                0.25,
++                3
++              ],
++              "material": "EX-STRUCT"
++            }
++          ]
++        },
++        {
++          "partId": "solar_panels",
++          "role": "pv",
++          "boxes": [
++            {
++              "centerM": [
++                -1,
++                0.875,
++                -0.625
++              ],
++              "sizeM": [
++                2,
++                0.25,
++                1.25
++              ],
++              "material": "EX-PV"
++            },
++            {
++              "centerM": [
++                -1,
++                0.875,
++                0.625
++              ],
++              "sizeM": [
++                2,
++                0.25,
++                1.25
++              ],
++              "material": "EX-PV"
++            },
++            {
++              "centerM": [
++                1,
++                0.875,
++                -0.625
++              ],
++              "sizeM": [
++                2,
++                0.25,
++                1.25
++              ],
++              "material": "EX-PV"
++            },
++            {
++              "centerM": [
++                1,
++                0.875,
++                0.625
++              ],
++              "sizeM": [
++                2,
++                0.25,
++                1.25
++              ],
++              "material": "EX-PV"
++            }
++          ]
++        },
++        {
++          "partId": "solar_hinge",
++          "role": "joint",
++          "boxes": [
++            {
++              "centerM": [
++                0,
++                1.125,
++                0
++              ],
++              "sizeM": [
++                0.25,
++                0.25,
++                2.5
++              ],
++              "material": "EX-FUNCTION"
++            }
++          ]
++        },
++        {
++          "partId": "solar_power_socket",
++          "role": "power-marker",
++          "boxes": [
++            {
++              "centerM": [
++                0,
++                0.625,
++                1.375
++              ],
++              "sizeM": [
++                0.25,
++                0.25,
++                0.25
++              ],
++              "material": "EX-FUNCTION"
++            }
++          ]
++        }
++      ],
++      "ports": [
++        {
++          "sourceId": "fp02.device.pv_pack_2kwp:POWER-OUT",
++          "role": "PowerProducer",
++          "centerM": [
++            0,
++            0.625,
++            1.375
++          ],
++          "normal": [
++            0,
++            0,
++            1
++          ],
++          "sizeM": [
++            0.25,
++            0.25
++          ],
++          "binding": "authoring-only"
++        }
++      ],
++      "supportsM": [
++        [
++          -1.875,
++          0,
++          -1.375
++        ],
++        [
++          -1.875,
++          0,
++          1.375
++        ],
++        [
++          1.875,
++          0,
++          -1.375
++        ],
++        [
++          1.875,
++          0,
++          1.375
++        ]
++      ],
++      "joints": [],
++      "serviceClearanceM": 1,
++      "sourceRefs": [
++        "FP01:sha256:ec3e605de2c6a4877c2ff0afae244b3215e7bf8bb267feef4c466b546477080c",
++        "FP02:sha256:5c4f068edba3d0c89e77b0d3a40734d4ee1a672c39f3885cbfef31430d942f39",
++        "FP03:sha256:7d43e358ae7ead52da3996e85bc52906cb2584a42e0802fc4d1e959df1289cb1"
++      ],
++      "authoringChoices": [
++        "Technical S0 proxies; no HVOX compilation or physical material reconstruction.",
++        "Feet belong to paid device BOM; no extra C09 material.",
++        "Power/waste marker poses are authoring-only until explicit installation binding.",
++        "Source-required protected Power-Out socket is an authoring marker only; native electrical admission belongs to W07."
++      ],
++      "license": "LicenseRef-Hestia-Project-Original",
++      "supportPatchesM": [
++        {
++          "partId": "solar_feet",
++          "centerM": [
++            -1.875,
++            0.0,
++            -1.375
++          ],
++          "sizeM": [
++            0.25,
++            0.25
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "solar_feet",
++          "centerM": [
++            -1.875,
++            0.0,
++            1.375
++          ],
++          "sizeM": [
++            0.25,
++            0.25
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "solar_feet",
++          "centerM": [
++            1.875,
++            0.0,
++            -1.375
++          ],
++          "sizeM": [
++            0.25,
++            0.25
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "solar_feet",
++          "centerM": [
++            1.875,
++            0.0,
++            1.375
++          ],
++          "sizeM": [
++            0.25,
++            0.25
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        }
++      ],
++      "serviceBoundsM": {
++        "min": [
++          -2.0,
++          0,
++          1.5
++        ],
++        "max": [
++          2.0,
++          1.25,
++          2.5
++        ]
++      }
++    },
++    {
++      "assetId": "fp01_wind_s0_v1",
++      "definitionId": "fp02.device.wind_pack_6kw",
++      "revision": 1,
++      "kind": "S0-proxy",
++      "frameId": "fp02_east_north_height_xyz_v1",
++      "origin": "ground-center",
++      "metersPerUnit": 1,
++      "authoringGridM": 0.25,
++      "terrainCellM": 0.125,
++      "dimensionsM": [
++        6,
++        13,
++        3
++      ],
++      "parts": [
++        {
++          "partId": "wind_feet",
++          "role": "support",
++          "boxes": [
++            {
++              "centerM": [
++                -1.25,
++                0.125,
++                -1.25
++              ],
++              "sizeM": [
++                0.5,
++                0.25,
++                0.5
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                -1.25,
++                0.125,
++                1.25
++              ],
++              "sizeM": [
++                0.5,
++                0.25,
++                0.5
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                1.25,
++                0.125,
++                -1.25
++              ],
++              "sizeM": [
++                0.5,
++                0.25,
++                0.5
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                1.25,
++                0.125,
++                1.25
++              ],
++              "sizeM": [
++                0.5,
++                0.25,
++                0.5
++              ],
++              "material": "EX-STRUCT"
++            }
++          ]
++        },
++        {
++          "partId": "wind_mast",
++          "role": "structure",
++          "boxes": [
++            {
++              "centerM": [
++                0,
++                5.125,
++                0
++              ],
++              "sizeM": [
++                0.5,
++                9.75,
++                0.5
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                0,
++                9.875,
++                0
++              ],
++              "sizeM": [
++                1,
++                0.25,
++                1
++              ],
++              "material": "EX-SHELL"
++            },
++            {
++              "centerM": [
++                0,
++                0.375,
++                -1.25
++              ],
++              "sizeM": [
++                3,
++                0.25,
++                0.5
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                0,
++                0.375,
++                1.25
++              ],
++              "sizeM": [
++                3,
++                0.25,
++                0.5
++              ],
++              "material": "EX-STRUCT"
++            },
++            {
++              "centerM": [
++                0,
++                0.375,
++                0
++              ],
++              "sizeM": [
++                0.5,
++                0.25,
++                3
++              ],
++              "material": "EX-STRUCT"
++            }
++          ]
++        },
++        {
++          "partId": "wind_hub",
++          "role": "joint",
++          "boxes": [
++            {
++              "centerM": [
++                0,
++                10,
++                0.25
++              ],
++              "sizeM": [
++                0.5,
++                0.5,
++                0.5
++              ],
++              "material": "EX-FUNCTION"
++            }
++          ]
++        },
++        {
++          "partId": "wind_blade_1",
++          "role": "rotor-blade",
++          "boxes": [
++            {
++              "centerM": [
++                -0.0,
++                11.375,
++                0.5
++              ],
++              "sizeM": [
++                0.5,
++                2.75,
++                0.25
++              ],
++              "material": "EX-SHELL",
++              "rotationZRadians": 0
++            }
++          ]
++        },
++        {
++          "partId": "wind_blade_2",
++          "role": "rotor-blade",
++          "boxes": [
++            {
++              "centerM": [
++                -1.1907849302036033,
++                9.3125,
++                0.5
++              ],
++              "sizeM": [
++                0.5,
++                2.75,
++                0.25
++              ],
++              "material": "EX-SHELL",
++              "rotationZRadians": 2.0943951023931953
++            }
++          ]
++        },
++        {
++          "partId": "wind_blade_3",
++          "role": "rotor-blade",
++          "boxes": [
++            {
++              "centerM": [
++                1.1907849302036029,
++                9.3125,
++                0.5
++              ],
++              "sizeM": [
++                0.5,
++                2.75,
++                0.25
++              ],
++              "material": "EX-SHELL",
++              "rotationZRadians": 4.1887902047863905
++            }
++          ]
++        },
++        {
++          "partId": "wind_power_socket",
++          "role": "power-marker",
++          "boxes": [
++            {
++              "centerM": [
++                0.375,
++                0.375,
++                1.375
++              ],
++              "sizeM": [
++                0.25,
++                0.25,
++                0.25
++              ],
++              "material": "EX-FUNCTION"
++            }
++          ]
++        }
++      ],
++      "ports": [
++        {
++          "sourceId": "fp02.device.wind_pack_6kw:POWER-OUT",
++          "role": "PowerProducer",
++          "centerM": [
++            0.375,
++            0.375,
++            1.375
++          ],
++          "normal": [
++            0,
++            0,
++            1
++          ],
++          "sizeM": [
++            0.25,
++            0.25
++          ],
++          "binding": "authoring-only"
++        }
++      ],
++      "supportsM": [
++        [
++          -1.25,
++          0,
++          -1.25
++        ],
++        [
++          -1.25,
++          0,
++          1.25
++        ],
++        [
++          1.25,
++          0,
++          -1.25
++        ],
++        [
++          1.25,
++          0,
++          1.25
++        ]
++      ],
++      "joints": [],
++      "serviceClearanceM": 1,
++      "sourceRefs": [
++        "FP01:sha256:ec3e605de2c6a4877c2ff0afae244b3215e7bf8bb267feef4c466b546477080c",
++        "FP02:sha256:5c4f068edba3d0c89e77b0d3a40734d4ee1a672c39f3885cbfef31430d942f39",
++        "FP03:sha256:7d43e358ae7ead52da3996e85bc52906cb2584a42e0802fc4d1e959df1289cb1"
++      ],
++      "authoringChoices": [
++        "Technical S0 proxies; no HVOX compilation or physical material reconstruction.",
++        "Feet belong to paid device BOM; no extra C09 material.",
++        "Power/waste marker poses are authoring-only until explicit installation binding.",
++        "Source-required protected Power-Out socket is an authoring marker only; native electrical admission belongs to W07."
++      ],
++      "license": "LicenseRef-Hestia-Project-Original",
++      "rotorDiameterM": 6,
++      "hubHeightM": 10,
++      "rotorSweepBoundsM": {
++        "min": [
++          -3,
++          7,
++          -1.5
++        ],
++        "max": [
++          3,
++          13,
++          1.5
++        ]
++      },
++      "supportPatchesM": [
++        {
++          "partId": "wind_feet",
++          "centerM": [
++            -1.25,
++            0.0,
++            -1.25
++          ],
++          "sizeM": [
++            0.5,
++            0.5
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "wind_feet",
++          "centerM": [
++            -1.25,
++            0.0,
++            1.25
++          ],
++          "sizeM": [
++            0.5,
++            0.5
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "wind_feet",
++          "centerM": [
++            1.25,
++            0.0,
++            -1.25
++          ],
++          "sizeM": [
++            0.5,
++            0.5
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        },
++        {
++          "partId": "wind_feet",
++          "centerM": [
++            1.25,
++            0.0,
++            1.25
++          ],
++          "sizeM": [
++            0.5,
++            0.5
++          ],
++          "normal": [
++            0,
++            -1,
++            0
++          ]
++        }
++      ],
++      "serviceBoundsM": {
++        "min": [
++          -3.0,
++          0,
++          1.5
++        ],
++        "max": [
++          3.0,
++          13,
++          2.5
++        ]
++      }
++    }
++  ]
++}
+diff --git a/apps/weltraum-browser/src/factory/presentation/factoryAssets.ts b/apps/weltraum-browser/src/factory/presentation/factoryAssets.ts
+new file mode 100644
+index 00000000..4f5981a7
+--- /dev/null
++++ b/apps/weltraum-browser/src/factory/presentation/factoryAssets.ts
+@@ -0,0 +1,113 @@
++import cutter from "../../../../../art/factory/fp02/cutter/source.scene.json";
++import former from "../../../../../art/factory/fp02/former/source.scene.json";
++import powerKit from "../../../../../art/factory/fp01/power-kit/source.scene.json";
++import {
++  artifactRevision, canonicalSignature, createMeshArtifact, createMaterialProfile, deepFreezeMetadata,
++  frameId, materialProfileId, representationKey, sourceRevision,
++  type MeshArtifact, type MaterialProfile, type AxisAlignedBounds
++} from "../../presentation";
++import { createFp02CatalogInput, loadFactoryCatalog } from "../catalog/fp02Catalog";
++
++export interface FactoryAssetDefinitionRef { readonly sourceId: string; readonly version: number; readonly digest: string; readonly instanceId?: string }
++export interface FactoryAssetBox { readonly centerM: readonly number[]; readonly sizeM: readonly number[]; readonly material: string; readonly rotationZRadians?: number }
++export interface FactoryAssetPart { readonly partId: string; readonly role: string; readonly boxes: readonly FactoryAssetBox[] }
++export interface FactoryAssetPort { readonly sourceId: string; readonly role: string; readonly centerM: readonly number[]; readonly normal: readonly number[]; readonly sizeM: readonly number[]; readonly binding: "source-solid" | "authoring-only" }
++export interface FactoryAssetSource {
++  readonly assetId: string; readonly definitionId: string; readonly revision: number;
++  readonly kind: "S0-proxy"; readonly frameId: string; readonly origin: "ground-center";
++  readonly metersPerUnit: 1; readonly authoringGridM: 0.25; readonly terrainCellM: 0.125;
++  readonly dimensionsM: readonly number[]; readonly parts: readonly FactoryAssetPart[];
++  readonly ports: readonly FactoryAssetPort[]; readonly sourceRefs: readonly string[];
++  readonly supportsM: readonly (readonly number[])[];
++  readonly supportPatchesM: readonly Readonly<{ partId: string; centerM: readonly number[]; sizeM: readonly number[]; normal: readonly number[] }>[];
++  readonly serviceBoundsM: Readonly<{ min: readonly number[]; max: readonly number[] }>;
++  readonly joints: readonly Readonly<{ partId: string; pivotM: readonly number[]; axis: readonly number[]; limitsM: readonly number[]; sweepBoundsM: Readonly<{ min: readonly number[]; max: readonly number[] }> }>[];
++  readonly phaseMotionProfile?: Readonly<{ version: 1; phaseEndsMs: readonly number[]; toolCycles: number;
++    channels: readonly Readonly<{ partId: string; axis: readonly number[];
++      segments: readonly Readonly<{ startMs: number; endMs: number; fromM: number; toM: number }>[] }>[] }>;
++}
++export interface FactoryAssetProjection {
++  readonly definitionRef: FactoryAssetDefinitionRef; readonly source: FactoryAssetSource;
++  readonly sourceDigest: string; readonly kind: "S0-proxy"; readonly frameId: string;
++  readonly bounds: AxisAlignedBounds;
++  readonly parts: readonly Readonly<{ partId: string; role: string; artifact: MeshArtifact; materialProfiles: readonly MaterialProfile[] }>[];
++  readonly ports: readonly FactoryAssetPort[];
++}
++
++const sources = deepFreezeMetadata([...cutter.assets, ...former.assets, ...powerKit.assets]) as unknown as readonly FactoryAssetSource[];
++const catalog = loadFactoryCatalog(createFp02CatalogInput());
++const sourceBytes = new Map(sources.map(source => [source.definitionId, JSON.stringify(source)]));
++const palette: Readonly<Record<string, string>> = { "EX-STRUCT": "30383D", "EX-SHELL": "B6BDB8", "EX-FUNCTION": "407A79", "EX-HAZARD": "D8A94E", "EX-PV": "1D2E3C" };
++const linear = (value: number): number => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
++const profiles = Object.fromEntries(Object.entries(palette).map(([family, hex]) => [family, createMaterialProfile({
++  id: materialProfileId(`fp06_${family.toLowerCase().replace("-", "_")}`), kind: "BasicLit",
++  baseColor: { r: linear(parseInt(hex.slice(0, 2), 16) / 255), g: linear(parseInt(hex.slice(2, 4), 16) / 255), b: linear(parseInt(hex.slice(4, 6), 16) / 255) },
++  opacity: 1, doubleSided: false, wireframe: false, depthWrite: true
++})]));
++
++/** Frozen original S0 source; no compiled HVOX, cargo or structural authority. */
++export const getFactoryAssetSource = (sourceId: string): FactoryAssetSource => {
++  const source = sources.find(value => value.definitionId === sourceId);
++  if (!source) throw new Error("Unknown factory asset source");
++  return source;
++};
++
++const vector = (values: readonly number[]) => ({ x: values[0]!, y: values[1]!, z: values[2]! });
++const faces = [
++  { n: [1, 0, 0], v: [[1, -1, -1], [1, 1, -1], [1, 1, 1], [1, -1, 1]] },
++  { n: [-1, 0, 0], v: [[-1, -1, 1], [-1, 1, 1], [-1, 1, -1], [-1, -1, -1]] },
++  { n: [0, 1, 0], v: [[-1, 1, -1], [-1, 1, 1], [1, 1, 1], [1, 1, -1]] },
++  { n: [0, -1, 0], v: [[-1, -1, 1], [-1, -1, -1], [1, -1, -1], [1, -1, 1]] },
++  { n: [0, 0, 1], v: [[1, -1, 1], [1, 1, 1], [-1, 1, 1], [-1, -1, 1]] },
++  { n: [0, 0, -1], v: [[-1, -1, -1], [-1, 1, -1], [1, 1, -1], [1, -1, -1]] }
++] as const;
++
++const partArtifact = (source: FactoryAssetSource, part: FactoryAssetPart, instanceId: string) => {
++  const positions: number[] = [], normals: number[] = [], indices: number[] = [];
++  const materialRanges: { materialProfileId: MaterialProfile["id"]; startIndex: number; indexCount: number }[] = [];
++  const used = new Map<string, MaterialProfile>();
++  for (const box of part.boxes) {
++    const material = profiles[box.material];
++    if (!material) throw new Error("Unknown factory material family");
++    used.set(box.material, material);
++    const sin = Math.sin(box.rotationZRadians ?? 0), cos = Math.cos(box.rotationZRadians ?? 0);
++    const startIndex = indices.length;
++    for (const face of faces) {
++      const first = positions.length / 3;
++      for (const corner of face.v) {
++        const x = corner[0] * box.sizeM[0]! / 2, y = corner[1] * box.sizeM[1]! / 2;
++        positions.push(box.centerM[0]! + cos * x - sin * y, box.centerM[1]! + sin * x + cos * y, box.centerM[2]! + corner[2] * box.sizeM[2]! / 2);
++        normals.push(cos * face.n[0] - sin * face.n[1], sin * face.n[0] + cos * face.n[1], face.n[2]);
++      }
++      indices.push(first, first + 1, first + 2, first, first + 2, first + 3);
++    }
++    const previous = materialRanges.at(-1);
++    if (previous?.materialProfileId === material.id) previous.indexCount += indices.length - startIndex;
++    else materialRanges.push({ materialProfileId: material.id, startIndex, indexCount: indices.length - startIndex });
++  }
++  const typedPositions = new Float32Array(positions), min = [Infinity, Infinity, Infinity], max = [-Infinity, -Infinity, -Infinity];
++  for (let index = 0; index < typedPositions.length; index += 1) {
++    const axis = index % 3; min[axis] = Math.min(min[axis]!, typedPositions[index]!); max[axis] = Math.max(max[axis]!, typedPositions[index]!);
++  }
++  const artifact = createMeshArtifact({ representationKey: representationKey(`factory:${instanceId}:${part.partId}`),
++    sourceRevision: sourceRevision(source.revision), artifactRevision: artifactRevision(1), algorithmVersion: "factory_s0_boxes_v1",
++    frameId: frameId("fp02_east_north_height_xyz_v1"), positions: typedPositions, normals: new Float32Array(normals), indices: new Uint16Array(indices),
++    materialRanges, bounds: { min: vector(min), max: vector(max) } });
++  return Object.freeze({ partId: part.partId, role: part.role, artifact, materialProfiles: Object.freeze([...used.values()]) });
++};
++
++/** MeshArtifacts are derived once per mount; subsequent poses never remesh. */
++export const createFactoryAssetProjection = (definitionRef: FactoryAssetDefinitionRef, source: FactoryAssetSource): FactoryAssetProjection => {
++  const definition = [...catalog.devices, ...catalog.items].find(value => value.sourceId === definitionRef.sourceId);
++  if (!definition || definitionRef.sourceId !== source.definitionId || definitionRef.version !== definition.version || definitionRef.digest !== definition.digest) throw new Error("Factory asset definition binding mismatch");
++  if (sourceBytes.get(source.definitionId) !== JSON.stringify(source)) throw new Error("Factory asset source binding mismatch");
++  const parts = source.parts.map(part => partArtifact(source, part, definitionRef.instanceId ?? source.assetId));
++  const bounds = { min: { x: Infinity, y: Infinity, z: Infinity }, max: { x: -Infinity, y: -Infinity, z: -Infinity } };
++  for (const part of parts) for (const axis of ["x", "y", "z"] as const) {
++    bounds.min[axis] = Math.min(bounds.min[axis], part.artifact.bounds.min[axis]); bounds.max[axis] = Math.max(bounds.max[axis], part.artifact.bounds.max[axis]);
++  }
++  const boundRef = { sourceId: definitionRef.sourceId, version: definitionRef.version, digest: definitionRef.digest,
++    ...(definitionRef.instanceId === undefined ? {} : { instanceId: definitionRef.instanceId }) };
++  return deepFreezeMetadata({ definitionRef: boundRef, source, sourceDigest: canonicalSignature(source), kind: "S0-proxy" as const,
++    frameId: "fp02_east_north_height_xyz_v1", bounds, parts, ports: source.ports });
++};
+diff --git a/apps/weltraum-browser/src/factory/presentation/machinePose.ts b/apps/weltraum-browser/src/factory/presentation/machinePose.ts
+new file mode 100644
+index 00000000..d64e0054
+--- /dev/null
++++ b/apps/weltraum-browser/src/factory/presentation/machinePose.ts
+@@ -0,0 +1,42 @@
++import type { FactoryAssetProjection } from "./factoryAssets";
++import { deepFreezeMetadata } from "../../presentation";
++export interface MachineReadView {
++  readonly projection: FactoryAssetProjection; readonly status: string; readonly confirmedWorkMs: number;
++  readonly presentPartIds: readonly string[]; readonly damageRevision: number;
++}
++export interface MachinePose {
++  readonly status: string; readonly phase: string; readonly paused: boolean;
++  readonly partPoses: readonly Readonly<{ partId: string; translationM: readonly number[] }>[];
++}
++const states = new Set(["UNPLACED", "CONSTRUCTING", "IDLE", "WAIT_INPUT", "WAIT_POWER", "WAIT_OUTPUT", "WAIT_WASTE", "RUNNING", "STOPPING", "BLOCKED", "FAULT", "DECONSTRUCTING"]);
++const labels = ["infeed", "clamp", "work", "return", "outfeed", "complete"];
++
++/** Render time is deliberately unable to advance confirmed work or create lots. */
++export const sampleMachinePose = (read: MachineReadView, presentationTime: number): MachinePose => {
++  if (!Number.isFinite(presentationTime) || presentationTime < 0 || !Number.isSafeInteger(read.confirmedWorkMs) || read.confirmedWorkMs < 0
++    || !Number.isSafeInteger(read.damageRevision) || read.damageRevision < 0) throw new Error("Invalid machine presentation sample");
++  const present = new Set(read.presentPartIds);
++  if (present.size !== read.presentPartIds.length || [...present].some(id => !read.projection.parts.some(part => part.partId === id))) throw new Error("Invalid machine part read view");
++  const profile = read.projection.source.phaseMotionProfile;
++  const timing = profile?.phaseEndsMs;
++  const work = Math.min(read.confirmedWorkMs, timing?.[4] ?? 0);
++  const phase = timing ? timing.findIndex(end => work < end) : -1;
++  let toolOffset = 0;
++  if (timing && work >= timing[1]! && work <= timing[2]!) {
++    const progress = (work - timing[1]!) / (timing[2]! - timing[1]!);
++    toolOffset = read.projection.definitionRef.sourceId === "B06" ? -0.25 + 0.5 * progress : -0.5 * Math.sin(Math.PI * progress * profile!.toolCycles) ** 2;
++  } else if (timing && work >= timing[0]! && work < timing[1]! && read.projection.definitionRef.sourceId === "B06") {
++    toolOffset = -0.25 * (work - timing[0]!) / (timing[1]! - timing[0]!);
++  } else if (timing && work > timing[2]! && work < timing[3]! && read.projection.definitionRef.sourceId === "B06") {
++    toolOffset = 0.25 * (1 - (work - timing[2]!) / (timing[3]! - timing[2]!));
++  }
++  const status = states.has(read.status) ? read.status : "UNKNOWN";
++  const partPoses = read.projection.parts.filter(part => present.has(part.partId)).map(part => {
++    const channel = profile?.channels.find(value => value.partId === part.partId);
++    const segment = channel?.segments.find(value => work >= value.startMs && work <= value.endMs);
++    const offset = segment ? segment.fromM + (segment.toM - segment.fromM) * (work - segment.startMs) / (segment.endMs - segment.startMs) : 0;
++    return { partId: part.partId, translationM: channel ? channel.axis.map(value => value * offset)
++      : part.role === "tool" ? (read.projection.definitionRef.sourceId === "B06" ? [0, 0, toolOffset] : [0, toolOffset, 0]) : [0, 0, 0] };
++  });
++  return deepFreezeMetadata({ status, phase: timing ? labels[phase < 0 ? 5 : phase]! : "idle", paused: status !== "RUNNING", partPoses });
++};
+diff --git a/apps/weltraum-browser/tests/unit/factory/presentation.test.ts b/apps/weltraum-browser/tests/unit/factory/presentation.test.ts
+new file mode 100644
+index 00000000..e91f2c52
+--- /dev/null
++++ b/apps/weltraum-browser/tests/unit/factory/presentation.test.ts
+@@ -0,0 +1,229 @@
++import { describe, expect, it } from "vitest";
++import { createFp02Fixture } from "../../../src/factory/catalog/fp02Catalog";
++import { createFactoryAssetProjection, getFactoryAssetSource } from "../../../src/factory/presentation/factoryAssets";
++import { sampleMachinePose } from "../../../src/factory/presentation/machinePose";
++import { backendRevision, canonicalSignature, validateMeshArtifact } from "../../../src/presentation";
++import { ThreeRenderBackend } from "../../../src/render/three/backend/threeRenderBackend";
++import { createHvpListeners } from "../../../src/hestia-prototype/runtime/listeners";
++
++const catalog = createFp02Fixture("cargo").catalog;
++const projection = (id = "B06") => createFactoryAssetProjection(catalog.devices.find(device => device.sourceId === id)!, getFactoryAssetSource(id));
++
++describe("FP06 W05 source-bound factory presentation", () => {
++  it("T021 loads real mesh bounds in meters and source-bound 1m ports", () => {
++    for (const [id, width, depth, height] of [["B06", 3, 2, 2.5], ["B07", 4, 3, 3]] as const) {
++      const asset = projection(id);
++      expect(asset.bounds.max.x - asset.bounds.min.x).toBe(width);
++      expect(asset.bounds.max.z - asset.bounds.min.z).toBe(depth);
++      expect(asset.bounds.max.y - asset.bounds.min.y).toBe(height);
++      expect(asset.parts.length).toBeGreaterThan(3);
++      for (const part of asset.parts) expect(validateMeshArtifact(part.artifact).valid).toBe(true);
++      const ports = asset.ports.filter(port => port.binding === "source-solid");
++      expect(ports.map(port => port.centerM)).toEqual([[-width / 2, 1, 0], [width / 2, 1, 0]]);
++      expect(ports.map(port => port.normal)).toEqual([[-1, 0, 0], [1, 0, 0]]);
++      expect(ports.map(port => port.sizeM)).toEqual([[0.75, 0.75], [0.75, 0.75]]);
++    }
++  });
++
++  it("T022 WAIT_POWER holds confirmed work and leaves real input/products unchanged", () => {
++    const asset = projection();
++    const resourceState = createFp02Fixture("cargo").resourceState;
++    const before = JSON.stringify(resourceState);
++    const read = { projection: asset, status: "RUNNING", confirmedWorkMs: 15_000,
++      presentPartIds: asset.parts.map(part => part.partId), damageRevision: 0, resourceState };
++    const running = sampleMachinePose(read, 1);
++    expect(running.partPoses.some(part => part.translationM.some(value => value !== 0))).toBe(true);
++    const stopped = { ...read, status: "WAIT_POWER" };
++    const first = sampleMachinePose(stopped, 1);
++    expect(first.status).toBe("WAIT_POWER");
++    for (const time of [2, 50, 1_000]) expect(sampleMachinePose(stopped, time)).toEqual(first);
++    expect(stopped.confirmedWorkMs).toBe(15_000);
++    expect(JSON.stringify(resourceState)).toBe(before);
++  });
++
++  it("T023 removed tool stays absent across subsequent damage samples", () => {
++    const asset = projection();
++    const remaining = asset.parts.filter(part => part.role !== "tool").map(part => part.partId);
++    expect(remaining.length).toBeGreaterThan(0);
++    const read = { projection: asset, status: "FAULT", confirmedWorkMs: 15_000, presentPartIds: remaining, damageRevision: 1 };
++    for (const time of [1, 2, 1_000]) {
++      expect(sampleMachinePose(read, time).partPoses.map(part => part.partId)).toEqual(remaining);
++    }
++  });
++
++  it("T024 100 real Three backend mounts/disposals return owned resources to baseline", () => {
++    const asset = projection();
++    const listeners = createHvpListeners();
++    let allocated = 0;
++    for (let cycle = 0; cycle < 100; cycle += 1) {
++      const backend = new ThreeRenderBackend({ canvas: {} as HTMLCanvasElement,
++        rendererFactory: () => ({ setPixelRatio() {}, setSize() {}, render() {}, dispose() {} }) });
++      const revision = backendRevision(0);
++      expect(backend.dispatch({ kind: "InitializeBackend", backendRevision: revision }).status).toBe("Accepted");
++      for (const part of asset.parts) {
++        expect(backend.dispatch({ kind: "UpsertMeshArtifact", backendRevision: revision,
++          artifact: part.artifact, materialProfiles: part.materialProfiles }).status).toBe("Accepted");
++      }
++      allocated += backend.readDiagnostics().geometryAllocations;
++      expect(backend.dispatch({ kind: "DisposeBackend", backendRevision: revision }).status).toBe("Accepted");
++      const result = backend.readDiagnostics();
++      expect(result.geometryAllocations - result.geometryDisposals).toBe(0);
++      expect(result.materialAllocations - result.materialDisposals).toBe(0);
++      expect(result.activeRepresentations).toBe(0);
++      expect(result.ownedCpuBytes).toBe(0);
++      expect(listeners.size).toBe(0);
++    }
++    expect(allocated).toBeGreaterThan(0);
++    listeners.dispose();
++  });
++
++  it("rejects drifted definition and native source bindings", () => {
++    const definition = catalog.devices.find(device => device.sourceId === "B06")!;
++    const source = getFactoryAssetSource("B06");
++    expect(() => createFactoryAssetProjection({ ...definition, digest: "stale" }, source)).toThrow("definition binding");
++    expect(() => createFactoryAssetProjection(definition, { ...source, revision: 2 })).toThrow("source binding");
++    expect(() => getFactoryAssetSource("unapproved" )).toThrow("Unknown factory asset");
++  });
++
++  it("retains explicit paid foot contacts, tool sweeps and separate250/125mm grids", () => {
++    for (const id of ["B06", "B07"]) {
++      const asset = projection(id), source = asset.source;
++      expect(source.authoringGridM).toBe(0.25);
++      expect(source.terrainCellM).toBe(0.125);
++      expect(source.supportPatchesM).toHaveLength(4);
++      for (const foot of source.supportPatchesM) {
++        expect(foot.centerM[1]).toBe(0);
++        expect(foot.normal).toEqual([0, -1, 0]);
++        expect(foot.sizeM).toEqual([0.5, 0.5]);
++        expect(asset.parts.some(part => part.partId === foot.partId)).toBe(true);
++      }
++      expect(source.joints).toHaveLength(4);
++      expect(source.joints.find(joint => joint.partId === asset.parts.find(part => part.role === "tool")!.partId)!.sweepBoundsM.min[1]).toBeGreaterThan(1);
++      expect(source.serviceBoundsM.max[2]! - source.serviceBoundsM.min[2]!).toBe(1);
++      expect(asset.ports.filter(port => port.role === "PowerConsumer").every(port => port.binding === "authoring-only")).toBe(true);
++    }
++  });
++
++  it("isolates real instance keys while repeated poses leave mesh bytes unchanged", () => {
++    const definition = catalog.devices.find(device => device.sourceId === "B06")!;
++    const source = getFactoryAssetSource("B06");
++    const first = createFactoryAssetProjection({ ...definition, instanceId: "first_instance" }, source);
++    const second = createFactoryAssetProjection({ ...definition, instanceId: "second_instance" }, source);
++    const keys = new Set(first.parts.map(part => part.artifact.representationKey));
++    expect(second.parts.every(part => !keys.has(part.artifact.representationKey))).toBe(true);
++    const before = canonicalSignature(first.parts.map(part => part.artifact));
++    const read = { projection: first, status: "RUNNING", confirmedWorkMs: 0, presentPartIds: first.parts.map(part => part.partId), damageRevision: 0 };
++    for (const work of [0, 5_000, 7_000, 15_000, 24_000, 30_000]) sampleMachinePose({ ...read, confirmedWorkMs: work }, work);
++    expect(canonicalSignature(first.parts.map(part => part.artifact))).toBe(before);
++  });
++
++  it("holds unknown states and rejects noncanonical pose work", () => {
++    const asset = projection();
++    const read = { projection: asset, status: "new_unknown_state", confirmedWorkMs: 15_000, presentPartIds: asset.parts.map(part => part.partId), damageRevision: 0 };
++    expect(sampleMachinePose(read, 1)).toMatchObject({ status: "UNKNOWN", paused: true });
++    for (const work of [-1, 0.5, NaN, Infinity]) expect(() => sampleMachinePose({ ...read, confirmedWorkMs: work }, 1)).toThrow("Invalid machine");
++    expect(() => sampleMachinePose({ ...read, presentPartIds: ["deleted_unknown_part"] }, 1)).toThrow("part read view");
++  });
++
++  it("loads four original power-kit S0 sources without product or fluid ports", () => {
++    for (const id of ["fp02.device.wind_pack_6kw", "fp02.device.pv_pack_2kwp", "fp02.device.battery_4kwh", "fp02.device.distribution_40kw"]) {
++      const definition = catalog.items.find(item => item.sourceId === id)!;
++      const asset = createFactoryAssetProjection(definition, getFactoryAssetSource(id));
++      expect(asset.kind).toBe("S0-proxy");
++      expect(asset.parts.length).toBeGreaterThan(2);
++      for (const part of asset.parts) expect(validateMeshArtifact(part.artifact).valid).toBe(true);
++      expect(asset.ports.every(port => port.binding === "authoring-only")).toBe(true);
++      const pose = sampleMachinePose({ projection: asset, status: "IDLE", confirmedWorkMs: 0, presentPartIds: asset.parts.map(part => part.partId), damageRevision: 0 }, 1);
++      expect(pose.partPoses.every(part => part.translationM.every(value => value === 0))).toBe(true);
++    }
++  });
++
++  for (const id of ["B06", "fp02.device.wind_pack_6kw"]) it(`R1 ${id} connects every paid ground shoe to a raised structural load path`, () => {
++    const source = getFactoryAssetSource(id);
++    const nodes = source.parts.filter(part => ["support", "structure"].includes(part.role)).flatMap(part =>
++      part.boxes.map(box => ({ role: part.role, box, min: box.centerM.map((value, axis) => value - box.sizeM[axis]! / 2),
++        max: box.centerM.map((value, axis) => value + box.sizeM[axis]! / 2) })));
++    const connected = (a: typeof nodes[number], b: typeof nodes[number]) => {
++      const overlaps = a.min.map((value, axis) => Math.min(a.max[axis]!, b.max[axis]!) - Math.max(value, b.min[axis]!));
++      return overlaps.every(value => value >= 0) && overlaps.filter(value => value === 0).length <= 1;
++    };
++    for (const foot of nodes.filter(node => node.role === "support")) {
++      expect(foot.min[1]).toBe(0);
++      const seen = new Set([foot]), pending = [foot];
++      while (pending.length) {
++        const current = pending.pop()!;
++        for (const node of nodes) if (!seen.has(node) && connected(current, node)) { seen.add(node); pending.push(node); }
++      }
++      expect([...seen].some(node => node.role === "structure" && node.box.centerM[1]! > source.dimensionsM[1]! / 3)).toBe(true);
++    }
++  });
++
++  it("R2 infeed, clamp and outfeed have bounded confirmed-work motion and frozen WAIT_POWER poses", () => {
++    for (const [id, samples] of [["B06", [2_500, 6_000, 28_500]], ["B07", [3_000, 8_000, 37_500]]] as const) {
++      const asset = projection(id);
++      const base = { projection: asset, status: "RUNNING", confirmedWorkMs: 0, presentPartIds: asset.parts.map(part => part.partId), damageRevision: 0 };
++      for (const [index, role] of ["infeed", "clamp", "outfeed"].entries()) {
++        const phaseRead = { ...base, confirmedWorkMs: samples[index]! };
++        const pose = sampleMachinePose(phaseRead, 1);
++        const phaseParts = asset.parts.filter(part => part.role === role);
++        expect(phaseParts.length).toBeGreaterThan(0);
++        expect(pose.partPoses.some(part => phaseParts.some(source => source.partId === part.partId) && part.translationM.some(value => value !== 0))).toBe(true);
++        const held = { ...phaseRead, status: "WAIT_POWER" };
++        expect(sampleMachinePose(held, 100_000)).toEqual(sampleMachinePose(held, 1));
++      }
++      for (const confirmedWorkMs of [0, ...samples, ...(asset.source.phaseMotionProfile!.phaseEndsMs)]) {
++        const pose = sampleMachinePose({ ...base, confirmedWorkMs }, 1);
++        for (const part of asset.parts) {
++          const offset = pose.partPoses.find(value => value.partId === part.partId)!.translationM;
++          for (const [axis, coordinate] of ["x", "y", "z"].entries()) {
++            expect(part.artifact.bounds.min[coordinate as "x" | "y" | "z"] + offset[axis]!).toBeGreaterThanOrEqual(asset.bounds.min[coordinate as "x" | "y" | "z"]);
++            expect(part.artifact.bounds.max[coordinate as "x" | "y" | "z"] + offset[axis]!).toBeLessThanOrEqual(asset.bounds.max[coordinate as "x" | "y" | "z"]);
++          }
++        }
++      }
++      expect(asset.source.phaseMotionProfile!.version).toBe(1);
++    }
++  });
++
++  it("R1 Former bed has a continuous contact path to its raised corner posts", () => {
++    const source = getFactoryAssetSource("B07");
++    const nodes = source.parts.filter(part => ["structure", "work-bed"].includes(part.role)).flatMap(part => part.boxes.map(box => ({
++      role: part.role, box, min: box.centerM.map((value, axis) => value - box.sizeM[axis]! / 2), max: box.centerM.map((value, axis) => value + box.sizeM[axis]! / 2)
++    })));
++    const seen = new Set(nodes.filter(node => node.role === "work-bed")), pending = [...seen];
++    while (pending.length) {
++      const current = pending.pop()!;
++      for (const node of nodes) {
++        const overlaps = current.min.map((value, axis) => Math.min(current.max[axis]!, node.max[axis]!) - Math.max(value, node.min[axis]!));
++        if (!seen.has(node) && overlaps.every(value => value >= 0) && overlaps.filter(value => value === 0).length <= 1) { seen.add(node); pending.push(node); }
++      }
++    }
++    expect([...seen].some(node => node.role === "structure" && node.box.centerM[1]! > 1.5)).toBe(true);
++  });
++
++  it("R1 Former tool keeps a positive-area actuator contact throughout its half-meter stroke", () => {
++    const asset = projection("B07");
++    const actuators = asset.source.parts.filter(part => part.role === "actuator").flatMap(part => part.boxes);
++    for (const work of [10_000, 15_000, 20_000, 25_000, 30_000]) {
++      const pose = sampleMachinePose({ projection: asset, status: "RUNNING", confirmedWorkMs: work,
++        presentPartIds: asset.parts.map(part => part.partId), damageRevision: 0 }, 1);
++      const tools = asset.source.parts.filter(part => part.role === "tool").flatMap(part => {
++        const offset = pose.partPoses.find(value => value.partId === part.partId)!.translationM;
++        return part.boxes.map(box => ({ ...box, centerM: box.centerM.map((value, axis) => value + offset[axis]!) }));
++      });
++      for (const actuator of actuators) expect(tools.some(tool => {
++        const overlaps = tool.centerM.map((value, axis) => Math.min(value + tool.sizeM[axis]! / 2, actuator.centerM[axis]! + actuator.sizeM[axis]! / 2)
++          - Math.max(value - tool.sizeM[axis]! / 2, actuator.centerM[axis]! - actuator.sizeM[axis]! / 2));
++        return overlaps.every(value => value >= 0) && overlaps.filter(value => value === 0).length <= 1;
++      })).toBe(true);
++    }
++  });
++
++  it("R3 Wind and PV expose source-required visible authoring-only power-out sockets", () => {
++    for (const id of ["fp02.device.wind_pack_6kw", "fp02.device.pv_pack_2kwp"]) {
++      const source = getFactoryAssetSource(id);
++      expect(source.ports.filter(port => port.role === "PowerProducer" && port.binding === "authoring-only")).toHaveLength(1);
++      expect(source.parts.some(part => part.role === "power-marker" && part.boxes.length > 0)).toBe(true);
++    }
++  });
++});
