@@ -1,0 +1,184 @@
+{
+  "timestampUtc": "2026-10-11T17:21:21.024878+00:00",
+  "fileSealSha256": "f36718d5fb01a28b3bbb0654269bc7b022aeb2a90300363700bf4ed7fd4f2e1d",
+  "all30CurrentFiles": [
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/placement.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/buildStep.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/buildTool.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/placement.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/package.json",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/factorySession.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/factoryEntry.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/installationProfile.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/presentation/vegetation.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-physics.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-coast-source.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-vegetation.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/player/input.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts",
+      "result": "MATCH"
+    }
+  ],
+  "exactDeltaPriorPreparing": [
+    "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
+  ],
+  "allOther29HeldMatch": true,
+  "actualChangedProductCount": 28,
+  "actualChangedProductPaths": [
+    "apps/weltraum-browser/package.json",
+    "apps/weltraum-browser/src/factory/construction/buildStep.ts",
+    "apps/weltraum-browser/src/factory/construction/installationProfile.ts",
+    "apps/weltraum-browser/src/factory/construction/placement.ts",
+    "apps/weltraum-browser/src/factory/factoryEntry.ts",
+    "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+    "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+    "apps/weltraum-browser/src/factory/session/factorySession.ts",
+    "apps/weltraum-browser/src/factory/session/hostPort.ts",
+    "apps/weltraum-browser/src/factory/ui/buildTool.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+    "apps/weltraum-browser/src/hestia-prototype/player/input.ts",
+    "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts",
+    "apps/weltraum-browser/src/hestia-prototype/presentation/vegetation.ts",
+    "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+    "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+    "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts",
+    "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/placement.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-vegetation.test.ts"
+  ],
+  "scope": "Byte/source proof only; browser83 NOT_RUN; W07 gate FAIL, no package commit",
+  "copiedPayloads": [
+    {
+      "path": "w07-adaptive-normal-input-product-files.json",
+      "sha256": "f36718d5fb01a28b3bbb0654269bc7b022aeb2a90300363700bf4ed7fd4f2e1d",
+      "bytes": 8588
+    },
+    {
+      "path": "w07-adaptive-normal-input-product.patch",
+      "sha256": "d0ffea608460855527057e6bdc057a0ded1b82e27ba909fd29dde933a4780f88",
+      "bytes": 241545
+    },
+    {
+      "path": "w07-adaptive-normal-input-delta-preparing.patch",
+      "sha256": "d290e399737be3bcd9fb46ed1d8570532c3581736ed7a6a38e3d039bcfd1ff02",
+      "bytes": 3120
+    },
+    {
+      "path": "w07-adaptive-normal-gesture-review.md",
+      "sha256": "ac964bdca977081d0206f05b7cef7110e5564f2f1ebde245634bf00da608c17d",
+      "bytes": 3669
+    }
+  ]
+}

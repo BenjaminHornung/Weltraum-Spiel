@@ -1,0 +1,12 @@
+{
+  "wholeExit": 2,
+  "wholeOutputBytes": 1724,
+  "wholeOutputSha256": "75c145273b2c40aa1adf71604a4bc14a87c7cddf7e3bc0ad9efe513171f3f3bc",
+  "scopedExit": 0,
+  "exactRawEvidencePatchExclusions": [
+    "docs/factory/fp06/reviews/w07-adaptive-normal-input-product.patch",
+    "docs/factory/fp06/reviews/w07-adaptive-normal-input-delta-preparing.patch"
+  ],
+  "reason": "Literal git patch context lines contain required single spaces; no product/source whitespace exception.",
+  "scope": "Root docs staged only"
+}

@@ -80,7 +80,7 @@
         "W10",
         "W11"
       ],
-      "status": "W07_ALL_PRODUCT_HOLD_EXCLUSIVE_TARGETED11_NORMAL_BROWSER_AUTHORIZED"
+      "status": "W07_ADAPTIVE_NORMAL11_AUTHORIZED_PRODUCT_HOLD"
     },
     {
       "slot": 2,
@@ -1289,27 +1289,23 @@
         }
       ],
       "currentProductSeal": {
-        "sealedAtUtc": "2026-10-11T17:02:33.072722+00:00",
-        "patch": "docs/factory/fp06/reviews/w07-input-delivery-preparing-final-product.patch",
-        "patchSha256": "2bf5e1f0dcf225085c1f6d41b05760b4c643eab87a87e9a9faa42b3fe4964a4b",
-        "patchBytes": 241228,
-        "fileHashes": "docs/factory/fp06/reviews/w07-input-delivery-preparing-final-product-files.json",
-        "fileHashesSha256": "b516b07c5502fe559ea89d530d912c76e3d2d69b0a840e5a466fe06cbab850b2",
+        "sealedAtUtc": "2026-10-11T17:13:55.109085+00:00",
+        "patch": "docs/factory/fp06/reviews/w07-adaptive-normal-input-product.patch",
+        "patchSha256": "d0ffea608460855527057e6bdc057a0ded1b82e27ba909fd29dde933a4780f88",
+        "patchBytes": 241545,
+        "fileHashes": "docs/factory/fp06/reviews/w07-adaptive-normal-input-product-files.json",
+        "fileHashesSha256": "f36718d5fb01a28b3bbb0654269bc7b022aeb2a90300363700bf4ed7fd4f2e1d",
         "grantedPaths": 30,
         "actualChangedProductPaths": 28,
-        "exactCandidateDeltaPaths": [
-          "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
-          "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts"
+        "exactPriorPreparingDeltaPaths": [
+          "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
         ],
-        "all28CandidateHeldMatch": true,
-        "phase": "InputDeliveryPreparingFinal_PRE_BROWSER",
+        "allOther29HeldMatch": true,
+        "phase": "E2E_ONLY_FINE_NORMAL_GESTURE_PRE_BROWSER",
         "packageCommitSha": null,
-        "rootProof": "docs/factory/fp06/reviews/w07-input-preparing-final-root-proof.json"
+        "rootProof": "docs/factory/fp06/reviews/w07-adaptive-normal-root-proof.json"
       },
-      "currentNarrowWriteSet": [
-        "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
-        "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts"
-      ],
+      "currentNarrowWriteSet": [],
       "currentNarrowScope": "One E2E-only bounded adaptive fine-key diagnostic; all other28 product paths held at Ninth seal",
       "browserSeventhActual": {
         "log": 51,
@@ -1895,8 +1891,72 @@
         "artifactRule": "Preserve all previous exact Browser67/68 output receipts, two fixed walkJSONwriters archive and bind before overwrite, only ownRun new subset/artifactcopies.",
         "constraints": "Ordinary trusted UI/keys, same actual Page/World, no wrapper/hook/diagnostic eval authority/faketick/Source Runtime E2E mutation/timeout cap changes.",
         "gate": "11 cases are targeted normal input evidence, not full17 W07/PASS. Actual result decides next action.",
+        "status": "EXECUTED_FAIL_CPU_GPU_PORT_RELEASED"
+      },
+      "normalInputVerificationActual": {
+        "log": 81,
+        "kind": "TARGETED_NORMAL11",
+        "pass": 5,
+        "fail": 1,
+        "notRun": 5,
+        "exitCode": 1,
+        "endedAtUtc": "2026-10-11T17:08:32.435849+00:00",
+        "wrapperSeconds": 84.52971313700255,
+        "rawSha256": "6e10e9d35d560206e19f7450a4632d7a6ec4d8293bb3885b55195b2479f47f9a",
+        "rawBytes": 6963,
+        "rootRawVerification": "Gzip-decompressed bytes/SHA exact receipt",
+        "actual": "All8 released250ms D/A presses move0.90-1.15m, Running/Walking/grounded/Idle,2stable releasedReadbacks each; finalX-5.84997177 outside unchanged0.3mstand",
+        "causalLimit": "No observed outgoingWorker/DOMhold timestamps; coarse testgesture overshoot observed, no new Native/input bug claimed",
+        "all30FinalBytesRestored": "MATCH",
+        "port": "RELEASED",
+        "notRunCases": "Z/reach/pause/build/full17gate"
+      },
+      "fineNormalGestureAuthorization": {
+        "authorizedAtUtc": "2026-10-11T17:12:41.267973+00:00",
+        "actor": "/root/fp06_integrator",
+        "writeSet": [
+          "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
+        ],
+        "kind": "NORMAL_E2E_GESTURE_ONLY",
+        "rule": "Peraxis gesturecap initially125ms, halve on actual target crossing to63/32/floor25ms, persistent across existing serialPagecases; compute nominal duration from observed distance/existing3m/s with cap; no guaranteed positive pulse movement.",
+        "unchanged": "Max4Taps/case/8X/16Z, max3releasedReadbacks,30s/Native60Hz/Factory6ticks/8Pending20s, sourceStand/reach/Floatasserts, samePage/normaltrustedkeys.",
+        "forbidden": "All29otherProductbytesHOLD; no new observer/wrapper/Authorityeval/Source/Native/tick/latch/route/timeout/cap/worldchange.",
+        "execution": "CPU_EXCLUSIVE_ORIGINAL_BUILD_ONLY_THEN30SEAL_REVIEW",
+        "browser": "NOT_GRANTED_AFTER_SOURCE_CHANGE",
+        "status": "EXECUTED_BUILD82_PASS_SEAL_REVIEW_PASS"
+      },
+      "fineNormalGestureBuild": {
+        "log": 82,
+        "result": "ORIGINAL_TYPESCRIPT_VITE_PASS",
+        "endedAtUtc": "2026-10-11T17:12:48.264687+00:00",
+        "wrapperSeconds": 4.322571226999571,
+        "rawBytes": 1904,
+        "rawSha256": "0c7bf7fea149454a6532d866b517afc138bf5f52e95e2d64fc93d0e64356ef1a",
+        "rootRawVerification": "Decompressed bytes/SHA exact receipt"
+      },
+      "fineNormalGestureReview": {
+        "report": "docs/factory/fp06/reviews/w07-adaptive-normal-gesture-review.md",
+        "sha256": "ac964bdca977081d0206f05b7cef7110e5564f2f1ebde245634bf00da608c17d",
+        "bytes": 3669,
+        "spec": "PASS",
+        "quality": "PASS",
+        "scope": "E2E-only; browser/package/Git NOT_RUN"
+      },
+      "adaptiveNormalVerificationAuthorization": {
+        "authorizedAtUtc": "2026-10-11T17:21:21.024878+00:00",
+        "actor": "/root/fp06_integrator",
+        "kind": "ONE_TARGETED_NORMAL_11_ADAPTIVE_GESTURES",
+        "grep": "accepted source|closed Cargo|normal Cargo|normal Play|at most four|Escape pauses",
+        "cpuGpuPortLease": "EXCLUSIVE_5174",
+        "productWriteHold": true,
+        "fileSealSha256": "f36718d5fb01a28b3bbb0654269bc7b022aeb2a90300363700bf4ed7fd4f2e1d",
+        "normalE2eSha256": "a194175366d0ab8c553bfe1c325f4c0437e332ab98e5b5586db4816aed74dd9d",
+        "configSha256": "53a55a48da97d43a02e317fb8edc844d57a9b5687f356a7ebf4f5b470efcf900",
+        "constraints": "All30 product bytes HOLD; normal trusted keys/UI one actual Page/World, no wrappers/diagnostic authority/tick/pose/source mutation or timeout/queue/cap change; preserve81 all artifacts before fixed writers overwrite. Fresh ownRun browser83 artifacts only.",
+        "gate": "Targeted11 only; full17 and package remain NOT_RUN/FAIL until actual results",
         "status": "AUTHORIZED_NOT_RUN"
-      }
+      },
+      "cpuGpuPortLease": "EXCLUSIVE_5174"
     },
     "W08": {
       "dependencies": [
@@ -2088,7 +2148,18 @@
       },
       "normalFlowDomainCheck": "docs/factory/fp06/reviews/w09-normal-flow-domain-check.md",
       "geometrySeamPreflight": "docs/factory/fp06/reviews/w09-geometry-seam-preflight.md",
-      "geometrySeamScopeNote": "PLANNED ONLY after W07PASS: Source registration+closed exactbytes/composite4mline reference validation require factoryAssets. B05/B09/brace catalog refs already exist; B10 absent catalogdevices/items, use narrow sourcebound4m technicalcompoundref on frozenconveyor/layout +4C14+1C23,26kg; no W01catalog/fixture change. OriginalLayoutAbench(7,2) andactualproduct carry(18,6)→bench; no extraSource masks."
+      "geometrySeamScopeNote": "PLANNED ONLY after W07PASS: Source registration+closed exactbytes/composite4mline reference validation require factoryAssets. B05/B09/brace catalog refs already exist; B10 absent catalogdevices/items, use narrow sourcebound4m technicalcompoundref on frozenconveyor/layout +4C14+1C23,26kg; no W01catalog/fixture change. OriginalLayoutAbench(7,2) andactualproduct carry(18,6)→bench; no extraSource masks.",
+      "heavyCargoSourcePreflight": {
+        "report": "docs/factory/fp06/reviews/w09-heavy-cargo-source-preflight.md",
+        "originalBytes": 5140,
+        "originalSha256": "eb0635fd91a7b829ef2ac15dd946f81c46d54c3db008d6034666c6ba876762f0",
+        "copiedSha256": "eb0635fd91a7b829ef2ac15dd946f81c46d54c3db008d6034666c6ba876762f0",
+        "scope": "SOURCE_ONLY_NOT_IMPLEMENTED",
+        "sourceRule": "FP01 415-417 andFP02 366/438/771 allow finite rollframe/montagepalette heavy chassis handling without full vehicle/future prerequisites. No universal carrymass/volume/toolprofile frozen;20kg sentence is not default;B09/shipcapacity notcarrierlimit.",
+        "closedFixtures": "C26/C27/C28 each1Piece180/300/450kg unchanged, carrier/packmass included per sources",
+        "missingRuntime": "ActualNativepickup→walk→deposit/localdepotcontract not present; W09afterW07 must implement without copy/freeRemoteTransfer.",
+        "decisions": "No new ownerdecision or grant inferred"
+      }
     },
     "W10": {
       "dependencies": [
