@@ -3594,6 +3594,15 @@
         "actualSourceWitness": "78 natural125mm columns ix94–99/iz157–169; whole player standwindow x[-3.94,-3.81]/z[3.935,4.94], naturalTop1.25m; concrete Actor[-3.875,2.16,4.9375]/CABLE depot[-3.875,1.25,3.9375]; both socket distances<3m; finite cablecost6500mm",
         "commandBlockerAtReviewEnd": "connect-power rejects same native carrier custody evenDeposited; partial40m cannot silently change fixed Native mass",
         "routineImplementationDirection": "Sourcebound exact neededCableJob6500mm;33500mm retains inCargo; wholedepotcustody jointNativeRelease+Material+Graph; existingCABLE40 partialrejection stays. Within existing granted closedjob/profile/scope; no broad profilefamily or newOwnerdecision."
+      },
+      "serviceClockAndNativeSupplyClosureReview": {
+        "status": "SCOPED_SOURCE_SPEC_PASS_FIRST_CLEAR_CREDIT_AND_LINKED_NATIVE_POWER_OWNER_ADMISSION_LOSS",
+        "path": "docs/factory/fp06/reviews/w09-service-clock-native-supply-closure-review.md",
+        "sha256": "8418800303cd0e104beb8967fdd9551a191606c16f1e6946358260c252928c36",
+        "actualPhases": "108 AssertionRED→109 1GREEN29skip;106 AssertionRED→107 1GREEN29skip; raw/receipt digests independently validated",
+        "sourceBinding": "ActualHEADaa2e5d7c335453fc555a98ccd35e9f564c596e93; FactorySessionhash drift and guarded paths re-read; W04unchanged",
+        "supersedesOnly": "First-clear credit open seam in78adda historicalreport and linked-ownerconfirmation WIP in that snapshot; historicalreports retained unchanged",
+        "limits": "Hostunit declared Native facts; actual Native socket query97 separately. Does not establish unlinked assets, restore/fullpaidbelt/pipeline/normalBrowser route or W09 package gate."
       }
     },
     "W10": {
