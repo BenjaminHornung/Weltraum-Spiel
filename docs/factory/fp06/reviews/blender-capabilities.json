@@ -1,0 +1,16 @@
+{
+  "checkedAtUtc": "2026-10-11T17:52:11.862876+00:00",
+  "userAuthorization": "User explicitly authorizes Blender installation ifneeded and local3D/gameasset creation for ongoingFP06scope; no paidprovider invocation or changedartacceptance assumed",
+  "blenderExecutable": "/usr/bin/blender",
+  "versionLines": [
+    "Blender 4.3.2"
+  ],
+  "exitCode": 0,
+  "versionRawSha256": "e8c2acc53fbac585a6becc0dbed623c375ac68a570efb4dba6d1ddcc59593ecc",
+  "gameDevCliOnPath": false,
+  "gameDevRelatedCallableToolsFound": 0,
+  "pluginSkill": "game-development-studio:game-asset-production",
+  "assetGeneration": "NOT_RUN_NO_CONCRETE_NEED_YET",
+  "installation": "NOT_NEEDED_ALREADY_PRESENT",
+  "scope": "Capabilitycheckonly,noengine/projectdependency/sourcecatalogchanges"
+}

@@ -1,0 +1,149 @@
+{
+  "verifiedAtUtc": "2026-10-11T17:54:46.416398+00:00",
+  "all30CurrentFiles": [
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/placement.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/buildStep.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/buildTool.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/placement.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/package.json",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/factorySession.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/factoryEntry.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/installationProfile.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/presentation/vegetation.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-physics.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-coast-source.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-vegetation.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/player/input.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
+      "result": "MATCH"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts",
+      "result": "MATCH"
+    }
+  ],
+  "fileSealSha256": "201394fb8346e8b12c93b0bb5d52c34d180d966a80c884697813b9d224c511d4",
+  "exactPrior85Delta": [
+    "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
+  ],
+  "allOther29HeldMatch": true,
+  "actualChangedProductCount": 28,
+  "rootCopiedPayloads": [
+    {
+      "path": "docs/factory/fp06/reviews/w07-cdp-trusted-driver-product-files.json",
+      "sha256": "201394fb8346e8b12c93b0bb5d52c34d180d966a80c884697813b9d224c511d4",
+      "bytes": 8773
+    },
+    {
+      "path": "docs/factory/fp06/reviews/w07-cdp-trusted-driver-product.patch",
+      "sha256": "8cc84f0fc56c32bc661fb25626da04d78288d2dc24a0706a290a52d1f9a7e936",
+      "bytes": 243267
+    },
+    {
+      "path": "docs/factory/fp06/reviews/w07-cdp-trusted-driver-delta-driver85.patch",
+      "sha256": "ea614b220f30ada06c5468e1725245e8e9ed9eaae6532eadefd5d7b1a3dd8870",
+      "bytes": 3937
+    }
+  ],
+  "scope": "Sourcebytes proof only; scopedReview pending, Browser88notauthorized; W07actual86FAIL"
+}

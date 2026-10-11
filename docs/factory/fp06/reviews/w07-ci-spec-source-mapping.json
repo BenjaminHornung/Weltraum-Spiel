@@ -1,0 +1,13 @@
+{
+  "actualSpecs": 43,
+  "assignedExactlyOnce": true,
+  "groupScripts": [
+    "test:e2e:core",
+    "test:e2e:live",
+    "test:e2e:ui"
+  ],
+  "aggregateScript": "playwright test",
+  "validation": "Independent source-only recursive specdiscovery+exactCounter; PASS",
+  "ciExecution": "NOT_RUN",
+  "productSealSha256": "201394fb8346e8b12c93b0bb5d52c34d180d966a80c884697813b9d224c511d4"
+}

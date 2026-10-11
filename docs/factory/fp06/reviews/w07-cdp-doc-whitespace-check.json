@@ -1,0 +1,11 @@
+{
+  "wholeExit": 2,
+  "wholeOutputBytes": 1866,
+  "wholeOutputSha256": "6dc8c704559bc4f91670bb4c611eb07c3480381d20c365d1934614cb7f6c166a",
+  "scopedExit": 0,
+  "exactRawEvidencePatchExclusions": [
+    "docs/factory/fp06/reviews/w07-cdp-trusted-driver-delta-driver85.patch",
+    "docs/factory/fp06/reviews/w07-cdp-trusted-driver-product.patch"
+  ],
+  "reason": "Literal patch context spaces preserved; no product/source exception."
+}

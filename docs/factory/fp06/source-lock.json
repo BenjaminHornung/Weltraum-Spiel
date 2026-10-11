@@ -1716,21 +1716,21 @@
         }
       ],
       "currentProductSeal": {
-        "sealedAtUtc": "2026-10-11T17:38:58.776983+00:00",
-        "patch": "docs/factory/fp06/reviews/w07-trusted-key-errors-final-product.patch",
-        "patchSha256": "7a2a35cebc06ca99ef7f143a1c52066a3402507e5462d41baf26cba1f6cef563",
-        "patchBytes": 242594,
-        "fileHashes": "docs/factory/fp06/reviews/w07-trusted-key-errors-final-product-files.json",
-        "fileHashesSha256": "b1ae0d339edefdcc06d387eb9581b85bb8530cac7980e99e3a43549b87303a89",
+        "sealedAtUtc": "2026-10-11T17:52:04.994160+00:00",
+        "patch": "docs/factory/fp06/reviews/w07-cdp-trusted-driver-product.patch",
+        "patchSha256": "8cc84f0fc56c32bc661fb25626da04d78288d2dc24a0706a290a52d1f9a7e936",
+        "patchBytes": 243267,
+        "fileHashes": "docs/factory/fp06/reviews/w07-cdp-trusted-driver-product-files.json",
+        "fileHashesSha256": "201394fb8346e8b12c93b0bb5d52c34d180d966a80c884697813b9d224c511d4",
         "grantedPaths": 30,
         "actualChangedProductPaths": 28,
-        "exactPriorDriver84DeltaPaths": [
+        "exactPrior85DeltaPaths": [
           "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
         ],
         "allOther29HeldMatch": true,
-        "phase": "E2E_TRUSTED_KEYBOARD_ERROR_PROVENANCE_FINAL_PRE_BROWSER",
+        "phase": "PUBLIC_TRUSTED_CDP_DRIVER_PRE_BROWSER",
         "packageCommitSha": null,
-        "rootProof": "docs/factory/fp06/reviews/w07-trusted-key-errors-final-root-proof.json"
+        "rootProof": "docs/factory/fp06/reviews/w07-cdp-trusted-driver-root-proof.json"
       },
       "currentNarrowWriteSet": [],
       "currentNarrowScope": "One E2E-only bounded adaptive fine-key diagnostic; all other28 product paths held at Ninth seal",
@@ -2520,6 +2520,89 @@
         "configSha256": "53a55a48da97d43a02e317fb8edc844d57a9b5687f356a7ebf4f5b470efcf900",
         "constraints": "All30productHOLD; ordinary public trusted keyboard/UI samePageactualWorld; nohooks/Authorityeval/Source/native/runtime/mutation/queue/timeout/cap changes. Preserveprior81/83 allraw+artifacts and fixedWalkJSONexact beforeoverwriting; fresh ownRun browser-trusted-normal-full-86",
         "rationale": "Full17 includes same11 input/walk/reach/pausecases plus6stillunresolved construction/conservation/ghost/C26/disposal gates; avoids repeating11 in another freshWorld. No dependent package starts until actual17+Evidence/Git closure.",
+        "status": "EXECUTED86_FAIL_CPU_GPU_PORT_RELEASED"
+      },
+      "trustedNormalFullGateActual": {
+        "log": 86,
+        "selected": 17,
+        "pass": 5,
+        "fail": 1,
+        "notRun": 11,
+        "exitCode": 1,
+        "endUtc": "2026-10-11T17:44:14.335819+00:00",
+        "wrapperSeconds": 87.09588902500036,
+        "rawBytes": 8192,
+        "rawSha256": "8a7e6a8e220e3b19beb8b4dcdb85563628c42bfdfddb00b66f29a18e84c22caf",
+        "rootRawVerification": "Gzip-decompressed exact receipt SHA/bytes",
+        "actual": "8Xgestures;7zeroMoves,oneD125ms moves-0.9000034m toX-6.4000034 beloworiginal-6.4; all16releasedreadbacks stable/ticksadvance/RunningWalkinggrounded; noonlyFloatbugclaim",
+        "causalLimit": "RunnerACKtimings show7near-simultaneousDownUpACKs but actualDOM/Nativeedges unknown; architectureSourceonlyCDPInputpreflight,noRuntimeCauseclaim",
+        "all30FinalBytesRestored": "MATCH",
+        "port": "RELEASED",
+        "scope": "WalkXfail;11notrun includes Z/reach/pause/paidconstruction/conservation/C26/disposal; fullW07FAIL"
+      },
+      "trustedCdpDriverPreflight": {
+        "report": "docs/factory/fp06/reviews/w07-cdp-trusted-input-preflight.md",
+        "originalSha256": "c0f03549c63d592307e123a80efd359d552fd27318f14374709fa6b285746eae",
+        "originalBytes": 3523,
+        "copiedSha256": "054dc6ba2aa11260e209a7d330e716303eb5b87ac45e1e23267a7b46f8295f22",
+        "scope": "SOURCE_ONLY_NO_BROWSER_GATE"
+      },
+      "trustedCdpDriverAuthorization": {
+        "authorizedAtUtc": "2026-10-11T17:49:53.201730+00:00",
+        "actor": "/root/fp06_integrator",
+        "writeSet": [
+          "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
+        ],
+        "kind": "ORDINARY_TRUSTED_BROWSER_CDP_WASD_DRIVER_ONLY",
+        "basis": "Actual86FAIL7zeroMoves/1-0.9m; independent sourcepreflightc0f03549 confirms publicCDPSessionInput avoidsPageapi InputSnapshotawaits while normalTrace retained; actualcausalDOMgap unobserved",
+        "implementation": "One publiccontext.newCDPSession(existingPage), onlysendInput.dispatchKeyEvent, EXACTpreflight ChromiumRawKeyboard WASD Down/Up payload/noModifiers. ExistingfiniteNode25..125timedUp/allSettled/freshFinalUp/alloriginalReasonclosure/Contextabort unchanged; no mixedPageKeyboardheldWASD; sessionreleasedbyContextclose. Runnertelemetry only, noDOMtimeclaim.",
+        "unchanged": "All29ProductbytesHOLD; samePageWorld/UIbuttons/NativeReadOnlyprojections,8X16Z/4Readbacks/original30s/Trace/SourceFloatReach/material/native60/pending8deadline20s; nohooks/evalmutation/NativeAPI/authority/latch/tick/Source/cap/queue/clock changes",
+        "execution": "CPU_EXCLUSIVE_ONE_ORIGINAL_FULL_BUILD87_THEN_NEW30SEAL_REVIEW",
+        "browser": "NOT_GRANTED_AFTER_SOURCE_CHANGE",
+        "status": "EXECUTED87b_BUILD_SEAL_SOURCE_SPEC_QUALITY_PASS"
+      },
+      "trustedCdpDriverBuild": [
+        {
+          "phase": "87",
+          "endUtc": "2026-10-11T17:50:46.959517+00:00",
+          "wrapperSeconds": 2.5491084749992297,
+          "exitCode": 1,
+          "rawSha256": "8a6de0911d941ca1958389908f61e5e30e9db3dab9a26ef1944f379d20ffed5f",
+          "rawBytes": 861,
+          "result": "TS2345_LITERAL_INFERENCE_FAIL",
+          "rootRawVerification": "Gzip-decompressed exact receipt bytes/SHA"
+        },
+        {
+          "phase": "87b",
+          "endUtc": "2026-10-11T17:51:17.908500+00:00",
+          "wrapperSeconds": 4.052197570003045,
+          "exitCode": 0,
+          "rawSha256": "5f30c4de8bc2968473b5da7ffefbb2f821f5e38bdbf40105de9b94cb72561993",
+          "rawBytes": 1904,
+          "result": "ORIGINAL_FULL_TYPESCRIPT_VITE_PASS",
+          "rootRawVerification": "Gzip-decompressed exact receipt bytes/SHA"
+        }
+      ],
+      "trustedCdpDriverFinalReview": {
+        "report": "docs/factory/fp06/reviews/w07-cdp-trusted-driver-final-review.md",
+        "originalSha256": "936628f3f752126eb29b91e4ab728eda51858c9607b32c5c48cf72f8b0bb6428",
+        "originalBytes": 3553,
+        "copiedSha256": "936628f3f752126eb29b91e4ab728eda51858c9607b32c5c48cf72f8b0bb6428",
+        "spec": "PASS",
+        "quality": "PASS",
+        "scope": "SOURCE_ONLY_NO_BROWSER_PACKAGE_GIT_PASS"
+      },
+      "cdpNormalFullGateAuthorization": {
+        "authorizedAtUtc": "2026-10-11T17:55:59.369449+00:00",
+        "actor": "/root/fp06_integrator",
+        "kind": "ONE_FULL_NORMAL17_PUBLIC_TRUSTED_CDP_WASD",
+        "commandCases": "Entire factory-placement.spec.ts withoutgrep",
+        "cpuGpuPortLease": "EXCLUSIVE_5174",
+        "productWriteHold": true,
+        "fileSealSha256": "201394fb8346e8b12c93b0bb5d52c34d180d966a80c884697813b9d224c511d4",
+        "normalE2eSha256": "030fc301147af6a45da6412847368e6c7d5243b70811018e53883b83210ef605",
+        "configSha256": "53a55a48da97d43a02e317fb8edc844d57a9b5687f356a7ebf4f5b470efcf900",
+        "constraints": "All30productHOLD; originalTrace/samePageactualWorld/trustedpublicCDPkeycontrols+normalbuttons; nohook/Authorityeval/Source/runtime/E2E mutation/faketicks/timeout/cap/queuechanges. Prior86+81+83 allraw/artifacts/fixedwriterorigins exact preserved; freshownRun browser-cdp-trusted-normal-full-88. Actualresultsdecide; no inferredsuccess.",
         "status": "AUTHORIZED_NOT_RUN"
       }
     },
@@ -2901,6 +2984,20 @@
           "answer": "Startplatz-Fixture freigeben"
         }
       ]
+    },
+    {
+      "recordedAtUtc": "2026-10-11T17:54:09.597685+00:00",
+      "source": "Two explicit usermessages during continue turn; instructions from user, not attached planningdocuments or skill inference",
+      "accepted": [
+        "Blender installation ifneeded for local3D/gameasset creation",
+        "Use relevant GameDevelopmentStudio skills/workflows for remaining authorizedW00-W11 implementations whenuseful"
+      ],
+      "scope": "Tool/workflow permission only; sourcecatalog/BOM/material/physics/save gates and maxwriters unchanged. Nonew productartacceptance or paidprovider invocation assumed. NoW12-W29 authorization.",
+      "capabilityReceipt": "docs/factory/fp06/reviews/blender-capabilities.json",
+      "capabilityReceiptSha256": "5aac131358e589e628501ec59734188db49c0965ff349202e5c75ff4923df43b",
+      "actualCapability": "Blender4.3.2 starts successfully; installationnotneeded. game-dev CLI absent fromPATH and no correspondingcallabletoolsfound; relevantreadskills guide availablelocalfallback.",
+      "skillRead": "skill://plugins_6a9137aee48c8191a56f6c5bda0e47f3/game-asset-production/SKILL.md",
+      "assetGeneration": "NOT_RUN_NO_CONCRETE_NEED_YET"
     }
   ],
   "handoffExtractionRootAtAudit": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
