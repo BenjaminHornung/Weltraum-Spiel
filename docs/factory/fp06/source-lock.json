@@ -4055,7 +4055,7 @@
         "protected": "W03W04W08 observedunchanged; mutable2d836d Source not finalseal"
       },
       "materialBindingCacheGoalV2": {
-        "status": "ACTIVE_ONE_CANDIDATE_AFTER_INDEPENDENT_GUARD_CLOSURE",
+        "status": "EXHAUSTED_ONE_CANDIDATE_ACTUAL160_NOT_MET_ONE_PASS_ONE_ORIGINAL_TIMEOUT",
         "path": "docs/factory/fp06/reviews/w09-material-binding-cache-bounded-goal-v2.json",
         "sha256": "c2d16d1fbb9b81105383c99f85461cacee387881395bc8ea5cc7ed88f3e2f521",
         "maxCandidates": 1,
@@ -4066,6 +4066,17 @@
         "activationReceipt": {
           "path": "docs/factory/fp06/reviews/w09-material-binding-cache-v2-activation.json",
           "sha256": "2d7e0f0efa96ba0715c44f22832a1d6ed7d46aec77dde20b4c8f7415e21cd4fa"
+        },
+        "actual160": {
+          "exitCode": 1,
+          "outputCaseMs": 5355,
+          "elapsedSeconds": 9.152665,
+          "rawBytes": 1094,
+          "rawSha256": "807c8a726a9ab47f5aa622578d4ec7ea339c62a572bb4731fcc2d1fe6044db9c",
+          "limitsChanged": false,
+          "remainingCandidates": 0,
+          "additionalCpuProfiles": 0,
+          "guardReview": "pending161165guard/affectedregs/build/currentSourceReview"
         }
       },
       "materialBindingCachePreflight": {
@@ -4101,6 +4112,19 @@
         "path": "docs/factory/fp06/reviews/w09-native-depot-snap-source-review.md",
         "sha256": "d29bf636e4102755179fe6b242ca730ee888dd7d42934112386c165c6a0ed380",
         "limits": "SyntheticRapierfloor/C27declared300kgCustody; no wholeWorld/Resourcesconservation/NativeSourceBrowsergate. Nativefixnotyetobserved."
+      },
+      "nativeDepotSnapClosureReview": {
+        "status": "READONLY_SCOPED_NATIVE_SPEC_QUALITY_PASS_150RED158GREEN159BUILD",
+        "path": "docs/factory/fp06/reviews/w09-native-depot-snap-closure-review.md",
+        "sha256": "b6cac6b570b188101c667a52f94c473c094c72344d2e98a7077ddf89b2da3995",
+        "actual": "1503 genuineRapierassertRED\u219215828/28PASS/159originalTSVitePASS verifiedreceipt/raw/snapshot",
+        "limits": "SyntheticRapierfloor anddeclaredC27custody; NativeSnap/custody/sweep/rollback only. No wholeD07SourceWorld/finiteResources/browser/Save/Packageproof."
+      },
+      "normalUiCycleSourcePreflight": {
+        "status": "READONLY_SOURCE_ONLY_CONCRETE_WHOLEMONTAGE_ENTRY_CONNECTION_RECEIPT_GAPS_OPEN",
+        "path": "docs/factory/fp06/reviews/w09-normal-ui-cycle-source-preflight.md",
+        "sha256": "c5175d7a802b634b926cb06811a1d87706c9e519c5d39efba44646d516c6d40f",
+        "limits": "Nojobs/productwrites; freshCUTFORM+normalUI/browserpipeline notrun. Actual121/126 stubs/startstock/commandchoices limited; pending5sitepathsunread. Integrator authorized existing Entry/Host boundaryfixes."
       }
     },
     "W10": {
