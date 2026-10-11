@@ -34,11 +34,11 @@
       "package": "W07",
       "branch": "codex/hestia-fp06-integrator-2026-10-11",
       "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
-      "baseCommitSha": "d5502ae7fd5431d58eda51bea062c54691ebe3c2",
-      "writeSet": [
-        "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
+      "paths": [
+        "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts"
       ],
-      "scope": "One E2E-only bounded adaptive fine-key diagnostic; all other28 product paths held at Ninth seal"
+      "lease": "TEST_ONLY_REAL_RAPIER_RED_CPU_EXCLUSIVE",
+      "baseSha": "d5502ae7fd5431d58eda51bea062c54691ebe3c2"
     }
   ],
   "activeDocumentationWriter": {
@@ -91,7 +91,7 @@
         "W10",
         "W11"
       ],
-      "status": "W07_RUNTIME_HOLD_EXACT_E2E_ONLY_FOLLOWUP_ACTIVE_27PATH_BASE_GRANT"
+      "status": "W07_TEST_ONLY_FACTORY_INPUT_DELIVERY_REAL_RAPIER_RED"
     },
     {
       "slot": 2,
@@ -1023,7 +1023,7 @@
         "wrapperSeconds": 1.51,
         "status": "WRITER_REPORTED_PENDING_SEALED_EVIDENCE_REVIEW"
       },
-      "runtimeWriteHold": false,
+      "runtimeWriteHold": true,
       "currentNarrowWriteGrant": {
         "authorizedAtUtc": "2026-10-11T14:37:52.124736+00:00",
         "productPaths": [
@@ -1303,7 +1303,7 @@
         "packageCommitSha": null
       },
       "currentNarrowWriteSet": [
-        "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
+        "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts"
       ],
       "currentNarrowScope": "One E2E-only bounded adaptive fine-key diagnostic; all other28 product paths held at Ninth seal",
       "browserSeventhActual": {
@@ -1545,7 +1545,14 @@
         "diagnosis": "apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/67-native-walk-readonly-diagnosis.json",
         "diagnosisRule": "Every tap actually moved; two stable released readbacks each; grounded/Walking and all relevant transactions Idle. No proven Native/input/obstacle fault; API605-675ms is total API duration, not observed trusted hold interval",
         "ghostPaidC26Dispose": "NOT_RUN",
-        "artifactReceipt": "apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/67-browser-ninth-artifact-receipt.json"
+        "artifactReceipt": "apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/67-browser-ninth-artifact-receipt.json",
+        "independentMovementReview": {
+          "report": "docs/factory/fp06/reviews/w07-ninth-movement-evidence-review.md",
+          "originalSha256": "5a9dac8db445f3232ed02c4408ad090f2fe6bae6bba247f5f0840de5a51a5834",
+          "originalBytes": 6556,
+          "copiedSha256": "5a9dac8db445f3232ed02c4408ad090f2fe6bae6bba247f5f0840de5a51a5834",
+          "scope": "Raw/receipts/archive/8motionrecord consistency; causation remains unproven; normalFAIL retained"
+        }
       },
       "fineMovementDiagnosticAuthorization": {
         "authorizedAtUtc": "2026-10-11T16:12:48.484129+00:00",
@@ -1558,7 +1565,62 @@
         "restoreRule": "Archive exact normal E2E bytes first; restore same bytes after diagnostic and revalidate all29 Ninth-seal paths",
         "forbidden": "No Runtime/Input/Native/IPC/terrain/reach/clock/caps/queue/timeout changes, no World mutation eval, no Worker wrapper or authority bridge, no diagnostic PASS as gameplay",
         "cpuGpuPortLease": "EXCLUSIVE_5174",
-        "result": "NOT_RUN"
+        "result": "EXECUTED_FAIL_NOT_NORMAL_GAMEPLAY"
+      },
+      "fineMovementDiagnosticActual": {
+        "log": 68,
+        "kind": "DIAGNOSTIC_ONLY",
+        "pass": 3,
+        "fail": 1,
+        "exitCode": 1,
+        "wrapperSeconds": 49.845111669998005,
+        "endedAtUtc": "2026-10-11T16:15:33.809449+00:00",
+        "rawSha256": "23f0b392d75c096e3c1482651e60e67fc486dd0ab445d9a93219eaa4cecce597",
+        "rawBytes": 4685,
+        "actual": "Eight trusted125ms nominal pulses, native ticks advance but all8 deltaX0; no target crossing, no63/50ms pulse actually reached",
+        "causalLimit": "Native outgoing intent delivery timestamps not recorded; no proven transport root cause yet",
+        "normalE2eRestored": true,
+        "all29NinthProductBytesMatch": true,
+        "normalGameplayGate": "NOT_ADMITTED",
+        "cpuGpuPort": "RELEASED",
+        "sourcePreflightOnly": "Integrator and Architecture inspect existing busyRead intent transport; no new runtime/IPC/Browser grants"
+      },
+      "factoryInputDeliveryPreflight": {
+        "reports": [
+          {
+            "report": "docs/factory/fp06/reviews/w07-input-delivery-preflight.md",
+            "originalSha256": "263bfd19377f5c07158b21940a6910a7b3eb7b26013eb649823e1533b616a64d",
+            "originalBytes": 9060,
+            "copiedSha256": "263bfd19377f5c07158b21940a6910a7b3eb7b26013eb649823e1533b616a64d"
+          },
+          {
+            "report": "docs/factory/fp06/reviews/w07-input-delivery-writer-proposal.md",
+            "originalSha256": "66dfe6d6459b235148b600ab2110fc161cf2b9c17a956aa21800833ae3c46866",
+            "originalBytes": 5853,
+            "copiedSha256": "66dfe6d6459b235148b600ab2110fc161cf2b9c17a956aa21800833ae3c46866"
+          }
+        ],
+        "status": "SOURCE_ONLY_PROPOSAL",
+        "actualSourceCounterexample": "Busy neutral Read retains Down then Up in one slot; only neutral survives. Actual Worker receive times from diagnostic68 remain unobserved.",
+        "proposedRuntimePaths": [
+          "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+          "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+          "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+          "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts"
+        ],
+        "runtimeGrant": "NOT_GRANTED"
+      },
+      "factoryInputDeliveryTestAuthorization": {
+        "authorizedAtUtc": "2026-10-11T16:29:29.851091+00:00",
+        "actor": "/root/fp06_integrator",
+        "kind": "TEST_ONLY_REAL_RAPIER_RED",
+        "writeSet": [
+          "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts"
+        ],
+        "execution": "CPU_EXCLUSIVE_FOCUSED_UNIT_ONLY",
+        "requirements": "Real collision/coverage/player support; same Rapier World; neutral Read ACK held; actual Native advance only; Down moves and Up stops before ACK; input dispatch alone does not advance pose/ticks. Record collect/setup failures separately.",
+        "exclusions": "No runtime/IPC/Browser/Build/producer/Bootstrap/Terrain/cap/deadline/tick/pose writes or changes.",
+        "status": "AUTHORIZED_NOT_RUN"
       }
     },
     "W08": {
