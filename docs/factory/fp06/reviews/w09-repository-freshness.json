@@ -1,0 +1,15 @@
+{
+  "schema": "hestia.root.w09-repository-freshness/v1",
+  "observedAtUtc": "2026-10-11 20:10:11 UTC",
+  "main": {
+    "command": "git ls-remote origin refs/heads/main",
+    "exitCode": 0,
+    "stdout": "e40592c113b72a8dc93725187f92cf948e07f44d\trefs/heads/main\n"
+  },
+  "worktreesAndOriginalStatus": {
+    "command": "git worktree list --porcelain && git status --porcelain=v1",
+    "exitCode": 0,
+    "stdout": "worktree /workspace/Weltraum-Spiel\nHEAD e40592c113b72a8dc93725187f92cf948e07f44d\nbranch refs/heads/work\n\nworktree /workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11\nHEAD 6929bf2447b72c9f3f8fa3bcae0a59c0691966c0\nbranch refs/heads/codex/hestia-fp06-domain-2026-10-11\n\nworktree /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11\nHEAD 7b23d072670ecfd4b0b5f1c3f037539f24e5b07e\nbranch refs/heads/codex/hestia-fp06-integrator-2026-10-11\n\nworktree /workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11\nHEAD 6e35c99a7d4421a8f4ee0ec2668ccffd434e7c85\nbranch refs/heads/codex/hestia-fp06-w00-2026-10-11\n\n"
+  },
+  "scope": "Remote main and visible local worktrees only. Original work branch is clean. External uncommitted writers and restricted GitHub API PR status remain unknown."
+}

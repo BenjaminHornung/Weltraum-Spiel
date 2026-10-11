@@ -3531,7 +3531,7 @@
         "No main merge/push/publication; no W12-W29",
         "Exactlyone approvedmobilehandlingowner/<=5colliders/<=16FactoryownersinclCargoCarrier; fullpairedSweepbeforebothposecommits. No newmasks/Sourcefreeze/WorldAuthority/wholeLegacydecoderchange.",
         "BusinessRED beforeminimalimplementation; failingImport/setup notbusinessRED. Native mass/LOS/pairedautostep-jump/custody/CAS/staleReplay/lostACK/stagingcaps, actualnormaluserflowmustpass.",
-        "Integratorownsall25exactnonUIpaths;4UIpanels+UITest secondwriter NOT_GRANTED untilrealcontractfreeze. ExtraRequiredpaths requireRootscopeextension beforewrites."
+        "Integratorownsall25exactnonUIpaths; Domain owns only four panels+UITest in separate W09 UI worktree from frozen43a61c0f interface commit. ExtraRequiredpaths requireRootscopeextension beforewrites."
       ],
       "scopeExtensions": [
         {
@@ -3628,18 +3628,30 @@
         "scope": "Only exact immutable W08 thenW04 cherry-picks on own cleanIntegratorbranch; verify sourceCommitpaths/SHA/bytes/GitLFSrefs unchanged and actualnewfullSHAs/cleanstatus. Stop/reportactualconflict; noRuntime/App/Source/Evidenceamend/newtests/Main/push/rebase. Aftercopy hold fornewW09grant; mobileHandlingOwnergate remainsOPEN."
       },
       "pendingSecondWriterUIRole": {
-        "actor": "/root/fp06_domain",
-        "status": "NOT_GRANTED_WAIT_INTEGRATOR_PUBLIC_INTERFACE_FREEZE",
+        "status": "GRANTED",
+        "agent": "/root/fp06_domain",
+        "role": "W09-panels-only-second-writer",
+        "branch": "codex/hestia-fp06-ui-w09-2026-10-11",
+        "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11",
+        "baseCommitSha": "43a61c0f5be5df69e4f8bb42db89da3d7a3a4b2b",
         "writeSet": [
-          "apps/weltraum-browser/src/factory/ui/machinePanel.ts",
           "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+          "apps/weltraum-browser/src/factory/ui/machinePanel.ts",
           "apps/weltraum-browser/src/factory/ui/powerPanel.ts",
           "apps/weltraum-browser/src/factory/ui/technologyView.ts",
           "apps/weltraum-browser/tests/unit/factory/panels.test.ts"
         ],
-        "branch": "codex/hestia-fp06-ui-w09-2026-10-11",
-        "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11",
-        "constraints": "NEWisolatedbranch/worktree fromacceptedIntegratorW09interfacecommit; only4panels+meaningfulUITest. NoHost/Physics/Save/Contract/Entrywrites. Source/material/job/power reads and commands only, noownWorld/clock/inventory. Maximum2implementationwriters including1Integrator."
+        "evidenceWriteSet": [
+          "apps/weltraum-browser/evidence/factory/w09/<distinct-actual-ui-run-id>/**"
+        ],
+        "authorizedAtUtc": "2026-10-11T20:13:00.288861+00:00",
+        "protocolFreeze": {
+          "sourceCommitSha": "43a61c0f5be5df69e4f8bb42db89da3d7a3a4b2b",
+          "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+          "sha256": "07b7a3e6ecf4b94fed367585dc4c094cb906d5688985e23177362867a3dc945c",
+          "scope": "Concrete exported UI protocol only; actual command runtime adoption and W09 gate remain pending."
+        },
+        "constraints": "NEW isolated branch/worktree; only four panels+meaningful UI business tests; no Host/Physics/Save/Contract/Entry or other writer paths; readonly snapshot and finite intent commands only; unsupported actions honestly disabled. Coordinate every test/build CPU lease directly with Integrator; no competing jobs."
       },
       "predecessorCopies": {
         "status": "BYTE_GIT_LFS_PASS",
@@ -3663,6 +3675,12 @@
         "exitCode": 1,
         "rawSha256": "7d25921b90972d09fa82c3721a8dcf20fc21df4a940f6a545d09c7c4fec54394",
         "scope": "Integrator-reported real collected C27/BOM/custody RED; independent review pending, no package PASS."
+      },
+      "uiProtocolFreeze": {
+        "sourceCommitSha": "43a61c0f5be5df69e4f8bb42db89da3d7a3a4b2b",
+        "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+        "sha256": "07b7a3e6ecf4b94fed367585dc4c094cb906d5688985e23177362867a3dc945c",
+        "scope": "Concrete exported UI protocol only; actual command runtime adoption and W09 gate remain pending."
       }
     },
     "W10": {
@@ -3803,7 +3821,13 @@
           "path": "apps/weltraum-browser/package.json",
           "reason": "Actual CI parser requires explicit existing spec paths assigned exactly once; register only this package new E2E spec when it exists. No future placeholder specs, parser relaxation, dependency/lockfile changes or unrelated script edits. Integrator only."
         }
-      ]
+      ],
+      "ciEvidenceCompatibilityPreflight": {
+        "status": "SOURCE_ONLY_PREPARATION",
+        "report": "docs/factory/fp06/reviews/w10-w11-ci-evidence-compatibility-preflight.md",
+        "sha256": "2168eca31ee166f610ea77ec152a73f22074e8bdbaffbe70c18f38d9e8dc1a48",
+        "scope": "Concrete aggregate-budget and two historical schema/map CI blockers. Closed per-run and exact immutable legacy adapter proposal only; no code write granted, no runtime CI PASS; budgets unchanged."
+      }
     }
   },
   "baseline": {
@@ -3946,6 +3970,16 @@
       "mainSha": "e40592c113b72a8dc93725187f92cf948e07f44d",
       "changedFromW00": false,
       "visibility": "Remote main only; foreign uncommitted writers remain UNKNOWN"
+    },
+    {
+      "command": "git ls-remote origin refs/heads/main",
+      "cwd": "/workspace/Weltraum-Spiel",
+      "observedAtUtc": "2026-10-11T20:10:11Z",
+      "exitCode": 0,
+      "mainSha": "e40592c113b72a8dc93725187f92cf948e07f44d",
+      "changedFromW00": false,
+      "receipt": "docs/factory/fp06/reviews/w09-repository-freshness.json",
+      "visibility": "Remote main and visible local worktrees; external uncommitted writers and API PR status remain unknown"
     }
   ],
   "integrationTransfers": [

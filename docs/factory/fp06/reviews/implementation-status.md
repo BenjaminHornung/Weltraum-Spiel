@@ -2,7 +2,7 @@
 
 Stand: 2026-10-11 20:10 UTC. `PASS` bezeichnet ein abgeschlossenes Paketgate. `FAIL` benennt eine tatsächlich fehlgeschlagene erforderliche Prüfung; laufende Korrekturen ändern diesen Befund erst nach Verifikation. `NOT_RUN` gilt für noch nicht ausgeführte Prüfungen. Tatsächlich ausgeführte Teilprüfungen stehen im jeweiligen Bericht. Die maßgeblichen Gates und Branch-/Worktree-/Schreibgrenzen sind in `source-lock.json` und `write-ownership.json` gebunden.
 
-Aktuell geprüftes `origin/main`: `e40592c113b72a8dc93725187f92cf948e07f44d` (erneutes tatsächliches `git ls-remote` zwischen 17:22:00 und 17:22:34 UTC). Kein Mainmerge, Push oder Veröffentlichung.
+Aktuell geprüftes `origin/main`: `e40592c113b72a8dc93725187f92cf948e07f44d` (erneutes tatsächliches `git ls-remote` um 20:10:11 UTC; [Beleg](w09-repository-freshness.json)). Kein Mainmerge, Push oder Veröffentlichung.
 
 | Paket | Endgate | Agent | Vollständiger Paket-Commit | Evidence / offene Abhängigkeit |
 | --- | --- | --- | --- | --- |
@@ -19,7 +19,7 @@ Aktuell geprüftes `origin/main`: `e40592c113b72a8dc93725187f92cf948e07f44d` (er
 | W10 | BLOCKED | `/root/fp06_integrator` | `—` | Vorgänger: W09 |
 | W11 | BLOCKED | `/root/fp06_integrator` | `—` | Vorgänger: W10 |
 
-Integratorbranch: `codex/hestia-fp06-integrator-2026-10-11`; Domainbranch: `codex/hestia-fp06-domain-2026-10-11`; W00-/Controldokumente: `codex/hestia-fp06-w00-2026-10-11`. Höchstens zwei Implementierungswriter, gemeinsam genutzte Host-/Physics-/Save-/Contractdateien ausschließlich Integrator. Domain ist derzeit im Produkt-Writehold; unabhängige Reviewer schreiben keinen Produktcode.
+Integratorbranch: `codex/hestia-fp06-integrator-2026-10-11`; Domainbranch: `codex/hestia-fp06-domain-2026-10-11`; W00-/Controldokumente: `codex/hestia-fp06-w00-2026-10-11`. Höchstens zwei Implementierungswriter, gemeinsam genutzte Host-/Physics-/Save-/Contractdateien ausschließlich Integrator. Der zweite Writer `/root/fp06_domain` erhält ausschließlich die vier UI-Panels und ihren Fachtest auf `codex/hestia-fp06-ui-w09-2026-10-11` ab dem tatsächlichen Protokollcommit `43a61c0f5be5df69e4f8bb42db89da3d7a3a4b2b`; gemeinsame Dateien bleiben beim Integrator. Unabhängige Reviewer schreiben keinen Produktcode.
 
 Die bisherigen D01–D11-Antworten bleiben gültig. Die konkrete D11-Ergänzung für genau einen Native-Transportträger wurde tatsächlich freigegeben; siehe [Vorschlag und Grenzen](../proposals/native-handling-v1.md). Es stehen keine benötigten Ownerantworten aus. Menschliche Art-/Gameplayabnahme bleibt separat `PENDING_OWNER`; daraus wird kein technischer Gesamt-PASS behauptet. W12–W29 sind ausgeschlossen.
 

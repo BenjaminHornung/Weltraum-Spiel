@@ -1,0 +1,26 @@
+# W09 Panels — konkrete RED-Vorbereitung, READ_ONLY
+
+2026-10-11, `/root/fp06_domain`. D11-Carrieraufnahme/Vorgängergates laut Root akzeptiert; UI-Writer **NOT_GRANTED**. Unveränderter UI-Kandidat `ac993d334bc7471595af45f4a6a95e6ef8560849c47b829b8f9476b30c7b4807`; tatsächlicher eingefrorener HostPort-Commit/NEWUIworktree fehlen noch. Kein Produktwrite, Test/Build/Browser/Nativejob; alle folgenden Fachorakel **NOT_RUN**, kein behaupteter RED.
+
+## Tatsächliche UI-/Inputmuster
+
+- `factoryEntry.ts` SHA256`ad7f1bb598f26db5ba873abe762fc39a1798c8bf18a65f971409efd7b3f87202`: normale Buttonclicks, status/alert-Rollen, Subscriptions/Dispose. Globaler `onBuildKey`(:43) verarbeitet R/Arrow/Escape mit Ghost, ohne editable-target-/Panel-Fokusprüfung. Kein bestehendes Produktionspanel importiert.
+- `player/input.ts` SHA256`322821a12db4b59fd5c448c578f0adafce86222b674d25a850b976b6de3c63b9`: `stop()`(:42) leert gehaltene Keys/Jump, sendet explizit neutrales Nativeintent, verlässt Pointerlock und pausiert. `start()` benötigt echten Userclick; kein automatisches Relock. Factoryevent-Keydown/Up publiziert echte Intentänderungen. Paneldateien dürfen keinen zweiten Gameplay-Keylistener installieren.
+- `session/hostPort.ts` SHA256`07b7a3e6ecf4b94fed367585dc4c094cb906d5688985e23177362867a3dc945c`: aktuell Bau/Read/Lifecycle. Pause verdrahtet vorhandenes Playerstop; neue Panel-Fokus-/Commandreceiptpublikation ist darin noch nicht enthalten. Quellen sind bewegliche Draftreads, kein Freeze.
+- Vorhandene Unitmuster verwenden injizierbare Document/EventTarget-Doubles (`hvp-bootstrap.test.ts`, `hvp-player-input.test.ts`); dafür keine DOMdependency nötig. Diese Doubles belegen Panelvertragsverhalten, niemals native Kollision/Gehen.
+
+## Vier konkrete erste business REDs
+
+1. **Fokus, T038-Vertragsanteil:** normales Öffnen/Betreten des Powerpanels bei zuvor gehaltenem Gameplay-/Buildintent fordert den eingefrorenen Host-Fokus-/Neutralisierungsseam an, bevor mutierende Panelaktion möglich ist. Bei zurückgehaltenem Focus-ACK bleiben Aktionen gesperrt. R/Arrow/Space in Quantity-/Recipecontrols erzeugen keinen Build-/Startcommand; Escape/Close beendet Fokus ohne automatisches Play oder frische Bauaktion. Paneltest prüft tatsächliche Eventfolge am Port, nicht nur `stopPropagation`-Aufruf. Native Down/Up-neutral/ACK plus echte Playerbewegung bleibt Integrator-/Browserorakel, keine Fakeworld im Paneltest.
+
+2. **Snapshotmengen, T037-Vertragsanteil:** echte eingefrorene W01-Cargoresources ergeben96kg Stahl, C26quantity1/180kg und C27quantity1/300kg; mg/piece/mm werden korrekt beschriftet. Pickup/8kg-Transfer pending verändert DOM-Bestand nicht. Erst eine veröffentlichte gemeinsame neue Revision zeigt88kg Source und8kg tatsächliches Child im richtigen Ziel; IDs/Extensions/Produktlineage bleiben lesbar. Claims dürfen weder als zusätzlicher Bestand noch als fertiges Produkt erscheinen. WAIT_POWER/WAIT_OUTPUT-Snapshot behält dieselbe WIP/Workdarstellung ohne UI-Timer. Alle Panels erhalten dieselbe Publicationrevision; Mutation der eingefrorenen Eingabe bleibt ausgeschlossen.
+
+3. **Ehrliche Technologie, T039:** Sourcegelistete spätere Technik mit vorhandenem Anforderungsdatensatz, aber `planned`/`definition-missing`, bleibt auswählbar und zeigt Anforderungen sowie konkreten Implementierungsstatus. Kein aktiver Bau-/Startbutton, behauptetes geheimes Level, erfundener Forschungslock oder verschwundene Verzeichniszeile. Implementierte bezahlte Gegenprobe bleibt bedienbar nur nach Hostcapability. TechnologyView enthält das vollständige Sourcezielverzeichnis; keine neue Futurefunktion.
+
+4. **Offene Commands, T040-Vertragsanteil:** Buttonclick sendet genau einen unveränderten Intent/Command. Deferred/Pending/Unknown-Recoveryantwort zeigt wartenden Status und verhindert erneute Submission mit neuer ID. Receiptauflösung benutzt dieselbe ID; `NoOp` beendet Pending anhand des Receipts und projiziert den aktuellen bestätigten Hostsnapshot, ohne Materialkopie oder erneute Arbeit. Definitiv Rejected zeigt Hostgrund und erlaubt bewusstes neues Intent aus aktueller Binding. Historischer Committed/NoOp-Receipt nach späterem Job löst keine weitere Produktion aus. Dispose entfernt Subscription/DOMlistener; verspätete Antwort einer alten Session verändert Ersatzpanel nicht.
+
+## Nur tatsächlich fehlender Anschluss
+
+Kein zusätzliches Produktfeld gegenüber `ac993…` angefordert. Vor dem Freeze muss der Integrator die dort geplante bestätigte Fokusaufnahme **auch** mit dem globalen Entry-Baukeyhandler verbinden: vorhandenes Playerstop allein verhindert dessen Ghostrotation/-verschiebung bei editierbarem Panelziel nicht. Panelstatus benötigt unterscheidbares Focus/Pending/Receiptresult und veröffentlichte Material-/Tech-/Jobdaten gemäß dem bereits vorgeschlagenen Seam; dies ist in dem alten HostPort noch nicht vorhanden, keine separate neue Schnittstelle.
+
+Nach Freeze: exakt vier Panels `cargoPanel.ts`, `machinePanel.ts`, `powerPanel.ts`, `technologyView.ts` und `panels.test.ts`, eigene neue Branch/Worktree; Integrator bleibt Entry/Host/Physics/Contract/Saveauthority. Erst collectable echte Fach-REDs, dann Minimumimplementation, fokussierte GREEN/zulässige Regressionen. Keine Importfehler als RED zählen. DomainHEAD`6929bf2447b72c9f3f8fa3bcae0a59c0691966c0` unverändert/clean.

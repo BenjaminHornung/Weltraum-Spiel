@@ -1,0 +1,30 @@
+{
+  "schema": "hestia.fp06.w09.ui-writer-grant/v1",
+  "package": "W09",
+  "status": "GRANTED",
+  "agent": "/root/fp06_domain",
+  "role": "W09-panels-only-second-writer",
+  "branch": "codex/hestia-fp06-ui-w09-2026-10-11",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11",
+  "baseCommitSha": "43a61c0f5be5df69e4f8bb42db89da3d7a3a4b2b",
+  "writeSet": [
+    "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+    "apps/weltraum-browser/src/factory/ui/machinePanel.ts",
+    "apps/weltraum-browser/src/factory/ui/powerPanel.ts",
+    "apps/weltraum-browser/src/factory/ui/technologyView.ts",
+    "apps/weltraum-browser/tests/unit/factory/panels.test.ts"
+  ],
+  "evidenceWriteSet": [
+    "apps/weltraum-browser/evidence/factory/w09/<distinct-actual-ui-run-id>/**"
+  ],
+  "authorizedAtUtc": "2026-10-11T20:13:00.288861+00:00",
+  "protocolFreeze": {
+    "sourceCommitSha": "43a61c0f5be5df69e4f8bb42db89da3d7a3a4b2b",
+    "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+    "sha256": "07b7a3e6ecf4b94fed367585dc4c094cb906d5688985e23177362867a3dc945c",
+    "scope": "Concrete exported UI protocol only; actual command runtime adoption and W09 gate remain pending."
+  },
+  "constraints": "NEW isolated branch/worktree; only four panels+meaningful UI business tests; no Host/Physics/Save/Contract/Entry or other writer paths; readonly snapshot and finite intent commands only; unsupported actions honestly disabled. Coordinate every test/build CPU lease directly with Integrator; no competing jobs.",
+  "controlPlane": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06",
+  "packageGate": "NOT_RUN"
+}
