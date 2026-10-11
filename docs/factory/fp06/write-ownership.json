@@ -18,7 +18,12 @@
     "apps/weltraum-browser/vite.config.ts",
     ".github/workflows/browser-mainline-ci.yml",
     "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
-    "apps/weltraum-browser/src/hestia-prototype/physics/session.ts"
+    "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+    "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+    "apps/weltraum-browser/src/hestia-prototype/presentation/vegetation.ts",
+    "apps/weltraum-browser/tests/unit/hvp-coast-source.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-vegetation.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-physics.test.ts"
   ],
   "sharedPathGrant": "NONE_YET; package-specific grant after source/decision gates and fresh conflict check",
   "activeImplementationWriters": [
@@ -91,7 +96,7 @@
         "W10",
         "W11"
       ],
-      "status": "IMPLEMENTING_W06"
+      "status": "IMPLEMENTING_W03"
     },
     {
       "slot": 2,
@@ -477,6 +482,13 @@
             "R3 missing Wind/PV authoring-only Power-Out markers"
           ],
           "disposition": "Narrow source-required geometry/pose/marker RED/fixes within existing six roots; no new Cargo/Physics authority or Ownerdecision."
+        },
+        {
+          "spec": "R1/R2 closed; R3 source/metadata corrected",
+          "quality": "FAIL:R3 socket contained/coplanar and not reliably visible; P2 cutter panel speckle",
+          "reviewReport": "docs/factory/fp06/reviews/w05-followup-sockets-open.md",
+          "patchSha256": "40cb5b0a0608073c9ad5822dc2224819f55d409ab6ad577a0ef6266fdbf865bd",
+          "disposition": "Narrow exposed paid source socket RED/fix and minor panel de-overlap within existing W05 roots; technical quality only."
         }
       ]
     },
@@ -536,13 +548,13 @@
         "apps/weltraum-browser/evidence/factory/w06/<actual-run-id>/**"
       ],
       "evidenceGrant": true,
-      "status": "IN_REVIEW",
+      "status": "PASS",
       "owner": "/root/fp06_integrator",
       "plannedRole": "integrator",
       "branch": "codex/hestia-fp06-integrator-2026-10-11",
       "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
       "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
-      "commitSha": "5b596f932dc769052e17603965d0179a4937d948",
+      "commitSha": "2c044e02f1f31a2db3de3a0df9156bd71a431a7a",
       "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
       "restrictions": [
         "Only exact granted paths; planned paths are not grants",
@@ -552,7 +564,7 @@
       "baseCommitSha": "a30630dd7963c165c673df7ea1b46d52735752ef",
       "implementationWriteHold": true,
       "authorizedAtUtc": "2026-10-11T10:07:10.972885+00:00",
-      "completedAtUtc": null,
+      "completedAtUtc": "2026-10-11T11:29:00.685646+00:00",
       "reviewHistory": [
         {
           "spec": "FAIL",
@@ -590,10 +602,31 @@
         "afterR1toR4FixAffected": "PASS:50tests2files214.34s before newly found Drop guard fix",
         "afterR1toR4FixBuild": "PASS:tsc+Vite before newly found Drop guard fix",
         "browser": "RUNNING; partial cases are not final gate PASS",
-        "performance": "NOT_RUN; no comparable baseline"
+        "performance": "NOT_RUN",
+        "finalDropActual": "PASS:4targeted/47skipped22.09s; threehold Drop/nullcommands+confirmed/legacycounter+specificbudgetcauses",
+        "finalTypeScript": "PASS:complete source/tests/config",
+        "finalBrowser": "PASS:7actualcases2.0min BEFORE sole finalDropguard; bytesexplicitlybound, no afterDropBrowserclaim",
+        "evidence": "PASS:whole tree4manifests342refs347files84,825,299bytes;299actualchangedpaths12product+287ownEvidence",
+        "independentFinalSpecQuality": "PASS"
       },
       "codeCommitSha": "5b596f932dc769052e17603965d0179a4937d948",
-      "evidencePackagingStatus": "Pending narrow evidence-only followup: actual CLI values and three own ignored artifact paths; code writes held, independent final review pending."
+      "evidencePackagingStatus": "PASS:2c044e02f1f31a2db3de3a0df9156bd71a431a7a,286tracked references=205Gitblobs+81actualLFSobjects; final diff0/clean observed independently.",
+      "reviewReport": "docs/factory/fp06/reviews/w06-final-commit.md",
+      "packageReport": "docs/factory/fp06/reviews/w06-package-report.md",
+      "actualProductPaths": [
+        "apps/weltraum-browser/factory.html",
+        "apps/weltraum-browser/src/factory/factoryEntry.ts",
+        "apps/weltraum-browser/src/factory/session/hostPort.ts",
+        "apps/weltraum-browser/src/factory/session/factorySession.ts",
+        "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+        "apps/weltraum-browser/tests/e2e/factory-host.spec.ts",
+        "tools/factory/verify-evidence.mjs",
+        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+        "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/vite.config.ts",
+        ".github/workflows/browser-mainline-ci.yml"
+      ]
     },
     "W07": {
       "dependencies": [
@@ -631,7 +664,22 @@
         "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
         "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
         "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
-        "apps/weltraum-browser/package.json"
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+        "apps/weltraum-browser/src/factory/session/hostPort.ts",
+        "apps/weltraum-browser/src/factory/session/factorySession.ts",
+        "apps/weltraum-browser/src/factory/factoryEntry.ts",
+        "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+        "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+        "apps/weltraum-browser/src/factory/construction/installationProfile.ts",
+        "apps/weltraum-browser/src/hestia-prototype/presentation/vegetation.ts",
+        "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+        "apps/weltraum-browser/tests/unit/hvp-physics.test.ts",
+        "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+        "apps/weltraum-browser/tests/unit/hvp-coast-source.test.ts",
+        "apps/weltraum-browser/tests/unit/hvp-vegetation.test.ts",
+        "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+        "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts"
       ],
       "grantedWriteSet": [],
       "evidenceWriteSet": [
@@ -671,6 +719,15 @@
           "unaffected": "Existing-v5 cutter placement and fixed Facility transaction with actual support proof",
           "approvalReceiptIndex": 1
         }
+      ],
+      "preflightReport": "docs/factory/fp06/reviews/w07-integration-map.md",
+      "scopeAdmissionNotes": [
+        "Planned only, no grant until W02/W05/W06 gates; exclusive Integrator on all Host/Native/Source writes.",
+        "Separate closed technical installationProfile binds unchanged W01 Items/devices and reviewed W05 native source geometry/ports/support/cable; no source fixture changes or owneracceptance invented.",
+        "Accepted15mask70m2 source only, all actual source/vegetation/spawn readers coherent; optional vegetation source-groundreader preserves existing default.",
+        "Finite paid C03+C04+C07 battery-first energy loop is permitted by existing sources, not renewable or WX-FAV benchmark evidence; unique SOC owner.",
+        "Actual battery support/body/service/cable route required outside blocked paths; no extra terrainmask, freeplatform, or Unknown wind air admitted.",
+        "Stage native fixedfacilities under real paused ACK, material completeview-CAS and hidden renderer; full owner/member/globalbudget rollback proof, no Worldhandle exposure."
       ]
     },
     "W08": {
