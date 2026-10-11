@@ -4055,14 +4055,18 @@
         "protected": "W03W04W08 observedunchanged; mutable2d836d Source not finalseal"
       },
       "materialBindingCacheGoalV2": {
-        "status": "AUTHORIZED_EXISTING_SCOPE_ACTIVATION_WAITS_EXTERNAL_OUTPUT_ALIAS_CLOSURE",
+        "status": "ACTIVE_ONE_CANDIDATE_AFTER_INDEPENDENT_GUARD_CLOSURE",
         "path": "docs/factory/fp06/reviews/w09-material-binding-cache-bounded-goal-v2.json",
         "sha256": "c2d16d1fbb9b81105383c99f85461cacee387881395bc8ea5cc7ed88f3e2f521",
         "maxCandidates": 1,
         "extraProfiles": 0,
         "originalTimeoutMs": 5000,
         "historicalGoalOutcome": "NOT_MET",
-        "ownerDecision": "No product Ownerdecision changed; startsiteV2 still pending"
+        "ownerDecision": "No product Ownerdecision changed; startsiteV2 still pending",
+        "activationReceipt": {
+          "path": "docs/factory/fp06/reviews/w09-material-binding-cache-v2-activation.json",
+          "sha256": "2d7e0f0efa96ba0715c44f22832a1d6ed7d46aec77dde20b4c8f7415e21cd4fa"
+        }
       },
       "materialBindingCachePreflight": {
         "status": "READONLY_INITIAL_W02_ADMISSION_GAP_CLOSED148149_SAFE_CACHE_RECOMMENDATION_ONLY",
@@ -4078,6 +4082,25 @@
         "source": "94762ca1cc1139a1c4f2ea596eea88fbd25093431b29e20e79a96d54ccf2d4b6",
         "actual": "14827PASS3skipped/149originalTSVitePASS verified originalrawreceipts",
         "remaining": "Externalfallback returnscaller-ownedmutable proposal graphs; actual countertest/minimalfreshlycheckedreturn requested. No additional performance candidate yet."
+      },
+      "compositionOutputAliasClosureReview": {
+        "status": "READONLY_SPEC_QUALITY_PASS_CURRENT_GUARDS_CLOSED_NOT_PERFORMANCE_OR_PACKAGE_PASS",
+        "path": "docs/factory/fp06/reviews/w09-composition-output-alias-closure-review.md",
+        "sha256": "0e665ef345d6a579ebe3ec9e5ce3bc597b7c9bec5c96691714548b920170cc51",
+        "actual": "1533 genuineAssertionsRED\u219215419PASS14skip;155TSFAIL\u21921563AliasPASS30skip\u2192157originalBuildPASS",
+        "runtimeSha256": "ddd2ff8cd718be451624bb3e5e709f86a48372a77a1e4899ced57f46e2ea6015",
+        "testSha256": "c1b65afb114370f0a4fc856e5fe41ace3e6ffe72faba9803643ac516b35d3a65"
+      },
+      "jointAdmissionAliasWitness": {
+        "path": "docs/factory/fp06/reviews/w09-joint-admission-and-alias-witness.json",
+        "sha256": "69b4ab733a6e2801aed30087078f5dd19f27f308ca686392e9560adf4d1132da",
+        "status": "ROOT_VERIFIED14_RAW_RECEIPTS_ACTUAL_CLASSIFICATION"
+      },
+      "nativeDepotSnapSourceReview": {
+        "status": "READONLY_NATIVE1503ASSERTION_RED_SOURCEFAIL_OPEN",
+        "path": "docs/factory/fp06/reviews/w09-native-depot-snap-source-review.md",
+        "sha256": "d29bf636e4102755179fe6b242ca730ee888dd7d42934112386c165c6a0ed380",
+        "limits": "SyntheticRapierfloor/C27declared300kgCustody; no wholeWorld/Resourcesconservation/NativeSourceBrowsergate. Nativefixnotyetobserved."
       }
     },
     "W10": {

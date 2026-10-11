@@ -1,0 +1,357 @@
+{
+  "observedAtUtc": "2026-10-11T23:17:04.402296+00:00",
+  "status": "RAW_RECEIPTS_VERIFIED_JOINT_ADMISSION_ALIAS_GUARDS_PASS_NATIVE_DEPOT150_STILL_OPEN_PERFORMANCE_NOT_MET",
+  "records": [
+    {
+      "phase": 144,
+      "receiptPath": "144-external-proposal-output-forgery-red.command.json",
+      "receiptSha256": "d13fe07ca99fc3edc672c80079c2fc86a6cf083cc2e4a159830d85932abf88f1",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "test",
+          "--",
+          "tests/unit/factory/dryFactorySlice.test.ts",
+          "-t",
+          "caller-forged Native OUTPUT"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-11T23:05:10.658416+00:00",
+        "endedAtUtc": "2026-10-11T23:05:11.646261+00:00",
+        "elapsedSeconds": 0.9883073399978457,
+        "exitCode": 1,
+        "rawBytes": 1626,
+        "rawSha256": "0e8a0e9abb58805d5876f0ebde3f0e84b693f770b920cf57bf950f8e1837aede"
+      },
+      "rawGzipSha256": "e1fc5d1c60d91ace4571bb0dcae924d00c717e2570eb89ddac73e0988cb8b125",
+      "rawVerified": true
+    },
+    {
+      "phase": 145,
+      "receiptPath": "145-external-output-complete-guards-green.command.json",
+      "receiptSha256": "363834690d52e3330c81518b6b26eca607b177917c3238106bcc1187275a00c1",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "test",
+          "--",
+          "tests/unit/factory/dryFactorySlice.test.ts",
+          "-t",
+          "private proposal byte guards|one Host material authority|Native quarter-turn|q1 Cutter|paid installed Cutter"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-11T23:05:20.425266+00:00",
+        "endedAtUtc": "2026-10-11T23:05:22.151291+00:00",
+        "elapsedSeconds": 1.7263915639996412,
+        "exitCode": 0,
+        "rawBytes": 484,
+        "rawSha256": "32e6868d142ac969876caa7f201753dc7e23aea7d1c1cad228b5828c38674001"
+      },
+      "rawGzipSha256": "eafe0c9058ff55875369b68adae49c9834f6f763321949649850162570df9aa0",
+      "rawVerified": true
+    },
+    {
+      "phase": 146,
+      "receiptPath": "146-complete-external-receipt-power-red.command.json",
+      "receiptSha256": "ae4973535c17af6a026a5f22b526a68058f977bb6c27f245e502d423502ade18",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "test",
+          "--",
+          "tests/unit/factory/dryFactorySlice.test.ts",
+          "-t",
+          "complete external"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-11T23:06:05.033065+00:00",
+        "endedAtUtc": "2026-10-11T23:06:06.174301+00:00",
+        "elapsedSeconds": 1.1417129089968512,
+        "exitCode": 1,
+        "rawBytes": 1454,
+        "rawSha256": "7983b2a38f19dda1b706ad40067ffb8625b7223a9eca964575017db1055916b3"
+      },
+      "rawGzipSha256": "6bd7fdef40ea762080ea2c41acda476e40a70c93a47a960fef1635a87f60711d",
+      "rawVerified": true
+    },
+    {
+      "phase": 147,
+      "receiptPath": "147-complete-w02-receipts-claims-red.command.json",
+      "receiptSha256": "cdf3e38282de5963a8438c201cc6ac3e4155cc6e55dc4e71f9909244a6e2ff07",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "test",
+          "--",
+          "tests/unit/factory/dryFactorySlice.test.ts",
+          "-t",
+          "actual W02"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-11T23:06:49.064924+00:00",
+        "endedAtUtc": "2026-10-11T23:06:50.176572+00:00",
+        "elapsedSeconds": 1.1120697229998768,
+        "exitCode": 1,
+        "rawBytes": 1399,
+        "rawSha256": "ba5ff085543b5fab3d4e63374e558c1030903c14e80b9fc482553ce1b3978ccc"
+      },
+      "rawGzipSha256": "0b5968ec9802bf9f97d70789fb0ea3f36a57c96f5fef05354968a942c1348515",
+      "rawVerified": true
+    },
+    {
+      "phase": 148,
+      "receiptPath": "148-complete-joint-admission-guards-green.command.json",
+      "receiptSha256": "815c33ff6e427e2aa9a03eb4ceb0c72d153ddb2e0d3eadf475d441bf540f4fac",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "test",
+          "--",
+          "tests/unit/factory/dryFactorySlice.test.ts",
+          "-t",
+          "private proposal byte guards|one Host material authority|Native quarter-turn|q1 Cutter|paid installed Cutter"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-11T23:07:51.206553+00:00",
+        "endedAtUtc": "2026-10-11T23:07:53.485620+00:00",
+        "elapsedSeconds": 2.2794870419966173,
+        "exitCode": 0,
+        "rawBytes": 484,
+        "rawSha256": "cad53a28f80509e900ef842a45148a31e9c9e06c583e25df760b2d6a6e213033"
+      },
+      "rawGzipSha256": "caa69a7e55e5676ac6dcd2d448db8ed5b85dd678a932e0226adc0c9c5db4dbb9",
+      "rawVerified": true
+    },
+    {
+      "phase": 149,
+      "receiptPath": "149-original-build-complete-joint-guards.command.json",
+      "receiptSha256": "44cde9b36e240c3b491a1121a82407179a5c9ac15f79f744a293c42d23b7e91f",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-11T23:08:23.919829+00:00",
+        "endedAtUtc": "2026-10-11T23:08:28.035786+00:00",
+        "elapsedSeconds": 4.1164108109951485,
+        "exitCode": 0,
+        "rawBytes": 1904,
+        "rawSha256": "c6c3547d9f80bbbb3ca79e80ac96b14cbfa09e48bd30add6f9b0bd68b6a54747"
+      },
+      "rawGzipSha256": "184ff4ca4f0f2d907c616719ce84119b2c461c940441f79e5290355010d9a1ab",
+      "rawVerified": true
+    },
+    {
+      "phase": 150,
+      "receiptPath": "150-native-depot-snap-custody-red.command.json",
+      "receiptSha256": "3831dccbfa2ab100a34c01e37ce7145901c0daea7a709738e202dda36133f1cf",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "test",
+          "--",
+          "tests/unit/factory/facilitySession.test.ts",
+          "-t",
+          "actual Native closed depot frame"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-11T23:09:58.694307+00:00",
+        "endedAtUtc": "2026-10-11T23:10:01.909489+00:00",
+        "elapsedSeconds": 3.2155397240057937,
+        "exitCode": 1,
+        "rawBytes": 2152,
+        "rawSha256": "743d1e6d0580f26e63f76889f09728668a1302e9961f381e096131ae1185eaf5"
+      },
+      "rawGzipSha256": "48414c02c6ab92a2a69639369eca6cbe0acb0e8fb73c558038497005efa4c1ce",
+      "rawVerified": true
+    },
+    {
+      "phase": 151,
+      "receiptPath": "151-external-output-alias-red.command.json",
+      "receiptSha256": "102a3cbe32687a885a5bed08bcbaa2888a3c09a785eab68c151c2c027365b4c6",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "test",
+          "--",
+          "tests/unit/factory/dryFactorySlice.test.ts",
+          "-t",
+          "isolates adopted external"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-11T23:14:06.634936+00:00",
+        "endedAtUtc": "2026-10-11T23:14:07.815954+00:00",
+        "elapsedSeconds": 1.1814424769981997,
+        "exitCode": 1,
+        "rawBytes": 2894,
+        "rawSha256": "74f484953d19c17c68070fc6a0d6aaff8880222d150664cd7fa1b071cd21ba59"
+      },
+      "rawGzipSha256": "65224295975375e71e1a04afcefc88662407537ee46474e0cb92e0e82ca864ed",
+      "rawVerified": true
+    },
+    {
+      "phase": 152,
+      "receiptPath": "152-external-output-alias-red.command.json",
+      "receiptSha256": "7ad9e8fd0cd4d21ce730e3b302aeb63af7b2b6584011e8876fb31b653cd6a5fb",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "test",
+          "--",
+          "tests/unit/factory/dryFactorySlice.test.ts",
+          "-t",
+          "isolates adopted external"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-11T23:14:40.043520+00:00",
+        "endedAtUtc": "2026-10-11T23:14:41.371280+00:00",
+        "elapsedSeconds": 1.3667910389995086,
+        "exitCode": 1,
+        "rawBytes": 1068931,
+        "rawSha256": "35f238c48e1e97b65b745ac59d1b5271f04da515e7d9743c9c4209edacb6ddbd"
+      },
+      "rawGzipSha256": "6f314167c1e1a676034e48a8590b80fc806978232b6416046c377094c8fd1d3c",
+      "rawVerified": true
+    },
+    {
+      "phase": 153,
+      "receiptPath": "153-external-output-alias-red.command.json",
+      "receiptSha256": "0fb57cd7ff760a03bd4b48b7fedf1378493ddf99e0a70c0d5d287932530f3aaf",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "test",
+          "--",
+          "tests/unit/factory/dryFactorySlice.test.ts",
+          "-t",
+          "isolates adopted external"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-11T23:15:15.337487+00:00",
+        "endedAtUtc": "2026-10-11T23:15:16.613571+00:00",
+        "elapsedSeconds": 1.2765123060016776,
+        "exitCode": 1,
+        "rawBytes": 2828,
+        "rawSha256": "10994511c872f3323bafb4a70e8160f8d8b05477edb6b731c21da4f6f1eabc14"
+      },
+      "rawGzipSha256": "8bf930de8ade47703452abe05e4ca9c70b13c5a3a26025871ed243f5e41e4aca",
+      "rawVerified": true
+    },
+    {
+      "phase": 154,
+      "receiptPath": "154-output-alias-and-joint-guards-green.command.json",
+      "receiptSha256": "4c723eefeb8b4b1ea8776f9b905d444df337afe1b0e28175d4ef6a0f4ba47a58",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "test",
+          "--",
+          "tests/unit/factory/dryFactorySlice.test.ts",
+          "-t",
+          "complete private proposal|rejects changes|joint|UUID"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-11T23:15:27.762921+00:00",
+        "endedAtUtc": "2026-10-11T23:15:32.439662+00:00",
+        "elapsedSeconds": 4.6771130449997145,
+        "exitCode": 0,
+        "rawBytes": 429,
+        "rawSha256": "ad7d42d29defb52d2287e847a71e92927e65f052175078b1864831f135a9f87a"
+      },
+      "rawGzipSha256": "f3f27f5eeb8cbc3ca2a14ee49b47802e204685034b2b5caa00360dd376d8df98",
+      "rawVerified": true
+    },
+    {
+      "phase": 155,
+      "receiptPath": "155-output-alias-original-build.command.json",
+      "receiptSha256": "33313ad10a716aa2296af264bc13013748e940cefe133c716985559842f148fb",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-11T23:15:32.472603+00:00",
+        "endedAtUtc": "2026-10-11T23:15:35.013764+00:00",
+        "elapsedSeconds": 2.5417651270036004,
+        "exitCode": 1,
+        "rawBytes": 180,
+        "rawSha256": "6e186a84a4293ad42b0e146d244713874881f3be1216bd26366939962ee841ba"
+      },
+      "rawGzipSha256": "60f31b8dead4375e40fec45c8c226211527f86432dc2d05f3785636a638eeb93",
+      "rawVerified": true
+    },
+    {
+      "phase": 156,
+      "receiptPath": "156-output-alias-test-types-green.command.json",
+      "receiptSha256": "414954354fc6d336a3c99f901807b07cc4bb7eaf953c75dfe14167e4fe2868b6",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "test",
+          "--",
+          "tests/unit/factory/dryFactorySlice.test.ts",
+          "-t",
+          "isolates adopted external"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-11T23:15:54.492498+00:00",
+        "endedAtUtc": "2026-10-11T23:15:55.859261+00:00",
+        "elapsedSeconds": 1.3671290089987451,
+        "exitCode": 0,
+        "rawBytes": 401,
+        "rawSha256": "313e69129b48c36aa5bbf5ac7f98ce9da5858ea2b9e3328d76b21a82fdedfc0d"
+      },
+      "rawGzipSha256": "d7a0e2fb23e39318999e3264d3050abd84ca4b46c1dc090479f989071d1cc6ca",
+      "rawVerified": true
+    },
+    {
+      "phase": 157,
+      "receiptPath": "157-output-alias-original-build.command.json",
+      "receiptSha256": "c2251dc280c0bf0f5a7fe98ebbf02cae9caf2df97151da73ff30331c8d95eb60",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-11T23:15:55.897036+00:00",
+        "endedAtUtc": "2026-10-11T23:16:00.406923+00:00",
+        "elapsedSeconds": 4.510299646004569,
+        "exitCode": 0,
+        "rawBytes": 1904,
+        "rawSha256": "3769a4cdcad9439aa05557c3995f9d28fe00b5e3d2c4501c5dec312dc5563c7c"
+      },
+      "rawGzipSha256": "121d9fcd812fdb6a11d0f37437856dc893e1134a0f0f659eba83f1576abf2432",
+      "rawVerified": true
+    }
+  ],
+  "actualClassification": {
+    "144145": "OUTPUTquantity genuineRED\u219223PASS3skipped",
+    "146147148149": "completejointPowerReceipt/NativeOutput/W02chainClaims genuineRED\u219227PASS3skipped/originalBuildPASS",
+    "150": "THREEactualRapierDepotAssertionREDs; NativeSnap/custody/sweep NOT_YET_CLOSED in this witness",
+    "151": "FIXTURE_ORACLE_FAIL not genuineAliasRED",
+    "152": "ONEStateassertionRED/TWOMaterialTypeErrororacles; no3businessREDclaim",
+    "153154": "THREEgenuineOUTPUTALIASassertionsRED\u219219PASS14skip",
+    "155156157": "TS7006TesttypeFAIL\u21923AliasPASS30skip\u2192originalTSVitePASS"
+  },
+  "sourceSnapshot": "external-output-alias-closure-157",
+  "runtimeSha256": "ddd2ff8cd718be451624bb3e5e709f86a48372a77a1e4899ced57f46e2ea6015",
+  "testSha256": "c1b65afb114370f0a4fc856e5fe41ace3e6ffe72faba9803643ac516b35d3a65",
+  "limits": "ImmutableSource snapshot mapping check delegatedreadOnlyReview; originalrawretained verified. Native150syntheticfloor/declaration not fullWorld/resourcesproof. No paidband/timeLimit/fullBrowser/CUTFORM/Save/W09package gate."
+}

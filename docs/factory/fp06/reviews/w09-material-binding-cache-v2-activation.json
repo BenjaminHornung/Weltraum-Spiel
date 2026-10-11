@@ -1,0 +1,23 @@
+{
+  "activatedAtUtc": "2026-10-11T23:18:08.497279+00:00",
+  "activatedBy": "/root",
+  "status": "ACTIVE_ONE_RUNTIME_CANDIDATE_NO_EXTRA_CPU_PROFILES_OR_LIMIT_CHANGES",
+  "goalPath": "docs/factory/fp06/reviews/w09-material-binding-cache-bounded-goal-v2.json",
+  "goalSha256": "c2d16d1fbb9b81105383c99f85461cacee387881395bc8ea5cc7ed88f3e2f521",
+  "guardReviewPath": "docs/factory/fp06/reviews/w09-composition-output-alias-closure-review.md",
+  "guardReviewSha256": "0e665ef345d6a579ebe3ec9e5ce3bc597b7c9bec5c96691714548b920170cc51",
+  "sourceBeforeCandidate": [
+    {
+      "path": "src/factory/session/dryFactorySlice.ts",
+      "bytes": 30936,
+      "sha256": "ddd2ff8cd718be451624bb3e5e709f86a48372a77a1e4899ced57f46e2ea6015"
+    },
+    {
+      "path": "tests/unit/factory/dryFactorySlice.test.ts",
+      "bytes": 35206,
+      "sha256": "c1b65afb114370f0a4fc856e5fe41ace3e6ffe72faba9803643ac516b35d3a65"
+    }
+  ],
+  "actualPrerequisites": "144147 genuine Material/power/receipt/claim REDs closed148149;153 threegenuineAliasREDs closed154156;157originalTSVitePASS; readonlyfinalSourceGuardQualityPASS. No current concrete guardfinding open.",
+  "limits": "Historical2candidate goalNOT_MET unchanged. Only existingDrySlice+countertests and ownrun within25grant; samecompletepaidbandcases5000ms. Native150 remainsopen separate; pending5terrainpaths ungranted. No PackagePASS."
+}
