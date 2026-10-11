@@ -2831,6 +2831,26 @@
         "constraints": "Transparent existing ThreeRenderBackend.renderFrame wrapper exact receiver/args/return/throw; same ESM identity proven observedcalls; readonly actual existingWebGL renderer diagnostics; passive90 observer/noV8/hvpMeasure/runtime/World/input/physics/ticks/caps/queue/timeouts changes. 3original30s serial cases neutral5s+125S released trusted gesture, source review before ONE new browser grant.",
         "execution": "BROWSER_NOT_AUTHORIZED_SOURCE_AND_ONE_BUILD_ONLY",
         "canvasContextObserver": "Transparent originalHTMLCanvasElement.getContext exactreceiver/args/return/throw; retain app-created debug-scene context only, no owngetContext; readonlyGLmetadata; restoreMethodsindependentlyFinally"
+      },
+      "renderWallDiagnosticExecutionAuthorization": {
+        "authorizedAtUtc": "2026-10-11T18:53:27.757316+00:00",
+        "actor": "/root/fp06_integrator",
+        "kind": "ONE_RENDER_WALL_DIAGNOSTIC3_NOT_GAMEPLAY_GATE",
+        "overlaySealSha256": "d1de24ea3e4328b28d4ed686085964f57189c105bfce174499ddcf9e048db3dd",
+        "overlayE2eSha256": "75a286b29689f3b6d06240828c24eb3e853713d0324c62d237115c437baaa87f",
+        "configSha256": "53a55a48da97d43a02e317fb8edc844d57a9b5687f356a7ebf4f5b470efcf900",
+        "review": {
+          "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/reviews/w07-render-wall-overlay-independent-review.md",
+          "sha256": "ad90c44ce8a675bea98f8ebfddb08198760786494259d275da6f1c7a5eec60b5",
+          "reviewer": "/root_NOT_E2E_AUTHOR",
+          "status": "SOURCE_SPEC_AND_QUALITY_PASS"
+        },
+        "build93": "PASS4.034502s/0c7bf1904B",
+        "cpuGpuPortLease": "EXCLUSIVE_5174_ONE_DIAGNOSTIC",
+        "caseCount": 3,
+        "constraints": "Frozen30overlay; original30s/trace/plainfactory/sameWorld/neutral5s+trusted125S; transparentexistingbackend+canvas/readonlyGL; no V8/hvpMeasure/World/runtime/pose/input/tick/flags/viewport/caps/queue/timeouts changes; wallnotGPUproof; keepalloriginalerrors",
+        "restoreAuthorization": "AfterONECLI archiveallfreshJSON/raw/artifacts then exactnormal030fc16961/all30baseline201/fixedorigins+absences+portrelease",
+        "status": "AUTHORIZED_NOT_RUN"
       }
     },
     "W08": {
