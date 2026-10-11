@@ -1795,6 +1795,29 @@
         "ghostVisual": "NOT_ESTABLISHED",
         "humanArt": "NOT_RUN",
         "finalManifestGitLfs": "PENDING"
+      },
+      "historicalCommandInventoryReview": {
+        "report": "docs/factory/fp06/reviews/w07-command-inventory-through-59.md",
+        "source": "/workspace/.cloud-setup/fp06-w07-command-inventory-review.md",
+        "originalSha256": "be098ce3042df4de809e89e9d36f1a233763f69741a2aa6c2c312736ade4534c",
+        "originalBytes": 19009,
+        "copiedSha256": "be098ce3042df4de809e89e9d36f1a233763f69741a2aa6c2c312736ade4534c",
+        "actualLogs": 59,
+        "exitFiles": 59,
+        "gzipIntegrity": "57/57_PASS",
+        "completeReceiptBindings": "32/32_MATCH",
+        "incompleteReceipts": [
+          22,
+          27
+        ],
+        "phasesWithoutCommandReceipt": "01-21,23-26",
+        "missingRawGzip": [
+          1,
+          2
+        ],
+        "historicalClassification": "01 mixed stubs/setup;02 three assertions plus five NotImplemented stubs;03 and45 failed despite green filename;04 missing API;07,18,35,48 compile failures",
+        "browserGate": "All eight normal runs FAIL;52 diagnostic separate",
+        "scope": "01-59 only; no final product/manifest/Git/PASS claim"
       }
     },
     "W08": {
@@ -2228,6 +2251,16 @@
       "cwd": "/workspace/Weltraum-Spiel",
       "observedAtUtc": "2026-10-11T14:51:51Z",
       "recordedAtUtc": "2026-10-11T14:52:03.141427+00:00",
+      "exitCode": 0,
+      "mainSha": "e40592c113b72a8dc93725187f92cf948e07f44d",
+      "changedFromW00": false,
+      "visibility": "remote main only; API/foreign uncommitted writers not inferred"
+    },
+    {
+      "command": "git ls-remote origin refs/heads/main",
+      "cwd": "/workspace/Weltraum-Spiel",
+      "observedAtUtc": "2026-10-11T15:38:12Z",
+      "recordedAtUtc": "2026-10-11T15:38:28.721488+00:00",
       "exitCode": 0,
       "mainSha": "e40592c113b72a8dc93725187f92cf948e07f44d",
       "changedFromW00": false,

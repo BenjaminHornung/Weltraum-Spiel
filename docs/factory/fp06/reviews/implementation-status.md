@@ -2,7 +2,7 @@
 
 Stand: 2026-10-11 15:37 UTC. `NOT_RUN` bezeichnet hier das noch nicht abgeschlossene Paket-Endgate; tatsächlich ausgeführte Teilprüfungen stehen im jeweiligen Bericht. Die maßgeblichen Gates und Branch-/Worktree-/Schreibgrenzen sind in `source-lock.json` und `write-ownership.json` gebunden.
 
-Aktuell geprüftes `origin/main`: `e40592c113b72a8dc93725187f92cf948e07f44d` (tatsächliches `git ls-remote` um 14:51:51 UTC). Kein Mainmerge, Push oder Veröffentlichung.
+Aktuell geprüftes `origin/main`: `e40592c113b72a8dc93725187f92cf948e07f44d` (tatsächliches `git ls-remote` um 15:38:12 UTC). Kein Mainmerge, Push oder Veröffentlichung.
 
 | Paket | Endgate | Agent | Vollständiger Paket-Commit | Evidence / offene Abhängigkeit |
 | --- | --- | --- | --- | --- |
