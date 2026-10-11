@@ -4070,6 +4070,14 @@
         "sha256": "7ff79edc7e150e49c514f4a0cdfabd38b37c8ec66db793bddb7e5069c39a4c30",
         "currentSource": "94762ca1cc1139a1c4f2ea596eea88fbd25093431b29e20e79a96d54ccf2d4b6",
         "limits": "Source/evidence read only, noownjobs/newruntimecandidate/performancePASS. Aliasfinding subsequent separateArchitectureReview notclosedbythisreport."
+      },
+      "compositionAdmissionClosureReview": {
+        "status": "READONLY146147_CLOSED148149_EXTERNAL_MUTABLE_OUTPUT_ALIAS_OPEN_SOURCEFAIL",
+        "path": "docs/factory/fp06/reviews/w09-composition-admission-closure-review.md",
+        "sha256": "85ce86e83d4386434c9e388c1e5a11cc99f47744966fb5309dc9e6e051f60431",
+        "source": "94762ca1cc1139a1c4f2ea596eea88fbd25093431b29e20e79a96d54ccf2d4b6",
+        "actual": "14827PASS3skipped/149originalTSVitePASS verified originalrawreceipts",
+        "remaining": "Externalfallback returnscaller-ownedmutable proposal graphs; actual countertest/minimalfreshlycheckedreturn requested. No additional performance candidate yet."
       }
     },
     "W10": {
