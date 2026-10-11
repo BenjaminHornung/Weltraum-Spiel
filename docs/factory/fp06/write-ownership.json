@@ -472,7 +472,16 @@
       "baseCommitSha": "1f2c568ec9db7b6b2895eb2a3b4f37797030dac8",
       "implementationWriteHold": false,
       "authorizedAtUtc": "2026-10-11T12:41:39.050117+00:00",
-      "completedAtUtc": null
+      "completedAtUtc": null,
+      "tddInitialStatus": {
+        "runId": "run-20261011T124704Z",
+        "command": "npm run test -- tests/unit/factory/production.test.ts",
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+        "reportedTests": "7 collected / 7 assertion FAIL / 0 PASS, Exit1 before implementation",
+        "vitestSeconds": 2.08,
+        "wrapperSeconds": 2.538,
+        "rawShaAndByteCount": "Contemporaneously recorded before gzip, writer-reported; final sealed evidence review pending"
+      }
     },
     "W05": {
       "dependencies": [
@@ -827,7 +836,8 @@
         "Accepted15mask70m2 source only, all actual source/vegetation/spawn readers coherent; optional vegetation source-groundreader preserves existing default.",
         "Finite paid C03+C04+C07 battery-first energy loop is permitted by existing sources, not renewable or WX-FAV benchmark evidence; unique SOC owner.",
         "Actual battery support/body/service/cable route required outside blocked paths; no extra terrainmask, freeplatform, or Unknown wind air admitted.",
-        "Stage native fixedfacilities under real paused ACK, material completeview-CAS and hidden renderer; full owner/member/globalbudget rollback proof, no Worldhandle exposure."
+        "Stage native fixedfacilities under real paused ACK, material completeview-CAS and hidden renderer; full owner/member/globalbudget rollback proof, no Worldhandle exposure.",
+        "Source-verified technicalB06InstallationProfile ServiceNorth1.0..2.0 directlyadjacent actualBodyNorthmax1.0; unchangedW05AuthoringBounds1.25..2.25 retained as originalSourcefacts. NormativeFP03≥1m service and exactacceptedCutterSiteNorth7..8. ClosedexplicitversionedOverride+trueRED+actualAir/support/clearance/provenance required, noCatalogue/art/mask/Formerchange. Rootreport reviews/w07-service-zone-admission.md."
       ],
       "baseCommitSha": "d5502ae7fd5431d58eda51bea062c54691ebe3c2",
       "implementationWriteHold": false,
