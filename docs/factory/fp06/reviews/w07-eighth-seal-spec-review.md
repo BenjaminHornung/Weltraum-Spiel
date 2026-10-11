@@ -1,0 +1,23 @@
+> Original SHA256 `dd16d9aac6ef2c5d8ede83260bfad9173d441e3d4f63d9cb205e39ffff3ff381` (4478 Bytes); only Markdown whitespace normalized. Scoped eighth-seal input/delta review; actualBrowser58FAIL and subsequentGhostfix excluded.
+
+# W07 Eighth-Seal: unabhängiger enger Spec-/Qualityreview
+
+**Spec PASS; Code Quality PASS für das Drei-Pfad-Delta.** Kein neuer konkreter Codebefund. W07-Gesamtgate, tatsächlicher Eighth-Browser, finale Evidence-/Gitbindung: **PENDING**, keine Performance- oder W09/W10-Aussage. Read-only; keine eigenen Tests, Builds, Browser-/Nativejobs oder Produktwrites. Historischer Review `fp06-w07-input-final-spec-review.md` bleibt unverändert.
+
+Basis `d5502ae7fd5431d58eda51bea062c54691ebe3c2`. Seal `fp06-w07-before-eighth-browser-product.patch`: **205179 Bytes**, SHA256 **1bd3173f72efe4b531e49579164cb62ead4534720c86696f1fa36eeeaf012636**; Dateimanifest **eb7a99c17be2a828823fd2d8646b18bfb65994449d13d75e109e708bf69b1fa2**, Zeitpunkt 2026-10-11T15:13:37.175340Z. Alle 29 gewährten Pfade stimmen beim Eintritt mit dem Manifest überein; 27 tatsächlich geändert gegen die Basis. Historischen Seventh-Patch für die drei Dateien im Speicher gegen Baseblobs rekonstruiert und deren vollständige Seventh-Hashes überprüft: ausschließlich Client, Inputunit und normales E2E unterscheiden sich; **26 andere Pfade byteidentisch**. Dadurch bleiben deren frühere Runtime-/Nativeurteile auf denselben Bytes gebunden.
+
+**Factory-No-op.** `src/hestia-prototype/physics/client.ts:369–374` berechnet zuerst den bestehenden Jump-Merge, prüft dann ausschließlich unter `factoryEnabled` die vier vollständigen Inputfelder x/z/sprint/jump. Identische Levels erzeugen keine neue EventRead-Kette; geänderte Releases bleiben dirty und hinter höchstens einer laufenden Read erhalten. Ein bereits dirty identischer Wiederholungsaufruf löscht die anstehende Änderung nicht. Unsent Jump bleibt beim gewöhnlichen Up erhalten, expliziter Cancel wird vor dem Vergleich angewandt. Nach gesendetem Jump ist Producerjump weiterhin gelöscht (`207–214`); normale Snapshot-/Neutralzustellung bleibt über `update:424–426` möglich. Guards für Hold/Pause/Disposition laufen **vor** der No-op-Prüfung; Read-/Prepare-Publication und Nativeauthority bleiben unverändert. Legacy bekommt weiterhin keine EventReads aus `setPlayerInput`.
+
+**Orakel.** `tests/unit/hvp-player-input.test.ts:99–106` prüft zwei unterschiedliche Fälle, bereits gesendete Null- und Nichtnulllevels: vier gleiche Producerupdates dürfen nach Abschluss der laufenden Read keinen zusätzlichen Transport erzeugen; explizites update muss weiterhin lesen. Jump-/Pausefälle `116–126` benutzen jetzt diesen expliziten Neutral-Updateweg und behalten die tatsächlichen Jump-/Cancelassertions. Kein Assertentfall oder geschenkter nativer Tick.
+
+Gelesene eigene Writerreceipts/Rawlogs, nicht selbst ausgeführt:
+
+| Receipt | Tatsächliches Ergebnis |
+|---|---|
+| 55 | **2 Assertion-FAIL, 12 skipped**, Exit1; unveränderte Extra-Read reproduziert; Vitest1,36 s, Wrapper1,769052611 s |
+| 56 | **14/14 PASS**, Exit0; Vitest1,40 s, Wrapper1,807823031 s |
+| 57 | Vollständiges TypeScript und Vite **PASS**, Exit0; Wrapper4,371923320 s, Vite1,60 s |
+
+**Normaler Browser-/Sourceoracle.** `tests/e2e/factory-placement.spec.ts:39–76` verwendet echte 250–350-ms-Keyboardpresses mit Release **vor** jeder Native-RPC-Abfrage, maximal vier Taps pro bestehendem Fall und höchstens drei zusätzliche echte Readbacks je Tap. Kein Workerwrapper, TestBridge, globale Hook, Stateinjection oder Tick-/Posevorgabe. Standprüfung verwendet genau die drei sourcebelegten X/Z-Teilboxen; Gesamt-X[-6,4;-6,1], Y[2,38;2,44]. Die breitere Grenze ist ein **Testziel innerhalb derselben Quelle**, keine Änderung von Reichweite/Hull/Terrain. Sourcequery-v2 JSON SHA256 **1008a7a6e82482e05fea8e89c19165e6805d7e49016b902b040f1c1978220c65** belegt vollständige flache 125-mm-Hullspalten sowie den LOS-Sourcekorridor; dies ersetzt keinen nativen Ground-/LOS-Nachweis. Finale Assertions fordern tatsächliches grounded, Cargo accessible, ursprüngliche 4-m-Cargopunktdistanz und beide 3-m-Serviceabstände; echte Folgepreviews/-CAS bleiben nötig. Die bounded Reads sind keine Garantie, dass Bewegung tatsächlich bereits endet: tatsächliche Browserpose/Previewassertions müssen das weiterhin bestehen.
+
+Unverändert: Nativeworker/-session/-Facilityworld, Uhr, Reach-/Hullregeln, 250/125-mm-Trennung, Source15mask, Cargo, globalen Budgets, Legacydefaults und ursprünglichen ≤30-s-Falllimits. Laufender normaler 17-Fälle-Eighth-Browser hier **nicht als PASS** bewertet. Finale Seal-Reprüfung und Berichtshash werden separat an Root gemeldet.

@@ -28,7 +28,21 @@
     "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts"
   ],
   "sharedPathGrant": "ONLY exact packageScopes.grantedWriteSet after recorded gates; no blanket shared-path permission. Shared contract/host/physics/save/config files remain integrator-exclusive.",
-  "activeImplementationWriters": [],
+  "activeImplementationWriters": [
+    {
+      "agent": "/root/fp06_integrator",
+      "package": "W07",
+      "branch": "codex/hestia-fp06-integrator-2026-10-11",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+      "baseCommitSha": "d5502ae7fd5431d58eda51bea062c54691ebe3c2",
+      "writeSet": [
+        "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+        "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts",
+        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts"
+      ],
+      "scope": "Bootstrap-only actualReceiver ghost pose/lifecycle correction after realRED59; input/Native/source/material/Receivercontracts andallother26grantpaths held."
+    }
+  ],
   "activeDocumentationWriter": {
     "agent": "/root",
     "branch": "codex/hestia-fp06-w00-2026-10-11",
@@ -883,7 +897,7 @@
         "apps/weltraum-browser/evidence/factory/w07/<actual-run-id>/**"
       ],
       "evidenceGrant": true,
-      "status": "IN_REVIEW",
+      "status": "IN_PROGRESS",
       "owner": "/root/fp06_integrator",
       "plannedRole": "integrator",
       "branch": "codex/hestia-fp06-integrator-2026-10-11",
@@ -943,7 +957,7 @@
         "Cargo provenance alone is not physical reach: initial source must be bound to a real Cargo-S0 world owner, native pose and access outside the 22 x 12 m machine zone. W07 handles initial witness/open and a truly reachable paid player build; W09 handles finite pickup, confirmed native movement and local deposit for remote construction/production. No new terrain masks, cargo, UI source-pose writes or automatic transport. New exact paths require a separate recorded scope extension; existing grants remain unchanged."
       ],
       "baseCommitSha": "d5502ae7fd5431d58eda51bea062c54691ebe3c2",
-      "implementationWriteHold": true,
+      "implementationWriteHold": false,
       "authorizedAtUtc": "2026-10-11T13:11:16.765614+00:00",
       "completedAtUtc": null,
       "tddInitialStatus": {
@@ -1290,8 +1304,12 @@
         "browserPhase": "eighth",
         "packageCommitSha": null
       },
-      "currentNarrowWriteSet": [],
-      "currentNarrowScope": "All29productgrantpaths WRITEHOLD; runtime sealed beforeactualnormal8th17caseBrowser; evidenceonlywrites allowed",
+      "currentNarrowWriteSet": [
+        "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+        "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts",
+        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts"
+      ],
+      "currentNarrowScope": "Bootstrap-only actualReceiver ghost pose/lifecycle correction after realRED59; input/Native/source/material/Receivercontracts andallother26grantpaths held.",
       "browserSeventhActual": {
         "log": 51,
         "endedAtUtc": "2026-10-11T14:55:26.833Z",
@@ -1302,6 +1320,67 @@
         "cliSeconds": 80.1268,
         "observedFailure": "Actual native player x=-5.5 after8trusted100ms D taps; paid build NOT_RUN",
         "traceDiagnosis": "All native transactions Idle and Walking/grounded; InputPlayer/locked=true/neutralizations1; last4press APIs496.9–544.5ms. Busy/latest-coalescing cause not yet directly witnessed."
+      },
+      "browserEighthActual": {
+        "log": 58,
+        "endedAtUtc": "2026-10-11T15:16:42.812Z",
+        "exitCode": 1,
+        "pass": 12,
+        "fail": 1,
+        "notRun": 4,
+        "cliSeconds": 154.197,
+        "actualPassedFacts": [
+          "NormaltrustedNativewalk/grounded/sourceService/NativeCargoLOS",
+          "One208kgpaidCutter",
+          "C26before1after0",
+          "TotalMaterial2,984,400,000mgunchanged",
+          "OneNativeCutterOwner added"
+        ],
+        "actualFailure": "T029errors[] contains2 earlier GhostMove/Rotate renderer RepresentationRemovedAtRevision; no error filtering; remaining4casesNOT_RUN",
+        "paidProof": "apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/browser-paid-cutter.json",
+        "paidCapture": "apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/paid-native-cutter.png",
+        "phaseNote": "Writer retains actualBrowserEighth copy; finalpathsmay latercontain ninth and needexplicitartifactreceipt binding."
+      },
+      "ghostReceiverFollowup": {
+        "authorizedAtUtc": "2026-10-11T15:20:02.754075+00:00",
+        "status": "GENUINE_RED_MINIMAL_FIX_IN_PROGRESS",
+        "writeSet": [
+          "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+          "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
+        ],
+        "contract": "Actual rendererReceiver/realBackend Ghostpreview→Move→Rotate→Cancel→Newpreview; preserve native/material counts; test the real tombstone lifecycle, not a permissivefake. No source/renderContractvalidationrelax/NativeGhostAuthority/errorfilter/newunboundedkeychurn. RuntimeBootstrap-only proposal awaits actualbusinessRED.",
+        "businessRed": {
+          "log": 59,
+          "status": "FAIL",
+          "selectedFail": 1,
+          "skip": 34,
+          "testSeconds": 7.582,
+          "vitestSeconds": 9.32,
+          "setupFailure": false,
+          "actual": "RealThreeRenderBackend receiver rejects pose update RepresentationRemovedAtRevision; existing permissive fake dispatch replaced only for this focused lifecyclecase",
+          "sourceRuntimeBeforeFix": "eighthseal1bd3173f72efe4b531e49579164cb62ead4534720c86696f1fa36eeeaf012636"
+        },
+        "minimalFixAuthorization": {
+          "authorizedAtUtc": "2026-10-11T15:24:41.113493+00:00",
+          "runtimeWriteSet": [
+            "apps/weltraum-browser/src/hvp/hvpBootstrap.ts"
+          ],
+          "allowed": "Same definition ghost move/rotation onlyupdatesresidentscene.transforms+refresh; preservegeometry/keys/leases. Cancel/repreview boundedreusableghostslot percloseddefinition andstrictlyhigherderivedartifactRevision withunchanged sourceRevision. Validate exhaustion/cap before allocation; rejectrealerrors, nofilter. OriginalpaidID/nativeMaterial/Renderercontractunchanged.",
+          "verification": "Focused actualReceiver lifecycle+affectedguards/material-input regression, fullbuild, new29seal+indepdeltareview, actualnormal9th17caseBrowser"
+        }
+      },
+      "eighthPaidVisualReview": {
+        "report": "docs/factory/fp06/reviews/w07-eighth-browser-paid-visual-review.md",
+        "source": "/workspace/.cloud-setup/fp06-w07-evidence-visual-review.md",
+        "originalSha256": "6d577cbd4271c7585df431b86750df65f2c2b6ef70da891fd2892b350bce0f98",
+        "originalBytes": 10448,
+        "copiedSha256": "6d577cbd4271c7585df431b86750df65f2c2b6ef70da891fd2892b350bce0f98",
+        "copyRule": "Markdown trailing spaces and EOF only; original source preserved",
+        "paidVisualNativeMaterialStatus": "SCOPED_PASS",
+        "normalBrowserStatus": "FAIL_12_PASS_1_FAIL_4_NOT_RUN",
+        "ghostVisual": "NOT_ESTABLISHED",
+        "humanArt": "NOT_RUN",
+        "finalManifestGitLfs": "PENDING"
       }
     },
     "W08": {
