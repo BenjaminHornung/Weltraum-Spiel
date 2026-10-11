@@ -843,7 +843,7 @@
         "apps/weltraum-browser/evidence/factory/w04/<actual-run-id>/**"
       ],
       "evidenceGrant": true,
-      "status": "IN_PROGRESS",
+      "status": "IN_REVIEW",
       "owner": "/root/fp06_domain",
       "plannedRole": "domain",
       "branch": "codex/hestia-fp06-domain-2026-10-11",
@@ -858,7 +858,7 @@
       ],
       "schedulingNote": "After W03 and W02 gates, Domain may implement its three pure production paths while Integrator owns W07 native Host/Physics; no shared-file grant.",
       "baseCommitSha": "1f2c568ec9db7b6b2895eb2a3b4f37797030dac8",
-      "implementationWriteHold": false,
+      "implementationWriteHold": true,
       "authorizedAtUtc": "2026-10-11T12:41:39.050117+00:00",
       "completedAtUtc": null,
       "tddInitialStatus": {
@@ -910,7 +910,38 @@
         "firstSafetyRun": "5 collected assertion FAIL / 7 skipped; 3.0 s; NoOp base, absent manual grant, historical manual replay, away passive clock, mutated native catalog metadata",
         "independentNoOpVariants": "4 collected assertion FAIL / 11 skipped; 2.699 s; base/material/plans/work, before fixes",
         "status": "WRITER_REPORTED_PENDING_SEALED_EVIDENCE_REVIEW"
-      }
+      },
+      "productSealedAtUtc": "2026-10-11T13:52:30.894769+00:00",
+      "workingProductSeal": {
+        "apps/weltraum-browser/src/factory/production/productionStep.ts": {
+          "sha256": "f74397051a7b2da13d6d183ccf573cb633cb932e915e1ebaf6bf6a50da29c449",
+          "bytes": 29154
+        },
+        "apps/weltraum-browser/src/factory/production/recipeAdmission.ts": {
+          "sha256": "c77eeaa220cbb491c51356533bdd8f1e6d221f67e9406b458d4a6c06ebac4102",
+          "bytes": 12898
+        },
+        "apps/weltraum-browser/tests/unit/factory/production.test.ts": {
+          "sha256": "7c31bf5f375af31c3ed0057cda4ce2a87951fff7412506fcab057c0d517769b6",
+          "bytes": 23542
+        }
+      },
+      "workingPatch": {
+        "sha256": "2cd262226ac36464316b18f6cdf4f70c18ff78c5d92fdcde9cdd8a57059b47ed",
+        "bytes": 67259,
+        "rootCopy": "docs/factory/fp06/reviews/w04-product-working.patch"
+      },
+      "evidenceRun": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z",
+      "evidenceManifestSha256": "7654cb46edef96a71211555c7b6d71a530664634a6e5d150d31ede42b5dbe621",
+      "finalVerification": {
+        "affectedSuite": "PASS:13files175tests,16production+159regressions, BEFORE sole commandId const-capture TypeScript fix",
+        "finalAffectedTargets": "PASS:4manual/history/away tests after const-capture fix;12skipped",
+        "finalTypeScriptAndVite": "PASS after const-capture fix",
+        "originalTestTimeoutMs": 5000,
+        "specAndCodeQuality": "PENDING independent final review",
+        "commitAndGitEvidence": "NOT_RUN; no commit yet"
+      },
+      "reviewScheduledAtUtc": "2026-10-11T14:00:57.063155+00:00"
     },
     "W05": {
       "dependencies": [
@@ -1355,6 +1386,31 @@
         "result": "3 collected assertion FAIL / 9 skipped, 2 files, exit 1, before cargo runtime fix",
         "wrapperSeconds": 1.51,
         "status": "WRITER_REPORTED_PENDING_SEALED_EVIDENCE_REVIEW"
+      },
+      "runtimeWriteHold": true,
+      "currentNarrowWriteGrant": {
+        "authorizedAtUtc": "2026-10-11T14:00:57.063155+00:00",
+        "productPaths": [
+          "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
+        ],
+        "evidence": "own W07 run only",
+        "purpose": "Split existing same-page/context/world normal browser sequence across serial cases retaining original <=30s limits and all real interactions; prove second-cutter C26 failure at valid disjoint supported place",
+        "excluded": "Runtime paths held; no timeout/queue/simulation acceleration or new terrain mask"
+      },
+      "reviewedHistoricalPhase": {
+        "patchSha256": "bc0986f9b508751644e6f392073caa8da293919b3d689dd96fe8df50c47909c1",
+        "patchBytes": 164001,
+        "nativeSpecAndCodeQuality": "FAIL: reserved Cargo owner ID collision and disposed checkpoint reading freed NativeWorld",
+        "report": "docs/factory/fp06/reviews/w07-native-review-prebrowser.md"
+      },
+      "preThirdBrowserPhase": {
+        "patchSha256": "d1e463f86c9cb6dd2fe8d27eb187532a9c27333963bf2cdc14a3d28ec728f6b4",
+        "patchBytes": 169868,
+        "genuinePreFixRed": "4 collected FAIL /54 skipped;2 CargoID assertions,disposed checkpoint null-pointer assertion,actual Bootstrap ghost publisher RuntimeFAIL;9.85s",
+        "focusedGreen": "30 Native/placement/cargo/source PASS plus1 actual BootstrapGhostCycle PASS",
+        "typeScriptAndVite": "PASS",
+        "browser": "1 PASS /1 FAIL /4 NOT_RUN;55.9s Exit1; frame and CargoOpen succeeded, original case30s consumed before Play; no diagnosed Play runtime fault",
+        "finalGate": "PENDING"
       }
     },
     "W08": {

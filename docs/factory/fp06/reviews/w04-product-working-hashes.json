@@ -1,0 +1,30 @@
+{
+  "package": "W04",
+  "actor": "/root/fp06_domain",
+  "branch": "codex/hestia-fp06-domain-2026-10-11",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11",
+  "baseCommitSha": "1f2c568ec9db7b6b2895eb2a3b4f37797030dac8",
+  "sealedAtUtc": "2026-10-11T13:52:30.894769+00:00",
+  "status": "WRITE_HOLD_PENDING_INDEPENDENT_REVIEW",
+  "products": {
+    "apps/weltraum-browser/src/factory/production/productionStep.ts": {
+      "sha256": "f74397051a7b2da13d6d183ccf573cb633cb932e915e1ebaf6bf6a50da29c449",
+      "bytes": 29154
+    },
+    "apps/weltraum-browser/src/factory/production/recipeAdmission.ts": {
+      "sha256": "c77eeaa220cbb491c51356533bdd8f1e6d221f67e9406b458d4a6c06ebac4102",
+      "bytes": 12898
+    },
+    "apps/weltraum-browser/tests/unit/factory/production.test.ts": {
+      "sha256": "7c31bf5f375af31c3ed0057cda4ce2a87951fff7412506fcab057c0d517769b6",
+      "bytes": 23542
+    }
+  },
+  "patch": {
+    "path": "/workspace/.cloud-setup/fp06-w04-product-working.patch",
+    "sha256": "2cd262226ac36464316b18f6cdf4f70c18ff78c5d92fdcde9cdd8a57059b47ed",
+    "bytes": 67259
+  },
+  "testBinding": "175/175 final affected suite before sole commandId const type narrowing; final4/4 affected manual cases plus complete tsc/Vite after narrowing",
+  "noForeignProductChanges": true
+}
