@@ -32,7 +32,7 @@ Three.js/HVP/Voxel/Physics/Save bleiben erhalten. Resources ist alleinige Warena
 | W05 | W01 | /root/fp06_domain, eigener Worktree | IN_PROGRESS: echter neuer Grant auf sauberem Domainbranch, Fachtests zuerst |
 | W06 | W01 | /root/fp06_integrator | IN_PROGRESS: echter Host-/Browser-RED, fokussiertes GREEN; vollständiger Paketgate offen |
 | W07 | W02/W05/W06 | /root/fp06_integrator | BLOCKED: Vorgänger; D11 freigegeben |
-| W08 | W02 | Domainwriter | BLOCKED: Vorgänger; D06 freigegeben |
+| W08 | W02 | Domainwriter | NOT_RUN: W02 PASS und D06 freigegeben; nach W05 |
 | W09 | W04/W07/W08 | /root/fp06_integrator | BLOCKED: Vorgänger |
 | W10 | W09 | /root/fp06_integrator | BLOCKED: Vorgänger; D11 freigegeben |
 | W11 | W10 | Integrator, unabhängige Reviews | BLOCKED: Vorgänger |
@@ -92,7 +92,7 @@ Bei unklarer Quelle, Zuständigkeit oder relevantem Ownergate nur betroffene Pro
 - [x] Zweiten Writer tatsächlich auf eigener Domainbranch/worktree eingerichtet; 82 benötigte LFS-Payloadhashes bestätigt, unveränderte gepinnte Dependencies verfügbar. Genau zwei disjunkte W02-/W06-Grants.
 - [x] D03-Restart und konkretes initiales StartSiteprofil zunächst als offene Ownerfragen dokumentiert, anschließend beide ausdrücklichen Nutzerfreigaben am 2026-10-11 um 10:34:17 UTC übernommen; Paketgates bleiben erforderlich.
 - [x] W02 technisches Paketgate: 61 Tests/Build/Cargo1 und unabhängige Spec-/Codeprüfung PASS bei 10e1e3026610065206d8ac4b361d3f1686114dd8. Anfänglicher T009–12 Business-RED vor Implementation NOT_RUN wegen Modulimport-Setupfehler; historische TDD-Konformität FAIL bleibt ausdrücklich sichtbar, kein erfundener Ownerwaiver. [Vollbericht](reviews/w02-package-report.md), [Nachprüfung](reviews/w02-followup.md).
-- [ ] W06: echte Host-/Kadenz-/Browser-REDs; vollständige frische Unitsuite 197 Dateien/1835 Tests PASS, 10 Session-/Evidencefälle PASS, Build/Typecheck PASS. Browser 3/6 PASS, übrige Fälle erschöpfen 30-s-Gesamtbudgets; tatsächliche Traces gesichert, fortlaufender normaler Sessionflow wird ohne Limitänderung geprüft. Host-Codeprüfung läuft, Endgate/Commit offen.
+- [ ] W06: echte Host-/Kadenz-/Browser-REDs; vollständige frische Unitsuite 197 Dateien/1835 Tests PASS, 10 Session-/Evidencefälle PASS, Build/Typecheck PASS. Browser 3/6 PASS, übrige Fälle erschöpfen 30-s-Gesamtbudgets; tatsächliche Traces gesichert, fortlaufender normaler Sessionflow wird ohne Limitänderung geprüft. Unabhängiges Erstreview Spec/Quality FAIL: Holdfilter, Resume-/Playguards, Manifestvalidierung und Factory-Restartroute. Enge echte RED/Fixes laufen; Endgate/Commit offen. [Befunde](reviews/w06-first.md).
 - [x] Browserprüfungen erhalten eine ausdrückliche serielle Lease für Port 5174; unveränderte 30-s-/5-s-/20-s-Defaults aus der vorhandenen Playwright-Konfiguration. Externe Umgebungsconfigs ändern ausschließlich Port und eigene Evidence-Ausgabepfade, keine Produktkonfiguration. W06s noch fehlgeschlagener kombinierter Browserfall wird in fokussierte reale Bedienfälle zerlegt und nach Unitabschluss seriell geprüft; kein neuer Timeout angenommen.
 - [ ] W05: Fachtestcode und Sourceprüfung zuerst; CPUjobs erst nach ausdrücklicher Lease, keine Runtimeimplementation vor BusinessRED.
 - [ ] W03/W04/W07–W11 je Paket RED/GREEN/Regression/Review/Evidence/Commit-Gate.

@@ -536,7 +536,29 @@
       "baseCommitSha": "a30630dd7963c165c673df7ea1b46d52735752ef",
       "implementationWriteHold": false,
       "authorizedAtUtc": "2026-10-11T10:07:10.972885+00:00",
-      "completedAtUtc": null
+      "completedAtUtc": null,
+      "reviewHistory": [
+        {
+          "spec": "FAIL",
+          "quality": "FAIL",
+          "reviewReport": "docs/factory/fp06/reviews/w06-first.md",
+          "snapshot": "2026-10-11T10:45:23.842374+00:00",
+          "findings": [
+            "R1 P1 native holds filtered from actual Host observers",
+            "R2 P1 inconsistent native confirmation across Factory resume/play paths",
+            "R3 P2 manifest artifact reference/hash admission missing",
+            "R4 P2 Factory end restart loses Factory profile"
+          ],
+          "disposition": "Narrow genuine business RED/fix/GREEN granted only within existing W06 product paths; end gate remains open"
+        }
+      ],
+      "verificationAtLastReview": {
+        "fullFreshUnits": "PASS:197files1835tests646.37s before review fixes",
+        "focusedSessionEvidence": "PASS:10 before review fixes",
+        "browser": "FAIL:3pass3fail before final serial harness",
+        "finalSerialHarness": "NOT_RUN at review",
+        "performance": "NOT_RUN; no comparable baseline"
+      }
     },
     "W07": {
       "dependencies": [
@@ -644,7 +666,7 @@
         "apps/weltraum-browser/evidence/factory/w08/<actual-run-id>/**"
       ],
       "evidenceGrant": false,
-      "status": "BLOCKED_DEPENDENCY",
+      "status": "NOT_RUN: W02 PASS; waiting for Domainwriter after W05",
       "owner": null,
       "plannedRole": "domain-or-assets-writer",
       "branch": null,
