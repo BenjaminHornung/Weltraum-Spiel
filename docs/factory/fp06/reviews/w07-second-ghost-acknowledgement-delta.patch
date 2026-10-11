@@ -1,0 +1,23 @@
+--- normal030fc/apps/weltraum-browser/tests/e2e/factory-placement.spec.ts
++++ candidate99/apps/weltraum-browser/tests/e2e/factory-placement.spec.ts
+@@ -126,11 +126,17 @@
+   test("normal second-Cutter ghost moves seven quarter-grid steps toward the independent source-checked site",async()=>{
+     beforeSecond=await readBuild(page);nativeBeforeSecond=await readNative(page);
+     await page.getByRole("button",{name:"Zuschnitt vorschauen",exact:true}).click();
+-    for(let step=0;step<7;step++)await page.keyboard.press("ArrowLeft");
+-    await expect.poll(async()=>(await readBuild(page)).ghost.request.centerMm[0]).toBe(-8000);
++    await expect.poll(async()=>{const request=(await readBuild(page)).ghost?.request;return request?{centerMm:request.centerMm,quarterTurns:request.quarterTurns}:null;}).toEqual({centerMm:[-6250,1500,5000],quarterTurns:1});
++    for(let step=0;step<7;step++){
++      await page.keyboard.press("ArrowLeft");
++      await expect.poll(async()=>(await readBuild(page)).ghost?.request.centerMm[0]).toBe(-6250-(step+1)*250);
++    }
+   });
+   test("seven more actual ghost moves reach the disjoint supported site and specifically prove BOM_MISSING",async()=>{
+-    for(let step=0;step<7;step++)await page.keyboard.press("ArrowLeft");
++    for(let step=0;step<7;step++){
++      await page.keyboard.press("ArrowLeft");
++      await expect.poll(async()=>(await readBuild(page)).ghost?.request.centerMm[0]).toBe(-8000-(step+1)*250);
++    }
+     const state=await readBuild(page);expect(state.ghost.request.centerMm).toEqual([-9750,1500,5000]);expect(state.ghost.request.quarterTurns).toBe(1);
+     await expect(page.locator("#factory-build-status")).toContainText("BOM_MISSING");
+   });

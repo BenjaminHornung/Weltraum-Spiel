@@ -1,6 +1,6 @@
 # FP06 Implementierungsstatus
 
-Stand: 2026-10-11 19:26 UTC. `PASS` bezeichnet ein abgeschlossenes Paketgate. `FAIL` benennt eine tatsächlich fehlgeschlagene erforderliche Prüfung; laufende Korrekturen ändern diesen Befund erst nach Verifikation. `NOT_RUN` gilt für noch nicht ausgeführte Prüfungen. Tatsächlich ausgeführte Teilprüfungen stehen im jeweiligen Bericht. Die maßgeblichen Gates und Branch-/Worktree-/Schreibgrenzen sind in `source-lock.json` und `write-ownership.json` gebunden.
+Stand: 2026-10-11 19:36 UTC. `PASS` bezeichnet ein abgeschlossenes Paketgate. `FAIL` benennt eine tatsächlich fehlgeschlagene erforderliche Prüfung; laufende Korrekturen ändern diesen Befund erst nach Verifikation. `NOT_RUN` gilt für noch nicht ausgeführte Prüfungen. Tatsächlich ausgeführte Teilprüfungen stehen im jeweiligen Bericht. Die maßgeblichen Gates und Branch-/Worktree-/Schreibgrenzen sind in `source-lock.json` und `write-ownership.json` gebunden.
 
 Aktuell geprüftes `origin/main`: `e40592c113b72a8dc93725187f92cf948e07f44d` (erneutes tatsächliches `git ls-remote` zwischen 17:22:00 und 17:22:34 UTC). Kein Mainmerge, Push oder Veröffentlichung.
 
@@ -13,7 +13,7 @@ Aktuell geprüftes `origin/main`: `e40592c113b72a8dc93725187f92cf948e07f44d` (er
 | W04 | PASS | `/root/fp06_domain` | `6929bf2447b72c9f3f8fa3bcae0a59c0691966c0` | [W04 Paketbericht](w04-package-report.md) |
 | W05 | PASS | `/root/fp06_domain` | `26d5e892c2b401b9011234dabf86955af7462fb8` | [W05 Paketbericht](w05-package-report.md) |
 | W06 | PASS | `/root/fp06_integrator` | `2c044e02f1f31a2db3de3a0df9156bd71a431a7a` | [W06 Paketbericht](w06-package-report.md) |
-| W07 | FAIL | `/root/fp06_integrator` | `—` | Normalbrowser88: 5 PASS/1 FAIL/11 NOT_RUN. Diagnosen90/92/94/97: 4/3/3/3 PASS ausschließlich Beobachtung. Timeline97 lokalisiert8384ms Browser-Commit-Wall bei65ms Trace-Threadzeit in8880ms Main-Aufgaben; Layout9ms. Down/Up werden danach in1,269ms verarbeitet, native Bewegung bleibt0 bei86 fortschreitenden Ticks. Konkreter Treiber-/Hardwareverursacher unbewiesen. Nach97 alle30 normal201394/E2E030fc exakt zurückgestellt, CPU/5174 freigegeben. Zwei kurze Setup-Proben tatsächlich ausgeführt: erste WebGL2 blockiert, zweite Mesa-WebGL2 verfügbar. Separater Starter47b081 unabhängig geprüft; genau ein unveränderter Normalvolltest98 mit17 Fällen autorisiert, Ergebnis ausstehend. Kein Hardware-/Performancegate. Manifest-/Git-/Commitgate offen. [Timelinebefund](w07-timeline97-attribution-report.md), [Umgebungsvorschlag](w07-browser-rendering-environment-preflight.md). |
+| W07 | NOT_RUN | `/root/fp06_integrator` | `—` | Paketabschluss ausstehend; tatsächlicher Mesa-Normalbrowser100 besteht17/17 in28.365s. Nativebewegung, Cargo, bezahlter208kgCutter,14bestätigte Rasterschritte zum unabhängigen zweiten Standort, spezifisches BOM_MISSING, volle Material-/Nativegleichheit und Disposal bestehen. Nur Testbestätigung14/15 geändert;Runtime29bytes unverändert, unabhängig geprüft. Scoped Manifest-/Git-/LFS-/Commitreview folgt. |
 | W08 | PASS | `/root/fp06_domain` | `8d22fc9907d84bf2ff6b257299ff47fb23b112ff` | [W08 Paketbericht](w08-package-report.md) |
 | W09 | BLOCKED | `/root/fp06_integrator` | `—` | Vorgänger: W04, W07, W08 |
 | W10 | BLOCKED | `/root/fp06_integrator` | `—` | Vorgänger: W09 |
@@ -21,7 +21,7 @@ Aktuell geprüftes `origin/main`: `e40592c113b72a8dc93725187f92cf948e07f44d` (er
 
 Integratorbranch: `codex/hestia-fp06-integrator-2026-10-11`; Domainbranch: `codex/hestia-fp06-domain-2026-10-11`; W00-/Controldokumente: `codex/hestia-fp06-w00-2026-10-11`. Höchstens zwei Implementierungswriter, gemeinsam genutzte Host-/Physics-/Save-/Contractdateien ausschließlich Integrator. Domain ist derzeit im Produkt-Writehold; unabhängige Reviewer schreiben keinen Produktcode.
 
-Für den beauftragten W00–W11-Scope stehen keine benötigten Ownerantworten aus. Menschliche Art-/Gameplayabnahme bleibt separat `PENDING_OWNER`; daraus wird kein technischer Gesamt-PASS behauptet. W12–W29 sind ausgeschlossen.
+Die bisherigen D01–D11-Antworten bleiben gültig. Für W09 steht eine enge zusätzliche Native-Handlingfreigabe aus: D11 umfasst ausdrücklich feste Owner, der vorgeschlagene einzelne Kin→Fixed-Träger benötigt eine Ergänzung. Nur davon abhängige Writes sind gesperrt; siehe [konkreter Vorschlag](../proposals/native-handling-v1.md). Menschliche Art-/Gameplayabnahme bleibt separat `PENDING_OWNER`; daraus wird kein technischer Gesamt-PASS behauptet. W12–W29 sind ausgeschlossen.
 
 Historische Grenzen bleiben sichtbar: W02s anfänglicher Business-RED vor Implementierung war wegen Importfehlern `NOT_RUN` und damalige TDD-Konformität `FAIL`; spätere echte Sicherheits-REDs ändern diese Historie nicht. W05s globale historische LFS-Cacheprüfung ist kein Repository-Gesamt-PASS. W08s früherer Vor-Kompressions-Bytevergleich war `NOT_AVAILABLE`. Tests vor späteren Korrekturen gelten nur für ihre tatsächlich gebundenen Bytes; keine erfundene erneute Gesamtausführung.
 

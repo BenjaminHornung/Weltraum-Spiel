@@ -1,0 +1,13 @@
+# W07 actual98 independent retained-evidence review
+
+Scope: read-only retained artifacts in Integrator `apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z`; no execution or evidence/product modification. This is an evidence-binding finding, not package or W07 gate approval.
+
+All 31 files in `98-full-browser-artifact-receipt.json` independently match actual SHA256/bytes: 9,110,585 bytes. Receipt SHA256: `70f963c570aaa201d53d42b75fd294d36a47a1d1f104a2b33c18aacb335a37ee`. Command receipt SHA256: `aedb99f71768ed0783089a0e400d6793c7a613f10e4de2e30b6525ef0dfef460`. Gzip SHA256: `90db35c6a806f4d733fe2479c725c967b368eb818df0e0217ed029597c3c1132`; decompression verifies 7,822 raw bytes/SHA256 `6146d841dd0ddbe2dcc6326ad5807f4377fe75400459dbddce3ba0d7c359d993` against the receipt and plain log.
+
+The unchanged 17-case normal suite ended 2026-10-11T19:26:35.145347Z after 27.124071126 seconds, exit 1: **13 PASS, 1 FAIL, 3 NOT_RUN**. Native walk, cargo access, move/rotate/cancel and first paid Cutter passed. Case14 fails reading `ghost.request` when `ghost` is null after seven ArrowLeft gestures; the retained failure does not establish why the ghost became null. Subsequent supported/depleted second-Cutter, conservation-on-rejection, and disposal/save cases did not run.
+
+Paid capture JSON SHA256 `f5d814fe56e1d546274b253afac6b1989f084b0ad337c9ebf4718fcf2746f317`: exact aggregate equality across 79 complete resource/owner/lineage keys; total 2,984,400,000mg before/after; one installed 208,000,000mg Cutter owner; bodies/colliders 5/81→6/114. Its errors array is empty at this capture, before case14. The individually viewed archived PNG (662,112B, SHA256 `1b5f4959c54e889393aa05222d914cbe14d9ef5497a61eba2ae758d54558b1a6`) visibly shows that Cutter on terrain and matching paused HUD; existing HVP/debug and prototype panels remain. Fine asset inspection, Owner art acceptance and complete playable-loop acceptance are not demonstrated.
+
+All current 30 product bytes independently match baseline seal `201394fb8346e8b12c93b0bb5d52c34d180d966a80c884697813b9d224c511d4`; all seven historical fixed-output original/absent states match. Restoration receipt SHA256 `62f34cf0fa84600565b24393df1afd1f9e88b56692eb9c0b4867236c2c4d7c85` records released CPU/GPU/5174 lease and empty listener output; no new port query performed.
+
+The live/archived 222B wrapper matches SHA256 `47b081898a76e3f36d43ce06697990adb093ebe2eaeed8ef1b484fa8bffd5ab9`: software GL/surfaceless environment, Chromium headless/ANGLE/gl-egl prefix, quoted argument passthrough. Config hash remains unchanged. Effective complete runtime argv/driver and physical GPU performance were not observed; no hardware, FPS or benchmark claim follows.

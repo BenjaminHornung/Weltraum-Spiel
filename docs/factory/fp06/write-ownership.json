@@ -1294,21 +1294,21 @@
         }
       ],
       "currentProductSeal": {
-        "sealedAtUtc": "2026-10-11T17:52:04.994160+00:00",
-        "patch": "docs/factory/fp06/reviews/w07-cdp-trusted-driver-product.patch",
-        "patchSha256": "8cc84f0fc56c32bc661fb25626da04d78288d2dc24a0706a290a52d1f9a7e936",
-        "patchBytes": 243267,
-        "fileHashes": "docs/factory/fp06/reviews/w07-cdp-trusted-driver-product-files.json",
-        "fileHashesSha256": "201394fb8346e8b12c93b0bb5d52c34d180d966a80c884697813b9d224c511d4",
+        "sealedAtUtc": "2026-10-11T19:33:31.595483+00:00",
+        "phase": "SECOND_GHOST_ACKNOWLEDGEMENT99_PRE_BROWSER",
+        "fileHashes": "docs/factory/fp06/reviews/w07-second-ghost-acknowledgement-product-files.json",
+        "fileHashesSha256": "5138bdc77c13a971158c93deb430c8648a5a79d6701d910aaefd10fa8ed7cb16",
+        "patch": "docs/factory/fp06/reviews/w07-second-ghost-acknowledgement-product.patch",
+        "patchSha256": "0a0c086a4a57a4b49df7f63ccf52315f62c478426680c947090c4e40f6934332",
+        "patchBytes": 243652,
         "grantedPaths": 30,
         "actualChangedProductPaths": 28,
-        "exactPrior85DeltaPaths": [
+        "exactPrior201394DeltaPaths": [
           "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
         ],
         "allOther29HeldMatch": true,
-        "phase": "PUBLIC_TRUSTED_CDP_DRIVER_PRE_BROWSER",
         "packageCommitSha": null,
-        "rootProof": "docs/factory/fp06/reviews/w07-cdp-trusted-driver-root-proof.json"
+        "rootProof": "docs/factory/fp06/reviews/w07-second-ghost99-root-source-review.md"
       },
       "currentNarrowWriteSet": [],
       "currentNarrowScope": "Frozenexact30CPUprofileoverlay; afterONEdiagnostic onlyexact normalE2Erestore authorized",
@@ -1961,7 +1961,7 @@
         "gate": "Targeted11 only; full17 and package remain NOT_RUN/FAIL until actual results",
         "status": "EXECUTED83_FAIL_CPU_GPU_PORT_RELEASED"
       },
-      "cpuGpuPortLease": "EXCLUSIVE_INTEGRATOR_ONE_NORMAL_FULL17_MESA98",
+      "cpuGpuPortLease": "RELEASED",
       "adaptiveNormalVerificationActual": {
         "log": 83,
         "selected": 11,
@@ -2789,6 +2789,76 @@
         "reviewPath": "docs/factory/fp06/reviews/w07-mesa-wrapper-root-source-review.md",
         "reviewSha256": "e2085aa34c2df75bb96743b00facbd9489d9b3ca95c6e3dfc787a0ae38a39b8b",
         "scope": "Exactly one unchanged full17 normal browser execution via reviewed wrapper, original config53a55, all30baseline201394 and normal030fc. No app/E2E/runtime/build edits, no diagnostic hooks, no source/physics/queue/timeout/budget change. Archive exact fresh raw/results, restore own fixed origins, verify all30, release own5174. No third availability probe or concurrent CPU/GPU work."
+      },
+      "mesaNormalFull98Actual": {
+        "status": "FAIL_NORMAL17_13PASS_1FAIL_3NOT_RUN",
+        "startUtc": "2026-10-11T19:26:08.021284+00:00",
+        "endUtc": "2026-10-11T19:26:35.145347+00:00",
+        "seconds": 27.1240711260034,
+        "exitCode": 1,
+        "rawSha256": "6146d841dd0ddbe2dcc6326ad5807f4377fe75400459dbddce3ba0d7c359d993",
+        "rawBytes": 7822,
+        "artifacts": 31,
+        "artifactBytes": 9110585,
+        "normalGameplay": "NativeWASD/Cargo/SourceReach/T030ghost/T029paid208kgCutterPASS",
+        "failure": "Case14 second-Cutter preview: null ghost dereference after7ArrowLeft before confirmed asynchronous select; source diagnosis pending, not product assertion fail",
+        "restoration": "all30baseline201394/normal030fc/fixed7MATCH;5174free",
+        "cpuGpuPortLease": "RELEASED",
+        "reviewStatus": "EVIDENCE_SCOPE_PASS_NORMAL_GAME_FAIL",
+        "reviewPath": "docs/factory/fp06/reviews/w07-mesa98-normal-evidence-review.md",
+        "reviewSha256": "484f7f3cece07cb2a42490acfa12eebbd2dbe58a707f7d99f240dc17f1215e37",
+        "sourceReviewSha256": "484f7f3cece07cb2a42490acfa12eebbd2dbe58a707f7d99f240dc17f1215e37",
+        "reviewCopyTransform": "TrailingLFonlyNormalized;externalOriginalPreserved"
+      },
+      "secondGhostAcknowledgementE2EAuthorization": {
+        "authorizedAtUtc": "2026-10-11T19:29:36.054710+00:00",
+        "actor": "/root/fp06_integrator",
+        "trigger": "Actual98 case14 null ghost after asynchronous choose; normal17 13PASS/1FAIL/3NOT_RUN",
+        "writeSet": [
+          "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
+        ],
+        "baseSealSha256": "201394fb8346e8b12c93b0bb5d52c34d180d966a80c884697813b9d224c511d4",
+        "scope": "After read-only actualtrace/source confirmation, ONLY cases14/15 await real initial ghost request at originalcenter(-6250,1500,5000),quarterTurns1 beforekeys; then each actual ArrowLeft acknowledged by original5s expect.poll on null-safe current ghostcenter. Preserve7+7moves,final[-9750,1500,5000],quarter1,BOM_MISSING,all material/native equality tests and original30s case timeout. No forced Factory/Native clock,Input/World/state/gift/position/reach/support/Sources changes. No runtime/App/otherE2E mutation. One original build for candidate/seals/sourceReview; no Browser until separate full17 grant."
+      },
+      "secondGhost99Review": {
+        "status": "SOURCE_SCOPE_PASS",
+        "path": "docs/factory/fp06/reviews/w07-second-ghost99-root-source-review.md",
+        "sha256": "ee61a95dd2bdc2cfbf489721f15b92de7310e6ae33327b060781b3089e7f16e7",
+        "actualBuildExit": 0
+      },
+      "mesaNormalFull100Authorization": {
+        "authorizedAtUtc": "2026-10-11T19:33:31.595483+00:00",
+        "actor": "/root/fp06_integrator",
+        "phase": "ONE_NORMAL_FULL17_MESA100",
+        "productSealSha256": "5138bdc77c13a971158c93deb430c8648a5a79d6701d910aaefd10fa8ed7cb16",
+        "normalE2eSha256": "8f3148798f82f37cdcabe7d811e30b19467db52ac7ffc639b26e8425d6856dfa",
+        "wrapperSha256": "47b081898a76e3f36d43ce06697990adb093ebe2eaeed8ef1b484fa8bffd5ab9",
+        "sourceReviewPath": "docs/factory/fp06/reviews/w07-second-ghost99-root-source-review.md",
+        "sourceReviewSha256": "ee61a95dd2bdc2cfbf489721f15b92de7310e6ae33327b060781b3089e7f16e7",
+        "scope": "Exactly one full17 normal game suite using reviewed Mesa wrapper47b081, config53a55 and sealed8f3148/source5138bdc7. No product/E2E/runtime/build/instrumentation/queue/timeout/source changes. Archiveprior98/97/94/92/90/88 refs and7fixedorigins; fresh100 raw/results/artifacts then exactorigins/all30restore andCPU/5174release."
+      },
+      "finalRuntimeSourceReview": {
+        "status": "RUNTIME_SOURCE_SPEC_QUALITY_PASS",
+        "path": "docs/factory/fp06/reviews/w07-final-runtime-source-review.md",
+        "sha256": "1f549a99b66362246ca84602649a9276a9d0103c5e18b5b6dee7f398314362da"
+      },
+      "mesaNormalFull100Actual": {
+        "status": "PASS_NORMAL_FULL17",
+        "startUtc": "2026-10-11T19:34:12.486564+00:00",
+        "endUtc": "2026-10-11T19:34:40.851664+00:00",
+        "seconds": 28.365107459001592,
+        "exitCode": 0,
+        "rawBytes": 4410,
+        "rawSha256": "2ac12a2cf7778a00feb198453239e597c471606c94ac83a2c8219ff14616fc87",
+        "artifacts": 9,
+        "artifactBytes": 3697906,
+        "sourceSealSha256": "5138bdc77c13a971158c93deb430c8648a5a79d6701d910aaefd10fa8ed7cb16",
+        "oracles": "ActualNativeWalking/CargoSourceReach/move-rotate-cancel/paid208kgCutter/supportedsecondsiteBOM_MISSING/finiteC26/fullmaterial-nativeunchanged/disposal/LegacySaveclosed",
+        "all30CandidateRestored": true,
+        "fixed7OriginalStatesRestored": true,
+        "cpuGpuPortLease": "RELEASED",
+        "independentEvidenceReview": "IN_PROGRESS",
+        "packageEndGate": "NOT_RUN_GIT_LFS_MANIFEST_COMMIT"
       }
     },
     "W08": {
@@ -3033,6 +3103,13 @@
           "reviewer": "/root/w00_architecture",
           "status": "SOURCE_PROPOSAL_PASS_NO_IMPLEMENTATION_OR_PRODUCT_FREEZE"
         }
+      },
+      "additionalNativeHandlingOwnerGate": {
+        "status": "OPEN_OWNER_DECISION",
+        "proposal": "docs/factory/fp06/proposals/native-handling-v1.md",
+        "proposalSha256": "c1aa59de0a2159e7ec2c81af5bd64f5c7d867751e0af274736e737fc26803a6c",
+        "originalD11FixedOnlyRemainsAccepted": true,
+        "blockedWrites": "New mobileHandlingNativeowner/Sweep/Mass/Saveimplementation only; independentHostDomain/UIwork may proceed afterW07"
       }
     },
     "W10": {
