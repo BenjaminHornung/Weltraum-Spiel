@@ -1,0 +1,29 @@
+# W09 – enges unabhängiges Consumed-depot-Nachreview
+
+Read-only 2026-10-11 21:08:56–21:10:26 UTC, Integrator-HEAD `aeb6680044eb455a10d0bba6e67979c153fd248f` plus WIP. Keine eigenen Test-/Build-/Browser-/Nativejobs. **Kein W09-Paketgate.**
+
+## Native-/Materialscope
+
+`placement.ts:66–73,98–110` erlaubt entfernte Maschine aus genau dem tatsächlichen erreichbaren Builddepot, dessen versionierte Profilterms exakt dem Geräte-BOM entsprechen. W02 überträgt die vollständigen Ressourcen in `installed_<instance>`; Rest im Depot wird abgewiesen. Das kanonische leere Custodyfragment begleitet das gesamte Materialcandidate. Die ursprüngliche Wrackfracht bleibt als Ursprungs-/Ownerbinding verlangt; ohne gültiges Depot gelten weiter Cargoaccessible und der tatsächliche Cargo-/Serviceabstand. Kein allgemeiner entfernter Inventoryzugriff entsteht.
+
+`factoryFacilitySession.ts:377–391` verlangt den eigenen vorhandenen Deposited-Carrier, echte Accessibleprojektion, exakte Container-ID, vollständige BOM-Profilterms/Masse und im gebundenen Materialcandidate sowohl identisches leeres Custodyfragment als auch vollständige Installed-BOM-Mengen. Dies ist ein bounded Hostreceipt; Native führt kein eigenes Inventar. Die Hostplanung bleibt für tatsächliche Resources-Provenance und vollständigen CAS zuständig.
+
+`:394–405` prüft **vor** Deaktivierung/Allocation weiter Cargo+Carrier+Owners≤16, Bodies einschließlich Dormants≤64, Dynamics≤32 und Collider≤4096. Die held Stage zählt alten Carrier und neue Maschine zugleich. Ausschließlich der exakt konsumierte eigene Carrier wird deaktiviert; alle übrigen aktiven Collider werden unverändert geprüft. Die Nativeoperation verwendet dieselbe World. Die Source-/Foot-/Air-/Serviceprüfungen der Placementroutine bleiben unverändert.
+
+`:97–101,221–229,423–429` beweist alte Memberbytes, Objekt-/Shapeidentitäten, deaktivierte Custody und verborgene feste Maschine. Rollback entfernt ausschließlich den Kandidaten, reaktiviert das ursprüngliche Depot und beweist den vollständigen Originalzustand. `:447–456` entfernt dessen Body/fünf Collider erst in Finalize und beweist alle übrigen Members. Slotwiederverwendung ist anschließend möglich. `buildStep.ts:40,47–56` bindet den neu abgeleiteten consumedCustodyanteil und übernimmt Material, Installation, gehaltenen Nativeview und Projektion synchron ohne Await vor Finalize. Historische vollständige UI-Commands bleiben über den bereits vorhandenen Historypfad gebunden; neuer Build-UIanschluss ist noch laufende Integration.
+
+## Konkreter verbleibender Faultpfad P1
+
+Zusätzlich gelesene Hostseam `hvpBootstrap.ts:2247,2253–2254`: `publishNative` versteckt die ursprüngliche CarrierScene und entfernt ihre activeKeys. Seine `refreshFactoryProjection()` kann über den echten Renderer/`requireAccepted` werfen (`:470,480,504,2200`). Ebenso kann anschließende Maschinenpublikation scheitern. Vor `buildStep.ts:54` abgeschlossenem `published=true` führt der Catch Native-/Materialrollback aus; `rollbackProjection` restauriert aber `carrierScene.published`/activeKeys nicht. Ergebnis des Sourcegegenfalls: Ready mit altem bezahltem Depotmaterial und NativefixedBody, dessen ursprüngliche Projektion unsichtbar bleibt. Root und Integrator unmittelbar informiert. Benötigt wird ein echter Receiver-Fault-RED und die enge Wiederherstellung dieser vorhandenen Projektion; keine Renderercontractlockerung. Nicht als bereits ausgeführter RuntimeFAIL oder PaketFAIL behauptet.
+
+## Tatsächliche Phasen 48–52
+
+Alle fünf Receipts/CWD/Rohlogs unabhängig gelesen, entpackt und SHA256-/Bytezahlen geprüft: Match. 48 tatsächlicher Assertion-FAIL `NativeOverlap`, RawSHA `538a75c065d39be4849785394b41fd1274cd7ad37aeddce7bc6e0b8dbfc42f03`, Vitest1,81s/Wrapper2,223555741s. 49 heißt historisch `green`, ist tatsächlich **FAIL**, RawSHA `0caa61b3365ecb216931cf423688a5b87f260ce6a61ed0e82bfd94cc30128648`, 1,72s/2,108585360s. Sein unverändert tatsächlicher Cargoschnitt ist durch echte gepaarte Sweepvorbereitung plus `World.step` auf dem synthetischen freien Boden in der neuen Testfixture beseitigt, nicht durch eine Collider-Ausnahme für Cargo.
+
+51 tatsächlich1PASS/20skipped, RawSHA `ee0bffcceacc68ca3f31c6c34ebbaeae42d5c6d27fb92ab96348e0020df09115`, 1,85s/2,240459626s. Dieses echte Rapierorakel prüft Commit→Rollback, Depotbody/Colliderenable/Counts und vollständige Finalize-Übergabe in einen341kg-Owner. Native-Testmaterial ist explizite synthetische Hostreceiptevidence. 50 tatsächlicher pure-Material-Assertion-FAIL Rejected statt Prepared, RawSHA `600df1ad6b02e07b958298e7164952d662bc58365848c0b84c8dc0aa5b3994df`, 676ms/1,043191567s. 52 tatsächlich1PASS/8skipped, RawSHA `77617c91c9305279eb8a55b2fd266f6f4f8e39fbefef26e4424f205de8b2f62a`, 959ms/1,344363743s. Es erzeugt über echten W02Transfer das vollständige B07-BOM und beweist leeres Depot,341kg Installedcontents und gleiche Gesamtmasse. Kein D07-Routen- oder gesamter Host/Renderer-Faultnachweis.
+
+## Bytebindung
+
+Vier Prüfdateien blieben21:08:56→21:10:26 identisch: Nativefacility `f0ac243f62c2801209edd6844a6965b5fdfb0ce5153997187505ce64428bcfb3`; Buildstep `26d8e5feeeff9f2ee02c85b9fa4f9ac4e4e12b1664b06ba87184fbc1cd3b1e95`; Placement `9b75688f1ad743246559d0e46c2c423cfd29c584932fdbae7b64c740f9ad75a3`; Handling `b5c4e663c2c0796d65b86e2af9c2bc4d403a710fd37d180f9403be10cb293018`. Tests endread: Native `4f09ddaf49d31e2afb37a75547356b14946b85fbaf200abef76f242c25302d24`, Material `d0b7eff02e1efc4c8ed89855c5a5d4ef07e2bf703825317565293e372b3be0a2`. Mutablephase, kein finals Versiegelungsurteil.
+
+Abschluss21:12:10: dieselben vier Sourcehashes erneut identisch. Zusätzlich Bootstrap `dd35de2527e1883627a061a0179051f6233f23347e184e3f21430b783c18906d`; dessen konkret genannte Publish-/Rollbackseam wurde im Abschluss noch einmal gelesen und blieb in dieser Phase unverändert.

@@ -1,0 +1,18 @@
+{
+  "schema": "hestia.fp06.readonly-main-freshness/v1",
+  "command": [
+    "git",
+    "ls-remote",
+    "origin",
+    "refs/heads/main"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel",
+  "startedAtUtc": "2026-10-11T21:20:55.852678+00:00",
+  "endedAtUtc": "2026-10-11T21:20:56.472672+00:00",
+  "elapsedSeconds": 0.6200001730030635,
+  "exitCode": 0,
+  "stdout": "e40592c113b72a8dc93725187f92cf948e07f44d\trefs/heads/main\n",
+  "actualMainSha": "e40592c113b72a8dc93725187f92cf948e07f44d",
+  "originalWorktreeStatusClean": true,
+  "scope": "Read-only remote main refresh during W09; no fetch/ref/foreign changes."
+}

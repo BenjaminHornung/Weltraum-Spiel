@@ -3741,6 +3741,24 @@
         "rootActualHeadAnd42GitBlobsVerifiedAtUtc": "2026-10-11T20:59:12.629343+00:00",
         "receipt": "docs/factory/fp06/reviews/w09-ui-copy-receipt.json",
         "beforeReceipt": "docs/factory/fp06/reviews/w09-ui-copy-before.json"
+      },
+      "consumedDepotReview": {
+        "report": "docs/factory/fp06/reviews/w09-consumed-depot-review.md",
+        "sha256": "dfad392cd909bf484ac9d2e8dfd6162ad991d7ff8216ad496c852452f10057aa",
+        "status": "SCOPED_NATIVE_MATERIAL_SOURCE_EVIDENCE_PASS_WITH_OPEN_RENDER_FAULT_FINDING",
+        "actualPhases": "48 FAIL;49 fixture failure retained;50 actual material FAIL;51 actual native PASS;52 actual material PASS",
+        "remainingFinding": "P1: consumed carrier visibility/active keys must restore with complete rollback or enter RecoveryHold after rejected render publication. Actual receiver-fault test pending.",
+        "limits": "Synthetic floor only, no D07 route/browser/complete power-production-belt/save/package acceptance."
+      },
+      "entryCarrierDraftReview": {
+        "report": "docs/factory/fp06/reviews/w09-entry-carrier-source-review.md",
+        "sha256": "5a5691acb60b2728d276f833ff1d12c0667d286d095f1d89c6718bb3a2ddd69e",
+        "status": "SOURCE_ONLY_DRAFT_WITH_OPEN_C1_C2_FINDINGS_NOT_PACKAGE_GATE",
+        "openFindings": [
+          "C1: rejected hidden carrier retire must retain cleanup state/cost and RecoveryHold until complete rollback is proven",
+          "C2: all carrier operations must admit existing bounded Native world-members capture temporary CPUcost before allocation"
+        ],
+        "limits": "No tests/browser executed by reviewer; mutable drySlice drift explicit. Current integration is not completed gameplay."
       }
     },
     "W10": {
@@ -3784,7 +3802,8 @@
         "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
         "apps/weltraum-browser/src/factory/material/reservations.ts",
         "apps/weltraum-browser/src/factory/factoryEntry.ts",
-        "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts"
+        "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+        "apps/weltraum-browser/src/factory/construction/buildStep.ts"
       ],
       "grantedWriteSet": [],
       "evidenceWriteSet": [
@@ -3831,6 +3850,14 @@
         "originalSha256": "c8f7217df442a9a78af6372d4c01af551c12da5e71da70475c5a88f1da9ccc5a",
         "originalBytes": 32122,
         "purpose": "Read-only Vorprüfung, W10 bleibt bis W09-PASS gesperrt; kein Produktwrite und kein Save-PASS."
+      },
+      "restoreSeamDelta": {
+        "report": "docs/factory/fp06/reviews/w10-w09-restore-seam-delta-v1.md",
+        "sha256": "c82c90131079f1fcf4a09c68435fa50519144528743e0de26eb1cf92b6e2b4b5",
+        "status": "READ_ONLY_SOURCE_PREPARATION_NOT_WRITE_GRANT",
+        "proposedAddedPath": "apps/weltraum-browser/src/factory/construction/buildStep.ts",
+        "reason": "Private installation registry needs validated restored initializer; Host published installations must match full paid saved world. Refresh source hashes against actual completed W09 before W10 grant.",
+        "noAdditionalHandlingPathJustified": true
       }
     },
     "W11": {
@@ -4040,6 +4067,12 @@
       "changedFromW00": false,
       "receipt": "docs/factory/fp06/reviews/w09-repository-freshness.json",
       "visibility": "Remote main and visible local worktrees; external uncommitted writers and API PR status remain unknown"
+    },
+    {
+      "record": "docs/factory/fp06/reviews/w09-main-freshness-20261011T2120.json",
+      "endedAtUtc": "2026-10-11T21:20:56.472672+00:00",
+      "mainSha": "e40592c113b72a8dc93725187f92cf948e07f44d",
+      "status": "UNCHANGED_ACTUAL_READ_ONLY_REMOTE_CHECK"
     }
   ],
   "integrationTransfers": [
