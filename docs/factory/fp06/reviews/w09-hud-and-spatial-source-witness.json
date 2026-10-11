@@ -1,0 +1,217 @@
+{
+  "observedAtUtc": "2026-10-11T23:43:37.049117+00:00",
+  "status": "ROOT_ACTUAL_RAW_RECEIPTS_VERIFIED_SCOPED_HUD_PASS_SPATIAL_FAILURES_OPEN",
+  "ownRun": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z",
+  "records": [
+    {
+      "phase": 171,
+      "classification": "BUSINESS_ASSERTION_RED_HUD",
+      "receiptPath": "171-carrier-context-hud-business-red.command.json",
+      "receiptSha256": "59943cb3bf9d4b132a78948c1a9bf9779d244e97e04e55cf8f7bdc68ff70457f",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "test",
+          "--",
+          "tests/unit/hvp-bootstrap.test.ts",
+          "-t",
+          "projects actual carrier mass"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-11T23:31:33.335160+00:00",
+        "endedAtUtc": "2026-10-11T23:31:42.659399+00:00",
+        "elapsedSeconds": 9.32463203399675,
+        "exitCode": 1,
+        "rawBytes": 1160,
+        "rawSha256": "8646c63197a6ea5557069601a6b74f40041ff835ea10dcb9ae8ad4fc2f2d42ad"
+      },
+      "rawGzipSha256": "f12c0a12cd6b8af639121a6f1c04f16918da14a22b1ac82018e3e644f760870e",
+      "rawVerified": true
+    },
+    {
+      "phase": 172,
+      "classification": "FOCUSED_HUD_PASS_43_SKIPPED",
+      "receiptPath": "172-carrier-context-hud-focused-green.command.json",
+      "receiptSha256": "639a72e0e88b22cac539449441c64183a22e0f1af8de8006a8785d07da7273fa",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "test",
+          "--",
+          "tests/unit/hvp-bootstrap.test.ts",
+          "-t",
+          "projects actual carrier mass"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-11T23:32:25.892798+00:00",
+        "endedAtUtc": "2026-10-11T23:32:35.796328+00:00",
+        "elapsedSeconds": 9.903992450999795,
+        "exitCode": 0,
+        "rawBytes": 394,
+        "rawSha256": "ef9ee152cbf0ec8886211a1a429300139fa5072864e3707b84bbdc797d9ad948"
+      },
+      "rawGzipSha256": "244ab56a3e7a3053249b7bbe72313c9a9abb98f901528d68622c43906d4950f7",
+      "rawVerified": true
+    },
+    {
+      "phase": 173,
+      "classification": "SEVEN_AFFECTED_HUD_RECEIVER_PASSES_37_SKIPPED",
+      "receiptPath": "173-carrier-context-hud-default-restore-and-fault-regressions.command.json",
+      "receiptSha256": "17320f30a46a263901db8967d25018e8247dc172bb026ee24a3e1095c37e299b",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "test",
+          "--",
+          "tests/unit/hvp-bootstrap.test.ts",
+          "-t",
+          "projects actual carrier mass|partially staged carrier|consumed paid depot|release enters RecoveryHold|complete Native member capture"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-11T23:33:01.260471+00:00",
+        "endedAtUtc": "2026-10-11T23:33:55.525590+00:00",
+        "elapsedSeconds": 54.265496961998,
+        "exitCode": 0,
+        "rawBytes": 500,
+        "rawSha256": "1a7c619cabe270edeeccb35bcca2e002aca50a0de3b01b88f97388232b55be50"
+      },
+      "rawGzipSha256": "3ee7d5488fe07caebf0375a9b2ac866c73477469a7bea6339bf875a3c261fb84",
+      "rawVerified": true
+    },
+    {
+      "phase": 174,
+      "classification": "ORIGINAL_TYPESCRIPT_VITE_BUILD_PASS",
+      "receiptPath": "174-carrier-context-hud-original-build.command.json",
+      "receiptSha256": "70124bcd333829dfc9ac2430067040b4fa44aa5b3f25e0dc67413ce56703d36d",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-11T23:34:09.838260+00:00",
+        "endedAtUtc": "2026-10-11T23:34:14.086550+00:00",
+        "elapsedSeconds": 4.248900122001942,
+        "exitCode": 0,
+        "rawBytes": 1904,
+        "rawSha256": "f4eb39b93c4d78b68b0c5e50a7aaa0590ba5ae8b02125876a512a161a378ec11"
+      },
+      "rawGzipSha256": "d9927e1d093a457ca310595049ddc709c891a176c15bd5f63804c7eeb7151e60",
+      "rawVerified": true
+    },
+    {
+      "phase": 175,
+      "classification": "FAIL_WRONG_EXPECTED_SERVICE_COORDINATES_NOT_PRODUCT_RED",
+      "receiptPath": "175-paid-rawbin-actual-source-service-red.command.json",
+      "receiptSha256": "32d92708d0eb04ba15fe2cdbf164278b93aaf64ffa34959f93b9b9ff55df5e8a",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "test",
+          "--",
+          "tests/unit/factory/cargoHandling.test.ts",
+          "-t",
+          "Raw bin reserves usable service"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-11T23:35:09.040989+00:00",
+        "endedAtUtc": "2026-10-11T23:35:10.519874+00:00",
+        "elapsedSeconds": 1.4793302090038196,
+        "exitCode": 1,
+        "rawBytes": 1718,
+        "rawSha256": "3ad1f41cc2e3d1e66a6f90b409ed006b4d5b67d1b948beef8275a2a96a331478"
+      },
+      "rawGzipSha256": "281eb964535ad255be31c00189e0d56866503c4705c774f2aa23153ce59cb6c1",
+      "rawVerified": true
+    },
+    {
+      "phase": 176,
+      "classification": "SOURCE_PLACEMENT_MATERIAL_PASS_11_SKIPPED_NOT_NATIVE_BROWSER",
+      "receiptPath": "176-paid-rawbin-current-source-oracle-correction.command.json",
+      "receiptSha256": "02c23bae8bdfbf5e483f94d483becee7ca6b86195b6870b23db2dbba510f7975",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "test",
+          "--",
+          "tests/unit/factory/cargoHandling.test.ts",
+          "-t",
+          "paid Raw bin has clear"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-11T23:37:16.479399+00:00",
+        "endedAtUtc": "2026-10-11T23:37:17.886452+00:00",
+        "elapsedSeconds": 1.4074158560033538,
+        "exitCode": 0,
+        "rawBytes": 396,
+        "rawSha256": "990dfb3e4926168f7d3ba7d4df7d961c8f789b50f60e631422db38d60209e8df"
+      },
+      "rawGzipSha256": "886037b0495320a4a9eafedf44fff1e0ac7f98770fdb205fc6bdd68dd75c0975",
+      "rawVerified": true
+    },
+    {
+      "phase": 177,
+      "classification": "TWO_SPATIAL_ASSERTION_FAILURES_BATTERY_SUPPORT_UNCONFIRMED",
+      "receiptPath": "177-cable4750-8000-actual-source-native-spatial-oracles.command.json",
+      "receiptSha256": "8bc18aa265fe4cd6c6f11ef8200b5c935d67d78ee5cc64d4a2a24b981f8f7fd4",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "test",
+          "--",
+          "tests/unit/factory/facilitySession.test.ts",
+          "-t",
+          "actual unchanged Source admits reachable"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-11T23:39:26.727568+00:00",
+        "endedAtUtc": "2026-10-11T23:39:36.501523+00:00",
+        "elapsedSeconds": 9.774355410998396,
+        "exitCode": 1,
+        "rawBytes": 1225,
+        "rawSha256": "434ab7c296cdd804b184b9ddf377f4a97bf27f68d596f250b4c62e0d381c5924"
+      },
+      "rawGzipSha256": "466cc1bdb601ca886d08a3687ee2fd20b97a2f4d285ff89ae78b269fe306c405",
+      "rawVerified": true
+    },
+    {
+      "phase": 178,
+      "classification": "SOURCE_NATIVE_SUPPORT_DIAGNOSTIC_FAILURES_PRESERVED_NO_RUNTIME_FIX",
+      "receiptPath": "178-cable-source-native-confirmation-countercase-witness.command.json",
+      "receiptSha256": "1133d8e947dd0bb99ea8ac06a06e96fd3af60f4816ac8775768961fa9c8c63da",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "test",
+          "--",
+          "tests/unit/factory/facilitySession.test.ts",
+          "-t",
+          "actual unchanged Source admits reachable"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-11T23:40:42.983751+00:00",
+        "endedAtUtc": "2026-10-11T23:40:52.494382+00:00",
+        "elapsedSeconds": 9.511066365004808,
+        "exitCode": 1,
+        "rawBytes": 3504,
+        "rawSha256": "46559b95eb45a4fba5627440a5536314ff10114c1753b02add5eac0b5f9ca393"
+      },
+      "rawGzipSha256": "42d49ba614a11fea1655ea8d0d63a53c3595d294d3ed842d0ce0894847740040",
+      "rawVerified": true
+    }
+  ],
+  "limits": [
+    "No fresh browser route or visual acceptance",
+    "No complete W09 package seal or commit",
+    "Battery placement and current cable lengths remain under actual source investigation",
+    "175 wrong expected coordinates are not a runtime regression"
+  ]
+}
