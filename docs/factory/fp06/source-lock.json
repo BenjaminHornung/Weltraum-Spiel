@@ -2644,9 +2644,11 @@
         },
         "independentSourceReview": {
           "path": "docs/factory/fp06/reviews/w07-input-tick-diagnostic-proposal-independent-review.md",
-          "sha256": "5544f32361271e51b6cb9a5630138b96aafff7a9773c9af20c79ff67eec03ad5",
-          "bytes": 4017,
-          "status": "SOURCE_ONLY_PASS_PLAIN_ROUTE_WITH_EXPLICIT_OBSERVATION_LIMITS"
+          "originalSha256": "5544f32361271e51b6cb9a5630138b96aafff7a9773c9af20c79ff67eec03ad5",
+          "sha256": "e3a16949fafad9469750691993ecf2db5d91d9ab04dedde6afeb1fa6698c3cf1",
+          "bytes": 4016,
+          "status": "SOURCE_ONLY_PASS_PLAIN_ROUTE_WITH_EXPLICIT_OBSERVATION_LIMITS",
+          "copyNormalization": "one final newline only; original external review preserved"
         },
         "route": "/factory.html; no hvpMeasure toggle",
         "notObserved": [

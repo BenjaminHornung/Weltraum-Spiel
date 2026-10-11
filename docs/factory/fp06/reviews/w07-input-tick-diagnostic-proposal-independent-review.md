@@ -21,4 +21,3 @@ Passive capture-Listener vor Bubblehandlern dürfen nur vorhandene Event-/Pointe
 Vier originale≤30s-Serienfälle: normales Ready/Open/Play, danach125/250/600ms echte CDPgesten mit bestehender allSettled/fresh-finalUp-/Fehler-/Contextabortclosure.600ms ist ausdrücklich einmalige Diagnose, kein Ausbau normaler125ms-Tapgrenze. Gleiche Page/NativeWorld; read-only Projektion erst nach Release. Null Bewegung bleibt erlaubtes Ergebnis, keine vorweggenommene Ursachenfeststellung.
 
 Overlay ausschließlich temporäre E2E/initScript; Originalbytes und88-Artefakte vorab bytegenau archivieren. Im finally Context schließen, Overlay **bytegenau zurücknehmen**, alle30 Basissealpfade/Bytes/Hashes prüfen und Receipt sichern, auch bei Timeout/Abbruch. Keine normale Paketevidence durch diagnostische Wrapper/Globale ersetzen. Tatsächliche Wrapperimplementierung und Ausführung müssen diesen Sourcevorschlag erst noch erfüllen.
-
