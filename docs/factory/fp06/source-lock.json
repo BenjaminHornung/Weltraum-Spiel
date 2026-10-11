@@ -840,7 +840,7 @@
       ],
       "evidenceGrant": false,
       "status": "NOT_RUN: W02/W03 PASS; waiting for Domainwriter after W08 and reviewed W03 integration",
-      "owner": "/root/fp06_integrator",
+      "owner": "/root/fp06_domain",
       "plannedRole": "domain",
       "branch": null,
       "plannedBranch": "codex/hestia-fp06-domain-2026-10-11",
@@ -1135,17 +1135,43 @@
         "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
         "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts"
       ],
-      "grantedWriteSet": [],
+      "grantedWriteSet": [
+        "apps/weltraum-browser/src/factory/construction/placement.ts",
+        "apps/weltraum-browser/src/factory/construction/buildStep.ts",
+        "apps/weltraum-browser/src/factory/ui/buildTool.ts",
+        "apps/weltraum-browser/tests/unit/factory/placement.test.ts",
+        "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+        "apps/weltraum-browser/src/factory/session/hostPort.ts",
+        "apps/weltraum-browser/src/factory/session/factorySession.ts",
+        "apps/weltraum-browser/src/factory/factoryEntry.ts",
+        "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+        "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+        "apps/weltraum-browser/src/factory/construction/installationProfile.ts",
+        "apps/weltraum-browser/src/hestia-prototype/presentation/vegetation.ts",
+        "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+        "apps/weltraum-browser/tests/unit/hvp-physics.test.ts",
+        "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+        "apps/weltraum-browser/tests/unit/hvp-coast-source.test.ts",
+        "apps/weltraum-browser/tests/unit/hvp-vegetation.test.ts",
+        "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+        "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts"
+      ],
       "evidenceWriteSet": [
         "apps/weltraum-browser/evidence/factory/w07/<actual-run-id>/**"
       ],
-      "evidenceGrant": false,
-      "status": "NOT_RUN: W02/W05/W06 PASS; awaiting reviewed branch-integration receipt and exact grant",
+      "evidenceGrant": true,
+      "status": "IN_PROGRESS",
       "owner": "/root/fp06_integrator",
       "plannedRole": "integrator",
-      "branch": null,
+      "branch": "codex/hestia-fp06-integrator-2026-10-11",
       "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
-      "worktree": null,
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
       "commitSha": null,
       "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
       "restrictions": [
@@ -1182,7 +1208,11 @@
         "Finite paid C03+C04+C07 battery-first energy loop is permitted by existing sources, not renewable or WX-FAV benchmark evidence; unique SOC owner.",
         "Actual battery support/body/service/cable route required outside blocked paths; no extra terrainmask, freeplatform, or Unknown wind air admitted.",
         "Stage native fixedfacilities under real paused ACK, material completeview-CAS and hidden renderer; full owner/member/globalbudget rollback proof, no Worldhandle exposure."
-      ]
+      ],
+      "baseCommitSha": "d5502ae7fd5431d58eda51bea062c54691ebe3c2",
+      "implementationWriteHold": false,
+      "authorizedAtUtc": "2026-10-11T12:20:03.945147+00:00",
+      "completedAtUtc": null
     },
     "W08": {
       "dependencies": [
@@ -1230,12 +1260,29 @@
         "No main merge/push/publication; no W12-W29"
       ],
       "baseCommitSha": "26d5e892c2b401b9011234dabf86955af7462fb8",
-      "implementationWriteHold": true,
+      "implementationWriteHold": false,
       "authorizedAtUtc": "2026-10-11T11:46:55.477266+00:00",
       "completedAtUtc": null,
       "sourceInterpretationNote": "Root authorizes a conservative versioned technical reference: at most one real Resources packet per entire straight line, with credit debited exactly once jointly at successful source-to-line Materialreceipt adoption. Source 0.75m is usable width, not invented longitudinal gap. No Qty cache authority/0m powered belt or unreviewed climate/live/save claim. Initial D06credit0 means injection wait plus54steps4mtravel; one slot bounds downstream burst. Exact phase/clock/revision/whole-CAS behavior must pass actual tests and independent review.",
       "preflightReport": "docs/factory/fp06/reviews/w08-preflight.md",
-      "heldProductPatchSha256": "e3267d2fdf593043902ea2e795422bb2423e13cf554d9be9a1fda4b592e2f350"
+      "heldProductPatchSha256": "e3267d2fdf593043902ea2e795422bb2423e13cf554d9be9a1fda4b592e2f350",
+      "reviewHistory": [
+        {
+          "report": "docs/factory/fp06/reviews/w08-first.md",
+          "sha256": "a6fd334feb5bb5984ac1deaea771b2374a45dbe173caf9411103beb58669e20e",
+          "reviewedProductPatchSha256": "e3267d2fdf593043902ea2e795422bb2423e13cf554d9be9a1fda4b592e2f350",
+          "spec": "PASS",
+          "quality": "PASS",
+          "finalGate": "PENDING_FINAL_COMMIT_AND_INTAKE_FIX"
+        }
+      ],
+      "narrowFixAuthorizations": [
+        {
+          "authorizedAtUtc": "2026-10-11T12:20:45.000124+00:00",
+          "scope": "Same three existing W08 paths only: optional exact positive SourceLot quantityUnits native transfer admission, ≤10kg and available source, default full bounded packet unchanged. Genuine8kg-from20kg/Cutter8kg RED, focused GREEN/build and new seal + independent followup required. No ledger/source/catalog/World authority change.",
+          "reason": "W09 source-bound Cutter8kg admission needs explicit packet quantity instead automatic10kg from large lot."
+        }
+      ]
     },
     "W09": {
       "dependencies": [
@@ -1510,8 +1557,18 @@
           "sha": "26d5e892c2b401b9011234dabf86955af7462fb8"
         }
       ],
-      "status": "AUTHORIZED_REVIEWED_COMMIT_INTEGRATION_ONLY",
-      "scope": "Cherry-pick these two immutable accepted package commits into own clean branch in this order; byte-verify all22 product paths and own refs; no edits/reinterpretation/main/foreign-worktree mutation. Report actual integrated full SHAs/cleanstatus; W07 needs subsequent exact grant at that resulting base."
+      "status": "PASS_REVIEWED_COMMIT_COPY",
+      "scope": "Cherry-pick these two immutable accepted package commits into own clean branch in this order; byte-verify all22 product paths and own refs; no edits/reinterpretation/main/foreign-worktree mutation. Report actual integrated full SHAs/cleanstatus; W07 needs subsequent exact grant at that resulting base.",
+      "actualIntegratedCommits": [
+        "427069727473e7542ab546c1fbef05cf36e2341d",
+        "d5502ae7fd5431d58eda51bea062c54691ebe3c2"
+      ],
+      "resultingHeadSha": "d5502ae7fd5431d58eda51bea062c54691ebe3c2",
+      "receipt": "docs/factory/fp06/reviews/w07-reviewed-integration-receipt.json",
+      "receiptSha256": "c934e2eda78567c76d365d8d8f85b1a5fae5cbe9492a9105649a74e399139b20",
+      "all22ProductFilesByteExact": true,
+      "all194ArtifactRefsAdmitted": true,
+      "completedAtUtc": "2026-10-11T12:13:14.768421+00:00"
     }
   ]
 }
