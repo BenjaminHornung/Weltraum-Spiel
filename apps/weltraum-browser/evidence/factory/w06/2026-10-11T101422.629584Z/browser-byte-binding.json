@@ -1,0 +1,14 @@
+{
+  "browserLog": "green-browser-r1-serial-runner-trace.txt",
+  "browserExitCode": 0,
+  "browserTestsPassed": 7,
+  "exactBrowserCandidate": "before-drop-product-hashes.json",
+  "finalProductCandidate": "product-final-hashes.json",
+  "laterChangedPaths": [
+    "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+    "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+    "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts"
+  ],
+  "validationOfLaterChanges": "4 targeted actualBootstrap/Drop/Resume/budget tests and complete tsc PASS; root explicitly approved no broad Browser replay for this sole held-Drop guard extension and cause-specific unit oracles.",
+  "noAfterDropBrowserClaim": true
+}

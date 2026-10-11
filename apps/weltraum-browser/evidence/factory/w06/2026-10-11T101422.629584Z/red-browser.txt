@@ -1,0 +1,55 @@
+
+> weltraum-browser@0.1.0 test:e2e
+> playwright test --config=/workspace/.cloud-setup/fp06-w06.playwright.config.mts tests/e2e/factory-host.spec.ts
+
+[WebServer] (node:16464) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:16492) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/factory-host.spec.ts:5:1 › T025 normal flight and legacy HVP request no Factory modules (25.2s)
+  ✘  2 [chromium] › tests/e2e/factory-host.spec.ts:20:1 › T026–T028 real Factory entry keeps one host and advances only confirmed native ticks (22.8s)
+
+
+  1) [chromium] › tests/e2e/factory-host.spec.ts:20:1 › T026–T028 real Factory entry keeps one host and advances only confirmed native ticks
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('#factory-status')
+    Expected substring: "Werkstatt bereit"
+    Timeout: 20000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toContainText" with timeout 20000ms
+      - waiting for locator('#factory-status')
+
+
+      21 |   const errors: string[] = []; page.on("pageerror", error => { errors.push(error.message); });
+      22 |   await page.goto("/factory.html");
+    > 23 |   await expect(page.locator("#factory-status")).toContainText("Werkstatt bereit", { timeout: 20_000 });
+         |                                                 ^
+      24 |   await expect(page.locator("#hvp-hud")).toHaveCount(1);
+      25 |   await expect(page.locator("canvas")).toHaveCount(1);
+      26 |   const read = () => page.evaluate(() => JSON.parse(document.body.dataset.hestiaFactoryClock!));
+        at /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/tests/e2e/factory-host.spec.ts:23:49
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    evidence/factory/w06/2026-10-11T101422.629584Z/playwright-output/factory-host-T026–T028-rea-80886-only-confirmed-native-ticks-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: evidence/factory/w06/2026-10-11T101422.629584Z/playwright-output/factory-host-T026–T028-rea-80886-only-confirmed-native-ticks-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    evidence/factory/w06/2026-10-11T101422.629584Z/playwright-output/factory-host-T026–T028-rea-80886-only-confirmed-native-ticks-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace evidence/factory/w06/2026-10-11T101422.629584Z/playwright-output/factory-host-T026–T028-rea-80886-only-confirmed-native-ticks-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/e2e/factory-host.spec.ts:20:1 › T026–T028 real Factory entry keeps one host and advances only confirmed native ticks
+  1 passed (50.3s)

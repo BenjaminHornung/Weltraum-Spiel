@@ -1,0 +1,243 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/hvp-bootstrap.test.ts tests/unit/factory/hostLifecycle.test.ts -t W06 R1|R1 keeps|R1 rejects
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-bootstrap.test.ts (32 tests | 3 failed | 29 skipped) 20624ms
+     × W06 R1 publishes actual unconfirmed native holds without work and permits transient recovery 6522ms
+     × W06 R1 refuses all actual Factory Resume and Play paths during native holds 7109ms
+     × W06 R1 keeps the actual post-disposal restart in the Factory profile 6991ms
+ ❯ tests/unit/factory/hostLifecycle.test.ts (15 tests | 5 failed | 10 skipped) 132ms
+     × R1 keeps transient native holds quiescent without granting ticks and recovers only from confirmed reads 8ms
+     × R1 rejects outside manifest evidence references 31ms
+     × R1 rejects missing manifest evidence references 30ms
+     × R1 rejects digest manifest evidence references 32ms
+     × R1 rejects placeholder manifest evidence references 28ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 8 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W06 R1 publishes actual unconfirmed native holds without work and permits transient recovery
+AssertionError: expected { sessionId: 'hvp-session-1', …(5) } to match object { physicsStatus: 'CoverageHold', …(1) }
+(13 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "confirmed": false,
+-   "physicsStatus": "CoverageHold",
++   "confirmed": true,
++   "physicsStatus": "Paused",
+  }
+
+ ❯ tests/unit/hvp-bootstrap.test.ts:554:35
+    552|     try {
+    553|       status = "CoverageHold"; tick = 23; stepFrame(source.windowPort,…
+    554|       expect(observations.at(-1)).toMatchObject({ physicsStatus: "Cove…
+       |                                   ^
+    555|       expect(session.read()).toMatchObject({ state: "WaitingForHost", …
+    556|       expect(session.isQuiescent()).toBe(true); // Neighbor repair mus…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/14]⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W06 R1 refuses all actual Factory Resume and Play paths during native holds
+AssertionError: promise resolved "{ sessionId: 'hvp-session-2', …(5) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "confirmed": false,
++   "epoch": 2,
++   "nativeTick": 0,
++   "physicsStatus": "CoverageHold",
++   "sessionId": "hvp-session-2",
++   "terrain": {
++     "baseDigest": "b8fde6b0",
++     "cellMeters": 0.125,
++     "epoch": 2,
++     "originMeters": {
++       "x": -16,
++       "y": -8,
++       "z": -16,
++     },
++     "revision": 0,
++     "sizeX": 256,
++     "sizeY": 128,
++     "sizeZ": 256,
++     "sourceDigest": "b8fde6b0",
++   },
+  }
+
+ ❯ tests/unit/hvp-bootstrap.test.ts:587:41
+    585|         status = hold;
+    586|         expect(port.read().confirmed).toBe(false);
+    587|         await expect.soft(port.resume()).rejects.toThrow(/unconfirmed|…
+       |                                         ^
+    588|         expect.soft(commands).toHaveLength(baseline); commands.length …
+    589|         descendants(source.body).find(e => e.id === "hvp-physics-pause…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/14]⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W06 R1 refuses all actual Factory Resume and Play paths during native holds
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W06 R1 refuses all actual Factory Resume and Play paths during native holds
+AssertionError: expected [ 'Resume' ] to have a length of +0 but got 1
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/unit/hvp-bootstrap.test.ts:588:31
+    586|         expect(port.read().confirmed).toBe(false);
+    587|         await expect.soft(port.resume()).rejects.toThrow(/unconfirmed|…
+    588|         expect.soft(commands).toHaveLength(baseline); commands.length …
+       |                               ^
+    589|         descendants(source.body).find(e => e.id === "hvp-physics-pause…
+    590|         await Promise.resolve(); await Promise.resolve();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/14]⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W06 R1 refuses all actual Factory Resume and Play paths during native holds
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W06 R1 refuses all actual Factory Resume and Play paths during native holds
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W06 R1 refuses all actual Factory Resume and Play paths during native holds
+AssertionError: expected [ 'Resume' ] to have a length of +0 but got 1
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/unit/hvp-bootstrap.test.ts:591:31
+    589|         descendants(source.body).find(e => e.id === "hvp-physics-pause…
+    590|         await Promise.resolve(); await Promise.resolve();
+    591|         expect.soft(commands).toHaveLength(baseline); commands.length …
+       |                               ^
+    592|         descendants(source.body).find(e => e.id === "hvp-play")!.dispa…
+    593|         await Promise.resolve(); await Promise.resolve();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/14]⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W06 R1 refuses all actual Factory Resume and Play paths during native holds
+AssertionError: promise resolved "{ sessionId: 'hvp-session-2', …(5) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "confirmed": false,
++   "epoch": 2,
++   "nativeTick": 0,
++   "physicsStatus": "RecoveryHold",
++   "sessionId": "hvp-session-2",
++   "terrain": {
++     "baseDigest": "b8fde6b0",
++     "cellMeters": 0.125,
++     "epoch": 2,
++     "originMeters": {
++       "x": -16,
++       "y": -8,
++       "z": -16,
++     },
++     "revision": 0,
++     "sizeX": 256,
++     "sizeY": 128,
++     "sizeZ": 256,
++     "sourceDigest": "b8fde6b0",
++   },
+  }
+
+ ❯ tests/unit/hvp-bootstrap.test.ts:587:41
+    585|         status = hold;
+    586|         expect(port.read().confirmed).toBe(false);
+    587|         await expect.soft(port.resume()).rejects.toThrow(/unconfirmed|…
+       |                                         ^
+    588|         expect.soft(commands).toHaveLength(baseline); commands.length …
+    589|         descendants(source.body).find(e => e.id === "hvp-physics-pause…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/14]⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W06 R1 keeps the actual post-disposal restart in the Factory profile
+AssertionError: expected "vi.fn()" to be called with arguments: [ '/factory.html' ]
+
+Received:
+
+  1st vi.fn() call:
+
+  [
+-   "/factory.html",
++   "/?hestiaPrototype=1",
+  ]
+
+
+Number of calls: 1
+
+ ❯ tests/unit/hvp-bootstrap.test.ts:609:22
+    607|       await vi.waitFor(() => { expect(descendants(source.body).find(e …
+    608|       descendants(source.body).find(e => e.textContent === "Neu starte…
+    609|       expect(assign).toHaveBeenCalledWith("/factory.html");
+       |                      ^
+    610|     } finally { await handle.dispose(); }
+    611|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/14]⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > FP06 W06 confirmed host lifecycle > R1 keeps transient native holds quiescent without granting ticks and recovers only from confirmed reads
+AssertionError: expected { sessionId: 'native-host', …(7) } to match object { state: 'WaitingForHost', …(2) }
+(5 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "nativeTick": 0,
+-   "state": "WaitingForHost",
++   "state": "RecoveryHold",
+    "steps": 0,
+  }
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts:100:32
+     98|       for (const physicsStatus of ["CoverageHold", "SimulationHold"] a…
+     99|         f.publish(6, { physicsStatus, confirmed: false });
+    100|         expect(session.read()).toMatchObject({ state: "WaitingForHost"…
+       |                                ^
+    101|         expect(session.isQuiescent()).toBe(true);
+    102|       }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/14]⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > W06 bounded recursive Factory evidence > R1 rejects outside manifest evidence references
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > W06 bounded recursive Factory evidence > R1 rejects missing manifest evidence references
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > W06 bounded recursive Factory evidence > R1 rejects digest manifest evidence references
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > W06 bounded recursive Factory evidence > R1 rejects placeholder manifest evidence references
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts:129:40
+    127|         digest: manifest([{ path: "actual.txt", sha256: "0".repeat(64)…
+    128|       writeFileSync(path.join(directory, "manifest.json"), invalid[kin…
+    129|       expect(verify(directory).status).toBe(1);
+       |                                        ^
+    130|     } finally { rmSync(directory, { recursive: true, force: true }); }
+    131|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/14]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  8 failed | 39 skipped (47)
+   Start at  10:51:12
+   Duration  22.50s (transform 1.22s, setup 0ms, import 1.54s, tests 20.76s, environment 0ms)

@@ -1,0 +1,27 @@
+{
+  "package": "W06",
+  "actor": "/root/fp06_integrator",
+  "branch": "codex/hestia-fp06-integrator-2026-10-11",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+  "baseCommitSha": "a30630dd7963c165c673df7ea1b46d52735752ef",
+  "writeSet": [
+    "apps/weltraum-browser/factory.html",
+    "apps/weltraum-browser/src/factory/factoryEntry.ts",
+    "apps/weltraum-browser/src/factory/session/hostPort.ts",
+    "apps/weltraum-browser/src/factory/session/factorySession.ts",
+    "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+    "apps/weltraum-browser/tests/e2e/factory-host.spec.ts",
+    "tools/factory/verify-evidence.mjs",
+    "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+    "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+    "apps/weltraum-browser/package.json",
+    "apps/weltraum-browser/vite.config.ts",
+    ".github/workflows/browser-mainline-ci.yml"
+  ],
+  "evidenceWriteSet": [
+    "apps/weltraum-browser/evidence/factory/w06/<actual-run-id>/**"
+  ],
+  "controlPlane": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06",
+  "authorizedAtUtc": "2026-10-11T10:07:10.972885+00:00",
+  "scope": "W06 only; no other product writes until a new exact grant"
+}

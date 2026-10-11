@@ -1,0 +1,13 @@
+{
+  "state": {
+    "sessionId": "hvp-session-1",
+    "epoch": 1,
+    "catalogDigest": "fnv1a:f3a8c642",
+    "nativeTick": 573,
+    "remainderTicks": 3,
+    "steps": 95,
+    "elapsedMs": 9500,
+    "state": "Ready"
+  },
+  "errors": []
+}

@@ -1,0 +1,167 @@
+[
+  {
+    "phase": "build-missing-import-build",
+    "exitCode": 1,
+    "log": "build-missing-import-build.txt"
+  },
+  {
+    "phase": "build-r1-final",
+    "exitCode": 0,
+    "log": "build-r1-final.txt"
+  },
+  {
+    "phase": "build",
+    "exitCode": 0,
+    "log": "build.txt"
+  },
+  {
+    "phase": "ci-group-membership",
+    "exitCode": 0,
+    "log": "ci-group-membership.txt"
+  },
+  {
+    "phase": "failed-combined-30s-green-browser",
+    "exitCode": 1,
+    "log": "failed-combined-30s-green-browser.txt"
+  },
+  {
+    "phase": "failed-import-hmr-green-browser",
+    "exitCode": 1,
+    "log": "failed-import-hmr-green-browser.txt"
+  },
+  {
+    "phase": "green-browser-r1-serial-runner-trace",
+    "exitCode": 0,
+    "log": "green-browser-r1-serial-runner-trace.txt"
+  },
+  {
+    "phase": "green-browser-r1-serial",
+    "exitCode": 1,
+    "log": "green-browser-r1-serial.txt"
+  },
+  {
+    "phase": "green-browser",
+    "exitCode": 1,
+    "log": "green-browser.txt"
+  },
+  {
+    "phase": "green-final-session-evidence",
+    "exitCode": 0,
+    "log": "green-final-session-evidence.txt"
+  },
+  {
+    "phase": "green-focused",
+    "exitCode": 0,
+    "log": "green-focused.txt"
+  },
+  {
+    "phase": "green-full-unit",
+    "exitCode": 0,
+    "log": "green-full-unit.txt"
+  },
+  {
+    "phase": "green-host-regressions",
+    "exitCode": 0,
+    "log": "green-host-regressions.txt"
+  },
+  {
+    "phase": "green-r1-host-regressions",
+    "exitCode": 0,
+    "log": "green-r1-host-regressions.txt"
+  },
+  {
+    "phase": "green-r1-targeted",
+    "exitCode": 0,
+    "log": "green-r1-targeted.txt"
+  },
+  {
+    "phase": "green-r2-drop-and-resume-budget",
+    "exitCode": 0,
+    "log": "green-r2-drop-and-resume-budget.txt"
+  },
+  {
+    "phase": "green-session-evidence",
+    "exitCode": 0,
+    "log": "green-session-evidence.txt"
+  },
+  {
+    "phase": "red-browser",
+    "exitCode": 1,
+    "log": "red-browser.txt"
+  },
+  {
+    "phase": "red-directory-budget",
+    "exitCode": 1,
+    "log": "red-directory-budget.txt"
+  },
+  {
+    "phase": "red-host-hook",
+    "exitCode": 1,
+    "log": "red-host-hook.txt"
+  },
+  {
+    "phase": "red-native-hold",
+    "exitCode": 1,
+    "log": "red-native-hold.txt"
+  },
+  {
+    "phase": "red-r1-complete-paths",
+    "exitCode": 1,
+    "log": "red-r1-complete-paths.txt"
+  },
+  {
+    "phase": "red-r1-host-and-manifest",
+    "exitCode": 1,
+    "log": "red-r1-host-and-manifest.txt"
+  },
+  {
+    "phase": "red-r1-player-and-terminal-end",
+    "exitCode": 1,
+    "log": "red-r1-player-and-terminal-end.txt"
+  },
+  {
+    "phase": "red-r1-player-dialog-path",
+    "exitCode": 1,
+    "log": "red-r1-player-dialog-path.txt"
+  },
+  {
+    "phase": "red-r2-drop-and-budget-cause",
+    "exitCode": 1,
+    "log": "red-r2-drop-and-budget-cause.txt"
+  },
+  {
+    "phase": "red-recursive-evidence",
+    "exitCode": 1,
+    "log": "red-recursive-evidence.txt"
+  },
+  {
+    "phase": "red-session",
+    "exitCode": 1,
+    "log": "red-session.txt"
+  },
+  {
+    "phase": "setup-fixture-call-red-session",
+    "exitCode": 1,
+    "log": "setup-fixture-call-red-session.txt"
+  },
+  {
+    "phase": "setup-root-npm-green-session",
+    "exitCode": 254,
+    "log": "setup-root-npm-green-session.txt"
+  },
+  {
+    "phase": "setup-wrong-working-directory-red-session",
+    "exitCode": 1,
+    "log": "setup-wrong-working-directory-red-session.txt"
+  },
+  {
+    "phase": "typecheck-final",
+    "exitCode": 0,
+    "log": "typecheck-final.txt"
+  },
+  {
+    "phase": "typecheck-r2-final",
+    "exitCode": 0,
+    "log": "typecheck-r2-final.txt"
+  }
+]

@@ -1,0 +1,1079 @@
+{
+  "schema": "hestia.fp06.source-lock/v1",
+  "createdAtUtc": "2026-10-11T09:23:32.353886+00:00",
+  "repository": "BenjaminHornung/Weltraum-Spiel",
+  "baseSha": "e40592c113b72a8dc93725187f92cf948e07f44d",
+  "auditPin": "e40592c113b72a8dc93725187f92cf948e07f44d",
+  "verifiedRemoteMainSha": "e40592c113b72a8dc93725187f92cf948e07f44d",
+  "auditPinMatchesCurrentMain": true,
+  "origin": "https://github.com/BenjaminHornung/Weltraum-Spiel.git",
+  "branch": "codex/hestia-fp06-w00-2026-10-11",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11",
+  "evidenceRun": "2026-10-11T090924Z",
+  "status": "W00_PASS; W01_READY_AFTER_W00_COMMIT",
+  "integrator": "/root/fp06_integrator",
+  "tranche": {
+    "authorized": [
+      "W00",
+      "W01",
+      "W02",
+      "W03",
+      "W04",
+      "W05",
+      "W06",
+      "W07",
+      "W08",
+      "W09",
+      "W10",
+      "W11"
+    ],
+    "excluded": "W12-W29",
+    "mainMergeAuthorized": false,
+    "pushAuthorized": false
+  },
+  "sourcePrecedence": [
+    "Direct user instructions and current repository constraints",
+    "Current code and fresh evidence at baseSha",
+    "Versioned planning sources with their individual acceptance status",
+    "Historical research as reference only"
+  ],
+  "sourceAcceptance": {
+    "FP01": "FACHLICH_ANGENOMMEN_PER_HANDOFF; runtime not implied",
+    "FP02-FP05": "VERSIONED_PROPOSALS; no blanket numeric or contract acceptance",
+    "FP06": "PROPOSED_OWNER_REVIEW_REQUIRED; user authorizes dependency-safe W00-W11 only",
+    "FP02 W01 fixtures": "ACCEPTED_BY_USER for frozen C01-C28/REC-01-REC-07/BOM/dimensions/ports and exact quantities; no blanket acceptance of later FP02-FP05 systems"
+  },
+  "archiveSha256": "3a64af406c2eec5d0c2ed94d37ac3e76656cc27b7d8cae417e2d2fa26e45e1db",
+  "manifestSha256": "ad32ad0efd38e92378c341c099ee563d9af908b603e22f0e505d9f6dd11ea6b8",
+  "sha256sumsSha256": "eb6985acc53dbb6507a5b039d049ef6812b9b8f8596eb033a99806a3418752fb",
+  "standaloneBriefSha256": "714d9f275be4213a4a5c9ec1333dcdd9779610adefb72913572be8291b2a0874",
+  "standaloneBriefEqualsArchiveBrief": true,
+  "integrity": {
+    "manifestEntries": "33/33 PASS",
+    "sha256sumsEntries": "33/33 PASS",
+    "duplicateG06ResearchCountsOnce": true
+  },
+  "sources": [
+    {
+      "path": "01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_CORE_GAME_KONZEPT_FACTORY_ROADMAP_2026-10-10.md",
+      "role": "primary_source",
+      "bytes": 80441,
+      "lines": 1128,
+      "sha256": "0c7e8b7ca7e0da30763475659022ff6c65b9b465cfdb4227f50dff3366524a21",
+      "integrity": "PASS",
+      "executionRole": "VERSIONED_PLANNING_SOURCE"
+    },
+    {
+      "path": "01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FACTORY_DETAILPLAN_01_2026-10-10.md",
+      "role": "primary_source",
+      "bytes": 79763,
+      "lines": 976,
+      "sha256": "cc43b69e056b86fdbfc55e2b5be096e6a716b99f77b555b5040e7021632f7e94",
+      "integrity": "PASS",
+      "executionRole": "VERSIONED_PLANNING_SOURCE"
+    },
+    {
+      "path": "01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP01_EINSTIEG_ENERGIE_DETAILPLAN_2026-10-10.md",
+      "role": "primary_source",
+      "bytes": 183726,
+      "lines": 2004,
+      "sha256": "ec3e605de2c6a4877c2ff0afae244b3215e7bf8bb267feef4c466b546477080c",
+      "integrity": "PASS",
+      "executionRole": "VERSIONED_PLANNING_SOURCE"
+    },
+    {
+      "path": "01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP02_PRODUKTIONSKETTEN_GEBAEUDE_LAYOUTS_DETAILPLAN_2026-10-10.md",
+      "role": "primary_source",
+      "bytes": 164696,
+      "lines": 1643,
+      "sha256": "5c4f068edba3d0c89e77b0d3a40734d4ee1a672c39f3885cbfef31430d942f39",
+      "integrity": "PASS",
+      "executionRole": "VERSIONED_PLANNING_SOURCE"
+    },
+    {
+      "path": "01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP03_BAUEN_BLUEPRINTS_BAUAUTOMATION_DETAILPLAN_2026-10-10.md",
+      "role": "primary_source",
+      "bytes": 191555,
+      "lines": 2113,
+      "sha256": "7d43e358ae7ead52da3996e85bc52906cb2584a42e0802fc4d1e959df1289cb1",
+      "integrity": "PASS",
+      "executionRole": "VERSIONED_PLANNING_SOURCE"
+    },
+    {
+      "path": "01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP04_AUTOMATION_ENERGIESELBSTSTAENDIGKEIT_DETAILPLAN_2026-10-10.md",
+      "role": "primary_source",
+      "bytes": 183440,
+      "lines": 1890,
+      "sha256": "a04f8074afc4e1d5cd8d8eb948bb93f42cdc5a5cc73b3f2a077cb13e67e48570",
+      "integrity": "PASS",
+      "executionRole": "VERSIONED_PLANNING_SOURCE"
+    },
+    {
+      "path": "01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP05_FLUIDS_SCHWERINDUSTRIE_KI_STADT_DETAILPLAN_2026-10-10.md",
+      "role": "primary_source",
+      "bytes": 234260,
+      "lines": 2351,
+      "sha256": "8aea627c70e7335a0d5d0c82c3070bfcc7d575605d037e9435ba0935e51557df",
+      "integrity": "PASS",
+      "executionRole": "VERSIONED_PLANNING_SOURCE"
+    },
+    {
+      "path": "01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_CODEX_WORK_ORCHESTRATOR_START_2026-10-10.md",
+      "role": "primary_source",
+      "bytes": 9795,
+      "lines": 85,
+      "sha256": "82242327d42d5cbc35f85ee823d0f7dcef6c8c83656509d6edd0a685c7dddc23",
+      "integrity": "PASS",
+      "executionRole": "VERSIONED_PLANNING_SOURCE"
+    },
+    {
+      "path": "01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md",
+      "role": "primary_source",
+      "bytes": 195396,
+      "lines": 2790,
+      "sha256": "501bf5d80ee6dec9627e48ea27c271b3f964d21cde61ce9410be7eb77fa182ea",
+      "integrity": "PASS",
+      "executionRole": "VERSIONED_PLANNING_SOURCE"
+    },
+    {
+      "path": "01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PRUEFPROTOKOLL_2026-10-10.md",
+      "role": "primary_source",
+      "bytes": 2446,
+      "lines": 51,
+      "sha256": "438d55b2043404b82ce4d6ed667785a1e5b7b6c0362b40bc50d58faa0dceddd9",
+      "integrity": "PASS",
+      "executionRole": "VERSIONED_PLANNING_SOURCE"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/Architekturkonzept Dynamisches Wetter.txt",
+      "role": "reference_only",
+      "bytes": 16574,
+      "lines": 251,
+      "sha256": "cf29b8dd49fdf271462d321f726a4e3a7ec56a4e2093b3913dea84e2a13ce601",
+      "integrity": "PASS",
+      "executionRole": "REFERENCE_ONLY"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G01_core_game_loop_progression_vertical_slices_abschlussbericht_2026-08-12(1).md",
+      "role": "reference_only",
+      "bytes": 84837,
+      "lines": 1241,
+      "sha256": "6297388fc9f6fa40547250d68a61c9b4539ff17df16507af22bf476c0aec790c",
+      "integrity": "PASS",
+      "executionRole": "REFERENCE_ONLY"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G02_unified_ingame_authoring_platform_abschlussbericht_2026-08-12(2).md",
+      "role": "reference_only",
+      "bytes": 79148,
+      "lines": 1161,
+      "sha256": "661bb79819c24fbdcf66009526bb1c26c8ec74dec28a46d67243ee308133f20d",
+      "integrity": "PASS",
+      "executionRole": "REFERENCE_ONLY"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G05_Mission_Dialog_Narrative_Authoring_Abschlussbericht_2026-08-12(2).md",
+      "role": "reference_only",
+      "bytes": 85544,
+      "lines": 1460,
+      "sha256": "4155b6ed3462fffe6fc3b9bfea836a0952fe18747219b88601df2bffae9e5fe1",
+      "integrity": "PASS",
+      "executionRole": "REFERENCE_ONLY"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G06_NPC_Gesellschaft_Simulations_LOD_Abschlussbericht_2026-08-12(2).md",
+      "role": "reference_only",
+      "bytes": 36115,
+      "lines": 526,
+      "sha256": "5d9771744276b33e57a528cae26aac1e1f178d0a1ac39bb2647639d50020c6c7",
+      "integrity": "PASS",
+      "executionRole": "REFERENCE_ONLY"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G06_NPC_Gesellschaft_Simulations_LOD_Abschlussbericht_2026-08-12(3).md",
+      "role": "reference_only",
+      "bytes": 36115,
+      "lines": 526,
+      "sha256": "5d9771744276b33e57a528cae26aac1e1f178d0a1ac39bb2647639d50020c6c7",
+      "integrity": "PASS",
+      "executionRole": "REFERENCE_ONLY"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G07_Fraktionen_Gilden_Reputation_Recht_Abschlussbericht_2026-08-12(2).md",
+      "role": "reference_only",
+      "bytes": 85470,
+      "lines": 1592,
+      "sha256": "ff001c635589bcb790c4cb464c325b001a03539410ec9e5d00de7e8110a3084d",
+      "integrity": "PASS",
+      "executionRole": "REFERENCE_ONLY"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G08_Wirtschaft_Handel_Produktion_Logistik_Abschlussbericht_2026-08-12(2).md",
+      "role": "reference_only",
+      "bytes": 129838,
+      "lines": 2219,
+      "sha256": "f04f80f890ff3e079e35c83ef2c5baae0ba4e8c53b0b59cda968760c98cdf572",
+      "integrity": "PASS",
+      "executionRole": "REFERENCE_ONLY"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G09_Ship_Vehicle_Drone_Builder_Abschlussbericht_2026-08-12(2).md",
+      "role": "reference_only",
+      "bytes": 71471,
+      "lines": 1274,
+      "sha256": "c0fe51653fbcc4ded182a699f9bfd8f3e8daf8e819efa45c245852fd9591ab16",
+      "integrity": "PASS",
+      "executionRole": "REFERENCE_ONLY"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G10_Planet_System_Orbit_Editor_Abschlussbericht_2026-08-12(2).md",
+      "role": "reference_only",
+      "bytes": 65453,
+      "lines": 1101,
+      "sha256": "cc62f7ed5d1fd98ec43ebdb2a5f4989bec01e15c3da648d497e2d98ea065419c",
+      "integrity": "PASS",
+      "executionRole": "REFERENCE_ONLY"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G11_AI_Authoring_Copilot_Abschlussbericht_2026-08-12(2).md",
+      "role": "reference_only",
+      "bytes": 102520,
+      "lines": 1852,
+      "sha256": "88bf005b6d0d39878be819c5bb4000b5b7197fff04269e4d9056d9c64fde2571",
+      "integrity": "PASS",
+      "executionRole": "REFERENCE_ONLY"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G12_Blender_to_HVOX_Toolchain_Architekturbericht_2026-08-12(2).md",
+      "role": "reference_only",
+      "bytes": 50338,
+      "lines": 852,
+      "sha256": "79b7c7116768faf6b1c7f10519943e1930796514cf6b10132db424b94dcc11a6",
+      "integrity": "PASS",
+      "executionRole": "REFERENCE_ONLY"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G13_Content_Data_Modding_Versioning_Hot_Reload_Abschlussbericht_2026-08-12(2).md",
+      "role": "reference_only",
+      "bytes": 77292,
+      "lines": 1226,
+      "sha256": "dfd28aec6ca16ed6f65fa032f55f5c9760cedf2a12b27ad43dc7c235f64b0b28",
+      "integrity": "PASS",
+      "executionRole": "REFERENCE_ONLY"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G14_UX_MODES_EDITOR_SURFACE_CITY_SPACE_ABSCHLUSSBERICHT_2026-08-12(2).md",
+      "role": "reference_only",
+      "bytes": 56324,
+      "lines": 983,
+      "sha256": "49d6a0289cf21e84fb8eeb1e885e036914d65f8ace4b0a839ac4cfede3692de0",
+      "integrity": "PASS",
+      "executionRole": "REFERENCE_ONLY"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G15_Combat_Mining_Drone_Operations_Abschlussbericht_2026-08-12(3).md",
+      "role": "reference_only",
+      "bytes": 109920,
+      "lines": 1629,
+      "sha256": "411659af503f87db206ff80223f9714229930ffc41a348efcf4c9a76eda64971",
+      "integrity": "PASS",
+      "executionRole": "REFERENCE_ONLY"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G16_procedural_settlement_city_generation_abschlussbericht_2026-08-12(4)(1).md",
+      "role": "reference_only",
+      "bytes": 69314,
+      "lines": 1045,
+      "sha256": "0e5f31c3f180dc0824f09500d770276601c88c7c6c60b05ba4dfe75579e40295",
+      "integrity": "PASS",
+      "executionRole": "REFERENCE_ONLY"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G17_Editor_QA_Validation_Playwright_Automation_Abschlussbericht_2026-08-12(1).md",
+      "role": "reference_only",
+      "bytes": 90840,
+      "lines": 1655,
+      "sha256": "a46416858744904359b7719fd5ca158b6d90fce17f9c00b6415ca4fdf0dc1365",
+      "integrity": "PASS",
+      "executionRole": "REFERENCE_ONLY"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/P06 Prototype Audit.txt",
+      "role": "reference_only",
+      "bytes": 546,
+      "lines": 11,
+      "sha256": "dee8de71d322dc38e350712f1cffb7dfed7f88a07492c8e14d961a0effd5a60b",
+      "integrity": "PASS",
+      "executionRole": "REFERENCE_ONLY"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/Reddit Referenzen ergänzen.txt",
+      "role": "reference_only",
+      "bytes": 13246,
+      "lines": 93,
+      "sha256": "b76a07a1cf38ed6267eb2fdc5daed6337c39fa2ac661ac1d52fe01041ebd0588",
+      "integrity": "PASS",
+      "executionRole": "REFERENCE_ONLY"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/Storyboard-Editor Recherche.txt",
+      "role": "reference_only",
+      "bytes": 50790,
+      "lines": 787,
+      "sha256": "61b9ca2ec8b4903857bdb8df0bc3efea9cdcb9b0b8b2fd8d0a3c25bf1b35ab02",
+      "integrity": "PASS",
+      "executionRole": "REFERENCE_ONLY"
+    },
+    {
+      "path": "CODEX_CLOUD_AGENT_BRIEF.md",
+      "role": "handoff",
+      "bytes": 11099,
+      "lines": 105,
+      "sha256": "714d9f275be4213a4a5c9ec1333dcdd9779610adefb72913572be8291b2a0874",
+      "integrity": "PASS",
+      "executionRole": "VERSIONED_PLANNING_SOURCE"
+    },
+    {
+      "path": "CODEX_CLOUD_STARTPROMPT.md",
+      "role": "handoff",
+      "bytes": 4677,
+      "lines": 26,
+      "sha256": "adcda92822ce70936878921a64b78334aa3c147f0a8108ab63c87fae044f821a",
+      "integrity": "PASS",
+      "executionRole": "VERSIONED_PLANNING_SOURCE"
+    },
+    {
+      "path": "README_START_HIER.md",
+      "role": "handoff",
+      "bytes": 5392,
+      "lines": 63,
+      "sha256": "66b65d985b3f7a3e4b37f598ec6150993336247f9264b1b66ef31699b440aa05",
+      "integrity": "PASS",
+      "executionRole": "VERSIONED_PLANNING_SOURCE"
+    }
+  ],
+  "repositoryFileHashes": {
+    "AGENTS.md": "2eeb7795250038f4780a5b1906161074b751e493a7d0d1fc4f36bfccc400b7b8",
+    ".agent/PLANS.md": "533c58ed272feb3b5c4d2bdfe394af6fd18114a3bf709f427c003cf4f00ce44b",
+    "README.md": "9695af9d3ffce6831479f6056ef31895d43652f1ee04815ad4c79edfa9da9c31",
+    "docs/current-mainline-state.md": "dfd4db5e89afec187899fcfffb1f000497341f8a30f93e965ce1a29fda657cb3",
+    "docs/roadmap/living-master-plan.md": "0b5a1fd3f04a8a23af6283384779855815b5d588faec2334ce0589ffc535688c",
+    "apps/weltraum-browser/package.json": "0ba7f05ec41d12b1be545c54fc1583df4b25f398a8917b0facdedc295a86e602",
+    "apps/weltraum-browser/package-lock.json": "df777f04bd29b891cccefcffb3b54cdd9f4dec8ae59d3de258ecdb85696c3890",
+    "apps/weltraum-browser/playwright.config.ts": "faaf12a16ac971b23c2799013d2956c3e86186f2808100da4d34ae3f4f686868"
+  },
+  "decisions": {
+    "D01": {
+      "status": "USER_CONSTRAINT",
+      "basis": "Direct user instruction: keep 0.25 m build grid separate from current 0.125 m HVP terrain source cells.",
+      "blockedPackages": []
+    },
+    "D02": {
+      "status": "USER_CONSTRAINT",
+      "basis": "User requires existing architecture and no duplication; use existing Resources snapshots as sole cargo authority. Exact quantities remain gated by W01_SOURCE_QUANTITY_FREEZE.",
+      "blockedPackages": []
+    },
+    "D03": {
+      "status": "USER_CONSTRAINT_WITH_SOURCE_POLICY",
+      "basis": "Preserve existing ship power solver; FP01 is fachlich angenommen according to handoff. Test a narrow factory allocator against that source, with no invented fairness or hysteresis policy.",
+      "blockedPackages": []
+    },
+    "D04": {
+      "status": "USER_CONSTRAINT_WITH_DESIGN_GATE",
+      "basis": "User explicitly requests shared save/recovery; closed HVP v1 cannot silently gain factory fields. A separate combined format is required; D11 and exact versioned save contract must be resolved before W10.",
+      "blockedPackages": []
+    },
+    "D05": {
+      "status": "ACCEPTED_BY_USER",
+      "proposal": "100 ms factory step after six confirmed 60 Hz host ticks; no offline catch-up.",
+      "blockedPackages": [],
+      "previousStatus": "PROPOSED_OWNER_REVIEW_REQUIRED",
+      "approvalReceipt": {
+        "receivedAtUtc": "2026-10-11T09:23:32Z",
+        "source": "direct user async question reply",
+        "decisionReply": "Alle vier für W00–W11 freigeben",
+        "freezeReply": "W01-Freeze freigeben",
+        "scope": "W00-W11 only",
+        "exactDecisionQuestion": "D05: 6 confirmed 60-Hz ticks =100ms/no offline; D06: powered 1kg/s initial0 max10kg persistent burstcredit; D07: /factory.html existing app; D11: <=16 fixed native facility owners, native install transaction, complete combined checkpoint under unchanged overall budgets",
+        "exactFreezeQuestion": "Unchanged FP02 C01-C28/REC-01-REC-07/BOM/dimensions/ports; bulk exactly1mg; packaged volume integer mm3; components integer count; SALVAGE-01 separate; reject inadmissible quantity."
+      }
+    },
+    "D06": {
+      "status": "ACCEPTED_BY_USER",
+      "proposal": "Powered belt credit: 1 kg/s, initial zero, capped at 10 kg, persistent; burst credit is not a strict sliding-window limit.",
+      "blockedPackages": [],
+      "previousStatus": "PROPOSED_OWNER_REVIEW_REQUIRED",
+      "approvalReceipt": {
+        "receivedAtUtc": "2026-10-11T09:23:32Z",
+        "source": "direct user async question reply",
+        "decisionReply": "Alle vier für W00–W11 freigeben",
+        "freezeReply": "W01-Freeze freigeben",
+        "scope": "W00-W11 only",
+        "exactDecisionQuestion": "D05: 6 confirmed 60-Hz ticks =100ms/no offline; D06: powered 1kg/s initial0 max10kg persistent burstcredit; D07: /factory.html existing app; D11: <=16 fixed native facility owners, native install transaction, complete combined checkpoint under unchanged overall budgets",
+        "exactFreezeQuestion": "Unchanged FP02 C01-C28/REC-01-REC-07/BOM/dimensions/ports; bulk exactly1mg; packaged volume integer mm3; components integer count; SALVAGE-01 separate; reject inadmissible quantity."
+      }
+    },
+    "D07": {
+      "status": "ACCEPTED_BY_USER",
+      "proposal": "Separate /factory.html in existing browser app with one HVP/native world.",
+      "blockedPackages": [],
+      "previousStatus": "PROPOSED_OWNER_REVIEW_REQUIRED",
+      "approvalReceipt": {
+        "receivedAtUtc": "2026-10-11T09:23:32Z",
+        "source": "direct user async question reply",
+        "decisionReply": "Alle vier für W00–W11 freigeben",
+        "freezeReply": "W01-Freeze freigeben",
+        "scope": "W00-W11 only",
+        "exactDecisionQuestion": "D05: 6 confirmed 60-Hz ticks =100ms/no offline; D06: powered 1kg/s initial0 max10kg persistent burstcredit; D07: /factory.html existing app; D11: <=16 fixed native facility owners, native install transaction, complete combined checkpoint under unchanged overall budgets",
+        "exactFreezeQuestion": "Unchanged FP02 C01-C28/REC-01-REC-07/BOM/dimensions/ports; bulk exactly1mg; packaged volume integer mm3; components integer count; SALVAGE-01 separate; reject inadmissible quantity."
+      }
+    },
+    "D08": {
+      "status": "DEFERRED_OUT_OF_SCOPE",
+      "basis": "W13 is outside the user-authorized W00-W11 tranche.",
+      "blockedPackages": []
+    },
+    "D09": {
+      "status": "DEFERRED_OUT_OF_SCOPE",
+      "basis": "W15 is outside the user-authorized W00-W11 tranche.",
+      "blockedPackages": []
+    },
+    "D10": {
+      "status": "USER_CONSTRAINT",
+      "basis": "Direct user instruction: no blanket timeouts or queue-limit increases. Keep Playwright global 30 s/expect 5 s.",
+      "blockedPackages": []
+    },
+    "D11": {
+      "status": "ACCEPTED_BY_USER",
+      "proposal": "At most 16 fixed facility owners with native prepare/commit/publish/rollback/finalize and complete combined world checkpoint under unchanged overall budgets.",
+      "blockedPackages": [],
+      "previousStatus": "PROPOSED_OWNER_REVIEW_REQUIRED",
+      "approvalReceipt": {
+        "receivedAtUtc": "2026-10-11T09:23:32Z",
+        "source": "direct user async question reply",
+        "decisionReply": "Alle vier für W00–W11 freigeben",
+        "freezeReply": "W01-Freeze freigeben",
+        "scope": "W00-W11 only",
+        "exactDecisionQuestion": "D05: 6 confirmed 60-Hz ticks =100ms/no offline; D06: powered 1kg/s initial0 max10kg persistent burstcredit; D07: /factory.html existing app; D11: <=16 fixed native facility owners, native install transaction, complete combined checkpoint under unchanged overall budgets",
+        "exactFreezeQuestion": "Unchanged FP02 C01-C28/REC-01-REC-07/BOM/dimensions/ports; bulk exactly1mg; packaged volume integer mm3; components integer count; SALVAGE-01 separate; reject inadmissible quantity."
+      }
+    },
+    "W01_SOURCE_QUANTITY_FREEZE": {
+      "status": "ACCEPTED_BY_USER",
+      "proposal": "FP02 C01-C28, REC-01-REC-07, BOM/dimensions/ports unchanged; explicit bijective Resources-ID mapping; bulk 1 mg admission quantum and integer component counts. Packaged volumes require exact rational allocation where per-quantum mm3 is fractional; no rounding or invented solid density. SALVAGE-01 separate.",
+      "blockedPackages": [],
+      "previousStatus": "PROPOSED_OWNER_REVIEW_REQUIRED",
+      "approvalReceipt": {
+        "receivedAtUtc": "2026-10-11T09:23:32Z",
+        "source": "direct user async question reply",
+        "decisionReply": "Alle vier für W00–W11 freigeben",
+        "freezeReply": "W01-Freeze freigeben",
+        "scope": "W00-W11 only",
+        "exactDecisionQuestion": "D05: 6 confirmed 60-Hz ticks =100ms/no offline; D06: powered 1kg/s initial0 max10kg persistent burstcredit; D07: /factory.html existing app; D11: <=16 fixed native facility owners, native install transaction, complete combined checkpoint under unchanged overall budgets",
+        "exactFreezeQuestion": "Unchanged FP02 C01-C28/REC-01-REC-07/BOM/dimensions/ports; bulk exactly1mg; packaged volume integer mm3; components integer count; SALVAGE-01 separate; reject inadmissible quantity."
+      }
+    }
+  },
+  "packageScopes": {
+    "W00": {
+      "dependencies": [],
+      "decisionGates": [],
+      "sourceReadSections": "FP01 §1; FP02 §1; FP03 §1; FP04 §1; FP05 §1; Repository-Regeln.",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/package-lock.json",
+        "handoff:01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md"
+      ],
+      "plannedWriteSet": [
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "docs/factory/fp06/baseline.md"
+      ],
+      "grantedWriteSet": [
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "docs/factory/fp06/baseline.md"
+      ],
+      "evidenceWriteSet": [
+        "apps/weltraum-browser/evidence/factory/w00/<actual-run-id>/**"
+      ],
+      "evidenceGrant": true,
+      "status": "PASS",
+      "owner": "/root",
+      "plannedRole": "integrator",
+      "branch": "codex/hestia-fp06-w00-2026-10-11",
+      "plannedBranch": "codex/hestia-fp06-w00-2026-10-11",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11",
+      "commitSha": null,
+      "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
+      "restrictions": [
+        "Only exact granted paths; planned paths are not grants",
+        "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
+        "No main merge/push/publication; no W12-W29"
+      ]
+    },
+    "W01": {
+      "dependencies": [
+        "W00"
+      ],
+      "decisionGates": [
+        "D01",
+        "W01_SOURCE_QUANTITY_FREEZE"
+      ],
+      "sourceReadSections": "FP02 §§4–6, 9–10; FP03 §1.2; FP04 §1.2.",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/package-lock.json",
+        "handoff:01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md",
+        "apps/weltraum-browser/src/resources/**",
+        "apps/weltraum-browser/tests/unit/resourceCatalog.test.ts",
+        "apps/weltraum-browser/tests/unit/resourceContainers.test.ts",
+        "apps/weltraum-browser/tests/unit/resourceTransfer.test.ts",
+        "apps/weltraum-browser/src/hvp/hvpCoastSource.ts"
+      ],
+      "plannedWriteSet": [
+        "apps/weltraum-browser/src/factory/contracts.ts",
+        "apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts",
+        "apps/weltraum-browser/src/factory/catalog/sourceLock.ts",
+        "apps/weltraum-browser/tests/fixtures/factory/fp02Fixtures.ts",
+        "apps/weltraum-browser/tests/unit/factory/catalog.test.ts"
+      ],
+      "grantedWriteSet": [],
+      "evidenceWriteSet": [
+        "apps/weltraum-browser/evidence/factory/w01/<actual-run-id>/**"
+      ],
+      "evidenceGrant": false,
+      "status": "READY_AFTER_W00_COMMIT",
+      "owner": "/root/fp06_integrator",
+      "plannedRole": "integrator",
+      "branch": null,
+      "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
+      "worktree": null,
+      "commitSha": null,
+      "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
+      "restrictions": [
+        "Only exact granted paths; planned paths are not grants",
+        "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
+        "No main merge/push/publication; no W12-W29"
+      ]
+    },
+    "W02": {
+      "dependencies": [
+        "W01"
+      ],
+      "decisionGates": [
+        "D02",
+        "W01_SOURCE_QUANTITY_FREEZE"
+      ],
+      "sourceReadSections": "FP02 §§4–6, 12; FP03 §13; Cargo-Core.",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/package-lock.json",
+        "handoff:01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md",
+        "apps/weltraum-browser/src/resources/**",
+        "apps/weltraum-browser/tests/unit/resourceCatalog.test.ts",
+        "apps/weltraum-browser/tests/unit/resourceContainers.test.ts",
+        "apps/weltraum-browser/tests/unit/resourceTransfer.test.ts",
+        "apps/weltraum-browser/src/hvp/hvpCoastSource.ts"
+      ],
+      "plannedWriteSet": [
+        "apps/weltraum-browser/src/factory/material/quantity.ts",
+        "apps/weltraum-browser/src/factory/material/resourcesAdapter.ts",
+        "apps/weltraum-browser/src/factory/material/reservations.ts",
+        "apps/weltraum-browser/tests/unit/factory/material.test.ts"
+      ],
+      "grantedWriteSet": [],
+      "evidenceWriteSet": [
+        "apps/weltraum-browser/evidence/factory/w02/<actual-run-id>/**"
+      ],
+      "evidenceGrant": false,
+      "status": "BLOCKED_DEPENDENCY",
+      "owner": null,
+      "plannedRole": "domain-or-assets-writer",
+      "branch": null,
+      "plannedBranch": "codex/hestia-fp06-w02-2026-10-11",
+      "worktree": null,
+      "commitSha": null,
+      "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
+      "restrictions": [
+        "Only exact granted paths; planned paths are not grants",
+        "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
+        "No main merge/push/publication; no W12-W29"
+      ]
+    },
+    "W03": {
+      "dependencies": [
+        "W01"
+      ],
+      "decisionGates": [
+        "D03",
+        "W01_SOURCE_QUANTITY_FREEZE"
+      ],
+      "sourceReadSections": "FP01 §§6–7, 13; FP02 §1.1; Power/Thermal-Core.",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/package-lock.json",
+        "handoff:01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md",
+        "apps/weltraum-browser/src/ship-power-thermal/**"
+      ],
+      "plannedWriteSet": [
+        "apps/weltraum-browser/src/factory/power/factoryPower.ts",
+        "apps/weltraum-browser/src/factory/power/sourceAdapter.ts",
+        "apps/weltraum-browser/src/factory/power/powerReadView.ts",
+        "apps/weltraum-browser/tests/unit/factory/power.test.ts"
+      ],
+      "grantedWriteSet": [],
+      "evidenceWriteSet": [
+        "apps/weltraum-browser/evidence/factory/w03/<actual-run-id>/**"
+      ],
+      "evidenceGrant": false,
+      "status": "BLOCKED_DEPENDENCY",
+      "owner": "/root/fp06_integrator",
+      "plannedRole": "integrator",
+      "branch": null,
+      "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
+      "worktree": null,
+      "commitSha": null,
+      "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
+      "restrictions": [
+        "Only exact granted paths; planned paths are not grants",
+        "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
+        "No main merge/push/publication; no W12-W29"
+      ]
+    },
+    "W04": {
+      "dependencies": [
+        "W02",
+        "W03"
+      ],
+      "decisionGates": [
+        "D05"
+      ],
+      "sourceReadSections": "FP02 §§5, 7, 12; FP01 §6.",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/package-lock.json",
+        "handoff:01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md"
+      ],
+      "plannedWriteSet": [
+        "apps/weltraum-browser/src/factory/production/productionStep.ts",
+        "apps/weltraum-browser/src/factory/production/recipeAdmission.ts",
+        "apps/weltraum-browser/tests/unit/factory/production.test.ts"
+      ],
+      "grantedWriteSet": [],
+      "evidenceWriteSet": [
+        "apps/weltraum-browser/evidence/factory/w04/<actual-run-id>/**"
+      ],
+      "evidenceGrant": false,
+      "status": "BLOCKED_DEPENDENCY",
+      "owner": "/root/fp06_integrator",
+      "plannedRole": "integrator",
+      "branch": null,
+      "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
+      "worktree": null,
+      "commitSha": null,
+      "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
+      "restrictions": [
+        "Only exact granted paths; planned paths are not grants",
+        "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
+        "No main merge/push/publication; no W12-W29"
+      ]
+    },
+    "W05": {
+      "dependencies": [
+        "W01"
+      ],
+      "decisionGates": [
+        "W01_SOURCE_QUANTITY_FREEZE"
+      ],
+      "sourceReadSections": "FP01 §§3, 8, 14; FP02 §§3, 7; FP03 §3.",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/package-lock.json",
+        "handoff:01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md"
+      ],
+      "plannedWriteSet": [
+        "art/factory/fp02/cutter/",
+        "art/factory/fp02/former/",
+        "art/factory/fp01/power-kit/",
+        "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+        "apps/weltraum-browser/src/factory/presentation/machinePose.ts",
+        "apps/weltraum-browser/tests/unit/factory/presentation.test.ts"
+      ],
+      "grantedWriteSet": [],
+      "evidenceWriteSet": [
+        "apps/weltraum-browser/evidence/factory/w05/<actual-run-id>/**"
+      ],
+      "evidenceGrant": false,
+      "status": "BLOCKED_DEPENDENCY",
+      "owner": null,
+      "plannedRole": "domain-or-assets-writer",
+      "branch": null,
+      "plannedBranch": "codex/hestia-fp06-w05-2026-10-11",
+      "worktree": null,
+      "commitSha": null,
+      "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
+      "restrictions": [
+        "Only exact granted paths; planned paths are not grants",
+        "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
+        "No main merge/push/publication; no W12-W29"
+      ]
+    },
+    "W06": {
+      "dependencies": [
+        "W01"
+      ],
+      "decisionGates": [
+        "D05",
+        "D07"
+      ],
+      "sourceReadSections": "FP01 §13; FP03 §§13–15; main.ts; hvpBootstrap.ts.",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/package-lock.json",
+        "handoff:01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md",
+        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/**",
+        "apps/weltraum-browser/src/hestia-prototype/persistence/**",
+        "apps/weltraum-browser/vite.config.ts",
+        ".github/workflows/browser-mainline-ci.yml"
+      ],
+      "plannedWriteSet": [
+        "apps/weltraum-browser/factory.html",
+        "apps/weltraum-browser/src/factory/factoryEntry.ts",
+        "apps/weltraum-browser/src/factory/session/hostPort.ts",
+        "apps/weltraum-browser/src/factory/session/factorySession.ts",
+        "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+        "apps/weltraum-browser/tests/e2e/factory-host.spec.ts",
+        "tools/factory/verify-evidence.mjs",
+        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+        "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/vite.config.ts",
+        ".github/workflows/browser-mainline-ci.yml"
+      ],
+      "grantedWriteSet": [],
+      "evidenceWriteSet": [
+        "apps/weltraum-browser/evidence/factory/w06/<actual-run-id>/**"
+      ],
+      "evidenceGrant": false,
+      "status": "BLOCKED_DEPENDENCY",
+      "owner": "/root/fp06_integrator",
+      "plannedRole": "integrator",
+      "branch": null,
+      "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
+      "worktree": null,
+      "commitSha": null,
+      "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
+      "restrictions": [
+        "Only exact granted paths; planned paths are not grants",
+        "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
+        "No main merge/push/publication; no W12-W29"
+      ]
+    },
+    "W07": {
+      "dependencies": [
+        "W02",
+        "W05",
+        "W06"
+      ],
+      "decisionGates": [
+        "D01",
+        "D11"
+      ],
+      "sourceReadSections": "FP02 §§6–10; FP03 §§4–6, 13.",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/package-lock.json",
+        "handoff:01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md",
+        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/**",
+        "apps/weltraum-browser/src/hestia-prototype/persistence/**",
+        "apps/weltraum-browser/vite.config.ts",
+        ".github/workflows/browser-mainline-ci.yml"
+      ],
+      "plannedWriteSet": [
+        "apps/weltraum-browser/src/factory/construction/placement.ts",
+        "apps/weltraum-browser/src/factory/construction/buildStep.ts",
+        "apps/weltraum-browser/src/factory/ui/buildTool.ts",
+        "apps/weltraum-browser/tests/unit/factory/placement.test.ts",
+        "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts"
+      ],
+      "grantedWriteSet": [],
+      "evidenceWriteSet": [
+        "apps/weltraum-browser/evidence/factory/w07/<actual-run-id>/**"
+      ],
+      "evidenceGrant": false,
+      "status": "BLOCKED_DEPENDENCY",
+      "owner": "/root/fp06_integrator",
+      "plannedRole": "integrator",
+      "branch": null,
+      "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
+      "worktree": null,
+      "commitSha": null,
+      "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
+      "restrictions": [
+        "Only exact granted paths; planned paths are not grants",
+        "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
+        "No main merge/push/publication; no W12-W29"
+      ]
+    },
+    "W08": {
+      "dependencies": [
+        "W02"
+      ],
+      "decisionGates": [
+        "D06"
+      ],
+      "sourceReadSections": "FP02 §§8–10; FP03 §7.",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/package-lock.json",
+        "handoff:01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md"
+      ],
+      "plannedWriteSet": [
+        "apps/weltraum-browser/src/factory/conveyor/beltReference.ts",
+        "apps/weltraum-browser/src/factory/conveyor/beltPorts.ts",
+        "apps/weltraum-browser/tests/unit/factory/conveyor.test.ts"
+      ],
+      "grantedWriteSet": [],
+      "evidenceWriteSet": [
+        "apps/weltraum-browser/evidence/factory/w08/<actual-run-id>/**"
+      ],
+      "evidenceGrant": false,
+      "status": "BLOCKED_DEPENDENCY",
+      "owner": null,
+      "plannedRole": "domain-or-assets-writer",
+      "branch": null,
+      "plannedBranch": "codex/hestia-fp06-w08-2026-10-11",
+      "worktree": null,
+      "commitSha": null,
+      "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
+      "restrictions": [
+        "Only exact granted paths; planned paths are not grants",
+        "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
+        "No main merge/push/publication; no W12-W29"
+      ]
+    },
+    "W09": {
+      "dependencies": [
+        "W04",
+        "W07",
+        "W08"
+      ],
+      "decisionGates": [],
+      "sourceReadSections": "FP01 §§9–12; FP02 §§2, 9–13; FP03 §14.",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/package-lock.json",
+        "handoff:01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md"
+      ],
+      "plannedWriteSet": [
+        "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+        "apps/weltraum-browser/src/factory/ui/machinePanel.ts",
+        "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+        "apps/weltraum-browser/src/factory/ui/powerPanel.ts",
+        "apps/weltraum-browser/src/factory/ui/technologyView.ts",
+        "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts"
+      ],
+      "grantedWriteSet": [],
+      "evidenceWriteSet": [
+        "apps/weltraum-browser/evidence/factory/w09/<actual-run-id>/**"
+      ],
+      "evidenceGrant": false,
+      "status": "BLOCKED_DEPENDENCY",
+      "owner": "/root/fp06_integrator",
+      "plannedRole": "integrator",
+      "branch": null,
+      "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
+      "worktree": null,
+      "commitSha": null,
+      "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
+      "restrictions": [
+        "Only exact granted paths; planned paths are not grants",
+        "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
+        "No main merge/push/publication; no W12-W29"
+      ]
+    },
+    "W10": {
+      "dependencies": [
+        "W09"
+      ],
+      "decisionGates": [
+        "D04",
+        "D11"
+      ],
+      "sourceReadSections": "FP01 §13; FP02 §12; FP03 §13; HVP-Checkpoint/SaveStore.",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/package-lock.json",
+        "handoff:01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md",
+        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/**",
+        "apps/weltraum-browser/src/hestia-prototype/persistence/**",
+        "apps/weltraum-browser/vite.config.ts",
+        ".github/workflows/browser-mainline-ci.yml"
+      ],
+      "plannedWriteSet": [
+        "apps/weltraum-browser/src/factory/persistence/factoryCheckpoint.ts",
+        "apps/weltraum-browser/src/factory/persistence/factorySaveStore.ts",
+        "apps/weltraum-browser/src/factory/persistence/restoreFactorySession.ts",
+        "apps/weltraum-browser/tests/unit/factory/persistence.test.ts",
+        "apps/weltraum-browser/tests/e2e/factory-save.spec.ts",
+        "apps/weltraum-browser/src/hestia-prototype/persistence/factoryWorldParts.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts"
+      ],
+      "grantedWriteSet": [],
+      "evidenceWriteSet": [
+        "apps/weltraum-browser/evidence/factory/w10/<actual-run-id>/**"
+      ],
+      "evidenceGrant": false,
+      "status": "BLOCKED_DEPENDENCY",
+      "owner": "/root/fp06_integrator",
+      "plannedRole": "integrator",
+      "branch": null,
+      "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
+      "worktree": null,
+      "commitSha": null,
+      "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
+      "restrictions": [
+        "Only exact granted paths; planned paths are not grants",
+        "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
+        "No main merge/push/publication; no W12-W29"
+      ]
+    },
+    "W11": {
+      "dependencies": [
+        "W10"
+      ],
+      "decisionGates": [
+        "D10"
+      ],
+      "sourceReadSections": "FP01 §15; FP02 §14; FP03 §16; G17-Testtrennung.",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/package-lock.json",
+        "handoff:01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md"
+      ],
+      "plannedWriteSet": [
+        "apps/weltraum-browser/tests/e2e/factory-acceptance.spec.ts",
+        "apps/weltraum-browser/tests/fixtures/factory/checkpoint-fixtures/",
+        "apps/weltraum-browser/evidence/factory/w11/",
+        "docs/factory/fp06/dry-slice-acceptance.md"
+      ],
+      "grantedWriteSet": [],
+      "evidenceWriteSet": [
+        "apps/weltraum-browser/evidence/factory/w11/<actual-run-id>/**"
+      ],
+      "evidenceGrant": false,
+      "status": "BLOCKED_DEPENDENCY",
+      "owner": "/root/fp06_integrator",
+      "plannedRole": "integrator",
+      "branch": null,
+      "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
+      "worktree": null,
+      "commitSha": null,
+      "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
+      "restrictions": [
+        "Only exact granted paths; planned paths are not grants",
+        "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
+        "No main merge/push/publication; no W12-W29"
+      ]
+    }
+  },
+  "baseline": {
+    "build": "PASS",
+    "focusedUnit": "PASS: 8 files, 95 tests, 189.88 s",
+    "freshBrowser": "NOT_RUN",
+    "freshFullUnit": "NOT_RUN",
+    "evidencePath": "apps/weltraum-browser/evidence/factory/w00/2026-10-11T090924Z"
+  },
+  "freshnessRule": "Recheck main, dirty state, source hashes, granted path set and writer claims before each package. Stop only affected writes on drift; no automatic rebase/merge.",
+  "approvalReceipts": [
+    {
+      "receivedAtUtc": "2026-10-11T09:23:32Z",
+      "source": "direct user async question reply",
+      "decisionReply": "Alle vier für W00–W11 freigeben",
+      "freezeReply": "W01-Freeze freigeben",
+      "scope": "W00-W11 only",
+      "exactDecisionQuestion": "D05: 6 confirmed 60-Hz ticks =100ms/no offline; D06: powered 1kg/s initial0 max10kg persistent burstcredit; D07: /factory.html existing app; D11: <=16 fixed native facility owners, native install transaction, complete combined checkpoint under unchanged overall budgets",
+      "exactFreezeQuestion": "Unchanged FP02 C01-C28/REC-01-REC-07/BOM/dimensions/ports; bulk exactly1mg; packaged volume integer mm3; components integer count; SALVAGE-01 separate; reject inadmissible quantity."
+    }
+  ],
+  "handoffExtractionRootAtAudit": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
+  "w00Gate": {
+    "status": "PASS",
+    "reviewer": "/root/w00_repo_audit",
+    "specCompliance": "PASS",
+    "documentContractQuality": "PASS",
+    "reviewedPatchSha256": "af4bc188b822048324ec877d4ba58183d3c1fec6a065e9da917f4a18905beccb",
+    "reviewPath": "apps/weltraum-browser/evidence/factory/w00/2026-10-11T090924Z/review.md",
+    "commitBinding": "Resolve full SHA from the Git commit containing these W00 documents; self-containing commit SHA cannot be embedded before commit."
+  }
+}

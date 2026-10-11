@@ -31,6 +31,9 @@ import {
   type HvpBootstrapHandle
 } from "../../src/hvp/hvpBootstrap";
 import { createHvpLookProfile } from "../../src/hestia-prototype/presentation/look";
+import { createFp02Fixture } from "../../src/factory/catalog/fp02Catalog";
+import { mountFactorySession, type FactorySessionHandle } from "../../src/factory/session/factorySession";
+import type { FactoryHostPort, FactoryHostView } from "../../src/factory/session/hostPort";
 
 class FakeElement extends EventTarget {
   id = "";
@@ -458,6 +461,206 @@ describe("HVP T08 bootstrap lifecycle", () => {
       HVP_COAST_BLOCK_SIZE_METERS,
       HVP_TERRAIN_MATERIAL_ID
     ), divergent)).toThrow(/diverg|profile/i);
+  });
+
+  it("W06 mounts one optional native-host extension, refuses legacy persistence, and closes it before the backend", async () => {
+    const source = harness();
+    let hostPort: import("../../src/factory/session/hostPort").FactoryHostPort | undefined;
+    let closed = 0;
+    const handle = await startHvp(source.overrides({ factoryExtension: async (host: import("../../src/factory/session/hostPort").FactoryHostPort) => {
+      hostPort = host;
+      return { isQuiescent: () => true, dispose: async () => {
+        expect(host.current()).toBe(false); expect(source.counts().backendDisposals).toBe(0); closed++;
+      } };
+    } }));
+    try {
+      expect(hostPort).toBeDefined();
+      expect(hostPort!.read()).toMatchObject({ nativeTick: 0, confirmed: true, terrain: { cellMeters: 0.125 } });
+      expect(hostPort!.readTerrainSlot(-1, 0, 0)).toBeUndefined();
+      const save = descendants(source.body).find(e => e.id === "hvp-save")!;
+      save.dispatchEvent(new Event("click")); await Promise.resolve();
+      expect(source.body.dataset.hestiaPrototypeSave).toContain("Factory");
+      expect(source.body.dataset.hestiaPrototypeSave).toContain("Rejected");
+    } finally { await handle.dispose(); }
+    expect(closed).toBe(1);
+  });
+
+  it("W06 holds the single host lease through late async extension cleanup and rejects stale pause", async () => {
+    const source = harness();
+    let entered!: () => void;
+    const mounting = new Promise<void>(resolve => { entered = resolve; });
+    let resolveExtension!: (value: import("../../src/factory/session/hostPort").FactoryHostExtensionHandle) => void;
+    const deferred = new Promise<import("../../src/factory/session/hostPort").FactoryHostExtensionHandle>(resolve => { resolveExtension = resolve; });
+    let oldHost!: import("../../src/factory/session/hostPort").FactoryHostPort;
+    let closed = 0;
+    const pending = startHvp(source.overrides({ factoryExtension: (host: typeof oldHost) => {
+      oldHost = host; entered(); return deferred;
+    } }));
+    await mounting;
+    source.windowPort.dispatchEvent(new Event("pagehide"));
+    await expect(startHvp(source.overrides())).rejects.toThrow(/already mounted/i);
+    resolveExtension({ isQuiescent: () => true, dispose: async () => { closed++; } });
+    const oldHandle = await pending; await oldHandle.dispose();
+    expect(closed).toBe(1); expect(source.windowPort.animationFrames.size).toBe(0);
+    const next = await startHvp(source.overrides());
+    try {
+      await expect(oldHost.pause()).rejects.toThrow(/disposed|superseded/i);
+      expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
+      expect(source.counts().backendConstructions).toBe(2);
+    } finally { await next.dispose(); }
+  });
+
+  it("W06 safe pause observes confirmed native counters and refuses busy resume", async () => {
+    const source = harness(); const original = source.overrides()!;
+    const confirm = vi.fn(() => true); Object.defineProperty(source.windowPort, "confirm", { value: confirm });
+    let tick = 17; let busy = false;
+    let port!: import("../../src/factory/session/hostPort").FactoryHostPort;
+    const views: number[] = [];
+    const handle = await startHvp(source.overrides({
+      createPhysics: async (...args: Parameters<NonNullable<typeof original.createPhysics>>) => {
+        const native = await original.createPhysics!(...args); const read = native.read;
+        return { ...native, read: () => ({ ...read(), ticks: tick }), command: async () => { tick++; } };
+      },
+      factoryExtension: async (host: typeof port) => {
+        port = host; const unsubscribe = host.subscribeConfirmed(view => { views.push(view.nativeTick); });
+        return { isQuiescent: () => !busy, dispose: async () => { unsubscribe(); } };
+      }
+    }));
+    try {
+      stepFrame(source.windowPort, 16); stepFrame(source.windowPort, 32);
+      expect(views.every(value => value === 17)).toBe(true);
+      tick = 23; stepFrame(source.windowPort, 48); expect(views.at(-1)).toBe(23);
+      await port.pause(); expect(views.at(-1)).toBe(24);
+      busy = true; await expect(port.resume()).rejects.toThrow(/busy|unconfirmed/i);
+      expect(port.read().confirmed).toBe(false); expect(tick).toBe(24);
+      descendants(source.body).find(e => e.id === "hvp-end-session")!.dispatchEvent(new Event("click"));
+      await Promise.resolve(); expect(confirm).not.toHaveBeenCalled();
+      expect(source.counts().backendDisposals).toBe(0);
+    } finally { await handle.dispose(); }
+  });
+
+  it("W06 R1 publishes actual unconfirmed native holds without work and permits transient recovery", async () => {
+    const source = harness(), original = source.overrides()!;
+    let status: FactoryHostView["physicsStatus"] = "Paused", tick = 17;
+    let session!: FactorySessionHandle;
+    const observations: FactoryHostView[] = [];
+    const handle = await startHvp(source.overrides({
+      createPhysics: async (...args: Parameters<NonNullable<typeof original.createPhysics>>) => {
+        const native = await original.createPhysics!(...args), read = native.read;
+        return { ...native, read: () => ({ ...read(), ticks: tick, status }) };
+      }, factoryExtension: async (host: FactoryHostPort) => {
+        session = await mountFactorySession(host, createFp02Fixture("cargo").catalog);
+        host.subscribeConfirmed(view => { observations.push(view); }); return session;
+      }
+    }));
+    try {
+      status = "CoverageHold"; tick = 23; stepFrame(source.windowPort, 16);
+      expect(observations.at(-1)).toMatchObject({ physicsStatus: "CoverageHold", confirmed: false });
+      expect(session.read()).toMatchObject({ state: "WaitingForHost", nativeTick: 17, steps: 0 });
+      expect(session.isQuiescent()).toBe(true); // Neighbor repair must remain admissible.
+      status = "SimulationHold"; stepFrame(source.windowPort, 32);
+      expect(session.read()).toMatchObject({ state: "WaitingForHost", nativeTick: 17, steps: 0 });
+      status = "Paused"; stepFrame(source.windowPort, 48);
+      expect(session.read()).toMatchObject({ state: "Ready", nativeTick: 23, steps: 1 });
+      status = "RecoveryHold"; tick = 29; stepFrame(source.windowPort, 64);
+      expect(session.read()).toMatchObject({ state: "RecoveryHold", nativeTick: 23, steps: 1 });
+      expect(session.isQuiescent()).toBe(false);
+      status = "Running"; tick = 35; stepFrame(source.windowPort, 80);
+      expect(session.read()).toMatchObject({ state: "RecoveryHold", nativeTick: 23, steps: 1 });
+    } finally { await handle.dispose(); }
+  });
+
+  it("W06 R1 refuses all actual Factory Resume and Play paths during native holds", async () => {
+    const source = harness(), original = source.overrides()!;
+    const requestPointerLock = vi.fn(); Object.defineProperty(source.canvas, "requestPointerLock", { value: requestPointerLock });
+    let status: FactoryHostView["physicsStatus"] = "Paused";
+    let port!: FactoryHostPort;
+    const commands: string[] = [];
+    const handle = await startHvp(source.overrides({
+      createPhysics: async (...args: Parameters<NonNullable<typeof original.createPhysics>>) => {
+        const native = await original.createPhysics!(...args), read = native.read;
+        return { ...native, read: () => ({ ...read(), status }), command: async (kind: string) => { commands.push(kind); } };
+      }, factoryExtension: async (host: FactoryHostPort) => {
+        port = host; return { isQuiescent: () => true, dispose: async () => {} };
+      }
+    }));
+    try {
+      const baseline = commands.length;
+      for (const hold of ["CoverageHold", "SimulationHold", "RecoveryHold"] as const) {
+        status = hold;
+        expect(port.read().confirmed).toBe(false);
+        await expect.soft(port.resume()).rejects.toThrow(/unconfirmed|hold/i);
+        expect.soft(commands).toHaveLength(baseline); commands.length = baseline;
+        descendants(source.body).find(e => e.id === "hvp-physics-pause")!.dispatchEvent(new Event("click"));
+        await Promise.resolve(); await Promise.resolve();
+        expect.soft(commands).toHaveLength(baseline); commands.length = baseline;
+        descendants(source.body).find(e => e.id === "hvp-play")!.dispatchEvent(new Event("click"));
+        await Promise.resolve(); await Promise.resolve();
+        expect.soft(commands).toHaveLength(baseline); commands.length = baseline;
+        expect.soft(requestPointerLock).not.toHaveBeenCalled(); requestPointerLock.mockClear();
+        descendants(source.body).find(e => e.textContent === "Spiel fortsetzen")!.dispatchEvent(new Event("click"));
+        expect.soft(requestPointerLock).not.toHaveBeenCalled(); requestPointerLock.mockClear();
+      }
+      status = "Paused"; await port.resume(); expect(commands.at(-1)).toBe("Resume");
+    } finally { await handle.dispose(); }
+  });
+
+  it("W06 R1 keeps the actual post-disposal restart in the Factory profile", async () => {
+    const source = harness(), assign = vi.fn();
+    Object.defineProperty(source.windowPort, "location", { value: { search: "", assign } });
+    Object.defineProperty(source.windowPort, "confirm", { value: () => true });
+    const handle = await startHvp(source.overrides({ factoryExtension: async () => ({ isQuiescent: () => true, dispose: async () => {} }) }));
+    try {
+      descendants(source.body).find(e => e.id === "hvp-end-session")!.dispatchEvent(new Event("click"));
+      await vi.waitFor(() => { expect(descendants(source.body).find(e => e.id === "hvp-ended")).toBeDefined(); });
+      descendants(source.body).find(e => e.textContent === "Neu starten")!.dispatchEvent(new Event("click"));
+      expect(assign).toHaveBeenCalledWith("/factory.html");
+    } finally { await handle.dispose(); }
+  });
+
+  it("W06 R1 permits awaited session disposal from terminal RecoveryHold without resuming", async () => {
+    const source = harness(), original = source.overrides()!;
+    Object.defineProperty(source.windowPort, "confirm", { value: () => true });
+    let tick = 0; const commands: string[] = [];
+    let session!: FactorySessionHandle;
+    const handle = await startHvp(source.overrides({
+      createPhysics: async (...args: Parameters<NonNullable<typeof original.createPhysics>>) => {
+        const native = await original.createPhysics!(...args), read = native.read;
+        return { ...native, read: () => ({ ...read(), ticks: tick }), command: async (kind: string) => { commands.push(kind); } };
+      }, factoryExtension: async (host: FactoryHostPort) => { session = await mountFactorySession(host, createFp02Fixture("cargo").catalog); return session; }
+    }));
+    try {
+      tick = -1; stepFrame(source.windowPort, 16); expect(session.read().state).toBe("RecoveryHold");
+      descendants(source.body).find(e => e.id === "hvp-end-session")!.dispatchEvent(new Event("click"));
+      await vi.waitFor(() => { expect(descendants(source.body).find(e => e.id === "hvp-ended")).toBeDefined(); });
+      expect(session.read().state).toBe("Disposed"); expect(source.counts().backendDisposals).toBe(1);
+      expect(commands).not.toContain("Resume");
+    } finally { await handle.dispose(); }
+  });
+
+  it("W06 R2 Drop grants no native command during holds and preserves confirmed and legacy dispatch", async () => {
+    for (const factory of [true, false]) {
+      const source = harness(), original = source.overrides()!;
+      let status: FactoryHostView["physicsStatus"] = "Paused";
+      const commands: string[] = [];
+      const handle = await startHvp(source.overrides({
+        createPhysics: async (...args: Parameters<NonNullable<typeof original.createPhysics>>) => {
+          const native = await original.createPhysics!(...args), read = native.read;
+          return { ...native, read: () => ({ ...read(), status }), command: async (kind: string) => { commands.push(kind); } };
+        }, ...(factory ? { factoryExtension: async () => ({ isQuiescent: () => true, dispose: async () => {} }) } : {})
+      }));
+      try {
+        const drop = descendants(source.body).find(e => e.id === "hvp-physics-drop")!;
+        for (const hold of ["CoverageHold", "SimulationHold", "RecoveryHold"] as const) {
+          status = hold; commands.length = 0; drop.dispatchEvent(new Event("click"));
+          await Promise.resolve(); await Promise.resolve();
+          if (factory) expect.soft(commands, hold).toEqual([]);
+          else expect(commands, `unchanged legacy ${hold}`).toEqual(["Drop"]);
+        }
+        status = "Paused"; commands.length = 0; drop.dispatchEvent(new Event("click"));
+        await Promise.resolve(); await Promise.resolve(); expect(commands).toEqual(["Drop"]);
+      } finally { await handle.dispose(); }
+    }
   });
 
   it("reaches Ready with exactly one tick loop and disposes start/dispose exactly once", async () => {

@@ -1,0 +1,1 @@
+{"entries":376,"files":329,"jsonFiles":37,"manifests":4,"referencedFiles":324,"totalBytes":84809161,"limits":{"depth":12,"entries":4096,"files":4096,"fileBytes":33554432,"jsonBytes":8388608,"totalBytes":268435456},"historicalProductReceipts":"path/hash form only; immutable run artifacts are verified, historical HEAD bytes are not reread"}

@@ -1,0 +1,67 @@
+{
+  "baseCommitSha": "a30630dd7963c165c673df7ea1b46d52735752ef",
+  "branch": "codex/hestia-fp06-integrator-2026-10-11",
+  "capturedAtUtc": "2026-10-11T10:45:23.842374+00:00",
+  "paths": [
+    {
+      "path": "apps/weltraum-browser/factory.html",
+      "sha256": "bf8af5027bbe9381b79b4b52a8ca054fbb594e8f94d7f1acbc0ef71bba56fea3",
+      "bytes": 383
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/factoryEntry.ts",
+      "sha256": "9ca318a9967050aaae6176019e49a3d95b83c169bfd5ac5214b256d489a73754",
+      "bytes": 3896
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+      "sha256": "7935fd9b78ac9702fb864b16a6e7c4ecd41ace246df1a482f49452f0f858d2e8",
+      "bytes": 1185
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/factorySession.ts",
+      "sha256": "25e7afcc2458bc247044e76e3543b0641923c5f7b64bcd4f2ed01ff811890907",
+      "bytes": 3424
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+      "sha256": "2085bd498c51655a91bfe894d461c12c2a2ed32d8683221717211e84830565b8",
+      "bytes": 8138
+    },
+    {
+      "path": "apps/weltraum-browser/tests/e2e/factory-host.spec.ts",
+      "sha256": "01f8c2766ff9b435e6e53c6fe13829999bf2dbab9a5d12f04a70ff0f312ad2c1",
+      "bytes": 6930
+    },
+    {
+      "path": "tools/factory/verify-evidence.mjs",
+      "sha256": "f24c83350d7916fe4c6232cd8de5578053dc07b1aaa7daa140c69b9741c965e9",
+      "bytes": 1948
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+      "sha256": "3fa34a158a9f257caefdd3f5c52764758a347a6f265d0449462e0a5c71758529",
+      "bytes": 150657
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+      "sha256": "4361e164f1e4ae002200d0befd2d09143c7c91e51c61ace4c8e61d773fa91e9d",
+      "bytes": 51517
+    },
+    {
+      "path": "apps/weltraum-browser/package.json",
+      "sha256": "f17cffe70fae770f14561908a0287f6abe0ec7f62dbfaa968d75163d79e96a63",
+      "bytes": 2534
+    },
+    {
+      "path": "apps/weltraum-browser/vite.config.ts",
+      "sha256": "96e10a87ba016b606939adb71b0d965c02d0280c2dca74f8b767c1739d3b8dd6",
+      "bytes": 622
+    },
+    {
+      "path": ".github/workflows/browser-mainline-ci.yml",
+      "sha256": "94ab68b85d723ffd021fc9a9cc4181a9efe8c45828796ca6e8f4068b7ee30e13",
+      "bytes": 13323
+    }
+  ]
+}

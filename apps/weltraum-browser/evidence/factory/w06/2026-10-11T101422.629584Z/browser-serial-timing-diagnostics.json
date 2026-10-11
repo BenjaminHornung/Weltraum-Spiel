@@ -1,0 +1,213 @@
+[
+  {
+    "case": "factory-host-Factory-expli-e6950-the-same-paused-native-host-chromium",
+    "events": [
+      {
+        "callId": "pw:api@28",
+        "title": "Launch browser",
+        "durationMs": 193.06,
+        "startTimeMs": 115034.824,
+        "error": null
+      },
+      {
+        "callId": "pw:api@32",
+        "title": "Create context",
+        "durationMs": 13.925,
+        "startTimeMs": 115234.891,
+        "error": null
+      },
+      {
+        "callId": "pw:api@34",
+        "title": "Create page",
+        "durationMs": 130.165,
+        "startTimeMs": 115254.282,
+        "error": null
+      },
+      {
+        "callId": "pw:api@35",
+        "title": "Navigate to \"/factory.html\"",
+        "durationMs": 695.481,
+        "startTimeMs": 115387.365,
+        "error": null
+      },
+      {
+        "callId": "pw:api@37",
+        "title": "Click getByRole('button', { name: 'Werkstatt pausieren', exact: true })",
+        "durationMs": 6843.478,
+        "startTimeMs": 125507.905,
+        "error": null
+      },
+      {
+        "callId": "pw:api@39",
+        "title": "Evaluate",
+        "durationMs": 1931.293,
+        "startTimeMs": 133813.569,
+        "error": null
+      },
+      {
+        "callId": "pw:api@40",
+        "title": "Click getByRole('button', { name: 'Werkstatt fortsetzen', exact: true })",
+        "durationMs": 7003.586,
+        "startTimeMs": 135745.901,
+        "error": null
+      },
+      {
+        "callId": "pw:api@42",
+        "title": "Evaluate",
+        "durationMs": 1524.17,
+        "startTimeMs": 142753.735,
+        "error": null
+      },
+      {
+        "callId": "pw:api@49",
+        "title": "Close context",
+        "durationMs": 461.573,
+        "startTimeMs": 148688.239,
+        "error": null
+      }
+    ]
+  },
+  {
+    "case": "factory-host-Factory-refus-4c1b3-paths-with-an-honest-reason-chromium",
+    "events": [
+      {
+        "callId": "pw:api@28",
+        "title": "Launch browser",
+        "durationMs": 176.408,
+        "startTimeMs": 80657.353,
+        "error": null
+      },
+      {
+        "callId": "pw:api@32",
+        "title": "Create context",
+        "durationMs": 8.003,
+        "startTimeMs": 80837.927,
+        "error": null
+      },
+      {
+        "callId": "pw:api@34",
+        "title": "Create page",
+        "durationMs": 91.66,
+        "startTimeMs": 80850.584,
+        "error": null
+      },
+      {
+        "callId": "pw:api@35",
+        "title": "Navigate to \"/factory.html\"",
+        "durationMs": 647.63,
+        "startTimeMs": 80945.891,
+        "error": null
+      },
+      {
+        "callId": "pw:api@37",
+        "title": "Click locator('#hvp-save')",
+        "durationMs": 6987.521,
+        "startTimeMs": 91095.35,
+        "error": null
+      },
+      {
+        "callId": "pw:api@40",
+        "title": "Click locator('#hvp-load')",
+        "durationMs": 6490.513,
+        "startTimeMs": 100969.699,
+        "error": null
+      },
+      {
+        "callId": "pw:api@43",
+        "title": "Click locator('#hvp-load-new')",
+        "durationMs": 3864.335,
+        "startTimeMs": 110445.63,
+        "error": "Error: locator.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#hvp-load-new')\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" id=\"hvp-load-new\">Gespeicherte Sitzung neu \u00f6ffnen</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n"
+      },
+      {
+        "callId": "pw:api@47",
+        "title": "Close context",
+        "durationMs": 449.976,
+        "startTimeMs": 113861.162,
+        "error": null
+      }
+    ]
+  },
+  {
+    "case": "factory-host-T028-native-p-8acd7-through-presentation-frames-chromium",
+    "events": [
+      {
+        "callId": "pw:api@23",
+        "title": "Create context",
+        "durationMs": 16.995,
+        "startTimeMs": 44466.684,
+        "error": null
+      },
+      {
+        "callId": "pw:api@25",
+        "title": "Create page",
+        "durationMs": 88.577,
+        "startTimeMs": 44486.484,
+        "error": null
+      },
+      {
+        "callId": "pw:api@26",
+        "title": "Navigate to \"/factory.html\"",
+        "durationMs": 687.127,
+        "startTimeMs": 44576.139,
+        "error": null
+      },
+      {
+        "callId": "pw:api@29",
+        "title": "Evaluate",
+        "durationMs": 1789.612,
+        "startTimeMs": 54278.96,
+        "error": null
+      },
+      {
+        "callId": "pw:api@31",
+        "title": "Click getByRole('button', { name: 'Werkstatt pausieren', exact: true })",
+        "durationMs": 6304.533,
+        "startTimeMs": 56070.791,
+        "error": null
+      },
+      {
+        "callId": "pw:api@33",
+        "title": "Evaluate",
+        "durationMs": 1477.321,
+        "startTimeMs": 63233.379,
+        "error": null
+      },
+      {
+        "callId": "pw:api@34",
+        "title": "Evaluate",
+        "durationMs": 6629.879,
+        "startTimeMs": 64711.55,
+        "error": null
+      },
+      {
+        "callId": "pw:api@35",
+        "title": "Evaluate",
+        "durationMs": 1479.414,
+        "startTimeMs": 71342.189,
+        "error": null
+      },
+      {
+        "callId": "pw:api@40",
+        "title": "Screenshot",
+        "durationMs": 3550.368,
+        "startTimeMs": 72828.213,
+        "error": null
+      },
+      {
+        "callId": "pw:api@44",
+        "title": "Evaluate",
+        "durationMs": 1359.658,
+        "startTimeMs": 76412.605,
+        "error": null
+      },
+      {
+        "callId": "pw:api@48",
+        "title": "Close context",
+        "durationMs": 501.657,
+        "startTimeMs": 79384.982,
+        "error": null
+      }
+    ]
+  }
+]

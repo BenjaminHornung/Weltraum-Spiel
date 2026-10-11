@@ -1,0 +1,67 @@
+{
+  "baseSha": "a30630dd7963c165c673df7ea1b46d52735752ef",
+  "capturedAtUtc": "2026-10-11T11:13:13.959565+00:00",
+  "phase": "R1-R4 incl Drop fixed;4finaltargetedPASS/tscPASS;50affected+build+7browserPASS explicitly preDrop; finalindependentreviewpending",
+  "productFiles": [
+    {
+      "path": "apps/weltraum-browser/factory.html",
+      "bytes": 383,
+      "sha256": "bf8af5027bbe9381b79b4b52a8ca054fbb594e8f94d7f1acbc0ef71bba56fea3"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/factoryEntry.ts",
+      "bytes": 4058,
+      "sha256": "e9e98e280282e2686b5da582e613c0aa13b94f56363712e6409b5f93f2b8dd97"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+      "bytes": 1394,
+      "sha256": "287949bb65dbd7d4c29586f4c08260a58d1dfb879bc2a6bcf77d701459b11980"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/factorySession.ts",
+      "bytes": 3866,
+      "sha256": "5037f16ecb6295568f32f19272cc70bb3b521b06c87538abef0506189a00370a"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+      "bytes": 12274,
+      "sha256": "2de4f571b2113884826a2d6da60aa71720c040d5aace972d012c8f41e7fe089c"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/e2e/factory-host.spec.ts",
+      "bytes": 6650,
+      "sha256": "e69942f50c459fe81c793a5ae20b882634bf8c2cfba902894be3c299026caa16"
+    },
+    {
+      "path": "tools/factory/verify-evidence.mjs",
+      "bytes": 5354,
+      "sha256": "68f55d7b945419fdd38749f8d56d27464f70c5d56dadd473b0cac18fc01a2054"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+      "bytes": 150927,
+      "sha256": "37b10fe65519eddd7ce07582a3f9560141711b9c9460d22bfbef70af8ed23f4c"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+      "bytes": 60280,
+      "sha256": "60ed8b7bd29cc85c1f0e1bf2a890023386d0fabe922543b86936b3241dd85b41"
+    },
+    {
+      "path": "apps/weltraum-browser/package.json",
+      "bytes": 2534,
+      "sha256": "f17cffe70fae770f14561908a0287f6abe0ec7f62dbfaa968d75163d79e96a63"
+    },
+    {
+      "path": "apps/weltraum-browser/vite.config.ts",
+      "bytes": 622,
+      "sha256": "96e10a87ba016b606939adb71b0d965c02d0280c2dca74f8b767c1739d3b8dd6"
+    },
+    {
+      "path": ".github/workflows/browser-mainline-ci.yml",
+      "bytes": 13323,
+      "sha256": "94ab68b85d723ffd021fc9a9cc4181a9efe8c45828796ca6e8f4068b7ee30e13"
+    }
+  ]
+}

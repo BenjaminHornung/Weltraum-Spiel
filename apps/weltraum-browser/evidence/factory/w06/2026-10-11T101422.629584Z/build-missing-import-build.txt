@@ -1,0 +1,5 @@
+
+> weltraum-browser@0.1.0 build
+> tsc -p tsconfig.json && vite build
+
+src/factory/factoryEntry.ts(4,36): error TS2307: Cannot find module './catalog/loadCatalog' or its corresponding type declarations.

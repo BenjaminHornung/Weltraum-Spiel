@@ -1,0 +1,1172 @@
+[
+  {
+    "path": "apps/weltraum-browser/evidence/autopilot-arrival.png",
+    "sha256": "59ba65938a8e65cff8f968b8336e1f5ad4e643284da41b68dbf8da631cd94ac0",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/autopilot-lifecycle-new-route-after-arrival.json",
+    "sha256": "b7240977788ea866ec2a81408697cb031dc211036c4714474befdb02342caa1f",
+    "size": 60693
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/autopilot-long-range-direct-1000m.png",
+    "sha256": "8efad85ea40d083b30cadf306424ebe2117fe2ca5bb7a47b557a772f74df9f8c",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/autopilot-long-range-direct-2500m.png",
+    "sha256": "0cf89662fae3d9933df60abdc5ab8fad095b1bd0966922c2b1bcc755ae6c5698",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/autopilot-long-range-known-stress.png",
+    "sha256": "5d4f71496715eba181336cb1074a369c9b4cfbc2916beb60f732280789100b49",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/autopilot-long-range-obstacle-course.png",
+    "sha256": "d3a203f6223dab8e11ce38117d9971ebdfedbf926518b5974f391775e979070d",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/autopilot-long-range-speed-profile-summary.json",
+    "sha256": "f9fc2f2931cdbaba6ed012cca562622d53ae9f58481b636fd447867de9796da7",
+    "size": 5491
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/autopilot-long-range-summary.json",
+    "sha256": "965ace4dcb14ad98a4305b056bc734e0cb62fdf0a09c8bd449d340c3fe01d9fa",
+    "size": 20695
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/autopilot-proving-ground-v2-corridor.png",
+    "sha256": "60b662fbc9e8041d838b447115a50e63a12bd12443e2f9fabca9fa8e8c647bd3",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/autopilot-proving-ground-v2-direct-long.png",
+    "sha256": "60b662fbc9e8041d838b447115a50e63a12bd12443e2f9fabca9fa8e8c647bd3",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/autopilot-proving-ground-v2-speed-profile.png",
+    "sha256": "60b662fbc9e8041d838b447115a50e63a12bd12443e2f9fabca9fa8e8c647bd3",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/autopilot-proving-ground-v2-summary.json",
+    "sha256": "9975cb2593481da5272c8ec54fad7b02204e9eeac3d4e3ec9aa2d2def8d4d4d9",
+    "size": 18049
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/autopilot-terminal-brake.png",
+    "sha256": "14ffea1a4f403416eb3a10acb8dce4e27e63bad016cd676cf3d3a55db7bdccaa",
+    "size": 130
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/autopilot-terminal-capture-telemetry.json",
+    "sha256": "cfac5ac6e711f44802bfd23b9ccd06705ed60eaef367db247c1b60d0129920e6",
+    "size": 59426
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/autopilot-terminal-capture.png",
+    "sha256": "eaef46bd41be77dd94a7c2a4d0c0eabe07eb45a25e76fd11bf517cacb179bd99",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/autopilot-terminal-hold.png",
+    "sha256": "ffba886de22a9aebca39dadaff92d504661235ecfc7ae31523243ad50dace0c7",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/autopilot-thruster-burn.png",
+    "sha256": "f34c84276ffa009a14b15f08646227899cd6cbd1c3b0b4f5fa1f9b237029db37",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-adaptive-microvoxel-authority-v1-summary.json",
+    "sha256": "65e3d81b42f303e2fbb10fee9a9057a497848cade105d1611ceb29f1ec18f1fc",
+    "size": 7357
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-adaptive-microvoxel-authority-v1.md",
+    "sha256": "b0a784be4e1303c6dcaae4960c2319451b55660d1e909d7a07899fcd825bb4f8",
+    "size": 6166
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-autopilot-bang-bang-metrics.json",
+    "sha256": "3d48401e117105aa3b78c18c9154fe1ea61893e9ffa0b5e9b5cfb1f60d6e79e1",
+    "size": 226514
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-autopilot-bang-bang-report.json",
+    "sha256": "58b3a38721d0912d6ec18e22303919283f3f7347298f767fe8f5526a4a7e5896",
+    "size": 9699
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-autopilot-bang-bang-timeline.json",
+    "sha256": "90bb99d668e4df625938e615b133ab884b4ae508b2bae8bc6415e9a09bb3cd37",
+    "size": 75420
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-autopilot-lifecycle-render-smoothing-v1.md",
+    "sha256": "82c9738085e057279ee095ea220655362e10ab7c0c52069babfd22c5e88e0309",
+    "size": 3571
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-autopilot-long-range-testfield-v1.md",
+    "sha256": "61dde47422caea37179c91c3d5d56788acf883be5fcecb0f506a183a20c156f1",
+    "size": 24669
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-autopilot-proving-ground-v2.md",
+    "sha256": "5dbb9d00f4a6cc9834356fa56c6241b0badc61257fc50b6eda56241f16ea58b7",
+    "size": 4547
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-autopilot-terminal-capture-v1.md",
+    "sha256": "cee6a33635163914f6bee0ae73f13d498b2bc8bb31dd46f857dd9b31d7ef4780",
+    "size": 4139
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-celestial-gravity-core-v1-summary.json",
+    "sha256": "ba7138816ee877a084835e1969d4651261d145f5921f21010d9658ba25554ed3",
+    "size": 3068
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-celestial-gravity-core-v1.md",
+    "sha256": "1ebfa1883695546aacc6bc3b8b9a98b8385bb2d2d1f316cf96e5fe61d57ea9a6",
+    "size": 2386
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-combat-weapon-damage-core-v1-summary.json",
+    "sha256": "3db6c9eeeec93298b8c8395f65fd710994faf975002c46157321d7619dae50bc",
+    "size": 5277
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-combat-weapon-damage-core-v1.md",
+    "sha256": "679b398b1c7a4c5037bc0a9005885d8290a6b27f0ba6aaa1530e6d653eafffbe",
+    "size": 4060
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-demo-scout-glb-visual-parity-v1.md",
+    "sha256": "b0934a616253f051c05de0bab069c7b9f54acaef29129f39b61019f99efdbbf3",
+    "size": 2669
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-flight-feel-control-modes-v1.md",
+    "sha256": "7d7ecea278f1edd475577c910624264ab22c03710354af9d8046f910e6a4ca82",
+    "size": 4007
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-flight-hud-polish-v1.md",
+    "sha256": "4a361519886c245bfe1758eb7525db830d0722fef850fb390f4b1830abeed32f",
+    "size": 4029
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-flight-ui-foundation-v1.md",
+    "sha256": "198b35984208a7effbd14583b4f7286792fcc364a72106170c538dfc861d483a",
+    "size": 958
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-graphics-settings-foundation-v1-summary.json",
+    "sha256": "e2ecd339278ef0e8d353ea7431a9d185faafabb38d82e3581190d962c4b33b69",
+    "size": 6075
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-graphics-settings-foundation-v1.md",
+    "sha256": "a3de0d6a5063ad6b3aacf08d9835f99276ffd700a43b246c63bcfc6127a26da1",
+    "size": 5888
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-hestia-microvoxel-surface-lab-v1-summary.json",
+    "sha256": "1f0d9393e7409bcdf415c9327617081f2fab6c3ec2a42560ddb48521a084cd23",
+    "size": 16131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-hestia-microvoxel-surface-lab-v1.md",
+    "sha256": "9c5425a4469a3bb00ddcc31da3be5e53b6aecd3fab46dc59cec253c5f69da058",
+    "size": 7769
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-indexeddb-save-repository-core-v1-summary.json",
+    "sha256": "17a637414095211350253fe263b110561cc796edcd67153db0c5968bc7054935",
+    "size": 1582
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-indexeddb-save-repository-core-v1.md",
+    "sha256": "8bfc28e7ceb930f4c422b37736c4628abf1c15365b68c54f92b6cd2b15dbafd8",
+    "size": 1462
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-large-field-navigation-objective-v1.md",
+    "sha256": "fb24a7495e4966866d8a010eec62ecb97122b37233796e474867a4105f57532d",
+    "size": 1389
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-large-field-objective-chain-live-v1.md",
+    "sha256": "6cf819152385a67b12b185f58cdfe366fe8f7abf793083a205cf5dc9843b5382",
+    "size": 2447
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-live-flight-objective-integration-v1.md",
+    "sha256": "ef174f5002218ffe21a616efd73d949e94b1c9d7f09b0e9a78e0af43f7210823",
+    "size": 5767
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-live-large-field-flight-acceptance-v1.md",
+    "sha256": "9d989e6db0efe6443d047bcf6d746645d64c5874cccb99c27056fd4baa1a38be",
+    "size": 2656
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-live-world-presentation-truth-v1-summary.json",
+    "sha256": "5f4fb5cc8f2b60868d6abe6a3c20c27fefe06a5282ff7d3a9f0e5f163e9a456b",
+    "size": 11169
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-live-world-presentation-truth-v1.md",
+    "sha256": "a88c1e7339062d590a4d26263d28353f9536c1295003aae008521c075857be5b",
+    "size": 851
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-low-poly-open-world-runtime-v1.md",
+    "sha256": "58d2d9150014cafcbac63a3cd441d8634a21d37a5ae2e705280a63b3720e074a",
+    "size": 2464
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-mission-contract-framework-core-v1-summary.json",
+    "sha256": "8c71267bede149d78ad20de5d5c716f2b9d21ee1e680e10c6d860e27d6eef5b7",
+    "size": 1418
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-mission-contract-framework-core-v1.md",
+    "sha256": "8092d08a53ade760d1c5f44fb9fe82d0df29b9b3a6339d0d0588891758a2be12",
+    "size": 1041
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-multi-obstacle-2500m-execution-v1-summary.json",
+    "sha256": "d8f171ebbc5aadd4d38cbaaa30696c67e255042f4e38aea0d1e244692133b185",
+    "size": 7203
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-multi-obstacle-2500m-execution-v1.md",
+    "sha256": "61074b0ce322d0a61ecf1a881159d4722d7673f22d4e826ba424bfd48ecbebe6",
+    "size": 6020
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-multi-obstacle-2500m-trace.json",
+    "sha256": "fa2c9ad493ab91f1aa4b5dec953497ff3533945ced3fccde91f731743244f345",
+    "size": 104890
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-multi-obstacle-route-planner-v1-summary.json",
+    "sha256": "d1f6a7f40419b3a806306990b6d53324fc040736afa0257ad8eaa4f52de584f1",
+    "size": 20628
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-multi-obstacle-route-planner-v1.md",
+    "sha256": "0e87775433b4f45934c4f0b5ad2db1535b79b4a036922e866faaac6b563ac8b6",
+    "size": 23792
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-objective-chain-1000m-completion-v2.md",
+    "sha256": "f0b249b123080e4ead52fde05b7977df9cc7e8686a98cb9f042ce91d53c05fd9",
+    "size": 2743
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-persistence-universe-time-event-core-v1-summary.json",
+    "sha256": "97a7552498b00cbf0552179cb36b4c8d4e1e37f5787cbb72c5efd5a7e22ca253",
+    "size": 1914
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-persistence-universe-time-event-core-v1.md",
+    "sha256": "f4f40142a94bbb1152e2d802c80647c19ba66c500dd7f8b5b5e0cc08784e700b",
+    "size": 1694
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-playable-large-proving-ground-v1.md",
+    "sha256": "80c57aa15cf5ed8b1b2c22b66bc69724d752cb91293397e41f5f80ecb3bc3f15",
+    "size": 1357
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-playable-ship-flight-polish-v1.md",
+    "sha256": "5dfa73f807d874234a668b2933377a5f421ebe0e8f41f000c737ecd993bb275e",
+    "size": 3374
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-playable-ship-flight-v1.md",
+    "sha256": "20c1b4bc856e91e61d128c8689ee73cbb800bf51a25099ce928e5f77ec83032d",
+    "size": 5676
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-render-backend-mesh-lifecycle-v1-summary.json",
+    "sha256": "f330285d846c3703c081d7e333f9f72bbc6406d36f3880533298c06e651afb31",
+    "size": 4360
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-render-backend-mesh-lifecycle-v1.md",
+    "sha256": "91f5513a9d4ba10b22b6bae4129c1034354ceaa05222ebda183bbaef1e2cda97",
+    "size": 2237
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-resource-cargo-inventory-core-v1-summary.json",
+    "sha256": "e495e56f6dcd348bd3bd6e78090e7a4512c65f17ae74f5485d5767a15f7159eb",
+    "size": 6763
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-resource-cargo-inventory-core-v1.md",
+    "sha256": "7b197732de6db1b693c87c7c91ac091c0978329d54fe81515d7fc41e1d0df288",
+    "size": 2957
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-shared-trajectory-predictor-core-v1-summary.json",
+    "sha256": "bb31308cc4f5bcfa066c63a48d53ce888257e09cf4aa8b99e1edb38337f8f633",
+    "size": 5863
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-shared-trajectory-predictor-core-v1.md",
+    "sha256": "43210bd50f20c64e1c602b24646a0f2d9eacc05fcb3b798310ec73cceb447593",
+    "size": 3824
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ship-builder-compatibility-mass-core-v1-summary.json",
+    "sha256": "22343a03afeea34c133b215918ead1e5fb76ae43119d4bef444f4f6230868d95",
+    "size": 43423
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ship-builder-compatibility-mass-core-v1.md",
+    "sha256": "32dc9926277a3565ccdaefc49bc607760ee45515bc2e600fbdaa730afd7127ce",
+    "size": 44889
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ship-builder-domain-catalog-v1-summary.json",
+    "sha256": "7c4e7cd95572a3fbb09691902934a96342e00c241f20f75d9d3fe33274d3b41b",
+    "size": 1652
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ship-builder-domain-catalog-v1.md",
+    "sha256": "7ba4945b687c93a043fa406955c18fb147e1c6271e56180a019d28784faee7af",
+    "size": 2725
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ship-builder-full-stats-flight-readiness-v1-summary.json",
+    "sha256": "f10a0cb30e1283122b91cdb786a660ed8f2228a60c92a134cf366b55fe6fbd72",
+    "size": 55227
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ship-builder-full-stats-flight-readiness-v1.md",
+    "sha256": "141ebbd28682c24bc040d4ff3585fc7c69d2332330d5ae2bcf33bd958593a90a",
+    "size": 56840
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ship-power-thermal-core-v1-summary.json",
+    "sha256": "e123ac85523cd7537cd7eeb0d23eb6f63d3999f954f7d9dfbdedcfba497223bd",
+    "size": 49897
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ship-power-thermal-core-v1.md",
+    "sha256": "2962702b7985bc294331df40260a072cd12bc40080b0369e54e52ed1c951be3f",
+    "size": 2898
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-simulation-scheduler-core-v1-summary.json",
+    "sha256": "98d808cf170cc7de031c1dd9d73cfb3ed3eaebe9733789410b317c2acd52ed01",
+    "size": 5792
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-simulation-scheduler-core-v1.md",
+    "sha256": "003c881557d4793d95d3caaaf511ae346de681f3376e666b3e0c33266bce3685",
+    "size": 529
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-spatial-physics-spine-v1-summary.json",
+    "sha256": "244c2e7b248655aa4e7c1335648dca365144a284a9764041922170946c70eeeb",
+    "size": 5465
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-spatial-physics-spine-v1.md",
+    "sha256": "b0d21a1cbb9de1267a0c4ba144fc140633194314fae069235ae8f8556d46ba2a",
+    "size": 3933
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-structural-microvoxel-destruction-v1-summary.json",
+    "sha256": "7f3da618c6b1a803a05a7cc4e34413a25f7d33de54211161f82b283a539fcb1a",
+    "size": 3947
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-structural-microvoxel-destruction-v1.md",
+    "sha256": "03483712b61c6707f8dc35b076b95dfd4ecd1381f600aee730c7ac3664eff158",
+    "size": 3590
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ui-concept-parity-v1-audit.md",
+    "sha256": "013fa6133c9b63fbdba6ec4368b6293b08bb4318789696718455d60ba540ffaf",
+    "size": 3322
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ui-concept-parity-v1-layout-report.json",
+    "sha256": "7a352f7f1ebf388b92b431fb7b9fd52a8e1aab2bccf9bc131c2713d058221e4c",
+    "size": 7195
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ui-concept-parity-v1.md",
+    "sha256": "fea5852c2db7990f4d3c62ba1eb30409a8de1cd4a7a80a38a85639117f1e7a25",
+    "size": 4381
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ui-concept-parity-v2-layout-report.json",
+    "sha256": "ed200bd9f9c4d629f886176a02a4a491f0612f41b94110dcadb8d9106b201ec0",
+    "size": 6320
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ui-concept-parity-v2-qa-combat-left-focus.png",
+    "sha256": "3e6a99449819247f16edd4c55433a008f005b06dfeffb824dbab309cf843a2d9",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ui-concept-parity-v2-qa-combat-right-focus.png",
+    "sha256": "7b76524b1e80e4673523ea20bbd967c18d4993e2926514f10254d4353babe003",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ui-concept-parity-v2-qa-combat.png",
+    "sha256": "e60167e8ef9e203a2d714564f6716e4bd4ea73c021b574c1eea1181c8076931c",
+    "size": 132
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ui-concept-parity-v2-qa-flight-left-focus.png",
+    "sha256": "f7052d8aa64674c35d5767c27bf9ba54021520f4072f5d43ee4a607ff35b7c6a",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ui-concept-parity-v2-qa-flight-right-focus.png",
+    "sha256": "632362aaaab4ae35ca4d92fdc2272951a831e0658c24f3b3f64ea32784df8bfe",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ui-concept-parity-v2-qa-flight.png",
+    "sha256": "e2bee361dec894eaef0b1b0429b635e7728d51686bb40328167130d25ca58055",
+    "size": 132
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ui-concept-parity-v2-qa-planner-details-focus.png",
+    "sha256": "10f372d45c2d4b7415c6eb04d999f9460c48955fcf58496a454af1f5eacef95d",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ui-concept-parity-v2-qa-planner-header-focus.png",
+    "sha256": "982164e03acf1d98f746354283b85f80a179052f1346a8054578ac1e50c24689",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ui-concept-parity-v2-qa-planner.png",
+    "sha256": "1e51dfb1d6def9b086da3a8121af57eb9b32ed5de5ee8410fbb102ae2a3481c7",
+    "size": 132
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ui-concept-parity-v2-visual-audit.md",
+    "sha256": "532a195575c922baeb3b5a277b319ad28c65965dd858e2fc2354bdfa86e034b1",
+    "size": 4927
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ui-concept-parity-v2.md",
+    "sha256": "262bc274fc102294fa283883bd36d3f19936988d642300c53de049f327907a24",
+    "size": 4563
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ui-concept-parity-v3-fhd-final-combat-1920x1080.png",
+    "sha256": "52101cf3c95fb01657c0a28839fe65371f7c1229c553cbf3483a922b279ee3df",
+    "size": 132
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ui-concept-parity-v3-fhd-final-comparison-combat-1920x1080.png",
+    "sha256": "52100604f1fdba4843adfd2dd353c7ee03b864c891c0ebf0b72d98e16bf5bb55",
+    "size": 132
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ui-concept-parity-v3-fhd-final-comparison-flight-1920x1080.png",
+    "sha256": "e4cdefd163b2e2758caaaaebd9ae3a7a63bc18fbb4b191b5fe4ca28e0a795f12",
+    "size": 132
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ui-concept-parity-v3-fhd-final-comparison-planner-1920x1080.png",
+    "sha256": "bd5fba1d9daad72d3bd66b63d1c5dd3c9e4d096c3e78f4306606a8f49c8ba42d",
+    "size": 132
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ui-concept-parity-v3-fhd-final-normal-1920x1080.png",
+    "sha256": "fde574bce8b18c4f420f5526e6c42e4ba0d0b18a5f7632b7320a52d32b4565e2",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ui-concept-parity-v3-fhd-final-normal-2560x1440.png",
+    "sha256": "d591720836f0f9227198d16d5425d5939806614120f778125cdf283fc6e83b3e",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ui-concept-parity-v3-fhd-final-planner-1920x1080.png",
+    "sha256": "00572876f5e4965d79374aea60df1bc7a5f2c6c6d21a66b8a7cf11595a20b4f3",
+    "size": 132
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ui-concept-parity-v3-fhd-final-planner-2560x1440.png",
+    "sha256": "d3c1161907a76efe105f3e8cfee33a825aca653ebf5e13daadbd77e88c6fae5d",
+    "size": 132
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-ui-input-hud-foundation-v1.md",
+    "sha256": "a180156bed2b38e6b07d4b237c4b5a50a74107ff0a8ea85d3e87f1673d7cfc72",
+    "size": 1424
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-vertical-slice-v1.md",
+    "sha256": "328e1e8faa634c441b1be5812643ec958896d02c97b052fbe530104bd735d342",
+    "size": 4818
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-worker-streaming-telemetry-spine-v1-summary.json",
+    "sha256": "2cab2a5e42f39e78e086fccf0657d88b1546752f430ca62513a480eed7a2a43f",
+    "size": 3145
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-worker-streaming-telemetry-spine-v1.md",
+    "sha256": "6e1e86a19c9d4fe83a83184749f14c2fe9af4d204c4af03f08a2c3de73618fe5",
+    "size": 763
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-world-chunk-registry-streaming-v1-summary.json",
+    "sha256": "14e1f4b540582d8ed6fa1aa1818403a1ce3ab1087176a4920dd487905d1ff62e",
+    "size": 38791
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/browser-world-chunk-registry-streaming-v1.md",
+    "sha256": "4d0c9286b9e53a3a2c63d77d32225744b124bfb539662414643e844166a25a0f",
+    "size": 39802
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/control-mode-cruise-main-thrust.png",
+    "sha256": "3849f63e9484df017cd14899ccad55ff427fb738d9374ef944ce4b784c12b805",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/control-mode-precision-rcs-rotation.png",
+    "sha256": "a35cb49e529daf4d2b9bf9192c0a909a0255ff5d72bca2c26a17d311107cbf34",
+    "size": 130
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/control-mode-translation-rcs-translation.png",
+    "sha256": "b163adb5eaad090f6de3724d4284b0b65d4ef5f716ce4a985f1d3909ba4eec2a",
+    "size": 130
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/debug-scene-mobile.png",
+    "sha256": "b31470a536bb243f4a6b2a2c21906d9bd386d1b02455fbd9a8574f8bc1180f09",
+    "size": 130
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/debug-scene.png",
+    "sha256": "608cd28b26462faf7b4c510461f7a311d75d3b86861b192f4c147099ca60d39a",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/demo-scout-autopilot-arrival.png",
+    "sha256": "1a37b81335988087d8018808cda3f9525387184354b0941d68129190969e7fc6",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/demo-scout-chasecam.png",
+    "sha256": "8e82af16aaf61d0e43c297f0278808d4f88fc6f9f09a978b701aa7a580dede16",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/demo-scout-glb-loaded.png",
+    "sha256": "94e2523be5a3c9487539eda84ca47776d0f4457de2c8a2a78237e43d1ea83af9",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/demo-scout-main-thruster.png",
+    "sha256": "494ca5f94de849a4550e2d1816118792c204006e867b0a7c505faac4f3022c77",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/demo-scout-nozzle-vfx-main.png",
+    "sha256": "c30e4d26a883f8d2d6c557edb4ae3141cb368098cd7c4f262434bcd2099a86af",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/demo-scout-nozzle-vfx-rotation.png",
+    "sha256": "e79225a1e1e0b151938191a797ae7ec31b710cc311df58e302e18274d15d433b",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/demo-scout-nozzle-vfx-snapshot.json",
+    "sha256": "13ee30febcb54be51d3bf9145668d6e07498c5b94add0dcfe2eec1840c1ca8b2",
+    "size": 100626
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/demo-scout-nozzle-vfx-translation.png",
+    "sha256": "5ef12b18993bd2181bf4e0c28c3844fb06c0b1a2d927748dfe89693ae39b3857",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/demo-scout-rcs-puffs.png",
+    "sha256": "3cb3fc9d89f7064f621ddb2d13e6a4d42e91a2616fc7166dc6116edabd6bde44",
+    "size": 130
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/flight-authority-fuel-braking-summary.md",
+    "sha256": "231ce0d12f9ff1655062250349c1177d7203c7e7ca1be0363b86e250adad296d",
+    "size": 3433
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/flight-ui-1024x768.png",
+    "sha256": "abe28ae2aacef43c021d901f6e6f82a8d56ac37c045660c60d76f74c1f48acd1",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/flight-ui-1440x900.png",
+    "sha256": "6cfd93b9075299e954273ec99c70958f0adca49f071f9ff960ecf53e7dafd531",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/flight-ui-760x640.png",
+    "sha256": "2910c7658d18afb34408871a0ca9da16e316f729f076050e97dc9f6a4091ebd5",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/flight-ui-autopilot-active-1280x720.png",
+    "sha256": "4be006a1fefef9c8dd60f51386f23d78aeaa713d439e9516ff901789b9d00b4b",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/flight-ui-foundation-1280x720.png",
+    "sha256": "70fffb4cbdb6f0e24e698d4535e86e65dd69b38e90a5aae45eeaa607b8b2149a",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/flight-ui-fuel-warning-1280x720.png",
+    "sha256": "bce575827daf481661bfd4396f66f3c70ada817384b4e020fbf650373564e983",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/flight-ui-ultrawide-1920x800.png",
+    "sha256": "96c0b8de7164f9595e4e93029bebf44ba3378a0b7c73d327d507b507e43147de",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/graphics-settings-high-preset-1920x1080.png",
+    "sha256": "c58de98d9a8cef805744299c673e00ced444f512dd4383bfbdd98ae9bb926448",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/graphics-settings-low-preset-1920x1080.png",
+    "sha256": "cd73176372245679f959b15d8d6ae6fe512bf7dc4f696ebca189c0666cfc9163",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/graphics-settings-panel-1920x1080.png",
+    "sha256": "6c603a00e35aa2a2f557515fd7a88b41771611594ce35c369ed162356536b50e",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/hestia-surface-lab-default-1920x1080.png",
+    "sha256": "38853418abdf182dd03fcb4cac5806438ab92c6937180d1daa7848639d23cf4b",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/hestia-surface-lab-quarter-meter-1920x1080.png",
+    "sha256": "8274a10dd67c798e846dededccc53cc77d93924ea82819bd3aa62b7b9dce67a8",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/hestia-surface-lab-wireframe-1920x1080.png",
+    "sha256": "21b0389dacdbe46c674f261f8d40db4875641ba7b8d3058785ea77e3de50ab58",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/hvp-01-fix.md",
+    "sha256": "beeaf87655f4f484cf4ef93ef3104e318ff573ffecf4526162c38226f7228227",
+    "size": 6274
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/hvp-visible-coast-1920x1080.png",
+    "sha256": "295125860b1034ed7d4dd4d23495df39f8c2f21006c044cbd2708ca06cc2fd5c",
+    "size": 130
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/hvp03-draft-c03.png",
+    "sha256": "80b97a03c2d823aa7154a712a09b1c299d9a3bf087e018b1103df010840d52ac",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/hvp03-draft-c04.png",
+    "sha256": "8af35aef58c1231fe8763a3f1e1e36755c195f1da044ab70ae464d9a2b42ea54",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/hvp03-r2-c04.png",
+    "sha256": "b9f7163ead8e1940ff78e47cf7b01f4af4095c12d7481aa9af325dbd18aa1e23",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/hvp03-revision-c03-draft.png",
+    "sha256": "76c73fa6fa5a4291dbbcf497da92062200b1ae18d5dd7a0915e843e0bdcb90b7",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/hvp03-revision-c04-draft.png",
+    "sha256": "d4843aa07aac54a788babb649f25b1c67ad9b7b597afaca4b286a041c88843c9",
+    "size": 132
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/hvp05-third-person-draft.png",
+    "sha256": "4261cf53af81cbd27f0c66e4788f38bde8d846fa9ef23cf960e61144a50b9b74",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/large-field-objective-complete-or-progress.png",
+    "sha256": "236a8ed6b0747ef18b218e58a13f6192765e150a255552b384bcc42470446c21",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/large-field-objective-enroute.png",
+    "sha256": "79bef56a49150ec7dde66381759b9a3bd69fa935d954b99d8b647e78ee188583",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/large-field-objective-ready.png",
+    "sha256": "7dc14dc19a2b2e046955e870de2c1222cf432f2612e0cc4355e734f35a85248c",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/live-large-field-arrival-or-progress.png",
+    "sha256": "f53133a54681ff17851e9ab27f888e7153508fcadfcffde186ce1f2f19037b6c",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/live-large-field-before-engage.png",
+    "sha256": "d98e9d78f04bd5dea2a4744b714cc1d06d3f389b2a213078175d02a4c33ddf42",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/live-large-field-in-flight.png",
+    "sha256": "39b1f66997e6c57faf95d7d0039b7658d85e2401c9c9963d40c508a679b34662",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/live-world-locked-route.png",
+    "sha256": "31fabce34ee1dac0499e5bc971c8d6553f036a51248f96c273018460854beaa6",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/live-world-obstacle-proxies.png",
+    "sha256": "8673512278ddaba68bf539a84cd1b8bf9aa1aa48f8351e292e0a21bac6d83804",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/live-world-preview-route.png",
+    "sha256": "819493f6dde21ec9e8de222dccb32db75a34a9e9fe418092a1e651c27b03d799",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/mainline-transition-summary.md",
+    "sha256": "6b7c4f67992c73e306826d9801ee1c0ced21eae0edc0b3f1fd6694c19ff2b3f7",
+    "size": 8442
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/manual-flight-chasecam.png",
+    "sha256": "0f0b7d2449c69598f9619713359ce0b1bee406e328d6ebbeff1eb62a0e8d14b9",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/navigation-autopilot-v2-summary.md",
+    "sha256": "80ec13ff81ae51c1de95814214e283e470c69475b7ceb6130196b21b95c9de28",
+    "size": 5016
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/objective-chain-1000m-ready-or-enroute.png",
+    "sha256": "1efca2224439c06c4b6c591eb8e9b5b32913e508b7d01455ec9791f4e61ff402",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/objective-chain-500m-complete.png",
+    "sha256": "42bae46763329e770b0b78d89c7d289e797beca727e23502eb9be8fccca2bbfe",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/objective-chain-500m-enroute.png",
+    "sha256": "034a0b86f437f3e00df8f8150adb213fde14ba23532f5742e12a34fdb426567f",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/objective-chain-ready.png",
+    "sha256": "2e562f064925bff89c806f905c736e2dcac7ec450395f1341a87fee548bafea3",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/objective-chain-v2-1000m-complete.png",
+    "sha256": "87e14a9dcf6cf1bf6e5a08665ec15b1a9576cc18ae2d8b7f5b99adf28fe8c365",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/objective-chain-v2-1000m-ready.png",
+    "sha256": "8beea226546aa3df2fbefdaf4079595e15ed738bb6382699704330510820619b",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/objective-chain-v2-2500m-ready.png",
+    "sha256": "bbc280275ae18b4b6bb2f28e4f0c13d35bd35e03dc4a892297960d29735b0c01",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/objective-chain-v2-500m-complete.png",
+    "sha256": "962c510f6a5eded67ce4ce7b450292a886c45489a336766e75550f318ade1b25",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/objective-chain-v2-500m-enroute.png",
+    "sha256": "87402586a6e53b9e48074f31b3b7d1644fa70cdb0ba2626fba167678794d2b60",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/objective-chain-v2-500m-ready.png",
+    "sha256": "1397fae9cbf790e1954df1b131de2044dc52cb2dbc5c21bfe503dc1f7b6ccfa0",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/pg-tragwerk-f7-summary.json",
+    "sha256": "86bc16362b5ebe18c18779914b518bd4b476bd6e5446c541116eb55b1bdc3b1a",
+    "size": 2497
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/pg-tragwerk-f7.md",
+    "sha256": "08877ff97cc8764d8b7cf4717aa277b87b88b88f620a53d1a1b5ca91f3a0e8a1",
+    "size": 9081
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/pg-tragwerk-f8-summary.json",
+    "sha256": "f6f64361881b59b0ce95c43e9eda008966b9cc384aafe5c2db24c1e33c5aa4d9",
+    "size": 1768
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/pg-tragwerk-f8.md",
+    "sha256": "3215728caf9df63d1f36a72291e3113519651f969c9bde475ad1c57efefad581",
+    "size": 7121
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/pg-tragwerk-notizen-p04-summary.json",
+    "sha256": "0afd6df7e2af6edb8c05bdbc74071ebc6735aa006b9019ea9809c02a5b65f073",
+    "size": 3212
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/pg-tragwerk-notizen-p04.md",
+    "sha256": "fc8f3f7b88f1f333d766d15698de53875437ae414aa1260dd7c7a84c5822ed12",
+    "size": 7686
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/pg-tragwerk-r3-summary.json",
+    "sha256": "2903b3c51a97761255e5e0445c9b0f8478ead3e094ca5ad6d80d362380b232a7",
+    "size": 1602
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/pg-tragwerk-r3.md",
+    "sha256": "fcf45389cad6fa14f81f5135bdddff1ad5d987116fba44b379e6c1a9fcf44c0a",
+    "size": 6666
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/pg-tragwerk-r4-summary.json",
+    "sha256": "a529fe7715d0e80211d53d47f079f89a694c6d81b7727cea9ef4b1b863fe3a28",
+    "size": 3937
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/pg-tragwerk-r4.md",
+    "sha256": "4bb297cd949dd152f97256061e8c2e5760e91bff33ff5a0c71c0c7d1b74a58d2",
+    "size": 15303
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/pg-tragwerk-r5-mesh-after.json",
+    "sha256": "3e52fc462793d67b138c1ad58f37d13f8386a54fed2ccdf82e961d8429689e15",
+    "size": 3472
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/pg-tragwerk-r5-mesh-before.json",
+    "sha256": "1a01d243e5d82eadbbf91456d1dde6f9fd7340149f9d18df8abbf1e3c7c21fe9",
+    "size": 3146
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/pg-tragwerk-r5-summary.json",
+    "sha256": "c21465f96bc449d574b87db30e094ff947f6bc795a0480751beca1e6ce7c44d6",
+    "size": 3259
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/pg-tragwerk-r5.md",
+    "sha256": "d8899914cd3f2b6dd1ec5d371f33a961c0b05a31b5083209c8169d7b985c207e",
+    "size": 8096
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/pg-tragwerk-r5b-after.png",
+    "sha256": "5fd678af01d5a8b53f7213d8ec8a6ccae1c0945b4b528a5fde87b488d78e9ef9",
+    "size": 129
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/pg-tragwerk-r5b-before.png",
+    "sha256": "c0b707e2799a0ea0b39ae4eeb3c6120bb6be71d4a8eae9d2740ea05bbfbdb21d",
+    "size": 129
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/pg-tragwerk-r5b-lod-high.png",
+    "sha256": "b82d6c34444971529cd3f50b798652bfa598536c8a44af19178003322958a4a1",
+    "size": 129
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/pg-tragwerk-r5b-lod-low.png",
+    "sha256": "5d449d91beaf3802f33202321b710dd8b3fb8ec129761e89535a81fb6a1e5be8",
+    "size": 129
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/pg-tragwerk-r5b-summary.json",
+    "sha256": "00d81baab1694e10c3d63cb5b77396c80b8b605b1da56b5467a75c2b8a61440e",
+    "size": 4794
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/pg-tragwerk-r5b.md",
+    "sha256": "33f75a6e6e64adee82ca4f10e5334bbad8a1042d5b942bee126c83aa5621c656",
+    "size": 4757
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/pg-tragwerk-slice1-summary.json",
+    "sha256": "393c132f6e1455b2eec1130ce65468c09920a6c2887a18b8b0a49edef5aee6bd",
+    "size": 1600
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/pg-tragwerk-slice1.md",
+    "sha256": "79e0b928e308bb4ffc166f5b7754eadfd8938f4813f87dd00b4bc53f6f50abb9",
+    "size": 1859
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/pg-tragwerk-slice2-summary.json",
+    "sha256": "c7275deb63c32c3133b1ed1177e7a38ebb20d48c9cbb3b15202849f9a04a7c30",
+    "size": 979
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/pg-tragwerk-slice2.md",
+    "sha256": "da316d2923c79a7b9a475fa515caee25a14ec8ab8643107a8254098e180438b4",
+    "size": 2560
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/pg-tragwerk-slice3-summary.json",
+    "sha256": "387fb16bd8d0dea740f458ea7d48731ef7c109be41ba7dd77d30e6c22f7a6e8b",
+    "size": 539
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/pg-tragwerk-slice3.md",
+    "sha256": "2554290b136a78f278df1033f219f9bafb3521ca7a4f02b9377488baa64671e4",
+    "size": 3248
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/pg-tragwerk-slice4-summary.json",
+    "sha256": "2ac40e56df1a92de5f8fd79792b2054bbc2301c1106a249111845f207c34b597",
+    "size": 1159
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/pg-tragwerk-slice4.md",
+    "sha256": "caf6d1d1cf149f219fcec784d3bfc566fc0d845454b16243ef185cba5cbfe06a",
+    "size": 3831
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/playable-large-field-1000m-target.png",
+    "sha256": "ca7f5b2a5fe47fa22e5775fc9afa438950c9da77c023424c74983b08538f4f7d",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/playable-large-field-2500m-target.png",
+    "sha256": "84a1d3768414bf001c5af9bc269e03ae868a922309a061d758af689927b35ec1",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/playable-large-field-overview.png",
+    "sha256": "66c87728d7a8dff9b20e9ddd7becc202dfb65ae14478d12d760d07af22a2371d",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/player-path-p12-after.png",
+    "sha256": "b94363862254179bc7652bab5c01729a07bd6c4d2139ef5ba0e44a45b4be2298",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/player-path-p12-before.png",
+    "sha256": "b70d38efd13e7abafbd72b5d7d46d8b89d2d3ec6b236fec4fdfd096efe5ab7e4",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/player-path-p12-summary.json",
+    "sha256": "1d0240973838849d62f2ba2ecd23851cb8c1015d0f268d346c44877cbcb558e0",
+    "size": 429
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/player-path-p12.md",
+    "sha256": "b306750cfd7bed84d7d4890dc5e0f70b757bd7cb568dbcc13bfd836768a9632a",
+    "size": 1595
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/rcs-translation.png",
+    "sha256": "1bcca196e58143ac98e4753036aeff5790a504cb686fc7ab9914097ae6b6a00e",
+    "size": 130
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/render-backend-child-active.png",
+    "sha256": "24ef03b5402e3f4e238203b021275c74dcabc0837c75fdd0efd1ac83210d48b1",
+    "size": 129
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/render-backend-parent-fallback.png",
+    "sha256": "61c60b168459a0d8fcc1f89d2cbd5f8e7dc3670f0086b3dd13cd8f9229e47fbe",
+    "size": 129
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/render-backend-replacement-active.png",
+    "sha256": "1ba73315a7344d39fcf89003b8d5d0b2113e2347694bce48f7811a2a18dcf2a3",
+    "size": 129
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/render-smoothing-chasecam.png",
+    "sha256": "2b43279e0a6da4fbe75d7a7ac6bb8ea31011cfc821a59a848bb8a7d4ba8b866e",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/render-smoothing-sample.json",
+    "sha256": "cbb9978b1835fb666e92b45fea282509d32a1780fc2a0ac6a904b3738fa1cd07",
+    "size": 16865
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/scenario-matrix.json",
+    "sha256": "fb7702db85db3ebe01c7c5628f99d5ed6a5e45f7201b7cd35cc5150350314a6f",
+    "size": 21089
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/telemetry.json",
+    "sha256": "65a04c0d8e8cf91fe617e31cc52cf3140c90e62e879627af1eabe1354400b835",
+    "size": 9787
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/ui-concept-parity-baseline-availability.json",
+    "sha256": "3c1d47ddae2056aa156da4ba916c35ebc2c53b254aa9548f699a1ab5e84038c3",
+    "size": 440
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/ui-concept-parity-baseline-flight-1280x720.png",
+    "sha256": "30835e87c07aeb119f0e98770f3793b813c7e45c8ac57fc0110477e83a2763d6",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/ui-concept-parity-baseline-flight-1440x900.png",
+    "sha256": "66cd59010bb71557689fa385ad9fe4b73913d39775a9b3c50deb2b5538ed667d",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/ui-concept-parity-baseline-flight-1640x900.png",
+    "sha256": "ffad4bbd590d8b48cf166c33cbb1d0e2ba805933f2cbb48d14c045f15dda27fe",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/ui-concept-parity-baseline-objective-enroute-1280x720.png",
+    "sha256": "403f4ccd9a701f616a712ae06b2bf8d213293feb24c9ec8e5f1343eb57c3547a",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/ui-concept-parity-baseline-target-selected-1440x900.png",
+    "sha256": "e204b0a8916123673cd720b19a37500951f0158c332f47e800864311b7362ccc",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/ui-concept-parity-combat-contact.png",
+    "sha256": "65486f6ea8aa81f6c037dbbb7f96764013f7d6952f96fb6c4577e0b59c4373ad",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/ui-concept-parity-flight-hud-1280x720.png",
+    "sha256": "52bf8377f3a4f41c4a677b0412a3430d3a1177974796c3a5229713c18f8895b2",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/ui-concept-parity-flight-hud-1440x900.png",
+    "sha256": "e1e1439dbb4be97e9aa7110508118f2aeb45155a9b07ec17dfe82445e8c6ba77",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/ui-concept-parity-flight-hud-enroute.png",
+    "sha256": "71ae4a3c55c875e8abf531c44b62810feffd057b24548153adf5fc1e5c0fa0ca",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/ui-concept-parity-flight-hud-target-selected.png",
+    "sha256": "b39247cfbbc61e06cd1966df032b7c3acfc2509a33933f5d3fe0e16be51ebf30",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/ui-concept-parity-flight-hud.png",
+    "sha256": "ccfcce6b26498964d664f994abb1afa6608accf7b6f45e2581afc864f18e8ab3",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/ui-concept-parity-navigation-planner.png",
+    "sha256": "8e8d0bc9c5445c3b8f5e436cd54d0e753458431d7b3a8fe47dc34eafa4d725b8",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-combat-contact.png",
+    "sha256": "16d1ac515c2811a1c8818395a528c25196baedfe3b7289cea06efc34e3cbc949",
+    "size": 205276
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-flight-hud-1280x720.png",
+    "sha256": "1377ed0b274e482dcf22f3237f1e5a2909e45ebd59a6339ace77b66abaf87ddf",
+    "size": 172820
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-flight-hud.png",
+    "sha256": "06fd0d95b6a324a39e920f6594e0d3d52086055028d276560409b2716e5dfb25",
+    "size": 218567
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/ui-concept-parity-v1-rejected-navigation-planner.png",
+    "sha256": "f6018ad920f85fabfe8923d438e0717995e97f9e4fd472b24cd73a6000d41d0f",
+    "size": 210844
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/ui-concept-parity-v2-combat-contact.png",
+    "sha256": "b87c81b19fbc131d03748839cb47e47d667aeee13a2bda89ad539ec981ba254f",
+    "size": 132
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/ui-concept-parity-v2-flight-hud-1280x720.png",
+    "sha256": "631ab7d172722feac65bde1afb5154481b3793f406835f70723e4a2b5857ae9f",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/ui-concept-parity-v2-flight-hud.png",
+    "sha256": "6b2b019958ab324a1af36b41ac44b2e8d8c6956cd251e002377af5f24c5dba2d",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/ui-concept-parity-v2-navigation-planner.png",
+    "sha256": "799432770bbdff7bdf1b33ab3404fb02371bb1e6f8c24fd01bc92ac40cb524f1",
+    "size": 131
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/vertical-slice-telemetry.json",
+    "sha256": "867b19f0d000b90879b97be86eaddd5c08ee12c7dce884cc23581a9599963e1f",
+    "size": 39102
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/worker-authority-p09-summary.json",
+    "sha256": "d7ea549622ab7155611f4c7d69eb06c4368d0b029677b23d0736286c0f267005",
+    "size": 3593
+  },
+  {
+    "path": "apps/weltraum-browser/evidence/worker-authority-p09.md",
+    "sha256": "25f859eb43bfe39a8268381d254011e7a9480b7f3b2f0f8697148d3c1b804455",
+    "size": 6305
+  }
+]

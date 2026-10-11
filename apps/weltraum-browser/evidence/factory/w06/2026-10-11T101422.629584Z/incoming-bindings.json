@@ -1,0 +1,10 @@
+{
+  "reviewedBaseSha": "a30630dd7963c165c673df7ea1b46d52735752ef",
+  "catalogDigest": "fnv1a:f3a8c642",
+  "sourceLockArtifact": "incoming-source-lock.json",
+  "sourceLockSha256": "52753f91b3505f514168618383559e6c23c08417913ab71850b8ade2ae1116e4",
+  "catalogSnapshotArtifact": "incoming-catalog-canonical.json",
+  "grantArtifact": "w06-grant.json",
+  "noSourceRewrites": "Existing HVP source/profile remains unchanged in W06; optional new start-site owner approval is for later explicitly granted W07 integration.",
+  "createdAtUtc": "2026-10-11T11:10:30.099561+00:00"
+}

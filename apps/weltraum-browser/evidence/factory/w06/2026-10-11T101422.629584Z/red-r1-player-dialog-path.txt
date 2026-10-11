@@ -1,0 +1,188 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/hvp-bootstrap.test.ts -t W06 R1 refuses
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-bootstrap.test.ts (33 tests | 1 failed | 32 skipped) 6535ms
+     × W06 R1 refuses all actual Factory Resume and Play paths during native holds 6533ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W06 R1 refuses all actual Factory Resume and Play paths during native holds
+AssertionError: promise resolved "{ sessionId: 'hvp-session-1', …(5) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "confirmed": false,
++   "epoch": 1,
++   "nativeTick": 0,
++   "physicsStatus": "CoverageHold",
++   "sessionId": "hvp-session-1",
++   "terrain": {
++     "baseDigest": "b8fde6b0",
++     "cellMeters": 0.125,
++     "epoch": 1,
++     "originMeters": {
++       "x": -16,
++       "y": -8,
++       "z": -16,
++     },
++     "revision": 0,
++     "sizeX": 256,
++     "sizeY": 128,
++     "sizeZ": 256,
++     "sourceDigest": "b8fde6b0",
++   },
+  }
+
+ ❯ tests/unit/hvp-bootstrap.test.ts:588:41
+    586|         status = hold;
+    587|         expect(port.read().confirmed).toBe(false);
+    588|         await expect.soft(port.resume()).rejects.toThrow(/unconfirmed|…
+       |                                         ^
+    589|         expect.soft(commands).toHaveLength(baseline); commands.length …
+    590|         descendants(source.body).find(e => e.id === "hvp-physics-pause…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/13]⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W06 R1 refuses all actual Factory Resume and Play paths during native holds
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W06 R1 refuses all actual Factory Resume and Play paths during native holds
+AssertionError: expected [ 'Resume' ] to have a length of +0 but got 1
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/unit/hvp-bootstrap.test.ts:589:31
+    587|         expect(port.read().confirmed).toBe(false);
+    588|         await expect.soft(port.resume()).rejects.toThrow(/unconfirmed|…
+    589|         expect.soft(commands).toHaveLength(baseline); commands.length …
+       |                               ^
+    590|         descendants(source.body).find(e => e.id === "hvp-physics-pause…
+    591|         await Promise.resolve(); await Promise.resolve();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/13]⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W06 R1 refuses all actual Factory Resume and Play paths during native holds
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W06 R1 refuses all actual Factory Resume and Play paths during native holds
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W06 R1 refuses all actual Factory Resume and Play paths during native holds
+AssertionError: expected [ 'Resume' ] to have a length of +0 but got 1
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/unit/hvp-bootstrap.test.ts:592:31
+    590|         descendants(source.body).find(e => e.id === "hvp-physics-pause…
+    591|         await Promise.resolve(); await Promise.resolve();
+    592|         expect.soft(commands).toHaveLength(baseline); commands.length …
+       |                               ^
+    593|         descendants(source.body).find(e => e.id === "hvp-play")!.dispa…
+    594|         await Promise.resolve(); await Promise.resolve();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/13]⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W06 R1 refuses all actual Factory Resume and Play paths during native holds
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W06 R1 refuses all actual Factory Resume and Play paths during native holds
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W06 R1 refuses all actual Factory Resume and Play paths during native holds
+AssertionError: expected "vi.fn()" to not be called at all, but actually been called 1 times
+
+Received:
+
+  1st vi.fn() call:
+
+    Array []
+
+
+Number of calls: 1
+
+ ❯ tests/unit/hvp-bootstrap.test.ts:596:45
+    594|         await Promise.resolve(); await Promise.resolve();
+    595|         expect.soft(commands).toHaveLength(baseline); commands.length …
+    596|         expect.soft(requestPointerLock).not.toHaveBeenCalled(); reques…
+       |                                             ^
+    597|         descendants(source.body).find(e => e.textContent === "Spiel fo…
+    598|         expect.soft(requestPointerLock).not.toHaveBeenCalled(); reques…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/13]⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W06 R1 refuses all actual Factory Resume and Play paths during native holds
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W06 R1 refuses all actual Factory Resume and Play paths during native holds
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W06 R1 refuses all actual Factory Resume and Play paths during native holds
+AssertionError: expected "vi.fn()" to not be called at all, but actually been called 1 times
+
+Received:
+
+  1st vi.fn() call:
+
+    Array []
+
+
+Number of calls: 1
+
+ ❯ tests/unit/hvp-bootstrap.test.ts:598:45
+    596|         expect.soft(requestPointerLock).not.toHaveBeenCalled(); reques…
+    597|         descendants(source.body).find(e => e.textContent === "Spiel fo…
+    598|         expect.soft(requestPointerLock).not.toHaveBeenCalled(); reques…
+       |                                             ^
+    599|       }
+    600|       status = "Paused"; await port.resume(); expect(commands.at(-1)).…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/13]⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W06 R1 refuses all actual Factory Resume and Play paths during native holds
+AssertionError: promise resolved "{ sessionId: 'hvp-session-1', …(5) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "confirmed": false,
++   "epoch": 1,
++   "nativeTick": 0,
++   "physicsStatus": "RecoveryHold",
++   "sessionId": "hvp-session-1",
++   "terrain": {
++     "baseDigest": "b8fde6b0",
++     "cellMeters": 0.125,
++     "epoch": 1,
++     "originMeters": {
++       "x": -16,
++       "y": -8,
++       "z": -16,
++     },
++     "revision": 0,
++     "sizeX": 256,
++     "sizeY": 128,
++     "sizeZ": 256,
++     "sourceDigest": "b8fde6b0",
++   },
+  }
+
+ ❯ tests/unit/hvp-bootstrap.test.ts:588:41
+    586|         status = hold;
+    587|         expect(port.read().confirmed).toBe(false);
+    588|         await expect.soft(port.resume()).rejects.toThrow(/unconfirmed|…
+       |                                         ^
+    589|         expect.soft(commands).toHaveLength(baseline); commands.length …
+    590|         descendants(source.body).find(e => e.id === "hvp-physics-pause…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/13]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 32 skipped (33)
+   Start at  10:52:55
+   Duration  8.25s (transform 1.22s, setup 0ms, import 1.54s, tests 6.53s, environment 0ms)

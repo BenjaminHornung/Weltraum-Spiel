@@ -292,6 +292,20 @@ jobs:
           console.log(`Validated ${evidenceFiles.length} top-level browser evidence JSON files.`);
           NODE
 
+      - name: Validate bounded recursive Factory evidence
+        id: factory_evidence
+        if: ${{ !cancelled() && steps.install_browser_dependencies.outcome == 'success' }}
+        run: node ../../tools/factory/verify-evidence.mjs evidence/factory
+
+      - name: Upload bounded Factory evidence
+        if: ${{ !cancelled() && steps.factory_evidence.outcome == 'success' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: factory-evidence-${{ github.run_id }}
+          if-no-files-found: error
+          retention-days: 3
+          path: apps/weltraum-browser/evidence/factory/**
+
       - name: Upload browser test artifacts
         if: failure()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

@@ -1,0 +1,12 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/hostLifecycle.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+No test files found, exiting with code 1
+
+filter: tests/unit/factory/hostLifecycle.test.ts
+include: tests/unit/**/*.test.ts
+exclude:  **/node_modules/**, **/.git/**

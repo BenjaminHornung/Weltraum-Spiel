@@ -1,0 +1,8 @@
+npm error code ENOENT
+npm error syscall open
+npm error path /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/package.json
+npm error errno -2
+npm error enoent Could not read package.json: Error: ENOENT: no such file or directory, open '/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/package.json'
+npm error enoent This is related to npm not being able to find a file.
+npm error enoent
+npm error A complete log of this run can be found in: /workspace/.cloud-setup/npm-cache/_logs/2026-10-11T10_16_54_235Z-debug-0.log

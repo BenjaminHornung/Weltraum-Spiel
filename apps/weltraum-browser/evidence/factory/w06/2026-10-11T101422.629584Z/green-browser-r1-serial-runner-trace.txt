@@ -1,0 +1,20 @@
+
+> weltraum-browser@0.1.0 test:e2e
+> playwright test --config=/workspace/.cloud-setup/fp06-w06.playwright.config.mts tests/e2e/factory-host.spec.ts
+
+[WebServer] (node:28053) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 7 tests using 1 worker
+
+(node:28077) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/factory-host.spec.ts:5:1 › T025 normal flight and legacy HVP request no Factory modules (19.1s)
+  ✓  2 [chromium] › tests/e2e/factory-host.spec.ts:43:3 › one actual Factory host through normal player actions › real Factory entry reaches Ready once (12.7s)
+  ✓  3 [chromium] › tests/e2e/factory-host.spec.ts:48:3 › one actual Factory host through normal player actions › T026 duplicate Factory entry creates no second worker or renderer (9.4s)
+  ✓  4 [chromium] › tests/e2e/factory-host.spec.ts:59:3 › one actual Factory host through normal player actions › T028 native pause preserves clock through presentation frames (24.2s)
+  ✓  5 [chromium] › tests/e2e/factory-host.spec.ts:74:3 › one actual Factory host through normal player actions › Factory refuses all legacy persistence paths with an honest reason (29.4s)
+  ✓  6 [chromium] › tests/e2e/factory-host.spec.ts:82:3 › one actual Factory host through normal player actions › Factory explicitly resumes the same paused native host (14.2s)
+  ✓  7 [chromium] › tests/e2e/factory-host.spec.ts:91:3 › one actual Factory host through normal player actions › T027 actual Factory teardown retires projection and native workers (5.3s)
+
+  7 passed (2.0m)

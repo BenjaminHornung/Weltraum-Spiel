@@ -1,0 +1,29 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/hostLifecycle.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts [ tests/unit/factory/hostLifecycle.test.ts ]
+Error: Unknown FP02 fixture
+ ❯ createFp02Fixture src/factory/catalog/fp02Catalog.ts:216:64
+    214| /** Declarative fixture only: the Resources state is the sole inventor…
+    215| export const createFp02Fixture = (name: "cargo" | "layout-a" | "layout…
+    216|   if (!["cargo", "layout-a", "layout-b"].includes(name)) throw new Err…
+       |                                                                ^
+    217|   const catalog = loadFactoryCatalog(createFp02CatalogInput());
+    218|   const contents: ResourceStackInput[] = [];
+ ❯ tests/unit/factory/hostLifecycle.test.ts:6:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  10:15:16
+   Duration  285ms (transform 143ms, setup 0ms, import 0ms, tests 0ms, environment 0ms)

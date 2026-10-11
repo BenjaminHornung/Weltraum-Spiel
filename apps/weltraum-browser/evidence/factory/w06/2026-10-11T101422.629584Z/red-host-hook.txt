@@ -1,0 +1,29 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/hvp-bootstrap.test.ts -t W06 mounts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-bootstrap.test.ts (27 tests | 1 failed | 26 skipped) 6512ms
+     × W06 mounts one optional native-host extension, refuses legacy persistence, and closes it before the backend 6510ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W06 mounts one optional native-host extension, refuses legacy persistence, and closes it before the backend
+AssertionError: expected undefined to be defined
+ ❯ tests/unit/hvp-bootstrap.test.ts:474:24
+    472|     } }));
+    473|     try {
+    474|       expect(hostPort).toBeDefined();
+       |                        ^
+    475|       expect(hostPort!.read()).toMatchObject({ nativeTick: 0, confirme…
+    476|       expect(hostPort!.readTerrainSlot(-1, 0, 0)).toBeUndefined();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 26 skipped (27)
+   Start at  10:15:28
+   Duration  7.93s (transform 1.05s, setup 0ms, import 1.31s, tests 6.51s, environment 0ms)

@@ -1,3 +1,4 @@
+import type { FactoryHostExtension, FactoryHostExtensionHandle, FactoryHostPort, FactoryHostView } from "../factory/session/hostPort";
 import * as THREE from "three";
 import {createHvpListeners} from "../hestia-prototype/runtime/listeners";
 import {createHvpNeighborController,type HvpNeighborStage} from "../hestia-prototype/runtime/neighborController";
@@ -749,6 +750,7 @@ export const startHvp = async (
     readonly createSourceSnapshot?: () => Promise<HvpCoastSourceSnapshot> | HvpCoastSourceSnapshot;
     readonly resourceCaps?: Partial<HvpResourceCaps>;
     readonly createPhysics?: typeof createHvpPhysicsClient;
+    readonly factoryExtension?: FactoryHostExtension;
   } = {}
 ): Promise<HvpBootstrapHandle> => {
   const documentPort = overrides.documentPort ?? document;
@@ -774,6 +776,13 @@ export const startHvp = async (
   let hud: ReturnType<typeof createHvpHud> | undefined;
   let physics: HvpPhysicsClient | undefined;
   let playerInput: ReturnType<typeof createHvpPlayerInput> | undefined;
+  let factoryMount: Promise<FactoryHostExtensionHandle> | undefined;
+  let factoryHandle: FactoryHostExtensionHandle | undefined;
+  const factoryListeners = new Set<(view: FactoryHostView) => void>();
+  const factoryBlocked = () => factoryHandle !== undefined && !factoryHandle.isQuiescent();
+  let publishFactoryView: (() => FactoryHostView) | undefined;
+  let readFactoryView: (() => FactoryHostView) | undefined;
+  const factoryCanResume = () => readFactoryView?.().confirmed === true && !documentPort.hidden;
   const physicsAbort = new AbortController();
   let physicsPausedByFocus = false;
   const pausePhysics = (): void => { physicsPausedByFocus = true; void physics?.command("Pause").catch(() => {}); };
@@ -796,7 +805,7 @@ export const startHvp = async (
   // The post-session launcher must not retain the inner scene/cell closures.
   const launcherListeners=createHvpListeners();
   let launcher:HTMLElement|undefined;
-  const restartAfterEnd=()=>{launcherListeners.dispose();launcher?.remove();launcher=undefined;windowPort.location?.assign(`/?hestiaPrototype=1${measurement.enabled?"&hvpMeasure=1":""}`);};
+  const restartAfterEnd=()=>{launcherListeners.dispose();launcher?.remove();launcher=undefined;windowPort.location?.assign(overrides.factoryExtension?`/factory.html${measurement.enabled?"?hvpMeasure=1":""}`:`/?hestiaPrototype=1${measurement.enabled?"&hvpMeasure=1":""}`);};
   let plainJoinLease: ThreeMaterialLease | undefined;
   const plainVegetationLeases: Array<{ nodeKey: string; lease: ThreeMaterialLease }> = [];
   let waterEnabled = true;
@@ -833,6 +842,10 @@ export const startHvp = async (
       const attempt=async(action:()=>unknown)=>{try{await action();}catch(error){errors.push(error);}};
       const closingInput=playerInput,closingCamera=camera,closingHud=hud,closingPhysics=physics,closingCompiler=terrainCompiler,closingBackend=backend;
       if(animationFrame!==undefined){windowPort.cancelAnimationFrame(animationFrame);animationFrame=undefined;}
+      factoryListeners.clear();
+      // Extension cleanup precedes every native, input and render owner.
+      await attempt(async () => { if (factoryMount) await (await factoryMount).dispose(); });
+      factoryHandle = undefined;
       await attempt(()=>listeners.dispose());
       await attempt(()=>playerInput?.dispose()); playerInput=undefined;
       await attempt(()=>plasmaTool?.dispose());plasmaTool=undefined;
@@ -986,6 +999,7 @@ export const startHvp = async (
     );
     startupPhase("startupRendererMs");
     const loadQuery=new URLSearchParams(windowPort.location?.search??"").get("hvpLoad");
+    if (overrides.factoryExtension && loadQuery !== null) throw new Error("Factory requires a combined checkpoint; legacy load is unavailable");
     if(loadQuery!==null&&loadQuery!=="primary"){throw new Error("Unknown Hestia restore slot");}
     let coldGame:HvpDecodedGame|undefined,coldRevision:number|null=null,checkpointSourceBytes=0;
     if(loadQuery==="primary"){
@@ -1330,7 +1344,7 @@ export const startHvp = async (
       isInputBlocked: () => playerInput?.active ?? false });
     playerInput = createHvpPlayerInput(canvas, backend.camera, physics, documentPort as Document, windowPort as Window, () => {
       camera!.reset(); hud!.update("Ready", camera!.readPose(), stats);
-    },{confirm:()=>{void plasmaTool?.confirm();},select:mode=>plasmaTool?.select(mode)},()=>saveBusy||saveHold||Boolean(dormancy?.read().recoveryHold));
+    },{confirm:()=>{if (!factoryBlocked()) void plasmaTool?.confirm();},select:mode=>plasmaTool?.select(mode)},()=>saveBusy||saveHold||factoryBlocked()||Boolean(dormancy?.read().recoveryHold)||Boolean(overrides.factoryExtension&&!factoryCanResume()));
     if(!coldGame&&scenario==="east-edge"){playerInput.aimAt({x:48,y:playerSpawn.y+.75,z:-14});}
     const dropProfile = createMaterialProfile({ id: materialProfileId("hvp:drop-limestone-v1"), kind: "BasicLit",
       baseColor: { r: 0.8, g: 0.35, b: 0.12 }, opacity: 1, doubleSided: false, wireframe: false, depthWrite: true });
@@ -1799,7 +1813,7 @@ export const startHvp = async (
       if(!saveInitialized){await saveStore.initialize();const list=await saveStore.list();saveRevision=list.slots.find(s=>s.slotId===HVP_SAVE_SLOT)?.recordRevision??null;saveInitialized=true;}
       return saveStore;
     };
-    const confirmed=()=>!disposed&&hvpMountEpoch===myEpoch&&!supportPending&&!neighbor?.read().busy&&!neighbor?.read().recoveryHold&&!dormancy?.read().busy&&!dormancy?.read().recoveryHold
+    const confirmed=()=>!disposed&&hvpMountEpoch===myEpoch&&!factoryBlocked()&&!supportPending&&!neighbor?.read().busy&&!neighbor?.read().recoveryHold&&!dormancy?.read().busy&&!dormancy?.read().recoveryHold
       &&!["Pending","RecoveryHold"].includes(terrainConsumer!.read().state)
       &&structuralConsumer!.read().state==="Ready"&&bodyCutConsumer!.read().state==="Idle";
     const admitNeighbor=(bytes:Readonly<{source:number;cache:number;checkpoint:number;preparing:boolean}>)=>{
@@ -1809,7 +1823,7 @@ export const startHvp = async (
     };
     neighbor=createHvpNeighborController({primary:()=>terrainRoot.read(),physics,compiler:terrainCompiler!,proxies:originalProxies,cache:neighborCache,
       baseSectorCount:physics.read().neighbor?.baseSectorCount??physics.preparation.jobs,current:()=>!disposed&&hvpMountEpoch===myEpoch,
-      blocked:()=>saveBusy||saveHold||supportPending||Boolean(dormancy?.read().busy||dormancy?.read().recoveryHold)||["Pending","RecoveryHold"].includes(terrainConsumer!.read().state)||structuralConsumer!.read().state!=="Ready"||bodyCutConsumer!.read().state!=="Idle",
+      blocked:()=>saveBusy||saveHold||factoryBlocked()||supportPending||Boolean(dormancy?.read().busy||dormancy?.read().recoveryHold)||["Pending","RecoveryHold"].includes(terrainConsumer!.read().state)||structuralConsumer!.read().state!=="Ready"||bodyCutConsumer!.read().state!=="Idle",
       admit:admitNeighbor,stage:stageNeighbor});
     const captureGame=async()=>{
       if(!confirmed()){throw new Error("Save requires all commands to be confirmed");}
@@ -1901,7 +1915,7 @@ export const startHvp = async (
               compiler:terrainCompiler!,proxies:originalProxies,cache:neighborCache,
               baseSectorCount:candidate.neighbor?.baseSectorCount??originalWorld.neighbor?.baseSectorCount??physics!.preparation.jobs,
               current:()=>!disposed&&hvpMountEpoch===myEpoch&&(neighborPublished||current()),
-              blocked:()=>!neighborPublished||saveBusy||saveHold||supportPending||Boolean(dormancy?.read().busy||dormancy?.read().recoveryHold)||["Pending","RecoveryHold"].includes(terrainConsumer!.read().state)
+              blocked:()=>!neighborPublished||saveBusy||saveHold||factoryBlocked()||supportPending||Boolean(dormancy?.read().busy||dormancy?.read().recoveryHold)||["Pending","RecoveryHold"].includes(terrainConsumer!.read().state)
                 ||structuralConsumer!.read().state!=="Ready"||bodyCutConsumer!.read().state!=="Idle",
               admit:cost=>neighborPublished?admitNeighbor(cost):admitHvpResources({...ledger,totalCpuBytes:ledger.totalCpuBytes-ledger.tempEstimateBytes+retainedDecodedBytes
                 +Math.max(0,cost.cache-neighborCosts.cacheBytes)+cost.source+cost.checkpoint+(cost.preparing?restorePrepareBytes:0)},caps),
@@ -1960,7 +1974,13 @@ export const startHvp = async (
         };
       },current);
     };
+    const rejectLegacyPersistence = () => {
+      if (!overrides.factoryExtension) return false;
+      saveView={state:"Rejected",message:"Factory: gemeinsamer Spielstand noch nicht verfügbar; altes Speichern/Laden gesperrt",revision:saveRevision};
+      hud?.updateSave(); return true;
+    };
     const saveAction=async(kind:"Save"|"Load")=>{
+      if (rejectLegacyPersistence()) return;
       if(saveBusy||saveHold||disposed||dormancy?.read().busy||dormancy?.read().recoveryHold){return;}
       saveBusy=true;saveView={state:kind==="Save"?"Saving":"Loading",message:"Bestätigte Generation vorbereiten",revision:saveRevision};
       hud?.updateSave();
@@ -1996,7 +2016,7 @@ export const startHvp = async (
       coldGame=undefined;
     }
     dormancy=createHvpDormancyController({physics,stage:stageDormancy,current:()=>!disposed&&hvpMountEpoch===myEpoch,
-      blocked:()=>saveBusy||saveHold||supportPending||Boolean(neighbor?.read().busy||neighbor?.read().recoveryHold)
+      blocked:()=>saveBusy||saveHold||factoryBlocked()||supportPending||Boolean(neighbor?.read().busy||neighbor?.read().recoveryHold)
         ||["Pending","RecoveryHold"].includes(terrainConsumer!.read().state)||structuralConsumer!.read().state!=="Ready"||bodyCutConsumer!.read().state!=="Idle",
       admit:()=>{
         // Warm derived CPU meshes stay bounded/accounted; native and GPU owners
@@ -2007,7 +2027,8 @@ export const startHvp = async (
       }});
     const endSession=async()=>{
       if(disposed||saveBusy){return;}
-      if(neighbor?.read().busy||dormancy?.read().busy||supportPending||terrainConsumer!.read().queued>0
+      const factoryEndBlocked=factoryHandle!==undefined&&!(factoryHandle.canEndSession?.()??factoryHandle.isQuiescent());
+      if(factoryEndBlocked||neighbor?.read().busy||dormancy?.read().busy||supportPending||terrainConsumer!.read().queued>0
         ||structuralConsumer!.read().state==="Pending"||bodyCutConsumer!.read().state==="Pending"){
         saveView={state:"Rejected",message:"Laufenden Vorgang vor dem Beenden abwarten",revision:saveRevision};hud?.updateSave();return;
       }
@@ -2035,7 +2056,7 @@ export const startHvp = async (
         restartSalvage:()=>{if(!saveBusy&&!saveHold&&windowPort.confirm?.("Neuen Bergungsauftrag starten? Ungespeicherte Änderungen werden verworfen; der gespeicherte Stand bleibt erhalten.")){
           windowPort.location?.assign("/?hestiaPrototype=1&hvpScenario=salvage");}},
         readSave:()=>saveView,save:()=>{void saveAction("Save");},load:()=>{void saveAction("Load");},
-        loadNewSession:()=>{if(!saveBusy&&!saveHold&&windowPort.confirm?.("Gespeicherte Sitzung neu öffnen? Ungespeicherte Änderungen werden verworfen.")){
+        loadNewSession:()=>{if (rejectLegacyPersistence()) return; if(!saveBusy&&!saveHold&&windowPort.confirm?.("Gespeicherte Sitzung neu öffnen? Ungespeicherte Änderungen werden verworfen.")){
           windowPort.location?.assign("/?hestiaPrototype=1&hvpLoad=primary");}},
         setPreset: (preset: HvpCameraPreset) => {
           playerInput!.stop();
@@ -2069,8 +2090,15 @@ export const startHvp = async (
           hud!.update("Ready", camera!.readPose(), stats);
         },
         readPhysics: () => physics!.read(),
-        physicsCommand: kind => { if (kind === "Pause") { playerInput!.stop(); } return physics!.command(kind); },
-        play: () => { inspectEnabled = false; camera!.setMode("Orbit"); playerInput!.start(); },
+        physicsCommand: kind => {
+          if (overrides.factoryExtension && (kind === "Resume" || kind === "Drop") && !factoryCanResume()) {
+            return Promise.reject(new Error("Factory host busy, hidden or unconfirmed"));
+          }
+          if (kind === "Pause") playerInput!.stop();
+          const result = physics!.command(kind);
+          return publishFactoryView ? result.then(() => { publishFactoryView!(); }) : result;
+        },
+        play: () => { if (overrides.factoryExtension && !factoryCanResume()) return; inspectEnabled = false; camera!.setMode("Orbit"); playerInput!.start(); },
         readThirdPerson: () => playerInput!.thirdPerson,
         readAimScreen: () => playerInput!.aimScreen,
         togglePlayerView: () => playerInput!.toggleView(),
@@ -2114,6 +2142,50 @@ export const startHvp = async (
     startupPhase("startupPublishMs");
     measurement.record("bootstrapReadyMs",measurementStarted,performance.now()-measurementStarted);
 
+    if (overrides.factoryExtension) {
+      const current = () => !disposed && hvpMountEpoch === myEpoch;
+      const read = (): FactoryHostView => {
+        if (!current()) throw new Error("Factory host disposed or superseded");
+        const root = terrainRoot.read(), native = physics!.read();
+        return Object.freeze({ sessionId: root.sessionId, epoch: myEpoch, nativeTick: native.ticks,
+          physicsStatus: native.status, confirmed: confirmed() && !saveBusy && !saveHold && ["Running", "Paused"].includes(native.status),
+          terrain: Object.freeze({ epoch: root.epoch, revision: root.revision, sourceDigest: root.sourceDigest,
+            baseDigest: root.baseDigest, cellMeters: root.cellMeters, originMeters: root.originMeters,
+            sizeX: root.sizeX, sizeY: root.sizeY, sizeZ: root.sizeZ }) });
+      };
+      publishFactoryView = () => {
+        const view = read();
+        for (const listener of factoryListeners) listener(view);
+        return view;
+      };
+      readFactoryView = read;
+      const hostPort: FactoryHostPort = Object.freeze({ current, read,
+        readTerrainSlot: (x: number, y: number, z: number) => {
+          if (!current()) throw new Error("Factory host disposed or superseded");
+          const root = terrainRoot.read();
+          if (![x,y,z].every(Number.isSafeInteger) || x < 0 || y < 0 || z < 0
+            || x >= root.sizeX || y >= root.sizeY || z >= root.sizeZ) return undefined;
+          return root.readSlot(x,y,z);
+        },
+        subscribeConfirmed: (listener: (view: FactoryHostView) => void) => {
+          if (!current()) throw new Error("Factory host disposed or superseded");
+          factoryListeners.add(listener); return () => { factoryListeners.delete(listener); };
+        },
+        pause: async () => {
+          if (!current()) throw new Error("Factory host disposed or superseded");
+          playerInput!.stop(); await physics!.command("Pause");
+          return publishFactoryView!();
+        },
+        resume: async () => {
+          if (!current() || !factoryCanResume()) throw new Error("Factory host busy, hidden or unconfirmed");
+          await physics!.command("Resume"); return publishFactoryView!();
+        } });
+      factoryMount = overrides.factoryExtension(hostPort);
+      factoryHandle = await factoryMount;
+      if (!current()) { await dispose(); return Object.freeze({ dispose }); }
+      publishFactoryView();
+    }
+
     let previousFrameTime: number | undefined;
     let measurementFrame=0;
     let firstReadyFrame=false;
@@ -2143,6 +2215,7 @@ export const startHvp = async (
         }
         documentPort.body.dataset.hestiaPrototypeTool=JSON.stringify(plasmaTool!.read());
          const state = physics!.read();
+         publishFactoryView?.();
          dormancy!.update();
          documentPort.body.dataset.hestiaPrototypeBodyResidency=JSON.stringify({...dormancy!.read(),parkedRenderOwners:[...parkedRenderOwners],
            derivedMeshCacheBytes:[...fragmentEntries.values()].filter(e=>parkedRenderOwners.has(e.ownerId)).reduce((n,e)=>n+e.mesh.positions.byteLength+e.mesh.normals.byteLength+e.mesh.indices.byteLength+(e.mesh.colors?.byteLength??0),0)});

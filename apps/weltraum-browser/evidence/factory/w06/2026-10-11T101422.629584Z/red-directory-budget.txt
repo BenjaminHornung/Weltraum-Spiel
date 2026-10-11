@@ -1,0 +1,36 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/hostLifecycle.test.ts -t bounds directories
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts (10 tests | 1 failed | 9 skipped) 295ms
+     × bounds directories as well as files in recursive admission 293ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > W06 bounded recursive Factory evidence > bounds directories as well as files in recursive admission
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts:117:40
+    115|       writeFileSync(path.join(directory, "manifest.json"), '{}');
+    116|       for (let i = 0; i < 4097; i++) mkdirSync(path.join(directory, `e…
+    117|       expect(verify(directory).status).toBe(1);
+       |                                        ^
+    118|     } finally { rmSync(directory, { recursive: true, force: true }); }
+    119|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 9 skipped (10)
+   Start at  10:28:07
+   Duration  643ms (transform 166ms, setup 0ms, import 222ms, tests 295ms, environment 0ms)

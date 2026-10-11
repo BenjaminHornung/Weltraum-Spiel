@@ -1,0 +1,56 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/hostLifecycle.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts (9 tests | 2 failed) 149ms
+     × accepts real nested JSON and rejects corrupt descendants and symlinks 89ms
+     × rejects oversized evidence before reading or uploading it 47ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > W06 bounded recursive Factory evidence > accepts real nested JSON and rejects corrupt descendants and symlinks
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts:106:40
+    104|       expect(verify(directory).status).toBe(0);
+    105|       writeFileSync(path.join(nested, "bad.json"), '{');
+    106|       expect(verify(directory).status).toBe(1);
+       |                                        ^
+    107|       rmSync(path.join(nested, "bad.json"));
+    108|       symlinkSync(path.join(nested, "manifest.json"), path.join(direct…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > W06 bounded recursive Factory evidence > rejects oversized evidence before reading or uploading it
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts:118:40
+    116|       const file = openSync(path.join(directory, "oversized.bin"), "w"…
+    117|       ftruncateSync(file, 32 * 1024 * 1024 + 1); closeSync(file);
+    118|       expect(verify(directory).status).toBe(1);
+       |                                        ^
+    119|     } finally { rmSync(directory, { recursive: true, force: true }); }
+    120|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 7 passed (9)
+   Start at  10:20:42
+   Duration  734ms (transform 240ms, setup 0ms, import 376ms, tests 149ms, environment 0ms)

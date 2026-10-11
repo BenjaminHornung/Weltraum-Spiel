@@ -1,0 +1,130 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/hvp-bootstrap.test.ts tests/unit/factory/hostLifecycle.test.ts -t W06 R1|R1 rejects outside
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/hvp-bootstrap.test.ts (32 tests | 3 failed | 29 skipped) 20629ms
+     × W06 R1 publishes actual unconfirmed native holds without work and permits transient recovery 6367ms
+     × W06 R1 refuses all actual Factory Resume and Play paths during native holds 7192ms
+     × W06 R1 keeps the actual post-disposal restart in the Factory profile 7068ms
+ ❯ tests/unit/factory/hostLifecycle.test.ts (11 tests | 1 failed | 10 skipped) 43ms
+     × R1 rejects outside, missing, corrupt and placeholder manifest evidence references 41ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W06 R1 publishes actual unconfirmed native holds without work and permits transient recovery
+AssertionError: expected { sessionId: 'hvp-session-1', …(5) } to match object { physicsStatus: 'CoverageHold', …(1) }
+(13 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "confirmed": false,
+-   "physicsStatus": "CoverageHold",
++   "confirmed": true,
++   "physicsStatus": "Paused",
+  }
+
+ ❯ tests/unit/hvp-bootstrap.test.ts:554:35
+    552|     try {
+    553|       status = "CoverageHold"; tick = 23; stepFrame(source.windowPort,…
+    554|       expect(observations.at(-1)).toMatchObject({ physicsStatus: "Cove…
+       |                                   ^
+    555|       expect(session.read()).toMatchObject({ state: "WaitingForHost", …
+    556|       expect(session.isQuiescent()).toBe(true); // Neighbor repair mus…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W06 R1 refuses all actual Factory Resume and Play paths during native holds
+AssertionError: promise resolved "{ sessionId: 'hvp-session-2', …(5) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "confirmed": false,
++   "epoch": 2,
++   "nativeTick": 0,
++   "physicsStatus": "CoverageHold",
++   "sessionId": "hvp-session-2",
++   "terrain": {
++     "baseDigest": "b8fde6b0",
++     "cellMeters": 0.125,
++     "epoch": 2,
++     "originMeters": {
++       "x": -16,
++       "y": -8,
++       "z": -16,
++     },
++     "revision": 0,
++     "sizeX": 256,
++     "sizeY": 128,
++     "sizeZ": 256,
++     "sourceDigest": "b8fde6b0",
++   },
+  }
+
+ ❯ tests/unit/hvp-bootstrap.test.ts:587:36
+    585|         status = hold;
+    586|         expect(port.read().confirmed).toBe(false);
+    587|         await expect(port.resume()).rejects.toThrow(/unconfirmed|hold/…
+       |                                    ^
+    588|         descendants(source.body).find(e => e.id === "hvp-physics-pause…
+    589|         descendants(source.body).find(e => e.id === "hvp-play")!.dispa…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/hvp-bootstrap.test.ts > HVP T08 bootstrap lifecycle > W06 R1 keeps the actual post-disposal restart in the Factory profile
+AssertionError: expected "vi.fn()" to be called with arguments: [ '/factory.html' ]
+
+Received:
+
+  1st vi.fn() call:
+
+  [
+-   "/factory.html",
++   "/?hestiaPrototype=1",
+  ]
+
+
+Number of calls: 1
+
+ ❯ tests/unit/hvp-bootstrap.test.ts:607:22
+    605|       await vi.waitFor(() => { expect(descendants(source.body).find(e …
+    606|       descendants(source.body).find(e => e.textContent === "Neu starte…
+    607|       expect(assign).toHaveBeenCalledWith("/factory.html");
+       |                      ^
+    608|     } finally { await handle.dispose(); }
+    609|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > W06 bounded recursive Factory evidence > R1 rejects outside, missing, corrupt and placeholder manifest evidence references
+AssertionError: {"schema":"hestia.fp06.evidence/v1","artifacts":[{"path":"../../outside.png","sha256":"0000000000000000000000000000000000000000000000000000000000000000"}]}: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts:114:49
+    112|       for (const bytes of invalid) {
+    113|         writeFileSync(path.join(directory, "manifest.json"), bytes);
+    114|         expect(verify(directory).status, bytes).toBe(1);
+       |                                                 ^
+    115|       }
+    116|     } finally { rmSync(directory, { recursive: true, force: true }); }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  4 failed | 39 skipped (43)
+   Start at  10:50:10
+   Duration  22.31s (transform 1.09s, setup 0ms, import 1.43s, tests 20.67s, environment 0ms)

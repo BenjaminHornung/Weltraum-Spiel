@@ -1,0 +1,963 @@
+diff --git a/.github/workflows/browser-mainline-ci.yml b/.github/workflows/browser-mainline-ci.yml
+index fbc04cccf5b3520cd310f669b3759f96db37130e..dda1fc736be3ae9a2ffbaeebc7cb21442847789d 100644
+--- a/.github/workflows/browser-mainline-ci.yml
++++ b/.github/workflows/browser-mainline-ci.yml
+@@ -294,0 +295,14 @@ jobs:
++      - name: Validate bounded recursive Factory evidence
++        id: factory_evidence
++        if: ${{ !cancelled() && steps.install_browser_dependencies.outcome == 'success' }}
++        run: node ../../tools/factory/verify-evidence.mjs evidence/factory
++
++      - name: Upload bounded Factory evidence
++        if: ${{ !cancelled() && steps.factory_evidence.outcome == 'success' }}
++        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
++        with:
++          name: factory-evidence-${{ github.run_id }}
++          if-no-files-found: error
++          retention-days: 3
++          path: apps/weltraum-browser/evidence/factory/**
++
+diff --git a/apps/weltraum-browser/factory.html b/apps/weltraum-browser/factory.html
+new file mode 100644
+index 0000000000000000000000000000000000000000..49d537d33fbdfd17f6840f8443c88413bc7480ef
+--- /dev/null
++++ b/apps/weltraum-browser/factory.html
+@@ -0,0 +1,12 @@
++<!doctype html>
++<html lang="de">
++  <head>
++    <meta charset="UTF-8" />
++    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
++    <title>Hestia · Werkstatt</title>
++  </head>
++  <body>
++    <main id="app"><canvas id="debug-scene" aria-label="Hestia Küste"></canvas></main>
++    <script type="module" src="/src/factory/factoryEntry.ts"></script>
++  </body>
++</html>
+diff --git a/apps/weltraum-browser/package.json b/apps/weltraum-browser/package.json
+index 629c4eea2a34da8c541431728d6a2c9418f55696..af8563b2394bc8078d2f61a2f06ef9f0ef4a1e37 100644
+--- a/apps/weltraum-browser/package.json
++++ b/apps/weltraum-browser/package.json
+@@ -12 +12 @@
+-    "test:e2e:live": "playwright test tests/e2e/browser-navigation-map-world-truth.spec.ts tests/e2e/hestia-microvoxel-surface-lab.spec.ts tests/e2e/hvp-visible-coast.spec.ts tests/e2e/hvp-look.spec.ts tests/e2e/large-field-navigation-objective.spec.ts tests/e2e/large-field-objective-chain-live.spec.ts tests/e2e/live-world-presentation-truth.spec.ts tests/e2e/normal-runtime-functional-planner.spec.ts tests/e2e/playable-large-field-live-flight.spec.ts tests/e2e/playable-large-proving-ground.spec.ts tests/e2e/world-chunk-streaming.spec.ts",
++    "test:e2e:live": "playwright test tests/e2e/browser-navigation-map-world-truth.spec.ts tests/e2e/hestia-microvoxel-surface-lab.spec.ts tests/e2e/hvp-visible-coast.spec.ts tests/e2e/hvp-look.spec.ts tests/e2e/factory-host.spec.ts tests/e2e/large-field-navigation-objective.spec.ts tests/e2e/large-field-objective-chain-live.spec.ts tests/e2e/live-world-presentation-truth.spec.ts tests/e2e/normal-runtime-functional-planner.spec.ts tests/e2e/playable-large-field-live-flight.spec.ts tests/e2e/playable-large-proving-ground.spec.ts tests/e2e/world-chunk-streaming.spec.ts",
+diff --git a/apps/weltraum-browser/src/factory/factoryEntry.ts b/apps/weltraum-browser/src/factory/factoryEntry.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..186d6b5f20bc0df8c6b95ab431ae40a3a7dd3834
+--- /dev/null
++++ b/apps/weltraum-browser/src/factory/factoryEntry.ts
+@@ -0,0 +1,58 @@
++import "../style.css";
++import { startHvp, type HvpBootstrapHandle } from "../hvp/hvpBootstrap";
++import { createFp02CatalogInput, loadFactoryCatalog } from "./catalog/fp02Catalog";
++import { mountFactorySession, type FactorySessionView } from "./session/factorySession";
++import type { FactoryHostExtension } from "./session/hostPort";
++
++const extension: FactoryHostExtension = async host => {
++  // Loading the immutable catalogue does not install objects or grant cargo.
++  const session = await mountFactorySession(host, loadFactoryCatalog(createFp02CatalogInput()));
++  const panel = document.createElement("section");
++  panel.id = "factory-panel"; panel.setAttribute("aria-label", "Werkstatt");
++  panel.setAttribute("style", "position:fixed;right:12px;top:12px;max-width:320px;padding:14px;background:#10202aeb;color:#f1f5f7;font:14px/1.5 system-ui;z-index:21");
++  const title = document.createElement("strong"); title.textContent = "Hestia · Werkstatt";
++  const status = document.createElement("p"); status.id = "factory-status"; status.setAttribute("role", "status");
++  const note = document.createElement("p"); note.textContent = "Werkstatt vorbereitet. Bau und Produktion folgen. Gemeinsames Speichern ist noch nicht verfügbar.";
++  const pause = document.createElement("button"); pause.type = "button"; pause.textContent = "Werkstatt pausieren";
++  const resume = document.createElement("button"); resume.type = "button"; resume.textContent = "Werkstatt fortsetzen";
++  pause.setAttribute("style", "margin:4px;padding:6px"); resume.setAttribute("style", "margin:4px;padding:6px");
++  let disposed = false;
++  const project = (view: FactorySessionView) => {
++    if (disposed || !host.current()) return;
++    document.body.dataset.hestiaFactory = "1";
++    document.body.dataset.hestiaFactoryClock = JSON.stringify(view);
++    const native = host.read(), paused = native.physicsStatus === "Paused";
++    const available = view.state === "Ready" && native.confirmed;
++    status.textContent = available ? `Werkstatt bereit · ${paused ? "Pausiert" : "Aktiv"}`
++      : view.state === "RecoveryHold" ? "Werkstatt angehalten · Sitzung neu starten" : "Werkstatt wartet · Host angehalten";
++    pause.disabled = paused || !available; resume.disabled = !paused || !available;
++  };
++  const command = async (kind: "pause" | "resume") => {
++    try { await host[kind](); project(session.read()); }
++    catch (error) { if (!disposed && host.current()) status.textContent = `Werkstatt angehalten · ${String(error)}`; }
++  };
++  const onPause = () => { void command("pause"); };
++  const onResume = () => { void command("resume"); };
++  pause.addEventListener("click", onPause); resume.addEventListener("click", onResume);
++  panel.append(title, status, note, pause, resume); document.querySelector("#app")!.append(panel);
++  const unsubscribe = session.subscribe(project);
++  const unsubscribeHost = host.subscribeConfirmed(() => { project(session.read()); });
++  project(session.read());
++  return Object.freeze({ isQuiescent: session.isQuiescent, canEndSession: session.canEndSession, dispose: async () => {
++    if (disposed) return;
++    disposed = true; unsubscribe(); unsubscribeHost(); pause.removeEventListener("click", onPause); resume.removeEventListener("click", onResume);
++    await session.dispose(); panel.remove();
++    // A stale close may not remove a replacement session's projection.
++    const current = document.body.dataset.hestiaFactoryClock;
++    if (current && JSON.parse(current).epoch === session.read().epoch) {
++      delete document.body.dataset.hestiaFactory; delete document.body.dataset.hestiaFactoryClock;
++    }
++  } });
++};
++
++/** The real HVP mount guard owns exclusivity; there is no parallel renderer/World. */
++export const startFactoryEntry = (): Promise<HvpBootstrapHandle> => startHvp({ factoryExtension: extension });
++void startFactoryEntry().catch(error => {
++  const status = document.createElement("p"); status.setAttribute("role", "alert");
++  status.textContent = `Werkstatt konnte nicht starten: ${String(error)}`; document.body.append(status);
++});
+diff --git a/apps/weltraum-browser/src/factory/session/factorySession.ts b/apps/weltraum-browser/src/factory/session/factorySession.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..93f543a1ce74566382cf1ec1a591257052b73bc8
+--- /dev/null
++++ b/apps/weltraum-browser/src/factory/session/factorySession.ts
+@@ -0,0 +1,70 @@
++import type { FactoryCatalog } from "../contracts";
++import type { FactoryHostPort, FactoryHostExtensionHandle, FactoryHostView } from "./hostPort";
++
++export interface FactorySessionView {
++  readonly sessionId: string; readonly epoch: number; readonly catalogDigest: string;
++  readonly nativeTick: number; readonly remainderTicks: number; readonly steps: number;
++  readonly elapsedMs: number; readonly state: "Ready" | "WaitingForHost" | "RecoveryHold" | "Disposed";
++}
++export interface FactorySessionHandle extends FactoryHostExtensionHandle {
++  read(): FactorySessionView;
++  subscribe(listener: (view: FactorySessionView) => void): () => void;
++}
++const mountedHosts = new WeakSet<FactoryHostPort>();
++
++/** D05: six confirmed native 60-Hz ticks, never browser time or offline time. */
++export const mountFactorySession = async (host: FactoryHostPort, catalog: FactoryCatalog): Promise<FactorySessionHandle> => {
++  if (!host.current()) throw new Error("Factory requires a current, undisposed host");
++  if (mountedHosts.has(host)) throw new Error("Factory already mounted on this host");
++  const initial = host.read();
++  if (!initial.confirmed || !["Running", "Paused"].includes(initial.physicsStatus) || !Number.isSafeInteger(initial.nativeTick) || initial.nativeTick < 0) {
++    throw new Error("Factory requires a confirmed native tick baseline");
++  }
++  mountedHosts.add(host);
++  let disposed = false;
++  let view: FactorySessionView = Object.freeze({ sessionId: initial.sessionId, epoch: initial.epoch,
++    catalogDigest: catalog.catalogDigest, nativeTick: initial.nativeTick, remainderTicks: 0,
++    steps: 0, elapsedMs: 0, state: "Ready" });
++  const listeners = new Set<(view: FactorySessionView) => void>();
++  const publish = (next: FactorySessionView) => {
++    view = Object.freeze(next);
++    for (const listener of listeners) listener(view);
++  };
++  const observe = (confirmed: FactoryHostView) => {
++    if (disposed || !host.current() || view.state === "RecoveryHold") return;
++    if (["RecoveryHold", "Disposed"].includes(confirmed.physicsStatus) || confirmed.sessionId !== initial.sessionId || confirmed.epoch !== initial.epoch
++      || !Number.isSafeInteger(confirmed.nativeTick) || confirmed.nativeTick < view.nativeTick) {
++      publish({ ...view, state: "RecoveryHold" }); return;
++    }
++    if (!confirmed.confirmed || !["Running", "Paused"].includes(confirmed.physicsStatus)) {
++      if (view.state !== "WaitingForHost") publish({ ...view, state: "WaitingForHost" });
++      return;
++    }
++    if (confirmed.nativeTick === view.nativeTick) {
++      if (view.state === "WaitingForHost") publish({ ...view, state: "Ready" });
++      return;
++    }
++    const ticks = view.remainderTicks + confirmed.nativeTick - view.nativeTick;
++    const steps = view.steps + Math.floor(ticks / 6);
++    if (!Number.isSafeInteger(ticks) || !Number.isSafeInteger(steps * 100)) {
++      publish({ ...view, state: "RecoveryHold" }); return;
++    }
++    publish({ ...view, state: "Ready", nativeTick: confirmed.nativeTick, remainderTicks: ticks % 6, steps, elapsedMs: steps * 100 });
++  };
++  let unsubscribe: () => void;
++  try { unsubscribe = host.subscribeConfirmed(observe); }
++  catch (error) { mountedHosts.delete(host); throw error; }
++  return Object.freeze({ read: () => view,
++    subscribe: (listener: (view: FactorySessionView) => void) => {
++      if (disposed) throw new Error("Factory session disposed");
++      listeners.add(listener); return () => { listeners.delete(listener); };
++    }, isQuiescent: () => !disposed && view.state !== "RecoveryHold",
++    // This clock-only session has no pending publication or material commit.
++    canEndSession: () => !disposed,
++    dispose: async () => {
++      if (disposed) return;
++      disposed = true;
++      unsubscribe(); listeners.clear(); mountedHosts.delete(host);
++      view = Object.freeze({ ...view, state: "Disposed" });
++    } });
++};
+diff --git a/apps/weltraum-browser/src/factory/session/hostPort.ts b/apps/weltraum-browser/src/factory/session/hostPort.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..d1edaacbd6ab3c2843dc89706dc64a081795b912
+--- /dev/null
++++ b/apps/weltraum-browser/src/factory/session/hostPort.ts
+@@ -0,0 +1,30 @@
++/** Read-only capability of the existing HVP host, never another World owner. */
++export interface FactoryHostView {
++  readonly sessionId: string;
++  readonly epoch: number;
++  readonly nativeTick: number;
++  readonly physicsStatus: "Running" | "Paused" | "SimulationHold" | "CoverageHold" | "RecoveryHold" | "Disposed";
++  readonly confirmed: boolean;
++  readonly terrain: Readonly<{
++    epoch: number; revision: number; sourceDigest: string; baseDigest: string;
++    cellMeters: number; originMeters: Readonly<{ x: number; y: number; z: number }>;
++    sizeX: number; sizeY: number; sizeZ: number;
++  }>;
++}
++export interface FactoryHostPort {
++  current(): boolean;
++  read(): FactoryHostView;
++  readTerrainSlot(x: number, y: number, z: number): number | undefined;
++  /** Includes informational unconfirmed holds; only view.confirmed may grant ticks. */
++  subscribeConfirmed(listener: (view: FactoryHostView) => void): () => void;
++  pause(): Promise<FactoryHostView>;
++  /** Explicit only; refuses hidden, unconfirmed, busy or stale hosts. */
++  resume(): Promise<FactoryHostView>;
++}
++export interface FactoryHostExtensionHandle {
++  dispose(): Promise<void>;
++  isQuiescent(): boolean;
++  /** Optional safe teardown barrier; default requires isQuiescent, never skips cleanup. */
++  canEndSession?(): boolean;
++}
++export type FactoryHostExtension = (host: FactoryHostPort) => Promise<FactoryHostExtensionHandle>;
+diff --git a/apps/weltraum-browser/src/hvp/hvpBootstrap.ts b/apps/weltraum-browser/src/hvp/hvpBootstrap.ts
+index 50c4d9098dd708255a8bbbaaeaa01d3313026158..8d7c896e2d41b5580b26c21070ffdb7eb34618c4 100644
+--- a/apps/weltraum-browser/src/hvp/hvpBootstrap.ts
++++ b/apps/weltraum-browser/src/hvp/hvpBootstrap.ts
+@@ -0,0 +1 @@
++import type { FactoryHostExtension, FactoryHostExtensionHandle, FactoryHostPort, FactoryHostView } from "../factory/session/hostPort";
+@@ -751,0 +753 @@ export const startHvp = async (
++    readonly factoryExtension?: FactoryHostExtension;
+@@ -776,0 +779,7 @@ export const startHvp = async (
++  let factoryMount: Promise<FactoryHostExtensionHandle> | undefined;
++  let factoryHandle: FactoryHostExtensionHandle | undefined;
++  const factoryListeners = new Set<(view: FactoryHostView) => void>();
++  const factoryBlocked = () => factoryHandle !== undefined && !factoryHandle.isQuiescent();
++  let publishFactoryView: (() => FactoryHostView) | undefined;
++  let readFactoryView: (() => FactoryHostView) | undefined;
++  const factoryCanResume = () => readFactoryView?.().confirmed === true && !documentPort.hidden;
+@@ -799 +808 @@ export const startHvp = async (
+-  const restartAfterEnd=()=>{launcherListeners.dispose();launcher?.remove();launcher=undefined;windowPort.location?.assign(`/?hestiaPrototype=1${measurement.enabled?"&hvpMeasure=1":""}`);};
++  const restartAfterEnd=()=>{launcherListeners.dispose();launcher?.remove();launcher=undefined;windowPort.location?.assign(overrides.factoryExtension?`/factory.html${measurement.enabled?"?hvpMeasure=1":""}`:`/?hestiaPrototype=1${measurement.enabled?"&hvpMeasure=1":""}`);};
+@@ -835,0 +845,4 @@ export const startHvp = async (
++      factoryListeners.clear();
++      // Extension cleanup precedes every native, input and render owner.
++      await attempt(async () => { if (factoryMount) await (await factoryMount).dispose(); });
++      factoryHandle = undefined;
+@@ -988,0 +1002 @@ export const startHvp = async (
++    if (overrides.factoryExtension && loadQuery !== null) throw new Error("Factory requires a combined checkpoint; legacy load is unavailable");
+@@ -1333 +1347 @@ export const startHvp = async (
+-    },{confirm:()=>{void plasmaTool?.confirm();},select:mode=>plasmaTool?.select(mode)},()=>saveBusy||saveHold||Boolean(dormancy?.read().recoveryHold));
++    },{confirm:()=>{if (!factoryBlocked()) void plasmaTool?.confirm();},select:mode=>plasmaTool?.select(mode)},()=>saveBusy||saveHold||factoryBlocked()||Boolean(dormancy?.read().recoveryHold)||Boolean(overrides.factoryExtension&&!factoryCanResume()));
+@@ -1802 +1816 @@ export const startHvp = async (
+-    const confirmed=()=>!disposed&&hvpMountEpoch===myEpoch&&!supportPending&&!neighbor?.read().busy&&!neighbor?.read().recoveryHold&&!dormancy?.read().busy&&!dormancy?.read().recoveryHold
++    const confirmed=()=>!disposed&&hvpMountEpoch===myEpoch&&!factoryBlocked()&&!supportPending&&!neighbor?.read().busy&&!neighbor?.read().recoveryHold&&!dormancy?.read().busy&&!dormancy?.read().recoveryHold
+@@ -1812 +1826 @@ export const startHvp = async (
+-      blocked:()=>saveBusy||saveHold||supportPending||Boolean(dormancy?.read().busy||dormancy?.read().recoveryHold)||["Pending","RecoveryHold"].includes(terrainConsumer!.read().state)||structuralConsumer!.read().state!=="Ready"||bodyCutConsumer!.read().state!=="Idle",
++      blocked:()=>saveBusy||saveHold||factoryBlocked()||supportPending||Boolean(dormancy?.read().busy||dormancy?.read().recoveryHold)||["Pending","RecoveryHold"].includes(terrainConsumer!.read().state)||structuralConsumer!.read().state!=="Ready"||bodyCutConsumer!.read().state!=="Idle",
+@@ -1904 +1918 @@ export const startHvp = async (
+-              blocked:()=>!neighborPublished||saveBusy||saveHold||supportPending||Boolean(dormancy?.read().busy||dormancy?.read().recoveryHold)||["Pending","RecoveryHold"].includes(terrainConsumer!.read().state)
++              blocked:()=>!neighborPublished||saveBusy||saveHold||factoryBlocked()||supportPending||Boolean(dormancy?.read().busy||dormancy?.read().recoveryHold)||["Pending","RecoveryHold"].includes(terrainConsumer!.read().state)
+@@ -1962,0 +1977,5 @@ export const startHvp = async (
++    const rejectLegacyPersistence = () => {
++      if (!overrides.factoryExtension) return false;
++      saveView={state:"Rejected",message:"Factory: gemeinsamer Spielstand noch nicht verfügbar; altes Speichern/Laden gesperrt",revision:saveRevision};
++      hud?.updateSave(); return true;
++    };
+@@ -1963,0 +1983 @@ export const startHvp = async (
++      if (rejectLegacyPersistence()) return;
+@@ -1999 +2019 @@ export const startHvp = async (
+-      blocked:()=>saveBusy||saveHold||supportPending||Boolean(neighbor?.read().busy||neighbor?.read().recoveryHold)
++      blocked:()=>saveBusy||saveHold||factoryBlocked()||supportPending||Boolean(neighbor?.read().busy||neighbor?.read().recoveryHold)
+@@ -2010 +2030,2 @@ export const startHvp = async (
+-      if(neighbor?.read().busy||dormancy?.read().busy||supportPending||terrainConsumer!.read().queued>0
++      const factoryEndBlocked=factoryHandle!==undefined&&!(factoryHandle.canEndSession?.()??factoryHandle.isQuiescent());
++      if(factoryEndBlocked||neighbor?.read().busy||dormancy?.read().busy||supportPending||terrainConsumer!.read().queued>0
+@@ -2038 +2059 @@ export const startHvp = async (
+-        loadNewSession:()=>{if(!saveBusy&&!saveHold&&windowPort.confirm?.("Gespeicherte Sitzung neu öffnen? Ungespeicherte Änderungen werden verworfen.")){
++        loadNewSession:()=>{if (rejectLegacyPersistence()) return; if(!saveBusy&&!saveHold&&windowPort.confirm?.("Gespeicherte Sitzung neu öffnen? Ungespeicherte Änderungen werden verworfen.")){
+@@ -2072,2 +2093,9 @@ export const startHvp = async (
+-        physicsCommand: kind => { if (kind === "Pause") { playerInput!.stop(); } return physics!.command(kind); },
+-        play: () => { inspectEnabled = false; camera!.setMode("Orbit"); playerInput!.start(); },
++        physicsCommand: kind => {
++          if (overrides.factoryExtension && (kind === "Resume" || kind === "Drop") && !factoryCanResume()) {
++            return Promise.reject(new Error("Factory host busy, hidden or unconfirmed"));
++          }
++          if (kind === "Pause") playerInput!.stop();
++          const result = physics!.command(kind);
++          return publishFactoryView ? result.then(() => { publishFactoryView!(); }) : result;
++        },
++        play: () => { if (overrides.factoryExtension && !factoryCanResume()) return; inspectEnabled = false; camera!.setMode("Orbit"); playerInput!.start(); },
+@@ -2116,0 +2145,44 @@ export const startHvp = async (
++    if (overrides.factoryExtension) {
++      const current = () => !disposed && hvpMountEpoch === myEpoch;
++      const read = (): FactoryHostView => {
++        if (!current()) throw new Error("Factory host disposed or superseded");
++        const root = terrainRoot.read(), native = physics!.read();
++        return Object.freeze({ sessionId: root.sessionId, epoch: myEpoch, nativeTick: native.ticks,
++          physicsStatus: native.status, confirmed: confirmed() && !saveBusy && !saveHold && ["Running", "Paused"].includes(native.status),
++          terrain: Object.freeze({ epoch: root.epoch, revision: root.revision, sourceDigest: root.sourceDigest,
++            baseDigest: root.baseDigest, cellMeters: root.cellMeters, originMeters: root.originMeters,
++            sizeX: root.sizeX, sizeY: root.sizeY, sizeZ: root.sizeZ }) });
++      };
++      publishFactoryView = () => {
++        const view = read();
++        for (const listener of factoryListeners) listener(view);
++        return view;
++      };
++      readFactoryView = read;
++      const hostPort: FactoryHostPort = Object.freeze({ current, read,
++        readTerrainSlot: (x: number, y: number, z: number) => {
++          if (!current()) throw new Error("Factory host disposed or superseded");
++          const root = terrainRoot.read();
++          if (![x,y,z].every(Number.isSafeInteger) || x < 0 || y < 0 || z < 0
++            || x >= root.sizeX || y >= root.sizeY || z >= root.sizeZ) return undefined;
++          return root.readSlot(x,y,z);
++        },
++        subscribeConfirmed: (listener: (view: FactoryHostView) => void) => {
++          if (!current()) throw new Error("Factory host disposed or superseded");
++          factoryListeners.add(listener); return () => { factoryListeners.delete(listener); };
++        },
++        pause: async () => {
++          if (!current()) throw new Error("Factory host disposed or superseded");
++          playerInput!.stop(); await physics!.command("Pause");
++          return publishFactoryView!();
++        },
++        resume: async () => {
++          if (!current() || !factoryCanResume()) throw new Error("Factory host busy, hidden or unconfirmed");
++          await physics!.command("Resume"); return publishFactoryView!();
++        } });
++      factoryMount = overrides.factoryExtension(hostPort);
++      factoryHandle = await factoryMount;
++      if (!current()) { await dispose(); return Object.freeze({ dispose }); }
++      publishFactoryView();
++    }
++
+@@ -2145,0 +2218 @@ export const startHvp = async (
++         publishFactoryView?.();
+diff --git a/apps/weltraum-browser/tests/e2e/factory-host.spec.ts b/apps/weltraum-browser/tests/e2e/factory-host.spec.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..643f3b36556aea6f17d751845e9dfcbd94bda6f5
+--- /dev/null
++++ b/apps/weltraum-browser/tests/e2e/factory-host.spec.ts
+@@ -0,0 +1,108 @@
++import { expect, test, type BrowserContext, type Page } from "@playwright/test";
++import { mkdir, writeFile } from "node:fs/promises";
++import path from "node:path";
++
++test("T025 normal flight and legacy HVP request no Factory modules", async ({ page }) => {
++  const requests: string[] = [];
++  page.on("request", request => { requests.push(new URL(request.url()).pathname); });
++  await page.goto("/");
++  await expect(page.locator("#flight-hud")).toBeVisible();
++  await expect(page.locator("#factory-status")).toHaveCount(0);
++  expect(requests.filter(url => url.includes("/factory/"))).toEqual([]);
++  requests.length = 0;
++  await page.goto("/?hestiaPrototype=1");
++  await expect(page.locator("#hvp-state")).toContainText("State: Ready", { timeout: 20_000 });
++  await expect(page.locator("#factory-status")).toHaveCount(0);
++  expect(requests.filter(url => url.includes("/factory/"))).toEqual([]);
++  expect(await page.evaluate(() => "TestBridge" in window)).toBe(false);
++});
++
++const openFactory = async (page: Page) => {
++  await page.goto("/factory.html");
++  await expect(page.locator("#factory-status")).toContainText("Werkstatt bereit", { timeout: 20_000 });
++};
++const readClock = (page: Page) => page.evaluate(() => JSON.parse(document.body.dataset.hestiaFactoryClock!));
++const evidenceRun = () => {
++  const run = process.env.WELTRAUM_FACTORY_EVIDENCE_RUN ?? new Date().toISOString().replaceAll(":", "");
++  if (!/^[A-Za-z0-9._-]{1,100}$/.test(run)) throw new Error("Invalid Factory evidence run ID");
++  return path.resolve("evidence/factory/w06", run);
++};
++
++test.describe.serial("one actual Factory host through normal player actions", () => {
++  let context: BrowserContext;
++  let page: Page;
++  let pausedClock: Awaited<ReturnType<typeof readClock>>;
++  test.beforeAll(async ({ browser }, testInfo) => {
++    context = await browser.newContext({ baseURL: testInfo.project.use.baseURL });
++    page = await context.newPage();
++  });
++  test.afterAll(async () => {
++    if (!context) return;
++    await context.close();
++  });
++  test("real Factory entry reaches Ready once", async () => {
++    await openFactory(page);
++    await expect(page.locator("#hvp-hud")).toHaveCount(1); await expect(page.locator("canvas")).toHaveCount(1);
++  });
++
++  test("T026 duplicate Factory entry creates no second worker or renderer", async () => {
++    const workers = page.workers().length; expect(workers).toBeGreaterThan(0);
++    const duplicate = await page.evaluate(async () => {
++      const entryPath = "/src/factory/factoryEntry.ts"; const entry = await import(entryPath);
++      try { await entry.startFactoryEntry(); return "unexpected second host"; } catch (error) { return String(error); }
++    });
++    expect(duplicate).toMatch(/already mounted/i); expect(page.workers().length).toBe(workers);
++    await expect(page.locator("canvas")).toHaveCount(1); await expect(page.locator("#hvp-hud")).toHaveCount(1);
++    await expect(page.locator("#factory-panel")).toHaveCount(1);
++  });
++
++  test("T028 native pause preserves clock through presentation frames", async ({}, testInfo) => {
++    const errors: string[] = []; page.on("pageerror", error => { errors.push(error.message); });
++    await expect.poll(async () => (await readClock(page)).steps).toBeGreaterThan(0);
++    await page.getByRole("button", { name: "Werkstatt pausieren", exact: true }).click();
++    await expect(page.locator("#factory-status")).toContainText("Pausiert"); const paused = await readClock(page); pausedClock = paused;
++    await page.evaluate(async () => { for (let i = 0; i < 12; i++) await new Promise<void>(resolve => requestAnimationFrame(() => resolve())); });
++    expect(await readClock(page)).toEqual(paused); expect(paused.elapsedMs).toBe(paused.steps * 100);
++    expect(paused.remainderTicks).toBeGreaterThanOrEqual(0); expect(paused.remainderTicks).toBeLessThan(6);
++    const capture = await page.screenshot(); await testInfo.attach("factory-single-host", { body: capture, contentType: "image/png" });
++    const directory = evidenceRun(); await mkdir(directory, { recursive: true });
++    await writeFile(path.join(directory, "factory-single-host.png"), capture);
++    await writeFile(path.join(directory, "browser-host-clock.json"), JSON.stringify({ state: paused, errors }, null, 2) + "\n");
++    expect(errors).toEqual([]); expect(await page.evaluate(() => "TestBridge" in window)).toBe(false);
++  });
++
++  test("Factory refuses all legacy persistence paths with an honest reason", async () => {
++    for (const id of ["hvp-save", "hvp-load", "hvp-load-new"]) {
++      await page.locator(`#${id}`).click(); await expect(page.locator("#hvp-save-status")).toContainText("Factory");
++      await expect(page.locator("#hvp-save-status")).toContainText("Rejected");
++    }
++    await expect(page).toHaveURL(/factory\.html$/);
++  });
++
++  test("Factory explicitly resumes the same paused native host", async () => {
++    await expect(page.locator("#factory-status")).toContainText("Pausiert");
++    expect(await readClock(page)).toEqual(pausedClock);
++    const paused = pausedClock;
++    await page.getByRole("button", { name: "Werkstatt fortsetzen", exact: true }).click();
++    await expect.poll(async () => (await readClock(page)).steps).toBeGreaterThan(paused.steps);
++    await expect(page.locator("#hvp-hud")).toHaveCount(1); await expect(page.locator("canvas")).toHaveCount(1);
++  });
++
++  test("T027 actual Factory teardown retires projection and native workers", async ({}, testInfo) => {
++    page.once("dialog", dialog => { void dialog.accept(); });
++    await page.getByRole("button", { name: "Sitzung beenden", exact: true }).click();
++    await expect(page.locator("#hvp-ended")).toContainText("Hestia-Sitzung beendet");
++    await expect(page.locator("#factory-panel")).toHaveCount(0); await expect(page.locator("#hvp-hud")).toHaveCount(0);
++    await expect.poll(() => page.workers().length).toBe(0);
++    const receipt = await page.evaluate(() => {
++      if (document.body.dataset.hestiaFactoryClock !== undefined) throw new Error("Disposed Factory projection survived");
++      return JSON.parse(document.body.dataset.hestiaPrototypeDisposal!);
++    });
++    expect(receipt.state).toBe("Disposed"); expect(receipt.errors).toEqual([]);
++    for (const name of ["workers", "timers", "listeners", "pendingJobs", "bodies", "colliders", "ownedBytes"]) expect(receipt.disposed[name], name).toBe(0);
++    await testInfo.attach("factory-host-disposal", { body: JSON.stringify(receipt), contentType: "application/json" });
++    const directory = evidenceRun(); await mkdir(directory, { recursive: true });
++    await writeFile(path.join(directory, "browser-host-disposal.json"), JSON.stringify(receipt, null, 2) + "\n");
++  });
++
++});
+diff --git a/apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts b/apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..d823f148db6f4f5c9c2fe177245976fa8ed854b5
+--- /dev/null
++++ b/apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts
+@@ -0,0 +1,183 @@
++import { spawnSync } from "node:child_process";
++import { createHash } from "node:crypto";
++import { mkdtempSync, mkdirSync, writeFileSync, symlinkSync, rmSync, openSync, ftruncateSync, closeSync } from "node:fs";
++import { tmpdir } from "node:os";
++import path from "node:path";
++import { fileURLToPath } from "node:url";
++import { describe, expect, it } from "vitest";
++import { createFp02Fixture } from "../../../src/factory/catalog/fp02Catalog";
++import { mountFactorySession } from "../../../src/factory/session/factorySession";
++import type { FactoryHostPort, FactoryHostView } from "../../../src/factory/session/hostPort";
++
++const catalog = createFp02Fixture("cargo").catalog;
++const hostFixture = (initialTick = 37) => {
++  let current = true;
++  let view: FactoryHostView = Object.freeze({ sessionId: "native-host", epoch: 1, nativeTick: initialTick,
++    physicsStatus: "Running", confirmed: true, terrain: Object.freeze({ epoch: 1, revision: 0,
++      sourceDigest: "source", baseDigest: "base", cellMeters: 0.125,
++      originMeters: Object.freeze({ x: -12, y: 0, z: -12 }), sizeX: 192, sizeY: 64, sizeZ: 192 }) });
++  const listeners = new Set<(view: FactoryHostView) => void>();
++  const callbacks: ((view: FactoryHostView) => void)[] = [];
++  const publish = (tick: number, overrides: Partial<FactoryHostView> = {}) => {
++    view = Object.freeze({ ...view, nativeTick: tick, ...overrides });
++    for (const listener of listeners) listener(view);
++    return view;
++  };
++  const host: FactoryHostPort = Object.freeze({ current: () => current, read: () => view,
++    readTerrainSlot: () => undefined, subscribeConfirmed: (listener: (view: FactoryHostView) => void) => {
++      listeners.add(listener); callbacks.push(listener); return () => { listeners.delete(listener); };
++    }, pause: async () => publish(view.nativeTick + 1, { physicsStatus: "Paused" }),
++    resume: async () => publish(view.nativeTick, { physicsStatus: "Running" }) });
++  return { host, publish, callbacks, listeners, retire: () => { current = false; } };
++};
++
++describe("FP06 W06 confirmed host lifecycle", () => {
++  it("T028 binds baseline and remainder to six NEW native ticks, never duplicate render observations", async () => {
++    const f = hostFixture(); const session = await mountFactorySession(f.host, catalog);
++    try {
++      expect(session.read()).toMatchObject({ nativeTick: 37, steps: 0, remainderTicks: 0, elapsedMs: 0 });
++      for (let frame = 0; frame < 100; frame++) f.publish(37);
++      expect(session.read().steps).toBe(0);
++      f.publish(42); expect(session.read()).toMatchObject({ steps: 0, remainderTicks: 5 });
++      f.publish(43); expect(session.read()).toMatchObject({ steps: 1, remainderTicks: 0, elapsedMs: 100 });
++      f.publish(56); expect(session.read()).toMatchObject({ steps: 3, remainderTicks: 1, elapsedMs: 300 });
++      expect(Object.isFrozen(session.read())).toBe(true);
++    } finally { await session.dispose(); }
++  });
++  it("T026 refuses a second factory mount on the same live native host", async () => {
++    const f = hostFixture(); const session = await mountFactorySession(f.host, catalog);
++    try { await expect(mountFactorySession(f.host, catalog)).rejects.toThrow(/already mounted/i); }
++    finally { await session.dispose(); }
++    const next = await mountFactorySession(f.host, catalog); await next.dispose();
++  });
++  it("T027 rejects queued old-epoch callbacks after dispose and never touches a replacement", async () => {
++    const f = hostFixture(); const old = await mountFactorySession(f.host, catalog);
++    const late = f.callbacks[0]; expect(late).toBeTypeOf("function");
++    await old.dispose(); const before = old.read();
++    const next = await mountFactorySession(f.host, catalog);
++    late!(Object.freeze({ ...f.host.read(), nativeTick: 1000 }));
++    expect(old.read()).toEqual(before); expect(next.read().steps).toBe(0);
++    expect(f.listeners.size).toBe(1); await next.dispose(); expect(f.listeners.size).toBe(0);
++  });
++  it("closes on stale epoch or backwards tick without granting progress", async () => {
++    const f = hostFixture(); const session = await mountFactorySession(f.host, catalog);
++    try {
++      f.publish(36); expect(session.read()).toMatchObject({ state: "RecoveryHold", steps: 0 });
++      f.publish(1000); expect(session.read().steps).toBe(0);
++    } finally { await session.dispose(); }
++    const g = hostFixture(); const other = await mountFactorySession(g.host, catalog);
++    try { g.publish(1000, { epoch: 2 }); expect(other.read()).toMatchObject({ state: "RecoveryHold", steps: 0 }); }
++    finally { await other.dispose(); }
++  });
++  it("flushes actual final confirmed ticks at pause ACK and grants no work while paused", async () => {
++    const f = hostFixture(0); const session = await mountFactorySession(f.host, catalog);
++    try {
++      f.publish(5); await f.host.pause(); expect(session.read()).toMatchObject({ nativeTick: 6, steps: 1 });
++      for (let frame = 0; frame < 100; frame++) f.publish(6, { physicsStatus: "Paused" });
++      expect(session.read().steps).toBe(1);
++    } finally { await session.dispose(); }
++  });
++  it("refuses a native RecoveryHold or disposed snapshot even if a caller marks it confirmed", async () => {
++    const f = hostFixture(); f.publish(37, { physicsStatus: "RecoveryHold" });
++    await expect(mountFactorySession(f.host, catalog)).rejects.toThrow(/confirmed|hold/i);
++    f.publish(37, { physicsStatus: "Running" }); const session = await mountFactorySession(f.host, catalog);
++    try { f.publish(1000, { physicsStatus: "Disposed" }); expect(session.read()).toMatchObject({ state: "RecoveryHold", steps: 0 }); }
++    finally { await session.dispose(); }
++  });
++  it("does not bind a disposed or unconfirmed host, and ignores retirement", async () => {
++    const f = hostFixture(); f.publish(37, { confirmed: false });
++    await expect(mountFactorySession(f.host, catalog)).rejects.toThrow(/confirmed/i);
++    f.publish(37, { confirmed: true }); const session = await mountFactorySession(f.host, catalog);
++    try { f.retire(); f.publish(1000); expect(session.read().steps).toBe(0); }
++    finally { await session.dispose(); }
++    await expect(mountFactorySession(f.host, catalog)).rejects.toThrow(/current|disposed/i);
++  });
++  it("R1 keeps transient native holds quiescent without granting ticks and recovers only from confirmed reads", async () => {
++    const f = hostFixture(0), session = await mountFactorySession(f.host, catalog);
++    try {
++      for (const physicsStatus of ["CoverageHold", "SimulationHold"] as const) {
++        f.publish(6, { physicsStatus, confirmed: false });
++        expect(session.read()).toMatchObject({ state: "WaitingForHost", nativeTick: 0, steps: 0 });
++        expect(session.isQuiescent()).toBe(true);
++      }
++      f.publish(6, { physicsStatus: "Running", confirmed: false });
++      expect(session.read()).toMatchObject({ state: "WaitingForHost", nativeTick: 0, steps: 0 });
++      f.publish(6, { physicsStatus: "Running", confirmed: true });
++      expect(session.read()).toMatchObject({ state: "Ready", nativeTick: 6, steps: 1 });
++      f.publish(12, { physicsStatus: "RecoveryHold", confirmed: false });
++      expect(session.read()).toMatchObject({ state: "RecoveryHold", nativeTick: 6, steps: 1 });
++      expect(session.isQuiescent()).toBe(false);
++      f.publish(18, { physicsStatus: "Running", confirmed: true });
++      expect(session.read()).toMatchObject({ state: "RecoveryHold", nativeTick: 6, steps: 1 });
++    } finally { await session.dispose(); }
++  });
++});
++
++describe("W06 bounded recursive Factory evidence", () => {
++  const verify = (directory: string) => spawnSync(process.execPath,
++    [fileURLToPath(new URL("../../../../../tools/factory/verify-evidence.mjs", import.meta.url)), directory], { encoding: "utf8" });
++  const manifest = (artifacts: unknown) => JSON.stringify({ schema: "hestia.fp06.evidence/v1", artifacts });
++  const hash = (bytes: string) => createHash("sha256").update(bytes).digest("hex");
++  it.each(["outside", "missing", "digest", "placeholder"])("R1 rejects %s manifest evidence references", kind => {
++    const directory = mkdtempSync(path.join(tmpdir(), "fp06-evidence-refs-"));
++    try {
++      writeFileSync(path.join(directory, "actual.txt"), "observed");
++      const invalid = { outside: manifest([{ path: "../../outside.png", sha256: "0".repeat(64) }]),
++        missing: manifest([{ path: "missing.txt", sha256: hash("observed") }]),
++        digest: manifest([{ path: "actual.txt", sha256: "0".repeat(64) }]), placeholder: '{"test":"real"}' };
++      writeFileSync(path.join(directory, "manifest.json"), invalid[kind as keyof typeof invalid]);
++      expect(verify(directory).status).toBe(1);
++    } finally { rmSync(directory, { recursive: true, force: true }); }
++  });
++  it("accepts real nested JSON and rejects corrupt descendants and symlinks", () => {
++    const directory = mkdtempSync(path.join(tmpdir(), "fp06-evidence-"));
++    try {
++      const nested = path.join(directory, "w06", "actual-run"); mkdirSync(nested, { recursive: true });
++      writeFileSync(path.join(nested, "observed.json"), '{"ticks":6}');
++      writeFileSync(path.join(nested, "manifest.json"), manifest([{ path: "observed.json", sha256: hash('{"ticks":6}') }]));
++      expect(verify(directory).status).toBe(0);
++      writeFileSync(path.join(nested, "bad.json"), '{');
++      expect(verify(directory).status).toBe(1);
++      rmSync(path.join(nested, "bad.json"));
++      symlinkSync(path.join(nested, "manifest.json"), path.join(directory, "linked.json"));
++      expect(verify(directory).status).toBe(1);
++    } finally { rmSync(directory, { recursive: true, force: true }); }
++  });
++  it.each(["artifacts", "evidenceFiles"])("binds actual %s bytes while preserving historical product receipts", field => {
++    const directory = mkdtempSync(path.join(tmpdir(), "fp06-evidence-digests-"));
++    try {
++      writeFileSync(path.join(directory, "actual.txt"), "observed");
++      const value = { schema: "hestia.fp06.w01-evidence/v1",
++        [field]: [{ path: "actual.txt", sha256: hash("observed"), bytes: 8 }],
++        productFiles: [{ path: "apps/weltraum-browser/historical.ts", sha256: hash("old source") }],
++        commands: [{ artifact: "actual.txt" }], verification: [{ log: "actual.txt" }], review: { artifact: "actual.txt" } };
++      writeFileSync(path.join(directory, "manifest.json"), JSON.stringify(value));
++      expect(verify(directory).status).toBe(0);
++      writeFileSync(path.join(directory, "actual.txt"), "mutated!"); expect(verify(directory).status).toBe(1);
++      writeFileSync(path.join(directory, "actual.txt"), "observed");
++      value.review.artifact = "unlisted.txt"; writeFileSync(path.join(directory, "manifest.json"), JSON.stringify(value));
++      expect(verify(directory).status).toBe(1);
++    } finally { rmSync(directory, { recursive: true, force: true }); }
++  });
++  it("bounds directories as well as files in recursive admission", () => {
++    const directory = mkdtempSync(path.join(tmpdir(), "fp06-evidence-entries-"));
++    try {
++      writeFileSync(path.join(directory, "actual.txt"), "observed");
++      writeFileSync(path.join(directory, "manifest.json"), manifest([{ path: "actual.txt", sha256: hash("observed") }]));
++      expect(verify(directory).status).toBe(0);
++      for (let i = 0; i < 4097; i++) mkdirSync(path.join(directory, `empty-${i}`));
++      const result = verify(directory); expect(result.status).toBe(1); expect(result.stderr).toContain("entry budget exceeded");
++    } finally { rmSync(directory, { recursive: true, force: true }); }
++  });
++  it("rejects oversized evidence before reading or uploading it", () => {
++    const directory = mkdtempSync(path.join(tmpdir(), "fp06-evidence-budget-"));
++    try {
++      writeFileSync(path.join(directory, "actual.txt"), "observed");
++      writeFileSync(path.join(directory, "manifest.json"), manifest([{ path: "actual.txt", sha256: hash("observed") }]));
++      expect(verify(directory).status).toBe(0);
++      const file = openSync(path.join(directory, "oversized.bin"), "w");
++      ftruncateSync(file, 32 * 1024 * 1024 + 1); closeSync(file);
++      const result = verify(directory); expect(result.status).toBe(1); expect(result.stderr).toContain("byte/file budget exceeded");
++    } finally { rmSync(directory, { recursive: true, force: true }); }
++  });
++});
+diff --git a/apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts b/apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts
+index 0aaeab0c52b5e0be76d122adc72883406ba63fe2..9549b1d07360e2c7dab878b80203589355667256 100644
+--- a/apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts
++++ b/apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts
+@@ -33,0 +34,3 @@ import { createHvpLookProfile } from "../../src/hestia-prototype/presentation/lo
++import { createFp02Fixture } from "../../src/factory/catalog/fp02Catalog";
++import { mountFactorySession, type FactorySessionHandle } from "../../src/factory/session/factorySession";
++import type { FactoryHostPort, FactoryHostView } from "../../src/factory/session/hostPort";
+@@ -462,0 +466,200 @@ describe("HVP T08 bootstrap lifecycle", () => {
++  it("W06 mounts one optional native-host extension, refuses legacy persistence, and closes it before the backend", async () => {
++    const source = harness();
++    let hostPort: import("../../src/factory/session/hostPort").FactoryHostPort | undefined;
++    let closed = 0;
++    const handle = await startHvp(source.overrides({ factoryExtension: async (host: import("../../src/factory/session/hostPort").FactoryHostPort) => {
++      hostPort = host;
++      return { isQuiescent: () => true, dispose: async () => {
++        expect(host.current()).toBe(false); expect(source.counts().backendDisposals).toBe(0); closed++;
++      } };
++    } }));
++    try {
++      expect(hostPort).toBeDefined();
++      expect(hostPort!.read()).toMatchObject({ nativeTick: 0, confirmed: true, terrain: { cellMeters: 0.125 } });
++      expect(hostPort!.readTerrainSlot(-1, 0, 0)).toBeUndefined();
++      const save = descendants(source.body).find(e => e.id === "hvp-save")!;
++      save.dispatchEvent(new Event("click")); await Promise.resolve();
++      expect(source.body.dataset.hestiaPrototypeSave).toContain("Factory");
++      expect(source.body.dataset.hestiaPrototypeSave).toContain("Rejected");
++    } finally { await handle.dispose(); }
++    expect(closed).toBe(1);
++  });
++
++  it("W06 holds the single host lease through late async extension cleanup and rejects stale pause", async () => {
++    const source = harness();
++    let entered!: () => void;
++    const mounting = new Promise<void>(resolve => { entered = resolve; });
++    let resolveExtension!: (value: import("../../src/factory/session/hostPort").FactoryHostExtensionHandle) => void;
++    const deferred = new Promise<import("../../src/factory/session/hostPort").FactoryHostExtensionHandle>(resolve => { resolveExtension = resolve; });
++    let oldHost!: import("../../src/factory/session/hostPort").FactoryHostPort;
++    let closed = 0;
++    const pending = startHvp(source.overrides({ factoryExtension: (host: typeof oldHost) => {
++      oldHost = host; entered(); return deferred;
++    } }));
++    await mounting;
++    source.windowPort.dispatchEvent(new Event("pagehide"));
++    await expect(startHvp(source.overrides())).rejects.toThrow(/already mounted/i);
++    resolveExtension({ isQuiescent: () => true, dispose: async () => { closed++; } });
++    const oldHandle = await pending; await oldHandle.dispose();
++    expect(closed).toBe(1); expect(source.windowPort.animationFrames.size).toBe(0);
++    const next = await startHvp(source.overrides());
++    try {
++      await expect(oldHost.pause()).rejects.toThrow(/disposed|superseded/i);
++      expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
++      expect(source.counts().backendConstructions).toBe(2);
++    } finally { await next.dispose(); }
++  });
++
++  it("W06 safe pause observes confirmed native counters and refuses busy resume", async () => {
++    const source = harness(); const original = source.overrides()!;
++    const confirm = vi.fn(() => true); Object.defineProperty(source.windowPort, "confirm", { value: confirm });
++    let tick = 17; let busy = false;
++    let port!: import("../../src/factory/session/hostPort").FactoryHostPort;
++    const views: number[] = [];
++    const handle = await startHvp(source.overrides({
++      createPhysics: async (...args: Parameters<NonNullable<typeof original.createPhysics>>) => {
++        const native = await original.createPhysics!(...args); const read = native.read;
++        return { ...native, read: () => ({ ...read(), ticks: tick }), command: async () => { tick++; } };
++      },
++      factoryExtension: async (host: typeof port) => {
++        port = host; const unsubscribe = host.subscribeConfirmed(view => { views.push(view.nativeTick); });
++        return { isQuiescent: () => !busy, dispose: async () => { unsubscribe(); } };
++      }
++    }));
++    try {
++      stepFrame(source.windowPort, 16); stepFrame(source.windowPort, 32);
++      expect(views.every(value => value === 17)).toBe(true);
++      tick = 23; stepFrame(source.windowPort, 48); expect(views.at(-1)).toBe(23);
++      await port.pause(); expect(views.at(-1)).toBe(24);
++      busy = true; await expect(port.resume()).rejects.toThrow(/busy|unconfirmed/i);
++      expect(port.read().confirmed).toBe(false); expect(tick).toBe(24);
++      descendants(source.body).find(e => e.id === "hvp-end-session")!.dispatchEvent(new Event("click"));
++      await Promise.resolve(); expect(confirm).not.toHaveBeenCalled();
++      expect(source.counts().backendDisposals).toBe(0);
++    } finally { await handle.dispose(); }
++  });
++
++  it("W06 R1 publishes actual unconfirmed native holds without work and permits transient recovery", async () => {
++    const source = harness(), original = source.overrides()!;
++    let status: FactoryHostView["physicsStatus"] = "Paused", tick = 17;
++    let session!: FactorySessionHandle;
++    const observations: FactoryHostView[] = [];
++    const handle = await startHvp(source.overrides({
++      createPhysics: async (...args: Parameters<NonNullable<typeof original.createPhysics>>) => {
++        const native = await original.createPhysics!(...args), read = native.read;
++        return { ...native, read: () => ({ ...read(), ticks: tick, status }) };
++      }, factoryExtension: async (host: FactoryHostPort) => {
++        session = await mountFactorySession(host, createFp02Fixture("cargo").catalog);
++        host.subscribeConfirmed(view => { observations.push(view); }); return session;
++      }
++    }));
++    try {
++      status = "CoverageHold"; tick = 23; stepFrame(source.windowPort, 16);
++      expect(observations.at(-1)).toMatchObject({ physicsStatus: "CoverageHold", confirmed: false });
++      expect(session.read()).toMatchObject({ state: "WaitingForHost", nativeTick: 17, steps: 0 });
++      expect(session.isQuiescent()).toBe(true); // Neighbor repair must remain admissible.
++      status = "SimulationHold"; stepFrame(source.windowPort, 32);
++      expect(session.read()).toMatchObject({ state: "WaitingForHost", nativeTick: 17, steps: 0 });
++      status = "Paused"; stepFrame(source.windowPort, 48);
++      expect(session.read()).toMatchObject({ state: "Ready", nativeTick: 23, steps: 1 });
++      status = "RecoveryHold"; tick = 29; stepFrame(source.windowPort, 64);
++      expect(session.read()).toMatchObject({ state: "RecoveryHold", nativeTick: 23, steps: 1 });
++      expect(session.isQuiescent()).toBe(false);
++      status = "Running"; tick = 35; stepFrame(source.windowPort, 80);
++      expect(session.read()).toMatchObject({ state: "RecoveryHold", nativeTick: 23, steps: 1 });
++    } finally { await handle.dispose(); }
++  });
++
++  it("W06 R1 refuses all actual Factory Resume and Play paths during native holds", async () => {
++    const source = harness(), original = source.overrides()!;
++    const requestPointerLock = vi.fn(); Object.defineProperty(source.canvas, "requestPointerLock", { value: requestPointerLock });
++    let status: FactoryHostView["physicsStatus"] = "Paused";
++    let port!: FactoryHostPort;
++    const commands: string[] = [];
++    const handle = await startHvp(source.overrides({
++      createPhysics: async (...args: Parameters<NonNullable<typeof original.createPhysics>>) => {
++        const native = await original.createPhysics!(...args), read = native.read;
++        return { ...native, read: () => ({ ...read(), status }), command: async (kind: string) => { commands.push(kind); } };
++      }, factoryExtension: async (host: FactoryHostPort) => {
++        port = host; return { isQuiescent: () => true, dispose: async () => {} };
++      }
++    }));
++    try {
++      const baseline = commands.length;
++      for (const hold of ["CoverageHold", "SimulationHold", "RecoveryHold"] as const) {
++        status = hold;
++        expect(port.read().confirmed).toBe(false);
++        await expect.soft(port.resume()).rejects.toThrow(/unconfirmed|hold/i);
++        expect.soft(commands).toHaveLength(baseline); commands.length = baseline;
++        descendants(source.body).find(e => e.id === "hvp-physics-pause")!.dispatchEvent(new Event("click"));
++        await Promise.resolve(); await Promise.resolve();
++        expect.soft(commands).toHaveLength(baseline); commands.length = baseline;
++        descendants(source.body).find(e => e.id === "hvp-play")!.dispatchEvent(new Event("click"));
++        await Promise.resolve(); await Promise.resolve();
++        expect.soft(commands).toHaveLength(baseline); commands.length = baseline;
++        expect.soft(requestPointerLock).not.toHaveBeenCalled(); requestPointerLock.mockClear();
++        descendants(source.body).find(e => e.textContent === "Spiel fortsetzen")!.dispatchEvent(new Event("click"));
++        expect.soft(requestPointerLock).not.toHaveBeenCalled(); requestPointerLock.mockClear();
++      }
++      status = "Paused"; await port.resume(); expect(commands.at(-1)).toBe("Resume");
++    } finally { await handle.dispose(); }
++  });
++
++  it("W06 R1 keeps the actual post-disposal restart in the Factory profile", async () => {
++    const source = harness(), assign = vi.fn();
++    Object.defineProperty(source.windowPort, "location", { value: { search: "", assign } });
++    Object.defineProperty(source.windowPort, "confirm", { value: () => true });
++    const handle = await startHvp(source.overrides({ factoryExtension: async () => ({ isQuiescent: () => true, dispose: async () => {} }) }));
++    try {
++      descendants(source.body).find(e => e.id === "hvp-end-session")!.dispatchEvent(new Event("click"));
++      await vi.waitFor(() => { expect(descendants(source.body).find(e => e.id === "hvp-ended")).toBeDefined(); });
++      descendants(source.body).find(e => e.textContent === "Neu starten")!.dispatchEvent(new Event("click"));
++      expect(assign).toHaveBeenCalledWith("/factory.html");
++    } finally { await handle.dispose(); }
++  });
++
++  it("W06 R1 permits awaited session disposal from terminal RecoveryHold without resuming", async () => {
++    const source = harness(), original = source.overrides()!;
++    Object.defineProperty(source.windowPort, "confirm", { value: () => true });
++    let tick = 0; const commands: string[] = [];
++    let session!: FactorySessionHandle;
++    const handle = await startHvp(source.overrides({
++      createPhysics: async (...args: Parameters<NonNullable<typeof original.createPhysics>>) => {
++        const native = await original.createPhysics!(...args), read = native.read;
++        return { ...native, read: () => ({ ...read(), ticks: tick }), command: async (kind: string) => { commands.push(kind); } };
++      }, factoryExtension: async (host: FactoryHostPort) => { session = await mountFactorySession(host, createFp02Fixture("cargo").catalog); return session; }
++    }));
++    try {
++      tick = -1; stepFrame(source.windowPort, 16); expect(session.read().state).toBe("RecoveryHold");
++      descendants(source.body).find(e => e.id === "hvp-end-session")!.dispatchEvent(new Event("click"));
++      await vi.waitFor(() => { expect(descendants(source.body).find(e => e.id === "hvp-ended")).toBeDefined(); });
++      expect(session.read().state).toBe("Disposed"); expect(source.counts().backendDisposals).toBe(1);
++      expect(commands).not.toContain("Resume");
++    } finally { await handle.dispose(); }
++  });
++
++  it("W06 R2 Drop grants no native command during holds and preserves confirmed and legacy dispatch", async () => {
++    for (const factory of [true, false]) {
++      const source = harness(), original = source.overrides()!;
++      let status: FactoryHostView["physicsStatus"] = "Paused";
++      const commands: string[] = [];
++      const handle = await startHvp(source.overrides({
++        createPhysics: async (...args: Parameters<NonNullable<typeof original.createPhysics>>) => {
++          const native = await original.createPhysics!(...args), read = native.read;
++          return { ...native, read: () => ({ ...read(), status }), command: async (kind: string) => { commands.push(kind); } };
++        }, ...(factory ? { factoryExtension: async () => ({ isQuiescent: () => true, dispose: async () => {} }) } : {})
++      }));
++      try {
++        const drop = descendants(source.body).find(e => e.id === "hvp-physics-drop")!;
++        for (const hold of ["CoverageHold", "SimulationHold", "RecoveryHold"] as const) {
++          status = hold; commands.length = 0; drop.dispatchEvent(new Event("click"));
++          await Promise.resolve(); await Promise.resolve();
++          if (factory) expect.soft(commands, hold).toEqual([]);
++          else expect(commands, `unchanged legacy ${hold}`).toEqual(["Drop"]);
++        }
++        status = "Paused"; commands.length = 0; drop.dispatchEvent(new Event("click"));
++        await Promise.resolve(); await Promise.resolve(); expect(commands).toEqual(["Drop"]);
++      } finally { await handle.dispose(); }
++    }
++  });
++
+diff --git a/apps/weltraum-browser/vite.config.ts b/apps/weltraum-browser/vite.config.ts
+index a15366bb9a09d09a993530de41a8422fc6391cbc..bdd74d90acecf11132d3ef43e7ec922f627a8f2e 100644
+--- a/apps/weltraum-browser/vite.config.ts
++++ b/apps/weltraum-browser/vite.config.ts
+@@ -1 +1,2 @@
+-﻿import { defineConfig } from "vitest/config";
++import { fileURLToPath } from "node:url";
++import { defineConfig } from "vitest/config";
+@@ -14 +15,7 @@ export default defineConfig({
+-    sourcemap: true
++    sourcemap: true,
++    rolldownOptions: {
++      input: {
++        main: fileURLToPath(new URL("./index.html", import.meta.url)),
++        factory: fileURLToPath(new URL("./factory.html", import.meta.url))
++      }
++    }
+diff --git a/tools/factory/verify-evidence.mjs b/tools/factory/verify-evidence.mjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..35ed70b771f960c4e5a54e0977ac506be9efd0ca
+--- /dev/null
++++ b/tools/factory/verify-evidence.mjs
+@@ -0,0 +1,93 @@
++import { lstat, readdir, readFile } from "node:fs/promises";
++import { createHash } from "node:crypto";
++import path from "node:path";
++
++// Artifact admission limits only; no simulation or worker queue budget changes.
++const limits = { depth: 12, entries: 4096, files: 4096, fileBytes: 32 * 1024 * 1024, jsonBytes: 8 * 1024 * 1024, totalBytes: 256 * 1024 * 1024 };
++const root = process.argv[2];
++let entries = 0, files = 0, jsonFiles = 0, totalBytes = 0;
++const admitted = new Map(), manifests = [];
++const visit = async (file, depth) => {
++  if (++entries > limits.entries) throw new Error(`Factory evidence entry budget exceeded: ${file}`);
++  if (depth > limits.depth) throw new Error(`Factory evidence depth exceeded: ${file}`);
++  const stat = await lstat(file);
++  if (stat.isSymbolicLink()) throw new Error(`Factory evidence symlink rejected: ${file}`);
++  if (stat.isDirectory()) {
++    const names = (await readdir(file)).sort();
++    if (entries + names.length > limits.entries) throw new Error(`Factory evidence entry budget exceeded: ${file}`);
++    for (const name of names) await visit(path.join(file, name), depth + 1);
++    return;
++  }
++  if (!stat.isFile()) throw new Error(`Factory evidence non-file rejected: ${file}`);
++  files++; totalBytes += stat.size;
++  if (files > limits.files || stat.size > limits.fileBytes || totalBytes > limits.totalBytes) {
++    throw new Error(`Factory evidence byte/file budget exceeded: ${file}`);
++  }
++  admitted.set(file, { bytes: stat.size });
++  if (file.endsWith(".json")) {
++    if (stat.size > limits.jsonBytes) throw new Error(`Factory evidence JSON budget exceeded: ${file}`);
++    const value = JSON.parse(await readFile(file, "utf8")); jsonFiles++;
++    if (path.basename(file) === "manifest.json") manifests.push({ file, value });
++  }
++};
++const relativePath = value => {
++  if (typeof value !== "string" || value.length === 0 || value.includes("\\") || value.includes("\0")
++    || path.posix.isAbsolute(value) || /^[A-Za-z]:/.test(value)
++    || value.split("/").some(part => part === "" || part === "." || part === "..")) {
++    throw new Error(`Factory evidence unsafe reference path: ${String(value)}`);
++  }
++  return value;
++};
++const receipt = value => {
++  if (!value || typeof value !== "object" || !/^[a-f0-9]{64}$/.test(value.sha256)) throw new Error("Factory evidence invalid SHA256 receipt");
++  relativePath(value.path);
++  if (value.bytes !== undefined && (!Number.isSafeInteger(value.bytes) || value.bytes < 0)) throw new Error("Factory evidence invalid byte receipt");
++};
++let referencedFiles = 0;
++const verifyManifest = async ({ file, value }) => {
++  if (!value || typeof value !== "object" || !/^hestia\.fp06\.[a-z0-9-]+\/v1$/.test(value.schema)) {
++    throw new Error(`Factory evidence placeholder or unsupported manifest: ${file}`);
++  }
++  const references = [];
++  for (const field of ["artifacts", "evidenceFiles"]) {
++    if (value[field] === undefined) continue;
++    if (!Array.isArray(value[field])) throw new Error(`Factory evidence invalid ${field}: ${file}`);
++    references.push(...value[field]);
++  }
++  if (references.length === 0) throw new Error(`Factory evidence manifest has no bound artifacts: ${file}`);
++  const listed = new Set();
++  for (const reference of references) {
++    receipt(reference);
++    if (listed.has(reference.path)) throw new Error(`Factory evidence duplicate reference: ${reference.path}`);
++    listed.add(reference.path);
++    // Lookup only previously admitted files: never follow outside paths or symlinks.
++    const target = path.join(path.dirname(file), reference.path), actual = admitted.get(target);
++    if (!actual) throw new Error(`Factory evidence missing local artifact: ${reference.path}`);
++    actual.sha256 ??= createHash("sha256").update(await readFile(target)).digest("hex");
++    if (actual.sha256 !== reference.sha256 || (reference.bytes !== undefined && actual.bytes !== reference.bytes)) {
++      throw new Error(`Factory evidence digest/byte mismatch: ${reference.path}`);
++    }
++    referencedFiles++;
++  }
++  // Historical source receipts describe their recorded commit, not today's HEAD.
++  if (value.productFiles !== undefined) {
++    if (!Array.isArray(value.productFiles)) throw new Error("Factory evidence invalid historical product receipts");
++    value.productFiles.forEach(receipt);
++  }
++  const localReferences = [...(value.commands ?? []).map(command => command.artifact),
++    ...(value.verification ?? []).map(command => command.log), value.review?.artifact].filter(reference => reference !== undefined);
++  for (const reference of localReferences) {
++    relativePath(reference);
++    if (!listed.has(reference)) throw new Error(`Factory evidence unbound command/review artifact: ${reference}`);
++  }
++};
++try {
++  if (!root) throw new Error("Usage: node tools/factory/verify-evidence.mjs <factory-evidence-root>");
++  await visit(path.resolve(root), 0);
++  if (manifests.length === 0) throw new Error("Factory evidence must include an actual bound manifest");
++  for (const manifest of manifests) await verifyManifest(manifest);
++  console.log(JSON.stringify({ entries, files, jsonFiles, manifests: manifests.length, referencedFiles, totalBytes, limits,
++    historicalProductReceipts: "path/hash form only; immutable run artifacts are verified, historical HEAD bytes are not reread" }));
++} catch (error) {
++  console.error(String(error)); process.exitCode = 1;
++}

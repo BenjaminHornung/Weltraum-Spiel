@@ -1,0 +1,104 @@
+
+> weltraum-browser@0.1.0 test:e2e
+> playwright test --config=/workspace/.cloud-setup/fp06-w06.playwright.config.mts tests/e2e/factory-host.spec.ts
+
+[WebServer] (node:22336) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 6 tests using 1 worker
+
+(node:22363) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › tests/e2e/factory-host.spec.ts:5:1 › T025 normal flight and legacy HVP request no Factory modules (19.3s)
+  ✓  2 [chromium] › tests/e2e/factory-host.spec.ts:31:1 › T026 duplicate Factory entry creates no second worker or renderer (23.5s)
+  ✘  3 [chromium] › tests/e2e/factory-host.spec.ts:43:1 › T028 native pause preserves clock through presentation frames (35.4s)
+(node:22887) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  4 [chromium] › tests/e2e/factory-host.spec.ts:59:1 › Factory refuses all legacy persistence paths with an honest reason (33.5s)
+(node:23303) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  5 [chromium] › tests/e2e/factory-host.spec.ts:68:1 › Factory explicitly resumes the same paused native host (33.9s)
+(node:23497) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  6 [chromium] › tests/e2e/factory-host.spec.ts:77:1 › T027 actual Factory teardown retires projection and native workers (16.2s)
+
+
+  1) [chromium] › tests/e2e/factory-host.spec.ts:43:1 › T028 native pause preserves clock through presentation frames
+
+    Test timeout of 30000ms exceeded.
+
+    attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+    evidence/factory/w06/2026-10-11T101422.629584Z/playwright-output/factory-host-T028-native-p-8acd7-through-presentation-frames-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: evidence/factory/w06/2026-10-11T101422.629584Z/playwright-output/factory-host-T028-native-p-8acd7-through-presentation-frames-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    evidence/factory/w06/2026-10-11T101422.629584Z/playwright-output/factory-host-T028-native-p-8acd7-through-presentation-frames-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace evidence/factory/w06/2026-10-11T101422.629584Z/playwright-output/factory-host-T028-native-p-8acd7-through-presentation-frames-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › tests/e2e/factory-host.spec.ts:59:1 › Factory refuses all legacy persistence paths with an honest reason
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('#hvp-load-new')
+        - locator resolved to <button type="button" id="hvp-load-new">Gespeicherte Sitzung neu öffnen</button>
+      - attempting click action
+        - waiting for element to be visible, enabled and stable
+        - element is visible, enabled and stable
+        - scrolling into view if needed
+        - done scrolling
+
+
+      60 |   await openFactory(page);
+      61 |   for (const id of ["hvp-save", "hvp-load", "hvp-load-new"]) {
+    > 62 |     await page.locator(`#${id}`).click(); await expect(page.locator("#hvp-save-status")).toContainText("Factory");
+         |                                  ^
+      63 |     await expect(page.locator("#hvp-save-status")).toContainText("Rejected");
+      64 |   }
+      65 |   await expect(page).toHaveURL(/factory\.html$/);
+        at /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/tests/e2e/factory-host.spec.ts:62:34
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    evidence/factory/w06/2026-10-11T101422.629584Z/playwright-output/factory-host-Factory-refus-4c1b3-paths-with-an-honest-reason-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: evidence/factory/w06/2026-10-11T101422.629584Z/playwright-output/factory-host-Factory-refus-4c1b3-paths-with-an-honest-reason-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    evidence/factory/w06/2026-10-11T101422.629584Z/playwright-output/factory-host-Factory-refus-4c1b3-paths-with-an-honest-reason-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace evidence/factory/w06/2026-10-11T101422.629584Z/playwright-output/factory-host-Factory-refus-4c1b3-paths-with-an-honest-reason-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium] › tests/e2e/factory-host.spec.ts:68:1 › Factory explicitly resumes the same paused native host
+
+    Test timeout of 30000ms exceeded.
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    evidence/factory/w06/2026-10-11T101422.629584Z/playwright-output/factory-host-Factory-expli-e6950-the-same-paused-native-host-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: evidence/factory/w06/2026-10-11T101422.629584Z/playwright-output/factory-host-Factory-expli-e6950-the-same-paused-native-host-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    evidence/factory/w06/2026-10-11T101422.629584Z/playwright-output/factory-host-Factory-expli-e6950-the-same-paused-native-host-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace evidence/factory/w06/2026-10-11T101422.629584Z/playwright-output/factory-host-Factory-expli-e6950-the-same-paused-native-host-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    [chromium] › tests/e2e/factory-host.spec.ts:43:1 › T028 native pause preserves clock through presentation frames
+    [chromium] › tests/e2e/factory-host.spec.ts:59:1 › Factory refuses all legacy persistence paths with an honest reason
+    [chromium] › tests/e2e/factory-host.spec.ts:68:1 › Factory explicitly resumes the same paused native host
+  3 passed (2.8m)

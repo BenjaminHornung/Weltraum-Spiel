@@ -1,0 +1,42 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/hostLifecycle.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts (7 tests | 1 failed) 14ms
+     × refuses a native RecoveryHold or disposed snapshot even if a caller marks it confirmed 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > FP06 W06 confirmed host lifecycle > refuses a native RecoveryHold or disposed snapshot even if a caller marks it confirmed
+AssertionError: promise resolved "{ read: [Function read], …(3) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "dispose": [Function dispose],
++   "isQuiescent": [Function isQuiescent],
++   "read": [Function read],
++   "subscribe": [Function subscribe],
+  }
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts:76:55
+     74|   it("refuses a native RecoveryHold or disposed snapshot even if a cal…
+     75|     const f = hostFixture(); f.publish(37, { physicsStatus: "RecoveryH…
+     76|     await expect(mountFactorySession(f.host, catalog)).rejects.toThrow…
+       |                                                       ^
+     77|     f.publish(37, { physicsStatus: "Running" }); const session = await…
+     78|     try { f.publish(1000, { physicsStatus: "Disposed" }); expect(sessi…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 passed (7)
+   Start at  10:18:17
+   Duration  333ms (transform 158ms, setup 0ms, import 211ms, tests 14ms, environment 0ms)

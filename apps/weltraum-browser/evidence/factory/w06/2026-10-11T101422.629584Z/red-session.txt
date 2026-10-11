@@ -1,0 +1,158 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/hostLifecycle.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts (6 tests | 6 failed) 18ms
+     × T028 binds baseline and remainder to six NEW native ticks, never duplicate render observations 10ms
+     × T026 refuses a second factory mount on the same live native host 2ms
+     × T027 rejects queued old-epoch callbacks after dispose and never touches a replacement 2ms
+     × closes on stale epoch or backwards tick without granting progress 1ms
+     × flushes actual final confirmed ticks at pause ACK and grants no work while paused 1ms
+     × does not bind a disposed or unconfirmed host, and ignores retirement 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > FP06 W06 confirmed host lifecycle > T028 binds baseline and remainder to six NEW native ticks, never duplicate render observations
+AssertionError: expected { sessionId: 'native-host', …(7) } to match object { steps: +0, remainderTicks: 5 }
+(6 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "remainderTicks": 5,
++   "remainderTicks": 0,
+    "steps": 0,
+  }
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts:35:45
+     33|       for (let frame = 0; frame < 100; frame++) f.publish(37);
+     34|       expect(session.read().steps).toBe(0);
+     35|       f.publish(42); expect(session.read()).toMatchObject({ steps: 0, …
+       |                                             ^
+     36|       f.publish(43); expect(session.read()).toMatchObject({ steps: 1, …
+     37|       f.publish(56); expect(session.read()).toMatchObject({ steps: 3, …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > FP06 W06 confirmed host lifecycle > T026 refuses a second factory mount on the same live native host
+AssertionError: promise resolved "{ read: [Function read], …(3) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "dispose": [Function dispose],
++   "isQuiescent": [Function isQuiescent],
++   "read": [Function read],
++   "subscribe": [Function subscribe],
+  }
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts:43:61
+     41|   it("T026 refuses a second factory mount on the same live native host…
+     42|     const f = hostFixture(); const session = await mountFactorySession…
+     43|     try { await expect(mountFactorySession(f.host, catalog)).rejects.t…
+       |                                                             ^
+     44|     finally { await session.dispose(); }
+     45|     const next = await mountFactorySession(f.host, catalog); await nex…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > FP06 W06 confirmed host lifecycle > T027 rejects queued old-epoch callbacks after dispose and never touches a replacement
+AssertionError: expected undefined to be type of 'function'
+
+Expected: "function"
+Received: "undefined"
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts:49:47
+     47|   it("T027 rejects queued old-epoch callbacks after dispose and never …
+     48|     const f = hostFixture(); const old = await mountFactorySession(f.h…
+     49|     const late = f.callbacks[0]; expect(late).toBeTypeOf("function");
+       |                                               ^
+     50|     await old.dispose(); const before = old.read();
+     51|     const next = await mountFactorySession(f.host, catalog);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > FP06 W06 confirmed host lifecycle > closes on stale epoch or backwards tick without granting progress
+AssertionError: expected { sessionId: 'native-host', …(7) } to match object { state: 'RecoveryHold', steps: +0 }
+(6 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "state": "RecoveryHold",
++   "state": "Ready",
+    "steps": 0,
+  }
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts:59:45
+     57|     const f = hostFixture(); const session = await mountFactorySession…
+     58|     try {
+     59|       f.publish(36); expect(session.read()).toMatchObject({ state: "Re…
+       |                                             ^
+     60|       f.publish(1000); expect(session.read().steps).toBe(0);
+     61|     } finally { await session.dispose(); }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > FP06 W06 confirmed host lifecycle > flushes actual final confirmed ticks at pause ACK and grants no work while paused
+AssertionError: expected { sessionId: 'native-host', …(7) } to match object { nativeTick: 6, steps: 1 }
+(6 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "nativeTick": 6,
+-   "steps": 1,
++   "nativeTick": 0,
++   "steps": 0,
+  }
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts:69:66
+     67|     const f = hostFixture(0); const session = await mountFactorySessio…
+     68|     try {
+     69|       f.publish(5); await f.host.pause(); expect(session.read()).toMat…
+       |                                                                  ^
+     70|       for (let frame = 0; frame < 100; frame++) f.publish(6, { physics…
+     71|       expect(session.read().steps).toBe(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  tests/unit/factory/hostLifecycle.test.ts > FP06 W06 confirmed host lifecycle > does not bind a disposed or unconfirmed host, and ignores retirement
+AssertionError: promise resolved "{ read: [Function read], …(3) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "dispose": [Function dispose],
++   "isQuiescent": [Function isQuiescent],
++   "read": [Function read],
++   "subscribe": [Function subscribe],
+  }
+
+ ❯ tests/unit/factory/hostLifecycle.test.ts:76:55
+     74|   it("does not bind a disposed or unconfirmed host, and ignores retire…
+     75|     const f = hostFixture(); f.publish(37, { confirmed: false });
+     76|     await expect(mountFactorySession(f.host, catalog)).rejects.toThrow…
+       |                                                       ^
+     77|     f.publish(37, { confirmed: true }); const session = await mountFac…
+     78|     try { f.retire(); f.publish(1000); expect(session.read().steps).to…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed (6)
+   Start at  10:15:27
+   Duration  330ms (transform 147ms, setup 0ms, import 196ms, tests 18ms, environment 0ms)

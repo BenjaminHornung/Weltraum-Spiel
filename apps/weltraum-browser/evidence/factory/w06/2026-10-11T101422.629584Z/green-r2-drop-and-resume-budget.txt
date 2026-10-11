@@ -1,0 +1,12 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/hvp-bootstrap.test.ts tests/unit/factory/hostLifecycle.test.ts -t W06 R2 Drop|W06 R1 refuses|bounds directories|rejects oversized
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+
+ Test Files  2 passed (2)
+      Tests  4 passed | 47 skipped (51)
+   Start at  11:11:44
+   Duration  22.09s (transform 1.07s, setup 0ms, import 1.38s, tests 20.49s, environment 0ms)
