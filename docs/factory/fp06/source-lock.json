@@ -1380,7 +1380,7 @@
         "Cargo provenance alone is not physical reach: initial source must be bound to a real Cargo-S0 world owner, native pose and access outside the 22 x 12 m machine zone. W07 handles initial witness/open and a truly reachable paid player build; W09 handles finite pickup, confirmed native movement and local deposit for remote construction/production. No new terrain masks, cargo, UI source-pose writes or automatic transport. New exact paths require a separate recorded scope extension; existing grants remain unchanged."
       ],
       "baseCommitSha": "d5502ae7fd5431d58eda51bea062c54691ebe3c2",
-      "implementationWriteHold": true,
+      "implementationWriteHold": false,
       "authorizedAtUtc": "2026-10-11T13:11:16.765614+00:00",
       "completedAtUtc": null,
       "tddInitialStatus": {
@@ -1732,7 +1732,9 @@
         "packageCommitSha": null,
         "rootProof": "docs/factory/fp06/reviews/w07-adaptive-normal-root-proof.json"
       },
-      "currentNarrowWriteSet": [],
+      "currentNarrowWriteSet": [
+        "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
+      ],
       "currentNarrowScope": "One E2E-only bounded adaptive fine-key diagnostic; all other28 product paths held at Ninth seal",
       "browserSeventhActual": {
         "log": 51,
@@ -2381,9 +2383,61 @@
         "configSha256": "53a55a48da97d43a02e317fb8edc844d57a9b5687f356a7ebf4f5b470efcf900",
         "constraints": "All30 product bytes HOLD; normal trusted keys/UI one actual Page/World, no wrappers/diagnostic authority/tick/pose/source mutation or timeout/queue/cap change; preserve81 all artifacts before fixed writers overwrite. Fresh ownRun browser83 artifacts only.",
         "gate": "Targeted11 only; full17 and package remain NOT_RUN/FAIL until actual results",
+        "status": "EXECUTED83_FAIL_CPU_GPU_PORT_RELEASED"
+      },
+      "cpuGpuPortLease": "EXCLUSIVE_BUILD_ONLY",
+      "adaptiveNormalVerificationActual": {
+        "log": 83,
+        "selected": 11,
+        "pass": 9,
+        "fail": 1,
+        "notRun": 1,
+        "exitCode": 1,
+        "endedAtUtc": "2026-10-11T17:24:15.175926+00:00",
+        "wrapperSeconds": 126.88262225700237,
+        "rawBytes": 7335,
+        "rawSha256": "7034ed0e4f42528e8698a190523282cfedbf906e29907c0d8ae6f694b1211b9a",
+        "rootRawVerification": "Gzip-decompressed exact byte length/SHA matches command receipt",
+        "actual": "X stand PASS;16 actual Z taps all sign-correct, stable stopped readbacks, final8.5749779 below source8.725; even nominal25ms moves0.55-0.65m",
+        "causalLimit": "OutgoingWorker and actualDOMhold gaps unobserved; no new Nativebug claim; protocol scheduling Sourcepreflight only",
+        "all30FinalBytesRestored": "MATCH",
+        "port": "RELEASED",
+        "scope": "Full17 and W07 package NOT_PASS; Pause NOT_RUN"
+      },
+      "trustedKeyboardDriverAuthorization": {
+        "authorizedAtUtc": "2026-10-11T17:29:58.429614+00:00",
+        "actor": "/root/fp06_integrator",
+        "writeSet": [
+          "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
+        ],
+        "kind": "TRUSTED_NORMAL_KEYBOARD_ACK_INDEPENDENT_RELEASE_DRIVER_ONLY",
+        "basis": "Actual83FAIL and independent Sourcepreflight9e13c75e; ACKlatency cause plausible only, actualDOMgap unknown",
+        "implementation": "Normal public Keyboard.down + externally25..125ms scheduled Keyboard.up beforeawaitDownACK; immediately bind allSettled for both, then mandatory FRESH keyboard.up in finally inclsuccess. Await closingUpACK beforeRead/nextTap; originalfailures propagate; closingReleasefailure abort+Context.close preservingfailure. NoDownretry or latergesture.",
+        "unchanged": "All29othersHOLD, samePage/World/trustedkeys, original30s/max8X16Z/max4Readbacks/standFloatReach/material/Native60Hz/pending8deadline20s; noAuthorityeval/hooks/inputlatch/terrain/tick/queue/dependency changes",
+        "execution": "CPU_EXCLUSIVE_ORIGINAL_BUILD_ONLY_THEN_NEW30SEAL_INDEPENDENT_REVIEW",
+        "browser": "NOT_GRANTED_AFTER_SOURCE_CHANGE",
         "status": "AUTHORIZED_NOT_RUN"
       },
-      "cpuGpuPortLease": "EXCLUSIVE_5174"
+      "trustedKeyboardDriverPreflight": [
+        {
+          "report": "docs/factory/fp06/reviews/w07-adaptive83-movement-review.md",
+          "originalSha256": "ffdd4e0f1bc133b52aad771506a9153bb7d55637095dd5def8ca853040eee4d5",
+          "originalBytes": 3914,
+          "copiedSha256": "ffdd4e0f1bc133b52aad771506a9153bb7d55637095dd5def8ca853040eee4d5",
+          "copiedBytes": 3914,
+          "normalization": "Final newline only",
+          "scope": "READONLY_SOURCE_OR_EXISTING_EVIDENCE_NOT_RUNTIME_ACCEPTANCE"
+        },
+        {
+          "report": "docs/factory/fp06/reviews/w07-trusted-keyboard-scheduling-preflight.md",
+          "originalSha256": "9e13c75e230f46db8ae1c419851d6c233ff64bda1535185fd217f9e5cde18494",
+          "originalBytes": 3462,
+          "copiedSha256": "fdf53b1dd38f2aeb935aadb283a01d72d88e87ec92cd549beb6dcf1f557c9372",
+          "copiedBytes": 3461,
+          "normalization": "Final newline only",
+          "scope": "READONLY_SOURCE_OR_EXISTING_EVIDENCE_NOT_RUNTIME_ACCEPTANCE"
+        }
+      ]
     },
     "W08": {
       "dependencies": [
@@ -2841,6 +2895,20 @@
       "mainSha": "e40592c113b72a8dc93725187f92cf948e07f44d",
       "changedFromW00": false,
       "visibility": "remote main only; API/foreign uncommitted writers not inferred"
+    },
+    {
+      "command": "git ls-remote origin refs/heads/main",
+      "cwd": "/workspace/Weltraum-Spiel",
+      "observedBetweenUtc": [
+        "2026-10-11T17:22:00Z",
+        "2026-10-11T17:22:34Z"
+      ],
+      "recordedAtUtc": "2026-10-11T17:24:02.521984+00:00",
+      "exitCode": 0,
+      "stdout": "e40592c113b72a8dc93725187f92cf948e07f44d\trefs/heads/main\n",
+      "mainSha": "e40592c113b72a8dc93725187f92cf948e07f44d",
+      "changedFromW00": false,
+      "visibility": "Remote main only; foreign uncommitted writers remain UNKNOWN"
     }
   ],
   "integrationTransfers": [

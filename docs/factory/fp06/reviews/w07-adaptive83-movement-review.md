@@ -1,0 +1,19 @@
+# W07 adaptive normal subset83: movement review
+
+Independent read-only review. **Subset83 FAIL: 9 PASS, 1 FAIL, 1 NOT_RUN**, exit1; ended `2026-10-11T17:24:15.175926+00:00`, duration126.88262225700237s. Retained evidence binding MATCH. No package/master-manifest/Git PASS, subsequent diagnostic or Native root-cause claim.
+
+Run: `/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z`; archive `browser-adaptive-normal-subset-83/`.
+
+Actual command selects eleven normal cases with `--grep 'accepted source|closed Cargo|normal Cargo|normal Play|at most four|Escape pauses'`. Command receipt SHA `4240a4da2e550d543238b27592b5526253d26054b1837005144f08576f316ff8`. Raw-gzip SHA `ad2ff1ca66c8222faf5fc827e3ed25e5ac076b92291d56d677638fca59c71fbb` decompresses to7335bytes/SHA `7034ed0e4f42528e8698a190523282cfedbf906e29907c0d8ae6f694b1211b9a`, matching receipt and exitfile. All27 artifact payloads match `83-subset-browser-artifact-receipt.json` SHA `89ea98a99727bde1a62fdcca55c02746e353114407cfbba89e26c61839b9285b`; fresh custom output is native taps only, fixed outputs were restored.
+
+Archived taps:448536bytes/SHA `f4ae71821d6072e374e89d270b17ba59913e1903e907c0d88ea35eed175ceedb`. All22 derived records match `83-native-taps-readonly-summary.json` SHA `e5ab28167d5b3e4967db52e8e3fd1dd0510329c8e9820e7e5ca8e9f9419bddf5`. Reviewed actual E2E helper SHA `a194175366d0ab8c553bfe1c325f4c0437e332ab98e5b5586db4816aed74dd9d` matches admission; source windows remain unchanged.
+
+**Observed approach.** X uses six D/A gestures, reducing cap125→63→32→25ms after target crossings; finalx=-6.3000030517578125 lies inside[-6.4,-6.1], and X confirmation passes. Z uses sixteen S/W gestures. At currentx≈-6.3000073 its unchanged interval is[8.725,9.075], midpoint8.9. Initial S pulses move11.875→11.374989→10.774986→10.274984→9.774982→9.124980. A75ms requested S crosses to8.674978; caps reduce125→63→32→25. Subsequent25ms requests keep crossing the midpoint, with0.55–0.65m measured corrections exceeding the0.35m window. Final sequence9.224980→8.574978→9.174980→8.574978 ends **z=8.57497787475586**, below8.725; case10 fails. This is an observed convergence failure despite correct crossing/cap updates.
+
+**Boundedness.** All22 directions, delay calculations and cap transitions reproduce the helper: choose direction from fresh pose, request max(25,min(cap,round(distance/3×1000))), halve cap on midpoint crossing, floor25. Caps persist separately by axis. Each invocation allows at most4gestures and4released readbacks per gesture; two X/four Z cases bound totals to8/16gestures. Retry boundedness is correct for this algorithm; minimum cap and noisy observed response do not guarantee convergence. The helper can proceed after its read limit without proving stability; in this actual run every gesture obtained a stable pair.
+
+All44 actual readbacks advance ticks and have stable XZ per pair; NativeRunning and inspected transactionsIdle. Stability tests X/Z, not grounded/Y. Both tap11readbacks atz9.124980 have grounded=false; subsequent/final reads are grounded. No “all grounded” claim.
+
+**Release/timing limit.** The helper awaits normal browser `keyboard.press` completion before readback. Actual retained final-four trace calls are W/S/W/S with requested25ms; API spans585.030/623.222/598.880/586.028ms, followed by evaluateExpression. Trace ZIP SHA `e7ef0aeb099d6f0f2372fad9838a29cf897b31efe8544fa165e8e7bc7ad41a97`. These establish API ordering, not trusted DOM down/up times, physical hold durations or outgoing Worker timing. No Input/Native/Hold/obstacle defect is inferred.
+
+Pause is NOT_RUN. Ghost/Cutter/C26/dispose successors are outside this subset. No tests/browser/native/build/profiling/verifier jobs or product/evidence edits; only static existing-file reads and this external report.
