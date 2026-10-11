@@ -2846,11 +2846,88 @@
           "status": "SOURCE_SPEC_AND_QUALITY_PASS"
         },
         "build93": "PASS4.034502s/0c7bf1904B",
-        "cpuGpuPortLease": "EXCLUSIVE_5174_ONE_DIAGNOSTIC",
+        "cpuGpuPortLease": "RELEASED",
         "caseCount": 3,
         "constraints": "Frozen30overlay; original30s/trace/plainfactory/sameWorld/neutral5s+trusted125S; transparentexistingbackend+canvas/readonlyGL; no V8/hvpMeasure/World/runtime/pose/input/tick/flags/viewport/caps/queue/timeouts changes; wallnotGPUproof; keepalloriginalerrors",
         "restoreAuthorization": "AfterONECLI archiveallfreshJSON/raw/artifacts then exactnormal030fc16961/all30baseline201/fixedorigins+absences+portrelease",
-        "status": "AUTHORIZED_NOT_RUN"
+        "status": "EXECUTED94_DIAGNOSTIC3PASS_ONLY_CPU_RELEASED_NORMAL88FAIL"
+      },
+      "renderWallDiagnosticActual": {
+        "log": 94,
+        "kind": "RENDER_WALL_DIAGNOSTIC_ONLY",
+        "status": "PASS_3_DIAGNOSTIC_CASES_ONLY",
+        "command": {
+          "kind": "DIAGNOSTIC_ONLY_RENDER_WALL_NOT_GAMEPLAY_GATE",
+          "argv": [
+            "npm",
+            "run",
+            "test:e2e",
+            "--",
+            "--config=/workspace/.cloud-setup/fp06-w07.playwright.config.mts",
+            "tests/e2e/factory-placement.spec.ts"
+          ],
+          "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+          "env": {
+            "FP06_E2E_RUN_DIR": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/browser-render-wall-diagnostic-94",
+            "WELTRAUM_FACTORY_EVIDENCE_RUN": "2026-10-11T122211.412749Z",
+            "WELTRAUM_PLAYWRIGHT_EXECUTABLE_PATH": "/usr/bin/chromium"
+          },
+          "startUtc": "2026-10-11T18:53:57.444280+00:00",
+          "endUtc": "2026-10-11T18:54:41.297938+00:00",
+          "wrapperSeconds": 43.853671473996656,
+          "exitCode": 0,
+          "rawBytes": 1138,
+          "rawSha256": "b507159c5e2072b3e802295e3706f90256597b0085e9b03af92365df6f40e339",
+          "configSha256": "53a55a48da97d43a02e317fb8edc844d57a9b5687f356a7ebf4f5b470efcf900",
+          "overlaySealSha256": "d1de24ea3e4328b28d4ed686085964f57189c105bfce174499ddcf9e048db3dd",
+          "renderWallScope": "Original ThreeRenderBackend synchronous wall timing; CPU/native/wait mixed, no hardware attribution"
+        },
+        "actualArtifacts": 6,
+        "actualArtifactBytes": 987748,
+        "renderer": "ANGLE Google Vulkan1.3 SwiftShader Subzero; actualdebugrendererinfo, noGPUhardwaretiming",
+        "renderWall": "60calls median0.6ms p95~1.2ms max28.8ms sum66.6ms; dispatch120 median2.35ms max22.3ms sum435.2ms",
+        "observedLongtasks": "59 post-first-render longtasks:136–236ms median166ms sum9899ms, render overlap66ms; earlier141–202ms was narrower tail sample. Dominant specific native task NOT_OBSERVED.",
+        "observedInput": "trusted125S DOMstamp127ms->handlers0.7ms; actualzeroXYZ/ticks+78; noAuthoritychange",
+        "rootRawArtifactHashesCheckedAtUtc": "2026-10-11T18:57:12.328480+00:00",
+        "cpuGpuPortLease": "RELEASED",
+        "W07GameplayEndGate": "FAIL88_UNCHANGED",
+        "attributionReport": {
+          "path": "docs/factory/fp06/reviews/w07-render-wall94-attribution-report.md",
+          "sha256": "c9c4edc1377a13e793d1d6d331531685f7a250779890aaa2cb93f5fe2054ad01"
+        },
+        "independentObservationReview": {
+          "path": "docs/factory/fp06/reviews/w07-render-wall94-independent-observation-review.md",
+          "sha256": "13e86056050882c9cc4764f15801078e9c5e45659d3e3a37a965413ee807744c",
+          "reviewer": "/root/w11_evidence",
+          "status": "ACTUAL_ARTIFACT_ARITHMETIC_AND_LIMITATIONS_PASS_NO_GAMEPLAY_GATE"
+        }
+      },
+      "timelineDiagnosticSourceAuthorization": {
+        "authorizedAtUtc": "2026-10-11T18:57:12.328480+00:00",
+        "actor": "/root/fp06_integrator",
+        "kind": "TEMPORARY_CDP_TIMELINE_SOURCE_PREPARATION_PLUS_ONE_ORIGINAL_BUILD_ONLY",
+        "writeSet": [
+          "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
+        ],
+        "baselineSealSha256": "201394fb8346e8b12c93b0bb5d52c34d180d966a80c884697813b9d224c511d4",
+        "constraints": "Retainreviewedpassive+wallhooks, noV8Profiler; publicCDP Tracing devtools.timeline/disabled-by-default-devtools.timeline/blink ReturnAsStream, startNEUTRALcase5s then125Srelease, guaranteedend/complete/IOread/close andoriginalerrorsclosure. ActualPID/threadNativeLayout/Paint/Event/RAF durations; noWorld/runtime/source/flags/viewport/input/physics/ticks/caps/queue/timeouts change; JSONstreamcompleteness mandatory",
+        "execution": "SOURCE_AND_ONE_BUILD_ONLY_BROWSER_NOT_AUTHORIZED"
+      },
+      "timeline95InitialReview": {
+        "path": "docs/factory/fp06/reviews/w07-timeline95-initial-source-review.md",
+        "sha256": "3bfe1d461b45945a1d5dfb46fbfdd530121933cf597fa0db2e20a27cc1ade817",
+        "reviewer": "/root_NOT_E2E_AUTHOR",
+        "status": "SOURCE_QUALITY_FAIL_F1_UNBOUNDED_COMPLETION_F2_DATA_LOSS_UNCHECKED",
+        "browser": "NOT_RUN"
+      },
+      "timelineDiagnosticCorrectionAuthorization": {
+        "authorizedAtUtc": "2026-10-11T19:00:57.327133+00:00",
+        "actor": "/root/fp06_integrator",
+        "writeSet": [
+          "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
+        ],
+        "scope": "ExactF1/F2 correction+ONEfreshOriginalbuild96; preserve95source/raw; diagnosticcompletion5000ms withclearedtimer/independentrestoration andlostTraceFLAGFAIL, noWorld/Native/testdeadline/budgets changes",
+        "execution": "BROWSER_HOLD"
       }
     },
     "W08": {
