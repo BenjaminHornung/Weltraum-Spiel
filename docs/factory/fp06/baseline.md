@@ -116,3 +116,9 @@ R1/R3/R4 sind im beurteilten Fixsnapshot geschlossen. Die 50 betroffenen Host-/S
 [W10-Vorprüfung](reviews/w10-preflight.md) benennt die nötige eigene Factoryprofileaufnahme, vollständige native Ownerzuordnung, gemeinsame Hostbarriere und Materialrestore ohne Reset von WIP/Receipts. Die fünf zusätzlichen exakten Integratorpfade sind ausschließlich geplant; W09 muss vorher bestehen, und Materialwrites werden erst nach Abgabe durch den Domainwriter erlaubt. Alte geschlossene V1-Decoder und Repositorybudgets bleiben geschützt.
 
 Nach W05 übernimmt der Domainwriter W08 und anschließend die drei reinen Produktionspfade von W04, sobald W03 bestanden ist. Der Integrator übernimmt W03 und W07; so können Produktion und native Platzierung nach ihren jeweiligen Vorgängergates unabhängig entstehen. Höchstens zwei Implementierungswriter; gemeinsam genutzte Contracts/Host/Physics/Save bleiben ausschließlich beim Integrator.
+
+## W06 Reviewhalt und unabhängiger W03-Start
+
+W06-Code-/Evidencecommit:5b596f932dc769052e17603965d0179a4937d948. Runtimewrites sind gehalten; eine eng begrenzte Evidence-only-Folge bindet tatsächliche CLIwerte und drei bisher ignorierte eigene Runartefakte an Git/LFS. Der Abschlussreview bleibt offen. W03 hängt ausschließlich von abgenommenem W01 ab; deshalb erhält derselbe Integrator jetzt ausschließlich seine vier Powerpfade. W07/W09 bleiben von ihrem tatsächlichen W06-Gate abhängig. Maximal zwei tatsächliche Produktwriter: W03 Integrator und W05 Domain, mit disjunkten Grenzen.
+
+[W05-Erstreview](reviews/w05-first.md):Spec/Quality FAIL bei gebundenem Erststand trotz korrekter ursprünglicher Unit-/Build-/GPUbelege. Reale zusätzliche REDs zeigen die Trag-/Phasen-/Markerlücken; enge Fixes laufen. Ein anfänglicher falscher Bildverband bei Root wurde durch erneute Einzelbild-/Hashprüfung korrigiert, kein Capture-FAIL erfunden.

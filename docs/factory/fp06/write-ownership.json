@@ -23,27 +23,6 @@
   "sharedPathGrant": "NONE_YET; package-specific grant after source/decision gates and fresh conflict check",
   "activeImplementationWriters": [
     {
-      "agent": "/root/fp06_integrator",
-      "package": "W06",
-      "branch": "codex/hestia-fp06-integrator-2026-10-11",
-      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
-      "baseCommitSha": "a30630dd7963c165c673df7ea1b46d52735752ef",
-      "writeSet": [
-        "apps/weltraum-browser/factory.html",
-        "apps/weltraum-browser/src/factory/factoryEntry.ts",
-        "apps/weltraum-browser/src/factory/session/hostPort.ts",
-        "apps/weltraum-browser/src/factory/session/factorySession.ts",
-        "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
-        "apps/weltraum-browser/tests/e2e/factory-host.spec.ts",
-        "tools/factory/verify-evidence.mjs",
-        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
-        "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
-        "apps/weltraum-browser/package.json",
-        "apps/weltraum-browser/vite.config.ts",
-        ".github/workflows/browser-mainline-ci.yml"
-      ]
-    },
-    {
       "agent": "/root/fp06_domain",
       "package": "W05",
       "branch": "codex/hestia-fp06-domain-2026-10-11",
@@ -56,6 +35,19 @@
         "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
         "apps/weltraum-browser/src/factory/presentation/machinePose.ts",
         "apps/weltraum-browser/tests/unit/factory/presentation.test.ts"
+      ]
+    },
+    {
+      "agent": "/root/fp06_integrator",
+      "package": "W03",
+      "branch": "codex/hestia-fp06-integrator-2026-10-11",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+      "baseCommitSha": "5b596f932dc769052e17603965d0179a4937d948",
+      "writeSet": [
+        "apps/weltraum-browser/src/factory/power/factoryPower.ts",
+        "apps/weltraum-browser/src/factory/power/sourceAdapter.ts",
+        "apps/weltraum-browser/src/factory/power/powerReadView.ts",
+        "apps/weltraum-browser/tests/unit/factory/power.test.ts"
       ]
     }
   ],
@@ -346,24 +338,33 @@
         "apps/weltraum-browser/src/factory/power/powerReadView.ts",
         "apps/weltraum-browser/tests/unit/factory/power.test.ts"
       ],
-      "grantedWriteSet": [],
+      "grantedWriteSet": [
+        "apps/weltraum-browser/src/factory/power/factoryPower.ts",
+        "apps/weltraum-browser/src/factory/power/sourceAdapter.ts",
+        "apps/weltraum-browser/src/factory/power/powerReadView.ts",
+        "apps/weltraum-browser/tests/unit/factory/power.test.ts"
+      ],
       "evidenceWriteSet": [
         "apps/weltraum-browser/evidence/factory/w03/<actual-run-id>/**"
       ],
-      "evidenceGrant": false,
-      "status": "NOT_RUN: ownerpolicy accepted; integrator completing W06",
+      "evidenceGrant": true,
+      "status": "IN_PROGRESS",
       "owner": "/root/fp06_integrator",
       "plannedRole": "integrator",
-      "branch": null,
+      "branch": "codex/hestia-fp06-integrator-2026-10-11",
       "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
-      "worktree": null,
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
       "commitSha": null,
       "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
       "restrictions": [
         "Only exact granted paths; planned paths are not grants",
         "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
         "No main merge/push/publication; no W12-W29"
-      ]
+      ],
+      "baseCommitSha": "5b596f932dc769052e17603965d0179a4937d948",
+      "implementationWriteHold": false,
+      "authorizedAtUtc": "2026-10-11T11:20:13.473677+00:00",
+      "completedAtUtc": null
     },
     "W04": {
       "dependencies": [
@@ -463,7 +464,21 @@
       "baseCommitSha": "10e1e3026610065206d8ac4b361d3f1686114dd8",
       "implementationWriteHold": false,
       "authorizedAtUtc": "2026-10-11T10:38:45.416452+00:00",
-      "completedAtUtc": null
+      "completedAtUtc": null,
+      "reviewHistory": [
+        {
+          "spec": "FAIL",
+          "quality": "FAIL",
+          "reviewReport": "docs/factory/fp06/reviews/w05-first.md",
+          "patchSha256": "c91d6d3805857b2a30c34e0f7513f5800460c4b509f77a834c28e342d3c462f9",
+          "findings": [
+            "R1 disconnected paid support/bed/actuator paths",
+            "R2 missing source phase motions",
+            "R3 missing Wind/PV authoring-only Power-Out markers"
+          ],
+          "disposition": "Narrow source-required geometry/pose/marker RED/fixes within existing six roots; no new Cargo/Physics authority or Ownerdecision."
+        }
+      ]
     },
     "W06": {
       "dependencies": [
@@ -521,13 +536,13 @@
         "apps/weltraum-browser/evidence/factory/w06/<actual-run-id>/**"
       ],
       "evidenceGrant": true,
-      "status": "IN_PROGRESS",
+      "status": "IN_REVIEW",
       "owner": "/root/fp06_integrator",
       "plannedRole": "integrator",
       "branch": "codex/hestia-fp06-integrator-2026-10-11",
       "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
       "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
-      "commitSha": null,
+      "commitSha": "5b596f932dc769052e17603965d0179a4937d948",
       "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
       "restrictions": [
         "Only exact granted paths; planned paths are not grants",
@@ -535,7 +550,7 @@
         "No main merge/push/publication; no W12-W29"
       ],
       "baseCommitSha": "a30630dd7963c165c673df7ea1b46d52735752ef",
-      "implementationWriteHold": false,
+      "implementationWriteHold": true,
       "authorizedAtUtc": "2026-10-11T10:07:10.972885+00:00",
       "completedAtUtc": null,
       "reviewHistory": [
@@ -576,7 +591,9 @@
         "afterR1toR4FixBuild": "PASS:tsc+Vite before newly found Drop guard fix",
         "browser": "RUNNING; partial cases are not final gate PASS",
         "performance": "NOT_RUN; no comparable baseline"
-      }
+      },
+      "codeCommitSha": "5b596f932dc769052e17603965d0179a4937d948",
+      "evidencePackagingStatus": "Pending narrow evidence-only followup: actual CLI values and three own ignored artifact paths; code writes held, independent final review pending."
     },
     "W07": {
       "dependencies": [
