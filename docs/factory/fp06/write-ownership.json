@@ -368,7 +368,20 @@
       "authorizedAtUtc": "2026-10-11T11:20:13.473677+00:00",
       "completedAtUtc": null,
       "actualImplementationParentSha": "2c044e02f1f31a2db3de3a0df9156bd71a431a7a",
-      "baseProvenanceNote": "Write grant was issued against reviewed W06 code5b596f932dc769052e17603965d0179a4937d948. Before W03 product changes, the same integrator finalized evidence-only W06 packaging2c044e02f1f31a2db3de3a0df9156bd71a431a7a. Product bytes unchanged in that parent follow-up; final W03 product/commit diff must bind actual parent2c044. Original grant remains immutable."
+      "baseProvenanceNote": "Write grant was issued against reviewed W06 code5b596f932dc769052e17603965d0179a4937d948. Before W03 product changes, the same integrator finalized evidence-only W06 packaging2c044e02f1f31a2db3de3a0df9156bd71a431a7a. Product bytes unchanged in that parent follow-up; final W03 product/commit diff must bind actual parent2c044. Original grant remains immutable.",
+      "reviewHistory": [
+        {
+          "spec": "FAIL",
+          "quality": "FAIL",
+          "reviewReport": "docs/factory/fp06/reviews/w03-first.md",
+          "patchSha256": "0f3cbd17027f4af38044fa984d47f2660736c534f7d0ca81e14743ac9e029e9b",
+          "findings": [
+            "R1 P1 missing consumer/device In-port ownership admission",
+            "R2 P2 missing source sample mislabeled confirmed0W"
+          ],
+          "disposition": "Genuine narrow negative tests then minimal fix within original four-file grant; previous78/78/build/legacyBrowserPASS remain tied to their original snapshot."
+        }
+      ]
     },
     "W04": {
       "dependencies": [

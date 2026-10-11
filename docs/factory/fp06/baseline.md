@@ -18,7 +18,7 @@ W12–W29, Enginewechsel, Dependency-Upgrades, main-Merge, Force-Push und Veröf
 
 ## Architecture decision
 
-Three.js/HVP/Voxel/Physics/Save bleiben erhalten. Resources ist alleinige Warenautorität; UI liest Snapshots und sendet Commands. Genau ein Integrator `/root/fp06_integrator` besitzt gemeinsame Contracts-, Host-, Physics- und Savegrenzen. Höchstens ein weiterer isolierter Domain-/Assetwriter darf parallel arbeiten. Aktuell gibt es den Dokumentationswriter `/root` sowie genau zwei isolierte Produktwriter: `/root/fp06_integrator` auf `codex/hestia-fp06-integrator-2026-10-11` für W06 und `/root/fp06_domain` auf `codex/hestia-fp06-domain-2026-10-11` für W05. Die tatsächlich delegierten Audit-/Review-/Preflightagenten arbeiten read-only. W01 hat nach der konkreten Portkorrektur sein unabhängiges Gate bestanden; Die Nutzerantworten „D03-Policy freigeben“ und „Startplatz-Fixture freigeben“ lösen seit 10:34:17 UTC die beiden zusätzlichen konkreten Ownergates; noch offene Paketgates bleiben davon getrennt.
+Three.js/HVP/Voxel/Physics/Save bleiben erhalten. Resources ist alleinige Warenautorität; UI liest Snapshots und sendet Commands. Genau ein Integrator `/root/fp06_integrator` besitzt gemeinsame Contracts-, Host-, Physics- und Savegrenzen. Höchstens ein weiterer isolierter Domain-/Assetwriter darf parallel arbeiten. Aktuell gibt es den Dokumentationswriter `/root` sowie genau zwei isolierte Produktwriter: `/root/fp06_integrator` auf `codex/hestia-fp06-integrator-2026-10-11` für W03 und `/root/fp06_domain` auf `codex/hestia-fp06-domain-2026-10-11` für W08. Die tatsächlich delegierten Audit-/Review-/Preflightagenten arbeiten read-only. W01 hat nach der konkreten Portkorrektur sein unabhängiges Gate bestanden; Die Nutzerantworten „D03-Policy freigeben“ und „Startplatz-Fixture freigeben“ lösen seit 10:34:17 UTC die beiden zusätzlichen konkreten Ownergates; noch offene Paketgates bleiben davon getrennt.
 
 ## Implementation phases
 
@@ -27,12 +27,12 @@ Three.js/HVP/Voxel/Physics/Save bleiben erhalten. Resources ist alleinige Warena
 | W00 | keine | /root Dokumentation | PASS: Baseline und unabhängiges Review |
 | W01 | W00 | /root/fp06_integrator | PASS: a30630dd7963c165c673df7ea1b46d52735752ef, 46 Tests/Build/Review |
 | W02 | W01 | /root/fp06_domain, eigener Worktree | PASS technisch: 10e1e3026610065206d8ac4b361d3f1686114dd8, 61 Tests/Build/Cargo1/Review; initiale TDD-Abweichung FAIL/NOT_RUN bleibt |
-| W03 | W01 | /root/fp06_integrator | NOT_RUN: Ownerpolicy freigegeben; nach frei gewordenem Integratorslot |
-| W04 | W02/W03 | /root/fp06_integrator | BLOCKED: Vorgänger; D05 freigegeben |
-| W05 | W01 | /root/fp06_domain, eigener Worktree | IN_PROGRESS: echter neuer Grant auf sauberem Domainbranch, Fachtests zuerst |
-| W06 | W01 | /root/fp06_integrator | IN_PROGRESS: echter Host-/Browser-RED, fokussiertes GREEN; vollständiger Paketgate offen |
+| W03 | W01 | /root/fp06_integrator | IN_PROGRESS:78 Tests/Build/LegacyBrowser1 PASS am Erststand; Review R1/R2 FAIL, enge echte RED/Fixes |
+| W04 | W02/W03 | /root/fp06_domain | BLOCKED: W03; D05 freigegeben, danach eigener Drei-Pfad-Grant |
+| W05 | W01 | /root/fp06_domain, eigener Worktree | PASS:26d5e892c2b401b9011234dabf86955af7462fb8,16 Fachtests/46 Regressionen/Build/GPU/Review |
+| W06 | W01 | /root/fp06_integrator | PASS:2c044e02f1f31a2db3de3a0df9156bd71a431a7a, Host-/Browser-/Review-/Gitgates mit getrennten Bytephasen |
 | W07 | W02/W05/W06 | /root/fp06_integrator | BLOCKED: Vorgänger; D11 freigegeben |
-| W08 | W02 | Domainwriter | NOT_RUN: W02 PASS und D06 freigegeben; nach W05 |
+| W08 | W02 | /root/fp06_domain | IN_PROGRESS: exakt drei exklusiv freigegebene Dateien, Ausgang26d5 |
 | W09 | W04/W07/W08 | /root/fp06_integrator | BLOCKED: Vorgänger |
 | W10 | W09 | /root/fp06_integrator | BLOCKED: Vorgänger; D11 freigegeben |
 | W11 | W10 | Integrator, unabhängige Reviews | BLOCKED: Vorgänger |
@@ -136,3 +136,9 @@ W06 PASS bei2c044e02f1f31a2db3de3a0df9156bd71a431a7a: unabhängige [Spec-/Qualit
 W05 PASS bei26d5e892c2b401b9011234dabf86955af7462fb8:16 abschließende Fachtests,46 frühere betroffene Regressionen bei unverändertem Backend,3/3 Schema,Build und frische Chromium-GPUprobe mit100 echten Lebenszyklen. [Technischer Review](reviews/w05-final.md), [Git-/LFS-Abnahme](reviews/w05-final-commit.md), [vollständiger175-Pfade-Bericht](reviews/w05-package-report.md). Alle90 eigenen LFSreferenzen/74Objekte und156Manifest-Evidencepfade sind tatsächlich anGit gebunden;18Produktbytes identisch zum abgenommenen Snapshot. MenschlicheArtabnahme/Performance bleiben NOT_RUN. Eine unnötige globaleLFSprüfung fand fehlende historischeCacheobjekte außerhalb W05 und endete mit1; das unvollständige stdout bleibt [separat](reviews/w05-historical-lfs-check.json), ohne behaupteten Repositorygesamt-PASS.
 
 W08 erhält nach bestandenem W02 den exklusiven Drei-Datei-Grant auf derselben Domainbranch mit tatsächlichem Ausgang26d5. CPU-/Browserlease wird nach tatsächlichem W03CLIabschluss an W08 übertragen; keine parallelen schweren Messläufe. W03 wartet bei gehaltenen Produktbytes auf unabhängiges Review.
+
+## W03 Erstreview und frische Mainprüfung
+
+[W03-Erstreview](reviews/w03-first.md) ist Spec/Quality FAIL wegen fehlender Maschinen-In-Port-/Owneradmission und fälschlich bestätigter Qualität bei fehlendem einzelnen Quellsample. Die belegten78Tests/Build/LegacyBrowser1 sind historische positive Nachweise dieses Erststands; kein fertiges W03-Gate. Echte enge Negativtests und Fixes erfolgen vor neuer Abnahme. Tatsächlicher W03Parent ist2c044, der dazwischen abgeschlossene W06-Evidence-only-Commit; der ursprüngliche5b596Grant bleibt unverändert nachvollziehbar.
+
+Erneute RemoteMainabfrage um11:49:22UTC mit Exit0 bestätigt e40592c113b72a8dc93725187f92cf948e07f44d. Ursprünglicher workCheckout bleibt sauber. Zwei tatsächliche Produktwriter auf eigenen Branches/Worktrees: W03Integrator und W08Domain. Externe uncommitted Writer bleiben unbekannt; keine Mainänderung/Veröffentlichung.
