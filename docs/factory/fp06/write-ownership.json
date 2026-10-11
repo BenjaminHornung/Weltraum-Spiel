@@ -28,19 +28,7 @@
     "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts"
   ],
   "sharedPathGrant": "ONLY exact packageScopes.grantedWriteSet after recorded gates; no blanket shared-path permission. Shared contract/host/physics/save/config files remain integrator-exclusive.",
-  "activeImplementationWriters": [
-    {
-      "agent": "/root/fp06_integrator",
-      "package": "W07",
-      "branch": "codex/hestia-fp06-integrator-2026-10-11",
-      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
-      "baseCommitSha": "d5502ae7fd5431d58eda51bea062c54691ebe3c2",
-      "writeSet": [
-        "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
-      ],
-      "scope": "E2E-only diagnostic narrow phase; all runtime held"
-    }
-  ],
+  "activeImplementationWriters": [],
   "activeDocumentationWriter": {
     "agent": "/root",
     "branch": "codex/hestia-fp06-w00-2026-10-11",
@@ -895,7 +883,7 @@
         "apps/weltraum-browser/evidence/factory/w07/<actual-run-id>/**"
       ],
       "evidenceGrant": true,
-      "status": "IN_PROGRESS",
+      "status": "IN_REVIEW",
       "owner": "/root/fp06_integrator",
       "plannedRole": "integrator",
       "branch": "codex/hestia-fp06-integrator-2026-10-11",
@@ -955,7 +943,7 @@
         "Cargo provenance alone is not physical reach: initial source must be bound to a real Cargo-S0 world owner, native pose and access outside the 22 x 12 m machine zone. W07 handles initial witness/open and a truly reachable paid player build; W09 handles finite pickup, confirmed native movement and local deposit for remote construction/production. No new terrain masks, cargo, UI source-pose writes or automatic transport. New exact paths require a separate recorded scope extension; existing grants remain unchanged."
       ],
       "baseCommitSha": "d5502ae7fd5431d58eda51bea062c54691ebe3c2",
-      "implementationWriteHold": false,
+      "implementationWriteHold": true,
       "authorizedAtUtc": "2026-10-11T13:11:16.765614+00:00",
       "completedAtUtc": null,
       "tddInitialStatus": {
@@ -1150,7 +1138,7 @@
           "setupFailure": false,
           "nativeReadPrepareWitness": "Real Rapier session snapshots in held transport fixture; premature public bodyCount3/colliders35 before Publish. No axis/nativeTick mock."
         },
-        "currentStatus": "DIAGNOSTIC_E2E_ONLY_AUTHORIZED; current runtime sealed, unit/build PASS remain byte-scoped; actual browser FAIL",
+        "currentStatus": "EIGHTH_SEAL_FULL_PRODUCT_HOLD; actual normalBrowser running, independent3delta reviews pending",
         "phaseResults": [
           {
             "log": 45,
@@ -1197,6 +1185,81 @@
           "globalBrowserLease": "/root/fp06_integrator",
           "allowed": "Passively record actual trusted keyevents/outgoing existing NativeWorker Read(input) and replies/tick/pose, forward unchanged if observing transport, bounded true250–700ms ordinary holds then release before RPCread; unchanged existing30s/20s/trace. One targeted diagnostic, not blind fullrun.",
           "forbidden": "No production source writes, fake input/tick/pose, new Native IPC/message, authority bridge, new product/public API, tempo/reach/terrain/budget/queue/timeout change. Any diagnostic instrumentation never qualifies normal no-TestBridge gameplay gate."
+        },
+        "diagnosticActual": {
+          "log": 52,
+          "kind": "DIAGNOSTIC_ONLY",
+          "caseCount": 4,
+          "cliSeconds": 28.7969,
+          "endedAtUtc": "2026-10-11T15:00:58.310Z",
+          "gameplayGate": "NOT_ADMITTED",
+          "observed100ms": "Trusted Down20403.8/Up20606.4 within busyRead30; Reply20784.4 sent neutralRead31 only; no nonzeroSend, deltaX0 despite80ticks",
+          "observed600ms": "Trusted Down22819.3/Up23516.3 survives Read42; actualRead43–45 x=-1; final neutralRead46; deltaX=-2.250m over105ticks",
+          "telemetryDropped": 0,
+          "runtimeChanged": false,
+          "normalE2eRestoredSha256": "488439fa85e682a90e28a9781581d4d419d3c691bd37d3ed675c53fcad36bc9e"
+        },
+        "normalE2eFollowupAuthorization": {
+          "authorizedAtUtc": "2026-10-11T15:04:36.260692+00:00",
+          "writeSet": [
+            "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
+          ],
+          "allowed": "boundedtrusted250–350mskeys release beforeRPC, sourcevalidatedbroaderstandregion or actualNative cargo/service/support admissibility, optionalboundedreadonly nativeTick/stablepose confirmation; ownnormalflow only; typecheck/newseal before8thrun",
+          "forbidden": "All runtimeheld; no observationalWorkerwrapper/debugbridge in normalgate; no artificial pose/input/tick/tempo/reach/source/queue/budget/timeout change",
+          "sourceRegionActor": "/root/w07_second_cutter_site"
+        },
+        "sourceStandRegionReport": "docs/factory/fp06/reviews/w07-reachable-stand-region.md",
+        "noOpTransportRedAuthorization": {
+          "authorizedAtUtc": "2026-10-11T15:10:32.014459+00:00",
+          "writeSet": [
+            "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts"
+          ],
+          "kind": "TEST_ONLY_BEFORE_IMPLEMENTATION",
+          "actualSourceCounterexample": "Factory setPlayerInput always marks same level dirty; RAF sameintent whilebusy causes finally to drain unnecessaryeventRead even without new input. Existing physics.update must still read physics snapshots. Actual redundant-stream assertion first; no Native pose/tick orinput retention/latch modification.",
+          "minimalConditionalImplementation": "Not yet granted: client-only Factory fulllevel/jump equality suppression preserving changed/cancel/jump semantics and Legacy default; after genuineRED and narrow authorization."
+        },
+        "finalReviewBeforeFurtherChange": [
+          {
+            "report": "docs/factory/fp06/reviews/w07-input-final-spec-review.md",
+            "originalSha256": "fc8a6f3c3ad3a4c47500aab3e3fa88689a4e2b005a4965363043ee79fad6a1a1",
+            "status": "SCOPED_SPEC_AND_QUALITY_PASS_SEVENTH_RUNTIME_ONLY",
+            "actualBrowserGate": "FAIL"
+          },
+          {
+            "report": "docs/factory/fp06/reviews/w07-input-native-final-review.md",
+            "originalSha256": "c82166de56421b720eef55a08e72e4f8c9b8317b5e739032eccc2d041291269f",
+            "status": "SCOPED_SPEC_AND_QUALITY_PASS_SEVENTH_RUNTIME_ONLY",
+            "actualBrowserGate": "FAIL"
+          }
+        ],
+        "noOpTransportBusinessRed": {
+          "log": 55,
+          "endedAtUtc": "2026-10-11T15:11:09.587Z",
+          "fail": 2,
+          "skip": 12,
+          "setupFailure": false,
+          "actual": "Expected0extraRead after reply of identical sent neutral/nonzero level; actual1 for each. Explicit update remains required snapshotRead.",
+          "preImplementationRuntimeSeal": "ce0007d04fc4833953acef94d78d1091b2848b410112028026179ad1b58eece4"
+        },
+        "noOpTransportMinimalFixAuthorization": {
+          "authorizedAtUtc": "2026-10-11T15:12:14.332687+00:00",
+          "runtimeWriteSet": [
+            "apps/weltraum-browser/src/hestia-prototype/physics/client.ts"
+          ],
+          "allowed": "Factory-only equality of all4 merged x/z/sprint/jump fields AFTER pendingjumpOR/cancelmerge; if identical preserve existing dirty and return, else unchanged actualdispatch. Explicit physics.update snapshotpoll unchanged. NewJump and pendingcancel still changes.",
+          "excluded": "No Legacy change, Native IPC/timer/latch/pose/tick/tempo/reach/source/cap/queue/timeout change; unit14 focusGREEN/fullbuild/newseal/review before normal8thbrowser."
+        },
+        "noOpTransportGreen": {
+          "log": 56,
+          "selected": 14,
+          "status": "PASS",
+          "cliSeconds": 1.8078
+        },
+        "noOpTransportBuild": {
+          "log": 57,
+          "command": "npm run build",
+          "status": "PASS",
+          "cliSeconds": 4.3719
         }
       },
       "historicalRuntimeReviewBeforeInput": [
@@ -1216,21 +1279,19 @@
         }
       ],
       "currentProductSeal": {
-        "sealedAtUtc": "2026-10-11T14:54:51.459915+00:00",
-        "patch": "docs/factory/fp06/reviews/w07-before-seventh-browser-product.patch",
-        "patchSha256": "ce0007d04fc4833953acef94d78d1091b2848b410112028026179ad1b58eece4",
-        "patchBytes": 202766,
-        "fileHashes": "docs/factory/fp06/reviews/w07-before-seventh-browser-product-files.json",
-        "fileHashesSha256": "4ea869a05fd9f2d9fd941a00b289c375cd18ef2e27e88c74a2bea1bc4f3053d1",
+        "sealedAtUtc": "2026-10-11T15:13:37.175340+00:00",
+        "patch": "docs/factory/fp06/reviews/w07-before-eighth-browser-product.patch",
+        "patchSha256": "1bd3173f72efe4b531e49579164cb62ead4534720c86696f1fa36eeeaf012636",
+        "patchBytes": 205179,
+        "fileHashes": "docs/factory/fp06/reviews/w07-before-eighth-browser-product-files.json",
+        "fileHashesSha256": "eb7a99c17be2a828823fd2d8646b18bfb65994449d13d75e109e708bf69b1fa2",
         "grantedPaths": 29,
         "actualChangedProductPaths": 27,
-        "browserPhase": "seventh",
+        "browserPhase": "eighth",
         "packageCommitSha": null
       },
-      "currentNarrowWriteSet": [
-        "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
-      ],
-      "currentNarrowScope": "E2E-only targeted diagnostic; all28 other granted productpaths remain byte-held at seventh seal. No normal-gate admission.",
+      "currentNarrowWriteSet": [],
+      "currentNarrowScope": "All29productgrantpaths WRITEHOLD; runtime sealed beforeactualnormal8th17caseBrowser; evidenceonlywrites allowed",
       "browserSeventhActual": {
         "log": 51,
         "endedAtUtc": "2026-10-11T14:55:26.833Z",
@@ -1390,7 +1451,8 @@
         "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
         "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
         "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts",
-        "apps/weltraum-browser/src/factory/construction/installationProfile.ts"
+        "apps/weltraum-browser/src/factory/construction/installationProfile.ts",
+        "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts"
       ],
       "grantedWriteSet": [],
       "evidenceWriteSet": [
@@ -1429,7 +1491,10 @@
         "originalSha256": "4759367c1db7a3340b027adfe363b46ff6d86e2d8dcdd5fbc066abd01c9d8ec7",
         "deliverySha256": "f1d7ba7f5c2308475ebfeea7f409170877eb876e12f76f901c50a0e0886f4049",
         "status": "READ_ONLY_PREPARATION; no W09 code/writegrant/gate"
-      }
+      },
+      "normalFlowDomainCheck": "docs/factory/fp06/reviews/w09-normal-flow-domain-check.md",
+      "geometrySeamPreflight": "docs/factory/fp06/reviews/w09-geometry-seam-preflight.md",
+      "geometrySeamScopeNote": "PLANNED ONLY after W07PASS: Source registration+closed exactbytes/composite4mline reference validation require factoryAssets. B05/B09/brace catalog refs already exist; B10 absent catalogdevices/items, use narrow sourcebound4m technicalcompoundref on frozenconveyor/layout +4C14+1C23,26kg; no W01catalog/fixture change. OriginalLayoutAbench(7,2) andactualproduct carry(18,6)→bench; no extraSource masks."
     },
     "W10": {
       "dependencies": [
