@@ -4046,6 +4046,13 @@
         "sha256": "e06da38a8ac02bcc4f0972a7fc34e680677510da8af24052c3dd17b401da621a",
         "phases": "132 boundedoneCLI/2profiles;1331PASS1Timeout;1341PASS1Timeout;135FixtureFAIL;1362genuineRED;1374PASS;138onlyDryProduction38PASS3skipped;139ConveyorMaterial29PASS;140TSFAIL;141Host1PASS33skipped;142originalTSVitePASS;143currentActivatedRuntimeNode22.23.3/npm10.9.8",
         "remaining": "Readonly OUTPUTproposal Nativequantity counterpath awaits actual businessRED/fix; no third performance candidate authorized yet; scoped unit/source facts no W09package/fullNative/browser gate"
+      },
+      "compositionPerformanceSourceReview": {
+        "status": "READONLY_SOURCE_FAIL_OPEN_ACTUAL146_147_GUARDS_PERFORMANCE_NOT_MET",
+        "path": "docs/factory/fp06/reviews/w09-composition-performance-source-review.md",
+        "sha256": "aaf8e07301cb1f71a63319a2b0e7cb1fce28ca1e71d9dd7ab82cbace0ff47819",
+        "scope": "Independentexistingprofiles/rawreceipts/source review only; original2candidateGoalNOT_MET. NativeOUTPUTF1 actual144RED\u219214523PASS3skip closes. Actual146receipt+power and147W02chain+claims REDs awaitfix. CurrentactivatedNode22.23.3/npm10.9.8 observed143; historicalNode20/56goal labels inaccurate, secondcase57actualadvances. No tests/build/profile ownjobs.",
+        "protected": "W03W04W08 observedunchanged; mutable2d836d Source not finalseal"
       }
     },
     "W10": {

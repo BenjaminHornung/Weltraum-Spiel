@@ -1,6 +1,6 @@
 # FP06 aktueller Paketstand
 
-Stand: `2026-10-11T22:34:17.120281+00:00`. W09 befindet sich in der Implementierung; sein Endgate wurde noch nicht ausgeführt. Remote-Main wurde um 22:17 UTC mit Exit 0 erneut als `e40592c113b72a8dc93725187f92cf948e07f44d` geprüft. Das ursprüngliche Worktree war sauber.
+Stand: `2026-10-11T23:08:31.438989+00:00`. W09 befindet sich in der Implementierung; sein Endgate wurde noch nicht ausgeführt. Remote-Main wurde um 22:17 UTC mit Exit 0 erneut als `e40592c113b72a8dc93725187f92cf948e07f44d` geprüft. Das ursprüngliche Worktree war sauber.
 
 | Paket | Status | Agent | Branch | Vollständiger Paketcommit | Dateien, Tests, Review und Evidence |
 |---|---|---|---|---|---|
@@ -44,3 +44,5 @@ Der [portable Snapshot und die lokal restaurierte Zweitinstanz](cloud-environmen
 Der [Band-/Stromgraph-Sourcecheck](w09-belt-graph-reconcile-source-review.md) findet in den stabil geprüften Pure-Verträgen keinen Resetpfad. Die Übergabe erhält Paket, Ratenkredit und vollständige Portbindung. Der tatsächlich durchlaufene Graphwechsel mit einem aktiven Paket und frischem Energiebeleg bleibt als Fachtest offen.
 
 Der [Band-Kompositionsrun131](w09-band-composition-performance-witness.json) endet mit zwei tatsächlichen 5.000-ms-Timeouts. Die [nachfolgenden Originalbelege132–143](w09-band-composition-candidates-witness.json) bestätigen ein begrenztes CPU-Profil und zwei Verbesserungen: Der längere Fall bleibt mit 5.586 ms über dem unveränderten Limit. Der begrenzte Performancegoal lautet daher NOT_MET. Zwei echte Guard-Assertion-REDs gegen eigene Arraymethoden und manipulierte Eingabemengen wurden geschlossen; ein später unabhängig gefundener Gegenfall für manipulierte **Vorschlags-Ausgabemengen** ist noch offen. Conveyor/Material29 Fälle und der erneute Original-TypeScript-/Vite-Build bestehen. Diese gezielten Ergebnisse ersetzen keinen vollständigen Kreislauf oder Paket-PASS. Gesamtbudgets und geschützte W03-/W04-/W08-Dateien bleiben unverändert.
+
+Der [unabhängige Kompositions-/Profilreview](w09-composition-performance-source-review.md) bindet die tatsächlich gelesenen Vorher-/Guardquellen und Profile. Der externe Outputmengen-Gegenfall wurde durch144RED→145GREEN geschlossen. Zwei weitere echte RED-Gruppen146/147 prüfen vollständige Vorschlagsbelege/Powerdaten und W02-Receiptketten/Reservierungen; diese Vertragsgates sind aktuell offen. Der historische Goaltext nennt irrtümlich Node20 und56 Übergänge:143 beobachtet Node22.23.3/npm10.9.8, der vollständige zweite Fachfall hat57 Übergänge. Die Originalmetadaten bleiben erhalten.
