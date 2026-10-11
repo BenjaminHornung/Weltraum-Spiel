@@ -1,6 +1,6 @@
 # FP06 Implementierungsstatus
 
-Stand: 2026-10-11 15:44 UTC. `PASS` bezeichnet ein abgeschlossenes Paketgate. `FAIL` benennt eine tatsächlich fehlgeschlagene erforderliche Prüfung; laufende Korrekturen ändern diesen Befund erst nach Verifikation. `NOT_RUN` gilt für noch nicht ausgeführte Prüfungen. Tatsächlich ausgeführte Teilprüfungen stehen im jeweiligen Bericht. Die maßgeblichen Gates und Branch-/Worktree-/Schreibgrenzen sind in `source-lock.json` und `write-ownership.json` gebunden.
+Stand: 2026-10-11 16:13 UTC. `PASS` bezeichnet ein abgeschlossenes Paketgate. `FAIL` benennt eine tatsächlich fehlgeschlagene erforderliche Prüfung; laufende Korrekturen ändern diesen Befund erst nach Verifikation. `NOT_RUN` gilt für noch nicht ausgeführte Prüfungen. Tatsächlich ausgeführte Teilprüfungen stehen im jeweiligen Bericht. Die maßgeblichen Gates und Branch-/Worktree-/Schreibgrenzen sind in `source-lock.json` und `write-ownership.json` gebunden.
 
 Aktuell geprüftes `origin/main`: `e40592c113b72a8dc93725187f92cf948e07f44d` (tatsächliches `git ls-remote` um 15:38:12 UTC). Kein Mainmerge, Push oder Veröffentlichung.
 
@@ -13,7 +13,7 @@ Aktuell geprüftes `origin/main`: `e40592c113b72a8dc93725187f92cf948e07f44d` (ta
 | W04 | PASS | `/root/fp06_domain` | `6929bf2447b72c9f3f8fa3bcae0a59c0691966c0` | [W04 Paketbericht](w04-package-report.md) |
 | W05 | PASS | `/root/fp06_domain` | `26d5e892c2b401b9011234dabf86955af7462fb8` | [W05 Paketbericht](w05-package-report.md) |
 | W06 | PASS | `/root/fp06_integrator` | `2c044e02f1f31a2db3de3a0df9156bd71a431a7a` | [W06 Paketbericht](w06-package-report.md) |
-| W07 | FAIL | `/root/fp06_integrator` | `—` | Achter Browser FAIL (12 PASS/1 FAIL/4 NOT_RUN): reale Bewegung und bezahlter 208-kg-Cutter unabhängig belegt; echter Receiver-RED (1 FAIL/34 übersprungen), minimaler Ghostfix läuft; [Teilreview](w07-eighth-browser-paid-visual-review.md) |
+| W07 | FAIL | `/root/fp06_integrator` | `—` | Neunter Normalbrowser FAIL (5 PASS/1 FAIL/11 NOT_RUN): reale Eingaben überschießen die 0,3-m-Standregion; begrenzte Feinpulsdiagnose freigegeben. Ghostfix ist unabhängig reviewed PASS, finale 2 Receiverfälle + 56 Guards + Build PASS; [Review](w07-ghost-final-quality-review.md) |
 | W08 | PASS | `/root/fp06_domain` | `8d22fc9907d84bf2ff6b257299ff47fb23b112ff` | [W08 Paketbericht](w08-package-report.md) |
 | W09 | BLOCKED | `/root/fp06_integrator` | `—` | Vorgänger: W04, W07, W08 |
 | W10 | BLOCKED | `/root/fp06_integrator` | `—` | Vorgänger: W09 |

@@ -1311,7 +1311,7 @@
         "apps/weltraum-browser/evidence/factory/w07/<actual-run-id>/**"
       ],
       "evidenceGrant": true,
-      "status": "IN_REVIEW",
+      "status": "IN_PROGRESS",
       "owner": "/root/fp06_integrator",
       "plannedRole": "integrator",
       "branch": "codex/hestia-fp06-integrator-2026-10-11",
@@ -1371,7 +1371,7 @@
         "Cargo provenance alone is not physical reach: initial source must be bound to a real Cargo-S0 world owner, native pose and access outside the 22 x 12 m machine zone. W07 handles initial witness/open and a truly reachable paid player build; W09 handles finite pickup, confirmed native movement and local deposit for remote construction/production. No new terrain masks, cargo, UI source-pose writes or automatic transport. New exact paths require a separate recorded scope extension; existing grants remain unchanged."
       ],
       "baseCommitSha": "d5502ae7fd5431d58eda51bea062c54691ebe3c2",
-      "implementationWriteHold": true,
+      "implementationWriteHold": false,
       "authorizedAtUtc": "2026-10-11T13:11:16.765614+00:00",
       "completedAtUtc": null,
       "tddInitialStatus": {
@@ -1719,11 +1719,9 @@
         "packageCommitSha": null
       },
       "currentNarrowWriteSet": [
-        "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
-        "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts",
-        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts"
+        "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
       ],
-      "currentNarrowScope": "Bootstrap-only actualReceiver ghost pose/lifecycle correction after realRED59; input/Native/source/material/Receivercontracts andallother26grantpaths held.",
+      "currentNarrowScope": "One E2E-only bounded adaptive fine-key diagnostic; all other28 product paths held at Ninth seal",
       "browserSeventhActual": {
         "log": 51,
         "endedAtUtc": "2026-10-11T14:55:26.833Z",
@@ -1942,7 +1940,41 @@
         "productSealSha256": "5f0588a7a969d185424780bd298fc16c45260874311ef9415cc4da49aa580c12",
         "configSha256": "53a55a48da97d43a02e317fb8edc844d57a9b5687f356a7ebf4f5b470efcf900",
         "authorityRule": "Normal UI/native keyboard only; no diagnostic bridge/eval authority/faketime/error filtering; existing timeouts/caps unchanged",
-        "status": "AUTHORIZED_NOT_YET_CLAIMED_RUN"
+        "status": "EXECUTED_FAIL_CPU_RELEASED",
+        "startedAtUtc": "2026-10-11T16:03:48Z",
+        "log": 67,
+        "normalCases": 17,
+        "workers": 1,
+        "eighthArchiveVerifiedArtifacts": 31
+      },
+      "browserNinthActual": {
+        "log": 67,
+        "endedAtUtc": "2026-10-11T16:05:14.315084+00:00",
+        "exitCode": 1,
+        "pass": 5,
+        "fail": 1,
+        "notRun": 11,
+        "wrapperSeconds": 85.65040222300013,
+        "rawSha256": "31ba4dbd904090a4b20edadcf1fc1f501c3c623a653a3bf9ffc35a57149e6a10",
+        "rawBytes": 8164,
+        "observedFailure": "Eight real stable D/A corrections overshoot narrow supported X region: final nativeX -5.699980735778809; not a timeout",
+        "diagnosis": "apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/67-native-walk-readonly-diagnosis.json",
+        "diagnosisRule": "Every tap actually moved; two stable released readbacks each; grounded/Walking and all relevant transactions Idle. No proven Native/input/obstacle fault; API605-675ms is total API duration, not observed trusted hold interval",
+        "ghostPaidC26Dispose": "NOT_RUN",
+        "artifactReceipt": "apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/67-browser-ninth-artifact-receipt.json"
+      },
+      "fineMovementDiagnosticAuthorization": {
+        "authorizedAtUtc": "2026-10-11T16:12:48.484129+00:00",
+        "actor": "/root/fp06_integrator",
+        "kind": "ONE_TARGETED_DIAGNOSTIC_NOT_NORMAL_GATE",
+        "writeSet": [
+          "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
+        ],
+        "allowed": "Normal route/Play/trusted keys; passive bounded Down/Up timestamps and read-only Native pose/ticks; initial100-125ms finepulse, halve on overshoot to50ms; maximum8 released corrections with existing bounded stableNativeRead confirmations",
+        "restoreRule": "Archive exact normal E2E bytes first; restore same bytes after diagnostic and revalidate all29 Ninth-seal paths",
+        "forbidden": "No Runtime/Input/Native/IPC/terrain/reach/clock/caps/queue/timeout changes, no World mutation eval, no Worker wrapper or authority bridge, no diagnostic PASS as gameplay",
+        "cpuGpuPortLease": "EXCLUSIVE_5174",
+        "result": "NOT_RUN"
       }
     },
     "W08": {
