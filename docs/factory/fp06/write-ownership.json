@@ -1670,6 +1670,37 @@
         "guardGates": "Real guard counterexample before fix where applicable; already native-staged Level/Jump must be neutralized across actual transient Hold→resume, without changing velocity/clock.",
         "browser": "NOT_GRANTED",
         "status": "AUTHORIZED_AFTER_REAL_RED"
+      },
+      "factoryInputDeliveryGuardReviews": [
+        {
+          "report": "docs/factory/fp06/reviews/w07-input-delivery-guard-review.md",
+          "originalSha256": "35fbb12f8bb287be65e94760758c8ca747949080e56f235f6c932824f7f44272",
+          "originalBytes": 5857,
+          "copiedSha256": "35fbb12f8bb287be65e94760758c8ca747949080e56f235f6c932824f7f44272"
+        },
+        {
+          "report": "docs/factory/fp06/reviews/w07-supported-input-red-review.md",
+          "originalSha256": "b46674c0e34e50a85548a1b42d8bb2b8aa2e0881d1cf0b2053ba85ae93fd5655",
+          "originalBytes": 3541,
+          "copiedSha256": "b46674c0e34e50a85548a1b42d8bb2b8aa2e0881d1cf0b2053ba85ae93fd5655"
+        }
+      ],
+      "factoryInputDeliveryNativeGuardRed": {
+        "log": 70,
+        "receipt": "apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/70-native-factory-input-guards-business-red-command.json",
+        "result": "4_BUSINESS_FAIL_16_SKIPPED_8_ACTUAL_ASSERTIONS_NO_SETUP_ERROR",
+        "endedAtUtc": "2026-10-11T16:35:47.515390+00:00",
+        "wrapperSeconds": 1.728079776999948,
+        "rawSha256": "f065263a0914704c36f7e3c86bff913542ebe93a8b036d65f28ce41f0ba3a5f5",
+        "rawBytes": 7679,
+        "rootRawVerification": "Gzip byte length/SHA exact receipt match",
+        "counterexamples": [
+          "Already staged Move+Jump survives real Terrain Prepare/Commit/Finalize",
+          "New Move+Jump under prepared Hold replays after finalize",
+          "Explicit Cancel fails to clear pendingJump while ordinary Up preserves it",
+          "Factory-only native input incorrectly accepted on Legacy"
+        ],
+        "nativeHoldEntry": "No pose/tick/velocity change proved"
       }
     },
     "W08": {
