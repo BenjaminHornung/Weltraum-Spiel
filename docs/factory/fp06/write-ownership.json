@@ -63,6 +63,18 @@
         "apps/weltraum-browser/src/factory/construction/placement.ts",
         "apps/weltraum-browser/src/factory/construction/buildStep.ts"
       ]
+    },
+    {
+      "agent": "/root/fp06_domain",
+      "package": "W09",
+      "role": "cargo-usability-only-second-writer",
+      "branch": "codex/hestia-fp06-ui-w09-2026-10-11",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11",
+      "baseCommitSha": "24c274e2302452c5fa305e5ca37d6935bbff55ba",
+      "writeSet": [
+        "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+        "apps/weltraum-browser/tests/unit/factory/panels.test.ts"
+      ]
     }
   ],
   "activeDocumentationWriter": {
@@ -3232,7 +3244,7 @@
         "scope": "Only exact immutable W08 thenW04 cherry-picks on own cleanIntegratorbranch; verify sourceCommitpaths/SHA/bytes/GitLFSrefs unchanged and actualnewfullSHAs/cleanstatus. Stop/reportactualconflict; noRuntime/App/Source/Evidenceamend/newtests/Main/push/rebase. Aftercopy hold fornewW09grant; mobileHandlingOwnergate remainsOPEN."
       },
       "pendingSecondWriterUIRole": {
-        "status": "UI_SUBDELIVERY_SOURCE_EVIDENCE_GIT_PASS_PACKAGE_GATE_PENDING",
+        "status": "CARGO_USABILITY_REVIEW_FIX_IN_PROGRESS",
         "agent": "/root/fp06_domain",
         "role": "W09-panels-only-second-writer",
         "branch": "codex/hestia-fp06-ui-w09-2026-10-11",
@@ -3274,7 +3286,7 @@
           "reason": "Independent actual DOM-lifetime finding: technology publication and its own click handler replace focused buttons. Stable controls keyed by technology ID needed.",
           "constraints": "Archive exact original seal/patch/manifest/report before overwrite; meaningful nodeidentity/keyboard publication RED first; narrow stable controls fix; focused UI tests and affected original build, then reseal/HOLD independentreview. Other three products remain exact sealed bytes. No Host/Entry/Physics/Save/Contract/newdependencies/browser or competingCPU jobs."
         },
-        "implementationWriteHold": true,
+        "implementationWriteHold": false,
         "commitAdmission": {
           "path": "docs/factory/fp06/reviews/w09-ui-commit-admission.json",
           "authorizedAtUtc": "2026-10-11T20:54:27.190450+00:00",
@@ -3283,7 +3295,32 @@
           "exactPathCount": 42
         },
         "commitSha": "24c274e2302452c5fa305e5ca37d6935bbff55ba",
-        "rootHeadAdmission": "docs/factory/fp06/reviews/w09-ui-root-head-admission.json"
+        "rootHeadAdmission": "docs/factory/fp06/reviews/w09-ui-root-head-admission.json",
+        "cargoUsabilityFixAuthorization": {
+          "schema": "hestia.fp06.w09.ui-cargo-usability-grant/v1",
+          "authorizedAtUtc": "2026-10-11T21:39:29.460779+00:00",
+          "actor": "/root/fp06_domain",
+          "branch": "codex/hestia-fp06-ui-w09-2026-10-11",
+          "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11",
+          "baseCommitSha": "24c274e2302452c5fa305e5ca37d6935bbff55ba",
+          "writeSet": [
+            "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+            "apps/weltraum-browser/tests/unit/factory/panels.test.ts"
+          ],
+          "evidenceWriteSet": [
+            "apps/weltraum-browser/evidence/factory/w09/<distinct-actual-ui-cargo-run-id>/**"
+          ],
+          "reason": "Actual browser72 screenshot and independent visual review: long complete inventory scrolls active transport controls out of view. Make controls reachable while keeping full finite inventory available and stable focused nodes.",
+          "reviewReport": "docs/factory/fp06/reviews/w09-browser72-visual-preflight.md",
+          "constraints": [
+            "Meaningful DOM/controls-order/bounded-inventory/focus business RED before smallest UI change, focused UI GREEN and affected original build",
+            "Current UI protocol unchanged; read-only published facts and existing finite intents only; no native facts, poses, grants, timers or separate authority",
+            "Only cargoPanel.ts and panels.test.ts; machinePanel/powerPanel/technologyView and all shared files remain HOLD",
+            "Inventory details may have bounded own scrolling/disclosure; active transport/open/transfer controls before long inventory, retain interactive nodes and complete source lots",
+            "Coordinate every CPU test/build lease with integrator; no browser/server or competing runtime jobs",
+            "Own distinct evidence run; preserve all accepted former evidence/commits; seal and independent review before copy; no direct integrator writes or main/push/publication"
+          ]
+        }
       },
       "predecessorCopies": {
         "status": "BYTE_GIT_LFS_PASS",
@@ -3363,6 +3400,21 @@
           "C2: all carrier operations must admit existing bounded Native world-members capture temporary CPUcost before allocation"
         ],
         "limits": "No tests/browser executed by reviewer; mutable drySlice drift explicit. Current integration is not completed gameplay."
+      },
+      "liveLoopDraftReview": {
+        "status": "WIP_SOURCE_ONLY_OPEN_SEAMS_NOT_PACKAGE_GATE",
+        "path": "docs/factory/fp06/reviews/w09-live-loop-command-seams.md",
+        "sha256": "f94226085dc11684f65af5cfc41770594f4ffd98540e1d965933c97f4427540c"
+      },
+      "partialBrowserWitness": {
+        "status": "5PASS_1FAIL_10NOT_RUN_FULL_ROUTE_AND_FACTORY_LOOP_NOT_RUN",
+        "path": "docs/factory/fp06/reviews/w09-browser72-partial-witness.json",
+        "sha256": "815d9a6f5c3d02c5556ec601e5b081288f02e46a7730d09be7fa831c5b11094d"
+      },
+      "browserVisualPreflight": {
+        "status": "FUNCTIONAL_CONTEXT_AND_CONTROL_REACH_FINDINGS_OPEN_NOT_ART_ACCEPTANCE",
+        "path": "docs/factory/fp06/reviews/w09-browser72-visual-preflight.md",
+        "sha256": "db601897dbd44e5a77b0207e3edb202d7ea38ea55890c1f40b008de62acb5fbd"
       }
     },
     "W10": {

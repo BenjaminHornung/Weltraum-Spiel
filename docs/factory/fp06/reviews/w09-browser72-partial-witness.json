@@ -1,0 +1,107 @@
+{
+  "schema": "fp06-root-partial-browser-witness-v1",
+  "recordedAtUtc": "2026-10-11T21:35:28.648681+00:00",
+  "package": "W09",
+  "packageGate": "NOT_RUN",
+  "actor": "/root/fp06_integrator",
+  "branch": "codex/hestia-fp06-integrator-2026-10-11",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+  "candidateCommitSha": null,
+  "workState": "mutable W09 candidate; preceding UI copy commit aeb6680044eb455a10d0bba6e67979c153fd248f is not a W09 implementation seal",
+  "phase": "72-normal-settled-heavy-route",
+  "commandReceipt": {
+    "command": [
+      "npm",
+      "run",
+      "test:e2e",
+      "--",
+      "--config=/workspace/.cloud-setup/fp06-w09.playwright.config.mts",
+      "tests/e2e/factory-dry-flow.spec.ts"
+    ],
+    "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+    "startedAtUtc": "2026-10-11T21:29:29.103304+00:00",
+    "endedAtUtc": "2026-10-11T21:29:58.437131+00:00",
+    "elapsedSeconds": 29.334360375003598,
+    "exitCode": 1,
+    "rawBytes": 8620,
+    "rawSha256": "4fedbf3f39e65dfeffe9b702c7e6e4c3dda93bd790ab4a88b4defb35b2f68828"
+  },
+  "actualCases": {
+    "PASS": 5,
+    "FAIL": 1,
+    "NOT_RUN": 10
+  },
+  "observedNative": {
+    "ticks": 1028,
+    "status": "Running",
+    "bodyCount": 6,
+    "colliderCount": 86,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -6.000001907348633,
+        "y": 2.4000418186187744,
+        "z": 11.875
+      },
+      "grounded": true,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Walking"
+    },
+    "carrier": {
+      "ownerId": "factory_carrier",
+      "profileId": "B07-BOM",
+      "phase": "Carrying",
+      "positionMm": [
+        -6000.001907348633,
+        1499.9998807907104,
+        10875
+      ],
+      "massMg": 341000000,
+      "nativeMassKg": 341,
+      "colliderHandles": [
+        4e-322,
+        4.05e-322,
+        4.1e-322,
+        4.15e-322,
+        4.2e-322
+      ]
+    }
+  },
+  "material": {
+    "inventoryTotalMassMg": 2984400000,
+    "containers": [
+      {
+        "id": "fp02_wreck_cargo",
+        "revision": 7,
+        "role": "cargo",
+        "massMg": 2643400000
+      },
+      {
+        "id": "carrier_ui_cargo_6d411e8bf7ff4610a69d56937622da91",
+        "revision": 7,
+        "role": "carrier",
+        "massMg": 341000000
+      }
+    ]
+  },
+  "pageErrors": [],
+  "artifact": {
+    "path": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/browser-heavy-route-72/heavy-route-final.json",
+    "bytes": 2459908,
+    "sha256": "75e37d9cf915dea152fe29331d2a8baac011e1462516cbc5f428db8e60eef58b"
+  },
+  "rootChecks": [
+    "Actual phase raw gzip decompressed bytes equal command receipt length and SHA256",
+    "Retained final browser JSON parses; complete published inventory mass sums exactly to 2984400000 mg",
+    "Native Carrying payload is 341 kg with five collider handles; no published page errors"
+  ],
+  "limits": [
+    "No successful west corridor / full heavy route / deposit witnessed",
+    "Geometric cause of movement veto not identified by phase 72",
+    "No complete paid CUT/belt/FORM/manual/usable-product flow",
+    "No W09 package PASS, W10 restore or W11 acceptance implied",
+    "No additional browser/test execution by root; author source-unchanged assertion is not independently repeated against later mutable worktree"
+  ]
+}
