@@ -805,7 +805,9 @@
       "baseCommitSha": "26d5e892c2b401b9011234dabf86955af7462fb8",
       "implementationWriteHold": false,
       "authorizedAtUtc": "2026-10-11T11:46:55.477266+00:00",
-      "completedAtUtc": null
+      "completedAtUtc": null,
+      "sourceInterpretationNote": "Root authorizes a conservative versioned technical reference: at most one real Resources packet per entire straight line, with credit debited exactly once jointly at successful source-to-line Materialreceipt adoption. Source 0.75m is usable width, not invented longitudinal gap. No Qty cache authority/0m powered belt or unreviewed climate/live/save claim. Initial D06credit0 means injection wait plus54steps4mtravel; one slot bounds downstream burst. Exact phase/clock/revision/whole-CAS behavior must pass actual tests and independent review.",
+      "preflightReport": "docs/factory/fp06/reviews/w08-preflight.md"
     },
     "W09": {
       "dependencies": [
