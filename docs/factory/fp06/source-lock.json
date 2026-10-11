@@ -4125,6 +4125,26 @@
         "path": "docs/factory/fp06/reviews/w09-normal-ui-cycle-source-preflight.md",
         "sha256": "c5175d7a802b634b926cb06811a1d87706c9e519c5d39efba44646d516c6d40f",
         "limits": "Nojobs/productwrites; freshCUTFORM+normalUI/browserpipeline notrun. Actual121/126 stubs/startstock/commandchoices limited; pending5sitepathsunread. Integrator authorized existing Entry/Host boundaryfixes."
+      },
+      "materialBindingCacheCandidateReview": {
+        "status": "READONLY_SCOPED_SPEC_QUALITY_PASS_PERFORMANCE_NOT_MET_ONE_CANDIDATE_EXHAUSTED",
+        "path": "docs/factory/fp06/reviews/w09-material-binding-cache-candidate-review.md",
+        "sha256": "d5c939c1c0b68f48ce147cb87c2c0c27b8ce0312390f09065356b3c871d99d6e",
+        "sourceSha256": "2122581f9075c53db0441002b650d6a6c2cb9eddd0c858f1b0078d58c3746a4a",
+        "testSha256": "e83081b79cd68180974f679000945dec0ea4c2c5642cbd4a83d810be7a043a8b",
+        "actual": "1601PASS1original5000Timeout5355ms;16119PASS1fixtureTypeError;16245PASS;16420GuardsPASS;165OriginalBuildPASS",
+        "limits": "Source/canonical-byte identity Soundness only. No measured baseline afterguard changes or hardware/browser/speedup/PackagePASS. No additional candidate/profile authorized."
+      },
+      "materialBindingCacheV2Witness": {
+        "path": "docs/factory/fp06/reviews/w09-material-binding-cache-v2-witness.json",
+        "sha256": "1b818f8f5cd90813208d5c3ca0aa30175b83383463ef14ad17742a139a2ad1df",
+        "records": 6,
+        "status": "ROOT_RAW_RECEIPT_SOURCE_SNAPSHOT_SCENARIO_EXACTLY_VERIFIED"
+      },
+      "outputAlias151ProvenanceCorrection": {
+        "path": "docs/factory/fp06/reviews/w09-output-alias-151-provenance-correction.md",
+        "sha256": "f5bb25ddbdbbc0fa57f4dd890796b773487dff2d97731290e67bb563043371b6",
+        "facts": "PlainResourcesSnapshot optionaldepletionundefined caused151fixturecanonicalfailure; noMethods. Originalreport/raw preserved,153actualAliasRED unchanged."
       }
     },
     "W10": {
