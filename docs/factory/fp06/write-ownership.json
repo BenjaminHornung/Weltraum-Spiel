@@ -1157,8 +1157,43 @@
         "tests": "new hvp-player-input.test.ts and existing granted bootstrap fixtures; existing E2E may only adapt actual ordinary user inputs",
         "contract": "Factory-only opt-in event-driven level intent and prompt neutralization through existing bounded Read(input); preserve Legacy default. Single latest coalesced input, one jump edge, no artificial movement tick. Recheck busy/mutating/bodyPending/held/paused/disposed at dispatch, suppress stale queued movement, protect in-flight Read publication during mutating/held phases.",
         "excluded": "No new IPC kind/timer/queue, dependency, timeout/budget/tempo/NativeTick/pose/authority/reach/terrain change. Latest coalescing does not promise motion for every0ms tap.",
-        "verification": "Collected noRAF/keyDown/keyup/stop/jump/defaultLegacy/clientBusy/coalescing/hold/disposeREDs then minimum implementation, focus GREEN, fullbuild, actualNativebrowser, new29pathSeal/review"
-      }
+        "verification": "Collected noRAF/keyDown/keyup/stop/jump/defaultLegacy/clientBusy/coalescing/hold/disposeREDs then minimum implementation, focus GREEN, fullbuild, actualNativebrowser, new29pathSeal/review",
+        "preflight": {
+          "report": "docs/factory/fp06/reviews/w07-input-intent-preflight.md",
+          "source": "/workspace/.cloud-setup/fp06-w07-input-intent-preflight.md",
+          "originalSha256": "a7f715c5b0d2abc1ff12e09dbdf9fd9ecaa982f7ecb8f4382dc2fdeee9d0e7f7",
+          "originalBytes": 10220,
+          "purpose": "Read-only technische Vorprüfung; Root hat die zwei zusätzlichen exakten Pfade anschließend freigegeben. Umsetzung und Endgate sind getrennt."
+        },
+        "observedBusinessRed": {
+          "actor": "/root/fp06_integrator",
+          "logNumber": 44,
+          "collectedTests": 12,
+          "assertionFailures": 10,
+          "legacyPasses": 2,
+          "exitCode": 1,
+          "vitestSeconds": 1.44,
+          "cliSeconds": 1.84,
+          "setupFailure": false,
+          "nativeReadPrepareWitness": "Real Rapier session snapshots in held transport fixture; premature public bodyCount3/colliders35 before Publish. No axis/nativeTick mock."
+        }
+      },
+      "historicalRuntimeReviewBeforeInput": [
+        {
+          "report": "docs/factory/fp06/reviews/w07-native-review-fourth-seal.md",
+          "source": "/workspace/.cloud-setup/fp06-w07-native-review-fourth-seal.md",
+          "originalSha256": "d49a6ae4dcce9f281674974bfed6224c020d51890a38ef2da8e1d6d3160f3a94",
+          "originalBytes": 9800,
+          "purpose": "Historisches Review des vierten 27-Pfad-Seals; die späteren Inputkorrekturen sind hier nicht geprüft."
+        },
+        {
+          "report": "docs/factory/fp06/reviews/w07-runtime-review-before-input.md",
+          "source": "/workspace/.cloud-setup/fp06-w07-final-spec-review.md",
+          "originalSha256": "76992b8eb6d5db9f8b3b4483a7952722aae658e078babcf048c41427690e2173",
+          "originalBytes": 22071,
+          "purpose": "Historischer Runtime-PASS vor dem neuen Inputdelta; kein W07-Paketgate und kein Browser-PASS."
+        }
+      ]
     },
     "W08": {
       "dependencies": [
@@ -1429,7 +1464,14 @@
       ],
       "preflightReport": "docs/factory/fp06/reviews/w10-preflight.md",
       "normalFlowPreflight": "docs/factory/fp06/reviews/w09-normal-flow-preflight.md",
-      "integrationScopeNote": "PLANNED ONLY, no grant before package gates. Actual Entry/Clock/Host/Bootstrap seams bound in W09 preflight; one host clock+sole material/power/work/belt authority, normal panels read published facts/send finite intents. Pending native/CAS publication blocks, an ordinary running or WAIT_POWER job must not permanently make isQuiescent false and suppress its own confirmed tick supply. W10 additionally couples Entry Save/Load intents and DrySlice complete validated checkpoint adoption; legacy closed codecs/repositories unchanged. Usable brace needs sourcebound paid native placement/profile evidence, no full building-statics claim."
+      "integrationScopeNote": "PLANNED ONLY, no grant before package gates. Actual Entry/Clock/Host/Bootstrap seams bound in W09 preflight; one host clock+sole material/power/work/belt authority, normal panels read published facts/send finite intents. Pending native/CAS publication blocks, an ordinary running or WAIT_POWER job must not permanently make isQuiescent false and suppress its own confirmed tick supply. W10 additionally couples Entry Save/Load intents and DrySlice complete validated checkpoint adoption; legacy closed codecs/repositories unchanged. Usable brace needs sourcebound paid native placement/profile evidence, no full building-statics claim.",
+      "cargoScenePreflight": {
+        "report": "docs/factory/fp06/reviews/w10-cargo-scene-preflight.md",
+        "source": "/workspace/.cloud-setup/fp06-w10-cargo-scene-preflight.md",
+        "originalSha256": "c8f7217df442a9a78af6372d4c01af551c12da5e71da70475c5a88f1da9ccc5a",
+        "originalBytes": 32122,
+        "purpose": "Read-only Vorprüfung, W10 bleibt bis W09-PASS gesperrt; kein Produktwrite und kein Save-PASS."
+      }
     },
     "W11": {
       "dependencies": [
