@@ -481,6 +481,15 @@
         "vitestSeconds": 2.08,
         "wrapperSeconds": 2.538,
         "rawShaAndByteCount": "Contemporaneously recorded before gzip, writer-reported; final sealed evidence review pending"
+      },
+      "firstGreenAttempt": {
+        "runId": "run-20261011T124704Z",
+        "status": "FAIL",
+        "tests": "3 PASS / 4 FAIL due existing 5000-ms test limit; no assertion failure reported",
+        "actualExitCode": 1,
+        "wrapperSeconds": 51.617,
+        "phase": "Before repeated canonical validation diagnosis; no limit increase",
+        "evidenceReview": "PENDING_WRITER_SEAL_AND_INDEPENDENT_REVIEW"
       }
     },
     "W05": {
@@ -837,7 +846,8 @@
         "Finite paid C03+C04+C07 battery-first energy loop is permitted by existing sources, not renewable or WX-FAV benchmark evidence; unique SOC owner.",
         "Actual battery support/body/service/cable route required outside blocked paths; no extra terrainmask, freeplatform, or Unknown wind air admitted.",
         "Stage native fixedfacilities under real paused ACK, material completeview-CAS and hidden renderer; full owner/member/globalbudget rollback proof, no Worldhandle exposure.",
-        "Source-verified technicalB06InstallationProfile ServiceNorth1.0..2.0 directlyadjacent actualBodyNorthmax1.0; unchangedW05AuthoringBounds1.25..2.25 retained as originalSourcefacts. NormativeFP03≥1m service and exactacceptedCutterSiteNorth7..8. ClosedexplicitversionedOverride+trueRED+actualAir/support/clearance/provenance required, noCatalogue/art/mask/Formerchange. Rootreport reviews/w07-service-zone-admission.md."
+        "Source-verified technicalB06InstallationProfile ServiceNorth1.0..2.0 directlyadjacent actualBodyNorthmax1.0; unchangedW05AuthoringBounds1.25..2.25 retained as originalSourcefacts. NormativeFP03≥1m service and exactacceptedCutterSiteNorth7..8. ClosedexplicitversionedOverride+trueRED+actualAir/support/clearance/provenance required, noCatalogue/art/mask/Formerchange. Rootreport reviews/w07-service-zone-admission.md.",
+        "Cargo provenance alone is not physical reach: initial source must be bound to a real Cargo-S0 world owner, native pose and access outside the 22 x 12 m machine zone. W07 handles initial witness/open and a truly reachable paid player build; W09 handles finite pickup, confirmed native movement and local deposit for remote construction/production. No new terrain masks, cargo, UI source-pose writes or automatic transport. New exact paths require a separate recorded scope extension; existing grants remain unchanged."
       ],
       "baseCommitSha": "d5502ae7fd5431d58eda51bea062c54691ebe3c2",
       "implementationWriteHold": false,
@@ -847,6 +857,15 @@
         "runId": "2026-10-11T122211.412749Z",
         "businessRed": "8 collected/8 expected AssertionFailure,CLI1 before implementation; previous mixed5business+3testSerialization preserved separately",
         "status": "REPORTED_BY_WRITER_PENDING_SEALED_EVIDENCE_REVIEW"
+      },
+      "affectedRegressionStatus": {
+        "reportedFiles": 8,
+        "reportedTests": 125,
+        "reportedResult": "PASS",
+        "actualExitCode": 0,
+        "wrapperSeconds": 329.58,
+        "phase": "Before cargo-anchor and final browser changes",
+        "evidenceReview": "PENDING_WRITER_SEAL_AND_INDEPENDENT_REVIEW"
       }
     },
     "W08": {
@@ -1025,9 +1044,11 @@
       "normalFlowPreflight": "docs/factory/fp06/reviews/w09-normal-flow-preflight.md",
       "integrationScopeNote": "PLANNED ONLY, no grant before package gates. Actual Entry/Clock/Host/Bootstrap seams bound in W09 preflight; one host clock+sole material/power/work/belt authority, normal panels read published facts/send finite intents. Pending native/CAS publication blocks, an ordinary running or WAIT_POWER job must not permanently make isQuiescent false and suppress its own confirmed tick supply. W10 additionally couples Entry Save/Load intents and DrySlice complete validated checkpoint adoption; legacy closed codecs/repositories unchanged. Usable brace needs sourcebound paid native placement/profile evidence, no full building-statics claim.",
       "scopeAdmissionNotes": [
-        "REC05 output must be truly portable/placeable (FP02:1019/639). Bind one produced5.8kg serialized piece into paid sameWorldfixedFacility with actual support/collision. W09 installationProfile planned only; S0 brace dimensions in reviews/w09-brace-use-preflight.md are technical proposal, not frozen source or Owneracceptance. Other narrowly conditional paths in report require actual sealedW07 API before grant. No W12statics/platform/newTerrain masks/duplicate material."
+        "REC05 output must be truly portable/placeable (FP02:1019/639). Bind one produced5.8kg serialized piece into paid sameWorldfixedFacility with actual support/collision. W09 installationProfile planned only; S0 brace dimensions in reviews/w09-brace-use-preflight.md are technical proposal, not frozen source or Owneracceptance. Other narrowly conditional paths in report require actual sealedW07 API before grant. No W12statics/platform/newTerrain masks/duplicate material.",
+        "Read-only cargo preflight is a technical proposal, not a runtime PASS. Rebind to sealed W07 cargo-anchor APIs. Each selected source must have individual native location/reach/access and exact Resources CAS; finite heavy handling is permitted by FP01 section 5.5 and FP02 section 6.4, without a vehicle simulator or new cargo. Initial Cargo-S0 belongs to W07; remaining pickup/walk/deposit belongs to W09. Conditional paths in the report are planned only until exact authorization."
       ],
-      "braceUsePreflight": "docs/factory/fp06/reviews/w09-brace-use-preflight.md"
+      "braceUsePreflight": "docs/factory/fp06/reviews/w09-brace-use-preflight.md",
+      "cargoReachPreflight": "docs/factory/fp06/reviews/w09-cargo-reach-preflight.md"
     },
     "W10": {
       "dependencies": [
