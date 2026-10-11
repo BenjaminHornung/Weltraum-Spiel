@@ -1,0 +1,384 @@
+{
+  "schema": "hestia.fp06.w09-ui-stage-proof/v1",
+  "capturedAtUtc": "2026-10-11T20:55:19.531080+00:00",
+  "baseCommitSha": "43a61c0f5be5df69e4f8bb42db89da3d7a3a4b2b",
+  "branch": "codex/hestia-fp06-ui-w09-2026-10-11",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11",
+  "paths": [
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+      "gitBlob": "1bc23bbd7aabe1f25c4e1b62a63e7543dd66444c",
+      "payloadBytes": 15555,
+      "payloadSha256": "6d7b7b565927e811dca394e67dccda51d9fe5fd6294e98611ecbcd1e042d6f78",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/machinePanel.ts",
+      "gitBlob": "07f44d7d24c47f4e22734bafdaba163fc5ede38a",
+      "payloadBytes": 6494,
+      "payloadSha256": "9905cc0d9bd04ee2dc15903b03fca2399e4fa95fdf828ed6853787f97a19c2e7",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/powerPanel.ts",
+      "gitBlob": "1226c06206b17653d4c3deb2a6ea478b3825d42d",
+      "payloadBytes": 1283,
+      "payloadSha256": "2ffe21ca555fdd9f60d06997fd2a42a3c4775319ec7768e45aaeb161529a7f15",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/technologyView.ts",
+      "gitBlob": "7d88ce12f7b711eec2baf63a42b974d3e560cfd7",
+      "payloadBytes": 1756,
+      "payloadSha256": "dd0dc44d98d7747b8cb9274c5d9f8158218744ad8fd9770860baacf0cec90da9",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/panels.test.ts",
+      "gitBlob": "94e54a5955dfef38cabee8c7e4e461475a715123",
+      "payloadBytes": 19798,
+      "payloadSha256": "c6540ecc6057371f5e6dbc5689b43ce0390ce62b60c7ba663ec92e12928eb63f",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/01-panels-initial-red.log.gz",
+      "gitBlob": "e3d0239c33713a1ab4b62cf2c5fdd02936f7a097",
+      "payloadBytes": 1120,
+      "payloadSha256": "fa113165793dff178e55c1307b4583bc871568349f69944149f737b24cbbea50",
+      "stagePayloadMatch": true,
+      "storage": "lfs",
+      "lfsOid": "fa113165793dff178e55c1307b4583bc871568349f69944149f737b24cbbea50",
+      "lfsSize": 1120,
+      "localObjectVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/01-panels-initial-red.receipt.json",
+      "gitBlob": "1b37d7ed932cb30180864d0b4e1153ead4d9ccb5",
+      "payloadBytes": 656,
+      "payloadSha256": "cff11bfc48cac3683a1c024c7ec1c3e3ed8b1f1f3eea7e399666c2a8303057a8",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/02-panels-first-green.log.gz",
+      "gitBlob": "7c4fcaa5e44956ae1eace87bb772fdba657d1f4c",
+      "payloadBytes": 253,
+      "payloadSha256": "918347f6283be345dea7a171bb9eaceb7ba56b7294bf0bae99694c8749b46daa",
+      "stagePayloadMatch": true,
+      "storage": "lfs",
+      "lfsOid": "918347f6283be345dea7a171bb9eaceb7ba56b7294bf0bae99694c8749b46daa",
+      "lfsSize": 253,
+      "localObjectVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/02-panels-first-green.receipt.json",
+      "gitBlob": "85dd11466afe8baa2ec0523f5d5415d2dc3ae955",
+      "payloadBytes": 513,
+      "payloadSha256": "7ef2f3121bf9e855683e14a7c932910260d4b51bb10b8fa60588d1221bdc7c92",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/03-panels-safety-transfer-red.log.gz",
+      "gitBlob": "eca1c0885ce70e5bbbba04e588fcf08ebb8dfde6",
+      "payloadBytes": 2368,
+      "payloadSha256": "5c899b403aaa0eb07ec40c2af83e04bdde8d1ca188da0ee255d4fee1e219b365",
+      "stagePayloadMatch": true,
+      "storage": "lfs",
+      "lfsOid": "5c899b403aaa0eb07ec40c2af83e04bdde8d1ca188da0ee255d4fee1e219b365",
+      "lfsSize": 2368,
+      "localObjectVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/03-panels-safety-transfer-red.receipt.json",
+      "gitBlob": "b2e36d6b268a27a5d05fd379da484bc36d0bf5db",
+      "payloadBytes": 523,
+      "payloadSha256": "19579717eefdcc042626ef7fa0e3136bf9188bceb064c4e92b924d171229d94a",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/04-panels-receipt-binding-red.log.gz",
+      "gitBlob": "1381c98422135e9d7dd6cf433f81115ac1f5754b",
+      "payloadBytes": 829,
+      "payloadSha256": "a01d2dd7c20d5f1f3b1751ca691e3d11ec907830111e9d91c249a011d23506c5",
+      "stagePayloadMatch": true,
+      "storage": "lfs",
+      "lfsOid": "a01d2dd7c20d5f1f3b1751ca691e3d11ec907830111e9d91c249a011d23506c5",
+      "lfsSize": 829,
+      "localObjectVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/04-panels-receipt-binding-red.receipt.json",
+      "gitBlob": "d53ba0607a4d80950106f3e9ea7247bb08234772",
+      "payloadBytes": 522,
+      "payloadSha256": "bbe4c47cae2eed1af34ca17ec96603e23c5800a18e9687cb54f4f558b8e466ae",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/05-panels-native-uuid-red.log.gz",
+      "gitBlob": "3d0b3faaaa9e12addc1a2bc3d2f9604c1d4645e1",
+      "payloadBytes": 708,
+      "payloadSha256": "f8065a14a7f505dc322d191c5924609fc4b867c4a397c2d38583b60be2fb086a",
+      "stagePayloadMatch": true,
+      "storage": "lfs",
+      "lfsOid": "f8065a14a7f505dc322d191c5924609fc4b867c4a397c2d38583b60be2fb086a",
+      "lfsSize": 708,
+      "localObjectVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/05-panels-native-uuid-red.receipt.json",
+      "gitBlob": "800de38802f5700c9170d3b5de752f921d31340c",
+      "payloadBytes": 533,
+      "payloadSha256": "b79ec521da8d37a0bfb69cccd50ea395ca4541476b4cf727e7bc4297da091dff",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/06-panels-green.log.gz",
+      "gitBlob": "1ec22b0101cead9a33e837ffd8716a468ac5a552",
+      "payloadBytes": 254,
+      "payloadSha256": "c5e721fd6d145064a479a6fd55eababf492c435f6eb3de26089716b425926775",
+      "stagePayloadMatch": true,
+      "storage": "lfs",
+      "lfsOid": "c5e721fd6d145064a479a6fd55eababf492c435f6eb3de26089716b425926775",
+      "lfsSize": 254,
+      "localObjectVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/06-panels-green.receipt.json",
+      "gitBlob": "e85edbce14edbe34412ad9d67a0e229fa2815292",
+      "payloadBytes": 507,
+      "payloadSha256": "b25a0cdd8cf04a9c9ec716a66f1cd1172f079a068f7e262a6e9dcef9d79fa912",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/07-catalog-resource-regressions.log.gz",
+      "gitBlob": "a1f3e7fb1b5a08052cdd6915b442db5b1282dfc5",
+      "payloadBytes": 282,
+      "payloadSha256": "8f34c30c29c8471e0b81acf7fe8c8f7314330e67786721bb5c189d225094b60c",
+      "stagePayloadMatch": true,
+      "storage": "lfs",
+      "lfsOid": "8f34c30c29c8471e0b81acf7fe8c8f7314330e67786721bb5c189d225094b60c",
+      "lfsSize": 282,
+      "localObjectVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/07-catalog-resource-regressions.receipt.json",
+      "gitBlob": "0602fad0c78b8d8b6cd246731f50cb66b0f7985f",
+      "payloadBytes": 633,
+      "payloadSha256": "146a228d7fd7c8b996855730d0a7004025005758c5efffda5891013f5d7fe8f6",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/08-build.log.gz",
+      "gitBlob": "6c593fbffd3146a2ce7b0243687ee224a38cb072",
+      "payloadBytes": 870,
+      "payloadSha256": "314b500b417e044d90df923ce03f6e83bfb1ae64127d39150fc966d0487cfd74",
+      "stagePayloadMatch": true,
+      "storage": "lfs",
+      "lfsOid": "314b500b417e044d90df923ce03f6e83bfb1ae64127d39150fc966d0487cfd74",
+      "lfsSize": 870,
+      "localObjectVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/08-build.receipt.json",
+      "gitBlob": "8f27e0ad71c0898561ac467c2a43c390057a0179",
+      "payloadBytes": 464,
+      "payloadSha256": "fc7ab62c9214d1f0bbd41fbc6a1655b28ba706a82a17f3404f50fa6865cba2c9",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/09-technology-keyboard-red.log.gz",
+      "gitBlob": "105bef4a6e51d87b9b08ec4bcfc9c6d97567725c",
+      "payloadBytes": 1675,
+      "payloadSha256": "de7a6e1ebb6e0737c7ddd575754c25ad4d3423059e0ca4a26454ef1c8be1181f",
+      "stagePayloadMatch": true,
+      "storage": "lfs",
+      "lfsOid": "de7a6e1ebb6e0737c7ddd575754c25ad4d3423059e0ca4a26454ef1c8be1181f",
+      "lfsSize": 1675,
+      "localObjectVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/09-technology-keyboard-red.receipt.json",
+      "gitBlob": "cc987e40dc370ac4fbe8afc88f05dd200f66b664",
+      "payloadBytes": 544,
+      "payloadSha256": "d5427bb0f7dedd9c01de5969b9aaf9cb44538715ba0cf7f6129e35326f1e9ff8",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/10-panels-tech-fix-green.log.gz",
+      "gitBlob": "26f99a1bca889c9b7740556fbfd2d22389d6179c",
+      "payloadBytes": 253,
+      "payloadSha256": "62ca3d9af8ff5f1072be698cb025fc1d9ecd9b153b7f4d468f4a97fd9846aef8",
+      "stagePayloadMatch": true,
+      "storage": "lfs",
+      "lfsOid": "62ca3d9af8ff5f1072be698cb025fc1d9ecd9b153b7f4d468f4a97fd9846aef8",
+      "lfsSize": 253,
+      "localObjectVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/10-panels-tech-fix-green.receipt.json",
+      "gitBlob": "c6926d4b16f2051b40b6faad6b1344334f1bfd41",
+      "payloadBytes": 516,
+      "payloadSha256": "4dbb6d4d5b17a96e622a6d2c359bae0b6bb4b50f568d4ee2a7242f0e824d7a2f",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/11-tech-fix-build.log.gz",
+      "gitBlob": "703de8c0a81e9f3be0b0b63deb85aabcf312111f",
+      "payloadBytes": 870,
+      "payloadSha256": "8c7acd1f9411e48b5bff5f3262eb0efbb672d202b16d09212ff9134fcb023087",
+      "stagePayloadMatch": true,
+      "storage": "lfs",
+      "lfsOid": "8c7acd1f9411e48b5bff5f3262eb0efbb672d202b16d09212ff9134fcb023087",
+      "lfsSize": 870,
+      "localObjectVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/11-tech-fix-build.receipt.json",
+      "gitBlob": "c9537c91bdcd92922884fde35a6d2f5668be3951",
+      "payloadBytes": 473,
+      "payloadSha256": "039dca23bef867b3ae5a1a04fdad1d47c13173edae4b101014e140bed484692b",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/history-before-tech-focus-fix/archive-receipt.json",
+      "gitBlob": "307db663ec9b2eeccf7c8a335a715f70e54a07bd",
+      "payloadBytes": 928,
+      "payloadSha256": "7296116bef2d98eddef4fe91809cdd6c65c226fdb3585e8254af9dec585f1f0e",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/history-before-tech-focus-fix/manifest.json",
+      "gitBlob": "59367131da028c7fb6beb9a1ad15880d5af97f08",
+      "payloadBytes": 14341,
+      "payloadSha256": "15e257c3063ca24d3774e21258e1611c822529d6a7cae97ff62817fb2f3147b2",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/history-before-tech-focus-fix/product-seal.json",
+      "gitBlob": "b195298d7fb9d41b53a0e4a87b06fd5e4cfd24df",
+      "payloadBytes": 3751,
+      "payloadSha256": "3ed3df962f5fd51dacf9b0c38c72c2f2cb7291159b3b7805d0ac58f055d28317",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/history-before-tech-focus-fix/product.patch",
+      "gitBlob": "e769880393a0972f69ee2ce5ab057d50df4be53b",
+      "payloadBytes": 45461,
+      "payloadSha256": "997fb8170fc40c709c366d5b2c90ff5ed1a88b93a384eef83b8d75680a2a76ef",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/history-before-tech-focus-fix/report.json",
+      "gitBlob": "ada8d0136a0b981bfcf81a61fd13b7047a8022ab",
+      "payloadBytes": 7360,
+      "payloadSha256": "8418ed33fb5224894552f14a73c8780acea825725971444bec072f74b0776f0c",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/history-before-tech-focus-fix/review.md",
+      "gitBlob": "907c17b15d3908727c19e54af03e1595f5d2ce7b",
+      "payloadBytes": 2087,
+      "payloadSha256": "ce73805bac5d2560509b6c9fa501e2fe376e6dfd1e67c05b984345143309e39e",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/manifest.json",
+      "gitBlob": "12ba17126cca18e9ed80bf24ccb352a5979d44aa",
+      "payloadBytes": 20560,
+      "payloadSha256": "0eba3c96623bc19cc336167e8f830c4b3e1fdb2d4c70b1831fe23d42087ad58f",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/plan.md",
+      "gitBlob": "46ed644ec1b0e6d2a814a899304e9174813c7463",
+      "payloadBytes": 1449,
+      "payloadSha256": "97d61d6890ae39e2a9c0c05ed951880b1a946e88481afd1485f04e4d73d9b1ec",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/product-seal.json",
+      "gitBlob": "171f054b8c8bbe9bb941ec361ea1a11d81d7eb4c",
+      "payloadBytes": 4324,
+      "payloadSha256": "521ed40282b6de2fb8a78e74d3d40bf6d19d69f25797b66c95e03e473eabb065",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/product.patch",
+      "gitBlob": "7e710e30392c71d6b3a87f7681c57919bd463f46",
+      "payloadBytes": 46749,
+      "payloadSha256": "41b2e0d869b52b5aca58c87eb9ffcc848acd19352a8068317aabe6f12c764e37",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/raw-log-archive-followup.json",
+      "gitBlob": "017242c27073420f852a9ebe4012142394f3e414",
+      "payloadBytes": 5997,
+      "payloadSha256": "e0a4161313fba1e796618cfff26f7e399792fd355e9d24b86ba702b2cb809600",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/raw-log-archive.json",
+      "gitBlob": "a604dd74ad707b9f6a6aa122a153b13e961ad414",
+      "payloadBytes": 4412,
+      "payloadSha256": "b4230f904cfb1d9ffeb1fab31339dbe8c4cb305ce20f2bc787933e64a90a4755",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/report.json",
+      "gitBlob": "ed6ddafbde1867747674298e4cff15562bad8618",
+      "payloadBytes": 9999,
+      "payloadSha256": "183eff961d72d69b6788f6de06bb6df9cec8a863e5dad14082b1c4ae1c0cd247",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/review.md",
+      "gitBlob": "8953058da4bf320935043e69a523d9210d94e5d4",
+      "payloadBytes": 2359,
+      "payloadSha256": "e8c0c5573b6e7946b1b3bcfd128d04ee8b0398becfffda0c3611e7f42f7bc6fe",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-20261011T202036Z/setup.json",
+      "gitBlob": "90837db6eeeb49114c4b209150ecc1944a5fcede",
+      "payloadBytes": 743,
+      "payloadSha256": "5b5aaf07fa79acb2362feed1ac5b814e7dd9b4ac5a92ae987be434ac1a4f726f",
+      "stagePayloadMatch": true,
+      "storage": "git"
+    }
+  ],
+  "stagedDiffCheck": {
+    "exitCode": 0,
+    "stdout": ""
+  },
+  "manifestSha256": "0eba3c96623bc19cc336167e8f830c4b3e1fdb2d4c70b1831fe23d42087ad58f",
+  "productSealSha256": "521ed40282b6de2fb8a78e74d3d40bf6d19d69f25797b66c95e03e473eabb065"
+}

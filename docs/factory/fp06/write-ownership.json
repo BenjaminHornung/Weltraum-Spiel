@@ -63,23 +63,6 @@
         "apps/weltraum-browser/src/factory/construction/placement.ts",
         "apps/weltraum-browser/src/factory/construction/buildStep.ts"
       ]
-    },
-    {
-      "agent": "/root/fp06_domain",
-      "role": "W09-panels-only-second-writer",
-      "branch": "codex/hestia-fp06-ui-w09-2026-10-11",
-      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11",
-      "baseCommitSha": "43a61c0f5be5df69e4f8bb42db89da3d7a3a4b2b",
-      "writeSet": [
-        "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
-        "apps/weltraum-browser/src/factory/ui/machinePanel.ts",
-        "apps/weltraum-browser/src/factory/ui/powerPanel.ts",
-        "apps/weltraum-browser/src/factory/ui/technologyView.ts",
-        "apps/weltraum-browser/tests/unit/factory/panels.test.ts"
-      ],
-      "package": "W09",
-      "implementationWriteHold": true,
-      "remainingAction": "Exact42path staging/localcommit and externalGitLFSproof only"
     }
   ],
   "activeDocumentationWriter": {
@@ -149,7 +132,7 @@
         "W08",
         "W04"
       ],
-      "status": "W09_UI_SEALED_REVIEW_PASS_LOCAL_COMMIT_ADMITTED"
+      "status": "W09_UI_COMMITTED_WRITE_HOLD_AVAILABLE_READONLY"
     }
   ],
   "packageScopes": {
@@ -3249,7 +3232,7 @@
         "scope": "Only exact immutable W08 thenW04 cherry-picks on own cleanIntegratorbranch; verify sourceCommitpaths/SHA/bytes/GitLFSrefs unchanged and actualnewfullSHAs/cleanstatus. Stop/reportactualconflict; noRuntime/App/Source/Evidenceamend/newtests/Main/push/rebase. Aftercopy hold fornewW09grant; mobileHandlingOwnergate remainsOPEN."
       },
       "pendingSecondWriterUIRole": {
-        "status": "LOCAL_COMMIT_ADMITTED_AFTER_SCOPED_SOURCE_EVIDENCE_PASS",
+        "status": "UI_SUBDELIVERY_SOURCE_EVIDENCE_GIT_PASS_PACKAGE_GATE_PENDING",
         "agent": "/root/fp06_domain",
         "role": "W09-panels-only-second-writer",
         "branch": "codex/hestia-fp06-ui-w09-2026-10-11",
@@ -3298,7 +3281,9 @@
           "sealSha256": "521ed40282b6de2fb8a78e74d3d40bf6d19d69f25797b66c95e03e473eabb065",
           "reviewSha256": "278a1a11360ac664e77ae5457a1c648967352b38e659d3084afb906040bc3c84",
           "exactPathCount": 42
-        }
+        },
+        "commitSha": "24c274e2302452c5fa305e5ca37d6935bbff55ba",
+        "rootHeadAdmission": "docs/factory/fp06/reviews/w09-ui-root-head-admission.json"
       },
       "predecessorCopies": {
         "status": "BYTE_GIT_LFS_PASS",
@@ -3333,6 +3318,20 @@
         "report": "docs/factory/fp06/reviews/w09-native-handling-slot-interpretation.md",
         "sha256": "f50c088710eb852750561bbcd4d2c0a0e7fe0b48054d096123dd8655d1aa2135",
         "scope": "Interpretation of already accepted one reusable slot; no occupied depot accumulation/new carrier, no lifetime Rapierhandle requirement; runtime gates open."
+      },
+      "uiCopyAdmission": "docs/factory/fp06/reviews/w09-ui-integrator-copy-admission.json",
+      "nativeCasFollowup": {
+        "report": "docs/factory/fp06/reviews/w09-native-cas-followup.md",
+        "sha256": "5558ccffd405375989be92bfe257c1eb0ace568ff411777f3911c0e4edc9e775",
+        "status": "SCOPED_SOURCE_AND_RETAINED_EVIDENCE_PASS_NOT_PACKAGE_GATE",
+        "closedFindings": [
+          "NoOp fresh nonmaterial facts",
+          "actual UUID same-domain power length",
+          "native local depot reach/LOS read facts",
+          "partial carrier transfer mass/custody mismatch"
+        ],
+        "actualPhases": "26–31 and39–42 independently read/hash verified; jump/autostep actual29; UUID39 RED→40twoPASS; depot/partial41twoRED→42twoPASS",
+        "remaining": "Actual paid machine/belt whole loop, native approved source route, public browser controls/usable product, complete Save and full package gate remain pending."
       }
     },
     "W10": {
