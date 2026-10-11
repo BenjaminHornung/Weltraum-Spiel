@@ -1,0 +1,70 @@
+{
+  "schema": "hestia-environment-copy-final-v1",
+  "completedUtc": "2026-10-11T18:16:40.809874+00:00",
+  "savedSnapshotStatus": "SAVED_LOCALLY_VERIFIED",
+  "secondLocalInstanceStatus": "RESTORED_AND_VERIFIED",
+  "secondCloudInstanceStatus": "UNAVAILABLE_TOOL_NOT_CREATED",
+  "platformPublicationStatus": "NOT_RUN",
+  "platformDraftStatus": "READ_ONLY_UNCHANGED",
+  "externalDurabilityStatus": "NOT_PUBLISHED_NOT_UPLOADED",
+  "savedSnapshotPath": "/workspace/.cloud-setup/environment-copy-2026-10-11/snapshot.tar",
+  "secondLocalInstancePath": "/workspace/.cloud-setup/environment-copy-2026-10-11/instance-2",
+  "archiveBytes": 1368309760,
+  "archiveSha256": "a2aa653f3fdb9b13780407f32511752dc6ab61ef9a39a92199ea6ad6096a602d",
+  "verifiedManifestEntries": 23514,
+  "restoredWorktreeCount": 4,
+  "restoredHeads": [
+    {
+      "path": "/workspace/.cloud-setup/environment-copy-2026-10-11/instance-2/Weltraum-Spiel",
+      "head": "e40592c113b72a8dc93725187f92cf948e07f44d"
+    },
+    {
+      "path": "/workspace/.cloud-setup/environment-copy-2026-10-11/instance-2/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11",
+      "head": "6929bf2447b72c9f3f8fa3bcae0a59c0691966c0"
+    },
+    {
+      "path": "/workspace/.cloud-setup/environment-copy-2026-10-11/instance-2/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+      "head": "d5502ae7fd5431d58eda51bea062c54691ebe3c2"
+    },
+    {
+      "path": "/workspace/.cloud-setup/environment-copy-2026-10-11/instance-2/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11",
+      "head": "a8a2225e2a91a4a9b03e79cbd5cf5a1ada31c719"
+    }
+  ],
+  "worktreeHeadAndStatusCheck": "PASS",
+  "sourceSeal30Files": "PASS",
+  "runtimeLfs82Files": "PASS",
+  "presentSharedLfsObjects": 310,
+  "gitFsckExitCode": 0,
+  "nodeVersion": "22.23.3",
+  "npmVersion": "10.9.8",
+  "dependencyImports": "PASS",
+  "systemImageCreated": false,
+  "browserStarted": false,
+  "nativeWorldCreated": false,
+  "serverStarted": false,
+  "buildRun": false,
+  "originalSourceMutations": 0,
+  "credentialsExported": false,
+  "redundantStagingDirectoryRemoved": true,
+  "evidence": {
+    "README.md": "8636e58c8f4344ed8c288e1241c1f0b38d69d7be0a28d1f1de016ff534d80e6b",
+    "capture-receipt.json": "ec560a8e2d68a0d16e7ae8a74ce3a8469f12a9acf7c7279887ab4c20dc38f8cc",
+    "capture.py": "5011a2ff69a75d2d7add8d34a3de266c5e48ee561ac429506e7e4d36ba4f7b91",
+    "git-fsck-receipt.json": "9f221fb75b7e2423cc63732d906da931d60adba8020e13603afc3cd80fd73f12",
+    "git-fsck.stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "git-fsck.stdout.txt": "e1fb45190c677edab6b136e87964d7d79e63e3ae64255bfbac7c9b32ca96d060",
+    "manifest.json": "f5ea8da6d4f02c7c1bbb023c44f63a69fc3c82ecb317e878acff6206d3f61974",
+    "platform-capability-receipt.json": "ad37203278e26f3573a6d2004bef64e8d0b7fd9ac0ed5417e8d9bea9832380ae",
+    "rehydrated-git-checks.json": "f8ae5710172429bdcabf612469e56cd7f2115bb62a428b9c5a4c3d1de6b28df1",
+    "rehydrated-source-lfs-integrity.json": "baddcef38348e2e7e5612ce0e15237990887f2a24217508861f735f90ff17913",
+    "rehydration-attempt-1.json": "432efc443eac8f3193a9867b9750a1fac493e27d41b7f9f0f9f8bc372ff63e88",
+    "restore-receipt.json": "c94576dfb22ba04e54cff48086be0369e7786e00748da48287bcf06f39de1ce0",
+    "restore.py": "49584e32ab4544707358c9fee6d86d6d49a7d53cb6a847b42a18f048de7f6364",
+    "safety-guard-checks.json": "ef39eb9cf4e9214ffb7cc2ab9017e3d6c3e5af12e8358c6da6ab9b4703c4d2a4",
+    "source-state.json": "38b66f0da20f025dafc3e56fe46261d2e9a3cb90551e9115390a83217049d920",
+    "system-packages.txt": "985aa59a27c9ab6ecc14a5ff974c9baad62ebb5b22a900a1243bb27e8db09b81",
+    "toolchain-checks.json": "1f4edcf3694cfddaf1fe8dd226bdc663832e156e05c85640f55edc6ed18740c5"
+  },
+  "remainingAction": "Download/persist portable package or use product Environment settings to publish and create a second cloud instance; tools do not expose those lifecycle operations."
+}

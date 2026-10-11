@@ -1732,10 +1732,8 @@
         "packageCommitSha": null,
         "rootProof": "docs/factory/fp06/reviews/w07-cdp-trusted-driver-root-proof.json"
       },
-      "currentNarrowWriteSet": [
-        "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
-      ],
-      "currentNarrowScope": "Temporary passive diagnostic overlay only; all29 other product paths HOLD201394; execution HOLD",
+      "currentNarrowWriteSet": [],
+      "currentNarrowScope": "All30 product source HOLD; temporary diagnostic E2E67e803/29baseline201; BrowserHOLD",
       "browserSeventhActual": {
         "log": 51,
         "endedAtUtc": "2026-10-11T14:55:26.833Z",
@@ -2385,7 +2383,7 @@
         "gate": "Targeted11 only; full17 and package remain NOT_RUN/FAIL until actual results",
         "status": "EXECUTED83_FAIL_CPU_GPU_PORT_RELEASED"
       },
-      "cpuGpuPortLease": "RELEASED_AFTER_88",
+      "cpuGpuPortLease": "EXCLUSIVE_5174_ONE_DIAGNOSTIC",
       "adaptiveNormalVerificationActual": {
         "log": 83,
         "selected": 11,
@@ -2657,9 +2655,63 @@
           "solverStep/mainFrameCpu without measurement opt-in"
         ],
         "contract": "Passive trustedDOMtimestamps and transparent ownerWorker primitive logs; exact forwarding args/return/throw; observer-only bounds/drop/error; existing Native60Hz/8pending20s/30s/config/trace unchanged",
-        "execution": "HOLD until exact overlay independent source review and separate ONE diagnostic authorization",
+        "execution": "Build89FAIL and89bPASS executed; BrowserHOLD pending finalsource review and separate ONE diagnostic grant",
         "restore": "Exact original E2E before/after; verify all30 201394 product hashes; preserve88 and fixed original/absent output states",
-        "status": "AUTHORIZED_SOURCE_PREPARATION_ONLY"
+        "status": "EXECUTED_SOURCE_PREPARATION_AND_MINIMAL_TYPEFIX_ORIGINAL_BUILDS"
+      },
+      "inputTickDiagnosticPrepared": {
+        "path": "docs/factory/fp06/reviews/w07-input-tick-diagnostic-overlay-files.json",
+        "sha256": "7d45044e874c0e039e8a165e877f29799d12a6dfa489c1d9f7fe9fdf4a76ad9d",
+        "bytes": 7451,
+        "sourceOnlyDelta": [
+          "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
+        ],
+        "overlayE2eSha256": "67e80392af5ae0b0b6c130c27c803f82497e7cdd74f52917689cb6b71456104c",
+        "allOther29Baseline": "MATCH",
+        "build89": {
+          "status": "FAIL_TS2532_SETUP",
+          "rawBytes": 160,
+          "rawSha256": "359a4824f206f81a5b430060b890a2ab89defa96748eced0fffc6943f237b572",
+          "endUtc": "2026-10-11T18:17:50.617326+00:00"
+        },
+        "build89b": {
+          "status": "PASS_ORIGINAL_TS_VITE",
+          "rawBytes": 1904,
+          "rawSha256": "9ccd69ac3976fcce2f6030e1f9fe34f0df4c57bc5d6a772db84727f0631f5f60",
+          "endUtc": "2026-10-11T18:18:30.231575+00:00"
+        },
+        "rootProof": "Actual30 sourcehashes + both exact decompressed buildraws independently checked",
+        "normalGameplayGate": "NOT_RUN_DIAGNOSTIC_NEVER_SUBSTITUTES_W07_GATE"
+      },
+      "inputTickDiagnosticOverlayFinalReview": {
+        "path": "docs/factory/fp06/reviews/w07-input-tick-diagnostic-overlay-independent-review.md",
+        "originalSha256": "895e598032651047fdf3f2744f991f411e6838a7b47d7282cf7f2e69f32ada98",
+        "copiedSha256": "895e598032651047fdf3f2744f991f411e6838a7b47d7282cf7f2e69f32ada98",
+        "status": "SOURCE_SPEC_COMPLIANCE_AND_QUALITY_PASS",
+        "scope": "Exact temporary diagnostic67e803/7d450; no execution or gameplay PASS"
+      },
+      "inputTickDiagnosticExecutionAuthorization": {
+        "authorizedAtUtc": "2026-10-11T18:23:11.755639+00:00",
+        "actor": "/root/fp06_integrator",
+        "kind": "ONE_PASSIVE_DIAGNOSTIC4_NOT_GAMEPLAY_GATE",
+        "route": "/factory.html",
+        "measurementOptIn": false,
+        "overlaySealSha256": "7d45044e874c0e039e8a165e877f29799d12a6dfa489c1d9f7fe9fdf4a76ad9d",
+        "overlayE2eSha256": "67e80392af5ae0b0b6c130c27c803f82497e7cdd74f52917689cb6b71456104c",
+        "configSha256": "53a55a48da97d43a02e317fb8edc844d57a9b5687f356a7ebf4f5b470efcf900",
+        "sourceReview": {
+          "path": "docs/factory/fp06/reviews/w07-input-tick-diagnostic-overlay-independent-review.md",
+          "originalSha256": "895e598032651047fdf3f2744f991f411e6838a7b47d7282cf7f2e69f32ada98",
+          "copiedSha256": "895e598032651047fdf3f2744f991f411e6838a7b47d7282cf7f2e69f32ada98",
+          "status": "SOURCE_SPEC_COMPLIANCE_AND_QUALITY_PASS",
+          "scope": "Exact temporary diagnostic67e803/7d450; no execution or gameplay PASS"
+        },
+        "originalBuild89b": "PASS9ccd69/1904B, exactRootDecompressedRawChecked",
+        "cpuGpuPortLease": "EXCLUSIVE_5174_ONE_DIAGNOSTIC",
+        "cases": "4 serial samePageWorld: ready/open/play,125ms,250ms,600ms ordinary released trustedS/CDP; originalcasebudgets/trace/Native60Hz/8pending20s",
+        "constraints": "Frozen exact30overlaybytes; passiveDOM/transparentoriginalWorkerforwardonly; noRuntime/pose/tick/Source/inputpayload/reach/float/caps/queue/timeout changes; id-onlyACKnotaccepted/executiontime; solver/mainCPU NOT_OBSERVED; logdrops/errorsinvalidatecompleteDiagnosis",
+        "restoreAuthorization": "AfterONECLI archivefreshdiagraw/artifacts; restoreEXACTnormal030fcE2E16961B and originalfixedwriters/absentstates; verifyall30baseline201394 andportfree",
+        "status": "AUTHORIZED_NOT_RUN"
       }
     },
     "W08": {
@@ -3202,5 +3254,21 @@
       "all87ArtifactRefsAdmitted": true,
       "completedAtUtc": "2026-10-11T12:40:54.263653+00:00"
     }
-  ]
+  ],
+  "environmentCopy": {
+    "requestedByUser": true,
+    "actor": "/root/cloud_environment_copy",
+    "completedAtUtc": "2026-10-11T18:16:40.809874+00:00",
+    "snapshotStatus": "SAVED_LOCALLY_VERIFIED",
+    "secondLocalInstanceStatus": "RESTORED_AND_VERIFIED",
+    "secondCloudInstanceStatus": "UNAVAILABLE_TOOL_NOT_CREATED",
+    "externalDurabilityStatus": "NOT_PUBLISHED_NOT_UPLOADED",
+    "archiveBytes": 1368309760,
+    "archiveSha256": "a2aa653f3fdb9b13780407f32511752dc6ab61ef9a39a92199ea6ad6096a602d",
+    "receipt": "docs/factory/fp06/reviews/cloud-environment-copy-receipt.json",
+    "receiptSha256": "2d5de75c317d8e42c8134d282485f7dcf04167712236778f06938e3f887bf4e4",
+    "report": "docs/factory/fp06/reviews/cloud-environment-copy.md",
+    "sourcePointInTime": "Roota8a22/Integrator201394; later changes not included",
+    "mainMergePushGamePublicationAuthorized": false
+  }
 }
