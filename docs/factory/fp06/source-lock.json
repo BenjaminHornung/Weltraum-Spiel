@@ -1313,7 +1313,7 @@
         "apps/weltraum-browser/evidence/factory/w07/<actual-run-id>/**"
       ],
       "evidenceGrant": true,
-      "status": "IN_PROGRESS",
+      "status": "IN_REVIEW",
       "owner": "/root/fp06_integrator",
       "plannedRole": "integrator",
       "branch": "codex/hestia-fp06-integrator-2026-10-11",
@@ -1380,7 +1380,7 @@
         "Cargo provenance alone is not physical reach: initial source must be bound to a real Cargo-S0 world owner, native pose and access outside the 22 x 12 m machine zone. W07 handles initial witness/open and a truly reachable paid player build; W09 handles finite pickup, confirmed native movement and local deposit for remote construction/production. No new terrain masks, cargo, UI source-pose writes or automatic transport. New exact paths require a separate recorded scope extension; existing grants remain unchanged."
       ],
       "baseCommitSha": "d5502ae7fd5431d58eda51bea062c54691ebe3c2",
-      "implementationWriteHold": false,
+      "implementationWriteHold": true,
       "authorizedAtUtc": "2026-10-11T13:11:16.765614+00:00",
       "completedAtUtc": null,
       "tddInitialStatus": {
@@ -1448,7 +1448,7 @@
         "wrapperSeconds": 1.51,
         "status": "WRITER_REPORTED_PENDING_SEALED_EVIDENCE_REVIEW"
       },
-      "runtimeWriteHold": false,
+      "runtimeWriteHold": true,
       "currentNarrowWriteGrant": {
         "authorizedAtUtc": "2026-10-11T14:37:52.124736+00:00",
         "productPaths": [
@@ -2080,7 +2080,7 @@
         "constraints": "Factory-only independent typed smallACK through existing bounded max8/20s transport; Read input-free only in Factory; no ACK clock/timing/restore/public/held publication; Release independent fromACK; no retained queue/latch/catchup/Nativeadvance/timer; Legacy same; actual private Hold/Pause/Restore/Dispose barriers and explicit Native Jumpcancel.",
         "guardGates": "Real guard counterexample before fix where applicable; already native-staged Level/Jump must be neutralized across actual transient Hold→resume, without changing velocity/clock.",
         "browser": "NOT_GRANTED",
-        "status": "AUTHORIZED_AFTER_REAL_RED"
+        "status": "EXECUTED_GREEN_BUILD_PRODUCT_HOLD_SEAL_REVIEW_PENDING"
       },
       "factoryInputDeliveryGuardReviews": [
         {
@@ -2140,7 +2140,42 @@
         "rawBytes": 353,
         "rootRawVerification": "Decompressed gzip bytes/SHA exact receipt",
         "scope": "Focused input suite only; affected regression/build/source sealed review/browser/commit pending"
-      }
+      },
+      "factoryInputDeliveryVerification": [
+        {
+          "log": 73,
+          "receipt": "apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/73-factory-input-affected-regressions-green-command.json",
+          "endedAtUtc": "2026-10-11T16:47:08.696055+00:00",
+          "wrapperSeconds": 5.459247196999058,
+          "exitCode": 1,
+          "rawBytes": 1916,
+          "rawSha256": "cae155d8eda922fc6cd092e9adc7af02a51a3338e4805bcd28b03fd46888e828",
+          "rootRawVerification": "Decompressed SHA/bytes exact receipt",
+          "result": "82_PASS_1_FAIL_TEST_CLOCK_BASELINE_BEFORE_PREPARE"
+        },
+        {
+          "log": 74,
+          "receipt": "apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/74-factory-input-affected-regressions-green-command.json",
+          "endedAtUtc": "2026-10-11T16:47:58.404583+00:00",
+          "wrapperSeconds": 5.126662946000579,
+          "exitCode": 0,
+          "rawBytes": 502,
+          "rawSha256": "fca3509b1eb44665d0a5d22015a8cb37f25192c09ac77ab68c98192379d28e6a",
+          "rootRawVerification": "Decompressed SHA/bytes exact receipt",
+          "result": "83_PASS_5_FILES_22_INPUT_CASES"
+        },
+        {
+          "log": 75,
+          "receipt": "apps/weltraum-browser/evidence/factory/w07/2026-10-11T122211.412749Z/75-factory-input-full-build-command.json",
+          "endedAtUtc": "2026-10-11T16:48:19.641719+00:00",
+          "wrapperSeconds": 4.150739782999153,
+          "exitCode": 0,
+          "rawBytes": 1904,
+          "rawSha256": "66f66677f67532c460e94a91fc89207e762b37d8a1cb5577e4407a0d255905e6",
+          "rootRawVerification": "Decompressed SHA/bytes exact receipt",
+          "result": "TYPESCRIPT_VITE_BUILD_PASS"
+        }
+      ]
     },
     "W08": {
       "dependencies": [
