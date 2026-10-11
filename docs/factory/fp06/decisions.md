@@ -71,3 +71,9 @@ W04/W09 implementieren daher nach ihren Paketgates eine explizite versionierte H
 ## D11-Ergänzung: einzelner Native-Transportträger
 
 Tatsächliche Nutzerantwort am 2026-10-11T19:54:17.321634+00:00: **„Diesen engen Transportvertrag freigeben“** auf den [konkreten Vorschlag](proposals/native-handling-v1.md), SHA256`c1aa59de0a2159e7ec2c81af5bd64f5c7d867751e0af274736e737fc26803a6c`. Damit ist ausschließlich ein versionierter kinematischer Träger mit höchstens5Collidern, vollständigen Native-Sweeps/Bodenprüfungen, endlicher Materialcustody, lokalem festen Depot und vollständigem gemeinsamem Save fürW09–W11 akzeptiert. Höchstens16Factoryowner **einschließlich Cargo und Träger**, unveränderte64/32/4096-Gesamtbudgets. Keine Fahrzeuge, allgemeine CreateBody-API oder W12–W29. Tatsächliche Implementierungs-/Native-/Savegates bleiben erforderlich.
+
+### W09 zusätzlicher Startplatz: OWNER_REVIEW_REQUIRED
+
+Der echte Browserlauf81 bestätigt CarrierOverlap bei unverändertem341kg-Träger und2984,4kg Gesamtmaterial. Die separat gebundene Sourceprüfung zeigt natürliche Geländeschultern im bestehenden schmalen Gang. Die bisherige Ownerfreigabe bindet15Masken/70m² und festen q1-Transport; zusätzliche Terrainmasken sind damit nicht automatisch angenommen.
+
+Der [konkrete Vorschlag](proposals/heavy-route-start-site-v2.md) ergänzt genau3Masken mit380Spalten/5,9375m², Gesamt75,9375m²,0mgInventarguthaben. [Exakte Geometriebytes](proposals/heavy-route-start-site-v2.json):SHA256 f78ffa85993585a2c60079c09f03d28d956da59414409dc97a8a8ca217487b3b. NeuerTerrainSourceDigest, Umsetzung und volleNativefahrt bleibenNOT_RUN. Nur davon abhängige zusätzlicheSourcewrites sind gesperrt; freigegebeneHost-/Prozess-/Recoveryarbeit läuft weiter. Keine Änderung anCoastquelle, Handlingyaw, Budgets oder historischenEvidencebytes angenommen.

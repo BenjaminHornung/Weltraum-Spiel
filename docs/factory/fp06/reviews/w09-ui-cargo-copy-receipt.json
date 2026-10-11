@@ -1,0 +1,30 @@
+{
+  "capturedAtUtc": "2026-10-11T21:52:38.401354+00:00",
+  "head": "aa2e5d7c335453fc555a98ccd35e9f564c596e93",
+  "parent": "aeb6680044eb455a10d0bba6e67979c153fd248f",
+  "sourceCommitSha": "28de0ce99f5f6fa9ca3bed415bcb34c7b5e3117a",
+  "actualChangedPaths": [
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/01-red.log.gz",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/01-red.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/02-green.log.gz",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/02-green.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/03-build.log.gz",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/03-build.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/grant.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/manifest.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/product-seal.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/product.patch",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/report.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/report.md",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/self-review.md",
+    "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+    "apps/weltraum-browser/tests/unit/factory/panels.test.ts"
+  ],
+  "noncopyWipFiles": 218,
+  "noncopyWipBytesUnchanged": true,
+  "porcelainUnchanged": true,
+  "indexEmpty": true,
+  "all15GitAndPayloadBytesMatch": true,
+  "productsDiffCheckExit": 0,
+  "fullRawPatchDiffCheckExit": 2
+}

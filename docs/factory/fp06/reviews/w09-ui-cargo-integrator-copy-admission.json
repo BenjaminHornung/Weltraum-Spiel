@@ -1,0 +1,39 @@
+{
+  "schema": "hestia.fp06.w09.ui-cargo-integrator-copy-admission/v1",
+  "authorizedAtUtc": "2026-10-11T21:51:32.202995+00:00",
+  "actor": "/root/fp06_integrator",
+  "sourceActor": "/root/fp06_domain",
+  "sourceCommitSha": "28de0ce99f5f6fa9ca3bed415bcb34c7b5e3117a",
+  "sourceParentSha": "24c274e2302452c5fa305e5ca37d6935bbff55ba",
+  "sourceWorktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11",
+  "targetWorktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+  "targetBranch": "codex/hestia-fp06-integrator-2026-10-11",
+  "exactPaths": [
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/01-red.log.gz",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/01-red.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/02-green.log.gz",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/02-green.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/03-build.log.gz",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/03-build.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/grant.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/manifest.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/product-seal.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/product.patch",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/report.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/report.md",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/self-review.md",
+    "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+    "apps/weltraum-browser/tests/unit/factory/panels.test.ts"
+  ],
+  "productSealSha256": "2722578365bf46b11d6924dc549b66023d29f0757d3b53243a1d8a9885f05423",
+  "manifestSha256": "ab822f4e21614eacd4cfd8492ef28d02f174028e0f4c1f35414c35fcf5138ef3",
+  "rootActualHeadGate": "PASS_LOCAL_15_PATHS_12_GIT_3_LFS_CURRENT_CLEAN",
+  "constraints": [
+    "Copy only exact15files from admitted source committed payloads; no direct cherry-pick/reset/amend while target has own Native WIP",
+    "Capture current target HEAD, empty index, own noncopy WIP file set+bytes+porcelain before copy; verify unchanged after scoped own copy commit",
+    "Commit only exact15copied paths; actual12Git/3LFS committed blob identities must equal admitted source commit; independently verify target after commit",
+    "Product/test diffcheck must pass; full archived patch diffcheck Exit2 is retained data-context finding, not a global PASS",
+    "Keep frozen public UI protocol / other3panels unchanged, no shared contract overwrite",
+    "No whole W09/Browser/Gameplay/Save gate or publication implied; continue current authorized Native/command work after actual copy proof"
+  ]
+}

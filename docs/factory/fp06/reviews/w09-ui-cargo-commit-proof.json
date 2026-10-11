@@ -1,0 +1,158 @@
+{
+  "schema": "hestia.fp06.w09.ui-cargo-commit-proof/v1",
+  "checkedAtUtc": "2026-10-11T21:50:21.702080+00:00",
+  "commitSha": "28de0ce99f5f6fa9ca3bed415bcb34c7b5e3117a",
+  "parentCommitSha": "24c274e2302452c5fa305e5ca37d6935bbff55ba",
+  "branch": "codex/hestia-fp06-ui-w09-2026-10-11",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11",
+  "commitAdmissionSha256": "ff6b2f73f334caa3ee99a6aac22d5f2dbfb8d67d4c5d962cbae3d794ea8abd56",
+  "stageProof": {
+    "path": "/workspace/.cloud-setup/fp06-w09-ui-cargo-stage-proof.json",
+    "sha256": "77b923269df9895d0cd6c0991d2a01a0d907a62133b4e75993e841f7e563a7bb"
+  },
+  "payloadScopeManifestStatus": "PASS",
+  "sourceDiffCheckExitCode": 0,
+  "wholeCommitDiffCheck": {
+    "exitCode": 2,
+    "stdout": "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/product.patch:38: trailing whitespace.\n+ \n",
+    "cause": "retained exact Git patch line38: one-space blank context line; Root explicitly confirmed immutable Evidence and authorized commit after scope/payload/source checks"
+  },
+  "actualChangedFiles": [
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/01-red.log.gz",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/01-red.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/02-green.log.gz",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/02-green.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/03-build.log.gz",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/03-build.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/grant.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/manifest.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/product-seal.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/product.patch",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/report.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/report.md",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/self-review.md",
+    "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+    "apps/weltraum-browser/tests/unit/factory/panels.test.ts"
+  ],
+  "exactPathCount": 15,
+  "regularGitBlobs": 12,
+  "ownLfsPayloads": 3,
+  "manifestSha256": "ab822f4e21614eacd4cfd8492ef28d02f174028e0f4c1f35414c35fcf5138ef3",
+  "manifestReferences": 12,
+  "rawGzipPairs": 3,
+  "productSealSha256": "2722578365bf46b11d6924dc549b66023d29f0757d3b53243a1d8a9885f05423",
+  "unchangedHeldReferences": 4,
+  "indexEmpty": true,
+  "trackedWorktreeClean": true,
+  "reportCommitShaNullPreservedAsPrecommit": true,
+  "wholeW09": "NOT_RUN",
+  "browser": "NOT_RUN",
+  "records": [
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/01-red.log.gz",
+      "kind": "LFS",
+      "payloadBytes": 905,
+      "payloadSha256": "c0505f91fc9c81b47f4be4508dfa26964ceedc500f4668b5a9d747ce381ce198",
+      "headBlobSha1": "85f304112e0e31f1e04e3fc444643348793d36e8"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/01-red.receipt.json",
+      "kind": "Git",
+      "payloadBytes": 832,
+      "payloadSha256": "141c2250a065e2acdb6745f1e15af9d68ed53cea4761791d722d664be23f5ee4",
+      "headBlobSha1": "d0eed15a5d11966cf9855cc8172082edc7bd5ccc"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/02-green.log.gz",
+      "kind": "LFS",
+      "payloadBytes": 254,
+      "payloadSha256": "a82af036a9174ec3e5f21a70dabfb15d52656037a02b305b0d36d3cb82bfe377",
+      "headBlobSha1": "3117747453e5c375e0c14a7921c6025cd55a0f59"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/02-green.receipt.json",
+      "kind": "Git",
+      "payloadBytes": 771,
+      "payloadSha256": "0d26b5f57f27adff8075def5bc673bbee4d5d058d3d069e978e50e78595b0799",
+      "headBlobSha1": "28bd60041e0bcfd1ade2772f41e94b3a7385ccc6"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/03-build.log.gz",
+      "kind": "LFS",
+      "payloadBytes": 870,
+      "payloadSha256": "00a21d0d701aacd2684c117c101a35bfb167b0b3e278d31908323646a5c14b49",
+      "headBlobSha1": "dae6ce1d10a31fccb922fe23b6f7a6066d277b4e"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/03-build.receipt.json",
+      "kind": "Git",
+      "payloadBytes": 721,
+      "payloadSha256": "a42e02074e0b952a8478a9f7b2aafaf066c750b3197b94493a9304bf803bb602",
+      "headBlobSha1": "089cc855bfb33e730da3dc1f80845f7bf703e5ea"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/grant.json",
+      "kind": "Git",
+      "payloadBytes": 1828,
+      "payloadSha256": "2b3c7a4965f227af14479ea388ceab28f67e62be0c09e8f51963533c10e24d08",
+      "headBlobSha1": "62db408f17680d1b0dc81f65683b526bebdec2e2"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/manifest.json",
+      "kind": "Git",
+      "payloadBytes": 3697,
+      "payloadSha256": "ab822f4e21614eacd4cfd8492ef28d02f174028e0f4c1f35414c35fcf5138ef3",
+      "headBlobSha1": "2a9e9ecb729d3f842f713a99460c91f140335796"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/product-seal.json",
+      "kind": "Git",
+      "payloadBytes": 1660,
+      "payloadSha256": "2722578365bf46b11d6924dc549b66023d29f0757d3b53243a1d8a9885f05423",
+      "headBlobSha1": "55d0b7fbfa6cb15ce300de3e77623a6ee99eb3bf"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/product.patch",
+      "kind": "Git",
+      "payloadBytes": 6430,
+      "payloadSha256": "fb063ff05858eb160f6817b3942dbc4e0d5ce92b5d25aad85cf2e50515e31927",
+      "headBlobSha1": "d051e115f47efdd9069a9f73444db20909371e90"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/report.json",
+      "kind": "Git",
+      "payloadBytes": 6263,
+      "payloadSha256": "d6eb2bfeb4d7e5af2a9e42416e53b5eb8af039f2e4019d68cfea22ecbeb3546b",
+      "headBlobSha1": "9611522051f2d9b5a2337d6f8c98f5b16bca3937"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/report.md",
+      "kind": "Git",
+      "payloadBytes": 1280,
+      "payloadSha256": "681b4cbf4193827c088ec563cf76275526b114eb7004eb0b1d38d99e45a4b67c",
+      "headBlobSha1": "bb6d986da048d28d2d122123dbdcbab983630235"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/self-review.md",
+      "kind": "Git",
+      "payloadBytes": 1598,
+      "payloadSha256": "5de86d5581f3165566c6a394c70d098ec369457df5aa3df4bc808ccd13515089",
+      "headBlobSha1": "4e7528d21ba0773cdd65021374bd5b7b99f49cb9"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+      "kind": "Git",
+      "payloadBytes": 15782,
+      "payloadSha256": "f899ffb7d5f062272c8f7693325981f9e789f3aec28716941a0522731d0356e5",
+      "headBlobSha1": "f1a501bf831bd76308c167a80d4b32437838da0c"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/panels.test.ts",
+      "kind": "Git",
+      "payloadBytes": 23331,
+      "payloadSha256": "caf724755fb9a2cd11670172bf3a48e7de9dd8580b0b40ee51d9fa8a68722006",
+      "headBlobSha1": "f25b36c2790cfc6e9606db6bd8e56b48106921e8"
+    }
+  ],
+  "diffStat": " .../w09/ui-cargo-20261011T214209Z/01-red.log.gz    |   3 +\n .../ui-cargo-20261011T214209Z/01-red.receipt.json  |  23 ++++\n .../w09/ui-cargo-20261011T214209Z/02-green.log.gz  |   3 +\n .../02-green.receipt.json                          |  21 +++\n .../w09/ui-cargo-20261011T214209Z/03-build.log.gz  |   3 +\n .../03-build.receipt.json                          |  19 +++\n .../w09/ui-cargo-20261011T214209Z/grant.json       |  25 ++++\n .../w09/ui-cargo-20261011T214209Z/manifest.json    |  94 ++++++++++++++\n .../ui-cargo-20261011T214209Z/product-seal.json    |  44 +++++++\n .../w09/ui-cargo-20261011T214209Z/product.patch    |  76 +++++++++++\n .../w09/ui-cargo-20261011T214209Z/report.json      | 144 +++++++++++++++++++++\n .../w09/ui-cargo-20261011T214209Z/report.md        |  12 ++\n .../w09/ui-cargo-20261011T214209Z/self-review.md   |   7 +\n apps/weltraum-browser/src/factory/ui/cargoPanel.ts |   4 +-\n .../tests/unit/factory/panels.test.ts              |  41 ++++++\n 15 files changed, 518 insertions(+), 1 deletion(-)\n"
+}

@@ -1,0 +1,57 @@
+{
+  "status": "PROPOSED_NOT_ACCEPTED_NOT_IMPLEMENTED",
+  "proposalVersion": "fp06-heavy-route-site-extension-proposal-v1",
+  "parentFactoryVersion": "hvp-factory-startsite-v1",
+  "parentFactorySourceDigest": "e62aea8a",
+  "parentCoastSourceDigest": "b8fde6b0",
+  "proposedFactoryVersion": "hvp-factory-startsite-v2",
+  "seedName": "hestia-factory-layout-a-001",
+  "terrainSourceDigest": "NOT_RUN",
+  "cellMm": 125,
+  "sourceDimensions": [256, 128, 256],
+  "sourceOriginMm": [-16000, -8000, -16000],
+  "preserveExistingMasks": 15,
+  "additionalMasksEastNorthMeters": [
+    [0.75, 6, 3.25, 3.5],
+    [8, 15.5, 3.25, 3.5],
+    [2, 13, 4.5, 4.75]
+  ],
+  "additionalMasksWorldXZMeters": [
+    [-9, -8.75, 6.5, 11.75],
+    [-9, -8.75, -3, 4.5],
+    [-7.75, -7.5, -0.5, 10.5]
+  ],
+  "additionalMasksSourceCellXZ": [
+    [56, 58, 180, 222],
+    [56, 58, 104, 164],
+    [66, 68, 124, 212]
+  ],
+  "intervalConvention": "half-open; world rectangles are [x0,x1,z0,z1]; all new columns are disjoint from the existing15 masks",
+  "newColumnTopMm": 1500,
+  "solidSlot": 1,
+  "airSlot": 0,
+  "newColumnCount": 380,
+  "newAreaMm2": 5937500,
+  "resultingColumnCount": 4860,
+  "resultingAreaMm2": 75937500,
+  "sourceFormulaCensus": {
+    "status": "SOURCE_ARITHMETIC_ONLY_NO_MATERIALIZATION",
+    "slotsAddressed": 48640,
+    "airToSolid": 264,
+    "solidToAir": 2626,
+    "retainedTopMaterialRemaps": 0,
+    "changedSlotBytes": 2890,
+    "solidVolumeAddedMm3": 515625000,
+    "solidVolumeRemovedMm3": 5128906250
+  },
+  "materialCreditMg": 0,
+  "playerRouteXZMeters": [[-6,11.875],[-6,12.175],[-8.25,12.175],[-8.25,-1.5],[-6.25,-1.5]],
+  "carrierRouteXZMeters": [[-6,10.875],[-6,11.175],[-8.25,11.175],[-8.25,-2.5],[-6.25,-2.5]],
+  "carrierGroundMm": 1500,
+  "carrierQuarterTurns": 1,
+  "postDepositPlayerServiceXZMeters": [-4.25,-1.5],
+  "nativeRouteGate": "NOT_RUN_AFTER_OWNER_ACCEPTANCE_REQUIRED",
+  "normalMainSourceChange": false,
+  "inventoryChange": false,
+  "worldBudgetChange": false
+}

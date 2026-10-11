@@ -63,18 +63,6 @@
         "apps/weltraum-browser/src/factory/construction/placement.ts",
         "apps/weltraum-browser/src/factory/construction/buildStep.ts"
       ]
-    },
-    {
-      "agent": "/root/fp06_domain",
-      "package": "W09",
-      "role": "cargo-usability-only-second-writer",
-      "branch": "codex/hestia-fp06-ui-w09-2026-10-11",
-      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11",
-      "baseCommitSha": "24c274e2302452c5fa305e5ca37d6935bbff55ba",
-      "writeSet": [
-        "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
-        "apps/weltraum-browser/tests/unit/factory/panels.test.ts"
-      ]
     }
   ],
   "activeDocumentationWriter": {
@@ -3244,7 +3232,7 @@
         "scope": "Only exact immutable W08 thenW04 cherry-picks on own cleanIntegratorbranch; verify sourceCommitpaths/SHA/bytes/GitLFSrefs unchanged and actualnewfullSHAs/cleanstatus. Stop/reportactualconflict; noRuntime/App/Source/Evidenceamend/newtests/Main/push/rebase. Aftercopy hold fornewW09grant; mobileHandlingOwnergate remainsOPEN."
       },
       "pendingSecondWriterUIRole": {
-        "status": "CARGO_USABILITY_REVIEW_FIX_IN_PROGRESS",
+        "status": "CARGO_UI_SOURCE_EVIDENCE_GIT_COPY_PASS_BROWSER_PENDING",
         "agent": "/root/fp06_domain",
         "role": "W09-panels-only-second-writer",
         "branch": "codex/hestia-fp06-ui-w09-2026-10-11",
@@ -3286,7 +3274,7 @@
           "reason": "Independent actual DOM-lifetime finding: technology publication and its own click handler replace focused buttons. Stable controls keyed by technology ID needed.",
           "constraints": "Archive exact original seal/patch/manifest/report before overwrite; meaningful nodeidentity/keyboard publication RED first; narrow stable controls fix; focused UI tests and affected original build, then reseal/HOLD independentreview. Other three products remain exact sealed bytes. No Host/Entry/Physics/Save/Contract/newdependencies/browser or competingCPU jobs."
         },
-        "implementationWriteHold": false,
+        "implementationWriteHold": true,
         "commitAdmission": {
           "path": "docs/factory/fp06/reviews/w09-ui-commit-admission.json",
           "authorizedAtUtc": "2026-10-11T20:54:27.190450+00:00",
@@ -3319,6 +3307,100 @@
             "Inventory details may have bounded own scrolling/disclosure; active transport/open/transfer controls before long inventory, retain interactive nodes and complete source lots",
             "Coordinate every CPU test/build lease with integrator; no browser/server or competing runtime jobs",
             "Own distinct evidence run; preserve all accepted former evidence/commits; seal and independent review before copy; no direct integrator writes or main/push/publication"
+          ]
+        },
+        "cargoUsabilityCommitAdmission": {
+          "schema": "hestia.fp06.w09.ui-cargo-commit-admission/v1",
+          "authorizedAtUtc": "2026-10-11T21:47:21.385113+00:00",
+          "actor": "/root/fp06_domain",
+          "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11",
+          "branch": "codex/hestia-fp06-ui-w09-2026-10-11",
+          "baseCommitSha": "24c274e2302452c5fa305e5ca37d6935bbff55ba",
+          "status": "SEALED_SOURCE_EVIDENCE_PASS_EXACT_15_PATH_LOCAL_COMMIT_AUTHORIZED",
+          "exactPaths": [
+            "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/01-red.log.gz",
+            "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/01-red.receipt.json",
+            "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/02-green.log.gz",
+            "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/02-green.receipt.json",
+            "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/03-build.log.gz",
+            "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/03-build.receipt.json",
+            "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/grant.json",
+            "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/manifest.json",
+            "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/product-seal.json",
+            "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/product.patch",
+            "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/report.json",
+            "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/report.md",
+            "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/self-review.md",
+            "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+            "apps/weltraum-browser/tests/unit/factory/panels.test.ts"
+          ],
+          "productSealSha256": "2722578365bf46b11d6924dc549b66023d29f0757d3b53243a1d8a9885f05423",
+          "manifestSha256": "ab822f4e21614eacd4cfd8492ef28d02f174028e0f4c1f35414c35fcf5138ef3",
+          "independentReview": {
+            "path": "docs/factory/fp06/reviews/w09-ui-cargo-usability-review.md",
+            "sha256": "c2869cebf2f3d7662685a4d77a9438d2299bad115951670203a907e2cf82663e"
+          },
+          "rootChecks": [
+            "All five sealed/report artifact hashes and sizes exact",
+            "Two changed products + four held references exact",
+            "All12Manifestrefs sizes+hashes exact",
+            "All3gzip/raw/external original bytepairs exact",
+            "Current base24c274/indexempty/two tracked product changes exact"
+          ],
+          "constraints": [
+            "Stage ONLY listed15paths; force-add only own ignored entries",
+            "Verify actual staged Git regular blobs + three LFS-pointer actualcache payload SHA/size before commit; report exact stage proof",
+            "Local own-branch commit only, no amend/reset/foreign staging/main merge/push/publication",
+            "Keep products/evidence HOLD; report full40char SHA,parent,actual15changedpaths,indexclean and commit proof; root admission before integrator copy",
+            "No browser/endW09 gate implied; final product browser/source evidence still pending"
+          ]
+        },
+        "cargoUsabilityCommit": {
+          "status": "ACTUAL_LOCAL_COMMIT_ROOT_HEAD_ADMISSION_PASS",
+          "sha": "28de0ce99f5f6fa9ca3bed415bcb34c7b5e3117a",
+          "parent": "24c274e2302452c5fa305e5ca37d6935bbff55ba",
+          "paths": 15,
+          "regularGitBlobs": 12,
+          "lfsActualPayloads": 3,
+          "scope": "Source/Evidence/Git only; Browser and full W09 pending"
+        },
+        "cargoUsabilityCopyAdmission": {
+          "schema": "hestia.fp06.w09.ui-cargo-integrator-copy-admission/v1",
+          "authorizedAtUtc": "2026-10-11T21:51:32.202995+00:00",
+          "actor": "/root/fp06_integrator",
+          "sourceActor": "/root/fp06_domain",
+          "sourceCommitSha": "28de0ce99f5f6fa9ca3bed415bcb34c7b5e3117a",
+          "sourceParentSha": "24c274e2302452c5fa305e5ca37d6935bbff55ba",
+          "sourceWorktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11",
+          "targetWorktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+          "targetBranch": "codex/hestia-fp06-integrator-2026-10-11",
+          "exactPaths": [
+            "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/01-red.log.gz",
+            "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/01-red.receipt.json",
+            "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/02-green.log.gz",
+            "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/02-green.receipt.json",
+            "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/03-build.log.gz",
+            "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/03-build.receipt.json",
+            "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/grant.json",
+            "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/manifest.json",
+            "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/product-seal.json",
+            "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/product.patch",
+            "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/report.json",
+            "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/report.md",
+            "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/self-review.md",
+            "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+            "apps/weltraum-browser/tests/unit/factory/panels.test.ts"
+          ],
+          "productSealSha256": "2722578365bf46b11d6924dc549b66023d29f0757d3b53243a1d8a9885f05423",
+          "manifestSha256": "ab822f4e21614eacd4cfd8492ef28d02f174028e0f4c1f35414c35fcf5138ef3",
+          "rootActualHeadGate": "PASS_LOCAL_15_PATHS_12_GIT_3_LFS_CURRENT_CLEAN",
+          "constraints": [
+            "Copy only exact15files from admitted source committed payloads; no direct cherry-pick/reset/amend while target has own Native WIP",
+            "Capture current target HEAD, empty index, own noncopy WIP file set+bytes+porcelain before copy; verify unchanged after scoped own copy commit",
+            "Commit only exact15copied paths; actual12Git/3LFS committed blob identities must equal admitted source commit; independently verify target after commit",
+            "Product/test diffcheck must pass; full archived patch diffcheck Exit2 is retained data-context finding, not a global PASS",
+            "Keep frozen public UI protocol / other3panels unchanged, no shared contract overwrite",
+            "No whole W09/Browser/Gameplay/Save gate or publication implied; continue current authorized Native/command work after actual copy proof"
           ]
         }
       },
@@ -3415,6 +3497,46 @@
         "status": "FUNCTIONAL_CONTEXT_AND_CONTROL_REACH_FINDINGS_OPEN_NOT_ART_ACCEPTANCE",
         "path": "docs/factory/fp06/reviews/w09-browser72-visual-preflight.md",
         "sha256": "db601897dbd44e5a77b0207e3edb202d7ea38ea55890c1f40b008de62acb5fbd"
+      },
+      "transportSourceReview": {
+        "status": "SOURCE_PREFLIGHT_ONLY_NATIVE_ROUTE_GATE_NOT_RUN",
+        "path": "docs/factory/fp06/reviews/w09-transport-block-source-review.md",
+        "sha256": "ea0f9ba3c42acb37d33c0e241cb7bb17b60026ed523465d5fcd04932885c3d1d"
+      },
+      "additionalStartSiteOwnerGate": {
+        "status": "OWNER_REVIEW_REQUIRED_ONLY_ADDITIONAL_START_SITE_WRITES_BLOCKED",
+        "recordedAtUtc": "2026-10-11T21:54:03.827660+00:00",
+        "reason": "Actual normal browser81 CarrierOverlap plus sourcebound shoulders obstruct current approved heavy route; accepted siteV1 contains exactly15masks and accepted handling has fixedq1. No extra terrain/rotation accepted implicitly.",
+        "proposal": "docs/factory/fp06/proposals/heavy-route-start-site-v2.md",
+        "proposalSha256": "5fd528af5b7fdddf467905f26087090a295ff65c3e15bb2dd843134f6aaee7c7",
+        "exactMaskBytes": "docs/factory/fp06/proposals/heavy-route-start-site-v2.json",
+        "exactMaskBytesSha256": "f78ffa85993585a2c60079c09f03d28d956da59414409dc97a8a8ca217487b3b",
+        "additionalAreaMm2": 5937500,
+        "totalAreaMm2": 75937500,
+        "newColumns": 380,
+        "unchangedOldMasks": 15,
+        "materialCreditMg": 0,
+        "proposedSourceVersion": "hvp-factory-startsite-v2",
+        "prospectiveTerrainSourceDigest": "NOT_RUN",
+        "nativeFullRoute": "NOT_RUN",
+        "implementationWriteGrant": "NONE_UNTIL_ACTUAL_OWNER_RECEIPT_AND_EXACT_SCOPE",
+        "independentAuthorizedWork": "Current Host/Native production facts, command wiring, renderer recovery/budget fixes and their unit/regression gates may continue under existing scope; W09 package gate remains pending."
+      },
+      "uiCargoIntegratorCopy": {
+        "status": "ACTUAL_COPY_LOCAL_COMMIT_ROOT_15_BLOB_IDENTITY_PASS",
+        "commitSha": "aa2e5d7c335453fc555a98ccd35e9f564c596e93",
+        "sourceSha": "28de0ce99f5f6fa9ca3bed415bcb34c7b5e3117a",
+        "paths": 15,
+        "regularGitBlobs": 12,
+        "lfsPayloads": 3,
+        "rootChecks": "Actual HEAD,parent,15diffpaths,15source/targetGitblobOIDs and empty index verified. Author receipt records218noncopyWIP byte+status equality; not repeated against later mutable worktree.",
+        "receipt": "docs/factory/fp06/reviews/w09-ui-cargo-copy-receipt.json",
+        "browser": "NOT_RUN"
+      },
+      "receiverFaultFollowupReview": {
+        "status": "ORIGINAL_C1_P1_C2_SCOPED_GREEN_R1_RELEASE_RETIREMENT_SOURCE_PATH_OPEN",
+        "path": "docs/factory/fp06/reviews/w09-receiver-fault-followup-review.md",
+        "sha256": "f82ef76b32edd6bce59b1c6c18f315f7b3489de7354cdf296847f930219a88dc"
       }
     },
     "W10": {
@@ -3570,6 +3692,11 @@
         "report": "docs/factory/fp06/reviews/w10-w11-ci-evidence-compatibility-preflight.md",
         "sha256": "2168eca31ee166f610ea77ec152a73f22074e8bdbaffbe70c18f38d9e8dc1a48",
         "scope": "Concrete aggregate-budget and two historical schema/map CI blockers. Closed per-run and exact immutable legacy adapter proposal only; no code write granted, no runtime CI PASS; budgets unchanged."
+      },
+      "uiEvidenceCompatibilityDelta": {
+        "status": "SOURCE_ONLY_NOT_GRANTED_NOT_RUN",
+        "path": "docs/factory/fp06/reviews/w09-ui-ci-compatibility-delta.md",
+        "sha256": "d1c00d15c0febef0e18ad7f13bbfe134493c3d0e15fa181c7bcdaf63f207aa53"
       }
     }
   },

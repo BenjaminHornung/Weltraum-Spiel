@@ -1,0 +1,46 @@
+{
+  "schema": "hestia.fp06.w09.ui-cargo-commit-admission/v1",
+  "authorizedAtUtc": "2026-10-11T21:47:21.385113+00:00",
+  "actor": "/root/fp06_domain",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11",
+  "branch": "codex/hestia-fp06-ui-w09-2026-10-11",
+  "baseCommitSha": "24c274e2302452c5fa305e5ca37d6935bbff55ba",
+  "status": "SEALED_SOURCE_EVIDENCE_PASS_EXACT_15_PATH_LOCAL_COMMIT_AUTHORIZED",
+  "exactPaths": [
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/01-red.log.gz",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/01-red.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/02-green.log.gz",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/02-green.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/03-build.log.gz",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/03-build.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/grant.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/manifest.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/product-seal.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/product.patch",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/report.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/report.md",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/self-review.md",
+    "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+    "apps/weltraum-browser/tests/unit/factory/panels.test.ts"
+  ],
+  "productSealSha256": "2722578365bf46b11d6924dc549b66023d29f0757d3b53243a1d8a9885f05423",
+  "manifestSha256": "ab822f4e21614eacd4cfd8492ef28d02f174028e0f4c1f35414c35fcf5138ef3",
+  "independentReview": {
+    "path": "docs/factory/fp06/reviews/w09-ui-cargo-usability-review.md",
+    "sha256": "c2869cebf2f3d7662685a4d77a9438d2299bad115951670203a907e2cf82663e"
+  },
+  "rootChecks": [
+    "All five sealed/report artifact hashes and sizes exact",
+    "Two changed products + four held references exact",
+    "All12Manifestrefs sizes+hashes exact",
+    "All3gzip/raw/external original bytepairs exact",
+    "Current base24c274/indexempty/two tracked product changes exact"
+  ],
+  "constraints": [
+    "Stage ONLY listed15paths; force-add only own ignored entries",
+    "Verify actual staged Git regular blobs + three LFS-pointer actualcache payload SHA/size before commit; report exact stage proof",
+    "Local own-branch commit only, no amend/reset/foreign staging/main merge/push/publication",
+    "Keep products/evidence HOLD; report full40char SHA,parent,actual15changedpaths,indexclean and commit proof; root admission before integrator copy",
+    "No browser/endW09 gate implied; final product browser/source evidence still pending"
+  ]
+}
