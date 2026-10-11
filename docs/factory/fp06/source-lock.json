@@ -860,7 +860,8 @@
         "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
         "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
         "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
-        "apps/weltraum-browser/src/hestia-prototype/physics/session.ts"
+        "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+        "apps/weltraum-browser/package.json"
       ],
       "grantedWriteSet": [],
       "evidenceWriteSet": [
@@ -886,6 +887,10 @@
           "owner": "/root/fp06_integrator",
           "reason": "Actual Rapier World is private closure in physics/session.ts; native fixed Facility transaction/lifecycle and complete combined checkpoint require narrow integration inside that same world.",
           "authorization": "Technical implementation of explicitly user-approved D11; no generic UI/native World access, no larger global budgets, no silent legacy codec changes."
+        },
+        {
+          "path": "apps/weltraum-browser/package.json",
+          "reason": "Actual CI parser requires explicit existing spec paths assigned exactly once; register only this package new E2E spec when it exists. No future placeholder specs, parser relaxation, dependency/lockfile changes or unrelated script edits. Integrator only."
         }
       ]
     },
@@ -955,7 +960,8 @@
         "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
         "apps/weltraum-browser/src/factory/ui/powerPanel.ts",
         "apps/weltraum-browser/src/factory/ui/technologyView.ts",
-        "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts"
+        "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts",
+        "apps/weltraum-browser/package.json"
       ],
       "grantedWriteSet": [],
       "evidenceWriteSet": [
@@ -974,6 +980,12 @@
         "Only exact granted paths; planned paths are not grants",
         "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
         "No main merge/push/publication; no W12-W29"
+      ],
+      "scopeExtensions": [
+        {
+          "path": "apps/weltraum-browser/package.json",
+          "reason": "Actual CI parser requires explicit existing spec paths assigned exactly once; register only this package new E2E spec when it exists. No future placeholder specs, parser relaxation, dependency/lockfile changes or unrelated script edits. Integrator only."
+        }
       ]
     },
     "W10": {
@@ -1009,7 +1021,8 @@
         "apps/weltraum-browser/src/hestia-prototype/persistence/factoryWorldParts.ts",
         "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
         "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
-        "apps/weltraum-browser/src/hestia-prototype/physics/session.ts"
+        "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+        "apps/weltraum-browser/package.json"
       ],
       "grantedWriteSet": [],
       "evidenceWriteSet": [
@@ -1035,6 +1048,10 @@
           "owner": "/root/fp06_integrator",
           "reason": "Actual Rapier World is private closure in physics/session.ts; native fixed Facility transaction/lifecycle and complete combined checkpoint require narrow integration inside that same world.",
           "authorization": "Technical implementation of explicitly user-approved D11; no generic UI/native World access, no larger global budgets, no silent legacy codec changes."
+        },
+        {
+          "path": "apps/weltraum-browser/package.json",
+          "reason": "Actual CI parser requires explicit existing spec paths assigned exactly once; register only this package new E2E spec when it exists. No future placeholder specs, parser relaxation, dependency/lockfile changes or unrelated script edits. Integrator only."
         }
       ]
     },
@@ -1060,7 +1077,8 @@
         "apps/weltraum-browser/tests/e2e/factory-acceptance.spec.ts",
         "apps/weltraum-browser/tests/fixtures/factory/checkpoint-fixtures/",
         "apps/weltraum-browser/evidence/factory/w11/",
-        "docs/factory/fp06/dry-slice-acceptance.md"
+        "docs/factory/fp06/dry-slice-acceptance.md",
+        "apps/weltraum-browser/package.json"
       ],
       "grantedWriteSet": [],
       "evidenceWriteSet": [
@@ -1079,6 +1097,12 @@
         "Only exact granted paths; planned paths are not grants",
         "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
         "No main merge/push/publication; no W12-W29"
+      ],
+      "scopeExtensions": [
+        {
+          "path": "apps/weltraum-browser/package.json",
+          "reason": "Actual CI parser requires explicit existing spec paths assigned exactly once; register only this package new E2E spec when it exists. No future placeholder specs, parser relaxation, dependency/lockfile changes or unrelated script edits. Integrator only."
+        }
       ]
     }
   },

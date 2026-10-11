@@ -47,3 +47,7 @@ Als konservative, explizit versionierte Kapazitätsenvelope (keine Feststoffdich
 ## Enger technischer Integrationsscope W07/W10
 
 Die tatsächliche Rapier-World ist eine private Closure in `src/hestia-prototype/physics/session.ts`. Neuer Facilityadapter und Worker-Nachrichten allein können dort keine fixed Facilities installieren. Daher wird genau diese Datei zusätzlich ausschließlich dem Integrator für Facility-Transaktion/Lifecycle und vollständigen kombinierten Checkpoint freigegeben, sobald W07 bzw. W10 ihre Gates erreichen. Dies setzt D11 in derselben vorhandenen World um; keine generische World-/CreateBody-API, keine erhöhten Gesamtbudgets und keine Lockerung des geschlossenen Legacyformats.
+
+## Paketweise E2E-Inventarbindung
+
+Die vorhandene CI-Prüfung akzeptiert ausschließlich explizite, tatsächlich vorhandene Specpfade in genau einer der drei bestehenden Gruppen. Deshalb wird package.json zusätzlich in W07, W09, W10 und W11 allein zur Aufnahme der jeweils neuen E2E-Datei vorgesehen. Der Integrator registriert jede Spec erst in ihrem Paket; keine Platzhalter aus späteren Paketen und keine Lockerung des Parsers, Abhängigkeiten oder Lockfiles. Dies ist ein technischer Integrationsscope unter dem vorhandenen Auftrag, keine neue Produktentscheidung. Geplante Pfade bleiben bis zum jeweiligen Gate ohne Write-Grant.
