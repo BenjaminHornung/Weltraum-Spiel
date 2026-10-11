@@ -38,6 +38,13 @@
       "exitCode": 0,
       "result": "TypeScript/Vite PASS, baseline bundlewarning only",
       "log": "build.txt"
+    },
+    {
+      "phase": "FULL_STAGED_DIFF_CHECK",
+      "command": "git diff --cached --check b8edd17bfdeb2bc724afc76c148d8aeacacde7b1",
+      "exitCode": 0,
+      "log": "diff-check.txt",
+      "result": "Complete corrected R1 code/evidence diff PASS"
     }
   ],
   "artifactNormalization": "Plain txt trailing-whitespace normalization only; raw.gz preserves actual outputbytes",
@@ -66,8 +73,16 @@
       "sha256": "a9836cc26ef4dc80f144b6b41f846fccd0f2d152044a5809ad6a2d7436076c7f"
     },
     {
+      "path": "diff-check-failure.txt",
+      "sha256": "3b3b6694e277029d63ec2d22ce0e9e9ad688a4a17589ac83a48b91570b8a7ef5"
+    },
+    {
+      "path": "diff-check-failure.txt.raw.gz",
+      "sha256": "bd7cc3b9da018d543acf0bb2fc54f639272fd6fa0d2cb5c58a71250cff38197c"
+    },
+    {
       "path": "diff-check.txt",
-      "sha256": "f51fd3bf470728a4661bcd298ccd911b35830db28d4e29fce83684f1c101962b"
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "path": "green-resource-regressions.txt",
@@ -99,8 +114,14 @@
     },
     {
       "path": "review.md",
-      "sha256": "425401c2ba0954d52230ea8062713e60d32d60d32f5ef17b0d6a4eb4f1e73a82"
+      "sha256": "5336db2500cd5ed491036130acb61d8abdacaf2256cd27fac8b0695da45a86ab"
     }
   ],
-  "diffArtifacts": "Full staged two-file product diff in product-diff.patch.raw.gz; exact readable --unified=0 product diff in product-diff-unified0.patch to avoid whitespace-only context."
+  "diffArtifacts": "Full staged two-file product diff in product-diff.patch.raw.gz; exact readable --unified=0 product diff in product-diff-unified0.patch to avoid whitespace-only context.",
+  "evidenceRecovery": {
+    "firstR1Commit": "14ebfb44194d36ae23663fedf6a66a384a40800f",
+    "problem": "Self-capturing check log retained raw patch context whitespace; evidence-only correction",
+    "preservedFailure": "diff-check-failure.txt.raw.gz",
+    "productChanges": "No additional product changes after the one-line CASS-OFFCUT fix and literal oracle"
+  }
 }
