@@ -1274,7 +1274,8 @@
         "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
         "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
         "apps/weltraum-browser/src/hestia-prototype/player/input.ts",
-        "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts"
+        "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
+        "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts"
       ],
       "grantedWriteSet": [
         "apps/weltraum-browser/src/factory/construction/placement.ts",
@@ -1305,7 +1306,8 @@
         "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
         "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
         "apps/weltraum-browser/src/hestia-prototype/player/input.ts",
-        "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts"
+        "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
+        "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts"
       ],
       "evidenceWriteSet": [
         "apps/weltraum-browser/evidence/factory/w07/<actual-run-id>/**"
@@ -1348,6 +1350,13 @@
           "authorizedAtUtc": "2026-10-11T13:11:16.734823+00:00",
           "reason": "Source-bound initial Cargo-S0 witness and real native access replace an unbound coordinate. Existing W07 Native/Host/Entry seams admit the owner and idempotent opening; finite pickup/walk/deposit remains W09.",
           "authorization": "Technical implementation within user-authorized W00-W11 and verified FP01 sections 5.5/E00 plus FP02 sections 6.4/9.1. No new product freeze, masks, cargo or limits."
+        },
+        {
+          "path": "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts",
+          "authorizedAtUtc": "2026-10-11T16:33:29.351601+00:00",
+          "owner": "/root/fp06_integrator",
+          "reason": "Explicit cancellation of native pendingJump required for Factory stop/blur/Hold, preserving ordinary keyup and Legacy default. Existing locomotion retains pendingJump with OR; transport-only neutral input cannot clear it.",
+          "authorization": "Technical correction under user-authorized W00-W11; no velocity, step, clock, coverage, terrain or Source changes."
         }
       ],
       "conditionalWriteGates": [
@@ -1439,7 +1448,7 @@
         "wrapperSeconds": 1.51,
         "status": "WRITER_REPORTED_PENDING_SEALED_EVIDENCE_REVIEW"
       },
-      "runtimeWriteHold": true,
+      "runtimeWriteHold": false,
       "currentNarrowWriteGrant": {
         "authorizedAtUtc": "2026-10-11T14:37:52.124736+00:00",
         "productPaths": [
@@ -1719,6 +1728,10 @@
         "packageCommitSha": null
       },
       "currentNarrowWriteSet": [
+        "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+        "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts",
         "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts"
       ],
       "currentNarrowScope": "One E2E-only bounded adaptive fine-key diagnostic; all other28 product paths held at Ninth seal",
@@ -2024,7 +2037,7 @@
           "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
           "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts"
         ],
-        "runtimeGrant": "NOT_GRANTED"
+        "runtimeGrant": "EXACT_FIVE_PATHS_AFTER_VERIFIED_LOG69_RED"
       },
       "factoryInputDeliveryTestAuthorization": {
         "authorizedAtUtc": "2026-10-11T16:29:29.851091+00:00",
@@ -2036,7 +2049,38 @@
         "execution": "CPU_EXCLUSIVE_FOCUSED_UNIT_ONLY",
         "requirements": "Real collision/coverage/player support; same Rapier World; neutral Read ACK held; actual Native advance only; Down moves and Up stops before ACK; input dispatch alone does not advance pose/ticks. Record collect/setup failures separately.",
         "exclusions": "No runtime/IPC/Browser/Build/producer/Bootstrap/Terrain/cap/deadline/tick/pose writes or changes.",
-        "status": "AUTHORIZED_NOT_RUN"
+        "status": "EXECUTED_REAL_ASSERTION_RED"
+      },
+      "factoryInputDeliveryBusinessRed": {
+        "log": 69,
+        "result": "2_ASSERTION_FAIL_14_SKIPPED_NO_SETUP_ERROR",
+        "exitCode": 1,
+        "endedAtUtc": "2026-10-11T16:31:51.173094+00:00",
+        "wrapperSeconds": 1.7540343159998883,
+        "rawSha256": "764e5864313f9cbddb0c1eed1cc8cfe702ca8ff8917989517f59354fb8fef110",
+        "rawBytes": 2448,
+        "rootRawVerification": "Gzip-decompressed raw matches receipt exactly",
+        "fixture": "Same real Rapier World, static collision, full coverage, Grounded/Walking/Running, all actual transactions Idle; dispatch alone no pose/tick advance",
+        "failures": [
+          "Busy neutral Read prevents Down before ACK (0 instead0.3m/6NativeSteps)",
+          "Up before ACK fails to stop real moving owner (0.600010 instead0.300010m)"
+        ]
+      },
+      "factoryInputDeliveryRuntimeAuthorization": {
+        "authorizedAtUtc": "2026-10-11T16:33:29.351601+00:00",
+        "actor": "/root/fp06_integrator",
+        "writeSet": [
+          "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+          "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+          "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+          "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts",
+          "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts"
+        ],
+        "cpuLease": "EXCLUSIVE_FOCUSED_UNIT_AFFECTED_REGRESSION_BUILD",
+        "constraints": "Factory-only independent typed smallACK through existing bounded max8/20s transport; Read input-free only in Factory; no ACK clock/timing/restore/public/held publication; Release independent fromACK; no retained queue/latch/catchup/Nativeadvance/timer; Legacy same; actual private Hold/Pause/Restore/Dispose barriers and explicit Native Jumpcancel.",
+        "guardGates": "Real guard counterexample before fix where applicable; already native-staged Level/Jump must be neutralized across actual transient Hold→resume, without changing velocity/clock.",
+        "browser": "NOT_GRANTED",
+        "status": "AUTHORIZED_AFTER_REAL_RED"
       }
     },
     "W08": {
