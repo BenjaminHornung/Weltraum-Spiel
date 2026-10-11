@@ -3916,7 +3916,26 @@
         "prospectiveTerrainSourceDigest": "NOT_RUN",
         "nativeFullRoute": "NOT_RUN",
         "implementationWriteGrant": "NONE_UNTIL_ACTUAL_OWNER_RECEIPT_AND_EXACT_SCOPE",
-        "independentAuthorizedWork": "Current Host/Native production facts, command wiring, renderer recovery/budget fixes and their unit/regression gates may continue under existing scope; W09 package gate remains pending."
+        "independentAuthorizedWork": "Current Host/Native production facts, command wiring, renderer recovery/budget fixes and their unit/regression gates may continue under existing scope; W09 package gate remains pending.",
+        "exactScopePreflight": {
+          "status": "READONLY_PLANNED_NOT_GRANTED_OWNER_PENDING",
+          "path": "docs/factory/fp06/reviews/w09-startsite-v2-exact-scope-preflight.md",
+          "sha256": "6bc09f54bb38b59d8d957274db870ceaf99d20f3f6be4f17eb5b143cb20dd548",
+          "additionalPlannedWriteSet": [
+            "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+            "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+            "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+            "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+            "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts"
+          ],
+          "alreadyGranted": [
+            "apps/weltraum-browser/src/factory/session/hostPort.ts",
+            "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+            "apps/weltraum-browser/src/factory/factoryEntry.ts",
+            "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts"
+          ],
+          "protectedLegacyParsers": "gameCheckpoint/sceneReplacement/hvpWorldRestore unchanged; W10 separate gate"
+        }
       },
       "uiCargoIntegratorCopy": {
         "status": "ACTUAL_COPY_LOCAL_COMMIT_ROOT_15_BLOB_IDENTITY_PASS",
