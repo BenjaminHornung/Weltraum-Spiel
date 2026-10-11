@@ -1,0 +1,14 @@
+{
+  "reports": [
+    {
+      "path": "apps/weltraum-browser/evidence/browser-ship-power-thermal-core-v1-summary.json",
+      "sha256": "e123ac85523cd7537cd7eeb0d23eb6f63d3999f954f7d9dfbdedcfba497223bd",
+      "bytes": 49897
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/browser-ship-power-thermal-core-v1.md",
+      "sha256": "2962702b7985bc294331df40260a072cd12bc40080b0369e54e52ed1c951be3f",
+      "bytes": 2898
+    }
+  ]
+}

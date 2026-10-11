@@ -1,0 +1,36 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/power.test.ts -t CURRENT Resources normbytes
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/power.test.ts (20 tests | 1 failed | 19 skipped) 43ms
+   × source admission rejects changed CURRENT Resources normbytes and unsupported profile before a receipt 41ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/power.test.ts > source admission rejects changed CURRENT Resources normbytes and unsupported profile before a receipt
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ tests/unit/factory/power.test.ts:235:59
+    233|   const snapshot=sourceFixture(); const mutated={...snapshot,resourceC…
+    234|     c.containerId===snapshot.installed[0].containerId?{...c,contents:c…
+    235|   expect(()=>prepareFactoryPowerSources(catalog,mutated)).toThrow(/Res…
+       |                                                           ^
+    236|   expect(()=>prepareFactoryPowerSources(catalog,{...snapshot,binding:{…
+    237| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 19 skipped (20)
+   Start at  11:40:30
+   Duration  401ms (transform 182ms, setup 0ms, import 242ms, tests 43ms, environment 0ms)

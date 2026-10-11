@@ -1,0 +1,115 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/power.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/power.test.ts (15 tests | 5 failed) 809ms
+     × actual installed serials from Resources admit fixed net-side observations, not cargo nameplate 17ms
+     × unknown/unconfirmed environment offers zero new wind/PVenergy, valid battery remains usable 14ms
+     × stale source bindings, wrong source version, forged/duplicated finite pieces reject without mutation 14ms
+     × WX-FAV-01 is a pinned net-side fixture, changed numerical claims are rejected 13ms
+     × read view separates nameplate, potential, actualwork, losses and stored energy without own authority 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/power.test.ts > FP06 W03 finite installed source and read projection > actual installed serials from Resources admit fixed net-side observations, not cargo nameplate
+ResourceValidationError: Container state requires a save-safe container id
+ ❯ failResourceValidation src/resources/ids.ts:45:9
+     43|
+     44| export const failResourceValidation = (code: ResourceValidationErrorCo…
+     45|   throw new ResourceValidationError(code, message);
+       |         ^
+     46| };
+     47|
+ ❯ createResourceContainerState src/resources/containers.ts:254:76
+ ❯ tests/unit/factory/power.test.ts:142:25
+ ❯ sourceFixture tests/unit/factory/power.test.ts:142:18
+ ❯ tests/unit/factory/power.test.ts:151:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/unit/factory/power.test.ts > FP06 W03 finite installed source and read projection > unknown/unconfirmed environment offers zero new wind/PVenergy, valid battery remains usable
+ResourceValidationError: Container state requires a save-safe container id
+ ❯ failResourceValidation src/resources/ids.ts:45:9
+     43|
+     44| export const failResourceValidation = (code: ResourceValidationErrorCo…
+     45|   throw new ResourceValidationError(code, message);
+       |         ^
+     46| };
+     47|
+ ❯ createResourceContainerState src/resources/containers.ts:254:76
+ ❯ tests/unit/factory/power.test.ts:142:25
+ ❯ sourceFixture tests/unit/factory/power.test.ts:142:18
+ ❯ tests/unit/factory/power.test.ts:159:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/unit/factory/power.test.ts > FP06 W03 finite installed source and read projection > stale source bindings, wrong source version, forged/duplicated finite pieces reject without mutation
+ResourceValidationError: Container state requires a save-safe container id
+ ❯ failResourceValidation src/resources/ids.ts:45:9
+     43|
+     44| export const failResourceValidation = (code: ResourceValidationErrorCo…
+     45|   throw new ResourceValidationError(code, message);
+       |         ^
+     46| };
+     47|
+ ❯ createResourceContainerState src/resources/containers.ts:254:76
+ ❯ tests/unit/factory/power.test.ts:142:25
+ ❯ sourceFixture tests/unit/factory/power.test.ts:142:18
+ ❯ tests/unit/factory/power.test.ts:169:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/unit/factory/power.test.ts > FP06 W03 finite installed source and read projection > WX-FAV-01 is a pinned net-side fixture, changed numerical claims are rejected
+ResourceValidationError: Container state requires a save-safe container id
+ ❯ failResourceValidation src/resources/ids.ts:45:9
+     43|
+     44| export const failResourceValidation = (code: ResourceValidationErrorCo…
+     45|   throw new ResourceValidationError(code, message);
+       |         ^
+     46| };
+     47|
+ ❯ createResourceContainerState src/resources/containers.ts:254:76
+ ❯ tests/unit/factory/power.test.ts:142:25
+ ❯ sourceFixture tests/unit/factory/power.test.ts:142:18
+ ❯ tests/unit/factory/power.test.ts:182:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/unit/factory/power.test.ts > FP06 W03 finite installed source and read projection > read view separates nameplate, potential, actualwork, losses and stored energy without own authority
+AssertionError: expected null to match object { nameplateMilliWatt: '6000000', …(3) }
+
+- Expected:
+{
+  "allocatedMilliWatt": "3500000",
+  "nameplateMilliWatt": "6000000",
+  "sourceActualMilliWatt": {
+    "d": "1",
+    "n": "3500000",
+  },
+  "storedEnergy": {
+    "d": "1",
+    "n": "12960000000",
+  },
+}
+
++ Received:
+null
+
+ ❯ tests/unit/factory/power.test.ts:191:18
+    189|     const state=initial(); const r=success(state,input(state,3500,[req…
+    190|     const view=readFactoryPower(r) as {nameplateMilliWatt:string;sourc…
+    191|     expect(view).toMatchObject({nameplateMilliWatt:"6000000",sourceAct…
+       |                  ^
+    192|     expect(Object.isFrozen(view)).toBe(true); expect(readFactoryPower(…
+    193|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 10 passed (15)
+   Start at  11:33:39
+   Duration  1.21s (transform 197ms, setup 0ms, import 260ms, tests 809ms, environment 0ms)

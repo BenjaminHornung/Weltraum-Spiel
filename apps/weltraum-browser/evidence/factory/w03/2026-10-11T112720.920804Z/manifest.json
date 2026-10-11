@@ -1,0 +1,639 @@
+{
+  "schema": "hestia.fp06.w03-evidence/v1",
+  "package": "W03",
+  "runId": "2026-10-11T112720.920804Z",
+  "actor": "/root/fp06_integrator",
+  "branch": "codex/hestia-fp06-integrator-2026-10-11",
+  "authorizedGrantBaseSha": "5b596f932dc769052e17603965d0179a4937d948",
+  "actualImplementationParentSha": "2c044e02f1f31a2db3de3a0df9156bd71a431a7a",
+  "createdAtUtc": "2026-10-11T11:54:34.678523+00:00",
+  "status": "TECHNICAL_REVIEW_PASS_PENDING_COMMITTED_HEAD_ADMISSION",
+  "independentFinalGate": "SPEC_PASS_QUALITY_PASS_CANDIDATE_PASS; committed HEAD/checkout and Root package gate pending",
+  "candidateCommitBinding": "Full SHA is the enclosing Git commit; external w03-report.md will record it after the actual permitted commit. No self-referential SHA is fabricated.",
+  "verification": [
+    {
+      "phase": "ALLOCATOR_BUSINESS_RED",
+      "command": "npm --prefix apps/weltraum-browser run test -- tests/unit/factory/power.test.ts",
+      "exitCode": 1,
+      "result": "9FAIL/1PASS, ten real collectable business tests",
+      "log": "01-business-red.log"
+    },
+    {
+      "phase": "ALLOCATOR_GREEN",
+      "command": "npm --prefix apps/weltraum-browser run test -- tests/unit/factory/power.test.ts",
+      "exitCode": 0,
+      "result": "10/10PASS",
+      "log": "02-allocator-green-attempt.log"
+    },
+    {
+      "phase": "SOURCE_FIXTURE_SETUP_FAILURE",
+      "command": "npm --prefix apps/weltraum-browser run test -- tests/unit/factory/power.test.ts",
+      "exitCode": 1,
+      "result": "5FAIL/10PASS; invalid test save-ID setup, explicitly not business RED",
+      "log": "03-source-readview-red.log"
+    },
+    {
+      "phase": "SOURCE_READVIEW_BUSINESS_RED",
+      "command": "npm --prefix apps/weltraum-browser run test -- tests/unit/factory/power.test.ts",
+      "exitCode": 1,
+      "result": "4FAIL/11PASS after correcting test setup; no import failure",
+      "log": "04-source-readview-business-red.log"
+    },
+    {
+      "phase": "SOURCE_READVIEW_GREEN",
+      "command": "npm --prefix apps/weltraum-browser run test -- tests/unit/factory/power.test.ts",
+      "exitCode": 0,
+      "result": "15/15PASS",
+      "log": "05-source-readview-green-attempt.log"
+    },
+    {
+      "phase": "NETWORK_QUANTUM_BUSINESS_RED",
+      "command": "npm --prefix apps/weltraum-browser run test -- tests/unit/factory/power.test.ts",
+      "exitCode": 1,
+      "result": "2FAIL/16PASS",
+      "log": "06-review-business-red.log"
+    },
+    {
+      "phase": "REQUEST_BYTES_COLLISION_RED",
+      "command": "npm --prefix apps/weltraum-browser run test -- tests/unit/factory/power.test.ts -t 'actual FNV collisions'",
+      "exitCode": 1,
+      "result": "1FAIL/18skipped; two actual distinct requests collide under FNV but must reset window",
+      "log": "07-request-bytes-business-red.log"
+    },
+    {
+      "phase": "INITIAL_AFFECTED_GREEN",
+      "command": "npm --prefix apps/weltraum-browser run test -- tests/unit/factory/power.test.ts tests/unit/shipBattery.test.ts tests/unit/shipPowerAllocation.test.ts tests/unit/shipPowerThermalDeterminism.test.ts tests/unit/shipPowerValidation.test.ts",
+      "exitCode": 0,
+      "result": "76/76PASS in5files; before current-Resources/source-byte guard",
+      "log": "08-focused-ship-regressions.log"
+    },
+    {
+      "phase": "INITIAL_BUILD_TYPE_FAILURE",
+      "command": "npm --prefix apps/weltraum-browser run build",
+      "exitCode": 1,
+      "result": "TS2339 on readonly JSON object/array narrowing; retained actual compiler failure",
+      "log": "09-build.log"
+    },
+    {
+      "phase": "INITIAL_BUILD_GREEN",
+      "command": "npm --prefix apps/weltraum-browser run build",
+      "exitCode": 0,
+      "result": "tsc+Vite PASS after exact object property guard; pre-review product",
+      "log": "10-build-green.log"
+    },
+    {
+      "phase": "RESOURCE_NORMBYTES_BUSINESS_RED",
+      "command": "npm --prefix apps/weltraum-browser run test -- tests/unit/factory/power.test.ts -t 'CURRENT Resources normbytes'",
+      "exitCode": 1,
+      "result": "1FAIL/19skipped; changed resource fields incorrectly accepted before strict bytes compare",
+      "log": "11-resource-source-bytes-business-red.log"
+    },
+    {
+      "phase": "RECEIPT_NORMALIZATION_FAILURE",
+      "command": "npm --prefix apps/weltraum-browser run test -- tests/unit/factory/power.test.ts tests/unit/shipBattery.test.ts tests/unit/shipPowerAllocation.test.ts tests/unit/shipPowerThermalDeterminism.test.ts tests/unit/shipPowerValidation.test.ts",
+      "exitCode": 1,
+      "result": "1FAIL/76PASS; T016 exposed raw supply array order in newly added receipt; corrected normalized receipt",
+      "log": "12-final-focused-ship-regressions.log"
+    },
+    {
+      "phase": "NORMALIZED_RECEIPT_GREEN",
+      "command": "npm --prefix apps/weltraum-browser run test -- tests/unit/factory/power.test.ts tests/unit/shipBattery.test.ts tests/unit/shipPowerAllocation.test.ts tests/unit/shipPowerThermalDeterminism.test.ts tests/unit/shipPowerValidation.test.ts",
+      "exitCode": 0,
+      "result": "77/77PASS in5files",
+      "log": "13-final-focused-ship-green.log"
+    },
+    {
+      "phase": "LITERAL_SIX_SOURCE_PRE_REVIEW_GREEN",
+      "command": "npm --prefix apps/weltraum-browser run test -- tests/unit/factory/power.test.ts tests/unit/shipBattery.test.ts tests/unit/shipPowerAllocation.test.ts tests/unit/shipPowerThermalDeterminism.test.ts tests/unit/shipPowerValidation.test.ts",
+      "exitCode": 0,
+      "result": "78/78PASS in5files:21Factory+57unchangedShip; before independent R1/R2",
+      "log": "14-literal-source-focused-green.log"
+    },
+    {
+      "phase": "PRE_REVIEW_BUILD",
+      "command": "npm --prefix apps/weltraum-browser run build",
+      "exitCode": 0,
+      "result": "tsc+Vite PASS; before independent R1/R2, existing chunk warning unchanged",
+      "log": "15-final-build.log"
+    },
+    {
+      "phase": "ACTUAL_NORMAL_ROUTE_SHIP_BROWSER",
+      "command": "FP06_E2E_RUN_DIR=\"/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z\" npm run test:e2e -- --config=/workspace/.cloud-setup/fp06-w03.playwright.config.mts tests/e2e/ship-power-thermal-core.spec.ts",
+      "exitCode": 0,
+      "result": "1/1PASS3.6stest/5.0srun; unchanged normal Ship compatibility, before pure Factory R1/R2guard; no Factory gameplay claim",
+      "log": "16-normal-browser-ship-core.log",
+      "workingDirectory": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser"
+    },
+    {
+      "phase": "INDEPENDENT_R1_R2_BUSINESS_RED",
+      "command": "npm --prefix apps/weltraum-browser run test -- tests/unit/factory/power.test.ts -t 'R1 rejects|R2 absent'",
+      "exitCode": 1,
+      "result": "2FAIL/21skipped; three invalid port/device targets actualacceptance and five missing sample quality defects executed",
+      "log": "17-independent-r1-r2-business-red.log"
+    },
+    {
+      "phase": "POST_R1_R2_AFFECTED_GREEN",
+      "command": "npm --prefix apps/weltraum-browser run test -- tests/unit/factory/power.test.ts tests/unit/shipBattery.test.ts tests/unit/shipPowerAllocation.test.ts tests/unit/shipPowerThermalDeterminism.test.ts tests/unit/shipPowerValidation.test.ts",
+      "exitCode": 0,
+      "result": "80/80PASS in5files:23Factory+57unchangedShip after R1/R2guards, BEFORE the later explicit Grant.deviceInstanceId output addition. Log19 validates that targeted output countercase; log20 typechecks final runtime; log21 covers only the later test counterassertions.",
+      "log": "18-independent-r1-r2-focused-green.log"
+    },
+    {
+      "phase": "EXPLICIT_DEVICE_GRANT_COUNTERCASE",
+      "command": "npm --prefix apps/weltraum-browser run test -- tests/unit/factory/power.test.ts -t 'R1 rejects'",
+      "exitCode": 0,
+      "result": "1PASS/22skipped after adding explicit Grant.deviceInstanceId output and its valid alias counterassertion; actual final runtime bytes, pre-final R2test counterassertions.",
+      "log": "19-explicit-device-grant-green.log"
+    },
+    {
+      "phase": "POST_R1_R2_COMPLETE_TYPECHECK",
+      "command": "npm --prefix apps/weltraum-browser exec -- tsc -p apps/weltraum-browser/tsconfig.json",
+      "exitCode": 0,
+      "result": "Complete source/test/config TypeScriptPASS on final runtime and pre-counterassertion test bytes; last later test change only adds present-confirmed-zero assertion, which is separately verified.",
+      "log": "20-post-review-typecheck.log"
+    },
+    {
+      "phase": "FINAL_PRESENT_CONFIRMED_ZERO_COUNTERCASE",
+      "command": "npm --prefix apps/weltraum-browser run test -- tests/unit/factory/power.test.ts -t 'R2 absent'",
+      "exitCode": 0,
+      "result": "1PASS/22skipped at11:58:29UTC; final test bytes prove present explicit0 remains confirmed while all5absent sources are unsupported0;469ms run",
+      "log": "21-present-confirmed-zero-countercase-green.log"
+    }
+  ],
+  "review": {
+    "artifact": "review.md",
+    "kind": "self-review; final independent technical/candidate PASS, enclosing commit admission pending",
+    "firstIndependentArtifact": "independent-review-first.md",
+    "interimIndependentArtifact": "independent-review-followup-with-seal-drift.md",
+    "finalIndependentArtifact": "independent-review-final-seal.md",
+    "finalIndependentSha256": "e7b7927af7e77a0ee80fcf2a65651b4291e2ccd337a9630190ac8ad870b7a4d1"
+  },
+  "productFiles": [
+    {
+      "path": "apps/weltraum-browser/src/factory/power/factoryPower.ts",
+      "sha256": "70ddfe44c9a81c6355262bed928ee4d72b410b4b0db2a6c6bf08a36ec71b2825",
+      "bytes": 19844
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/power/sourceAdapter.ts",
+      "sha256": "3c4886c67b79475783f287e93edcb8412db5a26f1156624c70283416fbeb5d9b",
+      "bytes": 8655
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/power/powerReadView.ts",
+      "sha256": "0921116600c4a50ba0b6bdcf8f46a2368d9d3ac0717e9cfcb6cd564d298d727a",
+      "bytes": 1752
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/power.test.ts",
+      "sha256": "91b8e559baed841a66e830532b8ec78192471912d26fa6c885c7eadf6a5bc13c",
+      "bytes": 24386
+    }
+  ],
+  "productPatchSha256": "03c47cbba6de6c378c6c63eed8ff47307319eb54511596d37f84ee486526ab05",
+  "performance": "NOT_RUN",
+  "factoryGameplay": "NOT_RUN; W03 pure mathematical/Resources-source fixtures, W09 owns integration",
+  "limits": "Unchanged original Playwright30s/5s/20s/retries/workers/trace, Native budgets and evidence budgets. Forest topology and no-line/no-standby-loss technical fixture only.",
+  "artifactNormalization": "Readable tool logs strip trailing whitespace/extra EOF blank lines. Corresponding raw.gz preserves exact original bytes. Historical runs and actual captures unchanged.",
+  "historicalProductReceiptBoundary": "productFiles path/hash/byte form only; immutable local run artifacts actually hashed. No current HEAD/history/network dereferencing.",
+  "artifacts": [
+    {
+      "path": "01-business-red.log",
+      "sha256": "9d02ee65f6cd40ffa015629c56061cf8ba18e0cada128808b6d9909873bd36b3",
+      "bytes": 8386
+    },
+    {
+      "path": "01-business-red.log.raw.gz",
+      "sha256": "6cc64045f7df3e7a56263f25c691e068dd9dc743243a5f33992f77e46bba991e",
+      "bytes": 1189
+    },
+    {
+      "path": "02-allocator-green-attempt.log",
+      "sha256": "94ff732df39a05559ccc24d2477a77e624563e2206fb1cd2ce3046899687d1d0",
+      "bytes": 349
+    },
+    {
+      "path": "02-allocator-green-attempt.log.raw.gz",
+      "sha256": "b0f24a324e11992d25c0a6c0cb933beeb6770f0e0061fa23521156b6ed1fd6f1",
+      "bytes": 254
+    },
+    {
+      "path": "03-source-readview-red.log",
+      "sha256": "760c320339bc684437f150e72a74f3239289ef103841b7d0e87b437959f09aa2",
+      "bytes": 5290
+    },
+    {
+      "path": "03-source-readview-red.log.raw.gz",
+      "sha256": "dcc7cbb9d255272749107129d00ecb591db5b10c6abdf9b55d99f56a85468520",
+      "bytes": 1222
+    },
+    {
+      "path": "04-source-readview-business-red.log",
+      "sha256": "f39508eee2f5e4ba35aa8af54a8788802eaf7992d0404c82cd36205800e8ac0f",
+      "bytes": 4223
+    },
+    {
+      "path": "04-source-readview-business-red.log.raw.gz",
+      "sha256": "279efbb4b4cce54ef5c73a637741b513b50703a35865d26bf894c6fbe3470c34",
+      "bytes": 1287
+    },
+    {
+      "path": "05-source-readview-green-attempt.log",
+      "sha256": "a7baa23fba1a09f84a427e77ef049c28f965d3a3345188d835eca481fdb41d2a",
+      "bytes": 349
+    },
+    {
+      "path": "05-source-readview-green-attempt.log.raw.gz",
+      "sha256": "243115a07499034dbf3794482fcea74329a5044a65c348408d19bd19b0be67a6",
+      "bytes": 256
+    },
+    {
+      "path": "06-review-business-red.log",
+      "sha256": "b865ec722477f374d1e62fb246951db014bb0a693810b0a70f2d5a4cfeeea6a7",
+      "bytes": 2456
+    },
+    {
+      "path": "06-review-business-red.log.raw.gz",
+      "sha256": "89546a0b12f82c04b1363c20dd8b50cd7e03e5c778f962279ca0533d42cabe3f",
+      "bytes": 1052
+    },
+    {
+      "path": "07-request-bytes-business-red.log",
+      "sha256": "85bf62aaca3e68a28f9bc07b8a484f4f9952ba562d4a69cf83ec80d5ea2a7e75",
+      "bytes": 1363
+    },
+    {
+      "path": "07-request-bytes-business-red.log.raw.gz",
+      "sha256": "ec7c32257feafc98698c3d2a5286bb6a2f5dfe4aff10f01b0279a40e9361d8e0",
+      "bytes": 609
+    },
+    {
+      "path": "08-focused-ship-regressions.log",
+      "sha256": "591c51aa04ffcd7b87eea9849bb070b1e977eddcd7d5ce4d22dc1de38c6f4f9a",
+      "bytes": 505
+    },
+    {
+      "path": "08-focused-ship-regressions.log.raw.gz",
+      "sha256": "5cf639ac8e3bfad05b3ce610b927e7dd9cbf646676003850df0f548d9714137e",
+      "bytes": 306
+    },
+    {
+      "path": "09-build.log",
+      "sha256": "44abcdc6e933ad1cba6ce3e6a1eb311a49ba0293683b8559ae5bfe70a07c7394",
+      "bytes": 297
+    },
+    {
+      "path": "09-build.log.raw.gz",
+      "sha256": "e6e0e78f83d6a911f440d58179949dc7c1553d6121cb5649834a20f167aa46ad",
+      "bytes": 202
+    },
+    {
+      "path": "10-build-green.log",
+      "sha256": "51358fdeb04525dd965737d7bba75675254e692a4968a257b1b483b7a6a2d12c",
+      "bytes": 1467
+    },
+    {
+      "path": "10-build-green.log.raw.gz",
+      "sha256": "37e9390ba79b0d209884ae6fbd29c6670c127bcc19f9a31c2efe456fc94cbb19",
+      "bytes": 741
+    },
+    {
+      "path": "11-resource-source-bytes-business-red.log",
+      "sha256": "dc09c25b4f6056806ec84aeaa5c12bb6e516f93924ebac3f2e6978c5edcebb7e",
+      "bytes": 1425
+    },
+    {
+      "path": "11-resource-source-bytes-business-red.log.raw.gz",
+      "sha256": "ae10cfd9f541cf62b1059ca22debd1aa88eea0aa4c5489f77f22982e936bad9f",
+      "bytes": 662
+    },
+    {
+      "path": "12-final-focused-ship-regressions.log",
+      "sha256": "61924256f9266887b29b0b76677a079403427a825b119fa6ad11c256cb8530bd",
+      "bytes": 7475
+    },
+    {
+      "path": "12-final-focused-ship-regressions.log.raw.gz",
+      "sha256": "70fa44ebb34c59332b463c53efb76411c6e0b54ce92d5f30b50a434ae59889b5",
+      "bytes": 1575
+    },
+    {
+      "path": "13-final-focused-ship-green.log",
+      "sha256": "369db4dc3633f109ef5ae250878944d77c7a582b8a243686bda6b1e38fbbb903",
+      "bytes": 505
+    },
+    {
+      "path": "13-final-focused-ship-green.log.raw.gz",
+      "sha256": "08976c199fc7e53931d6ecb7847c2dd271eb292989d946bdb26578789d8e0686",
+      "bytes": 305
+    },
+    {
+      "path": "14-literal-source-focused-green.log",
+      "sha256": "73a96658f1b1d1a2a85b686b4f653a9723dd7b64f4fed7ad888ef9fb52bd23da",
+      "bytes": 505
+    },
+    {
+      "path": "14-literal-source-focused-green.log.raw.gz",
+      "sha256": "304c24099c5357a258f9ad605a19ddce52abefaee9d8c651238b9110c03ab83d",
+      "bytes": 306
+    },
+    {
+      "path": "15-final-build.log",
+      "sha256": "0a2fded690d46c7d32afd0847749515763d2066994b1bad483a15e738e9db124",
+      "bytes": 1467
+    },
+    {
+      "path": "15-final-build.log.raw.gz",
+      "sha256": "282228a8dd835fde0875b8125b54a6cb98d8e599f2f280f2d6c0b3c3b74d700e",
+      "bytes": 741
+    },
+    {
+      "path": "16-normal-browser-ship-core.log",
+      "sha256": "2bf0ce1f835d13f69dd209d23bc5b5d7c3934d125b1801a486dee4f2f6176828",
+      "bytes": 744
+    },
+    {
+      "path": "16-normal-browser-ship-core.log.raw.gz",
+      "sha256": "ed0174ed3718e2b1cdc05f96be7b4c0a256ef3c8abd0e231173a6f9c5d84827f",
+      "bytes": 404
+    },
+    {
+      "path": "17-independent-r1-r2-business-red.log",
+      "sha256": "c87fa4f94e9e3cae8883fbaade8e2e56302a64d76db7cf1c266f31ca04e80a23",
+      "bytes": 2969
+    },
+    {
+      "path": "17-independent-r1-r2-business-red.log.raw.gz",
+      "sha256": "65c61135f631ddae715adf302b48838735eac430ddbb3c7b8ad09047c0fc7773",
+      "bytes": 1041
+    },
+    {
+      "path": "18-independent-r1-r2-focused-green.log",
+      "sha256": "177a63feb500ddf0dbf4e160ed60709d11ba92f9032f7179ee585fa22b9e5fe3",
+      "bytes": 505
+    },
+    {
+      "path": "18-independent-r1-r2-focused-green.log.raw.gz",
+      "sha256": "728d8bc2c5043d564809c98ff7a1a8519311d1a7a901d35c0907fa8562bbeac6",
+      "bytes": 305
+    },
+    {
+      "path": "19-explicit-device-grant-green.log",
+      "sha256": "fc1d65b576e6afd6345192345b7fc943f32f56e24c42cfcabd2cec794d3148fd",
+      "bytes": 373
+    },
+    {
+      "path": "19-explicit-device-grant-green.log.raw.gz",
+      "sha256": "4aba5ae3d772b7c8f8118b6f2f72e45a6ba9eb2c5773af51a94711457c9b0988",
+      "bytes": 271
+    },
+    {
+      "path": "20-post-review-typecheck.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "20-post-review-typecheck.log.raw.gz",
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "bytes": 20
+    },
+    {
+      "path": "21-present-confirmed-zero-countercase-green.log",
+      "sha256": "cf9fd6043b3f5861c47a02200859af660be1db83e78319ef289250e4fc9b6d0c",
+      "bytes": 373
+    },
+    {
+      "path": "21-present-confirmed-zero-countercase-green.log.raw.gz",
+      "sha256": "3b9bdf09ff9820c139c631e857f3e0da88d5ff31b09c0779f69a10c72f91415e",
+      "bytes": 272
+    },
+    {
+      "path": "22-final-local-evidence-admission.log",
+      "sha256": "d25d5d4801805c317cf7fe63f96b2b630c80f7708283c7f7fb03134313a4bb5c",
+      "bytes": 337
+    },
+    {
+      "path": "22-final-local-evidence-admission.log.raw.gz",
+      "sha256": "18fd9871d97753b0e47f3c124ca4780813dba58cbda9a734643ee32b417c1106",
+      "bytes": 237
+    },
+    {
+      "path": "actual-browser-ship-core/browser-ship-power-thermal-core-v1-summary.json",
+      "sha256": "e123ac85523cd7537cd7eeb0d23eb6f63d3999f954f7d9dfbdedcfba497223bd",
+      "bytes": 49897
+    },
+    {
+      "path": "actual-browser-ship-core/browser-ship-power-thermal-core-v1.md",
+      "sha256": "2962702b7985bc294331df40260a072cd12bc40080b0369e54e52ed1c951be3f",
+      "bytes": 2898
+    },
+    {
+      "path": "before-final-zero-counter-product-final-hashes.json",
+      "sha256": "523032a6358c0e28899a15e166c36b09c34bef7f7dd728bdf65e496e8c544d35",
+      "bytes": 1100
+    },
+    {
+      "path": "before-final-zero-counter-product-final.patch.raw.gz",
+      "sha256": "3f41714f10db479190a82352325d9fec9717afc84411f49c53cd7fd29f0f63d4",
+      "bytes": 14211
+    },
+    {
+      "path": "before-independent-product-final-hashes.json",
+      "sha256": "184f9a166a2928cf4ef7e2cf1a2f044de5526fd8b002ee14fe4e4250f26b82a7",
+      "bytes": 1086
+    },
+    {
+      "path": "before-independent-product-final.patch.raw.gz",
+      "sha256": "5c48f94d520fdfee2f40825a27ec7f2e2defc50a3c6b6af38af73192548bc7e1",
+      "bytes": 13697
+    },
+    {
+      "path": "before-independent-review.md",
+      "sha256": "55d567bc133efcacfc264a90a7e9e4375c2d7bd99e54ab2b05cdc54b6f82c957",
+      "bytes": 6162
+    },
+    {
+      "path": "historical-before/browser-ship-power-thermal-core-v1-summary.json",
+      "sha256": "e123ac85523cd7537cd7eeb0d23eb6f63d3999f954f7d9dfbdedcfba497223bd",
+      "bytes": 49897
+    },
+    {
+      "path": "historical-before/browser-ship-power-thermal-core-v1.md",
+      "sha256": "2962702b7985bc294331df40260a072cd12bc40080b0369e54e52ed1c951be3f",
+      "bytes": 2898
+    },
+    {
+      "path": "historical-before-hashes.json",
+      "sha256": "3191454d466e445746ec12e093140ee7b3e014e4b88d7ee94b379cda3b241033",
+      "bytes": 439
+    },
+    {
+      "path": "historical-restoration-receipt.json",
+      "sha256": "90beaf18d0026c6675b94e1b7155a1d6a3c627c02b51746c5c345d6c3a403005",
+      "bytes": 742
+    },
+    {
+      "path": "independent-review-final-seal.md",
+      "sha256": "e7b7927af7e77a0ee80fcf2a65651b4291e2ccd337a9630190ac8ad870b7a4d1",
+      "bytes": 7484
+    },
+    {
+      "path": "independent-review-first.md",
+      "sha256": "f080f90f1b4ff0abf6a735188b24afa7fabebe07cdb4ced0e90761078947b240",
+      "bytes": 10908
+    },
+    {
+      "path": "independent-review-followup-with-seal-drift.md",
+      "sha256": "604f74db02bed84df5c2de2400e9bfd2e6c49d9b5e4a560230dc244fc008c7fd",
+      "bytes": 9479
+    },
+    {
+      "path": "inputs/00-w03-grant.json.raw.gz",
+      "sha256": "57dae145dce88cedb8882eab87243e8000494dff636f8c46142e3efe7a8984f7",
+      "bytes": 418
+    },
+    {
+      "path": "inputs/01-w03-brief.md.raw.gz",
+      "sha256": "8cc1af8802de8e998f0c254cce9156e48b7be4ab6df4b36fcafa4c26d35bdf0c",
+      "bytes": 2925
+    },
+    {
+      "path": "inputs/02-fp06-w03-preflight.md.raw.gz",
+      "sha256": "535125dc1ba9dd9051688720b5ba13699fdc56c48654c24c197885afaafec1da",
+      "bytes": 9899
+    },
+    {
+      "path": "inputs/03-fp06-w03.playwright.config.mts.raw.gz",
+      "sha256": "fa86f152e86a041605a2005423c7f964d430b62fb80706bd0842b03392d54171",
+      "bytes": 504
+    },
+    {
+      "path": "inputs/04-source-lock.json.raw.gz",
+      "sha256": "5286547465c3bf86a33998f478074f85b2002666ae6c5f18f2958e48149cea10",
+      "bytes": 14286
+    },
+    {
+      "path": "inputs/05-HESTIA_FP01_EINSTIEG_ENERGIE_DETAILPLAN_2026-10-10.md.raw.gz",
+      "sha256": "91555d4d5f0775998967f6e895d0f6f245f0e9908c466729d0dac475861b1726",
+      "bytes": 73587
+    },
+    {
+      "path": "inputs/06-HESTIA_FP02_PRODUKTIONSKETTEN_GEBAEUDE_LAYOUTS_DETAILPLAN_2026-10-10.md.raw.gz",
+      "sha256": "ad13bc4bc1f622590d7e9b0e7630cccb0485a5dba70c3fb09e1098b5e9fced61",
+      "bytes": 64513
+    },
+    {
+      "path": "inputs/07-HESTIA_FP06_CODEX_WORK_ORCHESTRATOR_START_2026-10-10.md.raw.gz",
+      "sha256": "81db84b346c4a861bd21ed0163bc81a4315891040d3a117a37881a8b12371789",
+      "bytes": 4842
+    },
+    {
+      "path": "inputs/08-HESTIA_FP06_PRUEFPROTOKOLL_2026-10-10.md.raw.gz",
+      "sha256": "fb0d79999ea332575281a4617b5b083f7ef6fd7a347a03bdda6f2a1dd359adac",
+      "bytes": 1482
+    },
+    {
+      "path": "inputs/09-HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md.raw.gz",
+      "sha256": "061e218a56840638afdd9846d3fcc5495fbe51c9d3942b75beef6012883a8c9f",
+      "bytes": 59842
+    },
+    {
+      "path": "inputs/10-ship-power-thermal-core-v1.md.raw.gz",
+      "sha256": "ea077fd3e046daac7bdb082092b75a047d1bc9ae75228747961f77d7beb31b9d",
+      "bytes": 1981
+    },
+    {
+      "path": "inputs/11-contracts.ts.raw.gz",
+      "sha256": "3e735775f6a6bd6902cb985261350820f07133c7284dd90c72bb06306abb81c4",
+      "bytes": 2005
+    },
+    {
+      "path": "inputs/12-fp02Catalog.ts.raw.gz",
+      "sha256": "b227db24babee35a9619bbc5575972bc1a3ec8fc79ece768e983e296e014b4bc",
+      "bytes": 6536
+    },
+    {
+      "path": "inputs/13-types.ts.raw.gz",
+      "sha256": "87bb217c8d42872609a03ca4c9d6715548a0ba794165cf2b662475473e28a3d2",
+      "bytes": 2317
+    },
+    {
+      "path": "inputs/14-powerAllocation.ts.raw.gz",
+      "sha256": "64d2e0fb177a72c5a330b49033402e45e084cec9647f6a85c84672b4821a75e1",
+      "bytes": 3509
+    },
+    {
+      "path": "inputs/15-battery.ts.raw.gz",
+      "sha256": "04e9507e60c796adb755c675cb53393eadd8527f9071a9d64ee98d55903a06ab",
+      "bytes": 2348
+    },
+    {
+      "path": "inputs/16-step.ts.raw.gz",
+      "sha256": "4aea294603a85619dcefc0c5c333eb96067aab885638bc64ba918390b3b96be4",
+      "bytes": 1321
+    },
+    {
+      "path": "inputs/17-validation.ts.raw.gz",
+      "sha256": "3c614fa3a204d14c9109e9a31029983a4d54ddf3008cc7c96967a9dcaf854e84",
+      "bytes": 7529
+    },
+    {
+      "path": "inputs/18-fixtures.ts.raw.gz",
+      "sha256": "12d28c0a9870d79366d61143b2237e3d9db7291299b7c48e667d970438197db1",
+      "bytes": 954
+    },
+    {
+      "path": "inputs/19-canonical.ts.raw.gz",
+      "sha256": "841ab126675e4bfbedd82cad1d8ecf8285f995d82bc785e88a7624be6e679167",
+      "bytes": 2328
+    },
+    {
+      "path": "inputs/20-ids.ts.raw.gz",
+      "sha256": "5a1ce01be09b2823037a77bd4a4588e8e232fc936efe3b2ee382ab7a7f9ebacc",
+      "bytes": 1063
+    },
+    {
+      "path": "local-admission-receipt.json",
+      "sha256": "b664ed33bf2c6a28c289ea92125fd3d2bcb58770551cd17651992479a4bfe28e",
+      "bytes": 927
+    },
+    {
+      "path": "playwright-output/.last-run.json",
+      "sha256": "91d1c43004802cd49950d78eb11c8fa7d05da8ffffe219a8b13b2f561bc00903",
+      "bytes": 45
+    },
+    {
+      "path": "playwright-report/index.html",
+      "sha256": "72832df89769c69d752bb3fa58eee3f926e39be44abcd907b81fd6b5bc4020b1",
+      "bytes": 528882
+    },
+    {
+      "path": "precommit-index-admission.json",
+      "sha256": "21d9d71ec7f9e8f045f3cd6f286e1b92a00a1f0986cabb7f8ec6c3153601fec5",
+      "bytes": 3068
+    },
+    {
+      "path": "product-final-hashes.json",
+      "sha256": "dcbcd962c60d43b7450a4e9f31a4a42ad93a5666b652192733e147e505d1a6e8",
+      "bytes": 1100
+    },
+    {
+      "path": "product-final.patch.raw.gz",
+      "sha256": "38725eaab6e532adfc37508b3ba733ef3fe74d9cea7ce9e4b0a556324c05e795",
+      "bytes": 14253
+    },
+    {
+      "path": "review.md",
+      "sha256": "ab9c0f055468cb3b7e7695622f8b890b84eb2247ac0a00c65469cfd8890543f5",
+      "bytes": 8402
+    },
+    {
+      "path": "source-inputs.json",
+      "sha256": "019d4d4fb25dd8e73208fe20e6f3709aa28482fbd0d1ff4f77f120126819cf2f",
+      "bytes": 8141
+    }
+  ],
+  "finalProductCapturedAtUtc": "2026-10-11T12:02:15.765289+00:00",
+  "updatedAtUtc": "2026-10-11T12:05:46.733831+00:00",
+  "priorReviewBoundary": "The preserved before-independent-review.md is the OLD SELF-review, not the first external review. independent-review-first.md is the unchanged actual external FAIL report. before-final-zero-counter-* preserve the intermediate seal that drifted only in the later authorized counterassertion; current product-final-* bind final bytes."
+}

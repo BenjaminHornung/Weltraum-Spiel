@@ -1,0 +1,154 @@
+{
+  "capturedAtUtc": "2026-10-11T11:46:48.478499+00:00",
+  "actualImplementationParentSha": "2c044e02f1f31a2db3de3a0df9156bd71a431a7a",
+  "authorizedGrantBaseSha": "5b596f932dc769052e17603965d0179a4937d948",
+  "sources": [
+    {
+      "sourcePath": "/workspace/.cloud-setup/fp06-task-briefs/w03-grant.json",
+      "artifact": "inputs/00-w03-grant.json.raw.gz",
+      "sha256": "891ce7170853297428c64482f39c70c0dd1e4b606148aace38f76088d5bf8b94",
+      "bytes": 853,
+      "archiveSha256": "57dae145dce88cedb8882eab87243e8000494dff636f8c46142e3efe7a8984f7"
+    },
+    {
+      "sourcePath": "/workspace/.cloud-setup/fp06-task-briefs/w03-brief.md",
+      "artifact": "inputs/01-w03-brief.md.raw.gz",
+      "sha256": "05002bf37626dc9ca1559e504865680e7c676589361d032f4db178e5ef605e91",
+      "bytes": 5385,
+      "archiveSha256": "8cc1af8802de8e998f0c254cce9156e48b7be4ab6df4b36fcafa4c26d35bdf0c"
+    },
+    {
+      "sourcePath": "/workspace/.cloud-setup/fp06-w03-preflight.md",
+      "artifact": "inputs/02-fp06-w03-preflight.md.raw.gz",
+      "sha256": "5b925b6012c332774fa193272bc8703c883749060801bca0e65bf257f86c4e55",
+      "bytes": 21483,
+      "archiveSha256": "535125dc1ba9dd9051688720b5ba13699fdc56c48654c24c197885afaafec1da"
+    },
+    {
+      "sourcePath": "/workspace/.cloud-setup/fp06-w03.playwright.config.mts",
+      "artifact": "inputs/03-fp06-w03.playwright.config.mts.raw.gz",
+      "sha256": "c160e3343330af80730a01f573155be8a17ce4c1d529d4f90fa1359812b54968",
+      "bytes": 942,
+      "archiveSha256": "fa86f152e86a041605a2005423c7f964d430b62fb80706bd0842b03392d54171"
+    },
+    {
+      "sourcePath": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/source-lock.json",
+      "artifact": "inputs/04-source-lock.json.raw.gz",
+      "sha256": "ae0a29e6d5714eadabd27f397759751cb008ef0be521f64825c44df29de237ad",
+      "bytes": 71255,
+      "archiveSha256": "5286547465c3bf86a33998f478074f85b2002666ae6c5f18f2958e48149cea10"
+    },
+    {
+      "sourcePath": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11/01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP01_EINSTIEG_ENERGIE_DETAILPLAN_2026-10-10.md",
+      "artifact": "inputs/05-HESTIA_FP01_EINSTIEG_ENERGIE_DETAILPLAN_2026-10-10.md.raw.gz",
+      "sha256": "ec3e605de2c6a4877c2ff0afae244b3215e7bf8bb267feef4c466b546477080c",
+      "bytes": 183726,
+      "archiveSha256": "91555d4d5f0775998967f6e895d0f6f245f0e9908c466729d0dac475861b1726"
+    },
+    {
+      "sourcePath": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11/01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP02_PRODUKTIONSKETTEN_GEBAEUDE_LAYOUTS_DETAILPLAN_2026-10-10.md",
+      "artifact": "inputs/06-HESTIA_FP02_PRODUKTIONSKETTEN_GEBAEUDE_LAYOUTS_DETAILPLAN_2026-10-10.md.raw.gz",
+      "sha256": "5c4f068edba3d0c89e77b0d3a40734d4ee1a672c39f3885cbfef31430d942f39",
+      "bytes": 164696,
+      "archiveSha256": "ad13bc4bc1f622590d7e9b0e7630cccb0485a5dba70c3fb09e1098b5e9fced61"
+    },
+    {
+      "sourcePath": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11/01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_CODEX_WORK_ORCHESTRATOR_START_2026-10-10.md",
+      "artifact": "inputs/07-HESTIA_FP06_CODEX_WORK_ORCHESTRATOR_START_2026-10-10.md.raw.gz",
+      "sha256": "82242327d42d5cbc35f85ee823d0f7dcef6c8c83656509d6edd0a685c7dddc23",
+      "bytes": 9795,
+      "archiveSha256": "81db84b346c4a861bd21ed0163bc81a4315891040d3a117a37881a8b12371789"
+    },
+    {
+      "sourcePath": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11/01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PRUEFPROTOKOLL_2026-10-10.md",
+      "artifact": "inputs/08-HESTIA_FP06_PRUEFPROTOKOLL_2026-10-10.md.raw.gz",
+      "sha256": "438d55b2043404b82ce4d6ed667785a1e5b7b6c0362b40bc50d58faa0dceddd9",
+      "bytes": 2446,
+      "archiveSha256": "fb0d79999ea332575281a4617b5b083f7ef6fd7a347a03bdda6f2a1dd359adac"
+    },
+    {
+      "sourcePath": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11/01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md",
+      "artifact": "inputs/09-HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md.raw.gz",
+      "sha256": "501bf5d80ee6dec9627e48ea27c271b3f964d21cde61ce9410be7eb77fa182ea",
+      "bytes": 195396,
+      "archiveSha256": "061e218a56840638afdd9846d3fcc5495fbe51c9d3942b75beef6012883a8c9f"
+    },
+    {
+      "sourcePath": "docs/browser-mainline/ship-power-thermal-core-v1.md",
+      "artifact": "inputs/10-ship-power-thermal-core-v1.md.raw.gz",
+      "sha256": "15ff9750ee0e5312bc656868b49bf0c1515038fee79042acb2a448c8adc62fc1",
+      "bytes": 4502,
+      "archiveSha256": "ea077fd3e046daac7bdb082092b75a047d1bc9ae75228747961f77d7beb31b9d"
+    },
+    {
+      "sourcePath": "apps/weltraum-browser/src/factory/contracts.ts",
+      "artifact": "inputs/11-contracts.ts.raw.gz",
+      "sha256": "6cf50991a61acb0ff6453e7507f000f51cd3d8be8094f2a978735094c6ea1527",
+      "bytes": 6896,
+      "archiveSha256": "3e735775f6a6bd6902cb985261350820f07133c7284dd90c72bb06306abb81c4"
+    },
+    {
+      "sourcePath": "apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts",
+      "artifact": "inputs/12-fp02Catalog.ts.raw.gz",
+      "sha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+      "bytes": 23335,
+      "archiveSha256": "b227db24babee35a9619bbc5575972bc1a3ec8fc79ece768e983e296e014b4bc"
+    },
+    {
+      "sourcePath": "apps/weltraum-browser/src/ship-power-thermal/types.ts",
+      "artifact": "inputs/13-types.ts.raw.gz",
+      "sha256": "3dbe2cb14fd90805f7e3fad134e1082d02bd5ed07520bb5f3dac43a10c12c0aa",
+      "bytes": 11779,
+      "archiveSha256": "87bb217c8d42872609a03ca4c9d6715548a0ba794165cf2b662475473e28a3d2"
+    },
+    {
+      "sourcePath": "apps/weltraum-browser/src/ship-power-thermal/powerAllocation.ts",
+      "artifact": "inputs/14-powerAllocation.ts.raw.gz",
+      "sha256": "175c18a11c9cf342c51196a787922dd645c9da1bffa250927dd16ba2cd9ee46e",
+      "bytes": 14826,
+      "archiveSha256": "64d2e0fb177a72c5a330b49033402e45e084cec9647f6a85c84672b4821a75e1"
+    },
+    {
+      "sourcePath": "apps/weltraum-browser/src/ship-power-thermal/battery.ts",
+      "artifact": "inputs/15-battery.ts.raw.gz",
+      "sha256": "dc065229a89920c5dc0923cef5b71b09c6014aa171ab5052b9244c1af0056c4a",
+      "bytes": 12249,
+      "archiveSha256": "04e9507e60c796adb755c675cb53393eadd8527f9071a9d64ee98d55903a06ab"
+    },
+    {
+      "sourcePath": "apps/weltraum-browser/src/ship-power-thermal/step.ts",
+      "artifact": "inputs/16-step.ts.raw.gz",
+      "sha256": "4349c07b6a61b57da2986ccc9a85a02ff7d905b9a5e339b2fe1bb5a1b4f850d2",
+      "bytes": 3792,
+      "archiveSha256": "4aea294603a85619dcefc0c5c333eb96067aab885638bc64ba918390b3b96be4"
+    },
+    {
+      "sourcePath": "apps/weltraum-browser/src/ship-power-thermal/validation.ts",
+      "artifact": "inputs/17-validation.ts.raw.gz",
+      "sha256": "0247c705737ccd2e09e8c4cc2e3c9b64a79f8bbc13826fd7d6b1e7f712599720",
+      "bytes": 40679,
+      "archiveSha256": "3c614fa3a204d14c9109e9a31029983a4d54ddf3008cc7c96967a9dcaf854e84"
+    },
+    {
+      "sourcePath": "apps/weltraum-browser/src/ship-power-thermal/fixtures.ts",
+      "artifact": "inputs/18-fixtures.ts.raw.gz",
+      "sha256": "689a084643a32f21b7a180c6018ee76ce75b6cdc43081102f46bf766484f25e0",
+      "bytes": 3190,
+      "archiveSha256": "12d28c0a9870d79366d61143b2237e3d9db7291299b7c48e667d970438197db1"
+    },
+    {
+      "sourcePath": "apps/weltraum-browser/src/ship-power-thermal/canonical.ts",
+      "artifact": "inputs/19-canonical.ts.raw.gz",
+      "sha256": "021b39ea3eedb3a3b7cf9a42543bd29396a2153949ec8ac9b7feb4ae837839b0",
+      "bytes": 8206,
+      "archiveSha256": "841ab126675e4bfbedd82cad1d8ecf8285f995d82bc785e88a7624be6e679167"
+    },
+    {
+      "sourcePath": "apps/weltraum-browser/src/ship-power-thermal/ids.ts",
+      "artifact": "inputs/20-ids.ts.raw.gz",
+      "sha256": "948d6b1040939a04f045326d528e0998cb13526bfe968fa74b1d0a6859103acf",
+      "bytes": 3665,
+      "archiveSha256": "5a1ce01be09b2823037a77bd4a4588e8e232fc936efe3b2ee382ab7a7f9ebacc"
+    }
+  ]
+}

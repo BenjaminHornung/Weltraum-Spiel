@@ -1,0 +1,95 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/power.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/power.test.ts (15 tests | 4 failed) 742ms
+     × actual installed serials from Resources admit fixed net-side observations, not cargo nameplate 20ms
+     × unknown/unconfirmed environment offers zero new wind/PVenergy, valid battery remains usable 15ms
+     × WX-FAV-01 is a pinned net-side fixture, changed numerical claims are rejected 16ms
+     × read view separates nameplate, potential, actualwork, losses and stored energy without own authority 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/power.test.ts > FP06 W03 finite installed source and read projection > actual installed serials from Resources admit fixed net-side observations, not cargo nameplate
+Error: W03 source admission not implemented
+ ❯ prepareFactoryPowerSources src/factory/power/sourceAdapter.ts:27:9
+     25| }
+     26| export const prepareFactoryPowerSources = (_catalog: FactoryCatalog, _…
+     27|   throw new Error("W03 source admission not implemented");
+       |         ^
+     28| };
+     29|
+ ❯ tests/unit/factory/power.test.ts:152:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/factory/power.test.ts > FP06 W03 finite installed source and read projection > unknown/unconfirmed environment offers zero new wind/PVenergy, valid battery remains usable
+Error: W03 source admission not implemented
+ ❯ prepareFactoryPowerSources src/factory/power/sourceAdapter.ts:27:9
+     25| }
+     26| export const prepareFactoryPowerSources = (_catalog: FactoryCatalog, _…
+     27|   throw new Error("W03 source admission not implemented");
+       |         ^
+     28| };
+     29|
+ ❯ tests/unit/factory/power.test.ts:161:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/factory/power.test.ts > FP06 W03 finite installed source and read projection > WX-FAV-01 is a pinned net-side fixture, changed numerical claims are rejected
+AssertionError: expected [Function] to throw error matching /Observation/ but got 'W03 source admission not implemented'
+
+- Expected:
+/Observation/
+
++ Received:
+"W03 source admission not implemented"
+
+ ❯ tests/unit/factory/power.test.ts:183:128
+    181|   it("WX-FAV-01 is a pinned net-side fixture, changed numerical claims…
+    182|     const snapshot=sourceFixture();
+    183|     expect(()=>prepareFactoryPowerSources(catalog,{...snapshot,observa…
+       |                                                                                                                                ^
+    184|     const expected={...snapshot,observation:{...snapshot.observation!,…
+    185|       values:[{instanceId:"fp02_cargo_c01_unit_1",availableMilliWatt:"…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/unit/factory/power.test.ts > FP06 W03 finite installed source and read projection > read view separates nameplate, potential, actualwork, losses and stored energy without own authority
+AssertionError: expected null to match object { nameplateMilliWatt: '6000000', …(3) }
+
+- Expected:
+{
+  "allocatedMilliWatt": "3500000",
+  "nameplateMilliWatt": "6000000",
+  "sourceActualMilliWatt": {
+    "d": "1",
+    "n": "3500000",
+  },
+  "storedEnergy": {
+    "d": "1",
+    "n": "12960000000",
+  },
+}
+
++ Received:
+null
+
+ ❯ tests/unit/factory/power.test.ts:191:18
+    189|     const state=initial(); const r=success(state,input(state,3500,[req…
+    190|     const view=readFactoryPower(r) as {nameplateMilliWatt:string;sourc…
+    191|     expect(view).toMatchObject({nameplateMilliWatt:"6000000",sourceAct…
+       |                  ^
+    192|     expect(Object.isFrozen(view)).toBe(true); expect(readFactoryPower(…
+    193|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 11 passed (15)
+   Start at  11:33:51
+   Duration  1.10s (transform 181ms, setup 0ms, import 240ms, tests 742ms, environment 0ms)

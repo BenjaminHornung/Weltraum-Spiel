@@ -1,0 +1,33 @@
+# W03 self-review and evidence boundary
+
+Candidate product snapshot: `product-final-hashes.json`; full actual parent is `2c044e02f1f31a2db3de3a0df9156bd71a431a7a`. The grant retains its original `5b596f932dc769052e17603965d0179a4937d948`; the later parent changed only W06 evidence. Four new granted product paths; no Ship/HVP/Physics/Save/UI/Renderer/package/dependency edits.
+
+## Sources and policy
+
+Fully read FP01 §§6–7/13, FP02 §1.1, W03 card/preflight, actual Ship power/battery/step/types and compatibility contract. Actual byte snapshots and SHA256 receipts are in `source-inputs.json`. FP01 SHA256 is ec3e605de2c6a4877c2ff0afae244b3215e7bf8bb267feef4c466b546477080c. Current Root Source-Lock records the explicit D03 user acceptance; old preflight open questions are historical and cannot undo that approval.
+
+The local allocator keeps P0/P1/P2/P3 and stable code-unit IDs. Initial admission requires requested power only. A consumer that entered WAIT_POWER reserves its demand plus500W jointly with all other admissions; two complete confirmed seconds accrue without work. Restart occurs at the next interval boundary. No Date.now/rAF/fairnesscursor. Changing complete request bytes resets its window, including actual FNV-colliding jobs tested with IDs j1nf91otvjwxn/j1cm8rys196v4rn. Disabled or omitted jobs receive zero work and cannot accrue a window.
+
+Exactly one finite C03 SOC owner:4kWh capacity, explicit actual state (start fixture3.6kWh),1kWh production reserve,0.2kWh hardware minimum,8000W rate limits,19/20 charge and discharge efficiency. There is no implicit constructor refill or second Ship battery solver. P0/P1 reserve eligibility cannot leak into P2/P3; direct source energy remains usable at reserve. All motor admission is all-or-nothing for the complete bounded interval, rather than inventing partial progress beyond an energy boundary.
+
+mW/µs use canonical decimal integers and BigInt rational mJ. Persisted stored-energy denominator divides380000000, the exact lattice from1e6 time conversion and20/19/19/20 efficiency. Fractions are gcd-normalized. Noncanonical/foreign lattice/negative/over-capacity states reject, never repair. Charge/discharge loss and source potential/actual/curtailment remain separate. An asset never positively charges and discharges in one step. Tests compare full bus/store balances and equal state after1/10/1000 subdivisions and JSON checkpoints.
+
+## Source and integration boundary
+
+SourceAdapter validates the W01 canonical catalog; finite C01(two),C02(four),C03(one) serials; source-ID/version/digest/origin event; exactly one CURRENT Resources occurrence in the confirmed installed owner/container; current container normbytes/signature; and actual matching power port. It never moves materials, installs a device, fills battery energy, queries renderer/weather, or owns a World. Damage without a defined source capability yields zero source power; an unsupported damaged battery profile rejects. Packed cargo alone yields no power offer.
+
+Wind/PV numeric climate/curves are deliberately not fabricated. Only explicit versioned net-side fixed observations are admitted. WX-FAV-01 literals are1800W per C01 and800W per C02; the full six-source Resources fixture produces6800W without a repeated generator efficiency charge. Pending/unsupported/absent environment gives zero new wind/PV energy; an independently admissible real battery state can still supply loads. Biomass/fuel is absent.
+
+The conservative first topology is a forest with active directed port roles, finite shared links/ports, stable routing and no external line/standby losses in this explicitly versioned technical fixture. Cycles reject instead of claiming a general cyclic solver. NET_DISCONNECTED, NET_CAPACITY and WAIT_POWER distinguish missing paths, conductor bottlenecks and generation/storage shortage. No existing native World budget or queue is raised.
+
+PowerSuccess is a PURE PLAN, not a World commit or authorization. The Host must verify and atomically adopt the matching session/epoch, confirmed interval, current net/resource/installation/observation bytes, then provide W04 with an adopted receipt. `supplyCanonicalJson` binds normalized sources/topology plus full `authorityBytes`. No live Factory host/power UI/production/save integration is claimed in W03. Positive source tests are headless installation/Resources fixtures, not native browser installations. W09/W10 own the real authority/save integration. The existing normal-route Chromium ShipCore test is compatibility evidence only.
+
+## Actual verification
+
+Initial real collectable RED:9FAIL/1PASS, no import failures. Source/readview first attempt contained an invalid save-ID fixture (5FAIL/10PASS); it is retained and is not called business RED. Corrected actual source/readview business RED4FAIL/11PASS. Review RED2FAIL/16PASS (network diagnosis and fractional lattice), actual request-byte collision RED1FAIL/18skipped, current Resources-byte rejection RED1FAIL/19skipped. All immutable raw tool bytes retained in corresponding .raw.gz; readable logs strip only trailing whitespace/extra EOF blank lines.
+
+Final focused validation:78/78 tests in5files (21Factory +57 existing Ship tests),2.11s. Full final TypeScript+Vite build PASS. Earlier build revealed a TypeScript readonly JSON-array narrowing issue; the explicit instanceId-in-object guard corrected it and the final build is fresh. Existing build chunk-size warning remains unchanged.
+
+Actual existing normal-route ShipCore Chromium regression1/1PASS,3.6s test/5.0s run, unchanged30s/5s/20s limits. Its existing script still writes a historical Windows command string inside its own summary; that field is NOT the W03 executed command. The exact real Linux command is in this run manifest. Two known historical reports were verified equal to HEAD, backed up, fresh actual outputs retained, and only those exact paths restored byte-for-byte. Browser CLI ended; ss5174 empty; port/GPU explicitly released to Root.
+
+Independent Spec/Quality review is pending Root gate. Performance NOT_RUN; no visual or gameplay PASS, and no general-weather, cyclic-network or runtime power claim.

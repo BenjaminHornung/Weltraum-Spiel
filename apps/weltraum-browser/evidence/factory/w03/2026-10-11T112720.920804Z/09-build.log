@@ -1,0 +1,6 @@
+
+> weltraum-browser@0.1.0 build
+> tsc -p tsconfig.json && vite build
+
+src/factory/power/sourceAdapter.ts(72,81): error TS2339: Property 'instanceId' does not exist on type 'ResourceExtensionArray | ResourceExtensionObject'.
+  Property 'instanceId' does not exist on type 'ResourceExtensionArray'.

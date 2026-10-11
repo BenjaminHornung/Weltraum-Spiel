@@ -1,0 +1,23 @@
+{
+  "command": "node tools/factory/verify-evidence.mjs apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z",
+  "workingDirectory": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+  "exitCode": 0,
+  "boundary": "This admission checks the prior81reference manifest; final manifest extends it with this exact admission receipt. Final end verifier runs externally to avoid self-referential artifact hashes. No product/runtime test rerun.",
+  "result": {
+    "entries": 88,
+    "files": 82,
+    "jsonFiles": 10,
+    "manifests": 1,
+    "referencedFiles": 81,
+    "totalBytes": 1057315,
+    "limits": {
+      "depth": 12,
+      "entries": 4096,
+      "files": 4096,
+      "fileBytes": 33554432,
+      "jsonBytes": 8388608,
+      "totalBytes": 268435456
+    },
+    "historicalProductReceipts": "path/hash form only; immutable run artifacts are verified, historical HEAD bytes are not reread"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "capturedAtUtc": "2026-10-11T12:02:15.765289+00:00",
+  "productWriteHold": true,
+  "baseCommitSha": "5b596f932dc769052e17603965d0179a4937d948",
+  "actualImplementationParentSha": "2c044e02f1f31a2db3de3a0df9156bd71a431a7a",
+  "patchSha256": "03c47cbba6de6c378c6c63eed8ff47307319eb54511596d37f84ee486526ab05",
+  "productFiles": [
+    {
+      "path": "apps/weltraum-browser/src/factory/power/factoryPower.ts",
+      "sha256": "70ddfe44c9a81c6355262bed928ee4d72b410b4b0db2a6c6bf08a36ec71b2825",
+      "bytes": 19844
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/power/sourceAdapter.ts",
+      "sha256": "3c4886c67b79475783f287e93edcb8412db5a26f1156624c70283416fbeb5d9b",
+      "bytes": 8655
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/power/powerReadView.ts",
+      "sha256": "0921116600c4a50ba0b6bdcf8f46a2368d9d3ac0717e9cfcb6cd564d298d727a",
+      "bytes": 1752
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/power.test.ts",
+      "sha256": "91b8e559baed841a66e830532b8ec78192471912d26fa6c885c7eadf6a5bc13c",
+      "bytes": 24386
+    }
+  ]
+}

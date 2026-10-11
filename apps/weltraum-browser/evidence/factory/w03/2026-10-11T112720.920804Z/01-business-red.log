@@ -1,0 +1,206 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/power.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/power.test.ts (10 tests | 9 failed) 17ms
+     × T013 assigns exactly210000J over60 confirmed seconds; no battery needed 7ms
+     × T014 net-side6800W/6600W charges200W, stores190J, loses10J 1ms
+     × T015 reserve energy serves onlyP0/P1, production retains zero work 1ms
+     × T016 stable IDs and jointly reserved restart500W for2confirmed seconds 1ms
+     × exact discharge remainder is identical for1/10/1000interval parts and survives JSON 1ms
+     × disconnected real conductor gives NET_DISCONNECTED despite sufficient global offer 1ms
+     × shared cable/port capacity is consumed jointly, no phantom motor partial work 1ms
+     × 8kW battery ceiling, full-SOC curtailment, disabled output and exact reserve crossing 1ms
+     × stale epoch, repeated interval, unconfirmedclock and tampered normbytes reject atomically 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/power.test.ts > FP06 W03 actual electrical allocation > T013 assigns exactly210000J over60 confirmed seconds; no battery needed
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ success tests/unit/factory/power.test.ts:32:68
+     30| };
+     31| const success = (state: FactoryPowerState, value: FactoryPowerInput): …
+     32|   const result = stepFactoryPower(state, value); expect(result.ok).toB…
+       |                                                                    ^
+     33|   if (!result.ok) throw new Error(result.reason); return result;
+     34| };
+ ❯ tests/unit/factory/power.test.ts:51:50
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  tests/unit/factory/power.test.ts > FP06 W03 actual electrical allocation > T014 net-side6800W/6600W charges200W, stores190J, loses10J
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ success tests/unit/factory/power.test.ts:32:68
+     30| };
+     31| const success = (state: FactoryPowerState, value: FactoryPowerInput): …
+     32|   const result = stepFactoryPower(state, value); expect(result.ok).toB…
+       |                                                                    ^
+     33|   if (!result.ok) throw new Error(result.reason); return result;
+     34| };
+ ❯ tests/unit/factory/power.test.ts:61:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  tests/unit/factory/power.test.ts > FP06 W03 actual electrical allocation > T015 reserve energy serves onlyP0/P1, production retains zero work
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ success tests/unit/factory/power.test.ts:32:68
+     30| };
+     31| const success = (state: FactoryPowerState, value: FactoryPowerInput): …
+     32|   const result = stepFactoryPower(state, value); expect(result.ok).toB…
+       |                                                                    ^
+     33|   if (!result.ok) throw new Error(result.reason); return result;
+     34| };
+ ❯ tests/unit/factory/power.test.ts:66:45
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  tests/unit/factory/power.test.ts > FP06 W03 actual electrical allocation > T016 stable IDs and jointly reserved restart500W for2confirmed seconds
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ success tests/unit/factory/power.test.ts:32:68
+     30| };
+     31| const success = (state: FactoryPowerState, value: FactoryPowerInput): …
+     32|   const result = stepFactoryPower(state, value); expect(result.ok).toB…
+       |                                                                    ^
+     33|   if (!result.ok) throw new Error(result.reason); return result;
+     34| };
+ ❯ tests/unit/factory/power.test.ts:75:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  tests/unit/factory/power.test.ts > FP06 W03 actual electrical allocation > exact discharge remainder is identical for1/10/1000interval parts and survives JSON
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ success tests/unit/factory/power.test.ts:32:68
+     30| };
+     31| const success = (state: FactoryPowerState, value: FactoryPowerInput): …
+     32|   const result = stepFactoryPower(state, value); expect(result.ok).toB…
+       |                                                                    ^
+     33|   if (!result.ok) throw new Error(result.reason); return result;
+     34| };
+ ❯ run tests/unit/factory/power.test.ts:88:15
+ ❯ tests/unit/factory/power.test.ts:90:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  tests/unit/factory/power.test.ts > FP06 W03 actual electrical allocation > disconnected real conductor gives NET_DISCONNECTED despite sufficient global offer
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ success tests/unit/factory/power.test.ts:32:68
+     30| };
+     31| const success = (state: FactoryPowerState, value: FactoryPowerInput): …
+     32|   const result = stepFactoryPower(state, value); expect(result.ok).toB…
+       |                                                                    ^
+     33|   if (!result.ok) throw new Error(result.reason); return result;
+     34| };
+ ❯ tests/unit/factory/power.test.ts:95:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  tests/unit/factory/power.test.ts > FP06 W03 actual electrical allocation > shared cable/port capacity is consumed jointly, no phantom motor partial work
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ success tests/unit/factory/power.test.ts:32:68
+     30| };
+     31| const success = (state: FactoryPowerState, value: FactoryPowerInput): …
+     32|   const result = stepFactoryPower(state, value); expect(result.ok).toB…
+       |                                                                    ^
+     33|   if (!result.ok) throw new Error(result.reason); return result;
+     34| };
+ ❯ tests/unit/factory/power.test.ts:100:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+ FAIL  tests/unit/factory/power.test.ts > FP06 W03 actual electrical allocation > 8kW battery ceiling, full-SOC curtailment, disabled output and exact reserve crossing
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ success tests/unit/factory/power.test.ts:32:68
+     30| };
+     31| const success = (state: FactoryPowerState, value: FactoryPowerInput): …
+     32|   const result = stepFactoryPower(state, value); expect(result.ok).toB…
+       |                                                                    ^
+     33|   if (!result.ok) throw new Error(result.reason); return result;
+     34| };
+ ❯ tests/unit/factory/power.test.ts:104:40
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/9]⎯
+
+ FAIL  tests/unit/factory/power.test.ts > FP06 W03 actual electrical allocation > stale epoch, repeated interval, unconfirmedclock and tampered normbytes reject atomically
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ success tests/unit/factory/power.test.ts:32:68
+     30| };
+     31| const success = (state: FactoryPowerState, value: FactoryPowerInput): …
+     32|   const result = stepFactoryPower(state, value); expect(result.ok).toB…
+       |                                                                    ^
+     33|   if (!result.ok) throw new Error(result.reason); return result;
+     34| };
+ ❯ tests/unit/factory/power.test.ts:116:13
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/9]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  9 failed | 1 passed (10)
+   Start at  11:29:33
+   Duration  327ms (transform 141ms, setup 0ms, import 197ms, tests 17ms, environment 0ms)

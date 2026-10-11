@@ -1,0 +1,33 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/power.test.ts -t actual FNV collisions
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/power.test.ts (19 tests | 1 failed | 18 skipped) 16ms
+   × restart admission compares full request bytes even for actual FNV collisions 15ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/power.test.ts > restart admission compares full request bytes even for actual FNV collisions
+AssertionError: expected '1100000' to be '100000' // Object.is equality
+
+Expected: "100000"
+Received: "1100000"
+
+ ❯ tests/unit/factory/power.test.ts:229:109
+    227|   let state=initial(0,false); state=success(state,input(state,0,[a])).…
+    228|   for(let i=0;i<10;i++) state=success(state,input(state,1500,[a])).nex…
+    229|   const changed=success(state,input(state,1500,[b])); expect(changed.n…
+       |                                                                                                             ^
+    230| });
+    231|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 18 skipped (19)
+   Start at  11:38:29
+   Duration  358ms (transform 177ms, setup 0ms, import 236ms, tests 16ms, environment 0ms)

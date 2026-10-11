@@ -1,0 +1,347 @@
+{
+  "schemaVersion": "browser-ship-power-thermal-core-v1",
+  "status": "PASS",
+  "generator": "apps/weltraum-browser/tests/e2e/ship-power-thermal-core.spec.ts",
+  "publicModulePath": "/src/ship-power-thermal/index.ts",
+  "normalRoute": {
+    "path": "/",
+    "debugSceneVisible": true,
+    "faviconHref": "/favicon.png",
+    "testBridgeBefore": {
+      "ownProperty": false,
+      "inWindow": false
+    },
+    "testBridgeAfter": {
+      "ownProperty": false,
+      "inWindow": false
+    }
+  },
+  "browserHealth": {
+    "consoleErrors": [],
+    "pageErrors": [],
+    "failedRequests": [],
+    "nonSuccessHttpResponses": []
+  },
+  "deterministicRepeat": {
+    "completeResultEqual": true,
+    "canonicalJsonEqual": true,
+    "signatureEqual": true,
+    "eventStreamsEqual": true
+  },
+  "scenario": {
+    "scenarioName": "deterministic-power-brownout-thermal-recovery",
+    "modulePath": "/src/ship-power-thermal/index.ts",
+    "fixtureIds": {
+      "generator": "source:generator",
+      "battery": "battery:main",
+      "criticalConsumer": "consumer:critical",
+      "flightConsumer": "consumer:flight",
+      "weaponMissionConsumer": "consumer:mission",
+      "coolingConsumer": "consumer:cooling",
+      "coolingUnit": "cooling:main"
+    },
+    "normalOperation": {
+      "tick": 1,
+      "sourceOutputW": 85,
+      "battery": {
+        "flowState": "Idle",
+        "busPowerW": 0,
+        "previousStoredEnergyJ": 100,
+        "nextStoredEnergyJ": 100
+      },
+      "consumers": [
+        {
+          "consumerId": "consumer:cooling",
+          "priority": "Safety",
+          "requestedPowerW": 10,
+          "allocatedPowerW": 10,
+          "state": "Powered"
+        },
+        {
+          "consumerId": "consumer:critical",
+          "priority": "Critical",
+          "requestedPowerW": 20,
+          "allocatedPowerW": 20,
+          "state": "Powered"
+        },
+        {
+          "consumerId": "consumer:flight",
+          "priority": "Flight",
+          "requestedPowerW": 30,
+          "allocatedPowerW": 30,
+          "state": "Powered"
+        },
+        {
+          "consumerId": "consumer:mission",
+          "priority": "Mission",
+          "requestedPowerW": 25,
+          "allocatedPowerW": 25,
+          "state": "Powered"
+        }
+      ],
+      "temperatureK": 290,
+      "protectionState": "Nominal",
+      "heatInputW": 0,
+      "heatRemovedW": 100,
+      "cooling": {
+        "allocatedOperatingPowerW": 10,
+        "heatRemovedW": 100,
+        "coolingInsufficient": false
+      },
+      "actionCodes": [],
+      "eventCodes": [
+        "PowerAllocationCompleted"
+      ],
+      "eventIds": [
+        "event:1:0:712ac7f3"
+      ],
+      "canonicalJson": "{\"actions\":[],\"batteryResults\":[{\"batteryId\":\"battery:main\",\"busId\":\"bus:main\",\"busPowerW\":0,\"flowState\":\"Idle\",\"internalPowerW\":0,\"lossHeatW\":0,\"nextStoredEnergyJ\":100,\"previousStoredEnergyJ\":100,\"reserveEnergyUsedJ\":0,\"thermalNodeId\":\"thermal-node:main\"}],\"consumerResults\":[{\"allocatedPowerW\":10,\"busId\":\"bus:main\",\"consumerId\":\"consumer:cooling\",\"priority\":\"Safety\",\"rejectionCode\":null,\"requestedPowerW\":10,\"satisfactionFraction\":1,\"state\":\"Powered\"},{\"allocatedPowerW\":20,\"busId\":\"bus:main\",\"consumerId\":\"consumer:critical\",\"priority\":\"Critical\",\"rejectionCode\":null,\"requestedPowerW\":20,\"satisfactionFraction\":1,\"state\":\"Powered\"},{\"allocatedPowerW\":30,\"busId\":\"bus:main\",\"consumerId\":\"consumer:flight\",\"priority\":\"Flight\",\"rejectionCode\":null,\"requestedPowerW\":30,\"satisfactionFraction\":1,\"state\":\"Powered\"},{\"allocatedPowerW\":25,\"busId\":\"bus:main\",\"consumerId\":\"consumer:mission\",\"priority\":\"Mission\",\"rejectionCode\":null,\"requestedPowerW\":25,\"satisfactionFraction\":1,\"state\":\"Powered\"}],\"coolingResults\":[{\"allocatedOperatingPowerW\":10,\"consumerId\":\"consumer:cooling\",\"coolingId\":\"cooling:main\",\"coolingInsufficient\":false,\"heatRemovedW\":100,\"thermalNodeId\":\"thermal-node:main\"}],\"events\":[{\"code\":\"PowerAllocationCompleted\",\"eventId\":\"event:1:0:712ac7f3\",\"ordinal\":0,\"payload\":{\"allocatedPowerW\":85,\"availablePowerW\":85,\"batteryChargePowerW\":0,\"batteryDischargePowerW\":0,\"busId\":\"bus:main\",\"requestedPowerW\":85,\"sourcePowerW\":85,\"unmetPowerW\":0},\"phase\":\"Power\",\"severity\":\"Info\",\"sourceId\":\"bus:main\",\"targetId\":null,\"tick\":1}],\"ok\":true,\"sourceResults\":[{\"busId\":\"bus:main\",\"lossHeatW\":0,\"outputW\":85,\"previousOutputW\":0,\"sourceId\":\"source:generator\",\"targetOutputW\":85,\"thermalNodeId\":\"thermal-node:main\"}],\"state\":{\"batteries\":[{\"batteryId\":\"battery:main\",\"busId\":\"bus:main\",\"storedEnergyJ\":100,\"thermalNodeId\":\"thermal-node:main\"}],\"cooling\":[{\"allocatedOperatingPowerW\":10,\"consumerId\":\"consumer:cooling\",\"coolingId\":\"cooling:main\",\"thermalNodeId\":\"thermal-node:main\"}],\"sources\":[{\"busId\":\"bus:main\",\"currentOutputW\":85,\"sourceId\":\"source:generator\",\"thermalNodeId\":\"thermal-node:main\"}],\"thermalNodes\":[{\"busId\":\"bus:main\",\"protectionState\":\"Nominal\",\"temperatureK\":290,\"thermalNodeId\":\"thermal-node:main\"}],\"tick\":1},\"thermalResults\":[{\"boundaryAttempt\":null,\"busId\":\"bus:main\",\"heatInputW\":0,\"heatRemovedW\":100,\"nextTemperatureK\":290,\"previousTemperatureK\":300,\"protectionState\":\"Nominal\",\"rawIntegratedTemperatureK\":290,\"thermalNodeId\":\"thermal-node:main\"}]}",
+      "signature": "fnv1a32:fed3fdaa"
+    },
+    "reducedSourceBrownout": {
+      "tick": 2,
+      "sourceOutputW": 40,
+      "battery": {
+        "flowState": "Discharging",
+        "busPowerW": 20,
+        "previousStoredEnergyJ": 100,
+        "nextStoredEnergyJ": 80
+      },
+      "consumers": [
+        {
+          "consumerId": "consumer:cooling",
+          "priority": "Safety",
+          "requestedPowerW": 10,
+          "allocatedPowerW": 10,
+          "state": "Powered"
+        },
+        {
+          "consumerId": "consumer:critical",
+          "priority": "Critical",
+          "requestedPowerW": 20,
+          "allocatedPowerW": 20,
+          "state": "Powered"
+        },
+        {
+          "consumerId": "consumer:flight",
+          "priority": "Flight",
+          "requestedPowerW": 30,
+          "allocatedPowerW": 30,
+          "state": "Powered"
+        },
+        {
+          "consumerId": "consumer:mission",
+          "priority": "Mission",
+          "requestedPowerW": 25,
+          "allocatedPowerW": 0,
+          "state": "Shed"
+        }
+      ],
+      "temperatureK": 290,
+      "protectionState": "Nominal",
+      "heatInputW": 0,
+      "heatRemovedW": 0,
+      "cooling": {
+        "allocatedOperatingPowerW": 10,
+        "heatRemovedW": 0,
+        "coolingInsufficient": false
+      },
+      "actionCodes": [
+        "PowerBusBrownout",
+        "RequestConsumerShutdown"
+      ],
+      "eventCodes": [
+        "PowerAllocationCompleted",
+        "PowerConsumerShed",
+        "PowerBusBrownout"
+      ],
+      "eventIds": [
+        "event:2:0:c244aa8c",
+        "event:2:1:4b20a244",
+        "event:2:2:2db611f1"
+      ],
+      "canonicalJson": "{\"actions\":[{\"batteryId\":null,\"busId\":\"bus:main\",\"code\":\"PowerBusBrownout\",\"consumerId\":null,\"coolingId\":null,\"metadata\":{\"allocatedPowerW\":60,\"requestedPowerW\":85,\"unmetPowerW\":25},\"thermalNodeId\":null},{\"batteryId\":null,\"busId\":\"bus:main\",\"code\":\"RequestConsumerShutdown\",\"consumerId\":\"consumer:mission\",\"coolingId\":null,\"metadata\":{\"allocatedPowerW\":0,\"requestedPowerW\":25,\"state\":\"Shed\"},\"thermalNodeId\":null}],\"batteryResults\":[{\"batteryId\":\"battery:main\",\"busId\":\"bus:main\",\"busPowerW\":20,\"flowState\":\"Discharging\",\"internalPowerW\":20,\"lossHeatW\":0,\"nextStoredEnergyJ\":80,\"previousStoredEnergyJ\":100,\"reserveEnergyUsedJ\":0,\"thermalNodeId\":\"thermal-node:main\"}],\"consumerResults\":[{\"allocatedPowerW\":10,\"busId\":\"bus:main\",\"consumerId\":\"consumer:cooling\",\"priority\":\"Safety\",\"rejectionCode\":null,\"requestedPowerW\":10,\"satisfactionFraction\":1,\"state\":\"Powered\"},{\"allocatedPowerW\":20,\"busId\":\"bus:main\",\"consumerId\":\"consumer:critical\",\"priority\":\"Critical\",\"rejectionCode\":null,\"requestedPowerW\":20,\"satisfactionFraction\":1,\"state\":\"Powered\"},{\"allocatedPowerW\":30,\"busId\":\"bus:main\",\"consumerId\":\"consumer:flight\",\"priority\":\"Flight\",\"rejectionCode\":null,\"requestedPowerW\":30,\"satisfactionFraction\":1,\"state\":\"Powered\"},{\"allocatedPowerW\":0,\"busId\":\"bus:main\",\"consumerId\":\"consumer:mission\",\"priority\":\"Mission\",\"rejectionCode\":null,\"requestedPowerW\":25,\"satisfactionFraction\":0,\"state\":\"Shed\"}],\"coolingResults\":[{\"allocatedOperatingPowerW\":10,\"consumerId\":\"consumer:cooling\",\"coolingId\":\"cooling:main\",\"coolingInsufficient\":false,\"heatRemovedW\":0,\"thermalNodeId\":\"thermal-node:main\"}],\"events\":[{\"code\":\"PowerAllocationCompleted\",\"eventId\":\"event:2:0:c244aa8c\",\"ordinal\":0,\"payload\":{\"allocatedPowerW\":60,\"availablePowerW\":60,\"batteryChargePowerW\":0,\"batteryDischargePowerW\":20,\"busId\":\"bus:main\",\"requestedPowerW\":85,\"sourcePowerW\":40,\"unmetPowerW\":25},\"phase\":\"Power\",\"severity\":\"Info\",\"sourceId\":\"bus:main\",\"targetId\":null,\"tick\":2},{\"code\":\"PowerConsumerShed\",\"eventId\":\"event:2:1:4b20a244\",\"ordinal\":1,\"payload\":{\"allocatedPowerW\":0,\"busId\":\"bus:main\",\"consumerId\":\"consumer:mission\",\"requestedPowerW\":25,\"satisfactionFraction\":0},\"phase\":\"Power\",\"severity\":\"Warning\",\"sourceId\":\"bus:main\",\"targetId\":\"consumer:mission\",\"tick\":2},{\"code\":\"PowerBusBrownout\",\"eventId\":\"event:2:2:2db611f1\",\"ordinal\":2,\"payload\":{\"allocatedPowerW\":60,\"busId\":\"bus:main\",\"requestedPowerW\":85,\"unmetPowerW\":25},\"phase\":\"Protection\",\"severity\":\"Critical\",\"sourceId\":\"bus:main\",\"targetId\":null,\"tick\":2}],\"ok\":true,\"sourceResults\":[{\"busId\":\"bus:main\",\"lossHeatW\":0,\"outputW\":40,\"previousOutputW\":85,\"sourceId\":\"source:generator\",\"targetOutputW\":40,\"thermalNodeId\":\"thermal-node:main\"}],\"state\":{\"batteries\":[{\"batteryId\":\"battery:main\",\"busId\":\"bus:main\",\"storedEnergyJ\":80,\"thermalNodeId\":\"thermal-node:main\"}],\"cooling\":[{\"allocatedOperatingPowerW\":10,\"consumerId\":\"consumer:cooling\",\"coolingId\":\"cooling:main\",\"thermalNodeId\":\"thermal-node:main\"}],\"sources\":[{\"busId\":\"bus:main\",\"currentOutputW\":40,\"sourceId\":\"source:generator\",\"thermalNodeId\":\"thermal-node:main\"}],\"thermalNodes\":[{\"busId\":\"bus:main\",\"protectionState\":\"Nominal\",\"temperatureK\":290,\"thermalNodeId\":\"thermal-node:main\"}],\"tick\":2},\"thermalResults\":[{\"boundaryAttempt\":null,\"busId\":\"bus:main\",\"heatInputW\":0,\"heatRemovedW\":0,\"nextTemperatureK\":290,\"previousTemperatureK\":290,\"protectionState\":\"Nominal\",\"rawIntegratedTemperatureK\":290,\"thermalNodeId\":\"thermal-node:main\"}]}",
+      "signature": "fnv1a32:025ca9e1"
+    },
+    "thermalProgression": {
+      "warning": {
+        "tick": 3,
+        "sourceOutputW": 75,
+        "battery": {
+          "flowState": "Idle",
+          "busPowerW": 0,
+          "previousStoredEnergyJ": 80,
+          "nextStoredEnergyJ": 80
+        },
+        "consumers": [
+          {
+            "consumerId": "consumer:critical",
+            "priority": "Critical",
+            "requestedPowerW": 20,
+            "allocatedPowerW": 20,
+            "state": "Powered"
+          },
+          {
+            "consumerId": "consumer:flight",
+            "priority": "Flight",
+            "requestedPowerW": 30,
+            "allocatedPowerW": 30,
+            "state": "Powered"
+          },
+          {
+            "consumerId": "consumer:mission",
+            "priority": "Mission",
+            "requestedPowerW": 25,
+            "allocatedPowerW": 25,
+            "state": "Powered"
+          }
+        ],
+        "temperatureK": 310,
+        "protectionState": "Warning",
+        "heatInputW": 200,
+        "heatRemovedW": 0,
+        "cooling": {
+          "allocatedOperatingPowerW": 0,
+          "heatRemovedW": 0,
+          "coolingInsufficient": false
+        },
+        "actionCodes": [],
+        "eventCodes": [
+          "PowerAllocationCompleted",
+          "ThermalWarning"
+        ],
+        "eventIds": [
+          "event:3:0:2046aac3",
+          "event:3:1:e29b3d58"
+        ],
+        "canonicalJson": "{\"actions\":[],\"batteryResults\":[{\"batteryId\":\"battery:main\",\"busId\":\"bus:main\",\"busPowerW\":0,\"flowState\":\"Idle\",\"internalPowerW\":0,\"lossHeatW\":0,\"nextStoredEnergyJ\":80,\"previousStoredEnergyJ\":80,\"reserveEnergyUsedJ\":0,\"thermalNodeId\":\"thermal-node:main\"}],\"consumerResults\":[{\"allocatedPowerW\":20,\"busId\":\"bus:main\",\"consumerId\":\"consumer:critical\",\"priority\":\"Critical\",\"rejectionCode\":null,\"requestedPowerW\":20,\"satisfactionFraction\":1,\"state\":\"Powered\"},{\"allocatedPowerW\":30,\"busId\":\"bus:main\",\"consumerId\":\"consumer:flight\",\"priority\":\"Flight\",\"rejectionCode\":null,\"requestedPowerW\":30,\"satisfactionFraction\":1,\"state\":\"Powered\"},{\"allocatedPowerW\":25,\"busId\":\"bus:main\",\"consumerId\":\"consumer:mission\",\"priority\":\"Mission\",\"rejectionCode\":null,\"requestedPowerW\":25,\"satisfactionFraction\":1,\"state\":\"Powered\"}],\"coolingResults\":[{\"allocatedOperatingPowerW\":0,\"consumerId\":\"consumer:cooling\",\"coolingId\":\"cooling:main\",\"coolingInsufficient\":false,\"heatRemovedW\":0,\"thermalNodeId\":\"thermal-node:main\"}],\"events\":[{\"code\":\"PowerAllocationCompleted\",\"eventId\":\"event:3:0:2046aac3\",\"ordinal\":0,\"payload\":{\"allocatedPowerW\":75,\"availablePowerW\":75,\"batteryChargePowerW\":0,\"batteryDischargePowerW\":0,\"busId\":\"bus:main\",\"requestedPowerW\":75,\"sourcePowerW\":75,\"unmetPowerW\":0},\"phase\":\"Power\",\"severity\":\"Info\",\"sourceId\":\"bus:main\",\"targetId\":null,\"tick\":3},{\"code\":\"ThermalWarning\",\"eventId\":\"event:3:1:e29b3d58\",\"ordinal\":1,\"payload\":{\"busId\":\"bus:main\",\"nextTemperatureK\":310,\"previousProtectionState\":\"Nominal\",\"previousTemperatureK\":290,\"protectionState\":\"Warning\",\"thermalNodeId\":\"thermal-node:main\"},\"phase\":\"Thermal\",\"severity\":\"Warning\",\"sourceId\":\"thermal-node:main\",\"targetId\":\"thermal-node:main\",\"tick\":3}],\"ok\":true,\"sourceResults\":[{\"busId\":\"bus:main\",\"lossHeatW\":0,\"outputW\":75,\"previousOutputW\":40,\"sourceId\":\"source:generator\",\"targetOutputW\":75,\"thermalNodeId\":\"thermal-node:main\"}],\"state\":{\"batteries\":[{\"batteryId\":\"battery:main\",\"busId\":\"bus:main\",\"storedEnergyJ\":80,\"thermalNodeId\":\"thermal-node:main\"}],\"cooling\":[{\"allocatedOperatingPowerW\":0,\"consumerId\":\"consumer:cooling\",\"coolingId\":\"cooling:main\",\"thermalNodeId\":\"thermal-node:main\"}],\"sources\":[{\"busId\":\"bus:main\",\"currentOutputW\":75,\"sourceId\":\"source:generator\",\"thermalNodeId\":\"thermal-node:main\"}],\"thermalNodes\":[{\"busId\":\"bus:main\",\"protectionState\":\"Warning\",\"temperatureK\":310,\"thermalNodeId\":\"thermal-node:main\"}],\"tick\":3},\"thermalResults\":[{\"boundaryAttempt\":null,\"busId\":\"bus:main\",\"heatInputW\":200,\"heatRemovedW\":0,\"nextTemperatureK\":310,\"previousTemperatureK\":290,\"protectionState\":\"Warning\",\"rawIntegratedTemperatureK\":310,\"thermalNodeId\":\"thermal-node:main\"}]}",
+        "signature": "fnv1a32:dc2bacb6"
+      },
+      "critical": {
+        "tick": 4,
+        "sourceOutputW": 75,
+        "battery": {
+          "flowState": "Idle",
+          "busPowerW": 0,
+          "previousStoredEnergyJ": 80,
+          "nextStoredEnergyJ": 80
+        },
+        "consumers": [
+          {
+            "consumerId": "consumer:critical",
+            "priority": "Critical",
+            "requestedPowerW": 20,
+            "allocatedPowerW": 20,
+            "state": "Powered"
+          },
+          {
+            "consumerId": "consumer:flight",
+            "priority": "Flight",
+            "requestedPowerW": 30,
+            "allocatedPowerW": 30,
+            "state": "Powered"
+          },
+          {
+            "consumerId": "consumer:mission",
+            "priority": "Mission",
+            "requestedPowerW": 25,
+            "allocatedPowerW": 25,
+            "state": "Powered"
+          }
+        ],
+        "temperatureK": 330,
+        "protectionState": "Critical",
+        "heatInputW": 200,
+        "heatRemovedW": 0,
+        "cooling": {
+          "allocatedOperatingPowerW": 0,
+          "heatRemovedW": 0,
+          "coolingInsufficient": true
+        },
+        "actionCodes": [
+          "CoolingInsufficient",
+          "ThermalNodeCritical"
+        ],
+        "eventCodes": [
+          "PowerAllocationCompleted",
+          "CoolingInsufficient",
+          "ThermalCritical"
+        ],
+        "eventIds": [
+          "event:4:0:20446c2c",
+          "event:4:1:db40d790",
+          "event:4:2:acac11d7"
+        ],
+        "canonicalJson": "{\"actions\":[{\"batteryId\":null,\"busId\":null,\"code\":\"CoolingInsufficient\",\"consumerId\":\"consumer:cooling\",\"coolingId\":\"cooling:main\",\"metadata\":{\"allocatedOperatingPowerW\":0,\"heatRemovedW\":0},\"thermalNodeId\":\"thermal-node:main\"},{\"batteryId\":null,\"busId\":\"bus:main\",\"code\":\"ThermalNodeCritical\",\"consumerId\":null,\"coolingId\":null,\"metadata\":{\"nextTemperatureK\":330,\"protectionState\":\"Critical\"},\"thermalNodeId\":\"thermal-node:main\"}],\"batteryResults\":[{\"batteryId\":\"battery:main\",\"busId\":\"bus:main\",\"busPowerW\":0,\"flowState\":\"Idle\",\"internalPowerW\":0,\"lossHeatW\":0,\"nextStoredEnergyJ\":80,\"previousStoredEnergyJ\":80,\"reserveEnergyUsedJ\":0,\"thermalNodeId\":\"thermal-node:main\"}],\"consumerResults\":[{\"allocatedPowerW\":20,\"busId\":\"bus:main\",\"consumerId\":\"consumer:critical\",\"priority\":\"Critical\",\"rejectionCode\":null,\"requestedPowerW\":20,\"satisfactionFraction\":1,\"state\":\"Powered\"},{\"allocatedPowerW\":30,\"busId\":\"bus:main\",\"consumerId\":\"consumer:flight\",\"priority\":\"Flight\",\"rejectionCode\":null,\"requestedPowerW\":30,\"satisfactionFraction\":1,\"state\":\"Powered\"},{\"allocatedPowerW\":25,\"busId\":\"bus:main\",\"consumerId\":\"consumer:mission\",\"priority\":\"Mission\",\"rejectionCode\":null,\"requestedPowerW\":25,\"satisfactionFraction\":1,\"state\":\"Powered\"}],\"coolingResults\":[{\"allocatedOperatingPowerW\":0,\"consumerId\":\"consumer:cooling\",\"coolingId\":\"cooling:main\",\"coolingInsufficient\":true,\"heatRemovedW\":0,\"thermalNodeId\":\"thermal-node:main\"}],\"events\":[{\"code\":\"PowerAllocationCompleted\",\"eventId\":\"event:4:0:20446c2c\",\"ordinal\":0,\"payload\":{\"allocatedPowerW\":75,\"availablePowerW\":75,\"batteryChargePowerW\":0,\"batteryDischargePowerW\":0,\"busId\":\"bus:main\",\"requestedPowerW\":75,\"sourcePowerW\":75,\"unmetPowerW\":0},\"phase\":\"Power\",\"severity\":\"Info\",\"sourceId\":\"bus:main\",\"targetId\":null,\"tick\":4},{\"code\":\"CoolingInsufficient\",\"eventId\":\"event:4:1:db40d790\",\"ordinal\":1,\"payload\":{\"allocatedOperatingPowerW\":0,\"consumerId\":\"consumer:cooling\",\"coolingId\":\"cooling:main\",\"heatRemovedW\":0,\"thermalNodeId\":\"thermal-node:main\"},\"phase\":\"Thermal\",\"severity\":\"Warning\",\"sourceId\":\"thermal-node:main\",\"targetId\":\"cooling:main\",\"tick\":4},{\"code\":\"ThermalCritical\",\"eventId\":\"event:4:2:acac11d7\",\"ordinal\":2,\"payload\":{\"busId\":\"bus:main\",\"nextTemperatureK\":330,\"previousProtectionState\":\"Warning\",\"previousTemperatureK\":310,\"protectionState\":\"Critical\",\"thermalNodeId\":\"thermal-node:main\"},\"phase\":\"Thermal\",\"severity\":\"Critical\",\"sourceId\":\"thermal-node:main\",\"targetId\":\"thermal-node:main\",\"tick\":4}],\"ok\":true,\"sourceResults\":[{\"busId\":\"bus:main\",\"lossHeatW\":0,\"outputW\":75,\"previousOutputW\":75,\"sourceId\":\"source:generator\",\"targetOutputW\":75,\"thermalNodeId\":\"thermal-node:main\"}],\"state\":{\"batteries\":[{\"batteryId\":\"battery:main\",\"busId\":\"bus:main\",\"storedEnergyJ\":80,\"thermalNodeId\":\"thermal-node:main\"}],\"cooling\":[{\"allocatedOperatingPowerW\":0,\"consumerId\":\"consumer:cooling\",\"coolingId\":\"cooling:main\",\"thermalNodeId\":\"thermal-node:main\"}],\"sources\":[{\"busId\":\"bus:main\",\"currentOutputW\":75,\"sourceId\":\"source:generator\",\"thermalNodeId\":\"thermal-node:main\"}],\"thermalNodes\":[{\"busId\":\"bus:main\",\"protectionState\":\"Critical\",\"temperatureK\":330,\"thermalNodeId\":\"thermal-node:main\"}],\"tick\":4},\"thermalResults\":[{\"boundaryAttempt\":null,\"busId\":\"bus:main\",\"heatInputW\":200,\"heatRemovedW\":0,\"nextTemperatureK\":330,\"previousTemperatureK\":310,\"protectionState\":\"Critical\",\"rawIntegratedTemperatureK\":330,\"thermalNodeId\":\"thermal-node:main\"}]}",
+        "signature": "fnv1a32:8dc9c6d1"
+      }
+    },
+    "coolingRecovery": {
+      "tick": 5,
+      "sourceOutputW": 10,
+      "battery": {
+        "flowState": "Idle",
+        "busPowerW": 0,
+        "previousStoredEnergyJ": 80,
+        "nextStoredEnergyJ": 80
+      },
+      "consumers": [
+        {
+          "consumerId": "consumer:cooling",
+          "priority": "Safety",
+          "requestedPowerW": 10,
+          "allocatedPowerW": 10,
+          "state": "Powered"
+        }
+      ],
+      "temperatureK": 305,
+      "protectionState": "Nominal",
+      "heatInputW": 0,
+      "heatRemovedW": 250,
+      "cooling": {
+        "allocatedOperatingPowerW": 10,
+        "heatRemovedW": 250,
+        "coolingInsufficient": false
+      },
+      "actionCodes": [],
+      "eventCodes": [
+        "PowerAllocationCompleted"
+      ],
+      "eventIds": [
+        "event:5:0:de8e9093"
+      ],
+      "canonicalJson": "{\"actions\":[],\"batteryResults\":[{\"batteryId\":\"battery:main\",\"busId\":\"bus:main\",\"busPowerW\":0,\"flowState\":\"Idle\",\"internalPowerW\":0,\"lossHeatW\":0,\"nextStoredEnergyJ\":80,\"previousStoredEnergyJ\":80,\"reserveEnergyUsedJ\":0,\"thermalNodeId\":\"thermal-node:main\"}],\"consumerResults\":[{\"allocatedPowerW\":10,\"busId\":\"bus:main\",\"consumerId\":\"consumer:cooling\",\"priority\":\"Safety\",\"rejectionCode\":null,\"requestedPowerW\":10,\"satisfactionFraction\":1,\"state\":\"Powered\"}],\"coolingResults\":[{\"allocatedOperatingPowerW\":10,\"consumerId\":\"consumer:cooling\",\"coolingId\":\"cooling:main\",\"coolingInsufficient\":false,\"heatRemovedW\":250,\"thermalNodeId\":\"thermal-node:main\"}],\"events\":[{\"code\":\"PowerAllocationCompleted\",\"eventId\":\"event:5:0:de8e9093\",\"ordinal\":0,\"payload\":{\"allocatedPowerW\":10,\"availablePowerW\":10,\"batteryChargePowerW\":0,\"batteryDischargePowerW\":0,\"busId\":\"bus:main\",\"requestedPowerW\":10,\"sourcePowerW\":10,\"unmetPowerW\":0},\"phase\":\"Power\",\"severity\":\"Info\",\"sourceId\":\"bus:main\",\"targetId\":null,\"tick\":5}],\"ok\":true,\"sourceResults\":[{\"busId\":\"bus:main\",\"lossHeatW\":0,\"outputW\":10,\"previousOutputW\":75,\"sourceId\":\"source:generator\",\"targetOutputW\":10,\"thermalNodeId\":\"thermal-node:main\"}],\"state\":{\"batteries\":[{\"batteryId\":\"battery:main\",\"busId\":\"bus:main\",\"storedEnergyJ\":80,\"thermalNodeId\":\"thermal-node:main\"}],\"cooling\":[{\"allocatedOperatingPowerW\":10,\"consumerId\":\"consumer:cooling\",\"coolingId\":\"cooling:main\",\"thermalNodeId\":\"thermal-node:main\"}],\"sources\":[{\"busId\":\"bus:main\",\"currentOutputW\":10,\"sourceId\":\"source:generator\",\"thermalNodeId\":\"thermal-node:main\"}],\"thermalNodes\":[{\"busId\":\"bus:main\",\"protectionState\":\"Nominal\",\"temperatureK\":305,\"thermalNodeId\":\"thermal-node:main\"}],\"tick\":5},\"thermalResults\":[{\"boundaryAttempt\":null,\"busId\":\"bus:main\",\"heatInputW\":0,\"heatRemovedW\":250,\"nextTemperatureK\":305,\"previousTemperatureK\":330,\"protectionState\":\"Nominal\",\"rawIntegratedTemperatureK\":305,\"thermalNodeId\":\"thermal-node:main\"}]}",
+      "signature": "fnv1a32:037e9a57"
+    },
+    "eventStreams": [
+      [
+        "event:1:0:712ac7f3"
+      ],
+      [
+        "event:2:0:c244aa8c",
+        "event:2:1:4b20a244",
+        "event:2:2:2db611f1"
+      ],
+      [
+        "event:3:0:2046aac3",
+        "event:3:1:e29b3d58"
+      ],
+      [
+        "event:4:0:20446c2c",
+        "event:4:1:db40d790",
+        "event:4:2:acac11d7"
+      ],
+      [
+        "event:5:0:de8e9093"
+      ]
+    ],
+    "canonicalJson": "{\"coolingRecovery\":{\"actionCodes\":[],\"battery\":{\"busPowerW\":0,\"flowState\":\"Idle\",\"nextStoredEnergyJ\":80,\"previousStoredEnergyJ\":80},\"canonicalJson\":\"{\\\"actions\\\":[],\\\"batteryResults\\\":[{\\\"batteryId\\\":\\\"battery:main\\\",\\\"busId\\\":\\\"bus:main\\\",\\\"busPowerW\\\":0,\\\"flowState\\\":\\\"Idle\\\",\\\"internalPowerW\\\":0,\\\"lossHeatW\\\":0,\\\"nextStoredEnergyJ\\\":80,\\\"previousStoredEnergyJ\\\":80,\\\"reserveEnergyUsedJ\\\":0,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"consumerResults\\\":[{\\\"allocatedPowerW\\\":10,\\\"busId\\\":\\\"bus:main\\\",\\\"consumerId\\\":\\\"consumer:cooling\\\",\\\"priority\\\":\\\"Safety\\\",\\\"rejectionCode\\\":null,\\\"requestedPowerW\\\":10,\\\"satisfactionFraction\\\":1,\\\"state\\\":\\\"Powered\\\"}],\\\"coolingResults\\\":[{\\\"allocatedOperatingPowerW\\\":10,\\\"consumerId\\\":\\\"consumer:cooling\\\",\\\"coolingId\\\":\\\"cooling:main\\\",\\\"coolingInsufficient\\\":false,\\\"heatRemovedW\\\":250,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"events\\\":[{\\\"code\\\":\\\"PowerAllocationCompleted\\\",\\\"eventId\\\":\\\"event:5:0:de8e9093\\\",\\\"ordinal\\\":0,\\\"payload\\\":{\\\"allocatedPowerW\\\":10,\\\"availablePowerW\\\":10,\\\"batteryChargePowerW\\\":0,\\\"batteryDischargePowerW\\\":0,\\\"busId\\\":\\\"bus:main\\\",\\\"requestedPowerW\\\":10,\\\"sourcePowerW\\\":10,\\\"unmetPowerW\\\":0},\\\"phase\\\":\\\"Power\\\",\\\"severity\\\":\\\"Info\\\",\\\"sourceId\\\":\\\"bus:main\\\",\\\"targetId\\\":null,\\\"tick\\\":5}],\\\"ok\\\":true,\\\"sourceResults\\\":[{\\\"busId\\\":\\\"bus:main\\\",\\\"lossHeatW\\\":0,\\\"outputW\\\":10,\\\"previousOutputW\\\":75,\\\"sourceId\\\":\\\"source:generator\\\",\\\"targetOutputW\\\":10,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"state\\\":{\\\"batteries\\\":[{\\\"batteryId\\\":\\\"battery:main\\\",\\\"busId\\\":\\\"bus:main\\\",\\\"storedEnergyJ\\\":80,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"cooling\\\":[{\\\"allocatedOperatingPowerW\\\":10,\\\"consumerId\\\":\\\"consumer:cooling\\\",\\\"coolingId\\\":\\\"cooling:main\\\",\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"sources\\\":[{\\\"busId\\\":\\\"bus:main\\\",\\\"currentOutputW\\\":10,\\\"sourceId\\\":\\\"source:generator\\\",\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"thermalNodes\\\":[{\\\"busId\\\":\\\"bus:main\\\",\\\"protectionState\\\":\\\"Nominal\\\",\\\"temperatureK\\\":305,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"tick\\\":5},\\\"thermalResults\\\":[{\\\"boundaryAttempt\\\":null,\\\"busId\\\":\\\"bus:main\\\",\\\"heatInputW\\\":0,\\\"heatRemovedW\\\":250,\\\"nextTemperatureK\\\":305,\\\"previousTemperatureK\\\":330,\\\"protectionState\\\":\\\"Nominal\\\",\\\"rawIntegratedTemperatureK\\\":305,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}]}\",\"consumers\":[{\"allocatedPowerW\":10,\"consumerId\":\"consumer:cooling\",\"priority\":\"Safety\",\"requestedPowerW\":10,\"state\":\"Powered\"}],\"cooling\":{\"allocatedOperatingPowerW\":10,\"coolingInsufficient\":false,\"heatRemovedW\":250},\"eventCodes\":[\"PowerAllocationCompleted\"],\"eventIds\":[\"event:5:0:de8e9093\"],\"heatInputW\":0,\"heatRemovedW\":250,\"protectionState\":\"Nominal\",\"signature\":\"fnv1a32:037e9a57\",\"sourceOutputW\":10,\"temperatureK\":305,\"tick\":5},\"eventStreams\":[[\"event:1:0:712ac7f3\"],[\"event:2:0:c244aa8c\",\"event:2:1:4b20a244\",\"event:2:2:2db611f1\"],[\"event:3:0:2046aac3\",\"event:3:1:e29b3d58\"],[\"event:4:0:20446c2c\",\"event:4:1:db40d790\",\"event:4:2:acac11d7\"],[\"event:5:0:de8e9093\"]],\"fixtureIds\":{\"battery\":\"battery:main\",\"coolingConsumer\":\"consumer:cooling\",\"coolingUnit\":\"cooling:main\",\"criticalConsumer\":\"consumer:critical\",\"flightConsumer\":\"consumer:flight\",\"generator\":\"source:generator\",\"weaponMissionConsumer\":\"consumer:mission\"},\"modulePath\":\"/src/ship-power-thermal/index.ts\",\"normalOperation\":{\"actionCodes\":[],\"battery\":{\"busPowerW\":0,\"flowState\":\"Idle\",\"nextStoredEnergyJ\":100,\"previousStoredEnergyJ\":100},\"canonicalJson\":\"{\\\"actions\\\":[],\\\"batteryResults\\\":[{\\\"batteryId\\\":\\\"battery:main\\\",\\\"busId\\\":\\\"bus:main\\\",\\\"busPowerW\\\":0,\\\"flowState\\\":\\\"Idle\\\",\\\"internalPowerW\\\":0,\\\"lossHeatW\\\":0,\\\"nextStoredEnergyJ\\\":100,\\\"previousStoredEnergyJ\\\":100,\\\"reserveEnergyUsedJ\\\":0,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"consumerResults\\\":[{\\\"allocatedPowerW\\\":10,\\\"busId\\\":\\\"bus:main\\\",\\\"consumerId\\\":\\\"consumer:cooling\\\",\\\"priority\\\":\\\"Safety\\\",\\\"rejectionCode\\\":null,\\\"requestedPowerW\\\":10,\\\"satisfactionFraction\\\":1,\\\"state\\\":\\\"Powered\\\"},{\\\"allocatedPowerW\\\":20,\\\"busId\\\":\\\"bus:main\\\",\\\"consumerId\\\":\\\"consumer:critical\\\",\\\"priority\\\":\\\"Critical\\\",\\\"rejectionCode\\\":null,\\\"requestedPowerW\\\":20,\\\"satisfactionFraction\\\":1,\\\"state\\\":\\\"Powered\\\"},{\\\"allocatedPowerW\\\":30,\\\"busId\\\":\\\"bus:main\\\",\\\"consumerId\\\":\\\"consumer:flight\\\",\\\"priority\\\":\\\"Flight\\\",\\\"rejectionCode\\\":null,\\\"requestedPowerW\\\":30,\\\"satisfactionFraction\\\":1,\\\"state\\\":\\\"Powered\\\"},{\\\"allocatedPowerW\\\":25,\\\"busId\\\":\\\"bus:main\\\",\\\"consumerId\\\":\\\"consumer:mission\\\",\\\"priority\\\":\\\"Mission\\\",\\\"rejectionCode\\\":null,\\\"requestedPowerW\\\":25,\\\"satisfactionFraction\\\":1,\\\"state\\\":\\\"Powered\\\"}],\\\"coolingResults\\\":[{\\\"allocatedOperatingPowerW\\\":10,\\\"consumerId\\\":\\\"consumer:cooling\\\",\\\"coolingId\\\":\\\"cooling:main\\\",\\\"coolingInsufficient\\\":false,\\\"heatRemovedW\\\":100,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"events\\\":[{\\\"code\\\":\\\"PowerAllocationCompleted\\\",\\\"eventId\\\":\\\"event:1:0:712ac7f3\\\",\\\"ordinal\\\":0,\\\"payload\\\":{\\\"allocatedPowerW\\\":85,\\\"availablePowerW\\\":85,\\\"batteryChargePowerW\\\":0,\\\"batteryDischargePowerW\\\":0,\\\"busId\\\":\\\"bus:main\\\",\\\"requestedPowerW\\\":85,\\\"sourcePowerW\\\":85,\\\"unmetPowerW\\\":0},\\\"phase\\\":\\\"Power\\\",\\\"severity\\\":\\\"Info\\\",\\\"sourceId\\\":\\\"bus:main\\\",\\\"targetId\\\":null,\\\"tick\\\":1}],\\\"ok\\\":true,\\\"sourceResults\\\":[{\\\"busId\\\":\\\"bus:main\\\",\\\"lossHeatW\\\":0,\\\"outputW\\\":85,\\\"previousOutputW\\\":0,\\\"sourceId\\\":\\\"source:generator\\\",\\\"targetOutputW\\\":85,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"state\\\":{\\\"batteries\\\":[{\\\"batteryId\\\":\\\"battery:main\\\",\\\"busId\\\":\\\"bus:main\\\",\\\"storedEnergyJ\\\":100,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"cooling\\\":[{\\\"allocatedOperatingPowerW\\\":10,\\\"consumerId\\\":\\\"consumer:cooling\\\",\\\"coolingId\\\":\\\"cooling:main\\\",\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"sources\\\":[{\\\"busId\\\":\\\"bus:main\\\",\\\"currentOutputW\\\":85,\\\"sourceId\\\":\\\"source:generator\\\",\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"thermalNodes\\\":[{\\\"busId\\\":\\\"bus:main\\\",\\\"protectionState\\\":\\\"Nominal\\\",\\\"temperatureK\\\":290,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"tick\\\":1},\\\"thermalResults\\\":[{\\\"boundaryAttempt\\\":null,\\\"busId\\\":\\\"bus:main\\\",\\\"heatInputW\\\":0,\\\"heatRemovedW\\\":100,\\\"nextTemperatureK\\\":290,\\\"previousTemperatureK\\\":300,\\\"protectionState\\\":\\\"Nominal\\\",\\\"rawIntegratedTemperatureK\\\":290,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}]}\",\"consumers\":[{\"allocatedPowerW\":10,\"consumerId\":\"consumer:cooling\",\"priority\":\"Safety\",\"requestedPowerW\":10,\"state\":\"Powered\"},{\"allocatedPowerW\":20,\"consumerId\":\"consumer:critical\",\"priority\":\"Critical\",\"requestedPowerW\":20,\"state\":\"Powered\"},{\"allocatedPowerW\":30,\"consumerId\":\"consumer:flight\",\"priority\":\"Flight\",\"requestedPowerW\":30,\"state\":\"Powered\"},{\"allocatedPowerW\":25,\"consumerId\":\"consumer:mission\",\"priority\":\"Mission\",\"requestedPowerW\":25,\"state\":\"Powered\"}],\"cooling\":{\"allocatedOperatingPowerW\":10,\"coolingInsufficient\":false,\"heatRemovedW\":100},\"eventCodes\":[\"PowerAllocationCompleted\"],\"eventIds\":[\"event:1:0:712ac7f3\"],\"heatInputW\":0,\"heatRemovedW\":100,\"protectionState\":\"Nominal\",\"signature\":\"fnv1a32:fed3fdaa\",\"sourceOutputW\":85,\"temperatureK\":290,\"tick\":1},\"reducedSourceBrownout\":{\"actionCodes\":[\"PowerBusBrownout\",\"RequestConsumerShutdown\"],\"battery\":{\"busPowerW\":20,\"flowState\":\"Discharging\",\"nextStoredEnergyJ\":80,\"previousStoredEnergyJ\":100},\"canonicalJson\":\"{\\\"actions\\\":[{\\\"batteryId\\\":null,\\\"busId\\\":\\\"bus:main\\\",\\\"code\\\":\\\"PowerBusBrownout\\\",\\\"consumerId\\\":null,\\\"coolingId\\\":null,\\\"metadata\\\":{\\\"allocatedPowerW\\\":60,\\\"requestedPowerW\\\":85,\\\"unmetPowerW\\\":25},\\\"thermalNodeId\\\":null},{\\\"batteryId\\\":null,\\\"busId\\\":\\\"bus:main\\\",\\\"code\\\":\\\"RequestConsumerShutdown\\\",\\\"consumerId\\\":\\\"consumer:mission\\\",\\\"coolingId\\\":null,\\\"metadata\\\":{\\\"allocatedPowerW\\\":0,\\\"requestedPowerW\\\":25,\\\"state\\\":\\\"Shed\\\"},\\\"thermalNodeId\\\":null}],\\\"batteryResults\\\":[{\\\"batteryId\\\":\\\"battery:main\\\",\\\"busId\\\":\\\"bus:main\\\",\\\"busPowerW\\\":20,\\\"flowState\\\":\\\"Discharging\\\",\\\"internalPowerW\\\":20,\\\"lossHeatW\\\":0,\\\"nextStoredEnergyJ\\\":80,\\\"previousStoredEnergyJ\\\":100,\\\"reserveEnergyUsedJ\\\":0,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"consumerResults\\\":[{\\\"allocatedPowerW\\\":10,\\\"busId\\\":\\\"bus:main\\\",\\\"consumerId\\\":\\\"consumer:cooling\\\",\\\"priority\\\":\\\"Safety\\\",\\\"rejectionCode\\\":null,\\\"requestedPowerW\\\":10,\\\"satisfactionFraction\\\":1,\\\"state\\\":\\\"Powered\\\"},{\\\"allocatedPowerW\\\":20,\\\"busId\\\":\\\"bus:main\\\",\\\"consumerId\\\":\\\"consumer:critical\\\",\\\"priority\\\":\\\"Critical\\\",\\\"rejectionCode\\\":null,\\\"requestedPowerW\\\":20,\\\"satisfactionFraction\\\":1,\\\"state\\\":\\\"Powered\\\"},{\\\"allocatedPowerW\\\":30,\\\"busId\\\":\\\"bus:main\\\",\\\"consumerId\\\":\\\"consumer:flight\\\",\\\"priority\\\":\\\"Flight\\\",\\\"rejectionCode\\\":null,\\\"requestedPowerW\\\":30,\\\"satisfactionFraction\\\":1,\\\"state\\\":\\\"Powered\\\"},{\\\"allocatedPowerW\\\":0,\\\"busId\\\":\\\"bus:main\\\",\\\"consumerId\\\":\\\"consumer:mission\\\",\\\"priority\\\":\\\"Mission\\\",\\\"rejectionCode\\\":null,\\\"requestedPowerW\\\":25,\\\"satisfactionFraction\\\":0,\\\"state\\\":\\\"Shed\\\"}],\\\"coolingResults\\\":[{\\\"allocatedOperatingPowerW\\\":10,\\\"consumerId\\\":\\\"consumer:cooling\\\",\\\"coolingId\\\":\\\"cooling:main\\\",\\\"coolingInsufficient\\\":false,\\\"heatRemovedW\\\":0,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"events\\\":[{\\\"code\\\":\\\"PowerAllocationCompleted\\\",\\\"eventId\\\":\\\"event:2:0:c244aa8c\\\",\\\"ordinal\\\":0,\\\"payload\\\":{\\\"allocatedPowerW\\\":60,\\\"availablePowerW\\\":60,\\\"batteryChargePowerW\\\":0,\\\"batteryDischargePowerW\\\":20,\\\"busId\\\":\\\"bus:main\\\",\\\"requestedPowerW\\\":85,\\\"sourcePowerW\\\":40,\\\"unmetPowerW\\\":25},\\\"phase\\\":\\\"Power\\\",\\\"severity\\\":\\\"Info\\\",\\\"sourceId\\\":\\\"bus:main\\\",\\\"targetId\\\":null,\\\"tick\\\":2},{\\\"code\\\":\\\"PowerConsumerShed\\\",\\\"eventId\\\":\\\"event:2:1:4b20a244\\\",\\\"ordinal\\\":1,\\\"payload\\\":{\\\"allocatedPowerW\\\":0,\\\"busId\\\":\\\"bus:main\\\",\\\"consumerId\\\":\\\"consumer:mission\\\",\\\"requestedPowerW\\\":25,\\\"satisfactionFraction\\\":0},\\\"phase\\\":\\\"Power\\\",\\\"severity\\\":\\\"Warning\\\",\\\"sourceId\\\":\\\"bus:main\\\",\\\"targetId\\\":\\\"consumer:mission\\\",\\\"tick\\\":2},{\\\"code\\\":\\\"PowerBusBrownout\\\",\\\"eventId\\\":\\\"event:2:2:2db611f1\\\",\\\"ordinal\\\":2,\\\"payload\\\":{\\\"allocatedPowerW\\\":60,\\\"busId\\\":\\\"bus:main\\\",\\\"requestedPowerW\\\":85,\\\"unmetPowerW\\\":25},\\\"phase\\\":\\\"Protection\\\",\\\"severity\\\":\\\"Critical\\\",\\\"sourceId\\\":\\\"bus:main\\\",\\\"targetId\\\":null,\\\"tick\\\":2}],\\\"ok\\\":true,\\\"sourceResults\\\":[{\\\"busId\\\":\\\"bus:main\\\",\\\"lossHeatW\\\":0,\\\"outputW\\\":40,\\\"previousOutputW\\\":85,\\\"sourceId\\\":\\\"source:generator\\\",\\\"targetOutputW\\\":40,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"state\\\":{\\\"batteries\\\":[{\\\"batteryId\\\":\\\"battery:main\\\",\\\"busId\\\":\\\"bus:main\\\",\\\"storedEnergyJ\\\":80,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"cooling\\\":[{\\\"allocatedOperatingPowerW\\\":10,\\\"consumerId\\\":\\\"consumer:cooling\\\",\\\"coolingId\\\":\\\"cooling:main\\\",\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"sources\\\":[{\\\"busId\\\":\\\"bus:main\\\",\\\"currentOutputW\\\":40,\\\"sourceId\\\":\\\"source:generator\\\",\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"thermalNodes\\\":[{\\\"busId\\\":\\\"bus:main\\\",\\\"protectionState\\\":\\\"Nominal\\\",\\\"temperatureK\\\":290,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"tick\\\":2},\\\"thermalResults\\\":[{\\\"boundaryAttempt\\\":null,\\\"busId\\\":\\\"bus:main\\\",\\\"heatInputW\\\":0,\\\"heatRemovedW\\\":0,\\\"nextTemperatureK\\\":290,\\\"previousTemperatureK\\\":290,\\\"protectionState\\\":\\\"Nominal\\\",\\\"rawIntegratedTemperatureK\\\":290,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}]}\",\"consumers\":[{\"allocatedPowerW\":10,\"consumerId\":\"consumer:cooling\",\"priority\":\"Safety\",\"requestedPowerW\":10,\"state\":\"Powered\"},{\"allocatedPowerW\":20,\"consumerId\":\"consumer:critical\",\"priority\":\"Critical\",\"requestedPowerW\":20,\"state\":\"Powered\"},{\"allocatedPowerW\":30,\"consumerId\":\"consumer:flight\",\"priority\":\"Flight\",\"requestedPowerW\":30,\"state\":\"Powered\"},{\"allocatedPowerW\":0,\"consumerId\":\"consumer:mission\",\"priority\":\"Mission\",\"requestedPowerW\":25,\"state\":\"Shed\"}],\"cooling\":{\"allocatedOperatingPowerW\":10,\"coolingInsufficient\":false,\"heatRemovedW\":0},\"eventCodes\":[\"PowerAllocationCompleted\",\"PowerConsumerShed\",\"PowerBusBrownout\"],\"eventIds\":[\"event:2:0:c244aa8c\",\"event:2:1:4b20a244\",\"event:2:2:2db611f1\"],\"heatInputW\":0,\"heatRemovedW\":0,\"protectionState\":\"Nominal\",\"signature\":\"fnv1a32:025ca9e1\",\"sourceOutputW\":40,\"temperatureK\":290,\"tick\":2},\"scenarioName\":\"deterministic-power-brownout-thermal-recovery\",\"thermalProgression\":{\"critical\":{\"actionCodes\":[\"CoolingInsufficient\",\"ThermalNodeCritical\"],\"battery\":{\"busPowerW\":0,\"flowState\":\"Idle\",\"nextStoredEnergyJ\":80,\"previousStoredEnergyJ\":80},\"canonicalJson\":\"{\\\"actions\\\":[{\\\"batteryId\\\":null,\\\"busId\\\":null,\\\"code\\\":\\\"CoolingInsufficient\\\",\\\"consumerId\\\":\\\"consumer:cooling\\\",\\\"coolingId\\\":\\\"cooling:main\\\",\\\"metadata\\\":{\\\"allocatedOperatingPowerW\\\":0,\\\"heatRemovedW\\\":0},\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"},{\\\"batteryId\\\":null,\\\"busId\\\":\\\"bus:main\\\",\\\"code\\\":\\\"ThermalNodeCritical\\\",\\\"consumerId\\\":null,\\\"coolingId\\\":null,\\\"metadata\\\":{\\\"nextTemperatureK\\\":330,\\\"protectionState\\\":\\\"Critical\\\"},\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"batteryResults\\\":[{\\\"batteryId\\\":\\\"battery:main\\\",\\\"busId\\\":\\\"bus:main\\\",\\\"busPowerW\\\":0,\\\"flowState\\\":\\\"Idle\\\",\\\"internalPowerW\\\":0,\\\"lossHeatW\\\":0,\\\"nextStoredEnergyJ\\\":80,\\\"previousStoredEnergyJ\\\":80,\\\"reserveEnergyUsedJ\\\":0,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"consumerResults\\\":[{\\\"allocatedPowerW\\\":20,\\\"busId\\\":\\\"bus:main\\\",\\\"consumerId\\\":\\\"consumer:critical\\\",\\\"priority\\\":\\\"Critical\\\",\\\"rejectionCode\\\":null,\\\"requestedPowerW\\\":20,\\\"satisfactionFraction\\\":1,\\\"state\\\":\\\"Powered\\\"},{\\\"allocatedPowerW\\\":30,\\\"busId\\\":\\\"bus:main\\\",\\\"consumerId\\\":\\\"consumer:flight\\\",\\\"priority\\\":\\\"Flight\\\",\\\"rejectionCode\\\":null,\\\"requestedPowerW\\\":30,\\\"satisfactionFraction\\\":1,\\\"state\\\":\\\"Powered\\\"},{\\\"allocatedPowerW\\\":25,\\\"busId\\\":\\\"bus:main\\\",\\\"consumerId\\\":\\\"consumer:mission\\\",\\\"priority\\\":\\\"Mission\\\",\\\"rejectionCode\\\":null,\\\"requestedPowerW\\\":25,\\\"satisfactionFraction\\\":1,\\\"state\\\":\\\"Powered\\\"}],\\\"coolingResults\\\":[{\\\"allocatedOperatingPowerW\\\":0,\\\"consumerId\\\":\\\"consumer:cooling\\\",\\\"coolingId\\\":\\\"cooling:main\\\",\\\"coolingInsufficient\\\":true,\\\"heatRemovedW\\\":0,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"events\\\":[{\\\"code\\\":\\\"PowerAllocationCompleted\\\",\\\"eventId\\\":\\\"event:4:0:20446c2c\\\",\\\"ordinal\\\":0,\\\"payload\\\":{\\\"allocatedPowerW\\\":75,\\\"availablePowerW\\\":75,\\\"batteryChargePowerW\\\":0,\\\"batteryDischargePowerW\\\":0,\\\"busId\\\":\\\"bus:main\\\",\\\"requestedPowerW\\\":75,\\\"sourcePowerW\\\":75,\\\"unmetPowerW\\\":0},\\\"phase\\\":\\\"Power\\\",\\\"severity\\\":\\\"Info\\\",\\\"sourceId\\\":\\\"bus:main\\\",\\\"targetId\\\":null,\\\"tick\\\":4},{\\\"code\\\":\\\"CoolingInsufficient\\\",\\\"eventId\\\":\\\"event:4:1:db40d790\\\",\\\"ordinal\\\":1,\\\"payload\\\":{\\\"allocatedOperatingPowerW\\\":0,\\\"consumerId\\\":\\\"consumer:cooling\\\",\\\"coolingId\\\":\\\"cooling:main\\\",\\\"heatRemovedW\\\":0,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"},\\\"phase\\\":\\\"Thermal\\\",\\\"severity\\\":\\\"Warning\\\",\\\"sourceId\\\":\\\"thermal-node:main\\\",\\\"targetId\\\":\\\"cooling:main\\\",\\\"tick\\\":4},{\\\"code\\\":\\\"ThermalCritical\\\",\\\"eventId\\\":\\\"event:4:2:acac11d7\\\",\\\"ordinal\\\":2,\\\"payload\\\":{\\\"busId\\\":\\\"bus:main\\\",\\\"nextTemperatureK\\\":330,\\\"previousProtectionState\\\":\\\"Warning\\\",\\\"previousTemperatureK\\\":310,\\\"protectionState\\\":\\\"Critical\\\",\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"},\\\"phase\\\":\\\"Thermal\\\",\\\"severity\\\":\\\"Critical\\\",\\\"sourceId\\\":\\\"thermal-node:main\\\",\\\"targetId\\\":\\\"thermal-node:main\\\",\\\"tick\\\":4}],\\\"ok\\\":true,\\\"sourceResults\\\":[{\\\"busId\\\":\\\"bus:main\\\",\\\"lossHeatW\\\":0,\\\"outputW\\\":75,\\\"previousOutputW\\\":75,\\\"sourceId\\\":\\\"source:generator\\\",\\\"targetOutputW\\\":75,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"state\\\":{\\\"batteries\\\":[{\\\"batteryId\\\":\\\"battery:main\\\",\\\"busId\\\":\\\"bus:main\\\",\\\"storedEnergyJ\\\":80,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"cooling\\\":[{\\\"allocatedOperatingPowerW\\\":0,\\\"consumerId\\\":\\\"consumer:cooling\\\",\\\"coolingId\\\":\\\"cooling:main\\\",\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"sources\\\":[{\\\"busId\\\":\\\"bus:main\\\",\\\"currentOutputW\\\":75,\\\"sourceId\\\":\\\"source:generator\\\",\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"thermalNodes\\\":[{\\\"busId\\\":\\\"bus:main\\\",\\\"protectionState\\\":\\\"Critical\\\",\\\"temperatureK\\\":330,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"tick\\\":4},\\\"thermalResults\\\":[{\\\"boundaryAttempt\\\":null,\\\"busId\\\":\\\"bus:main\\\",\\\"heatInputW\\\":200,\\\"heatRemovedW\\\":0,\\\"nextTemperatureK\\\":330,\\\"previousTemperatureK\\\":310,\\\"protectionState\\\":\\\"Critical\\\",\\\"rawIntegratedTemperatureK\\\":330,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}]}\",\"consumers\":[{\"allocatedPowerW\":20,\"consumerId\":\"consumer:critical\",\"priority\":\"Critical\",\"requestedPowerW\":20,\"state\":\"Powered\"},{\"allocatedPowerW\":30,\"consumerId\":\"consumer:flight\",\"priority\":\"Flight\",\"requestedPowerW\":30,\"state\":\"Powered\"},{\"allocatedPowerW\":25,\"consumerId\":\"consumer:mission\",\"priority\":\"Mission\",\"requestedPowerW\":25,\"state\":\"Powered\"}],\"cooling\":{\"allocatedOperatingPowerW\":0,\"coolingInsufficient\":true,\"heatRemovedW\":0},\"eventCodes\":[\"PowerAllocationCompleted\",\"CoolingInsufficient\",\"ThermalCritical\"],\"eventIds\":[\"event:4:0:20446c2c\",\"event:4:1:db40d790\",\"event:4:2:acac11d7\"],\"heatInputW\":200,\"heatRemovedW\":0,\"protectionState\":\"Critical\",\"signature\":\"fnv1a32:8dc9c6d1\",\"sourceOutputW\":75,\"temperatureK\":330,\"tick\":4},\"warning\":{\"actionCodes\":[],\"battery\":{\"busPowerW\":0,\"flowState\":\"Idle\",\"nextStoredEnergyJ\":80,\"previousStoredEnergyJ\":80},\"canonicalJson\":\"{\\\"actions\\\":[],\\\"batteryResults\\\":[{\\\"batteryId\\\":\\\"battery:main\\\",\\\"busId\\\":\\\"bus:main\\\",\\\"busPowerW\\\":0,\\\"flowState\\\":\\\"Idle\\\",\\\"internalPowerW\\\":0,\\\"lossHeatW\\\":0,\\\"nextStoredEnergyJ\\\":80,\\\"previousStoredEnergyJ\\\":80,\\\"reserveEnergyUsedJ\\\":0,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"consumerResults\\\":[{\\\"allocatedPowerW\\\":20,\\\"busId\\\":\\\"bus:main\\\",\\\"consumerId\\\":\\\"consumer:critical\\\",\\\"priority\\\":\\\"Critical\\\",\\\"rejectionCode\\\":null,\\\"requestedPowerW\\\":20,\\\"satisfactionFraction\\\":1,\\\"state\\\":\\\"Powered\\\"},{\\\"allocatedPowerW\\\":30,\\\"busId\\\":\\\"bus:main\\\",\\\"consumerId\\\":\\\"consumer:flight\\\",\\\"priority\\\":\\\"Flight\\\",\\\"rejectionCode\\\":null,\\\"requestedPowerW\\\":30,\\\"satisfactionFraction\\\":1,\\\"state\\\":\\\"Powered\\\"},{\\\"allocatedPowerW\\\":25,\\\"busId\\\":\\\"bus:main\\\",\\\"consumerId\\\":\\\"consumer:mission\\\",\\\"priority\\\":\\\"Mission\\\",\\\"rejectionCode\\\":null,\\\"requestedPowerW\\\":25,\\\"satisfactionFraction\\\":1,\\\"state\\\":\\\"Powered\\\"}],\\\"coolingResults\\\":[{\\\"allocatedOperatingPowerW\\\":0,\\\"consumerId\\\":\\\"consumer:cooling\\\",\\\"coolingId\\\":\\\"cooling:main\\\",\\\"coolingInsufficient\\\":false,\\\"heatRemovedW\\\":0,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"events\\\":[{\\\"code\\\":\\\"PowerAllocationCompleted\\\",\\\"eventId\\\":\\\"event:3:0:2046aac3\\\",\\\"ordinal\\\":0,\\\"payload\\\":{\\\"allocatedPowerW\\\":75,\\\"availablePowerW\\\":75,\\\"batteryChargePowerW\\\":0,\\\"batteryDischargePowerW\\\":0,\\\"busId\\\":\\\"bus:main\\\",\\\"requestedPowerW\\\":75,\\\"sourcePowerW\\\":75,\\\"unmetPowerW\\\":0},\\\"phase\\\":\\\"Power\\\",\\\"severity\\\":\\\"Info\\\",\\\"sourceId\\\":\\\"bus:main\\\",\\\"targetId\\\":null,\\\"tick\\\":3},{\\\"code\\\":\\\"ThermalWarning\\\",\\\"eventId\\\":\\\"event:3:1:e29b3d58\\\",\\\"ordinal\\\":1,\\\"payload\\\":{\\\"busId\\\":\\\"bus:main\\\",\\\"nextTemperatureK\\\":310,\\\"previousProtectionState\\\":\\\"Nominal\\\",\\\"previousTemperatureK\\\":290,\\\"protectionState\\\":\\\"Warning\\\",\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"},\\\"phase\\\":\\\"Thermal\\\",\\\"severity\\\":\\\"Warning\\\",\\\"sourceId\\\":\\\"thermal-node:main\\\",\\\"targetId\\\":\\\"thermal-node:main\\\",\\\"tick\\\":3}],\\\"ok\\\":true,\\\"sourceResults\\\":[{\\\"busId\\\":\\\"bus:main\\\",\\\"lossHeatW\\\":0,\\\"outputW\\\":75,\\\"previousOutputW\\\":40,\\\"sourceId\\\":\\\"source:generator\\\",\\\"targetOutputW\\\":75,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"state\\\":{\\\"batteries\\\":[{\\\"batteryId\\\":\\\"battery:main\\\",\\\"busId\\\":\\\"bus:main\\\",\\\"storedEnergyJ\\\":80,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"cooling\\\":[{\\\"allocatedOperatingPowerW\\\":0,\\\"consumerId\\\":\\\"consumer:cooling\\\",\\\"coolingId\\\":\\\"cooling:main\\\",\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"sources\\\":[{\\\"busId\\\":\\\"bus:main\\\",\\\"currentOutputW\\\":75,\\\"sourceId\\\":\\\"source:generator\\\",\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"thermalNodes\\\":[{\\\"busId\\\":\\\"bus:main\\\",\\\"protectionState\\\":\\\"Warning\\\",\\\"temperatureK\\\":310,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}],\\\"tick\\\":3},\\\"thermalResults\\\":[{\\\"boundaryAttempt\\\":null,\\\"busId\\\":\\\"bus:main\\\",\\\"heatInputW\\\":200,\\\"heatRemovedW\\\":0,\\\"nextTemperatureK\\\":310,\\\"previousTemperatureK\\\":290,\\\"protectionState\\\":\\\"Warning\\\",\\\"rawIntegratedTemperatureK\\\":310,\\\"thermalNodeId\\\":\\\"thermal-node:main\\\"}]}\",\"consumers\":[{\"allocatedPowerW\":20,\"consumerId\":\"consumer:critical\",\"priority\":\"Critical\",\"requestedPowerW\":20,\"state\":\"Powered\"},{\"allocatedPowerW\":30,\"consumerId\":\"consumer:flight\",\"priority\":\"Flight\",\"requestedPowerW\":30,\"state\":\"Powered\"},{\"allocatedPowerW\":25,\"consumerId\":\"consumer:mission\",\"priority\":\"Mission\",\"requestedPowerW\":25,\"state\":\"Powered\"}],\"cooling\":{\"allocatedOperatingPowerW\":0,\"coolingInsufficient\":false,\"heatRemovedW\":0},\"eventCodes\":[\"PowerAllocationCompleted\",\"ThermalWarning\"],\"eventIds\":[\"event:3:0:2046aac3\",\"event:3:1:e29b3d58\"],\"heatInputW\":200,\"heatRemovedW\":0,\"protectionState\":\"Warning\",\"signature\":\"fnv1a32:dc2bacb6\",\"sourceOutputW\":75,\"temperatureK\":310,\"tick\":3}}}",
+    "signature": "fnv1a32:2fa5570f"
+  },
+  "verification": {
+    "command": "$env:WELTRAUM_PLAYWRIGHT_EXECUTABLE_PATH=\"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\"; npx --yes node@22 \"C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js\" run test:e2e -- tests/e2e/ship-power-thermal-core.spec.ts",
+    "nodeVersion": "22",
+    "expectedResult": "one focused Playwright test passes and writes deterministic JSON and Markdown evidence",
+    "observedResult": "pass"
+  }
+}

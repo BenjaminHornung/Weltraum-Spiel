@@ -1,0 +1,12 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/power.test.ts tests/unit/shipBattery.test.ts tests/unit/shipPowerAllocation.test.ts tests/unit/shipPowerThermalDeterminism.test.ts tests/unit/shipPowerValidation.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+
+ Test Files  5 passed (5)
+      Tests  78 passed (78)
+   Start at  11:43:10
+   Duration  2.11s (transform 284ms, setup 0ms, import 446ms, tests 1.16s, environment 1ms)

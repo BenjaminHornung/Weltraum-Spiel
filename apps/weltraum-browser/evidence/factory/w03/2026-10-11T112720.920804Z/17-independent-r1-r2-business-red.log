@@ -1,0 +1,87 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/power.test.ts -t R1 rejects|R2 absent
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/power.test.ts (23 tests | 2 failed | 21 skipped) 41ms
+     × R1 rejects BOTH distributor and foreign In-Port targets before granting cutter work 11ms
+     × R2 absent sample is unsupported zero, never a confirmed observation of calm wind or dark PV 29ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/power.test.ts > W03 independent review guards > R1 rejects BOTH distributor and foreign In-Port targets before granting cutter work
+AssertionError: expected [ true, true, true ] to deeply equal [ false, false, false ]
+
+- Expected
++ Received
+
+  [
+-   false,
+-   false,
+-   false,
++   true,
++   true,
++   true,
+  ]
+
+ ❯ tests/unit/factory/power.test.ts:264:33
+    262|     const wrongDevice={...base,requests:[{...request(),deviceInstanceI…
+    263|     const actual=[bus,wrongOwner,wrongDevice].map(value=>stepFactoryPo…
+    264|     expect(actual.map(r=>r.ok)).toEqual([false,false,false]);
+       |                                 ^
+    265|     for(const r of actual) {expect(r.nextState).toBe(state);if(!r.ok)e…
+    266|     const alias={...base,requests:[{...request(),deviceInstanceId:"cut…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/factory/power.test.ts > W03 independent review guards > R2 absent sample is unsupported zero, never a confirmed observation of calm wind or dark PV
+AssertionError: expected [ { power: '0', …(1) }, …(4) ] to deeply equal [ { power: '0', …(1) }, …(4) ]
+
+- Expected
++ Received
+
+  [
+    {
+      "power": "0",
+-     "quality": "unsupported",
++     "quality": "confirmed",
+    },
+    {
+      "power": "0",
+-     "quality": "unsupported",
++     "quality": "confirmed",
+    },
+    {
+      "power": "0",
+-     "quality": "unsupported",
++     "quality": "confirmed",
+    },
+    {
+      "power": "0",
+-     "quality": "unsupported",
++     "quality": "confirmed",
+    },
+    {
+      "power": "0",
+-     "quality": "unsupported",
++     "quality": "confirmed",
+    },
+  ]
+
+ ❯ tests/unit/factory/power.test.ts:272:78
+    270|     const supply=prepareFactoryPowerSources(catalog,sourceFixture(true…
+    271|     const missing=supply.offers.filter(o=>o.instanceId!=="fp02_cargo_c…
+    272|     expect(missing.map(o=>({power:o.availableMilliWatt,quality:o.quali…
+       |                                                                              ^
+    273|     expect(supply.offers[0].quality).toBe("confirmed");
+    274|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 21 skipped (23)
+   Start at  11:50:55
+   Duration  370ms (transform 166ms, setup 0ms, import 219ms, tests 41ms, environment 0ms)

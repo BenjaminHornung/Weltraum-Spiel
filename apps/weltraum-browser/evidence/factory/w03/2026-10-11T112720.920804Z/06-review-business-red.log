@@ -1,0 +1,57 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/power.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/power.test.ts (18 tests | 2 failed) 914ms
+     × separates real network bottleneck from generation shortage and damaged source capability 8ms
+     × saved fractional state must belong to the exact versioned mW/µs efficiency lattice 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/power.test.ts > W03 review oracles > separates real network bottleneck from generation shortage and damaged source capability
+AssertionError: expected 'WAIT_POWER' to be 'NET_CAPACITY' // Object.is equality
+
+Expected: "NET_CAPACITY"
+Received: "WAIT_POWER"
+
+ ❯ tests/unit/factory/power.test.ts:200:38
+    198|     const state=initial(0,false),value=input(state,3500,[request()]);
+    199|     const limited=success(state,rebind(value,{links:value.supply.links…
+    200|     expect(limited.grants[0].status).toBe("NET_CAPACITY");
+       |                                      ^
+    201|     const shortage=success(state,input(state,2500,[request()])); expec…
+    202|     const snapshot=sourceFixture(),broken={...snapshot,resourceContain…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/factory/power.test.ts > W03 review oracles > saved fractional state must belong to the exact versioned mW/µs efficiency lattice
+AssertionError: expected { balance: { …(9) }, …(9) } to match object { ok: false, …(1) }
+(29 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "ok": false,
+-   "reason": "IncompatibleEnergyQuantum",
++   "ok": true,
+  }
+
+ ❯ tests/unit/factory/power.test.ts:209:50
+    207|     const state=initial(),value=input(state,0,[request()]);
+    208|     const incompatible={...state,battery:{...state.battery!,storedEner…
+    209|     expect(stepFactoryPower(incompatible,value)).toMatchObject({ok:fal…
+       |                                                  ^
+    210|   });
+    211|   it("restart timer resets on a changed job or interval shortage, neve…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 16 passed (18)
+   Start at  11:37:48
+   Duration  1.29s (transform 197ms, setup 0ms, import 260ms, tests 914ms, environment 0ms)
