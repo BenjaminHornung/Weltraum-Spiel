@@ -60,6 +60,18 @@
         "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
         "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts"
       ]
+    },
+    {
+      "agent": "/root/fp06_domain",
+      "package": "W04",
+      "branch": "codex/hestia-fp06-domain-2026-10-11",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11",
+      "baseCommitSha": "1f2c568ec9db7b6b2895eb2a3b4f37797030dac8",
+      "writeSet": [
+        "apps/weltraum-browser/src/factory/production/productionStep.ts",
+        "apps/weltraum-browser/src/factory/production/recipeAdmission.ts",
+        "apps/weltraum-browser/tests/unit/factory/production.test.ts"
+      ]
     }
   ],
   "activeDocumentationWriter": {
@@ -119,7 +131,7 @@
         "W08",
         "W04"
       ],
-      "status": "W08_NEW_INTAKE_SEALED_HOLD; FINAL_REVIEW_COMMIT_PENDING; W04_NEXT"
+      "status": "W08_FINAL_PASS; REVIEWED_W03_COPY_PASS; W04_EXACT3PATH_ACTIVE"
     }
   ],
   "packageScopes": {
@@ -434,17 +446,21 @@
         "apps/weltraum-browser/src/factory/production/recipeAdmission.ts",
         "apps/weltraum-browser/tests/unit/factory/production.test.ts"
       ],
-      "grantedWriteSet": [],
+      "grantedWriteSet": [
+        "apps/weltraum-browser/src/factory/production/productionStep.ts",
+        "apps/weltraum-browser/src/factory/production/recipeAdmission.ts",
+        "apps/weltraum-browser/tests/unit/factory/production.test.ts"
+      ],
       "evidenceWriteSet": [
         "apps/weltraum-browser/evidence/factory/w04/<actual-run-id>/**"
       ],
-      "evidenceGrant": false,
-      "status": "NOT_RUN: W02/W03 PASS; waiting for Domainwriter after W08 and reviewed W03 integration",
+      "evidenceGrant": true,
+      "status": "IN_PROGRESS",
       "owner": "/root/fp06_domain",
       "plannedRole": "domain",
-      "branch": null,
+      "branch": "codex/hestia-fp06-domain-2026-10-11",
       "plannedBranch": "codex/hestia-fp06-domain-2026-10-11",
-      "worktree": null,
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11",
       "commitSha": null,
       "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
       "restrictions": [
@@ -452,7 +468,11 @@
         "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
         "No main merge/push/publication; no W12-W29"
       ],
-      "schedulingNote": "After W03 and W02 gates, Domain may implement its three pure production paths while Integrator owns W07 native Host/Physics; no shared-file grant."
+      "schedulingNote": "After W03 and W02 gates, Domain may implement its three pure production paths while Integrator owns W07 native Host/Physics; no shared-file grant.",
+      "baseCommitSha": "1f2c568ec9db7b6b2895eb2a3b4f37797030dac8",
+      "implementationWriteHold": false,
+      "authorizedAtUtc": "2026-10-11T12:41:39.050117+00:00",
+      "completedAtUtc": null
     },
     "W05": {
       "dependencies": [
@@ -812,7 +832,12 @@
       "baseCommitSha": "d5502ae7fd5431d58eda51bea062c54691ebe3c2",
       "implementationWriteHold": false,
       "authorizedAtUtc": "2026-10-11T12:20:03.945147+00:00",
-      "completedAtUtc": null
+      "completedAtUtc": null,
+      "tddInitialStatus": {
+        "runId": "2026-10-11T122211.412749Z",
+        "businessRed": "8 collected/8 expected AssertionFailure,CLI1 before implementation; previous mixed5business+3testSerialization preserved separately",
+        "status": "REPORTED_BY_WRITER_PENDING_SEALED_EVIDENCE_REVIEW"
+      }
     },
     "W08": {
       "dependencies": [
@@ -846,13 +871,13 @@
         "apps/weltraum-browser/evidence/factory/w08/<actual-run-id>/**"
       ],
       "evidenceGrant": true,
-      "status": "IN_REVIEW",
+      "status": "PASS",
       "owner": "/root/fp06_domain",
       "plannedRole": "domain-or-assets-writer",
       "branch": "codex/hestia-fp06-domain-2026-10-11",
       "plannedBranch": "codex/hestia-fp06-w08-2026-10-11",
       "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11",
-      "commitSha": null,
+      "commitSha": "8d22fc9907d84bf2ff6b257299ff47fb23b112ff",
       "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
       "restrictions": [
         "Only exact granted paths; planned paths are not grants",
@@ -862,7 +887,7 @@
       "baseCommitSha": "26d5e892c2b401b9011234dabf86955af7462fb8",
       "implementationWriteHold": true,
       "authorizedAtUtc": "2026-10-11T11:46:55.477266+00:00",
-      "completedAtUtc": null,
+      "completedAtUtc": "2026-10-11T12:39:48.785142+00:00",
       "sourceInterpretationNote": "Root authorizes a conservative versioned technical reference: at most one real Resources packet per entire straight line, with credit debited exactly once jointly at successful source-to-line Materialreceipt adoption. Source 0.75m is usable width, not invented longitudinal gap. No Qty cache authority/0m powered belt or unreviewed climate/live/save claim. Initial D06credit0 means injection wait plus54steps4mtravel; one slot bounds downstream burst. Exact phase/clock/revision/whole-CAS behavior must pass actual tests and independent review.",
       "preflightReport": "docs/factory/fp06/reviews/w08-preflight.md",
       "heldProductPatchSha256": "e3267d2fdf593043902ea2e795422bb2423e13cf554d9be9a1fda4b592e2f350",
@@ -924,8 +949,9 @@
       },
       "specReview": "PASS",
       "qualityReview": "PASS",
-      "reviewReport": "docs/factory/fp06/reviews/w08-intake-followup.md",
-      "finalCommitGate": "PENDING_ACTUAL_COMMIT_GIT_LFS_BINDING"
+      "reviewReport": "docs/factory/fp06/reviews/w08-final-commit.md",
+      "finalCommitGate": "PASS",
+      "packageReport": "docs/factory/fp06/reviews/w08-package-report.md"
     },
     "W09": {
       "dependencies": [
@@ -1329,6 +1355,30 @@
       "all22ProductFilesByteExact": true,
       "all194ArtifactRefsAdmitted": true,
       "completedAtUtc": "2026-10-11T12:13:14.768421+00:00"
+    },
+    {
+      "actor": "/root/fp06_domain",
+      "targetBranch": "codex/hestia-fp06-domain-2026-10-11",
+      "targetWorktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11",
+      "fromSha": "8d22fc9907d84bf2ff6b257299ff47fb23b112ff",
+      "authorizedAtUtc": "2026-10-11T12:40:01.108168+00:00",
+      "reviewedOriginalCommits": [
+        {
+          "package": "W03",
+          "sha": "fee8f3bf4b971fc3a5e56884d245126b6b264b3d"
+        }
+      ],
+      "status": "PASS_REVIEWED_COMMIT_COPY",
+      "scope": "Own cleanbranch cherry-pick exact immutable acceptedW03 only, byte-verify4products+88copiedGitEvidence and87manifestrefs, actualparent/newfullSHA/clean report. No edits/tests/Runtime/main/foreignworktree. W04 exact3pathgrant after receipt at resultinghead.",
+      "actualIntegratedCommits": [
+        "1f2c568ec9db7b6b2895eb2a3b4f37797030dac8"
+      ],
+      "resultingHeadSha": "1f2c568ec9db7b6b2895eb2a3b4f37797030dac8",
+      "receipt": "docs/factory/fp06/reviews/w04-reviewed-integration-receipt.json",
+      "receiptSha256": "608f97e79c6129589a719f5ac77aba4af07ae19f7e1e795c3fd2ed09767148e7",
+      "all4ProductFilesByteExact": true,
+      "all87ArtifactRefsAdmitted": true,
+      "completedAtUtc": "2026-10-11T12:40:54.263653+00:00"
     }
   ]
 }

@@ -1,0 +1,490 @@
+{
+  "schema": "fp06-reviewed-predecessor-integration-v1",
+  "actor": "/root/fp06_domain",
+  "targetBranch": "codex/hestia-fp06-domain-2026-10-11",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11",
+  "command": "git cherry-pick fee8f3bf4b971fc3a5e56884d245126b6b264b3d",
+  "exitCode": 0,
+  "reviewedOriginalCommit": "fee8f3bf4b971fc3a5e56884d245126b6b264b3d",
+  "actualCommitSha": "1f2c568ec9db7b6b2895eb2a3b4f37797030dac8",
+  "actualParentSha": "8d22fc9907d84bf2ff6b257299ff47fb23b112ff",
+  "verifiedAtUtc": "2026-10-11T12:40:54.263653+00:00",
+  "status": "PASS_IMMUTABLE_COPY",
+  "cleanStatus": "PASS",
+  "productFiles": [
+    "apps/weltraum-browser/src/factory/power/factoryPower.ts",
+    "apps/weltraum-browser/src/factory/power/powerReadView.ts",
+    "apps/weltraum-browser/src/factory/power/sourceAdapter.ts",
+    "apps/weltraum-browser/tests/unit/factory/power.test.ts"
+  ],
+  "copiedEvidenceFiles": [
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/01-business-red.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/01-business-red.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/02-allocator-green-attempt.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/02-allocator-green-attempt.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/03-source-readview-red.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/03-source-readview-red.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/04-source-readview-business-red.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/04-source-readview-business-red.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/05-source-readview-green-attempt.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/05-source-readview-green-attempt.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/06-review-business-red.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/06-review-business-red.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/07-request-bytes-business-red.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/07-request-bytes-business-red.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/08-focused-ship-regressions.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/08-focused-ship-regressions.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/09-build.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/09-build.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/10-build-green.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/10-build-green.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/11-resource-source-bytes-business-red.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/11-resource-source-bytes-business-red.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/12-final-focused-ship-regressions.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/12-final-focused-ship-regressions.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/13-final-focused-ship-green.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/13-final-focused-ship-green.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/14-literal-source-focused-green.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/14-literal-source-focused-green.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/15-final-build.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/15-final-build.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/16-normal-browser-ship-core.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/16-normal-browser-ship-core.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/17-independent-r1-r2-business-red.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/17-independent-r1-r2-business-red.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/18-independent-r1-r2-focused-green.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/18-independent-r1-r2-focused-green.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/19-explicit-device-grant-green.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/19-explicit-device-grant-green.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/20-post-review-typecheck.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/20-post-review-typecheck.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/21-present-confirmed-zero-countercase-green.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/21-present-confirmed-zero-countercase-green.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/22-final-local-evidence-admission.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/22-final-local-evidence-admission.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/actual-browser-ship-core/browser-ship-power-thermal-core-v1-summary.json",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/actual-browser-ship-core/browser-ship-power-thermal-core-v1.md",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/before-final-zero-counter-product-final-hashes.json",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/before-final-zero-counter-product-final.patch.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/before-independent-product-final-hashes.json",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/before-independent-product-final.patch.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/before-independent-review.md",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/historical-before-hashes.json",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/historical-before/browser-ship-power-thermal-core-v1-summary.json",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/historical-before/browser-ship-power-thermal-core-v1.md",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/historical-restoration-receipt.json",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/independent-review-final-seal.md",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/independent-review-first.md",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/independent-review-followup-with-seal-drift.md",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/00-w03-grant.json.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/01-w03-brief.md.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/02-fp06-w03-preflight.md.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/03-fp06-w03.playwright.config.mts.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/04-source-lock.json.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/05-HESTIA_FP01_EINSTIEG_ENERGIE_DETAILPLAN_2026-10-10.md.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/06-HESTIA_FP02_PRODUKTIONSKETTEN_GEBAEUDE_LAYOUTS_DETAILPLAN_2026-10-10.md.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/07-HESTIA_FP06_CODEX_WORK_ORCHESTRATOR_START_2026-10-10.md.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/08-HESTIA_FP06_PRUEFPROTOKOLL_2026-10-10.md.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/09-HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/10-ship-power-thermal-core-v1.md.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/11-contracts.ts.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/12-fp02Catalog.ts.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/13-types.ts.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/14-powerAllocation.ts.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/15-battery.ts.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/16-step.ts.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/17-validation.ts.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/18-fixtures.ts.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/19-canonical.ts.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/20-ids.ts.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/local-admission-receipt.json",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/manifest.json",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/playwright-output/.last-run.json",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/playwright-report/index.html",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/precommit-index-admission.json",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/product-final-hashes.json",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/product-final.patch.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/review.md",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/source-inputs.json"
+  ],
+  "actualChangedFiles": [
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/01-business-red.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/01-business-red.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/02-allocator-green-attempt.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/02-allocator-green-attempt.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/03-source-readview-red.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/03-source-readview-red.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/04-source-readview-business-red.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/04-source-readview-business-red.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/05-source-readview-green-attempt.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/05-source-readview-green-attempt.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/06-review-business-red.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/06-review-business-red.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/07-request-bytes-business-red.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/07-request-bytes-business-red.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/08-focused-ship-regressions.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/08-focused-ship-regressions.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/09-build.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/09-build.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/10-build-green.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/10-build-green.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/11-resource-source-bytes-business-red.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/11-resource-source-bytes-business-red.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/12-final-focused-ship-regressions.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/12-final-focused-ship-regressions.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/13-final-focused-ship-green.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/13-final-focused-ship-green.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/14-literal-source-focused-green.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/14-literal-source-focused-green.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/15-final-build.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/15-final-build.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/16-normal-browser-ship-core.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/16-normal-browser-ship-core.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/17-independent-r1-r2-business-red.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/17-independent-r1-r2-business-red.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/18-independent-r1-r2-focused-green.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/18-independent-r1-r2-focused-green.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/19-explicit-device-grant-green.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/19-explicit-device-grant-green.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/20-post-review-typecheck.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/20-post-review-typecheck.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/21-present-confirmed-zero-countercase-green.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/21-present-confirmed-zero-countercase-green.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/22-final-local-evidence-admission.log",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/22-final-local-evidence-admission.log.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/actual-browser-ship-core/browser-ship-power-thermal-core-v1-summary.json",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/actual-browser-ship-core/browser-ship-power-thermal-core-v1.md",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/before-final-zero-counter-product-final-hashes.json",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/before-final-zero-counter-product-final.patch.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/before-independent-product-final-hashes.json",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/before-independent-product-final.patch.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/before-independent-review.md",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/historical-before-hashes.json",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/historical-before/browser-ship-power-thermal-core-v1-summary.json",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/historical-before/browser-ship-power-thermal-core-v1.md",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/historical-restoration-receipt.json",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/independent-review-final-seal.md",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/independent-review-first.md",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/independent-review-followup-with-seal-drift.md",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/00-w03-grant.json.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/01-w03-brief.md.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/02-fp06-w03-preflight.md.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/03-fp06-w03.playwright.config.mts.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/04-source-lock.json.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/05-HESTIA_FP01_EINSTIEG_ENERGIE_DETAILPLAN_2026-10-10.md.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/06-HESTIA_FP02_PRODUKTIONSKETTEN_GEBAEUDE_LAYOUTS_DETAILPLAN_2026-10-10.md.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/07-HESTIA_FP06_CODEX_WORK_ORCHESTRATOR_START_2026-10-10.md.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/08-HESTIA_FP06_PRUEFPROTOKOLL_2026-10-10.md.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/09-HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/10-ship-power-thermal-core-v1.md.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/11-contracts.ts.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/12-fp02Catalog.ts.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/13-types.ts.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/14-powerAllocation.ts.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/15-battery.ts.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/16-step.ts.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/17-validation.ts.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/18-fixtures.ts.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/19-canonical.ts.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/20-ids.ts.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/local-admission-receipt.json",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/manifest.json",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/playwright-output/.last-run.json",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/playwright-report/index.html",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/precommit-index-admission.json",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/product-final-hashes.json",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/product-final.patch.raw.gz",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/review.md",
+    "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/source-inputs.json",
+    "apps/weltraum-browser/src/factory/power/factoryPower.ts",
+    "apps/weltraum-browser/src/factory/power/powerReadView.ts",
+    "apps/weltraum-browser/src/factory/power/sourceAdapter.ts",
+    "apps/weltraum-browser/tests/unit/factory/power.test.ts"
+  ],
+  "sameOriginalAndCopiedGitBlobs": "PASS_ALL_92",
+  "manifestSha256": "9f7d17310b96301a170bda54a6e68e0d7e737a55f28734d516584f52a71003f3",
+  "manifestArtifactsVerified": 87,
+  "manifestProductRefsVerified": 4,
+  "ownLfsRefs": [
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/01-business-red.log.raw.gz",
+      "sha256": "6cc64045f7df3e7a56263f25c691e068dd9dc743243a5f33992f77e46bba991e",
+      "bytes": 1189,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/02-allocator-green-attempt.log.raw.gz",
+      "sha256": "b0f24a324e11992d25c0a6c0cb933beeb6770f0e0061fa23521156b6ed1fd6f1",
+      "bytes": 254,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/03-source-readview-red.log.raw.gz",
+      "sha256": "dcc7cbb9d255272749107129d00ecb591db5b10c6abdf9b55d99f56a85468520",
+      "bytes": 1222,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/04-source-readview-business-red.log.raw.gz",
+      "sha256": "279efbb4b4cce54ef5c73a637741b513b50703a35865d26bf894c6fbe3470c34",
+      "bytes": 1287,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/05-source-readview-green-attempt.log.raw.gz",
+      "sha256": "243115a07499034dbf3794482fcea74329a5044a65c348408d19bd19b0be67a6",
+      "bytes": 256,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/06-review-business-red.log.raw.gz",
+      "sha256": "89546a0b12f82c04b1363c20dd8b50cd7e03e5c778f962279ca0533d42cabe3f",
+      "bytes": 1052,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/07-request-bytes-business-red.log.raw.gz",
+      "sha256": "ec7c32257feafc98698c3d2a5286bb6a2f5dfe4aff10f01b0279a40e9361d8e0",
+      "bytes": 609,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/08-focused-ship-regressions.log.raw.gz",
+      "sha256": "5cf639ac8e3bfad05b3ce610b927e7dd9cbf646676003850df0f548d9714137e",
+      "bytes": 306,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/09-build.log.raw.gz",
+      "sha256": "e6e0e78f83d6a911f440d58179949dc7c1553d6121cb5649834a20f167aa46ad",
+      "bytes": 202,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/10-build-green.log.raw.gz",
+      "sha256": "37e9390ba79b0d209884ae6fbd29c6670c127bcc19f9a31c2efe456fc94cbb19",
+      "bytes": 741,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/11-resource-source-bytes-business-red.log.raw.gz",
+      "sha256": "ae10cfd9f541cf62b1059ca22debd1aa88eea0aa4c5489f77f22982e936bad9f",
+      "bytes": 662,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/12-final-focused-ship-regressions.log.raw.gz",
+      "sha256": "70fa44ebb34c59332b463c53efb76411c6e0b54ce92d5f30b50a434ae59889b5",
+      "bytes": 1575,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/13-final-focused-ship-green.log.raw.gz",
+      "sha256": "08976c199fc7e53931d6ecb7847c2dd271eb292989d946bdb26578789d8e0686",
+      "bytes": 305,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/14-literal-source-focused-green.log.raw.gz",
+      "sha256": "304c24099c5357a258f9ad605a19ddce52abefaee9d8c651238b9110c03ab83d",
+      "bytes": 306,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/15-final-build.log.raw.gz",
+      "sha256": "282228a8dd835fde0875b8125b54a6cb98d8e599f2f280f2d6c0b3c3b74d700e",
+      "bytes": 741,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/16-normal-browser-ship-core.log.raw.gz",
+      "sha256": "ed0174ed3718e2b1cdc05f96be7b4c0a256ef3c8abd0e231173a6f9c5d84827f",
+      "bytes": 404,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/17-independent-r1-r2-business-red.log.raw.gz",
+      "sha256": "65c61135f631ddae715adf302b48838735eac430ddbb3c7b8ad09047c0fc7773",
+      "bytes": 1041,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/18-independent-r1-r2-focused-green.log.raw.gz",
+      "sha256": "728d8bc2c5043d564809c98ff7a1a8519311d1a7a901d35c0907fa8562bbeac6",
+      "bytes": 305,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/19-explicit-device-grant-green.log.raw.gz",
+      "sha256": "4aba5ae3d772b7c8f8118b6f2f72e45a6ba9eb2c5773af51a94711457c9b0988",
+      "bytes": 271,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/20-post-review-typecheck.log.raw.gz",
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "bytes": 20,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/21-present-confirmed-zero-countercase-green.log.raw.gz",
+      "sha256": "3b9bdf09ff9820c139c631e857f3e0da88d5ff31b09c0779f69a10c72f91415e",
+      "bytes": 272,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/22-final-local-evidence-admission.log.raw.gz",
+      "sha256": "18fd9871d97753b0e47f3c124ca4780813dba58cbda9a734643ee32b417c1106",
+      "bytes": 237,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/before-final-zero-counter-product-final.patch.raw.gz",
+      "sha256": "3f41714f10db479190a82352325d9fec9717afc84411f49c53cd7fd29f0f63d4",
+      "bytes": 14211,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/before-independent-product-final.patch.raw.gz",
+      "sha256": "5c48f94d520fdfee2f40825a27ec7f2e2defc50a3c6b6af38af73192548bc7e1",
+      "bytes": 13697,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/00-w03-grant.json.raw.gz",
+      "sha256": "57dae145dce88cedb8882eab87243e8000494dff636f8c46142e3efe7a8984f7",
+      "bytes": 418,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/01-w03-brief.md.raw.gz",
+      "sha256": "8cc1af8802de8e998f0c254cce9156e48b7be4ab6df4b36fcafa4c26d35bdf0c",
+      "bytes": 2925,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/02-fp06-w03-preflight.md.raw.gz",
+      "sha256": "535125dc1ba9dd9051688720b5ba13699fdc56c48654c24c197885afaafec1da",
+      "bytes": 9899,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/03-fp06-w03.playwright.config.mts.raw.gz",
+      "sha256": "fa86f152e86a041605a2005423c7f964d430b62fb80706bd0842b03392d54171",
+      "bytes": 504,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/04-source-lock.json.raw.gz",
+      "sha256": "5286547465c3bf86a33998f478074f85b2002666ae6c5f18f2958e48149cea10",
+      "bytes": 14286,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/05-HESTIA_FP01_EINSTIEG_ENERGIE_DETAILPLAN_2026-10-10.md.raw.gz",
+      "sha256": "91555d4d5f0775998967f6e895d0f6f245f0e9908c466729d0dac475861b1726",
+      "bytes": 73587,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/06-HESTIA_FP02_PRODUKTIONSKETTEN_GEBAEUDE_LAYOUTS_DETAILPLAN_2026-10-10.md.raw.gz",
+      "sha256": "ad13bc4bc1f622590d7e9b0e7630cccb0485a5dba70c3fb09e1098b5e9fced61",
+      "bytes": 64513,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/07-HESTIA_FP06_CODEX_WORK_ORCHESTRATOR_START_2026-10-10.md.raw.gz",
+      "sha256": "81db84b346c4a861bd21ed0163bc81a4315891040d3a117a37881a8b12371789",
+      "bytes": 4842,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/08-HESTIA_FP06_PRUEFPROTOKOLL_2026-10-10.md.raw.gz",
+      "sha256": "fb0d79999ea332575281a4617b5b083f7ef6fd7a347a03bdda6f2a1dd359adac",
+      "bytes": 1482,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/09-HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md.raw.gz",
+      "sha256": "061e218a56840638afdd9846d3fcc5495fbe51c9d3942b75beef6012883a8c9f",
+      "bytes": 59842,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/10-ship-power-thermal-core-v1.md.raw.gz",
+      "sha256": "ea077fd3e046daac7bdb082092b75a047d1bc9ae75228747961f77d7beb31b9d",
+      "bytes": 1981,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/11-contracts.ts.raw.gz",
+      "sha256": "3e735775f6a6bd6902cb985261350820f07133c7284dd90c72bb06306abb81c4",
+      "bytes": 2005,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/12-fp02Catalog.ts.raw.gz",
+      "sha256": "b227db24babee35a9619bbc5575972bc1a3ec8fc79ece768e983e296e014b4bc",
+      "bytes": 6536,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/13-types.ts.raw.gz",
+      "sha256": "87bb217c8d42872609a03ca4c9d6715548a0ba794165cf2b662475473e28a3d2",
+      "bytes": 2317,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/14-powerAllocation.ts.raw.gz",
+      "sha256": "64d2e0fb177a72c5a330b49033402e45e084cec9647f6a85c84672b4821a75e1",
+      "bytes": 3509,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/15-battery.ts.raw.gz",
+      "sha256": "04e9507e60c796adb755c675cb53393eadd8527f9071a9d64ee98d55903a06ab",
+      "bytes": 2348,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/16-step.ts.raw.gz",
+      "sha256": "4aea294603a85619dcefc0c5c333eb96067aab885638bc64ba918390b3b96be4",
+      "bytes": 1321,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/17-validation.ts.raw.gz",
+      "sha256": "3c614fa3a204d14c9109e9a31029983a4d54ddf3008cc7c96967a9dcaf854e84",
+      "bytes": 7529,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/18-fixtures.ts.raw.gz",
+      "sha256": "12d28c0a9870d79366d61143b2237e3d9db7291299b7c48e667d970438197db1",
+      "bytes": 954,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/19-canonical.ts.raw.gz",
+      "sha256": "841ab126675e4bfbedd82cad1d8ecf8285f995d82bc785e88a7624be6e679167",
+      "bytes": 2328,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/inputs/20-ids.ts.raw.gz",
+      "sha256": "5a1ce01be09b2823037a77bd4a4588e8e232fc936efe3b2ee382ab7a7f9ebacc",
+      "bytes": 1063,
+      "ownObjectHash": "PASS"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w03/2026-10-11T112720.920804Z/product-final.patch.raw.gz",
+      "sha256": "38725eaab6e532adfc37508b3ba733ef3fe74d9cea7ce9e4b0a556324c05e795",
+      "bytes": 14253,
+      "ownObjectHash": "PASS"
+    }
+  ],
+  "uniqueOwnLfsObjects": 46,
+  "testBuildBrowser": "NOT_RUN_NOT_AUTHORIZED_FOR_IMMUTABLE_COPY",
+  "runtimeEdits": "NONE",
+  "broaderHistoricalFsck": "NOT_RUN"
+}

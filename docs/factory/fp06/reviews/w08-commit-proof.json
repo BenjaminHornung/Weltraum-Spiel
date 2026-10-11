@@ -1,0 +1,146 @@
+{
+  "package": "W08",
+  "phase": "actual-HEAD-own-scope",
+  "baseCommitSha": "26d5e892c2b401b9011234dabf86955af7462fb8",
+  "scopePaths": [
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/build-batch-intake.log.gz",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/build-batch-intake.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/build-port-family-recipe.log.gz",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/build-port-family-recipe.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/build.log.gz",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/build.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/green-attempt-1.log.gz",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/green-attempt-1.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/green-attempt-2.log.gz",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/green-attempt-2.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/green-batch-intake.log.gz",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/green-batch-intake.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/green-port-family-recipe.log.gz",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/green-port-family-recipe.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/green-self-review.log.gz",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/green-self-review.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/manifest-before-batch.json",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/manifest.json",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/plan.md",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/product-before-batch-seal.json",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/product-final.diff",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/product.diff",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/receipt-corrections.json",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/red-batch-intake-2.log.gz",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/red-batch-intake-2.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/red-batch-intake.log.gz",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/red-batch-intake.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/red-initial.log.gz",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/red-initial.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/red-port-family-recipe.log.gz",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/red-port-family-recipe.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/red-self-review.log.gz",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/red-self-review.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/regression.log.gz",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/regression.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/review-final.md",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/review.md",
+    "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/source-preflight.json",
+    "apps/weltraum-browser/src/factory/conveyor/beltPorts.ts",
+    "apps/weltraum-browser/src/factory/conveyor/beltReference.ts",
+    "apps/weltraum-browser/tests/unit/factory/conveyor.test.ts"
+  ],
+  "productPatchSha256": "1ddcf341c9233fb06b3fabde98ba7f2aa9eb919343a126247fe710d4ad3cfecb",
+  "manifestSha256": "9e99dbeb65f10ddd9e2c5f22e62d81d5ee77f39133543803d393a7993bcdcdab",
+  "artifactRefsVerified": 37,
+  "ownLfsRefs": [
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/build-batch-intake.log.gz",
+      "oid": "24b9bb0fd38bce1330c2f6752614d105c023e9f5abd12240ab02c26e45a7fb2e",
+      "bytes": 682,
+      "objectExistsAndHashPass": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/build-port-family-recipe.log.gz",
+      "oid": "ab3ba42ec607f98dfbfa690e5ea2361a0a747f1c39bde4bdc59b8228db376780",
+      "bytes": 689,
+      "objectExistsAndHashPass": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/build.log.gz",
+      "oid": "23d2daf8635c25405ddb3b7308ddf19f3f048be152b0a13ef970c12ad0ea07ad",
+      "bytes": 668,
+      "objectExistsAndHashPass": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/green-attempt-1.log.gz",
+      "oid": "8fedeebb9b0f6239f3f4a8ce1bd15f2f88dbdfd63ba044b9c604ccdfa154c891",
+      "bytes": 1470,
+      "objectExistsAndHashPass": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/green-attempt-2.log.gz",
+      "oid": "9c14fafc0373e7c6b1a9306718fecda98b8c484b2b6639c9e2ae8000a021f26f",
+      "bytes": 277,
+      "objectExistsAndHashPass": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/green-batch-intake.log.gz",
+      "oid": "aff084794068efbd81379fceb41824cd9ce1322f5e4f2b0f9723ce614e7b3b70",
+      "bytes": 280,
+      "objectExistsAndHashPass": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/green-port-family-recipe.log.gz",
+      "oid": "0a17ad3e8125f8da9186a33ec088df07b3ff7dcd8f0ef79104dadda7ddd6c481",
+      "bytes": 285,
+      "objectExistsAndHashPass": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/green-self-review.log.gz",
+      "oid": "e5a273398ead3e8d9fdcc1a8f21b9be3c331f72f4d49b6a1ba8f8b29308dd644",
+      "bytes": 278,
+      "objectExistsAndHashPass": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/red-batch-intake-2.log.gz",
+      "oid": "16f119a1ea27844ccdb6c919d6f962a2a3ed5f4db81de52c79973c2d4bc3741c",
+      "bytes": 942,
+      "objectExistsAndHashPass": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/red-batch-intake.log.gz",
+      "oid": "bfd6f8b4b1859d21445e20a9372a7d17217bcdc3e804661814a728e91f64ff6a",
+      "bytes": 763,
+      "objectExistsAndHashPass": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/red-initial.log.gz",
+      "oid": "cf0d04dd702e7cd8f6a99f9ffc613865a31a6e784ca90c7e2789190d68888f31",
+      "bytes": 918,
+      "objectExistsAndHashPass": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/red-port-family-recipe.log.gz",
+      "oid": "1df4f5b41b81186f5c70a0ac7bcc28e7e9191348e5f1545935e93fb8af0f2eba",
+      "bytes": 885,
+      "objectExistsAndHashPass": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/red-self-review.log.gz",
+      "oid": "e9489a7d93f2c4becb6d9bb427ac1016510371982713928d1eb963125527f092",
+      "bytes": 1026,
+      "objectExistsAndHashPass": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/regression.log.gz",
+      "oid": "a15b457d6f2333074b5cecaf331504fdb34424d551c1e52b9705293ab95e1737",
+      "bytes": 304,
+      "objectExistsAndHashPass": true
+    }
+  ],
+  "uniqueOwnLfsObjects": 14,
+  "indexMatchesWorkingBytes": "PASS",
+  "diffCheck": "PASS",
+  "scope": "PASS",
+  "unrelatedHistoricalGitLfsFsck": "NOT_RUN",
+  "commitSha": "8d22fc9907d84bf2ff6b257299ff47fb23b112ff",
+  "parentCommitSha": "26d5e892c2b401b9011234dabf86955af7462fb8",
+  "cleanStatus": "PASS",
+  "headBytesAndOwnLfsObjects": "PASS"
+}
