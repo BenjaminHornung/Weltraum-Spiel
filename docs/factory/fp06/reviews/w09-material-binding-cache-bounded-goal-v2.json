@@ -1,0 +1,37 @@
+{
+  "schema": "hestia.fp06.w09.bounded-performance-goal/v1",
+  "id": "paid-band-exact-material-binding-v2",
+  "authorizedBy": "/root orchestrator within existing W09 25-path grant and original user implementation/performance authorization",
+  "authorizedAtUtc": "2026-10-11T23:09:55.834527+00:00",
+  "activationCondition": "Independent readonly review confirms actual144-147 REDs closed by148 guards at94762ca1cc1139a1c4f2ea596eea88fbd25093431b29e20e79a96d54ccf2d4b6 plus149originalBuildPASS. Until then no performance candidate.",
+  "historicalGoal": {
+    "id": "paid-band-step-budget-v1",
+    "maximumIterations": 2,
+    "outcome": "NOT_MET",
+    "evidence": "w09-band-composition-candidates-witness.json",
+    "unchangedMetadata": "OriginalNode20/56labels retained;143 observesNode22.23.3/npm10.9.8 and actual secondscenario57adoptions. No retroactive rewrite."
+  },
+  "metric": "original Vitest per-case timeout",
+  "targetMs": 5000,
+  "maximumRuntimeCandidates": 1,
+  "additionalCpuProfiles": 0,
+  "allowedProductPaths": [
+    "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+    "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts"
+  ],
+  "candidate": "Local exact factoryMaterialBytes projection string WeakMap keyed only by complete strict deeply immutable admitted MaterialView identity. Cold path retains W04 actual catalogue/native snapshot validation and W02 receipt-chain/reservation/capacity admission; no new authoritative state. Original protected serialization exact bytes, no digest-only comparison. No cache inserted on failure. Mutable/accessor/exotic/function/symbol/cyclic/sparse objects do not qualify. Caller-owned array functions must not be invoked by local traversal.",
+  "verification": [
+    "Meaningful existing/new cold and warm tests bind actual Native quantity vs copied receipts, invalid W02 chain/claims, full proposal/material/power/lastStep payload, mutable children/getters/prototypes/own array methods and cloned identities. Show actual assertion RED before any corrective implementation; existing correct assertions may beGREEN honestly.",
+    "Run same two existing paid-band cases with complete blackout/graph/custody/output hold/release assertions and original 5000ms. Preserve exact existing scenario code; no transition-count, fixture, assertion, queue or timer reduction. Snapshot scenario and runtime bytes before/after.",
+    "Run affected Material/Conveyor/Production/DrySlice guards and original TS/Vite build; serial Integrator CPU lease.",
+    "Independent readonly source/evidence review. One candidate verification failing remains NOT_MET; no fourth unbounded iteration."
+  ],
+  "protected": [
+    "W01/W02/W03/W04/W08 source modules",
+    "250mm build vs125mm terrain separation",
+    "Original test/queue/IPC/World/evidence budgets",
+    "Inventory/receipts/native-source/power/packet/custody publication barriers",
+    "Pending five startsiteV2 paths remain UNGRANTED"
+  ],
+  "claimLimits": "Local unit wall-time observations, not hardware/browser/GPU/final W09 package evidence."
+}

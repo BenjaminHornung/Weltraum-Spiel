@@ -4053,6 +4053,16 @@
         "sha256": "aaf8e07301cb1f71a63319a2b0e7cb1fce28ca1e71d9dd7ab82cbace0ff47819",
         "scope": "Independentexistingprofiles/rawreceipts/source review only; original2candidateGoalNOT_MET. NativeOUTPUTF1 actual144RED\u219214523PASS3skip closes. Actual146receipt+power and147W02chain+claims REDs awaitfix. CurrentactivatedNode22.23.3/npm10.9.8 observed143; historicalNode20/56goal labels inaccurate, secondcase57actualadvances. No tests/build/profile ownjobs.",
         "protected": "W03W04W08 observedunchanged; mutable2d836d Source not finalseal"
+      },
+      "materialBindingCacheGoalV2": {
+        "status": "AUTHORIZED_WITHIN_CURRENT_SCOPE_CONDITIONAL_ON_INDEPENDENT148_GUARD_CLOSURE",
+        "path": "docs/factory/fp06/reviews/w09-material-binding-cache-bounded-goal-v2.json",
+        "sha256": "148c4f56f18c5a1ae6f132a6fa9e64a9826665bf3d04dceea9739892bb901b82",
+        "maxCandidates": 1,
+        "extraProfiles": 0,
+        "originalTimeoutMs": 5000,
+        "historicalGoalOutcome": "NOT_MET",
+        "ownerDecision": "No product Ownerdecision changed; startsiteV2 still pending"
       }
     },
     "W10": {
