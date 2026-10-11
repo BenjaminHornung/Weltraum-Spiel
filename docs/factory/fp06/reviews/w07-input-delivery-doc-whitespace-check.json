@@ -1,0 +1,25 @@
+{
+  "verifiedAtUtc": "2026-10-11T16:56:15.050345+00:00",
+  "wholeCheckExit": 2,
+  "wholeCheckOutputBytes": 1861,
+  "wholeCheckOutputSha256": "4e418714cfc4211d2d4805150f44d25f96c2b1325e22c012174a214c6bbdcd82",
+  "scopedCheckExit": 0,
+  "exactExceptions": [
+    "docs/factory/fp06/reviews/w07-input-delivery-candidate-product.patch",
+    "docs/factory/fp06/reviews/w07-input-delivery-delta-ninth.patch"
+  ],
+  "reason": "Immutable raw diffs preserve context whitespace; no product/config exception",
+  "historicalReviewCopy": {
+    "path": "docs/factory/fp06/reviews/w07-seventh-input-final-spec-review-preserved.md",
+    "originalBytes": 20331,
+    "originalSha256": "fc8a6f3c3ad3a4c47500aab3e3fa88689a4e2b005a4965363043ee79fad6a1a1",
+    "copiedBytes": 20330,
+    "copiedSha256": "5649176949a22b9973a901bed83649b431d95c467bad8d30255f40a4b3260c3f",
+    "normalization": "Only one trailing blank EOF line removed after scopedcheck failed; original20331Bytes reproducible as copied20330Bytes + one0a byte",
+    "reconstructionHashVerification": "PASS"
+  },
+  "firstScopedCheck": "FAIL on historical copied review newblanklineEOF; corrected only own copied Markdown",
+  "jsonMirrors": "PASS",
+  "activeWriters": 1,
+  "runtimeHold": true
+}

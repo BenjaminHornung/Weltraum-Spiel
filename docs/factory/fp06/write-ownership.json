@@ -29,7 +29,19 @@
     "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts"
   ],
   "sharedPathGrant": "ONLY exact packageScopes.grantedWriteSet after recorded gates; no blanket shared-path permission. Shared contract/host/physics/save/config files remain integrator-exclusive.",
-  "activeImplementationWriters": [],
+  "activeImplementationWriters": [
+    {
+      "agent": "/root/fp06_integrator",
+      "package": "W07",
+      "branch": "codex/hestia-fp06-integrator-2026-10-11",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+      "paths": [
+        "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts"
+      ],
+      "lease": "TEST_ONLY_BODY_PREPARING_NATIVE_RED",
+      "baseSha": "d5502ae7fd5431d58eda51bea062c54691ebe3c2"
+    }
+  ],
   "activeDocumentationWriter": {
     "agent": "/root",
     "branch": "codex/hestia-fp06-w00-2026-10-11",
@@ -80,7 +92,7 @@
         "W10",
         "W11"
       ],
-      "status": "W07_INPUT_DELIVERY_83_GREEN_BUILD_PASS_ALL_PRODUCT_HOLD_PENDING_SEAL_REVIEW"
+      "status": "W07_TEST_ONLY_NATIVE_BODY_PREPARING_RED_AFTER_SPEC_FINDING"
     },
     {
       "slot": 2,
@@ -886,7 +898,7 @@
         "apps/weltraum-browser/evidence/factory/w07/<actual-run-id>/**"
       ],
       "evidenceGrant": true,
-      "status": "IN_REVIEW",
+      "status": "IN_PROGRESS",
       "owner": "/root/fp06_integrator",
       "plannedRole": "integrator",
       "branch": "codex/hestia-fp06-integrator-2026-10-11",
@@ -953,7 +965,7 @@
         "Cargo provenance alone is not physical reach: initial source must be bound to a real Cargo-S0 world owner, native pose and access outside the 22 x 12 m machine zone. W07 handles initial witness/open and a truly reachable paid player build; W09 handles finite pickup, confirmed native movement and local deposit for remote construction/production. No new terrain masks, cargo, UI source-pose writes or automatic transport. New exact paths require a separate recorded scope extension; existing grants remain unchanged."
       ],
       "baseCommitSha": "d5502ae7fd5431d58eda51bea062c54691ebe3c2",
-      "implementationWriteHold": true,
+      "implementationWriteHold": false,
       "authorizedAtUtc": "2026-10-11T13:11:16.765614+00:00",
       "completedAtUtc": null,
       "tddInitialStatus": {
@@ -1289,22 +1301,27 @@
         }
       ],
       "currentProductSeal": {
-        "sealedAtUtc": "2026-10-11T15:55:12.557402+00:00",
-        "patch": "docs/factory/fp06/reviews/w07-before-ninth-browser-product.patch",
-        "patchSha256": "d7040eba7f26090783c69372b7ae64f077338de060f0abaaaa2387d510bd9184",
-        "patchBytes": 214847,
-        "fileHashes": "docs/factory/fp06/reviews/w07-before-ninth-browser-product-files.json",
-        "fileHashesSha256": "5f0588a7a969d185424780bd298fc16c45260874311ef9415cc4da49aa580c12",
-        "grantedPaths": 29,
-        "actualChangedProductPaths": 27,
-        "browserPhase": "ninth",
-        "packageCommitSha": null
+        "sealedAtUtc": "2026-10-11T16:50:12.656879+00:00",
+        "patch": "docs/factory/fp06/reviews/w07-input-delivery-candidate-product.patch",
+        "patchSha256": "d347852c0651fbd55ba8c509c2717bbefdcde49787911b8566fc62718a6be385",
+        "patchBytes": 237566,
+        "fileHashes": "docs/factory/fp06/reviews/w07-input-delivery-candidate-product-files.json",
+        "fileHashesSha256": "0f9272a18f2f968a8b68fd6735a4c59300b84c07babdad0fa702af6912aa09b7",
+        "grantedPaths": 30,
+        "actualChangedProductPaths": 28,
+        "exactNinthDeltaPaths": [
+          "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+          "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+          "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+          "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
+          "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts"
+        ],
+        "all25NinthHeldMatch": true,
+        "phase": "InputDeliveryCandidate_PRE_BROWSER",
+        "packageCommitSha": null,
+        "rootProof": "docs/factory/fp06/reviews/w07-input-delivery-seal-root-proof.json"
       },
       "currentNarrowWriteSet": [
-        "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
-        "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
-        "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
-        "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts",
         "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts"
       ],
       "currentNarrowScope": "One E2E-only bounded adaptive fine-key diagnostic; all other28 product paths held at Ninth seal",
@@ -1748,7 +1765,50 @@
           "rootRawVerification": "Decompressed SHA/bytes exact receipt",
           "result": "TYPESCRIPT_VITE_BUILD_PASS"
         }
-      ]
+      ],
+      "factoryInputDeliveryCandidateQualityReview": {
+        "report": "docs/factory/fp06/reviews/w07-input-delivery-candidate-quality-review.md",
+        "originalSha256": "e34b32c4ef7a53a9f23be1a47d89d82230bcdbebba80c2c73955f39ad89063c3",
+        "originalBytes": 6227,
+        "copiedSha256": "e34b32c4ef7a53a9f23be1a47d89d82230bcdbebba80c2c73955f39ad89063c3",
+        "quality": "SCOPED_PASS_ORIGINAL_CANDIDATE",
+        "remainingSpecFinding": "Factory BodyPreparing old movement release blocked while Native ticks continue; independent supplement pending",
+        "wholePackage": "NOT_PASS"
+      },
+      "factoryBodyPreparingTestAuthorization": {
+        "authorizedAtUtc": "2026-10-11T16:54:11.813216+00:00",
+        "actor": "/root/fp06_integrator",
+        "writeSet": [
+          "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts"
+        ],
+        "execution": "EXCLUSIVE_REAL_RAPIER_FOCUSED_RED_ONLY",
+        "counterexample": "Native moving.begin sets busy while holdsWorld false; existing Down remains, Up rejected during bodyPending/MovingPreparing, Nativeadvance continues untilStage.",
+        "requirements": "Actual valid moving contact/source/member/Rapier preparation; actual Native steps only, no pose/tick fake. Sourcecounterexample not executedRED yet.",
+        "runtime": "ALL_FOUR_RUNTIME_PATHS_HOLD",
+        "browser": "NOT_GRANTED"
+      },
+      "factoryBodyPreparingReview": {
+        "report": "docs/factory/fp06/reviews/w07-input-preparing-quality-supplement.md",
+        "originalSha256": "a7d1a84d077f632709d41fdedaa5a99b8d113b4751a02ad7d5c2d0616df489b3",
+        "originalBytes": 3133,
+        "copiedSha256": "a7d1a84d077f632709d41fdedaa5a99b8d113b4751a02ad7d5c2d0616df489b3",
+        "quality": "FAIL",
+        "finding": "P1 direct Native/client API retains movement during Preparing until Stage; Up barred while native advance continues",
+        "actualUiNuance": "Normal moving.submit busy synchronously blocks Bootstrapconfirmed, Producer stop on KeyUp/RAF sends explicitCancel across pending and neutralizes; no observed normalUIunreleasedmovement claimed",
+        "red": "NOT_RUN",
+        "all29HeldPaths": "MATCH; Unit reopened alone"
+      },
+      "factoryInputDeliveryCandidateSpecReview": {
+        "report": "docs/factory/fp06/reviews/w07-input-delivery-candidate-spec-review.md",
+        "originalSha256": "8e4314c51d6d6da07d843cd57e32e3485496c9bb99b41d48e2a10a02ee27c3e3",
+        "originalBytes": 6305,
+        "copiedSha256": "0c0689869e4934df6f450198ddc8a3d7b7abc60d411573d2eb6007e76cebbf63",
+        "spec": "FAIL",
+        "quality": "FAIL",
+        "openFinding": "F1 direct BodyPreparing release retains old movement untilStage; new genuine businessOracle required",
+        "all30CandidateBytesAtReview": "MATCH16:55:31UTC",
+        "originalInputGuards": "CLOSED"
+      }
     },
     "W08": {
       "dependencies": [

@@ -1,0 +1,32 @@
+{
+  "verifiedAtUtc": "2026-10-11T16:52:01.293470+00:00",
+  "all30CurrentPaths": "MATCH",
+  "all25NinthHeldPaths": "MATCH",
+  "exactFiveDelta": [
+    "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+    "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
+    "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts"
+  ],
+  "actual28DirtyPathsNoLeak": "PASS",
+  "copies": [
+    {
+      "path": "docs/factory/fp06/reviews/w07-input-delivery-candidate-product.patch",
+      "bytes": 237566,
+      "sha256": "d347852c0651fbd55ba8c509c2717bbefdcde49787911b8566fc62718a6be385"
+    },
+    {
+      "path": "docs/factory/fp06/reviews/w07-input-delivery-candidate-product-files.json",
+      "bytes": 8536,
+      "sha256": "0f9272a18f2f968a8b68fd6735a4c59300b84c07babdad0fa702af6912aa09b7"
+    },
+    {
+      "path": "docs/factory/fp06/reviews/w07-input-delivery-delta-ninth.patch",
+      "bytes": 40156,
+      "sha256": "e52212c7dd795207321acf4a97858990916150677ef6bf8393d68b56893d92ea"
+    }
+  ],
+  "browser": "NOT_RUN_AFTER_INPUT_FIX",
+  "commit": "PENDING"
+}
