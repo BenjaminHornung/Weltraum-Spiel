@@ -1051,7 +1051,15 @@
         "evidence": "own W07 run only",
         "purpose": "Genuine short keyboard.press taps; release keys before read-only Native/CDP polls; bounded closed-loop actual player coordinates; continue same Page/Context/World/session across original <=30s serial cases",
         "excluded": "No runtime, terrain, reach, tick, tempo, timeout, queue, DOMdispatch, testbridge, teleport changes",
-        "basis": "Actual overshoot trace in fourth-browser run; Root explicit instruction before test-only writes"
+        "basis": "Actual overshoot trace in fourth-browser run; Root explicit instruction before test-only writes",
+        "shortPressClarification": {
+          "authorizedAtUtc": "2026-10-11T14:29:42.017924+00:00",
+          "actualHoldMilliseconds": [
+            25,
+            100
+          ],
+          "condition": "Only real trusted keyboard.press with measured hold; release before read, bound max8taps/axis from current targetdistance. No runtime speed/tick/reach/timeout/queue change."
+        }
       },
       "reviewedHistoricalPhase": {
         "patchSha256": "bc0986f9b508751644e6f392073caa8da293919b3d689dd96fe8df50c47909c1",
@@ -1108,6 +1116,24 @@
         "mountRegression": "2 actual assertion RED;19 whole lifecycle GREEN before testfixture ResourceCatalog typefix;2 targeted GREEN +fullTypeScript after",
         "browser": "FAIL:4 PASS /1 FAIL /6 NOT_RUN;82.15s Exit1. Actual Paused/grounded player x=-8.4434595 z=2.2250071 overshot intended target while keys held during slow CDP reads; cargo.accessible=false correctly. No timeout/frame/reach runtime error.",
         "originalTraceSha256": "d7087a54603424c0a601dcc02b0c359764222ea8e9caa810cb258ec3bbcdc684"
+      },
+      "preFifthBrowserPhase": {
+        "patchSha256": "011ac1353029be83afa1e516374a01806942befbdec92042ff5bf0cfa7c6b8c9",
+        "patchBytes": 176593,
+        "changedPathsFromFourth": [
+          "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
+        ],
+        "other26paths": "byteidentical to fourth phase",
+        "actualBrowser": "FAIL:5 PASS /1 FAIL /9 NOT_RUN;78.56s exit1. All8 default0ms D-presses returned actual player x=-5.5/noMovement with advancingNativeTicks; not a Native reach/runtime error.",
+        "originalTapsEvidence": "own W07 browser-fifth/native-walk-taps.json retained unchanged"
+      },
+      "preSixthBrowserPhase": {
+        "patchSha256": "f0742a1f8149d25cd0502e49e793cf422d207ff41b6477eb3fce9569fd63fe60",
+        "patchBytes": 176705,
+        "other26paths": "byteidentical to fourth phase; Native/Mount code held",
+        "typeScript": "PASS actual Log42",
+        "browser": "RUNNING; no PASS claimed",
+        "actual15SerialCases": "same Page/Context/World/session and original30s budgets"
       }
     },
     "W08": {
