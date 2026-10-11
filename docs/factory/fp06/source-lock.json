@@ -576,13 +576,13 @@
         "apps/weltraum-browser/evidence/factory/w01/<actual-run-id>/**"
       ],
       "evidenceGrant": true,
-      "status": "IN_PROGRESS",
+      "status": "PASS",
       "owner": "/root/fp06_integrator",
       "plannedRole": "integrator",
       "branch": "codex/hestia-fp06-integrator-2026-10-11",
       "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
       "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
-      "commitSha": null,
+      "commitSha": "a30630dd7963c165c673df7ea1b46d52735752ef",
       "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
       "restrictions": [
         "Only exact granted paths; planned paths are not grants",
@@ -590,9 +590,9 @@
         "No main merge/push/publication; no W12-W29"
       ],
       "baseCommitSha": "b8edd17bfdeb2bc724afc76c148d8aeacacde7b1",
-      "implementationWriteHold": false,
-      "reviewReport": "/workspace/.cloud-setup/fp06-w01-independent-review.md",
-      "completedAtUtc": "2026-10-11T10:00:53.964442+00:00",
+      "implementationWriteHold": true,
+      "reviewReport": "docs/factory/fp06/reviews/w01-followup.md",
+      "completedAtUtc": "2026-10-11T10:06:38.005976+00:00",
       "authorizedAtUtc": "2026-10-11T10:00:54.249780+00:00",
       "reviewHistory": [
         {
@@ -600,7 +600,14 @@
           "specCompliance": "FAIL",
           "codeQuality": "FAIL",
           "finding": "P2 R1 literal cassette port source ID",
-          "report": "/workspace/.cloud-setup/fp06-w01-independent-review.md"
+          "report": "docs/factory/fp06/reviews/w01-first.md"
+        },
+        {
+          "candidateSha": "a30630dd7963c165c673df7ea1b46d52735752ef",
+          "specCompliance": "PASS",
+          "codeQuality": "PASS",
+          "finding": "R1 closed; full original review plus narrow correction follow-up",
+          "report": "docs/factory/fp06/reviews/w01-followup.md"
         }
       ]
     },
@@ -634,24 +641,33 @@
         "apps/weltraum-browser/src/factory/material/reservations.ts",
         "apps/weltraum-browser/tests/unit/factory/material.test.ts"
       ],
-      "grantedWriteSet": [],
+      "grantedWriteSet": [
+        "apps/weltraum-browser/src/factory/material/quantity.ts",
+        "apps/weltraum-browser/src/factory/material/resourcesAdapter.ts",
+        "apps/weltraum-browser/src/factory/material/reservations.ts",
+        "apps/weltraum-browser/tests/unit/factory/material.test.ts"
+      ],
       "evidenceWriteSet": [
         "apps/weltraum-browser/evidence/factory/w02/<actual-run-id>/**"
       ],
-      "evidenceGrant": false,
-      "status": "BLOCKED_DEPENDENCY",
-      "owner": null,
+      "evidenceGrant": true,
+      "status": "IN_PROGRESS",
+      "owner": "/root/fp06_domain",
       "plannedRole": "domain-or-assets-writer",
-      "branch": null,
+      "branch": "codex/hestia-fp06-domain-2026-10-11",
       "plannedBranch": "codex/hestia-fp06-w02-2026-10-11",
-      "worktree": null,
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11",
       "commitSha": null,
       "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
       "restrictions": [
         "Only exact granted paths; planned paths are not grants",
         "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
         "No main merge/push/publication; no W12-W29"
-      ]
+      ],
+      "baseCommitSha": "a30630dd7963c165c673df7ea1b46d52735752ef",
+      "implementationWriteHold": false,
+      "authorizedAtUtc": "2026-10-11T10:07:10.936195+00:00",
+      "completedAtUtc": null
     },
     "W03": {
       "dependencies": [
@@ -685,7 +701,7 @@
         "apps/weltraum-browser/evidence/factory/w03/<actual-run-id>/**"
       ],
       "evidenceGrant": false,
-      "status": "BLOCKED: W01 and D03_RESTART_POLICY",
+      "status": "BLOCKED: D03_RESTART_POLICY only; W01 PASS",
       "owner": "/root/fp06_integrator",
       "plannedRole": "integrator",
       "branch": null,
@@ -825,24 +841,41 @@
         "apps/weltraum-browser/vite.config.ts",
         ".github/workflows/browser-mainline-ci.yml"
       ],
-      "grantedWriteSet": [],
+      "grantedWriteSet": [
+        "apps/weltraum-browser/factory.html",
+        "apps/weltraum-browser/src/factory/factoryEntry.ts",
+        "apps/weltraum-browser/src/factory/session/hostPort.ts",
+        "apps/weltraum-browser/src/factory/session/factorySession.ts",
+        "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+        "apps/weltraum-browser/tests/e2e/factory-host.spec.ts",
+        "tools/factory/verify-evidence.mjs",
+        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+        "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/vite.config.ts",
+        ".github/workflows/browser-mainline-ci.yml"
+      ],
       "evidenceWriteSet": [
         "apps/weltraum-browser/evidence/factory/w06/<actual-run-id>/**"
       ],
-      "evidenceGrant": false,
-      "status": "BLOCKED_DEPENDENCY",
+      "evidenceGrant": true,
+      "status": "IN_PROGRESS",
       "owner": "/root/fp06_integrator",
       "plannedRole": "integrator",
-      "branch": null,
+      "branch": "codex/hestia-fp06-integrator-2026-10-11",
       "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
-      "worktree": null,
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
       "commitSha": null,
       "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
       "restrictions": [
         "Only exact granted paths; planned paths are not grants",
         "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
         "No main merge/push/publication; no W12-W29"
-      ]
+      ],
+      "baseCommitSha": "a30630dd7963c165c673df7ea1b46d52735752ef",
+      "implementationWriteHold": false,
+      "authorizedAtUtc": "2026-10-11T10:07:10.972885+00:00",
+      "completedAtUtc": null
     },
     "W07": {
       "dependencies": [
