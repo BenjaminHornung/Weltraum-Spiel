@@ -1,0 +1,25 @@
+{
+  "authorizedAtUtc": "2026-10-11T23:28:43.034622+00:00",
+  "status": "EXACT_ONE_ADDITIONAL_READONLY_HUD_PRODUCT_PATH_AUTHORIZED",
+  "extension": {
+    "path": "apps/weltraum-browser/src/hvp/hvpHud.ts",
+    "reason": "Actual existing hvpHud privately rewrites generic voxel cut/keys/target/feedback text during carrier handling. Optional pure context-hint callback from existing NativeFactorystate allows correct normal gameplay hints. SharedHUDIntegrator-only; noWorldauthority/commands/newstate, preserve nonfactorydefault. New businessRED first in alreadygranted hvp-bootstrap.test.ts.",
+    "authorizedBy": "/root",
+    "authorizedAtUtc": "2026-10-11T23:28:43.034622+00:00",
+    "beforeSha256": "2e89c73b3749ec7d539ff3656cc233cc22eb774947f4bc19ab67d0e85ef3f699",
+    "beforeBytes": 22610,
+    "sourceBeforeStatus": "HEAD_CLEAN",
+    "ownerDecision": "Routine authorized W09 implementation; no product Ownerpolicy/terrain change"
+  },
+  "actor": "/root/fp06_integrator",
+  "branch": "codex/hestia-fp06-integrator-2026-10-11",
+  "totalGrantedProductPaths": 26,
+  "mirrors": [
+    "source-lock.json packageScopes.W09.grantedWriteSet",
+    "write-ownership.json packageScopes.W09 plus activeImplementationWriters",
+    "/workspace/.cloud-setup/fp06-task-briefs/w09-grant.json"
+  ],
+  "localGrantSha256": "4d60df6150fbf052d915d7df95ca12509cae43ad1d8d3b3d3a09840bb6990cb5",
+  "pendingSite5": "NONE_GRANTED",
+  "maxWriters": "actual1/max2/exactly1integrator"
+}

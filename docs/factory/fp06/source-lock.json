@@ -3484,7 +3484,8 @@
         "apps/weltraum-browser/tests/unit/hvp-locomotion.test.ts",
         "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
         "apps/weltraum-browser/src/factory/construction/placement.ts",
-        "apps/weltraum-browser/src/factory/construction/buildStep.ts"
+        "apps/weltraum-browser/src/factory/construction/buildStep.ts",
+        "apps/weltraum-browser/src/hvp/hvpHud.ts"
       ],
       "grantedWriteSet": [
         "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
@@ -3511,7 +3512,8 @@
         "apps/weltraum-browser/tests/unit/hvp-locomotion.test.ts",
         "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
         "apps/weltraum-browser/src/factory/construction/placement.ts",
-        "apps/weltraum-browser/src/factory/construction/buildStep.ts"
+        "apps/weltraum-browser/src/factory/construction/buildStep.ts",
+        "apps/weltraum-browser/src/hvp/hvpHud.ts"
       ],
       "evidenceWriteSet": [
         "apps/weltraum-browser/evidence/factory/w09/<actual-run-id>/**"
@@ -3537,6 +3539,16 @@
         {
           "path": "apps/weltraum-browser/package.json",
           "reason": "Actual CI parser requires explicit existing spec paths assigned exactly once; register only this package new E2E spec when it exists. No future placeholder specs, parser relaxation, dependency/lockfile changes or unrelated script edits. Integrator only."
+        },
+        {
+          "path": "apps/weltraum-browser/src/hvp/hvpHud.ts",
+          "reason": "Actual existing hvpHud privately rewrites generic voxel cut/keys/target/feedback text during carrier handling. Optional pure context-hint callback from existing NativeFactorystate allows correct normal gameplay hints. SharedHUDIntegrator-only; noWorldauthority/commands/newstate, preserve nonfactorydefault. New businessRED first in alreadygranted hvp-bootstrap.test.ts.",
+          "authorizedBy": "/root",
+          "authorizedAtUtc": "2026-10-11T23:28:43.034622+00:00",
+          "beforeSha256": "2e89c73b3749ec7d539ff3656cc233cc22eb774947f4bc19ab67d0e85ef3f699",
+          "beforeBytes": 22610,
+          "sourceBeforeStatus": "HEAD_CLEAN",
+          "ownerDecision": "Routine authorized W09 implementation; no product Ownerpolicy/terrain change"
         }
       ],
       "normalFlowPreflight": "docs/factory/fp06/reviews/w09-normal-flow-preflight.md",
@@ -4145,6 +4157,13 @@
         "path": "docs/factory/fp06/reviews/w09-output-alias-151-provenance-correction.md",
         "sha256": "f5bb25ddbdbbc0fa57f4dd890796b773487dff2d97731290e67bb563043371b6",
         "facts": "PlainResourcesSnapshot optionaldepletionundefined caused151fixturecanonicalfailure; noMethods. Originalreport/raw preserved,153actualAliasRED unchanged."
+      },
+      "carrierHudScopeExtension": {
+        "status": "AUTHORIZED_EXACT_ONE_SOURCE_PATH_BEFORE_WRITES",
+        "path": "apps/weltraum-browser/src/hvp/hvpHud.ts",
+        "authorAtUtc": "2026-10-11T23:28:43.034622+00:00",
+        "sourceBeforeSha256": "2e89c73b3749ec7d539ff3656cc233cc22eb774947f4bc19ab67d0e85ef3f699",
+        "limits": "OptionalreadOnlyNative-derivedhint; originalHUDdefaultunchanged; no newinputaction/pose/material/power authority; tests onlyalreadygrantedBootstraptest; startsiteV2fivepathsstillUNGRANTED"
       }
     },
     "W10": {
