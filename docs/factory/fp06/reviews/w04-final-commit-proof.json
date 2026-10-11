@@ -1,0 +1,921 @@
+{
+  "version": "fp06-w04-final-commit-review-v1",
+  "timestamp": "2026-10-11T14:14:56.264273+00:00",
+  "verdict": "PASS",
+  "scope": "Actual W04 committed Git/LFS byte binding only, no new tests/build/browser/spec review",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11",
+  "head": "6929bf2447b72c9f3f8fa3bcae0a59c0691966c0",
+  "reviewedCommit": "6929bf2447b72c9f3f8fa3bcae0a59c0691966c0",
+  "parentLine": [
+    "6929bf2447b72c9f3f8fa3bcae0a59c0691966c0",
+    "1f2c568ec9db7b6b2895eb2a3b4f37797030dac8"
+  ],
+  "branch": "codex/hestia-fp06-domain-2026-10-11",
+  "status": "",
+  "actualChangedNameStatus": [
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/authority-contract.md",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/build-final-type-fixed.log.raw.gz",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/build-final-type-fixed.receipt.json",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/build-final.log.raw.gz",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/build-final.receipt.json",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-attempt-1.log.raw.gz",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-attempt-1.receipt.json",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-authority-core-fifteen.log.raw.gz",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-authority-core-fifteen.receipt.json",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-byte-cache-original-seven.log.raw.gz",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-byte-cache-original-seven.receipt.json",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-canonical-segments-fifteen.log.raw.gz",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-canonical-segments-fifteen.receipt.json",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-final-affected.log.raw.gz",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-final-affected.receipt.json",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-type-narrowing.log.raw.gz",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-type-narrowing.receipt.json",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/manifest.json",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/plan.md",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/product-diff.patch",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-analysis.json",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-authority-core-analysis.json",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-authority-core.log.raw.gz",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-authority-core.receipt.json",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-authority-core/CPU.20261011.133307.56267.0.001.cpuprofile",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-authority-core/CPU.20261011.133308.56292.0.001.cpuprofile",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-before-byte-cache.log.raw.gz",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-before-byte-cache.receipt.json",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-before-byte-cache/CPU.20261011.131111.53669.0.001.cpuprofile",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-before-byte-cache/CPU.20261011.131111.53694.0.001.cpuprofile",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-closed-keys.log.raw.gz",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-closed-keys.receipt.json",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-initial.log.raw.gz",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-initial.receipt.json",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-noop-four.log.raw.gz",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-noop-four.receipt.json",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-safety-five.log.raw.gz",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-safety-five.receipt.json",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/review.md",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/scope-check.json",
+    "A\tapps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/source-preflight.json",
+    "A\tapps/weltraum-browser/src/factory/production/productionStep.ts",
+    "A\tapps/weltraum-browser/src/factory/production/recipeAdmission.ts",
+    "A\tapps/weltraum-browser/tests/unit/factory/production.test.ts"
+  ],
+  "counts": {
+    "changedPaths": 44,
+    "products": 3,
+    "ownEvidence": 41,
+    "manifestRefs": 40,
+    "lfsPointers": 14,
+    "uniqueLfsObjects": 14
+  },
+  "scopeExact": true,
+  "allAdditions": true,
+  "files": [
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/authority-contract.md",
+      "gitBlobOid": "f1a046b8f0a214a0f81c675bfcb6b155c3879d3c",
+      "gitBlobSha256": "dc8a59003f593e01f519088e7add1b2c9639f6ba0be98eefd4b5f59bc5aeddf0",
+      "gitBlobBytes": 6462,
+      "isLfsPointer": false,
+      "payloadSha256": "dc8a59003f593e01f519088e7add1b2c9639f6ba0be98eefd4b5f59bc5aeddf0",
+      "payloadBytes": 6462,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/build-final-type-fixed.log.raw.gz",
+      "gitBlobOid": "6703cec1f05fb8947749f8bd585b0009dba26c8e",
+      "gitBlobSha256": "3d14c9e54c0b066272dcdb146bfff5dcb95eceeff667dab78aab90eca76e4afa",
+      "gitBlobBytes": 128,
+      "isLfsPointer": true,
+      "payloadSha256": "f8a2cc54c482ba105930a94aee771ed87e0a4df4b904c38e34947ee1a97adc0b",
+      "payloadBytes": 659,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/build-final-type-fixed.receipt.json",
+      "gitBlobOid": "eba0a8f81d460eaefd928157f5831f1741d673ca",
+      "gitBlobSha256": "e95daa0bda39d6dfe010b92e94ca055b83ed695c25404e725b3ce86d8931168b",
+      "gitBlobBytes": 995,
+      "isLfsPointer": false,
+      "payloadSha256": "e95daa0bda39d6dfe010b92e94ca055b83ed695c25404e725b3ce86d8931168b",
+      "payloadBytes": 995,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/build-final.log.raw.gz",
+      "gitBlobOid": "3f804a7b8583033b99129f672bcd2c6d157e9c35",
+      "gitBlobSha256": "13a38ace9100e6a457a45577155930e79d35399eafca9ab065be5aec53120b2c",
+      "gitBlobBytes": 128,
+      "isLfsPointer": true,
+      "payloadSha256": "c32507afd4ea65c445c9cef4145f753ae5e2e0c955cb3e964e5c47e5a8ff838f",
+      "payloadBytes": 160,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/build-final.receipt.json",
+      "gitBlobOid": "6cf2e3dab2495b9491f24ec6c75195cdc1e0590b",
+      "gitBlobSha256": "92b38fcfb8e2baa6b62f5897f616944c2d1a2369978c949be0196a2ffa9323b6",
+      "gitBlobBytes": 994,
+      "isLfsPointer": false,
+      "payloadSha256": "92b38fcfb8e2baa6b62f5897f616944c2d1a2369978c949be0196a2ffa9323b6",
+      "payloadBytes": 994,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-attempt-1.log.raw.gz",
+      "gitBlobOid": "7a0de36b445f4f6f18c37f8fb0781427e3f6a978",
+      "gitBlobSha256": "20a4cf2f131cc2997a5e7ab1a60a2218a276b9ae4ce145dc5f3e9dde8ef040d4",
+      "gitBlobBytes": 129,
+      "isLfsPointer": true,
+      "payloadSha256": "791786c51fef4fb130fd8f5bd9dac4e0f981cc89c91f49c22c8b42db50c6a9c6",
+      "payloadBytes": 1157,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-attempt-1.receipt.json",
+      "gitBlobOid": "f820f412d5d1bab57bf8fcfaa690680950676034",
+      "gitBlobSha256": "fa8a59b4a7af365a875342f91a44b18a9fc7379ebc75b61418a0493964eb4e35",
+      "gitBlobBytes": 624,
+      "isLfsPointer": false,
+      "payloadSha256": "fa8a59b4a7af365a875342f91a44b18a9fc7379ebc75b61418a0493964eb4e35",
+      "payloadBytes": 624,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-authority-core-fifteen.log.raw.gz",
+      "gitBlobOid": "cb140df5cdfa5ed5d2367ee9207be6052d585d44",
+      "gitBlobSha256": "423aa0b44524b5fc524dd208d3e09d2178d29b26792b3b682faa077fb0f10923",
+      "gitBlobBytes": 129,
+      "isLfsPointer": true,
+      "payloadSha256": "93fa137e12f96843c46a4f5e8a7c04b091dad11f33953343b74e0e96cc41db3a",
+      "payloadBytes": 1157,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-authority-core-fifteen.receipt.json",
+      "gitBlobOid": "91c9e79ea45a45573aa345288a853efe2474dbd7",
+      "gitBlobSha256": "55b4f5f5016b4df2bf0cd87e33396e481db0bc7a5f002213f5926559bd6fa180",
+      "gitBlobBytes": 580,
+      "isLfsPointer": false,
+      "payloadSha256": "55b4f5f5016b4df2bf0cd87e33396e481db0bc7a5f002213f5926559bd6fa180",
+      "payloadBytes": 580,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-byte-cache-original-seven.log.raw.gz",
+      "gitBlobOid": "f5352400c6f638b5839d7ef4035bf089a3fc2936",
+      "gitBlobSha256": "00ba163dda1b21587152a2f5447f55f59ceeccabd1b2a69409c27d7dbf5e3601",
+      "gitBlobBytes": 129,
+      "isLfsPointer": true,
+      "payloadSha256": "7d0bf15a069630a2d44b2b79dd9d969cd608a3bd564ebf369daa8d470dc7b3c9",
+      "payloadBytes": 1188,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-byte-cache-original-seven.receipt.json",
+      "gitBlobOid": "5a8d5297123b59bed9245972959deaabe85893af",
+      "gitBlobSha256": "cb0c6793d36f23a4e5d285083f8192033c6ad89e36eaf9ba42f9829051222ea3",
+      "gitBlobBytes": 694,
+      "isLfsPointer": false,
+      "payloadSha256": "cb0c6793d36f23a4e5d285083f8192033c6ad89e36eaf9ba42f9829051222ea3",
+      "payloadBytes": 694,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-canonical-segments-fifteen.log.raw.gz",
+      "gitBlobOid": "893e0cf754ea73e1a4ca6104bf00595068632f80",
+      "gitBlobSha256": "a52089a175e1320b9f12d965a9397c5705da7901faca1b0812f73ca7b30810a7",
+      "gitBlobBytes": 128,
+      "isLfsPointer": true,
+      "payloadSha256": "f61751d480679abd99321bbe33a2ba3bccbb254067ea493036c35fb6bdbb62ad",
+      "payloadBytes": 259,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-canonical-segments-fifteen.receipt.json",
+      "gitBlobOid": "44c9fc14899469018f3e84ae18186b4cb6de405b",
+      "gitBlobSha256": "8ea7eb157bec42d8d4e459a5b36ffb6b0c9a6ba3065aaec88f3bae9cddfadcbd",
+      "gitBlobBytes": 1142,
+      "isLfsPointer": false,
+      "payloadSha256": "8ea7eb157bec42d8d4e459a5b36ffb6b0c9a6ba3065aaec88f3bae9cddfadcbd",
+      "payloadBytes": 1142,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-final-affected.log.raw.gz",
+      "gitBlobOid": "a74079225e1019c18f9957778e7183e18955425a",
+      "gitBlobSha256": "5cf19c3edc2b9dfc81792e79996cc53a88aed4e39dedef4c8ffdddd84f68f43e",
+      "gitBlobBytes": 128,
+      "isLfsPointer": true,
+      "payloadSha256": "3ef09c945020850a89b8ade3ef6f724bce9a1dba6f7ab6d9988f3f609ec836a6",
+      "payloadBytes": 369,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-final-affected.receipt.json",
+      "gitBlobOid": "9f0b499a8e01c9beb38b5180c4323b9de0f6c4c0",
+      "gitBlobSha256": "c68373b0c1e217cbd2b85457805493f6a3f5f2e6a62c9e4ef11fad214f1f52a0",
+      "gitBlobBytes": 2085,
+      "isLfsPointer": false,
+      "payloadSha256": "c68373b0c1e217cbd2b85457805493f6a3f5f2e6a62c9e4ef11fad214f1f52a0",
+      "payloadBytes": 2085,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-type-narrowing.log.raw.gz",
+      "gitBlobOid": "f2557b0ec62daaa4d0b5acfb4b62604a3e833320",
+      "gitBlobSha256": "8a11dce5fcad37ce98ca3b77da0c2a87fdb038f92be1bc7668e2495d27cbdff8",
+      "gitBlobBytes": 128,
+      "isLfsPointer": true,
+      "payloadSha256": "d0edaacbebd4285bdca3b28ef658cd3e306cbc0a8a6c25c9221e7792f0925be0",
+      "payloadBytes": 303,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-type-narrowing.receipt.json",
+      "gitBlobOid": "27b6a400d74c365c356d14960d27a3a02fc9fdb1",
+      "gitBlobSha256": "d495fe5ddd580c7a71788f53b6afc86b2f46b155f4269dcf2de70d0ae45e0703",
+      "gitBlobBytes": 1240,
+      "isLfsPointer": false,
+      "payloadSha256": "d495fe5ddd580c7a71788f53b6afc86b2f46b155f4269dcf2de70d0ae45e0703",
+      "payloadBytes": 1240,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/manifest.json",
+      "gitBlobOid": "3f47d827ab09f3c7510de4573d9f5d5b0e272b36",
+      "gitBlobSha256": "7654cb46edef96a71211555c7b6d71a530664634a6e5d150d31ede42b5dbe621",
+      "gitBlobBytes": 32934,
+      "isLfsPointer": false,
+      "payloadSha256": "7654cb46edef96a71211555c7b6d71a530664634a6e5d150d31ede42b5dbe621",
+      "payloadBytes": 32934,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/plan.md",
+      "gitBlobOid": "f543b064a60af4f3cf27fa0253284e504aa7abc3",
+      "gitBlobSha256": "8bd9cf1fe20c209c8ba9e4bb47a309161f00c9c1f30622eb2478f6727604cf59",
+      "gitBlobBytes": 605,
+      "isLfsPointer": false,
+      "payloadSha256": "8bd9cf1fe20c209c8ba9e4bb47a309161f00c9c1f30622eb2478f6727604cf59",
+      "payloadBytes": 605,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/product-diff.patch",
+      "gitBlobOid": "c6fd77b40d4083db5219969f863fcff4192d8e4c",
+      "gitBlobSha256": "2cd262226ac36464316b18f6cdf4f70c18ff78c5d92fdcde9cdd8a57059b47ed",
+      "gitBlobBytes": 67259,
+      "isLfsPointer": false,
+      "payloadSha256": "2cd262226ac36464316b18f6cdf4f70c18ff78c5d92fdcde9cdd8a57059b47ed",
+      "payloadBytes": 67259,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-analysis.json",
+      "gitBlobOid": "dded8025ed6b62e821122a5bc2cb4c42d3caf04c",
+      "gitBlobSha256": "e042118f76c1657facb873888fae05d2456da658ba392083325a26d764733ec1",
+      "gitBlobBytes": 7637,
+      "isLfsPointer": false,
+      "payloadSha256": "e042118f76c1657facb873888fae05d2456da658ba392083325a26d764733ec1",
+      "payloadBytes": 7637,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-authority-core-analysis.json",
+      "gitBlobOid": "3d02ece37fd0f4513ad06404a25fc8cc041a87fb",
+      "gitBlobSha256": "695ecd677c6f5c5b9102e424bfc1e2f1bb64ccc8d51526b18f1f581aac215fdb",
+      "gitBlobBytes": 8315,
+      "isLfsPointer": false,
+      "payloadSha256": "695ecd677c6f5c5b9102e424bfc1e2f1bb64ccc8d51526b18f1f581aac215fdb",
+      "payloadBytes": 8315,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-authority-core.log.raw.gz",
+      "gitBlobOid": "57afa2f758389442057f63d4677040a1922e6436",
+      "gitBlobSha256": "b8e76e7cf70a84c1cbd9027fcccc750c92b5093ee210a4094a103a9f5d3a42ec",
+      "gitBlobBytes": 128,
+      "isLfsPointer": true,
+      "payloadSha256": "6580eb796eadcea38f1e4477b32ec155f614ebbb80d425d11fd0ad33bfeb7046",
+      "payloadBytes": 663,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-authority-core.receipt.json",
+      "gitBlobOid": "767f9ef84922c3c59414330d4ba52ed5cb272206",
+      "gitBlobSha256": "91ca1bd95434b1a212689a1f3100110d5f2a77287bbd4dcecf390c4862ad8465",
+      "gitBlobBytes": 2012,
+      "isLfsPointer": false,
+      "payloadSha256": "91ca1bd95434b1a212689a1f3100110d5f2a77287bbd4dcecf390c4862ad8465",
+      "payloadBytes": 2012,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-authority-core/CPU.20261011.133307.56267.0.001.cpuprofile",
+      "gitBlobOid": "2f5bcc568d70ac9f96bfb46111cf293f5b7005cc",
+      "gitBlobSha256": "e5cf972d657bca3c02f51fe1ed1b3e283e7666597d7d96a43efc96a073277991",
+      "gitBlobBytes": 273247,
+      "isLfsPointer": false,
+      "payloadSha256": "e5cf972d657bca3c02f51fe1ed1b3e283e7666597d7d96a43efc96a073277991",
+      "payloadBytes": 273247,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-authority-core/CPU.20261011.133308.56292.0.001.cpuprofile",
+      "gitBlobOid": "0b8dc674a9e47361edb3e62907bf45505946dea3",
+      "gitBlobSha256": "3d4d3bd02fd1f3b2f228709820049025901427a59537e490f8620477198e3c55",
+      "gitBlobBytes": 914618,
+      "isLfsPointer": false,
+      "payloadSha256": "3d4d3bd02fd1f3b2f228709820049025901427a59537e490f8620477198e3c55",
+      "payloadBytes": 914618,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-before-byte-cache.log.raw.gz",
+      "gitBlobOid": "a4acfff1d1cb7601dc475d222afb1492c9e82315",
+      "gitBlobSha256": "4de1fe382e7018043ec9b2bb51807308cb8e1a2c7a18311f1d41e30b3d6351a5",
+      "gitBlobBytes": 128,
+      "isLfsPointer": true,
+      "payloadSha256": "494948c17f9adc6b82e77518ec24777762eab759656906beb59b96fc4148c4e5",
+      "payloadBytes": 662,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-before-byte-cache.receipt.json",
+      "gitBlobOid": "324b16cfd25c4395a0097ed507ac21f3e9310b6a",
+      "gitBlobSha256": "1490a9ee691220e018875299c560ae88a9344dca7f74ae7ac9f24534ef479f21",
+      "gitBlobBytes": 1460,
+      "isLfsPointer": false,
+      "payloadSha256": "1490a9ee691220e018875299c560ae88a9344dca7f74ae7ac9f24534ef479f21",
+      "payloadBytes": 1460,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-before-byte-cache/CPU.20261011.131111.53669.0.001.cpuprofile",
+      "gitBlobOid": "feea28521b5ccfb8d62a6402433c0bf0fa44625b",
+      "gitBlobSha256": "2b190bdcc026d32620e3260bc29a539c6a883ba3254f44cf5b85b0ea3d918929",
+      "gitBlobBytes": 293738,
+      "isLfsPointer": false,
+      "payloadSha256": "2b190bdcc026d32620e3260bc29a539c6a883ba3254f44cf5b85b0ea3d918929",
+      "payloadBytes": 293738,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-before-byte-cache/CPU.20261011.131111.53694.0.001.cpuprofile",
+      "gitBlobOid": "8cef9cbbfffab41b78a5803d8fb25168f36f2b37",
+      "gitBlobSha256": "877bcad25134a7b156579cb54f3581dc2cb433ac810c75b591224efa9ac9514b",
+      "gitBlobBytes": 915150,
+      "isLfsPointer": false,
+      "payloadSha256": "877bcad25134a7b156579cb54f3581dc2cb433ac810c75b591224efa9ac9514b",
+      "payloadBytes": 915150,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-closed-keys.log.raw.gz",
+      "gitBlobOid": "ae7a9dd77bf45fc3c7380cbf6fbba4a2727cc0f1",
+      "gitBlobSha256": "1ae08fc80d9d5895d0fed46df8b0ca1ac225c799231112700b0dc0a89cc52182",
+      "gitBlobBytes": 128,
+      "isLfsPointer": true,
+      "payloadSha256": "51d8bea0dcf9f9c4f54e0465804c2ba63f3c8a2b837fa7de68a481d5053d7b0c",
+      "payloadBytes": 673,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-closed-keys.receipt.json",
+      "gitBlobOid": "b6240214af8162a8b5e6ed2ce09fe4dc23b56f6a",
+      "gitBlobSha256": "6dfb60a7f3555a8abdca55b50d76378fd68935c67900966ca7cc2bb34dad382e",
+      "gitBlobBytes": 654,
+      "isLfsPointer": false,
+      "payloadSha256": "6dfb60a7f3555a8abdca55b50d76378fd68935c67900966ca7cc2bb34dad382e",
+      "payloadBytes": 654,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-initial.log.raw.gz",
+      "gitBlobOid": "5060373764163ccd54f084590a1cbaee39afada6",
+      "gitBlobSha256": "eb9ccd08601a693dc02f8804f0ee9f599f4a95f8d75ff92160520df31f9583e0",
+      "gitBlobBytes": 129,
+      "isLfsPointer": true,
+      "payloadSha256": "09085ad17576670de43e980c943f9eab79ec799e097e2981729ccaa6452dc8a3",
+      "payloadBytes": 1288,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-initial.receipt.json",
+      "gitBlobOid": "b7946048a3bbd4cfc1f1ab1fd1f919bccc674572",
+      "gitBlobSha256": "d34b1f043ff0f4cb0478575a53ea8fdade8ef0758377621749e55a198850f300",
+      "gitBlobBytes": 718,
+      "isLfsPointer": false,
+      "payloadSha256": "d34b1f043ff0f4cb0478575a53ea8fdade8ef0758377621749e55a198850f300",
+      "payloadBytes": 718,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-noop-four.log.raw.gz",
+      "gitBlobOid": "1f595b00f5834d74c18ca4c712c32c65c4142186",
+      "gitBlobSha256": "bc49a430196c578497a87479f74d4b778dab78f83ce6d2fb6af73f5d2877a842",
+      "gitBlobBytes": 128,
+      "isLfsPointer": true,
+      "payloadSha256": "6c51a01d01fc7433102e9ffc8dd87595db22666ef3c7a3ab748f52d56f2c449c",
+      "payloadBytes": 747,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-noop-four.receipt.json",
+      "gitBlobOid": "814e58162dda050e9d5c04dd9915ba00f40cc1b6",
+      "gitBlobSha256": "1d19c415fb577924a4084fd5c37e05e2e42692e719086984059beae2275339d6",
+      "gitBlobBytes": 630,
+      "isLfsPointer": false,
+      "payloadSha256": "1d19c415fb577924a4084fd5c37e05e2e42692e719086984059beae2275339d6",
+      "payloadBytes": 630,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-safety-five.log.raw.gz",
+      "gitBlobOid": "54006c44ef9f6c8c8cb7d3c822959b139e2ffd5f",
+      "gitBlobSha256": "e98b9c6c757bb4ca639e43937d0127abc23875bed3ddc296122ddfe831109824",
+      "gitBlobBytes": 129,
+      "isLfsPointer": true,
+      "payloadSha256": "2a0e9f2f7238587aa19bf2b4dba4b6f99837ec0da6c22f2589ada663b231788a",
+      "payloadBytes": 1318,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-safety-five.receipt.json",
+      "gitBlobOid": "0ab77c67f06d5fea4934ee9e5a3ddb2c46f5eb5d",
+      "gitBlobSha256": "6d896dad89e52fa4866e44f19a2a0631ca66690510113b995b06ef8c78e2e4e5",
+      "gitBlobBytes": 787,
+      "isLfsPointer": false,
+      "payloadSha256": "6d896dad89e52fa4866e44f19a2a0631ca66690510113b995b06ef8c78e2e4e5",
+      "payloadBytes": 787,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/review.md",
+      "gitBlobOid": "fc8a7208544c4e176729f2d984ae82b1adf24f06",
+      "gitBlobSha256": "594791e4d46bf193ca9ad84c3669cc0483e3d93e0b8c388775adb3ee6af589b6",
+      "gitBlobBytes": 6277,
+      "isLfsPointer": false,
+      "payloadSha256": "594791e4d46bf193ca9ad84c3669cc0483e3d93e0b8c388775adb3ee6af589b6",
+      "payloadBytes": 6277,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/scope-check.json",
+      "gitBlobOid": "b2f9d6b08fa4badd574a9196b2f3fff00b133c59",
+      "gitBlobSha256": "cccd83c06d80fcb35e5fbc3be0f4ff33bdd57838bb495a90568724095f0a9a4f",
+      "gitBlobBytes": 5607,
+      "isLfsPointer": false,
+      "payloadSha256": "cccd83c06d80fcb35e5fbc3be0f4ff33bdd57838bb495a90568724095f0a9a4f",
+      "payloadBytes": 5607,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/source-preflight.json",
+      "gitBlobOid": "6099c158c4c90b8327e8a2284d8f1dde37bd273b",
+      "gitBlobSha256": "c2aa7d00f86c7836a2e1f24469151cbeb55e38e3934750df906f2d9bd6ca9641",
+      "gitBlobBytes": 1591,
+      "isLfsPointer": false,
+      "payloadSha256": "c2aa7d00f86c7836a2e1f24469151cbeb55e38e3934750df906f2d9bd6ca9641",
+      "payloadBytes": 1591,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/production/productionStep.ts",
+      "gitBlobOid": "b9358aabcd91878b783df72bd75974f052da0d6e",
+      "gitBlobSha256": "f74397051a7b2da13d6d183ccf573cb633cb932e915e1ebaf6bf6a50da29c449",
+      "gitBlobBytes": 29154,
+      "isLfsPointer": false,
+      "payloadSha256": "f74397051a7b2da13d6d183ccf573cb633cb932e915e1ebaf6bf6a50da29c449",
+      "payloadBytes": 29154,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/production/recipeAdmission.ts",
+      "gitBlobOid": "ac80a56d2ba46f6e96f48aeb2fc4297a347c2162",
+      "gitBlobSha256": "c77eeaa220cbb491c51356533bdd8f1e6d221f67e9406b458d4a6c06ebac4102",
+      "gitBlobBytes": 12898,
+      "isLfsPointer": false,
+      "payloadSha256": "c77eeaa220cbb491c51356533bdd8f1e6d221f67e9406b458d4a6c06ebac4102",
+      "payloadBytes": 12898,
+      "matchesPrecommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/production.test.ts",
+      "gitBlobOid": "8f90636f1d8f84da9069c1d013a6c78aa8778ab7",
+      "gitBlobSha256": "7c31bf5f375af31c3ed0057cda4ce2a87951fff7412506fcab057c0d517769b6",
+      "gitBlobBytes": 23542,
+      "isLfsPointer": false,
+      "payloadSha256": "7c31bf5f375af31c3ed0057cda4ce2a87951fff7412506fcab057c0d517769b6",
+      "payloadBytes": 23542,
+      "matchesPrecommit": true
+    }
+  ],
+  "manifest": {
+    "gitBound": true,
+    "sha256": "7654cb46edef96a71211555c7b6d71a530664634a6e5d150d31ede42b5dbe621",
+    "matchesPrecommit": true,
+    "refs": [
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/authority-contract.md",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/build-final-type-fixed.log.raw.gz",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/build-final-type-fixed.receipt.json",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/build-final.log.raw.gz",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/build-final.receipt.json",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-attempt-1.log.raw.gz",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-attempt-1.receipt.json",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-authority-core-fifteen.log.raw.gz",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-authority-core-fifteen.receipt.json",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-byte-cache-original-seven.log.raw.gz",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-byte-cache-original-seven.receipt.json",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-canonical-segments-fifteen.log.raw.gz",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-canonical-segments-fifteen.receipt.json",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-final-affected.log.raw.gz",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-final-affected.receipt.json",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-type-narrowing.log.raw.gz",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-type-narrowing.receipt.json",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/plan.md",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/product-diff.patch",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-analysis.json",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-authority-core/CPU.20261011.133307.56267.0.001.cpuprofile",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-authority-core/CPU.20261011.133308.56292.0.001.cpuprofile",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-authority-core-analysis.json",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-authority-core.log.raw.gz",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-authority-core.receipt.json",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-before-byte-cache/CPU.20261011.131111.53669.0.001.cpuprofile",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-before-byte-cache/CPU.20261011.131111.53694.0.001.cpuprofile",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-before-byte-cache.log.raw.gz",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-before-byte-cache.receipt.json",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-closed-keys.log.raw.gz",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-closed-keys.receipt.json",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-initial.log.raw.gz",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-initial.receipt.json",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-noop-four.log.raw.gz",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-noop-four.receipt.json",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-safety-five.log.raw.gz",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-safety-five.receipt.json",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/review.md",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/scope-check.json",
+        "matchesCommittedPayload": true
+      },
+      {
+        "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/source-preflight.json",
+        "matchesCommittedPayload": true
+      }
+    ],
+    "exactRefCoverage": true
+  },
+  "productSealMatches": {
+    "apps/weltraum-browser/src/factory/production/productionStep.ts": true,
+    "apps/weltraum-browser/src/factory/production/recipeAdmission.ts": true,
+    "apps/weltraum-browser/tests/unit/factory/production.test.ts": true
+  },
+  "productPatch": {
+    "actualCommittedDiffSha256": "2cd262226ac36464316b18f6cdf4f70c18ff78c5d92fdcde9cdd8a57059b47ed",
+    "sealedPatchSha256": "2cd262226ac36464316b18f6cdf4f70c18ff78c5d92fdcde9cdd8a57059b47ed",
+    "byteEqual": true
+  },
+  "lfs": [
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/build-final-type-fixed.log.raw.gz",
+      "gitBlobOid": "6703cec1f05fb8947749f8bd585b0009dba26c8e",
+      "pointerSha256": "3d14c9e54c0b066272dcdb146bfff5dcb95eceeff667dab78aab90eca76e4afa",
+      "lfsObjectOid": "f8a2cc54c482ba105930a94aee771ed87e0a4df4b904c38e34947ee1a97adc0b",
+      "size": 659,
+      "objectPath": "/workspace/Weltraum-Spiel/.git/lfs/objects/f8/a2/f8a2cc54c482ba105930a94aee771ed87e0a4df4b904c38e34947ee1a97adc0b",
+      "actualObjectPresent": true,
+      "actualShaMatches": true,
+      "actualSizeMatches": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/build-final.log.raw.gz",
+      "gitBlobOid": "3f804a7b8583033b99129f672bcd2c6d157e9c35",
+      "pointerSha256": "13a38ace9100e6a457a45577155930e79d35399eafca9ab065be5aec53120b2c",
+      "lfsObjectOid": "c32507afd4ea65c445c9cef4145f753ae5e2e0c955cb3e964e5c47e5a8ff838f",
+      "size": 160,
+      "objectPath": "/workspace/Weltraum-Spiel/.git/lfs/objects/c3/25/c32507afd4ea65c445c9cef4145f753ae5e2e0c955cb3e964e5c47e5a8ff838f",
+      "actualObjectPresent": true,
+      "actualShaMatches": true,
+      "actualSizeMatches": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-attempt-1.log.raw.gz",
+      "gitBlobOid": "7a0de36b445f4f6f18c37f8fb0781427e3f6a978",
+      "pointerSha256": "20a4cf2f131cc2997a5e7ab1a60a2218a276b9ae4ce145dc5f3e9dde8ef040d4",
+      "lfsObjectOid": "791786c51fef4fb130fd8f5bd9dac4e0f981cc89c91f49c22c8b42db50c6a9c6",
+      "size": 1157,
+      "objectPath": "/workspace/Weltraum-Spiel/.git/lfs/objects/79/17/791786c51fef4fb130fd8f5bd9dac4e0f981cc89c91f49c22c8b42db50c6a9c6",
+      "actualObjectPresent": true,
+      "actualShaMatches": true,
+      "actualSizeMatches": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-authority-core-fifteen.log.raw.gz",
+      "gitBlobOid": "cb140df5cdfa5ed5d2367ee9207be6052d585d44",
+      "pointerSha256": "423aa0b44524b5fc524dd208d3e09d2178d29b26792b3b682faa077fb0f10923",
+      "lfsObjectOid": "93fa137e12f96843c46a4f5e8a7c04b091dad11f33953343b74e0e96cc41db3a",
+      "size": 1157,
+      "objectPath": "/workspace/Weltraum-Spiel/.git/lfs/objects/93/fa/93fa137e12f96843c46a4f5e8a7c04b091dad11f33953343b74e0e96cc41db3a",
+      "actualObjectPresent": true,
+      "actualShaMatches": true,
+      "actualSizeMatches": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-byte-cache-original-seven.log.raw.gz",
+      "gitBlobOid": "f5352400c6f638b5839d7ef4035bf089a3fc2936",
+      "pointerSha256": "00ba163dda1b21587152a2f5447f55f59ceeccabd1b2a69409c27d7dbf5e3601",
+      "lfsObjectOid": "7d0bf15a069630a2d44b2b79dd9d969cd608a3bd564ebf369daa8d470dc7b3c9",
+      "size": 1188,
+      "objectPath": "/workspace/Weltraum-Spiel/.git/lfs/objects/7d/0b/7d0bf15a069630a2d44b2b79dd9d969cd608a3bd564ebf369daa8d470dc7b3c9",
+      "actualObjectPresent": true,
+      "actualShaMatches": true,
+      "actualSizeMatches": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-canonical-segments-fifteen.log.raw.gz",
+      "gitBlobOid": "893e0cf754ea73e1a4ca6104bf00595068632f80",
+      "pointerSha256": "a52089a175e1320b9f12d965a9397c5705da7901faca1b0812f73ca7b30810a7",
+      "lfsObjectOid": "f61751d480679abd99321bbe33a2ba3bccbb254067ea493036c35fb6bdbb62ad",
+      "size": 259,
+      "objectPath": "/workspace/Weltraum-Spiel/.git/lfs/objects/f6/17/f61751d480679abd99321bbe33a2ba3bccbb254067ea493036c35fb6bdbb62ad",
+      "actualObjectPresent": true,
+      "actualShaMatches": true,
+      "actualSizeMatches": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-final-affected.log.raw.gz",
+      "gitBlobOid": "a74079225e1019c18f9957778e7183e18955425a",
+      "pointerSha256": "5cf19c3edc2b9dfc81792e79996cc53a88aed4e39dedef4c8ffdddd84f68f43e",
+      "lfsObjectOid": "3ef09c945020850a89b8ade3ef6f724bce9a1dba6f7ab6d9988f3f609ec836a6",
+      "size": 369,
+      "objectPath": "/workspace/Weltraum-Spiel/.git/lfs/objects/3e/f0/3ef09c945020850a89b8ade3ef6f724bce9a1dba6f7ab6d9988f3f609ec836a6",
+      "actualObjectPresent": true,
+      "actualShaMatches": true,
+      "actualSizeMatches": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-type-narrowing.log.raw.gz",
+      "gitBlobOid": "f2557b0ec62daaa4d0b5acfb4b62604a3e833320",
+      "pointerSha256": "8a11dce5fcad37ce98ca3b77da0c2a87fdb038f92be1bc7668e2495d27cbdff8",
+      "lfsObjectOid": "d0edaacbebd4285bdca3b28ef658cd3e306cbc0a8a6c25c9221e7792f0925be0",
+      "size": 303,
+      "objectPath": "/workspace/Weltraum-Spiel/.git/lfs/objects/d0/ed/d0edaacbebd4285bdca3b28ef658cd3e306cbc0a8a6c25c9221e7792f0925be0",
+      "actualObjectPresent": true,
+      "actualShaMatches": true,
+      "actualSizeMatches": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-authority-core.log.raw.gz",
+      "gitBlobOid": "57afa2f758389442057f63d4677040a1922e6436",
+      "pointerSha256": "b8e76e7cf70a84c1cbd9027fcccc750c92b5093ee210a4094a103a9f5d3a42ec",
+      "lfsObjectOid": "6580eb796eadcea38f1e4477b32ec155f614ebbb80d425d11fd0ad33bfeb7046",
+      "size": 663,
+      "objectPath": "/workspace/Weltraum-Spiel/.git/lfs/objects/65/80/6580eb796eadcea38f1e4477b32ec155f614ebbb80d425d11fd0ad33bfeb7046",
+      "actualObjectPresent": true,
+      "actualShaMatches": true,
+      "actualSizeMatches": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-before-byte-cache.log.raw.gz",
+      "gitBlobOid": "a4acfff1d1cb7601dc475d222afb1492c9e82315",
+      "pointerSha256": "4de1fe382e7018043ec9b2bb51807308cb8e1a2c7a18311f1d41e30b3d6351a5",
+      "lfsObjectOid": "494948c17f9adc6b82e77518ec24777762eab759656906beb59b96fc4148c4e5",
+      "size": 662,
+      "objectPath": "/workspace/Weltraum-Spiel/.git/lfs/objects/49/49/494948c17f9adc6b82e77518ec24777762eab759656906beb59b96fc4148c4e5",
+      "actualObjectPresent": true,
+      "actualShaMatches": true,
+      "actualSizeMatches": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-closed-keys.log.raw.gz",
+      "gitBlobOid": "ae7a9dd77bf45fc3c7380cbf6fbba4a2727cc0f1",
+      "pointerSha256": "1ae08fc80d9d5895d0fed46df8b0ca1ac225c799231112700b0dc0a89cc52182",
+      "lfsObjectOid": "51d8bea0dcf9f9c4f54e0465804c2ba63f3c8a2b837fa7de68a481d5053d7b0c",
+      "size": 673,
+      "objectPath": "/workspace/Weltraum-Spiel/.git/lfs/objects/51/d8/51d8bea0dcf9f9c4f54e0465804c2ba63f3c8a2b837fa7de68a481d5053d7b0c",
+      "actualObjectPresent": true,
+      "actualShaMatches": true,
+      "actualSizeMatches": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-initial.log.raw.gz",
+      "gitBlobOid": "5060373764163ccd54f084590a1cbaee39afada6",
+      "pointerSha256": "eb9ccd08601a693dc02f8804f0ee9f599f4a95f8d75ff92160520df31f9583e0",
+      "lfsObjectOid": "09085ad17576670de43e980c943f9eab79ec799e097e2981729ccaa6452dc8a3",
+      "size": 1288,
+      "objectPath": "/workspace/Weltraum-Spiel/.git/lfs/objects/09/08/09085ad17576670de43e980c943f9eab79ec799e097e2981729ccaa6452dc8a3",
+      "actualObjectPresent": true,
+      "actualShaMatches": true,
+      "actualSizeMatches": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-noop-four.log.raw.gz",
+      "gitBlobOid": "1f595b00f5834d74c18ca4c712c32c65c4142186",
+      "pointerSha256": "bc49a430196c578497a87479f74d4b778dab78f83ce6d2fb6af73f5d2877a842",
+      "lfsObjectOid": "6c51a01d01fc7433102e9ffc8dd87595db22666ef3c7a3ab748f52d56f2c449c",
+      "size": 747,
+      "objectPath": "/workspace/Weltraum-Spiel/.git/lfs/objects/6c/51/6c51a01d01fc7433102e9ffc8dd87595db22666ef3c7a3ab748f52d56f2c449c",
+      "actualObjectPresent": true,
+      "actualShaMatches": true,
+      "actualSizeMatches": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-safety-five.log.raw.gz",
+      "gitBlobOid": "54006c44ef9f6c8c8cb7d3c822959b139e2ffd5f",
+      "pointerSha256": "e98b9c6c757bb4ca639e43937d0127abc23875bed3ddc296122ddfe831109824",
+      "lfsObjectOid": "2a0e9f2f7238587aa19bf2b4dba4b6f99837ec0da6c22f2589ada663b231788a",
+      "size": 1318,
+      "objectPath": "/workspace/Weltraum-Spiel/.git/lfs/objects/2a/0e/2a0e9f2f7238587aa19bf2b4dba4b6f99837ec0da6c22f2589ada663b231788a",
+      "actualObjectPresent": true,
+      "actualShaMatches": true,
+      "actualSizeMatches": true
+    }
+  ],
+  "checks": {
+    "parentCommitDiffCheck": {
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "showCommitCheck": {
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "worktreeDiffCheck": {
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "indexDiffCheck": {
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  "writerProofBinding": {
+    "path": "/workspace/.cloud-setup/fp06-w04-commit-proof.json",
+    "sha256": "dfd6f0e44c7636639d915daaebd539c6059828043086bf7a6616d3e49765545e",
+    "bytes": 54072,
+    "keys": [
+      "package",
+      "status",
+      "actor",
+      "branch",
+      "worktree",
+      "baseCommitSha",
+      "commitSha",
+      "checkedAtUtc",
+      "expectedFiles",
+      "changedPathCount",
+      "stagedCheck",
+      "payloadChecks",
+      "ownLfsObjects",
+      "manifestSha256",
+      "manifestArtifactCount",
+      "diffstat",
+      "commitCommand",
+      "parentCommitSha",
+      "actualChangedFiles",
+      "actualChangedPathCount",
+      "cleanStatus",
+      "committedPayloadChecks",
+      "committedOwnLfsObjects",
+      "committedDiffCheck"
+    ]
+  },
+  "precommitBinding": {
+    "jsonSha256": "e9771737cf00d25db800836121ef598e98951c21b7ee2727caed06743ecf6f88",
+    "mdSha256": "517f90f81f31e2cba47c4782f236bfff1566944cba5be649beee606bedbd527e"
+  },
+  "limitations": [
+    "No filesystem fallback used for Gitblobs; LFS payload only from the actual committed pointer object",
+    "No global LFS fsck/fetch/repair",
+    "Previous175-test receipt precedes soleconst capture; final4-tests/fullbuild exact finalbytes remain separate",
+    "No new tests/build/browser or W09/W10/W11 claim"
+  ],
+  "problems": [],
+  "sealBinding": {
+    "path": "/workspace/.cloud-setup/fp06-w04-product-working-hashes.json",
+    "sha256": "01bd38888e4dc808c1d1acfc921f5e7a44ccdd36e39b498c8ebee7879f4266d0",
+    "matchesOriginalPrecommitSeal": true,
+    "committedProductsMatchSeal": {
+      "apps/weltraum-browser/src/factory/production/productionStep.ts": true,
+      "apps/weltraum-browser/src/factory/production/recipeAdmission.ts": true,
+      "apps/weltraum-browser/tests/unit/factory/production.test.ts": true
+    }
+  }
+}

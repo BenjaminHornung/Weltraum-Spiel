@@ -126,7 +126,7 @@
         "W08",
         "W04"
       ],
-      "status": "W04_SEALED_PRODUCT_WRITE_HOLD_INDEPENDENT_REVIEW_PENDING"
+      "status": "W02_W05_W08_W04_PASS_PRODUCT_WRITE_HOLD_READONLY_HANDOFF_READY"
     }
   ],
   "packageScopes": {
@@ -450,7 +450,7 @@
         "apps/weltraum-browser/evidence/factory/w04/<actual-run-id>/**"
       ],
       "evidenceGrant": true,
-      "status": "IN_REVIEW",
+      "status": "PASS",
       "owner": "/root/fp06_domain",
       "plannedRole": "domain",
       "branch": "codex/hestia-fp06-domain-2026-10-11",
@@ -467,7 +467,7 @@
       "baseCommitSha": "1f2c568ec9db7b6b2895eb2a3b4f37797030dac8",
       "implementationWriteHold": true,
       "authorizedAtUtc": "2026-10-11T12:41:39.050117+00:00",
-      "completedAtUtc": null,
+      "completedAtUtc": "2026-10-11T14:17:57.703554+00:00",
       "tddInitialStatus": {
         "runId": "run-20261011T124704Z",
         "command": "npm run test -- tests/unit/factory/production.test.ts",
@@ -546,7 +546,7 @@
         "finalTypeScriptAndVite": "PASS after const-capture fix",
         "originalTestTimeoutMs": 5000,
         "specAndCodeQuality": "PASS for sealed pure W04 contract",
-        "commitAndGitEvidence": "NOT_RUN; no commit yet"
+        "commitAndGitEvidence": "PASS independent actualHEAD-only binding"
       },
       "reviewScheduledAtUtc": "2026-10-11T14:00:57.063155+00:00",
       "independentFinalWorkingReview": {
@@ -580,7 +580,23 @@
         "report": "docs/factory/fp06/reviews/w04-writer-commit-proof.json",
         "sha256": "dfd6f0e44c7636639d915daaebd539c6059828043086bf7a6616d3e49765545e",
         "status": "WRITER_REPORTED_44PATHS40REFS14LFS_COMMIT_PASS; independent final HEAD-only review pending"
-      }
+      },
+      "reviewReport": "docs/factory/fp06/reviews/w04-final.md",
+      "acceptedGateCommitSha": "6929bf2447b72c9f3f8fa3bcae0a59c0691966c0",
+      "implementationReport": "docs/factory/fp06/reviews/w04-package-report.md",
+      "actualProductFiles": [
+        "apps/weltraum-browser/src/factory/production/productionStep.ts",
+        "apps/weltraum-browser/src/factory/production/recipeAdmission.ts",
+        "apps/weltraum-browser/tests/unit/factory/production.test.ts"
+      ],
+      "finalGitReview": {
+        "report": "docs/factory/fp06/reviews/w04-final-commit.md",
+        "originalSha256": "f31d5e38ec82c26387b85a1498a9a0249b74c79b323919bd27b0bfa05af49e43",
+        "proof": "docs/factory/fp06/reviews/w04-final-commit-proof.json",
+        "proofSha256": "cb8d07c7599031a7fc418ecdd40253355e847983782d5f6ea4174c843469122a",
+        "status": "PASS:44committedpayloads40manifestrefs14LFSobjects3unchangedproducts,clean4diffchecksExit0"
+      },
+      "technicalGate": "PASS"
     },
     "W05": {
       "dependencies": [
