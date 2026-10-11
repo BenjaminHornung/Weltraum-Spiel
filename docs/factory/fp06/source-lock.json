@@ -2094,6 +2094,14 @@
           "originalSha256": "b46674c0e34e50a85548a1b42d8bb2b8aa2e0881d1cf0b2053ba85ae93fd5655",
           "originalBytes": 3541,
           "copiedSha256": "b46674c0e34e50a85548a1b42d8bb2b8aa2e0881d1cf0b2053ba85ae93fd5655"
+        },
+        {
+          "report": "docs/factory/fp06/reviews/w07-input-delivery-guard-review-final.md",
+          "originalSha256": "1d7d965d12c944f421bd1367c03116f9d1a6a5b374ad7f7015abf53788b5917d",
+          "originalBytes": 7082,
+          "copiedSha256": "1d7d965d12c944f421bd1367c03116f9d1a6a5b374ad7f7015abf53788b5917d",
+          "phase": "Final source guardreview; earlier35fbbcopy retained as historical phase",
+          "scope": "Source-only real Hold/rollback/finalize oracle recommendations; no runtime/testing acceptance"
         }
       ],
       "factoryInputDeliveryNativeGuardRed": {
