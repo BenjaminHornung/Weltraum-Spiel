@@ -1,0 +1,35 @@
+{
+  "phase": "SOURCE_ONLY_WRAPPER",
+  "createdUtc": "2026-10-11T19:17:09.935720+00:00",
+  "path": "/workspace/.cloud-setup/bin/chromium-hestia-mesa",
+  "bytes": 222,
+  "sha256": "47b081898a76e3f36d43ce06697990adb093ebe2eaeed8ef1b484fa8bffd5ab9",
+  "mode": "0o755",
+  "exclusiveCreation": true,
+  "existingFilesOverwritten": false,
+  "actualBrowserRun": false,
+  "thirdAvailabilityProbe": false,
+  "gameRun": false,
+  "systemSettingsChanged": false,
+  "HOMEChanged": false,
+  "argumentsForwarded": "exact quoted \"$@\" after the four fixed flags",
+  "environmentExports": {
+    "LIBGL_ALWAYS_SOFTWARE": "1",
+    "EGL_PLATFORM": "surfaceless"
+  },
+  "syntaxCheck": {
+    "argv": [
+      "bash",
+      "-n",
+      "/workspace/.cloud-setup/bin/chromium-hestia-mesa"
+    ],
+    "exitCode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "provenance": {
+    "candidate-2-result.json": "83d6310c0214eb18964c3ed7f19be561c27b08c0af1b80c22f8c749f486e0d82",
+    "candidate-2-command-receipt.json": "d1f6ae746e8cd97c3b16fc687e151b491a4ecc69bece83cd6d9c214067c1f824",
+    "candidate-2-cleanup-receipt.json": "b3e9a2f8f88a1f4073f685737c77a487a36e9acbab123223a32933e82a2b1678"
+  }
+}

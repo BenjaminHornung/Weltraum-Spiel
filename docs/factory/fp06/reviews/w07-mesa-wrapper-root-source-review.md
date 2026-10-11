@@ -1,0 +1,7 @@
+# W07 Mesa-Starter: unabhängige Quellenprüfung
+
+SOURCE-SCOPE PASS. Root hat den vom Setupagent erzeugten vollständigen 222-Byte-Starter gelesen, SHA256 `47b081898a76e3f36d43ce06697990adb093ebe2eaeed8ef1b484fa8bffd5ab9` selbst ermittelt und `bash -n` mit Exit 0 ausgeführt. Exakt vier Argumente und zwei Umgebungswerte entsprechen der erfolgreichen kurzen Verfügbarkeitsprobe 2; `exec` und zitiertes "$@" erhalten den Originalaufruf. Keine globale Konfiguration, Geheimnisserialisierung, Engine-, Quellen-, Queue- oder Zeitänderung.
+
+Die unveränderte Originalkonfiguration setzt nur executablePath, enthält keine widersprechenden GL-/ANGLE-/Ozone-Argumente und behält 30-s-Fälle, 5-s-Erwartungen und 20-s-Serverstart. Scoped-Konfiguration SHA256 `53a55a48da97d43a02e317fb8edc844d57a9b5687f356a7ebf4f5b470efcf900` selbst geprüft. Alle 30 Produktdateien wurden separat gegen Seal201394 geprüft und stimmen überein; normales E2E bleibt030fc. Port5174 war beim Review frei.
+
+Runner98 vollständig gelesen: kein grep, keine Instrumentierung oder Produktmutation; 17 Normalfälle, nur neuer executablePath, sichere explizite Metadaten, Archive der alten Belege und Wiederherstellung eigener sieben Artefakte/Abwesenheiten. Vollständige Laufzeitargumente und tatsächlicher GL-Kontext des Spiels bleiben ohne zusätzlichen Hook NOT_OBSERVED. Probe2 beweist Verfügbarkeit ihres eigenen Kontextes, keinen Gameplay-, Hardware- oder Performance-PASS. Ein gesonderter tatsächlicher Normalspiel-Lauf ist erforderlich.

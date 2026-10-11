@@ -2383,7 +2383,7 @@
         "gate": "Targeted11 only; full17 and package remain NOT_RUN/FAIL until actual results",
         "status": "EXECUTED83_FAIL_CPU_GPU_PORT_RELEASED"
       },
-      "cpuGpuPortLease": "EXCLUSIVE_5174_ONE_DIAGNOSTIC",
+      "cpuGpuPortLease": "EXCLUSIVE_INTEGRATOR_ONE_NORMAL_FULL17_MESA98",
       "adaptiveNormalVerificationActual": {
         "log": 83,
         "selected": 11,
@@ -3061,8 +3061,156 @@
         "deviceScaleFactor": 1,
         "diagnosticDeadlineMs": 20000,
         "constraints": "ExistingChromium154/Node22/PW; ownblankpageWebGL2contextactualvendor/renderer/extensions/argv proof. NoGame/World/server/display/install/build/dependency/RepoApp/30source/globalsettings/viewport/budgetmutation. Alwayscloseownedbrowser. Actualfallback/unsupported explicit; nohardwareperformanceclaim. Candidate2 needsNEWconditionalgrant.",
-        "cpuGpuPortLease": "EXCLUSIVE_ONE_SETUP_AVAILABILITY_PROBE",
-        "status": "AUTHORIZED_NOT_RUN"
+        "cpuGpuPortLease": "RELEASED",
+        "status": "EXECUTED_CANDIDATE1_UNSUPPORTED_WEBGL2_BLOCKLISTED_CPU_RELEASED"
+      },
+      "renderingEnvironmentCandidate1Actual": {
+        "status": "UNSUPPORTED_WEBGL2",
+        "procedureExitCode": 0,
+        "startUtc": "2026-10-11T19:12:46.207767Z",
+        "endUtc": "2026-10-11T19:12:47.033995Z",
+        "durationSeconds": 0.826228,
+        "resultPath": "docs/factory/fp06/reviews/w07-rendering-env-candidate1-result.json",
+        "resultSha256": "766dc79862d9a50f9651483b1c4de7eb53e8d19074c2d437addc4597866c7f39",
+        "actualFindings": "ANGLEMesa/llvmpipe contextCreationError and fatalWebGL2blocklisted; no usableWebGL2/gameperf claim",
+        "noGameOrNativeWorldStarted": true,
+        "cpuGpuPortLease": "RELEASED",
+        "cleanup": "0activeownBrowserprocesses;2deadzygoteZ/PPID1 documented/noGlobalKill"
+      },
+      "renderingEnvironmentCandidate2Authorization": {
+        "authorizedAtUtc": "2026-10-11T19:15:01.321342+00:00",
+        "actor": "/root/cloud_environment_copy",
+        "kind": "ONE_SHORT_ISOLATED_WEBGL_AVAILABILITY_PROBE_NOT_GAMEPLAY_OR_PERFORMANCE",
+        "writeSet": [
+          "/workspace/.cloud-setup/fp06-w07-render-env-probe/**"
+        ],
+        "maxEnvironmentCandidates": 2,
+        "currentCandidate": 2,
+        "headless": true,
+        "args": [
+          "--ozone-platform=headless",
+          "--use-gl=angle",
+          "--use-angle=gl-egl",
+          "--ignore-gpu-blocklist"
+        ],
+        "env": {
+          "LIBGL_ALWAYS_SOFTWARE": "1",
+          "EGL_PLATFORM": "surfaceless"
+        },
+        "viewport": [
+          1280,
+          720
+        ],
+        "deviceScaleFactor": 1,
+        "diagnosticDeadlineMs": 20000,
+        "constraints": "ExistingChromium154/Node22/PW; ownblankpageWebGL2contextactualvendor/renderer/extensions/argv proof. NoGame/World/server/display/install/build/dependency/RepoApp/30source/globalsettings/viewport/budgetmutation. Alwayscloseownedbrowser. Actualfallback/unsupported explicit; nohardwareperformanceclaim. Candidate2 needsNEWconditionalgrant.",
+        "cpuGpuPortLease": "RELEASED",
+        "status": "EXECUTED_CONTEXT_AVAILABLE_MESA_SOFTWARE_ONLY_CPU_RELEASED",
+        "planChangeReason": "Actualcandidate1showsMesaavailablebutWebGL2policyblock, so one minimalpolicyflag replaces speculativeXorgfallback. Fixedmax2availabilityiterations retained; no thirdprobe/Xorg/install/game until newRootgrant."
+      },
+      "renderingEnvironmentCandidate2Actual": {
+        "status": "AVAILABLE_MESA_SOFTWARE_CONTEXT_ONLY",
+        "procedureExitCode": 0,
+        "commandStartUtc": "2026-10-11T19:14:47.042545Z",
+        "commandEndUtc": "2026-10-11T19:14:48.656745Z",
+        "procedureSeconds": 1.6142,
+        "resultPath": "docs/factory/fp06/reviews/w07-rendering-env-candidate2-result.json",
+        "resultSha256": "83d6310c0214eb18964c3ed7f19be561c27b08c0af1b80c22f8c749f486e0d82",
+        "actualWebGL": {
+          "webgl2Available": true,
+          "creationError": null,
+          "contextLost": false,
+          "framebufferStatus": 36053,
+          "framebufferCompleteValue": 36053,
+          "probeGlError": 0,
+          "vendor": "WebKit",
+          "renderer": "WebKit WebGL",
+          "unmaskedVendor": "Google Inc. (Mesa)",
+          "unmaskedRenderer": "ANGLE (Mesa, llvmpipe (LLVM 19.1.7 256 bits), OpenGL ES 3.2)",
+          "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+          "shadingLanguageVersion": "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+          "supportedExtensions": [
+            "EXT_clip_control",
+            "EXT_color_buffer_float",
+            "EXT_color_buffer_half_float",
+            "EXT_conservative_depth",
+            "EXT_depth_clamp",
+            "EXT_disjoint_timer_query_webgl2",
+            "EXT_float_blend",
+            "EXT_polygon_offset_clamp",
+            "EXT_render_snorm",
+            "EXT_texture_compression_bptc",
+            "EXT_texture_compression_rgtc",
+            "EXT_texture_filter_anisotropic",
+            "EXT_texture_mirror_clamp_to_edge",
+            "EXT_texture_norm16",
+            "KHR_parallel_shader_compile",
+            "NV_shader_noperspective_interpolation",
+            "OES_draw_buffers_indexed",
+            "OES_sample_variables",
+            "OES_shader_multisample_interpolation",
+            "OES_texture_float_linear",
+            "WEBGL_blend_func_extended",
+            "WEBGL_clip_cull_distance",
+            "WEBGL_compressed_texture_astc",
+            "WEBGL_compressed_texture_etc",
+            "WEBGL_compressed_texture_etc1",
+            "WEBGL_compressed_texture_s3tc",
+            "WEBGL_compressed_texture_s3tc_srgb",
+            "WEBGL_debug_renderer_info",
+            "WEBGL_debug_shaders",
+            "WEBGL_lose_context",
+            "WEBGL_multi_draw",
+            "WEBGL_stencil_texturing"
+          ],
+          "contextAttributes": {
+            "alpha": true,
+            "antialias": true,
+            "depth": true,
+            "desynchronized": false,
+            "failIfMajorPerformanceCaveat": false,
+            "powerPreference": "default",
+            "premultipliedAlpha": true,
+            "preserveDrawingBuffer": false,
+            "stencil": false,
+            "xrCompatible": false
+          },
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          },
+          "dpr": 1
+        },
+        "browserDisposed": true,
+        "noGameOrNativeWorldStarted": true,
+        "cpuGpuPortLease": "RELEASED",
+        "cleanup": "0activeownBrowserprocesses;2deadzygoteZ/PPID1 noGlobalKill",
+        "hardwarePerformance": "NOT_RUN",
+        "W07GameplayEndGate": "FAIL88_UNCHANGED"
+      },
+      "mesaBrowserWrapperSourceAuthorization": {
+        "authorizedAtUtc": "2026-10-11T19:17:21.874507+00:00",
+        "actor": "/root/cloud_environment_copy",
+        "writeSet": [
+          "/workspace/.cloud-setup/bin/chromium-hestia-mesa"
+        ],
+        "scope": "Exactnewbashwrapper exportsLIBGL_ALWAYS_SOFTWARE=1/EGL_PLATFORM=surfaceless; exec/usr/bin/chromium samecandidate2fourflags plus exactargs. Noexistingfiles/System/RepoApp/30source/secret/envdump/cacheflags/Browser/probe3/Game/deps changes. SourceandSHA only; Rootindependentreview beforeONEseparateoriginalFull17gamegrant."
+      },
+      "mesaBrowserWrapperSourceReview": {
+        "status": "SOURCE_SCOPE_PASS",
+        "path": "docs/factory/fp06/reviews/w07-mesa-wrapper-root-source-review.md",
+        "sha256": "e2085aa34c2df75bb96743b00facbd9489d9b3ca95c6e3dfc787a0ae38a39b8b"
+      },
+      "mesaNormalFull98Authorization": {
+        "authorizedAtUtc": "2026-10-11T19:25:52.481831+00:00",
+        "actor": "/root/fp06_integrator",
+        "phase": "ONE_NORMAL_FULL17_MESA98",
+        "wrapperPath": "/workspace/.cloud-setup/bin/chromium-hestia-mesa",
+        "wrapperSha256": "47b081898a76e3f36d43ce06697990adb093ebe2eaeed8ef1b484fa8bffd5ab9",
+        "runnerSha256": "187c2726af08d07d7525090ee841277ab203f75efa6a18f348b5da1573851141",
+        "reviewPath": "docs/factory/fp06/reviews/w07-mesa-wrapper-root-source-review.md",
+        "reviewSha256": "e2085aa34c2df75bb96743b00facbd9489d9b3ca95c6e3dfc787a0ae38a39b8b",
+        "scope": "Exactly one unchanged full17 normal browser execution via reviewed wrapper, original config53a55, all30baseline201394 and normal030fc. No app/E2E/runtime/build edits, no diagnostic hooks, no source/physics/queue/timeout/budget change. Archive exact fresh raw/results, restore own fixed origins, verify all30, release own5174. No third availability probe or concurrent CPU/GPU work."
       }
     },
     "W08": {
