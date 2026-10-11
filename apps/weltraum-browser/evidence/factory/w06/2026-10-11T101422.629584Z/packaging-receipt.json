@@ -1,0 +1,19 @@
+{
+  "codeEvidenceCommitSha": "5b596f932dc769052e17603965d0179a4937d948",
+  "packagingFinding": "Three locally present referenced successful-run Playwright artifacts were ignored by default Git rules and absent from the first code commit.",
+  "missingAtCodeCommit": [
+    "playwright-output/.last-run.json",
+    "playwright-report/data/665fea70a0aa3c9a98164e6d167dcea49f711578.png",
+    "playwright-report/index.html"
+  ],
+  "correction": "Only these three exact own-run paths are explicitly force-added; no broad add/foreign changes. Exact executed Browser env values replace manifest command placeholders.",
+  "indexBindingBeforeAddingThisReceipt": {
+    "artifactReferences": 285,
+    "trackedGitBlobs": 204,
+    "trackedLfsPointers": 81,
+    "untrackedReferences": [],
+    "byteOrPointerMismatches": [],
+    "binding": "Every immutable run artifact is staged/tracked; Git blob bytes or LFS SHA256 oid+size match the manifest. Local actual content was separately checked by bounded verifier."
+  },
+  "finalValidation": "Final complete Gitindex/HEAD reference binding and bounded verifier receipts remain external to avoid self-referential hash output; external w06-report records actual followup SHA and counts."
+}

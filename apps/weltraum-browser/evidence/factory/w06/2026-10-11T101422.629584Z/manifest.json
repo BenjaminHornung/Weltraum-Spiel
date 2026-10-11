@@ -94,10 +94,11 @@
     },
     {
       "phase": "REAL_BROWSER_PRE_DROP",
-      "command": "FP06_E2E_RUN_DIR=<actual run> WELTRAUM_FACTORY_EVIDENCE_RUN=<actual run id> npm run test:e2e -- --config=/workspace/.cloud-setup/fp06-w06.playwright.config.mts tests/e2e/factory-host.spec.ts",
+      "command": "FP06_E2E_RUN_DIR=\"/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/w06/2026-10-11T101422.629584Z\" WELTRAUM_FACTORY_EVIDENCE_RUN=\"2026-10-11T101422.629584Z\" npm run test:e2e -- --config=/workspace/.cloud-setup/fp06-w06.playwright.config.mts tests/e2e/factory-host.spec.ts",
       "exitCode": 0,
       "result": "7/7 PASS in2.0m, original30s/5s/20s unchanged; exact byte basis in browser-byte-binding.json",
-      "log": "green-browser-r1-serial-runner-trace.txt"
+      "log": "green-browser-r1-serial-runner-trace.txt",
+      "workingDirectory": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser"
     },
     {
       "phase": "FINAL_DROP_RED",
@@ -1147,6 +1148,11 @@
       "sha256": "dbc2a6ff8fce2c5bdd9aeed5e6519bc2146f2e5bbb46f30bcf443875c0d982b8"
     },
     {
+      "path": "packaging-receipt.json",
+      "bytes": 1217,
+      "sha256": "be399f2f8f9a9a058a3dd504b15de8d2e041cc4d422ab0006951d774594637b8"
+    },
+    {
       "path": "playwright-environment-config.mts.txt",
       "bytes": 942,
       "sha256": "93055461b3f057aa7068fb38fe5168c5fdc9436dbb3f0ca2dc2d2ab5598e5791"
@@ -1566,5 +1572,7 @@
       "bytes": 1248,
       "sha256": "b9992c0fe336fc6e6899d57307c54faf57e45c47e222d09b1959c9d9ddceaf05"
     }
-  ]
+  ],
+  "codeEvidenceCommitSha": "5b596f932dc769052e17603965d0179a4937d948",
+  "evidenceClarification": "Only these three exact own-run paths are explicitly force-added; no broad add/foreign changes. Exact executed Browser env values replace manifest command placeholders."
 }
