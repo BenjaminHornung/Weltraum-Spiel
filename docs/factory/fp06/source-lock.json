@@ -1411,6 +1411,16 @@
         "typeScriptAndVite": "PASS",
         "browser": "1 PASS /1 FAIL /4 NOT_RUN;55.9s Exit1; frame and CargoOpen succeeded, original case30s consumed before Play; no diagnosed Play runtime fault",
         "finalGate": "PENDING"
+      },
+      "narrowMountRecoveryFollowup": {
+        "authorizedAtUtc": "2026-10-11T14:04:24.667053+00:00",
+        "status": "AUTHORIZED_PRE_FIX_BUSINESS_RED_THEN_MINIMAL_FIX; not yet executed",
+        "paths": [
+          "apps/weltraum-browser/src/factory/session/factorySession.ts",
+          "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts"
+        ],
+        "purpose": "Failed initial Cargo catalog/material initialization must release mounted-host reservation before same-host valid retry; no World/source API changes",
+        "timing": "after current serial browser harness phase; fresh runtime seal/review afterward"
       }
     },
     "W08": {
@@ -1812,6 +1822,15 @@
       "stderr": "",
       "remoteMainSha": "e40592c113b72a8dc93725187f92cf948e07f44d",
       "matchesLockedBase": true
+    },
+    {
+      "timestampUtc": "2026-10-11T14:04:24.667053+00:00",
+      "command": "git ls-remote origin refs/heads/main",
+      "cwd": "/workspace/Weltraum-Spiel",
+      "exitCode": 0,
+      "stdout": "e40592c113b72a8dc93725187f92cf948e07f44d\trefs/heads/main\n",
+      "verifiedRemoteMainSha": "e40592c113b72a8dc93725187f92cf948e07f44d",
+      "timestampNote": "Recorded shortly after actual command returned at2026-10-11T14:02:22Z; not an invented exact process-start timestamp"
     }
   ],
   "integrationTransfers": [
