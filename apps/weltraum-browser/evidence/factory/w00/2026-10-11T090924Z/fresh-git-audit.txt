@@ -1,0 +1,60 @@
+$ git status --porcelain=v1
+?? apps/weltraum-browser/evidence/factory/
+exit=0
+
+$ git rev-parse HEAD
+e40592c113b72a8dc93725187f92cf948e07f44d
+exit=0
+
+$ git rev-parse origin/main
+e40592c113b72a8dc93725187f92cf948e07f44d
+exit=0
+
+$ git ls-remote origin refs/heads/main
+e40592c113b72a8dc93725187f92cf948e07f44d	refs/heads/main
+exit=0
+
+$ git worktree list --porcelain
+worktree /workspace/Weltraum-Spiel
+HEAD e40592c113b72a8dc93725187f92cf948e07f44d
+branch refs/heads/work
+
+worktree /workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11
+HEAD e40592c113b72a8dc93725187f92cf948e07f44d
+branch refs/heads/codex/hestia-fp06-w00-2026-10-11
+
+exit=0
+
+$ git branch -a --format=%(refname) %(objectname)
+refs/heads/codex/hestia-fp06-w00-2026-10-11 e40592c113b72a8dc93725187f92cf948e07f44d
+refs/heads/work e40592c113b72a8dc93725187f92cf948e07f44d
+refs/remotes/origin/HEAD e40592c113b72a8dc93725187f92cf948e07f44d
+refs/remotes/origin/agent/hestia-asset-compiler-spike-2026-10-02 1592ff882cd6f30cc3ee96df6e61f630dee167a7
+refs/remotes/origin/feature/hestia-destruction-program-2026-10-07 17b1db4201a28e7b607c30707bdc2b75e3484a10
+refs/remotes/origin/feature/hvp-cut-rt-p00 f2ee73cfbfa80b6c09d540c784d3ad426ae83a04
+refs/remotes/origin/feature/hvp-cut-rt-v3-completion-2026-09-23 0bfd1e67117d0dd6184e592e9a2a1b8b9f58241a
+refs/remotes/origin/feature/player-path-p12 e7ccbb1ab41767d4edb6027b143200e4563e2058
+refs/remotes/origin/feature/resume-hvp-cut-v3-2026-10-05 aa2eabd918e03c475a489b412cd18e05f781a0f9
+refs/remotes/origin/feature/worker-authority-p09 28db171a7d33411cb14b7ab28479d30706d60683
+refs/remotes/origin/integration/hestia-fp06-v2-2026-10-10 07c7587b1a646b6a460025fe5b98c4ef6ac43182
+refs/remotes/origin/main e40592c113b72a8dc93725187f92cf948e07f44d
+refs/remotes/origin/perf/hvp-hud-frame-hotpath-2026-10-02 7e608d4f1e909dbc6576cde821b595a5bc41927b
+refs/remotes/origin/perf/hvp-route-bundle-isolation-2026-10-02 d8fa02867e538dab3363819f10394fd059bda321
+exit=0
+
+$ git show --format=fuller --stat origin/integration/hestia-fp06-v2-2026-10-10
+commit 07c7587b1a646b6a460025fe5b98c4ef6ac43182
+Author:     Benjamin Hornung <benni.hornung@gmail.com>
+AuthorDate: Sat Oct 10 22:50:41 2026 +0200
+Commit:     Benjamin Hornung <benni.hornung@gmail.com>
+CommitDate: Sat Oct 10 22:50:41 2026 +0200
+
+    docs(factory): record FP06 W00 preflight and blocked gates
+
+ docs/factory/fp06/baseline.md          | 101 ++++
+ docs/factory/fp06/decisions.md         |  65 +++
+ docs/factory/fp06/source-lock.json     | 936 +++++++++++++++++++++++++++++++++
+ docs/factory/fp06/write-ownership.json | 745 ++++++++++++++++++++++++++
+ 4 files changed, 1847 insertions(+)
+exit=0
+

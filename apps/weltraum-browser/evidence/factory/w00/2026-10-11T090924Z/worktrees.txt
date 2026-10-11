@@ -1,0 +1,8 @@
+worktree /workspace/Weltraum-Spiel
+HEAD e40592c113b72a8dc93725187f92cf948e07f44d
+branch refs/heads/work
+
+worktree /workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11
+HEAD e40592c113b72a8dc93725187f92cf948e07f44d
+branch refs/heads/codex/hestia-fp06-w00-2026-10-11
+

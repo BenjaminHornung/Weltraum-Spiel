@@ -1,0 +1,270 @@
+{
+  "checkedAtUtc": "2026-10-11T09:15:48.758061+00:00",
+  "manifestStatus": "PASS",
+  "entries": [
+    {
+      "path": "01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_CORE_GAME_KONZEPT_FACTORY_ROADMAP_2026-10-10.md",
+      "expectedSha256": "0c7e8b7ca7e0da30763475659022ff6c65b9b465cfdb4227f50dff3366524a21",
+      "actualSha256": "0c7e8b7ca7e0da30763475659022ff6c65b9b465cfdb4227f50dff3366524a21",
+      "expectedBytes": 80441,
+      "actualBytes": 80441,
+      "status": "PASS"
+    },
+    {
+      "path": "01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FACTORY_DETAILPLAN_01_2026-10-10.md",
+      "expectedSha256": "cc43b69e056b86fdbfc55e2b5be096e6a716b99f77b555b5040e7021632f7e94",
+      "actualSha256": "cc43b69e056b86fdbfc55e2b5be096e6a716b99f77b555b5040e7021632f7e94",
+      "expectedBytes": 79763,
+      "actualBytes": 79763,
+      "status": "PASS"
+    },
+    {
+      "path": "01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP01_EINSTIEG_ENERGIE_DETAILPLAN_2026-10-10.md",
+      "expectedSha256": "ec3e605de2c6a4877c2ff0afae244b3215e7bf8bb267feef4c466b546477080c",
+      "actualSha256": "ec3e605de2c6a4877c2ff0afae244b3215e7bf8bb267feef4c466b546477080c",
+      "expectedBytes": 183726,
+      "actualBytes": 183726,
+      "status": "PASS"
+    },
+    {
+      "path": "01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP02_PRODUKTIONSKETTEN_GEBAEUDE_LAYOUTS_DETAILPLAN_2026-10-10.md",
+      "expectedSha256": "5c4f068edba3d0c89e77b0d3a40734d4ee1a672c39f3885cbfef31430d942f39",
+      "actualSha256": "5c4f068edba3d0c89e77b0d3a40734d4ee1a672c39f3885cbfef31430d942f39",
+      "expectedBytes": 164696,
+      "actualBytes": 164696,
+      "status": "PASS"
+    },
+    {
+      "path": "01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP03_BAUEN_BLUEPRINTS_BAUAUTOMATION_DETAILPLAN_2026-10-10.md",
+      "expectedSha256": "7d43e358ae7ead52da3996e85bc52906cb2584a42e0802fc4d1e959df1289cb1",
+      "actualSha256": "7d43e358ae7ead52da3996e85bc52906cb2584a42e0802fc4d1e959df1289cb1",
+      "expectedBytes": 191555,
+      "actualBytes": 191555,
+      "status": "PASS"
+    },
+    {
+      "path": "01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP04_AUTOMATION_ENERGIESELBSTSTAENDIGKEIT_DETAILPLAN_2026-10-10.md",
+      "expectedSha256": "a04f8074afc4e1d5cd8d8eb948bb93f42cdc5a5cc73b3f2a077cb13e67e48570",
+      "actualSha256": "a04f8074afc4e1d5cd8d8eb948bb93f42cdc5a5cc73b3f2a077cb13e67e48570",
+      "expectedBytes": 183440,
+      "actualBytes": 183440,
+      "status": "PASS"
+    },
+    {
+      "path": "01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP05_FLUIDS_SCHWERINDUSTRIE_KI_STADT_DETAILPLAN_2026-10-10.md",
+      "expectedSha256": "8aea627c70e7335a0d5d0c82c3070bfcc7d575605d037e9435ba0935e51557df",
+      "actualSha256": "8aea627c70e7335a0d5d0c82c3070bfcc7d575605d037e9435ba0935e51557df",
+      "expectedBytes": 234260,
+      "actualBytes": 234260,
+      "status": "PASS"
+    },
+    {
+      "path": "01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_CODEX_WORK_ORCHESTRATOR_START_2026-10-10.md",
+      "expectedSha256": "82242327d42d5cbc35f85ee823d0f7dcef6c8c83656509d6edd0a685c7dddc23",
+      "actualSha256": "82242327d42d5cbc35f85ee823d0f7dcef6c8c83656509d6edd0a685c7dddc23",
+      "expectedBytes": 9795,
+      "actualBytes": 9795,
+      "status": "PASS"
+    },
+    {
+      "path": "01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md",
+      "expectedSha256": "501bf5d80ee6dec9627e48ea27c271b3f964d21cde61ce9410be7eb77fa182ea",
+      "actualSha256": "501bf5d80ee6dec9627e48ea27c271b3f964d21cde61ce9410be7eb77fa182ea",
+      "expectedBytes": 195396,
+      "actualBytes": 195396,
+      "status": "PASS"
+    },
+    {
+      "path": "01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PRUEFPROTOKOLL_2026-10-10.md",
+      "expectedSha256": "438d55b2043404b82ce4d6ed667785a1e5b7b6c0362b40bc50d58faa0dceddd9",
+      "actualSha256": "438d55b2043404b82ce4d6ed667785a1e5b7b6c0362b40bc50d58faa0dceddd9",
+      "expectedBytes": 2446,
+      "actualBytes": 2446,
+      "status": "PASS"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/Architekturkonzept Dynamisches Wetter.txt",
+      "expectedSha256": "cf29b8dd49fdf271462d321f726a4e3a7ec56a4e2093b3913dea84e2a13ce601",
+      "actualSha256": "cf29b8dd49fdf271462d321f726a4e3a7ec56a4e2093b3913dea84e2a13ce601",
+      "expectedBytes": 16574,
+      "actualBytes": 16574,
+      "status": "PASS"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G01_core_game_loop_progression_vertical_slices_abschlussbericht_2026-08-12(1).md",
+      "expectedSha256": "6297388fc9f6fa40547250d68a61c9b4539ff17df16507af22bf476c0aec790c",
+      "actualSha256": "6297388fc9f6fa40547250d68a61c9b4539ff17df16507af22bf476c0aec790c",
+      "expectedBytes": 84837,
+      "actualBytes": 84837,
+      "status": "PASS"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G02_unified_ingame_authoring_platform_abschlussbericht_2026-08-12(2).md",
+      "expectedSha256": "661bb79819c24fbdcf66009526bb1c26c8ec74dec28a46d67243ee308133f20d",
+      "actualSha256": "661bb79819c24fbdcf66009526bb1c26c8ec74dec28a46d67243ee308133f20d",
+      "expectedBytes": 79148,
+      "actualBytes": 79148,
+      "status": "PASS"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G05_Mission_Dialog_Narrative_Authoring_Abschlussbericht_2026-08-12(2).md",
+      "expectedSha256": "4155b6ed3462fffe6fc3b9bfea836a0952fe18747219b88601df2bffae9e5fe1",
+      "actualSha256": "4155b6ed3462fffe6fc3b9bfea836a0952fe18747219b88601df2bffae9e5fe1",
+      "expectedBytes": 85544,
+      "actualBytes": 85544,
+      "status": "PASS"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G06_NPC_Gesellschaft_Simulations_LOD_Abschlussbericht_2026-08-12(2).md",
+      "expectedSha256": "5d9771744276b33e57a528cae26aac1e1f178d0a1ac39bb2647639d50020c6c7",
+      "actualSha256": "5d9771744276b33e57a528cae26aac1e1f178d0a1ac39bb2647639d50020c6c7",
+      "expectedBytes": 36115,
+      "actualBytes": 36115,
+      "status": "PASS"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G06_NPC_Gesellschaft_Simulations_LOD_Abschlussbericht_2026-08-12(3).md",
+      "expectedSha256": "5d9771744276b33e57a528cae26aac1e1f178d0a1ac39bb2647639d50020c6c7",
+      "actualSha256": "5d9771744276b33e57a528cae26aac1e1f178d0a1ac39bb2647639d50020c6c7",
+      "expectedBytes": 36115,
+      "actualBytes": 36115,
+      "status": "PASS"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G07_Fraktionen_Gilden_Reputation_Recht_Abschlussbericht_2026-08-12(2).md",
+      "expectedSha256": "ff001c635589bcb790c4cb464c325b001a03539410ec9e5d00de7e8110a3084d",
+      "actualSha256": "ff001c635589bcb790c4cb464c325b001a03539410ec9e5d00de7e8110a3084d",
+      "expectedBytes": 85470,
+      "actualBytes": 85470,
+      "status": "PASS"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G08_Wirtschaft_Handel_Produktion_Logistik_Abschlussbericht_2026-08-12(2).md",
+      "expectedSha256": "f04f80f890ff3e079e35c83ef2c5baae0ba4e8c53b0b59cda968760c98cdf572",
+      "actualSha256": "f04f80f890ff3e079e35c83ef2c5baae0ba4e8c53b0b59cda968760c98cdf572",
+      "expectedBytes": 129838,
+      "actualBytes": 129838,
+      "status": "PASS"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G09_Ship_Vehicle_Drone_Builder_Abschlussbericht_2026-08-12(2).md",
+      "expectedSha256": "c0fe51653fbcc4ded182a699f9bfd8f3e8daf8e819efa45c245852fd9591ab16",
+      "actualSha256": "c0fe51653fbcc4ded182a699f9bfd8f3e8daf8e819efa45c245852fd9591ab16",
+      "expectedBytes": 71471,
+      "actualBytes": 71471,
+      "status": "PASS"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G10_Planet_System_Orbit_Editor_Abschlussbericht_2026-08-12(2).md",
+      "expectedSha256": "cc62f7ed5d1fd98ec43ebdb2a5f4989bec01e15c3da648d497e2d98ea065419c",
+      "actualSha256": "cc62f7ed5d1fd98ec43ebdb2a5f4989bec01e15c3da648d497e2d98ea065419c",
+      "expectedBytes": 65453,
+      "actualBytes": 65453,
+      "status": "PASS"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G11_AI_Authoring_Copilot_Abschlussbericht_2026-08-12(2).md",
+      "expectedSha256": "88bf005b6d0d39878be819c5bb4000b5b7197fff04269e4d9056d9c64fde2571",
+      "actualSha256": "88bf005b6d0d39878be819c5bb4000b5b7197fff04269e4d9056d9c64fde2571",
+      "expectedBytes": 102520,
+      "actualBytes": 102520,
+      "status": "PASS"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G12_Blender_to_HVOX_Toolchain_Architekturbericht_2026-08-12(2).md",
+      "expectedSha256": "79b7c7116768faf6b1c7f10519943e1930796514cf6b10132db424b94dcc11a6",
+      "actualSha256": "79b7c7116768faf6b1c7f10519943e1930796514cf6b10132db424b94dcc11a6",
+      "expectedBytes": 50338,
+      "actualBytes": 50338,
+      "status": "PASS"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G13_Content_Data_Modding_Versioning_Hot_Reload_Abschlussbericht_2026-08-12(2).md",
+      "expectedSha256": "dfd28aec6ca16ed6f65fa032f55f5c9760cedf2a12b27ad43dc7c235f64b0b28",
+      "actualSha256": "dfd28aec6ca16ed6f65fa032f55f5c9760cedf2a12b27ad43dc7c235f64b0b28",
+      "expectedBytes": 77292,
+      "actualBytes": 77292,
+      "status": "PASS"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G14_UX_MODES_EDITOR_SURFACE_CITY_SPACE_ABSCHLUSSBERICHT_2026-08-12(2).md",
+      "expectedSha256": "49d6a0289cf21e84fb8eeb1e885e036914d65f8ace4b0a839ac4cfede3692de0",
+      "actualSha256": "49d6a0289cf21e84fb8eeb1e885e036914d65f8ace4b0a839ac4cfede3692de0",
+      "expectedBytes": 56324,
+      "actualBytes": 56324,
+      "status": "PASS"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G15_Combat_Mining_Drone_Operations_Abschlussbericht_2026-08-12(3).md",
+      "expectedSha256": "411659af503f87db206ff80223f9714229930ffc41a348efcf4c9a76eda64971",
+      "actualSha256": "411659af503f87db206ff80223f9714229930ffc41a348efcf4c9a76eda64971",
+      "expectedBytes": 109920,
+      "actualBytes": 109920,
+      "status": "PASS"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G16_procedural_settlement_city_generation_abschlussbericht_2026-08-12(4)(1).md",
+      "expectedSha256": "0e5f31c3f180dc0824f09500d770276601c88c7c6c60b05ba4dfe75579e40295",
+      "actualSha256": "0e5f31c3f180dc0824f09500d770276601c88c7c6c60b05ba4dfe75579e40295",
+      "expectedBytes": 69314,
+      "actualBytes": 69314,
+      "status": "PASS"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/G17_Editor_QA_Validation_Playwright_Automation_Abschlussbericht_2026-08-12(1).md",
+      "expectedSha256": "a46416858744904359b7719fd5ca158b6d90fce17f9c00b6415ca4fdf0dc1365",
+      "actualSha256": "a46416858744904359b7719fd5ca158b6d90fce17f9c00b6415ca4fdf0dc1365",
+      "expectedBytes": 90840,
+      "actualBytes": 90840,
+      "status": "PASS"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/P06 Prototype Audit.txt",
+      "expectedSha256": "dee8de71d322dc38e350712f1cffb7dfed7f88a07492c8e14d961a0effd5a60b",
+      "actualSha256": "dee8de71d322dc38e350712f1cffb7dfed7f88a07492c8e14d961a0effd5a60b",
+      "expectedBytes": 546,
+      "actualBytes": 546,
+      "status": "PASS"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/Reddit Referenzen erg\u00e4nzen.txt",
+      "expectedSha256": "b76a07a1cf38ed6267eb2fdc5daed6337c39fa2ac661ac1d52fe01041ebd0588",
+      "actualSha256": "b76a07a1cf38ed6267eb2fdc5daed6337c39fa2ac661ac1d52fe01041ebd0588",
+      "expectedBytes": 13246,
+      "actualBytes": 13246,
+      "status": "PASS"
+    },
+    {
+      "path": "02_HISTORISCHE_RECHERCHE_REFERENZEN/Storyboard-Editor Recherche.txt",
+      "expectedSha256": "61b9ca2ec8b4903857bdb8df0bc3efea9cdcb9b0b8b2fd8d0a3c25bf1b35ab02",
+      "actualSha256": "61b9ca2ec8b4903857bdb8df0bc3efea9cdcb9b0b8b2fd8d0a3c25bf1b35ab02",
+      "expectedBytes": 50790,
+      "actualBytes": 50790,
+      "status": "PASS"
+    },
+    {
+      "path": "CODEX_CLOUD_AGENT_BRIEF.md",
+      "expectedSha256": "714d9f275be4213a4a5c9ec1333dcdd9779610adefb72913572be8291b2a0874",
+      "actualSha256": "714d9f275be4213a4a5c9ec1333dcdd9779610adefb72913572be8291b2a0874",
+      "expectedBytes": 11099,
+      "actualBytes": 11099,
+      "status": "PASS"
+    },
+    {
+      "path": "CODEX_CLOUD_STARTPROMPT.md",
+      "expectedSha256": "adcda92822ce70936878921a64b78334aa3c147f0a8108ab63c87fae044f821a",
+      "actualSha256": "adcda92822ce70936878921a64b78334aa3c147f0a8108ab63c87fae044f821a",
+      "expectedBytes": 4677,
+      "actualBytes": 4677,
+      "status": "PASS"
+    },
+    {
+      "path": "README_START_HIER.md",
+      "expectedSha256": "66b65d985b3f7a3e4b37f598ec6150993336247f9264b1b66ef31699b440aa05",
+      "actualSha256": "66b65d985b3f7a3e4b37f598ec6150993336247f9264b1b66ef31699b440aa05",
+      "expectedBytes": 5392,
+      "actualBytes": 5392,
+      "status": "PASS"
+    }
+  ]
+}

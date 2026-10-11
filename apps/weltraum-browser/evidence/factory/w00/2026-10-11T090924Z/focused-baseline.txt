@@ -1,0 +1,13 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/hvp-bootstrap.test.ts tests/unit/resourceCatalog.test.ts tests/unit/resourceContainers.test.ts tests/unit/resourceTransfer.test.ts tests/unit/hvp-physics.test.ts tests/unit/hvp-world-save.test.ts tests/unit/hvp-game-save.test.ts tests/unit/hvp-world-replacement.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/apps/weltraum-browser
+
+
+ Test Files  8 passed (8)
+      Tests  95 passed (95)
+   Start at  09:09:24
+   Duration  189.88s (transform 1.75s, setup 0ms, import 2.78s, tests 186.33s, environment 1ms)
+

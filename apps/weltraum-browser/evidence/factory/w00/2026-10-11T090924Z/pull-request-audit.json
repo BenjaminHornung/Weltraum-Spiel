@@ -1,0 +1,36 @@
+{
+  "method": "public HTML open-pull-request listing",
+  "url": "https://github.com/BenjaminHornung/Weltraum-Spiel/pulls",
+  "httpStatus": 200,
+  "responseSha256": "e488ff8c37db6ba4dca3feecf874cdc59253d9474a8a2da7ad3c4cb07e99f930",
+  "visiblePullRequests": [
+    {
+      "number": 72,
+      "title": "#WELTRAUM-000 deps: Bump three from 0.185.1 to 0.186.1 in /apps/weltraum-browser",
+      "url": "https://github.com/BenjaminHornung/Weltraum-Spiel/pull/72"
+    },
+    {
+      "number": 71,
+      "title": "#WELTRAUM-000 deps: Bump @dimforge/rapier3d-compat from 0.12.0 to 0.20.0 in /apps/weltraum-browser",
+      "url": "https://github.com/BenjaminHornung/Weltraum-Spiel/pull/71"
+    },
+    {
+      "number": 70,
+      "title": "#WELTRAUM-000 deps: Bump three and @types/three in /apps/weltraum-browser",
+      "url": "https://github.com/BenjaminHornung/Weltraum-Spiel/pull/70"
+    },
+    {
+      "number": 69,
+      "title": "#WELTRAUM-000 deps: Bump the browser-development-dependencies group across 1 directory with 3 updates",
+      "url": "https://github.com/BenjaminHornung/Weltraum-Spiel/pull/69"
+    },
+    {
+      "number": 59,
+      "title": "#WELTRAUM-000 deps: Bump vitest from 4.1.11 to 5.0.0 in /apps/weltraum-browser",
+      "url": "https://github.com/BenjaminHornung/Weltraum-Spiel/pull/59"
+    }
+  ],
+  "limitations": [
+    "GitHub GraphQL API blocked by environment network policy; public HTML does not prove completeness or externally active writer status."
+  ]
+}

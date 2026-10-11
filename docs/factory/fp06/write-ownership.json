@@ -1,0 +1,821 @@
+{
+  "schema": "hestia.fp06.write-ownership/v1",
+  "createdAtUtc": "2026-10-11T09:23:32.353886+00:00",
+  "baseSha": "e40592c113b72a8dc93725187f92cf948e07f44d",
+  "maxSimultaneousImplementationWriters": 2,
+  "integrator": "/root/fp06_integrator",
+  "commonFilesExclusiveOwner": "/root/fp06_integrator",
+  "sharedPaths": [
+    "apps/weltraum-browser/src/factory/contracts.ts",
+    "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+    "apps/weltraum-browser/src/hestia-prototype/persistence/factoryWorldParts.ts",
+    "apps/weltraum-browser/src/factory/session/**",
+    "apps/weltraum-browser/src/factory/persistence/**",
+    "apps/weltraum-browser/package.json",
+    "apps/weltraum-browser/vite.config.ts",
+    ".github/workflows/browser-mainline-ci.yml",
+    "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts"
+  ],
+  "sharedPathGrant": "NONE_YET; package-specific grant after source/decision gates and fresh conflict check",
+  "activeImplementationWriters": [],
+  "activeDocumentationWriter": {
+    "agent": "/root",
+    "branch": "codex/hestia-fp06-w00-2026-10-11",
+    "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11",
+    "paths": [
+      "docs/factory/fp06/source-lock.json",
+      "docs/factory/fp06/write-ownership.json",
+      "docs/factory/fp06/decisions.md",
+      "docs/factory/fp06/baseline.md",
+      "apps/weltraum-browser/evidence/factory/w00/2026-10-11T090924Z/**"
+    ]
+  },
+  "readOnlyAgents": [
+    {
+      "agent": "/root/w00_repo_audit",
+      "task": "fresh repository/branches/PR audit",
+      "productWriteGrant": false
+    },
+    {
+      "agent": "/root/w00_architecture",
+      "task": "architecture and W01 source/contract preflight",
+      "productWriteGrant": false
+    }
+  ],
+  "plannedSlots": [
+    {
+      "slot": 1,
+      "role": "integrator",
+      "agent": "/root/fp06_integrator",
+      "packages": [
+        "W01",
+        "W03",
+        "W04",
+        "W06",
+        "W07",
+        "W09",
+        "W10",
+        "W11"
+      ],
+      "status": "NOT_STARTED"
+    },
+    {
+      "slot": 2,
+      "role": "domain-or-assets-writer",
+      "agent": null,
+      "packages": [
+        "W02",
+        "W05",
+        "W08"
+      ],
+      "status": "NOT_DISPATCHED"
+    }
+  ],
+  "packageScopes": {
+    "W00": {
+      "dependencies": [],
+      "decisionGates": [],
+      "sourceReadSections": "FP01 §1; FP02 §1; FP03 §1; FP04 §1; FP05 §1; Repository-Regeln.",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/package-lock.json",
+        "handoff:01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md"
+      ],
+      "plannedWriteSet": [
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "docs/factory/fp06/baseline.md"
+      ],
+      "grantedWriteSet": [
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "docs/factory/fp06/baseline.md"
+      ],
+      "evidenceWriteSet": [
+        "apps/weltraum-browser/evidence/factory/w00/<actual-run-id>/**"
+      ],
+      "evidenceGrant": true,
+      "status": "PASS",
+      "owner": "/root",
+      "plannedRole": "integrator",
+      "branch": "codex/hestia-fp06-w00-2026-10-11",
+      "plannedBranch": "codex/hestia-fp06-w00-2026-10-11",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11",
+      "commitSha": null,
+      "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
+      "restrictions": [
+        "Only exact granted paths; planned paths are not grants",
+        "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
+        "No main merge/push/publication; no W12-W29"
+      ]
+    },
+    "W01": {
+      "dependencies": [
+        "W00"
+      ],
+      "decisionGates": [
+        "D01",
+        "W01_SOURCE_QUANTITY_FREEZE"
+      ],
+      "sourceReadSections": "FP02 §§4–6, 9–10; FP03 §1.2; FP04 §1.2.",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/package-lock.json",
+        "handoff:01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md",
+        "apps/weltraum-browser/src/resources/**",
+        "apps/weltraum-browser/tests/unit/resourceCatalog.test.ts",
+        "apps/weltraum-browser/tests/unit/resourceContainers.test.ts",
+        "apps/weltraum-browser/tests/unit/resourceTransfer.test.ts",
+        "apps/weltraum-browser/src/hvp/hvpCoastSource.ts"
+      ],
+      "plannedWriteSet": [
+        "apps/weltraum-browser/src/factory/contracts.ts",
+        "apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts",
+        "apps/weltraum-browser/src/factory/catalog/sourceLock.ts",
+        "apps/weltraum-browser/tests/fixtures/factory/fp02Fixtures.ts",
+        "apps/weltraum-browser/tests/unit/factory/catalog.test.ts"
+      ],
+      "grantedWriteSet": [],
+      "evidenceWriteSet": [
+        "apps/weltraum-browser/evidence/factory/w01/<actual-run-id>/**"
+      ],
+      "evidenceGrant": false,
+      "status": "READY_AFTER_W00_COMMIT",
+      "owner": "/root/fp06_integrator",
+      "plannedRole": "integrator",
+      "branch": null,
+      "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
+      "worktree": null,
+      "commitSha": null,
+      "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
+      "restrictions": [
+        "Only exact granted paths; planned paths are not grants",
+        "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
+        "No main merge/push/publication; no W12-W29"
+      ]
+    },
+    "W02": {
+      "dependencies": [
+        "W01"
+      ],
+      "decisionGates": [
+        "D02",
+        "W01_SOURCE_QUANTITY_FREEZE"
+      ],
+      "sourceReadSections": "FP02 §§4–6, 12; FP03 §13; Cargo-Core.",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/package-lock.json",
+        "handoff:01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md",
+        "apps/weltraum-browser/src/resources/**",
+        "apps/weltraum-browser/tests/unit/resourceCatalog.test.ts",
+        "apps/weltraum-browser/tests/unit/resourceContainers.test.ts",
+        "apps/weltraum-browser/tests/unit/resourceTransfer.test.ts",
+        "apps/weltraum-browser/src/hvp/hvpCoastSource.ts"
+      ],
+      "plannedWriteSet": [
+        "apps/weltraum-browser/src/factory/material/quantity.ts",
+        "apps/weltraum-browser/src/factory/material/resourcesAdapter.ts",
+        "apps/weltraum-browser/src/factory/material/reservations.ts",
+        "apps/weltraum-browser/tests/unit/factory/material.test.ts"
+      ],
+      "grantedWriteSet": [],
+      "evidenceWriteSet": [
+        "apps/weltraum-browser/evidence/factory/w02/<actual-run-id>/**"
+      ],
+      "evidenceGrant": false,
+      "status": "BLOCKED_DEPENDENCY",
+      "owner": null,
+      "plannedRole": "domain-or-assets-writer",
+      "branch": null,
+      "plannedBranch": "codex/hestia-fp06-w02-2026-10-11",
+      "worktree": null,
+      "commitSha": null,
+      "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
+      "restrictions": [
+        "Only exact granted paths; planned paths are not grants",
+        "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
+        "No main merge/push/publication; no W12-W29"
+      ]
+    },
+    "W03": {
+      "dependencies": [
+        "W01"
+      ],
+      "decisionGates": [
+        "D03",
+        "W01_SOURCE_QUANTITY_FREEZE"
+      ],
+      "sourceReadSections": "FP01 §§6–7, 13; FP02 §1.1; Power/Thermal-Core.",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/package-lock.json",
+        "handoff:01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md",
+        "apps/weltraum-browser/src/ship-power-thermal/**"
+      ],
+      "plannedWriteSet": [
+        "apps/weltraum-browser/src/factory/power/factoryPower.ts",
+        "apps/weltraum-browser/src/factory/power/sourceAdapter.ts",
+        "apps/weltraum-browser/src/factory/power/powerReadView.ts",
+        "apps/weltraum-browser/tests/unit/factory/power.test.ts"
+      ],
+      "grantedWriteSet": [],
+      "evidenceWriteSet": [
+        "apps/weltraum-browser/evidence/factory/w03/<actual-run-id>/**"
+      ],
+      "evidenceGrant": false,
+      "status": "BLOCKED_DEPENDENCY",
+      "owner": "/root/fp06_integrator",
+      "plannedRole": "integrator",
+      "branch": null,
+      "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
+      "worktree": null,
+      "commitSha": null,
+      "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
+      "restrictions": [
+        "Only exact granted paths; planned paths are not grants",
+        "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
+        "No main merge/push/publication; no W12-W29"
+      ]
+    },
+    "W04": {
+      "dependencies": [
+        "W02",
+        "W03"
+      ],
+      "decisionGates": [
+        "D05"
+      ],
+      "sourceReadSections": "FP02 §§5, 7, 12; FP01 §6.",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/package-lock.json",
+        "handoff:01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md"
+      ],
+      "plannedWriteSet": [
+        "apps/weltraum-browser/src/factory/production/productionStep.ts",
+        "apps/weltraum-browser/src/factory/production/recipeAdmission.ts",
+        "apps/weltraum-browser/tests/unit/factory/production.test.ts"
+      ],
+      "grantedWriteSet": [],
+      "evidenceWriteSet": [
+        "apps/weltraum-browser/evidence/factory/w04/<actual-run-id>/**"
+      ],
+      "evidenceGrant": false,
+      "status": "BLOCKED_DEPENDENCY",
+      "owner": "/root/fp06_integrator",
+      "plannedRole": "integrator",
+      "branch": null,
+      "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
+      "worktree": null,
+      "commitSha": null,
+      "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
+      "restrictions": [
+        "Only exact granted paths; planned paths are not grants",
+        "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
+        "No main merge/push/publication; no W12-W29"
+      ]
+    },
+    "W05": {
+      "dependencies": [
+        "W01"
+      ],
+      "decisionGates": [
+        "W01_SOURCE_QUANTITY_FREEZE"
+      ],
+      "sourceReadSections": "FP01 §§3, 8, 14; FP02 §§3, 7; FP03 §3.",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/package-lock.json",
+        "handoff:01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md"
+      ],
+      "plannedWriteSet": [
+        "art/factory/fp02/cutter/",
+        "art/factory/fp02/former/",
+        "art/factory/fp01/power-kit/",
+        "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+        "apps/weltraum-browser/src/factory/presentation/machinePose.ts",
+        "apps/weltraum-browser/tests/unit/factory/presentation.test.ts"
+      ],
+      "grantedWriteSet": [],
+      "evidenceWriteSet": [
+        "apps/weltraum-browser/evidence/factory/w05/<actual-run-id>/**"
+      ],
+      "evidenceGrant": false,
+      "status": "BLOCKED_DEPENDENCY",
+      "owner": null,
+      "plannedRole": "domain-or-assets-writer",
+      "branch": null,
+      "plannedBranch": "codex/hestia-fp06-w05-2026-10-11",
+      "worktree": null,
+      "commitSha": null,
+      "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
+      "restrictions": [
+        "Only exact granted paths; planned paths are not grants",
+        "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
+        "No main merge/push/publication; no W12-W29"
+      ]
+    },
+    "W06": {
+      "dependencies": [
+        "W01"
+      ],
+      "decisionGates": [
+        "D05",
+        "D07"
+      ],
+      "sourceReadSections": "FP01 §13; FP03 §§13–15; main.ts; hvpBootstrap.ts.",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/package-lock.json",
+        "handoff:01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md",
+        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/**",
+        "apps/weltraum-browser/src/hestia-prototype/persistence/**",
+        "apps/weltraum-browser/vite.config.ts",
+        ".github/workflows/browser-mainline-ci.yml"
+      ],
+      "plannedWriteSet": [
+        "apps/weltraum-browser/factory.html",
+        "apps/weltraum-browser/src/factory/factoryEntry.ts",
+        "apps/weltraum-browser/src/factory/session/hostPort.ts",
+        "apps/weltraum-browser/src/factory/session/factorySession.ts",
+        "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+        "apps/weltraum-browser/tests/e2e/factory-host.spec.ts",
+        "tools/factory/verify-evidence.mjs",
+        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+        "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/vite.config.ts",
+        ".github/workflows/browser-mainline-ci.yml"
+      ],
+      "grantedWriteSet": [],
+      "evidenceWriteSet": [
+        "apps/weltraum-browser/evidence/factory/w06/<actual-run-id>/**"
+      ],
+      "evidenceGrant": false,
+      "status": "BLOCKED_DEPENDENCY",
+      "owner": "/root/fp06_integrator",
+      "plannedRole": "integrator",
+      "branch": null,
+      "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
+      "worktree": null,
+      "commitSha": null,
+      "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
+      "restrictions": [
+        "Only exact granted paths; planned paths are not grants",
+        "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
+        "No main merge/push/publication; no W12-W29"
+      ]
+    },
+    "W07": {
+      "dependencies": [
+        "W02",
+        "W05",
+        "W06"
+      ],
+      "decisionGates": [
+        "D01",
+        "D11"
+      ],
+      "sourceReadSections": "FP02 §§6–10; FP03 §§4–6, 13.",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/package-lock.json",
+        "handoff:01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md",
+        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/**",
+        "apps/weltraum-browser/src/hestia-prototype/persistence/**",
+        "apps/weltraum-browser/vite.config.ts",
+        ".github/workflows/browser-mainline-ci.yml"
+      ],
+      "plannedWriteSet": [
+        "apps/weltraum-browser/src/factory/construction/placement.ts",
+        "apps/weltraum-browser/src/factory/construction/buildStep.ts",
+        "apps/weltraum-browser/src/factory/ui/buildTool.ts",
+        "apps/weltraum-browser/tests/unit/factory/placement.test.ts",
+        "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts"
+      ],
+      "grantedWriteSet": [],
+      "evidenceWriteSet": [
+        "apps/weltraum-browser/evidence/factory/w07/<actual-run-id>/**"
+      ],
+      "evidenceGrant": false,
+      "status": "BLOCKED_DEPENDENCY",
+      "owner": "/root/fp06_integrator",
+      "plannedRole": "integrator",
+      "branch": null,
+      "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
+      "worktree": null,
+      "commitSha": null,
+      "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
+      "restrictions": [
+        "Only exact granted paths; planned paths are not grants",
+        "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
+        "No main merge/push/publication; no W12-W29"
+      ]
+    },
+    "W08": {
+      "dependencies": [
+        "W02"
+      ],
+      "decisionGates": [
+        "D06"
+      ],
+      "sourceReadSections": "FP02 §§8–10; FP03 §7.",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/package-lock.json",
+        "handoff:01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md"
+      ],
+      "plannedWriteSet": [
+        "apps/weltraum-browser/src/factory/conveyor/beltReference.ts",
+        "apps/weltraum-browser/src/factory/conveyor/beltPorts.ts",
+        "apps/weltraum-browser/tests/unit/factory/conveyor.test.ts"
+      ],
+      "grantedWriteSet": [],
+      "evidenceWriteSet": [
+        "apps/weltraum-browser/evidence/factory/w08/<actual-run-id>/**"
+      ],
+      "evidenceGrant": false,
+      "status": "BLOCKED_DEPENDENCY",
+      "owner": null,
+      "plannedRole": "domain-or-assets-writer",
+      "branch": null,
+      "plannedBranch": "codex/hestia-fp06-w08-2026-10-11",
+      "worktree": null,
+      "commitSha": null,
+      "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
+      "restrictions": [
+        "Only exact granted paths; planned paths are not grants",
+        "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
+        "No main merge/push/publication; no W12-W29"
+      ]
+    },
+    "W09": {
+      "dependencies": [
+        "W04",
+        "W07",
+        "W08"
+      ],
+      "decisionGates": [],
+      "sourceReadSections": "FP01 §§9–12; FP02 §§2, 9–13; FP03 §14.",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/package-lock.json",
+        "handoff:01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md"
+      ],
+      "plannedWriteSet": [
+        "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+        "apps/weltraum-browser/src/factory/ui/machinePanel.ts",
+        "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+        "apps/weltraum-browser/src/factory/ui/powerPanel.ts",
+        "apps/weltraum-browser/src/factory/ui/technologyView.ts",
+        "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts"
+      ],
+      "grantedWriteSet": [],
+      "evidenceWriteSet": [
+        "apps/weltraum-browser/evidence/factory/w09/<actual-run-id>/**"
+      ],
+      "evidenceGrant": false,
+      "status": "BLOCKED_DEPENDENCY",
+      "owner": "/root/fp06_integrator",
+      "plannedRole": "integrator",
+      "branch": null,
+      "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
+      "worktree": null,
+      "commitSha": null,
+      "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
+      "restrictions": [
+        "Only exact granted paths; planned paths are not grants",
+        "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
+        "No main merge/push/publication; no W12-W29"
+      ]
+    },
+    "W10": {
+      "dependencies": [
+        "W09"
+      ],
+      "decisionGates": [
+        "D04",
+        "D11"
+      ],
+      "sourceReadSections": "FP01 §13; FP02 §12; FP03 §13; HVP-Checkpoint/SaveStore.",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/package-lock.json",
+        "handoff:01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md",
+        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/**",
+        "apps/weltraum-browser/src/hestia-prototype/persistence/**",
+        "apps/weltraum-browser/vite.config.ts",
+        ".github/workflows/browser-mainline-ci.yml"
+      ],
+      "plannedWriteSet": [
+        "apps/weltraum-browser/src/factory/persistence/factoryCheckpoint.ts",
+        "apps/weltraum-browser/src/factory/persistence/factorySaveStore.ts",
+        "apps/weltraum-browser/src/factory/persistence/restoreFactorySession.ts",
+        "apps/weltraum-browser/tests/unit/factory/persistence.test.ts",
+        "apps/weltraum-browser/tests/e2e/factory-save.spec.ts",
+        "apps/weltraum-browser/src/hestia-prototype/persistence/factoryWorldParts.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts"
+      ],
+      "grantedWriteSet": [],
+      "evidenceWriteSet": [
+        "apps/weltraum-browser/evidence/factory/w10/<actual-run-id>/**"
+      ],
+      "evidenceGrant": false,
+      "status": "BLOCKED_DEPENDENCY",
+      "owner": "/root/fp06_integrator",
+      "plannedRole": "integrator",
+      "branch": null,
+      "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
+      "worktree": null,
+      "commitSha": null,
+      "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
+      "restrictions": [
+        "Only exact granted paths; planned paths are not grants",
+        "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
+        "No main merge/push/publication; no W12-W29"
+      ]
+    },
+    "W11": {
+      "dependencies": [
+        "W10"
+      ],
+      "decisionGates": [
+        "D10"
+      ],
+      "sourceReadSections": "FP01 §15; FP02 §14; FP03 §16; G17-Testtrennung.",
+      "readSet": [
+        "AGENTS.md",
+        ".agent/PLANS.md",
+        "docs/factory/fp06/source-lock.json",
+        "docs/factory/fp06/write-ownership.json",
+        "docs/factory/fp06/decisions.md",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/package-lock.json",
+        "handoff:01_PLANUNG_VERBINDLICHE_QUELLEN/HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md"
+      ],
+      "plannedWriteSet": [
+        "apps/weltraum-browser/tests/e2e/factory-acceptance.spec.ts",
+        "apps/weltraum-browser/tests/fixtures/factory/checkpoint-fixtures/",
+        "apps/weltraum-browser/evidence/factory/w11/",
+        "docs/factory/fp06/dry-slice-acceptance.md"
+      ],
+      "grantedWriteSet": [],
+      "evidenceWriteSet": [
+        "apps/weltraum-browser/evidence/factory/w11/<actual-run-id>/**"
+      ],
+      "evidenceGrant": false,
+      "status": "BLOCKED_DEPENDENCY",
+      "owner": "/root/fp06_integrator",
+      "plannedRole": "integrator",
+      "branch": null,
+      "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
+      "worktree": null,
+      "commitSha": null,
+      "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
+      "restrictions": [
+        "Only exact granted paths; planned paths are not grants",
+        "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
+        "No main merge/push/publication; no W12-W29"
+      ]
+    }
+  },
+  "remoteConflictCandidates": [
+    {
+      "ref": "origin/integration/hestia-fp06-v2-2026-10-10",
+      "headSha": "07c7587b1a646b6a460025fe5b98c4ef6ac43182",
+      "mergeBaseSha": "e40592c113b72a8dc93725187f92cf948e07f44d",
+      "changedPathCount": 4,
+      "sharedPathOverlaps": [],
+      "activeWriterStatus": "UNKNOWN_EXTERNAL",
+      "action": "READ_ONLY_PRESERVE; recheck live write claim immediately before affected integration package"
+    },
+    {
+      "ref": "origin/feature/hvp-cut-rt-p00",
+      "headSha": "f2ee73cfbfa80b6c09d540c784d3ad426ae83a04",
+      "mergeBaseSha": "9341fb906383515057e659a99e16a381632f2bea",
+      "changedPathCount": 320,
+      "sharedPathOverlaps": [
+        "apps/weltraum-browser/src/hestia-prototype/persistence/gameCheckpoint.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+        "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts"
+      ],
+      "activeWriterStatus": "UNKNOWN_EXTERNAL",
+      "action": "READ_ONLY_PRESERVE; recheck live write claim immediately before affected integration package"
+    },
+    {
+      "ref": "origin/feature/hvp-cut-rt-v3-completion-2026-09-23",
+      "headSha": "0bfd1e67117d0dd6184e592e9a2a1b8b9f58241a",
+      "mergeBaseSha": "9341fb906383515057e659a99e16a381632f2bea",
+      "changedPathCount": 411,
+      "sharedPathOverlaps": [
+        "apps/weltraum-browser/src/hestia-prototype/persistence/gameCheckpoint.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/worldReplacement.ts",
+        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+        "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts"
+      ],
+      "activeWriterStatus": "UNKNOWN_EXTERNAL",
+      "action": "READ_ONLY_PRESERVE; recheck live write claim immediately before affected integration package"
+    },
+    {
+      "ref": "origin/feature/resume-hvp-cut-v3-2026-10-05",
+      "headSha": "aa2eabd918e03c475a489b412cd18e05f781a0f9",
+      "mergeBaseSha": "9341fb906383515057e659a99e16a381632f2bea",
+      "changedPathCount": 7597,
+      "sharedPathOverlaps": [
+        "apps/weltraum-browser/src/hestia-prototype/persistence/gameCheckpoint.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/worldReplacement.ts",
+        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+        "apps/weltraum-browser/src/main.ts",
+        "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts"
+      ],
+      "activeWriterStatus": "UNKNOWN_EXTERNAL",
+      "action": "READ_ONLY_PRESERVE; recheck live write claim immediately before affected integration package"
+    },
+    {
+      "ref": "origin/feature/hestia-destruction-program-2026-10-07",
+      "headSha": "17b1db4201a28e7b607c30707bdc2b75e3484a10",
+      "mergeBaseSha": "9341fb906383515057e659a99e16a381632f2bea",
+      "changedPathCount": 7736,
+      "sharedPathOverlaps": [
+        "apps/weltraum-browser/src/hestia-prototype/persistence/gameCheckpoint.ts",
+        "apps/weltraum-browser/src/hestia-prototype/persistence/saveStore.ts",
+        "apps/weltraum-browser/src/hestia-prototype/persistence/worldCheckpoint.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/worldReplacement.ts",
+        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+        "apps/weltraum-browser/src/main.ts",
+        "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts"
+      ],
+      "activeWriterStatus": "UNKNOWN_EXTERNAL",
+      "action": "READ_ONLY_PRESERVE; recheck live write claim immediately before affected integration package"
+    },
+    {
+      "ref": "origin/perf/hvp-hud-frame-hotpath-2026-10-02",
+      "headSha": "7e608d4f1e909dbc6576cde821b595a5bc41927b",
+      "mergeBaseSha": "9341fb906383515057e659a99e16a381632f2bea",
+      "changedPathCount": 374,
+      "sharedPathOverlaps": [
+        "apps/weltraum-browser/src/hestia-prototype/persistence/gameCheckpoint.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/worldReplacement.ts",
+        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+        "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts"
+      ],
+      "activeWriterStatus": "UNKNOWN_EXTERNAL",
+      "action": "READ_ONLY_PRESERVE; recheck live write claim immediately before affected integration package"
+    },
+    {
+      "ref": "origin/perf/hvp-route-bundle-isolation-2026-10-02",
+      "headSha": "d8fa02867e538dab3363819f10394fd059bda321",
+      "mergeBaseSha": "9341fb906383515057e659a99e16a381632f2bea",
+      "changedPathCount": 376,
+      "sharedPathOverlaps": [
+        "apps/weltraum-browser/src/hestia-prototype/persistence/gameCheckpoint.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/worldReplacement.ts",
+        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+        "apps/weltraum-browser/src/main.ts",
+        "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts"
+      ],
+      "activeWriterStatus": "UNKNOWN_EXTERNAL",
+      "action": "READ_ONLY_PRESERVE; recheck live write claim immediately before affected integration package"
+    }
+  ],
+  "localWorktrees": [
+    {
+      "path": "/workspace/Weltraum-Spiel",
+      "branch": "work",
+      "headSha": "e40592c113b72a8dc93725187f92cf948e07f44d",
+      "initialTrackedState": "CLEAN",
+      "productWriteClaim": false
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11",
+      "branch": "codex/hestia-fp06-w00-2026-10-11",
+      "headSha": "e40592c113b72a8dc93725187f92cf948e07f44d",
+      "productWriteClaim": false,
+      "documentationWriteClaim": true
+    }
+  ],
+  "externalVisibility": "Remote branch existence does not prove activity or inactivity. External uncommitted writers cannot be enumerated here. GitHub API blocked; public visible PR listing captured separately.",
+  "handoffRule": "Release prior write lease after reviewed commit. A writer starts in a distinct branch/worktree from full reviewed predecessor SHA. Only integrator adopts reviewed predecessor commits. No product writer edits contracts or shared host/physics/save files outside its exact granted set.",
+  "protectedReadOnlyPaths": [
+    "apps/weltraum-browser/src/hestia-prototype/persistence/gameCheckpoint.ts",
+    "apps/weltraum-browser/src/hestia-prototype/persistence/worldCheckpoint.ts",
+    "apps/weltraum-browser/src/hestia-prototype/persistence/saveStore.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/worldReplacement.ts",
+    "apps/weltraum-browser/src/main.ts",
+    "apps/weltraum-browser/package-lock.json"
+  ],
+  "approvalReceipts": [
+    {
+      "receivedAtUtc": "2026-10-11T09:23:32Z",
+      "source": "direct user async question reply",
+      "decisionReply": "Alle vier für W00–W11 freigeben",
+      "freezeReply": "W01-Freeze freigeben",
+      "scope": "W00-W11 only",
+      "exactDecisionQuestion": "D05: 6 confirmed 60-Hz ticks =100ms/no offline; D06: powered 1kg/s initial0 max10kg persistent burstcredit; D07: /factory.html existing app; D11: <=16 fixed native facility owners, native install transaction, complete combined checkpoint under unchanged overall budgets",
+      "exactFreezeQuestion": "Unchanged FP02 C01-C28/REC-01-REC-07/BOM/dimensions/ports; bulk exactly1mg; packaged volume integer mm3; components integer count; SALVAGE-01 separate; reject inadmissible quantity."
+    }
+  ],
+  "sharedPathsExistingAtAudit": [
+    "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+    "apps/weltraum-browser/package.json",
+    "apps/weltraum-browser/vite.config.ts",
+    ".github/workflows/browser-mainline-ci.yml",
+    "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts"
+  ],
+  "sharedPathsPlannedNew": [
+    "apps/weltraum-browser/src/factory/contracts.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+    "apps/weltraum-browser/src/hestia-prototype/persistence/factoryWorldParts.ts"
+  ],
+  "w00Gate": {
+    "status": "PASS",
+    "reviewer": "/root/w00_repo_audit",
+    "specCompliance": "PASS",
+    "documentContractQuality": "PASS",
+    "reviewedPatchSha256": "af4bc188b822048324ec877d4ba58183d3c1fec6a065e9da917f4a18905beccb",
+    "reviewPath": "apps/weltraum-browser/evidence/factory/w00/2026-10-11T090924Z/review.md",
+    "commitBinding": "Resolve full SHA from the Git commit containing these W00 documents; self-containing commit SHA cannot be embedded before commit."
+  }
+}

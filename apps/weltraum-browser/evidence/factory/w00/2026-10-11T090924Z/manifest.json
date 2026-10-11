@@ -1,0 +1,141 @@
+{
+  "schema": "hestia.fp06.evidence/v1",
+  "package": "W00",
+  "runId": "2026-10-11T090924Z",
+  "baseSha": "e40592c113b72a8dc93725187f92cf948e07f44d",
+  "candidateBranch": "codex/hestia-fp06-w00-2026-10-11",
+  "candidateCommitSha": null,
+  "createdAtUtc": "2026-10-11T09:23:32.353886+00:00",
+  "status": "PASS",
+  "productCodeChanged": false,
+  "commands": [
+    {
+      "command": "git fetch --all --prune",
+      "exitCode": 0,
+      "artifact": "fetch.txt"
+    },
+    {
+      "command": "sha256sum -c SHA256SUMS.txt",
+      "exitCode": 0,
+      "artifact": "sha256sums.txt"
+    },
+    {
+      "command": "npm --prefix apps/weltraum-browser run build",
+      "exitCode": 0,
+      "artifact": "build.txt"
+    },
+    {
+      "command": "npm --prefix apps/weltraum-browser run test -- tests/unit/hvp-bootstrap.test.ts tests/unit/resourceCatalog.test.ts tests/unit/resourceContainers.test.ts tests/unit/resourceTransfer.test.ts tests/unit/hvp-physics.test.ts tests/unit/hvp-world-save.test.ts tests/unit/hvp-game-save.test.ts tests/unit/hvp-world-replacement.test.ts",
+      "exitCode": 0,
+      "artifact": "focused-baseline.txt",
+      "testFilesPassed": 8,
+      "testsPassed": 95,
+      "durationSeconds": 189.88
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "branch-conflicts.json",
+      "bytes": 5642,
+      "sha256": "949ac098635ccad66c805bc69962640cbd3c816b4f3a6b8486c721d8d0ba0731"
+    },
+    {
+      "path": "build.txt",
+      "bytes": 1207,
+      "sha256": "cfe97538d24cb2241010395ae8cbcb43a549f7e57926c1349624e179b521535c"
+    },
+    {
+      "path": "fetch.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "focused-baseline.txt",
+      "bytes": 595,
+      "sha256": "881e050341fb744430089d505ae59752403a447830540fbeb88b7c09d12890fe"
+    },
+    {
+      "path": "fresh-git-audit.txt",
+      "bytes": 2635,
+      "sha256": "15c99091739dce8a199729c0bb3532bf15a23889f43100db4263885c4d3f93b7"
+    },
+    {
+      "path": "github-api-error.txt",
+      "bytes": 49,
+      "sha256": "682deed6ccd21e66582c7f0e0efdffb3363feeac4c8b58f35a46d43dc240c725"
+    },
+    {
+      "path": "pull-request-audit.json",
+      "bytes": 1483,
+      "sha256": "ce86b3465aeb573ff5e92797e6ddf389ca6e6a511c65ed1d7a5359066ef80d75"
+    },
+    {
+      "path": "remote-heads.txt",
+      "bytes": 11498,
+      "sha256": "4ba0cf431fbbd694d8e7b619e23f996bd7b3772158c3d8b23bf47d2386d88412"
+    },
+    {
+      "path": "review-initial.md",
+      "bytes": 6833,
+      "sha256": "64aaa2f672009544cfcc75a1f85500c64f8adff458ddfe66e67fb9248cf4c528"
+    },
+    {
+      "path": "review.md",
+      "bytes": 4751,
+      "sha256": "ff90874b6813d347f4b6a2a97aee6bcf46540d4be0e0b705121150bec87b1759"
+    },
+    {
+      "path": "sha256sums.txt",
+      "bytes": 3147,
+      "sha256": "d52168782ea5afc3f8bf679c1f11a47cdbdf406ab173d50f935f556d0a74726e"
+    },
+    {
+      "path": "source-integrity.json",
+      "bytes": 12798,
+      "sha256": "0ed4aa1d8c0fe2516280b3eb60ce653b4b0091bd661c8c266c7dbec064fa4f79"
+    },
+    {
+      "path": "status-in-progress.txt",
+      "bytes": 38,
+      "sha256": "709a74cb2c1bae0cfb5f937ac3733f2b61021a8a70c838d406cb4d493804a3e1"
+    },
+    {
+      "path": "user-approval.json",
+      "bytes": 729,
+      "sha256": "b6d5720b8b28243202f92e1ad49012b762e3c9d88fff9e971bb2af998cdeb52c"
+    },
+    {
+      "path": "visible-pr-heads.txt",
+      "bytes": 295,
+      "sha256": "e2246fe3c398151f72b35c0a504d0430ca18b2b6d02b16edc0eea04ebbeb5768"
+    },
+    {
+      "path": "w01-readonly-preflight.md",
+      "bytes": 24873,
+      "sha256": "a32fdf3e9ada4ece1692aca68ff88f3bc4c0a6c608e5b744a9e5110376800c45"
+    },
+    {
+      "path": "w03-readonly-preflight.md",
+      "bytes": 21171,
+      "sha256": "c77654609d5b90022b38d3c88cdbce98d0c578e5d615b6654ca2f16e2cbf2aec"
+    },
+    {
+      "path": "worktrees.txt",
+      "bytes": 269,
+      "sha256": "dfad35ce757c8acc128fc2a0178ed89ad7dd897f9188e7606475ceefcad6224e"
+    }
+  ],
+  "unrun": [
+    "fresh full unit suite",
+    "fresh browser acceptance",
+    "synthetic W00 T001-T004 negative scenarios"
+  ],
+  "approvalGates": "W01 freeze and D05/D06/D07/D11 ACCEPTED_BY_USER; product grants wait for W00 review",
+  "candidateCommitBinding": "Full SHA resolved from Git commit containing this manifest; then recorded in successor receipt.",
+  "review": {
+    "spec": "PASS",
+    "quality": "PASS",
+    "reviewer": "/root/w00_repo_audit",
+    "artifact": "review.md"
+  }
+}
