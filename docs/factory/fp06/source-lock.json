@@ -1159,7 +1159,9 @@
         "apps/weltraum-browser/tests/unit/hvp-coast-source.test.ts",
         "apps/weltraum-browser/tests/unit/hvp-vegetation.test.ts",
         "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
-        "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts"
+        "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+        "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+        "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts"
       ],
       "grantedWriteSet": [
         "apps/weltraum-browser/src/factory/construction/placement.ts",
@@ -1186,7 +1188,9 @@
         "apps/weltraum-browser/tests/unit/hvp-coast-source.test.ts",
         "apps/weltraum-browser/tests/unit/hvp-vegetation.test.ts",
         "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
-        "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts"
+        "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+        "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+        "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts"
       ],
       "evidenceWriteSet": [
         "apps/weltraum-browser/evidence/factory/w07/<actual-run-id>/**"
@@ -1215,6 +1219,20 @@
         {
           "path": "apps/weltraum-browser/package.json",
           "reason": "Actual CI parser requires explicit existing spec paths assigned exactly once; register only this package new E2E spec when it exists. No future placeholder specs, parser relaxation, dependency/lockfile changes or unrelated script edits. Integrator only."
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+          "owner": "/root/fp06_integrator",
+          "authorizedAtUtc": "2026-10-11T13:11:16.734823+00:00",
+          "reason": "Source-bound initial Cargo-S0 witness and real native access replace an unbound coordinate. Existing W07 Native/Host/Entry seams admit the owner and idempotent opening; finite pickup/walk/deposit remains W09.",
+          "authorization": "Technical implementation within user-authorized W00-W11 and verified FP01 sections 5.5/E00 plus FP02 sections 6.4/9.1. No new product freeze, masks, cargo or limits."
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+          "owner": "/root/fp06_integrator",
+          "authorizedAtUtc": "2026-10-11T13:11:16.734823+00:00",
+          "reason": "Source-bound initial Cargo-S0 witness and real native access replace an unbound coordinate. Existing W07 Native/Host/Entry seams admit the owner and idempotent opening; finite pickup/walk/deposit remains W09.",
+          "authorization": "Technical implementation within user-authorized W00-W11 and verified FP01 sections 5.5/E00 plus FP02 sections 6.4/9.1. No new product freeze, masks, cargo or limits."
         }
       ],
       "conditionalWriteGates": [
@@ -1239,7 +1257,7 @@
       ],
       "baseCommitSha": "d5502ae7fd5431d58eda51bea062c54691ebe3c2",
       "implementationWriteHold": false,
-      "authorizedAtUtc": "2026-10-11T12:20:03.945147+00:00",
+      "authorizedAtUtc": "2026-10-11T13:11:16.765614+00:00",
       "completedAtUtc": null,
       "tddInitialStatus": {
         "runId": "2026-10-11T122211.412749Z",
@@ -1254,6 +1272,20 @@
         "wrapperSeconds": 329.58,
         "phase": "Before cargo-anchor and final browser changes",
         "evidenceReview": "PENDING_WRITER_SEAL_AND_INDEPENDENT_REVIEW"
+      },
+      "initialCargoAdmission": {
+        "version": "fp06-initial-cargo-s0-admission-v1",
+        "owner": "fp02_wreck_owner",
+        "containerId": "fp02_wreck_cargo",
+        "sourceReport": "docs/factory/fp06/reviews/w09-cargo-reach-preflight.md",
+        "status": "EXACT_PATHS_GRANTED_RUNTIME_NOT_RUN",
+        "requirements": [
+          "Initial source-bound immutable pose outside the 22 x 12 m machine zone, proved terrain support and native clearance/coverage. No numerical site is accepted without actual evidence.",
+          "Same private native World; owner included in unchanged facility and global caps, full rollback and later complete W10 checkpoint.",
+          "Host source/terrain/session/owner/access binding; actual native player reach and normal idempotent Open. UI sends intents only.",
+          "Original finite C01-C28 remain in their sole Resources container; initial wreck projection creates no materials, salvage, flight capability or free platform.",
+          "Real collected source-location/access business RED before implementation; actual player build/browser evidence before W07 PASS."
+        ]
       }
     },
     "W08": {
