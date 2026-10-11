@@ -1329,7 +1329,7 @@
       },
       "ghostReceiverFollowup": {
         "authorizedAtUtc": "2026-10-11T15:20:02.754075+00:00",
-        "status": "FINAL_CLI_PASS_PENDING_DELTA_REVIEW",
+        "status": "SEALED_DELTA_SPEC_QUALITY_PASS",
         "writeSet": [
           "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
           "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
@@ -1454,6 +1454,18 @@
           "quality": "PASS",
           "G1": "CLOSED",
           "scope": "Ninth29FileSeal; no Browser/Evidence/Git/package PASS"
+        },
+        "finalQualityReview": {
+          "report": "docs/factory/fp06/reviews/w07-ghost-final-quality-review.md",
+          "source": "/workspace/.cloud-setup/fp06-w07-ghost-final-quality-review.md",
+          "originalSha256": "76f684cff6c2d34d9832e89f7ca72c6f94d729b6d6915b7ea2ca16436cd78433",
+          "originalBytes": 7130,
+          "copiedSha256": "76f684cff6c2d34d9832e89f7ca72c6f94d729b6d6915b7ea2ca16436cd78433",
+          "copyRule": "Markdown trailing spaces/EOF only",
+          "spec": "PASS",
+          "quality": "PASS",
+          "P1": "CLOSED",
+          "scope": "Ninth29FileSeal; Browser/Evidence/Git/package still open"
         }
       },
       "eighthPaidVisualReview": {
@@ -1491,6 +1503,18 @@
         "historicalClassification": "01 mixed stubs/setup;02 three assertions plus five NotImplemented stubs;03 and45 failed despite green filename;04 missing API;07,18,35,48 compile failures",
         "browserGate": "All eight normal runs FAIL;52 diagnostic separate",
         "scope": "01-59 only; no final product/manifest/Git/PASS claim"
+      },
+      "browserNinthAuthorization": {
+        "authorizedAtUtc": "2026-10-11T16:02:52.568623+00:00",
+        "actor": "/root/fp06_integrator",
+        "kind": "ONE_NORMAL17_CASE_RUN",
+        "cpuGpuPortLease": "EXCLUSIVE_5174",
+        "productWriteHold": true,
+        "artifactWrites": "Own W07 run only; preserve Eighth archive/receipts before Playwright output clear",
+        "productSealSha256": "5f0588a7a969d185424780bd298fc16c45260874311ef9415cc4da49aa580c12",
+        "configSha256": "53a55a48da97d43a02e317fb8edc844d57a9b5687f356a7ebf4f5b470efcf900",
+        "authorityRule": "Normal UI/native keyboard only; no diagnostic bridge/eval authority/faketime/error filtering; existing timeouts/caps unchanged",
+        "status": "AUTHORIZED_NOT_YET_CLAIMED_RUN"
       }
     },
     "W08": {
