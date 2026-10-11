@@ -938,10 +938,37 @@
         "finalAffectedTargets": "PASS:4manual/history/away tests after const-capture fix;12skipped",
         "finalTypeScriptAndVite": "PASS after const-capture fix",
         "originalTestTimeoutMs": 5000,
-        "specAndCodeQuality": "PENDING independent final review",
+        "specAndCodeQuality": "PASS for sealed pure W04 contract",
         "commitAndGitEvidence": "NOT_RUN; no commit yet"
       },
-      "reviewScheduledAtUtc": "2026-10-11T14:00:57.063155+00:00"
+      "reviewScheduledAtUtc": "2026-10-11T14:00:57.063155+00:00",
+      "independentFinalWorkingReview": {
+        "report": "docs/factory/fp06/reviews/w04-final.md",
+        "originalSha256": "443c43d00902db9107c348fa851c55743ab71f786b2a75c03ca8860693f2e0ea",
+        "deliverySha256": "181dc562bc7383fa9f22088950347213d944d1959aec0dc167df10a0e715aeec",
+        "spec": "PASS",
+        "codeQuality": "PASS",
+        "scope": "pure three-file W04 contract only; commit still null"
+      },
+      "independentPrecommitEvidenceReview": {
+        "report": "docs/factory/fp06/reviews/w04-precommit-evidence-review.md",
+        "originalSha256": "517f90f81f31e2cba47c4782f236bfff1566944cba5be649beee606bedbd527e",
+        "deliverySha256": "97899ba75437f8e594ac5c3086893bcc2635456ea0f72168d76751ba8521c317",
+        "status": "PASS:44paths40refs14losslessrawGzips; Git/LFScommitbinding pending",
+        "proof": {
+          "report": "docs/factory/fp06/reviews/w04-precommit-evidence-review.json",
+          "originalSha256": "e9771737cf00d25db800836121ef598e98951c21b7ee2727caed06743ecf6f88",
+          "deliverySha256": "e9771737cf00d25db800836121ef598e98951c21b7ee2727caed06743ecf6f88"
+        }
+      },
+      "narrowCommitGrant": {
+        "authorizedAtUtc": "2026-10-11T14:13:15.952582+00:00",
+        "status": "AUTHORIZED_LOCAL_STAGE_COMMIT_ONLY",
+        "productSealSha256": "01bd38888e4dc808c1d1acfc921f5e7a44ccdd36e39b498c8ebee7879f4266d0",
+        "exactPathCount": 44,
+        "scope": "Exact actualOwnChangedFiles in precommit writer report:3unchangedproducts+41unchangedownRunfiles",
+        "excluded": "No Runtime/manifest/history/test/build changes; no push/mainmerge/publication"
+      }
     },
     "W05": {
       "dependencies": [
@@ -1421,6 +1448,28 @@
         ],
         "purpose": "Failed initial Cargo catalog/material initialization must release mounted-host reservation before same-host valid retry; no World/source API changes",
         "timing": "after current serial browser harness phase; fresh runtime seal/review afterward"
+      },
+      "preThirdBrowserNativeReview": {
+        "report": "docs/factory/fp06/reviews/w07-native-review-third-seal.md",
+        "originalSha256": "266f07dc333bab4c2f6ec30637e034e090c87c8322690e40c959b6ece4ea8947",
+        "deliverySha256": "f3ec0d8f5f856af3be933170399a23942a635d261c7704103fa271f9d9702797",
+        "spec": "PASS",
+        "codeQuality": "PASS",
+        "scope": "historical d1e463f seal; subsequent authorized Mountfix/newE2E/finalseal NOT_RUN"
+      },
+      "secondCutterSourcePreflight": {
+        "report": "docs/factory/fp06/reviews/w07-second-cutter-site-preflight.md",
+        "originalSha256": "bfd82113829ba58f1421a88b3fa35cb7a67753e4338087fd7f7f59864c695366",
+        "deliverySha256": "512d70d2982cf03466807682047a399e8c7c176a34efe281337cca91b800f662",
+        "centerMm": [
+          -9750,
+          1500,
+          5000
+        ],
+        "quarterTurns": 1,
+        "source": "PASS bounded feet/body/service/sweeps/reach facts",
+        "nativeActorWalkLosAndBrowser": "NOT_RUN",
+        "oracle": "specific actual BOM_MISSING and unchanged first208kg installation/material/nativeownership; noOverlapstockclaim"
       }
     },
     "W08": {
@@ -1603,7 +1652,13 @@
         "Read-only cargo preflight is a technical proposal, not a runtime PASS. Rebind to sealed W07 cargo-anchor APIs. Each selected source must have individual native location/reach/access and exact Resources CAS; finite heavy handling is permitted by FP01 section 5.5 and FP02 section 6.4, without a vehicle simulator or new cargo. Initial Cargo-S0 belongs to W07; remaining pickup/walk/deposit belongs to W09. Conditional paths in the report are planned only until exact authorization."
       ],
       "braceUsePreflight": "docs/factory/fp06/reviews/w09-brace-use-preflight.md",
-      "cargoReachPreflight": "docs/factory/fp06/reviews/w09-cargo-reach-preflight.md"
+      "cargoReachPreflight": "docs/factory/fp06/reviews/w09-cargo-reach-preflight.md",
+      "domainApiHandoff": {
+        "report": "docs/factory/fp06/reviews/w09-domain-api-handoff.md",
+        "originalSha256": "4759367c1db7a3340b027adfe363b46ff6d86e2d8dcdd5fbc066abd01c9d8ec7",
+        "deliverySha256": "f1d7ba7f5c2308475ebfeea7f409170877eb876e12f76f901c50a0e0886f4049",
+        "status": "READ_ONLY_PREPARATION; no W09 code/writegrant/gate"
+      }
     },
     "W10": {
       "dependencies": [
