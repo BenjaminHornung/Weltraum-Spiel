@@ -1,0 +1,121 @@
+{
+  "schema": "hestia.fp06.w09-ui-product-seal/v1",
+  "sealedAtUtc": "2026-10-11T20:41:18.044457+00:00",
+  "baseCommitSha": "43a61c0f5be5df69e4f8bb42db89da3d7a3a4b2b",
+  "branch": "codex/hestia-fp06-ui-w09-2026-10-11",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11",
+  "protocolSha256": "07b7a3e6ecf4b94fed367585dc4c094cb906d5688985e23177362867a3dc945c",
+  "writeHold": true,
+  "products": [
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+      "bytes": 15555,
+      "sha256": "6d7b7b565927e811dca394e67dccda51d9fe5fd6294e98611ecbcd1e042d6f78"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/machinePanel.ts",
+      "bytes": 6494,
+      "sha256": "9905cc0d9bd04ee2dc15903b03fca2399e4fa95fdf828ed6853787f97a19c2e7"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/powerPanel.ts",
+      "bytes": 1283,
+      "sha256": "2ffe21ca555fdd9f60d06997fd2a42a3c4775319ec7768e45aaeb161529a7f15"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/technologyView.ts",
+      "bytes": 1212,
+      "sha256": "95a6f969587634e50324cb3471b766d15a6257e9811c7f19161ff34800ea293a"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/panels.test.ts",
+      "bytes": 19075,
+      "sha256": "2041382db969318d148170e649d911a12298fec75191b81f52069af2875a8ca6"
+    }
+  ],
+  "patchPath": "product.patch",
+  "patchBytes": 45461,
+  "patchSha256": "997fb8170fc40c709c366d5b2c90ff5ed1a88b93a384eef83b8d75680a2a76ef",
+  "productWhitespaceChecks": [
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+      "command": [
+        "git",
+        "diff",
+        "--no-index",
+        "--check",
+        "--",
+        "/dev/null",
+        "apps/weltraum-browser/src/factory/ui/cargoPanel.ts"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "",
+      "interpretation": "No whitespace diagnostics; no-index exit1 reflects added-file difference."
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/machinePanel.ts",
+      "command": [
+        "git",
+        "diff",
+        "--no-index",
+        "--check",
+        "--",
+        "/dev/null",
+        "apps/weltraum-browser/src/factory/ui/machinePanel.ts"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "",
+      "interpretation": "No whitespace diagnostics; no-index exit1 reflects added-file difference."
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/powerPanel.ts",
+      "command": [
+        "git",
+        "diff",
+        "--no-index",
+        "--check",
+        "--",
+        "/dev/null",
+        "apps/weltraum-browser/src/factory/ui/powerPanel.ts"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "",
+      "interpretation": "No whitespace diagnostics; no-index exit1 reflects added-file difference."
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/technologyView.ts",
+      "command": [
+        "git",
+        "diff",
+        "--no-index",
+        "--check",
+        "--",
+        "/dev/null",
+        "apps/weltraum-browser/src/factory/ui/technologyView.ts"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "",
+      "interpretation": "No whitespace diagnostics; no-index exit1 reflects added-file difference."
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/panels.test.ts",
+      "command": [
+        "git",
+        "diff",
+        "--no-index",
+        "--check",
+        "--",
+        "/dev/null",
+        "apps/weltraum-browser/tests/unit/factory/panels.test.ts"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "",
+      "interpretation": "No whitespace diagnostics; no-index exit1 reflects added-file difference."
+    }
+  ]
+}

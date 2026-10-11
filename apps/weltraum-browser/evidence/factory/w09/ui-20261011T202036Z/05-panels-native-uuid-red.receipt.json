@@ -1,0 +1,11 @@
+{
+  "command": "source /workspace/.cloud-setup/activate.sh\nnpm run test -- tests/unit/factory/panels.test.ts -t UUID-shaped",
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T20:36:21.900185+00:00",
+  "endedAtUtc": "2026-10-11T20:36:22.720213+00:00",
+  "elapsedSeconds": 0.8200402530055726,
+  "exitCode": 1,
+  "rawLog": "05-panels-native-uuid-red.log",
+  "rawBytes": 1459,
+  "rawSha256": "80d309636a28c09048fca3d13b404e3766f49d132d7b8c53b55b3317bbf250f3"
+}

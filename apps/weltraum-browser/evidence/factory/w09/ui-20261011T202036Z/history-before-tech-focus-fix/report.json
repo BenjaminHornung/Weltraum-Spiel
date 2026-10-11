@@ -1,0 +1,151 @@
+{
+  "schema": "hestia.fp06.w09-ui-writer-report/v1",
+  "status": "IN_REVIEW",
+  "agent": "/root/fp06_domain",
+  "branch": "codex/hestia-fp06-ui-w09-2026-10-11",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11",
+  "baseCommitSha": "43a61c0f5be5df69e4f8bb42db89da3d7a3a4b2b",
+  "commitSha": null,
+  "implementationWriteHold": true,
+  "changedProducts": [
+    "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+    "apps/weltraum-browser/src/factory/ui/machinePanel.ts",
+    "apps/weltraum-browser/src/factory/ui/powerPanel.ts",
+    "apps/weltraum-browser/src/factory/ui/technologyView.ts",
+    "apps/weltraum-browser/tests/unit/factory/panels.test.ts"
+  ],
+  "exports": [
+    "mountFactoryCargoPanel",
+    "mountFactoryMachinePanel",
+    "mountFactoryPowerPanel",
+    "mountFactoryTechnologyView"
+  ],
+  "signature": "(port: FactoryUiPort, doc: Document = document) => { element: HTMLElement; dispose(): void }",
+  "sourceFreeze": {
+    "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+    "sha256": "07b7a3e6ecf4b94fed367585dc4c094cb906d5688985e23177362867a3dc945c"
+  },
+  "actualResults": {
+    "initialRed": "4 assertion FAIL / 4 collected",
+    "firstGreen": "4 PASS",
+    "safetyTransferRed": "4 assertion FAIL / 6 PASS / 10 collected",
+    "receiptPayloadRed": "1 assertion FAIL / 10 PASS / 11 collected",
+    "uuidRed": "1 assertion FAIL / 11 skipped / 12 collected",
+    "latestGreen": "12 PASS",
+    "regressions": "46 PASS in 4 files",
+    "build": "TypeScript and Vite PASS",
+    "nativeGameplay": "NOT_RUN",
+    "browser": "NOT_RUN",
+    "saveRecovery": "NOT_RUN",
+    "packageGate": "NOT_RUN"
+  },
+  "actualCommandReceipts": [
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm run test -- tests/unit/factory/panels.test.ts",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11/apps/weltraum-browser",
+      "startedUtc": "2026-10-11T20:21:38.680198+00:00",
+      "endedUtc": "2026-10-11T20:21:39.537366+00:00",
+      "wallSeconds": 0.8570559489962761,
+      "exitCode": 1,
+      "rawLog": "01-panels-initial-red.log",
+      "rawSha256": "0ae06a1e9c02b9512d034f4f088c28d02c7e6d45fdefbd26e4bb5376a828c0da",
+      "rawBytes": 3793,
+      "phase": "initial-business-RED",
+      "fixtureScope": "synthetic immutable UI snapshots/Document; no native movement or actual world adoption proof",
+      "receiptPath": "01-panels-initial-red.receipt.json"
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm run test -- tests/unit/factory/panels.test.ts",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T20:29:47.384140+00:00",
+      "endedAtUtc": "2026-10-11T20:29:48.092080+00:00",
+      "elapsedSeconds": 0.7079514819997712,
+      "exitCode": 0,
+      "rawLog": "02-panels-first-green.log",
+      "rawBytes": 343,
+      "rawSha256": "7e43bd7db5882a990b5f1b7e10a702cfa2a2fc68e928016a6b0cb8a9c33dafed",
+      "receiptPath": "02-panels-first-green.receipt.json"
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm run test -- tests/unit/factory/panels.test.ts",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T20:31:44.068992+00:00",
+      "endedAtUtc": "2026-10-11T20:31:44.922800+00:00",
+      "elapsedSeconds": 0.8538140259988722,
+      "exitCode": 1,
+      "rawLog": "03-panels-safety-transfer-red.log",
+      "rawBytes": 12360,
+      "rawSha256": "9fa63cf194f24fe007d5f6d214b9682bad6f4615685552fc9b34e0fd729bfb4e",
+      "receiptPath": "03-panels-safety-transfer-red.receipt.json"
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm run test -- tests/unit/factory/panels.test.ts",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T20:34:24.414223+00:00",
+      "endedAtUtc": "2026-10-11T20:34:25.219646+00:00",
+      "elapsedSeconds": 0.8054293980021612,
+      "exitCode": 1,
+      "rawLog": "04-panels-receipt-binding-red.log",
+      "rawBytes": 1867,
+      "rawSha256": "5b17e0a0186117c302d8052dd47fbc27312ba032ec9efc1ebf6ca9f9d82593de",
+      "receiptPath": "04-panels-receipt-binding-red.receipt.json"
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm run test -- tests/unit/factory/panels.test.ts -t UUID-shaped",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T20:36:21.900185+00:00",
+      "endedAtUtc": "2026-10-11T20:36:22.720213+00:00",
+      "elapsedSeconds": 0.8200402530055726,
+      "exitCode": 1,
+      "rawLog": "05-panels-native-uuid-red.log",
+      "rawBytes": 1459,
+      "rawSha256": "80d309636a28c09048fca3d13b404e3766f49d132d7b8c53b55b3317bbf250f3",
+      "receiptPath": "05-panels-native-uuid-red.receipt.json"
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm run test -- tests/unit/factory/panels.test.ts",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T20:38:05.835591+00:00",
+      "endedAtUtc": "2026-10-11T20:38:06.638684+00:00",
+      "elapsedSeconds": 0.8031031930004247,
+      "exitCode": 0,
+      "rawLog": "06-panels-green.log",
+      "rawBytes": 346,
+      "rawSha256": "ee7a6b25541aac7522a8fdf21a66641da9c2b0de2d77a4122f895e311c7a575e",
+      "receiptPath": "06-panels-green.receipt.json"
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm run test -- tests/unit/factory/catalog.test.ts tests/unit/resourceCatalog.test.ts tests/unit/resourceContainers.test.ts tests/unit/resourceTransfer.test.ts",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T20:38:06.639444+00:00",
+      "endedAtUtc": "2026-10-11T20:38:08.012182+00:00",
+      "elapsedSeconds": 1.3727491829995415,
+      "exitCode": 0,
+      "rawLog": "07-catalog-resource-regressions.log",
+      "rawBytes": 457,
+      "rawSha256": "404f1ad5cd6dd2d90d8a065d2772279579883bf4ce8b9b8645e5440860623ab6",
+      "receiptPath": "07-catalog-resource-regressions.receipt.json"
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm run build",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T20:38:08.012509+00:00",
+      "endedAtUtc": "2026-10-11T20:38:11.781184+00:00",
+      "elapsedSeconds": 3.768692073004786,
+      "exitCode": 0,
+      "rawLog": "08-build.log",
+      "rawBytes": 1904,
+      "rawSha256": "b513948a07670fe8498c06d767cf17629ca351150897baf9d183be1fe55c6a0f",
+      "receiptPath": "08-build.receipt.json"
+    }
+  ],
+  "productSeal": "product-seal.json",
+  "rawArchive": "raw-log-archive.json",
+  "selfReview": "review.md",
+  "externalOriginalsDirectory": "/workspace/.cloud-setup/fp06-w09-ui-original-raw/ui-20261011T202036Z",
+  "limits": [
+    "Document/published-read-model fixtures are synthetic; no native or browser proof.",
+    "Shared Host/Entry adoption is Integrator work; W09 gate pending.",
+    "Technology keyboard focus continuity is flagged for independent review."
+  ]
+}

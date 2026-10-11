@@ -1,0 +1,478 @@
+{
+  "schema": "hestia.fp06.w09-ui-evidence/v1",
+  "package": "W09",
+  "component": "four-panels",
+  "status": "IN_REVIEW",
+  "baseCommitSha": "43a61c0f5be5df69e4f8bb42db89da3d7a3a4b2b",
+  "productSeal": [
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+      "bytes": 15555,
+      "sha256": "6d7b7b565927e811dca394e67dccda51d9fe5fd6294e98611ecbcd1e042d6f78"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/machinePanel.ts",
+      "bytes": 6494,
+      "sha256": "9905cc0d9bd04ee2dc15903b03fca2399e4fa95fdf828ed6853787f97a19c2e7"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/powerPanel.ts",
+      "bytes": 1283,
+      "sha256": "2ffe21ca555fdd9f60d06997fd2a42a3c4775319ec7768e45aaeb161529a7f15"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/technologyView.ts",
+      "bytes": 1756,
+      "sha256": "dd0dc44d98d7747b8cb9274c5d9f8158218744ad8fd9770860baacf0cec90da9"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/panels.test.ts",
+      "bytes": 19798,
+      "sha256": "c6540ecc6057371f5e6dbc5689b43ce0390ce62b60c7ba663ec92e12928eb63f"
+    }
+  ],
+  "artifactRefs": [
+    {
+      "path": "01-panels-initial-red.log.gz",
+      "bytes": 1120,
+      "sha256": "fa113165793dff178e55c1307b4583bc871568349f69944149f737b24cbbea50"
+    },
+    {
+      "path": "01-panels-initial-red.receipt.json",
+      "bytes": 656,
+      "sha256": "cff11bfc48cac3683a1c024c7ec1c3e3ed8b1f1f3eea7e399666c2a8303057a8"
+    },
+    {
+      "path": "02-panels-first-green.log.gz",
+      "bytes": 253,
+      "sha256": "918347f6283be345dea7a171bb9eaceb7ba56b7294bf0bae99694c8749b46daa"
+    },
+    {
+      "path": "02-panels-first-green.receipt.json",
+      "bytes": 513,
+      "sha256": "7ef2f3121bf9e855683e14a7c932910260d4b51bb10b8fa60588d1221bdc7c92"
+    },
+    {
+      "path": "03-panels-safety-transfer-red.log.gz",
+      "bytes": 2368,
+      "sha256": "5c899b403aaa0eb07ec40c2af83e04bdde8d1ca188da0ee255d4fee1e219b365"
+    },
+    {
+      "path": "03-panels-safety-transfer-red.receipt.json",
+      "bytes": 523,
+      "sha256": "19579717eefdcc042626ef7fa0e3136bf9188bceb064c4e92b924d171229d94a"
+    },
+    {
+      "path": "04-panels-receipt-binding-red.log.gz",
+      "bytes": 829,
+      "sha256": "a01d2dd7c20d5f1f3b1751ca691e3d11ec907830111e9d91c249a011d23506c5"
+    },
+    {
+      "path": "04-panels-receipt-binding-red.receipt.json",
+      "bytes": 522,
+      "sha256": "bbe4c47cae2eed1af34ca17ec96603e23c5800a18e9687cb54f4f558b8e466ae"
+    },
+    {
+      "path": "05-panels-native-uuid-red.log.gz",
+      "bytes": 708,
+      "sha256": "f8065a14a7f505dc322d191c5924609fc4b867c4a397c2d38583b60be2fb086a"
+    },
+    {
+      "path": "05-panels-native-uuid-red.receipt.json",
+      "bytes": 533,
+      "sha256": "b79ec521da8d37a0bfb69cccd50ea395ca4541476b4cf727e7bc4297da091dff"
+    },
+    {
+      "path": "06-panels-green.log.gz",
+      "bytes": 254,
+      "sha256": "c5e721fd6d145064a479a6fd55eababf492c435f6eb3de26089716b425926775"
+    },
+    {
+      "path": "06-panels-green.receipt.json",
+      "bytes": 507,
+      "sha256": "b25a0cdd8cf04a9c9ec716a66f1cd1172f079a068f7e262a6e9dcef9d79fa912"
+    },
+    {
+      "path": "07-catalog-resource-regressions.log.gz",
+      "bytes": 282,
+      "sha256": "8f34c30c29c8471e0b81acf7fe8c8f7314330e67786721bb5c189d225094b60c"
+    },
+    {
+      "path": "07-catalog-resource-regressions.receipt.json",
+      "bytes": 633,
+      "sha256": "146a228d7fd7c8b996855730d0a7004025005758c5efffda5891013f5d7fe8f6"
+    },
+    {
+      "path": "08-build.log.gz",
+      "bytes": 870,
+      "sha256": "314b500b417e044d90df923ce03f6e83bfb1ae64127d39150fc966d0487cfd74"
+    },
+    {
+      "path": "08-build.receipt.json",
+      "bytes": 464,
+      "sha256": "fc7ab62c9214d1f0bbd41fbc6a1655b28ba706a82a17f3404f50fa6865cba2c9"
+    },
+    {
+      "path": "09-technology-keyboard-red.log.gz",
+      "bytes": 1675,
+      "sha256": "de7a6e1ebb6e0737c7ddd575754c25ad4d3423059e0ca4a26454ef1c8be1181f"
+    },
+    {
+      "path": "09-technology-keyboard-red.receipt.json",
+      "bytes": 544,
+      "sha256": "d5427bb0f7dedd9c01de5969b9aaf9cb44538715ba0cf7f6129e35326f1e9ff8"
+    },
+    {
+      "path": "10-panels-tech-fix-green.log.gz",
+      "bytes": 253,
+      "sha256": "62ca3d9af8ff5f1072be698cb025fc1d9ecd9b153b7f4d468f4a97fd9846aef8"
+    },
+    {
+      "path": "10-panels-tech-fix-green.receipt.json",
+      "bytes": 516,
+      "sha256": "4dbb6d4d5b17a96e622a6d2c359bae0b6bb4b50f568d4ee2a7242f0e824d7a2f"
+    },
+    {
+      "path": "11-tech-fix-build.log.gz",
+      "bytes": 870,
+      "sha256": "8c7acd1f9411e48b5bff5f3262eb0efbb672d202b16d09212ff9134fcb023087"
+    },
+    {
+      "path": "11-tech-fix-build.receipt.json",
+      "bytes": 473,
+      "sha256": "039dca23bef867b3ae5a1a04fdad1d47c13173edae4b101014e140bed484692b"
+    },
+    {
+      "path": "history-before-tech-focus-fix/archive-receipt.json",
+      "bytes": 928,
+      "sha256": "7296116bef2d98eddef4fe91809cdd6c65c226fdb3585e8254af9dec585f1f0e"
+    },
+    {
+      "path": "history-before-tech-focus-fix/manifest.json",
+      "bytes": 14341,
+      "sha256": "15e257c3063ca24d3774e21258e1611c822529d6a7cae97ff62817fb2f3147b2"
+    },
+    {
+      "path": "history-before-tech-focus-fix/product-seal.json",
+      "bytes": 3751,
+      "sha256": "3ed3df962f5fd51dacf9b0c38c72c2f2cb7291159b3b7805d0ac58f055d28317"
+    },
+    {
+      "path": "history-before-tech-focus-fix/product.patch",
+      "bytes": 45461,
+      "sha256": "997fb8170fc40c709c366d5b2c90ff5ed1a88b93a384eef83b8d75680a2a76ef"
+    },
+    {
+      "path": "history-before-tech-focus-fix/report.json",
+      "bytes": 7360,
+      "sha256": "8418ed33fb5224894552f14a73c8780acea825725971444bec072f74b0776f0c"
+    },
+    {
+      "path": "history-before-tech-focus-fix/review.md",
+      "bytes": 2087,
+      "sha256": "ce73805bac5d2560509b6c9fa501e2fe376e6dfd1e67c05b984345143309e39e"
+    },
+    {
+      "path": "plan.md",
+      "bytes": 1449,
+      "sha256": "97d61d6890ae39e2a9c0c05ed951880b1a946e88481afd1485f04e4d73d9b1ec"
+    },
+    {
+      "path": "product-seal.json",
+      "bytes": 4324,
+      "sha256": "521ed40282b6de2fb8a78e74d3d40bf6d19d69f25797b66c95e03e473eabb065"
+    },
+    {
+      "path": "product.patch",
+      "bytes": 46749,
+      "sha256": "41b2e0d869b52b5aca58c87eb9ffcc848acd19352a8068317aabe6f12c764e37"
+    },
+    {
+      "path": "raw-log-archive-followup.json",
+      "bytes": 5997,
+      "sha256": "e0a4161313fba1e796618cfff26f7e399792fd355e9d24b86ba702b2cb809600"
+    },
+    {
+      "path": "raw-log-archive.json",
+      "bytes": 4412,
+      "sha256": "b4230f904cfb1d9ffeb1fab31339dbe8c4cb305ce20f2bc787933e64a90a4755"
+    },
+    {
+      "path": "report.json",
+      "bytes": 9999,
+      "sha256": "183eff961d72d69b6788f6de06bb6df9cec8a863e5dad14082b1c4ae1c0cd247"
+    },
+    {
+      "path": "review.md",
+      "bytes": 2359,
+      "sha256": "e8c0c5573b6e7946b1b3bcfd128d04ee8b0398becfffda0c3611e7f42f7bc6fe"
+    },
+    {
+      "path": "setup.json",
+      "bytes": 743,
+      "sha256": "5b5aaf07fa79acb2362feed1ac5b814e7dd9b4ac5a92ae987be434ac1a4f726f"
+    }
+  ],
+  "actualCommandReceipts": [
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm run test -- tests/unit/factory/panels.test.ts",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11/apps/weltraum-browser",
+      "startedUtc": "2026-10-11T20:21:38.680198+00:00",
+      "endedUtc": "2026-10-11T20:21:39.537366+00:00",
+      "wallSeconds": 0.8570559489962761,
+      "exitCode": 1,
+      "rawLog": "01-panels-initial-red.log",
+      "rawSha256": "0ae06a1e9c02b9512d034f4f088c28d02c7e6d45fdefbd26e4bb5376a828c0da",
+      "rawBytes": 3793,
+      "phase": "initial-business-RED",
+      "fixtureScope": "synthetic immutable UI snapshots/Document; no native movement or actual world adoption proof",
+      "receiptPath": "01-panels-initial-red.receipt.json"
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm run test -- tests/unit/factory/panels.test.ts",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T20:29:47.384140+00:00",
+      "endedAtUtc": "2026-10-11T20:29:48.092080+00:00",
+      "elapsedSeconds": 0.7079514819997712,
+      "exitCode": 0,
+      "rawLog": "02-panels-first-green.log",
+      "rawBytes": 343,
+      "rawSha256": "7e43bd7db5882a990b5f1b7e10a702cfa2a2fc68e928016a6b0cb8a9c33dafed",
+      "receiptPath": "02-panels-first-green.receipt.json"
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm run test -- tests/unit/factory/panels.test.ts",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T20:31:44.068992+00:00",
+      "endedAtUtc": "2026-10-11T20:31:44.922800+00:00",
+      "elapsedSeconds": 0.8538140259988722,
+      "exitCode": 1,
+      "rawLog": "03-panels-safety-transfer-red.log",
+      "rawBytes": 12360,
+      "rawSha256": "9fa63cf194f24fe007d5f6d214b9682bad6f4615685552fc9b34e0fd729bfb4e",
+      "receiptPath": "03-panels-safety-transfer-red.receipt.json"
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm run test -- tests/unit/factory/panels.test.ts",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T20:34:24.414223+00:00",
+      "endedAtUtc": "2026-10-11T20:34:25.219646+00:00",
+      "elapsedSeconds": 0.8054293980021612,
+      "exitCode": 1,
+      "rawLog": "04-panels-receipt-binding-red.log",
+      "rawBytes": 1867,
+      "rawSha256": "5b17e0a0186117c302d8052dd47fbc27312ba032ec9efc1ebf6ca9f9d82593de",
+      "receiptPath": "04-panels-receipt-binding-red.receipt.json"
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm run test -- tests/unit/factory/panels.test.ts -t UUID-shaped",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T20:36:21.900185+00:00",
+      "endedAtUtc": "2026-10-11T20:36:22.720213+00:00",
+      "elapsedSeconds": 0.8200402530055726,
+      "exitCode": 1,
+      "rawLog": "05-panels-native-uuid-red.log",
+      "rawBytes": 1459,
+      "rawSha256": "80d309636a28c09048fca3d13b404e3766f49d132d7b8c53b55b3317bbf250f3",
+      "receiptPath": "05-panels-native-uuid-red.receipt.json"
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm run test -- tests/unit/factory/panels.test.ts",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T20:38:05.835591+00:00",
+      "endedAtUtc": "2026-10-11T20:38:06.638684+00:00",
+      "elapsedSeconds": 0.8031031930004247,
+      "exitCode": 0,
+      "rawLog": "06-panels-green.log",
+      "rawBytes": 346,
+      "rawSha256": "ee7a6b25541aac7522a8fdf21a66641da9c2b0de2d77a4122f895e311c7a575e",
+      "receiptPath": "06-panels-green.receipt.json"
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm run test -- tests/unit/factory/catalog.test.ts tests/unit/resourceCatalog.test.ts tests/unit/resourceContainers.test.ts tests/unit/resourceTransfer.test.ts",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T20:38:06.639444+00:00",
+      "endedAtUtc": "2026-10-11T20:38:08.012182+00:00",
+      "elapsedSeconds": 1.3727491829995415,
+      "exitCode": 0,
+      "rawLog": "07-catalog-resource-regressions.log",
+      "rawBytes": 457,
+      "rawSha256": "404f1ad5cd6dd2d90d8a065d2772279579883bf4ce8b9b8645e5440860623ab6",
+      "receiptPath": "07-catalog-resource-regressions.receipt.json"
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm run build",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T20:38:08.012509+00:00",
+      "endedAtUtc": "2026-10-11T20:38:11.781184+00:00",
+      "elapsedSeconds": 3.768692073004786,
+      "exitCode": 0,
+      "rawLog": "08-build.log",
+      "rawBytes": 1904,
+      "rawSha256": "b513948a07670fe8498c06d767cf17629ca351150897baf9d183be1fe55c6a0f",
+      "receiptPath": "08-build.receipt.json"
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm run test -- tests/unit/factory/panels.test.ts -t 'technology keyboard'",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T20:45:28.842668+00:00",
+      "endedAtUtc": "2026-10-11T20:45:29.662435+00:00",
+      "elapsedSeconds": 0.8197805050003808,
+      "exitCode": 1,
+      "rawLog": "09-technology-keyboard-red.log",
+      "rawBytes": 9747,
+      "rawSha256": "44ecdb9f593a4b7135c65bc2244fb28c0f3835e88a0589ec470f1c1ecb7277d0",
+      "receiptPath": "09-technology-keyboard-red.receipt.json"
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm run test -- tests/unit/factory/panels.test.ts",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T20:46:26.099653+00:00",
+      "endedAtUtc": "2026-10-11T20:46:26.947105+00:00",
+      "elapsedSeconds": 0.8474612800055183,
+      "exitCode": 0,
+      "rawLog": "10-panels-tech-fix-green.log",
+      "rawBytes": 346,
+      "rawSha256": "abdba98f51a101c58d9ef86a6e81e0f8d5cd3834f319efb58647a8e55fee8c23",
+      "receiptPath": "10-panels-tech-fix-green.receipt.json"
+    },
+    {
+      "command": "source /workspace/.cloud-setup/activate.sh\nnpm run build",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11/apps/weltraum-browser",
+      "startedAtUtc": "2026-10-11T20:46:26.947504+00:00",
+      "endedAtUtc": "2026-10-11T20:46:31.423227+00:00",
+      "elapsedSeconds": 4.475738852001086,
+      "exitCode": 0,
+      "rawLog": "11-tech-fix-build.log",
+      "rawBytes": 1904,
+      "rawSha256": "5f30c4de8bc2968473b5da7ffefbb2f821f5e38bdbf40105de9b94cb72561993",
+      "receiptPath": "11-tech-fix-build.receipt.json"
+    }
+  ],
+  "rawLogArchive": [
+    {
+      "path": "01-panels-initial-red.log.gz",
+      "originalCapturedName": "01-panels-initial-red.log",
+      "rawBytes": 3793,
+      "rawSha256": "0ae06a1e9c02b9512d034f4f088c28d02c7e6d45fdefbd26e4bb5376a828c0da",
+      "compressedBytes": 1120,
+      "compressedSha256": "fa113165793dff178e55c1307b4583bc871568349f69944149f737b24cbbea50",
+      "externalOriginal": "/workspace/.cloud-setup/fp06-w09-ui-original-raw/ui-20261011T202036Z/01-panels-initial-red.log",
+      "losslessByteComparison": "PASS"
+    },
+    {
+      "path": "02-panels-first-green.log.gz",
+      "originalCapturedName": "02-panels-first-green.log",
+      "rawBytes": 343,
+      "rawSha256": "7e43bd7db5882a990b5f1b7e10a702cfa2a2fc68e928016a6b0cb8a9c33dafed",
+      "compressedBytes": 253,
+      "compressedSha256": "918347f6283be345dea7a171bb9eaceb7ba56b7294bf0bae99694c8749b46daa",
+      "externalOriginal": "/workspace/.cloud-setup/fp06-w09-ui-original-raw/ui-20261011T202036Z/02-panels-first-green.log",
+      "losslessByteComparison": "PASS"
+    },
+    {
+      "path": "03-panels-safety-transfer-red.log.gz",
+      "originalCapturedName": "03-panels-safety-transfer-red.log",
+      "rawBytes": 12360,
+      "rawSha256": "9fa63cf194f24fe007d5f6d214b9682bad6f4615685552fc9b34e0fd729bfb4e",
+      "compressedBytes": 2368,
+      "compressedSha256": "5c899b403aaa0eb07ec40c2af83e04bdde8d1ca188da0ee255d4fee1e219b365",
+      "externalOriginal": "/workspace/.cloud-setup/fp06-w09-ui-original-raw/ui-20261011T202036Z/03-panels-safety-transfer-red.log",
+      "losslessByteComparison": "PASS"
+    },
+    {
+      "path": "04-panels-receipt-binding-red.log.gz",
+      "originalCapturedName": "04-panels-receipt-binding-red.log",
+      "rawBytes": 1867,
+      "rawSha256": "5b17e0a0186117c302d8052dd47fbc27312ba032ec9efc1ebf6ca9f9d82593de",
+      "compressedBytes": 829,
+      "compressedSha256": "a01d2dd7c20d5f1f3b1751ca691e3d11ec907830111e9d91c249a011d23506c5",
+      "externalOriginal": "/workspace/.cloud-setup/fp06-w09-ui-original-raw/ui-20261011T202036Z/04-panels-receipt-binding-red.log",
+      "losslessByteComparison": "PASS"
+    },
+    {
+      "path": "05-panels-native-uuid-red.log.gz",
+      "originalCapturedName": "05-panels-native-uuid-red.log",
+      "rawBytes": 1459,
+      "rawSha256": "80d309636a28c09048fca3d13b404e3766f49d132d7b8c53b55b3317bbf250f3",
+      "compressedBytes": 708,
+      "compressedSha256": "f8065a14a7f505dc322d191c5924609fc4b867c4a397c2d38583b60be2fb086a",
+      "externalOriginal": "/workspace/.cloud-setup/fp06-w09-ui-original-raw/ui-20261011T202036Z/05-panels-native-uuid-red.log",
+      "losslessByteComparison": "PASS"
+    },
+    {
+      "path": "06-panels-green.log.gz",
+      "originalCapturedName": "06-panels-green.log",
+      "rawBytes": 346,
+      "rawSha256": "ee7a6b25541aac7522a8fdf21a66641da9c2b0de2d77a4122f895e311c7a575e",
+      "compressedBytes": 254,
+      "compressedSha256": "c5e721fd6d145064a479a6fd55eababf492c435f6eb3de26089716b425926775",
+      "externalOriginal": "/workspace/.cloud-setup/fp06-w09-ui-original-raw/ui-20261011T202036Z/06-panels-green.log",
+      "losslessByteComparison": "PASS"
+    },
+    {
+      "path": "07-catalog-resource-regressions.log.gz",
+      "originalCapturedName": "07-catalog-resource-regressions.log",
+      "rawBytes": 457,
+      "rawSha256": "404f1ad5cd6dd2d90d8a065d2772279579883bf4ce8b9b8645e5440860623ab6",
+      "compressedBytes": 282,
+      "compressedSha256": "8f34c30c29c8471e0b81acf7fe8c8f7314330e67786721bb5c189d225094b60c",
+      "externalOriginal": "/workspace/.cloud-setup/fp06-w09-ui-original-raw/ui-20261011T202036Z/07-catalog-resource-regressions.log",
+      "losslessByteComparison": "PASS"
+    },
+    {
+      "path": "08-build.log.gz",
+      "originalCapturedName": "08-build.log",
+      "rawBytes": 1904,
+      "rawSha256": "b513948a07670fe8498c06d767cf17629ca351150897baf9d183be1fe55c6a0f",
+      "compressedBytes": 870,
+      "compressedSha256": "314b500b417e044d90df923ce03f6e83bfb1ae64127d39150fc966d0487cfd74",
+      "externalOriginal": "/workspace/.cloud-setup/fp06-w09-ui-original-raw/ui-20261011T202036Z/08-build.log",
+      "losslessByteComparison": "PASS"
+    },
+    {
+      "path": "09-technology-keyboard-red.log.gz",
+      "originalCapturedName": "09-technology-keyboard-red.log",
+      "rawBytes": 9747,
+      "rawSha256": "44ecdb9f593a4b7135c65bc2244fb28c0f3835e88a0589ec470f1c1ecb7277d0",
+      "compressedBytes": 1675,
+      "compressedSha256": "de7a6e1ebb6e0737c7ddd575754c25ad4d3423059e0ca4a26454ef1c8be1181f",
+      "externalOriginal": "/workspace/.cloud-setup/fp06-w09-ui-original-raw/ui-20261011T202036Z/09-technology-keyboard-red.log",
+      "losslessByteComparison": "PASS"
+    },
+    {
+      "path": "10-panels-tech-fix-green.log.gz",
+      "originalCapturedName": "10-panels-tech-fix-green.log",
+      "rawBytes": 346,
+      "rawSha256": "abdba98f51a101c58d9ef86a6e81e0f8d5cd3834f319efb58647a8e55fee8c23",
+      "compressedBytes": 253,
+      "compressedSha256": "62ca3d9af8ff5f1072be698cb025fc1d9ecd9b153b7f4d468f4a97fd9846aef8",
+      "externalOriginal": "/workspace/.cloud-setup/fp06-w09-ui-original-raw/ui-20261011T202036Z/10-panels-tech-fix-green.log",
+      "losslessByteComparison": "PASS"
+    },
+    {
+      "path": "11-tech-fix-build.log.gz",
+      "originalCapturedName": "11-tech-fix-build.log",
+      "rawBytes": 1904,
+      "rawSha256": "5f30c4de8bc2968473b5da7ffefbb2f821f5e38bdbf40105de9b94cb72561993",
+      "compressedBytes": 870,
+      "compressedSha256": "8c7acd1f9411e48b5bff5f3262eb0efbb672d202b16d09212ff9134fcb023087",
+      "externalOriginal": "/workspace/.cloud-setup/fp06-w09-ui-original-raw/ui-20261011T202036Z/11-tech-fix-build.log",
+      "losslessByteComparison": "PASS"
+    }
+  ],
+  "browser": "NOT_RUN",
+  "packageGate": "NOT_RUN",
+  "reviewFix": {
+    "finding": "F01 technology control lifetime",
+    "previousSeal": "history-before-tech-focus-fix/product-seal.json",
+    "previousSealSha256": "3ed3df962f5fd51dacf9b0c38c72c2f2cb7291159b3b7805d0ac58f055d28317",
+    "unchangedProducts": [
+      "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+      "apps/weltraum-browser/src/factory/ui/machinePanel.ts",
+      "apps/weltraum-browser/src/factory/ui/powerPanel.ts"
+    ],
+    "businessRed": "09-technology-keyboard-red.receipt.json",
+    "latestGreen": "10-panels-tech-fix-green.receipt.json"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "command": "source /workspace/.cloud-setup/activate.sh\nnpm run build",
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T20:38:08.012509+00:00",
+  "endedAtUtc": "2026-10-11T20:38:11.781184+00:00",
+  "elapsedSeconds": 3.768692073004786,
+  "exitCode": 0,
+  "rawLog": "08-build.log",
+  "rawBytes": 1904,
+  "rawSha256": "b513948a07670fe8498c06d767cf17629ca351150897baf9d183be1fe55c6a0f"
+}

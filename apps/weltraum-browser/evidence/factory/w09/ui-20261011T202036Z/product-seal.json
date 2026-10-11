@@ -1,0 +1,133 @@
+{
+  "schema": "hestia.fp06.w09-ui-product-seal/v1",
+  "sealedAtUtc": "2026-10-11T20:47:42.725875+00:00",
+  "baseCommitSha": "43a61c0f5be5df69e4f8bb42db89da3d7a3a4b2b",
+  "branch": "codex/hestia-fp06-ui-w09-2026-10-11",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11",
+  "protocolSha256": "07b7a3e6ecf4b94fed367585dc4c094cb906d5688985e23177362867a3dc945c",
+  "writeHold": true,
+  "products": [
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+      "bytes": 15555,
+      "sha256": "6d7b7b565927e811dca394e67dccda51d9fe5fd6294e98611ecbcd1e042d6f78"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/machinePanel.ts",
+      "bytes": 6494,
+      "sha256": "9905cc0d9bd04ee2dc15903b03fca2399e4fa95fdf828ed6853787f97a19c2e7"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/powerPanel.ts",
+      "bytes": 1283,
+      "sha256": "2ffe21ca555fdd9f60d06997fd2a42a3c4775319ec7768e45aaeb161529a7f15"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/technologyView.ts",
+      "bytes": 1756,
+      "sha256": "dd0dc44d98d7747b8cb9274c5d9f8158218744ad8fd9770860baacf0cec90da9"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/panels.test.ts",
+      "bytes": 19798,
+      "sha256": "c6540ecc6057371f5e6dbc5689b43ce0390ce62b60c7ba663ec92e12928eb63f"
+    }
+  ],
+  "patchPath": "product.patch",
+  "patchBytes": 46749,
+  "patchSha256": "41b2e0d869b52b5aca58c87eb9ffcc848acd19352a8068317aabe6f12c764e37",
+  "productWhitespaceChecks": [
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+      "command": [
+        "git",
+        "diff",
+        "--no-index",
+        "--check",
+        "--",
+        "/dev/null",
+        "apps/weltraum-browser/src/factory/ui/cargoPanel.ts"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "",
+      "interpretation": "No whitespace diagnostics; no-index exit1 reflects added-file difference."
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/machinePanel.ts",
+      "command": [
+        "git",
+        "diff",
+        "--no-index",
+        "--check",
+        "--",
+        "/dev/null",
+        "apps/weltraum-browser/src/factory/ui/machinePanel.ts"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "",
+      "interpretation": "No whitespace diagnostics; no-index exit1 reflects added-file difference."
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/powerPanel.ts",
+      "command": [
+        "git",
+        "diff",
+        "--no-index",
+        "--check",
+        "--",
+        "/dev/null",
+        "apps/weltraum-browser/src/factory/ui/powerPanel.ts"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "",
+      "interpretation": "No whitespace diagnostics; no-index exit1 reflects added-file difference."
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/technologyView.ts",
+      "command": [
+        "git",
+        "diff",
+        "--no-index",
+        "--check",
+        "--",
+        "/dev/null",
+        "apps/weltraum-browser/src/factory/ui/technologyView.ts"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "",
+      "interpretation": "No whitespace diagnostics; no-index exit1 reflects added-file difference."
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/panels.test.ts",
+      "command": [
+        "git",
+        "diff",
+        "--no-index",
+        "--check",
+        "--",
+        "/dev/null",
+        "apps/weltraum-browser/tests/unit/factory/panels.test.ts"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "",
+      "interpretation": "No whitespace diagnostics; no-index exit1 reflects added-file difference."
+    }
+  ],
+  "reviewFix": {
+    "finding": "F01 technology control lifetime",
+    "previousSeal": "history-before-tech-focus-fix/product-seal.json",
+    "previousSealSha256": "3ed3df962f5fd51dacf9b0c38c72c2f2cb7291159b3b7805d0ac58f055d28317",
+    "unchangedProducts": [
+      "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+      "apps/weltraum-browser/src/factory/ui/machinePanel.ts",
+      "apps/weltraum-browser/src/factory/ui/powerPanel.ts"
+    ],
+    "businessRed": "09-technology-keyboard-red.receipt.json",
+    "latestGreen": "10-panels-tech-fix-green.receipt.json"
+  }
+}

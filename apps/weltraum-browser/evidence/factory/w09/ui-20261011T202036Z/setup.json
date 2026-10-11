@@ -1,0 +1,13 @@
+{
+  "schema": "hestia.fp06.w09-ui-setup.v1",
+  "actualUtc": "2026-10-11T20:20:36.105806+00:00",
+  "branch": "codex/hestia-fp06-ui-w09-2026-10-11",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11",
+  "baseCommitSha": "43a61c0f5be5df69e4f8bb42db89da3d7a3a4b2b",
+  "protocolPath": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+  "protocolSha256": "07b7a3e6ecf4b94fed367585dc4c094cb906d5688985e23177362867a3dc945c",
+  "protocolBytes": 8995,
+  "dependencySetup": "Ignored real node_modules directory with entries linking already-pinned domain node_modules contents; no install/package changes.",
+  "nativePlayerFocusAuthority": "Integrator; panel tests only port/DOM contract.",
+  "browserStatus": "NOT_RUN"
+}

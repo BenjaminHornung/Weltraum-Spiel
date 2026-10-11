@@ -1,0 +1,31 @@
+{
+  "createdAtUtc": "2026-10-11T20:44:13.380750+00:00",
+  "reason": "Narrow independent technology control DOM-lifetime review fix; immutable previous candidate files.",
+  "files": [
+    {
+      "path": "product-seal.json",
+      "bytes": 3751,
+      "sha256": "3ed3df962f5fd51dacf9b0c38c72c2f2cb7291159b3b7805d0ac58f055d28317"
+    },
+    {
+      "path": "product.patch",
+      "bytes": 45461,
+      "sha256": "997fb8170fc40c709c366d5b2c90ff5ed1a88b93a384eef83b8d75680a2a76ef"
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 14341,
+      "sha256": "15e257c3063ca24d3774e21258e1611c822529d6a7cae97ff62817fb2f3147b2"
+    },
+    {
+      "path": "report.json",
+      "bytes": 7360,
+      "sha256": "8418ed33fb5224894552f14a73c8780acea825725971444bec072f74b0776f0c"
+    },
+    {
+      "path": "review.md",
+      "bytes": 2087,
+      "sha256": "ce73805bac5d2560509b6c9fa501e2fe376e6dfd1e67c05b984345143309e39e"
+    }
+  ]
+}

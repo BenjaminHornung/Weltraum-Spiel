@@ -1,0 +1,603 @@
+diff --git a/apps/weltraum-browser/src/factory/ui/cargoPanel.ts b/apps/weltraum-browser/src/factory/ui/cargoPanel.ts
+new file mode 100644
+index 00000000..1bc23bbd
+--- /dev/null
++++ b/apps/weltraum-browser/src/factory/ui/cargoPanel.ts
+@@ -0,0 +1,205 @@
++import type { FactoryUiCommand, FactoryUiPanel, FactoryUiPort, FactoryUiReadModel, FactoryUiReceipt } from "../session/hostPort";
++import { canonicalJson, canonicalizeJsonValue } from "../../resources/serialization";
++
++export interface FactoryPanel { readonly element: HTMLElement; dispose(): void }
++
++export type FactoryUiIntent = FactoryUiCommand extends infer C ? C extends FactoryUiCommand ? Omit<C, "version" | "commandId" | "sessionId" | "epoch" | "expected"> : never : never;
++export const uiText = (doc: Document, tag: string, text: string): HTMLElement => {
++  const element = doc.createElement(tag); element.textContent = text; return element;
++};
++export const uiButton = (doc: Document, text: string, action: () => void): HTMLButtonElement => {
++  const button = doc.createElement("button"); button.type = "button"; button.textContent = text;
++  button.addEventListener("click", action); return button;
++};
++export const formatQuantity = (units: number, basis: "mg" | "mm" | "piece"): string => {
++  const scale = basis === "mg" ? 1_000_000 : basis === "mm" ? 1000 : 1;
++  const whole = Math.floor(units / scale), remainder = units % scale;
++  const fraction = remainder ? `,${String(remainder).padStart(basis === "mg" ? 6 : 3, "0").replace(/0+$/, "")}` : "";
++  return `${whole}${fraction} ${basis === "mg" ? "kg" : basis === "mm" ? "m" : "Stück"}`;
++};
++export const formatSeconds = (ms: number): string => `${String(ms / 1000).replace(".", ",")} s`;
++export const factoryReason = (reason: string | null): string => {
++  const labels: Record<string, string> = {
++    IDLE: "Bereit", RUNNING: "In Arbeit", READY: "Bereit", WAIT_POWER: "Wartet auf Strom",
++    BLOCKED_OUTPUT: "Ausgang belegt", WAIT_OUTPUT: "Ausgang belegt", WAIT_INPUT: "Material fehlt",
++    LAID_OUT: "Material ausgelegt", ASSEMBLED: "Montiert", FINISHED: "Abgeschlossen",
++    NOT_IMPLEMENTED: "Geplant", NOT_INSTALLED: "Noch nicht gebaut", OUT_OF_REACH: "Außer Reichweite",
++    SOURCE_STALE: "Ansicht veraltet", STALE: "Ansicht veraltet", RecoveryHold: "Wiederherstellung erforderlich",
++    Waiting: "Bitte warten", Disposed: "Sitzung beendet", Ready: "Bereit",
++  };
++  return reason ? labels[reason] ?? "Aktion zurzeit nicht verfügbar" : "";
++};
++
++/** Presentation lifetime and pending intent; all domain numbers come from the Host. */
++export const createFactoryPanel = (port: FactoryUiPort, doc: Document, panel: FactoryUiPanel, title: string) => {
++  const element = doc.createElement("section");
++  element.setAttribute("aria-label", title); element.tabIndex = 0;
++  element.style.cssText = "padding:12px;border:1px solid #52606d;border-radius:6px;background:#16212bed;color:#eef4f8;max-width:360px;font:14px/1.45 system-ui";
++  const content = doc.createElement("div"), status = uiText(doc, "p", "");
++  status.setAttribute("role", "status"); status.setAttribute("aria-live", "polite");
++  let view = port.read(), pending: FactoryUiCommand | null = null, disposed = false, focused = false;
++  const sessionId = view.sessionId, epoch = view.epoch;
++  let render: (view: FactoryUiReadModel) => void = () => {};
++  const focus = () => { if (!disposed) { focused = true; port.setPanelFocus(panel); } };
++  const blur = (event: Event) => {
++    const target = (event as FocusEvent).relatedTarget;
++    if (target && element.contains(target as Node)) return;
++    if (focused) { focused = false; port.setPanelFocus(null); }
++  };
++  element.addEventListener("focusin", focus); element.addEventListener("focusout", blur);
++  const receiptText = (receipt: FactoryUiReceipt): string => receipt.status === "Committed" ? "Aktion bestätigt" :
++    receipt.status === "RecoveryHold" ? "Wiederherstellung erforderlich" : `Aktion abgewiesen. ${factoryReason(receipt.reason)}`;
++  const settle = (receipt: FactoryUiReceipt) => {
++    if (disposed || !pending || receipt.commandId !== pending.commandId || receipt.requestCanonicalJson !== canonicalJson(pending)) return;
++    pending = null; check.hidden = true; status.textContent = receiptText(receipt); render(view);
++  };
++  const check = uiButton(doc, "Antwort prüfen", () => {
++    if (!pending) return;
++    const receipt = port.readReceipt(pending.commandId); if (receipt) settle(receipt);
++  });
++  check.hidden = true;
++  element.append(uiText(doc, "h2", title), content, status, check);
++  const accept = (next: FactoryUiReadModel) => {
++    if (disposed || next.sessionId !== sessionId || next.epoch !== epoch || next.publicationRevision < view.publicationRevision) return;
++    view = next; element.dataset.publicationRevision = String(view.publicationRevision);
++    if (pending) { const receipt = port.readReceipt(pending.commandId); if (receipt) settle(receipt); }
++    render(view); check.hidden = pending === null;
++  };
++  const unsubscribe = port.subscribe(accept);
++  const submit = (intent: FactoryUiIntent) => {
++    if (disposed || pending) return;
++    const current = port.read();
++    if (current.sessionId !== sessionId || current.epoch !== epoch || current.publicationRevision < view.publicationRevision) {
++      status.textContent = "Ansicht veraltet. Bitte Panel neu öffnen."; return;
++    }
++    accept(current);
++    if (view.state !== "Ready") { status.textContent = factoryReason(view.state); return; }
++    focus();
++    // Intent identity only: secure UUIDs avoid collisions across ports/remounts/recovery.
++    // The raw Native session UUID remains its own unchanged binding field.
++    pending = canonicalizeJsonValue({ ...intent, version: "fp06-ui-command-v1", commandId: `ui_${panel}_${crypto.randomUUID().replace(/-/g, "")}`,
++      sessionId: view.sessionId, epoch: view.epoch, expected: { ...view.binding } }) as unknown as FactoryUiCommand;
++    const command = pending;
++    status.textContent = "Antwort ausstehend"; check.hidden = false; render(view);
++    try {
++      void port.submit(command).then(result => {
++        if (disposed || pending?.commandId !== command.commandId) return;
++        accept(port.read()); settle(result.receipt); check.hidden = pending !== null;
++      }).catch(() => {
++        if (disposed || pending?.commandId !== command.commandId) return;
++        status.textContent = "Antwort unbekannt. Bitte Antwort prüfen.";
++      });
++    } catch { status.textContent = "Antwort unbekannt. Bitte Antwort prüfen."; }
++  };
++  return {
++    element, content, submit,
++    get view() { return view; }, get busy() { return pending !== null || view.state !== "Ready"; },
++    start(renderer: (view: FactoryUiReadModel) => void) { render = renderer; accept(view); },
++    dispose() {
++      if (disposed) return; disposed = true; unsubscribe();
++      element.removeEventListener("focusin", focus); element.removeEventListener("focusout", blur);
++      if (focused) port.setPanelFocus(null); element.remove();
++    },
++  };
++};
++
++const roles: Record<FactoryUiReadModel["inventory"][number]["role"], string> = {
++  cargo: "Wrackfracht", carrier: "Transport", depot: "Lager", installed: "Verbaut", input: "Eingang",
++  output: "Produkte", offcut: "Verschnitt", wip: "In Arbeit", belt: "Förderband",
++};
++
++const containerName = (view: FactoryUiReadModel, id: string): string => {
++  const container = view.inventory.find(c => c.id === id)!;
++  const machine = view.machines.find(m => [m.inputContainerId, m.outputContainerId, m.offcutContainerId, m.wipContainerId, m.installedContainerId].includes(id));
++  const index = view.inventory.filter(c => c.role === container.role).findIndex(c => c.id === id) + 1;
++  return `${roles[container.role]}${machine ? ` · ${machine.name}` : ` ${index}`}`;
++};
++const exactQuantity = (text: string, basis: "mg" | "mm" | "piece"): number | null => {
++  const digits = basis === "mg" ? 6 : basis === "mm" ? 3 : 0;
++  const match = /^(\d+)(?:[,.](\d+))?$/.exec(text.trim());
++  if (!match || (match[2]?.length ?? 0) > digits) return null;
++  const units = BigInt(match[1]!) * 10n ** BigInt(digits) + BigInt((match[2] ?? "").padEnd(digits, "0") || "0");
++  return units > 0n && units <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(units) : null;
++};
++const syncOptions = (doc: Document, select: HTMLSelectElement, options: readonly { value: string; label: string }[]) => {
++  const signature = JSON.stringify(options);
++  if (select.dataset.options === signature) return;
++  const old = select.value; select.replaceChildren();
++  for (const choice of options) { const option = doc.createElement("option"); option.value = choice.value; option.textContent = choice.label; select.append(option); }
++  select.value = options.some(o => o.value === old) ? old : options[0]?.value ?? ""; select.dataset.options = signature;
++};
++
++export const mountFactoryCargoPanel = (port: FactoryUiPort, doc: Document = document): FactoryPanel => {
++  const panel = createFactoryPanel(port, doc, "cargo", "Fracht und Lager");
++  const inventory = doc.createElement("div"), controls = doc.createElement("div");
++  const open = uiButton(doc, "Fracht öffnen", () => { if (panel.view.interaction.openCargo.enabled) panel.submit({ kind: "open-cargo" }); });
++  const handling = uiText(doc, "p", "");
++  const deposit = uiButton(doc, "Hier ablegen", () => {
++    const h = panel.view.interaction.handling;
++    if (h && panel.view.interaction.deposit.enabled) panel.submit({ kind: "deposit", handling: { id: h.id, revision: h.revision }, target: { kind: "ground" } });
++  });
++  const back = uiButton(doc, "Zurück zur Fracht", () => {
++    const h = panel.view.interaction.handling, target = panel.view.inventory.find(c => c.role === "cargo" && c.accessible);
++    if (h && target && panel.view.interaction.returnCargo.enabled) panel.submit({ kind: "return", handling: { id: h.id, revision: h.revision }, target: { id: target.id, revision: target.revision } });
++  });
++  controls.append(open, handling, deposit, back);
++  const source = doc.createElement("select"), target = doc.createElement("select"), amount = doc.createElement("input");
++  source.setAttribute("aria-label", "Transferquelle"); target.setAttribute("aria-label", "Transferziel"); amount.setAttribute("aria-label", "Transfermenge");
++  amount.type = "text"; amount.inputMode = "decimal"; amount.value = "1";
++  const amountLabel = uiText(doc, "span", "Menge");
++  const selection = () => {
++    for (const container of panel.view.inventory) for (const stack of container.contents) {
++      if (JSON.stringify([container.id, stack.stackId]) === source.value && container.accessible && ["cargo", "depot", "input", "output", "offcut"].includes(container.role)) return { container, stack };
++    }
++    return null;
++  };
++  const transfer = uiButton(doc, "Übertragen", () => {
++    const selected = selection(), destination = panel.view.inventory.find(c => c.id === target.value && c.accessible);
++    const units = selected && exactQuantity(amount.value, selected.stack.quantityBasis);
++    if (selected && destination && destination.id !== selected.container.id && units && units <= selected.stack.quantityUnits) panel.submit({ kind: "transfer",
++      source: { containerId: selected.container.id, containerRevision: selected.container.revision, stackId: selected.stack.stackId, quantityUnits: units }, target: { id: destination.id, revision: destination.revision } });
++  });
++  const transferForm = doc.createElement("div"); transferForm.append(uiText(doc, "h3", "Lokal übertragen"), source, amountLabel, amount, target, transfer);
++  panel.content.append(inventory, controls, transferForm);
++  const rows = new Map<string, { row: HTMLElement; title: HTMLElement; summary: HTMLElement; stacks: HTMLElement; pickups: Map<string, HTMLButtonElement> }>();
++  const updateTransfer = () => {
++    const selected = selection();
++    syncOptions(doc, target, [{ value: "", label: "Ziel wählen" }, ...panel.view.inventory.filter(c => c.accessible && c.id !== selected?.container.id && ["cargo", "depot", "input", "output", "offcut"].includes(c.role)).map(c => ({ value: c.id, label: containerName(panel.view, c.id) }))]);
++    amountLabel.textContent = `Menge in ${selected?.stack.quantityBasis === "mg" ? "kg" : selected?.stack.quantityBasis === "mm" ? "m" : "Stück"}`;
++    const units = selected && exactQuantity(amount.value, selected.stack.quantityBasis);
++    transfer.disabled = panel.busy || !selected || !units || units > selected.stack.quantityUnits || !target.value;
++    source.disabled = panel.busy; target.disabled = panel.busy; amount.disabled = panel.busy;
++  };
++  source.addEventListener("change", updateTransfer); target.addEventListener("change", updateTransfer); amount.addEventListener("input", updateTransfer);
++  panel.start(view => {
++    for (const [id, row] of rows) if (!view.inventory.some(c => c.id === id)) { row.row.remove(); rows.delete(id); }
++    for (const container of view.inventory) {
++      let row = rows.get(container.id);
++      if (!row) { const element = doc.createElement("div"), title = uiText(doc, "h3", ""), summary = uiText(doc, "p", ""), stacks = doc.createElement("div");
++        element.append(title, summary, stacks); inventory.append(element); row = { row: element, title, summary, stacks, pickups: new Map() }; rows.set(container.id, row); }
++      row.title.textContent = containerName(view, container.id);
++      row.summary.textContent = `${formatQuantity(container.massMg, "mg")} / ${formatQuantity(container.capacityMassMg, "mg")} · ${container.accessible ? "Erreichbar" : "Außer Reichweite"}`;
++      const content = container.contents.map(stack => `${stack.name}: ${formatQuantity(stack.quantityUnits, stack.quantityBasis)}${stack.quantityBasis === "mg" ? "" : ` · ${formatQuantity(stack.massMg, "mg")}`}${stack.freshProduction ? " · Neu hergestellt" : ""}`);
++      if (row.stacks.dataset.contents !== JSON.stringify(content)) { row.stacks.replaceChildren(...content.map(t => uiText(doc, "p", t))); row.stacks.dataset.contents = JSON.stringify(content); }
++      for (const [id, button] of row.pickups) if (!container.pickupProfiles.some(p => p.profileId === id)) { button.remove(); row.pickups.delete(id); }
++      for (const profile of container.pickupProfiles) {
++        let pickup = row.pickups.get(profile.profileId);
++        if (!pickup) { pickup = uiButton(doc, `Aufnehmen: ${profile.name}`, () => {
++          const owner = panel.view.inventory.find(c => c.id === container.id), current = owner?.pickupProfiles.find(p => p.profileId === profile.profileId);
++          if (owner?.accessible && current?.capability.enabled) panel.submit({ kind: "pickup", profileId: current.profileId, sourceLots: current.sourceLots.map(l => ({ ...l })) });
++        }); row.pickups.set(profile.profileId, pickup); row.row.append(pickup); }
++        pickup.textContent = `Aufnehmen: ${profile.name}`;
++        pickup.disabled = panel.busy || !container.accessible || !profile.capability.enabled;
++        pickup.title = factoryReason(profile.capability.reason);
++      }
++    }
++    open.disabled = panel.busy || !view.interaction.openCargo.enabled;
++    handling.textContent = view.interaction.handling ? `Transportgut: ${formatQuantity(view.interaction.handling.massMg, "mg")}` : "";
++    deposit.hidden = back.hidden = !view.interaction.handling;
++    deposit.disabled = panel.busy || !view.interaction.deposit.enabled;
++    back.disabled = panel.busy || !view.interaction.returnCargo.enabled || !view.inventory.some(c => c.role === "cargo" && c.accessible);
++    syncOptions(doc, source, view.inventory.filter(c => c.accessible && ["cargo", "depot", "input", "output", "offcut"].includes(c.role)).flatMap(c => c.contents.filter(s => s.quantityUnits > 0).map(s => ({ value: JSON.stringify([c.id, s.stackId]), label: `${containerName(view, c.id)} · ${s.name}` }))));
++    updateTransfer();
++  });
++  return panel;
++};
+diff --git a/apps/weltraum-browser/src/factory/ui/machinePanel.ts b/apps/weltraum-browser/src/factory/ui/machinePanel.ts
+new file mode 100644
+index 00000000..07f44d7d
+--- /dev/null
++++ b/apps/weltraum-browser/src/factory/ui/machinePanel.ts
+@@ -0,0 +1,79 @@
++import { createFp02CatalogInput, loadFactoryCatalog } from "../catalog/fp02Catalog";
++import type { FactoryUiLotRef, FactoryUiMachine, FactoryUiPort, FactoryUiReadModel } from "../session/hostPort";
++import { createFactoryPanel, factoryReason, formatQuantity, formatSeconds, uiButton, uiText, type FactoryPanel } from "./cargoPanel";
++
++// Immutable terms select finite intents; the Host rechecks custody and admission.
++const catalog = loadFactoryCatalog(createFp02CatalogInput());
++const selectSourceLots = (view: FactoryUiReadModel, machine: FactoryUiMachine): FactoryUiLotRef[] | null => {
++  if (view.binding.catalogDigest !== catalog.catalogDigest || !machine.selectedRecipe) return null;
++  const selected = machine.selectedRecipe;
++  const recipe = catalog.recipes.find(r => r.sourceId === selected.sourceId && r.version === selected.version && r.digest === selected.digest);
++  if (!recipe) return null;
++  const manual = recipe.processes.some(p => p.kind === "manual" && p.availability === "first-dry-loop");
++  const containers = view.inventory.filter(c => c.accessible && (manual ? ["input", "output", "depot"].includes(c.role) : c.id === machine.inputContainerId));
++  const lots: FactoryUiLotRef[] = [];
++  for (const term of recipe.inputs) {
++    let needed = term.quantityUnits;
++    for (const container of containers) for (const stack of container.contents) {
++      if (!needed || stack.itemId !== term.itemId || (manual && !stack.freshProduction)) continue;
++      const quantityUnits = Math.min(needed, stack.quantityUnits);
++      if (quantityUnits > 0) lots.push({ containerId: container.id, containerRevision: container.revision, stackId: stack.stackId, quantityUnits });
++      needed -= quantityUnits;
++    }
++    if (needed) return null;
++  }
++  return lots;
++};
++
++export const mountFactoryMachinePanel = (port: FactoryUiPort, doc: Document = document): FactoryPanel => {
++  const panel = createFactoryPanel(port, doc, "machine", "Maschinen");
++  const cards = new Map<string, { element: HTMLElement; status: HTMLElement; buffers: HTMLElement; recipes: HTMLSelectElement; start: HTMLButtonElement; work: HTMLButtonElement; finish: HTMLButtonElement }>();
++  panel.start(view => {
++    for (const [id, card] of cards) if (!view.machines.some(m => m.id === id)) { card.element.remove(); cards.delete(id); }
++    for (const machine of view.machines) {
++      let card = cards.get(machine.id);
++      if (!card) {
++        const element = doc.createElement("div"), status = uiText(doc, "p", ""), buffers = doc.createElement("div"), recipes = doc.createElement("select");
++        recipes.setAttribute("aria-label", `Rezept für ${machine.name}`);
++        recipes.addEventListener("change", () => {
++          const current = panel.view.machines.find(m => m.id === machine.id), selected = current?.recipes.find(r => r.ref.sourceId === recipes.value);
++          if (current?.installed && !current.jobId && selected) panel.submit({ kind: "select-recipe", machine: { id: current.id, revision: current.revision }, recipe: { ...selected.ref } });
++        });
++        const start = uiButton(doc, "Starten", () => {
++          const current = panel.view.machines.find(m => m.id === machine.id), sourceLots = current && selectSourceLots(panel.view, current);
++          if (current?.actions.start.enabled && sourceLots) panel.submit({ kind: "start", machine: { id: current.id, revision: current.revision }, sourceLots });
++        });
++        const work = uiButton(doc, "Aktiv montieren", () => {
++          const current = panel.view.machines.find(m => m.id === machine.id);
++          if (current?.jobId && current.actions.manualWork.enabled) panel.submit({ kind: "manual-work", machine: { id: current.id, revision: current.revision }, jobId: current.jobId });
++        });
++        const finish = uiButton(doc, "Montage abschließen", () => {
++          const current = panel.view.machines.find(m => m.id === machine.id);
++          if (current?.jobId && current.actions.manualFinish.enabled) panel.submit({ kind: "manual-finish", machine: { id: current.id, revision: current.revision }, jobId: current.jobId });
++        });
++        element.append(uiText(doc, "h3", machine.name), status, recipes, start, work, finish, buffers); panel.content.append(element);
++        card = { element, status, buffers, recipes, start, work, finish }; cards.set(machine.id, card);
++      }
++      card.status.textContent = `${factoryReason(machine.reason ?? machine.status)} · ${formatSeconds(machine.confirmedWorkMs)}${machine.requiredWorkMs === null ? " bestätigte Arbeit" : ` / ${formatSeconds(machine.requiredWorkMs)}`} · ${machine.allocatedWatts} W`;
++      const signature = machine.recipes.map(r => `${r.ref.sourceId}:${r.ref.digest}`).join("|");
++      if (card.recipes.dataset.recipes !== signature) {
++        card.recipes.replaceChildren(); const empty = doc.createElement("option"); empty.value = ""; empty.textContent = "Rezept wählen"; card.recipes.append(empty);
++        for (const recipe of machine.recipes) { const option = doc.createElement("option"); option.value = recipe.ref.sourceId; option.textContent = recipe.name; card.recipes.append(option); }
++        card.recipes.dataset.recipes = signature;
++      }
++      card.recipes.value = machine.selectedRecipe?.sourceId ?? "";
++      card.recipes.disabled = panel.busy || !machine.installed || machine.jobId !== null || !machine.recipes.length;
++      card.start.disabled = panel.busy || !machine.actions.start.enabled || selectSourceLots(view, machine) === null;
++      card.start.title = factoryReason(machine.actions.start.reason);
++      card.work.disabled = panel.busy || !machine.actions.manualWork.enabled || machine.jobId === null;
++      card.finish.disabled = panel.busy || !machine.actions.manualFinish.enabled || machine.jobId === null;
++      card.work.hidden = !machine.actions.manualWork.enabled; card.finish.hidden = !machine.actions.manualFinish.enabled;
++      card.buffers.replaceChildren();
++      for (const [label, id] of [["Eingang", machine.inputContainerId], ["Produkte", machine.outputContainerId], ["Verschnitt", machine.offcutContainerId], ["In Arbeit", machine.wipContainerId]]) {
++        const container = view.inventory.find(c => c.id === id);
++        if (container) card.buffers.append(uiText(doc, "p", `${label}: ${formatQuantity(container.massMg, "mg")}${container.contents.length ? ` · ${container.contents.map(s => `${s.name} ${formatQuantity(s.quantityUnits, s.quantityBasis)}`).join(", ")}` : ""}`));
++      }
++    }
++  });
++  return panel;
++};
+diff --git a/apps/weltraum-browser/src/factory/ui/powerPanel.ts b/apps/weltraum-browser/src/factory/ui/powerPanel.ts
+new file mode 100644
+index 00000000..1226c062
+--- /dev/null
++++ b/apps/weltraum-browser/src/factory/ui/powerPanel.ts
+@@ -0,0 +1,17 @@
++import type { FactoryUiPort } from "../session/hostPort";
++import { createFactoryPanel, factoryReason, uiText, type FactoryPanel } from "./cargoPanel";
++
++export const mountFactoryPowerPanel = (port: FactoryUiPort, doc: Document = document): FactoryPanel => {
++  const panel = createFactoryPanel(port, doc, "power", "Stromversorgung");
++  panel.start(view => {
++    const power = view.power;
++    panel.content.replaceChildren(uiText(doc, "p", factoryReason(power.status)),
++      uiText(doc, "p", `Erzeugung: ${power.generationWatts} W · Zuweisung: ${power.allocatedWatts} W`),
++      uiText(doc, "p", power.batteryEnergyJ === null ? "Batterie: Keine bestätigte Energiemenge" :
++        `Batterie: ${power.batteryEnergyJ} J${power.batteryCapacityJ === null ? "" : ` / ${power.batteryCapacityJ} J`}`),
++      uiText(doc, "p", power.reserveEnergyJ === null ? "Reserve: Keine bestätigte Energiemenge" : `Reserve: ${power.reserveEnergyJ} J`));
++    for (const consumer of power.consumers) panel.content.append(uiText(doc, "p", `${consumer.name}: ${consumer.allocatedWatts} / ${consumer.requestedWatts} W${consumer.reason ? ` · ${factoryReason(consumer.reason)}` : ""}`));
++    panel.content.append(uiText(doc, "p", "Stromanschlüsse werden an den Anlagen verbunden."));
++  });
++  return panel;
++};
+diff --git a/apps/weltraum-browser/src/factory/ui/technologyView.ts b/apps/weltraum-browser/src/factory/ui/technologyView.ts
+new file mode 100644
+index 00000000..7d88ce12
+--- /dev/null
++++ b/apps/weltraum-browser/src/factory/ui/technologyView.ts
+@@ -0,0 +1,29 @@
++import type { FactoryUiPort } from "../session/hostPort";
++import { createFactoryPanel, uiButton, uiText, type FactoryPanel } from "./cargoPanel";
++
++export const mountFactoryTechnologyView = (port: FactoryUiPort, doc: Document = document): FactoryPanel => {
++  const panel = createFactoryPanel(port, doc, "technology", "Bau und Technik");
++  let selected: string | null = null;
++  const choices = doc.createElement("div"), details = doc.createElement("div");
++  const buttons = new Map<string, HTMLButtonElement>();
++  panel.content.append(choices, details);
++  const render = () => {
++    for (const [id, button] of buttons) if (!panel.view.technologies.some(t => t.id === id)) { button.remove(); buttons.delete(id); }
++    details.replaceChildren();
++    for (const technology of panel.view.technologies) {
++      let button = buttons.get(technology.id);
++      if (!button) {
++        button = uiButton(doc, technology.name, () => { selected = technology.id; render(); });
++        choices.append(button); buttons.set(technology.id, button);
++      }
++      button.textContent = technology.name;
++      button.setAttribute("aria-pressed", String(selected === technology.id));
++      if (selected === technology.id) {
++        details.append(uiText(doc, "h3", technology.name), uiText(doc, "p", technology.status === "AVAILABLE" ? "Verfügbar" : technology.status === "PLANNED" ? "Geplant" : "Voraussetzungen fehlen"));
++        for (const requirement of technology.requirements) details.append(uiText(doc, "p", requirement));
++        details.append(uiText(doc, "p", technology.status === "PLANNED" ? "Für diesen Prototyp noch nicht verfügbar." : "Gebaut wird mit der Bauvorschau an einem geeigneten Standort."));
++      }
++    }
++  };
++  panel.start(render); return panel;
++};
+diff --git a/apps/weltraum-browser/tests/unit/factory/panels.test.ts b/apps/weltraum-browser/tests/unit/factory/panels.test.ts
+new file mode 100644
+index 00000000..94e54a59
+--- /dev/null
++++ b/apps/weltraum-browser/tests/unit/factory/panels.test.ts
+@@ -0,0 +1,243 @@
++import { describe, expect, it } from "vitest";
++import { isSaveSafeResourceId } from "../../../src/resources/ids";
++import { loadFactoryCatalog, createFp02CatalogInput } from "../../../src/factory/catalog/fp02Catalog";
++import type { FactoryUiCommand, FactoryUiPanel, FactoryUiPort, FactoryUiReadModel, FactoryUiReceipt, FactoryUiResult } from "../../../src/factory/session/hostPort";
++import { mountFactoryCargoPanel } from "../../../src/factory/ui/cargoPanel";
++import { mountFactoryMachinePanel } from "../../../src/factory/ui/machinePanel";
++import { mountFactoryPowerPanel } from "../../../src/factory/ui/powerPanel";
++import { mountFactoryTechnologyView } from "../../../src/factory/ui/technologyView";
++
++// Synthetic published-UI snapshots and a Document double exercise only the UI
++// protocol; native grounding, movement, focus cancellation and world adoption
++// remain Integrator tests. No fake World, elapsed clock or inventory mutation.
++class ElementDouble extends EventTarget {
++  readonly children: ElementDouble[] = [];
++  parent: ElementDouble | null = null;
++  readonly attributes = new Map<string, string>();
++  readonly dataset: Record<string, string> = {};
++  readonly style = { cssText: "" };
++  id = ""; value = ""; disabled = false; hidden = false; type = "";
++  open = false; selected = false; tabIndex = 0;
++  private content = "";
++  constructor(readonly tagName: string) { super(); }
++  get textContent(): string { return this.content + this.children.map(c => c.textContent).join(" "); }
++  set textContent(v: string | null) { this.content = v ?? ""; this.replaceChildren(); }
++  append(...items: ElementDouble[]): void { for (const child of items) { child.parent = this; this.children.push(child); } }
++  replaceChildren(...items: ElementDouble[]): void { for (const child of this.children) child.parent = null; this.children.length = 0; this.append(...items); }
++  setAttribute(k: string, v: string): void { this.attributes.set(k, v); }
++  getAttribute(k: string): string | null { return this.attributes.get(k) ?? null; }
++  contains(v: unknown): boolean { return this === v || this.children.some(c => c.contains(v)); }
++  remove(): void { if (this.parent) { const index = this.parent.children.indexOf(this); if (index >= 0) this.parent.children.splice(index, 1); this.parent = null; } }
++  focus(): void { this.dispatchEvent(new Event("focusin")); }
++  click(): void { if (!this.disabled) this.dispatchEvent(new Event("click")); }
++}
++const documentDouble = () => ({ createElement: (tag: string) => new ElementDouble(tag.toUpperCase()) }) as unknown as Document;
++const descendants = (root: ElementDouble): ElementDouble[] => [root, ...root.children.flatMap(descendants)];
++const button = (root: HTMLElement, label: string): ElementDouble | undefined => descendants(root as unknown as ElementDouble).find(e => e.tagName === "BUTTON" && e.textContent === label);
++const freeze = <T>(v: T): T => { if (v && typeof v === "object" && !Object.isFrozen(v)) { Object.values(v).forEach(freeze); Object.freeze(v); } return v; };
++const catalog = loadFactoryCatalog(createFp02CatalogInput());
++const binding = { catalogDigest: catalog.catalogDigest, terrainSourceDigest: "terrain_source", powerSourceProfileDigest: "power_source", terrainRevision: 1, facilityRevision: 1, materialRevision: 0, netRevision: 1, handlingRevision: 0 };
++const cap = (enabled = true, reason: string | null = null) => ({ enabled, reason });
++const initialView = (): FactoryUiReadModel => freeze({
++  version: "fp06-ui-read-v1", sessionId: "ui_session", epoch: 1, publicationRevision: 1, binding,
++  host: { sessionId: "ui_session", epoch: 1, nativeTick: 6, physicsStatus: "Paused", confirmed: true,
++    terrain: { epoch: 1, revision: 1, sourceDigest: "terrain_source", baseDigest: "terrain_base", cellMeters: .125, originMeters: { x: 0, y: 0, z: 0 }, sizeX: 16, sizeY: 16, sizeZ: 16 } },
++  factorySteps: 1, elapsedMs: 100, state: "Ready", reason: null, focusedPanel: null,
++  inventory: [{ id: "wreck", revision: 0, ownerId: "wreck_owner", role: "cargo", accessible: true, massMg: 576_000_000, capacityMassMg: 4_000_000_000, capacityVolumeMm3: 30_000_000_000,
++    contents: [{ stackId: "steel", itemId: catalog.cargo.find(c => c.cargoId === "C10")!.itemId, name: "Schiffsstahl", quantityUnits: 96_000_000, quantityBasis: "mg", massMg: 96_000_000, freshProduction: false },
++      { stackId: "c26", itemId: catalog.cargo.find(c => c.cargoId === "C26")!.itemId, name: "Zuschnitt-Grundchassis", quantityUnits: 1, quantityBasis: "piece", massMg: 180_000_000, freshProduction: false },
++      { stackId: "c27", itemId: catalog.cargo.find(c => c.cargoId === "C27")!.itemId, name: "Umform-Grundchassis", quantityUnits: 1, quantityBasis: "piece", massMg: 300_000_000, freshProduction: false }],
++    pickupProfiles: [{ profileId: "raw8", name: "8 kg Stahl", sourceLots: [{ containerId: "wreck", containerRevision: 0, stackId: "steel", quantityUnits: 8_000_000 }], capability: cap() }] }],
++  machines: [{ id: "cutter", revision: 1, definitionId: "B06", name: "Zuschnittstation", installed: true, status: "WAIT_POWER", reason: "WAIT_POWER", selectedRecipe: null, recipes: [], jobId: "job_1", confirmedWorkMs: 1200, requiredWorkMs: 30000, allocatedWatts: 0, inputContainerId: "cut_in", outputContainerId: "cut_out", offcutContainerId: "cut_waste", wipContainerId: "cut_wip", installedContainerId: "cut_installed", ports: [], actions: { start: cap(false, "WAIT_POWER"), manualWork: cap(false), manualFinish: cap(false), toggle: cap(false) } }],
++  power: { status: "WAIT_POWER", generationWatts: 0, allocatedWatts: 0, batteryEnergyJ: 12_960_000, batteryCapacityJ: 14_400_000, reserveEnergyJ: 3_600_000, sourceQuality: "confirmed", consumers: [{ id: "cut_power", name: "Zuschnittstation", requestedWatts: 1200, allocatedWatts: 0, reason: "WAIT_POWER" }] },
++  technologies: [{ id: "blast_furnace", name: "Hochofen", status: "PLANNED", requirements: ["Erzkonzentrat", "Reduktionsmittel"], reason: "NOT_IMPLEMENTED" }],
++  interaction: { cargoOpened: true, cargoAccessible: true, handling: null, openCargo: cap(false), deposit: cap(false), returnCargo: cap(false) }, lastReceipt: null
++});
++const harness = () => {
++  let view = initialView(); const listeners = new Set<(v: FactoryUiReadModel) => void>();
++  const commands: FactoryUiCommand[] = []; const focuses: (FactoryUiPanel | null)[] = [];
++  const receipts = new Map<string, FactoryUiReceipt>();
++  let resolve: ((result: FactoryUiResult) => void) | undefined;
++  let reject: ((reason: Error) => void) | undefined;
++  const port: FactoryUiPort = {
++    read: () => view, subscribe: listener => { listeners.add(listener); return () => { listeners.delete(listener); }; },
++    setPanelFocus: panel => { focuses.push(panel); }, readReceipt: id => receipts.get(id),
++    submit: command => { commands.push(command); return new Promise((r, j) => { resolve = r; reject = j; }); }
++  };
++  const publish = (v: FactoryUiReadModel) => { view = freeze(v); for (const listener of listeners) listener(view); };
++  const complete = (status: FactoryUiResult["status"] = "Committed") => {
++    const command = commands.at(-1)!;
++    const receipt: FactoryUiReceipt = freeze({ commandId: command.commandId, requestCanonicalJson: JSON.stringify(command), status: status === "NoOp" ? "Committed" : status, reason: null, publicationRevision: view.publicationRevision, binding: view.binding });
++    receipts.set(command.commandId, receipt); resolve!({ status, receipt });
++  };
++  return { port, commands, focuses, publish, complete, failTransport: () => reject!(new Error("Lost reply")), receipts, get view() { return view; }, get subscribers() { return listeners.size; } };
++};
++const flush = async () => { await Promise.resolve(); await Promise.resolve(); };
++
++describe("W09 frozen panel projection and finite player intents", () => {
++  it("entering the power panel delegates focus neutralization to the Host", () => {
++    const h = harness(), panel = mountFactoryPowerPanel(h.port, documentDouble());
++    panel.element.dispatchEvent(new Event("focusin"));
++    expect(h.focuses).toEqual(["power"]);
++    expect(h.commands).toHaveLength(0);
++    panel.dispose();
++  });
++  it("renders exact source quantities and only adopts published material changes", () => {
++    const h = harness(), panel = mountFactoryCargoPanel(h.port, documentDouble());
++    expect(panel.element.textContent).toContain("96 kg");
++    expect(panel.element.textContent).toContain("180 kg");
++    expect(panel.element.textContent).toContain("300 kg");
++    expect(panel.element.textContent).toContain("1 Stück");
++    const source = h.view.inventory[0]!;
++    h.publish({ ...h.view, publicationRevision: 2, binding: { ...h.view.binding, materialRevision: 1 }, inventory: [{ ...source, revision: 1, massMg: 568_000_000, contents: source.contents.map(s => s.stackId === "steel" ? { ...s, quantityUnits: 88_000_000, massMg: 88_000_000 } : s) },
++      { id: "carrier", revision: 1, ownerId: "wreck_owner", role: "carrier", accessible: true, massMg: 8_000_000, capacityMassMg: 8_000_000, capacityVolumeMm3: 5_000_000, contents: [{ ...source.contents[0]!, stackId: "steel_child", quantityUnits: 8_000_000, massMg: 8_000_000 }], pickupProfiles: [] }] });
++    expect(panel.element.textContent).toContain("88 kg");
++    expect(panel.element.textContent).toContain("8 kg");
++    expect(panel.element.dataset.publicationRevision).toBe("2");
++    expect(h.commands).toHaveLength(0);
++    panel.dispose();
++  });
++  it("shows planned technology requirements without granting a hidden research unlock", () => {
++    const h = harness(), panel = mountFactoryTechnologyView(h.port, documentDouble());
++    const select = button(panel.element, "Hochofen");
++    expect(select).toBeDefined(); select!.click();
++    expect(panel.element.textContent).toContain("Geplant");
++    expect(panel.element.textContent).toContain("Erzkonzentrat");
++    expect(panel.element.textContent).toContain("Reduktionsmittel");
++    expect(panel.element.textContent).not.toMatch(/Level|Forschung freischalten/i);
++    expect(h.commands).toHaveLength(0);
++    panel.dispose();
++  });
++  it("keeps finite pickup pending and never changes stock or submits a second command", async () => {
++    const h = harness(), panel = mountFactoryCargoPanel(h.port, documentDouble());
++    const pickup = button(panel.element, "Aufnehmen: 8 kg Stahl");
++    expect(pickup).toBeDefined(); pickup!.click(); pickup!.click();
++    expect(h.focuses).toContain("cargo");
++    expect(h.commands).toHaveLength(1);
++    expect(h.commands[0]).toMatchObject({ kind: "pickup", profileId: "raw8", sourceLots: [{ stackId: "steel", quantityUnits: 8_000_000 }] });
++    expect(panel.element.textContent).toContain("96 kg");
++    expect(panel.element.textContent).toContain("Antwort ausstehend");
++    h.complete("NoOp"); await flush();
++    expect(h.commands).toHaveLength(1);
++    expect(panel.element.textContent).toContain("96 kg");
++    const machine = mountFactoryMachinePanel(h.port, documentDouble());
++    expect(machine.element.textContent).toContain("Wartet auf Strom");
++    expect(machine.element.textContent).toContain("1,2 s");
++    machine.dispose(); panel.dispose();
++    expect(h.subscribers).toBe(0);
++  });
++  it("preserves a focused pickup control across unrelated confirmed publications", () => {
++    const h = harness(), panel = mountFactoryCargoPanel(h.port, documentDouble());
++    const pickup = button(panel.element, "Aufnehmen: 8 kg Stahl")!;
++    h.publish({ ...h.view, publicationRevision: 2, power: { ...h.view.power, batteryEnergyJ: 12_959_990 } });
++    expect(button(panel.element, "Aufnehmen: 8 kg Stahl")).toBe(pickup);
++    expect(h.commands).toHaveLength(0); panel.dispose();
++  });
++  it("rejects foreign-session intent submission and ignores older inventory publications", () => {
++    const h = harness(), panel = mountFactoryCargoPanel(h.port, documentDouble());
++    h.publish({ ...h.view, publicationRevision: 4 });
++    h.publish({ ...h.view, publicationRevision: 2, inventory: [] });
++    expect(panel.element.dataset.publicationRevision).toBe("4");
++    expect(panel.element.textContent).toContain("96 kg");
++    h.publish({ ...initialView(), sessionId: "other_session", publicationRevision: 5 });
++    button(panel.element, "Aufnehmen: 8 kg Stahl")!.click();
++    expect(h.commands).toHaveLength(0); panel.dispose();
++  });
++  it("keeps one unknown intent until a matching authoritative receipt is found", async () => {
++    const h = harness(), panel = mountFactoryCargoPanel(h.port, documentDouble());
++    button(panel.element, "Aufnehmen: 8 kg Stahl")!.click();
++    h.failTransport(); await flush();
++    expect(panel.element.textContent).toContain("Antwort unbekannt");
++    button(panel.element, "Aufnehmen: 8 kg Stahl")!.click();
++    expect(h.commands).toHaveLength(1);
++    const command = h.commands[0]!;
++    h.receipts.set(command.commandId, { commandId: "wrong", requestCanonicalJson: "{}", status: "Committed", reason: null, publicationRevision: 1, binding });
++    button(panel.element, "Antwort prüfen")!.click();
++    expect(panel.element.textContent).toContain("Antwort unbekannt");
++    h.receipts.set(command.commandId, { commandId: command.commandId, requestCanonicalJson: "{}", status: "Committed", reason: null, publicationRevision: 1, binding });
++    button(panel.element, "Antwort prüfen")!.click();
++    expect(panel.element.textContent).toContain("Antwort unbekannt");
++    h.receipts.set(command.commandId, { commandId: command.commandId, requestCanonicalJson: JSON.stringify(command), status: "Committed", reason: null, publicationRevision: 1, binding });
++    button(panel.element, "Antwort prüfen")!.click();
++    expect(panel.element.textContent).toContain("Aktion bestätigt");
++    expect(button(panel.element, "Antwort prüfen")!.hidden).toBe(true);
++    expect(panel.element.textContent).toContain("96 kg"); panel.dispose();
++  });
++  it("does not release focus between controls or revive disposed panels after an answer", async () => {
++    const h = harness(), panel = mountFactoryCargoPanel(h.port, documentDouble());
++    panel.element.dispatchEvent(new Event("focusin"));
++    const event = new Event("focusout");
++    Object.defineProperty(event, "relatedTarget", { value: button(panel.element, "Aufnehmen: 8 kg Stahl") });
++    panel.element.dispatchEvent(event); expect(h.focuses).toEqual(["cargo"]);
++    button(panel.element, "Aufnehmen: 8 kg Stahl")!.click();
++    panel.dispose(); const count = h.focuses.length, text = panel.element.textContent;
++    h.complete(); await flush();
++    expect(h.focuses).toHaveLength(count); expect(panel.element.textContent).toBe(text);
++    expect(h.subscribers).toBe(0);
++  });
++  it("transfers an exact local published amount without resetting the player's entry each step", () => {
++    const h = harness();
++    h.publish({ ...h.view, inventory: [...h.view.inventory, { ...h.view.inventory[0]!, id: "cut_in", role: "input", contents: [], pickupProfiles: [], massMg: 0 }] });
++    const panel = mountFactoryCargoPanel(h.port, documentDouble());
++    const elements = descendants(panel.element as unknown as ElementDouble);
++    const amount = elements.find(e => e.tagName === "INPUT" && e.getAttribute("aria-label") === "Transfermenge");
++    expect(amount).toBeDefined(); amount!.value = "8,000001";
++    const target = elements.find(e => e.tagName === "SELECT" && e.getAttribute("aria-label") === "Transferziel")!;
++    target.value = "cut_in"; target.dispatchEvent(new Event("change"));
++    h.publish({ ...h.view, publicationRevision: 2 });
++    expect(amount!.value).toBe("8,000001");
++    button(panel.element, "Übertragen")!.click();
++    expect(h.commands).toHaveLength(1);
++    expect(h.commands[0]).toMatchObject({ kind: "transfer", source: { containerId: "wreck", containerRevision: 0, stackId: "steel", quantityUnits: 8_000_001 }, target: { id: "cut_in", revision: 0 }, expected: h.view.binding });
++    expect(panel.element.textContent).toContain("96 kg"); panel.dispose();
++  });
++  it("starts only the frozen finite recipe from actual input and blocks catalog mismatches", () => {
++    const h = harness(), recipe = catalog.recipes.find(r => r.sourceId === "REC-01-CUT")!;
++    const ref = { sourceId: recipe.sourceId, version: recipe.version, digest: recipe.digest };
++    const machine = { ...h.view.machines[0]!, jobId: null, selectedRecipe: ref, recipes: [{ ref, name: "Zuschnitt", durationMs: 30000, powerWatts: 1200 }], actions: { ...h.view.machines[0]!.actions, start: cap() } };
++    h.publish({ ...h.view, machines: [machine], inventory: [{ ...h.view.inventory[0]!, id: "cut_in", role: "input", revision: 3, pickupProfiles: [] }] });
++    const panel = mountFactoryMachinePanel(h.port, documentDouble());
++    button(panel.element, "Starten")!.click();
++    expect(h.commands[0]).toMatchObject({ kind: "start", machine: { id: "cutter", revision: 1 }, sourceLots: [{ containerId: "cut_in", containerRevision: 3, stackId: "steel", quantityUnits: 8_000_000 }] });
++    panel.dispose();
++    const wrong = harness(); wrong.publish({ ...h.view, binding: { ...binding, catalogDigest: "other_catalog" } });
++    const rejected = mountFactoryMachinePanel(wrong.port, documentDouble());
++    expect(button(rejected.element, "Starten")!.disabled).toBe(true);
++    button(rejected.element, "Starten")!.click(); expect(wrong.commands).toHaveLength(0); rejected.dispose();
++  });
++  it("rejects zero, over-lot, nonfinite and sub-mg transfer amounts", () => {
++    const h = harness(); h.publish({ ...h.view, inventory: [...h.view.inventory, { ...h.view.inventory[0]!, id: "cut_in", role: "input", contents: [], pickupProfiles: [], massMg: 0 }] });
++    const panel = mountFactoryCargoPanel(h.port, documentDouble()), elements = descendants(panel.element as unknown as ElementDouble);
++    const amount = elements.find(e => e.tagName === "INPUT")!, target = elements.find(e => e.getAttribute("aria-label") === "Transferziel")!;
++    target.value = "cut_in"; target.dispatchEvent(new Event("change"));
++    for (const invalid of ["0", "97", "0,0000001", "-1", "Infinity", "NaN", "1e2"]) {
++      amount.value = invalid; amount.dispatchEvent(new Event("input"));
++      expect(button(panel.element, "Übertragen")!.disabled).toBe(true); button(panel.element, "Übertragen")!.click();
++    }
++    expect(h.commands).toHaveLength(0); panel.dispose();
++  });
++  it("uses save-safe unique command IDs with a real UUID-shaped Native session across remounts", async () => {
++    const h = harness(), sessionId = "839b1cc4-dc9d-4c8f-9433-7662c4e15462";
++    h.publish({ ...h.view, sessionId });
++    const panel = mountFactoryCargoPanel(h.port, documentDouble());
++    button(panel.element, "Aufnehmen: 8 kg Stahl")!.click();
++    expect(h.commands[0]!.sessionId).toBe(sessionId);
++    expect(isSaveSafeResourceId(h.commands[0]!.commandId)).toBe(true);
++    h.complete(); await flush(); panel.dispose();
++    const remounted = mountFactoryCargoPanel(h.port, documentDouble());
++    button(remounted.element, "Aufnehmen: 8 kg Stahl")!.click();
++    expect(h.commands[1]!.commandId).not.toBe(h.commands[0]!.commandId);
++    expect(isSaveSafeResourceId(h.commands[1]!.commandId)).toBe(true); remounted.dispose();
++  });
++  it("retains the selected technology keyboard control after selection and confirmed publications", () => {
++    const h = harness(), panel = mountFactoryTechnologyView(h.port, documentDouble());
++    const choice = button(panel.element, "Hochofen")!;
++    choice.focus(); choice.click();
++    expect(button(panel.element, "Hochofen")).toBe(choice);
++    expect((panel.element as unknown as ElementDouble).contains(choice)).toBe(true);
++    h.publish({ ...h.view, publicationRevision: 2, elapsedMs: 200, factorySteps: 2 });
++    expect(button(panel.element, "Hochofen")).toBe(choice);
++    choice.click(); expect(panel.element.textContent).toContain("Erzkonzentrat");
++    expect(h.commands).toHaveLength(0); panel.dispose();
++  });
++});

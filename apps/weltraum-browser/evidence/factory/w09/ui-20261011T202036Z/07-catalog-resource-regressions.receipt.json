@@ -1,0 +1,11 @@
+{
+  "command": "source /workspace/.cloud-setup/activate.sh\nnpm run test -- tests/unit/factory/catalog.test.ts tests/unit/resourceCatalog.test.ts tests/unit/resourceContainers.test.ts tests/unit/resourceTransfer.test.ts",
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T20:38:06.639444+00:00",
+  "endedAtUtc": "2026-10-11T20:38:08.012182+00:00",
+  "elapsedSeconds": 1.3727491829995415,
+  "exitCode": 0,
+  "rawLog": "07-catalog-resource-regressions.log",
+  "rawBytes": 457,
+  "rawSha256": "404f1ad5cd6dd2d90d8a065d2772279579883bf4ce8b9b8645e5440860623ab6"
+}

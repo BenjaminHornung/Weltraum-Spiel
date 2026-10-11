@@ -1,0 +1,13 @@
+{
+  "command": "source /workspace/.cloud-setup/activate.sh\nnpm run test -- tests/unit/factory/panels.test.ts",
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11/apps/weltraum-browser",
+  "startedUtc": "2026-10-11T20:21:38.680198+00:00",
+  "endedUtc": "2026-10-11T20:21:39.537366+00:00",
+  "wallSeconds": 0.8570559489962761,
+  "exitCode": 1,
+  "rawLog": "01-panels-initial-red.log",
+  "rawSha256": "0ae06a1e9c02b9512d034f4f088c28d02c7e6d45fdefbd26e4bb5376a828c0da",
+  "rawBytes": 3793,
+  "phase": "initial-business-RED",
+  "fixtureScope": "synthetic immutable UI snapshots/Document; no native movement or actual world adoption proof"
+}

@@ -1,0 +1,11 @@
+{
+  "command": "source /workspace/.cloud-setup/activate.sh\nnpm run test -- tests/unit/factory/panels.test.ts",
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T20:46:26.099653+00:00",
+  "endedAtUtc": "2026-10-11T20:46:26.947105+00:00",
+  "elapsedSeconds": 0.8474612800055183,
+  "exitCode": 0,
+  "rawLog": "10-panels-tech-fix-green.log",
+  "rawBytes": 346,
+  "rawSha256": "abdba98f51a101c58d9ef86a6e81e0f8d5cd3834f319efb58647a8e55fee8c23"
+}

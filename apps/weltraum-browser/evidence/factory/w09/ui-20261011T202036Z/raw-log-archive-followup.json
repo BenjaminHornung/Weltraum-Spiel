@@ -1,0 +1,116 @@
+{
+  "schema": "hestia.lossless-raw-log-archive/v1",
+  "note": "All original capture receipts are unchanged. .log names map to lossless gzip archives, with retained original bytes externally. The initial eight-log raw-log-archive.json remains immutable.",
+  "archives": [
+    {
+      "path": "01-panels-initial-red.log.gz",
+      "originalCapturedName": "01-panels-initial-red.log",
+      "rawBytes": 3793,
+      "rawSha256": "0ae06a1e9c02b9512d034f4f088c28d02c7e6d45fdefbd26e4bb5376a828c0da",
+      "compressedBytes": 1120,
+      "compressedSha256": "fa113165793dff178e55c1307b4583bc871568349f69944149f737b24cbbea50",
+      "externalOriginal": "/workspace/.cloud-setup/fp06-w09-ui-original-raw/ui-20261011T202036Z/01-panels-initial-red.log",
+      "losslessByteComparison": "PASS"
+    },
+    {
+      "path": "02-panels-first-green.log.gz",
+      "originalCapturedName": "02-panels-first-green.log",
+      "rawBytes": 343,
+      "rawSha256": "7e43bd7db5882a990b5f1b7e10a702cfa2a2fc68e928016a6b0cb8a9c33dafed",
+      "compressedBytes": 253,
+      "compressedSha256": "918347f6283be345dea7a171bb9eaceb7ba56b7294bf0bae99694c8749b46daa",
+      "externalOriginal": "/workspace/.cloud-setup/fp06-w09-ui-original-raw/ui-20261011T202036Z/02-panels-first-green.log",
+      "losslessByteComparison": "PASS"
+    },
+    {
+      "path": "03-panels-safety-transfer-red.log.gz",
+      "originalCapturedName": "03-panels-safety-transfer-red.log",
+      "rawBytes": 12360,
+      "rawSha256": "9fa63cf194f24fe007d5f6d214b9682bad6f4615685552fc9b34e0fd729bfb4e",
+      "compressedBytes": 2368,
+      "compressedSha256": "5c899b403aaa0eb07ec40c2af83e04bdde8d1ca188da0ee255d4fee1e219b365",
+      "externalOriginal": "/workspace/.cloud-setup/fp06-w09-ui-original-raw/ui-20261011T202036Z/03-panels-safety-transfer-red.log",
+      "losslessByteComparison": "PASS"
+    },
+    {
+      "path": "04-panels-receipt-binding-red.log.gz",
+      "originalCapturedName": "04-panels-receipt-binding-red.log",
+      "rawBytes": 1867,
+      "rawSha256": "5b17e0a0186117c302d8052dd47fbc27312ba032ec9efc1ebf6ca9f9d82593de",
+      "compressedBytes": 829,
+      "compressedSha256": "a01d2dd7c20d5f1f3b1751ca691e3d11ec907830111e9d91c249a011d23506c5",
+      "externalOriginal": "/workspace/.cloud-setup/fp06-w09-ui-original-raw/ui-20261011T202036Z/04-panels-receipt-binding-red.log",
+      "losslessByteComparison": "PASS"
+    },
+    {
+      "path": "05-panels-native-uuid-red.log.gz",
+      "originalCapturedName": "05-panels-native-uuid-red.log",
+      "rawBytes": 1459,
+      "rawSha256": "80d309636a28c09048fca3d13b404e3766f49d132d7b8c53b55b3317bbf250f3",
+      "compressedBytes": 708,
+      "compressedSha256": "f8065a14a7f505dc322d191c5924609fc4b867c4a397c2d38583b60be2fb086a",
+      "externalOriginal": "/workspace/.cloud-setup/fp06-w09-ui-original-raw/ui-20261011T202036Z/05-panels-native-uuid-red.log",
+      "losslessByteComparison": "PASS"
+    },
+    {
+      "path": "06-panels-green.log.gz",
+      "originalCapturedName": "06-panels-green.log",
+      "rawBytes": 346,
+      "rawSha256": "ee7a6b25541aac7522a8fdf21a66641da9c2b0de2d77a4122f895e311c7a575e",
+      "compressedBytes": 254,
+      "compressedSha256": "c5e721fd6d145064a479a6fd55eababf492c435f6eb3de26089716b425926775",
+      "externalOriginal": "/workspace/.cloud-setup/fp06-w09-ui-original-raw/ui-20261011T202036Z/06-panels-green.log",
+      "losslessByteComparison": "PASS"
+    },
+    {
+      "path": "07-catalog-resource-regressions.log.gz",
+      "originalCapturedName": "07-catalog-resource-regressions.log",
+      "rawBytes": 457,
+      "rawSha256": "404f1ad5cd6dd2d90d8a065d2772279579883bf4ce8b9b8645e5440860623ab6",
+      "compressedBytes": 282,
+      "compressedSha256": "8f34c30c29c8471e0b81acf7fe8c8f7314330e67786721bb5c189d225094b60c",
+      "externalOriginal": "/workspace/.cloud-setup/fp06-w09-ui-original-raw/ui-20261011T202036Z/07-catalog-resource-regressions.log",
+      "losslessByteComparison": "PASS"
+    },
+    {
+      "path": "08-build.log.gz",
+      "originalCapturedName": "08-build.log",
+      "rawBytes": 1904,
+      "rawSha256": "b513948a07670fe8498c06d767cf17629ca351150897baf9d183be1fe55c6a0f",
+      "compressedBytes": 870,
+      "compressedSha256": "314b500b417e044d90df923ce03f6e83bfb1ae64127d39150fc966d0487cfd74",
+      "externalOriginal": "/workspace/.cloud-setup/fp06-w09-ui-original-raw/ui-20261011T202036Z/08-build.log",
+      "losslessByteComparison": "PASS"
+    },
+    {
+      "path": "09-technology-keyboard-red.log.gz",
+      "originalCapturedName": "09-technology-keyboard-red.log",
+      "rawBytes": 9747,
+      "rawSha256": "44ecdb9f593a4b7135c65bc2244fb28c0f3835e88a0589ec470f1c1ecb7277d0",
+      "compressedBytes": 1675,
+      "compressedSha256": "de7a6e1ebb6e0737c7ddd575754c25ad4d3423059e0ca4a26454ef1c8be1181f",
+      "externalOriginal": "/workspace/.cloud-setup/fp06-w09-ui-original-raw/ui-20261011T202036Z/09-technology-keyboard-red.log",
+      "losslessByteComparison": "PASS"
+    },
+    {
+      "path": "10-panels-tech-fix-green.log.gz",
+      "originalCapturedName": "10-panels-tech-fix-green.log",
+      "rawBytes": 346,
+      "rawSha256": "abdba98f51a101c58d9ef86a6e81e0f8d5cd3834f319efb58647a8e55fee8c23",
+      "compressedBytes": 253,
+      "compressedSha256": "62ca3d9af8ff5f1072be698cb025fc1d9ecd9b153b7f4d468f4a97fd9846aef8",
+      "externalOriginal": "/workspace/.cloud-setup/fp06-w09-ui-original-raw/ui-20261011T202036Z/10-panels-tech-fix-green.log",
+      "losslessByteComparison": "PASS"
+    },
+    {
+      "path": "11-tech-fix-build.log.gz",
+      "originalCapturedName": "11-tech-fix-build.log",
+      "rawBytes": 1904,
+      "rawSha256": "5f30c4de8bc2968473b5da7ffefbb2f821f5e38bdbf40105de9b94cb72561993",
+      "compressedBytes": 870,
+      "compressedSha256": "8c7acd1f9411e48b5bff5f3262eb0efbb672d202b16d09212ff9134fcb023087",
+      "externalOriginal": "/workspace/.cloud-setup/fp06-w09-ui-original-raw/ui-20261011T202036Z/11-tech-fix-build.log",
+      "losslessByteComparison": "PASS"
+    }
+  ]
+}

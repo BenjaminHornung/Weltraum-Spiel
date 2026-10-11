@@ -1,0 +1,11 @@
+{
+  "command": "source /workspace/.cloud-setup/activate.sh\nnpm run test -- tests/unit/factory/panels.test.ts -t 'technology keyboard'",
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11/apps/weltraum-browser",
+  "startedAtUtc": "2026-10-11T20:45:28.842668+00:00",
+  "endedAtUtc": "2026-10-11T20:45:29.662435+00:00",
+  "elapsedSeconds": 0.8197805050003808,
+  "exitCode": 1,
+  "rawLog": "09-technology-keyboard-red.log",
+  "rawBytes": 9747,
+  "rawSha256": "44ecdb9f593a4b7135c65bc2244fb28c0f3835e88a0589ec470f1c1ecb7277d0"
+}
