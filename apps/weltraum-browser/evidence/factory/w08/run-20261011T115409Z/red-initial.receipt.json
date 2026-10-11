@@ -1,0 +1,7 @@
+{
+  "command": "npm run test -- tests/unit/factory/conveyor.test.ts",
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+  "exitCode": 1,
+  "durationSeconds": 0.855,
+  "classification": "business RED if test assertions execute; otherwise SETUP_FAIL"
+}

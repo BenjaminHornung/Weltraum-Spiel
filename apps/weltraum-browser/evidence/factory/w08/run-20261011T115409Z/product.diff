@@ -1,0 +1,624 @@
+diff --git a/apps/weltraum-browser/src/factory/conveyor/beltPorts.ts b/apps/weltraum-browser/src/factory/conveyor/beltPorts.ts
+new file mode 100644
+index 00000000..0bda5ce9
+--- /dev/null
++++ b/apps/weltraum-browser/src/factory/conveyor/beltPorts.ts
+@@ -0,0 +1,94 @@
++import type { MaterialView } from "../material/reservations";
++import { safeWhole } from "../material/quantity";
++import { isSaveSafeResourceId } from "../../resources/ids";
++
++/** Runtime tuples are east x, height y, north z; W07 supplies installed native facts. */
++export interface BeltInstalledPort {
++  readonly instanceId: string; readonly installRevision: number;
++  readonly deviceId: string; readonly deviceDigest: string; readonly portSourceId: string;
++  readonly containerId: string; readonly nativePortId: string;
++  readonly placementCenterMm: readonly [number, number, number];
++  readonly quarterTurns: 0 | 1 | 2 | 3;
++  readonly centerMm: readonly [number, number, number];
++  readonly outwardNormal: readonly [number, number, number];
++}
++export interface BeltInstallation {
++  readonly version: "fp06-straight-installed-belt-v1";
++  readonly installationId: string; readonly revision: number;
++  readonly catalogDigest: string; readonly sourceProfileDigest: string;
++  readonly source: BeltInstalledPort; readonly target: BeltInstalledPort;
++  readonly lengthMm: number; readonly moduleInstanceIds: readonly string[];
++  readonly driveInstanceId: string; readonly powerPortId: string;
++  readonly consumerId: string; readonly jobId: string;
++  readonly bandContainerId: string; readonly bandInPortId: string; readonly bandOutPortId: string;
++}
++const require = (condition: boolean, reason: string): void => { if (!condition) throw new Error(reason); };
++const same = (a: readonly number[], b: readonly number[]): boolean => a.length === b.length && a.every((n, i) => n === b[i]);
++const rotate = ([x, y, z]: readonly number[], turns: number): readonly number[] =>
++  turns === 0 ? [x, y, z] : turns === 1 ? [-z, y, x] : turns === 2 ? [-x, y, -z] : [z, y, -x];
++/** FP02 main Solid ports, derived from frozen recipes; offcut uses its separate cassette. */
++export const BELT_PORT_RECIPE_BINDING_VERSION = "fp02-solid-port-recipe-binding-v1";
++const processPorts: Readonly<Record<string, Readonly<{ recipes: readonly string[]; side: "inputs" | "outputs" }>>> = Object.freeze({
++  "B06:IN-STEEL": { recipes: ["REC-01-CUT"], side: "inputs" },
++  "B06:OUT-SEMI": { recipes: ["REC-01-CUT"], side: "outputs" },
++  "B07:IN-SEMI": { recipes: ["REC-02-PROFILE", "REC-03-SHEET"], side: "inputs" },
++  "B07:OUT-PROFILE-OR-SHEET": { recipes: ["REC-02-PROFILE", "REC-03-SHEET"], side: "outputs" },
++  "B08:IN-ROCK": { recipes: ["REC-04-CRUSH"], side: "inputs" },
++  "B08:OUT-GRAVEL": { recipes: ["REC-04-CRUSH"], side: "outputs" }
++});
++export function assertFactoryBeltItemPorts(installation: BeltInstallation, itemId: string, material: MaterialView): void {
++  for (const port of [installation.source, installation.target]) {
++    if (port.portSourceId === "B09:MAT-IN" || port.portSourceId === "B09:MAT-OUT") continue;
++    const binding = processPorts[port.portSourceId];
++    require(!!binding && itemId !== "fp02.bulk.steel_offcut" && binding.recipes.some((id) =>
++      material.catalog.recipes.find((recipe) => recipe.sourceId === id)?.[binding.side].some((term) => term.itemId === itemId)), "BeltPortMaterialFamilyMismatch");
++  }
++}
++export function assertFactoryBeltPorts(installation: BeltInstallation, material: MaterialView): void {
++  const i = installation;
++  require(i.version === "fp06-straight-installed-belt-v1", "UnknownBeltInstallationVersion");
++  safeWhole(i.revision, "BeltInstallRevision");
++  require(i.catalogDigest === material.catalog.catalogDigest, "BeltCatalogMismatch");
++  require(typeof i.sourceProfileDigest === "string" && i.sourceProfileDigest.length > 0, "UnboundBeltSourceProfile");
++  for (const id of [i.installationId, i.driveInstanceId, i.powerPortId, i.consumerId, i.jobId,
++    i.bandContainerId, i.bandInPortId, i.bandOutPortId, ...i.moduleInstanceIds]) require(isSaveSafeResourceId(id), "InvalidBeltId");
++  safeWhole(i.lengthMm, "BeltLength");
++  require(i.lengthMm % 1_000 === 0 && i.lengthMm <= material.catalog.conveyor.maxFixtureLineLengthMm,
++    "UnsupportedBeltLength");
++  require(i.moduleInstanceIds.length === i.lengthMm / 1_000 && new Set(i.moduleInstanceIds).size === i.moduleInstanceIds.length
++    && !i.moduleInstanceIds.includes(i.driveInstanceId), "InvalidPaidBeltModuleBinding");
++  require(new Set([i.source.containerId, i.target.containerId, i.bandContainerId]).size === 3, "AliasedBeltCustody");
++  for (const [p, expectedRole, nativeDirection] of [[i.source, "SolidBatchOut", "Outbound"], [i.target, "SolidBatchIn", "Inbound"]] as const) {
++    require([p.instanceId, p.containerId, p.nativePortId].every(isSaveSafeResourceId), "InvalidBeltPortId");
++    safeWhole(p.installRevision, "BeltPortInstallRevision");
++    require(Number.isInteger(p.quarterTurns) && p.quarterTurns >= 0 && p.quarterTurns <= 3, "InvalidBeltPortRotation");
++    const device = material.catalog.devices.find((d) => d.sourceId === p.deviceId);
++    const port = device?.ports.find((entry) => entry.sourceId === p.portSourceId);
++    require(!!device && device.digest === p.deviceDigest && !!port && port.role === expectedRole && port.externallyConnectable
++      && port.centerMm !== null && port.outwardNormal !== null && port.sizeMm?.[0] === 750 && port.sizeMm[1] === 750,
++      "IncompatibleBeltCatalogPort");
++    require(p.placementCenterMm.length === 3 && p.placementCenterMm.every((n) => Number.isSafeInteger(n) && n % 250 === 0)
++      && p.centerMm.length === 3 && p.centerMm.every(Number.isSafeInteger), "InvalidBeltPortPlacement");
++    const local = port!.centerMm!;
++    const rotated = rotate([local[0], local[2], local[1]], p.quarterTurns);
++    const normal = port!.outwardNormal!;
++    require(same(p.centerMm, rotated.map((n, k) => n + p.placementCenterMm[k]))
++      && same(p.outwardNormal, rotate([normal[0], normal[2], normal[1]], p.quarterTurns)), "BeltPortPoseMismatch");
++    const snapshot = material.containers.find((entry) => entry.state.containerId === p.containerId);
++    const native = snapshot?.definition.transferPorts.find((entry) => entry.portId === p.nativePortId);
++    require(!!native && (native.direction === nativeDirection || native.direction === "Bidirectional"), "MissingNativeBeltPort");
++  }
++  require(i.source.instanceId !== i.target.instanceId && i.source.instanceId !== i.driveInstanceId && i.target.instanceId !== i.driveInstanceId,
++    "AliasedBeltInstallation");
++  const delta = i.target.centerMm.map((n, k) => n - i.source.centerMm[k]);
++  require(i.source.outwardNormal[1] === 0 && same(delta, i.source.outwardNormal.map((n) => n * i.lengthMm))
++    && same(i.target.outwardNormal, i.source.outwardNormal.map((n) => -n)), "InvalidDirectedBeltRoute");
++  const band = material.containers.find((entry) => entry.state.containerId === i.bandContainerId);
++  require(!!band && band.definition.maxStackCount === 1 && band.definition.maxMassKg <= 10 && !band.state.sealed,
++    "UnboundedBeltCustodyContainer");
++  for (const [id, direction] of [[i.bandInPortId, "Inbound"], [i.bandOutPortId, "Outbound"]]) {
++    require(band!.definition.transferPorts.some((port) => port.portId === id && (port.direction === direction || port.direction === "Bidirectional")),
++      "MissingNativeBeltCustodyPort");
++  }
++  require(!material.reservations.some((reservation) => reservation.wipContainerId === i.bandContainerId), "ReservedBeltCustodyContainer");
++}
+diff --git a/apps/weltraum-browser/src/factory/conveyor/beltReference.ts b/apps/weltraum-browser/src/factory/conveyor/beltReference.ts
+new file mode 100644
+index 00000000..ce275a9e
+--- /dev/null
++++ b/apps/weltraum-browser/src/factory/conveyor/beltReference.ts
+@@ -0,0 +1,253 @@
++import { commitFactoryMaterialStep, prepareFactoryMaterialStep, type MaterialPlan, type MaterialView, type MaterialIntent } from "../material/reservations";
++import { assertMaterialSnapshots } from "../material/resourcesAdapter";
++import { findFactoryItem, safeWhole, safeBigIntNumber, validateFactoryAmount } from "../material/quantity";
++import { canonicalJson, canonicalSignature } from "../../resources/serialization";
++import { isSaveSafeResourceId } from "../../resources/ids";
++import type { ResourceStack } from "../../resources/types";
++import { assertFactoryBeltPorts, assertFactoryBeltItemPorts, type BeltInstallation } from "./beltPorts";
++
++/** Conservative versioned reference: one native packet per short, straight line. */
++export const FACTORY_BELT_POLICY = Object.freeze({ version: "fp06-one-packet-belt-v1", maxPackets: 1,
++  stepUs: "100000", speedMmPerSecond: 750, movementMmPerStep: 75,
++  maxPacketMassMg: 10_000_000, creditMgPerStep: 100_000, maxCreditMg: 10_000_000 });
++export interface BeltBinding {
++  readonly sessionId: string; readonly epoch: number; readonly netRevision: number;
++  readonly catalogDigest: string; readonly sourceProfileDigest: string;
++}
++/** Structural seam to W03 FactoryPowerSuccess, including its complete canonical receipt. */
++export interface BeltPowerReceipt {
++  readonly ok: true; readonly binding: BeltBinding;
++  readonly tickStartUs: string; readonly tickEndUs: string;
++  readonly grants: readonly Readonly<{ consumerId: string; deviceInstanceId: string; jobId: string; portId: string;
++    requiredMilliWatt: string; allocatedMilliWatt: string; work: Readonly<{ n: string; d: string }>;
++    status: "Powered" | "Idle" | "WAIT_POWER" | "WAIT_RESTART" | "NET_DISCONNECTED" | "NET_CAPACITY" }>[];
++  readonly canonicalJson: string; readonly digest: string;
++}
++export interface BeltPacket {
++  readonly packetId: string; readonly stackId: string; readonly itemId: string;
++  readonly itemVersion: number; readonly itemDigest: string;
++  readonly parentStackId: string; readonly injectionTransactionId: string;
++  readonly injectionReceiptCanonicalJson: string;
++  readonly sourceRevisionAfterInjection: number; readonly targetRevisionAtInjection: number;
++  readonly positionMm: number;
++}
++export interface BeltState {
++  readonly version: "fp06-one-packet-belt-v1"; readonly lineId: string; readonly revision: number;
++  readonly binding: BeltBinding; readonly installation: BeltInstallation;
++  readonly tickEndUs: string; readonly creditMg: number; readonly packetCursor: number;
++  readonly packet: BeltPacket | null;
++  readonly lastStep: Readonly<{ tickEndUs: string; requestDigest: string; outcome: string }> | null;
++}
++export interface BeltStepInput {
++  readonly confirmed: boolean; readonly binding: BeltBinding;
++  readonly tickStartUs: string; readonly tickEndUs: string;
++  readonly installation: BeltInstallation; readonly material: MaterialView;
++  readonly power: BeltPowerReceipt; readonly actorId: string;
++  readonly sourceLot: Readonly<{ stackId: string; itemId: string }> | null;
++}
++export type BeltStepProposal = Readonly<{ status: "Prepared"; baseLineCanonicalJson: string;
++  inputCanonicalJson: string; nextLine: BeltState; materialPlan: MaterialPlan | null;
++  outcome: "Injected" | "Moved" | "Delivered" | "WAIT_SOURCE" | "WAIT_CREDIT" | "WAIT_OUTPUT" | "WAIT_POWER" }>
++  | Readonly<{ status: "Rejected"; reason: string }>;
++export type BeltStepResult = Readonly<{ status: "Committed" | "NoOp"; line: BeltState; material: MaterialView }>
++  | Readonly<{ status: "Rejected"; line: BeltState; material: MaterialView; reason: string }>;
++const require = (condition: boolean, reason: string): void => { if (!condition) throw new Error(reason); };
++const integer = (value: string): bigint => {
++  require(typeof value === "string" && /^(0|[1-9][0-9]{0,18})$/.test(value), "InvalidBeltInteger");
++  const result = BigInt(value); require(result <= 9_223_372_036_854_775_807n, "BeltIntegerOverflow"); return result;
++};
++const freeze = <T>(value: T): T => {
++  if (value !== null && typeof value === "object" && !Object.isFrozen(value)) {
++    for (const child of Object.values(value)) freeze(child);
++    Object.freeze(value);
++  }
++  return value;
++};
++const snapshot = (material: MaterialView, id: string) => {
++  const found = material.containers.find((entry) => entry.state.containerId === id);
++  require(!!found, "MissingBeltContainer"); return found!;
++};
++// Resources deliberately exposes depletion:undefined for non-mining snapshots.
++// Omit that one native optional projection; bind every other complete snapshot fact.
++const materialData = (material: MaterialView) => ({ ...material, containers: material.containers.map((entry) => {
++  const { depletion, ...data } = entry;
++  return depletion === undefined ? data : { ...data, depletion };
++}) });
++const inputBytes = (input: BeltStepInput): string => canonicalJson({ ...input, material: materialData(input.material) });
++const proposalBytes = (proposal: Extract<BeltStepProposal, { status: "Prepared" }>): string => canonicalJson({ ...proposal,
++  materialPlan: proposal.materialPlan ? { ...proposal.materialPlan, candidate: materialData(proposal.materialPlan.candidate) } : null });
++const capacityBlocked = (reason: string): boolean => ["TargetMassExceeded", "TargetVolumeExceeded", "TargetStackLimitExceeded"].includes(reason);
++const assertProductionRef = (lot: ResourceStack, itemId: string, material: MaterialView): void => {
++  const production = lot.extensions["factory.production"];
++  if (production === undefined) return;
++  require(production !== null && typeof production === "object" && !Array.isArray(production) && "recipeRef" in production, "InvalidBeltProductionRef");
++  const ref = (production as { recipeRef: unknown }).recipeRef;
++  require(ref !== null && typeof ref === "object" && !Array.isArray(ref) && "sourceId" in ref && "version" in ref && "digest" in ref,
++    "InvalidBeltProductionRef");
++  const reference = ref as { sourceId: unknown; version: unknown; digest: unknown };
++  const recipe = material.catalog.recipes.find((entry) => entry.sourceId === reference.sourceId);
++  require(!!recipe && recipe.version === reference.version && recipe.digest === reference.digest
++    && recipe.outputs.some((term) => term.itemId === itemId), "StaleBeltProductionRecipe");
++};
++
++/** Public restore/read validation; it proves reference consistency, not World admission. */
++export function assertFactoryBeltState(line: BeltState, material: MaterialView): void {
++  require(line.version === FACTORY_BELT_POLICY.version && isSaveSafeResourceId(line.lineId), "InvalidBeltState");
++  safeWhole(line.revision, "BeltRevision", true); safeWhole(line.packetCursor, "PacketCursor", true);
++  safeWhole(line.creditMg, "BeltCredit", true); require(line.creditMg <= FACTORY_BELT_POLICY.maxCreditMg, "BeltCreditOverflow");
++  require(integer(line.tickEndUs) % 100_000n === 0n, "InvalidBeltClockCursor");
++  safeWhole(line.binding.epoch, "BeltEpoch", true); safeWhole(line.binding.netRevision, "BeltNetRevision", true);
++  require(isSaveSafeResourceId(line.binding.sessionId) && line.binding.catalogDigest === material.catalog.catalogDigest
++    && line.installation.catalogDigest === line.binding.catalogDigest && line.installation.sourceProfileDigest === line.binding.sourceProfileDigest,
++    "BeltAuthorityBindingMismatch");
++  require((line.revision === 0 && line.lastStep === null) || (line.revision > 0 && line.lastStep?.tickEndUs === line.tickEndUs), "InvalidBeltStepCursor");
++  require(line.revision > 0 || (line.creditMg === 0 && line.packetCursor === 0 && line.packet === null), "InvalidInitialBeltCredit");
++  assertMaterialSnapshots(material.catalog, material.containers);
++  assertFactoryBeltPorts(line.installation, material);
++  const band = snapshot(material, line.installation.bandContainerId);
++  if (line.packet === null) { require(band.state.contents.length === 0, "OrphanedBeltLot"); return; }
++  const p = line.packet;
++  require([p.packetId, p.stackId, p.parentStackId, p.injectionTransactionId].every(isSaveSafeResourceId), "InvalidBeltPacketId");
++  safeWhole(p.positionMm, "BeltPosition", true); require(p.positionMm <= line.installation.lengthMm, "BeltPositionOutsideRoute");
++  safeWhole(p.sourceRevisionAfterInjection, "BeltSourceRevision", true); safeWhole(p.targetRevisionAtInjection, "BeltTargetRevision", true);
++  const item = findFactoryItem(material.catalog, p.itemId);
++  require(item.digest === p.itemDigest && item.version === p.itemVersion, "BeltPacketItemBindingMismatch");
++  require(band.state.contents.length === 1 && band.state.contents[0].stackId === p.stackId && band.state.contents[0].resourceId === item.resourceId,
++    "BeltLotCustodyMismatch");
++  const amount = validateFactoryAmount(p.itemId, band.state.contents[0].quantity, material.catalog);
++  assertFactoryBeltItemPorts(line.installation, p.itemId, material);
++  assertProductionRef(band.state.contents[0], p.itemId, material);
++  require(amount.massMg <= FACTORY_BELT_POLICY.maxPacketMassMg, "BeltPacketTooHeavy");
++  const receipt = material.receipts.find((entry) => entry.transactionId === p.injectionTransactionId);
++  require(!!receipt && canonicalJson(receipt) === p.injectionReceiptCanonicalJson, "BeltInjectionReceiptMismatch");
++  const intent = JSON.parse(receipt!.requestCanonicalJson) as MaterialIntent;
++  require(intent.kind === "transfer" && intent.ownerId === line.installation.driveInstanceId && intent.moves.length === 1
++    && intent.moves[0].sourceContainerId === line.installation.source.containerId && intent.moves[0].sourceStackId === p.parentStackId
++    && intent.moves[0].targetContainerId === band.state.containerId && intent.moves[0].targetStackId === p.stackId
++    && intent.moves[0].itemId === p.itemId && intent.moves[0].quantityUnits === amount.quantityUnits
++    && intent.moves[0].sourcePortId === line.installation.source.nativePortId && intent.moves[0].targetPortId === line.installation.bandInPortId,
++    "BeltPacketLineageMismatch");
++  require(snapshot(material, line.installation.source.containerId).state.revision >= p.sourceRevisionAfterInjection
++    && snapshot(material, line.installation.target.containerId).state.revision >= p.targetRevisionAtInjection, "BeltContainerRevisionRegressed");
++}
++
++const powered = (line: BeltState, input: BeltStepInput): boolean => {
++  const p = input.power;
++  require(p.ok === true && canonicalJson(p.binding) === canonicalJson(input.binding)
++    && p.tickStartUs === input.tickStartUs && p.tickEndUs === input.tickEndUs, "StaleBeltPowerGrant");
++  const { canonicalJson: bytes, digest, ...body } = p;
++  require(canonicalJson(body) === bytes && canonicalSignature(body) === digest, "InvalidBeltPowerReceipt");
++  const grants = p.grants.filter((grant) => grant.consumerId === line.installation.consumerId);
++  require(grants.length === 1, "MissingOrDuplicateBeltPowerGrant");
++  const grant = grants[0];
++  require(grant.deviceInstanceId === line.installation.driveInstanceId && grant.jobId === line.installation.jobId
++    && grant.portId === line.installation.powerPortId, "ForeignBeltPowerConsumer");
++  const required = BigInt(line.installation.lengthMm) * 25n;
++  const declared = integer(grant.requiredMilliWatt), allocated = integer(grant.allocatedMilliWatt);
++  const n = integer(grant.work.n), d = integer(grant.work.d);
++  require(d > 0n && declared <= required && allocated <= declared && n * 10n === allocated * d, "InconsistentBeltPowerWork");
++  return grant.status === "Powered" && declared === required && allocated === required;
++};
++
++export function advanceFactoryBelt(line: BeltState, input: BeltStepInput): BeltStepProposal {
++  try {
++    assertFactoryBeltState(line, input.material);
++    require(input.confirmed === true && canonicalJson(input.binding) === canonicalJson(line.binding)
++      && canonicalJson(input.installation) === canonicalJson(line.installation), "StaleBeltAuthority");
++    require(isSaveSafeResourceId(input.actorId), "InvalidBeltActor");
++    require(input.tickStartUs === line.tickEndUs && integer(input.tickEndUs) - integer(input.tickStartUs) === 100_000n, "InvalidConfirmedBeltStep");
++    const revision = safeBigIntNumber(BigInt(line.revision) + 1n, "BeltRevision");
++    const requestBytes = inputBytes(input);
++    let outcome: Extract<BeltStepProposal, { status: "Prepared" }>["outcome"] = "WAIT_POWER";
++    let packet = line.packet, packetCursor = line.packetCursor, creditMg = line.creditMg;
++    let materialPlan: MaterialPlan | null = null;
++    if (powered(line, input)) {
++      creditMg = Math.min(FACTORY_BELT_POLICY.maxCreditMg, creditMg + FACTORY_BELT_POLICY.creditMgPerStep);
++      if (packet) {
++        packet = { ...packet, positionMm: Math.min(line.installation.lengthMm, packet.positionMm + FACTORY_BELT_POLICY.movementMmPerStep) };
++        outcome = "Moved";
++        if (packet.positionMm === line.installation.lengthMm) {
++          const lot = snapshot(input.material, line.installation.bandContainerId).state.contents[0];
++          const intent: MaterialIntent = { kind: "transfer", transactionId: `${packet.packetId}_exit`, ownerId: line.installation.driveInstanceId,
++            actorId: input.actorId, moves: [{ sourceContainerId: line.installation.bandContainerId, sourceStackId: packet.stackId,
++              sourcePortId: line.installation.bandOutPortId, targetContainerId: line.installation.target.containerId,
++              targetPortId: line.installation.target.nativePortId, targetStackId: packet.stackId, itemId: packet.itemId, quantityUnits: lot.quantity }] };
++          const plan = prepareFactoryMaterialStep(input.material, intent);
++          if (plan.status === "Prepared") { materialPlan = plan; packet = null; outcome = "Delivered"; }
++          else if (capacityBlocked(plan.reason)) outcome = "WAIT_OUTPUT";
++          else throw new Error(plan.reason);
++        }
++      } else if (input.sourceLot) {
++        const source = snapshot(input.material, line.installation.source.containerId);
++        const lot = source.state.contents.find((entry) => entry.stackId === input.sourceLot!.stackId);
++        if (!lot) outcome = "WAIT_SOURCE";
++        else {
++          const item = findFactoryItem(input.material.catalog, input.sourceLot.itemId);
++          require(lot.resourceId === item.resourceId, "BeltSourceItemMismatch");
++          assertFactoryBeltItemPorts(line.installation, item.sourceId, input.material);
++          assertProductionRef(lot, item.sourceId, input.material);
++          const quantity = Math.min(safeWhole(lot.quantity, "SourceQuantity"), Math.floor(FACTORY_BELT_POLICY.maxPacketMassMg / item.massMgPerUnit));
++          require(quantity > 0, "BeltSourceUnitTooHeavy");
++          const definition = input.material.catalog.resources.resources.find((entry) => entry.resourceId === item.resourceId)!;
++          require(quantity === lot.quantity || (definition.stackRule.splitAllowed && !lot.sealed), "UnsplittableBeltSourceLot");
++          const amount = validateFactoryAmount(item.sourceId, quantity, input.material.catalog);
++          if (creditMg < amount.massMg) outcome = "WAIT_CREDIT";
++          else {
++            const cursor = safeBigIntNumber(BigInt(packetCursor) + 1n, "PacketCursor");
++            const id = `${line.lineId}_packet_${cursor}`;
++            require(!input.material.containers.some((entry) => entry.state.contents.some((stack) => stack.stackId === id)), "DuplicateBeltChildId");
++            const intent: MaterialIntent = { kind: "transfer", transactionId: `${id}_enter`, ownerId: line.installation.driveInstanceId,
++              actorId: input.actorId, moves: [{ sourceContainerId: source.state.containerId, sourceStackId: lot.stackId,
++                sourcePortId: line.installation.source.nativePortId, targetContainerId: line.installation.bandContainerId,
++                targetPortId: line.installation.bandInPortId, targetStackId: id, itemId: item.sourceId, quantityUnits: quantity }] };
++            const plan = prepareFactoryMaterialStep(input.material, intent);
++            if (plan.status === "Prepared") {
++              const acceptedLot = snapshot(plan.candidate, line.installation.bandContainerId).state.contents;
++              require(acceptedLot.length === 1 && acceptedLot[0].stackId === id && acceptedLot[0].quantity === quantity, "BeltNativeChildAdmissionMismatch");
++              const receipt = plan.candidate.receipts.find((entry) => entry.transactionId === intent.transactionId)!;
++              packet = { packetId: id, stackId: id, itemId: item.sourceId, itemVersion: item.version, itemDigest: item.digest,
++                parentStackId: lot.stackId, injectionTransactionId: intent.transactionId, injectionReceiptCanonicalJson: canonicalJson(receipt),
++                sourceRevisionAfterInjection: snapshot(plan.candidate, source.state.containerId).state.revision,
++                targetRevisionAtInjection: snapshot(input.material, line.installation.target.containerId).state.revision, positionMm: 0 };
++              materialPlan = plan; packetCursor = cursor; creditMg -= amount.massMg; outcome = "Injected";
++            } else if (capacityBlocked(plan.reason)) outcome = "WAIT_OUTPUT";
++            else throw new Error(plan.reason);
++          }
++        }
++      } else outcome = "WAIT_SOURCE";
++    }
++    // Accrue -> one admission/debit OR existing-packet motion. Newly admitted packets remain at s=0.
++    const nextLine: BeltState = { ...line, revision, tickEndUs: input.tickEndUs, creditMg, packetCursor, packet,
++      lastStep: { tickEndUs: input.tickEndUs, requestDigest: canonicalSignature(requestBytes), outcome } };
++    assertFactoryBeltState(nextLine, materialPlan?.candidate ?? input.material);
++    return freeze({ status: "Prepared", baseLineCanonicalJson: canonicalJson(line), inputCanonicalJson: requestBytes, nextLine, materialPlan, outcome });
++  } catch (error) { return { status: "Rejected", reason: error instanceof Error ? error.message : "InvalidBeltStep" }; }
++}
++/** Returns an atomic pair for the sole Host to adopt at its combined World CAS. */
++export function commitFactoryBeltStep(line: BeltState, input: BeltStepInput, proposal: BeltStepProposal): BeltStepResult {
++  const reject = (reason: string): BeltStepResult => ({ status: "Rejected", line, material: input.material, reason });
++  if (proposal.status !== "Prepared") return reject(proposal.reason);
++  try {
++    // Replay only the exact already-adopted pair and the exact original non-material request.
++    if (canonicalJson(line) === canonicalJson(proposal.nextLine)) {
++      const prior = JSON.parse(proposal.inputCanonicalJson) as BeltStepInput;
++      const expectedMaterial = proposal.materialPlan?.candidate ?? prior.material;
++      if (canonicalJson(materialData(input.material)) !== canonicalJson(materialData(expectedMaterial))
++        || inputBytes({ ...input, material: prior.material }) !== proposal.inputCanonicalJson) return reject("StaleBeltReplay");
++      const oldLine = JSON.parse(proposal.baseLineCanonicalJson) as BeltState;
++      const verified = advanceFactoryBelt(oldLine, prior);
++      if (verified.status !== "Prepared" || proposalBytes(verified) !== proposalBytes(proposal)) return reject("InvalidBeltReplay");
++      assertFactoryBeltState(line, input.material);
++      return { status: "NoOp", line, material: input.material };
++    }
++    if (canonicalJson(line) !== proposal.baseLineCanonicalJson || inputBytes(input) !== proposal.inputCanonicalJson) return reject("StaleBeltStep");
++    const verified = advanceFactoryBelt(line, input);
++    if (verified.status !== "Prepared" || proposalBytes(verified) !== proposalBytes(proposal)) return reject("InvalidBeltProposal");
++    if (verified.materialPlan) {
++      const material = commitFactoryMaterialStep(input.material, verified.materialPlan);
++      if (material.status !== "Committed") return reject(material.status === "Rejected" ? material.reason : "ReplayedMaterialWithoutBeltAdoption");
++      return { status: "Committed", line: verified.nextLine, material: material.view };
++    }
++    return { status: "Committed", line: verified.nextLine, material: input.material };
++  } catch (error) { return reject(error instanceof Error ? error.message : "InvalidBeltProposal"); }
++}
+diff --git a/apps/weltraum-browser/tests/unit/factory/conveyor.test.ts b/apps/weltraum-browser/tests/unit/factory/conveyor.test.ts
+new file mode 100644
+index 00000000..6d227e08
+--- /dev/null
++++ b/apps/weltraum-browser/tests/unit/factory/conveyor.test.ts
+@@ -0,0 +1,259 @@
++import { describe, expect, it } from "vitest";
++import { createFp02Fixture } from "../../../src/factory/catalog/fp02Catalog";
++import { readMaterialMassMg } from "../../../src/factory/material/resourcesAdapter";
++import { createFactoryMaterialView, type MaterialView } from "../../../src/factory/material/reservations";
++import { advanceFactoryBelt, commitFactoryBeltStep, type BeltState, type BeltStepInput, type BeltPowerReceipt } from "../../../src/factory/conveyor/beltReference";
++import type { BeltInstallation } from "../../../src/factory/conveyor/beltPorts";
++import { createResourceContainerDefinition, createResourceContainerSnapshot, createResourceContainerState } from "../../../src/resources/containers";
++import { canonicalJson, canonicalSignature } from "../../../src/resources/serialization";
++
++const catalog = createFp02Fixture("cargo").catalog;
++const itemId = "fp02.bulk.steel_known";
++const item = catalog.items.find((entry) => entry.sourceId === itemId)!;
++const device = catalog.devices.find((entry) => entry.sourceId === "B09")!;
++const binding = { sessionId: "belt_test_session", epoch: 1, netRevision: 1, catalogDigest: catalog.catalogDigest, sourceProfileDigest: "TEST:installed-straight-ports-v1" };
++/** Isolated installation admission fixture, NOT native World/W07 support acceptance. */
++const installation: BeltInstallation = {
++  version: "fp06-straight-installed-belt-v1", installationId: "belt_install_a", revision: 1,
++  catalogDigest: catalog.catalogDigest, sourceProfileDigest: binding.sourceProfileDigest,
++  source: { instanceId: "source_device", installRevision: 1, deviceId: "B09", deviceDigest: device.digest,
++    portSourceId: "B09:MAT-OUT", containerId: "source", nativePortId: "source_out", placementCenterMm: [1_000, 0, 6_000], quarterTurns: 0,
++    centerMm: [2_000, 1_000, 6_000], outwardNormal: [1, 0, 0] },
++  target: { instanceId: "target_device", installRevision: 1, deviceId: "B09", deviceDigest: device.digest,
++    portSourceId: "B09:MAT-IN", containerId: "target", nativePortId: "target_in", placementCenterMm: [7_000, 0, 6_000], quarterTurns: 0,
++    centerMm: [6_000, 1_000, 6_000], outwardNormal: [-1, 0, 0] },
++  lengthMm: 4_000, moduleInstanceIds: ["belt_module_a", "belt_module_b", "belt_module_c", "belt_module_d"],
++  driveInstanceId: "belt_drive_a", powerPortId: "belt_power_a", consumerId: "belt_consumer_a", jobId: "belt_job_a",
++  bandContainerId: "band", bandInPortId: "band_in", bandOutPortId: "band_out"
++};
++const bin = (id: string, contents: readonly unknown[] = [], maxMassKg = 40, actor = "pilot") => createResourceContainerSnapshot(
++  createResourceContainerDefinition({ containerId: id, kind: "OutpostStorage", maxMassKg, maxVolumeM3: 1, maxStackCount: id === "band" ? 1 : 20,
++    transferPorts: id === "source" ? [{ portId: "source_out", direction: "Outbound", allowedActorIds: [actor] }]
++      : id === "target" ? [{ portId: "target_in", direction: "Inbound", allowedActorIds: [actor] }]
++      : [{ portId: "band_in", direction: "Inbound", allowedActorIds: [actor] }, { portId: "band_out", direction: "Outbound", allowedActorIds: [actor] }] }),
++  createResourceContainerState({ containerId: id, contents, ownerId: "pilot" }, catalog.resources), catalog.resources);
++const initial = (quantity = 10_000_000, targetMassKg = 40) => ({
++  line: { version: "fp06-one-packet-belt-v1", lineId: "belt_a", revision: 0, binding, installation,
++    tickEndUs: "0", creditMg: 0, packetCursor: 0, packet: null, lastStep: null } as BeltState,
++  material: createFactoryMaterialView(catalog, [bin("source", [{ stackId: "steel_parent", resourceId: item.resourceId, quantity,
++    grade: "source_grade", condition: .8, extensions: { "factory.source": { eventId: "known_finite_test_lot" } } }]), bin("band", [], 10), bin("target", [], targetMassKg)])
++});
++const power = (line: BeltState, powered: boolean): BeltPowerReceipt => {
++  const end = String(BigInt(line.tickEndUs) + 100_000n);
++  const grant = { consumerId: installation.consumerId, deviceInstanceId: installation.driveInstanceId, jobId: installation.jobId, portId: installation.powerPortId,
++    requiredMilliWatt: "100000", allocatedMilliWatt: powered ? "100000" : "0", work: { n: powered ? "10000" : "0", d: "1" }, status: powered ? "Powered" as const : "WAIT_POWER" as const };
++  const body = { ok: true as const, binding: line.binding, tickStartUs: line.tickEndUs, tickEndUs: end, grants: [grant] };
++  return { ...body, canonicalJson: canonicalJson(body), digest: canonicalSignature(body) };
++};
++const input = (pair: ReturnType<typeof initial>, powered = true, source = true): BeltStepInput => ({ confirmed: true, binding: pair.line.binding,
++  tickStartUs: pair.line.tickEndUs, tickEndUs: String(BigInt(pair.line.tickEndUs) + 100_000n), installation: pair.line.installation,
++  material: pair.material, power: power(pair.line, powered), actorId: "pilot", sourceLot: source ? { stackId: "steel_parent", itemId } : null });
++const step = (pair: ReturnType<typeof initial>, powered = true, source = true) => {
++  const request = input(pair, powered, source);
++  const proposal = advanceFactoryBelt(pair.line, request);
++  expect(proposal.status, proposal.status === "Rejected" ? proposal.reason : proposal.outcome).toBe("Prepared");
++  const result = commitFactoryBeltStep(pair.line, request, proposal);
++  expect(result.status).toBe("Committed");
++  return { line: result.line, material: result.material };
++};
++const ticks = (pair: ReturnType<typeof initial>, count: number, powered = true, source = true) => {
++  for (let index = 0; index < count; index++) pair = step(pair, powered, source);
++  return pair;
++};
++const lots = (material: MaterialView, id: string) => material.containers.find((entry) => entry.state.containerId === id)!.state.contents;
++const persistedFacts = (pair: ReturnType<typeof initial>) => canonicalJson({ packet: pair.line.packet, creditMg: pair.line.creditMg,
++  material: { revision: pair.material.revision, receipts: pair.material.receipts, reservations: pair.material.reservations,
++    containers: pair.material.containers.map((entry) => JSON.parse(entry.canonicalJson)) } });
++
++describe("FP06 native one-packet conveyor reference", () => {
++  it("FP06-T033 pays entry credit, then needs 54 confirmed moves on 4m before actual target custody", () => {
++    let pair = initial();
++    pair = ticks(pair, 99);
++    expect(pair.line.creditMg).toBe(9_900_000);
++    expect(lots(pair.material, "source")[0].quantity).toBe(10_000_000);
++    pair = step(pair);
++    expect(pair.line.packet?.positionMm).toBe(0);
++    expect(lots(pair.material, "source")).toEqual([]);
++    expect(lots(pair.material, "band")[0].quantity).toBe(10_000_000);
++    pair = ticks(pair, 53, true, false);
++    expect(pair.line.packet?.positionMm).toBe(3_975);
++    expect(lots(pair.material, "target")).toEqual([]);
++    pair = step(pair, true, false);
++    expect(pair.line.packet).toBeNull();
++    expect(lots(pair.material, "band")).toEqual([]);
++    expect(lots(pair.material, "target")[0].quantity).toBe(10_000_000);
++    expect(readMaterialMassMg(pair.material)).toBe(10_000_000);
++  });
++
++  it("FP06-T034 transports 20kg as two paced native 10kg children with receipt-bound parent lineage", () => {
++    let pair = initial(20_000_000);
++    pair = ticks(pair, 100);
++    const first = pair.line.packet!;
++    expect(lots(pair.material, "source")[0].quantity).toBe(10_000_000);
++    expect(lots(pair.material, "band")[0].quantity).toBe(10_000_000);
++    expect(first.parentStackId).toBe("steel_parent");
++    expect(JSON.parse(first.injectionReceiptCanonicalJson).requestCanonicalJson).toContain('"quantityUnits":10000000');
++    pair = ticks(pair, 54);
++    expect(pair.line.packet).toBeNull();
++    pair = ticks(pair, 45);
++    expect(lots(pair.material, "source")[0].quantity).toBe(10_000_000);
++    expect(pair.line.creditMg).toBe(9_900_000);
++    pair = step(pair);
++    const second = pair.line.packet!;
++    expect(second.stackId).not.toBe(first.stackId);
++    expect(second.parentStackId).toBe(first.parentStackId);
++    pair = ticks(pair, 54, true, false);
++    expect(lots(pair.material, "target").map((lot) => lot.quantity)).toEqual([10_000_000, 10_000_000]);
++    expect(lots(pair.material, "source")).toEqual([]);
++    expect(readMaterialMassMg(pair.material)).toBe(20_000_000);
++    expect(lots(pair.material, "target")[0]).toMatchObject({ grade: "source_grade", condition: .8,
++      extensions: { "factory.source": { eventId: "known_finite_test_lot" } } });
++  });
++
++  it("FP06-T035 holds real band custody at a full receiver and transfers once after freeing capacity", () => {
++    let pair = initial(10_000_000, 0);
++    pair = ticks(pair, 154);
++    expect(pair.line.packet?.positionMm).toBe(4_000);
++    expect(lots(pair.material, "target")).toEqual([]);
++    expect(lots(pair.material, "band")[0].quantity).toBe(10_000_000);
++    pair = ticks(pair, 30, true, false);
++    expect(pair.line.packet?.positionMm).toBe(4_000);
++    const containers = pair.material.containers.map((entry) => entry.state.containerId === "target" ? bin("target") : entry);
++    pair = { ...pair, material: { ...pair.material, containers } };
++    const request = input(pair, true, false);
++    const proposal = advanceFactoryBelt(pair.line, request);
++    const delivered = commitFactoryBeltStep(pair.line, request, proposal);
++    expect(delivered.status).toBe("Committed");
++    expect(delivered.line.packet).toBeNull();
++    expect(lots(delivered.material, "target")[0].quantity).toBe(10_000_000);
++    const replay = commitFactoryBeltStep(delivered.line, { ...request, material: delivered.material }, proposal);
++    expect(replay.status).toBe("NoOp");
++    expect(replay.material).toBe(delivered.material);
++    expect(readMaterialMassMg(replay.material)).toBe(10_000_000);
++  });
++
++  it("FP06-T036 persists partial credit/position, freezes without actual power and rejects offline catch-up", () => {
++    let pair = ticks(initial(), 37);
++    const credit = pair.line.creditMg;
++    pair = ticks(pair, 15, false);
++    expect(pair.line.creditMg).toBe(credit);
++    pair = JSON.parse(JSON.stringify(pair)) as typeof pair;
++    expect(pair.line.creditMg).toBe(3_700_000);
++    pair = ticks(pair, 63);
++    pair = ticks(pair, 17, true, false);
++    expect(pair.line.packet?.positionMm).toBe(1_275);
++    const before = persistedFacts(pair);
++    pair = JSON.parse(JSON.stringify(pair)) as typeof pair;
++    pair = ticks(pair, 20, false, false);
++    expect(persistedFacts(pair)).toBe(before);
++    const request = input(pair, true, false);
++    expect(advanceFactoryBelt(pair.line, { ...request, tickEndUs: String(BigInt(request.tickEndUs) + 100_000n * 360_000n) })).toMatchObject({ status: "Rejected" });
++    expect(advanceFactoryBelt(pair.line, { ...request, confirmed: false })).toMatchObject({ status: "Rejected" });
++    expect(readMaterialMassMg(pair.material)).toBe(10_000_000);
++  });
++
++  it("caps credit with no source, uses one occupancy slot and rejects fabricated initial credit", () => {
++    let pair = ticks(initial(20_000_000), 150, true, false);
++    expect(pair.line.creditMg).toBe(10_000_000);
++    pair = step(pair);
++    pair = ticks(pair, 30);
++    expect(pair.line.packetCursor).toBe(1);
++    expect(lots(pair.material, "source")[0].quantity).toBe(10_000_000);
++    expect(lots(pair.material, "band")).toHaveLength(1);
++    const virgin = initial();
++    expect(advanceFactoryBelt({ ...virgin.line, creditMg: 10_000_000 }, input(virgin))).toMatchObject({ status: "Rejected" });
++  });
++
++  it("requires actual exact energy, native Device/consumer/tick binding and complete receipt bytes", () => {
++    const pair = initial();
++    const request = input(pair);
++    const modified = (delta: Partial<BeltPowerReceipt["grants"][number]>) => {
++      const { canonicalJson: _bytes, digest: _digest, ...body } = request.power;
++      const changed = { ...body, grants: [{ ...body.grants[0], ...delta }] };
++      return { ...changed, canonicalJson: canonicalJson(changed), digest: canonicalSignature(changed) };
++    };
++    const partial = advanceFactoryBelt(pair.line, { ...request, power: modified({ allocatedMilliWatt: "90000", work: { n: "9000", d: "1" } }) });
++    expect(partial).toMatchObject({ status: "Prepared", outcome: "WAIT_POWER", nextLine: { creditMg: 0, packet: null } });
++    for (const delta of [{ deviceInstanceId: "other_drive" }, { portId: "other_port" }, { jobId: "other_job" }, { consumerId: "other_consumer" }]) {
++      expect(advanceFactoryBelt(pair.line, { ...request, power: modified(delta) })).toMatchObject({ status: "Rejected" });
++    }
++    expect(advanceFactoryBelt(pair.line, { ...request, power: { ...request.power, canonicalJson: "{}" } })).toMatchObject({ status: "Rejected" });
++    const advanced = step(pair);
++    expect(advanceFactoryBelt(advanced.line, { ...input(advanced), power: request.power })).toMatchObject({ status: "Rejected" });
++  });
++
++  it("checks actual source-bound geometry/port roles/native directions and rejects route changes", () => {
++    const pair = initial();
++    const request = input(pair);
++    const changes: BeltInstallation[] = [
++      { ...installation, lengthMm: 0 }, { ...installation, lengthMm: 4_250 },
++      { ...installation, lengthMm: 13_000 }, { ...installation, moduleInstanceIds: ["one_unpaid_module"] },
++      { ...installation, source: { ...installation.source, portSourceId: "B09:MAT-IN" } },
++      { ...installation, target: { ...installation.target, centerMm: [6_000, 1_250, 6_000] } },
++      { ...installation, target: { ...installation.target, outwardNormal: [1, 0, 0] } },
++      { ...installation, bandContainerId: "source" }
++    ];
++    for (const changed of changes) {
++      expect(advanceFactoryBelt({ ...pair.line, installation: changed }, { ...request, installation: changed })).toMatchObject({ status: "Rejected" });
++    }
++    const badNative = bin("target");
++    const definition = createResourceContainerDefinition({ ...badNative.definition, transferPorts: [{ portId: "target_in", direction: "Outbound" }] });
++    const material = { ...pair.material, containers: pair.material.containers.map((entry) => entry.state.containerId === "target"
++      ? createResourceContainerSnapshot(definition, badNative.state, catalog.resources) : entry) };
++    expect(advanceFactoryBelt(pair.line, { ...request, material })).toMatchObject({ status: "Rejected" });
++    expect(advanceFactoryBelt(pair.line, { ...request, installation: { ...installation, revision: 2 } })).toMatchObject({ status: "Rejected" });
++  });
++
++  it("rejects stale receiver/capacity/clock and forged candidates without a material or position partial commit", () => {
++    let pair = ticks(initial(), 100);
++    pair = ticks(pair, 53, true, false);
++    const request = input(pair, true, false);
++    const proposal = advanceFactoryBelt(pair.line, request);
++    expect(proposal.status).toBe("Prepared");
++    const material = { ...pair.material, containers: pair.material.containers.map((entry) => entry.state.containerId === "target" ? bin("target", [], 0) : entry) };
++    const stale = commitFactoryBeltStep(pair.line, { ...request, material }, proposal);
++    expect(stale).toMatchObject({ status: "Rejected", line: pair.line, material });
++    expect(stale.line.packet?.positionMm).toBe(3_975);
++    expect(lots(stale.material, "band")[0].quantity).toBe(10_000_000);
++    if (proposal.status !== "Prepared") throw new Error("Unreachable");
++    const forged = { ...proposal, nextLine: { ...proposal.nextLine, creditMg: 10_000_000 } };
++    expect(commitFactoryBeltStep(pair.line, request, forged)).toMatchObject({ status: "Rejected", line: pair.line, material: pair.material });
++    const committed = commitFactoryBeltStep(pair.line, request, proposal);
++    expect(committed.status).toBe("Committed");
++    expect(advanceFactoryBelt(committed.line, { ...request, material: committed.material })).toMatchObject({ status: "Rejected" });
++    expect(commitFactoryBeltStep({ ...pair.line, revision: pair.line.revision + 1 }, request, proposal)).toMatchObject({ status: "Rejected" });
++  });
++
++  it("starts a newly installed line at the current confirmed factory cursor with zero historical credit", () => {
++    const virgin = initial();
++    const pair = { ...virgin, line: { ...virgin.line, tickEndUs: "30000000" } };
++    const proposal = advanceFactoryBelt(pair.line, input(pair));
++    expect(proposal).toMatchObject({ status: "Prepared", outcome: "WAIT_CREDIT", nextLine: { tickEndUs: "30100000", creditMg: 100_000, packet: null } });
++  });
++
++  it("rejects a forged no-op acknowledgement for a never-adopted confirmed step", () => {
++    const pair = initial();
++    const request = input(pair);
++    const proposal = advanceFactoryBelt(pair.line, request);
++    if (proposal.status !== "Prepared") throw new Error(proposal.reason);
++    expect(commitFactoryBeltStep(pair.line, request, { ...proposal, nextLine: pair.line })).toMatchObject({ status: "Rejected", line: pair.line, material: pair.material });
++  });
++
++  it("rejects a wrong material family at Cutter IN-STEEL despite generic native container rights", () => {
++    const pair = initial();
++    const elastomer = catalog.items.find((entry) => entry.sourceId === "fp02.bulk.elastomer_reclaimed")!;
++    const cutter = catalog.devices.find((entry) => entry.sourceId === "B06")!;
++    const changed: BeltInstallation = { ...installation, target: { ...installation.target, deviceId: "B06", deviceDigest: cutter.digest,
++      portSourceId: "B06:IN-STEEL", placementCenterMm: [7_500, 0, 6_000] } };
++    const material = createFactoryMaterialView(catalog, [bin("source", [{ stackId: "elastomer_parent", resourceId: elastomer.resourceId, quantity: 10_000_000 }]), bin("band", [], 10), bin("target")]);
++    const request = { ...input(pair), installation: changed, material, sourceLot: { stackId: "elastomer_parent", itemId: elastomer.sourceId } };
++    expect(advanceFactoryBelt({ ...pair.line, installation: changed }, request)).toMatchObject({ status: "Rejected" });
++  });
++
++  it("rejects a stale production RecipeRef before transporting its native lot", () => {
++    const pair = initial();
++    const material = createFactoryMaterialView(catalog, [bin("source", [{ stackId: "steel_parent", resourceId: item.resourceId, quantity: 10_000_000,
++      extensions: { "factory.production": { recipeRef: { sourceId: "REC-01-CUT", version: 1, digest: "stale_recipe_digest" }, sourceLots: [] } } }]), bin("band", [], 10), bin("target")]);
++    expect(advanceFactoryBelt(pair.line, { ...input(pair), material })).toMatchObject({ status: "Rejected" });
++  });
++});

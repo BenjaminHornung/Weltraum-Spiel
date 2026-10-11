@@ -1,0 +1,6 @@
+{
+  "command": "npm run test -- tests/unit/factory/conveyor.test.ts -t \"explicit 8kg|invalid intake\"",
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+  "exitCode": 1,
+  "durationSeconds": 1.843
+}

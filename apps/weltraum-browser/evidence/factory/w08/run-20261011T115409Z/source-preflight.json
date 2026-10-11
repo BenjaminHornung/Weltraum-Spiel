@@ -1,0 +1,24 @@
+{
+  "package": "W08",
+  "baseCommit": "26d5e892c2b401b9011234dabf86955af7462fb8",
+  "readSections": [
+    "FP02 sections8-10 complete",
+    "FP03 section7 complete",
+    "full W08 brief and subsequent approval update",
+    "current Root Source-Lock approvalReceipts/packageScopes.W08",
+    "W02 APIs/native transfer targetStackId seam",
+    "full readonly W08 architecture preflight"
+  ],
+  "sources": {
+    "HESTIA_FP02_PRODUKTIONSKETTEN_GEBAEUDE_LAYOUTS_DETAILPLAN_2026-10-10.md": "5c4f068edba3d0c89e77b0d3a40734d4ee1a672c39f3885cbfef31430d942f39",
+    "HESTIA_FP03_BAUEN_BLUEPRINTS_BAUAUTOMATION_DETAILPLAN_2026-10-10.md": "7d43e358ae7ead52da3996e85bc52906cb2584a42e0802fc4d1e959df1289cb1"
+  },
+  "controlPlaneSha256AtRead": "c06a7a7f31d08b91fd8d148009c9ce77f06966afcf2cc0438dc18ae544681f5d",
+  "policy": "fp06-one-packet-belt-v1: one native custody slot; no invented longitudinal gap; powered accrual -> successful admission/debit OR existing packet movement; newly admitted packet remains0mm; debit only once at source-to-band boundary",
+  "limits": [
+    "Synthetic installation fixtures are not W07/native World admission.",
+    "Structural W03 receipt seam; no unreviewed W03 code import.",
+    "Pure proposals/atomic-pair adoption are not W09 gameplay or W10 combined Save PASS.",
+    "No browser needed for pure reference."
+  ]
+}

@@ -1,0 +1,314 @@
+{
+  "schema": "fp06-package-evidence-v1",
+  "package": "W08",
+  "actor": "/root/fp06_domain",
+  "branch": "codex/hestia-fp06-domain-2026-10-11",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11",
+  "baseCommitSha": "26d5e892c2b401b9011234dabf86955af7462fb8",
+  "commitSha": null,
+  "status": "READY_FOR_FOLLOWUP_INDEPENDENT_REVIEW",
+  "runId": "run-20261011T115409Z",
+  "sealedAtUtc": "2026-10-11T12:25:33.377917+00:00",
+  "productPatchSha256": "1ddcf341c9233fb06b3fabde98ba7f2aa9eb919343a126247fe710d4ad3cfecb",
+  "productFiles": {
+    "apps/weltraum-browser/src/factory/conveyor/beltReference.ts": "45fb7e4d0bb618a07d215ab923db4521c1bd46203428b49760e5140f402be211",
+    "apps/weltraum-browser/src/factory/conveyor/beltPorts.ts": "54c2bdd48838f869db887d72b19f4169487070ba194e301340b12179f6a7cfa9",
+    "apps/weltraum-browser/tests/unit/factory/conveyor.test.ts": "31c9212810bea211f56b9145efa6aef7b926272022e843124afe2bf35b5f7682"
+  },
+  "artifacts": [
+    {
+      "path": "build-batch-intake.log.gz",
+      "bytes": 682,
+      "sha256": "24b9bb0fd38bce1330c2f6752614d105c023e9f5abd12240ab02c26e45a7fb2e"
+    },
+    {
+      "path": "build-batch-intake.receipt.json",
+      "bytes": 172,
+      "sha256": "8ff7f1c46934dfb76c81303c4c3d4e5689297f2d026586fc7708c9a66c1e3176"
+    },
+    {
+      "path": "build-port-family-recipe.log.gz",
+      "bytes": 689,
+      "sha256": "ab3ba42ec607f98dfbfa690e5ea2361a0a747f1c39bde4bdc59b8228db376780"
+    },
+    {
+      "path": "build-port-family-recipe.receipt.json",
+      "bytes": 172,
+      "sha256": "62e37aba0679675dcf8ffe0ae4dd8c1f6deca5d260c612eb24d4b04027098ed7"
+    },
+    {
+      "path": "build.log.gz",
+      "bytes": 668,
+      "sha256": "23d2daf8635c25405ddb3b7308ddf19f3f048be152b0a13ef970c12ad0ea07ad"
+    },
+    {
+      "path": "build.receipt.json",
+      "bytes": 172,
+      "sha256": "b284d8527700b3adb37fbfb2ef2f195b7bbe73cdf6282f9e2fa21dd73d959c19"
+    },
+    {
+      "path": "green-attempt-1.log.gz",
+      "bytes": 1470,
+      "sha256": "8fedeebb9b0f6239f3f4a8ce1bd15f2f88dbdfd63ba044b9c604ccdfa154c891"
+    },
+    {
+      "path": "green-attempt-1.receipt.json",
+      "bytes": 210,
+      "sha256": "b34efa3846432eb9a925b643a386357d09e1cecfc49cea97e8506ea6dc286f6c"
+    },
+    {
+      "path": "green-attempt-2.log.gz",
+      "bytes": 277,
+      "sha256": "9c14fafc0373e7c6b1a9306718fecda98b8c484b2b6639c9e2ae8000a021f26f"
+    },
+    {
+      "path": "green-attempt-2.receipt.json",
+      "bytes": 211,
+      "sha256": "25961a2a468aa02e3400e62a14f76045b5ded7bfbdd40eaef5345e23844a2361"
+    },
+    {
+      "path": "green-batch-intake.log.gz",
+      "bytes": 280,
+      "sha256": "aff084794068efbd81379fceb41824cd9ce1322f5e4f2b0f9723ce614e7b3b70"
+    },
+    {
+      "path": "green-batch-intake.receipt.json",
+      "bytes": 211,
+      "sha256": "fb40992a3bd78402fd1ffd12bb14205d7e9585e97da371c45161d6e743620885"
+    },
+    {
+      "path": "green-port-family-recipe.log.gz",
+      "bytes": 285,
+      "sha256": "0a17ad3e8125f8da9186a33ec088df07b3ff7dcd8f0ef79104dadda7ddd6c481"
+    },
+    {
+      "path": "green-port-family-recipe.receipt.json",
+      "bytes": 211,
+      "sha256": "b6fba79f64c33d257d1052f076c5fbb9824d31380d89d2a0a9e4a29b6ec187e3"
+    },
+    {
+      "path": "green-self-review.log.gz",
+      "bytes": 278,
+      "sha256": "e5a273398ead3e8d9fdcc1a8f21b9be3c331f72f4d49b6a1ba8f8b29308dd644"
+    },
+    {
+      "path": "green-self-review.receipt.json",
+      "bytes": 211,
+      "sha256": "295844f9fab8ae14fb66e9101f925098ee5e622698dfe5dab08c4fadee3e328c"
+    },
+    {
+      "path": "manifest-before-batch.json",
+      "bytes": 7759,
+      "sha256": "afa050462d7bcd3f09afe31e87969294d4c20c0d50e7df6381be903d7ad54bd8"
+    },
+    {
+      "path": "plan.md",
+      "bytes": 875,
+      "sha256": "ba15df8ef475278aba76e1acc15d9eb6cab24b98a2d8fadbba0255b4b76cba4f"
+    },
+    {
+      "path": "product-before-batch-seal.json",
+      "bytes": 1422,
+      "sha256": "312304d395257c1ea0aed5e2037631e30a1ed8224184ad4bb7fe5eb0cb57710f"
+    },
+    {
+      "path": "product-final.diff",
+      "bytes": 49451,
+      "sha256": "1ddcf341c9233fb06b3fabde98ba7f2aa9eb919343a126247fe710d4ad3cfecb"
+    },
+    {
+      "path": "product.diff",
+      "bytes": 47169,
+      "sha256": "e3267d2fdf593043902ea2e795422bb2423e13cf554d9be9a1fda4b592e2f350"
+    },
+    {
+      "path": "receipt-corrections.json",
+      "bytes": 2230,
+      "sha256": "1e442985badc03227f746fa12f23a64f0bbfb8b540834014a098dbc2588b9028"
+    },
+    {
+      "path": "red-batch-intake-2.log.gz",
+      "bytes": 942,
+      "sha256": "16f119a1ea27844ccdb6c919d6f962a2a3ed5f4db81de52c79973c2d4bc3741c"
+    },
+    {
+      "path": "red-batch-intake-2.receipt.json",
+      "bytes": 245,
+      "sha256": "567d18d526a603a9a02f48a9429f89492b05dd9855d55adb0a3f9697670ff46c"
+    },
+    {
+      "path": "red-batch-intake.log.gz",
+      "bytes": 763,
+      "sha256": "bfd6f8b4b1859d21445e20a9372a7d17217bcdc3e804661814a728e91f64ff6a"
+    },
+    {
+      "path": "red-batch-intake.receipt.json",
+      "bytes": 230,
+      "sha256": "7894c36c36b79ee04e5fe6765c0278e9ad5f0ae1fb1b9eb1aa4ebdde67f3af23"
+    },
+    {
+      "path": "red-initial.log.gz",
+      "bytes": 918,
+      "sha256": "cf0d04dd702e7cd8f6a99f9ffc613865a31a6e784ca90c7e2789190d68888f31"
+    },
+    {
+      "path": "red-initial.receipt.json",
+      "bytes": 295,
+      "sha256": "796e61bf2884f72c6781e7b64d017e0495d53653b67d7a68897b78b370224656"
+    },
+    {
+      "path": "red-port-family-recipe.log.gz",
+      "bytes": 885,
+      "sha256": "1df4f5b41b81186f5c70a0ac7bcc28e7e9191348e5f1545935e93fb8af0f2eba"
+    },
+    {
+      "path": "red-port-family-recipe.receipt.json",
+      "bytes": 161,
+      "sha256": "c1343440039583fec590ea04608a7e34ccd1e3be7d47447390ab05acadd10ae4"
+    },
+    {
+      "path": "red-self-review.log.gz",
+      "bytes": 1026,
+      "sha256": "e9489a7d93f2c4becb6d9bb427ac1016510371982713928d1eb963125527f092"
+    },
+    {
+      "path": "red-self-review.receipt.json",
+      "bytes": 151,
+      "sha256": "5374a4d71104f89fa35a56bd881a5933b073ede04030c062769c1f52f0ea88d8"
+    },
+    {
+      "path": "regression.log.gz",
+      "bytes": 304,
+      "sha256": "a15b457d6f2333074b5cecaf331504fdb34424d551c1e52b9705293ab95e1737"
+    },
+    {
+      "path": "regression.receipt.json",
+      "bytes": 354,
+      "sha256": "bb0d100c94c6f7697fb67658f69828eaf20b6c9d74350190c3f702ec19e0525d"
+    },
+    {
+      "path": "review-final.md",
+      "bytes": 7417,
+      "sha256": "fe46989bcc725c4677411a22521d47f390cee226429bc036d7265675ca92071a"
+    },
+    {
+      "path": "review.md",
+      "bytes": 5020,
+      "sha256": "e243415914497dec5a1f102d590cf4cef22137d44affb851bb622be1dfcf18e9"
+    },
+    {
+      "path": "source-preflight.json",
+      "bytes": 1340,
+      "sha256": "ca183c4c860471c08b35d2ba46eeec6a04f3a6c3411e7472ce5c48a47f0aa773"
+    }
+  ],
+  "actualCommandReceipts": {
+    "build-batch-intake.receipt.json": {
+      "command": "npm run build",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "exitCode": 0,
+      "durationSeconds": 4.694
+    },
+    "build-port-family-recipe.receipt.json": {
+      "command": "npm run build",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "exitCode": 0,
+      "durationSeconds": 4.396
+    },
+    "build.receipt.json": {
+      "command": "npm run build",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "exitCode": 0,
+      "durationSeconds": 4.465
+    },
+    "green-attempt-1.receipt.json": {
+      "command": "npm run test -- tests/unit/factory/conveyor.test.ts",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "exitCode": 1,
+      "durationSeconds": 0.893
+    },
+    "green-attempt-2.receipt.json": {
+      "command": "npm run test -- tests/unit/factory/conveyor.test.ts",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "exitCode": 0,
+      "durationSeconds": 15.232
+    },
+    "green-batch-intake.receipt.json": {
+      "command": "npm run test -- tests/unit/factory/conveyor.test.ts",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "exitCode": 0,
+      "durationSeconds": 15.406
+    },
+    "green-port-family-recipe.receipt.json": {
+      "command": "npm run test -- tests/unit/factory/conveyor.test.ts",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "exitCode": 0,
+      "durationSeconds": 13.749
+    },
+    "green-self-review.receipt.json": {
+      "command": "npm run test -- tests/unit/factory/conveyor.test.ts",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "exitCode": 0,
+      "durationSeconds": 14.982
+    },
+    "red-batch-intake-2.receipt.json": {
+      "command": "npm run test -- tests/unit/factory/conveyor.test.ts -t \"explicit 8kg|invalid intake\"",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "exitCode": 1,
+      "durationSeconds": 1.843
+    },
+    "red-batch-intake.receipt.json": {
+      "command": "npm run test -- tests/unit/factory/conveyor.test.ts -t \"explicit 8kg\"",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "exitCode": 1,
+      "durationSeconds": 0.994
+    },
+    "red-initial.receipt.json": {
+      "command": "npm run test -- tests/unit/factory/conveyor.test.ts",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "exitCode": 1,
+      "durationSeconds": 0.855,
+      "classification": "business RED if test assertions execute; otherwise SETUP_FAIL"
+    },
+    "red-port-family-recipe.receipt.json": {
+      "command": "npm run test -- tests/unit/factory/conveyor.test.ts -t \"wrong material family|stale production\"",
+      "exitCode": 1,
+      "durationSeconds": 0.88,
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "cwdMetadataStatus": "reconstructed",
+      "cwdSupplement": "receipt-corrections.json#cwdSupplement.red-port-family-recipe.receipt.json",
+      "originalReceiptSha256": "c1343440039583fec590ea04608a7e34ccd1e3be7d47447390ab05acadd10ae4"
+    },
+    "red-self-review.receipt.json": {
+      "command": "npm run test -- tests/unit/factory/conveyor.test.ts -t \"newly installed|forged no-op\"",
+      "exitCode": 1,
+      "durationSeconds": 0.79,
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "cwdMetadataStatus": "reconstructed",
+      "cwdSupplement": "receipt-corrections.json#cwdSupplement.red-self-review.receipt.json",
+      "originalReceiptSha256": "5374a4d71104f89fa35a56bd881a5933b073ede04030c062769c1f52f0ea88d8"
+    },
+    "regression.receipt.json": {
+      "command": "npm run test -- tests/unit/factory/material.test.ts tests/unit/factory/catalog.test.ts tests/unit/resourceTransfer.test.ts tests/unit/resourceContainers.test.ts tests/unit/resourceCatalog.test.ts",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "exitCode": 0,
+      "durationSeconds": 3.067
+    }
+  },
+  "receiptCorrections": "receipt-corrections.json",
+  "independentReview": "OriginalSPEC/QUALITYPASS; final follow-up pending Root",
+  "downstream": {
+    "W09": "NOT_RUN",
+    "W10": "NOT_RUN",
+    "browser": "NOT_RUN_NOT_REQUIRED_FOR_PURE_W08"
+  },
+  "sourcePreflight": "source-preflight.json",
+  "writerReview": "review-final.md",
+  "historicalFiles": [
+    "product.diff",
+    "product-before-batch-seal.json",
+    "manifest-before-batch.json",
+    "review.md"
+  ],
+  "commandReceiptNote": "Two original selected RED receipt files did not record cwd contemporaneously and remain byte-exact. Summaries add reconstructed metadata bound by explicit original SHA and supplement; every other field remains actual original receipt."
+}

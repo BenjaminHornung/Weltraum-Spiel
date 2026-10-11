@@ -1,0 +1,5 @@
+{
+  "command": "npm run test -- tests/unit/factory/conveyor.test.ts -t \"newly installed|forged no-op\"",
+  "exitCode": 1,
+  "durationSeconds": 0.79
+}

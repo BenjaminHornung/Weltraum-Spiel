@@ -1,0 +1,26 @@
+{
+  "package": "W08",
+  "status": "WRITE_HOLD_FOR_INDEPENDENT_REVIEW",
+  "baseCommitSha": "26d5e892c2b401b9011234dabf86955af7462fb8",
+  "branch": "codex/hestia-fp06-domain-2026-10-11",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11",
+  "sealedAtUtc": "2026-10-11T12:10:08.752256+00:00",
+  "patchSha256": "e3267d2fdf593043902ea2e795422bb2423e13cf554d9be9a1fda4b592e2f350",
+  "productFiles": {
+    "apps/weltraum-browser/src/factory/conveyor/beltReference.ts": "fe03778dcfdaa0f3cdce250bd83f9239fae0fc08e79089715f9e49dc9dc5f556",
+    "apps/weltraum-browser/src/factory/conveyor/beltPorts.ts": "54c2bdd48838f869db887d72b19f4169487070ba194e301340b12179f6a7cfa9",
+    "apps/weltraum-browser/tests/unit/factory/conveyor.test.ts": "5b1515e6a05bc1c90cb9b5f2e074048ac96c6fe80c35f29a42c00f720c5b64a2"
+  },
+  "evidenceRun": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z",
+  "testResults": {
+    "initialBusinessRED": "4FAIL/4 collected,Exit1",
+    "selfReviewRED": "2FAIL/8 skipped,Exit1",
+    "portFamilyRecipeRED": "2FAIL/10 skipped,Exit1",
+    "focusedFinal": "12PASS,Exit0,13.32s",
+    "affectedRegression": "61PASS,Exit0,2.66s",
+    "buildFinal": "TypeScript/VitePASS,Exit0,4.316s",
+    "Browser": "NOT_RUN: pure W08 reference; no browser requirement",
+    "W09Gameplay": "NOT_RUN",
+    "W10CombinedSave": "NOT_RUN"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "schema": "fp06-evidence-addendum-v1",
+  "originalReceiptBytesUnchanged": true,
+  "actualExecutionCwd": {
+    "red-self-review.receipt.json": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+    "red-port-family-recipe.receipt.json": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser"
+  },
+  "basis": "Actual exec_command workdir for both preserved commands; omitted in original receipt rather than rerun.",
+  "durationClarifications": {
+    "green-port-family-recipe": {
+      "vitestSeconds": 13.32,
+      "pythonWrapperSeconds": 13.749
+    },
+    "build-port-family-recipe": {
+      "pythonWrapperSeconds": 4.396,
+      "earlierWriterReviewMistakenSeconds": 4.316
+    },
+    "green-batch-intake": {
+      "vitestSeconds": 15.02,
+      "pythonWrapperSeconds": 15.406
+    },
+    "build-batch-intake": {
+      "pythonWrapperSeconds": 4.694
+    }
+  },
+  "history": "review.md is original pre-batch writer review; review-final.md and this addendum correct its duration statements without overwriting history.",
+  "cwdSupplement": {
+    "red-self-review.receipt.json": {
+      "originalReceiptPath": "red-self-review.receipt.json",
+      "originalReceiptSha256": "5374a4d71104f89fa35a56bd881a5933b073ede04030c062769c1f52f0ea88d8",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "metadataStatus": "reconstructed; cwd not contemporaneously recorded in original receipt",
+      "reconstructionBasis": "Original actual exec_command.workdir and matching Vitest RUN directory in preserved original CLI log; no historical rerun."
+    },
+    "red-port-family-recipe.receipt.json": {
+      "originalReceiptPath": "red-port-family-recipe.receipt.json",
+      "originalReceiptSha256": "c1343440039583fec590ea04608a7e34ccd1e3be7d47447390ab05acadd10ae4",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11/apps/weltraum-browser",
+      "metadataStatus": "reconstructed; cwd not contemporaneously recorded in original receipt",
+      "reconstructionBasis": "Original actual exec_command.workdir and matching Vitest RUN directory in preserved original CLI log; no historical rerun."
+    }
+  }
+}
