@@ -1,0 +1,26 @@
+{
+  "schema": "hestia.fp06.w09.composition-performance-witness/v1",
+  "commandReceipt": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/131-paid-band-real-c03-countercases.command.json",
+  "commandReceiptSha256": "73ed52a3fd7de104c584ea2d9c343639f3e1bb8a2c24e5ddf0207b8519fdc964",
+  "gzip": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z/131-paid-band-real-c03-countercases.raw.log.gz",
+  "gzipSha256": "ef5d550443e9a61f089aef1960a6bd0f532b3eba08121f56c54718fca4859a9a",
+  "rawSha256": "ebe692acc9b6a861660f8bfb4bea5f8cf342fce9414f7db0fd31113eb84360fd",
+  "rawBytes": 1653,
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/dryFactorySlice.test.ts",
+    "-t",
+    "paid-band"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "startAtUtc": "2026-10-11T22:49:15.546077+00:00",
+  "endAtUtc": "2026-10-11T22:49:49.414443+00:00",
+  "elapsedSeconds": 33.86878016300034,
+  "exitCode": 1,
+  "result": "TWO_ORIGINAL_5000MS_TIMEOUT_FAILURES_NOT_BUSINESS_ASSERTION_RED",
+  "retainedRaw": "\n> weltraum-browser@0.1.0 test\n> vitest run tests/unit/factory/dryFactorySlice.test.ts -t paid-band\n\n\n RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser\n\n ❯ tests/unit/factory/dryFactorySlice.test.ts (16 tests | 2 failed | 14 skipped) 32942ms\n   × W09 paid-band joint adoption preserves real custody and credit across blackout and a later graph revision 9514ms\n   × W09 paid-band output blockage retains the same lot at the end until actual receiver room exists 23427ms\n\n⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯\n\n FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 paid-band joint adoption preserves real custody and credit across blackout and a later graph revision\nError: Test timed out in 5000ms.\nIf this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".\n ❯ tests/unit/factory/dryFactorySlice.test.ts:94:1\n\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯\n\n FAIL  tests/unit/factory/dryFactorySlice.test.ts > W09 paid-band output blockage retains the same lot at the end until actual receiver room exists\nError: Test timed out in 5000ms.\nIf this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".\n ❯ tests/unit/factory/dryFactorySlice.test.ts:101:1\n\n\n⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯\n\n\n Test Files  1 failed (1)\n      Tests  2 failed | 14 skipped (16)\n   Start at  22:49:15\n   Duration  33.48s (transform 318ms, setup 0ms, import 424ms, tests 32.94s, environment 0ms)\n\n",
+  "limits": "Root read-only retained gzip/receipt consistency verified. Original external raw bytecomparison delegated to independent followup; current mutable Source not bound by this result. No causal hotspot/optimization/PASS anticipated."
+}
