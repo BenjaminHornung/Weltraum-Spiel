@@ -1732,8 +1732,10 @@
         "packageCommitSha": null,
         "rootProof": "docs/factory/fp06/reviews/w07-cdp-trusted-driver-root-proof.json"
       },
-      "currentNarrowWriteSet": [],
-      "currentNarrowScope": "All30 product source HOLD; temporary diagnostic E2E67e803/29baseline201; BrowserHOLD",
+      "currentNarrowWriteSet": [
+        "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
+      ],
+      "currentNarrowScope": "Temporary mainCPUprofile diagnosticE2Esource only; all29productionbaseline201HOLD; BrowserHOLD",
       "browserSeventhActual": {
         "log": 51,
         "endedAtUtc": "2026-10-11T14:55:26.833Z",
@@ -2383,7 +2385,7 @@
         "gate": "Targeted11 only; full17 and package remain NOT_RUN/FAIL until actual results",
         "status": "EXECUTED83_FAIL_CPU_GPU_PORT_RELEASED"
       },
-      "cpuGpuPortLease": "EXCLUSIVE_5174_ONE_DIAGNOSTIC",
+      "cpuGpuPortLease": "ONE_ORIGINALBUILD_CPU_ONLY_THEN_HOLD",
       "adaptiveNormalVerificationActual": {
         "log": 83,
         "selected": 11,
@@ -2711,7 +2713,54 @@
         "cases": "4 serial samePageWorld: ready/open/play,125ms,250ms,600ms ordinary released trustedS/CDP; originalcasebudgets/trace/Native60Hz/8pending20s",
         "constraints": "Frozen exact30overlaybytes; passiveDOM/transparentoriginalWorkerforwardonly; noRuntime/pose/tick/Source/inputpayload/reach/float/caps/queue/timeout changes; id-onlyACKnotaccepted/executiontime; solver/mainCPU NOT_OBSERVED; logdrops/errorsinvalidatecompleteDiagnosis",
         "restoreAuthorization": "AfterONECLI archivefreshdiagraw/artifacts; restoreEXACTnormal030fcE2E16961B and originalfixedwriters/absentstates; verifyall30baseline201394 andportfree",
-        "status": "AUTHORIZED_NOT_RUN"
+        "status": "EXECUTED90_DIAGNOSTIC4PASS_ONLY_CPU_RELEASED_NORMAL88FAIL"
+      },
+      "inputTickDiagnosticActual": {
+        "log": 90,
+        "kind": "DIAGNOSTIC_ONLY",
+        "pass": 4,
+        "fail": 0,
+        "exitCode": 0,
+        "startUtc": "2026-10-11T18:25:00.746550+00:00",
+        "endUtc": "2026-10-11T18:25:42.147519+00:00",
+        "wrapperSeconds": 41.400954145996366,
+        "rawBytes": 1318,
+        "rawSha256": "c6feaf807346a8add1be3a690c744095246228735a2281b30ef7686d8d090369",
+        "artifactCount": 6,
+        "artifactBytes": 1007553,
+        "normalE2eRestoredSha256": "030fc301147af6a45da6412847368e6c7d5243b70811018e53883b83210ef605",
+        "baseline30Restore": "MATCH201394",
+        "normalAndDiagnosticFixedOutputs": "RESTORED_EXACT_ORIGINAL_OR_ABSENCE",
+        "cpuGpuPort": "RELEASED",
+        "observed": "125S physicalstamps131.2ms -> actualDOM0.7ms/MainFactoryposts0.4ms, NativeZ0; 250/600 createNativeMovement; Mainlongtasks144-239ms near gestures; 0 observer/idDrops/errors",
+        "notObserved": [
+          "Expensive function",
+          "GPU/wholeCPU timing",
+          "NativeFactoryInput handler time/acceptedBool",
+          "Actual step consumption boundaries"
+        ],
+        "independentReview": {
+          "path": "docs/factory/fp06/reviews/w07-input-tick-diagnostic90-independent-observation-review.md",
+          "originalSha256": "efd35b649dd7aa493e0fed4cfc394588db83c002dcaafdf42fa2bc036c98fe60",
+          "copiedSha256": "efd35b649dd7aa493e0fed4cfc394588db83c002dcaafdf42fa2bc036c98fe60",
+          "status": "PASS_ACTUAL_OBSERVATION_AND_ARTIFACT_BINDINGS_NOT_GAMEPLAY_GATE"
+        },
+        "rootRawVerification": "Exact decompressed raw SHA and bytes confirmed",
+        "W07GameplayEndGate": "FAIL88_UNCHANGED"
+      },
+      "mainCpuProfileSourceAuthorization": {
+        "authorizedAtUtc": "2026-10-11T18:30:31.862853+00:00",
+        "actor": "/root/fp06_integrator",
+        "kind": "TEMPORARY_MAIN_CPU_PROFILE_SOURCE_PREPARATION_AND_ONE_ORIGINALBUILD_ONLY",
+        "writeSet": [
+          "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
+        ],
+        "sourceBaselineSealSha256": "201394fb8346e8b12c93b0bb5d52c34d180d966a80c884697813b9d224c511d4",
+        "profile": "Existing public CDP Profiler mainPage;1000us defaultsampling; neutral5s bounded existing30s cases thenone125Sreleasedgesture; plainfactory/nohvpMeasure/originaltrace; preserve90/currentnormal030fc/all29runtime",
+        "purpose": "Locate observed mainLongtask costly function before choosing productfix; nohardwareorbeforeafterclaim",
+        "constraints": "NoWorldauthority/input/tick/pose/runtime/source/reach/float/caps/queue/timeout modifications; profiler stop/disable finally/rawoutput; unchangedpassiveForwarding/caps/errorclosure from reviewed67e overlay",
+        "execution": "BrowserHOLD until exactsource review and separate ONE diagnostic grant",
+        "status": "AUTHORIZED_SOURCE_PREPARATION_AND_ONE_BUILD_ONLY"
       }
     },
     "W08": {
@@ -2915,6 +2964,36 @@
         "closedFixtures": "C26/C27/C28 each1Piece180/300/450kg unchanged, carrier/packmass included per sources",
         "missingRuntime": "ActualNativepickup→walk→deposit/localdepotcontract not present; W09afterW07 must implement without copy/freeRemoteTransfer.",
         "decisions": "No new ownerdecision or grant inferred"
+      },
+      "nativeCargoHandlingProposal": {
+        "status": "SOURCE_PROPOSAL_REVIEW_PASS_WITH_CONCRETE_RUNTIME_GATES_NOT_RUN",
+        "dependencyW07": "FAIL_IMPLEMENTATION_BLOCKED",
+        "artifacts": [
+          {
+            "path": "docs/factory/fp06/reviews/w09-native-cargo-handling-contract-proposal.md",
+            "originalSha256": "c959234485d93b143d7511bdfd338fbea80024411bd6219391ab29e94243ff2a",
+            "copiedSha256": "c959234485d93b143d7511bdfd338fbea80024411bd6219391ab29e94243ff2a"
+          },
+          {
+            "path": "docs/factory/fp06/reviews/w09-native-cargo-handling-contract-independent-review.md",
+            "originalSha256": "ea289a0c224d6b52ba5f0efc89780bd481412980595e8f2161fd73ecd06fcc4b",
+            "copiedSha256": "ba9b43136d752bf278193f370bee0ea628af447132eda5a0e2d807ba125b49c6"
+          }
+        ],
+        "additionalRequiredPaths": [
+          "apps/weltraum-browser/src/factory/construction/cargoHandlingProfile.ts",
+          "apps/weltraum-browser/src/factory/session/cargoHandling.ts",
+          "apps/weltraum-browser/tests/unit/factory/cargoHandling.test.ts",
+          "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+          "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+          "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+          "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+          "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts",
+          "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+          "apps/weltraum-browser/tests/unit/hvp-locomotion.test.ts"
+        ],
+        "authorization": "NOT_GRANTED; exact complete W09scope afterW07PASS and immutableW04/W08integration",
+        "gates": "Closed finite jobprofile geometry; native combined capsule/payload sweeps before both commits; soleResources jointCAS; trueOwner endpoints/localdeposit; <=16FixedCargoIncluded/unchangedglobalbudgets; SourcePayloadmassNativeRapierTest; CombinedSave wholecustodyOwnerMembership withoutLegacyweakening"
       }
     },
     "W10": {
