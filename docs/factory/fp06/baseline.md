@@ -26,7 +26,7 @@ Three.js/HVP/Voxel/Physics/Save bleiben erhalten. Resources ist alleinige Warena
 |---|---|---|---|
 | W00 | keine | /root Dokumentation | PASS: Baseline und unabhängiges Review |
 | W01 | W00 | /root/fp06_integrator | PASS: a30630dd7963c165c673df7ea1b46d52735752ef, 46 Tests/Build/Review |
-| W02 | W01 | /root/fp06_domain, eigener Worktree | IN_PROGRESS: 59 Tests/Build grün; E2E/Review offen; initiale TDD-Abweichung dokumentiert |
+| W02 | W01 | /root/fp06_domain, eigener Worktree | IN_PROGRESS: 61 Tests/Build grün; Cargo-E2E und unabhängiges Review laufen; initiale TDD-Abweichung dokumentiert |
 | W03 | W01 | /root/fp06_integrator | BLOCKED: D03_RESTART_POLICY offen, W01 bestanden |
 | W04 | W02/W03 | /root/fp06_integrator | BLOCKED: Vorgänger; D05 freigegeben |
 | W05 | W01 | /root/fp06_domain, eigener Worktree | NOT_RUN: nach freiem Domainwriter-Slot |
@@ -93,6 +93,7 @@ Bei unklarer Quelle, Zuständigkeit oder relevantem Ownergate nur betroffene Pro
 - [x] D03-Restart und konkretes initiales StartSiteprofil als offene Ownerfragen dokumentiert; nur abhängige Policy-/Sourceanteile halten.
 - [ ] W02: genuine WIP-Lock-RED/GREEN, Resourcesregressions und Build bestehen; anfänglicher T009–12 Business-RED vor Implementation NOT_RUN wegen Modulimport-Setupfehler. Browser/Commit/Review noch offen.
 - [ ] W06: echte Host-/Kadenz-/Browser-REDs und erster fokussierter GREEN; vollständige Regression/Build/Browser/Commit/Review noch offen.
+- [x] Browserprüfungen erhalten eine ausdrückliche serielle Lease für Port 5174; unveränderte 30-s-/5-s-/20-s-Defaults aus der vorhandenen Playwright-Konfiguration. Externe Umgebungsconfigs ändern ausschließlich Port und eigene Evidence-Ausgabepfade, keine Produktkonfiguration. W06s noch fehlgeschlagener kombinierter Browserfall wird in fokussierte reale Bedienfälle zerlegt und nach Unitabschluss seriell geprüft; kein neuer Timeout angenommen.
 - [ ] W03–W05/W07–W11 je Paket RED/GREEN/Regression/Review/Evidence/Commit-Gate.
 
 ## Definition of Done

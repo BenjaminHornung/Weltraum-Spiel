@@ -55,3 +55,9 @@ Die vorhandene CI-Prüfung akzeptiert ausschließlich explizite, tatsächlich vo
 ## Offene zusätzliche Startplatzentscheidung
 
 D07_START_SITE_PROFILE ist PROPOSED_OWNER_REVIEW_REQUIRED: [konkrete70-m²-Fixture](proposals/start-site-v1.md). Sie behebt keine Supportprüfung durch Behauptung, sondern bietet eine ausdrücklich andere Anfangsgeologie ausschließlich für /factory.html an. Nur der neue Quellen-/Vegetations-/Profilanteil bleibt bis zur tatsächlichen Ownerentscheidung gesperrt. Native W07-Transaktion und einzelne reale Cutterplatzierung dürfen mit tatsächlich belegtem bestehenden v5-Support weiterlaufen; das beweist noch keinen vollständigen Layout-A-Kreislauf. Material-/Asset-/Hostarbeit bleibt zulässig. Kein Quellen-/Vegetationswechsel angenommen.
+
+## Offene Präzisierung der Wiederanlaufpolitik
+
+D03_RESTART_POLICY ist PROPOSED_OWNER_REVIEW_REQUIRED. FP01 §6.4.2 nennt 2 s stabile Versorgung und 500 W Reserve als vorgeschlagene Hysterese, legt deren Bedeutung für den ersten Start gegenüber dem Wiederanlauf aber nicht abschließend fest. Der vorgelegte konkrete Vorschlag sortiert Verbraucher innerhalb ihrer Priorität nach stabiler ID. Ein erster Start benötigt die angeforderte Leistung; erst nach WAIT_POWER benötigt ein Wiederanlauf 2 bestätigte Simulationssekunden mit angeforderter Leistung plus 500 W Headroom. Die Reserve wird gemeinsam geprüft, ohne Fairnesscursor. Das erlaubt einen ersten 6,6-kW-Start in der bestätigten 6,8-kW-Fixture und setzt keinen zusätzlichen Erzeuger voraus.
+
+Die entsprechende Ownerfrage ist noch unbeantwortet. W03s abhängige Policyimplementation bleibt gesperrt; W02, W05, W06 und nach deren eigenen Gates W07/W08 bleiben zulässig. Die bereits akzeptierten D05/D06/D07/D11 und der W01-Freeze beantworten diese zusätzliche Frage nicht. Schweigen ist keine Freigabe.
