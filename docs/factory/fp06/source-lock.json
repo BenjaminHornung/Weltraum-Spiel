@@ -479,6 +479,14 @@
       "blockedPackages": [
         "W03"
       ]
+    },
+    "D07_START_SITE_PROFILE": {
+      "status": "PROPOSED_OWNER_REVIEW_REQUIRED",
+      "proposal": "Factory-only versioned initial startsite: explicit15 LayoutA body/belt/service/access masks, union70m2 at dry limestone top1.5m; coverage/cell125mm/nativeauthority/budgets unchanged; no west-frame/north-young initial woodowners in corridor; no mined/material credit. Normal coastv5 unchanged and combinedsave binds distinctsourcebaseline.",
+      "blockedPackages": [
+        "W07"
+      ],
+      "artifact": "docs/factory/fp06/proposals/start-site-v1.md"
     }
   },
   "packageScopes": {
@@ -585,7 +593,16 @@
       "implementationWriteHold": false,
       "reviewReport": "/workspace/.cloud-setup/fp06-w01-independent-review.md",
       "completedAtUtc": "2026-10-11T10:00:53.964442+00:00",
-      "authorizedAtUtc": "2026-10-11T10:00:54.249780+00:00"
+      "authorizedAtUtc": "2026-10-11T10:00:54.249780+00:00",
+      "reviewHistory": [
+        {
+          "candidateSha": "b8edd17bfdeb2bc724afc76c148d8aeacacde7b1",
+          "specCompliance": "FAIL",
+          "codeQuality": "FAIL",
+          "finding": "P2 R1 literal cassette port source ID",
+          "report": "/workspace/.cloud-setup/fp06-w01-independent-review.md"
+        }
+      ]
     },
     "W02": {
       "dependencies": [
@@ -835,7 +852,8 @@
       ],
       "decisionGates": [
         "D01",
-        "D11"
+        "D11",
+        "D07_START_SITE_PROFILE"
       ],
       "sourceReadSections": "FP02 §§6–10; FP03 §§4–6, 13.",
       "readSet": [

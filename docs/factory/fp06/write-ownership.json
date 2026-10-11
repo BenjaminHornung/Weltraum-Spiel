@@ -46,7 +46,9 @@
       "docs/factory/fp06/write-ownership.json",
       "docs/factory/fp06/decisions.md",
       "docs/factory/fp06/baseline.md",
-      "apps/weltraum-browser/evidence/factory/w00/2026-10-11T090924Z/**"
+      "apps/weltraum-browser/evidence/factory/w00/2026-10-11T090924Z/**",
+      "docs/factory/fp06/proposals/**",
+      "docs/factory/fp06/reviews/**"
     ]
   },
   "readOnlyAgents": [
@@ -194,7 +196,16 @@
       "implementationWriteHold": false,
       "reviewReport": "/workspace/.cloud-setup/fp06-w01-independent-review.md",
       "completedAtUtc": "2026-10-11T10:00:53.964442+00:00",
-      "authorizedAtUtc": "2026-10-11T10:00:54.249780+00:00"
+      "authorizedAtUtc": "2026-10-11T10:00:54.249780+00:00",
+      "reviewHistory": [
+        {
+          "candidateSha": "b8edd17bfdeb2bc724afc76c148d8aeacacde7b1",
+          "specCompliance": "FAIL",
+          "codeQuality": "FAIL",
+          "finding": "P2 R1 literal cassette port source ID",
+          "report": "/workspace/.cloud-setup/fp06-w01-independent-review.md"
+        }
+      ]
     },
     "W02": {
       "dependencies": [
@@ -444,7 +455,8 @@
       ],
       "decisionGates": [
         "D01",
-        "D11"
+        "D11",
+        "D07_START_SITE_PROFILE"
       ],
       "sourceReadSections": "FP02 §§6–10; FP03 §§4–6, 13.",
       "readSet": [

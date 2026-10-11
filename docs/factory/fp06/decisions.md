@@ -51,3 +51,7 @@ Die tatsächliche Rapier-World ist eine private Closure in `src/hestia-prototype
 ## Paketweise E2E-Inventarbindung
 
 Die vorhandene CI-Prüfung akzeptiert ausschließlich explizite, tatsächlich vorhandene Specpfade in genau einer der drei bestehenden Gruppen. Deshalb wird package.json zusätzlich in W07, W09, W10 und W11 allein zur Aufnahme der jeweils neuen E2E-Datei vorgesehen. Der Integrator registriert jede Spec erst in ihrem Paket; keine Platzhalter aus späteren Paketen und keine Lockerung des Parsers, Abhängigkeiten oder Lockfiles. Dies ist ein technischer Integrationsscope unter dem vorhandenen Auftrag, keine neue Produktentscheidung. Geplante Pfade bleiben bis zum jeweiligen Gate ohne Write-Grant.
+
+## Offene zusätzliche Startplatzentscheidung
+
+D07_START_SITE_PROFILE ist PROPOSED_OWNER_REVIEW_REQUIRED: [konkrete70-m²-Fixture](proposals/start-site-v1.md). Sie behebt keine Supportprüfung durch Behauptung, sondern bietet eine ausdrücklich andere Anfangsgeologie ausschließlich für /factory.html an. W07 bleibt bis zu tatsächlicher Ownerentscheidung abhängig gesperrt; unabhängige Material-/Asset-/Hostarbeit bleibt zulässig. Kein Quellen-/Vegetationswechsel angenommen.
