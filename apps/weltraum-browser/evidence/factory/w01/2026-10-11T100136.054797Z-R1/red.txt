@@ -1,0 +1,40 @@
+
+> weltraum-browser@0.1.0 test
+> vitest run tests/unit/factory/catalog.test.ts
+
+
+ RUN  v4.1.11 /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser
+
+ ❯ tests/unit/factory/catalog.test.ts (12 tests | 1 failed) 168ms
+     × preserves the literal FP02 CASS-OFFCUT source port in the cutter and explicit mapping 15ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/factory/catalog.test.ts > source-locked FP02 factory catalog > preserves the literal FP02 CASS-OFFCUT source port in the cutter and explicit mapping
+AssertionError: expected undefined to match object { runtimeId: 'fp02_b06_offcut', …(2) }
+
+- Expected:
+{
+  "externallyConnectable": false,
+  "role": "WasteCassette",
+  "runtimeId": "fp02_b06_offcut",
+}
+
++ Received:
+undefined
+
+ ❯ tests/unit/factory/catalog.test.ts:11:8
+      9|     const cutter = catalog.devices.find((device) => device.sourceId ==…
+     10|     expect(cutter.ports.find((port) => port.sourceId === "B06:CASS-OFF…
+     11|       .toMatchObject({ runtimeId: "fp02_b06_offcut", role: "WasteCasse…
+       |        ^
+     12|     expect(catalog.idMapping.find((mapping) => mapping.sourceId === "B…
+     13|       .toEqual({ sourceId: "B06:CASS-OFFCUT", runtimeId: "fp02_b06_off…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 11 passed (12)
+   Start at  10:01:36
+   Duration  506ms (transform 183ms, setup 0ms, import 224ms, tests 168ms, environment 0ms)

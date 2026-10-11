@@ -1,0 +1,22 @@
+diff --git a/apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts b/apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts
+index 91ba3250..812c8525 100644
+--- a/apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts
++++ b/apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts
+@@ -117 +117 @@ const devices: readonly FactoryDevice[] = freeze([
+-      port("B06:POWER-IN", "fp02_b06_power_in", "PowerConsumer", 0), port("B06:OFFCUT", "fp02_b06_offcut", "WasteCassette", 0)], 16_000_000, 22_500_000, 6_000_000),
++      port("B06:POWER-IN", "fp02_b06_power_in", "PowerConsumer", 0), port("B06:CASS-OFFCUT", "fp02_b06_offcut", "WasteCassette", 0)], 16_000_000, 22_500_000, 6_000_000),
+diff --git a/apps/weltraum-browser/tests/unit/factory/catalog.test.ts b/apps/weltraum-browser/tests/unit/factory/catalog.test.ts
+index a194b258..f4dcc168 100644
+--- a/apps/weltraum-browser/tests/unit/factory/catalog.test.ts
++++ b/apps/weltraum-browser/tests/unit/factory/catalog.test.ts
+@@ -6,0 +7,10 @@ describe("source-locked FP02 factory catalog", () => {
++  it("preserves the literal FP02 CASS-OFFCUT source port in the cutter and explicit mapping", () => {
++    const catalog = loadFactoryCatalog(createFp02CatalogInput());
++    const cutter = catalog.devices.find((device) => device.sourceId === "B06")!;
++    expect(cutter.ports.find((port) => port.sourceId === "B06:CASS-OFFCUT"))
++      .toMatchObject({ runtimeId: "fp02_b06_offcut", role: "WasteCassette", externallyConnectable: false });
++    expect(catalog.idMapping.find((mapping) => mapping.sourceId === "B06:CASS-OFFCUT"))
++      .toEqual({ sourceId: "B06:CASS-OFFCUT", runtimeId: "fp02_b06_offcut" });
++    expect(catalog.idMapping.some((mapping) => mapping.sourceId === "B06:OFFCUT")).toBe(false);
++  });
++

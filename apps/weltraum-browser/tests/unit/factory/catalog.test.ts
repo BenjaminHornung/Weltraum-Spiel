@@ -4,6 +4,16 @@ import { canonicalJson, canonicalSignature, validateResourceStackForCatalog } fr
 import { FP02_CARGO_ORACLES } from "../../fixtures/factory/fp02Fixtures";
 
 describe("source-locked FP02 factory catalog", () => {
+  it("preserves the literal FP02 CASS-OFFCUT source port in the cutter and explicit mapping", () => {
+    const catalog = loadFactoryCatalog(createFp02CatalogInput());
+    const cutter = catalog.devices.find((device) => device.sourceId === "B06")!;
+    expect(cutter.ports.find((port) => port.sourceId === "B06:CASS-OFFCUT"))
+      .toMatchObject({ runtimeId: "fp02_b06_offcut", role: "WasteCassette", externallyConnectable: false });
+    expect(catalog.idMapping.find((mapping) => mapping.sourceId === "B06:CASS-OFFCUT"))
+      .toEqual({ sourceId: "B06:CASS-OFFCUT", runtimeId: "fp02_b06_offcut" });
+    expect(catalog.idMapping.some((mapping) => mapping.sourceId === "B06:OFFCUT")).toBe(false);
+  });
+
   it("FP06-T005 admits exactly the finite 28 cargo positions without salvage or equipment", () => {
     const fixture = createFp02Fixture("cargo");
     expect(fixture.cargo.map((row) => [row.cargoId, row.massMg, row.packedVolumeMm3])).toEqual(FP02_CARGO_ORACLES);

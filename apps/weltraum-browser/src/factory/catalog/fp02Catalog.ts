@@ -114,7 +114,7 @@ const devices: readonly FactoryDevice[] = freeze([
   device("B05", "fp02_device_b05_workbench", [2_000, 1_000, 1_100], [term("fp02.device.field_workbench", 1)], ["bench.assembly", "bench.belt-join"], 0, [], 0, 0),
   device("B06", "fp02_device_b06_cutter", [3_000, 2_000, 2_500], machineBom("fp02.chassis.cutter", 12_000_000, 10_000_000, "fp02.tool.cutter_head"),
     ["steel.cold-cut"], 1_200, [port("B06:IN-STEEL", "fp02_b06_in_steel", "SolidBatchIn", -1_500), port("B06:OUT-SEMI", "fp02_b06_out_semi", "SolidBatchOut", 1_500),
-      port("B06:POWER-IN", "fp02_b06_power_in", "PowerConsumer", 0), port("B06:OFFCUT", "fp02_b06_offcut", "WasteCassette", 0)], 16_000_000, 22_500_000, 6_000_000),
+      port("B06:POWER-IN", "fp02_b06_power_in", "PowerConsumer", 0), port("B06:CASS-OFFCUT", "fp02_b06_offcut", "WasteCassette", 0)], 16_000_000, 22_500_000, 6_000_000),
   device("B07", "fp02_device_b07_former", [4_000, 3_000, 3_000], machineBom("fp02.chassis.former", 20_000_000, 14_000_000, "fp02.tool.forming_die"),
     ["steel.cold-form"], 2_000, [port("B07:IN-SEMI", "fp02_b07_in_semi", "SolidBatchIn", -2_000), port("B07:OUT-PROFILE-OR-SHEET", "fp02_b07_out_profile_or_sheet", "SolidBatchOut", 2_000),
       port("B07:POWER-IN", "fp02_b07_power_in", "PowerConsumer", 0), port("B07:OFFCUT", "fp02_b07_offcut", "WasteCassette", 0)], 15_000_000, 21_000_000, 6_000_000),

@@ -1,0 +1,106 @@
+{
+  "schema": "hestia.fp06.w01-r1-evidence/v1",
+  "runId": "2026-10-11T100136.054797Z-R1",
+  "createdAtUtc": "2026-10-11T10:02:35.198765+00:00",
+  "actor": "/root/fp06_integrator",
+  "branch": "codex/hestia-fp06-integrator-2026-10-11",
+  "reviewedBaseSha": "b8edd17bfdeb2bc724afc76c148d8aeacacde7b1",
+  "status": "R1_FIXED_VERIFIED_PENDING_INDEPENDENT_REREVIEW",
+  "reviewRequest": "P2-R1: literal B06:CASS-OFFCUT source ID",
+  "productFiles": [
+    {
+      "path": "apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts",
+      "sha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/catalog.test.ts",
+      "sha256": "528cde607bdd3e4f36b19071dc57cb1aba712b497c005f26ad99d583c6d647e5"
+    }
+  ],
+  "verification": [
+    {
+      "phase": "RED",
+      "command": "npm --prefix apps/weltraum-browser run test -- tests/unit/factory/catalog.test.ts",
+      "exitCode": 1,
+      "result": "1failed/11passed: real literal CASS-OFFCUT port absent",
+      "log": "red.txt"
+    },
+    {
+      "phase": "GREEN",
+      "command": "npm --prefix apps/weltraum-browser run test -- tests/unit/factory/catalog.test.ts tests/unit/resourceCatalog.test.ts tests/unit/resourceContainers.test.ts tests/unit/resourceTransfer.test.ts",
+      "exitCode": 0,
+      "result": "4files/46tests PASS:12W01+34Resource regressions",
+      "log": "green-resource-regressions.txt"
+    },
+    {
+      "phase": "BUILD",
+      "command": "npm --prefix apps/weltraum-browser run build",
+      "exitCode": 0,
+      "result": "TypeScript/Vite PASS, baseline bundlewarning only",
+      "log": "build.txt"
+    }
+  ],
+  "artifactNormalization": "Plain txt trailing-whitespace normalization only; raw.gz preserves actual outputbytes",
+  "independentRereview": "PENDING",
+  "originalRunPreserved": "apps/weltraum-browser/evidence/factory/w01/2026-10-11T093328.263557Z",
+  "catalogDigest": "fnv1a:f3a8c642",
+  "artifacts": [
+    {
+      "path": "build.txt",
+      "sha256": "0cafd92da66aff7214af2a5ce4303761921cf6b77a3088b8c14cb105317efc76"
+    },
+    {
+      "path": "build.txt.raw.gz",
+      "sha256": "ff61a84aa27571b1952c946a4b0ea3c4a18ead3f765a086dad77d03fb5359532"
+    },
+    {
+      "path": "cargo-state.json",
+      "sha256": "ac3f4e5d885ca378143cfd6f41a007e6e80ad400dd28cce90ca5efb9e7d7ea0e"
+    },
+    {
+      "path": "catalog-canonical.json",
+      "sha256": "257570d333dfc69e7ef22868984bc2dd1222d2a45f1be691e14d341aca06f398"
+    },
+    {
+      "path": "catalog-oracles.json",
+      "sha256": "a9836cc26ef4dc80f144b6b41f846fccd0f2d152044a5809ad6a2d7436076c7f"
+    },
+    {
+      "path": "diff-check.txt",
+      "sha256": "f51fd3bf470728a4661bcd298ccd911b35830db28d4e29fce83684f1c101962b"
+    },
+    {
+      "path": "green-resource-regressions.txt",
+      "sha256": "63a09479152b26483f63733f97abfc0b43bc8da1cbff54e5a7b62804a7e6d1d7"
+    },
+    {
+      "path": "green-resource-regressions.txt.raw.gz",
+      "sha256": "ce7ac938beab928f286eaf4997cbfc7a1f27b687da8d9a88076d538cf2d792aa"
+    },
+    {
+      "path": "independent-review-first.md",
+      "sha256": "af489d194d8efc46ac903f6668f060e5ee48a8d9ec42b6c0cc766e81bbf39e36"
+    },
+    {
+      "path": "product-diff-unified0.patch",
+      "sha256": "c82a0c5547320392cd15911489fbccb875acdf9c079d7e88eb46a7ea0c870091"
+    },
+    {
+      "path": "product-diff.patch.raw.gz",
+      "sha256": "b63bc6c51655ae69f6f570ee694bb3d037b1b2eccde7f3267c187f638f522167"
+    },
+    {
+      "path": "red.txt",
+      "sha256": "3c2a37cafc95c66f29b23c915e36cfece2bb372ee6502e0f18a73b5a754411ec"
+    },
+    {
+      "path": "red.txt.raw.gz",
+      "sha256": "0e9189f9c35d6e6dc87da1971b60a77fb56fd6d4afcc0427e3bbbe873e2e9ec9"
+    },
+    {
+      "path": "review.md",
+      "sha256": "425401c2ba0954d52230ea8062713e60d32d60d32f5ef17b0d6a4eb4f1e73a82"
+    }
+  ],
+  "diffArtifacts": "Full staged two-file product diff in product-diff.patch.raw.gz; exact readable --unified=0 product diff in product-diff-unified0.patch to avoid whitespace-only context."
+}
