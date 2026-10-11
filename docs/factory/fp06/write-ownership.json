@@ -3556,6 +3556,15 @@
         "status": "ORIGINAL_C1_P1_C2_SCOPED_GREEN_R1_RELEASE_RETIREMENT_SOURCE_PATH_OPEN",
         "path": "docs/factory/fp06/reviews/w09-receiver-fault-followup-review.md",
         "sha256": "f82ef76b32edd6bce59b1c6c18f315f7b3489de7354cdf296847f930219a88dc"
+      },
+      "nativeProductionFactsSourceReview": {
+        "status": "SOURCE_REVIEW_F1_OPEN_AT_REVIEW_END_F2_PENDING_DISPOSE_RETRY_SCOPED_CLOSED",
+        "path": "docs/factory/fp06/reviews/w09-native-production-facts-source-review.md",
+        "sha256": "56ce1cb0bbd6a71e575dcffa5e624637ce6024517ea516a862d5a0658ef99221",
+        "reviewEndAtUtc": "2026-10-11T22:07:35Z",
+        "laterWriterReportedActualPhases": "101 powered finite cable/WIP/SOC GREEN;102 transient activeJob serviceblock RED→103 GREEN;104 restart-port-capacity RED,105 not independently assessed yet",
+        "laterIndependentFollowup": "IN_PROGRESS_READONLY_W00_ARCHITECTURE",
+        "limits": "Mutable source drift disclosed. Synthetic Native terrain/sourceproof test and scoped Host tests do not prove complete normal browser route/loop, shared save or package gate."
       }
     },
     "W10": {
