@@ -1,0 +1,151 @@
+{
+  "observedAtUtc": "2026-10-11T23:56:50.029979+00:00",
+  "status": "ROOT_ACTUAL_RAW_RECEIPTS_VERIFIED_SCOPED_NATIVE_SOURCE_AND_FINITE_CABLE_GATES_PASS",
+  "records": [
+    {
+      "phase": 187,
+      "classification": "THREE_MISSING_CLOSED_JOB_ASSERTION_REDS_TWO_OLD_BAD_POSE_NATIVE_PASSES",
+      "receiptPath": "187-new-supported-battery-cable-red.command.json",
+      "receiptSha256": "18091bf5d5cd4c925b7e4ed776fc9f3531b5c40e11baf175d3fe7336a8d24084",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "test",
+          "--",
+          "tests/unit/factory/facilitySession.test.ts",
+          "-t",
+          "corrected supported battery"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-11T23:53:55.056398+00:00",
+        "endedAtUtc": "2026-10-11T23:54:16.579612+00:00",
+        "elapsedSeconds": 21.523775002002367,
+        "exitCode": 1,
+        "rawBytes": 3758,
+        "rawSha256": "31a59669b73797fb9938f4fcb7bc63b044f3f8aba3d430f295c2f1b0e1714209"
+      },
+      "rawGzipSha256": "1b454ae7a35d3dc96c4c69f94aa51f5d338e0f6ceaab8724aaac5c35cc0a751e",
+      "rawVerified": true
+    },
+    {
+      "phase": 188,
+      "classification": "FIVE_NATIVE_SOURCE_AND_SOCKET_PASSES_28_SKIPPED",
+      "receiptPath": "188-supported-battery-source-native-green.command.json",
+      "receiptSha256": "d341ca6fd8509b3710d84ec155bed354e1eae83530e42b7e9b49d17bce4d8a60",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "test",
+          "--",
+          "tests/unit/factory/facilitySession.test.ts",
+          "-t",
+          "corrected supported battery"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-11T23:55:08.352412+00:00",
+        "endedAtUtc": "2026-10-11T23:55:29.808345+00:00",
+        "elapsedSeconds": 21.45634715000051,
+        "exitCode": 0,
+        "rawBytes": 405,
+        "rawSha256": "953ac79affdc8f5063adcbe9d7807f678910d8e6b623b9e9f96e13a2ce6e2577"
+      },
+      "rawGzipSha256": "4fed69d93b862a0e1a3eaf9b221eb5f0b72eff40b9a02a1e58318241114249ac",
+      "rawVerified": true
+    },
+    {
+      "phase": 189,
+      "classification": "TEN_FINITE_CARGO_HOST_REGRESSION_PASSES_41_SKIPPED",
+      "receiptPath": "189-cable-finite-custody-regressions.command.json",
+      "receiptSha256": "6397e9578b0324847d2526e201385d9b133fa6b7717fa3045adecbf2eca00c0a",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "test",
+          "--",
+          "tests/unit/factory/cargoHandling.test.ts",
+          "tests/unit/factory/hostLifecycle.test.ts",
+          "-t",
+          "exactly19.75m|closed paid cargo custody|partial|Source-layout connection|paid Raw bin|exact paid whole C07|only Native-bound paid power"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-11T23:55:45.099083+00:00",
+        "endedAtUtc": "2026-10-11T23:55:48.242117+00:00",
+        "elapsedSeconds": 3.1435164859940414,
+        "exitCode": 0,
+        "rawBytes": 551,
+        "rawSha256": "de513c7f25afbc3cfb1c58a1ceaf79b6c401e48c203c59eec0d5c288d4011035"
+      },
+      "rawGzipSha256": "c9a6e7a81d218c379bb5c3a0bda4649986d0e575f2fdfbf70f6ead0adbe593e1",
+      "rawVerified": true
+    },
+    {
+      "phase": 190,
+      "classification": "ORIGINAL_TYPESCRIPT_VITE_BUILD_PASS",
+      "receiptPath": "190-supported-battery-cable-original-build.command.json",
+      "receiptSha256": "3d112e619f6b3d6b85c020c2339b7e2bcdad4dafacb5d677dd0b6c55565ebd93",
+      "receipt": {
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+        "startedAtUtc": "2026-10-11T23:55:48.271645+00:00",
+        "endedAtUtc": "2026-10-11T23:55:52.391468+00:00",
+        "elapsedSeconds": 4.120356872997945,
+        "exitCode": 0,
+        "rawBytes": 1904,
+        "rawSha256": "5450ddbe6d465232b5c5de10ee115dd9465348f5f6e8c4eb09eca2e3464d6b48"
+      },
+      "rawGzipSha256": "1e6a79068c8bd94fe75a864aa18a403f9ba2e86c071ad395464c54144a1a2adc",
+      "rawVerified": true
+    }
+  ],
+  "sourceSnapshotReceiptSha256": "a139d21d7112dfda0901660607c4d9e280dd31246bae9d3e2a9ed0b73820ea25",
+  "sourceSnapshot": {
+    "phase": 190,
+    "productFiles": [
+      {
+        "path": "src/factory/factoryEntry.ts",
+        "bytes": 13665,
+        "sha256": "d6ef6be3e810ee815857f739a832eae04e5b80d99804a870999712d5006c4dd7"
+      },
+      {
+        "path": "src/factory/construction/cargoHandlingProfile.ts",
+        "bytes": 4766,
+        "sha256": "04e3f16fdc073414c5d02ef58082cfe9f959663a597e2d1d689206e892a92fcd"
+      },
+      {
+        "path": "tests/unit/factory/facilitySession.test.ts",
+        "bytes": 39743,
+        "sha256": "33a2402978e78952c5b926bcc3ee0003d54527c311268f20d418b482ab53c0d0"
+      },
+      {
+        "path": "tests/unit/factory/cargoHandling.test.ts",
+        "bytes": 17904,
+        "sha256": "74c072ca22252bdd004732fb770e67690d63eab01a825b178dc0a66ffa62542b"
+      }
+    ],
+    "verification": {
+      "187": "3 collected assertion RED new closed profiles missing;2 original z3000 Native support negative PASS",
+      "188": "5 actual unchanged Source/Native queries PASS (3 supported z2500 routes +2 z3000 rejection)",
+      "189": "10 selected finite Resources/whole-custody/source/power cases PASS;41 NOT_RUN",
+      "190": "original TypeScript/Vite build PASS"
+    },
+    "limits": [
+      "Exact bounded collision column projection of real unchanged Source, not full browser World/player walk",
+      "Reach/LOS verified from declared actor observer positions; no Source-to-source normal walk proved",
+      "W02 full finite19.75m payment independent of Native transaction; joint original6500 Host case uses Native transport stub",
+      "No Terrain masks, tolerance, yaw, material source or budgets changed"
+    ]
+  },
+  "limits": [
+    "Readonly Source contract closure is pending",
+    "Native tests use bounded projection of the unchanged approved Source and declared actor poses; no ordinary browser walk or full factory world claim",
+    "Finite cable tests are W02 custody/host cases, not a completed fresh production cycle",
+    "No W09 package or performance pass"
+  ]
+}
