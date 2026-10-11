@@ -4164,6 +4164,19 @@
         "authorAtUtc": "2026-10-11T23:28:43.034622+00:00",
         "sourceBeforeSha256": "2e89c73b3749ec7d539ff3656cc233cc22eb774947f4bc19ab67d0e85ef3f699",
         "limits": "OptionalreadOnlyNative-derivedhint; originalHUDdefaultunchanged; no newinputaction/pose/material/power authority; tests onlyalreadygrantedBootstraptest; startsiteV2fivepathsstillUNGRANTED"
+      },
+      "normalUiCycleClosureReview": {
+        "status": "READONLY_SCOPED_CURRENT_SOURCE_CONTRACT_F1F2_PASS_166RED167168GREEN170BUILD",
+        "path": "docs/factory/fp06/reviews/w09-normal-ui-cycle-closure-review.md",
+        "sha256": "ca3b976eca059baafb301e21e90eacc3bf8a0eeff2bfb41927de03d8edd2d585",
+        "actual": "1661AssertionFAIL34skip\u21921671PASS34skip;16810PASS40skip;169TS6196FAIL\u2192170originalTSVitePASS4.578209",
+        "uiCore": "Fouradmittedcore sources byteexact accepted28de0ce; Entryreuse noownBooleanPendingController",
+        "limits": "NativecontrolledReplies/initialProfileSheetstock; FreshCUT-Belt-FORM-Montage/NativeFullMembership/Worldroute/browser/W09PackageNOT_RUN. Snapshot source stable currentEightFiles; futureHUDchanges separate."
+      },
+      "wholeLocalDeliveryUiWitness": {
+        "path": "docs/factory/fp06/reviews/w09-whole-local-delivery-ui-witness.json",
+        "sha256": "75ee7d70aa4c6527a87ed9f8edc769851394b29bf74574e96fcb1ae66857c260",
+        "status": "ROOT_VERIFIED_FIVE_COMMAND_RAW_RECEIPTS"
       }
     },
     "W10": {
