@@ -93,7 +93,6 @@
       "packages": [
         "W01",
         "W03",
-        "W04",
         "W06",
         "W07",
         "W09",
@@ -109,9 +108,10 @@
       "packages": [
         "W02",
         "W05",
-        "W08"
+        "W08",
+        "W04"
       ],
-      "status": "IMPLEMENTING_W02"
+      "status": "IMPLEMENTING_W05"
     }
   ],
   "packageScopes": {
@@ -396,9 +396,9 @@
       "evidenceGrant": false,
       "status": "BLOCKED_DEPENDENCY",
       "owner": "/root/fp06_integrator",
-      "plannedRole": "integrator",
+      "plannedRole": "domain",
       "branch": null,
-      "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
+      "plannedBranch": "codex/hestia-fp06-domain-2026-10-11",
       "worktree": null,
       "commitSha": null,
       "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
@@ -406,7 +406,8 @@
         "Only exact granted paths; planned paths are not grants",
         "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
         "No main merge/push/publication; no W12-W29"
-      ]
+      ],
+      "schedulingNote": "After W03 and W02 gates, Domain may implement its three pure production paths while Integrator owns W07 native Host/Physics; no shared-file grant."
     },
     "W05": {
       "dependencies": [
@@ -783,7 +784,12 @@
         "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
         "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
         "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
-        "apps/weltraum-browser/package.json"
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+        "apps/weltraum-browser/src/factory/session/hostPort.ts",
+        "apps/weltraum-browser/src/factory/session/factorySession.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+        "apps/weltraum-browser/src/factory/material/reservations.ts"
       ],
       "grantedWriteSet": [],
       "evidenceWriteSet": [
@@ -814,7 +820,14 @@
           "path": "apps/weltraum-browser/package.json",
           "reason": "Actual CI parser requires explicit existing spec paths assigned exactly once; register only this package new E2E spec when it exists. No future placeholder specs, parser relaxation, dependency/lockfile changes or unrelated script edits. Integrator only."
         }
-      ]
+      ],
+      "scopeAdmissionNotes": [
+        "Planned paths only, not an active grant; W09 gate and clean reviewed integrations required.",
+        "Factory source profile requires its own closed codec, unchanged valid legacy component parts, never a forged whole Coast-v1 game.",
+        "Material reservations.ts extension only validated whole-view restore primitive after Domainwriter relinquishes this path; old material semantics otherwise unchanged.",
+        "No old closed V1 decoder, repository, transport/decode/globalbudget changes."
+      ],
+      "preflightReport": "docs/factory/fp06/reviews/w10-preflight.md"
     },
     "W11": {
       "dependencies": [

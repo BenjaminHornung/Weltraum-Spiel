@@ -110,3 +110,9 @@ Erstreview FAIL wegen R1 falscher Shared-Physics-/Save-/Workflowpfade und R2 Pla
 ## W06 Nachreview vor Endgate
 
 R1/R3/R4 sind im beurteilten Fixsnapshot geschlossen. Die 50 betroffenen Host-/Sessiontests und tsc/Vite sind PASS; das ist kein globaler Folge-PASS für spätere Fixes. R2 bleibt FAIL wegen tatsächlichem HUD-Drop→tick.resume während Nativehold. Derselbe bestätigte Nativeguard wird eng auch für Drop geprüft und angewendet; ursachenspezifische Budgetassertions folgen. [Nachreview](reviews/w06-followup-drop-open.md). Das neue siebenteilige echte Browsergate läuft; Teilfälle, historische Fehlruns und Performance NOT_RUN werden nicht zum abgeschlossenen Paketgate umgedeutet.
+
+## Folgepaket-Vorbereitung und konkrete Verteilung
+
+[W10-Vorprüfung](reviews/w10-preflight.md) benennt die nötige eigene Factoryprofileaufnahme, vollständige native Ownerzuordnung, gemeinsame Hostbarriere und Materialrestore ohne Reset von WIP/Receipts. Die fünf zusätzlichen exakten Integratorpfade sind ausschließlich geplant; W09 muss vorher bestehen, und Materialwrites werden erst nach Abgabe durch den Domainwriter erlaubt. Alte geschlossene V1-Decoder und Repositorybudgets bleiben geschützt.
+
+Nach W05 übernimmt der Domainwriter W08 und anschließend die drei reinen Produktionspfade von W04, sobald W03 bestanden ist. Der Integrator übernimmt W03 und W07; so können Produktion und native Platzierung nach ihren jeweiligen Vorgängergates unabhängig entstehen. Höchstens zwei Implementierungswriter; gemeinsam genutzte Contracts/Host/Physics/Save bleiben ausschließlich beim Integrator.
