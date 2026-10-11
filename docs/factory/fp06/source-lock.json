@@ -878,6 +878,21 @@
         "wrapperSeconds": 51.617,
         "phase": "Before repeated canonical validation diagnosis; no limit increase",
         "evidenceReview": "PENDING_WRITER_SEAL_AND_INDEPENDENT_REVIEW"
+      },
+      "draftIntakeReview": {
+        "report": "docs/factory/fp06/reviews/w04-draft-intake-review.md",
+        "sha256": "148c1659e76b64427627ed1e680dfc571220c9c9b2a4bd0d250f49984c44582c",
+        "status": "READ_ONLY_DRAFT_OBSERVATIONS; NOT_FINAL_GATE",
+        "runtimeOracles": "Forged NoOp payload and historical manual command replay assigned to Domain; execution pending."
+      },
+      "serializationDiagnosis": {
+        "actualCase": "Unchanged T017, 1 default-timeout FAIL / 6 skipped",
+        "caseSeconds": 10.729,
+        "wrapperSeconds": 11.547,
+        "weightedWorkerCanonicalSerializationPercent": 83.05,
+        "serializerSelfPercent": 51.3,
+        "status": "WRITER_REPORTED_PENDING_SEALED_EVIDENCE_REVIEW",
+        "changeScope": "Existing three W04 files only; full-byte immutable validation cache, no timeout, recipe or step-count changes."
       }
     },
     "W05": {
