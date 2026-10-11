@@ -18,7 +18,7 @@ W12–W29, Enginewechsel, Dependency-Upgrades, main-Merge, Force-Push und Veröf
 
 ## Architecture decision
 
-Three.js/HVP/Voxel/Physics/Save bleiben erhalten. Resources ist alleinige Warenautorität; UI liest Snapshots und sendet Commands. Genau ein Integrator `/root/fp06_integrator` besitzt gemeinsame Contracts-, Host-, Physics- und Savegrenzen. Höchstens ein weiterer isolierter Domain-/Assetwriter darf parallel arbeiten. Aktuell gibt es den Dokumentationswriter `/root` sowie genau zwei isolierte Produktwriter: `/root/fp06_integrator` auf `codex/hestia-fp06-integrator-2026-10-11` für W03 und `/root/fp06_domain` auf `codex/hestia-fp06-domain-2026-10-11` für W08. Die tatsächlich delegierten Audit-/Review-/Preflightagenten arbeiten read-only. W01 hat nach der konkreten Portkorrektur sein unabhängiges Gate bestanden; Die Nutzerantworten „D03-Policy freigeben“ und „Startplatz-Fixture freigeben“ lösen seit 10:34:17 UTC die beiden zusätzlichen konkreten Ownergates; noch offene Paketgates bleiben davon getrennt.
+Three.js/HVP/Voxel/Physics/Save bleiben erhalten. Resources ist alleinige Warenautorität; UI liest Snapshots und sendet Commands. Genau ein Integrator `/root/fp06_integrator` besitzt gemeinsame Contracts-, Host-, Physics- und Savegrenzen. Höchstens ein weiterer isolierter Domain-/Assetwriter darf parallel arbeiten. Aktuell gibt es den Dokumentationswriter `/root` sowie genau zwei isolierte Produktwriter: `/root/fp06_integrator` auf `codex/hestia-fp06-integrator-2026-10-11` für abgenommene W02/W05-Integration und anschließend W07 sowie `/root/fp06_domain` auf `codex/hestia-fp06-domain-2026-10-11` für W08, derzeit mit gehaltenen Produktbytes zum Review. Die tatsächlich delegierten Audit-/Review-/Preflightagenten arbeiten read-only. W01 hat nach der konkreten Portkorrektur sein unabhängiges Gate bestanden; Die Nutzerantworten „D03-Policy freigeben“ und „Startplatz-Fixture freigeben“ lösen seit 10:34:17 UTC die beiden zusätzlichen konkreten Ownergates; noch offene Paketgates bleiben davon getrennt.
 
 ## Implementation phases
 
@@ -27,11 +27,11 @@ Three.js/HVP/Voxel/Physics/Save bleiben erhalten. Resources ist alleinige Warena
 | W00 | keine | /root Dokumentation | PASS: Baseline und unabhängiges Review |
 | W01 | W00 | /root/fp06_integrator | PASS: a30630dd7963c165c673df7ea1b46d52735752ef, 46 Tests/Build/Review |
 | W02 | W01 | /root/fp06_domain, eigener Worktree | PASS technisch: 10e1e3026610065206d8ac4b361d3f1686114dd8, 61 Tests/Build/Cargo1/Review; initiale TDD-Abweichung FAIL/NOT_RUN bleibt |
-| W03 | W01 | /root/fp06_integrator | IN_PROGRESS:78 Tests/Build/LegacyBrowser1 PASS am Erststand; Review R1/R2 FAIL, enge echte RED/Fixes |
-| W04 | W02/W03 | /root/fp06_domain | BLOCKED: W03; D05 freigegeben, danach eigener Drei-Pfad-Grant |
+| W03 | W01 | /root/fp06_integrator | PASS:fee8f3bf4b971fc3a5e56884d245126b6b264b3d, echte R1/R2 RED/Fixes/80 betroffene und finale Gegenproben/tsc/Review/87 HEADrefs |
+| W04 | W02/W03 | /root/fp06_domain | NOT_RUN: Vorgänger PASS; nach W08-Writerslot und W03-Integration eigener Drei-Pfad-Grant |
 | W05 | W01 | /root/fp06_domain, eigener Worktree | PASS:26d5e892c2b401b9011234dabf86955af7462fb8,16 Fachtests/46 Regressionen/Build/GPU/Review |
 | W06 | W01 | /root/fp06_integrator | PASS:2c044e02f1f31a2db3de3a0df9156bd71a431a7a, Host-/Browser-/Review-/Gitgates mit getrennten Bytephasen |
-| W07 | W02/W05/W06 | /root/fp06_integrator | BLOCKED: Vorgänger; D11 freigegeben |
+| W07 | W02/W05/W06 | /root/fp06_integrator | NOT_RUN: Vorgänger PASS; reviewed Branchintegration läuft vor eigenem Grant |
 | W08 | W02 | /root/fp06_domain | IN_PROGRESS: exakt drei exklusiv freigegebene Dateien, Ausgang26d5 |
 | W09 | W04/W07/W08 | /root/fp06_integrator | BLOCKED: Vorgänger |
 | W10 | W09 | /root/fp06_integrator | BLOCKED: Vorgänger; D11 freigegeben |
@@ -142,3 +142,15 @@ W08 erhält nach bestandenem W02 den exklusiven Drei-Datei-Grant auf derselben D
 [W03-Erstreview](reviews/w03-first.md) ist Spec/Quality FAIL wegen fehlender Maschinen-In-Port-/Owneradmission und fälschlich bestätigter Qualität bei fehlendem einzelnen Quellsample. Die belegten78Tests/Build/LegacyBrowser1 sind historische positive Nachweise dieses Erststands; kein fertiges W03-Gate. Echte enge Negativtests und Fixes erfolgen vor neuer Abnahme. Tatsächlicher W03Parent ist2c044, der dazwischen abgeschlossene W06-Evidence-only-Commit; der ursprüngliche5b596Grant bleibt unverändert nachvollziehbar.
 
 Erneute RemoteMainabfrage um11:49:22UTC mit Exit0 bestätigt e40592c113b72a8dc93725187f92cf948e07f44d. Ursprünglicher workCheckout bleibt sauber. Zwei tatsächliche Produktwriter auf eigenen Branches/Worktrees: W03Integrator und W08Domain. Externe uncommitted Writer bleiben unbekannt; keine Mainänderung/Veröffentlichung.
+
+## W09 normale Bedienaufnahme und W10 Anschluss
+
+[Read-only Vorprüfung](reviews/w09-normal-flow-preflight.md) bindet tatsächliche Entry-/Clock-/Host-/Bootstrap-Callseams. Sieben exakte zusätzliche W09Integratorpfade und zwei W10Pfadanschlüsse sind nur geplant; kein Grant vor grünen Vorgängern. Der spätere normale16kg-Kreislauf muss frisch produzierte Profile/Blech, bestätigte Handmontage und tatsächliche bezahlte native Verwendung der5.8kg-Stütze zeigen. C08 sind drei Container, C09 sechs12kg-Fundamentschuhe laut unverändertem Freeze. Bestehende prozessierende Jobs dürfen ihre bestätigte Tickzufuhr nicht durch pauschales !isQuiescent sperren. Echte Pending-Publikation/Hold und Compounddisposal bleiben geschützt.
+
+W03 neuer finaler Vierdatei-Seal03c47cbba6de6c378c6c63eed8ff47307319eb54511596d37f84ee486526ab05 ist unabhängigSpec/Quality/BytePASS: [Abschlussreview](reviews/w03-final.md). Die ergänzte R2-Testassertion war während vorherigemHold neu geschrieben worden; [damaliger Pendingbericht](reviews/w03-runtime-followup-pending-test.md) bleibt erhalten, neuer Seal und realer1-Fall-Lauf schließen genau diesen Zustand. Testphasen bleiben getrennt; Commit/Packagingbind steht noch aus, kein endgültigesW03-Paket-PASS aus dem Quellreview allein.
+
+## W03 endgültiges Gate und reviewed Integrationsaufnahme
+
+W03 PASS bei fee8f3bf4b971fc3a5e56884d245126b6b264b3d: [vollständiger92-Pfade-Bericht](reviews/w03-package-report.md), [endgültigerGit-/LFSreceipt](reviews/w03-final-commit.md). Alle87Artefakte/4Produktbytes sind committed passend;80frühere betroffeneChecks und spätere finaleCountertests/TypeScript werden korrekt getrennt berichtet. Kein FactoryGameplay-/Wetter-/Save-/Performance-PASS.
+
+Der Integrator darf jetzt ausschließlich die unveränderten bereits abgenommenen W02-/W05-Commits10e1e3026610065206d8ac4b361d3f1686114dd8 und26d5e892c2b401b9011234dabf86955af7462fb8 auf seinen sauberen Branch übernehmen und deren Produktbytes vergleichen. W07-Produktwrites benötigen anschließend einen eigenen exakten Grant auf dem tatsächlichen integrierten Head. Kein Mainmerge/Push/Ändern fremder Worktrees.

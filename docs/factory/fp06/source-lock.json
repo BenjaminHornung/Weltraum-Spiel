@@ -10,7 +10,7 @@
   "branch": "codex/hestia-fp06-w00-2026-10-11",
   "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11",
   "evidenceRun": "2026-10-11T090924Z",
-  "status": "W00_PASS; actual downstream package states in packageScopes; W01/W02/W05/W06 PASS; W03/W08 IN_PROGRESS",
+  "status": "W00_PASS; W00-W11_IN_PROGRESS; authoritative per-package statuses in packageScopes",
   "integrator": "/root/fp06_integrator",
   "tranche": {
     "authorized": [
@@ -764,13 +764,13 @@
         "apps/weltraum-browser/evidence/factory/w03/<actual-run-id>/**"
       ],
       "evidenceGrant": true,
-      "status": "IN_PROGRESS",
+      "status": "PASS",
       "owner": "/root/fp06_integrator",
       "plannedRole": "integrator",
       "branch": "codex/hestia-fp06-integrator-2026-10-11",
       "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
       "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
-      "commitSha": null,
+      "commitSha": "fee8f3bf4b971fc3a5e56884d245126b6b264b3d",
       "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
       "restrictions": [
         "Only exact granted paths; planned paths are not grants",
@@ -778,9 +778,9 @@
         "No main merge/push/publication; no W12-W29"
       ],
       "baseCommitSha": "5b596f932dc769052e17603965d0179a4937d948",
-      "implementationWriteHold": false,
+      "implementationWriteHold": true,
       "authorizedAtUtc": "2026-10-11T11:20:13.473677+00:00",
-      "completedAtUtc": null,
+      "completedAtUtc": "2026-10-11T12:12:15.680832+00:00",
       "actualImplementationParentSha": "2c044e02f1f31a2db3de3a0df9156bd71a431a7a",
       "baseProvenanceNote": "Write grant was issued against reviewed W06 code5b596f932dc769052e17603965d0179a4937d948. Before W03 product changes, the same integrator finalized evidence-only W06 packaging2c044e02f1f31a2db3de3a0df9156bd71a431a7a. Product bytes unchanged in that parent follow-up; final W03 product/commit diff must bind actual parent2c044. Original grant remains immutable.",
       "reviewHistory": [
@@ -795,7 +795,20 @@
           ],
           "disposition": "Genuine narrow negative tests then minimal fix within original four-file grant; previous78/78/build/legacyBrowserPASS remain tied to their original snapshot."
         }
-      ]
+      ],
+      "reviewReport": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/reviews/w03-final-commit.md",
+      "specStatus": "PASS",
+      "qualityStatus": "PASS",
+      "technicalReview": "docs/factory/fp06/reviews/w03-final.md",
+      "packageReport": "docs/factory/fp06/reviews/w03-package-report.md",
+      "actualChangedPaths": 92,
+      "actualProductPaths": 4,
+      "actualEvidencePaths": 88,
+      "manifestReferencesVerified": 87,
+      "committedLfsReferencesVerified": 46,
+      "productPatchSha256": "03c47cbba6de6c378c6c63eed8ff47307319eb54511596d37f84ee486526ab05",
+      "testPhaseNote": "80 affected PASS after R1/R2 guards before output-device-field addition; targeted Grant-device1+fulltsc final runtime, then targetedR2 confirmed-zero1 after three test assertions. Initial78/build/legacyBrowser1 before review; no fabricated final full-suite/browser.",
+      "performanceGate": "NOT_RUN"
     },
     "W04": {
       "dependencies": [
@@ -826,7 +839,7 @@
         "apps/weltraum-browser/evidence/factory/w04/<actual-run-id>/**"
       ],
       "evidenceGrant": false,
-      "status": "BLOCKED_DEPENDENCY",
+      "status": "NOT_RUN: W02/W03 PASS; waiting for Domainwriter after W08 and reviewed W03 integration",
       "owner": "/root/fp06_integrator",
       "plannedRole": "domain",
       "branch": null,
@@ -1127,7 +1140,7 @@
         "apps/weltraum-browser/evidence/factory/w07/<actual-run-id>/**"
       ],
       "evidenceGrant": false,
-      "status": "BLOCKED_DEPENDENCY",
+      "status": "NOT_RUN: W02/W05/W06 PASS; awaiting reviewed branch-integration receipt and exact grant",
       "owner": "/root/fp06_integrator",
       "plannedRole": "integrator",
       "branch": null,
@@ -1217,11 +1230,12 @@
         "No main merge/push/publication; no W12-W29"
       ],
       "baseCommitSha": "26d5e892c2b401b9011234dabf86955af7462fb8",
-      "implementationWriteHold": false,
+      "implementationWriteHold": true,
       "authorizedAtUtc": "2026-10-11T11:46:55.477266+00:00",
       "completedAtUtc": null,
       "sourceInterpretationNote": "Root authorizes a conservative versioned technical reference: at most one real Resources packet per entire straight line, with credit debited exactly once jointly at successful source-to-line Materialreceipt adoption. Source 0.75m is usable width, not invented longitudinal gap. No Qty cache authority/0m powered belt or unreviewed climate/live/save claim. Initial D06credit0 means injection wait plus54steps4mtravel; one slot bounds downstream burst. Exact phase/clock/revision/whole-CAS behavior must pass actual tests and independent review.",
-      "preflightReport": "docs/factory/fp06/reviews/w08-preflight.md"
+      "preflightReport": "docs/factory/fp06/reviews/w08-preflight.md",
+      "heldProductPatchSha256": "e3267d2fdf593043902ea2e795422bb2423e13cf554d9be9a1fda4b592e2f350"
     },
     "W09": {
       "dependencies": [
@@ -1248,7 +1262,14 @@
         "apps/weltraum-browser/src/factory/ui/powerPanel.ts",
         "apps/weltraum-browser/src/factory/ui/technologyView.ts",
         "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts",
-        "apps/weltraum-browser/package.json"
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/src/factory/factoryEntry.ts",
+        "apps/weltraum-browser/src/factory/session/hostPort.ts",
+        "apps/weltraum-browser/src/factory/session/factorySession.ts",
+        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+        "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+        "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+        "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts"
       ],
       "grantedWriteSet": [],
       "evidenceWriteSet": [
@@ -1273,7 +1294,9 @@
           "path": "apps/weltraum-browser/package.json",
           "reason": "Actual CI parser requires explicit existing spec paths assigned exactly once; register only this package new E2E spec when it exists. No future placeholder specs, parser relaxation, dependency/lockfile changes or unrelated script edits. Integrator only."
         }
-      ]
+      ],
+      "normalFlowPreflight": "docs/factory/fp06/reviews/w09-normal-flow-preflight.md",
+      "integrationScopeNote": "PLANNED ONLY, no grant before package gates. Actual Entry/Clock/Host/Bootstrap seams bound in W09 preflight; one host clock+sole material/power/work/belt authority, normal panels read published facts/send finite intents. Pending native/CAS publication blocks, an ordinary running or WAIT_POWER job must not permanently make isQuiescent false and suppress its own confirmed tick supply. W10 additionally couples Entry Save/Load intents and DrySlice complete validated checkpoint adoption; legacy closed codecs/repositories unchanged. Usable brace needs sourcebound paid native placement/profile evidence, no full building-statics claim."
     },
     "W10": {
       "dependencies": [
@@ -1314,7 +1337,9 @@
         "apps/weltraum-browser/src/factory/session/hostPort.ts",
         "apps/weltraum-browser/src/factory/session/factorySession.ts",
         "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
-        "apps/weltraum-browser/src/factory/material/reservations.ts"
+        "apps/weltraum-browser/src/factory/material/reservations.ts",
+        "apps/weltraum-browser/src/factory/factoryEntry.ts",
+        "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts"
       ],
       "grantedWriteSet": [],
       "evidenceWriteSet": [
@@ -1352,7 +1377,9 @@
         "Material reservations.ts extension only validated whole-view restore primitive after Domainwriter relinquishes this path; old material semantics otherwise unchanged.",
         "No old closed V1 decoder, repository, transport/decode/globalbudget changes."
       ],
-      "preflightReport": "docs/factory/fp06/reviews/w10-preflight.md"
+      "preflightReport": "docs/factory/fp06/reviews/w10-preflight.md",
+      "normalFlowPreflight": "docs/factory/fp06/reviews/w09-normal-flow-preflight.md",
+      "integrationScopeNote": "PLANNED ONLY, no grant before package gates. Actual Entry/Clock/Host/Bootstrap seams bound in W09 preflight; one host clock+sole material/power/work/belt authority, normal panels read published facts/send finite intents. Pending native/CAS publication blocks, an ordinary running or WAIT_POWER job must not permanently make isQuiescent false and suppress its own confirmed tick supply. W10 additionally couples Entry Save/Load intents and DrySlice complete validated checkpoint adoption; legacy closed codecs/repositories unchanged. Usable brace needs sourcebound paid native placement/profile evidence, no full building-statics claim."
     },
     "W11": {
       "dependencies": [
@@ -1464,6 +1491,27 @@
         "/root/fp06_domain:W08"
       ],
       "externalUncommittedWriterVisibility": "UNKNOWN"
+    }
+  ],
+  "integrationTransfers": [
+    {
+      "actor": "/root/fp06_integrator",
+      "targetBranch": "codex/hestia-fp06-integrator-2026-10-11",
+      "targetWorktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+      "fromSha": "fee8f3bf4b971fc3a5e56884d245126b6b264b3d",
+      "authorizedAtUtc": "2026-10-11T12:12:15.714123+00:00",
+      "reviewedOriginalCommits": [
+        {
+          "package": "W02",
+          "sha": "10e1e3026610065206d8ac4b361d3f1686114dd8"
+        },
+        {
+          "package": "W05",
+          "sha": "26d5e892c2b401b9011234dabf86955af7462fb8"
+        }
+      ],
+      "status": "AUTHORIZED_REVIEWED_COMMIT_INTEGRATION_ONLY",
+      "scope": "Cherry-pick these two immutable accepted package commits into own clean branch in this order; byte-verify all22 product paths and own refs; no edits/reinterpretation/main/foreign-worktree mutation. Report actual integrated full SHAs/cleanstatus; W07 needs subsequent exact grant at that resulting base."
     }
   ]
 }
