@@ -1,0 +1,94 @@
+{
+  "schema": "hestia.fp06.w09.ui-cargo-evidence/v1",
+  "runId": "ui-cargo-20261011T214209Z",
+  "baseCommitSha": "24c274e2302452c5fa305e5ca37d6935bbff55ba",
+  "productSeal": {
+    "path": "product-seal.json",
+    "sha256": "2722578365bf46b11d6924dc549b66023d29f0757d3b53243a1d8a9885f05423"
+  },
+  "artifacts": [
+    {
+      "path": "01-red.log.gz",
+      "bytes": 905,
+      "sha256": "c0505f91fc9c81b47f4be4508dfa26964ceedc500f4668b5a9d747ce381ce198"
+    },
+    {
+      "path": "01-red.receipt.json",
+      "bytes": 832,
+      "sha256": "141c2250a065e2acdb6745f1e15af9d68ed53cea4761791d722d664be23f5ee4"
+    },
+    {
+      "path": "02-green.log.gz",
+      "bytes": 254,
+      "sha256": "a82af036a9174ec3e5f21a70dabfb15d52656037a02b305b0d36d3cb82bfe377"
+    },
+    {
+      "path": "02-green.receipt.json",
+      "bytes": 771,
+      "sha256": "0d26b5f57f27adff8075def5bc673bbee4d5d058d3d069e978e50e78595b0799"
+    },
+    {
+      "path": "03-build.log.gz",
+      "bytes": 870,
+      "sha256": "00a21d0d701aacd2684c117c101a35bfb167b0b3e278d31908323646a5c14b49"
+    },
+    {
+      "path": "03-build.receipt.json",
+      "bytes": 721,
+      "sha256": "a42e02074e0b952a8478a9f7b2aafaf066c750b3197b94493a9304bf803bb602"
+    },
+    {
+      "path": "grant.json",
+      "bytes": 1828,
+      "sha256": "2b3c7a4965f227af14479ea388ceab28f67e62be0c09e8f51963533c10e24d08"
+    },
+    {
+      "path": "product.patch",
+      "bytes": 6430,
+      "sha256": "fb063ff05858eb160f6817b3942dbc4e0d5ce92b5d25aad85cf2e50515e31927"
+    },
+    {
+      "path": "product-seal.json",
+      "bytes": 1660,
+      "sha256": "2722578365bf46b11d6924dc549b66023d29f0757d3b53243a1d8a9885f05423"
+    },
+    {
+      "path": "report.json",
+      "bytes": 6263,
+      "sha256": "d6eb2bfeb4d7e5af2a9e42416e53b5eb8af039f2e4019d68cfea22ecbeb3546b"
+    },
+    {
+      "path": "report.md",
+      "bytes": 1280,
+      "sha256": "681b4cbf4193827c088ec563cf76275526b114eb7004eb0b1d38d99e45a4b67c"
+    },
+    {
+      "path": "self-review.md",
+      "bytes": 1598,
+      "sha256": "5de86d5581f3165566c6a394c70d098ec369457df5aa3df4bc808ccd13515089"
+    }
+  ],
+  "actualOwnChangedFiles": [
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/01-red.log.gz",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/01-red.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/02-green.log.gz",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/02-green.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/03-build.log.gz",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/03-build.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/grant.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/manifest.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/product-seal.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/product.patch",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/report.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/report.md",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/self-review.md",
+    "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+    "apps/weltraum-browser/tests/unit/factory/panels.test.ts"
+  ],
+  "rawOriginalDirectory": "/workspace/.cloud-setup/fp06-w09-ui-cargo-original-raw/ui-cargo-20261011T214209Z",
+  "rawGzipBytePairs": 3,
+  "productWriteHold": true,
+  "browser": "NOT_RUN",
+  "independentReview": "PENDING",
+  "commitSha": null
+}

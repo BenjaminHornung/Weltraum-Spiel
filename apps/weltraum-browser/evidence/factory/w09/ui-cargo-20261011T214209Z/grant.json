@@ -1,0 +1,25 @@
+{
+  "schema": "hestia.fp06.w09.ui-cargo-usability-grant/v1",
+  "authorizedAtUtc": "2026-10-11T21:39:29.460779+00:00",
+  "actor": "/root/fp06_domain",
+  "branch": "codex/hestia-fp06-ui-w09-2026-10-11",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11",
+  "baseCommitSha": "24c274e2302452c5fa305e5ca37d6935bbff55ba",
+  "writeSet": [
+    "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+    "apps/weltraum-browser/tests/unit/factory/panels.test.ts"
+  ],
+  "evidenceWriteSet": [
+    "apps/weltraum-browser/evidence/factory/w09/<distinct-actual-ui-cargo-run-id>/**"
+  ],
+  "reason": "Actual browser72 screenshot and independent visual review: long complete inventory scrolls active transport controls out of view. Make controls reachable while keeping full finite inventory available and stable focused nodes.",
+  "reviewReport": "docs/factory/fp06/reviews/w09-browser72-visual-preflight.md",
+  "constraints": [
+    "Meaningful DOM/controls-order/bounded-inventory/focus business RED before smallest UI change, focused UI GREEN and affected original build",
+    "Current UI protocol unchanged; read-only published facts and existing finite intents only; no native facts, poses, grants, timers or separate authority",
+    "Only cargoPanel.ts and panels.test.ts; machinePanel/powerPanel/technologyView and all shared files remain HOLD",
+    "Inventory details may have bounded own scrolling/disclosure; active transport/open/transfer controls before long inventory, retain interactive nodes and complete source lots",
+    "Coordinate every CPU test/build lease with integrator; no browser/server or competing runtime jobs",
+    "Own distinct evidence run; preserve all accepted former evidence/commits; seal and independent review before copy; no direct integrator writes or main/push/publication"
+  ]
+}

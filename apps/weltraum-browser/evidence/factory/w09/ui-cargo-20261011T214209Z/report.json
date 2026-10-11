@@ -1,0 +1,144 @@
+{
+  "schema": "hestia.fp06.w09.ui-cargo-report/v1",
+  "capturedAtUtc": "2026-10-11T21:45:06.504588+00:00",
+  "actor": "/root/fp06_domain",
+  "branch": "codex/hestia-fp06-ui-w09-2026-10-11",
+  "baseCommitSha": "24c274e2302452c5fa305e5ca37d6935bbff55ba",
+  "commitSha": null,
+  "runId": "ui-cargo-20261011T214209Z",
+  "status": {
+    "initialBusinessRed": "PASS_EXPECTED_2_ASSERTION_FAILURES",
+    "focusedUiRegression": "PASS_15_OF_15",
+    "originalBuild": "PASS",
+    "independentReview": "PENDING",
+    "browserNormalFlow": "NOT_RUN",
+    "wholeW09": "NOT_RUN",
+    "gitCommitAdmission": "PENDING"
+  },
+  "actualOwnChangedFiles": [
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/01-red.log.gz",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/01-red.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/02-green.log.gz",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/02-green.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/03-build.log.gz",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/03-build.receipt.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/grant.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/manifest.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/product-seal.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/product.patch",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/report.json",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/report.md",
+    "apps/weltraum-browser/evidence/factory/w09/ui-cargo-20261011T214209Z/self-review.md",
+    "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+    "apps/weltraum-browser/tests/unit/factory/panels.test.ts"
+  ],
+  "productWriteHold": true,
+  "changedProducts": [
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+      "bytes": 15782,
+      "sha256": "f899ffb7d5f062272c8f7693325981f9e789f3aec28716941a0522731d0356e5"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/panels.test.ts",
+      "bytes": 23331,
+      "sha256": "caf724755fb9a2cd11670172bf3a48e7de9dd8580b0b40ee51d9fa8a68722006"
+    }
+  ],
+  "unchangedReferenceFiles": [
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/machinePanel.ts",
+      "sha256": "9905cc0d9bd04ee2dc15903b03fca2399e4fa95fdf828ed6853787f97a19c2e7"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/powerPanel.ts",
+      "sha256": "2ffe21ca555fdd9f60d06997fd2a42a3c4775319ec7768e45aaeb161529a7f15"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/technologyView.ts",
+      "sha256": "dd0dc44d98d7747b8cb9274c5d9f8158218744ad8fd9770860baacf0cec90da9"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+      "sha256": "07b7a3e6ecf4b94fed367585dc4c094cb906d5688985e23177362867a3dc945c"
+    }
+  ],
+  "diffStat": " apps/weltraum-browser/src/factory/ui/cargoPanel.ts |  4 ++-\n .../tests/unit/factory/panels.test.ts              | 41 ++++++++++++++++++++++\n 2 files changed, 44 insertions(+), 1 deletion(-)\n",
+  "diffCheck": {
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11",
+    "exitCode": 0,
+    "stdout": ""
+  },
+  "commandReceipts": [
+    {
+      "schema": "hestia.fp06.command-receipt/v1",
+      "label": "01-red",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11/apps/weltraum-browser",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/factory/panels.test.ts",
+        "-t",
+        "long complete inventory|independently scrollable"
+      ],
+      "startedAtUtc": "2026-10-11T21:42:09.930466+00:00",
+      "finishedAtUtc": "2026-10-11T21:42:10.684145+00:00",
+      "exitCode": 1,
+      "wallSeconds": 0.7536647379965871,
+      "rawLogPath": "/workspace/.cloud-setup/fp06-w09-ui-cargo-original-raw/ui-cargo-20261011T214209Z/01-red.log",
+      "rawBytes": 2356,
+      "rawSha256": "660c495390d0a9acc3133afa210720b7505261790bef93bd41cbb8297be2ba25",
+      "artifact": "01-red.log.gz",
+      "compressedSha256": "c0505f91fc9c81b47f4be4508dfa26964ceedc500f4668b5a9d747ce381ce198"
+    },
+    {
+      "schema": "hestia.fp06.command-receipt/v1",
+      "label": "02-green",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11/apps/weltraum-browser",
+      "command": [
+        "npm",
+        "run",
+        "test",
+        "--",
+        "tests/unit/factory/panels.test.ts"
+      ],
+      "startedAtUtc": "2026-10-11T21:43:26.679975+00:00",
+      "finishedAtUtc": "2026-10-11T21:43:27.445435+00:00",
+      "exitCode": 0,
+      "wallSeconds": 0.7654470929992385,
+      "rawLogPath": "/workspace/.cloud-setup/fp06-w09-ui-cargo-original-raw/ui-cargo-20261011T214209Z/02-green.log",
+      "rawBytes": 346,
+      "rawSha256": "1259f7896c37527a5d74fc9c3e288528136867c99b1f9acfcd645cccad94d198",
+      "artifact": "02-green.log.gz",
+      "compressedSha256": "a82af036a9174ec3e5f21a70dabfb15d52656037a02b305b0d36d3cb82bfe377"
+    },
+    {
+      "schema": "hestia.fp06.command-receipt/v1",
+      "label": "03-build",
+      "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11/apps/weltraum-browser",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "startedAtUtc": "2026-10-11T21:43:27.446386+00:00",
+      "finishedAtUtc": "2026-10-11T21:43:31.446079+00:00",
+      "exitCode": 0,
+      "wallSeconds": 3.999678091997339,
+      "rawLogPath": "/workspace/.cloud-setup/fp06-w09-ui-cargo-original-raw/ui-cargo-20261011T214209Z/03-build.log",
+      "rawBytes": 1904,
+      "rawSha256": "15a63f72960068bd26644edc6f9e0dc71c398f71b14af0c34c7d568c9e4f8d02",
+      "artifact": "03-build.log.gz",
+      "compressedSha256": "00a21d0d701aacd2684c117c101a35bfb167b0b3e278d31908323646a5c14b49"
+    }
+  ],
+  "evidenceManifest": "manifest.json",
+  "scopeLimit": "Document double and synthetic published UI snapshots only; no browser/native/world/full-package claims."
+}

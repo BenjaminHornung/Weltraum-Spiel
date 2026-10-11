@@ -73,8 +73,49 @@ const harness = () => {
   return { port, commands, focuses, publish, complete, failTransport: () => reject!(new Error("Lost reply")), receipts, get view() { return view; }, get subscribers() { return listeners.size; } };
 };
 const flush = async () => { await Promise.resolve(); await Promise.resolve(); };
+const longCargoView = (): FactoryUiReadModel => {
+  const view = initialView(), cargo = view.inventory[0]!;
+  return { ...view, inventory: [{ ...cargo, massMg: 86_000_000,
+    contents: Array.from({ length: 79 }, (_, i) => ({ ...cargo.contents[0]!, stackId: i === 0 ? "steel" : `lot_${i}`, name: `Stahllos ${i}`, quantityUnits: i === 0 ? 8_000_000 : 1_000_000, massMg: i === 0 ? 8_000_000 : 1_000_000 })) },
+    { ...cargo, id: "cut_in", role: "input", contents: [], pickupProfiles: [], massMg: 0 }],
+    interaction: { ...view.interaction, handling: { id: "heavy_carrier", revision: 4, profileId: "B06-BOM", phase: "Carrying", massMg: 341_000_000 }, deposit: cap(), returnCargo: cap() } };
+};
 
 describe("W09 frozen panel projection and finite player intents", () => {
+  it("keeps active transport and local transfer controls before a long complete inventory", () => {
+    const h = harness(); h.publish(longCargoView());
+    const panel = mountFactoryCargoPanel(h.port, documentDouble()), elements = descendants(panel.element as unknown as ElementDouble);
+    const firstLot = elements.find(e => e.tagName === "P" && e.textContent.startsWith("Stahllos 0:"))!;
+    expect(firstLot).toBeDefined();
+    const inventory = firstLot.parent!.parent!.parent!, content = inventory.parent!;
+    const deposit = button(panel.element, "Hier ablegen")!, back = button(panel.element, "Zurück zur Fracht")!, transfer = button(panel.element, "Übertragen")!;
+    expect(deposit.hidden).toBe(false); expect(deposit.disabled).toBe(false);
+    expect(back.hidden).toBe(false); expect(back.disabled).toBe(false);
+    expect(content.children.indexOf(deposit.parent!)).toBeLessThan(content.children.indexOf(inventory));
+    expect(content.children.indexOf(transfer.parent!)).toBeLessThan(content.children.indexOf(inventory));
+    for (let i = 0; i < 79; i++) expect(inventory.textContent).toContain(`Stahllos ${i}:`);
+    expect(h.commands).toHaveLength(0); panel.dispose();
+  });
+  it("bounds the independently scrollable full inventory without replacing focused transfer controls", () => {
+    const h = harness(); h.publish(longCargoView());
+    const panel = mountFactoryCargoPanel(h.port, documentDouble()), elements = descendants(panel.element as unknown as ElementDouble);
+    const inventory = elements.find(e => e.getAttribute("aria-label") === "Materialbestand");
+    expect(inventory).toBeDefined();
+    expect(inventory!.getAttribute("role")).toBe("region");
+    expect(inventory!.style.cssText).toMatch(/max-height:\s*[^;]*(?:vh|rem|px)/);
+    expect(inventory!.style.cssText).toMatch(/overflow-y:\s*auto/);
+    const amount = elements.find(e => e.getAttribute("aria-label") === "Transfermenge")!, source = elements.find(e => e.getAttribute("aria-label") === "Transferquelle")!;
+    expect(source.children).toHaveLength(79); amount.value = "0,5"; amount.focus();
+    const pickup = button(panel.element, "Aufnehmen: 8 kg Stahl")!;
+    h.publish({ ...h.view, publicationRevision: 2, power: { ...h.view.power, batteryEnergyJ: 12_959_990 } });
+    const updated = descendants(panel.element as unknown as ElementDouble);
+    expect(updated.find(e => e.getAttribute("aria-label") === "Transfermenge")).toBe(amount);
+    expect(updated.find(e => e.getAttribute("aria-label") === "Transferquelle")).toBe(source);
+    expect(amount.value).toBe("0,5"); expect(source.children).toHaveLength(79);
+    expect(button(panel.element, "Aufnehmen: 8 kg Stahl")).toBe(pickup);
+    for (let i = 0; i < 79; i++) expect(inventory!.textContent).toContain(`Stahllos ${i}:`);
+    expect(h.commands).toHaveLength(0); panel.dispose();
+  });
   it("entering the power panel delegates focus neutralization to the Host", () => {
     const h = harness(), panel = mountFactoryPowerPanel(h.port, documentDouble());
     panel.element.dispatchEvent(new Event("focusin"));

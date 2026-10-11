@@ -132,6 +132,8 @@ const syncOptions = (doc: Document, select: HTMLSelectElement, options: readonly
 export const mountFactoryCargoPanel = (port: FactoryUiPort, doc: Document = document): FactoryPanel => {
   const panel = createFactoryPanel(port, doc, "cargo", "Fracht und Lager");
   const inventory = doc.createElement("div"), controls = doc.createElement("div");
+  inventory.setAttribute("role", "region"); inventory.setAttribute("aria-label", "Materialbestand"); inventory.tabIndex = 0;
+  inventory.style.cssText = "max-height:min(32vh,20rem);overflow-y:auto;overscroll-behavior:contain";
   const open = uiButton(doc, "Fracht öffnen", () => { if (panel.view.interaction.openCargo.enabled) panel.submit({ kind: "open-cargo" }); });
   const handling = uiText(doc, "p", "");
   const deposit = uiButton(doc, "Hier ablegen", () => {
@@ -160,7 +162,7 @@ export const mountFactoryCargoPanel = (port: FactoryUiPort, doc: Document = docu
       source: { containerId: selected.container.id, containerRevision: selected.container.revision, stackId: selected.stack.stackId, quantityUnits: units }, target: { id: destination.id, revision: destination.revision } });
   });
   const transferForm = doc.createElement("div"); transferForm.append(uiText(doc, "h3", "Lokal übertragen"), source, amountLabel, amount, target, transfer);
-  panel.content.append(inventory, controls, transferForm);
+  panel.content.append(controls, transferForm, inventory);
   const rows = new Map<string, { row: HTMLElement; title: HTMLElement; summary: HTMLElement; stacks: HTMLElement; pickups: Map<string, HTMLButtonElement> }>();
   const updateTransfer = () => {
     const selected = selection();

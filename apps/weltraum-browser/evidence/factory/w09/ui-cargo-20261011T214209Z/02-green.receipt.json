@@ -1,0 +1,21 @@
+{
+  "schema": "hestia.fp06.command-receipt/v1",
+  "label": "02-green",
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11/apps/weltraum-browser",
+  "command": [
+    "npm",
+    "run",
+    "test",
+    "--",
+    "tests/unit/factory/panels.test.ts"
+  ],
+  "startedAtUtc": "2026-10-11T21:43:26.679975+00:00",
+  "finishedAtUtc": "2026-10-11T21:43:27.445435+00:00",
+  "exitCode": 0,
+  "wallSeconds": 0.7654470929992385,
+  "rawLogPath": "/workspace/.cloud-setup/fp06-w09-ui-cargo-original-raw/ui-cargo-20261011T214209Z/02-green.log",
+  "rawBytes": 346,
+  "rawSha256": "1259f7896c37527a5d74fc9c3e288528136867c99b1f9acfcd645cccad94d198",
+  "artifact": "02-green.log.gz",
+  "compressedSha256": "a82af036a9174ec3e5f21a70dabfb15d52656037a02b305b0d36d3cb82bfe377"
+}

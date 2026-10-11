@@ -1,0 +1,44 @@
+{
+  "schema": "hestia.fp06.w09.ui-cargo-product-seal/v1",
+  "sealedAtUtc": "2026-10-11T21:45:06.504588+00:00",
+  "baseCommitSha": "24c274e2302452c5fa305e5ca37d6935bbff55ba",
+  "branch": "codex/hestia-fp06-ui-w09-2026-10-11",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11",
+  "productWriteHold": true,
+  "products": [
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+      "bytes": 15782,
+      "sha256": "f899ffb7d5f062272c8f7693325981f9e789f3aec28716941a0522731d0356e5"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/panels.test.ts",
+      "bytes": 23331,
+      "sha256": "caf724755fb9a2cd11670172bf3a48e7de9dd8580b0b40ee51d9fa8a68722006"
+    }
+  ],
+  "unchangedReferenceFiles": [
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/machinePanel.ts",
+      "sha256": "9905cc0d9bd04ee2dc15903b03fca2399e4fa95fdf828ed6853787f97a19c2e7"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/powerPanel.ts",
+      "sha256": "2ffe21ca555fdd9f60d06997fd2a42a3c4775319ec7768e45aaeb161529a7f15"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/technologyView.ts",
+      "sha256": "dd0dc44d98d7747b8cb9274c5d9f8158218744ad8fd9770860baacf0cec90da9"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+      "sha256": "07b7a3e6ecf4b94fed367585dc4c094cb906d5688985e23177362867a3dc945c"
+    }
+  ],
+  "patch": {
+    "path": "product.patch",
+    "bytes": 6430,
+    "sha256": "fb063ff05858eb160f6817b3942dbc4e0d5ce92b5d25aad85cf2e50515e31927"
+  },
+  "grantSha256": "2b3c7a4965f227af14479ea388ceab28f67e62be0c09e8f51963533c10e24d08"
+}
