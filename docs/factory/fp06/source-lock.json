@@ -456,6 +456,15 @@
         "scope": "W00-W11 only",
         "exactDecisionQuestion": "D05: 6 confirmed 60-Hz ticks =100ms/no offline; D06: powered 1kg/s initial0 max10kg persistent burstcredit; D07: /factory.html existing app; D11: <=16 fixed native facility owners, native install transaction, complete combined checkpoint under unchanged overall budgets",
         "exactFreezeQuestion": "Unchanged FP02 C01-C28/REC-01-REC-07/BOM/dimensions/ports; bulk exactly1mg; packaged volume integer mm3; components integer count; SALVAGE-01 separate; reject inadmissible quantity."
+      },
+      "nativeHandlingSupplement": {
+        "receivedAtUtc": "2026-10-11T19:54:17.321634+00:00",
+        "source": "Actualuser send_user_message_question_reply call_132a5f16d5a04bfba3a1b712a76f3ee7",
+        "answer": "Diesen engen Transportvertrag freigeben",
+        "status": "ACCEPTED_BY_USER",
+        "proposal": "docs/factory/fp06/proposals/native-handling-v1.md",
+        "proposalSha256": "c1aa59de0a2159e7ec2c81af5bd64f5c7d867751e0af274736e737fc26803a6c",
+        "scope": "W09–W11 exactlyoneversionedKinematicNativeTransportowner<=5Colliders; ordinaryPlayerinputs/completepairedSweepSupportCoverage; finiteMaterialCustody/localfixedDepot/fullCombinedSave; <=16Factoryowners INCLUDINGCargo+Carrier; same64/32/4096budgets; noVehicles/generalCreateBody/W12–W29."
       }
     },
     "W01_SOURCE_QUANTITY_FREEZE": {
@@ -1313,13 +1322,13 @@
         "apps/weltraum-browser/evidence/factory/w07/<actual-run-id>/**"
       ],
       "evidenceGrant": true,
-      "status": "IN_REVIEW",
+      "status": "PASS",
       "owner": "/root/fp06_integrator",
       "plannedRole": "integrator",
       "branch": "codex/hestia-fp06-integrator-2026-10-11",
       "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
       "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
-      "commitSha": null,
+      "commitSha": "823fe92df37aa11ac5c59e9aa377cbfdc84e3c30",
       "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
       "restrictions": [
         "Only exact granted paths; planned paths are not grants",
@@ -1382,7 +1391,7 @@
       "baseCommitSha": "d5502ae7fd5431d58eda51bea062c54691ebe3c2",
       "implementationWriteHold": true,
       "authorizedAtUtc": "2026-10-11T13:11:16.765614+00:00",
-      "completedAtUtc": null,
+      "completedAtUtc": "2026-10-11T19:52:25.463704+00:00",
       "tddInitialStatus": {
         "runId": "2026-10-11T122211.412749Z",
         "businessRed": "8 collected/8 expected AssertionFailure,CLI1 before implementation; previous mixed5business+3testSerialization preserved separately",
@@ -1729,7 +1738,7 @@
           "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
         ],
         "allOther29HeldMatch": true,
-        "packageCommitSha": null,
+        "packageCommitSha": "823fe92df37aa11ac5c59e9aa377cbfdc84e3c30",
         "rootProof": "docs/factory/fp06/reviews/w07-second-ghost99-root-source-review.md"
       },
       "currentNarrowWriteSet": [],
@@ -3279,8 +3288,43 @@
         "all30CandidateRestored": true,
         "fixed7OriginalStatesRestored": true,
         "cpuGpuPortLease": "RELEASED",
-        "independentEvidenceReview": "IN_PROGRESS",
-        "packageEndGate": "NOT_RUN_GIT_LFS_MANIFEST_COMMIT"
+        "independentEvidenceReview": "NORMAL_BROWSER_EVIDENCE_SCOPE_PASS",
+        "packageEndGate": "PASS",
+        "reviewPath": "docs/factory/fp06/reviews/w07-mesa100-normal-evidence-review.md",
+        "reviewSha256": "ac82cf5f21da6b6f489f1e185ede28c9c4b0682da6ed31f6fa154e5f33e00066"
+      },
+      "finalStageSelfBinding": {
+        "status": "STAGED_SELF_BINDING_PASS_INDEPENDENT_REVIEW_PENDING",
+        "manifestSha256": "edb7652f3bd2e1fa8262164fc428262f66095371d51f3b0e58948f25e55c2e40",
+        "productSealSha256": "5138bdc77c13a971158c93deb430c8648a5a79d6701d910aaefd10fa8ed7cb16",
+        "exactStagePaths": 1230,
+        "productPaths": 28,
+        "ownEvidenceFiles": 1202,
+        "regularGitBlobs": 1018,
+        "lfsReceipts": 212,
+        "mismatches": 0,
+        "wholeStagedDiffCheck": 2,
+        "product28DiffCheck": 0,
+        "newAuthored7DiffCheck": 0,
+        "scope": "OriginalrawderivedLog/Patch/Reviewpayloadwhitespace preserved; no globaldiffPASS",
+        "stageReceiptSha256": "dcccb4f4a424261af51a9d90c3e638ffc677672b194c0905d5d2610170bce524",
+        "gitLfsReceiptSha256": "2a244173bcb1f4c869298ccd4f9f590c40d23ca3f442efd546e462989a6767cd",
+        "localAdmissionReceiptSha256": "f53e70036278bb305039632c16841149352c72760258cce77c0fc5d8b4432828",
+        "packageCommit": "NOT_RUN",
+        "independentReview": "STAGED_BINDING_SCOPE_PASS",
+        "independentReviewSha256": "af2cf4d97c52b17c39c0dc51a076bb391bc3e026572c4a15e423326956d34471"
+      },
+      "commitAuthorization": {
+        "authorizedAtUtc": "2026-10-11T19:48:28.818024+00:00",
+        "scope": "Commitexact reviewed staged1230 paths only (28products+1202ownrun); no product/evidence/indexchanges, no push/Main/merge. Reportfull40SHA/parent/actualHEADdiff1230/cleanownworktree+all30sealedBytes and GitLFS HEADpayloadpostAdmission. No dependentpackageuntilRootactualGatePASS.",
+        "stageReviewSha256": "af2cf4d97c52b17c39c0dc51a076bb391bc3e026572c4a15e423326956d34471",
+        "stageReviewPath": "docs/factory/fp06/reviews/w07-staged-evidence-independent-review.md"
+      },
+      "reviewReport": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/reviews/w07-root-head-admission.md",
+      "rootHeadAdmission": {
+        "path": "docs/factory/fp06/reviews/w07-root-head-admission.md",
+        "sha256": "dede5a75edbcbb257529cc6fa2dc75f97288d6e3e6f35f100e647b7b81d58990",
+        "status": "PASS"
       }
     },
     "W08": {
@@ -3417,10 +3461,6 @@
       ],
       "plannedWriteSet": [
         "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
-        "apps/weltraum-browser/src/factory/ui/machinePanel.ts",
-        "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
-        "apps/weltraum-browser/src/factory/ui/powerPanel.ts",
-        "apps/weltraum-browser/src/factory/ui/technologyView.ts",
         "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts",
         "apps/weltraum-browser/package.json",
         "apps/weltraum-browser/src/factory/factoryEntry.ts",
@@ -3431,25 +3471,67 @@
         "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
         "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts",
         "apps/weltraum-browser/src/factory/construction/installationProfile.ts",
-        "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts"
+        "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+        "apps/weltraum-browser/src/factory/construction/cargoHandlingProfile.ts",
+        "apps/weltraum-browser/src/factory/session/cargoHandling.ts",
+        "apps/weltraum-browser/tests/unit/factory/cargoHandling.test.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+        "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts",
+        "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+        "apps/weltraum-browser/tests/unit/hvp-locomotion.test.ts",
+        "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
+        "apps/weltraum-browser/src/factory/construction/placement.ts",
+        "apps/weltraum-browser/src/factory/construction/buildStep.ts"
       ],
-      "grantedWriteSet": [],
+      "grantedWriteSet": [
+        "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+        "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts",
+        "apps/weltraum-browser/package.json",
+        "apps/weltraum-browser/src/factory/factoryEntry.ts",
+        "apps/weltraum-browser/src/factory/session/hostPort.ts",
+        "apps/weltraum-browser/src/factory/session/factorySession.ts",
+        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+        "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+        "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+        "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts",
+        "apps/weltraum-browser/src/factory/construction/installationProfile.ts",
+        "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+        "apps/weltraum-browser/src/factory/construction/cargoHandlingProfile.ts",
+        "apps/weltraum-browser/src/factory/session/cargoHandling.ts",
+        "apps/weltraum-browser/tests/unit/factory/cargoHandling.test.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+        "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+        "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts",
+        "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+        "apps/weltraum-browser/tests/unit/hvp-locomotion.test.ts",
+        "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
+        "apps/weltraum-browser/src/factory/construction/placement.ts",
+        "apps/weltraum-browser/src/factory/construction/buildStep.ts"
+      ],
       "evidenceWriteSet": [
         "apps/weltraum-browser/evidence/factory/w09/<actual-run-id>/**"
       ],
-      "evidenceGrant": false,
-      "status": "BLOCKED_DEPENDENCY",
+      "evidenceGrant": true,
+      "status": "IN_PROGRESS",
       "owner": "/root/fp06_integrator",
       "plannedRole": "integrator",
-      "branch": null,
+      "branch": "codex/hestia-fp06-integrator-2026-10-11",
       "plannedBranch": "codex/hestia-fp06-integrator-2026-10-11",
-      "worktree": null,
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
       "commitSha": null,
       "sourceRoot": "/workspace/hestia-handoff/HESTIA_CODEX_CLOUD_HANDOFF_2026-10-11",
       "restrictions": [
         "Only exact granted paths; planned paths are not grants",
         "Shared contracts/host/physics/save/config writes only by /root/fp06_integrator",
-        "No main merge/push/publication; no W12-W29"
+        "No main merge/push/publication; no W12-W29",
+        "Exactlyone approvedmobilehandlingowner/<=5colliders/<=16FactoryownersinclCargoCarrier; fullpairedSweepbeforebothposecommits. No newmasks/Sourcefreeze/WorldAuthority/wholeLegacydecoderchange.",
+        "BusinessRED beforeminimalimplementation; failingImport/setup notbusinessRED. Native mass/LOS/pairedautostep-jump/custody/CAS/staleReplay/lostACK/stagingcaps, actualnormaluserflowmustpass.",
+        "Integratorownsall25exactnonUIpaths;4UIpanels+UITest secondwriter NOT_GRANTED untilrealcontractfreeze. ExtraRequiredpaths requireRootscopeextension beforewrites."
       ],
       "scopeExtensions": [
         {
@@ -3527,11 +3609,60 @@
         }
       },
       "additionalNativeHandlingOwnerGate": {
-        "status": "OPEN_OWNER_DECISION",
+        "receivedAtUtc": "2026-10-11T19:54:17.321634+00:00",
+        "source": "Actualuser send_user_message_question_reply call_132a5f16d5a04bfba3a1b712a76f3ee7",
+        "answer": "Diesen engen Transportvertrag freigeben",
+        "status": "ACCEPTED_BY_USER",
         "proposal": "docs/factory/fp06/proposals/native-handling-v1.md",
         "proposalSha256": "c1aa59de0a2159e7ec2c81af5bd64f5c7d867751e0af274736e737fc26803a6c",
-        "originalD11FixedOnlyRemainsAccepted": true,
-        "blockedWrites": "New mobileHandlingNativeowner/Sweep/Mass/Saveimplementation only; independentHostDomain/UIwork may proceed afterW07"
+        "scope": "W09–W11 exactlyoneversionedKinematicNativeTransportowner<=5Colliders; ordinaryPlayerinputs/completepairedSweepSupportCoverage; finiteMaterialCustody/localfixedDepot/fullCombinedSave; <=16Factoryowners INCLUDINGCargo+Carrier; same64/32/4096budgets; noVehicles/generalCreateBody/W12–W29."
+      },
+      "predecessorCopyAuthorization": {
+        "authorizedAtUtc": "2026-10-11T19:52:25.494031+00:00",
+        "actor": "/root/fp06_integrator",
+        "baseCommitSha": "823fe92df37aa11ac5c59e9aa377cbfdc84e3c30",
+        "acceptedCommitsInOrder": [
+          "8d22fc9907d84bf2ff6b257299ff47fb23b112ff",
+          "6929bf2447b72c9f3f8fa3bcae0a59c0691966c0"
+        ],
+        "scope": "Only exact immutable W08 thenW04 cherry-picks on own cleanIntegratorbranch; verify sourceCommitpaths/SHA/bytes/GitLFSrefs unchanged and actualnewfullSHAs/cleanstatus. Stop/reportactualconflict; noRuntime/App/Source/Evidenceamend/newtests/Main/push/rebase. Aftercopy hold fornewW09grant; mobileHandlingOwnergate remainsOPEN."
+      },
+      "pendingSecondWriterUIRole": {
+        "actor": "/root/fp06_domain",
+        "status": "NOT_GRANTED_WAIT_INTEGRATOR_PUBLIC_INTERFACE_FREEZE",
+        "writeSet": [
+          "apps/weltraum-browser/src/factory/ui/machinePanel.ts",
+          "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+          "apps/weltraum-browser/src/factory/ui/powerPanel.ts",
+          "apps/weltraum-browser/src/factory/ui/technologyView.ts",
+          "apps/weltraum-browser/tests/unit/factory/panels.test.ts"
+        ],
+        "branch": "codex/hestia-fp06-ui-w09-2026-10-11",
+        "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11",
+        "constraints": "NEWisolatedbranch/worktree fromacceptedIntegratorW09interfacecommit; only4panels+meaningfulUITest. NoHost/Physics/Save/Contract/Entrywrites. Source/material/job/power reads and commands only, noownWorld/clock/inventory. Maximum2implementationwriters including1Integrator."
+      },
+      "predecessorCopies": {
+        "status": "BYTE_GIT_LFS_PASS",
+        "headCommitSha": "7b23d072670ecfd4b0b5f1c3f037539f24e5b07e",
+        "W08CopySha": "4312f9bfb59b7406c7d3ad99caa958c19c83b28b",
+        "W04CopySha": "7b23d072670ecfd4b0b5f1c3f037539f24e5b07e",
+        "receiptSha256": "e41c910ff4406e83bb5e26dca915e68152137d53143d6fbdc17904e6c33db6b4",
+        "path": "docs/factory/fp06/reviews/w09-predecessor-copy-final-receipt.json",
+        "originalImmutableSchemas": "HistoricalW04/W08 fp06-package-evidence-v1 retained unchanged; no aggregateFactoryTreeCheckerPASS claimed"
+      },
+      "baseCommitSha": "7b23d072670ecfd4b0b5f1c3f037539f24e5b07e",
+      "implementationWriteHold": false,
+      "authorizedAtUtc": "2026-10-11T19:57:30.701430+00:00",
+      "completedAtUtc": null,
+      "initialBusinessRed": {
+        "run": "apps/weltraum-browser/evidence/factory/w09/2026-10-11T200540.207510Z",
+        "phase": "01-cargo-custody-business-red",
+        "collected": 4,
+        "assertionFailures": 3,
+        "passes": 1,
+        "exitCode": 1,
+        "rawSha256": "7d25921b90972d09fa82c3721a8dcf20fc21df4a940f6a545d09c7c4fec54394",
+        "scope": "Integrator-reported real collected C27/BOM/custody RED; independent review pending, no package PASS."
       }
     },
     "W10": {
@@ -3886,6 +4017,26 @@
     "receiptSha256": "2d5de75c317d8e42c8134d282485f7dcf04167712236778f06938e3f887bf4e4",
     "report": "docs/factory/fp06/reviews/cloud-environment-copy.md",
     "sourcePointInTime": "Roota8a22/Integrator201394; later changes not included",
-    "mainMergePushGamePublicationAuthorized": false
+    "mainMergePushGamePublicationAuthorized": false,
+    "laterMesaDraftSave": {
+      "status": "SAVED_AND_EXACT_READBACK_VERIFIED",
+      "revisionBefore": 1,
+      "revisionAfter": 2,
+      "submittedFields": [
+        "install_script",
+        "start_skill"
+      ],
+      "receipt": "docs/factory/fp06/reviews/environment-draft-save-receipt.json",
+      "receiptSha256": "3f0ba49ed354b94fb1b19ce4d53388ac04166759eba7e33b5941baba2613652d",
+      "independentRootReadback": "docs/factory/fp06/reviews/environment-draft-root-readback.json",
+      "independentRootReadbackSha256": "1c807da0ed32113259420092a570ef8dd1e1c95afe374735c78cf817c9952c77",
+      "copySaveSupplement": "docs/factory/fp06/reviews/environment-copy-draft-save-supplement.json",
+      "copySaveSupplementSha256": "f80c17ae166d3fab786792d5d65871ad16a9c87fcd47e1da3ca5ec9289a0ac25",
+      "requiresPublish": true,
+      "platformPublished": false,
+      "secondLiveCloudCreated": false,
+      "originalSnapshotChanged": false,
+      "installerOrBrowserExecuted": false
+    }
   }
 }

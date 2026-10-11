@@ -1,0 +1,436 @@
+{
+  "capturedAtUtc": "2026-10-11T19:54:06.613943+00:00",
+  "originalBaseSha": "823fe92df37aa11ac5c59e9aa377cbfdc84e3c30",
+  "actualIntegratedCommits": [
+    "4312f9bfb59b7406c7d3ad99caa958c19c83b28b",
+    "7b23d072670ecfd4b0b5f1c3f037539f24e5b07e"
+  ],
+  "resultingHeadSha": "7b23d072670ecfd4b0b5f1c3f037539f24e5b07e",
+  "acceptedOriginalCommits": [
+    "8d22fc9907d84bf2ff6b257299ff47fb23b112ff",
+    "6929bf2447b72c9f3f8fa3bcae0a59c0691966c0"
+  ],
+  "copiedPathCount": 85,
+  "regularGitBlobs": 57,
+  "lfsPointerPayloads": 28,
+  "products": [
+    {
+      "path": "apps/weltraum-browser/src/factory/conveyor/beltPorts.ts",
+      "sha256": "54c2bdd48838f869db887d72b19f4169487070ba194e301340b12179f6a7cfa9",
+      "bytes": 7259,
+      "headGitBlobOid": "0bda5ce9de207bb08e6a79869665eb2c098ef0e7",
+      "matchesAcceptedOriginalCommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/conveyor/beltReference.ts",
+      "sha256": "45fb7e4d0bb618a07d215ab923db4521c1bd46203428b49760e5140f402be211",
+      "bytes": 20546,
+      "headGitBlobOid": "0bde025def618ee88f36e21ef9931cfee7723135",
+      "matchesAcceptedOriginalCommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/conveyor.test.ts",
+      "sha256": "31c9212810bea211f56b9145efa6aef7b926272022e843124afe2bf35b5f7682",
+      "bytes": 20187,
+      "headGitBlobOid": "848a47f0de9f164224d3a72bd2bd5a0a6b25c6be",
+      "matchesAcceptedOriginalCommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/production/productionStep.ts",
+      "sha256": "f74397051a7b2da13d6d183ccf573cb633cb932e915e1ebaf6bf6a50da29c449",
+      "bytes": 29154,
+      "headGitBlobOid": "b9358aabcd91878b783df72bd75974f052da0d6e",
+      "matchesAcceptedOriginalCommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/production/recipeAdmission.ts",
+      "sha256": "c77eeaa220cbb491c51356533bdd8f1e6d221f67e9406b458d4a6c06ebac4102",
+      "bytes": 12898,
+      "headGitBlobOid": "ac80a56d2ba46f6e96f48aeb2fc4297a347c2162",
+      "matchesAcceptedOriginalCommit": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/production.test.ts",
+      "sha256": "7c31bf5f375af31c3ed0057cda4ce2a87951fff7412506fcab057c0d517769b6",
+      "bytes": 23542,
+      "headGitBlobOid": "8f90636f1d8f84da9069c1d013a6c78aa8778ab7",
+      "matchesAcceptedOriginalCommit": true
+    }
+  ],
+  "manifests": [
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/manifest.json",
+      "sha256": "9e99dbeb65f10ddd9e2c5f22e62d81d5ee77f39133543803d393a7993bcdcdab",
+      "bytes": 12112,
+      "schema": "fp06-package-evidence-v1",
+      "artifactRefs": 37,
+      "allRefsMaterializedAndHeadBound": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/manifest.json",
+      "sha256": "7654cb46edef96a71211555c7b6d71a530664634a6e5d150d31ede42b5dbe621",
+      "bytes": 32934,
+      "schema": "fp06-package-evidence-v1",
+      "artifactRefs": 40,
+      "allRefsMaterializedAndHeadBound": true
+    }
+  ],
+  "lfsPayloads": [
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/build-batch-intake.log.gz",
+      "oidSha256": "24b9bb0fd38bce1330c2f6752614d105c023e9f5abd12240ab02c26e45a7fb2e",
+      "bytes": 682,
+      "materializedAndCacheVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/build-port-family-recipe.log.gz",
+      "oidSha256": "ab3ba42ec607f98dfbfa690e5ea2361a0a747f1c39bde4bdc59b8228db376780",
+      "bytes": 689,
+      "materializedAndCacheVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/build.log.gz",
+      "oidSha256": "23d2daf8635c25405ddb3b7308ddf19f3f048be152b0a13ef970c12ad0ea07ad",
+      "bytes": 668,
+      "materializedAndCacheVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/green-attempt-1.log.gz",
+      "oidSha256": "8fedeebb9b0f6239f3f4a8ce1bd15f2f88dbdfd63ba044b9c604ccdfa154c891",
+      "bytes": 1470,
+      "materializedAndCacheVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/green-attempt-2.log.gz",
+      "oidSha256": "9c14fafc0373e7c6b1a9306718fecda98b8c484b2b6639c9e2ae8000a021f26f",
+      "bytes": 277,
+      "materializedAndCacheVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/green-batch-intake.log.gz",
+      "oidSha256": "aff084794068efbd81379fceb41824cd9ce1322f5e4f2b0f9723ce614e7b3b70",
+      "bytes": 280,
+      "materializedAndCacheVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/green-port-family-recipe.log.gz",
+      "oidSha256": "0a17ad3e8125f8da9186a33ec088df07b3ff7dcd8f0ef79104dadda7ddd6c481",
+      "bytes": 285,
+      "materializedAndCacheVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/green-self-review.log.gz",
+      "oidSha256": "e5a273398ead3e8d9fdcc1a8f21b9be3c331f72f4d49b6a1ba8f8b29308dd644",
+      "bytes": 278,
+      "materializedAndCacheVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/red-batch-intake-2.log.gz",
+      "oidSha256": "16f119a1ea27844ccdb6c919d6f962a2a3ed5f4db81de52c79973c2d4bc3741c",
+      "bytes": 942,
+      "materializedAndCacheVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/red-batch-intake.log.gz",
+      "oidSha256": "bfd6f8b4b1859d21445e20a9372a7d17217bcdc3e804661814a728e91f64ff6a",
+      "bytes": 763,
+      "materializedAndCacheVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/red-initial.log.gz",
+      "oidSha256": "cf0d04dd702e7cd8f6a99f9ffc613865a31a6e784ca90c7e2789190d68888f31",
+      "bytes": 918,
+      "materializedAndCacheVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/red-port-family-recipe.log.gz",
+      "oidSha256": "1df4f5b41b81186f5c70a0ac7bcc28e7e9191348e5f1545935e93fb8af0f2eba",
+      "bytes": 885,
+      "materializedAndCacheVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/red-self-review.log.gz",
+      "oidSha256": "e9489a7d93f2c4becb6d9bb427ac1016510371982713928d1eb963125527f092",
+      "bytes": 1026,
+      "materializedAndCacheVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w08/run-20261011T115409Z/regression.log.gz",
+      "oidSha256": "a15b457d6f2333074b5cecaf331504fdb34424d551c1e52b9705293ab95e1737",
+      "bytes": 304,
+      "materializedAndCacheVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/build-final-type-fixed.log.raw.gz",
+      "oidSha256": "f8a2cc54c482ba105930a94aee771ed87e0a4df4b904c38e34947ee1a97adc0b",
+      "bytes": 659,
+      "materializedAndCacheVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/build-final.log.raw.gz",
+      "oidSha256": "c32507afd4ea65c445c9cef4145f753ae5e2e0c955cb3e964e5c47e5a8ff838f",
+      "bytes": 160,
+      "materializedAndCacheVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-attempt-1.log.raw.gz",
+      "oidSha256": "791786c51fef4fb130fd8f5bd9dac4e0f981cc89c91f49c22c8b42db50c6a9c6",
+      "bytes": 1157,
+      "materializedAndCacheVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-authority-core-fifteen.log.raw.gz",
+      "oidSha256": "93fa137e12f96843c46a4f5e8a7c04b091dad11f33953343b74e0e96cc41db3a",
+      "bytes": 1157,
+      "materializedAndCacheVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-byte-cache-original-seven.log.raw.gz",
+      "oidSha256": "7d0bf15a069630a2d44b2b79dd9d969cd608a3bd564ebf369daa8d470dc7b3c9",
+      "bytes": 1188,
+      "materializedAndCacheVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-canonical-segments-fifteen.log.raw.gz",
+      "oidSha256": "f61751d480679abd99321bbe33a2ba3bccbb254067ea493036c35fb6bdbb62ad",
+      "bytes": 259,
+      "materializedAndCacheVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-final-affected.log.raw.gz",
+      "oidSha256": "3ef09c945020850a89b8ade3ef6f724bce9a1dba6f7ab6d9988f3f609ec836a6",
+      "bytes": 369,
+      "materializedAndCacheVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/green-type-narrowing.log.raw.gz",
+      "oidSha256": "d0edaacbebd4285bdca3b28ef658cd3e306cbc0a8a6c25c9221e7792f0925be0",
+      "bytes": 303,
+      "materializedAndCacheVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-authority-core.log.raw.gz",
+      "oidSha256": "6580eb796eadcea38f1e4477b32ec155f614ebbb80d425d11fd0ad33bfeb7046",
+      "bytes": 663,
+      "materializedAndCacheVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/profile-before-byte-cache.log.raw.gz",
+      "oidSha256": "494948c17f9adc6b82e77518ec24777762eab759656906beb59b96fc4148c4e5",
+      "bytes": 662,
+      "materializedAndCacheVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-closed-keys.log.raw.gz",
+      "oidSha256": "51d8bea0dcf9f9c4f54e0465804c2ba63f3c8a2b837fa7de68a481d5053d7b0c",
+      "bytes": 673,
+      "materializedAndCacheVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-initial.log.raw.gz",
+      "oidSha256": "09085ad17576670de43e980c943f9eab79ec799e097e2981729ccaa6452dc8a3",
+      "bytes": 1288,
+      "materializedAndCacheVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-noop-four.log.raw.gz",
+      "oidSha256": "6c51a01d01fc7433102e9ffc8dd87595db22666ef3c7a3ab748f52d56f2c449c",
+      "bytes": 747,
+      "materializedAndCacheVerified": true
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/w04/run-20261011T124704Z/red-safety-five.log.raw.gz",
+      "oidSha256": "2a0e9f2f7238587aa19bf2b4dba4b6f99837ec0da6c22f2589ada663b231788a",
+      "bytes": 1318,
+      "materializedAndCacheVerified": true
+    }
+  ],
+  "all30W07ProductBytesUnchanged": true,
+  "unchangedW07Products": [
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/placement.ts",
+      "sha256": "89194437192f2788e4ea7458af06f760583f8250ccce494a89e0cc225debd09e",
+      "bytes": 11255,
+      "matchesW07Final": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/buildStep.ts",
+      "sha256": "4e5db5b1bb70921a8ee4cfbd91da48c66f4e5686b2228805b5b0ab6ae2f8ea17",
+      "bytes": 5734,
+      "matchesW07Final": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/buildTool.ts",
+      "sha256": "6e5e3250a3211b45f10521f750ccf2239d536e3d4fa4ca1e1cadd22af0860f75",
+      "bytes": 1630,
+      "matchesW07Final": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/placement.test.ts",
+      "sha256": "9fe9bde4a0cd6cd0385caaf1e63b15856ec46ca324242c782a3779a720b78909",
+      "bytes": 11200,
+      "matchesW07Final": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts",
+      "sha256": "8f3148798f82f37cdcabe7d811e30b19467db52ac7ffc639b26e8425d6856dfa",
+      "bytes": 17340,
+      "matchesW07Final": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+      "sha256": "620a60b3d7d1e5edfef558fe07fac9af78cd9fc13385f9c45ad5fde1279d2eee",
+      "bytes": 18339,
+      "matchesW07Final": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+      "sha256": "4b8bfe5766be527c9c71a5312cc80068cb6ac5b157012e24f4349993c71cc0e6",
+      "bytes": 34808,
+      "matchesW07Final": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/physicsWorker.ts",
+      "sha256": "776ec49c1c8e180eb02e11d9e5a828087d4b7efd57a65619989c3408276056cb",
+      "bytes": 16654,
+      "matchesW07Final": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+      "sha256": "3bd432ac5618a6b30b1b5248c9ae0711bd7e722fd6b079189ae623f62c6973a4",
+      "bytes": 38047,
+      "matchesW07Final": true
+    },
+    {
+      "path": "apps/weltraum-browser/package.json",
+      "sha256": "f3193e4ab6e1eeef81304adeb75812f8933b2d73863317d1a1632c453cc37b89",
+      "bytes": 2570,
+      "matchesW07Final": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+      "sha256": "ab5ec227a525684802affde9236ba1484d1842275b04f80024e41aed59bb9f88",
+      "bytes": 165644,
+      "matchesW07Final": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+      "sha256": "8db32270b8a9fdadf70a6a838838bedfe02a09b1451516fb41a25fe75cd25118",
+      "bytes": 2518,
+      "matchesW07Final": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/factorySession.ts",
+      "sha256": "7f1e342aecac3525bcc1b0a0f6ea579a1db2172af6f98d00d7289b7087a3a00f",
+      "bytes": 5378,
+      "matchesW07Final": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/factoryEntry.ts",
+      "sha256": "ad7f1bb598f26db5ba873abe762fc39a1798c8bf18a65f971409efd7b3f87202",
+      "bytes": 9253,
+      "matchesW07Final": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+      "sha256": "13128d7ad3151da644ae909af0dbb0e2df0e91066c01f55ee566f7eedc1fdaca",
+      "bytes": 38423,
+      "matchesW07Final": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+      "sha256": "53725bbf06af6be92ac1b3b3e250ee6548e37bb6abf8500b4cd50e09b1ec1a29",
+      "bytes": 2121,
+      "matchesW07Final": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/installationProfile.ts",
+      "sha256": "64df3962d652649301e1a7f411516829e6e7fd915d5fa48f566f18090c32832f",
+      "bytes": 5733,
+      "matchesW07Final": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/presentation/vegetation.ts",
+      "sha256": "a6c6996706591f5fd77f31ea9a445fa421f6e1e02ee7162904a58834b5008dd3",
+      "bytes": 22422,
+      "matchesW07Final": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+      "sha256": "012bb4f13bbd0d31fb79b5a8e8b00604da3b0674ef0ba2079862faf2966b5b84",
+      "bytes": 70821,
+      "matchesW07Final": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-physics.test.ts",
+      "sha256": "cbab1e3815dd4483c517c3ab1520d3b8d832cd36d1095f38d0ba3e8377aa2004",
+      "bytes": 9736,
+      "matchesW07Final": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+      "sha256": "fd55eb45af1166c49b8302d925cb9bf14bc189665f2dbd11f3a661f0330018b5",
+      "bytes": 14119,
+      "matchesW07Final": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-coast-source.test.ts",
+      "sha256": "ee3a980d39a5b13fe17547c8b12fc51f066a76ea003576ee6cfc2f63ba739909",
+      "bytes": 25321,
+      "matchesW07Final": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-vegetation.test.ts",
+      "sha256": "05dd0282c751167c03490d71a83e4f04d1859ef8c8ac11528f662a3a8ceeffb8",
+      "bytes": 15971,
+      "matchesW07Final": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+      "sha256": "6cc02b9d07b7f3180ce515cc39f093a0d89d8c2487ddfe4bdccd68c99d097b9f",
+      "bytes": 2143,
+      "matchesW07Final": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+      "sha256": "8efd8c5bc62184ff1fb1ea77dbc141a1ab9e665e8af787627c77cf9d10a282a8",
+      "bytes": 8284,
+      "matchesW07Final": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+      "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c",
+      "bytes": 4071,
+      "matchesW07Final": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+      "sha256": "abe6b53b1e5927b4756823b133e2b704a417a533bb520d94eb1c4a5df5fab86f",
+      "bytes": 2746,
+      "matchesW07Final": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/player/input.ts",
+      "sha256": "322821a12db4b59fd5c448c578f0adafce86222b674d25a850b976b6de3c63b9",
+      "bytes": 11833,
+      "matchesW07Final": true
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
+      "sha256": "fbc9380f96223d9c6345fae2df1c11a5f278c9bc6a6704e2f948162594cbd931",
+      "bytes": 26308,
+      "matchesW07Final": true
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts",
+      "sha256": "59957019db4330ff1160851ec10326ee21fa1b8b6c1f372bb895b3af1b3aa89e",
+      "bytes": 7545,
+      "matchesW07Final": true
+    }
+  ],
+  "statusPorcelain": "",
+  "cleanOwnWorktree": true,
+  "testsBuildBrowser": "NOT_RUN_IMMUTABLE_REVIEWED_COPY_ONLY",
+  "productWriteHold": true,
+  "mobileOwnerDecision": "OPEN_NOT_SELF_ACCEPTED"
+}

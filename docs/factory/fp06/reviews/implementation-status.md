@@ -1,6 +1,6 @@
 # FP06 Implementierungsstatus
 
-Stand: 2026-10-11 19:36 UTC. `PASS` bezeichnet ein abgeschlossenes Paketgate. `FAIL` benennt eine tatsächlich fehlgeschlagene erforderliche Prüfung; laufende Korrekturen ändern diesen Befund erst nach Verifikation. `NOT_RUN` gilt für noch nicht ausgeführte Prüfungen. Tatsächlich ausgeführte Teilprüfungen stehen im jeweiligen Bericht. Die maßgeblichen Gates und Branch-/Worktree-/Schreibgrenzen sind in `source-lock.json` und `write-ownership.json` gebunden.
+Stand: 2026-10-11 20:10 UTC. `PASS` bezeichnet ein abgeschlossenes Paketgate. `FAIL` benennt eine tatsächlich fehlgeschlagene erforderliche Prüfung; laufende Korrekturen ändern diesen Befund erst nach Verifikation. `NOT_RUN` gilt für noch nicht ausgeführte Prüfungen. Tatsächlich ausgeführte Teilprüfungen stehen im jeweiligen Bericht. Die maßgeblichen Gates und Branch-/Worktree-/Schreibgrenzen sind in `source-lock.json` und `write-ownership.json` gebunden.
 
 Aktuell geprüftes `origin/main`: `e40592c113b72a8dc93725187f92cf948e07f44d` (erneutes tatsächliches `git ls-remote` zwischen 17:22:00 und 17:22:34 UTC). Kein Mainmerge, Push oder Veröffentlichung.
 
@@ -13,18 +13,20 @@ Aktuell geprüftes `origin/main`: `e40592c113b72a8dc93725187f92cf948e07f44d` (er
 | W04 | PASS | `/root/fp06_domain` | `6929bf2447b72c9f3f8fa3bcae0a59c0691966c0` | [W04 Paketbericht](w04-package-report.md) |
 | W05 | PASS | `/root/fp06_domain` | `26d5e892c2b401b9011234dabf86955af7462fb8` | [W05 Paketbericht](w05-package-report.md) |
 | W06 | PASS | `/root/fp06_integrator` | `2c044e02f1f31a2db3de3a0df9156bd71a431a7a` | [W06 Paketbericht](w06-package-report.md) |
-| W07 | NOT_RUN | `/root/fp06_integrator` | `—` | Paketabschluss ausstehend; tatsächlicher Mesa-Normalbrowser100 besteht17/17 in28.365s. Nativebewegung, Cargo, bezahlter208kgCutter,14bestätigte Rasterschritte zum unabhängigen zweiten Standort, spezifisches BOM_MISSING, volle Material-/Nativegleichheit und Disposal bestehen. Nur Testbestätigung14/15 geändert;Runtime29bytes unverändert, unabhängig geprüft. Scoped Manifest-/Git-/LFS-/Commitreview folgt. |
+| W07 | PASS | `/root/fp06_integrator` | `823fe92df37aa11ac5c59e9aa377cbfdc84e3c30` | [W07 Paketbericht](w07-package-report.md); actual17/17Normalbrowser,89Runtimeunitprüfungen,Build99,1230Commitpfade/212LFS/1201Manifestrefs und tatsächlicher saubererHEAD gebunden. |
 | W08 | PASS | `/root/fp06_domain` | `8d22fc9907d84bf2ff6b257299ff47fb23b112ff` | [W08 Paketbericht](w08-package-report.md) |
-| W09 | BLOCKED | `/root/fp06_integrator` | `—` | Vorgänger: W04, W07, W08 |
+| W09 | NOT_RUN | `/root/fp06_integrator` | `—` | Implementierung läuft auf `7b23d072670ecfd4b0b5f1c3f037539f24e5b07e` nach bytegeprüften W04/W08-Kopien. 25 Integratorpfade freigegeben; erste vier echte Fachtests: drei erwartete Assertionfehler, eine zulässige Bereichsabweisung. Paketgate noch nicht ausgeführt; Transportregel akzeptiert. |
 | W10 | BLOCKED | `/root/fp06_integrator` | `—` | Vorgänger: W09 |
 | W11 | BLOCKED | `/root/fp06_integrator` | `—` | Vorgänger: W10 |
 
 Integratorbranch: `codex/hestia-fp06-integrator-2026-10-11`; Domainbranch: `codex/hestia-fp06-domain-2026-10-11`; W00-/Controldokumente: `codex/hestia-fp06-w00-2026-10-11`. Höchstens zwei Implementierungswriter, gemeinsam genutzte Host-/Physics-/Save-/Contractdateien ausschließlich Integrator. Domain ist derzeit im Produkt-Writehold; unabhängige Reviewer schreiben keinen Produktcode.
 
-Die bisherigen D01–D11-Antworten bleiben gültig. Für W09 steht eine enge zusätzliche Native-Handlingfreigabe aus: D11 umfasst ausdrücklich feste Owner, der vorgeschlagene einzelne Kin→Fixed-Träger benötigt eine Ergänzung. Nur davon abhängige Writes sind gesperrt; siehe [konkreter Vorschlag](../proposals/native-handling-v1.md). Menschliche Art-/Gameplayabnahme bleibt separat `PENDING_OWNER`; daraus wird kein technischer Gesamt-PASS behauptet. W12–W29 sind ausgeschlossen.
+Die bisherigen D01–D11-Antworten bleiben gültig. Die konkrete D11-Ergänzung für genau einen Native-Transportträger wurde tatsächlich freigegeben; siehe [Vorschlag und Grenzen](../proposals/native-handling-v1.md). Es stehen keine benötigten Ownerantworten aus. Menschliche Art-/Gameplayabnahme bleibt separat `PENDING_OWNER`; daraus wird kein technischer Gesamt-PASS behauptet. W12–W29 sind ausgeschlossen.
 
 Historische Grenzen bleiben sichtbar: W02s anfänglicher Business-RED vor Implementierung war wegen Importfehlern `NOT_RUN` und damalige TDD-Konformität `FAIL`; spätere echte Sicherheits-REDs ändern diese Historie nicht. W05s globale historische LFS-Cacheprüfung ist kein Repository-Gesamt-PASS. W08s früherer Vor-Kompressions-Bytevergleich war `NOT_AVAILABLE`. Tests vor späteren Korrekturen gelten nur für ihre tatsächlich gebundenen Bytes; keine erfundene erneute Gesamtausführung.
 
 Blender4.3.2 ist verfügbar und tatsächlich gestartet; der Nutzer erlaubt dessen Installation bei Bedarf und relevante GameDevelopmentStudio-Workflows für den verbleibenden W00–W11-Scope. [Capabilitynachweis](blender-capabilities.json). Assetgeneration bislang NOT_RUN, `game-dev`-CLI hier nicht verfügbar.
 
 Parallel beauftragte Umgebungskopie: lokaler Snapshot plus isolierte zweite Dateibauminstanz geprüft; keine zweite Cloud-Maschine oder externe Speicherung mangels Lifecycletools. [Copybericht](cloud-environment-copy.md), [Prüfbeleg](cloud-environment-copy-receipt.json). Zeitpunkt des Snapshots liegt vor den späteren Diagnoseänderungen.
+
+Der reproduzierbare Mesa-Setupentwurf wurde anschließend tatsächlich gespeichert (Revision 1→2); beide Skripte stimmen beim unabhängigen erneuten Lesen exakt mit dem Vorschlag überein. [Speicherbeleg](environment-draft-save-receipt.json), [Root-Readback](environment-draft-root-readback.json). Der Entwurf ist unveröffentlicht; keine zweite Live-Cloud-Instanz erzeugt.

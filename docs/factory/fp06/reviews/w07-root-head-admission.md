@@ -1,0 +1,7 @@
+# W07 tatsächlicher Commit: Root-Admission
+
+PASS. Root hat am 2026-10-11T19:51:37.478738+00:00 tatsächlichen HEAD `823fe92df37aa11ac5c59e9aa377cbfdc84e3c30` und Parent `d5502ae7fd5431d58eda51bea062c54691ebe3c2` gelesen. Genau1230 Commitpfade stimmen mit der unabhängig geprüften1230-Pfad-Stage überein; aktueller Index entspricht HEAD, das eigene Worktree ist sauber. Alle30 Produktdateien wurden direkt aus HEAD gelesen und mit Seal5138bdc7 sowie Arbeitsbytes verglichen: alle SHA/Größen stimmen. Der237369-Byte-Manifestblob aus HEAD hat unverändert SHAedb7652f3bd2e1fa8262164fc428262f66095371d51f3b0e58948f25e55c2e40.
+
+Unabhängiger Stage-Revieweraf2cf4 hatte alle1201 Manifestrefs,1018 Gitblobs und212 echte LFS-Cacheinhalte geprüft. Root hat die Commit-/Indexgleichheit geprüft; keine erfundene erneute212-LFS-Ausführung. Zusätzlich selbst gehashter Postcommit-Autorreceiptb70c523f42f5d5011e62faad2a03b1a89540230fe5536532bdc6c282a3e47741 bindet alle1232 HEADpfade inklusive zweier unveränderter Grantdateien,1020 Gitblobs und212LFS ohne Fehler. RemoteLFSupload/Checkout wird nicht behauptet.
+
+Fach-/Sourcequalität, tatsächliche89 betroffene Runtimeunitprüfungen, Originalbuild99 und unabhängiger tatsächlicher17/17Normalbrowser100 sind vorliegend gebunden; historische Fehler behalten ihre Klassifikation. PaketW07 kann für seine dependierenden W09-Arbeiten freigegeben werden. Menschliche Artabnahme, Hardwareperformance, Save und Produktionskreislauf sind eigene spätere Gates. Kein Push/Mainmerge oder erneuter Test ausgeführt.

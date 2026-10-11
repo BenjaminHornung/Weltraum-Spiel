@@ -1,0 +1,17 @@
+{
+  "schema": "hestia.root.environment-draft-readback/v1",
+  "checkedAtUtc": "2026-10-11 20:07:29 UTC",
+  "checks": {
+    "sameDraftId": true,
+    "sameBaseVersion": true,
+    "revision2": true,
+    "installExact": true,
+    "startExact": true
+  },
+  "privateValuesPrintedOrSerialized": false,
+  "scope": "Independent root fresh connector read of IDs/revision/two scripts. Other preserved fields rely on agent's exact pre-/postread evidence; root did not independently reread pre-save state.",
+  "published": false,
+  "secondLiveCloudInstanceCreated": false,
+  "installerOrBrowserExecuted": false,
+  "agentSaveReceiptSha256": "3f0ba49ed354b94fb1b19ce4d53388ac04166759eba7e33b5941baba2613652d"
+}

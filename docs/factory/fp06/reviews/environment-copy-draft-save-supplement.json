@@ -1,0 +1,45 @@
+{
+  "schema": "hestia-environment-copy-mesa-draft-save-supplement-v1",
+  "createdUtc": "2026-10-11T20:03:24.503761+00:00",
+  "originalArchiveSha256": "a2aa653f3fdb9b13780407f32511752dc6ab61ef9a39a92199ea6ad6096a602d",
+  "originalSnapshotChanged": false,
+  "priorMesaSupplementSha256": "2a7849a7b3e6b236fb289c6c27c355393aa79d3da74e8dc679d3a843965d8fdf",
+  "draft_id": "98938894-a900-4390-9100-649dcfc53d6c~cecfgdraft_6acb4fee9034819ebb62b8638953ace5",
+  "base_version_id": "98938894-a900-4390-9100-649dcfc53d6c~cecfgver_6acb4e5b2ae4819ea13dfe0d35207f63",
+  "revisionBefore": 1,
+  "revisionAfter": 2,
+  "draftSaveStatus": "saved",
+  "requiresPublish": true,
+  "submittedFields": [
+    "install_script",
+    "start_skill"
+  ],
+  "readbackFieldHashes": {
+    "install_script": {
+      "sha256": "34480b07198661fa9e8f0a146195fe1bffd4e01ebf9ab92edc65dc7e957ea903",
+      "bytes": 4469,
+      "proposalExactlyEqual": true
+    },
+    "start_skill": {
+      "sha256": "27eee50e81099f380b685c3de079af4f4465cb742acf4ca11420f8aa1b0ae9de",
+      "bytes": 3842,
+      "proposalExactlyEqual": true
+    }
+  },
+  "preservedFieldEqualityFlags": {
+    "repositories": true,
+    "network_policy": true,
+    "runtime_requirements": true,
+    "pending_runtime_requirements": true,
+    "secrets": true
+  },
+  "wrapperSha256": "47b081898a76e3f36d43ce06697990adb093ebe2eaeed8ef1b484fa8bffd5ab9",
+  "saveReceiptPath": "/workspace/.cloud-setup/fp06-w07-mesa-setup-proposal/draft-save-receipt.json",
+  "saveReceiptSha256": "3f0ba49ed354b94fb1b19ce4d53388ac04166759eba7e33b5941baba2613652d",
+  "installerExecuted": false,
+  "currentActivationChanged": false,
+  "browserRun": false,
+  "platformPublished": false,
+  "secondCloudInstanceCreated": false,
+  "externalDurability": "Original portable package and supplements remain local; draft persistence is confirmed, cloud snapshot publication is not."
+}

@@ -1,0 +1,60 @@
+{
+  "schema": "hestia-mesa-environment-draft-save-v1",
+  "draft_id": "98938894-a900-4390-9100-649dcfc53d6c~cecfgdraft_6acb4fee9034819ebb62b8638953ace5",
+  "base_version_id": "98938894-a900-4390-9100-649dcfc53d6c~cecfgver_6acb4e5b2ae4819ea13dfe0d35207f63",
+  "saveStartedUtc": "2026-10-11 20:01:51 UTC",
+  "saveCompletedUtc": "2026-10-11 20:02:23 UTC",
+  "toolResult": {
+    "draft_id": "98938894-a900-4390-9100-649dcfc53d6c~cecfgdraft_6acb4fee9034819ebb62b8638953ace5",
+    "requires_publish": true,
+    "status": "saved"
+  },
+  "submittedFields": [
+    "install_script",
+    "start_skill"
+  ],
+  "proposalSha256": "a375352d696182fd6e7f4085e4c050b75e4fd08164f6d665704eca6851e42010",
+  "preflight": {
+    "sameDraft": true,
+    "sameRevision": true,
+    "sameBaseVersion": true,
+    "sameInstallScript": true,
+    "sameStartSkill": true
+  },
+  "readback": {
+    "sameDraftId": true,
+    "sameBaseVersion": true,
+    "revisionBefore": 1,
+    "revisionAfter": 2,
+    "revisionAdvanced": true,
+    "exactInstallScript": true,
+    "exactStartSkill": true,
+    "preservedFieldEqualityFlags": {
+      "repositories": true,
+      "network_policy": true,
+      "runtime_requirements": true,
+      "pending_runtime_requirements": true,
+      "secrets": true
+    }
+  },
+  "privateEnvironmentOrSecretValuesSerialized": false,
+  "installerExecuted": false,
+  "browserRun": false,
+  "originalSnapshotChanged": false,
+  "platformPublished": false,
+  "secondCloudInstanceCreated": false,
+  "requiresPublish": true,
+  "readbackFieldHashes": {
+    "install_script": {
+      "sha256": "34480b07198661fa9e8f0a146195fe1bffd4e01ebf9ab92edc65dc7e957ea903",
+      "bytes": 4469,
+      "proposalExactlyEqual": true
+    },
+    "start_skill": {
+      "sha256": "27eee50e81099f380b685c3de079af4f4465cb742acf4ca11420f8aa1b0ae9de",
+      "bytes": 3842,
+      "proposalExactlyEqual": true
+    }
+  },
+  "readbackFieldsFileSha256": "510ec85823ac8a5efdca790a540ed069976c48f76263c6c11b7abc6ad11b9beb"
+}
