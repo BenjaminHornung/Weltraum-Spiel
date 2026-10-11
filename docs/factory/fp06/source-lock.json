@@ -4055,14 +4055,21 @@
         "protected": "W03W04W08 observedunchanged; mutable2d836d Source not finalseal"
       },
       "materialBindingCacheGoalV2": {
-        "status": "AUTHORIZED_WITHIN_CURRENT_SCOPE_CONDITIONAL_ON_INDEPENDENT148_GUARD_CLOSURE",
+        "status": "AUTHORIZED_EXISTING_SCOPE_ACTIVATION_WAITS_EXTERNAL_OUTPUT_ALIAS_CLOSURE",
         "path": "docs/factory/fp06/reviews/w09-material-binding-cache-bounded-goal-v2.json",
-        "sha256": "148c4f56f18c5a1ae6f132a6fa9e64a9826665bf3d04dceea9739892bb901b82",
+        "sha256": "c2d16d1fbb9b81105383c99f85461cacee387881395bc8ea5cc7ed88f3e2f521",
         "maxCandidates": 1,
         "extraProfiles": 0,
         "originalTimeoutMs": 5000,
         "historicalGoalOutcome": "NOT_MET",
         "ownerDecision": "No product Ownerdecision changed; startsiteV2 still pending"
+      },
+      "materialBindingCachePreflight": {
+        "status": "READONLY_INITIAL_W02_ADMISSION_GAP_CLOSED148149_SAFE_CACHE_RECOMMENDATION_ONLY",
+        "path": "docs/factory/fp06/reviews/w09-material-binding-cache-preflight.md",
+        "sha256": "7ff79edc7e150e49c514f4a0cdfabd38b37c8ec66db793bddb7e5069c39a4c30",
+        "currentSource": "94762ca1cc1139a1c4f2ea596eea88fbd25093431b29e20e79a96d54ccf2d4b6",
+        "limits": "Source/evidence read only, noownjobs/newruntimecandidate/performancePASS. Aliasfinding subsequent separateArchitectureReview notclosedbythisreport."
       }
     },
     "W10": {

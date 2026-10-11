@@ -3,7 +3,7 @@
   "id": "paid-band-exact-material-binding-v2",
   "authorizedBy": "/root orchestrator within existing W09 25-path grant and original user implementation/performance authorization",
   "authorizedAtUtc": "2026-10-11T23:09:55.834527+00:00",
-  "activationCondition": "Independent readonly review confirms actual144-147 REDs closed by148 guards at94762ca1cc1139a1c4f2ea596eea88fbd25093431b29e20e79a96d54ccf2d4b6 plus149originalBuildPASS. Until then no performance candidate.",
+  "activationCondition": "Independent readonly review confirms actual144-147 REDs closed by148/149 AND the subsequently found external mutable-output alias/accessor finding closed by an actual businessRED\u2192verified freshly checked return, focused guards and originalBuild; bind final Sourcehash. Until all current concrete contract findings close, no performance candidate.",
   "historicalGoal": {
     "id": "paid-band-step-budget-v1",
     "maximumIterations": 2,
@@ -33,5 +33,6 @@
     "Inventory/receipts/native-source/power/packet/custody publication barriers",
     "Pending five startsiteV2 paths remain UNGRANTED"
   ],
-  "claimLimits": "Local unit wall-time observations, not hardware/browser/GPU/final W09 package evidence."
+  "claimLimits": "Local unit wall-time observations, not hardware/browser/GPU/final W09 package evidence.",
+  "activationConditionAmendment": "New external mutable-output alias finding arose after original conditional goal publication; candidate count remains1, no candidate executed at amendment."
 }
