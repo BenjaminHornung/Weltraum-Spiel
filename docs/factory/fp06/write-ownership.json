@@ -3565,6 +3565,35 @@
         "laterWriterReportedActualPhases": "101 powered finite cable/WIP/SOC GREEN;102 transient activeJob serviceblock RED→103 GREEN;104 restart-port-capacity RED,105 not independently assessed yet",
         "laterIndependentFollowup": "IN_PROGRESS_READONLY_W00_ARCHITECTURE",
         "limits": "Mutable source drift disclosed. Synthetic Native terrain/sourceproof test and scoped Host tests do not prove complete normal browser route/loop, shared save or package gate."
+      },
+      "receiverReleaseClosureReview": {
+        "status": "R1_RELEASE_RETIREMENT_SCOPED_SOURCE_AND_RECEIVER_PASS_NO_PACKAGE_GATE",
+        "path": "docs/factory/fp06/reviews/w09-receiver-release-closure-review.md",
+        "sha256": "ee188e6f7a45beda9e97e472a5d296c693af14ecd6dce502bc8d430178b4ce58",
+        "supersedesOnly": "R1 of immutable earlier f82ef76b32edd6bce59b1c6c18f315f7b3489de7354cdf296847f930219a88dc report;87 actualassertionRED→88singleGREEN42skipped; actualFourReceiverKeys retained after one accepted remove and second rejected remove",
+        "headerCorrection": {
+          "preservedPreviousPath": "docs/factory/fp06/reviews/w09-receiver-release-closure-review.previous.md",
+          "sha256": "a9febbc57b3f6af9939a2c41eec332508079ce657de27cabf0a01479eac75243",
+          "reviewTimeHead": "NOT_OBSERVED",
+          "freshReadAtUtc": "2026-10-11T22:18:01.369211Z",
+          "freshActualIntegratorHead": "aa2e5d7c335453fc555a98ccd35e9f564c596e93"
+        },
+        "limits": "Actual Three receiver/fakeGPU/controlledNative replies; Source proves retained capture/slotcost and no ordinary rollback/Refund/Ready. No integrated Native membership/browser/whole material loop/package gate."
+      },
+      "serviceHoldFollowupReview": {
+        "status": "TERMINAL_SERVICE_RECOVERY_CLOSED_FIRST_CLEAR_CREDIT_OPEN_AT_HISTORICAL_REVIEW_END_D03_PORT_RESERVE_SCOPED_PASS",
+        "path": "docs/factory/fp06/reviews/w09-service-hold-followup-review.md",
+        "sha256": "78adda3f161514f0e57c97f82da0219b40499fa0e7c3c9dd645decbf18713814",
+        "laterWriterActualPhases": "108 first-clear-credit AssertionRED→109 GREEN1/29skipped;107 native-confirmation-loss GREEN1/29skipped; independent closure followup IN_PROGRESS",
+        "limits": "Source drift recorded;109 is later and does not rewrite historical open finding. SourceSupply actual native confirmation and full cable/paid-belt/browser/material loop not inferred from105 alone."
+      },
+      "powerConnectionReachSourcePreflight": {
+        "status": "SOURCE_ONLY_WHOLE_REGION_REACH_SUPPORT_POSITIVE_NATIVE_LOS_ROUTE_AND_CONNECTION_NOT_RUN",
+        "path": "docs/factory/fp06/reviews/w09-power-connection-reach-source-preflight.md",
+        "sha256": "49ee77e4aa58fd136cbb77f654578684640bceaf182ab44b84be65ce4b439bc9",
+        "actualSourceWitness": "78 natural125mm columns ix94–99/iz157–169; whole player standwindow x[-3.94,-3.81]/z[3.935,4.94], naturalTop1.25m; concrete Actor[-3.875,2.16,4.9375]/CABLE depot[-3.875,1.25,3.9375]; both socket distances<3m; finite cablecost6500mm",
+        "commandBlockerAtReviewEnd": "connect-power rejects same native carrier custody evenDeposited; partial40m cannot silently change fixed Native mass",
+        "routineImplementationDirection": "Sourcebound exact neededCableJob6500mm;33500mm retains inCargo; wholedepotcustody jointNativeRelease+Material+Graph; existingCABLE40 partialrejection stays. Within existing granted closedjob/profile/scope; no broad profilefamily or newOwnerdecision."
       }
     },
     "W10": {

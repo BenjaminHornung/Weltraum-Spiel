@@ -1,0 +1,23 @@
+{
+  "schema": "hestia.fp06.main-freshness/v1",
+  "command": [
+    "git",
+    "ls-remote",
+    "--heads",
+    "origin",
+    "main"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel",
+  "startAtUtc": "2026-10-11T22:17:09.681728+00:00",
+  "endAtUtc": "2026-10-11T22:17:10.387328+00:00",
+  "wallSeconds": 0.7231981430013548,
+  "exitCode": 0,
+  "verifiedRemoteMainSha": "e40592c113b72a8dc93725187f92cf948e07f44d",
+  "auditPinMatches": true,
+  "stdout": "e40592c113b72a8dc93725187f92cf948e07f44d\trefs/heads/main\n",
+  "stderr": "",
+  "originalWorktreePorcelain": "",
+  "originalWorktreeClean": true,
+  "actualWorktrees": "worktree /workspace/Weltraum-Spiel\nHEAD e40592c113b72a8dc93725187f92cf948e07f44d\nbranch refs/heads/work\n\nworktree /workspace/Weltraum-Spiel/.worktrees/fp06-domain-2026-10-11\nHEAD 6929bf2447b72c9f3f8fa3bcae0a59c0691966c0\nbranch refs/heads/codex/hestia-fp06-domain-2026-10-11\n\nworktree /workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11\nHEAD aa2e5d7c335453fc555a98ccd35e9f564c596e93\nbranch refs/heads/codex/hestia-fp06-integrator-2026-10-11\n\nworktree /workspace/Weltraum-Spiel/.worktrees/fp06-ui-w09-2026-10-11\nHEAD 28de0ce99f5f6fa9ca3bed415bcb34c7b5e3117a\nbranch refs/heads/codex/hestia-fp06-ui-w09-2026-10-11\n\nworktree /workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11\nHEAD 528d8a8b996f4aaead0ba345d5220c5aaea37a93\nbranch refs/heads/codex/hestia-fp06-w00-2026-10-11\n\n",
+  "limits": "Read-only ls-remote; no fetch/branch mutation/push. Physical worktrees are not evidence of active writers; external uncommitted changes unknown."
+}
