@@ -1272,7 +1272,9 @@
         "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
         "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
         "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
-        "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts"
+        "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+        "apps/weltraum-browser/src/hestia-prototype/player/input.ts",
+        "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts"
       ],
       "grantedWriteSet": [
         "apps/weltraum-browser/src/factory/construction/placement.ts",
@@ -1301,7 +1303,9 @@
         "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
         "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
         "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
-        "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts"
+        "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+        "apps/weltraum-browser/src/hestia-prototype/player/input.ts",
+        "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts"
       ],
       "evidenceWriteSet": [
         "apps/weltraum-browser/evidence/factory/w07/<actual-run-id>/**"
@@ -1435,24 +1439,22 @@
         "wrapperSeconds": 1.51,
         "status": "WRITER_REPORTED_PENDING_SEALED_EVIDENCE_REVIEW"
       },
-      "runtimeWriteHold": true,
+      "runtimeWriteHold": false,
       "currentNarrowWriteGrant": {
-        "authorizedAtUtc": "2026-10-11T14:23:53.728822+00:00",
+        "authorizedAtUtc": "2026-10-11T14:37:52.124736+00:00",
         "productPaths": [
+          "apps/weltraum-browser/src/hestia-prototype/player/input.ts",
+          "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
+          "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+          "apps/weltraum-browser/src/hvp/hvpBootstrap.ts"
+        ],
+        "tests": [
+          "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
+          "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
           "apps/weltraum-browser/tests/e2e/factory-placement.spec.ts"
         ],
-        "evidence": "own W07 run only",
-        "purpose": "Genuine short keyboard.press taps; release keys before read-only Native/CDP polls; bounded closed-loop actual player coordinates; continue same Page/Context/World/session across original <=30s serial cases",
-        "excluded": "No runtime, terrain, reach, tick, tempo, timeout, queue, DOMdispatch, testbridge, teleport changes",
-        "basis": "Actual overshoot trace in fourth-browser run; Root explicit instruction before test-only writes",
-        "shortPressClarification": {
-          "authorizedAtUtc": "2026-10-11T14:29:42.017924+00:00",
-          "actualHoldMilliseconds": [
-            25,
-            100
-          ],
-          "condition": "Only real trusted keyboard.press with measured hold; release before read, bound max8taps/axis from current targetdistance. No runtime speed/tick/reach/timeout/queue change."
-        }
+        "evidence": "ownW07only",
+        "purpose": "Close actual source-proven lost/no-frame input and delayed neutralization path through same native authority. All other granted W07 runtime paths stay held."
       },
       "reviewedHistoricalPhase": {
         "patchSha256": "bc0986f9b508751644e6f392073caa8da293919b3d689dd96fe8df50c47909c1",
@@ -1525,8 +1527,26 @@
         "patchBytes": 176705,
         "other26paths": "byteidentical to fourth phase; Native/Mount code held",
         "typeScript": "PASS actual Log42",
-        "browser": "RUNNING; no PASS claimed",
+        "browser": "FAIL:5 PASS /1 FAIL /9 NOT_RUN;79.93s exit1. Eight actual100ms presses again yielded no movement while confirmed Native ticks advanced; old paired RAF input sampling/Read flush drops intents between frames.",
         "actual15SerialCases": "same Page/Context/World/session and original30s budgets"
+      },
+      "inputIntentFollowup": {
+        "authorizedAtUtc": "2026-10-11T14:37:52.124736+00:00",
+        "status": "AUTHORIZED_EXACT29PATH_PHASE; genuine businessRED before implementation required",
+        "newPaths": [
+          "apps/weltraum-browser/src/hestia-prototype/player/input.ts",
+          "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts"
+        ],
+        "currentlyWritableProductionDelta": [
+          "apps/weltraum-browser/src/hestia-prototype/player/input.ts",
+          "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
+          "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+          "apps/weltraum-browser/src/hvp/hvpBootstrap.ts"
+        ],
+        "tests": "new hvp-player-input.test.ts and existing granted bootstrap fixtures; existing E2E may only adapt actual ordinary user inputs",
+        "contract": "Factory-only opt-in event-driven level intent and prompt neutralization through existing bounded Read(input); preserve Legacy default. Single latest coalesced input, one jump edge, no artificial movement tick. Recheck busy/mutating/bodyPending/held/paused/disposed at dispatch, suppress stale queued movement, protect in-flight Read publication during mutating/held phases.",
+        "excluded": "No new IPC kind/timer/queue, dependency, timeout/budget/tempo/NativeTick/pose/authority/reach/terrain change. Latest coalescing does not promise motion for every0ms tap.",
+        "verification": "Collected noRAF/keyDown/keyup/stop/jump/defaultLegacy/clientBusy/coalescing/hold/disposeREDs then minimum implementation, focus GREEN, fullbuild, actualNativebrowser, new29pathSeal/review"
       }
     },
     "W08": {
