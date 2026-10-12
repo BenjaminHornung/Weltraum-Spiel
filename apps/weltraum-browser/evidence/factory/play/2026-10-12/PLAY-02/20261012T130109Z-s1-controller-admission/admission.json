@@ -1,0 +1,35 @@
+{
+  "actor": "/root/play_integrator",
+  "atUtc": "2026-10-12T12:59:31.450676+00:00",
+  "sourceCommitSha": "572c247bd96757d194e12524548a3ea538caab90",
+  "beforeHead": "69a804fd53988334c6cbfc056951ed1c79b454f9",
+  "grantSha256": "0e37fe90293717adcd3b77ef3da1132ca8ae7a734586fa8aa2226e34807d973f",
+  "files": [
+    {
+      "path": "apps/weltraum-browser/src/factory/presentation/factoryS1Assets.ts",
+      "before": {
+        "bytes": 8499,
+        "sha256": "740ba925876067b4b6e2a8aa5c5a4ca1ed549c64308c5cae69b49d95995561b5",
+        "state": "EXACT_ORIGINAL_UNTRACKED_HOLD_SEED"
+      },
+      "source": {
+        "bytes": 10747,
+        "sha256": "cb3e400ef173aa397bf35a096c9038b3d3e1aafb1990228f4fbf83a33f80fe21"
+      }
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/factoryS1Assets.test.ts",
+      "before": {
+        "bytes": 7097,
+        "sha256": "a62f2a3b86fd139f43fa2e87cb2203c7bded221a2b8f07b1ca344183a49ee082",
+        "state": "EXACT_ORIGINAL_UNTRACKED_HOLD_SEED"
+      },
+      "source": {
+        "bytes": 15097,
+        "sha256": "54c666c2517d7ca6c41903b1765f34cb6b23146527eb96fc442e371fb9c4fbb1"
+      }
+    }
+  ],
+  "reviewSha256": "520559aed5e1e60b388b8515307ffdab44e90c1f16c0018860d2140e1750c8b8",
+  "scope": "Immutable pure-controller admission; runtime/S1/W09/Owner not accepted"
+}
