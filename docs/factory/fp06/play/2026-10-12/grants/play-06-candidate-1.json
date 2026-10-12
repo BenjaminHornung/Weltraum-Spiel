@@ -1,0 +1,45 @@
+{
+  "schema": "hestia.fp06.play-performance-candidate/v1",
+  "milestone": "PLAY-06-C1",
+  "actor": "/root/play_integrator",
+  "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+  "authorizedAtUtc": "2026-10-12T07:49:27.969748+00:00",
+  "status": "GRANTED",
+  "writeSet": [
+    "apps/weltraum-browser/src/factory/conveyor/beltReference.ts",
+    "apps/weltraum-browser/tests/unit/factory/conveyor.test.ts"
+  ],
+  "beforeBytes": [
+    {
+      "path": "apps/weltraum-browser/src/factory/conveyor/beltReference.ts",
+      "bytes": 20546,
+      "sha256": "45fb7e4d0bb618a07d215ab923db4521c1bd46203428b49760e5140f402be211"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/conveyor.test.ts",
+      "bytes": 20187,
+      "sha256": "31c9212810bea211f56b9145efa6aef7b926272022e843124afe2bf35b5f7682"
+    }
+  ],
+  "attribution": {
+    "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T072849Z/attribution-report.md",
+    "sha256": "b024fe4e50d9ffffb65246660f9c1e8165397132e8253cfa5e8b6da3427f14a4"
+  },
+  "budget": {
+    "runtimeCandidates": 1,
+    "newProfiles": 0,
+    "freshUnprofiledOriginalPaidBandPair": 1
+  },
+  "constraints": [
+    "Business RED first; measured W08 repeated validation/canonicalization only; no broad refactor",
+    "All public validation and canonical receipts preserved for mutable, untrusted and restored inputs",
+    "Identity reuse permitted only if actual deep immutability/own data/canonical projection is proved; accessor/prototype/own-array-method inputs do not obtain unsafe reuse",
+    "No input binding omitted: full power receipts, tick, source, ports, receiver capacity, replay and quantities stay in canonical bytes",
+    "Cold and warm output byte equality, copied/restored inputs, failed validation, power loss/full output/no material-progress loss guard tests",
+    "No W02/W03/W04/global serialization/cache/config/dependency/timeout/queue-limit changes",
+    "Original 6563-byte paid-band test block remains byte-identical, same order and 5000ms limit; preserve all earlier FAILs",
+    "Run relevant conveyor regressions and build; no automatic further profile/candidate on FAIL",
+    "Coordinate UI CPU lease; honest CPU/browser/hardware results remain separate"
+  ]
+}

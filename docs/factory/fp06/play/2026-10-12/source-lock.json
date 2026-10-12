@@ -126,12 +126,15 @@
       "status": "IN_PROGRESS",
       "grant": "grants/play-01-integrator.json",
       "implementationWriteHold": false,
-      "ownerTerrainAcceptance": "OWNER_REVIEW_PENDING"
+      "ownerTerrainAcceptance": "OWNER_REVIEW_PENDING",
+      "exactDerivedFloraDelta": "grants/play-01-flora-delta.json"
     },
     "PLAY-02": {
-      "status": "IN_PROGRESS",
+      "status": "ARTIFACTS_SEALED_REVIEW_PENDING",
       "grant": "grants/play-02-art.json",
-      "ownerArtAcceptance": "OWNER_REVIEW_PENDING"
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING",
+      "sealedCommitSha": "e752cc7fce43a50b4bcb4800d9d27584b44b6a0e",
+      "runtimeAdoption": "NOT_RUN"
     },
     "PLAY-03/04/06": {
       "status": "NOT_RUN",
@@ -149,6 +152,12 @@
     "W11": {
       "status": "BLOCKED_DEPENDENCY",
       "blockingGate": "W10_PASS"
+    },
+    "PLAY-06-attribution": {
+      "status": "NOT_RUN",
+      "grant": "grants/play-06-attribution.json",
+      "productWriteSet": [],
+      "runtimeCandidateGranted": false
     }
   },
   "newAuthorizationBoundaries": {
@@ -225,5 +234,72 @@
       "bytes": 7458,
       "sha256": "7388c9a34b2ba37e07b67a4c857d24ac861a74135157222ed9b17bc93307c42f"
     }
-  ]
+  ],
+  "actorTransfers": [
+    {
+      "atUtc": "2026-10-12T07:06:15.293370+00:00",
+      "previousActor": "/root/fp06_integrator",
+      "newActor": "/root/play_integrator",
+      "reason": "Actual prior agent model-capacity error; interrupted with errored previous status. No retry/push/reset/rebase. Same branch/worktree and authorized drafts retained.",
+      "observedHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceDraftFiles": [
+        {
+          "path": "apps/weltraum-browser/src/factory/factoryEntry.ts",
+          "bytes": 13673,
+          "sha256": "7e4dad82fffb27cad3f4f5064460e6c57d3b4c46f81eeca84901f9baf2e31754"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+          "bytes": 4118,
+          "sha256": "1ff5b11c5ceb027755015c8db305acc85d7dbe1db8e3ac2e68fca983f89a17e7"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+          "bytes": 3901,
+          "sha256": "faead62d37493fcdfa98c000003e2ffd125408ddd6212e9b3bb69dd0fe05f168"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+          "bytes": 10114,
+          "sha256": "107601ff938da6eee3f1db1159f8c55961a2517551b186fc0a8bbc01f8f7525a"
+        },
+        {
+          "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+          "bytes": 175196,
+          "sha256": "50e49426c05b29343d94c884184d26972209ef3c907daa2fd11a30e63fee730d"
+        },
+        {
+          "path": "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+          "bytes": 38948,
+          "sha256": "2f3fd41bea2edb1756f1b7933ac0243ee98c1e742bb4c6fe26b6756f70b09408"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+          "bytes": 3584,
+          "sha256": "1fed4863963b871262f66455e33725dc6027b439910d56d7c5d861af56e1b4f2"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+          "bytes": 4414,
+          "sha256": "1f37638fbb02b04e47c0e60b1a9f11f0cb68bfad968d40e218a64caac410e618"
+        }
+      ]
+    }
+  ],
+  "currentProgress": {
+    "atUtc": "2026-10-12T07:51:10.564126+00:00",
+    "candidateDigest": "ec8ba9b1",
+    "v2ChangedSlots": 2890,
+    "materialCreditMg": 0,
+    "normalHeavyRoute": "341kg pickup/depot/playerexit/paidFormer native PASS (partial W09); battery/cable/full16kg NOT_RUN",
+    "simulationIdleHold": "Observed FAIL during normal idle; independent attribution OPEN; fast successful route does not waive this",
+    "artHead": "e752cc7fce43a50b4bcb4800d9d27584b44b6a0e",
+    "artAcceptance": "Technical handoff supported by independent review; runtime/door/catalogguard/receipt/Owner gaps remain; writer HOLD",
+    "uiWriter": "/root/play_ui, new isolated seven-path grant",
+    "composition": "Original5000ms repeated: baseline5649ms FAIL; oneV8profile measured W08 validation/serialization cost; exactlyone new candidate grant",
+    "w09Endgate": "NOT_RUN",
+    "w10": "BLOCKED_ON_W09",
+    "w11": "BLOCKED_ON_W09_W10",
+    "humanAcceptance": "OWNER_REVIEW_PENDING"
+  }
 }

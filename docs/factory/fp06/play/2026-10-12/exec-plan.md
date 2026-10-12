@@ -35,7 +35,7 @@
 
 Root control worktree: `/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11`. Existing Integrator worktree: `/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11`. Existing W05 work and all accepted UI copies are already in the Integrator and must be inspected before replacement.
 
-Agent `/root/fp06_integrator` owns the sole implementation and CPU/browser slot initially. `/root/fp06_domain` performs the initial asset inventory and is the intended Art writer after an exact grant. `/root/w00_repo_audit` checks paths/branch/LFS boundaries; `/root/w00_architecture` prepares the bounded performance investigation. No product write is granted by this plan alone. New grant files bind base SHA, branch, worktree, exact paths and evidence location.
+Agent `/root/fp06_integrator` owned the initial implementation/CPU slot. After its actual model-capacity failure, `/root/play_integrator` is the sole active Integrator on the same candidate worktree/branch, preserving the authorized draft. `/root/fp06_domain` performed the initial asset inventory; after two actual capacity failures, the real `/root/play_art` agent owns the exact Art grant in its separate worktree. `/root/w00_repo_audit` checks paths/branch/LFS boundaries; `/root/w00_architecture` prepares the bounded performance investigation. No product write is granted by this plan alone. New grant files bind base SHA, branch, worktree, exact paths and evidence location.
 
 Existing original cards: FP06 W05, W09, W10 and W11. Existing source/readiness reports: `../../reviews/package-status-current.md`, `../../reviews/w05-package-report.md`, `../../reviews/w09-package-report.md`, `../../proposals/heavy-route-start-site-v2.md`, and current Root source/write locks. Existing grants under `/workspace/.cloud-setup/fp06-task-briefs/` are provenance only until replaced by a new grant.
 
@@ -86,7 +86,7 @@ Reuse the existing Cargo/Machine/Power/Technology panels and BuildTool. A later 
 
 ### PLAY-06: composition diagnosis and actual browser measurement
 
-- [ ] Issue one concrete measured investigation grant from the readonly preflight. Reproduce original scenario and 5000-ms failure with the unchanged Node22 toolchain and isolated CPU lease.
+- [x] Issue one concrete measured investigation grant from the readonly preflight. Reproduce original scenario and 5000-ms failure with the unchanged Node22 toolchain and isolated CPU lease.
 - [ ] Measure the demonstrated bottleneck, implement only the granted minimal candidate with RED/GREEN guard coverage and repeat identical inputs. Preserve every FAIL.
 - [ ] Measure the production browser with actual loaded assets, named CPU/browser/software-GPU backend, resolution/DPR/settings and recording overhead declared separately.
 - [ ] Separate composition outcome from browser frame distribution/input stalls and general hardware acceptance. No synthetic FPS claim.
@@ -123,6 +123,10 @@ Stop only dependent changes when exact source/owner policy is missing, native cl
 - 2026-10-12: Explicit new user instruction received; archive extracted and ten hashes passed. Existing local `96cced23…` is the requested implementation basis. Real Integrator PLAY-00, readonly repository audit, readonly Art inventory and readonly performance preflight dispatched; no new product grants yet.
 
 - PLAY-00 closure: real normal cargo/pickup/341-kg CarrierOverlap recorded, five screenshots and finalized24.56-s video; Root inspected first/last capture and preserved setup failures. Readonly audit/inventory/performancepreflight copied with exact hashes. Exact13-sourcepath candidate grant released; separate real Artwriter on clean96cc worktree has only new artifacts/tests. Inventory equality misstatement explicitly corrected in Rootwitness, not silently rewritten.
+
+- Integrator takeover: prior agent failed with model-capacity error after Source RED and eight authorized candidate drafts; interrupted in errored state. Root transferred the exact13-path grant and zero-write attribution grant to real `/root/play_integrator`, preserving branch/HEAD/drafts and historical receipts. `/root/play_art` returned the final CPU slot after22 actual Blender exports,25/25 focused/presentation tests and original tsc PASS; artifacts still await independent review/runtime adoption.
+
+- Current technical progress: V2 digest `ec8ba9b1`/2890 changed slots/0mg; native normal341kg route, depot, player exit and paid Former proven in run17. Normal idle run16 raised a NativeSimulationHold and remains an open functional failure; no fast-retry waiver. Actual new composition baseline5649ms and profile5847ms failed original5000ms; one bounded W08 candidate grant issued. Independently reviewed Art commit `e752cc7fce43a50b4bcb4800d9d27584b44b6a0e` is held with explicit remaining gaps. New `/root/play_ui` is the second actual writer in a separate96cc worktree, exact seven-file grant; Integrator alone owns shared files.
 
 ## Definition of done
 

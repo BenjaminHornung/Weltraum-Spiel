@@ -2,18 +2,18 @@
   "schema": "hestia.fp06.play-write-ownership/v1",
   "openedAtUtc": "2026-10-12T06:25:55.138956+00:00",
   "maxSimultaneousImplementationWriters": 2,
-  "integrator": "/root/fp06_integrator",
+  "integrator": "/root/play_integrator",
   "controlPlaneRoot": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/play/2026-10-12",
   "previousOwnership": "../../write-ownership.json",
   "activeImplementationWriters": [
-    "/root/fp06_integrator",
-    "/root/play_art"
+    "/root/play_integrator",
+    "/root/play_ui"
   ],
   "activeDocumentationWriter": "/root",
-  "browserCpuLease": "/root/fp06_integrator until coordinated Art short batch",
+  "browserCpuLease": "/root/play_integrator normal route/idle attribution; UI code/read only until coordinated",
   "plannedWriters": [
     {
-      "actor": "/root/fp06_integrator",
+      "actor": "/root/play_integrator",
       "role": "sole Integrator",
       "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
       "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
@@ -26,6 +26,14 @@
       "branch": "codex/hestia-fp06-play-art-2026-10-12",
       "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-play-art-2026-10-12",
       "grant": "grants/play-02-art.json",
+      "implementationWriteHold": true
+    },
+    {
+      "actor": "/root/play_ui",
+      "role": "UI presentation writer; seven new isolated files",
+      "branch": "codex/hestia-fp06-play-ui-2026-10-12",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-play-ui-2026-10-12",
+      "grant": "grants/play-03-ui.json",
       "implementationWriteHold": false
     }
   ],
@@ -50,7 +58,7 @@
     "PLAY-01": {
       "schema": "hestia.fp06.play-grant/v1",
       "milestone": "PLAY-01",
-      "actor": "/root/fp06_integrator",
+      "actor": "/root/play_integrator",
       "baseCommitSha": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
       "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
       "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
@@ -158,7 +166,65 @@
       "ownerTerrainAcceptance": "OWNER_REVIEW_PENDING",
       "releasedAtUtc": "2026-10-12T06:35:06.823023+00:00",
       "releaseEvidence": "play00-root-witness.json",
-      "releaseEvidenceSha256": "3a463a3cddabeeb8fdefe63e468b1249660dcb22a07f11caa3ab1acf2108deb8"
+      "releaseEvidenceSha256": "3a463a3cddabeeb8fdefe63e468b1249660dcb22a07f11caa3ab1acf2108deb8",
+      "actorTransfers": [
+        {
+          "atUtc": "2026-10-12T07:06:15.293370+00:00",
+          "previousActor": "/root/fp06_integrator",
+          "newActor": "/root/play_integrator",
+          "reason": "Actual prior agent model-capacity error; interrupted with errored previous status. No retry/push/reset/rebase. Same branch/worktree and authorized drafts retained.",
+          "observedHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+          "sourceDraftFiles": [
+            {
+              "path": "apps/weltraum-browser/src/factory/factoryEntry.ts",
+              "bytes": 13673,
+              "sha256": "7e4dad82fffb27cad3f4f5064460e6c57d3b4c46f81eeca84901f9baf2e31754"
+            },
+            {
+              "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+              "bytes": 4118,
+              "sha256": "1ff5b11c5ceb027755015c8db305acc85d7dbe1db8e3ac2e68fca983f89a17e7"
+            },
+            {
+              "path": "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+              "bytes": 3901,
+              "sha256": "faead62d37493fcdfa98c000003e2ffd125408ddd6212e9b3bb69dd0fe05f168"
+            },
+            {
+              "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+              "bytes": 10114,
+              "sha256": "107601ff938da6eee3f1db1159f8c55961a2517551b186fc0a8bbc01f8f7525a"
+            },
+            {
+              "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+              "bytes": 175196,
+              "sha256": "50e49426c05b29343d94c884184d26972209ef3c907daa2fd11a30e63fee730d"
+            },
+            {
+              "path": "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+              "bytes": 38948,
+              "sha256": "2f3fd41bea2edb1756f1b7933ac0243ee98c1e742bb4c6fe26b6756f70b09408"
+            },
+            {
+              "path": "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+              "bytes": 3584,
+              "sha256": "1fed4863963b871262f66455e33725dc6027b439910d56d7c5d861af56e1b4f2"
+            },
+            {
+              "path": "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+              "bytes": 4414,
+              "sha256": "1f37638fbb02b04e47c0e60b1a9f11f0cb68bfad968d40e218a64caac410e618"
+            }
+          ]
+        }
+      ],
+      "scopeAmendments": [
+        {
+          "path": "grants/play-01-flora-delta.json",
+          "allowedProductPathsAlreadyInGrant": true,
+          "exactDiscardedVisualId": "hvp:flora:bed-52-220"
+        }
+      ]
     },
     "PLAY-02": {
       "schema": "hestia.fp06.play-grant/v1",
@@ -170,8 +236,8 @@
       "controlPlane": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/play/2026-10-12",
       "authorizedAtUtc": "2026-10-12T06:32:43.653284+00:00",
       "authorization": "Explicit user instruction to use Blender for actual missing/insufficient models; separate exact source/runtime paths after real before capture and readonly audit",
-      "status": "GRANTED",
-      "implementationWriteHold": false,
+      "status": "SEALED_ARTIFACTS_REVIEW_PENDING",
+      "implementationWriteHold": true,
       "writeSet": [
         "art/factory/play-2026-10-12/cutter/**",
         "art/factory/play-2026-10-12/former/**",
@@ -324,7 +390,370 @@
           "GLB nodes/customextras bound to native partId/sourceSHA; no remote texture/fonts"
         ],
         "pendingRuntimeAdoption": "Integrator-only loader/receiver/readview/animation; Art scope proves artifacts, not normal gameplay integration"
-      }
+      },
+      "sealedCommitSha": "e752cc7fce43a50b4bcb4800d9d27584b44b6a0e"
+    },
+    "PLAY-06-attribution": {
+      "schema": "hestia.fp06.play-measurement-grant/v1",
+      "milestone": "PLAY-06-attribution",
+      "actor": "/root/play_integrator",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+      "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+      "authorizedAtUtc": "2026-10-12T06:43:03.136750+00:00",
+      "authorization": "Explicit new user targeted composition investigation; existing exact source/scenario/limit preserved; no blanket optimization permission",
+      "status": "GRANTED_ON_SERIAL_CPU_SLOT",
+      "writeSet": [],
+      "testSourceOverlayAllowed": false,
+      "iterationBudget": {
+        "unprofiledBaseline": 1,
+        "v8CpuProfile": 1,
+        "runtimeCandidates": 0,
+        "additionalCpuProfiles": 0
+      },
+      "metric": "original selected paid-band Vitest case completion milliseconds; original5000ms timeout; actual CLI outcomes",
+      "scenarioBlock": {
+        "bytes": 6563,
+        "sha256": "ce1fb626500b8b05fcbd255f574f4a0597d1ebd864dab82d74a98dbd64951cd1",
+        "cases": "both original paid-band cases in existing order/single process",
+        "outputCaseAdoptions": 57
+      },
+      "sourceBindings": [
+        {
+          "path": "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+          "bytes": 31347,
+          "sha256": "2122581f9075c53db0441002b650d6a6c2cb9eddd0c858f1b0078d58c3746a4a"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts",
+          "bytes": 36419,
+          "sha256": "e83081b79cd68180974f679000945dec0ea4c2c5642cbd4a83d810be7a043a8b"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/conveyor/beltReference.ts",
+          "bytes": 20546,
+          "sha256": "45fb7e4d0bb618a07d215ab923db4521c1bd46203428b49760e5140f402be211"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/material/reservations.ts",
+          "bytes": 22417,
+          "sha256": "4f5c1d17db3c5167dc42b23e0ab6b0a63f3a9b441684bc5140c367dd7d4d483e"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/material/resourcesAdapter.ts",
+          "bytes": 5790,
+          "sha256": "00fb33b5774fd96980e02e8c1bb92a178d5aedb18b612499cde21a3b0ab1c509"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/production/productionStep.ts",
+          "bytes": 29154,
+          "sha256": "f74397051a7b2da13d6d183ccf573cb633cb932e915e1ebaf6bf6a50da29c449"
+        },
+        {
+          "path": "apps/weltraum-browser/src/resources/serialization.ts",
+          "bytes": 4186,
+          "sha256": "7d1459f7ff1b470d5f88f6046259add5f0ecaab78955fc2afc8d37adf14ff80f"
+        },
+        {
+          "path": "apps/weltraum-browser/vite.config.ts",
+          "bytes": 622,
+          "sha256": "96e10a87ba016b606939adb71b0d965c02d0280c2dca74f8b767c1739d3b8dd6"
+        },
+        {
+          "path": "apps/weltraum-browser/package.json",
+          "bytes": 2605,
+          "sha256": "dd683e0eec65497469a71956c22e2cee90fa5d9f74e279264e10590db28d4416"
+        }
+      ],
+      "evidenceWriteSet": [
+        "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/<actual-run-id>/**"
+      ],
+      "scratchEvidenceRoot": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-06/attribution",
+      "commands": {
+        "baseline": [
+          "npm",
+          "run",
+          "test",
+          "--",
+          "tests/unit/factory/dryFactorySlice.test.ts",
+          "-t",
+          "paid-band"
+        ],
+        "profile": [
+          "node",
+          "--cpu-prof",
+          "--cpu-prof-dir=<new-actual-own-run>",
+          "node_modules/vitest/vitest.mjs",
+          "run",
+          "tests/unit/factory/dryFactorySlice.test.ts",
+          "-t",
+          "paid-band"
+        ]
+      },
+      "constraints": [
+        "activate and freshly verify unchanged installed Node22.23.3/npm10.9.8; bind execpath",
+        "stop competing heavy browser/Blender/Node workloads; report resource/backend scope honestly",
+        "no product/test/fixture/source/config/timeout/guard changes for attribution",
+        "profile overhead is separate; profiling outcome is not performancePASS",
+        "do not add inclusive samples from overlapping categories",
+        "Nativephase NOT_PRESENT in this pure composition test; browser/hardware separate",
+        "hypothesis H1 only supported historically; current profile must attribute before any runtime candidate grant",
+        "If source/same6563/order changes, stop and report INCOMPARABLE; no spontaneous rerun",
+        "all originalFAILs preserved; at budget exhaustion stop this milestone; route/assets/UI maycontinue",
+        "No main/push/publish/dependency/limit changes"
+      ],
+      "actorTransfers": [
+        {
+          "atUtc": "2026-10-12T07:06:15.293370+00:00",
+          "previousActor": "/root/fp06_integrator",
+          "newActor": "/root/play_integrator",
+          "reason": "Actual prior agent model-capacity error; interrupted with errored previous status. No retry/push/reset/rebase. Same branch/worktree and authorized drafts retained.",
+          "observedHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+          "sourceDraftFiles": [
+            {
+              "path": "apps/weltraum-browser/src/factory/factoryEntry.ts",
+              "bytes": 13673,
+              "sha256": "7e4dad82fffb27cad3f4f5064460e6c57d3b4c46f81eeca84901f9baf2e31754"
+            },
+            {
+              "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+              "bytes": 4118,
+              "sha256": "1ff5b11c5ceb027755015c8db305acc85d7dbe1db8e3ac2e68fca983f89a17e7"
+            },
+            {
+              "path": "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+              "bytes": 3901,
+              "sha256": "faead62d37493fcdfa98c000003e2ffd125408ddd6212e9b3bb69dd0fe05f168"
+            },
+            {
+              "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+              "bytes": 10114,
+              "sha256": "107601ff938da6eee3f1db1159f8c55961a2517551b186fc0a8bbc01f8f7525a"
+            },
+            {
+              "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+              "bytes": 175196,
+              "sha256": "50e49426c05b29343d94c884184d26972209ef3c907daa2fd11a30e63fee730d"
+            },
+            {
+              "path": "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+              "bytes": 38948,
+              "sha256": "2f3fd41bea2edb1756f1b7933ac0243ee98c1e742bb4c6fe26b6756f70b09408"
+            },
+            {
+              "path": "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+              "bytes": 3584,
+              "sha256": "1fed4863963b871262f66455e33725dc6027b439910d56d7c5d861af56e1b4f2"
+            },
+            {
+              "path": "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+              "bytes": 4414,
+              "sha256": "1f37638fbb02b04e47c0e60b1a9f11f0cb68bfad968d40e218a64caac410e618"
+            }
+          ]
+        }
+      ]
+    },
+    "PLAY-01-flora-delta": {
+      "schema": "hestia.fp06.play-candidate-flora-delta/v1",
+      "authorizedAtUtc": "2026-10-12T07:29:58.702919+00:00",
+      "actor": "/root/play_integrator",
+      "candidateSourceVersion": "hvp-factory-startsite-v2",
+      "candidateTerrainDigest": "ec8ba9b1",
+      "reason": "Exact V2 changes neighboring slope; existing habitat guard correctly rejects one decorative broadleaf. Derived initial decoration, not a clearance/collider bypass.",
+      "writeSet": [
+        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+        "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts"
+      ],
+      "onlyAllowedRemovedPlant": {
+        "id": "hvp:flora:bed-52-220",
+        "species": "broadleaf",
+        "variant": 1,
+        "positionMeters": [
+          -9.5,
+          2.5,
+          11.5
+        ],
+        "wood": null,
+        "decorationPhysics": "none"
+      },
+      "expectedInitialCounts": {
+        "v1Valid": 97,
+        "v2Planned": 97,
+        "v2ValidAfterFilter": 96,
+        "newNativeColliderChanges": 0,
+        "nativeMassShapeChanges": 0,
+        "materialCreditMg": 0
+      },
+      "constraints": [
+        "V2 candidate only; V1 and Coast plants unchanged",
+        "existing habitat/buildHvpPlant guards retained and evaluated",
+        "reject/report any additional invalid plant or physical/wood owner, no blanket vegetation deletion",
+        "no extra terrain mask, physical geometry/foot/sweep/quantity/budget changes",
+        "exact before/after visual-source delta bound; final human acceptance OWNER_REVIEW_PENDING"
+      ],
+      "censusEvidence": {
+        "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T071257Z/plant-source-delta.json",
+        "bytes": 473,
+        "sha256": "95fbb5032899f27cd8342a28159307aca6b833fb01d36c99968e037f1bca5214"
+      },
+      "ownerDecision": "Routine explicitly authorized isolated V2 candidate implementation; no final terrain acceptance"
+    },
+    "PLAY-03": {
+      "schema": "hestia.fp06.play-grant/v1",
+      "milestone": "PLAY-03",
+      "actor": "/root/play_ui",
+      "baseCommitSha": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "branch": "codex/hestia-fp06-play-ui-2026-10-12",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-play-ui-2026-10-12",
+      "authorizedAtUtc": "2026-10-12T07:48:21.429215+00:00",
+      "authorization": "Explicit playable followup: independent UI/map/onboarding additions; Art implementation held",
+      "status": "GRANTED",
+      "implementationWriteHold": false,
+      "writeSet": [
+        "apps/weltraum-browser/src/factory/ui/factoryShell.ts",
+        "apps/weltraum-browser/src/factory/ui/localMap.ts",
+        "apps/weltraum-browser/src/factory/ui/onboarding.ts",
+        "apps/weltraum-browser/src/factory/ui/factoryShell.css",
+        "apps/weltraum-browser/tests/unit/factory/factoryShell.test.ts",
+        "apps/weltraum-browser/tests/unit/factory/localMap.test.ts",
+        "apps/weltraum-browser/tests/unit/factory/onboarding.test.ts"
+      ],
+      "beforeBytes": [
+        {
+          "path": "apps/weltraum-browser/src/factory/ui/factoryShell.ts",
+          "state": "ABSENT"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/ui/localMap.ts",
+          "state": "ABSENT"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/ui/onboarding.ts",
+          "state": "ABSENT"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/ui/factoryShell.css",
+          "state": "ABSENT"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/factoryShell.test.ts",
+          "state": "ABSENT"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/localMap.test.ts",
+          "state": "ABSENT"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/onboarding.test.ts",
+          "state": "ABSENT"
+        }
+      ],
+      "constraints": [
+        "Exactly seven new paths; no existing shared/panel/entry/Host/Physics/Save/Contract files",
+        "UI presentation only, existing panels mounted once; pending receipts preserved",
+        "Real lifecycle and Save admission implemented only by Integrator; unavailable Continue disabled honestly",
+        "Read-only confirmed source-bound map/facts; no world mutation, timer progression, inventory or generated routes",
+        "Export narrow presentation port from new UI module; coordinate immutable seam with Integrator",
+        "Business RED first, focused tests then typecheck; fresh runtime screenshot only after actual Integrator wiring",
+        "No dependency/lockfile changes, no main merge/push/publish",
+        "CPU/browser jobs coordinate with Integrator; Art remains HOLD"
+      ]
+    },
+    "PLAY-06-C1": {
+      "schema": "hestia.fp06.play-performance-candidate/v1",
+      "milestone": "PLAY-06-C1",
+      "actor": "/root/play_integrator",
+      "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+      "authorizedAtUtc": "2026-10-12T07:49:27.969748+00:00",
+      "status": "GRANTED",
+      "writeSet": [
+        "apps/weltraum-browser/src/factory/conveyor/beltReference.ts",
+        "apps/weltraum-browser/tests/unit/factory/conveyor.test.ts"
+      ],
+      "beforeBytes": [
+        {
+          "path": "apps/weltraum-browser/src/factory/conveyor/beltReference.ts",
+          "bytes": 20546,
+          "sha256": "45fb7e4d0bb618a07d215ab923db4521c1bd46203428b49760e5140f402be211"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/conveyor.test.ts",
+          "bytes": 20187,
+          "sha256": "31c9212810bea211f56b9145efa6aef7b926272022e843124afe2bf35b5f7682"
+        }
+      ],
+      "attribution": {
+        "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/20261012T072849Z/attribution-report.md",
+        "sha256": "b024fe4e50d9ffffb65246660f9c1e8165397132e8253cfa5e8b6da3427f14a4"
+      },
+      "budget": {
+        "runtimeCandidates": 1,
+        "newProfiles": 0,
+        "freshUnprofiledOriginalPaidBandPair": 1
+      },
+      "constraints": [
+        "Business RED first; measured W08 repeated validation/canonicalization only; no broad refactor",
+        "All public validation and canonical receipts preserved for mutable, untrusted and restored inputs",
+        "Identity reuse permitted only if actual deep immutability/own data/canonical projection is proved; accessor/prototype/own-array-method inputs do not obtain unsafe reuse",
+        "No input binding omitted: full power receipts, tick, source, ports, receiver capacity, replay and quantities stay in canonical bytes",
+        "Cold and warm output byte equality, copied/restored inputs, failed validation, power loss/full output/no material-progress loss guard tests",
+        "No W02/W03/W04/global serialization/cache/config/dependency/timeout/queue-limit changes",
+        "Original 6563-byte paid-band test block remains byte-identical, same order and 5000ms limit; preserve all earlier FAILs",
+        "Run relevant conveyor regressions and build; no automatic further profile/candidate on FAIL",
+        "Coordinate UI CPU lease; honest CPU/browser/hardware results remain separate"
+      ]
     }
-  }
+  },
+  "actorTransfers": [
+    {
+      "atUtc": "2026-10-12T07:06:15.293370+00:00",
+      "previousActor": "/root/fp06_integrator",
+      "newActor": "/root/play_integrator",
+      "reason": "Actual prior agent model-capacity error; interrupted with errored previous status. No retry/push/reset/rebase. Same branch/worktree and authorized drafts retained.",
+      "observedHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceDraftFiles": [
+        {
+          "path": "apps/weltraum-browser/src/factory/factoryEntry.ts",
+          "bytes": 13673,
+          "sha256": "7e4dad82fffb27cad3f4f5064460e6c57d3b4c46f81eeca84901f9baf2e31754"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+          "bytes": 4118,
+          "sha256": "1ff5b11c5ceb027755015c8db305acc85d7dbe1db8e3ac2e68fca983f89a17e7"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+          "bytes": 3901,
+          "sha256": "faead62d37493fcdfa98c000003e2ffd125408ddd6212e9b3bb69dd0fe05f168"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+          "bytes": 10114,
+          "sha256": "107601ff938da6eee3f1db1159f8c55961a2517551b186fc0a8bbc01f8f7525a"
+        },
+        {
+          "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+          "bytes": 175196,
+          "sha256": "50e49426c05b29343d94c884184d26972209ef3c907daa2fd11a30e63fee730d"
+        },
+        {
+          "path": "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+          "bytes": 38948,
+          "sha256": "2f3fd41bea2edb1756f1b7933ac0243ee98c1e742bb4c6fe26b6756f70b09408"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+          "bytes": 3584,
+          "sha256": "1fed4863963b871262f66455e33725dc6027b439910d56d7c5d861af56e1b4f2"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+          "bytes": 4414,
+          "sha256": "1f37638fbb02b04e47c0e60b1a9f11f0cb68bfad968d40e218a64caac410e618"
+        }
+      ]
+    }
+  ]
 }

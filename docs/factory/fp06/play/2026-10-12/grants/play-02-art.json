@@ -8,8 +8,8 @@
   "controlPlane": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/play/2026-10-12",
   "authorizedAtUtc": "2026-10-12T06:32:43.653284+00:00",
   "authorization": "Explicit user instruction to use Blender for actual missing/insufficient models; separate exact source/runtime paths after real before capture and readonly audit",
-  "status": "GRANTED",
-  "implementationWriteHold": false,
+  "status": "SEALED_ARTIFACTS_REVIEW_PENDING",
+  "implementationWriteHold": true,
   "writeSet": [
     "art/factory/play-2026-10-12/cutter/**",
     "art/factory/play-2026-10-12/former/**",
@@ -162,5 +162,6 @@
       "GLB nodes/customextras bound to native partId/sourceSHA; no remote texture/fonts"
     ],
     "pendingRuntimeAdoption": "Integrator-only loader/receiver/readview/animation; Art scope proves artifacts, not normal gameplay integration"
-  }
+  },
+  "sealedCommitSha": "e752cc7fce43a50b4bcb4800d9d27584b44b6a0e"
 }

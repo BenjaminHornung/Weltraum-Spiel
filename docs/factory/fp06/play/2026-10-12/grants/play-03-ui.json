@@ -1,0 +1,61 @@
+{
+  "schema": "hestia.fp06.play-grant/v1",
+  "milestone": "PLAY-03",
+  "actor": "/root/play_ui",
+  "baseCommitSha": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+  "branch": "codex/hestia-fp06-play-ui-2026-10-12",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-play-ui-2026-10-12",
+  "authorizedAtUtc": "2026-10-12T07:48:21.429215+00:00",
+  "authorization": "Explicit playable followup: independent UI/map/onboarding additions; Art implementation held",
+  "status": "GRANTED",
+  "implementationWriteHold": false,
+  "writeSet": [
+    "apps/weltraum-browser/src/factory/ui/factoryShell.ts",
+    "apps/weltraum-browser/src/factory/ui/localMap.ts",
+    "apps/weltraum-browser/src/factory/ui/onboarding.ts",
+    "apps/weltraum-browser/src/factory/ui/factoryShell.css",
+    "apps/weltraum-browser/tests/unit/factory/factoryShell.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/localMap.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/onboarding.test.ts"
+  ],
+  "beforeBytes": [
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/factoryShell.ts",
+      "state": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/localMap.ts",
+      "state": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/onboarding.ts",
+      "state": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/factoryShell.css",
+      "state": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/factoryShell.test.ts",
+      "state": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/localMap.test.ts",
+      "state": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/onboarding.test.ts",
+      "state": "ABSENT"
+    }
+  ],
+  "constraints": [
+    "Exactly seven new paths; no existing shared/panel/entry/Host/Physics/Save/Contract files",
+    "UI presentation only, existing panels mounted once; pending receipts preserved",
+    "Real lifecycle and Save admission implemented only by Integrator; unavailable Continue disabled honestly",
+    "Read-only confirmed source-bound map/facts; no world mutation, timer progression, inventory or generated routes",
+    "Export narrow presentation port from new UI module; coordinate immutable seam with Integrator",
+    "Business RED first, focused tests then typecheck; fresh runtime screenshot only after actual Integrator wiring",
+    "No dependency/lockfile changes, no main merge/push/publish",
+    "CPU/browser jobs coordinate with Integrator; Art remains HOLD"
+  ]
+}

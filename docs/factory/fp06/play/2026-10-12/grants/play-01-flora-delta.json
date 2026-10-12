@@ -1,0 +1,45 @@
+{
+  "schema": "hestia.fp06.play-candidate-flora-delta/v1",
+  "authorizedAtUtc": "2026-10-12T07:29:58.702919+00:00",
+  "actor": "/root/play_integrator",
+  "candidateSourceVersion": "hvp-factory-startsite-v2",
+  "candidateTerrainDigest": "ec8ba9b1",
+  "reason": "Exact V2 changes neighboring slope; existing habitat guard correctly rejects one decorative broadleaf. Derived initial decoration, not a clearance/collider bypass.",
+  "writeSet": [
+    "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+    "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts"
+  ],
+  "onlyAllowedRemovedPlant": {
+    "id": "hvp:flora:bed-52-220",
+    "species": "broadleaf",
+    "variant": 1,
+    "positionMeters": [
+      -9.5,
+      2.5,
+      11.5
+    ],
+    "wood": null,
+    "decorationPhysics": "none"
+  },
+  "expectedInitialCounts": {
+    "v1Valid": 97,
+    "v2Planned": 97,
+    "v2ValidAfterFilter": 96,
+    "newNativeColliderChanges": 0,
+    "nativeMassShapeChanges": 0,
+    "materialCreditMg": 0
+  },
+  "constraints": [
+    "V2 candidate only; V1 and Coast plants unchanged",
+    "existing habitat/buildHvpPlant guards retained and evaluated",
+    "reject/report any additional invalid plant or physical/wood owner, no blanket vegetation deletion",
+    "no extra terrain mask, physical geometry/foot/sweep/quantity/budget changes",
+    "exact before/after visual-source delta bound; final human acceptance OWNER_REVIEW_PENDING"
+  ],
+  "censusEvidence": {
+    "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T071257Z/plant-source-delta.json",
+    "bytes": 473,
+    "sha256": "95fbb5032899f27cd8342a28159307aca6b833fb01d36c99968e037f1bca5214"
+  },
+  "ownerDecision": "Routine explicitly authorized isolated V2 candidate implementation; no final terrain acceptance"
+}
