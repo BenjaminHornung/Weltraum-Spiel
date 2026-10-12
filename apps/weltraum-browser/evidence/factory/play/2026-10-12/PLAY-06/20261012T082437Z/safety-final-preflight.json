@@ -1,0 +1,62 @@
+{
+  "observedAtUtc": "2026-10-12T08:49:11.524146+00:00",
+  "grant": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/play/2026-10-12/grants/play-06-c1-safety-final.json",
+  "grantSha256": "4abcfe905fa7b824e2a11ddcdad7104a5801c1f22b7859b02803199ad33a504b",
+  "rootConfirmedIndependentSecurityClose": true,
+  "sourceBindings": [
+    {
+      "path": "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+      "bytes": 31347,
+      "sha256": "2122581f9075c53db0441002b650d6a6c2cb9eddd0c858f1b0078d58c3746a4a"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts",
+      "bytes": 36419,
+      "sha256": "e83081b79cd68180974f679000945dec0ea4c2c5642cbd4a83d810be7a043a8b"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/conveyor/beltReference.ts",
+      "bytes": 23568,
+      "sha256": "2e8a33d97553567d5e17092151d75a4c0e0d98abbaf73c5450cfc4a28500dae7"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/material/reservations.ts",
+      "bytes": 22417,
+      "sha256": "4f5c1d17db3c5167dc42b23e0ab6b0a63f3a9b441684bc5140c367dd7d4d483e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/material/resourcesAdapter.ts",
+      "bytes": 5790,
+      "sha256": "00fb33b5774fd96980e02e8c1bb92a178d5aedb18b612499cde21a3b0ab1c509"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/production/productionStep.ts",
+      "bytes": 29154,
+      "sha256": "f74397051a7b2da13d6d183ccf573cb633cb932e915e1ebaf6bf6a50da29c449"
+    },
+    {
+      "path": "apps/weltraum-browser/src/resources/serialization.ts",
+      "bytes": 4186,
+      "sha256": "7d1459f7ff1b470d5f88f6046259add5f0ecaab78955fc2afc8d37adf14ff80f"
+    },
+    {
+      "path": "apps/weltraum-browser/vite.config.ts",
+      "bytes": 622,
+      "sha256": "96e10a87ba016b606939adb71b0d965c02d0280c2dca74f8b767c1739d3b8dd6"
+    },
+    {
+      "path": "apps/weltraum-browser/package.json",
+      "bytes": 2605,
+      "sha256": "dd683e0eec65497469a71956c22e2cee90fa5d9f74e279264e10590db28d4416"
+    }
+  ],
+  "scenarioBlock": {
+    "offset": 22431,
+    "bytes": 6563,
+    "sha256": "ce1fb626500b8b05fcbd255f574f4a0597d1ebd864dab82d74a98dbd64951cd1",
+    "cases": "both original paid-band cases in existing order",
+    "outputCaseAdoptions": 57
+  },
+  "exclusiveLease": "Art businessRED ended; Art Sourcefix only; ownedPreviewidle; noBrowser/profiles",
+  "processes": "    PID STAT COMMAND\n      1 S+   tail\n      2 S+   cloud-agent-log\n      3 S+   caas-prefix-tra\n    207 Ssl  dockerd\n    258 Ssl  containerd\n    531 Sl+  codex\n   2327 Z    git\n   3459 Z    chrome_crashpad\n   3461 Z    chromium\n   3462 Z    chromium\n   4179 Z    chrome_crashpad\n   4181 Z    chromium\n   4182 Z    chromium\n   5478 Zs   git\n   9489 Zs   git\n  13279 Ss   codex-linux-san\n  13281 S    bwrap\n  13282 Ss   codex\n  13283 Sl   node\n  13357 Z    chrome_crashpad\n  13359 Z    chromium\n  13360 Z    chromium\n  13692 Z    chrome_crashpad\n  13694 Z    chromium\n  13695 Z    chromium\n  14281 Z    chrome_crashpad\n  14283 Z    chromium\n  14284 Z    chromium\n  14975 Zs   git\n  16097 Z    chrome_crashpad\n  16099 Z    chromium\n  16100 Z    chromium\n  17217 Zs   git\n  18638 Zs   git\n  19883 Zs   git\n  20974 Zs   git\n  23356 Zs   git\n  23676 Ss   codex-linux-san\n  23678 S    bwrap\n  23679 Ss   codex\n  23680 S    bash\n  23683 S    python3\n  23684 R    ps\n"
+}

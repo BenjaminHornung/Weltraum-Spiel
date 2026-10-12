@@ -64,6 +64,56 @@ const freeze = <T>(value: T): T => {
   }
   return value;
 };
+// W08 reuses only a successful W02 snapshot validation of the exact immutable
+// catalog/list pair. No line, power, receipt, port or custody decision is cached.
+const immutableSnapshotData = new WeakSet<object>();
+const cloneableSnapshotData = new WeakSet<object>();
+const validatedSnapshotSets = new WeakMap<MaterialView["catalog"], WeakSet<MaterialView["containers"]>>();
+const isImmutableSnapshotData = (value: unknown, parents = new WeakSet<object>()): boolean => {
+  if (value === null || value === undefined) return true;
+  if (typeof value !== "object") return typeof value === "string" || typeof value === "boolean"
+    || (typeof value === "number" && Number.isFinite(value));
+  if (immutableSnapshotData.has(value)) return true;
+  if (!Object.isFrozen(value) || parents.has(value)) return false;
+  const array = Array.isArray(value), prototype = Object.getPrototypeOf(value);
+  if (array ? prototype !== Array.prototype : prototype !== Object.prototype && prototype !== null) return false;
+  const descriptors = Object.getOwnPropertyDescriptors(value), keys = Reflect.ownKeys(descriptors);
+  if (keys.some(key => typeof key !== "string")) return false;
+  // Standard cloneability must visit every fact; hidden values stay uncached.
+  if (keys.some(key => !(array && key === "length") && !descriptors[key as string]!.enumerable)) return false;
+  if (array && (keys.some(key => key !== "length" && (!/^(0|[1-9][0-9]*)$/.test(key as string)
+    || !Number.isSafeInteger(Number(key)) || Number(key) >= value.length))
+    || keys.length !== value.length + 1)) return false;
+  parents.add(value);
+  const valid = Object.values(descriptors).every(descriptor => "value" in descriptor
+    && isImmutableSnapshotData(descriptor.value, parents));
+  parents.delete(value);
+  if (valid) immutableSnapshotData.add(value);
+  return valid;
+};
+const isCloneableSnapshotData = (value: object): boolean => {
+  if (typeof globalThis.structuredClone !== "function") return false;
+  if (cloneableSnapshotData.has(value)) return true;
+  try {
+    // Unlike descriptor inspection, the standard clone operation rejects even
+    // nested frozen Proxies with virtual inherited iterators/methods. Its output
+    // is discarded; the original W02 input and canonical authority stay intact.
+    globalThis.structuredClone(value);
+    cloneableSnapshotData.add(value);
+    return true;
+  } catch { return false; }
+};
+const assertBeltMaterialSnapshots = (material: MaterialView): void => {
+  // Read caller accessors once: only the very same pair checked by W02 may enter.
+  const { catalog, containers } = material;
+  if (validatedSnapshotSets.get(catalog)?.has(containers)) return;
+  assertMaterialSnapshots(catalog, containers);
+  if (!isImmutableSnapshotData(catalog) || !isImmutableSnapshotData(containers)) return;
+  if (!isCloneableSnapshotData(catalog) || !isCloneableSnapshotData(containers)) return;
+  let sets = validatedSnapshotSets.get(catalog);
+  if (!sets) { sets = new WeakSet(); validatedSnapshotSets.set(catalog, sets); }
+  sets.add(containers);
+};
 const snapshot = (material: MaterialView, id: string) => {
   const found = material.containers.find((entry) => entry.state.containerId === id);
   require(!!found, "MissingBeltContainer"); return found!;
@@ -103,7 +153,7 @@ export function assertFactoryBeltState(line: BeltState, material: MaterialView):
     "BeltAuthorityBindingMismatch");
   require((line.revision === 0 && line.lastStep === null) || (line.revision > 0 && line.lastStep?.tickEndUs === line.tickEndUs), "InvalidBeltStepCursor");
   require(line.revision > 0 || (line.creditMg === 0 && line.packetCursor === 0 && line.packet === null), "InvalidInitialBeltCredit");
-  assertMaterialSnapshots(material.catalog, material.containers);
+  assertBeltMaterialSnapshots(material);
   assertFactoryBeltPorts(line.installation, material);
   const band = snapshot(material, line.installation.bandContainerId);
   if (line.packet === null) { require(band.state.contents.length === 0, "OrphanedBeltLot"); return; }

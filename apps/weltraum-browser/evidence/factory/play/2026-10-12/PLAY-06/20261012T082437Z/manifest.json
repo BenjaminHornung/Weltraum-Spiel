@@ -1,0 +1,178 @@
+{
+  "schema": "hestia.fp06.play-owned-evidence/v1",
+  "actor": "/root/play_integrator",
+  "artifacts": [
+    {
+      "path": "01-c1-business-red.command.json",
+      "bytes": 2673,
+      "sha256": "c5f39bc4edb14a08a0e6b3d4a80eee90ddb707cd74a1f49015bbe71ba0c8bbf9"
+    },
+    {
+      "path": "01-c1-business-red.raw.log.gz",
+      "bytes": 679,
+      "sha256": "c86e389e61432b1c0302f60cab978556f0e20b8205b4aa2df5d1845b08929f80"
+    },
+    {
+      "path": "02-c1-focused-green.command.json",
+      "bytes": 2867,
+      "sha256": "5df075b8523aa4f7c7bf449f1479dd4469ff469f74521fa92445331b569a03c2"
+    },
+    {
+      "path": "02-c1-focused-green.raw.log.gz",
+      "bytes": 252,
+      "sha256": "8984cc6540095ccae564ba3bb91022c18a967fd8c374624e2c74316921fc6f60"
+    },
+    {
+      "path": "03-c1-conveyor-regressions.command.json",
+      "bytes": 2839,
+      "sha256": "b63047d232c53072f44093ceae5d9a357bc708a5a7ab868518707bb2d59253d6"
+    },
+    {
+      "path": "03-c1-conveyor-regressions.raw.log.gz",
+      "bytes": 252,
+      "sha256": "cac5ec7f52f78ea46248faf96740ceb5ebeb091d89d33912cb155dc3e125646a"
+    },
+    {
+      "path": "04-c1-original-build.command.json",
+      "bytes": 2742,
+      "sha256": "f1f3281ebd4f910bd946c82efacd5dc261511d52345e4c7a6406b72e37f5cd38"
+    },
+    {
+      "path": "04-c1-original-build.raw.log.gz",
+      "bytes": 905,
+      "sha256": "e34c0d758bb00f10dac9ed235447494fbb009482cd28b36d0b19d2b16c8c14ea"
+    },
+    {
+      "path": "05-c1-final-original-paid-pair.command.json",
+      "bytes": 2827,
+      "sha256": "d4758b70b629c8943a7975388636e268a1bd0fefa5403c13d31225cec1dd87cd"
+    },
+    {
+      "path": "05-c1-final-original-paid-pair.raw.log.gz",
+      "bytes": 321,
+      "sha256": "5df90ec1f11138c77dacb89528851fcc39530c070fb97c01b7840f185638eaec"
+    },
+    {
+      "path": "06-c1-review-getter-poison-red.command.json",
+      "bytes": 1191,
+      "sha256": "3c91497b13bf2d2e69d73534d70fed4b229e7978b11bf35002a562a3c1d8ddb7"
+    },
+    {
+      "path": "06-c1-review-getter-poison-red.raw.log.gz",
+      "bytes": 259,
+      "sha256": "036435e39ba0f5f3ae186d3367a92059f0b34a228516fddf6eda400a058b214a"
+    },
+    {
+      "path": "07-c1-warm-catalog-getter-poison-red.command.json",
+      "bytes": 1192,
+      "sha256": "8d04f44aa98a23c56c29403a68e60c9357484efe83787abc92a52e8e80f8a3dc"
+    },
+    {
+      "path": "07-c1-warm-catalog-getter-poison-red.raw.log.gz",
+      "bytes": 678,
+      "sha256": "7d94aa33284d18c75673d8ea2e8eeb36c8fc77aa8243f145f9c4da1904758a35"
+    },
+    {
+      "path": "08-c1-review-getter-guards-green.command.json",
+      "bytes": 1172,
+      "sha256": "cd70589bdbdc221f9344dc76fc641e169ff533f14aa1f1cb3f04c1aa97d8ccb1"
+    },
+    {
+      "path": "08-c1-review-getter-guards-green.raw.log.gz",
+      "bytes": 265,
+      "sha256": "6a2c0d13f3c425ef40fb45ff238fce3a4648eb2f3a204c29bc7bd8e64f1ef28d"
+    },
+    {
+      "path": "09-c1-proxy-and-hidden-facts-red.command.json",
+      "bytes": 1173,
+      "sha256": "2ac5ed1b21870d57481dbc140bcf6d4069466e2934a062e76db17e25c4f210f8"
+    },
+    {
+      "path": "09-c1-proxy-and-hidden-facts-red.raw.log.gz",
+      "bytes": 802,
+      "sha256": "bcf3ac666a60eec643304455773ed9b183004d0fbf5113b381032d721b23562b"
+    },
+    {
+      "path": "10-c1-nested-proxy-red.command.json",
+      "bytes": 1191,
+      "sha256": "195cae65b4830816b60a0df806ac107d97f3963179a6ed3ac4dde1bda8a3e6c5"
+    },
+    {
+      "path": "10-c1-nested-proxy-red.raw.log.gz",
+      "bytes": 604,
+      "sha256": "5a8b2920f8c3dc7347c3588a7dc475f24d42a8e6c3ca7778d9875bd391dd1b0e"
+    },
+    {
+      "path": "11-c1-clone-unavailable-red.command.json",
+      "bytes": 1201,
+      "sha256": "a3c405b34619de9149fef806815572c00011d034ec035426e61a4fde19688d1a"
+    },
+    {
+      "path": "11-c1-clone-unavailable-red.raw.log.gz",
+      "bytes": 642,
+      "sha256": "5aa7e3618e365ee3addefb91ff7f0d93f66e5f8c0e2f0f89c14c1fdbb6f1d35e"
+    },
+    {
+      "path": "12-c1-all-security-guards-green.command.json",
+      "bytes": 1171,
+      "sha256": "d07ac210fdaa9a2faba16a370c4ccecb67c59ddc452d036f46bebd0c48e0f6f7"
+    },
+    {
+      "path": "12-c1-all-security-guards-green.raw.log.gz",
+      "bytes": 263,
+      "sha256": "d480d328fb6b199b9581e07799c43e1c3e98e9c7e31e96855fdc4b0adb6b52a1"
+    },
+    {
+      "path": "13-c1-final-conveyor-regressions.command.json",
+      "bytes": 1144,
+      "sha256": "b6b7def708ce3ac79d398e1fa6618e742d462e1ebe016f631c4855628c8c726a"
+    },
+    {
+      "path": "13-c1-final-conveyor-regressions.raw.log.gz",
+      "bytes": 258,
+      "sha256": "5fe5b048d2f4342f03c3df5b3b0b36bf8195aae495319f2b9b7e8e870181e4df"
+    },
+    {
+      "path": "14-c1-security-final-original-build.command.json",
+      "bytes": 1047,
+      "sha256": "bca5aa71f4aabefd0f9599121e2e3ba12bc3de2bab05eba08a89727be6b8c1fc"
+    },
+    {
+      "path": "14-c1-security-final-original-build.raw.log.gz",
+      "bytes": 918,
+      "sha256": "44e2656a95295c90142684907eeee1cffda2115bc172b5386bb3790e589fd177"
+    },
+    {
+      "path": "15-c1-safety-final-original-paid-pair.command.json",
+      "bytes": 1132,
+      "sha256": "8ef651303928a74ab727b68a998db5042647fe2467895d7af3accbe58feed744"
+    },
+    {
+      "path": "15-c1-safety-final-original-paid-pair.raw.log.gz",
+      "bytes": 328,
+      "sha256": "a29115453eee329aaf7346813ddcc90f1d34a66f6e4348c982f1779fcf1ec7a1"
+    },
+    {
+      "path": "candidate-report.md",
+      "bytes": 2431,
+      "sha256": "147b66f10dc59d22f248aadbf62499c63e140dacd4e89c05a8ca2180db106c31"
+    },
+    {
+      "path": "final-pair-preflight.json",
+      "bytes": 25121,
+      "sha256": "07b5ae56fb1bcd5aafd12b2e2e9f2b8b64d3f4a4f128e492e898ffc261136a76"
+    },
+    {
+      "path": "independent-review.md",
+      "bytes": 17434,
+      "sha256": "44e101791b0df8d1cd5c600e5c5d1786b85a1dc0a5e3d9dc833b59a2c2bb6365"
+    },
+    {
+      "path": "safety-final-preflight.json",
+      "bytes": 3432,
+      "sha256": "0972ba2a8a7d9388142adde86733faf66e229ef7f84be0ceaaef39f1f7bbe59b"
+    }
+  ],
+  "claim": "final boundedC1 PASS; no fullW09/hardware/owner claim",
+  "rawEncoding": "Each exact raw byte stream is preserved in its gzip artifact and decoded SHA/count receipt; untracked convenience .log copies are excluded."
+}

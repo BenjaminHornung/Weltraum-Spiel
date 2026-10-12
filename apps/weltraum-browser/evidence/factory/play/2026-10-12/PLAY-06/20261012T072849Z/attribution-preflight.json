@@ -1,0 +1,64 @@
+{
+  "observedAtUtc": "2026-10-12T07:28:50.164819+00:00",
+  "grantSha256": "9726201188ef89a6426a4f3abbe890c9266e7b5d9f4b0f56d925320c60be6a3a",
+  "sourceBindings": [
+    {
+      "path": "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+      "bytes": 31347,
+      "sha256": "2122581f9075c53db0441002b650d6a6c2cb9eddd0c858f1b0078d58c3746a4a"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts",
+      "bytes": 36419,
+      "sha256": "e83081b79cd68180974f679000945dec0ea4c2c5642cbd4a83d810be7a043a8b"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/conveyor/beltReference.ts",
+      "bytes": 20546,
+      "sha256": "45fb7e4d0bb618a07d215ab923db4521c1bd46203428b49760e5140f402be211"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/material/reservations.ts",
+      "bytes": 22417,
+      "sha256": "4f5c1d17db3c5167dc42b23e0ab6b0a63f3a9b441684bc5140c367dd7d4d483e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/material/resourcesAdapter.ts",
+      "bytes": 5790,
+      "sha256": "00fb33b5774fd96980e02e8c1bb92a178d5aedb18b612499cde21a3b0ab1c509"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/production/productionStep.ts",
+      "bytes": 29154,
+      "sha256": "f74397051a7b2da13d6d183ccf573cb633cb932e915e1ebaf6bf6a50da29c449"
+    },
+    {
+      "path": "apps/weltraum-browser/src/resources/serialization.ts",
+      "bytes": 4186,
+      "sha256": "7d1459f7ff1b470d5f88f6046259add5f0ecaab78955fc2afc8d37adf14ff80f"
+    },
+    {
+      "path": "apps/weltraum-browser/vite.config.ts",
+      "bytes": 622,
+      "sha256": "96e10a87ba016b606939adb71b0d965c02d0280c2dca74f8b767c1739d3b8dd6"
+    },
+    {
+      "path": "apps/weltraum-browser/package.json",
+      "bytes": 2605,
+      "sha256": "dd683e0eec65497469a71956c22e2cee90fa5d9f74e279264e10590db28d4416"
+    }
+  ],
+  "scenarioBlock": {
+    "offset": 22431,
+    "bytes": 6563,
+    "sha256": "ce1fb626500b8b05fcbd255f574f4a0597d1ebd864dab82d74a98dbd64951cd1",
+    "cases": "both original paid-band cases in existing order",
+    "outputCaseAdoptions": 57
+  },
+  "node": "v22.23.3",
+  "npm": "10.9.8",
+  "nodeExecPath": "/workspace/.cloud-setup/toolchain/node_modules/node/bin/node",
+  "cpuMax": "400000 100000",
+  "competingHeavyJobs": "none observed; transferred old preview Node PID2819 is idle0percent; Chromium crashpad/zombie entries defunct, no rendering/Blender jobs",
+  "limits": "original5000ms; no test source overlay; exact granted one baseline and one V8 profile"
+}

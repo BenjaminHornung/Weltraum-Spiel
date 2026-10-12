@@ -1,8 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import * as resourcesAdapter from "../../../src/factory/material/resourcesAdapter";
 import { createFp02Fixture } from "../../../src/factory/catalog/fp02Catalog";
 import { readMaterialMassMg } from "../../../src/factory/material/resourcesAdapter";
 import { createFactoryMaterialView, type MaterialView } from "../../../src/factory/material/reservations";
-import { advanceFactoryBelt, commitFactoryBeltStep, type BeltState, type BeltStepInput, type BeltPowerReceipt } from "../../../src/factory/conveyor/beltReference";
+import { advanceFactoryBelt, assertFactoryBeltState, commitFactoryBeltStep, type BeltState, type BeltStepInput, type BeltPowerReceipt } from "../../../src/factory/conveyor/beltReference";
 import type { BeltInstallation } from "../../../src/factory/conveyor/beltPorts";
 import { createResourceContainerDefinition, createResourceContainerSnapshot, createResourceContainerState } from "../../../src/resources/containers";
 import { canonicalJson, canonicalSignature } from "../../../src/resources/serialization";
@@ -65,6 +66,155 @@ const lots = (material: MaterialView, id: string) => material.containers.find((e
 const persistedFacts = (pair: ReturnType<typeof initial>) => canonicalJson({ packet: pair.line.packet, creditMg: pair.line.creditMg,
   material: { revision: pair.material.revision, receipts: pair.material.receipts, reservations: pair.material.reservations,
     containers: pair.material.containers.map((entry) => JSON.parse(entry.canonicalJson)) } });
+
+describe("PLAY06 C1 immutable material validation boundary", () => {
+  const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
+
+  it("validates a cold immutable snapshot set once and preserves every warm/copy/restore proposal byte", () => {
+    const pair = initial(), request = input(pair, false);
+    const validate = vi.spyOn(resourcesAdapter, "assertMaterialSnapshots");
+    try {
+      const cold = advanceFactoryBelt(pair.line, request), warm = advanceFactoryBelt(pair.line, request);
+      expect(cold).toMatchObject({ status: "Prepared", outcome: "WAIT_POWER" });
+      expect(canonicalJson(warm)).toBe(canonicalJson(cold));
+      // Both old/new-line validation boundaries share one already admitted, immutable set.
+      expect(validate).toHaveBeenCalledTimes(1);
+      const copy = advanceFactoryBelt(clone(pair.line), { ...clone(request), material: clone(pair.material) });
+      expect(canonicalJson(copy)).toBe(canonicalJson(cold));
+      expect(validate).toHaveBeenCalledTimes(3);
+      expect(commitFactoryBeltStep(pair.line, request, cold)).toMatchObject({ status: "Committed", material: pair.material });
+      expect(readMaterialMassMg(pair.material)).toBe(10_000_000);
+    } finally { validate.mockRestore(); }
+  });
+
+  it("does not admit a shallow-frozen list whose snapshot can change after validation", () => {
+    const pair = initial(), containers = Object.freeze(clone(pair.material.containers));
+    const material = { ...pair.material, containers }, validate = vi.spyOn(resourcesAdapter, "assertMaterialSnapshots");
+    try {
+      assertFactoryBeltState(pair.line, material);
+      assertFactoryBeltState(pair.line, material);
+      expect(validate).toHaveBeenCalledTimes(2);
+      (containers[0] as { signature: string }).signature = "forged_after_read";
+      expect(() => assertFactoryBeltState(pair.line, material)).toThrow("InvalidResourceSnapshot");
+      expect(validate).toHaveBeenCalledTimes(3);
+    } finally { validate.mockRestore(); }
+  });
+
+  it("revalidates frozen accessors rather than trusting their previous projection", () => {
+    const pair = initial(), original = pair.material.containers[0]!;
+    let current = original.state;
+    const accessor = Object.freeze({ ...original, get state() { return current; } });
+    const material = { ...pair.material, containers: Object.freeze([accessor, ...pair.material.containers.slice(1)]) };
+    assertFactoryBeltState(pair.line, material);
+    current = { ...current, revision: current.revision + 1 };
+    expect(() => assertFactoryBeltState(pair.line, material)).toThrow("InvalidResourceSnapshot");
+  });
+
+  it("does not let a changing MaterialView getter admit snapshots other than those W02 actually validated", () => {
+    const pair = initial(), valid = pair.material.containers;
+    const counterfeit = Object.freeze([Object.freeze({ ...valid[0]!, signature: "never_validated" }), ...valid.slice(1)]);
+    assertFactoryBeltState(pair.line, pair.material); // Warm the legitimate catalog's admission map first.
+    let reads = 0;
+    const changing = { ...pair.material, get containers() { return ++reads === 2 ? valid : counterfeit; } };
+    // A fail-closed implementation may reject the very first counterfeit read.
+    try { assertFactoryBeltState(pair.line, changing); }
+    catch (error) { expect(error).toMatchObject({ message: "InvalidResourceSnapshot" }); }
+    // A later ordinary read must still validate this same invalid immutable set.
+    expect(() => assertFactoryBeltState(pair.line, { ...pair.material, containers: counterfeit }))
+      .toThrow("InvalidResourceSnapshot");
+  });
+
+  it("revalidates a frozen ArrayProxy when its hidden inherited iterator changes after a public read", () => {
+    const pair = initial(), valid = pair.material.containers;
+    const counterfeit = Object.freeze([Object.freeze({ ...valid[0]!, signature: "proxy_counterfeit" }), ...valid.slice(1)]);
+    let validIteration = true;
+    const proxy = new Proxy(counterfeit, { get(target, key, receiver) {
+      return key === Symbol.iterator && validIteration ? () => valid[Symbol.iterator]() : Reflect.get(target, key, receiver);
+    } });
+    const material = { ...pair.material, containers: proxy };
+    const validate = vi.spyOn(resourcesAdapter, "assertMaterialSnapshots");
+    try {
+      expect(Object.isFrozen(proxy)).toBe(true);
+      expect(Object.getPrototypeOf(proxy)).toBe(Array.prototype);
+      assertFactoryBeltState(pair.line, material);
+      validIteration = false;
+      expect(() => assertFactoryBeltState(pair.line, material)).toThrow("InvalidResourceSnapshot");
+      expect(validate).toHaveBeenCalledTimes(2);
+    } finally { validate.mockRestore(); }
+  });
+
+  it("keeps nonenumerable snapshot facts on the full validation path", () => {
+    const pair = initial(), original = pair.material.containers[0]!;
+    const { signature, ...data } = original;
+    const hidden = Object.freeze(Object.defineProperty(data, "signature", { value: signature, enumerable: false }));
+    const material = { ...pair.material, containers: Object.freeze([hidden as typeof original, ...pair.material.containers.slice(1)]) };
+    const validate = vi.spyOn(resourcesAdapter, "assertMaterialSnapshots");
+    try {
+      assertFactoryBeltState(pair.line, material);
+      assertFactoryBeltState(pair.line, material);
+      expect(validate).toHaveBeenCalledTimes(2);
+    } finally { validate.mockRestore(); }
+  });
+
+  it("excludes a nested frozen contents Proxy from snapshot admission", () => {
+    const pair = initial(), source = pair.material.containers.find(c => c.state.containerId === "source")!;
+    const valid = source.state.contents, counterfeit = Object.freeze([Object.freeze({ ...valid[0]!, quantity: valid[0]!.quantity + 1 })]);
+    let validIteration = true;
+    const proxy = new Proxy(counterfeit, { get(target, key, receiver) {
+      return key === Symbol.iterator && validIteration ? () => valid[Symbol.iterator]() : Reflect.get(target, key, receiver);
+    } });
+    const nested = Object.freeze({ ...source, state: Object.freeze({ ...source.state, contents: proxy }) });
+    const material = { ...pair.material, containers: Object.freeze(pair.material.containers.map(c => c === source ? nested : c)) };
+    assertFactoryBeltState(pair.line, material);
+    validIteration = false;
+    expect(() => assertFactoryBeltState(pair.line, material)).toThrow("InvalidResourceSnapshot");
+  });
+
+  it("falls back to full validation when standard cloneability admission is unavailable", () => {
+    const pair = initial(), validate = vi.spyOn(resourcesAdapter, "assertMaterialSnapshots");
+    vi.stubGlobal("structuredClone", undefined);
+    try {
+      assertFactoryBeltState(pair.line, pair.material);
+      assertFactoryBeltState(pair.line, pair.material);
+      expect(validate).toHaveBeenCalledTimes(2);
+    } finally { vi.unstubAllGlobals(); validate.mockRestore(); }
+  });
+
+  it.each(["prototype", "own-array-method"])("never reuses an exotic %s set even when its own values are frozen", (kind) => {
+    const pair = initial();
+    const snapshots = [...pair.material.containers];
+    if (kind === "prototype") Object.setPrototypeOf(snapshots, Object.create(Array.prototype));
+    else Object.defineProperty(snapshots, "map", { value: Array.prototype.map });
+    const material = { ...pair.material, containers: Object.freeze(snapshots) };
+    const validate = vi.spyOn(resourcesAdapter, "assertMaterialSnapshots");
+    try {
+      assertFactoryBeltState(pair.line, material);
+      assertFactoryBeltState(pair.line, material);
+      expect(validate).toHaveBeenCalledTimes(2);
+    } finally { validate.mockRestore(); }
+  });
+
+  it("revalidates invalid frozen sets on every attempt and still checks warm power/authority/capacity facts", () => {
+    const pair = initial(), bad = Object.freeze({ ...pair.material.containers[0]!, signature: "forged" });
+    const material = { ...pair.material, containers: Object.freeze([bad, ...pair.material.containers.slice(1)]) };
+    const validate = vi.spyOn(resourcesAdapter, "assertMaterialSnapshots");
+    try {
+      for (let n = 0; n < 2; n++) expect(() => assertFactoryBeltState(pair.line, material)).toThrow("InvalidResourceSnapshot");
+      expect(validate).toHaveBeenCalledTimes(2);
+    } finally { validate.mockRestore(); }
+    const request = input(pair, false), cold = advanceFactoryBelt(pair.line, request);
+    expect(cold).toMatchObject({ status: "Prepared", outcome: "WAIT_POWER" });
+    expect(advanceFactoryBelt(pair.line, { ...request, power: { ...request.power, digest: "forged" } }))
+      .toMatchObject({ status: "Rejected", reason: "InvalidBeltPowerReceipt" });
+    expect(advanceFactoryBelt(pair.line, { ...request, binding: { ...request.binding, epoch: 2 } }))
+      .toMatchObject({ status: "Rejected", reason: "StaleBeltAuthority" });
+    const reduced = { ...pair.material, containers: pair.material.containers.map(c => c.state.containerId === "source" ? bin("source", [], 0) : c) };
+    expect(advanceFactoryBelt(pair.line, { ...request, material: reduced })).toMatchObject({ status: "Prepared", outcome: "WAIT_POWER" });
+    expect(commitFactoryBeltStep(pair.line, { ...request, material: reduced }, cold))
+      .toMatchObject({ status: "Rejected", reason: "StaleBeltStep", material: reduced });
+    expect(readMaterialMassMg(pair.material)).toBe(10_000_000);
+  });
+});
 
 describe("FP06 native one-packet conveyor reference", () => {
   it("FP06-T033 pays entry credit, then needs 54 confirmed moves on 4m before actual target custody", () => {

@@ -1,0 +1,160 @@
+{
+  "schema": "hestia.fp06.play-measurement-grant/v1",
+  "milestone": "PLAY-06-attribution",
+  "actor": "/root/play_integrator",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+  "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+  "authorizedAtUtc": "2026-10-12T06:43:03.136750+00:00",
+  "authorization": "Explicit new user targeted composition investigation; existing exact source/scenario/limit preserved; no blanket optimization permission",
+  "status": "GRANTED_ON_SERIAL_CPU_SLOT",
+  "writeSet": [],
+  "testSourceOverlayAllowed": false,
+  "iterationBudget": {
+    "unprofiledBaseline": 1,
+    "v8CpuProfile": 1,
+    "runtimeCandidates": 0,
+    "additionalCpuProfiles": 0
+  },
+  "metric": "original selected paid-band Vitest case completion milliseconds; original5000ms timeout; actual CLI outcomes",
+  "scenarioBlock": {
+    "bytes": 6563,
+    "sha256": "ce1fb626500b8b05fcbd255f574f4a0597d1ebd864dab82d74a98dbd64951cd1",
+    "cases": "both original paid-band cases in existing order/single process",
+    "outputCaseAdoptions": 57
+  },
+  "sourceBindings": [
+    {
+      "path": "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+      "bytes": 31347,
+      "sha256": "2122581f9075c53db0441002b650d6a6c2cb9eddd0c858f1b0078d58c3746a4a"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts",
+      "bytes": 36419,
+      "sha256": "e83081b79cd68180974f679000945dec0ea4c2c5642cbd4a83d810be7a043a8b"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/conveyor/beltReference.ts",
+      "bytes": 20546,
+      "sha256": "45fb7e4d0bb618a07d215ab923db4521c1bd46203428b49760e5140f402be211"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/material/reservations.ts",
+      "bytes": 22417,
+      "sha256": "4f5c1d17db3c5167dc42b23e0ab6b0a63f3a9b441684bc5140c367dd7d4d483e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/material/resourcesAdapter.ts",
+      "bytes": 5790,
+      "sha256": "00fb33b5774fd96980e02e8c1bb92a178d5aedb18b612499cde21a3b0ab1c509"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/production/productionStep.ts",
+      "bytes": 29154,
+      "sha256": "f74397051a7b2da13d6d183ccf573cb633cb932e915e1ebaf6bf6a50da29c449"
+    },
+    {
+      "path": "apps/weltraum-browser/src/resources/serialization.ts",
+      "bytes": 4186,
+      "sha256": "7d1459f7ff1b470d5f88f6046259add5f0ecaab78955fc2afc8d37adf14ff80f"
+    },
+    {
+      "path": "apps/weltraum-browser/vite.config.ts",
+      "bytes": 622,
+      "sha256": "96e10a87ba016b606939adb71b0d965c02d0280c2dca74f8b767c1739d3b8dd6"
+    },
+    {
+      "path": "apps/weltraum-browser/package.json",
+      "bytes": 2605,
+      "sha256": "dd683e0eec65497469a71956c22e2cee90fa5d9f74e279264e10590db28d4416"
+    }
+  ],
+  "evidenceWriteSet": [
+    "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/<actual-run-id>/**"
+  ],
+  "scratchEvidenceRoot": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-06/attribution",
+  "commands": {
+    "baseline": [
+      "npm",
+      "run",
+      "test",
+      "--",
+      "tests/unit/factory/dryFactorySlice.test.ts",
+      "-t",
+      "paid-band"
+    ],
+    "profile": [
+      "node",
+      "--cpu-prof",
+      "--cpu-prof-dir=<new-actual-own-run>",
+      "node_modules/vitest/vitest.mjs",
+      "run",
+      "tests/unit/factory/dryFactorySlice.test.ts",
+      "-t",
+      "paid-band"
+    ]
+  },
+  "constraints": [
+    "activate and freshly verify unchanged installed Node22.23.3/npm10.9.8; bind execpath",
+    "stop competing heavy browser/Blender/Node workloads; report resource/backend scope honestly",
+    "no product/test/fixture/source/config/timeout/guard changes for attribution",
+    "profile overhead is separate; profiling outcome is not performancePASS",
+    "do not add inclusive samples from overlapping categories",
+    "Nativephase NOT_PRESENT in this pure composition test; browser/hardware separate",
+    "hypothesis H1 only supported historically; current profile must attribute before any runtime candidate grant",
+    "If source/same6563/order changes, stop and report INCOMPARABLE; no spontaneous rerun",
+    "all originalFAILs preserved; at budget exhaustion stop this milestone; route/assets/UI maycontinue",
+    "No main/push/publish/dependency/limit changes"
+  ],
+  "actorTransfers": [
+    {
+      "atUtc": "2026-10-12T07:06:15.293370+00:00",
+      "previousActor": "/root/fp06_integrator",
+      "newActor": "/root/play_integrator",
+      "reason": "Actual prior agent model-capacity error; interrupted with errored previous status. No retry/push/reset/rebase. Same branch/worktree and authorized drafts retained.",
+      "observedHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceDraftFiles": [
+        {
+          "path": "apps/weltraum-browser/src/factory/factoryEntry.ts",
+          "bytes": 13673,
+          "sha256": "7e4dad82fffb27cad3f4f5064460e6c57d3b4c46f81eeca84901f9baf2e31754"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+          "bytes": 4118,
+          "sha256": "1ff5b11c5ceb027755015c8db305acc85d7dbe1db8e3ac2e68fca983f89a17e7"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+          "bytes": 3901,
+          "sha256": "faead62d37493fcdfa98c000003e2ffd125408ddd6212e9b3bb69dd0fe05f168"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+          "bytes": 10114,
+          "sha256": "107601ff938da6eee3f1db1159f8c55961a2517551b186fc0a8bbc01f8f7525a"
+        },
+        {
+          "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+          "bytes": 175196,
+          "sha256": "50e49426c05b29343d94c884184d26972209ef3c907daa2fd11a30e63fee730d"
+        },
+        {
+          "path": "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+          "bytes": 38948,
+          "sha256": "2f3fd41bea2edb1756f1b7933ac0243ee98c1e742bb4c6fe26b6756f70b09408"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+          "bytes": 3584,
+          "sha256": "1fed4863963b871262f66455e33725dc6027b439910d56d7c5d861af56e1b4f2"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+          "bytes": 4414,
+          "sha256": "1f37638fbb02b04e47c0e60b1a9f11f0cb68bfad968d40e218a64caac410e618"
+        }
+      ]
+    }
+  ]
+}

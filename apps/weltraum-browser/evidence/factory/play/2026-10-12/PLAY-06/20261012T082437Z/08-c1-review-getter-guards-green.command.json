@@ -1,0 +1,36 @@
+{
+  "command": [
+    "node",
+    "node_modules/vitest/vitest.mjs",
+    "run",
+    "tests/unit/factory/conveyor.test.ts",
+    "--maxWorkers",
+    "1",
+    "-t",
+    "PLAY06 C1"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "actor": "/root/play_integrator",
+  "startedAtUtc": "2026-10-12T08:34:59.244115+00:00",
+  "endedAtUtc": "2026-10-12T08:35:00.036398+00:00",
+  "elapsedSeconds": 0.7922596919997886,
+  "exitCode": 0,
+  "rawBytes": 283,
+  "rawSha256": "cbd72dd22343332539fb91364c21b9a03dcb3b3aa2c49b54106f429189f4f47c",
+  "head": "393670fccd4789b562d31b721f15d02457420935",
+  "node": "v22.23.3",
+  "npm": "10.9.8",
+  "nodeExecPath": "/workspace/.cloud-setup/toolchain/node_modules/node/bin/node",
+  "sourceBindings": [
+    {
+      "path": "apps/weltraum-browser/src/factory/conveyor/beltReference.ts",
+      "bytes": 22676,
+      "sha256": "c66f0e3fb21758c372c0371a63cff2787884e52c351c511b913b9f7f1a4b711b"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/conveyor.test.ts",
+      "bytes": 26379,
+      "sha256": "ff787139642856e700f556720550d5ac5c5494ffbaf871375fc8a4e83a5d308e"
+    }
+  ]
+}
