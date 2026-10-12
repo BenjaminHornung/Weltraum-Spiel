@@ -1,0 +1,119 @@
+{
+  "schema": "hestia.fp06.play-bounded-s1-bridge/v1",
+  "milestone": "PLAY-02-S1",
+  "actor": "/root/play_integrator",
+  "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+  "authorizedAtUtc": "2026-10-12T08:12:51.650473+00:00",
+  "authorization": "Explicit followup Cutter/Former S1 and physical-authority integration; narrow source/readview/compiler reuse after actual independent inspection",
+  "status": "GRANTED_IMPLEMENTATION; ACCEPTANCE_PENDING_EVIDENCE",
+  "writeSet": [
+    "apps/weltraum-browser/src/factory/presentation/factoryPartCells.ts",
+    "apps/weltraum-browser/src/factory/presentation/factoryS1Assets.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+    "apps/weltraum-browser/src/factory/session/hostPort.ts",
+    "apps/weltraum-browser/src/factory/session/factorySession.ts",
+    "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+    "apps/weltraum-browser/tests/unit/factory/factoryPartCells.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/factoryS1Assets.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+    "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts"
+  ],
+  "beforeBytes": [
+    {
+      "path": "apps/weltraum-browser/src/factory/presentation/factoryPartCells.ts",
+      "state": "ABSENT",
+      "bytes": 0,
+      "sha256": null
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/presentation/factoryS1Assets.ts",
+      "state": "ABSENT",
+      "bytes": 0,
+      "sha256": null
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+      "state": "EXISTS",
+      "bytes": 53631,
+      "sha256": "d6b78d8f21b3c726752f72310c20e851c21dfe9589969823630830bb5ca98311"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+      "state": "EXISTS",
+      "bytes": 10114,
+      "sha256": "107601ff938da6eee3f1db1159f8c55961a2517551b186fc0a8bbc01f8f7525a"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/factorySession.ts",
+      "state": "EXISTS",
+      "bytes": 66208,
+      "sha256": "ea8d8cdee5ea1826a9b00f0dd7d2d7cbfc4408cdeb7cb2e3f880893ea86a448a"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+      "state": "EXISTS",
+      "bytes": 175973,
+      "sha256": "049946eb7039aa736761c6002e0e531412861ba28f039aa87637fb0f44a141e9"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/factoryPartCells.test.ts",
+      "state": "ABSENT",
+      "bytes": 0,
+      "sha256": null
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/factoryS1Assets.test.ts",
+      "state": "ABSENT",
+      "bytes": 0,
+      "sha256": null
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+      "state": "EXISTS",
+      "bytes": 39743,
+      "sha256": "33a2402978e78952c5b926bcc3ee0003d54527c311268f20d418b482ab53c0d0"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+      "state": "EXISTS",
+      "bytes": 86906,
+      "sha256": "c57fdd84247a711358a849e1b5ec8e435d77c178bb9907f6b15dc6c6afab2bda"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts",
+      "state": "EXISTS",
+      "bytes": 7458,
+      "sha256": "7388c9a34b2ba37e07b67a4c857d24ac861a74135157222ed9b17bc93307c42f"
+    }
+  ],
+  "preflight": {
+    "path": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-02/s1-bridge-preflight.md",
+    "sha256": "7d639cba2daf532f1b4d63e16b89c698974f6507a5db956ee41ef8209783d2b7"
+  },
+  "closedContract": {
+    "definitions": [
+      "B06",
+      "B07"
+    ],
+    "assetCellMeters": 0.125,
+    "buildGridMeters": 0.25,
+    "assetCellAuthority": "Exact per-part geometry derivative of unchanged native SourceScene boxes, using existing compact occupancy mesher; not terrain/mining/material/density authority",
+    "nativeAuthority": "Existing same-World fixed facilities, paid BOM, original collider recipes/masses/ports/supports/sweeps; actual native per-part observation",
+    "allowedRuntimeWork": "Existing confirmed domain work/status/custody and source authored joint parents; no render timer progress",
+    "persistentDamage": "No new player-accessible destruction or partial-damage save invented; actual missing native parts reject/hold/suppress, synthetic removal labelled synthetic"
+  },
+  "constraints": [
+    "Exactly11 paths; sole Integrator, UI7new paths disjoint, Art HOLD",
+    "No original Scene/authoring/catalog/installProfile/coreMesher/structuralIngest edits, no mass from proxy volume/render colors",
+    "Two-definition closed adapter only; no generic HVOX compiler or physical branch/terrain migration",
+    "Validate original source/definition/part/joint/frame/digest, exact125mm edges before bounded allocation; deterministic overlap policy preserves part identities",
+    "Existing budgets unchanged; aggregate owned ledger costs admitted before stage; instance keys distinct, hidden stage rollback/retire/dispose guarded",
+    "Native part presence from real collider/body membership/enabled/shape/profile, never copied source list as proof; stale/unknown parent suppresses child pose",
+    "Actual GLB and current native definition/geometry binding, neutral roots exactoneworldtransform; no GLB authority",
+    "Business RED/GREEN, actual Rapier part-negative guards, affected regressions/build, normal paid process/WAIT/pose/import screenshots",
+    "S1 candidate acceptance only after independent runtime/source review; all human terrain/Art/usability/hardware OWNER_REVIEW_PENDING",
+    "No free material/fragments, member/budget/quantity/policy/limit increases, W12\u201329, engine/dependency changes or publishing"
+  ]
+}

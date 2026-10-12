@@ -1,0 +1,30 @@
+{
+  "schema": "hestia.factory.balance-audit-grant/v1",
+  "milestone": "BAL-00-to-04",
+  "actor": "/root/balance_audit",
+  "authorizedAtUtc": "2026-10-12T08:21:43.000086+00:00",
+  "authorization": "Explicit supplemental owner balancing request: readonly audit, versioned inactive proposal and migration/test reports; playable completion remains priority",
+  "status": "READONLY_ANALYSIS_AND_ISOLATED_DOCUMENTS_ONLY",
+  "productWriteSet": [],
+  "artifactDirectory": "/workspace/.cloud-setup/fp06-play-2026-10-12/BALANCE",
+  "deliverables": [
+    "BALANCE_AUDIT.md",
+    "BALANCE_V2_PROPOSAL.md",
+    "BALANCE_MIGRATION_MATRIX.md",
+    "BALANCE_TEST_REPORT.md"
+  ],
+  "archive": {
+    "path": "/workspace/attachments/52f26734-f4c0-41b5-b2ad-41cd20ca4a30/HESTIA_FACTORY_BALANCE_5ER_RATEN_CODEX_HANDOFF_2026-10-12.zip",
+    "bytes": 259331,
+    "sha256": "631c93c5a60803de79fc643345d285ad193e9d4cab6b1120a69c61dd08fa9b75",
+    "verifiedSha256SumsEntries": 15
+  },
+  "designDirection": "Future main nominal rates preferably multiples5 in explicit units; simple ratios and early0.5kW main loads, actual mass/energy/weather untouched",
+  "constraints": [
+    "Existing W09 recipes/version/digests/goldens/cargo/save/history unchanged; current active runtime grants retain priority",
+    "Separate inactive balanceV2 and exact migration/gate matrix; no new standard content accepted from illustrative fixture",
+    "Pure rational/archive arithmetic after sourceinspection only; no Vitest/build/browser/native/profile/dependencies/publish",
+    "No live SourceLock/WriteLock writes by analysis agent; Root imports reviewed four artifacts",
+    "Historical references and packaging Smoke are not fresh repository/test evidence"
+  ]
+}

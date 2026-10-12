@@ -301,5 +301,19 @@
     "w10": "BLOCKED_ON_W09",
     "w11": "BLOCKED_ON_W09_W10",
     "humanAcceptance": "OWNER_REVIEW_PENDING"
+  },
+  "supplementalBalanceOwnerRequest": {
+    "archive": {
+      "path": "/workspace/attachments/52f26734-f4c0-41b5-b2ad-41cd20ca4a30/HESTIA_FACTORY_BALANCE_5ER_RATEN_CODEX_HANDOFF_2026-10-12.zip",
+      "bytes": 259331,
+      "sha256": "631c93c5a60803de79fc643345d285ad193e9d4cab6b1120a69c61dd08fa9b75",
+      "verifiedSha256SumsEntries": 15
+    },
+    "direction": "Accepted for planning future content",
+    "activeRecipesChanged": false,
+    "runtimeGrant": null,
+    "analysisAgent": "/root/balance_audit",
+    "prototypePriority": "W09-W11 remains priority",
+    "artifactGrant": "grants/balance-readonly.json"
   }
 }
