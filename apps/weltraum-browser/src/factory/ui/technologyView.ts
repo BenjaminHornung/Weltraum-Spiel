@@ -5,11 +5,13 @@ export const mountFactoryTechnologyView = (port: FactoryUiPort, doc: Document = 
   const panel = createFactoryPanel(port, doc, "technology", "Bau und Technik");
   let selected: string | null = null;
   const choices = doc.createElement("div"), details = doc.createElement("div");
+  choices.className = "factory-technology-directory"; details.className = "factory-technology-detail";
   const buttons = new Map<string, HTMLButtonElement>();
   panel.content.append(choices, details);
   const render = () => {
     for (const [id, button] of buttons) if (!panel.view.technologies.some(t => t.id === id)) { button.remove(); buttons.delete(id); }
     details.replaceChildren();
+    if (!panel.view.technologies.some(t => t.id === selected)) selected = panel.view.technologies.find(t => t.status === "AVAILABLE")?.id ?? panel.view.technologies[0]?.id ?? null;
     for (const technology of panel.view.technologies) {
       let button = buttons.get(technology.id);
       if (!button) {
@@ -17,6 +19,7 @@ export const mountFactoryTechnologyView = (port: FactoryUiPort, doc: Document = 
         choices.append(button); buttons.set(technology.id, button);
       }
       button.textContent = technology.name;
+      button.title = technology.status === "AVAILABLE" ? "Verfügbar" : technology.status === "PLANNED" ? "Später" : "Voraussetzungen fehlen";
       button.setAttribute("aria-pressed", String(selected === technology.id));
       if (selected === technology.id) {
         details.append(uiText(doc, "h3", technology.name), uiText(doc, "p", technology.status === "AVAILABLE" ? "Verfügbar" : technology.status === "PLANNED" ? "Geplant" : "Voraussetzungen fehlen"));

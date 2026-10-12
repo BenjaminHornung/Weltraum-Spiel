@@ -1,0 +1,145 @@
+{
+  "admittedAtUtc": "2026-10-12T12:07:09.484086+00:00",
+  "actor": "/root/play_integrator",
+  "sourceCommit": "6b2e53eb0f1fd3b42a5d16ebe244fe7d0bc57199",
+  "grant": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/play/2026-10-12/grants/play-03-gamefeel-ui-admission.json",
+  "grantSha256": "e4a8d16851a8a1c86edfdbcf80f33eb0e462d05e52f0067793b70e836c43282b",
+  "verifiedFiles": [
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/factoryShell.ts",
+      "before": {
+        "path": "apps/weltraum-browser/src/factory/ui/factoryShell.ts",
+        "state": "EXISTS",
+        "bytes": 16646,
+        "sha256": "168418de11ccca20fb6b4d18febf2f95bfe93ff8ef9f117a7d41e98aaba2bf16"
+      },
+      "source": {
+        "bytes": 19713,
+        "sha256": "6c17543789b58b3691e461d28040897edf10632ff05d5a23d618fad8276b8eed"
+      }
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/factoryShell.css",
+      "before": {
+        "path": "apps/weltraum-browser/src/factory/ui/factoryShell.css",
+        "state": "EXISTS",
+        "bytes": 5106,
+        "sha256": "4603db5ebe8da2e4ca36fa3093532133acfa235a9bfab2aba53f9dd384df8fd9"
+      },
+      "source": {
+        "bytes": 15992,
+        "sha256": "7a48c7af3ed2c8b810e137e4fb8227c9222ca27f73b4cde5ea44f86888afbe15"
+      }
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+      "before": {
+        "path": "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+        "state": "EXISTS",
+        "bytes": 15782,
+        "sha256": "f899ffb7d5f062272c8f7693325981f9e789f3aec28716941a0522731d0356e5"
+      },
+      "source": {
+        "bytes": 25904,
+        "sha256": "fa105f26d2feb5fcfaa7b6c0c4e079b3f911e2adf23e6825427cf5102224a21e"
+      }
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/machinePanel.ts",
+      "before": {
+        "path": "apps/weltraum-browser/src/factory/ui/machinePanel.ts",
+        "state": "EXISTS",
+        "bytes": 6494,
+        "sha256": "9905cc0d9bd04ee2dc15903b03fca2399e4fa95fdf828ed6853787f97a19c2e7"
+      },
+      "source": {
+        "bytes": 11262,
+        "sha256": "ceb6f0c9be68772cdf5be709b985a20f024e07259b0ec9ebc9c30f17dfdee37c"
+      }
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/technologyView.ts",
+      "before": {
+        "path": "apps/weltraum-browser/src/factory/ui/technologyView.ts",
+        "state": "EXISTS",
+        "bytes": 1756,
+        "sha256": "dd0dc44d98d7747b8cb9274c5d9f8158218744ad8fd9770860baacf0cec90da9"
+      },
+      "source": {
+        "bytes": 2184,
+        "sha256": "327470e188bba8a12e44be66ddd9d629ce7e72d1d5221f8534eed8eb3a897c37"
+      }
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/itemVisuals.ts",
+      "before": {
+        "path": "apps/weltraum-browser/src/factory/ui/itemVisuals.ts",
+        "state": "ABSENT"
+      },
+      "source": {
+        "bytes": 9449,
+        "sha256": "930a7874bbe99af032c3cc0b88ef963259ecbbdebbd48769367fdcdcce447894"
+      }
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/factoryShell.test.ts",
+      "before": {
+        "path": "apps/weltraum-browser/tests/unit/factory/factoryShell.test.ts",
+        "state": "EXISTS",
+        "bytes": 8684,
+        "sha256": "bda4245f25032c33cf3a58cf2a797f48f6e0bb0ed6a2951f138a8b463d164269"
+      },
+      "source": {
+        "bytes": 13249,
+        "sha256": "7a00e14e755ee25902358d9732e1f40ab0d164dd1692fa00a655b141a7642c10"
+      }
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/gameUiPresentation.test.ts",
+      "before": {
+        "path": "apps/weltraum-browser/tests/unit/factory/gameUiPresentation.test.ts",
+        "state": "ABSENT"
+      },
+      "source": {
+        "bytes": 16501,
+        "sha256": "ac8d3b6b5465ce752a1957a9061fb3e8e2872be091605b45ae1fad47b96151eb"
+      }
+    }
+  ],
+  "handoff": {
+    "path": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-03/ui-gamefeel/commit-handoff.json",
+    "sha256": "032b97807390c639696f8e76c503d62dafaa298c51b0e55189eff885b5e52b32"
+  },
+  "review": {
+    "path": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-03/ui-gamefeel-independent-review.md",
+    "sha256": "92bd154c20c65857adb2f2d8604b15c86537e2afbb97d01f70dd2c3aac4d3b84",
+    "scope": "Bounded Source PASS54focused+tsc; actual post-fix native pixels and Owner acceptance pending"
+  },
+  "scope": "Exact8 immutable Source/controller/test blobs; source54PASS/tsc reviewed; actual game/Pixel/Native UI gate and Owner acceptance remain pending; one earlier static layoutProbe remainsFAIL",
+  "preservedDirtyProduct": [
+    "apps/weltraum-browser/src/factory/factoryEntry.ts",
+    "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+    "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+    "apps/weltraum-browser/src/factory/session/factorySession.ts",
+    "apps/weltraum-browser/src/factory/session/hostPort.ts",
+    "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+    "apps/weltraum-browser/src/factory/ui/factoryShell.css",
+    "apps/weltraum-browser/src/factory/ui/factoryShell.ts",
+    "apps/weltraum-browser/src/factory/ui/machinePanel.ts",
+    "apps/weltraum-browser/src/factory/ui/onboarding.ts",
+    "apps/weltraum-browser/src/factory/ui/technologyView.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+    "apps/weltraum-browser/src/hestia-prototype/player/input.ts",
+    "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+    "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+    "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/factoryShell.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/onboarding.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts"
+  ]
+}
