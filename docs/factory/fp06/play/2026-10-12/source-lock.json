@@ -306,7 +306,7 @@
     "normalHeavyRoute": "341kg pickup/depot/playerexit/paidFormer native PASS (partial W09); battery/cable/full16kg NOT_RUN",
     "simulationIdleHold": "Observed FAIL during normal idle; independent attribution OPEN; fast successful route does not waive this",
     "artHead": "e752cc7fce43a50b4bcb4800d9d27584b44b6a0e",
-    "artAcceptance": "Twelve-path correction independently reviewed/committed clean; Root exact immutable admission issued, runtime pending",
+    "artAcceptance": "Reviewed correction source+2actualLFS and pure compiler admitted by sole Integrator; runtime/S1/Owner pending",
     "uiWriter": "/root/play_ui HOLD; source admitted; normal-browser Host wiring ongoing by sole Integrator",
     "composition": "Bounded C1 reviewPASS: bothP1closed,11guards/25conveyor/build/2originalpairPASS5000ms; final source2e8a33..; noFPS/hardwareclaim",
     "w09Endgate": "NOT_RUN",
@@ -321,12 +321,15 @@
     "route19": "NormalCarrierOverlap at7.081mm deviation, separateBatteryCarrierSupport; custody preserved; fullflowFAIL",
     "balance": "Fourreviewedplanningartifacts adopted docs/factory/balance;26rationalChecksPASS, productV2inactive/legacyW09unchanged",
     "v3": "Owner-approved exact 3-mask candidate Source/Cargo13PASS and Bootstrap2PASS/44skip/buildPASS; first normal run 085310 FAIL before margin trial; no full-route conclusion",
-    "integratorHead": "d76e5fa764a1e62fbe215c589b6aa8b18adf1040",
+    "integratorHead": "9a2c9397af8efcb56d2e18bc578b2c30eab6875d",
     "inputActivation": "11 genuine business assertions RED; minimal ACK/cancel lifecycle implementation ongoing in exact two-path grant",
     "partCells": "44 focusedPASS/tscPASS and independent boundedPASS, two-file cleancommit, exact immutable admission issued; S1/native/runtime pending",
     "portableDelivery": "Read-only current-package preflight dispatched; old instance2 remains historical, final clean-copy verification NOT_RUN",
     "artCorrectionCommit": "1314e813b39ba460bdc6c470c37416b65498fbac",
-    "partCellsCommit": "214ff98a07ea76dce50e5382f842decd2ce9a6a0"
+    "partCellsCommit": "214ff98a07ea76dce50e5382f842decd2ce9a6a0",
+    "artCorrectionImportCommit": "9a2c9397af8efcb56d2e18bc578b2c30eab6875d",
+    "partCellsImportCommit": "9a2c9397af8efcb56d2e18bc578b2c30eab6875d",
+    "modelLoaderWriter": "/root/play_cell_bridge exacttwofile delegatedmodule, clean9a2base/23verified actualGLBs"
   },
   "supplementalBalanceOwnerRequest": {
     "archive": {

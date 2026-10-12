@@ -16,11 +16,9 @@
     "apps/weltraum-browser/src/factory/factoryEntry.ts",
     "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
     "apps/weltraum-browser/src/factory/presentation/machinePose.ts",
-    "apps/weltraum-browser/src/factory/presentation/playAssetLoader.ts",
     "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
     "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts",
-    "apps/weltraum-browser/tests/unit/factory/presentation.test.ts",
-    "apps/weltraum-browser/tests/unit/factory/playAssetLoader.test.ts"
+    "apps/weltraum-browser/tests/unit/factory/presentation.test.ts"
   ],
   "beforeBytes": [
     {
@@ -120,5 +118,14 @@
     "Business RED then focused source-bound guard/regression tests/build and later normal browser evidence",
     "Original6563-byte paid-band block,5000ms and recipe/BOM/source quantities/budgets unchanged",
     "No dependency/config upgrades, limit increases, mainmerge/push/publish or old closed grants"
-  ]
+  ],
+  "delegatedPureLoader": {
+    "actor": "/root/play_cell_bridge",
+    "writeSet": [
+      "apps/weltraum-browser/src/factory/presentation/playAssetLoader.ts",
+      "apps/weltraum-browser/tests/unit/factory/playAssetLoader.test.ts"
+    ],
+    "grant": "grants/play-02-model-loader-writer.json",
+    "integratorWriteHoldUntilReviewedAdmission": true
+  }
 }
