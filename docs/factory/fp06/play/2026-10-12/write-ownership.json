@@ -7,7 +7,7 @@
   "previousOwnership": "../../write-ownership.json",
   "activeImplementationWriters": [
     "/root/play_integrator",
-    "/root/play_cell_bridge"
+    "/root/visual_review_assets"
   ],
   "activeDocumentationWriter": "/root",
   "browserCpuLease": "/root/play_integrator input/Host/native runtime; other jobs coordinate directly",
@@ -3095,6 +3095,41 @@
         "GenuineRED for3profiles thenfocusedSource/mass/transfer/replay/oldprofileimmutability GREEN/regression/tsc/build. Exact2pathssoleIntegrator, existingSharedSession/Host scopes unchanged; oldui/ArtWriterHOLD, CellpureGoal only.",
         "No additionalTerrain/Flora/sourcegeometry/collider/budget/queue/timeout/Dependency/Engine/W12-W29/Saveadoption/forcepush/Mainmerge/push/publishing; ownerhumanacceptancepending."
       ]
+    },
+    "OWNER_REQUESTED_COMPLETE_MARKDOWN_IMAGE_REVIEW": {
+      "schema": "hestia.fp06.visual-review-art-grant/v1",
+      "milestone": "OWNER_REQUESTED_COMPLETE_MARKDOWN_IMAGE_REVIEW",
+      "actor": "/root/visual_review_assets",
+      "branch": "codex/hestia-fp06-visual-review-2026-10-12",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-visual-review-2026-10-12",
+      "baseCommitSha": "f85d1379c3458488d225105156adfb66837799ce",
+      "authorizedAtUtc": "2026-10-12T14:36:46.286896+00:00",
+      "status": "GRANTED_SECOND_WRITER_PREVIEW_ONLY",
+      "authorization": "Explicit Owner asks images of allBlend files and fullMarkdownreviewpackage; implied necessary localCPUBlender preview invocation, no extra confirmation required",
+      "previousSecondWriter": {
+        "actor": "/root/play_cell_bridge",
+        "commitSha": "58cb6556b280d206a7e8a24a502e5c7a66763990",
+        "status": "CLEAN_HOLD_EXACT_TWO_FILES"
+      },
+      "sourceInputManifest": "/workspace/review-packages/Hestia-FP06-Review-2026-10-12/provenance/asset-inputs.json",
+      "sourceWorktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+      "writeSet": [
+        "docs/factory/fp06/play/2026-10-12/visual-review/render_blend_previews.py",
+        "docs/factory/fp06/play/2026-10-12/visual-review/run_blend_previews.py"
+      ],
+      "externalWriteSet": [
+        "/workspace/review-packages/Hestia-FP06-Review-2026-10-12/images/assets",
+        "/workspace/review-packages/Hestia-FP06-Review-2026-10-12/provenance/blender"
+      ],
+      "constraints": [
+        "All24 actual nativeBlend sourcefiles, actual23CurrentHestiaAssets plus1olderunrelatedmodularship; exactsourceSHA before/after, no savedSource/model/mat/geometry/GLBchange. Open existingBlend read-only with--disable-autoexec, sceneCamera/lighting/reviewfloor in memory only; never save_as_mainfile or export newRuntime.",
+        "Two1024x768 reviewviews per source: primary3quarter/front andback/secondary makesfunction/silhouette inspectable; Sourceactualpalette/nodes/topology unchanged. Ground/camera/light only clearlyreviewrender, noinventedpaidjob/process/Worldanimation orstartupshipflight.",
+        "Use installed /usr/bin/blender4.3.2, CPUcycles oneprocess/1thread andlowbounded8samples. game-devCLIabsent, honest directBlenderfallback per explicit user. No providers/cloudGPU/network/install/Dependency/renderer/product edits.",
+        "Beforefirstpilot andallrender CPUlease coordinate DIRECTLYwithsoleIntegrator so no NativeBrowser/test/build overlap. Runtime18currentlease~90sfirst. Prepare scripts/readmetadata allowed; no SourceCPUprofiling. PilotactualcutterPNG inspect byRoot thenremainingsamepipeline, preserveallfailreceipts.",
+        "Ownbranch exact2newscriptpaths and externalPNG/renderjson/rawreceipts only, no packageREADME/gameSnapshots/Rootdocs/FactoryShared edits; Rootowns Review.md/galleryHTML/nativefilecopies/ZIP/selectedGameEvidence. Max2writersIntegrator+thisPreviewActor; CelloldbranchcleanHOLD andallotherArt/UI HOLD.",
+        "Truthfulimageclass BlenderAuthoringPreview notScreenshot/InGame/NativeGameplay. ArtifacteachSourcehash/actualBlenderargv/version/cwd/start/end/exit/renderer/dimensions/imageSHA/boundingbox/objectcounts/camera parameters; noMaterial/WorldAuthority.",
+        "No W12-W29/Mainmerge/push/PR/publish/newGeometry/sourceposeinjection/Colliderchanges/framework/engine/spend/limit changes. Finaluserstyle/gameplay/terrain/hardwarejudgementpending."
+      ]
     }
   },
   "actorTransfers": [
@@ -3156,6 +3191,13 @@
       "previousActor": "/root/play_integrator",
       "newActor": "/root/play_cell_bridge",
       "reason": "Usermax2writers and explicitIntegrator disjointpurehelpertransfer; sameexact2 draftbytes in isolatedNative69a base; Sharedfiles remainsoleIntegrator"
+    },
+    {
+      "atUtc": "2026-10-12T14:36:46.286896+00:00",
+      "previousActor": "/root/play_cell_bridge",
+      "newActor": "/root/visual_review_assets",
+      "reason": "Cell58cb twofileCommitcleanHOLD; explicitOwner allBlendimageReview; onlyreadonly-source previewrenders/scripts inownbranch",
+      "sourceFilesModified": false
     }
   ]
 }

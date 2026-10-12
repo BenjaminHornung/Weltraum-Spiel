@@ -382,16 +382,8 @@
       "/root/play_cell_bridge"
     ],
     "freshLineageWriter": {
-      "actor": "/root/play_cell_bridge",
-      "branch": "codex/hestia-fp06-play-fresh-lineage-2026-10-12",
-      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-play-fresh-lineage-2026-10-12",
-      "baseCommitSha": "f85d1379c3458488d225105156adfb66837799ce",
-      "scope": [
-        "apps/weltraum-browser/src/factory/session/freshLineageProjection.ts",
-        "apps/weltraum-browser/tests/unit/factory/freshLineageProjection.test.ts"
-      ],
-      "requiredInitialMaterial": "actualretainedreadonlySourcebaseline no constructor/duplicateWorld",
-      "status": "GRANTED_EXACT_TWO_NEW_FILES_SECOND_WRITER"
+      "commitSha": "58cb6556b280d206a7e8a24a502e5c7a66763990",
+      "status": "23_FOCUSED_PASS_TSC0_REVIEW0P1P2_CLEAN_HOLD_ADMISSION_PENDING"
     },
     "helpPause": "Actual RED12 \u2192 Unit13/build14/normalBrowser15 PASS; Root pixel+raw verified, 3Factory-avatarvisibility lines fix actualCanvashelm; finalSharedreview pending",
     "v5Proposal": {
@@ -449,6 +441,16 @@
       "report": "reviews/play-07-base-only-payload-audit.md",
       "sha256": "ce004b9d08179bcf9fe3f864f9fc46a53bd84b0e4d9ac5d241db903d4b07aa22",
       "finalDeliveryCleanCopy": "NOT_RUN"
+    },
+    "visualReviewPackage": {
+      "ownerRequested": true,
+      "output": "/workspace/review-packages/Hestia-FP06-Review-2026-10-12",
+      "nativeBlendCount": 24,
+      "hestiaBlendCount": 23,
+      "olderReferenceCount": 1,
+      "renderStatus": "NOT_RUN",
+      "secondWriter": "/root/visual_review_assets",
+      "grant": "grants/play-visual-review-assets.json"
     }
   },
   "supplementalBalanceOwnerRequest": {
