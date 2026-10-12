@@ -1,0 +1,49 @@
+{
+  "schema": "hestia.fp06.play-immutable-admission/v1",
+  "milestone": "PLAY-02-model-loader-admission",
+  "actor": "/root/play_integrator",
+  "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+  "authorizedAtUtc": "2026-10-12T10:40:24.994469+00:00",
+  "status": "GRANTED_EXACT_REVIEWED_FINAL_TWO_BLOBS",
+  "sourceCommitSha": "1b635619c2ca13bdcf8d4078ac491a32578feefa",
+  "sourceParentSha": "5ea6978e54a049323e82185797b06bbee657b672",
+  "writeSet": [
+    "apps/weltraum-browser/src/factory/presentation/playAssetLoader.ts",
+    "apps/weltraum-browser/tests/unit/factory/playAssetLoader.test.ts"
+  ],
+  "verifiedFiles": [
+    {
+      "path": "apps/weltraum-browser/src/factory/presentation/playAssetLoader.ts",
+      "before": {
+        "state": "ABSENT"
+      },
+      "source": {
+        "bytes": 18666,
+        "sha256": "7db5db2357f58e6b7b5785f886939235b70af932134010ca0dc0ff96e6ec75b3"
+      }
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/playAssetLoader.test.ts",
+      "before": {
+        "state": "ABSENT"
+      },
+      "source": {
+        "bytes": 14718,
+        "sha256": "4676e909f7f66d401f6d85924851732c589ccc6a932723b17f811a285b6fb138"
+      }
+    }
+  ],
+  "acceptedManifestSha256": "f76c9cb6e504555446d3bafe7b8ef7a95bdb3b9242df51a2ef836aec548f03e1",
+  "independentReview": {
+    "path": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-02/loader/request-capture-independent-review.md",
+    "sha256": "6c7cbe1cb9b8d8d320101e13685f7e0d05e73d1936e3f88fb9ec8e47bfd87308"
+  },
+  "constraints": [
+    "Copy exact two absent destination blobs from immutable final1b635619 source; do not use historical5ea pre-request-capture-fix bytes; repeat absence/sourcehash checks before mutation",
+    "All23 manifest/runtimeproducts unchanged, Native/S1/work/controller/inspection/ledger integration remain soleIntegrator existinggrants; no SourceAssetregeneration/physics/Worldauthority",
+    "CurrentV4/Source/UI/Inputdrafts preserved; onlythese2newfiles and ownbounded evidence may be added/committed for admission",
+    "Genuine4newRED/final66focused+originaltsc bounded reviewPASS; no Native/world/browser/S1/Owner performanceclaim from pure helper",
+    "No mainmerge/push/forcepush/PR/publishing/dependencies/engine/budgetchanges/W12\u201329"
+  ]
+}
