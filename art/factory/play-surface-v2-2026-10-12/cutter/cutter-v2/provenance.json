@@ -1,0 +1,75 @@
+{
+  "schema": "hestia.play-model-provenance/v1",
+  "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+  "sourceFile": {
+    "path": "art/factory/fp02/cutter/source.scene.json",
+    "sha256": "abd1ce25fd19ad61a9cb65de9f5ba10c303aa5c1a1aa16260de9dce9534fa5fd",
+    "bytes": 19222
+  },
+  "sourceBlob": {
+    "path": "art/factory/play-surface-v2-2026-10-12/cutter/cutter-v2/native-owner-source.blob",
+    "sha256": "abd1ce25fd19ad61a9cb65de9f5ba10c303aa5c1a1aa16260de9dce9534fa5fd",
+    "bytes": 19222
+  },
+  "sourceSnapshot": {
+    "path": "art/factory/play-surface-v2-2026-10-12/cutter/cutter-v2/native-source.json",
+    "sha256": "79c429c1cc9d545eb5ab1bcec1417bc872d75b5aa5e6d957f5aac6ae48f5f2ce",
+    "bytes": 15515
+  },
+  "generator": {
+    "path": "art/factory/play-surface-v2-2026-10-12/build_surface_v2.py",
+    "sha256": "01b0393b2de64746efaed4df7437bcf85aabe4f59b9a289373312972f4776482",
+    "bytes": 12500
+  },
+  "originalNativeBlend": {
+    "path": "art/factory/play-2026-10-12/cutter/cutter/cutter.blend",
+    "sha256": "62d503483ecbaa1a26154ebcd452ca081e90951ca50e4bf1f1fe74126e67e31f",
+    "bytes": 717388
+  },
+  "originalRuntimeGlb": {
+    "path": "apps/weltraum-browser/public/factory/play-2026-10-12/cutter.glb",
+    "sha256": "94bb74a02431d8d08f004a7f7220c56a8e6d25eb07c7f6afed24f6b5efa1f5ea",
+    "bytes": 60724,
+    "url": "/factory/play-2026-10-12/cutter.glb"
+  },
+  "originalAssetId": "play_cutter_v1",
+  "nativeBlend": {
+    "path": "art/factory/play-surface-v2-2026-10-12/cutter/cutter-v2/cutter-v2.blend",
+    "sha256": "6e2ba489abd053b0e7654c9e2eaf6f97037408474d45fff3dc39323ab93040f8",
+    "bytes": 717812
+  },
+  "reopened": true,
+  "runtimeGlb": {
+    "path": "apps/weltraum-browser/public/factory/play-2026-10-12/cutter-v2.glb",
+    "sha256": "4f0885139b19835cc985ab9e4fb2b9c5c8d4d430a21011f0e0c03805d6821eb4",
+    "bytes": 61360
+  },
+  "exporter": {
+    "path": "tools/blender/hestia_asset_authoring/export_hestia_glb.py",
+    "sha256": "96732611048d3ff0d215e5c69ccfeed68234d552e75eed8c871572caf07b5b27",
+    "bytes": 18150
+  },
+  "blenderVersion": "4.3.2",
+  "gltfExporterVersion": "4.3.47",
+  "origin": "project-original native Blender scene derivative; no provider/remote textures",
+  "license": "LicenseRef-Hestia-Project-Original",
+  "assetToVoxelCompiler": "KNOWN_GAP_NOT_DELIVERED",
+  "visualRepair": {
+    "version": 2,
+    "originalAssetId": "play_cutter_v1",
+    "kind": "bounded-render-surface-coplanarity-repair",
+    "nativeAuthority": "unchanged original source only",
+    "changedFaceCount": 71,
+    "changedVertexCount": 234,
+    "maxVertexDisplacementM": 0.0008660254037844387,
+    "maxFaceRecessM": 0.0005,
+    "materialPriorityLowToHigh": [
+      "EX-STRUCT",
+      "EX-SHELL",
+      "EX-FUNCTION",
+      "EX-HAZARD",
+      "EX-PV"
+    ],
+    "topology": "same connected vertices, six closed quads per original cuboid"
+  }
+}

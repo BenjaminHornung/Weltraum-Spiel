@@ -1,0 +1,274 @@
+{
+  "schema": "hestia.factory.play-assets/v1",
+  "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+  "assets": [
+    {
+      "assetId": "play_cutter_v2",
+      "family": "cutter",
+      "slug": "cutter-v2",
+      "definitionRef": {
+        "sourceId": "B06",
+        "version": 1,
+        "digest": "fnv1a:9f35228b"
+      },
+      "visualOnlyAnchor": null,
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceFile": {
+        "path": "art/factory/fp02/cutter/source.scene.json",
+        "sha256": "abd1ce25fd19ad61a9cb65de9f5ba10c303aa5c1a1aa16260de9dce9534fa5fd",
+        "bytes": 19222
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-surface-v2-2026-10-12/cutter/cutter-v2/native-owner-source.blob",
+        "sha256": "abd1ce25fd19ad61a9cb65de9f5ba10c303aa5c1a1aa16260de9dce9534fa5fd",
+        "bytes": 19222
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-surface-v2-2026-10-12/cutter/cutter-v2/native-source.json",
+        "sha256": "79c429c1cc9d545eb5ab1bcec1417bc872d75b5aa5e6d957f5aac6ae48f5f2ce",
+        "bytes": 15515
+      },
+      "units": "meters",
+      "runtimeAxes": "right-handed +X east +Y up +Z north",
+      "origin": "ground-center",
+      "partIds": [
+        "cutter_feet",
+        "cutter_frame",
+        "cutter_infeed",
+        "cutter_chamber",
+        "cutter_clamp",
+        "cutter_tool",
+        "cutter_outfeed",
+        "cutter_service",
+        "cutter_power",
+        "cutter_offcut",
+        "cutter_infeed_carriage",
+        "cutter_outfeed_carriage"
+      ],
+      "parentPartIds": {
+        "cutter_feet": null,
+        "cutter_frame": null,
+        "cutter_infeed": null,
+        "cutter_chamber": null,
+        "cutter_clamp": null,
+        "cutter_tool": null,
+        "cutter_outfeed": null,
+        "cutter_service": null,
+        "cutter_power": null,
+        "cutter_offcut": null,
+        "cutter_infeed_carriage": null,
+        "cutter_outfeed_carriage": null
+      },
+      "nativeBoundsM": {
+        "min": [
+          -1.5,
+          0.0,
+          -1.0
+        ],
+        "max": [
+          1.5,
+          2.5,
+          1.0
+        ]
+      },
+      "nativeReferences": {
+        "snapshotPath": "art/factory/play-surface-v2-2026-10-12/cutter/cutter-v2/native-source.json",
+        "boxes": "parts[].boxes",
+        "ports": "ports",
+        "pivots": "joints",
+        "supports": "supportPatchesM",
+        "serviceBounds": "serviceBoundsM",
+        "geometryAuthority": "original frozen native source only"
+      },
+      "nativeBlend": {
+        "path": "art/factory/play-surface-v2-2026-10-12/cutter/cutter-v2/cutter-v2.blend",
+        "sha256": "6e2ba489abd053b0e7654c9e2eaf6f97037408474d45fff3dc39323ab93040f8",
+        "bytes": 717812
+      },
+      "runtimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/cutter-v2.glb",
+        "sha256": "4f0885139b19835cc985ab9e4fb2b9c5c8d4d430a21011f0e0c03805d6821eb4",
+        "bytes": 61360,
+        "url": "/factory/play-2026-10-12/cutter-v2.glb"
+      },
+      "exporterReport": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/cutter-v2.hestia-authoring-report.json",
+        "sha256": "e8e68d820c7bd87519c8404f9743441137f25c995194287bce4fd1f935f30df3",
+        "bytes": 13807
+      },
+      "provenance": {
+        "path": "art/factory/play-surface-v2-2026-10-12/cutter/cutter-v2/provenance.json",
+        "sha256": "78ca3155acc29b9233421263ab7b73eaa2671281d0b4f34b1f9a277d422389c2",
+        "bytes": 2878
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-2026-10-12/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
+      "runtimeAdoption": "PENDING_INTEGRATOR",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING",
+      "visualRepair": {
+        "version": 2,
+        "originalAssetId": "play_cutter_v1",
+        "kind": "bounded-render-surface-coplanarity-repair",
+        "nativeAuthority": "unchanged original source only",
+        "changedFaceCount": 71,
+        "changedVertexCount": 234,
+        "maxVertexDisplacementM": 0.0008660254037844387,
+        "maxFaceRecessM": 0.0005,
+        "materialPriorityLowToHigh": [
+          "EX-STRUCT",
+          "EX-SHELL",
+          "EX-FUNCTION",
+          "EX-HAZARD",
+          "EX-PV"
+        ],
+        "topology": "same connected vertices, six closed quads per original cuboid"
+      }
+    },
+    {
+      "assetId": "play_former_v2",
+      "family": "former",
+      "slug": "former-v2",
+      "definitionRef": {
+        "sourceId": "B07",
+        "version": 1,
+        "digest": "fnv1a:1cb654af"
+      },
+      "visualOnlyAnchor": null,
+      "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+      "sourceFile": {
+        "path": "art/factory/fp02/former/source.scene.json",
+        "sha256": "4e27abd922e46516d1db0307b8dfb5edaf1b8c6807e80006781344b9dfcf535d",
+        "bytes": 19487
+      },
+      "sourceBlob": {
+        "path": "art/factory/play-surface-v2-2026-10-12/former/former-v2/native-owner-source.blob",
+        "sha256": "4e27abd922e46516d1db0307b8dfb5edaf1b8c6807e80006781344b9dfcf535d",
+        "bytes": 19487
+      },
+      "sourceSnapshot": {
+        "path": "art/factory/play-surface-v2-2026-10-12/former/former-v2/native-source.json",
+        "sha256": "512f442effa422b2101c6ca3c261cbcfa098c41281df2546e3158f1dabef6960",
+        "bytes": 15696
+      },
+      "units": "meters",
+      "runtimeAxes": "right-handed +X east +Y up +Z north",
+      "origin": "ground-center",
+      "partIds": [
+        "former_feet",
+        "former_frame",
+        "former_infeed",
+        "former_bed",
+        "former_tool",
+        "former_actuators",
+        "former_outfeed",
+        "former_service",
+        "former_power",
+        "former_offcut",
+        "former_clamp",
+        "former_infeed_carriage",
+        "former_outfeed_carriage"
+      ],
+      "parentPartIds": {
+        "former_feet": null,
+        "former_frame": null,
+        "former_infeed": null,
+        "former_bed": null,
+        "former_tool": null,
+        "former_actuators": null,
+        "former_outfeed": null,
+        "former_service": null,
+        "former_power": null,
+        "former_offcut": null,
+        "former_clamp": null,
+        "former_infeed_carriage": null,
+        "former_outfeed_carriage": null
+      },
+      "nativeBoundsM": {
+        "min": [
+          -2.0,
+          0.0,
+          -1.5
+        ],
+        "max": [
+          2.0,
+          3.0,
+          1.5
+        ]
+      },
+      "nativeReferences": {
+        "snapshotPath": "art/factory/play-surface-v2-2026-10-12/former/former-v2/native-source.json",
+        "boxes": "parts[].boxes",
+        "ports": "ports",
+        "pivots": "joints",
+        "supports": "supportPatchesM",
+        "serviceBounds": "serviceBoundsM",
+        "geometryAuthority": "original frozen native source only"
+      },
+      "nativeBlend": {
+        "path": "art/factory/play-surface-v2-2026-10-12/former/former-v2/former-v2.blend",
+        "sha256": "2ac344e492d73145f0b11f17e22854d5fda2e44ab45283de9ea7be0c5a7fe78c",
+        "bytes": 727316
+      },
+      "runtimeGlb": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/former-v2.glb",
+        "sha256": "2ea1dca9b5f1915ce984762cefded3b00063c6675ae4b62f02b51d63f308ba81",
+        "bytes": 63764,
+        "url": "/factory/play-2026-10-12/former-v2.glb"
+      },
+      "exporterReport": {
+        "path": "apps/weltraum-browser/public/factory/play-2026-10-12/former-v2.hestia-authoring-report.json",
+        "sha256": "f55d8b4e3470488328ad63a083afaae1fb3188f26f1de2601fa536b3a8896261",
+        "bytes": 15166
+      },
+      "provenance": {
+        "path": "art/factory/play-surface-v2-2026-10-12/former/former-v2/provenance.json",
+        "sha256": "47702068fc6a452cac18978212dcffb77fbaec71c2531763e8bfeef2e768ff39",
+        "bytes": 2878
+      },
+      "license": {
+        "id": "LicenseRef-Hestia-Project-Original",
+        "path": "art/factory/play-2026-10-12/LICENSE.txt",
+        "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632",
+        "bytes": 326
+      },
+      "nodeContract": "one neutral Mesh node per native part; merged detail geometry disappears with that part; extras.hestia.partId + extras.playBinding; absent parentPartId means null",
+      "runtimeAdoption": "PENDING_INTEGRATOR",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING",
+      "visualRepair": {
+        "version": 2,
+        "originalAssetId": "play_former_v1",
+        "kind": "bounded-render-surface-coplanarity-repair",
+        "nativeAuthority": "unchanged original source only",
+        "changedFaceCount": 48,
+        "changedVertexCount": 188,
+        "maxVertexDisplacementM": 0.0007071067811865475,
+        "maxFaceRecessM": 0.0005,
+        "materialPriorityLowToHigh": [
+          "EX-STRUCT",
+          "EX-SHELL",
+          "EX-FUNCTION",
+          "EX-HAZARD",
+          "EX-PV"
+        ],
+        "topology": "same connected vertices, six closed quads per original cuboid"
+      }
+    }
+  ],
+  "palette": {
+    "EX-STRUCT": "30383D",
+    "EX-SHELL": "B6BDB8",
+    "EX-FUNCTION": "407A79",
+    "EX-HAZARD": "D8A94E",
+    "EX-PV": "1D2E3C"
+  },
+  "authority": "derived render meshes only; no collider/material/quantity/energy/save authority",
+  "knownGaps": [
+    "runtime adoption is Integrator scope",
+    "human Art/usability/hardware acceptance pending"
+  ]
+}
