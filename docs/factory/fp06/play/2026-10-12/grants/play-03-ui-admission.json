@@ -1,0 +1,28 @@
+{
+  "schema": "hestia.fp06.play-ui-admission/v1",
+  "actor": "/root/play_integrator",
+  "sourceCommitSha": "3cc40cc604ffbd4e47ced3411274f32fa406affa",
+  "authorizedAtUtc": "2026-10-12T08:28:49.348784+00:00",
+  "status": "GRANTED_REVIEWED_SEVEN_PATH_HANDOFF",
+  "writeSet": [
+    "apps/weltraum-browser/src/factory/ui/factoryShell.css",
+    "apps/weltraum-browser/src/factory/ui/factoryShell.ts",
+    "apps/weltraum-browser/src/factory/ui/localMap.ts",
+    "apps/weltraum-browser/src/factory/ui/onboarding.ts",
+    "apps/weltraum-browser/tests/unit/factory/factoryShell.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/localMap.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/onboarding.test.ts"
+  ],
+  "destinationsBefore": "ALL_ABSENT",
+  "allowedMutation": "Copy exactly the seven reviewed source-commit bytes, then runtime wiring only under current Integrator runtime grants",
+  "independentReview": {
+    "path": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-03/ui/independent-review.md",
+    "sha256": "b23e9e557d68d7ec10083324f84499c21c5c587457b9fdccd237c9b9edfbd1f8"
+  },
+  "verifiedEvidence": "31 focused tests PASS, tsc PASS, 3P2closed; no normal Native/browser/Continue claim",
+  "constraints": [
+    "UI writer clean/HOLD; Art may replace second active writer only through exact new grant",
+    "Preserve current Source/C1 drafts and existing panels; no overwrites",
+    "Shared lifetime/Native/focus/Save behavior remains sole Integrator; actual browser proof later required"
+  ]
+}

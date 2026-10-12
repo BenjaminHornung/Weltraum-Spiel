@@ -1,0 +1,1123 @@
+{
+  "schema": "hestia.factory.balance-math-receipt/v1",
+  "actor": "/root/balance_audit",
+  "scope": "STATIC_RATIONAL_MATH_AND_ARCHIVE_INTEGRITY_ONLY",
+  "observedAtUtc": "2026-10-12T08:27:11.663555+00:00",
+  "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+  "head": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+  "initialObservedProductStatus": " M apps/weltraum-browser/src/factory/conveyor/beltReference.ts\n M apps/weltraum-browser/src/factory/factoryEntry.ts\n M apps/weltraum-browser/src/factory/fixtures/cargoSite.ts\n M apps/weltraum-browser/src/factory/fixtures/startSite.ts\n M apps/weltraum-browser/src/factory/session/hostPort.ts\n M apps/weltraum-browser/src/hvp/hvpBootstrap.ts\n M apps/weltraum-browser/src/hvp/hvpCoastSource.ts\n M apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts\n M apps/weltraum-browser/tests/unit/factory/conveyor.test.ts\n M apps/weltraum-browser/tests/unit/factory/startSite.test.ts\n M apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts\n?? apps/weltraum-browser/evidence/factory/play/\n",
+  "productWriteSet": [],
+  "runtimeCatalogDigest": "NOT_OBSERVED_NO_RUNTIME_RUN",
+  "sourceInventory": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 6706,
+      "sha256": "2eeb7795250038f4780a5b1906161074b751e493a7d0d1fc4f36bfccc400b7b8",
+      "mtimeUtc": "2026-10-11T09:30:25.158851+00:00"
+    },
+    {
+      "path": "README.md",
+      "bytes": 10773,
+      "sha256": "9695af9d3ffce6831479f6056ef31895d43652f1ee04815ad4c79edfa9da9c31",
+      "mtimeUtc": "2026-10-11T09:30:25.158851+00:00"
+    },
+    {
+      "path": "docs/current-mainline-state.md",
+      "bytes": 17258,
+      "sha256": "dfd4db5e89afec187899fcfffb1f000497341f8a30f93e965ce1a29fda657cb3",
+      "mtimeUtc": "2026-10-11T09:30:25.340537+00:00"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/contracts.ts",
+      "bytes": 6896,
+      "sha256": "6cf50991a61acb0ff6453e7507f000f51cd3d8be8094f2a978735094c6ea1527",
+      "mtimeUtc": "2026-10-11T09:42:58.832094+00:00"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts",
+      "bytes": 23335,
+      "sha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+      "mtimeUtc": "2026-10-11T10:01:50.519085+00:00"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/catalog/sourceLock.ts",
+      "bytes": 2184,
+      "sha256": "a91d9a8ccacc03dde29de4992ba81404aed5c342f8c326986eb026f81658600a",
+      "mtimeUtc": "2026-10-11T09:35:17.435752+00:00"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/material/quantity.ts",
+      "bytes": 3472,
+      "sha256": "ba29fc004b20d9bb0cd6e41f39f2b28acf036e0e395f50421f42ccf5d8721328",
+      "mtimeUtc": "2026-10-11T12:12:40.114022+00:00"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/material/reservations.ts",
+      "bytes": 22417,
+      "sha256": "4f5c1d17db3c5167dc42b23e0ab6b0a63f3a9b441684bc5140c367dd7d4d483e",
+      "mtimeUtc": "2026-10-11T12:12:40.117672+00:00"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/production/recipeAdmission.ts",
+      "bytes": 12898,
+      "sha256": "c77eeaa220cbb491c51356533bdd8f1e6d221f67e9406b458d4a6c06ebac4102",
+      "mtimeUtc": "2026-10-11T19:53:20.911445+00:00"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/production/productionStep.ts",
+      "bytes": 29154,
+      "sha256": "f74397051a7b2da13d6d183ccf573cb633cb932e915e1ebaf6bf6a50da29c449",
+      "mtimeUtc": "2026-10-11T19:53:20.910003+00:00"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/power/factoryPower.ts",
+      "bytes": 19844,
+      "sha256": "70ddfe44c9a81c6355262bed928ee4d72b410b4b0db2a6c6bf08a36ec71b2825",
+      "mtimeUtc": "2026-10-11T11:51:19.206565+00:00"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/power/sourceAdapter.ts",
+      "bytes": 8655,
+      "sha256": "3c4886c67b79475783f287e93edcb8412db5a26f1156624c70283416fbeb5d9b",
+      "mtimeUtc": "2026-10-11T11:51:19.206698+00:00"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/power/powerReadView.ts",
+      "bytes": 1752,
+      "sha256": "0921116600c4a50ba0b6bdcf8f46a2368d9d3ac0717e9cfcb6cd564d298d727a",
+      "mtimeUtc": "2026-10-11T11:35:46.296333+00:00"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+      "bytes": 31347,
+      "sha256": "2122581f9075c53db0441002b650d6a6c2cb9eddd0c858f1b0078d58c3746a4a",
+      "mtimeUtc": "2026-10-11T23:19:34.043769+00:00"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/factorySession.ts",
+      "bytes": 66208,
+      "sha256": "ea8d8cdee5ea1826a9b00f0dd7d2d7cbfc4408cdeb7cb2e3f880893ea86a448a",
+      "mtimeUtc": "2026-10-12T00:04:04.668823+00:00"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+      "bytes": 10114,
+      "sha256": "107601ff938da6eee3f1db1159f8c55961a2517551b186fc0a8bbc01f8f7525a",
+      "mtimeUtc": "2026-10-12T06:56:21.460330+00:00"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/conveyor/beltReference.ts",
+      "bytes": 22630,
+      "sha256": "d48015f53b5c9e991e3c6e792e35b8ca238eb56006c79c01e1780125236fdcf9",
+      "mtimeUtc": "2026-10-12T08:25:31.384245+00:00"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/conveyor/beltPorts.ts",
+      "bytes": 7259,
+      "sha256": "54c2bdd48838f869db887d72b19f4169487070ba194e301340b12179f6a7cfa9",
+      "mtimeUtc": "2026-10-11T19:53:20.725413+00:00"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/machinePanel.ts",
+      "bytes": 6494,
+      "sha256": "9905cc0d9bd04ee2dc15903b03fca2399e4fa95fdf828ed6853787f97a19c2e7",
+      "mtimeUtc": "2026-10-11T20:58:07.485833+00:00"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/cargoPanel.ts",
+      "bytes": 15782,
+      "sha256": "f899ffb7d5f062272c8f7693325981f9e789f3aec28716941a0522731d0356e5",
+      "mtimeUtc": "2026-10-11T21:52:25.679617+00:00"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/powerPanel.ts",
+      "bytes": 1283,
+      "sha256": "2ffe21ca555fdd9f60d06997fd2a42a3c4775319ec7768e45aaeb161529a7f15",
+      "mtimeUtc": "2026-10-11T20:58:07.485833+00:00"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+      "bytes": 3901,
+      "sha256": "faead62d37493fcdfa98c000003e2ffd125408ddd6212e9b3bb69dd0fe05f168",
+      "mtimeUtc": "2026-10-12T06:56:20.581199+00:00"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+      "bytes": 4118,
+      "sha256": "1ff5b11c5ceb027755015c8db305acc85d7dbe1db8e3ac2e68fca983f89a17e7",
+      "mtimeUtc": "2026-10-12T06:56:21.013292+00:00"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+      "bytes": 38948,
+      "sha256": "2f3fd41bea2edb1756f1b7933ac0243ee98c1e742bb4c6fe26b6756f70b09408",
+      "mtimeUtc": "2026-10-12T06:56:20.145257+00:00"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/persistence/gameCheckpoint.ts",
+      "bytes": 12487,
+      "sha256": "71335a3b25493145e7abb12f02fe6a31f46f7861d9da65b3d741ffef4dde990f",
+      "mtimeUtc": "2026-10-11T09:30:25.299225+00:00"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/persistence/saveStore.ts",
+      "bytes": 3273,
+      "sha256": "3bc2e7c043b21f491b53082929652f7da3940dfe64003b92182c9435806094c7",
+      "mtimeUtc": "2026-10-11T09:30:25.299225+00:00"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/catalog.test.ts",
+      "bytes": 12243,
+      "sha256": "528cde607bdd3e4f36b19071dc57cb1aba712b497c005f26ad99d583c6d647e5",
+      "mtimeUtc": "2026-10-11T10:01:35.818941+00:00"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts",
+      "bytes": 36419,
+      "sha256": "e83081b79cd68180974f679000945dec0ea4c2c5642cbd4a83d810be7a043a8b",
+      "mtimeUtc": "2026-10-11T23:22:12.893100+00:00"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/fixtures/factory/fp02Fixtures.ts",
+      "bytes": 968,
+      "sha256": "1f2b67dbaa39044f2854abc9445908b384bfbdb2980ca50940222da33c34a647",
+      "mtimeUtc": "2026-10-11T09:33:28.263983+00:00"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts",
+      "bytes": 7458,
+      "sha256": "7388c9a34b2ba37e07b67a4c857d24ac861a74135157222ed9b17bc93307c42f",
+      "mtimeUtc": "2026-10-11T21:29:03.362599+00:00"
+    }
+  ],
+  "controlInventory": [
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/play/2026-10-12/source-lock.json",
+      "sha256": "e52bf90e84aeafa00fbf1d4efa2354ad8de9c4d53ce7b4f9f9f8593cb9563697"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/play/2026-10-12/write-ownership.json",
+      "sha256": "bd5b0748a3d24204d45e4ef36def641a30a512ce276b185dfa4f43895bf973e9"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/play/2026-10-12/grants/balance-readonly.json",
+      "sha256": "60edcf1239d748e1e7830debcc731e2c0a7b4a136b0e829f9bcb16c98a742567"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/play/2026-10-12/grants/play-01-flora-delta.json",
+      "sha256": "8b117befca59405bc35e271aed5e37ea726bf83a6e64ea5c1e2ca6d5e76ab6b8"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/play/2026-10-12/grants/play-01-integrator.json",
+      "sha256": "333cdb4d6de072194b3751eb6c056377a140983c9c38ffb50729288373719923"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/play/2026-10-12/grants/play-01-route-margin-proposal.json",
+      "sha256": "1a67f0bfcec637cec63b1246587a76ef7742eba3eef344f4eec9b8c0225fdcda"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/play/2026-10-12/grants/play-02-art.json",
+      "sha256": "a71b7cc08644eda0d956732a8985934799781b2f46eae74d75258cd27cda07c2"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/play/2026-10-12/grants/play-02-render-admission.json",
+      "sha256": "ce870373caf9f932c74bee6354479e4abcd48ff842c69dac2cf4857bef55f7fc"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/play/2026-10-12/grants/play-02-s1-bridge.json",
+      "sha256": "b98c321e0ca0804ab94cb1fc493021a8e3fbaf251a519e0b0dbff37e3e4209bf"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/play/2026-10-12/grants/play-03-04-runtime.json",
+      "sha256": "5928796dcf98099f4c4630bee88ea4d4bd5f646372ffbd4788c473efc8a67208"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/play/2026-10-12/grants/play-03-powerpanel.json",
+      "sha256": "9ce42e071f240417b265b89b3b7a87329798157e27de99d220d9e89faab913ba"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/play/2026-10-12/grants/play-03-ui.json",
+      "sha256": "f8983b1c5e5182aec3e2d8c07a1599642bb9b5384e6b14d1275b672a99d3878c"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/play/2026-10-12/grants/play-06-attribution.json",
+      "sha256": "9726201188ef89a6426a4f3abbe890c9266e7b5d9f4b0f56d925320c60be6a3a"
+    },
+    {
+      "path": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/play/2026-10-12/grants/play-06-candidate-1.json",
+      "sha256": "c265cf9f199a5dc8fcabb337096d6d00e93fa42559b7234efc81d133f493c471"
+    }
+  ],
+  "recipes": [
+    {
+      "id": "REC-01-CUT",
+      "version": 1,
+      "staticDerivedRecipeDigest": "fnv1a:cc0cefe6",
+      "definition": {
+        "sourceId": "REC-01-CUT",
+        "runtimeId": "fp02_rec_01_cut",
+        "version": 1,
+        "inputs": [
+          {
+            "itemId": "fp02.bulk.steel_known",
+            "quantityUnits": 8000000
+          }
+        ],
+        "outputs": [
+          {
+            "itemId": "fp02.bulk.steel_semi",
+            "quantityUnits": 7500000
+          },
+          {
+            "itemId": "fp02.bulk.steel_offcut",
+            "quantityUnits": 500000
+          }
+        ],
+        "processes": [
+          {
+            "kind": "electric",
+            "capability": "steel.cold-cut",
+            "durationMs": 30000,
+            "powerWatts": 1200,
+            "workJ": 36000,
+            "availability": "first-dry-loop"
+          }
+        ],
+        "sourceRef": "FP02:5.2:REC-01-CUT"
+      },
+      "massMgPerBatch": 8000000,
+      "processRates": [
+        {
+          "process": {
+            "kind": "electric",
+            "capability": "steel.cold-cut",
+            "durationMs": 30000,
+            "powerWatts": 1200,
+            "workJ": 36000,
+            "availability": "first-dry-loop"
+          },
+          "nominalRates": {
+            "inputs": [
+              {
+                "itemId": "fp02.bulk.steel_known",
+                "kgPerMinute": "16",
+                "piecesPerMinute": null
+              }
+            ],
+            "outputs": [
+              {
+                "itemId": "fp02.bulk.steel_semi",
+                "kgPerMinute": "15",
+                "piecesPerMinute": null
+              },
+              {
+                "itemId": "fp02.bulk.steel_offcut",
+                "kgPerMinute": "1",
+                "piecesPerMinute": null
+              }
+            ]
+          },
+          "runtimeAdmitted": true
+        }
+      ],
+      "sourceLine": 74
+    },
+    {
+      "id": "REC-02-PROFILE",
+      "version": 1,
+      "staticDerivedRecipeDigest": "fnv1a:a3dc3ad4",
+      "definition": {
+        "sourceId": "REC-02-PROFILE",
+        "runtimeId": "fp02_rec_02_profile",
+        "version": 1,
+        "inputs": [
+          {
+            "itemId": "fp02.bulk.steel_semi",
+            "quantityUnits": 7500000
+          }
+        ],
+        "outputs": [
+          {
+            "itemId": "fp02.bulk.steel_profile",
+            "quantityUnits": 7000000
+          },
+          {
+            "itemId": "fp02.bulk.steel_offcut",
+            "quantityUnits": 500000
+          }
+        ],
+        "processes": [
+          {
+            "kind": "electric",
+            "capability": "steel.cold-form",
+            "durationMs": 40000,
+            "powerWatts": 2000,
+            "workJ": 80000,
+            "availability": "first-dry-loop"
+          }
+        ],
+        "sourceRef": "FP02:5.2:REC-02-PROFILE"
+      },
+      "massMgPerBatch": 7500000,
+      "processRates": [
+        {
+          "process": {
+            "kind": "electric",
+            "capability": "steel.cold-form",
+            "durationMs": 40000,
+            "powerWatts": 2000,
+            "workJ": 80000,
+            "availability": "first-dry-loop"
+          },
+          "nominalRates": {
+            "inputs": [
+              {
+                "itemId": "fp02.bulk.steel_semi",
+                "kgPerMinute": "45/4",
+                "piecesPerMinute": null
+              }
+            ],
+            "outputs": [
+              {
+                "itemId": "fp02.bulk.steel_profile",
+                "kgPerMinute": "21/2",
+                "piecesPerMinute": null
+              },
+              {
+                "itemId": "fp02.bulk.steel_offcut",
+                "kgPerMinute": "3/4",
+                "piecesPerMinute": null
+              }
+            ]
+          },
+          "runtimeAdmitted": true
+        }
+      ],
+      "sourceLine": 76
+    },
+    {
+      "id": "REC-03-SHEET",
+      "version": 1,
+      "staticDerivedRecipeDigest": "fnv1a:03dfab3f",
+      "definition": {
+        "sourceId": "REC-03-SHEET",
+        "runtimeId": "fp02_rec_03_sheet",
+        "version": 1,
+        "inputs": [
+          {
+            "itemId": "fp02.bulk.steel_semi",
+            "quantityUnits": 7500000
+          }
+        ],
+        "outputs": [
+          {
+            "itemId": "fp02.bulk.steel_sheet",
+            "quantityUnits": 7000000
+          },
+          {
+            "itemId": "fp02.bulk.steel_offcut",
+            "quantityUnits": 500000
+          }
+        ],
+        "processes": [
+          {
+            "kind": "electric",
+            "capability": "steel.cold-form",
+            "durationMs": 40000,
+            "powerWatts": 2000,
+            "workJ": 80000,
+            "availability": "first-dry-loop"
+          }
+        ],
+        "sourceRef": "FP02:5.2:REC-03-SHEET"
+      },
+      "massMgPerBatch": 7500000,
+      "processRates": [
+        {
+          "process": {
+            "kind": "electric",
+            "capability": "steel.cold-form",
+            "durationMs": 40000,
+            "powerWatts": 2000,
+            "workJ": 80000,
+            "availability": "first-dry-loop"
+          },
+          "nominalRates": {
+            "inputs": [
+              {
+                "itemId": "fp02.bulk.steel_semi",
+                "kgPerMinute": "45/4",
+                "piecesPerMinute": null
+              }
+            ],
+            "outputs": [
+              {
+                "itemId": "fp02.bulk.steel_sheet",
+                "kgPerMinute": "21/2",
+                "piecesPerMinute": null
+              },
+              {
+                "itemId": "fp02.bulk.steel_offcut",
+                "kgPerMinute": "3/4",
+                "piecesPerMinute": null
+              }
+            ]
+          },
+          "runtimeAdmitted": true
+        }
+      ],
+      "sourceLine": 78
+    },
+    {
+      "id": "REC-04-CRUSH",
+      "version": 1,
+      "staticDerivedRecipeDigest": "fnv1a:4feb34f8",
+      "definition": {
+        "sourceId": "REC-04-CRUSH",
+        "runtimeId": "fp02_rec_04_crush",
+        "version": 1,
+        "inputs": [
+          {
+            "itemId": "fp02.bulk.rock_raw",
+            "quantityUnits": 20000000
+          }
+        ],
+        "outputs": [
+          {
+            "itemId": "fp02.bulk.gravel_mix",
+            "quantityUnits": 20000000
+          }
+        ],
+        "processes": [
+          {
+            "kind": "electric",
+            "capability": "rock.crush",
+            "durationMs": 20000,
+            "powerWatts": 3000,
+            "workJ": 60000,
+            "availability": "planned"
+          }
+        ],
+        "sourceRef": "FP02:5.2:REC-04-CRUSH"
+      },
+      "massMgPerBatch": 20000000,
+      "processRates": [
+        {
+          "process": {
+            "kind": "electric",
+            "capability": "rock.crush",
+            "durationMs": 20000,
+            "powerWatts": 3000,
+            "workJ": 60000,
+            "availability": "planned"
+          },
+          "nominalRates": {
+            "inputs": [
+              {
+                "itemId": "fp02.bulk.rock_raw",
+                "kgPerMinute": "60",
+                "piecesPerMinute": null
+              }
+            ],
+            "outputs": [
+              {
+                "itemId": "fp02.bulk.gravel_mix",
+                "kgPerMinute": "60",
+                "piecesPerMinute": null
+              }
+            ]
+          },
+          "runtimeAdmitted": false
+        }
+      ],
+      "sourceLine": 80
+    },
+    {
+      "id": "REC-05-BRACE",
+      "version": 1,
+      "staticDerivedRecipeDigest": "fnv1a:3531c19d",
+      "definition": {
+        "sourceId": "REC-05-BRACE",
+        "runtimeId": "fp02_rec_05_brace",
+        "version": 1,
+        "inputs": [
+          {
+            "itemId": "fp02.bulk.steel_profile",
+            "quantityUnits": 4000000
+          },
+          {
+            "itemId": "fp02.bulk.steel_sheet",
+            "quantityUnits": 2000000
+          }
+        ],
+        "outputs": [
+          {
+            "itemId": "fp02.comp.small_brace",
+            "quantityUnits": 1
+          },
+          {
+            "itemId": "fp02.bulk.steel_offcut",
+            "quantityUnits": 200000
+          }
+        ],
+        "processes": [
+          {
+            "kind": "manual",
+            "capability": "bench.assembly",
+            "durationMs": null,
+            "powerWatts": 0,
+            "workJ": 0,
+            "availability": "first-dry-loop"
+          },
+          {
+            "kind": "electric",
+            "capability": "assembly.small",
+            "durationMs": 30000,
+            "powerWatts": 4000,
+            "workJ": 120000,
+            "availability": "planned"
+          }
+        ],
+        "sourceRef": "FP02:5.2:REC-05-BRACE"
+      },
+      "massMgPerBatch": 6000000,
+      "processRates": [
+        {
+          "process": {
+            "kind": "manual",
+            "capability": "bench.assembly",
+            "durationMs": null,
+            "powerWatts": 0,
+            "workJ": 0,
+            "availability": "first-dry-loop"
+          },
+          "nominalRates": null,
+          "runtimeAdmitted": true
+        },
+        {
+          "process": {
+            "kind": "electric",
+            "capability": "assembly.small",
+            "durationMs": 30000,
+            "powerWatts": 4000,
+            "workJ": 120000,
+            "availability": "planned"
+          },
+          "nominalRates": {
+            "inputs": [
+              {
+                "itemId": "fp02.bulk.steel_profile",
+                "kgPerMinute": "8",
+                "piecesPerMinute": null
+              },
+              {
+                "itemId": "fp02.bulk.steel_sheet",
+                "kgPerMinute": "4",
+                "piecesPerMinute": null
+              }
+            ],
+            "outputs": [
+              {
+                "itemId": "fp02.comp.small_brace",
+                "kgPerMinute": "58/5",
+                "piecesPerMinute": "2"
+              },
+              {
+                "itemId": "fp02.bulk.steel_offcut",
+                "kgPerMinute": "2/5",
+                "piecesPerMinute": null
+              }
+            ]
+          },
+          "runtimeAdmitted": false
+        }
+      ],
+      "sourceLine": 82
+    },
+    {
+      "id": "REC-06-DRIVE",
+      "version": 1,
+      "staticDerivedRecipeDigest": "fnv1a:17f4ac83",
+      "definition": {
+        "sourceId": "REC-06-DRIVE",
+        "runtimeId": "fp02_rec_06_drive",
+        "version": 1,
+        "inputs": [
+          {
+            "itemId": "fp02.bulk.steel_profile",
+            "quantityUnits": 3000000
+          },
+          {
+            "itemId": "fp02.comp.wiring_harness",
+            "quantityUnits": 1
+          },
+          {
+            "itemId": "fp02.comp.machine_drive",
+            "quantityUnits": 1
+          },
+          {
+            "itemId": "fp02.comp.machine_controller",
+            "quantityUnits": 1
+          }
+        ],
+        "outputs": [
+          {
+            "itemId": "fp02.comp.drive_module",
+            "quantityUnits": 1
+          }
+        ],
+        "processes": [
+          {
+            "kind": "electric",
+            "capability": "assembly.small",
+            "durationMs": 60000,
+            "powerWatts": 4000,
+            "workJ": 240000,
+            "availability": "planned"
+          }
+        ],
+        "sourceRef": "FP02:5.2:REC-06-DRIVE"
+      },
+      "massMgPerBatch": 6000000,
+      "processRates": [
+        {
+          "process": {
+            "kind": "electric",
+            "capability": "assembly.small",
+            "durationMs": 60000,
+            "powerWatts": 4000,
+            "workJ": 240000,
+            "availability": "planned"
+          },
+          "nominalRates": {
+            "inputs": [
+              {
+                "itemId": "fp02.bulk.steel_profile",
+                "kgPerMinute": "3",
+                "piecesPerMinute": null
+              },
+              {
+                "itemId": "fp02.comp.wiring_harness",
+                "kgPerMinute": "4/5",
+                "piecesPerMinute": "1"
+              },
+              {
+                "itemId": "fp02.comp.machine_drive",
+                "kgPerMinute": "2",
+                "piecesPerMinute": "1"
+              },
+              {
+                "itemId": "fp02.comp.machine_controller",
+                "kgPerMinute": "1/5",
+                "piecesPerMinute": "1"
+              }
+            ],
+            "outputs": [
+              {
+                "itemId": "fp02.comp.drive_module",
+                "kgPerMinute": "6",
+                "piecesPerMinute": "1"
+              }
+            ]
+          },
+          "runtimeAdmitted": false
+        }
+      ],
+      "sourceLine": 84
+    },
+    {
+      "id": "REC-07-BELT",
+      "version": 1,
+      "staticDerivedRecipeDigest": "fnv1a:4e0ea579",
+      "definition": {
+        "sourceId": "REC-07-BELT",
+        "runtimeId": "fp02_rec_07_belt",
+        "version": 1,
+        "inputs": [
+          {
+            "itemId": "fp02.bulk.steel_profile",
+            "quantityUnits": 2000000
+          },
+          {
+            "itemId": "fp02.bulk.steel_sheet",
+            "quantityUnits": 1000000
+          },
+          {
+            "itemId": "fp02.bulk.elastomer_reclaimed",
+            "quantityUnits": 2000000
+          }
+        ],
+        "outputs": [
+          {
+            "itemId": "fp02.comp.belt_module",
+            "quantityUnits": 1
+          }
+        ],
+        "processes": [
+          {
+            "kind": "manual",
+            "capability": "bench.belt-join",
+            "durationMs": 90000,
+            "powerWatts": 0,
+            "workJ": 0,
+            "availability": "first-dry-loop"
+          }
+        ],
+        "sourceRef": "FP02:5.2:REC-07-BELT"
+      },
+      "massMgPerBatch": 5000000,
+      "processRates": [
+        {
+          "process": {
+            "kind": "manual",
+            "capability": "bench.belt-join",
+            "durationMs": 90000,
+            "powerWatts": 0,
+            "workJ": 0,
+            "availability": "first-dry-loop"
+          },
+          "nominalRates": {
+            "inputs": [
+              {
+                "itemId": "fp02.bulk.steel_profile",
+                "kgPerMinute": "4/3",
+                "piecesPerMinute": null
+              },
+              {
+                "itemId": "fp02.bulk.steel_sheet",
+                "kgPerMinute": "2/3",
+                "piecesPerMinute": null
+              },
+              {
+                "itemId": "fp02.bulk.elastomer_reclaimed",
+                "kgPerMinute": "4/3",
+                "piecesPerMinute": null
+              }
+            ],
+            "outputs": [
+              {
+                "itemId": "fp02.comp.belt_module",
+                "kgPerMinute": "10/3",
+                "piecesPerMinute": "2/3"
+              }
+            ]
+          },
+          "runtimeAdmitted": false
+        }
+      ],
+      "sourceLine": 86
+    }
+  ],
+  "cargoMassMg": 2984400000,
+  "cargoPackedVolumeMm3": 12450000000,
+  "mathChecks": [
+    {
+      "name": "current-v1-seven-recipes-mass",
+      "result": "PASS",
+      "detail": "7/7 exact integer mg input = output"
+    },
+    {
+      "name": "current-v1-cargo",
+      "result": "PASS",
+      "detail": "2984.4 kg; 12.45 m3 packed; C01-C28"
+    },
+    {
+      "name": "W09-brace-total",
+      "result": "PASS",
+      "detail": "16=5.8+3+5+2.2 kg"
+    },
+    {
+      "name": "W09-process-work",
+      "result": "PASS",
+      "detail": "232000 J before hand/belt/auxiliary work"
+    },
+    {
+      "name": "v1-CUT-Former-ratio",
+      "result": "PASS",
+      "detail": "3 CUT : 4 Former; one-plus-one accumulates 15/4 kg/min halfstock"
+    },
+    {
+      "name": "v1-planned-profile-assembly-ratio",
+      "result": "PASS",
+      "detail": "16 profile Formers : 21 planned30s assemblers"
+    },
+    {
+      "name": "v1-planned-sheet-assembly-ratio",
+      "result": "PASS",
+      "detail": "8 sheet Formers : 21 planned30s assemblers"
+    },
+    {
+      "name": "v2-ratios",
+      "result": "PASS",
+      "detail": "1:1,1:2,2:3,3:2 exact units"
+    },
+    {
+      "name": "v2-metal-mass",
+      "result": "PASS",
+      "detail": "30 raw ->25 brace mass+5 separated reststeel kg/min"
+    },
+    {
+      "name": "v2-metal-power",
+      "result": "PASS",
+      "detail": "9kW process +20m*25W/m=9.5kW; optional100Waux makes9.6kW"
+    },
+    {
+      "name": "v2-metal-energy",
+      "result": "PASS",
+      "detail": "570000J/min process+band, excludes unmodelled auxiliary"
+    },
+    {
+      "name": "v2-unit5-rates",
+      "result": "PASS",
+      "detail": "primary kg/min and brace5pieces/min exactly quantum5"
+    },
+    {
+      "name": "v2-halfclock",
+      "result": "PASS",
+      "detail": "50% of15kg/min is7.5, never rounded to10"
+    },
+    {
+      "name": "ore-element-budget",
+      "result": "PASS",
+      "detail": "suitable hematite fixture18kgFe2O3/min; concentrate16.2+tailing1.8; 90%mineral recovery; no pureiron"
+    },
+    {
+      "name": "band-travel-discrete",
+      "result": "PASS",
+      "detail": "4m physical lowerbound16/3s;54 movementticks=5.4s; separate injection tick"
+    },
+    {
+      "name": "band-smallpacket-service",
+      "result": "PASS",
+      "detail": "5kg packets/4m singleposition service cap600/11kg/min≈54.545;60ratecredit is not throughputguarantee"
+    },
+    {
+      "name": "band-v2-batch-policy",
+      "result": "PASS",
+      "detail": "7.5kg packets every15s can carry30kg/min with4m line5.5s occupancy; port acceptance stillunrun"
+    },
+    {
+      "name": "battery-energy",
+      "result": "PASS",
+      "detail": "12.96MJinitial;14.4MJcapacity;no rounding"
+    }
+  ],
+  "archiveArithmetic": {
+    "command": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python tools/verify_illustrative_balance.py",
+    "cwd": "/workspace/hestia-balance-2026-10-12/HESTIA_FACTORY_BALANCE_5ER_RATEN_CODEX_HANDOFF_2026-10-12",
+    "exitCode": 0,
+    "stdout": "PASS DEMO-SALVAGE-QUALITY-CUT: 30 = 30 kg/min, 3/2 kW\nPASS DEMO-FORM-PROFILES: 15 = 15 kg/min, 2 kW\nPASS DEMO-FORM-SHEETS: 10 = 10 kg/min, 5/2 kW\nPASS DEMO-ASSEMBLE-BRACES: 25 = 25 kg/min, 3 kW\nPASS DEMO-CRUSH-IRON-BEARING-ROCK: 60 = 60 kg/min, 3 kW\nPASS DEMO-DRY-ORE-CONCENTRATION: 60 = 60 kg/min, 5 kW\nPASS intermediate qualified_steel_halfstock: 25 produced = consumed\nPASS intermediate formed_profile: 15 produced = consumed\nPASS intermediate formed_sheet: 10 produced = consumed\nPASS intermediate crushed_selected_ore: 60 produced = consumed\nPASS ratio source 15/min -> consumer 10/min: 2:3\nPASS ratio source 30/min -> consumer 15/min: 1:2\nPASS ratio source 60/min -> consumer 60/min: 1:1\nPASS illustrative metal line: nominal 9.5 kW including 20m belt, 570000 J/60 s\nPASS all illustrative arithmetic checks; runtime/save/browser/asset tests NOT_RUN\n",
+    "stderr": ""
+  },
+  "archiveIntegrity": {
+    "command": "sha256sum -c SHA256SUMS.txt",
+    "cwd": "/workspace/hestia-balance-2026-10-12/HESTIA_FACTORY_BALANCE_5ER_RATEN_CODEX_HANDOFF_2026-10-12",
+    "exitCode": 0,
+    "stdout": "01_CODEX_STARTPROMPT.md: OK\n02_DESIGN_CONTRACT_BALANCE_RATIOS_V1.md: OK\n03_EXISTING_FP02_FP06_CROSSWALK_AND_MIGRATION.md: OK\n04_TESTPLAN_AND_DELIVERABLES.md: OK\n05_BALANCE_EXAMPLES.md: OK\nREADME_START_HIER.md: OK\nSMOKE_TEST_EVIDENCE.txt: OK\nfixtures/illustrative_balance_v2.json: OK\nreferences/HESTIA_FP01_EINSTIEG_ENERGIE_DETAILPLAN_2026-10-10.md: OK\nreferences/HESTIA_FP02_PRODUKTIONSKETTEN_GEBAEUDE_LAYOUTS_DETAILPLAN_2026-10-10.md: OK\nreferences/HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md: OK\nreferences/HESTIA_FP06_SPIELBARER_PROTOTYP_REVIEW_FOLGEAUFTRAG_2026-10-12.md: OK\nreferences/package-status-current.md: OK\ntools/verify_illustrative_balance.py: OK\nMANIFEST.json: OK\n",
+    "stderr": ""
+  },
+  "notRun": [
+    "Vitest",
+    "Build",
+    "Browser",
+    "Runtime",
+    "Native",
+    "Save",
+    "UI",
+    "Profile",
+    "LFS",
+    "Performance",
+    "OwnerAcceptance"
+  ],
+  "supplementalProposalMathChecks": [
+    {
+      "name": "optional-cut-S",
+      "result": "PASS",
+      "detail": "20=15+5kg/min;90kJ/60s;2CUT-S:3Sheet"
+    },
+    {
+      "name": "optional-cut-M",
+      "result": "PASS",
+      "detail": "40=30+10kg/min;120kJ/60s;1CUT-M:2Profile"
+    },
+    {
+      "name": "chemistry-stoichiometric-mass",
+      "result": "PASS",
+      "detail": "243.717g input=output;heat/reagent supplyPENDING"
+    },
+    {
+      "name": "v2-control-aux-energy",
+      "result": "PASS",
+      "detail": "100Waux:9.6kW/576000J"
+    },
+    {
+      "name": "v2-battery-deficit",
+      "result": "PASS",
+      "detail": "2.7kWbusdeficit;54/19kWstorage at19/20efficiency"
+    },
+    {
+      "name": "v2-batch-wholepiece",
+      "result": "PASS",
+      "detail": "5wholebrace items/batch;25kg"
+    },
+    {
+      "name": "v2-line-packet-space",
+      "result": "PASS",
+      "detail": "7.5kg per15s;credit7.5s andmotion5.5s fit15s;noRuntime"
+    },
+    {
+      "name": "ore-gangue-budget",
+      "result": "PASS",
+      "detail": "42kg gangue conserved"
+    }
+  ],
+  "pythonBinding": {
+    "execPath": "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+    "version": "3.12.14"
+  },
+  "completionGuardFirstAttempt": {
+    "exitCode": 1,
+    "result": "LIVE_HEAD_ADVANCED",
+    "error": "AssertionError: HEAD changed; snapshot remains historical, report final binding separately",
+    "cause": "Overly strict equality assertion after authorized concurrent Integrator source commit; no product defect; all8 supplemental arithmetic assertions and14protectedbytechecks had passed before this guard",
+    "productMutation": false,
+    "receiptWrittenByFailedAttempt": false,
+    "command": "python - <<'PY' (supplemental math/protected source checks plus HEAD equality guard)",
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 32, in <module>\nAssertionError: HEAD changed; snapshot remains historical, report final binding separately\n"
+  },
+  "completionProtectedByteCheck": {
+    "observedAtUtc": "2026-10-12T08:43:55.239657+00:00",
+    "head": "393670fccd4789b562d31b721f15d02457420935",
+    "auditSnapshotHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+    "headAdvanced": true,
+    "pathCount": 14,
+    "files": [
+      {
+        "path": "apps/weltraum-browser/src/factory/contracts.ts",
+        "snapshotSha256": "6cf50991a61acb0ff6453e7507f000f51cd3d8be8094f2a978735094c6ea1527",
+        "finalSha256": "6cf50991a61acb0ff6453e7507f000f51cd3d8be8094f2a978735094c6ea1527",
+        "headSha256": "6cf50991a61acb0ff6453e7507f000f51cd3d8be8094f2a978735094c6ea1527",
+        "result": "BYTE_IDENTICAL"
+      },
+      {
+        "path": "apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts",
+        "snapshotSha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+        "finalSha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+        "headSha256": "e746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3",
+        "result": "BYTE_IDENTICAL"
+      },
+      {
+        "path": "apps/weltraum-browser/src/factory/catalog/sourceLock.ts",
+        "snapshotSha256": "a91d9a8ccacc03dde29de4992ba81404aed5c342f8c326986eb026f81658600a",
+        "finalSha256": "a91d9a8ccacc03dde29de4992ba81404aed5c342f8c326986eb026f81658600a",
+        "headSha256": "a91d9a8ccacc03dde29de4992ba81404aed5c342f8c326986eb026f81658600a",
+        "result": "BYTE_IDENTICAL"
+      },
+      {
+        "path": "apps/weltraum-browser/src/factory/material/quantity.ts",
+        "snapshotSha256": "ba29fc004b20d9bb0cd6e41f39f2b28acf036e0e395f50421f42ccf5d8721328",
+        "finalSha256": "ba29fc004b20d9bb0cd6e41f39f2b28acf036e0e395f50421f42ccf5d8721328",
+        "headSha256": "ba29fc004b20d9bb0cd6e41f39f2b28acf036e0e395f50421f42ccf5d8721328",
+        "result": "BYTE_IDENTICAL"
+      },
+      {
+        "path": "apps/weltraum-browser/src/factory/material/reservations.ts",
+        "snapshotSha256": "4f5c1d17db3c5167dc42b23e0ab6b0a63f3a9b441684bc5140c367dd7d4d483e",
+        "finalSha256": "4f5c1d17db3c5167dc42b23e0ab6b0a63f3a9b441684bc5140c367dd7d4d483e",
+        "headSha256": "4f5c1d17db3c5167dc42b23e0ab6b0a63f3a9b441684bc5140c367dd7d4d483e",
+        "result": "BYTE_IDENTICAL"
+      },
+      {
+        "path": "apps/weltraum-browser/src/factory/production/recipeAdmission.ts",
+        "snapshotSha256": "c77eeaa220cbb491c51356533bdd8f1e6d221f67e9406b458d4a6c06ebac4102",
+        "finalSha256": "c77eeaa220cbb491c51356533bdd8f1e6d221f67e9406b458d4a6c06ebac4102",
+        "headSha256": "c77eeaa220cbb491c51356533bdd8f1e6d221f67e9406b458d4a6c06ebac4102",
+        "result": "BYTE_IDENTICAL"
+      },
+      {
+        "path": "apps/weltraum-browser/src/factory/production/productionStep.ts",
+        "snapshotSha256": "f74397051a7b2da13d6d183ccf573cb633cb932e915e1ebaf6bf6a50da29c449",
+        "finalSha256": "f74397051a7b2da13d6d183ccf573cb633cb932e915e1ebaf6bf6a50da29c449",
+        "headSha256": "f74397051a7b2da13d6d183ccf573cb633cb932e915e1ebaf6bf6a50da29c449",
+        "result": "BYTE_IDENTICAL"
+      },
+      {
+        "path": "apps/weltraum-browser/src/factory/power/factoryPower.ts",
+        "snapshotSha256": "70ddfe44c9a81c6355262bed928ee4d72b410b4b0db2a6c6bf08a36ec71b2825",
+        "finalSha256": "70ddfe44c9a81c6355262bed928ee4d72b410b4b0db2a6c6bf08a36ec71b2825",
+        "headSha256": "70ddfe44c9a81c6355262bed928ee4d72b410b4b0db2a6c6bf08a36ec71b2825",
+        "result": "BYTE_IDENTICAL"
+      },
+      {
+        "path": "apps/weltraum-browser/src/factory/power/sourceAdapter.ts",
+        "snapshotSha256": "3c4886c67b79475783f287e93edcb8412db5a26f1156624c70283416fbeb5d9b",
+        "finalSha256": "3c4886c67b79475783f287e93edcb8412db5a26f1156624c70283416fbeb5d9b",
+        "headSha256": "3c4886c67b79475783f287e93edcb8412db5a26f1156624c70283416fbeb5d9b",
+        "result": "BYTE_IDENTICAL"
+      },
+      {
+        "path": "apps/weltraum-browser/src/factory/power/powerReadView.ts",
+        "snapshotSha256": "0921116600c4a50ba0b6bdcf8f46a2368d9d3ac0717e9cfcb6cd564d298d727a",
+        "finalSha256": "0921116600c4a50ba0b6bdcf8f46a2368d9d3ac0717e9cfcb6cd564d298d727a",
+        "headSha256": "0921116600c4a50ba0b6bdcf8f46a2368d9d3ac0717e9cfcb6cd564d298d727a",
+        "result": "BYTE_IDENTICAL"
+      },
+      {
+        "path": "apps/weltraum-browser/src/factory/conveyor/beltPorts.ts",
+        "snapshotSha256": "54c2bdd48838f869db887d72b19f4169487070ba194e301340b12179f6a7cfa9",
+        "finalSha256": "54c2bdd48838f869db887d72b19f4169487070ba194e301340b12179f6a7cfa9",
+        "headSha256": "54c2bdd48838f869db887d72b19f4169487070ba194e301340b12179f6a7cfa9",
+        "result": "BYTE_IDENTICAL"
+      },
+      {
+        "path": "apps/weltraum-browser/src/hestia-prototype/persistence/gameCheckpoint.ts",
+        "snapshotSha256": "71335a3b25493145e7abb12f02fe6a31f46f7861d9da65b3d741ffef4dde990f",
+        "finalSha256": "71335a3b25493145e7abb12f02fe6a31f46f7861d9da65b3d741ffef4dde990f",
+        "headSha256": "71335a3b25493145e7abb12f02fe6a31f46f7861d9da65b3d741ffef4dde990f",
+        "result": "BYTE_IDENTICAL"
+      },
+      {
+        "path": "apps/weltraum-browser/src/hestia-prototype/persistence/saveStore.ts",
+        "snapshotSha256": "3bc2e7c043b21f491b53082929652f7da3940dfe64003b92182c9435806094c7",
+        "finalSha256": "3bc2e7c043b21f491b53082929652f7da3940dfe64003b92182c9435806094c7",
+        "headSha256": "3bc2e7c043b21f491b53082929652f7da3940dfe64003b92182c9435806094c7",
+        "result": "BYTE_IDENTICAL"
+      },
+      {
+        "path": "apps/weltraum-browser/tests/fixtures/factory/fp02Fixtures.ts",
+        "snapshotSha256": "1f2b67dbaa39044f2854abc9445908b384bfbdb2980ca50940222da33c34a647",
+        "finalSha256": "1f2b67dbaa39044f2854abc9445908b384bfbdb2980ca50940222da33c34a647",
+        "headSha256": "1f2b67dbaa39044f2854abc9445908b384bfbdb2980ca50940222da33c34a647",
+        "result": "BYTE_IDENTICAL"
+      }
+    ],
+    "result": "PASS",
+    "exitCode": 0,
+    "scope": "Protected14paths unchanged versus08:27snapshot andcurrentHEAD; actively grantedHost/UI/C1/sourcepaths not globally frozen",
+    "finalProductGitStatus": " M apps/weltraum-browser/src/factory/conveyor/beltReference.ts\n M apps/weltraum-browser/tests/unit/factory/conveyor.test.ts\n?? apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-03/\n?? apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-06/\n?? apps/weltraum-browser/src/factory/ui/factoryShell.css\n?? apps/weltraum-browser/src/factory/ui/factoryShell.ts\n?? apps/weltraum-browser/src/factory/ui/localMap.ts\n?? apps/weltraum-browser/src/factory/ui/onboarding.ts\n?? apps/weltraum-browser/tests/unit/factory/factoryShell.test.ts\n?? apps/weltraum-browser/tests/unit/factory/localMap.test.ts\n?? apps/weltraum-browser/tests/unit/factory/onboarding.test.ts\n"
+  },
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+  "verifiedMathReproduction": {
+    "commandArguments": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+      "-c",
+      "from pathlib import Path\nfrom fractions import Fraction as F\nimport json,re,hashlib,math\nreceipt=Path('/workspace/.cloud-setup/fp06-play-2026-10-12/BALANCE/math-receipt.json')\nd=json.loads(receipt.read_text())\nsource=Path(d['worktree'])/'apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts'\ntext=source.read_text()\nexpected=next(x['sha256'] for x in d['sourceInventory'] if x['path']=='apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts')\nassert hashlib.sha256(source.read_bytes()).hexdigest()==expected,'Source bytes drift: old receipt remains historical'\nnum=lambda s:int(s.replace('_',''))\nitems={a:(basis,num(mass)) for a,basis,mass in re.findall(r'item\\(\"([^\"]+)\",\\s*\"[^\"]+\",\\s*\"[^\"]+\",\\s*\"(mg|piece|mm)\",\\s*([\\d_]+)',text)}\nsection=text.split('const recipes: readonly FactoryRecipe[] = freeze([')[1].split('\\n]);')[0]\nblocks=re.split(r'\\n  (?=recipe\\()',section)\ncount=0\nfor block in blocks:\n if 'recipe(' not in block:continue\n m=re.search(r'recipe\\(\"([^\"]+)\",\\s*\"([^\"]+)\",\\s*\\[(.*?)\\],\\s*\\[(.*?)\\],\\s*\\[(.*?)\\]\\)',block,re.S)\n assert m\n rid,runtime,ins,outs,process=m.groups()\n terms=lambda s:[{'itemId':a,'quantityUnits':num(b)} for a,b in re.findall(r'term\\(\"([^\"]+)\",\\s*([\\d_]+)\\)',s)]\n inputs,outputs=terms(ins),terms(outs)\n mass=lambda ts:sum(x['quantityUnits']*items[x['itemId']][1] for x in ts)\n assert mass(inputs)==mass(outputs)\n captured=next(x for x in d['recipes'] if x['id']==rid)\n assert captured['definition']['inputs']==inputs and captured['definition']['outputs']==outputs\n canonical=json.dumps(captured['definition'],sort_keys=True,separators=(',',':'),ensure_ascii=False)\n assert canonical.isascii()\n h=0x811c9dc5\n for c in canonical:h=((h^ord(c))*0x01000193)&0xffffffff\n assert captured['staticDerivedRecipeDigest']==f'fnv1a:{h:08x}'\n for p in captured['processRates']:\n  ms=p['process']['durationMs']\n  if ms is None:assert p['nominalRates'] is None;continue\n  for side,ts in [('inputs',inputs),('outputs',outputs)]:\n   for term,flow in zip(ts,p['nominalRates'][side]):\n    basis,um=items[term['itemId']]\n    assert F(flow['kgPerMinute'])==F(term['quantityUnits']*um*60000,ms*1000000)\n    if basis=='piece':assert F(flow['piecesPerMinute'])==F(term['quantityUnits']*60000,ms)\n count+=1\nassert count==7\ncargo=text.split('const cargoRows:')[1].split('\\n];')[0]\nrows=re.findall(r'\\[\"(C\\d+)\",\\s*\"[^\"]+\",\\s*([\\d_]+),\\s*([\\d_]+)\\]',cargo)\nassert len(rows)==28\ncargoMass=sum(items[list(items)[i]][1]*num(q) for i,(_,q,v) in enumerate(rows))\ncargoVolume=sum(num(v) for _,q,v in rows)\ndef ratio(s,need):\n s,need=F(s),F(need);den=math.lcm(s.denominator,need.denominator);a,b=int(s*den),int(need*den);g=math.gcd(a,b);return [b//g,a//g]\nchecks=[\n ('current-v1-seven-recipes-mass',count==7),\n ('current-v1-cargo',cargoMass==2984400000 and cargoVolume==12450000000),\n ('W09-brace-total',F(16)==F('5.8')+3+5+F('2.2')),\n ('W09-process-work',2*36000+2*80000==232000),\n ('v1-CUT-Former-ratio',ratio(15,F(45,4))==[3,4]),\n ('v1-planned-profile-assembly-ratio',ratio(F(21,2),8)==[16,21]),\n ('v1-planned-sheet-assembly-ratio',ratio(F(21,2),4)==[8,21]),\n ('v2-ratios',all(ratio(s,n)==v for s,n,v in [(60,60,[1,1]),(30,15,[1,2]),(15,10,[2,3]),(20,30,[3,2])])),\n ('v2-metal-mass',F(30)==25+5 and 25==15+10 and 25==5*5),\n ('v2-metal-power',F('1.5')+2+F('2.5')+3==9),\n ('v2-metal-energy',F('9.5')*1000*60==570000),\n ('v2-unit5-rates',all(F(x)%5==0 for x in [30,25,5,15,10,60])),\n ('v2-halfclock',F(15)*F(1,2)==F('7.5')),\n ('ore-element-budget',60*F('.3')==30*F('.54')+30*F('.06')),\n ('band-travel-discrete',math.ceil(F(4000,75))==54),\n ('band-smallpacket-service',F(5)*60/F('5.5')==F(600,11)),\n ('band-v2-batch-policy',F(7500000)*60/15==30000000),\n ('battery-energy',F(12960000000,1000)==12960000 and F(14400000000,1000)==14400000),\n ('optional-cut-S',F(20)==15+5 and F('1.5')/F('.5')==3),\n ('optional-cut-M',F(40)==30+10 and F(2)/F('.5')==4),\n ('chemistry-stoichiometric-mass',F('159.687')+3*F('28.010')==2*F('55.845')+3*F('44.009')),\n ('v2-control-aux-energy',(F('9.5')+F('.1'))*1000*60==576000),\n ('v2-battery-deficit',F('2.7')/F('.95')==F(54,19)),\n ('v2-batch-wholepiece',5==int(5) and F(5)*F(5)==25),\n ('v2-line-packet-space',F('7.5')<=10 and F('5.5')<=15 and F('7.5')<=15),\n ('ore-gangue-budget',F(42)==F('13.8')+F('28.2'))]\nassert len(checks)==26\nfor name,condition in checks:\n assert condition,name\n print('PASS',name)\nprint('PASS 26 rational checks; 7 source recipes and 28 cargo positions; runtime/browser/save NOT_RUN')\n"
+    ],
+    "cwd": "/workspace",
+    "sourceProgram": "from pathlib import Path\nfrom fractions import Fraction as F\nimport json,re,hashlib,math\nreceipt=Path('/workspace/.cloud-setup/fp06-play-2026-10-12/BALANCE/math-receipt.json')\nd=json.loads(receipt.read_text())\nsource=Path(d['worktree'])/'apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts'\ntext=source.read_text()\nexpected=next(x['sha256'] for x in d['sourceInventory'] if x['path']=='apps/weltraum-browser/src/factory/catalog/fp02Catalog.ts')\nassert hashlib.sha256(source.read_bytes()).hexdigest()==expected,'Source bytes drift: old receipt remains historical'\nnum=lambda s:int(s.replace('_',''))\nitems={a:(basis,num(mass)) for a,basis,mass in re.findall(r'item\\(\"([^\"]+)\",\\s*\"[^\"]+\",\\s*\"[^\"]+\",\\s*\"(mg|piece|mm)\",\\s*([\\d_]+)',text)}\nsection=text.split('const recipes: readonly FactoryRecipe[] = freeze([')[1].split('\\n]);')[0]\nblocks=re.split(r'\\n  (?=recipe\\()',section)\ncount=0\nfor block in blocks:\n if 'recipe(' not in block:continue\n m=re.search(r'recipe\\(\"([^\"]+)\",\\s*\"([^\"]+)\",\\s*\\[(.*?)\\],\\s*\\[(.*?)\\],\\s*\\[(.*?)\\]\\)',block,re.S)\n assert m\n rid,runtime,ins,outs,process=m.groups()\n terms=lambda s:[{'itemId':a,'quantityUnits':num(b)} for a,b in re.findall(r'term\\(\"([^\"]+)\",\\s*([\\d_]+)\\)',s)]\n inputs,outputs=terms(ins),terms(outs)\n mass=lambda ts:sum(x['quantityUnits']*items[x['itemId']][1] for x in ts)\n assert mass(inputs)==mass(outputs)\n captured=next(x for x in d['recipes'] if x['id']==rid)\n assert captured['definition']['inputs']==inputs and captured['definition']['outputs']==outputs\n canonical=json.dumps(captured['definition'],sort_keys=True,separators=(',',':'),ensure_ascii=False)\n assert canonical.isascii()\n h=0x811c9dc5\n for c in canonical:h=((h^ord(c))*0x01000193)&0xffffffff\n assert captured['staticDerivedRecipeDigest']==f'fnv1a:{h:08x}'\n for p in captured['processRates']:\n  ms=p['process']['durationMs']\n  if ms is None:assert p['nominalRates'] is None;continue\n  for side,ts in [('inputs',inputs),('outputs',outputs)]:\n   for term,flow in zip(ts,p['nominalRates'][side]):\n    basis,um=items[term['itemId']]\n    assert F(flow['kgPerMinute'])==F(term['quantityUnits']*um*60000,ms*1000000)\n    if basis=='piece':assert F(flow['piecesPerMinute'])==F(term['quantityUnits']*60000,ms)\n count+=1\nassert count==7\ncargo=text.split('const cargoRows:')[1].split('\\n];')[0]\nrows=re.findall(r'\\[\"(C\\d+)\",\\s*\"[^\"]+\",\\s*([\\d_]+),\\s*([\\d_]+)\\]',cargo)\nassert len(rows)==28\ncargoMass=sum(items[list(items)[i]][1]*num(q) for i,(_,q,v) in enumerate(rows))\ncargoVolume=sum(num(v) for _,q,v in rows)\ndef ratio(s,need):\n s,need=F(s),F(need);den=math.lcm(s.denominator,need.denominator);a,b=int(s*den),int(need*den);g=math.gcd(a,b);return [b//g,a//g]\nchecks=[\n ('current-v1-seven-recipes-mass',count==7),\n ('current-v1-cargo',cargoMass==2984400000 and cargoVolume==12450000000),\n ('W09-brace-total',F(16)==F('5.8')+3+5+F('2.2')),\n ('W09-process-work',2*36000+2*80000==232000),\n ('v1-CUT-Former-ratio',ratio(15,F(45,4))==[3,4]),\n ('v1-planned-profile-assembly-ratio',ratio(F(21,2),8)==[16,21]),\n ('v1-planned-sheet-assembly-ratio',ratio(F(21,2),4)==[8,21]),\n ('v2-ratios',all(ratio(s,n)==v for s,n,v in [(60,60,[1,1]),(30,15,[1,2]),(15,10,[2,3]),(20,30,[3,2])])),\n ('v2-metal-mass',F(30)==25+5 and 25==15+10 and 25==5*5),\n ('v2-metal-power',F('1.5')+2+F('2.5')+3==9),\n ('v2-metal-energy',F('9.5')*1000*60==570000),\n ('v2-unit5-rates',all(F(x)%5==0 for x in [30,25,5,15,10,60])),\n ('v2-halfclock',F(15)*F(1,2)==F('7.5')),\n ('ore-element-budget',60*F('.3')==30*F('.54')+30*F('.06')),\n ('band-travel-discrete',math.ceil(F(4000,75))==54),\n ('band-smallpacket-service',F(5)*60/F('5.5')==F(600,11)),\n ('band-v2-batch-policy',F(7500000)*60/15==30000000),\n ('battery-energy',F(12960000000,1000)==12960000 and F(14400000000,1000)==14400000),\n ('optional-cut-S',F(20)==15+5 and F('1.5')/F('.5')==3),\n ('optional-cut-M',F(40)==30+10 and F(2)/F('.5')==4),\n ('chemistry-stoichiometric-mass',F('159.687')+3*F('28.010')==2*F('55.845')+3*F('44.009')),\n ('v2-control-aux-energy',(F('9.5')+F('.1'))*1000*60==576000),\n ('v2-battery-deficit',F('2.7')/F('.95')==F(54,19)),\n ('v2-batch-wholepiece',5==int(5) and F(5)*F(5)==25),\n ('v2-line-packet-space',F('7.5')<=10 and F('5.5')<=15 and F('7.5')<=15),\n ('ore-gangue-budget',F(42)==F('13.8')+F('28.2'))]\nassert len(checks)==26\nfor name,condition in checks:\n assert condition,name\n print('PASS',name)\nprint('PASS 26 rational checks; 7 source recipes and 28 cargo positions; runtime/browser/save NOT_RUN')\n",
+    "exitCode": 0,
+    "stdout": "PASS current-v1-seven-recipes-mass\nPASS current-v1-cargo\nPASS W09-brace-total\nPASS W09-process-work\nPASS v1-CUT-Former-ratio\nPASS v1-planned-profile-assembly-ratio\nPASS v1-planned-sheet-assembly-ratio\nPASS v2-ratios\nPASS v2-metal-mass\nPASS v2-metal-power\nPASS v2-metal-energy\nPASS v2-unit5-rates\nPASS v2-halfclock\nPASS ore-element-budget\nPASS band-travel-discrete\nPASS band-smallpacket-service\nPASS band-v2-batch-policy\nPASS battery-energy\nPASS optional-cut-S\nPASS optional-cut-M\nPASS chemistry-stoichiometric-mass\nPASS v2-control-aux-energy\nPASS v2-battery-deficit\nPASS v2-batch-wholepiece\nPASS v2-line-packet-space\nPASS ore-gangue-budget\nPASS 26 rational checks; 7 source recipes and 28 cargo positions; runtime/browser/save NOT_RUN\n",
+    "stderr": "",
+    "scope": "Fresh exact rerunnable positive rational math and captured source equivalence only; no product import/test/runtime",
+    "namedChecks": 26
+  },
+  "independentArtifactReview": {
+    "actor": "/root/balance_audit/fp02_reference_readonly",
+    "scope": "Four complete Markdown documents plus complete initialreceipt; finalfollowup reads of corrected evidencefields/docareas only; no tools/tests/runtime/writes by reviewer",
+    "initialFindings": "No blocking substantive/math inconsistency; three receipt/wording gaps about completioncomparison, Python/exactprogram binding and absoluteversusrelative paths",
+    "finalResult": "PASS_NO_REMAINING_BLOCKING_DOCUMENTATION_DEVIATION",
+    "confirmed": "worktree, pythonBinding, completionProtectedByteCheck14paths/08:43:55Z/393670fc, preserved firstguardExit1, verifiedMathReproduction fullprogram/args/cwd/exit0/26checks",
+    "ownerAcceptance": "PENDING"
+  }
+}

@@ -7,10 +7,10 @@
   "previousOwnership": "../../write-ownership.json",
   "activeImplementationWriters": [
     "/root/play_integrator",
-    "/root/play_ui"
+    "/root/play_cell_bridge"
   ],
   "activeDocumentationWriter": "/root",
-  "browserCpuLease": "/root/play_integrator normal route/idle attribution; UI code/read only until coordinated",
+  "browserCpuLease": "/root/play_integrator V3Source/runtime; newcellwriter read/code until coordinated",
   "plannedWriters": [
     {
       "actor": "/root/play_integrator",
@@ -25,7 +25,7 @@
       "role": "Art counts as second writer; new files only",
       "branch": "codex/hestia-fp06-play-art-2026-10-12",
       "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-play-art-2026-10-12",
-      "grant": "grants/play-02-art.json",
+      "grant": "grants/play-02-art-corrections.json",
       "implementationWriteHold": true
     },
     {
@@ -34,6 +34,15 @@
       "branch": "codex/hestia-fp06-play-ui-2026-10-12",
       "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-play-ui-2026-10-12",
       "grant": "grants/play-03-ui.json",
+      "implementationWriteHold": true,
+      "sourceCommitSha": "3cc40cc604ffbd4e47ced3411274f32fa406affa"
+    },
+    {
+      "actor": "/root/play_cell_bridge",
+      "role": "Puretwo-definition partcell compiler writer",
+      "branch": "codex/hestia-fp06-play-cells-2026-10-12",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-play-cells-2026-10-12",
+      "grant": "grants/play-02-partcells-writer.json",
       "implementationWriteHold": false
     }
   ],
@@ -1131,25 +1140,17 @@
       "authorization": "Explicit followup Cutter/Former S1 and physical-authority integration; narrow source/readview/compiler reuse after actual independent inspection",
       "status": "GRANTED_IMPLEMENTATION; ACCEPTANCE_PENDING_EVIDENCE",
       "writeSet": [
-        "apps/weltraum-browser/src/factory/presentation/factoryPartCells.ts",
         "apps/weltraum-browser/src/factory/presentation/factoryS1Assets.ts",
         "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
         "apps/weltraum-browser/src/factory/session/hostPort.ts",
         "apps/weltraum-browser/src/factory/session/factorySession.ts",
         "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
-        "apps/weltraum-browser/tests/unit/factory/factoryPartCells.test.ts",
         "apps/weltraum-browser/tests/unit/factory/factoryS1Assets.test.ts",
         "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
         "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
         "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts"
       ],
       "beforeBytes": [
-        {
-          "path": "apps/weltraum-browser/src/factory/presentation/factoryPartCells.ts",
-          "state": "ABSENT",
-          "bytes": 0,
-          "sha256": null
-        },
         {
           "path": "apps/weltraum-browser/src/factory/presentation/factoryS1Assets.ts",
           "state": "ABSENT",
@@ -1179,12 +1180,6 @@
           "state": "EXISTS",
           "bytes": 175973,
           "sha256": "049946eb7039aa736761c6002e0e531412861ba28f039aa87637fb0f44a141e9"
-        },
-        {
-          "path": "apps/weltraum-browser/tests/unit/factory/factoryPartCells.test.ts",
-          "state": "ABSENT",
-          "bytes": 0,
-          "sha256": null
         },
         {
           "path": "apps/weltraum-browser/tests/unit/factory/factoryS1Assets.test.ts",
@@ -1238,7 +1233,16 @@
         "Business RED/GREEN, actual Rapier part-negative guards, affected regressions/build, normal paid process/WAIT/pose/import screenshots",
         "S1 candidate acceptance only after independent runtime/source review; all human terrain/Art/usability/hardware OWNER_REVIEW_PENDING",
         "No free material/fragments, member/budget/quantity/policy/limit increases, W12\u201329, engine/dependency changes or publishing"
-      ]
+      ],
+      "delegation": {
+        "actor": "/root/play_cell_bridge",
+        "paths": [
+          "apps/weltraum-browser/src/factory/presentation/factoryPartCells.ts",
+          "apps/weltraum-browser/tests/unit/factory/factoryPartCells.test.ts"
+        ],
+        "grant": "play-02-partcells-writer.json",
+        "ownership": "Theseexacttwofiles excluded fromIntegratorwrites until reviewedimmutableadmission"
+      }
     },
     "BAL-00-to-04": {
       "schema": "hestia.factory.balance-audit-grant/v1",
@@ -1268,6 +1272,400 @@
         "Pure rational/archive arithmetic after sourceinspection only; no Vitest/build/browser/native/profile/dependencies/publish",
         "No live SourceLock/WriteLock writes by analysis agent; Root imports reviewed four artifacts",
         "Historical references and packaging Smoke are not fresh repository/test evidence"
+      ]
+    },
+    "PLAY-03-ui-handoff": {
+      "schema": "hestia.fp06.play-ui-admission/v1",
+      "actor": "/root/play_integrator",
+      "sourceCommitSha": "3cc40cc604ffbd4e47ced3411274f32fa406affa",
+      "authorizedAtUtc": "2026-10-12T08:28:49.348784+00:00",
+      "status": "GRANTED_REVIEWED_SEVEN_PATH_HANDOFF",
+      "writeSet": [
+        "apps/weltraum-browser/src/factory/ui/factoryShell.css",
+        "apps/weltraum-browser/src/factory/ui/factoryShell.ts",
+        "apps/weltraum-browser/src/factory/ui/localMap.ts",
+        "apps/weltraum-browser/src/factory/ui/onboarding.ts",
+        "apps/weltraum-browser/tests/unit/factory/factoryShell.test.ts",
+        "apps/weltraum-browser/tests/unit/factory/localMap.test.ts",
+        "apps/weltraum-browser/tests/unit/factory/onboarding.test.ts"
+      ],
+      "destinationsBefore": "ALL_ABSENT",
+      "allowedMutation": "Copy exactly the seven reviewed source-commit bytes, then runtime wiring only under current Integrator runtime grants",
+      "independentReview": {
+        "path": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-03/ui/independent-review.md",
+        "sha256": "b23e9e557d68d7ec10083324f84499c21c5c587457b9fdccd237c9b9edfbd1f8"
+      },
+      "verifiedEvidence": "31 focused tests PASS, tsc PASS, 3P2closed; no normal Native/browser/Continue claim",
+      "constraints": [
+        "UI writer clean/HOLD; Art may replace second active writer only through exact new grant",
+        "Preserve current Source/C1 drafts and existing panels; no overwrites",
+        "Shared lifetime/Native/focus/Save behavior remains sole Integrator; actual browser proof later required"
+      ]
+    },
+    "PLAY-01-V3": {
+      "schema": "hestia.fp06.play-grant/v1",
+      "milestone": "PLAY-01-V3-isolated-candidate",
+      "actor": "/root/play_integrator",
+      "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+      "baseCommitSha": "393670fccd4789b562d31b721f15d02457420935",
+      "authorizedAtUtc": "2026-10-12T08:40:57.706040+00:00",
+      "authorization": "Actual owner reply: Diesen V3-Kandidaten freigeben to exact2492slot/5.9375m\u00b2 proposal; final terrain not accepted",
+      "status": "GRANTED_ISOLATED_CANDIDATE_ONLY",
+      "writeSet": [
+        "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+        "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+        "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+        "apps/weltraum-browser/src/factory/session/hostPort.ts",
+        "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+        "apps/weltraum-browser/src/factory/factoryEntry.ts",
+        "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+        "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+        "apps/weltraum-browser/tests/unit/hvp-coast-source.test.ts",
+        "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+        "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+        "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+        "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts"
+      ],
+      "beforeBytes": [
+        {
+          "path": "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+          "bytes": 3901,
+          "sha256": "faead62d37493fcdfa98c000003e2ffd125408ddd6212e9b3bb69dd0fe05f168"
+        },
+        {
+          "path": "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+          "bytes": 38948,
+          "sha256": "2f3fd41bea2edb1756f1b7933ac0243ee98c1e742bb4c6fe26b6756f70b09408"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+          "bytes": 4118,
+          "sha256": "1ff5b11c5ceb027755015c8db305acc85d7dbe1db8e3ac2e68fca983f89a17e7"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+          "bytes": 10114,
+          "sha256": "107601ff938da6eee3f1db1159f8c55961a2517551b186fc0a8bbc01f8f7525a"
+        },
+        {
+          "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+          "bytes": 175973,
+          "sha256": "049946eb7039aa736761c6002e0e531412861ba28f039aa87637fb0f44a141e9"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/factoryEntry.ts",
+          "bytes": 13673,
+          "sha256": "7e4dad82fffb27cad3f4f5064460e6c57d3b4c46f81eeca84901f9baf2e31754"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+          "bytes": 4495,
+          "sha256": "a26868b43265ce8e1dd9dc289afe5b5b5252202725d7a3f74845c6cb3db0c53a"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+          "bytes": 3584,
+          "sha256": "1fed4863963b871262f66455e33725dc6027b439910d56d7c5d861af56e1b4f2"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/hvp-coast-source.test.ts",
+          "bytes": 25321,
+          "sha256": "ee3a980d39a5b13fe17547c8b12fc51f066a76ea003576ee6cfc2f63ba739909"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+          "bytes": 86906,
+          "sha256": "c57fdd84247a711358a849e1b5ec8e435d77c178bb9907f6b15dc6c6afab2bda"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+          "bytes": 62333,
+          "sha256": "20f4480c965480cf097e1c4541a31868c02595ea4dbaae4445718b6a315917cc"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+          "bytes": 39743,
+          "sha256": "33a2402978e78952c5b926bcc3ee0003d54527c311268f20d418b482ab53c0d0"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts",
+          "bytes": 7458,
+          "sha256": "7388c9a34b2ba37e07b67a4c857d24ac861a74135157222ed9b17bc93307c42f"
+        }
+      ],
+      "proposal": "../../proposals/route-margin-candidate-v3.md",
+      "exactEdits": [
+        {
+          "mask": "S1",
+          "from": [
+            0.75,
+            6,
+            3.25,
+            3.5
+          ],
+          "to": [
+            0.75,
+            6,
+            3,
+            3.5
+          ]
+        },
+        {
+          "mask": "S2",
+          "from": [
+            8,
+            15.5,
+            3.25,
+            3.5
+          ],
+          "to": [
+            8,
+            15.5,
+            3,
+            3.5
+          ]
+        },
+        {
+          "mask": "S3",
+          "from": [
+            2,
+            13,
+            4.5,
+            4.75
+          ],
+          "to": [
+            2,
+            13,
+            4.5,
+            5
+          ]
+        }
+      ],
+      "actualSlotDigestUnderV2Header": "e569c7fd",
+      "actualSlotsSha256": "267230ca09cf7d8a9fa0d6f6bc2e3fac6cc0cd7adaaf2af57c3c24d60a6187d7",
+      "changedSlots": 2492,
+      "materialCreditMg": 0,
+      "constraints": [
+        "Add a separate closed namedV3 source/profile; retain V1/V2 constructors/byte behavior; reject unknownV4/mismatched profiles",
+        "Exactly approved3edits only; original15/restV2/cargo geometry/NativeOwner/budgets/materials unchanged",
+        "Same exactV2decorativeplant exception only,96valid, bothWoodOwnerSources byte-identical; existinghabitatguard stays",
+        "BusinessRED, source/Cargo/profile/regressions/build; normal loaded native route with realistic steering before any robustness claim",
+        "No claim to full batterycrossroute; any further geometry requires separate exact proposal and approval",
+        "Combined futureSave pins exact profile/digest; no hot terrain replacement or migration of previous generations",
+        "Final terrain/Art/Gameplay human acceptance OWNER_REVIEW_PENDING; W09 full16kg stillopen"
+      ]
+    },
+    "PLAY-02-R2-R6": {
+      "schema": "hestia.fp06.play-art-correction/v1",
+      "milestone": "PLAY-02-R2-R6",
+      "actor": "/root/play_art",
+      "branch": "codex/hestia-fp06-play-art-2026-10-12",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-play-art-2026-10-12",
+      "baseCommitSha": "e752cc7fce43a50b4bcb4800d9d27584b44b6a0e",
+      "authorizedAtUtc": "2026-10-12T08:41:59.429514+00:00",
+      "status": "GRANTED_SECOND_WRITER; UI_HOLD",
+      "writeSet": [
+        "art/factory/play-2026-10-12/build_assets.py",
+        "art/factory/play-2026-10-12/manifest.json",
+        "art/factory/play-2026-10-12/README.md",
+        "apps/weltraum-browser/public/factory/play-2026-10-12/manifest.json",
+        "apps/weltraum-browser/tests/unit/factory/playAssetDerivatives.test.ts",
+        "art/factory/play-2026-10-12/storage/storage-open/native-owner-source.blob",
+        "art/factory/play-2026-10-12/storage/storage-open/provenance.json",
+        "art/factory/play-2026-10-12/storage/storage-open/model-spec.json",
+        "art/factory/play-2026-10-12/storage/storage-open/native-source.json",
+        "art/factory/play-2026-10-12/storage/storage-open/storage-open.blend",
+        "apps/weltraum-browser/public/factory/play-2026-10-12/storage-open.glb",
+        "apps/weltraum-browser/public/factory/play-2026-10-12/storage-open.hestia-authoring-report.json"
+      ],
+      "beforeBytes": [
+        {
+          "path": "art/factory/play-2026-10-12/build_assets.py",
+          "state": "EXISTS",
+          "bytes": 32459,
+          "sha256": "91978eb6b828bbee9b29e24551c65b22e088c5d97ac0e63e0e18c35ec0fcbde9"
+        },
+        {
+          "path": "art/factory/play-2026-10-12/manifest.json",
+          "state": "EXISTS",
+          "bytes": 79571,
+          "sha256": "b886e419673e69cb5e3200de87af06b23d2e965957ffdc5b6de61c5edcddc0d2"
+        },
+        {
+          "path": "art/factory/play-2026-10-12/README.md",
+          "state": "EXISTS",
+          "bytes": 5090,
+          "sha256": "4452e303786fc7873e1fe76ef783745b75c70201e46973916c22c0551f9d3905"
+        },
+        {
+          "path": "apps/weltraum-browser/public/factory/play-2026-10-12/manifest.json",
+          "state": "EXISTS",
+          "bytes": 79571,
+          "sha256": "b886e419673e69cb5e3200de87af06b23d2e965957ffdc5b6de61c5edcddc0d2"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/playAssetDerivatives.test.ts",
+          "state": "EXISTS",
+          "bytes": 12013,
+          "sha256": "7c317f610f6f00d302a2c9dfed2da8fea706b5b03bfcb29f40106eb6d8fd0893"
+        },
+        {
+          "path": "art/factory/play-2026-10-12/storage/storage-open/native-owner-source.blob",
+          "state": "ABSENT",
+          "bytes": 0,
+          "sha256": null
+        },
+        {
+          "path": "art/factory/play-2026-10-12/storage/storage-open/provenance.json",
+          "state": "ABSENT",
+          "bytes": 0,
+          "sha256": null
+        },
+        {
+          "path": "art/factory/play-2026-10-12/storage/storage-open/model-spec.json",
+          "state": "ABSENT",
+          "bytes": 0,
+          "sha256": null
+        },
+        {
+          "path": "art/factory/play-2026-10-12/storage/storage-open/native-source.json",
+          "state": "ABSENT",
+          "bytes": 0,
+          "sha256": null
+        },
+        {
+          "path": "art/factory/play-2026-10-12/storage/storage-open/storage-open.blend",
+          "state": "ABSENT",
+          "bytes": 0,
+          "sha256": null
+        },
+        {
+          "path": "apps/weltraum-browser/public/factory/play-2026-10-12/storage-open.glb",
+          "state": "ABSENT",
+          "bytes": 0,
+          "sha256": null
+        },
+        {
+          "path": "apps/weltraum-browser/public/factory/play-2026-10-12/storage-open.hestia-authoring-report.json",
+          "state": "ABSENT",
+          "bytes": 0,
+          "sha256": null
+        }
+      ],
+      "constraints": [
+        "R6 Frozen includes exactfp02Catalog.ts23335B/SHAe746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3; expectedcatalogDigestfnv1a:f3a8c642 checked immediatelyafterSSR beforeanySnapshotwrite",
+        "R2 newstorage-open visualinspection derivative only, same five originalNativepartroots/supports/ports/definition/OBB and mass; no newCollider/Worldstate",
+        "Door folded centers[\u00b10.475,1.44,0.390],dimensions[0.925,0.07,1.13]m withinexistingBodybounds; panels/handlesfollow; validateactualunionbounds",
+        "Variant selection awaits Integratorconfirmed local inventory inspection/access projection; notclaiming actual native doorbody/persistentopening state",
+        "Old22blends/GLBs/nativeJSON/provenance and20protectedoriginals remain byte-identical; exportONLYnewstorage-open rather than unnecessaryregeneration",
+        "GenuinebusinessRED for missingCatalogearlyguard/variantbinding, focusedGREEN and freshpropertscreceipt; realBlendernewblend saved/reopened/export/report/LFSpayload",
+        "Manifestbothmirrorsupdated together, old22entries unchanged except explicittopgeneratorreceipt; sourcehistorical96provenance distinctcurrentcodehead",
+        "NoexistingRuntime/Host/Physics/Save/sharedfiles, noadditionalgeometry/recipe/dependency/limits/mainmerge/push/publish",
+        "CPUleasecoordinate with soleIntegrator; activewritersIntegrator+Art, UIimplementationHOLD",
+        "Technicalpayloadreview/runtimeadmission separately; S1/Owner/Browser notclaimed bythiscorrection"
+      ]
+    },
+    "PLAY-06-C1-SAFETY-FINAL": {
+      "schema": "hestia.fp06.play-performance-review-verification/v1",
+      "milestone": "PLAY-06-C1-SAFETY-FINAL",
+      "actor": "/root/play_integrator",
+      "authorizedAtUtc": "2026-10-12T08:45:35.551780+00:00",
+      "status": "GRANTED_AFTER_INDEPENDENT_SECURITY_CLOSE",
+      "reason": "Two independently established P1 bugs required narrow samecandidate safetyfixes; earlierfinalpair measures presafety bytes. Fresh sourcebound verification required, not second optimizationcandidate",
+      "productWriteSet": [],
+      "budget": {
+        "originalPaidBandPair": 1,
+        "profiles": 0,
+        "newOptimizationCandidates": 0
+      },
+      "sourceBindings": [
+        {
+          "path": "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+          "bytes": 31347,
+          "sha256": "2122581f9075c53db0441002b650d6a6c2cb9eddd0c858f1b0078d58c3746a4a"
+        },
+        {
+          "path": "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts",
+          "bytes": 36419,
+          "sha256": "e83081b79cd68180974f679000945dec0ea4c2c5642cbd4a83d810be7a043a8b"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/conveyor/beltReference.ts",
+          "bytes": 23568,
+          "sha256": "2e8a33d97553567d5e17092151d75a4c0e0d98abbaf73c5450cfc4a28500dae7"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/material/reservations.ts",
+          "bytes": 22417,
+          "sha256": "4f5c1d17db3c5167dc42b23e0ab6b0a63f3a9b441684bc5140c367dd7d4d483e"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/material/resourcesAdapter.ts",
+          "bytes": 5790,
+          "sha256": "00fb33b5774fd96980e02e8c1bb92a178d5aedb18b612499cde21a3b0ab1c509"
+        },
+        {
+          "path": "apps/weltraum-browser/src/factory/production/productionStep.ts",
+          "bytes": 29154,
+          "sha256": "f74397051a7b2da13d6d183ccf573cb633cb932e915e1ebaf6bf6a50da29c449"
+        },
+        {
+          "path": "apps/weltraum-browser/src/resources/serialization.ts",
+          "bytes": 4186,
+          "sha256": "7d1459f7ff1b470d5f88f6046259add5f0ecaab78955fc2afc8d37adf14ff80f"
+        },
+        {
+          "path": "apps/weltraum-browser/vite.config.ts",
+          "bytes": 622,
+          "sha256": "96e10a87ba016b606939adb71b0d965c02d0280c2dca74f8b767c1739d3b8dd6"
+        },
+        {
+          "path": "apps/weltraum-browser/package.json",
+          "bytes": 2605,
+          "sha256": "dd683e0eec65497469a71956c22e2cee90fa5d9f74e279264e10590db28d4416"
+        }
+      ],
+      "scenarioBlock": {
+        "bytes": 6563,
+        "sha256": "ce1fb626500b8b05fcbd255f574f4a0597d1ebd864dab82d74a98dbd64951cd1",
+        "cases": "both original paid-band cases in existing order/single process",
+        "outputCaseAdoptions": 57
+      },
+      "constraints": [
+        "Independent static/guard closure of both P1s and final25Conveyor/build PASS already reported; retain exact hashreceipts",
+        "Run exactlybothoriginalcases sameorder/6563bytes/57adoptions/original5000ms onNode22 toolchain with exclusive CPUlease",
+        "CurrenteightnonC1bindings byte-identical; no DrySlice/runtime/recipe/testblock mutations beforethismeasure",
+        "Coordinate shortArtCPUslot; no browser or simultaneousBlender/tests/build",
+        "Preserveall earlierfail/firstgreen/preP1fix timings; do not inventindividualgreenms or browserFPS",
+        "IfFAIL noautomaticnewprofile/cache/refactor/limitincrease; independent review mustbindactualfinalsource"
+      ]
+    },
+    "PLAY-02-PARTCELLS": {
+      "schema": "hestia.fp06.play-grant/v1",
+      "milestone": "PLAY-02-PARTCELLS",
+      "actor": "/root/play_cell_bridge",
+      "branch": "codex/hestia-fp06-play-cells-2026-10-12",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-play-cells-2026-10-12",
+      "baseCommitSha": "d76e5fa764a1e62fbe215c589b6aa8b18adf1040",
+      "authorizedAtUtc": "2026-10-12T09:02:42.796414+00:00",
+      "status": "GRANTED_SECOND_WRITER; ART_AND_UI_HOLD",
+      "writeSet": [
+        "apps/weltraum-browser/src/factory/presentation/factoryPartCells.ts",
+        "apps/weltraum-browser/tests/unit/factory/factoryPartCells.test.ts"
+      ],
+      "destinationsBefore": "ABSENT",
+      "constraints": [
+        "Pure closed B06/B07 SourceScene/authoring\u2192125mm partcells only; existingoccupancy mesher reuse, noWorldauthority",
+        "Sameoriginal12/13Parts/33/34nativeboxgeometry/ports/joints/supports/BOM/mass unchanged; no mass/densityfromproxycells/renderroles",
+        "Source/definition/authoring/partparent/versiondigest admission and exactgrid/noRotation/noRounding beforeallocation",
+        "Retainpartidentity acrossoverlap; deterministic documentedboxpriority; frozen/copy-safe output, budgets below existingmesh/ledger limits",
+        "Coordinate exported compiler API with soleIntegrator; neverchange existing sharedHost/Native/contract/renderer/Save source",
+        "TDD meaningfulBusinessRED thenminimalCompiler/focusedGREEN/typecheck; noNativeWorld/browser/Blender/profile/generalbenchmarks",
+        "Readonlypreflight /workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-02/s1-bridge-preflight.md isdesign, notacceptedS1evidence",
+        "Finalruntime/controller/nativepart/work/restore/owner acceptance separate; compileralonecannotclaimS1",
+        "Exacttwofiles, no dependency/limit/engine/mainmerge/push/publish/W12\u201329",
+        "CPUlease directcoordinateIntegrator; own evidence outsideProductscope /workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-02/partcells"
       ]
     }
   },

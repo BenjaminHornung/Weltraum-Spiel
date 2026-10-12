@@ -1,0 +1,110 @@
+{
+  "schema": "hestia.fp06.play-art-correction/v1",
+  "milestone": "PLAY-02-R2-R6",
+  "actor": "/root/play_art",
+  "branch": "codex/hestia-fp06-play-art-2026-10-12",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-play-art-2026-10-12",
+  "baseCommitSha": "e752cc7fce43a50b4bcb4800d9d27584b44b6a0e",
+  "authorizedAtUtc": "2026-10-12T08:41:59.429514+00:00",
+  "status": "GRANTED_SECOND_WRITER; UI_HOLD",
+  "writeSet": [
+    "art/factory/play-2026-10-12/build_assets.py",
+    "art/factory/play-2026-10-12/manifest.json",
+    "art/factory/play-2026-10-12/README.md",
+    "apps/weltraum-browser/public/factory/play-2026-10-12/manifest.json",
+    "apps/weltraum-browser/tests/unit/factory/playAssetDerivatives.test.ts",
+    "art/factory/play-2026-10-12/storage/storage-open/native-owner-source.blob",
+    "art/factory/play-2026-10-12/storage/storage-open/provenance.json",
+    "art/factory/play-2026-10-12/storage/storage-open/model-spec.json",
+    "art/factory/play-2026-10-12/storage/storage-open/native-source.json",
+    "art/factory/play-2026-10-12/storage/storage-open/storage-open.blend",
+    "apps/weltraum-browser/public/factory/play-2026-10-12/storage-open.glb",
+    "apps/weltraum-browser/public/factory/play-2026-10-12/storage-open.hestia-authoring-report.json"
+  ],
+  "beforeBytes": [
+    {
+      "path": "art/factory/play-2026-10-12/build_assets.py",
+      "state": "EXISTS",
+      "bytes": 32459,
+      "sha256": "91978eb6b828bbee9b29e24551c65b22e088c5d97ac0e63e0e18c35ec0fcbde9"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/manifest.json",
+      "state": "EXISTS",
+      "bytes": 79571,
+      "sha256": "b886e419673e69cb5e3200de87af06b23d2e965957ffdc5b6de61c5edcddc0d2"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/README.md",
+      "state": "EXISTS",
+      "bytes": 5090,
+      "sha256": "4452e303786fc7873e1fe76ef783745b75c70201e46973916c22c0551f9d3905"
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/manifest.json",
+      "state": "EXISTS",
+      "bytes": 79571,
+      "sha256": "b886e419673e69cb5e3200de87af06b23d2e965957ffdc5b6de61c5edcddc0d2"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/playAssetDerivatives.test.ts",
+      "state": "EXISTS",
+      "bytes": 12013,
+      "sha256": "7c317f610f6f00d302a2c9dfed2da8fea706b5b03bfcb29f40106eb6d8fd0893"
+    },
+    {
+      "path": "art/factory/play-2026-10-12/storage/storage-open/native-owner-source.blob",
+      "state": "ABSENT",
+      "bytes": 0,
+      "sha256": null
+    },
+    {
+      "path": "art/factory/play-2026-10-12/storage/storage-open/provenance.json",
+      "state": "ABSENT",
+      "bytes": 0,
+      "sha256": null
+    },
+    {
+      "path": "art/factory/play-2026-10-12/storage/storage-open/model-spec.json",
+      "state": "ABSENT",
+      "bytes": 0,
+      "sha256": null
+    },
+    {
+      "path": "art/factory/play-2026-10-12/storage/storage-open/native-source.json",
+      "state": "ABSENT",
+      "bytes": 0,
+      "sha256": null
+    },
+    {
+      "path": "art/factory/play-2026-10-12/storage/storage-open/storage-open.blend",
+      "state": "ABSENT",
+      "bytes": 0,
+      "sha256": null
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/storage-open.glb",
+      "state": "ABSENT",
+      "bytes": 0,
+      "sha256": null
+    },
+    {
+      "path": "apps/weltraum-browser/public/factory/play-2026-10-12/storage-open.hestia-authoring-report.json",
+      "state": "ABSENT",
+      "bytes": 0,
+      "sha256": null
+    }
+  ],
+  "constraints": [
+    "R6 Frozen includes exactfp02Catalog.ts23335B/SHAe746f2408314511a9e82315734fc78993b13ddc2627216b72dc0aa2c35d73fd3; expectedcatalogDigestfnv1a:f3a8c642 checked immediatelyafterSSR beforeanySnapshotwrite",
+    "R2 newstorage-open visualinspection derivative only, same five originalNativepartroots/supports/ports/definition/OBB and mass; no newCollider/Worldstate",
+    "Door folded centers[\u00b10.475,1.44,0.390],dimensions[0.925,0.07,1.13]m withinexistingBodybounds; panels/handlesfollow; validateactualunionbounds",
+    "Variant selection awaits Integratorconfirmed local inventory inspection/access projection; notclaiming actual native doorbody/persistentopening state",
+    "Old22blends/GLBs/nativeJSON/provenance and20protectedoriginals remain byte-identical; exportONLYnewstorage-open rather than unnecessaryregeneration",
+    "GenuinebusinessRED for missingCatalogearlyguard/variantbinding, focusedGREEN and freshpropertscreceipt; realBlendernewblend saved/reopened/export/report/LFSpayload",
+    "Manifestbothmirrorsupdated together, old22entries unchanged except explicittopgeneratorreceipt; sourcehistorical96provenance distinctcurrentcodehead",
+    "NoexistingRuntime/Host/Physics/Save/sharedfiles, noadditionalgeometry/recipe/dependency/limits/mainmerge/push/publish",
+    "CPUleasecoordinate with soleIntegrator; activewritersIntegrator+Art, UIimplementationHOLD",
+    "Technicalpayloadreview/runtimeadmission separately; S1/Owner/Browser notclaimed bythiscorrection"
+  ]
+}

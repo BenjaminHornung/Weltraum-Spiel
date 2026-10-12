@@ -294,13 +294,21 @@
     "normalHeavyRoute": "341kg pickup/depot/playerexit/paidFormer native PASS (partial W09); battery/cable/full16kg NOT_RUN",
     "simulationIdleHold": "Observed FAIL during normal idle; independent attribution OPEN; fast successful route does not waive this",
     "artHead": "e752cc7fce43a50b4bcb4800d9d27584b44b6a0e",
-    "artAcceptance": "Technical handoff supported by independent review; runtime/door/catalogguard/receipt/Owner gaps remain; writer HOLD",
+    "artAcceptance": "Original22 technicalpayloadreviewed; newStorage-open/catalogGuard/freshtsc corrections await independentreview; Art activeexact12pathgrant",
     "uiWriter": "/root/play_ui, new isolated seven-path grant",
-    "composition": "Original5000ms repeated: baseline5649ms FAIL; oneV8profile measured W08 validation/serialization cost; exactlyone new candidate grant",
+    "composition": "Bounded C1 reviewPASS: bothP1closed,11guards/25conveyor/build/2originalpairPASS5000ms; final source2e8a33..; noFPS/hardwareclaim",
     "w09Endgate": "NOT_RUN",
     "w10": "BLOCKED_ON_W09",
     "w11": "BLOCKED_ON_W09_W10",
-    "humanAcceptance": "OWNER_REVIEW_PENDING"
+    "humanAcceptance": "OWNER_REVIEW_PENDING",
+    "sourcePartialCommit": "393670fccd4789b562d31b721f15d02457420935",
+    "uiSourceCommit": "3cc40cc604ffbd4e47ced3411274f32fa406affa",
+    "uiImportCommit": "3e4acefc18a543e27fbfd97378d6a6929f194b8f",
+    "artImportCommit": "0dd5cdb6400aac5df3f0fe7937a6d612d8a76bd6",
+    "uiAcceptance": "Seven modules technicalreviewPASS/31tests/tsc; Native/browserwiring NOT_RUN; UIwriter HOLD",
+    "route19": "NormalCarrierOverlap at7.081mm deviation, separateBatteryCarrierSupport; custody preserved; fullflowFAIL",
+    "balance": "Fourreviewedplanningartifacts adopted docs/factory/balance;26rationalChecksPASS, productV2inactive/legacyW09unchanged",
+    "v3": "Exact3mask2492slot candidate ownerapproved and grantissued; SourceRED/GREEN/runtime pending"
   },
   "supplementalBalanceOwnerRequest": {
     "archive": {
@@ -315,5 +323,12 @@
     "analysisAgent": "/root/balance_audit",
     "prototypePriority": "W09-W11 remains priority",
     "artifactGrant": "grants/balance-readonly.json"
+  },
+  "v3CandidateOwnerApproval": {
+    "answer": "Diesen V3-Kandidaten freigeben",
+    "receivedAtUtc": "2026-10-12T08:40:57.706040+00:00",
+    "scope": "exact3maskdiff2492slots; isolatedcandidate only",
+    "finalTerrainAcceptance": "OWNER_REVIEW_PENDING",
+    "runtimeGrant": "grants/play-01-v3-candidate.json"
   }
 }

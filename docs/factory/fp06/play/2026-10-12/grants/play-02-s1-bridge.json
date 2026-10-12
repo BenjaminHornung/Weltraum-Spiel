@@ -8,25 +8,17 @@
   "authorization": "Explicit followup Cutter/Former S1 and physical-authority integration; narrow source/readview/compiler reuse after actual independent inspection",
   "status": "GRANTED_IMPLEMENTATION; ACCEPTANCE_PENDING_EVIDENCE",
   "writeSet": [
-    "apps/weltraum-browser/src/factory/presentation/factoryPartCells.ts",
     "apps/weltraum-browser/src/factory/presentation/factoryS1Assets.ts",
     "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
     "apps/weltraum-browser/src/factory/session/hostPort.ts",
     "apps/weltraum-browser/src/factory/session/factorySession.ts",
     "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
-    "apps/weltraum-browser/tests/unit/factory/factoryPartCells.test.ts",
     "apps/weltraum-browser/tests/unit/factory/factoryS1Assets.test.ts",
     "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
     "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
     "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts"
   ],
   "beforeBytes": [
-    {
-      "path": "apps/weltraum-browser/src/factory/presentation/factoryPartCells.ts",
-      "state": "ABSENT",
-      "bytes": 0,
-      "sha256": null
-    },
     {
       "path": "apps/weltraum-browser/src/factory/presentation/factoryS1Assets.ts",
       "state": "ABSENT",
@@ -56,12 +48,6 @@
       "state": "EXISTS",
       "bytes": 175973,
       "sha256": "049946eb7039aa736761c6002e0e531412861ba28f039aa87637fb0f44a141e9"
-    },
-    {
-      "path": "apps/weltraum-browser/tests/unit/factory/factoryPartCells.test.ts",
-      "state": "ABSENT",
-      "bytes": 0,
-      "sha256": null
     },
     {
       "path": "apps/weltraum-browser/tests/unit/factory/factoryS1Assets.test.ts",
@@ -115,5 +101,14 @@
     "Business RED/GREEN, actual Rapier part-negative guards, affected regressions/build, normal paid process/WAIT/pose/import screenshots",
     "S1 candidate acceptance only after independent runtime/source review; all human terrain/Art/usability/hardware OWNER_REVIEW_PENDING",
     "No free material/fragments, member/budget/quantity/policy/limit increases, W12\u201329, engine/dependency changes or publishing"
-  ]
+  ],
+  "delegation": {
+    "actor": "/root/play_cell_bridge",
+    "paths": [
+      "apps/weltraum-browser/src/factory/presentation/factoryPartCells.ts",
+      "apps/weltraum-browser/tests/unit/factory/factoryPartCells.test.ts"
+    ],
+    "grant": "play-02-partcells-writer.json",
+    "ownership": "Theseexacttwofiles excluded fromIntegratorwrites until reviewedimmutableadmission"
+  }
 }

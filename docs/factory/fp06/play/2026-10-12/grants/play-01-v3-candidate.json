@@ -1,0 +1,154 @@
+{
+  "schema": "hestia.fp06.play-grant/v1",
+  "milestone": "PLAY-01-V3-isolated-candidate",
+  "actor": "/root/play_integrator",
+  "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+  "baseCommitSha": "393670fccd4789b562d31b721f15d02457420935",
+  "authorizedAtUtc": "2026-10-12T08:40:57.706040+00:00",
+  "authorization": "Actual owner reply: Diesen V3-Kandidaten freigeben to exact2492slot/5.9375m\u00b2 proposal; final terrain not accepted",
+  "status": "GRANTED_ISOLATED_CANDIDATE_ONLY",
+  "writeSet": [
+    "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+    "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+    "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+    "apps/weltraum-browser/src/factory/session/hostPort.ts",
+    "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+    "apps/weltraum-browser/src/factory/factoryEntry.ts",
+    "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-coast-source.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+    "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts"
+  ],
+  "beforeBytes": [
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+      "bytes": 3901,
+      "sha256": "faead62d37493fcdfa98c000003e2ffd125408ddd6212e9b3bb69dd0fe05f168"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+      "bytes": 38948,
+      "sha256": "2f3fd41bea2edb1756f1b7933ac0243ee98c1e742bb4c6fe26b6756f70b09408"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+      "bytes": 4118,
+      "sha256": "1ff5b11c5ceb027755015c8db305acc85d7dbe1db8e3ac2e68fca983f89a17e7"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+      "bytes": 10114,
+      "sha256": "107601ff938da6eee3f1db1159f8c55961a2517551b186fc0a8bbc01f8f7525a"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+      "bytes": 175973,
+      "sha256": "049946eb7039aa736761c6002e0e531412861ba28f039aa87637fb0f44a141e9"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/factoryEntry.ts",
+      "bytes": 13673,
+      "sha256": "7e4dad82fffb27cad3f4f5064460e6c57d3b4c46f81eeca84901f9baf2e31754"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+      "bytes": 4495,
+      "sha256": "a26868b43265ce8e1dd9dc289afe5b5b5252202725d7a3f74845c6cb3db0c53a"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+      "bytes": 3584,
+      "sha256": "1fed4863963b871262f66455e33725dc6027b439910d56d7c5d861af56e1b4f2"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-coast-source.test.ts",
+      "bytes": 25321,
+      "sha256": "ee3a980d39a5b13fe17547c8b12fc51f066a76ea003576ee6cfc2f63ba739909"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+      "bytes": 86906,
+      "sha256": "c57fdd84247a711358a849e1b5ec8e435d77c178bb9907f6b15dc6c6afab2bda"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+      "bytes": 62333,
+      "sha256": "20f4480c965480cf097e1c4541a31868c02595ea4dbaae4445718b6a315917cc"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+      "bytes": 39743,
+      "sha256": "33a2402978e78952c5b926bcc3ee0003d54527c311268f20d418b482ab53c0d0"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts",
+      "bytes": 7458,
+      "sha256": "7388c9a34b2ba37e07b67a4c857d24ac861a74135157222ed9b17bc93307c42f"
+    }
+  ],
+  "proposal": "../../proposals/route-margin-candidate-v3.md",
+  "exactEdits": [
+    {
+      "mask": "S1",
+      "from": [
+        0.75,
+        6,
+        3.25,
+        3.5
+      ],
+      "to": [
+        0.75,
+        6,
+        3,
+        3.5
+      ]
+    },
+    {
+      "mask": "S2",
+      "from": [
+        8,
+        15.5,
+        3.25,
+        3.5
+      ],
+      "to": [
+        8,
+        15.5,
+        3,
+        3.5
+      ]
+    },
+    {
+      "mask": "S3",
+      "from": [
+        2,
+        13,
+        4.5,
+        4.75
+      ],
+      "to": [
+        2,
+        13,
+        4.5,
+        5
+      ]
+    }
+  ],
+  "actualSlotDigestUnderV2Header": "e569c7fd",
+  "actualSlotsSha256": "267230ca09cf7d8a9fa0d6f6bc2e3fac6cc0cd7adaaf2af57c3c24d60a6187d7",
+  "changedSlots": 2492,
+  "materialCreditMg": 0,
+  "constraints": [
+    "Add a separate closed namedV3 source/profile; retain V1/V2 constructors/byte behavior; reject unknownV4/mismatched profiles",
+    "Exactly approved3edits only; original15/restV2/cargo geometry/NativeOwner/budgets/materials unchanged",
+    "Same exactV2decorativeplant exception only,96valid, bothWoodOwnerSources byte-identical; existinghabitatguard stays",
+    "BusinessRED, source/Cargo/profile/regressions/build; normal loaded native route with realistic steering before any robustness claim",
+    "No claim to full batterycrossroute; any further geometry requires separate exact proposal and approval",
+    "Combined futureSave pins exact profile/digest; no hot terrain replacement or migration of previous generations",
+    "Final terrain/Art/Gameplay human acceptance OWNER_REVIEW_PENDING; W09 full16kg stillopen"
+  ]
+}

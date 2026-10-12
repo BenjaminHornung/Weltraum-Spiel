@@ -1,0 +1,37 @@
+{
+  "schema": "hestia.factory.balance-document-adoption/v1",
+  "adoptedAtUtc": "2026-10-12T08:56:11.085189+00:00",
+  "actor": "/root",
+  "sourceActor": "/root/balance_audit",
+  "scope": "Reviewed four planningdocuments+actual26mathreceipt; no productintegration",
+  "sourceFileHashes": [
+    {
+      "name": "BALANCE_AUDIT.md",
+      "sha256": "9a8b1fcb166fd4648fcf3da6384a503e02021b3ad7244001b7df3a0fc3cc4f50",
+      "adoptedSha256": "a55060b469618aff8f11dc4fe682f652b4409d84beae3fe667a6d60d330c5871"
+    },
+    {
+      "name": "BALANCE_V2_PROPOSAL.md",
+      "sha256": "b5d2d5b69c74fa22a610b0af3f416b98e13993ee88560b95b4cea90cb8b987bf",
+      "adoptedSha256": "b5d2d5b69c74fa22a610b0af3f416b98e13993ee88560b95b4cea90cb8b987bf"
+    },
+    {
+      "name": "BALANCE_MIGRATION_MATRIX.md",
+      "sha256": "20886ea2a7b38b4e4992a01133239d88ba218c4abe749f10ba120b92866f599e",
+      "adoptedSha256": "20886ea2a7b38b4e4992a01133239d88ba218c4abe749f10ba120b92866f599e"
+    },
+    {
+      "name": "BALANCE_TEST_REPORT.md",
+      "sha256": "3154e51193b1e1bea2294da9f90f892602502cbdd1837d961d9325834f03ba4c",
+      "adoptedSha256": "3154e51193b1e1bea2294da9f90f892602502cbdd1837d961d9325834f03ba4c"
+    },
+    {
+      "name": "math-receipt.json",
+      "sha256": "616b706ab6486d2c5e2d1beba5f9bbf717eeea86572b191d5f33c406eac7de9c",
+      "adoptedSha256": "616b706ab6486d2c5e2d1beba5f9bbf717eeea86572b191d5f33c406eac7de9c"
+    }
+  ],
+  "rootAuditAddendum": "Currentwriter/prototypeprogress and7.081mm correction; originalSnapshot remains historical",
+  "checks": "26positive rational PASS; archivePythonPASS;15/15SHA PASS;14protectedpaths byte-identical; negativeRuntime/UI/Save/BrowserNOT_RUN",
+  "newRecipesActive": false
+}

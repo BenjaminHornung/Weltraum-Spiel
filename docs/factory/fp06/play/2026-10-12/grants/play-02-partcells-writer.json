@@ -1,0 +1,27 @@
+{
+  "schema": "hestia.fp06.play-grant/v1",
+  "milestone": "PLAY-02-PARTCELLS",
+  "actor": "/root/play_cell_bridge",
+  "branch": "codex/hestia-fp06-play-cells-2026-10-12",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-play-cells-2026-10-12",
+  "baseCommitSha": "d76e5fa764a1e62fbe215c589b6aa8b18adf1040",
+  "authorizedAtUtc": "2026-10-12T09:02:42.796414+00:00",
+  "status": "GRANTED_SECOND_WRITER; ART_AND_UI_HOLD",
+  "writeSet": [
+    "apps/weltraum-browser/src/factory/presentation/factoryPartCells.ts",
+    "apps/weltraum-browser/tests/unit/factory/factoryPartCells.test.ts"
+  ],
+  "destinationsBefore": "ABSENT",
+  "constraints": [
+    "Pure closed B06/B07 SourceScene/authoring\u2192125mm partcells only; existingoccupancy mesher reuse, noWorldauthority",
+    "Sameoriginal12/13Parts/33/34nativeboxgeometry/ports/joints/supports/BOM/mass unchanged; no mass/densityfromproxycells/renderroles",
+    "Source/definition/authoring/partparent/versiondigest admission and exactgrid/noRotation/noRounding beforeallocation",
+    "Retainpartidentity acrossoverlap; deterministic documentedboxpriority; frozen/copy-safe output, budgets below existingmesh/ledger limits",
+    "Coordinate exported compiler API with soleIntegrator; neverchange existing sharedHost/Native/contract/renderer/Save source",
+    "TDD meaningfulBusinessRED thenminimalCompiler/focusedGREEN/typecheck; noNativeWorld/browser/Blender/profile/generalbenchmarks",
+    "Readonlypreflight /workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-02/s1-bridge-preflight.md isdesign, notacceptedS1evidence",
+    "Finalruntime/controller/nativepart/work/restore/owner acceptance separate; compileralonecannotclaimS1",
+    "Exacttwofiles, no dependency/limit/engine/mainmerge/push/publish/W12\u201329",
+    "CPUlease directcoordinateIntegrator; own evidence outsideProductscope /workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-02/partcells"
+  ]
+}
