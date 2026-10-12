@@ -464,5 +464,16 @@
     "scope": "exacttwo3m\u00b2/192columns/1246slots isolatedinitialruntimecandidate",
     "finalTerrainAcceptance": "OWNER_REVIEW_PENDING",
     "runtimeGrant": "grants/play-01-v5-raw-belt-floor-candidate.json"
+  },
+  "ownerProvidedGameQualitySkills": {
+    "recordedAtUtc": "2026-10-12T14:19:58.356905+00:00",
+    "source": "Explicit pasted owner message, applied directly",
+    "skills": [
+      "skills/game-ui-quality.md",
+      "skills/gameplay-flow.md"
+    ],
+    "application": "skills/application.md",
+    "scope": "Existing authorized gameUI/coreflow; no newWorld/recipes/engine/framework/spend authority",
+    "humanJudgement": "OWNER_REVIEW_PENDING"
   }
 }
