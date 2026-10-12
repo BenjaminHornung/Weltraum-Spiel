@@ -1,0 +1,169 @@
+{
+  "command": [
+    "node",
+    "node_modules/vitest/vitest.mjs",
+    "run",
+    "tests/unit/factory/playAssetLoader.test.ts",
+    "-t",
+    "rejects changed"
+  ],
+  "cwd": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser",
+  "actor": "/root",
+  "startedAtUtc": "2026-10-12T23:11:44.286847+00:00",
+  "endedAtUtc": "2026-10-12T23:11:45.838413+00:00",
+  "elapsedSeconds": 1.5515423649994773,
+  "exitCode": 1,
+  "rawBytes": 255371,
+  "rawSha256": "2d72110181af2bd24a78e67548c5bda1ccc8108b857daa1069dbc01f94734a3c",
+  "head": "20da08c1aa380c54e76c796a98e16f8afa8ad630",
+  "node": "v22.23.3",
+  "npm": "11.9.0",
+  "nodeExecPath": "/workspace/.cloud-setup/toolchain/node_modules/node/bin/node",
+  "sourceBindings": [
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/cargoHandlingProfile.ts",
+      "bytes": 4924,
+      "sha256": "23760fc65db868c924fdefdaf6f445a1b0465dfa2108c50b3ea20247f4bf5c88"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/factoryEntry.ts",
+      "bytes": 17698,
+      "sha256": "2f73026b816125bcdf0efb54ffabe97086a9fa8691d140927fc0e6a17d5756b6"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+      "bytes": 4253,
+      "sha256": "5c46b4b1318c671e199ee98e5f261df6f92541252c49723814424b6336fb2591"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+      "bytes": 9338,
+      "sha256": "ccf5ecd952f866bf242fd6f14e3aee9a44dbf1b5d5080317d699d131c7694868"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+      "bytes": 16222,
+      "sha256": "8b027d2a9eb30cdc65a30fd7fd7792dfd6ddb6c2a06233f89f75e1b78b42be8f"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/dryFactorySlice.ts",
+      "bytes": 36108,
+      "sha256": "890882e41a8b7aa4f1dc344602b093fbbb3192b195d28c2e1190e4f8572a6710"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/factorySession.ts",
+      "bytes": 80524,
+      "sha256": "cfe8686badcc4bc25c84aaa6274ed7da84ead2e9f3e518eb577323eeba8fcbe8"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+      "bytes": 12315,
+      "sha256": "86703b5406be9110e8ea2560cb93f2f8029780ade9dd62a4190d6e79efc1c74d"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/onboarding.ts",
+      "bytes": 5123,
+      "sha256": "0de49c107d9742f1bbc0dc9217775a733461d6e29a74007edfc8a4e4c9287c7c"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/powerPanel.ts",
+      "bytes": 2129,
+      "sha256": "160cf898153c267e61e7cd5ac54910c228d43b2b490766f4fc40d6f57cc043f7"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+      "bytes": 41700,
+      "sha256": "fd5ca0b6edc34275bf40684ac407c7e79335d441a32f8c281935c55bc2ede901"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+      "bytes": 62998,
+      "sha256": "704ea0aa636cb20babe83309dcc5f5592bf97a6dfaa5a4d2b40a70d710e6697b"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+      "bytes": 39475,
+      "sha256": "9ffd0d47f00977ec093d920a3f897a6da176dbbba0c5326beba0b75df034c349"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/player/input.ts",
+      "bytes": 14549,
+      "sha256": "ce9c73073918b5f1bdad790be737b1a9036ebd1e93ca914cdfca6492407d1fa9"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+      "bytes": 194645,
+      "sha256": "6634eba4ada00b6314318dd8f51fc0ade9b3d76cf3676a0b2811ee80b19cefb4"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+      "bytes": 40502,
+      "sha256": "dc40fe0b9c8805046702dbe5670d092a96aefe8817863afed9ecb69d59e958f3"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/cargoHandling.test.ts",
+      "bytes": 22955,
+      "sha256": "7711d14ab6ccdc215a55a571d279ceebaa079b1663528ad3bff9f6e8ae90edd9"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+      "bytes": 5283,
+      "sha256": "f3e64fc3e896655892e8ab71685a86601f2faca87e5a4ba264cde6005b55faae"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/dryFactorySlice.test.ts",
+      "bytes": 41413,
+      "sha256": "793db55ad9d2df803f637c83ce77ada6d39a613850e166bc233bbde1a9609dbd"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+      "bytes": 55812,
+      "sha256": "00fcf7527686889673c28345af33e641b0b4216e791a120702c006338f92756c"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/factoryS1Assets.test.ts",
+      "bytes": 15097,
+      "sha256": "d414a5317376fd8daa009368a689dc550871cda15d431f699696163d57724885"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+      "bytes": 81821,
+      "sha256": "245850ef96952122bacc980c52cc9837bd6ef57336335342f04dc4c615acaca4"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/onboarding.test.ts",
+      "bytes": 3294,
+      "sha256": "e4ebcdc631236d73e6cc2bdff1fd1dddd32eb7dd77f75ac863f0adf56fc8010e"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/panels.test.ts",
+      "bytes": 24228,
+      "sha256": "bf7a96a192dd36f8ed3b46e42e46260e39354a1d59e92df846e132a6374f539e"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/playAssetLoader.test.ts",
+      "bytes": 14925,
+      "sha256": "d919db12535ce09e2ffadfe184cc9a161399d6ab381b9996f4c081fb2a18f754"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/presentation.test.ts",
+      "bytes": 17307,
+      "sha256": "3b5be6ab3edb7d66b4ffd5cc619cb4eb76ec65d3e823bce971b3a8655f7d021b"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+      "bytes": 11772,
+      "sha256": "7118e51b8d4718c8a23cc146798bbcfb0437ade999d41e02fa1224b2cd54e4e9"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+      "bytes": 106982,
+      "sha256": "2cbc323e7cd985b8faf4bec9269c07eaab458ed042cf2c0261529f11c0f98369"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-player-input.test.ts",
+      "bytes": 41971,
+      "sha256": "ff508546719ac1b77bada36ed0a0d8034995b1ba9741463cb769b76b4dd820a3"
+    }
+  ]
+}
