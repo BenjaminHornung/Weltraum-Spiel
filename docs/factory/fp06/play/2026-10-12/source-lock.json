@@ -321,7 +321,7 @@
     "route19": "NormalCarrierOverlap at7.081mm deviation, separateBatteryCarrierSupport; custody preserved; fullflowFAIL",
     "balance": "Fourreviewedplanningartifacts adopted docs/factory/balance;26rationalChecksPASS, productV2inactive/legacyW09unchanged",
     "v3": "Owner-approved exact 3-mask candidate Source/Cargo13PASS and Bootstrap2PASS/44skip/buildPASS; first normal run 085310 FAIL before margin trial; no full-route conclusion",
-    "integratorHead": "9a2c9397af8efcb56d2e18bc578b2c30eab6875d",
+    "integratorHead": "694570bac7ce7d59f7f1dd87266a777ac14c1b10",
     "inputActivation": "Business REDs, repeat/ACK/pointer-lock P2 fixes and focused120/Input/Host/UI PASS; actual normal Browser28 Native movement/pause/heldrepeat/freshpress PASS. Final shared draft independent review still pending",
     "partCells": "Exact reviewed two source blobs admitted by sole Integrator9a2c9397; 44 scoped PASS/tsc. Native part/S1/runtime join pending",
     "portableDelivery": "Read-only current-package preflight dispatched; old instance2 remains historical, final clean-copy verification NOT_RUN",
@@ -332,13 +332,14 @@
     "modelLoaderWriter": "/root/play_cell_bridge cleanfinal1b635619 HOLD, final review/admission granted; read-only runtime preflight active",
     "v4": "Owner-approved exact three extra masks; Source/Cargo04 16/16 PASS; V2/V3/V4 matching/missing/mismatch/unknown/profile-habitat/Host05 4 PASS 44 skip; originalbuild06 PASS. Normalroute07 FAIL before pickup: normal-key exposure driver diagnosis, no new terrain/fullroute verdict",
     "shellInputBrowser": "NormalBrowser28actualNativeACK/move/pause/held-repeat/freshPress PASS with 8 captures; fullMap/History/S1/W09/Save pending",
-    "modelLoader": "Final1b635619 requestcaptureP2closed,66focusedPASS/tsc/independentreview, Root exacttwo-blob admission granted; runtime pending",
+    "modelLoader": "Final immutable1b635619 exacttwo source blobs admitted by Integrator694570bac7ce7d59f7f1dd87266a777ac14c1b10; Native/S1/runtime pending",
     "ownerUiFeedback": "OWNER_UI_REJECTED: user rejects current form/toolbar/largepanel appearance as notgame; coordinated visual redesign nowpriority, technical120/nativeInputScopePASS does not override rejection",
     "gameUiCandidate": "Pixel-grounded A brief completed; reversible implementation granted by Root8c1e476. New real In-game screenshots and visual Owner acceptance pending",
     "candidateVersion": "hvp-factory-startsite-v4",
     "candidateDigestEvidence": "Integrator PLAY-01/20261012T102834Z normal-route-final.json actual runtime; 5190c339 only offline old-V3-header digest",
     "v4EvidenceRoot": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z",
-    "v4Route07RawSha256": "4b1b3750b780acdb1944e11864ccb7ab6c580946ad3db64cf07e91034af5a2c4"
+    "v4Route07RawSha256": "4b1b3750b780acdb1944e11864ccb7ab6c580946ad3db64cf07e91034af5a2c4",
+    "nativeReadHold": "Actual currentV4 route10 heavy/depot/exit/paidFormer partialPASS then SimulationHold; measured publicRead29.6/34.5/44.4/67.5ms, four full B07 proofs. One exact3path synchronous-snapshot reuse candidate granted; closure NOT_RUN"
   },
   "supplementalBalanceOwnerRequest": {
     "archive": {

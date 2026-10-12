@@ -1,0 +1,50 @@
+{
+  "schema": "hestia.fp06.play-bounded-native-read/v1",
+  "milestone": "PLAY-06-native-read-same-snapshot",
+  "actor": "/root/play_integrator",
+  "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+  "observedHeadSha": "694570bac7ce7d59f7f1dd87266a777ac14c1b10",
+  "authorizedAtUtc": "2026-10-12T11:14:18.917261+00:00",
+  "status": "GRANTED_ONE_BOUNDED_SAME_READ_CANDIDATE",
+  "authorization": "Explicit ongoing playable performance/deterministic native-authority task; actual V4 route10 NativeSimulationHold attributed to duplicate same-snapshot production/support/service/sweep observations. This is a narrow routine fix, no product policy change.",
+  "writeSet": [
+    "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+    "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+    "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts"
+  ],
+  "beforeBytes": [
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/session.ts",
+      "bytes": 39185,
+      "sha256": "5d5fa4b98d1a5f05d5d4bf562c0b88397e0c9cb7ead4eaeacab19e03e2019f0c"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+      "bytes": 53631,
+      "sha256": "d6b78d8f21b3c726752f72310c20e851c21dfe9589969823630830bb5ca98311"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+      "bytes": 39743,
+      "sha256": "33a2402978e78952c5b926bcc3ee0003d54527c311268f20d418b482ab53c0d0"
+    }
+  ],
+  "actualAttribution": {
+    "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T102834Z/10-native-read-hold-attribution.json",
+    "bytes": 216061,
+    "sha256": "1609f697a6cc47a46049175e0e4ff8a4855f1e37d38d42f63f45f7afa797c7de",
+    "scope": "Read handlers29.6/34.5/44.4/67.5ms; source four full B07 proofs per public read, not exclusive attribution of every browser or native cost"
+  },
+  "constraints": [
+    "Exactly three existing paths; sole Integrator. UI eight pure paths, Loader/Partcells/Art sources remain protected/HOLD; all existing authorized drafts preserved",
+    "One candidate: capture at most one actual facilities.read result in one public physics/session.read call, and reuse one actual full productionObservation per relevant owner within one synchronous Facility.read. No timer/shape/support/reach/LOS/queue/receipt/tick/budget/hold changes",
+    "No cache across read calls/native steps/World or Terrain/actor/membership changes; no new sampling throttle or skip. All later reads recompute full original Native facts, including disabled/removed bodies/colliders, support/service/sweep and local source/port access",
+    "Do not turn sources/current native owner lists into copied SourceScene part evidence; pending PreparedHeld/rollback/recovery semantics identical. Existing B09/Battery/Power and pure Legacy paths remain valid",
+    "Genuine RED with actual Rapier and bounded work-budget assertion plus later-read actor/terrain/collider invalidation business guards, then minimal implementation; required affected Native regressions/typecheck/originalbuild and current normal V4 route using unchanged actual keys/ACK driver",
+    "Record actual before/after source hashes, count/timing scenario/input facts and raw receipts; read reuse itself is not automatic SimulationHold closure/FPS/general hardware acceptance. Preserve all route FAILs and current319/913c0c46 actual source bindings",
+    "This new NativeRead problem is separate from CLOSED original composition C1 profile budget; no new composition profiling/candidates/global cache. At most one scoped paired NativeRead observation scenario; CPU coordinate directly with UI writer",
+    "Independent source/contract review before bounded candidate commit and later normal-browser Native route. W09/full16kg/blackout/fulloutput/save/visual/hardware gates remain separate",
+    "No new dependencies/engine/Collidergeometry/worldauthority/material/recipe/golden/save changes; no W12–29/mainmerge/push/forcepush/PR/publishing"
+  ]
+}
