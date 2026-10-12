@@ -1,0 +1,50 @@
+{
+  "schema": "hestia.fp06.play-immutable-admission/v1",
+  "observedAtUtc": "2026-10-12T08:38:11.342188+00:00",
+  "sourceCommitSha": "3cc40cc604ffbd4e47ced3411274f32fa406affa",
+  "paths": [
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/factoryShell.css",
+      "bytes": 5106,
+      "sha256": "4603db5ebe8da2e4ca36fa3093532133acfa235a9bfab2aba53f9dd384df8fd9",
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/factoryShell.ts",
+      "bytes": 16646,
+      "sha256": "168418de11ccca20fb6b4d18febf2f95bfe93ff8ef9f117a7d41e98aaba2bf16",
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/localMap.ts",
+      "bytes": 11523,
+      "sha256": "601a26422ab73f095759cc1009a423316eec5f4227d599b063c43b87345ffd68",
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/onboarding.ts",
+      "bytes": 5134,
+      "sha256": "0792b419b6d5ce8420632fcf99af11672891e4b1a360bca00bbce53c3e1bc97a",
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/factoryShell.test.ts",
+      "bytes": 8684,
+      "sha256": "bda4245f25032c33cf3a58cf2a797f48f6e0bb0ed6a2951f138a8b463d164269",
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/localMap.test.ts",
+      "bytes": 4341,
+      "sha256": "d49791579eab4a190a089096b6a2cbe385241b524b9008f2a6099eb7a5c2f99e",
+      "before": "ABSENT"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/onboarding.test.ts",
+      "bytes": 2880,
+      "sha256": "22761cb56614e7c861a227587c80bdd0280c49617ec3b3ab324bac3423908b9a",
+      "before": "ABSENT"
+    }
+  ],
+  "scope": "exact reviewed7bytes; runtime/native wiring pending"
+}
