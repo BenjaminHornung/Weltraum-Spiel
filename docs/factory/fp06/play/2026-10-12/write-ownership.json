@@ -1947,6 +1947,35 @@
         "Later shared Native/Host/work/controller binding remains sole Integrator under existing nine-path S1 and runtime grants",
         "Second writer enters HOLD after immutable handoff; no mainmerge/push/publish"
       ]
+    },
+    "PLAY-03-readonly-input-telemetry": {
+      "schema": "hestia.fp06.play-grant/v1",
+      "milestone": "PLAY-03-readonly-input-telemetry",
+      "actor": "/root/play_integrator",
+      "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+      "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+      "authorizedAtUtc": "2026-10-12T09:32:36.121596+00:00",
+      "status": "GRANTED_MINIMAL_READONLY_OBSERVATION",
+      "writeSet": [
+        "apps/weltraum-browser/src/hestia-prototype/physics/client.ts"
+      ],
+      "beforeBytes": [
+        {
+          "path": "apps/weltraum-browser/src/hestia-prototype/physics/client.ts",
+          "bytes": 40784,
+          "sha256": "d27eab2d45683ec7155261578204343d014f7d33a1fd2dc6384777900d5a574a"
+        }
+      ],
+      "existingTestGrant": "grants/play-03-input-activation.json",
+      "constraints": [
+        "Add only readonly lifecycle factoryInput facts from existing client private values and at most two observation counters; no native/protocol/send/read/command/queue/deadline/admission semantics change",
+        "lastSentId only after successful actual FactoryInput postMessage; lastAckId only after matching accepted actual FactoryInput reply; rejected/error/foreign ACK cannot count as success",
+        "IDs are client RPC command IDs, not confirmed simulation tick or Native player applied-input sequence; document buffered input level as desired intent, not applied pose/Worldfact",
+        "Expose frozen copies of pending FactoryInput IDs (existing maximum8), buffered level and existing commandDepth/closing/enabled/canDispatch; no mutable pending map or write API",
+        "Preserve small bare ACK no-public/no-held-readview authority guard and original withheld-Read semantics; existing Native state remains authority",
+        "Meaningful business RED then focused input/client/affected Host GREEN and typecheck; integrate actual native ACK/neutral/focus facts into next normal browser capture, no teleports/pose/clock injection",
+        "No general instrumentation framework, new protocol fields, timeout/queue/budget increases, dependency/engine/mainmerge/push/publish/W12\u201329"
+      ]
     }
   },
   "actorTransfers": [
