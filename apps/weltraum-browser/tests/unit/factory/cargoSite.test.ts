@@ -2,7 +2,7 @@ import { beforeAll,expect,it } from "vitest";
 import { createFactoryFacilitySession } from "../../../src/hestia-prototype/physics/factoryFacilitySession";
 import { R,initializeHvpRapier } from "../../../src/hestia-prototype/physics/rapierPort";
 import { createFactoryCargoSite,assertFactoryCargoSite } from "../../../src/factory/fixtures/cargoSite";
-import { materializeFactoryStartSite,materializeFactoryStartSiteV2 } from "../../../src/factory/fixtures/startSite";
+import { materializeFactoryStartSite,materializeFactoryStartSiteV2,materializeFactoryStartSiteV3,materializeFactoryStartSiteV4 } from "../../../src/factory/fixtures/startSite";
 it("W07 initial Cargo binds one actual source-owner outside the machine zone, not a player-relative point",()=>{
  const source=materializeFactoryStartSite();
  expect(createFactoryCargoSite(source)).toBeDefined();
@@ -32,6 +32,23 @@ it("PLAY01 V2 Cargo binds the new real source while preserving the exact V1 geom
  expect(v2.sourceDigest).toBe(source.sourceDigest);expect(v2.profileDigest).not.toBe(v1.profileDigest);
  for(const key of ["version","ownerId","containerId","centerMm","sizeMm","boundsMm","accessPointMm","accessBoundsMm","spawnMm","geometryPolicy","sourceRefs"] as const)expect(v2[key]).toEqual(v1[key]);
  expect(()=>assertFactoryCargoSite(v2)).not.toThrow();
- expect(()=>createFactoryCargoSite({...source,version:"hvp-factory-startsite-v3"})).toThrow(/frame/);
+ expect(()=>createFactoryCargoSite({...source,version:"hvp-factory-startsite-v6"})).toThrow(/frame/);
  expect(()=>createFactoryCargoSite({...source,originMeters:{x:-16,y:0,z:-16}})).toThrow(/frame/);
+});
+it("PLAY01 V3 Cargo binds exact new source pages with unchanged original owner/body/support/access geometry", () => {
+ const source=materializeFactoryStartSiteV3(),v3=createFactoryCargoSite(source),v1=createFactoryCargoSite(materializeFactoryStartSite());
+ expect(v3.sourceDigest).toBe(source.sourceDigest);expect(v3.profileDigest).not.toBe(v1.profileDigest);
+ for(const key of ["version","ownerId","containerId","centerMm","sizeMm","boundsMm","accessPointMm","accessBoundsMm","spawnMm","geometryPolicy","sourceRefs"] as const)expect(v3[key]).toEqual(v1[key]);
+ expect(()=>assertFactoryCargoSite(v3)).not.toThrow();
+ expect(()=>createFactoryCargoSite({...source,version:"hvp-factory-startsite-v6"})).toThrow(/frame/);
+ expect(()=>createFactoryCargoSite({...source,originMeters:{x:0,y:-8,z:-16}})).toThrow(/frame/);
+});
+
+it("PLAY01 V4 Cargo binds exact new source pages with unchanged original owner/body/support/access geometry", () => {
+ const source=materializeFactoryStartSiteV4(),v4=createFactoryCargoSite(source),v1=createFactoryCargoSite(materializeFactoryStartSite());
+ expect(v4.sourceDigest).toBe(source.sourceDigest);expect(v4.profileDigest).not.toBe(v1.profileDigest);
+ for(const key of ["version","ownerId","containerId","centerMm","sizeMm","boundsMm","accessPointMm","accessBoundsMm","spawnMm","geometryPolicy","sourceRefs"] as const)expect(v4[key]).toEqual(v1[key]);
+ expect(()=>assertFactoryCargoSite(v4)).not.toThrow();
+ expect(()=>createFactoryCargoSite({...source,version:"hvp-factory-startsite-v6"})).toThrow(/frame/);
+ expect(()=>createFactoryCargoSite({...source,originMeters:{x:0,y:-8,z:-16}})).toThrow(/frame/);
 });

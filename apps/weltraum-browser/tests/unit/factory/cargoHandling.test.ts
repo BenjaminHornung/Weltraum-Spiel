@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { createHash } from "node:crypto";
 import { createFp02Fixture } from "../../../src/factory/catalog/fp02Catalog";
 import { readCargoHandlingProfile } from "../../../src/factory/construction/cargoHandlingProfile";
 import { createFactoryHandling, prepareCargoHandling, type CargoHandlingIntent } from "../../../src/factory/session/cargoHandling";
@@ -140,5 +141,42 @@ it("W09 three actual supported battery routes pay exactly19.75m from finite C07 
  }
  expect(material.containers.find(c=>c.state.containerId===fixture.resourceState.containerId)!.state.contents.find(s=>s.resourceId===cable.resourceId)?.quantity).toBe(20250);
  expect(material.containers.filter(c=>targets.some(t=>t.state.containerId===c.state.containerId)).reduce((n,c)=>n+c.state.contents.reduce((q,s)=>q+s.quantity,0),0)).toBe(19750);
+ expect(readCargoHandlingProfile(fixture.catalog,"CABLE7501")).toBeUndefined();
+});
+
+// Exact pre-change historical bytes were captured before the V5 closed-job implementation.
+it("PLAY04 V5 cable additions preserve all seven historical profile canonical bytes",()=>{
+ const pins={"CABLE4750":"b3605328f7a34553b246e2afc85d4bea06b3f9dc5e8904d30f45ea9fa8cd280a","CABLE6500":"95b86f449ad908ee4b7d9c1e9d84dc32fd1880bc42f23be4a9e39fd2529d0f91","CABLE8000":"65642057a43dfd24ac3a5fe92d7891ac00892614d0424f5d171c31e53bf667ae","CABLE7000":"ee7e56c504a922642abc8148d88985b17ef2b61b674b52a95c942e90a1382065","CABLE5250":"981826bd9825822b1a73ae16db48667d6c91ba633b6c03ce3b8c5ce0cfd65413","CABLE7500":"8b6d9b77b8e566087aa2089015b5c754c38bef038d0b3358ba7554c4596403df","CABLE40":"912e97d5da96dac025b5760a6513c91df77b7f87892b821273182807750980b4"};
+ for(const [id,sha] of Object.entries(pins)){
+  const profile=readCargoHandlingProfile(fixture.catalog,id)!;
+  expect(createHash("sha256").update(profile.canonicalJson).digest("hex"),id).toBe(sha);
+ }
+});
+it.each([["CABLE5000",5000],["CABLE5750",5750],["CABLE7750",7750]] as const)("PLAY04 V5 closed %s pays its declared cable quantity in the original light envelope",(id,length)=>{
+ const profile=readCargoHandlingProfile(fixture.catalog,id);
+ expect(profile).toMatchObject({terms:[{itemId:"fp02.comp.field_cable",quantityUnits:length}],massMg:length*250,capacityMm3:length*3000,sizeMm:[500,1000,500]});
+ expect(profile?.sourceRefs).toContain("fp06-technical-s0-closed-native-socket-cable-jobs-v3");
+ expect(profile&&Object.isFrozen(profile)).toBe(true);
+ expect(readCargoHandlingProfile(fixture.catalog,`CABLE${length+1}`)).toBeUndefined();
+});
+
+// Custody/payment proof only; actual Native socket reach and LOS are separate normal-game gates.
+it("PLAY04 V5 five declared finite cable jobs pay exactly34m from finite C07 with whole custody and no duplicate mass",()=>{
+ const initial=setup(),owner=fixture.resourceState.ownerId!,cable=fixture.catalog.items.find(i=>i.sourceId==="fp02.comp.field_cable")!;
+ const targets=["cable_cut","cable_belt","cable_former","cable_distro","cable_raw_belt"].map(id=>createResourceContainerSnapshot(createResourceContainerDefinition({containerId:id,kind:"OutpostStorage",maxMassKg:10,maxVolumeM3:.1,maxStackCount:1}),createResourceContainerState({containerId:id,ownerId:owner,contents:[]},fixture.catalog.resources),fixture.catalog.resources));
+ let material={...initial,containers:[...initial.containers,...targets]};const mass=readMaterialMassMg(material);
+ for(const [id,length,target] of [["CABLE7500",7500,"cable_cut"],["CABLE8000",8000,"cable_belt"],["CABLE5750",5750,"cable_former"],["CABLE5000",5000,"cable_distro"],["CABLE7750",7750,"cable_raw_belt"]] as const){
+  const source=material.containers.find(c=>c.state.containerId===fixture.resourceState.containerId)!,stack=source.state.contents.find(s=>s.resourceId===cable.resourceId)!;
+  const request={...intent,commandId:`pay_${id.toLowerCase()}`,profileId:id,expectedMaterialRevision:material.revision,sourceLots:[{containerId:source.state.containerId,stackId:stack.stackId,quantityUnits:length}]};
+  expect(prepareCargoHandling(material,{...request,sourceLots:[{...request.sourceLots[0]!,quantityUnits:length-1}]})).toMatchObject({status:"Rejected",reason:"HandlingProfileTermsMismatch"});
+  const plan=prepareCargoHandling(material,request);expect(plan.status).toBe("Prepared");if(plan.status!=="Prepared")throw Error(plan.reason);expect(plan.profile.massMg).toBe(length*250);
+  const paid=commitFactoryMaterialStep(material,plan.materialPlan);expect(paid.status).toBe("Committed");expect(commitFactoryMaterialStep(paid.view,plan.materialPlan).status).toBe("NoOp");material={...paid.view,containers:[...paid.view.containers]};
+  const custody=material.containers.find(c=>c.state.containerId==="factory_carrier")!,held=custody.state.contents[0]!;expect(held.quantity).toBe(length);
+  const install=prepareFactoryMaterialStep(material,{kind:"transfer",transactionId:`install_${id.toLowerCase()}`,ownerId:owner,actorId:owner,moves:[{sourceContainerId:custody.state.containerId,sourceStackId:held.stackId,targetContainerId:target,targetStackId:held.stackId,itemId:cable.sourceId,quantityUnits:length}]});
+  expect(install.status).toBe("Prepared");if(install.status!=="Prepared")throw Error(install.reason);const result=commitFactoryMaterialStep(material,install);expect(result.status).toBe("Committed");material={...result.view,containers:[...result.view.containers]};
+  expect(material.containers.find(c=>c.state.containerId==="factory_carrier")!.state.contents).toEqual([]);expect(readMaterialMassMg(material)).toBe(mass);
+ }
+ expect(material.containers.find(c=>c.state.containerId===fixture.resourceState.containerId)!.state.contents.find(s=>s.resourceId===cable.resourceId)?.quantity).toBe(6000);
+ expect(material.containers.filter(c=>targets.some(t=>t.state.containerId===c.state.containerId)).reduce((n,c)=>n+c.state.contents.reduce((q,s)=>q+s.quantity,0),0)).toBe(34000);
  expect(readCargoHandlingProfile(fixture.catalog,"CABLE7501")).toBeUndefined();
 });

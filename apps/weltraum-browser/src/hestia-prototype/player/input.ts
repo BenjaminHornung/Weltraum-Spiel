@@ -4,16 +4,23 @@ import { HVP_PLAYER_PROFILE } from "../physics/profile";
 import {createHvpListeners} from "../runtime/listeners";
 import { createHvpPlayerVisualPose } from "./presentation";
 
+export interface HvpPlayerActivationResult {
+  readonly status: "Playing" | "Cancelled" | "Rejected";
+  readonly reason: string | null;
+}
+
 /** Input owns intent, never avatar position. Camera consumes solver readback only. */
 export const createHvpPlayerInput = (canvas: HTMLCanvasElement, camera: PerspectiveCamera, physics: HvpPhysicsClient,
   doc: Document = document, win: Pick<Window, "addEventListener" | "removeEventListener"> = window,
-  onInspect: () => void = () => {}, tool: {confirm():void;select(mode:number):void} = {confirm:()=>{},select:()=>{}},isBlocked:()=>boolean=()=>false, factoryEventIntent=false) => {
+  onInspect: () => void = () => {}, tool: {confirm():void;select(mode:number):void} = {confirm:()=>{},select:()=>{}},isBlocked:()=>boolean=()=>false, factoryEventIntent=false, externalPauseUi=false) => {
   const listeners=createHvpListeners();
   const keys = new Set<string>();
   const movementKeys = new Set(["KeyW", "KeyA", "KeyS", "KeyD", "ShiftLeft", "ShiftRight", "Space"]);
   let active = false;
   let activating = false;
   let disposed = false;
+  let activation: { readonly promise: Promise<HvpPlayerActivationResult>;
+    readonly resolve: (result: HvpPlayerActivationResult) => void; playRequested: boolean } | undefined;
   let yaw = Math.PI;
   let pitch = 0;
   let jump = false;
@@ -38,15 +45,20 @@ export const createHvpPlayerInput = (canvas: HTMLCanvasElement, camera: Perspect
   const inspectButton = doc.createElement("button");
   inspectButton.textContent = "Zur Inspektionsansicht";
   dialog.append(instruction, resumeButton, inspectButton); doc.body.append(dialog);
-  const error = (value: unknown): void => { doc.body.dataset.hestiaPrototypeInputError = value instanceof Error ? value.message : String(value); };
+  const error = (value: unknown): void => { if (!disposed) doc.body.dataset.hestiaPrototypeInputError = value instanceof Error ? value.message : String(value); };
+  const finishActivation = (status: HvpPlayerActivationResult["status"], reason: string | null): void => {
+    const pending = activation; activation = undefined;
+    pending?.resolve(Object.freeze({ status, reason }));
+  };
   const stop = (): void => {
     const wasActive = active;
     active = false; activating = false; keys.clear(); jump = false; neutralizations += 1;
+    finishActivation("Cancelled", "InputStopped");
     physics.setPlayerInput({ x: 0, z: 0, sprint: false, jump: false },factoryEventIntent);
     if (doc.pointerLockElement === canvas) { doc.exitPointerLock(); }
     if (wasActive && !disposed) {
       void physics.command("Pause").catch(error);
-      if (!dialog.open) { dialog.showModal(); }
+      if (!externalPauseUi && !dialog.open) { dialog.showModal(); }
     }
   };
   const levelIntent = () => {
@@ -71,14 +83,32 @@ export const createHvpPlayerInput = (canvas: HTMLCanvasElement, camera: Perspect
   const locked = (): void => {
     if (disposed) { return; }
     if (doc.pointerLockElement !== canvas||isBlocked()) { stop(); return; }
+    if (active && (!activating || activation?.playRequested)) return;
+    const pending = activation;
+    // A late lock grant after cancellation never creates a fresh Play intent.
+    if (!pending) { stop(); return; }
+    pending.playRequested = true;
     active = true; activating = true; keys.clear(); jump = false;
     canvas.focus({ preventScroll: true });
-    void physics.command("Play").then(() => { activating = false; if(keys.size||jump)publishEventIntent(); }).catch(value => { error(value); stop(); });
+    void physics.command("Play").then(() => {
+      if (disposed || activation !== pending) return;
+      if (!active || doc.pointerLockElement !== canvas || doc.hidden || isBlocked()) { stop(); return; }
+      if (physics.read().status !== "Running") {
+        finishActivation("Rejected", "NativePlayNotRunning"); stop(); return;
+      }
+      activating = false; keys.clear(); jump = false;
+      finishActivation("Playing", null);
+    }).catch(value => {
+      if (disposed || activation !== pending) return;
+      error(value); finishActivation("Rejected", value instanceof Error ? value.message : String(value)); stop();
+    });
   };
   const keyDown = (event: KeyboardEvent): void => {
     if(factoryEventIntent&&active&&isBlocked()){stop();return;}
     if (!active || isBlocked() || doc.pointerLockElement !== canvas) { return; }
     if (event.code === "Escape") { event.preventDefault(); stop(); return; }
+    // No key received while Play is unconfirmed is replayed by its later ACK.
+    if (activating) { if (movementKeys.has(event.code)) event.preventDefault(); return; }
     if (/^Digit[123]$/.test(event.code)) { event.preventDefault(); if(!event.repeat) { tool.select(Number(event.code.slice(-1))); } return; }
     if (event.code === "KeyV" && !event.repeat) { event.preventDefault(); thirdPerson = !thirdPerson; return; }
     if(event.code==="KeyF") {
@@ -88,6 +118,8 @@ export const createHvpPlayerInput = (canvas: HTMLCanvasElement, camera: Perspect
     }
     if (!movementKeys.has(event.code)) { return; }
     event.preventDefault();
+    // A repeated key cannot re-admit intent cleared by Pause or a pending Play.
+    if (event.repeat && !keys.has(event.code)) { return; }
     if (event.code === "Space" && !event.repeat && !keys.has(event.code)) { jump = true; jumpEdges += 1; }
     keys.add(event.code);
     publishEventIntent();
@@ -100,16 +132,33 @@ export const createHvpPlayerInput = (canvas: HTMLCanvasElement, camera: Perspect
     publishEventIntent();
   };
   const visibility = (): void => { if (doc.hidden) { stop(); } };
-  const pointerError = (): void => { error("Pointer Lock nicht verfügbar – bitte erneut auf Spielen klicken."); stop(); };
+  const pointerError = (): void => {
+    const reason = "Pointer Lock nicht verfügbar – bitte erneut auf Spielen klicken.";
+    error(reason); finishActivation("Rejected", reason); stop();
+  };
   const confirm = (event:MouseEvent):void => {
     if(active&&!isBlocked()&&!activating&&doc.pointerLockElement===canvas&&event.button===0) { event.preventDefault();tool.confirm(); }
   };
-  const start = (): void => {
-    if (disposed || doc.hidden || isBlocked()) { return; }
+  const start = (): Promise<HvpPlayerActivationResult> => {
+    if (disposed || doc.hidden || isBlocked()) return Promise.resolve(Object.freeze({ status: "Rejected", reason: "InputBlockedOrDisposed" }));
+    if (activation) return activation.promise;
+    if (active) {
+      if (doc.pointerLockElement === canvas && physics.read().status === "Running") return Promise.resolve(Object.freeze({ status: "Playing", reason: null }));
+      stop();
+    }
+    let resolve!: (result: HvpPlayerActivationResult) => void;
+    const promise = new Promise<HvpPlayerActivationResult>(done => { resolve = done; });
+    const pending = { promise, resolve, playRequested: false }; activation = pending;
     delete doc.body.dataset.hestiaPrototypeInputError;
     if (dialog.open) { dialog.close(); }
     // Stay within the real click's user activation; never auto-relock on focus.
-    try { void canvas.requestPointerLock()?.catch(error); } catch (value) { error(value); }
+    const rejectLock = (value: unknown): void => {
+      if (disposed || activation !== pending) return;
+      const reason = value instanceof Error ? value.message : String(value);
+      error(value); finishActivation("Rejected", reason); stop();
+    };
+    try { void canvas.requestPointerLock()?.catch(rejectLock); } catch (value) { rejectLock(value); }
+    return promise;
   };
   listeners.add(resumeButton,"click",start);
   listeners.add(inspectButton,"click",()=>{dialog.close();onInspect();});
@@ -124,6 +173,7 @@ export const createHvpPlayerInput = (canvas: HTMLCanvasElement, camera: Perspect
   return {
     get listenerCount(){return listeners.size;},
     get active() { return active; },
+    get activationPending() { return activation !== undefined; },
     get thirdPerson() { return thirdPerson; },
     get aimScreen() { return aimScreen; },
     checkpoint(){return Object.freeze({playerYaw:yaw,playerPitch:pitch,thirdPerson});},
@@ -195,7 +245,7 @@ export const createHvpPlayerInput = (canvas: HTMLCanvasElement, camera: Perspect
     },
     dispose(): void {
       if (disposed) { return; }
-      disposed = true; stop();
+      stop(); disposed = true;
       listeners.dispose();
       dialog.remove();
     }

@@ -8,6 +8,7 @@ import { createFactoryAssetProjection, getFactoryAssetSource, readFactoryAssetDe
 import { validateMeshArtifact } from "../../../src/presentation";
 
 const repo=fileURLToPath(new URL("../../../../../",import.meta.url));
+const surfaceAssets=JSON.parse(readFileSync(`${repo}art/factory/play-surface-v2-2026-10-12/manifest.json`,"utf8")).assets as typeof manifest.assets;
 const assets=manifest.assets;
 const entry=(id="play_cutter_v1")=>assets.find(a=>a.assetId===id)!;
 const bytes=(a=entry())=>new Uint8Array(readFileSync(`${repo}${a.runtimeGlb.path}`));
@@ -69,7 +70,7 @@ const edited=(change:(doc:Doc)=>void)=>{
 };
 
 describe("reviewed closed Play GLB loader",()=>{
-  it.each(assets)("imports actual $assetId bytes into managed source-local artifacts",async a=>{
+  it.each([...assets,...surfaceAssets])("imports actual $assetId bytes into managed source-local artifacts",async a=>{
     const actual=bytes(a),result=await loadPlayAssetProjection(request(a,actual));
     expect(result.parts.map(p=>p.partId).sort()).toEqual([...a.partIds].sort());
     expect(result.parts.length).toBeGreaterThan(0);
@@ -150,9 +151,9 @@ describe("reviewed closed Play GLB loader",()=>{
     if(kind==="index")view.setUint16(offset,65535,true);else view.setFloat32(offset,NaN,true);
     await expect(loadPlayAssetProjection(request(entry(),payload))).rejects.toThrow(/finite|index|attribute/i);
   });
-  it("rejects changed manifest bytes before fetching",async()=>{
-    const path="../../../public/factory/play-2026-10-12/manifest.json?raw";
-    const raw=readFileSync(`${repo}apps/weltraum-browser/public/factory/play-2026-10-12/manifest.json`,"utf8");
+  it.each(["manifest.json","manifest-surface-v2.json"])("rejects changed %s bytes before fetching",async file=>{
+    const path=`../../../public/factory/play-2026-10-12/${file}?raw`;
+    const raw=readFileSync(`${repo}apps/weltraum-browser/public/factory/play-2026-10-12/${file}`,"utf8");
     vi.resetModules();vi.doMock(path,()=>({default:raw+" "}));
     try{
       const fresh=await import("../../../src/factory/presentation/playAssetLoader");let fetched=0;

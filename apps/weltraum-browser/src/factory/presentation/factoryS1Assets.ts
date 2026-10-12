@@ -34,7 +34,7 @@ export interface FactoryS1Sample {
  readonly native:FactoryS1NativeParts;readonly work:FactoryS1WorkRead;
 }
 const owned=new WeakSet<FactoryS1Assets>(),disposed=new WeakSet<FactoryS1Assets>();
-const assetIds=Object.freeze({B06:"play_cutter_v1",B07:"play_former_v1"});
+const assetIds=Object.freeze({B06:"play_cutter_v2",B07:"play_former_v2"});
 const bytes=(artifact:import("../../presentation").MeshArtifact)=>artifact.positions.byteLength+(artifact.normals?.byteLength??0)+artifact.indices.byteLength;
 const sameRef=(a:FactoryAssetDefinitionRef,b:FactoryAssetDefinitionRef)=>a.sourceId===b.sourceId&&a.version===b.version&&a.digest===b.digest;
 function invalid(reason:string):never{throw Error(`FactoryS1 ${reason}`);}

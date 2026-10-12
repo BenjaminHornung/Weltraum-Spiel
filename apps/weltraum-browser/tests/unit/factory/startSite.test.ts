@@ -2,6 +2,7 @@ import { assertHvpSourceComplete,restoreHvpCoastSource } from "../../../src/hvp/
 import { describe, expect, it } from "vitest";
 import { materializeFactoryStartSite } from "../../../src/factory/fixtures/startSite";
 import * as factory from "../../../src/factory/fixtures/startSite";
+import { createHash } from "node:crypto";
 import { materializeHvpCoastSource, prepareHvpCoastSource } from "../../../src/hvp/hvpCoastSource";
 
 describe("W07 approved Factory initial source", () => {
@@ -55,4 +56,95 @@ it("PLAY01 candidate changes only the exact380 shoulder columns and2890 slot byt
  expect(expectedColumns.size).toBe(380);expect(changedColumns.size).toBe(297);
  for(const column of expectedColumns){const x=column%256,z=Math.floor(column/256);for(let y=0;y<128;y++)expect(candidate.readSlot(x,y,z)).toBe(y<=75?1:0);}
  expect(candidate.initializationReceipt.materialCreditMg).toBe(0);
+});
+
+// Original collectable business RED used the previous candidate; final oracle calls actual V3.
+const v3Site = () => factory.materializeFactoryStartSiteV3();
+it("PLAY01 V3 has its own closed header and exact Owner-approved pages while preserving V1/V2/Coast", () => {
+  const site = v3Site();
+  expect(site.version).toBe("hvp-factory-startsite-v3");
+  expect(createHash("sha256").update(site.copySlots()).digest("hex"))
+    .toBe("267230ca09cf7d8a9fa0d6f6bc2e3fac6cc0cd7adaaf2af57c3c24d60a6187d7");
+  expect(site.initializationReceipt).toMatchObject({ maskCount: 18, columnCount: 5240, areaMm2: 81875000,
+    materialCreditMg: 0, ownerTerrainAcceptance: "OWNER_REVIEW_PENDING" });
+  expect(prepareHvpCoastSource(site).sourceDigest).toBe(site.sourceDigest);
+  expect(materializeFactoryStartSite().sourceDigest).toBe("e62aea8a");
+  expect(factory.materializeFactoryStartSiteV2().sourceDigest).toBe("ec8ba9b1");
+  expect(materializeHvpCoastSource().sourceDigest).toBe("b8fde6b0");
+  expect(() => assertHvpSourceComplete({ ...site, version: "hvp-factory-startsite-v6" })).toThrow(/version|profile/);
+  expect(() => restoreHvpCoastSource(site.copySlots(), site.sourceDigest)).toThrow(/digest/);
+});
+it("PLAY01 V3 changes only the additional380 columns and2492 actual slots without material credit", () => {
+  const before = factory.materializeFactoryStartSiteV2().copySlots(), site = v3Site(), after = site.copySlots();
+  const columns = new Set<number>();
+  for (const [x0, x1, z0, z1] of [[54, 56, 180, 222], [54, 56, 104, 164], [68, 70, 124, 212]])
+    for (let x = x0!; x < x1!; x++) for (let z = z0!; z < z1!; z++) columns.add(x + 256 * z);
+  let changed = 0, added = 0, removed = 0; const changedColumns = new Set<number>();
+  for (let i = 0; i < before.length; i++) if (before[i] !== after[i]) {
+    const x = i % 256, z = Math.floor(i / 32768), y = Math.floor(i / 256) % 128;
+    expect(columns.has(x + 256 * z)).toBe(true); expect(after[i]).toBe(+(y <= 75));
+    changed++; changedColumns.add(x + 256 * z); if (!before[i]) added++; else removed++;
+  }
+  expect({ changed, added, removed, changedColumns: changedColumns.size, columns: columns.size })
+    .toEqual({ changed: 2492, added: 268, removed: 2224, changedColumns: 289, columns: 380 });
+  expect(site.initializationReceipt.materialCreditMg).toBe(0);
+});
+
+// Collectable RED uses the actual previous generation until the authorized V4 constructor exists.
+const v4Site = () => factory.materializeFactoryStartSiteV4();
+it("PLAY01 V4 binds its own header to the exact Owner-approved connector pages without legacy migration", () => {
+  const site = v4Site();
+  expect(site.version).toBe("hvp-factory-startsite-v4");
+  expect(site.sourceDigest).toBe("913c0c46");
+  expect(createHash("sha256").update(site.copySlots()).digest("hex")).toBe("ea7ccf99cb3ec14f284793664df4535544a76aa7e26a83ff107f98504a1c977d");
+  expect(site.sourceDigest).not.toBe("5190c339"); // Offline proposal used the old V3 header.
+  expect(site.initializationReceipt).toMatchObject({maskCount:21,columnCount:5688,areaMm2:88875000,materialCreditMg:0,ownerTerrainAcceptance:"OWNER_REVIEW_PENDING"});
+  expect(prepareHvpCoastSource(site).sourceDigest).toBe(site.sourceDigest);
+  expect(factory.materializeFactoryStartSiteV3().sourceDigest).toBe("16dbaa28");
+  expect(factory.materializeFactoryStartSiteV2().sourceDigest).toBe("ec8ba9b1");
+  expect(materializeFactoryStartSite().sourceDigest).toBe("e62aea8a");expect(materializeHvpCoastSource().sourceDigest).toBe("b8fde6b0");
+  expect(()=>assertHvpSourceComplete({...site,version:"hvp-factory-startsite-v6"})).toThrow(/version|profile/);
+  expect(()=>restoreHvpCoastSource(site.copySlots(),site.sourceDigest)).toThrow(/digest/);
+});
+it("PLAY01 V4 changes only the exact448 connector columns and1164 slots with zero material credit", () => {
+  const before=factory.materializeFactoryStartSiteV3().copySlots(),site=v4Site(),after=site.copySlots(),columns=new Set<number>();
+  for(const [x0,x1,z0,z1] of [[70,74,140,156],[82,98,140,156],[90,98,124,140]])for(let x=x0!;x<x1!;x++)for(let z=z0!;z<z1!;z++)columns.add(x+256*z);
+  let changed=0,added=0,removed=0,remapped=0;
+  for(let i=0;i<before.length;i++)if(before[i]!==after[i]){
+    const x=i%256,z=Math.floor(i/32768),y=Math.floor(i/256)%128;
+    expect(columns.has(x+256*z)).toBe(true);expect(after[i]).toBe(+(y<=75));changed++;
+    if(!before[i])added++;else if(!after[i])removed++;else remapped++;
+  }
+  expect({columns:columns.size,changed,added,removed,remapped}).toEqual({columns:448,changed:1164,added:1058,removed:0,remapped:106});
+  for(const column of columns)for(let y=0;y<128;y++)expect(site.readSlot(column%256,y,Math.floor(column/256))).toBe(+(y<=75));
+  expect(site.initializationReceipt.materialCreditMg).toBe(0);
+});
+
+// The preserved initial RED used V4; final verification calls the actual V5 constructor.
+const v5Site=()=>factory.materializeFactoryStartSiteV5();
+it("PLAY01 V5 binds a separately named generation to the exact approved3m2 raw-band pages",()=>{
+ const site=v5Site();expect(site.version).toBe("hvp-factory-startsite-v5");expect(site.sourceDigest).toBe("0e2a0bcb");
+ expect(createHash("sha256").update(site.copySlots()).digest("hex")).toBe("106a3c5ba17e7bb8861d853e1889d71ebf42a686f3d0605d0cb8efabb20c7911");
+ expect(site.initializationReceipt).toMatchObject({maskCount:23,columnCount:5880,areaMm2:91875000,materialCreditMg:0,ownerTerrainAcceptance:"OWNER_REVIEW_PENDING"});
+ expect(()=>assertHvpSourceComplete(site)).not.toThrow();
+ expect(factory.materializeFactoryStartSiteV4().sourceDigest).toBe("913c0c46");
+ expect(factory.materializeFactoryStartSiteV3().sourceDigest).toBe("16dbaa28");
+ expect(factory.materializeFactoryStartSiteV2().sourceDigest).toBe("ec8ba9b1");
+ expect(factory.materializeFactoryStartSite().sourceDigest).toBe("e62aea8a");
+ expect(materializeHvpCoastSource().sourceDigest).toBe("b8fde6b0");
+ expect(()=>assertHvpSourceComplete({...site,version:"hvp-factory-startsite-v6"})).toThrow(/version|profile/);
+});
+it("PLAY01 V5 changes only192 approvedcolumns and1246 slots with214add1032remove and0credit",()=>{
+ const before=factory.materializeFactoryStartSiteV4().copySlots(),site=v5Site(),after=site.copySlots(),columns=new Set<number>();
+ for(const [z0,z1] of [[180,212],[124,140]])for(let z=z0!;z<z1!;z++)for(let x=70;x<74;x++)columns.add(x+256*z);
+ let changed=0,added=0,removed=0,remapped=0,dryRemoved=0,soilRemoved=0;const changedColumns=new Set<number>();
+ for(let i=0;i<before.length;i++)if(before[i]!==after[i]){
+  const x=i%256,z=Math.floor(i/32768),y=Math.floor(i/256)%128;
+  expect(columns.has(x+256*z)).toBe(true);expect(after[i]).toBe(+(y<=75));changed++;changedColumns.add(x+256*z);
+  if(!before[i])added++;else if(!after[i]){removed++;if(before[i]===1)dryRemoved++;if(before[i]===3)soilRemoved++;}else remapped++;
+ }
+ expect({columns:columns.size,changedColumns:changedColumns.size,changed,added,removed,remapped,dryRemoved,soilRemoved})
+  .toEqual({columns:192,changedColumns:185,changed:1246,added:214,removed:1032,remapped:0,dryRemoved:1018,soilRemoved:14});
+ for(const c of columns)for(let y=0;y<128;y++)expect(site.readSlot(c%256,y,Math.floor(c/256))).toBe(+(y<=75));
+ expect(site.initializationReceipt.materialCreditMg).toBe(0);
 });

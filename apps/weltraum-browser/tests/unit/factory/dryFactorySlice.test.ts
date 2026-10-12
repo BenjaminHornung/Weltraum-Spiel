@@ -1,4 +1,5 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import * as materialSteps from "../../../src/factory/material/reservations";
 import { createFp02Fixture } from "../../../src/factory/catalog/fp02Catalog";
 import { createFactoryMaterialView, prepareFactoryMaterialStep, commitFactoryMaterialStep } from "../../../src/factory/material/reservations";
 import { bindFactoryDomainSession, createFactoryMaterialAuthority, createFactoryCommandHistory } from "../../../src/factory/session/dryFactorySlice";
@@ -38,6 +39,29 @@ describe("W09 complete private proposal byte guards",()=>{
  const freezeData=<T>(value:T):T=>{if(value&&typeof value==="object"){Object.values(value).forEach(freezeData);Object.freeze(value);}return value;};
  const copyMaterial=(material:ReturnType<typeof initial>)=>({...material,containers:material.containers.map(c=>({...c,definition:JSON.parse(canonicalJson(c.definition)) as typeof c.definition,state:JSON.parse(canonicalJson(c.state)) as typeof c.state}))});
  const outputValues=(state:DryFactoryState,material:ReturnType<typeof initial>)=>({powerRevision:state.power.revision,materialRevision:material.revision,steel:material.containers[0]!.state.contents.find(s=>s.resourceId==="fp02_bulk_steel_known")!.quantity});
+ it("validates cold immutable material but avoids redundant W02 work when adoption changes nothing",()=>{
+  const material=initial(),authority=createFactoryMaterialAuthority(material),spy=vi.spyOn(materialSteps,"prepareFactoryMaterialStep");
+  try{
+   expect(authority.adopt(material,material)).toBe(true);expect(spy).toHaveBeenCalled();
+   const bytes=factoryMaterialBytes(material);spy.mockClear();
+   for(let i=0;i<5;i++)expect(authority.adopt(material,material)).toBe(true);
+   expect(spy.mock.calls.length).toBe(0);expect(authority.read()).toBe(material);expect(factoryMaterialBytes(authority.read())).toBe(bytes);expect(material.revision).toBe(0);expect(material.receipts).toEqual([]);
+  }finally{spy.mockRestore();}
+ });
+ it("binds nested frozen ArrayProxy facts with the original canonical iterator semantics",()=>{
+  const f=emptyDryFixture(),proxy=new Proxy(Object.freeze([1]),{get(target,key,receiver){return key===Symbol.iterator?()=>[2][Symbol.iterator]():Reflect.get(target,key,receiver);}});
+  const base=freezeData({...f.state,extra:{rows:proxy}}),proposal=prepareDryFactoryStep(base,f.inputFor(base,f.material));
+  expect(proposal.status).toBe("Prepared");if(proposal.status!=="Prepared")return;
+  const {lastStep:_last,...core}=base;expect(proposal.baseStateBytes).toBe(canonicalJson(core));
+ });
+ it("rejects changed frozen ArrayProxy domain membership between prepare and adoption",()=>{
+  const f=emptyDryFixture();let changed=false;
+  const proxy=new Proxy(Object.freeze([]),{get(target,key,receiver){return key===Symbol.iterator?()=> (changed?[{lineId:"foreign_pending_line"}]:[])[Symbol.iterator]():Reflect.get(target,key,receiver);}});
+  const base=freezeData({...f.state,belts:proxy}),input=f.inputFor(base,f.material),proposal=prepareDryFactoryStep(base,input);
+  expect(proposal.status).toBe("Prepared");changed=true;
+  expect(commitDryFactoryStep(base,input,proposal)).toMatchObject({status:"Rejected"});
+  expect(f.material.revision).toBe(0);expect(f.material.receipts).toEqual([]);
+ });
  it("preserves exact cold and warm material projection bytes without admitting a later mutable clone",()=>{
   const f=emptyDryFixture(),base=freezeData(f.state),input=f.inputFor(base,f.material),expected=factoryMaterialBytes(f.material);
   const cold=prepareDryFactoryStep(base,input),warm=prepareDryFactoryStep(base,input);
@@ -260,3 +284,34 @@ it("W09 q1 Cutter OUT to Former IN is exactly four metres toward Native minus-Z"
  expect(b.centerMm.map((n:number,i:number)=>n-a.centerMm[i])).toEqual([0,0,-4000]);
  expect(()=>read(fixture.catalog,{instanceId:"cut",definitionSourceId:"B06",profileDigest:"wrong",sourceDigest:"wrong",centerMm:[-6250,1500,5000],quarterTurns:1},"B06:OUT-SEMI",1)).toThrow(/Binding/);
 });
+
+// The preserved RED used the unchanged domain; final tests call the actual domain control.
+const controlCandidate=dryControls.setDryFactoryEnabled;
+it("PLAY04 control disabling the paid battery cuts actual supply routes without changing finite SOC or custody",async()=>{
+ const {owners,adopted}=paidBeltFixture(),battery=owners[3]!,state=controlCandidate(adopted.state,adopted.material,battery,false,"disable_battery");
+ const links=[{linkId:"actual_control_test_link",fromPortId:"power_actual_battery",toPortId:"power_actual_cut",active:true,maxMilliWatt:"1700000"}];
+ const supply=readDryFactorySupply(state,adopted.material,owners,links,"100000");
+ expect(supply.ports.find(p=>p.portId==="power_actual_battery")?.active).toBe(false);
+ expect(supply.battery).toEqual({instanceId:"fp02_cargo_c03_unit_1",portId:"power_actual_battery"});
+ expect(state.power.battery).toEqual(adopted.state.power.battery);
+ const {stepFactoryPower}=await import("../../../src/factory/power/factoryPower");
+ const power=stepFactoryPower(state.power,{confirmed:true,binding:state.binding,tickStartUs:"0",tickEndUs:"100000",supply,requests:[{consumerId:"consumer_actual_cut",deviceInstanceId:"actual_cut",jobId:"actual_control_job",portId:"power_actual_cut",priority:"P2",requiredMilliWatt:"1200000",enabled:true}]});
+ expect(power.ok).toBe(true);if(!power.ok)throw Error(power.reason);
+ expect(power.grants[0]).toMatchObject({status:"NET_DISCONNECTED",allocatedMilliWatt:"0",work:{n:"0",d:"1"}});
+ expect(power.nextState.battery).toEqual(adopted.state.power.battery);
+});
+it("PLAY04 control disables only the paid band and preserves packet, credit and paid machine owners",()=>{
+ const {owners,adopted}=paidBeltFixture(),state=controlCandidate(adopted.state,adopted.material,owners[2]!,false,"disable_band");
+ const supply=readDryFactorySupply(state,adopted.material,owners,[],"100000");
+ expect(supply.ports.find(p=>p.portId==="power_actual_line")?.active).toBe(false);
+ expect(supply.ports.find(p=>p.portId==="power_actual_cut")?.active).toBe(true);
+ expect(state.belts[0]?.packet).toBe(adopted.state.belts[0]?.packet);expect(state.belts[0]?.creditMg).toBe(adopted.state.belts[0]?.creditMg);
+ expect(state.machines.map(m=>m.machineInstanceId)).toEqual(adopted.state.machines.map(m=>m.machineInstanceId));
+});
+it("PLAY04 control replay preserves the same disabled state and rejects changed command payload",()=>{
+ const {owners,adopted}=paidBeltFixture(),state=controlCandidate(adopted.state,adopted.material,owners[3]!,false,"control_replay");
+ expect(state.binding.netRevision).toBe(adopted.state.binding.netRevision+1);
+ expect(controlCandidate(state,adopted.material,owners[3]!,false,"control_replay")).toBe(state);
+ expect(()=>controlCandidate(state,adopted.material,owners[3]!,true,"control_replay")).toThrow(/Idempotency/);
+});
+import * as dryControls from "../../../src/factory/session/dryFactorySlice";

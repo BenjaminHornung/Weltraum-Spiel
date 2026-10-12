@@ -19,7 +19,10 @@ export interface HvpPhysicsClient {
   readonly collisionBytes: number;
   readonly workerCount: number;
   readonly clock?: HvpPhysicsClock;
-  lifecycle?():Readonly<{workers:number;pendingJobs:number;timers:number|null;listeners:number;native:Readonly<{status:string;bodies:number;colliders:number}>|null}>;
+  lifecycle?():Readonly<{workers:number;pendingJobs:number;timers:number|null;listeners:number;native:Readonly<{status:string;bodies:number;colliders:number}>|null;
+    /** RPC observations only. desiredLevel is buffered client intent, never a Native applied-input sequence or pose. */
+    factoryInput:Readonly<{enabled:boolean;lastSentId:number|null;lastAckId:number|null;pendingIds:readonly number[];
+      desiredLevel:Readonly<HvpPlayerInput>;commandDepth:number;closing:boolean;canDispatch:boolean}>}>;
   readonly preparation: Readonly<{ jobs: number; peakParallelJobs: number; mainPrepareMaxMs: number }>;
   read(): HvpPhysicsSnapshot;
   update(): void;
@@ -161,6 +164,7 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
   let terminated=false;
   let busy = false;
   let factoryInputClosing=false,factoryCommandDepth=0;
+  let lastFactoryInputSentId:number|null=null,lastFactoryInputAckId:number|null=null;
   let mutating = false;
   let bodyPending=false;
   let factoryPending:{request:FactoryFacilityRequest;before:HvpPhysicsSnapshot;promoted:boolean}|undefined;
@@ -189,6 +193,7 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
       clearTimeout(p.timeout);pending.delete(data.id);
       if(data.rejected!==undefined){const error=new Error(data.rejected);p.reject(error);fail(error);return;}
       // A small input ACK has no authority over any public or held read view.
+      lastFactoryInputAckId=data.id;
       p.resolve();return;
     }
     if(data.clock!==undefined){clock=data.clock;}
@@ -209,7 +214,7 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
     const id = nextId++;
     const timeout = setTimeout(() => fail(new Error("Physics worker response deadline exceeded")), 20_000);
     pending.set(id, { resolve, reject, timeout, publish,kind:message.kind,onReply });
-    try { worker.postMessage({ ...message, id }, transfers); } catch (e) { fail(e instanceof Error ? e : new Error("Physics transfer failed")); }
+    try { worker.postMessage({ ...message, id }, transfers); if(message.kind==="FactoryInput")lastFactoryInputSentId=id; } catch (e) { fail(e instanceof Error ? e : new Error("Physics transfer failed")); }
   });
   const clearFactoryInput=()=>{playerInput={x:0,z:0,sprint:false,jump:false};};
   const sendFactoryInput=(input:HvpPlayerInput,cancelPendingJump=false)=>{
@@ -527,7 +532,10 @@ export const createHvpPhysicsClient = async (sources: readonly HvpCollisionSourc
     async finalizeTerrain(id) { await send({kind:"FinalizeTerrain",transactionId:id}); heldSnapshot=undefined; mutating=false; },
     lifecycle:()=>Object.freeze({workers:terminated?0:1,pendingJobs:pending.size,timers:clock===undefined?null:pending.size+clock.timers,
       listeners:Number(worker.onmessage!==null)+Number(worker.onerror!==null)+Number(worker.onmessageerror!==null),
-      native:snapshot?Object.freeze({status:snapshot.status,bodies:snapshot.bodyCount,colliders:snapshot.colliderCount}):null}),
+      native:snapshot?Object.freeze({status:snapshot.status,bodies:snapshot.bodyCount,colliders:snapshot.colliderCount}):null,
+      factoryInput:Object.freeze({enabled:factoryEnabled,lastSentId:lastFactoryInputSentId,lastAckId:lastFactoryInputAckId,
+        pendingIds:Object.freeze([...pending].filter(([,value])=>value.kind==="FactoryInput").map(([id])=>id)),
+        desiredLevel:Object.freeze({...playerInput}),commandDepth:factoryCommandDepth,closing:factoryInputClosing,canDispatch:canDispatchFactoryInput()})}),
     async dispose() {
       if (disposed) { return; }
       if(factoryEnabled){factoryInputClosing=true;clearFactoryInput();}

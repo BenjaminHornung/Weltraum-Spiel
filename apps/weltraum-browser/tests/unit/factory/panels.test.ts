@@ -282,3 +282,13 @@ describe("W09 frozen panel projection and finite player intents", () => {
     expect(h.commands).toHaveLength(0); panel.dispose();
   });
 });
+
+it("PLAY04 power panel submits one current installed-device control and waits for canonical confirmation",async()=>{
+ const h=harness();h.publish({...h.view,power:{...h.view.power,devices:[{id:"battery",revision:4,name:"Expeditionsbatterie",enabled:true,capability:cap()}]} as FactoryUiReadModel["power"]});
+ const panel=mountFactoryPowerPanel(h.port,documentDouble());
+ try{const toggle=button(panel.element,"Expeditionsbatterie ausschalten");expect(toggle).toBeDefined();toggle!.click();toggle!.click();
+  expect(h.commands).toHaveLength(1);expect(h.commands[0]).toMatchObject({kind:"set-enabled",machine:{id:"battery",revision:4},enabled:false});
+  expect(button(panel.element,"Expeditionsbatterie ausschalten")!.disabled).toBe(true);h.complete("Rejected");await flush();
+  expect(panel.element.textContent).not.toContain("Expeditionsbatterie: ausgeschaltet");
+ }finally{panel.dispose();}
+});

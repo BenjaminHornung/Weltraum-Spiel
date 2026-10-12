@@ -578,6 +578,24 @@ export const createHvpFactorySourceSnapshotV2 = (slots: Uint8Array): HvpCoastSou
   return wrapSnapshot(slots.slice(), "hvp-factory-startsite-v2", "hestia-factory-layout-a-001");
 };
 
+/** Closed V3 candidate with an independent header; previous generations remain byte-identical. */
+export const createHvpFactorySourceSnapshotV3 = (slots: Uint8Array): HvpCoastSourceSnapshot => {
+  if (!(slots instanceof Uint8Array) || slots.length !== HVP_SOURCE_SLOT_COUNT || slots.some(value => value > HVP_SLOT_MOSS)) throw new Error("Invalid Factory V3 source pages");
+  return wrapSnapshot(slots.slice(), "hvp-factory-startsite-v3", "hestia-factory-layout-a-001");
+};
+
+/** Closed V4 connector candidate; no prior generation or legacy restore is migrated. */
+export const createHvpFactorySourceSnapshotV4 = (slots: Uint8Array): HvpCoastSourceSnapshot => {
+  if (!(slots instanceof Uint8Array) || slots.length !== HVP_SOURCE_SLOT_COUNT || slots.some(value => value > HVP_SLOT_MOSS)) throw new Error("Invalid Factory V4 source pages");
+  return wrapSnapshot(slots.slice(), "hvp-factory-startsite-v4", "hestia-factory-layout-a-001");
+};
+
+/** Closed V5 raw-band floor candidate; older initial generations stay unchanged. */
+export const createHvpFactorySourceSnapshotV5 = (slots: Uint8Array): HvpCoastSourceSnapshot => {
+  if (!(slots instanceof Uint8Array) || slots.length !== HVP_SOURCE_SLOT_COUNT || slots.some(value => value > HVP_SLOT_MOSS)) throw new Error("Invalid Factory V5 source pages");
+  return wrapSnapshot(slots.slice(), "hvp-factory-startsite-v5", "hestia-factory-layout-a-001");
+};
+
 /** Artifact boundary: verify saved canonical bytes without running the generator. */
 export const restoreHvpCoastSource = (slots:Uint8Array,expectedDigest:string):HvpCoastSourceSnapshot => {
   if(!(slots instanceof Uint8Array)||slots.length!==HVP_SOURCE_SLOT_COUNT||slots.some(s=>s>HVP_SLOT_MOSS)
@@ -630,7 +648,7 @@ export const assertHvpSourceComplete = (snapshot: HvpCoastSourceSnapshot): void 
     throw new Error("HVP coast source is missing: materialize the named seed before claiming readiness.");
   }
   const problems: string[] = [];
-  const factoryProfile = (snapshot.version === "hvp-factory-startsite-v1" || snapshot.version === "hvp-factory-startsite-v2") && snapshot.seedName === "hestia-factory-layout-a-001";
+  const factoryProfile = (snapshot.version === "hvp-factory-startsite-v1" || snapshot.version === "hvp-factory-startsite-v2" || snapshot.version === "hvp-factory-startsite-v3" || snapshot.version === "hvp-factory-startsite-v4" || snapshot.version === "hvp-factory-startsite-v5") && snapshot.seedName === "hestia-factory-layout-a-001";
   if (snapshot.version !== HVP_COAST_SOURCE_VERSION && !factoryProfile) {
     problems.push(`version ${String(snapshot.version)}`);
   }

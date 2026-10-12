@@ -18,6 +18,12 @@ describe("confirmed Factory onboarding", () => {
     const projection = await load();
     expect(projection?.projectFactoryOnboarding({ ...facts(), cargoOpened: true, installedSourceIds: ["B06", "B07"], powerConnected: true })?.taskId).toBe("transport");
   });
+  it("guides the direct finite Battery wiring without a mandatory distributor", async () => {
+    const projection = await load();
+    const next = projection?.projectFactoryOnboarding({ ...facts(), cargoOpened: true, installedSourceIds: ["B06", "B07"] });
+    expect(next?.taskId).toBe("power");
+    expect(next?.hint).toBe("Batterie und die vorhandenen Kabel über die sichtbaren Anschlüsse verbinden.");
+  });
 
   it("does not declare the brace goal completed from starting-stock products", async () => {
     const projection = await load();

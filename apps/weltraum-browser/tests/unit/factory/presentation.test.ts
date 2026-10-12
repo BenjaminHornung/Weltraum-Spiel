@@ -5,6 +5,23 @@ import { sampleMachinePose } from "../../../src/factory/presentation/machinePose
 import { backendRevision, canonicalSignature, validateMeshArtifact } from "../../../src/presentation";
 import { ThreeRenderBackend } from "../../../src/render/three/backend/threeRenderBackend";
 import { createHvpListeners } from "../../../src/hestia-prototype/runtime/listeners";
+import * as factoryAssets from "../../../src/factory/presentation/factoryAssets";
+
+it("PLAY02 source-local animated offsets rotate once with the actual Native owner and omit absent parts",()=>{
+ const asset=projection("B07"),tool=asset.parts.find(part=>part.role==="forming_tool")??asset.parts[0]!;
+ const read=(factoryAssets as any).createFactoryPartTransforms;
+ expect(read).toBeTypeOf("function");if(!read)return;
+ const transforms=read(asset.parts,{centerMm:[-6250,1500,-2500],quarterTurns:1},[{partId:tool.partId,translationM:[.25,.125,-.5]}]);
+ expect(transforms).toHaveLength(1);expect(transforms[0]).toMatchObject({representationKey:tool.artifact.representationKey,
+  positionRelative:{x:-6.75,y:1.625,z:-2.75},scale:{x:1,y:1,z:1}});
+ expect(read(asset.parts,{centerMm:[-6250,1500,-2500],quarterTurns:1},[])).toEqual([]);
+});
+
+it("PLAY02 Cargo GLB ground origin comes from current Native bounds rather than its cube center",()=>{
+ const read=(factoryAssets as any).readFactoryCargoProjectionOrigin;expect(read).toBeTypeOf("function");if(!read)return;
+ expect(read({positionMm:[-5500,2000,13125],site:{centerMm:[-5500,2000,13125],boundsMm:{min:[-6250,1250,12625],max:[-4750,2750,13625]}}})).toEqual([-5500,1250,13125]);
+ expect(()=>read({positionMm:[0,0,0],site:{centerMm:[-5500,2000,13125],boundsMm:{min:[-6250,1250,12625],max:[-4750,2750,13625]}}})).toThrow();
+});
 
 const catalog = createFp02Fixture("cargo").catalog;
 const projection = (id = "B06") => createFactoryAssetProjection(catalog.devices.find(device => device.sourceId === id)!, getFactoryAssetSource(id));

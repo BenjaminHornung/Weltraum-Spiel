@@ -389,12 +389,14 @@ it.each([
   // Exact bounded column projection of actual immutable Source slots, not a synthetic flat floor.
   // Equal adjacent solid columns are merged horizontally; no terrain, water, material or player-pose authority is introduced.
   const ground=world.createRigidBody(R.RigidBodyDesc.fixed());
+  let zeroCount=0,firstZero:readonly number[]|null=null;
   for(let z=zmin;z<zmax;z+=.125){let start=xmin,height=top(xmin+.0625,z+.0625);
    for(let x=xmin;x<xmax;x+=.125){const h=top(x+.0625,z+.0625),ix=Math.floor((x+16)/.125),iz=Math.floor((z+16)/.125);
-    for(let y=0;-8+(y+1)*.125<=h;y++)expect(source.readSlot(ix,y,iz)).not.toBe(0);
+    for(let y=0;-8+(y+1)*.125<=h;y++)if(source.readSlot(ix,y,iz)===0){zeroCount++;firstZero??=[ix,y,iz];}
     if(h!==height){world.createCollider(R.ColliderDesc.cuboid((x-start)/2,(height+8)/2,.0625).setTranslation((start+x)/2,(height-8)/2,z+.0625),ground);start=x;height=h;}}
    world.createCollider(R.ColliderDesc.cuboid((xmax-start)/2,(height+8)/2,.0625).setTranslation((start+xmax)/2,(height-8)/2,z+.0625),ground);
   }
+  expect(zeroCount,`Every exact Source column cell must remain solid; first zero ${JSON.stringify(firstZero)}`).toBe(0);
   world.updateSceneQueries();expect(world.colliders.len()).toBeLessThan(4096);
   const facilities=createFactoryFacilitySession(world,()=>true,()=>0,()=>0,undefined,()=>actor,()=>undefined,(x,z)=>x>=xmin&&x<xmax&&z>=zmin&&z<zmax);
   for(const [id,definition,position] of [["battery","fp02.device.battery_4kwh",[-2250,1500,batteryZ]],["target",definitionId,center]] as const){const p=createFactoryInstallationProfile(definition),r={...request,transactionId:`source_${id}`,instanceId:id,ownerId:id,definitionRef:p.definitionRef,profileDigest:p.profileDigest,centerMm:position,quarterTurns:1,expectedRevision:facilities.read().revision};facilities.prepare(r);facilities.commit(r.transactionId);facilities.publish(r.transactionId);facilities.finalize(r.transactionId);}
@@ -476,6 +478,35 @@ it("PLAY06 NativeRead rejects a newly removed real facility collider without cro
 
 // S1 actual-world negatives are synthetic mutations, not player damage commands.
 const partRead=(facility:ReturnType<typeof createFactoryFacilitySession>)=>facility.read().partObservations;
+const storagePortFixture=()=>{
+ const world=new R.World({x:0,y:-9.81,z:0}),floor=world.createCollider(R.ColliderDesc.cuboid(16,.125,16).setTranslation(0,1.375,0));
+ const actor={x:-6.25,y:2.5,z:9.5},coverage={valid:true},profile=createFactoryInstallationProfile("B09");
+ const facility=createFactoryFacilitySession(world,()=>true,()=>0,()=>0,undefined,()=>actor,()=>undefined,()=>coverage.valid);
+ const r={...request,transactionId:"native_storage_ports",instanceId:"native_storage_ports",ownerId:"native_storage_ports",definitionRef:profile.definitionRef,profileDigest:profile.profileDigest,centerMm:[-6250,1500,11500]};
+ facility.prepare(r);facility.commit(r.transactionId);facility.publish(r.transactionId);facility.finalize(r.transactionId);world.updateSceneQueries();
+ return {world,floor,actor,coverage,profile,facility};
+};
+it("PLAY04 actual B09 solid ports bind current parts/support/source and clockwise world frame without a production row",()=>{
+ const f=storagePortFixture();try{const read=f.facility.read(),ports=(read as any).solidPorts;
+  expect(ports).toBeDefined();if(!ports)return;
+  expect(read.production).toEqual([]);expect(ports).toHaveLength(2);
+  const out=ports.find((p:any)=>p.role==="SolidBatchOut");
+  expect(out).toMatchObject({sourcePortId:"B09:MAT-OUT",instanceId:"native_storage_ports",positionMm:[-6250,2500,10500],outwardNormal:[0,0,-1],confirmed:true,supported:true,accessible:true,installationRevision:1,terrainRevision:0,facilityRevision:1,sourceDigest:f.profile.sourceDigest,profileDigest:f.profile.profileDigest});
+  expect(Object.isFrozen(ports)).toBe(true);expect(read.owners[0].massMg).toBe(f.profile.massMg);
+ }finally{f.world.free();}
+});
+it.each(["member","coverage","ground","far","los"] as const)("PLAY04 B09 solid port refresh fails closed for current %s with unchanged facility revision",kind=>{
+ const f=storagePortFixture();try{const first=f.facility.read(),ports=(first as any).solidPorts;expect(ports).toBeDefined();if(!ports)return;
+  const out=ports.find((p:any)=>p.role==="SolidBatchOut");expect(out.accessible).toBe(true);
+  if(kind==="member")f.world.removeCollider(f.world.getCollider(first.owners[0].colliderHandles[0]!),true);
+  if(kind==="coverage")f.coverage.valid=false;if(kind==="ground")f.floor.setEnabled(false);if(kind==="far")f.actor.x=100;
+  if(kind==="los")f.world.createCollider(R.ColliderDesc.cuboid(.15,.15,.1).setTranslation(-6.25,2.5,10));
+  f.world.updateSceneQueries();const next=f.facility.read(),changed=(next as any).solidPorts.find((p:any)=>p.role==="SolidBatchOut");
+  expect(next.revision).toBe(first.revision);expect(changed.accessible).toBe(false);
+  if(["member","coverage","ground"].includes(kind))expect(changed.confirmed).toBe(false);
+  expect(next.production).toEqual([]);expect(next.owners[0].massMg).toBe(first.owners[0].massMg);
+ }finally{f.world.free();}
+});
 it("PLAY02 S1 observes actual published native parts and unchanged paid Cutter members",()=>{
  const f=nativeReadFixture();try{const observed=partRead(f.facility);expect(observed).toHaveLength(1);
   expect(observed![0]).toMatchObject({instanceId:request.instanceId,confirmed:true,complete:true,sourceDigest:f.profile.sourceDigest,profileDigest:f.profile.profileDigest,installationRevision:1,facilityRevision:1});
@@ -528,4 +559,25 @@ it("PLAY02 S1 observes real Former34 members and341kg while preserving another n
   expect(former.parts).toHaveLength(13);expect(former.parts.reduce((n,p)=>n+p.colliderHandles.length,0)).toBe(34);
   expect(current.owners.find(o=>o.instanceId===req.instanceId)!.massMg).toBe(341000000);expect(current.owners[0]).toBe(old);expect(f.world.getRigidBody(old.bodyHandle).isFixed()).toBe(true);
  }finally{f.world.free();}
+});
+
+
+it("PLAY04 cold finite Cargo World starts paused through warmup and advances only after explicit play",async()=>{
+ // Actual Rapier cold World with the closed Cargo profile. No route/support or material-flow claim.
+ const site=createFactoryCargoSite(materializeFactoryStartSite());
+ const ground={vertices:new Float32Array([-16,1.25,-16,-16,1.25,16,16,1.25,16,16,1.25,-16]),indices:new Uint32Array([0,1,2,0,2,3])};
+ const session=await createHvpPhysicsSession([ground],{x:3,y:8,z:3},undefined,{spawn:{x:site.spawnMm[0]/1000,y:site.spawnMm[1]/1000,z:site.spawnMm[2]/1000},coverage:[{minX:-16,maxX:16,minZ:-16,maxZ:16}]},undefined,undefined,"cold_factory",undefined,"branch",true,site);
+ try{
+  const before=session.read();expect(before).toMatchObject({status:"Paused",ticks:0,backlogSeconds:0,discardedSeconds:0});
+  expect(before.factoryFacilities?.cargo?.sourceDigest).toBe(site.sourceDigest);
+  for(const delay of [.016,1,120])session.advance(delay);
+  const warmed=session.read();expect(warmed).toMatchObject({status:"Paused",ticks:0,backlogSeconds:0,discardedSeconds:0});
+  expect(warmed.bodies).toEqual(before.bodies);expect(warmed.player?.position).toEqual(before.player?.position);
+  expect(warmed.bodyCount).toBe(before.bodyCount);expect(warmed.colliderCount).toBe(before.colliderCount);expect(warmed.factoryFacilities?.cargo).toEqual(before.factoryFacilities?.cargo);
+  session.play();session.advance(1/60);expect(session.read()).toMatchObject({status:"Running",ticks:1,player:{status:"Walking"}});
+ }finally{session.dispose();}
+});
+it.each([false,true])("PLAY04 cold no-Cargo World preserves existing Running default with factory=%s",async factoryEnabled=>{
+ const session=await createHvpPhysicsSession([],{x:3,y:8,z:3},undefined,undefined,undefined,undefined,"cold_default",undefined,"branch",factoryEnabled);
+ try{expect(session.read()).toMatchObject({status:"Running",ticks:0});session.advance(1/60);expect(session.read()).toMatchObject({status:"Running",ticks:1});}finally{session.dispose();}
 });

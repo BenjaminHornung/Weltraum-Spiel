@@ -57,6 +57,114 @@ const inputHarness = async (factory = true) => {
   return { input, native, intents, key, win, block: () => { blocked = true; } };
 };
 
+const activationHarness = async (lockFailure?: "reject" | "throw" | "event", externalPauseUi = false) => {
+  const native = await createHvpPhysicsSession([], { x: 10, y: 4, z: 10 }, undefined,
+    { spawn: { x: 0, y: 2, z: 0 }, coverage: [{ minX: -16, minZ: -16, maxX: 16, maxZ: 16 }] });
+  native.pause(); // Actual native paused start; pointer-lock failure grants no simulation resume.
+  const elements: Element[] = [];
+  const doc = Object.assign(new EventTarget(), { body: new Element(), hidden: false, pointerLockElement: null as Element | null,
+    createElement: () => { const value = new Element(); elements.push(value); return value; }, exitPointerLock: () => { doc.pointerLockElement = null; doc.dispatchEvent(new Event("pointerlockchange")); } });
+  let activationWindow = false, lockRequests = 0, blocked = false;
+  const canvas = Object.assign(new Element(), { requestPointerLock: () => {
+    expect(activationWindow, "Pointer lock must stay inside the actual invoking gesture").toBe(true); lockRequests++;
+    if (lockFailure === "throw") throw Error("LockDenied");
+    if (lockFailure === "reject") return Promise.reject(Error("LockDenied"));
+    if (lockFailure === "event") return Promise.resolve();
+    doc.pointerLockElement = canvas; doc.dispatchEvent(new Event("pointerlockchange")); return Promise.resolve();
+  } });
+  const win = new EventTarget(), intents: HvpPlayerInput[] = [], acks: { resolve(): void; reject(error: Error): void }[] = [];
+  const physics = { read: () => native.read(), setPlayerInput: (value: HvpPlayerInput) => { intents.push({ ...value }); native.input(value); },
+    setCameraOffset: () => {}, command: (kind: string) => {
+      if (kind === "Play") { native.play(); return new Promise<void>((resolve, reject) => { acks.push({ resolve, reject }); }); }
+      if (kind === "Pause") native.pause(); return Promise.resolve();
+    } } as unknown as HvpPhysicsClient;
+  const create = createHvpPlayerInput as unknown as (...args: unknown[]) => ReturnType<typeof createHvpPlayerInput>;
+  const input = create(canvas, new PerspectiveCamera(), physics, doc, win, () => {}, { confirm() {}, select() {} }, () => blocked, true, externalPauseUi);
+  cleanup.push(() => { input.dispose(); native.dispose(); });
+  const begin = () => { activationWindow = true; const result = input.start(); activationWindow = false;
+    return Promise.resolve(result) as unknown as Promise<{ status: "Playing" | "Cancelled" | "Rejected"; reason: string | null }>; };
+  const key = (type: string, code: string, repeat = false) => win.dispatchEvent(Object.assign(new Event(type, { cancelable: true }), { code, repeat }));
+  return { input, native, doc, win, key, begin, intents, acks, elements, lockRequests: () => lockRequests, block: () => { blocked = true; } };
+};
+
+describe("PLAY03 actual user activation and Native Play ACK", () => {
+  it.each([false, true])("retains native pause with externalPauseUi=%s and opens only the owning pause surface", async external => {
+    const h = await activationHarness(undefined, external), started = h.begin(); h.acks[0]!.resolve(); await started;
+    h.key("keydown", "KeyW"); h.input.stop();
+    expect(h.native.read().status).toBe("Paused"); expect(h.intents.at(-1)).toMatchObject(zero);
+    expect(h.elements.find(element => element.id === "hvp-player-pause")?.open).toBe(!external);
+  });
+  it.each(["pending ACK", "stop and new Play"])("ignores held-key repeats across %s until a fresh press", async transition => {
+    const h = await activationHarness(); let started = h.begin();
+    if (transition === "stop and new Play") {
+      h.acks[0]!.resolve(); await started;
+      h.key("keydown", "KeyW"); h.key("keydown", "ShiftLeft"); h.key("keydown", "Space");
+      h.input.stop(); started = h.begin();
+    } else {
+      h.key("keydown", "KeyW"); h.key("keydown", "ShiftLeft"); h.key("keydown", "Space");
+    }
+    h.acks.at(-1)!.resolve(); expect((await started).status).toBe("Playing");
+    const index = h.intents.length;
+    h.key("keydown", "KeyW", true); h.key("keydown", "ShiftLeft", true); h.key("keydown", "Space", true); h.input.update();
+    expect(h.intents.slice(index).every(value => value.x === 0 && value.z === 0 && !value.sprint && !value.jump)).toBe(true);
+    h.key("keyup", "KeyW"); h.key("keyup", "ShiftLeft"); h.key("keyup", "Space");
+    h.key("keydown", "KeyW"); h.key("keydown", "ShiftLeft"); h.key("keydown", "Space");
+    expect(Math.abs(h.intents.at(-1)!.z)).toBeCloseTo(1); expect(h.intents.at(-1)).toMatchObject({ sprint: true, jump: true });
+  });
+  it("requires a current pointer lock when start follows a delayed lock-loss notification", async () => {
+    const h = await activationHarness(), first = h.begin(); h.acks[0]!.resolve(); await first;
+    h.doc.pointerLockElement = null; // Real lock loss; browser change notification is delayed.
+    let settled = false; const second = h.begin().then(result => { settled = true; return result; });
+    await turn(); expect(h.lockRequests()).toBe(2); expect(settled).toBe(false); expect(h.acks).toHaveLength(2);
+    expect(h.intents.at(-1)).toMatchObject(zero); h.acks[1]!.resolve(); expect((await second).status).toBe("Playing");
+  });
+  it("requests lock synchronously but confirms Playing only after its real Native ACK, without pending key replay", async () => {
+    const h = await activationHarness(); let settled = false;
+    const started = h.begin().then(result => { settled = true; return result; });
+    expect(h.lockRequests()).toBe(1); expect(h.acks).toHaveLength(1);
+    h.key("keydown", "KeyW"); h.key("keydown", "Space"); await turn();
+    expect(settled).toBe(false); expect(h.intents.some(v => v.x || v.z || v.jump)).toBe(false);
+    h.acks[0]!.resolve(); await turn(); expect((await started)?.status).toBe("Playing");
+    expect(h.intents.some(v => v.x || v.z || v.jump)).toBe(false);
+    h.key("keyup", "KeyW"); h.key("keyup", "Space"); h.key("keydown", "KeyD");
+    expect(h.intents.at(-1)?.x).toBeCloseTo(-1);
+  });
+  it.each(["stop", "blur", "visibility", "modal", "dispose"])("cancels %s before a late ACK without restoring held movement/jump or advancing poses", async kind => {
+    const h = await activationHarness(), before = h.native.read(), started = h.begin();
+    h.key("keydown", "KeyW"); h.key("keydown", "Space");
+    if (kind === "stop") h.input.stop();
+    else if (kind === "blur") h.win.dispatchEvent(new Event("blur"));
+    else if (kind === "visibility") { h.doc.hidden = true; h.doc.dispatchEvent(new Event("visibilitychange")); }
+    else if (kind === "modal") { h.block(); h.input.update(); }
+    else h.input.dispose();
+    await turn(); expect((await started)?.status).toBe("Cancelled");
+    h.acks[0]!.resolve(); await turn(); expect(h.input.active).toBe(false);
+    expect(h.native.read().status).toBe("Paused"); expect(h.intents.at(-1)).toMatchObject(zero);
+    expect(h.native.read().ticks).toBe(before.ticks); expect(h.native.read().player?.position).toEqual(before.player?.position);
+  });
+  it("does not let an old activation ACK release a second pending activation", async () => {
+    const h = await activationHarness(), first = h.begin(); h.input.stop(); expect((await first)?.status).toBe("Cancelled");
+    let settled = false; const second = h.begin().then(result => { settled = true; return result; });
+    h.acks[0]!.resolve(); await turn(); h.key("keydown", "KeyD"); h.input.update();
+    expect(settled).toBe(false); expect(h.intents.some(v => v.x || v.z || v.jump)).toBe(false);
+    h.acks[1]!.resolve(); await turn(); expect((await second)?.status).toBe("Playing");
+    expect(h.intents.some(v => v.x || v.z || v.jump)).toBe(false);
+  });
+  it.each(["reject", "throw", "event"] as const)("returns a readable Rejected result for pointer-lock %s and remains paused", async failure => {
+    const h = await activationHarness(failure), started = h.begin();
+    if (failure === "event") h.doc.dispatchEvent(new Event("pointerlockerror"));
+    await turn(); const result = await started;
+    expect(result?.status).toBe("Rejected"); expect(result?.reason).toMatch(/lock|Lock/i);
+    expect(h.input.active).toBe(false); expect(h.native.read().status).toBe("Paused"); expect(h.acks).toHaveLength(0);
+  });
+  it("rejects its actual Native Play failure instead of acknowledging success", async () => {
+    const h = await activationHarness(), started = h.begin(); h.acks[0]!.reject(Error("NativePlayRejected"));
+    await turn(); const result = await started;
+    expect(result?.status).toBe("Rejected"); expect(result?.reason).toContain("NativePlayRejected");
+    expect(h.input.active).toBe(false); expect(h.native.read().status).toBe("Paused");
+  });
+});
+
 describe("W07 Factory event intent without render authority", () => {
   it("delivers normal Factory KeyD without any RAF and releases it before a frame", async () => {
     const h = await inputHarness(); const ticks = h.native.read().ticks;
@@ -127,6 +235,30 @@ const clientHarness = async (factory = true, supported = false, onTimings?:(batc
     { x: 0, y: 2, z: 0 }, undefined, undefined, undefined, "branch", onTimings, factory);
   const worker = NativeTransport.current; cleanup.push(() => client.dispose()); return { client, worker };
 };
+
+describe("PLAY03 readonly Factory input transport facts", () => {
+  it("reports actual sent and accepted bare ACK IDs without publishing a native readview", async () => {
+    const { client, worker } = await clientHarness(); await client.command("Play"); worker.holdInputAcks = true;
+    const before = client.read(), beforeAck = client.lifecycle!().factoryInput.lastAckId;
+    client.setPlayerInput({ ...zero, x: 1 }); const id = worker.inputAcks[0]!;
+    const read = () => (client.lifecycle!() as unknown as { factoryInput?: { lastSentId: number | null; lastAckId: number | null;
+      pendingIds: readonly number[]; desiredLevel: HvpPlayerInput; enabled: boolean; commandDepth: number; closing: boolean; canDispatch: boolean } }).factoryInput;
+    expect(read()).toMatchObject({ enabled: true, lastSentId: id, lastAckId: beforeAck, pendingIds: [id], desiredLevel: { ...zero, x: 1 }, commandDepth: 0, closing: false, canDispatch: true });
+    const captured = read()!; expect(Object.isFrozen(captured)).toBe(true); expect(Object.isFrozen(captured.pendingIds)).toBe(true); expect(Object.isFrozen(captured.desiredLevel)).toBe(true);
+    worker.onmessage?.(new MessageEvent("message", { data: { id: id + 99 } })); expect(read()?.lastAckId).toBe(beforeAck);
+    worker.onmessage?.(new MessageEvent("message", { data: { id } }));
+    expect(read()).toMatchObject({ lastSentId: id, lastAckId: id, pendingIds: [] }); expect(client.read()).toBe(before);
+    client.setPlayerInput(zero); expect(read()?.desiredLevel).toEqual(zero); expect(captured.desiredLevel).toEqual({ ...zero, x: 1 });
+  });
+  it("reports the existing neutral desired level and no new send while the real client is paused", async () => {
+    const { client, worker } = await clientHarness(); await client.command("Pause"); const count = worker.messages.length;
+    const before = client.lifecycle!().factoryInput;
+    client.setPlayerInput({ ...zero, x: 1 });
+    const facts = (client.lifecycle!() as unknown as { factoryInput?: { lastSentId: number | null; lastAckId: number | null; pendingIds: readonly number[]; desiredLevel: HvpPlayerInput; canDispatch: boolean } }).factoryInput;
+    expect(facts).toMatchObject({ lastSentId: before.lastSentId, lastAckId: before.lastAckId, pendingIds: [], desiredLevel: zero, canDispatch: false });
+    expect(worker.messages).toHaveLength(count); expect(client.read().status).toBe("Paused");
+  });
+});
 
 it("W09 real Native carrier transport withholds every prepared and committed receipt until joint Host publication", async () => {
   vi.stubGlobal("Worker", class extends NativeTransport { factoryCargoFixture = true; });

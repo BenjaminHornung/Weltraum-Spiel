@@ -7,6 +7,7 @@ import { stepFactoryPower,FACTORY_POWER_POLICY, type FactoryPowerBinding, type F
 import { createFactoryProductionState, readFactoryProductionRequest, stepFactoryProduction, commitFactoryProductionStep, type ProductionState, type ProductionCommand } from "../production/productionStep";
 import { productionMaterialCanonicalJson, type ProductionHostFacts } from "../production/recipeAdmission";
 import { advanceFactoryBelt, commitFactoryBeltStep,assertFactoryBeltState, type BeltState, type BeltStepInput } from "../conveyor/beltReference";
+import {isSaveSafeResourceId} from "../../resources/ids";
 import type {FactoryInstallation} from "../construction/placement";
 import {createFactoryInstallationProfile,transformFactoryPoint} from "../construction/installationProfile";
 import {createResourceContainerDefinition,createResourceContainerSnapshot,createResourceContainerState} from "../../resources/containers";
@@ -15,16 +16,34 @@ import type {BeltInstalledPort} from "../conveyor/beltPorts";
 // Derived bytes only: quantities and decisions remain in the existing domain
 // validators. Mutable data, accessors and exotic prototypes never enter caches.
 const canonicalBytes = new WeakMap<object,string>();
-const immutableData = new WeakSet<object>();
-const isImmutableData = (value:unknown,parents=new WeakSet<object>()):boolean => {
+const immutableShape = new WeakSet<object>();
+const cloneableImmutableData = new WeakSet<object>();
+const isImmutableDataShape = (value:unknown,parents=new WeakSet<object>()):boolean => {
  if(!value||typeof value!=="object")return typeof value!=="function"&&typeof value!=="symbol"&&(typeof value!=="number"||Number.isFinite(value));
- if(immutableData.has(value))return true;
+ if(immutableShape.has(value))return true;
  if(!Object.isFrozen(value)||parents.has(value))return false;
  const prototype=Object.getPrototypeOf(value);
  if(Array.isArray(value)?prototype!==Array.prototype:prototype!==Object.prototype&&prototype!==null)return false;
  const descriptors=Object.getOwnPropertyDescriptors(value);parents.add(value);
- const okay=Reflect.ownKeys(descriptors).every(key=>typeof key==="string")&&Object.values(descriptors).every(d=>"value" in d&&isImmutableData(d.value,parents));
- parents.delete(value);if(okay)immutableData.add(value);return okay;
+ const keys=Reflect.ownKeys(descriptors),array=Array.isArray(value);
+ const okay=keys.every(key=>typeof key==="string"&&(key==="length"&&array||descriptors[key]!.enumerable))
+  &&(!array||keys.length===value.length+1&&keys.every(key=>key==="length"||/^(0|[1-9][0-9]*)$/.test(key as string)&&Number(key)<value.length))
+  &&Object.values(descriptors).every(d=>"value" in d&&isImmutableDataShape(d.value,parents));
+ parents.delete(value);if(okay)immutableShape.add(value);return okay;
+};
+const isImmutableData=(value:unknown):boolean=>{
+ if(!isImmutableDataShape(value))return false;
+ if(!value||typeof value!=="object"||cloneableImmutableData.has(value))return true;
+ if(typeof globalThis.structuredClone!=="function")return false;
+ // Frozen descriptor inspection cannot exclude Proxies with changing inherited
+ // iterators. The standard clone rejects them, including nested ones. Every
+ // property below is enumerable own data, so this proof visits the whole tree.
+ try{globalThis.structuredClone(value);}catch{return false;}
+ const remember=(node:object):void=>{
+  if(cloneableImmutableData.has(node))return;cloneableImmutableData.add(node);
+  for(const descriptor of Object.values(Object.getOwnPropertyDescriptors(node))){const child=descriptor.value;if(child&&typeof child==="object")remember(child);}
+ };
+ remember(value);return true;
 };
 const canonicalJson = (value:unknown):string => {
  if(!value||typeof value!=="object"||!isImmutableData(value))return uncachedCanonicalJson(value);
@@ -42,15 +61,25 @@ const canonicalJson = (value:unknown):string => {
 };
 const stateBytes = new WeakMap<DryFactoryState,string>();
 const preparedTransitions = new WeakMap<Extract<DryFactoryProposal,{status:"Prepared"}>,Readonly<{base:DryFactoryState;material:MaterialView}>>();
-const dataOnly = (value:unknown,parents=new WeakSet<object>()):boolean => {
+const dataOnlyShape = (value:unknown,parents=new WeakSet<object>()):boolean => {
  if(!value||typeof value!=="object")return typeof value!=="function";
  if(isImmutableData(value))return true;
  const prototype=Object.getPrototypeOf(value);
  if(Array.isArray(value)?prototype!==Array.prototype:prototype!==Object.prototype&&prototype!==null)return false;
  if(parents.has(value))return false;parents.add(value);
  const descriptors=Object.getOwnPropertyDescriptors(value);
- const okay=Reflect.ownKeys(descriptors).every(key=>typeof key==="string")&&Object.values(descriptors).every(d=>"value" in d&&dataOnly(d.value,parents));
+ const keys=Reflect.ownKeys(descriptors),array=Array.isArray(value);
+ const okay=keys.every(key=>typeof key==="string"&&(key==="length"&&array||descriptors[key]!.enumerable))
+  &&Object.values(descriptors).every(d=>"value" in d&&dataOnlyShape(d.value,parents));
  parents.delete(value);return okay;
+};
+const dataOnly=(value:unknown):boolean=>{
+ if(!dataOnlyShape(value))return false;
+ if(!value||typeof value!=="object"||isImmutableData(value))return true;
+ // Mutable caller facts receive a fresh proof at both prepare and adoption.
+ // Descriptor checking happens first, so this never evaluates an accessor.
+ if(typeof globalThis.structuredClone!=="function")return false;
+ try{globalThis.structuredClone(value);return true;}catch{return false;}
 };
 const admittedMaterials = new WeakSet<MaterialView>();
 const validateDryMaterial = (material:MaterialView):void => {
@@ -108,12 +137,31 @@ export function readDryFactorySupply(state:DryFactoryState,material:MaterialView
   if(cargoId){
    const item=material.catalog.items.find(i=>i.sourceId===sourceId)!,origin=paid.state.contents[0]?.extensions["factory.source"] as {instanceId:string};
    assets.push({instanceId:origin.instanceId,cargoId,itemSourceId:sourceId,definitionVersion:item.version,definitionDigest:item.digest,containerId:paid.state.containerId,ownerId:paid.state.ownerId!,portId:`power_${owner.instanceId}`,installationRevision:1,confirmed:true});
-   ports.push({portId:`power_${owner.instanceId}`,assetId:origin.instanceId,direction:cargoId==="C03"?"both":"out",active:true,maxMilliWatt:cargoId==="C03"?"8000000":cargoId==="C01"?"6000000":"2000000"});
-  }else if(sourceId==="fp02.device.distribution_40kw")ports.push({portId:`power_${owner.instanceId}`,assetId:owner.instanceId,direction:"both",active:true,maxMilliWatt:"40000000"});
-  else if(sourceId==="B06"||sourceId==="B07")ports.push({portId:`power_${owner.instanceId}`,assetId:owner.instanceId,direction:"in",active:true,maxMilliWatt:String(BigInt(sourceId==="B06"?1200000:2000000)+BigInt(FACTORY_POWER_POLICY.restartHeadroomMilliWatt))});
+   ports.push({portId:`power_${owner.instanceId}`,assetId:origin.instanceId,direction:cargoId==="C03"?"both":"out",active:readDryFactoryEnabled(state,owner.instanceId),maxMilliWatt:cargoId==="C03"?"8000000":cargoId==="C01"?"6000000":"2000000"});
+  }else if(sourceId==="fp02.device.distribution_40kw")ports.push({portId:`power_${owner.instanceId}`,assetId:owner.instanceId,direction:"both",active:readDryFactoryEnabled(state,owner.instanceId),maxMilliWatt:"40000000"});
+  else if(sourceId==="B06"||sourceId==="B07")ports.push({portId:`power_${owner.instanceId}`,assetId:owner.instanceId,direction:"in",active:readDryFactoryEnabled(state,owner.instanceId),maxMilliWatt:String(BigInt(sourceId==="B06"?1200000:2000000)+BigInt(FACTORY_POWER_POLICY.restartHeadroomMilliWatt))});
  }
- for(const line of state.belts)ports.push({portId:line.installation.powerPortId,assetId:line.installation.driveInstanceId,direction:"in",active:true,maxMilliWatt:String(100000n+BigInt(FACTORY_POWER_POLICY.restartHeadroomMilliWatt))});
+ for(const line of state.belts)ports.push({portId:line.installation.powerPortId,assetId:line.installation.driveInstanceId,direction:"in",active:readDryFactoryEnabled(state,line.lineId),maxMilliWatt:String(100000n+BigInt(FACTORY_POWER_POLICY.restartHeadroomMilliWatt))});
  return prepareFactoryPowerSources(material.catalog,{binding:state.binding,tickStartUs:state.tickEndUs,tickEndUs:end,installed:assets,resourceContainers:material.containers.map(c=>c.state),ports,links,observation:null});
+}
+/** Controls belong to the adopted domain. Host separately proves current Native ownership and local reach. */
+export const readDryFactoryEnabled=(state:DryFactoryState,instanceId:string):boolean=>!state.enabledControls?.disabledInstanceIds.includes(instanceId);
+export function setDryFactoryEnabled(state:DryFactoryState,material:MaterialView,owner:FactoryInstallation,enabled:boolean,commandId:string):DryFactoryState{
+ if(typeof enabled!=="boolean"||!isSaveSafeResourceId(commandId)||!isSaveSafeResourceId(owner.instanceId))throw Error("InvalidEnabledControl");
+ const controls=state.enabledControls??{revision:0,disabledInstanceIds:[],commandReceipts:[]};
+ const prior=controls.commandReceipts.find(r=>r.commandId===commandId);
+ if(prior){if(prior.instanceId!==owner.instanceId||prior.enabled!==enabled)throw Error("IdempotencyConflict");return state;}
+ if(!["B06","B07","fp06.line.belt_4m","fp02.device.battery_4kwh","fp02.device.distribution_40kw","fp02.device.wind_pack_6kw","fp02.device.pv_pack_2kwp"].includes(owner.definitionSourceId))throw Error("DeviceControlUnsupported");
+ // Existing payment validation remains authoritative; no material candidate is adopted here.
+ reconcileDryFactoryInstallations(state,material,[owner]);
+ if((owner.definitionSourceId==="B06"||owner.definitionSourceId==="B07")&&!state.machines.some(m=>m.machineInstanceId===owner.instanceId)
+   ||owner.definitionSourceId==="fp06.line.belt_4m"&&!state.belts.some(b=>b.lineId===owner.instanceId)
+   ||owner.definitionSourceId==="fp02.device.battery_4kwh"&&state.power.battery?.instanceId!=="fp02_cargo_c03_unit_1")throw Error("AdoptedControlOwnerMissing");
+ const binding={...state.binding,netRevision:state.binding.netRevision+1},revision=state.revision+1,controlRevision=controls.revision+1;
+ if(![binding.netRevision,revision,controlRevision].every(Number.isSafeInteger))throw Error("EnabledControlRevisionExhausted");
+ const disabledInstanceIds=controls.disabledInstanceIds.filter(id=>id!==owner.instanceId);if(!enabled)disabledInstanceIds.push(owner.instanceId);
+ return freeze({...state,binding,revision,enabledControls:{revision:controlRevision,disabledInstanceIds:disabledInstanceIds.sort(),commandReceipts:[...controls.commandReceipts,{commandId,instanceId:owner.instanceId,enabled}]},
+  power:{...state.power,binding},machines:state.machines.map(machine=>({...machine,binding,lastStep:null})),belts:state.belts.map(line=>({...line,binding,lastStep:null})),lastStep:null});
 }
 /** Source-bound empty buffers and domain membership. Host first proves the same installed Native owners. */
 export function reconcileDryFactoryInstallations(state:DryFactoryState,material:MaterialView,installations:readonly FactoryInstallation[],netRevision=state.binding.netRevision):{state:DryFactoryState;material:MaterialView}{
@@ -158,6 +206,7 @@ export function reconcileDryFactoryInstallations(state:DryFactoryState,material:
 export interface DryFactoryState {
   readonly binding: FactoryPowerBinding; readonly revision: number; readonly tickEndUs: string;
   readonly power: FactoryPowerState; readonly machines: readonly ProductionState[]; readonly belts: readonly BeltState[];
+  readonly enabledControls?: Readonly<{revision:number;disabledInstanceIds:readonly string[];commandReceipts:readonly Readonly<{commandId:string;instanceId:string;enabled:boolean}>[]}>;
   readonly lastStep: Readonly<{ inputBytes: string; factsBytes: string; nextStateBytes: string; materialBytes: string }> | null;
 }
 export interface DryFactoryStepInput {
@@ -267,6 +316,8 @@ export const createFactoryMaterialAuthority = (initial: MaterialView): FactoryMa
   let current = initial;
   return Object.freeze({ read: () => current, adopt: (expected: MaterialView, candidate: MaterialView) => {
     if (factoryMaterialBytes(current) !== factoryMaterialBytes(expected)) return false;
+    // Complete byte validation above already proves this same immutable material.
+    if (candidate === current && isImmutableData(current)) return true;
     if (current.catalog.canonicalJson !== candidate.catalog.canonicalJson || readMaterialMassMg(current) !== readMaterialMassMg(candidate)) return false;
     // Exercise the existing complete Resources/reservation/receipt validation without publishing its hypothetical empty command.
     const ids = new Set(candidate.receipts.map(r => r.transactionId)); let ordinal = 0;

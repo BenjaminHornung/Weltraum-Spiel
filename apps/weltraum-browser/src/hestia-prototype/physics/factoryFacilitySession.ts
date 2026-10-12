@@ -58,6 +58,10 @@ export interface FactoryFacilityRead {
   readonly partObservations?:readonly FactoryNativePartObservation[];
   /** Disabled candidate geometry is hidden staging evidence, never published gameplay presence. */
   readonly preparedPartObservation?:FactoryNativePartObservation;
+  readonly solidPorts?:readonly Readonly<{portId:string;sourcePortId:string;instanceId:string;definitionRef:FactoryFacilityRequest["definitionRef"];
+    sourceDigest:string;profileDigest:string;installationRevision:number;terrainRevision:number;facilityRevision:number;
+    positionMm:FactoryVector;outwardNormal:FactoryVector;role:"SolidBatchIn"|"SolidBatchOut";
+    confirmed:boolean;supported:boolean;serviceClear:boolean;sweepClear:boolean;accessible:boolean}>[];
   readonly powerPorts?:readonly Readonly<{portId:string;sourcePortId:string;instanceId:string;profileDigest:string;sourceDigest:string;installationRevision:number;terrainRevision:number;facilityRevision:number;positionMm:FactoryVector;outwardNormal:FactoryVector;role:string;confirmed:boolean;accessible:boolean}>[];
   readonly production?:readonly Readonly<{instanceId:string;profileDigest:string;sourceDigest:string;installationRevision:number;terrainRevision:number;facilityRevision:number;confirmed:boolean;supported:boolean;serviceClear:boolean;sweepClear:boolean;accessible:boolean}>[];
   readonly sources?: readonly Readonly<{containerId:string;instanceId:string;accessible:boolean}>[];
@@ -214,6 +218,26 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
       return Object.freeze({portId:`power_${owner.instanceId}`,sourcePortId:port.sourceId,instanceId:owner.instanceId,profileDigest:owner.profileDigest,sourceDigest:owner.sourceDigest,installationRevision:owner.installationRevision,terrainRevision:terrainRevision(),facilityRevision:revision,positionMm,outwardNormal,role:port.role,confirmed:proof.confirmed&&proof.supported,accessible});
     });
   };
+  const solidPortObservation=(owner:FactoryFacilityOwner,readProof:()=>ReturnType<typeof productionObservation>):NonNullable<FactoryFacilityRead["solidPorts"]>=>{
+    if(!["B06","B07","B09"].includes(owner.definitionRef.sourceId))return [];
+    const profile=profileFor(owner),definition=handlingCatalog.devices.find(d=>d.sourceId===owner.definitionRef.sourceId)!;
+    const proof=readProof(),actor=actorPosition(),body=world.getRigidBody(owner.bodyHandle);
+    return Object.freeze(profile.source.ports.filter(p=>p.role==="SolidBatchIn"||p.role==="SolidBatchOut").map(port=>{
+      const catalogPort=definition.ports.find(p=>p.sourceId===port.sourceId&&p.role===port.role)!;
+      const local=port.centerM.map(n=>n*1000),normal=port.normal;
+      const frameValid=!!catalogPort?.centerMm&&!!catalogPort.outwardNormal
+        &&canonicalJson(local)===canonicalJson([catalogPort.centerMm[0],catalogPort.centerMm[2],catalogPort.centerMm[1]])
+        &&canonicalJson(normal)===canonicalJson([catalogPort.outwardNormal[0],catalogPort.outwardNormal[2],catalogPort.outwardNormal[1]]);
+      const positionMm=transformFactoryPoint(local,owner.centerMm,owner.quarterTurns),outwardNormal=transformFactoryPoint(normal,[0,0,0],owner.quarterTurns);
+      const confirmed=frameValid&&proof.confirmed&&proof.supported&&proof.serviceClear&&proof.sweepClear;
+      const distance=actor?Math.hypot(positionMm[0]/1000-actor.x,positionMm[1]/1000-actor.y,positionMm[2]/1000-actor.z):Infinity;
+      let accessible=confirmed&&distance<=3;
+      if(accessible&&distance>.001){const hit=world.castRay(new R.Ray(actor!,{x:(positionMm[0]/1000-actor!.x)/distance,y:(positionMm[1]/1000-actor!.y)/distance,z:(positionMm[2]/1000-actor!.z)/distance}),distance-.001,true,undefined,undefined,undefined,body,c=>c.isEnabled()&&!c.isSensor()&&c.parent()?.handle!==owner.bodyHandle&&(actorBodyHandle()===undefined||c.parent()?.handle!==actorBodyHandle()));accessible=!hit;}
+      return Object.freeze({portId:`port_${owner.instanceId}_${catalogPort?.runtimeId??"unknown"}`,sourcePortId:port.sourceId,instanceId:owner.instanceId,definitionRef:owner.definitionRef,
+        sourceDigest:owner.sourceDigest,profileDigest:owner.profileDigest,installationRevision:owner.installationRevision,terrainRevision:terrainRevision(),facilityRevision:revision,
+        positionMm,outwardNormal,role:port.role as "SolidBatchIn"|"SolidBatchOut",confirmed,supported:proof.supported,serviceClear:proof.serviceClear,sweepClear:proof.sweepClear,accessible});
+    }));
+  };
   const carrierPose = (profile: CargoHandlingProfile, actor: Readonly<{ x: number; y: number; z: number }>, snap=false) => {
     const light = profile.sizeMm[0] === 500;
     const rawX=actor.x,rawZ=actor.z-(light?.75:1),x=snap?Math.round(rawX*4)/4:rawX,z=snap?Math.round(rawZ*4)/4:rawZ;
@@ -329,7 +353,7 @@ export const createFactoryFacilitySession = (world: R.World, safePaused: () => b
       const observeParts=(owner:FactoryFacilityOwner)=>{let proof=partProofs.get(owner);if(!proof){proof=partObservation(owner);partProofs.set(owner,proof);}return proof;};
       const proofs=new Map<FactoryFacilityOwner,ReturnType<typeof productionObservation>>();
       const observeProduction=(owner:FactoryFacilityOwner)=>{let proof=proofs.get(owner);if(!proof){proof=productionObservation(owner,observedDefinitions.has(owner.definitionRef.sourceId)?observeParts(owner):undefined);proofs.set(owner,proof);}return proof;};
-      return Object.freeze({ ...(lastCarrierVeto?{lastCarrierVeto}:{}),partObservations:Object.freeze(owners.filter(owner=>observedDefinitions.has(owner.definitionRef.sourceId)).map(observeParts)),
+      return Object.freeze({ ...(lastCarrierVeto?{lastCarrierVeto}:{}),solidPorts:Object.freeze(owners.flatMap(owner=>solidPortObservation(owner,()=>observeProduction(owner)))),partObservations:Object.freeze(owners.filter(owner=>observedDefinitions.has(owner.definitionRef.sourceId)).map(observeParts)),
         ...(pending&&observedDefinitions.has(pending.owner.definitionRef.sourceId)?{preparedPartObservation:partObservation(pending.owner,false,pending.state!=="PreparedHeld")}:{}),powerPorts:Object.freeze(owners.flatMap(owner=>powerSocketObservation(owner,()=>observeProduction(owner)))),production:Object.freeze(owners.filter(owner=>["B05","B06","B07"].includes(owner.definitionRef.sourceId)).map(observeProduction)),sources:Object.freeze(owners.flatMap(owner=>(owner.definitionRef.sourceId==="B09"?["storage"]:["B05","B06","B07"].includes(owner.definitionRef.sourceId)?["input","output","offcut"]:[]).map(role=>Object.freeze({containerId:`${role}_${owner.instanceId}`,instanceId:owner.instanceId,accessible:localSourceAccess(`${role}_${owner.instanceId}`,owner.instanceId,observedDefinitions.has(owner.definitionRef.sourceId)?observeParts(owner):undefined)})))), ...(cargo?{cargo}:{}), ...(currentCarrier?{carrier:currentCarrier}:{}), revision, state: recovery ? "RecoveryHold" : pending?.state ?? (carrierWork ? carrier!.phase as "PreparedHeld" | "CommittedHeld" | "PublishedHeld" : "Idle"), transactionId: pending?.owner.transactionId ?? (carrierWork ? carrier!.transactionId : null),
       owners, prepared: pending?.owner ?? null }); },
     openCargo(intent:FactoryCargoOpenIntent):FactoryFacilityRead{

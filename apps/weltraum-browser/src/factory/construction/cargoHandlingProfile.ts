@@ -22,7 +22,7 @@ const singleItems: Readonly<Record<string, string>> = Object.freeze({
   "BENCH-PACK": "fp02.device.field_workbench", "BIN-PACK": "fp02.device.material_container", "FOOT-PACK": "fp02.comp.foundation_foot", "BRACE": "fp02.comp.small_brace"
 });
 /** Closed measured socket routes; historical jobs remain stable, never a caller-sized body. */
-export const FACTORY_CLOSED_CABLE_JOBS=Object.freeze({CABLE4750:4750,CABLE6500:6500,CABLE8000:8000,CABLE7000:7000,CABLE5250:5250,CABLE7500:7500});
+export const FACTORY_CLOSED_CABLE_JOBS=Object.freeze({CABLE4750:4750,CABLE6500:6500,CABLE8000:8000,CABLE7000:7000,CABLE5250:5250,CABLE7500:7500,CABLE5000:5000,CABLE5750:5750,CABLE7750:7750});
 const freeze = <T>(value: T): T => { if (value && typeof value === "object" && !Object.isFrozen(value)) { Object.values(value).forEach(freeze); Object.freeze(value); } return value; };
 /** Profile capacity is the CEILING of an exact source-packed rational sum, not a rounded material quantity. */
 export const readCargoHandlingProfile = (catalog: FactoryCatalog, profileId: string): CargoHandlingProfile | undefined => {
@@ -39,7 +39,7 @@ export const readCargoHandlingProfile = (catalog: FactoryCatalog, profileId: str
   else return undefined;
   let numerator = 0n, denominator = 1n, mass = 0n;
   const refs = new Set<string>(["FP01:5:heavy-module-handling", "FP02:6.4", "accepted:D11-native-handling-v1"]);
-  if(Object.hasOwn(FACTORY_CLOSED_CABLE_JOBS,profileId))refs.add(["CABLE7000","CABLE5250","CABLE7500"].includes(profileId)?"fp06-technical-s0-closed-native-socket-cable-jobs-v2":"fp06-technical-s0-closed-native-socket-cable-jobs-v1");
+  if(Object.hasOwn(FACTORY_CLOSED_CABLE_JOBS,profileId))refs.add(["CABLE5000","CABLE5750","CABLE7750"].includes(profileId)?"fp06-technical-s0-closed-native-socket-cable-jobs-v3":["CABLE7000","CABLE5250","CABLE7500"].includes(profileId)?"fp06-technical-s0-closed-native-socket-cable-jobs-v2":"fp06-technical-s0-closed-native-socket-cable-jobs-v1");
   for (const term of terms) {
     const amount = validateFactoryAmount(term.itemId, term.quantityUnits, catalog);
     const item = catalog.items.find(i => i.sourceId === term.itemId)!;

@@ -5,7 +5,7 @@ import powerKit from "../../../../../art/factory/fp01/power-kit/source.scene.jso
 import {
   artifactRevision, canonicalSignature, createMeshArtifact, createMaterialProfile, deepFreezeMetadata,
   frameId, materialProfileId, representationKey, sourceRevision,
-  type MeshArtifact, type MaterialProfile, type AxisAlignedBounds
+  type MeshArtifact, type MaterialProfile, type AxisAlignedBounds,type RepresentationTransformSnapshot
 } from "../../presentation";
 import { createFp02CatalogInput, loadFactoryCatalog } from "../catalog/fp02Catalog";
 
@@ -34,6 +34,32 @@ export interface FactoryAssetProjection {
   readonly parts: readonly Readonly<{ partId: string; role: string; artifact: MeshArtifact; materialProfiles: readonly MaterialProfile[] }>[];
   readonly ports: readonly FactoryAssetPort[];
 }
+
+/** Source vertices already carry their complete local position. Only an admitted
+ * part offset is rotated; never add its bounds/box center a second time. */
+export const createFactoryPartTransforms=(parts:readonly Readonly<{partId:string;artifact:MeshArtifact}>[],
+ owner:Readonly<{centerMm:readonly number[];quarterTurns:number}>,
+ poses:readonly Readonly<{partId:string;translationM:readonly number[]}>[]):readonly RepresentationTransformSnapshot[]=>{
+ if(owner.centerMm.length!==3||!owner.centerMm.every(Number.isFinite)||!Number.isInteger(owner.quarterTurns)||owner.quarterTurns<0||owner.quarterTurns>3
+  ||new Set(poses.map(p=>p.partId)).size!==poses.length)throw Error("Factory part transform binding invalid");
+ const turns=owner.quarterTurns,cos=[1,0,-1,0][turns]!,sin=[0,1,0,-1][turns]!;
+ return Object.freeze(poses.map(pose=>{
+  const part=parts.find(p=>p.partId===pose.partId),offset=pose.translationM;
+  if(!part||offset.length!==3||!offset.every(Number.isFinite))throw Error("Factory part transform binding invalid");
+  return Object.freeze({representationKey:part.artifact.representationKey,
+   positionRelative:{x:owner.centerMm[0]!/1000+cos*offset[0]!+sin*offset[2]!,y:owner.centerMm[1]!/1000+offset[1]!,z:owner.centerMm[2]!/1000-sin*offset[0]!+cos*offset[2]!},
+   orientation:{x:0,y:Math.sin(turns*Math.PI/4),z:0,w:Math.cos(turns*Math.PI/4)},scale:{x:1,y:1,z:1}});
+ }));
+};
+
+/** The source GLB is authored with y=0 at ground; Native Cargo's position is
+ * the old physical box center. Its current bounds supply the ground origin. */
+export const readFactoryCargoProjectionOrigin=(cargo:Pick<import("../../hestia-prototype/physics/factoryFacilitySession").FactoryNativeCargoRead,"positionMm"|"site">):readonly number[]=>{
+ const {positionMm,site}=cargo,{min,max}=site.boundsMm;
+ if(positionMm.length!==3||min.length!==3||max.length!==3||positionMm.some((value,axis)=>!Number.isFinite(value)||value!==site.centerMm[axis]
+  ||value!==(min[axis]!+max[axis]!)/2||!(max[axis]!>min[axis]!)))throw Error("Factory Cargo ground binding invalid");
+ return Object.freeze([positionMm[0]!,min[1]!,positionMm[2]!]);
+};
 
 /** Technical S0 bindings: source dimensions/BOM stay catalog-owned; brace cross-section is explicitly a proxy. */
 const technicalSources:FactoryAssetSource[]=["B05","B09","fp02.comp.small_brace"].map(id=>{

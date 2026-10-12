@@ -54,7 +54,7 @@ export const projectFactoryOnboarding = (facts: FactoryOnboardingFacts | null): 
   if (!facts.installedSourceIds.includes("B06") || !facts.installedSourceIds.includes("B07"))
     return task("machines", "Zuschnittstation und Umformwerk aufbauen", "Schwere Chassis zuerst transportieren; Depot und Spielerstand vor der Installation freihalten.", "build");
   if (facts.powerConnected === null) return waiting();
-  if (!facts.powerConnected) return task("power", "Maschinen mit Strom versorgen", "Batterie, Verteiler und die vorhandenen Kabel über die sichtbaren Anschlüsse verbinden.", "power");
+  if (!facts.powerConnected) return task("power", "Maschinen mit Strom versorgen", "Batterie und die vorhandenen Kabel über die sichtbaren Anschlüsse verbinden.", "power");
   if (facts.twoBeltLinesConnected === null) return waiting();
   if (!facts.twoBeltLinesConnected) return task("transport", "Lager und zwei kurze Bandlinien verbinden", "Die Anschlüsse zeigen zulässige Verbindungen; jede Linie benötigt vorhandenes Material.", "power");
   if (!p || !cutComplete(p)) return task("cut", "16 kg Stahl in zwei Zuschnittaufträgen verarbeiten", "Je Auftrag 8 kg sortenbekannten Stahl zuführen. Zusammen entstehen 15 kg Halbzeug und 1 kg Verschnitt.", "machine");

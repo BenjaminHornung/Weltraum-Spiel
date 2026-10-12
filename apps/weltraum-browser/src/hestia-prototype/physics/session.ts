@@ -117,6 +117,9 @@ export const createHvpPhysicsSession = async (
       const end=performance.now();stepCpuMs = end - start;
       stepTimings?.push([solverStart,end-solverStart]);
     },saved?.tick);
+    // A cold Factory menu owns no elapsed simulation time. Pause before the
+    // worker starts its timer; ordinary HVP and restored clocks keep their policy.
+    if(factoryEnabled&&initialFactoryCargo!==undefined&&checkpoint===undefined)tick.pause();
     const neutralizeFactoryInput=()=>{if(factoryEnabled&&!disposed)character?.setInput({x:0,z:0,sprint:false,jump:false},true);};
     const holdTick=()=>{neutralizeFactoryInput();tick.pause();};
     let terrainGeneration = saved?.terrainGeneration??0;

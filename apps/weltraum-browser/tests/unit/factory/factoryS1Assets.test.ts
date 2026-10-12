@@ -36,7 +36,7 @@ describe("PLAY02 closed S1 source/cell/native/work/render join",()=>{
  it.each(["B06","B07"])("admits the actual %s GLB beside its real125mm cell derivative and frozen native recipe",async sourceId=>{
   const f=await fixture(sourceId);expect(f.assets.cells.profileDigest).toBe(f.profile.profileDigest);expect(f.assets.cells.sourceDigest).toBe(f.profile.sourceDigest);
   expect(f.assets.cells.parts.map(p=>p.partId).sort()).toEqual(f.assets.render.parts.map(p=>p.partId).sort());
-  expect(f.assets.render.assetId).toBe(sourceId==="B06"?"play_cutter_v1":"play_former_v1");
+  expect(f.assets.render.assetId).toBe(sourceId==="B06"?"play_cutter_v2":"play_former_v2");
   expect(f.assets.render.parts.every(p=>validateMeshArtifact(p.artifact).valid)).toBe(true);
   expect(f.assets.cells.parts.every(p=>validateMeshArtifact(p.artifact).valid)).toBe(true);
   expect(f.assets.cost.triangles).toBe(f.assets.render.parts.reduce((n,p)=>n+p.artifact.indices.length/3,0));

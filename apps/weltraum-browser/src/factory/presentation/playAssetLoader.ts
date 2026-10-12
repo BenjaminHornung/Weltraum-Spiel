@@ -1,4 +1,5 @@
 import manifestBytes from "../../../public/factory/play-2026-10-12/manifest.json?raw";
+import surfaceManifestBytes from "../../../public/factory/play-2026-10-12/manifest-surface-v2.json?raw";
 import {
   artifactRevision, createMaterialProfile, createMeshArtifact, deepFreezeMetadata, frameId, materialProfileId,
   representationKey, sourceRevision, validateSemanticId, type AxisAlignedBounds, type MaterialProfile, type MeshArtifact
@@ -56,7 +57,7 @@ const profiles=new Map(Object.entries(palette).map(([role,hex])=>[role,createMat
 // local caps precede output allocation; aggregate scene admission remains Host-owned.
 const census:Readonly<Record<string,readonly [number,number,number]>>=Object.freeze({
   play_belt_v1:[1296,1944,22],play_brace_v1:[120,180,4],play_carrier_heavy_v1:[360,540,8],play_carrier_light_v1:[360,540,8],play_carrier_medium_v1:[360,540,8],
-  play_cutter_v1:[1680,2520,21],play_former_v1:[1704,2556,24],play_offcut_v1:[216,324,3],play_profile_v1:[144,216,2],play_semi_v1:[96,144,1],
+  play_cutter_v1:[1680,2520,21],play_former_v1:[1704,2556,24],play_cutter_v2:[1680,2520,21],play_former_v2:[1704,2556,24],play_offcut_v1:[216,324,3],play_profile_v1:[144,216,2],play_semi_v1:[96,144,1],
   play_sheet_v1:[120,180,1],play_steel_v1:[96,144,2],play_battery_v1:[480,720,7],play_cable_end_v1:[72,108,3],play_cable_link_v1:[24,36,1],
   play_distribution_v1:[480,720,7],play_pv_v1:[3720,5580,8],play_wind_v1:[384,576,9],play_storage_v1:[600,900,7],play_workbench_v1:[648,972,15],
   play_wreck_cargo_v1:[360,540,4],play_wreck_cargo_open_v1:[312,468,4],play_storage_inspection_open_v1:[600,900,7]
@@ -71,7 +72,12 @@ const readManifest=():Promise<readonly Entry[]>=>checkedManifest??=(async()=>{
   const manifest=JSON.parse(manifestBytes) as {schema:string;assets:Entry[];palette:unknown};
   if(manifest.schema!=="hestia.factory.play-assets/v1" || manifest.assets.length!==23 || new Set(manifest.assets.map(a=>a.assetId)).size!==23
     || canonicalJson(manifest.palette)!==canonicalJson(palette))fail("manifest schema/palette mismatch");
-  return deepFreezeMetadata(manifest.assets);
+  const surfaceBytes=new TextEncoder().encode(surfaceManifestBytes);
+  if(surfaceBytes.byteLength!==9_721 || await sha256(surfaceBytes)!=="cb1ceaf9b05b738418ebaff95104efad61fea93eac0c8009bc271f23f000d2b9")fail("surface manifest bytes/hash mismatch");
+  const surface=JSON.parse(surfaceManifestBytes) as {schema:string;assets:Entry[];palette:unknown};
+  if(surface.schema!=="hestia.factory.play-assets/v1" || canonicalJson(surface.assets.map(a=>a.assetId).sort())!==canonicalJson(["play_cutter_v2","play_former_v2"])
+    || canonicalJson(surface.palette)!==canonicalJson(palette))fail("surface manifest schema/palette mismatch");
+  return deepFreezeMetadata([...manifest.assets,...surface.assets]);
 })();
 
 /** Reads only the sealed file's byte budget, cancels failed/aborted streams. */
@@ -105,7 +111,7 @@ const rejectExtensions=(value:unknown):void=>{
 };
 
 /**
- * Imports only the 23 hash-sealed Play exports' embedded, indexed float VEC3
+ * Imports only the 23 original and two versioned hash-sealed Play exports' embedded, indexed float VEC3
  * primitives. No scene/extension engine, Three objects, GPU or World is created.
  * Caller binding is explicit; current Native presence/profile and selection of
  * inspection variants remain Host responsibilities, not inferred from triangles.

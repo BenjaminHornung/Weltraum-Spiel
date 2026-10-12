@@ -25,7 +25,8 @@ export interface FactoryNativeHandlingPort {
   rollback(id:string):Promise<void>;
   finalize(id:string):Promise<void>;
 }
-export interface FactorySourceProfile { readonly version:"hvp-factory-startsite-v1"|"hvp-factory-startsite-v2"; readColumn(x:number,z:number):HvpSourceColumn }
+export interface FactorySourceProfile { readonly version:"hvp-factory-startsite-v1"|"hvp-factory-startsite-v2"|"hvp-factory-startsite-v3"|"hvp-factory-startsite-v4"|"hvp-factory-startsite-v5"; readColumn(x:number,z:number):HvpSourceColumn }
+export type FactoryHostSurface = "cargo"|"machine"|"power"|"technology"|"build"|"map"|"help"|"pause"|"start"|"settings";
 /** Read-only capability of the existing HVP host, never another World owner. */
 export interface FactoryHostView {
   readonly sessionId: string;
@@ -33,8 +34,10 @@ export interface FactoryHostView {
   readonly nativeTick: number;
   readonly physicsStatus: "Running" | "Paused" | "SimulationHold" | "CoverageHold" | "RecoveryHold" | "Disposed";
   readonly confirmed: boolean;
+  readonly input?:Readonly<{active:boolean;activationPending:boolean;pointerLocked:boolean;pausePending:boolean;
+    focusedPanel:FactoryUiPanel|null;surface:FactoryHostSurface|null;error:string|null}>;
   readonly terrain: Readonly<{
-    epoch: number; revision: number; sourceDigest: string; baseDigest: string;
+    epoch: number; revision: number; sourceDigest: string; baseDigest: string; profileVersion?:FactorySourceProfile["version"];
     cellMeters: number; originMeters: Readonly<{ x: number; y: number; z: number }>;
     sizeX: number; sizeY: number; sizeZ: number;
   }>;
@@ -43,6 +46,11 @@ export interface FactoryHostPort {
   readonly construction?:FactoryNativeConstructionPort;
   readonly handling?:FactoryNativeHandlingPort;
   setPanelFocus?(panel:FactoryUiPanel|null):void;
+  /** Closing clears only its own modal binding; it never resumes input. */
+  setSurface?(surface:FactoryHostSurface|null,binding:Readonly<{sessionId:string;epoch:number}>):void;
+  /** Called directly under the actual gesture; resolves only after native Play ACK and current pointer lock. */
+  play?():Promise<FactoryHostView>;
+  endSession?():Promise<void>;
   current(): boolean;
   read(): FactoryHostView;
   readTerrainSlot(x: number, y: number, z: number): number | undefined;
@@ -57,6 +65,22 @@ export interface FactoryHostExtensionHandle {
   isQuiescent(): boolean;
   /** Optional safe teardown barrier; default requires isQuiescent, never skips cleanup. */
   canEndSession?(): boolean;
+  /** Internal immutable committed-domain projection, independent of panel visibility. */
+  readFactoryPresentation?(host:FactoryHostView):FactoryPresentationRead;
+}
+export interface FactoryPresentationMachine {
+ readonly instanceId:string;readonly definitionRef:FactoryUiRecipeRef;readonly sourceDigest:string;readonly profileDigest:string;
+ readonly installationRevision:number;readonly confirmed:boolean;readonly status:string;readonly confirmedWorkMs:number;
+ readonly jobId:string|null;readonly recipeRef:FactoryUiRecipeRef|null;
+ readonly custody:Readonly<{inputContainerId:string;wipContainerId:string;outputContainerId:string;offcutContainerId:string;installedContainerId:string}>;
+}
+export interface FactoryPresentationRead {
+ readonly sessionId:string;readonly epoch:number;readonly publicationRevision:number;readonly nativeTick:number;
+ readonly catalogDigest:string;readonly terrainRevision:number;readonly facilityRevision:number;readonly confirmed:boolean;
+ readonly phase:FactoryHostView["physicsStatus"];
+ readonly machines:readonly FactoryPresentationMachine[];
+ readonly material:import("../material/reservations").MaterialView;
+ readonly installations:readonly import("../construction/placement").FactoryInstallation[];
 }
 export type FactoryHostExtension = (host: FactoryHostPort) => Promise<FactoryHostExtensionHandle>;
 
@@ -118,7 +142,7 @@ export interface FactoryUiReadModel {
   readonly state: "Ready" | "Waiting" | "RecoveryHold" | "Disposed"; readonly reason: string | null; readonly focusedPanel: FactoryUiPanel | null;
   readonly inventory: readonly FactoryUiInventory[]; readonly machines: readonly FactoryUiMachine[];
   readonly power: Readonly<{ status: string; generationWatts: number; allocatedWatts: number; batteryEnergyJ: number | null; batteryCapacityJ: number | null;
-    reserveEnergyJ: number | null; sourceQuality: string; consumers: readonly Readonly<{ id: string; name: string; requestedWatts: number; allocatedWatts: number; reason: string | null }>[] }>;
+    reserveEnergyJ: number | null; sourceQuality: string; allocationConfirmed?:boolean; devices?:readonly Readonly<{id:string;revision:number;name:string;enabled:boolean;capability:FactoryUiCapability}>[]; consumers: readonly Readonly<{ id: string; name: string; requestedWatts: number; allocatedWatts: number; reason: string | null }>[] }>;
   readonly technologies: readonly Readonly<{ id: string; name: string; status: "AVAILABLE" | "MISSING_REQUIREMENTS" | "PLANNED";
     requirements: readonly string[]; reason: string | null }>[];
   readonly interaction: Readonly<{ cargoOpened: boolean; cargoAccessible: boolean; handling: Readonly<{ id: string; revision: number; profileId: string;
