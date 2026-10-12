@@ -1,0 +1,35 @@
+{
+  "schema": "hestia.fp06.play-grant/v1",
+  "milestone": "PLAY-03-onboarding-power-hint",
+  "actor": "/root/play_integrator",
+  "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+  "authorizedAtUtc": "2026-10-12T10:04:30.926642+00:00",
+  "status": "GRANTED_EXACT_HINT_CORRECTION",
+  "writeSet": [
+    "apps/weltraum-browser/src/factory/ui/onboarding.ts",
+    "apps/weltraum-browser/tests/unit/factory/onboarding.test.ts"
+  ],
+  "beforeBytes": [
+    {
+      "path": "apps/weltraum-browser/src/factory/ui/onboarding.ts",
+      "bytes": 5134,
+      "sha256": "0792b419b6d5ce8420632fcf99af11672891e4b1a360bca00bbce53c3e1bc97a"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/onboarding.test.ts",
+      "bytes": 2880,
+      "sha256": "22761cb56614e7c861a227587c80bdd0280c49617ec3b3ab324bac3423908b9a"
+    }
+  ],
+  "exactTextReplacement": {
+    "from": "Batterie, Verteiler und die vorhandenen Kabel \u00fcber die sichtbaren Anschl\u00fcsse verbinden.",
+    "to": "Batterie und die vorhandenen Kabel \u00fcber die sichtbaren Anschl\u00fcsse verbinden."
+  },
+  "constraints": [
+    "Only the one false mandatory Distribution prerequisite phrase is removed; existing optional finite B04/source remains unchanged",
+    "Onboarding logic/facts/tasks/actions/unknown handling and Native Power/recipes/cargo/source/placement unchanged",
+    "Focused hint assertion may be added or adapted to existing onboarding test; use current focused UI verification, no invented extra gameplay gate",
+    "No other module/style/Host/World files or dependency/budget/mainmerge/push/publish/W12\u201329 authorization"
+  ]
+}
