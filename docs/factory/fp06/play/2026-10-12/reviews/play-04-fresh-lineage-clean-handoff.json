@@ -1,0 +1,67 @@
+{
+  "schema": "hestia.fp06.play-pure-fresh-lineage-handoff/v1",
+  "actor": "/root/play_cell_bridge",
+  "writtenAtUtc": "2026-10-12 14:32:31 UTC",
+  "status": "EXACT_TWO_FILE_COMMITTED_CLEAN_HOLD_ROOT_ADMISSION_PENDING",
+  "grantCommit": "58622991465b35ed02e4573eebd5413ce7261c72",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-play-fresh-lineage-2026-10-12",
+  "branch": "codex/hestia-fp06-play-fresh-lineage-2026-10-12",
+  "baseCommit": "f85d1379c3458488d225105156adfb66837799ce",
+  "commit": "58cb6556b280d206a7e8a24a502e5c7a66763990",
+  "commitProductFiles": 2,
+  "workingTreeStatusPorcelain": "",
+  "files": [
+    {
+      "path": "apps/weltraum-browser/src/factory/session/freshLineageProjection.ts",
+      "bytes": 21559,
+      "sha256": "1e9af3acee02be76ded8a0ffc7be5a4cde3044cfc6046ff7c137c0e9cd1ced59"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/freshLineageProjection.test.ts",
+      "bytes": 23570,
+      "sha256": "89bb59d59b8349e4324cc8d21d59313b2d127f8869d3d6911043cf663650cbc8"
+    }
+  ],
+  "verification": {
+    "focusedReceipt": "12-final-focused-green.command.json",
+    "focusedPassed": 23,
+    "focusedSkipped": 0,
+    "focusedExitCode": 0,
+    "focusedRawSha256": "8df63bec16db8a692dd5f82679a4a12ee8ea157b25e4314a9c7b351006513830",
+    "typecheckReceipt": "13-final-original-tsc.command.json",
+    "typecheckExitCode": 0,
+    "typecheckRawBytes": 0,
+    "all28BeforeAfterBindingsIdentical": true,
+    "formalGateSeal": "14-final-typed-gate-seal.json",
+    "formalGateSealSha256": "61c32df71e5de72dc2a3ecab1372e4e2b44352c448a3224c14f173846a676115",
+    "historicalFailureClassification": "10-tdd-classification-before-final-gate.json"
+  },
+  "independentReview": {
+    "actor": "/root/play_c1_review",
+    "path": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-04/fresh-lineage-independent-review-v1.md",
+    "bytes": 16575,
+    "sha256": "18b78b58c4b018dd4c4b9f3a981fd223b98c3308f99045bbb7b7b926e92460c1",
+    "verdict": "BOUNDED_SOURCE_23_GUARD_ORIGINAL_TSC_PASS",
+    "p1": 0,
+    "p2": 0,
+    "blockers": 0
+  },
+  "api": "projectFactoryProductionGoals(input: FactoryProductionGoalInput): FactoryProductionGoalFacts | null",
+  "requiredInputs": [
+    "initialMaterial",
+    "material",
+    "machines",
+    "installations",
+    "native",
+    "binding"
+  ],
+  "limits": [
+    "Current admitted four-recipe contract only; no recipe-policy changes.",
+    "Three CUTs without unique downstream witnesses and equally complete ambiguous lineages return null; actual inventory/production must remain visible in Host/UI.",
+    "Cumulative fields do not assert current remaining stock after later legitimate consumption.",
+    "Trusted current private Native/ConstructionReady/session/epoch/tick DTO provenance remains Integrator-owned; helper performs no World/body/shape query.",
+    "Actual Material/Production/Construction owner transitions in explicitly synthetic power/Native/terrain/reach fixtures; no normal UI/transport/Native/S1/World acceptance.",
+    "Five setup failures, runner launch failure and historical typecheck failure are retained without relabeling.",
+    "All previous Cells/Loader/S1 lanes remain HOLD. No main merge, push, publish or further writer jobs."
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "schema": "hestia.fp06.play-immutable-source-admission/v1",
+  "milestone": "PLAY-04-pure-fresh-lineage-admission",
+  "actor": "/root/play_integrator",
+  "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+  "authorizedAtUtc": "2026-10-12T14:39:19.909109+00:00",
+  "status": "GRANTED_EXACT_TWO_REVIEWED_ABSENT_TARGET_BLOBS",
+  "sourceActor": "/root/play_cell_bridge",
+  "sourceCommitSha": "58cb6556b280d206a7e8a24a502e5c7a66763990",
+  "sourceWorktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-play-fresh-lineage-2026-10-12",
+  "integratorHeadAtRead": "f85d1379c3458488d225105156adfb66837799ce",
+  "writeSet": [
+    "apps/weltraum-browser/src/factory/session/freshLineageProjection.ts",
+    "apps/weltraum-browser/tests/unit/factory/freshLineageProjection.test.ts"
+  ],
+  "sourceFiles": [
+    {
+      "path": "apps/weltraum-browser/src/factory/session/freshLineageProjection.ts",
+      "bytes": 21559,
+      "sha256": "1e9af3acee02be76ded8a0ffc7be5a4cde3044cfc6046ff7c137c0e9cd1ced59"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/freshLineageProjection.test.ts",
+      "bytes": 23570,
+      "sha256": "89bb59d59b8349e4324cc8d21d59313b2d127f8869d3d6911043cf663650cbc8"
+    }
+  ],
+  "integratorBefore": "BOTH_PATHS_ABSENT_ROOT_VERIFIED",
+  "sourceWorkingTree": "CLEAN_HOLD",
+  "independentReview": {
+    "path": "reviews/play-04-fresh-lineage-source-review.md",
+    "bytes": 16575,
+    "sha256": "18b78b58c4b018dd4c4b9f3a981fd223b98c3308f99045bbb7b7b926e92460c1",
+    "verdict": "BOUNDED_SOURCE_23_GUARD_TSC_PASS_0P1P2"
+  },
+  "verification": {
+    "focusedReceipt": "12-final-focused-green.command.json",
+    "focusedPassed": 23,
+    "focusedSkipped": 0,
+    "focusedExitCode": 0,
+    "focusedRawSha256": "8df63bec16db8a692dd5f82679a4a12ee8ea157b25e4314a9c7b351006513830",
+    "typecheckReceipt": "13-final-original-tsc.command.json",
+    "typecheckExitCode": 0,
+    "typecheckRawBytes": 0,
+    "all28BeforeAfterBindingsIdentical": true,
+    "formalGateSeal": "14-final-typed-gate-seal.json",
+    "formalGateSealSha256": "61c32df71e5de72dc2a3ecab1372e4e2b44352c448a3224c14f173846a676115",
+    "historicalFailureClassification": "10-tdd-classification-before-final-gate.json"
+  },
+  "constraints": [
+    "Adopt exacttwo fullSource/test blobs from58cb, nootherfiles/historicalbranchmerge/Sourcecoldrestart/reset. CurrentauthorizedShared/native/V5/Powerdrafts unchanged; SourceScene/nativeMaterial/goldens/recipes protected.",
+    "PrivateSession/Host actualconfirmedcurrentSnapshot/source/catalog/terrain/facility/session/epoch/tick/ConstructionReady binding beforecallingpureprojector, retainedactualinitialMaterial sameSession once, nevernewduplicateFracht constructor. IDs/digestconsistentDTO alone notWorldproof.",
+    "LiveGoal readonly actualcumulativeMaterial+machine receipts, not selectedrecipe/latestjob/currentglobal16kg/restsums. ThreeunlinkedCUTs/fullyambiguouslineagesnull remainsbounded; UI stillshowsactualmaterial/production andcannotclaimlossorabsencefromnull.",
+    "Recipe/source/material/save/worldauthority unchanged. Add privateProducer consumption in existingsoleIntegrator Session/Host/Entry/onboarding grants only, read-onlyMap separate. W10needsrealreadonlybaseline+receiptgraph/currentNativegeneration butdoesnotbeginbeforeW09endgate.",
+    "Actual23Puretests+tscSourcePASS notUI/Native/S1/full16kg/Save/PerformancePASS. FocusedcurrentIntegratorimport/affectedRegression/tsc then normalfresh16kgactualcommands. No newwriter, Cell58cbhold; activeIntegrator+Artpreview.",
+    "NoW12-W29/remote-mainrestart/engine/dependency/limit/queue/timeout/Mainmerge/push/forcepush/PR/publish. FinalhumanreviewsOWNER_REVIEW_PENDING."
+  ]
+}

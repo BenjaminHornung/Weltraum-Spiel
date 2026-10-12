@@ -383,7 +383,8 @@
     ],
     "freshLineageWriter": {
       "commitSha": "58cb6556b280d206a7e8a24a502e5c7a66763990",
-      "status": "23_FOCUSED_PASS_TSC0_REVIEW0P1P2_CLEAN_HOLD_ADMISSION_PENDING"
+      "status": "23_FOCUSED_PASS_TSC0_REVIEW0P1P2_CLEAN_HOLD_EXACT_ADMISSION_GRANTED",
+      "admissionGrant": "grants/play-04-fresh-lineage-admission.json"
     },
     "helpPause": "Actual RED12 \u2192 Unit13/build14/normalBrowser15 PASS; Root pixel+raw verified, 3Factory-avatarvisibility lines fix actualCanvashelm; finalSharedreview pending",
     "v5Proposal": {
