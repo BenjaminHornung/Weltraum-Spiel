@@ -299,7 +299,7 @@
     }
   ],
   "currentProgress": {
-    "atUtc": "2026-10-12T14:00:36.388387+00:00",
+    "atUtc": "2026-10-12T14:27:33.296988+00:00",
     "candidateDigest": "913c0c46",
     "v2ChangedSlots": 2890,
     "materialCreditMg": 0,
@@ -428,6 +428,27 @@
       "status": "GRANTED_NOT_IMPLEMENTED",
       "historicalProfiles": "UNCHANGED",
       "actualNativeRoutes": "NOT_RUN"
+    },
+    "runtimeV1Review": {
+      "status": "CHANGES_REQUIRED_P1_PRIVATE_PREPARE_RECEIPT_NOT_RETAINED",
+      "report": "reviews/play-02-runtime-v1-review.md",
+      "sha256": "de71b69e38b80f2e859b792c07abfad52663331ef35ba4db362e6355c27649d3",
+      "normalRecording08": "FAIL_NATIVE_SIMULATION_HOLD_BEFORE_PICKUP",
+      "normalNoRecord09": "FAIL_B07_PRIVATE_HIDDEN_STAGE_AFTER_ACTUAL341KG_TRANSPORT_DEPOT_EXIT",
+      "recordingCausality": "NOT_PROVEN_BY_SINGLE_COMPARISON",
+      "sourceFix": "RED10/11\u2192GREEN12_TWO_FOCUSED; FINAL_TSC_BUILD_BROWSER_CLOSURE_PENDING"
+    },
+    "baseOnlyLfsPayloadAudit": {
+      "status": "PASS_BASE_ONLY",
+      "fixedProductSha": "f85d1379c3458488d225105156adfb66837799ce",
+      "fixedControlSha": "6ee49c69bc3cb35d9575166262331c2a3ea586af",
+      "uniqueOids": 1210,
+      "deduplicatedBytes": 512708211,
+      "shaSizePass": 1210,
+      "fail": 0,
+      "report": "reviews/play-07-base-only-payload-audit.md",
+      "sha256": "ce004b9d08179bcf9fe3f864f9fc46a53bd84b0e4d9ac5d241db903d4b07aa22",
+      "finalDeliveryCleanCopy": "NOT_RUN"
     }
   },
   "supplementalBalanceOwnerRequest": {
