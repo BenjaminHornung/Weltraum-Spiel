@@ -1,0 +1,18 @@
+{
+  "observedAtUtc": "2026-10-12T11:25:48.415459+00:00",
+  "capture": "Post-run unchanged scaffold before any implementation; first genuine15AssertionRED receipt preserved",
+  "files": [
+    {
+      "path": "apps/weltraum-browser/src/factory/presentation/factoryS1Assets.ts",
+      "bytes": 2636,
+      "sha256": "1f861ff175406ef4e500c8c93d56b6a78884ce9745fcf3659f2ee72e49b1d762",
+      "snapshot": "01-red-factoryS1Assets.ts.txt"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/factoryS1Assets.test.ts",
+      "bytes": 6187,
+      "sha256": "6683371f1b9af451967b60ce44c59cda8c182ff377b24c5e27cfbe03b3ddf5e0",
+      "snapshot": "01-red-factoryS1Assets.test.ts.txt"
+    }
+  ]
+}

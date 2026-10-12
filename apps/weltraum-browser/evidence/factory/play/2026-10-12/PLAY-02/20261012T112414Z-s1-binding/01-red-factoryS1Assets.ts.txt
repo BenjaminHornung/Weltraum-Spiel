@@ -1,0 +1,29 @@
+import type { FactoryAssetDefinitionRef } from "./factoryAssets";
+import type { FactoryPartCellProjection } from "./factoryPartCells";
+import type { LoadPlayAssetInput, PlayAssetProjection } from "./playAssetLoader";
+import type { MachinePose } from "./machinePose";
+export interface FactoryS1WorkRead {
+ readonly sessionId:string;readonly epoch:number;readonly publicationRevision:number;readonly nativeTick:number;
+ readonly catalogDigest:string;readonly instanceId:string;readonly definitionRef:FactoryAssetDefinitionRef;
+ readonly sourceDigest:string;readonly profileDigest:string;readonly terrainRevision:number;readonly facilityRevision:number;
+ readonly confirmed:boolean;readonly status:string;readonly confirmedWorkMs:number;readonly jobId:string|null;
+ readonly recipeRef:Readonly<{sourceId:string;version:number;digest:string}>|null;
+ readonly custody:Readonly<{inputContainerId:string;wipContainerId:string;outputContainerId:string;offcutContainerId:string;installedContainerId:string}>;
+}
+export interface FactoryS1NativeParts {
+ readonly instanceId:string;readonly definitionRef:FactoryAssetDefinitionRef;readonly sourceDigest:string;readonly profileDigest:string;
+ readonly installationRevision:number;readonly terrainRevision:number;readonly facilityRevision:number;
+ readonly confirmed:boolean;readonly complete:boolean;readonly observationDigest:string;
+ readonly parts:readonly Readonly<{partId:string;status:"Present"|"Absent"|"Unknown";colliderHandles:readonly number[]}>[];
+}
+export interface FactoryS1Assets {
+ readonly instanceId:string;readonly cells:FactoryPartCellProjection;readonly render:PlayAssetProjection;
+ readonly cost:Readonly<{cpu:number;mesh:number;triangles:number;draws:number}>;
+}
+export interface FactoryS1Sample {
+ readonly sessionId:string;readonly epoch:number;readonly nativeTick:number;readonly terrainRevision:number;readonly facilityRevision:number;
+ readonly native:FactoryS1NativeParts;readonly work:FactoryS1WorkRead;
+}
+export const loadFactoryS1Assets=async(_ref:FactoryAssetDefinitionRef&{instanceId:string},_options:Pick<LoadPlayAssetInput,"fetch"|"signal">={}):Promise<FactoryS1Assets>=>({instanceId:_ref.instanceId,cells:{profileDigest:"MISSING",sourceDigest:"MISSING",parts:[],semanticParents:{}} as unknown as FactoryPartCellProjection,render:{assetId:"MISSING",parts:[]} as unknown as PlayAssetProjection,cost:{cpu:0,mesh:0,triangles:0,draws:0}});
+export const sampleFactoryS1Assets=(_assets:FactoryS1Assets,_read:FactoryS1Sample):MachinePose=>({status:"MISSING",phase:"idle",paused:true,partPoses:[]});
+export const disposeFactoryS1Assets=(_assets:FactoryS1Assets):void=>{};

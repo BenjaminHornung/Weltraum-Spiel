@@ -1,0 +1,60 @@
+import {describe,it,expect} from "vitest";
+import {readFile} from "node:fs/promises";
+import path from "node:path";
+import {loadFactoryS1Assets,sampleFactoryS1Assets,disposeFactoryS1Assets,type FactoryS1Sample} from "../../../src/factory/presentation/factoryS1Assets";
+import {createFactoryInstallationProfile} from "../../../src/factory/construction/installationProfile";
+import {validateMeshArtifact} from "../../../src/presentation";
+const actualFetch:typeof fetch=async input=>{
+ const url=String(input);const bytes=await readFile(path.resolve("public",url.replace(/^\//,"")));return new Response(new Uint8Array(bytes));
+};
+const fixture=async(sourceId="B06")=>{
+ const profile=createFactoryInstallationProfile(sourceId),instanceId=`actual_asset_${sourceId.toLowerCase()}`;
+ const assets=await loadFactoryS1Assets({...profile.definitionRef,instanceId},{fetch:actualFetch});
+ // Native/work record is an explicitly synthetic readonly controller fixture.
+ // Actual Rapier membership/removal is verified separately in facilitySession.
+ const read:FactoryS1Sample={sessionId:"s1_unit",epoch:3,nativeTick:120,terrainRevision:0,facilityRevision:1,native:{instanceId,definitionRef:profile.definitionRef,sourceDigest:profile.sourceDigest,profileDigest:profile.profileDigest,installationRevision:1,terrainRevision:0,facilityRevision:1,confirmed:true,complete:true,observationDigest:"synthetic_fixture_v1",parts:profile.source.parts.map(p=>({partId:p.partId,status:"Present",colliderHandles:profile.colliders.flatMap((c,i)=>c.partId===p.partId?[i]:[])}))},work:{sessionId:"s1_unit",epoch:3,publicationRevision:8,nativeTick:120,catalogDigest:"bound_unit_catalog",instanceId,definitionRef:profile.definitionRef,sourceDigest:profile.sourceDigest,profileDigest:profile.profileDigest,terrainRevision:0,facilityRevision:1,confirmed:true,status:"RUNNING",confirmedWorkMs:15000,jobId:"paid_unit_job",recipeRef:{sourceId:sourceId==="B06"?"REC-01-CUT":"REC-02-PROFILE",version:1,digest:"unit_recipe_binding"},custody:{inputContainerId:`input_${instanceId}`,wipContainerId:`wip_${instanceId}`,outputContainerId:`output_${instanceId}`,offcutContainerId:`offcut_${instanceId}`,installedContainerId:`installed_${instanceId}`}}};
+ return {assets,read,profile};
+};
+describe("PLAY02 closed S1 source/cell/native/work/render join",()=>{
+ it.each(["B06","B07"])("admits the actual %s GLB beside its real125mm cell derivative and frozen native recipe",async sourceId=>{
+  const f=await fixture(sourceId);expect(f.assets.cells.profileDigest).toBe(f.profile.profileDigest);expect(f.assets.cells.sourceDigest).toBe(f.profile.sourceDigest);
+  expect(f.assets.cells.parts.map(p=>p.partId).sort()).toEqual(f.assets.render.parts.map(p=>p.partId).sort());
+  expect(f.assets.render.assetId).toBe(sourceId==="B06"?"play_cutter_v1":"play_former_v1");
+  expect(f.assets.render.parts.every(p=>validateMeshArtifact(p.artifact).valid)).toBe(true);
+  expect(f.assets.cells.parts.every(p=>validateMeshArtifact(p.artifact).valid)).toBe(true);
+  expect(f.assets.cost.triangles).toBe(f.assets.render.parts.reduce((n,p)=>n+p.artifact.indices.length/3,0));
+  expect(f.assets.cost.draws).toBe(f.assets.render.parts.reduce((n,p)=>n+p.artifact.materialRanges.length,0));
+  expect(f.assets.cost.cpu).toBeGreaterThan(f.assets.cost.mesh/2);
+  expect(f.profile.massMg).toBe(sourceId==="B06"?208000000:341000000);
+  const pose=sampleFactoryS1Assets(f.assets,f.read);expect(pose.status).toBe("RUNNING");expect(pose.paused).toBe(false);expect(pose.partPoses).toHaveLength(f.profile.source.parts.length);
+ });
+ it.each(["instanceId","sourceDigest","profileDigest"] as const)("rejects wrong native %s instead of accepting render provenance",async key=>{
+  const f=await fixture();expect(()=>sampleFactoryS1Assets(f.assets,{...f.read,native:{...f.read.native,[key]:"wrong"}})).toThrow(/binding/i);
+ });
+ it.each(["epoch","terrainRevision","facilityRevision"] as const)("rejects stale work %s even when source/asset identity matches",async key=>{
+  const f=await fixture();expect(()=>sampleFactoryS1Assets(f.assets,{...f.read,work:{...f.read.work,[key]:99}})).toThrow(/binding/i);
+ });
+ it("suppresses an absent native part and its authored moving children without rebuilding it from cached source",async()=>{
+  const f=await fixture();const read={...f.read,native:{...f.read.native,complete:false,parts:f.read.native.parts.map(p=>p.partId==="cutter_frame"?{...p,status:"Absent" as const}:p)}};
+  const pose=sampleFactoryS1Assets(f.assets,read),ids=pose.partPoses.map(p=>p.partId);
+  expect(ids).not.toContain("cutter_frame");for(const child of Object.keys(f.assets.cells.semanticParents))expect(ids).not.toContain(child);
+  expect(pose.status).toBe("FAULT");expect(pose.paused).toBe(true);
+  expect(sampleFactoryS1Assets(f.assets,read)).toEqual(pose);
+ });
+ it("unknown native body binding cannot make source-listed parts present",async()=>{
+  const f=await fixture();const pose=sampleFactoryS1Assets(f.assets,{...f.read,native:{...f.read.native,confirmed:false}});
+  expect(pose.partPoses).toEqual([]);expect(pose.status).toBe("FAULT");
+ });
+ it.each(["WAIT_INPUT","WAIT_POWER","WAIT_OUTPUT"])("keeps the confirmed phase frozen for %s with the same real custody",async status=>{
+  const f=await fixture();const read={...f.read,work:{...f.read.work,status}};const before=JSON.stringify(read);
+  const first=sampleFactoryS1Assets(f.assets,read);expect(first.status).toBe(status);expect(first.paused).toBe(true);
+  expect(sampleFactoryS1Assets(f.assets,read)).toEqual(first);expect(JSON.stringify(read)).toBe(before);
+ });
+ it("refuses future work/native ticks and malformed custody identity",async()=>{
+  const f=await fixture();expect(()=>sampleFactoryS1Assets(f.assets,{...f.read,work:{...f.read.work,nativeTick:121}})).toThrow(/binding/i);
+  expect(()=>sampleFactoryS1Assets(f.assets,{...f.read,work:{...f.read.work,custody:{...f.read.work.custody,wipContainerId:"foreign"}}})).toThrow(/custody/i);
+ });
+ it("disposed owned assets cannot resurrect their parts or pose after later cache reads",async()=>{
+  const f=await fixture();disposeFactoryS1Assets(f.assets);expect(()=>sampleFactoryS1Assets(f.assets,f.read)).toThrow(/disposed/i);
+ });
+});

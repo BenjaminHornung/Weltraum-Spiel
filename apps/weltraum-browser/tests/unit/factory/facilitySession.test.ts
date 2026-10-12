@@ -472,3 +472,60 @@ it("PLAY06 NativeRead rejects a newly removed real facility collider without cro
   const removed=f.facility.read();expect(removed.revision).toBe(first.revision);expect(removed.production![0].confirmed).toBe(false);expect(removed.powerPorts![0].confirmed).toBe(false);
  }finally{f.world.free();}
 });
+
+
+// S1 actual-world negatives are synthetic mutations, not player damage commands.
+const partRead=(facility:ReturnType<typeof createFactoryFacilitySession>)=>facility.read().partObservations;
+it("PLAY02 S1 observes actual published native parts and unchanged paid Cutter members",()=>{
+ const f=nativeReadFixture();try{const observed=partRead(f.facility);expect(observed).toHaveLength(1);
+  expect(observed![0]).toMatchObject({instanceId:request.instanceId,confirmed:true,complete:true,sourceDigest:f.profile.sourceDigest,profileDigest:f.profile.profileDigest,installationRevision:1,facilityRevision:1});
+  expect(observed![0].parts).toHaveLength(12);expect(observed![0].parts.every(p=>p.status==="Present"&&p.colliderHandles.length>0)).toBe(true);
+  expect(observed![0].parts.reduce((n,p)=>n+p.colliderHandles.length,0)).toBe(33);
+ }finally{f.world.free();}
+});
+it.each(["removed","disabled","moved","rotated","sensor","shape"])("PLAY02 S1 actual %s tool collider loses complete part proof and production capability",kind=>{
+ const f=nativeReadFixture();try{expect(partRead(f.facility)?.[0].complete).toBe(true);
+  const owner=f.facility.read().owners[0],index=f.profile.colliders.findIndex(c=>c.partId==="cutter_tool"),collider=f.world.getCollider(owner.colliderHandles[index]!);
+  expect(index).toBeGreaterThanOrEqual(0);
+  if(kind==="removed")f.world.removeCollider(collider,true);else if(kind==="disabled")collider.setEnabled(false);else if(kind==="sensor")collider.setSensor(true);
+  else if(kind==="moved"){const p=f.profile.colliders[index]!.centerMm;collider.setTranslationWrtParent({x:p[0]/1000+.125,y:p[1]/1000,z:p[2]/1000});}
+  else if(kind==="rotated")collider.setRotationWrtParent({x:0,y:0,z:Math.sin(.2),w:Math.cos(.2)});else collider.setHalfExtents({x:.75,y:.75,z:.75});
+  f.world.propagateModifiedBodyPositionsToColliders();f.world.updateSceneQueries();const read=f.facility.read(),parts=partRead(f.facility)![0];
+  expect(parts.complete).toBe(false);expect(parts.parts.find(p=>p.partId==="cutter_tool")!.status).not.toBe("Present");
+  expect(read.production![0].confirmed).toBe(false);expect(read.powerPorts![0].confirmed).toBe(false);expect(read.owners[0].massMg).toBe(208000000);
+ }finally{f.world.free();}
+});
+it("PLAY02 S1 a disabled native owner cannot make cached source parts present",()=>{
+ const f=nativeReadFixture();try{expect(partRead(f.facility)?.[0].complete).toBe(true);f.world.getRigidBody(f.facility.read().owners[0].bodyHandle).setEnabled(false);
+  const read=partRead(f.facility)![0];expect(read.confirmed).toBe(false);expect(read.parts.every(p=>p.status!=="Present")).toBe(true);
+ }finally{f.world.free();}
+});
+it("PLAY02 S1 closed B09 inspection uses actual local owner integrity without inventing a production row",()=>{
+ const world=new R.World({x:0,y:-9.81,z:0}),actor={x:-4.5,y:2.4,z:5};try{
+  world.createCollider(R.ColliderDesc.cuboid(16,.125,16).setTranslation(0,1.375,0));const profile=createFactoryInstallationProfile("B09"),facility=createFactoryFacilitySession(world,()=>true,()=>0,()=>0,undefined,()=>actor);
+  const req={...request,transactionId:"native_storage_1",ownerId:"native_storage_1",instanceId:"native_storage_1",definitionRef:profile.definitionRef};facility.prepare(req);facility.commit(req.transactionId);facility.publish(req.transactionId);facility.finalize(req.transactionId);
+  expect(partRead(facility)).toHaveLength(1);const first=facility.read();expect(first.production).toEqual([]);
+  expect(partRead(facility)![0]).toMatchObject({confirmed:true,complete:true});expect(first.sources![0].accessible).toBe(true);
+  actor.x=100;expect(facility.read().sources![0].accessible).toBe(false);actor.x=-4.5;
+  world.getCollider(first.owners[0].colliderHandles[0]!).setSensor(true);world.updateSceneQueries();
+  expect(partRead(facility)![0].complete).toBe(false);expect(facility.read().sources![0].accessible).toBe(false);
+ }finally{world.free();}
+});
+
+it("PLAY02 S1 distinguishes actual disabled prepared geometry from published presence",()=>{
+ const world=new R.World({x:0,y:-9.81,z:0});try{const facility=createFactoryFacilitySession(world,()=>true,()=>0);facility.prepare(request);
+  const prepared=facility.read();expect(prepared.partObservations).toEqual([]);expect(prepared.preparedPartObservation).toMatchObject({published:false,confirmed:true,complete:true});
+  expect(world.getRigidBody(prepared.prepared!.bodyHandle).isEnabled()).toBe(false);
+  facility.rollback(request.transactionId);expect(facility.read().preparedPartObservation).toBeUndefined();expect(facility.read().partObservations).toEqual([]);
+ }finally{world.free();}
+});
+it("PLAY02 S1 observes real Former34 members and341kg while preserving another native owner",()=>{
+ const f=nativeReadFixture();try{
+  const old=f.facility.read().owners[0],profile=createFactoryInstallationProfile("B07"),req={...request,transactionId:"actual_former_1",ownerId:"actual_former_1",instanceId:"actual_former_1",definitionRef:profile.definitionRef,centerMm:[-6250,1500,-2500],expectedRevision:1};
+  f.facility.prepare(req);f.facility.commit(req.transactionId);f.facility.publish(req.transactionId);f.facility.finalize(req.transactionId);
+  const current=f.facility.read(),former=current.partObservations!.find(p=>p.instanceId===req.instanceId)!;
+  expect(former).toMatchObject({published:true,confirmed:true,complete:true,sourceDigest:"13c8ba14",profileDigest:profile.profileDigest});
+  expect(former.parts).toHaveLength(13);expect(former.parts.reduce((n,p)=>n+p.colliderHandles.length,0)).toBe(34);
+  expect(current.owners.find(o=>o.instanceId===req.instanceId)!.massMg).toBe(341000000);expect(current.owners[0]).toBe(old);expect(f.world.getRigidBody(old.bodyHandle).isFixed()).toBe(true);
+ }finally{f.world.free();}
+});

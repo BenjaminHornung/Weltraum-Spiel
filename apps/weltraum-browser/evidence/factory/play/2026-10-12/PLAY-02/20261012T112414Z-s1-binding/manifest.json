@@ -1,0 +1,162 @@
+{
+  "createdAtUtc": "2026-10-12T12:10:54.177098+00:00",
+  "status": "Native foundation evidence; purehelper16/17 historic PASS with3 reviewP2 unresolved; no runtime S1 acceptance",
+  "files": [
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/01-red-factoryS1Assets.test.ts.txt",
+      "bytes": 6187,
+      "sha256": "6683371f1b9af451967b60ce44c59cda8c182ff377b24c5e27cfbe03b3ddf5e0"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/01-red-factoryS1Assets.ts.txt",
+      "bytes": 2636,
+      "sha256": "1f861ff175406ef4e500c8c93d56b6a78884ce9745fcf3659f2ee72e49b1d762"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/01-red-inputs.json",
+      "bytes": 698,
+      "sha256": "cbb3d0373ee1eae61c165e8296396a22b5cc241b069f5b52a8e5ee4a5be7244d"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/01-s1-closed-source-native-work-business-red.command.json",
+      "bytes": 4417,
+      "sha256": "484f38af254e9a5ff2692b0bb0b5b315bfd5958d9c62ee462eb56a5dcf74ecd4"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/01-s1-closed-source-native-work-business-red.raw.log.gz",
+      "bytes": 1839,
+      "sha256": "0f59610c459238699cda1f7dfda65e924b4081fa0227e85a5cfbcdfb7dc6c77b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/02-active-recipe-catalog-business-red.command.json",
+      "bytes": 3845,
+      "sha256": "e40eaaa556c5595104de4774a5e3f703625ef8c09a1510db6ad7374bfedeb07a"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/02-active-recipe-catalog-business-red.raw.log.gz",
+      "bytes": 638,
+      "sha256": "73d078b2c679397d8f88487d91c127db39b50af9c2baf93d03fb9b7f2329c9a7"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/03-s1-cell-native-work-green.command.json",
+      "bytes": 3807,
+      "sha256": "42bc1ab9b983ab43d2752db1c90ea12fa5fa7f738c4862f47c157edd73c2fb84"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/03-s1-cell-native-work-green.raw.log.gz",
+      "bytes": 250,
+      "sha256": "8ec417eb60b35d30d309289a9e4cd30c736c259bbe5a2401c45a8f2ebb72513d"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/04-actual-native-part-inspection-business-red.command.json",
+      "bytes": 4034,
+      "sha256": "179c693a88d9719c8e276bcbb402f7b2c2a647a20499eb1da3cd2e6578c4f536"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/04-actual-native-part-inspection-business-red.raw.log.gz",
+      "bytes": 1068,
+      "sha256": "c1ed0ad2129c26f46c14a4c6ecc3c437193d11fae86b7db11fcd31269e4f1fd3"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/04-pre-native-implementation-source-bindings.json",
+      "bytes": 886,
+      "sha256": "b197b696b35d1c6a79251ec1035132b55bc9bb5cbbf62dc6912c55b820847b20"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/05-actual-native-part-inspection-green.command.json",
+      "bytes": 4265,
+      "sha256": "34cf8f0cb0d8483fafd90cc8d6c04749f797ecf86fea2846741c51ea045d8672"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/05-actual-native-part-inspection-green.raw.log.gz",
+      "bytes": 736,
+      "sha256": "70d934f02280fcc73fb8def5130103a1aa3c08b6cc6bff72094ace608a9676b4"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/06-actual-parent-pose-inspection-green.command.json",
+      "bytes": 4262,
+      "sha256": "553f749d8826423155e2b704870531a3723cbaf67de2ad93b8a12bce4f23f81c"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/06-actual-parent-pose-inspection-green.raw.log.gz",
+      "bytes": 272,
+      "sha256": "6295b5db6ecde98d61036085c21a5d681e568ec5a816dfbe1f1ba94cabf267e2"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/07-prepared-candidate-visibility-business-red.command.json",
+      "bytes": 4260,
+      "sha256": "47b48b10e519bff4e0327de2e343183a907f598c8bc503766a29ede0c5ac0b40"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/07-prepared-candidate-visibility-business-red.raw.log.gz",
+      "bytes": 714,
+      "sha256": "4eada26b122503671af6b3cce7c6aac6acf2c91c74c99e0c2bf16054a49b08b7"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/08-actual-native-s1-binding-regression.command.json",
+      "bytes": 4315,
+      "sha256": "ed6706fdaab3d5eb37ae63f938cc8be72a8767ea0696a068e9d1fad415961cc8"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/08-actual-native-s1-binding-regression.raw.log.gz",
+      "bytes": 266,
+      "sha256": "ee228f1ee5f3c98b36b6a89d3ac0f3e9421de0dc8b66843e03595e30ca4e6a7f"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/09-original-native-s1-typecheck.command.json",
+      "bytes": 4550,
+      "sha256": "814344f8d7b889c87213e51594c2bef718635b16dd965b6e10c0a72ed2b07db3"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/09-original-native-s1-typecheck.raw.log.gz",
+      "bytes": 60,
+      "sha256": "1b89f2e620b2972703edf0df4efd3d930ba49d698eaa2f907346469ed2e219f0"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/10-native-observer-original-build.command.json",
+      "bytes": 4520,
+      "sha256": "ae973a9dcfb0b3c6c45df882ceb17419727f77a3b7182b4c748f5dec6404e437"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/10-native-observer-original-build.raw.log.gz",
+      "bytes": 930,
+      "sha256": "acd8083f9e5bcd97cf418074f711b25bf694368662ff54e16bc57dfa74be211b"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/11-native-observer-sealed-api-focused.command.json",
+      "bytes": 4663,
+      "sha256": "f443c9a8e99288e8b87354677d9c74a6e5f4e545eff1d754ea95e85009d26ac6"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/11-native-observer-sealed-api-focused.raw.log.gz",
+      "bytes": 271,
+      "sha256": "24cb56ae0eea7bd15c29325b4faf64c7ca56c12686cdcfd6ff5a0b647ff794f4"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/12-sealed-native-api-typecheck.command.json",
+      "bytes": 4550,
+      "sha256": "302838ea93ba148530fc646b8c45fe5504e05c33311abc9e76a9ad5f35e79559"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/12-sealed-native-api-typecheck.raw.log.gz",
+      "bytes": 59,
+      "sha256": "6c24068012eb63a88867d59c486b81dbe5512a8f654c3622747eacd12c8e3789"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/native-observer-foundation.diff",
+      "bytes": 21604,
+      "sha256": "1d31e319fad41640626228ad9e397f43750d4bc96a7f5df01143ae6c16ad40c6"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/native-observer-foundation.json",
+      "bytes": 1726,
+      "sha256": "77f2c82fd1043e882c1284e71d513c88501170477f6f882f5eb190d4a503bcd4"
+    },
+    {
+      "path": "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/20261012T112414Z-s1-binding/scripts/run-bound-command.py",
+      "bytes": 2236,
+      "sha256": "e1c1e78eef60280e3fb7134a8aa49b620fda6899f347af1e58757a56ee019cd0"
+    }
+  ],
+  "excluded": "Ignored .log convenience duplicates; exact raw bytes preserved in .raw.log.gz"
+}

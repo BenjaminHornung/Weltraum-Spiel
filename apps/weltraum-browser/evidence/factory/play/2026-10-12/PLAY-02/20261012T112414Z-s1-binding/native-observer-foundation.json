@@ -1,0 +1,20 @@
+{
+  "capturedAtUtc": "2026-10-12T12:10:54.163180+00:00",
+  "actor": "/root/play_integrator",
+  "status": "Native readonly B06/B07 part observation and B09 integrity foundation; pureS1controller3P2s and actual renderer integration pending",
+  "files": [
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+      "bytes": 59908,
+      "sha256": "4024e9f47e4a568e04304ba139191ad3c26f743e740dd02c96b732216b595b68"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+      "bytes": 50744,
+      "sha256": "a710442a9499aabc36fdfc5332c74b34dbb77640fd68ca88be1d8aa57e32e585"
+    }
+  ],
+  "api": "FactoryFacilityRead.partObservations: FactoryNativePartObservation[]; preparedPartObservation separately marks published:false while validating actual disabled prepared geometry. Current observations inspect original body/collider object identity, enabled/parent/cuboid extents/world translation/rotation/sensor against frozen profile. Public Native snapshot ticks + these raw immutable rows are the witness for Host wrapper, not UI data.",
+  "validation": "Genuine9 native API RED04; two attached-collider globalsetter fixture failures preserved05; explicit actualWrtParent mutants pass06; Native49 + controller17 + presentation16 pass08. FinalNative16 focused11 and tsc12 PASS. Originalbuild10 PASS. Purecontroller3 reviewP2 open; currenthelper unitPASS is not integrated S1/World/Owner gate.",
+  "sourceScope": "No physical recipes, bodies, source scenes, mass/BOM, ports, probes, membership budgets, timer, queue, checkpoint or collider geometry changes. Synthetic collider removal/mutation fixtures are not a gameplay destruction feature."
+}

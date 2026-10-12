@@ -1,0 +1,25 @@
+{
+  "observedAtUtc": "2026-10-12T11:41:46.603910+00:00",
+  "files": [
+    {
+      "path": "apps/weltraum-browser/src/factory/presentation/factoryS1Assets.ts",
+      "bytes": 8436,
+      "sha256": "f87ca20c73c454aee5f66963f3bbb2fc13771d00cfdac9b92268f85aa352fb88"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/factoryS1Assets.test.ts",
+      "bytes": 6771,
+      "sha256": "a0a921e6108eafbb563b9e8fc19348ca672997965f154a93e8eea585a9c7458e"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hestia-prototype/physics/factoryFacilitySession.ts",
+      "bytes": 54137,
+      "sha256": "a864f3b04001bbe8d7d89bf175858c700a325c12de16eaf2d677efddb1594c27"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+      "bytes": 48943,
+      "sha256": "3c8cc1a566ab64357e6b69894789e2e2b889ee74b05c6757b8de9026cfdd1bf7"
+    }
+  ]
+}
