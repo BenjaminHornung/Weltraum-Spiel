@@ -1,0 +1,166 @@
+{
+  "schema": "hestia.fp06.play-grant/v1",
+  "milestone": "PLAY-02",
+  "actor": "/root/play_art",
+  "baseCommitSha": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+  "branch": "codex/hestia-fp06-play-art-2026-10-12",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-play-art-2026-10-12",
+  "controlPlane": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/play/2026-10-12",
+  "authorizedAtUtc": "2026-10-12T06:32:43.653284+00:00",
+  "authorization": "Explicit user instruction to use Blender for actual missing/insufficient models; separate exact source/runtime paths after real before capture and readonly audit",
+  "status": "GRANTED",
+  "implementationWriteHold": false,
+  "writeSet": [
+    "art/factory/play-2026-10-12/cutter/**",
+    "art/factory/play-2026-10-12/former/**",
+    "art/factory/play-2026-10-12/wreck-cargo/**",
+    "art/factory/play-2026-10-12/carrier/**",
+    "art/factory/play-2026-10-12/workbench/**",
+    "art/factory/play-2026-10-12/storage/**",
+    "art/factory/play-2026-10-12/belt/**",
+    "art/factory/play-2026-10-12/power-kit/**",
+    "art/factory/play-2026-10-12/materials/**",
+    "art/factory/play-2026-10-12/brace/**",
+    "art/factory/play-2026-10-12/build_assets.py",
+    "art/factory/play-2026-10-12/manifest.json",
+    "art/factory/play-2026-10-12/README.md",
+    "art/factory/play-2026-10-12/LICENSE.txt",
+    "apps/weltraum-browser/public/factory/play-2026-10-12/**",
+    "apps/weltraum-browser/tests/unit/factory/playAssetDerivatives.test.ts"
+  ],
+  "evidenceWriteSet": [
+    "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-02/<actual-run-id>/**"
+  ],
+  "scratchEvidenceRoot": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-02",
+  "protectedBeforeBytes": [
+    {
+      "path": "art/factory/fp01/power-kit/LICENSE.txt",
+      "bytes": 326,
+      "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632"
+    },
+    {
+      "path": "art/factory/fp01/power-kit/README.md",
+      "bytes": 888,
+      "sha256": "89a63ec1ca27ef8e958d5cd52271e5c7065ae472a39337f0e77b069bc643fe3e"
+    },
+    {
+      "path": "art/factory/fp01/power-kit/authoring-v1.json",
+      "bytes": 7286,
+      "sha256": "ebab668ca024e995b8742021f4440886c10b51ba58a5c7520de37a6bc87c7dd8"
+    },
+    {
+      "path": "art/factory/fp01/power-kit/derived-report.json",
+      "bytes": 16840,
+      "sha256": "21bd57c0853b2f5ff151532d06308d0baffab4aa2920d2bd2bc1d3e9379d40f0"
+    },
+    {
+      "path": "art/factory/fp01/power-kit/source.scene.json",
+      "bytes": 27070,
+      "sha256": "bb131bb9b03f2e76abf1ba4ad25fe7d228ecf19b70ec9910e491c03dd1ab256c"
+    },
+    {
+      "path": "art/factory/fp02/cutter/LICENSE.txt",
+      "bytes": 326,
+      "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632"
+    },
+    {
+      "path": "art/factory/fp02/cutter/README.md",
+      "bytes": 888,
+      "sha256": "89a63ec1ca27ef8e958d5cd52271e5c7065ae472a39337f0e77b069bc643fe3e"
+    },
+    {
+      "path": "art/factory/fp02/cutter/authoring-v1.json",
+      "bytes": 5596,
+      "sha256": "0cdb071fb15c5b7c5ee57fa5f10685b8919b741adbe0d10c5e7f47f93cca1a61"
+    },
+    {
+      "path": "art/factory/fp02/cutter/derived-report.json",
+      "bytes": 10823,
+      "sha256": "03d2d4c8ad1198d8e24d655ded01de7cd8cdbbe7af798ef6f02c5a6b5ea9a38a"
+    },
+    {
+      "path": "art/factory/fp02/cutter/source.scene.json",
+      "bytes": 19222,
+      "sha256": "abd1ce25fd19ad61a9cb65de9f5ba10c303aa5c1a1aa16260de9dce9534fa5fd"
+    },
+    {
+      "path": "art/factory/fp02/former/LICENSE.txt",
+      "bytes": 326,
+      "sha256": "bc5e00789f9e69f40bb76b0db9802fca5122dde6d37f905c700b17febccbb632"
+    },
+    {
+      "path": "art/factory/fp02/former/README.md",
+      "bytes": 888,
+      "sha256": "89a63ec1ca27ef8e958d5cd52271e5c7065ae472a39337f0e77b069bc643fe3e"
+    },
+    {
+      "path": "art/factory/fp02/former/authoring-v1.json",
+      "bytes": 5889,
+      "sha256": "31500d6c38d06be22226940222c8abcba5d2e9e48483e36293910da71575c34b"
+    },
+    {
+      "path": "art/factory/fp02/former/derived-report.json",
+      "bytes": 10954,
+      "sha256": "d8886ba6ae7703a3718c2293582812d8d6c153bfc0defe717a49449713e4a8c9"
+    },
+    {
+      "path": "art/factory/fp02/former/source.scene.json",
+      "bytes": 19487,
+      "sha256": "4e27abd922e46516d1db0307b8dfb5edaf1b8c6807e80006781344b9dfcf535d"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/presentation/factoryAssets.ts",
+      "bytes": 14061,
+      "sha256": "a9d707c53d8ae401e952076007aff523bcec127f4c0b58d37020aaea9ced973c"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/presentation/machinePose.ts",
+      "bytes": 3309,
+      "sha256": "c426f01ae087004a1eacde662de0c5da7c22f18410d5900d2ca20e840cae111b"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/installationProfile.ts",
+      "bytes": 5568,
+      "sha256": "4e5d3f027da5aef0ba68243b911c55d7558eab86477e2ebd3e134a26f82d8b8b"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/construction/cargoHandlingProfile.ts",
+      "bytes": 4766,
+      "sha256": "04e3f16fdc073414c5d02ef58082cfe9f959663a597e2d1d689206e892a92fcd"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+      "bytes": 4071,
+      "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c"
+    }
+  ],
+  "constraints": [
+    "Only new granted Art/runtime/test files; no existing authority/Host/Physics/Save/catalog/native scene/module/package/config writes",
+    "Author .blend, reopen and export real derivatives using installed Blender4.3.2 and existing exporter; no service/provider/dependency install",
+    "Existing source part IDs/box geometry/ports/pivots/bounds/S0native bytes frozen",
+    "Hard Microvoxel geometry/accepted palette; finite-load and actual readview binding supplied later by Integrator",
+    "No GLB/Voxel compiler or StructuralS1 authority claim; missing bridge remains explicit KnownGap",
+    "No full Blender/GPU/test jobs concurrent with Integrator CPU/browser lease; coordinate short serial slots",
+    "Own exact local .gitattributes for new runtimeGLB files allowed; existing global attributes unchanged",
+    "Actual SHA/size/LFS payload verification, real businessRED before minimal feature GREEN, independent source/quality review",
+    "No mainmerge/push/PR/publish/W12; no ownerArt/usability/hardware acceptance claim"
+  ],
+  "ownerArtAcceptance": "OWNER_REVIEW_PENDING",
+  "runtimeContract": {
+    "schema": "hestia.factory.play-assets/v1",
+    "manifestPath": "art/factory/play-2026-10-12/manifest.json",
+    "assetsEntryRequirements": [
+      "stable assetId",
+      "definitionRef or declared visual-only cargo/carrier/material anchor",
+      "sourceHead and exact sourceFile paths/SHA256",
+      "units=meters, runtimeAxes=right-handed +X east +Y up +Z north, ground-center origin",
+      "partIds and parentPartIds plus exact native bounds/ports/pivots references",
+      "nativeBlend path/SHA256/bytes",
+      "runtimeGlb path and URL under /factory/play-2026-10-12/ plus SHA256/bytes",
+      "exporterReport path/SHA256",
+      "generated project-original provenance and existing LICENSE",
+      "GLB nodes/customextras bound to native partId/sourceSHA; no remote texture/fonts"
+    ],
+    "pendingRuntimeAdoption": "Integrator-only loader/receiver/readview/animation; Art scope proves artifacts, not normal gameplay integration"
+  }
+}

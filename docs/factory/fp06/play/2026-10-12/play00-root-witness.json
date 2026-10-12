@@ -1,0 +1,74 @@
+{
+  "schema": "hestia.fp06.play00-root-witness/v1",
+  "verifiedAtUtc": "2026-10-12T06:35:06.820831+00:00",
+  "sourceHead": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+  "normalEntry": "http://127.0.0.1:5174/factory.html",
+  "browserVersion": "154.0.8037.57",
+  "recordingDeclaredByActor": "Playwright recordVideo; actual context.close finalizes the file",
+  "video": {
+    "path": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-00/integrator/video/page@077b7afe3d5a75b8366e6e2503da08a7.webm",
+    "bytes": 1780170,
+    "sha256": "e9434ce6c619b34a429a567e4a9c2548cc7397fa37def0d2716ec5cc2b25c3e0",
+    "actorMeasuredDurationSeconds": 24.56,
+    "actorMeasuredFrames": 614,
+    "independentRootPlayback": "NOT_RUN"
+  },
+  "pixelInspectionByRoot": [
+    "01-before-normal-entry.png",
+    "05-heavy-first-blockade.png"
+  ],
+  "screenshots": [
+    {
+      "path": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-00/integrator/01-before-normal-entry.png",
+      "bytes": 660785,
+      "sha256": "1d6fb976da8eab41c0814ea0745b38417baad9a8c050e11cc385548876a35d94"
+    },
+    {
+      "path": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-00/integrator/02-opened-finite-cargo.png",
+      "bytes": 633091,
+      "sha256": "c8e0a70233786918b0ce513698450df6b835649d9aaeaea1b5c8028b87b0b365"
+    },
+    {
+      "path": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-00/integrator/03-released-normal-walk.png",
+      "bytes": 269982,
+      "sha256": "477374fda1cc444a3839c2e185a2e90b20d9b1e7be75c2807500357ca6bc12a8"
+    },
+    {
+      "path": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-00/integrator/04-former-pickup-result.png",
+      "bytes": 627389,
+      "sha256": "086c885b758804641d9a7fc7fa83f982343f4b974717262511b49272846def2c"
+    },
+    {
+      "path": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-00/integrator/05-heavy-first-blockade.png",
+      "bytes": 272521,
+      "sha256": "70c0c03f547a573ef40878f93ba11753a4cb6c6bd68e69d89c4de5092bdef541"
+    }
+  ],
+  "readOnlyReports": [
+    {
+      "path": "repo-audit.md",
+      "bytes": 14286,
+      "sha256": "3cd2a00d839598dca1061e431e32d49a2998704c266e35cb3a6f14c6c8946387"
+    },
+    {
+      "path": "asset-inventory.md",
+      "bytes": 20953,
+      "sha256": "6d29459d8a74420fe4cb63b1c2ef5cb88ea750cf02eb6fd5710b4c03d235fd5a"
+    },
+    {
+      "path": "performance-preflight.md",
+      "bytes": 10850,
+      "sha256": "b3cdd9acbf0c3383b3f1307a8f1b1e45bdaff8f4b632068e7c9fc5a0009a0e57"
+    }
+  ],
+  "observedBlocker": "Native CarrierOverlap at target X -6050.001908093691, 341000000mg carrier, 2984400000mg full material; no route completion",
+  "hardwareScope": "NOT_OBSERVED; declared Mesa wrapper software backend, not hardware acceptance",
+  "errors": [
+    {
+      "time": "2026-10-12T06:26:25.388Z",
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    }
+  ],
+  "inventoryReviewCorrection": "Archive package-status SHA807187fc differs from Root current report SHA4048cd1e captured by assetreader; inventory sentence claiming byte equality is inaccurate. Relevant original native/source/reference hashes remain separately bound. Root control files also legitimately change during inventory; not a final shared-product seal."
+}

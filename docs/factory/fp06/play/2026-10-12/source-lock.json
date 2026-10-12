@@ -1,0 +1,229 @@
+{
+  "schema": "hestia.fp06.play-source-lock/v1",
+  "openedAtUtc": "2026-10-12T06:25:55.138956+00:00",
+  "repository": "BenjaminHornung/Weltraum-Spiel",
+  "localImplementationBaseSha": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+  "rootControlBaseSha": "245dcb61401b9785486545365b7d31bb452d89c2",
+  "remoteMainSha": "e40592c113b72a8dc93725187f92cf948e07f44d",
+  "remoteMainIsImplementationBasis": false,
+  "previousSourceLock": "../../source-lock.json",
+  "sourcePrecedence": [
+    "current explicit user instruction",
+    "current actual repository rules and confirmed scoped product contracts",
+    "verified original FP01-FP06",
+    "new follow-up review as accepted bounded implementation brief",
+    "historical reviews/evidence only for their recorded scopes"
+  ],
+  "followupArchiveSha256": "ecf6008dda77d54fd585bcacef06fca9acfcff2486031fdfb15018b8b7af1a75",
+  "followupSources": [
+    {
+      "path": "DOCUMENT_CHECK.json",
+      "bytes": 401,
+      "sha256": "4627c6fe78719f44a48a84ce73c10f949aa639b39811cb178725846af3bd5c17",
+      "verified": true
+    },
+    {
+      "path": "HESTIA_CODEX_FOLGEAUFTRAG_SPIELBARER_PROTOTYP_STARTPROMPT_2026-10-12.md",
+      "bytes": 6902,
+      "sha256": "ac0afab8364d40efcc98691437e59ce9cd28f815d1cc58c173cd773e2130f813",
+      "verified": true
+    },
+    {
+      "path": "HESTIA_FP06_SPIELBARER_PROTOTYP_REVIEW_FOLGEAUFTRAG_2026-10-12.md",
+      "bytes": 48084,
+      "sha256": "c7dc0493b67ab7637360973c7de18c4fc5c9b832ab2c3191d14bf285763c0152",
+      "verified": true
+    },
+    {
+      "path": "README_START_HIER.md",
+      "bytes": 1529,
+      "sha256": "a5e8b8609751537c0ee37521262708022c9668d130b58ba486f1bc8d503a7646",
+      "verified": true
+    },
+    {
+      "path": "REVIEW_EVIDENCE.json",
+      "bytes": 1959,
+      "sha256": "192c995d6530011c0b25ca684f2b4862cc27ee969f6346f89c3219c0f071c8d1",
+      "verified": true
+    },
+    {
+      "path": "heavy-route-start-site-v2.md",
+      "bytes": 8362,
+      "sha256": "5fd528af5b7fdddf467905f26087090a295ff65c3e15bb2dd843134f6aaee7c7",
+      "verified": true
+    },
+    {
+      "path": "package-status-current.md",
+      "bytes": 15725,
+      "sha256": "807187fc6a0f1d1f3eae5b205aea890f8f2d77222c7c302f74838b01a991fb15",
+      "verified": true
+    },
+    {
+      "path": "referenzen/HESTIA_FP01_EINSTIEG_ENERGIE_DETAILPLAN_2026-10-10.md",
+      "bytes": 183726,
+      "sha256": "ec3e605de2c6a4877c2ff0afae244b3215e7bf8bb267feef4c466b546477080c",
+      "verified": true
+    },
+    {
+      "path": "referenzen/HESTIA_FP02_PRODUKTIONSKETTEN_GEBAEUDE_LAYOUTS_DETAILPLAN_2026-10-10.md",
+      "bytes": 164696,
+      "sha256": "5c4f068edba3d0c89e77b0d3a40734d4ee1a672c39f3885cbfef31430d942f39",
+      "verified": true
+    },
+    {
+      "path": "referenzen/HESTIA_FP06_PROTOTYPEN_TECHNISCHE_INTEGRATION_IMPLEMENTIERUNGSPAKETE_2026-10-10.md",
+      "bytes": 195396,
+      "sha256": "501bf5d80ee6dec9627e48ea27c271b3f964d21cde61ce9410be7eb77fa182ea",
+      "verified": true
+    }
+  ],
+  "priorAcceptedPackages": {
+    "W00": {
+      "status": "PASS",
+      "commitSha": "656c52458eff15133025bb21dc3e5b7b708cfbf7"
+    },
+    "W01": {
+      "status": "PASS",
+      "commitSha": "a30630dd7963c165c673df7ea1b46d52735752ef"
+    },
+    "W02": {
+      "status": "PASS",
+      "commitSha": "10e1e3026610065206d8ac4b361d3f1686114dd8"
+    },
+    "W03": {
+      "status": "PASS",
+      "commitSha": "fee8f3bf4b971fc3a5e56884d245126b6b264b3d"
+    },
+    "W04": {
+      "status": "PASS",
+      "commitSha": "6929bf2447b72c9f3f8fa3bcae0a59c0691966c0"
+    },
+    "W05": {
+      "status": "PASS",
+      "commitSha": "26d5e892c2b401b9011234dabf86955af7462fb8"
+    },
+    "W06": {
+      "status": "PASS",
+      "commitSha": "2c044e02f1f31a2db3de3a0df9156bd71a431a7a"
+    },
+    "W07": {
+      "status": "PASS",
+      "commitSha": "823fe92df37aa11ac5c59e9aa377cbfdc84e3c30"
+    },
+    "W08": {
+      "status": "PASS",
+      "commitSha": "8d22fc9907d84bf2ff6b257299ff47fb23b112ff"
+    }
+  },
+  "priorW09PartialCommitSha": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+  "milestones": {
+    "PLAY-00": {
+      "status": "PASS_SCOPE_BEFORE_CAPTURE_AND_AUDIT_ONLY",
+      "productWrites": false,
+      "rootWitness": "play00-root-witness.json"
+    },
+    "PLAY-01": {
+      "status": "IN_PROGRESS",
+      "grant": "grants/play-01-integrator.json",
+      "implementationWriteHold": false,
+      "ownerTerrainAcceptance": "OWNER_REVIEW_PENDING"
+    },
+    "PLAY-02": {
+      "status": "IN_PROGRESS",
+      "grant": "grants/play-02-art.json",
+      "ownerArtAcceptance": "OWNER_REVIEW_PENDING"
+    },
+    "PLAY-03/04/06": {
+      "status": "NOT_RUN",
+      "grant": null
+    },
+    "W09": {
+      "status": "IN_PROGRESS",
+      "endGateStatus": "NOT_RUN",
+      "packageAcceptanceCommitSha": null
+    },
+    "W10": {
+      "status": "BLOCKED_DEPENDENCY",
+      "blockingGate": "W09_PASS"
+    },
+    "W11": {
+      "status": "BLOCKED_DEPENDENCY",
+      "blockingGate": "W10_PASS"
+    }
+  },
+  "newAuthorizationBoundaries": {
+    "isolatedExactV2Candidate": "AUTHORIZED_AFTER_EXACT_ROOT_GRANT",
+    "additionalGeometry": "EXACT_SEPARATE_PROPOSAL_REQUIRED",
+    "targetedCompositionInvestigation": "AUTHORIZED_PENDING_EXACT_MEASUREMENT_GRANT",
+    "blenderAssetsAndUIMapOnboarding": "AUTHORIZED_PENDING_EXACT_WRITER_GRANTS",
+    "terrainArtUsabilityGeneralHardwareAcceptance": "OWNER_REVIEW_PENDING",
+    "publishingPushMainMerge": "NOT_AUTHORIZED"
+  },
+  "baselineProductBytes": [
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+      "bytes": 2121,
+      "sha256": "53725bbf06af6be92ac1b3b3e250ee6548e37bb6abf8500b4cd50e09b1ec1a29"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+      "bytes": 38423,
+      "sha256": "13128d7ad3151da644ae909af0dbb0e2df0e91066c01f55ee566f7eedc1fdaca"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+      "bytes": 4071,
+      "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+      "bytes": 10087,
+      "sha256": "da5fc8501828850272aeb3e55e93cce37f57c288961fb81b2c5aec9f09e9afdf"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+      "bytes": 175076,
+      "sha256": "66ec6f330dc7d6cf7c25851fc20b3ae17bb0daf8faad8827efe6d45dff81198d"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/factoryEntry.ts",
+      "bytes": 13665,
+      "sha256": "d6ef6be3e810ee815857f739a832eae04e5b80d99804a870999712d5006c4dd7"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+      "bytes": 2143,
+      "sha256": "6cc02b9d07b7f3180ce515cc39f093a0d89d8c2487ddfe4bdccd68c99d097b9f"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+      "bytes": 2746,
+      "sha256": "abe6b53b1e5927b4756823b133e2b704a417a533bb520d94eb1c4a5df5fab86f"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-coast-source.test.ts",
+      "bytes": 25321,
+      "sha256": "ee3a980d39a5b13fe17547c8b12fc51f066a76ea003576ee6cfc2f63ba739909"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+      "bytes": 83663,
+      "sha256": "1af43b680ce07f6799f0f59a846abd9538a59f97d851868df24a12dd6d3cef51"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+      "bytes": 62333,
+      "sha256": "20f4480c965480cf097e1c4541a31868c02595ea4dbaae4445718b6a315917cc"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+      "bytes": 39743,
+      "sha256": "33a2402978e78952c5b926bcc3ee0003d54527c311268f20d418b482ab53c0d0"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts",
+      "bytes": 7458,
+      "sha256": "7388c9a34b2ba37e07b67a4c857d24ac861a74135157222ed9b17bc93307c42f"
+    }
+  ]
+}

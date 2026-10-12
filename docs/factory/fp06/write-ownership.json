@@ -29,7 +29,10 @@
     "apps/weltraum-browser/src/hestia-prototype/player/locomotion.ts"
   ],
   "sharedPathGrant": "ONLY exact packageScopes.grantedWriteSet after recorded gates; no blanket shared-path permission. Shared contract/host/physics/save/config files remain integrator-exclusive.",
-  "activeImplementationWriters": [],
+  "activeImplementationWriters": [
+    "/root/fp06_integrator",
+    "/root/play_art"
+  ],
   "activeDocumentationWriter": {
     "agent": "/root",
     "branch": "codex/hestia-fp06-w00-2026-10-11",
@@ -4219,5 +4222,13 @@
       "originalSnapshotChanged": false,
       "installerOrBrowserExecuted": false
     }
+  },
+  "activeFollowupWindow": {
+    "path": "play/2026-10-12",
+    "sourceLock": "play/2026-10-12/source-lock.json",
+    "writeOwnership": "play/2026-10-12/write-ownership.json",
+    "plan": "play/2026-10-12/exec-plan.md",
+    "authorization": "Explicit new user follow-up; prior W09 grants remain closed; new candidate grants authoritative for this window",
+    "status": "PLAY00_BEFORE_CAPTURE_SCOPE_PASS; PLAY01_EXACT_V2_CANDIDATE_AND_PLAY02_ART_IN_PROGRESS; W09_ENDGATE_NOT_RUN"
   }
 }

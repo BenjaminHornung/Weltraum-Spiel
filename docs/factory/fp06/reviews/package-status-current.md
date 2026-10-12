@@ -1,5 +1,7 @@
 # FP06 aktueller Paketstand
 
+> Aktive Fortsetzung seit dem ausdrücklichen Folgeauftrag vom 12.10.: [PLAY-ExecPlan](../play/2026-10-12/exec-plan.md), [neuer Source-Lock](../play/2026-10-12/source-lock.json) und [neue Schreibgrenzen](../play/2026-10-12/write-ownership.json). PLAY-00 läuft im unveränderten lokalen Integratorstand. Die folgenden Paket-/Gate-Ergebnisse dokumentieren den zuletzt abgeschlossenen Stand; neue Candidates erben daraus keinen PASS und keine historische Schreibfreigabe.
+
 Stand: `2026-10-12T00:21:57.963431+00:00`. W09 ist als reviewbarer Teilstand committed und BLOCKED; sein Endgate wurde nicht ausgeführt. Remote-Main wurde am 12.10. um 00:18 UTC mit Exit 0 erneut als `e40592c113b72a8dc93725187f92cf948e07f44d` geprüft. Das ursprüngliche Worktree war sauber.
 
 | Paket | Status | Agent | Branch | Vollständiger Paketcommit | Dateien, Tests, Review und Evidence |

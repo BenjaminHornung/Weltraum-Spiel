@@ -1,0 +1,113 @@
+{
+  "schema": "hestia.fp06.play-grant/v1",
+  "milestone": "PLAY-01",
+  "actor": "/root/fp06_integrator",
+  "baseCommitSha": "96cced23cd285b57f8a557d01ac9ed8a158c927f",
+  "branch": "codex/hestia-fp06-play-candidate-2026-10-12",
+  "worktree": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11",
+  "controlPlane": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/play/2026-10-12",
+  "authorizedAtUtc": "2026-10-12T06:25:55.138956+00:00",
+  "authorization": "Explicit user follow-up of 2026-10-12 after read-only local path/conflict audit; exact isolated V2 candidate, not final terrain acceptance",
+  "status": "GRANTED",
+  "implementationWriteHold": false,
+  "releaseCondition": "Actual normal unchanged PLAY-00 before capture and report finalized; then Root releases this exact grant",
+  "writeSet": [
+    "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+    "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+    "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+    "apps/weltraum-browser/src/factory/session/hostPort.ts",
+    "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+    "apps/weltraum-browser/src/factory/factoryEntry.ts",
+    "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-coast-source.test.ts",
+    "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+    "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+    "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts"
+  ],
+  "beforeBytes": [
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/startSite.ts",
+      "bytes": 2121,
+      "sha256": "53725bbf06af6be92ac1b3b3e250ee6548e37bb6abf8500b4cd50e09b1ec1a29"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpCoastSource.ts",
+      "bytes": 38423,
+      "sha256": "13128d7ad3151da644ae909af0dbb0e2df0e91066c01f55ee566f7eedc1fdaca"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/fixtures/cargoSite.ts",
+      "bytes": 4071,
+      "sha256": "83fa38b62b88c8f0c7f9351a1d30617b2704d4c04a21bb64fcc5084e8739ef0c"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/session/hostPort.ts",
+      "bytes": 10087,
+      "sha256": "da5fc8501828850272aeb3e55e93cce37f57c288961fb81b2c5aec9f09e9afdf"
+    },
+    {
+      "path": "apps/weltraum-browser/src/hvp/hvpBootstrap.ts",
+      "bytes": 175076,
+      "sha256": "66ec6f330dc7d6cf7c25851fc20b3ae17bb0daf8faad8827efe6d45dff81198d"
+    },
+    {
+      "path": "apps/weltraum-browser/src/factory/factoryEntry.ts",
+      "bytes": 13665,
+      "sha256": "d6ef6be3e810ee815857f739a832eae04e5b80d99804a870999712d5006c4dd7"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/startSite.test.ts",
+      "bytes": 2143,
+      "sha256": "6cc02b9d07b7f3180ce515cc39f093a0d89d8c2487ddfe4bdccd68c99d097b9f"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/cargoSite.test.ts",
+      "bytes": 2746,
+      "sha256": "abe6b53b1e5927b4756823b133e2b704a417a533bb520d94eb1c4a5df5fab86f"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-coast-source.test.ts",
+      "bytes": 25321,
+      "sha256": "ee3a980d39a5b13fe17547c8b12fc51f066a76ea003576ee6cfc2f63ba739909"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/hvp-bootstrap.test.ts",
+      "bytes": 83663,
+      "sha256": "1af43b680ce07f6799f0f59a846abd9538a59f97d851868df24a12dd6d3cef51"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/hostLifecycle.test.ts",
+      "bytes": 62333,
+      "sha256": "20f4480c965480cf097e1c4541a31868c02595ea4dbaae4445718b6a315917cc"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/facilitySession.test.ts",
+      "bytes": 39743,
+      "sha256": "33a2402978e78952c5b926bcc3ee0003d54527c311268f20d418b482ab53c0d0"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/e2e/factory-dry-flow.spec.ts",
+      "bytes": 7458,
+      "sha256": "7388c9a34b2ba37e07b67a4c857d24ac861a74135157222ed9b17bc93307c42f"
+    }
+  ],
+  "evidenceWriteSet": [
+    "apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/<actual-run-id>/**"
+  ],
+  "scratchEvidenceRoot": "/workspace/.cloud-setup/fp06-play-2026-10-12/PLAY-01",
+  "constraints": [
+    "exact three additive V2 masks only; all 15 V1 masks/Coast/V1 source unchanged",
+    "actual sparse diff/digest; no inventory credit",
+    "no collider/foot/yaw/player pose/coverage/capacity/budget bypass",
+    "normal real input heavy pickup/depot/player exit/install/battery/cables",
+    "no package/lock/engine/dependency/timeout changes",
+    "no W10 or W11 implementation until dependency gate",
+    "no other product writes without exact Root amendment"
+  ],
+  "ownerTerrainAcceptance": "OWNER_REVIEW_PENDING",
+  "releasedAtUtc": "2026-10-12T06:35:06.823023+00:00",
+  "releaseEvidence": "play00-root-witness.json",
+  "releaseEvidenceSha256": "3a463a3cddabeeb8fdefe63e468b1249660dcb22a07f11caa3ab1acf2108deb8"
+}
