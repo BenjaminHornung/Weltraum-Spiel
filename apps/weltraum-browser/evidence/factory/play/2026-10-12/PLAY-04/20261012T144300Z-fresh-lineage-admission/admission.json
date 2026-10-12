@@ -1,0 +1,25 @@
+{
+  "grant": "/workspace/Weltraum-Spiel/.worktrees/fp06-w00-2026-10-11/docs/factory/fp06/play/2026-10-12/grants/play-04-fresh-lineage-admission.json",
+  "sourceCommit": "58cb6556b280d206a7e8a24a502e5c7a66763990",
+  "actor": "/root/play_integrator",
+  "before": "Both exact targets observed ABSENT before mutation",
+  "sourceBlobsVerified": [
+    {
+      "path": "apps/weltraum-browser/src/factory/session/freshLineageProjection.ts",
+      "bytes": 21559,
+      "sha256": "1e9af3acee02be76ded8a0ffc7be5a4cde3044cfc6046ff7c137c0e9cd1ced59"
+    },
+    {
+      "path": "apps/weltraum-browser/tests/unit/factory/freshLineageProjection.test.ts",
+      "bytes": 23570,
+      "sha256": "89bb59d59b8349e4324cc8d21d59313b2d127f8869d3d6911043cf663650cbc8"
+    }
+  ],
+  "independentReview": {
+    "path": "reviews/play-04-fresh-lineage-source-review.md",
+    "bytes": 16575,
+    "sha256": "18b78b58c4b018dd4c4b9f3a981fd223b98c3308f99045bbb7b7b926e92460c1",
+    "verdict": "BOUNDED_SOURCE_23_GUARD_TSC_PASS_0P1P2"
+  },
+  "scope": "Immutable pure helper and tests only; current shared drafts preserved. Native/normal16kg/Save/Worldauthority not accepted by this import."
+}
