@@ -1,0 +1,34 @@
+{
+  "observedAtUtc": "2026-10-12T07:58:11.772298+00:00",
+  "normalHeavyPartial": "PASS with actual final native/read-only assertions",
+  "carrier341kgColliderCount": 5,
+  "installedB07MassMg": 341000000,
+  "installedNativeColliderCount": 34,
+  "materialTotalMg": 2984400000,
+  "playerExit": {
+    "x": -4.2500152587890625,
+    "y": 2.4000446796417236,
+    "z": -1.4750295877456665
+  },
+  "sourceDigest": "ec8ba9b1",
+  "factoryNativeProduction": [
+    {
+      "instanceId": "facility_b07_1",
+      "profileDigest": "e567f7ef",
+      "sourceDigest": "13c8ba14",
+      "installationRevision": 4,
+      "terrainRevision": 0,
+      "facilityRevision": 4,
+      "confirmed": true,
+      "supported": true,
+      "serviceClear": true,
+      "sweepClear": true,
+      "accessible": true
+    }
+  ],
+  "battery3cables": "NOT_RUN",
+  "beginnerUsability": "OWNER_REVIEW_PENDING",
+  "performance": "NOT_MET",
+  "save": "NOT_RUN",
+  "idle16Cause": "OPEN; missing original Clock capture; new35sprobe Running throughout"
+}

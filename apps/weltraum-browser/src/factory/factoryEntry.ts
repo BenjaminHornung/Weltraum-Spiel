@@ -1,4 +1,4 @@
-import { materializeFactoryStartSite,readFactorySourceColumnWorld } from "./fixtures/startSite";
+import { materializeFactoryStartSiteV2,readFactorySourceColumnWorldV2 } from "./fixtures/startSite";
 import { createFactoryBuildTool } from "./ui/buildTool";
 import { readMaterialMassMg } from "./material/resourcesAdapter";
 import {mountFactoryCargoPanel,createFactoryPanel} from "./ui/cargoPanel";
@@ -112,7 +112,7 @@ const extension: FactoryHostExtension = async host => {
 };
 
 /** The real HVP mount guard owns exclusivity; there is no parallel renderer/World. */
-export const startFactoryEntry = (): Promise<HvpBootstrapHandle> => startHvp({ factoryExtension: extension,createSourceSnapshot:materializeFactoryStartSite,factorySourceProfile:{version:"hvp-factory-startsite-v1",readColumn:readFactorySourceColumnWorld} });
+export const startFactoryEntry = (): Promise<HvpBootstrapHandle> => startHvp({ factoryExtension: extension,createSourceSnapshot:materializeFactoryStartSiteV2,factorySourceProfile:{version:"hvp-factory-startsite-v2",readColumn:readFactorySourceColumnWorldV2} });
 void startFactoryEntry().catch(error => {
   const status = document.createElement("p"); status.setAttribute("role", "alert");
   status.textContent = `Werkstatt konnte nicht starten: ${String(error)}`; document.body.append(status);

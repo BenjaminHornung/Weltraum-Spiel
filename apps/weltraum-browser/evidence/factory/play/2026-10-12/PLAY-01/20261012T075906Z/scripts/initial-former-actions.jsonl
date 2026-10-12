@@ -1,0 +1,28 @@
+{"kind":"capture","label":"01-v2-normal-entry"}
+{"kind":"click","name":"Fracht öffnen"}
+{"kind":"click","name":"Spielen · WASD / Maus / Space"}
+{"kind":"walk","axis":"x","target":-5.75}
+{"kind":"key","key":"Escape"}
+{"kind":"click","name":"Zur Inspektionsansicht"}
+{"kind":"click","name":"Aufnehmen: B07-BOM"}
+{"kind":"capture","label":"02-paid-341kg-pickup"}
+{"kind":"click","name":"Spielen · WASD / Maus / Space"}
+{"kind":"walk","axis":"z","target":12.175}
+{"kind":"walk","axis":"x","target":-8.25}
+{"kind":"capture","label":"03-heavy-west-corridor"}
+{"kind":"walk","axis":"z","target":-1.5}
+{"kind":"walk","axis":"x","target":-6.25}
+{"kind":"capture","label":"04-supported-depot-approach"}
+{"kind":"key","key":"Escape"}
+{"kind":"click","name":"Zur Inspektionsansicht"}
+{"kind":"click","name":"Hier ablegen"}
+{"kind":"capture","label":"05-local-341kg-depot"}
+{"kind":"click","name":"Spielen · WASD / Maus / Space"}
+{"kind":"walk","axis":"x","target":-4.25}
+{"kind":"capture","label":"06-player-exit-from-former-hull"}
+{"kind":"key","key":"Escape"}
+{"kind":"click","name":"Zur Inspektionsansicht"}
+{"kind":"click","name":"Umformung vorschauen"}
+{"kind":"capture","label":"07-paid-former-ghost"}
+{"kind":"click","name":"Bau bestätigen"}
+{"kind":"capture","label":"08-paid-native-former"}

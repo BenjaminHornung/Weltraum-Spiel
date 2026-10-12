@@ -1,0 +1,42 @@
+{
+  "schema": "hestia.fp06.play-owned-evidence/v1",
+  "actor": "/root/play_integrator",
+  "artifacts": [
+    {
+      "path": "01-readonly-shoulder-proposal.command.json",
+      "bytes": 2887,
+      "sha256": "bba87d656164af93941e7278533991768827a6a3f3f1e7d496aa070b904d5f7a"
+    },
+    {
+      "path": "01-readonly-shoulder-proposal.log",
+      "bytes": 3191,
+      "sha256": "8a120a1e0e4ace8dccc3fb83250ddb8ed1841e9fd605adb7acf3fd01066db9a6"
+    },
+    {
+      "path": "01-readonly-shoulder-proposal.raw.log.gz",
+      "bytes": 1396,
+      "sha256": "e8fa495af24d81f3dc5642706a0e0dec477d977fa79ad6c29ad58c9c524b33c1"
+    },
+    {
+      "path": "proposal-report.md",
+      "bytes": 1306,
+      "sha256": "f7fbc18dd2c8b5d725d941821b8788f34e0e3d3fe4b3d83d317acbb130eb7a1e"
+    },
+    {
+      "path": "scripts/shoulder-proposal-census.mjs",
+      "bytes": 6151,
+      "sha256": "57747f37fcdf08876bf59a62454810521c708ff840cd7eac473295bec76e6cc1"
+    },
+    {
+      "path": "shoulder-proposal-census.json",
+      "bytes": 33100,
+      "sha256": "ed57d233cb0e38edfcb7af39498cdb5652805cc72c810592e5ba81eb0d46591d"
+    },
+    {
+      "path": "v2-to-shoulder-proposal-sparse-slot-diff.json",
+      "bytes": 34890,
+      "sha256": "8a35adf0e084f1d6ed28c7f9e9d50b5b85fedad649ab02f480fb7933b841856e"
+    }
+  ],
+  "claim": "bounded claims in report; fullW09/owner/hardware pending"
+}

@@ -271,6 +271,35 @@ describe("HVP T08 bootstrap lifecycle", () => {
   // instead of the 5 s default so slow environments report real failures.
   vi.setConfig({ testTimeout: 120_000 });
 
+  it("PLAY01 V2 bootstrap admits only its explicitly matching Factory profile",async()=>{
+    const fixture=await import("../../src/factory/fixtures/startSite");
+    const extension=async()=>({isQuiescent:()=>true,dispose:async()=>{}});
+    const invalidPhysicalProfile={version:"hvp-factory-startsite-v2",readColumn:(x:number,z:number)=>x===8.0625&&z===7.0625?{topMeters:0,slot:0}:fixture.readFactorySourceColumnWorldV2(x,z)};
+    for(const [name,profile,factoryExtension,ready] of [
+      ["matching",{version:"hvp-factory-startsite-v2",readColumn:fixture.readFactorySourceColumnWorldV2},extension,true],
+      ["V1 mismatch",{version:"hvp-factory-startsite-v1",readColumn:fixture.readFactorySourceColumnWorld},extension,false],
+      ["missing",undefined,extension,false],
+      ["without Factory",{version:"hvp-factory-startsite-v2",readColumn:fixture.readFactorySourceColumnWorldV2},undefined,false],
+      ["unknown version",{version:"hvp-factory-startsite-v3",readColumn:fixture.readFactorySourceColumnWorldV2},extension,false],
+      ["additional invalid physical plant",invalidPhysicalProfile,extension,false]
+    ] as const){
+      const source=harness(),original=source.overrides()!;
+      const handle=await startHvp(source.overrides({createSourceSnapshot:fixture.materializeFactoryStartSiteV2,factorySourceProfile:profile,factoryExtension,
+        // Actual source binding with declared Native reply fixture; physical admission is tested in the normal browser.
+        createPhysics:async(...args:Parameters<NonNullable<typeof original.createPhysics>>)=>{
+          const native=await original.createPhysics!(...args),read=native.read,site=args[10]!;
+          return {...native,read:()=>({...read(),factoryFacilities:{revision:0,state:"Idle" as const,transactionId:null,owners:[],prepared:null,
+            cargo:{site,ownerId:site.ownerId,containerId:site.containerId,sourceDigest:site.sourceDigest,profileDigest:site.profileDigest,opened:false,positionMm:site.centerMm,accessBoundsMm:site.accessBoundsMm,bodyHandle:4,colliderHandles:[5],accessible:true,openReceipt:null}}})};
+        }}));
+      try{
+        const alert=descendants(source.body).find(e=>e.textContent.startsWith("Technical initialization failure:"));
+        expect(source.body.dataset.hestiaPrototypeState,`${name}: ${alert?.textContent??""}`).toBe(ready?"Ready":"Error");
+        if(ready){expect(source.body.dataset.hestiaPrototypeSourceDigest).toBe("ec8ba9b1");expect(source.body.dataset.hestiaPrototypeVegetationCount).toBe("96");}
+        else{expect(source.counts().renders,name).toBe(0);expect(source.windowPort.animationFrames.size,name).toBe(0);}
+      }finally{await handle.dispose();}
+    }
+  });
+
   it("W09 projects actual carrier mass, movement veto and deposit guidance into the normal HUD",async()=>{
     // Actual Bootstrap/HUD path with declared Native transport reply fixture; no physical admission claim.
     const f=await factoryCarrierHostFixture();const text=(id:string)=>descendants(f.source.body).find(e=>e.id===id)!.textContent;
@@ -774,13 +803,16 @@ describe("HVP T08 bootstrap lifecycle", () => {
     const handle = await startHvp(source.overrides({
       createPhysics: async (...args: Parameters<NonNullable<typeof original.createPhysics>>) => {
         const native = await original.createPhysics!(...args), read = native.read;
-        return { ...native, read: () => ({ ...read(), ticks: tick, status }) };
+        // Declared transport fixture for the current Host read contract, not Native facility admission.
+        return { ...native, read: () => ({ ...read(), ticks: tick, status,
+          factoryFacilities:{revision:0,state:"Idle" as const,transactionId:null,owners:[],prepared:null} }) };
       }, factoryExtension: async (host: FactoryHostPort) => {
         session = await mountFactorySession(host, createFp02Fixture("cargo").catalog);
         host.subscribeConfirmed(view => { observations.push(view); }); return session;
       }
     }));
     try {
+      expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
       status = "CoverageHold"; tick = 23; stepFrame(source.windowPort, 16);
       expect(observations.at(-1)).toMatchObject({ physicsStatus: "CoverageHold", confirmed: false });
       expect(session.read()).toMatchObject({ state: "WaitingForHost", nativeTick: 17, steps: 0 });
@@ -853,10 +885,13 @@ describe("HVP T08 bootstrap lifecycle", () => {
     const handle = await startHvp(source.overrides({
       createPhysics: async (...args: Parameters<NonNullable<typeof original.createPhysics>>) => {
         const native = await original.createPhysics!(...args), read = native.read;
-        return { ...native, read: () => ({ ...read(), ticks: tick }), command: async (kind: string) => { commands.push(kind); } };
+        // Same declared empty facility fixture; real World/custody tests remain separate.
+        return { ...native, read: () => ({ ...read(), ticks: tick,
+          factoryFacilities:{revision:0,state:"Idle" as const,transactionId:null,owners:[],prepared:null} }), command: async (kind: string) => { commands.push(kind); } };
       }, factoryExtension: async (host: FactoryHostPort) => { session = await mountFactorySession(host, createFp02Fixture("cargo").catalog); return session; }
     }));
     try {
+      expect(source.body.dataset.hestiaPrototypeState).toBe("Ready");
       tick = -1; stepFrame(source.windowPort, 16); expect(session.read().state).toBe("RecoveryHold");
       descendants(source.body).find(e => e.id === "hvp-end-session")!.dispatchEvent(new Event("click"));
       await vi.waitFor(() => { expect(descendants(source.body).find(e => e.id === "hvp-ended")).toBeDefined(); });

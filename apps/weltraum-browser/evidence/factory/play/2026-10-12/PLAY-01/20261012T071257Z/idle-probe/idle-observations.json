@@ -1,0 +1,2258 @@
+[
+  {
+    "observedAtUtc": "2026-10-12T07:48:16.417Z",
+    "nativeStatus": "Running",
+    "ticks": 407,
+    "backlogSeconds": 0.0009666666674117384,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 407,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 31.799999999813735,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.20000000018626451,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": null,
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:17.605Z",
+    "nativeStatus": "Running",
+    "ticks": 475,
+    "backlogSeconds": 0.0036333333340784063,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 475,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 34.10000000055879,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.7000000001862645,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": null,
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:18.729Z",
+    "nativeStatus": "Running",
+    "ticks": 543,
+    "backlogSeconds": 0.006200000000186286,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 543,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 36.40000000037253,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.20000000018626451,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": null,
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:19.809Z",
+    "nativeStatus": "Running",
+    "ticks": 603,
+    "backlogSeconds": 0.014200000000186282,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 603,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 36.40000000037253,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.20000000018626451,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": null,
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:20.949Z",
+    "nativeStatus": "Running",
+    "ticks": 678,
+    "backlogSeconds": 0.002300000000745074,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 678,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 36.40000000037253,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.40000000037252903,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": null,
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:22.032Z",
+    "nativeStatus": "Running",
+    "ticks": 737,
+    "backlogSeconds": 0.0048666666668529465,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 737,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 36.40000000037253,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 7.1000000005587935,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": null,
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:23.089Z",
+    "nativeStatus": "Running",
+    "ticks": 808,
+    "backlogSeconds": 0.0055333333335196265,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 808,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 38.299999999813735,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.5,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": null,
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:24.157Z",
+    "nativeStatus": "Running",
+    "ticks": 870,
+    "backlogSeconds": 0.012200000000186294,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 870,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 38.299999999813735,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.40000000037252903,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": null,
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:25.335Z",
+    "nativeStatus": "Running",
+    "ticks": 937,
+    "backlogSeconds": 0.0009333333338921619,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 937,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 38.299999999813735,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.39999999944120646,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": null,
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:26.410Z",
+    "nativeStatus": "Running",
+    "ticks": 1006,
+    "backlogSeconds": 0.0015333333335196542,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 1006,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 38.299999999813735,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.40000000037252903,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": {
+        "geometries": 123,
+        "materials": 19,
+        "representations": 123,
+        "ownedCpuBytes": 25354392,
+        "previewCount": 0
+      },
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:27.593Z",
+    "nativeStatus": "Running",
+    "ticks": 1075,
+    "backlogSeconds": 0.00353333333351967,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 1075,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 38.299999999813735,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.2999999998137355,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": {
+        "geometries": 123,
+        "materials": 19,
+        "representations": 123,
+        "ownedCpuBytes": 25354392,
+        "previewCount": 0
+      },
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:28.661Z",
+    "nativeStatus": "Running",
+    "ticks": 1141,
+    "backlogSeconds": 0.007533333333519684,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 1141,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 38.299999999813735,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.2999999998137355,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": {
+        "geometries": 123,
+        "materials": 19,
+        "representations": 123,
+        "ownedCpuBytes": 25354392,
+        "previewCount": 0
+      },
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:29.732Z",
+    "nativeStatus": "Running",
+    "ticks": 1210,
+    "backlogSeconds": 0.009533333333519703,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 1210,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 38.299999999813735,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.2999999998137355,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": {
+        "geometries": 123,
+        "materials": 19,
+        "representations": 123,
+        "ownedCpuBytes": 25354392,
+        "previewCount": 0
+      },
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:30.787Z",
+    "nativeStatus": "Running",
+    "ticks": 1264,
+    "backlogSeconds": 0.00553333333351971,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 1264,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 38.299999999813735,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.5,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": {
+        "geometries": 123,
+        "materials": 19,
+        "representations": 123,
+        "ownedCpuBytes": 25354392,
+        "previewCount": 0
+      },
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:31.846Z",
+    "nativeStatus": "Running",
+    "ticks": 1332,
+    "backlogSeconds": 0.008500000000000112,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 1332,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 38.299999999813735,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.2999999998137355,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": {
+        "geometries": 123,
+        "materials": 19,
+        "representations": 123,
+        "ownedCpuBytes": 25354392,
+        "previewCount": 0
+      },
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:32.972Z",
+    "nativeStatus": "Running",
+    "ticks": 1392,
+    "backlogSeconds": 0.002300000000745185,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 1392,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 38.299999999813735,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.40000000037252903,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": {
+        "geometries": 123,
+        "materials": 19,
+        "representations": 123,
+        "ownedCpuBytes": 25354392,
+        "previewCount": 0
+      },
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:34.168Z",
+    "nativeStatus": "Running",
+    "ticks": 1472,
+    "backlogSeconds": 0.010866666666853056,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 1472,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 38.299999999813735,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.6000000005587935,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": {
+        "geometries": 123,
+        "materials": 19,
+        "representations": 123,
+        "ownedCpuBytes": 25354392,
+        "previewCount": 0
+      },
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:35.295Z",
+    "nativeStatus": "Running",
+    "ticks": 1530,
+    "backlogSeconds": 0.004200000000186402,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 1530,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 38.299999999813735,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.599999999627471,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": {
+        "geometries": 123,
+        "materials": 19,
+        "representations": 123,
+        "ownedCpuBytes": 25354392,
+        "previewCount": 0
+      },
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:36.411Z",
+    "nativeStatus": "Running",
+    "ticks": 1604,
+    "backlogSeconds": 0.003066666667039329,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 1604,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 39.90000000037253,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.39999999944120646,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": {
+        "geometries": 123,
+        "materials": 19,
+        "representations": 123,
+        "ownedCpuBytes": 25354392,
+        "previewCount": 0
+      },
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:37.503Z",
+    "nativeStatus": "Running",
+    "ticks": 1674,
+    "backlogSeconds": 0.004200000000186419,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 1674,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 39.90000000037253,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.39999999944120646,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": {
+        "geometries": 123,
+        "materials": 19,
+        "representations": 123,
+        "ownedCpuBytes": 25354392,
+        "previewCount": 0
+      },
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:38.555Z",
+    "nativeStatus": "Running",
+    "ticks": 1731,
+    "backlogSeconds": 0.014900000000372681,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 1731,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 39.90000000037253,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.40000000037252903,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": {
+        "geometries": 123,
+        "materials": 19,
+        "representations": 123,
+        "ownedCpuBytes": 25354392,
+        "previewCount": 0
+      },
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:39.615Z",
+    "nativeStatus": "Running",
+    "ticks": 1792,
+    "backlogSeconds": 0.005533333333519748,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 1792,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 48.19999999925494,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.39999999944120646,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": {
+        "geometries": 123,
+        "materials": 19,
+        "representations": 123,
+        "ownedCpuBytes": 25354392,
+        "previewCount": 0
+      },
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:40.810Z",
+    "nativeStatus": "Running",
+    "ticks": 1855,
+    "backlogSeconds": 0.011633333334078545,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 1855,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 48.19999999925494,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.30000000074505806,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": {
+        "geometries": 123,
+        "materials": 19,
+        "representations": 123,
+        "ownedCpuBytes": 25354392,
+        "previewCount": 0
+      },
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:41.966Z",
+    "nativeStatus": "Running",
+    "ticks": 1935,
+    "backlogSeconds": 0.006200000000186435,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 1935,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 48.19999999925494,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.2999999998137355,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": {
+        "geometries": 123,
+        "materials": 19,
+        "representations": 123,
+        "ownedCpuBytes": 25354392,
+        "previewCount": 0
+      },
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:43.043Z",
+    "nativeStatus": "Running",
+    "ticks": 2006,
+    "backlogSeconds": 0.006866666666853125,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 2006,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 48.19999999925494,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.40000000037252903,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": {
+        "geometries": 123,
+        "materials": 19,
+        "representations": 123,
+        "ownedCpuBytes": 25354392,
+        "previewCount": 0
+      },
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:44.177Z",
+    "nativeStatus": "Running",
+    "ticks": 2072,
+    "backlogSeconds": 0.01086666666685316,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 2072,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 48.19999999925494,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.5,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": {
+        "geometries": 123,
+        "materials": 19,
+        "representations": 123,
+        "ownedCpuBytes": 25354392,
+        "previewCount": 0
+      },
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:45.365Z",
+    "nativeStatus": "Running",
+    "ticks": 2140,
+    "backlogSeconds": 0.014033333333519818,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 2140,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 48.19999999925494,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.2999999998137355,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": {
+        "geometries": 123,
+        "materials": 19,
+        "representations": 123,
+        "ownedCpuBytes": 25354392,
+        "previewCount": 0
+      },
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:46.503Z",
+    "nativeStatus": "Running",
+    "ticks": 2202,
+    "backlogSeconds": 0.004300000000745281,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 2202,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 48.19999999925494,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 1.2000000001862645,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": {
+        "geometries": 123,
+        "materials": 19,
+        "representations": 123,
+        "ownedCpuBytes": 25354392,
+        "previewCount": 0
+      },
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:47.613Z",
+    "nativeStatus": "Running",
+    "ticks": 2276,
+    "backlogSeconds": 0.0037666666672256793,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 2276,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 48.19999999925494,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.2999999998137355,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": {
+        "geometries": 123,
+        "materials": 19,
+        "representations": 123,
+        "ownedCpuBytes": 25354392,
+        "previewCount": 0
+      },
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:48.852Z",
+    "nativeStatus": "Running",
+    "ticks": 2351,
+    "backlogSeconds": 0.0008666666668531511,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 2351,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 48.19999999925494,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.2999999998137355,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": {
+        "geometries": 123,
+        "materials": 19,
+        "representations": 123,
+        "ownedCpuBytes": 25354392,
+        "previewCount": 0
+      },
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:50.062Z",
+    "nativeStatus": "Running",
+    "ticks": 2424,
+    "backlogSeconds": 0.016600000000559015,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 2424,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 48.19999999925494,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.40000000037252903,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": {
+        "geometries": 123,
+        "materials": 19,
+        "representations": 123,
+        "ownedCpuBytes": 25354392,
+        "previewCount": 0
+      },
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:51.279Z",
+    "nativeStatus": "Running",
+    "ticks": 2491,
+    "backlogSeconds": 0.003733333333706075,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 2491,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 48.19999999925494,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.599999999627471,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": {
+        "geometries": 123,
+        "materials": 19,
+        "representations": 123,
+        "ownedCpuBytes": 25354392,
+        "previewCount": 0
+      },
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:52.446Z",
+    "nativeStatus": "Running",
+    "ticks": 2563,
+    "backlogSeconds": 0.0035333333335198155,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 2563,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 48.19999999925494,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.20000000018626451,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": {
+        "geometries": 123,
+        "materials": 19,
+        "representations": 123,
+        "ownedCpuBytes": 25354392,
+        "previewCount": 0
+      },
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:53.528Z",
+    "nativeStatus": "Running",
+    "ticks": 2634,
+    "backlogSeconds": 0.00450000000000024,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 2634,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 48.19999999925494,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.2999999998137355,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": {
+        "geometries": 123,
+        "materials": 19,
+        "representations": 123,
+        "ownedCpuBytes": 25354392,
+        "previewCount": 0
+      },
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  },
+  {
+    "observedAtUtc": "2026-10-12T07:48:54.720Z",
+    "nativeStatus": "Running",
+    "ticks": 2703,
+    "backlogSeconds": 0.006200000000186518,
+    "discardedSeconds": 0,
+    "player": {
+      "ownerId": "hvp:player",
+      "position": {
+        "x": -5.5,
+        "y": 2.4200000762939453,
+        "z": 11.875
+      },
+      "grounded": false,
+      "velocityY": 0,
+      "jumpCount": 0,
+      "cameraFraction": 1,
+      "status": "Inspection"
+    },
+    "uiState": "Ready",
+    "host": {
+      "sessionId": "hvp-session-1",
+      "epoch": 1,
+      "nativeTick": 2703,
+      "physicsStatus": "Running",
+      "confirmed": true,
+      "terrain": {
+        "epoch": 1,
+        "revision": 0,
+        "sourceDigest": "ec8ba9b1",
+        "baseDigest": "ec8ba9b1",
+        "cellMeters": 0.125,
+        "originMeters": {
+          "x": -16,
+          "y": -8,
+          "z": -16
+        },
+        "sizeX": 256,
+        "sizeY": 128,
+        "sizeZ": 256
+      }
+    },
+    "diagnostics": {
+      "physicsClock": {
+        "maxTimerGapMs": 48.19999999925494,
+        "maxAdvanceMs": 12.200000000186265,
+        "maxHandlerMs": 1139.6000000005588,
+        "lastCommand": "Read",
+        "lastHandlerMs": 0.2999999998137355,
+        "delayedCallbacks": [],
+        "timers": 1
+      },
+      "physicsWorkers": "2",
+      "ownedRender": {
+        "geometries": 123,
+        "materials": 19,
+        "representations": 123,
+        "ownedCpuBytes": 25354392,
+        "previewCount": 0
+      },
+      "visibility": "visible",
+      "hasFocus": true,
+      "pointerLockElement": null,
+      "inputError": null
+    }
+  }
+]

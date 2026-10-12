@@ -28,7 +28,7 @@ export const assertFactoryCargoSite=(site:FactoryCargoSite):void=>{
 export const copyFactoryCargoSite=(site:FactoryCargoSite):FactoryCargoSite=>{assertFactoryCargoSite(site);const profile=data(site.sourceDigest);return freeze({...profile,canonicalJson:canonicalJson(profile),profileDigest:canonicalSignature(profile)});};
 /** Checks actual current source slots, including untouched natural support and the real player hull. */
 export const createFactoryCargoSite=(source:HvpCoastSourceSnapshot):FactoryCargoSite=>{
-  if(source.version!=="hvp-factory-startsite-v1"||source.originMeters.x!==-16||source.originMeters.y!==-8||source.originMeters.z!==-16||source.cellMeters!==.125)throw new Error("CargoSite source frame mismatch");
+  if((source.version!=="hvp-factory-startsite-v1"&&source.version!=="hvp-factory-startsite-v2")||source.originMeters.x!==-16||source.originMeters.y!==-8||source.originMeters.z!==-16||source.cellMeters!==.125)throw new Error("CargoSite source frame mismatch");
   const read=(x:number,y:number,z:number)=>{const ix=Math.floor((x+16000)/125),iy=Math.floor((y+8000)/125),iz=Math.floor((z+16000)/125);if(ix<0||ix>=256||iy<0||iy>=128||iz<0||iz>=256)throw new Error("CargoSite unknown coverage");return source.readSlot(ix,iy,iz);};
   const profile=data(source.sourceDigest);
   for(let z=12687.5;z<13625;z+=125)for(let x=-6187.5;x<-4750;x+=125){if(read(x,1249,z)===0)throw new Error("CargoSite support missing");for(let y=1312.5;y<2750;y+=125)if(read(x,y,z)!==0)throw new Error("CargoSite body clearance blocked");}

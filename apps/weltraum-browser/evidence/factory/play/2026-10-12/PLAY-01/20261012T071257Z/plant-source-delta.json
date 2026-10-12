@@ -1,0 +1,19 @@
+{
+  "v1PlannedCount": 97,
+  "v2PlannedCount": 97,
+  "v1Invalid": [],
+  "v2Invalid": [
+    {
+      "id": "hvp:flora:bed-52-220",
+      "kind": "broadleaf",
+      "variant": 1,
+      "position": {
+        "x": -9.5,
+        "y": 2.5,
+        "z": 11.5
+      }
+    }
+  ],
+  "proposedV2ValidCount": 96,
+  "policy": "Proposed initial V2 source-derived habitat rejection only; Coast and V1 planning remain byte-identical; no Native mutation or collider shape change performed"
+}

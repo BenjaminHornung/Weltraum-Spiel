@@ -25,7 +25,7 @@ export interface FactoryNativeHandlingPort {
   rollback(id:string):Promise<void>;
   finalize(id:string):Promise<void>;
 }
-export interface FactorySourceProfile { readonly version:"hvp-factory-startsite-v1"; readColumn(x:number,z:number):HvpSourceColumn }
+export interface FactorySourceProfile { readonly version:"hvp-factory-startsite-v1"|"hvp-factory-startsite-v2"; readColumn(x:number,z:number):HvpSourceColumn }
 /** Read-only capability of the existing HVP host, never another World owner. */
 export interface FactoryHostView {
   readonly sessionId: string;

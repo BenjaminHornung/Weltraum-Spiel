@@ -2,7 +2,7 @@ import { beforeAll,expect,it } from "vitest";
 import { createFactoryFacilitySession } from "../../../src/hestia-prototype/physics/factoryFacilitySession";
 import { R,initializeHvpRapier } from "../../../src/hestia-prototype/physics/rapierPort";
 import { createFactoryCargoSite,assertFactoryCargoSite } from "../../../src/factory/fixtures/cargoSite";
-import { materializeFactoryStartSite } from "../../../src/factory/fixtures/startSite";
+import { materializeFactoryStartSite,materializeFactoryStartSiteV2 } from "../../../src/factory/fixtures/startSite";
 it("W07 initial Cargo binds one actual source-owner outside the machine zone, not a player-relative point",()=>{
  const source=materializeFactoryStartSite();
  expect(createFactoryCargoSite(source)).toBeDefined();
@@ -26,4 +26,12 @@ it("W07 source Cargo keeps closed canonical geometry, and rejects modified pose 
  const source=materializeFactoryStartSite(),site=createFactoryCargoSite(source);expect(site.boundsMm.min[2]).toBeGreaterThan(12500);expect(Object.isFrozen(site.centerMm)).toBe(true);
  expect(()=>assertFactoryCargoSite({...site,centerMm:[0,2000,13125]})).toThrow(/geometry/);
  expect(()=>createFactoryCargoSite({...source,readSlot:()=>0})).toThrow(/support/);
+});
+it("PLAY01 V2 Cargo binds the new real source while preserving the exact V1 geometry and ownership",()=>{
+ const v1=createFactoryCargoSite(materializeFactoryStartSite()),source=materializeFactoryStartSiteV2(),v2=createFactoryCargoSite(source);
+ expect(v2.sourceDigest).toBe(source.sourceDigest);expect(v2.profileDigest).not.toBe(v1.profileDigest);
+ for(const key of ["version","ownerId","containerId","centerMm","sizeMm","boundsMm","accessPointMm","accessBoundsMm","spawnMm","geometryPolicy","sourceRefs"] as const)expect(v2[key]).toEqual(v1[key]);
+ expect(()=>assertFactoryCargoSite(v2)).not.toThrow();
+ expect(()=>createFactoryCargoSite({...source,version:"hvp-factory-startsite-v3"})).toThrow(/frame/);
+ expect(()=>createFactoryCargoSite({...source,originMeters:{x:-16,y:0,z:-16}})).toThrow(/frame/);
 });

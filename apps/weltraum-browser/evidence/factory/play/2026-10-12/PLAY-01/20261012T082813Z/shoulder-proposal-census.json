@@ -1,0 +1,1197 @@
+{
+  "schema": "hestia.fp06.play-source-proposal-census/v1",
+  "status": "READONLY_PROPOSAL_NOT_RUNTIME; OWNER_REVIEW_PENDING",
+  "currentDigest": "ec8ba9b1",
+  "proposedDigestUnderExistingV2Header": "e569c7fd",
+  "currentSlotsSha256": "a380a6b29746d731ebf02d29fdd27fd15d38dc16bfd67b4cb2bec175b0c8264f",
+  "proposedSlotsSha256": "267230ca09cf7d8a9fa0d6f6bc2e3fac6cc0cd7adaaf2af57c3c24d60a6187d7",
+  "slotCount": 8388608,
+  "original15MasksUnchanged": true,
+  "restV2BytesUnchanged": true,
+  "currentAdditionalColumns": 380,
+  "proposedAddressedColumns": 760,
+  "additionalAddressedColumns": 380,
+  "changedColumns": 289,
+  "changedSlots": 2492,
+  "added": 268,
+  "removed": 2224,
+  "replaced": 0,
+  "materialCreditMg": 0,
+  "cellMeters": 0.125,
+  "addedAreaMm2": 5937500,
+  "proposedTotalFlatColumns": 5240,
+  "carrierFootColliderPolicyAndBudgetsUnchanged": true,
+  "perMask": [
+    {
+      "id": "S1",
+      "before": [
+        0.75,
+        6,
+        3.25,
+        3.5
+      ],
+      "proposed": [
+        0.75,
+        6,
+        3,
+        3.5
+      ],
+      "addressedColumns": 168,
+      "additionalColumns": 84,
+      "changedColumns": 84,
+      "added": 0,
+      "removed": 964
+    },
+    {
+      "id": "S2",
+      "before": [
+        8,
+        15.5,
+        3.25,
+        3.5
+      ],
+      "proposed": [
+        8,
+        15.5,
+        3,
+        3.5
+      ],
+      "addressedColumns": 240,
+      "additionalColumns": 120,
+      "changedColumns": 66,
+      "added": 48,
+      "removed": 528
+    },
+    {
+      "id": "S3",
+      "before": [
+        2,
+        13,
+        4.5,
+        4.75
+      ],
+      "proposed": [
+        2,
+        13,
+        4.5,
+        5
+      ],
+      "addressedColumns": 352,
+      "additionalColumns": 176,
+      "changedColumns": 139,
+      "added": 220,
+      "removed": 732
+    }
+  ],
+  "flora": {
+    "current": {
+      "plannedCount": 97,
+      "invalid": [
+        {
+          "id": "hvp:flora:bed-52-220",
+          "kind": "broadleaf",
+          "variant": 1,
+          "position": {
+            "x": -9.5,
+            "y": 2.5,
+            "z": 11.5
+          }
+        }
+      ],
+      "validCount": 96,
+      "woodOwners": [
+        {
+          "id": "hvp:flora:hero",
+          "position": {
+            "x": 8,
+            "y": 0.75,
+            "z": 7
+          },
+          "digest": "912f6018",
+          "woodSlotsSha256": "dc0683f9ec347e4494344138f1771d0ae27d2577089a3637df52e52607576516",
+          "decorationPhysics": "none"
+        },
+        {
+          "id": "hvp:flora:east-young",
+          "position": {
+            "x": 12,
+            "y": 0.375,
+            "z": -6
+          },
+          "digest": "a2660ad9",
+          "woodSlotsSha256": "323694c7e55eebf1b44cef76e74290e8afc438e92ff27d568eb4e8ed8cad96a3",
+          "decorationPhysics": "none"
+        }
+      ]
+    },
+    "proposal": {
+      "plannedCount": 97,
+      "invalid": [
+        {
+          "id": "hvp:flora:bed-52-220",
+          "kind": "broadleaf",
+          "variant": 1,
+          "position": {
+            "x": -9.5,
+            "y": 2.5,
+            "z": 11.5
+          }
+        }
+      ],
+      "validCount": 96,
+      "woodOwners": [
+        {
+          "id": "hvp:flora:hero",
+          "position": {
+            "x": 8,
+            "y": 0.75,
+            "z": 7
+          },
+          "digest": "912f6018",
+          "woodSlotsSha256": "dc0683f9ec347e4494344138f1771d0ae27d2577089a3637df52e52607576516",
+          "decorationPhysics": "none"
+        },
+        {
+          "id": "hvp:flora:east-young",
+          "position": {
+            "x": 12,
+            "y": 0.375,
+            "z": -6
+          },
+          "digest": "a2660ad9",
+          "woodSlotsSha256": "323694c7e55eebf1b44cef76e74290e8afc438e92ff27d568eb4e8ed8cad96a3",
+          "decorationPhysics": "none"
+        }
+      ]
+    },
+    "woodOwnersByteEqual": true
+  },
+  "batteryFirstVetoSourceAnalysis": {
+    "actualNativeReason": "CarrierSupport",
+    "actualPlayer": {
+      "x": -7.847768783569336,
+      "y": 2.4000189304351807,
+      "z": 3.530683994293213
+    },
+    "actualTargetMm": [
+      -7797.768782824278,
+      2400.0189304351807,
+      3530.683994293213
+    ],
+    "carrierCenterAtTarget": {
+      "x": -7.797768782824278,
+      "z": 2.530683994293213
+    },
+    "centerTop": 1.5,
+    "currentUnequalSamples": 10,
+    "proposalUnequalSamples": 0,
+    "samples": [
+      {
+        "x": -8.110258782824278,
+        "z": 2.218193994293213,
+        "east": 10.281806005706787,
+        "north": 4.139741217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.110258782824278,
+        "z": 2.249433994293213,
+        "east": 10.250566005706787,
+        "north": 4.139741217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.110258782824278,
+        "z": 2.280683994293213,
+        "east": 10.219316005706787,
+        "north": 4.139741217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.110258782824278,
+        "z": 2.311933994293213,
+        "east": 10.188066005706787,
+        "north": 4.139741217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.110258782824278,
+        "z": 2.343173994293213,
+        "east": 10.156826005706787,
+        "north": 4.139741217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.079018782824278,
+        "z": 2.218193994293213,
+        "east": 10.281806005706787,
+        "north": 4.170981217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.079018782824278,
+        "z": 2.249433994293213,
+        "east": 10.250566005706787,
+        "north": 4.170981217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.079018782824278,
+        "z": 2.280683994293213,
+        "east": 10.219316005706787,
+        "north": 4.170981217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.079018782824278,
+        "z": 2.311933994293213,
+        "east": 10.188066005706787,
+        "north": 4.170981217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.079018782824278,
+        "z": 2.343173994293213,
+        "east": 10.156826005706787,
+        "north": 4.170981217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.047768782824278,
+        "z": 2.218193994293213,
+        "east": 10.281806005706787,
+        "north": 4.202231217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.047768782824278,
+        "z": 2.249433994293213,
+        "east": 10.250566005706787,
+        "north": 4.202231217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.047768782824278,
+        "z": 2.280683994293213,
+        "east": 10.219316005706787,
+        "north": 4.202231217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.047768782824278,
+        "z": 2.311933994293213,
+        "east": 10.188066005706787,
+        "north": 4.202231217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.047768782824278,
+        "z": 2.343173994293213,
+        "east": 10.156826005706787,
+        "north": 4.202231217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.016518782824278,
+        "z": 2.218193994293213,
+        "east": 10.281806005706787,
+        "north": 4.233481217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.016518782824278,
+        "z": 2.249433994293213,
+        "east": 10.250566005706787,
+        "north": 4.233481217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.016518782824278,
+        "z": 2.280683994293213,
+        "east": 10.219316005706787,
+        "north": 4.233481217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.016518782824278,
+        "z": 2.311933994293213,
+        "east": 10.188066005706787,
+        "north": 4.233481217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.016518782824278,
+        "z": 2.343173994293213,
+        "east": 10.156826005706787,
+        "north": 4.233481217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.9852787828242775,
+        "z": 2.218193994293213,
+        "east": 10.281806005706787,
+        "north": 4.2647212171757225,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.9852787828242775,
+        "z": 2.249433994293213,
+        "east": 10.250566005706787,
+        "north": 4.2647212171757225,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.9852787828242775,
+        "z": 2.280683994293213,
+        "east": 10.219316005706787,
+        "north": 4.2647212171757225,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.9852787828242775,
+        "z": 2.311933994293213,
+        "east": 10.188066005706787,
+        "north": 4.2647212171757225,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.9852787828242775,
+        "z": 2.343173994293213,
+        "east": 10.156826005706787,
+        "north": 4.2647212171757225,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.110258782824278,
+        "z": 2.718193994293213,
+        "east": 9.781806005706787,
+        "north": 4.139741217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.110258782824278,
+        "z": 2.749433994293213,
+        "east": 9.750566005706787,
+        "north": 4.139741217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.110258782824278,
+        "z": 2.780683994293213,
+        "east": 9.719316005706787,
+        "north": 4.139741217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.110258782824278,
+        "z": 2.811933994293213,
+        "east": 9.688066005706787,
+        "north": 4.139741217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.110258782824278,
+        "z": 2.843173994293213,
+        "east": 9.656826005706787,
+        "north": 4.139741217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.079018782824278,
+        "z": 2.718193994293213,
+        "east": 9.781806005706787,
+        "north": 4.170981217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.079018782824278,
+        "z": 2.749433994293213,
+        "east": 9.750566005706787,
+        "north": 4.170981217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.079018782824278,
+        "z": 2.780683994293213,
+        "east": 9.719316005706787,
+        "north": 4.170981217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.079018782824278,
+        "z": 2.811933994293213,
+        "east": 9.688066005706787,
+        "north": 4.170981217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.079018782824278,
+        "z": 2.843173994293213,
+        "east": 9.656826005706787,
+        "north": 4.170981217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.047768782824278,
+        "z": 2.718193994293213,
+        "east": 9.781806005706787,
+        "north": 4.202231217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.047768782824278,
+        "z": 2.749433994293213,
+        "east": 9.750566005706787,
+        "north": 4.202231217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.047768782824278,
+        "z": 2.780683994293213,
+        "east": 9.719316005706787,
+        "north": 4.202231217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.047768782824278,
+        "z": 2.811933994293213,
+        "east": 9.688066005706787,
+        "north": 4.202231217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.047768782824278,
+        "z": 2.843173994293213,
+        "east": 9.656826005706787,
+        "north": 4.202231217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.016518782824278,
+        "z": 2.718193994293213,
+        "east": 9.781806005706787,
+        "north": 4.233481217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.016518782824278,
+        "z": 2.749433994293213,
+        "east": 9.750566005706787,
+        "north": 4.233481217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.016518782824278,
+        "z": 2.780683994293213,
+        "east": 9.719316005706787,
+        "north": 4.233481217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.016518782824278,
+        "z": 2.811933994293213,
+        "east": 9.688066005706787,
+        "north": 4.233481217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -8.016518782824278,
+        "z": 2.843173994293213,
+        "east": 9.656826005706787,
+        "north": 4.233481217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.9852787828242775,
+        "z": 2.718193994293213,
+        "east": 9.781806005706787,
+        "north": 4.2647212171757225,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.9852787828242775,
+        "z": 2.749433994293213,
+        "east": 9.750566005706787,
+        "north": 4.2647212171757225,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.9852787828242775,
+        "z": 2.780683994293213,
+        "east": 9.719316005706787,
+        "north": 4.2647212171757225,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.9852787828242775,
+        "z": 2.811933994293213,
+        "east": 9.688066005706787,
+        "north": 4.2647212171757225,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.9852787828242775,
+        "z": 2.843173994293213,
+        "east": 9.656826005706787,
+        "north": 4.2647212171757225,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.610258782824278,
+        "z": 2.218193994293213,
+        "east": 10.281806005706787,
+        "north": 4.639741217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.610258782824278,
+        "z": 2.249433994293213,
+        "east": 10.250566005706787,
+        "north": 4.639741217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.610258782824278,
+        "z": 2.280683994293213,
+        "east": 10.219316005706787,
+        "north": 4.639741217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.610258782824278,
+        "z": 2.311933994293213,
+        "east": 10.188066005706787,
+        "north": 4.639741217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.610258782824278,
+        "z": 2.343173994293213,
+        "east": 10.156826005706787,
+        "north": 4.639741217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.579018782824278,
+        "z": 2.218193994293213,
+        "east": 10.281806005706787,
+        "north": 4.670981217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.579018782824278,
+        "z": 2.249433994293213,
+        "east": 10.250566005706787,
+        "north": 4.670981217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.579018782824278,
+        "z": 2.280683994293213,
+        "east": 10.219316005706787,
+        "north": 4.670981217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.579018782824278,
+        "z": 2.311933994293213,
+        "east": 10.188066005706787,
+        "north": 4.670981217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.579018782824278,
+        "z": 2.343173994293213,
+        "east": 10.156826005706787,
+        "north": 4.670981217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.547768782824278,
+        "z": 2.218193994293213,
+        "east": 10.281806005706787,
+        "north": 4.702231217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.547768782824278,
+        "z": 2.249433994293213,
+        "east": 10.250566005706787,
+        "north": 4.702231217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.547768782824278,
+        "z": 2.280683994293213,
+        "east": 10.219316005706787,
+        "north": 4.702231217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.547768782824278,
+        "z": 2.311933994293213,
+        "east": 10.188066005706787,
+        "north": 4.702231217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.547768782824278,
+        "z": 2.343173994293213,
+        "east": 10.156826005706787,
+        "north": 4.702231217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.516518782824278,
+        "z": 2.218193994293213,
+        "east": 10.281806005706787,
+        "north": 4.733481217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.516518782824278,
+        "z": 2.249433994293213,
+        "east": 10.250566005706787,
+        "north": 4.733481217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.516518782824278,
+        "z": 2.280683994293213,
+        "east": 10.219316005706787,
+        "north": 4.733481217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.516518782824278,
+        "z": 2.311933994293213,
+        "east": 10.188066005706787,
+        "north": 4.733481217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.516518782824278,
+        "z": 2.343173994293213,
+        "east": 10.156826005706787,
+        "north": 4.733481217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.4852787828242775,
+        "z": 2.218193994293213,
+        "east": 10.281806005706787,
+        "north": 4.7647212171757225,
+        "currentTop": 1,
+        "proposalTop": 1.5,
+        "currentLevelMatches": false,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.4852787828242775,
+        "z": 2.249433994293213,
+        "east": 10.250566005706787,
+        "north": 4.7647212171757225,
+        "currentTop": 1,
+        "proposalTop": 1.5,
+        "currentLevelMatches": false,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.4852787828242775,
+        "z": 2.280683994293213,
+        "east": 10.219316005706787,
+        "north": 4.7647212171757225,
+        "currentTop": 1,
+        "proposalTop": 1.5,
+        "currentLevelMatches": false,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.4852787828242775,
+        "z": 2.311933994293213,
+        "east": 10.188066005706787,
+        "north": 4.7647212171757225,
+        "currentTop": 1,
+        "proposalTop": 1.5,
+        "currentLevelMatches": false,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.4852787828242775,
+        "z": 2.343173994293213,
+        "east": 10.156826005706787,
+        "north": 4.7647212171757225,
+        "currentTop": 1,
+        "proposalTop": 1.5,
+        "currentLevelMatches": false,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.610258782824278,
+        "z": 2.718193994293213,
+        "east": 9.781806005706787,
+        "north": 4.639741217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.610258782824278,
+        "z": 2.749433994293213,
+        "east": 9.750566005706787,
+        "north": 4.639741217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.610258782824278,
+        "z": 2.780683994293213,
+        "east": 9.719316005706787,
+        "north": 4.639741217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.610258782824278,
+        "z": 2.811933994293213,
+        "east": 9.688066005706787,
+        "north": 4.639741217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.610258782824278,
+        "z": 2.843173994293213,
+        "east": 9.656826005706787,
+        "north": 4.639741217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.579018782824278,
+        "z": 2.718193994293213,
+        "east": 9.781806005706787,
+        "north": 4.670981217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.579018782824278,
+        "z": 2.749433994293213,
+        "east": 9.750566005706787,
+        "north": 4.670981217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.579018782824278,
+        "z": 2.780683994293213,
+        "east": 9.719316005706787,
+        "north": 4.670981217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.579018782824278,
+        "z": 2.811933994293213,
+        "east": 9.688066005706787,
+        "north": 4.670981217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.579018782824278,
+        "z": 2.843173994293213,
+        "east": 9.656826005706787,
+        "north": 4.670981217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.547768782824278,
+        "z": 2.718193994293213,
+        "east": 9.781806005706787,
+        "north": 4.702231217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.547768782824278,
+        "z": 2.749433994293213,
+        "east": 9.750566005706787,
+        "north": 4.702231217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.547768782824278,
+        "z": 2.780683994293213,
+        "east": 9.719316005706787,
+        "north": 4.702231217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.547768782824278,
+        "z": 2.811933994293213,
+        "east": 9.688066005706787,
+        "north": 4.702231217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.547768782824278,
+        "z": 2.843173994293213,
+        "east": 9.656826005706787,
+        "north": 4.702231217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.516518782824278,
+        "z": 2.718193994293213,
+        "east": 9.781806005706787,
+        "north": 4.733481217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.516518782824278,
+        "z": 2.749433994293213,
+        "east": 9.750566005706787,
+        "north": 4.733481217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.516518782824278,
+        "z": 2.780683994293213,
+        "east": 9.719316005706787,
+        "north": 4.733481217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.516518782824278,
+        "z": 2.811933994293213,
+        "east": 9.688066005706787,
+        "north": 4.733481217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.516518782824278,
+        "z": 2.843173994293213,
+        "east": 9.656826005706787,
+        "north": 4.733481217175722,
+        "currentTop": 1.5,
+        "proposalTop": 1.5,
+        "currentLevelMatches": true,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.4852787828242775,
+        "z": 2.718193994293213,
+        "east": 9.781806005706787,
+        "north": 4.7647212171757225,
+        "currentTop": 1.25,
+        "proposalTop": 1.5,
+        "currentLevelMatches": false,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.4852787828242775,
+        "z": 2.749433994293213,
+        "east": 9.750566005706787,
+        "north": 4.7647212171757225,
+        "currentTop": 1.25,
+        "proposalTop": 1.5,
+        "currentLevelMatches": false,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.4852787828242775,
+        "z": 2.780683994293213,
+        "east": 9.719316005706787,
+        "north": 4.7647212171757225,
+        "currentTop": 1.25,
+        "proposalTop": 1.5,
+        "currentLevelMatches": false,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.4852787828242775,
+        "z": 2.811933994293213,
+        "east": 9.688066005706787,
+        "north": 4.7647212171757225,
+        "currentTop": 1.25,
+        "proposalTop": 1.5,
+        "currentLevelMatches": false,
+        "proposalLevelMatches": true
+      },
+      {
+        "x": -7.4852787828242775,
+        "z": 2.843173994293213,
+        "east": 9.656826005706787,
+        "north": 4.7647212171757225,
+        "currentTop": 1.25,
+        "proposalTop": 1.5,
+        "currentLevelMatches": false,
+        "proposalLevelMatches": true
+      }
+    ],
+    "limit": "Source-slot reconstruction of actual native sampling coordinates; captured veto has no blocking-collider/sample identifier. Not a live raycast or full cross-route proof; farther north gaps remain."
+  },
+  "sparseArtifact": {
+    "path": "v2-to-shoulder-proposal-sparse-slot-diff.json",
+    "bytes": 34890,
+    "sha256": "8a35adf0e084f1d6ed28c7f9e9d50b5b85fedad649ab02f480fb7933b841856e"
+  }
+}

@@ -1,0 +1,2431 @@
+{
+  "startedAtUtc": "2026-10-12T07:37:14.892Z",
+  "endedAtUtc": "2026-10-12T07:40:21.402Z",
+  "entry": "http://127.0.0.1:5174/factory.html",
+  "browserVersion": "154.0.8037.57",
+  "viewport": {
+    "width": 1280,
+    "height": 720,
+    "dpr": 1
+  },
+  "backend": "Declared software Mesa wrapper; hardware acceptance NOT_RUN",
+  "input": "normal visible UI and trusted CDP WASD; read-only diagnostics; no pose/world mutation",
+  "videoPath": "/workspace/Weltraum-Spiel/.worktrees/fp06-integrator-2026-10-11/apps/weltraum-browser/evidence/factory/play/2026-10-12/PLAY-01/20261012T071257Z/normal-route/video/page@48ea33b3f67be260c840efa64521c0cb.webm",
+  "events": [
+    {
+      "command": {
+        "kind": "capture",
+        "label": "01-v2-normal-entry"
+      },
+      "start": "2026-10-12T07:37:59.477Z",
+      "end": "2026-10-12T07:38:01.192Z",
+      "status": "completed",
+      "result": {
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.5,
+            "y": 2.4200000762939453,
+            "z": 11.875
+          },
+          "grounded": false,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Inspection"
+        },
+        "carrier": null,
+        "handling": null,
+        "inventory": [
+          {
+            "id": "fp02_wreck_cargo",
+            "role": "cargo",
+            "massMg": 2984400000,
+            "stackCount": 79
+          }
+        ],
+        "construction": {
+          "state": "Ready",
+          "installations": [],
+          "revision": 0,
+          "massMg": 2984400000,
+          "ghost": null
+        },
+        "connections": {
+          "power": [],
+          "belts": []
+        },
+        "deposits": [],
+        "power": {
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "buttons": [
+          {
+            "name": "Sitzung beenden",
+            "disabled": false
+          },
+          {
+            "name": "Spielen · WASD / Maus / Space",
+            "disabled": false
+          },
+          {
+            "name": "Perspektive: Ego (V)",
+            "disabled": false
+          },
+          {
+            "name": "C01-EYE",
+            "disabled": false
+          },
+          {
+            "name": "C02-SHORE",
+            "disabled": false
+          },
+          {
+            "name": "C03-ROOTS",
+            "disabled": false
+          },
+          {
+            "name": "C04-WIDE",
+            "disabled": false
+          },
+          {
+            "name": "C05-Felsarm",
+            "disabled": false
+          },
+          {
+            "name": "Felsarm-Stütze prüfen (ohne Schnitt)",
+            "disabled": false
+          },
+          {
+            "name": "Stütze anvisieren (2 + Klick)",
+            "disabled": false
+          },
+          {
+            "name": "Neustart: Felsarm",
+            "disabled": false
+          },
+          {
+            "name": "Neuer Bergungsauftrag",
+            "disabled": false
+          },
+          {
+            "name": "Neustart: Ostpfad",
+            "disabled": false
+          },
+          {
+            "name": "Ostregion erneut versuchen",
+            "disabled": false
+          },
+          {
+            "name": "Ansicht: Schnittstelle",
+            "disabled": false
+          },
+          {
+            "name": "L-Körper anvisieren (F)",
+            "disabled": false
+          },
+          {
+            "name": "Ast anvisieren (2 + Klick)",
+            "disabled": false
+          },
+          {
+            "name": "1: Zelle",
+            "disabled": false
+          },
+          {
+            "name": "2: Box",
+            "disabled": false
+          },
+          {
+            "name": "3: Kugel",
+            "disabled": false
+          },
+          {
+            "name": "Spielstand speichern",
+            "disabled": false
+          },
+          {
+            "name": "Spielstand laden",
+            "disabled": false
+          },
+          {
+            "name": "Gespeicherte Sitzung neu öffnen",
+            "disabled": false
+          },
+          {
+            "name": "Reset view",
+            "disabled": false
+          },
+          {
+            "name": "Water: on",
+            "disabled": false
+          },
+          {
+            "name": "Inspect: off",
+            "disabled": false
+          },
+          {
+            "name": "AO: on",
+            "disabled": false
+          },
+          {
+            "name": "Physik fortsetzen",
+            "disabled": false
+          },
+          {
+            "name": "Fallkörper neu starten",
+            "disabled": false
+          },
+          {
+            "name": "Hide UI",
+            "disabled": false
+          },
+          {
+            "name": "Werkstatt pausieren",
+            "disabled": true
+          },
+          {
+            "name": "Werkstatt fortsetzen",
+            "disabled": true
+          },
+          {
+            "name": "Wrackfracht öffnen",
+            "disabled": false
+          },
+          {
+            "name": "Zuschnitt vorschauen",
+            "disabled": false
+          },
+          {
+            "name": "Umformung vorschauen",
+            "disabled": false
+          },
+          {
+            "name": "Rohlager vorschauen",
+            "disabled": false
+          },
+          {
+            "name": "Produktlager vorschauen",
+            "disabled": false
+          },
+          {
+            "name": "Werkbank vorschauen",
+            "disabled": false
+          },
+          {
+            "name": "Neue Stütze platzieren",
+            "disabled": false
+          },
+          {
+            "name": "Batterie vorschauen",
+            "disabled": false
+          },
+          {
+            "name": "Verteiler vorschauen",
+            "disabled": false
+          },
+          {
+            "name": "Bauvorschau drehen",
+            "disabled": false
+          },
+          {
+            "name": "Bauvorschau verwerfen",
+            "disabled": false
+          },
+          {
+            "name": "Bau bestätigen",
+            "disabled": false
+          },
+          {
+            "name": "Fracht öffnen",
+            "disabled": true
+          },
+          {
+            "name": "Übertragen",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: C26-PACK",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: C27-PACK",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: B06-BOM",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: B07-BOM",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: BATTERY-PACK",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: DISTRIBUTOR-PACK",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: BENCH-PACK",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: BIN-PACK",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: BELT4",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: CABLE40",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: CABLE4750",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: CABLE6500",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: CABLE8000",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: CABLE7000",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: CABLE5250",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: CABLE7500",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: RAW8",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: MONTAGE",
+            "disabled": true
+          },
+          {
+            "name": "Expeditions-Windanlage",
+            "disabled": false
+          },
+          {
+            "name": "Expeditions-Solararray",
+            "disabled": false
+          },
+          {
+            "name": "Expeditionsbatterie",
+            "disabled": false
+          },
+          {
+            "name": "Expeditionsverteiler",
+            "disabled": false
+          },
+          {
+            "name": "Feldwerkbank",
+            "disabled": false
+          },
+          {
+            "name": "Zuschnittstation",
+            "disabled": false
+          },
+          {
+            "name": "Umformwerk",
+            "disabled": false
+          },
+          {
+            "name": "Gesteinsbrecher",
+            "disabled": false
+          },
+          {
+            "name": "Materialcontainer",
+            "disabled": false
+          },
+          {
+            "name": "Kleine Förderlinie",
+            "disabled": false
+          },
+          {
+            "name": "Bandverteiler / Zusammenführung",
+            "disabled": false
+          },
+          {
+            "name": "Fundamentfamilie",
+            "disabled": false
+          },
+          {
+            "name": "Biomasse-Zusatzgenerator",
+            "disabled": false
+          },
+          {
+            "name": "Montagezelle",
+            "disabled": false
+          },
+          {
+            "name": "Automatischer Flachschürfer",
+            "disabled": false
+          },
+          {
+            "name": "Einzelbau und Verbindungen",
+            "disabled": false
+          },
+          {
+            "name": "Gruppen kopieren und Blueprints speichern",
+            "disabled": false
+          },
+          {
+            "name": "Größere Ghost-Pläne",
+            "disabled": false
+          },
+          {
+            "name": "Automatische Bauqueues",
+            "disabled": false
+          },
+          {
+            "name": "Automatische Geländeprofile",
+            "disabled": false
+          },
+          {
+            "name": "Kabelgebundener Flachschürfer",
+            "disabled": false
+          },
+          {
+            "name": "Lokaler Vermessungsanker",
+            "disabled": false
+          },
+          {
+            "name": "Kompaktbagger",
+            "disabled": false
+          },
+          {
+            "name": "Planier- und Nivelliermaschine",
+            "disabled": false
+          },
+          {
+            "name": "Schwerer Tagebaubagger",
+            "disabled": false
+          },
+          {
+            "name": "Biomasse-Erntegerät",
+            "disabled": false
+          },
+          {
+            "name": "Mining-Hopper und Förderschleuse",
+            "disabled": false
+          },
+          {
+            "name": "Autonomer Frachtcrawler",
+            "disabled": false
+          },
+          {
+            "name": "Kipptransporter",
+            "disabled": false
+          },
+          {
+            "name": "Schüttgutdepot",
+            "disabled": false
+          },
+          {
+            "name": "Fahrzeugladebucht",
+            "disabled": false
+          },
+          {
+            "name": "Auftrags- und Logistikterminal",
+            "disabled": false
+          },
+          {
+            "name": "Schwerlastförderer",
+            "disabled": false
+          },
+          {
+            "name": "Bodenbasierter Kleinbauroboter",
+            "disabled": false
+          },
+          {
+            "name": "Montage- und Inspektionsdrohne",
+            "disabled": false
+          },
+          {
+            "name": "Mobiler Lastheber",
+            "disabled": false
+          },
+          {
+            "name": "Bau- und Reparaturdepot",
+            "disabled": false
+          },
+          {
+            "name": "Reparatur- und Inspektionseinheit",
+            "disabled": false
+          },
+          {
+            "name": "Expeditionsenergie",
+            "disabled": false
+          },
+          {
+            "name": "Einmalige Wind-Reassembly",
+            "disabled": false
+          },
+          {
+            "name": "Eigene Generatorfertigung aus Recycling",
+            "disabled": false
+          },
+          {
+            "name": "Geschlossene Rohstoffversorgung",
+            "disabled": false
+          },
+          {
+            "name": "Industrielle Energieversorgung",
+            "disabled": false
+          },
+          {
+            "name": "Selbst gefertigter Windgenerator",
+            "disabled": false
+          },
+          {
+            "name": "Proben- und Pegelmessanker",
+            "disabled": false
+          },
+          {
+            "name": "Geschütztes Wasserentnahmemodul",
+            "disabled": false
+          },
+          {
+            "name": "Prozesswasserpumpe",
+            "disabled": false
+          },
+          {
+            "name": "Rohrmodule und Kupplungen",
+            "disabled": false
+          },
+          {
+            "name": "Isolierventil",
+            "disabled": false
+          },
+          {
+            "name": "Prozesswassertank",
+            "disabled": false
+          },
+          {
+            "name": "Wasserfilter",
+            "disabled": false
+          },
+          {
+            "name": "Durchfluss-Messstück",
+            "disabled": false
+          },
+          {
+            "name": "Abwasserrückgewinnung",
+            "disabled": false
+          },
+          {
+            "name": "Kühlkreislaufträger",
+            "disabled": false
+          },
+          {
+            "name": "Rohrbrücke und Wartungslaufsteg",
+            "disabled": false
+          },
+          {
+            "name": "Nasskonzentrator",
+            "disabled": false
+          },
+          {
+            "name": "Eindicker und Absetzbecken",
+            "disabled": false
+          },
+          {
+            "name": "Filterpresse",
+            "disabled": false
+          },
+          {
+            "name": "Schrott- und Elektroniksortierung",
+            "disabled": false
+          },
+          {
+            "name": "Elektrische Recycling-Schmelze",
+            "disabled": false
+          },
+          {
+            "name": "Gieß- und Abkühlzelle",
+            "disabled": false
+          },
+          {
+            "name": "Präzisionsfräse",
+            "disabled": false
+          },
+          {
+            "name": "Industrie-Reparaturwerkstatt",
+            "disabled": false
+          },
+          {
+            "name": "Wärmetauscher",
+            "disabled": false
+          },
+          {
+            "name": "Industrielles Lastschaltwerk",
+            "disabled": false
+          },
+          {
+            "name": "Optionale thermische Energieanlage",
+            "disabled": false
+          },
+          {
+            "name": "Gasdruck- und Speichermodul",
+            "disabled": false
+          },
+          {
+            "name": "Abraum- und Reststoffhof",
+            "disabled": false
+          },
+          {
+            "name": "Flüssigkeitstransportfahrzeug",
+            "disabled": false
+          },
+          {
+            "name": "Großanlagen-Wartungsportal",
+            "disabled": false
+          },
+          {
+            "name": "Stadtrandtor",
+            "disabled": false
+          },
+          {
+            "name": "Stadtsektor-Verteilstation",
+            "disabled": false
+          },
+          {
+            "name": "Historisches Pumpwerk",
+            "disabled": false
+          },
+          {
+            "name": "Städtisches Industrieareal",
+            "disabled": false
+          },
+          {
+            "name": "Robotereinwohner und Ladebuchten",
+            "disabled": false
+          },
+          {
+            "name": "Archiv und historische KI-Infrastruktur",
+            "disabled": false
+          },
+          {
+            "name": "Stadt-Frachtterminal",
+            "disabled": false
+          },
+          {
+            "name": "Stadtkommunikation",
+            "disabled": false
+          },
+          {
+            "name": "Roboterreparatur",
+            "disabled": false
+          },
+          {
+            "name": "Sozialer Stadtplatz",
+            "disabled": false
+          },
+          {
+            "name": "Raumhafen und späteres Raumfahrtprogramm",
+            "disabled": false
+          },
+          {
+            "name": "Stadt-Schwarzstartinsel",
+            "disabled": false
+          },
+          {
+            "name": "Fuß-/Nivelliermodul",
+            "disabled": false
+          },
+          {
+            "name": "Kurze Stützstrebe",
+            "disabled": false
+          },
+          {
+            "name": "Kleine Deckplatte",
+            "disabled": false
+          },
+          {
+            "name": "Deckplatte klein",
+            "disabled": false
+          },
+          {
+            "name": "Langer Hauptträger",
+            "disabled": false
+          },
+          {
+            "name": "Konsol-/Wandstützelement",
+            "disabled": false
+          },
+          {
+            "name": "Rampenplatte",
+            "disabled": false
+          },
+          {
+            "name": "Arbeitsbühne",
+            "disabled": false
+          },
+          {
+            "name": "Treppen-/Leitersegment",
+            "disabled": false
+          },
+          {
+            "name": "Wandsegment",
+            "disabled": false
+          },
+          {
+            "name": "Tor-/Durchgangsrahmen",
+            "disabled": false
+          },
+          {
+            "name": "Dachsegment",
+            "disabled": false
+          },
+          {
+            "name": "Geländer",
+            "disabled": false
+          },
+          {
+            "name": "Bandträger",
+            "disabled": false
+          },
+          {
+            "name": "Kabel-/Leitungsträger",
+            "disabled": false
+          },
+          {
+            "name": "Eck-/Verbindungsstück",
+            "disabled": false
+          },
+          {
+            "name": "Expeditionsenergie",
+            "disabled": false
+          },
+          {
+            "name": "Biomasse-Peak",
+            "disabled": false
+          },
+          {
+            "name": "Einmalige Wind-Reassembly",
+            "disabled": false
+          },
+          {
+            "name": "Eigene Windfertigung",
+            "disabled": false
+          },
+          {
+            "name": "Größere erneuerbare Netze",
+            "disabled": false
+          },
+          {
+            "name": "Optionale thermische Versorgung",
+            "disabled": false
+          },
+          {
+            "name": "Stadt-/Raumhafennetz",
+            "disabled": false
+          },
+          {
+            "name": "REC-01-CUT",
+            "disabled": false
+          },
+          {
+            "name": "REC-02-PROFILE",
+            "disabled": false
+          },
+          {
+            "name": "REC-03-SHEET",
+            "disabled": false
+          },
+          {
+            "name": "REC-04-CRUSH",
+            "disabled": false
+          },
+          {
+            "name": "REC-05-BRACE",
+            "disabled": false
+          },
+          {
+            "name": "REC-06-DRIVE",
+            "disabled": false
+          },
+          {
+            "name": "REC-07-BELT",
+            "disabled": false
+          }
+        ],
+        "testBridge": false
+      }
+    },
+    {
+      "command": {
+        "kind": "click",
+        "name": "Fracht öffnen"
+      },
+      "start": "2026-10-12T07:38:01.197Z",
+      "end": "2026-10-12T07:38:31.207Z",
+      "status": "failed",
+      "error": "TimeoutError: locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Fracht öffnen', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button disabled type=\"button\">Fracht öffnen</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    36 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not enabled\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n"
+    },
+    {
+      "command": {
+        "kind": "click",
+        "name": "Spielen · WASD / Maus / Space"
+      },
+      "start": "2026-10-12T07:38:31.208Z",
+      "end": "2026-10-12T07:38:32.245Z",
+      "status": "completed",
+      "result": {
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.5,
+            "y": 2.4200000762939453,
+            "z": 11.875
+          },
+          "grounded": false,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Inspection"
+        },
+        "carrier": null,
+        "handling": null,
+        "inventory": [
+          {
+            "id": "fp02_wreck_cargo",
+            "role": "cargo",
+            "massMg": 2984400000,
+            "stackCount": 79
+          }
+        ],
+        "construction": {
+          "state": "Ready",
+          "installations": [],
+          "revision": 0,
+          "massMg": 2984400000,
+          "ghost": null
+        },
+        "connections": {
+          "power": [],
+          "belts": []
+        },
+        "deposits": [],
+        "power": {
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "buttons": [
+          {
+            "name": "Sitzung beenden",
+            "disabled": false
+          },
+          {
+            "name": "Spielen · WASD / Maus / Space",
+            "disabled": false
+          },
+          {
+            "name": "Perspektive: Ego (V)",
+            "disabled": false
+          },
+          {
+            "name": "C01-EYE",
+            "disabled": false
+          },
+          {
+            "name": "C02-SHORE",
+            "disabled": false
+          },
+          {
+            "name": "C03-ROOTS",
+            "disabled": false
+          },
+          {
+            "name": "C04-WIDE",
+            "disabled": false
+          },
+          {
+            "name": "C05-Felsarm",
+            "disabled": false
+          },
+          {
+            "name": "Felsarm-Stütze prüfen (ohne Schnitt)",
+            "disabled": false
+          },
+          {
+            "name": "Stütze anvisieren (2 + Klick)",
+            "disabled": false
+          },
+          {
+            "name": "Neustart: Felsarm",
+            "disabled": false
+          },
+          {
+            "name": "Neuer Bergungsauftrag",
+            "disabled": false
+          },
+          {
+            "name": "Neustart: Ostpfad",
+            "disabled": false
+          },
+          {
+            "name": "Ostregion erneut versuchen",
+            "disabled": false
+          },
+          {
+            "name": "Ansicht: Schnittstelle",
+            "disabled": false
+          },
+          {
+            "name": "L-Körper anvisieren (F)",
+            "disabled": false
+          },
+          {
+            "name": "Ast anvisieren (2 + Klick)",
+            "disabled": false
+          },
+          {
+            "name": "1: Zelle",
+            "disabled": false
+          },
+          {
+            "name": "2: Box",
+            "disabled": false
+          },
+          {
+            "name": "3: Kugel",
+            "disabled": false
+          },
+          {
+            "name": "Spielstand speichern",
+            "disabled": false
+          },
+          {
+            "name": "Spielstand laden",
+            "disabled": false
+          },
+          {
+            "name": "Gespeicherte Sitzung neu öffnen",
+            "disabled": false
+          },
+          {
+            "name": "Reset view",
+            "disabled": false
+          },
+          {
+            "name": "Water: on",
+            "disabled": false
+          },
+          {
+            "name": "Inspect: off",
+            "disabled": false
+          },
+          {
+            "name": "AO: on",
+            "disabled": false
+          },
+          {
+            "name": "Physik fortsetzen",
+            "disabled": false
+          },
+          {
+            "name": "Fallkörper neu starten",
+            "disabled": false
+          },
+          {
+            "name": "Hide UI",
+            "disabled": false
+          },
+          {
+            "name": "Werkstatt pausieren",
+            "disabled": true
+          },
+          {
+            "name": "Werkstatt fortsetzen",
+            "disabled": true
+          },
+          {
+            "name": "Wrackfracht öffnen",
+            "disabled": false
+          },
+          {
+            "name": "Zuschnitt vorschauen",
+            "disabled": false
+          },
+          {
+            "name": "Umformung vorschauen",
+            "disabled": false
+          },
+          {
+            "name": "Rohlager vorschauen",
+            "disabled": false
+          },
+          {
+            "name": "Produktlager vorschauen",
+            "disabled": false
+          },
+          {
+            "name": "Werkbank vorschauen",
+            "disabled": false
+          },
+          {
+            "name": "Neue Stütze platzieren",
+            "disabled": false
+          },
+          {
+            "name": "Batterie vorschauen",
+            "disabled": false
+          },
+          {
+            "name": "Verteiler vorschauen",
+            "disabled": false
+          },
+          {
+            "name": "Bauvorschau drehen",
+            "disabled": false
+          },
+          {
+            "name": "Bauvorschau verwerfen",
+            "disabled": false
+          },
+          {
+            "name": "Bau bestätigen",
+            "disabled": false
+          },
+          {
+            "name": "Fracht öffnen",
+            "disabled": true
+          },
+          {
+            "name": "Übertragen",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: C26-PACK",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: C27-PACK",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: B06-BOM",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: B07-BOM",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: BATTERY-PACK",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: DISTRIBUTOR-PACK",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: BENCH-PACK",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: BIN-PACK",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: BELT4",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: CABLE40",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: CABLE4750",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: CABLE6500",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: CABLE8000",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: CABLE7000",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: CABLE5250",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: CABLE7500",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: RAW8",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: MONTAGE",
+            "disabled": true
+          },
+          {
+            "name": "Expeditions-Windanlage",
+            "disabled": false
+          },
+          {
+            "name": "Expeditions-Solararray",
+            "disabled": false
+          },
+          {
+            "name": "Expeditionsbatterie",
+            "disabled": false
+          },
+          {
+            "name": "Expeditionsverteiler",
+            "disabled": false
+          },
+          {
+            "name": "Feldwerkbank",
+            "disabled": false
+          },
+          {
+            "name": "Zuschnittstation",
+            "disabled": false
+          },
+          {
+            "name": "Umformwerk",
+            "disabled": false
+          },
+          {
+            "name": "Gesteinsbrecher",
+            "disabled": false
+          },
+          {
+            "name": "Materialcontainer",
+            "disabled": false
+          },
+          {
+            "name": "Kleine Förderlinie",
+            "disabled": false
+          },
+          {
+            "name": "Bandverteiler / Zusammenführung",
+            "disabled": false
+          },
+          {
+            "name": "Fundamentfamilie",
+            "disabled": false
+          },
+          {
+            "name": "Biomasse-Zusatzgenerator",
+            "disabled": false
+          },
+          {
+            "name": "Montagezelle",
+            "disabled": false
+          },
+          {
+            "name": "Automatischer Flachschürfer",
+            "disabled": false
+          },
+          {
+            "name": "Einzelbau und Verbindungen",
+            "disabled": false
+          },
+          {
+            "name": "Gruppen kopieren und Blueprints speichern",
+            "disabled": false
+          },
+          {
+            "name": "Größere Ghost-Pläne",
+            "disabled": false
+          },
+          {
+            "name": "Automatische Bauqueues",
+            "disabled": false
+          },
+          {
+            "name": "Automatische Geländeprofile",
+            "disabled": false
+          },
+          {
+            "name": "Kabelgebundener Flachschürfer",
+            "disabled": false
+          },
+          {
+            "name": "Lokaler Vermessungsanker",
+            "disabled": false
+          },
+          {
+            "name": "Kompaktbagger",
+            "disabled": false
+          },
+          {
+            "name": "Planier- und Nivelliermaschine",
+            "disabled": false
+          },
+          {
+            "name": "Schwerer Tagebaubagger",
+            "disabled": false
+          },
+          {
+            "name": "Biomasse-Erntegerät",
+            "disabled": false
+          },
+          {
+            "name": "Mining-Hopper und Förderschleuse",
+            "disabled": false
+          },
+          {
+            "name": "Autonomer Frachtcrawler",
+            "disabled": false
+          },
+          {
+            "name": "Kipptransporter",
+            "disabled": false
+          },
+          {
+            "name": "Schüttgutdepot",
+            "disabled": false
+          },
+          {
+            "name": "Fahrzeugladebucht",
+            "disabled": false
+          },
+          {
+            "name": "Auftrags- und Logistikterminal",
+            "disabled": false
+          },
+          {
+            "name": "Schwerlastförderer",
+            "disabled": false
+          },
+          {
+            "name": "Bodenbasierter Kleinbauroboter",
+            "disabled": false
+          },
+          {
+            "name": "Montage- und Inspektionsdrohne",
+            "disabled": false
+          },
+          {
+            "name": "Mobiler Lastheber",
+            "disabled": false
+          },
+          {
+            "name": "Bau- und Reparaturdepot",
+            "disabled": false
+          },
+          {
+            "name": "Reparatur- und Inspektionseinheit",
+            "disabled": false
+          },
+          {
+            "name": "Expeditionsenergie",
+            "disabled": false
+          },
+          {
+            "name": "Einmalige Wind-Reassembly",
+            "disabled": false
+          },
+          {
+            "name": "Eigene Generatorfertigung aus Recycling",
+            "disabled": false
+          },
+          {
+            "name": "Geschlossene Rohstoffversorgung",
+            "disabled": false
+          },
+          {
+            "name": "Industrielle Energieversorgung",
+            "disabled": false
+          },
+          {
+            "name": "Selbst gefertigter Windgenerator",
+            "disabled": false
+          },
+          {
+            "name": "Proben- und Pegelmessanker",
+            "disabled": false
+          },
+          {
+            "name": "Geschütztes Wasserentnahmemodul",
+            "disabled": false
+          },
+          {
+            "name": "Prozesswasserpumpe",
+            "disabled": false
+          },
+          {
+            "name": "Rohrmodule und Kupplungen",
+            "disabled": false
+          },
+          {
+            "name": "Isolierventil",
+            "disabled": false
+          },
+          {
+            "name": "Prozesswassertank",
+            "disabled": false
+          },
+          {
+            "name": "Wasserfilter",
+            "disabled": false
+          },
+          {
+            "name": "Durchfluss-Messstück",
+            "disabled": false
+          },
+          {
+            "name": "Abwasserrückgewinnung",
+            "disabled": false
+          },
+          {
+            "name": "Kühlkreislaufträger",
+            "disabled": false
+          },
+          {
+            "name": "Rohrbrücke und Wartungslaufsteg",
+            "disabled": false
+          },
+          {
+            "name": "Nasskonzentrator",
+            "disabled": false
+          },
+          {
+            "name": "Eindicker und Absetzbecken",
+            "disabled": false
+          },
+          {
+            "name": "Filterpresse",
+            "disabled": false
+          },
+          {
+            "name": "Schrott- und Elektroniksortierung",
+            "disabled": false
+          },
+          {
+            "name": "Elektrische Recycling-Schmelze",
+            "disabled": false
+          },
+          {
+            "name": "Gieß- und Abkühlzelle",
+            "disabled": false
+          },
+          {
+            "name": "Präzisionsfräse",
+            "disabled": false
+          },
+          {
+            "name": "Industrie-Reparaturwerkstatt",
+            "disabled": false
+          },
+          {
+            "name": "Wärmetauscher",
+            "disabled": false
+          },
+          {
+            "name": "Industrielles Lastschaltwerk",
+            "disabled": false
+          },
+          {
+            "name": "Optionale thermische Energieanlage",
+            "disabled": false
+          },
+          {
+            "name": "Gasdruck- und Speichermodul",
+            "disabled": false
+          },
+          {
+            "name": "Abraum- und Reststoffhof",
+            "disabled": false
+          },
+          {
+            "name": "Flüssigkeitstransportfahrzeug",
+            "disabled": false
+          },
+          {
+            "name": "Großanlagen-Wartungsportal",
+            "disabled": false
+          },
+          {
+            "name": "Stadtrandtor",
+            "disabled": false
+          },
+          {
+            "name": "Stadtsektor-Verteilstation",
+            "disabled": false
+          },
+          {
+            "name": "Historisches Pumpwerk",
+            "disabled": false
+          },
+          {
+            "name": "Städtisches Industrieareal",
+            "disabled": false
+          },
+          {
+            "name": "Robotereinwohner und Ladebuchten",
+            "disabled": false
+          },
+          {
+            "name": "Archiv und historische KI-Infrastruktur",
+            "disabled": false
+          },
+          {
+            "name": "Stadt-Frachtterminal",
+            "disabled": false
+          },
+          {
+            "name": "Stadtkommunikation",
+            "disabled": false
+          },
+          {
+            "name": "Roboterreparatur",
+            "disabled": false
+          },
+          {
+            "name": "Sozialer Stadtplatz",
+            "disabled": false
+          },
+          {
+            "name": "Raumhafen und späteres Raumfahrtprogramm",
+            "disabled": false
+          },
+          {
+            "name": "Stadt-Schwarzstartinsel",
+            "disabled": false
+          },
+          {
+            "name": "Fuß-/Nivelliermodul",
+            "disabled": false
+          },
+          {
+            "name": "Kurze Stützstrebe",
+            "disabled": false
+          },
+          {
+            "name": "Kleine Deckplatte",
+            "disabled": false
+          },
+          {
+            "name": "Deckplatte klein",
+            "disabled": false
+          },
+          {
+            "name": "Langer Hauptträger",
+            "disabled": false
+          },
+          {
+            "name": "Konsol-/Wandstützelement",
+            "disabled": false
+          },
+          {
+            "name": "Rampenplatte",
+            "disabled": false
+          },
+          {
+            "name": "Arbeitsbühne",
+            "disabled": false
+          },
+          {
+            "name": "Treppen-/Leitersegment",
+            "disabled": false
+          },
+          {
+            "name": "Wandsegment",
+            "disabled": false
+          },
+          {
+            "name": "Tor-/Durchgangsrahmen",
+            "disabled": false
+          },
+          {
+            "name": "Dachsegment",
+            "disabled": false
+          },
+          {
+            "name": "Geländer",
+            "disabled": false
+          },
+          {
+            "name": "Bandträger",
+            "disabled": false
+          },
+          {
+            "name": "Kabel-/Leitungsträger",
+            "disabled": false
+          },
+          {
+            "name": "Eck-/Verbindungsstück",
+            "disabled": false
+          },
+          {
+            "name": "Expeditionsenergie",
+            "disabled": false
+          },
+          {
+            "name": "Biomasse-Peak",
+            "disabled": false
+          },
+          {
+            "name": "Einmalige Wind-Reassembly",
+            "disabled": false
+          },
+          {
+            "name": "Eigene Windfertigung",
+            "disabled": false
+          },
+          {
+            "name": "Größere erneuerbare Netze",
+            "disabled": false
+          },
+          {
+            "name": "Optionale thermische Versorgung",
+            "disabled": false
+          },
+          {
+            "name": "Stadt-/Raumhafennetz",
+            "disabled": false
+          },
+          {
+            "name": "REC-01-CUT",
+            "disabled": false
+          },
+          {
+            "name": "REC-02-PROFILE",
+            "disabled": false
+          },
+          {
+            "name": "REC-03-SHEET",
+            "disabled": false
+          },
+          {
+            "name": "REC-04-CRUSH",
+            "disabled": false
+          },
+          {
+            "name": "REC-05-BRACE",
+            "disabled": false
+          },
+          {
+            "name": "REC-06-DRIVE",
+            "disabled": false
+          },
+          {
+            "name": "REC-07-BELT",
+            "disabled": false
+          }
+        ],
+        "testBridge": false
+      }
+    },
+    {
+      "kind": "released-walk-gesture",
+      "axis": "x",
+      "target": -5.75,
+      "key": "d",
+      "ms": 83,
+      "before": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.4200000762939453,
+          "z": 11.875
+        },
+        "grounded": false,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Inspection"
+      },
+      "after": {
+        "ownerId": "hvp:player",
+        "position": {
+          "x": -5.5,
+          "y": 2.4200000762939453,
+          "z": 11.875
+        },
+        "grounded": false,
+        "velocityY": 0,
+        "jumpCount": 0,
+        "cameraFraction": 1,
+        "status": "Inspection"
+      }
+    },
+    {
+      "command": {
+        "kind": "walk",
+        "axis": "x",
+        "target": -5.75
+      },
+      "start": "2026-10-12T07:38:32.252Z",
+      "end": "2026-10-12T07:38:32.885Z",
+      "status": "failed",
+      "error": "Error: Normal movement blocked: {\"player\":{\"ownerId\":\"hvp:player\",\"position\":{\"x\":-5.5,\"y\":2.4200000762939453,\"z\":11.875},\"grounded\":false,\"velocityY\":0,\"jumpCount\":0,\"cameraFraction\":1,\"status\":\"Inspection\"},\"carrier\":null,\"handling\":null,\"inventory\":[{\"id\":\"fp02_wreck_cargo\",\"role\":\"cargo\",\"massMg\":2984400000,\"stackCount\":79}],\"construction\":{\"state\":\"Ready\",\"installations\":[],\"revision\":0,\"massMg\":2984400000,\"ghost\":null},\"connections\":{\"power\":[],\"belts\":[]},\"deposits\":[],\"power\":{\"status\":\"UNCONNECTED\",\"generationWatts\":0,\"allocatedWatts\":0,\"batteryEnergyJ\":null,\"batteryCapacityJ\":null,\"reserveEnergyJ\":null,\"sourceQuality\":\"unsupported\",\"consumers\":[]},\"buttons\":null,\"testBridge\":false}"
+    },
+    {
+      "command": {
+        "kind": "capture",
+        "label": "02-normal-pickup-stand"
+      },
+      "start": "2026-10-12T07:38:32.902Z",
+      "end": "2026-10-12T07:38:34.533Z",
+      "status": "completed",
+      "result": {
+        "player": {
+          "ownerId": "hvp:player",
+          "position": {
+            "x": -5.5,
+            "y": 2.4200000762939453,
+            "z": 11.875
+          },
+          "grounded": false,
+          "velocityY": 0,
+          "jumpCount": 0,
+          "cameraFraction": 1,
+          "status": "Inspection"
+        },
+        "carrier": null,
+        "handling": null,
+        "inventory": [
+          {
+            "id": "fp02_wreck_cargo",
+            "role": "cargo",
+            "massMg": 2984400000,
+            "stackCount": 79
+          }
+        ],
+        "construction": {
+          "state": "Ready",
+          "installations": [],
+          "revision": 0,
+          "massMg": 2984400000,
+          "ghost": null
+        },
+        "connections": {
+          "power": [],
+          "belts": []
+        },
+        "deposits": [],
+        "power": {
+          "status": "UNCONNECTED",
+          "generationWatts": 0,
+          "allocatedWatts": 0,
+          "batteryEnergyJ": null,
+          "batteryCapacityJ": null,
+          "reserveEnergyJ": null,
+          "sourceQuality": "unsupported",
+          "consumers": []
+        },
+        "buttons": [
+          {
+            "name": "Sitzung beenden",
+            "disabled": false
+          },
+          {
+            "name": "Spielen · WASD / Maus / Space",
+            "disabled": false
+          },
+          {
+            "name": "Perspektive: Ego (V)",
+            "disabled": false
+          },
+          {
+            "name": "C01-EYE",
+            "disabled": false
+          },
+          {
+            "name": "C02-SHORE",
+            "disabled": false
+          },
+          {
+            "name": "C03-ROOTS",
+            "disabled": false
+          },
+          {
+            "name": "C04-WIDE",
+            "disabled": false
+          },
+          {
+            "name": "C05-Felsarm",
+            "disabled": false
+          },
+          {
+            "name": "Felsarm-Stütze prüfen (ohne Schnitt)",
+            "disabled": false
+          },
+          {
+            "name": "Stütze anvisieren (2 + Klick)",
+            "disabled": false
+          },
+          {
+            "name": "Neustart: Felsarm",
+            "disabled": false
+          },
+          {
+            "name": "Neuer Bergungsauftrag",
+            "disabled": false
+          },
+          {
+            "name": "Neustart: Ostpfad",
+            "disabled": false
+          },
+          {
+            "name": "Ostregion erneut versuchen",
+            "disabled": false
+          },
+          {
+            "name": "Ansicht: Schnittstelle",
+            "disabled": false
+          },
+          {
+            "name": "L-Körper anvisieren (F)",
+            "disabled": false
+          },
+          {
+            "name": "Ast anvisieren (2 + Klick)",
+            "disabled": false
+          },
+          {
+            "name": "1: Zelle",
+            "disabled": false
+          },
+          {
+            "name": "2: Box",
+            "disabled": false
+          },
+          {
+            "name": "3: Kugel",
+            "disabled": false
+          },
+          {
+            "name": "Spielstand speichern",
+            "disabled": false
+          },
+          {
+            "name": "Spielstand laden",
+            "disabled": false
+          },
+          {
+            "name": "Gespeicherte Sitzung neu öffnen",
+            "disabled": false
+          },
+          {
+            "name": "Reset view",
+            "disabled": false
+          },
+          {
+            "name": "Water: on",
+            "disabled": false
+          },
+          {
+            "name": "Inspect: off",
+            "disabled": false
+          },
+          {
+            "name": "AO: on",
+            "disabled": false
+          },
+          {
+            "name": "Physik fortsetzen",
+            "disabled": false
+          },
+          {
+            "name": "Fallkörper neu starten",
+            "disabled": false
+          },
+          {
+            "name": "Hide UI",
+            "disabled": false
+          },
+          {
+            "name": "Werkstatt pausieren",
+            "disabled": true
+          },
+          {
+            "name": "Werkstatt fortsetzen",
+            "disabled": true
+          },
+          {
+            "name": "Wrackfracht öffnen",
+            "disabled": false
+          },
+          {
+            "name": "Zuschnitt vorschauen",
+            "disabled": false
+          },
+          {
+            "name": "Umformung vorschauen",
+            "disabled": false
+          },
+          {
+            "name": "Rohlager vorschauen",
+            "disabled": false
+          },
+          {
+            "name": "Produktlager vorschauen",
+            "disabled": false
+          },
+          {
+            "name": "Werkbank vorschauen",
+            "disabled": false
+          },
+          {
+            "name": "Neue Stütze platzieren",
+            "disabled": false
+          },
+          {
+            "name": "Batterie vorschauen",
+            "disabled": false
+          },
+          {
+            "name": "Verteiler vorschauen",
+            "disabled": false
+          },
+          {
+            "name": "Bauvorschau drehen",
+            "disabled": false
+          },
+          {
+            "name": "Bauvorschau verwerfen",
+            "disabled": false
+          },
+          {
+            "name": "Bau bestätigen",
+            "disabled": false
+          },
+          {
+            "name": "Fracht öffnen",
+            "disabled": true
+          },
+          {
+            "name": "Übertragen",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: C26-PACK",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: C27-PACK",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: B06-BOM",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: B07-BOM",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: BATTERY-PACK",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: DISTRIBUTOR-PACK",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: BENCH-PACK",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: BIN-PACK",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: BELT4",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: CABLE40",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: CABLE4750",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: CABLE6500",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: CABLE8000",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: CABLE7000",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: CABLE5250",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: CABLE7500",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: RAW8",
+            "disabled": true
+          },
+          {
+            "name": "Aufnehmen: MONTAGE",
+            "disabled": true
+          },
+          {
+            "name": "Expeditions-Windanlage",
+            "disabled": false
+          },
+          {
+            "name": "Expeditions-Solararray",
+            "disabled": false
+          },
+          {
+            "name": "Expeditionsbatterie",
+            "disabled": false
+          },
+          {
+            "name": "Expeditionsverteiler",
+            "disabled": false
+          },
+          {
+            "name": "Feldwerkbank",
+            "disabled": false
+          },
+          {
+            "name": "Zuschnittstation",
+            "disabled": false
+          },
+          {
+            "name": "Umformwerk",
+            "disabled": false
+          },
+          {
+            "name": "Gesteinsbrecher",
+            "disabled": false
+          },
+          {
+            "name": "Materialcontainer",
+            "disabled": false
+          },
+          {
+            "name": "Kleine Förderlinie",
+            "disabled": false
+          },
+          {
+            "name": "Bandverteiler / Zusammenführung",
+            "disabled": false
+          },
+          {
+            "name": "Fundamentfamilie",
+            "disabled": false
+          },
+          {
+            "name": "Biomasse-Zusatzgenerator",
+            "disabled": false
+          },
+          {
+            "name": "Montagezelle",
+            "disabled": false
+          },
+          {
+            "name": "Automatischer Flachschürfer",
+            "disabled": false
+          },
+          {
+            "name": "Einzelbau und Verbindungen",
+            "disabled": false
+          },
+          {
+            "name": "Gruppen kopieren und Blueprints speichern",
+            "disabled": false
+          },
+          {
+            "name": "Größere Ghost-Pläne",
+            "disabled": false
+          },
+          {
+            "name": "Automatische Bauqueues",
+            "disabled": false
+          },
+          {
+            "name": "Automatische Geländeprofile",
+            "disabled": false
+          },
+          {
+            "name": "Kabelgebundener Flachschürfer",
+            "disabled": false
+          },
+          {
+            "name": "Lokaler Vermessungsanker",
+            "disabled": false
+          },
+          {
+            "name": "Kompaktbagger",
+            "disabled": false
+          },
+          {
+            "name": "Planier- und Nivelliermaschine",
+            "disabled": false
+          },
+          {
+            "name": "Schwerer Tagebaubagger",
+            "disabled": false
+          },
+          {
+            "name": "Biomasse-Erntegerät",
+            "disabled": false
+          },
+          {
+            "name": "Mining-Hopper und Förderschleuse",
+            "disabled": false
+          },
+          {
+            "name": "Autonomer Frachtcrawler",
+            "disabled": false
+          },
+          {
+            "name": "Kipptransporter",
+            "disabled": false
+          },
+          {
+            "name": "Schüttgutdepot",
+            "disabled": false
+          },
+          {
+            "name": "Fahrzeugladebucht",
+            "disabled": false
+          },
+          {
+            "name": "Auftrags- und Logistikterminal",
+            "disabled": false
+          },
+          {
+            "name": "Schwerlastförderer",
+            "disabled": false
+          },
+          {
+            "name": "Bodenbasierter Kleinbauroboter",
+            "disabled": false
+          },
+          {
+            "name": "Montage- und Inspektionsdrohne",
+            "disabled": false
+          },
+          {
+            "name": "Mobiler Lastheber",
+            "disabled": false
+          },
+          {
+            "name": "Bau- und Reparaturdepot",
+            "disabled": false
+          },
+          {
+            "name": "Reparatur- und Inspektionseinheit",
+            "disabled": false
+          },
+          {
+            "name": "Expeditionsenergie",
+            "disabled": false
+          },
+          {
+            "name": "Einmalige Wind-Reassembly",
+            "disabled": false
+          },
+          {
+            "name": "Eigene Generatorfertigung aus Recycling",
+            "disabled": false
+          },
+          {
+            "name": "Geschlossene Rohstoffversorgung",
+            "disabled": false
+          },
+          {
+            "name": "Industrielle Energieversorgung",
+            "disabled": false
+          },
+          {
+            "name": "Selbst gefertigter Windgenerator",
+            "disabled": false
+          },
+          {
+            "name": "Proben- und Pegelmessanker",
+            "disabled": false
+          },
+          {
+            "name": "Geschütztes Wasserentnahmemodul",
+            "disabled": false
+          },
+          {
+            "name": "Prozesswasserpumpe",
+            "disabled": false
+          },
+          {
+            "name": "Rohrmodule und Kupplungen",
+            "disabled": false
+          },
+          {
+            "name": "Isolierventil",
+            "disabled": false
+          },
+          {
+            "name": "Prozesswassertank",
+            "disabled": false
+          },
+          {
+            "name": "Wasserfilter",
+            "disabled": false
+          },
+          {
+            "name": "Durchfluss-Messstück",
+            "disabled": false
+          },
+          {
+            "name": "Abwasserrückgewinnung",
+            "disabled": false
+          },
+          {
+            "name": "Kühlkreislaufträger",
+            "disabled": false
+          },
+          {
+            "name": "Rohrbrücke und Wartungslaufsteg",
+            "disabled": false
+          },
+          {
+            "name": "Nasskonzentrator",
+            "disabled": false
+          },
+          {
+            "name": "Eindicker und Absetzbecken",
+            "disabled": false
+          },
+          {
+            "name": "Filterpresse",
+            "disabled": false
+          },
+          {
+            "name": "Schrott- und Elektroniksortierung",
+            "disabled": false
+          },
+          {
+            "name": "Elektrische Recycling-Schmelze",
+            "disabled": false
+          },
+          {
+            "name": "Gieß- und Abkühlzelle",
+            "disabled": false
+          },
+          {
+            "name": "Präzisionsfräse",
+            "disabled": false
+          },
+          {
+            "name": "Industrie-Reparaturwerkstatt",
+            "disabled": false
+          },
+          {
+            "name": "Wärmetauscher",
+            "disabled": false
+          },
+          {
+            "name": "Industrielles Lastschaltwerk",
+            "disabled": false
+          },
+          {
+            "name": "Optionale thermische Energieanlage",
+            "disabled": false
+          },
+          {
+            "name": "Gasdruck- und Speichermodul",
+            "disabled": false
+          },
+          {
+            "name": "Abraum- und Reststoffhof",
+            "disabled": false
+          },
+          {
+            "name": "Flüssigkeitstransportfahrzeug",
+            "disabled": false
+          },
+          {
+            "name": "Großanlagen-Wartungsportal",
+            "disabled": false
+          },
+          {
+            "name": "Stadtrandtor",
+            "disabled": false
+          },
+          {
+            "name": "Stadtsektor-Verteilstation",
+            "disabled": false
+          },
+          {
+            "name": "Historisches Pumpwerk",
+            "disabled": false
+          },
+          {
+            "name": "Städtisches Industrieareal",
+            "disabled": false
+          },
+          {
+            "name": "Robotereinwohner und Ladebuchten",
+            "disabled": false
+          },
+          {
+            "name": "Archiv und historische KI-Infrastruktur",
+            "disabled": false
+          },
+          {
+            "name": "Stadt-Frachtterminal",
+            "disabled": false
+          },
+          {
+            "name": "Stadtkommunikation",
+            "disabled": false
+          },
+          {
+            "name": "Roboterreparatur",
+            "disabled": false
+          },
+          {
+            "name": "Sozialer Stadtplatz",
+            "disabled": false
+          },
+          {
+            "name": "Raumhafen und späteres Raumfahrtprogramm",
+            "disabled": false
+          },
+          {
+            "name": "Stadt-Schwarzstartinsel",
+            "disabled": false
+          },
+          {
+            "name": "Fuß-/Nivelliermodul",
+            "disabled": false
+          },
+          {
+            "name": "Kurze Stützstrebe",
+            "disabled": false
+          },
+          {
+            "name": "Kleine Deckplatte",
+            "disabled": false
+          },
+          {
+            "name": "Deckplatte klein",
+            "disabled": false
+          },
+          {
+            "name": "Langer Hauptträger",
+            "disabled": false
+          },
+          {
+            "name": "Konsol-/Wandstützelement",
+            "disabled": false
+          },
+          {
+            "name": "Rampenplatte",
+            "disabled": false
+          },
+          {
+            "name": "Arbeitsbühne",
+            "disabled": false
+          },
+          {
+            "name": "Treppen-/Leitersegment",
+            "disabled": false
+          },
+          {
+            "name": "Wandsegment",
+            "disabled": false
+          },
+          {
+            "name": "Tor-/Durchgangsrahmen",
+            "disabled": false
+          },
+          {
+            "name": "Dachsegment",
+            "disabled": false
+          },
+          {
+            "name": "Geländer",
+            "disabled": false
+          },
+          {
+            "name": "Bandträger",
+            "disabled": false
+          },
+          {
+            "name": "Kabel-/Leitungsträger",
+            "disabled": false
+          },
+          {
+            "name": "Eck-/Verbindungsstück",
+            "disabled": false
+          },
+          {
+            "name": "Expeditionsenergie",
+            "disabled": false
+          },
+          {
+            "name": "Biomasse-Peak",
+            "disabled": false
+          },
+          {
+            "name": "Einmalige Wind-Reassembly",
+            "disabled": false
+          },
+          {
+            "name": "Eigene Windfertigung",
+            "disabled": false
+          },
+          {
+            "name": "Größere erneuerbare Netze",
+            "disabled": false
+          },
+          {
+            "name": "Optionale thermische Versorgung",
+            "disabled": false
+          },
+          {
+            "name": "Stadt-/Raumhafennetz",
+            "disabled": false
+          },
+          {
+            "name": "REC-01-CUT",
+            "disabled": false
+          },
+          {
+            "name": "REC-02-PROFILE",
+            "disabled": false
+          },
+          {
+            "name": "REC-03-SHEET",
+            "disabled": false
+          },
+          {
+            "name": "REC-04-CRUSH",
+            "disabled": false
+          },
+          {
+            "name": "REC-05-BRACE",
+            "disabled": false
+          },
+          {
+            "name": "REC-06-DRIVE",
+            "disabled": false
+          },
+          {
+            "name": "REC-07-BELT",
+            "disabled": false
+          }
+        ],
+        "testBridge": false
+      }
+    },
+    {
+      "command": {
+        "kind": "close"
+      },
+      "start": "2026-10-12T07:40:20.787Z",
+      "end": "2026-10-12T07:40:20.787Z",
+      "status": "completed"
+    }
+  ],
+  "errors": [
+    {
+      "time": "2026-10-12T07:37:20.769Z",
+      "type": "error",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    }
+  ],
+  "resources": [
+    {
+      "url": "http://127.0.0.1:5174/factory.html",
+      "status": 200,
+      "type": "document"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/hvpBootstrap-GeJ96uLU.css",
+      "status": 200,
+      "type": "stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/hash-_jyFVLd7.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/installationProfile-bfmxcyNH.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/factoryAssets-M3P9MbWq.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/factory-CZ4JUT-l.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/hvpBootstrap-DLkrRi2n.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/cargoSite-CW6EGi_0.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/streamingWorker-CZ5H7ot8.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/streamingWorker-CZ5H7ot8.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:5174/assets/physicsWorker-D17RmkKp.js",
+      "status": 200,
+      "type": "script"
+    }
+  ]
+}

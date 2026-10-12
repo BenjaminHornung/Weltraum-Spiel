@@ -1,0 +1,22 @@
+[
+  {
+    "path": "scripts/former-route-actions.jsonl",
+    "bytes": 1310,
+    "sha256": "7a6efc95a1b17e9392e4254cd875c83a2abae17a9f06c94949f330762a2b55f3"
+  },
+  {
+    "path": "scripts/normal-route-driver.mjs",
+    "bytes": 8660,
+    "sha256": "86d018473d634909f45ace4679b545acdd15af060a6cafe8458b55ec5763c4c4"
+  },
+  {
+    "path": "scripts/run-command.py",
+    "bytes": 2018,
+    "sha256": "60cc963d208f9d88792aee64352d55ae594a7e6139ec1347d7a4defe668b33cf"
+  },
+  {
+    "path": "scripts/initial-former-actions.jsonl",
+    "bytes": 1293,
+    "sha256": "6dfea3e9c01f74ce5bbb46d172bf0c8a779d08bf97f546630a0e666e11d81c3e"
+  }
+]

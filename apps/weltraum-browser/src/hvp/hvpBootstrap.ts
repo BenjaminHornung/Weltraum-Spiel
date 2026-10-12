@@ -61,7 +61,7 @@ import {
 } from "../presentation";
 import { createHvpCamera, type HvpCameraPreset } from "./hvpCamera";
 import { createHvpHud, type HvpLifecycleState } from "./hvpHud";
-import { buildHvpPlant, estimateHvpVegetationSourceBytes, meshHvpVegetation, planHvpVegetation, projectHvpVegetation, HVP_VEGETATION_VERSION } from "../hestia-prototype/presentation/vegetation";
+import { buildHvpPlant, estimateHvpVegetationSourceBytes, isHvpPlantHabitat, meshHvpVegetation, planHvpVegetation, projectHvpVegetation, HVP_VEGETATION_VERSION } from "../hestia-prototype/presentation/vegetation";
 import type { RepresentationTransformSnapshot } from "../presentation";
 import {
   assertHvpWaterPresentation,
@@ -1026,8 +1026,8 @@ export const startHvp = async (
       // nothing, claim neither Ready nor Error.
       return Object.freeze({ dispose });
     }
-    if(overrides.factorySourceProfile && (!overrides.factoryExtension||overrides.factorySourceProfile.version!=="hvp-factory-startsite-v1"||snapshot.version!==overrides.factorySourceProfile.version))throw new Error("Factory source/profile binding mismatch");
-    if(snapshot.version==="hvp-factory-startsite-v1"&&!overrides.factorySourceProfile)throw new Error("Factory source requires its explicitly bound profile");
+    if(overrides.factorySourceProfile && (!overrides.factoryExtension||(overrides.factorySourceProfile.version!=="hvp-factory-startsite-v1"&&overrides.factorySourceProfile.version!=="hvp-factory-startsite-v2")||snapshot.version!==overrides.factorySourceProfile.version))throw new Error("Factory source/profile binding mismatch");
+    if((snapshot.version==="hvp-factory-startsite-v1"||snapshot.version==="hvp-factory-startsite-v2")&&!overrides.factorySourceProfile)throw new Error("Factory source requires its explicitly bound profile");
     const initialFactoryCargo=overrides.factorySourceProfile?(await import("../factory/fixtures/cargoSite")).createFactoryCargoSite(snapshot):undefined;
     if(initialFactoryCargo)factoryCosts.set(initialFactoryCargo.ownerId,{cpu:initialFactoryCargo.canonicalJson.length*16+1944,mesh:1296,triangles:12,draws:1});
     const sourceColumn=overrides.factorySourceProfile?.readColumn??readHvpSourceColumnWorld;
@@ -1060,7 +1060,16 @@ export const startHvp = async (
     const terrainLooks = new Map([...initialTerrain].map(([id, mesh]) => [id, createHvpCompactLookTerrain(mesh, look, {allowPartialRoles:true})]));
     let joinLook = createHvpCompactLookTerrain(joinMesh, look);
     let farLook = createHvpCompactLookTerrain(farMesh, look, { allowPartialRoles: true });
-    const plants = coldGame?coldGame.plants.map(p=>p.instance):planHvpVegetation(undefined,vegetationProfile);
+    const plants = coldGame?coldGame.plants.map(p=>p.instance):(()=>{
+      const planned=planHvpVegetation(undefined,vegetationProfile);
+      if(overrides.factorySourceProfile?.version!=="hvp-factory-startsite-v2")return planned;
+      const invalid=planned.filter(p=>!isHvpPlantHabitat(p.kind,p.position.x,p.position.z,vegetationProfile));
+      const removed=invalid[0];
+      if(planned.length!==97||invalid.length!==1||removed?.id!=="hvp:flora:bed-52-220"||removed.kind!=="broadleaf"||removed.variant!==1
+        ||removed.position.x!==-9.5||removed.position.y!==2.5||removed.position.z!==11.5)throw Error("Factory V2 initial decoration differs from its exact habitat delta");
+      // Exact source-derived nonphysical broadleaf delta; all wood/native owners and habitat guards remain intact.
+      return Object.freeze(planned.filter(p=>p!==removed));
+    })();
     const vegetationSourceBytes = estimateHvpVegetationSourceBytes(plants);
     if (vegetationSourceBytes > 16 * 1024 * 1024) { throw new Error("Vegetation source BudgetExceeded before allocation"); }
     const collisionSources: HvpCollisionSource[] = [{...terrainRoot.read(),

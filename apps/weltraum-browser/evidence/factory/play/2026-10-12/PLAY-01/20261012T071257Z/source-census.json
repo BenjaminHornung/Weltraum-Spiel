@@ -1,0 +1,70 @@
+{
+  "slotCount": 8388608,
+  "coastDigest": "b8fde6b0",
+  "v1Digest": "e62aea8a",
+  "v2Digest": "ec8ba9b1",
+  "v1SlotsSha256": "48f80a82e119e1691289f7835585fd2a2d275715e146f85353276d388999702e",
+  "v2SlotsSha256": "a380a6b29746d731ebf02d29fdd27fd15d38dc16bfd67b4cb2bec175b0c8264f",
+  "addressedNewColumns": 380,
+  "changedColumns": 297,
+  "changedSlotBytes": 2890,
+  "added": 264,
+  "removed": 2626,
+  "replaced": 0,
+  "materialCreditMg": 0,
+  "initializationReceipt": {
+    "maskCount": 18,
+    "columnCount": 4860,
+    "areaMm2": 75937500,
+    "materialCreditMg": 0,
+    "ownerTerrainAcceptance": "OWNER_REVIEW_PENDING"
+  },
+  "perMask": [
+    {
+      "id": "S1",
+      "mask": [
+        56,
+        58,
+        180,
+        222
+      ],
+      "addressedColumns": 84,
+      "added": 0,
+      "removed": 1256,
+      "replaced": 0
+    },
+    {
+      "id": "S2",
+      "mask": [
+        56,
+        58,
+        104,
+        164
+      ],
+      "addressedColumns": 120,
+      "added": 70,
+      "removed": 506,
+      "replaced": 0
+    },
+    {
+      "id": "S3",
+      "mask": [
+        66,
+        68,
+        124,
+        212
+      ],
+      "addressedColumns": 176,
+      "added": 194,
+      "removed": 864,
+      "replaced": 0
+    }
+  ],
+  "sparseArtifact": {
+    "path": "v1-to-v2-sparse-slot-diff.json",
+    "bytes": 40462,
+    "sha256": "83217ba7b953cd634967ca384ec28cc70162603b9b25ebc869406f0760cefef9"
+  },
+  "outsideUnion": "all other slot bytes identical over full 8388608-slot census",
+  "legacyRestore": "unchanged Coast-only decoder"
+}

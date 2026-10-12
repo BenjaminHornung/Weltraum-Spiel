@@ -1,0 +1,227 @@
+{
+  "schema": "hestia.fp06.play-owned-evidence/v1",
+  "actor": "/root/play_integrator",
+  "artifacts": [
+    {
+      "path": "01-full-normal-native-flow.command.json",
+      "bytes": 2678,
+      "sha256": "e36006b3b950117624114626c16a2aade939e3e4bcd202fa1e30312e9060829f"
+    },
+    {
+      "path": "01-full-normal-native-flow.log",
+      "bytes": 83540,
+      "sha256": "ecd063ca5c44fcae4c4733ad70e2f0e83b22ed9d4bf349b538133994bca865f1"
+    },
+    {
+      "path": "01-full-normal-native-flow.raw.log.gz",
+      "bytes": 3559,
+      "sha256": "7fe0f1e521ae2f536a3ac843cd9633b46c00fcc75f3d5da36664cbe27f44a2da"
+    },
+    {
+      "path": "normal-full-flow/01-v2-normal-entry.json",
+      "bytes": 166210,
+      "sha256": "38d9ce4d73da98274f60a73fc8dff5def5042ba8a7b58883c4c642c84f907684"
+    },
+    {
+      "path": "normal-full-flow/01-v2-normal-entry.png",
+      "bytes": 660547,
+      "sha256": "082f419c3aa244d814125043ff7e17c364bc291d9a1edee75694e377d608a8ee"
+    },
+    {
+      "path": "normal-full-flow/02-paid-341kg-pickup.json",
+      "bytes": 303091,
+      "sha256": "6c2ab02afaf96b273cd5fd0893807382f40823f83b8753ab5c80eea5c672487c"
+    },
+    {
+      "path": "normal-full-flow/02-paid-341kg-pickup.png",
+      "bytes": 627061,
+      "sha256": "d0bae02b4edeff54b7fc33a698e762b2567b533a4f0ad091a869b97523ca6705"
+    },
+    {
+      "path": "normal-full-flow/03-heavy-west-corridor.json",
+      "bytes": 302274,
+      "sha256": "d1befe57192ca195c3775fa3093dad5747049faee2388b6195b4c813ae1cad8c"
+    },
+    {
+      "path": "normal-full-flow/03-heavy-west-corridor.png",
+      "bytes": 292972,
+      "sha256": "8c4b5de99e6ffc8b99bf2935e79b125a0d30db04d364e63524ec09ac424399bb"
+    },
+    {
+      "path": "normal-full-flow/04-supported-depot-approach.json",
+      "bytes": 302085,
+      "sha256": "d26034cb4dae44b2038fb557c4c740f19268cdb1ffcf867d4c123f598709dc36"
+    },
+    {
+      "path": "normal-full-flow/04-supported-depot-approach.png",
+      "bytes": 282107,
+      "sha256": "8141dc82d39bf8946183119b3d2465c29f589630ba0c741b59b637f293583a2d"
+    },
+    {
+      "path": "normal-full-flow/05-local-341kg-depot.json",
+      "bytes": 302418,
+      "sha256": "a05ab748ea124ba2c10fd4cfae707c9c5ac209e31902f5fa4f098840eb10584f"
+    },
+    {
+      "path": "normal-full-flow/05-local-341kg-depot.png",
+      "bytes": 628948,
+      "sha256": "cf145907fde7ecf60599436f393b616e559b87ac043ca8a551b93fc7a68c2125"
+    },
+    {
+      "path": "normal-full-flow/06-player-exit-from-former-hull.json",
+      "bytes": 301438,
+      "sha256": "e56825f628e7bc58f153afe44ee0b4c8944b085f1214decaa344e489ae54ee83"
+    },
+    {
+      "path": "normal-full-flow/06-player-exit-from-former-hull.png",
+      "bytes": 275341,
+      "sha256": "00c0bb902ddae410a9c193e9308d6dcd015be28c915c6a63fd33a890bc79400d"
+    },
+    {
+      "path": "normal-full-flow/07-paid-former-ghost.json",
+      "bytes": 302716,
+      "sha256": "2231a88113266a9cf3636576038f8c3c25f9138da3281779ae6d3d9006d53303"
+    },
+    {
+      "path": "normal-full-flow/07-paid-former-ghost.png",
+      "bytes": 630818,
+      "sha256": "18599c3126f047235ac90e32e87fc217bc06274ce713f72ae933a9d2774589c7"
+    },
+    {
+      "path": "normal-full-flow/08-paid-native-former.json",
+      "bytes": 302712,
+      "sha256": "dcef77881f022697153bf776d4a7707cf51300844e17abf32c297b7efedf67db"
+    },
+    {
+      "path": "normal-full-flow/08-paid-native-former.png",
+      "bytes": 630450,
+      "sha256": "32eae28025d49d7232bf297c46bce763ae675b8ae42324c0524af88aec8b8043"
+    },
+    {
+      "path": "normal-full-flow/09-normal-recovery-to-cargo.json",
+      "bytes": 301622,
+      "sha256": "44e5a675649421ecb4d3d75b8b519734603d2af7e504c60ea5bd2ce94ca2adb7"
+    },
+    {
+      "path": "normal-full-flow/09-normal-recovery-to-cargo.png",
+      "bytes": 272292,
+      "sha256": "191a90ac5f38a013fbfaf72293e0804aff786fd7ce2afaadcfd84bd4a1c0229a"
+    },
+    {
+      "path": "normal-full-flow/10-recovered-heavy-finite-cargo.json",
+      "bytes": 172693,
+      "sha256": "388856941a334f1736dea63720f4bf4e385d1cb6922405e114aa8994776e8874"
+    },
+    {
+      "path": "normal-full-flow/10-recovered-heavy-finite-cargo.png",
+      "bytes": 631582,
+      "sha256": "4efb212542d4aac1535f49ece8855902493447daaef543cca0f6f2255ebd8836"
+    },
+    {
+      "path": "normal-full-flow/11-normal-paid-battery-pickup.json",
+      "bytes": 172802,
+      "sha256": "810a7dbfc8928e0ca0d286ec2811002bfd382db1ed4a1f760abd15c8cdedf2fc"
+    },
+    {
+      "path": "normal-full-flow/11-normal-paid-battery-pickup.png",
+      "bytes": 631838,
+      "sha256": "4641b791e93da558d3911459ada2722da1df79b1ab867efb5cb6e8c1d0ec45d7"
+    },
+    {
+      "path": "normal-full-flow/12-paid-battery-supported-stand.json",
+      "bytes": 306378,
+      "sha256": "5d187b499375e6329c330e44f6d11c07323e765cc52bf7e5cc6ee395b6b27947"
+    },
+    {
+      "path": "normal-full-flow/12-paid-battery-supported-stand.png",
+      "bytes": 628300,
+      "sha256": "d32d746fd13aef3d676cd76db5ebc46b691bfdb441b1aa321f98989e4e2fe8c9"
+    },
+    {
+      "path": "normal-full-flow/13-paid-battery-service-transfer-approach.json",
+      "bytes": 302493,
+      "sha256": "1b029e3d669d795f45ceef873460ce957861b8f802b8d9a6186e87ce7a8d5b86"
+    },
+    {
+      "path": "normal-full-flow/13-paid-battery-service-transfer-approach.png",
+      "bytes": 369991,
+      "sha256": "b33f266c3d616f1e49c2f7678d528bca8b213b3384f1410374b5dd065e5c249a"
+    },
+    {
+      "path": "normal-full-flow/14-paid-battery-service-transfer-result.json",
+      "bytes": 302657,
+      "sha256": "d6948f32c116cc4ae0de2c7f7c55abe490de8b29e58e8fa505ac9804a317ac68"
+    },
+    {
+      "path": "normal-full-flow/14-paid-battery-service-transfer-result.png",
+      "bytes": 359841,
+      "sha256": "b9d3afd33813dfd6b69d2ef6e8ee37d17d431f89e1b2fc0a19d9a49a1639124c"
+    },
+    {
+      "path": "normal-full-flow/15-battery-native-support-blocker.json",
+      "bytes": 303952,
+      "sha256": "0e32df016e64fd0716e3bddeddc5e9dc489f9a24d2b65c00063a268d4a78bf8b"
+    },
+    {
+      "path": "normal-full-flow/15-battery-native-support-blocker.png",
+      "bytes": 626631,
+      "sha256": "152e2e47402e9db871b6393993394a111803444170ceebfa8f93b27279d1348c"
+    },
+    {
+      "path": "normal-full-flow/normal-route-actions.json",
+      "bytes": 934437,
+      "sha256": "d75300da516083aa3cd3c1faeb9e94f50a8c9eb4649ebcecdbee216436e7262d"
+    },
+    {
+      "path": "normal-full-flow/normal-route-execution.json",
+      "bytes": 1017350,
+      "sha256": "b8105833b26607f6c5ab3cd79562967dbeda3a41a1e4532e47af56e8f3eb1f7d"
+    },
+    {
+      "path": "normal-full-flow/normal-route-final.json",
+      "bytes": 303952,
+      "sha256": "a42fff6bc91260274e4ea8de80494e6c07b96e8d3d1ded71cf7de4a74e68109a"
+    },
+    {
+      "path": "normal-full-flow/video/page@2470fbf2161268f1ae29e6a368815dd7.webm",
+      "bytes": 83901604,
+      "sha256": "98a335fd69bd93ac5a7dbca6554f692a49fb3d01ecfbc238863b61924c11f26b"
+    },
+    {
+      "path": "normal-full-flow/video-ffprobe.json",
+      "bytes": 216,
+      "sha256": "d619403a0ea9eeb68b7e9b0b137b6976df1c965222bce70e5165c7c90b53f5ab"
+    },
+    {
+      "path": "route-blockers.md",
+      "bytes": 2265,
+      "sha256": "ddaa39356ddb69b2f8243129ab6ad6103d94f8fc5e7c1a55aba6933729acdbc7"
+    },
+    {
+      "path": "script-bindings-before.json",
+      "bytes": 626,
+      "sha256": "80203c80c2aefbdf2e62a3e147fbea15a302fc31bf01cd7c7df5bb15ee5500bb"
+    },
+    {
+      "path": "scripts/former-route-actions.jsonl",
+      "bytes": 1310,
+      "sha256": "7a6efc95a1b17e9392e4254cd875c83a2abae17a9f06c94949f330762a2b55f3"
+    },
+    {
+      "path": "scripts/initial-former-actions.jsonl",
+      "bytes": 1293,
+      "sha256": "6dfea3e9c01f74ce5bbb46d172bf0c8a779d08bf97f546630a0e666e11d81c3e"
+    },
+    {
+      "path": "scripts/normal-route-driver.mjs",
+      "bytes": 8660,
+      "sha256": "86d018473d634909f45ace4679b545acdd15af060a6cafe8458b55ec5763c4c4"
+    },
+    {
+      "path": "scripts/run-command.py",
+      "bytes": 2018,
+      "sha256": "60cc963d208f9d88792aee64352d55ae594a7e6139ec1347d7a4defe668b33cf"
+    }
+  ],
+  "claim": "bounded claims in report; fullW09/owner/hardware pending"
+}

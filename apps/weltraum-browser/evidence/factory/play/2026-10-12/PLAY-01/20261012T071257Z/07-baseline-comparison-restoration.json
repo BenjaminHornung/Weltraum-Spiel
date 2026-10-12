@@ -1,0 +1,7 @@
+{
+  "experiment": "Only hvpBootstrap reverted temporarily to exact original HEAD bytes; other authorized drafts and unchanged W06 cases preserved; original payload restored in finally",
+  "originalBootstrapSha256": "66ec6f330dc7d6cf7c25851fc20b3ae17bb0daf8faad8827efe6d45dff81198d",
+  "candidateBootstrapSha256": "50e49426c05b29343d94c884184d26972209ef3c907daa2fd11a30e63fee730d",
+  "restoredBootstrapSha256": "50e49426c05b29343d94c884184d26972209ef3c907daa2fd11a30e63fee730d",
+  "restoredByteIdentical": true
+}

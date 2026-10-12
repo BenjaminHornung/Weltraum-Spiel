@@ -572,6 +572,12 @@ export const createHvpFactorySourceSnapshot = (slots: Uint8Array): HvpCoastSourc
   return wrapSnapshot(slots.slice(), "hvp-factory-startsite-v1", "hestia-factory-layout-a-001");
 };
 
+/** Isolated, closed V2 initial-source candidate; legacy restore still admits only Coast V5. */
+export const createHvpFactorySourceSnapshotV2 = (slots: Uint8Array): HvpCoastSourceSnapshot => {
+  if (!(slots instanceof Uint8Array) || slots.length !== HVP_SOURCE_SLOT_COUNT || slots.some(value => value > HVP_SLOT_MOSS)) throw new Error("Invalid Factory V2 source pages");
+  return wrapSnapshot(slots.slice(), "hvp-factory-startsite-v2", "hestia-factory-layout-a-001");
+};
+
 /** Artifact boundary: verify saved canonical bytes without running the generator. */
 export const restoreHvpCoastSource = (slots:Uint8Array,expectedDigest:string):HvpCoastSourceSnapshot => {
   if(!(slots instanceof Uint8Array)||slots.length!==HVP_SOURCE_SLOT_COUNT||slots.some(s=>s>HVP_SLOT_MOSS)
@@ -624,7 +630,7 @@ export const assertHvpSourceComplete = (snapshot: HvpCoastSourceSnapshot): void 
     throw new Error("HVP coast source is missing: materialize the named seed before claiming readiness.");
   }
   const problems: string[] = [];
-  const factoryProfile = snapshot.version === "hvp-factory-startsite-v1" && snapshot.seedName === "hestia-factory-layout-a-001";
+  const factoryProfile = (snapshot.version === "hvp-factory-startsite-v1" || snapshot.version === "hvp-factory-startsite-v2") && snapshot.seedName === "hestia-factory-layout-a-001";
   if (snapshot.version !== HVP_COAST_SOURCE_VERSION && !factoryProfile) {
     problems.push(`version ${String(snapshot.version)}`);
   }
